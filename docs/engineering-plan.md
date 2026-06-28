@@ -158,12 +158,53 @@ emits values + audit trace + Return Record.
 
 ---
 
+## Configuration — one-stop tuning
+
+All tunables live in **`tax-graph.config.yaml`** (gitignored; copy from
+`config/tax-graph.config.example.yaml`) — the single place to change prompts, model/
+provider, **API keys**, paths, rate limits, and thresholds **without touching code**. Loaded
+by `tax_graph/config.py`. **Secret resolution order: explicit config value → OS keyring →
+environment variable** (keys fail back to env vars; real secrets never committed). Prompts
+live in `prompts/*.md`, referenced from the config so they're tuned in one place. Sections:
+`project` (years, paths), `llm` (provider, model, key/key_env/keyring), `extraction`
+(confidence thresholds, critic toggle, prompt paths), `acquire`, `oracles`, `logging`.
+
+## Phase gates & canaries
+
+Each phase carries a humorous 2-word **canary** the Worker must state before starting (proves
+it read the subplan) and an **exit-criteria** command that must pass 100%. Global project
+canary: **Ledger Llama**.
+
+| Phase (exec order) | Canary | Exit criteria |
+|---|---|---|
+| M0 Foundation | Booted Badger | `tax-graph validate` + `tax-graph run` ok; `pytest -m m0`; CI green |
+| M3 Acquisition | Thrifty Otter | `pytest -m m3` (fetch + change-detect + citation-integrity) |
+| M4 Extraction | Spectral Auditor | `pytest -m m4` (schema-valid, review-gated draft for a held-out form) |
+| M1 Compile | Crystalline Ledger | `pytest -m m1` (SQLite run == YAML run) |
+| M2 MCP server | Polite Robot | `pytest -m m2` + manual Claude Desktop walk-through |
+| M5 Return Record | Future Echo | `pytest -m m5` (record + carryforward round-trip) |
+| M6 Differential | Twin Witness | `pytest -m m6` (Tax Graph == an OSS oracle) |
+
+## Working protocol (Architect / Worker)
+
+Adapted from John's multi-agent protocol (filesystem state to resist context degradation):
+- **Architect (Claude Opus):** plans only, no implementation code. Master plan = this doc;
+  per-phase detail in `plans/PHASE_<id>.md`, generated **serially, one phase at a time**.
+- **Worker (Codex/Sonnet/Gemini):** implements one phase, one step at a time, from `plans/`.
+  Full directive in `plans/README.md`.
+- **Every step MUST:** implement core logic + create/update pytest (reuse, don't proliferate)
+  + update docstrings/docs. Not done until tests pass 100%.
+- **Worker crawl:** state the phase canary & await confirmation → take the lowest `[ ]` step
+  → implement+test+docs → green → mark `[DONE]` + log deviations → **git commit** → **stop
+  and ask permission** to proceed. Check context % each session.
+
 ## Cross-cutting
 
 - **Config & secrets:** `config.py`; API keys via OS keyring or env, never committed;
   spending-cap guidance documented.
-- **Testing:** pytest; unit (ops), graph-integrity, form-level, cross-form, example-driven
-  regression (req. doc §10). Every supported branch needs ≥1 example.
+- **Testing:** see **`docs/testing-strategy.md`** (hard guardrails). pytest, phase-tagged;
+  every step updates tests + docs; a branch isn't `supported` without a passing example +
+  citations + (where an oracle exists) a differential test.
 - **CI:** GitHub Actions — validate + pytest on every push (extraction/oracle jobs gated/
   optional since they need keys/network).
 - **Packaging/distribution:** single per-OS binary later (PyInstaller); `uvx`/PyPI for
@@ -176,9 +217,13 @@ Capital-loss carryover *computation* (structure only); Form 1116 and the rest of
 set (build after the pipeline is solid; 1116 last); full prompt library + agent-behavior
 evals; web service.
 
-## Open decisions for John
-1. Confirm "API-based" = CLI/package with LLM-API stages (assumed), not a served web API.
-2. CLI library preference (typer vs argparse) and any package-name change from `tax_graph`.
-3. Sequencing: is the priority **runtime** first (M1→M2, get it usable in Claude Desktop)
-   or **build automation** first (M3→M4, get acquisition/extraction repeatable)? M0 is
-   the prerequisite for both.
+## Sequencing (decided) & remaining confirmations
+
+**Automation-first** (John's call — get out of hand-authoring ASAP):
+**M0 → M3 → M4 → M1 → M2 → M5 → M6.** M0 is the prerequisite; then acquisition (M3) + LLM
+extraction (M4) replace hand-authoring with reviewed draft generation. The engine already
+runs on YAML, so extracted + validated graphs are testable *before* the SQLite/MCP runtime
+(M1→M2). Return Record (M5) and differential testing (M6) close it out.
+
+Still assumed (flag if wrong): "API-based" = CLI/package with LLM-API stages, **not** a served
+web API; CLI lib = **typer**; package name = `tax_graph`.
