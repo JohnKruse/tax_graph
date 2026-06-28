@@ -75,12 +75,7 @@ inside the MCP server.
   instruction `document` objects and re-pointing the citations (small graph fix; flag to
   the Architect if it grows).
 
-- [ ] **Step 5 - CLI + gate.** Wire `tax-graph acquire [--year] [--check]` to run
-  manifest -> fetch/store/hash/render -> ChangeReport -> citation-integrity, printing a concise
-  summary. Test: CLI smoke test (mocked fetch) asserts exit 0 + a change report + integrity
-  result. Exit: `pytest -m m3` green. Docs: `acquire` usage in README.
-
-- [ ] **Step 6 - Form renderer via fitz (PyMuPDF), line-number-anchored.** Verified on Form 1116:
+- [ ] **Step 5 - Form renderer via fitz (PyMuPDF), line-number-anchored.** Verified on Form 1116:
   fitz un-mashes the dense Part I deductions block that OCR collapsed, and yields the AcroForm
   field grid for free. Add `tax_graph/acquire/render_form.py`: for `kind` in {tax_form, schedule,
   source_document}, group words into rows by y-position (DROP dot-leader fragments), keeping each
@@ -94,18 +89,25 @@ inside the MCP server.
   come out as separate line-numbered rows with the correct entry columns, and the field grid shows
   the expected column x-clusters. Docs.
 
-- [ ] **Step 7 - Instructions renderer via Mistral OCR 4 + the dispatcher.** For `kind` in
+- [ ] **Step 6 - Instructions renderer via Mistral OCR 4 + the dispatcher.** For `kind` in
   {instructions, publication}: 2-column prose where fitz reading-order would interleave columns,
   so use OCR. Add `tax_graph/acquire/render_ocr.py` calling Mistral OCR (config `ocr.*`, key from
   keyring/env); store per-doc + per-page markdown + extracted hyperlinks (page-level citation
   locators + URLs). Cache by `content_hash` (paid API). ASCII-normalize. Note: numbered worksheet
   STEPS (prose like "Line 2. Combine...") come through clean - the computation lives there; blank
   worksheet GRIDS mash but are low-value scaffolding; genuinely garbled tabular worksheets -> flag
-  for human review, never guess. Add a `render()` dispatcher that routes by `kind` (Step 6 vs
-  Step 7) and FAILS LOUDLY if the needed renderer or OCR key is unavailable. Test (mocked OCR
+  for human review, never guess. Add a `render()` dispatcher that routes by `kind` (Step 5 vs
+  Step 6) and FAILS LOUDLY if the needed renderer or OCR key is unavailable. Test (mocked OCR
   client): markdown + per-page + hyperlinks stored, cache hit skips re-OCR; deterministic tests
   use committed fixture markdown; a separate `@pytest.mark.network` real-OCR test (one small public
   IRS instructions doc). Docs.
+
+- [ ] **Step 7 - CLI + gate.** Wire `tax-graph acquire [--year] [--check]` to run
+  manifest -> fetch/store/hash -> render (the Step 5/6 dispatcher) -> ChangeReport ->
+  citation-integrity, printing a concise summary. The renderers from Steps 5-6 now exist, so the
+  CLI wires real components (not a render that does not exist yet). Test: CLI smoke test (mocked
+  fetch + mocked renderers) asserts exit 0 + a change report + integrity result. Exit:
+  `pytest -m m3` green. Docs: `acquire` usage in README.
 
 When all steps are `[DONE]`: mark this phase `[COMPLETE]`, move it to `archive/`, and tell
 John. The Architect will then generate `PHASE_M4.md` (Extraction - canary *Spectral Auditor*)
