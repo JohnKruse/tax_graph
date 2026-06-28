@@ -43,7 +43,7 @@ hardened — do not copy the POC's gaps forward. (P3 = package shape = this whol
   - Verification: `pytest -q -m m0`, `pytest -q`, and
     `python tools\validate_graph.py 2025` pass.
 
-- [ ] **Step 3 — Port engine + enforce the missing-input invariant (review finding P1).**
+- [DONE] **Step 3 — Port engine + enforce the missing-input invariant (review finding P1).**
   Move the engine to `tax_graph/engine/` (engine + `operations.py` for COPY/SUM/SUBTRACT).
   **Do NOT coerce a missing required input to 0.** Behavior:
     - An input node marked `required` with no provided fact is `MISSING` (a sentinel, not 0).
@@ -56,6 +56,9 @@ hardened — do not copy the POC's gaps forward. (P3 = package shape = this whol
   Tests: `tests/test_capital_gains_slice.py` still passes; **and** omitting 1099-B basis
   reports a missing required input and leaves Form 1040 line 7 undetermined — it must NOT
   compute 12000. Docs: docstrings.
+  - Verification: `pytest -q -m m0`, `pytest -q`,
+    `python tools\validate_graph.py 2025`, and
+    `python engine\engine.py examples\capital_gains_basic\facts.yaml 2025` pass.
 
 - [ ] **Step 4 — CLI.** `tax_graph/cli.py` (typer) with `validate` and `run` subcommands.
   `config.py` loads `tax-graph.config.yaml` (precedence: value → keyring → env). Test: CLI
