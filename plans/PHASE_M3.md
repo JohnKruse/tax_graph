@@ -50,11 +50,13 @@ inside the MCP server.
     and `python -m tax_graph.cli validate 2025` pass. The live network test is
     opt-in with `TAX_GRAPH_RUN_NETWORK_TESTS=1`.
 
-- [ ] **Step 3 - Change detection.** `tax_graph/acquire/changes.py` + a persisted state file
+- [DONE] **Step 3 - Change detection.** `tax_graph/acquire/changes.py` + a persisted state file
   (`<raw_store>/<year>/_state.json`: document_id -> {content_hash, retrieved_date, url}). A run
   compares fresh hashes to stored state and returns a **ChangeReport** (new / changed /
   unchanged) - changed docs are what M4 re-extracts. `--check` diffs without writing state.
   Test: seeded state -> a new hash reports `changed`, same hash reports `unchanged`. Docs.
+  - Verification: `python tools\check_ascii.py`, `pytest -q -m m3`, `pytest -q`,
+    and `python -m tax_graph.cli validate 2025` pass.
 
 - [ ] **Step 4 - Citation integrity.** `tax_graph/acquire/citation_check.py`: for each graph
   citation, confirm its `quoted_text` still appears (whitespace-normalized) in the rendered

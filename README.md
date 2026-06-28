@@ -65,6 +65,10 @@ Fetched source documents are stored under the configured raw store, defaulting
 to `.cache/raw/<year>/`, with the original PDF, extracted text, and JSON
 metadata containing the content hash and retrieval date.
 
+The raw store also keeps `_state.json`, a document-id index of the last seen
+content hash. Acquisition uses that state to report new, changed, and unchanged
+source documents.
+
 ## Compatibility Scripts
 
 Validate the authored graph:
