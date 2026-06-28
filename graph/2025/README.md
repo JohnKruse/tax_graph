@@ -1,4 +1,4 @@
-# Graph — tax year 2025
+# Graph - tax year 2025
 
 Authored graph objects (YAML), validated against `../../schemas/` and compiled to
 SQLite by the build step.
@@ -19,21 +19,21 @@ SQLite by the build step.
 The first runnable branch:
 
 ```
-1099-B  ──COPY──▶  Form 8949 (d),(e)
-                        │ SUBTRACT (d − e)
-                        ▼
-                   8949 (h) gain ──SUM──▶ 8949 line 2 total
-                                              │ COPY
-                                              ▼
-                   Schedule D line 8b ──SUM──▶ line 15 (net LT)
-                                                   │
-   Schedule D line 7 (net ST) ──SUM──▶ line 16 ◀──┘
-                                          │ COPY
-                                          ▼
+1099-B  --COPY-->  Form 8949 (d),(e)
+                        | SUBTRACT (d - e)
+                        v
+                   8949 (h) gain --SUM--> 8949 line 2 total
+                                              | COPY
+                                              v
+                   Schedule D line 8b --SUM--> line 15 (net LT)
+                                                   |
+   Schedule D line 7 (net ST) --SUM--> line 16 <--+
+                                          | COPY
+                                          v
                               Form 1040 line 7
 ```
 
-Supported: long-term, single covered lot, no adjustments (req. doc §15.1).
+Supported: long-term, single covered lot, no adjustments (req. doc Section 15.1).
 The short-term path (Schedule D line 7) is a stub input (defaults to 0) for now.
 
 ## Known v0 simplifications (eyeball list)
@@ -45,5 +45,5 @@ The short-term path (Schedule D line 7) is a stub input (defaults to 0) for now.
   separate *instructions* document objects are a planned refinement.
 - **quoted_text** is authored from known phrasing and must be verified verbatim by
   the citation-integrity build step before this branch is marked `supported`.
-- **Capital-loss carryover** (when line 16 is a net loss) is deferred (§9.3); the
+- **Capital-loss carryover** (when line 16 is a net loss) is deferred (Section 9.3); the
   Return Record's carryforward block is where it will live.

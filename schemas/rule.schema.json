@@ -10,7 +10,7 @@
     "rule_id": { "type": "string", "pattern": "^[a-z0-9_]+$" },
     "operation": {
       "type": "string",
-      "description": "v0 primitive set. Bounding is done with MIN/MAX whose operands may be node refs OR literal constants, so CAP/FLOOR/LIMIT were dropped as redundant (an upper bound is MIN(x, const); a lower bound is MAX(x, const); a clamp is MIN(MAX(x, lo), hi)). Rounding is ROUND with parameters {mode: nearest|up|down, increment} — which also covers round-up/down-to-increment, so CEILING and FLOOR-as-rounding were dropped too.",
+      "description": "v0 primitive set. Bounding is done with MIN/MAX whose operands may be node refs OR literal constants, so CAP/FLOOR/LIMIT were dropped as redundant (an upper bound is MIN(x, const); a lower bound is MAX(x, const); a clamp is MIN(MAX(x, lo), hi)). Rounding is ROUND with parameters {mode: nearest|up|down, increment} - which also covers round-up/down-to-increment, so CEILING and FLOOR-as-rounding were dropped too.",
       "enum": [
         "COPY", "SUM", "SUBTRACT", "MULTIPLY", "DIVIDE",
         "MIN", "MAX", "NEGATE", "ABS", "ROUND",
@@ -29,7 +29,7 @@
     "citation_refs": {
       "type": "array",
       "items": { "type": "string" },
-      "description": "Per governance (req. doc §13), every supported rule must cite an IRS source."
+      "description": "Per governance (req. doc Section 13), every supported rule must cite an IRS source."
     }
   }
 }

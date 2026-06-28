@@ -1,7 +1,7 @@
 """Regression test: execute the capital-gains slice and check expected values.
 
-Example-driven (facts.yaml + expected.yaml) — the pattern that will scale into
-the IRS Example Regression Suite (requirements doc §10.4).
+Example-driven (facts.yaml + expected.yaml) - the pattern that will scale into
+the IRS Example Regression Suite (requirements doc Section 10.4).
 """
 import pathlib
 

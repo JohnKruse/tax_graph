@@ -10,7 +10,7 @@
 
 Tax Graph is an open-source project intended to provide a grounded computational model of U.S. tax forms, instructions, calculations, dependencies, and data flows.
 
-The central idea is not that an AI model should “know taxes” by reasoning freely from natural language. The central idea is that an AI agent should be given a verified roadmap of the tax system and should operate within that roadmap.
+The central idea is not that an AI model should "know taxes" by reasoning freely from natural language. The central idea is that an AI agent should be given a verified roadmap of the tax system and should operate within that roadmap.
 
 The project will model the tax system as a typed directed graph:
 
@@ -21,7 +21,7 @@ The project will model the tax system as a typed directed graph:
 - An audit trace records how every computed value was produced.
 - An MCP server exposes the graph and rule engine to AI clients.
 
-The long-term vision is that once a taxpayer’s relevant facts are known, the system can instantiate that person’s **personal tax tree**, walk the tree, compute the return, document the reasoning, and eventually pass the computed model to a form filler.
+The long-term vision is that once a taxpayer's relevant facts are known, the system can instantiate that person's **personal tax tree**, walk the tree, compute the return, document the reasoning, and eventually pass the computed model to a form filler.
 
 ---
 
@@ -86,17 +86,17 @@ Tax Graph should be organized as a layered system.
 
 ```text
 Tax source documents / taxpayer facts
-        ↓
+        v
 Normalized tax data
-        ↓
+        v
 Personal tax tree
-        ↓
+        v
 Graph traversal and rule execution
-        ↓
+        v
 Computed return model
-        ↓
+        v
 Audit trace / explanation file
-        ↓
+        v
 Future form filler or UI renderer
 ```
 
@@ -120,11 +120,11 @@ The Universal Tax Graph is the full modeled tax system for a given tax year.
 Example:
 
 ```text
-1099-B → Form 8949 → Schedule D → Form 1040
-1099-R → Form 1040
-Foreign taxes paid → Form 1116 → Schedule 3 → Form 1040
-W-2 → Form 1040
-1099-DIV → Schedule B → Form 1040
+1099-B -> Form 8949 -> Schedule D -> Form 1040
+1099-R -> Form 1040
+Foreign taxes paid -> Form 1116 -> Schedule 3 -> Form 1040
+W-2 -> Form 1040
+1099-DIV -> Schedule B -> Form 1040
 ```
 
 The Universal Tax Graph contains all supported documents, nodes, edges, rules, citations, and tests.
@@ -575,7 +575,7 @@ This should be the first worked example because it clearly demonstrates graph tr
 Initial supported capital gains flow:
 
 ```text
-1099-B → Form 8949 → Schedule D → Form 1040 Line 7
+1099-B -> Form 8949 -> Schedule D -> Form 1040 Line 7
 ```
 
 Supported in v0:
@@ -611,7 +611,7 @@ This is highly relevant for retirees and cross-border taxpayers.
 Initial retirement flow:
 
 ```text
-1099-R → Form 1040 retirement distribution lines
+1099-R -> Form 1040 retirement distribution lines
 ```
 
 Later expansion:
@@ -642,7 +642,7 @@ This should be included in the first phase despite being less common than W-2 or
 Initial foreign tax credit flow:
 
 ```text
-Foreign tax paid/accrued → Form 1116 → Schedule 3 → Form 1040
+Foreign tax paid/accrued -> Form 1116 -> Schedule 3 -> Form 1040
 ```
 
 Supported in early version:
@@ -960,7 +960,7 @@ The MVP should prove the architecture with two concrete branches:
 ### 15.1 Capital Gains Branch
 
 ```text
-1099-B → Form 8949 → Schedule D → Form 1040
+1099-B -> Form 8949 -> Schedule D -> Form 1040
 ```
 
 Required features:
@@ -979,7 +979,7 @@ Required features:
 ### 15.2 Foreign Tax Credit Branch
 
 ```text
-Foreign tax paid/accrued → Form 1116 → Schedule 3 → Form 1040
+Foreign tax paid/accrued -> Form 1116 -> Schedule 3 -> Form 1040
 ```
 
 Required features:

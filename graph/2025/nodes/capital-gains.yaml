@@ -19,21 +19,21 @@
 # --- Form 8949 Part II (long-term) ---
 - node_id: form_8949_2025_partii_proceeds
   document_id: form_8949_2025
-  label: Form 8949 Part II, column (d) — Proceeds
+  label: Form 8949 Part II, column (d) - Proceeds
   node_type: form_line
   value_type: currency
   required: conditional
 
 - node_id: form_8949_2025_partii_cost
   document_id: form_8949_2025
-  label: Form 8949 Part II, column (e) — Cost or other basis
+  label: Form 8949 Part II, column (e) - Cost or other basis
   node_type: form_line
   value_type: currency
   required: conditional
 
 - node_id: form_8949_2025_partii_gain_loss
   document_id: form_8949_2025
-  label: Form 8949 Part II, column (h) — Gain or (loss)
+  label: Form 8949 Part II, column (h) - Gain or (loss)
   node_type: computed
   value_type: currency
   required: optional
@@ -42,7 +42,7 @@
 
 - node_id: form_8949_2025_partii_total_gain_loss
   document_id: form_8949_2025
-  label: Form 8949 Part II, line 2 — Total gain or (loss)
+  label: Form 8949 Part II, line 2 - Total gain or (loss)
   node_type: computed
   value_type: currency
   required: optional
@@ -50,21 +50,21 @@
 # --- Schedule D ---
 - node_id: schedule_d_2025_line_8b_gain
   document_id: schedule_d_2025
-  label: Schedule D, line 8b — Long-term totals from Form 8949 (gain/loss)
+  label: Schedule D, line 8b - Long-term totals from Form 8949 (gain/loss)
   node_type: form_line
   value_type: currency
   required: conditional
 
 - node_id: schedule_d_2025_line_15_net_lt
   document_id: schedule_d_2025
-  label: Schedule D, line 15 — Net long-term capital gain or (loss)
+  label: Schedule D, line 15 - Net long-term capital gain or (loss)
   node_type: computed
   value_type: currency
   required: optional
 
 - node_id: schedule_d_2025_line_7_net_st
   document_id: schedule_d_2025
-  label: Schedule D, line 7 — Net short-term capital gain or (loss)
+  label: Schedule D, line 7 - Net short-term capital gain or (loss)
   node_type: form_line
   value_type: currency
   required: conditional
@@ -72,7 +72,7 @@
 
 - node_id: schedule_d_2025_line_16_total
   document_id: schedule_d_2025
-  label: Schedule D, line 16 — Total capital gain or (loss)
+  label: Schedule D, line 16 - Total capital gain or (loss)
   node_type: computed
   value_type: currency
   required: optional
@@ -80,7 +80,7 @@
 # --- Form 1040 ---
 - node_id: form_1040_2025_line_7_capital_gain_loss
   document_id: form_1040_2025
-  label: Form 1040, line 7 — Capital gain or (loss)
+  label: Form 1040, line 7 - Capital gain or (loss)
   node_type: form_line
   value_type: currency
   required: optional

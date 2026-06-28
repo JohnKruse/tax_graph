@@ -10,7 +10,7 @@ JSON Schema (draft 2020-12) definitions for the graph's authored YAML objects. T
 | `node.schema.json` | An addressable point: form line, box, worksheet field, taxpayer fact, computed value, or concept. |
 | `edge.schema.json` | A typed directed relationship between nodes; references a rule by id. |
 | `rule.schema.json` | A reusable declarative transformation from the primitive instruction set. |
-| `citation.schema.json` | **(addition beyond req. doc §11)** A span-level, *quotable* pointer to source text — the artifact that powers both extraction-time verification and runtime grounded questions. |
+| `citation.schema.json` | **(addition beyond req. doc Section 11)** A span-level, *quotable* pointer to source text - the artifact that powers both extraction-time verification and runtime grounded questions. |
 | `decision.schema.json` | **(addition)** A first-class human-judgment point. Enforces an escape hatch (`other`/`unsupported`/`escalate`) at the schema level, so a filer is never forced into a wrong choice. |
 | `taxpayer_facts.schema.json` | Normalized inputs (not canonical graph); each fact records provenance for the audit trace. |
 | `carryforward.schema.json` | **(addition)** The structured, machine-ingestible block of a Return Record (see `../docs/return-record.md`): cross-year carryforwards + consistency elections that year N emits and year N+1 ingests. |
@@ -18,9 +18,9 @@ JSON Schema (draft 2020-12) definitions for the graph's authored YAML objects. T
 ## Conventions
 
 - All ids are `snake_case`, conventionally suffixed with the tax year (`schedule_d_2025_line_16`).
-- `additionalProperties: false` everywhere — unknown fields are authoring errors and fail validation on purpose.
-- Cross-object references (`citation_refs`, `edge.source/target`, `edge.rule_id`) are **id strings**, validated for existence by build-time graph-integrity checks (req. doc §10.3), not by JSON Schema `$ref`.
+- `additionalProperties: false` everywhere - unknown fields are authoring errors and fail validation on purpose.
+- Cross-object references (`citation_refs`, `edge.source/target`, `edge.rule_id`) are **id strings**, validated for existence by build-time graph-integrity checks (req. doc Section 10.3), not by JSON Schema `$ref`.
 
 ## Note on the rule vocabulary
 
-`rule.schema.json`'s `operation` enum is the **v0** starting set from req. doc §6.6. It is being validated and (sparingly) expanded by a survey of real IRS instruction language — see the rule-survey notes. Bias is toward *composing* existing primitives over adding new ones.
+`rule.schema.json`'s `operation` enum is the **v0** starting set from req. doc Section 6.6. It is being validated and (sparingly) expanded by a survey of real IRS instruction language - see the rule-survey notes. Bias is toward *composing* existing primitives over adding new ones.

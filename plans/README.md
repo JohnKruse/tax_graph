@@ -1,16 +1,16 @@
-# plans/ — working state for the Architect / Worker protocol
+# plans/ - working state for the Architect / Worker protocol
 
 Filesystem-persisted plan state so a **fresh Worker session can resume without the original
 context** (mitigates context degradation). Adapted from John's multi-agent protocol.
 
-- **Master plan:** `../docs/engineering-plan.md` (phases M0–M6, gates, canaries, config).
-- **Per-phase subplans:** `PHASE_<id>.md` here — generated **serially, one phase at a time**
+- **Master plan:** `../docs/engineering-plan.md` (phases M0-M6, gates, canaries, config).
+- **Per-phase subplans:** `PHASE_<id>.md` here - generated **serially, one phase at a time**
   by the Architect at full resolution. Steps marked `[ ]` / `[DONE]`; a finished phase is
   marked `[COMPLETE]` and moved to `archive/`.
-- **archive/** — completed subplans.
+- **archive/** - completed subplans.
 
 ## Roles
-- **Architect (Claude Opus):** plans only — no implementation code. Writes/updates these files.
+- **Architect (Claude Opus):** plans only - no implementation code. Writes/updates these files.
 - **Worker (Codex / Sonnet / Gemini):** implements one phase, one step at a time.
 
 ## Worker directive (start of a Worker session)
@@ -23,3 +23,11 @@ context** (mitigates context degradation). Adapted from John's multi-agent proto
 6. **Stop and ask permission** to proceed to the next step. Don't offer to do anything else.
 
 Global project canary: **Ledger Llama**.
+
+## File format: ASCII-only (enforced)
+
+All operational, planning, docs, and data files (plans/, docs/, config, schema
+descriptions, graph YAML labels, Python docstrings) are **ASCII-only**. Use "-" not em/en
+dashes, "->" not arrow glyphs, "Section" not the section sign, straight quotes, and plain
+ASCII for diagrams. Unicode glyphs break PowerShell (cp1252), patch/diff tooling, and agent
+handoffs. `tools/check_ascii.py` enforces this and must be a CI gate.
