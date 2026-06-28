@@ -19,10 +19,14 @@ hardened — do not copy the POC's gaps forward. (P3 = package shape = this whol
 
 ## Steps
 
-- [ ] **Step 1 — Package + uv skeleton.** `pyproject.toml` (uv; deps: pyyaml, jsonschema,
+- [DONE] **Step 1 — Package + uv skeleton.** `pyproject.toml` (uv; deps: pyyaml, jsonschema,
   pytest, typer). Create `tax_graph/` (`__init__.py`, `config.py` stub, `io/loader.py`).
   Test: `uv run python -c "import tax_graph"`; `tests/test_smoke.py::test_import` (`@pytest.mark.m0`).
   Docs: README install/run section.
+  - Verification: `python -c "import tax_graph; print(tax_graph.__version__)"`,
+    `pytest -q -m m0`, `pytest -q`, and `python tools\validate_graph.py 2025` pass.
+  - Deviation: `uv` is not installed in this environment, so the exact `uv run ...`
+    smoke command could not be executed locally yet.
 
 - [ ] **Step 2 — Shared loader + port validator.** Implement `tax_graph/io/loader.py` (YAML
   load + the date-normalization that tames YAML implicit typing). Port the validator to
