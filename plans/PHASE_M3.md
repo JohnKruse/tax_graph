@@ -19,8 +19,8 @@ inside the MCP server.
   (`irs.gov/pub/irs-pdf/{f|i|p}NNNN.pdf`; prior years `irs-prior/`). A maintained **manifest**
   beats scraping links. Only revisit if a needed *index* page is JS-rendered - verify first.
 - **Rendering = SPLIT BY DOC TYPE** (verified on 1116). Route by manifest `kind`: **forms**
-  (tax_form/schedule/source_document) -> **fitz/PyMuPDF** (Step 6); **instructions/publications**
-  -> **Mistral OCR 4** (Step 7). Why: visual fidelity is a NON-GOAL - we key on the IRS line/entry
+  (tax_form/schedule/source_document) -> **fitz/PyMuPDF** (Step 5); **instructions/publications**
+  -> **Mistral OCR 4** (Step 6). Why: visual fidelity is a NON-GOAL - we key on the IRS line/entry
   numbers (1a, 2, 3a-3g, cols A/B/C), which are the form's canonical address = our node-id scheme.
   fitz keeps each numbered line a discrete, column-tagged row + hands us the AcroForm field grid
   (deterministic, free, local); OCR handles 2-column instruction prose where fitz would interleave
@@ -34,7 +34,7 @@ inside the MCP server.
   The single real-network fetch test is marked `@pytest.mark.network` and excluded from the
   deterministic gate.
 - Store raw + `content_hash` (sha256) + `retrieved_date` for reproducibility/audit.
-- New deps to add: `httpx`, `pymupdf` (fitz, form renderer, Step 6), `mistralai` (OCR, Step 7).
+- New deps to add: `httpx`, `pymupdf` (fitz, form renderer, Step 5), `mistralai` (OCR, Step 6).
   Drop `pypdf` - raw-PDF text scrambles multi-column forms; not a usable fallback.
 
 ## Steps
@@ -79,7 +79,7 @@ inside the MCP server.
   - Deviation logged: citation checking supports a `source_map` for form-to-instructions
     mappings; the graph citation document ids are unchanged in this step.
 
-- [ ] **Step 5 - Form renderer via fitz (PyMuPDF), line-number-anchored.** Verified on Form 1116:
+- [DONE] **Step 5 - Form renderer via fitz (PyMuPDF), line-number-anchored.** Verified on Form 1116:
   fitz un-mashes the dense Part I deductions block that OCR collapsed, and yields the AcroForm
   field grid for free. Add `tax_graph/acquire/render_form.py`: for `kind` in {tax_form, schedule,
   source_document}, group words into rows by y-position (DROP dot-leader fragments), keeping each
@@ -92,6 +92,10 @@ inside the MCP server.
   Test: against a committed `f1116.pdf` fixture, assert the deductions sub-lines (3a-3g, 4a, 4b)
   come out as separate line-numbered rows with the correct entry columns, and the field grid shows
   the expected column x-clusters. Docs.
+  - Verification: `python tools\check_ascii.py`, `pytest -q -m m3`, `pytest -q`,
+    and `python -m tax_graph.cli validate 2025` pass.
+  - Deviation logged: the deterministic test generates a small f1116-like PDF fixture with
+    PyMuPDF at runtime rather than committing a binary PDF fixture.
 
 - [ ] **Step 6 - Instructions renderer via Mistral OCR 4 + the dispatcher.** For `kind` in
   {instructions, publication}: 2-column prose where fitz reading-order would interleave columns,

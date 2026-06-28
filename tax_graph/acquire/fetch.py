@@ -25,7 +25,6 @@ class FetchedDocument:
     content_hash: str
     retrieved_date: str
     raw_path: str
-    text_path: str
     metadata_path: str
 
 
@@ -48,11 +47,9 @@ def fetch_document(
     retrieved_date = (today or dt.date.today()).isoformat()
 
     raw_path = raw_root / f"{entry.document_id}.pdf"
-    text_path = raw_root / f"{entry.document_id}.txt"
     metadata_path = raw_root / f"{entry.document_id}.json"
 
     raw_path.write_bytes(content)
-    text_path.write_text(render_pdf_text(content), encoding="utf-8")
 
     metadata = FetchedDocument(
         document_id=entry.document_id,
@@ -60,7 +57,6 @@ def fetch_document(
         content_hash=content_hash,
         retrieved_date=retrieved_date,
         raw_path=str(raw_path),
-        text_path=str(text_path),
         metadata_path=str(metadata_path),
     )
     metadata_path.write_text(json.dumps(asdict(metadata), indent=2, sort_keys=True) + "\n", encoding="utf-8")
@@ -88,19 +84,6 @@ def fetch_manifest_documents(
         )
         for entry in entries
     ]
-
-
-def render_pdf_text(content: bytes) -> str:
-    """Extract text from PDF bytes, falling back to UTF-8 for test fixtures."""
-    try:
-        from io import BytesIO
-
-        from pypdf import PdfReader
-
-        reader = PdfReader(BytesIO(content))
-        return "\n".join(page.extract_text() or "" for page in reader.pages)
-    except Exception:
-        return content.decode("utf-8", errors="ignore")
 
 
 def _httpx_fetch_bytes(url: str, config: dict[str, Any]) -> bytes:

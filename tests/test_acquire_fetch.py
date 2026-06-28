@@ -29,11 +29,9 @@ def test_fetch_document_stores_raw_text_hash_and_metadata(tmp_path):
     )
 
     raw_path = tmp_path / "2025" / "form_8949_2025.pdf"
-    text_path = tmp_path / "2025" / "form_8949_2025.txt"
     metadata_path = tmp_path / "2025" / "form_8949_2025.json"
 
     assert raw_path.read_bytes() == content
-    assert text_path.read_text(encoding="utf-8") == content.decode("utf-8")
     assert metadata.content_hash == hashlib.sha256(content).hexdigest()
     assert metadata.retrieved_date == "2026-06-28"
 

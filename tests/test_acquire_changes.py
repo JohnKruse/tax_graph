@@ -16,7 +16,6 @@ def _fetched(document_id: str, content_hash: str) -> FetchedDocument:
         content_hash=content_hash,
         retrieved_date="2026-06-28",
         raw_path=f"{document_id}.pdf",
-        text_path=f"{document_id}.txt",
         metadata_path=f"{document_id}.json",
     )
 

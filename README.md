@@ -74,6 +74,10 @@ rendered text in the raw store after whitespace normalization. A source map can
 point form citations at instruction PDFs when the authoritative quote lives in
 the instructions.
 
+Forms, schedules, and source documents render through PyMuPDF into line-numbered
+text plus a companion `.fields.json` AcroForm grid. Instruction rendering is
+handled separately by OCR in M3.
+
 ## Compatibility Scripts
 
 Validate the authored graph:
