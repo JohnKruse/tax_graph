@@ -60,9 +60,15 @@ hardened — do not copy the POC's gaps forward. (P3 = package shape = this whol
     `python tools\validate_graph.py 2025`, and
     `python engine\engine.py examples\capital_gains_basic\facts.yaml 2025` pass.
 
-- [ ] **Step 4 — CLI.** `tax_graph/cli.py` (typer) with `validate` and `run` subcommands.
+- [DONE] **Step 4 — CLI.** `tax_graph/cli.py` (typer) with `validate` and `run` subcommands.
   `config.py` loads `tax-graph.config.yaml` (precedence: value → keyring → env). Test: CLI
   smoke tests assert exit 0 and the expected line-7 value. Docs: CLI usage in README.
+  - Verification: `pytest -q -m m0`, `pytest -q`,
+    `python -m tax_graph.cli validate 2025`, and
+    `python -m tax_graph.cli run --facts examples\capital_gains_basic\facts.yaml` pass.
+  - Deviation: `uv` and Typer are not installed in this environment, so the local smoke
+    used the module CLI fallback. The `tax-graph` console script and Typer dependency are
+    declared in `pyproject.toml` for synced environments.
 
 - [ ] **Step 5 — CI.** GitHub Actions: `uv sync` → `tax-graph validate` → `pytest`. Exit: CI
   green on push. Docs: CI note/badge in README.

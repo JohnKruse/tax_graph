@@ -22,7 +22,26 @@ uv sync
 If `uv` is not available in your environment yet, the existing proof-of-concept
 scripts can still be run with Python directly.
 
-## Run The Current POC
+## CLI Usage
+
+Phase M0 provides a package CLI named `tax-graph`:
+
+```powershell
+uv run tax-graph validate 2025
+uv run tax-graph run --facts examples\capital_gains_basic\facts.yaml
+```
+
+When working from a source checkout before installing console scripts, the same
+commands can be run as a module:
+
+```powershell
+python -m tax_graph.cli validate 2025
+python -m tax_graph.cli run --facts examples\capital_gains_basic\facts.yaml
+```
+
+Expected result: `form_1040_2025_line_7_capital_gain_loss = 2000`.
+
+## Compatibility Scripts
 
 Validate the authored graph:
 
@@ -37,14 +56,3 @@ python engine\engine.py examples\capital_gains_basic\facts.yaml 2025
 ```
 
 Expected result: `form_1040_2025_line_7_capital_gain_loss = 2000`.
-
-## Phase M0 Target
-
-Phase M0 converts the proof of concept into a package named `tax_graph` with a
-CLI named `tax-graph`. The target commands are:
-
-```powershell
-uv run tax-graph validate 2025
-uv run tax-graph run --facts examples\capital_gains_basic\facts.yaml
-pytest -m m0
-```
