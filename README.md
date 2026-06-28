@@ -61,6 +61,10 @@ IRS PDF URLs for the supported tax year. M3 begins with the 2025 capital-gains
 slice: Form 8949, Schedule D, Form 1040, Form 1099-B, and their instructions
 where applicable.
 
+Fetched source documents are stored under the configured raw store, defaulting
+to `.cache/raw/<year>/`, with the original PDF, extracted text, and JSON
+metadata containing the content hash and retrieval date.
+
 ## Compatibility Scripts
 
 Validate the authored graph:

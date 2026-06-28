@@ -40,12 +40,15 @@ inside the MCP server.
   - Verification: `python tools\check_ascii.py`, `pytest -q -m m3`, `pytest -q`,
     and `python -m tax_graph.cli validate 2025` pass.
 
-- [ ] **Step 2 - Fetcher + raw store + text render.** `tax_graph/acquire/fetch.py`: httpx GET
+- [DONE] **Step 2 - Fetcher + raw store + text render.** `tax_graph/acquire/fetch.py`: httpx GET
   driven by `acquire.*` config; store the raw artifact to `<raw_store>/<year>/<document_id>.pdf`;
   compute sha256 `content_hash`; capture `retrieved_date`; render a text version
   (`<document_id>.txt`) via pypdf for downstream use. Test (mocked transport): given canned
   bytes, asserts raw + text stored, hash computed, metadata recorded. Add a separate
   `@pytest.mark.network` real-fetch test (one small doc). Docs.
+  - Verification: `python tools\check_ascii.py`, `pytest -q -m m3`, `pytest -q`,
+    and `python -m tax_graph.cli validate 2025` pass. The live network test is
+    opt-in with `TAX_GRAPH_RUN_NETWORK_TESTS=1`.
 
 - [ ] **Step 3 - Change detection.** `tax_graph/acquire/changes.py` + a persisted state file
   (`<raw_store>/<year>/_state.json`: document_id -> {content_hash, retrieved_date, url}). A run
