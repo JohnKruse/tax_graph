@@ -1,4 +1,6 @@
-# PHASE M0 — Foundation: make the POC a runnable package   [ ]
+# PHASE M0 — Foundation: make the POC a runnable package   [COMPLETE]
+
+Archived after completion of all M0 steps.
 
 **Canary:** Booted Badger
 **Goal:** Convert the POC (engine + validator + capital-gains slice) into a `uv`-managed
@@ -70,8 +72,13 @@ hardened — do not copy the POC's gaps forward. (P3 = package shape = this whol
     used the module CLI fallback. The `tax-graph` console script and Typer dependency are
     declared in `pyproject.toml` for synced environments.
 
-- [ ] **Step 5 — CI.** GitHub Actions: `uv sync` → `tax-graph validate` → `pytest`. Exit: CI
+- [DONE] **Step 5 — CI.** GitHub Actions: `uv sync` → `tax-graph validate` → `pytest`. Exit: CI
   green on push. Docs: CI note/badge in README.
+  - Verification: `pytest -q -m m0`, `pytest -q`,
+    `python -m tax_graph.cli validate 2025`, and
+    `python -m tax_graph.cli run --facts examples\capital_gains_basic\facts.yaml` pass.
+  - Deviation: local `uv` is still unavailable, so the exact `uv` commands are configured
+    in GitHub Actions but were not executed locally. Remote CI will run after push.
 
 When all steps are `[DONE]`: mark this phase `[COMPLETE]`, move it to `archive/`, and tell
 John. The Architect will then generate `PHASE_M3.md` (Acquisition — canary *Thrifty Otter*).

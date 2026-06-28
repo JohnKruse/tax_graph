@@ -1,5 +1,7 @@
 # Tax Graph
 
+[![CI](https://github.com/JohnKruse/tax_graph/actions/workflows/ci.yml/badge.svg)](https://github.com/JohnKruse/tax_graph/actions/workflows/ci.yml)
+
 Tax Graph is a local-first project for modeling U.S. tax forms as a typed,
 deterministic computation graph. The current proof of concept covers a narrow
 2025 capital-gains slice:
@@ -40,6 +42,17 @@ python -m tax_graph.cli run --facts examples\capital_gains_basic\facts.yaml
 ```
 
 Expected result: `form_1040_2025_line_7_capital_gain_loss = 2000`.
+
+## CI
+
+GitHub Actions runs the deterministic gate on pushes and pull requests:
+
+```powershell
+uv sync --all-groups
+uv run tax-graph validate 2025
+uv run tax-graph run --facts examples\capital_gains_basic\facts.yaml
+uv run pytest
+```
 
 ## Compatibility Scripts
 
