@@ -54,6 +54,13 @@ uv run tax-graph run --facts examples\capital_gains_basic\facts.yaml
 uv run pytest
 ```
 
+## Acquisition Manifest
+
+Source acquisition starts from `config/manifest.yaml`, a reviewed list of stable
+IRS PDF URLs for the supported tax year. M3 begins with the 2025 capital-gains
+slice: Form 8949, Schedule D, Form 1040, Form 1099-B, and their instructions
+where applicable.
+
 ## Compatibility Scripts
 
 Validate the authored graph:

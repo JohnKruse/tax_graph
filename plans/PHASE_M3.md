@@ -31,12 +31,14 @@ inside the MCP server.
 
 ## Steps
 
-- [ ] **Step 1 - Manifest.** Define the acquisition manifest format and module
+- [DONE] **Step 1 - Manifest.** Define the acquisition manifest format and module
   (`tax_graph/acquire/manifest.py`); seed `config/manifest.yaml` with the capital-gains docs
   - the **forms and their instructions** (e.g. `f8949.pdf`/`i8949.pdf`, `f1040sd.pdf`/
   `i1040sd.pdf`, `f1040.pdf`/`i1040gi.pdf`, `f1099b.pdf`), each entry: `document_id`, `kind`
   (tax_form|instructions|...), `url`. Add a lightweight `schemas/manifest.schema.json`.
   Test: manifest loads, entries validate, URLs match the IRS pattern. Docs.
+  - Verification: `python tools\check_ascii.py`, `pytest -q -m m3`, `pytest -q`,
+    and `python -m tax_graph.cli validate 2025` pass.
 
 - [ ] **Step 2 - Fetcher + raw store + text render.** `tax_graph/acquire/fetch.py`: httpx GET
   driven by `acquire.*` config; store the raw artifact to `<raw_store>/<year>/<document_id>.pdf`;

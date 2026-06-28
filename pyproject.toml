@@ -28,4 +28,6 @@ testpaths = ["tests"]
 pythonpath = ["."]
 markers = [
   "m0: Phase M0 foundation tests",
+  "m3: Phase M3 acquisition tests",
+  "network: tests that require live network access",
 ]

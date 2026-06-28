@@ -1,0 +1,30 @@
+# Acquisition manifest for the 2025 capital-gains slice.
+tax_year: 2025
+documents:
+  - document_id: form_8949_2025
+    kind: tax_form
+    url: https://www.irs.gov/pub/irs-pdf/f8949.pdf
+
+  - document_id: instructions_form_8949_2025
+    kind: instructions
+    url: https://www.irs.gov/pub/irs-pdf/i8949.pdf
+
+  - document_id: schedule_d_2025
+    kind: schedule
+    url: https://www.irs.gov/pub/irs-pdf/f1040sd.pdf
+
+  - document_id: instructions_schedule_d_2025
+    kind: instructions
+    url: https://www.irs.gov/pub/irs-pdf/i1040sd.pdf
+
+  - document_id: form_1040_2025
+    kind: tax_form
+    url: https://www.irs.gov/pub/irs-pdf/f1040.pdf
+
+  - document_id: instructions_form_1040_2025
+    kind: instructions
+    url: https://www.irs.gov/pub/irs-pdf/i1040gi.pdf
+
+  - document_id: form_1099b_2025
+    kind: source_document
+    url: https://www.irs.gov/pub/irs-pdf/f1099b.pdf
