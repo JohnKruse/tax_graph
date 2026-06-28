@@ -6,7 +6,12 @@ import argparse
 from pathlib import Path
 from typing import Callable
 
-from tax_graph.config import load_config, project_root
+from tax_graph.acquire.changes import ChangeReport, detect_changes
+from tax_graph.acquire.citation_check import CitationIntegrityReport, check_graph_citations
+from tax_graph.acquire.fetch import FetchedDocument, FetchBytes, fetch_manifest_documents
+from tax_graph.acquire.manifest import load_manifest
+from tax_graph.acquire.render import render_source
+from tax_graph.config import get_config_value, load_config, project_root
 from tax_graph.engine import Engine, Graph, MISSING, load_facts, render_trace
 from tax_graph.validate import validate_graph
 
@@ -20,6 +25,11 @@ except ImportError:  # pragma: no cover - local fallback for unsynced envs.
 
 
 DEFAULT_TARGET = "form_1040_2025_line_7_capital_gain_loss"
+DEFAULT_CITATION_SOURCE_MAP = {
+    "form_8949_2025": "instructions_form_8949_2025",
+    "schedule_d_2025": "instructions_schedule_d_2025",
+    "form_1040_2025": "instructions_form_1040_2025",
+}
 
 
 def validate_command(year: str = "2025", root: str | Path | None = None) -> int:
@@ -56,6 +66,90 @@ def run_command(
     return 1 if result.values.get(target) is MISSING else 0
 
 
+def acquire_command(
+    year: str = "2025",
+    *,
+    check: bool = False,
+    root: str | Path | None = None,
+    fetch_bytes: FetchBytes | None = None,
+    renderer: Callable[..., object] | None = None,
+    citation_checker: Callable[..., CitationIntegrityReport] | None = None,
+) -> int:
+    """Acquire source docs, render them, detect changes, and check citations."""
+    root_path = Path(root).resolve() if root is not None else project_root()
+    config = load_config(root=root_path)
+    raw_store = root_path / get_config_value(config, "project.paths.raw_store", ".cache/raw")
+    manifest = load_manifest(root=root_path)
+    if str(manifest.tax_year) != str(year):
+        raise ValueError(f"manifest tax_year {manifest.tax_year} does not match requested {year}")
+
+    fetched = fetch_manifest_documents(
+        manifest.documents,
+        year=year,
+        raw_store=raw_store,
+        config=config,
+        fetch_bytes=fetch_bytes,
+    )
+    report = detect_changes(fetched, raw_store=raw_store, year=year, check=check)
+    _render_fetched_documents(
+        manifest.by_document_id(),
+        fetched,
+        raw_store=raw_store,
+        year=year,
+        config=config,
+        renderer=renderer,
+    )
+    citation_report = (
+        citation_checker(year=year, raw_store=raw_store, root=root_path)
+        if citation_checker
+        else check_graph_citations(
+            year=year,
+            raw_store=raw_store,
+            root=root_path,
+            source_map=DEFAULT_CITATION_SOURCE_MAP,
+        )
+    )
+    _print_acquire_summary(report, citation_report)
+    return 0 if citation_report.ok else 1
+
+
+def _render_fetched_documents(
+    entries_by_id,
+    fetched: list[FetchedDocument],
+    *,
+    raw_store: Path,
+    year: str,
+    config: dict,
+    renderer: Callable[..., object] | None = None,
+) -> None:
+    output_dir = raw_store / str(year)
+    render = renderer or render_source
+    for document in fetched:
+        entry = entries_by_id[document.document_id]
+        render(
+            entry,
+            pdf_path=document.raw_path,
+            output_dir=output_dir,
+            content_hash=document.content_hash,
+            config=config,
+        )
+
+
+def _print_acquire_summary(report: ChangeReport, citation_report: CitationIntegrityReport) -> None:
+    print("=== acquisition change report ===")
+    print("  new:", ", ".join(report.new) if report.new else "-")
+    print("  changed:", ", ".join(report.changed) if report.changed else "-")
+    print("  unchanged:", ", ".join(report.unchanged) if report.unchanged else "-")
+    print("\n=== citation integrity ===")
+    print(f"  checked: {citation_report.checked}")
+    if citation_report.ok:
+        print("  result: OK")
+    else:
+        print("  result: FAILED")
+        for mismatch in citation_report.mismatches:
+            print(f"  - {mismatch.citation_id}: {mismatch.reason}")
+
+
 def _build_typer_app():
     cli = typer.Typer(help="Tax Graph command-line interface.")
 
@@ -81,6 +175,17 @@ def _build_typer_app():
         if raise_code:
             raise typer.Exit(raise_code)
 
+    @cli.command("acquire")
+    def acquire_cli(
+        year: str = typer.Argument("2025"),
+        check: bool = typer.Option(False, "--check", help="Report changes without updating state."),
+        root: Path | None = typer.Option(None, "--root", help="Project root override."),
+    ) -> None:
+        """Acquire source documents and verify rendered citations."""
+        raise_code = acquire_command(year=year, check=check, root=root)
+        if raise_code:
+            raise typer.Exit(raise_code)
+
     return cli
 
 
@@ -98,11 +203,18 @@ def _fallback_app() -> int:
     run_parser.add_argument("--target", "-t", default=DEFAULT_TARGET)
     run_parser.add_argument("--root", default=None)
 
+    acquire_parser = subparsers.add_parser("acquire")
+    acquire_parser.add_argument("year", nargs="?", default="2025")
+    acquire_parser.add_argument("--check", action="store_true")
+    acquire_parser.add_argument("--root", default=None)
+
     args = parser.parse_args()
     if args.command == "validate":
         return validate_command(year=args.year, root=args.root)
     if args.command == "run":
         return run_command(facts=args.facts, year=args.year, target=args.target, root=args.root)
+    if args.command == "acquire":
+        return acquire_command(year=args.year, check=args.check, root=args.root)
     return 2
 
 

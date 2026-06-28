@@ -1,4 +1,6 @@
-# PHASE M3 - Source Acquisition + change detection   [ ]
+# PHASE M3 - Source Acquisition + change detection   [COMPLETE]
+
+Archived after completion of all M3 steps.
 
 **Canary:** Thrifty Otter
 **Depends on:** M0 (`tax_graph` package, `config.py`, `io/loader.py`, `cli.py`, validator).
@@ -114,12 +116,17 @@ inside the MCP server.
   - Deviation logged: the live OCR test is present but remains opt-in with
     `TAX_GRAPH_RUN_NETWORK_TESTS=1`; deterministic tests use a mocked OCR client.
 
-- [ ] **Step 7 - CLI + gate.** Wire `tax-graph acquire [--year] [--check]` to run
+- [DONE] **Step 7 - CLI + gate.** Wire `tax-graph acquire [--year] [--check]` to run
   manifest -> fetch/store/hash -> render (the Step 5/6 dispatcher) -> ChangeReport ->
   citation-integrity, printing a concise summary. The renderers from Steps 5-6 now exist, so the
   CLI wires real components (not a render that does not exist yet). Test: CLI smoke test (mocked
   fetch + mocked renderers) asserts exit 0 + a change report + integrity result. Exit:
   `pytest -m m3` green. Docs: `acquire` usage in README.
+  - Verification: `python tools\check_ascii.py`, `pytest -q -m m3`, `pytest -q`,
+    `python -m tax_graph.cli validate 2025`, and
+    `python -m tax_graph.cli run --facts examples\capital_gains_basic\facts.yaml` pass.
+  - Deviation logged: local `uv`, live network fetch, and live Mistral OCR were not run in
+    this environment. Live fetch/OCR tests are opt-in and remain gated.
 
 When all steps are `[DONE]`: mark this phase `[COMPLETE]`, move it to `archive/`, and tell
 John. The Architect will then generate `PHASE_M4.md` (Extraction - canary *Spectral Auditor*)

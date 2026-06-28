@@ -31,6 +31,8 @@ Phase M0 provides a package CLI named `tax-graph`:
 ```powershell
 uv run tax-graph validate 2025
 uv run tax-graph run --facts examples\capital_gains_basic\facts.yaml
+uv run tax-graph acquire 2025
+uv run tax-graph acquire 2025 --check
 ```
 
 When working from a source checkout before installing console scripts, the same
@@ -39,6 +41,7 @@ commands can be run as a module:
 ```powershell
 python -m tax_graph.cli validate 2025
 python -m tax_graph.cli run --facts examples\capital_gains_basic\facts.yaml
+python -m tax_graph.cli acquire 2025 --check
 ```
 
 Expected result: `form_1040_2025_line_7_capital_gain_loss = 2000`.
