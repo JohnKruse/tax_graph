@@ -1,0 +1,99 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "carryforward.schema.json",
+  "title": "Return Record - Carryforward Block",
+  "description": "The structured, machine-ingestible portion of a Return Record (see ../docs/return-record.md): the cross-tax-year payload that year N emits and year N+1 reads as input facts. Holds carryforwards and consistency elections. Human rationale/'why' lives in the Markdown memo; only deterministic values live here, so next year never re-parses prose for a number.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["tax_year", "carryforwards"],
+  "properties": {
+    "tax_year": {
+      "type": "integer",
+      "minimum": 1900,
+      "maximum": 2100,
+      "description": "The return year that produced this block."
+    },
+    "tax_graph_version": { "type": "string" },
+    "generated_date": { "type": "string", "format": "date" },
+    "carryforwards": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/carryforward" }
+    },
+    "elections": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/election" },
+      "description": "Year-to-year choices that must stay consistent (e.g. FTC paid-vs-accrued)."
+    }
+  },
+  "$defs": {
+    "carryforward": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["carryforward_id", "kind", "amount", "originating_year"],
+      "properties": {
+        "carryforward_id": { "type": "string", "pattern": "^[a-z0-9_]+$" },
+        "kind": {
+          "type": "string",
+          "description": "Type of carryover. Open vocabulary (many exist). Examples: capital_loss_short_term, capital_loss_long_term, foreign_tax_credit_unused, nol, charitable_contribution, passive_activity_loss, amt_credit."
+        },
+        "amount": { "type": "number" },
+        "category": {
+          "type": "string",
+          "description": "Optional sub-classification, e.g. FTC category 'passive'/'general', or holding period."
+        },
+        "originating_year": {
+          "type": "integer",
+          "minimum": 1900,
+          "maximum": 2100,
+          "description": "The tax year in which this carryover arose."
+        },
+        "applies_from_year": {
+          "type": "integer",
+          "description": "First year this carryover may be used (often originating_year + 1)."
+        },
+        "expires_after_year": {
+          "type": "integer",
+          "description": "Last year it may be used, for windowed carryovers (e.g. FTC: 10-year carryforward)."
+        },
+        "source_node": {
+          "type": "string",
+          "description": "node_id in the originating return that produced this amount."
+        },
+        "target_node": {
+          "type": "string",
+          "description": "node_id this should feed as an input in a future year."
+        },
+        "derivation": {
+          "type": "string",
+          "description": "Short note on how it was computed (the human 'why' lives in the memo prose)."
+        },
+        "citation_refs": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "election": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["election_id", "topic", "choice", "first_year"],
+      "properties": {
+        "election_id": { "type": "string", "pattern": "^[a-z0-9_]+$" },
+        "topic": {
+          "type": "string",
+          "description": "What the election is about, e.g. 'ftc_paid_vs_accrued'."
+        },
+        "choice": { "type": "string", "description": "The chosen value, e.g. 'accrued'." },
+        "first_year": {
+          "type": "integer",
+          "minimum": 1900,
+          "maximum": 2100,
+          "description": "The year the election was first made."
+        },
+        "binding": {
+          "type": "boolean",
+          "default": false,
+          "description": "True if subsequent years must keep this choice."
+        },
+        "citation_refs": { "type": "array", "items": { "type": "string" } }
+      }
+    }
+  }
+}

@@ -13,6 +13,7 @@ JSON Schema (draft 2020-12) definitions for the graph's authored YAML objects. T
 | `citation.schema.json` | **(addition beyond req. doc §11)** A span-level, *quotable* pointer to source text — the artifact that powers both extraction-time verification and runtime grounded questions. |
 | `decision.schema.json` | **(addition)** A first-class human-judgment point. Enforces an escape hatch (`other`/`unsupported`/`escalate`) at the schema level, so a filer is never forced into a wrong choice. |
 | `taxpayer_facts.schema.json` | Normalized inputs (not canonical graph); each fact records provenance for the audit trace. |
+| `carryforward.schema.json` | **(addition)** The structured, machine-ingestible block of a Return Record (see `../docs/return-record.md`): cross-year carryforwards + consistency elections that year N emits and year N+1 ingests. |
 
 ## Conventions
 
