@@ -28,7 +28,7 @@ hardened — do not copy the POC's gaps forward. (P3 = package shape = this whol
   - Deviation: `uv` is not installed in this environment, so the exact `uv run ...`
     smoke command could not be executed locally yet.
 
-- [ ] **Step 2 — Shared loader + port validator.** Implement `tax_graph/io/loader.py` (YAML
+- [DONE] **Step 2 — Shared loader + port validator.** Implement `tax_graph/io/loader.py` (YAML
   load + the date-normalization that tames YAML implicit typing). Port the validator to
   `tax_graph/validate/graph_validator.py` and **harden it to the full §10.3 contract (review
   finding P2):**
@@ -40,6 +40,8 @@ hardened — do not copy the POC's gaps forward. (P3 = package shape = this whol
       within the same tax year.
   Tests: existing integrity over `graph/2025` passes; a negative test for **each** new check
   (dup id, cycle, cross-year ref) is caught. Docs: docstrings.
+  - Verification: `pytest -q -m m0`, `pytest -q`, and
+    `python tools\validate_graph.py 2025` pass.
 
 - [ ] **Step 3 — Port engine + enforce the missing-input invariant (review finding P1).**
   Move the engine to `tax_graph/engine/` (engine + `operations.py` for COPY/SUM/SUBTRACT).
