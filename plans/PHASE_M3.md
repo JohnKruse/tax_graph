@@ -8,7 +8,7 @@ run, and verify citation quotes still match the source. Build-time infra - it ne
 inside the MCP server.
 
 **Exit criteria (must pass 100%):**
-- `pytest -m m3` is green (fetch + change-detection + citation-integrity, all deterministic).
+- `pytest -m m3` is green (fetch + change-detection + citation-integrity + rendering, all deterministic).
 - Manual sanity (network): `uv run tax-graph acquire 2025` fetches the manifest docs, stores
   raw + hashes, and prints a change report. `--check` reports changed-vs-last without
   committing new state.
@@ -18,21 +18,24 @@ inside the MCP server.
 - **Plain HTTP only (httpx). No Playwright/browser crawling.** IRS docs live at stable URLs
   (`irs.gov/pub/irs-pdf/{f|i|p}NNNN.pdf`; prior years `irs-prior/`). A maintained **manifest**
   beats scraping links. Only revisit if a needed *index* page is JS-rendered - verify first.
-- **Rendering IRS docs:** primary renderer is **Mistral OCR 4** (Step 6) - validated on Form
-  1116 + instructions (line numbers, cross-references, Worksheet A/B logic captured cleanly).
-  IRS docs are PUBLIC domain, so cloud OCR has NO privacy issue here (privacy only applies to
-  the taxpayer's personal docs at runtime). **No raw-PDF fallback:** pypdf dumps text in PDF
-  object order, so it SCRAMBLES multi-column forms (worse than OCR). Deterministic tests mock
-  the OCR client and use committed fixture markdown; if OCR is unavailable, FAIL LOUDLY rather
-  than emit garbage. Treat OCR output as clean LINEAR text, NOT parseable tables; ASCII-normalize it.
+- **Rendering = SPLIT BY DOC TYPE** (verified on 1116). Route by manifest `kind`: **forms**
+  (tax_form/schedule/source_document) -> **fitz/PyMuPDF** (Step 6); **instructions/publications**
+  -> **Mistral OCR 4** (Step 7). Why: visual fidelity is a NON-GOAL - we key on the IRS line/entry
+  numbers (1a, 2, 3a-3g, cols A/B/C), which are the form's canonical address = our node-id scheme.
+  fitz keeps each numbered line a discrete, column-tagged row + hands us the AcroForm field grid
+  (deterministic, free, local); OCR handles 2-column instruction prose where fitz would interleave
+  columns. IRS docs are PUBLIC domain, so cloud OCR has NO privacy issue here (privacy only applies
+  to the taxpayer's personal docs at runtime). **No raw-PDF text fallback** (pypdf scrambles
+  multi-column layout). Deterministic tests use committed fixture markdown / mock the OCR client;
+  if a renderer (or OCR key) is unavailable, FAIL LOUDLY. ASCII-normalize all rendered output.
 - **Politeness:** user-agent, rate-limit, retries, timeout all from `acquire.*` in config.
   Cache raw artifacts so re-runs don't re-hit IRS.
 - **Determinism:** `-m m3` tests **mock the network** (fake httpx transport / canned bytes).
   The single real-network fetch test is marked `@pytest.mark.network` and excluded from the
   deterministic gate.
 - Store raw + `content_hash` (sha256) + `retrieved_date` for reproducibility/audit.
-- New deps to add: `httpx`, `mistralai` (OCR, Step 6). Drop `pypdf` - raw-PDF text scrambles
-  multi-column forms; it is not a usable fallback.
+- New deps to add: `httpx`, `pymupdf` (fitz, form renderer, Step 6), `mistralai` (OCR, Step 7).
+  Drop `pypdf` - raw-PDF text scrambles multi-column forms; not a usable fallback.
 
 ## Steps
 
@@ -77,18 +80,32 @@ inside the MCP server.
   summary. Test: CLI smoke test (mocked fetch) asserts exit 0 + a change report + integrity
   result. Exit: `pytest -m m3` green. Docs: `acquire` usage in README.
 
-- [ ] **Step 6 - Mistral OCR 4 renderer (primary; pypdf becomes the offline fallback).**
-  Validated June 2026 on Form 1116 + instructions: OCR captured line numbers, cross-references,
-  and the Worksheet A/B logic cleanly (the dense Part I grid collapses to linear text, which is
-  fine - downstream M4 consumes text, not grid geometry). Add `tax_graph/acquire/ocr.py`
-  calling Mistral OCR (config `ocr.*`, key from keyring/env); store per-doc and per-page
-  markdown plus extracted hyperlinks (page-level citation locators + URLs). Cache by
-  `content_hash` (paid API). ASCII-normalize the output. **Mistral OCR is the SOLE renderer:**
-  remove the Step 2 pypdf render (keep its fetch/hash/store), and fail loudly if OCR is
-  unavailable rather than fall back to scrambled raw-PDF text. Test (mocked OCR client):
-  markdown + per-page + hyperlinks stored, cache hit skips re-OCR; deterministic tests use a
-  committed fixture markdown; a separate `@pytest.mark.network` real-OCR test (one small public
-  IRS doc). Docs.
+- [ ] **Step 6 - Form renderer via fitz (PyMuPDF), line-number-anchored.** Verified on Form 1116:
+  fitz un-mashes the dense Part I deductions block that OCR collapsed, and yields the AcroForm
+  field grid for free. Add `tax_graph/acquire/render_form.py`: for `kind` in {tax_form, schedule,
+  source_document}, group words into rows by y-position (DROP dot-leader fragments), keeping each
+  IRS line/entry number as the row anchor; read AcroForm widgets and cluster their x -> columns,
+  y -> rows; emit (a) line-numbered markdown with `[entry: A B C ...]` column annotations and
+  (b) `<document_id>.fields.json` (the field grid, for the M4 cross-check). Remove the Step 2
+  pypdf render (keep its fetch/hash/store). Known weak spot: dense multi-column HEADERS jumble
+  (same-y words from different columns concatenate) - mitigate with column-aware x-band grouping;
+  not critical since downstream keys on line numbers, not headers. Deterministic + offline.
+  Test: against a committed `f1116.pdf` fixture, assert the deductions sub-lines (3a-3g, 4a, 4b)
+  come out as separate line-numbered rows with the correct entry columns, and the field grid shows
+  the expected column x-clusters. Docs.
+
+- [ ] **Step 7 - Instructions renderer via Mistral OCR 4 + the dispatcher.** For `kind` in
+  {instructions, publication}: 2-column prose where fitz reading-order would interleave columns,
+  so use OCR. Add `tax_graph/acquire/render_ocr.py` calling Mistral OCR (config `ocr.*`, key from
+  keyring/env); store per-doc + per-page markdown + extracted hyperlinks (page-level citation
+  locators + URLs). Cache by `content_hash` (paid API). ASCII-normalize. Note: numbered worksheet
+  STEPS (prose like "Line 2. Combine...") come through clean - the computation lives there; blank
+  worksheet GRIDS mash but are low-value scaffolding; genuinely garbled tabular worksheets -> flag
+  for human review, never guess. Add a `render()` dispatcher that routes by `kind` (Step 6 vs
+  Step 7) and FAILS LOUDLY if the needed renderer or OCR key is unavailable. Test (mocked OCR
+  client): markdown + per-page + hyperlinks stored, cache hit skips re-OCR; deterministic tests
+  use committed fixture markdown; a separate `@pytest.mark.network` real-OCR test (one small public
+  IRS instructions doc). Docs.
 
 When all steps are `[DONE]`: mark this phase `[COMPLETE]`, move it to `archive/`, and tell
 John. The Architect will then generate `PHASE_M4.md` (Extraction - canary *Spectral Auditor*)
