@@ -28,6 +28,10 @@
       "type": "string",
       "description": "The rule applied along this edge (expected for computational relationships)."
     },
+    "role": {
+      "type": "string",
+      "description": "Operand position for order-sensitive rules, e.g. 'minuend'/'subtrahend' for SUBTRACT, 'numerator'/'denominator' for DIVIDE, 'addend' for SUM. Omit for single-input rules like COPY. A computed node's value is produced by all edges that target it sharing a rule_id."
+    },
     "condition": {
       "type": "object",
       "description": "Optional gate: which fact/decision and value activates this edge.",

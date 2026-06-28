@@ -1,0 +1,28 @@
+# Decision (elicitation) nodes for the capital-gains slice.
+# Demonstrates the schema-enforced escape hatch: a filer is never forced into a
+# wrong choice — "unsupported" and "escalate" are first-class outcomes.
+
+- decision_id: decision_8949_adjustments
+  question: >-
+    Does this transaction need any adjustment — for example a wash sale, a basis
+    correction, or a nondeductible loss?
+  citation_refs:
+    - cite_8949_adjustment_codes
+  options:
+    - option_id: none
+      label: No adjustments
+      option_type: choice
+      downstream_effect: >-
+        Gain or loss is simply proceeds minus basis; no column (g) adjustment.
+
+    - option_id: has_adjustment
+      label: Yes — wash sale, basis correction, or other adjustment
+      option_type: unsupported
+      downstream_effect: >-
+        Adjustment handling beyond simple reported figures is unsupported in v0;
+        this transaction is flagged out of scope rather than guessed.
+
+    - option_id: not_sure
+      label: I'm not sure
+      option_type: escalate
+      downstream_effect: Flag for human review before continuing.

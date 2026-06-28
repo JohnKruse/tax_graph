@@ -1,0 +1,40 @@
+# Citations for the capital-gains slice.
+# NOTE (v0): quoted_text below is authored from known IRS phrasing and MUST be
+# verified verbatim against the cited source by the citation-integrity build step
+# before any branch is marked 'supported'. document_id points at the form; the
+# locator names the instructions (separate instruction document objects are a
+# planned refinement).
+
+- citation_id: cite_8949_col_h_gain
+  document_id: form_8949_2025
+  locator: Instructions for Form 8949, column (h)
+  quoted_text: >-
+    Subtract column (e) from column (d) and combine the result with column (g)
+    to figure your gain or loss.
+  url: https://www.irs.gov/instructions/i8949
+  retrieved_date: 2026-06-28
+
+- citation_id: cite_8949_adjustment_codes
+  document_id: form_8949_2025
+  locator: Instructions for Form 8949, column (f) — codes
+  quoted_text: >-
+    If you need to make an adjustment to the gain or loss, enter the appropriate
+    code(s) in column (f) and the adjustment amount in column (g).
+  url: https://www.irs.gov/instructions/i8949
+  retrieved_date: 2026-06-28
+
+- citation_id: cite_schedule_d_16_to_1040_7
+  document_id: schedule_d_2025
+  locator: Schedule D, line 16
+  quoted_text: Enter the amount from line 16 on Form 1040 or 1040-SR, line 7.
+  url: https://www.irs.gov/instructions/i1040sd
+  retrieved_date: 2026-06-28
+
+- citation_id: cite_1040_line_7
+  document_id: form_1040_2025
+  locator: Form 1040, line 7
+  quoted_text: >-
+    Capital gain or (loss). Attach Schedule D if required. If not required,
+    check here.
+  url: https://www.irs.gov/forms-pubs/about-form-1040
+  retrieved_date: 2026-06-28

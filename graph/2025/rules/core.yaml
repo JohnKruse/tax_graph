@@ -1,0 +1,22 @@
+# Core reusable rules for the capital-gains slice.
+# Operations are from the v0 primitive set (schemas/rule.schema.json).
+
+- rule_id: copy_currency_value
+  operation: COPY
+  description: Copy a currency value from the source node to the target node.
+  rounding: none
+
+- rule_id: sum_currency
+  operation: SUM
+  description: >-
+    Sum the currency values of all edges that target a node with this rule
+    (each edge role 'addend'). Blank operands count as zero.
+  parameters:
+    include_blank_as_zero: true
+  rounding: currency
+
+- rule_id: subtract_currency
+  operation: SUBTRACT
+  description: >-
+    Subtract the 'subtrahend' operand edge from the 'minuend' operand edge.
+  rounding: currency

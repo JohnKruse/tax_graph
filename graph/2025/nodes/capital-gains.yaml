@@ -1,0 +1,88 @@
+# Capital-gains MVP nodes: 1099-B -> Form 8949 -> Schedule D -> Form 1040 line 7
+# v0 supported path: long-term, single covered lot, no adjustments.
+
+# --- Form 1099-B (source inputs) ---
+- node_id: form_1099b_2025_box_1d_proceeds
+  document_id: form_1099b_2025
+  label: Proceeds (Box 1d)
+  node_type: box
+  value_type: currency
+  required: required
+
+- node_id: form_1099b_2025_box_1e_cost_basis
+  document_id: form_1099b_2025
+  label: Cost or other basis (Box 1e)
+  node_type: box
+  value_type: currency
+  required: required
+
+# --- Form 8949 Part II (long-term) ---
+- node_id: form_8949_2025_partii_proceeds
+  document_id: form_8949_2025
+  label: Form 8949 Part II, column (d) — Proceeds
+  node_type: form_line
+  value_type: currency
+  required: conditional
+
+- node_id: form_8949_2025_partii_cost
+  document_id: form_8949_2025
+  label: Form 8949 Part II, column (e) — Cost or other basis
+  node_type: form_line
+  value_type: currency
+  required: conditional
+
+- node_id: form_8949_2025_partii_gain_loss
+  document_id: form_8949_2025
+  label: Form 8949 Part II, column (h) — Gain or (loss)
+  node_type: computed
+  value_type: currency
+  required: optional
+  citation_refs:
+    - cite_8949_col_h_gain
+
+- node_id: form_8949_2025_partii_total_gain_loss
+  document_id: form_8949_2025
+  label: Form 8949 Part II, line 2 — Total gain or (loss)
+  node_type: computed
+  value_type: currency
+  required: optional
+
+# --- Schedule D ---
+- node_id: schedule_d_2025_line_8b_gain
+  document_id: schedule_d_2025
+  label: Schedule D, line 8b — Long-term totals from Form 8949 (gain/loss)
+  node_type: form_line
+  value_type: currency
+  required: conditional
+
+- node_id: schedule_d_2025_line_15_net_lt
+  document_id: schedule_d_2025
+  label: Schedule D, line 15 — Net long-term capital gain or (loss)
+  node_type: computed
+  value_type: currency
+  required: optional
+
+- node_id: schedule_d_2025_line_7_net_st
+  document_id: schedule_d_2025
+  label: Schedule D, line 7 — Net short-term capital gain or (loss)
+  node_type: form_line
+  value_type: currency
+  required: conditional
+  description: Populated by the short-term path (deferred in this slice); defaults to 0.
+
+- node_id: schedule_d_2025_line_16_total
+  document_id: schedule_d_2025
+  label: Schedule D, line 16 — Total capital gain or (loss)
+  node_type: computed
+  value_type: currency
+  required: optional
+
+# --- Form 1040 ---
+- node_id: form_1040_2025_line_7_capital_gain_loss
+  document_id: form_1040_2025
+  label: Form 1040, line 7 — Capital gain or (loss)
+  node_type: form_line
+  value_type: currency
+  required: optional
+  citation_refs:
+    - cite_1040_line_7
