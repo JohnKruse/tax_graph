@@ -69,6 +69,11 @@ The raw store also keeps `_state.json`, a document-id index of the last seen
 content hash. Acquisition uses that state to report new, changed, and unchanged
 source documents.
 
+Citation integrity checks compare each authored `quoted_text` span to the
+rendered text in the raw store after whitespace normalization. A source map can
+point form citations at instruction PDFs when the authoritative quote lives in
+the instructions.
+
 ## Compatibility Scripts
 
 Validate the authored graph:

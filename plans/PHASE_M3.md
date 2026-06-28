@@ -66,7 +66,7 @@ inside the MCP server.
   - Verification: `python tools\check_ascii.py`, `pytest -q -m m3`, `pytest -q`,
     and `python -m tax_graph.cli validate 2025` pass.
 
-- [ ] **Step 4 - Citation integrity.** `tax_graph/acquire/citation_check.py`: for each graph
+- [DONE] **Step 4 - Citation integrity.** `tax_graph/acquire/citation_check.py`: for each graph
   citation, confirm its `quoted_text` still appears (whitespace-normalized) in the rendered
   text of the source mapped to its `document_id`; report mismatches. Test (fixture text):
   a matching quote passes, a doctored quote is flagged. **Note/deviation to log:** the slice
@@ -74,6 +74,10 @@ inside the MCP server.
   *instructions* - running this against real data will surface that; resolve by adding
   instruction `document` objects and re-pointing the citations (small graph fix; flag to
   the Architect if it grows).
+  - Verification: `python tools\check_ascii.py`, `pytest -q -m m3`, `pytest -q`,
+    and `python -m tax_graph.cli validate 2025` pass.
+  - Deviation logged: citation checking supports a `source_map` for form-to-instructions
+    mappings; the graph citation document ids are unchanged in this step.
 
 - [ ] **Step 5 - Form renderer via fitz (PyMuPDF), line-number-anchored.** Verified on Form 1116:
   fitz un-mashes the dense Part I deductions block that OCR collapsed, and yields the AcroForm
