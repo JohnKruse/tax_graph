@@ -76,7 +76,9 @@ the instructions.
 
 Forms, schedules, and source documents render through PyMuPDF into line-numbered
 text plus a companion `.fields.json` AcroForm grid. Instruction rendering is
-handled separately by OCR in M3.
+handled separately by Mistral OCR, storing per-document markdown, per-page
+markdown, and extracted links. The OCR path caches by content hash and fails
+loudly when no OCR client or key is available.
 
 ## Compatibility Scripts
 

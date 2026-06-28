@@ -97,7 +97,7 @@ inside the MCP server.
   - Deviation logged: the deterministic test generates a small f1116-like PDF fixture with
     PyMuPDF at runtime rather than committing a binary PDF fixture.
 
-- [ ] **Step 6 - Instructions renderer via Mistral OCR 4 + the dispatcher.** For `kind` in
+- [DONE] **Step 6 - Instructions renderer via Mistral OCR 4 + the dispatcher.** For `kind` in
   {instructions, publication}: 2-column prose where fitz reading-order would interleave columns,
   so use OCR. Add `tax_graph/acquire/render_ocr.py` calling Mistral OCR (config `ocr.*`, key from
   keyring/env); store per-doc + per-page markdown + extracted hyperlinks (page-level citation
@@ -109,6 +109,10 @@ inside the MCP server.
   client): markdown + per-page + hyperlinks stored, cache hit skips re-OCR; deterministic tests
   use committed fixture markdown; a separate `@pytest.mark.network` real-OCR test (one small public
   IRS instructions doc). Docs.
+  - Verification: `python tools\check_ascii.py`, `pytest -q -m m3`, `pytest -q`,
+    and `python -m tax_graph.cli validate 2025` pass.
+  - Deviation logged: the live OCR test is present but remains opt-in with
+    `TAX_GRAPH_RUN_NETWORK_TESTS=1`; deterministic tests use a mocked OCR client.
 
 - [ ] **Step 7 - CLI + gate.** Wire `tax-graph acquire [--year] [--check]` to run
   manifest -> fetch/store/hash -> render (the Step 5/6 dispatcher) -> ChangeReport ->
