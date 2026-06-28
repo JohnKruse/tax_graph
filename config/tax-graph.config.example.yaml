@@ -33,6 +33,15 @@ extraction:
     critic: prompts/extract_critic.md
     citation_finder: prompts/citation_finder.md
 
+ocr:                             # IRS-document rendering (build-time; public docs, no privacy issue)
+  provider: mistral
+  model: mistral-ocr-latest      # confirm current OCR model id at build time
+  api_key: null                  # leave null; prefer keyring/env below
+  api_key_keyring: tax-graph/mistral
+  api_key_env: MISTRAL_API_KEY
+  output: markdown               # store per-doc + per-page markdown and extracted hyperlinks
+  cache_by_hash: true            # skip re-OCR of unchanged docs (paid API)
+
 acquire:
   user_agent: "tax-graph-bot/0.1 (+https://github.com/JohnKruse/tax_graph)"
   rate_limit_per_sec: 1

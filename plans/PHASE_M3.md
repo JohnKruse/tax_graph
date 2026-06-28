@@ -18,16 +18,18 @@ inside the MCP server.
 - **Plain HTTP only (httpx). No Playwright/browser crawling.** IRS docs live at stable URLs
   (`irs.gov/pub/irs-pdf/{f|i|p}NNNN.pdf`; prior years `irs-prior/`). A maintained **manifest**
   beats scraping links. Only revisit if a needed *index* page is JS-rendered - verify first.
-- **IRS source docs are clean digital-text PDFs** -> use a simple text extractor (pypdf/
-  pdfplumber). This is NOT the OCR-adapter concern (that's for the taxpayer's messy docs at
-  runtime); keep it deterministic and offline.
+- **Rendering IRS docs:** primary renderer is **Mistral OCR 4** (Step 6) - validated on Form
+  1116 + instructions (line numbers, cross-references, Worksheet A/B logic captured cleanly).
+  IRS docs are PUBLIC domain, so cloud OCR has NO privacy issue here (privacy only applies to
+  the taxpayer's personal docs at runtime). pypdf text (Step 2) is the deterministic offline
+  fallback. Treat OCR output as clean LINEAR text, NOT parseable tables; ASCII-normalize it.
 - **Politeness:** user-agent, rate-limit, retries, timeout all from `acquire.*` in config.
   Cache raw artifacts so re-runs don't re-hit IRS.
 - **Determinism:** `-m m3` tests **mock the network** (fake httpx transport / canned bytes).
   The single real-network fetch test is marked `@pytest.mark.network` and excluded from the
   deterministic gate.
 - Store raw + `content_hash` (sha256) + `retrieved_date` for reproducibility/audit.
-- New deps to add: `httpx`, `pypdf` (or `pdfplumber`).
+- New deps to add: `httpx`, `pypdf` (offline fallback), `mistralai` (OCR, Step 6).
 
 ## Steps
 
@@ -71,6 +73,17 @@ inside the MCP server.
   manifest -> fetch/store/hash/render -> ChangeReport -> citation-integrity, printing a concise
   summary. Test: CLI smoke test (mocked fetch) asserts exit 0 + a change report + integrity
   result. Exit: `pytest -m m3` green. Docs: `acquire` usage in README.
+
+- [ ] **Step 6 - Mistral OCR 4 renderer (primary; pypdf becomes the offline fallback).**
+  Validated June 2026 on Form 1116 + instructions: OCR captured line numbers, cross-references,
+  and the Worksheet A/B logic cleanly (the dense Part I grid collapses to linear text, which is
+  fine - downstream M4 consumes text, not grid geometry). Add `tax_graph/acquire/ocr.py`
+  calling Mistral OCR (config `ocr.*`, key from keyring/env); store per-doc and per-page
+  markdown plus extracted hyperlinks (page-level citation locators + URLs). Cache by
+  `content_hash` (paid API). ASCII-normalize the output. The Step 2 pypdf text stays as the
+  deterministic offline fallback. Test (mocked OCR client): markdown + per-page + hyperlinks
+  stored, cache hit skips re-OCR; a separate `@pytest.mark.network` real-OCR test (one small
+  public IRS doc). Docs.
 
 When all steps are `[DONE]`: mark this phase `[COMPLETE]`, move it to `archive/`, and tell
 John. The Architect will then generate `PHASE_M4.md` (Extraction - canary *Spectral Auditor*)
