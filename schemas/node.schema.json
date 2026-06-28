@@ -1,0 +1,47 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "node.schema.json",
+  "title": "Tax Graph Node",
+  "description": "A single addressable point in the graph: a form line, box, worksheet field, normalized taxpayer fact, computed value, or reusable concept.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["node_id", "document_id", "label", "node_type", "value_type"],
+  "properties": {
+    "node_id": {
+      "type": "string",
+      "pattern": "^[a-z0-9_]+$",
+      "description": "Stable snake_case id, e.g. schedule_d_2025_line_16."
+    },
+    "document_id": {
+      "type": "string",
+      "pattern": "^[a-z0-9_]+$",
+      "description": "The document this node belongs to."
+    },
+    "label": { "type": "string", "description": "Human-readable label, e.g. 'Net capital gain or loss'." },
+    "node_type": {
+      "type": "string",
+      "enum": ["form_line", "box", "worksheet_field", "fact", "computed", "concept"]
+    },
+    "value_type": {
+      "type": "string",
+      "enum": ["currency", "integer", "percentage", "boolean", "string", "date", "enum"]
+    },
+    "required": {
+      "type": "string",
+      "enum": ["required", "conditional", "optional"],
+      "default": "optional",
+      "description": "Whether this node must be present; 'conditional' is gated by a fact or decision."
+    },
+    "enum_values": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Allowed values when value_type is 'enum'."
+    },
+    "citation_refs": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Ids of citation objects that authorize/explain this node."
+    },
+    "description": { "type": "string" }
+  }
+}

@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "edge.schema.json",
+  "title": "Tax Graph Edge",
+  "description": "A typed, directed relationship between two nodes. Edges reference rules by id; they never contain executable code.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["edge_id", "source", "target", "relationship"],
+  "properties": {
+    "edge_id": { "type": "string", "pattern": "^[a-z0-9_]+$" },
+    "source": { "type": "string", "description": "node_id of the source." },
+    "target": { "type": "string", "description": "node_id of the target." },
+    "relationship": {
+      "type": "string",
+      "enum": [
+        "FEEDS",
+        "REQUIRES",
+        "CALCULATES",
+        "VALIDATES",
+        "REFERENCES",
+        "GENERATES",
+        "DERIVED_FROM",
+        "OPTIONAL_FOR",
+        "CONDITIONALLY_REQUIRED_FOR"
+      ]
+    },
+    "rule_id": {
+      "type": "string",
+      "description": "The rule applied along this edge (expected for computational relationships)."
+    },
+    "condition": {
+      "type": "object",
+      "description": "Optional gate: which fact/decision and value activates this edge.",
+      "additionalProperties": false,
+      "properties": {
+        "node_id": { "type": "string" },
+        "decision_id": { "type": "string" },
+        "equals": {}
+      }
+    },
+    "citation_refs": { "type": "array", "items": { "type": "string" } }
+  }
+}

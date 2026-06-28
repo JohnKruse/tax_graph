@@ -1,0 +1,54 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "taxpayer_facts.schema.json",
+  "title": "Tax Graph Taxpayer Facts",
+  "description": "Normalized inputs supplied by the taxpayer/agent. NOT part of the canonical graph. Each fact records its provenance so the audit trace can show where every value came from.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["tax_year", "facts"],
+  "properties": {
+    "tax_year": { "type": "integer", "minimum": 1900, "maximum": 2100 },
+    "filing_status": {
+      "type": "string",
+      "enum": [
+        "single",
+        "married_filing_jointly",
+        "married_filing_separately",
+        "head_of_household",
+        "qualifying_surviving_spouse"
+      ]
+    },
+    "facts": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/fact" }
+    }
+  },
+  "$defs": {
+    "fact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["node_id", "value"],
+      "properties": {
+        "node_id": {
+          "type": "string",
+          "description": "The fact/source node this fills, e.g. form_1099b_2025_box_1d_proceeds."
+        },
+        "value": {},
+        "source": {
+          "type": "object",
+          "description": "Provenance: where this value came from.",
+          "additionalProperties": false,
+          "properties": {
+            "document_label": { "type": "string", "description": "e.g. 'Fidelity 1099-B 2025'." },
+            "extracted_by": {
+              "type": "string",
+              "description": "e.g. 'mistral_ocr_4', 'antigravity_gemini_flash', 'manual'."
+            },
+            "citation_ref": { "type": "string" }
+          }
+        },
+        "confidence": { "type": "number", "minimum": 0, "maximum": 1 }
+      }
+    }
+  }
+}

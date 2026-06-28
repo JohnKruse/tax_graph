@@ -1,0 +1,52 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "decision.schema.json",
+  "title": "Tax Graph Decision Node",
+  "description": "A first-class point where human judgment is required. The agent presents the question and options grounded in citations; it never makes the interpretive ruling itself. Every decision MUST offer an escape hatch (other / unsupported / escalate) so a filer is never forced into a wrong choice ('incomplete, but never wrong').",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["decision_id", "question", "citation_refs", "options"],
+  "properties": {
+    "decision_id": { "type": "string", "pattern": "^[a-z0-9_]+$" },
+    "sets_node": { "type": "string", "description": "Optional: the fact node this decision resolves." },
+    "question": { "type": "string", "minLength": 1, "description": "What the agent asks the filer." },
+    "citation_refs": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "type": "string" },
+      "description": "The governing authority. A decision may cite many sources."
+    },
+    "options": {
+      "type": "array",
+      "minItems": 1,
+      "description": "The choices. Must include at least one escape option (option_type other/unsupported/escalate).",
+      "items": { "$ref": "#/$defs/option" },
+      "contains": {
+        "type": "object",
+        "required": ["option_type"],
+        "properties": {
+          "option_type": { "enum": ["other", "unsupported", "escalate"] }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "option": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["option_id", "label", "option_type"],
+      "properties": {
+        "option_id": { "type": "string", "pattern": "^[a-z0-9_]+$" },
+        "label": { "type": "string" },
+        "option_type": {
+          "type": "string",
+          "enum": ["choice", "other", "unsupported", "escalate"],
+          "description": "'choice' = a substantive answer; the others are escape hatches."
+        },
+        "sets": { "type": "object", "description": "Fact/value assigned, or branch activated, if chosen." },
+        "downstream_effect": { "type": "string", "description": "Plain-language consequence of choosing this." },
+        "citation_refs": { "type": "array", "items": { "type": "string" } }
+      }
+    }
+  }
+}

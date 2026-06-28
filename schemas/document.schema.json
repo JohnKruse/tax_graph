@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "document.schema.json",
+  "title": "Tax Graph Document",
+  "description": "A container for nodes: an IRS form, schedule, source document, instructions, publication, or worksheet for a given tax year.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["document_id", "title", "tax_year", "document_type", "status"],
+  "properties": {
+    "document_id": {
+      "type": "string",
+      "pattern": "^[a-z0-9_]+$",
+      "description": "Stable snake_case id, conventionally suffixed with the tax year, e.g. form_1040_2025."
+    },
+    "title": { "type": "string", "description": "Human-readable title, e.g. 'Form 1040'." },
+    "tax_year": { "type": "integer", "minimum": 1900, "maximum": 2100 },
+    "document_type": {
+      "type": "string",
+      "enum": ["tax_form", "schedule", "source_document", "instructions", "publication", "worksheet"]
+    },
+    "source_url": { "type": "string", "format": "uri" },
+    "version_date": {
+      "type": "string",
+      "format": "date",
+      "description": "IRS revision/publication date; used for annual change detection."
+    },
+    "revision": { "type": "string", "description": "IRS revision label as printed, e.g. 'Rev. 2024'." },
+    "catalog_number": { "type": "string", "description": "IRS catalog number, e.g. '11320B'." },
+    "omb_number": { "type": "string" },
+    "content_hash": {
+      "type": "string",
+      "description": "Hash of the fetched source, for the change-detection manifest."
+    },
+    "status": {
+      "type": "string",
+      "enum": ["supported", "partial", "planned", "unsupported"]
+    }
+  }
+}

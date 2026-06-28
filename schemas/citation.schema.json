@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "citation.schema.json",
+  "title": "Tax Graph Citation",
+  "description": "A span-level, quotable pointer to authoritative source text. Captured once at extraction time and reused at runtime so an agent can show the filer the exact passage instead of re-fetching a PDF.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["citation_id", "document_id", "quoted_text"],
+  "properties": {
+    "citation_id": { "type": "string", "pattern": "^[a-z0-9_]+$" },
+    "document_id": {
+      "type": "string",
+      "pattern": "^[a-z0-9_]+$",
+      "description": "The source document (carries the tax year)."
+    },
+    "locator": {
+      "type": "string",
+      "description": "Where in the document, e.g. 'Instructions for line 16, paragraph 2'."
+    },
+    "quoted_text": {
+      "type": "string",
+      "minLength": 1,
+      "description": "The verbatim source passage, stored so the agent need not re-fetch."
+    },
+    "url": { "type": "string", "format": "uri", "description": "Deep link to the source, if available." },
+    "retrieved_date": { "type": "string", "format": "date" }
+  }
+}
