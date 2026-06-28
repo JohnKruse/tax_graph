@@ -1,0 +1,9 @@
+# Expected computed values for the capital_gains_basic scenario.
+# This example-driven pattern (facts.yaml + expected.yaml) is the seed of the
+# IRS Example Regression Suite (requirements doc §10.4).
+expected:
+  form_8949_2025_partii_gain_loss: 2000
+  form_8949_2025_partii_total_gain_loss: 2000
+  schedule_d_2025_line_15_net_lt: 2000
+  schedule_d_2025_line_16_total: 2000
+  form_1040_2025_line_7_capital_gain_loss: 2000
