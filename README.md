@@ -24,6 +24,13 @@ uv sync
 If `uv` is not available in your environment yet, the existing proof-of-concept
 scripts can still be run with Python directly.
 
+Live LLM extraction uses optional provider SDKs. For the default OpenRouter
+adapter, install the OpenAI-compatible SDK extra:
+
+```powershell
+uv sync --extra llm-openrouter
+```
+
 ## CLI Usage
 
 Phase M0 provides a package CLI named `tax-graph`:
@@ -33,6 +40,7 @@ uv run tax-graph validate 2025
 uv run tax-graph run --facts examples\capital_gains_basic\facts.yaml
 uv run tax-graph acquire 2025
 uv run tax-graph acquire 2025 --check
+uv run tax-graph extract --doc form_8949_2025
 ```
 
 When working from a source checkout before installing console scripts, the same
@@ -42,6 +50,7 @@ commands can be run as a module:
 python -m tax_graph.cli validate 2025
 python -m tax_graph.cli run --facts examples\capital_gains_basic\facts.yaml
 python -m tax_graph.cli acquire 2025 --check
+python -m tax_graph.cli extract --doc form_8949_2025
 ```
 
 Expected result: `form_1040_2025_line_7_capital_gain_loss = 2000`.
@@ -82,6 +91,27 @@ text plus a companion `.fields.json` AcroForm grid. Instruction rendering is
 handled separately by Mistral OCR, storing per-document markdown, per-page
 markdown, and extracted links. The OCR path caches by content hash and fails
 loudly when no OCR client or key is available.
+
+## Extraction Drafts
+
+Phase M4 adds `tax-graph extract --doc <document_id>`, which turns rendered
+source artifacts into schema-valid draft graph YAML through a mocked-in-tests
+LLM client protocol and a live provider adapter when `llm.provider` is
+configured. Drafts are written only under `graph/<year>/_drafts/<document_id>/`, together with
+`provenance.yaml` and `review.md`; the live graph directories are never
+modified by extraction.
+
+Live extraction is provider-agnostic behind `tax_graph.extract.llm_client.LlmClient`.
+The built-in adapters currently cover `openrouter`, `anthropic`, and `openai`,
+with provider SDKs installed only when needed via optional extras. OpenRouter
+uses the OpenAI-compatible client with `llm.base_url`, so model ids may use the
+gateway's `vendor/model` format. The Mistral-specific path is limited to OCR
+for instructions and publications.
+
+Automatic routing is conservative: a draft must meet the configured confidence
+threshold, agree with the independent critic, and pass deterministic checks
+before it appears in the auto-accepted section of the review report. Anything
+else stays on the human-review list.
 
 ## Compatibility Scripts
 

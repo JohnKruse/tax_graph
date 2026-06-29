@@ -10,6 +10,7 @@ import yaml
 
 
 DEFAULT_CONFIG_FILE = "tax-graph.config.yaml"
+CONFIG_DIR_CONFIG_FILE = "config/tax-graph.config.yaml"
 
 
 def project_root() -> Path:
@@ -20,7 +21,13 @@ def project_root() -> Path:
 def default_config_path(root: str | Path | None = None) -> Path:
     """Return the default user configuration path."""
     base = Path(root) if root is not None else project_root()
-    return base / DEFAULT_CONFIG_FILE
+    root_config = base / DEFAULT_CONFIG_FILE
+    if root_config.exists():
+        return root_config
+    config_dir_config = base / CONFIG_DIR_CONFIG_FILE
+    if config_dir_config.exists():
+        return config_dir_config
+    return root_config
 
 
 def load_config(path: str | Path | None = None, root: str | Path | None = None) -> dict[str, Any]:
@@ -72,7 +79,10 @@ def resolve_secret(
 
     env_name = get_config_value(config, env_path) if env_path else None
     if env_name:
-        return os.environ.get(str(env_name))
+        env_value = os.environ.get(str(env_name))
+        if env_value:
+            return env_value
+        return _read_user_environment_secret(str(env_name))
     return None
 
 
@@ -86,3 +96,20 @@ def _read_keyring_secret(keyring_name: str) -> str | None:
     if not service or not username:
         return None
     return keyring.get_password(service, username)
+
+
+def _read_user_environment_secret(name: str) -> str | None:
+    """Read a Windows user environment variable not loaded into this process."""
+    if os.name != "nt":
+        return None
+    try:
+        import winreg
+    except ImportError:  # pragma: no cover - Windows-only fallback.
+        return None
+
+    try:
+        with winreg.OpenKey(winreg.HKEY_CURRENT_USER, "Environment") as key:
+            value, _value_type = winreg.QueryValueEx(key, name)
+    except OSError:
+        return None
+    return str(value) if value else None

@@ -9,7 +9,7 @@ import re
 from typing import Any
 
 
-LINE_ANCHOR_RE = re.compile(r"^(?:\d+[a-z]?|[a-z])$")
+LINE_ANCHOR_RE = re.compile(r"^(?:[1-9][0-9]?[a-z]?|[a-z])$")
 
 
 @dataclass(frozen=True)
@@ -61,21 +61,24 @@ def extract_field_grid(pdf_path: str | Path) -> dict[str, Any]:
     fields: list[dict[str, Any]] = []
     with fitz.open(pdf_path) as document:
         for page_number, page in enumerate(document, 1):
+            line_positions = _line_anchor_positions(page.get_text("words"))
             widgets = page.widgets() or []
             for widget in widgets:
                 rect = widget.rect
-                fields.append(
-                    {
-                        "field_name": widget.field_name,
-                        "page": page_number,
-                        "x0": round(rect.x0, 2),
-                        "y0": round(rect.y0, 2),
-                        "x1": round(rect.x1, 2),
-                        "y1": round(rect.y1, 2),
-                        "x_cluster": _cluster(rect.x0),
-                        "y_cluster": _cluster(rect.y0),
-                    }
-                )
+                field = {
+                    "field_name": widget.field_name,
+                    "page": page_number,
+                    "x0": round(rect.x0, 2),
+                    "y0": round(rect.y0, 2),
+                    "x1": round(rect.x1, 2),
+                    "y1": round(rect.y1, 2),
+                    "x_cluster": _cluster(rect.x0),
+                    "y_cluster": _cluster(rect.y0),
+                }
+                line_anchor = _nearest_line_anchor(rect.y0, line_positions)
+                if line_anchor:
+                    field["line_anchor"] = line_anchor
+                fields.append(field)
     return {"fields": fields}
 
 
@@ -89,6 +92,9 @@ def _rows_from_words(words: list[tuple[Any, ...]]) -> list[str]:
             continue
         anchor_index = _anchor_index(tokens)
         if anchor_index is None:
+            header = _header_row(tokens)
+            if header:
+                rendered.append(f"Header: {header}")
             continue
         anchor = tokens[anchor_index]
         rest = " ".join(tokens[anchor_index + 1 :])
@@ -114,6 +120,40 @@ def _anchor_index(tokens: list[str]) -> int | None:
         if LINE_ANCHOR_RE.match(token):
             return index
     return None
+
+
+def _header_row(tokens: list[str]) -> str | None:
+    row = " ".join(tokens).strip()
+    lowered = row.lower()
+    if not row:
+        return None
+    if "column" in lowered or re.search(r"\([a-z]\)", lowered):
+        return row
+    if lowered.startswith("part ") or "schedule d" in lowered:
+        return row
+    return None
+
+
+def _line_anchor_positions(words: list[tuple[Any, ...]]) -> list[tuple[str, float]]:
+    positions: list[tuple[str, float]] = []
+    for row_words in _group_words_by_y(words):
+        sorted_words = sorted(row_words, key=lambda word: word[0])
+        tokens = [_clean_token(str(word[4])) for word in sorted_words]
+        tokens = [token for token in tokens if token and not _is_dot_leader(token)]
+        anchor_index = _anchor_index(tokens)
+        if anchor_index is not None:
+            positions.append((tokens[anchor_index].lower(), float(sorted_words[anchor_index][1])))
+    return positions
+
+
+def _nearest_line_anchor(y0: float, positions: list[tuple[str, float]], tolerance: float = 12.0) -> str | None:
+    if not positions:
+        return None
+    anchor, distance = min(
+        ((anchor, abs(float(y0) - anchor_y)) for anchor, anchor_y in positions),
+        key=lambda item: item[1],
+    )
+    return anchor if distance <= tolerance else None
 
 
 def _clean_token(token: str) -> str:

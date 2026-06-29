@@ -13,6 +13,8 @@ from tax_graph.acquire.manifest import load_manifest
 from tax_graph.acquire.render import render_source
 from tax_graph.config import get_config_value, load_config, project_root
 from tax_graph.engine import Engine, Graph, MISSING, load_facts, render_trace
+from tax_graph.extract import extract_document, extract_year
+from tax_graph.extract.llm_client import LlmClient
 from tax_graph.validate import validate_graph
 
 try:
@@ -113,6 +115,40 @@ def acquire_command(
     return 0 if citation_report.ok else 1
 
 
+def extract_command(
+    *,
+    doc: str | None = None,
+    year: str = "2025",
+    root: str | Path | None = None,
+    client: LlmClient | None = None,
+) -> int:
+    """Extract draft graph objects for one document or manifest year."""
+    root_path = Path(root).resolve() if root is not None else project_root()
+    config = load_config(root=root_path)
+    if doc:
+        routed = extract_document(doc, year=year, root=root_path, client=client, config=config)
+        _print_extract_summary(doc, routed)
+        return 0
+
+    routed_year = extract_year(year=year, root=root_path, client=client, config=config)
+    print("=== extraction review ===")
+    print(f"  year: {year}")
+    print(f"  documents: {len(routed_year)}")
+    print(f"  auto_accepted: {sum(len(item.accepted) for item in routed_year)}")
+    print(f"  human_review: {sum(len(item.review) for item in routed_year)}")
+    print(f"  deterministic_issues: {sum(len(item.issues) for item in routed_year)}")
+    return 0
+
+
+def _print_extract_summary(doc: str, routed) -> None:
+    print("=== extraction review ===")
+    print(f"  document: {doc}")
+    print(f"  draft_dir: {routed.output_dir}")
+    print(f"  auto_accepted: {len(routed.accepted)}")
+    print(f"  human_review: {len(routed.review)}")
+    print(f"  deterministic_issues: {len(routed.issues)}")
+
+
 def _render_fetched_documents(
     entries_by_id,
     fetched: list[FetchedDocument],
@@ -186,6 +222,17 @@ def _build_typer_app():
         if raise_code:
             raise typer.Exit(raise_code)
 
+    @cli.command("extract")
+    def extract_cli(
+        doc: str | None = typer.Option(None, "--doc", help="Manifest document id to extract."),
+        year: str = typer.Option("2025", "--year", "-y", help="Tax year to extract."),
+        root: Path | None = typer.Option(None, "--root", help="Project root override."),
+    ) -> None:
+        """Extract draft graph objects from rendered source artifacts."""
+        raise_code = extract_command(doc=doc, year=year, root=root)
+        if raise_code:
+            raise typer.Exit(raise_code)
+
     return cli
 
 
@@ -208,6 +255,11 @@ def _fallback_app() -> int:
     acquire_parser.add_argument("--check", action="store_true")
     acquire_parser.add_argument("--root", default=None)
 
+    extract_parser = subparsers.add_parser("extract")
+    extract_parser.add_argument("--doc", default=None)
+    extract_parser.add_argument("--year", "-y", default="2025")
+    extract_parser.add_argument("--root", default=None)
+
     args = parser.parse_args()
     if args.command == "validate":
         return validate_command(year=args.year, root=args.root)
@@ -215,6 +267,8 @@ def _fallback_app() -> int:
         return run_command(facts=args.facts, year=args.year, target=args.target, root=args.root)
     if args.command == "acquire":
         return acquire_command(year=args.year, check=args.check, root=args.root)
+    if args.command == "extract":
+        return extract_command(doc=args.doc, year=args.year, root=args.root)
     return 2
 
 

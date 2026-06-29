@@ -43,5 +43,6 @@ Thumbs.db
 
 # Tax Graph — local config (may hold secrets) and pipeline artifacts
 tax-graph.config.yaml
+config/tax-graph.config.yaml
 .cache/
 output/

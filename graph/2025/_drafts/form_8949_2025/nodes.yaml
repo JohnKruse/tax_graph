@@ -1,0 +1,66 @@
+- node_id: f8949_2025_p1_box
+  document_id: form_8949_2025
+  label: Short-term transaction box selection
+  node_type: fact
+  value_type: enum
+  enum_values:
+  - a
+  - b
+  - c
+  - g
+  - h
+  - i
+  - other
+- node_id: f8949_2025_p1_l2_d
+  document_id: form_8949_2025
+  label: Totals Column (d) - Proceeds
+  node_type: computed
+  value_type: currency
+- node_id: f8949_2025_p1_l2_e
+  document_id: form_8949_2025
+  label: Totals Column (e) - Cost or other basis
+  node_type: computed
+  value_type: currency
+- node_id: f8949_2025_p1_l2_g
+  document_id: form_8949_2025
+  label: Totals Column (g) - Adjustments
+  node_type: computed
+  value_type: currency
+- node_id: f8949_2025_p1_l2_h
+  document_id: form_8949_2025
+  label: Totals Column (h) - Gain or loss
+  node_type: computed
+  value_type: currency
+- node_id: f8949_2025_p2_box
+  document_id: form_8949_2025
+  label: Long-term transaction box selection
+  node_type: fact
+  value_type: enum
+  enum_values:
+  - d
+  - e
+  - f
+  - j
+  - k
+  - l
+  - other
+- node_id: f8949_2025_p2_l2_d
+  document_id: form_8949_2025
+  label: Totals Column (d) - Proceeds
+  node_type: computed
+  value_type: currency
+- node_id: f8949_2025_p2_l2_e
+  document_id: form_8949_2025
+  label: Totals Column (e) - Cost or other basis
+  node_type: computed
+  value_type: currency
+- node_id: f8949_2025_p2_l2_g
+  document_id: form_8949_2025
+  label: Totals Column (g) - Adjustments
+  node_type: computed
+  value_type: currency
+- node_id: f8949_2025_p2_l2_h
+  document_id: form_8949_2025
+  label: Totals Column (h) - Gain or loss
+  node_type: computed
+  value_type: currency

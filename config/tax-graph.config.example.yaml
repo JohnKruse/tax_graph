@@ -1,4 +1,4 @@
-# Tax Graph - one-stop tuning. Copy to `tax-graph.config.yaml` (gitignored) and edit.
+# Tax Graph - one-stop tuning. Copy to `config/tax-graph.config.yaml` (gitignored) and edit.
 # This file is the single place to change behavior without touching code:
 # prompts, model/provider, API keys, paths, rate limits, thresholds.
 #
@@ -16,13 +16,21 @@ project:
     manifest: config/manifest.yaml
 
 llm:
-  provider: anthropic
-  model: claude-opus-4-8         # confirm current flagship at build time
+  provider: openrouter           # default: one key, any vendor's model via the OpenRouter gateway (https://openrouter.ai)
+  model: null                    # pick an OpenRouter model id, e.g. anthropic/claude-opus-4, google/gemini-2.5-pro, openai/gpt-5.1
+  base_url: https://openrouter.ai/api/v1
+  site_url: null                 # optional OpenRouter HTTP-Referer header
+  app_name: Tax Graph            # optional OpenRouter X-Title header
+  require_parameters: true       # only route to endpoints that support requested structured-output params
+  reasoning_effort: null         # optional OpenRouter reasoning control for capable models, e.g. minimal
+  reasoning_exclude: null        # optional: true keeps reasoning tokens out of responses when supported
   temperature: 0
-  max_tokens: 8000
+  strict_schema: false           # extractor validates drafts after parsing; strict mode rejects optional graph fields
+  max_tokens: 16000
+  critic_max_tokens: 4000
   api_key: null                  # leave null; prefer keyring/env below
-  api_key_keyring: tax-graph/anthropic
-  api_key_env: ANTHROPIC_API_KEY
+  api_key_keyring: tax-graph/openrouter
+  api_key_env: OPENROUTER_API_KEY
 
 extraction:
   auto_accept_confidence: 0.95   # >= this AND critic agrees -> draft auto-accepted (still PR-reviewed)

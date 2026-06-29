@@ -1,0 +1,33 @@
+- decision_id: dec_p1_box
+  sets_node: f8949_2025_p1_box
+  question: Which box applies to these short-term transactions?
+  citation_refs:
+  - cit_8949_p1_header
+  options:
+  - option_id: opt_a
+    label: (A) 1099-B, basis reported
+    option_type: choice
+    sets: {}
+    downstream_effect: Flows to Schedule D, line 1b
+  - option_id: opt_g
+    label: (G) 1099-DA, basis reported
+    option_type: choice
+    sets: {}
+    downstream_effect: Flows to Schedule D, line 1b
+  - option_id: opt_other
+    label: Other
+    option_type: other
+- decision_id: dec_p2_box
+  sets_node: f8949_2025_p2_box
+  question: Which box applies to these long-term transactions?
+  citation_refs:
+  - cit_8949_sd_flow
+  options:
+  - option_id: opt_d
+    label: (D) 1099-B, basis reported
+    option_type: choice
+    sets: {}
+    downstream_effect: Flows to Schedule D, line 8b
+  - option_id: opt_other
+    label: Other
+    option_type: other

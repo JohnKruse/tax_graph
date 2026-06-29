@@ -114,7 +114,10 @@ def _build_mistral_client(config: dict[str, Any]) -> OcrClient:
         raise RendererUnavailable("Mistral OCR requires an API key")
 
     try:
-        from mistralai import Mistral
+        try:
+            from mistralai import Mistral
+        except ImportError:
+            from mistralai.client import Mistral
     except ImportError as exc:  # pragma: no cover - dependency is declared for synced envs.
         raise RendererUnavailable("mistralai package is not installed") from exc
 

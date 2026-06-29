@@ -18,6 +18,8 @@ def test_render_form_extracts_line_rows_and_fields(tmp_path):
     page.insert_text((72, 112), "3c .... Deduction allocation column C")
     page.insert_text((72, 132), "4a Other deduction entry")
     page.insert_text((72, 152), "4b Another deduction entry")
+    page.insert_text((72, 172), "(h) Gain or loss. Subtract column (e) from column (d)")
+    page.insert_text((72, 192), "8949 2025")
 
     widget = fitz.Widget()
     widget.field_name = "topmostSubform[0].Page1[0].f3a_colA[0]"
@@ -35,8 +37,12 @@ def test_render_form_extracts_line_rows_and_fields(tmp_path):
     assert "- 3c: Deduction allocation column C" in markdown
     assert "- 4a: Other deduction entry" in markdown
     assert "- 4b: Another deduction entry" in markdown
+    assert "Header: (h) Gain or loss. Subtract column (e) from column (d)" in markdown
+    assert "- 8949:" not in markdown
+    assert "- 2025:" not in markdown
 
     fields = json.loads((tmp_path / "form_1116_2025.fields.json").read_text(encoding="utf-8"))
     assert fields["fields"][0]["field_name"] == "topmostSubform[0].Page1[0].f3a_colA[0]"
     assert fields["fields"][0]["x_cluster"] == 300
+    assert fields["fields"][0]["line_anchor"] == "3a"
     assert result.document_id == "form_1116_2025"

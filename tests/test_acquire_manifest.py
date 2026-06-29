@@ -43,6 +43,16 @@ def test_manifest_urls_match_stable_irs_pdf_pattern():
 
 
 @pytest.mark.m3
+def test_manifest_loads_form_instruction_relationships():
+    manifest = load_manifest(root=ROOT)
+    entries = manifest.by_document_id()
+
+    assert entries["form_8949_2025"].instructions_document_id == "instructions_form_8949_2025"
+    assert entries["schedule_d_2025"].instructions_document_id == "instructions_schedule_d_2025"
+    assert entries["form_1040_2025"].instructions_document_id == "instructions_form_1040_2025"
+
+
+@pytest.mark.m3
 def test_manifest_rejects_duplicate_document_ids():
     data = yaml.safe_load((ROOT / "config" / "manifest.yaml").read_text(encoding="utf-8"))
     data["documents"].append(dict(data["documents"][0]))
@@ -57,4 +67,13 @@ def test_manifest_rejects_non_irs_pdf_url():
     data["documents"][0]["url"] = "https://www.irs.gov/forms-pubs/about-form-8949"
 
     with pytest.raises(Exception, match="does not match|stable IRS PDF"):
+        validate_manifest_data(data, root=ROOT)
+
+
+@pytest.mark.m3
+def test_manifest_rejects_missing_instruction_relationship():
+    data = yaml.safe_load((ROOT / "config" / "manifest.yaml").read_text(encoding="utf-8"))
+    data["documents"][0]["instructions_document_id"] = "missing_instructions_2025"
+
+    with pytest.raises(ValueError, match="references missing instructions"):
         validate_manifest_data(data, root=ROOT)

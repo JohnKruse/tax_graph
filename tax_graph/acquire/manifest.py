@@ -23,6 +23,7 @@ class ManifestEntry:
     document_id: str
     kind: str
     url: str
+    instructions_document_id: str | None = None
 
 
 @dataclass(frozen=True)
@@ -61,6 +62,7 @@ def load_manifest(path: str | Path | None = None, root: str | Path | None = None
                 document_id=entry["document_id"],
                 kind=entry["kind"],
                 url=entry["url"],
+                instructions_document_id=entry.get("instructions_document_id"),
             )
             for entry in data["documents"]
         ),
@@ -74,6 +76,7 @@ def validate_manifest_data(data: dict[str, Any], root: str | Path | None = None)
     jsonschema.validate(data, schema)
     _validate_unique_document_ids(data)
     _validate_irs_pdf_urls(data)
+    _validate_instruction_relationships(data)
 
 
 def _validate_unique_document_ids(data: dict[str, Any]) -> None:
@@ -94,3 +97,22 @@ def _validate_irs_pdf_urls(data: dict[str, Any]) -> None:
     if bad_urls:
         joined = ", ".join(sorted(bad_urls))
         raise ValueError(f"manifest URLs must use stable IRS PDF paths: {joined}")
+
+
+def _validate_instruction_relationships(data: dict[str, Any]) -> None:
+    entries = {entry["document_id"]: entry for entry in data["documents"]}
+    for entry in data["documents"]:
+        instructions_document_id = entry.get("instructions_document_id")
+        if not instructions_document_id:
+            continue
+        target = entries.get(instructions_document_id)
+        if target is None:
+            raise ValueError(
+                f"manifest document {entry['document_id']} references missing instructions "
+                f"{instructions_document_id}"
+            )
+        if target.get("kind") not in {"instructions", "publication"}:
+            raise ValueError(
+                f"manifest document {entry['document_id']} instructions_document_id "
+                f"{instructions_document_id} is kind {target.get('kind')}"
+            )

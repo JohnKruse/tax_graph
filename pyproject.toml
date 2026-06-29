@@ -14,6 +14,21 @@ dependencies = [
   "typer>=0.12",
 ]
 
+[project.optional-dependencies]
+llm-anthropic = [
+  "anthropic>=0.34",
+]
+llm-openai = [
+  "openai>=1.0",
+]
+llm-openrouter = [
+  "openai>=1.0",
+]
+llm = [
+  "anthropic>=0.34",
+  "openai>=1.0",
+]
+
 [project.scripts]
 tax-graph = "tax_graph.cli:app"
 
@@ -32,5 +47,6 @@ pythonpath = ["."]
 markers = [
   "m0: Phase M0 foundation tests",
   "m3: Phase M3 acquisition tests",
+  "m4: Phase M4 extraction tests",
   "network: tests that require live network access",
 ]
