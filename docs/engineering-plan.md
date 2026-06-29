@@ -193,13 +193,16 @@ Adapted from John's multi-agent protocol (filesystem state to resist context deg
   diagrams). Unicode breaks PowerShell/patching/handoffs. `tools/check_ascii.py` enforces it in CI.
 - **Architect (Claude Opus):** plans only, no implementation code. Master plan = this doc;
   per-phase detail in `plans/PHASE_<id>.md`, generated **serially, one phase at a time**.
-- **Worker (Codex/Sonnet/Gemini):** implements one phase, one step at a time, from `plans/`.
+- **Worker (Codex/Sonnet/Gemini):** implements an entire phase, step by step, from `plans/`.
   Full directive in `plans/README.md`.
 - **Every step MUST:** implement core logic + create/update pytest (reuse, don't proliferate)
   + update docstrings/docs. Not done until tests pass 100%.
-- **Worker crawl:** state the phase canary & await confirmation -> take the lowest `[ ]` step
-  -> implement+test+docs -> green -> mark `[DONE]` + log deviations -> **git commit** -> **stop
-  and ask permission** to proceed. Check context % each session.
+- **Worker run (whole phase):** state the phase canary & await confirmation, then work the steps
+  in order WITHOUT stopping between them. Each step = implement+test+docs -> green -> mark
+  `[DONE]` + log deviations -> **git commit** (one per step, no push yet). Stop and surface to
+  John only on a problem (tests stuck, real ambiguity, plan-changing deviation, low context).
+  At phase end: run the exit-criteria command, mark `[COMPLETE]`, archive the subplan, then
+  **git push once** and report. Check context % at the start.
 
 ## Cross-cutting
 
