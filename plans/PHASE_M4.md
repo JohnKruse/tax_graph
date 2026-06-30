@@ -140,8 +140,9 @@ The `LlmClient` Protocol and the generator/critic remain provider-neutral.
     1. **Outline tree - mostly deterministic.** Build `graph/<year>/_drafts/<id>/outline.yaml` from
        the rendered form text + headers + field-grid geometry + line anchors: sections, lines,
        tables, column groups, checkbox groups, worksheets, outbound-flow cues. LLM **repair only**
-       for blocks the deterministic builder cannot confidently classify. Commit it as a reviewable
-       draft artifact (a human can sanity-check the structure before any extraction).
+       for blocks the deterministic builder cannot confidently classify. It is a reviewable LOCAL
+       artifact under the gitignored `_drafts/` (sanity-check on disk before extraction; NOT
+       committed - see pinned decision 3 below).
     2. **Evidence bundle per outline node:** nearby form text, headers, the node's field-grid rows
        (x/y clusters), and the relevant instruction text (whole instructions are small - pass them,
        cached).
@@ -162,6 +163,25 @@ The `LlmClient` Protocol and the generator/critic remain provider-neutral.
   Test (mocked client): the outline builder produces the 8949 tree (Part I/II, line-1 tables,
   line-2 totals, flow cues) deterministically; a mocked micro-extraction recovers column (h) =
   d - e + g over closed ops; assembly yields schema-valid objects with code-assigned ids. Docs.
+
+  **Step 7 interface decisions (pinned 2026-06-30, answering Codex):**
+  1. **`operation_plan` is intermediate-only.** Assembly converts it into canonical
+     single-operation rules + edges, creating intermediate `computed` nodes for multi-step formulas
+     (column (h): a SUBTRACT subtotal node for (d)-(e), then a SUM with (g)). Do NOT change
+     `rule.schema.json` - one operation per rule stays; the engine already chains computed nodes.
+  2. **Outbound flows = a separate intermediate artifact**, not draft edges. Write
+     `_drafts/<id>/outbound_flows.yaml` ({source node, target form + line, citation}); a cross-form
+     LINK step (separate from per-form extraction) realizes them into real edges once the target
+     node exists. Keeps each per-form draft internally valid (no dangling targets).
+  3. **Outlines are gitignored LOCAL artifacts** under `_drafts/` - reviewed on disk, not committed.
+     Only promoted live `graph/<year>/` objects are committed.
+  4. **Citations = code-generated candidate span ids.** Code segments the source into candidate
+     spans (id + verbatim text + locator); the model RETURNS the supporting span id(s); code
+     materializes the citation with the verbatim `quoted_text`. The model never returns char offsets
+     or free-typed quotes (so citations pass `citation_check` by construction).
+  5. **Evidence = whole instructions (cached) + the candidate-span list.** Drop the ~7000-char
+     snippet heuristic (lossy; misses cross-references). Form instructions are small - pass the whole
+     text with prompt caching. Retrieval/sectioning ONLY for oversized publications (Pub 514/17).
 
 - [ ] **Step 8 - Held-out validation (corrected gate).** Extract `form_8949_2025` **with its
   instructions** and diff against the hand-authored `graph/2025/` reference. Sound if it recovers:
