@@ -22,8 +22,11 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
     otherwise `llm.model`.
   - `tax_graph/extract/assembly.py` converts intermediate operation plans into canonical graph
     objects and realizes outbound flows only when target nodes exist.
+  - `tax_graph/extract/outline_checks.py` validates outline completeness, candidate-span evidence,
+    and outbound-flow references before micro-extraction runs.
   - `tax_graph/extract/outline_pipeline.py` walks formula outline nodes and returns an
-    `ExtractionBatch`.
+    `ExtractionBatch`; mocked coverage now includes Form 8949 Part I/II column (h), line-2
+    per-column totals, and outbound flow declarations for Schedule D lines 1b/2/3/8b/9/10.
   - `tax_graph/extract/pipeline.py` supports `extraction.mode: one_pass|outline_first`; default is
     still `one_pass`.
   - `_drafts` is ignored, and stale tracked `graph/2025/_drafts/form_8949_2025/*` files are removed.
@@ -41,10 +44,23 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
   SUBTRACT-then-SUM the old approach missed). Once (h) round-trips cleanly, extend the SAME outline
   walk to line-2 totals (SUM) and the outbound flow. Step 8's held-out gate needs all three, but
   build them incrementally with (h) first - if it fails you know it is the formula path.
+  (Nice work getting h + totals + outbound declarations green in one slice - that is ahead of this.)
+- **Cross-form LINK: separate step, DEFERRED past M4 - do NOT build it in the next slice.** With
+  only Form 8949 extracted there is nothing to link to, so a LINK command now would be untested
+  scaffolding. M4 completes on 8949 with DECLARATIONS only - Step 8's held-out gate asks for FEEDS
+  declarations, not realized edges. Keep `realize_outbound_flows()` as the primitive (it already
+  no-ops when a target is absent) and keep the declarations in `outbound_flows.yaml`. When
+  extraction LATER expands to a second form, the LINK step resolves declarations against the
+  **promoted live-graph node index** (reviewed nodes) - NOT by reading another form's raw
+  `_drafts/*/outbound_flows.yaml` (that is ungated and couples extraction ordering).
+- **Next:** finish Step 8 (held-out 8949 diff), mark M4 `[COMPLETE]`, then proceed to **M1** per the
+  milestone order (M4 -> M1 -> M2 ...). Not Schedule D, not the LINK.
 
 ## Latest verification
-- `pytest -m m4` -> 26 passed, 39 deselected
-- `pytest` -> 63 passed, 2 skipped
+- Real cached `form_8949_2025` outline artifact check -> 0 issues; outbound targets exactly
+  1b/2/3/8b/9/10.
+- `pytest -m m4` -> 27 passed, 39 deselected
+- `pytest` -> 64 passed, 2 skipped
 - `python tools/check_ascii.py` -> ASCII check OK
 
 ## Resolved / superseded

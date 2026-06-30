@@ -182,6 +182,13 @@ The `LlmClient` Protocol and the generator/critic remain provider-neutral.
   5. **Evidence = whole instructions (cached) + the candidate-span list.** Drop the ~7000-char
      snippet heuristic (lossy; misses cross-references). Form instructions are small - pass the whole
      text with prompt caching. Retrieval/sectioning ONLY for oversized publications (Pub 514/17).
+  6. **Cross-form LINK is a separate step, DEFERRED past M4.** Outbound flows stay as DECLARATIONS
+     (`outbound_flows.yaml` + the `realize_outbound_flows()` primitive, which no-ops when a target is
+     absent). M4 completes on Form 8949 with declarations only; Step 8's gate asks for FEEDS
+     declarations, not realized edges. Do NOT build a LINK command while only 8949 exists (nothing to
+     link, untestable). When extraction later expands to a second form, LINK resolves declarations
+     against the PROMOTED live-graph node index (reviewed nodes), NOT another form's raw
+     `_drafts/*/outbound_flows.yaml` (ungated; couples extraction ordering).
 
 - [ ] **Step 8 - Held-out validation (corrected gate).** Extract `form_8949_2025` **with its
   instructions** and diff against the hand-authored `graph/2025/` reference. Sound if it recovers:
