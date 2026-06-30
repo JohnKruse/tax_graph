@@ -187,22 +187,8 @@ canary: **Ledger Llama**.
 
 ## Working protocol (Architect / Worker)
 
-Adapted from John's multi-agent protocol (filesystem state to resist context degradation):
-- **ASCII-only files (no Unicode):** all operational/planning/docs/data files use plain ASCII
-  ("-" not em dashes, "->" not arrows, "Section" not the section sign, straight quotes, ASCII
-  diagrams). Unicode breaks PowerShell/patching/handoffs. `tools/check_ascii.py` enforces it in CI.
-- **Architect (Claude Opus):** plans only, no implementation code. Master plan = this doc;
-  per-phase detail in `plans/PHASE_<id>.md`, generated **serially, one phase at a time**.
-- **Worker (Codex/Sonnet/Gemini):** implements an entire phase, step by step, from `plans/`.
-  Full directive in `plans/README.md`.
-- **Every step MUST:** implement core logic + create/update pytest (reuse, don't proliferate)
-  + update docstrings/docs. Not done until tests pass 100%.
-- **Worker run (whole phase):** state the phase canary & await confirmation, then work the steps
-  in order WITHOUT stopping between them. Each step = implement+test+docs -> green -> mark
-  `[DONE]` + log deviations -> **git commit** (one per step, no push yet). Stop and surface to
-  John only on a problem (tests stuck, real ambiguity, plan-changing deviation, low context).
-  At phase end: run the exit-criteria command, mark `[COMPLETE]`, archive the subplan, then
-  **git push once** and report. Check context % at the start.
+Canonical roles, the Worker directive, and the hard rules now live in **`AGENTS.md`** (repo root) -
+see there. The phase gates and canaries above are plan-specific.
 
 ## Cross-cutting
 
