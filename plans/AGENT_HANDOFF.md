@@ -55,6 +55,10 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
   `_drafts/*/outbound_flows.yaml` (that is ungated and couples extraction ordering).
 - **Next:** finish Step 8 (held-out 8949 diff), mark M4 `[COMPLETE]`, then proceed to **M1** per the
   milestone order (M4 -> M1 -> M2 ...). Not Schedule D, not the LINK.
+- **Reserved (post-MVP, nothing to build now): Coverage Map + form front-matter** (form `title` +
+  verbatim-cited `purpose`/`who_must_file`). See engineering-plan "Reserved seams". The only thing
+  current work must respect: keep the document schema additive, and do NOT add any filter that strips
+  form front-matter ("Purpose of Form" / "Who Must File" / title) from rendered text.
 
 ## Latest verification
 - Real cached `form_8949_2025` outline artifact check -> 0 issues; outbound targets exactly

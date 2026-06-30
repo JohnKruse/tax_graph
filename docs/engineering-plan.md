@@ -209,6 +209,27 @@ Capital-loss carryover *computation* (structure only); Form 1116 and the rest of
 set (build after the pipeline is solid; 1116 last); full prompt library + agent-behavior
 evals; web service.
 
+**Reserved - Coverage Map + form front-matter (final-polish "icing", post-MVP).** A user-facing
+visual map of what Tax Graph covers: forms as nodes (number + official title), FEEDS edges between
+them, colored by status (modeled / declared-frontier / not-modeled) and sized by SOI weight, so a
+user sees - before investing - whether their situation is in scope or leads to a brick wall. Nodes
+carry the IRS "Purpose of Form" and "Who Must File" text (lifted VERBATIM + cited, never our own
+summary) shown on hover/click; even unmodeled nodes carry title + purpose so the wall is a signpost,
+not a dead end. The map is GENERATED from the graph + frontier registry (no hand-authoring, no API
+key, deterministic SVG; interactive HTML as a fast-follow). Depends on the frontier/coverage policy
+(frontier registry + SOI-weighted priorities - still being finalized).
+
+**Reserved seams (do NOT preclude while building now):**
+- **Document schema stays additive** - leave room for optional `title`, `purpose`, `who_must_file`
+  on a document, each stored as a verbatim citation (quoted_text + locator + URL), populated later.
+- **Never discard form front-matter** - renderers/extraction keep the form title line and the
+  instruction "Purpose of Form" / "Who Must File" / "What's New" sections in the rendered text
+  (today's full-text OCR + form render already do; just do not add a filter that strips them).
+- **Allow a light front-matter-only acquisition tier** - capturing a form's title + purpose must NOT
+  require fully modeling it (tiered coverage: catalog -> purpose -> modeled; effort by SOI weight).
+- **Coverage data is a projection** - the frontier registry should carry per-form id, status, weight,
+  edges, and (when present) title/purpose, so a map renders from data with no extra source.
+
 ## Sequencing (decided) & remaining confirmations
 
 **Automation-first** (John's call - get out of hand-authoring ASAP):
