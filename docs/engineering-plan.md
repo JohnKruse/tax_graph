@@ -184,6 +184,7 @@ canary: **Ledger Llama**.
 | M2 MCP server | Polite Robot | `pytest -m m2` + manual Claude Desktop walk-through |
 | M5 Return Record | Future Echo | `pytest -m m5` (record + carryforward round-trip) |
 | M6 Differential | Twin Witness | `pytest -m m6` (Tax Graph == an OSS oracle) |
+| M7 Frontier/Coverage | Compass Rose | `pytest -m m7` (frontier registry + SOI weights + coverage %) |
 
 ## Working protocol (Architect / Worker)
 
@@ -237,6 +238,12 @@ key, deterministic SVG; interactive HTML as a fast-follow). Depends on the front
 extraction (M4) replace hand-authoring with reviewed draft generation. The engine already
 runs on YAML, so extracted + validated graphs are testable *before* the SQLite/MCP runtime
 (M1->M2). Return Record (M5) and differential testing (M6) close it out.
+
+**M7 (Frontier/Coverage)** slots in after the core pipeline (post-M2; can run alongside M5/M6). It
+turns the graph's incompleteness into a derived, SOI-weighted, queryable registry - the data
+foundation for the deferred Coverage Map and the backing for the cross-form LINK step (PHASE_M4
+pinned decision 6). Its outbound-flow half may be pulled earlier if multi-form extraction lands
+first. Plan: `plans/PHASE_M7.md`.
 
 Still assumed (flag if wrong): "API-based" = CLI/package with LLM-API stages, **not** a served
 web API; CLI lib = **typer**; package name = `tax_graph`.

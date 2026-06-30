@@ -31,7 +31,8 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
     still `one_pass`.
   - `_drafts` is ignored, and stale tracked `graph/2025/_drafts/form_8949_2025/*` files are removed.
 - Queued: **M1** (Compile to SQLite + light runtime, canary Crystalline Ledger), then **M2** (MCP
-  server, Polite Robot), then M5, M6.
+  server, Polite Robot), then M5, M6, then **M7** (Frontier registry + SOI-weighted coverage, canary
+  Compass Rose - plan written, `plans/PHASE_M7.md`; backs the deferred Coverage Map + the LINK step).
 
 ## Open for Architect
 - (none open)
