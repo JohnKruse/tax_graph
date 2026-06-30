@@ -193,6 +193,18 @@ The `LlmClient` Protocol and the generator/critic remain provider-neutral.
   (`auto_accepted=0`, `human_review=32`, `deterministic_issues=19`) because exact quote/provenance
   and some line-anchor issues still need human review. Step 7 remains open for John's held-out diff.
 
+## Housekeeping (for Codex)
+- **Gitignore `graph/<year>/_drafts/`** - extraction drafts are regenerated every run; do not commit
+  churny LLM output. `git rm -r --cached graph/2025/_drafts` and delete the stale glm-5.2 drafts
+  under `graph/2025/_drafts/form_8949_2025/`. The human promotes ACCEPTED objects into the live
+  `graph/<year>/` (which IS committed), not the raw drafts. (If PR-visible drafts are wanted later,
+  revisit - but default to gitignore.)
+- **Write generated files with LF newlines** (`newline="\n"`) in the renderers / draft writers so
+  output stops tripping the `.gitattributes` CRLF->LF normalization warnings on Windows.
+- **Retire the worker-note files** once M4 is `[COMPLETE]`: `plans/M4_WORKER_NOTE_FOR_CLAUDE.md` and
+  `plans/M4_OUTLINE_FIRST_EXTRACTION_PROPOSAL_FOR_CLAUDE.md` are addressed (their decisions are in
+  this plan now) - delete them or move to `plans/archive/`.
+
 When all steps are `[DONE]`: mark this phase `[COMPLETE]`, move it to `plans/archive/`, and tell
 John. The Architect will then generate `PHASE_M1.md` (Compile to SQLite - canary
 *Crystalline Ledger*), per the automation-first order M0 -> M3 -> M4 -> M1 -> M2 -> M5 -> M6.
