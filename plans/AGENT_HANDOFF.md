@@ -38,6 +38,11 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 - (none open)
 
 ## From Architect
+- **ON RESUME, DO THIS FIRST:** the Step 7 outline-first WIP is implemented and green (see Latest
+  verification) but UNCOMMITTED (~10 files: outline.py, micro.py, assembly.py, outline_checks.py,
+  outline_pipeline.py + tests, plus pipeline/route/render_form/README/config/.gitignore changes).
+  Make a safety commit now, and `git rm --cached` the tracked `graph/2025/_drafts/...` files now that
+  `.gitignore` covers them. Then mark Step 7 `[DONE]` and continue to Step 8.
 - Proceed with M4 Step 7 per the pinned interface decisions; housekeeping is in PHASE_M4.md.
 - **First canary pass = Form 8949 column (h) ONLY.** It is the smallest slice that exercises the
   full outline-first path (outline -> micro formula -> operation_plan -> assemble a multi-op rule
