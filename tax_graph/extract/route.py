@@ -8,7 +8,8 @@ from typing import Any
 import yaml
 
 from tax_graph.config import get_config_value, project_root
-from tax_graph.extract.models import DRAFT_KINDS, DeterministicReport, DraftObject, ExtractionBatch, RoutedDrafts
+from tax_graph.extract.models import DRAFT_KINDS, DeterministicReport, DraftObject, ExtractionBatch, RoutedDrafts, SourceDocumentInput
+from tax_graph.extract.review_html import write_review_html
 
 
 def route_drafts(
@@ -43,6 +44,7 @@ def write_routed_drafts(
     *,
     root: str | Path | None = None,
     config: dict[str, Any] | None = None,
+    document: SourceDocumentInput | None = None,
 ) -> RoutedDrafts:
     """Write schema-pure draft YAML and review metadata under graph/<year>/_drafts."""
     root_path = Path(root).resolve() if root is not None else project_root()
@@ -58,6 +60,8 @@ def write_routed_drafts(
 
     _write_yaml(draft_dir / "provenance.yaml", [_provenance(obj) for obj in batch.objects])
     (draft_dir / "review.md").write_text(render_review(batch, routed), encoding="utf-8", newline="\n")
+    if document is not None:
+        write_review_html(draft_dir, batch=batch, routed=routed, document=document)
     return RoutedDrafts(
         accepted=routed.accepted,
         review=routed.review,

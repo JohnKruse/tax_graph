@@ -440,6 +440,10 @@ def test_outline_first_mode_routes_and_writes_assembled_drafts(tmp_path):
     assert citations[0]["document_id"] == "instructions_form_8949_2025"
     assert "Subtract column" in citations[0]["quoted_text"]
     assert any("Totals. Add the amounts" in citation["quoted_text"] for citation in citations)
+    review_html = (draft_dir / "review.html").read_text(encoding="utf-8")
+    assert "Outbound Flows" in review_html
+    assert "form_8949_2025_part_i_line_1_column_h" in review_html
+    assert "Report long-term totals on Schedule D lines 8b, 9, and 10." in review_html
     assert not (root / "graph" / "2025" / "nodes").exists()
 
 

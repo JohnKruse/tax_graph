@@ -98,8 +98,9 @@ Phase M4 adds `tax-graph extract --doc <document_id>`, which turns rendered
 source artifacts into schema-valid draft graph YAML through a mocked-in-tests
 LLM client protocol and a live provider adapter when `llm.provider` is
 configured. Drafts are written only under `graph/<year>/_drafts/<document_id>/`, together with
-`provenance.yaml` and `review.md`; the live graph directories are never
-modified by extraction.
+`provenance.yaml`, `review.md`, and a standalone `review.html` source-to-draft
+visual review page; the live graph directories are never modified by
+extraction.
 
 Live extraction is provider-agnostic behind `tax_graph.extract.llm_client.LlmClient`.
 The built-in adapters currently cover `openrouter`, `anthropic`, and `openai`,

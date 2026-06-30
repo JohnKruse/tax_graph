@@ -43,7 +43,7 @@ def extract_document(
         raise ValueError(f"unsupported extraction.mode: {mode}")
     checks = run_deterministic_checks(document, batch, root=root_path)
     routed = route_drafts(batch, checks, config=settings)
-    return write_routed_drafts(batch, routed, root=root_path, config=settings)
+    return write_routed_drafts(batch, routed, root=root_path, config=settings, document=document)
 
 
 def extract_year(

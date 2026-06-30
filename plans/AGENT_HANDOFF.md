@@ -17,6 +17,9 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
   fix taught the outline builder to attach post-line table headers to real Form 8949 line 1 rows
   and taught assembly to normalize the common column (d) minus column (e) intermediate to stable
   code-assigned ids.
+- Post-M4 usability slice: extraction now also writes a standalone `review.html` beside `review.md`
+  to visually compare rendered source lines, extracted objects, outline, outbound flows, and linked
+  provenance evidence. This does not change promotion rules; drafts remain ignored under `_drafts`.
 - Next phase by milestone order: **M1** (Compile to SQLite + light runtime, canary Crystalline
   Ledger), then **M2** (MCP
   server, Polite Robot), then M5, M6, then **M7** (Frontier registry + SOI-weighted coverage, canary
@@ -41,6 +44,8 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 - `pytest -m m4` -> 29 passed, 39 deselected
 - `pytest` -> 66 passed, 2 skipped
 - `python tools/check_ascii.py` -> ASCII check OK
+- `review.html` smoke check for existing Form 8949 draft -> 418 source lines, 73 draft cards, Part
+  I/II column (h), outbound flow table, and Schedule D targets present.
 
 ## Resolved / superseded
 - `M4_WORKER_NOTE_FOR_CLAUDE.md` (form-only flaw) -> folded into M4 Steps 6-7 and archived.

@@ -170,8 +170,15 @@ def test_extract_command_writes_drafts_only_under_drafts(tmp_path, capsys):
     assert (draft_dir / "outline.yaml").exists()
     assert (draft_dir / "candidate_spans.yaml").exists()
     assert (draft_dir / "provenance.yaml").exists()
+    assert (draft_dir / "review.html").exists()
     assert "Drafts remain under `_drafts`" in (draft_dir / "review.md").read_text(encoding="utf-8")
     assert not (root / "graph" / "2025" / "nodes").exists()
+
+    review_html = (draft_dir / "review.html").read_text(encoding="utf-8")
+    assert "Extraction Review - form_8949_2025" in review_html
+    assert "Source Evidence" in review_html
+    assert "form_8949_2025_line_1_proceeds" in review_html
+    assert "Column h is column d minus column e." in review_html
 
     node = yaml.safe_load((draft_dir / "nodes.yaml").read_text(encoding="utf-8"))[0]
     assert node["node_id"] == "form_8949_2025_line_1_proceeds"
