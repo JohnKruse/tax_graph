@@ -113,6 +113,13 @@ threshold, agree with the independent critic, and pass deterministic checks
 before it appears in the auto-accepted section of the review report. Anything
 else stays on the human-review list.
 
+M4 also includes an outline-first canary path, enabled through config with
+`extraction.mode: outline_first`. That path writes local review artifacts
+(`outline.yaml`, `candidate_spans.yaml`, and `outbound_flows.yaml`) under the
+same `_drafts` directory, asks narrow micro-extraction questions over outline
+nodes, and assembles canonical draft graph objects in code. The default remains
+`one_pass` until the held-out Form 8949 validation is complete.
+
 ## Compatibility Scripts
 
 Validate the authored graph:

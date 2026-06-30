@@ -57,7 +57,7 @@ def write_routed_drafts(
             _write_yaml(draft_dir / f"{kind}.yaml", items)
 
     _write_yaml(draft_dir / "provenance.yaml", [_provenance(obj) for obj in batch.objects])
-    (draft_dir / "review.md").write_text(render_review(batch, routed), encoding="utf-8")
+    (draft_dir / "review.md").write_text(render_review(batch, routed), encoding="utf-8", newline="\n")
     return RoutedDrafts(
         accepted=routed.accepted,
         review=routed.review,
@@ -115,7 +115,7 @@ def _provenance(obj: DraftObject) -> dict[str, Any]:
 
 def _write_yaml(path: Path, data: Any) -> None:
     text = yaml.safe_dump(data, sort_keys=False, allow_unicode=False)
-    path.write_text(_assert_ascii(text), encoding="utf-8")
+    path.write_text(_assert_ascii(text), encoding="utf-8", newline="\n")
 
 
 def _assert_ascii(text: str) -> str:

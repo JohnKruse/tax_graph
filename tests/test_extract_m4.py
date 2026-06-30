@@ -167,6 +167,8 @@ def test_extract_command_writes_drafts_only_under_drafts(tmp_path, capsys):
     assert "auto_accepted: 2" in captured.out
     assert (draft_dir / "nodes.yaml").exists()
     assert (draft_dir / "citations.yaml").exists()
+    assert (draft_dir / "outline.yaml").exists()
+    assert (draft_dir / "candidate_spans.yaml").exists()
     assert (draft_dir / "provenance.yaml").exists()
     assert "Drafts remain under `_drafts`" in (draft_dir / "review.md").read_text(encoding="utf-8")
     assert not (root / "graph" / "2025" / "nodes").exists()

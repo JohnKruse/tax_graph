@@ -46,3 +46,4 @@ tax-graph.config.yaml
 config/tax-graph.config.yaml
 .cache/
 output/
+graph/*/_drafts/

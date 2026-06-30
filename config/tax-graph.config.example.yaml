@@ -28,11 +28,14 @@ llm:
   strict_schema: false           # extractor validates drafts after parsing; strict mode rejects optional graph fields
   max_tokens: 16000
   critic_max_tokens: 4000
+  micro_model: null              # optional cheaper/faster model for outline-first micro-extractions
+  micro_max_tokens: 8000
   api_key: null                  # leave null; prefer keyring/env below
   api_key_keyring: tax-graph/openrouter
   api_key_env: OPENROUTER_API_KEY
 
 extraction:
+  mode: one_pass                  # one_pass or outline_first; outline_first is the M4 Step 7 canary path
   auto_accept_confidence: 0.95   # >= this AND critic agrees -> draft auto-accepted (still PR-reviewed)
   require_critic_agreement: true # independent critic must agree, else flag for human
   max_docs_per_run: 5

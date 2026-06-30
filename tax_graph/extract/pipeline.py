@@ -13,6 +13,8 @@ from tax_graph.extract.critic import critique_drafts
 from tax_graph.extract.generator import generate_drafts
 from tax_graph.extract.inputs import load_document_input
 from tax_graph.extract.llm_client import LlmClient, build_llm_client
+from tax_graph.extract.outline_pipeline import generate_outline_first_drafts
+from tax_graph.extract.outline import write_outline_artifacts
 from tax_graph.extract.route import route_drafts, write_routed_drafts
 from tax_graph.extract.models import RoutedDrafts
 
@@ -30,8 +32,15 @@ def extract_document(
     settings = config if config is not None else load_config(root=root_path)
     llm_client = client or build_llm_client(settings)
     document = load_document_input(document_id, year=year, root=root_path, config=settings)
-    batch = generate_drafts(document, client=llm_client, config=settings, root=root_path)
-    critique_drafts(document, batch, client=llm_client, config=settings, root=root_path)
+    write_outline_artifacts(document, root=root_path, config=settings)
+    mode = str(get_config_value(settings, "extraction.mode", "one_pass"))
+    if mode == "one_pass":
+        batch = generate_drafts(document, client=llm_client, config=settings, root=root_path)
+        critique_drafts(document, batch, client=llm_client, config=settings, root=root_path)
+    elif mode == "outline_first":
+        batch = generate_outline_first_drafts(document, client=llm_client, config=settings, root=root_path)
+    else:
+        raise ValueError(f"unsupported extraction.mode: {mode}")
     checks = run_deterministic_checks(document, batch, root=root_path)
     routed = route_drafts(batch, checks, config=settings)
     return write_routed_drafts(batch, routed, root=root_path, config=settings)

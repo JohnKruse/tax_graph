@@ -1,5 +1,0 @@
-- rule_id: rule_total_sum
-  operation: SUM
-  description: Add the amounts in the column.
-  citation_refs:
-  - cit_8949_l2_calc

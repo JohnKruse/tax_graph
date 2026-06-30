@@ -31,8 +31,8 @@ def render_form_pdf(pdf_path: str | Path, *, document_id: str, output_dir: str |
     markdown = extract_line_markdown(pdf_path)
     fields = extract_field_grid(pdf_path)
 
-    markdown_path.write_text(markdown, encoding="utf-8")
-    fields_path.write_text(json.dumps(fields, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    markdown_path.write_text(markdown, encoding="utf-8", newline="\n")
+    fields_path.write_text(json.dumps(fields, indent=2, sort_keys=True) + "\n", encoding="utf-8", newline="\n")
     return FormRenderResult(
         document_id=document_id,
         markdown_path=str(markdown_path),
