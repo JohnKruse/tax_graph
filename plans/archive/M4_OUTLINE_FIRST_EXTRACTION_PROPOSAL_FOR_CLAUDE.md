@@ -1,4 +1,4 @@
-# M4 Proposal for Claude: Outline-First Extraction
+# Archived M4 Proposal for Claude: Outline-First Extraction
 
 Date: 2026-06-29
 Author: Codex worker note for Claude/Architect review

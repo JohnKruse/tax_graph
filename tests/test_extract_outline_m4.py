@@ -9,6 +9,7 @@ import jsonschema
 import pytest
 
 from tax_graph.extract.assembly import assemble_formula_plan, realize_outbound_flows
+from tax_graph.extract.outline_pipeline import _formula_outline_nodes
 from tax_graph.extract.pipeline import extract_document
 from tax_graph.extract.micro import MicroExtractionError, extract_formula_plan, validate_formula_plan
 from tax_graph.extract.models import RelatedSourceInput, SourceDocumentInput
@@ -123,6 +124,47 @@ def test_outline_builder_captures_8949_structure_and_flow_cue(tmp_path):
     assert part_ii.children[2].kind == "outbound_flow_cue"
     assert outline.children[-1].kind == "outbound_flow_cue"
     assert "1b, 2, 3, 8b, 9, 10" in outline.children[-1].label
+
+
+@pytest.mark.m4
+def test_outline_builder_uses_post_line_headers_for_8949_part_ii_formula(tmp_path):
+    text_path = tmp_path / "form_8949_2025.txt"
+    text = "\n".join(
+        [
+            "# Page 2",
+            "Header: Part II Long-Term. Transactions involving capital assets you held more than 1 year are generally long-term",
+            "Header: (J) Long-term transactions reported on Form(s) 1099-DA showing basis was reported to the IRS",
+            "Header: (K) Long-term transactions reported on Form(s) 1099-DA showing basis was not reported to the IRS",
+            "Header: (L) Long-term digital asset transactions not reported to you on Form 1099-DA or Form 1099-B",
+            "- 1: If you enter an amount in column (g),",
+            "Header: (e) (h)",
+            "Header: (c) (d) Cost or other basis enter a code in column (f). Gain or (loss)",
+            "Header: instructions. Code(s) from Amount of with column (g).",
+            "- 2: Totals. Add the amounts in columns (d), (e), (g), and (h)",
+            "",
+        ]
+    )
+    document = SourceDocumentInput(
+        document_id="form_8949_2025",
+        kind="tax_form",
+        year="2025",
+        url="https://www.irs.gov/pub/irs-pdf/f8949.pdf",
+        text=text,
+        text_path=text_path,
+        fields={"fields": []},
+        related_sources=[],
+    )
+
+    outline = build_outline_tree(document)
+
+    part_ii_line_1 = outline.children[0].children[0]
+    assert part_ii_line_1.outline_id == "part_ii_line_1"
+    assert part_ii_line_1.kind == "transaction_table"
+    assert "h" in part_ii_line_1.columns
+    assert [node.outline_id for node in _formula_outline_nodes(outline.children)] == [
+        "part_ii_line_1",
+        "part_ii_line_2",
+    ]
 
 
 @pytest.mark.m4
@@ -293,8 +335,56 @@ def test_assembly_turns_operation_plan_into_schema_objects(tmp_path):
         jsonschema.validate(obj.data, schemas[obj.kind])
     assert [rule.data["operation"] for rule in batch.items("rules")] == ["SUBTRACT", "SUM"]
     assert any(node.data["node_type"] == "computed" for node in batch.items("nodes"))
+    assert any(node.data["node_id"] == "form_8949_2025_part_i_line_1_column_d_minus_e" for node in batch.items("nodes"))
     assert any(edge.data["role"] == "subtrahend" for edge in batch.items("edges"))
     assert batch.items("citations")[0].data["quoted_text"] == span.text
+
+
+@pytest.mark.m4
+def test_assembly_normalizes_generic_subtract_intermediate_names(tmp_path):
+    document = _outline_document(tmp_path)
+    span = CandidateSpan(
+        span_id="span_instructions_form_8949_2025_0001",
+        document_id="instructions_form_8949_2025",
+        relationship="instructions",
+        locator="page 1, line 1",
+        text="Column (h). Subtract column (e) from column (d), and include column (g).",
+    )
+    outline_node = OutlineNode("part_ii_line_1", "transaction_table", "Form 8949 line 1", columns=["d", "e", "g", "h"])
+    plan = {
+        "operation_plan": [
+            {
+                "output": "intermediate_1",
+                "operation": "SUBTRACT",
+                "inputs": [
+                    {"name": "column_d"},
+                    {"name": "column_e"},
+                ],
+                "citation_span_ids": [span.span_id],
+            },
+            {
+                "output": "column_h",
+                "operation": "SUM",
+                "inputs": [
+                    {"name": "intermediate_1", "role": "addend"},
+                    {"name": "column_g", "role": "addend"},
+                ],
+                "citation_span_ids": [span.span_id],
+            },
+        ]
+    }
+
+    batch = assemble_formula_plan(document, outline_node, plan, [span], model="mock-micro", root=ROOT)
+
+    assert any(
+        node.data["node_id"] == "form_8949_2025_part_ii_line_1_column_d_minus_e"
+        for node in batch.items("nodes")
+    )
+    assert any(
+        edge.data["source"] == "form_8949_2025_part_ii_line_1_column_d_minus_e"
+        and edge.data["target"] == "form_8949_2025_part_ii_line_1_column_h"
+        for edge in batch.items("edges")
+    )
 
 
 @pytest.mark.m4

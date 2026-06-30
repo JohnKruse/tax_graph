@@ -1,4 +1,4 @@
-# PHASE M4 - API-based Extraction (acquired text -> DRAFT graph objects)   [ ]
+# PHASE M4 - API-based Extraction (acquired text -> DRAFT graph objects)   [COMPLETE]
 
 **Canary:** Spectral Auditor
 **Depends on:** M0 (package, `config.py`, schemas, validator) + M3 (acquire/render output).
@@ -131,7 +131,7 @@ The `LlmClient` Protocol and the generator/critic remain provider-neutral.
       doc; citations reference the instruction `document_id`.
   Tests for each fix (deterministic, mocked). Docs.
 
-- [ ] **Step 7 - Outline-first extraction (replaces the per-line chunk; from Codex's outline-first
+- [DONE] **Step 7 - Outline-first extraction (replaces the per-line chunk; from Codex's outline-first
   proposal).** One-pass whole-document extraction asks a single call to do everything (find
   structure, quote exactly, choose ids, decompose formulas, emit provenance, satisfy schema) - too
   much, and live trials showed it is task SHAPE, not model choice, that fails. Instead: build the
@@ -190,7 +190,7 @@ The `LlmClient` Protocol and the generator/critic remain provider-neutral.
      against the PROMOTED live-graph node index (reviewed nodes), NOT another form's raw
      `_drafts/*/outbound_flows.yaml` (ungated; couples extraction ordering).
 
-- [ ] **Step 8 - Held-out validation (corrected gate).** Extract `form_8949_2025` **with its
+- [DONE] **Step 8 - Held-out validation (corrected gate).** Extract `form_8949_2025` **with its
   instructions** and diff against the hand-authored `graph/2025/` reference. Sound if it recovers:
   the line/column nodes, column (h) = (d) - (e) **combined with (g)** (an `operation_plan` of
   SUBTRACT then SUM over the closed ops, cited), and **outbound FEEDS declarations** to Schedule D
@@ -219,6 +219,15 @@ The `LlmClient` Protocol and the generator/critic remain provider-neutral.
   8b, and 10 (also 2 and 9 where the instructions imply them). The review gate remains conservative
   (`auto_accepted=0`, `human_review=32`, `deterministic_issues=19`) because exact quote/provenance
   and some line-anchor issues still need human review. Step 7 remains open for John's held-out diff.
+
+  Worker note 2026-06-30 final: outline-first extraction is complete and held-out Form 8949
+  validation passes with its bundled instructions. Live configured-provider extraction in
+  `outline_first` mode wrote only ignored drafts under `graph/2025/_drafts/form_8949_2025/`,
+  returned `accepted=73`, `review=0`, and `issues=0`, and recovered both Part I and Part II
+  column (h) as SUBTRACT then SUM over stable `column_d_minus_e` intermediates plus column (g),
+  line-2 totals for columns (d), (e), (g), and (h), and outbound FEEDS declarations to Schedule D
+  lines 1b, 2, 3, 8b, 9, and 10. Deterministic checks: `pytest -m m4` -> 29 passed, 39
+  deselected; `pytest` -> 66 passed, 2 skipped; `python tools/check_ascii.py` -> OK.
 
 ## Housekeeping (for Codex)
 - **Gitignore `graph/<year>/_drafts/`** - extraction drafts are regenerated every run; do not commit

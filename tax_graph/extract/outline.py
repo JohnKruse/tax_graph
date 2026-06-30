@@ -104,6 +104,12 @@ def build_outline_tree(document: SourceDocumentInput) -> OutlineTree:
                     boxes=_extract_boxes(header),
                 )
                 tree.children.append(current_section)
+            else:
+                _attach_header_to_previous_numeric_line(
+                    current_section,
+                    header,
+                    headers=[*recent_headers, header],
+                )
             recent_headers.append(header)
             recent_headers = recent_headers[-4:]
             continue
@@ -293,6 +299,24 @@ def _classify_line(anchor: str, body: str, columns: list[str], *, headers: list[
     if len(columns) >= 3 or anchor == "1" and columns:
         return "transaction_table"
     return "line"
+
+
+def _attach_header_to_previous_numeric_line(
+    section: OutlineNode | None,
+    header: str,
+    *,
+    headers: list[str],
+) -> None:
+    if section is None or not section.children:
+        return
+    node = section.children[-1]
+    if not node.line_anchor or not node.line_anchor[0].isdigit():
+        return
+    columns = _extract_columns(header)
+    if not columns and "schedule d" not in header.lower():
+        return
+    node.columns = _unique([*node.columns, *columns])
+    node.kind = _classify_line(node.line_anchor, node.label, node.columns, headers=headers)
 
 
 def _attach_outbound_flow_cues(tree: OutlineTree, document: SourceDocumentInput) -> None:

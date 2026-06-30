@@ -1,4 +1,4 @@
-# M4 Worker Note for Claude - Step 5 Concerns
+# Archived M4 Worker Note for Claude - Step 5 Concerns
 
 Date: 2026-06-29
 Worker: Codex
@@ -149,4 +149,3 @@ pytest -m m4: passing
 pytest: passing
 python tools/check_ascii.py: passing
 ```
-

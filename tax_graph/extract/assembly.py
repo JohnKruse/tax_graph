@@ -43,8 +43,10 @@ def assemble_formula_plan(
                 objects.append(_citation_object(citation_id, span, model))
                 emitted_citations.add(citation_id)
 
-        output_name = str(step.get("output", f"step_{step_index}"))
+        raw_output_name = str(step.get("output", f"step_{step_index}"))
+        output_name = _normalized_output_name(step, raw_output_name)
         target_id = _node_id(document.document_id, outline_node.outline_id, output_name)
+        node_ids_by_name[raw_output_name] = target_id
         node_ids_by_name[output_name] = target_id
         if target_id not in emitted_nodes:
             objects.append(_node_object(document.document_id, target_id, output_name, citation_refs, model, computed=True))
@@ -184,6 +186,27 @@ def _default_role(operation: str, input_index: int) -> str:
     if operation == "DIVIDE":
         return "numerator" if input_index == 1 else "denominator"
     return "addend"
+
+
+def _normalized_output_name(step: dict[str, Any], fallback: str) -> str:
+    operation = str(step.get("operation", ""))
+    if operation == "SUBTRACT":
+        inputs = step.get("inputs", [])
+        if _has_input(inputs, "column_d", "minuend") and _has_input(inputs, "column_e", "subtrahend"):
+            return "column_d_minus_e"
+    return fallback
+
+
+def _has_input(inputs: Any, name: str, role: str) -> bool:
+    if not isinstance(inputs, list):
+        return False
+    for input_index, input_item in enumerate(inputs, 1):
+        if not isinstance(input_item, dict):
+            continue
+        input_role = input_item.get("role") or _default_role("SUBTRACT", input_index)
+        if input_item.get("name") == name and input_role == role:
+            return True
+    return False
 
 
 def _node_id(document_id: str, outline_id: str, name: str) -> str:
