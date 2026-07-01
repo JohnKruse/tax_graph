@@ -29,6 +29,71 @@ actually wanted, flag it - it changes M2.
 5. **Repeatable & resumable.** Every stage is a re-runnable command. Within-filing state
    (tree, facts, trace) persists so a session survives model throttling.
 
+## Repeatable tables (decided 2026-07-01)
+
+Form 8949 forces a policy for repeatable transaction tables before M1/M2 harden the runtime
+contracts (Codex raised it; John set the aggregate-subunit rule). Four things that look alike must
+stay distinct:
+
+- **(a) IRS line anchor** - the citeable form address, e.g. Part I line 1. Stable across taxpayers.
+  It names the TABLE.
+- **(b) Row-template columns + per-row rule** - the graph logic that applies to every row: columns
+  (d) proceeds, (e) cost, (g) adjustment as inputs; (h) = (d) - (e) + (g) as the per-row computed
+  column (already realized as chained single-op computed nodes, PHASE_M4 pinned decision 1). These
+  are TEMPLATES, not instances.
+- **(c) Physical printed row slots** - the blank rows the form prints (review labels line 1.01 ..
+  line 1.11). Page GEOMETRY only; a 3-transaction return uses 3 slots, a 500-transaction return uses
+  an attached statement. Never enters node ids, the runtime graph, or facts - it lives only in
+  acquisition/review artifacts and (later) the form filler.
+- **(d) Taxpayer fact instances** - the actual N transactions, which may exceed printed slots.
+  RUNTIME data, not graph structure.
+
+Decided representation:
+
+1. **A repeatable table is ONE aggregate subunit, not loose sibling lines** (John's rule). It groups
+   its row-template columns (line 1) with its totals row (line 2) as a single addressable unit that a
+   parser/renderer/engine treats atomically. Additive schema (authored at M6b, not now): a `tables`
+   object kind, plus optional `table_id` / `column` / `role in {row_template, total}` on member nodes.
+2. **Static ids stay flat and template-level.** table id = the line anchor
+   `form_8949_2025_part_i_line_1`; columns = `..._column_d` (already what M4 extraction emits);
+   totals = `..._line_2_column_d_total`. No instance ever appears in a static node id.
+3. **Instances live only at runtime, in a SEPARATE namespace.** A fact supplies rows against a table
+   id, each row carrying a `row_key` (a runtime id - the broker transaction id or a synthesized
+   `r0001`), explicitly divorced from physical slots (c). The engine evaluates the row-template rule
+   per instance and the totals row aggregates across instances. In the trace / MCP an instance is
+   addressed `<column_node_id>#<row_key>`; `#` is DISALLOWED by the node_id pattern `^[a-z0-9_]+$`,
+   so a runtime instance id can never collide with a static graph id - the schema itself enforces the
+   static/runtime boundary.
+4. **The trigger is DETERMINISTIC and dual-signal - not an LLM judgment call** (John's call: nail it
+   deterministically). A section becomes an aggregating table subunit only when BOTH hold: (i)
+   GEOMETRY - the M3 field grid (`.fields.json` `x_cluster`/`y_cluster`) shows the same column
+   x-clusters repeated across >=2 y-row bands under one IRS line anchor (a repeated row-band, not a
+   single line); and (ii) TOTALS CUE - a following line in the same section carries an explicit
+   aggregation instruction naming its columns (e.g. "Add the amounts in columns (d), (e), (g), and
+   (h)") or a geometrically-aligned totals row directly under the band. The outline pass already
+   emits these as `kind: transaction_table` + `kind: totals`, so that IS the trigger; assembly groups
+   the line-1 rows + line-2 totals into one subunit and takes the SUM columns from the totals cue (the
+   per-row (h) formula comes from the column header, PHASE_M4 pinned decision 1). A cross-check
+   reconciles the totals' SUM columns against the field-grid columns and the cue; on mismatch, or a
+   table with no resolvable totals, FLAG for human review - never emit a guessed aggregation. Row
+   COUNT is never inferred at parse time (that is runtime fact (d)). No LLM call and no second
+   document fetch are needed to fire the trigger.
+
+This is scheduled as **M6b** (below). Until then the single-lot v0 slice (one instance; totals ==
+that instance) is a legitimate supported case and stays as authored.
+
+Seams every phase before M6b must respect:
+- **M1 (compile):** SQLite is a rebuildable projection of YAML, so adding the table representation
+  later is a data change, not a migration. Keep the compiler generic over object kinds and the
+  `nodes` row additive; do not assume a flat-scalar-only node set. Single-lot parity (line 7 = 2000)
+  is unchanged.
+- **M2 (MCP):** adopt this addressing convention from day one - `get_node` / `get_dependencies` /
+  `explain_calculation` speak table + column + optional `#row_key` instance - so the client-facing
+  contract needs no breaking change when M6b lands.
+- **Do NOT promote `graph/2025/_drafts/form_8949_2025/` into the live graph before M6b.** Those
+  per-column nodes are correct as templates but would land as loose siblings without the table
+  subunit; they stay in `_drafts/` (gitignored) until M6b defines the grouping.
+
 ## Current state (the POC - build on this, don't redo it)
 
 | Exists | Path | Status |
@@ -156,6 +221,26 @@ emits values + audit trace + Return Record.
 - **Acceptance:** a scenario runs through Tax Graph and >=1 OSS oracle with matching key
   values; a deliberate graph bug is caught by the diff.
 
+### M6b - Repeatable-table execution (row instances)
+- **Goal:** make repeatable transaction tables real end to end - N fact instances -> per-row
+  compute -> totals aggregation -> trace - and promote Form 8949 from `_drafts` into the live graph
+  as table subunits. Turns the "single covered lot" v0 simplification into arbitrary-N support.
+- **Scope:** additive schema (`tables` object kind + node `table_id`/`column`/`role`); a compiler +
+  loader pass-through for the new kind/fields; a **deterministic table-detector + column-reconciler**
+  (repeated field-grid row-band AND a totals cue -> group as one subunit; mismatch/absent -> review
+  flag) that decides WHEN to aggregate; `taxpayer_facts` gains per-table row instances (`row_key` +
+  column values); the engine evaluates the row-template rule per instance and aggregates the totals
+  row across instances, with per-instance trace addressed `<column_node>#<row_key>`; promote
+  `form_8949_2025` Part I/II as table subunits (line 1 rows + line 2 totals). Physical printed slots
+  stay OUT (acquisition/review geometry only).
+- **Decisions set:** see "Repeatable tables (decided)". Static ids are template-level; instances are
+  runtime-only in the `#row_key` namespace; a table is one aggregate subunit (rows + totals).
+- **Acceptance:** a multi-transaction 8949 scenario (e.g. 3 lots, mixed gain/loss) computes the
+  correct Part totals and 1040 line 7 with a per-instance trace; the deterministic detector groups
+  8949 line 1 + line 2 into one subunit from geometry + the totals cue, and a mismatched/absent
+  totals cue is FLAGGED, not guessed; the single-lot example still yields line 7 = 2000 (no
+  regression); `pytest -m m6b` green.
+
 ---
 
 ## Configuration - one-stop tuning
@@ -184,6 +269,7 @@ canary: **Ledger Llama**.
 | M2 MCP server | Polite Robot | `pytest -m m2` + manual Claude Desktop walk-through |
 | M5 Return Record | Future Echo | `pytest -m m5` (record + carryforward round-trip) |
 | M6 Differential | Twin Witness | `pytest -m m6` (Tax Graph == an OSS oracle) |
+| M6b Repeatable tables | Tandem Abacus | `pytest -m m6b` (multi-row totals + single-lot parity) |
 | M7 Frontier/Coverage | Compass Rose | `pytest -m m7` (frontier registry + SOI weights + coverage %) |
 
 ## Working protocol (Architect / Worker)
@@ -234,16 +320,27 @@ key, deterministic SVG; interactive HTML as a fast-follow). Depends on the front
 ## Sequencing (decided) & remaining confirmations
 
 **Automation-first** (John's call - get out of hand-authoring ASAP):
-**M0 -> M3 -> M4 -> M1 -> M2 -> M5 -> M6.** M0 is the prerequisite; then acquisition (M3) + LLM
+**M0 -> M3 -> M4 -> M1 -> M2 -> M5 -> M6 -> M6b.** M0 is the prerequisite; then acquisition (M3) + LLM
 extraction (M4) replace hand-authoring with reviewed draft generation. The engine already
 runs on YAML, so extracted + validated graphs are testable *before* the SQLite/MCP runtime
-(M1->M2). Return Record (M5) and differential testing (M6) close it out.
+(M1->M2). Return Record (M5) and differential testing (M6) close out the core pipeline;
+repeatable-table execution (M6b) is a follow-on that makes the slice arbitrary-N and differentially
+tests a realistic multi-row return.
 
 **M7 (Frontier/Coverage)** slots in after the core pipeline (post-M2; can run alongside M5/M6). It
 turns the graph's incompleteness into a derived, SOI-weighted, queryable registry - the data
 foundation for the deferred Coverage Map and the backing for the cross-form LINK step (PHASE_M4
 pinned decision 6). Its outbound-flow half may be pulled earlier if multi-form extraction lands
 first. Plan: `plans/PHASE_M7.md`.
+
+**M6b (Repeatable tables)** is a follow-on to M6, not on the critical path to a first working+tested
+pipeline (single-lot proves M1/M2/M5/M6). It is the ONE place the scalar-per-node v0 becomes
+arbitrary-N: facts row instances + per-row engine execution + totals aggregation, plus the gated
+promotion of the Form 8949 draft into a live table subunit. M6 builds the differential harness
+(provable on single-lot + a deliberate bug); M6b then makes multi-row real and differentially tests a
+realistic multi-transaction return. Its representation and addressing are already decided ("Repeatable
+tables (decided)"); M1/M2 only respect the seam. The subplan `PHASE_M6b.md` is written just-in-time
+(like PHASE_M2) when M6b becomes next.
 
 Still assumed (flag if wrong): "API-based" = CLI/package with LLM-API stages, **not** a served
 web API; CLI lib = **typer**; package name = `tax_graph`.

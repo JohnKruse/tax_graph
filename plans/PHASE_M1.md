@@ -34,6 +34,12 @@ stdlib; the engine is pure Python).
 - **Do NOT commit the binary `.sqlite`** (keep `build/` gitignored); a release/binary bundles it.
 - **One graph-loader interface.** SQLite-backed and YAML-backed loaders sit behind the same
   interface the engine's `Graph` already uses, so the engine is source-agnostic.
+- **Table-aware SEAM (do not foreclose).** A later milestone (M6b) adds repeatable-table objects and
+  optional node `table_id`/`column`/`role` fields. Keep the compiler GENERIC over object kinds and
+  the compiled `nodes` row ADDITIVE, so that promotion lands as a data change, not a schema-break. Do
+  NOT flatten repeatable tables to scalars, hardcode a closed node shape, or assume a flat-scalar-only
+  node set. SQLite is a rebuildable projection of YAML, so this costs nothing now. Single-lot parity
+  (line 7 = 2000) is unchanged. Full policy: engineering-plan "Repeatable tables (decided)".
 - **ASCII-only.**
 
 ## Steps
