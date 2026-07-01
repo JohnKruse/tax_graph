@@ -37,6 +37,10 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 - **M2 Step 2 is done.** Read-only MCP tools now return documents, nodes, upstream dependencies,
   downstream reachability, citations, compiled FTS citation search, and `#row_key` base-node
   resolution. Next: M2 Step 3 execution + explanation tools.
+- **M2 Step 3 is done.** Execution MCP tools delegate to `Engine`: `execute_tax_tree`,
+  `list_required_inputs`, `explain_calculation`, and `export_audit_file` return values, missing
+  inputs, trace/rule/citations, and human-readable audit text. Next: M2 Step 4 behavioral contract +
+  decisions + light-runtime gate.
 - Next phase by milestone order: **M2** (MCP server, Polite Robot). Architect should generate
   `plans/PHASE_M2.md` next. Then M5, M6, **M6b** (Repeatable-table execution, Tandem Abacus), with
   **M7** (Frontier registry + SOI-weighted coverage, Compass Rose - plan written,
@@ -99,6 +103,10 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
   - `uv run pytest -m m2` -> 5 passed, 74 deselected
   - Direct MCP tool tests cover document/node lookup, dependency/downstream traversal, citation id
     lookup, compiled FTS search, and `#row_key` base-node resolution
+- M2 Step 3:
+  - `uv run pytest -m m2` -> 9 passed, 74 deselected
+  - Direct MCP tool tests cover `execute_tax_tree`, `list_required_inputs`, `explain_calculation`,
+    and `export_audit_file` on `examples/capital_gains_basic/facts.yaml`
 - M1 phase exit:
   - `uv run pytest -m m1` -> 6 passed, 68 deselected
   - `uv run tax-graph build 2025` -> wrote `build/tax_graph_2025.sqlite`

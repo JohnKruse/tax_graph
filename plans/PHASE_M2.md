@@ -85,7 +85,7 @@ by `explain_calculation` + `get_dependencies` for now).
     document/node lookup, `#row_key` base-node resolution, upstream/downstream traversal, citation id
     lookup, and compiled FTS citation search.
 
-- [ ] **Step 3 - Execution + explanation tools.** `execute_tax_tree(facts)` loads facts (same shape as
+- [DONE] **Step 3 - Execution + explanation tools.** `execute_tax_tree(facts)` loads facts (same shape as
   `examples/.../facts.yaml`), runs `Engine.execute`, and returns computed `values` +
   `missing_required_inputs` + the per-node `trace` (NEVER computing anything in the tool itself).
   `list_required_inputs(facts)` returns missing required leaf inputs. `explain_calculation(node)`
@@ -96,6 +96,9 @@ by `explain_calculation` + `get_dependencies` for now).
   `form_1040_2025_line_7_capital_gain_loss` = 2000 with a trace; `list_required_inputs` flags a removed
   1099-B box as missing; `explain_calculation` on the 8949 gain node shows the SUBTRACT + its citation;
   `export_audit_file` contains the SUBTRACT/SUM chain and citation ids. Docs.
+  - Verification: `uv run pytest -m m2` -> 9 passed, 74 deselected; direct MCP tool tests cover
+    execution values + trace, missing required inputs, calculation explanation with rule/operands/
+    citations, and human-readable audit trace export.
 
 - [ ] **Step 4 - Behavioral contract + decisions + light-runtime gate.** Populate the server
   `instructions` block with the contract: (1) never compute values yourself - call `execute_tax_tree`;

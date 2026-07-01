@@ -2,14 +2,16 @@
 
 from __future__ import annotations
 
+from contextlib import redirect_stdout
 from dataclasses import dataclass
+from io import StringIO
 from pathlib import Path
 import sqlite3
 from typing import Any
 
 from mcp.server.fastmcp import FastMCP
 
-from tax_graph.engine import Graph
+from tax_graph.engine import Engine, Graph, MISSING, Result, render_trace
 from tax_graph.io.loader import LoadedGraph, load_graph
 from tax_graph.io.sqlite_loader import compiled_db_path, load_sqlite_graph
 
@@ -167,22 +169,56 @@ def _register_tools(server: FastMCP, context: McpGraphContext) -> None:
     @server.tool()
     def execute_tax_tree(facts: dict[str, Any]) -> dict[str, Any]:
         """Execute the graph from taxpayer facts."""
-        return _stub("execute_tax_tree", context, facts=facts)
+        result = _execute(context, facts)
+        return {
+            "year": context.year,
+            "source": context.graph.source,
+            "values": _json_safe(result.values),
+            "missing_required_inputs": result.missing_required_inputs,
+            "trace": _json_safe(result.trace),
+        }
 
     @server.tool()
     def list_required_inputs(facts: dict[str, Any]) -> dict[str, Any]:
         """List missing required inputs for supplied facts."""
-        return _stub("list_required_inputs", context, facts=facts)
+        fact_values = _coerce_facts(facts)
+        return {
+            "missing_required_inputs": Engine(context.graph).list_required_inputs(fact_values),
+        }
 
     @server.tool()
     def explain_calculation(node_id: str, facts: dict[str, Any] | None = None) -> dict[str, Any]:
         """Explain a node's calculation from an execution trace."""
-        return _stub("explain_calculation", context, node_id=node_id, facts=facts)
+        address = _parse_node_address(node_id)
+        result = _execute(context, facts or {})
+        trace = result.trace.get(address["base_node_id"])
+        citation_ids = trace.get("citations", []) if trace else []
+        rule_id = trace.get("rule") if trace else None
+        return {
+            "node_id": node_id,
+            "base_node_id": address["base_node_id"],
+            "row_key": address["row_key"],
+            "instance_note": _instance_note(address),
+            "node": context.graph.nodes.get(address["base_node_id"]),
+            "trace": _json_safe(trace),
+            "rule": context.graph.rules.get(rule_id) if rule_id else None,
+            "citations": [context.citations[citation_id] for citation_id in citation_ids if citation_id in context.citations],
+        }
 
     @server.tool()
     def export_audit_file(target: str, facts: dict[str, Any] | None = None) -> dict[str, Any]:
         """Return a human-readable audit trace for a target node."""
-        return _stub("export_audit_file", context, target=target, facts=facts)
+        address = _parse_node_address(target)
+        result = _execute(context, facts or {})
+        buffer = StringIO()
+        with redirect_stdout(buffer):
+            render_trace(address["base_node_id"], result, context.graph)
+        return {
+            "target": target,
+            "base_node_id": address["base_node_id"],
+            "row_key": address["row_key"],
+            "audit_text": buffer.getvalue(),
+        }
 
 
 def _stub(tool: str, context: McpGraphContext, **arguments: Any) -> dict[str, Any]:
@@ -258,3 +294,27 @@ def _search_citations(context: McpGraphContext, query: str) -> list[dict[str, An
         for citation_id, citation in sorted(context.citations.items())
         if normalized in str(citation.get("quoted_text", "")).lower()
     ]
+
+
+def _execute(context: McpGraphContext, facts: dict[str, Any]) -> Result:
+    return Engine(context.graph).execute(_coerce_facts(facts))
+
+
+def _coerce_facts(facts: dict[str, Any]) -> dict[str, Any]:
+    if "facts" not in facts:
+        return dict(facts)
+    return {
+        fact["node_id"]: fact.get("value")
+        for fact in facts.get("facts", [])
+        if isinstance(fact, dict) and "node_id" in fact
+    }
+
+
+def _json_safe(value: Any) -> Any:
+    if value is MISSING:
+        return "MISSING"
+    if isinstance(value, dict):
+        return {key: _json_safe(item) for key, item in value.items()}
+    if isinstance(value, list):
+        return [_json_safe(item) for item in value]
+    return value

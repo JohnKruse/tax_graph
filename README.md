@@ -108,6 +108,11 @@ rules: `get_document`, `get_node`, `get_dependencies`,
 runtime instance suffix such as `some_column_node#row_key`; the base node is
 resolved from the static graph while the row key remains runtime-only.
 
+Execution tools delegate to the deterministic engine: `execute_tax_tree`,
+`list_required_inputs`, `explain_calculation`, and `export_audit_file`. They
+return computed values, missing required inputs, machine-readable trace entries,
+and human-readable audit text without putting tax calculation logic in MCP.
+
 Example Claude Desktop config while developing from this checkout:
 
 ```json
