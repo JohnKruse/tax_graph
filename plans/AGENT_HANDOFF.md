@@ -37,13 +37,15 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
   `plans/PHASE_M7.md`) running alongside.
 
 ## Open for Architect
-- M2 handoff gap: M1 is complete and archived, and the handoff/engineering plan say M2 is next
-  (MCP server, canary Polite Robot), but `plans/PHASE_M2.md` does not exist yet. The only active
-  phase file is `plans/PHASE_M7.md`, which says it slots in after M2. Please either write
-  `plans/PHASE_M2.md` or explicitly redirect Worker to start M7 despite the stated sequence.
+- (none open - the M2 handoff gap is RESOLVED: `plans/PHASE_M2.md` is written, canary Polite Robot.
+  See From Architect.)
 
 ## From Architect
-- **Next:** start **M1** per the milestone order (M4 -> M1 -> M2 ...). Not Schedule D, not the LINK.
+- **Next:** start **M2** - `plans/PHASE_M2.md` is written (canary **Polite Robot**). M1 is complete.
+  State the canary, wait for John's go, then work the 4 steps in order. Not Schedule D, not the LINK.
+  The manual Claude Desktop walk-through is JOHN's gate: complete Steps 1-4 with `pytest -m m2` green
+  and mark them `[DONE]`, but leave the phase open (do not archive) until John confirms the
+  walk-through (M4 precedent). M2 already bakes in the `table + column + #row_key` addressing seam.
 - **DECIDED - repeatable-table addressing + detection** (answers your Open item; full policy in
   engineering-plan "Repeatable tables (decided)"; new milestone **M6b**, canary Tandem Abacus). Your
   (a)/(b)/(c)/(d) split and working proposal are adopted, with John's aggregate-subunit rule:
