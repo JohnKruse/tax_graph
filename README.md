@@ -21,6 +21,22 @@ This project is being packaged for `uv`.
 uv sync
 ```
 
+The base install is the light runtime: graph validation, execution, and (in M1)
+SQLite build/read commands. It intentionally does not install acquisition,
+OCR, PDF rendering, or live LLM SDKs.
+
+Maintainers who need the full build pipeline should install the build extra:
+
+```powershell
+uv sync --extra build
+```
+
+For local development, including pytest and the build pipeline extras:
+
+```powershell
+uv sync --extra dev
+```
+
 If `uv` is not available in your environment yet, the existing proof-of-concept
 scripts can still be run with Python directly.
 
@@ -60,7 +76,7 @@ Expected result: `form_1040_2025_line_7_capital_gain_loss = 2000`.
 GitHub Actions runs the deterministic gate on pushes and pull requests:
 
 ```powershell
-uv sync --all-groups
+uv sync --extra dev
 uv run tax-graph validate 2025
 uv run tax-graph run --facts examples\capital_gains_basic\facts.yaml
 uv run pytest

@@ -4,17 +4,10 @@ from __future__ import annotations
 
 import argparse
 from pathlib import Path
-from typing import Callable
+from typing import Any, Callable
 
-from tax_graph.acquire.changes import ChangeReport, detect_changes
-from tax_graph.acquire.citation_check import CitationIntegrityReport, check_graph_citations
-from tax_graph.acquire.fetch import FetchedDocument, FetchBytes, fetch_manifest_documents
-from tax_graph.acquire.manifest import load_manifest
-from tax_graph.acquire.render import render_source
 from tax_graph.config import get_config_value, load_config, project_root
 from tax_graph.engine import Engine, Graph, MISSING, load_facts, render_trace
-from tax_graph.extract import extract_document, extract_year
-from tax_graph.extract.llm_client import LlmClient
 from tax_graph.validate import validate_graph
 
 try:
@@ -73,11 +66,16 @@ def acquire_command(
     *,
     check: bool = False,
     root: str | Path | None = None,
-    fetch_bytes: FetchBytes | None = None,
+    fetch_bytes: Callable[..., bytes] | None = None,
     renderer: Callable[..., object] | None = None,
-    citation_checker: Callable[..., CitationIntegrityReport] | None = None,
+    citation_checker: Callable[..., Any] | None = None,
 ) -> int:
     """Acquire source docs, render them, detect changes, and check citations."""
+    from tax_graph.acquire.changes import detect_changes
+    from tax_graph.acquire.citation_check import check_graph_citations
+    from tax_graph.acquire.fetch import fetch_manifest_documents
+    from tax_graph.acquire.manifest import load_manifest
+
     root_path = Path(root).resolve() if root is not None else project_root()
     config = load_config(root=root_path)
     raw_store = root_path / get_config_value(config, "project.paths.raw_store", ".cache/raw")
@@ -120,9 +118,11 @@ def extract_command(
     doc: str | None = None,
     year: str = "2025",
     root: str | Path | None = None,
-    client: LlmClient | None = None,
+    client: object | None = None,
 ) -> int:
     """Extract draft graph objects for one document or manifest year."""
+    from tax_graph.extract import extract_document, extract_year
+
     root_path = Path(root).resolve() if root is not None else project_root()
     config = load_config(root=root_path)
     if doc:
@@ -151,13 +151,15 @@ def _print_extract_summary(doc: str, routed) -> None:
 
 def _render_fetched_documents(
     entries_by_id,
-    fetched: list[FetchedDocument],
+    fetched: list[Any],
     *,
     raw_store: Path,
     year: str,
     config: dict,
     renderer: Callable[..., object] | None = None,
 ) -> None:
+    from tax_graph.acquire.render import render_source
+
     output_dir = raw_store / str(year)
     render = renderer or render_source
     for document in fetched:
@@ -171,7 +173,7 @@ def _render_fetched_documents(
         )
 
 
-def _print_acquire_summary(report: ChangeReport, citation_report: CitationIntegrityReport) -> None:
+def _print_acquire_summary(report: Any, citation_report: Any) -> None:
     print("=== acquisition change report ===")
     print("  new:", ", ".join(report.new) if report.new else "-")
     print("  changed:", ", ".join(report.changed) if report.changed else "-")

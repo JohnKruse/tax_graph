@@ -44,7 +44,7 @@ stdlib; the engine is pure Python).
 
 ## Steps
 
-- [ ] **Step 1 - Runtime/build dependency split + lazy imports (the packaging fix).** In
+- [DONE] **Step 1 - Runtime/build dependency split + lazy imports (the packaging fix).** In
   `pyproject.toml`, move build-time deps out of base into extras: base = `pyyaml`, `jsonschema`,
   `typer`; `[acquire]` = `httpx`, `pymupdf`, `mistralai`; `[extract]` = the existing LLM extras;
   `[build]` = acquire + extract; `[dev]` = pytest + build. Lazy-import the heavy modules inside the
@@ -53,6 +53,10 @@ stdlib; the engine is pure Python).
   install, `tax-graph run --facts examples/capital_gains_basic/facts.yaml` and
   `tax-graph validate 2025` succeed, and a guard asserts `fitz`/`mistralai` are NOT in
   `sys.modules` after a runtime command. Docs.
+  - Verification: `uv run pytest -m m1`, `uv run tax-graph validate 2025`,
+    `uv run tax-graph run --facts examples\capital_gains_basic\facts.yaml`, `uv run pytest`, and
+    `uv run python tools\check_ascii.py` pass. Local `uv run pytest` is base-only and skips the
+    PyMuPDF render test as expected; CI installs `--extra dev` for build extras.
 
 - [ ] **Step 2 - YAML -> SQLite compiler (+ FTS5).** `tax_graph/compile/to_sqlite.py`: load the
   authored graph via `io/loader.py` and write `<build_dir>/tax_graph_<year>.sqlite` with tables for

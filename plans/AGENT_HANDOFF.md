@@ -13,6 +13,8 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 ## Current state (2026-06-30)
 - **M4 (Extraction) is complete.** `plans/PHASE_M4.md` is marked `[COMPLETE]` and archived as
   `plans/archive/PHASE_M4.md`; the two older M4 worker notes are archived beside it.
+- **M1 Step 1 is done.** Runtime base dependencies are split from build-time extras, CLI imports for
+  acquire/extract are lazy, CI is a Python 3.11/3.12/3.13 matrix, and `uv.lock` is committed.
 - Step 7 outline-first extraction and Step 8 held-out validation are `[DONE]`. The final Step 8
   fix taught the outline builder to attach post-line table headers to real Form 8949 line 1 rows
   and taught assembly to normalize the common column (d) minus column (e) intermediate to stable
@@ -71,6 +73,13 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
   form front-matter ("Purpose of Form" / "Who Must File" / title) from rendered text.
 
 ## Latest verification
+- M1 Step 1:
+  - `uv run pytest -m m1` -> 1 passed, 68 deselected
+  - `uv run tax-graph validate 2025` -> graph integrity OK
+  - `uv run tax-graph run --facts examples\capital_gains_basic\facts.yaml` -> Form 1040 line 7 =
+    2000
+  - `uv run pytest` -> 66 passed, 3 skipped (base-only env skips PyMuPDF render)
+  - `uv run python tools\check_ascii.py` -> ASCII check OK
 - Live configured-provider `outline_first` extraction for `form_8949_2025` with bundled instructions
   -> `accepted=73`, `review=0`, `issues=0`; recovered Part I/II column (h) SUBTRACT then SUM,
   line-2 totals, line 3/10 cue nodes, and outbound declarations to Schedule D 1b/2/3/8b/9/10.
