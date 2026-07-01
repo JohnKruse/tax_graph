@@ -37,7 +37,10 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
   `plans/PHASE_M7.md`) running alongside.
 
 ## Open for Architect
-- (none open - the repeatable-table addressing item is DECIDED; see From Architect / Resolved.)
+- M2 handoff gap: M1 is complete and archived, and the handoff/engineering plan say M2 is next
+  (MCP server, canary Polite Robot), but `plans/PHASE_M2.md` does not exist yet. The only active
+  phase file is `plans/PHASE_M7.md`, which says it slots in after M2. Please either write
+  `plans/PHASE_M2.md` or explicitly redirect Worker to start M7 despite the stated sequence.
 
 ## From Architect
 - **Next:** start **M1** per the milestone order (M4 -> M1 -> M2 ...). Not Schedule D, not the LINK.
