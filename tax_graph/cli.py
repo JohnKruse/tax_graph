@@ -41,11 +41,12 @@ def run_command(
     year: str = "2025",
     target: str = DEFAULT_TARGET,
     root: str | Path | None = None,
+    source: str | None = None,
 ) -> int:
     """Execute a graph from taxpayer facts and print values plus trace."""
     root_path = Path(root).resolve() if root is not None else project_root()
     load_config(root=root_path)
-    graph = Graph(year, root=root_path)
+    graph = Graph(year, root=root_path, source=source)
     fact_values = load_facts(Path(facts))
     result = Engine(graph).execute(fact_values)
 
@@ -218,10 +219,11 @@ def _build_typer_app():
         facts: Path = typer.Option(..., "--facts", "-f", help="Path to taxpayer facts YAML."),
         year: str = typer.Option("2025", "--year", "-y", help="Tax year to execute."),
         target: str = typer.Option(DEFAULT_TARGET, "--target", "-t", help="Target node for the audit trace."),
+        source: str | None = typer.Option(None, "--source", help="Graph source: sqlite or yaml. Defaults to sqlite when built, else yaml."),
         root: Path | None = typer.Option(None, "--root", help="Project root override."),
     ) -> None:
         """Execute a return graph from taxpayer facts."""
-        raise_code = run_command(facts=facts, year=year, target=target, root=root)
+        raise_code = run_command(facts=facts, year=year, target=target, root=root, source=source)
         if raise_code:
             raise typer.Exit(raise_code)
 
@@ -272,6 +274,7 @@ def _fallback_app() -> int:
     run_parser.add_argument("--facts", "-f", required=True)
     run_parser.add_argument("--year", "-y", default="2025")
     run_parser.add_argument("--target", "-t", default=DEFAULT_TARGET)
+    run_parser.add_argument("--source", choices=["sqlite", "yaml"], default=None)
     run_parser.add_argument("--root", default=None)
 
     build_parser = subparsers.add_parser("build")
@@ -292,7 +295,7 @@ def _fallback_app() -> int:
     if args.command == "validate":
         return validate_command(year=args.year, root=args.root)
     if args.command == "run":
-        return run_command(facts=args.facts, year=args.year, target=args.target, root=args.root)
+        return run_command(facts=args.facts, year=args.year, target=args.target, root=args.root, source=args.source)
     if args.command == "build":
         return build_command(year=args.year, root=args.root)
     if args.command == "acquire":

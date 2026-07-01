@@ -55,6 +55,7 @@ Phase M0 provides a package CLI named `tax-graph`:
 uv run tax-graph validate 2025
 uv run tax-graph run --facts examples\capital_gains_basic\facts.yaml
 uv run tax-graph build 2025
+uv run tax-graph run --facts examples\capital_gains_basic\facts.yaml --source sqlite
 uv run tax-graph acquire 2025
 uv run tax-graph acquire 2025 --check
 uv run tax-graph extract --doc form_8949_2025
@@ -77,6 +78,10 @@ Expected result: `form_1040_2025_line_7_capital_gain_loss = 2000`.
 `build/tax_graph_2025.sqlite`. The SQLite file is a deterministic runtime
 artifact rebuilt from YAML; `build/` is gitignored, so the binary artifact is
 not committed.
+
+After a build exists, `tax-graph run` defaults to the SQLite artifact. Use
+`--source yaml` to force the authored YAML source or `--source sqlite` to require
+the compiled artifact.
 
 ## CI
 

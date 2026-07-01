@@ -14,6 +14,7 @@ from typing import Any
 
 from tax_graph.engine.operations import MISSING, apply_operation, is_missing, round_value
 from tax_graph.io.loader import load_graph, load_yaml
+from tax_graph.io.sqlite_loader import compiled_db_path, load_sqlite_graph
 
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -22,15 +23,26 @@ ROOT = Path(__file__).resolve().parents[2]
 class Graph:
     """Executable view of a loaded tax graph."""
 
-    def __init__(self, year: str | int, root: str | Path = ROOT):
-        loaded = load_graph(year, root)
+    def __init__(self, year: str | int, root: str | Path = ROOT, source: str | None = None):
+        graph_source = _resolve_source(year, root, source)
+        loaded = load_sqlite_graph(year, root) if graph_source == "sqlite" else load_graph(year, root)
         self.year = loaded.year
         self.root = loaded.root
-        self.nodes = {node["node_id"]: node for node in loaded.items("nodes")}
-        self.rules = {rule["rule_id"]: rule for rule in loaded.items("rules")}
+        self.source = graph_source
+        self.nodes = {node["node_id"]: node for node in sorted(loaded.items("nodes"), key=lambda item: item["node_id"])}
+        self.rules = {rule["rule_id"]: rule for rule in sorted(loaded.items("rules"), key=lambda item: item["rule_id"])}
         self.incoming: dict[str, list[dict[str, Any]]] = {}
-        for edge in loaded.items("edges"):
+        for edge in sorted(loaded.items("edges"), key=lambda item: item["edge_id"]):
             self.incoming.setdefault(edge["target"], []).append(edge)
+
+
+def _resolve_source(year: str | int, root: str | Path, source: str | None) -> str:
+    if source in (None, "auto"):
+        return "sqlite" if compiled_db_path(year, root).exists() else "yaml"
+    normalized = str(source).lower()
+    if normalized not in {"yaml", "sqlite"}:
+        raise ValueError(f"unsupported graph source: {source}")
+    return normalized
 
 
 @dataclass

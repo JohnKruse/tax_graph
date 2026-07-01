@@ -68,12 +68,16 @@ stdlib; the engine is pure Python).
     metadata reports tax year 2025; FTS for `Subtract` returns `cite_8949_col_h_gain`;
     `uv run pytest -m m1`, `uv run pytest`, and `uv run python tools\check_ascii.py` pass.
 
-- [ ] **Step 3 - SQLite-backed runtime loader (source-agnostic engine).** Add a SQLite-backed graph
+- [DONE] **Step 3 - SQLite-backed runtime loader (source-agnostic engine).** Add a SQLite-backed graph
   loader behind the SAME interface the engine's `Graph` uses today (nodes / rules / incoming edges),
   so the engine runs from either source. `tax-graph run` gains `--source sqlite|yaml` (default
   sqlite when a build exists, else yaml). Test: PARITY - running `capital_gains_basic` from the
   compiled SQLite yields IDENTICAL computed values AND the same audit trace as the YAML run
   (line 7 = 2000). Docs.
+  - Verification: parity test compares SQLite vs YAML `values` and `trace`; explicit
+    `uv run tax-graph run --facts examples\capital_gains_basic\facts.yaml --source sqlite` and
+    `--source yaml` both report Form 1040 line 7 = 2000; `uv run pytest -m m1`, `uv run pytest`,
+    and `uv run python tools\check_ascii.py` pass.
 
 - [ ] **Step 4 - Shippable artifact + light-runtime gate.** Confirm the `build_dir` SQLite is the
   runtime artifact and that a base-only environment (no `[acquire]`/`[extract]`) can `build` and

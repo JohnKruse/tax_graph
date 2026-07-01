@@ -17,6 +17,8 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
   acquire/extract are lazy, CI is a Python 3.11/3.12/3.13 matrix, and `uv.lock` is committed.
 - **M1 Step 2 is done.** `tax-graph build 2025` compiles authored YAML into
   `build/tax_graph_2025.sqlite` with per-kind tables plus FTS5 over node labels and citation quotes.
+- **M1 Step 3 is done.** The engine can load YAML or compiled SQLite through the same `Graph`
+  interface; `tax-graph run --source sqlite|yaml` is wired, with auto-select of SQLite when built.
 - Step 7 outline-first extraction and Step 8 held-out validation are `[DONE]`. The final Step 8
   fix taught the outline builder to attach post-line table headers to real Form 8949 line 1 rows
   and taught assembly to normalize the common column (d) minus column (e) intermediate to stable
@@ -87,6 +89,15 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
   - SQLite FTS smoke -> `Subtract` citation search returns `cite_8949_col_h_gain`
   - `uv run pytest -m m1` -> 4 passed, 68 deselected
   - `uv run pytest` -> 69 passed, 3 skipped
+  - `uv run python tools\check_ascii.py` -> ASCII check OK
+- M1 Step 3:
+  - SQLite vs YAML parity test compares exact `values` and `trace`
+  - `uv run tax-graph run --facts examples\capital_gains_basic\facts.yaml --source sqlite` -> Form
+    1040 line 7 = 2000
+  - `uv run tax-graph run --facts examples\capital_gains_basic\facts.yaml --source yaml` -> Form
+    1040 line 7 = 2000
+  - `uv run pytest -m m1` -> 6 passed, 68 deselected
+  - `uv run pytest` -> 71 passed, 3 skipped
   - `uv run python tools\check_ascii.py` -> ASCII check OK
 - Live configured-provider `outline_first` extraction for `form_8949_2025` with bundled instructions
   -> `accepted=73`, `review=0`, `issues=0`; recovered Part I/II column (h) SUBTRACT then SUM,
