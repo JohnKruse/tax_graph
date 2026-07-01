@@ -72,7 +72,7 @@ by `explain_calculation` + `get_dependencies` for now).
   - Verification: `uv run pytest -m m2` -> 2 passed, 74 deselected; `uv run pytest` -> 73 passed,
     3 skipped; `uv run python tools\check_ascii.py` -> ASCII check OK.
 
-- [ ] **Step 2 - Read-only graph tools.** Implement `get_document`, `get_node`, `get_dependencies`
+- [DONE] **Step 2 - Read-only graph tools.** Implement `get_document`, `get_node`, `get_dependencies`
   (upstream, from the engine's `incoming` index), `get_downstream_effects` (a derived OUTGOING index -
   the reverse of `incoming`), and `get_citation` (from the citations table; support search-by-phrase
   via the compiled `graph_fts` FTS5 index). Node addressing: accept a `node_id` with an optional
@@ -81,6 +81,9 @@ by `explain_calculation` + `get_dependencies` for now).
   `get_downstream_effects(form_8949_2025_partii_total_gain_loss)` reaches
   `form_1040_2025_line_7_capital_gain_loss`; `get_citation(cite_8949_col_h_gain)` returns its
   `quoted_text`; an FTS query for "Subtract" returns that citation id. Docs.
+  - Verification: `uv run pytest -m m2` -> 5 passed, 74 deselected; direct MCP tool tests cover
+    document/node lookup, `#row_key` base-node resolution, upstream/downstream traversal, citation id
+    lookup, and compiled FTS citation search.
 
 - [ ] **Step 3 - Execution + explanation tools.** `execute_tax_tree(facts)` loads facts (same shape as
   `examples/.../facts.yaml`), runs `Engine.execute`, and returns computed `values` +

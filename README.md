@@ -102,6 +102,12 @@ The server loads `build/tax_graph_2025.sqlite` when present and falls back to th
 authored YAML graph otherwise. It is a runtime adapter over the graph and engine;
 it does not fetch sources, run OCR, or call an LLM.
 
+M2 read-only tools expose graph traversal without asking the model to infer tax
+rules: `get_document`, `get_node`, `get_dependencies`,
+`get_downstream_effects`, and `get_citation`. Node tools accept a future
+runtime instance suffix such as `some_column_node#row_key`; the base node is
+resolved from the static graph while the row key remains runtime-only.
+
 Example Claude Desktop config while developing from this checkout:
 
 ```json
