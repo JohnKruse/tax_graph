@@ -19,6 +19,8 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
   `build/tax_graph_2025.sqlite` with per-kind tables plus FTS5 over node labels and citation quotes.
 - **M1 Step 3 is done.** The engine can load YAML or compiled SQLite through the same `Graph`
   interface; `tax-graph run --source sqlite|yaml` is wired, with auto-select of SQLite when built.
+- **M1 Step 4 is done.** Base-only `uv --no-dev` build/run passes, README documents runtime vs
+  maintainer installs, and CI has a base-runtime build/run job.
 - Step 7 outline-first extraction and Step 8 held-out validation are `[DONE]`. The final Step 8
   fix taught the outline builder to attach post-line table headers to real Form 8949 line 1 rows
   and taught assembly to normalize the common column (d) minus column (e) intermediate to stable
@@ -96,6 +98,13 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
     1040 line 7 = 2000
   - `uv run tax-graph run --facts examples\capital_gains_basic\facts.yaml --source yaml` -> Form
     1040 line 7 = 2000
+  - `uv run pytest -m m1` -> 6 passed, 68 deselected
+  - `uv run pytest` -> 71 passed, 3 skipped
+  - `uv run python tools\check_ascii.py` -> ASCII check OK
+- M1 Step 4:
+  - `uv run --no-dev tax-graph build 2025` -> wrote `build/tax_graph_2025.sqlite`
+  - `uv run --no-dev tax-graph run --facts examples\capital_gains_basic\facts.yaml --source sqlite`
+    -> Form 1040 line 7 = 2000
   - `uv run pytest -m m1` -> 6 passed, 68 deselected
   - `uv run pytest` -> 71 passed, 3 skipped
   - `uv run python tools\check_ascii.py` -> ASCII check OK

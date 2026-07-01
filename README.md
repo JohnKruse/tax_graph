@@ -83,6 +83,11 @@ After a build exists, `tax-graph run` defaults to the SQLite artifact. Use
 `--source yaml` to force the authored YAML source or `--source sqlite` to require
 the compiled artifact.
 
+Distribution path: source installs can use the light runtime (`pip install
+tax-graph`) or the maintainer pipeline (`pip install tax-graph[build]`). A later
+single-file binary can bundle the runtime plus a prebuilt SQLite artifact so an
+end user does not need Python or build-time dependencies.
+
 ## CI
 
 GitHub Actions runs the deterministic gate on pushes and pull requests:

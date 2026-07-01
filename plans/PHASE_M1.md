@@ -79,13 +79,17 @@ stdlib; the engine is pure Python).
     `--source yaml` both report Form 1040 line 7 = 2000; `uv run pytest -m m1`, `uv run pytest`,
     and `uv run python tools\check_ascii.py` pass.
 
-- [ ] **Step 4 - Shippable artifact + light-runtime gate.** Confirm the `build_dir` SQLite is the
+- [DONE] **Step 4 - Shippable artifact + light-runtime gate.** Confirm the `build_dir` SQLite is the
   runtime artifact and that a base-only environment (no `[acquire]`/`[extract]`) can `build` and
   `run` against it end to end. Update the README with the two install paths: `pip install tax-graph`
   (light runtime) vs `pip install tax-graph[build]` (maintainer pipeline), and note the eventual
   single-binary path bundles the runtime + prebuilt SQLite (no Python needed for end users). Test: a
   base-only CI job runs `tax-graph build 2025 && tax-graph run --facts examples/capital_gains_basic/
   facts.yaml --source sqlite` green. Exit: `pytest -m m1` green. Docs.
+  - Verification: `uv run --no-dev tax-graph build 2025` and
+    `uv run --no-dev tax-graph run --facts examples\capital_gains_basic\facts.yaml --source sqlite`
+    pass with Form 1040 line 7 = 2000; base-runtime CI job added; `uv run pytest -m m1`,
+    `uv run pytest`, and `uv run python tools\check_ascii.py` pass.
 
 When all steps are `[DONE]`: mark this phase `[COMPLETE]`, move it to `plans/archive/`, and tell
 John. The Architect will then generate `PHASE_M2.md` (MCP server over stdio - canary *Polite Robot*),

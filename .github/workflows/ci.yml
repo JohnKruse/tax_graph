@@ -7,6 +7,33 @@ on:
     branches: ["main"]
 
 jobs:
+  runtime-base:
+    name: Base runtime build/run
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+
+      - name: Sync base runtime only
+        run: uv sync --no-dev
+
+      - name: Build SQLite artifact
+        run: uv run --no-dev tax-graph build 2025
+
+      - name: Run against SQLite artifact
+        run: uv run --no-dev tax-graph run --facts examples/capital_gains_basic/facts.yaml --source sqlite
+
   test:
     name: Validate and test (Python ${{ matrix.python-version }})
     runs-on: ubuntu-latest
