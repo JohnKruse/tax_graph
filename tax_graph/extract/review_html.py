@@ -25,6 +25,16 @@ class SourceLine:
     text: str
 
 
+@dataclass(frozen=True)
+class TableSlot:
+    """One physical table row slot found in AcroForm fields."""
+
+    part: str
+    line_anchor: str
+    row: int
+    columns: tuple[str, ...]
+
+
 def write_review_html(
     draft_dir: Path,
     *,
@@ -53,6 +63,7 @@ def render_review_html(
     objects = batch.objects
     source_lines = _source_lines(document)
     source_links = _source_links(objects, source_lines)
+    source_lines_by_id = {line.line_id: line for line in source_lines}
     accepted_ids = {(obj.kind, obj.object_id) for obj in routed.accepted}
     review_ids = {(obj.kind, obj.object_id) for obj in routed.review}
     outline = _load_yaml(draft_dir / "outline.yaml") if draft_dir else None
@@ -72,6 +83,7 @@ def render_review_html(
         "<body>",
         '<main class="shell">',
         _summary(batch, routed),
+        _structure_panel(document, outline),
         '<section class="review-grid" aria-label="Visual extraction review">',
         '<section class="pane source-pane">',
         "<h2>Source Evidence</h2>",
@@ -79,7 +91,7 @@ def render_review_html(
         "</section>",
         '<section class="pane draft-pane">',
         "<h2>Extracted Drafts</h2>",
-        _object_panel(objects, source_links, accepted_ids, review_ids),
+        _object_panel(objects, source_links, source_lines_by_id, accepted_ids, review_ids),
         _issues_panel(routed),
         _outline_panel(outline),
         _outbound_panel(outbound_flows),
@@ -126,7 +138,7 @@ def _source_panel(source_lines: list[SourceLine], source_links: dict[str, list[D
         for line in lines:
             linked = source_links.get(line.line_id, [])
             refs = " ".join(
-                f'<button type="button" class="mini-ref" data-target="{_h(_object_dom_id(obj))}">{_h(obj.kind)}/{_h(obj.object_id)}</button>'
+                f'<button type="button" class="mini-ref" data-target="{_h(_object_dom_id(obj))}">{_h(_object_chip_label(obj))}</button>'
                 for obj in linked[:4]
             )
             more = f'<span class="more">+{len(linked) - 4}</span>' if len(linked) > 4 else ""
@@ -145,6 +157,7 @@ def _source_panel(source_lines: list[SourceLine], source_links: dict[str, list[D
 def _object_panel(
     objects: list[DraftObject],
     source_links: dict[str, list[DraftObject]],
+    source_lines_by_id: dict[str, SourceLine],
     accepted_ids: set[tuple[str, str]],
     review_ids: set[tuple[str, str]],
 ) -> str:
@@ -158,8 +171,9 @@ def _object_panel(
         for obj in kind_objects:
             status = "accepted" if (obj.kind, obj.object_id) in accepted_ids else "review" if (obj.kind, obj.object_id) in review_ids else "draft"
             evidence_links = " ".join(
-                f'<a href="#{_h(line_id)}" data-target="{_h(line_id)}">line</a>'
+                f'<a href="#{_h(line_id)}" data-target="{_h(line_id)}">{_h(_source_line_label(source_lines_by_id[line_id]))}</a>'
                 for line_id in object_to_lines.get(obj.object_id, [])[:8]
+                if line_id in source_lines_by_id
             )
             flags = "".join(f"<li>{_h(flag)}</li>" for flag in obj.flags)
             parts.append(
@@ -167,10 +181,11 @@ def _object_panel(
                     [
                         f'<article id="{_h(_object_dom_id(obj))}" class="object-card {status}" data-object="{_h(_object_dom_id(obj))}">',
                         '<div class="object-head">',
-                        f"<strong>{_h(obj.kind)}/{_h(obj.object_id)}</strong>",
+                        f"<strong>{_h(_object_title(obj))}</strong>",
                         f'<span class="badge">{_h(status)}</span>',
                         "</div>",
-                        f'<pre>{_h(_compact_json(obj.data))}</pre>',
+                        _object_facts(obj),
+                        f'<details><summary>Raw schema object</summary><pre>{_h(_compact_json(obj.data))}</pre></details>',
                         f'<p class="evidence">Evidence: {evidence_links or "<span>none linked</span>"}</p>',
                         f'<p class="confidence">confidence={obj.confidence:.3f} critic_agrees={str(obj.critic_agrees).lower()}</p>',
                         f"<ul>{flags}</ul>" if flags else "",
@@ -180,6 +195,46 @@ def _object_panel(
             )
     parts.append("</div>")
     return "\n".join(parts)
+
+
+def _structure_panel(document: SourceDocumentInput, outline: Any) -> str:
+    slots = _table_slots(document)
+    rows_by_table: dict[tuple[str, str], list[TableSlot]] = {}
+    for slot in slots:
+        rows_by_table.setdefault((slot.part, slot.line_anchor), []).append(slot)
+
+    table_cards = []
+    for (part, line_anchor), table_slots in sorted(rows_by_table.items(), key=lambda item: (_part_order(item[0][0]), item[0][1])):
+        rows = sorted(table_slots, key=lambda slot: slot.row)
+        columns = rows[0].columns if rows else ()
+        table_cards.append(
+            "\n".join(
+                [
+                    '<article class="structure-card">',
+                    f"<h3>{_h(_part_label(part))} - IRS line {line_anchor} transaction table</h3>",
+                    f'<p class="muted">{len(rows)} printed row slots. Columns: {_h(", ".join(columns))}.</p>',
+                    f'<p><strong>Review labels:</strong> {_h(_row_range_label(line_anchor, rows))}</p>',
+                    f'<p><strong>Row-template formula:</strong> line {line_anchor}[row].column_h = column_d - column_e + column_g.</p>',
+                    f'<p><strong>Review-only slot label:</strong> {_h(part)}.line_{_h(line_anchor)}.row_01.column_h (physical geometry, not a runtime row key).</p>',
+                    "</article>",
+                ]
+            )
+        )
+
+    outline_note = ""
+    if outline:
+        outline_note = '<p class="muted">Outline ids such as part_i_line_1 refer to IRS anchors/table templates, not a single printed row.</p>'
+
+    return "\n".join(
+        [
+            '<section class="structure-panel">',
+            "<h2>Form Structure</h2>",
+            '<p class="muted">IRS line anchor = legal form line. Source L# = rendered text line. Row slot = physical blank table row from the field grid. Runtime instances use column_node#row_key, not row_01.</p>',
+            outline_note,
+            "".join(table_cards) if table_cards else '<p class="muted">No repeatable table row slots were found in the field grid.</p>',
+            "</section>",
+        ]
+    )
 
 
 def _issues_panel(routed: RoutedDrafts) -> str:
@@ -250,6 +305,27 @@ def _source_lines(document: SourceDocumentInput) -> list[SourceLine]:
     return lines
 
 
+def _table_slots(document: SourceDocumentInput) -> list[TableSlot]:
+    fields = (document.fields or {}).get("fields", [])
+    row_pattern = re.compile(r"Table_Line(?P<line>[0-9]+)_Part(?P<part>[0-9]+)\[\d+\]\.Row(?P<row>[0-9]+)")
+    rows: dict[tuple[str, str, int], list[dict[str, Any]]] = {}
+    for field in fields:
+        match = row_pattern.search(str(field.get("field_name", "")))
+        if not match:
+            continue
+        part = _part_id(match.group("part"))
+        line_anchor = match.group("line")
+        row = int(match.group("row"))
+        rows.setdefault((part, line_anchor, row), []).append(field)
+
+    slots = []
+    for (part, line_anchor, row), row_fields in rows.items():
+        ordered_fields = sorted(row_fields, key=lambda field: (int(field.get("x_cluster", 0)), str(field.get("field_name", ""))))
+        columns = tuple(chr(ord("a") + index) for index, _field in enumerate(ordered_fields))
+        slots.append(TableSlot(part=part, line_anchor=line_anchor, row=row, columns=columns))
+    return slots
+
+
 def _lines_for_text(document_id: str, relationship: str, text: str) -> list[SourceLine]:
     lines = []
     for number, raw_line in enumerate(text.splitlines(), 1):
@@ -304,6 +380,125 @@ def _load_yaml(path: Path) -> Any:
 
 def _compact_json(data: dict[str, Any]) -> str:
     return json.dumps(data, indent=2, sort_keys=True)
+
+
+def _object_title(obj: DraftObject) -> str:
+    if obj.kind == "rules":
+        return f"Rule - {obj.data.get('operation', '')} - {_human_object_id(obj.object_id)}"
+    if obj.kind == "nodes":
+        label = str(obj.data.get("label") or "")
+        context = _human_object_id(obj.object_id)
+        return f"Node - {context}" + (f" - {label}" if label else "")
+    if obj.kind == "edges":
+        return f"Edge - {_human_object_id(str(obj.data.get('source', '')))} -> {_human_object_id(str(obj.data.get('target', '')))}"
+    if obj.kind == "citations":
+        return f"Citation - {_human_object_id(obj.object_id)}"
+    return f"{obj.kind} - {_human_object_id(obj.object_id)}"
+
+
+def _object_facts(obj: DraftObject) -> str:
+    facts = []
+    if obj.kind == "nodes":
+        facts.extend(
+            [
+                ("id", obj.object_id),
+                ("label", obj.data.get("label", "")),
+                ("type", obj.data.get("node_type", "")),
+                ("value", obj.data.get("value_type", "")),
+            ]
+        )
+    elif obj.kind == "rules":
+        facts.extend(
+            [
+                ("id", obj.object_id),
+                ("operation", obj.data.get("operation", "")),
+                ("description", obj.data.get("description", "")),
+            ]
+        )
+    elif obj.kind == "edges":
+        facts.extend(
+            [
+                ("id", obj.object_id),
+                ("source", obj.data.get("source", "")),
+                ("target", obj.data.get("target", "")),
+                ("role", obj.data.get("role", "")),
+            ]
+        )
+    elif obj.kind == "citations":
+        quoted = str(obj.data.get("quoted_text", ""))
+        facts.extend(
+            [
+                ("id", obj.object_id),
+                ("document", obj.data.get("document_id", "")),
+                ("locator", obj.data.get("locator", "")),
+                ("quote", quoted[:220] + ("..." if len(quoted) > 220 else "")),
+            ]
+        )
+    else:
+        facts.append(("id", obj.object_id))
+    rows = "".join(f"<dt>{_h(name)}</dt><dd>{_h(value)}</dd>" for name, value in facts if value != "")
+    return f'<dl class="object-facts">{rows}</dl>'
+
+
+def _object_chip_label(obj: DraftObject) -> str:
+    prefix = {"nodes": "node", "rules": "rule", "edges": "edge", "citations": "cite", "decisions": "decision"}.get(obj.kind, obj.kind)
+    if obj.kind == "rules":
+        return f"{prefix}: {obj.data.get('operation', '')} {_short_object_id(obj.object_id)}"
+    if obj.kind == "nodes":
+        return f"{prefix}: {_short_object_id(obj.object_id)}"
+    return f"{prefix}: {_short_object_id(obj.object_id)}"
+
+
+def _source_line_label(line: SourceLine) -> str:
+    document_label = "form" if line.relationship == "source" else _short_document_id(line.document_id)
+    return f"{document_label} L{line.number}"
+
+
+def _short_document_id(document_id: str) -> str:
+    value = document_id.replace("instructions_", "instr_")
+    return value.replace("_2025", "")
+
+
+def _short_object_id(object_id: str) -> str:
+    value = object_id.replace("form_8949_2025_", "")
+    value = value.replace("instructions_form_8949_2025_", "instr_")
+    return value
+
+
+def _human_object_id(object_id: str) -> str:
+    value = _short_object_id(object_id)
+    replacements = {
+        "part_i": "Part I",
+        "part_ii": "Part II",
+        "line_": "line ",
+        "column_": "column ",
+        "_total": " total",
+    }
+    for old, new in replacements.items():
+        value = value.replace(old, new)
+    value = value.replace("_", " ")
+    value = re.sub(r"\bline ([0-9]+) line \1\b", r"line \1", value)
+    return value
+
+
+def _part_id(number: str) -> str:
+    return {"1": "part_i", "2": "part_ii"}.get(number, f"part_{number}")
+
+
+def _part_label(part: str) -> str:
+    return {"part_i": "Part I", "part_ii": "Part II"}.get(part, part.replace("_", " ").title())
+
+
+def _part_order(part: str) -> int:
+    return {"part_i": 1, "part_ii": 2}.get(part, 99)
+
+
+def _row_range_label(line_anchor: str, rows: list[TableSlot]) -> str:
+    if not rows:
+        return "none"
+    first = rows[0].row
+    last = rows[-1].row
+    return f"line {line_anchor}.{first:02d} through line {line_anchor}.{last:02d}"
 
 
 def _object_dom_id(obj: DraftObject) -> str:
@@ -375,6 +570,27 @@ h3 { font-size: 14px; margin: 16px 0 8px; }
   gap: 16px;
   align-items: start;
 }
+.structure-panel {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 14px;
+  margin-bottom: 16px;
+}
+.structure-panel h2 { margin-bottom: 6px; }
+.structure-card {
+  display: inline-block;
+  width: min(100%, 520px);
+  vertical-align: top;
+  border: 1px solid var(--line);
+  border-left: 4px solid var(--accent-2);
+  border-radius: 8px;
+  padding: 10px;
+  margin: 10px 10px 0 0;
+  background: #fffefa;
+}
+.structure-card h3 { margin-top: 0; }
+.structure-card p { margin: 6px 0 0; }
 .pane {
   background: var(--panel);
   border: 1px solid var(--line);
@@ -428,6 +644,25 @@ h3 { font-size: 14px; margin: 16px 0 8px; }
 .object-card.review { border-left-color: var(--warn); }
 .object-head { display: flex; justify-content: space-between; gap: 8px; align-items: center; }
 .object-head strong { min-width: 0; overflow-wrap: anywhere; }
+.object-facts {
+  display: grid;
+  grid-template-columns: minmax(76px, auto) minmax(0, 1fr);
+  gap: 4px 8px;
+  margin: 8px 0;
+}
+.object-facts dt { color: var(--muted); font-weight: 700; }
+.object-facts dd { margin: 0; overflow-wrap: anywhere; }
+details {
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: #f8f9f5;
+}
+summary {
+  cursor: pointer;
+  padding: 6px 8px;
+  color: var(--muted);
+  font-weight: 700;
+}
 pre {
   margin: 8px 0;
   padding: 8px;

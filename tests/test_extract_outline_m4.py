@@ -441,6 +441,11 @@ def test_outline_first_mode_routes_and_writes_assembled_drafts(tmp_path):
     assert "Subtract column" in citations[0]["quoted_text"]
     assert any("Totals. Add the amounts" in citation["quoted_text"] for citation in citations)
     review_html = (draft_dir / "review.html").read_text(encoding="utf-8")
+    assert "Form Structure" in review_html
+    assert "line 1.01 through line 1.11" in review_html
+    assert "Review-only slot label" in review_html
+    assert "part_i.line_1.row_01.column_h" in review_html
+    assert "column_node#row_key" in review_html
     assert "Outbound Flows" in review_html
     assert "form_8949_2025_part_i_line_1_column_h" in review_html
     assert "Report long-term totals on Schedule D lines 8b, 9, and 10." in review_html
@@ -536,6 +541,26 @@ def _make_outline_project(tmp_path: Path) -> Path:
         ]
     )
     (raw_dir / "form_8949_2025.txt").write_text(form_text, encoding="utf-8")
-    (raw_dir / "form_8949_2025.fields.json").write_text(json.dumps({"fields": []}), encoding="utf-8")
+    (raw_dir / "form_8949_2025.fields.json").write_text(
+        json.dumps({"fields": _form_8949_row_fields()}),
+        encoding="utf-8",
+    )
     (raw_dir / "instructions_form_8949_2025.txt").write_text(instructions_text, encoding="utf-8")
     return root
+
+
+def _form_8949_row_fields() -> list[dict]:
+    fields = []
+    x_clusters = [25, 175, 225, 275, 350, 400, 450, 500]
+    for part in [1, 2]:
+        for row in range(1, 12):
+            for index, x_cluster in enumerate(x_clusters, 1):
+                fields.append(
+                    {
+                        "field_name": f"topmostSubform[0].Page{part}[0].Table_Line1_Part{part}[0].Row{row}[0].f{part}_{row:02d}_{index:02d}[0]",
+                        "page": part,
+                        "x_cluster": x_cluster,
+                        "y_cluster": 400 + row * 25,
+                    }
+                )
+    return fields
