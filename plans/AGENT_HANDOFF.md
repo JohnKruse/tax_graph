@@ -10,9 +10,11 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
   clear the item. Record active direction under **From Architect**.
 - Keep it short - move resolved items to **Resolved** or delete them.
 
-## Current state (2026-06-30)
+## Current state (2026-07-01)
 - **M4 (Extraction) is complete.** `plans/PHASE_M4.md` is marked `[COMPLETE]` and archived as
   `plans/archive/PHASE_M4.md`; the two older M4 worker notes are archived beside it.
+- **M1 (Compile to SQLite + light runtime) is complete.** `plans/PHASE_M1.md` is marked
+  `[COMPLETE]` and archived as `plans/archive/PHASE_M1.md`.
 - **M1 Step 1 is done.** Runtime base dependencies are split from build-time extras, CLI imports for
   acquire/extract are lazy, CI is a Python 3.11/3.12/3.13 matrix, and `uv.lock` is committed.
 - **M1 Step 2 is done.** `tax-graph build 2025` compiles authored YAML into
@@ -29,11 +31,10 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
   to visually compare rendered source lines, extracted objects, outline, outbound flows, repeatable
   table row slots, and linked provenance evidence. This does not change promotion rules; drafts
   remain ignored under `_drafts`.
-- Next phase by milestone order: **M1** (Compile to SQLite + light runtime, canary Crystalline
-  Ledger), then **M2** (MCP server, Polite Robot), then M5, M6, then **M6b** (Repeatable-table
-  execution, Tandem Abacus); **M7** (Frontier registry + SOI-weighted coverage, Compass Rose - plan
-  written, `plans/PHASE_M7.md`) runs alongside. M6b is new (see From Architect); it is a follow-on to
-  M6 where the scalar-per-node v0 becomes arbitrary-N.
+- Next phase by milestone order: **M2** (MCP server, Polite Robot). Architect should generate
+  `plans/PHASE_M2.md` next. Then M5, M6, **M6b** (Repeatable-table execution, Tandem Abacus), with
+  **M7** (Frontier registry + SOI-weighted coverage, Compass Rose - plan written,
+  `plans/PHASE_M7.md`) running alongside.
 
 ## Open for Architect
 - (none open - the repeatable-table addressing item is DECIDED; see From Architect / Resolved.)
@@ -79,6 +80,12 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
   form front-matter ("Purpose of Form" / "Who Must File" / title) from rendered text.
 
 ## Latest verification
+- M1 phase exit:
+  - `uv run pytest -m m1` -> 6 passed, 68 deselected
+  - `uv run tax-graph build 2025` -> wrote `build/tax_graph_2025.sqlite`
+  - `uv run tax-graph run --facts examples\capital_gains_basic\facts.yaml --source sqlite` -> Form
+    1040 line 7 = 2000
+  - `uv run python tools\check_ascii.py` -> ASCII check OK
 - M1 Step 1:
   - `uv run pytest -m m1` -> 1 passed, 68 deselected
   - `uv run tax-graph validate 2025` -> graph integrity OK

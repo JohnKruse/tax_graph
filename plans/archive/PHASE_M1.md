@@ -1,4 +1,4 @@
-# PHASE M1 - Compile to SQLite + light runtime   [ ]
+# PHASE M1 - Compile to SQLite + light runtime   [COMPLETE]
 
 **Canary:** Crystalline Ledger
 **Depends on:** M0 (package, `io/loader.py`, `engine/`, `validate/`, schemas, `config.py`).
