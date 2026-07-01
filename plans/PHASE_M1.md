@@ -58,12 +58,15 @@ stdlib; the engine is pure Python).
     `uv run python tools\check_ascii.py` pass. Local `uv run pytest` is base-only and skips the
     PyMuPDF render test as expected; CI installs `--extra dev` for build extras.
 
-- [ ] **Step 2 - YAML -> SQLite compiler (+ FTS5).** `tax_graph/compile/to_sqlite.py`: load the
+- [DONE] **Step 2 - YAML -> SQLite compiler (+ FTS5).** `tax_graph/compile/to_sqlite.py`: load the
   authored graph via `io/loader.py` and write `<build_dir>/tax_graph_<year>.sqlite` with tables for
   documents/nodes/edges/rules/citations/decisions (mirroring the schemas) plus an FTS5 index over
   citation `quoted_text` and node labels. Deterministic (stable ordering). Wire
   `tax-graph build [--year]`. Test: build `2025`; per-kind row counts equal the YAML object counts;
   an FTS query for a known phrase returns the expected `citation_id`. Base deps only. Docs.
+  - Verification: `uv run tax-graph build 2025` writes `build/tax_graph_2025.sqlite`; SQLite
+    metadata reports tax year 2025; FTS for `Subtract` returns `cite_8949_col_h_gain`;
+    `uv run pytest -m m1`, `uv run pytest`, and `uv run python tools\check_ascii.py` pass.
 
 - [ ] **Step 3 - SQLite-backed runtime loader (source-agnostic engine).** Add a SQLite-backed graph
   loader behind the SAME interface the engine's `Graph` uses today (nodes / rules / incoming edges),

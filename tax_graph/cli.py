@@ -61,6 +61,18 @@ def run_command(
     return 1 if result.values.get(target) is MISSING else 0
 
 
+def build_command(year: str = "2025", root: str | Path | None = None) -> int:
+    """Compile authored graph YAML into a SQLite runtime artifact."""
+    from tax_graph.compile import build_sqlite
+
+    root_path = Path(root).resolve() if root is not None else project_root()
+    result = build_sqlite(year, root=root_path)
+    print(f"built SQLite graph: {result.path}")
+    for kind, count in result.counts.items():
+        print(f"  {kind}: {count}")
+    return 0
+
+
 def acquire_command(
     year: str = "2025",
     *,
@@ -213,6 +225,16 @@ def _build_typer_app():
         if raise_code:
             raise typer.Exit(raise_code)
 
+    @cli.command("build")
+    def build_cli(
+        year: str = typer.Argument("2025"),
+        root: Path | None = typer.Option(None, "--root", help="Project root override."),
+    ) -> None:
+        """Compile authored graph YAML into SQLite."""
+        raise_code = build_command(year=year, root=root)
+        if raise_code:
+            raise typer.Exit(raise_code)
+
     @cli.command("acquire")
     def acquire_cli(
         year: str = typer.Argument("2025"),
@@ -252,6 +274,10 @@ def _fallback_app() -> int:
     run_parser.add_argument("--target", "-t", default=DEFAULT_TARGET)
     run_parser.add_argument("--root", default=None)
 
+    build_parser = subparsers.add_parser("build")
+    build_parser.add_argument("year", nargs="?", default="2025")
+    build_parser.add_argument("--root", default=None)
+
     acquire_parser = subparsers.add_parser("acquire")
     acquire_parser.add_argument("year", nargs="?", default="2025")
     acquire_parser.add_argument("--check", action="store_true")
@@ -267,6 +293,8 @@ def _fallback_app() -> int:
         return validate_command(year=args.year, root=args.root)
     if args.command == "run":
         return run_command(facts=args.facts, year=args.year, target=args.target, root=args.root)
+    if args.command == "build":
+        return build_command(year=args.year, root=args.root)
     if args.command == "acquire":
         return acquire_command(year=args.year, check=args.check, root=args.root)
     if args.command == "extract":
