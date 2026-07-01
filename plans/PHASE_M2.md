@@ -100,7 +100,7 @@ by `explain_calculation` + `get_dependencies` for now).
     execution values + trace, missing required inputs, calculation explanation with rule/operands/
     citations, and human-readable audit trace export.
 
-- [ ] **Step 4 - Behavioral contract + decisions + light-runtime gate.** Populate the server
+- [DONE] **Step 4 - Behavioral contract + decisions + light-runtime gate.** Populate the server
   `instructions` block with the contract: (1) never compute values yourself - call `execute_tax_tree`;
   (2) never assert a rule without its citation; (3) at a decision node, present the options INCLUDING
   the escape hatch, never rule yourself; (4) report missing inputs and marked-unsupported cases rather
@@ -109,6 +109,9 @@ by `explain_calculation` + `get_dependencies` for now).
   `serve` end to end. Test: the `instructions` string contains the four contract clauses; a decision
   node exposes options with at least one `other`/`unsupported`/`escalate`; a base-only guard asserts
   `fitz`/`mistralai` are not imported by `serve`. Exit: `pytest -m m2` green.
+  - Verification: `uv run --no-dev python -c "<serve construction smoke>"` lists all M2 tools with
+    no `fitz`/`mistralai` imports; `uv run pytest -m m2` -> 11 passed, 74 deselected; `uv run pytest`
+    -> 82 passed, 3 skipped; `uv run python tools\check_ascii.py` -> ASCII check OK.
 
 ## Human gate (John)
 The **manual Claude Desktop walk-through** is John's action, not automatable. Follow M4's precedent:

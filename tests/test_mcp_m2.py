@@ -100,6 +100,29 @@ def test_get_citation_by_id_and_fts_query(tmp_path):
 
 
 @pytest.mark.m2
+def test_server_instructions_include_behavior_contract():
+    server = build_mcp_server(year="2025", root=ROOT, source="yaml")
+
+    instructions = server.instructions
+
+    assert "Never compute tax values yourself" in instructions
+    assert "Never assert a tax rule without" in instructions
+    assert "At a decision node" in instructions
+    assert "Report missing inputs" in instructions
+
+
+@pytest.mark.m2
+def test_document_surfaces_decision_escape_hatch():
+    server = build_mcp_server(year="2025", root=ROOT, source="yaml")
+
+    document = _call_tool(server, "get_document", {"document_id": "form_8949_2025"})
+    decision = document["decisions"][0]
+
+    assert decision["question"]
+    assert {option["option_type"] for option in decision["options"]} & {"other", "unsupported", "escalate"}
+
+
+@pytest.mark.m2
 def test_execute_tax_tree_returns_values_and_trace():
     server = build_mcp_server(year="2025", root=ROOT, source="yaml")
     facts = load_yaml(FACTS_PATH)

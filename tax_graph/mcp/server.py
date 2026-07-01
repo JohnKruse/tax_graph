@@ -30,7 +30,13 @@ M2_TOOL_NAMES = (
 
 SERVER_INSTRUCTIONS = """Tax Graph MCP server.
 
-Use the graph and engine tools as the source of truth. Never compute tax values yourself.
+Use the graph and engine tools as the source of truth.
+
+1. Never compute tax values yourself; call execute_tax_tree for computed values.
+2. Never assert a tax rule without returning the citation that supports it.
+3. At a decision node, present the available options, including the escape hatch, and never choose
+   for the filer yourself.
+4. Report missing inputs, unsupported cases, and unresolved paths rather than guessing.
 """
 
 
@@ -45,6 +51,7 @@ class McpGraphContext:
     loaded: LoadedGraph
     documents: dict[str, dict[str, Any]]
     citations: dict[str, dict[str, Any]]
+    decisions: dict[str, dict[str, Any]]
     downstream: dict[str, list[dict[str, Any]]]
 
 
@@ -69,6 +76,7 @@ def build_context(
         loaded=loaded,
         documents={document["document_id"]: document for document in loaded.items("documents")},
         citations={citation["citation_id"]: citation for citation in loaded.items("citations")},
+        decisions={decision["decision_id"]: decision for decision in loaded.items("decisions")},
         downstream={node_id: sorted(edges, key=lambda edge: edge["edge_id"]) for node_id, edges in downstream.items()},
     )
 
@@ -101,7 +109,12 @@ def _register_tools(server: FastMCP, context: McpGraphContext) -> None:
     def get_document(document_id: str) -> dict[str, Any]:
         """Return a document object by id."""
         document = context.documents.get(document_id)
-        return {"document_id": document_id, "found": document is not None, "document": document}
+        return {
+            "document_id": document_id,
+            "found": document is not None,
+            "document": document,
+            "decisions": _decisions_for_document(context, document_id),
+        }
 
     @server.tool()
     def get_node(node_id: str) -> dict[str, Any]:
@@ -115,6 +128,7 @@ def _register_tools(server: FastMCP, context: McpGraphContext) -> None:
             "instance_note": _instance_note(address),
             "found": node is not None,
             "node": node,
+            "decisions": _decisions_for_node(context, address["base_node_id"]),
         }
 
     @server.tool()
@@ -294,6 +308,30 @@ def _search_citations(context: McpGraphContext, query: str) -> list[dict[str, An
         for citation_id, citation in sorted(context.citations.items())
         if normalized in str(citation.get("quoted_text", "")).lower()
     ]
+
+
+def _decisions_for_document(context: McpGraphContext, document_id: str) -> list[dict[str, Any]]:
+    decisions = []
+    for decision in context.decisions.values():
+        citation_document_ids = {
+            context.citations[citation_id]["document_id"]
+            for citation_id in decision.get("citation_refs", [])
+            if citation_id in context.citations
+        }
+        if document_id in citation_document_ids:
+            decisions.append(decision)
+    return sorted(decisions, key=lambda decision: decision["decision_id"])
+
+
+def _decisions_for_node(context: McpGraphContext, node_id: str) -> list[dict[str, Any]]:
+    return sorted(
+        [
+            decision
+            for decision in context.decisions.values()
+            if decision.get("sets_node") == node_id
+        ],
+        key=lambda decision: decision["decision_id"],
+    )
 
 
 def _execute(context: McpGraphContext, facts: dict[str, Any]) -> Result:

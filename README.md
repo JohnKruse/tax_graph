@@ -113,6 +113,10 @@ Execution tools delegate to the deterministic engine: `execute_tax_tree`,
 return computed values, missing required inputs, machine-readable trace entries,
 and human-readable audit text without putting tax calculation logic in MCP.
 
+The server instructions tell MCP clients to call tools rather than compute tax
+values, to cite every asserted rule, to present decision options including the
+escape hatch, and to report missing or unsupported paths instead of guessing.
+
 Example Claude Desktop config while developing from this checkout:
 
 ```json
