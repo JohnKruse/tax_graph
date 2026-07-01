@@ -60,7 +60,7 @@ by `explain_calculation` + `get_dependencies` for now).
 
 ## Steps
 
-- [ ] **Step 1 - `mcp` dep + `serve` entrypoint (stdio skeleton).** Add `mcp` (official MCP Python
+- [DONE] **Step 1 - `mcp` dep + `serve` entrypoint (stdio skeleton).** Add `mcp` (official MCP Python
   SDK) to BASE `dependencies` in `pyproject.toml` (base stays light: pyyaml, jsonschema, typer, mcp);
   refresh `uv.lock`. Create `tax_graph/mcp/server.py` that builds a stdio MCP server, loads the graph
   through the source-agnostic loader (`Graph(year, source=...)`, default sqlite when built else yaml),
@@ -69,6 +69,8 @@ by `explain_calculation` + `get_dependencies` for now).
   the server object builds and advertises exactly the M2 tool names; importing/constructing `serve`
   does NOT import `fitz`/`mistralai` (assert not in `sys.modules`). Docs (README serve section + a
   Claude Desktop config snippet).
+  - Verification: `uv run pytest -m m2` -> 2 passed, 74 deselected; `uv run pytest` -> 73 passed,
+    3 skipped; `uv run python tools\check_ascii.py` -> ASCII check OK.
 
 - [ ] **Step 2 - Read-only graph tools.** Implement `get_document`, `get_node`, `get_dependencies`
   (upstream, from the engine's `incoming` index), `get_downstream_effects` (a derived OUTGOING index -

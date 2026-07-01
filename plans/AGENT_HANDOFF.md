@@ -31,6 +31,9 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
   to visually compare rendered source lines, extracted objects, outline, outbound flows, repeatable
   table row slots, and linked provenance evidence. This does not change promotion rules; drafts
   remain ignored under `_drafts`.
+- **M2 Step 1 is done.** Added base `mcp` dependency, `tax-graph serve`, stdio FastMCP skeleton, and
+  the exact M2 tool advertisements with runtime-light import guard. Next: M2 Step 2 read-only graph
+  tools.
 - Next phase by milestone order: **M2** (MCP server, Polite Robot). Architect should generate
   `plans/PHASE_M2.md` next. Then M5, M6, **M6b** (Repeatable-table execution, Tandem Abacus), with
   **M7** (Frontier registry + SOI-weighted coverage, Compass Rose - plan written,
@@ -85,6 +88,10 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
   form front-matter ("Purpose of Form" / "Who Must File" / title) from rendered text.
 
 ## Latest verification
+- M2 Step 1:
+  - `uv run pytest -m m2` -> 2 passed, 74 deselected
+  - `uv run pytest` -> 73 passed, 3 skipped
+  - `uv run python tools\check_ascii.py` -> ASCII check OK
 - M1 phase exit:
   - `uv run pytest -m m1` -> 6 passed, 68 deselected
   - `uv run tax-graph build 2025` -> wrote `build/tax_graph_2025.sqlite`

@@ -74,6 +74,19 @@ def build_command(year: str = "2025", root: str | Path | None = None) -> int:
     return 0
 
 
+def serve_command(
+    year: str = "2025",
+    root: str | Path | None = None,
+    source: str | None = None,
+) -> int:
+    """Start the Tax Graph MCP stdio server."""
+    from tax_graph.mcp import run_mcp_server
+
+    root_path = Path(root).resolve() if root is not None else project_root()
+    run_mcp_server(year=year, root=root_path, source=source)
+    return 0
+
+
 def acquire_command(
     year: str = "2025",
     *,
@@ -237,6 +250,17 @@ def _build_typer_app():
         if raise_code:
             raise typer.Exit(raise_code)
 
+    @cli.command("serve")
+    def serve_cli(
+        year: str = typer.Option("2025", "--year", "-y", help="Tax year to serve."),
+        source: str | None = typer.Option(None, "--source", help="Graph source: sqlite or yaml. Defaults to sqlite when built, else yaml."),
+        root: Path | None = typer.Option(None, "--root", help="Project root override."),
+    ) -> None:
+        """Start the MCP stdio server."""
+        raise_code = serve_command(year=year, root=root, source=source)
+        if raise_code:
+            raise typer.Exit(raise_code)
+
     @cli.command("acquire")
     def acquire_cli(
         year: str = typer.Argument("2025"),
@@ -281,6 +305,11 @@ def _fallback_app() -> int:
     build_parser.add_argument("year", nargs="?", default="2025")
     build_parser.add_argument("--root", default=None)
 
+    serve_parser = subparsers.add_parser("serve")
+    serve_parser.add_argument("--year", "-y", default="2025")
+    serve_parser.add_argument("--source", choices=["sqlite", "yaml"], default=None)
+    serve_parser.add_argument("--root", default=None)
+
     acquire_parser = subparsers.add_parser("acquire")
     acquire_parser.add_argument("year", nargs="?", default="2025")
     acquire_parser.add_argument("--check", action="store_true")
@@ -298,6 +327,8 @@ def _fallback_app() -> int:
         return run_command(facts=args.facts, year=args.year, target=args.target, root=args.root, source=args.source)
     if args.command == "build":
         return build_command(year=args.year, root=args.root)
+    if args.command == "serve":
+        return serve_command(year=args.year, root=args.root, source=args.source)
     if args.command == "acquire":
         return acquire_command(year=args.year, check=args.check, root=args.root)
     if args.command == "extract":

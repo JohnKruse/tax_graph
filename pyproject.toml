@@ -7,6 +7,7 @@ requires-python = ">=3.11"
 license = { file = "LICENSE" }
 dependencies = [
   "jsonschema>=4.0",
+  "mcp>=1.0",
   "pyyaml>=6.0",
   "typer>=0.12",
 ]
@@ -68,6 +69,7 @@ pythonpath = ["."]
 markers = [
   "m0: Phase M0 foundation tests",
   "m1: Phase M1 compile/runtime artifact tests",
+  "m2: Phase M2 MCP server tests",
   "m3: Phase M3 acquisition tests",
   "m4: Phase M4 extraction tests",
   "network: tests that require live network access",

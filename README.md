@@ -56,6 +56,7 @@ uv run tax-graph validate 2025
 uv run tax-graph run --facts examples\capital_gains_basic\facts.yaml
 uv run tax-graph build 2025
 uv run tax-graph run --facts examples\capital_gains_basic\facts.yaml --source sqlite
+uv run tax-graph serve --year 2025
 uv run tax-graph acquire 2025
 uv run tax-graph acquire 2025 --check
 uv run tax-graph extract --doc form_8949_2025
@@ -68,6 +69,7 @@ commands can be run as a module:
 python -m tax_graph.cli validate 2025
 python -m tax_graph.cli run --facts examples\capital_gains_basic\facts.yaml
 python -m tax_graph.cli build 2025
+python -m tax_graph.cli serve --year 2025
 python -m tax_graph.cli acquire 2025 --check
 python -m tax_graph.cli extract --doc form_8949_2025
 ```
@@ -87,6 +89,32 @@ Distribution path: source installs can use the light runtime (`pip install
 tax-graph`) or the maintainer pipeline (`pip install tax-graph[build]`). A later
 single-file binary can bundle the runtime plus a prebuilt SQLite artifact so an
 end user does not need Python or build-time dependencies.
+
+## MCP Server
+
+Phase M2 adds a local stdio MCP server:
+
+```powershell
+uv run tax-graph serve --year 2025
+```
+
+The server loads `build/tax_graph_2025.sqlite` when present and falls back to the
+authored YAML graph otherwise. It is a runtime adapter over the graph and engine;
+it does not fetch sources, run OCR, or call an LLM.
+
+Example Claude Desktop config while developing from this checkout:
+
+```json
+{
+  "mcpServers": {
+    "tax-graph": {
+      "command": "uv",
+      "args": ["run", "tax-graph", "serve", "--year", "2025"],
+      "cwd": "C:\\Users\\devbox\\projects\\tax_graph"
+    }
+  }
+}
+```
 
 ## CI
 
