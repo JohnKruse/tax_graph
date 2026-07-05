@@ -60,6 +60,19 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
   See From Architect.)
 
 ## From Architect
+- **NEW (2026-07-05) - Oracle strategy pinned (extends M6, no new milestone).** Design doc:
+  `docs/oracle-strategy.md` (canonical); summary added to the M6 block in the engineering
+  plan. Key rulings: OTS logic is imperative C (no ruleset diff possible), but its
+  line-labeled I/O maps 1:1 to IRS line numbers, so scale comes from execution-level
+  fuzzing: domain profile -> seeded scenario generator -> box-level diff (`box_map.yaml`,
+  drill-tested) -> triage -> FREEZE agreed pairs as offline `examples/` fixtures. A separate
+  **oracle corpus factory repo** (created at M6 start) holds oracle builds/GPL source/
+  generator/corpus releases; main-repo CI only replays frozen data. NO IRS enrollment (ATS
+  certifies transmission acceptance, not arithmetic); public ATS scenario PDFs + MeF schema
+  are downloaded data only. OTS static C-mining = time-boxed, flag-only experiment. These
+  shape `PHASE_M6.md` when it is written just-in-time. Proposed to John (defaults adopted
+  unless vetoed): corpus repo at M6 start; arm's-length IRS stance; mining never
+  load-bearing.
 - **NEW (2026-07-05) - M8 Verification ladder planned (canary Skeptical Notary).** John's
   top concern: extraction accuracy cannot depend on hand-authored references or humans
   re-deriving forms - that is the exact bottleneck extraction exists to remove. Design doc:

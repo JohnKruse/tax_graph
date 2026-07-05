@@ -1,0 +1,112 @@
+# Oracle Strategy (scaling differential verification)
+
+> Design note extending M6 (differential harness) and ladder layer L5 of
+> `docs/extraction-verification.md`. Written 2026-07-05, following John's questions:
+> can we compare against OpenTaxSolver's ruleset directly, does that warrant a second
+> repo, and do we need the IRS's own validation service?
+
+## 1. What OpenTaxSolver actually is (so we design against reality)
+
+OpenTaxSolver (OTS, opentaxsolver.sourceforge.net) is C source, one solver program per
+form-year (`taxsolve_US_1040_<year>` etc.), GPL-licensed (worker confirms exact version
+from the source headers). Three facts matter for us:
+
+1. **Its tax logic is IMPERATIVE C, not a declarative ruleset.** There is no structured
+   rules file to diff our graph against. The hope "OTS saves its mechanisms in a
+   structured way we could just compare" is, strictly, false.
+2. **But its INTERFACE is structured and line-anchored.** Input files are line-labeled
+   (`L7  1000 ;` - labels map 1:1 to IRS form line numbers; multiple amounts before a
+   semicolon are summed; 8949 transactions import from a CSV with
+   Description/DateAcquired/DateSold/Proceeds/Cost/Code/AdjustmentAmount). Output files
+   are line-labeled computed values. IRS line numbers are OUR node spine too - so
+   scenario translation in both directions is a small deterministic mapping, not a
+   research problem.
+3. **Its C code is highly REGULAR.** Line arithmetic appears as recognizable per-line
+   patterns, and example input files ship with every form. Structured enough to
+   mechanically mine, even though it is not a ruleset.
+
+So there are two comparison channels, with very different reliability:
+
+- **Execution-level (load-bearing, scalable):** run OTS as a black-box subprocess,
+  translate facts -> OTS input, diff OTS output boxes against our engine's node values.
+  This is what M6 already plans; the section below scales it.
+- **Structure-level (exploratory bonus, never load-bearing):** statically mine OTS's
+  per-line C patterns into a line-dependency graph (which lines feed which) and diff its
+  SHAPE against our edges. Cheap way to catch routing errors (taxonomy F4) across a whole
+  form at once - but parsing C is brittle and OTS refactors yearly, so it may only ever
+  flag, never bless. Time-boxed experiment; drop it without regret if noisy.
+
+## 2. The scalable test: scenario fuzzing + a frozen corpus
+
+The genuinely scalable differential test is EXECUTION at volume:
+
+1. **Domain profile per form** - a small committed spec of what a valid scenario looks
+   like (which inputs, ranges, cardinalities: 1-50 lots, gains and losses, zero and
+   boundary values). Authored once per form; reviewed like code.
+2. **Property-based scenario generator** - deterministic-seeded random scenarios from the
+   profile; each renders BOTH ways: our `facts.yaml` and the OTS input file (and the
+   PolicyEngine/Tax-Calculator situation JSON for liability-level oracles).
+3. **Box-level diff** - run both, compare per mapped line via a per-form
+   `box_map.yaml` (our node id <-> OTS `L#` label). The box map is hand-authored but
+   tiny, one-time, and itself drill-tested (a deliberately mis-mapped box must surface).
+4. **Triage policy** - on disagreement NEITHER side is presumed right (OTS has bugs
+   too). A disagreement is a flag with the full scenario attached; a human adjudicates a
+   SAMPLE, and adjudicated cases join the drill/regression catalogs.
+5. **Freeze the corpus** - agreed scenario+expected pairs are frozen into committed
+   fixtures (`facts.yaml` + `expected.yaml`, the existing `examples/` pattern). Frozen
+   fixtures are pure data: the main repo's CI replays them offline with NO oracle
+   installed, preserving the deterministic-offline invariant. Re-generation against live
+   oracles is a periodic gated job, not a per-push cost.
+
+Thousands of machine-checked scenarios per form, zero humans except disagreement
+triage - this is the scalability answer.
+
+## 3. The second repo: an oracle corpus FACTORY, not (initially) a fork
+
+A separate GitHub project is the right call, but its product is DATA, not a fork:
+
+- **`tax-oracle-corpus` (name TBD by John):** vendors/pins exact OTS releases (and
+  PolicyEngine / Tax-Calculator versions), builds OTS in its own CI, hosts the domain
+  profiles + generator + box maps + triage log, and PUBLISHES the frozen corpus. The
+  main repo consumes released corpus fixtures as plain files.
+- **Why separate:** (a) LICENSE isolation - running OTS as a subprocess does not touch
+  our license, but keeping GPL C source, patches, and build tooling in their own repo
+  keeps the main project clean; (b) the C toolchain and oracle installs stay out of the
+  main repo's base CI; (c) the corpus is independently useful and independently
+  versioned (oracle-version bumps churn the corpus, not the tax graph).
+- **Fork only when a patch is actually needed** (e.g. machine-readable JSON output or a
+  headless fix). OTS is already CLI-driven, so a thin wrapper likely suffices; if we do
+  patch, the fork lives inside/beside the corpus repo and patches are offered upstream.
+  Harvesting the oracles' OWN shipped tests (OTS example files; PolicyEngine's YAML unit
+  tests) as scenario seeds is cheap corpus bootstrap - license terms for redistributing
+  derived fixtures get checked per oracle (worker task).
+
+## 4. The IRS's validation service: stay at arm's length (John's instinct is right)
+
+The IRS offering is MeF ATS (Assurance Testing System) - a certification gate for
+authorized e-file providers. Per the June 2026 oracle research: it validates SCHEMA and
+BUSINESS-RULE ACCEPTANCE of a transmission, not arithmetic, and enrolling means becoming
+an e-file provider (EFIN application, compliance obligations). We are not filing
+software; we produce a roadmap + audit trail. Decision:
+
+- **Do NOT enroll or transmit anything to the IRS.** The degree of separation is
+  deliberate: independent implementations prove themselves (PolicyEngine is validated
+  against NBER TAXSIM; OTS against its user base and published examples), and we measure
+  agreement with THEM.
+- **Do use the IRS's PUBLIC artifacts as data:** ATS scenario PDFs (public downloads)
+  are IRS-authored scenario INPUTS - feed them to the generator pipeline as seeds; the
+  MeF schema line inventory (if cleanly obtainable) serves as the box-mapping ground
+  truth already noted in ladder layer L1. Both are downloads, not a service
+  relationship.
+
+## 5. How this slots into the plan
+
+All of this is the SCALE half of **M6** (Twin Witness) plus the L5 layer of the M8
+ladder; no new milestone. M6's step list (in `PHASE_M6.md`, written just-in-time) should
+cover: adapters + box maps -> domain profile + generator -> fuzz/diff/triage -> corpus
+freeze + offline replay -> (time-boxed, optional) OTS static line-graph mining. The
+corpus-factory repo is created when M6 starts; until then nothing blocks on it.
+
+Decisions proposed to John: (1) create the separate corpus-factory repo at M6 start;
+(2) no IRS enrollment, public artifacts only; (3) OTS static mining is a time-boxed
+experiment, never load-bearing. Defaults adopted unless vetoed.

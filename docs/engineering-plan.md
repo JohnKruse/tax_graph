@@ -220,6 +220,19 @@ emits values + audit trace + Return Record.
   already started in `examples/`).
 - **Acceptance:** a scenario runs through Tax Graph and >=1 OSS oracle with matching key
   values; a deliberate graph bug is caught by the diff.
+- **Scale half (added 2026-07-05; design canonical in `docs/oracle-strategy.md`):** OTS has
+  no declarative ruleset to diff against - its logic is imperative C - but its line-labeled
+  input/output maps 1:1 to IRS line numbers (our node spine), so the scalable channel is
+  EXECUTION at volume: per-form domain profiles -> seeded property-based scenario generator
+  -> box-level diff via a drill-tested `box_map.yaml` -> disagreement triage (neither side
+  presumed right) -> agreed pairs FROZEN into `examples/` fixtures replayed offline in base
+  CI (no oracle installed). Oracle builds, GPL source, generator, and the frozen-corpus
+  releases live in a separate **oracle corpus factory repo** created at M6 start (fork OTS
+  only if a patch proves necessary). No IRS enrollment ever - MeF ATS certifies e-file
+  transmission acceptance, not arithmetic; public ATS scenario PDFs and the MeF schema line
+  inventory are used as downloaded data only. Optional time-boxed experiment: statically
+  mine OTS's per-line C patterns into a line-dependency graph and diff its shape against
+  our edges (flag-only, never load-bearing).
 
 ### M6b - Repeatable-table execution (row instances)
 - **Goal:** make repeatable transaction tables real end to end - N fact instances -> per-row
