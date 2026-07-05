@@ -98,7 +98,7 @@ verification ladder and the template for every future promoted form.
   - Worker note: differ statuses are `agreed`, `disagreed`, and `rejected`. Guard violations
     short-circuit mapped-box comparison; mapped disagreements include the scenario payload.
 
-- [ ] **Step 4 - Domain profile + seeded generator + fuzz command.** Committed
+- [DONE] **Step 4 - Domain profile + seeded generator + fuzz command.** Committed
   `oracles/domain_2025.yaml`: what a valid in-domain scenario is (statuses; proceeds/cost/
   adjustment ranges incl. zero and boundary values; net loss capped at $3000 so the unmodeled
   limitation stays inert; everything else absent/inert per the fence). Seeded PRNG generator
@@ -106,6 +106,11 @@ verification ladder and the template for every future promoted form.
   -> run both -> diff -> summary + triage file for disagreements. Test (offline): generator
   determinism + profile-bounds property; out-of-profile scenario refused. Live fuzz >= 100
   scenarios behind `@pytest.mark.oracle`. Docs.
+  - Architect note (2026-07-05): Codex drafted this step but its session hit the usage limit
+    before it could run tests (sandbox escalation blocked). The Architect ran verification on
+    its behalf: `pytest -m m6` -> 17 passed, 2 skipped (gated live-oracle tests); full `pytest`
+    -> 113 passed, 5 skipped; ASCII check OK; `oracles/domain_2025.yaml` confirmed to cap net
+    loss at -3000 with boundary values. Committed by the Architect, authored by Codex.
 
 - [ ] **Step 5 - Corpus freeze + offline replay + triage log.** `tax-graph oracle freeze`:
   agreed scenario/expected pairs -> `examples/oracle_corpus/<scenario_id>/` (facts.yaml +

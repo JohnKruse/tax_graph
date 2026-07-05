@@ -1165,7 +1165,7 @@ requires-dist = [
     { name = "pyyaml", specifier = ">=6.0" },
     { name = "typer", specifier = ">=0.12" },
 ]
-provides-extras = ["acquire", "llm-anthropic", "llm-openai", "llm-openrouter", "llm", "extract", "build", "dev"]
+provides-extras = ["acquire", "llm-anthropic", "llm-openai", "llm-openrouter", "llm", "extract", "oracles", "build", "dev"]
 
 [package.metadata.requires-dev]
 dev = [{ name = "pytest", specifier = ">=8.0" }]

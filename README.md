@@ -55,6 +55,7 @@ plus sha256 in `config/tax-graph.config.yaml`:
 ```powershell
 uv sync --extra oracles
 uv run tax-graph oracle install --year 2025
+uv run tax-graph oracle fuzz --year 2025 --n 100 --seed 1234
 ```
 
 The M6 harness keeps its checked-in comparison data under `oracles/`: the 2025
@@ -68,6 +69,12 @@ A guard failure marks the scenario `rejected` as outside the fenced domain; a
 mapped-box mismatch marks it `disagreed` for triage, with the full generated
 scenario attached to the report.
 
+`tax-graph oracle fuzz` loads the committed domain profile, generates scenarios
+from a deterministic seed, writes OTS inputs under `output/oracle_fuzz/`, and
+writes a `triage.yaml` for any rejected or disagreed scenario. It requires a
+configured local OTS executable and is intended for gated oracle jobs, not the
+base CI path.
+
 ## CLI Usage
 
 Phase M0 provides a package CLI named `tax-graph`:
@@ -80,6 +87,7 @@ uv run tax-graph run --facts examples\capital_gains_basic\facts.yaml --source sq
 uv run tax-graph run --facts examples\capital_gains_basic\facts.yaml --prior-record prior.carryforward.yaml
 uv run tax-graph serve --year 2025
 uv run tax-graph oracle install --year 2025
+uv run tax-graph oracle fuzz --year 2025 --n 100 --seed 1234
 uv run tax-graph acquire 2025
 uv run tax-graph acquire 2025 --check
 uv run tax-graph extract --doc form_8949_2025
@@ -94,6 +102,7 @@ python -m tax_graph.cli run --facts examples\capital_gains_basic\facts.yaml
 python -m tax_graph.cli build 2025
 python -m tax_graph.cli serve --year 2025
 python -m tax_graph.cli oracle install --year 2025
+python -m tax_graph.cli oracle fuzz --year 2025 --n 100 --seed 1234
 python -m tax_graph.cli acquire 2025 --check
 python -m tax_graph.cli extract --doc form_8949_2025
 ```

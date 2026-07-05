@@ -1,0 +1,24 @@
+tax_year: 2025
+scenario_type: capital_gains_single_lot
+filing_statuses:
+  - single
+single_lot:
+  holding_period: long_term
+  date_acquired: 01/15/2024
+  date_sold: 06/01/2025
+  proceeds:
+    min: 0
+    max: 50000
+    include: [0, 1, 3000, 12000, 50000]
+  cost:
+    min: 0
+    max: 50000
+    include: [0, 10000, 15000, 50000]
+  adjustment:
+    min: 0
+    max: 0
+    include: [0]
+  net_gain_loss:
+    min: -3000
+    max: 50000
+    include: [-3000, 0, 2000, 50000]

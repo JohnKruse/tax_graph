@@ -92,6 +92,15 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
   swapped 8949 SUBTRACT role detection at the 8949 mapped total, and the unmodeled capital-loss
   limit detected as a line 7 disagreement. Next: M6 Step 4 domain profile, seeded generator, and
   fuzz command.
+- **M6 Step 4 is done (verified + committed by the Architect, 2026-07-05).** Codex drafted
+  `oracles/domain_2025.yaml`, `tax_graph.oracles.domain`, `tax_graph.oracles.fuzz`,
+  `tax-graph oracle fuzz`, and offline/live tests, but its session hit the usage limit before it
+  could run tests. Architect verification: `pytest -m m6` -> 17 passed, 2 skipped (gated
+  live-oracle tests); full `pytest` -> 113 passed, 5 skipped; ASCII check OK; domain profile
+  confirmed to cap net loss at -3000 with boundary values. Step 4 is marked `[DONE]` in
+  `plans/PHASE_M6.md`. Next Codex session: Step 5 (corpus freeze + offline replay + triage log)
+  - note the live fuzz >= 100 run and corpus freeze need an installed OTS
+  (`tax-graph oracle install`, or set `OTS_1040_2025_BIN`).
 
 ## Open for Architect
 - (none open - the PHASE_M6 request is RESOLVED: `plans/PHASE_M6.md` is written, canary Twin

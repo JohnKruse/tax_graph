@@ -215,6 +215,51 @@ def oracle_install_command(
     return 0
 
 
+def oracle_fuzz_command(
+    year: str = "2025",
+    n: int = 100,
+    seed: int = 0,
+    root: str | Path | None = None,
+    output_dir: str | Path | None = None,
+    source: str | None = None,
+) -> int:
+    """Run seeded scenarios through Tax Graph and a live OTS binary."""
+    from tax_graph.oracles.fuzz import resolve_ots_executable, run_fuzz
+
+    root_path = Path(root).resolve() if root is not None else project_root()
+    config = load_config(root=root_path)
+    executable = resolve_ots_executable(config, root=root_path, year=year)
+    if executable is None:
+        print(f"ERROR: no OTS 1040 {year} executable configured; run oracle install or set OTS_1040_{year}_BIN")
+        return 1
+    out_dir = (
+        Path(output_dir).resolve()
+        if output_dir is not None
+        else root_path / "output" / "oracle_fuzz" / f"{year}_seed{seed}"
+    )
+    try:
+        summary = run_fuzz(
+            year=year,
+            n=n,
+            seed=seed,
+            root=root_path,
+            output_dir=out_dir,
+            executable=executable,
+            source=source,
+        )
+    except Exception as exc:
+        print(f"ERROR: {exc}")
+        return 1
+
+    print("=== oracle fuzz ===")
+    print(f"  generated: {summary.generated}")
+    print(f"  agreed: {summary.agreed}")
+    print(f"  disagreed: {summary.disagreed}")
+    print(f"  rejected: {summary.rejected}")
+    print(f"  triage: {summary.triage_path}")
+    return 0 if summary.disagreed == 0 and summary.rejected == 0 else 1
+
+
 def acquire_command(
     year: str = "2025",
     *,
@@ -414,6 +459,27 @@ def _build_typer_app():
         if raise_code:
             raise typer.Exit(raise_code)
 
+    @oracle_cli.command("fuzz")
+    def oracle_fuzz_cli(
+        year: str = typer.Option("2025", "--year", "-y", help="Tax year to fuzz."),
+        n: int = typer.Option(100, "--n", help="Number of generated scenarios."),
+        seed: int = typer.Option(0, "--seed", help="Deterministic PRNG seed."),
+        output_dir: Path | None = typer.Option(None, "--output-dir", help="Directory for OTS inputs and triage."),
+        source: str | None = typer.Option(None, "--source", help="Graph source: sqlite or yaml. Defaults to auto."),
+        root: Path | None = typer.Option(None, "--root", help="Project root override."),
+    ) -> None:
+        """Run a seeded live OTS fuzz comparison."""
+        raise_code = oracle_fuzz_command(
+            year=year,
+            n=n,
+            seed=seed,
+            root=root,
+            output_dir=output_dir,
+            source=source,
+        )
+        if raise_code:
+            raise typer.Exit(raise_code)
+
     cli.add_typer(oracle_cli, name="oracle")
 
     @cli.command("acquire")
@@ -475,6 +541,14 @@ def _fallback_app() -> int:
     oracle_install_parser.add_argument("--archive", default=None)
     oracle_install_parser.add_argument("--root", default=None)
 
+    oracle_fuzz_parser = oracle_subparsers.add_parser("fuzz")
+    oracle_fuzz_parser.add_argument("--year", "-y", default="2025")
+    oracle_fuzz_parser.add_argument("--n", type=int, default=100)
+    oracle_fuzz_parser.add_argument("--seed", type=int, default=0)
+    oracle_fuzz_parser.add_argument("--output-dir", default=None)
+    oracle_fuzz_parser.add_argument("--source", choices=["sqlite", "yaml"], default=None)
+    oracle_fuzz_parser.add_argument("--root", default=None)
+
     acquire_parser = subparsers.add_parser("acquire")
     acquire_parser.add_argument("year", nargs="?", default="2025")
     acquire_parser.add_argument("--check", action="store_true")
@@ -505,6 +579,15 @@ def _fallback_app() -> int:
         return serve_command(year=args.year, root=args.root, source=args.source)
     if args.command == "oracle" and args.oracle_command == "install":
         return oracle_install_command(year=args.year, root=args.root, archive=args.archive)
+    if args.command == "oracle" and args.oracle_command == "fuzz":
+        return oracle_fuzz_command(
+            year=args.year,
+            n=args.n,
+            seed=args.seed,
+            root=args.root,
+            output_dir=args.output_dir,
+            source=args.source,
+        )
     if args.command == "acquire":
         return acquire_command(year=args.year, check=args.check, root=args.root)
     if args.command == "extract":

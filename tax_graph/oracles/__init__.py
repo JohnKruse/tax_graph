@@ -16,6 +16,13 @@ from tax_graph.oracles.diff import (
     diff_engine_result,
     diff_values,
 )
+from tax_graph.oracles.domain import (
+    DomainProfile,
+    assert_scenario_in_domain,
+    generate_scenarios,
+    load_domain_profile,
+)
+from tax_graph.oracles.fuzz import FuzzSummary, run_fuzz
 from tax_graph.oracles.ots import (
     OtsInstallError,
     OtsRelease,
@@ -43,6 +50,8 @@ __all__ = [
     "BoxMapping",
     "BoxComparison",
     "CapitalGainScenario",
+    "DomainProfile",
+    "FuzzSummary",
     "GuardViolation",
     "OracleDiffReport",
     "GuardBox",
@@ -50,11 +59,14 @@ __all__ = [
     "OtsRelease",
     "OtsRunError",
     "OtsRunResult",
-    "find_ots_executable",
+    "assert_scenario_in_domain",
     "diff_engine_result",
     "diff_values",
+    "find_ots_executable",
+    "generate_scenarios",
     "install_ots_release",
     "load_box_map",
+    "load_domain_profile",
     "load_ots_label_inventory",
     "output_path_for",
     "parse_ots_output",
@@ -63,6 +75,7 @@ __all__ = [
     "render_ots_input_text",
     "render_tax_graph_facts_document",
     "render_tax_graph_facts_yaml",
+    "run_fuzz",
     "run_ots_1040",
     "validate_box_map",
     "write_ots_input_bundle",
