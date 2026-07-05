@@ -44,6 +44,12 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 - **M2 Step 4 is done.** Server instructions include the four behavior-contract clauses, decision
   escape hatches surface through MCP, and base-only serve construction is runtime-light. M2 remains
   OPEN pending John's manual Claude Desktop walk-through before marking `[COMPLETE]` / archiving.
+- **M2 Desktop startup smoke is done.** Claude Desktop read the local `tax-graph` MCP config and
+  successfully initialized/listed tools after switching the config snippet to
+  `uv --directory C:\Users\devbox\projects\tax_graph run python -m tax_graph.cli serve --year 2025`.
+  A local stdio MCP client also walked the full capital-gains branch and returned 1040 line 7 =
+  2000 with the 8949 SUBTRACT citation. M2 is still OPEN pending John's in-window Desktop
+  walkthrough confirmation (or John's explicit acceptance of the stdio client smoke as equivalent).
 - Next phase by milestone order: **M2** (MCP server, Polite Robot). Architect should generate
   `plans/PHASE_M2.md` next. Then M5, M6, **M6b** (Repeatable-table execution, Tandem Abacus), with
   **M7** (Frontier registry + SOI-weighted coverage, Compass Rose - plan written,
@@ -115,6 +121,14 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
     `fitz`/`mistralai` imports
   - `uv run pytest -m m2` -> 11 passed, 74 deselected
   - `uv run pytest` -> 82 passed, 3 skipped
+  - `uv run python tools\check_ascii.py` -> ASCII check OK
+- M2 Desktop startup smoke:
+  - Claude Desktop log `logs\mcp-server-tax-graph.log` -> `tax-graph` initialized, returned
+    `initialize`, and served `tools/list` using `uv --directory ... run python -m tax_graph.cli`.
+  - Local stdio MCP client via SDK -> tools listed; `get_document`, `get_dependencies`,
+    `get_downstream_effects`, `execute_tax_tree`, `explain_calculation`, and `export_audit_file`
+    all passed; 1040 line 7 = 2000; citation `cite_8949_col_h_gain` present.
+  - `uv run pytest -m m2` -> 11 passed, 74 deselected
   - `uv run python tools\check_ascii.py` -> ASCII check OK
 - M1 phase exit:
   - `uv run pytest -m m1` -> 6 passed, 68 deselected

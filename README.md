@@ -124,8 +124,17 @@ Example Claude Desktop config while developing from this checkout:
   "mcpServers": {
     "tax-graph": {
       "command": "uv",
-      "args": ["run", "tax-graph", "serve", "--year", "2025"],
-      "cwd": "C:\\Users\\devbox\\projects\\tax_graph"
+      "args": [
+        "--directory",
+        "C:\\Users\\devbox\\projects\\tax_graph",
+        "run",
+        "python",
+        "-m",
+        "tax_graph.cli",
+        "serve",
+        "--year",
+        "2025"
+      ]
     }
   }
 }
