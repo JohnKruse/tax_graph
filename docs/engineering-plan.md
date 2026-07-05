@@ -82,6 +82,41 @@ Decided representation:
 This is scheduled as **M6b** (below). Until then the single-lot v0 slice (one instance; totals ==
 that instance) is a legitimate supported case and stays as authored.
 
+## Parameters and thresholds (decided 2026-07-05)
+
+Reading OTS's 1040 C solver (John's find) shows what a full form ruleset carries besides
+operations: standard-deduction amounts by filing status, bracket boundary/rate tables, the
+qualified-dividends worksheet breakpoints (0/15/20 percent), Social Security taxability
+thresholds, AMT exemption + phaseout amounts, caps and floors (capital-loss $3000/$1500, SALT
+limit), and phase-out ranges. In OTS these are hardcoded C constants. In OUR graph they must be
+first-class, or the "roadmap for AI" thesis fails at exactly the numbers that matter:
+
+1. **A parameter is a NODE, never an inline magic number.** Additive schema: a `parameter`
+   node_type (year-specific value + citation). Most parameters vary by filing status, so a
+   parameter carries keyed values consumed via `LOOKUP_TABLE`/`LOOKUP_BRACKET` (exact
+   representation - one node with keyed values vs per-status nodes - is a phase-plan decision;
+   the PRINCIPLE is pinned). Rules reach parameters through edges, like any other input.
+2. **No-magic-numbers guardrail (drill-enforced under M8):** a numeric literal inside
+   `rule.parameters` that is not purely structural (e.g. a rounding increment) is a validator
+   flag. If a number came from the IRS, it must be a cited parameter node.
+3. **Every parameter is individually cited.** The values live in the instructions/worksheets
+   and the annual inflation-adjustment revenue procedure; extraction targets them like any
+   other cited object. This makes year-over-year re-extraction sharp: inflation updates are
+   parameter-only diffs.
+4. **Bulk tables are DATA, not nodes.** The under-$100k tax table (hundreds of rows) compiles
+   to a data resource referenced by a `LOOKUP_TABLE` rule, with provenance - not per-row nodes.
+5. **Parameter-level differential (new cheap oracle channel; see `docs/oracle-strategy.md`):**
+   PolicyEngine-US publishes its parameters as declarative YAML with values-by-date and
+   references - a DIRECT structured oracle for exactly these numbers; OTS's C constants are
+   mechanically minable as a second witness. Diffing our extracted parameter values against
+   both catches wrong-threshold extraction directly, without executing anything.
+
+The closed op vocabulary already covers the mechanics (`LOOKUP_BRACKET`, `IF/IF_ELSE`,
+`COMPARE`, `MIN/MAX`, ...) and `worksheet_field` nodes already exist - no vocabulary change.
+The engine implements ops as branches need them (it has COPY/SUM/SUBTRACT today; the first
+worksheet branch brings the rest). First live parameter when Schedule D is extracted: the
+capital-loss limit ($3000 / $1500 MFS) on line 21.
+
 Seams every phase before M6b must respect:
 - **M1 (compile):** SQLite is a rebuildable projection of YAML, so adding the table representation
   later is a data change, not a migration. Keep the compiler generic over object kinds and the

@@ -30,6 +30,17 @@ So there are two comparison channels, with very different reliability:
 - **Execution-level (load-bearing, scalable):** run OTS as a black-box subprocess,
   translate facts -> OTS input, diff OTS output boxes against our engine's node values.
   This is what M6 already plans; the section below scales it.
+- **Parameter-level (load-bearing, cheapest of all; added 2026-07-05):** once thresholds/
+  limits/brackets are first-class parameter nodes (engineering-plan "Parameters and
+  thresholds (decided)"), diff their VALUES directly against two independent witnesses:
+  PolicyEngine-US's declarative parameters YAML (values-by-date, with references - a
+  structured oracle for exactly these numbers) and constants mined from OTS's C source
+  (simple literals like `S_STD_DEDUC = 15750.0` and bracket arrays - regex-minable even
+  though the surrounding LOGIC is not). No execution needed; catches wrong-threshold
+  extraction (the standard deduction, bracket boundaries, 0/15/20 percent breakpoints,
+  AMT phaseouts, caps like the $3000 capital-loss limit) as a plain value comparison.
+  Disagreement between the two witnesses themselves -> flag, human adjudicates against
+  the revenue procedure.
 - **Structure-level (exploratory bonus, never load-bearing):** statically mine OTS's
   per-line C patterns into a line-dependency graph (which lines feed which) and diff its
   SHAPE against our edges. Cheap way to catch routing errors (taxonomy F4) across a whole
@@ -49,6 +60,18 @@ The genuinely scalable differential test is EXECUTION at volume:
 3. **Box-level diff** - run both, compare per mapped line via a per-form
    `box_map.yaml` (our node id <-> OTS `L#` label). The box map is hand-authored but
    tiny, one-time, and itself drill-tested (a deliberately mis-mapped box must surface).
+   **Both ends of the map are machine-validated (added 2026-07-05):** the OTS side
+   against OTS's own PDF-fill METADATA file (each form-year ships one; it enumerates
+   every output variable name - `L1a`, `S1_8d`, `D1bh`, `F8949_1ah`, ... - as
+   whitespace-delimited name/coordinate rows, trivially parseable, zero tax logic), and
+   our side against the M7 frontier registry. The metadata's page list is also the FENCE
+   list: it names exactly which schedules the 1040 solver computes (Sched 1/1-A/2/3, A,
+   B, D, 8949 short+long with 11 row slots + a totals row, 6251) - unmodeled entries
+   there need guard boxes; forms absent there OTS cannot oracle at all. Its
+   `round_to_whole_numbers` directive corroborates the whole-dollar diff default.
+   **Pin SourceForge releases only** - the GitHub mirrors are stale (stop ~2020); tax
+   logic itself lives solely in the per-form C solvers, confirmed by the metadata's
+   omission of any arithmetic.
 4. **Triage policy** - on disagreement NEITHER side is presumed right (OTS has bugs
    too). A disagreement is a flag with the full scenario attached; a human adjudicates a
    SAMPLE, and adjudicated cases join the drill/regression catalogs.

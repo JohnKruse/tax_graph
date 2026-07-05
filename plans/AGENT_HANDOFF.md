@@ -59,6 +59,17 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
   first, confirm that explicitly because `plans/PHASE_M7.md` is already live.
 
 ## From Architect
+- **NEW (2026-07-05) - Parameters and thresholds are first-class (decided; John's OTS C
+  reading).** Pinned in engineering-plan "Parameters and thresholds (decided 2026-07-05)".
+  Summary: IRS-sourced numbers (standard deduction, bracket tables, worksheet breakpoints,
+  caps/floors, phaseouts) become `parameter` nodes (additive node_type) with individual
+  citations, consumed via `LOOKUP_TABLE`/`LOOKUP_BRACKET` edges - NEVER inline magic numbers
+  in `rule.parameters` (drill-enforced under M8). Bulk tables (under-$100k tax table) compile
+  as data resources, not per-row nodes. New cheapest oracle channel in
+  `docs/oracle-strategy.md`: diff parameter values against PolicyEngine-US parameters YAML +
+  OTS C constants. No op-vocabulary change; engine grows ops when the first worksheet branch
+  lands. Nothing to build NOW - the seam to respect: keep node_type additive and do not let
+  any extraction/authoring write an IRS number inline into a rule.
 - **NEW (2026-07-05) - Oracle strategy pinned (extends M6, no new milestone).** Design doc:
   `docs/oracle-strategy.md` (canonical); summary added to the M6 block in the engineering
   plan. Key rulings: OTS logic is imperative C (no ruleset diff possible), but its
