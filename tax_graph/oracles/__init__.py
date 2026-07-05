@@ -9,6 +9,13 @@ from tax_graph.oracles.box_map import (
     load_ots_label_inventory,
     validate_box_map,
 )
+from tax_graph.oracles.diff import (
+    BoxComparison,
+    GuardViolation,
+    OracleDiffReport,
+    diff_engine_result,
+    diff_values,
+)
 from tax_graph.oracles.ots import (
     OtsInstallError,
     OtsRelease,
@@ -34,13 +41,18 @@ __all__ = [
     "BoxMap",
     "BoxMapValidationReport",
     "BoxMapping",
+    "BoxComparison",
     "CapitalGainScenario",
+    "GuardViolation",
+    "OracleDiffReport",
     "GuardBox",
     "OtsInstallError",
     "OtsRelease",
     "OtsRunError",
     "OtsRunResult",
     "find_ots_executable",
+    "diff_engine_result",
+    "diff_values",
     "install_ots_release",
     "load_box_map",
     "load_ots_label_inventory",

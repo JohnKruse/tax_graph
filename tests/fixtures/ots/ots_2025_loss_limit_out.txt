@@ -1,0 +1,13 @@
+Title: Tax Graph M6 loss-limit OTS output fixture
+OpenTaxSolver: US 1040 2025 fixture
+
+F8949_2d = 0
+F8949_2e = 10000
+F8949_2g = 0
+F8949_2h = -10000
+D7 = 0
+D8b = -10000
+D15 = -10000
+D16 = -10000
+L7 = -3000
+S1_8z = 0

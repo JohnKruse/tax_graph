@@ -87,7 +87,7 @@ verification ladder and the template for every future promoted form.
     Form 8949 CSV. The v0 Tax Graph renderer rejects nonzero adjustments because the live graph
     has no adjustment node yet; the domain profile keeps adjustment at zero until M6b/graph growth.
 
-- [ ] **Step 3 - Differ + guards + deliberate-bug canary.** `oracles/diff.py`: run engine
+- [DONE] **Step 3 - Differ + guards + deliberate-bug canary.** `oracles/diff.py`: run engine
   result + parsed OTS output through the box map -> report (per-box agree/disagree with values,
   guard violations, scenario attached to every disagreement). Whole-dollar exact match; guard
   violation = scenario REJECTED (distinct from disagreement). Canary tests (offline, canned OTS
@@ -95,6 +95,8 @@ verification ladder and the template for every future promoted form.
   minuend/subtrahend -> diff catches at the 8949 box, not just L7; (c) a loss-beyond-3000
   canned pair -> detected (OTS caps at -3000, we do not; the divergence/guard must fire).
   Docs.
+  - Worker note: differ statuses are `agreed`, `disagreed`, and `rejected`. Guard violations
+    short-circuit mapped-box comparison; mapped disagreements include the scenario payload.
 
 - [ ] **Step 4 - Domain profile + seeded generator + fuzz command.** Committed
   `oracles/domain_2025.yaml`: what a valid in-domain scenario is (statuses; proceeds/cost/

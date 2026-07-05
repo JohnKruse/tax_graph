@@ -63,6 +63,11 @@ fixture validates that every mapped OTS box is known before any diff runs.
 Generated single-lot scenarios render both to Tax Graph `facts.yaml` and to an
 OTS 1040 input text file plus Form 8949 CSV.
 
+The differ compares whole-dollar mapped boxes and evaluates guard boxes first.
+A guard failure marks the scenario `rejected` as outside the fenced domain; a
+mapped-box mismatch marks it `disagreed` for triage, with the full generated
+scenario attached to the report.
+
 ## CLI Usage
 
 Phase M0 provides a package CLI named `tax-graph`:
