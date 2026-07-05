@@ -52,7 +52,7 @@ a dollar figure from prose.**
 
 ## Steps
 
-- [ ] **Step 1 - Record model + builder (and provenance-preserving facts load).**
+- [DONE] **Step 1 - Record model + builder (and provenance-preserving facts load).**
   `tax_graph/record/return_record.py`: typed record model + `build_return_record(...)` from
   (a) the facts DOCUMENT including per-fact `source`/`confidence` provenance - note
   `load_facts()` currently returns bare values; add a provenance-preserving loader beside it
@@ -64,6 +64,8 @@ a dollar figure from prose.**
   `docs/return-record.md` Contents 1-7. Test: builder over the capital-gains example is
   deterministic and complete; a resolution referencing a nonexistent decision/option fails
   loudly. Docs: module docstrings.
+  - Verification: `.\.venv\Scripts\python.exe -m pytest -m m5` -> 2 passed, 85 deselected;
+    `.\.venv\Scripts\python.exe tools\check_ascii.py` -> ASCII check OK.
 
 - [ ] **Step 2 - Markdown memo renderer.** `render_memo(record) -> str`: metadata header, facts
   ledger (value + provenance per fact), decision log (question, options presented, chosen,

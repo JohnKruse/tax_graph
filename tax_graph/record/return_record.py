@@ -1,0 +1,266 @@
+"""Build deterministic Return Record objects from facts, graph, and trace.
+
+The Return Record is the cross-year memory artifact. This module builds the
+typed in-memory record while preserving the dual-format rule: prose renderers
+may display facts and carryforwards, but next year's machine ingestion reads
+only the structured carryforward block.
+"""
+
+from __future__ import annotations
+
+from dataclasses import asdict, dataclass, field
+from pathlib import Path
+from typing import Any
+
+from jsonschema import Draft202012Validator
+
+from tax_graph.engine import Graph, MISSING, Result
+from tax_graph.io.loader import load_yaml
+
+
+SCHEMA_DIR = Path(__file__).resolve().parents[2] / "schemas"
+
+
+@dataclass(frozen=True)
+class RecordMetadata:
+    """Stable metadata for one generated Return Record."""
+
+    tax_year: int
+    filing_status: str | None
+    generated_date: str
+    tax_graph_version: str
+    target_node: str | None = None
+
+
+@dataclass(frozen=True)
+class FactLedgerEntry:
+    """One taxpayer-supplied fact with provenance preserved."""
+
+    node_id: str
+    label: str
+    value: Any
+    source: dict[str, Any] = field(default_factory=dict)
+    confidence: float | None = None
+
+
+@dataclass(frozen=True)
+class DecisionLogEntry:
+    """One resolved decision with option, rationale, and citations."""
+
+    decision_id: str
+    question: str
+    chosen_option_id: str
+    chosen_label: str
+    chosen_option_type: str
+    rationale: str
+    decided_by: str
+    decided_date: str
+    options_presented: list[dict[str, Any]]
+    citations: list[dict[str, Any]]
+
+
+@dataclass(frozen=True)
+class TraceSummaryEntry:
+    """A stable, compact trace row for rendered record summaries."""
+
+    node_id: str
+    label: str
+    kind: str
+    value: Any
+    operation: str | None = None
+    rule: str | None = None
+    citations: list[str] = field(default_factory=list)
+
+
+@dataclass(frozen=True)
+class CarryforwardBlock:
+    """Structured carryforward payload paired with the prose memo."""
+
+    tax_year: int
+    tax_graph_version: str
+    generated_date: str
+    carryforwards: list[dict[str, Any]] = field(default_factory=list)
+    elections: list[dict[str, Any]] = field(default_factory=list)
+
+
+@dataclass(frozen=True)
+class ReturnRecord:
+    """Typed Return Record assembled from a single engine execution."""
+
+    metadata: RecordMetadata
+    facts: list[FactLedgerEntry]
+    decisions: list[DecisionLogEntry]
+    unsupported: list[str]
+    outputs: list[TraceSummaryEntry]
+    trace_summary: list[TraceSummaryEntry]
+    carryforward_block: CarryforwardBlock
+    elections: list[dict[str, Any]] = field(default_factory=list)
+
+    def to_dict(self) -> dict[str, Any]:
+        """Return a plain dictionary suitable for YAML or JSON rendering."""
+        return _json_safe(asdict(self))
+
+
+def build_return_record(
+    *,
+    facts_document: dict[str, Any],
+    result: Result,
+    graph: Graph,
+    decision_resolutions: dict[str, Any] | None = None,
+    tax_year: int | str | None = None,
+    tax_graph_version: str = "unknown",
+    generated_date: str = "unknown",
+    target_node: str | None = None,
+) -> ReturnRecord:
+    """Build a deterministic Return Record model from an engine result."""
+    record_year = int(tax_year or facts_document.get("tax_year") or graph.year)
+    metadata = RecordMetadata(
+        tax_year=record_year,
+        filing_status=facts_document.get("filing_status"),
+        generated_date=str(generated_date),
+        tax_graph_version=tax_graph_version,
+        target_node=target_node,
+    )
+    resolutions = validate_decision_resolutions(decision_resolutions or {"resolutions": []}, graph)
+    facts = _build_facts(facts_document, graph)
+    decisions = _build_decisions(resolutions, graph)
+    unsupported = _build_unsupported(result, decisions)
+    trace_summary = [_trace_entry(node_id, trace, graph) for node_id, trace in sorted(result.trace.items())]
+    outputs = _build_outputs(result, graph, target_node)
+    carryforward_block = CarryforwardBlock(
+        tax_year=record_year,
+        tax_graph_version=tax_graph_version,
+        generated_date=str(generated_date),
+        carryforwards=[],
+        elections=[],
+    )
+    return ReturnRecord(
+        metadata=metadata,
+        facts=facts,
+        decisions=decisions,
+        unsupported=unsupported,
+        outputs=outputs,
+        trace_summary=trace_summary,
+        carryforward_block=carryforward_block,
+        elections=[],
+    )
+
+
+def load_decision_resolutions(path: str | Path) -> dict[str, Any]:
+    """Load decision resolutions from YAML and normalize an empty file."""
+    data = load_yaml(path)
+    return data if data is not None else {"resolutions": []}
+
+
+def validate_decision_resolutions(data: dict[str, Any], graph: Graph) -> list[dict[str, Any]]:
+    """Validate resolution schema and ensure every decision option exists."""
+    schema = load_yaml(SCHEMA_DIR / "decision_resolutions.schema.json")
+    validator = Draft202012Validator(schema)
+    errors = sorted(validator.iter_errors(data), key=lambda error: list(error.path))
+    if errors:
+        first = errors[0]
+        path = ".".join(str(part) for part in first.path) or "<root>"
+        raise ValueError(f"invalid decision resolutions at {path}: {first.message}")
+
+    resolutions = sorted(data.get("resolutions", []), key=lambda item: item["decision_id"])
+    for resolution in resolutions:
+        decision = graph.decisions.get(resolution["decision_id"])
+        if decision is None:
+            raise ValueError(f"unknown decision_id: {resolution['decision_id']}")
+        option_ids = {option["option_id"] for option in decision.get("options", [])}
+        if resolution["chosen_option_id"] not in option_ids:
+            raise ValueError(
+                f"unknown option_id {resolution['chosen_option_id']} for decision {resolution['decision_id']}"
+            )
+    return resolutions
+
+
+def _build_facts(facts_document: dict[str, Any], graph: Graph) -> list[FactLedgerEntry]:
+    facts: list[FactLedgerEntry] = []
+    for fact in sorted(facts_document.get("facts", []), key=lambda item: item["node_id"]):
+        node = graph.nodes.get(fact["node_id"], {})
+        facts.append(
+            FactLedgerEntry(
+                node_id=fact["node_id"],
+                label=node.get("label", fact["node_id"]),
+                value=fact.get("value"),
+                source=dict(fact.get("source", {})),
+                confidence=fact.get("confidence"),
+            )
+        )
+    return facts
+
+
+def _build_decisions(resolutions: list[dict[str, Any]], graph: Graph) -> list[DecisionLogEntry]:
+    entries: list[DecisionLogEntry] = []
+    for resolution in resolutions:
+        decision = graph.decisions[resolution["decision_id"]]
+        chosen = next(
+            option for option in decision["options"] if option["option_id"] == resolution["chosen_option_id"]
+        )
+        citation_ids = sorted(set(decision.get("citation_refs", []) + chosen.get("citation_refs", [])))
+        entries.append(
+            DecisionLogEntry(
+                decision_id=decision["decision_id"],
+                question=decision["question"],
+                chosen_option_id=chosen["option_id"],
+                chosen_label=chosen["label"],
+                chosen_option_type=chosen["option_type"],
+                rationale=resolution["rationale"],
+                decided_by=resolution["decided_by"],
+                decided_date=resolution["decided_date"],
+                options_presented=list(decision.get("options", [])),
+                citations=[
+                    graph.citations[citation_id]
+                    for citation_id in citation_ids
+                    if citation_id in graph.citations
+                ],
+            )
+        )
+    return entries
+
+
+def _build_unsupported(result: Result, decisions: list[DecisionLogEntry]) -> list[str]:
+    items = [
+        f"Missing required input: {node_id}"
+        for node_id in result.missing_required_inputs
+    ]
+    for decision in decisions:
+        if decision.chosen_option_type in {"other", "unsupported", "escalate"}:
+            items.append(
+                f"Decision {decision.decision_id} chose {decision.chosen_option_type}: {decision.chosen_label}"
+            )
+    return sorted(items)
+
+
+def _build_outputs(result: Result, graph: Graph, target_node: str | None) -> list[TraceSummaryEntry]:
+    if target_node:
+        trace = result.trace.get(target_node, {"kind": "not_found", "value": None})
+        return [_trace_entry(target_node, trace, graph)]
+    return [
+        _trace_entry(node_id, trace, graph)
+        for node_id, trace in sorted(result.trace.items())
+        if trace.get("kind") == "computed"
+    ]
+
+
+def _trace_entry(node_id: str, trace: dict[str, Any], graph: Graph) -> TraceSummaryEntry:
+    return TraceSummaryEntry(
+        node_id=node_id,
+        label=graph.nodes.get(node_id, {}).get("label", node_id),
+        kind=trace.get("kind", "unknown"),
+        value=_json_safe(trace.get("value")),
+        operation=trace.get("operation"),
+        rule=trace.get("rule"),
+        citations=list(trace.get("citations", [])),
+    )
+
+
+def _json_safe(value: Any) -> Any:
+    if value is MISSING:
+        return "MISSING"
+    if isinstance(value, dict):
+        return {key: _json_safe(item) for key, item in value.items()}
+    if isinstance(value, list):
+        return [_json_safe(item) for item in value]
+    return value

@@ -29,6 +29,18 @@ class Graph:
         self.year = loaded.year
         self.root = loaded.root
         self.source = graph_source
+        self.documents = {
+            document["document_id"]: document
+            for document in sorted(loaded.items("documents"), key=lambda item: item["document_id"])
+        }
+        self.citations = {
+            citation["citation_id"]: citation
+            for citation in sorted(loaded.items("citations"), key=lambda item: item["citation_id"])
+        }
+        self.decisions = {
+            decision["decision_id"]: decision
+            for decision in sorted(loaded.items("decisions"), key=lambda item: item["decision_id"])
+        }
         self.nodes = {node["node_id"]: node for node in sorted(loaded.items("nodes"), key=lambda item: item["node_id"])}
         self.rules = {rule["rule_id"]: rule for rule in sorted(loaded.items("rules"), key=lambda item: item["rule_id"])}
         self.incoming: dict[str, list[dict[str, Any]]] = {}
@@ -156,9 +168,18 @@ class Engine:
         return value
 
 
+def load_facts_document(path: str | Path) -> dict[str, Any]:
+    """Load normalized taxpayer facts while preserving fact provenance."""
+    data = load_yaml(path)
+    if data is None:
+        return {"facts": []}
+    data.setdefault("facts", [])
+    return data
+
+
 def load_facts(path: str | Path) -> dict[str, Any]:
     """Load normalized taxpayer facts as a node-id to value mapping."""
-    data = load_yaml(path)
+    data = load_facts_document(path)
     return {fact["node_id"]: fact["value"] for fact in data.get("facts", [])}
 
 

@@ -72,5 +72,6 @@ markers = [
   "m2: Phase M2 MCP server tests",
   "m3: Phase M3 acquisition tests",
   "m4: Phase M4 extraction tests",
+  "m5: Phase M5 Return Record tests",
   "network: tests that require live network access",
 ]

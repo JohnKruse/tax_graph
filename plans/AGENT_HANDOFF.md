@@ -52,6 +52,10 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 - Next core phase by milestone order: **M5** (Return Record, canary Future Echo). Architect should
   generate `plans/PHASE_M5.md` next. **M7** (Frontier registry + SOI-weighted coverage, Compass
   Rose - plan written, `plans/PHASE_M7.md`) is also live and may run alongside if John chooses it.
+- **M5 Step 1 is done.** Added the base-runtime `tax_graph.record` model/builder, preserved fact
+  provenance via `load_facts_document()` without breaking `load_facts()`, indexed graph documents /
+  citations / decisions for record use, added `decision_resolutions.schema.json`, and covered
+  deterministic builder output plus bad decision/option references. Next: M5 Step 2 memo renderer.
 
 ## Open for Architect
 - (none open - the PHASE_M5 request is RESOLVED: `plans/PHASE_M5.md` is written, canary Future
@@ -150,6 +154,9 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
   form front-matter ("Purpose of Form" / "Who Must File" / title) from rendered text.
 
 ## Latest verification
+- M5 Step 1:
+  - `.\.venv\Scripts\python.exe -m pytest -m m5` -> 2 passed, 85 deselected
+  - `.\.venv\Scripts\python.exe tools\check_ascii.py` -> ASCII check OK
 - M2 Step 1:
   - `uv run pytest -m m2` -> 2 passed, 74 deselected
   - `uv run pytest` -> 73 passed, 3 skipped

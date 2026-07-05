@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "decision_resolutions.schema.json",
+  "title": "Tax Graph Decision Resolutions",
+  "description": "User or agent recorded choices for decision nodes. These feed the Return Record decision log and must reference existing graph decisions and options.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["resolutions"],
+  "properties": {
+    "resolutions": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/resolution" }
+    }
+  },
+  "$defs": {
+    "resolution": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "decision_id",
+        "chosen_option_id",
+        "rationale",
+        "decided_by",
+        "decided_date"
+      ],
+      "properties": {
+        "decision_id": { "type": "string", "pattern": "^[a-z0-9_]+$" },
+        "chosen_option_id": { "type": "string", "pattern": "^[a-z0-9_]+$" },
+        "rationale": { "type": "string", "minLength": 1 },
+        "decided_by": { "type": "string", "minLength": 1 },
+        "decided_date": { "type": "string", "format": "date" }
+      }
+    }
+  }
+}
