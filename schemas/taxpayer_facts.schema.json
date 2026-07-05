@@ -21,6 +21,11 @@
     "facts": {
       "type": "array",
       "items": { "$ref": "#/$defs/fact" }
+    },
+    "tables": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/table_fact" },
+      "description": "Runtime row instances for repeatable tables. Rows are keyed by row_key and values by table column id."
     }
   },
   "$defs": {
@@ -44,6 +49,48 @@
               "type": "string",
               "description": "e.g. 'mistral_ocr_4', 'antigravity_gemini_flash', 'manual'."
             },
+            "citation_ref": { "type": "string" }
+          }
+        },
+        "confidence": { "type": "number", "minimum": 0, "maximum": 1 }
+      }
+    },
+    "table_fact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["table_id", "rows"],
+      "properties": {
+        "table_id": {
+          "type": "string",
+          "pattern": "^[a-z0-9_]+$"
+        },
+        "rows": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/table_row" }
+        }
+      }
+    },
+    "table_row": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["row_key", "columns"],
+      "properties": {
+        "row_key": {
+          "type": "string",
+          "pattern": "^[a-z0-9_]+$",
+          "description": "Runtime row id, unique only within this table's rows."
+        },
+        "columns": {
+          "type": "object",
+          "additionalProperties": {},
+          "description": "Input values keyed by column_id from the table definition."
+        },
+        "source": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "document_label": { "type": "string" },
+            "extracted_by": { "type": "string" },
             "citation_ref": { "type": "string" }
           }
         },

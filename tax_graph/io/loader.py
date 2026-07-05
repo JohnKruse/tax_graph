@@ -17,6 +17,7 @@ import yaml
 GRAPH_KINDS: dict[str, tuple[str, bool, str]] = {
     "documents": ("document", False, "document_id"),
     "nodes": ("node", True, "node_id"),
+    "tables": ("table", True, "table_id"),
     "edges": ("edge", True, "edge_id"),
     "rules": ("rule", True, "rule_id"),
     "citations": ("citation", True, "citation_id"),

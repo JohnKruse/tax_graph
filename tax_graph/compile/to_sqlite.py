@@ -90,6 +90,13 @@ def _create_schema(conn: sqlite3.Connection) -> None:
             object_json TEXT NOT NULL
         );
 
+        CREATE TABLE tables (
+            table_id TEXT PRIMARY KEY,
+            document_id TEXT,
+            line_anchor TEXT,
+            object_json TEXT NOT NULL
+        );
+
         CREATE TABLE edges (
             edge_id TEXT PRIMARY KEY,
             source TEXT,
@@ -142,6 +149,7 @@ def _insert_graph(conn: sqlite3.Connection, graph: LoadedGraph) -> None:
     )
     _insert_documents(conn, graph.items("documents"))
     _insert_nodes(conn, graph.items("nodes"))
+    _insert_tables(conn, graph.items("tables"))
     _insert_edges(conn, graph.items("edges"))
     _insert_rules(conn, graph.items("rules"))
     _insert_citations(conn, graph.items("citations"))
@@ -184,6 +192,22 @@ def _insert_nodes(conn: sqlite3.Connection, objects: list[dict[str, Any]]) -> No
         INSERT INTO nodes(node_id, document_id, label, node_type, value_type, required, object_json)
         VALUES (?, ?, ?, ?, ?, ?, ?)
         """,
+        rows,
+    )
+
+
+def _insert_tables(conn: sqlite3.Connection, objects: list[dict[str, Any]]) -> None:
+    rows = [
+        (
+            obj.get("table_id"),
+            obj.get("document_id"),
+            obj.get("line_anchor"),
+            _json(obj),
+        )
+        for obj in _stable_objects("tables", objects)
+    ]
+    conn.executemany(
+        "INSERT INTO tables(table_id, document_id, line_anchor, object_json) VALUES (?, ?, ?, ?)",
         rows,
     )
 

@@ -112,6 +112,11 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
   `source: live_ots_diff_report`, pinned the Windows SourceForge URL/sha256 in the example config,
   and verified `pytest -m oracle` with the installed executable. **M6 is complete** and archived as
   `plans/archive/PHASE_M6.md`.
+- **M6b Step 1 is done.** Added `schemas/table.schema.json`, additive table-member fields on nodes,
+  `tables` in taxpayer facts, `tables` as a loaded graph kind, semantic table/facts validation, and
+  Step 1 tests in `tests/test_tables_schema_m6b.py`. SQLite now has a generic `tables` table and
+  the SQLite loader tolerates older compiled artifacts that lack it. Next: M6b Step 2 compiler +
+  loader parity tests/docs.
 
 ## Open for Architect
 - (none open - the M6 closeout question is ANSWERED: the live gate is NOT deferrable, and
@@ -243,6 +248,12 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
   form front-matter ("Purpose of Form" / "Who Must File" / title) from rendered text.
 
 ## Latest verification
+- M6b Step 1:
+  - `.\.venv\Scripts\python.exe -m pytest -m m6b` -> 7 passed, 124 deselected
+  - `.\.venv\Scripts\python.exe -m pytest -m "m0 or m1"` -> 24 passed, 107 deselected
+  - `.\.venv\Scripts\python.exe -m tax_graph.cli validate 2025` -> graph integrity OK; tables=0
+  - `.\.venv\Scripts\python.exe -m pytest` -> 126 passed, 5 skipped
+  - `.\.venv\Scripts\python.exe tools\check_ascii.py` -> ASCII check OK
 - M6 phase exit / live-gate closeout:
   - `.\.venv\Scripts\python.exe -m pytest -m m6` -> 23 passed, 2 skipped, 99 deselected
   - `.\.venv\Scripts\python.exe -m pytest -m oracle` with `OTS_1040_2025_BIN` set -> 2 passed,

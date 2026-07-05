@@ -1,4 +1,4 @@
-"""Validate authored Tax Graph YAML.
+"""Validate authored Tax Graph YAML and taxpayer fact documents.
 
 Validation has two layers: JSON Schema checks for each object and graph-level
 integrity checks that JSON Schema cannot express, such as unique ids,
@@ -10,7 +10,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 import json
 from pathlib import Path
-from typing import Any
+from typing import Any, Mapping
 
 from tax_graph.io.loader import GRAPH_KINDS, LoadedGraph, load_graph, load_yaml
 
@@ -61,6 +61,7 @@ def validate_graph(year: str | int = "2025", root: str | Path | None = None) -> 
     _validate_schemas(graph, schemas_dir, errors)
     _validate_unique_ids(graph, errors)
     _validate_references_and_years(graph, errors)
+    _validate_tables(graph, errors)
     _validate_acyclic_dependencies(graph, errors)
 
     return ValidationResult(
@@ -69,6 +70,53 @@ def validate_graph(year: str | int = "2025", root: str | Path | None = None) -> 
         jsonschema_enabled=HAVE_JSONSCHEMA,
         errors=errors,
     )
+
+
+def validate_taxpayer_facts_document(
+    facts_document: Mapping[str, Any],
+    graph: LoadedGraph,
+    *,
+    schemas_dir: str | Path | None = None,
+) -> list[str]:
+    """Validate table-shaped taxpayer facts against a loaded graph.
+
+    Scalar fact node references remain runtime inputs. Repeatable-table facts
+    need graph context because their values are keyed by table column id.
+    """
+
+    errors: list[str] = []
+    schema_root = Path(schemas_dir) if schemas_dir is not None else graph.root / "schemas"
+    if HAVE_JSONSCHEMA:
+        try:
+            jsonschema.validate(dict(facts_document), load_yaml(schema_root / "taxpayer_facts.schema.json"))
+        except jsonschema.ValidationError as exc:
+            preview = json.dumps(facts_document, default=str)[:120]
+            errors.append(f"[schema/taxpayer_facts] {exc.message} :: {preview}")
+
+    tables = {table["table_id"]: table for table in graph.items("tables") if "table_id" in table}
+    for table_fact in facts_document.get("tables", []) or []:
+        table_id = table_fact.get("table_id", "<unknown>")
+        table = tables.get(table_id)
+        if table is None:
+            errors.append(f"facts table {table_id} -> missing table definition")
+            continue
+        columns = {column["column_id"]: column for column in table.get("columns", []) if "column_id" in column}
+        input_columns = {column_id for column_id, column in columns.items() if column.get("kind") == "input"}
+        computed_columns = {column_id for column_id, column in columns.items() if column.get("kind") == "computed"}
+        seen_row_keys: set[str] = set()
+        for row in table_fact.get("rows", []) or []:
+            row_key = row.get("row_key", "<unknown>")
+            if row_key in seen_row_keys:
+                errors.append(f"facts table {table_id} row {row_key} -> duplicate row_key within table")
+            seen_row_keys.add(row_key)
+            for column_id in (row.get("columns") or {}):
+                if column_id in computed_columns:
+                    errors.append(
+                        f"facts table {table_id} row {row_key} column {column_id} -> computed columns cannot be supplied"
+                    )
+                elif column_id not in input_columns:
+                    errors.append(f"facts table {table_id} row {row_key} column {column_id} -> unknown input column")
+    return errors
 
 
 def _validate_schemas(graph: LoadedGraph, schemas_dir: Path, errors: list[str]) -> None:
@@ -153,6 +201,93 @@ def _validate_references_and_years(graph: LoadedGraph, errors: list[str]) -> Non
     for decision in graph.items("decisions"):
         decision_id = decision.get("decision_id", "<unknown>")
         _check_citation_refs("decision", decision_id, decision.get("citation_refs", []), citations, errors)
+
+
+def _validate_tables(graph: LoadedGraph, errors: list[str]) -> None:
+    documents = {doc["document_id"]: doc for doc in graph.items("documents") if "document_id" in doc}
+    nodes = {node["node_id"]: node for node in graph.items("nodes") if "node_id" in node}
+    citations = {cite["citation_id"]: cite for cite in graph.items("citations") if "citation_id" in cite}
+    for table in graph.items("tables"):
+        table_id = table.get("table_id", "<unknown>")
+        document_id = table.get("document_id")
+        if document_id not in documents:
+            errors.append(f"table {table_id} -> missing document {document_id}")
+        _check_citation_refs("table", table_id, table.get("citation_refs", []), citations, errors)
+        columns = table.get("columns", []) or []
+        totals = table.get("totals", []) or []
+        column_ids = _duplicate_values(columns, "column_id")
+        for duplicate in column_ids:
+            errors.append(f"table {table_id} -> duplicate column_id {duplicate}")
+        total_column_ids = _duplicate_values(totals, "column_id")
+        for duplicate in total_column_ids:
+            errors.append(f"table {table_id} -> duplicate total column_id {duplicate}")
+
+        row_columns = {column.get("column_id") for column in columns}
+        for column in columns:
+            column_id = column.get("column_id", "<unknown>")
+            node_id = column.get("template_node")
+            _validate_table_member(
+                table_id=table_id,
+                column_id=column_id,
+                node_id=node_id,
+                expected_role="row_template",
+                expected_document=document_id,
+                nodes=nodes,
+                errors=errors,
+                owner=f"column {column_id}",
+            )
+        for total in totals:
+            column_id = total.get("column_id", "<unknown>")
+            if column_id not in row_columns:
+                errors.append(f"table {table_id} total {column_id} -> total column is not a row column")
+            _validate_table_member(
+                table_id=table_id,
+                column_id=column_id,
+                node_id=total.get("total_node"),
+                expected_role="total",
+                expected_document=document_id,
+                nodes=nodes,
+                errors=errors,
+                owner=f"total {column_id}",
+            )
+
+
+def _validate_table_member(
+    *,
+    table_id: str,
+    column_id: str,
+    node_id: Any,
+    expected_role: str,
+    expected_document: Any,
+    nodes: dict[str, dict[str, Any]],
+    errors: list[str],
+    owner: str,
+) -> None:
+    node = nodes.get(node_id)
+    if node is None:
+        errors.append(f"table {table_id} {owner} -> missing node {node_id}")
+        return
+    if node.get("table_id") != table_id:
+        errors.append(f"table {table_id} {owner} -> node {node_id} has table_id {node.get('table_id')}")
+    if node.get("column") != column_id:
+        errors.append(f"table {table_id} {owner} -> node {node_id} has column {node.get('column')}")
+    if node.get("role") != expected_role:
+        errors.append(f"table {table_id} {owner} -> node {node_id} has role {node.get('role')}")
+    if expected_document and node.get("document_id") != expected_document:
+        errors.append(f"table {table_id} {owner} -> node {node_id} belongs to document {node.get('document_id')}")
+
+
+def _duplicate_values(objects: list[dict[str, Any]], field: str) -> list[str]:
+    seen: set[str] = set()
+    duplicates: set[str] = set()
+    for obj in objects:
+        value = obj.get(field)
+        if not value:
+            continue
+        if value in seen:
+            duplicates.add(str(value))
+        seen.add(value)
+    return sorted(duplicates)
 
 
 def _check_citation_refs(

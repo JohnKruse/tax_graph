@@ -42,6 +42,21 @@
       "items": { "type": "string" },
       "description": "Ids of citation objects that authorize/explain this node."
     },
+    "table_id": {
+      "type": "string",
+      "pattern": "^[a-z0-9_]+$",
+      "description": "Optional repeatable-table id when this node is a table member."
+    },
+    "column": {
+      "type": "string",
+      "pattern": "^[a-z0-9_]+$",
+      "description": "Optional table column id when this node is a row-template or total column."
+    },
+    "role": {
+      "type": "string",
+      "enum": ["row_template", "total"],
+      "description": "Optional table role for repeatable-table member nodes."
+    },
     "description": { "type": "string" }
   }
 }

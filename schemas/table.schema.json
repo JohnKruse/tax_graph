@@ -1,0 +1,85 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "table.schema.json",
+  "title": "Tax Graph Repeatable Table",
+  "description": "A repeatable form table subunit: row-template columns plus totals rows, with taxpayer instances supplied at runtime.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["table_id", "document_id", "line_anchor", "columns", "totals"],
+  "properties": {
+    "table_id": {
+      "type": "string",
+      "pattern": "^[a-z0-9_]+$",
+      "description": "Stable template-level table id, usually the IRS line anchor."
+    },
+    "document_id": {
+      "type": "string",
+      "pattern": "^[a-z0-9_]+$",
+      "description": "The document this repeatable table belongs to."
+    },
+    "line_anchor": {
+      "type": "string",
+      "description": "Human-readable IRS line anchor, e.g. 'Form 8949 Part II line 1'."
+    },
+    "columns": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/column" },
+      "description": "Ordered row-template columns. Values in taxpayer facts are keyed by column_id."
+    },
+    "totals": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/total" },
+      "description": "Totals-row nodes keyed by the row-template column they aggregate."
+    },
+    "citation_refs": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Ids of citation objects that authorize/explain this table."
+    },
+    "description": { "type": "string" }
+  },
+  "$defs": {
+    "column": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["column_id", "label", "kind", "template_node"],
+      "properties": {
+        "column_id": {
+          "type": "string",
+          "pattern": "^[a-z0-9_]+$",
+          "description": "IRS column id such as d, e, g, or h."
+        },
+        "label": { "type": "string" },
+        "kind": {
+          "type": "string",
+          "enum": ["input", "computed"],
+          "description": "Whether the row-template column is supplied by facts or computed by rules."
+        },
+        "template_node": {
+          "type": "string",
+          "pattern": "^[a-z0-9_]+$",
+          "description": "Static node id for this row-template column."
+        }
+      }
+    },
+    "total": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["column_id", "total_node"],
+      "properties": {
+        "column_id": {
+          "type": "string",
+          "pattern": "^[a-z0-9_]+$",
+          "description": "Column id aggregated by this total."
+        },
+        "total_node": {
+          "type": "string",
+          "pattern": "^[a-z0-9_]+$",
+          "description": "Static totals-row node id."
+        }
+      }
+    }
+  }
+}

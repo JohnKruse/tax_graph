@@ -42,6 +42,10 @@ class Graph:
             for decision in sorted(loaded.items("decisions"), key=lambda item: item["decision_id"])
         }
         self.nodes = {node["node_id"]: node for node in sorted(loaded.items("nodes"), key=lambda item: item["node_id"])}
+        self.tables = {
+            table["table_id"]: table
+            for table in sorted(loaded.items("tables"), key=lambda item: item["table_id"])
+        }
         self.rules = {rule["rule_id"]: rule for rule in sorted(loaded.items("rules"), key=lambda item: item["rule_id"])}
         self.incoming: dict[str, list[dict[str, Any]]] = {}
         for edge in sorted(loaded.items("edges"), key=lambda item: item["edge_id"]):

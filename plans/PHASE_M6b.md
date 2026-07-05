@@ -55,7 +55,7 @@ hand-authored single-lot 8949 slice with extracted, table-shaped structure.
 
 ## Steps
 
-- [ ] **Step 1 - Additive schema + validator.** `schemas/table.schema.json`: a table object
+- [DONE] **Step 1 - Additive schema + validator.** `schemas/table.schema.json`: a table object
   (`table_id`, `document_id`, `line_anchor`, ordered `columns` [{`column_id` e.g. "d",
   `label`, `input|computed`, `template_node`}], `totals` [{`column_id`, `total_node`}],
   `citation_refs`). Additive optional node fields: `table_id`, `column`, `role` in
@@ -67,6 +67,10 @@ hand-authored single-lot 8949 slice with extracted, table-shaped structure.
   one table's rows; facts columns resolve against the table definition; computed columns in
   facts are an ERROR. Tests: valid table validates; each violation fails loudly. Docs:
   `schemas/README.md`.
+  - Worker note: added the table schema, additive node/facts fields, a `tables` graph kind,
+    semantic table-member validation, and `validate_taxpayer_facts_document()` for table-row facts.
+    SQLite pass-through was kept compatible with old local DBs so the added graph kind does not
+    break existing auto-source runs before a rebuild.
 
 - [ ] **Step 2 - Compiler + loader pass-through.** `tables` compile to SQLite (additive table;
   nodes row already generic per the M1 seam) and load back through the same `Graph` interface;

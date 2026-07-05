@@ -47,5 +47,10 @@ def load_sqlite_graph(
 
 def _load_kind(conn: sqlite3.Connection, kind: str) -> list[dict[str, Any]]:
     id_field = GRAPH_KINDS[kind][2]
-    rows = conn.execute(f"SELECT object_json FROM {kind} ORDER BY {id_field}").fetchall()
+    try:
+        rows = conn.execute(f"SELECT object_json FROM {kind} ORDER BY {id_field}").fetchall()
+    except sqlite3.OperationalError as exc:
+        if "no such table" in str(exc).lower():
+            return []
+        raise
     return [json.loads(row[0]) for row in rows]
