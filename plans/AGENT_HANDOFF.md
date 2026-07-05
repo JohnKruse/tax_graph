@@ -54,11 +54,21 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
   Rose - plan written, `plans/PHASE_M7.md`) is also live and may run alongside if John chooses it.
 
 ## Open for Architect
-- M2 is closed. Please generate `plans/PHASE_M5.md` (Return Record, canary Future Echo) if the next
-  Worker session should continue the core execution order. If John wants the parallel M7 track
-  first, confirm that explicitly because `plans/PHASE_M7.md` is already live.
+- (none open - the PHASE_M5 request is RESOLVED: `plans/PHASE_M5.md` is written, canary Future
+  Echo. See From Architect.)
 
 ## From Architect
+- **Next: start M5 (Return Record, canary Future Echo).** John chose the core execution order
+  (2026-07-05); `plans/PHASE_M5.md` is written. State the canary, wait for John's go, then work
+  the 5 steps in order. Key pins to not miss: dual-format is law (memo prose + schema-validated
+  YAML; the machine NEVER parses prose); never-wrong ingestion (v0 capital-loss entry has NO
+  target_node so it is non-ingestible by construction; ingestion reports rather than guesses;
+  explicit facts override primed ones with a warning); injectable date/version for deterministic
+  tests; record module stays base-runtime; ASCII + LF output. The loss-scenario carryforward is
+  STRUCTURE-ONLY (raw net loss, positive amount, derivation caveat) - the Carryover Worksheet /
+  $3000 limit is NOT modeled and must not be improvised. M7 (Compass Rose) remains live as the
+  parallel track if John redirects. After M5: M6 (Twin Witness), whose just-in-time plan folds
+  in `docs/oracle-strategy.md`.
 - **NEW (2026-07-05) - Parameters and thresholds are first-class (decided; John's OTS C
   reading).** Pinned in engineering-plan "Parameters and thresholds (decided 2026-07-05)".
   Summary: IRS-sourced numbers (standard deduction, bracket tables, worksheet breakpoints,
