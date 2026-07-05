@@ -1,11 +1,14 @@
 from __future__ import annotations
 
+import asyncio
 from pathlib import Path
 
 import pytest
 
 from tax_graph.cli import run_command
 from tax_graph.engine import Engine, Graph, load_facts, load_facts_document
+from tax_graph.io.loader import load_yaml
+from tax_graph.mcp import build_mcp_server
 from tax_graph.record import (
     build_return_record,
     ingest_prior_record,
@@ -238,6 +241,65 @@ def test_run_command_invalid_prior_record_exits_nonzero(tmp_path, capsys):
     assert "ERROR: invalid carryforward block" in capsys.readouterr().out
 
 
+def test_run_command_writes_return_record_pair(tmp_path, capsys):
+    code = run_command(
+        facts=FACTS_PATH,
+        year="2025",
+        root=ROOT,
+        source="yaml",
+        record_dir=tmp_path,
+        record_date="2026-07-05",
+        tax_graph_version="test-version",
+    )
+
+    memo_path = tmp_path / "return_record_2025.md"
+    carryforward_path = tmp_path / "return_record_2025.carryforward.yaml"
+
+    assert code == 0
+    assert memo_path.exists()
+    assert carryforward_path.exists()
+    assert "Form 1040, line 7 - Capital gain or (loss)" in memo_path.read_text(encoding="utf-8")
+    assert load_yaml(carryforward_path)["carryforwards"] == []
+    output = capsys.readouterr().out
+    assert "form_1040_2025_line_7_capital_gain_loss = 2000" in output
+    assert str(memo_path) in output
+    assert str(carryforward_path) in output
+
+
+def test_run_command_no_record_opt_out(tmp_path):
+    code = run_command(
+        facts=FACTS_PATH,
+        year="2025",
+        root=ROOT,
+        source="yaml",
+        record_dir=tmp_path,
+        no_record=True,
+    )
+
+    assert code == 0
+    assert not list(tmp_path.iterdir())
+
+
+def test_mcp_export_return_record_tool_returns_memo_and_block():
+    server = build_mcp_server(year="2025", root=ROOT, source="yaml")
+    facts = load_yaml(FACTS_PATH)
+
+    result = _call_tool(
+        server,
+        "export_return_record",
+        {
+            "facts": facts,
+            "target": TARGET,
+            "generated_date": "2026-07-05",
+            "tax_graph_version": "test-version",
+        },
+    )
+
+    assert "Tax Graph Return Record" in result["memo_text"]
+    assert result["carryforward_block"]["tax_year"] == 2025
+    assert result["carryforward_block"]["carryforwards"] == []
+
+
 def test_decision_resolution_references_must_exist():
     graph = Graph("2025", root=ROOT, source="yaml")
 
@@ -281,6 +343,11 @@ def _capital_gains_record():
         generated_date="2026-07-05",
         target_node=TARGET,
     )
+
+
+def _call_tool(server, name: str, arguments: dict):
+    _content, structured = asyncio.run(server.call_tool(name, arguments))
+    return structured
 
 
 def _capital_loss_record():

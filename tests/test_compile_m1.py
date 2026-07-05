@@ -96,6 +96,7 @@ def test_cli_run_can_execute_from_sqlite_source(tmp_path):
             str(EXAMPLE / "facts.yaml"),
             "--source",
             "sqlite",
+            "--no-record",
             "--root",
             str(root),
         ],

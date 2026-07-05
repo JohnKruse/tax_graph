@@ -15,7 +15,7 @@ import sys
 from tax_graph.cli import run_command, validate_command
 
 validate_code = validate_command(year="2025")
-run_code = run_command(facts="examples/capital_gains_basic/facts.yaml")
+run_code = run_command(facts="examples/capital_gains_basic/facts.yaml", no_record=True)
 loaded = [name for name in ("fitz", "mistralai") if name in sys.modules]
 print(json.dumps({"validate_code": validate_code, "run_code": run_code, "loaded": loaded}))
 """

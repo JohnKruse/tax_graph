@@ -1,6 +1,6 @@
 # Return Record (decision log + carryforward memo)
 
-> Status: design note (v0). The runtime, persistent counterpart to the build-time
+> Status: implemented-v0. The runtime, persistent counterpart to the build-time
 > [decision nodes](../schemas/decision.schema.json). Extends the requirements-doc
 > "Tax Trace" (Section 5.3) / `export_audit_file` (Section 8.2) from *computation provenance* into a
 > durable, re-ingestible record of **what was decided, why, and what carries forward**.
@@ -74,9 +74,20 @@ Even the capital-gains MVP has a carryforward (the capital-loss carryover). The 
 of that carryover is deferred for v0 (req. doc Section 9.3), but the **Return Record structure should
 exist from day one** so it isn't retrofitted - the carryforward block simply starts empty/simple.
 
+## Implemented v0
+
+M5 implements a paired output from `tax-graph run`: `return_record_<year>.md` for the memo and
+`return_record_<year>.carryforward.yaml` validated by
+[`carryforward.schema.json`](../schemas/carryforward.schema.json). Use `--record-dir` to redirect
+the files, `--no-record` to skip emission, and `--prior-record` to ingest a previous structured
+block. The MCP server also exposes `export_return_record`.
+
+The v0 capital-loss policy is intentionally structure-only. A negative Schedule D line 16 emits a
+positive `capital_loss` amount with no `target_node`, so it is non-ingestible by construction. The
+memo and derivation both state that the Capital Loss Carryover Worksheet / $3000 limitation is not
+modeled in v0 and the amount is the raw net loss, not the usable carryover.
+
 ## Open items
 
-- A `return_record` / `carryforward` JSON Schema for the structured block (follow-on to the
-  `schemas/` set).
 - How the agent *surfaces* last year's decisions when a consistency election recurs.
 - Redaction/fixture tooling so records can be shared for testing with fake data only.

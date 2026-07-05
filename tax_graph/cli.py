@@ -3,11 +3,13 @@
 from __future__ import annotations
 
 import argparse
+import datetime as _dt
 from pathlib import Path
 from typing import Any, Callable
 
+from tax_graph import __version__
 from tax_graph.config import get_config_value, load_config, project_root
-from tax_graph.engine import Engine, Graph, MISSING, load_facts, render_trace
+from tax_graph.engine import Engine, Graph, MISSING, load_facts, load_facts_document, render_trace
 from tax_graph.validate import validate_graph
 
 try:
@@ -43,12 +45,18 @@ def run_command(
     root: str | Path | None = None,
     source: str | None = None,
     prior_record: str | Path | None = None,
+    record_dir: str | Path | None = None,
+    no_record: bool = False,
+    record_date: str | None = None,
+    tax_graph_version: str | None = None,
 ) -> int:
     """Execute a graph from taxpayer facts and print values plus trace."""
     root_path = Path(root).resolve() if root is not None else project_root()
     load_config(root=root_path)
     graph = Graph(year, root=root_path, source=source)
-    fact_values = load_facts(Path(facts))
+    facts_path = Path(facts)
+    facts_document = load_facts_document(facts_path)
+    fact_values = load_facts(facts_path)
     prior_ingestion = None
     if prior_record is not None:
         from tax_graph.record import ingest_prior_record, load_carryforward_block
@@ -63,6 +71,7 @@ def run_command(
             print(f"ERROR: {exc}")
             return 1
         fact_values = prior_ingestion.facts
+        facts_document = _facts_document_with_prior(facts_document, prior_ingestion)
     result = Engine(graph).execute(fact_values)
 
     print("=== computed values ===")
@@ -74,9 +83,69 @@ def run_command(
             print(f"  {node_id}")
     if prior_ingestion is not None:
         _print_prior_record_report(prior_ingestion)
+    record_paths = None
+    if not no_record:
+        record_paths = _write_return_record(
+            facts_path=facts_path,
+            facts_document=facts_document,
+            result=result,
+            graph=graph,
+            year=year,
+            target=target,
+            record_dir=record_dir,
+            generated_date=record_date or _dt.date.today().isoformat(),
+            tax_graph_version=tax_graph_version or __version__,
+        )
+        print("\n=== return record ===")
+        print(f"  memo: {record_paths['memo']}")
+        print(f"  carryforward: {record_paths['carryforward']}")
     print(f"\n=== audit trace: {target} ===")
     render_trace(target, result, graph)
     return 1 if result.values.get(target) is MISSING else 0
+
+
+def _facts_document_with_prior(facts_document: dict[str, Any], prior_ingestion: Any) -> dict[str, Any]:
+    merged = dict(facts_document)
+    merged["facts"] = prior_ingestion.fact_entries + list(facts_document.get("facts", []))
+    return merged
+
+
+def _write_return_record(
+    *,
+    facts_path: Path,
+    facts_document: dict[str, Any],
+    result: Any,
+    graph: Graph,
+    year: str,
+    target: str,
+    record_dir: str | Path | None,
+    generated_date: str,
+    tax_graph_version: str,
+) -> dict[str, Path]:
+    from tax_graph.record import build_return_record, render_carryforward_yaml, render_memo
+
+    output_dir = Path(record_dir).resolve() if record_dir is not None else facts_path.resolve().parent
+    output_dir.mkdir(parents=True, exist_ok=True)
+    stem = f"return_record_{year}"
+    memo_path = output_dir / f"{stem}.md"
+    carryforward_path = output_dir / f"{stem}.carryforward.yaml"
+    record = build_return_record(
+        facts_document=facts_document,
+        result=result,
+        graph=graph,
+        tax_year=year,
+        tax_graph_version=tax_graph_version,
+        generated_date=generated_date,
+        target_node=target,
+    )
+    _write_text_lf(memo_path, render_memo(record))
+    _write_text_lf(carryforward_path, render_carryforward_yaml(record.carryforward_block))
+    return {"memo": memo_path, "carryforward": carryforward_path}
+
+
+def _write_text_lf(path: Path, text: str) -> None:
+    with path.open("w", encoding="utf-8", newline="\n") as handle:
+        handle.write(text)
 
 
 def _print_prior_record_report(prior_ingestion: Any) -> None:
@@ -263,6 +332,8 @@ def _build_typer_app():
         target: str = typer.Option(DEFAULT_TARGET, "--target", "-t", help="Target node for the audit trace."),
         source: str | None = typer.Option(None, "--source", help="Graph source: sqlite or yaml. Defaults to sqlite when built, else yaml."),
         prior_record: Path | None = typer.Option(None, "--prior-record", help="Prior Return Record carryforward YAML."),
+        record_dir: Path | None = typer.Option(None, "--record-dir", help="Directory for Return Record outputs."),
+        no_record: bool = typer.Option(False, "--no-record", help="Do not write Return Record outputs."),
         root: Path | None = typer.Option(None, "--root", help="Project root override."),
     ) -> None:
         """Execute a return graph from taxpayer facts."""
@@ -273,6 +344,8 @@ def _build_typer_app():
             root=root,
             source=source,
             prior_record=prior_record,
+            record_dir=record_dir,
+            no_record=no_record,
         )
         if raise_code:
             raise typer.Exit(raise_code)
@@ -337,6 +410,8 @@ def _fallback_app() -> int:
     run_parser.add_argument("--target", "-t", default=DEFAULT_TARGET)
     run_parser.add_argument("--source", choices=["sqlite", "yaml"], default=None)
     run_parser.add_argument("--prior-record", default=None)
+    run_parser.add_argument("--record-dir", default=None)
+    run_parser.add_argument("--no-record", action="store_true")
     run_parser.add_argument("--root", default=None)
 
     build_parser = subparsers.add_parser("build")
@@ -369,6 +444,8 @@ def _fallback_app() -> int:
             root=args.root,
             source=args.source,
             prior_record=args.prior_record,
+            record_dir=args.record_dir,
+            no_record=args.no_record,
         )
     if args.command == "build":
         return build_command(year=args.year, root=args.root)

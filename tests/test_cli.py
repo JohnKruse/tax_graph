@@ -44,6 +44,7 @@ def test_cli_run_reports_line_7_value():
             "run",
             "--facts",
             "examples/capital_gains_basic/facts.yaml",
+            "--no-record",
         ],
         capture_output=True,
         text=True,

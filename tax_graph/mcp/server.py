@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from contextlib import redirect_stdout
 from dataclasses import dataclass
+import datetime as _dt
 from io import StringIO
 from pathlib import Path
 import sqlite3
@@ -11,6 +12,7 @@ from typing import Any
 
 from mcp.server.fastmcp import FastMCP
 
+from tax_graph import __version__
 from tax_graph.engine import Engine, Graph, MISSING, Result, render_trace
 from tax_graph.io.loader import LoadedGraph, load_graph
 from tax_graph.io.sqlite_loader import compiled_db_path, load_sqlite_graph
@@ -27,6 +29,7 @@ M2_TOOL_NAMES = (
     "explain_calculation",
     "export_audit_file",
 )
+MCP_TOOL_NAMES = M2_TOOL_NAMES + ("export_return_record",)
 
 SERVER_INSTRUCTIONS = """Tax Graph MCP server.
 
@@ -234,6 +237,32 @@ def _register_tools(server: FastMCP, context: McpGraphContext) -> None:
             "audit_text": buffer.getvalue(),
         }
 
+    @server.tool()
+    def export_return_record(
+        facts: dict[str, Any],
+        target: str = "form_1040_2025_line_7_capital_gain_loss",
+        generated_date: str | None = None,
+        tax_graph_version: str | None = None,
+    ) -> dict[str, Any]:
+        """Return a Markdown memo plus structured carryforward block."""
+        from tax_graph.record import build_return_record, render_memo
+
+        result = _execute(context, facts)
+        record = build_return_record(
+            facts_document=_facts_document_for_record(facts, context.year),
+            result=result,
+            graph=context.graph,
+            tax_year=context.year,
+            tax_graph_version=tax_graph_version or __version__,
+            generated_date=generated_date or _dt.date.today().isoformat(),
+            target_node=target,
+        )
+        return {
+            "target": target,
+            "memo_text": render_memo(record),
+            "carryforward_block": record.carryforward_block.to_dict(),
+        }
+
 
 def _stub(tool: str, context: McpGraphContext, **arguments: Any) -> dict[str, Any]:
     return {
@@ -345,6 +374,21 @@ def _coerce_facts(facts: dict[str, Any]) -> dict[str, Any]:
         fact["node_id"]: fact.get("value")
         for fact in facts.get("facts", [])
         if isinstance(fact, dict) and "node_id" in fact
+    }
+
+
+def _facts_document_for_record(facts: dict[str, Any], year: str) -> dict[str, Any]:
+    if "facts" in facts:
+        document = dict(facts)
+        document.setdefault("tax_year", int(year))
+        document.setdefault("facts", [])
+        return document
+    return {
+        "tax_year": int(year),
+        "facts": [
+            {"node_id": node_id, "value": value}
+            for node_id, value in sorted(facts.items())
+        ],
     }
 
 

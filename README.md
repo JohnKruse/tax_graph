@@ -56,6 +56,7 @@ uv run tax-graph validate 2025
 uv run tax-graph run --facts examples\capital_gains_basic\facts.yaml
 uv run tax-graph build 2025
 uv run tax-graph run --facts examples\capital_gains_basic\facts.yaml --source sqlite
+uv run tax-graph run --facts examples\capital_gains_basic\facts.yaml --prior-record prior.carryforward.yaml
 uv run tax-graph serve --year 2025
 uv run tax-graph acquire 2025
 uv run tax-graph acquire 2025 --check
@@ -85,6 +86,14 @@ After a build exists, `tax-graph run` defaults to the SQLite artifact. Use
 `--source yaml` to force the authored YAML source or `--source sqlite` to require
 the compiled artifact.
 
+`tax-graph run` writes a Return Record pair by default next to the facts file:
+`return_record_<year>.md` for the human memo and
+`return_record_<year>.carryforward.yaml` for the machine-ingestible payload. Use
+`--record-dir` to write them elsewhere, `--no-record` to opt out, and
+`--prior-record <carryforward.yaml>` to prime a later run from a previous
+structured block. Carryforwards without a resolvable `target_node` are reported
+as not ingested rather than guessed.
+
 Distribution path: source installs can use the light runtime (`pip install
 tax-graph`) or the maintainer pipeline (`pip install tax-graph[build]`). A later
 single-file binary can bundle the runtime plus a prebuilt SQLite artifact so an
@@ -112,6 +121,8 @@ Execution tools delegate to the deterministic engine: `execute_tax_tree`,
 `list_required_inputs`, `explain_calculation`, and `export_audit_file`. They
 return computed values, missing required inputs, machine-readable trace entries,
 and human-readable audit text without putting tax calculation logic in MCP.
+M5 adds `export_return_record`, which returns the Markdown memo text paired with
+the structured carryforward block for the supplied facts.
 
 The server instructions tell MCP clients to call tools rather than compute tax
 values, to cite every asserted rule, to present decision options including the

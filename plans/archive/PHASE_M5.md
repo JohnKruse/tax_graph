@@ -105,13 +105,16 @@ a dollar figure from prose.**
   - Verification: `.\.venv\Scripts\python.exe -m pytest -m m5` -> 11 passed, 85 deselected;
     `.\.venv\Scripts\python.exe tools\check_ascii.py` -> ASCII check OK.
 
-- [ ] **Step 5 - CLI default emission + MCP tool + docs.** `run` writes the record pair by
+- [DONE] **Step 5 - CLI default emission + MCP tool + docs.** `run` writes the record pair by
   default next to the facts file (`return_record_<year>.md` + `.carryforward.yaml`), with
   `--record-dir` override and `--no-record` opt-out; print the two paths in the run summary.
   MCP: additive `export_return_record` tool (memo text + structured block for the current
   execution), runtime-light, following the M2 tool patterns and the server behavioral contract.
   README: `run` record output + `--prior-record` usage; update `docs/return-record.md` status
   from "design note (v0)" to implemented-v0 with pointers. Exit-criteria command run. Docs.
+  - Verification: `.\.venv\Scripts\python.exe -m pytest -m m5` -> 14 passed, 85 deselected;
+    `.\.venv\Scripts\python.exe -m pytest -m m2` -> 11 passed, 88 deselected;
+    `.\.venv\Scripts\python.exe tools\check_ascii.py` -> ASCII check OK.
 
 When all steps are `[DONE]`: mark this phase `[COMPLETE]`, move it to `plans/archive/`, update
 `plans/AGENT_HANDOFF.md`, single `git push`, and tell John. Next by milestone order: M6

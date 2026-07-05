@@ -68,6 +68,10 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
   resolvable `target_node` entries as facts with Return Record provenance, reports no-target/unknown
   carryforwards without guessing, and warns when explicit facts override primed values. Next: M5
   Step 5 CLI default emission + MCP tool + docs.
+- **M5 Step 5 is done.** `tax-graph run` now writes `return_record_<year>.md` plus
+  `return_record_<year>.carryforward.yaml` by default, supports `--record-dir`, `--no-record`, and
+  `--prior-record`, and prints output paths. MCP adds `export_return_record`. README and
+  `docs/return-record.md` document implemented-v0 behavior. Next: M5 phase exit checks.
 
 ## Open for Architect
 - (none open - the PHASE_M5 request is RESOLVED: `plans/PHASE_M5.md` is written, canary Future
@@ -177,6 +181,10 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
   - `.\.venv\Scripts\python.exe tools\check_ascii.py` -> ASCII check OK
 - M5 Step 4:
   - `.\.venv\Scripts\python.exe -m pytest -m m5` -> 11 passed, 85 deselected
+  - `.\.venv\Scripts\python.exe tools\check_ascii.py` -> ASCII check OK
+- M5 Step 5:
+  - `.\.venv\Scripts\python.exe -m pytest -m m5` -> 14 passed, 85 deselected
+  - `.\.venv\Scripts\python.exe -m pytest -m m2` -> 11 passed, 88 deselected
   - `.\.venv\Scripts\python.exe tools\check_ascii.py` -> ASCII check OK
 - M2 Step 1:
   - `uv run pytest -m m2` -> 2 passed, 74 deselected

@@ -12,7 +12,7 @@ import pytest
 
 from tax_graph.compile import build_sqlite
 from tax_graph.io.loader import load_yaml
-from tax_graph.mcp import M2_TOOL_NAMES, build_mcp_server
+from tax_graph.mcp import M2_TOOL_NAMES, MCP_TOOL_NAMES, build_mcp_server
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -25,7 +25,7 @@ def test_mcp_server_advertises_m2_tools():
 
     tools = asyncio.run(server.list_tools())
 
-    assert tuple(sorted(tool.name for tool in tools)) == tuple(sorted(M2_TOOL_NAMES))
+    assert tuple(sorted(tool.name for tool in tools)) == tuple(sorted(MCP_TOOL_NAMES))
 
 
 @pytest.mark.m2
@@ -51,7 +51,8 @@ print(json.dumps({"loaded": loaded, "tools": tools}))
     assert result.returncode == 0, result.stderr
     payload = json.loads(result.stdout.strip().splitlines()[-1])
     assert payload["loaded"] == []
-    assert payload["tools"] == sorted(M2_TOOL_NAMES)
+    assert set(M2_TOOL_NAMES) <= set(payload["tools"])
+    assert payload["tools"] == sorted(MCP_TOOL_NAMES)
 
 
 @pytest.mark.m2
