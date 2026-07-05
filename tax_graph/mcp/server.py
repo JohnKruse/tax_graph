@@ -13,7 +13,7 @@ from typing import Any
 from mcp.server.fastmcp import FastMCP
 
 from tax_graph import __version__
-from tax_graph.engine import Engine, Graph, MISSING, Result, render_trace
+from tax_graph.engine import Engine, Graph, MISSING, Result, TABLE_FACTS_KEY, render_trace
 from tax_graph.io.loader import LoadedGraph, load_graph
 from tax_graph.io.sqlite_loader import compiled_db_path, load_sqlite_graph
 
@@ -207,8 +207,9 @@ def _register_tools(server: FastMCP, context: McpGraphContext) -> None:
     def explain_calculation(node_id: str, facts: dict[str, Any] | None = None) -> dict[str, Any]:
         """Explain a node's calculation from an execution trace."""
         address = _parse_node_address(node_id)
+        trace_id = _trace_id(address)
         result = _execute(context, facts or {})
-        trace = result.trace.get(address["base_node_id"])
+        trace = result.trace.get(trace_id)
         citation_ids = trace.get("citations", []) if trace else []
         rule_id = trace.get("rule") if trace else None
         return {
@@ -229,7 +230,7 @@ def _register_tools(server: FastMCP, context: McpGraphContext) -> None:
         result = _execute(context, facts or {})
         buffer = StringIO()
         with redirect_stdout(buffer):
-            render_trace(address["base_node_id"], result, context.graph)
+            render_trace(_trace_id(address), result, context.graph)
         return {
             "target": target,
             "base_node_id": address["base_node_id"],
@@ -277,6 +278,12 @@ def _stub(tool: str, context: McpGraphContext, **arguments: Any) -> dict[str, An
 def _parse_node_address(node_id: str) -> dict[str, str | None]:
     base_node_id, separator, row_key = node_id.partition("#")
     return {"base_node_id": base_node_id, "row_key": row_key if separator else None}
+
+
+def _trace_id(address: dict[str, str | None]) -> str:
+    if address["row_key"]:
+        return f"{address['base_node_id']}#{address['row_key']}"
+    return str(address["base_node_id"])
 
 
 def _instance_note(address: dict[str, str | None]) -> str | None:
@@ -369,12 +376,18 @@ def _execute(context: McpGraphContext, facts: dict[str, Any]) -> Result:
 
 def _coerce_facts(facts: dict[str, Any]) -> dict[str, Any]:
     if "facts" not in facts:
-        return dict(facts)
-    return {
+        coerced = dict(facts)
+        if "tables" in coerced:
+            coerced[TABLE_FACTS_KEY] = coerced.pop("tables")
+        return coerced
+    coerced = {
         fact["node_id"]: fact.get("value")
         for fact in facts.get("facts", [])
         if isinstance(fact, dict) and "node_id" in fact
     }
+    if facts.get("tables"):
+        coerced[TABLE_FACTS_KEY] = facts["tables"]
+    return coerced
 
 
 def _facts_document_for_record(facts: dict[str, Any], year: str) -> dict[str, Any]:
@@ -382,13 +395,17 @@ def _facts_document_for_record(facts: dict[str, Any], year: str) -> dict[str, An
         document = dict(facts)
         document.setdefault("tax_year", int(year))
         document.setdefault("facts", [])
+        document.setdefault("tables", [])
         return document
+    table_facts = facts.get(TABLE_FACTS_KEY) or facts.get("tables") or []
     return {
         "tax_year": int(year),
         "facts": [
             {"node_id": node_id, "value": value}
             for node_id, value in sorted(facts.items())
+            if node_id not in {TABLE_FACTS_KEY, "tables"}
         ],
+        "tables": table_facts,
     }
 
 

@@ -495,9 +495,14 @@ def _build_outputs(result: Result, graph: Graph, target_node: str | None) -> lis
 
 
 def _trace_entry(node_id: str, trace: dict[str, Any], graph: Graph) -> TraceSummaryEntry:
+    base_node_id = trace.get("base_node_id") or node_id.partition("#")[0]
+    row_key = trace.get("row_key")
+    label = graph.nodes.get(base_node_id, {}).get("label", node_id)
+    if row_key:
+        label = f"{label}#{row_key}"
     return TraceSummaryEntry(
         node_id=node_id,
-        label=graph.nodes.get(node_id, {}).get("label", node_id),
+        label=label,
         kind=trace.get("kind", "unknown"),
         value=_json_safe(trace.get("value")),
         operation=trace.get("operation"),

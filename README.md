@@ -142,6 +142,11 @@ the compiled artifact.
 structured block. Carryforwards without a resolvable `target_node` are reported
 as not ingested rather than guessed.
 
+Repeatable table runtime support is additive. Table row instances are supplied
+under `tables` in taxpayer facts and keyed by `row_key`; traces address an
+instance as `<template_node>#<row_key>`. Live Form 8949 facts migrate to this
+shape after the M6b human promotion gate.
+
 Distribution path: source installs can use the light runtime (`pip install
 tax-graph`) or the maintainer pipeline (`pip install tax-graph[build]`). A later
 single-file binary can bundle the runtime plus a prebuilt SQLite artifact so an

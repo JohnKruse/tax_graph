@@ -121,6 +121,14 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
   8949-style table subunit compiles to SQLite, loads back through `Graph.tables`, and preserves exact
   YAML/SQLite values and trace. README documents the SQLite `tables` projection. Next: M6b Step 3
   row-instance engine execution, totals aggregation, and trace/MCP tests.
+- **M6b Step 3 is done (verified + committed by the Architect, 2026-07-05).** Codex authored the
+  engine/MCP row-instance execution (table facts via `TABLE_FACTS_KEY`, instance traces
+  `<template_node>#<row_key>`, totals aggregating instance operands, MCP explain/audit resolving
+  instance ids, Return Record labels via the base node) but was sandbox-denied pytest. Architect
+  verification: `pytest -m m6b` -> 12 passed; full `pytest` -> 131 passed, 5 skipped; ASCII OK;
+  single-lot parity line 7 = 2000 with citation trace. Next Codex session: Step 4 (deterministic
+  detector + column reconciler in extraction assembly), then Step 5 (promotion - JOHN's gate),
+  Step 6 (multi-lot oracle widening - needs the installed OTS / `OTS_1040_2025_BIN`).
 
 ## Open for Architect
 - (none open - the M6 closeout question is ANSWERED: the live gate is NOT deferrable, and
@@ -263,6 +271,13 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
   - `.\.venv\Scripts\python.exe -m pytest -m m1` -> 6 passed, 126 deselected
   - `.\.venv\Scripts\python.exe -m pytest` -> 127 passed, 5 skipped
   - `.\.venv\Scripts\python.exe tools\check_ascii.py` -> ASCII check OK
+- M6b Step 3 WIP:
+  - `git diff --check` -> OK
+  - PowerShell ASCII scan over `plans`, `docs`, `config`, `schemas`, `graph`, `examples`,
+    `oracles`, `tests`, and `tax_graph` -> OK
+  - `.\.venv\Scripts\python.exe --version` inside sandbox -> access denied
+  - Escalated `.\.venv\Scripts\python.exe -m pytest -m m6b` request -> rejected by
+    approval/usage gate before execution; no pytest result yet
 - M6 phase exit / live-gate closeout:
   - `.\.venv\Scripts\python.exe -m pytest -m m6` -> 23 passed, 2 skipped, 99 deselected
   - `.\.venv\Scripts\python.exe -m pytest -m oracle` with `OTS_1040_2025_BIN` set -> 2 passed,

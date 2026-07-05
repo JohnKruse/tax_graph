@@ -80,7 +80,7 @@ hand-authored single-lot 8949 slice with extracted, table-shaped structure.
     table-bearing graph fixture proving exact values/trace parity. README notes the SQLite
     `tables` projection.
 
-- [ ] **Step 3 - Engine row instances + totals aggregation + trace.** Facts rows instantiate
+- [DONE] **Step 3 - Engine row instances + totals aggregation + trace.** Facts rows instantiate
   the row-template rules per `row_key`: each computed template column evaluates per instance
   (column (h) chain: d-e intermediate then +g); totals nodes aggregate their column across ALL
   instances. Trace entries for instances are addressed `<column_node_id>#<row_key>`; totals
@@ -90,6 +90,12 @@ hand-authored single-lot 8949 slice with extracted, table-shaped structure.
   resolution shipped in M2) - add one MCP test asserting per-instance trace passes through.
   Tests: 3-lot mixed gain/loss with one nonzero (g); per-instance missing-input; zero-row
   totals; MCP pass-through. Docs.
+  - Architect note (2026-07-05): Codex drafted this step but its sandbox was denied pytest
+    execution (same approval/usage gate as M6 Step 4). Architect verification on its behalf:
+    `pytest -m m6b` -> 12 passed; full `pytest` -> 131 passed, 5 skipped; ASCII OK; single-lot
+    parity line 7 = 2000 with citation trace intact; per-instance `#row_key` values/traces and
+    per-instance missing-input assertions confirmed in `tests/test_tables_engine_m6b.py`.
+    Committed by the Architect, authored by Codex.
 
 - [ ] **Step 4 - Deterministic detector + column reconciler (extraction assembly).** In the
   outline-first assembly: when (i) the field grid shows the same column x-clusters repeated
