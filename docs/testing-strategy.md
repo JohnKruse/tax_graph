@@ -47,6 +47,18 @@ source span + confidence, and is gated behind human review before merge. A suite
 "passes" because the model agreed with itself is worthless - that is what Differential and
 the IRS examples are for.
 
+**Verification at scale (M8, `docs/extraction-verification.md`):** structural checks verify
+FORM, not MEANING - a schema-valid draft can still swap SUBTRACT roles or mis-target a flow.
+Accuracy checks that need a hand-authored reference do not scale past the canary form.
+Two additional hard rules once M8 lands:
+1. **The check net is itself under test.** Seeded-defect drills (mutation testing over the
+   known-good slice) must catch 100% of the cataloged defect classes, offline, in CI; every
+   real-world escape becomes a new drill case. A defect class no layer can catch means that
+   object class is not auto-promotable - route it to human review by policy.
+2. **Confidence scores are telemetry, never load-bearing.** No promotion decision may depend
+   on a self-reported confidence value (drill-enforced: inflating all confidences to 1.0
+   must change nothing).
+
 ## Layout & gates
 - `tests/` mirrors components. **Tag tests by phase** with pytest markers
   (`@pytest.mark.m0`, `m3`, ...) so each phase's exit-criteria command is `pytest -m <phase>`.

@@ -241,6 +241,41 @@ emits values + audit trace + Return Record.
   totals cue is FLAGGED, not guessed; the single-lot example still yields line 7 = 2000 (no
   regression); `pytest -m m6b` green.
 
+### M8 - Extraction verification at scale (the trust ladder)
+- **Goal:** make extraction accuracy verifiable WITHOUT a hand-authored reference and
+  WITHOUT humans re-deriving forms - the held-out-diff method used to close M4 does not
+  scale past the canary form. Full design: **`docs/extraction-verification.md`**.
+- **Scope (summary; the design doc is canonical):**
+  1. **Seeded-defect drills** - mutation-test the check net itself against a defect
+     catalog (swapped SUBTRACT roles, dropped addend, off-by-one flow target, phantom
+     node, ...); the net must catch 100% of cataloged classes and name the catching
+     layer; every later real-world escape joins the catalog.
+  2. **Both-direction structural ground truth** - every entry field in the AcroForm grid
+     maps to a node or an explicit not-modeled record; optional MeF e-file schema line
+     inventory as a second authoritative box-mapping oracle (worker pins availability).
+  3. **Property tests from op semantics** - engine-executed algebraic checks generated
+     in code per extracted rule (SUM permutation, SUBTRACT antisymmetry, metamorphic
+     column (h) relations); offline, no LLM.
+  4. **IRS worked-example miner** - extract instruction "Example." blocks into candidate
+     facts/expected fixtures, execute through the extracted graph, human-confirm in
+     minutes, FREEZE into `examples/` as regression tests. The authoritative numeric
+     answer key, per form, from the same source doc.
+  5. **N-version extraction** - re-run micro-extractions with a second (cross-VENDOR)
+     model via the provider-agnostic seam; diff assembled canonical objects; agreement
+     corroborates, disagreement routes to a cheap A/B human decision.
+  6. **Trust tiers + metrics + year-over-year delta mode** - T1 structural / T2
+     corroborated / T3 behavioral; promotion rule (rules/edges need T3); per-run
+     `metrics.yaml` (human minutes per promoted object, escape rate); year N+1 verifies
+     as a diff against year N's promoted graph.
+- **Decisions set:** confidence scores are telemetry, never load-bearing (drill-enforced);
+  humans review exceptions + a calibration sample, never whole forms; decisions (the
+  object kind) always get human eyes. Proposed defaults for John: 10% calibration sample
+  (min 5), N=2 vendors, 100% drill bar before extracting beyond the capital-gains set.
+- **Acceptance:** `pytest -m m8` green (drills catch 100% of the catalog, offline); a
+  seeded swapped-role defect on the known-good slice is caught and attributed; a mined
+  8949/Schedule D example executes to the IRS-published number; `tax-graph verify report`
+  prints tier distribution + human-minutes + escape-rate lines.
+
 ---
 
 ## Configuration - one-stop tuning
@@ -271,6 +306,7 @@ canary: **Ledger Llama**.
 | M6 Differential | Twin Witness | `pytest -m m6` (Tax Graph == an OSS oracle) |
 | M6b Repeatable tables | Tandem Abacus | `pytest -m m6b` (multi-row totals + single-lot parity) |
 | M7 Frontier/Coverage | Compass Rose | `pytest -m m7` (frontier registry + SOI weights + coverage %) |
+| M8 Verification ladder | Skeptical Notary | `pytest -m m8` (drill catalog 100% caught + example fixtures execute) |
 
 ## Working protocol (Architect / Worker)
 
@@ -332,6 +368,15 @@ turns the graph's incompleteness into a derived, SOI-weighted, queryable registr
 foundation for the deferred Coverage Map and the backing for the cross-form LINK step (PHASE_M4
 pinned decision 6). Its outbound-flow half may be pulled earlier if multi-form extraction lands
 first. Plan: `plans/PHASE_M7.md`.
+
+**M8 (Verification ladder)** is the gate between "extraction works on the canary form" and
+"extraction scales to the form set": the held-out human diff that closed M4 required a
+hand-authored reference and cannot verify the next form. M8's offline steps (drills,
+both-direction field completeness, property tests) have no M5/M6 dependency and may be pulled
+forward any time; the example miner and N-version steps complete the ladder; M6 supplies the
+differential layer. **Hard sequencing rule: no bulk extraction beyond the capital-gains form
+set until the M8 drill gate passes.** Design: `docs/extraction-verification.md`; subplan
+`PHASE_M8.md` written just-in-time.
 
 **M6b (Repeatable tables)** is a follow-on to M6, not on the critical path to a first working+tested
 pipeline (single-lot proves M1/M2/M5/M6). It is the ONE place the scalar-per-node v0 becomes

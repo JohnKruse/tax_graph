@@ -60,6 +60,22 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
   See From Architect.)
 
 ## From Architect
+- **NEW (2026-07-05) - M8 Verification ladder planned (canary Skeptical Notary).** John's
+  top concern: extraction accuracy cannot depend on hand-authored references or humans
+  re-deriving forms - that is the exact bottleneck extraction exists to remove. Design doc:
+  `docs/extraction-verification.md` (canonical); milestone block + gate row + sequencing in
+  `docs/engineering-plan.md`. Core moves: (1) seeded-defect drills that mutation-test the
+  check net itself (100% catalog catch rate required); (2) both-direction field-grid
+  completeness + optional MeF schema box inventory; (3) engine-executed property tests from
+  op semantics; (4) mine IRS instruction "Example." blocks into facts/expected fixtures and
+  execute them through the extracted graph (authoritative numbers, human confirms in
+  minutes, freeze into `examples/`); (5) cross-VENDOR N-version micro-extraction diffs; (6)
+  trust tiers T1/T2/T3 + `metrics.yaml` + year-over-year delta verification. **Hard
+  sequencing rule: no bulk extraction beyond the capital-gains form set until the M8 drill
+  gate passes.** M8 slots after M6 (which supplies the differential layer), but steps 1-3
+  are offline/independent and may be pulled forward. `PHASE_M8.md` is written just-in-time.
+  Awaiting John's veto/OK on three defaults: 10% calibration sample (min 5), N=2 vendors,
+  100% drill bar.
 - **Next:** start **M2** - `plans/PHASE_M2.md` is written (canary **Polite Robot**). M1 is complete.
   State the canary, wait for John's go, then work the 4 steps in order. Not Schedule D, not the LINK.
   The manual Claude Desktop walk-through is JOHN's gate: complete Steps 1-4 with `pytest -m m2` green
