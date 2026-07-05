@@ -60,8 +60,20 @@ acquire:
   timeout_sec: 30
 
 oracles:                         # differential testing (M6)
-  opentaxsolver_bin: null
-  policyengine_enabled: false
+  opentaxsolver:
+    version: "2025_23.06"        # pin the SourceForge release used for live oracle jobs
+    install_dir: .cache/oracles/opentaxsolver/2025_23.06
+    executable: null             # optional override after install
+    releases:
+      windows:
+        url: null                # set to the pinned SourceForge .zip download URL
+        sha256: null             # required; compute before running oracle install
+      linux:
+        url: null                # set to the pinned SourceForge .tgz download URL
+        sha256: null
+      macos:
+        url: null                # set to the pinned SourceForge .tgz download URL
+        sha256: null
 
 logging:
   level: INFO

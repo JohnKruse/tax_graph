@@ -75,6 +75,12 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 - **M5 (Return Record) is complete.** `plans/PHASE_M5.md` is marked `[COMPLETE]` and archived as
   `plans/archive/PHASE_M5.md`; exit checks passed and local generated records stayed under
   gitignored `output/`.
+- **M6 Step 1 is done.** Added `tax_graph.oracles.ots` with a config-pinned OTS release model,
+  sha256-verified install/unpack helper, US 1040 subprocess runner, `_out.txt` path handling, and
+  tolerant line-label parser. CLI now has `tax-graph oracle install`; README and example config
+  document pinned SourceForge URLs/hashes. Offline fixture tests cover parser and installer hash
+  behavior; live runner smoke is `@pytest.mark.oracle` and skipped unless `OTS_1040_2025_BIN` is
+  set. Next: M6 Step 2 scenario model, dual renderers, and box map validation.
 
 ## Open for Architect
 - (none open - the PHASE_M6 request is RESOLVED: `plans/PHASE_M6.md` is written, canary Twin
@@ -199,6 +205,9 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
   - `uv --directory C:\Users\devbox\projects\tax_graph run --no-dev python -m tax_graph.cli run --facts examples\capital_gains_basic\facts.yaml --source yaml --record-dir output\m5_base` -> Form 1040 line 7 = 2000; memo + carryforward written
   - Generated `output\m5_exit\return_record_2025.carryforward.yaml` validated against `carryforward.schema.json`
   - `.\.venv\Scripts\python.exe -m pytest` -> 96 passed, 3 skipped
+  - `.\.venv\Scripts\python.exe tools\check_ascii.py` -> ASCII check OK
+- M6 Step 1:
+  - `.\.venv\Scripts\python.exe -m pytest -m m6` -> 3 passed, 1 skipped, 99 deselected
   - `.\.venv\Scripts\python.exe tools\check_ascii.py` -> ASCII check OK
 - M2 Step 1:
   - `uv run pytest -m m2` -> 2 passed, 74 deselected

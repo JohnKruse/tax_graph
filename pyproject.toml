@@ -35,6 +35,8 @@ extract = [
   "anthropic>=0.34",
   "openai>=1.0",
 ]
+oracles = [
+]
 build = [
   "anthropic>=0.34",
   "httpx>=0.27",
@@ -73,5 +75,7 @@ markers = [
   "m3: Phase M3 acquisition tests",
   "m4: Phase M4 extraction tests",
   "m5: Phase M5 Return Record tests",
+  "m6: Phase M6 differential oracle tests",
   "network: tests that require live network access",
+  "oracle: tests that require a pinned local oracle binary",
 ]

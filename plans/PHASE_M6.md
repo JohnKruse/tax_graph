@@ -62,13 +62,15 @@ verification ladder and the template for every future promoted form.
 
 ## Steps
 
-- [ ] **Step 1 - Pinned OTS runner + output parser.** New extra `[oracles]`;
+- [DONE] **Step 1 - Pinned OTS runner + output parser.** New extra `[oracles]`;
   `tax_graph/oracles/ots.py`: config-pinned release (version, per-OS download URL, sha256),
   `tax-graph oracle install` fetch/verify/unpack helper (gitignored install dir), and a
   subprocess runner: write an input file, invoke the US_1040 solver, read the `_out.txt`.
   Parser: line-labeled output -> `{label: value}` dict (labels like `L7`, `D16`, `F8949_2h`).
   Commit a real OTS output file as a fixture. Test (offline): parser over the fixture; runner
   smoke behind `@pytest.mark.oracle`. Docs: install + pinning.
+  - Worker note: implemented with stdlib download/unpack/hash verification, so the `[oracles]`
+    extra exists but adds no base dependency. Live runner smoke is gated by `OTS_1040_2025_BIN`.
 
 - [ ] **Step 2 - Scenario model + dual renderers + box map.** A `Scenario` model for the
   capital-gains slice (filing status, single lot: description/dates/proceeds/cost/adjustment -

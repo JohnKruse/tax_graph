@@ -47,6 +47,16 @@ adapter, install the OpenAI-compatible SDK extra:
 uv sync --extra llm-openrouter
 ```
 
+Live differential oracle runs are optional and gated. The base suite replays
+committed fixtures offline; a maintainer who wants to invoke OpenTaxSolver
+should install the oracle extra and configure a pinned SourceForge release URL
+plus sha256 in `config/tax-graph.config.yaml`:
+
+```powershell
+uv sync --extra oracles
+uv run tax-graph oracle install --year 2025
+```
+
 ## CLI Usage
 
 Phase M0 provides a package CLI named `tax-graph`:
@@ -58,6 +68,7 @@ uv run tax-graph build 2025
 uv run tax-graph run --facts examples\capital_gains_basic\facts.yaml --source sqlite
 uv run tax-graph run --facts examples\capital_gains_basic\facts.yaml --prior-record prior.carryforward.yaml
 uv run tax-graph serve --year 2025
+uv run tax-graph oracle install --year 2025
 uv run tax-graph acquire 2025
 uv run tax-graph acquire 2025 --check
 uv run tax-graph extract --doc form_8949_2025
@@ -71,6 +82,7 @@ python -m tax_graph.cli validate 2025
 python -m tax_graph.cli run --facts examples\capital_gains_basic\facts.yaml
 python -m tax_graph.cli build 2025
 python -m tax_graph.cli serve --year 2025
+python -m tax_graph.cli oracle install --year 2025
 python -m tax_graph.cli acquire 2025 --check
 python -m tax_graph.cli extract --doc form_8949_2025
 ```

@@ -185,6 +185,36 @@ def serve_command(
     return 0
 
 
+def oracle_install_command(
+    year: str = "2025",
+    root: str | Path | None = None,
+    archive: str | Path | None = None,
+) -> int:
+    """Install a pinned OpenTaxSolver release for live oracle jobs."""
+    from tax_graph.oracles import find_ots_executable, install_ots_release, release_from_config
+
+    root_path = Path(root).resolve() if root is not None else project_root()
+    config = load_config(root=root_path)
+    try:
+        release = release_from_config(config, root=root_path, year=year)
+        install_dir = install_ots_release(release, archive_path=archive)
+        executable = find_ots_executable(
+            install_dir,
+            year=year,
+            executable=release.executable,
+        )
+    except Exception as exc:
+        print(f"ERROR: {exc}")
+        return 1
+
+    print("=== oracle install ===")
+    print(f"  oracle: OpenTaxSolver")
+    print(f"  version: {release.version}")
+    print(f"  install_dir: {install_dir}")
+    print(f"  executable: {executable}")
+    return 0
+
+
 def acquire_command(
     year: str = "2025",
     *,
@@ -371,6 +401,21 @@ def _build_typer_app():
         if raise_code:
             raise typer.Exit(raise_code)
 
+    oracle_cli = typer.Typer(help="Differential oracle helpers.")
+
+    @oracle_cli.command("install")
+    def oracle_install_cli(
+        year: str = typer.Option("2025", "--year", "-y", help="Tax year to install."),
+        archive: Path | None = typer.Option(None, "--archive", help="Use a local pre-downloaded OTS archive."),
+        root: Path | None = typer.Option(None, "--root", help="Project root override."),
+    ) -> None:
+        """Install the pinned OpenTaxSolver release."""
+        raise_code = oracle_install_command(year=year, root=root, archive=archive)
+        if raise_code:
+            raise typer.Exit(raise_code)
+
+    cli.add_typer(oracle_cli, name="oracle")
+
     @cli.command("acquire")
     def acquire_cli(
         year: str = typer.Argument("2025"),
@@ -423,6 +468,13 @@ def _fallback_app() -> int:
     serve_parser.add_argument("--source", choices=["sqlite", "yaml"], default=None)
     serve_parser.add_argument("--root", default=None)
 
+    oracle_parser = subparsers.add_parser("oracle")
+    oracle_subparsers = oracle_parser.add_subparsers(dest="oracle_command", required=True)
+    oracle_install_parser = oracle_subparsers.add_parser("install")
+    oracle_install_parser.add_argument("--year", "-y", default="2025")
+    oracle_install_parser.add_argument("--archive", default=None)
+    oracle_install_parser.add_argument("--root", default=None)
+
     acquire_parser = subparsers.add_parser("acquire")
     acquire_parser.add_argument("year", nargs="?", default="2025")
     acquire_parser.add_argument("--check", action="store_true")
@@ -451,6 +503,8 @@ def _fallback_app() -> int:
         return build_command(year=args.year, root=args.root)
     if args.command == "serve":
         return serve_command(year=args.year, root=args.root, source=args.source)
+    if args.command == "oracle" and args.oracle_command == "install":
+        return oracle_install_command(year=args.year, root=args.root, archive=args.archive)
     if args.command == "acquire":
         return acquire_command(year=args.year, check=args.check, root=args.root)
     if args.command == "extract":
