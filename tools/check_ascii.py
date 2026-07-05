@@ -12,7 +12,7 @@ import pathlib
 import sys
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
-DIRS = ["plans", "docs", "config", "schemas", "graph", "examples", "tests", "tax_graph"]
+DIRS = ["plans", "docs", "config", "schemas", "graph", "examples", "oracles", "tests", "tax_graph"]
 EXTS = {".md", ".yaml", ".yml", ".json", ".txt", ".py", ".toml"}
 SKIP = {"__pycache__", ".pytest_cache"}
 

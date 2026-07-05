@@ -1,0 +1,32 @@
+tax_year: 2025
+ots_label_inventory: oracles/ots_label_inventory_2025.txt
+boxes:
+  - node_id: form_8949_2025_partii_proceeds
+    ots_label: F8949_2d
+    rounding: whole_dollar
+  - node_id: form_8949_2025_partii_cost
+    ots_label: F8949_2e
+    rounding: whole_dollar
+  - node_id: form_8949_2025_partii_total_gain_loss
+    ots_label: F8949_2h
+    rounding: whole_dollar
+  - node_id: schedule_d_2025_line_7_net_st
+    ots_label: D7
+    rounding: whole_dollar
+  - node_id: schedule_d_2025_line_8b_gain
+    ots_label: D8b
+    rounding: whole_dollar
+  - node_id: schedule_d_2025_line_15_net_lt
+    ots_label: D15
+    rounding: whole_dollar
+  - node_id: schedule_d_2025_line_16_total
+    ots_label: D16
+    rounding: whole_dollar
+  - node_id: form_1040_2025_line_7_capital_gain_loss
+    ots_label: L7
+    rounding: whole_dollar
+guards:
+  - guard_id: schedule_1_additional_income_inert
+    ots_label: S1_8z
+    expected: 0
+    allow_absent: true

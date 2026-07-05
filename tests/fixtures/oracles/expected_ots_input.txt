@@ -1,0 +1,3 @@
+Title: Tax Graph 2025 scenario m6_single_lot_gain
+Status: Single ;
+f8949spreadsheet: m6_single_lot_gain_f8949.csv ;

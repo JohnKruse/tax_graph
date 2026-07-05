@@ -57,6 +57,12 @@ uv sync --extra oracles
 uv run tax-graph oracle install --year 2025
 ```
 
+The M6 harness keeps its checked-in comparison data under `oracles/`: the 2025
+box map links Tax Graph node ids to OTS output labels, and the label inventory
+fixture validates that every mapped OTS box is known before any diff runs.
+Generated single-lot scenarios render both to Tax Graph `facts.yaml` and to an
+OTS 1040 input text file plus Form 8949 CSV.
+
 ## CLI Usage
 
 Phase M0 provides a package CLI named `tax-graph`:

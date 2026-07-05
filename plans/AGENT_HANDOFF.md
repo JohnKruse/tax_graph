@@ -81,6 +81,11 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
   document pinned SourceForge URLs/hashes. Offline fixture tests cover parser and installer hash
   behavior; live runner smoke is `@pytest.mark.oracle` and skipped unless `OTS_1040_2025_BIN` is
   set. Next: M6 Step 2 scenario model, dual renderers, and box map validation.
+- **M6 Step 2 is done.** Added `CapitalGainScenario`, deterministic renderers for Tax Graph facts
+  and OTS 1040 input + 8949 CSV, `oracles/box_map_2025.yaml`, and
+  `oracles/ots_label_inventory_2025.txt`. Box-map validation checks Tax Graph node ids against the
+  live graph and OTS labels against the inventory, including guard labels. README documents the
+  oracle fixtures. Next: M6 Step 3 differ, guards, and deliberate-bug canaries.
 
 ## Open for Architect
 - (none open - the PHASE_M6 request is RESOLVED: `plans/PHASE_M6.md` is written, canary Twin
@@ -208,6 +213,9 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
   - `.\.venv\Scripts\python.exe tools\check_ascii.py` -> ASCII check OK
 - M6 Step 1:
   - `.\.venv\Scripts\python.exe -m pytest -m m6` -> 3 passed, 1 skipped, 99 deselected
+  - `.\.venv\Scripts\python.exe tools\check_ascii.py` -> ASCII check OK
+- M6 Step 2:
+  - `.\.venv\Scripts\python.exe -m pytest -m m6` -> 10 passed, 1 skipped, 99 deselected
   - `.\.venv\Scripts\python.exe tools\check_ascii.py` -> ASCII check OK
 - M2 Step 1:
   - `uv run pytest -m m2` -> 2 passed, 74 deselected

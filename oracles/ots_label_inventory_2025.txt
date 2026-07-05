@@ -1,0 +1,11 @@
+# M6 fixture inventory derived from OTS 1040/8949 output labels used by this slice.
+F8949_2d
+F8949_2e
+F8949_2g
+F8949_2h
+D7
+D8b
+D15
+D16
+L7
+S1_8z

@@ -72,7 +72,7 @@ verification ladder and the template for every future promoted form.
   - Worker note: implemented with stdlib download/unpack/hash verification, so the `[oracles]`
     extra exists but adds no base dependency. Live runner smoke is gated by `OTS_1040_2025_BIN`.
 
-- [ ] **Step 2 - Scenario model + dual renderers + box map.** A `Scenario` model for the
+- [DONE] **Step 2 - Scenario model + dual renderers + box map.** A `Scenario` model for the
   capital-gains slice (filing status, single lot: description/dates/proceeds/cost/adjustment -
   multi-lot arrives with M6b). Two deterministic renderers: scenario -> our `facts.yaml`;
   scenario -> OTS input `.txt` (title line, `Status`, lot entry - via the 8949 CSV route if
@@ -83,6 +83,9 @@ verification ladder and the template for every future promoted form.
   inventory (parse OTS's PDF-metadata file once into a fixture - it enumerates all output
   variable names). Test: golden renders; map validation fails on an unknown node id and on an
   OTS label not in the inventory. Docs.
+  - Worker note: OTS rendering uses the documented `f8949spreadsheet` route with a generated
+    Form 8949 CSV. The v0 Tax Graph renderer rejects nonzero adjustments because the live graph
+    has no adjustment node yet; the domain profile keeps adjustment at zero until M6b/graph growth.
 
 - [ ] **Step 3 - Differ + guards + deliberate-bug canary.** `oracles/diff.py`: run engine
   result + parsed OTS output through the box map -> report (per-box agree/disagree with values,
