@@ -74,7 +74,21 @@ The genuinely scalable differential test is EXECUTION at volume:
    omission of any arithmetic.
 4. **Triage policy** - on disagreement NEITHER side is presumed right (OTS has bugs
    too). A disagreement is a flag with the full scenario attached; a human adjudicates a
-   SAMPLE, and adjudicated cases join the drill/regression catalogs.
+   SAMPLE, and adjudicated cases join the drill/regression catalogs. Adjudication is
+   asymmetric in our favor: our engine emits the full trace (rule, edges, quoted
+   citation) while OTS emits a number, so the human reads OUR derivation against the
+   instruction text. Three outcomes, each with a required action:
+   - **Our bug** -> fix the graph; the scenario freezes as a regression fixture and the
+     defect class joins the M8 drill catalog.
+   - **OTS bug** -> report upstream (from the corpus-factory repo, which owns the OTS
+     relationship) with the minimal repro the generator already produced - the scenario
+     in OTS's own input format. The case is recorded as a known-divergence exclusion
+     (with the report link) so it stops flagging, and re-checked on the next pinned OTS
+     release bump.
+   - **Genuine IRS-text ambiguity** -> the rarest and most valuable outcome: document it
+     on the graph object itself (citation + note, or a decision node if filers genuinely
+     choose), so the ambiguity becomes visible roadmap content instead of a silent
+     coin-flip.
 5. **Freeze the corpus** - agreed scenario+expected pairs are frozen into committed
    fixtures (`facts.yaml` + `expected.yaml`, the existing `examples/` pattern). Frozen
    fixtures are pure data: the main repo's CI replays them offline with NO oracle
