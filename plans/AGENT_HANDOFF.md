@@ -108,8 +108,12 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
   tests are wired but skipped here because `OTS_1040_2025_BIN` is not configured.
 
 ## Open for Architect
-- (none open - the PHASE_M6 request is RESOLVED: `plans/PHASE_M6.md` is written, canary Twin
-  Witness. See From Architect.)
+- **M6 phase closeout gate:** all five M6 implementation steps are done and committed, with
+  offline exit checks green. Phase archive/push is intentionally NOT done yet because the gated
+  live OTS job could not run in this checkout: no `OTS_1040_2025_BIN` is configured and
+  `pytest -m oracle` skips the two live tests. Need John/Architect direction: either install/configure
+  pinned OTS and run the live >=100 fuzz gate before closing M6, or explicitly accept the gated
+  oracle job as external/deferred and close M6 on the offline deterministic gates.
 
 ## From Architect
 - **Next: start M6 (Differential harness, canary Twin Witness).** `plans/PHASE_M6.md` is written
