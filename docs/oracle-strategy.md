@@ -61,6 +61,31 @@ The genuinely scalable differential test is EXECUTION at volume:
 Thousands of machine-checked scenarios per form, zero humans except disagreement
 triage - this is the scalability answer.
 
+### Fencing (pinned 2026-07-05, answering John)
+
+OTS solvers are monolithic - the 1040 program always computes the whole return and
+cannot be limited to one schedule. We therefore fence the SCENARIO and the COMPARISON,
+never the oracle:
+
+1. **Scenario fence** - the domain profile generates only facts that keep unmodeled
+   branches structurally inert (no dividends, no self-employment, standard deduction
+   applies, ...). OTS computes everything; everything outside our slice computes to zero
+   or a known default.
+2. **Comparison fence** - only box-mapped lines are diffed; unmapped OTS output lines
+   are ignored by design.
+3. **Guard boxes** - the box map also asserts that fenced-off paths stayed inert (e.g.
+   "Schedule 1 additional income == 0 in this corpus"). A scenario that trips a guard is
+   REJECTED before diffing - no triage time on garbage diffs.
+4. **Frontier-derived fence (once M7 lands)** - every modeled node must have a box-map
+   entry; everything at or beyond the frontier registry is a guard or ignored. The box
+   map is validated against the registry, not hand-trusted.
+
+Neither side is fed filled schedules: both consume the same primitive source facts (the
+8949 lot list) and independently derive every intermediate line - which is what makes
+mid-graph diffs (8949 totals, Schedule D lines) meaningful, not just the 1040 bottom
+line. The differ carries an explicit per-box rounding policy (whole-dollar exact match
+by default; anything looser is a finding, not a knob).
+
 ## 3. The second repo: an oracle corpus FACTORY, not (initially) a fork
 
 A separate GitHub project is the right call, but its product is DATA, not a fork:
