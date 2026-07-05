@@ -77,11 +77,22 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
   gitignored `output/`.
 
 ## Open for Architect
-- M5 is closed. Please generate `plans/PHASE_M6.md` (Differential-testing harness, canary Twin
-  Witness) for the next core phase, folding in `docs/oracle-strategy.md` as directed. If John wants
-  the parallel M7 track first, confirm that explicitly because `plans/PHASE_M7.md` is already live.
+- (none open - the PHASE_M6 request is RESOLVED: `plans/PHASE_M6.md` is written, canary Twin
+  Witness. See From Architect.)
 
 ## From Architect
+- **Next: start M6 (Differential harness, canary Twin Witness).** `plans/PHASE_M6.md` is written
+  (2026-07-05); read `docs/oracle-strategy.md` FIRST (fencing, triage outcomes, corpus policy).
+  State the canary, wait for John's go, then work the 5 steps in order. Key pins: pinned PREBUILT
+  OTS release binaries (no vendored GPL source, no C toolchain - the corpus-factory repo timing is
+  AMENDED to only-when-needed); `pytest -m m6` is fully offline (canned OTS fixtures), real OTS
+  only behind `@pytest.mark.oracle`; whole-dollar exact diff; guard boxes reject out-of-domain
+  scenarios BEFORE diffing; the loss-beyond-$3000 canary must be DETECTED (our slice has no loss
+  limit - that divergence firing is the proof the harness sees unmodeled semantics); freeze >= 20
+  agreed scenarios into `examples/oracle_corpus/`. PolicyEngine/Tax-Calculator adapters, parameter
+  diffing, and OTS C-mining are explicitly DEFERRED - do not build them. Remaining sequence after
+  M6: M6b (Tandem Abacus, just-in-time plan) -> M8 (Skeptical Notary, just-in-time plan); M7
+  (Compass Rose, plan already live) may run parallel whenever John chooses.
 - **M5 closure note:** M5 is archived complete as of 2026-07-05. The old "start M5" direction is
   superseded. Next core phase is M6 (Twin Witness), whose just-in-time plan should fold in
   `docs/oracle-strategy.md`; M7 (Compass Rose) remains live as the parallel track if John redirects.

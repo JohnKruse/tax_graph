@@ -128,9 +128,14 @@ by default; anything looser is a finding, not a knob).
 A separate GitHub project is the right call, but its product is DATA, not a fork:
 
 - **`tax-oracle-corpus` (name TBD by John):** vendors/pins exact OTS releases (and
-  PolicyEngine / Tax-Calculator versions), builds OTS in its own CI, hosts the domain
-  profiles + generator + box maps + triage log, and PUBLISHES the frozen corpus. The
-  main repo consumes released corpus fixtures as plain files.
+  PolicyEngine / Tax-Calculator versions), builds OTS in its own CI, hosts scale
+  generation, and PUBLISHES the frozen corpus. The main repo consumes released corpus
+  fixtures as plain files.
+- **Timing (amended 2026-07-05):** OTS ships prebuilt per-OS release binaries, so M6
+  needs NO C toolchain and NO vendored source - it pins a release (version + sha256) and
+  downloads it like an acquire artifact, keeping the main repo GPL-clean. The factory
+  repo is created only when source patches, C builds, or scale CI actually demand it -
+  not automatically at M6 start.
 - **Why separate:** (a) LICENSE isolation - running OTS as a subprocess does not touch
   our license, but keeping GPL C source, patches, and build tooling in their own repo
   keeps the main project clean; (b) the C toolchain and oracle installs stay out of the
