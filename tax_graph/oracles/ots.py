@@ -169,6 +169,23 @@ def find_ots_executable(
     raise OtsInstallError(f"no OTS US 1040 {year} executable found under {root}")
 
 
+def find_ots_1040_template(executable: str | Path, *, year: str = "2025") -> Path:
+    """Find the US 1040 input template shipped beside an OTS executable."""
+
+    executable_path = Path(executable).resolve()
+    candidate_names = (
+        "US_1040_template.txt",
+        f"US_1040_{year}_template.txt",
+    )
+    for root in (executable_path.parent.parent, *executable_path.parents):
+        template_dir = root / "tax_form_files" / "US_1040"
+        for name in candidate_names:
+            candidate = template_dir / name
+            if candidate.exists():
+                return candidate
+    raise OtsInstallError(f"no OTS US 1040 template found beside {executable_path}")
+
+
 def run_ots_1040(
     input_path: str | Path,
     *,

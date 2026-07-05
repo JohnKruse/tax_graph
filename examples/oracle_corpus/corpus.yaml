@@ -5,7 +5,7 @@ generated_date: '2026-07-05'
 provenance:
   oracle: opentaxsolver
   oracle_version: ots_2025_23.06
-  source: m6_seeded_single_lot_corpus
+  source: live_ots_diff_report
 entries:
 - scenario_id: m6_seed20250705_0000
   path: m6_seed20250705_0000

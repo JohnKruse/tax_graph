@@ -78,7 +78,7 @@ def test_box_map_validation_fails_on_unknown_node_id():
     box_map = box_map_from_dict(
         {
             "tax_year": 2025,
-            "boxes": [{"node_id": "missing_node", "ots_label": "L7"}],
+            "boxes": [{"node_id": "missing_node", "ots_label": "L7a"}],
         }
     )
 

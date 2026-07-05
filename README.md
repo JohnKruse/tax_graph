@@ -49,8 +49,9 @@ uv sync --extra llm-openrouter
 
 Live differential oracle runs are optional and gated. The base suite replays
 committed fixtures offline; a maintainer who wants to invoke OpenTaxSolver
-should install the oracle extra and configure a pinned SourceForge release URL
-plus sha256 in `config/tax-graph.config.yaml`:
+should install the oracle extra and configure a pinned SourceForge release in
+`config/tax-graph.config.yaml`. The example config pins the 2025 Windows
+v23.06 zip and sha256 used by M6:
 
 ```powershell
 uv sync --extra oracles
@@ -77,7 +78,8 @@ writes a `triage.yaml` for any rejected or disagreed scenario. It requires a
 configured local OTS executable and is intended for gated oracle jobs, not the
 base CI path.
 
-`tax-graph oracle freeze` materializes agreed or adjudicated scenarios into
+`tax-graph oracle freeze` runs generated scenarios through live OTS and
+materializes only agreed diff reports into
 `examples/oracle_corpus/<scenario_id>/facts.yaml` and `expected.yaml`, plus a
 `corpus.yaml` manifest. `tax-graph oracle replay-corpus` runs those fixtures
 offline through the deterministic engine. `oracles/triage.yaml` records

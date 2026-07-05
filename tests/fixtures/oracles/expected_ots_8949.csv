@@ -1,2 +1,2 @@
-Description,DateAcquired,DateSold,Proceeds,Cost,Code,AdjustmentAmount
+Description,Date_Acquired,Date_Sold,Proceeds,Cost,Code,Adjustment
 Fake LT lot,01/15/2024,06/01/2025,12000,10000,,

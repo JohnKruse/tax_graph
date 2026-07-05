@@ -1,4 +1,4 @@
-# PHASE M6 - Differential-testing harness   [ ]
+# PHASE M6 - Differential-testing harness   [COMPLETE]
 
 **Canary:** Twin Witness
 **Depends on:** M0/M1 (engine + compiled runtime), M5 (run pipeline stable). Precedes M6b
@@ -66,7 +66,7 @@ verification ladder and the template for every future promoted form.
   `tax_graph/oracles/ots.py`: config-pinned release (version, per-OS download URL, sha256),
   `tax-graph oracle install` fetch/verify/unpack helper (gitignored install dir), and a
   subprocess runner: write an input file, invoke the US_1040 solver, read the `_out.txt`.
-  Parser: line-labeled output -> `{label: value}` dict (labels like `L7`, `D16`, `F8949_2h`).
+  Parser: line-labeled output -> `{label: value}` dict (labels like `L7a`, `D16`, `F8949_2h`).
   Commit a real OTS output file as a fixture. Test (offline): parser over the fixture; runner
   smoke behind `@pytest.mark.oracle`. Docs: install + pinning.
   - Worker note: implemented with stdlib download/unpack/hash verification, so the `[oracles]`
@@ -83,9 +83,11 @@ verification ladder and the template for every future promoted form.
   inventory (parse OTS's PDF-metadata file once into a fixture - it enumerates all output
   variable names). Test: golden renders; map validation fails on an unknown node id and on an
   OTS label not in the inventory. Docs.
-  - Worker note: OTS rendering uses the documented `f8949spreadsheet` route with a generated
-    Form 8949 CSV. The v0 Tax Graph renderer rejects nonzero adjustments because the live graph
-    has no adjustment node yet; the domain profile keeps adjustment at zero until M6b/graph growth.
+  - Worker note: live rendering now fills the installed OTS `US_1040_template.txt` and points the
+    category-specific `f8949_spreadsheet-A/D:` field at a generated Form 8949 CSV. The live v23.06
+    labels pinned in the box map are `D8bh` and `L7a` for Schedule D line 8b column (h) and Form
+    1040 line 7. The v0 Tax Graph renderer rejects nonzero adjustments because the live graph has
+    no adjustment node yet; the domain profile keeps adjustment at zero until M6b/graph growth.
 
 - [DONE] **Step 3 - Differ + guards + deliberate-bug canary.** `oracles/diff.py`: run engine
   result + parsed OTS output through the box map -> report (per-box agree/disagree with values,
@@ -123,11 +125,12 @@ verification ladder and the template for every future promoted form.
   disagreed pair cannot freeze without a disposition. Exit-criteria commands run. Docs: README
   oracle workflow.
   - Worker note: `tax-graph oracle freeze` writes deterministic replay fixtures and
-    `tax-graph oracle replay-corpus` replays them offline. The committed seed corpus has 20
-    in-domain scenarios under `examples/oracle_corpus/`. `pytest -m oracle` is wired and skipped
-    in this checkout because no OTS binary is configured; live OTS remains the gated job.
+    `tax-graph oracle replay-corpus` replays them offline. After the live-gate fix,
+    `freeze_generated_corpus` requires a live OTS executable and freezes expected values only from
+    agreed diff reports. The committed seed corpus has 20 in-domain scenarios under
+    `examples/oracle_corpus/` with provenance `live_ots_diff_report`.
 
-## Architect live-gate review (2026-07-05): phase NOT closeable yet
+## Architect live-gate review (2026-07-05): resolved before phase close
 
 All five steps are implemented and the OFFLINE gates are green, but the Architect installed the
 pinned OTS (2025 v23.06, sha256-verified) and ran the live gate: **both live tests FAIL**, and
@@ -173,3 +176,29 @@ When all steps are `[DONE]`: mark this phase `[COMPLETE]`, move it to `plans/arc
 (repeatable tables, canary Tandem Abacus - plan written just-in-time; its multi-lot execution
 immediately widens this harness's domain profile to N lots), then **M8** (verification ladder,
 canary Skeptical Notary), with **M7** (Compass Rose) available as the parallel track.
+
+## Worker closeout (2026-07-05)
+
+Resolved F1-F3 from the live-gate review:
+- OTS input rendering fills the installed `US_1040_template.txt`, emits the required header
+  question sequence, uses `Status` without a colon, and writes `f8949_spreadsheet-A/D:` with a
+  bare CSV filename beside the input.
+- `tax-graph oracle freeze` now requires a live OTS executable, runs generated scenarios through
+  OTS, and freezes only values carried by agreed diff reports.
+- The box map and label inventory now match live OTS v23.06 labels (`D8bh`, `L7a`), and the
+  committed corpus manifest records `source: live_ots_diff_report`.
+
+Exit verification:
+- `.\.venv\Scripts\python.exe -m pytest -m m6` -> 23 passed, 2 skipped, 99 deselected
+- `.\.venv\Scripts\python.exe -m pytest -m oracle` with `OTS_1040_2025_BIN` set -> 2 passed,
+  122 deselected
+- `.\.venv\Scripts\python.exe -m tax_graph.cli oracle freeze --year 2025 --n 20 --seed 20250705
+  --generated-date 2026-07-05 --oracle-version ots_2025_23.06 --source yaml` -> wrote 20 live
+  OTS-agreed scenarios
+- `.\.venv\Scripts\python.exe -m tax_graph.cli oracle replay-corpus --year 2025 --source yaml`
+  -> 20 scenarios, OK
+- `.\.venv\Scripts\python.exe -m pytest` -> 119 passed, 5 skipped
+- `.\.venv\Scripts\python.exe tools\check_ascii.py` -> ASCII check OK
+- `uv --directory C:\Users\devbox\projects\tax_graph run --no-dev python -m tax_graph.cli run
+  --facts examples\capital_gains_basic\facts.yaml --source yaml --no-record` -> Form 1040 line 7
+  = 2000

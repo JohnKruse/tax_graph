@@ -78,19 +78,35 @@ def render_tax_graph_facts_yaml(scenario: CapitalGainScenario) -> str:
     )
 
 
-def render_ots_input_text(scenario: CapitalGainScenario, *, spreadsheet_name: str | None = None) -> str:
+def render_ots_input_text(
+    scenario: CapitalGainScenario,
+    *,
+    spreadsheet_name: str | None = None,
+    template_text: str | None = None,
+) -> str:
     """Render the OTS 1040 input text that points at an 8949 CSV."""
 
     _require_supported_ots_scenario(scenario)
     csv_name = spreadsheet_name or f"{_safe_id(scenario.scenario_id)}_f8949.csv"
     status = SUPPORTED_FILING_STATUSES[scenario.filing_status]
-    lines = [
-        f"Title: Tax Graph {scenario.tax_year} scenario {scenario.scenario_id}",
-        f"Status: {status} ;",
-        f"f8949spreadsheet: {csv_name} ;",
-        "",
-    ]
-    return "\n".join(lines)
+    template = template_text or _fallback_ots_template(scenario.tax_year)
+    rendered = _fill_ots_template(
+        template,
+        {
+            "Title": f"US Federal 1040 Tax Form - {scenario.tax_year} - Tax Graph scenario {scenario.scenario_id}",
+            "Status": status,
+            "You_65+Over?": "N",
+            "You_Blind?": "N",
+            "Spouse_65+Over?": "N",
+            "Spouse_Blind?": "N",
+            "Dependents": "0",
+            "CkHomeInUS": "Y",
+            "VirtCurr?": "N",
+            "CkSepLivedApart": "N",
+            "f8949_spreadsheet-A/D": csv_name,
+        },
+    )
+    return rendered if rendered.endswith("\n") else f"{rendered}\n"
 
 
 def render_ots_8949_csv(scenario: CapitalGainScenario) -> str:
@@ -102,12 +118,12 @@ def render_ots_8949_csv(scenario: CapitalGainScenario) -> str:
     writer.writerow(
         [
             "Description",
-            "DateAcquired",
-            "DateSold",
+            "Date_Acquired",
+            "Date_Sold",
             "Proceeds",
             "Cost",
             "Code",
-            "AdjustmentAmount",
+            "Adjustment",
         ]
     )
     writer.writerow(
@@ -124,7 +140,12 @@ def render_ots_8949_csv(scenario: CapitalGainScenario) -> str:
     return buffer.getvalue()
 
 
-def write_ots_input_bundle(scenario: CapitalGainScenario, output_dir: str | Path) -> dict[str, Path]:
+def write_ots_input_bundle(
+    scenario: CapitalGainScenario,
+    output_dir: str | Path,
+    *,
+    template_path: str | Path | None = None,
+) -> dict[str, Path]:
     """Write OTS input text and 8949 CSV for a scenario."""
 
     directory = Path(output_dir)
@@ -132,9 +153,10 @@ def write_ots_input_bundle(scenario: CapitalGainScenario, output_dir: str | Path
     stem = _safe_id(scenario.scenario_id)
     csv_path = directory / f"{stem}_f8949.csv"
     input_path = directory / f"{stem}.txt"
+    template_text = Path(template_path).read_text(encoding="utf-8") if template_path else None
     csv_path.write_text(render_ots_8949_csv(scenario), encoding="utf-8", newline="\n")
     input_path.write_text(
-        render_ots_input_text(scenario, spreadsheet_name=csv_path.name),
+        render_ots_input_text(scenario, spreadsheet_name=csv_path.name, template_text=template_text),
         encoding="utf-8",
         newline="\n",
     )
@@ -178,3 +200,59 @@ def _format_adjustment(value: int | float) -> str:
 def _safe_id(value: str) -> str:
     cleaned = re.sub(r"[^A-Za-z0-9_-]+", "_", value.strip())
     return cleaned.strip("_") or "scenario"
+
+
+def _fallback_ots_template(tax_year: str) -> str:
+    return "\n".join(
+        [
+            f"Title:  US Federal 1040 Tax Form - {tax_year}",
+            "Status        Single",
+            "You_65+Over?  N",
+            "You_Blind?  N",
+            "Spouse_65+Over?  N",
+            "Spouse_Blind?  N",
+            "Dependents  0",
+            "CkHomeInUS  Y",
+            "VirtCurr?  N",
+            "CkSepLivedApart  N",
+            "f8949_spreadsheet-A/D:",
+            "",
+        ]
+    )
+
+
+def _fill_ots_template(template: str, values: dict[str, str]) -> str:
+    rendered = template.replace("\r\n", "\n").replace("\r", "\n")
+    colon_labels = {"Title", "f8949_spreadsheet-A/D"}
+    for label, value in values.items():
+        rendered = _replace_template_value(
+            rendered,
+            label=label,
+            value=value,
+            use_colon=label in colon_labels,
+        )
+    return rendered
+
+
+def _replace_template_value(text: str, *, label: str, value: str, use_colon: bool) -> str:
+    pattern = re.compile(
+        rf"^(?P<indent>\s*){re.escape(label)}(?P<colon>:?)(?P<body>[^\n]*)$",
+        re.MULTILINE,
+    )
+    match = pattern.search(text)
+    if not match:
+        raise ValueError(f"OTS template is missing required field {label}")
+
+    def replace(found: re.Match[str]) -> str:
+        comment = _inline_comment(found.group("body"))
+        colon = ":" if use_colon else ""
+        return f"{found.group('indent')}{label}{colon}  {value}{comment}"
+
+    return pattern.sub(replace, text, count=1)
+
+
+def _inline_comment(text: str) -> str:
+    comment_start = text.find("{")
+    if comment_start < 0:
+        return ""
+    return f"  {text[comment_start:].strip()}"

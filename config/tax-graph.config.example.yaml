@@ -66,8 +66,8 @@ oracles:                         # differential testing (M6)
     executable: null             # optional override after install
     releases:
       windows:
-        url: null                # set to the pinned SourceForge .zip download URL
-        sha256: null             # required; compute before running oracle install
+        url: https://sourceforge.net/projects/opentaxsolver/files/OTS_2025/v23.06_mswin/OpenTaxSolver2025_23.06_mswin.zip/download
+        sha256: 7d570384801b04a70eea4e704f80f2c5f37472ecd3406e9a3d695d132b963bc7
       linux:
         url: null                # set to the pinned SourceForge .tgz download URL
         sha256: null

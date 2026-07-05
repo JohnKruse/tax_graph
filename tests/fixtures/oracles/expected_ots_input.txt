@@ -1,3 +1,11 @@
-Title: Tax Graph 2025 scenario m6_single_lot_gain
-Status: Single ;
-f8949spreadsheet: m6_single_lot_gain_f8949.csv ;
+Title:  US Federal 1040 Tax Form - 2025 - Tax Graph scenario m6_single_lot_gain
+Status  Single
+You_65+Over?  N
+You_Blind?  N
+Spouse_65+Over?  N
+Spouse_Blind?  N
+Dependents  0
+CkHomeInUS  Y
+VirtCurr?  N
+CkSepLivedApart  N
+f8949_spreadsheet-A/D:  m6_single_lot_gain_f8949.csv

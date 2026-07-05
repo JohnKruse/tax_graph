@@ -49,8 +49,8 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
   `uv --directory C:\Users\devbox\projects\tax_graph run python -m tax_graph.cli serve --year 2025`.
   A local stdio MCP client also walked the full capital-gains branch and returned 1040 line 7 =
   2000 with the 8949 SUBTRACT citation.
-- Next core phase by milestone order: **M5** (Return Record, canary Future Echo). Architect should
-  generate `plans/PHASE_M5.md` next. **M7** (Frontier registry + SOI-weighted coverage, Compass
+- Next core phase by milestone order: **M6b** (Repeatable tables, canary Tandem Abacus; plan
+  written just-in-time by Architect). **M7** (Frontier registry + SOI-weighted coverage, Compass
   Rose - plan written, `plans/PHASE_M7.md`) is also live and may run alongside if John chooses it.
 - **M5 Step 1 is done.** Added the base-runtime `tax_graph.record` model/builder, preserved fact
   provenance via `load_facts_document()` without breaking `load_facts()`, indexed graph documents /
@@ -106,6 +106,12 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
   20-scenario frozen corpus under `examples/oracle_corpus/`. Tests cover freeze replay,
   corrupted expected failure, and rejection of disagreed candidates without disposition. Live OTS
   tests are wired but skipped here because `OTS_1040_2025_BIN` is not configured.
+- **M6 live-gate closeout is done.** Codex fixed the live OTS grammar path by filling the installed
+  `US_1040_template.txt`, switched freeze to require live OTS-agreed diff reports, updated live
+  v23.06 labels (`D8bh`, `L7a`), regenerated the 20-scenario corpus with
+  `source: live_ots_diff_report`, pinned the Windows SourceForge URL/sha256 in the example config,
+  and verified `pytest -m oracle` with the installed executable. **M6 is complete** and archived as
+  `plans/archive/PHASE_M6.md`.
 
 ## Open for Architect
 - (none open - the M6 closeout question is ANSWERED: the live gate is NOT deferrable, and
@@ -223,6 +229,15 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
   form front-matter ("Purpose of Form" / "Who Must File" / title) from rendered text.
 
 ## Latest verification
+- M6 phase exit / live-gate closeout:
+  - `.\.venv\Scripts\python.exe -m pytest -m m6` -> 23 passed, 2 skipped, 99 deselected
+  - `.\.venv\Scripts\python.exe -m pytest -m oracle` with `OTS_1040_2025_BIN` set -> 2 passed,
+    122 deselected
+  - `.\.venv\Scripts\python.exe -m tax_graph.cli oracle freeze --year 2025 --n 20 --seed 20250705 --generated-date 2026-07-05 --oracle-version ots_2025_23.06 --source yaml` -> wrote 20 live OTS-agreed scenarios
+  - `.\.venv\Scripts\python.exe -m tax_graph.cli oracle replay-corpus --year 2025 --source yaml` -> 20 scenarios, OK
+  - `.\.venv\Scripts\python.exe -m pytest` -> 119 passed, 5 skipped
+  - `.\.venv\Scripts\python.exe tools\check_ascii.py` -> ASCII check OK
+  - `uv --directory C:\Users\devbox\projects\tax_graph run --no-dev python -m tax_graph.cli run --facts examples\capital_gains_basic\facts.yaml --source yaml --no-record` -> Form 1040 line 7 = 2000
 - M5 Step 1:
   - `.\.venv\Scripts\python.exe -m pytest -m m5` -> 2 passed, 85 deselected
   - `.\.venv\Scripts\python.exe tools\check_ascii.py` -> ASCII check OK

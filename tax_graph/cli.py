@@ -267,13 +267,19 @@ def oracle_freeze_command(
     root: str | Path | None = None,
     corpus_dir: str | Path | None = None,
     generated_date: str | None = None,
-    oracle_version: str = "ots_2025_fixture",
+    oracle_version: str = "ots_2025_23.06",
     source: str | None = None,
 ) -> int:
     """Freeze generated oracle-agreed scenarios into offline examples."""
     from tax_graph.oracles import freeze_generated_corpus
+    from tax_graph.oracles.fuzz import resolve_ots_executable
 
     root_path = Path(root).resolve() if root is not None else project_root()
+    config = load_config(root=root_path)
+    executable = resolve_ots_executable(config, root=root_path, year=year)
+    if executable is None:
+        print(f"ERROR: no OTS 1040 {year} executable configured; run oracle install or set OTS_1040_{year}_BIN")
+        return 1
     output_dir = (
         Path(corpus_dir).resolve()
         if corpus_dir is not None
@@ -289,6 +295,7 @@ def oracle_freeze_command(
             generated_date=generated_date or _dt.date.today().isoformat(),
             oracle_version=oracle_version,
             source=source,
+            executable=executable,
         )
     except Exception as exc:
         print(f"ERROR: {exc}")
@@ -560,7 +567,7 @@ def _build_typer_app():
         seed: int = typer.Option(0, "--seed", help="Deterministic PRNG seed."),
         corpus_dir: Path | None = typer.Option(None, "--corpus-dir", help="Directory for frozen corpus examples."),
         generated_date: str | None = typer.Option(None, "--generated-date", help="Manifest generated date override."),
-        oracle_version: str = typer.Option("ots_2025_fixture", "--oracle-version", help="Pinned oracle version label."),
+        oracle_version: str = typer.Option("ots_2025_23.06", "--oracle-version", help="Pinned oracle version label."),
         source: str | None = typer.Option(None, "--source", help="Graph source: sqlite or yaml. Defaults to auto."),
         root: Path | None = typer.Option(None, "--root", help="Project root override."),
     ) -> None:
@@ -665,7 +672,7 @@ def _fallback_app() -> int:
     oracle_freeze_parser.add_argument("--seed", type=int, default=0)
     oracle_freeze_parser.add_argument("--corpus-dir", default=None)
     oracle_freeze_parser.add_argument("--generated-date", default=None)
-    oracle_freeze_parser.add_argument("--oracle-version", default="ots_2025_fixture")
+    oracle_freeze_parser.add_argument("--oracle-version", default="ots_2025_23.06")
     oracle_freeze_parser.add_argument("--source", choices=["sqlite", "yaml"], default=None)
     oracle_freeze_parser.add_argument("--root", default=None)
 

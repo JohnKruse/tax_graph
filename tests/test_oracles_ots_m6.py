@@ -10,10 +10,12 @@ import pytest
 from tax_graph.oracles.ots import (
     OtsInstallError,
     OtsRelease,
+    find_ots_1040_template,
     install_ots_release,
     parse_ots_output,
     run_ots_1040,
 )
+from tax_graph.oracles.scenario import CapitalGainScenario, write_ots_input_bundle
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -28,7 +30,7 @@ def test_parse_ots_output_fixture():
     assert labels["F8949_2e"] == 10000
     assert labels["F8949_2h"] == 2000
     assert labels["D16"] == 2000
-    assert labels["L7"] == 2000
+    assert labels["L7a"] == 2000
 
 
 @pytest.mark.m6
@@ -72,20 +74,26 @@ def test_ots_runner_smoke_with_env_binary(tmp_path):
     if not executable:
         pytest.skip("set OTS_1040_2025_BIN to run the live OTS smoke test")
 
-    input_path = tmp_path / "tax_graph_m6_ots_smoke.txt"
-    input_path.write_text(
-        "\n".join(
-            [
-                "Title: Tax Graph M6 OTS smoke",
-                "Status: Single ;",
-                "L7: 0 ;",
-                "",
-            ]
-        ),
-        encoding="utf-8",
+    scenario = CapitalGainScenario(
+        scenario_id="tax_graph_m6_ots_smoke",
+        tax_year="2025",
+        filing_status="single",
+        description="Smoke LT lot",
+        date_acquired="01/15/2024",
+        date_sold="06/01/2025",
+        proceeds=12000,
+        cost=10000,
+    )
+    paths = write_ots_input_bundle(
+        scenario,
+        tmp_path,
+        template_path=find_ots_1040_template(executable, year="2025"),
     )
 
-    result = run_ots_1040(input_path, executable=executable)
+    result = run_ots_1040(paths["input"], executable=executable)
 
     assert result.output_path.exists()
     assert result.labels
+    assert "ERROR1" not in result.stdout
+    assert "ERROR1" not in result.stderr
+    assert "ERROR1" not in result.output_path.read_text(encoding="utf-8", errors="replace")

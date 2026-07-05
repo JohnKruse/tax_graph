@@ -4,14 +4,24 @@ from __future__ import annotations
 
 from dataclasses import asdict, dataclass
 from pathlib import Path
-from typing import Any, Mapping
+from typing import Any, Callable, Mapping
 
 import yaml
 
 from tax_graph.engine import Engine, Graph, load_facts
-from tax_graph.oracles.box_map import BoxMap, load_box_map
+from tax_graph.oracles.box_map import load_box_map
+from tax_graph.oracles.diff import OracleDiffReport, diff_engine_result
 from tax_graph.oracles.domain import assert_scenario_in_domain, generate_scenarios, load_domain_profile
-from tax_graph.oracles.scenario import CapitalGainScenario, render_tax_graph_facts_yaml
+from tax_graph.oracles.ots import find_ots_1040_template, run_ots_1040
+from tax_graph.oracles.scenario import (
+    CapitalGainScenario,
+    render_tax_graph_facts_document,
+    render_tax_graph_facts_yaml,
+    write_ots_input_bundle,
+)
+
+
+OtsRunner = Callable[..., Any]
 
 
 @dataclass(frozen=True)
@@ -21,6 +31,7 @@ class FreezeCandidate:
     scenario: CapitalGainScenario
     status: str = "agreed"
     disposition: str | None = None
+    expected: Mapping[str, Any] | None = None
 
 
 @dataclass(frozen=True)
@@ -66,13 +77,52 @@ def freeze_generated_corpus(
     generated_date: str,
     oracle_version: str,
     source: str | None = None,
+    executable: str | Path | None = None,
+    output_dir: str | Path | None = None,
+    template_path: str | Path | None = None,
+    runner: OtsRunner = run_ots_1040,
 ) -> FrozenCorpusSummary:
-    """Freeze generated in-domain scenarios as offline replay fixtures."""
+    """Freeze generated scenarios after live OTS agreement."""
 
+    if executable is None:
+        raise ValueError("live OTS executable is required to freeze an oracle corpus")
     root_path = Path(root)
     profile = load_domain_profile(root_path / "oracles" / f"domain_{year}.yaml")
+    box_map = load_box_map(root_path / "oracles" / f"box_map_{year}.yaml")
+    graph = Graph(year, root=root_path, source=source)
     scenarios = generate_scenarios(profile, n=scenario_count, seed=seed)
-    candidates = [FreezeCandidate(scenario=scenario, status="agreed") for scenario in scenarios]
+    render_dir = (
+        Path(output_dir)
+        if output_dir is not None
+        else root_path / "output" / "oracle_freeze" / f"{year}_seed{seed}"
+    )
+    render_template = _resolve_template_path(executable, year=year, template_path=template_path, runner=runner)
+    candidates: list[FreezeCandidate] = []
+    failures: list[str] = []
+    for scenario in scenarios:
+        assert_scenario_in_domain(profile, scenario)
+        paths = write_ots_input_bundle(
+            scenario,
+            render_dir / scenario.scenario_id,
+            template_path=render_template,
+        )
+        result = Engine(graph).execute(_facts_from_scenario(scenario))
+        ots_result = runner(paths["input"], executable=executable)
+        report = diff_engine_result(result, ots_result.labels, box_map, scenario=scenario)
+        if report.status != "agreed":
+            failures.append(f"{scenario.scenario_id}: {report.status}")
+            continue
+        candidates.append(
+            FreezeCandidate(
+                scenario=scenario,
+                status=report.status,
+                expected=expected_values_from_report(report),
+            )
+        )
+    if failures:
+        joined = ", ".join(failures[:5])
+        more = "" if len(failures) <= 5 else f", ... ({len(failures)} total)"
+        raise ValueError(f"cannot freeze corpus; live oracle did not agree for {joined}{more}")
     return freeze_candidates(
         candidates,
         year=year,
@@ -101,8 +151,6 @@ def freeze_candidates(
     root_path = Path(root)
     output_dir = Path(corpus_dir)
     profile = load_domain_profile(root_path / "oracles" / f"domain_{year}.yaml")
-    box_map = load_box_map(root_path / "oracles" / f"box_map_{year}.yaml")
-    graph = Graph(year, root=root_path, source=source)
     output_dir.mkdir(parents=True, exist_ok=True)
 
     entries: list[dict[str, Any]] = []
@@ -116,7 +164,7 @@ def freeze_candidates(
             encoding="utf-8",
             newline="\n",
         )
-        expected = expected_values_for_scenario(candidate.scenario, graph, box_map)
+        expected = dict(candidate.expected or {})
         (scenario_dir / "expected.yaml").write_text(
             _dump_yaml({"expected": expected}),
             encoding="utf-8",
@@ -142,7 +190,7 @@ def freeze_candidates(
                 "provenance": {
                     "oracle": "opentaxsolver",
                     "oracle_version": oracle_version,
-                    "source": "m6_seeded_single_lot_corpus",
+                    "source": "live_ots_diff_report",
                 },
                 "entries": entries,
             }
@@ -160,30 +208,26 @@ def freeze_candidates(
 def validate_freeze_candidate(candidate: FreezeCandidate) -> None:
     """Reject candidates that lack an oracle agreement or disposition."""
 
+    if candidate.status == "agreed" and candidate.expected:
+        return
     if candidate.status == "agreed":
+        raise ValueError(f"scenario {candidate.scenario.scenario_id} lacks oracle expected values")
+    if candidate.disposition and candidate.expected:
         return
     if candidate.disposition:
-        return
+        raise ValueError(f"scenario {candidate.scenario.scenario_id} lacks adjudicated expected values")
     raise ValueError(
         f"scenario {candidate.scenario.scenario_id} has status {candidate.status} "
         "and no adjudicated disposition"
     )
 
 
-def expected_values_for_scenario(
-    scenario: CapitalGainScenario,
-    graph: Graph,
-    box_map: BoxMap,
-) -> dict[str, Any]:
-    """Compute frozen expected values for mapped Tax Graph boxes."""
+def expected_values_from_report(report: OracleDiffReport) -> dict[str, Any]:
+    """Extract frozen expected values from an agreed live oracle report."""
 
-    facts_path_values = yaml.safe_load(render_tax_graph_facts_yaml(scenario))["facts"]
-    facts = {item["node_id"]: item["value"] for item in facts_path_values}
-    result = Engine(graph).execute(facts)
-    expected: dict[str, Any] = {}
-    for box in box_map.boxes:
-        expected[box.node_id] = result.values[box.node_id]
-    return expected
+    if report.status != "agreed":
+        raise ValueError(f"cannot freeze expected values from {report.status} report")
+    return {item.node_id: _clean_expected_value(item.ots_value) for item in report.comparisons}
 
 
 def replay_corpus(*, year: str, root: str | Path, corpus_dir: str | Path, source: str | None = None) -> ReplayReport:
@@ -232,3 +276,30 @@ def candidate_to_dict(candidate: FreezeCandidate) -> dict[str, Any]:
 
     data = asdict(candidate)
     return data
+
+
+def _facts_from_scenario(scenario: CapitalGainScenario) -> dict[str, Any]:
+    document = render_tax_graph_facts_document(scenario)
+    return {fact["node_id"]: fact["value"] for fact in document["facts"]}
+
+
+def _resolve_template_path(
+    executable: str | Path,
+    *,
+    year: str,
+    template_path: str | Path | None,
+    runner: OtsRunner,
+) -> Path | None:
+    if template_path is not None:
+        return Path(template_path)
+    executable_path = Path(executable)
+    if executable_path.exists() or runner is run_ots_1040:
+        return find_ots_1040_template(executable_path, year=year)
+    return None
+
+
+def _clean_expected_value(value: Any) -> Any:
+    if isinstance(value, (int, float)):
+        number = float(value)
+        return int(number) if number.is_integer() else value
+    return value

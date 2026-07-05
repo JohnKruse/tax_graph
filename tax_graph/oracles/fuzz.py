@@ -14,7 +14,7 @@ from tax_graph.engine import MISSING, Engine, Graph
 from tax_graph.oracles.box_map import load_box_map
 from tax_graph.oracles.diff import OracleDiffReport, diff_engine_result
 from tax_graph.oracles.domain import assert_scenario_in_domain, generate_scenarios, load_domain_profile
-from tax_graph.oracles.ots import find_ots_executable, run_ots_1040
+from tax_graph.oracles.ots import find_ots_1040_template, find_ots_executable, run_ots_1040
 from tax_graph.oracles.scenario import CapitalGainScenario, render_tax_graph_facts_document, write_ots_input_bundle
 
 
@@ -52,13 +52,14 @@ def run_fuzz(
     box_map = load_box_map(root_path / "oracles" / f"box_map_{year}.yaml")
     graph = Graph(year, root=root_path, source=source)
     scenarios = generate_scenarios(profile, n=n, seed=seed)
+    template_path = find_ots_1040_template(executable, year=year)
 
     triage_entries: list[dict[str, Any]] = []
     agreed = disagreed = rejected = 0
     for scenario in scenarios:
         assert_scenario_in_domain(profile, scenario)
         scenario_dir = out_dir / scenario.scenario_id
-        paths = write_ots_input_bundle(scenario, scenario_dir)
+        paths = write_ots_input_bundle(scenario, scenario_dir, template_path=template_path)
         facts = _facts_from_scenario(scenario)
         engine_result = Engine(graph).execute(facts)
         ots_result = runner(paths["input"], executable=executable)
