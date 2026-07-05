@@ -1,0 +1,9 @@
+expected:
+  form_8949_2025_partii_proceeds: 130
+  form_8949_2025_partii_cost: 1377
+  form_8949_2025_partii_total_gain_loss: -1247
+  schedule_d_2025_line_7_net_st: 0
+  schedule_d_2025_line_8b_gain: -1247
+  schedule_d_2025_line_15_net_lt: -1247
+  schedule_d_2025_line_16_total: -1247
+  form_1040_2025_line_7_capital_gain_loss: -1247

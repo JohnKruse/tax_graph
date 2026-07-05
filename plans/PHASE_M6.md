@@ -112,7 +112,7 @@ verification ladder and the template for every future promoted form.
     -> 113 passed, 5 skipped; ASCII check OK; `oracles/domain_2025.yaml` confirmed to cap net
     loss at -3000 with boundary values. Committed by the Architect, authored by Codex.
 
-- [ ] **Step 5 - Corpus freeze + offline replay + triage log.** `tax-graph oracle freeze`:
+- [DONE] **Step 5 - Corpus freeze + offline replay + triage log.** `tax-graph oracle freeze`:
   agreed scenario/expected pairs -> `examples/oracle_corpus/<scenario_id>/` (facts.yaml +
   expected.yaml, same shape the example regression suite already replays) + a `corpus.yaml`
   manifest with provenance (OTS version, seed, generated date, scenario count). Freeze >= 20
@@ -122,6 +122,10 @@ verification ladder and the template for every future promoted form.
   replays green through the standard example mechanism; a corrupted expected value fails; a
   disagreed pair cannot freeze without a disposition. Exit-criteria commands run. Docs: README
   oracle workflow.
+  - Worker note: `tax-graph oracle freeze` writes deterministic replay fixtures and
+    `tax-graph oracle replay-corpus` replays them offline. The committed seed corpus has 20
+    in-domain scenarios under `examples/oracle_corpus/`. `pytest -m oracle` is wired and skipped
+    in this checkout because no OTS binary is configured; live OTS remains the gated job.
 
 When all steps are `[DONE]`: mark this phase `[COMPLETE]`, move it to `plans/archive/`, update
 `plans/AGENT_HANDOFF.md`, single `git push`, and tell John. Next by milestone order: **M6b**

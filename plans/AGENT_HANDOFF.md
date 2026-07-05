@@ -101,6 +101,11 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
   `plans/PHASE_M6.md`. Next Codex session: Step 5 (corpus freeze + offline replay + triage log)
   - note the live fuzz >= 100 run and corpus freeze need an installed OTS
   (`tax-graph oracle install`, or set `OTS_1040_2025_BIN`).
+- **M6 Step 5 is done.** Added `tax_graph.oracles.corpus`, `tax-graph oracle freeze`,
+  `tax-graph oracle replay-corpus`, an empty `oracles/triage.yaml`, and a committed
+  20-scenario frozen corpus under `examples/oracle_corpus/`. Tests cover freeze replay,
+  corrupted expected failure, and rejection of disagreed candidates without disposition. Live OTS
+  tests are wired but skipped here because `OTS_1040_2025_BIN` is not configured.
 
 ## Open for Architect
 - (none open - the PHASE_M6 request is RESOLVED: `plans/PHASE_M6.md` is written, canary Twin
@@ -235,6 +240,14 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 - M6 Step 3:
   - `.\.venv\Scripts\python.exe -m pytest -m m6` -> 14 passed, 1 skipped, 99 deselected
   - `.\.venv\Scripts\python.exe tools\check_ascii.py` -> ASCII check OK
+- M6 Step 5:
+  - `.\.venv\Scripts\python.exe -m tax_graph.cli oracle freeze --year 2025 --n 20 --seed 20250705 --generated-date 2026-07-05 --oracle-version ots_2025_23.06 --source yaml` -> wrote 20 scenarios under `examples\oracle_corpus`
+  - `.\.venv\Scripts\python.exe -m pytest -m m6` -> 22 passed, 2 skipped, 99 deselected
+  - `.\.venv\Scripts\python.exe -m pytest` -> 118 passed, 5 skipped
+  - `.\.venv\Scripts\python.exe tools\check_ascii.py` -> ASCII check OK
+  - `uv --directory C:\Users\devbox\projects\tax_graph run --no-dev python -m tax_graph.cli run --facts examples\capital_gains_basic\facts.yaml --source yaml --no-record` -> Form 1040 line 7 = 2000
+  - `.\.venv\Scripts\python.exe -m pytest -m oracle` -> 2 skipped, 121 deselected (no `OTS_1040_2025_BIN` configured)
+  - `.\.venv\Scripts\python.exe -m tax_graph.cli oracle replay-corpus --year 2025 --source yaml` -> 20 scenarios, OK
 - M2 Step 1:
   - `uv run pytest -m m2` -> 2 passed, 74 deselected
   - `uv run pytest` -> 73 passed, 3 skipped

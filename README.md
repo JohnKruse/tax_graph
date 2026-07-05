@@ -56,6 +56,8 @@ plus sha256 in `config/tax-graph.config.yaml`:
 uv sync --extra oracles
 uv run tax-graph oracle install --year 2025
 uv run tax-graph oracle fuzz --year 2025 --n 100 --seed 1234
+uv run tax-graph oracle freeze --year 2025 --n 20 --seed 20250705
+uv run tax-graph oracle replay-corpus --year 2025
 ```
 
 The M6 harness keeps its checked-in comparison data under `oracles/`: the 2025
@@ -75,6 +77,13 @@ writes a `triage.yaml` for any rejected or disagreed scenario. It requires a
 configured local OTS executable and is intended for gated oracle jobs, not the
 base CI path.
 
+`tax-graph oracle freeze` materializes agreed or adjudicated scenarios into
+`examples/oracle_corpus/<scenario_id>/facts.yaml` and `expected.yaml`, plus a
+`corpus.yaml` manifest. `tax-graph oracle replay-corpus` runs those fixtures
+offline through the deterministic engine. `oracles/triage.yaml` records
+disagreements and their disposition before any non-agreed pair is allowed into
+the frozen corpus.
+
 ## CLI Usage
 
 Phase M0 provides a package CLI named `tax-graph`:
@@ -88,6 +97,8 @@ uv run tax-graph run --facts examples\capital_gains_basic\facts.yaml --prior-rec
 uv run tax-graph serve --year 2025
 uv run tax-graph oracle install --year 2025
 uv run tax-graph oracle fuzz --year 2025 --n 100 --seed 1234
+uv run tax-graph oracle freeze --year 2025 --n 20 --seed 20250705
+uv run tax-graph oracle replay-corpus --year 2025
 uv run tax-graph acquire 2025
 uv run tax-graph acquire 2025 --check
 uv run tax-graph extract --doc form_8949_2025
@@ -103,6 +114,8 @@ python -m tax_graph.cli build 2025
 python -m tax_graph.cli serve --year 2025
 python -m tax_graph.cli oracle install --year 2025
 python -m tax_graph.cli oracle fuzz --year 2025 --n 100 --seed 1234
+python -m tax_graph.cli oracle freeze --year 2025 --n 20 --seed 20250705
+python -m tax_graph.cli oracle replay-corpus --year 2025
 python -m tax_graph.cli acquire 2025 --check
 python -m tax_graph.cli extract --doc form_8949_2025
 ```

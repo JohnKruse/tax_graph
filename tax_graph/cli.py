@@ -260,6 +260,79 @@ def oracle_fuzz_command(
     return 0 if summary.disagreed == 0 and summary.rejected == 0 else 1
 
 
+def oracle_freeze_command(
+    year: str = "2025",
+    n: int = 20,
+    seed: int = 0,
+    root: str | Path | None = None,
+    corpus_dir: str | Path | None = None,
+    generated_date: str | None = None,
+    oracle_version: str = "ots_2025_fixture",
+    source: str | None = None,
+) -> int:
+    """Freeze generated oracle-agreed scenarios into offline examples."""
+    from tax_graph.oracles import freeze_generated_corpus
+
+    root_path = Path(root).resolve() if root is not None else project_root()
+    output_dir = (
+        Path(corpus_dir).resolve()
+        if corpus_dir is not None
+        else root_path / "examples" / "oracle_corpus"
+    )
+    try:
+        summary = freeze_generated_corpus(
+            year=year,
+            root=root_path,
+            corpus_dir=output_dir,
+            scenario_count=n,
+            seed=seed,
+            generated_date=generated_date or _dt.date.today().isoformat(),
+            oracle_version=oracle_version,
+            source=source,
+        )
+    except Exception as exc:
+        print(f"ERROR: {exc}")
+        return 1
+
+    print("=== oracle corpus freeze ===")
+    print(f"  scenarios: {summary.scenario_count}")
+    print(f"  corpus: {summary.corpus_dir}")
+    print(f"  manifest: {summary.manifest_path}")
+    return 0
+
+
+def oracle_replay_corpus_command(
+    year: str = "2025",
+    root: str | Path | None = None,
+    corpus_dir: str | Path | None = None,
+    source: str | None = None,
+) -> int:
+    """Replay frozen oracle corpus examples through the engine."""
+    from tax_graph.oracles import replay_corpus
+
+    root_path = Path(root).resolve() if root is not None else project_root()
+    input_dir = (
+        Path(corpus_dir).resolve()
+        if corpus_dir is not None
+        else root_path / "examples" / "oracle_corpus"
+    )
+    try:
+        report = replay_corpus(year=year, root=root_path, corpus_dir=input_dir, source=source)
+    except Exception as exc:
+        print(f"ERROR: {exc}")
+        return 1
+
+    print("=== oracle corpus replay ===")
+    print(f"  scenarios: {report.scenario_count}")
+    if report.ok:
+        print("  result: OK")
+        return 0
+    print("  result: FAILED")
+    for issue in report.issues:
+        print(f"  - {issue.scenario_id} {issue.node_id}: got {issue.actual}, want {issue.expected}")
+    return 1
+
+
 def acquire_command(
     year: str = "2025",
     *,
@@ -480,6 +553,43 @@ def _build_typer_app():
         if raise_code:
             raise typer.Exit(raise_code)
 
+    @oracle_cli.command("freeze")
+    def oracle_freeze_cli(
+        year: str = typer.Option("2025", "--year", "-y", help="Tax year to freeze."),
+        n: int = typer.Option(20, "--n", help="Number of generated scenarios."),
+        seed: int = typer.Option(0, "--seed", help="Deterministic PRNG seed."),
+        corpus_dir: Path | None = typer.Option(None, "--corpus-dir", help="Directory for frozen corpus examples."),
+        generated_date: str | None = typer.Option(None, "--generated-date", help="Manifest generated date override."),
+        oracle_version: str = typer.Option("ots_2025_fixture", "--oracle-version", help="Pinned oracle version label."),
+        source: str | None = typer.Option(None, "--source", help="Graph source: sqlite or yaml. Defaults to auto."),
+        root: Path | None = typer.Option(None, "--root", help="Project root override."),
+    ) -> None:
+        """Freeze agreed oracle scenarios into offline examples."""
+        raise_code = oracle_freeze_command(
+            year=year,
+            n=n,
+            seed=seed,
+            root=root,
+            corpus_dir=corpus_dir,
+            generated_date=generated_date,
+            oracle_version=oracle_version,
+            source=source,
+        )
+        if raise_code:
+            raise typer.Exit(raise_code)
+
+    @oracle_cli.command("replay-corpus")
+    def oracle_replay_corpus_cli(
+        year: str = typer.Option("2025", "--year", "-y", help="Tax year to replay."),
+        corpus_dir: Path | None = typer.Option(None, "--corpus-dir", help="Directory for frozen corpus examples."),
+        source: str | None = typer.Option(None, "--source", help="Graph source: sqlite or yaml. Defaults to auto."),
+        root: Path | None = typer.Option(None, "--root", help="Project root override."),
+    ) -> None:
+        """Replay frozen oracle corpus examples."""
+        raise_code = oracle_replay_corpus_command(year=year, root=root, corpus_dir=corpus_dir, source=source)
+        if raise_code:
+            raise typer.Exit(raise_code)
+
     cli.add_typer(oracle_cli, name="oracle")
 
     @cli.command("acquire")
@@ -549,6 +659,22 @@ def _fallback_app() -> int:
     oracle_fuzz_parser.add_argument("--source", choices=["sqlite", "yaml"], default=None)
     oracle_fuzz_parser.add_argument("--root", default=None)
 
+    oracle_freeze_parser = oracle_subparsers.add_parser("freeze")
+    oracle_freeze_parser.add_argument("--year", "-y", default="2025")
+    oracle_freeze_parser.add_argument("--n", type=int, default=20)
+    oracle_freeze_parser.add_argument("--seed", type=int, default=0)
+    oracle_freeze_parser.add_argument("--corpus-dir", default=None)
+    oracle_freeze_parser.add_argument("--generated-date", default=None)
+    oracle_freeze_parser.add_argument("--oracle-version", default="ots_2025_fixture")
+    oracle_freeze_parser.add_argument("--source", choices=["sqlite", "yaml"], default=None)
+    oracle_freeze_parser.add_argument("--root", default=None)
+
+    oracle_replay_corpus_parser = oracle_subparsers.add_parser("replay-corpus")
+    oracle_replay_corpus_parser.add_argument("--year", "-y", default="2025")
+    oracle_replay_corpus_parser.add_argument("--corpus-dir", default=None)
+    oracle_replay_corpus_parser.add_argument("--source", choices=["sqlite", "yaml"], default=None)
+    oracle_replay_corpus_parser.add_argument("--root", default=None)
+
     acquire_parser = subparsers.add_parser("acquire")
     acquire_parser.add_argument("year", nargs="?", default="2025")
     acquire_parser.add_argument("--check", action="store_true")
@@ -586,6 +712,24 @@ def _fallback_app() -> int:
             seed=args.seed,
             root=args.root,
             output_dir=args.output_dir,
+            source=args.source,
+        )
+    if args.command == "oracle" and args.oracle_command == "freeze":
+        return oracle_freeze_command(
+            year=args.year,
+            n=args.n,
+            seed=args.seed,
+            root=args.root,
+            corpus_dir=args.corpus_dir,
+            generated_date=args.generated_date,
+            oracle_version=args.oracle_version,
+            source=args.source,
+        )
+    if args.command == "oracle" and args.oracle_command == "replay-corpus":
+        return oracle_replay_corpus_command(
+            year=args.year,
+            root=args.root,
+            corpus_dir=args.corpus_dir,
             source=args.source,
         )
     if args.command == "acquire":
