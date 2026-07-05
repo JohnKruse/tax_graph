@@ -72,23 +72,19 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
   `return_record_<year>.carryforward.yaml` by default, supports `--record-dir`, `--no-record`, and
   `--prior-record`, and prints output paths. MCP adds `export_return_record`. README and
   `docs/return-record.md` document implemented-v0 behavior. Next: M5 phase exit checks.
+- **M5 (Return Record) is complete.** `plans/PHASE_M5.md` is marked `[COMPLETE]` and archived as
+  `plans/archive/PHASE_M5.md`; exit checks passed and local generated records stayed under
+  gitignored `output/`.
 
 ## Open for Architect
-- (none open - the PHASE_M5 request is RESOLVED: `plans/PHASE_M5.md` is written, canary Future
-  Echo. See From Architect.)
+- M5 is closed. Please generate `plans/PHASE_M6.md` (Differential-testing harness, canary Twin
+  Witness) for the next core phase, folding in `docs/oracle-strategy.md` as directed. If John wants
+  the parallel M7 track first, confirm that explicitly because `plans/PHASE_M7.md` is already live.
 
 ## From Architect
-- **Next: start M5 (Return Record, canary Future Echo).** John chose the core execution order
-  (2026-07-05); `plans/PHASE_M5.md` is written. State the canary, wait for John's go, then work
-  the 5 steps in order. Key pins to not miss: dual-format is law (memo prose + schema-validated
-  YAML; the machine NEVER parses prose); never-wrong ingestion (v0 capital-loss entry has NO
-  target_node so it is non-ingestible by construction; ingestion reports rather than guesses;
-  explicit facts override primed ones with a warning); injectable date/version for deterministic
-  tests; record module stays base-runtime; ASCII + LF output. The loss-scenario carryforward is
-  STRUCTURE-ONLY (raw net loss, positive amount, derivation caveat) - the Carryover Worksheet /
-  $3000 limit is NOT modeled and must not be improvised. M7 (Compass Rose) remains live as the
-  parallel track if John redirects. After M5: M6 (Twin Witness), whose just-in-time plan folds
-  in `docs/oracle-strategy.md`.
+- **M5 closure note:** M5 is archived complete as of 2026-07-05. The old "start M5" direction is
+  superseded. Next core phase is M6 (Twin Witness), whose just-in-time plan should fold in
+  `docs/oracle-strategy.md`; M7 (Compass Rose) remains live as the parallel track if John redirects.
 - **NEW (2026-07-05) - Parameters and thresholds are first-class (decided; John's OTS C
   reading).** Pinned in engineering-plan "Parameters and thresholds (decided 2026-07-05)".
   Summary: IRS-sourced numbers (standard deduction, bracket tables, worksheet breakpoints,
@@ -185,6 +181,13 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 - M5 Step 5:
   - `.\.venv\Scripts\python.exe -m pytest -m m5` -> 14 passed, 85 deselected
   - `.\.venv\Scripts\python.exe -m pytest -m m2` -> 11 passed, 88 deselected
+  - `.\.venv\Scripts\python.exe tools\check_ascii.py` -> ASCII check OK
+- M5 phase exit:
+  - `.\.venv\Scripts\python.exe -m pytest -m m5` -> 14 passed, 85 deselected
+  - `.\.venv\Scripts\python.exe -m tax_graph.cli run --facts examples\capital_gains_basic\facts.yaml --source yaml --record-dir output\m5_exit` -> Form 1040 line 7 = 2000; memo + carryforward written
+  - `uv --directory C:\Users\devbox\projects\tax_graph run --no-dev python -m tax_graph.cli run --facts examples\capital_gains_basic\facts.yaml --source yaml --record-dir output\m5_base` -> Form 1040 line 7 = 2000; memo + carryforward written
+  - Generated `output\m5_exit\return_record_2025.carryforward.yaml` validated against `carryforward.schema.json`
+  - `.\.venv\Scripts\python.exe -m pytest` -> 96 passed, 3 skipped
   - `.\.venv\Scripts\python.exe tools\check_ascii.py` -> ASCII check OK
 - M2 Step 1:
   - `uv run pytest -m m2` -> 2 passed, 74 deselected

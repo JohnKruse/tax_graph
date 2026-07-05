@@ -1,4 +1,4 @@
-# PHASE M5 - Return Record + carryforward output   [ ]
+# PHASE M5 - Return Record + carryforward output   [COMPLETE]
 
 **Canary:** Future Echo
 **Depends on:** M0 (package/CLI/engine), M1 (compiled runtime), M2 (MCP server - complete).
@@ -120,3 +120,9 @@ When all steps are `[DONE]`: mark this phase `[COMPLETE]`, move it to `plans/arc
 `plans/AGENT_HANDOFF.md`, single `git push`, and tell John. Next by milestone order: M6
 (differential harness, canary Twin Witness) - its plan is written just-in-time and should fold
 in `docs/oracle-strategy.md` (fencing, corpus factory, triage, parameter-level diff).
+
+- Exit verification: `.\.venv\Scripts\python.exe -m pytest -m m5` -> 14 passed, 85 deselected;
+  CLI run wrote memo + carryforward under `output/m5_exit` and preserved line 7 = 2000;
+  base-only `uv --no-dev` run wrote memo + carryforward under `output/m5_base`; generated
+  carryforward YAML validated; full `pytest` -> 96 passed, 3 skipped; `tools/check_ascii.py` ->
+  ASCII check OK.
