@@ -127,7 +127,8 @@ Expected result: `form_1040_2025_line_7_capital_gain_loss = 2000`.
 `tax-graph build 2025` compiles the authored YAML graph into
 `build/tax_graph_2025.sqlite`. The SQLite file is a deterministic runtime
 artifact rebuilt from YAML; `build/` is gitignored, so the binary artifact is
-not committed.
+not committed. Repeatable table subunits compile into the SQLite `tables`
+projection alongside nodes, edges, rules, citations, and decisions.
 
 After a build exists, `tax-graph run` defaults to the SQLite artifact. Use
 `--source yaml` to force the authored YAML source or `--source sqlite` to require

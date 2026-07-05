@@ -72,10 +72,13 @@ hand-authored single-lot 8949 slice with extracted, table-shaped structure.
     SQLite pass-through was kept compatible with old local DBs so the added graph kind does not
     break existing auto-source runs before a rebuild.
 
-- [ ] **Step 2 - Compiler + loader pass-through.** `tables` compile to SQLite (additive table;
+- [DONE] **Step 2 - Compiler + loader pass-through.** `tables` compile to SQLite (additive table;
   nodes row already generic per the M1 seam) and load back through the same `Graph` interface;
   YAML/SQLite parity for a graph containing a table subunit. Tests: build + parity (exact
   values and trace). Docs.
+  - Worker note: `Graph.tables` now round-trips through YAML and SQLite, with a temporary
+    table-bearing graph fixture proving exact values/trace parity. README notes the SQLite
+    `tables` projection.
 
 - [ ] **Step 3 - Engine row instances + totals aggregation + trace.** Facts rows instantiate
   the row-template rules per `row_key`: each computed template column evaluates per instance

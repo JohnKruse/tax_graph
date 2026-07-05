@@ -117,6 +117,10 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
   Step 1 tests in `tests/test_tables_schema_m6b.py`. SQLite now has a generic `tables` table and
   the SQLite loader tolerates older compiled artifacts that lack it. Next: M6b Step 2 compiler +
   loader parity tests/docs.
+- **M6b Step 2 is done.** Added `tests/test_tables_compile_m6b.py` proving a graph containing an
+  8949-style table subunit compiles to SQLite, loads back through `Graph.tables`, and preserves exact
+  YAML/SQLite values and trace. README documents the SQLite `tables` projection. Next: M6b Step 3
+  row-instance engine execution, totals aggregation, and trace/MCP tests.
 
 ## Open for Architect
 - (none open - the M6 closeout question is ANSWERED: the live gate is NOT deferrable, and
@@ -253,6 +257,11 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
   - `.\.venv\Scripts\python.exe -m pytest -m "m0 or m1"` -> 24 passed, 107 deselected
   - `.\.venv\Scripts\python.exe -m tax_graph.cli validate 2025` -> graph integrity OK; tables=0
   - `.\.venv\Scripts\python.exe -m pytest` -> 126 passed, 5 skipped
+  - `.\.venv\Scripts\python.exe tools\check_ascii.py` -> ASCII check OK
+- M6b Step 2:
+  - `.\.venv\Scripts\python.exe -m pytest -m m6b` -> 8 passed, 124 deselected
+  - `.\.venv\Scripts\python.exe -m pytest -m m1` -> 6 passed, 126 deselected
+  - `.\.venv\Scripts\python.exe -m pytest` -> 127 passed, 5 skipped
   - `.\.venv\Scripts\python.exe tools\check_ascii.py` -> ASCII check OK
 - M6 phase exit / live-gate closeout:
   - `.\.venv\Scripts\python.exe -m pytest -m m6` -> 23 passed, 2 skipped, 99 deselected
