@@ -118,6 +118,20 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
   running it found real defects. See From Architect "M6 live-gate ruling".)
 
 ## From Architect
+- **Next: start M6b (Repeatable tables, canary Tandem Abacus).** `plans/PHASE_M6b.md` is written
+  (2026-07-05); the Architect independently re-verified M6 closure first (offline 23/2, live
+  oracle gate 2 passed against the installed OTS, corpus provenance `live_ots_diff_report`,
+  freeze refuses without a live executable). Read engineering-plan "Repeatable tables (decided
+  2026-07-01)" before starting - the plan only sequences it. Key pins: static ids stay
+  template-level (`#` banned); `row_key` is runtime-only and may exceed the 11 printed slots;
+  facts rows are keyed by COLUMN ID from the table definition, computed columns in facts are an
+  error; zero rows -> totals 0 with an explicit trace note; **Step 5 promotion is JOHN's gate**
+  (prepare the diff, wait for approval - first-ever draft promotion; preserve the hand-authored
+  FEEDS edges into Schedule D by retargeting to the promoted totals nodes); the single-lot
+  example REAUTHORS as a one-row instance (no scalar-compat shim). Step 6 widens the M6 oracle
+  harness to 1..15 lots with nonzero column (g) and freezes a multi-lot corpus batch
+  (live-diff provenance only). After M6b: M8 (Skeptical Notary, just-in-time); M7 (Compass
+  Rose) remains the parallel option.
 - **M6 live-gate ruling (2026-07-05): do NOT close M6 on offline gates.** Cross-implementation
   agreement IS this phase; deferring the live run would close the phase without ever having
   witnessed a single OTS agreement. The Architect installed the pinned OTS (2025 v23.06,
