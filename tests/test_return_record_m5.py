@@ -5,7 +5,7 @@ from pathlib import Path
 import pytest
 
 from tax_graph.engine import Engine, Graph, load_facts, load_facts_document
-from tax_graph.record import build_return_record, validate_decision_resolutions
+from tax_graph.record import build_return_record, render_memo, validate_decision_resolutions
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -16,30 +16,7 @@ pytestmark = pytest.mark.m5
 
 
 def test_return_record_builder_is_deterministic_and_complete():
-    graph = Graph("2025", root=ROOT, source="yaml")
-    facts_document = load_facts_document(FACTS_PATH)
-    result = Engine(graph).execute(load_facts(FACTS_PATH))
-    resolutions = {
-        "resolutions": [
-            {
-                "decision_id": "decision_8949_adjustments",
-                "chosen_option_id": "none",
-                "rationale": "Broker statement shows a simple covered long-term lot with no adjustment code.",
-                "decided_by": "test_filer",
-                "decided_date": "2026-07-05",
-            }
-        ]
-    }
-
-    record = build_return_record(
-        facts_document=facts_document,
-        result=result,
-        graph=graph,
-        decision_resolutions=resolutions,
-        tax_graph_version="test-version",
-        generated_date="2026-07-05",
-        target_node=TARGET,
-    )
+    record = _capital_gains_record()
     payload = record.to_dict()
 
     assert payload["metadata"] == {
@@ -69,6 +46,31 @@ def test_return_record_builder_is_deterministic_and_complete():
     assert payload["unsupported"] == []
 
 
+def test_render_memo_matches_golden_fixture():
+    memo = render_memo(_capital_gains_record())
+    expected = (ROOT / "tests" / "fixtures" / "return_record_capital_gains.md").read_text(encoding="utf-8")
+
+    assert memo == expected
+    assert "\r\n" not in memo
+
+
+def test_render_memo_without_decisions_is_explicit():
+    graph = Graph("2025", root=ROOT, source="yaml")
+    result = Engine(graph).execute(load_facts(FACTS_PATH))
+    record = build_return_record(
+        facts_document=load_facts_document(FACTS_PATH),
+        result=result,
+        graph=graph,
+        tax_graph_version="test-version",
+        generated_date="2026-07-05",
+        target_node=TARGET,
+    )
+
+    memo = render_memo(record)
+
+    assert "- No decisions were required." in memo
+
+
 def test_decision_resolution_references_must_exist():
     graph = Graph("2025", root=ROOT, source="yaml")
 
@@ -87,6 +89,31 @@ def test_decision_resolution_references_must_exist():
             },
             graph,
         )
+
+
+def _capital_gains_record():
+    graph = Graph("2025", root=ROOT, source="yaml")
+    result = Engine(graph).execute(load_facts(FACTS_PATH))
+    resolutions = {
+        "resolutions": [
+            {
+                "decision_id": "decision_8949_adjustments",
+                "chosen_option_id": "none",
+                "rationale": "Broker statement shows a simple covered long-term lot with no adjustment code.",
+                "decided_by": "test_filer",
+                "decided_date": "2026-07-05",
+            }
+        ]
+    }
+    return build_return_record(
+        facts_document=load_facts_document(FACTS_PATH),
+        result=result,
+        graph=graph,
+        decision_resolutions=resolutions,
+        tax_graph_version="test-version",
+        generated_date="2026-07-05",
+        target_node=TARGET,
+    )
 
     with pytest.raises(ValueError, match="unknown option_id"):
         validate_decision_resolutions(

@@ -9,6 +9,7 @@ from tax_graph.record.return_record import (
     TraceSummaryEntry,
     build_return_record,
     load_decision_resolutions,
+    render_memo,
     validate_decision_resolutions,
 )
 
@@ -21,5 +22,6 @@ __all__ = [
     "TraceSummaryEntry",
     "build_return_record",
     "load_decision_resolutions",
+    "render_memo",
     "validate_decision_resolutions",
 ]

@@ -67,7 +67,7 @@ a dollar figure from prose.**
   - Verification: `.\.venv\Scripts\python.exe -m pytest -m m5` -> 2 passed, 85 deselected;
     `.\.venv\Scripts\python.exe tools\check_ascii.py` -> ASCII check OK.
 
-- [ ] **Step 2 - Markdown memo renderer.** `render_memo(record) -> str`: metadata header, facts
+- [DONE] **Step 2 - Markdown memo renderer.** `render_memo(record) -> str`: metadata header, facts
   ledger (value + provenance per fact), decision log (question, options presented, chosen,
   rationale, quoted citation text, decided-by, date), unsupported/deferred section (explicitly
   lists what was NOT modeled and why that is intentional), computed outputs + trace summary for
@@ -75,6 +75,8 @@ a dollar figure from prose.**
   ASCII, LF, stable ordering. Test: golden memo fixture for the example scenario; a scenario
   with no decisions renders an explicit "no decisions were required" section (not an omission).
   Docs.
+  - Verification: `.\.venv\Scripts\python.exe -m pytest -m m5` -> 4 passed, 85 deselected;
+    `.\.venv\Scripts\python.exe tools\check_ascii.py` -> ASCII check OK.
 
 - [ ] **Step 3 - Carryforward block emission (structure-only v0, never wrong).** Emit
   `<stem>.carryforward.yaml` validated against `carryforward.schema.json`. v0 policy (pinned):

@@ -56,6 +56,10 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
   provenance via `load_facts_document()` without breaking `load_facts()`, indexed graph documents /
   citations / decisions for record use, added `decision_resolutions.schema.json`, and covered
   deterministic builder output plus bad decision/option references. Next: M5 Step 2 memo renderer.
+- **M5 Step 2 is done.** Added deterministic `render_memo(record)`, including metadata, facts,
+  decisions, unsupported/deferred, outputs, trace summary, carryforward display, and elections.
+  Golden fixture covers the capital-gains example; no-decision records render an explicit section.
+  Next: M5 Step 3 carryforward YAML emission.
 
 ## Open for Architect
 - (none open - the PHASE_M5 request is RESOLVED: `plans/PHASE_M5.md` is written, canary Future
@@ -156,6 +160,9 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 ## Latest verification
 - M5 Step 1:
   - `.\.venv\Scripts\python.exe -m pytest -m m5` -> 2 passed, 85 deselected
+  - `.\.venv\Scripts\python.exe tools\check_ascii.py` -> ASCII check OK
+- M5 Step 2:
+  - `.\.venv\Scripts\python.exe -m pytest -m m5` -> 4 passed, 85 deselected
   - `.\.venv\Scripts\python.exe tools\check_ascii.py` -> ASCII check OK
 - M2 Step 1:
   - `uv run pytest -m m2` -> 2 passed, 74 deselected

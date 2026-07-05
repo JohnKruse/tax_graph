@@ -152,6 +152,104 @@ def load_decision_resolutions(path: str | Path) -> dict[str, Any]:
     return data if data is not None else {"resolutions": []}
 
 
+def render_memo(record: ReturnRecord) -> str:
+    """Render a stable ASCII Markdown memo for human review."""
+    lines = [
+        "# Tax Graph Return Record",
+        "",
+        "## Metadata",
+        f"- Tax year: {record.metadata.tax_year}",
+        f"- Filing status: {record.metadata.filing_status or 'not provided'}",
+        f"- Generated date: {record.metadata.generated_date}",
+        f"- Tax Graph version: {record.metadata.tax_graph_version}",
+        f"- Target node: {record.metadata.target_node or 'not provided'}",
+        "",
+        "## Facts Ledger",
+    ]
+    if record.facts:
+        for fact in record.facts:
+            lines.extend(
+                [
+                    f"- {fact.label} (`{fact.node_id}`): {_format_value(fact.value)}",
+                    f"  - Source: {_format_source(fact.source)}",
+                    f"  - Confidence: {_format_confidence(fact.confidence)}",
+                ]
+            )
+    else:
+        lines.append("- No input facts were supplied.")
+
+    lines.extend(["", "## Decision Log"])
+    if record.decisions:
+        for decision in record.decisions:
+            lines.extend(
+                [
+                    f"### {decision.decision_id}",
+                    f"- Question: {decision.question}",
+                    "- Options presented:",
+                ]
+            )
+            for option in decision.options_presented:
+                lines.append(
+                    f"  - {option['option_id']}: {option['label']} [{option['option_type']}]"
+                )
+            lines.extend(
+                [
+                    f"- Chosen: {decision.chosen_option_id} - {decision.chosen_label} [{decision.chosen_option_type}]",
+                    f"- Rationale: {decision.rationale}",
+                    f"- Decided by: {decision.decided_by}",
+                    f"- Decided date: {decision.decided_date}",
+                    "- Citations:",
+                ]
+            )
+            lines.extend(_render_citations(decision.citations, indent="  "))
+    else:
+        lines.append("- No decisions were required.")
+
+    lines.extend(["", "## Unsupported / Deferred"])
+    if record.unsupported:
+        lines.extend(f"- {item}" for item in record.unsupported)
+    else:
+        lines.append("- No unsupported or deferred items were recorded.")
+
+    lines.extend(["", "## Computed Outputs"])
+    if record.outputs:
+        lines.extend(_render_trace_entries(record.outputs))
+    else:
+        lines.append("- No computed outputs were recorded.")
+
+    lines.extend(["", "## Trace Summary"])
+    if record.trace_summary:
+        lines.extend(_render_trace_entries(record.trace_summary))
+    else:
+        lines.append("- No trace entries were recorded.")
+
+    lines.extend(["", "## Carryforwards"])
+    if record.carryforward_block.carryforwards:
+        for item in record.carryforward_block.carryforwards:
+            lines.append(
+                f"- {item['carryforward_id']} ({item['kind']}): {_format_value(item['amount'])}"
+            )
+            if item.get("target_node"):
+                lines.append(f"  - Target node: {item['target_node']}")
+            else:
+                lines.append("  - Target node: not ingestible in v0")
+            if item.get("derivation"):
+                lines.append(f"  - Derivation: {item['derivation']}")
+    else:
+        lines.append("- No carryforwards emitted.")
+    lines.append("- Machine payload: see paired carryforward YAML; do not parse this prose.")
+
+    lines.extend(["", "## Elections"])
+    elections = record.elections or record.carryforward_block.elections
+    if elections:
+        for election in elections:
+            lines.append(f"- {election['election_id']}: {election['choice']}")
+    else:
+        lines.append("- No consistency elections recorded.")
+
+    return "\n".join(lines) + "\n"
+
+
 def validate_decision_resolutions(data: dict[str, Any], graph: Graph) -> list[dict[str, Any]]:
     """Validate resolution schema and ensure every decision option exists."""
     schema = load_yaml(SCHEMA_DIR / "decision_resolutions.schema.json")
@@ -264,3 +362,51 @@ def _json_safe(value: Any) -> Any:
     if isinstance(value, list):
         return [_json_safe(item) for item in value]
     return value
+
+
+def _format_value(value: Any) -> str:
+    safe = _json_safe(value)
+    if safe is None:
+        return "blank"
+    return str(safe)
+
+
+def _format_source(source: dict[str, Any]) -> str:
+    if not source:
+        return "not recorded"
+    return ", ".join(f"{key}={source[key]}" for key in sorted(source))
+
+
+def _format_confidence(confidence: float | None) -> str:
+    return "not recorded" if confidence is None else str(confidence)
+
+
+def _render_citations(citations: list[dict[str, Any]], *, indent: str = "") -> list[str]:
+    if not citations:
+        return [f"{indent}- No citations recorded."]
+    return [
+        f"{indent}- {citation['citation_id']} ({citation.get('locator', 'unknown locator')}): "
+        f"\"{_collapse_text(citation.get('quoted_text', ''))}\""
+        for citation in citations
+    ]
+
+
+def _render_trace_entries(entries: list[TraceSummaryEntry]) -> list[str]:
+    lines: list[str] = []
+    for entry in entries:
+        suffix = []
+        if entry.operation:
+            suffix.append(f"operation={entry.operation}")
+        if entry.rule:
+            suffix.append(f"rule={entry.rule}")
+        if entry.citations:
+            suffix.append("citations=" + ",".join(entry.citations))
+        detail = f" ({'; '.join(suffix)})" if suffix else ""
+        lines.append(
+            f"- {entry.label} (`{entry.node_id}`): {_format_value(entry.value)} [{entry.kind}]{detail}"
+        )
+    return lines
+
+
+def _collapse_text(text: str) -> str:
+    return " ".join(str(text).split())
