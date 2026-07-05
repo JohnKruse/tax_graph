@@ -1,4 +1,4 @@
-# PHASE M2 - MCP server (stdio)   [ ]
+# PHASE M2 - MCP server (stdio)   [COMPLETE]
 
 **Canary:** Polite Robot
 **Depends on:** M0 (package, CLI, `config.py`), M1 (compiled `tax_graph_<year>.sqlite` + the
@@ -118,6 +118,10 @@ The **manual Claude Desktop walk-through** is John's action, not automatable. Fo
 Codex completes Steps 1-4 with `pytest -m m2` green and marks them `[DONE]`, but does NOT mark the
 phase `[COMPLETE]` or archive it until John confirms the Desktop walk-through (capital-gains branch ->
 values + trace + citations). Surface that the walk-through is pending in the handoff.
+
+- Verification/closure: John accepted the Desktop startup smoke + local stdio MCP client walkthrough
+  as satisfying the human gate on 2026-07-05. `pytest -m m2` passed with 11 tests, and
+  `tools/check_ascii.py` passed.
 
 When all steps are `[DONE]` and John confirms the walk-through: mark this phase `[COMPLETE]`, move it
 to `plans/archive/`, single `git push`, and tell John. Next by the execution order

@@ -41,23 +41,22 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
   `list_required_inputs`, `explain_calculation`, and `export_audit_file` return values, missing
   inputs, trace/rule/citations, and human-readable audit text. Next: M2 Step 4 behavioral contract +
   decisions + light-runtime gate.
-- **M2 Step 4 is done.** Server instructions include the four behavior-contract clauses, decision
-  escape hatches surface through MCP, and base-only serve construction is runtime-light. M2 remains
-  OPEN pending John's manual Claude Desktop walk-through before marking `[COMPLETE]` / archiving.
+- **M2 (MCP server) is complete.** `plans/PHASE_M2.md` is marked `[COMPLETE]` and archived as
+  `plans/archive/PHASE_M2.md`. John accepted the Desktop startup smoke + local stdio MCP client
+  walkthrough as satisfying the human gate on 2026-07-05.
 - **M2 Desktop startup smoke is done.** Claude Desktop read the local `tax-graph` MCP config and
   successfully initialized/listed tools after switching the config snippet to
   `uv --directory C:\Users\devbox\projects\tax_graph run python -m tax_graph.cli serve --year 2025`.
   A local stdio MCP client also walked the full capital-gains branch and returned 1040 line 7 =
-  2000 with the 8949 SUBTRACT citation. M2 is still OPEN pending John's in-window Desktop
-  walkthrough confirmation (or John's explicit acceptance of the stdio client smoke as equivalent).
-- Next phase by milestone order: **M2** (MCP server, Polite Robot). Architect should generate
-  `plans/PHASE_M2.md` next. Then M5, M6, **M6b** (Repeatable-table execution, Tandem Abacus), with
-  **M7** (Frontier registry + SOI-weighted coverage, Compass Rose - plan written,
-  `plans/PHASE_M7.md`) running alongside.
+  2000 with the 8949 SUBTRACT citation.
+- Next core phase by milestone order: **M5** (Return Record, canary Future Echo). Architect should
+  generate `plans/PHASE_M5.md` next. **M7** (Frontier registry + SOI-weighted coverage, Compass
+  Rose - plan written, `plans/PHASE_M7.md`) is also live and may run alongside if John chooses it.
 
 ## Open for Architect
-- (none open - the M2 handoff gap is RESOLVED: `plans/PHASE_M2.md` is written, canary Polite Robot.
-  See From Architect.)
+- M2 is closed. Please generate `plans/PHASE_M5.md` (Return Record, canary Future Echo) if the next
+  Worker session should continue the core execution order. If John wants the parallel M7 track
+  first, confirm that explicitly because `plans/PHASE_M7.md` is already live.
 
 ## From Architect
 - **NEW (2026-07-05) - Oracle strategy pinned (extends M6, no new milestone).** Design doc:
@@ -89,11 +88,8 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
   are offline/independent and may be pulled forward. `PHASE_M8.md` is written just-in-time.
   Awaiting John's veto/OK on three defaults: 10% calibration sample (min 5), N=2 vendors,
   100% drill bar.
-- **Next:** start **M2** - `plans/PHASE_M2.md` is written (canary **Polite Robot**). M1 is complete.
-  State the canary, wait for John's go, then work the 4 steps in order. Not Schedule D, not the LINK.
-  The manual Claude Desktop walk-through is JOHN's gate: complete Steps 1-4 with `pytest -m m2` green
-  and mark them `[DONE]`, but leave the phase open (do not archive) until John confirms the
-  walk-through (M4 precedent). M2 already bakes in the `table + column + #row_key` addressing seam.
+- **M2 closure note:** M2 is archived complete as of 2026-07-05 after John's acceptance of the
+  Desktop startup smoke + local stdio MCP walkthrough. The old "start M2" direction is superseded.
 - **DECIDED - repeatable-table addressing + detection** (answers your Open item; full policy in
   engineering-plan "Repeatable tables (decided)"; new milestone **M6b**, canary Tandem Abacus). Your
   (a)/(b)/(c)/(d) split and working proposal are adopted, with John's aggregate-subunit rule:
@@ -159,6 +155,11 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
     all passed; 1040 line 7 = 2000; citation `cite_8949_col_h_gain` present.
   - `uv run pytest -m m2` -> 11 passed, 74 deselected
   - `uv run python tools\check_ascii.py` -> ASCII check OK
+- M2 phase exit:
+  - John accepted the Desktop startup smoke + local stdio MCP client walkthrough as the human gate.
+  - `.\.venv\Scripts\python.exe -m pytest -m m2` -> 11 passed, 74 deselected
+  - `.\.venv\Scripts\python.exe tools\check_ascii.py` -> ASCII check OK
+  - `plans/archive/PHASE_M2.md` marked `[COMPLETE]`
 - M1 phase exit:
   - `uv run pytest -m m1` -> 6 passed, 68 deselected
   - `uv run tax-graph build 2025` -> wrote `build/tax_graph_2025.sqlite`
