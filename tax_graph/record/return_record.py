@@ -111,6 +111,16 @@ class ReturnRecord:
         return _json_safe(asdict(self))
 
 
+@dataclass(frozen=True)
+class PriorRecordIngestion:
+    """Result of priming facts from a prior carryforward block."""
+
+    facts: dict[str, Any]
+    fact_entries: list[dict[str, Any]]
+    not_ingested: list[dict[str, Any]]
+    warnings: list[str]
+
+
 def build_return_record(
     *,
     facts_document: dict[str, Any],
@@ -160,6 +170,80 @@ def load_decision_resolutions(path: str | Path) -> dict[str, Any]:
     """Load decision resolutions from YAML and normalize an empty file."""
     data = load_yaml(path)
     return data if data is not None else {"resolutions": []}
+
+
+def load_carryforward_block(path: str | Path) -> dict[str, Any]:
+    """Load and validate a structured carryforward block from YAML."""
+    data = load_yaml(path)
+    if data is None:
+        data = {}
+    validate_carryforward_block(data)
+    return data
+
+
+def ingest_prior_record(
+    prior_record: dict[str, Any],
+    graph: Graph,
+    explicit_facts: dict[str, Any] | None = None,
+) -> PriorRecordIngestion:
+    """Prime input facts from a prior Return Record carryforward block.
+
+    Only entries with a resolvable ``target_node`` are ingested. Entries without
+    targets or with targets absent from the loaded graph are reported and left
+    unused. Explicit facts always override primed values with a warning.
+    """
+    validate_carryforward_block(prior_record)
+    explicit = explicit_facts or {}
+    primed_values: dict[str, Any] = {}
+    primed_entries: list[dict[str, Any]] = []
+    not_ingested: list[dict[str, Any]] = []
+    warnings: list[str] = []
+    prior_year = prior_record["tax_year"]
+
+    for carryforward in prior_record.get("carryforwards", []):
+        target_node = carryforward.get("target_node")
+        if not target_node:
+            not_ingested.append(
+                {
+                    "carryforward_id": carryforward["carryforward_id"],
+                    "reason": "no target_node",
+                    "target_node": None,
+                }
+            )
+            continue
+        if target_node not in graph.nodes:
+            not_ingested.append(
+                {
+                    "carryforward_id": carryforward["carryforward_id"],
+                    "reason": "unknown target_node",
+                    "target_node": target_node,
+                }
+            )
+            continue
+        entry = {
+            "node_id": target_node,
+            "value": carryforward["amount"],
+            "source": {
+                "document_label": f"from {prior_year} Return Record",
+                "extracted_by": "tax_graph_prior_record",
+            },
+            "confidence": 1.0,
+        }
+        primed_entries.append(entry)
+        primed_values[target_node] = carryforward["amount"]
+
+    facts = dict(primed_values)
+    for node_id, value in explicit.items():
+        if node_id in facts:
+            warnings.append(f"explicit fact overrides prior-record value for {node_id}")
+        facts[node_id] = value
+
+    return PriorRecordIngestion(
+        facts=facts,
+        fact_entries=[entry for entry in primed_entries if entry["node_id"] not in explicit],
+        not_ingested=not_ingested,
+        warnings=warnings,
+    )
 
 
 def render_memo(record: ReturnRecord) -> str:

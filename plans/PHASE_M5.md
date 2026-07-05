@@ -92,7 +92,7 @@ a dollar figure from prose.**
   - Verification: `.\.venv\Scripts\python.exe -m pytest -m m5` -> 7 passed, 85 deselected;
     `.\.venv\Scripts\python.exe tools\check_ascii.py` -> ASCII check OK.
 
-- [ ] **Step 4 - Prior-record ingestion.** `tax-graph run --prior-record <carryforward.yaml>`:
+- [DONE] **Step 4 - Prior-record ingestion.** `tax-graph run --prior-record <carryforward.yaml>`:
   validate the block; for each entry whose `target_node` exists in the loaded graph, prime it
   as an input fact with provenance `from <tax_year> Return Record` and confidence 1.0; collect
   everything else (no target_node, unknown target) into a printed "carryforwards NOT ingested"
@@ -102,6 +102,8 @@ a dollar figure from prose.**
   the override warning fires; an invalid block exits nonzero. (Adding real Schedule D line
   6/14 carryover input nodes to the live 2025 graph is OPTIONAL - only if trivially citable;
   the fixture graph is the required test vehicle.) Docs.
+  - Verification: `.\.venv\Scripts\python.exe -m pytest -m m5` -> 11 passed, 85 deselected;
+    `.\.venv\Scripts\python.exe tools\check_ascii.py` -> ASCII check OK.
 
 - [ ] **Step 5 - CLI default emission + MCP tool + docs.** `run` writes the record pair by
   default next to the facts file (`return_record_<year>.md` + `.carryforward.yaml`), with

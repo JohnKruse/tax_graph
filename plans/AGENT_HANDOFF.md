@@ -64,6 +64,10 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
   gain scenarios emit an empty `carryforwards: []` payload, and negative Schedule D line 16 emits a
   raw `capital_loss` entry with no `target_node` plus the explicit worksheet/$3000 caveat in the
   Unsupported section. Next: M5 Step 4 prior-record ingestion.
+- **M5 Step 4 is done.** `tax-graph run --prior-record` validates carryforward YAML, primes
+  resolvable `target_node` entries as facts with Return Record provenance, reports no-target/unknown
+  carryforwards without guessing, and warns when explicit facts override primed values. Next: M5
+  Step 5 CLI default emission + MCP tool + docs.
 
 ## Open for Architect
 - (none open - the PHASE_M5 request is RESOLVED: `plans/PHASE_M5.md` is written, canary Future
@@ -170,6 +174,9 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
   - `.\.venv\Scripts\python.exe tools\check_ascii.py` -> ASCII check OK
 - M5 Step 3:
   - `.\.venv\Scripts\python.exe -m pytest -m m5` -> 7 passed, 85 deselected
+  - `.\.venv\Scripts\python.exe tools\check_ascii.py` -> ASCII check OK
+- M5 Step 4:
+  - `.\.venv\Scripts\python.exe -m pytest -m m5` -> 11 passed, 85 deselected
   - `.\.venv\Scripts\python.exe tools\check_ascii.py` -> ASCII check OK
 - M2 Step 1:
   - `uv run pytest -m m2` -> 2 passed, 74 deselected

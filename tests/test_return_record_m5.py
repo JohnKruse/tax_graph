@@ -4,9 +4,12 @@ from pathlib import Path
 
 import pytest
 
+from tax_graph.cli import run_command
 from tax_graph.engine import Engine, Graph, load_facts, load_facts_document
 from tax_graph.record import (
     build_return_record,
+    ingest_prior_record,
+    load_carryforward_block,
     render_carryforward_yaml,
     render_memo,
     validate_carryforward_block,
@@ -135,6 +138,106 @@ def test_corrupted_carryforward_block_fails_validation():
         validate_carryforward_block(block)
 
 
+def test_prior_record_with_resolvable_target_primes_next_run(tmp_path):
+    graph = Graph("2025", root=ROOT, source="yaml")
+    explicit_facts = load_facts(FACTS_PATH)
+    explicit_facts.pop("schedule_d_2025_line_7_net_st")
+    prior_block = {
+        "tax_year": 2024,
+        "tax_graph_version": "test-version",
+        "generated_date": "2026-07-05",
+        "carryforwards": [
+            {
+                "carryforward_id": "test_prior_st_amount",
+                "kind": "test_prior_short_term_amount",
+                "amount": 500,
+                "originating_year": 2024,
+                "target_node": "schedule_d_2025_line_7_net_st",
+            }
+        ],
+    }
+    prior_path = tmp_path / "prior.carryforward.yaml"
+    prior_path.write_text(render_carryforward_yaml(prior_block), encoding="utf-8", newline="\n")
+
+    ingestion = ingest_prior_record(load_carryforward_block(prior_path), graph, explicit_facts=explicit_facts)
+    result = Engine(graph).execute(ingestion.facts)
+
+    assert ingestion.not_ingested == []
+    assert ingestion.fact_entries == [
+        {
+            "node_id": "schedule_d_2025_line_7_net_st",
+            "value": 500,
+            "source": {
+                "document_label": "from 2024 Return Record",
+                "extracted_by": "tax_graph_prior_record",
+            },
+            "confidence": 1.0,
+        }
+    ]
+    assert result.values[TARGET] == 2500
+
+
+def test_prior_record_reports_v0_capital_loss_without_ingesting():
+    graph = Graph("2025", root=ROOT, source="yaml")
+    loss_record = _capital_loss_record()
+
+    ingestion = ingest_prior_record(
+        loss_record.carryforward_block.to_dict(),
+        graph,
+        explicit_facts=load_facts(FACTS_PATH),
+    )
+
+    assert ingestion.not_ingested == [
+        {
+            "carryforward_id": "capital_loss_raw_2025",
+            "reason": "no target_node",
+            "target_node": None,
+        }
+    ]
+    assert ingestion.fact_entries == []
+    assert ingestion.facts["schedule_d_2025_line_7_net_st"] == 0
+
+
+def test_prior_record_explicit_fact_override_warns():
+    graph = Graph("2025", root=ROOT, source="yaml")
+    prior_block = {
+        "tax_year": 2024,
+        "carryforwards": [
+            {
+                "carryforward_id": "test_prior_st_amount",
+                "kind": "test_prior_short_term_amount",
+                "amount": 500,
+                "originating_year": 2024,
+                "target_node": "schedule_d_2025_line_7_net_st",
+            }
+        ],
+    }
+
+    ingestion = ingest_prior_record(prior_block, graph, explicit_facts=load_facts(FACTS_PATH))
+
+    assert ingestion.warnings == [
+        "explicit fact overrides prior-record value for schedule_d_2025_line_7_net_st"
+    ]
+    assert ingestion.facts["schedule_d_2025_line_7_net_st"] == 0
+    assert ingestion.fact_entries == []
+
+
+def test_run_command_invalid_prior_record_exits_nonzero(tmp_path, capsys):
+    invalid_path = tmp_path / "bad.carryforward.yaml"
+    invalid_path.write_text("tax_year: 2024\ncarryforwards:\n  - carryforward_id: bad\n", encoding="utf-8")
+
+    code = run_command(
+        facts=FACTS_PATH,
+        year="2025",
+        root=ROOT,
+        source="yaml",
+        prior_record=invalid_path,
+    )
+
+    assert code == 1
+    assert "ERROR: invalid carryforward block" in capsys.readouterr().out
+
+
 def test_decision_resolution_references_must_exist():
     graph = Graph("2025", root=ROOT, source="yaml")
 
@@ -174,6 +277,26 @@ def _capital_gains_record():
         result=result,
         graph=graph,
         decision_resolutions=resolutions,
+        tax_graph_version="test-version",
+        generated_date="2026-07-05",
+        target_node=TARGET,
+    )
+
+
+def _capital_loss_record():
+    graph = Graph("2025", root=ROOT, source="yaml")
+    facts_document = load_facts_document(FACTS_PATH)
+    for fact in facts_document["facts"]:
+        if fact["node_id"] == "form_1099b_2025_box_1d_proceeds":
+            fact["value"] = 10000
+        if fact["node_id"] == "form_1099b_2025_box_1e_cost_basis":
+            fact["value"] = 12000
+    fact_values = {fact["node_id"]: fact["value"] for fact in facts_document["facts"]}
+    result = Engine(graph).execute(fact_values)
+    return build_return_record(
+        facts_document=facts_document,
+        result=result,
+        graph=graph,
         tax_graph_version="test-version",
         generated_date="2026-07-05",
         target_node=TARGET,

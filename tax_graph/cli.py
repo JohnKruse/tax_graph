@@ -42,12 +42,27 @@ def run_command(
     target: str = DEFAULT_TARGET,
     root: str | Path | None = None,
     source: str | None = None,
+    prior_record: str | Path | None = None,
 ) -> int:
     """Execute a graph from taxpayer facts and print values plus trace."""
     root_path = Path(root).resolve() if root is not None else project_root()
     load_config(root=root_path)
     graph = Graph(year, root=root_path, source=source)
     fact_values = load_facts(Path(facts))
+    prior_ingestion = None
+    if prior_record is not None:
+        from tax_graph.record import ingest_prior_record, load_carryforward_block
+
+        try:
+            prior_ingestion = ingest_prior_record(
+                load_carryforward_block(prior_record),
+                graph,
+                explicit_facts=fact_values,
+            )
+        except ValueError as exc:
+            print(f"ERROR: {exc}")
+            return 1
+        fact_values = prior_ingestion.facts
     result = Engine(graph).execute(fact_values)
 
     print("=== computed values ===")
@@ -57,9 +72,23 @@ def run_command(
         print("\n=== missing required inputs ===")
         for node_id in result.missing_required_inputs:
             print(f"  {node_id}")
+    if prior_ingestion is not None:
+        _print_prior_record_report(prior_ingestion)
     print(f"\n=== audit trace: {target} ===")
     render_trace(target, result, graph)
     return 1 if result.values.get(target) is MISSING else 0
+
+
+def _print_prior_record_report(prior_ingestion: Any) -> None:
+    if prior_ingestion.warnings:
+        print("\n=== prior record warnings ===")
+        for warning in prior_ingestion.warnings:
+            print(f"  {warning}")
+    if prior_ingestion.not_ingested:
+        print("\n=== carryforwards NOT ingested ===")
+        for item in prior_ingestion.not_ingested:
+            target = item.get("target_node") or "-"
+            print(f"  {item['carryforward_id']}: {item['reason']} (target: {target})")
 
 
 def build_command(year: str = "2025", root: str | Path | None = None) -> int:
@@ -233,10 +262,18 @@ def _build_typer_app():
         year: str = typer.Option("2025", "--year", "-y", help="Tax year to execute."),
         target: str = typer.Option(DEFAULT_TARGET, "--target", "-t", help="Target node for the audit trace."),
         source: str | None = typer.Option(None, "--source", help="Graph source: sqlite or yaml. Defaults to sqlite when built, else yaml."),
+        prior_record: Path | None = typer.Option(None, "--prior-record", help="Prior Return Record carryforward YAML."),
         root: Path | None = typer.Option(None, "--root", help="Project root override."),
     ) -> None:
         """Execute a return graph from taxpayer facts."""
-        raise_code = run_command(facts=facts, year=year, target=target, root=root, source=source)
+        raise_code = run_command(
+            facts=facts,
+            year=year,
+            target=target,
+            root=root,
+            source=source,
+            prior_record=prior_record,
+        )
         if raise_code:
             raise typer.Exit(raise_code)
 
@@ -299,6 +336,7 @@ def _fallback_app() -> int:
     run_parser.add_argument("--year", "-y", default="2025")
     run_parser.add_argument("--target", "-t", default=DEFAULT_TARGET)
     run_parser.add_argument("--source", choices=["sqlite", "yaml"], default=None)
+    run_parser.add_argument("--prior-record", default=None)
     run_parser.add_argument("--root", default=None)
 
     build_parser = subparsers.add_parser("build")
@@ -324,7 +362,14 @@ def _fallback_app() -> int:
     if args.command == "validate":
         return validate_command(year=args.year, root=args.root)
     if args.command == "run":
-        return run_command(facts=args.facts, year=args.year, target=args.target, root=args.root, source=args.source)
+        return run_command(
+            facts=args.facts,
+            year=args.year,
+            target=args.target,
+            root=args.root,
+            source=args.source,
+            prior_record=args.prior_record,
+        )
     if args.command == "build":
         return build_command(year=args.year, root=args.root)
     if args.command == "serve":
