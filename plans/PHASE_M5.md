@@ -78,7 +78,7 @@ a dollar figure from prose.**
   - Verification: `.\.venv\Scripts\python.exe -m pytest -m m5` -> 4 passed, 85 deselected;
     `.\.venv\Scripts\python.exe tools\check_ascii.py` -> ASCII check OK.
 
-- [ ] **Step 3 - Carryforward block emission (structure-only v0, never wrong).** Emit
+- [DONE] **Step 3 - Carryforward block emission (structure-only v0, never wrong).** Emit
   `<stem>.carryforward.yaml` validated against `carryforward.schema.json`. v0 policy (pinned):
   when the Schedule D net node feeding 1040 line 7 is NEGATIVE, emit ONE `kind: capital_loss`
   entry with `amount` = the absolute net loss (amounts are POSITIVE; kind carries meaning),
@@ -89,6 +89,8 @@ a dollar figure from prose.**
   worksheet. A gain scenario emits an empty `carryforwards: []` block (the file still exists -
   structure from day one). Test: loss scenario block validates + is flagged non-ingestible;
   gain scenario emits empty block; a hand-corrupted block fails schema validation loudly. Docs.
+  - Verification: `.\.venv\Scripts\python.exe -m pytest -m m5` -> 7 passed, 85 deselected;
+    `.\.venv\Scripts\python.exe tools\check_ascii.py` -> ASCII check OK.
 
 - [ ] **Step 4 - Prior-record ingestion.** `tax-graph run --prior-record <carryforward.yaml>`:
   validate the block; for each entry whose `target_node` exists in the loaded graph, prime it

@@ -13,12 +13,18 @@ from pathlib import Path
 from typing import Any
 
 from jsonschema import Draft202012Validator
+import yaml
 
 from tax_graph.engine import Graph, MISSING, Result
 from tax_graph.io.loader import load_yaml
 
 
 SCHEMA_DIR = Path(__file__).resolve().parents[2] / "schemas"
+CAPITAL_LOSS_SOURCE_NODE = "schedule_d_2025_line_16_total"
+CAPITAL_LOSS_DERIVATION = (
+    "Capital Loss Carryover Worksheet / $3000 limitation is not modeled in v0; "
+    "this is the RAW net loss, not the usable carryover."
+)
 
 
 @dataclass(frozen=True)
@@ -82,6 +88,10 @@ class CarryforwardBlock:
     carryforwards: list[dict[str, Any]] = field(default_factory=list)
     elections: list[dict[str, Any]] = field(default_factory=list)
 
+    def to_dict(self) -> dict[str, Any]:
+        """Return a schema-shaped dictionary for YAML emission."""
+        return _json_safe(asdict(self))
+
 
 @dataclass(frozen=True)
 class ReturnRecord:
@@ -124,16 +134,16 @@ def build_return_record(
     resolutions = validate_decision_resolutions(decision_resolutions or {"resolutions": []}, graph)
     facts = _build_facts(facts_document, graph)
     decisions = _build_decisions(resolutions, graph)
-    unsupported = _build_unsupported(result, decisions)
     trace_summary = [_trace_entry(node_id, trace, graph) for node_id, trace in sorted(result.trace.items())]
     outputs = _build_outputs(result, graph, target_node)
-    carryforward_block = CarryforwardBlock(
+    carryforward_block = _build_carryforward_block(
+        result=result,
         tax_year=record_year,
         tax_graph_version=tax_graph_version,
         generated_date=str(generated_date),
-        carryforwards=[],
-        elections=[],
     )
+    validate_carryforward_block(carryforward_block.to_dict())
+    unsupported = _build_unsupported(result, decisions, carryforward_block)
     return ReturnRecord(
         metadata=metadata,
         facts=facts,
@@ -250,6 +260,24 @@ def render_memo(record: ReturnRecord) -> str:
     return "\n".join(lines) + "\n"
 
 
+def render_carryforward_yaml(block: CarryforwardBlock | dict[str, Any]) -> str:
+    """Render a schema-validated carryforward block as LF-normalized YAML."""
+    payload = block.to_dict() if isinstance(block, CarryforwardBlock) else dict(block)
+    validate_carryforward_block(payload)
+    return yaml.safe_dump(payload, sort_keys=False, allow_unicode=False).replace("\r\n", "\n")
+
+
+def validate_carryforward_block(data: dict[str, Any]) -> None:
+    """Validate a structured carryforward block against the project schema."""
+    schema = load_yaml(SCHEMA_DIR / "carryforward.schema.json")
+    validator = Draft202012Validator(schema)
+    errors = sorted(validator.iter_errors(data), key=lambda error: list(error.path))
+    if errors:
+        first = errors[0]
+        path = ".".join(str(part) for part in first.path) or "<root>"
+        raise ValueError(f"invalid carryforward block at {path}: {first.message}")
+
+
 def validate_decision_resolutions(data: dict[str, Any], graph: Graph) -> list[dict[str, Any]]:
     """Validate resolution schema and ensure every decision option exists."""
     schema = load_yaml(SCHEMA_DIR / "decision_resolutions.schema.json")
@@ -318,7 +346,11 @@ def _build_decisions(resolutions: list[dict[str, Any]], graph: Graph) -> list[De
     return entries
 
 
-def _build_unsupported(result: Result, decisions: list[DecisionLogEntry]) -> list[str]:
+def _build_unsupported(
+    result: Result,
+    decisions: list[DecisionLogEntry],
+    carryforward_block: CarryforwardBlock,
+) -> list[str]:
     items = [
         f"Missing required input: {node_id}"
         for node_id in result.missing_required_inputs
@@ -328,7 +360,43 @@ def _build_unsupported(result: Result, decisions: list[DecisionLogEntry]) -> lis
             items.append(
                 f"Decision {decision.decision_id} chose {decision.chosen_option_type}: {decision.chosen_label}"
             )
+    for carryforward in carryforward_block.carryforwards:
+        if not carryforward.get("target_node"):
+            items.append(
+                f"Carryforward {carryforward['carryforward_id']} is not ingestible in v0: "
+                f"{carryforward.get('derivation', 'no derivation recorded')}"
+            )
     return sorted(items)
+
+
+def _build_carryforward_block(
+    *,
+    result: Result,
+    tax_year: int,
+    tax_graph_version: str,
+    generated_date: str,
+) -> CarryforwardBlock:
+    carryforwards: list[dict[str, Any]] = []
+    net_value = result.values.get(CAPITAL_LOSS_SOURCE_NODE)
+    if isinstance(net_value, (int, float)) and net_value < 0:
+        carryforwards.append(
+            {
+                "carryforward_id": f"capital_loss_raw_{tax_year}",
+                "kind": "capital_loss",
+                "amount": abs(net_value),
+                "originating_year": tax_year,
+                "applies_from_year": tax_year + 1,
+                "source_node": CAPITAL_LOSS_SOURCE_NODE,
+                "derivation": CAPITAL_LOSS_DERIVATION,
+            }
+        )
+    return CarryforwardBlock(
+        tax_year=tax_year,
+        tax_graph_version=tax_graph_version,
+        generated_date=generated_date,
+        carryforwards=carryforwards,
+        elections=[],
+    )
 
 
 def _build_outputs(result: Result, graph: Graph, target_node: str | None) -> list[TraceSummaryEntry]:
