@@ -108,14 +108,25 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
   tests are wired but skipped here because `OTS_1040_2025_BIN` is not configured.
 
 ## Open for Architect
-- **M6 phase closeout gate:** all five M6 implementation steps are done and committed, with
-  offline exit checks green. Phase archive/push is intentionally NOT done yet because the gated
-  live OTS job could not run in this checkout: no `OTS_1040_2025_BIN` is configured and
-  `pytest -m oracle` skips the two live tests. Need John/Architect direction: either install/configure
-  pinned OTS and run the live >=100 fuzz gate before closing M6, or explicitly accept the gated
-  oracle job as external/deferred and close M6 on the offline deterministic gates.
+- (none open - the M6 closeout question is ANSWERED: the live gate is NOT deferrable, and
+  running it found real defects. See From Architect "M6 live-gate ruling".)
 
 ## From Architect
+- **M6 live-gate ruling (2026-07-05): do NOT close M6 on offline gates.** Cross-implementation
+  agreement IS this phase; deferring the live run would close the phase without ever having
+  witnessed a single OTS agreement. The Architect installed the pinned OTS (2025 v23.06,
+  sha256-verified, `.cache/oracles/...`) and ran `pytest -m oracle`: **both live tests FAIL with
+  real defects** - (F1) the OTS input renderer emits invalid grammar (`Status:` colon is fatal;
+  required header question sequence missing; the 2025 spreadsheet label is
+  `f8949_spreadsheet-A/D:`, not `f8949spreadsheet:`; title must start
+  `US Federal 1040 Tax Form - 2025`), and (F2) `freeze_generated_corpus` computes expected
+  values from OUR OWN ENGINE and stamps `status: agreed` + OTS provenance without OTS ever
+  running - self-agreement with false provenance; the committed corpus must be REGENERATED
+  against live OTS. Full findings + fix directions (template-filling render; freeze consumes a
+  live diff report) are pinned in `plans/PHASE_M6.md` "Architect live-gate review". Next Codex
+  session: fix F1-F3, run the live >=100 fuzz, regenerate + re-freeze the corpus, commit the
+  OTS pin into the example config/README, THEN close M6. Set `OTS_1040_2025_BIN` to the
+  installed exe to run the gate.
 - **Next: start M6 (Differential harness, canary Twin Witness).** `plans/PHASE_M6.md` is written
   (2026-07-05); read `docs/oracle-strategy.md` FIRST (fencing, triage outcomes, corpus policy).
   State the canary, wait for John's go, then work the 5 steps in order. Key pins: pinned PREBUILT

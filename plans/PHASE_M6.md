@@ -127,6 +127,47 @@ verification ladder and the template for every future promoted form.
     in-domain scenarios under `examples/oracle_corpus/`. `pytest -m oracle` is wired and skipped
     in this checkout because no OTS binary is configured; live OTS remains the gated job.
 
+## Architect live-gate review (2026-07-05): phase NOT closeable yet
+
+All five steps are implemented and the OFFLINE gates are green, but the Architect installed the
+pinned OTS (2025 v23.06, sha256-verified) and ran the live gate: **both live tests FAIL**, and
+the failures are real defects the offline goldens could not see. This is the live gate doing
+its job. Required fixes before `[COMPLETE]`:
+
+1. **F1 - OTS input renderer emits invalid grammar** (`scenario.py` OTS render + the smoke
+   test input). Verified against the real solver and the shipped examples:
+   - `Status` takes NO colon (`Status Single` - `Status:` is a fatal ERROR1).
+   - The title line must start `Title:  US Federal 1040 Tax Form - 2025` (a foreign title also
+     makes the exe shell out to a `bin/` helper from the wrong cwd - the "'bin' is not
+     recognized" noise).
+   - The header QUESTION SEQUENCE is required after Status: `You_65+Over?`, `You_Blind?`,
+     `Spouse_65+Over?`, `Spouse_Blind?`, `Dependents`, `CkHomeInUS`, `VirtCurr?`,
+     `CkSepLivedApart` (parser expects them in order; missing -> ERROR1).
+   - The spreadsheet label in 2025 v23.06 is CATEGORY-SPECIFIC WITH a colon:
+     `f8949_spreadsheet-A/D:  <csv>` (also `-B/E:`, `-C/F:`, ...) - NOT `f8949spreadsheet:`.
+     The CSV path resolves relative to the solver's cwd; the runner sets cwd = the input
+     file's dir, so write the CSV beside the input and reference the bare filename.
+   - **Fix direction: fill the INSTALLED package's `tax_form_files/US_1040/US_1040_template.txt`
+     rather than composing lines from scratch** - template-filling guarantees the grammar and
+     survives yearly template drift. Add a live grammar test (valid render -> OTS exit 0, no
+     ERROR1 in output).
+2. **F2 - Corpus freeze bypasses the oracle.** `freeze_generated_corpus` computes `expected`
+   from OUR OWN ENGINE and stamps every entry `status: agreed` with
+   `oracle_version: ots_2025_23.06` - but OTS never ran. That is self-agreement with false
+   provenance, exactly what testing-strategy forbids. Fix: freezing must CONSUME a live diff
+   report (only boxes that actually agreed with OTS freeze as `agreed`); REGENERATE the
+   committed corpus against live OTS after F1; the current corpus must not survive phase close
+   with its current provenance.
+3. **F3 - Smoke test input** has the same grammar bugs as F1 (fix together).
+
+Infrastructure now in place (Architect, 2026-07-05): OTS 2025 v23.06 installed and verified at
+`.cache/oracles/opentaxsolver/2025_23.06/` (executable `...\bin\taxsolve_US_1040_2025.exe`);
+pin is in John's local config. **Commit the pin (URL + sha256) into
+`config/tax-graph.config.example.yaml` and README** so the gated CI/job can reproduce it:
+url `https://sourceforge.net/projects/opentaxsolver/files/OTS_2025/v23.06_mswin/OpenTaxSolver2025_23.06_mswin.zip/download`,
+sha256 `7d570384801b04a70eea4e704f80f2c5f37472ecd3406e9a3d695d132b963bc7`. Set
+`OTS_1040_2025_BIN` to the executable path to run `pytest -m oracle`.
+
 When all steps are `[DONE]`: mark this phase `[COMPLETE]`, move it to `plans/archive/`, update
 `plans/AGENT_HANDOFF.md`, single `git push`, and tell John. Next by milestone order: **M6b**
 (repeatable tables, canary Tandem Abacus - plan written just-in-time; its multi-lot execution
