@@ -198,16 +198,24 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
   running it found real defects. See From Architect "M6 live-gate ruling".)
 
 ## From Architect
-- **Next (2026-07-06): John chooses the post-M8 direction.** The drill gate is green, so
-  bulk extraction is unlocked. Two candidate tracks: (a) **M7** (Compass Rose,
-  `plans/PHASE_M7.md` already live) - frontier registry + SOI weights, the data-driven
-  worklist for expansion; or (b) a new **form-set expansion phase** (Schedule D + 1040
-  extraction, the cross-form LINK step realizing the 8949 outbound-flow declarations) which
-  the Architect will plan just-in-time once John picks. Recommendation: M7 FIRST - it makes
-  the expansion order data-driven instead of guessed, and the LINK step leans on its
-  registry (PHASE_M4 pinned decision 6). One review-queue item pending for John from the M8
-  live N-version run: adjudicate the Part I/II line-2 totals rule disagreement (primary =
-  SUM/addend, matching the promoted graph; secondary's alternative shape is the outlier).
+- **Next: start M7 (Frontier registry + SOI-weighted coverage, canary Compass Rose).**
+  `plans/PHASE_M7.md` is the only open plan (written 2026-07-05, two phases ahead of its
+  turn - re-validate file/module references against the CURRENT repo at phase start; the
+  codebase has since gained M5 records, M6 oracles, M6b tables, and M8 verify/drills).
+  Work the 5 steps in order: SOI weight table (acquire, behind the `[acquire]` extra) ->
+  frontier registry schema + deterministic builder -> `tax-graph frontier` worklist +
+  coverage metric -> validator integration (registered frontier passes, dangling edge
+  fails) -> engine `unresolved` trace entries (never compute through the wall). Key pins
+  unchanged: live graph stays referentially CLOSED; the registry is DERIVED, rebuilt like
+  the SQLite compile; weight = returns-filed, not dollars; SOI provenance labeled
+  (sample-based, ~2yr lag); base-deps `validate`/`run`/`frontier` must work. Note the 8949
+  outbound-flow declarations now live in the PROMOTED graph context (M6b) - registry
+  entries target the live Schedule D lines. Why M7 now: the M8 drill gate unlocked bulk
+  extraction, and M7 makes the expansion order data-driven (the Architect plans the
+  form-set expansion phase just-in-time from M7's weighted worklist).
+- **Pending for John (from the M8 live N-version run):** adjudicate the Part I/II line-2
+  totals rule disagreement (primary = SUM/addend, matching the promoted graph; the
+  mini-model secondary's alternative shape is the outlier). Seconds, not minutes.
 - **Superseded: start M8 direction (M8 is complete and archived).** `plans/PHASE_M8.md` is
   written (2026-07-06). The Architect independently verified M6b closure first: full pytest
   137 passed / 5 skipped; `validate 2025` OK with tables=2; multi-lot example line 7 = 250
