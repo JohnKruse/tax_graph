@@ -54,7 +54,11 @@ class ValidationResult:
 
 def validate_graph(year: str | int = "2025", root: str | Path | None = None) -> ValidationResult:
     """Validate schema conformance and graph integrity for one tax year."""
-    graph = load_graph(year, root)
+    return validate_loaded_graph(load_graph(year, root))
+
+
+def validate_loaded_graph(graph: LoadedGraph) -> ValidationResult:
+    """Validate a loaded graph, including in-memory mutated drill graphs."""
     schemas_dir = graph.root / "schemas"
     errors: list[str] = []
 
@@ -62,6 +66,7 @@ def validate_graph(year: str | int = "2025", root: str | Path | None = None) -> 
     _validate_unique_ids(graph, errors)
     _validate_references_and_years(graph, errors)
     _validate_tables(graph, errors)
+    _validate_no_inline_magic_numbers(graph, errors)
     _validate_acyclic_dependencies(graph, errors)
 
     return ValidationResult(
@@ -274,7 +279,66 @@ def _validate_table_member(
     if node.get("role") != expected_role:
         errors.append(f"table {table_id} {owner} -> node {node_id} has role {node.get('role')}")
     if expected_document and node.get("document_id") != expected_document:
-        errors.append(f"table {table_id} {owner} -> node {node_id} belongs to document {node.get('document_id')}")
+            errors.append(f"table {table_id} {owner} -> node {node_id} belongs to document {node.get('document_id')}")
+
+
+_STRUCTURAL_NUMERIC_PARAMETER_KEYS = {
+    "increment",
+    "precision",
+    "scale",
+}
+
+
+def _validate_no_inline_magic_numbers(graph: LoadedGraph, errors: list[str]) -> None:
+    """Flag IRS-sourced numeric constants embedded directly in rule parameters."""
+    for rule in graph.items("rules"):
+        rule_id = rule.get("rule_id", "<unknown>")
+        _check_parameter_value(
+            rule_id=rule_id,
+            path=("parameters",),
+            key=None,
+            value=rule.get("parameters", {}),
+            errors=errors,
+        )
+
+
+def _check_parameter_value(
+    *,
+    rule_id: str,
+    path: tuple[str, ...],
+    key: str | None,
+    value: Any,
+    errors: list[str],
+) -> None:
+    if isinstance(value, Mapping):
+        for child_key, child_value in value.items():
+            _check_parameter_value(
+                rule_id=rule_id,
+                path=path + (str(child_key),),
+                key=str(child_key),
+                value=child_value,
+                errors=errors,
+            )
+        return
+    if isinstance(value, list):
+        for index, child_value in enumerate(value):
+            _check_parameter_value(
+                rule_id=rule_id,
+                path=path + (str(index),),
+                key=key,
+                value=child_value,
+                errors=errors,
+            )
+        return
+    if isinstance(value, bool) or not isinstance(value, (int, float)):
+        return
+    if key in _STRUCTURAL_NUMERIC_PARAMETER_KEYS:
+        return
+    dotted_path = ".".join(path)
+    errors.append(
+        f"rule {rule_id} -> inline numeric parameter at {dotted_path}: "
+        f"{value} must be a cited parameter node"
+    )
 
 
 def _duplicate_values(objects: list[dict[str, Any]], field: str) -> list[str]:

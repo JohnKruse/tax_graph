@@ -1,0 +1,114 @@
+- id: swap_8949_subtract_roles
+  taxonomy: F3
+  description: Swap Form 8949 column (d) and (e) SUBTRACT operand roles.
+  mutation:
+    kind: swap_edge_roles
+    edge_ids:
+      - e_8949_part_ii_d_to_d_minus_e
+      - e_8949_part_ii_e_to_d_minus_e
+  expected_layers:
+    - L3
+
+- id: sum_rule_changed_to_subtract
+  taxonomy: F3
+  description: Change the reusable SUM rule into SUBTRACT.
+  mutation:
+    kind: change_rule_operation
+    rule_id: sum_currency
+    operation: SUBTRACT
+  expected_layers:
+    - L3
+
+- id: drop_8949_adjustment_addend
+  taxonomy: F3
+  description: Drop Form 8949 column (g) from column (h).
+  mutation:
+    kind: remove_edge
+    edge_id: e_8949_part_ii_g_to_h
+  expected_layers:
+    - L3
+
+- id: delete_required_table_node
+  taxonomy: F1
+  description: Delete a promoted required Form 8949 row-template node.
+  mutation:
+    kind: delete_node
+    node_id: form_8949_2025_part_ii_line_1_column_d
+  expected_layers:
+    - L0
+    - L1
+
+- id: merge_adjacent_schedule_d_lines
+  taxonomy: F2
+  description: Relabel Schedule D line 15 as if it were line 16.
+  mutation:
+    kind: change_node_label
+    node_id: schedule_d_2025_line_15_net_lt
+    label: Schedule D, line 16 - Merged net long-term capital gain or (loss)
+  expected_layers:
+    - L1
+
+- id: retarget_outbound_flow_line_off
+  taxonomy: F4
+  description: Retarget the Form 8949 total flow to the wrong Schedule D line.
+  mutation:
+    kind: retarget_edge
+    edge_id: e_8949_total_to_sd_8b
+    target: schedule_d_2025_line_15_net_lt
+  expected_layers:
+    - L5
+
+- id: corrupt_citation_quote
+  taxonomy: F5
+  description: Corrupt a stored authoritative citation quote.
+  mutation:
+    kind: corrupt_citation_quote
+    citation_id: cite_8949_col_h_gain
+    quoted_text: M8_CORRUPTED_QUOTE
+  expected_layers:
+    - L0
+
+- id: add_phantom_plausible_node
+  taxonomy: F6
+  description: Add a plausible but unauthoritative Schedule D node.
+  mutation:
+    kind: add_phantom_node
+    node:
+      node_id: schedule_d_2025_line_999_phantom
+      document_id: schedule_d_2025
+      label: Schedule D, line 999 - Phantom verification drill node
+      node_type: computed
+      value_type: currency
+      required: optional
+  expected_layers:
+    - L1
+
+- id: drop_table_total_column
+  taxonomy: F2
+  description: Drop one totals column from a promoted repeatable table.
+  mutation:
+    kind: drop_table_total
+    table_id: form_8949_2025_part_ii_line_1
+    column_id: g
+  expected_layers:
+    - L1
+
+- id: confidence_inflation_no_effect
+  taxonomy: F6
+  description: Inflate confidence telemetry; no layer should trust it.
+  mutation:
+    kind: annotate_confidence
+    confidence: 1.0
+  expectation: no_effect
+  expected_layers: []
+
+- id: inline_magic_number_parameter
+  taxonomy: F3
+  description: Embed an IRS-sourced threshold directly in rule parameters.
+  mutation:
+    kind: add_rule_parameter
+    rule_id: sum_currency
+    parameter: capital_loss_limit
+    value: 3000
+  expected_layers:
+    - L0

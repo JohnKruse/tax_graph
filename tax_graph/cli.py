@@ -185,6 +185,20 @@ def serve_command(
     return 0
 
 
+def drill_run_command(
+    year: str = "2025",
+    root: str | Path | None = None,
+    catalog: str | Path | None = None,
+) -> int:
+    """Run seeded-defect drills against the verification ladder."""
+    from tax_graph.drills import run_drills
+
+    root_path = Path(root).resolve() if root is not None else project_root()
+    report = run_drills(year=year, root=root_path, catalog=catalog)
+    print(report.format_report())
+    return 0 if report.ok else 1
+
+
 def oracle_install_command(
     year: str = "2025",
     root: str | Path | None = None,
@@ -526,6 +540,21 @@ def _build_typer_app():
         if raise_code:
             raise typer.Exit(raise_code)
 
+    drill_cli = typer.Typer(help="Extraction verification drill helpers.")
+
+    @drill_cli.command("run")
+    def drill_run_cli(
+        year: str = typer.Option("2025", "--year", "-y", help="Tax year to drill."),
+        catalog: Path | None = typer.Option(None, "--catalog", help="Override drill catalog YAML."),
+        root: Path | None = typer.Option(None, "--root", help="Project root override."),
+    ) -> None:
+        """Run seeded-defect drills and report layer attribution."""
+        raise_code = drill_run_command(year=year, root=root, catalog=catalog)
+        if raise_code:
+            raise typer.Exit(raise_code)
+
+    cli.add_typer(drill_cli, name="drill")
+
     oracle_cli = typer.Typer(help="Differential oracle helpers.")
 
     @oracle_cli.command("install")
@@ -651,6 +680,13 @@ def _fallback_app() -> int:
     serve_parser.add_argument("--source", choices=["sqlite", "yaml"], default=None)
     serve_parser.add_argument("--root", default=None)
 
+    drill_parser = subparsers.add_parser("drill")
+    drill_subparsers = drill_parser.add_subparsers(dest="drill_command", required=True)
+    drill_run_parser = drill_subparsers.add_parser("run")
+    drill_run_parser.add_argument("--year", "-y", default="2025")
+    drill_run_parser.add_argument("--catalog", default=None)
+    drill_run_parser.add_argument("--root", default=None)
+
     oracle_parser = subparsers.add_parser("oracle")
     oracle_subparsers = oracle_parser.add_subparsers(dest="oracle_command", required=True)
     oracle_install_parser = oracle_subparsers.add_parser("install")
@@ -710,6 +746,8 @@ def _fallback_app() -> int:
         return build_command(year=args.year, root=args.root)
     if args.command == "serve":
         return serve_command(year=args.year, root=args.root, source=args.source)
+    if args.command == "drill" and args.drill_command == "run":
+        return drill_run_command(year=args.year, root=args.root, catalog=args.catalog)
     if args.command == "oracle" and args.oracle_command == "install":
         return oracle_install_command(year=args.year, root=args.root, archive=args.archive)
     if args.command == "oracle" and args.oracle_command == "fuzz":

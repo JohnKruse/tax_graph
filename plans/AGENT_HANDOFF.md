@@ -147,6 +147,11 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
   as seed 20260706 with `live_ots_diff_report` provenance. `plans/PHASE_M6b.md` is marked
   `[COMPLETE]` and archived as `plans/archive/PHASE_M6b.md`. Next by milestone order: M8
   (Skeptical Notary), with M7 (Compass Rose) still available as the parallel track.
+- **M8 Step 1 is done.** Added `tax_graph.drills`, the seeded defect catalog, `tax-graph drill run`,
+  in-memory drill mutations with layer attribution, and the inline-magic-number validator guard for
+  IRS-sourced numeric literals in `rule.parameters`. The current L3 drill check is an explicit
+  Form 8949 arithmetic stub until Step 3 replaces it with generated property checks. Next: Step 2
+  both-direction structural completeness.
 
 ## Open for Architect
 - (none open - the M6 closeout question is ANSWERED: the live gate is NOT deferrable, and
@@ -292,6 +297,12 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
   form front-matter ("Purpose of Form" / "Who Must File" / title) from rendered text.
 
 ## Latest verification
+- M8 Step 1:
+  - `.\.venv\Scripts\python.exe -m pytest -m m8` -> 4 passed, 142 deselected
+  - `.\.venv\Scripts\python.exe -m tax_graph.cli drill run --year 2025` -> 11 drills, PASS, expected layer attribution
+  - `.\.venv\Scripts\python.exe -m tax_graph.cli validate 2025` -> graph integrity OK; tables=2
+  - `.\.venv\Scripts\python.exe -m pytest` -> 141 passed, 5 skipped
+  - `.\.venv\Scripts\python.exe tools\check_ascii.py` -> ASCII check OK
 - M6b Step 1:
   - `.\.venv\Scripts\python.exe -m pytest -m m6b` -> 7 passed, 124 deselected
   - `.\.venv\Scripts\python.exe -m pytest -m "m0 or m1"` -> 24 passed, 107 deselected

@@ -104,6 +104,7 @@ uv run tax-graph oracle install --year 2025
 uv run tax-graph oracle fuzz --year 2025 --n 100 --seed 1234
 uv run tax-graph oracle freeze --year 2025 --n 20 --seed 20250705
 uv run tax-graph oracle replay-corpus --year 2025
+uv run tax-graph drill run --year 2025
 uv run tax-graph acquire 2025
 uv run tax-graph acquire 2025 --check
 uv run tax-graph extract --doc form_8949_2025
@@ -121,6 +122,7 @@ python -m tax_graph.cli oracle install --year 2025
 python -m tax_graph.cli oracle fuzz --year 2025 --n 100 --seed 1234
 python -m tax_graph.cli oracle freeze --year 2025 --n 20 --seed 20250705
 python -m tax_graph.cli oracle replay-corpus --year 2025
+python -m tax_graph.cli drill run --year 2025
 python -m tax_graph.cli acquire 2025 --check
 python -m tax_graph.cli extract --doc form_8949_2025
 ```
@@ -278,6 +280,20 @@ M4 also includes an outline-first canary path, enabled through config with
 same `_drafts` directory, asks narrow micro-extraction questions over outline
 nodes, and assembles canonical draft graph objects in code. The default remains
 `one_pass` until the held-out Form 8949 validation is complete.
+
+## Verification Drills
+
+M8 starts the extraction verification ladder by mutation-testing the check net
+itself. `tax-graph drill run --year 2025` loads the known-good live graph,
+injects one seeded defect at a time from `tax_graph/drills/drill_catalog.yaml`,
+and reports which ladder layer caught it. The default catalog covers swapped
+SUBTRACT roles, dropped addends, wrong outbound flow targets, phantom nodes,
+table totals omissions, corrupted citation quotes, confidence inflation as a
+no-op, and inline IRS magic numbers in `rule.parameters`.
+
+The drill gate is intentionally offline and deterministic. A caught defect must
+name the catching layer; an uncaught catalog entry fails the command honestly
+instead of shrinking the catalog.
 
 ## Compatibility Scripts
 

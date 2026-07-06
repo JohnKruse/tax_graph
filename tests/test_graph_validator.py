@@ -91,3 +91,19 @@ def test_validator_catches_cross_year_documents(tmp_path):
 
     assert not result.ok
     assert any("tax_year 2024 does not match graph 2025" in error for error in result.errors)
+
+
+@pytest.mark.m8
+def test_validator_flags_inline_magic_number_parameters(tmp_path):
+    root = _copy_graph_root(tmp_path)
+    rules_file = root / "graph" / "2025" / "rules" / "core.yaml"
+    rules = _read_yaml(rules_file)
+    for rule in rules:
+        if rule["rule_id"] == "sum_currency":
+            rule.setdefault("parameters", {})["capital_loss_limit"] = 3000
+    _write_yaml(rules_file, rules)
+
+    result = validate_graph("2025", root=root)
+
+    assert not result.ok
+    assert any("inline numeric parameter at parameters.capital_loss_limit" in error for error in result.errors)

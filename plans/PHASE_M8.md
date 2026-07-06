@@ -71,7 +71,7 @@ differ); 100% drill-catalog catch rate before bulk extraction.
 
 ## Steps
 
-- [ ] **Step 1 - Drill harness + defect catalog + layer attribution.**
+- [DONE] **Step 1 - Drill harness + defect catalog + layer attribution.**
   `tax_graph/drills/` (dev tooling, not base runtime): a `drill_catalog.yaml` seeded from the
   guardrail list above (id, taxonomy class F1-F6, mutation spec, expected catching layer(s));
   a mutator that applies one defect to an in-memory copy of the live graph or a draft batch;
