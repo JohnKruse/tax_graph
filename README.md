@@ -305,6 +305,12 @@ The same checker accepts an optional MeF line inventory fixture when an official
 schema source is available. If no clean official inventory is supplied, the
 check skips that witness and relies on the AcroForm grid.
 
+The property layer runs deterministic sample facts through the engine and checks
+operation semantics from the trace: COPY identity, SUM addend totals, SUBTRACT
+roles and antisymmetry, repeatable-table column `(h)` as `d - e + g`, and table
+total aggregation. Extraction runs these checks against draft batches; the
+drill harness uses the same layer for F3 seeded defects.
+
 ## Compatibility Scripts
 
 Validate the authored graph:

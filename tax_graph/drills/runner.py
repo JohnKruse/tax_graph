@@ -18,7 +18,8 @@ import yaml
 
 from tax_graph.io.loader import LoadedGraph, load_graph
 from tax_graph.validate.graph_validator import validate_loaded_graph
-from tax_graph.verify import check_loaded_graph_field_completeness
+from tax_graph.verify.completeness import check_loaded_graph_field_completeness
+from tax_graph.verify.properties import check_graph_properties
 
 
 DEFAULT_CATALOG = Path(__file__).with_name("drill_catalog.yaml")
@@ -229,7 +230,7 @@ def _run_layers(
     findings.extend(_citation_quote_findings(baseline, mutated))
     findings.extend(_structural_delta_findings(baseline, mutated))
     findings.extend(_field_grid_completeness_findings(mutated, field_grids))
-    findings.extend(_property_stub_findings(mutated))
+    findings.extend(_property_findings(mutated))
     findings.extend(_link_delta_findings(baseline, mutated))
     return findings
 
@@ -310,75 +311,15 @@ def _field_grid_completeness_findings(
     ]
 
 
-def _property_stub_findings(graph: LoadedGraph) -> list[LayerFinding]:
-    findings: list[LayerFinding] = []
-    rules = _objects_by_id(graph, "rules", "rule_id")
-    if rules.get("sum_currency", {}).get("operation") != "SUM":
-        findings.append(LayerFinding("L3", "op_semantics_stub", "sum_currency operation is not SUM"))
-    if rules.get("subtract_currency", {}).get("operation") != "SUBTRACT":
-        findings.append(LayerFinding("L3", "op_semantics_stub", "subtract_currency operation is not SUBTRACT"))
-
-    nodes = _objects_by_id(graph, "nodes", "node_id")
-    incoming = _incoming_edges(graph)
-    for table in graph.items("tables"):
-        table_id = table.get("table_id")
-        table_nodes = [node for node in nodes.values() if node.get("table_id") == table_id]
-        by_column = {node.get("column"): node["node_id"] for node in table_nodes if node.get("role") == "row_template"}
-        d_node = by_column.get("d")
-        e_node = by_column.get("e")
-        g_node = by_column.get("g")
-        d_minus_e_node = by_column.get("d_minus_e")
-        h_node = by_column.get("h")
-        if d_node and e_node and d_minus_e_node:
-            findings.extend(_check_subtract_shape(d_minus_e_node, d_node, e_node, incoming))
-        if d_minus_e_node and g_node and h_node:
-            findings.extend(_check_h_sum_shape(h_node, d_minus_e_node, g_node, incoming))
-    return findings
-
-
-def _check_subtract_shape(
-    target: str,
-    d_node: str,
-    e_node: str,
-    incoming: dict[str, list[dict[str, Any]]],
-) -> list[LayerFinding]:
-    edges = incoming.get(target, [])
-    roles = {(edge.get("source"), edge.get("role"), edge.get("rule_id")) for edge in edges}
-    expected = {
-        (d_node, "minuend", "subtract_currency"),
-        (e_node, "subtrahend", "subtract_currency"),
-    }
-    if expected.issubset(roles):
-        return []
+def _property_findings(graph: LoadedGraph) -> list[LayerFinding]:
+    report = check_graph_properties(graph)
     return [
         LayerFinding(
-            "L3",
-            "op_semantics_stub",
-            f"{target} does not model column d minus column e with correct SUBTRACT roles",
+            issue.layer,
+            issue.check_id,
+            f"{issue.object_id}: {issue.reason}",
         )
-    ]
-
-
-def _check_h_sum_shape(
-    target: str,
-    d_minus_e_node: str,
-    g_node: str,
-    incoming: dict[str, list[dict[str, Any]]],
-) -> list[LayerFinding]:
-    edges = incoming.get(target, [])
-    roles = {(edge.get("source"), edge.get("role"), edge.get("rule_id")) for edge in edges}
-    expected = {
-        (d_minus_e_node, "addend", "sum_currency"),
-        (g_node, "addend", "sum_currency"),
-    }
-    if expected.issubset(roles):
-        return []
-    return [
-        LayerFinding(
-            "L3",
-            "op_semantics_stub",
-            f"{target} does not sum column d-minus-e and column g into column h",
-        )
+        for issue in report.issues
     ]
 
 

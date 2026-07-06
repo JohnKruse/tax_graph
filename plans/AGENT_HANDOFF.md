@@ -159,6 +159,11 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
   `field_grid_completeness` L1 check when a field grid is supplied. No official MeF package is
   required by CI; the optional witness is skipped unless a clean official inventory is supplied.
   Next: Step 3 property tests from op semantics.
+- **M8 Step 3 is done.** Added `tax_graph.verify.properties` and wired it into extraction
+  deterministic checks plus the drill runner's L3 layer. Properties execute deterministic sample
+  facts through the engine, then check COPY identity, SUM addend totals, SUBTRACT roles and
+  antisymmetry, Form 8949 per-instance `h = d - e + g`, and table total aggregation. The swapped
+  SUBTRACT drill is caught by the property layer. Next: Step 4 IRS worked-example miner.
 
 ## Open for Architect
 - (none open - the M6 closeout question is ANSWERED: the live gate is NOT deferrable, and
@@ -315,6 +320,13 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
   - `.\.venv\Scripts\python.exe -m pytest -m "m4 or m8"` -> 41 passed, 113 deselected
   - `.\.venv\Scripts\python.exe -m tax_graph.cli validate 2025` -> graph integrity OK; tables=2
   - `.\.venv\Scripts\python.exe -m pytest` -> 149 passed, 5 skipped
+  - `.\.venv\Scripts\python.exe tools\check_ascii.py` -> ASCII check OK
+- M8 Step 3:
+  - `.\.venv\Scripts\python.exe -m pytest -m m8` -> 16 passed, 142 deselected
+  - `.\.venv\Scripts\python.exe -m pytest -m "m4 or m8"` -> 45 passed, 113 deselected
+  - `.\.venv\Scripts\python.exe -m tax_graph.cli drill run --year 2025` -> 11 drills, PASS, L3 properties caught F3 drills
+  - `.\.venv\Scripts\python.exe -m tax_graph.cli validate 2025` -> graph integrity OK; tables=2
+  - `.\.venv\Scripts\python.exe -m pytest` -> 153 passed, 5 skipped
   - `.\.venv\Scripts\python.exe tools\check_ascii.py` -> ASCII check OK
 - M6b Step 1:
   - `.\.venv\Scripts\python.exe -m pytest -m m6b` -> 7 passed, 124 deselected

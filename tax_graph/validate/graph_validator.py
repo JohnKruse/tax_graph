@@ -13,7 +13,7 @@ from pathlib import Path
 from typing import Any, Mapping
 
 from tax_graph.io.loader import GRAPH_KINDS, LoadedGraph, load_graph, load_yaml
-from tax_graph.verify import check_loaded_graph_field_completeness
+from tax_graph.verify.completeness import check_loaded_graph_field_completeness
 
 try:
     import jsonschema

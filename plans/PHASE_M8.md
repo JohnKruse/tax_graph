@@ -90,7 +90,7 @@ differ); 100% drill-catalog catch rate before bulk extraction.
   the promoted 8949 passes; deleting a node from a copy produces an unmapped-field flag (and
   Step 1's deleted-node drill now attributes here). Docs.
 
-- [ ] **Step 3 - Property tests from op semantics.** `tax_graph/verify/properties.py`:
+- [DONE] **Step 3 - Property tests from op semantics.** `tax_graph/verify/properties.py`:
   generate engine-executed property checks per rule from the op table - SUBTRACT antisymmetry
   (swapping inputs negates), SUM permutation + zero-identity, COPY identity, MULTIPLY/DIVIDE
   inverse where both present, and metamorphic column (h) relations (g=0 -> h=d-e; d+k -> h+k)

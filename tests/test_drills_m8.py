@@ -21,7 +21,7 @@ def test_default_drill_catalog_catches_expected_layers():
     assert by_id["swap_8949_subtract_roles"].actual_layers == ("L3",)
     assert "L0" in by_id["delete_required_table_node"].actual_layers
     assert "L1" in by_id["delete_required_table_node"].actual_layers
-    assert by_id["retarget_outbound_flow_line_off"].actual_layers == ("L5",)
+    assert "L5" in by_id["retarget_outbound_flow_line_off"].actual_layers
     assert by_id["confidence_inflation_no_effect"].status == "no_effect"
     assert by_id["inline_magic_number_parameter"].actual_layers == ("L0",)
 

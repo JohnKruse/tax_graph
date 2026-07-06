@@ -17,7 +17,8 @@ from tax_graph.extract.models import (
     SourceDocumentInput,
 )
 from tax_graph.extract.prompts import graph_object_schemas
-from tax_graph.verify import check_field_grid_completeness
+from tax_graph.verify.completeness import check_field_grid_completeness
+from tax_graph.verify.properties import check_draft_batch_properties
 
 
 LINE_RE = re.compile(r"^-\s+([0-9]+[a-z]?|[a-z]):", re.MULTILINE)
@@ -37,6 +38,7 @@ def run_deterministic_checks(
     issues.extend(_rule_citation_issues(batch))
     issues.extend(_line_completeness_issues(document, batch))
     issues.extend(_field_grid_issues(document, batch))
+    issues.extend(_property_issues(batch, root=root))
     issues.extend(_citation_quote_issues(document, batch))
     _apply_issues(batch, issues)
     return DeterministicReport(issues=issues)
@@ -102,6 +104,14 @@ def _citation_quote_issues(document: SourceDocumentInput, batch: ExtractionBatch
     ]
 
 
+def _property_issues(batch: ExtractionBatch, *, root: str | Path | None) -> list[CheckIssue]:
+    report = check_draft_batch_properties(batch, root=root)
+    return [
+        CheckIssue("properties", issue.object_id, f"{issue.check_id}: {issue.reason}")
+        for issue in report.issues
+    ]
+
+
 def _apply_issues(batch: ExtractionBatch, issues: list[CheckIssue]) -> None:
     by_identity = batch.by_identity()
     for issue in issues:
@@ -111,6 +121,9 @@ def _apply_issues(batch: ExtractionBatch, issues: list[CheckIssue]) -> None:
     if any(issue.kind == "document" for issue in issues):
         for obj in batch.objects:
             obj.flag("document-level deterministic check failed")
+    if any(issue.kind == "properties" for issue in issues):
+        for obj in batch.objects:
+            obj.flag("property check failed")
 
 
 def _raw_line_anchors(text: str) -> list[str]:
