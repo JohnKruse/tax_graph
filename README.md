@@ -286,6 +286,13 @@ handled separately by Mistral OCR, storing per-document markdown, per-page
 markdown, and extracted links. The OCR path caches by content hash and fails
 loudly when no OCR client or key is available.
 
+M9 adds a deterministic offline Schedule D fixture slice under
+`tests/fixtures/schedule_d_bundle/`. The live cache for Step 1 was produced
+from `f1040sd.pdf` and `i1040sd.pdf`; the full manifest acquire currently needs
+the Form 1099-B URL reviewed because the configured IRS URL returned 404 during
+the M9 Step 1 run. The committed fixture preserves only the lines needed for
+loader and outline regression tests.
+
 ## Extraction Drafts
 
 Phase M4 adds `tax-graph extract --doc <document_id>`, which turns rendered

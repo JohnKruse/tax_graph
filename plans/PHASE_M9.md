@@ -76,7 +76,7 @@ loss-beyond-$3000 case from an out-of-domain fence into a correctly-modeled bran
 
 ## Steps
 
-- [ ] **Step 1 - Acquire + render the Schedule D bundle.** The manifest already declares
+- [DONE] **Step 1 - Acquire + render the Schedule D bundle.** The manifest already declares
   `schedule_d_2025` + `instructions_schedule_d_2025` but only the 8949 bundle was ever
   rendered (check `.cache/raw/2025/`). Run acquire/OCR/render for the pair (gated:
   network + Mistral key); verify the artifacts (line-anchored `.txt`, `.fields.json`

@@ -1,0 +1,33 @@
+# Page 1
+2025
+
+IRS
+
+# Instructions for Schedule D (Form 1040)
+
+## Capital Gains and Losses
+
+Section references are to the Internal Revenue Code unless otherwise noted.
+
+### Future Developments
+
+For the latest information about developments related to Schedule D and its instructions, such as legislation enacted after they were published, go to IRS.gov/ScheduleD.
+
+### What's New
+
+Codes G, H, I, J, K, and L were added to lines 1b, 2, 3, 8b, 9, and 10 to represent the reporting of digital asset transactions.
+
+### General Instructions
+
+These instructions explain how to complete Schedule D (Form 1040). Complete Form 8949 before you complete line 1b, 2, 3, 8b, 9, or 10 of Schedule D.
+
+Use Schedule D:
+
+- To figure the overall gain or loss from transactions reported on Form 8949;
+- To report a capital loss carryover from 2024 to 2025.
+
+Additional information. See Pub. 544 and Pub. 550 for more details.
+
+# Page 8
+
+Line 21. If line 16 is a loss, enter on line 21 the smaller of the loss on line 16 or ($3,000), or if married filing separately, ($1,500).

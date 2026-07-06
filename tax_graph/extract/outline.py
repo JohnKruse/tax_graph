@@ -294,7 +294,9 @@ def _classify_line(anchor: str, body: str, columns: list[str], *, headers: list[
     context = " ".join([*headers, body]).lower()
     if "schedule d" in lowered or anchor in {"3", "10"} and "schedule d" in context:
         return "outbound_flow_cue"
-    if "total" in lowered or "add the amounts" in lowered:
+    if anchor in FORM_8949_SCHEDULE_D_TARGETS and len(columns) >= 3:
+        return "transaction_table"
+    if "add the amounts" in lowered or lowered.startswith("totals."):
         return "totals"
     if len(columns) >= 3 or anchor == "1" and columns:
         return "transaction_table"

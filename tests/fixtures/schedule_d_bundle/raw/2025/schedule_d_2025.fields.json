@@ -1,0 +1,81 @@
+{
+  "fields": [
+    {
+      "field_name": "Table_PartI.Row1b.d",
+      "line_anchor": "1b",
+      "page": 1,
+      "x_cluster": 300,
+      "y_cluster": 300
+    },
+    {
+      "field_name": "Table_PartI.Row1b.e",
+      "line_anchor": "1b",
+      "page": 1,
+      "x_cluster": 350,
+      "y_cluster": 300
+    },
+    {
+      "field_name": "Table_PartI.Row1b.g",
+      "line_anchor": "1b",
+      "page": 1,
+      "x_cluster": 425,
+      "y_cluster": 300
+    },
+    {
+      "field_name": "Table_PartI.Row1b.h",
+      "line_anchor": "1b",
+      "page": 1,
+      "x_cluster": 500,
+      "y_cluster": 300
+    },
+    {
+      "field_name": "Table_PartI.Row2.d",
+      "line_anchor": "2",
+      "page": 1,
+      "x_cluster": 300,
+      "y_cluster": 325
+    },
+    {
+      "field_name": "Table_PartI.Row2.e",
+      "line_anchor": "2",
+      "page": 1,
+      "x_cluster": 350,
+      "y_cluster": 325
+    },
+    {
+      "field_name": "Table_PartI.Row3.h",
+      "line_anchor": "3",
+      "page": 1,
+      "x_cluster": 500,
+      "y_cluster": 350
+    },
+    {
+      "field_name": "Table_PartII.Row8b.d",
+      "line_anchor": "8b",
+      "page": 1,
+      "x_cluster": 300,
+      "y_cluster": 500
+    },
+    {
+      "field_name": "Table_PartII.Row9.h",
+      "line_anchor": "9",
+      "page": 1,
+      "x_cluster": 500,
+      "y_cluster": 525
+    },
+    {
+      "field_name": "Table_PartII.Row10.h",
+      "line_anchor": "10",
+      "page": 1,
+      "x_cluster": 500,
+      "y_cluster": 550
+    },
+    {
+      "field_name": "PartIII.Line21.amount",
+      "line_anchor": "21",
+      "page": 2,
+      "x_cluster": 500,
+      "y_cluster": 350
+    }
+  ]
+}

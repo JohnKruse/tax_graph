@@ -199,6 +199,15 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
   for declared/unmodeled upstream dependencies. `plans/PHASE_M7.md` is marked `[COMPLETE]` and
   archived as `plans/archive/PHASE_M7.md`. Next by milestone order: post-M7 Form Verification
   Record or the next bulk extraction expansion plan, pending Architect direction.
+- **M9 Step 1 is done.** Directly fetched the verified IRS Schedule D form/instructions PDFs
+  (`f1040sd.pdf`, `i1040sd.pdf`) into the local raw cache, rendered the form with PyMuPDF, and
+  rendered the instructions through configured Mistral OCR. Full `tax-graph acquire 2025 --check`
+  was attempted first but stopped on the existing manifest URL for `form_1099b_2025`
+  (`f1099b.pdf`) returning 404 before reaching Schedule D; review/fix that URL in a later
+  acquisition cleanup. Added committed fixture slices under `tests/fixtures/schedule_d_bundle/`
+  plus M9 tests proving loader wiring, front-matter retention, field-grid anchors, Parts I/II/III
+  outline structure, 1b-3 and 8b-10 row bands, and the line 21 cue. Next: M9 Step 2 extraction under
+  the full verification net.
 
 ## Open for Architect
 - (none open - the M6 closeout question is ANSWERED: the live gate is NOT deferrable, and
@@ -418,6 +427,13 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
   - `uv --directory C:\Users\devbox\projects\tax_graph run --no-dev python -m tax_graph.cli frontier --year 2025` -> base-runtime frontier query OK
   - `.\.venv\Scripts\python.exe -m pytest` -> 180 passed, 5 skipped
   - `.\.venv\Scripts\python.exe tools\check_ascii.py` -> ASCII check OK
+- M9 Step 1:
+  - `.\.venv\Scripts\python.exe -m tax_graph.cli acquire 2025 --check` -> stopped on IRS 404 for `https://www.irs.gov/pub/irs-pdf/f1099b.pdf`
+  - `Invoke-WebRequest https://www.irs.gov/pub/irs-pdf/f1040sd.pdf` -> wrote local Schedule D PDF
+  - `Invoke-WebRequest https://www.irs.gov/pub/irs-pdf/i1040sd.pdf` -> wrote local Schedule D instructions PDF
+  - `.\.venv\Scripts\python.exe -c "<render_form_pdf schedule_d_2025>"` -> emitted `.txt` and `.fields.json`
+  - `.\.venv\Scripts\python.exe -c "<render_instructions_ocr instructions_schedule_d_2025>"` -> emitted `.txt`, `.pages/`, `.links.json`, `.ocr.json`
+  - `.\.venv\Scripts\python.exe -m pytest tests\test_schedule_d_bundle_m9.py -m m9` -> 2 passed
 - M8 Step 2:
   - `.\.venv\Scripts\python.exe -m pytest -m m8` -> 12 passed, 142 deselected
   - `.\.venv\Scripts\python.exe -m pytest -m "m4 or m8"` -> 41 passed, 113 deselected
