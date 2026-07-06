@@ -76,7 +76,7 @@ SOI weights let us SEE and PROVE where the high-value 25% is and where the long 
   targeting Schedule D lines with `status: declared` and `weight` = Schedule D's SOI count; a
   reference to a publication maps to `pub_reference` with `weight: null`. Base deps only. Docs.
 
-- [ ] **Step 3 - `tax-graph frontier` query (worklist + coverage metric).** Read `frontier.yaml` +
+- [DONE] **Step 3 - `tax-graph frontier` query (worklist + coverage metric).** Read `frontier.yaml` +
   the SOI table + the modeled set and print: (a) the **worklist** - `status: declared` entries
   sorted by weight descending (the data-driven "build this next" list); and (b) the **coverage
   metric** - `sum(weight of modeled forms) / sum(weight over the universe)` as

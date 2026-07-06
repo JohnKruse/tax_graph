@@ -173,11 +173,14 @@ uses promoted repeatable table subunits, and the capital-gains example supplies
 its long-term lot as one Part II table row.
 
 The frontier registry is derived data, regenerated with
-`tax-graph frontier build --year 2025` into `graph/2025/frontier.yaml`. It
-combines promoted graph references, reviewed outbound-flow declarations,
+`tax-graph frontier build --year 2025` into `graph/2025/frontier.yaml`. Query
+it with `tax-graph frontier --year 2025` or `--json` for the deferred map data.
+It combines promoted graph references, reviewed outbound-flow declarations,
 manifest scope, and committed SOI counts. Modeled entries name already-covered
 targets; declared entries are intentional open ends; unmodeled entries are
-outside the current manifest scope. The registry is not hand-maintained.
+outside the current manifest scope. Coverage is reported against the full SOI
+form-count universe and the currently in-scope weighted manifest set. The
+registry is not hand-maintained.
 
 Outline-first extraction now carries a deterministic repeatable-table detector:
 it emits a draft `tables` subunit only when repeated field-grid row bands and a

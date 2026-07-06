@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+import json
 import re
 from pathlib import Path
 from typing import Any
@@ -66,6 +67,69 @@ def load_frontier_registry(year: str | int = "2025", root: str | Path | None = N
     return yaml.safe_load(path.read_text(encoding="utf-8")) or {"tax_year": int(year), "frontiers": []}
 
 
+def summarize_frontier(year: str | int = "2025", root: str | Path | None = None) -> dict[str, Any]:
+    """Summarize worklist and coverage from the current frontier registry."""
+    root_path = Path(root).resolve() if root is not None else Path(__file__).resolve().parents[2]
+    registry = load_frontier_registry(year, root_path)
+    if not registry.get("frontiers"):
+        registry = build_frontier_registry(year, root_path).registry
+    graph = load_graph(year, root_path)
+    soi = load_soi_counts(root_path)
+    modeled_docs = {doc["document_id"] for doc in graph.items("documents") if "document_id" in doc}
+    manifest_docs = {entry.document_id for entry in load_manifest(root=root_path).documents}
+    worklist = sorted(
+        [entry for entry in registry.get("frontiers", []) if entry.get("status") == "declared"],
+        key=lambda entry: (-(entry.get("weight") or 0), entry["frontier_id"]),
+    )
+    return {
+        "tax_year": int(year),
+        "worklist": worklist,
+        "coverage": _coverage_summary(
+            soi=soi,
+            modeled_docs=modeled_docs,
+            in_scope_docs={doc for doc in manifest_docs if doc in soi.counts},
+        ),
+        "provenance": registry.get("provenance", {}),
+    }
+
+
+def render_frontier_summary(summary: dict[str, Any], *, json_output: bool = False) -> str:
+    """Render a frontier summary for CLI output."""
+    if json_output:
+        return json.dumps(summary, indent=2, sort_keys=True) + "\n"
+    coverage = summary["coverage"]
+    lines = ["=== frontier worklist ==="]
+    if summary["worklist"]:
+        for entry in summary["worklist"]:
+            target = entry.get("target", {})
+            address = target.get("document_id", "-")
+            if target.get("line"):
+                address += f" line {target['line']}"
+            lines.append(
+                f"  {address}: {entry['kind']} from {entry['source'].get('document_id', '-')} "
+                f"(weight {entry.get('weight') or 'unknown'}, {entry['status']})"
+            )
+    else:
+        lines.append("  -")
+    lines.append("")
+    lines.append(
+        f"covers ~{coverage['full_universe_percent']:.1f}% of filer-weighted form usage "
+        f"({coverage['modeled_weight']} / {coverage['full_universe_weight']})"
+    )
+    lines.append(
+        f"covers ~{coverage['in_scope_percent']:.1f}% of in-scope filer-weighted form usage "
+        f"({coverage['in_scope_modeled_weight']} / {coverage['in_scope_weight']})"
+    )
+    provenance = summary.get("provenance", {})
+    if provenance:
+        lines.append(
+            "SOI provenance: "
+            f"{provenance.get('soi_year')} {provenance.get('soi_source_url')} "
+            f"({provenance.get('soi_note')})"
+        )
+    return "\n".join(lines) + "\n"
+
+
 def _outbound_flow_entries(
     graph: LoadedGraph,
     soi: SoiCounts,
@@ -111,6 +175,32 @@ def _outbound_flow_entries(
             }
         )
     return entries
+
+
+def _coverage_summary(
+    *,
+    soi: SoiCounts,
+    modeled_docs: set[str],
+    in_scope_docs: set[str],
+) -> dict[str, Any]:
+    modeled_weight = sum(weight for doc, weight in soi.counts.items() if doc in modeled_docs)
+    full_weight = sum(soi.counts.values())
+    in_scope_weight = sum(weight for doc, weight in soi.counts.items() if doc in in_scope_docs)
+    in_scope_modeled = sum(weight for doc, weight in soi.counts.items() if doc in modeled_docs and doc in in_scope_docs)
+    return {
+        "modeled_weight": modeled_weight,
+        "full_universe_weight": full_weight,
+        "full_universe_percent": _percent(modeled_weight, full_weight),
+        "in_scope_modeled_weight": in_scope_modeled,
+        "in_scope_weight": in_scope_weight,
+        "in_scope_percent": _percent(in_scope_modeled, in_scope_weight),
+    }
+
+
+def _percent(numerator: int, denominator: int) -> float:
+    if denominator == 0:
+        return 0.0
+    return round((numerator / denominator) * 100.0, 1)
 
 
 def _reference_entries(

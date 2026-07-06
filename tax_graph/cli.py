@@ -187,6 +187,20 @@ def frontier_build_command(year: str = "2025", root: str | Path | None = None) -
     return 0
 
 
+def frontier_query_command(
+    year: str = "2025",
+    root: str | Path | None = None,
+    json_output: bool = False,
+) -> int:
+    """Print the frontier worklist and SOI-weighted coverage."""
+    from tax_graph.frontier.build import render_frontier_summary, summarize_frontier
+
+    root_path = Path(root).resolve() if root is not None else project_root()
+    summary = summarize_frontier(year, root=root_path)
+    print(render_frontier_summary(summary, json_output=json_output), end="")
+    return 0
+
+
 def serve_command(
     year: str = "2025",
     root: str | Path | None = None,
@@ -866,7 +880,21 @@ def _build_typer_app():
 
     cli.add_typer(oracle_cli, name="oracle")
 
-    frontier_cli = typer.Typer(help="Frontier registry and coverage helpers.")
+    frontier_cli = typer.Typer(help="Frontier registry and coverage helpers.", invoke_without_command=True)
+
+    @frontier_cli.callback(invoke_without_command=True)
+    def frontier_query_cli(
+        ctx: typer.Context,
+        year: str = typer.Option("2025", "--year", "-y", help="Tax year to query."),
+        json_output: bool = typer.Option(False, "--json", help="Print machine-readable JSON."),
+        root: Path | None = typer.Option(None, "--root", help="Project root override."),
+    ) -> None:
+        """Print the frontier worklist and SOI-weighted coverage."""
+        if ctx.invoked_subcommand is not None:
+            return
+        raise_code = frontier_query_command(year=year, root=root, json_output=json_output)
+        if raise_code:
+            raise typer.Exit(raise_code)
 
     @frontier_cli.command("build")
     def frontier_build_cli(
@@ -928,7 +956,10 @@ def _fallback_app() -> int:
     build_parser.add_argument("--root", default=None)
 
     frontier_parser = subparsers.add_parser("frontier")
-    frontier_subparsers = frontier_parser.add_subparsers(dest="frontier_command", required=True)
+    frontier_parser.add_argument("--year", "-y", default="2025")
+    frontier_parser.add_argument("--json", action="store_true")
+    frontier_parser.add_argument("--root", default=None)
+    frontier_subparsers = frontier_parser.add_subparsers(dest="frontier_command", required=False)
     frontier_build_parser = frontier_subparsers.add_parser("build")
     frontier_build_parser.add_argument("--year", "-y", default="2025")
     frontier_build_parser.add_argument("--root", default=None)
@@ -1026,6 +1057,8 @@ def _fallback_app() -> int:
         return build_command(year=args.year, root=args.root)
     if args.command == "frontier" and args.frontier_command == "build":
         return frontier_build_command(year=args.year, root=args.root)
+    if args.command == "frontier":
+        return frontier_query_command(year=args.year, root=args.root, json_output=args.json)
     if args.command == "serve":
         return serve_command(year=args.year, root=args.root, source=args.source)
     if args.command == "drill" and args.drill_command == "run":
