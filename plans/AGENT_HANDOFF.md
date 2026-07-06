@@ -224,6 +224,13 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
   never papered over; triage outcomes shown; plain-language tiers from the supported-branch
   bar; same data queryable over MCP). Generated from metrics/corpus/triage/drill/example
   data, no hand-authoring. Slots after M7; do NOT build during M7.
+- **PINNED (2026-07-06, John's call): M9 is the LAST bespoke single-form phase.** M10 (plan
+  just-in-time at M9 close) batch-runs the pipeline across the full OTS-witnessed set (the
+  solver's metadata fence list: Schedules 1, 1-A, 2, 3, A, B, D/8949, Form 6251), with human
+  effort limited to exception queues + calibration + promotion gates, promotions sequenced
+  by the frontier. See engineering-plan "M10". M9's job is to land the six form-agnostic
+  capabilities batch depends on (LINK, parameters/ops, second acquire run, record generator,
+  growth mechanics) and MEASURE the per-form human cost that sizes M10.
 - **Next: start M9 (Schedule D expansion + LINK + Verification Record, canary Daisy Chain).**
   `plans/PHASE_M9.md` is written (2026-07-06); milestone block + gate row added to the
   engineering plan. The Architect verified M7 closure first (12 passed on `-m m7`; full

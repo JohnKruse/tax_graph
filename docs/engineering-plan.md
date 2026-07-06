@@ -348,6 +348,22 @@ emits values + audit trace + Return Record.
   scenarios agree with OTS; line 21 computes -3000/-1500 through cited parameter nodes;
   committed byte-stable VERIFICATION.md; `pytest -m m9` green.
 
+### M10 - Batch expansion across the OTS-witnessed set (pinned 2026-07-06; plan just-in-time)
+- **M9 is the LAST bespoke single-form phase** (John's call). It exists to land the six
+  form-agnostic capabilities batch expansion depends on: LINK, parameter nodes + comparison
+  ops, a second acquire/OCR run, the Verification Record generator, and the box-map/domain
+  growth mechanics - and to measure the true per-form human cost (M9 Step 2 metrics).
+- **M10 then runs the pipeline as a BATCH** over the full OTS-witnessed set: grow the
+  manifest to the schedules the pinned OTS 1040 solver computes (its metadata fence list:
+  Schedules 1, 1-A, 2, 3, A, B, D/8949, Form 6251), acquire/extract/verify them together,
+  LINK as promotions land, box maps seeded from the OTS label inventory, human effort
+  limited to exception queues + calibration samples + promotion gates. Frontier ordering
+  still sequences the PROMOTIONS (dependencies matter even when extraction is parallel).
+  Worksheet-heavy branches (QDCGT/tax computation, AMT math) may remain frontier entries
+  within otherwise-modeled forms - "incomplete, but never wrong" applies per branch, and
+  the Verification Record states each form's actual depth. `PHASE_M10.md` is written
+  just-in-time when M9 closes, informed by M9's measured per-form economics.
+
 ---
 
 ## Configuration - one-stop tuning
