@@ -10,6 +10,7 @@ from tax_graph.validate import validate_graph
 
 ROOT = Path(__file__).resolve().parents[1]
 FACTS = ROOT / "examples" / "capital_gains_basic" / "facts.yaml"
+MULTI_FACTS = ROOT / "examples" / "capital_gains_multi_lot" / "facts.yaml"
 TARGET = "form_1040_2025_line_7_capital_gain_loss"
 TABLE_ID = "form_8949_2025_part_ii_line_1"
 GAIN_INSTANCE = "form_8949_2025_part_ii_line_1_column_h#lot_1"
@@ -31,3 +32,23 @@ def test_promoted_form_8949_tables_validate_and_preserve_single_lot_parity():
     assert result.trace[TOTAL_NODE]["instances"] == [GAIN_INSTANCE]
     assert result.trace[SUBTRACT_INSTANCE]["operation"] == "SUBTRACT"
     assert "cite_8949_col_h_gain" in result.trace[SUBTRACT_INSTANCE]["citations"]
+
+
+@pytest.mark.m6b
+def test_committed_multi_lot_example_computes_totals_and_instance_trace():
+    graph = Graph("2025", root=ROOT, source="yaml")
+
+    result = Engine(graph).execute(load_facts(MULTI_FACTS))
+
+    assert result.values["form_8949_2025_part_ii_line_1_column_h#lot_gain"] == 2000
+    assert result.values["form_8949_2025_part_ii_line_1_column_h#lot_loss"] == -2000
+    assert result.values["form_8949_2025_part_ii_line_1_column_h#lot_adjusted"] == 250
+    assert result.values["form_8949_2025_part_ii_line_2_line_2_column_g_total"] == 50
+    assert result.values[TOTAL_NODE] == 250
+    assert result.values[TARGET] == 250
+    assert result.trace[TOTAL_NODE]["instances"] == [
+        "form_8949_2025_part_ii_line_1_column_h#lot_gain",
+        "form_8949_2025_part_ii_line_1_column_h#lot_loss",
+        "form_8949_2025_part_ii_line_1_column_h#lot_adjusted",
+    ]
+    assert result.trace["form_8949_2025_part_ii_line_1_column_d_minus_e#lot_adjusted"]["operation"] == "SUBTRACT"

@@ -16,12 +16,10 @@ SUPPORTED_FILING_STATUSES = {"single": "Single"}
 
 
 @dataclass(frozen=True)
-class CapitalGainScenario:
-    """A fenced single-lot capital-gains scenario."""
+class CapitalGainLot:
+    """One long-term Form 8949 row in an oracle scenario."""
 
-    scenario_id: str
-    tax_year: str
-    filing_status: str
+    row_key: str
     description: str
     date_acquired: str
     date_sold: str
@@ -36,10 +34,63 @@ class CapitalGainScenario:
         return _clean_number(self.proceeds) - _clean_number(self.cost) + _clean_number(self.adjustment)
 
 
+@dataclass(frozen=True)
+class CapitalGainScenario:
+    """A fenced capital-gains scenario with one or more long-term lots."""
+
+    scenario_id: str
+    tax_year: str
+    filing_status: str
+    description: str
+    date_acquired: str
+    date_sold: str
+    proceeds: int | float
+    cost: int | float
+    adjustment: int | float = 0
+    lots: tuple[CapitalGainLot, ...] = ()
+
+    @property
+    def gain_loss(self) -> int | float:
+        """Return total proceeds minus cost plus adjustment across all lots."""
+
+        return _clean_number(sum(lot.gain_loss for lot in self.normalized_lots))
+
+    @property
+    def normalized_lots(self) -> tuple[CapitalGainLot, ...]:
+        """Return explicit lots, or a one-lot view of legacy fields."""
+
+        if self.lots:
+            return self.lots
+        return (
+            CapitalGainLot(
+                row_key="lot_1",
+                description=self.description,
+                date_acquired=self.date_acquired,
+                date_sold=self.date_sold,
+                proceeds=self.proceeds,
+                cost=self.cost,
+                adjustment=self.adjustment,
+            ),
+        )
+
+
 def render_tax_graph_facts_document(scenario: CapitalGainScenario) -> dict[str, Any]:
     """Render a scenario to Tax Graph taxpayer facts."""
 
     _require_supported_tax_graph_scenario(scenario)
+    rows = []
+    for index, lot in enumerate(scenario.normalized_lots, start=1):
+        rows.append(
+            {
+                "row_key": _safe_row_key(lot.row_key or f"lot_{index}"),
+                "columns": {
+                    "d": _clean_number(lot.proceeds),
+                    "e": _clean_number(lot.cost),
+                    "g": _clean_number(lot.adjustment),
+                },
+                "source": _source(scenario),
+            }
+        )
     return {
         "tax_year": int(scenario.tax_year),
         "filing_status": scenario.filing_status,
@@ -57,17 +108,7 @@ def render_tax_graph_facts_document(scenario: CapitalGainScenario) -> dict[str, 
         "tables": [
             {
                 "table_id": "form_8949_2025_part_ii_line_1",
-                "rows": [
-                    {
-                        "row_key": "lot_1",
-                        "columns": {
-                            "d": _clean_number(scenario.proceeds),
-                            "e": _clean_number(scenario.cost),
-                            "g": _clean_number(scenario.adjustment),
-                        },
-                        "source": _source(scenario),
-                    }
-                ],
+                "rows": rows,
             }
         ],
     }
@@ -115,7 +156,7 @@ def render_ots_input_text(
 
 
 def render_ots_8949_csv(scenario: CapitalGainScenario) -> str:
-    """Render the OTS Form 8949 spreadsheet CSV for one lot."""
+    """Render the OTS Form 8949 spreadsheet CSV for all lots."""
 
     _require_supported_ots_scenario(scenario)
     buffer = io.StringIO()
@@ -131,17 +172,18 @@ def render_ots_8949_csv(scenario: CapitalGainScenario) -> str:
             "Adjustment",
         ]
     )
-    writer.writerow(
-        [
-            scenario.description,
-            scenario.date_acquired,
-            scenario.date_sold,
-            _format_number(scenario.proceeds),
-            _format_number(scenario.cost),
-            "",
-            _format_adjustment(scenario.adjustment),
-        ]
-    )
+    for lot in scenario.normalized_lots:
+        writer.writerow(
+            [
+                lot.description,
+                lot.date_acquired,
+                lot.date_sold,
+                _format_number(lot.proceeds),
+                _format_number(lot.cost),
+                _format_code(lot.adjustment),
+                _format_adjustment(lot.adjustment),
+            ]
+        )
     return buffer.getvalue()
 
 
@@ -170,8 +212,8 @@ def write_ots_input_bundle(
 
 def _require_supported_tax_graph_scenario(scenario: CapitalGainScenario) -> None:
     _require_supported_ots_scenario(scenario)
-    if _clean_number(scenario.adjustment) != 0:
-        raise ValueError("Tax Graph v0 capital-gains slice does not model 8949 adjustments")
+    if not scenario.normalized_lots:
+        raise ValueError("capital-gains scenarios require at least one lot")
 
 
 def _require_supported_ots_scenario(scenario: CapitalGainScenario) -> None:
@@ -202,9 +244,18 @@ def _format_adjustment(value: int | float) -> str:
     return "" if _clean_number(value) == 0 else _format_number(value)
 
 
+def _format_code(adjustment: int | float) -> str:
+    return "" if _clean_number(adjustment) == 0 else "B"
+
+
 def _safe_id(value: str) -> str:
     cleaned = re.sub(r"[^A-Za-z0-9_-]+", "_", value.strip())
     return cleaned.strip("_") or "scenario"
+
+
+def _safe_row_key(value: str) -> str:
+    cleaned = re.sub(r"[^a-z0-9_]+", "_", value.strip().lower())
+    return cleaned.strip("_") or "lot"
 
 
 def _fallback_ots_template(tax_year: str) -> str:

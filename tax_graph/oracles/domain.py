@@ -9,7 +9,7 @@ from typing import Any
 
 import yaml
 
-from tax_graph.oracles.scenario import CapitalGainScenario
+from tax_graph.oracles.scenario import CapitalGainLot, CapitalGainScenario
 
 
 @dataclass(frozen=True)
@@ -27,6 +27,7 @@ class DomainProfile:
 
     tax_year: str
     filing_statuses: tuple[str, ...]
+    lot_count: NumericRange
     proceeds: NumericRange
     cost: NumericRange
     adjustment: NumericRange
@@ -39,10 +40,12 @@ def load_domain_profile(path: str | Path) -> DomainProfile:
     """Load a committed domain profile YAML file."""
 
     data = yaml.safe_load(Path(path).read_text(encoding="utf-8")) or {}
-    lot = data["single_lot"]
+    lot = data.get("multi_lot") or data["single_lot"]
+    count = lot.get("count", {"min": 1, "max": 1, "include": [1]})
     return DomainProfile(
         tax_year=str(data["tax_year"]),
         filing_statuses=tuple(str(item) for item in data["filing_statuses"]),
+        lot_count=_range(count),
         proceeds=_range(lot["proceeds"]),
         cost=_range(lot["cost"]),
         adjustment=_range(lot["adjustment"]),
@@ -68,34 +71,37 @@ def assert_scenario_in_domain(profile: DomainProfile, scenario: CapitalGainScena
         raise ValueError(f"tax_year outside domain: {scenario.tax_year}")
     if scenario.filing_status not in profile.filing_statuses:
         raise ValueError(f"filing_status outside domain: {scenario.filing_status}")
-    _assert_in_range("proceeds", scenario.proceeds, profile.proceeds)
-    _assert_in_range("cost", scenario.cost, profile.cost)
-    _assert_in_range("adjustment", scenario.adjustment, profile.adjustment)
+    _assert_in_range("lot_count", len(scenario.normalized_lots), profile.lot_count)
+    for lot in scenario.normalized_lots:
+        _assert_in_range("proceeds", lot.proceeds, profile.proceeds)
+        _assert_in_range("cost", lot.cost, profile.cost)
+        _assert_in_range("adjustment", lot.adjustment, profile.adjustment)
     _assert_in_range("net_gain_loss", scenario.gain_loss, profile.net_gain_loss)
 
 
 def _generate_one(profile: DomainProfile, rng: random.Random, *, seed: int, index: int) -> CapitalGainScenario:
     for _attempt in range(1000):
-        proceeds = _draw_number(rng, profile.proceeds)
-        adjustment = _draw_number(rng, profile.adjustment)
-        min_cost = profile.cost.minimum
-        max_cost = min(
-            profile.cost.maximum,
-            proceeds + adjustment - profile.net_gain_loss.minimum,
+        count = _draw_lot_count(profile, rng, index=index)
+        lots = tuple(
+            _generate_lot(
+                profile,
+                rng,
+                row_index=row_index,
+                force_sign=_forced_sign(count, row_index),
+            )
+            for row_index in range(count)
         )
-        if max_cost < min_cost:
-            continue
-        cost = _draw_number(rng, NumericRange(min_cost, max_cost, profile.cost.include))
         scenario = CapitalGainScenario(
             scenario_id=f"m6_seed{seed}_{index:04d}",
             tax_year=profile.tax_year,
             filing_status=rng.choice(profile.filing_statuses),
-            description=f"Generated LT lot {index + 1}",
+            description=f"Generated LT scenario {index + 1}",
             date_acquired=profile.date_acquired,
             date_sold=profile.date_sold,
-            proceeds=proceeds,
-            cost=cost,
-            adjustment=adjustment,
+            proceeds=lots[0].proceeds,
+            cost=lots[0].cost,
+            adjustment=lots[0].adjustment,
+            lots=lots,
         )
         try:
             assert_scenario_in_domain(profile, scenario)
@@ -103,6 +109,71 @@ def _generate_one(profile: DomainProfile, rng: random.Random, *, seed: int, inde
             continue
         return scenario
     raise ValueError("could not generate an in-domain scenario after 1000 attempts")
+
+
+def _draw_lot_count(profile: DomainProfile, rng: random.Random, *, index: int) -> int:
+    includes = [int(item) for item in profile.lot_count.include if profile.lot_count.minimum <= item <= profile.lot_count.maximum]
+    if index < len(includes):
+        return includes[index]
+    return int(_draw_number(rng, profile.lot_count))
+
+
+def _generate_lot(
+    profile: DomainProfile,
+    rng: random.Random,
+    *,
+    row_index: int,
+    force_sign: str | None,
+) -> CapitalGainLot:
+    for _attempt in range(1000):
+        adjustment = _draw_number(rng, profile.adjustment)
+        if force_sign == "adjusted_gain" and adjustment == 0:
+            adjustment = 50 if profile.adjustment.maximum >= 50 else profile.adjustment.maximum
+        target_gain = _draw_lot_gain(rng, force_sign=force_sign)
+        if target_gain >= 0:
+            cost = _draw_number(rng, NumericRange(profile.cost.minimum, min(profile.cost.maximum, 20000), profile.cost.include))
+            proceeds = cost + target_gain - adjustment
+        else:
+            proceeds = _draw_number(
+                rng,
+                NumericRange(profile.proceeds.minimum, min(profile.proceeds.maximum, 20000), profile.proceeds.include),
+            )
+            cost = proceeds + adjustment - target_gain
+        proceeds = _clean_number(proceeds)
+        cost = _clean_number(cost)
+        if profile.proceeds.minimum <= proceeds <= profile.proceeds.maximum and profile.cost.minimum <= cost <= profile.cost.maximum:
+            return CapitalGainLot(
+                row_key=f"lot_{row_index + 1}",
+                description=f"Generated LT lot {row_index + 1}",
+                date_acquired=profile.date_acquired,
+                date_sold=profile.date_sold,
+                proceeds=proceeds,
+                cost=cost,
+                adjustment=adjustment,
+            )
+    raise ValueError("could not generate an in-domain lot after 1000 attempts")
+
+
+def _forced_sign(count: int, row_index: int) -> str | None:
+    if count < 3:
+        return None
+    if row_index == 0:
+        return "gain"
+    if row_index == 1:
+        return "loss"
+    if row_index == 2:
+        return "adjusted_gain"
+    return None
+
+
+def _draw_lot_gain(rng: random.Random, *, force_sign: str | None) -> int:
+    if force_sign == "gain":
+        return rng.randint(100, 5000)
+    if force_sign == "loss":
+        return -rng.randint(100, 3000)
+    if force_sign == "adjusted_gain":
+        return rng.randint(100, 2000)
+    return rng.randint(-2000, 5000)
 
 
 def _draw_number(rng: random.Random, range_: NumericRange) -> int | float:
@@ -129,3 +200,8 @@ def _assert_in_range(name: str, value: int | float, range_: NumericRange) -> Non
 
 def _is_int_like(value: int | float) -> bool:
     return float(value).is_integer()
+
+
+def _clean_number(value: int | float) -> int | float:
+    number = float(value)
+    return int(number) if number.is_integer() else number

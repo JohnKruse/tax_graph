@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-from dataclasses import replace
 from pathlib import Path
 
 import pytest
@@ -8,6 +7,7 @@ import pytest
 from tax_graph.engine import Graph
 from tax_graph.oracles.box_map import box_map_from_dict, load_box_map, load_ots_label_inventory, validate_box_map
 from tax_graph.oracles.scenario import (
+    CapitalGainLot,
     CapitalGainScenario,
     render_ots_8949_csv,
     render_ots_input_text,
@@ -29,6 +29,49 @@ def _scenario() -> CapitalGainScenario:
         date_sold="06/01/2025",
         proceeds=12000,
         cost=10000,
+    )
+
+
+def _multi_lot_scenario() -> CapitalGainScenario:
+    lots = (
+        CapitalGainLot(
+            row_key="lot_gain",
+            description="Fake LT gain lot",
+            date_acquired="01/15/2024",
+            date_sold="06/01/2025",
+            proceeds=12000,
+            cost=10000,
+            adjustment=0,
+        ),
+        CapitalGainLot(
+            row_key="lot_loss",
+            description="Fake LT loss lot",
+            date_acquired="02/15/2024",
+            date_sold="06/02/2025",
+            proceeds=5000,
+            cost=7000,
+            adjustment=0,
+        ),
+        CapitalGainLot(
+            row_key="lot_adjusted",
+            description="Fake LT adjusted lot",
+            date_acquired="03/15/2024",
+            date_sold="06/03/2025",
+            proceeds=1000,
+            cost=800,
+            adjustment=50,
+        ),
+    )
+    return CapitalGainScenario(
+        scenario_id="m6b_three_lot_adjusted",
+        tax_year="2025",
+        filing_status="single",
+        description="Three fake LT lots",
+        date_acquired="01/15/2024",
+        date_sold="06/01/2025",
+        proceeds=lots[0].proceeds,
+        cost=lots[0].cost,
+        lots=lots,
     )
 
 
@@ -54,11 +97,12 @@ def test_scenario_renders_ots_8949_csv_golden():
 
 
 @pytest.mark.m6
-def test_tax_graph_renderer_rejects_unmodeled_adjustment():
-    scenario = replace(_scenario(), adjustment=25)
+def test_multi_lot_scenario_renders_tax_graph_and_ots_goldens():
+    facts = (FIXTURES / "expected_tax_graph_facts_multi_lot.yaml").read_text(encoding="utf-8")
+    csv = (FIXTURES / "expected_ots_8949_multi_lot.csv").read_text(encoding="utf-8")
 
-    with pytest.raises(ValueError, match="does not model 8949 adjustments"):
-        render_tax_graph_facts_yaml(scenario)
+    assert render_tax_graph_facts_yaml(_multi_lot_scenario()) == facts
+    assert render_ots_8949_csv(_multi_lot_scenario()) == csv
 
 
 @pytest.mark.m6

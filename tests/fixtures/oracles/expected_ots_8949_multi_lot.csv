@@ -1,0 +1,4 @@
+Description,Date_Acquired,Date_Sold,Proceeds,Cost,Code,Adjustment
+Fake LT gain lot,01/15/2024,06/01/2025,12000,10000,,
+Fake LT loss lot,02/15/2024,06/02/2025,5000,7000,,
+Fake LT adjusted lot,03/15/2024,06/03/2025,1000,800,B,50

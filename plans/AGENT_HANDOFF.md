@@ -141,6 +141,12 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
   table facts so replay stays green until Step 6 replaces it with multi-lot scenarios. Next: Step 6
   widens the oracle harness to 1..15 lots with nonzero column (g), runs the live >=100 gate, and
   freezes a multi-lot corpus batch.
+- **M6b (Repeatable tables) is complete.** Step 6 widened the oracle harness to 1..15 long-term
+  lots, including scenarios that exceed the 11 printed Form 8949 slots and rows with nonzero column
+  (g). Live OTS fuzz agreed 100/100 for seed 2468, and the committed oracle corpus was regenerated
+  as seed 20260706 with `live_ots_diff_report` provenance. `plans/PHASE_M6b.md` is marked
+  `[COMPLETE]` and archived as `plans/archive/PHASE_M6b.md`. Next by milestone order: M8
+  (Skeptical Notary), with M7 (Compass Rose) still available as the parallel track.
 
 ## Open for Architect
 - (none open - the M6 closeout question is ANSWERED: the live gate is NOT deferrable, and
@@ -300,6 +306,20 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
   - `.\.venv\Scripts\python.exe -m tax_graph.cli run --facts examples\capital_gains_basic\facts.yaml --source yaml --no-record` -> Form 1040 line 7 = 2000 with `#lot_1` SUBTRACT trace
   - `.\.venv\Scripts\python.exe -m tax_graph.cli run --facts examples\capital_gains_basic\facts.yaml --source sqlite --no-record` -> Form 1040 line 7 = 2000 with `#lot_1` SUBTRACT trace
   - `.\.venv\Scripts\python.exe -m pytest` -> 136 passed, 5 skipped
+  - `.\.venv\Scripts\python.exe tools\check_ascii.py` -> ASCII check OK
+- M6b Step 6 / phase exit:
+  - `.\.venv\Scripts\python.exe -m pytest -m "m6 or m6b"` -> 41 passed, 2 skipped, 99 deselected
+  - `.\.venv\Scripts\python.exe -m tax_graph.cli run --facts examples\capital_gains_multi_lot\facts.yaml --source yaml --no-record` -> Form 1040 line 7 = 250 with `#lot_gain`, `#lot_loss`, and `#lot_adjusted` traces
+  - `.\.venv\Scripts\python.exe -m tax_graph.cli oracle fuzz --year 2025 --n 100 --seed 2468 --source yaml` -> generated=100, agreed=100, disagreed=0, rejected=0
+  - `.\.venv\Scripts\python.exe -m tax_graph.cli oracle freeze --year 2025 --n 20 --seed 20260706 --generated-date 2026-07-06 --oracle-version ots_2025_23.06 --source yaml` -> wrote 20 live OTS-agreed multi-lot scenarios
+  - `.\.venv\Scripts\python.exe -m tax_graph.cli oracle replay-corpus --year 2025 --source yaml` -> 20 scenarios, OK
+  - `.\.venv\Scripts\python.exe -m tax_graph.cli validate 2025` -> graph integrity OK; tables=2
+  - `.\.venv\Scripts\python.exe -m tax_graph.cli build 2025` -> built SQLite graph with tables=2
+  - `.\.venv\Scripts\python.exe -m tax_graph.cli run --facts examples\capital_gains_basic\facts.yaml --source yaml --no-record` -> Form 1040 line 7 = 2000
+  - `.\.venv\Scripts\python.exe -m tax_graph.cli run --facts examples\capital_gains_basic\facts.yaml --source sqlite --no-record` -> Form 1040 line 7 = 2000
+  - `uv --directory C:\Users\devbox\projects\tax_graph run --no-dev python -m tax_graph.cli run --facts examples\capital_gains_basic\facts.yaml --source yaml --no-record` -> Form 1040 line 7 = 2000
+  - `.\.venv\Scripts\python.exe -m pytest -m oracle` with `OTS_1040_2025_BIN` set -> 2 passed, 140 deselected
+  - `.\.venv\Scripts\python.exe -m pytest` -> 137 passed, 5 skipped
   - `.\.venv\Scripts\python.exe tools\check_ascii.py` -> ASCII check OK
 - M6 phase exit / live-gate closeout:
   - `.\.venv\Scripts\python.exe -m pytest -m m6` -> 23 passed, 2 skipped, 99 deselected

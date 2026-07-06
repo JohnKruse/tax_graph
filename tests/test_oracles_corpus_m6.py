@@ -116,15 +116,16 @@ def test_committed_oracle_corpus_replays():
 def _fake_agreeing_ots_runner(input_path: str | Path, *, executable: str | Path):
     csv_path = Path(input_path).with_name(f"{Path(input_path).stem}_f8949.csv")
     with csv_path.open(newline="", encoding="utf-8") as handle:
-        row = next(csv.DictReader(handle))
-    proceeds = _clean_number(row["Proceeds"])
-    cost = _clean_number(row["Cost"])
-    gain = _clean_number(proceeds - cost + _clean_number(row.get("Adjustment") or 0))
+        rows = list(csv.DictReader(handle))
+    proceeds = _clean_number(sum(_clean_number(row["Proceeds"]) for row in rows))
+    cost = _clean_number(sum(_clean_number(row["Cost"]) for row in rows))
+    adjustment = _clean_number(sum(_clean_number(row.get("Adjustment") or 0) for row in rows))
+    gain = _clean_number(proceeds - cost + adjustment)
     return SimpleNamespace(
         labels={
             "F8949_2d": proceeds,
             "F8949_2e": cost,
-            "F8949_2g": _clean_number(row.get("Adjustment") or 0),
+            "F8949_2g": adjustment,
             "F8949_2h": gain,
             "D7": 0,
             "D8bh": gain,

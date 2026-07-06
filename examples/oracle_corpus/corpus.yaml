@@ -1,89 +1,89 @@
 tax_year: 2025
 scenario_count: 20
-seed: 20250705
-generated_date: '2026-07-05'
+seed: 20260706
+generated_date: '2026-07-06'
 provenance:
   oracle: opentaxsolver
   oracle_version: ots_2025_23.06
   source: live_ots_diff_report
 entries:
-- scenario_id: m6_seed20250705_0000
-  path: m6_seed20250705_0000
+- scenario_id: m6_seed20260706_0000
+  path: m6_seed20260706_0000
   status: agreed
   disposition: null
-- scenario_id: m6_seed20250705_0001
-  path: m6_seed20250705_0001
+- scenario_id: m6_seed20260706_0001
+  path: m6_seed20260706_0001
   status: agreed
   disposition: null
-- scenario_id: m6_seed20250705_0002
-  path: m6_seed20250705_0002
+- scenario_id: m6_seed20260706_0002
+  path: m6_seed20260706_0002
   status: agreed
   disposition: null
-- scenario_id: m6_seed20250705_0003
-  path: m6_seed20250705_0003
+- scenario_id: m6_seed20260706_0003
+  path: m6_seed20260706_0003
   status: agreed
   disposition: null
-- scenario_id: m6_seed20250705_0004
-  path: m6_seed20250705_0004
+- scenario_id: m6_seed20260706_0004
+  path: m6_seed20260706_0004
   status: agreed
   disposition: null
-- scenario_id: m6_seed20250705_0005
-  path: m6_seed20250705_0005
+- scenario_id: m6_seed20260706_0005
+  path: m6_seed20260706_0005
   status: agreed
   disposition: null
-- scenario_id: m6_seed20250705_0006
-  path: m6_seed20250705_0006
+- scenario_id: m6_seed20260706_0006
+  path: m6_seed20260706_0006
   status: agreed
   disposition: null
-- scenario_id: m6_seed20250705_0007
-  path: m6_seed20250705_0007
+- scenario_id: m6_seed20260706_0007
+  path: m6_seed20260706_0007
   status: agreed
   disposition: null
-- scenario_id: m6_seed20250705_0008
-  path: m6_seed20250705_0008
+- scenario_id: m6_seed20260706_0008
+  path: m6_seed20260706_0008
   status: agreed
   disposition: null
-- scenario_id: m6_seed20250705_0009
-  path: m6_seed20250705_0009
+- scenario_id: m6_seed20260706_0009
+  path: m6_seed20260706_0009
   status: agreed
   disposition: null
-- scenario_id: m6_seed20250705_0010
-  path: m6_seed20250705_0010
+- scenario_id: m6_seed20260706_0010
+  path: m6_seed20260706_0010
   status: agreed
   disposition: null
-- scenario_id: m6_seed20250705_0011
-  path: m6_seed20250705_0011
+- scenario_id: m6_seed20260706_0011
+  path: m6_seed20260706_0011
   status: agreed
   disposition: null
-- scenario_id: m6_seed20250705_0012
-  path: m6_seed20250705_0012
+- scenario_id: m6_seed20260706_0012
+  path: m6_seed20260706_0012
   status: agreed
   disposition: null
-- scenario_id: m6_seed20250705_0013
-  path: m6_seed20250705_0013
+- scenario_id: m6_seed20260706_0013
+  path: m6_seed20260706_0013
   status: agreed
   disposition: null
-- scenario_id: m6_seed20250705_0014
-  path: m6_seed20250705_0014
+- scenario_id: m6_seed20260706_0014
+  path: m6_seed20260706_0014
   status: agreed
   disposition: null
-- scenario_id: m6_seed20250705_0015
-  path: m6_seed20250705_0015
+- scenario_id: m6_seed20260706_0015
+  path: m6_seed20260706_0015
   status: agreed
   disposition: null
-- scenario_id: m6_seed20250705_0016
-  path: m6_seed20250705_0016
+- scenario_id: m6_seed20260706_0016
+  path: m6_seed20260706_0016
   status: agreed
   disposition: null
-- scenario_id: m6_seed20250705_0017
-  path: m6_seed20250705_0017
+- scenario_id: m6_seed20260706_0017
+  path: m6_seed20260706_0017
   status: agreed
   disposition: null
-- scenario_id: m6_seed20250705_0018
-  path: m6_seed20250705_0018
+- scenario_id: m6_seed20260706_0018
+  path: m6_seed20260706_0018
   status: agreed
   disposition: null
-- scenario_id: m6_seed20250705_0019
-  path: m6_seed20250705_0019
+- scenario_id: m6_seed20260706_0019
+  path: m6_seed20260706_0019
   status: agreed
   disposition: null

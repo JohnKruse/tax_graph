@@ -1,0 +1,12 @@
+# Expected computed values for the capital_gains_multi_lot scenario.
+expected:
+  form_8949_2025_part_ii_line_1_column_h#lot_gain: 2000
+  form_8949_2025_part_ii_line_1_column_h#lot_loss: -2000
+  form_8949_2025_part_ii_line_1_column_h#lot_adjusted: 250
+  form_8949_2025_part_ii_line_2_line_2_column_d_total: 18000
+  form_8949_2025_part_ii_line_2_line_2_column_e_total: 17800
+  form_8949_2025_part_ii_line_2_line_2_column_g_total: 50
+  form_8949_2025_part_ii_line_2_line_2_column_h_total: 250
+  schedule_d_2025_line_15_net_lt: 250
+  schedule_d_2025_line_16_total: 250
+  form_1040_2025_line_7_capital_gain_loss: 250

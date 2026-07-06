@@ -1,0 +1,36 @@
+tax_year: 2025
+filing_status: single
+scenario_id: m6_seed20260706_0001
+facts:
+- node_id: schedule_d_2025_line_7_net_st
+  value: 0
+  source:
+    document_label: Generated scenario m6_seed20260706_0001
+    extracted_by: m6_scenario_renderer
+tables:
+- table_id: form_8949_2025_part_ii_line_1
+  rows:
+  - row_key: lot_1
+    columns:
+      d: 4209
+      e: 1155
+      g: -500
+    source:
+      document_label: Generated broker 1099-B for scenario m6_seed20260706_0001
+      extracted_by: m6_scenario_renderer
+  - row_key: lot_2
+    columns:
+      d: 7314
+      e: 7937
+      g: -9
+    source:
+      document_label: Generated broker 1099-B for scenario m6_seed20260706_0001
+      extracted_by: m6_scenario_renderer
+  - row_key: lot_3
+    columns:
+      d: 17377
+      e: 15000
+      g: -500
+    source:
+      document_label: Generated broker 1099-B for scenario m6_seed20260706_0001
+      extracted_by: m6_scenario_renderer

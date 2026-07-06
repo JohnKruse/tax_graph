@@ -1,0 +1,36 @@
+# Sample scenario (fake data): three long-term lots with mixed gain/loss and one adjustment.
+# Expected: Form 1040 line 7 = 250.
+tax_year: 2025
+filing_status: single
+facts:
+  - node_id: schedule_d_2025_line_7_net_st
+    value: 0
+    source:
+      extracted_by: manual
+tables:
+  - table_id: form_8949_2025_part_ii_line_1
+    rows:
+      - row_key: lot_gain
+        columns:
+          d: 12000
+          e: 10000
+          g: 0
+        source:
+          document_label: Sample broker 1099-B multi-lot (fake)
+          extracted_by: manual
+      - row_key: lot_loss
+        columns:
+          d: 5000
+          e: 7000
+          g: 0
+        source:
+          document_label: Sample broker 1099-B multi-lot (fake)
+          extracted_by: manual
+      - row_key: lot_adjusted
+        columns:
+          d: 1000
+          e: 800
+          g: 50
+        source:
+          document_label: Sample broker 1099-B multi-lot (fake)
+          extracted_by: manual

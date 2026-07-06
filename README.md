@@ -65,7 +65,9 @@ The M6 harness keeps its checked-in comparison data under `oracles/`: the 2025
 box map links Tax Graph node ids to OTS output labels, and the label inventory
 fixture validates that every mapped OTS box is known before any diff runs.
 Generated scenarios render both to Tax Graph table-row `facts.yaml` and to an
-OTS 1040 input text file plus Form 8949 CSV.
+OTS 1040 input text file plus Form 8949 CSV. The current domain generates 1 to
+15 long-term lots, deliberately crossing the printed 11-row Form 8949 grid, and
+includes mixed gain/loss rows plus nonzero column (g) adjustments.
 
 The differ compares whole-dollar mapped boxes and evaluates guard boxes first.
 A guard failure marks the scenario `rejected` as outside the fenced domain; a
@@ -84,7 +86,8 @@ materializes only agreed diff reports into
 `corpus.yaml` manifest. `tax-graph oracle replay-corpus` runs those fixtures
 offline through the deterministic engine. `oracles/triage.yaml` records
 disagreements and their disposition before any non-agreed pair is allowed into
-the frozen corpus.
+the frozen corpus. The committed M6b corpus is a live OTS-agreed multi-lot
+batch with `live_ots_diff_report` provenance.
 
 ## CLI Usage
 

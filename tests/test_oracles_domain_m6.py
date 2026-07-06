@@ -34,11 +34,20 @@ def test_generated_scenarios_stay_inside_profile_bounds():
     scenarios = generate_scenarios(profile, n=100, seed=987)
 
     assert len(scenarios) == 100
+    lot_counts = [len(scenario.normalized_lots) for scenario in scenarios]
     for scenario in scenarios:
         assert_scenario_in_domain(profile, scenario)
         render_tax_graph_facts_document(scenario)
-        assert scenario.adjustment == 0
+        assert 1 <= len(scenario.normalized_lots) <= 15
         assert scenario.gain_loss >= -3000
+    assert max(lot_counts) > 11
+    assert any(lot.adjustment != 0 for scenario in scenarios for lot in scenario.normalized_lots)
+    assert any(
+        len(scenario.normalized_lots) >= 3
+        and any(lot.gain_loss > 0 for lot in scenario.normalized_lots)
+        and any(lot.gain_loss < 0 for lot in scenario.normalized_lots)
+        for scenario in scenarios
+    )
 
 
 @pytest.mark.m6
