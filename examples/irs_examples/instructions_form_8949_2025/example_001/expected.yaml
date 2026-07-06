@@ -1,0 +1,9 @@
+example_id: example_001
+source_document_id: instructions_form_8949_2025
+confirmed: true
+expected:
+  form_8949_2025_part_ii_line_1_column_h#irs_example_001: 4000
+  form_8949_2025_part_ii_line_2_line_2_column_h_total: 4000
+  schedule_d_2025_line_15_net_lt: 4000
+  schedule_d_2025_line_16_total: 4000
+  form_1040_2025_line_7_capital_gain_loss: 4000

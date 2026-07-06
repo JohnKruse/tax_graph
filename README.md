@@ -105,6 +105,8 @@ uv run tax-graph oracle fuzz --year 2025 --n 100 --seed 1234
 uv run tax-graph oracle freeze --year 2025 --n 20 --seed 20250705
 uv run tax-graph oracle replay-corpus --year 2025
 uv run tax-graph drill run --year 2025
+uv run tax-graph verify mine-examples --doc instructions_form_8949_2025 --limit 1
+uv run tax-graph verify replay-examples --year 2025
 uv run tax-graph acquire 2025
 uv run tax-graph acquire 2025 --check
 uv run tax-graph extract --doc form_8949_2025
@@ -123,6 +125,8 @@ python -m tax_graph.cli oracle fuzz --year 2025 --n 100 --seed 1234
 python -m tax_graph.cli oracle freeze --year 2025 --n 20 --seed 20250705
 python -m tax_graph.cli oracle replay-corpus --year 2025
 python -m tax_graph.cli drill run --year 2025
+python -m tax_graph.cli verify mine-examples --doc instructions_form_8949_2025 --limit 1
+python -m tax_graph.cli verify replay-examples --year 2025
 python -m tax_graph.cli acquire 2025 --check
 python -m tax_graph.cli extract --doc form_8949_2025
 ```
@@ -310,6 +314,14 @@ operation semantics from the trace: COPY identity, SUM addend totals, SUBTRACT
 roles and antisymmetry, repeatable-table column `(h)` as `d - e + g`, and table
 total aggregation. Extraction runs these checks against draft batches; the
 drill harness uses the same layer for F3 seeded defects.
+
+Worked-example mining is gated behind `tax-graph verify mine-examples`. The
+miner segments rendered IRS instruction text at `Example` headings, asks a
+narrow extraction client for facts and expected node values, executes the graph,
+and reports agreed/disagreed/unmappable candidates. Use `--confirm` only after a
+human has checked the paragraph; confirmed examples freeze under
+`examples/irs_examples/` and replay offline with
+`tax-graph verify replay-examples`.
 
 ## Compatibility Scripts
 

@@ -1,0 +1,7 @@
+example_id: example_001
+source_document_id: instructions_form_8949_2025
+locator: Instructions for Form 8949, column (h), Example 1 Gain
+quoted_text: >-
+  Example 1Gain. Column (d) is $6,000 and column (e) is $2,000. Enter $4,000
+  in column (h).
+human_confirmed: true

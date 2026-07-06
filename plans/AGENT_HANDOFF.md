@@ -164,6 +164,11 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
   facts through the engine, then check COPY identity, SUM addend totals, SUBTRACT roles and
   antisymmetry, Form 8949 per-instance `h = d - e + g`, and table total aggregation. The swapped
   SUBTRACT drill is caught by the property layer. Next: Step 4 IRS worked-example miner.
+- **M8 Step 4 is done.** Added deterministic IRS example segmentation, a gated mocked-in-tests
+  example miner, `tax-graph verify mine-examples`, `tax-graph verify replay-examples`, and a
+  confirmed frozen Form 8949 instruction Example 1 fixture under `examples/irs_examples/`.
+  Mining still requires a configured LLM client and `--confirm` is the human-confirmation gate;
+  replay is fully offline. Next: Step 5 N-version cross-vendor micro-extraction.
 
 ## Open for Architect
 - (none open - the M6 closeout question is ANSWERED: the live gate is NOT deferrable, and
@@ -327,6 +332,13 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
   - `.\.venv\Scripts\python.exe -m tax_graph.cli drill run --year 2025` -> 11 drills, PASS, L3 properties caught F3 drills
   - `.\.venv\Scripts\python.exe -m tax_graph.cli validate 2025` -> graph integrity OK; tables=2
   - `.\.venv\Scripts\python.exe -m pytest` -> 153 passed, 5 skipped
+  - `.\.venv\Scripts\python.exe tools\check_ascii.py` -> ASCII check OK
+- M8 Step 4:
+  - `.\.venv\Scripts\python.exe -m pytest -m m8` -> 20 passed, 142 deselected
+  - `.\.venv\Scripts\python.exe -m tax_graph.cli verify replay-examples --year 2025 --source yaml` -> 1 example, OK
+  - `.\.venv\Scripts\python.exe -m pytest -m "m4 or m8"` -> 49 passed, 113 deselected
+  - `.\.venv\Scripts\python.exe -m tax_graph.cli validate 2025` -> graph integrity OK; tables=2
+  - `.\.venv\Scripts\python.exe -m pytest` -> 157 passed, 5 skipped
   - `.\.venv\Scripts\python.exe tools\check_ascii.py` -> ASCII check OK
 - M6b Step 1:
   - `.\.venv\Scripts\python.exe -m pytest -m m6b` -> 7 passed, 124 deselected

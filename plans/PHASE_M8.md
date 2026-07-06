@@ -98,7 +98,7 @@ differ); 100% drill-catalog catch rate before bulk extraction.
   against the live graph and against draft batches at extraction time. Tests: live graph
   green; the swapped-SUBTRACT drill is caught HERE (attribution proof). Docs.
 
-- [ ] **Step 4 - IRS worked-example miner (the answer key).** Segment instruction/pub text
+- [DONE] **Step 4 - IRS worked-example miner (the answer key).** Segment instruction/pub text
   into "Example." blocks (deterministic segmentation; the blocks are already in the rendered
   pages). Micro-extract each block (existing outline-first micro pattern, narrow schema) into
   candidate `facts.yaml` + `expected.yaml` keyed to graph nodes; EXECUTE through the engine;

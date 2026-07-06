@@ -1,0 +1,10 @@
+# IRS worked example fixture mined from the 2025 Form 8949 instructions.
+facts: []
+tables:
+  - table_id: form_8949_2025_part_ii_line_1
+    rows:
+      - row_key: irs_example_001
+        columns:
+          d: 6000
+          e: 2000
+          g: 0

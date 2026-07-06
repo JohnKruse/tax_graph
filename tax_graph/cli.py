@@ -199,6 +199,82 @@ def drill_run_command(
     return 0 if report.ok else 1
 
 
+def verify_mine_examples_command(
+    *,
+    doc: str,
+    year: str = "2025",
+    root: str | Path | None = None,
+    output_dir: str | Path | None = None,
+    confirm: bool = False,
+    limit: int | None = None,
+    source: str | None = None,
+    client: object | None = None,
+) -> int:
+    """Mine IRS worked examples from rendered source text."""
+    from tax_graph.extract.llm_client import build_llm_client
+    from tax_graph.verify.examples import mine_examples
+
+    root_path = Path(root).resolve() if root is not None else project_root()
+    config = load_config(root=root_path)
+    llm_client = client or build_llm_client(config)
+    try:
+        report = mine_examples(
+            document_id=doc,
+            year=year,
+            root=root_path,
+            client=llm_client,
+            config=config,
+            output_dir=output_dir,
+            confirm=confirm,
+            limit=limit,
+            source=source,
+        )
+    except Exception as exc:
+        print(f"ERROR: {exc}")
+        return 1
+
+    print("=== IRS example mining ===")
+    print(f"  document: {doc}")
+    print(f"  examples: {len(report.examples)}")
+    print(f"  agreed: {report.agreed}")
+    print(f"  disagreed: {report.disagreed}")
+    print(f"  unmappable: {report.unmappable}")
+    for example in report.examples:
+        if example.output_dir:
+            print(f"  frozen: {example.output_dir}")
+        elif example.mismatches:
+            print(f"  - {example.block.example_id}: {example.status} ({'; '.join(example.mismatches)})")
+    return 0 if report.disagreed == 0 else 1
+
+
+def verify_replay_examples_command(
+    *,
+    year: str = "2025",
+    root: str | Path | None = None,
+    examples_dir: str | Path | None = None,
+    source: str | None = None,
+) -> int:
+    """Replay frozen IRS worked-example fixtures."""
+    from tax_graph.verify.examples import replay_irs_examples
+
+    root_path = Path(root).resolve() if root is not None else project_root()
+    try:
+        report = replay_irs_examples(year=year, root=root_path, examples_dir=examples_dir, source=source)
+    except Exception as exc:
+        print(f"ERROR: {exc}")
+        return 1
+
+    print("=== IRS example replay ===")
+    print(f"  examples: {report.example_count}")
+    if report.ok:
+        print("  result: OK")
+        return 0
+    print("  result: FAILED")
+    for issue in report.issues:
+        print(f"  - {issue.example_id} {issue.node_id}: got {issue.actual}, want {issue.expected}")
+    return 1
+
+
 def oracle_install_command(
     year: str = "2025",
     root: str | Path | None = None,
@@ -555,6 +631,45 @@ def _build_typer_app():
 
     cli.add_typer(drill_cli, name="drill")
 
+    verify_cli = typer.Typer(help="Extraction verification helpers.")
+
+    @verify_cli.command("mine-examples")
+    def verify_mine_examples_cli(
+        doc: str = typer.Option(..., "--doc", help="Manifest document id to mine."),
+        year: str = typer.Option("2025", "--year", "-y", help="Tax year to mine."),
+        output_dir: Path | None = typer.Option(None, "--output-dir", help="Directory for confirmed fixtures."),
+        confirm: bool = typer.Option(False, "--confirm", help="Freeze agreed examples after human confirmation."),
+        limit: int | None = typer.Option(None, "--limit", help="Maximum examples to mine."),
+        source: str | None = typer.Option(None, "--source", help="Graph source: sqlite or yaml. Defaults to auto."),
+        root: Path | None = typer.Option(None, "--root", help="Project root override."),
+    ) -> None:
+        """Mine worked examples from rendered IRS source text."""
+        raise_code = verify_mine_examples_command(
+            doc=doc,
+            year=year,
+            root=root,
+            output_dir=output_dir,
+            confirm=confirm,
+            limit=limit,
+            source=source,
+        )
+        if raise_code:
+            raise typer.Exit(raise_code)
+
+    @verify_cli.command("replay-examples")
+    def verify_replay_examples_cli(
+        year: str = typer.Option("2025", "--year", "-y", help="Tax year to replay."),
+        examples_dir: Path | None = typer.Option(None, "--examples-dir", help="Directory of frozen IRS example fixtures."),
+        source: str | None = typer.Option(None, "--source", help="Graph source: sqlite or yaml. Defaults to auto."),
+        root: Path | None = typer.Option(None, "--root", help="Project root override."),
+    ) -> None:
+        """Replay frozen IRS worked-example fixtures."""
+        raise_code = verify_replay_examples_command(year=year, root=root, examples_dir=examples_dir, source=source)
+        if raise_code:
+            raise typer.Exit(raise_code)
+
+    cli.add_typer(verify_cli, name="verify")
+
     oracle_cli = typer.Typer(help="Differential oracle helpers.")
 
     @oracle_cli.command("install")
@@ -687,6 +802,23 @@ def _fallback_app() -> int:
     drill_run_parser.add_argument("--catalog", default=None)
     drill_run_parser.add_argument("--root", default=None)
 
+    verify_parser = subparsers.add_parser("verify")
+    verify_subparsers = verify_parser.add_subparsers(dest="verify_command", required=True)
+    verify_mine_parser = verify_subparsers.add_parser("mine-examples")
+    verify_mine_parser.add_argument("--doc", required=True)
+    verify_mine_parser.add_argument("--year", "-y", default="2025")
+    verify_mine_parser.add_argument("--output-dir", default=None)
+    verify_mine_parser.add_argument("--confirm", action="store_true")
+    verify_mine_parser.add_argument("--limit", type=int, default=None)
+    verify_mine_parser.add_argument("--source", choices=["sqlite", "yaml"], default=None)
+    verify_mine_parser.add_argument("--root", default=None)
+
+    verify_replay_parser = verify_subparsers.add_parser("replay-examples")
+    verify_replay_parser.add_argument("--year", "-y", default="2025")
+    verify_replay_parser.add_argument("--examples-dir", default=None)
+    verify_replay_parser.add_argument("--source", choices=["sqlite", "yaml"], default=None)
+    verify_replay_parser.add_argument("--root", default=None)
+
     oracle_parser = subparsers.add_parser("oracle")
     oracle_subparsers = oracle_parser.add_subparsers(dest="oracle_command", required=True)
     oracle_install_parser = oracle_subparsers.add_parser("install")
@@ -748,6 +880,23 @@ def _fallback_app() -> int:
         return serve_command(year=args.year, root=args.root, source=args.source)
     if args.command == "drill" and args.drill_command == "run":
         return drill_run_command(year=args.year, root=args.root, catalog=args.catalog)
+    if args.command == "verify" and args.verify_command == "mine-examples":
+        return verify_mine_examples_command(
+            doc=args.doc,
+            year=args.year,
+            root=args.root,
+            output_dir=args.output_dir,
+            confirm=args.confirm,
+            limit=args.limit,
+            source=args.source,
+        )
+    if args.command == "verify" and args.verify_command == "replay-examples":
+        return verify_replay_examples_command(
+            year=args.year,
+            root=args.root,
+            examples_dir=args.examples_dir,
+            source=args.source,
+        )
     if args.command == "oracle" and args.oracle_command == "install":
         return oracle_install_command(year=args.year, root=args.root, archive=args.archive)
     if args.command == "oracle" and args.oracle_command == "fuzz":
