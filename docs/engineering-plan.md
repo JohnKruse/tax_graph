@@ -324,6 +324,30 @@ emits values + audit trace + Return Record.
   8949/Schedule D example executes to the IRS-published number; `tax-graph verify report`
   prints tier distribution + human-minutes + escape-rate lines.
 
+### M9 - Schedule D expansion + LINK + Verification Record
+- **Goal:** the first data-driven form expansion, chosen by M7's weighted worklist (every
+  frontier entry points at Schedule D, ~24M returns each). Full plan: `plans/PHASE_M9.md`
+  (canary Daisy Chain).
+- **Scope (summary):** acquire/render the Schedule D bundle (never rendered - only 8949 was);
+  extract it under the complete M8 net (first form with the ladder in place from day one;
+  first REAL human-minutes/escape data recorded in metrics); introduce the project's FIRST
+  `parameter` nodes (the $3000/$1500 capital-loss limit, line 21 - the "Parameters and
+  thresholds (decided)" policy goes live, with the no-magic-numbers flag enforced);
+  human-gated promotion replacing the hand-authored Schedule D slice; the long-deferred
+  **LINK step** realizes the 8949 outbound-flow declarations into real edges against the
+  promoted node index (PHASE_M4 pinned decision 6), flipping frontier entries
+  `declared -> modeled` and raising the coverage metric; the oracle harness widens
+  (short-term lots; losses past $3000 become IN-domain via line 21); and the user-facing
+  **Form Verification Record** ships (`VERIFICATION.md` + generated per-form pages + MCP
+  exposure - design pinned in `docs/extraction-verification.md` Section 10).
+- **Decisions set:** out-of-scope Schedule D branches (28%-rate and 1250 worksheets, tax
+  computation, carryover worksheet, passthrough lines) are explicit frontier entries with
+  `unresolved` engine traces - stated in the Verification Record, never guessed.
+- **Acceptance:** see PHASE_M9 exit criteria - promoted graph green with parity (2000/250)
+  unchanged; LINK edges realized; frontier coverage rises; >=100 widened-domain fuzz
+  scenarios agree with OTS; line 21 computes -3000/-1500 through cited parameter nodes;
+  committed byte-stable VERIFICATION.md; `pytest -m m9` green.
+
 ---
 
 ## Configuration - one-stop tuning
@@ -355,6 +379,7 @@ canary: **Ledger Llama**.
 | M6b Repeatable tables | Tandem Abacus | `pytest -m m6b` (multi-row totals + single-lot parity) |
 | M7 Frontier/Coverage | Compass Rose | `pytest -m m7` (frontier registry + SOI weights + coverage %) |
 | M8 Verification ladder | Skeptical Notary | `pytest -m m8` (drill catalog 100% caught + example fixtures execute) |
+| M9 Schedule D + LINK + Verification Record | Daisy Chain | `pytest -m m9` (promoted Sched D + realized LINK edges + coverage rise + committed VERIFICATION.md) |
 
 ## Working protocol (Architect / Worker)
 

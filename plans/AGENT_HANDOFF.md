@@ -224,7 +224,23 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
   never papered over; triage outcomes shown; plain-language tiers from the supported-branch
   bar; same data queryable over MCP). Generated from metrics/corpus/triage/drill/example
   data, no hand-authoring. Slots after M7; do NOT build during M7.
-- **Next: start M7 (Frontier registry + SOI-weighted coverage, canary Compass Rose).**
+- **Next: start M9 (Schedule D expansion + LINK + Verification Record, canary Daisy Chain).**
+  `plans/PHASE_M9.md` is written (2026-07-06); milestone block + gate row added to the
+  engineering plan. The Architect verified M7 closure first (12 passed on `-m m7`; full
+  pytest 180 passed / 5 skipped; `tax-graph frontier` reports ~42.4% filer-weighted coverage
+  with SOI provenance; worklist unanimous on Schedule D). Key pins: Schedule D artifacts
+  were NEVER rendered (only the 8949 bundle exists in `.cache/raw/2025/`) - Step 1 acquires
+  them (gated: network + Mistral OCR key); Step 2 records the FIRST real human-minutes in
+  metrics.yaml; Step 3 introduces the first `parameter` nodes (line 21 loss limit,
+  $3000/$1500 MFS, cited - no-magic-numbers flag enforced repo-wide + new
+  wrong_parameter_value drill); **Step 4 promotion is JOHN's gate**, then LINK resolves the
+  8949 declarations against the PROMOTED index only, frontier flips declared -> modeled and
+  coverage rises; Step 5 widens the oracle domain (short-term lots; losses past $3000 become
+  IN-domain; retire the old out-of-domain canary for a line 21 agreement test); Step 6 ships
+  the generated `VERIFICATION.md` + per-form pages + MCP exposure (byte-stable regeneration;
+  witness absences stated plainly). Deferred, do not build: tax liability/QDCGT, 1040 full
+  extraction, PolicyEngine, Coverage Map render, carryover computation.
+- **Superseded: start M7 direction (M7 is complete and archived).**
   `plans/PHASE_M7.md` is the only open plan (written 2026-07-05, two phases ahead of its
   turn - re-validate file/module references against the CURRENT repo at phase start; the
   codebase has since gained M5 records, M6 oracles, M6b tables, and M8 verify/drills).
