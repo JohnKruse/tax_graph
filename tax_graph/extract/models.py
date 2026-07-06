@@ -7,13 +7,14 @@ from pathlib import Path
 from typing import Any
 
 
-DRAFT_KINDS = ("nodes", "edges", "rules", "citations", "decisions")
+DRAFT_KINDS = ("nodes", "edges", "rules", "citations", "decisions", "tables")
 ID_FIELDS = {
     "nodes": "node_id",
     "edges": "edge_id",
     "rules": "rule_id",
     "citations": "citation_id",
     "decisions": "decision_id",
+    "tables": "table_id",
 }
 
 

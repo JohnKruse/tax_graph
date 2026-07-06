@@ -97,7 +97,7 @@ hand-authored single-lot 8949 slice with extracted, table-shaped structure.
     per-instance missing-input assertions confirmed in `tests/test_tables_engine_m6b.py`.
     Committed by the Architect, authored by Codex.
 
-- [ ] **Step 4 - Deterministic detector + column reconciler (extraction assembly).** In the
+- [DONE] **Step 4 - Deterministic detector + column reconciler (extraction assembly).** In the
   outline-first assembly: when (i) the field grid shows the same column x-clusters repeated
   across >= 2 y-row bands under one line anchor AND (ii) the outline carries the totals cue
   (`transaction_table` + `totals` kinds, e.g. "Add the amounts in columns (d), (e), (g), and
@@ -107,6 +107,11 @@ hand-authored single-lot 8949 slice with extracted, table-shaped structure.
   Tests (mocked/offline over the real cached 8949 artifacts): both Parts detected as one
   subunit each; a doctored cue (drops column (g)) -> flagged; a doctored grid (single row
   band) -> no trigger. Docs.
+  - Worker note: added deterministic table grouping in outline-first extraction. Draft `tables`
+    objects are emitted only when repeated AcroForm row geometry and the line-2 totals cue
+    reconcile; related row/total draft objects are flagged when the cue omits a resolved row
+    column. Node drafts in accepted subunits now carry `table_id`/`column`/`role` metadata for
+    row templates, row intermediates, and totals. No live graph promotion was performed.
 
 - [ ] **Step 5 - Promote Form 8949 (human-gated) + example reauthor.** Regenerate the 8949
   draft with table grouping; prepare the promotion diff: replace the hand-authored 8949 nodes

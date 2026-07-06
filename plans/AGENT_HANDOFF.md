@@ -129,6 +129,11 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
   single-lot parity line 7 = 2000 with citation trace. Next Codex session: Step 4 (deterministic
   detector + column reconciler in extraction assembly), then Step 5 (promotion - JOHN's gate),
   Step 6 (multi-lot oracle widening - needs the installed OTS / `OTS_1040_2025_BIN`).
+- **M6b Step 4 is done.** Added deterministic repeatable-table grouping to outline-first
+  extraction. `tables` is now a draft kind; table subunits are emitted only when repeated field-grid
+  row bands and the line-2 totals cue reconcile. A doctored totals cue that drops column (g) is
+  flagged for review with no guessed table, and a single-row grid does not trigger. No live graph
+  promotion happened. Next: Step 5 prepares the Form 8949 promotion diff and stops for JOHN's gate.
 
 ## Open for Architect
 - (none open - the M6 closeout question is ANSWERED: the live gate is NOT deferrable, and
@@ -271,13 +276,15 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
   - `.\.venv\Scripts\python.exe -m pytest -m m1` -> 6 passed, 126 deselected
   - `.\.venv\Scripts\python.exe -m pytest` -> 127 passed, 5 skipped
   - `.\.venv\Scripts\python.exe tools\check_ascii.py` -> ASCII check OK
-- M6b Step 3 WIP:
-  - `git diff --check` -> OK
-  - PowerShell ASCII scan over `plans`, `docs`, `config`, `schemas`, `graph`, `examples`,
-    `oracles`, `tests`, and `tax_graph` -> OK
-  - `.\.venv\Scripts\python.exe --version` inside sandbox -> access denied
-  - Escalated `.\.venv\Scripts\python.exe -m pytest -m m6b` request -> rejected by
-    approval/usage gate before execution; no pytest result yet
+- M6b Step 3:
+  - Architect verification: `.\.venv\Scripts\python.exe -m pytest -m m6b` -> 12 passed
+  - Architect verification: `.\.venv\Scripts\python.exe -m pytest` -> 131 passed, 5 skipped
+  - Architect verification: `.\.venv\Scripts\python.exe tools\check_ascii.py` -> ASCII check OK
+- M6b Step 4:
+  - `.\.venv\Scripts\python.exe -m pytest -m m6b` -> 16 passed, 124 deselected
+  - `.\.venv\Scripts\python.exe -m pytest -m m4` -> 29 passed, 111 deselected
+  - `.\.venv\Scripts\python.exe -m pytest` -> 135 passed, 5 skipped
+  - `.\.venv\Scripts\python.exe tools\check_ascii.py` -> ASCII check OK
 - M6 phase exit / live-gate closeout:
   - `.\.venv\Scripts\python.exe -m pytest -m m6` -> 23 passed, 2 skipped, 99 deselected
   - `.\.venv\Scripts\python.exe -m pytest -m oracle` with `OTS_1040_2025_BIN` set -> 2 passed,

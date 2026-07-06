@@ -147,6 +147,11 @@ under `tables` in taxpayer facts and keyed by `row_key`; traces address an
 instance as `<template_node>#<row_key>`. Live Form 8949 facts migrate to this
 shape after the M6b human promotion gate.
 
+Outline-first extraction now carries a deterministic repeatable-table detector:
+it emits a draft `tables` subunit only when repeated field-grid row bands and a
+totals cue agree on the summed columns. A mismatch is routed for human review
+instead of guessed.
+
 Distribution path: source installs can use the light runtime (`pip install
 tax-graph`) or the maintainer pipeline (`pip install tax-graph[build]`). A later
 single-file binary can bundle the runtime plus a prebuilt SQLite artifact so an

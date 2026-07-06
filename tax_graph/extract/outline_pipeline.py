@@ -18,6 +18,7 @@ from tax_graph.extract.outline import (
     build_outbound_flows,
     build_outline_tree,
 )
+from tax_graph.extract.tables import assemble_table_subunits
 
 
 def generate_outline_first_drafts(
@@ -45,6 +46,7 @@ def generate_outline_first_drafts(
         )
         batch = assemble_formula_plan(document, outline_node, plan, spans, model=str(model), root=root)
         objects.extend(batch.objects)
+    objects.extend(assemble_table_subunits(document, outline, objects, model="deterministic-table-detector"))
     objects.extend(_line_cue_objects(document, outline.children, spans, model=model))
 
     return ExtractionBatch(document_id=document.document_id, year=document.year, objects=_dedupe_objects(objects))
