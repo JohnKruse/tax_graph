@@ -8,14 +8,17 @@
 - Target node: form_1040_2025_line_7_capital_gain_loss
 
 ## Facts Ledger
-- Proceeds (Box 1d) (`form_1099b_2025_box_1d_proceeds`): 12000
-  - Source: document_label=Sample broker 1099-B (fake), extracted_by=manual
-  - Confidence: not recorded
-- Cost or other basis (Box 1e) (`form_1099b_2025_box_1e_cost_basis`): 10000
-  - Source: document_label=Sample broker 1099-B (fake), extracted_by=manual
-  - Confidence: not recorded
 - Schedule D, line 7 - Net short-term capital gain or (loss) (`schedule_d_2025_line_7_net_st`): 0
   - Source: extracted_by=manual
+  - Confidence: not recorded
+- Form 8949 Part II, line 1, column (d) - Proceeds (`form_8949_2025_part_ii_line_1_column_d#lot_1`): 12000
+  - Source: document_label=Sample broker 1099-B (fake), extracted_by=manual
+  - Confidence: not recorded
+- Form 8949 Part II, line 1, column (e) - Cost or other basis (`form_8949_2025_part_ii_line_1_column_e#lot_1`): 10000
+  - Source: document_label=Sample broker 1099-B (fake), extracted_by=manual
+  - Confidence: not recorded
+- Form 8949 Part II, line 1, column (g) - Adjustment amount (`form_8949_2025_part_ii_line_1_column_g#lot_1`): 0
+  - Source: document_label=Sample broker 1099-B (fake), extracted_by=manual
   - Confidence: not recorded
 
 ## Decision Log
@@ -40,12 +43,29 @@
 
 ## Trace Summary
 - Form 1040, line 7 - Capital gain or (loss) (`form_1040_2025_line_7_capital_gain_loss`): 2000 [computed] (operation=COPY; rule=copy_currency_value; citations=cite_schedule_d_16_to_1040_7)
-- Proceeds (Box 1d) (`form_1099b_2025_box_1d_proceeds`): 12000 [input]
-- Cost or other basis (Box 1e) (`form_1099b_2025_box_1e_cost_basis`): 10000 [input]
-- Form 8949 Part II, column (e) - Cost or other basis (`form_8949_2025_partii_cost`): 10000 [computed] (operation=COPY; rule=copy_currency_value)
-- Form 8949 Part II, column (h) - Gain or (loss) (`form_8949_2025_partii_gain_loss`): 2000 [computed] (operation=SUBTRACT; rule=subtract_currency; citations=cite_8949_col_h_gain)
-- Form 8949 Part II, column (d) - Proceeds (`form_8949_2025_partii_proceeds`): 12000 [computed] (operation=COPY; rule=copy_currency_value)
-- Form 8949 Part II, line 2 - Total gain or (loss) (`form_8949_2025_partii_total_gain_loss`): 2000 [computed] (operation=SUM; rule=sum_currency)
+- Form 8949 Part I, line 1, column (d) - Proceeds (`form_8949_2025_part_i_line_1_column_d`): blank [table_template]
+- Form 8949 Part I, line 1, column (d) minus column (e) (`form_8949_2025_part_i_line_1_column_d_minus_e`): blank [table_template]
+- Form 8949 Part I, line 1, column (e) - Cost or other basis (`form_8949_2025_part_i_line_1_column_e`): blank [table_template]
+- Form 8949 Part I, line 1, column (g) - Adjustment amount (`form_8949_2025_part_i_line_1_column_g`): blank [table_template]
+- Form 8949 Part I, line 1, column (h) - Gain or (loss) (`form_8949_2025_part_i_line_1_column_h`): blank [table_template]
+- Form 8949 Part I, line 2, column (d) total (`form_8949_2025_part_i_line_2_line_2_column_d_total`): 0 [table_total] (operation=SUM; citations=cite_8949_col_h_gain,cite_8949_line2_totals)
+- Form 8949 Part I, line 2, column (e) total (`form_8949_2025_part_i_line_2_line_2_column_e_total`): 0 [table_total] (operation=SUM; citations=cite_8949_col_h_gain,cite_8949_line2_totals)
+- Form 8949 Part I, line 2, column (g) total (`form_8949_2025_part_i_line_2_line_2_column_g_total`): 0 [table_total] (operation=SUM; citations=cite_8949_col_h_gain,cite_8949_line2_totals)
+- Form 8949 Part I, line 2, column (h) total (`form_8949_2025_part_i_line_2_line_2_column_h_total`): 0 [table_total] (operation=SUM; citations=cite_8949_col_h_gain,cite_8949_line2_totals)
+- Form 8949 Part II, line 1, column (d) - Proceeds (`form_8949_2025_part_ii_line_1_column_d`): blank [table_template]
+- Form 8949 Part II, line 1, column (d) - Proceeds#lot_1 (`form_8949_2025_part_ii_line_1_column_d#lot_1`): 12000 [table_input]
+- Form 8949 Part II, line 1, column (d) minus column (e) (`form_8949_2025_part_ii_line_1_column_d_minus_e`): blank [table_template]
+- Form 8949 Part II, line 1, column (d) minus column (e)#lot_1 (`form_8949_2025_part_ii_line_1_column_d_minus_e#lot_1`): 2000 [table_computed] (operation=SUBTRACT; rule=subtract_currency; citations=cite_8949_col_h_gain)
+- Form 8949 Part II, line 1, column (e) - Cost or other basis (`form_8949_2025_part_ii_line_1_column_e`): blank [table_template]
+- Form 8949 Part II, line 1, column (e) - Cost or other basis#lot_1 (`form_8949_2025_part_ii_line_1_column_e#lot_1`): 10000 [table_input]
+- Form 8949 Part II, line 1, column (g) - Adjustment amount (`form_8949_2025_part_ii_line_1_column_g`): blank [table_template]
+- Form 8949 Part II, line 1, column (g) - Adjustment amount#lot_1 (`form_8949_2025_part_ii_line_1_column_g#lot_1`): 0 [table_input]
+- Form 8949 Part II, line 1, column (h) - Gain or (loss) (`form_8949_2025_part_ii_line_1_column_h`): blank [table_template]
+- Form 8949 Part II, line 1, column (h) - Gain or (loss)#lot_1 (`form_8949_2025_part_ii_line_1_column_h#lot_1`): 2000 [table_computed] (operation=SUM; rule=sum_currency; citations=cite_8949_col_h_gain)
+- Form 8949 Part II, line 2, column (d) total (`form_8949_2025_part_ii_line_2_line_2_column_d_total`): 12000 [table_total] (operation=SUM; rule=sum_currency; citations=cite_8949_col_h_gain,cite_8949_line2_totals)
+- Form 8949 Part II, line 2, column (e) total (`form_8949_2025_part_ii_line_2_line_2_column_e_total`): 10000 [table_total] (operation=SUM; rule=sum_currency; citations=cite_8949_col_h_gain,cite_8949_line2_totals)
+- Form 8949 Part II, line 2, column (g) total (`form_8949_2025_part_ii_line_2_line_2_column_g_total`): 0 [table_total] (operation=SUM; rule=sum_currency; citations=cite_8949_col_h_gain,cite_8949_line2_totals)
+- Form 8949 Part II, line 2, column (h) total (`form_8949_2025_part_ii_line_2_line_2_column_h_total`): 2000 [table_total] (operation=SUM; rule=sum_currency; citations=cite_8949_col_h_gain,cite_8949_line2_totals)
 - Schedule D, line 15 - Net long-term capital gain or (loss) (`schedule_d_2025_line_15_net_lt`): 2000 [computed] (operation=SUM; rule=sum_currency)
 - Schedule D, line 16 - Total capital gain or (loss) (`schedule_d_2025_line_16_total`): 2000 [computed] (operation=SUM; rule=sum_currency)
 - Schedule D, line 7 - Net short-term capital gain or (loss) (`schedule_d_2025_line_7_net_st`): 0 [input]

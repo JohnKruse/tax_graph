@@ -134,6 +134,13 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
   row bands and the line-2 totals cue reconcile. A doctored totals cue that drops column (g) is
   flagged for review with no guessed table, and a single-row grid does not trigger. No live graph
   promotion happened. Next: Step 5 prepares the Form 8949 promotion diff and stops for JOHN's gate.
+- **M6b Step 5 is done.** John approved the human gate. Form 8949 Part I/II are now promoted into
+  live repeatable table subunits, Schedule D line 8b feeds from the promoted Part II column (h)
+  total, and `examples/capital_gains_basic/facts.yaml` is one long-term table row (`lot_1`) with no
+  scalar 1099-B compatibility path. The old M6 frozen corpus was mechanically migrated to one-row
+  table facts so replay stays green until Step 6 replaces it with multi-lot scenarios. Next: Step 6
+  widens the oracle harness to 1..15 lots with nonzero column (g), runs the live >=100 gate, and
+  freezes a multi-lot corpus batch.
 
 ## Open for Architect
 - (none open - the M6 closeout question is ANSWERED: the live gate is NOT deferrable, and
@@ -284,6 +291,15 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
   - `.\.venv\Scripts\python.exe -m pytest -m m6b` -> 16 passed, 124 deselected
   - `.\.venv\Scripts\python.exe -m pytest -m m4` -> 29 passed, 111 deselected
   - `.\.venv\Scripts\python.exe -m pytest` -> 135 passed, 5 skipped
+  - `.\.venv\Scripts\python.exe tools\check_ascii.py` -> ASCII check OK
+- M6b Step 5:
+  - `.\.venv\Scripts\python.exe -m tax_graph.cli validate 2025` -> graph integrity OK; tables=2
+  - `.\.venv\Scripts\python.exe -m tax_graph.cli build 2025` -> built SQLite graph with tables=2
+  - `.\.venv\Scripts\python.exe -m pytest -m m6b` -> 17 passed, 124 deselected
+  - `.\.venv\Scripts\python.exe -m pytest -m "m0 or m2 or m5 or m6"` -> 66 passed, 2 skipped, 73 deselected
+  - `.\.venv\Scripts\python.exe -m tax_graph.cli run --facts examples\capital_gains_basic\facts.yaml --source yaml --no-record` -> Form 1040 line 7 = 2000 with `#lot_1` SUBTRACT trace
+  - `.\.venv\Scripts\python.exe -m tax_graph.cli run --facts examples\capital_gains_basic\facts.yaml --source sqlite --no-record` -> Form 1040 line 7 = 2000 with `#lot_1` SUBTRACT trace
+  - `.\.venv\Scripts\python.exe -m pytest` -> 136 passed, 5 skipped
   - `.\.venv\Scripts\python.exe tools\check_ascii.py` -> ASCII check OK
 - M6 phase exit / live-gate closeout:
   - `.\.venv\Scripts\python.exe -m pytest -m m6` -> 23 passed, 2 skipped, 99 deselected

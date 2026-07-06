@@ -124,6 +124,7 @@ def _fake_agreeing_ots_runner(input_path: str | Path, *, executable: str | Path)
         labels={
             "F8949_2d": proceeds,
             "F8949_2e": cost,
+            "F8949_2g": _clean_number(row.get("Adjustment") or 0),
             "F8949_2h": gain,
             "D7": 0,
             "D8bh": gain,

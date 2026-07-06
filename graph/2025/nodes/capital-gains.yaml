@@ -1,51 +1,215 @@
-# Capital-gains MVP nodes: 1099-B -> Form 8949 -> Schedule D -> Form 1040 line 7
-# v0 supported path: long-term, single covered lot, no adjustments.
+# Capital-gains MVP nodes: Form 8949 repeatable table -> Schedule D -> Form 1040 line 7.
+# Supported path: long-term table rows, with short-term path explicitly supplied as zero.
 
-# --- Form 1099-B (source inputs) ---
-- node_id: form_1099b_2025_box_1d_proceeds
-  document_id: form_1099b_2025
-  label: Proceeds (Box 1d)
-  node_type: box
-  value_type: currency
-  required: required
-
-- node_id: form_1099b_2025_box_1e_cost_basis
-  document_id: form_1099b_2025
-  label: Cost or other basis (Box 1e)
-  node_type: box
-  value_type: currency
-  required: required
-
-# --- Form 8949 Part II (long-term) ---
-- node_id: form_8949_2025_partii_proceeds
+# --- Form 8949 Part I (short-term) repeatable table ---
+- node_id: form_8949_2025_part_i_line_1_column_d
   document_id: form_8949_2025
-  label: Form 8949 Part II, column (d) - Proceeds
+  label: Form 8949 Part I, line 1, column (d) - Proceeds
   node_type: form_line
   value_type: currency
-  required: conditional
+  required: required
+  table_id: form_8949_2025_part_i_line_1
+  column: d
+  role: row_template
 
-- node_id: form_8949_2025_partii_cost
+- node_id: form_8949_2025_part_i_line_1_column_e
   document_id: form_8949_2025
-  label: Form 8949 Part II, column (e) - Cost or other basis
+  label: Form 8949 Part I, line 1, column (e) - Cost or other basis
   node_type: form_line
   value_type: currency
-  required: conditional
+  required: required
+  table_id: form_8949_2025_part_i_line_1
+  column: e
+  role: row_template
 
-- node_id: form_8949_2025_partii_gain_loss
+- node_id: form_8949_2025_part_i_line_1_column_g
   document_id: form_8949_2025
-  label: Form 8949 Part II, column (h) - Gain or (loss)
+  label: Form 8949 Part I, line 1, column (g) - Adjustment amount
+  node_type: form_line
+  value_type: currency
+  required: optional
+  citation_refs:
+    - cite_8949_adjustment_codes
+  table_id: form_8949_2025_part_i_line_1
+  column: g
+  role: row_template
+
+- node_id: form_8949_2025_part_i_line_1_column_d_minus_e
+  document_id: form_8949_2025
+  label: Form 8949 Part I, line 1, column (d) minus column (e)
   node_type: computed
   value_type: currency
   required: optional
   citation_refs:
     - cite_8949_col_h_gain
+  table_id: form_8949_2025_part_i_line_1
+  column: d_minus_e
+  role: row_template
 
-- node_id: form_8949_2025_partii_total_gain_loss
+- node_id: form_8949_2025_part_i_line_1_column_h
   document_id: form_8949_2025
-  label: Form 8949 Part II, line 2 - Total gain or (loss)
+  label: Form 8949 Part I, line 1, column (h) - Gain or (loss)
   node_type: computed
   value_type: currency
   required: optional
+  citation_refs:
+    - cite_8949_col_h_gain
+  table_id: form_8949_2025_part_i_line_1
+  column: h
+  role: row_template
+
+- node_id: form_8949_2025_part_i_line_2_line_2_column_d_total
+  document_id: form_8949_2025
+  label: Form 8949 Part I, line 2, column (d) total
+  node_type: computed
+  value_type: currency
+  required: optional
+  citation_refs:
+    - cite_8949_line2_totals
+  table_id: form_8949_2025_part_i_line_1
+  column: d
+  role: total
+
+- node_id: form_8949_2025_part_i_line_2_line_2_column_e_total
+  document_id: form_8949_2025
+  label: Form 8949 Part I, line 2, column (e) total
+  node_type: computed
+  value_type: currency
+  required: optional
+  citation_refs:
+    - cite_8949_line2_totals
+  table_id: form_8949_2025_part_i_line_1
+  column: e
+  role: total
+
+- node_id: form_8949_2025_part_i_line_2_line_2_column_g_total
+  document_id: form_8949_2025
+  label: Form 8949 Part I, line 2, column (g) total
+  node_type: computed
+  value_type: currency
+  required: optional
+  citation_refs:
+    - cite_8949_line2_totals
+  table_id: form_8949_2025_part_i_line_1
+  column: g
+  role: total
+
+- node_id: form_8949_2025_part_i_line_2_line_2_column_h_total
+  document_id: form_8949_2025
+  label: Form 8949 Part I, line 2, column (h) total
+  node_type: computed
+  value_type: currency
+  required: optional
+  citation_refs:
+    - cite_8949_line2_totals
+  table_id: form_8949_2025_part_i_line_1
+  column: h
+  role: total
+
+# --- Form 8949 Part II (long-term) repeatable table ---
+- node_id: form_8949_2025_part_ii_line_1_column_d
+  document_id: form_8949_2025
+  label: Form 8949 Part II, line 1, column (d) - Proceeds
+  node_type: form_line
+  value_type: currency
+  required: required
+  table_id: form_8949_2025_part_ii_line_1
+  column: d
+  role: row_template
+
+- node_id: form_8949_2025_part_ii_line_1_column_e
+  document_id: form_8949_2025
+  label: Form 8949 Part II, line 1, column (e) - Cost or other basis
+  node_type: form_line
+  value_type: currency
+  required: required
+  table_id: form_8949_2025_part_ii_line_1
+  column: e
+  role: row_template
+
+- node_id: form_8949_2025_part_ii_line_1_column_g
+  document_id: form_8949_2025
+  label: Form 8949 Part II, line 1, column (g) - Adjustment amount
+  node_type: form_line
+  value_type: currency
+  required: optional
+  citation_refs:
+    - cite_8949_adjustment_codes
+  table_id: form_8949_2025_part_ii_line_1
+  column: g
+  role: row_template
+
+- node_id: form_8949_2025_part_ii_line_1_column_d_minus_e
+  document_id: form_8949_2025
+  label: Form 8949 Part II, line 1, column (d) minus column (e)
+  node_type: computed
+  value_type: currency
+  required: optional
+  citation_refs:
+    - cite_8949_col_h_gain
+  table_id: form_8949_2025_part_ii_line_1
+  column: d_minus_e
+  role: row_template
+
+- node_id: form_8949_2025_part_ii_line_1_column_h
+  document_id: form_8949_2025
+  label: Form 8949 Part II, line 1, column (h) - Gain or (loss)
+  node_type: computed
+  value_type: currency
+  required: optional
+  citation_refs:
+    - cite_8949_col_h_gain
+  table_id: form_8949_2025_part_ii_line_1
+  column: h
+  role: row_template
+
+- node_id: form_8949_2025_part_ii_line_2_line_2_column_d_total
+  document_id: form_8949_2025
+  label: Form 8949 Part II, line 2, column (d) total
+  node_type: computed
+  value_type: currency
+  required: optional
+  citation_refs:
+    - cite_8949_line2_totals
+  table_id: form_8949_2025_part_ii_line_1
+  column: d
+  role: total
+
+- node_id: form_8949_2025_part_ii_line_2_line_2_column_e_total
+  document_id: form_8949_2025
+  label: Form 8949 Part II, line 2, column (e) total
+  node_type: computed
+  value_type: currency
+  required: optional
+  citation_refs:
+    - cite_8949_line2_totals
+  table_id: form_8949_2025_part_ii_line_1
+  column: e
+  role: total
+
+- node_id: form_8949_2025_part_ii_line_2_line_2_column_g_total
+  document_id: form_8949_2025
+  label: Form 8949 Part II, line 2, column (g) total
+  node_type: computed
+  value_type: currency
+  required: optional
+  citation_refs:
+    - cite_8949_line2_totals
+  table_id: form_8949_2025_part_ii_line_1
+  column: g
+  role: total
+
+- node_id: form_8949_2025_part_ii_line_2_line_2_column_h_total
+  document_id: form_8949_2025
+  label: Form 8949 Part II, line 2, column (h) total
+  node_type: computed
+  value_type: currency
+  required: optional
+  citation_refs:
+    - cite_8949_line2_totals
+  table_id: form_8949_2025_part_ii_line_1
+  column: h
+  role: total
 
 # --- Schedule D ---
 - node_id: schedule_d_2025_line_8b_gain

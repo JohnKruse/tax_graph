@@ -98,6 +98,7 @@ class Engine:
             node_id
             for node_id, node in self.g.nodes.items()
             if node.get("required") == "required"
+            and node.get("role") != "row_template"
             and not self.g.incoming.get(node_id)
             and (node_id not in facts or facts[node_id] is None)
         ]

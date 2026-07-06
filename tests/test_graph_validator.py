@@ -54,7 +54,7 @@ def test_validator_catches_duplicate_ids(tmp_path):
     result = validate_graph("2025", root=root)
 
     assert not result.ok
-    assert any("duplicate node_id form_1099b_2025_box_1d_proceeds" in error for error in result.errors)
+    assert any("duplicate node_id form_8949_2025_part_i_line_1_column_d" in error for error in result.errors)
 
 
 @pytest.mark.m0
@@ -64,9 +64,9 @@ def test_validator_catches_dependency_cycles(tmp_path):
     edges = _read_yaml(edges_file)
     edges.append(
         {
-            "edge_id": "e_1040_7_back_to_1099b_1d",
+            "edge_id": "e_1040_7_back_to_sd_7",
             "source": "form_1040_2025_line_7_capital_gain_loss",
-            "target": "form_1099b_2025_box_1d_proceeds",
+            "target": "schedule_d_2025_line_7_net_st",
             "relationship": "FEEDS",
             "rule_id": "copy_currency_value",
         }

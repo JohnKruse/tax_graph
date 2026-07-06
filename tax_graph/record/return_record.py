@@ -398,6 +398,32 @@ def _build_facts(facts_document: dict[str, Any], graph: Graph) -> list[FactLedge
                 confidence=fact.get("confidence"),
             )
         )
+    table_entries = []
+    for table_fact in facts_document.get("tables", []) or []:
+        table = graph.tables.get(table_fact.get("table_id"), {})
+        columns = {
+            column.get("column_id"): column
+            for column in table.get("columns", [])
+            if column.get("kind") == "input"
+        }
+        for row in table_fact.get("rows", []) or []:
+            row_key = row.get("row_key", "")
+            row_columns = row.get("columns") or {}
+            for column_id, value in row_columns.items():
+                column = columns.get(column_id)
+                template_node = column.get("template_node") if column else None
+                base_node = graph.nodes.get(template_node or "", {})
+                node_id = f"{template_node}#{row_key}" if template_node else f"{table_fact.get('table_id')}.{column_id}#{row_key}"
+                table_entries.append(
+                    FactLedgerEntry(
+                        node_id=node_id,
+                        label=base_node.get("label", node_id),
+                        value=value,
+                        source=dict(row.get("source", {})),
+                        confidence=row.get("confidence"),
+                    )
+                )
+    facts.extend(sorted(table_entries, key=lambda item: item.node_id))
     return facts
 
 

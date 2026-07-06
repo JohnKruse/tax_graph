@@ -6,7 +6,7 @@ from pathlib import Path
 import pytest
 
 from tax_graph.cli import run_command
-from tax_graph.engine import Engine, Graph, load_facts, load_facts_document
+from tax_graph.engine import TABLE_FACTS_KEY, Engine, Graph, load_facts, load_facts_document
 from tax_graph.io.loader import load_yaml
 from tax_graph.mcp import build_mcp_server
 from tax_graph.record import (
@@ -38,8 +38,12 @@ def test_return_record_builder_is_deterministic_and_complete():
         "tax_graph_version": "test-version",
         "target_node": TARGET,
     }
-    assert payload["facts"][0]["node_id"] == "form_1099b_2025_box_1d_proceeds"
-    assert payload["facts"][0]["source"]["document_label"] == "Sample broker 1099-B (fake)"
+    fact_ids = {fact["node_id"] for fact in payload["facts"]}
+    assert "form_8949_2025_part_ii_line_1_column_d#lot_1" in fact_ids
+    proceeds_fact = next(
+        fact for fact in payload["facts"] if fact["node_id"] == "form_8949_2025_part_ii_line_1_column_d#lot_1"
+    )
+    assert proceeds_fact["source"]["document_label"] == "Sample broker 1099-B (fake)"
     assert payload["decisions"][0]["chosen_option_id"] == "none"
     assert payload["decisions"][0]["citations"][0]["citation_id"] == "cite_8949_adjustment_codes"
     assert payload["outputs"] == [
@@ -98,12 +102,8 @@ def test_gain_scenario_emits_empty_valid_carryforward_block():
 def test_loss_scenario_emits_non_ingestible_raw_capital_loss():
     graph = Graph("2025", root=ROOT, source="yaml")
     facts_document = load_facts_document(FACTS_PATH)
-    for fact in facts_document["facts"]:
-        if fact["node_id"] == "form_1099b_2025_box_1d_proceeds":
-            fact["value"] = 10000
-        if fact["node_id"] == "form_1099b_2025_box_1e_cost_basis":
-            fact["value"] = 12000
-    fact_values = {fact["node_id"]: fact["value"] for fact in facts_document["facts"]}
+    _set_first_lot(facts_document, proceeds=10000, cost=12000)
+    fact_values = _fact_values(facts_document)
     result = Engine(graph).execute(fact_values)
 
     record = build_return_record(
@@ -353,12 +353,8 @@ def _call_tool(server, name: str, arguments: dict):
 def _capital_loss_record():
     graph = Graph("2025", root=ROOT, source="yaml")
     facts_document = load_facts_document(FACTS_PATH)
-    for fact in facts_document["facts"]:
-        if fact["node_id"] == "form_1099b_2025_box_1d_proceeds":
-            fact["value"] = 10000
-        if fact["node_id"] == "form_1099b_2025_box_1e_cost_basis":
-            fact["value"] = 12000
-    fact_values = {fact["node_id"]: fact["value"] for fact in facts_document["facts"]}
+    _set_first_lot(facts_document, proceeds=10000, cost=12000)
+    fact_values = _fact_values(facts_document)
     result = Engine(graph).execute(fact_values)
     return build_return_record(
         facts_document=facts_document,
@@ -384,3 +380,16 @@ def _capital_loss_record():
             },
             graph,
         )
+
+
+def _set_first_lot(facts_document: dict, *, proceeds: int, cost: int) -> None:
+    columns = facts_document["tables"][0]["rows"][0]["columns"]
+    columns["d"] = proceeds
+    columns["e"] = cost
+
+
+def _fact_values(facts_document: dict) -> dict:
+    values = {fact["node_id"]: fact["value"] for fact in facts_document["facts"]}
+    if facts_document.get("tables"):
+        values[TABLE_FACTS_KEY] = facts_document["tables"]
+    return values

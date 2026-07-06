@@ -1,49 +1,82 @@
-# Capital-gains MVP edges. A computed node's value is produced by all edges
-# that target it sharing a rule_id; 'role' gives operand position where order matters.
+# Capital-gains MVP edges. Row-template edges execute once per runtime table row.
 
-# 1099-B -> Form 8949 (copy the reported figures)
-- edge_id: e_1099b_1d_to_8949_proceeds
-  source: form_1099b_2025_box_1d_proceeds
-  target: form_8949_2025_partii_proceeds
-  relationship: FEEDS
-  rule_id: copy_currency_value
-
-- edge_id: e_1099b_1e_to_8949_cost
-  source: form_1099b_2025_box_1e_cost_basis
-  target: form_8949_2025_partii_cost
-  relationship: FEEDS
-  rule_id: copy_currency_value
-
-# Form 8949 column (h): gain = proceeds (d) - cost (e)
-- edge_id: e_8949_proceeds_to_gain
-  source: form_8949_2025_partii_proceeds
-  target: form_8949_2025_partii_gain_loss
+# Form 8949 Part I column (h): gain = proceeds (d) - cost (e) + adjustment (g)
+- edge_id: e_8949_part_i_d_to_d_minus_e
+  source: form_8949_2025_part_i_line_1_column_d
+  target: form_8949_2025_part_i_line_1_column_d_minus_e
   relationship: CALCULATES
   rule_id: subtract_currency
   role: minuend
   citation_refs:
     - cite_8949_col_h_gain
 
-- edge_id: e_8949_cost_to_gain
-  source: form_8949_2025_partii_cost
-  target: form_8949_2025_partii_gain_loss
+- edge_id: e_8949_part_i_e_to_d_minus_e
+  source: form_8949_2025_part_i_line_1_column_e
+  target: form_8949_2025_part_i_line_1_column_d_minus_e
   relationship: CALCULATES
   rule_id: subtract_currency
   role: subtrahend
   citation_refs:
     - cite_8949_col_h_gain
 
-# Form 8949 line 2 total (single lot here, but modeled as a SUM)
-- edge_id: e_8949_gain_to_total
-  source: form_8949_2025_partii_gain_loss
-  target: form_8949_2025_partii_total_gain_loss
+- edge_id: e_8949_part_i_d_minus_e_to_h
+  source: form_8949_2025_part_i_line_1_column_d_minus_e
+  target: form_8949_2025_part_i_line_1_column_h
   relationship: CALCULATES
   rule_id: sum_currency
   role: addend
+  citation_refs:
+    - cite_8949_col_h_gain
 
-# Form 8949 totals -> Schedule D line 8b
+- edge_id: e_8949_part_i_g_to_h
+  source: form_8949_2025_part_i_line_1_column_g
+  target: form_8949_2025_part_i_line_1_column_h
+  relationship: CALCULATES
+  rule_id: sum_currency
+  role: addend
+  citation_refs:
+    - cite_8949_col_h_gain
+
+# Form 8949 Part II column (h): gain = proceeds (d) - cost (e) + adjustment (g)
+- edge_id: e_8949_part_ii_d_to_d_minus_e
+  source: form_8949_2025_part_ii_line_1_column_d
+  target: form_8949_2025_part_ii_line_1_column_d_minus_e
+  relationship: CALCULATES
+  rule_id: subtract_currency
+  role: minuend
+  citation_refs:
+    - cite_8949_col_h_gain
+
+- edge_id: e_8949_part_ii_e_to_d_minus_e
+  source: form_8949_2025_part_ii_line_1_column_e
+  target: form_8949_2025_part_ii_line_1_column_d_minus_e
+  relationship: CALCULATES
+  rule_id: subtract_currency
+  role: subtrahend
+  citation_refs:
+    - cite_8949_col_h_gain
+
+- edge_id: e_8949_part_ii_d_minus_e_to_h
+  source: form_8949_2025_part_ii_line_1_column_d_minus_e
+  target: form_8949_2025_part_ii_line_1_column_h
+  relationship: CALCULATES
+  rule_id: sum_currency
+  role: addend
+  citation_refs:
+    - cite_8949_col_h_gain
+
+- edge_id: e_8949_part_ii_g_to_h
+  source: form_8949_2025_part_ii_line_1_column_g
+  target: form_8949_2025_part_ii_line_1_column_h
+  relationship: CALCULATES
+  rule_id: sum_currency
+  role: addend
+  citation_refs:
+    - cite_8949_col_h_gain
+
+# Form 8949 Part II totals -> Schedule D line 8b
 - edge_id: e_8949_total_to_sd_8b
-  source: form_8949_2025_partii_total_gain_loss
+  source: form_8949_2025_part_ii_line_2_line_2_column_h_total
   target: schedule_d_2025_line_8b_gain
   relationship: FEEDS
   rule_id: copy_currency_value

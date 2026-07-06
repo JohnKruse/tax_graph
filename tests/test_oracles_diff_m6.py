@@ -4,7 +4,7 @@ from pathlib import Path
 
 import pytest
 
-from tax_graph.engine import Engine, Graph, load_facts
+from tax_graph.engine import TABLE_FACTS_KEY, Engine, Graph
 from tax_graph.oracles.box_map import load_box_map
 from tax_graph.oracles.diff import diff_engine_result
 from tax_graph.oracles.ots import parse_ots_output
@@ -88,7 +88,7 @@ def test_diff_catches_swapped_8949_subtract_roles_at_8949_box():
 
     disagreement_nodes = {item.node_id for item in report.disagreements}
     assert report.status == "disagreed"
-    assert "form_8949_2025_partii_total_gain_loss" in disagreement_nodes
+    assert "form_8949_2025_part_ii_line_2_line_2_column_h_total" in disagreement_nodes
     assert "form_1040_2025_line_7_capital_gain_loss" in disagreement_nodes
     assert report.disagreements[0].scenario["scenario_id"] == scenario.scenario_id
 
@@ -109,11 +109,13 @@ def test_diff_detects_loss_beyond_3000_limit_as_unmodeled_semantics():
 
 def load_facts_from_scenario(scenario: CapitalGainScenario):
     document = render_tax_graph_facts_document(scenario)
-    return {fact["node_id"]: fact["value"] for fact in document["facts"]}
+    facts = {fact["node_id"]: fact["value"] for fact in document["facts"]}
+    facts[TABLE_FACTS_KEY] = document["tables"]
+    return facts
 
 
 def _swap_8949_subtract_roles(graph: Graph) -> None:
-    for edge in graph.incoming["form_8949_2025_partii_gain_loss"]:
+    for edge in graph.incoming["form_8949_2025_part_ii_line_1_column_d_minus_e"]:
         if edge["role"] == "minuend":
             edge["role"] = "subtrahend"
         elif edge["role"] == "subtrahend":

@@ -14,12 +14,12 @@ from tax_graph.validate import validate_graph
 
 
 ROOT = Path(__file__).resolve().parents[1]
-TABLE_ID = "form_8949_2025_partii_line_1"
+TABLE_ID = "form_8949_2025_part_ii_line_1"
 TARGET = "form_1040_2025_line_7_capital_gain_loss"
-GAIN_NODE = "form_8949_2025_partii_gain_loss"
-TOTAL_NODE = "form_8949_2025_partii_total_gain_loss"
-ADJUSTMENT_NODE = "form_8949_2025_partii_adjustment"
-INTERMEDIATE_NODE = "form_8949_2025_partii_gain_loss_before_adjustment"
+GAIN_NODE = "form_8949_2025_part_ii_line_1_column_h"
+TOTAL_NODE = "form_8949_2025_part_ii_line_2_line_2_column_h_total"
+ADJUSTMENT_NODE = "form_8949_2025_part_ii_line_1_column_g"
+INTERMEDIATE_NODE = "form_8949_2025_part_ii_line_1_column_d_minus_e"
 
 
 def _copy_graph_project(tmp_path: Path) -> Path:
@@ -38,104 +38,7 @@ def _write_yaml(path: Path, value) -> None:
 
 
 def _install_table_graph(root: Path) -> None:
-    nodes_file = root / "graph" / "2025" / "nodes" / "capital-gains.yaml"
-    nodes = _read_yaml(nodes_file)
-    marks = {
-        "form_8949_2025_partii_proceeds": ("d", "row_template", "required"),
-        "form_8949_2025_partii_cost": ("e", "row_template", "required"),
-        GAIN_NODE: ("h", "row_template", "optional"),
-        TOTAL_NODE: ("h", "total", "optional"),
-    }
-    nodes_by_id = {node["node_id"]: node for node in nodes}
-    for node in nodes:
-        if node["node_id"] in marks:
-            column, role, required = marks[node["node_id"]]
-            node["table_id"] = TABLE_ID
-            node["column"] = column
-            node["role"] = role
-            node["required"] = required
-    for node in [
-        {
-            "node_id": ADJUSTMENT_NODE,
-            "document_id": "form_8949_2025",
-            "label": "Form 8949 Part II, column (g) - Adjustment",
-            "node_type": "form_line",
-            "value_type": "currency",
-            "required": "optional",
-            "table_id": TABLE_ID,
-            "column": "g",
-            "role": "row_template",
-        },
-        {
-            "node_id": INTERMEDIATE_NODE,
-            "document_id": "form_8949_2025",
-            "label": "Form 8949 Part II, column (h) before adjustment",
-            "node_type": "computed",
-            "value_type": "currency",
-            "required": "optional",
-            "table_id": TABLE_ID,
-            "column": "h_intermediate",
-            "role": "row_template",
-        },
-    ]:
-        if node["node_id"] in nodes_by_id:
-            nodes_by_id[node["node_id"]].update(node)
-        else:
-            nodes.append(node)
-    _write_yaml(nodes_file, nodes)
-
-    edges_file = root / "graph" / "2025" / "edges" / "capital-gains.yaml"
-    edges = _read_yaml(edges_file)
-    for edge in edges:
-        if edge["edge_id"] in {"e_8949_proceeds_to_gain", "e_8949_cost_to_gain"}:
-            edge["target"] = INTERMEDIATE_NODE
-    edges_by_id = {edge["edge_id"]: edge for edge in edges}
-    for edge in [
-        {
-            "edge_id": "e_8949_gain_base_to_gain",
-            "source": INTERMEDIATE_NODE,
-            "target": GAIN_NODE,
-            "relationship": "CALCULATES",
-            "rule_id": "sum_currency",
-            "role": "addend",
-            "citation_refs": ["cite_8949_col_h_gain"],
-        },
-        {
-            "edge_id": "e_8949_adjustment_to_gain",
-            "source": ADJUSTMENT_NODE,
-            "target": GAIN_NODE,
-            "relationship": "CALCULATES",
-            "rule_id": "sum_currency",
-            "role": "addend",
-            "citation_refs": ["cite_8949_col_h_gain"],
-        },
-    ]:
-        if edge["edge_id"] in edges_by_id:
-            edges_by_id[edge["edge_id"]].update(edge)
-        else:
-            edges.append(edge)
-    _write_yaml(edges_file, edges)
-
-    tables_dir = root / "graph" / "2025" / "tables"
-    tables_dir.mkdir(exist_ok=True)
-    _write_yaml(
-        tables_dir / "form-8949.yaml",
-        [
-            {
-                "table_id": TABLE_ID,
-                "document_id": "form_8949_2025",
-                "line_anchor": "Form 8949 Part II line 1",
-                "columns": [
-                    {"column_id": "d", "label": "Proceeds", "kind": "input", "template_node": "form_8949_2025_partii_proceeds"},
-                    {"column_id": "e", "label": "Cost or other basis", "kind": "input", "template_node": "form_8949_2025_partii_cost"},
-                    {"column_id": "g", "label": "Adjustment", "kind": "input", "template_node": ADJUSTMENT_NODE},
-                    {"column_id": "h", "label": "Gain or loss", "kind": "computed", "template_node": GAIN_NODE},
-                ],
-                "totals": [{"column_id": "h", "total_node": TOTAL_NODE}],
-                "citation_refs": ["cite_8949_col_h_gain"],
-            }
-        ],
-    )
+    return None
 
 
 def _facts_document(rows: list[dict[str, Any]]) -> dict[str, Any]:
@@ -143,8 +46,6 @@ def _facts_document(rows: list[dict[str, Any]]) -> dict[str, Any]:
         "tax_year": 2025,
         "filing_status": "single",
         "facts": [
-            {"node_id": "form_1099b_2025_box_1d_proceeds", "value": 0},
-            {"node_id": "form_1099b_2025_box_1e_cost_basis", "value": 0},
             {"node_id": "schedule_d_2025_line_7_net_st", "value": 0},
         ],
         "tables": [{"table_id": TABLE_ID, "rows": rows}],
@@ -204,7 +105,7 @@ def test_engine_reports_missing_required_table_input_per_instance(tmp_path):
 
     result = Engine(graph).execute(facts)
 
-    missing_id = "form_8949_2025_partii_proceeds#lot_missing"
+    missing_id = "form_8949_2025_part_ii_line_1_column_d#lot_missing"
     assert result.values[missing_id] is MISSING
     assert result.values[TOTAL_NODE] is MISSING
     assert result.values[TARGET] is MISSING

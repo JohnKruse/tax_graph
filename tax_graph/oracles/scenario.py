@@ -46,24 +46,29 @@ def render_tax_graph_facts_document(scenario: CapitalGainScenario) -> dict[str, 
         "scenario_id": scenario.scenario_id,
         "facts": [
             {
-                "node_id": "form_1099b_2025_box_1d_proceeds",
-                "value": _clean_number(scenario.proceeds),
-                "source": _source(scenario),
-            },
-            {
-                "node_id": "form_1099b_2025_box_1e_cost_basis",
-                "value": _clean_number(scenario.cost),
-                "source": _source(scenario),
-            },
-            {
                 "node_id": "schedule_d_2025_line_7_net_st",
                 "value": 0,
                 "source": {
                     "document_label": f"Generated scenario {scenario.scenario_id}",
                     "extracted_by": "m6_scenario_renderer",
-                    "note": "Short-term path fenced inert for M6 single-lot long-term scenarios.",
                 },
             },
+        ],
+        "tables": [
+            {
+                "table_id": "form_8949_2025_part_ii_line_1",
+                "rows": [
+                    {
+                        "row_key": "lot_1",
+                        "columns": {
+                            "d": _clean_number(scenario.proceeds),
+                            "e": _clean_number(scenario.cost),
+                            "g": _clean_number(scenario.adjustment),
+                        },
+                        "source": _source(scenario),
+                    }
+                ],
+            }
         ],
     }
 

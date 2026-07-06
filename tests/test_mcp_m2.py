@@ -60,10 +60,10 @@ def test_read_only_tools_return_graph_objects_and_instance_addresses():
     server = build_mcp_server(year="2025", root=ROOT, source="yaml")
 
     document = _call_tool(server, "get_document", {"document_id": "form_8949_2025"})
-    node = _call_tool(server, "get_node", {"node_id": "form_8949_2025_partii_gain_loss#broker_1"})
+    node = _call_tool(server, "get_node", {"node_id": "form_8949_2025_part_ii_line_1_column_h#broker_1"})
 
     assert document["document"]["title"] == "Form 8949"
-    assert node["base_node_id"] == "form_8949_2025_partii_gain_loss"
+    assert node["base_node_id"] == "form_8949_2025_part_ii_line_1_column_h"
     assert node["row_key"] == "broker_1"
     assert node["found"] is True
     assert "Runtime row instances" in node["instance_note"]
@@ -77,7 +77,7 @@ def test_read_only_dependency_tools_walk_capital_gains_slice():
     downstream = _call_tool(
         server,
         "get_downstream_effects",
-        {"node_id": "form_8949_2025_partii_total_gain_loss"},
+        {"node_id": "form_8949_2025_part_ii_line_2_line_2_column_h_total"},
     )
 
     assert {edge["source"] for edge in dependencies["dependencies"]} == {
@@ -132,22 +132,18 @@ def test_execute_tax_tree_returns_values_and_trace():
 
     assert result["values"]["form_1040_2025_line_7_capital_gain_loss"] == 2000
     assert result["missing_required_inputs"] == []
-    assert result["trace"]["form_8949_2025_partii_gain_loss"]["operation"] == "SUBTRACT"
+    assert result["trace"]["form_8949_2025_part_ii_line_1_column_d_minus_e#lot_1"]["operation"] == "SUBTRACT"
 
 
 @pytest.mark.m2
 def test_list_required_inputs_reports_missing_leaf():
     server = build_mcp_server(year="2025", root=ROOT, source="yaml")
     facts = load_yaml(FACTS_PATH)
-    facts["facts"] = [
-        fact
-        for fact in facts["facts"]
-        if fact["node_id"] != "form_1099b_2025_box_1e_cost_basis"
-    ]
+    facts["tables"][0]["rows"][0]["columns"].pop("e")
 
     result = _call_tool(server, "list_required_inputs", {"facts": facts})
 
-    assert result["missing_required_inputs"] == ["form_1099b_2025_box_1e_cost_basis"]
+    assert result["missing_required_inputs"] == ["form_8949_2025_part_ii_line_1_column_e#lot_1"]
 
 
 @pytest.mark.m2
@@ -158,7 +154,7 @@ def test_explain_calculation_returns_rule_operands_and_citations():
     result = _call_tool(
         server,
         "explain_calculation",
-        {"node_id": "form_8949_2025_partii_gain_loss", "facts": facts},
+        {"node_id": "form_8949_2025_part_ii_line_1_column_d_minus_e#lot_1", "facts": facts},
     )
 
     assert result["trace"]["operation"] == "SUBTRACT"

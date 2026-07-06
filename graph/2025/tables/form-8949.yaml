@@ -1,0 +1,67 @@
+- table_id: form_8949_2025_part_i_line_1
+  document_id: form_8949_2025
+  line_anchor: Form 8949 Part I line 1
+  columns:
+    - column_id: d
+      label: Proceeds
+      kind: input
+      template_node: form_8949_2025_part_i_line_1_column_d
+    - column_id: e
+      label: Cost or other basis
+      kind: input
+      template_node: form_8949_2025_part_i_line_1_column_e
+    - column_id: g
+      label: Adjustment amount
+      kind: input
+      template_node: form_8949_2025_part_i_line_1_column_g
+    - column_id: h
+      label: Gain or loss
+      kind: computed
+      template_node: form_8949_2025_part_i_line_1_column_h
+  totals:
+    - column_id: d
+      total_node: form_8949_2025_part_i_line_2_line_2_column_d_total
+    - column_id: e
+      total_node: form_8949_2025_part_i_line_2_line_2_column_e_total
+    - column_id: g
+      total_node: form_8949_2025_part_i_line_2_line_2_column_g_total
+    - column_id: h
+      total_node: form_8949_2025_part_i_line_2_line_2_column_h_total
+  citation_refs:
+    - cite_8949_col_h_gain
+    - cite_8949_line2_totals
+  description: Repeatable table promoted from the 2025 Form 8949 draft after deterministic row-grid and totals-cue reconciliation.
+
+- table_id: form_8949_2025_part_ii_line_1
+  document_id: form_8949_2025
+  line_anchor: Form 8949 Part II line 1
+  columns:
+    - column_id: d
+      label: Proceeds
+      kind: input
+      template_node: form_8949_2025_part_ii_line_1_column_d
+    - column_id: e
+      label: Cost or other basis
+      kind: input
+      template_node: form_8949_2025_part_ii_line_1_column_e
+    - column_id: g
+      label: Adjustment amount
+      kind: input
+      template_node: form_8949_2025_part_ii_line_1_column_g
+    - column_id: h
+      label: Gain or loss
+      kind: computed
+      template_node: form_8949_2025_part_ii_line_1_column_h
+  totals:
+    - column_id: d
+      total_node: form_8949_2025_part_ii_line_2_line_2_column_d_total
+    - column_id: e
+      total_node: form_8949_2025_part_ii_line_2_line_2_column_e_total
+    - column_id: g
+      total_node: form_8949_2025_part_ii_line_2_line_2_column_g_total
+    - column_id: h
+      total_node: form_8949_2025_part_ii_line_2_line_2_column_h_total
+  citation_refs:
+    - cite_8949_col_h_gain
+    - cite_8949_line2_totals
+  description: Repeatable table promoted from the 2025 Form 8949 draft after deterministic row-grid and totals-cue reconciliation.

@@ -10,7 +10,7 @@ from typing import Any, Callable
 import yaml
 
 from tax_graph.config import get_config_value
-from tax_graph.engine import MISSING, Engine, Graph
+from tax_graph.engine import MISSING, TABLE_FACTS_KEY, Engine, Graph
 from tax_graph.oracles.box_map import load_box_map
 from tax_graph.oracles.diff import OracleDiffReport, diff_engine_result
 from tax_graph.oracles.domain import assert_scenario_in_domain, generate_scenarios, load_domain_profile
@@ -121,7 +121,10 @@ def resolve_ots_executable(config: dict[str, Any], *, root: str | Path, year: st
 
 def _facts_from_scenario(scenario: CapitalGainScenario) -> dict[str, Any]:
     document = render_tax_graph_facts_document(scenario)
-    return {fact["node_id"]: fact["value"] for fact in document["facts"]}
+    facts = {fact["node_id"]: fact["value"] for fact in document["facts"]}
+    if document.get("tables"):
+        facts[TABLE_FACTS_KEY] = document["tables"]
+    return facts
 
 
 def _triage_entry(scenario: CapitalGainScenario, report: OracleDiffReport) -> dict[str, Any]:

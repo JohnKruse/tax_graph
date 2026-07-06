@@ -2,8 +2,11 @@
 # This example-driven pattern (facts.yaml + expected.yaml) is the seed of the
 # IRS Example Regression Suite (requirements doc Section 10.4).
 expected:
-  form_8949_2025_partii_gain_loss: 2000
-  form_8949_2025_partii_total_gain_loss: 2000
+  form_8949_2025_part_ii_line_1_column_h#lot_1: 2000
+  form_8949_2025_part_ii_line_2_line_2_column_d_total: 12000
+  form_8949_2025_part_ii_line_2_line_2_column_e_total: 10000
+  form_8949_2025_part_ii_line_2_line_2_column_g_total: 0
+  form_8949_2025_part_ii_line_2_line_2_column_h_total: 2000
   schedule_d_2025_line_15_net_lt: 2000
   schedule_d_2025_line_16_total: 2000
   form_1040_2025_line_7_capital_gain_loss: 2000

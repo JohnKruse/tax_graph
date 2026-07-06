@@ -8,7 +8,7 @@ from typing import Any, Callable, Mapping
 
 import yaml
 
-from tax_graph.engine import Engine, Graph, load_facts
+from tax_graph.engine import TABLE_FACTS_KEY, Engine, Graph, load_facts
 from tax_graph.oracles.box_map import load_box_map
 from tax_graph.oracles.diff import OracleDiffReport, diff_engine_result
 from tax_graph.oracles.domain import assert_scenario_in_domain, generate_scenarios, load_domain_profile
@@ -280,7 +280,10 @@ def candidate_to_dict(candidate: FreezeCandidate) -> dict[str, Any]:
 
 def _facts_from_scenario(scenario: CapitalGainScenario) -> dict[str, Any]:
     document = render_tax_graph_facts_document(scenario)
-    return {fact["node_id"]: fact["value"] for fact in document["facts"]}
+    facts = {fact["node_id"]: fact["value"] for fact in document["facts"]}
+    if document.get("tables"):
+        facts[TABLE_FACTS_KEY] = document["tables"]
+    return facts
 
 
 def _resolve_template_path(

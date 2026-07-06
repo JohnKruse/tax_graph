@@ -1,7 +1,8 @@
 expected:
-  form_8949_2025_partii_proceeds: 6131
-  form_8949_2025_partii_cost: 8756
-  form_8949_2025_partii_total_gain_loss: -2625
+  form_8949_2025_part_ii_line_2_line_2_column_d_total: 6131
+  form_8949_2025_part_ii_line_2_line_2_column_e_total: 8756
+  form_8949_2025_part_ii_line_2_line_2_column_g_total: 0
+  form_8949_2025_part_ii_line_2_line_2_column_h_total: -2625
   schedule_d_2025_line_7_net_st: 0
   schedule_d_2025_line_8b_gain: -2625
   schedule_d_2025_line_15_net_lt: -2625

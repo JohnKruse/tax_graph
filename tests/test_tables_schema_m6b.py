@@ -11,7 +11,8 @@ from tax_graph.validate import validate_graph, validate_taxpayer_facts_document
 
 
 ROOT = Path(__file__).resolve().parents[1]
-TABLE_ID = "form_8949_2025_partii_line_1"
+TABLE_ID = "form_8949_2025_part_ii_line_1"
+COST_NODE = "form_8949_2025_part_ii_line_1_column_e"
 
 
 def _copy_graph_root(tmp_path: Path) -> Path:
@@ -29,61 +30,12 @@ def _write_yaml(path: Path, value) -> None:
     path.write_text(yaml.safe_dump(value, sort_keys=False), encoding="utf-8")
 
 
-def _install_valid_table(root: Path) -> None:
-    nodes_file = root / "graph" / "2025" / "nodes" / "capital-gains.yaml"
-    nodes = _read_yaml(nodes_file)
-    marks = {
-        "form_8949_2025_partii_proceeds": ("d", "row_template"),
-        "form_8949_2025_partii_cost": ("e", "row_template"),
-        "form_8949_2025_partii_gain_loss": ("h", "row_template"),
-        "form_8949_2025_partii_total_gain_loss": ("h", "total"),
-    }
-    for node in nodes:
-        if node["node_id"] in marks:
-            node["table_id"] = TABLE_ID
-            node["column"] = marks[node["node_id"]][0]
-            node["role"] = marks[node["node_id"]][1]
-    _write_yaml(nodes_file, nodes)
+def _table_by_id(tables: list[dict], table_id: str) -> dict:
+    return next(table for table in tables if table["table_id"] == table_id)
 
-    tables_dir = root / "graph" / "2025" / "tables"
-    tables_dir.mkdir()
-    _write_yaml(
-        tables_dir / "form-8949.yaml",
-        [
-            {
-                "table_id": TABLE_ID,
-                "document_id": "form_8949_2025",
-                "line_anchor": "Form 8949 Part II line 1",
-                "columns": [
-                    {
-                        "column_id": "d",
-                        "label": "Proceeds",
-                        "kind": "input",
-                        "template_node": "form_8949_2025_partii_proceeds",
-                    },
-                    {
-                        "column_id": "e",
-                        "label": "Cost or other basis",
-                        "kind": "input",
-                        "template_node": "form_8949_2025_partii_cost",
-                    },
-                    {
-                        "column_id": "h",
-                        "label": "Gain or loss",
-                        "kind": "computed",
-                        "template_node": "form_8949_2025_partii_gain_loss",
-                    },
-                ],
-                "totals": [
-                    {
-                        "column_id": "h",
-                        "total_node": "form_8949_2025_partii_total_gain_loss",
-                    }
-                ],
-                "citation_refs": ["cite_8949_col_h_gain"],
-            }
-        ],
-    )
+
+def _install_valid_table(root: Path) -> None:
+    return None
 
 
 @pytest.mark.m6b
@@ -94,7 +46,7 @@ def test_valid_table_definition_validates(tmp_path):
     result = validate_graph("2025", root=root)
 
     assert result.ok, result.errors
-    assert result.counts["tables"] == 1
+    assert result.counts["tables"] == 2
 
 
 @pytest.mark.m6b
@@ -103,13 +55,13 @@ def test_table_validation_fails_on_missing_template_node(tmp_path):
     _install_valid_table(root)
     table_file = root / "graph" / "2025" / "tables" / "form-8949.yaml"
     tables = _read_yaml(table_file)
-    tables[0]["columns"][0]["template_node"] = "missing_node"
+    _table_by_id(tables, TABLE_ID)["columns"][0]["template_node"] = "missing_node"
     _write_yaml(table_file, tables)
 
     result = validate_graph("2025", root=root)
 
     assert not result.ok
-    assert any("table form_8949_2025_partii_line_1 column d -> missing node missing_node" in error for error in result.errors)
+    assert any(f"table {TABLE_ID} column d -> missing node missing_node" in error for error in result.errors)
 
 
 @pytest.mark.m6b
@@ -119,14 +71,14 @@ def test_table_validation_fails_on_inconsistent_member_metadata(tmp_path):
     nodes_file = root / "graph" / "2025" / "nodes" / "capital-gains.yaml"
     nodes = _read_yaml(nodes_file)
     for node in nodes:
-        if node["node_id"] == "form_8949_2025_partii_cost":
+        if node["node_id"] == COST_NODE:
             node["column"] = "x"
     _write_yaml(nodes_file, nodes)
 
     result = validate_graph("2025", root=root)
 
     assert not result.ok
-    assert any("node form_8949_2025_partii_cost has column x" in error for error in result.errors)
+    assert any(f"node {COST_NODE} has column x" in error for error in result.errors)
 
 
 @pytest.mark.m6b
@@ -135,13 +87,13 @@ def test_table_validation_fails_when_total_column_is_not_a_row_column(tmp_path):
     _install_valid_table(root)
     table_file = root / "graph" / "2025" / "tables" / "form-8949.yaml"
     tables = _read_yaml(table_file)
-    tables[0]["totals"][0]["column_id"] = "z"
+    _table_by_id(tables, TABLE_ID)["totals"][0]["column_id"] = "z"
     _write_yaml(table_file, tables)
 
     result = validate_graph("2025", root=root)
 
     assert not result.ok
-    assert any("table form_8949_2025_partii_line_1 total z -> total column is not a row column" in error for error in result.errors)
+    assert any(f"table {TABLE_ID} total z -> total column is not a row column" in error for error in result.errors)
 
 
 @pytest.mark.m6b

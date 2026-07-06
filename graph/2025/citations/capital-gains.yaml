@@ -23,6 +23,13 @@
   url: https://www.irs.gov/instructions/i8949
   retrieved_date: 2026-06-28
 
+- citation_id: cite_8949_line2_totals
+  document_id: form_8949_2025
+  locator: Form 8949, line 2
+  quoted_text: Totals. Add the amounts in columns (d), (e), (g), and (h).
+  url: https://www.irs.gov/forms-pubs/about-form-8949
+  retrieved_date: 2026-07-06
+
 - citation_id: cite_schedule_d_16_to_1040_7
   document_id: schedule_d_2025
   locator: Schedule D, line 16

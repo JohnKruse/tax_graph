@@ -2,19 +2,19 @@ tax_year: 2025
 filing_status: single
 scenario_id: m6_seed20250705_0005
 facts:
-- node_id: form_1099b_2025_box_1d_proceeds
-  value: 50000
-  source:
-    document_label: Generated broker 1099-B for scenario m6_seed20250705_0005
-    extracted_by: m6_scenario_renderer
-- node_id: form_1099b_2025_box_1e_cost_basis
-  value: 4665
-  source:
-    document_label: Generated broker 1099-B for scenario m6_seed20250705_0005
-    extracted_by: m6_scenario_renderer
 - node_id: schedule_d_2025_line_7_net_st
   value: 0
   source:
     document_label: Generated scenario m6_seed20250705_0005
     extracted_by: m6_scenario_renderer
-    note: Short-term path fenced inert for M6 single-lot long-term scenarios.
+tables:
+- table_id: form_8949_2025_part_ii_line_1
+  rows:
+  - row_key: lot_1
+    columns:
+      d: 50000
+      e: 4665
+      g: 0
+    source:
+      document_label: Generated broker 1099-B for scenario m6_seed20250705_0005
+      extracted_by: m6_scenario_renderer

@@ -113,7 +113,7 @@ hand-authored single-lot 8949 slice with extracted, table-shaped structure.
     column. Node drafts in accepted subunits now carry `table_id`/`column`/`role` metadata for
     row templates, row intermediates, and totals. No live graph promotion was performed.
 
-- [ ] **Step 5 - Promote Form 8949 (human-gated) + example reauthor.** Regenerate the 8949
+- [DONE] **Step 5 - Promote Form 8949 (human-gated) + example reauthor.** Regenerate the 8949
   draft with table grouping; prepare the promotion diff: replace the hand-authored 8949 nodes
   in `graph/2025/` with the extracted table subunits (Part I and Part II), PRESERVING the
   existing hand-authored FEEDS edges into the live Schedule D lines (retarget their sources to
@@ -124,6 +124,13 @@ hand-authored single-lot 8949 slice with extracted, table-shaped structure.
   live graph change. Then `validate`, `build`, base-deps `run`, full suite. Tests: promoted
   graph passes validator; single-lot parity; trace snapshot still cites the 8949 SUBTRACT.
   Docs: README graph status.
+  - Worker note: after John's approval, promoted Form 8949 Part I/II into live `tables` subunits,
+    replaced the old scalar 1099-B -> 8949 path, retargeted Schedule D line 8b to the promoted
+    Part II column (h) total, and reauthored the capital-gains example as `lot_1` table facts
+    with no scalar compatibility path. The existing frozen M6 corpus was mechanically migrated to
+    one-row table facts so replay remains valid until Step 6 regenerates multi-lot scenarios.
+    Return Record facts now include table row inputs, and `list_required_inputs()` skips static
+    row-template nodes while still reporting missing required columns per `#row_key`.
 
 - [ ] **Step 6 - Widen the M6 oracle harness to N lots.** Scenario model gains multiple lots
   (and nonzero adjustments - column (g) is now modeled); OTS render lists all lots in the 8949

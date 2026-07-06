@@ -64,7 +64,7 @@ uv run tax-graph oracle replay-corpus --year 2025
 The M6 harness keeps its checked-in comparison data under `oracles/`: the 2025
 box map links Tax Graph node ids to OTS output labels, and the label inventory
 fixture validates that every mapped OTS box is known before any diff runs.
-Generated single-lot scenarios render both to Tax Graph `facts.yaml` and to an
+Generated scenarios render both to Tax Graph table-row `facts.yaml` and to an
 OTS 1040 input text file plus Form 8949 CSV.
 
 The differ compares whole-dollar mapped boxes and evaluates guard boxes first.
@@ -144,8 +144,9 @@ as not ingested rather than guessed.
 
 Repeatable table runtime support is additive. Table row instances are supplied
 under `tables` in taxpayer facts and keyed by `row_key`; traces address an
-instance as `<template_node>#<row_key>`. Live Form 8949 facts migrate to this
-shape after the M6b human promotion gate.
+instance as `<template_node>#<row_key>`. The live Form 8949 Part I/II graph now
+uses promoted repeatable table subunits, and the capital-gains example supplies
+its long-term lot as one Part II table row.
 
 Outline-first extraction now carries a deterministic repeatable-table detector:
 it emits a draft `tables` subunit only when repeated field-grid row bands and a
