@@ -202,7 +202,37 @@ MeF), and 3 (L3 properties) are offline and independent of M5/M6; Step 4 (exampl
 miner), Step 5 (N-version), and Step 6 (metrics + delta mode) complete the ladder. M6
 supplies L5. PHASE_M8.md is written just-in-time when M8 becomes next.
 
-## 10. Status (2026-07-06): IMPLEMENTED
+## 10. User-facing Form Verification Record (decided 2026-07-06, build post-M7)
+
+Everything above records evidence for the MAINTAINERS; users need the same story told
+honestly, per form. Decision (John): a **Form Verification Record** - one GENERATED
+Markdown page per form plus a roll-up `VERIFICATION.md` - stating what is modeled, which
+witnesses back the math, what disagreed and how it was resolved, and a plain-language
+verification tier. Rules:
+
+- **Generated from data, never hand-written** (same law as the Coverage Map): rendered
+  deterministically from `metrics.yaml`, the corpus manifest, `triage.yaml`, drill
+  results, frozen IRS examples, and graph status. No LLM, no API key, committed to the
+  repo (it describes public forms, not taxpayer data).
+- **The witness list is the honesty mechanism.** OTS's breadth is limited, so each form
+  lists ITS witnesses explicitly: differential scenarios (oracle + version + count)
+  where an oracle covers it; frozen IRS worked examples; cross-vendor N-version
+  agreement; property tests; calibration audits + escape count. A form with no external
+  oracle SAYS SO and shows what it has instead - the absence is stated, never papered
+  over. Plain-language tiers map from the supported-branch bar (testing-strategy):
+  "independently witnessed" > "IRS-example verified" > "structurally verified" >
+  "partial".
+- **Disagreements build trust.** Triage outcomes appear (our bug fixed + regression;
+  OTS bug reported upstream; IRS-text ambiguity documented on the graph object) - a
+  record that shows adjudicated conflict is more credible than a clean sheet.
+- **Queryable at runtime.** The same data surfaces over MCP (additive tool or document
+  metadata) so the filer's agent can answer "how validated is this branch?" in
+  conversation - confidence is roadmap content, per the core thesis.
+- **Slot:** build after M7 (the frontier registry supplies coverage/status per form and
+  enforces box-map growth); render as part of `tax-graph build`. Complements the
+  reserved Coverage Map (map = breadth at a glance; record = depth per form).
+
+## 11. Status (2026-07-06): IMPLEMENTED (Sections 1-9)
 
 M8 is complete (`plans/archive/PHASE_M8.md`). The ladder runs: drills catch 100% of the
 catalog with layer attribution; routing is deterministic from check outcomes (confidence

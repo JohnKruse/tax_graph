@@ -198,6 +198,25 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
   running it found real defects. See From Architect "M6 live-gate ruling".)
 
 ## From Architect
+- **Oracle comparison/recording mechanism AFFIRMED (John + Architect review, 2026-07-06).**
+  Walked the full chain: `oracles/box_map_2025.yaml` is the single auditable definition of
+  the comparison (machine-validated both ends); agreements freeze to
+  `examples/oracle_corpus/` with `live_ots_diff_report` provenance (freeze RAISES without a
+  live OTS executable); disagreements cannot freeze without a disposition in
+  `oracles/triage.yaml` (currently empty - and the deliberate-bug canaries prove the differ
+  catches, so empty means clean, not blind). Four GROWTH items pinned (not blockers):
+  (1) the box map (9 boxes) must grow with every promoted form - M7's frontier registry is
+  the natural enforcement point; (2) guards (1 entry) should be DERIVED from OTS's metadata
+  fence list as the domain widens; (3) PolicyEngine is the second witness, triggered by the
+  first liability branch; (4) metrics payoff fields (human_minutes, escapes) get first real
+  data at the NEXT promotion - whoever runs it fills them in.
+- **NEW (2026-07-06) - Form Verification Record decided (user-facing trust surface; build
+  post-M7).** Design pinned in `docs/extraction-verification.md` Section 10: one GENERATED
+  MD page per form + roll-up `VERIFICATION.md` (witness list per form - differential where
+  an oracle covers it, IRS examples, N-version, properties, calibration; absences stated,
+  never papered over; triage outcomes shown; plain-language tiers from the supported-branch
+  bar; same data queryable over MCP). Generated from metrics/corpus/triage/drill/example
+  data, no hand-authoring. Slots after M7; do NOT build during M7.
 - **Next: start M7 (Frontier registry + SOI-weighted coverage, canary Compass Rose).**
   `plans/PHASE_M7.md` is the only open plan (written 2026-07-05, two phases ahead of its
   turn - re-validate file/module references against the CURRENT repo at phase start; the
