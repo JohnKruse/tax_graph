@@ -1,0 +1,70 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "frontier.schema.json",
+  "title": "Tax Graph Frontier Registry",
+  "description": "Derived records for intentional graph boundaries and cross-form worklist priorities.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["tax_year", "provenance", "frontiers"],
+  "properties": {
+    "tax_year": { "type": "integer", "minimum": 1900, "maximum": 2100 },
+    "provenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["generated_by", "soi_year", "soi_source_url", "soi_note"],
+      "properties": {
+        "generated_by": { "type": "string" },
+        "soi_year": { "type": "integer" },
+        "soi_source_url": { "type": "string", "format": "uri" },
+        "soi_note": { "type": "string" }
+      }
+    },
+    "frontiers": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["frontier_id", "kind", "source", "target", "target_url", "citation_ref", "status", "weight"],
+        "properties": {
+          "frontier_id": { "type": "string", "pattern": "^[a-z0-9_]+$" },
+          "kind": {
+            "type": "string",
+            "enum": ["outbound_flow", "form_reference", "pub_reference"]
+          },
+          "source": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "document_id": { "type": "string", "pattern": "^[a-z0-9_]+$" },
+              "node_id": { "type": "string" },
+              "citation_id": { "type": "string", "pattern": "^[a-z0-9_]+$" },
+              "flow_id": { "type": "string", "pattern": "^[a-z0-9_]+$" }
+            }
+          },
+          "target": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "document_id": { "type": "string", "pattern": "^[a-z0-9_]+$" },
+              "line": { "type": "string" },
+              "node_id": { "type": "string" },
+              "external_id": { "type": "string" }
+            }
+          },
+          "target_url": { "type": "string", "format": "uri" },
+          "citation_ref": { "type": "string", "pattern": "^[a-z0-9_]+$" },
+          "status": {
+            "type": "string",
+            "enum": ["modeled", "declared", "unmodeled"]
+          },
+          "weight": {
+            "type": ["number", "null"],
+            "minimum": 0
+          },
+          "title": { "type": "string" },
+          "purpose": { "type": "string" }
+        }
+      }
+    }
+  }
+}

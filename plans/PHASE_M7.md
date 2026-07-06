@@ -62,7 +62,7 @@ SOI weights let us SEE and PROVE where the high-value 25% is and where the long 
   Schedule 3) have counts; a power-law sanity check (1040 outranks 1116 outranks an obscure form).
   Docs: the source, the lag, and the sample caveat.
 
-- [ ] **Step 2 - Frontier registry schema + deterministic builder.** Define
+- [DONE] **Step 2 - Frontier registry schema + deterministic builder.** Define
   `schemas/frontier.schema.json` (entry: `frontier_id`, `kind` =
   `outbound_flow|form_reference|pub_reference`, `source` [node_id or document_id], `target`
   [document_id (+ `line` for outbound_flow) or external pub id], `target_url`, `citation_ref`,

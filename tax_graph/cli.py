@@ -172,6 +172,21 @@ def build_command(year: str = "2025", root: str | Path | None = None) -> int:
     return 0
 
 
+def frontier_build_command(year: str = "2025", root: str | Path | None = None) -> int:
+    """Build the derived frontier registry."""
+    from tax_graph.frontier import build_frontier_registry
+
+    root_path = Path(root).resolve() if root is not None else project_root()
+    result = build_frontier_registry(year, root=root_path)
+    counts: dict[str, int] = {}
+    for entry in result.registry.get("frontiers", []):
+        counts[entry["status"]] = counts.get(entry["status"], 0) + 1
+    print(f"built frontier registry: {result.path}")
+    for status in sorted(counts):
+        print(f"  {status}: {counts[status]}")
+    return 0
+
+
 def serve_command(
     year: str = "2025",
     root: str | Path | None = None,
@@ -851,6 +866,20 @@ def _build_typer_app():
 
     cli.add_typer(oracle_cli, name="oracle")
 
+    frontier_cli = typer.Typer(help="Frontier registry and coverage helpers.")
+
+    @frontier_cli.command("build")
+    def frontier_build_cli(
+        year: str = typer.Option("2025", "--year", "-y", help="Tax year to build."),
+        root: Path | None = typer.Option(None, "--root", help="Project root override."),
+    ) -> None:
+        """Build the derived frontier registry."""
+        raise_code = frontier_build_command(year=year, root=root)
+        if raise_code:
+            raise typer.Exit(raise_code)
+
+    cli.add_typer(frontier_cli, name="frontier")
+
     @cli.command("acquire")
     def acquire_cli(
         year: str = typer.Argument("2025"),
@@ -897,6 +926,12 @@ def _fallback_app() -> int:
     build_parser = subparsers.add_parser("build")
     build_parser.add_argument("year", nargs="?", default="2025")
     build_parser.add_argument("--root", default=None)
+
+    frontier_parser = subparsers.add_parser("frontier")
+    frontier_subparsers = frontier_parser.add_subparsers(dest="frontier_command", required=True)
+    frontier_build_parser = frontier_subparsers.add_parser("build")
+    frontier_build_parser.add_argument("--year", "-y", default="2025")
+    frontier_build_parser.add_argument("--root", default=None)
 
     serve_parser = subparsers.add_parser("serve")
     serve_parser.add_argument("--year", "-y", default="2025")
@@ -989,6 +1024,8 @@ def _fallback_app() -> int:
         )
     if args.command == "build":
         return build_command(year=args.year, root=args.root)
+    if args.command == "frontier" and args.frontier_command == "build":
+        return frontier_build_command(year=args.year, root=args.root)
     if args.command == "serve":
         return serve_command(year=args.year, root=args.root, source=args.source)
     if args.command == "drill" and args.drill_command == "run":
