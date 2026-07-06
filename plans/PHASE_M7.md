@@ -93,7 +93,7 @@ SOI weights let us SEE and PROVE where the high-value 25% is and where the long 
   frontier entry fails; the same reference with a valid frontier entry passes; a malformed frontier
   entry fails. Docs.
 
-- [ ] **Step 5 - Engine frontier behavior (never compute through the wall).** When a computed node's
+- [DONE] **Step 5 - Engine frontier behavior (never compute through the wall).** When a computed node's
   input chain reaches a frontier (a `declared`/`unmodeled` upstream), the engine emits a typed
   `unresolved` Tax Trace entry - "depends on <target address>, not yet modeled, see <target_url>" -
   rather than a number, extending the existing invariant that the engine reports missing inputs

@@ -13,6 +13,7 @@ from pathlib import Path
 from typing import Any
 
 from tax_graph.engine.operations import MISSING, apply_operation, is_missing, round_value
+from tax_graph.frontier.build import load_frontier_registry
 from tax_graph.io.loader import load_graph, load_yaml
 from tax_graph.io.sqlite_loader import compiled_db_path, load_sqlite_graph
 
@@ -47,6 +48,7 @@ class Graph:
             table["table_id"]: table
             for table in sorted(loaded.items("tables"), key=lambda item: item["table_id"])
         }
+        self.frontiers = list(load_frontier_registry(year, self.root).get("frontiers", []) or [])
         self.rules = {rule["rule_id"]: rule for rule in sorted(loaded.items("rules"), key=lambda item: item["rule_id"])}
         self.incoming: dict[str, list[dict[str, Any]]] = {}
         for edge in sorted(loaded.items("edges"), key=lambda item: item["edge_id"]):
@@ -173,6 +175,12 @@ class Engine:
         rule = self.g.rules[next(iter(rule_ids))]
         operands = []
         for edge in incoming:
+            if edge["source"] not in self.g.nodes:
+                frontier = _frontier_for_missing_source(edge, self.g)
+                if frontier is not None:
+                    result.values[node_id] = MISSING
+                    result.trace[node_id] = _unresolved_trace(edge, frontier)
+                    return MISSING
             source_value = self._eval(edge["source"], facts, result)
             source_node = self.g.nodes[edge["source"]]
             operands.append(
@@ -425,6 +433,8 @@ def render_trace(node_id: str, result: Result, graph: Graph, depth: int = 0, rol
         tag = "(blank)"
     elif trace.get("kind") == "table_template":
         tag = "(table template)"
+    elif trace.get("kind") == "unresolved":
+        tag = "(UNRESOLVED)"
     else:
         tag = "(MISSING)"
 
@@ -465,3 +475,55 @@ def _column_definition(table: dict[str, Any], node_id: str) -> dict[str, Any] | 
         if column.get("template_node") == node_id:
             return column
     return None
+
+
+def _frontier_for_missing_source(edge: dict[str, Any], graph: Graph) -> dict[str, Any] | None:
+    source = edge.get("source")
+    doc_id, line = _infer_document_line(str(source), graph)
+    for entry in graph.frontiers:
+        if entry.get("status") == "modeled":
+            continue
+        entry_source = entry.get("source") or {}
+        entry_target = entry.get("target") or {}
+        if entry_source.get("node_id") == source:
+            return entry
+        if entry_target.get("node_id") == source:
+            return entry
+        if doc_id == entry_target.get("document_id") and line == str(entry_target.get("line")):
+            return entry
+    return None
+
+
+def _unresolved_trace(edge: dict[str, Any], frontier: dict[str, Any]) -> dict[str, Any]:
+    target = frontier.get("target") or {}
+    address = target.get("document_id") or target.get("external_id") or "unknown frontier"
+    if target.get("line"):
+        address = f"{address} line {target['line']}"
+    return {
+        "kind": "unresolved",
+        "value": MISSING,
+        "inputs": [
+            {
+                "node": edge.get("source"),
+                "role": edge.get("role"),
+                "value": MISSING,
+                "required": "frontier",
+            }
+        ],
+        "frontier_id": frontier.get("frontier_id"),
+        "target": target,
+        "target_url": frontier.get("target_url"),
+        "citation_ref": frontier.get("citation_ref"),
+        "citations": [frontier.get("citation_ref")] if frontier.get("citation_ref") else [],
+        "note": f"depends on {address}, not yet modeled, see {frontier.get('target_url')}",
+    }
+
+
+def _infer_document_line(node_id: str, graph: Graph) -> tuple[str | None, str | None]:
+    document_ids = sorted(graph.documents, key=len, reverse=True)
+    document_id = next((candidate for candidate in document_ids if node_id.startswith(candidate)), None)
+    import re
+
+    match = re.search(r"_line_([0-9]+[a-z]?)", node_id, flags=re.IGNORECASE)
+    line = match.group(1).lower() if match else None
+    return document_id, line

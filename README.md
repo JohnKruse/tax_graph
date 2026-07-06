@@ -182,7 +182,10 @@ outside the current manifest scope. Coverage is reported against the full SOI
 form-count universe and the currently in-scope weighted manifest set. The
 registry is not hand-maintained. The graph validator schema-checks the registry
 and only treats a dangling graph edge as intentional when a matching frontier
-entry has a target URL and a live citation reference.
+entry has a target URL and a live citation reference. At runtime, if a modeled
+calculation depends on a declared or unmodeled frontier, the engine emits an
+`unresolved` trace entry with the frontier URL and citation instead of computing
+through the missing dependency.
 
 Outline-first extraction now carries a deterministic repeatable-table detector:
 it emits a draft `tables` subunit only when repeated field-grid row bands and a
