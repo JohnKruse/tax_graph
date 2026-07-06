@@ -51,7 +51,7 @@ SOI weights let us SEE and PROVE where the high-value 25% is and where the long 
 
 ## Steps
 
-- [ ] **Step 1 - SOI weight reference table (acquire + commit).** Add an acquire helper that
+- [DONE] **Step 1 - SOI weight reference table (acquire + commit).** Add an acquire helper that
   fetches the IRS SOI "Individual Income Tax Returns" table(s) of return counts by form/schedule
   (irs.gov/statistics; the worker pins the exact table) and parses them to `form_id -> returns_count`.
   Write a committed reference file `data/soi/form_counts_<soi_year>.yaml` carrying provenance

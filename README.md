@@ -89,6 +89,13 @@ disagreements and their disposition before any non-agreed pair is allowed into
 the frozen corpus. The committed M6b corpus is a live OTS-agreed multi-lot
 batch with `live_ots_diff_report` provenance.
 
+M7 adds a committed SOI filing-frequency reference under `data/soi/`.
+`form_counts_<soi_year>.yaml` stores return-count weights by graph document id
+with SOI provenance, retrieval date, and the sample-based estimate caveat.
+`form_id_map.yaml` maps SOI table labels to Tax Graph document ids. Maintainers
+can refresh a normalized CSV extract through `tax_graph.acquire.soi`; runtime
+commands read only the committed YAML and do not import acquisition extras.
+
 ## CLI Usage
 
 Phase M0 provides a package CLI named `tax-graph`:
@@ -110,6 +117,7 @@ uv run tax-graph verify replay-examples --year 2025
 uv run tax-graph verify nversion --doc form_8949_2025
 uv run tax-graph verify report --year 2025
 uv run tax-graph verify diff-drafts --doc form_8949_2025 --year 2025
+uv run tax-graph frontier --year 2025
 uv run tax-graph acquire 2025
 uv run tax-graph acquire 2025 --check
 uv run tax-graph extract --doc form_8949_2025
@@ -133,6 +141,7 @@ python -m tax_graph.cli verify replay-examples --year 2025
 python -m tax_graph.cli verify nversion --doc form_8949_2025
 python -m tax_graph.cli verify report --year 2025
 python -m tax_graph.cli verify diff-drafts --doc form_8949_2025 --year 2025
+python -m tax_graph.cli frontier --year 2025
 python -m tax_graph.cli acquire 2025 --check
 python -m tax_graph.cli extract --doc form_8949_2025
 ```

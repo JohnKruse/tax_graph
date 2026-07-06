@@ -1,0 +1,28 @@
+provenance:
+  source: SOI labels mapped to Tax Graph document ids
+  maintained_by: deterministic frontier builder tests
+labels:
+  Form 1040:
+    document_id: form_1040_2025
+  Schedule 1:
+    document_id: schedule_1_2025
+  Schedule 2:
+    document_id: schedule_2_2025
+  Schedule 3:
+    document_id: schedule_3_2025
+  Schedule B:
+    document_id: schedule_b_2025
+  Schedule D:
+    document_id: schedule_d_2025
+  Form 8949:
+    document_id: form_8949_2025
+  Schedule C:
+    document_id: schedule_c_2025
+  Schedule E:
+    document_id: schedule_e_2025
+  Form 1116:
+    document_id: form_1116_2025
+  Form 6251:
+    document_id: form_6251_2025
+  Form 8396:
+    document_id: form_8396_2025

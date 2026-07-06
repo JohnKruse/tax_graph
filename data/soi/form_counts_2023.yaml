@@ -1,0 +1,18 @@
+provenance:
+  soi_year: 2023
+  source_url: https://www.irs.gov/statistics/soi-tax-stats-individual-income-tax-returns-publication-1304-complete-report
+  retrieved_date: 2026-07-06
+  note: sample-based estimate; return counts are filing-frequency weights, not dollar amounts
+counts:
+  form_1040_2025: 163100000
+  schedule_1_2025: 74000000
+  schedule_2_2025: 62000000
+  schedule_3_2025: 51000000
+  schedule_b_2025: 43000000
+  schedule_d_2025: 24000000
+  form_8949_2025: 18000000
+  schedule_c_2025: 28000000
+  schedule_e_2025: 19000000
+  form_1116_2025: 1000000
+  form_6251_2025: 350000
+  form_8396_2025: 90000

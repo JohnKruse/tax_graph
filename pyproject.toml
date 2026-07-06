@@ -77,6 +77,7 @@ markers = [
   "m5: Phase M5 Return Record tests",
   "m6: Phase M6 differential oracle tests",
   "m6b: Phase M6b repeatable-table tests",
+  "m7: Phase M7 frontier registry tests",
   "m8: Phase M8 extraction verification tests",
   "network: tests that require live network access",
   "oracle: tests that require a pinned local oracle binary",
