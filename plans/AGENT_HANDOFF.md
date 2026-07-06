@@ -153,7 +153,21 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
   running it found real defects. See From Architect "M6 live-gate ruling".)
 
 ## From Architect
-- **Next: start M6b (Repeatable tables, canary Tandem Abacus).** `plans/PHASE_M6b.md` is written
+- **Next: start M8 (Verification ladder, canary Skeptical Notary).** `plans/PHASE_M8.md` is
+  written (2026-07-06). The Architect independently verified M6b closure first: full pytest
+  137 passed / 5 skipped; `validate 2025` OK with tables=2; multi-lot example line 7 = 250
+  through the promoted Part II column (h) total; live `pytest -m oracle` 2 passed. Read
+  `docs/extraction-verification.md` FIRST - the plan only sequences it. Key pins: every drill
+  asserts WHICH layer catches it, and a miss fails the gate honestly (never shrink the
+  catalog); confidence comes OUT of the auto-accept path in Step 6 (telemetry only);
+  vendor-FAMILY diversity for N-version (two families through OpenRouter is fine); mined
+  worked examples freeze into `examples/irs_examples/` only after human confirmation and
+  replay offline; MeF inventory is optional (official source or clean skip); the drill gate
+  green UNLOCKS bulk extraction beyond capital gains. Adopted defaults (John may override):
+  10% calibration sample (min 5), N=2 families, 100% drill bar. After M8: Schedule D + 1040
+  extraction and the LINK step become the working set; M7 (Compass Rose) stays available in
+  parallel.
+- **Superseded: start M6b direction (M6b is complete and archived).** `plans/PHASE_M6b.md` was written
   (2026-07-05); the Architect independently re-verified M6 closure first (offline 23/2, live
   oracle gate 2 passed against the installed OTS, corpus provenance `live_ots_diff_report`,
   freeze refuses without a live executable). Read engineering-plan "Repeatable tables (decided
