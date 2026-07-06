@@ -109,13 +109,20 @@ differ); 100% drill-catalog catch rate before bulk extraction.
   deterministic tests mock the client over a committed fixture block. Wire
   `tax-graph verify mine-examples --doc ID`. Docs.
 
-- [ ] **Step 5 - N-version cross-vendor micro-extraction.** Config gains a second
+- [DONE] **Step 5 - N-version cross-vendor micro-extraction.** Config gains a second
   vendor-family model for verification passes (same `LlmClient` seam). Re-run the
   micro-extraction questions for a document with model B; diff the ASSEMBLED canonical
   objects (code-assigned ids make this an object diff, not text): agree -> record
   corroboration in provenance; disagree -> review-queue entry showing BOTH answers
   side-by-side (a pick-A/B/neither human decision). Gated live run for `form_8949_2025`;
   deterministic tests with two mocked clients (agreeing and disagreeing cases). Docs.
+  - Architect note (2026-07-06): Codex authored `tax_graph/verify/nversion.py` + tests but its
+    session ended at the usage limit before committing or writing the handoff note. Architect
+    verification: `pytest -m m8` -> 24 passed (4 new N-version tests); full `pytest` -> 161
+    passed, 5 skipped; ASCII OK; tests confirm vendor-family tracking, agreement
+    corroboration in provenance, and disagreement producing a side-by-side review entry.
+    Committed by the Architect, authored by Codex. The gated LIVE N-version run for
+    form_8949_2025 has not been executed yet - fold it into Step 6's exit-criteria pass.
 
 - [ ] **Step 6 - Trust tiers + metrics + verify report (routing change).** Tier assignment in
   routing: T1 = L0/L1 clean; T2 = T1 + N-version agreement; T3 = T2 + properties pass + an

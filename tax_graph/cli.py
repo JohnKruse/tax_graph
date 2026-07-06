@@ -275,6 +275,47 @@ def verify_replay_examples_command(
     return 1
 
 
+def verify_nversion_command(
+    *,
+    doc: str,
+    year: str = "2025",
+    root: str | Path | None = None,
+    primary_client: object | None = None,
+    secondary_client: object | None = None,
+) -> int:
+    """Run N-version extraction corroboration for one document."""
+    from tax_graph.extract.inputs import load_document_input
+    from tax_graph.extract.llm_client import build_llm_client
+    from tax_graph.verify.nversion import run_nversion_extraction
+
+    root_path = Path(root).resolve() if root is not None else project_root()
+    config = load_config(root=root_path)
+    try:
+        client_a = primary_client or build_llm_client(config)
+        client_b = secondary_client or build_llm_client(config)
+        document = load_document_input(doc, year=year, root=root_path, config=config)
+        report = run_nversion_extraction(
+            document,
+            primary_client=client_a,
+            secondary_client=client_b,
+            config=config,
+            root=root_path,
+        )
+    except Exception as exc:
+        print(f"ERROR: {exc}")
+        return 1
+
+    print("=== N-version extraction ===")
+    print(f"  document: {doc}")
+    print(f"  primary: {report.primary_family} {report.primary_model}")
+    print(f"  secondary: {report.secondary_family} {report.secondary_model}")
+    print(f"  status: {report.status}")
+    print(f"  diffs: {len(report.diffs)}")
+    for diff in report.diffs:
+        print(f"  - {diff.kind}/{diff.object_id}: {diff.reason}")
+    return 0 if report.ok else 1
+
+
 def oracle_install_command(
     year: str = "2025",
     root: str | Path | None = None,
@@ -668,6 +709,17 @@ def _build_typer_app():
         if raise_code:
             raise typer.Exit(raise_code)
 
+    @verify_cli.command("nversion")
+    def verify_nversion_cli(
+        doc: str = typer.Option(..., "--doc", help="Manifest document id to corroborate."),
+        year: str = typer.Option("2025", "--year", "-y", help="Tax year to corroborate."),
+        root: Path | None = typer.Option(None, "--root", help="Project root override."),
+    ) -> None:
+        """Run N-version extraction corroboration."""
+        raise_code = verify_nversion_command(doc=doc, year=year, root=root)
+        if raise_code:
+            raise typer.Exit(raise_code)
+
     cli.add_typer(verify_cli, name="verify")
 
     oracle_cli = typer.Typer(help="Differential oracle helpers.")
@@ -819,6 +871,11 @@ def _fallback_app() -> int:
     verify_replay_parser.add_argument("--source", choices=["sqlite", "yaml"], default=None)
     verify_replay_parser.add_argument("--root", default=None)
 
+    verify_nversion_parser = verify_subparsers.add_parser("nversion")
+    verify_nversion_parser.add_argument("--doc", required=True)
+    verify_nversion_parser.add_argument("--year", "-y", default="2025")
+    verify_nversion_parser.add_argument("--root", default=None)
+
     oracle_parser = subparsers.add_parser("oracle")
     oracle_subparsers = oracle_parser.add_subparsers(dest="oracle_command", required=True)
     oracle_install_parser = oracle_subparsers.add_parser("install")
@@ -897,6 +954,8 @@ def _fallback_app() -> int:
             examples_dir=args.examples_dir,
             source=args.source,
         )
+    if args.command == "verify" and args.verify_command == "nversion":
+        return verify_nversion_command(doc=args.doc, year=args.year, root=args.root)
     if args.command == "oracle" and args.oracle_command == "install":
         return oracle_install_command(year=args.year, root=args.root, archive=args.archive)
     if args.command == "oracle" and args.oracle_command == "fuzz":

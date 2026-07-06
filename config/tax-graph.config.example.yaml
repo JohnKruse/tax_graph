@@ -18,6 +18,9 @@ project:
 llm:
   provider: openrouter           # default: one key, any vendor's model via the OpenRouter gateway (https://openrouter.ai)
   model: null                    # pick an OpenRouter model id, e.g. anthropic/claude-opus-4, google/gemini-2.5-pro, openai/gpt-5.1
+  vendor_family: null            # optional telemetry label for the primary model family, e.g. anthropic
+  nversion_model: null           # optional second-family model for verification, e.g. google/gemini-2.5-pro
+  nversion_vendor_family: null   # required by process when nversion_model is used live, e.g. google
   base_url: https://openrouter.ai/api/v1
   site_url: null                 # optional OpenRouter HTTP-Referer header
   app_name: Tax Graph            # optional OpenRouter X-Title header

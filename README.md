@@ -107,6 +107,7 @@ uv run tax-graph oracle replay-corpus --year 2025
 uv run tax-graph drill run --year 2025
 uv run tax-graph verify mine-examples --doc instructions_form_8949_2025 --limit 1
 uv run tax-graph verify replay-examples --year 2025
+uv run tax-graph verify nversion --doc form_8949_2025
 uv run tax-graph acquire 2025
 uv run tax-graph acquire 2025 --check
 uv run tax-graph extract --doc form_8949_2025
@@ -127,6 +128,7 @@ python -m tax_graph.cli oracle replay-corpus --year 2025
 python -m tax_graph.cli drill run --year 2025
 python -m tax_graph.cli verify mine-examples --doc instructions_form_8949_2025 --limit 1
 python -m tax_graph.cli verify replay-examples --year 2025
+python -m tax_graph.cli verify nversion --doc form_8949_2025
 python -m tax_graph.cli acquire 2025 --check
 python -m tax_graph.cli extract --doc form_8949_2025
 ```
@@ -322,6 +324,11 @@ and reports agreed/disagreed/unmappable candidates. Use `--confirm` only after a
 human has checked the paragraph; confirmed examples freeze under
 `examples/irs_examples/` and replay offline with
 `tax-graph verify replay-examples`.
+
+N-version corroboration is gated behind `tax-graph verify nversion`. Configure
+`llm.nversion_model` and `llm.nversion_vendor_family` for a second model family;
+the command reruns outline-first micro-extraction, diffs assembled canonical
+objects by id, and prints side-by-side review entries for disagreements.
 
 ## Compatibility Scripts
 

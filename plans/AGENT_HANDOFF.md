@@ -169,6 +169,16 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
   confirmed frozen Form 8949 instruction Example 1 fixture under `examples/irs_examples/`.
   Mining still requires a configured LLM client and `--confirm` is the human-confirmation gate;
   replay is fully offline. Next: Step 5 N-version cross-vendor micro-extraction.
+- **M8 Step 5 is done (verified + committed by the Architect, 2026-07-06).** Codex authored
+  `tax_graph/verify/nversion.py`, `tax-graph verify nversion` CLI wiring, the
+  `llm.nversion_model` / vendor-family config, and `tests/test_nversion_m8.py`, but its session
+  hit the usage limit before committing. Architect verification: `pytest -m m8` -> 24 passed;
+  full `pytest` -> 161 passed, 5 skipped; ASCII OK. Tests cover vendor-family tracking,
+  agreement corroboration in provenance, and disagreement producing side-by-side review
+  entries. NOTE: the gated LIVE N-version run for `form_8949_2025` has not run yet - execute it
+  during Step 6's exit-criteria pass. Next Codex session: Step 6 (trust tiers + metrics +
+  verify report - the routing change that removes confidence from auto-accept), then phase
+  exit: drill gate, live N-version run, `verify report`, archive, push.
 
 ## Open for Architect
 - (none open - the M6 closeout question is ANSWERED: the live gate is NOT deferrable, and
