@@ -192,6 +192,13 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
   during Step 6's exit-criteria pass. Next Codex session: Step 6 (trust tiers + metrics +
   verify report - the routing change that removes confidence from auto-accept), then phase
   exit: drill gate, live N-version run, `verify report`, archive, push.
+- **M7 (Frontier registry + SOI-weighted coverage) is complete.** Added committed SOI
+  filing-frequency weights under `data/soi/`, a deterministic frontier registry builder,
+  generated `graph/2025/frontier.yaml`, `tax-graph frontier build`, `tax-graph frontier`
+  text/JSON worklist + coverage, frontier-aware validation, and engine `unresolved` trace entries
+  for declared/unmodeled upstream dependencies. `plans/PHASE_M7.md` is marked `[COMPLETE]` and
+  archived as `plans/archive/PHASE_M7.md`. Next by milestone order: post-M7 Form Verification
+  Record or the next bulk extraction expansion plan, pending Architect direction.
 
 ## Open for Architect
 - (none open - the M6 closeout question is ANSWERED: the live gate is NOT deferrable, and
@@ -379,6 +386,14 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
   - `.\.venv\Scripts\python.exe -m tax_graph.cli drill run --year 2025` -> 11 drills, PASS, expected layer attribution
   - `.\.venv\Scripts\python.exe -m tax_graph.cli validate 2025` -> graph integrity OK; tables=2
   - `.\.venv\Scripts\python.exe -m pytest` -> 141 passed, 5 skipped
+  - `.\.venv\Scripts\python.exe tools\check_ascii.py` -> ASCII check OK
+- M7 phase exit:
+  - `.\.venv\Scripts\python.exe -m pytest -m m7` -> 12 passed, 173 deselected
+  - `.\.venv\Scripts\python.exe -m tax_graph.cli frontier --year 2025` -> worklist printed; coverage ~42.4% full SOI universe / 100.0% in-scope
+  - `.\.venv\Scripts\python.exe -m tax_graph.cli validate 2025` -> graph integrity OK
+  - `.\.venv\Scripts\python.exe -m tax_graph.cli run --facts examples\capital_gains_basic\facts.yaml --source yaml --no-record` -> Form 1040 line 7 = 2000
+  - `uv --directory C:\Users\devbox\projects\tax_graph run --no-dev python -m tax_graph.cli frontier --year 2025` -> base-runtime frontier query OK
+  - `.\.venv\Scripts\python.exe -m pytest` -> 180 passed, 5 skipped
   - `.\.venv\Scripts\python.exe tools\check_ascii.py` -> ASCII check OK
 - M8 Step 2:
   - `.\.venv\Scripts\python.exe -m pytest -m m8` -> 12 passed, 142 deselected

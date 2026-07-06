@@ -1,4 +1,4 @@
-# PHASE M7 - Frontier registry + SOI-weighted coverage   [ ]
+# PHASE M7 - Frontier registry + SOI-weighted coverage   [COMPLETE]
 
 **Canary:** Compass Rose
 **Depends on:** M3 (acquire - to fetch SOI tables), M4 (extraction - per-form `outbound_flows.yaml`
