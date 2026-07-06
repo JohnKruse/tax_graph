@@ -5,3 +5,23 @@ tax_year: 2025
 document_type: tax_form
 source_url: https://www.irs.gov/forms-pubs/about-form-8949
 status: partial
+not_modeled_fields:
+  - field_id: form_8949_taxpayer_identity_fields
+    field_name_pattern: ^topmostSubform\[0\]\.Page[12]\[0\]\.f[12]_0[12]\[0\]$
+    reason: Taxpayer identity fields are filer-profile inputs, not computation graph nodes.
+  - field_id: form_8949_sales_category_checkboxes
+    field_name_pattern: ^topmostSubform\[0\]\.Page[12]\[0\]\.c[12]_1\[[0-5]\]$
+    reason: Box A-F category checkboxes are filing classification fields outside this partial slice.
+  - field_id: form_8949_description_date_code_columns
+    table_columns:
+      - a
+      - b
+      - c
+      - f
+    reason: Description, date, and adjustment-code columns are review and filing data, not arithmetic inputs in this slice.
+  - field_id: form_8949_part_i_line_3_total_fields
+    line_anchor: "3"
+    reason: Part I line 3 totals belong to the deferred short-term branch.
+  - field_id: form_8949_part_ii_line_10_total_fields
+    line_anchor: "10"
+    reason: Part II line 10 totals belong to deferred long-term boxes outside the promoted line 1 table path.

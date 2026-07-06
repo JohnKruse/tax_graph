@@ -508,6 +508,29 @@ def _make_outline_project(tmp_path: Path) -> Path:
     root = tmp_path / "project"
     shutil.copytree(ROOT / "config", root / "config")
     shutil.copytree(ROOT / "schemas", root / "schemas")
+    graph_documents = root / "graph" / "2025" / "documents"
+    graph_documents.mkdir(parents=True)
+    (graph_documents / "form-8949.yaml").write_text(
+        "\n".join(
+            [
+                "document_id: form_8949_2025",
+                "title: Form 8949",
+                "tax_year: 2025",
+                "document_type: tax_form",
+                "status: partial",
+                "not_modeled_fields:",
+                "  - field_id: form_8949_unmodeled_table_columns",
+                "    table_columns:",
+                "      - a",
+                "      - b",
+                "      - c",
+                "      - f",
+                "    reason: Non-arithmetic table columns are outside the draft slice.",
+                "",
+            ]
+        ),
+        encoding="utf-8",
+    )
     raw_dir = root / ".cache" / "raw" / "2025"
     raw_dir.mkdir(parents=True)
     form_text = "\n".join(

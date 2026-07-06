@@ -101,3 +101,50 @@ def test_line_completeness_allows_multiple_column_nodes_for_one_line(tmp_path):
     report = run_deterministic_checks(document, batch, root=ROOT)
 
     assert not report.issues
+
+
+@pytest.mark.m8
+def test_extraction_field_completeness_requires_not_modeled_record(tmp_path):
+    text_path = tmp_path / "form_8949_2025.txt"
+    text_path.write_text("- 1: Transaction table\n", encoding="utf-8")
+    document = SourceDocumentInput(
+        document_id="form_8949_2025",
+        kind="tax_form",
+        year="2025",
+        url="https://www.irs.gov/pub/irs-pdf/f8949.pdf",
+        text=text_path.read_text(encoding="utf-8"),
+        text_path=text_path,
+        fields={"fields": [{"field_name": "unanchored_identity_field", "page": 1}]},
+    )
+    batch = ExtractionBatch(document_id="form_8949_2025", year="2025", objects=[])
+
+    report = run_deterministic_checks(document, batch, root=ROOT)
+
+    assert any("unanchored_identity_field" in issue.reason for issue in report.issues)
+
+
+@pytest.mark.m8
+def test_extraction_field_completeness_honors_not_modeled_record(tmp_path):
+    text_path = tmp_path / "form_8949_2025.txt"
+    text_path.write_text("- 1: Transaction table\n", encoding="utf-8")
+    document = SourceDocumentInput(
+        document_id="form_8949_2025",
+        kind="tax_form",
+        year="2025",
+        url="https://www.irs.gov/pub/irs-pdf/f8949.pdf",
+        text=text_path.read_text(encoding="utf-8"),
+        text_path=text_path,
+        fields={"fields": [{"field_name": "unanchored_identity_field", "page": 1}]},
+        not_modeled_fields=[
+            {
+                "field_id": "identity_field",
+                "field_name": "unanchored_identity_field",
+                "reason": "Identity data is not a computation node.",
+            }
+        ],
+    )
+    batch = ExtractionBatch(document_id="form_8949_2025", year="2025", objects=[])
+
+    report = run_deterministic_checks(document, batch, root=ROOT)
+
+    assert not any("unanchored_identity_field" in issue.reason for issue in report.issues)

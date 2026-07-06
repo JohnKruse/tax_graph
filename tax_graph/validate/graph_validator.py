@@ -13,6 +13,7 @@ from pathlib import Path
 from typing import Any, Mapping
 
 from tax_graph.io.loader import GRAPH_KINDS, LoadedGraph, load_graph, load_yaml
+from tax_graph.verify import check_loaded_graph_field_completeness
 
 try:
     import jsonschema
@@ -52,12 +53,27 @@ class ValidationResult:
         return "\n".join(lines)
 
 
-def validate_graph(year: str | int = "2025", root: str | Path | None = None) -> ValidationResult:
+def validate_graph(
+    year: str | int = "2025",
+    root: str | Path | None = None,
+    *,
+    field_grids: Mapping[str, Mapping[str, Any]] | None = None,
+    mef_line_inventory: Mapping[str, list[str]] | None = None,
+) -> ValidationResult:
     """Validate schema conformance and graph integrity for one tax year."""
-    return validate_loaded_graph(load_graph(year, root))
+    return validate_loaded_graph(
+        load_graph(year, root),
+        field_grids=field_grids,
+        mef_line_inventory=mef_line_inventory,
+    )
 
 
-def validate_loaded_graph(graph: LoadedGraph) -> ValidationResult:
+def validate_loaded_graph(
+    graph: LoadedGraph,
+    *,
+    field_grids: Mapping[str, Mapping[str, Any]] | None = None,
+    mef_line_inventory: Mapping[str, list[str]] | None = None,
+) -> ValidationResult:
     """Validate a loaded graph, including in-memory mutated drill graphs."""
     schemas_dir = graph.root / "schemas"
     errors: list[str] = []
@@ -67,6 +83,7 @@ def validate_loaded_graph(graph: LoadedGraph) -> ValidationResult:
     _validate_references_and_years(graph, errors)
     _validate_tables(graph, errors)
     _validate_no_inline_magic_numbers(graph, errors)
+    _validate_field_grid_completeness(graph, field_grids, mef_line_inventory, errors)
     _validate_acyclic_dependencies(graph, errors)
 
     return ValidationResult(
@@ -300,6 +317,23 @@ def _validate_no_inline_magic_numbers(graph: LoadedGraph, errors: list[str]) -> 
             value=rule.get("parameters", {}),
             errors=errors,
         )
+
+
+def _validate_field_grid_completeness(
+    graph: LoadedGraph,
+    field_grids: Mapping[str, Mapping[str, Any]] | None,
+    mef_line_inventory: Mapping[str, list[str]] | None,
+    errors: list[str],
+) -> None:
+    if not field_grids and not mef_line_inventory:
+        return
+    report = check_loaded_graph_field_completeness(
+        graph,
+        field_grids or {},
+        mef_line_inventory=mef_line_inventory,
+    )
+    for issue in report.issues:
+        errors.append(f"field grid {issue.document_id}/{issue.field_name} -> {issue.reason}")
 
 
 def _check_parameter_value(

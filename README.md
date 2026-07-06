@@ -295,6 +295,16 @@ The drill gate is intentionally offline and deterministic. A caught defect must
 name the catching layer; an uncaught catalog entry fails the command honestly
 instead of shrinking the catalog.
 
+M8 also tightens AcroForm field completeness. A rendered `.fields.json` entry
+must map to a promoted/draft node, a repeatable-table template column, or a
+document-level `not_modeled_fields` record with a reason. Form 8949 carries
+these explicit not-modeled groups for taxpayer identity/status fields,
+non-arithmetic table columns, and deferred line totals.
+
+The same checker accepts an optional MeF line inventory fixture when an official
+schema source is available. If no clean official inventory is supplied, the
+check skips that witness and relies on the AcroForm grid.
+
 ## Compatibility Scripts
 
 Validate the authored graph:

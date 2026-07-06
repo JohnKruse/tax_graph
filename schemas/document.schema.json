@@ -34,6 +34,32 @@
     "status": {
       "type": "string",
       "enum": ["supported", "partial", "planned", "unsupported"]
+    },
+    "not_modeled_fields": {
+      "type": "array",
+      "description": "AcroForm fields or field groups explicitly outside the modeled computation graph.",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["field_id", "reason"],
+        "properties": {
+          "field_id": {
+            "type": "string",
+            "pattern": "^[a-z0-9_]+$"
+          },
+          "field_name": { "type": "string" },
+          "field_name_pattern": { "type": "string" },
+          "line_anchor": { "type": "string" },
+          "table_columns": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^[a-z0-9_]+$"
+            }
+          },
+          "reason": { "type": "string" }
+        }
+      }
     }
   }
 }

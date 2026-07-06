@@ -152,6 +152,13 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
   IRS-sourced numeric literals in `rule.parameters`. The current L3 drill check is an explicit
   Form 8949 arithmetic stub until Step 3 replaces it with generated property checks. Next: Step 2
   both-direction structural completeness.
+- **M8 Step 2 is done.** Added `tax_graph.verify.completeness`, validator/extraction hooks for
+  AcroForm field-grid direction-two completeness, optional fixture-supplied MeF line inventory
+  checks, and Form 8949 `not_modeled_fields` records for identity/status, non-arithmetic table
+  columns, and deferred line totals. The deleted-node drill can now attribute to the
+  `field_grid_completeness` L1 check when a field grid is supplied. No official MeF package is
+  required by CI; the optional witness is skipped unless a clean official inventory is supplied.
+  Next: Step 3 property tests from op semantics.
 
 ## Open for Architect
 - (none open - the M6 closeout question is ANSWERED: the live gate is NOT deferrable, and
@@ -302,6 +309,12 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
   - `.\.venv\Scripts\python.exe -m tax_graph.cli drill run --year 2025` -> 11 drills, PASS, expected layer attribution
   - `.\.venv\Scripts\python.exe -m tax_graph.cli validate 2025` -> graph integrity OK; tables=2
   - `.\.venv\Scripts\python.exe -m pytest` -> 141 passed, 5 skipped
+  - `.\.venv\Scripts\python.exe tools\check_ascii.py` -> ASCII check OK
+- M8 Step 2:
+  - `.\.venv\Scripts\python.exe -m pytest -m m8` -> 12 passed, 142 deselected
+  - `.\.venv\Scripts\python.exe -m pytest -m "m4 or m8"` -> 41 passed, 113 deselected
+  - `.\.venv\Scripts\python.exe -m tax_graph.cli validate 2025` -> graph integrity OK; tables=2
+  - `.\.venv\Scripts\python.exe -m pytest` -> 149 passed, 5 skipped
   - `.\.venv\Scripts\python.exe tools\check_ascii.py` -> ASCII check OK
 - M6b Step 1:
   - `.\.venv\Scripts\python.exe -m pytest -m m6b` -> 7 passed, 124 deselected

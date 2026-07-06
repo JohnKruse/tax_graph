@@ -18,6 +18,7 @@ import yaml
 
 from tax_graph.io.loader import LoadedGraph, load_graph
 from tax_graph.validate.graph_validator import validate_loaded_graph
+from tax_graph.verify import check_loaded_graph_field_completeness
 
 
 DEFAULT_CATALOG = Path(__file__).with_name("drill_catalog.yaml")
@@ -116,17 +117,23 @@ def run_drills(
     year: str | int = "2025",
     root: str | Path | None = None,
     catalog: str | Path | None = None,
+    field_grids: dict[str, dict[str, Any]] | None = None,
 ) -> DrillReport:
     """Run all seeded-defect drills in a catalog."""
     baseline = load_graph(year, root)
-    outcomes = tuple(_run_one(baseline, spec) for spec in load_catalog(catalog))
+    outcomes = tuple(_run_one(baseline, spec, field_grids=field_grids) for spec in load_catalog(catalog))
     return DrillReport(year=baseline.year, outcomes=outcomes)
 
 
-def _run_one(baseline: LoadedGraph, spec: DrillSpec) -> DrillOutcome:
+def _run_one(
+    baseline: LoadedGraph,
+    spec: DrillSpec,
+    *,
+    field_grids: dict[str, dict[str, Any]] | None,
+) -> DrillOutcome:
     mutated = _copy_graph(baseline)
     _apply_mutation(mutated, spec.mutation)
-    findings = tuple(_run_layers(baseline, mutated))
+    findings = tuple(_run_layers(baseline, mutated, field_grids=field_grids))
     actual_layers = tuple(sorted({finding.layer for finding in findings}))
     status, ok = _classify(spec, actual_layers)
     return DrillOutcome(
@@ -211,11 +218,17 @@ def _apply_mutation(graph: LoadedGraph, mutation: dict[str, Any]) -> None:
     raise ValueError(f"unsupported drill mutation: {kind}")
 
 
-def _run_layers(baseline: LoadedGraph, mutated: LoadedGraph) -> list[LayerFinding]:
+def _run_layers(
+    baseline: LoadedGraph,
+    mutated: LoadedGraph,
+    *,
+    field_grids: dict[str, dict[str, Any]] | None,
+) -> list[LayerFinding]:
     findings: list[LayerFinding] = []
     findings.extend(_validator_findings(mutated))
     findings.extend(_citation_quote_findings(baseline, mutated))
     findings.extend(_structural_delta_findings(baseline, mutated))
+    findings.extend(_field_grid_completeness_findings(mutated, field_grids))
     findings.extend(_property_stub_findings(mutated))
     findings.extend(_link_delta_findings(baseline, mutated))
     return findings
@@ -278,6 +291,23 @@ def _structural_delta_findings(baseline: LoadedGraph, mutated: LoadedGraph) -> l
                 )
             )
     return findings
+
+
+def _field_grid_completeness_findings(
+    graph: LoadedGraph,
+    field_grids: dict[str, dict[str, Any]] | None,
+) -> list[LayerFinding]:
+    if not field_grids:
+        return []
+    report = check_loaded_graph_field_completeness(graph, field_grids)
+    return [
+        LayerFinding(
+            "L1",
+            "field_grid_completeness",
+            f"{issue.document_id}/{issue.field_name}: {issue.reason}",
+        )
+        for issue in report.issues
+    ]
 
 
 def _property_stub_findings(graph: LoadedGraph) -> list[LayerFinding]:

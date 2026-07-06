@@ -82,7 +82,7 @@ differ); 100% drill-catalog catch rate before bulk extraction.
   Tests: every seeded drill caught with correct attribution; an uncatchable synthetic drill
   reports honestly as MISS (and the gate fails). Docs.
 
-- [ ] **Step 2 - Both-direction structural completeness.** Extend extraction checks +
+- [DONE] **Step 2 - Both-direction structural completeness.** Extend extraction checks +
   validator: direction one exists (true anchors -> nodes); add direction two - every AcroForm
   entry field in `.fields.json` maps to a promoted/draft node or an explicit `not_modeled`
   record (id + reason) carried with the form. Optional MeF line-inventory cross-check behind

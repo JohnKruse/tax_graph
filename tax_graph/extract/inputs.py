@@ -9,6 +9,7 @@ from typing import Any
 from tax_graph.acquire.manifest import load_manifest
 from tax_graph.config import get_config_value, load_config, project_root
 from tax_graph.extract.models import RelatedSourceInput, SourceDocumentInput
+from tax_graph.io.loader import load_graph
 
 
 FORM_KINDS = {"tax_form", "schedule", "source_document"}
@@ -90,7 +91,19 @@ def load_document_input(
         links=links,
         links_path=links_path,
         related_sources=related_sources,
+        not_modeled_fields=_load_not_modeled_fields(document_id, year=year, root=root_path),
     )
+
+
+def _load_not_modeled_fields(document_id: str, *, year: str | int, root: Path) -> list[dict[str, Any]]:
+    try:
+        graph = load_graph(year, root)
+    except FileNotFoundError:
+        return []
+    for document in graph.items("documents"):
+        if document.get("document_id") == document_id:
+            return list(document.get("not_modeled_fields", []) or [])
+    return []
 
 
 def _load_related_source(document_id: str, *, entries, text_dir: Path, relationship: str) -> RelatedSourceInput:

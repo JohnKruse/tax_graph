@@ -17,6 +17,7 @@ from tax_graph.extract.models import (
     SourceDocumentInput,
 )
 from tax_graph.extract.prompts import graph_object_schemas
+from tax_graph.verify import check_field_grid_completeness
 
 
 LINE_RE = re.compile(r"^-\s+([0-9]+[a-z]?|[a-z]):", re.MULTILINE)
@@ -77,15 +78,17 @@ def _line_completeness_issues(document: SourceDocumentInput, batch: ExtractionBa
 def _field_grid_issues(document: SourceDocumentInput, batch: ExtractionBatch) -> list[CheckIssue]:
     if not document.fields:
         return []
-    nodes = [obj for obj in batch.items("nodes") if obj.data.get("document_id") == document.document_id]
-    issues: list[CheckIssue] = []
-    for field in document.fields.get("fields", []):
-        anchor = str(field.get("line_anchor", "")).lower()
-        if not anchor:
-            continue
-        if not any(_node_mentions_line(node, anchor) for node in nodes):
-            issues.append(CheckIssue("document", document.document_id, f"field {field.get('field_name')} maps to missing line {anchor}"))
-    return issues
+    report = check_field_grid_completeness(
+        document_id=document.document_id,
+        fields=document.fields,
+        nodes=[obj.data for obj in batch.items("nodes")],
+        tables=[obj.data for obj in batch.items("tables")],
+        not_modeled_fields=document.not_modeled_fields,
+    )
+    return [
+        CheckIssue("document", document.document_id, f"field {issue.field_name}: {issue.reason}")
+        for issue in report.issues
+    ]
 
 
 def _citation_quote_issues(document: SourceDocumentInput, batch: ExtractionBatch) -> list[CheckIssue]:
