@@ -85,7 +85,7 @@ SOI weights let us SEE and PROVE where the high-value 25% is and where the long 
   deferred map consumes this). Test: coverage is between 0 and 100; marking a form modeled increases
   coverage; the worklist is weight-sorted; `--json` validates. Docs.
 
-- [ ] **Step 4 - Validator integration (intentional incompleteness vs dangling bug).** Extend
+- [DONE] **Step 4 - Validator integration (intentional incompleteness vs dangling bug).** Extend
   `tools/validate_graph.py`: a live edge whose target node is missing is an ERROR **unless** that
   reference is a well-formed registered frontier entry (valid target address + `target_url` +
   `citation_ref`); a frontier entry missing its url or citation is an error. So the registry blesses

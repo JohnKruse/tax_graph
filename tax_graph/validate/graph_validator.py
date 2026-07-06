@@ -10,6 +10,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 import json
 from pathlib import Path
+import re
 from typing import Any, Mapping
 
 from tax_graph.io.loader import GRAPH_KINDS, LoadedGraph, load_graph, load_yaml
@@ -81,6 +82,7 @@ def validate_loaded_graph(
     _validate_schemas(graph, schemas_dir, errors)
     _validate_unique_ids(graph, errors)
     _validate_references_and_years(graph, errors)
+    _validate_frontier_registry(graph, schemas_dir, errors)
     _validate_tables(graph, errors)
     _validate_no_inline_magic_numbers(graph, errors)
     _validate_field_grid_completeness(graph, field_grids, mef_line_inventory, errors)
@@ -179,6 +181,7 @@ def _validate_references_and_years(graph: LoadedGraph, errors: list[str]) -> Non
     nodes = {node["node_id"]: node for node in graph.items("nodes") if "node_id" in node}
     rules = {rule["rule_id"]: rule for rule in graph.items("rules") if "rule_id" in rule}
     citations = {cite["citation_id"]: cite for cite in graph.items("citations") if "citation_id" in cite}
+    frontier_entries = _load_frontier_entries(graph)
 
     for doc in graph.items("documents"):
         doc_id = doc.get("document_id", "<unknown>")
@@ -199,9 +202,11 @@ def _validate_references_and_years(graph: LoadedGraph, errors: list[str]) -> Non
         source = edge.get("source")
         target = edge.get("target")
         if source not in nodes:
-            errors.append(f"edge {edge_id} -> missing source {source}")
+            if not _frontier_allows_edge(edge, missing_node=source, missing_side="source", graph=graph, frontier_entries=frontier_entries):
+                errors.append(f"edge {edge_id} -> missing source {source}")
         if target not in nodes:
-            errors.append(f"edge {edge_id} -> missing target {target}")
+            if not _frontier_allows_edge(edge, missing_node=target, missing_side="target", graph=graph, frontier_entries=frontier_entries):
+                errors.append(f"edge {edge_id} -> missing target {target}")
         if source in nodes and target in nodes:
             source_year = _node_tax_year(nodes[source], documents)
             target_year = _node_tax_year(nodes[target], documents)
@@ -223,6 +228,83 @@ def _validate_references_and_years(graph: LoadedGraph, errors: list[str]) -> Non
     for decision in graph.items("decisions"):
         decision_id = decision.get("decision_id", "<unknown>")
         _check_citation_refs("decision", decision_id, decision.get("citation_refs", []), citations, errors)
+
+
+def _validate_frontier_registry(graph: LoadedGraph, schemas_dir: Path, errors: list[str]) -> None:
+    registry_path = graph.graph_dir / "frontier.yaml"
+    if not registry_path.exists():
+        return
+    registry = load_yaml(registry_path)
+    if HAVE_JSONSCHEMA:
+        try:
+            jsonschema.validate(registry, load_yaml(schemas_dir / "frontier.schema.json"))
+        except jsonschema.ValidationError as exc:
+            preview = json.dumps(registry, default=str)[:120]
+            errors.append(f"[schema/frontier] {exc.message} :: {preview}")
+    citations = {cite["citation_id"] for cite in graph.items("citations") if "citation_id" in cite}
+    seen: set[str] = set()
+    for entry in registry.get("frontiers", []) or []:
+        frontier_id = entry.get("frontier_id", "<unknown>")
+        if frontier_id in seen:
+            errors.append(f"frontier -> duplicate frontier_id {frontier_id}")
+        seen.add(frontier_id)
+        if not entry.get("target_url"):
+            errors.append(f"frontier {frontier_id} -> missing target_url")
+        citation_ref = entry.get("citation_ref")
+        if not citation_ref:
+            errors.append(f"frontier {frontier_id} -> missing citation_ref")
+        elif citation_ref not in citations:
+            errors.append(f"frontier {frontier_id} -> missing citation {citation_ref}")
+
+
+def _load_frontier_entries(graph: LoadedGraph) -> list[dict[str, Any]]:
+    registry_path = graph.graph_dir / "frontier.yaml"
+    if not registry_path.exists():
+        return []
+    registry = load_yaml(registry_path) or {}
+    return list(registry.get("frontiers", []) or [])
+
+
+def _frontier_allows_edge(
+    edge: Mapping[str, Any],
+    *,
+    missing_node: Any,
+    missing_side: str,
+    graph: LoadedGraph,
+    frontier_entries: list[dict[str, Any]],
+) -> bool:
+    missing = str(missing_node)
+    nodes = {node["node_id"] for node in graph.items("nodes") if "node_id" in node}
+    for entry in frontier_entries:
+        if entry.get("status") == "modeled":
+            continue
+        if not entry.get("target_url") or not entry.get("citation_ref"):
+            continue
+        source = entry.get("source") or {}
+        target = entry.get("target") or {}
+        if target.get("node_id") == missing or source.get("node_id") == missing:
+            return True
+        if missing_side == "target" and edge.get("source") == source.get("node_id"):
+            doc_id, line = _infer_document_line(missing, graph)
+            if doc_id == target.get("document_id") and line == str(target.get("line")):
+                return True
+        if missing_side == "source" and edge.get("target") in nodes:
+            doc_id, line = _infer_document_line(missing, graph)
+            if doc_id == target.get("document_id") and line == str(target.get("line")):
+                return True
+    return False
+
+
+def _infer_document_line(node_id: str, graph: LoadedGraph) -> tuple[str | None, str | None]:
+    document_ids = sorted(
+        [doc["document_id"] for doc in graph.items("documents") if "document_id" in doc],
+        key=len,
+        reverse=True,
+    )
+    document_id = next((candidate for candidate in document_ids if node_id.startswith(candidate)), None)
+    match = re.search(r"_line_([0-9]+[a-z]?)", node_id, flags=re.IGNORECASE)
+    line = match.group(1).lower() if match else None
+    return document_id, line
 
 
 def _validate_tables(graph: LoadedGraph, errors: list[str]) -> None:

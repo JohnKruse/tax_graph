@@ -180,7 +180,9 @@ manifest scope, and committed SOI counts. Modeled entries name already-covered
 targets; declared entries are intentional open ends; unmodeled entries are
 outside the current manifest scope. Coverage is reported against the full SOI
 form-count universe and the currently in-scope weighted manifest set. The
-registry is not hand-maintained.
+registry is not hand-maintained. The graph validator schema-checks the registry
+and only treats a dangling graph edge as intentional when a matching frontier
+entry has a target URL and a live citation reference.
 
 Outline-first extraction now carries a deterministic repeatable-table detector:
 it emits a draft `tables` subunit only when repeated field-grid row bands and a

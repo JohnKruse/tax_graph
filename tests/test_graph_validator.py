@@ -107,3 +107,107 @@ def test_validator_flags_inline_magic_number_parameters(tmp_path):
 
     assert not result.ok
     assert any("inline numeric parameter at parameters.capital_loss_limit" in error for error in result.errors)
+
+
+@pytest.mark.m7
+def test_validator_allows_registered_frontier_edge(tmp_path):
+    root = _copy_graph_root(tmp_path)
+    edges_file = root / "graph" / "2025" / "edges" / "capital-gains.yaml"
+    edges = _read_yaml(edges_file)
+    edges.append(
+        {
+            "edge_id": "e_8949_part_ii_total_to_sd_9_frontier",
+            "source": "form_8949_2025_part_ii_line_2_line_2_column_h_total",
+            "target": "schedule_d_2025_line_9_frontier",
+            "relationship": "FEEDS",
+            "rule_id": "copy_currency_value",
+        }
+    )
+    _write_yaml(edges_file, edges)
+    frontier = {
+        "tax_year": 2025,
+        "provenance": {
+            "generated_by": "test",
+            "soi_year": 2023,
+            "soi_source_url": "https://www.irs.gov/statistics",
+            "soi_note": "sample-based estimate",
+        },
+        "frontiers": [
+            {
+                "frontier_id": "flow_test_to_schedule_d_line_9",
+                "kind": "outbound_flow",
+                "source": {
+                    "document_id": "form_8949_2025",
+                    "node_id": "form_8949_2025_part_ii_line_2_line_2_column_h_total",
+                },
+                "target": {
+                    "document_id": "schedule_d_2025",
+                    "line": "9",
+                },
+                "target_url": "https://www.irs.gov/pub/irs-pdf/f1040sd.pdf",
+                "citation_ref": "cite_8949_line2_totals",
+                "status": "declared",
+                "weight": 24000000,
+            }
+        ],
+    }
+    _write_yaml(root / "graph" / "2025" / "frontier.yaml", frontier)
+
+    result = validate_graph("2025", root=root)
+
+    assert result.ok, result.errors
+
+
+@pytest.mark.m7
+def test_validator_rejects_unregistered_dangling_edge(tmp_path):
+    root = _copy_graph_root(tmp_path)
+    (root / "graph" / "2025" / "frontier.yaml").unlink()
+    edges_file = root / "graph" / "2025" / "edges" / "capital-gains.yaml"
+    edges = _read_yaml(edges_file)
+    edges.append(
+        {
+            "edge_id": "e_8949_part_ii_total_to_missing_sd_9",
+            "source": "form_8949_2025_part_ii_line_2_line_2_column_h_total",
+            "target": "schedule_d_2025_line_9_frontier",
+            "relationship": "FEEDS",
+            "rule_id": "copy_currency_value",
+        }
+    )
+    _write_yaml(edges_file, edges)
+
+    result = validate_graph("2025", root=root)
+
+    assert not result.ok
+    assert any("missing target schedule_d_2025_line_9_frontier" in error for error in result.errors)
+
+
+@pytest.mark.m7
+def test_validator_rejects_malformed_frontier_entry(tmp_path):
+    root = _copy_graph_root(tmp_path)
+    frontier = {
+        "tax_year": 2025,
+        "provenance": {
+            "generated_by": "test",
+            "soi_year": 2023,
+            "soi_source_url": "https://www.irs.gov/statistics",
+            "soi_note": "sample-based estimate",
+        },
+        "frontiers": [
+            {
+                "frontier_id": "flow_missing_citation",
+                "kind": "outbound_flow",
+                "source": {"document_id": "form_8949_2025"},
+                "target": {"document_id": "schedule_d_2025", "line": "9"},
+                "target_url": "https://www.irs.gov/pub/irs-pdf/f1040sd.pdf",
+                "citation_ref": "cite_missing",
+                "status": "declared",
+                "weight": 24000000,
+            }
+        ],
+    }
+    _write_yaml(root / "graph" / "2025" / "frontier.yaml", frontier)
+
+    result = validate_graph("2025", root=root)
+
+    assert not result.ok
+    assert any("frontier flow_missing_citation -> missing citation cite_missing" in error for error in result.errors)
