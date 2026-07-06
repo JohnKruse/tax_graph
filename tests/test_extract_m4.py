@@ -214,18 +214,22 @@ def test_extract_command_year_runs_manifest_docs(tmp_path, capsys):
 
 
 @pytest.mark.m4
-def test_low_confidence_draft_routes_to_human_review(tmp_path):
+@pytest.mark.m8
+def test_confidence_is_telemetry_never_routing(tmp_path):
+    """M8: a low self-reported confidence must NOT change routing (no-op drill)."""
     root = _make_project(tmp_path)
     client = FakeLlmClient(response=_good_response(confidence=0.40))
 
     extract_command(doc="form_8949_2025", year="2025", root=root, client=client)
 
-    review = (
-        root / "graph" / "2025" / "_drafts" / "form_8949_2025" / "review.md"
-    ).read_text(encoding="utf-8")
-    assert "Auto-accepted drafts: 0" in review
-    assert "Human-review drafts: 2" in review
-    assert "confidence 0.400 below threshold 0.950" in review
+    draft_dir = root / "graph" / "2025" / "_drafts" / "form_8949_2025"
+    review = (draft_dir / "review.md").read_text(encoding="utf-8")
+    assert "Auto-accepted drafts: 2" in review
+    assert "Human-review drafts: 0" in review
+    assert "below threshold" not in review
+    provenance = yaml.safe_load((draft_dir / "provenance.yaml").read_text(encoding="utf-8"))
+    assert all(entry["confidence"] == 0.40 for entry in provenance)
+    assert all(entry["tier"] in {"T1", "T2", "T3"} for entry in provenance)
 
 
 @pytest.mark.m4
@@ -391,6 +395,10 @@ def test_openai_adapter_extracts_json_from_text_wrapper():
 def _make_project(tmp_path: Path) -> Path:
     root = tmp_path / "project"
     shutil.copytree(ROOT / "config", root / "config")
+    shutil.copyfile(
+        root / "config" / "tax-graph.config.example.yaml",
+        root / "config" / "tax-graph.config.yaml",
+    )  # hermetic: never inherit the developer's gitignored local config
     shutil.copytree(ROOT / "schemas", root / "schemas")
     shutil.copytree(ROOT / "prompts", root / "prompts")
     raw_dir = root / ".cache" / "raw" / "2025"

@@ -17,6 +17,10 @@ ROOT = Path(__file__).resolve().parents[1]
 def _copy_acquire_root(tmp_path):
     root = tmp_path / "project"
     shutil.copytree(ROOT / "config", root / "config")
+    shutil.copyfile(
+        root / "config" / "tax-graph.config.example.yaml",
+        root / "config" / "tax-graph.config.yaml",
+    )  # hermetic: never inherit the developer's gitignored local config
     shutil.copytree(ROOT / "schemas", root / "schemas")
     return root
 

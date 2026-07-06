@@ -61,6 +61,7 @@ class DraftObject:
     confidence: float
     critic_agrees: bool = True
     flags: list[str] = field(default_factory=list)
+    tier: str | None = None
 
     @property
     def object_id(self) -> str:
@@ -150,6 +151,7 @@ class RoutedDrafts:
     review: list[DraftObject]
     issues: list[CheckIssue]
     output_dir: Path | None = None
+    calibration: list[DraftObject] = field(default_factory=list)
 
     @property
     def ok(self) -> bool:

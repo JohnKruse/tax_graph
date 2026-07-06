@@ -1,4 +1,4 @@
-# PHASE M8 - Extraction verification at scale (the trust ladder)   [ ]
+# PHASE M8 - Extraction verification at scale (the trust ladder)   [COMPLETE]
 
 **Canary:** Skeptical Notary
 **Depends on:** M4 (extraction pipeline), M6 (differential harness - supplies ladder layer L5),
@@ -124,7 +124,7 @@ differ); 100% drill-catalog catch rate before bulk extraction.
     Committed by the Architect, authored by Codex. The gated LIVE N-version run for
     form_8949_2025 has not been executed yet - fold it into Step 6's exit-criteria pass.
 
-- [ ] **Step 6 - Trust tiers + metrics + verify report (routing change).** Tier assignment in
+- [DONE] **Step 6 - Trust tiers + metrics + verify report (routing change).** Tier assignment in
   routing: T1 = L0/L1 clean; T2 = T1 + N-version agreement; T3 = T2 + properties pass + an
   example/differential executes through the object's branch. **Remove confidence from the
   auto-accept path** (it stays in provenance as telemetry); review queue = exceptions +
@@ -137,6 +137,25 @@ differ); 100% drill-catalog catch rate before bulk extraction.
   exercised now against 8949 itself). Tests: tier logic; confidence-inflation no-op at the
   ROUTING level; calibration sample determinism (seeded); report golden. Exit-criteria
   commands run. Docs: README verify workflow + design-doc status update.
+  - Architect note (2026-07-06): implemented by the ARCHITECT at John's direction (Codex out
+    of messages; explicit one-time role deviation). Delivered: `tax_graph/verify/tiers.py`
+    (T0-T3 from check outcomes), `metrics.py` (per-run metrics.yaml + report roll-up),
+    `delta.py` (`verify diff-drafts`), routing rewrite (confidence removed from auto-accept;
+    critic + decision policy + seeded 10%-min-5 calibration sample), `verify report` +
+    `verify diff-drafts` CLI. Two live findings folded in: (1) N-version comparison narrowed
+    to the SEMANTIC core - free-text fields and citation-span selection are excluded (spans
+    are verbatim-verified by construction; selection variance is F5, not F3) - without this
+    the review queue drowns in prose-phrasing noise; (2) test fixtures were inheriting the
+    developer's gitignored local config - all five copytree fixtures now pin the example
+    config (hermeticity bug, pre-existing). Live exit runs: outline-first 8949 extraction ->
+    70 objects, 0 flags, tiers assigned, calibration sample 7, metrics.yaml written; live
+    cross-family N-version (gemini-flash primary vs gpt-mini secondary) agreed on the whole
+    structure EXCEPT the Part I/II line-2 totals rule shape - a genuine F3-class disagreement
+    now in the review queue for John (primary matches the promoted live graph); drill gate
+    100% caught with correct layer attribution; confidence-inflation no-op proven at routing
+    level; full pytest 168 passed / 5 skipped; ASCII OK. John's operating rule recorded:
+    small/cheap models are acceptable for verification passes exactly BECAUSE the
+    micro-questions are tightly fenced - fencing, not model size, carries the reliability.
 
 When all steps are `[DONE]`: mark this phase `[COMPLETE]`, move it to `plans/archive/`, update
 `plans/AGENT_HANDOFF.md`, single `git push`, and tell John. With the drill gate green, bulk

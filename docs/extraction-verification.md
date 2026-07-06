@@ -201,3 +201,20 @@ milestone block, gate row, and sequencing. Steps 1 (drills), 2 (L1 both-directio
 MeF), and 3 (L3 properties) are offline and independent of M5/M6; Step 4 (example
 miner), Step 5 (N-version), and Step 6 (metrics + delta mode) complete the ladder. M6
 supplies L5. PHASE_M8.md is written just-in-time when M8 becomes next.
+
+## 10. Status (2026-07-06): IMPLEMENTED
+
+M8 is complete (`plans/archive/PHASE_M8.md`). The ladder runs: drills catch 100% of the
+catalog with layer attribution; routing is deterministic from check outcomes (confidence
+is telemetry, drill-proven); `tax-graph verify report` prints the payoff lines. Two
+refinements learned from the LIVE runs, now part of the design:
+
+- **L2 compares the SEMANTIC core only.** Free-text fields (label/description) and
+  citation-span SELECTION are excluded from the cross-vendor diff: spans are already
+  verbatim-verified by construction, and which of several valid supporting spans a model
+  picks is provenance quality (F5), not a formula disagreement (F3). Without this the
+  review queue drowns in prose-phrasing noise and the economics collapse.
+- **Small models are fine BECAUSE the questions are fenced** (John's rule, validated
+  live): a mini-class secondary agreed with the flagship primary across the whole 8949
+  structure and diverged only on one totals-rule shape - which the queue caught and a
+  human adjudicates in seconds against the promoted graph.

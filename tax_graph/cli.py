@@ -316,6 +316,41 @@ def verify_nversion_command(
     return 0 if report.ok else 1
 
 
+def verify_report_command(
+    year: str = "2025",
+    root: str | Path | None = None,
+) -> int:
+    """Print the cross-form verification metrics roll-up."""
+    from tax_graph.verify.metrics import collect_metrics, render_report
+
+    root_path = Path(root).resolve() if root is not None else project_root()
+    config = load_config(root=root_path)
+    graph_dir = str(get_config_value(config, "project.paths.graph_dir", "graph"))
+    reports = collect_metrics(root_path, year=year, graph_dir=graph_dir)
+    print(render_report(reports, year=year), end="")
+    return 0
+
+
+def verify_diff_drafts_command(
+    *,
+    doc: str,
+    year: str = "2025",
+    root: str | Path | None = None,
+) -> int:
+    """Structurally diff a draft re-extraction against the promoted live graph."""
+    from tax_graph.verify.delta import diff_drafts_against_live, render_delta
+
+    root_path = Path(root).resolve() if root is not None else project_root()
+    load_config(root=root_path)
+    try:
+        delta = diff_drafts_against_live(doc, year=year, root=root_path)
+    except Exception as exc:
+        print(f"ERROR: {exc}")
+        return 1
+    print(render_delta(delta), end="")
+    return 0 if delta.ok else 1
+
+
 def oracle_install_command(
     year: str = "2025",
     root: str | Path | None = None,
@@ -717,6 +752,27 @@ def _build_typer_app():
     ) -> None:
         """Run N-version extraction corroboration."""
         raise_code = verify_nversion_command(doc=doc, year=year, root=root)
+        if raise_code:
+            raise typer.Exit(raise_code)
+
+    @verify_cli.command("report")
+    def verify_report_cli(
+        year: str = typer.Option("2025", "--year", "-y", help="Tax year to report."),
+        root: Path | None = typer.Option(None, "--root", help="Project root override."),
+    ) -> None:
+        """Roll up per-form verification metrics (tiers, flags, payoff lines)."""
+        raise_code = verify_report_command(year=year, root=root)
+        if raise_code:
+            raise typer.Exit(raise_code)
+
+    @verify_cli.command("diff-drafts")
+    def verify_diff_drafts_cli(
+        doc: str = typer.Option(..., "--doc", help="Manifest document id to diff."),
+        year: str = typer.Option("2025", "--year", "-y", help="Tax year to diff."),
+        root: Path | None = typer.Option(None, "--root", help="Project root override."),
+    ) -> None:
+        """Diff a draft re-extraction against the promoted live graph."""
+        raise_code = verify_diff_drafts_command(doc=doc, year=year, root=root)
         if raise_code:
             raise typer.Exit(raise_code)
 

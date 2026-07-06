@@ -108,6 +108,8 @@ uv run tax-graph drill run --year 2025
 uv run tax-graph verify mine-examples --doc instructions_form_8949_2025 --limit 1
 uv run tax-graph verify replay-examples --year 2025
 uv run tax-graph verify nversion --doc form_8949_2025
+uv run tax-graph verify report --year 2025
+uv run tax-graph verify diff-drafts --doc form_8949_2025 --year 2025
 uv run tax-graph acquire 2025
 uv run tax-graph acquire 2025 --check
 uv run tax-graph extract --doc form_8949_2025
@@ -129,6 +131,8 @@ python -m tax_graph.cli drill run --year 2025
 python -m tax_graph.cli verify mine-examples --doc instructions_form_8949_2025 --limit 1
 python -m tax_graph.cli verify replay-examples --year 2025
 python -m tax_graph.cli verify nversion --doc form_8949_2025
+python -m tax_graph.cli verify report --year 2025
+python -m tax_graph.cli verify diff-drafts --doc form_8949_2025 --year 2025
 python -m tax_graph.cli acquire 2025 --check
 python -m tax_graph.cli extract --doc form_8949_2025
 ```

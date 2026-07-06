@@ -169,6 +169,19 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
   confirmed frozen Form 8949 instruction Example 1 fixture under `examples/irs_examples/`.
   Mining still requires a configured LLM client and `--confirm` is the human-confirmation gate;
   replay is fully offline. Next: Step 5 N-version cross-vendor micro-extraction.
+- **M8 (Verification ladder) is COMPLETE (2026-07-06).** Step 6 was implemented by the
+  ARCHITECT at John's explicit direction (Codex out of messages; one-time role deviation,
+  noted in the plan). Trust tiers T0-T3 assigned deterministically from check outcomes;
+  confidence REMOVED from the auto-accept path (telemetry only, drill-proven no-op); seeded
+  10%-min-5 calibration sampling; per-run `metrics.yaml`; `tax-graph verify report` +
+  `verify diff-drafts` wired. Live exit runs: outline-first 8949 extraction -> 70 objects /
+  0 flags / calibration 7; live cross-family N-version (gemini-flash vs gpt-mini) agreed on
+  everything EXCEPT the Part I/II line-2 totals rule shape - **one review-queue adjudication
+  PENDING for John** (primary matches the promoted graph); drill gate 100% caught; full
+  pytest 168 passed / 5 skipped. Design refinement pinned: N-version diffs the SEMANTIC core
+  only (free text + citation-span selection excluded). Hermeticity fix: test fixtures no
+  longer inherit the developer's gitignored local config. `plans/PHASE_M8.md` is archived.
+  **The drill gate is green: bulk extraction beyond the capital-gains set is UNLOCKED.**
 - **M8 Step 5 is done (verified + committed by the Architect, 2026-07-06).** Codex authored
   `tax_graph/verify/nversion.py`, `tax-graph verify nversion` CLI wiring, the
   `llm.nversion_model` / vendor-family config, and `tests/test_nversion_m8.py`, but its session
@@ -185,7 +198,17 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
   running it found real defects. See From Architect "M6 live-gate ruling".)
 
 ## From Architect
-- **Next: start M8 (Verification ladder, canary Skeptical Notary).** `plans/PHASE_M8.md` is
+- **Next (2026-07-06): John chooses the post-M8 direction.** The drill gate is green, so
+  bulk extraction is unlocked. Two candidate tracks: (a) **M7** (Compass Rose,
+  `plans/PHASE_M7.md` already live) - frontier registry + SOI weights, the data-driven
+  worklist for expansion; or (b) a new **form-set expansion phase** (Schedule D + 1040
+  extraction, the cross-form LINK step realizing the 8949 outbound-flow declarations) which
+  the Architect will plan just-in-time once John picks. Recommendation: M7 FIRST - it makes
+  the expansion order data-driven instead of guessed, and the LINK step leans on its
+  registry (PHASE_M4 pinned decision 6). One review-queue item pending for John from the M8
+  live N-version run: adjudicate the Part I/II line-2 totals rule disagreement (primary =
+  SUM/addend, matching the promoted graph; secondary's alternative shape is the outlier).
+- **Superseded: start M8 direction (M8 is complete and archived).** `plans/PHASE_M8.md` is
   written (2026-07-06). The Architect independently verified M6b closure first: full pytest
   137 passed / 5 skipped; `validate 2025` OK with tables=2; multi-lot example line 7 = 250
   through the promoted Part II column (h) total; live `pytest -m oracle` 2 passed. Read

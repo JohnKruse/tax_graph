@@ -159,11 +159,38 @@ def _batch_data_by_identity(batch: ExtractionBatch) -> dict[tuple[str, str], dic
     return {
         (obj.kind, obj.object_id): _object_payload(obj)
         for obj in batch.objects
+        if obj.kind != "citations"
     }
 
 
+_NON_SEMANTIC_FIELDS = {"label", "description", "derivation", "citation_refs"}
+
+
 def _object_payload(obj: DraftObject) -> dict[str, Any]:
-    return deepcopy(obj.data)
+    """Return the SEMANTIC payload for cross-version comparison.
+
+    N-version corroborates structure and formula semantics (taxonomy F2/F3/
+    F6): ops, roles, targets, columns, types. Free-text fields are stripped
+    recursively (two vendor families never phrase prose identically) and so
+    are citation selections - every selected span is already verbatim-verified
+    by construction (L0), and which of several valid supporting spans a model
+    picks is provenance-selection quality (F5), reviewed by the citation
+    layer, not a semantic disagreement. Citation objects themselves are
+    excluded from the comparison for the same reason.
+    """
+    return _strip_free_text(deepcopy(obj.data))
+
+
+def _strip_free_text(value: Any) -> Any:
+    if isinstance(value, dict):
+        return {
+            key: _strip_free_text(item)
+            for key, item in value.items()
+            if key not in _NON_SEMANTIC_FIELDS
+        }
+    if isinstance(value, list):
+        return [_strip_free_text(item) for item in value]
+    return value
 
 
 def _secondary_config(settings: dict[str, Any]) -> dict[str, Any]:

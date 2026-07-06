@@ -199,6 +199,10 @@ def _document(tmp_path: Path) -> SourceDocumentInput:
 def _make_project(tmp_path: Path) -> Path:
     root = tmp_path / "project"
     shutil.copytree(ROOT / "config", root / "config")
+    shutil.copyfile(
+        root / "config" / "tax-graph.config.example.yaml",
+        root / "config" / "tax-graph.config.yaml",
+    )  # hermetic: never inherit the developer's gitignored local config
     shutil.copytree(ROOT / "schemas", root / "schemas")
     shutil.copytree(ROOT / "graph", root / "graph")
     raw_dir = root / ".cache" / "raw" / "2025"
