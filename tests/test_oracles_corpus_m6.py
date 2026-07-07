@@ -117,23 +117,37 @@ def _fake_agreeing_ots_runner(input_path: str | Path, *, executable: str | Path)
     csv_path = Path(input_path).with_name(f"{Path(input_path).stem}_f8949.csv")
     with csv_path.open(newline="", encoding="utf-8") as handle:
         rows = list(csv.DictReader(handle))
-    proceeds = _clean_number(sum(_clean_number(row["Proceeds"]) for row in rows))
-    cost = _clean_number(sum(_clean_number(row["Cost"]) for row in rows))
-    adjustment = _clean_number(sum(_clean_number(row.get("Adjustment") or 0) for row in rows))
-    gain = _clean_number(proceeds - cost + adjustment)
+    short_rows = [row for row in rows if str(row["Date_Acquired"]).endswith("2025")]
+    long_rows = [row for row in rows if row not in short_rows]
+    proceeds = _clean_number(sum(_clean_number(row["Proceeds"]) for row in long_rows))
+    cost = _clean_number(sum(_clean_number(row["Cost"]) for row in long_rows))
+    adjustment = _clean_number(sum(_clean_number(row.get("Adjustment") or 0) for row in long_rows))
+    long_gain = _clean_number(proceeds - cost + adjustment)
+    short_gain = _gain(short_rows)
+    total = _clean_number(short_gain + long_gain)
+    line_7 = max(total, -3000)
     return SimpleNamespace(
         labels={
             "F8949_2d": proceeds,
             "F8949_2e": cost,
             "F8949_2g": adjustment,
-            "F8949_2h": gain,
-            "D7": 0,
-            "D8bh": gain,
-            "D15": gain,
-            "D16": gain,
-            "L7a": gain,
+            "F8949_2h": long_gain,
+            "D1bh": short_gain,
+            "D7": short_gain,
+            "D8bh": long_gain,
+            "D15": long_gain,
+            "D16": total,
+            "D21": line_7 if total < 0 else 0,
+            "L7a": line_7,
         }
     )
+
+
+def _gain(rows):
+    proceeds = _clean_number(sum(_clean_number(row["Proceeds"]) for row in rows))
+    cost = _clean_number(sum(_clean_number(row["Cost"]) for row in rows))
+    adjustment = _clean_number(sum(_clean_number(row.get("Adjustment") or 0) for row in rows))
+    return _clean_number(proceeds - cost + adjustment)
 
 
 def _clean_number(value):

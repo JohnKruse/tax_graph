@@ -41,10 +41,15 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
     promoted; frontier flipped to modeled (only line 20 remains declared). Supported
     computation intentionally sums line 1b into line 7 and line 8b into line 15 (one table
     per part); category rows 2/3/9/10 linked but not yet downstream addends.
-- **Step 5 [worker-standard] is IN FLIGHT with uncommitted work in the tree** (oracle box
-  map/domain/scenario/diff modules + their tests). Widen the oracle domain: short-term lots,
-  losses beyond $3000 in-domain via line 21, retire the old out-of-domain canary for a line 21
-  agreement test, >=100 live fuzz gate, re-freeze corpus (live-diff provenance only).
+- **Step 5 [worker-standard] is DONE in the worktree and ready to commit.** The oracle harness
+  now covers mixed short-term + long-term lots and the modeled Schedule D line 21 branch:
+  `oracles/box_map_2025.yaml` maps `D1bh` and conditional `D21`; `oracles/domain_2025.yaml`
+  permits losses below -3000 and seeds short-term dates; scenario rendering splits Part I vs
+  Part II table rows; the canned OTS loss-limit fixture now carries `D21 = -3000`; the old
+  out-of-domain loss canary was retired in favor of agreement on the modeled branch. Verified:
+  targeted oracle suite green, `pytest -m m6` green, `pytest -m m9` green, ASCII green. The
+  gated live `>=100` fuzz/corpus-refresh item still needs a real OTS binary during Step 5/6
+  exit execution.
 - **Step 6 [worker-standard] pending:** generated `VERIFICATION.md` + per-form pages + MCP
   exposure; byte-stable regeneration; witness absences stated plainly. Design:
   `docs/extraction-verification.md` Section 10. Also run the still-pending live N-version
@@ -140,7 +145,12 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
   - ASCII check OK
 - M9 Step 2 extraction: accepted=75, review=0, deterministic_issues=0, calibration=8;
   nversion agreed diffs=0; mine-examples 10/10 unmappable (verifier endpoint config issue).
-- M9 Step 5: (in flight - worker records results here)
+- M9 Step 5 closeout (worker, 2026-07-07):
+  - `& '.\.venv\Scripts\python.exe' -m pytest tests/test_oracles_domain_m6.py tests/test_oracles_scenario_boxmap_m6.py tests/test_oracles_corpus_m6.py` -> 16 passed, 1 skipped
+  - `& '.\.venv\Scripts\python.exe' -m pytest -m m6 -q` -> 23 passed, 2 skipped
+  - `& '.\.venv\Scripts\python.exe' -m pytest -m m9 -q` -> 14 passed
+  - `& '.\.venv\Scripts\python.exe' tools/check_ascii.py` -> ASCII check OK
+  - Scope landed: widened domain profile, mixed ST/LT scenario rendering, new D1bh/D21 box-map coverage, conditional D21 diffing, updated OTS label inventory, refreshed goldens/fixtures including modeled line 21 agreement.
 
 ## Resolved / superseded
 - All pre-M9 items: see `plans/archive/AGENT_HANDOFF_2026-07-07_full.md` and the archived

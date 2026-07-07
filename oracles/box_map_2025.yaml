@@ -13,6 +13,9 @@ boxes:
   - node_id: form_8949_2025_part_ii_line_2_line_2_column_h_total
     ots_label: F8949_2h
     rounding: whole_dollar
+  - node_id: schedule_d_2025_part_i_line_1b_column_h
+    ots_label: D1bh
+    rounding: whole_dollar
   - node_id: schedule_d_2025_line_7_net_st
     ots_label: D7
     rounding: whole_dollar
@@ -25,6 +28,10 @@ boxes:
   - node_id: schedule_d_2025_line_16_total
     ots_label: D16
     rounding: whole_dollar
+  - node_id: schedule_d_2025_line_21_capital_loss_limited
+    ots_label: D21
+    rounding: whole_dollar
+    condition: tax_graph_negative
   - node_id: form_1040_2025_line_7_capital_gain_loss
     ots_label: L7a
     rounding: whole_dollar

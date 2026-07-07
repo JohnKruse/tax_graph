@@ -81,8 +81,10 @@ def diff_values(
         return OracleDiffReport(status="rejected", guard_violations=tuple(guard_violations))
 
     comparisons = tuple(
-        _compare_box(box, tax_graph_values, ots_values, scenario_payload)
+        comparison
         for box in box_map.boxes
+        if _condition_applies(box, tax_graph_values)
+        for comparison in (_compare_box(box, tax_graph_values, ots_values, scenario_payload),)
     )
     status = "agreed" if all(item.status == "agree" for item in comparisons) else "disagreed"
     return OracleDiffReport(status=status, comparisons=comparisons)
@@ -141,6 +143,15 @@ def _compare_box(
             scenario=scenario,
         )
     if box.ots_label not in ots_values:
+        if _whole_dollar(tax_value) == 0:
+            return BoxComparison(
+                node_id=box.node_id,
+                ots_label=box.ots_label,
+                tax_graph_value=tax_value,
+                ots_value=None,
+                status="agree",
+                scenario=scenario,
+            )
         return BoxComparison(
             node_id=box.node_id,
             ots_label=box.ots_label,
@@ -159,6 +170,15 @@ def _compare_box(
         status=status,
         scenario=scenario,
     )
+
+
+def _condition_applies(box: BoxMapping, tax_graph_values: Mapping[str, Any]) -> bool:
+    if box.condition is None:
+        return True
+    if box.condition == "tax_graph_negative":
+        value = tax_graph_values.get(box.node_id, MISSING)
+        return value is not MISSING and value is not None and float(value) < 0
+    raise ValueError(f"unsupported box-map condition: {box.condition}")
 
 
 def _whole_dollar(value: Any) -> int | None:

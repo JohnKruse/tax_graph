@@ -1,16 +1,11 @@
 tax_year: 2025
 filing_status: single
 scenario_id: m6b_three_lot_adjusted
-facts:
-- node_id: schedule_d_2025_line_7_net_st
-  value: 0
-  source:
-    document_label: Generated scenario m6b_three_lot_adjusted
-    extracted_by: m6_scenario_renderer
+facts: []
 tables:
-- table_id: form_8949_2025_part_ii_line_1
+- table_id: form_8949_2025_part_i_line_1
   rows:
-  - row_key: lot_gain
+  - row_key: lot_st_gain
     columns:
       d: 12000
       e: 10000
@@ -18,7 +13,9 @@ tables:
     source:
       document_label: Generated broker 1099-B for scenario m6b_three_lot_adjusted
       extracted_by: m6_scenario_renderer
-  - row_key: lot_loss
+- table_id: form_8949_2025_part_ii_line_1
+  rows:
+  - row_key: lot_lt_loss
     columns:
       d: 5000
       e: 7000
@@ -26,7 +23,7 @@ tables:
     source:
       document_label: Generated broker 1099-B for scenario m6b_three_lot_adjusted
       extracted_by: m6_scenario_renderer
-  - row_key: lot_adjusted
+  - row_key: lot_lt_adjusted
     columns:
       d: 1000
       e: 800

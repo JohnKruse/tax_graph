@@ -39,8 +39,11 @@ def test_generated_scenarios_stay_inside_profile_bounds():
         assert_scenario_in_domain(profile, scenario)
         render_tax_graph_facts_document(scenario)
         assert 1 <= len(scenario.normalized_lots) <= 15
-        assert scenario.gain_loss >= -3000
+        assert scenario.gain_loss >= -25000
     assert max(lot_counts) > 11
+    assert any(scenario.short_term_lots for scenario in scenarios)
+    assert any(scenario.long_term_lots for scenario in scenarios)
+    assert any(scenario.gain_loss < -3000 for scenario in scenarios)
     assert any(lot.adjustment != 0 for scenario in scenarios for lot in scenario.normalized_lots)
     assert any(
         len(scenario.normalized_lots) >= 3
@@ -61,10 +64,10 @@ def test_out_of_profile_scenario_is_refused():
         date_acquired="01/15/2024",
         date_sold="06/01/2025",
         proceeds=0,
-        cost=10000,
+        cost=60000,
     )
 
-    with pytest.raises(ValueError, match="net_gain_loss outside domain"):
+    with pytest.raises(ValueError, match="cost outside domain"):
         assert_scenario_in_domain(profile, scenario)
 
 

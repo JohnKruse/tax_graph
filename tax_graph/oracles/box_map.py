@@ -16,6 +16,7 @@ class BoxMapping:
     node_id: str
     ots_label: str
     rounding: str = "whole_dollar"
+    condition: str | None = None
 
 
 @dataclass(frozen=True)
@@ -69,6 +70,7 @@ def box_map_from_dict(data: dict[str, Any]) -> BoxMap:
                 node_id=str(item["node_id"]),
                 ots_label=str(item["ots_label"]),
                 rounding=str(item.get("rounding", "whole_dollar")),
+                condition=item.get("condition"),
             )
             for item in data.get("boxes", [])
         ),
@@ -116,6 +118,8 @@ def validate_box_map(box_map: BoxMap, graph: Any, ots_labels: set[str]) -> BoxMa
             errors.append(f"unknown OTS label: {box.ots_label}")
         if box.rounding != "whole_dollar":
             errors.append(f"unsupported rounding policy for {box.node_id}: {box.rounding}")
+        if box.condition not in {None, "tax_graph_negative"}:
+            errors.append(f"unsupported condition for {box.node_id}: {box.condition}")
 
     seen_guards: set[str] = set()
     for guard in box_map.guards:

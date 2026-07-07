@@ -17,7 +17,7 @@ SUPPORTED_FILING_STATUSES = {"single": "Single"}
 
 @dataclass(frozen=True)
 class CapitalGainLot:
-    """One long-term Form 8949 row in an oracle scenario."""
+    """One Form 8949 row in an oracle scenario."""
 
     row_key: str
     description: str
@@ -26,6 +26,7 @@ class CapitalGainLot:
     proceeds: int | float
     cost: int | float
     adjustment: int | float = 0
+    holding_period: str = "long_term"
 
     @property
     def gain_loss(self) -> int | float:
@@ -36,7 +37,7 @@ class CapitalGainLot:
 
 @dataclass(frozen=True)
 class CapitalGainScenario:
-    """A fenced capital-gains scenario with one or more long-term lots."""
+    """A fenced capital-gains scenario with one or more Form 8949 lots."""
 
     scenario_id: str
     tax_year: str
@@ -47,6 +48,7 @@ class CapitalGainScenario:
     proceeds: int | float
     cost: int | float
     adjustment: int | float = 0
+    holding_period: str = "long_term"
     lots: tuple[CapitalGainLot, ...] = ()
 
     @property
@@ -70,16 +72,46 @@ class CapitalGainScenario:
                 proceeds=self.proceeds,
                 cost=self.cost,
                 adjustment=self.adjustment,
+                holding_period=self.holding_period,
             ),
         )
+
+    @property
+    def short_term_lots(self) -> tuple[CapitalGainLot, ...]:
+        """Return lots assigned to Form 8949 Part I."""
+
+        return tuple(lot for lot in self.normalized_lots if lot.holding_period == "short_term")
+
+    @property
+    def long_term_lots(self) -> tuple[CapitalGainLot, ...]:
+        """Return lots assigned to Form 8949 Part II."""
+
+        return tuple(lot for lot in self.normalized_lots if lot.holding_period == "long_term")
 
 
 def render_tax_graph_facts_document(scenario: CapitalGainScenario) -> dict[str, Any]:
     """Render a scenario to Tax Graph taxpayer facts."""
 
     _require_supported_tax_graph_scenario(scenario)
+    tables = []
+    for table_id, lots in (
+        ("form_8949_2025_part_i_line_1", scenario.short_term_lots),
+        ("form_8949_2025_part_ii_line_1", scenario.long_term_lots),
+    ):
+        if lots:
+            tables.append({"table_id": table_id, "rows": _tax_graph_rows(scenario, lots)})
+    return {
+        "tax_year": int(scenario.tax_year),
+        "filing_status": scenario.filing_status,
+        "scenario_id": scenario.scenario_id,
+        "facts": [],
+        "tables": tables,
+    }
+
+
+def _tax_graph_rows(scenario: CapitalGainScenario, lots: tuple[CapitalGainLot, ...]) -> list[dict[str, Any]]:
     rows = []
-    for index, lot in enumerate(scenario.normalized_lots, start=1):
+    for index, lot in enumerate(lots, start=1):
         rows.append(
             {
                 "row_key": _safe_row_key(lot.row_key or f"lot_{index}"),
@@ -91,27 +123,7 @@ def render_tax_graph_facts_document(scenario: CapitalGainScenario) -> dict[str, 
                 "source": _source(scenario),
             }
         )
-    return {
-        "tax_year": int(scenario.tax_year),
-        "filing_status": scenario.filing_status,
-        "scenario_id": scenario.scenario_id,
-        "facts": [
-            {
-                "node_id": "schedule_d_2025_line_7_net_st",
-                "value": 0,
-                "source": {
-                    "document_label": f"Generated scenario {scenario.scenario_id}",
-                    "extracted_by": "m6_scenario_renderer",
-                },
-            },
-        ],
-        "tables": [
-            {
-                "table_id": "form_8949_2025_part_ii_line_1",
-                "rows": rows,
-            }
-        ],
-    }
+    return rows
 
 
 def render_tax_graph_facts_yaml(scenario: CapitalGainScenario) -> str:
@@ -150,6 +162,9 @@ def render_ots_input_text(
             "VirtCurr?": "N",
             "CkSepLivedApart": "N",
             "f8949_spreadsheet-A/D": csv_name,
+            "D14": "0",
+            "D19": "0",
+            "Collectibles": "0",
         },
     )
     return rendered if rendered.endswith("\n") else f"{rendered}\n"
@@ -214,6 +229,9 @@ def _require_supported_tax_graph_scenario(scenario: CapitalGainScenario) -> None
     _require_supported_ots_scenario(scenario)
     if not scenario.normalized_lots:
         raise ValueError("capital-gains scenarios require at least one lot")
+    for lot in scenario.normalized_lots:
+        if lot.holding_period not in {"short_term", "long_term"}:
+            raise ValueError(f"unsupported holding period: {lot.holding_period}")
 
 
 def _require_supported_ots_scenario(scenario: CapitalGainScenario) -> None:
@@ -272,6 +290,9 @@ def _fallback_ots_template(tax_year: str) -> str:
             "VirtCurr?  N",
             "CkSepLivedApart  N",
             "f8949_spreadsheet-A/D:",
+            "D14 0",
+            "D19 0",
+            "Collectibles 0",
             "",
         ]
     )
@@ -302,6 +323,8 @@ def _replace_template_value(text: str, *, label: str, value: str, use_colon: boo
     def replace(found: re.Match[str]) -> str:
         comment = _inline_comment(found.group("body"))
         colon = ":" if use_colon else ""
+        if not use_colon and ";" in found.group("body"):
+            return f"{found.group('indent')}{label}  {value} ;{comment}"
         return f"{found.group('indent')}{label}{colon}  {value}{comment}"
 
     return pattern.sub(replace, text, count=1)

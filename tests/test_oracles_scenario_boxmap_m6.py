@@ -35,16 +35,17 @@ def _scenario() -> CapitalGainScenario:
 def _multi_lot_scenario() -> CapitalGainScenario:
     lots = (
         CapitalGainLot(
-            row_key="lot_gain",
-            description="Fake LT gain lot",
-            date_acquired="01/15/2024",
+            row_key="lot_st_gain",
+            description="Fake ST gain lot",
+            date_acquired="01/15/2025",
             date_sold="06/01/2025",
             proceeds=12000,
             cost=10000,
             adjustment=0,
+            holding_period="short_term",
         ),
         CapitalGainLot(
-            row_key="lot_loss",
+            row_key="lot_lt_loss",
             description="Fake LT loss lot",
             date_acquired="02/15/2024",
             date_sold="06/02/2025",
@@ -53,7 +54,7 @@ def _multi_lot_scenario() -> CapitalGainScenario:
             adjustment=0,
         ),
         CapitalGainLot(
-            row_key="lot_adjusted",
+            row_key="lot_lt_adjusted",
             description="Fake LT adjusted lot",
             date_acquired="03/15/2024",
             date_sold="06/03/2025",

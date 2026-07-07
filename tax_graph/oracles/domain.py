@@ -32,7 +32,8 @@ class DomainProfile:
     cost: NumericRange
     adjustment: NumericRange
     net_gain_loss: NumericRange
-    date_acquired: str
+    long_term_date_acquired: str
+    short_term_date_acquired: str
     date_sold: str
 
 
@@ -50,7 +51,8 @@ def load_domain_profile(path: str | Path) -> DomainProfile:
         cost=_range(lot["cost"]),
         adjustment=_range(lot["adjustment"]),
         net_gain_loss=_range(lot["net_gain_loss"]),
-        date_acquired=str(lot["date_acquired"]),
+        long_term_date_acquired=str(lot["date_acquired"]),
+        short_term_date_acquired=str(lot.get("short_term_date_acquired", lot["date_acquired"])),
         date_sold=str(lot["date_sold"]),
     )
 
@@ -87,7 +89,8 @@ def _generate_one(profile: DomainProfile, rng: random.Random, *, seed: int, inde
                 profile,
                 rng,
                 row_index=row_index,
-                force_sign=_forced_sign(count, row_index),
+                force_sign=_forced_sign(count, row_index, scenario_index=index),
+                holding_period=_forced_holding_period(count, row_index, scenario_index=index),
             )
             for row_index in range(count)
         )
@@ -95,12 +98,13 @@ def _generate_one(profile: DomainProfile, rng: random.Random, *, seed: int, inde
             scenario_id=f"m6_seed{seed}_{index:04d}",
             tax_year=profile.tax_year,
             filing_status=rng.choice(profile.filing_statuses),
-            description=f"Generated LT scenario {index + 1}",
-            date_acquired=profile.date_acquired,
+            description=f"Generated capital gains scenario {index + 1}",
+            date_acquired=lots[0].date_acquired,
             date_sold=profile.date_sold,
             proceeds=lots[0].proceeds,
             cost=lots[0].cost,
             adjustment=lots[0].adjustment,
+            holding_period=lots[0].holding_period,
             lots=lots,
         )
         try:
@@ -124,6 +128,7 @@ def _generate_lot(
     *,
     row_index: int,
     force_sign: str | None,
+    holding_period: str,
 ) -> CapitalGainLot:
     for _attempt in range(1000):
         adjustment = _draw_number(rng, profile.adjustment)
@@ -144,17 +149,24 @@ def _generate_lot(
         if profile.proceeds.minimum <= proceeds <= profile.proceeds.maximum and profile.cost.minimum <= cost <= profile.cost.maximum:
             return CapitalGainLot(
                 row_key=f"lot_{row_index + 1}",
-                description=f"Generated LT lot {row_index + 1}",
-                date_acquired=profile.date_acquired,
+                description=f"Generated {'ST' if holding_period == 'short_term' else 'LT'} lot {row_index + 1}",
+                date_acquired=(
+                    profile.short_term_date_acquired
+                    if holding_period == "short_term"
+                    else profile.long_term_date_acquired
+                ),
                 date_sold=profile.date_sold,
                 proceeds=proceeds,
                 cost=cost,
                 adjustment=adjustment,
+                holding_period=holding_period,
             )
     raise ValueError("could not generate an in-domain lot after 1000 attempts")
 
 
-def _forced_sign(count: int, row_index: int) -> str | None:
+def _forced_sign(count: int, row_index: int, *, scenario_index: int) -> str | None:
+    if scenario_index == 0 and row_index == 0:
+        return "severe_loss"
     if count < 3:
         return None
     if row_index == 0:
@@ -166,14 +178,26 @@ def _forced_sign(count: int, row_index: int) -> str | None:
     return None
 
 
+def _forced_holding_period(count: int, row_index: int, *, scenario_index: int) -> str:
+    if count == 1:
+        return "long_term"
+    if row_index == 0:
+        return "short_term"
+    if row_index == 1:
+        return "long_term"
+    return "short_term" if (scenario_index + row_index) % 2 else "long_term"
+
+
 def _draw_lot_gain(rng: random.Random, *, force_sign: str | None) -> int:
+    if force_sign == "severe_loss":
+        return -rng.randint(3001, 10000)
     if force_sign == "gain":
         return rng.randint(100, 5000)
     if force_sign == "loss":
-        return -rng.randint(100, 3000)
+        return -rng.randint(100, 8000)
     if force_sign == "adjusted_gain":
         return rng.randint(100, 2000)
-    return rng.randint(-2000, 5000)
+    return rng.randint(-8000, 5000)
 
 
 def _draw_number(rng: random.Random, range_: NumericRange) -> int | float:

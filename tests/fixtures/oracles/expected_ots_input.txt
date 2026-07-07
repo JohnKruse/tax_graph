@@ -9,3 +9,6 @@ CkHomeInUS  Y
 VirtCurr?  N
 CkSepLivedApart  N
 f8949_spreadsheet-A/D:  m6_single_lot_gain_f8949.csv
+D14  0
+D19  0
+Collectibles  0

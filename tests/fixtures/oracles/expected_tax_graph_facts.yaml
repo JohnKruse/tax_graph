@@ -1,12 +1,7 @@
 tax_year: 2025
 filing_status: single
 scenario_id: m6_single_lot_gain
-facts:
-- node_id: schedule_d_2025_line_7_net_st
-  value: 0
-  source:
-    document_label: Generated scenario m6_single_lot_gain
-    extracted_by: m6_scenario_renderer
+facts: []
 tables:
 - table_id: form_8949_2025_part_ii_line_1
   rows:
