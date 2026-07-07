@@ -37,16 +37,24 @@ def generate_outline_first_drafts(
 
     objects: list[DraftObject] = []
     for outline_node in _formula_outline_nodes(outline.children):
-        plan = extract_formula_plan(
-            outline_node=outline_node,
-            spans=spans,
-            client=client,
-            config=config,
-            root=root,
-        )
-        batch = assemble_formula_plan(document, outline_node, plan, spans, model=str(model), root=root)
+        node_spans = _spans_for_outline_node(outline_node, spans, document_id=document.document_id)
+        plan = _deterministic_schedule_d_formula_plan(document, outline_node, node_spans)
+        formula_model = str(model)
+        if plan is None:
+            plan = extract_formula_plan(
+                outline_node=outline_node,
+                spans=node_spans,
+                client=client,
+                config=config,
+                root=root,
+            )
+        else:
+            formula_model = "deterministic-schedule-d-formula"
+        batch = assemble_formula_plan(document, outline_node, plan, node_spans, model=formula_model, root=root)
         objects.extend(batch.objects)
     objects.extend(assemble_table_subunits(document, outline, objects, model="deterministic-table-detector"))
+    objects.extend(_schedule_d_band_tables(document, outline.children, model="deterministic-schedule-d-band-detector"))
+    objects.extend(_schedule_d_not_modeled_document(document, outline.children, model="deterministic-schedule-d-scope"))
     objects.extend(_line_cue_objects(document, outline.children, spans, model=model))
 
     return ExtractionBatch(document_id=document.document_id, year=document.year, objects=_dedupe_objects(objects))
@@ -65,6 +73,92 @@ def _is_formula_node(node: OutlineNode) -> bool:
     if node.kind == "transaction_table" and "h" in node.columns:
         return True
     return node.kind == "totals" and bool(node.columns)
+
+
+def _deterministic_schedule_d_formula_plan(
+    document: SourceDocumentInput,
+    node: OutlineNode,
+    spans: list[CandidateSpan],
+) -> dict[str, Any] | None:
+    """Return the fixed Schedule D row-band column h formula when applicable."""
+    if not document.document_id.startswith("schedule_d_"):
+        return None
+    if node.kind != "transaction_table" or not node.line_anchor:
+        return None
+    if node.line_anchor not in {"1b", "2", "3", "8b", "9", "10"}:
+        return None
+    if not {"d", "e", "g", "h"}.issubset(set(node.columns)):
+        return None
+    span_id = spans[0].span_id if spans else ""
+    citation_span_ids = [span_id] if span_id else []
+    return {
+        "operation_plan": [
+            {
+                "output": "column_d_minus_e",
+                "operation": "SUBTRACT",
+                "inputs": [
+                    {"name": "column_d", "role": "minuend"},
+                    {"name": "column_e", "role": "subtrahend"},
+                ],
+                "citation_span_ids": citation_span_ids,
+            },
+            {
+                "output": "column_h",
+                "operation": "SUM",
+                "inputs": [
+                    {"name": "column_d_minus_e", "role": "addend"},
+                    {"name": "column_g", "role": "addend"},
+                ],
+                "citation_span_ids": citation_span_ids,
+            },
+        ]
+    }
+
+
+def _spans_for_outline_node(
+    node: OutlineNode,
+    spans: list[CandidateSpan],
+    *,
+    document_id: str = "",
+) -> list[CandidateSpan]:
+    """Select a small evidence packet for one micro-extraction prompt."""
+    selected: list[CandidateSpan] = []
+    if node.line_anchor:
+        line_prefix = f"- {node.line_anchor}:"
+        line_phrase = f"line {node.line_anchor}"
+        instruction_hits: list[CandidateSpan] = []
+        for span in spans:
+            lowered = span.text.lower()
+            if span.relationship == "source" and span.text.startswith(line_prefix):
+                selected.append(span)
+            elif line_phrase in lowered and _direct_line_evidence(span.text, node.line_anchor):
+                instruction_hits.append(span)
+        selected.extend(instruction_hits[:3])
+    if node.columns:
+        column_terms = [f"({column})" for column in node.columns]
+        column_hits: list[CandidateSpan] = []
+        for span in spans:
+            if span in selected:
+                continue
+            lowered = span.text.lower()
+            if "column" in lowered and any(term in lowered for term in column_terms):
+                column_hits.append(span)
+        column_limit = 4 if document_id.startswith("schedule_d_") else 8
+        selected.extend(column_hits[:column_limit])
+    if not selected:
+        selected = spans[:20]
+    limit = 12 if document_id.startswith("schedule_d_") else 80
+    return selected[:limit]
+
+
+def _direct_line_evidence(text: str, anchor: str) -> bool:
+    """Return true when an instruction span appears to discuss the exact line."""
+    lowered = text.lower()
+    line_phrase = f"line {anchor}".lower()
+    if line_phrase not in lowered:
+        return False
+    direct_tokens = ("enter", "report", "include", "combine", "total", "add", "subtract")
+    return any(token in lowered for token in direct_tokens)
 
 
 def _dedupe_objects(objects: list[DraftObject]) -> list[DraftObject]:
@@ -129,6 +223,177 @@ def _line_cue_nodes(nodes: list[OutlineNode]) -> list[OutlineNode]:
             selected.append(node)
         selected.extend(_line_cue_nodes(node.children))
     return selected
+
+
+def _schedule_d_band_tables(
+    document: SourceDocumentInput,
+    nodes: list[OutlineNode],
+    *,
+    model: str,
+) -> list[DraftObject]:
+    if not document.document_id.startswith("schedule_d_"):
+        return []
+    groups = [
+        ("part_i", ["1b", "2", "3"]),
+        ("part_ii", ["8b", "9", "10"]),
+    ]
+    by_section = {node.outline_id: node for node in nodes if node.kind == "section"}
+    objects: list[DraftObject] = []
+    for section_id, anchors in groups:
+        section = by_section.get(section_id)
+        if section is None:
+            continue
+        children = {child.line_anchor: child for child in section.children}
+        if not all(anchor in children for anchor in anchors):
+            continue
+        first = children[anchors[0]]
+        columns = [column for column in ["d", "e", "g", "h"] if column in first.columns]
+        if len(columns) < 4:
+            continue
+        table_id = _slug(f"{document.document_id}_{section_id}_lines_{anchors[0]}_{anchors[-1]}")
+        objects.append(
+            DraftObject(
+                "tables",
+                {
+                    "table_id": table_id,
+                    "document_id": document.document_id,
+                    "line_anchor": f"{section.label}, lines {anchors[0]}-{anchors[-1]}",
+                    "description": "Schedule D row-band grouping for Form 8949 totals.",
+                    "columns": [
+                        {
+                            "column_id": column,
+                            "label": f"Column ({column})",
+                            "kind": "computed" if column == "h" else "input",
+                            "template_node": _slug(
+                                f"{document.document_id}_{first.outline_id}_column_{column}"
+                            ),
+                        }
+                        for column in columns
+                    ],
+                    "totals": [
+                        {
+                            "column_id": "h",
+                            "total_node": _slug(
+                                f"{document.document_id}_{children[anchors[-1]].outline_id}_column_h"
+                            ),
+                        }
+                    ],
+                },
+                first.label,
+                model,
+                1.0,
+            )
+        )
+    return objects
+
+
+def _schedule_d_not_modeled_document(
+    document: SourceDocumentInput,
+    nodes: list[OutlineNode],
+    *,
+    model: str,
+) -> list[DraftObject]:
+    if not document.document_id.startswith("schedule_d_"):
+        return []
+    present_anchors = {node.line_anchor for node in _flatten_nodes(nodes) if node.line_anchor}
+    deferred_lines = [
+        ("1a", "summary transactions not sourced from Form 8949 totals in M9 Step 2"),
+        ("4", "pass-through short-term gain or loss inputs deferred"),
+        ("5", "pass-through short-term gain or loss inputs deferred"),
+        ("6", "short-term capital loss carryover worksheet deferred"),
+        ("7", "Part I subtotal modeled after promotion and link realization"),
+        ("8a", "summary transactions not sourced from Form 8949 totals in M9 Step 2"),
+        ("11", "pass-through long-term gain or loss inputs deferred"),
+        ("12", "pass-through long-term gain or loss inputs deferred"),
+        ("13", "capital gain distributions input deferred"),
+        ("14", "long-term capital loss carryover worksheet deferred"),
+        ("15", "Part II subtotal modeled after promotion and link realization"),
+        ("16", "net capital gain or loss modeled in M9 Step 3"),
+        ("17", "line 15 and line 16 decision cue modeled in M9 Step 3"),
+        ("18", "28 percent rate gain worksheet deferred"),
+        ("19", "unrecaptured Section 1250 gain worksheet deferred"),
+        ("20", "qualified dividends and capital gain tax worksheet deferred"),
+        ("21", "capital loss limit branch modeled in M9 Step 3"),
+        ("22", "line 18 and line 19 decision cue deferred"),
+    ]
+    records = [
+        {
+            "field_id": f"schedule_d_{_slug(anchor)}_not_modeled",
+            "line_anchor": anchor,
+            "reason": reason,
+        }
+        for anchor, reason in deferred_lines
+        if anchor in present_anchors
+    ]
+    records.extend(
+        [
+            {
+                "field_id": "schedule_d_name_field_not_modeled",
+                "field_name_pattern": r"^topmostSubform\[0\]\.Page1\[0\]\.f1_1\[0\]$",
+                "reason": "taxpayer identity field is outside the computation graph",
+            },
+            {
+                "field_id": "schedule_d_ssn_field_not_modeled",
+                "field_name_pattern": r"^topmostSubform\[0\]\.Page1\[0\]\.f1_2\[0\]$",
+                "reason": "taxpayer identity field is outside the computation graph",
+            },
+            {
+                "field_id": "schedule_d_status_checkbox_not_modeled",
+                "field_name_pattern": r"^topmostSubform\[0\]\.Page1\[0\]\.c1_1\[[01]\]$",
+                "reason": "form status checkbox is outside the computation graph",
+            },
+            {
+                "field_id": "schedule_d_row_1a_table_not_modeled",
+                "field_name_pattern": "Row1a",
+                "reason": "line 1a table fields are deferred with summary transactions",
+            },
+            {
+                "field_id": "schedule_d_row_8a_table_not_modeled",
+                "field_name_pattern": "Row8a",
+                "reason": "line 8a table fields are deferred with summary transactions",
+            },
+            {
+                "field_id": "schedule_d_line_20_checkbox_not_modeled",
+                "field_name_pattern": r"^topmostSubform\[0\]\.Page2\[0\]\.c2_2\[[01]\]$",
+                "reason": "line 20 and line 22 worksheet decision fields are deferred",
+            },
+            {
+                "field_id": "schedule_d_line_21_amount_not_modeled",
+                "field_name_pattern": r"^topmostSubform\[0\]\.Page2\[0\]\.f2_4\[0\]$",
+                "reason": "line 21 capital loss limit branch is modeled in M9 Step 3",
+            },
+            {
+                "field_id": "schedule_d_line_22_checkbox_not_modeled",
+                "field_name_pattern": r"^topmostSubform\[0\]\.Page2\[0\]\.c2_3\[[01]\]$",
+                "reason": "line 22 worksheet decision fields are deferred",
+            },
+        ]
+    )
+    return [
+        DraftObject(
+            "documents",
+            {
+                "document_id": document.document_id,
+                "title": "Schedule D (Form 1040)",
+                "tax_year": int(document.year),
+                "document_type": "schedule",
+                "source_url": document.url,
+                "status": "partial",
+                "not_modeled_fields": records,
+            },
+            "",
+            model,
+            1.0,
+        )
+    ]
+
+
+def _flatten_nodes(nodes: list[OutlineNode]) -> list[OutlineNode]:
+    flattened: list[OutlineNode] = []
+    for node in nodes:
+        flattened.append(node)
+        flattened.extend(_flatten_nodes(node.children))
+    return flattened
 
 
 def _span_for_line(node: OutlineNode, spans: list[CandidateSpan]) -> CandidateSpan | None:

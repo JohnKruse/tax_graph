@@ -9,6 +9,7 @@ from typing import Any
 
 DRAFT_KINDS = ("nodes", "edges", "rules", "citations", "decisions", "tables")
 ID_FIELDS = {
+    "documents": "document_id",
     "nodes": "node_id",
     "edges": "edge_id",
     "rules": "rule_id",

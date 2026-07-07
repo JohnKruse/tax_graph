@@ -6,7 +6,7 @@ from pathlib import Path
 import pytest
 
 from tax_graph.cli import verify_mine_examples_command, verify_replay_examples_command
-from tax_graph.verify.examples import replay_irs_examples, segment_example_blocks
+from tax_graph.verify.examples import mine_examples, replay_irs_examples, segment_example_blocks
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -50,6 +50,11 @@ class FakeExampleClient:
         }
 
 
+class FailingExampleClient:
+    def structured_completion(self, *, prompt, schema, model, max_tokens, temperature, purpose):
+        raise RuntimeError("provider down")
+
+
 @pytest.mark.m8
 def test_segment_example_blocks_finds_markdown_examples():
     text = "\n".join(
@@ -88,9 +93,29 @@ def test_mine_examples_command_with_mocked_client_freezes_confirmed_fixture(tmp_
     assert exit_code == 0
     assert "agreed: 1" in captured.out
     assert client.calls[0]["purpose"] == "tax_graph_example_miner"
+    assert client.calls[0]["model"] == "configured-llm"
     assert (fixture_dir / "facts.yaml").exists()
     assert (fixture_dir / "expected.yaml").exists()
     assert (fixture_dir / "provenance.yaml").exists()
+
+
+@pytest.mark.m8
+def test_mine_examples_records_provider_failure_as_unmappable(tmp_path):
+    root = _make_project(tmp_path)
+
+    report = mine_examples(
+        document_id="instructions_form_8949_2025",
+        year="2025",
+        root=root,
+        client=FailingExampleClient(),
+        config={"llm": {"model": "mock-model"}},
+        limit=1,
+        source="yaml",
+    )
+
+    assert report.agreed == 0
+    assert report.unmappable == 1
+    assert "example miner unavailable" in report.examples[0].mismatches[0]
 
 
 @pytest.mark.m8

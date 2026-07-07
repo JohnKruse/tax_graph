@@ -9,6 +9,7 @@ from typing import Any, Mapping, Sequence
 
 import yaml
 
+from tax_graph.config import get_config_value
 from tax_graph.engine import Engine, Graph, load_facts
 from tax_graph.extract.inputs import load_document_input
 from tax_graph.extract.llm_client import LlmClient, build_llm_client
@@ -137,12 +138,13 @@ def mine_examples(
     source_texts = [(document.document_id, document.text)]
     source_texts.extend((related.document_id, related.text) for related in document.related_sources)
     graph = Graph(year, root=root_path, source=source)
+    model = _example_model(settings)
     examples: list[MinedExample] = []
     for source_document_id, text in source_texts:
         for block in segment_example_blocks(text, source_document_id=source_document_id):
             if limit is not None and len(examples) >= limit:
                 break
-            mined = _mine_block(block, client=llm_client, graph=graph)
+            mined = _mine_block(block, client=llm_client, graph=graph, model=model)
             if confirm and mined.status == "agreed":
                 mined = _freeze_mined_example(mined, output_dir=_examples_dir(root_path, output_dir))
             examples.append(mined)
@@ -184,15 +186,24 @@ def replay_irs_examples(
     return ExampleReplayReport(example_count=example_count, issues=tuple(issues))
 
 
-def _mine_block(block: ExampleBlock, *, client: LlmClient, graph: Graph) -> MinedExample:
-    response = client.structured_completion(
-        prompt=_example_prompt(block),
-        schema=_example_schema(),
-        model="configured-micro-model",
-        max_tokens=2000,
-        temperature=0,
-        purpose="tax_graph_example_miner",
-    )
+def _mine_block(block: ExampleBlock, *, client: LlmClient, graph: Graph, model: str) -> MinedExample:
+    try:
+        response = client.structured_completion(
+            prompt=_example_prompt(block),
+            schema=_example_schema(),
+            model=model,
+            max_tokens=2000,
+            temperature=0,
+            purpose="tax_graph_example_miner",
+        )
+    except Exception as exc:
+        return MinedExample(
+            block,
+            {},
+            {},
+            status="unmappable",
+            mismatches=(f"example miner unavailable: {exc}",),
+        )
     facts_document = _normalize_facts_document(response.get("facts", {}))
     expected = dict(response.get("expected", {}) or {})
     if not expected:
@@ -257,6 +268,16 @@ def _facts_from_document(facts_document: Mapping[str, Any]) -> dict[str, Any]:
     if facts_document.get("tables"):
         facts["#tables"] = list(facts_document["tables"])
     return facts
+
+
+def _example_model(settings: Mapping[str, Any]) -> str:
+    config = dict(settings)
+    model = (
+        get_config_value(config, "llm.micro_model")
+        or get_config_value(config, "llm.nversion_model")
+        or get_config_value(config, "llm.model")
+    )
+    return str(model or "configured-llm")
 
 
 def _example_prompt(block: ExampleBlock) -> str:

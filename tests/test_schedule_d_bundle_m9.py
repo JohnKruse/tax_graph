@@ -40,5 +40,6 @@ def test_schedule_d_outline_has_parts_row_bands_and_line_21():
 
     assert {part_i[line].kind for line in ["1b", "2", "3"]} == {"transaction_table"}
     assert {part_ii[line].kind for line in ["8b", "9", "10"]} == {"transaction_table"}
+    assert part_i["1b"].columns == ["g", "h", "d", "e"]
     assert part_iii["21"].kind == "line"
     assert "smaller of" in part_iii["21"].label

@@ -22,6 +22,9 @@ from tax_graph.verify.metrics import build_metrics, write_metrics
 from tax_graph.verify.tiers import TierInputs, assign_tier
 
 
+WRITE_KINDS = (*DRAFT_KINDS, "documents")
+
+
 def route_drafts(
     batch: ExtractionBatch,
     report: DeterministicReport,
@@ -93,7 +96,7 @@ def write_routed_drafts(
     draft_dir = graph_dir / batch.year / "_drafts" / batch.document_id
     draft_dir.mkdir(parents=True, exist_ok=True)
 
-    for kind in DRAFT_KINDS:
+    for kind in WRITE_KINDS:
         items = [obj.data for obj in batch.items(kind)]
         if items:
             _write_yaml(draft_dir / f"{kind}.yaml", items)

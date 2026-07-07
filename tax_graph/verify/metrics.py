@@ -22,9 +22,9 @@ METRICS_FILENAME = "metrics.yaml"
 _LAYER_PATTERNS = (
     ("magic", "parameters"),
     ("schema", "schema"),
-    ("line ", "line_completeness"),
     ("field", "field_grid"),
     ("unmapped", "field_grid"),
+    ("line ", "line_completeness"),
     ("citation", "citation"),
     ("quote", "citation"),
     ("critic", "critic"),

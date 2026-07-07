@@ -321,6 +321,11 @@ M4 also includes an outline-first canary path, enabled through config with
 same `_drafts` directory, asks narrow micro-extraction questions over outline
 nodes, and assembles canonical draft graph objects in code. The default remains
 `one_pass` until the held-out Form 8949 validation is complete.
+M9 extends this path for Schedule D: the six Form 8949 landing row bands
+(`1b`, `2`, `3`, `8b`, `9`, and `10`) use deterministic `d - e + g -> h`
+formula assembly, while out-of-scope Schedule D lines and identity/status
+fields are carried as a draft `documents.yaml` `not_modeled_fields` record
+until the promotion gate.
 
 ## Verification Drills
 
@@ -359,6 +364,8 @@ and reports agreed/disagreed/unmappable candidates. Use `--confirm` only after a
 human has checked the paragraph; confirmed examples freeze under
 `examples/irs_examples/` and replay offline with
 `tax-graph verify replay-examples`.
+Provider or routing failures are recorded as explicit unmappable candidates, not
+as agreed examples and not as committed fixtures.
 
 N-version corroboration is gated behind `tax-graph verify nversion`. Configure
 `llm.nversion_model` and `llm.nversion_vendor_family` for a second model family;

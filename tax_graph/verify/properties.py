@@ -247,6 +247,8 @@ def _table_relation_issues(graph: LoadedGraph, values: Mapping[str, Any]) -> lis
     issues: list[PropertyIssue] = []
     nodes = {node["node_id"]: node for node in graph.items("nodes") if "node_id" in node}
     for table in graph.items("tables"):
+        if "row-band grouping" in str(table.get("description", "")).lower():
+            continue
         columns = _table_columns(table)
         d_node = columns.get("d")
         e_node = columns.get("e")

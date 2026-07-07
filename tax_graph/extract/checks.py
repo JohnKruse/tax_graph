@@ -8,6 +8,7 @@ from typing import Any
 
 import jsonschema
 
+from tax_graph.config import project_root
 from tax_graph.acquire.citation_check import check_citation_integrity
 from tax_graph.extract.models import (
     CheckIssue,
@@ -17,6 +18,7 @@ from tax_graph.extract.models import (
     SourceDocumentInput,
 )
 from tax_graph.extract.prompts import graph_object_schemas
+from tax_graph.io.loader import load_yaml
 from tax_graph.verify.completeness import check_field_grid_completeness
 from tax_graph.verify.properties import check_draft_batch_properties
 
@@ -46,13 +48,21 @@ def run_deterministic_checks(
 
 def _schema_issues(batch: ExtractionBatch, *, root: str | Path | None) -> list[CheckIssue]:
     schemas = graph_object_schemas(root=root)
+    schemas["documents"] = _document_schema(root)
     issues: list[CheckIssue] = []
     for obj in batch.objects:
         try:
             jsonschema.validate(obj.data, schemas[obj.kind])
+        except KeyError:
+            issues.append(CheckIssue(obj.kind, obj.object_id, f"schema: unknown draft kind {obj.kind}"))
         except jsonschema.ValidationError as exc:
             issues.append(CheckIssue(obj.kind, obj.object_id, f"schema: {exc.message}"))
     return issues
+
+
+def _document_schema(root: str | Path | None) -> dict[str, Any]:
+    root_path = Path(root).resolve() if root is not None else project_root()
+    return load_yaml(root_path / "schemas" / "document.schema.json")
 
 
 def _rule_citation_issues(batch: ExtractionBatch) -> list[CheckIssue]:
@@ -69,8 +79,11 @@ def _line_completeness_issues(document: SourceDocumentInput, batch: ExtractionBa
         return []
 
     nodes = [obj for obj in batch.items("nodes") if obj.data.get("document_id") == document.document_id]
+    not_modeled_fields = _not_modeled_fields(document, batch)
     issues: list[CheckIssue] = []
     for anchor in anchors:
+        if _line_is_not_modeled(anchor, not_modeled_fields):
+            continue
         matching = [node for node in nodes if _node_mentions_line(node, anchor)]
         if not matching:
             issues.append(CheckIssue("document", document.document_id, f"line {anchor} has no node"))
@@ -85,7 +98,7 @@ def _field_grid_issues(document: SourceDocumentInput, batch: ExtractionBatch) ->
         fields=document.fields,
         nodes=[obj.data for obj in batch.items("nodes")],
         tables=[obj.data for obj in batch.items("tables")],
-        not_modeled_fields=document.not_modeled_fields,
+        not_modeled_fields=_not_modeled_fields(document, batch),
     )
     return [
         CheckIssue("document", document.document_id, f"field {issue.field_name}: {issue.reason}")
@@ -175,6 +188,19 @@ def _node_mentions_line(node: DraftObject, anchor: str) -> bool:
 
 def _normalize_anchor(anchor: str) -> str:
     return anchor.lower().replace("-", "_")
+
+
+def _not_modeled_fields(document: SourceDocumentInput, batch: ExtractionBatch) -> list[dict[str, Any]]:
+    records = list(document.not_modeled_fields)
+    for obj in batch.items("documents"):
+        if obj.data.get("document_id") == document.document_id:
+            records.extend(obj.data.get("not_modeled_fields", []) or [])
+    return records
+
+
+def _line_is_not_modeled(anchor: str, records: list[dict[str, Any]]) -> bool:
+    normalized = anchor.lower()
+    return any(str(record.get("line_anchor", "")).lower() == normalized for record in records)
 
 
 def _field_anchor(field_name: str) -> str | None:

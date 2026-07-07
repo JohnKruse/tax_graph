@@ -95,7 +95,7 @@ def build_outline_tree(document: SourceDocumentInput) -> OutlineTree:
         if line.startswith("Header:"):
             header = line.removeprefix("Header:").strip()
             part_match = PART_RE.search(header)
-            if part_match:
+            if part_match and header.lower().startswith("part "):
                 current_section = OutlineNode(
                     outline_id=_section_id(part_match.group(1), len(tree.children) + 1),
                     kind="section",
@@ -104,14 +104,16 @@ def build_outline_tree(document: SourceDocumentInput) -> OutlineTree:
                     boxes=_extract_boxes(header),
                 )
                 tree.children.append(current_section)
+                recent_headers = [header]
             else:
                 _attach_header_to_previous_numeric_line(
                     current_section,
                     header,
+                    document_id=document.document_id,
                     headers=[*recent_headers, header],
                 )
             recent_headers.append(header)
-            recent_headers = recent_headers[-4:]
+            recent_headers = recent_headers[-8:]
             continue
 
         line_match = LINE_RE.match(line)
@@ -123,7 +125,7 @@ def build_outline_tree(document: SourceDocumentInput) -> OutlineTree:
         columns = _unique([*_extract_columns(" ".join(recent_headers)), *_extract_columns(body)])
         node = OutlineNode(
             outline_id=_line_id(current_section, anchor, body),
-            kind=_classify_line(anchor, body, columns, headers=recent_headers),
+            kind=_classify_line(anchor, body, columns, headers=recent_headers, document_id=document.document_id),
             label=body or f"Line {anchor}",
             page=page,
             line_anchor=anchor,
@@ -289,13 +291,22 @@ def _spans_for_text(document_id: str, relationship: str, text: str) -> list[Cand
     return spans
 
 
-def _classify_line(anchor: str, body: str, columns: list[str], *, headers: list[str]) -> str:
+def _classify_line(
+    anchor: str,
+    body: str,
+    columns: list[str],
+    *,
+    headers: list[str],
+    document_id: str,
+) -> str:
     lowered = body.lower()
     context = " ".join([*headers, body]).lower()
     if "schedule d" in lowered or anchor in {"3", "10"} and "schedule d" in context:
         return "outbound_flow_cue"
-    if anchor in FORM_8949_SCHEDULE_D_TARGETS and len(columns) >= 3:
-        return "transaction_table"
+    if document_id.startswith("schedule_d_"):
+        if anchor in FORM_8949_SCHEDULE_D_TARGETS and len(columns) >= 3:
+            return "transaction_table"
+        return "line"
     if "add the amounts" in lowered or lowered.startswith("totals."):
         return "totals"
     if len(columns) >= 3 or anchor == "1" and columns:
@@ -307,6 +318,7 @@ def _attach_header_to_previous_numeric_line(
     section: OutlineNode | None,
     header: str,
     *,
+    document_id: str,
     headers: list[str],
 ) -> None:
     if section is None or not section.children:
@@ -318,7 +330,7 @@ def _attach_header_to_previous_numeric_line(
     if not columns and "schedule d" not in header.lower():
         return
     node.columns = _unique([*node.columns, *columns])
-    node.kind = _classify_line(node.line_anchor, node.label, node.columns, headers=headers)
+    node.kind = _classify_line(node.line_anchor, node.label, node.columns, headers=headers, document_id=document_id)
 
 
 def _attach_outbound_flow_cues(tree: OutlineTree, document: SourceDocumentInput) -> None:
@@ -397,7 +409,7 @@ def _source_node_id(document_id: str, source_outline_id: str, column: str) -> st
 
 
 def _extract_columns(text: str) -> list[str]:
-    return _unique(match.group(1).lower() for match in COLUMN_RE.finditer(text))
+    return _unique(match.group(1).lower() for match in COLUMN_RE.finditer(text) if match.group(1).lower() in "abcdefgh")
 
 
 def _extract_boxes(text: str) -> list[str]:

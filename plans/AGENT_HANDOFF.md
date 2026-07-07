@@ -208,6 +208,17 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
   plus M9 tests proving loader wiring, front-matter retention, field-grid anchors, Parts I/II/III
   outline structure, 1b-3 and 8b-10 row bands, and the line 21 cue. Next: M9 Step 2 extraction under
   the full verification net.
+- **M9 Step 2 is done.** Schedule D outline-first extraction now emits deterministic draft formulas
+  and table groupings for the six Form 8949 landing row bands: Part I lines 1b/2/3 and Part II
+  lines 8b/9/10. Schedule D-specific classification no longer treats every column-bearing line as a
+  transaction table; out-of-scope Schedule D lines and identity/status fields are carried in a draft
+  `documents.yaml` `not_modeled_fields` record, so both line and field-grid completeness pass without
+  guessing. Live `tax-graph extract --doc schedule_d_2025` completed with 75 accepted drafts, 0
+  review, 0 deterministic issues, and calibration sample 8; `human_minutes` remains null until the
+  promotion gate per the phase exit criterion. N-version corroboration agreed with 0 diffs. Schedule
+  D worked-example mining ran over 10 instruction examples and reported all 10 explicitly
+  unmappable because the configured OpenRouter verifier endpoint could not satisfy the requested
+  structured-output parameters; no examples were frozen. Next: M9 Step 3 parameter nodes + line 21.
 
 ## Open for Architect
 - (none open - the M6 closeout question is ANSWERED: the live gate is NOT deferrable, and
@@ -434,6 +445,14 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
   - `.\.venv\Scripts\python.exe -c "<render_form_pdf schedule_d_2025>"` -> emitted `.txt` and `.fields.json`
   - `.\.venv\Scripts\python.exe -c "<render_instructions_ocr instructions_schedule_d_2025>"` -> emitted `.txt`, `.pages/`, `.links.json`, `.ocr.json`
   - `.\.venv\Scripts\python.exe -m pytest tests\test_schedule_d_bundle_m9.py -m m9` -> 2 passed
+- M9 Step 2:
+  - `.\.venv\Scripts\python.exe -m pytest tests\test_schedule_d_bundle_m9.py tests\test_schedule_d_extraction_m9.py -m m9` -> 5 passed
+  - `.\.venv\Scripts\python.exe -m pytest tests\test_extract_outline_m4.py tests\test_tables_detector_m6b.py -m "m4 or m6b"` -> 13 passed
+  - `.\.venv\Scripts\python.exe -m pytest tests\test_trust_tiers_m8.py::test_metrics_capture_tiers_layers_and_telemetry` -> 1 passed
+  - `.\.venv\Scripts\python.exe -m pytest tests\test_examples_m8.py -m m8` -> 5 passed
+  - `.\.venv\Scripts\python.exe -m tax_graph.cli extract --doc schedule_d_2025` -> accepted=75, review=0, deterministic_issues=0; `metrics.yaml` written with calibration_sample=8
+  - `.\.venv\Scripts\python.exe -m tax_graph.cli verify nversion --doc schedule_d_2025` -> agreed, diffs=0
+  - `.\.venv\Scripts\python.exe -m tax_graph.cli verify mine-examples --doc schedule_d_2025 --limit 10 --source yaml` -> examples=10, agreed=0, disagreed=0, unmappable=10; no fixtures frozen
 - M8 Step 2:
   - `.\.venv\Scripts\python.exe -m pytest -m m8` -> 12 passed, 142 deselected
   - `.\.venv\Scripts\python.exe -m pytest -m "m4 or m8"` -> 41 passed, 113 deselected

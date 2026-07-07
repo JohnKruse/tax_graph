@@ -86,7 +86,7 @@ loss-beyond-$3000 case from an out-of-domain fence into a correctly-modeled bran
   outline builder produces a sane Schedule D tree (Parts I/II/III, the line 1b-3 and
   8b-10 row bands, the line 21 cue) from the real artifacts. Docs.
 
-- [ ] **Step 2 - Extract under the full net (first real economics data).** Outline-first
+- [DONE] **Step 2 - Extract under the full net (first real economics data).** Outline-first
   extraction of `schedule_d_2025` with its instructions: tiers, `metrics.yaml`,
   calibration sample; gated N-version (cross-family) and worked-example mining from the
   Schedule D instructions (freeze confirmed examples). Both-direction field completeness
