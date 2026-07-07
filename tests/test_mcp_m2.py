@@ -63,6 +63,7 @@ def test_read_only_tools_return_graph_objects_and_instance_addresses():
     node = _call_tool(server, "get_node", {"node_id": "form_8949_2025_part_ii_line_1_column_h#broker_1"})
 
     assert document["document"]["title"] == "Form 8949"
+    assert document["verification"]["verification_tier"] == "independently witnessed"
     assert node["base_node_id"] == "form_8949_2025_part_ii_line_1_column_h"
     assert node["row_key"] == "broker_1"
     assert node["found"] is True
@@ -178,6 +179,17 @@ def test_export_audit_file_returns_human_readable_trace():
     assert "[SUM]" in result["audit_text"]
     assert "[SUBTRACT]" in result["audit_text"]
     assert "cite_8949_col_h_gain" in result["audit_text"]
+
+
+@pytest.mark.m9
+def test_get_verification_returns_generated_summary():
+    server = build_mcp_server(year="2025", root=ROOT, source="yaml")
+
+    result = _call_tool(server, "get_verification", {"document_id": "schedule_d_2025"})
+
+    assert result["document_id"] == "schedule_d_2025"
+    assert result["verification_tier"] == "independently witnessed"
+    assert "No committed IRS worked-example fixture" in result["page_markdown"]
 
 
 def _call_tool(server, name: str, arguments: dict[str, Any]) -> dict[str, Any]:

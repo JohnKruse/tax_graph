@@ -50,10 +50,18 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
   targeted oracle suite green, `pytest -m m6` green, `pytest -m m9` green, ASCII green. The
   gated live `>=100` fuzz/corpus-refresh item still needs a real OTS binary during Step 5/6
   exit execution.
-- **Step 6 [worker-standard] pending:** generated `VERIFICATION.md` + per-form pages + MCP
-  exposure; byte-stable regeneration; witness absences stated plainly. Design:
-  `docs/extraction-verification.md` Section 10. Also run the still-pending live N-version
-  exit item during Step 6's exit pass if not already done.
+- **Step 6 [worker-standard] is DONE in the worktree and ready to commit.** Added
+  `tax-graph verify record --year 2025`, generated and committed `VERIFICATION.md` plus
+  `docs/verification/*.md`, and exposed the same summary over MCP via `get_verification`
+  and `get_document.verification`. Regeneration is byte-stable; witness absences are stated
+  plainly. Verified: focused Step 6 tests green, `pytest -m m9` green, full `pytest` green,
+  `validate 2025` green, ASCII green.
+- **Phase-close blockers remain external/gated, not code-local.** The phase exit still needs:
+  (1) the real `human_minutes` value filled for the promoted Schedule D review batch
+  (current draft metrics remain null); (2) the gated live `>=100` OTS fuzz pass plus corpus
+  refresh on the widened domain; and (3) the still-pending live N-version exit item if John
+  still wants it rerun. Once those land, mark `[COMPLETE]`, archive the plan, prune this
+  handoff again, single `git push`, tell John.
 - Phase close checklist (after Step 6): mark `[COMPLETE]`, archive the plan, prune this file
   again per the seam-hygiene rule, single `git push`, tell John. NOTE: local main is several
   commits ahead of origin - the push is overdue at phase close.
@@ -151,6 +159,14 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
   - `& '.\.venv\Scripts\python.exe' -m pytest -m m9 -q` -> 14 passed
   - `& '.\.venv\Scripts\python.exe' tools/check_ascii.py` -> ASCII check OK
   - Scope landed: widened domain profile, mixed ST/LT scenario rendering, new D1bh/D21 box-map coverage, conditional D21 diffing, updated OTS label inventory, refreshed goldens/fixtures including modeled line 21 agreement.
+- M9 Step 6 closeout (worker, 2026-07-07):
+  - `& '.\.venv\Scripts\python.exe' -m tax_graph.cli verify record --year 2025` -> generated `VERIFICATION.md` plus 4 per-form pages under `docs/verification/`
+  - `& '.\.venv\Scripts\python.exe' -m pytest tests/test_verify_record_m9.py tests/test_mcp_m2.py tests/test_cli.py -q` -> 18 passed
+  - `& '.\.venv\Scripts\python.exe' -m pytest -m m9 -q` -> 18 passed
+  - `& '.\.venv\Scripts\python.exe' -m tax_graph.cli validate 2025` -> graph integrity OK
+  - `& '.\.venv\Scripts\python.exe' -m pytest -q` -> 200 passed, 4 skipped
+  - `& '.\.venv\Scripts\python.exe' tools/check_ascii.py` -> ASCII check OK
+  - Scope landed: shared verification-record generator, committed roll-up/per-form pages, MCP `get_verification` surface plus `get_document.verification`, byte-stability coverage, explicit witness-absence rendering.
 
 ## Resolved / superseded
 - All pre-M9 items: see `plans/archive/AGENT_HANDOFF_2026-07-07_full.md` and the archived

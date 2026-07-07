@@ -378,6 +378,27 @@ def verify_report_command(
     return 0
 
 
+def verify_record_command(
+    year: str = "2025",
+    root: str | Path | None = None,
+    *,
+    rollup_path: str | Path | None = None,
+    pages_dir: str | Path | None = None,
+) -> int:
+    """Generate VERIFICATION.md plus per-form verification pages."""
+    from tax_graph.verify.record import write_verification_record
+
+    root_path = Path(root).resolve() if root is not None else project_root()
+    load_config(root=root_path)
+    result = write_verification_record(year=year, root=root_path, rollup_path=rollup_path, pages_dir=pages_dir)
+    print("=== verification record ===")
+    print(f"  rollup: {result.rollup_path}")
+    print(f"  pages: {len(result.page_paths)}")
+    for document_id, path in sorted(result.page_paths.items()):
+        print(f"  - {document_id}: {path}")
+    return 0
+
+
 def verify_diff_drafts_command(
     *,
     doc: str,
@@ -812,6 +833,18 @@ def _build_typer_app():
         if raise_code:
             raise typer.Exit(raise_code)
 
+    @verify_cli.command("record")
+    def verify_record_cli(
+        year: str = typer.Option("2025", "--year", "-y", help="Tax year to render."),
+        rollup_path: Path | None = typer.Option(None, "--rollup-path", help="Optional VERIFICATION.md output path."),
+        pages_dir: Path | None = typer.Option(None, "--pages-dir", help="Optional per-form page output directory."),
+        root: Path | None = typer.Option(None, "--root", help="Project root override."),
+    ) -> None:
+        """Generate VERIFICATION.md plus per-form verification pages."""
+        raise_code = verify_record_command(year=year, root=root, rollup_path=rollup_path, pages_dir=pages_dir)
+        if raise_code:
+            raise typer.Exit(raise_code)
+
     @verify_cli.command("diff-drafts")
     def verify_diff_drafts_cli(
         doc: str = typer.Option(..., "--doc", help="Manifest document id to diff."),
@@ -1030,6 +1063,12 @@ def _fallback_app() -> int:
     verify_nversion_parser.add_argument("--year", "-y", default="2025")
     verify_nversion_parser.add_argument("--root", default=None)
 
+    verify_record_parser = verify_subparsers.add_parser("record")
+    verify_record_parser.add_argument("--year", "-y", default="2025")
+    verify_record_parser.add_argument("--rollup-path", default=None)
+    verify_record_parser.add_argument("--pages-dir", default=None)
+    verify_record_parser.add_argument("--root", default=None)
+
     oracle_parser = subparsers.add_parser("oracle")
     oracle_subparsers = oracle_parser.add_subparsers(dest="oracle_command", required=True)
     oracle_install_parser = oracle_subparsers.add_parser("install")
@@ -1116,6 +1155,13 @@ def _fallback_app() -> int:
         )
     if args.command == "verify" and args.verify_command == "nversion":
         return verify_nversion_command(doc=args.doc, year=args.year, root=args.root)
+    if args.command == "verify" and args.verify_command == "record":
+        return verify_record_command(
+            year=args.year,
+            root=args.root,
+            rollup_path=args.rollup_path,
+            pages_dir=args.pages_dir,
+        )
     if args.command == "oracle" and args.oracle_command == "install":
         return oracle_install_command(year=args.year, root=args.root, archive=args.archive)
     if args.command == "oracle" and args.oracle_command == "fuzz":

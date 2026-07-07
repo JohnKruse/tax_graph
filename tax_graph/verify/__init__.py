@@ -22,6 +22,13 @@ from tax_graph.verify.nversion import (
 )
 from tax_graph.verify.delta import DraftDelta, diff_drafts_against_live, render_delta
 from tax_graph.verify.metrics import build_metrics, collect_metrics, render_report, write_metrics
+from tax_graph.verify.record import (
+    build_verification_bundle,
+    render_verification_page,
+    render_verification_rollup,
+    verification_summary_for_document,
+    write_verification_record,
+)
 from tax_graph.verify.tiers import TierInputs, assign_tier, collect_covered_nodes, tier_distribution
 
 __all__ = [
@@ -45,9 +52,14 @@ __all__ = [
     "compare_batches",
     "corroboration_provenance",
     "diff_drafts_against_live",
+    "build_verification_bundle",
     "render_delta",
+    "render_verification_page",
+    "render_verification_rollup",
     "render_report",
     "run_nversion_extraction",
     "tier_distribution",
+    "verification_summary_for_document",
     "write_metrics",
+    "write_verification_record",
 ]

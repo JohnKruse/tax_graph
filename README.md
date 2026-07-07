@@ -344,6 +344,12 @@ are declared through `graph/2025/frontier-declarations.yaml`; the generated
 frontier registry lets the engine emit an `unresolved` trace instead of guessing
 worksheet values.
 
+M9 also adds a user-facing verification surface. `tax-graph verify record --year
+2025` generates the committed roll-up `VERIFICATION.md` plus per-form pages
+under `docs/verification/`, stating what is modeled, which witnesses cover the
+branch, and which witness types are still absent. The same summary is available
+at runtime over MCP through `get_verification` and `get_document`.
+
 ## Verification Drills
 
 M8 starts the extraction verification ladder by mutation-testing the check net

@@ -29,7 +29,7 @@ M2_TOOL_NAMES = (
     "explain_calculation",
     "export_audit_file",
 )
-MCP_TOOL_NAMES = M2_TOOL_NAMES + ("export_return_record",)
+MCP_TOOL_NAMES = M2_TOOL_NAMES + ("export_return_record", "get_verification")
 
 SERVER_INSTRUCTIONS = """Tax Graph MCP server.
 
@@ -112,11 +112,13 @@ def _register_tools(server: FastMCP, context: McpGraphContext) -> None:
     def get_document(document_id: str) -> dict[str, Any]:
         """Return a document object by id."""
         document = context.documents.get(document_id)
+        verification = _verification_summary(document_id, context)
         return {
             "document_id": document_id,
             "found": document is not None,
             "document": document,
             "decisions": _decisions_for_document(context, document_id),
+            "verification": verification,
         }
 
     @server.tool()
@@ -264,6 +266,11 @@ def _register_tools(server: FastMCP, context: McpGraphContext) -> None:
             "carryforward_block": record.carryforward_block.to_dict(),
         }
 
+    @server.tool()
+    def get_verification(document_id: str) -> dict[str, Any]:
+        """Return the generated verification summary for one document."""
+        return _verification_summary(document_id, context)
+
 
 def _stub(tool: str, context: McpGraphContext, **arguments: Any) -> dict[str, Any]:
     return {
@@ -344,6 +351,12 @@ def _search_citations(context: McpGraphContext, query: str) -> list[dict[str, An
         for citation_id, citation in sorted(context.citations.items())
         if normalized in str(citation.get("quoted_text", "")).lower()
     ]
+
+
+def _verification_summary(document_id: str, context: McpGraphContext) -> dict[str, Any]:
+    from tax_graph.verify.record import verification_summary_for_document
+
+    return verification_summary_for_document(document_id, year=context.year, root=context.root)
 
 
 def _decisions_for_document(context: McpGraphContext, document_id: str) -> list[dict[str, Any]]:
