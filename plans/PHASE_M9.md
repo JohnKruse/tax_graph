@@ -121,7 +121,10 @@ loss-beyond-$3000 case from an out-of-domain fence into a correctly-modeled bran
   unchanged. Test: LINK realizes exactly the resolvable declarations, idempotently; a
   declaration targeting an absent form stays declared. Docs.
 
-- [ ] **Step 5 - Extend the oracle harness to the widened domain.** Box map grows to the
+- [ ] **Step 5 [worker-standard] - Extend the oracle harness to the widened domain.**
+  (Tier note: this step modifies the verification net by design - box map, scenario
+  model, canary retirement, corpus freeze - so worker-light is disallowed under the QC
+  contract in AGENT_HANDOFF.md.) Box map grows to the
   newly-modeled Schedule D lines (labels from the committed OTS inventory: D1b*, D2*,
   D3*, D8b*, D9*, D10*, D21, ...) - validated both ways; scenario model gains SHORT-TERM
   lots (Part I) and losses beyond $3000 (now in-domain via line 21); carryover inputs
@@ -130,7 +133,9 @@ loss-beyond-$3000 case from an out-of-domain fence into a correctly-modeled bran
   domain agree or triage; re-freeze a corpus batch (live-diff provenance only). Offline:
   renderer goldens for an ST+LT mixed scenario; differ fixtures for line 21. Docs.
 
-- [ ] **Step 6 - Form Verification Record (user-facing trust surface).**
+- [ ] **Step 6 [worker-standard] - Form Verification Record (user-facing trust surface).**
+  (Tier note: new generator module with delegated design decisions - "worker pins
+  which" latitude is incompatible with worker-light.)
   `tax-graph verify record --year 2025`: generate `VERIFICATION.md` (roll-up: coverage %
   from frontier, per-form tier/witness summary, drill-gate status) + per-form pages
   (`docs/verification/<document_id>.md`): what is modeled / explicitly not modeled;
