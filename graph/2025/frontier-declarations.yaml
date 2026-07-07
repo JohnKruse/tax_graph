@@ -1,0 +1,8 @@
+- frontier_id: deferred_schedule_d_2025_line_20
+  document_id: schedule_d_2025
+  line: "20"
+  node_id: schedule_d_2025_line_20_frontier
+  citation_ref: cite_schedule_d_line20_deferred
+  status: declared
+  title: Schedule D line 20 tax computation worksheet
+  purpose: Deferred QDCGT tax-computation worksheet branch.

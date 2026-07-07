@@ -29,6 +29,7 @@ class FakeExampleClient:
         )
         return {
             "facts": {
+                "filing_status": "single",
                 "facts": [],
                 "tables": [
                     {

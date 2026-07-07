@@ -112,3 +112,13 @@
     value: 3000
   expected_layers:
     - L0
+
+- id: wrong_capital_loss_limit_parameter
+  taxonomy: F3
+  description: Mutate the cited Schedule D capital loss limit parameter.
+  mutation:
+    kind: change_node_constant
+    node_id: schedule_d_2025_capital_loss_limit_default
+    value: 3500
+  expected_layers:
+    - L3

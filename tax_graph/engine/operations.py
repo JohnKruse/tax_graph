@@ -48,6 +48,14 @@ def apply_operation(operation: str, operands: list[dict[str, Any]], rule: dict[s
     if operation == "SUBTRACT":
         roles = {operand["role"]: _number(operand["value"]) for operand in operands}
         return roles.get("minuend", 0) - roles.get("subtrahend", 0)
+    if operation == "NEGATE":
+        return -_number(operands[0]["value"])
+    if operation == "MIN":
+        return min(_number(operand["value"]) for operand in operands)
+    if operation == "MAX":
+        return max(_number(operand["value"]) for operand in operands)
+    if operation == "LOOKUP_TABLE":
+        return _lookup_table(operands)
     raise NotImplementedError(f"operation {operation} not implemented in v0")
 
 
@@ -59,3 +67,18 @@ def _number_for_sum(operand: dict[str, Any], rule: dict[str, Any]) -> int | floa
 
 def _number(value: Any) -> int | float:
     return 0 if value is None else value
+
+
+def _lookup_table(operands: list[dict[str, Any]]) -> Any:
+    keys = [operand["value"] for operand in operands if operand.get("role") == "key"]
+    if not keys:
+        return MISSING
+    key = str(keys[0])
+    default = MISSING
+    for operand in operands:
+        role = operand.get("role")
+        if role == "default":
+            default = operand["value"]
+        if role == key:
+            return operand["value"]
+    return default

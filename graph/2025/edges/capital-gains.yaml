@@ -104,11 +104,103 @@
   rule_id: sum_currency
   role: addend
 
-# Schedule D line 16 -> Form 1040 line 7
-- edge_id: e_sd_16_to_1040_7
+# Schedule D line 21 limit selection by filing status.
+- edge_id: e_filing_status_to_sd_21_limit
+  source: taxpayer_2025_filing_status
+  target: schedule_d_2025_line_21_loss_limit
+  relationship: CALCULATES
+  rule_id: lookup_capital_loss_limit
+  role: key
+  citation_refs:
+    - cite_schedule_d_line21_loss_limit
+
+- edge_id: e_sd_loss_limit_default_single_to_sd_21_limit
+  source: schedule_d_2025_capital_loss_limit_default
+  target: schedule_d_2025_line_21_loss_limit
+  relationship: CALCULATES
+  rule_id: lookup_capital_loss_limit
+  role: single
+  citation_refs:
+    - cite_schedule_d_line21_loss_limit
+
+- edge_id: e_sd_loss_limit_default_mfj_to_sd_21_limit
+  source: schedule_d_2025_capital_loss_limit_default
+  target: schedule_d_2025_line_21_loss_limit
+  relationship: CALCULATES
+  rule_id: lookup_capital_loss_limit
+  role: married_filing_jointly
+  citation_refs:
+    - cite_schedule_d_line21_loss_limit
+
+- edge_id: e_sd_loss_limit_mfs_to_sd_21_limit
+  source: schedule_d_2025_capital_loss_limit_mfs
+  target: schedule_d_2025_line_21_loss_limit
+  relationship: CALCULATES
+  rule_id: lookup_capital_loss_limit
+  role: married_filing_separately
+  citation_refs:
+    - cite_schedule_d_line21_loss_limit
+
+- edge_id: e_sd_loss_limit_default_hoh_to_sd_21_limit
+  source: schedule_d_2025_capital_loss_limit_default
+  target: schedule_d_2025_line_21_loss_limit
+  relationship: CALCULATES
+  rule_id: lookup_capital_loss_limit
+  role: head_of_household
+  citation_refs:
+    - cite_schedule_d_line21_loss_limit
+
+- edge_id: e_sd_loss_limit_default_qss_to_sd_21_limit
+  source: schedule_d_2025_capital_loss_limit_default
+  target: schedule_d_2025_line_21_loss_limit
+  relationship: CALCULATES
+  rule_id: lookup_capital_loss_limit
+  role: qualifying_surviving_spouse
+  citation_refs:
+    - cite_schedule_d_line21_loss_limit
+
+- edge_id: e_sd_21_limit_to_negative
+  source: schedule_d_2025_line_21_loss_limit
+  target: schedule_d_2025_line_21_loss_limit_negative
+  relationship: CALCULATES
+  rule_id: negate_currency
+  citation_refs:
+    - cite_schedule_d_line21_loss_limit
+
+# Schedule D line 21 limited loss = larger of line 16 and the negative limit.
+- edge_id: e_sd_16_to_21_limited
   source: schedule_d_2025_line_16_total
+  target: schedule_d_2025_line_21_capital_loss_limited
+  relationship: CALCULATES
+  rule_id: max_currency
+  role: candidate
+  citation_refs:
+    - cite_schedule_d_line21_loss_limit
+
+- edge_id: e_sd_21_negative_limit_to_21_limited
+  source: schedule_d_2025_line_21_loss_limit_negative
+  target: schedule_d_2025_line_21_capital_loss_limited
+  relationship: CALCULATES
+  rule_id: max_currency
+  role: candidate
+  citation_refs:
+    - cite_schedule_d_line21_loss_limit
+
+# Schedule D limited capital gain/loss -> Form 1040 line 7
+- edge_id: e_sd_21_limited_to_1040_7
+  source: schedule_d_2025_line_21_capital_loss_limited
   target: form_1040_2025_line_7_capital_gain_loss
   relationship: FEEDS
   rule_id: copy_currency_value
   citation_refs:
     - cite_schedule_d_16_to_1040_7
+
+# Schedule D line 20 remains a declared frontier, so the engine reports an
+# unresolved trace instead of guessing a tax-computation worksheet value.
+- edge_id: e_sd_20_frontier_to_sd_20_tax_computation
+  source: schedule_d_2025_line_20_frontier
+  target: schedule_d_2025_line_20_tax_computation
+  relationship: CALCULATES
+  rule_id: copy_currency_value
+  citation_refs:
+    - cite_schedule_d_line20_deferred

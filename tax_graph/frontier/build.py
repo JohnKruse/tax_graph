@@ -40,6 +40,7 @@ def build_frontier_registry(
     entries = []
     entries.extend(_outbound_flow_entries(graph, soi, manifest_urls))
     entries.extend(_reference_entries(graph, soi, manifest_urls, label_map))
+    entries.extend(_deferred_branch_entries(graph, soi, manifest_urls))
     entries = _dedupe_entries(entries)
 
     registry = {
@@ -261,8 +262,53 @@ def _load_outbound_flows(graph_dir: Path) -> list[dict[str, Any]]:
         return flows
     for path in sorted(drafts_dir.glob("*/outbound_flows.yaml")):
         data = yaml.safe_load(path.read_text(encoding="utf-8")) or []
-        flows.extend(data)
+        flows.extend(
+            flow
+            for flow in data
+            if str(flow.get("source_document_id")) != str(flow.get("target_document_id"))
+        )
     return flows
+
+
+def _deferred_branch_entries(
+    graph: LoadedGraph,
+    soi: SoiCounts,
+    manifest_urls: dict[str, str],
+) -> list[dict[str, Any]]:
+    path = graph.graph_dir / "frontier-declarations.yaml"
+    if not path.exists():
+        return []
+    citations = {citation["citation_id"] for citation in graph.items("citations") if "citation_id" in citation}
+    documents = {document["document_id"] for document in graph.items("documents") if "document_id" in document}
+    entries = []
+    for item in yaml.safe_load(path.read_text(encoding="utf-8")) or []:
+        document_id = str(item["document_id"])
+        citation_ref = str(item["citation_ref"])
+        if document_id not in documents:
+            raise ValueError(f"frontier declaration {item.get('frontier_id')} references unknown document {document_id}")
+        if citation_ref not in citations:
+            raise ValueError(f"frontier declaration {item.get('frontier_id')} references unknown citation {citation_ref}")
+        entries.append(
+            {
+                "frontier_id": _slug(item.get("frontier_id") or f"deferred_{document_id}_line_{item.get('line')}"),
+                "kind": "deferred_branch",
+                "source": {"document_id": document_id},
+                "target": _compact(
+                    {
+                        "document_id": document_id,
+                        "line": str(item.get("line")) if item.get("line") is not None else None,
+                        "node_id": item.get("node_id"),
+                    }
+                ),
+                "target_url": str(item.get("target_url") or _target_url(document_id, manifest_urls, graph)),
+                "citation_ref": citation_ref,
+                "status": str(item.get("status") or "declared"),
+                "weight": soi.counts.get(document_id),
+                "title": item.get("title"),
+                "purpose": item.get("purpose"),
+            }
+        )
+    return entries
 
 
 def _resolve_flow_source_node(flow: dict[str, Any], nodes: dict[str, dict[str, Any]]) -> str | None:

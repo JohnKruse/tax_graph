@@ -10,6 +10,7 @@ from typing import TYPE_CHECKING, Any, Mapping, Sequence
 from tax_graph.engine import Engine
 from tax_graph.engine.engine import TABLE_FACTS_KEY
 from tax_graph.engine.operations import MISSING, is_missing
+from tax_graph.frontier.build import load_frontier_registry
 from tax_graph.io.loader import LoadedGraph
 
 if TYPE_CHECKING:
@@ -49,6 +50,7 @@ def check_graph_properties(
 ) -> PropertyReport:
     """Run generated operation properties over a loaded graph."""
     issues: list[PropertyIssue] = []
+    issues.extend(_parameter_value_issues(graph))
     executable = _ExecutableGraph(graph)
     for index in range(samples):
         facts = _sample_facts(graph, seed=seed + index)
@@ -60,6 +62,29 @@ def check_graph_properties(
         issues.extend(_trace_operation_issues(result.trace))
         issues.extend(_table_relation_issues(graph, result.values))
     return PropertyReport(tuple(_dedupe_issues(issues)))
+
+
+def _parameter_value_issues(graph: LoadedGraph) -> list[PropertyIssue]:
+    expected = {
+        "schedule_d_2025_capital_loss_limit_default": 3000,
+        "schedule_d_2025_capital_loss_limit_mfs": 1500,
+    }
+    issues: list[PropertyIssue] = []
+    nodes = {node.get("node_id"): node for node in graph.items("nodes")}
+    for node_id, expected_value in expected.items():
+        node = nodes.get(node_id)
+        if not node:
+            continue
+        actual = node.get("constant_value")
+        if actual != expected_value:
+            issues.append(
+                PropertyIssue(
+                    "parameter_value",
+                    node_id,
+                    f"parameter value {actual} does not equal cited value {expected_value}",
+                )
+            )
+    return issues
 
 
 def check_draft_batch_properties(
@@ -119,6 +144,7 @@ class _ExecutableGraph:
             for rule in sorted(graph.items("rules"), key=lambda item: item.get("rule_id", ""))
             if "rule_id" in rule
         }
+        self.frontiers = list(load_frontier_registry(graph.year, graph.root).get("frontiers", []) or [])
         self.incoming: dict[str, list[dict[str, Any]]] = {}
         for edge in sorted(graph.items("edges"), key=lambda item: item.get("edge_id", "")):
             if edge.get("target"):

@@ -327,6 +327,16 @@ formula assembly, while out-of-scope Schedule D lines and identity/status
 fields are carried as a draft `documents.yaml` `not_modeled_fields` record
 until the promotion gate.
 
+M9 also introduces cited `parameter` nodes. Schedule D line 21 now selects the
+capital-loss limit through `taxpayer_2025_filing_status`: most filing statuses
+use the cited `$3000` node, while married filing separately uses the cited
+`$1500` node. The engine supports the closed operations needed for this branch
+(`LOOKUP_TABLE`, `NEGATE`, and `MAX`) and renders parameter nodes with their
+citations in audit traces. Deferred Schedule D neighbors, starting with line 20,
+are declared through `graph/2025/frontier-declarations.yaml`; the generated
+frontier registry lets the engine emit an `unresolved` trace instead of guessing
+worksheet values.
+
 ## Verification Drills
 
 M8 starts the extraction verification ladder by mutation-testing the check net
@@ -336,6 +346,8 @@ and reports which ladder layer caught it. The default catalog covers swapped
 SUBTRACT roles, dropped addends, wrong outbound flow targets, phantom nodes,
 table totals omissions, corrupted citation quotes, confidence inflation as a
 no-op, and inline IRS magic numbers in `rule.parameters`.
+M9 adds a wrong-parameter-value mutation for the Schedule D line 21 capital-loss
+limit.
 
 The drill gate is intentionally offline and deterministic. A caught defect must
 name the catching layer; an uncaught catalog entry fails the command honestly

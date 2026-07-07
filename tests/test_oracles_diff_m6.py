@@ -94,7 +94,7 @@ def test_diff_catches_swapped_8949_subtract_roles_at_8949_box():
 
 
 @pytest.mark.m6
-def test_diff_detects_loss_beyond_3000_limit_as_unmodeled_semantics():
+def test_diff_agrees_on_loss_beyond_3000_limit_now_that_line_21_is_modeled():
     scenario = _loss_scenario()
     graph = Graph("2025", root=ROOT, source="yaml")
     result = Engine(graph).execute(load_facts_from_scenario(scenario))
@@ -102,14 +102,16 @@ def test_diff_detects_loss_beyond_3000_limit_as_unmodeled_semantics():
 
     report = diff_engine_result(result, ots_values, _box_map(), scenario=scenario)
 
-    disagreement_nodes = {item.node_id for item in report.disagreements}
-    assert report.status == "disagreed"
-    assert "form_1040_2025_line_7_capital_gain_loss" in disagreement_nodes
+    assert report.ok
+    assert report.status == "agreed"
+    assert not report.disagreements
 
 
 def load_facts_from_scenario(scenario: CapitalGainScenario):
     document = render_tax_graph_facts_document(scenario)
     facts = {fact["node_id"]: fact["value"] for fact in document["facts"]}
+    if document.get("filing_status"):
+        facts["taxpayer_2025_filing_status"] = document["filing_status"]
     facts[TABLE_FACTS_KEY] = document["tables"]
     return facts
 

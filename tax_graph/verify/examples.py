@@ -265,6 +265,8 @@ def _normalize_facts_document(facts: Mapping[str, Any]) -> dict[str, Any]:
 
 def _facts_from_document(facts_document: Mapping[str, Any]) -> dict[str, Any]:
     facts = {fact["node_id"]: fact["value"] for fact in facts_document.get("facts", []) or []}
+    if facts_document.get("filing_status"):
+        facts["taxpayer_2025_filing_status"] = facts_document["filing_status"]
     if facts_document.get("tables"):
         facts["#tables"] = list(facts_document["tables"])
     return facts

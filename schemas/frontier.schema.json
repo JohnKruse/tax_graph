@@ -29,7 +29,7 @@
           "frontier_id": { "type": "string", "pattern": "^[a-z0-9_]+$" },
           "kind": {
             "type": "string",
-            "enum": ["outbound_flow", "form_reference", "pub_reference"]
+              "enum": ["outbound_flow", "form_reference", "pub_reference", "deferred_branch"]
           },
           "source": {
             "type": "object",

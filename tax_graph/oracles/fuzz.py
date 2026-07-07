@@ -122,6 +122,8 @@ def resolve_ots_executable(config: dict[str, Any], *, root: str | Path, year: st
 def _facts_from_scenario(scenario: CapitalGainScenario) -> dict[str, Any]:
     document = render_tax_graph_facts_document(scenario)
     facts = {fact["node_id"]: fact["value"] for fact in document["facts"]}
+    if document.get("filing_status"):
+        facts["taxpayer_2025_filing_status"] = document["filing_status"]
     if document.get("tables"):
         facts[TABLE_FACTS_KEY] = document["tables"]
     return facts

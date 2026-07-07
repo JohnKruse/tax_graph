@@ -6,6 +6,20 @@ provenance:
   soi_note: sample-based estimate; return counts are filing-frequency weights, not
     dollar amounts
 frontiers:
+- frontier_id: deferred_schedule_d_2025_line_20
+  kind: deferred_branch
+  source:
+    document_id: schedule_d_2025
+  target:
+    document_id: schedule_d_2025
+    line: '20'
+    node_id: schedule_d_2025_line_20_frontier
+  target_url: https://www.irs.gov/pub/irs-pdf/f1040sd.pdf
+  citation_ref: cite_schedule_d_line20_deferred
+  status: declared
+  weight: 24000000
+  title: Schedule D line 20 tax computation worksheet
+  purpose: Deferred QDCGT tax-computation worksheet branch.
 - frontier_id: flow_form_8949_2025_part_i_line_2_column_h_to_schedule_d_2025_line_1b
   kind: outbound_flow
   source:
@@ -107,3 +121,25 @@ frontiers:
   citation_ref: cite_schedule_d_16_to_1040_7
   status: modeled
   weight: 163100000
+- frontier_id: ref_cite_schedule_d_line20_deferred_to_schedule_d_2025
+  kind: form_reference
+  source:
+    document_id: instructions_schedule_d_2025
+    citation_id: cite_schedule_d_line20_deferred
+  target:
+    document_id: schedule_d_2025
+  target_url: https://www.irs.gov/pub/irs-pdf/f1040sd.pdf
+  citation_ref: cite_schedule_d_line20_deferred
+  status: modeled
+  weight: 24000000
+- frontier_id: ref_cite_schedule_d_line21_loss_limit_to_schedule_d_2025
+  kind: form_reference
+  source:
+    document_id: instructions_schedule_d_2025
+    citation_id: cite_schedule_d_line21_loss_limit
+  target:
+    document_id: schedule_d_2025
+  target_url: https://www.irs.gov/pub/irs-pdf/f1040sd.pdf
+  citation_ref: cite_schedule_d_line21_loss_limit
+  status: modeled
+  weight: 24000000

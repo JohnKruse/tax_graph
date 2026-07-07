@@ -390,6 +390,8 @@ def _set_first_lot(facts_document: dict, *, proceeds: int, cost: int) -> None:
 
 def _fact_values(facts_document: dict) -> dict:
     values = {fact["node_id"]: fact["value"] for fact in facts_document["facts"]}
+    if facts_document.get("filing_status"):
+        values["filing_status"] = facts_document["filing_status"]
     if facts_document.get("tables"):
         values[TABLE_FACTS_KEY] = facts_document["tables"]
     return values

@@ -134,6 +134,20 @@ def test_validator_allows_registered_frontier_edge(tmp_path):
         },
         "frontiers": [
             {
+                "frontier_id": "deferred_schedule_d_2025_line_20",
+                "kind": "deferred_branch",
+                "source": {"document_id": "schedule_d_2025"},
+                "target": {
+                    "document_id": "schedule_d_2025",
+                    "line": "20",
+                    "node_id": "schedule_d_2025_line_20_frontier",
+                },
+                "target_url": "https://www.irs.gov/pub/irs-pdf/f1040sd.pdf",
+                "citation_ref": "cite_schedule_d_line20_deferred",
+                "status": "declared",
+                "weight": 24000000,
+            },
+            {
                 "frontier_id": "flow_test_to_schedule_d_line_9",
                 "kind": "outbound_flow",
                 "source": {

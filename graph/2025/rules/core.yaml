@@ -20,3 +20,20 @@
   description: >-
     Subtract the 'subtrahend' operand edge from the 'minuend' operand edge.
   rounding: currency
+
+- rule_id: lookup_capital_loss_limit
+  operation: LOOKUP_TABLE
+  description: Select the Schedule D capital loss limit by filing status.
+  rounding: currency
+  citation_refs:
+    - cite_schedule_d_line21_loss_limit
+
+- rule_id: negate_currency
+  operation: NEGATE
+  description: Convert a positive currency amount to the matching negative amount.
+  rounding: currency
+
+- rule_id: max_currency
+  operation: MAX
+  description: Select the larger currency value from the candidate operands.
+  rounding: currency

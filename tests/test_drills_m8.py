@@ -24,6 +24,7 @@ def test_default_drill_catalog_catches_expected_layers():
     assert "L5" in by_id["retarget_outbound_flow_line_off"].actual_layers
     assert by_id["confidence_inflation_no_effect"].status == "no_effect"
     assert by_id["inline_magic_number_parameter"].actual_layers == ("L0",)
+    assert by_id["wrong_capital_loss_limit_parameter"].actual_layers == ("L3",)
 
 
 @pytest.mark.m8

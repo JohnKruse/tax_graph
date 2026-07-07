@@ -20,7 +20,7 @@
     "label": { "type": "string", "description": "Human-readable label, e.g. 'Net capital gain or loss'." },
     "node_type": {
       "type": "string",
-      "enum": ["form_line", "box", "worksheet_field", "fact", "computed", "concept"]
+      "enum": ["form_line", "box", "worksheet_field", "fact", "computed", "concept", "parameter"]
     },
     "value_type": {
       "type": "string",
@@ -36,6 +36,9 @@
       "type": "array",
       "items": { "type": "string" },
       "description": "Allowed values when value_type is 'enum'."
+    },
+    "constant_value": {
+      "description": "Literal value for cited parameter nodes or other graph constants."
     },
     "citation_refs": {
       "type": "array",

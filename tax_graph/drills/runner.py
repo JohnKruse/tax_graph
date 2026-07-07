@@ -191,6 +191,9 @@ def _apply_mutation(graph: LoadedGraph, mutation: dict[str, Any]) -> None:
     if kind == "change_node_label":
         _objects_by_id(graph, "nodes", "node_id")[mutation["node_id"]]["label"] = mutation["label"]
         return
+    if kind == "change_node_constant":
+        _objects_by_id(graph, "nodes", "node_id")[mutation["node_id"]]["constant_value"] = mutation["value"]
+        return
     if kind == "retarget_edge":
         _objects_by_id(graph, "edges", "edge_id")[mutation["edge_id"]]["target"] = mutation["target"]
         return

@@ -96,7 +96,7 @@ loss-beyond-$3000 case from an out-of-domain fence into a correctly-modeled bran
   step. Test (offline, mocked): Schedule D fixtures produce schema-valid drafts with
   table subunits for the 1b-3 / 8b-10 bands; unmapped fields flag. Docs.
 
-- [ ] **Step 3 - First parameter nodes + the line 21 loss-limit branch.** Additive
+- [DONE] **Step 3 - First parameter nodes + the line 21 loss-limit branch.** Additive
   `parameter` node_type in `node.schema.json`; author/extract the capital-loss limit
   parameters ($3000; $1500 MFS) with verbatim citations from the Schedule D instructions;
   the line 21 rule computes the smaller-of (loss, limit by filing status) via closed ops;

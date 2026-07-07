@@ -81,6 +81,7 @@ class Engine:
 
     def execute(self, facts: dict[str, Any]) -> Result:
         """Evaluate all graph nodes and return values plus an audit trace."""
+        facts = _normalize_facts(facts)
         result = Result()
         self._stack: set[str] = set()
         self._instance_stack: set[str] = set()
@@ -96,6 +97,7 @@ class Engine:
 
     def list_required_inputs(self, facts: dict[str, Any]) -> list[str]:
         """List missing required leaf inputs for the supplied facts."""
+        facts = _normalize_facts(facts)
         missing = [
             node_id
             for node_id, node in self.g.nodes.items()
@@ -146,6 +148,15 @@ class Engine:
 
     def _eval_input(self, node_id: str, facts: dict[str, Any], result: Result) -> Any:
         node = self.g.nodes[node_id]
+        if "constant_value" in node:
+            value = node["constant_value"]
+            result.values[node_id] = value
+            result.trace[node_id] = {
+                "kind": "parameter" if node.get("node_type") == "parameter" else "constant",
+                "value": value,
+                "citations": sorted(node.get("citation_refs", [])),
+            }
+            return value
         if node_id in facts and not (node.get("required") == "required" and facts[node_id] is None):
             value = facts[node_id]
             result.values[node_id] = value
@@ -411,9 +422,20 @@ def load_facts(path: str | Path) -> dict[str, Any]:
     """Load normalized taxpayer facts as a node-id to value mapping."""
     data = load_facts_document(path)
     facts = {fact["node_id"]: fact["value"] for fact in data.get("facts", [])}
+    if data.get("filing_status"):
+        facts["taxpayer_2025_filing_status"] = data["filing_status"]
     if data.get("tables"):
         facts[TABLE_FACTS_KEY] = data["tables"]
     return facts
+
+
+def _normalize_facts(facts: dict[str, Any]) -> dict[str, Any]:
+    """Accept public fact aliases used by YAML fixtures and direct callers."""
+    if "filing_status" not in facts or "taxpayer_2025_filing_status" in facts:
+        return facts
+    normalized = dict(facts)
+    normalized["taxpayer_2025_filing_status"] = normalized["filing_status"]
+    return normalized
 
 
 def render_trace(node_id: str, result: Result, graph: Graph, depth: int = 0, role: str | None = None) -> None:
@@ -433,6 +455,12 @@ def render_trace(node_id: str, result: Result, graph: Graph, depth: int = 0, rol
         tag = "(blank)"
     elif trace.get("kind") == "table_template":
         tag = "(table template)"
+    elif trace.get("kind") == "parameter":
+        tag = "(parameter)"
+        if trace.get("citations"):
+            tag += " (" + ", ".join(trace["citations"]) + ")"
+    elif trace.get("kind") == "constant":
+        tag = "(constant)"
     elif trace.get("kind") == "unresolved":
         tag = "(UNRESOLVED)"
     else:

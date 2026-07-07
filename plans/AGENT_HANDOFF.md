@@ -219,6 +219,18 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
   D worked-example mining ran over 10 instruction examples and reported all 10 explicitly
   unmappable because the configured OpenRouter verifier endpoint could not satisfy the requested
   structured-output parameters; no examples were frozen. Next: M9 Step 3 parameter nodes + line 21.
+- **M9 Step 3 is done.** Added the first live `parameter` nodes for the Schedule D line 21
+  capital-loss limit (`3000` default, `1500` married filing separately), a filing-status fact,
+  `LOOKUP_TABLE`/`NEGATE`/`MAX` engine support, and line 21 edges that cap net capital losses
+  while leaving gains uncapped. Parameter traces carry citations, while the final Form 1040 line 7
+  output keeps its pre-existing top-level citation surface. Deferred Schedule D line 20 is declared
+  through `graph/2025/frontier-declarations.yaml`; the rebuilt frontier registry lets the engine
+  emit a typed `unresolved` trace for that worksheet branch without feeding it into line 21.
+  Follow-on repairs completed during closeout: fact coercion now preserves top-level
+  `filing_status` across MCP/example/oracle helpers, the property-check executable shim now loads
+  frontier data, the old M6 loss-limit disagreement canary is retired in favor of agreement on the
+  modeled line 21 branch, and the Return Record golden fixture was refreshed to the new trace
+  surface. Next: M9 Step 4 promotion gate + LINK realization.
 
 ## Open for Architect
 - (none open - the M6 closeout question is ANSWERED: the live gate is NOT deferrable, and
@@ -453,6 +465,21 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
   - `.\.venv\Scripts\python.exe -m tax_graph.cli extract --doc schedule_d_2025` -> accepted=75, review=0, deterministic_issues=0; `metrics.yaml` written with calibration_sample=8
   - `.\.venv\Scripts\python.exe -m tax_graph.cli verify nversion --doc schedule_d_2025` -> agreed, diffs=0
   - `.\.venv\Scripts\python.exe -m tax_graph.cli verify mine-examples --doc schedule_d_2025 --limit 10 --source yaml` -> examples=10, agreed=0, disagreed=0, unmappable=10; no fixtures frozen
+- M9 Step 3:
+  - `.\.venv\Scripts\python.exe -m pytest -m m9` -> 11 passed
+  - `.\.venv\Scripts\python.exe -m pytest tests\test_drills_m8.py -m m8` -> 3 passed
+  - `.\.venv\Scripts\python.exe -m pytest tests\test_compile_m1.py tests\test_tables_compile_m6b.py tests\test_tables_engine_m6b.py -m "m1 or m6b"` -> 10 passed
+  - `.\.venv\Scripts\python.exe -m pytest tests\test_examples_m8.py tests\test_graph_validator.py tests\test_mcp_m2.py tests\test_oracles_corpus_m6.py tests\test_oracles_diff_m6.py tests\test_return_record_m5.py` -> 49 passed
+  - `.\.venv\Scripts\python.exe -m pytest` -> 193 passed, 4 skipped
+  - `.\.venv\Scripts\python.exe -m tax_graph.cli drill run --year 2025` -> 12 drills, PASS
+  - `.\.venv\Scripts\python.exe -m tax_graph.cli validate 2025` -> graph integrity OK; documents=5 nodes=30 tables=2 edges=23 rules=6 citations=7 decisions=1
+  - `.\.venv\Scripts\python.exe -m tax_graph.cli frontier build --year 2025` -> declared=6, modeled=5
+  - `.\.venv\Scripts\python.exe -m tax_graph.cli run --facts examples\capital_gains_basic\facts.yaml --source yaml --no-record` -> line 7 = 2000; parameter trace present
+  - `.\.venv\Scripts\python.exe -m tax_graph.cli run --facts examples\capital_gains_multi_lot\facts.yaml --source yaml --no-record` -> line 7 = 250
+  - `.\.venv\Scripts\python.exe -m tax_graph.cli run --facts examples\capital_gains_basic\facts.yaml --source sqlite --no-record` -> line 7 = 2000
+  - `.\.venv\Scripts\python.exe -m tax_graph.cli run --facts examples\capital_gains_multi_lot\facts.yaml --source sqlite --no-record` -> line 7 = 250
+  - `.\.venv\Scripts\python.exe -m tax_graph.cli build 2025` -> built SQLite graph
+  - `.\.venv\Scripts\python.exe tools\check_ascii.py` -> ASCII check OK
 - M8 Step 2:
   - `.\.venv\Scripts\python.exe -m pytest -m m8` -> 12 passed, 142 deselected
   - `.\.venv\Scripts\python.exe -m pytest -m "m4 or m8"` -> 41 passed, 113 deselected

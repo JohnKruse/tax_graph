@@ -37,6 +37,24 @@
   url: https://www.irs.gov/instructions/i1040sd
   retrieved_date: 2026-06-28
 
+- citation_id: cite_schedule_d_line21_loss_limit
+  document_id: instructions_schedule_d_2025
+  locator: Instructions for Schedule D, line 21
+  quoted_text: >-
+    Line 21. If line 16 is a loss, enter on line 21 the smaller of the loss on
+    line 16 or ($3,000), or if married filing separately, ($1,500).
+  url: https://www.irs.gov/instructions/i1040sd
+  retrieved_date: 2026-07-07
+
+- citation_id: cite_schedule_d_line20_deferred
+  document_id: instructions_schedule_d_2025
+  locator: Instructions for Schedule D, line 20
+  quoted_text: >-
+    Line 20. If you are required to complete the Qualified Dividends and Capital
+    Gain Tax Worksheet, enter the amount from line 3 of that worksheet.
+  url: https://www.irs.gov/instructions/i1040sd
+  retrieved_date: 2026-07-07
+
 - citation_id: cite_1040_line_7
   document_id: form_1040_2025
   locator: Form 1040, line 7

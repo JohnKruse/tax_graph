@@ -1,4 +1,5 @@
 # IRS worked example fixture mined from the 2025 Form 8949 instructions.
+filing_status: single
 facts: []
 tables:
   - table_id: form_8949_2025_part_ii_line_1

@@ -212,6 +212,39 @@
   role: total
 
 # --- Schedule D ---
+- node_id: taxpayer_2025_filing_status
+  document_id: form_1040_2025
+  label: Taxpayer filing status
+  node_type: fact
+  value_type: enum
+  required: required
+  enum_values:
+    - single
+    - married_filing_jointly
+    - married_filing_separately
+    - head_of_household
+    - qualifying_surviving_spouse
+
+- node_id: schedule_d_2025_capital_loss_limit_default
+  document_id: schedule_d_2025
+  label: Schedule D capital loss limit, default filing statuses
+  node_type: parameter
+  value_type: currency
+  required: optional
+  constant_value: 3000
+  citation_refs:
+    - cite_schedule_d_line21_loss_limit
+
+- node_id: schedule_d_2025_capital_loss_limit_mfs
+  document_id: schedule_d_2025
+  label: Schedule D capital loss limit, married filing separately
+  node_type: parameter
+  value_type: currency
+  required: optional
+  constant_value: 1500
+  citation_refs:
+    - cite_schedule_d_line21_loss_limit
+
 - node_id: schedule_d_2025_line_8b_gain
   document_id: schedule_d_2025
   label: Schedule D, line 8b - Long-term totals from Form 8949 (gain/loss)
@@ -240,6 +273,42 @@
   node_type: computed
   value_type: currency
   required: optional
+
+- node_id: schedule_d_2025_line_21_loss_limit
+  document_id: schedule_d_2025
+  label: Schedule D, line 21 - Capital loss limit for filing status
+  node_type: computed
+  value_type: currency
+  required: optional
+  citation_refs:
+    - cite_schedule_d_line21_loss_limit
+
+- node_id: schedule_d_2025_line_21_loss_limit_negative
+  document_id: schedule_d_2025
+  label: Schedule D, line 21 - Capital loss limit as a negative amount
+  node_type: computed
+  value_type: currency
+  required: optional
+  citation_refs:
+    - cite_schedule_d_line21_loss_limit
+
+- node_id: schedule_d_2025_line_21_capital_loss_limited
+  document_id: schedule_d_2025
+  label: Schedule D, line 21 - Loss limited for Form 1040 line 7
+  node_type: computed
+  value_type: currency
+  required: optional
+  citation_refs:
+    - cite_schedule_d_line21_loss_limit
+
+- node_id: schedule_d_2025_line_20_tax_computation
+  document_id: schedule_d_2025
+  label: Schedule D, line 20 - Qualified Dividends and Capital Gain Tax Worksheet
+  node_type: computed
+  value_type: currency
+  required: conditional
+  citation_refs:
+    - cite_schedule_d_line20_deferred
 
 # --- Form 1040 ---
 - node_id: form_1040_2025_line_7_capital_gain_loss

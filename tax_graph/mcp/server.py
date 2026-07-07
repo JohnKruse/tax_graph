@@ -379,12 +379,16 @@ def _coerce_facts(facts: dict[str, Any]) -> dict[str, Any]:
         coerced = dict(facts)
         if "tables" in coerced:
             coerced[TABLE_FACTS_KEY] = coerced.pop("tables")
+        if "filing_status" in coerced and "taxpayer_2025_filing_status" not in coerced:
+            coerced["taxpayer_2025_filing_status"] = coerced["filing_status"]
         return coerced
     coerced = {
         fact["node_id"]: fact.get("value")
         for fact in facts.get("facts", [])
         if isinstance(fact, dict) and "node_id" in fact
     }
+    if facts.get("filing_status") and "taxpayer_2025_filing_status" not in coerced:
+        coerced["taxpayer_2025_filing_status"] = facts["filing_status"]
     if facts.get("tables"):
         coerced[TABLE_FACTS_KEY] = facts["tables"]
     return coerced
@@ -400,10 +404,11 @@ def _facts_document_for_record(facts: dict[str, Any], year: str) -> dict[str, An
     table_facts = facts.get(TABLE_FACTS_KEY) or facts.get("tables") or []
     return {
         "tax_year": int(year),
+        "filing_status": facts.get("filing_status"),
         "facts": [
             {"node_id": node_id, "value": value}
             for node_id, value in sorted(facts.items())
-            if node_id not in {TABLE_FACTS_KEY, "tables"}
+            if node_id not in {TABLE_FACTS_KEY, "tables", "filing_status", "taxpayer_2025_filing_status"}
         ],
         "tables": table_facts,
     }
