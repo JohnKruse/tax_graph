@@ -74,20 +74,25 @@
   citation_refs:
     - cite_8949_col_h_gain
 
-# Form 8949 Part II totals -> Schedule D line 8b
-- edge_id: e_8949_total_to_sd_8b
-  source: form_8949_2025_part_ii_line_2_line_2_column_h_total
-  target: schedule_d_2025_line_8b_gain
-  relationship: FEEDS
-  rule_id: copy_currency_value
+# Schedule D line 7 (net short-term) = supported short-term Form 8949 line 1b.
+- edge_id: e_sd_1b_to_7
+  source: schedule_d_2025_part_i_line_1b_column_h
+  target: schedule_d_2025_line_7_net_st
+  relationship: CALCULATES
+  rule_id: sum_currency
+  role: addend
+  citation_refs:
+    - cite_span_schedule_d_2025_0011
 
-# Schedule D line 15 (net long-term) = sum of long-term lines (here, line 8b)
+# Schedule D line 15 (net long-term) = supported long-term Form 8949 line 8b.
 - edge_id: e_sd_8b_to_15
-  source: schedule_d_2025_line_8b_gain
+  source: schedule_d_2025_part_ii_line_8b_column_h
   target: schedule_d_2025_line_15_net_lt
   relationship: CALCULATES
   rule_id: sum_currency
   role: addend
+  citation_refs:
+    - cite_span_schedule_d_2025_0025
 
 # Schedule D line 16 = net short-term (line 7) + net long-term (line 15)
 - edge_id: e_sd_7_to_16

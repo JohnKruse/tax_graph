@@ -30,6 +30,48 @@
   url: https://www.irs.gov/forms-pubs/about-form-8949
   retrieved_date: 2026-07-06
 
+- citation_id: cite_span_schedule_d_2025_0011
+  document_id: schedule_d_2025
+  locator: Schedule D, line 1b
+  quoted_text: "Totals for all transactions reported on Form(s) 8949"
+  url: https://www.irs.gov/pub/irs-pdf/f1040sd.pdf
+  retrieved_date: 2026-07-07
+
+- citation_id: cite_span_schedule_d_2025_0012
+  document_id: schedule_d_2025
+  locator: Schedule D, line 2
+  quoted_text: "Totals for all transactions reported on Form(s) 8949"
+  url: https://www.irs.gov/pub/irs-pdf/f1040sd.pdf
+  retrieved_date: 2026-07-07
+
+- citation_id: cite_span_schedule_d_2025_0013
+  document_id: schedule_d_2025
+  locator: Schedule D, line 3
+  quoted_text: "Totals for all transactions reported on Form(s) 8949"
+  url: https://www.irs.gov/pub/irs-pdf/f1040sd.pdf
+  retrieved_date: 2026-07-07
+
+- citation_id: cite_span_schedule_d_2025_0025
+  document_id: schedule_d_2025
+  locator: Schedule D, line 8b
+  quoted_text: "Totals for all transactions reported on Form(s) 8949"
+  url: https://www.irs.gov/pub/irs-pdf/f1040sd.pdf
+  retrieved_date: 2026-07-07
+
+- citation_id: cite_span_schedule_d_2025_0026
+  document_id: schedule_d_2025
+  locator: Schedule D, line 9
+  quoted_text: "Totals for all transactions reported on Form(s) 8949"
+  url: https://www.irs.gov/pub/irs-pdf/f1040sd.pdf
+  retrieved_date: 2026-07-07
+
+- citation_id: cite_span_schedule_d_2025_0027
+  document_id: schedule_d_2025
+  locator: Schedule D, line 10
+  quoted_text: "Totals for all transactions reported on Form(s) 8949"
+  url: https://www.irs.gov/pub/irs-pdf/f1040sd.pdf
+  retrieved_date: 2026-07-07
+
 - citation_id: cite_schedule_d_16_to_1040_7
   document_id: schedule_d_2025
   locator: Schedule D, line 16

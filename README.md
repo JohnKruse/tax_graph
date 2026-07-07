@@ -117,6 +117,7 @@ uv run tax-graph verify replay-examples --year 2025
 uv run tax-graph verify nversion --doc form_8949_2025
 uv run tax-graph verify report --year 2025
 uv run tax-graph verify diff-drafts --doc form_8949_2025 --year 2025
+uv run tax-graph link --year 2025
 uv run tax-graph frontier --year 2025
 uv run tax-graph acquire 2025
 uv run tax-graph acquire 2025 --check
@@ -141,6 +142,7 @@ python -m tax_graph.cli verify replay-examples --year 2025
 python -m tax_graph.cli verify nversion --doc form_8949_2025
 python -m tax_graph.cli verify report --year 2025
 python -m tax_graph.cli verify diff-drafts --doc form_8949_2025 --year 2025
+python -m tax_graph.cli link --year 2025
 python -m tax_graph.cli frontier --year 2025
 python -m tax_graph.cli acquire 2025 --check
 python -m tax_graph.cli extract --doc form_8949_2025
@@ -175,6 +177,11 @@ its long-term lot as one Part II table row.
 The frontier registry is derived data, regenerated with
 `tax-graph frontier build --year 2025` into `graph/2025/frontier.yaml`. Query
 it with `tax-graph frontier --year 2025` or `--json` for the deferred map data.
+After a reviewed form promotion, `tax-graph link --year 2025` resolves
+`_drafts/*/outbound_flows.yaml` declarations against the promoted live node
+index and writes deterministic FEEDS edges under `graph/2025/edges/`. A
+declaration whose target line is still absent remains a frontier entry; LINK
+does not realize edges against raw drafts.
 It combines promoted graph references, reviewed outbound-flow declarations,
 manifest scope, and committed SOI counts. Modeled entries name already-covered
 targets; declared entries are intentional open ends; unmodeled entries are

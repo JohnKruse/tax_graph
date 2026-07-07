@@ -109,7 +109,7 @@ loss-beyond-$3000 case from an out-of-domain fence into a correctly-modeled bran
   node in the trace + citation; gain scenarios bypass; unresolved trace for a line-20
   dependency; magic-number drill fires. Docs.
 
-- [ ] **Step 4 - Promotion (JOHN's gate) + LINK realization + frontier flip.** Prepare the
+- [DONE] **Step 4 - Promotion (JOHN's gate) + LINK realization + frontier flip.** Prepare the
   promotion diff (replace the hand-authored Schedule D slice; preserve the 1040 line 7
   edge; wire the promoted 8b/1b/etc. lines to receive the 8949 totals); STOP for John's
   approval. After approval: implement the LINK step (`tax-graph link --year 2025` or an

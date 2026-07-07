@@ -53,7 +53,7 @@
   description: Retarget the Form 8949 total flow to the wrong Schedule D line.
   mutation:
     kind: retarget_edge
-    edge_id: e_8949_total_to_sd_8b
+    edge_id: link_flow_form_8949_2025_part_ii_line_2_column_h_to_schedule_d_2025_line_8b
     target: schedule_d_2025_line_15_net_lt
   expected_layers:
     - L5

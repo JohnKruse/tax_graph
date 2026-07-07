@@ -201,6 +201,24 @@ def frontier_query_command(
     return 0
 
 
+def link_command(year: str = "2025", root: str | Path | None = None) -> int:
+    """Resolve reviewed outbound-flow declarations into live FEEDS edges."""
+    from tax_graph.link import link_outbound_flows
+
+    root_path = Path(root).resolve() if root is not None else project_root()
+    result = link_outbound_flows(year, root=root_path)
+    print(f"wrote linked outbound edges: {result.path}")
+    print(f"  realized: {len(result.realized)}")
+    print(f"  unresolved: {len(result.unresolved)}")
+    for item in result.unresolved:
+        print(
+            "  - "
+            f"{item.get('flow_id')}: {item.get('source_node_id')} -> "
+            f"{item.get('target_document_id')} line {item.get('target_line')}"
+        )
+    return 0
+
+
 def serve_command(
     year: str = "2025",
     root: str | Path | None = None,
@@ -908,6 +926,16 @@ def _build_typer_app():
 
     cli.add_typer(frontier_cli, name="frontier")
 
+    @cli.command("link")
+    def link_cli(
+        year: str = typer.Option("2025", "--year", "-y", help="Tax year to link."),
+        root: Path | None = typer.Option(None, "--root", help="Project root override."),
+    ) -> None:
+        """Resolve reviewed outbound-flow declarations into live edges."""
+        raise_code = link_command(year=year, root=root)
+        if raise_code:
+            raise typer.Exit(raise_code)
+
     @cli.command("acquire")
     def acquire_cli(
         year: str = typer.Argument("2025"),
@@ -963,6 +991,10 @@ def _fallback_app() -> int:
     frontier_build_parser = frontier_subparsers.add_parser("build")
     frontier_build_parser.add_argument("--year", "-y", default="2025")
     frontier_build_parser.add_argument("--root", default=None)
+
+    link_parser = subparsers.add_parser("link")
+    link_parser.add_argument("--year", "-y", default="2025")
+    link_parser.add_argument("--root", default=None)
 
     serve_parser = subparsers.add_parser("serve")
     serve_parser.add_argument("--year", "-y", default="2025")
@@ -1059,6 +1091,8 @@ def _fallback_app() -> int:
         return frontier_build_command(year=args.year, root=args.root)
     if args.command == "frontier":
         return frontier_query_command(year=args.year, root=args.root, json_output=args.json)
+    if args.command == "link":
+        return link_command(year=args.year, root=args.root)
     if args.command == "serve":
         return serve_command(year=args.year, root=args.root, source=args.source)
     if args.command == "drill" and args.drill_command == "run":

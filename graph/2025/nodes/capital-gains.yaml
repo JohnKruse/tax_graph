@@ -245,12 +245,66 @@
   citation_refs:
     - cite_schedule_d_line21_loss_limit
 
-- node_id: schedule_d_2025_line_8b_gain
+- node_id: schedule_d_2025_part_i_line_1b_column_h
   document_id: schedule_d_2025
-  label: Schedule D, line 8b - Long-term totals from Form 8949 (gain/loss)
+  label: Schedule D, line 1b, column (h) - Short-term totals from Form 8949
   node_type: form_line
   value_type: currency
   required: conditional
+  citation_refs:
+    - cite_span_schedule_d_2025_0011
+
+- node_id: schedule_d_2025_part_i_line_2_column_h
+  document_id: schedule_d_2025
+  label: Schedule D, line 2, column (h) - Short-term totals from Form 8949
+  node_type: form_line
+  value_type: currency
+  required: conditional
+  citation_refs:
+    - cite_span_schedule_d_2025_0012
+
+- node_id: schedule_d_2025_part_i_line_3_column_h
+  document_id: schedule_d_2025
+  label: Schedule D, line 3, column (h) - Short-term totals from Form 8949
+  node_type: form_line
+  value_type: currency
+  required: conditional
+  citation_refs:
+    - cite_span_schedule_d_2025_0013
+
+- node_id: schedule_d_2025_part_ii_line_8b_column_h
+  document_id: schedule_d_2025
+  label: Schedule D, line 8b, column (h) - Long-term totals from Form 8949
+  node_type: form_line
+  value_type: currency
+  required: conditional
+  citation_refs:
+    - cite_span_schedule_d_2025_0025
+
+- node_id: schedule_d_2025_part_ii_line_9_column_h
+  document_id: schedule_d_2025
+  label: Schedule D, line 9, column (h) - Long-term totals from Form 8949
+  node_type: form_line
+  value_type: currency
+  required: conditional
+  citation_refs:
+    - cite_span_schedule_d_2025_0026
+
+- node_id: schedule_d_2025_part_ii_line_10_column_h
+  document_id: schedule_d_2025
+  label: Schedule D, line 10, column (h) - Long-term totals from Form 8949
+  node_type: form_line
+  value_type: currency
+  required: conditional
+  citation_refs:
+    - cite_span_schedule_d_2025_0027
+
+- node_id: schedule_d_2025_line_7_net_st
+  document_id: schedule_d_2025
+  label: Schedule D, line 7 - Net short-term capital gain or (loss)
+  node_type: computed
+  value_type: currency
+  required: optional
 
 - node_id: schedule_d_2025_line_15_net_lt
   document_id: schedule_d_2025
@@ -258,14 +312,6 @@
   node_type: computed
   value_type: currency
   required: optional
-
-- node_id: schedule_d_2025_line_7_net_st
-  document_id: schedule_d_2025
-  label: Schedule D, line 7 - Net short-term capital gain or (loss)
-  node_type: form_line
-  value_type: currency
-  required: conditional
-  description: Populated by the short-term path (deferred in this slice); defaults to 0.
 
 - node_id: schedule_d_2025_line_16_total
   document_id: schedule_d_2025

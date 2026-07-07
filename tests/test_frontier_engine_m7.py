@@ -67,7 +67,7 @@ def test_engine_emits_unresolved_trace_for_frontier_upstream(tmp_path):
     assert result.values["schedule_d_2025_line_15_net_lt"] is MISSING
     trace = result.trace["schedule_d_2025_line_15_net_lt"]
     assert trace["kind"] == "unresolved"
-    assert trace["frontier_id"] == "flow_form_8949_2025_part_ii_line_2_column_h_to_schedule_d_2025_line_9"
+    assert trace["frontier_id"] == "flow_test_schedule_d_line_9"
     assert trace["target_url"] == "https://www.irs.gov/pub/irs-pdf/f1040sd.pdf"
     assert trace["citation_ref"] == "cite_8949_line2_totals"
     assert "not yet modeled" in trace["note"]

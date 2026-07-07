@@ -16,7 +16,7 @@ boxes:
   - node_id: schedule_d_2025_line_7_net_st
     ots_label: D7
     rounding: whole_dollar
-  - node_id: schedule_d_2025_line_8b_gain
+  - node_id: schedule_d_2025_part_ii_line_8b_column_h
     ots_label: D8bh
     rounding: whole_dollar
   - node_id: schedule_d_2025_line_15_net_lt

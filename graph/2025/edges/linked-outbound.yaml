@@ -1,0 +1,42 @@
+- edge_id: link_flow_form_8949_2025_part_i_line_2_column_h_to_schedule_d_2025_line_1b
+  source: form_8949_2025_part_i_line_2_line_2_column_h_total
+  target: schedule_d_2025_part_i_line_1b_column_h
+  relationship: FEEDS
+  rule_id: copy_currency_value
+  citation_refs:
+  - cite_8949_line2_totals
+- edge_id: link_flow_form_8949_2025_part_i_line_2_column_h_to_schedule_d_2025_line_2
+  source: form_8949_2025_part_i_line_2_line_2_column_h_total
+  target: schedule_d_2025_part_i_line_2_column_h
+  relationship: FEEDS
+  rule_id: copy_currency_value
+  citation_refs:
+  - cite_8949_line2_totals
+- edge_id: link_flow_form_8949_2025_part_i_line_2_column_h_to_schedule_d_2025_line_3
+  source: form_8949_2025_part_i_line_2_line_2_column_h_total
+  target: schedule_d_2025_part_i_line_3_column_h
+  relationship: FEEDS
+  rule_id: copy_currency_value
+  citation_refs:
+  - cite_8949_line2_totals
+- edge_id: link_flow_form_8949_2025_part_ii_line_2_column_h_to_schedule_d_2025_line_10
+  source: form_8949_2025_part_ii_line_2_line_2_column_h_total
+  target: schedule_d_2025_part_ii_line_10_column_h
+  relationship: FEEDS
+  rule_id: copy_currency_value
+  citation_refs:
+  - cite_8949_line2_totals
+- edge_id: link_flow_form_8949_2025_part_ii_line_2_column_h_to_schedule_d_2025_line_8b
+  source: form_8949_2025_part_ii_line_2_line_2_column_h_total
+  target: schedule_d_2025_part_ii_line_8b_column_h
+  relationship: FEEDS
+  rule_id: copy_currency_value
+  citation_refs:
+  - cite_8949_line2_totals
+- edge_id: link_flow_form_8949_2025_part_ii_line_2_column_h_to_schedule_d_2025_line_9
+  source: form_8949_2025_part_ii_line_2_line_2_column_h_total
+  target: schedule_d_2025_part_ii_line_9_column_h
+  relationship: FEEDS
+  rule_id: copy_currency_value
+  citation_refs:
+  - cite_8949_line2_totals

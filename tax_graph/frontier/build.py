@@ -13,6 +13,7 @@ import yaml
 from tax_graph.acquire.manifest import load_manifest
 from tax_graph.frontier.soi import SoiCounts, load_form_id_map, load_soi_counts
 from tax_graph.io.loader import LoadedGraph, load_graph
+from tax_graph.link import _resolve_flow_target_node, _target_line_index
 
 
 @dataclass(frozen=True)
@@ -140,13 +141,13 @@ def _outbound_flow_entries(
     nodes = {node["node_id"]: node for node in graph.items("nodes") if "node_id" in node}
     citations = {citation["citation_id"]: citation for citation in graph.items("citations") if "citation_id" in citation}
     live_edges = {(edge.get("source"), edge.get("target")) for edge in graph.items("edges")}
-    line_index = _line_index(graph)
+    line_index = _target_line_index(graph)
     entries = []
     for flow in flows:
         target_document_id = str(flow.get("target_document_id"))
         target_line = str(flow.get("target_line"))
         source_node_id = _resolve_flow_source_node(flow, nodes)
-        target_node_id = line_index.get((target_document_id, target_line))
+        target_node_id = _resolve_flow_target_node(flow, line_index)
         status = "unmodeled"
         if target_document_id in manifest_urls or target_document_id in {doc.get("document_id") for doc in graph.items("documents")}:
             status = "declared"

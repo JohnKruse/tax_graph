@@ -36,7 +36,7 @@ def test_frontier_summary_worklist_and_coverage(tmp_path):
     assert summary["coverage"]["full_universe_percent"] < 100
     assert summary["coverage"]["in_scope_percent"] == 100.0
     assert weights == sorted(weights, reverse=True)
-    assert any(entry["target"].get("line") == "1b" for entry in summary["worklist"])
+    assert any(entry["frontier_id"] == "deferred_schedule_d_2025_line_20" for entry in summary["worklist"])
 
 
 @pytest.mark.m7
@@ -85,7 +85,7 @@ def test_frontier_cli_text_and_json(tmp_path):
     assert text_result.returncode == 0, text_result.stderr
     assert "covers ~" in text_result.stdout
     assert "SOI provenance: 2023" in text_result.stdout
-    assert "schedule_d_2025 line 1b" in text_result.stdout
+    assert "schedule_d_2025 line 20" in text_result.stdout
     assert json_result.returncode == 0, json_result.stderr
     payload = json.loads(json_result.stdout)
     assert payload["coverage"]["full_universe_percent"] > 0

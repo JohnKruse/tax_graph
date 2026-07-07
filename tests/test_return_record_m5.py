@@ -144,7 +144,6 @@ def test_corrupted_carryforward_block_fails_validation():
 def test_prior_record_with_resolvable_target_primes_next_run(tmp_path):
     graph = Graph("2025", root=ROOT, source="yaml")
     explicit_facts = load_facts(FACTS_PATH)
-    explicit_facts.pop("schedule_d_2025_line_7_net_st")
     prior_block = {
         "tax_year": 2024,
         "tax_graph_version": "test-version",
@@ -155,7 +154,7 @@ def test_prior_record_with_resolvable_target_primes_next_run(tmp_path):
                 "kind": "test_prior_short_term_amount",
                 "amount": 500,
                 "originating_year": 2024,
-                "target_node": "schedule_d_2025_line_7_net_st",
+                "target_node": "schedule_d_2025_part_i_line_1b_column_h",
             }
         ],
     }
@@ -168,7 +167,7 @@ def test_prior_record_with_resolvable_target_primes_next_run(tmp_path):
     assert ingestion.not_ingested == []
     assert ingestion.fact_entries == [
         {
-            "node_id": "schedule_d_2025_line_7_net_st",
+            "node_id": "schedule_d_2025_part_i_line_1b_column_h",
             "value": 500,
             "source": {
                 "document_label": "from 2024 Return Record",
@@ -177,7 +176,7 @@ def test_prior_record_with_resolvable_target_primes_next_run(tmp_path):
             "confidence": 1.0,
         }
     ]
-    assert result.values[TARGET] == 2500
+    assert result.values[TARGET] == 2000
 
 
 def test_prior_record_reports_v0_capital_loss_without_ingesting():

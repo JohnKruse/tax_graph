@@ -231,7 +231,15 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
   frontier data, the old M6 loss-limit disagreement canary is retired in favor of agreement on the
   modeled line 21 branch, and the Return Record golden fixture was refreshed to the new trace
   surface. Next: M9 Step 4 promotion gate + LINK realization.
-
+- **M9 Step 4 is done.** John approved the promotion gate. Added `tax-graph link`, promoted
+  Schedule D Form 8949 landing nodes for lines 1b/2/3/8b/9/10, generated six deterministic LINK
+  FEEDS edges from the reviewed Form 8949 outbound-flow declarations, and rebuilt
+  `graph/2025/frontier.yaml` so the 8949 outbound entries flip to `modeled`; only deferred Schedule
+  D line 20 remains declared. The supported computation intentionally sums line 1b into line 7 and
+  line 8b into line 15 for parity with the current one-table-per-part 8949 model; category rows
+  2/3/9/10 are linked and visible but not yet downstream addends. Updated M7/M9 tests, drill
+  catalog, oracle box map/corpus expected ids, Return Record golden, and README docs. Next: M9
+  Step 5 widens the oracle harness to short-term lots and losses beyond $3000.
 ## Open for Architect
 - (none open - the M6 closeout question is ANSWERED: the live gate is NOT deferrable, and
   running it found real defects. See From Architect "M6 live-gate ruling".)

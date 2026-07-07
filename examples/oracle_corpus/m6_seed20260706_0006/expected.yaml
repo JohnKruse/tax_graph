@@ -4,7 +4,7 @@ expected:
   form_8949_2025_part_ii_line_2_line_2_column_g_total: 814
   form_8949_2025_part_ii_line_2_line_2_column_h_total: 4606
   schedule_d_2025_line_7_net_st: 0
-  schedule_d_2025_line_8b_gain: 4606
+  schedule_d_2025_part_ii_line_8b_column_h: 4606
   schedule_d_2025_line_15_net_lt: 4606
   schedule_d_2025_line_16_total: 4606
   form_1040_2025_line_7_capital_gain_loss: 4606
