@@ -21,6 +21,7 @@ class WitnessSummary:
     oracle_scenarios: int = 0
     oracle_version: str | None = None
     irs_examples: int = 0
+    irs_examples_pending_review: int = 0
     calibration_sample: int | None = None
     escapes: int | None = None
     human_minutes: float | None = None
@@ -76,7 +77,7 @@ def build_verification_bundle(year: str = "2025", root: str | Path | None = None
         for report in collect_metrics(root_path, year=year)
         if isinstance(report, dict) and report.get("document_id")
     }
-    example_counts = _collect_example_counts(root_path)
+    example_counts, pending_example_counts = _collect_example_counts(root_path)
     oracle_counts, oracle_version = _collect_oracle_coverage(root_path, graph)
     triage_counts = _collect_triage_counts(root_path, graph)
     gaps_by_document = _collect_gaps(graph, frontier)
@@ -90,6 +91,7 @@ def build_verification_bundle(year: str = "2025", root: str | Path | None = None
             oracle_scenarios=oracle_counts.get(document_id, 0),
             oracle_version=oracle_version if oracle_counts.get(document_id, 0) else None,
             irs_examples=example_counts.get(document_id, 0),
+            irs_examples_pending_review=pending_example_counts.get(document_id, 0),
             calibration_sample=_optional_int(metrics_index.get(document_id, {}).get("routing", {}).get("calibration_sample")),
             escapes=_optional_int(metrics_index.get(document_id, {}).get("escapes")),
             human_minutes=_optional_float(metrics_index.get(document_id, {}).get("human_minutes")),
@@ -258,6 +260,7 @@ def verification_summary_for_document(
                     "oracle_scenarios": record.witnesses.oracle_scenarios,
                     "oracle_version": record.witnesses.oracle_version,
                     "irs_examples": record.witnesses.irs_examples,
+                    "irs_examples_pending_review": record.witnesses.irs_examples_pending_review,
                     "calibration_sample": record.witnesses.calibration_sample,
                     "escapes": record.witnesses.escapes,
                     "human_minutes": record.witnesses.human_minutes,
@@ -343,19 +346,23 @@ def _collect_gaps(graph: Any, frontier: dict[str, Any]) -> dict[str, tuple[str, 
     return {document_id: tuple(entries) for document_id, entries in sorted(gaps.items())}
 
 
-def _collect_example_counts(root: Path) -> dict[str, int]:
+def _collect_example_counts(root: Path) -> tuple[dict[str, int], dict[str, int]]:
     counts: dict[str, int] = {}
+    pending_counts: dict[str, int] = {}
     examples_dir = root / "examples" / "irs_examples"
     if not examples_dir.is_dir():
-        return counts
+        return counts, pending_counts
     for provenance_path in sorted(examples_dir.rglob("provenance.yaml")):
         payload = yaml.safe_load(provenance_path.read_text(encoding="utf-8")) or {}
         source_document_id = str(payload.get("source_document_id") or "")
         if not source_document_id:
             continue
+        pending_review = not bool(payload.get("human_confirmed"))
         for document_id in _related_document_ids(source_document_id):
             counts[document_id] = counts.get(document_id, 0) + 1
-    return counts
+            if pending_review:
+                pending_counts[document_id] = pending_counts.get(document_id, 0) + 1
+    return counts, pending_counts
 
 
 def _collect_oracle_coverage(root: Path, graph: Any) -> tuple[dict[str, int], str | None]:
@@ -429,7 +436,12 @@ def _oracle_summary(witnesses: WitnessSummary) -> str:
 def _example_summary(witnesses: WitnessSummary) -> str:
     if not witnesses.irs_examples:
         return "No committed IRS worked-example fixture covers this document."
-    return f"{witnesses.irs_examples} committed IRS worked-example fixture(s)."
+    if not witnesses.irs_examples_pending_review:
+        return f"{witnesses.irs_examples} committed IRS worked-example fixture(s)."
+    return (
+        f"{witnesses.irs_examples} committed IRS worked-example fixture(s); "
+        f"{witnesses.irs_examples_pending_review} pending human review."
+    )
 
 
 def _calibration_summary(witnesses: WitnessSummary) -> str:

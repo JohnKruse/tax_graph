@@ -133,7 +133,7 @@ Filer-weighted coverage currently stands at 42.4%; this set is where the power-l
   `check_graph_citations` shows 7) - likely the CLI's `source_map` for span citations;
   make the CLI report per-citation reasons so this class of confusion cannot recur. Docs.
 
-- [ ] **Step 3 [worker-standard] - Repair example mining (known M9 defect).** M9 Step 2
+- [DONE] **Step 3 [worker-standard] - Repair example mining (known M9 defect).** M9 Step 2
   reported 10/10 mined examples unmappable because the OpenRouter verifier endpoint
   rejected the structured-output parameters. Fix the verifier client/config (stay
   provider-agnostic - capability-detect or config-declare structured-output support, no

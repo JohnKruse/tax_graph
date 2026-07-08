@@ -251,6 +251,7 @@ def verify_mine_examples_command(
     root: str | Path | None = None,
     output_dir: str | Path | None = None,
     confirm: bool = False,
+    freeze_agreed: bool = False,
     limit: int | None = None,
     source: str | None = None,
     client: object | None = None,
@@ -271,6 +272,7 @@ def verify_mine_examples_command(
             config=config,
             output_dir=output_dir,
             confirm=confirm,
+            freeze_agreed=freeze_agreed,
             limit=limit,
             source=source,
         )
@@ -287,6 +289,8 @@ def verify_mine_examples_command(
     for example in report.examples:
         if example.output_dir:
             print(f"  frozen: {example.output_dir}")
+            if example.review_queue_path:
+                print(f"  review queue: {example.review_queue_path}")
         elif example.mismatches:
             print(f"  - {example.block.example_id}: {example.status} ({'; '.join(example.mismatches)})")
     return 0 if report.disagreed == 0 else 1
@@ -784,6 +788,11 @@ def _build_typer_app():
         year: str = typer.Option("2025", "--year", "-y", help="Tax year to mine."),
         output_dir: Path | None = typer.Option(None, "--output-dir", help="Directory for confirmed fixtures."),
         confirm: bool = typer.Option(False, "--confirm", help="Freeze agreed examples after human confirmation."),
+        freeze_agreed: bool = typer.Option(
+            False,
+            "--freeze-agreed",
+            help="Freeze machine-agreed examples with pending human review and a deferred-review queue entry.",
+        ),
         limit: int | None = typer.Option(None, "--limit", help="Maximum examples to mine."),
         source: str | None = typer.Option(None, "--source", help="Graph source: sqlite or yaml. Defaults to auto."),
         root: Path | None = typer.Option(None, "--root", help="Project root override."),
@@ -795,6 +804,7 @@ def _build_typer_app():
             root=root,
             output_dir=output_dir,
             confirm=confirm,
+            freeze_agreed=freeze_agreed,
             limit=limit,
             source=source,
         )
@@ -1049,6 +1059,7 @@ def _fallback_app() -> int:
     verify_mine_parser.add_argument("--year", "-y", default="2025")
     verify_mine_parser.add_argument("--output-dir", default=None)
     verify_mine_parser.add_argument("--confirm", action="store_true")
+    verify_mine_parser.add_argument("--freeze-agreed", action="store_true")
     verify_mine_parser.add_argument("--limit", type=int, default=None)
     verify_mine_parser.add_argument("--source", choices=["sqlite", "yaml"], default=None)
     verify_mine_parser.add_argument("--root", default=None)
@@ -1144,6 +1155,7 @@ def _fallback_app() -> int:
             root=args.root,
             output_dir=args.output_dir,
             confirm=args.confirm,
+            freeze_agreed=args.freeze_agreed,
             limit=args.limit,
             source=args.source,
         )

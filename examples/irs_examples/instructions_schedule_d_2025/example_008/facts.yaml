@@ -1,0 +1,14 @@
+example: Form 8949 Part I line 1 gain example
+transaction_type: gain
+column_d: 6000
+column_e: 2000
+instruction: enter the difference in column h
+facts: []
+tables:
+- table_id: form_8949_2025_part_i_line_1
+  rows:
+  - row_key: example_008
+    columns:
+      d: 6000
+      e: 2000
+      g: 0

@@ -1,0 +1,21 @@
+tax_year: 2025
+entries:
+- queue_id: irs_example_review_instructions_schedule_d_2025_example_008
+  kind: irs_example_review
+  status: pending
+  priority: medium
+  document_id: schedule_d_2025
+  source_document_id: instructions_schedule_d_2025
+  example_id: example_008
+  created_date: '2026-07-08'
+  created_by: tax_graph.verify.examples
+  summary: Review machine-agreed IRS example freeze for instructions_schedule_d_2025
+    example_008
+  artifact_dir: examples/irs_examples/instructions_schedule_d_2025/example_008
+  machine_agreed: true
+  human_confirmed: false
+  expected_nodes:
+  - form_8949_2025_part_i_line_1_column_d#example_008
+  - form_8949_2025_part_i_line_1_column_d_minus_e#example_008
+  - form_8949_2025_part_i_line_1_column_e#example_008
+  - form_8949_2025_part_i_line_1_column_h#example_008

@@ -1,0 +1,10 @@
+example_id: example_008
+source_document_id: instructions_schedule_d_2025
+locator: instructions_schedule_d_2025 example 8
+quoted_text: '**Example 1gain.** Column (d) is $6,000 and column (e) is $2,000. Enter
+  $4,000 in column (h).'
+human_confirmed: false
+machine_agreed: true
+review_status: pending_human_review
+machine_agreed_basis: engine_replay_matched_expected
+recorded_date: '2026-07-08'

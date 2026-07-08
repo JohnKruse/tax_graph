@@ -164,6 +164,60 @@ def test_mine_examples_command_with_mocked_client_freezes_confirmed_fixture(tmp_
     assert (fixture_dir / "facts.yaml").exists()
     assert (fixture_dir / "expected.yaml").exists()
     assert (fixture_dir / "provenance.yaml").exists()
+    expected = (fixture_dir / "expected.yaml").read_text(encoding="utf-8")
+    provenance = (fixture_dir / "provenance.yaml").read_text(encoding="utf-8")
+    assert "confirmed: true" in expected
+    assert "human_confirmed: true" in provenance
+
+
+@pytest.mark.m8
+def test_mine_examples_command_freezes_machine_agreed_fixture_and_queue_entry(tmp_path, capsys):
+    root = _make_project(tmp_path)
+    client = FakeExampleClient()
+
+    exit_code = verify_mine_examples_command(
+        doc="instructions_form_8949_2025",
+        year="2025",
+        root=root,
+        client=client,
+        freeze_agreed=True,
+        limit=1,
+        source="yaml",
+    )
+
+    captured = capsys.readouterr()
+    fixture_dir = root / "examples" / "irs_examples" / "instructions_form_8949_2025" / "example_001"
+    queue_path = root / "review_queue" / "2025" / "deferred_review.yaml"
+    assert exit_code == 0
+    assert "review queue:" in captured.out
+    assert queue_path.exists()
+    expected = (fixture_dir / "expected.yaml").read_text(encoding="utf-8")
+    provenance = (fixture_dir / "provenance.yaml").read_text(encoding="utf-8")
+    queue = queue_path.read_text(encoding="utf-8")
+    assert "confirmed: false" in expected
+    assert "review_status: pending_human_review" in expected
+    assert "human_confirmed: false" in provenance
+    assert "machine_agreed: true" in provenance
+    assert "kind: irs_example_review" in queue
+    assert "status: pending" in queue
+
+
+@pytest.mark.m8
+def test_mine_examples_rejects_conflicting_freeze_modes(tmp_path):
+    root = _make_project(tmp_path)
+
+    with pytest.raises(ValueError, match="either confirm or freeze_agreed"):
+        mine_examples(
+            document_id="instructions_form_8949_2025",
+            year="2025",
+            root=root,
+            client=FakeExampleClient(),
+            config={"llm": {"model": "mock-model"}},
+            confirm=True,
+            freeze_agreed=True,
+            limit=1,
+            source="yaml",
+        )
 
 
 @pytest.mark.m8

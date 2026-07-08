@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+import datetime as _dt
 from pathlib import Path
 import re
 from typing import Any, Mapping, Sequence
@@ -36,6 +37,7 @@ class MinedExample:
     status: str
     mismatches: tuple[str, ...] = ()
     output_dir: Path | None = None
+    review_queue_path: Path | None = None
 
     @property
     def ok(self) -> bool:
@@ -127,10 +129,14 @@ def mine_examples(
     config: dict[str, Any] | None = None,
     output_dir: str | Path | None = None,
     confirm: bool = False,
+    freeze_agreed: bool = False,
+    freeze_date: str | None = None,
     limit: int | None = None,
     source: str | None = None,
 ) -> ExampleMiningReport:
     """Mine worked examples for one rendered document and optionally freeze them."""
+    if confirm and freeze_agreed:
+        raise ValueError("choose either confirm or freeze_agreed, not both")
     root_path = Path(root).resolve() if root is not None else Path(__file__).resolve().parents[2]
     settings = config or {}
     llm_client = client or build_llm_client(settings)
@@ -146,7 +152,23 @@ def mine_examples(
                 break
             mined = _mine_block(block, client=llm_client, graph=graph, model=model)
             if confirm and mined.status == "agreed":
-                mined = _freeze_mined_example(mined, output_dir=_examples_dir(root_path, output_dir))
+                mined = _freeze_mined_example(
+                    mined,
+                    output_dir=_examples_dir(root_path, output_dir),
+                    root=root_path,
+                    year=year,
+                    freeze_date=freeze_date,
+                    human_confirmed=True,
+                )
+            elif freeze_agreed and mined.status == "agreed":
+                mined = _freeze_mined_example(
+                    mined,
+                    output_dir=_examples_dir(root_path, output_dir),
+                    root=root_path,
+                    year=year,
+                    freeze_date=freeze_date,
+                    human_confirmed=False,
+                )
             examples.append(mined)
         if limit is not None and len(examples) >= limit:
             break
@@ -218,16 +240,27 @@ def _mine_block(block: ExampleBlock, *, client: LlmClient, graph: Graph, model: 
     return MinedExample(block, facts_document, expected, status=status, mismatches=mismatches)
 
 
-def _freeze_mined_example(mined: MinedExample, *, output_dir: Path) -> MinedExample:
+def _freeze_mined_example(
+    mined: MinedExample,
+    *,
+    output_dir: Path,
+    root: Path,
+    year: str | int,
+    freeze_date: str | None,
+    human_confirmed: bool,
+) -> MinedExample:
     example_dir = output_dir / mined.block.source_document_id / mined.block.example_id
     example_dir.mkdir(parents=True, exist_ok=True)
+    recorded_date = freeze_date or _dt.date.today().isoformat()
     _write_yaml(example_dir / "facts.yaml", mined.facts_document)
     _write_yaml(
         example_dir / "expected.yaml",
         {
             "example_id": mined.block.example_id,
             "source_document_id": mined.block.source_document_id,
-            "confirmed": True,
+            "confirmed": human_confirmed,
+            "machine_agreed": True,
+            "review_status": "confirmed" if human_confirmed else "pending_human_review",
             "expected": mined.expected,
         },
     )
@@ -238,9 +271,22 @@ def _freeze_mined_example(mined: MinedExample, *, output_dir: Path) -> MinedExam
             "source_document_id": mined.block.source_document_id,
             "locator": mined.block.locator,
             "quoted_text": mined.block.text,
-            "human_confirmed": True,
+            "human_confirmed": human_confirmed,
+            "machine_agreed": True,
+            "review_status": "confirmed" if human_confirmed else "pending_human_review",
+            "machine_agreed_basis": "engine_replay_matched_expected",
+            "recorded_date": recorded_date,
         },
     )
+    review_queue_path = None
+    if not human_confirmed:
+        review_queue_path = _append_deferred_review_queue_entry(
+            root=root,
+            year=year,
+            mined=mined,
+            example_dir=example_dir,
+            recorded_date=recorded_date,
+        )
     return MinedExample(
         block=mined.block,
         facts_document=mined.facts_document,
@@ -248,6 +294,7 @@ def _freeze_mined_example(mined: MinedExample, *, output_dir: Path) -> MinedExam
         status=mined.status,
         mismatches=mined.mismatches,
         output_dir=example_dir,
+        review_queue_path=review_queue_path,
     )
 
 
@@ -500,11 +547,69 @@ def _examples_dir(root: Path, output_dir: str | Path | None) -> Path:
     return path if path.is_absolute() else root / path
 
 
+def _append_deferred_review_queue_entry(
+    *,
+    root: Path,
+    year: str | int,
+    mined: MinedExample,
+    example_dir: Path,
+    recorded_date: str,
+) -> Path:
+    queue_path = root / "review_queue" / str(year) / "deferred_review.yaml"
+    payload = _load_yaml(queue_path)
+    if not isinstance(payload, dict):
+        payload = {}
+    entries = payload.get("entries")
+    if not isinstance(entries, list):
+        entries = []
+    queue_id = f"irs_example_review_{mined.block.source_document_id}_{mined.block.example_id}"
+    entry = {
+        "queue_id": queue_id,
+        "kind": "irs_example_review",
+        "status": "pending",
+        "priority": "medium",
+        "document_id": _review_document_id(mined),
+        "source_document_id": mined.block.source_document_id,
+        "example_id": mined.block.example_id,
+        "created_date": recorded_date,
+        "created_by": "tax_graph.verify.examples",
+        "summary": (
+            f"Review machine-agreed IRS example freeze for "
+            f"{mined.block.source_document_id} {mined.block.example_id}"
+        ),
+        "artifact_dir": str(example_dir.relative_to(root)).replace("\\", "/"),
+        "machine_agreed": True,
+        "human_confirmed": False,
+        "expected_nodes": sorted(str(node_id) for node_id in mined.expected),
+    }
+    updated_entries = [item for item in entries if isinstance(item, dict) and item.get("queue_id") != queue_id]
+    updated_entries.append(entry)
+    updated_entries.sort(key=lambda item: str(item.get("queue_id") or ""))
+    _write_yaml(
+        queue_path,
+        {
+            "tax_year": int(year),
+            "entries": updated_entries,
+        },
+    )
+    return queue_path
+
+
+def _review_document_id(mined: MinedExample) -> str:
+    document_id = mined.block.source_document_id
+    if document_id.startswith("instructions_"):
+        return document_id.removeprefix("instructions_")
+    return document_id
+
+
 def _load_yaml(path: Path) -> Any:
+    if not path.exists():
+        return {}
     return yaml.safe_load(path.read_text(encoding="utf-8")) or {}
 
 
 def _write_yaml(path: Path, data: Any) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(yaml.safe_dump(data, sort_keys=False, allow_unicode=False), encoding="utf-8", newline="\n")
 
 

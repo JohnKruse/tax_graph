@@ -85,6 +85,14 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
   - `.\.venv\Scripts\python.exe tools/check_ascii.py` -> ASCII check OK
   - Live probe: `.\.venv\Scripts\python.exe -m tax_graph.cli verify mine-examples --doc instructions_form_8949_2025 --limit 3 --source yaml` -> `agreed: 1, disagreed: 0, unmappable: 2` (transport no longer blocked; one real agreement)
   - Live probe: later Schedule D blocks 7-9 mined directly after segmentation -> `example_007`, `example_008`, `example_009` all `agreed` after shorthand normalization, covering both the section-1244 and compact 8949 arithmetic example shapes embedded in `instructions_schedule_d_2025`
+- **Worker update (Codex, 2026-07-08): M10 Step 3 is now COMPLETE in the worktree under the deferred-review policy.** Added machine-agreed freeze support to IRS example mining (`--freeze-agreed`), keeping `--confirm` reserved for actual humans. Machine freezes now write honest provenance (`human_confirmed: false`, `machine_agreed: true`, `review_status: pending_human_review`), add a committed deferred-review queue artifact at `review_queue/2025/deferred_review.yaml`, and surface pending-review witness text in `VERIFICATION.md` / `docs/verification/`. Added `schemas/deferred_review_queue.schema.json` to pin the queue shape. Live freeze landed one new Schedule D fixture at `examples/irs_examples/instructions_schedule_d_2025/example_008/`; replay is green.
+- **Worker verification (Codex, 2026-07-08):**
+  - `.\.venv\Scripts\python.exe -m pytest tests/test_examples_m8.py tests/test_extract_m4.py tests/test_verify_record_m9.py tests/test_mcp_m2.py -q` -> 45 passed
+  - `.\.venv\Scripts\python.exe -m tax_graph.cli verify mine-examples --doc instructions_schedule_d_2025 --freeze-agreed --limit 10 --source yaml` -> `agreed: 1, disagreed: 0, unmappable: 9`; froze `instructions_schedule_d_2025/example_008` and queued deferred review
+  - `.\.venv\Scripts\python.exe -m tax_graph.cli verify replay-examples --year 2025 --source yaml` -> `examples: 2`, `result: OK`
+  - `.\.venv\Scripts\python.exe -m tax_graph.cli verify record --year 2025 --root C:\Users\devbox\projects\tax_graph` -> regenerated `VERIFICATION.md` + per-form pages with Schedule D pending-review witness text
+  - `.\.venv\Scripts\python.exe -m pytest -q` -> 227 passed, 4 skipped
+  - `.\.venv\Scripts\python.exe tools/check_ascii.py` -> ASCII check OK
 
 ## Open for Architect
 - (none - the Step 3 freeze-policy question is ANSWERED by the DEFERRED-REVIEW policy

@@ -189,7 +189,7 @@ def test_get_verification_returns_generated_summary():
 
     assert result["document_id"] == "schedule_d_2025"
     assert result["verification_tier"] == "independently witnessed"
-    assert "No committed IRS worked-example fixture" in result["page_markdown"]
+    assert "pending human review" in result["page_markdown"]
 
 
 def _call_tool(server, name: str, arguments: dict[str, Any]) -> dict[str, Any]:

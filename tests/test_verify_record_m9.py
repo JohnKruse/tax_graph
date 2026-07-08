@@ -54,5 +54,5 @@ def test_verify_record_states_witness_absence_plainly():
     schedule_d = bundle.page_texts["schedule_d_2025"]
     form_1099b = bundle.page_texts["form_1099b_2025"]
 
-    assert "No committed IRS worked-example fixture covers this document." in schedule_d
+    assert "1 committed IRS worked-example fixture(s); 1 pending human review." in schedule_d
     assert "No committed calibration metrics artifact covers this document." in form_1099b

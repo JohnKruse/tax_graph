@@ -1,0 +1,10 @@
+example_id: example_008
+source_document_id: instructions_schedule_d_2025
+confirmed: false
+machine_agreed: true
+review_status: pending_human_review
+expected:
+  form_8949_2025_part_i_line_1_column_d#example_008: 6000
+  form_8949_2025_part_i_line_1_column_e#example_008: 2000
+  form_8949_2025_part_i_line_1_column_d_minus_e#example_008: 4000
+  form_8949_2025_part_i_line_1_column_h#example_008: 4000
