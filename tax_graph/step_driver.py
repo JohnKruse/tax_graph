@@ -23,8 +23,8 @@ from tax_graph.config import project_root
 
 DEFAULT_DRIVER_CONFIG = "config/driver.yaml"
 STEP_HEADER_RE = re.compile(
-    r"^- \[(?P<box>[ xX])\] \*\*Step (?P<number>\d+) "
-    r"\[(?P<tier>[a-z-]+)\] - (?P<title>.+?)\.\*\*(?P<body>.*?)(?=^- \[[ xX]\] \*\*Step |\Z)"
+    r"^- \[(?P<box>[^\]]+)\] \*\*Step (?P<number>\d+)(?P<suffix>[a-z]?) "
+    r"\[(?P<tier>[a-z-]+)\] - (?P<title>.+?)\*\*(?P<body>.*?)(?=^- \[[^\]]+\] \*\*Step \d+[a-z]? |\Z)"
     ,
     re.MULTILINE | re.DOTALL,
 )
@@ -148,8 +148,10 @@ def parse_phase_plan(plan_path: str | Path) -> PhasePlan:
                 break
 
     for match in STEP_HEADER_RE.finditer(text):
+        if match.group("suffix"):
+            continue
         raw_title = match.group("title")
-        title_text = " ".join(raw_title.split())
+        title_text = " ".join(raw_title.split()).rstrip(".")
         body_text = match.group("body").strip()
         title_lower = title_text.lower()
         body_first_line = body_text.splitlines()[0].strip().lower() if body_text else ""
@@ -159,7 +161,7 @@ def parse_phase_plan(plan_path: str | Path) -> PhasePlan:
                 tier=match.group("tier"),
                 title=title_text,
                 body=body_text,
-                checked=match.group("box").lower() == "x",
+                checked=match.group("box").strip().lower() in {"x", "done", "complete"},
                 john_gate=(
                     "john's gate" in title_lower
                     or "john's gates" in title_lower

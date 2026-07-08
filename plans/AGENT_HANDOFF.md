@@ -93,6 +93,13 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
   - `.\.venv\Scripts\python.exe -m tax_graph.cli verify record --year 2025 --root C:\Users\devbox\projects\tax_graph` -> regenerated `VERIFICATION.md` + per-form pages with Schedule D pending-review witness text
   - `.\.venv\Scripts\python.exe -m pytest -q` -> 227 passed, 4 skipped
   - `.\.venv\Scripts\python.exe tools/check_ascii.py` -> ASCII check OK
+- **Worker update (Codex, 2026-07-08): M10 Step 4 first extraction slice is now green in the worktree; step NOT complete yet.** `extract_year(...)` now writes per-bundle verification sidecars after draft routing: `nversion.yaml` is always written (including honest `not_configured` state when absent), `example_mining.yaml` is written for each batch form, and `metrics.yaml` is amended with both summaries. Schedule B's offline fixture path now truly exercises repeatable-table detection: the fixture field grid includes repeated row bands, the table detector synthesizes missing row-template input nodes for non-formula row bands, recognizes generic totals-line ids beyond hardcoded `line_2`, and falls back to row columns when the totals cue says "Add the amounts on line X" without restating column letters. Added `tests/test_batch_extraction_m10.py` to drive `extract_year(...)` end-to-end offline on a single-form manifest and assert the sidecars plus Schedule B table artifacts.
+- **Worker verification (Codex, 2026-07-08):**
+  - `.\.venv\Scripts\python.exe -m pytest tests/test_batch_extraction_m10.py tests/test_batch_bundle_m10.py tests/test_tables_detector_m6b.py tests/test_schedule_d_extraction_m9.py -q` -> 16 passed
+  - `.\.venv\Scripts\python.exe -m pytest tests/test_step_driver_m10.py tests/test_batch_extraction_m10.py tests/test_cli.py tests/test_compile_m1.py tests/test_frontier_query_m7.py tests/test_runtime_light_m1.py -q` -> 20 passed
+  - `.\.venv\Scripts\python.exe -m pytest -q` -> 228 passed, 4 skipped
+  - `.\.venv\Scripts\python.exe tools/check_ascii.py` -> ASCII check OK
+- **Worker note / next slice:** Step 4 still needs the remaining batch-form coverage beyond the Schedule B canary, plus a cleaner story for the deterministic completeness issues now surfacing on unmodeled Schedule B lines (currently acceptable for `_drafts`, but not yet expressed as the full per-form `not_modeled` record set the step calls for).
 
 ## Open for Architect
 - (none - the Step 3 freeze-policy question is ANSWERED by the DEFERRED-REVIEW policy

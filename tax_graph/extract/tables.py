@@ -17,7 +17,7 @@ ROW_FIELD_RE = re.compile(
     re.IGNORECASE,
 )
 ROW_COLUMN_RE = re.compile(r"_column_([a-z])$")
-TOTAL_COLUMN_RE = re.compile(r"_line_2_column_([a-z])_total$")
+TOTAL_COLUMN_RE = re.compile(r"_line_[0-9]+[a-z]?_column_([a-z])_total$")
 
 
 @dataclass(frozen=True)
@@ -91,7 +91,17 @@ def _assemble_one_table(
 ) -> DraftObject | None:
     node_objects = {obj.object_id: obj for obj in objects if obj.kind == "nodes"}
     row_columns = _row_template_columns(document.document_id, row_node.outline_id, node_objects)
+    if not row_columns:
+        row_columns = _synthesize_row_template_nodes(
+            document=document,
+            row_node=row_node,
+            objects=objects,
+            model=model,
+        )
+        node_objects = {obj.object_id: obj for obj in objects if obj.kind == "nodes"}
     cue_columns = _cue_columns(totals_node.label)
+    if not cue_columns and "add the amounts on line" in totals_node.label.lower():
+        cue_columns = list(row_columns)
     total_nodes = _total_nodes(document.document_id, totals_node.outline_id, node_objects)
 
     expected_columns = set(row_columns)
@@ -286,6 +296,41 @@ def _mark_row_template_nodes(
         obj.data["column"] = column if column in row_columns else _column_suffix(obj.object_id)
 
 
+def _synthesize_row_template_nodes(
+    *,
+    document: SourceDocumentInput,
+    row_node: OutlineNode,
+    objects: list[DraftObject],
+    model: str,
+) -> dict[str, DraftObject]:
+    citation_refs = _citation_refs_for_outlines(
+        objects,
+        document_id=document.document_id,
+        outline_ids=[row_node.outline_id],
+    )
+    source_span = _source_span_for_outlines(
+        objects,
+        document_id=document.document_id,
+        outline_ids=[row_node.outline_id],
+    )
+    synthesized: dict[str, DraftObject] = {}
+    for column in row_node.columns:
+        node_id = _slug(f"{document.document_id}_{row_node.outline_id}_column_{column}")
+        data = {
+            "node_id": node_id,
+            "document_id": document.document_id,
+            "label": f"Column ({column})",
+            "node_type": "form_line",
+            "value_type": _row_column_value_type(row_node=row_node, column=column),
+        }
+        if citation_refs:
+            data["citation_refs"] = citation_refs
+        obj = DraftObject("nodes", data, source_span, model, 1.0)
+        objects.append(obj)
+        synthesized[column] = obj
+    return synthesized
+
+
 def _mark_total_nodes(total_nodes: dict[str, DraftObject], *, table_id: str) -> None:
     for column, obj in total_nodes.items():
         obj.data["table_id"] = table_id
@@ -296,6 +341,12 @@ def _mark_total_nodes(total_nodes: dict[str, DraftObject], *, table_id: str) -> 
 def _single_letter_column(node_id: str) -> str | None:
     match = ROW_COLUMN_RE.search(node_id)
     return match.group(1) if match else None
+
+
+def _row_column_value_type(*, row_node: OutlineNode, column: str) -> str:
+    if column == "a" and "list name of payer" in row_node.label.lower():
+        return "string"
+    return "currency"
 
 
 def _column_suffix(node_id: str) -> str:
