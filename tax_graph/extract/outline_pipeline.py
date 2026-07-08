@@ -55,6 +55,7 @@ def generate_outline_first_drafts(
     objects.extend(assemble_table_subunits(document, outline, objects, model="deterministic-table-detector"))
     objects.extend(_schedule_d_band_tables(document, outline.children, model="deterministic-schedule-d-band-detector"))
     objects.extend(_schedule_d_not_modeled_document(document, outline.children, model="deterministic-schedule-d-scope"))
+    objects.extend(_simple_line_objects(document, outline.children, spans, objects=objects, model=model))
     objects.extend(_line_cue_objects(document, outline.children, spans, model=model))
     objects.extend(_generic_not_modeled_document(document, outline.children, objects=objects, model=model))
 
@@ -215,6 +216,76 @@ def _line_cue_objects(
             data["citation_refs"] = citation_refs
         objects.append(DraftObject("nodes", data, source_span, model, 1.0))
     return objects
+
+
+def _simple_line_objects(
+    document: SourceDocumentInput,
+    nodes: list[OutlineNode],
+    spans: list[CandidateSpan],
+    *,
+    objects: list[DraftObject],
+    model: str,
+) -> list[DraftObject]:
+    generated: list[DraftObject] = []
+    for node in _flatten_nodes(nodes):
+        if not _is_simple_line_node(node):
+            continue
+        if any(_object_mentions_line(obj, str(node.line_anchor or "")) for obj in objects + generated if obj.kind == "nodes"):
+            continue
+        if _skip_simple_line(node):
+            continue
+        span = _span_for_line(node, spans)
+        citation_refs: list[str] = []
+        source_span = ""
+        if span:
+            citation_id = f"cite_{_slug(span.span_id)}"
+            citation_refs.append(citation_id)
+            source_span = span.text
+            generated.append(
+                DraftObject(
+                    "citations",
+                    {
+                        "citation_id": citation_id,
+                        "document_id": span.document_id,
+                        "locator": span.locator,
+                        "quoted_text": span.text,
+                    },
+                    span.text,
+                    model,
+                    1.0,
+                )
+            )
+        data = {
+            "node_id": _slug(f"{document.document_id}_{node.outline_id}"),
+            "document_id": document.document_id,
+            "label": f"Line {node.line_anchor}: {node.label}" if node.line_anchor else node.label,
+            "node_type": "form_line",
+            "value_type": _simple_line_value_type(node),
+        }
+        if citation_refs:
+            data["citation_refs"] = citation_refs
+        generated.append(DraftObject("nodes", data, source_span, model, 1.0))
+    return generated
+
+
+def _is_simple_line_node(node: OutlineNode) -> bool:
+    return node.kind in {"line", "totals"} and bool(node.line_anchor)
+
+
+def _skip_simple_line(node: OutlineNode) -> bool:
+    lowered = node.label.lower()
+    if "list type and amount" in lowered:
+        return True
+    return False
+
+
+def _simple_line_value_type(node: OutlineNode) -> str:
+    lowered = node.label.lower()
+    if "did you have" in lowered or lowered.startswith("at any time"):
+        return "boolean"
+    if "enter the name" in lowered:
+        return "string"
+    return "currency"
 
 
 def _line_cue_nodes(nodes: list[OutlineNode]) -> list[OutlineNode]:

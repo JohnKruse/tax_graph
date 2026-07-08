@@ -106,6 +106,12 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
   - `.\.venv\Scripts\python.exe -m pytest -q` -> 229 passed, 4 skipped
   - `.\.venv\Scripts\python.exe tools/check_ascii.py` -> ASCII check OK
 - **Worker note / next slice:** Step 4 still needs stronger per-form structure beyond partial document records - especially whether any of Schedule 1/1-A/2/3/A/6251 should emit deterministic non-table line nodes in this phase instead of only `not_modeled` coverage records.
+- **Worker update (Codex, 2026-07-08): Step 4 third extraction slice is now green in the worktree; step still NOT complete.** Added deterministic simple-line node synthesis for clearly scalar outline lines (`line` / `totals`) outside the existing table/formula paths. The extractor now emits cited `form_line` nodes for straightforward currency lines (for example Schedule 1 lines 1/9/11/25, Schedule A line items, and Form 6251 lines 1/2e/4/5/6/7) plus typed boolean/string nodes for obvious prompt lines such as Schedule B foreign-account lines 9/10. Mixed-content "List type and amount" lines still stay honestly unmodeled. The generic partial-document record now only carries the residual holes (for example Schedule 1 `8z`/`24z`, Schedule B `7`/`8`) instead of entire forms.
+- **Worker verification (Codex, 2026-07-08):**
+  - `.\.venv\Scripts\python.exe -m pytest tests/test_batch_extraction_m10.py tests/test_batch_bundle_m10.py tests/test_schedule_d_extraction_m9.py -q` -> 13 passed
+  - `.\.venv\Scripts\python.exe -m pytest -q` -> 229 passed, 4 skipped
+  - `.\.venv\Scripts\python.exe tools/check_ascii.py` -> ASCII check OK
+- **Worker note / next slice:** Step 4 still needs a call on the remaining non-scalar or table-ish lines (for example Schedule B lines 7/8 and the "List type and amount" rows on Schedules 1/1-A). Those may stay as explicit `not_modeled` coverage in Step 4, but the next decision is whether any deserve deterministic rule/node treatment before Step 5 promotions begin.
 
 ## Open for Architect
 - (none - the Step 3 freeze-policy question is ANSWERED by the DEFERRED-REVIEW policy

@@ -216,16 +216,32 @@ def test_extract_year_full_batch_writes_partial_document_records(tmp_path):
         assert example_mining["ran"] is True
         assert documents[0]["document_id"] == document_id
         assert documents[0]["status"] == "partial"
-        assert documents[0]["not_modeled_fields"]
 
     schedule_1_doc = yaml.safe_load(
         (root / "graph" / "2025" / "_drafts" / "schedule_1_2025" / "documents.yaml").read_text(encoding="utf-8")
     )[0]
+    schedule_1_nodes = yaml.safe_load(
+        (root / "graph" / "2025" / "_drafts" / "schedule_1_2025" / "nodes.yaml").read_text(encoding="utf-8")
+    )
     schedule_b_doc = yaml.safe_load(
         (root / "graph" / "2025" / "_drafts" / "schedule_b_2025" / "documents.yaml").read_text(encoding="utf-8")
     )[0]
-    assert {item["line_anchor"] for item in schedule_1_doc["not_modeled_fields"]} >= {"1", "8z", "9", "11", "24z", "25"}
-    assert {item["line_anchor"] for item in schedule_b_doc["not_modeled_fields"]} >= {"3", "4", "7", "8", "9", "10"}
+    schedule_b_nodes = yaml.safe_load(
+        (root / "graph" / "2025" / "_drafts" / "schedule_b_2025" / "nodes.yaml").read_text(encoding="utf-8")
+    )
+    schedule_1_node_ids = {item["node_id"] for item in schedule_1_nodes}
+    schedule_b_node_ids = {item["node_id"] for item in schedule_b_nodes}
+
+    assert {item["line_anchor"] for item in schedule_1_doc["not_modeled_fields"]} == {"8z", "24z"}
+    assert "schedule_1_2025_part_i_line_1" in schedule_1_node_ids
+    assert "schedule_1_2025_part_i_line_9" in schedule_1_node_ids
+    assert "schedule_1_2025_part_ii_line_11" in schedule_1_node_ids
+    assert "schedule_1_2025_part_ii_line_25" in schedule_1_node_ids
+    assert {item["line_anchor"] for item in schedule_b_doc["not_modeled_fields"]} == {"7", "8"}
+    assert "schedule_b_2025_part_i_line_3" in schedule_b_node_ids
+    assert "schedule_b_2025_part_i_line_4" in schedule_b_node_ids
+    assert "schedule_b_2025_part_iii_line_9" in schedule_b_node_ids
+    assert "schedule_b_2025_part_iii_line_10" in schedule_b_node_ids
     assert primary.calls
     assert secondary.calls
 
