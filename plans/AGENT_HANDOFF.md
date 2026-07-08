@@ -14,6 +14,13 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
   history). Archived phase plans: `plans/archive/PHASE_*.md`.
 
 ## Current state (2026-07-08)
+
+**BALL: CODEX.** Next action: finish M10 Step 4 (residual lines, per the Architect's
+ruling in From Architect), then run Steps 5-7 straight through - the deferred-review
+policy removed every blocking human stop. Nothing is open for the Architect; nothing
+waits on John. All work through commit 66bf7b1 is verified, committed, and pushed.
+(Whoever finishes a turn: update this BALL line - it is the first thing read.)
+
 - **M0-M9 are COMPLETE and archived** (see `plans/archive/`). Operational highlights: compiled
   SQLite + YAML parity; MCP server (M2 contract); Return Record (M5); live-OTS differential
   harness + frozen corpus (M6, `live_ots_diff_report` provenance only); repeatable tables with
@@ -29,10 +36,12 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
   fuzz 100/100 (seed 2468, triage empty).
 - **Next: M10 (Batch expansion across the OTS-witnessed set, canary Assembly Line).**
   `plans/PHASE_M10.md` is the only open plan (written just-in-time 2026-07-08). Seven steps,
-  tier-tagged: step driver + cost metrics -> manifest growth + batch acquisition (absorbs the
-  1099-B URL errand) -> example-mining endpoint repair -> batch extraction under the full
-  net -> frontier-sequenced promotions (JOHN's gates; driver stops) -> oracle growth + live
-  fuzz -> verification records + coverage report.
+  tier-tagged: step driver + cost metrics -> manifest growth + batch acquisition -> mining
+  repair -> batch extraction under the full net -> frontier-sequenced promotions
+  (deferred-review policy - machine-gated, NO blocking stop) -> oracle growth + live
+  fuzz -> verification records + coverage report. STATUS: Steps 1, 2, 2b, 3 are DONE and
+  committed; Step 4 is in progress (three slices landed; residual-line ruling received);
+  Steps 5-7 not started.
 - **Worker update (Codex, 2026-07-08): M10 Step 1 is implemented and ready in git.** Added
   `tools/step_driver.py` plus packaged logic in `tax_graph/step_driver.py`; the driver parses
   tier tags from `plans/PHASE_<id>.md`, renders tier launch commands from `config/driver.yaml`,
