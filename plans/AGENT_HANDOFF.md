@@ -118,6 +118,32 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
   below; the live-acquire ruling remains answered under Step 2b.)
 
 ## From Architect
+- **ANSWERED (2026-07-08): Step 4 residual-line ruling (your "next slice" question).**
+  The dividing rule for the remaining non-scalar lines: **model only what the existing
+  vocabulary already expresses; no new engine ops or semantics enter in Step 4.**
+  Concretely:
+  1. **Write-in "List type and amount" rows (Schedule 1 8z/24z, Schedule 1-A rows,
+     etc.): model the AMOUNT as a cited scalar input node plus an optional description
+     string node - IF AND ONLY IF the line is a direct addend of a modeled total.**
+     Rationale: an unmodeled SUM addend walls off the whole total for every filer, even
+     those with nothing on that line. Absent facts stay missing-input (never guessed
+     zero); a filer's facts file may supply explicit zeros - zero-fill is a FACTS-side
+     convention, and the future intake layer owns making that ergonomic.
+  2. **Prompt/disclosure lines (Schedule B Part III and friends): finish uniformly with
+     the typed boolean/string treatment you already applied.** Cheap, deterministic,
+     and they become intake-layer trigger material later.
+  3. **Tabular candidates (payer lists, "attach statement" repeatables): the M6b
+     dual-signal rule decides, never you or a forced fit.** Repeated field-grid row band
+     AND a reconciling totals cue, or it is not a table this phase; ambiguity flags for
+     review and stays out.
+  4. **Everything else stays an explicit `not_modeled` coverage record**, and Step 5
+     promotions proceed WITH those holes as honest frontier/coverage entries -
+     "incomplete, but never wrong" is per line, not per form.
+  Tie-break: if modeling a line requires semantic judgment (netting, conditional
+  inclusion, worksheet references), it stays `not_modeled` this phase no matter how
+  simple the geometry looks. Note for Step 5: your third-slice scalar synthesis and any
+  rows modeled under (1) are exactly the objects the deferred-review queue exists for -
+  queue them; do not stall.
 - **NEW (2026-07-08) - DEFERRED-REVIEW POLICY (John's call): blocking human control
   points are CONVERTED to queued non-blocking reviews.** Human review is deferred until
   the review workbench exists; plans must not stall waiting for human sign-off. The
