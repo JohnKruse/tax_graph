@@ -40,7 +40,12 @@ Global project canary: **Ledger Llama**.
   `llm.provider` with no silent default. Mistral OCR (OCR stage) is the only deliberate exception.
   The example config defaults to `openrouter`, a vendor-neutral gateway.
 - **Drafts are never auto-merged and never committed.** LLM extraction output goes to
-  `graph/<year>/_drafts/` (gitignored); a human promotes accepted objects into the live graph.
+  `graph/<year>/_drafts/` (gitignored). Promotion into the live graph requires the FULL
+  machine witness set green; under the **deferred-review policy (John, 2026-07-08)** the
+  human review of a promotion diff may be DEFERRED to a committed review queue instead of
+  blocking - with honest pending-review provenance, never asserted as reviewed. No agent
+  ever writes `human_confirmed: true` or any equivalent human-review claim on the human's
+  behalf; deferral is recorded, review happens later in the review workbench.
 - **Runtime stays light:** build-time deps (pymupdf, mistralai, httpx, LLM clients) live in
   `pyproject` extras, never base; a runtime command must not import them.
 - **IRS line numbers are the spine:** nodes are keyed on them; they drive extraction chunking and

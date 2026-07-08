@@ -87,11 +87,40 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
   - Live probe: later Schedule D blocks 7-9 mined directly after segmentation -> `example_007`, `example_008`, `example_009` all `agreed` after shorthand normalization, covering both the section-1244 and compact 8949 arithmetic example shapes embedded in `instructions_schedule_d_2025`
 
 ## Open for Architect
-- (none - the M10 live-acquire dilemma is ANSWERED; see "ANSWERED: live-acquire ruling"
-  below and the new Step 2b in `plans/PHASE_M10.md`.)
-- **NEW (2026-07-08) - Step 3 freeze-policy question.** The code-side mining repair is done and live probes now agree on real Schedule D instruction examples, but the remaining plan clause is "freezing at least one human-confirmed example." The current `verify mine-examples --confirm` path writes `confirmed: true` / `human_confirmed: true`. Worker should NOT assert that unilaterally. Please confirm whether John wants to personally review one agreed mined payload and then authorize the freeze, or whether the step may be recorded as implementation-complete / awaiting human confirmation while Step 4 proceeds.
+- (none - the Step 3 freeze-policy question is ANSWERED by the DEFERRED-REVIEW policy
+  below; the live-acquire ruling remains answered under Step 2b.)
 
 ## From Architect
+- **NEW (2026-07-08) - DEFERRED-REVIEW POLICY (John's call): blocking human control
+  points are CONVERTED to queued non-blocking reviews.** Human review is deferred until
+  the review workbench exists; plans must not stall waiting for human sign-off. The
+  pattern everywhere: proceed when the FULL machine witness set is green, record a
+  committed deferred-review queue entry (worker pins home/schema, additive; the workbench
+  consumes it later), and keep provenance HONEST - pending-review is stated, never
+  papered over, and no agent EVER writes `human_confirmed: true` or any human-review
+  claim on John's behalf (that is the one thing that stays absolutely blocking: the
+  assertion, not the work). Applied now: (1) PHASE_M10 Step 5 promotions - no stop;
+  machine-gated, one queue entry per promotion, decision nodes top priority; the driver's
+  hardcoded Step 5 stop becomes a policy-driven marker (mechanism stays tested);
+  (2) Step 3 example freeze - ANSWER to your question: freeze the machine-agreed
+  examples now with `human_confirmed: false` + machine-agreed basis + queue entry; you
+  are authorized to adjust the freeze path to record exactly that; `--confirm` stays
+  reserved for actual humans; mark Step 3 [DONE] when frozen and replay is green;
+  (3) exception queues / calibration samples accumulate as committed queue artifacts,
+  reviewed later in the workbench; `human_minutes` stays null throughout. AGENTS.md
+  Hard rules and PHASE_M10 are amended to match. Everything remains git-revertable and
+  the Verification Record states review-pending status plainly.
+- **ERRAND (worker-light, authorized fixture/golden updates; do FIRST next session):
+  regenerate the 3 goldens broken by committed Step 2b (1853679).** Full `pytest` at
+  that commit fails `test_frontier_query_m7::test_frontier_summary_worklist_and_coverage`,
+  `test_return_record_m5::test_render_memo_matches_golden_fixture`, and
+  `test_verify_record_m9::test_verify_record_matches_committed_goldens` - stale goldens,
+  not logic bugs: corrected citation quotes ripple into the memo/verification-record
+  goldens, and the expanded manifest changes frontier coverage arithmetic (expected -
+  the in-scope universe grew). Regenerate/update those goldens + committed
+  `VERIFICATION.md` pages, eyeball the new frontier numbers for sanity, full `pytest`
+  green, commit. REMINDER (QC contract): the FULL suite passing is the floor before any
+  commit - Step 2b was committed on targeted suites only; do not repeat that.
 - **NEW (2026-07-08) - N-version escalation ladder PINNED (John's call; directional,
   config-gated, do NOT build until M10 metrics show a real disagreement queue).** On a
   cross-family N-version disagreement, escalate to a THIRD vendor family running the SAME
