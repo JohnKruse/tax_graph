@@ -1,0 +1,192 @@
+- node_id: schedule_2_2025_root_line_2
+  document_id: schedule_2_2025
+  label: 'Line 2: Line 2'
+  node_type: form_line
+  value_type: currency
+  citation_refs:
+  - cite_span_schedule_2_2025_0001
+- node_id: schedule_2_2025_part_i_line_1
+  document_id: schedule_2_2025
+  label: 'Line 1: Additions to tax:'
+  node_type: form_line
+  value_type: currency
+  citation_refs:
+  - cite_span_schedule_2_2025_0004
+- node_id: schedule_2_2025_part_i_line_1b
+  document_id: schedule_2_2025
+  label: 'Line 1b: Line 1b'
+  node_type: form_line
+  value_type: currency
+  citation_refs:
+  - cite_span_schedule_2_2025_0007
+- node_id: schedule_2_2025_part_i_line_1a
+  document_id: schedule_2_2025
+  label: 'Line 1a: (ii) Line 1c'
+  node_type: form_line
+  value_type: currency
+  citation_refs:
+  - cite_span_schedule_2_2025_0011
+- node_id: schedule_2_2025_part_i_line_1d
+  document_id: schedule_2_2025
+  label: 'Line 1d: (iv) Line 2a 1e'
+  node_type: form_line
+  value_type: currency
+  citation_refs:
+  - cite_span_schedule_2_2025_0012
+- node_id: schedule_2_2025_part_i_line_3
+  document_id: schedule_2_2025
+  label: 'Line 3: Add lines 1z and 2. Enter here and on Form 1040, 1040-SR, or 1040-NR,
+    line 17 3'
+  node_type: form_line
+  value_type: currency
+  citation_refs:
+  - cite_span_schedule_2_2025_0019
+- node_id: schedule_2_2025_part_ii_line_4
+  document_id: schedule_2_2025
+  label: 'Line 4: Self-employment tax. Attach Schedule SE. Check if any exemption
+    from (see instructions):'
+  node_type: form_line
+  value_type: currency
+  citation_refs:
+  - cite_span_schedule_2_2025_0021
+- node_id: schedule_2_2025_part_ii_line_5
+  document_id: schedule_2_2025
+  label: 'Line 5: Social security and Medicare tax on unreported tip income. Attach
+    Form 4137 5'
+  node_type: form_line
+  value_type: currency
+  citation_refs:
+  - cite_span_schedule_2_2025_0023
+- node_id: schedule_2_2025_part_ii_line_6
+  document_id: schedule_2_2025
+  label: 'Line 6: Uncollected social security and Medicare tax on wages. Attach Form
+    8919 6'
+  node_type: form_line
+  value_type: currency
+  citation_refs:
+  - cite_span_schedule_2_2025_0024
+- node_id: schedule_2_2025_part_ii_line_7
+  document_id: schedule_2_2025
+  label: 'Line 7: Total additional social security and Medicare tax. Add lines 5 and
+    6 7'
+  node_type: form_line
+  value_type: currency
+  citation_refs:
+  - cite_span_schedule_2_2025_0025
+- node_id: schedule_2_2025_part_ii_line_8
+  document_id: schedule_2_2025
+  label: 'Line 8: Additional tax on IRAs or other tax-favored accounts. Attach Form
+    5329 if required.'
+  node_type: form_line
+  value_type: currency
+  citation_refs:
+  - cite_span_schedule_2_2025_0026
+- node_id: schedule_2_2025_part_ii_line_9
+  document_id: schedule_2_2025
+  label: 'Line 9: Household employment taxes. Attach Schedule H 9'
+  node_type: form_line
+  value_type: currency
+  citation_refs:
+  - cite_span_schedule_2_2025_0027
+- node_id: schedule_2_2025_part_ii_line_10
+  document_id: schedule_2_2025
+  label: 'Line 10: Reserved for future use 10'
+  node_type: form_line
+  value_type: currency
+  citation_refs:
+  - cite_span_schedule_2_2025_0028
+- node_id: schedule_2_2025_part_ii_line_11
+  document_id: schedule_2_2025
+  label: 'Line 11: Additional Medicare Tax. Attach Form 8959 11'
+  node_type: form_line
+  value_type: currency
+  citation_refs:
+  - cite_span_schedule_2_2025_0029
+- node_id: schedule_2_2025_part_ii_line_12
+  document_id: schedule_2_2025
+  label: 'Line 12: Net investment income tax. Attach Form 8960 12'
+  node_type: form_line
+  value_type: currency
+  citation_refs:
+  - cite_span_schedule_2_2025_0030
+- node_id: schedule_2_2025_part_ii_line_13
+  document_id: schedule_2_2025
+  label: 'Line 13: Uncollected social security and Medicare or RRTA tax on tips or
+    group-term life insurance from Form'
+  node_type: form_line
+  value_type: currency
+  citation_refs:
+  - cite_span_schedule_2_2025_0031
+- node_id: schedule_2_2025_part_ii_line_14
+  document_id: schedule_2_2025
+  label: 'Line 14: Interest on tax due on installment income from the sale of certain
+    residential lots and timeshares 14'
+  node_type: form_line
+  value_type: currency
+  citation_refs:
+  - cite_span_schedule_2_2025_0033
+- node_id: schedule_2_2025_part_ii_line_15
+  document_id: schedule_2_2025
+  label: 'Line 15: Interest on the deferred tax on gain from certain installment sales
+    with a sales price over $150,000 15'
+  node_type: form_line
+  value_type: currency
+  citation_refs:
+  - cite_span_schedule_2_2025_0034
+- node_id: schedule_2_2025_part_ii_line_16
+  document_id: schedule_2_2025
+  label: 'Line 16: Recapture of low-income housing credit. Attach Form 8611 16'
+  node_type: form_line
+  value_type: currency
+  citation_refs:
+  - cite_span_schedule_2_2025_0035
+- node_id: schedule_2_2025_part_ii_line_17a
+  document_id: schedule_2_2025
+  label: 'Line 17a: Line 17a'
+  node_type: form_line
+  value_type: currency
+  citation_refs:
+  - cite_span_schedule_2_2025_0041
+- node_id: schedule_2_2025_part_ii_line_17d
+  document_id: schedule_2_2025
+  label: 'Line 17d: Line 17d'
+  node_type: form_line
+  value_type: currency
+  citation_refs:
+  - cite_span_schedule_2_2025_0045
+- node_id: schedule_2_2025_part_ii_line_17z
+  document_id: schedule_2_2025
+  label: 'Line 17z: Line 17z'
+  node_type: form_line
+  value_type: currency
+  citation_refs:
+  - cite_span_schedule_2_2025_0060
+- node_id: schedule_2_2025_part_ii_line_18
+  document_id: schedule_2_2025
+  label: 'Line 18: Total additional taxes. Add lines 17a through 17z 18'
+  node_type: form_line
+  value_type: currency
+  citation_refs:
+  - cite_span_schedule_2_2025_0061
+- node_id: schedule_2_2025_part_ii_line_19
+  document_id: schedule_2_2025
+  label: 'Line 19: Recapture of net EPE from Form 4255, line 1d, column (l) 19'
+  node_type: form_line
+  value_type: currency
+  citation_refs:
+  - cite_span_schedule_2_2025_0062
+- node_id: schedule_2_2025_part_ii_line_20
+  document_id: schedule_2_2025
+  label: 'Line 20: Section 965 net tax liability installment from Form 965-A 20'
+  node_type: form_line
+  value_type: currency
+  citation_refs:
+  - cite_span_schedule_2_2025_0063
+- node_id: schedule_2_2025_part_ii_line_21
+  document_id: schedule_2_2025
+  label: 'Line 21: Add lines 4, 7 through 16, 18, and 19. These are your total other
+    taxes. Enter here and on Form 1040'
+  node_type: form_line
+  value_type: currency
+  citation_refs:
+  - cite_span_schedule_2_2025_0064

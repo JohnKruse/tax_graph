@@ -38,3 +38,22 @@ entries:
   - ascii green
   - nversion agreed
   - example mining unmappable only
+- queue_id: promotion_review_schedule_2_2025
+  kind: promotion_review
+  status: pending
+  priority: medium
+  document_id: schedule_2_2025
+  created_date: '2026-07-08'
+  created_by: tax_graph.promote
+  summary: Review deferred machine-gated promotion for schedule_2_2025
+  artifact_dir: graph/2025/_drafts/schedule_2_2025
+  artifact_paths:
+  - graph/2025/documents/schedule-2.yaml
+  - graph/2025/nodes/schedule-2.yaml
+  - graph/2025/citations/schedule-2.yaml
+  machine_witnesses:
+  - validate green
+  - pytest green
+  - ascii green
+  - nversion agreed
+  - example mining unmappable only
