@@ -1,4 +1,17 @@
-# PHASE M9 - Schedule D expansion + LINK + Verification Record   [ ]
+# PHASE M9 - Schedule D expansion + LINK + Verification Record   [COMPLETE]
+
+**Closed 2026-07-08 by the Architect (John's direction).** All 6 steps `[DONE]`. Close-out
+verification: full `pytest` 200 passed / 4 skipped; `validate 2025` OK (documents=5 nodes=35
+tables=2 edges=29 rules=6 citations=13 decisions=1); ASCII OK; live widened-domain OTS fuzz
+100/100 agreed (seed 2468, triage empty); corpus committed with `live_ots_diff_report`
+provenance; `frontier` reports 42.4% filer-weighted coverage with only Schedule D line 20
+still `declared`. Two exit criteria were amended by John's calls rather than met literally:
+(1) `human_minutes` remains honestly NULL - John did not perform the manual review batch and
+directed that it never be invented; the real measurement waits for the review workbench
+(`docs/review-workbench.md`, unscheduled circle-back). (2) The live N-version rerun was
+declined; the M8 Part I/II line-2 totals adjudication is folded into the same workbench
+circle-back (primary matched the promoted graph and every later witness agrees - it is a
+recorded outlier, not a blocker).
 
 **Canary:** Daisy Chain
 **Depends on:** M8 (drill gate green - bulk extraction UNLOCKED), M7 (frontier registry -
