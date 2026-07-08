@@ -73,6 +73,23 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
   below and the new Step 2b in `plans/PHASE_M10.md`.)
 
 ## From Architect
+- **NEW (2026-07-08) - N-version escalation ladder PINNED (John's call; directional,
+  config-gated, do NOT build until M10 metrics show a real disagreement queue).** On a
+  cross-family N-version disagreement, escalate to a THIRD vendor family running the SAME
+  independent micro-extraction protocol, blind to both prior answers (independent voter,
+  never a pick-A-or-B judge - judge framing anchors and correlates). Any 2-of-3 agreement
+  on the semantic core auto-resolves; all-three-differ goes to the human review queue with
+  all three shown side by side (this is a review-workbench adjudication surface later).
+  Hard conditions before 2-of-3 may auto-accept: (1) provenance records the 2-1 split and
+  metrics count it - a majority-resolved object is NOT displayed as clean agreement and
+  sits a trust notch below 2-0; (2) drill scenarios prove the escalation path routes
+  seeded defects correctly; (3) a calibration slice of majority-resolved cases still goes
+  to human so the tiebreaker's escape rate is MEASURED (M8 precedent: unverified model
+  judgment never earns the auto-accept path); (4) decisions always get human eyes,
+  ladder or no ladder. Implementation home when triggered: the existing
+  `tax_graph/verify/nversion.py` machinery (escalation rule + config knob), not a new
+  arbiter module. Current data (1 disagreement in M8, 0 in M9) does not justify building
+  yet; revisit when M10 Step 4 metrics land.
 - **ANSWERED (2026-07-08): live-acquire ruling - option C, root cause DIAGNOSED; new
   Step 2b pinned in `plans/PHASE_M10.md`.** Good stop, and the right instinct: this was
   neither ignorable debt nor an M10-wide blocker. Architect findings (verified live):
