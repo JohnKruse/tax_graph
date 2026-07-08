@@ -1,0 +1,13 @@
+# Page 1
+SCHEDULE 3
+(Form 1040) 2025 Additional Credits and Payments
+Header: Part I Nonrefundable Credits
+- 1: Foreign tax credit
+- 6z: Other nonrefundable credits. List type and amount
+- 7: Total other nonrefundable credits. Add lines 6a through 6z
+- 8: Add lines 1 through 4, 5a, 5b, and 7
+Header: Part II Other Payments and Refundable Credits
+- 9: Net premium tax credit
+- 13z: Other refundable credits. List type and amount
+- 14: Total other payments or refundable credits. Add lines 13a through 13z
+- 15: Add lines 9 through 12 and 14

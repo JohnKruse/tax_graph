@@ -1,0 +1,11 @@
+{
+  "fields": [
+    {"field_name": "Schedule1A.Line1", "line_anchor": "1", "page": 1, "x_cluster": 300, "y_cluster": 100},
+    {"field_name": "Schedule1A.Line2e", "line_anchor": "2e", "page": 1, "x_cluster": 300, "y_cluster": 120},
+    {"field_name": "Schedule1A.Line3", "line_anchor": "3", "page": 1, "x_cluster": 300, "y_cluster": 140},
+    {"field_name": "Schedule1A.Line4a", "line_anchor": "4a", "page": 1, "x_cluster": 300, "y_cluster": 200},
+    {"field_name": "Schedule1A.Line13", "line_anchor": "13", "page": 1, "x_cluster": 300, "y_cluster": 240},
+    {"field_name": "Schedule1A.Line14a", "line_anchor": "14a", "page": 1, "x_cluster": 300, "y_cluster": 300},
+    {"field_name": "Schedule1A.Line21", "line_anchor": "21", "page": 1, "x_cluster": 300, "y_cluster": 340}
+  ]
+}

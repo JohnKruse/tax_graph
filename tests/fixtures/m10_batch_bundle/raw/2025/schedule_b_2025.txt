@@ -1,0 +1,20 @@
+# Page 1
+SCHEDULE B
+(Form 1040) 2025 Interest and Ordinary Dividends
+Header: Part I Interest
+Header: (a) (b)
+- 1: List name of payer
+Header: Amount
+- 2: Add the amounts on line 1
+- 3: Excludable interest on series EE and I U.S. savings bonds
+- 4: Subtract line 3 from line 2
+Header: Part II Ordinary Dividends
+Header: (a) (b) (c)
+- 5: List name of payer
+Header: Amount
+- 6: Add the amounts on line 5
+- 7: Ordinary dividends
+- 8: Subtract line 7 from line 6
+Header: Part III Foreign Accounts and Trusts
+- 9: At any time during 2025, did you have a financial interest in or signature authority over a financial account in a foreign country
+- 10: If you are required to file FinCEN Form 114, enter the name of the foreign country

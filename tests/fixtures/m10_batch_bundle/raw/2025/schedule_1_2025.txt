@@ -1,0 +1,11 @@
+# Page 1
+SCHEDULE 1
+(Form 1040) 2025 Additional Income and Adjustments to Income
+Header: Part I Additional Income
+- 1: Taxable refunds, credits, or offsets of state and local income taxes
+- 8z: Other income. List type and amount
+- 9: Total other income. Add lines 8a through 8z
+Header: Part II Adjustments to Income
+- 11: Educator expenses
+- 24z: Other adjustments. List type and amount
+- 25: Total other adjustments. Add lines 24a through 24z

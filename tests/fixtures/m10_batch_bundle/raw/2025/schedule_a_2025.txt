@@ -1,0 +1,10 @@
+# Page 1
+SCHEDULE A
+(Form 1040)
+Itemized Deductions
+- 1: Medical and dental expenses
+- 5a: State and local income taxes or general sales taxes
+- 5e: Enter the smaller of line 5d or $40,000
+- 8a: Home mortgage interest and points reported to you on Form 1098
+- 11: Gifts by cash or check
+- 17: Add the amounts in the far right column for lines 4 through 16

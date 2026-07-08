@@ -1,0 +1,11 @@
+# Page 1
+Form 6251
+Alternative Minimum Tax - Individuals
+Header: Part I Alternative Minimum Taxable Income
+- 1: Enter the amount from Form 1040, line 11b
+- 2e: Add lines 2a through 2d
+- 4: Alternative minimum taxable income
+Header: Part II Exemption
+- 5: Exemption amount
+- 6: Subtract line 5 from line 4
+- 7: If line 6 is zero or less, enter -0-

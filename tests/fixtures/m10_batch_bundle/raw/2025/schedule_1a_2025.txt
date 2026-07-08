@@ -1,0 +1,13 @@
+# Page 1
+SCHEDULE 1-A
+(Form 1040) 2025 Additional Deductions
+Header: Part I Modified Adjusted Gross Income (MAGI) Amount
+- 1: Enter the amount from Form 1040, line 11b
+- 2e: Add lines 2a through 2d
+- 3: Add lines 1 and 2e
+Header: Part II No Tax on Tips
+- 4a: Qualified tips included on Form W-2, box 7
+- 13: Qualified tips deduction
+Header: Part III No Tax on Overtime
+- 14a: Qualified overtime compensation included in Form W-2, box 1
+- 21: Qualified overtime deduction

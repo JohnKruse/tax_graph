@@ -16,7 +16,7 @@ def test_manifest_loads_seeded_capital_gains_docs():
     manifest = load_manifest(root=ROOT)
 
     assert manifest.tax_year == 2025
-    assert len(manifest.documents) == 7
+    assert len(manifest.documents) == 17
     assert set(manifest.by_document_id()) == {
         "form_8949_2025",
         "instructions_form_8949_2025",
@@ -24,6 +24,16 @@ def test_manifest_loads_seeded_capital_gains_docs():
         "instructions_schedule_d_2025",
         "form_1040_2025",
         "instructions_form_1040_2025",
+        "schedule_1_2025",
+        "schedule_1a_2025",
+        "schedule_2_2025",
+        "schedule_3_2025",
+        "schedule_a_2025",
+        "instructions_schedule_a_2025",
+        "schedule_b_2025",
+        "instructions_schedule_b_2025",
+        "form_6251_2025",
+        "instructions_form_6251_2025",
         "form_1099b_2025",
     }
 
@@ -50,6 +60,13 @@ def test_manifest_loads_form_instruction_relationships():
     assert entries["form_8949_2025"].instructions_document_id == "instructions_form_8949_2025"
     assert entries["schedule_d_2025"].instructions_document_id == "instructions_schedule_d_2025"
     assert entries["form_1040_2025"].instructions_document_id == "instructions_form_1040_2025"
+    assert entries["schedule_1_2025"].instructions_document_id == "instructions_form_1040_2025"
+    assert entries["schedule_1a_2025"].instructions_document_id == "instructions_form_1040_2025"
+    assert entries["schedule_2_2025"].instructions_document_id == "instructions_form_1040_2025"
+    assert entries["schedule_3_2025"].instructions_document_id == "instructions_form_1040_2025"
+    assert entries["schedule_a_2025"].instructions_document_id == "instructions_schedule_a_2025"
+    assert entries["schedule_b_2025"].instructions_document_id == "instructions_schedule_b_2025"
+    assert entries["form_6251_2025"].instructions_document_id == "instructions_form_6251_2025"
 
 
 @pytest.mark.m3

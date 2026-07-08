@@ -47,6 +47,26 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
   - `.\.venv\Scripts\python.exe tools/check_ascii.py` -> ASCII check OK
 - **Worker note:** this Codex desktop session does not expose a reliable session-context % meter,
   so no percentage is recorded here; better to leave it absent than invent one.
+- **Worker update (Codex, 2026-07-08): M10 Step 2 slice is implemented in the worktree.**
+  `config/manifest.yaml` now covers the batch set from the M10 fence: Schedule 1, Schedule 1-A,
+  Schedule 2, Schedule 3, Schedule A, Schedule B, and Form 6251, with `form_1099b_2025` moved to
+  the stable 2025 prior-year IRS PDF URL (`irs-prior/f1099b--2025.pdf`). Shared Form 1040
+  instructions are reused for Schedules 1/1-A/2/3; Schedule A, Schedule B, and Form 6251 have
+  their own instruction entries. Added offline fixture slices under
+  `tests/fixtures/m10_batch_bundle/raw/2025/` plus `tests/test_batch_bundle_m10.py` so loader +
+  outline sanity for the new bundle stays deterministic in CI.
+- **Worker verification (Codex, 2026-07-08):**
+  - Official URL checks: confirmed HTTP 200 on the IRS PDF endpoints for `f1040s1.pdf`,
+    `f1040s1a.pdf`, `f1040s2.pdf`, `f1040s3.pdf`, `f1040sa.pdf`, `f1040sb.pdf`, `f6251.pdf`,
+    `i1040sca.pdf`, `i1040sb.pdf`, `i6251.pdf`, and `irs-prior/f1099b--2025.pdf`
+  - `.\.venv\Scripts\python.exe -m pytest tests/test_acquire_manifest.py tests/test_batch_bundle_m10.py -q` -> 15 passed
+  - `.\.venv\Scripts\python.exe tools/check_ascii.py` -> ASCII check OK
+- **Deviation / blocker candidate:** `.\.venv\Scripts\python.exe -m tax_graph.cli acquire 2025 --check`
+  fetched the expanded manifest but ended with citation-integrity failure on all 13 existing
+  promoted citations (`cite_8949_*`, `cite_span_schedule_d_*`, `cite_schedule_d_*`, and
+  `cite_1040_line_7`). This looks like live source drift or a render/normalization mismatch in the
+  current acquire path, not a manifest-schema issue. No code change attempted here because Step 2 is
+  worker-light and the failure reaches beyond the pattern-following fixture work.
 
 ## Open for Architect
 - (none)

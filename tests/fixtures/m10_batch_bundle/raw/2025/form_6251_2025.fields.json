@@ -1,0 +1,10 @@
+{
+  "fields": [
+    {"field_name": "Form6251.Line1", "line_anchor": "1", "page": 1, "x_cluster": 300, "y_cluster": 100},
+    {"field_name": "Form6251.Line2e", "line_anchor": "2e", "page": 1, "x_cluster": 300, "y_cluster": 120},
+    {"field_name": "Form6251.Line4", "line_anchor": "4", "page": 1, "x_cluster": 300, "y_cluster": 160},
+    {"field_name": "Form6251.Line5", "line_anchor": "5", "page": 1, "x_cluster": 300, "y_cluster": 220},
+    {"field_name": "Form6251.Line6", "line_anchor": "6", "page": 1, "x_cluster": 300, "y_cluster": 240},
+    {"field_name": "Form6251.Line7", "line_anchor": "7", "page": 1, "x_cluster": 300, "y_cluster": 260}
+  ]
+}

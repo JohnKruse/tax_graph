@@ -1,0 +1,12 @@
+# Page 1
+SCHEDULE 2
+(Form 1040) 2025 Additional Taxes
+Header: Part I Tax
+- 1z: Add lines 1a through 1y
+- 2: Alternative minimum tax. Attach Form 6251
+- 3: Add lines 1z and 2
+Header: Part II Other Taxes
+- 4: Self-employment tax
+- 17z: Any other taxes. List type and amount
+- 18: Total additional taxes. Add lines 17a through 17z
+- 21: Total other taxes
