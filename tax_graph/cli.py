@@ -24,8 +24,6 @@ except ImportError:  # pragma: no cover - local fallback for unsynced envs.
 DEFAULT_TARGET = "form_1040_2025_line_7_capital_gain_loss"
 DEFAULT_CITATION_SOURCE_MAP = {
     "form_8949_2025": "instructions_form_8949_2025",
-    "schedule_d_2025": "instructions_schedule_d_2025",
-    "form_1040_2025": "instructions_form_1040_2025",
 }
 
 
@@ -698,7 +696,10 @@ def _print_acquire_summary(report: Any, citation_report: Any) -> None:
     else:
         print("  result: FAILED")
         for mismatch in citation_report.mismatches:
-            print(f"  - {mismatch.citation_id}: {mismatch.reason}")
+            print(
+                f"  - {mismatch.citation_id}: {mismatch.reason} "
+                f"(doc={mismatch.document_id}, source={mismatch.source_document_id})"
+            )
 
 
 def _build_typer_app():

@@ -67,6 +67,9 @@ def test_manifest_loads_form_instruction_relationships():
     assert entries["schedule_a_2025"].instructions_document_id == "instructions_schedule_a_2025"
     assert entries["schedule_b_2025"].instructions_document_id == "instructions_schedule_b_2025"
     assert entries["form_6251_2025"].instructions_document_id == "instructions_form_6251_2025"
+    assert entries["form_8949_2025"].expected_sha256 is not None
+    assert entries["schedule_d_2025"].expected_sha256 is not None
+    assert entries["form_1040_2025"].expected_sha256 is not None
 
 
 @pytest.mark.m3

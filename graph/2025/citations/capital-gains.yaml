@@ -7,31 +7,34 @@
 
 - citation_id: cite_8949_col_h_gain
   document_id: form_8949_2025
-  locator: Instructions for Form 8949, column (h)
+  source_document_id: form_8949_2025
+  locator: Form 8949, column (h)
   quoted_text: >-
-    Subtract column (e) from column (d) and combine the result with column (g)
-    to figure your gain or loss.
+    Subtract column (e) from column (d) and combine the result with column (g).
   url: https://www.irs.gov/instructions/i8949
   retrieved_date: 2026-06-28
 
 - citation_id: cite_8949_adjustment_codes
   document_id: form_8949_2025
+  source_document_id: instructions_form_8949_2025
   locator: Instructions for Form 8949, column (f) - codes
   quoted_text: >-
-    If you need to make an adjustment to the gain or loss, enter the appropriate
-    code(s) in column (f) and the adjustment amount in column (g).
+    In order to explain any adjustment to gain (or loss) in column (g), enter
+    the appropriate code(s) in column (f).
   url: https://www.irs.gov/instructions/i8949
   retrieved_date: 2026-06-28
 
 - citation_id: cite_8949_line2_totals
   document_id: form_8949_2025
+  source_document_id: form_8949_2025
   locator: Form 8949, line 2
-  quoted_text: Totals. Add the amounts in columns (d), (e), (g), and (h).
+  quoted_text: Totals. Add the amounts in columns (d), (e), (g), and (h)
   url: https://www.irs.gov/forms-pubs/about-form-8949
   retrieved_date: 2026-07-06
 
 - citation_id: cite_span_schedule_d_2025_0011
   document_id: schedule_d_2025
+  source_document_id: schedule_d_2025
   locator: Schedule D, line 1b
   quoted_text: "Totals for all transactions reported on Form(s) 8949"
   url: https://www.irs.gov/pub/irs-pdf/f1040sd.pdf
@@ -39,6 +42,7 @@
 
 - citation_id: cite_span_schedule_d_2025_0012
   document_id: schedule_d_2025
+  source_document_id: schedule_d_2025
   locator: Schedule D, line 2
   quoted_text: "Totals for all transactions reported on Form(s) 8949"
   url: https://www.irs.gov/pub/irs-pdf/f1040sd.pdf
@@ -46,6 +50,7 @@
 
 - citation_id: cite_span_schedule_d_2025_0013
   document_id: schedule_d_2025
+  source_document_id: schedule_d_2025
   locator: Schedule D, line 3
   quoted_text: "Totals for all transactions reported on Form(s) 8949"
   url: https://www.irs.gov/pub/irs-pdf/f1040sd.pdf
@@ -53,6 +58,7 @@
 
 - citation_id: cite_span_schedule_d_2025_0025
   document_id: schedule_d_2025
+  source_document_id: schedule_d_2025
   locator: Schedule D, line 8b
   quoted_text: "Totals for all transactions reported on Form(s) 8949"
   url: https://www.irs.gov/pub/irs-pdf/f1040sd.pdf
@@ -60,6 +66,7 @@
 
 - citation_id: cite_span_schedule_d_2025_0026
   document_id: schedule_d_2025
+  source_document_id: schedule_d_2025
   locator: Schedule D, line 9
   quoted_text: "Totals for all transactions reported on Form(s) 8949"
   url: https://www.irs.gov/pub/irs-pdf/f1040sd.pdf
@@ -67,6 +74,7 @@
 
 - citation_id: cite_span_schedule_d_2025_0027
   document_id: schedule_d_2025
+  source_document_id: schedule_d_2025
   locator: Schedule D, line 10
   quoted_text: "Totals for all transactions reported on Form(s) 8949"
   url: https://www.irs.gov/pub/irs-pdf/f1040sd.pdf
@@ -74,34 +82,40 @@
 
 - citation_id: cite_schedule_d_16_to_1040_7
   document_id: schedule_d_2025
+  source_document_id: schedule_d_2025
   locator: Schedule D, line 16
-  quoted_text: Enter the amount from line 16 on Form 1040 or 1040-SR, line 7.
+  quoted_text: >-
+    If line 16 is a gain, enter the amount from line 16 on Form 1040, 1040-SR,
+    or 1040-NR, line 7a.
   url: https://www.irs.gov/instructions/i1040sd
   retrieved_date: 2026-06-28
 
 - citation_id: cite_schedule_d_line21_loss_limit
   document_id: instructions_schedule_d_2025
-  locator: Instructions for Schedule D, line 21
+  source_document_id: instructions_schedule_d_2025
+  locator: Instructions for Schedule D, Capital Losses
   quoted_text: >-
-    Line 21. If line 16 is a loss, enter on line 21 the smaller of the loss on
-    line 16 or ($3,000), or if married filing separately, ($1,500).
+    You can deduct capital losses up to the amount of your capital gains plus
+    $3,000 ($1,500 if married filing separately).
   url: https://www.irs.gov/instructions/i1040sd
   retrieved_date: 2026-07-07
 
 - citation_id: cite_schedule_d_line20_deferred
   document_id: instructions_schedule_d_2025
-  locator: Instructions for Schedule D, line 20
+  source_document_id: instructions_schedule_d_2025
+  locator: Instructions for Schedule D, Qualified Dividends and Capital Gain Tax Worksheet
   quoted_text: >-
-    Line 20. If you are required to complete the Qualified Dividends and Capital
-    Gain Tax Worksheet, enter the amount from line 3 of that worksheet.
+    Otherwise, complete the Qualified Dividends and Capital Gain Tax Worksheet
+    in the instructions for Form 1040, line 16, (or in the instructions for
+    Form 1040-NR, line 16) to figure your tax.
   url: https://www.irs.gov/instructions/i1040sd
   retrieved_date: 2026-07-07
 
 - citation_id: cite_1040_line_7
   document_id: form_1040_2025
+  source_document_id: form_1040_2025
   locator: Form 1040, line 7
   quoted_text: >-
-    Capital gain or (loss). Attach Schedule D if required. If not required,
-    check here.
+    Capital gain or (loss). Attach Schedule D if required
   url: https://www.irs.gov/forms-pubs/about-form-1040
   retrieved_date: 2026-06-28

@@ -67,6 +67,18 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
   `cite_1040_line_7`). This looks like live source drift or a render/normalization mismatch in the
   current acquire path, not a manifest-schema issue. No code change attempted here because Step 2 is
   worker-light and the failure reaches beyond the pattern-following fixture work.
+- **Worker update (Codex, 2026-07-08): M10 Step 2b is implemented and green.** Landed
+  decoration-insensitive citation checking in `tax_graph/acquire/citation_check.py`, added
+  optional `source_document_id` on citations for explicit quote verification routing, added
+  manifest-level `expected_sha256` pins for the promoted 2025 docs, switched 2025 manifest URLs
+  to stable `irs-prior/*--2025.pdf` variants, and improved CLI acquire output to print each
+  failure with `doc=` and `source=`. Also corrected the 7 stale live-slice citation quotes to the
+  current pinned 2025 source phrasing so the gate reflects the actual promoted documents.
+- **Worker verification (Codex, 2026-07-08):**
+  - `.\.venv\Scripts\python.exe -m pytest tests/test_acquire_citation_check.py tests/test_acquire_manifest.py tests/test_cli.py tests/test_acquire_fetch.py -q` -> 19 passed, 1 skipped
+  - `.\.venv\Scripts\python.exe -m tax_graph.cli validate 2025` -> graph integrity OK
+  - `.\.venv\Scripts\python.exe tools/check_ascii.py` -> ASCII check OK
+  - `.\.venv\Scripts\python.exe -m tax_graph.cli acquire 2025 --check` -> citation integrity OK (13 checked, 0 mismatches) against live IRS fetch/render
 
 ## Open for Architect
 - (none - the M10 live-acquire dilemma is ANSWERED; see "ANSWERED: live-acquire ruling"

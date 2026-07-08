@@ -3,10 +3,12 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+import json
 from pathlib import Path
 import re
 from typing import Any
 
+from tax_graph.acquire.manifest import load_manifest
 from tax_graph.io.loader import load_graph
 
 
@@ -43,7 +45,18 @@ def check_graph_citations(
     """Check graph citation quotes against rendered text in the raw store."""
     graph = load_graph(year, root)
     text_dir = Path(raw_store) / str(year)
-    return check_citation_integrity(graph.items("citations"), text_dir=text_dir, source_map=source_map)
+    manifest = load_manifest(root=root)
+    source_pins = {
+        entry.document_id: entry.expected_sha256
+        for entry in manifest.documents
+        if entry.expected_sha256
+    }
+    return check_citation_integrity(
+        graph.items("citations"),
+        text_dir=text_dir,
+        source_map=source_map,
+        source_pins=source_pins,
+    )
 
 
 def check_citation_integrity(
@@ -51,15 +64,31 @@ def check_citation_integrity(
     *,
     text_dir: str | Path,
     source_map: dict[str, str] | None = None,
+    source_pins: dict[str, str] | None = None,
 ) -> CitationIntegrityReport:
     """Check citation quoted_text against acquired text files."""
     text_root = Path(text_dir)
     document_map = source_map or {}
+    pin_map = source_pins or {}
     mismatches: list[CitationMismatch] = []
+    checked_sources: set[str] = set()
 
     for citation in citations:
         document_id = citation["document_id"]
-        source_document_id = document_map.get(document_id, document_id)
+        source_document_id = _resolve_source_document_id(citation, document_map)
+        if source_document_id not in checked_sources:
+            checked_sources.add(source_document_id)
+            drift_reason = _detect_source_drift(text_root, source_document_id, pin_map)
+            if drift_reason is not None:
+                mismatches.append(
+                    CitationMismatch(
+                        citation_id=f"source_drift_{source_document_id}",
+                        document_id=document_id,
+                        source_document_id=source_document_id,
+                        reason=drift_reason,
+                    )
+                )
+                continue
         text_path = text_root / f"{source_document_id}.txt"
         if not text_path.exists():
             mismatches.append(
@@ -73,7 +102,14 @@ def check_citation_integrity(
             continue
 
         text = text_path.read_text(encoding="utf-8")
-        if not _contains_normalized(text, citation["quoted_text"]):
+        undecorated = _undecorated_text(text)
+        if _contains_normalized(undecorated, citation["quoted_text"]):
+            continue
+        pdf_path = text_root / f"{source_document_id}.pdf"
+        pdf_text = _load_pdf_text(pdf_path)
+        if pdf_text is not None and _contains_normalized(pdf_text, citation["quoted_text"]):
+            continue
+        if not _contains_normalized(undecorated, citation["quoted_text"]):
             mismatches.append(
                 CitationMismatch(
                     citation_id=citation["citation_id"],
@@ -86,9 +122,71 @@ def check_citation_integrity(
     return CitationIntegrityReport(checked=len(citations), mismatches=mismatches)
 
 
+def _resolve_source_document_id(citation: dict[str, Any], source_map: dict[str, str]) -> str:
+    explicit = citation.get("source_document_id")
+    if explicit:
+        return str(explicit)
+    document_id = str(citation["document_id"])
+    return str(source_map.get(document_id, document_id))
+
+
+def _detect_source_drift(text_root: Path, source_document_id: str, source_pins: dict[str, str]) -> str | None:
+    expected = source_pins.get(source_document_id)
+    if not expected:
+        return None
+    metadata_path = text_root / f"{source_document_id}.json"
+    if not metadata_path.exists():
+        return f"source drift: missing metadata for pinned document {source_document_id}"
+    metadata = json.loads(metadata_path.read_text(encoding="utf-8"))
+    actual = str(metadata.get("content_hash") or "").lower()
+    if actual != expected.lower():
+        return f"source drift: expected sha256 {expected.lower()}, got {actual or 'missing'}"
+    return None
+
+
+def _load_pdf_text(pdf_path: Path) -> str | None:
+    if not pdf_path.exists():
+        return None
+    try:
+        import fitz
+    except ImportError:
+        return None
+
+    pages: list[str] = []
+    with fitz.open(pdf_path) as document:
+        for page in document:
+            pages.append(page.get_text("text"))
+    return "\n".join(pages)
+
+
 def _contains_normalized(haystack: str, needle: str) -> bool:
     return _normalize_ws(needle) in _normalize_ws(haystack)
 
 
+def _undecorated_text(value: str) -> str:
+    lines: list[str] = []
+    for raw_line in value.splitlines():
+        line = raw_line.strip()
+        if not line or line.startswith("# Page "):
+            continue
+        if line.startswith("Header:"):
+            lines.append(line.removeprefix("Header:").strip())
+            continue
+        lines.append(line)
+    return "\n".join(lines)
+
+
 def _normalize_ws(value: str) -> str:
-    return re.sub(r"\s+", " ", value).strip()
+    return re.sub(r"\s+", " ", _normalize_punctuation(value)).strip()
+
+
+def _normalize_punctuation(value: str) -> str:
+    return (
+        value.replace("\u2018", "'")
+        .replace("\u2019", "'")
+        .replace("\u201c", '"')
+        .replace("\u201d", '"')
+        .replace("\u2013", "-")
+        .replace("\u2014", "-")
+        .replace("\xa0", " ")
+    )

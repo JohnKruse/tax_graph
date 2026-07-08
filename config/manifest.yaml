@@ -3,77 +3,83 @@ tax_year: 2025
 documents:
   - document_id: form_8949_2025
     kind: tax_form
-    url: https://www.irs.gov/pub/irs-pdf/f8949.pdf
+    url: https://www.irs.gov/pub/irs-prior/f8949--2025.pdf
     instructions_document_id: instructions_form_8949_2025
+    expected_sha256: 274513891e4e281d11e14286f14b9df724c24b6030fca0f0681da64fb2e7f525
 
   - document_id: instructions_form_8949_2025
     kind: instructions
-    url: https://www.irs.gov/pub/irs-pdf/i8949.pdf
+    url: https://www.irs.gov/pub/irs-prior/i8949--2025.pdf
+    expected_sha256: f077991c83b086810c46cbad3755e0f126cb8dfd88cf8bf8ab2d5605d6e7ab45
 
   - document_id: schedule_d_2025
     kind: schedule
-    url: https://www.irs.gov/pub/irs-pdf/f1040sd.pdf
+    url: https://www.irs.gov/pub/irs-prior/f1040sd--2025.pdf
     instructions_document_id: instructions_schedule_d_2025
+    expected_sha256: 90564c8b7e49280363612639b804d113ebedb516c2e87c70649f29c844da1d2e
 
   - document_id: instructions_schedule_d_2025
     kind: instructions
-    url: https://www.irs.gov/pub/irs-pdf/i1040sd.pdf
+    url: https://www.irs.gov/pub/irs-prior/i1040sd--2025.pdf
+    expected_sha256: 650643a686378b7573e4f4476ee4e7c9f9bab1384314dca32dc336f7b2276002
 
   - document_id: form_1040_2025
     kind: tax_form
-    url: https://www.irs.gov/pub/irs-pdf/f1040.pdf
+    url: https://www.irs.gov/pub/irs-prior/f1040--2025.pdf
     instructions_document_id: instructions_form_1040_2025
+    expected_sha256: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
 
   - document_id: instructions_form_1040_2025
     kind: instructions
-    url: https://www.irs.gov/pub/irs-pdf/i1040gi.pdf
+    url: https://www.irs.gov/pub/irs-prior/i1040gi--2025.pdf
+    expected_sha256: 482e9c487c608f1bbeaceef35bc3c0933e8b35443cfff447e4279d590468364a
 
   - document_id: schedule_1_2025
     kind: schedule
-    url: https://www.irs.gov/pub/irs-pdf/f1040s1.pdf
+    url: https://www.irs.gov/pub/irs-prior/f1040s1--2025.pdf
     instructions_document_id: instructions_form_1040_2025
 
   - document_id: schedule_1a_2025
     kind: schedule
-    url: https://www.irs.gov/pub/irs-pdf/f1040s1a.pdf
+    url: https://www.irs.gov/pub/irs-prior/f1040s1a--2025.pdf
     instructions_document_id: instructions_form_1040_2025
 
   - document_id: schedule_2_2025
     kind: schedule
-    url: https://www.irs.gov/pub/irs-pdf/f1040s2.pdf
+    url: https://www.irs.gov/pub/irs-prior/f1040s2--2025.pdf
     instructions_document_id: instructions_form_1040_2025
 
   - document_id: schedule_3_2025
     kind: schedule
-    url: https://www.irs.gov/pub/irs-pdf/f1040s3.pdf
+    url: https://www.irs.gov/pub/irs-prior/f1040s3--2025.pdf
     instructions_document_id: instructions_form_1040_2025
 
   - document_id: schedule_a_2025
     kind: schedule
-    url: https://www.irs.gov/pub/irs-pdf/f1040sa.pdf
+    url: https://www.irs.gov/pub/irs-prior/f1040sa--2025.pdf
     instructions_document_id: instructions_schedule_a_2025
 
   - document_id: instructions_schedule_a_2025
     kind: instructions
-    url: https://www.irs.gov/pub/irs-pdf/i1040sca.pdf
+    url: https://www.irs.gov/pub/irs-prior/i1040sca--2025.pdf
 
   - document_id: schedule_b_2025
     kind: schedule
-    url: https://www.irs.gov/pub/irs-pdf/f1040sb.pdf
+    url: https://www.irs.gov/pub/irs-prior/f1040sb--2025.pdf
     instructions_document_id: instructions_schedule_b_2025
 
   - document_id: instructions_schedule_b_2025
     kind: instructions
-    url: https://www.irs.gov/pub/irs-pdf/i1040sb.pdf
+    url: https://www.irs.gov/pub/irs-prior/i1040sb--2025.pdf
 
   - document_id: form_6251_2025
     kind: tax_form
-    url: https://www.irs.gov/pub/irs-pdf/f6251.pdf
+    url: https://www.irs.gov/pub/irs-prior/f6251--2025.pdf
     instructions_document_id: instructions_form_6251_2025
 
   - document_id: instructions_form_6251_2025
     kind: instructions
-    url: https://www.irs.gov/pub/irs-pdf/i6251.pdf
+    url: https://www.irs.gov/pub/irs-prior/i6251--2025.pdf
 
   - document_id: form_1099b_2025
     kind: source_document

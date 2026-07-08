@@ -41,6 +41,11 @@
           "type": "string",
           "pattern": "^[a-z0-9_]+$",
           "description": "Paired instructions document to include when extracting this form or schedule."
+        },
+        "expected_sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$",
+          "description": "Pinned source PDF sha256 for promoted-year drift detection."
         }
       }
     }

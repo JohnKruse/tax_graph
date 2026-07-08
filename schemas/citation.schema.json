@@ -13,6 +13,11 @@
       "pattern": "^[a-z0-9_]+$",
       "description": "The source document (carries the tax year)."
     },
+    "source_document_id": {
+      "type": "string",
+      "pattern": "^[a-z0-9_]+$",
+      "description": "Optional explicit acquired-text document id used for quote verification."
+    },
     "locator": {
       "type": "string",
       "description": "Where in the document, e.g. 'Instructions for line 16, paragraph 2'."

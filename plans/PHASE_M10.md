@@ -91,7 +91,7 @@ Filer-weighted coverage currently stands at 42.4%; this set is where the power-l
   any code, test-logic, or net edits beyond pattern-following fixtures. Test: input
   loader resolves every new bundle; outline builder produces a sane tree per form.
 
-- [ ] **Step 2b [worker-standard] - Citation-integrity hardening + source pinning (Architect
+- [DONE] **Step 2b [worker-standard] - Citation-integrity hardening + source pinning (Architect
   ruling, 2026-07-08; MUST land before Step 4).** Root cause of the Step 2 live-acquire
   failure, diagnosed by the Architect: the IRS sources did NOT drift (fresh `f8949.pdf` is
   byte-identical to the year-pinned `irs-prior/f8949--2025.pdf`); the failure is OURS. The
