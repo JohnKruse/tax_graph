@@ -1,0 +1,224 @@
+- node_id: schedule_1_2025_root_line_1
+  document_id: schedule_1_2025
+  label: 'Line 1: Line 1'
+  node_type: form_line
+  value_type: currency
+  citation_refs:
+  - cite_span_schedule_1_2025_0001
+- node_id: schedule_1_2025_part_i_line_2a
+  document_id: schedule_1_2025
+  label: 'Line 2a: Alimony received 2a'
+  node_type: form_line
+  value_type: currency
+  citation_refs:
+  - cite_span_schedule_1_2025_0008
+- node_id: schedule_1_2025_part_i_line_3
+  document_id: schedule_1_2025
+  label: 'Line 3: Business income or (loss). Attach Schedule C 3'
+  node_type: form_line
+  value_type: currency
+  citation_refs:
+  - cite_span_schedule_1_2025_0010
+- node_id: schedule_1_2025_part_i_line_4
+  document_id: schedule_1_2025
+  label: 'Line 4: Other gains or (losses). Check if any from Form(s): 4797 4684 4'
+  node_type: form_line
+  value_type: currency
+  citation_refs:
+  - cite_span_schedule_1_2025_0011
+- node_id: schedule_1_2025_part_i_line_5
+  document_id: schedule_1_2025
+  label: 'Line 5: Rental real estate, royalties, partnerships, S corporations, trusts,
+    etc. Attach Schedule E 5'
+  node_type: form_line
+  value_type: currency
+  citation_refs:
+  - cite_span_schedule_1_2025_0012
+- node_id: schedule_1_2025_part_i_line_6
+  document_id: schedule_1_2025
+  label: 'Line 6: Farm income or (loss). Attach Schedule F 6'
+  node_type: form_line
+  value_type: currency
+  citation_refs:
+  - cite_span_schedule_1_2025_0013
+- node_id: schedule_1_2025_part_i_line_7
+  document_id: schedule_1_2025
+  label: 'Line 7: Unemployment compensation. If you repaid a 2025 overpayment (see
+    instructions), check here and'
+  node_type: form_line
+  value_type: currency
+  citation_refs:
+  - cite_span_schedule_1_2025_0014
+- node_id: schedule_1_2025_part_i_line_8
+  document_id: schedule_1_2025
+  label: 'Line 8: Other income:'
+  node_type: form_line
+  value_type: currency
+  citation_refs:
+  - cite_span_schedule_1_2025_0016
+- node_id: schedule_1_2025_part_i_line_1a
+  document_id: schedule_1_2025
+  label: 'Line 1a: or 1d 8s ( )'
+  node_type: form_line
+  value_type: currency
+  citation_refs:
+  - cite_span_schedule_1_2025_0036
+- node_id: schedule_1_2025_part_i_line_8v
+  document_id: schedule_1_2025
+  label: 'Line 8v: Line 8v'
+  node_type: form_line
+  value_type: currency
+  citation_refs:
+  - cite_span_schedule_1_2025_0040
+- node_id: schedule_1_2025_part_i_line_8z
+  document_id: schedule_1_2025
+  label: 'Line 8z: Line 8z'
+  node_type: form_line
+  value_type: currency
+  citation_refs:
+  - cite_span_schedule_1_2025_0042
+- node_id: schedule_1_2025_part_i_line_9
+  document_id: schedule_1_2025
+  label: 'Line 9: Total other income. Add lines 8a through 8z 9'
+  node_type: form_line
+  value_type: currency
+  citation_refs:
+  - cite_span_schedule_1_2025_0043
+- node_id: schedule_1_2025_part_i_line_10
+  document_id: schedule_1_2025
+  label: 'Line 10: Combine lines 1 through 7 and 9. This is your additional income.
+    Enter here and on Form 1040,'
+  node_type: form_line
+  value_type: currency
+  citation_refs:
+  - cite_span_schedule_1_2025_0044
+- node_id: schedule_1_2025_part_ii_line_11
+  document_id: schedule_1_2025
+  label: 'Line 11: Educator expenses 11'
+  node_type: form_line
+  value_type: currency
+  citation_refs:
+  - cite_span_schedule_1_2025_0048
+- node_id: schedule_1_2025_part_ii_line_12
+  document_id: schedule_1_2025
+  label: 'Line 12: Certain business expenses of reservists, performing artists, and
+    fee-basis government officials. Attach'
+  node_type: form_line
+  value_type: currency
+  citation_refs:
+  - cite_span_schedule_1_2025_0049
+- node_id: schedule_1_2025_part_ii_line_13
+  document_id: schedule_1_2025
+  label: 'Line 13: Health savings account deduction. Attach Form 8889 13'
+  node_type: form_line
+  value_type: currency
+  citation_refs:
+  - cite_span_schedule_1_2025_0051
+- node_id: schedule_1_2025_part_ii_line_14
+  document_id: schedule_1_2025
+  label: 'Line 14: Moving expenses for members of the Armed Forces. Attach Form 3903.
+    If claiming only storage fees'
+  node_type: form_line
+  value_type: currency
+  citation_refs:
+  - cite_span_schedule_1_2025_0052
+- node_id: schedule_1_2025_part_ii_line_15
+  document_id: schedule_1_2025
+  label: 'Line 15: Deductible part of self-employment tax. Attach Schedule SE 15'
+  node_type: form_line
+  value_type: currency
+  citation_refs:
+  - cite_span_schedule_1_2025_0053
+- node_id: schedule_1_2025_part_ii_line_16
+  document_id: schedule_1_2025
+  label: 'Line 16: Self-employed SEP, SIMPLE, and qualified plans 16'
+  node_type: form_line
+  value_type: currency
+  citation_refs:
+  - cite_span_schedule_1_2025_0054
+- node_id: schedule_1_2025_part_ii_line_17
+  document_id: schedule_1_2025
+  label: 'Line 17: Self-employed health insurance deduction 17'
+  node_type: form_line
+  value_type: currency
+  citation_refs:
+  - cite_span_schedule_1_2025_0055
+- node_id: schedule_1_2025_part_ii_line_18
+  document_id: schedule_1_2025
+  label: 'Line 18: Penalty on early withdrawal of savings 18'
+  node_type: form_line
+  value_type: currency
+  citation_refs:
+  - cite_span_schedule_1_2025_0056
+- node_id: schedule_1_2025_part_ii_line_19a
+  document_id: schedule_1_2025
+  label: 'Line 19a: Alimony paid 19a'
+  node_type: form_line
+  value_type: currency
+  citation_refs:
+  - cite_span_schedule_1_2025_0057
+- node_id: schedule_1_2025_part_ii_line_20
+  document_id: schedule_1_2025
+  label: 'Line 20: IRA deduction. If you are married filing separately and lived apart
+    from your spouse for the entire year'
+  node_type: form_line
+  value_type: currency
+  citation_refs:
+  - cite_span_schedule_1_2025_0060
+- node_id: schedule_1_2025_part_ii_line_21
+  document_id: schedule_1_2025
+  label: 'Line 21: Student loan interest deduction 21'
+  node_type: form_line
+  value_type: currency
+  citation_refs:
+  - cite_span_schedule_1_2025_0061
+- node_id: schedule_1_2025_part_ii_line_22
+  document_id: schedule_1_2025
+  label: 'Line 22: Reserved for future use 22'
+  node_type: form_line
+  value_type: currency
+  citation_refs:
+  - cite_span_schedule_1_2025_0062
+- node_id: schedule_1_2025_part_ii_line_23
+  document_id: schedule_1_2025
+  label: 'Line 23: Archer MSA deduction 23'
+  node_type: form_line
+  value_type: currency
+  citation_refs:
+  - cite_span_schedule_1_2025_0063
+- node_id: schedule_1_2025_part_ii_line_24
+  document_id: schedule_1_2025
+  label: 'Line 24: Other adjustments:'
+  node_type: form_line
+  value_type: currency
+  citation_refs:
+  - cite_span_schedule_1_2025_0064
+- node_id: schedule_1_2025_part_ii_line_24e
+  document_id: schedule_1_2025
+  label: 'Line 24e: Line 24e'
+  node_type: form_line
+  value_type: currency
+  citation_refs:
+  - cite_span_schedule_1_2025_0070
+- node_id: schedule_1_2025_part_ii_line_24z
+  document_id: schedule_1_2025
+  label: 'Line 24z: Line 24z'
+  node_type: form_line
+  value_type: currency
+  citation_refs:
+  - cite_span_schedule_1_2025_0078
+- node_id: schedule_1_2025_part_ii_line_25
+  document_id: schedule_1_2025
+  label: 'Line 25: Total other adjustments. Add lines 24a through 24z 25'
+  node_type: form_line
+  value_type: currency
+  citation_refs:
+  - cite_span_schedule_1_2025_0079
+- node_id: schedule_1_2025_part_ii_line_26
+  document_id: schedule_1_2025
+  label: 'Line 26: Add lines 11 through 23 and 25. These are your adjustments to income.
+    Enter here and on Form'
+  node_type: form_line
+  value_type: currency
+  citation_refs:
+  - cite_span_schedule_1_2025_0080

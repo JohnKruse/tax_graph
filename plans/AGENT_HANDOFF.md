@@ -15,11 +15,11 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## Current state (2026-07-08)
 
-**BALL: CODEX.** Next action: start M10 Step 5 promotions in frontier order, then carry
-through Steps 6-7 straight through - the deferred-review policy removed every blocking
-human stop. Nothing is open for the Architect; nothing waits on John. All work through
-commit 66bf7b1 is verified, committed, and pushed; Step 4 closeout is now green in the
-worktree and pending commit.
+**BALL: CODEX.** Next action: continue M10 Step 5 promotions in frontier order from the
+new `schedule_1_2025` baseline, then carry through Steps 6-7 straight through - the
+deferred-review policy removed every blocking human stop. Nothing is open for the
+Architect; nothing waits on John. Step 4 is committed (`4132c97`); Step 5 is in progress
+with the first promotion green in the worktree and pending commit.
 (Whoever finishes a turn: update this BALL line - it is the first thing read.)
 
 - **M0-M9 are COMPLETE and archived** (see `plans/archive/`). Operational highlights: compiled
@@ -41,8 +41,9 @@ worktree and pending commit.
   repair -> batch extraction under the full net -> frontier-sequenced promotions
   (deferred-review policy - machine-gated, NO blocking stop) -> oracle growth + live
   fuzz -> verification records + coverage report. STATUS: Steps 1, 2, 2b, 3 are DONE and
-  committed; Step 4 is DONE in the worktree (pending closeout commit); Steps 5-7 not
-  started.
+  committed; Step 4 is DONE and committed (`4132c97`); Step 5 is in progress (promotion
+  helper + generic deferred-review queue landed in the worktree; `schedule_1_2025`
+  promoted and validated locally); Steps 6-7 not started.
 - **Worker update (Codex, 2026-07-08): M10 Step 1 is implemented and ready in git.** Added
   `tools/step_driver.py` plus packaged logic in `tax_graph/step_driver.py`; the driver parses
   tier tags from `plans/PHASE_<id>.md`, renders tier launch commands from `config/driver.yaml`,
@@ -142,6 +143,28 @@ worktree and pending commit.
   deterministic expectations. The tests now copy only the specific legacy draft dirs they
   depend on and avoid exact verification-record golden comparisons against mutable local
   metrics.
+- **Worker update (Codex, 2026-07-08): M10 Step 5 has started in the worktree.** Added
+  `tax_graph.promote.promote_draft_document(...)` to copy one draft document's live YAML
+  deterministically, plus a shared `tax_graph.review_queue.upsert_deferred_review_entry(...)`
+  helper so deferred-review artifacts are no longer IRS-example-specific. The queue schema
+  is widened additively for promotion-review entries, and the IRS example freeze path now
+  uses the shared helper.
+- **Worker promotion slice (Codex, 2026-07-08): `schedule_1_2025` is promoted locally and
+  machine-gated green.** New live files:
+  `graph/2025/documents/schedule-1.yaml`, `graph/2025/nodes/schedule-1.yaml`,
+  `graph/2025/citations/schedule-1.yaml`. Deferred review is queued at
+  `review_queue/2025/deferred_review.yaml` as `promotion_review_schedule_1_2025`.
+  Coverage after rebuilding frontier: `57.7%` full-universe (`279100000 / 483540000`) and
+  `64.1%` in-scope (`279100000 / 435450000`), up from the pre-M10 baseline of `42.4%`.
+  The only declared worklist entries after this promotion are still `schedule_d_2025`
+  line 20 plus the as-yet-unpromoted Form 6251 -> Schedule D outbound flows; new
+  Schedule 1 references to Schedule C / Schedule E surface honestly as `unmodeled`.
+- **Worker verification (Codex, 2026-07-08):**
+  - `.\.venv\Scripts\python.exe -m pytest tests/test_promote_m10.py tests/test_examples_m8.py tests/test_step_driver_m10.py -q` -> 19 passed
+  - `.\.venv\Scripts\python.exe -m tax_graph.cli validate 2025 --root C:\Users\devbox\projects\tax_graph` -> graph integrity OK
+  - `.\.venv\Scripts\python.exe -m tax_graph.cli frontier build --year 2025 --root C:\Users\devbox\projects\tax_graph` -> declared 3 / modeled 12 / unmodeled 2
+  - `.\.venv\Scripts\python.exe -m tax_graph.cli frontier --year 2025 --root C:\Users\devbox\projects\tax_graph` -> coverage `57.7%` full / `64.1%` in-scope
+  - `.\.venv\Scripts\python.exe -m tax_graph.cli verify replay-examples --year 2025 --source yaml --root C:\Users\devbox\projects\tax_graph` -> examples 2, result OK
 
 ## Open for Architect
 - (none - the Step 3 freeze-policy question is ANSWERED by the DEFERRED-REVIEW policy

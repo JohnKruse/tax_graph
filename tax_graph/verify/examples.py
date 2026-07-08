@@ -14,6 +14,7 @@ from tax_graph.config import get_config_value
 from tax_graph.engine import Engine, Graph, load_facts
 from tax_graph.extract.inputs import load_document_input
 from tax_graph.extract.llm_client import LlmClient, build_llm_client
+from tax_graph.review_queue import upsert_deferred_review_entry
 
 
 @dataclass(frozen=True)
@@ -555,13 +556,6 @@ def _append_deferred_review_queue_entry(
     example_dir: Path,
     recorded_date: str,
 ) -> Path:
-    queue_path = root / "review_queue" / str(year) / "deferred_review.yaml"
-    payload = _load_yaml(queue_path)
-    if not isinstance(payload, dict):
-        payload = {}
-    entries = payload.get("entries")
-    if not isinstance(entries, list):
-        entries = []
     queue_id = f"irs_example_review_{mined.block.source_document_id}_{mined.block.example_id}"
     entry = {
         "queue_id": queue_id,
@@ -582,17 +576,11 @@ def _append_deferred_review_queue_entry(
         "human_confirmed": False,
         "expected_nodes": sorted(str(node_id) for node_id in mined.expected),
     }
-    updated_entries = [item for item in entries if isinstance(item, dict) and item.get("queue_id") != queue_id]
-    updated_entries.append(entry)
-    updated_entries.sort(key=lambda item: str(item.get("queue_id") or ""))
-    _write_yaml(
-        queue_path,
-        {
-            "tax_year": int(year),
-            "entries": updated_entries,
-        },
+    return upsert_deferred_review_entry(
+        root=root,
+        year=year,
+        entry=entry,
     )
-    return queue_path
 
 
 def _review_document_id(mined: MinedExample) -> str:

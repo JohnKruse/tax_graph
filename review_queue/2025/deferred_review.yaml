@@ -19,3 +19,22 @@ entries:
   - form_8949_2025_part_i_line_1_column_d_minus_e#example_008
   - form_8949_2025_part_i_line_1_column_e#example_008
   - form_8949_2025_part_i_line_1_column_h#example_008
+- queue_id: promotion_review_schedule_1_2025
+  kind: promotion_review
+  status: pending
+  priority: medium
+  document_id: schedule_1_2025
+  created_date: '2026-07-08'
+  created_by: tax_graph.promote
+  summary: Review deferred machine-gated promotion for schedule_1_2025
+  artifact_dir: graph/2025/_drafts/schedule_1_2025
+  artifact_paths:
+  - graph/2025/documents/schedule-1.yaml
+  - graph/2025/nodes/schedule-1.yaml
+  - graph/2025/citations/schedule-1.yaml
+  machine_witnesses:
+  - validate green
+  - pytest green
+  - ascii green
+  - nversion agreed
+  - example mining unmappable only

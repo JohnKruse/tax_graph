@@ -19,15 +19,9 @@
           "status",
           "priority",
           "document_id",
-          "source_document_id",
-          "example_id",
           "created_date",
           "created_by",
-          "summary",
-          "artifact_dir",
-          "machine_agreed",
-          "human_confirmed",
-          "expected_nodes"
+          "summary"
         ],
         "properties": {
           "queue_id": {"type": "string"},
@@ -41,8 +35,25 @@
           "created_by": {"type": "string"},
           "summary": {"type": "string"},
           "artifact_dir": {"type": "string"},
+          "artifact_paths": {
+            "type": "array",
+            "items": {"type": "string"}
+          },
           "machine_agreed": {"type": "boolean"},
           "human_confirmed": {"type": "boolean"},
+          "review_status": {"type": "string"},
+          "changed_kinds": {
+            "type": "array",
+            "items": {"type": "string"}
+          },
+          "changed_object_ids": {
+            "type": "array",
+            "items": {"type": "string"}
+          },
+          "machine_witnesses": {
+            "type": "array",
+            "items": {"type": "string"}
+          },
           "expected_nodes": {
             "type": "array",
             "items": {"type": "string"}
