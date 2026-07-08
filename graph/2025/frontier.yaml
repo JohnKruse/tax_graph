@@ -341,6 +341,28 @@ frontiers:
   citation_ref: cite_span_schedule_1_2025_0044
   status: modeled
   weight: 163100000
+- frontier_id: ref_cite_span_schedule_1a_2025_0003_to_form_1040_2025
+  kind: form_reference
+  source:
+    document_id: schedule_1a_2025
+    citation_id: cite_span_schedule_1a_2025_0003
+  target:
+    document_id: form_1040_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040--2025.pdf
+  citation_ref: cite_span_schedule_1a_2025_0003
+  status: modeled
+  weight: 163100000
+- frontier_id: ref_cite_span_schedule_1a_2025_0064_to_form_1040_2025
+  kind: form_reference
+  source:
+    document_id: schedule_1a_2025
+    citation_id: cite_span_schedule_1a_2025_0064
+  target:
+    document_id: form_1040_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040--2025.pdf
+  citation_ref: cite_span_schedule_1a_2025_0064
+  status: modeled
+  weight: 163100000
 - frontier_id: ref_cite_span_schedule_2_2025_0019_to_form_1040_2025
   kind: form_reference
   source:
