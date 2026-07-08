@@ -15,11 +15,11 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## Current state (2026-07-08)
 
-**BALL: CODEX.** Next action: continue M10 Step 5 promotions in frontier order from the
-new `schedule_1_2025` baseline, then carry through Steps 6-7 straight through - the
-deferred-review policy removed every blocking human stop. Nothing is open for the
-Architect; nothing waits on John. Step 4 is committed (`4132c97`); Step 5 is in progress
-with the first promotion green in the worktree and pending commit.
+**BALL: CODEX.** Next action: finish the remaining M10 Step 5 seam - the `form_6251_2025`
+LINK fallback / source-node issue and the step-driver policy-marker cleanup - then move
+into Steps 6-7 straight through. Nothing is open for the Architect; nothing waits on
+John. Step 4 is committed (`4132c97`); Step 5 is in progress with the whole non-LINK
+promotion set now green through committed/uncommitted slices.
 (Whoever finishes a turn: update this BALL line - it is the first thing read.)
 
 - **M0-M9 are COMPLETE and archived** (see `plans/archive/`). Operational highlights: compiled
@@ -180,6 +180,11 @@ with the first promotion green in the worktree and pending commit.
   seam: either synthesize/preserve that source node during promotion or teach LINK a
   deterministic fallback for this flow shape. Current state is honest and valid - the
   declarations remain declared, not silently realized.
+- **Worker promotion slice (Codex, 2026-07-08): `schedule_1a_2025` and `schedule_a_2025`
+  are now promoted locally and machine-gated green in the worktree.** Coverage stays at
+  `90.1%` full / `100.0%` in-scope because these forms do not carry SOI weights in the
+  current committed mapping, but the live graph now includes their committed
+  document/node/citation artifacts and deferred-review queue entries.
 
 ## Open for Architect
 - (none - the Step 3 freeze-policy question is ANSWERED by the DEFERRED-REVIEW policy

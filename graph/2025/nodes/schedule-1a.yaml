@@ -1,0 +1,271 @@
+- node_id: schedule_1a_2025_part_i_line_1
+  document_id: schedule_1a_2025
+  label: 'Line 1: Enter the amount from Form 1040, 1040-SR, or 1040-NR, line 11b 1'
+  node_type: form_line
+  value_type: currency
+  citation_refs:
+  - cite_span_schedule_1a_2025_0003
+- node_id: schedule_1a_2025_part_i_line_2a
+  document_id: schedule_1a_2025
+  label: 'Line 2a: Enter any income from Puerto Rico that you excluded 2a'
+  node_type: form_line
+  value_type: currency
+  citation_refs:
+  - cite_span_schedule_1a_2025_0004
+- node_id: schedule_1a_2025_part_i_line_b
+  document_id: schedule_1a_2025
+  label: 'Line b: Enter the amount from Form 2555, line 45 2b'
+  node_type: form_line
+  value_type: currency
+  citation_refs:
+  - cite_span_schedule_1a_2025_0005
+- node_id: schedule_1a_2025_part_i_line_c
+  document_id: schedule_1a_2025
+  label: 'Line c: Enter the amount from Form 2555, line 50 2c'
+  node_type: form_line
+  value_type: currency
+  citation_refs:
+  - cite_span_schedule_1a_2025_0006
+- node_id: schedule_1a_2025_part_i_line_d
+  document_id: schedule_1a_2025
+  label: 'Line d: Enter the amount from Form 4563, line 15 2d'
+  node_type: form_line
+  value_type: currency
+  citation_refs:
+  - cite_span_schedule_1a_2025_0007
+- node_id: schedule_1a_2025_part_i_line_e
+  document_id: schedule_1a_2025
+  label: 'Line e: Add lines 2a, 2b, 2c, and 2d 2e'
+  node_type: form_line
+  value_type: currency
+  citation_refs:
+  - cite_span_schedule_1a_2025_0008
+- node_id: schedule_1a_2025_part_i_line_3
+  document_id: schedule_1a_2025
+  label: 'Line 3: Add lines 1 and 2e 3'
+  node_type: form_line
+  value_type: currency
+  citation_refs:
+  - cite_span_schedule_1a_2025_0009
+- node_id: schedule_1a_2025_part_ii_line_4b
+  document_id: schedule_1a_2025
+  label: 'Line 4b: and see the instructions to determine the amount to enter on line
+    4c. If you'
+  node_type: form_line
+  value_type: currency
+  citation_refs:
+  - cite_span_schedule_1a_2025_0012
+- node_id: schedule_1a_2025_part_ii_line_a
+  document_id: schedule_1a_2025
+  label: 'Line a: Enter qualified tips included on Form W-2, box 7, but see the instructions
+    if'
+  node_type: form_line
+  value_type: currency
+  citation_refs:
+  - cite_span_schedule_1a_2025_0013
+- node_id: schedule_1a_2025_part_ii_line_6
+  document_id: schedule_1a_2025
+  label: 'Line 6: Add lines 4c and 5 6'
+  node_type: form_line
+  value_type: currency
+  citation_refs:
+  - cite_span_schedule_1a_2025_0018
+- node_id: schedule_1a_2025_part_ii_line_7
+  document_id: schedule_1a_2025
+  label: 'Line 7: Enter the smaller of the amount on line 6 or $25,000 7'
+  node_type: form_line
+  value_type: currency
+  citation_refs:
+  - cite_span_schedule_1a_2025_0019
+- node_id: schedule_1a_2025_part_ii_line_8
+  document_id: schedule_1a_2025
+  label: 'Line 8: Enter the amount from line 3 8'
+  node_type: form_line
+  value_type: currency
+  citation_refs:
+  - cite_span_schedule_1a_2025_0020
+- node_id: schedule_1a_2025_part_ii_line_9
+  document_id: schedule_1a_2025
+  label: 'Line 9: Enter $150,000 ($300,000 if married filing jointly) 9'
+  node_type: form_line
+  value_type: currency
+  citation_refs:
+  - cite_span_schedule_1a_2025_0021
+- node_id: schedule_1a_2025_part_ii_line_10
+  document_id: schedule_1a_2025
+  label: 'Line 10: Subtract line 9 from line 8. If zero or less, enter the amount
+    from line 7 on line 13 10'
+  node_type: form_line
+  value_type: currency
+  citation_refs:
+  - cite_span_schedule_1a_2025_0022
+- node_id: schedule_1a_2025_part_ii_line_12
+  document_id: schedule_1a_2025
+  label: 'Line 12: Multiply line 11 by $100 12'
+  node_type: form_line
+  value_type: currency
+  citation_refs:
+  - cite_span_schedule_1a_2025_0024
+- node_id: schedule_1a_2025_part_iii_line_14
+  document_id: schedule_1a_2025
+  label: 'Line 14: a Qualified overtime compensation included in Form W-2, box 1.
+    If you received'
+  node_type: form_line
+  value_type: currency
+  citation_refs:
+  - cite_span_schedule_1a_2025_0027
+- node_id: schedule_1a_2025_part_iii_line_16
+  document_id: schedule_1a_2025
+  label: 'Line 16: Enter the amount from line 3 16'
+  node_type: form_line
+  value_type: currency
+  citation_refs:
+  - cite_span_schedule_1a_2025_0032
+- node_id: schedule_1a_2025_part_iii_line_17
+  document_id: schedule_1a_2025
+  label: 'Line 17: Enter $150,000 ($300,000 if married filing jointly) 17'
+  node_type: form_line
+  value_type: currency
+  citation_refs:
+  - cite_span_schedule_1a_2025_0033
+- node_id: schedule_1a_2025_part_iii_line_18
+  document_id: schedule_1a_2025
+  label: 'Line 18: Subtract line 17 from line 16. If zero or less, enter the amount
+    from line 15 on line 21 18'
+  node_type: form_line
+  value_type: currency
+  citation_refs:
+  - cite_span_schedule_1a_2025_0034
+- node_id: schedule_1a_2025_part_iii_line_19
+  document_id: schedule_1a_2025
+  label: 'Line 19: Divide line 18 by $1,000. If the resulting number isnt a whole
+    number, decrease the result to the next'
+  node_type: form_line
+  value_type: currency
+  citation_refs:
+  - cite_span_schedule_1a_2025_0035
+- node_id: schedule_1a_2025_part_iii_line_20
+  document_id: schedule_1a_2025
+  label: 'Line 20: Multiply line 19 by $100 20'
+  node_type: form_line
+  value_type: currency
+  citation_refs:
+  - cite_span_schedule_1a_2025_0036
+- node_id: schedule_1a_2025_part_iv_line_22
+  document_id: schedule_1a_2025
+  label: 'Line 22: Applicable passenger vehicle (see instructions). If more than two
+    VINs, see instructions.'
+  node_type: form_line
+  value_type: currency
+  citation_refs:
+  - cite_span_schedule_1a_2025_0041
+- node_id: schedule_1a_2025_part_iv_line_23
+  document_id: schedule_1a_2025
+  label: 'Line 23: Add lines 22a and 22b, column (iii) 23'
+  node_type: form_line
+  value_type: currency
+  citation_refs:
+  - cite_span_schedule_1a_2025_0045
+- node_id: schedule_1a_2025_part_iv_line_24
+  document_id: schedule_1a_2025
+  label: 'Line 24: Enter the smaller of the amount on line 23 or $10,000 24'
+  node_type: form_line
+  value_type: currency
+  citation_refs:
+  - cite_span_schedule_1a_2025_0046
+- node_id: schedule_1a_2025_part_iv_line_25
+  document_id: schedule_1a_2025
+  label: 'Line 25: Enter the amount from line 3 25'
+  node_type: form_line
+  value_type: currency
+  citation_refs:
+  - cite_span_schedule_1a_2025_0047
+- node_id: schedule_1a_2025_part_iv_line_26
+  document_id: schedule_1a_2025
+  label: 'Line 26: Enter $100,000 ($200,000 if married filing jointly) 26'
+  node_type: form_line
+  value_type: currency
+  citation_refs:
+  - cite_span_schedule_1a_2025_0048
+- node_id: schedule_1a_2025_part_iv_line_27
+  document_id: schedule_1a_2025
+  label: 'Line 27: Subtract line 26 from line 25. If zero or less, enter the amount
+    from line 24 on line 30 27'
+  node_type: form_line
+  value_type: currency
+  citation_refs:
+  - cite_span_schedule_1a_2025_0049
+- node_id: schedule_1a_2025_part_iv_line_28
+  document_id: schedule_1a_2025
+  label: 'Line 28: Divide line 27 by $1,000. If the resulting number isnt a whole
+    number, increase the result to the next'
+  node_type: form_line
+  value_type: currency
+  citation_refs:
+  - cite_span_schedule_1a_2025_0050
+- node_id: schedule_1a_2025_part_iv_line_29
+  document_id: schedule_1a_2025
+  label: 'Line 29: Multiply line 28 by $200 29'
+  node_type: form_line
+  value_type: currency
+  citation_refs:
+  - cite_span_schedule_1a_2025_0051
+- node_id: schedule_1a_2025_part_v_line_31
+  document_id: schedule_1a_2025
+  label: 'Line 31: Enter the amount from line 3 31'
+  node_type: form_line
+  value_type: currency
+  citation_refs:
+  - cite_span_schedule_1a_2025_0055
+- node_id: schedule_1a_2025_part_v_line_32
+  document_id: schedule_1a_2025
+  label: 'Line 32: Enter $75,000 ($150,000 if married filing jointly) 32'
+  node_type: form_line
+  value_type: currency
+  citation_refs:
+  - cite_span_schedule_1a_2025_0056
+- node_id: schedule_1a_2025_part_v_line_33
+  document_id: schedule_1a_2025
+  label: 'Line 33: Subtract line 32 from line 31. If zero or less, enter $6,000 on
+    line 35 33'
+  node_type: form_line
+  value_type: currency
+  citation_refs:
+  - cite_span_schedule_1a_2025_0057
+- node_id: schedule_1a_2025_part_v_line_34
+  document_id: schedule_1a_2025
+  label: 'Line 34: Multiply line 33 by 6% (0.06) 34'
+  node_type: form_line
+  value_type: currency
+  citation_refs:
+  - cite_span_schedule_1a_2025_0058
+- node_id: schedule_1a_2025_part_v_line_36
+  document_id: schedule_1a_2025
+  label: 'Line 36: a If you have a valid social security number (see instructions)
+    and were born before January 2, 1961,'
+  node_type: form_line
+  value_type: currency
+  citation_refs:
+  - cite_span_schedule_1a_2025_0060
+- node_id: schedule_1a_2025_part_v_line_37
+  document_id: schedule_1a_2025
+  label: 'Line 37: Enhanced deduction for seniors. Add lines 36a and 36b 37'
+  node_type: form_line
+  value_type: currency
+  citation_refs:
+  - cite_span_schedule_1a_2025_0062
+- node_id: schedule_1a_2025_part_vi_line_38
+  document_id: schedule_1a_2025
+  label: 'Line 38: Add lines 13, 21, 30, and 37. Enter here and on Form 1040 or 1040-SR,
+    line 13b, or on Form 1040-NR,'
+  node_type: form_line
+  value_type: currency
+  citation_refs:
+  - cite_span_schedule_1a_2025_0064
+- node_id: schedule_1a_2025_part_vi_line_13c
+  document_id: schedule_1a_2025
+  label: 'Line 13c: 38'
+  node_type: form_line
+  value_type: currency
+  citation_refs:
+  - cite_span_schedule_1a_2025_0065

@@ -57,6 +57,25 @@ entries:
   - ascii green
   - nversion agreed
   - example mining unmappable only
+- queue_id: promotion_review_schedule_1a_2025
+  kind: promotion_review
+  status: pending
+  priority: medium
+  document_id: schedule_1a_2025
+  created_date: '2026-07-08'
+  created_by: tax_graph.promote
+  summary: Review deferred machine-gated promotion for schedule_1a_2025
+  artifact_dir: graph/2025/_drafts/schedule_1a_2025
+  artifact_paths:
+  - graph/2025/documents/schedule-1a.yaml
+  - graph/2025/nodes/schedule-1a.yaml
+  - graph/2025/citations/schedule-1a.yaml
+  machine_witnesses:
+  - validate green
+  - pytest green
+  - ascii green
+  - nversion agreed
+  - example mining unmappable only
 - queue_id: promotion_review_schedule_2_2025
   kind: promotion_review
   status: pending
@@ -89,6 +108,25 @@ entries:
   - graph/2025/documents/schedule-3.yaml
   - graph/2025/nodes/schedule-3.yaml
   - graph/2025/citations/schedule-3.yaml
+  machine_witnesses:
+  - validate green
+  - pytest green
+  - ascii green
+  - nversion agreed
+  - example mining unmappable only
+- queue_id: promotion_review_schedule_a_2025
+  kind: promotion_review
+  status: pending
+  priority: medium
+  document_id: schedule_a_2025
+  created_date: '2026-07-08'
+  created_by: tax_graph.promote
+  summary: Review deferred machine-gated promotion for schedule_a_2025
+  artifact_dir: graph/2025/_drafts/schedule_a_2025
+  artifact_paths:
+  - graph/2025/documents/schedule-a.yaml
+  - graph/2025/nodes/schedule-a.yaml
+  - graph/2025/citations/schedule-a.yaml
   machine_witnesses:
   - validate green
   - pytest green

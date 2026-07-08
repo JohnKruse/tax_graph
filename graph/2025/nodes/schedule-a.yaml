@@ -1,0 +1,172 @@
+- node_id: schedule_a_2025_root_line_16_amount
+  document_id: schedule_a_2025
+  label: 'Line 16: Otherfrom list in instructions. List type and amount: amount'
+  node_type: form_line
+  value_type: currency
+  citation_refs: &id001
+  - cite_span_schedule_a_2025_0036
+- node_id: schedule_a_2025_root_line_16_description
+  document_id: schedule_a_2025
+  label: 'Line 16: Otherfrom list in instructions. List type and amount: description'
+  node_type: form_line
+  value_type: string
+  citation_refs: *id001
+- node_id: schedule_a_2025_root_line_2
+  document_id: schedule_a_2025
+  label: 'Line 2: Line 2'
+  node_type: form_line
+  value_type: currency
+  citation_refs:
+  - cite_span_schedule_a_2025_0003
+- node_id: schedule_a_2025_root_line_11b
+  document_id: schedule_a_2025
+  label: 'Line 11b: Line 11b'
+  node_type: form_line
+  value_type: currency
+  citation_refs:
+  - cite_span_schedule_a_2025_0004
+- node_id: schedule_a_2025_root_line_3
+  document_id: schedule_a_2025
+  label: 'Line 3: Multiply line 2 by 7.5% (0.075) 3'
+  node_type: form_line
+  value_type: currency
+  citation_refs:
+  - cite_span_schedule_a_2025_0006
+- node_id: schedule_a_2025_root_line_4
+  document_id: schedule_a_2025
+  label: 'Line 4: Subtract line 3 from line 1. If line 3 is more than line 1, enter
+    -0- 4'
+  node_type: form_line
+  value_type: currency
+  citation_refs:
+  - cite_span_schedule_a_2025_0007
+- node_id: schedule_a_2025_root_line_5
+  document_id: schedule_a_2025
+  label: 'Line 5: State and local taxes (SALT).'
+  node_type: form_line
+  value_type: currency
+  citation_refs:
+  - cite_span_schedule_a_2025_0008
+- node_id: schedule_a_2025_root_line_a
+  document_id: schedule_a_2025
+  label: 'Line a: State and local income taxes or general sales taxes. You may'
+  node_type: form_line
+  value_type: currency
+  citation_refs:
+  - cite_span_schedule_a_2025_0009
+- node_id: schedule_a_2025_root_line_b
+  document_id: schedule_a_2025
+  label: 'Line b: State and local real estate taxes (see instructions) 5b'
+  node_type: form_line
+  value_type: currency
+  citation_refs:
+  - cite_span_schedule_a_2025_0010
+- node_id: schedule_a_2025_root_line_c
+  document_id: schedule_a_2025
+  label: 'Line c: State and local personal property taxes 5c'
+  node_type: form_line
+  value_type: currency
+  citation_refs:
+  - cite_span_schedule_a_2025_0011
+- node_id: schedule_a_2025_root_line_d
+  document_id: schedule_a_2025
+  label: 'Line d: Add lines 5a through 5c 5d'
+  node_type: form_line
+  value_type: currency
+  citation_refs:
+  - cite_span_schedule_a_2025_0012
+- node_id: schedule_a_2025_root_line_e
+  document_id: schedule_a_2025
+  label: 'Line e: Enter the smaller of line 5d or $40,000 ($20,000 if married filing'
+  node_type: form_line
+  value_type: currency
+  citation_refs:
+  - cite_span_schedule_a_2025_0013
+- node_id: schedule_a_2025_root_line_6
+  document_id: schedule_a_2025
+  label: 'Line 6: Line 6'
+  node_type: form_line
+  value_type: currency
+  citation_refs:
+  - cite_span_schedule_a_2025_0014
+- node_id: schedule_a_2025_root_line_7
+  document_id: schedule_a_2025
+  label: 'Line 7: Add lines 5e and 6 7'
+  node_type: form_line
+  value_type: currency
+  citation_refs:
+  - cite_span_schedule_a_2025_0016
+- node_id: schedule_a_2025_root_line_8
+  document_id: schedule_a_2025
+  label: 'Line 8: Home mortgage interest and points. If you didnt use all of your'
+  node_type: form_line
+  value_type: currency
+  citation_refs:
+  - cite_span_schedule_a_2025_0017
+- node_id: schedule_a_2025_root_line_8c
+  document_id: schedule_a_2025
+  label: 'Line 8c: Line 8c'
+  node_type: form_line
+  value_type: currency
+  citation_refs:
+  - cite_span_schedule_a_2025_0022
+- node_id: schedule_a_2025_root_line_9
+  document_id: schedule_a_2025
+  label: 'Line 9: Investment interest. Attach Form 4952 if required. See instructions
+    9'
+  node_type: form_line
+  value_type: currency
+  citation_refs:
+  - cite_span_schedule_a_2025_0025
+- node_id: schedule_a_2025_root_line_10
+  document_id: schedule_a_2025
+  label: 'Line 10: Add lines 8e and 9 10'
+  node_type: form_line
+  value_type: currency
+  citation_refs:
+  - cite_span_schedule_a_2025_0026
+- node_id: schedule_a_2025_root_line_12
+  document_id: schedule_a_2025
+  label: 'Line 12: Other than by cash or check. If you made any gift of $250 or'
+  node_type: form_line
+  value_type: currency
+  citation_refs:
+  - cite_span_schedule_a_2025_0029
+- node_id: schedule_a_2025_root_line_13
+  document_id: schedule_a_2025
+  label: 'Line 13: Carryover from prior year 13'
+  node_type: form_line
+  value_type: currency
+  citation_refs:
+  - cite_span_schedule_a_2025_0032
+- node_id: schedule_a_2025_root_line_14
+  document_id: schedule_a_2025
+  label: 'Line 14: Add lines 11 through 13 14'
+  node_type: form_line
+  value_type: currency
+  citation_refs:
+  - cite_span_schedule_a_2025_0033
+- node_id: schedule_a_2025_root_line_15
+  document_id: schedule_a_2025
+  label: 'Line 15: Casualty and theft loss(es) from a federally declared disaster
+    (other than net qualified'
+  node_type: form_line
+  value_type: currency
+  citation_refs:
+  - cite_span_schedule_a_2025_0034
+- node_id: schedule_a_2025_root_line_17
+  document_id: schedule_a_2025
+  label: 'Line 17: Add the amounts in the far right column for lines 4 through 16.
+    Also, enter this amount'
+  node_type: form_line
+  value_type: currency
+  citation_refs:
+  - cite_span_schedule_a_2025_0038
+- node_id: schedule_a_2025_root_line_18
+  document_id: schedule_a_2025
+  label: 'Line 18: If you elect to itemize deductions even though they are less than
+    your standard'
+  node_type: form_line
+  value_type: currency
+  citation_refs:
+  - cite_span_schedule_a_2025_0039
