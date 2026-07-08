@@ -110,17 +110,21 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
   reviewed later in the workbench; `human_minutes` stays null throughout. AGENTS.md
   Hard rules and PHASE_M10 are amended to match. Everything remains git-revertable and
   the Verification Record states review-pending status plainly.
-- **ERRAND (worker-light, authorized fixture/golden updates; do FIRST next session):
-  regenerate the 3 goldens broken by committed Step 2b (1853679).** Full `pytest` at
-  that commit fails `test_frontier_query_m7::test_frontier_summary_worklist_and_coverage`,
-  `test_return_record_m5::test_render_memo_matches_golden_fixture`, and
-  `test_verify_record_m9::test_verify_record_matches_committed_goldens` - stale goldens,
-  not logic bugs: corrected citation quotes ripple into the memo/verification-record
-  goldens, and the expanded manifest changes frontier coverage arithmetic (expected -
-  the in-scope universe grew). Regenerate/update those goldens + committed
-  `VERIFICATION.md` pages, eyeball the new frontier numbers for sanity, full `pytest`
-  green, commit. REMINDER (QC contract): the FULL suite passing is the floor before any
-  commit - Step 2b was committed on targeted suites only; do not repeat that.
+- **Worker update (Codex, 2026-07-08): stale-golden/full-suite errand is fixed in the
+  worktree.** Updated the frontier regression expectation to the widened in-scope coverage
+  (`47.1%` / `205100000 of 435450000`), refreshed the return-record memo golden for the
+  corrected `cite_8949_adjustment_codes` quote, refreshed `VERIFICATION.md` to the same
+  in-scope coverage figure, and aligned `tests/test_step_driver_m10.py` with the
+  deferred-review policy (real M10 Step 5 is no longer a blocking `john_gate`; the
+  synthetic gate-stop tests still prove the mechanism). This clears the stale "bad tests"
+  without masking a logic regression.
+- **Worker verification (Codex, 2026-07-08):**
+  - `.\.venv\Scripts\python.exe -m pytest tests/test_frontier_query_m7.py::test_frontier_summary_worklist_and_coverage -q` -> 1 passed
+  - `.\.venv\Scripts\python.exe -m pytest tests/test_return_record_m5.py::test_render_memo_matches_golden_fixture -q` -> 1 passed
+  - `.\.venv\Scripts\python.exe -m pytest tests/test_verify_record_m9.py::test_verify_record_matches_committed_goldens -q` -> 1 passed
+  - `.\.venv\Scripts\python.exe -m pytest tests/test_step_driver_m10.py::test_parse_phase_plan_handles_wrapped_real_plan_headers -q` -> 1 passed
+  - `.\.venv\Scripts\python.exe -m pytest -q` -> 225 passed, 4 skipped
+  - `.\.venv\Scripts\python.exe tools/check_ascii.py` -> ASCII check OK
 - **NEW (2026-07-08) - N-version escalation ladder PINNED (John's call; directional,
   config-gated, do NOT build until M10 metrics show a real disagreement queue).** On a
   cross-family N-version disagreement, escalate to a THIRD vendor family running the SAME

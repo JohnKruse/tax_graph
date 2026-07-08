@@ -5,7 +5,7 @@ This report is generated from committed repository data by `tax_graph.verify.rec
 ## Coverage
 
 - Full filer-weighted coverage: 42.4% (205100000 / 483540000)
-- In-scope filer-weighted coverage: 100.0% (205100000 / 205100000)
+- In-scope filer-weighted coverage: 47.1% (205100000 / 435450000)
 - Declared frontier items still open: 1
 
 ## Forms

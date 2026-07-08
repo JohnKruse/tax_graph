@@ -112,7 +112,7 @@ def test_parse_phase_plan_handles_wrapped_real_plan_headers():
     plan = parse_phase_plan(Path(__file__).resolve().parents[1] / "plans" / "PHASE_M10.md")
 
     assert [step.number for step in plan.steps] == [1, 2, 3, 4, 5, 6, 7]
-    assert plan.steps[4].john_gate is True
+    assert plan.steps[4].john_gate is False
     assert "frontier flips" in plan.steps[4].title.lower()
 
 

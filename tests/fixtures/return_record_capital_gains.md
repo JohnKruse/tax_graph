@@ -33,7 +33,7 @@
 - Decided by: test_filer
 - Decided date: 2026-07-05
 - Citations:
-  - cite_8949_adjustment_codes (Instructions for Form 8949, column (f) - codes): "If you need to make an adjustment to the gain or loss, enter the appropriate code(s) in column (f) and the adjustment amount in column (g)."
+  - cite_8949_adjustment_codes (Instructions for Form 8949, column (f) - codes): "In order to explain any adjustment to gain (or loss) in column (g), enter the appropriate code(s) in column (f)."
 
 ## Unsupported / Deferred
 - No unsupported or deferred items were recorded.

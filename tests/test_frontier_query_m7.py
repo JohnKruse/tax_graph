@@ -34,7 +34,7 @@ def test_frontier_summary_worklist_and_coverage(tmp_path):
 
     assert summary["coverage"]["full_universe_percent"] > 0
     assert summary["coverage"]["full_universe_percent"] < 100
-    assert summary["coverage"]["in_scope_percent"] == 100.0
+    assert summary["coverage"]["in_scope_percent"] == 47.1
     assert weights == sorted(weights, reverse=True)
     assert any(entry["frontier_id"] == "deferred_schedule_d_2025_line_20" for entry in summary["worklist"])
 
