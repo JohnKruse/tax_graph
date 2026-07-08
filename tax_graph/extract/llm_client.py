@@ -87,6 +87,7 @@ def _build_openai_client(api_key: str, config: dict[str, Any]) -> LlmClient:
         OpenAI(api_key=api_key),
         provider_name="OpenAI",
         strict_schema=bool(get_config_value(config, "llm.strict_schema", False)),
+        parameter_mode=_parameter_mode(config),
     )
 
 
@@ -106,6 +107,7 @@ def _build_openrouter_client(api_key: str, config: dict[str, Any]) -> LlmClient:
         provider_name="OpenRouter",
         extra_body=_openrouter_extra_body(config),
         strict_schema=bool(get_config_value(config, "llm.strict_schema", False)),
+        parameter_mode=_parameter_mode(config),
     )
 
 
@@ -121,6 +123,7 @@ def _openrouter_headers(config: dict[str, Any]) -> dict[str, str]:
 
 
 def _openrouter_extra_body(config: dict[str, Any]) -> dict[str, Any]:
+    parameter_mode = _parameter_mode(config)
     reasoning_effort = get_config_value(config, "llm.reasoning_effort")
     reasoning_exclude = get_config_value(config, "llm.reasoning_exclude")
     extra_body: dict[str, Any] = {}
@@ -131,7 +134,7 @@ def _openrouter_extra_body(config: dict[str, Any]) -> dict[str, Any]:
         reasoning["exclude"] = bool(reasoning_exclude)
     if reasoning:
         extra_body["reasoning"] = reasoning
-    if bool(get_config_value(config, "llm.require_parameters", True)):
+    if parameter_mode in {"auto", "require"}:
         extra_body["provider"] = {"require_parameters": True}
     return extra_body
 
@@ -190,11 +193,13 @@ class OpenAICompatibleLlmClient:
         provider_name: str,
         extra_body: dict[str, Any] | None = None,
         strict_schema: bool = False,
+        parameter_mode: str = "omit",
     ):
         self.client = client
         self.provider_name = provider_name
         self.extra_body = extra_body or {}
         self.strict_schema = strict_schema
+        self.parameter_mode = parameter_mode
 
     def structured_completion(
         self,
@@ -222,9 +227,23 @@ class OpenAICompatibleLlmClient:
         }
         if temperature is not None:
             kwargs["temperature"] = temperature
-        if self.extra_body:
-            kwargs["extra_body"] = self.extra_body
-        response = self.client.chat.completions.create(**kwargs)
+        extra_body = dict(self.extra_body)
+        if extra_body:
+            kwargs["extra_body"] = extra_body
+        try:
+            response = self.client.chat.completions.create(**kwargs)
+        except Exception as exc:
+            if self._should_retry_without_provider_hints(exc, extra_body):
+                retry_kwargs = dict(kwargs)
+                retry_extra_body = dict(extra_body)
+                retry_extra_body.pop("provider", None)
+                if retry_extra_body:
+                    retry_kwargs["extra_body"] = retry_extra_body
+                else:
+                    retry_kwargs.pop("extra_body", None)
+                response = self.client.chat.completions.create(**retry_kwargs)
+            else:
+                raise _rewrite_openai_compatible_error(exc, provider_name=self.provider_name) from exc
         content = _openai_message_content(response, provider_name=self.provider_name)
         try:
             parsed = json.loads(_extract_json_payload(content))
@@ -233,6 +252,21 @@ class OpenAICompatibleLlmClient:
         if not isinstance(parsed, dict):
             raise LlmUnavailable(f"{self.provider_name} response JSON was not an object")
         return parsed
+
+    def _should_retry_without_provider_hints(self, exc: Exception, extra_body: dict[str, Any]) -> bool:
+        if self.parameter_mode != "auto":
+            return False
+        if "provider" not in extra_body:
+            return False
+        message = str(exc).lower()
+        return (
+            "require_parameters" in message
+            or "provider.require_parameters" in message
+            or ("provider" in message and "unsupported parameter" in message)
+            or ("provider" in message and "unknown parameter" in message)
+            or ("provider" in message and "extra inputs are not permitted" in message)
+            or "no endpoints found that can handle the requested parameters" in message
+        )
 
 
 OpenAILlmClient = OpenAICompatibleLlmClient
@@ -310,3 +344,29 @@ def _get(value: Any, key: str, default: Any = None) -> Any:
     if isinstance(value, dict):
         return value.get(key, default)
     return getattr(value, key, default)
+
+
+def _parameter_mode(config: dict[str, Any]) -> str:
+    raw = get_config_value(config, "llm.require_parameters", "auto")
+    if isinstance(raw, bool):
+        return "require" if raw else "omit"
+    normalized = str(raw).strip().lower()
+    if normalized in {"auto", "require", "omit"}:
+        return normalized
+    raise LlmUnavailable("llm.require_parameters must be true, false, auto, require, or omit")
+
+
+def _rewrite_openai_compatible_error(exc: Exception, *, provider_name: str) -> LlmUnavailable:
+    message = str(exc)
+    lowered = message.lower()
+    if (
+        "response_format" in lowered
+        or "json_schema" in lowered
+        or "structured output" in lowered
+        or "structured-output" in lowered
+    ):
+        return LlmUnavailable(
+            f"{provider_name} endpoint does not support JSON-schema structured outputs; "
+            "choose a structured-output-capable endpoint or adjust llm.require_parameters"
+        )
+    return LlmUnavailable(f"{provider_name} request failed: {message}")

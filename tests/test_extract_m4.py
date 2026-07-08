@@ -276,6 +276,7 @@ def test_llm_factory_dispatches_to_openrouter_adapter(monkeypatch):
     assert calls[0]["base_url"] == "https://openrouter.ai/api/v1"
     assert calls[0]["default_headers"]["X-Title"] == "Tax Graph Tests"
     assert client.extra_body["provider"]["require_parameters"] is True
+    assert client.parameter_mode == "auto"
 
 
 @pytest.mark.m4
@@ -390,6 +391,61 @@ def test_openai_adapter_extracts_json_from_text_wrapper():
     )
 
     assert result["nodes"] == []
+
+
+@pytest.mark.m4
+def test_openai_compatible_adapter_retries_without_provider_hint_in_auto_mode():
+    class FakeCompletions:
+        def __init__(self):
+            self.calls = []
+
+        def create(self, **kwargs):
+            self.calls.append(kwargs)
+            if len(self.calls) == 1:
+                raise RuntimeError("unsupported parameter: provider.require_parameters")
+            return {"choices": [{"message": {"content": "{\"ok\": true}"}}]}
+
+    completions = FakeCompletions()
+    fake_client = SimpleNamespace(chat=SimpleNamespace(completions=completions))
+    client = OpenAILlmClient(
+        fake_client,
+        provider_name="OpenRouter",
+        extra_body={"provider": {"require_parameters": True}},
+        parameter_mode="auto",
+    )
+
+    result = client.structured_completion(
+        prompt="extract",
+        schema={"type": "object"},
+        model="provider-model",
+        max_tokens=100,
+        temperature=0,
+        purpose="tax_graph_draft",
+    )
+
+    assert result["ok"] is True
+    assert "provider" in completions.calls[0]["extra_body"]
+    assert "provider" not in completions.calls[1].get("extra_body", {})
+
+
+@pytest.mark.m4
+def test_openai_compatible_adapter_reports_clear_structured_output_error():
+    class FakeCompletions:
+        def create(self, **kwargs):
+            raise RuntimeError("response_format json_schema is not supported by this endpoint")
+
+    fake_client = SimpleNamespace(chat=SimpleNamespace(completions=FakeCompletions()))
+    client = OpenAILlmClient(fake_client, provider_name="OpenRouter", parameter_mode="auto")
+
+    with pytest.raises(LlmUnavailable, match="structured-output-capable endpoint|JSON-schema structured outputs"):
+        client.structured_completion(
+            prompt="extract",
+            schema={"type": "object"},
+            model="provider-model",
+            max_tokens=100,
+            temperature=0,
+            purpose="tax_graph_draft",
+        )
 
 
 def _make_project(tmp_path: Path) -> Path:

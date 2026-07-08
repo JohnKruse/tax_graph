@@ -79,10 +79,17 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
   - `.\.venv\Scripts\python.exe -m tax_graph.cli validate 2025` -> graph integrity OK
   - `.\.venv\Scripts\python.exe tools/check_ascii.py` -> ASCII check OK
   - `.\.venv\Scripts\python.exe -m tax_graph.cli acquire 2025 --check` -> citation integrity OK (13 checked, 0 mismatches) against live IRS fetch/render
+- **Worker update (Codex, 2026-07-08): M10 Step 3 implementation slice is now green in the worktree; pending the freeze-policy call only.** The OpenRouter verifier-path defect from M9 is repaired in code: `llm.require_parameters` now accepts `auto|require|omit` (example config defaults to `auto`), the OpenAI-compatible adapter retries once without `provider.require_parameters` when an endpoint rejects that hint, and unsupported structured-output endpoints now raise a clear actionable `JSON-schema structured outputs` error instead of collapsing into opaque unmappables. On the semantic side, `tax_graph/verify/examples.py` now normalizes the shorthand example payloads seen live: top-level `row_key + inputs`, static row-template expected ids without `#row_key`, `given_values`, `proceeds`/`basis`/`ordinary_loss_claimed_on_form_4797`, and `tax_form`/`part`/`line` cues all synthesize proper repeatable-table facts plus runtime expected ids before replay.
+- **Worker verification (Codex, 2026-07-08):**
+  - `.\.venv\Scripts\python.exe -m pytest tests/test_examples_m8.py tests/test_extract_m4.py -q` -> 28 passed
+  - `.\.venv\Scripts\python.exe tools/check_ascii.py` -> ASCII check OK
+  - Live probe: `.\.venv\Scripts\python.exe -m tax_graph.cli verify mine-examples --doc instructions_form_8949_2025 --limit 3 --source yaml` -> `agreed: 1, disagreed: 0, unmappable: 2` (transport no longer blocked; one real agreement)
+  - Live probe: later Schedule D blocks 7-9 mined directly after segmentation -> `example_007`, `example_008`, `example_009` all `agreed` after shorthand normalization, covering both the section-1244 and compact 8949 arithmetic example shapes embedded in `instructions_schedule_d_2025`
 
 ## Open for Architect
 - (none - the M10 live-acquire dilemma is ANSWERED; see "ANSWERED: live-acquire ruling"
   below and the new Step 2b in `plans/PHASE_M10.md`.)
+- **NEW (2026-07-08) - Step 3 freeze-policy question.** The code-side mining repair is done and live probes now agree on real Schedule D instruction examples, but the remaining plan clause is "freezing at least one human-confirmed example." The current `verify mine-examples --confirm` path writes `confirmed: true` / `human_confirmed: true`. Worker should NOT assert that unilaterally. Please confirm whether John wants to personally review one agreed mined payload and then authorize the freeze, or whether the step may be recorded as implementation-complete / awaiting human confirmation while Step 4 proceeds.
 
 ## From Architect
 - **NEW (2026-07-08) - N-version escalation ladder PINNED (John's call; directional,

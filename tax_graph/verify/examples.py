@@ -189,7 +189,7 @@ def replay_irs_examples(
 def _mine_block(block: ExampleBlock, *, client: LlmClient, graph: Graph, model: str) -> MinedExample:
     try:
         response = client.structured_completion(
-            prompt=_example_prompt(block),
+            prompt=_example_prompt(block, graph=graph),
             schema=_example_schema(),
             model=model,
             max_tokens=2000,
@@ -204,8 +204,12 @@ def _mine_block(block: ExampleBlock, *, client: LlmClient, graph: Graph, model: 
             status="unmappable",
             mismatches=(f"example miner unavailable: {exc}",),
         )
-    facts_document = _normalize_facts_document(response.get("facts", {}))
-    expected = dict(response.get("expected", {}) or {})
+    facts_document, expected = _normalize_mined_payload(
+        response.get("facts", {}),
+        response.get("expected", {}),
+        graph=graph,
+        block=block,
+    )
     if not expected:
         return MinedExample(block, facts_document, expected, status="unmappable", mismatches=("no expected values",))
     result = Engine(graph).execute(_facts_from_document(facts_document))
@@ -256,11 +260,187 @@ def _expected_mismatches(expected: Mapping[str, Any], actual_values: Mapping[str
     return mismatches
 
 
+def _normalize_mined_payload(
+    facts: Mapping[str, Any],
+    expected: Mapping[str, Any] | None,
+    *,
+    graph: Graph,
+    block: ExampleBlock,
+) -> tuple[dict[str, Any], dict[str, Any]]:
+    facts_document = _normalize_facts_document(facts)
+    normalized_expected = dict(expected or {})
+    facts_document = _maybe_add_example_table(facts_document, normalized_expected, graph=graph, block=block)
+    normalized_expected = _normalize_expected_runtime_ids(normalized_expected, facts_document, graph=graph)
+    return facts_document, normalized_expected
+
+
 def _normalize_facts_document(facts: Mapping[str, Any]) -> dict[str, Any]:
     normalized = dict(facts)
     normalized.setdefault("facts", [])
     normalized.setdefault("tables", [])
     return normalized
+
+
+def _maybe_add_example_table(
+    facts_document: Mapping[str, Any],
+    expected: Mapping[str, Any],
+    *,
+    graph: Graph,
+    block: ExampleBlock,
+) -> dict[str, Any]:
+    normalized = dict(facts_document)
+    if normalized.get("tables"):
+        return normalized
+    table_id = _infer_example_table_id(normalized, expected, graph=graph)
+    row_key = _infer_example_row_key(normalized, block=block)
+    columns = _infer_example_columns(normalized)
+    if not table_id or not row_key or not columns:
+        return normalized
+    columns.setdefault("g", 0)
+    normalized["tables"] = [
+        {
+            "table_id": table_id,
+            "rows": [{"row_key": row_key, "columns": columns}],
+        }
+    ]
+    return normalized
+
+
+def _infer_example_table_id(
+    facts_document: Mapping[str, Any],
+    expected: Mapping[str, Any],
+    *,
+    graph: Graph,
+) -> str | None:
+    explicit = facts_document.get("table_id")
+    if explicit:
+        return str(explicit)
+    table_counts: dict[str, int] = {}
+    for node_id in expected:
+        base_node_id = str(node_id).partition("#")[0]
+        table_id = graph.nodes.get(base_node_id, {}).get("table_id")
+        if table_id:
+            table_counts[str(table_id)] = table_counts.get(str(table_id), 0) + 1
+    if table_counts:
+        return sorted(table_counts.items(), key=lambda item: (-item[1], item[0]))[0][0]
+    form = _digits_only(facts_document.get("form") or facts_document.get("tax_form"))
+    part = _normalize_part_token(facts_document.get("part"))
+    line = _normalize_line_token(facts_document.get("line"))
+    if form and part and line:
+        candidate = f"form_{form}_{graph.year}_part_{part}_line_{line}"
+        if candidate in graph.tables:
+            return candidate
+    return None
+
+
+def _infer_example_row_key(facts_document: Mapping[str, Any], *, block: ExampleBlock) -> str:
+    if facts_document.get("row_key"):
+        return _slug_token(facts_document["row_key"])
+    if facts_document.get("scenario"):
+        return _slug_token(f"{block.example_id}_{facts_document['scenario']}")
+    if facts_document.get("example_id"):
+        return _slug_token(facts_document["example_id"])
+    return _slug_token(block.example_id)
+
+
+def _infer_example_columns(facts_document: Mapping[str, Any]) -> dict[str, Any]:
+    columns: dict[str, Any] = {}
+    for raw_inputs in (facts_document.get("inputs"), facts_document.get("given_values")):
+        if isinstance(raw_inputs, Mapping):
+            for key, value in raw_inputs.items():
+                column_id = _normalize_column_token(key)
+                if column_id:
+                    columns[column_id] = value
+    for key, value in facts_document.items():
+        column_id = _normalize_column_token(key)
+        if column_id and column_id not in columns:
+            columns[column_id] = value
+    return columns
+
+
+def _normalize_expected_runtime_ids(
+    expected: Mapping[str, Any],
+    facts_document: Mapping[str, Any],
+    *,
+    graph: Graph,
+) -> dict[str, Any]:
+    row_keys_by_table = _table_row_keys(facts_document)
+    normalized: dict[str, Any] = {}
+    for node_id, value in expected.items():
+        key = str(node_id)
+        if "#" in key:
+            normalized[key] = value
+            continue
+        node = graph.nodes.get(key, {})
+        table_id = node.get("table_id")
+        if node.get("role") == "row_template" and table_id:
+            row_keys = row_keys_by_table.get(str(table_id), [])
+            if len(row_keys) == 1:
+                key = f"{key}#{row_keys[0]}"
+        normalized[key] = value
+    return normalized
+
+
+def _table_row_keys(facts_document: Mapping[str, Any]) -> dict[str, list[str]]:
+    row_keys_by_table: dict[str, list[str]] = {}
+    for table in facts_document.get("tables", []) or []:
+        table_id = table.get("table_id")
+        if not table_id:
+            continue
+        row_keys_by_table[str(table_id)] = [
+            str(row.get("row_key"))
+            for row in table.get("rows", []) or []
+            if row.get("row_key") is not None
+        ]
+    return row_keys_by_table
+
+
+def _normalize_column_token(value: Any) -> str | None:
+    if value is None:
+        return None
+    token = str(value).strip().lower()
+    if token.startswith("column_"):
+        token = token[7:]
+    aliases = {
+        "proceeds": "d",
+        "basis": "e",
+        "cost_or_other_basis": "e",
+        "adjustment": "g",
+        "adjustment_amount": "g",
+        "ordinary_loss_claimed_on_form_4797": "g",
+    }
+    token = aliases.get(token, token)
+    if token in {"d", "e", "g"}:
+        return token
+    return None
+
+
+def _normalize_part_token(value: Any) -> str | None:
+    if value is None:
+        return None
+    token = re.sub(r"[^a-z0-9]", "", str(value).strip().lower())
+    if token in {"1", "i", "parti"}:
+        return "i"
+    if token in {"2", "ii", "partii"}:
+        return "ii"
+    return None
+
+
+def _normalize_line_token(value: Any) -> str | None:
+    if value is None:
+        return None
+    token = str(value).strip().lower()
+    match = re.search(r"[0-9]+[a-z]?", token)
+    return match.group(0) if match else None
+
+
+def _digits_only(value: Any) -> str:
+    return re.sub(r"[^0-9]", "", str(value or ""))
+
+
+def _slug_token(value: Any) -> str:
+    text = re.sub(r"[^a-z0-9]+", "_", str(value).strip().lower())
+    return text.strip("_") or "example"
 
 
 def _facts_from_document(facts_document: Mapping[str, Any]) -> dict[str, Any]:
@@ -275,19 +455,25 @@ def _facts_from_document(facts_document: Mapping[str, Any]) -> dict[str, Any]:
 def _example_model(settings: Mapping[str, Any]) -> str:
     config = dict(settings)
     model = (
-        get_config_value(config, "llm.micro_model")
-        or get_config_value(config, "llm.nversion_model")
+        get_config_value(config, "llm.example_model")
+        or get_config_value(config, "llm.micro_model")
         or get_config_value(config, "llm.model")
+        or get_config_value(config, "llm.nversion_model")
     )
     return str(model or "configured-llm")
 
 
-def _example_prompt(block: ExampleBlock) -> str:
+def _example_prompt(block: ExampleBlock, *, graph: Graph) -> str:
+    candidate_nodes = "\n".join(f"- {node_id}" for node_id in sorted(graph.nodes))
     return "\n".join(
         [
             "Extract this IRS worked example into Tax Graph facts and expected node values.",
             "Return schema fields: facts, expected, notes.",
+            "Only use expected keys that are real Tax Graph node ids or runtime table-instance ids of the form <node_id>#<row_key>.",
+            "If the example is outside the currently modeled graph scope, leave expected empty and explain why in notes.",
             "Use table row_key values that are stable lowercase ids.",
+            "Current in-scope static node ids:",
+            candidate_nodes,
             "",
             block.text,
         ]

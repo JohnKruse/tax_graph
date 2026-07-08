@@ -56,6 +56,72 @@ class FailingExampleClient:
         raise RuntimeError("provider down")
 
 
+class UnsupportedStructuredOutputClient:
+    def structured_completion(self, *, prompt, schema, model, max_tokens, temperature, purpose):
+        raise RuntimeError("OpenRouter endpoint does not support JSON-schema structured outputs; choose a structured-output-capable endpoint or adjust llm.require_parameters")
+
+
+class RuntimeRowShorthandClient:
+    def structured_completion(self, *, prompt, schema, model, max_tokens, temperature, purpose):
+        return {
+            "facts": {
+                "filing_status": "single",
+                "row_key": "example_1_gain",
+                "inputs": {"column_d": 6000, "column_e": 2000},
+            },
+            "expected": {
+                "form_8949_2025_part_ii_line_1_column_d#example_1_gain": 6000,
+                "form_8949_2025_part_ii_line_1_column_e#example_1_gain": 2000,
+                "form_8949_2025_part_ii_line_1_column_d_minus_e#example_1_gain": 4000,
+                "form_8949_2025_part_ii_line_1_column_h#example_1_gain": 4000,
+                "form_1040_2025_line_7_capital_gain_loss": 4000,
+            },
+        }
+
+
+class StaticRowTemplateIdClient:
+    def structured_completion(self, *, prompt, schema, model, max_tokens, temperature, purpose):
+        return {
+            "facts": {
+                "filing_status": "single",
+                "form": "8949",
+                "part": "II",
+                "line": "1",
+                "scenario": "gain",
+                "column_d": 6000,
+                "column_e": 2000,
+            },
+            "expected": {
+                "form_8949_2025_part_ii_line_1_column_d_minus_e": 4000,
+                "form_8949_2025_part_ii_line_1_column_h": 4000,
+                "form_1040_2025_line_7_capital_gain_loss": 4000,
+            },
+        }
+
+
+class ScheduleDShorthandClient:
+    def structured_completion(self, *, prompt, schema, model, max_tokens, temperature, purpose):
+        return {
+            "facts": {
+                "filing_status": "single",
+                "tax_form": "Form 8949",
+                "part": "Part II (long-term)",
+                "line": "line 1",
+                "example_id": "section_1244",
+                "proceeds": 1000,
+                "basis": 60000,
+                "ordinary_loss_claimed_on_form_4797": 50000,
+            },
+            "expected": {
+                "form_8949_2025_part_ii_line_1_column_d": 1000,
+                "form_8949_2025_part_ii_line_1_column_e": 60000,
+                "form_8949_2025_part_ii_line_1_column_g": 50000,
+                "form_8949_2025_part_ii_line_1_column_d_minus_e": -59000,
+                "form_8949_2025_part_ii_line_1_column_h": -9000,
+            },
+        }
+
+
 @pytest.mark.m8
 def test_segment_example_blocks_finds_markdown_examples():
     text = "\n".join(
@@ -117,6 +183,85 @@ def test_mine_examples_records_provider_failure_as_unmappable(tmp_path):
     assert report.agreed == 0
     assert report.unmappable == 1
     assert "example miner unavailable" in report.examples[0].mismatches[0]
+
+
+@pytest.mark.m8
+def test_mine_examples_records_actionable_structured_output_error(tmp_path):
+    root = _make_project(tmp_path)
+
+    report = mine_examples(
+        document_id="instructions_form_8949_2025",
+        year="2025",
+        root=root,
+        client=UnsupportedStructuredOutputClient(),
+        config={"llm": {"provider": "openrouter", "require_parameters": "auto"}},
+        limit=1,
+        source="yaml",
+    )
+
+    assert report.unmappable == 1
+    assert "structured-output-capable endpoint" in report.examples[0].mismatches[0]
+
+
+@pytest.mark.m8
+def test_mine_examples_normalizes_runtime_row_shorthand(tmp_path):
+    root = _make_project(tmp_path)
+
+    report = mine_examples(
+        document_id="instructions_form_8949_2025",
+        year="2025",
+        root=root,
+        client=RuntimeRowShorthandClient(),
+        config={"llm": {"model": "mock-model"}},
+        limit=1,
+        source="yaml",
+    )
+
+    example = report.examples[0]
+    assert report.agreed == 1, example.mismatches
+    assert example.facts_document["tables"][0]["table_id"] == "form_8949_2025_part_ii_line_1"
+    assert example.facts_document["tables"][0]["rows"][0]["row_key"] == "example_1_gain"
+    assert example.facts_document["tables"][0]["rows"][0]["columns"] == {"d": 6000, "e": 2000, "g": 0}
+
+
+@pytest.mark.m8
+def test_mine_examples_rewrites_static_row_template_expected_ids(tmp_path):
+    root = _make_project(tmp_path)
+
+    report = mine_examples(
+        document_id="instructions_form_8949_2025",
+        year="2025",
+        root=root,
+        client=StaticRowTemplateIdClient(),
+        config={"llm": {"model": "mock-model"}},
+        limit=1,
+        source="yaml",
+    )
+
+    example = report.examples[0]
+    assert report.agreed == 1, example.mismatches
+    assert "form_8949_2025_part_ii_line_1_column_h#example_001_gain" in example.expected
+    assert "form_8949_2025_part_ii_line_1_column_h" not in example.expected
+
+
+@pytest.mark.m8
+def test_mine_examples_maps_schedule_d_shorthand_aliases_into_table_rows(tmp_path):
+    root = _make_project(tmp_path)
+
+    report = mine_examples(
+        document_id="instructions_form_8949_2025",
+        year="2025",
+        root=root,
+        client=ScheduleDShorthandClient(),
+        config={"llm": {"model": "mock-model"}},
+        limit=1,
+        source="yaml",
+    )
+
+    example = report.examples[0]
+    assert report.agreed == 1, example.mismatches
+    assert example.facts_document["tables"][0]["rows"][0]["columns"] == {"d": 1000, "e": 60000, "g": 50000}
+    assert "form_8949_2025_part_ii_line_1_column_h#section_1244" in example.expected
 
 
 @pytest.mark.m8
