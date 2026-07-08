@@ -83,10 +83,14 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
   Hard conditions before 2-of-3 may auto-accept: (1) provenance records the 2-1 split and
   metrics count it - a majority-resolved object is NOT displayed as clean agreement and
   sits a trust notch below 2-0; (2) drill scenarios prove the escalation path routes
-  seeded defects correctly; (3) a calibration slice of majority-resolved cases still goes
-  to human so the tiebreaker's escape rate is MEASURED (M8 precedent: unverified model
-  judgment never earns the auto-accept path); (4) decisions always get human eyes,
-  ladder or no ladder. Implementation home when triggered: the existing
+  seeded defects correctly; (3) **every 2-1 resolution is flagged to the human review
+  program as a NON-BLOCKING attention item** (John's refinement, 2026-07-08): the
+  pipeline proceeds on the majority, but the disagreement queues in the review workbench
+  AND surfaces in the promotion-gate context ("this object was 2-1"). Disagreements are
+  rare enough that reviewing all of them beats sampling - human verdicts on these give a
+  COMPLETE tiebreaker escape-rate measurement (calibration sampling still applies to
+  clean 2-0 agreements; M8 precedent: unverified model judgment never earns the
+  auto-accept path); (4) decisions always get human eyes, ladder or no ladder. Implementation home when triggered: the existing
   `tax_graph/verify/nversion.py` machinery (escalation rule + config knob), not a new
   arbiter module. Current data (1 disagreement in M8, 0 in M9) does not justify building
   yet; revisit when M10 Step 4 metrics land.

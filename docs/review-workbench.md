@@ -89,7 +89,12 @@ trustworthy, and keeps promotion mechanics where they already live.
    form, spatially, on the form itself.
 2. N-version adjudication: side-by-side semantic-core diff anchored to the disputed
    region of the page (the pending Part I/II line-2 totals disagreement is the live
-   test case).
+   test case). Two intake severities, per the pinned escalation ladder (AGENT_HANDOFF,
+   2026-07-08): BLOCKING items where all families disagreed (no majority - the human
+   IS the resolution, all answers shown), and NON-BLOCKING attention flags for 2-1
+   majority resolutions (pipeline already proceeded on the majority; the human verdict
+   confirms or overrides, and the verdicts double as a complete tiebreaker
+   escape-rate measurement).
 3. Mined-example confirmation: show the instruction "Example." paragraph in place,
    the facts/expected extracted from it, and the engine result.
 4. (Later) Coverage walk: page heatmap of modeled vs frontier vs unclaimed regions.
