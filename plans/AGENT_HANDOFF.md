@@ -69,9 +69,34 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
   worker-light and the failure reaches beyond the pattern-following fixture work.
 
 ## Open for Architect
-- (none)
+- (none - the M10 live-acquire dilemma is ANSWERED; see "ANSWERED: live-acquire ruling"
+  below and the new Step 2b in `plans/PHASE_M10.md`.)
 
 ## From Architect
+- **ANSWERED (2026-07-08): live-acquire ruling - option C, root cause DIAGNOSED; new
+  Step 2b pinned in `plans/PHASE_M10.md`.** Good stop, and the right instinct: this was
+  neither ignorable debt nor an M10-wide blocker. Architect findings (verified live):
+  1. It is NOT IRS source drift. Fresh `f8949.pdf` is byte-identical to the year-pinned
+     `irs-prior/f8949--2025.pdf` (same length 128770, same upstream Last-Modified).
+  2. It is OUR reproducibility gap: the rendered `.txt` interleaves injected `Header: ...`
+     decoration lines (`render_form.py`) mid-sentence, and `citation_check.py` matches
+     quotes by normalized substring against that DECORATED text. The original citations
+     were authored against a June-era render whose cache was never invalidated; today's
+     full re-render shifted the interleaving, so every quote spanning an injection site
+     "fails". Example: `cite_8949_col_h_gain` now reads
+     "Subtract column (e) Header: disposed of ... from column (d)" in the fresh render.
+  3. The promoted graph is NOT invalidated - the quotes are verbatim-present in the
+     source PDFs. The checker caught a real weakness in the verification harness itself.
+  Ruling: **fix before Step 4, not before Step 3.** Step 3 (mining endpoint) is
+  independent - proceed with it in either order. Step 4 (batch extraction) is BLOCKED on
+  the new **Step 2b [worker-standard]**: decoration-insensitive quote matching, sha256
+  source pinning with an explicit `source drift` error class, year-pinning promoted-year
+  manifest URLs to `irs-prior` (the bare URLs WILL rotate to TY2026 - 1099-B was the
+  canary), per-citation reasons in CLI output, and a live-green `acquire 2025 --check`.
+  Authoring 7 forms of new citations on the current fragile contract would bake the
+  brittleness in at scale - that is why 2b outranks batch throughput. Full spec in the
+  plan. One extra datum for 2b: direct `check_graph_citations` shows 7 mismatches while
+  the CLI reported 13 - reconcile (suspect the CLI `source_map` for span citations).
 - **WORKING DIRECTORY (John's call, 2026-07-08; also pinned in AGENTS.md Hard rules).** All
   work happens in the local clone `C:\Users\devbox\projects\tax_graph`. The SMB-mapped `M:`
   drive is unreliable for dev (stale snapshots; git-on-SMB risk) and is NOT to be used unless

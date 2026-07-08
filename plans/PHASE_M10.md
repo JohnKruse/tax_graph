@@ -91,6 +91,35 @@ Filer-weighted coverage currently stands at 42.4%; this set is where the power-l
   any code, test-logic, or net edits beyond pattern-following fixtures. Test: input
   loader resolves every new bundle; outline builder produces a sane tree per form.
 
+- [ ] **Step 2b [worker-standard] - Citation-integrity hardening + source pinning (Architect
+  ruling, 2026-07-08; MUST land before Step 4).** Root cause of the Step 2 live-acquire
+  failure, diagnosed by the Architect: the IRS sources did NOT drift (fresh `f8949.pdf` is
+  byte-identical to the year-pinned `irs-prior/f8949--2025.pdf`); the failure is OURS. The
+  rendered `.txt` is DECORATED with injected `Header: ...` lines
+  (`tax_graph/acquire/render_form.py`), and the checker
+  (`tax_graph/acquire/citation_check.py`) does substring-over-normalized-whitespace against
+  that decorated text - so any shift in where headers interleave (library version, re-render)
+  breaks every quote spanning an injection site. The promoted graph is NOT invalidated; the
+  verification harness is coupled to decoration placement. Fix three things:
+  1. **Decoration-insensitive matching:** the checker verifies quotes against UNDECORATED
+     source text (strip renderer annotation lines before normalize+match). The citation
+     contract is "verbatim from the source document", so verification must not depend on
+     our own annotations' placement.
+  2. **Real drift detection:** pin the sha256 of each promoted document's fetched PDF
+     (manifest field or a lockfile beside it, worker pins which); `acquire --check` compares
+     and reports a mismatch as an EXPLICIT `source drift` error, distinct from
+     `quote not found`. Record today's hashes for all promoted docs (verified same as
+     promotion era). CLI check output must show per-citation reasons.
+  3. **Year-pin promoted-year URLs:** switch manifest URLs for year-2025 documents to the
+     stable `irs-prior/<name>--2025.pdf` variants where they exist (the bare
+     `pub/irs-pdf` URLs WILL rotate to TY2026 later this year - `f1099b` already did).
+  Exit: `acquire 2025 --check` fully green live; offline tests prove (a) a doctored
+  decorated text with shifted header interleaving still matches, (b) a doctored PDF hash
+  mismatch raises the explicit drift error, (c) a genuinely absent quote still fails.
+  Note: also reconcile the count discrepancy (CLI reported 13 failures; direct
+  `check_graph_citations` shows 7) - likely the CLI's `source_map` for span citations;
+  make the CLI report per-citation reasons so this class of confusion cannot recur. Docs.
+
 - [ ] **Step 3 [worker-standard] - Repair example mining (known M9 defect).** M9 Step 2
   reported 10/10 mined examples unmappable because the OpenRouter verifier endpoint
   rejected the structured-output parameters. Fix the verifier client/config (stay
