@@ -1,0 +1,116 @@
+- node_id: schedule_3_2025_root_line_3
+  document_id: schedule_3_2025
+  label: 'Line 3: Line 3'
+  node_type: form_line
+  value_type: currency
+  citation_refs:
+  - cite_span_schedule_3_2025_0001
+- node_id: schedule_3_2025_part_i_line_1
+  document_id: schedule_3_2025
+  label: 'Line 1: Foreign tax credit. Attach Form 1116 if required 1'
+  node_type: form_line
+  value_type: currency
+  citation_refs:
+  - cite_span_schedule_3_2025_0004
+- node_id: schedule_3_2025_part_i_line_2
+  document_id: schedule_3_2025
+  label: 'Line 2: Credit for child and dependent care expenses from Form 2441, line
+    11. Attach Form 2441 2'
+  node_type: form_line
+  value_type: currency
+  citation_refs:
+  - cite_span_schedule_3_2025_0005
+- node_id: schedule_3_2025_part_i_line_4
+  document_id: schedule_3_2025
+  label: 'Line 4: Retirement savings contributions credit. Attach Form 8880 4'
+  node_type: form_line
+  value_type: currency
+  citation_refs:
+  - cite_span_schedule_3_2025_0007
+- node_id: schedule_3_2025_part_i_line_5a
+  document_id: schedule_3_2025
+  label: 'Line 5a: Residential clean energy credit from Form 5695, line 15 5a'
+  node_type: form_line
+  value_type: currency
+  citation_refs:
+  - cite_span_schedule_3_2025_0008
+- node_id: schedule_3_2025_part_i_line_6
+  document_id: schedule_3_2025
+  label: 'Line 6: Other nonrefundable credits:'
+  node_type: form_line
+  value_type: currency
+  citation_refs:
+  - cite_span_schedule_3_2025_0010
+- node_id: schedule_3_2025_part_i_line_6z
+  document_id: schedule_3_2025
+  label: 'Line 6z: Line 6z'
+  node_type: form_line
+  value_type: currency
+  citation_refs:
+  - cite_span_schedule_3_2025_0025
+- node_id: schedule_3_2025_part_i_line_7
+  document_id: schedule_3_2025
+  label: 'Line 7: Total other nonrefundable credits. Add lines 6a through 6z 7'
+  node_type: form_line
+  value_type: currency
+  citation_refs:
+  - cite_span_schedule_3_2025_0026
+- node_id: schedule_3_2025_part_i_line_8
+  document_id: schedule_3_2025
+  label: 'Line 8: Add lines 1 through 4, 5a, 5b, and 7. Enter here and on Form 1040,
+    1040-SR, or 1040-NR, line 20 8'
+  node_type: form_line
+  value_type: currency
+  citation_refs:
+  - cite_span_schedule_3_2025_0027
+- node_id: schedule_3_2025_part_ii_line_9
+  document_id: schedule_3_2025
+  label: 'Line 9: Net premium tax credit. Attach Form 8962 9'
+  node_type: form_line
+  value_type: currency
+  citation_refs:
+  - cite_span_schedule_3_2025_0029
+- node_id: schedule_3_2025_part_ii_line_10
+  document_id: schedule_3_2025
+  label: 'Line 10: Amount paid with request for extension to file (see instructions)
+    10'
+  node_type: form_line
+  value_type: currency
+  citation_refs:
+  - cite_span_schedule_3_2025_0030
+- node_id: schedule_3_2025_part_ii_line_12
+  document_id: schedule_3_2025
+  label: 'Line 12: Credit for federal tax on fuels. Attach Form 4136 12'
+  node_type: form_line
+  value_type: currency
+  citation_refs:
+  - cite_span_schedule_3_2025_0032
+- node_id: schedule_3_2025_part_ii_line_13
+  document_id: schedule_3_2025
+  label: 'Line 13: Other payments or refundable credits:'
+  node_type: form_line
+  value_type: currency
+  citation_refs:
+  - cite_span_schedule_3_2025_0033
+- node_id: schedule_3_2025_part_ii_line_13b
+  document_id: schedule_3_2025
+  label: 'Line 13b: Line 13b'
+  node_type: form_line
+  value_type: currency
+  citation_refs:
+  - cite_span_schedule_3_2025_0036
+- node_id: schedule_3_2025_part_ii_line_13z
+  document_id: schedule_3_2025
+  label: 'Line 13z: Line 13z'
+  node_type: form_line
+  value_type: currency
+  citation_refs:
+  - cite_span_schedule_3_2025_0040
+- node_id: schedule_3_2025_part_ii_line_14
+  document_id: schedule_3_2025
+  label: 'Line 14: Total other payments or refundable credits. Add lines 13a through
+    13z 14'
+  node_type: form_line
+  value_type: currency
+  citation_refs:
+  - cite_span_schedule_3_2025_0041

@@ -19,6 +19,25 @@ entries:
   - form_8949_2025_part_i_line_1_column_d_minus_e#example_008
   - form_8949_2025_part_i_line_1_column_e#example_008
   - form_8949_2025_part_i_line_1_column_h#example_008
+- queue_id: promotion_review_form_6251_2025
+  kind: promotion_review
+  status: pending
+  priority: medium
+  document_id: form_6251_2025
+  created_date: '2026-07-08'
+  created_by: tax_graph.promote
+  summary: Review deferred machine-gated promotion for form_6251_2025
+  artifact_dir: graph/2025/_drafts/form_6251_2025
+  artifact_paths:
+  - graph/2025/documents/form-6251.yaml
+  - graph/2025/nodes/form-6251.yaml
+  - graph/2025/citations/form-6251.yaml
+  machine_witnesses:
+  - validate green
+  - pytest green
+  - ascii green
+  - nversion agreed
+  - example mining unmappable only
 - queue_id: promotion_review_schedule_1_2025
   kind: promotion_review
   status: pending
@@ -57,3 +76,41 @@ entries:
   - ascii green
   - nversion agreed
   - example mining unmappable only
+- queue_id: promotion_review_schedule_3_2025
+  kind: promotion_review
+  status: pending
+  priority: medium
+  document_id: schedule_3_2025
+  created_date: '2026-07-08'
+  created_by: tax_graph.promote
+  summary: Review deferred machine-gated promotion for schedule_3_2025
+  artifact_dir: graph/2025/_drafts/schedule_3_2025
+  artifact_paths:
+  - graph/2025/documents/schedule-3.yaml
+  - graph/2025/nodes/schedule-3.yaml
+  - graph/2025/citations/schedule-3.yaml
+  machine_witnesses:
+  - validate green
+  - pytest green
+  - ascii green
+  - nversion agreed
+  - example mining unmappable only
+- queue_id: promotion_review_schedule_b_2025
+  kind: promotion_review
+  status: pending
+  priority: medium
+  document_id: schedule_b_2025
+  created_date: '2026-07-08'
+  created_by: tax_graph.promote
+  summary: Review deferred machine-gated promotion for schedule_b_2025
+  artifact_dir: graph/2025/_drafts/schedule_b_2025
+  artifact_paths:
+  - graph/2025/documents/schedule-b.yaml
+  - graph/2025/nodes/schedule-b.yaml
+  - graph/2025/citations/schedule-b.yaml
+  machine_witnesses:
+  - validate green
+  - pytest green
+  - ascii green
+  - repeatable-table fixture green
+  - example mining not configured

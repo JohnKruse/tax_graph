@@ -165,6 +165,21 @@ with the first promotion green in the worktree and pending commit.
   - `.\.venv\Scripts\python.exe -m tax_graph.cli frontier build --year 2025 --root C:\Users\devbox\projects\tax_graph` -> declared 3 / modeled 12 / unmodeled 2
   - `.\.venv\Scripts\python.exe -m tax_graph.cli frontier --year 2025 --root C:\Users\devbox\projects\tax_graph` -> coverage `57.7%` full / `64.1%` in-scope
   - `.\.venv\Scripts\python.exe -m tax_graph.cli verify replay-examples --year 2025 --source yaml --root C:\Users\devbox\projects\tax_graph` -> examples 2, result OK
+- **Worker promotion slice (Codex, 2026-07-08): `schedule_2_2025`, `schedule_3_2025`,
+  `schedule_b_2025`, and `form_6251_2025` are now promoted locally and machine-gated
+  green in the worktree.** Coverage climbed monotonically at each promotion:
+  `schedule_2_2025` -> `70.5%` full / `78.3%` in-scope; `schedule_3_2025` ->
+  `81.1%` full / `90.0%` in-scope; `schedule_b_2025` -> `90.0%` full / `99.9%`
+  in-scope; `form_6251_2025` -> `90.1%` full / `100.0%` in-scope. Deferred-review queue
+  entries are appended for each promoted form.
+- **Worker note:** the remaining declared frontier items are now entirely the real deferred
+  branch plus the two Form 6251 -> Schedule D flow declarations. `form_6251_2025` itself
+  is promoted, but LINK still leaves those two flows declared because the draft
+  outbound-flow records name `form_6251_2025_outbound_schedule_d_column_h` as the source
+  node and no promoted node with that id exists. This is now the concrete Step 5 cleanup
+  seam: either synthesize/preserve that source node during promotion or teach LINK a
+  deterministic fallback for this flow shape. Current state is honest and valid - the
+  declarations remain declared, not silently realized.
 
 ## Open for Architect
 - (none - the Step 3 freeze-policy question is ANSWERED by the DEFERRED-REVIEW policy

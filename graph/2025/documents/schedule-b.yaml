@@ -1,0 +1,13 @@
+document_id: schedule_b_2025
+title: Schedule B (Form 1040) - Interest and Ordinary Dividends
+tax_year: 2025
+document_type: schedule
+source_url: https://www.irs.gov/pub/irs-prior/f1040sb--2025.pdf
+status: partial
+not_modeled_fields:
+- field_id: schedule_b_2025_7_not_modeled
+  line_anchor: '7'
+  reason: line remains unmodeled in the M10 Step 4 batch draft
+- field_id: schedule_b_2025_8_not_modeled
+  line_anchor: '8'
+  reason: line remains unmodeled in the M10 Step 4 batch draft

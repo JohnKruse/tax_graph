@@ -187,6 +187,127 @@ frontiers:
   citation_ref: cite_schedule_d_line21_loss_limit
   status: modeled
   weight: 24000000
+- frontier_id: ref_cite_span_form_6251_2025_0003_to_form_1040_2025
+  kind: form_reference
+  source:
+    document_id: form_6251_2025
+    citation_id: cite_span_form_6251_2025_0003
+  target:
+    document_id: form_1040_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040--2025.pdf
+  citation_ref: cite_span_form_6251_2025_0003
+  status: modeled
+  weight: 163100000
+- frontier_id: ref_cite_span_form_6251_2025_0003_to_schedule_1_2025
+  kind: form_reference
+  source:
+    document_id: form_6251_2025
+    citation_id: cite_span_form_6251_2025_0003
+  target:
+    document_id: schedule_1_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040s1--2025.pdf
+  citation_ref: cite_span_form_6251_2025_0003
+  status: modeled
+  weight: 74000000
+- frontier_id: ref_cite_span_form_6251_2025_0005_to_form_1040_2025
+  kind: form_reference
+  source:
+    document_id: form_6251_2025
+    citation_id: cite_span_form_6251_2025_0005
+  target:
+    document_id: form_1040_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040--2025.pdf
+  citation_ref: cite_span_form_6251_2025_0005
+  status: modeled
+  weight: 163100000
+- frontier_id: ref_cite_span_form_6251_2025_0007_to_form_1040_2025
+  kind: form_reference
+  source:
+    document_id: form_6251_2025
+    citation_id: cite_span_form_6251_2025_0007
+  target:
+    document_id: form_1040_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040--2025.pdf
+  citation_ref: cite_span_form_6251_2025_0007
+  status: modeled
+  weight: 163100000
+- frontier_id: ref_cite_span_form_6251_2025_0011_to_form_1040_2025
+  kind: form_reference
+  source:
+    document_id: form_6251_2025
+    citation_id: cite_span_form_6251_2025_0011
+  target:
+    document_id: form_1040_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040--2025.pdf
+  citation_ref: cite_span_form_6251_2025_0011
+  status: modeled
+  weight: 163100000
+- frontier_id: ref_cite_span_form_6251_2025_0011_to_schedule_1_2025
+  kind: form_reference
+  source:
+    document_id: form_6251_2025
+    citation_id: cite_span_form_6251_2025_0011
+  target:
+    document_id: schedule_1_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040s1--2025.pdf
+  citation_ref: cite_span_form_6251_2025_0011
+  status: modeled
+  weight: 74000000
+- frontier_id: ref_cite_span_form_6251_2025_0034_to_form_1040_2025
+  kind: form_reference
+  source:
+    document_id: form_6251_2025
+    citation_id: cite_span_form_6251_2025_0034
+  target:
+    document_id: form_1040_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040--2025.pdf
+  citation_ref: cite_span_form_6251_2025_0034
+  status: modeled
+  weight: 163100000
+- frontier_id: ref_cite_span_form_6251_2025_0034_to_schedule_d_2025
+  kind: form_reference
+  source:
+    document_id: form_6251_2025
+    citation_id: cite_span_form_6251_2025_0034
+  target:
+    document_id: schedule_d_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040sd--2025.pdf
+  citation_ref: cite_span_form_6251_2025_0034
+  status: modeled
+  weight: 24000000
+- frontier_id: ref_cite_span_form_6251_2025_0038_to_form_1040_2025
+  kind: form_reference
+  source:
+    document_id: form_6251_2025
+    citation_id: cite_span_form_6251_2025_0038
+  target:
+    document_id: form_1040_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040--2025.pdf
+  citation_ref: cite_span_form_6251_2025_0038
+  status: modeled
+  weight: 163100000
+- frontier_id: ref_cite_span_form_6251_2025_0038_to_schedule_2_2025
+  kind: form_reference
+  source:
+    document_id: form_6251_2025
+    citation_id: cite_span_form_6251_2025_0038
+  target:
+    document_id: schedule_2_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040s2--2025.pdf
+  citation_ref: cite_span_form_6251_2025_0038
+  status: modeled
+  weight: 62000000
+- frontier_id: ref_cite_span_form_6251_2025_0048_to_schedule_d_2025
+  kind: form_reference
+  source:
+    document_id: form_6251_2025
+    citation_id: cite_span_form_6251_2025_0048
+  target:
+    document_id: schedule_d_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040sd--2025.pdf
+  citation_ref: cite_span_form_6251_2025_0048
+  status: modeled
+  weight: 24000000
 - frontier_id: ref_cite_span_schedule_1_2025_0010_to_schedule_c_2025
   kind: form_reference
   source:
@@ -240,5 +361,49 @@ frontiers:
     document_id: form_1040_2025
   target_url: https://www.irs.gov/pub/irs-prior/f1040--2025.pdf
   citation_ref: cite_span_schedule_2_2025_0064
+  status: modeled
+  weight: 163100000
+- frontier_id: ref_cite_span_schedule_3_2025_0004_to_form_1116_2025
+  kind: form_reference
+  source:
+    document_id: schedule_3_2025
+    citation_id: cite_span_schedule_3_2025_0004
+  target:
+    document_id: form_1116_2025
+  target_url: https://www.irs.gov/forms-pubs
+  citation_ref: cite_span_schedule_3_2025_0004
+  status: unmodeled
+  weight: 1000000
+- frontier_id: ref_cite_span_schedule_3_2025_0027_to_form_1040_2025
+  kind: form_reference
+  source:
+    document_id: schedule_3_2025
+    citation_id: cite_span_schedule_3_2025_0027
+  target:
+    document_id: form_1040_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040--2025.pdf
+  citation_ref: cite_span_schedule_3_2025_0027
+  status: modeled
+  weight: 163100000
+- frontier_id: ref_cite_span_schedule_b_2025_0009_to_form_1040_2025
+  kind: form_reference
+  source:
+    document_id: schedule_b_2025
+    citation_id: cite_span_schedule_b_2025_0009
+  target:
+    document_id: form_1040_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040--2025.pdf
+  citation_ref: cite_span_schedule_b_2025_0009
+  status: modeled
+  weight: 163100000
+- frontier_id: ref_cite_span_schedule_b_2025_0015_to_form_1040_2025
+  kind: form_reference
+  source:
+    document_id: schedule_b_2025
+    citation_id: cite_span_schedule_b_2025_0015
+  target:
+    document_id: form_1040_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040--2025.pdf
+  citation_ref: cite_span_schedule_b_2025_0015
   status: modeled
   weight: 163100000

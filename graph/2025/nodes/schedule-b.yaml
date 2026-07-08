@@ -1,0 +1,45 @@
+- node_id: schedule_b_2025_root_line_1
+  document_id: schedule_b_2025
+  label: 'Line 1: Amount'
+  node_type: form_line
+  value_type: currency
+  citation_refs:
+  - cite_span_schedule_b_2025_0002
+- node_id: schedule_b_2025_root_line_2
+  document_id: schedule_b_2025
+  label: 'Line 2: Add the amounts on line 1 2'
+  node_type: form_line
+  value_type: currency
+  citation_refs:
+  - cite_span_schedule_b_2025_0006
+- node_id: schedule_b_2025_root_line_3
+  document_id: schedule_b_2025
+  label: 'Line 3: Excludable interest on series EE and I U.S. savings bonds issued
+    after 1989.'
+  node_type: form_line
+  value_type: currency
+  citation_refs:
+  - cite_span_schedule_b_2025_0007
+- node_id: schedule_b_2025_root_line_4
+  document_id: schedule_b_2025
+  label: 'Line 4: Subtract line 3 from line 2. Enter the result here and on Form 1040
+    or 1040-SR, line 2b 4'
+  node_type: form_line
+  value_type: currency
+  citation_refs:
+  - cite_span_schedule_b_2025_0009
+- node_id: schedule_b_2025_root_line_5
+  document_id: schedule_b_2025
+  label: 'Line 5: List name of payer:'
+  node_type: form_line
+  value_type: currency
+  citation_refs:
+  - cite_span_schedule_b_2025_0011
+- node_id: schedule_b_2025_root_line_6
+  document_id: schedule_b_2025
+  label: 'Line 6: Add the amounts on line 5. Enter the total here and on Form 1040
+    or 1040-SR, line 3b 6'
+  node_type: form_line
+  value_type: currency
+  citation_refs:
+  - cite_span_schedule_b_2025_0015
