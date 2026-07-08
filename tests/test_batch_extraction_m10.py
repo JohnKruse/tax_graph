@@ -40,6 +40,70 @@ class ScheduleBFormulaClient:
         }
 
 
+class GenericBatchClient:
+    def __init__(self):
+        self.calls: list[dict[str, str]] = []
+
+    def structured_completion(self, *, prompt, schema, model, max_tokens, temperature, purpose):
+        self.calls.append({"model": model, "purpose": purpose, "prompt": prompt})
+        outline_id_match = re.search(r"outline_id: ([^\n]+)", prompt)
+        columns_match = re.search(r"columns: \[(.*?)\]", prompt)
+        span_ids = re.findall(r"- (span_[a-z0-9_]+):", prompt)
+        span_id = span_ids[0] if span_ids else ""
+        if not outline_id_match or not columns_match:
+            return {"operation_plan": [{"output": "column_a", "operation": "COPY", "inputs": [{"name": "column_a"}], "citation_span_ids": [span_id] if span_id else []}]}
+        outline_id = outline_id_match.group(1)
+        line_anchor = re.search(r"line_([0-9]+[a-z]?)$", outline_id).group(1)
+        previous_line = str(max(int(re.sub(r"[^0-9]", "", line_anchor) or "1") - 1, 1))
+        columns = re.findall(r"'([a-z])'", columns_match.group(1))
+        if "kind: totals" in prompt:
+            return {
+                "operation_plan": [
+                    {
+                        "output": f"line_{line_anchor}_column_{column}_total",
+                        "operation": "SUM",
+                        "inputs": [{"name": f"line_{previous_line}_column_{column}", "role": "addend"}],
+                        "citation_span_ids": [span_id] if span_id else [],
+                    }
+                    for column in columns
+                ]
+            }
+        if {"d", "e", "g", "h"}.issubset(set(columns)):
+            return {
+                "operation_plan": [
+                    {
+                        "output": "column_d_minus_e",
+                        "operation": "SUBTRACT",
+                        "inputs": [
+                            {"name": "column_d", "role": "minuend"},
+                            {"name": "column_e", "role": "subtrahend"},
+                        ],
+                        "citation_span_ids": [span_id] if span_id else [],
+                    },
+                    {
+                        "output": "column_h",
+                        "operation": "SUM",
+                        "inputs": [
+                            {"name": "column_d_minus_e", "role": "addend"},
+                            {"name": "column_g", "role": "addend"},
+                        ],
+                        "citation_span_ids": [span_id] if span_id else [],
+                    },
+                ]
+            }
+        first = columns[0] if columns else "a"
+        return {
+            "operation_plan": [
+                {
+                    "output": f"column_{first}",
+                    "operation": "COPY",
+                    "inputs": [{"name": f"column_{first}"}],
+                    "citation_span_ids": [span_id] if span_id else [],
+                }
+            ]
+        }
+
+
 @pytest.mark.m10
 def test_extract_year_writes_batch_sidecars_and_schedule_b_table_fixture(tmp_path):
     root = _make_batch_project(tmp_path)
@@ -103,7 +167,70 @@ def test_extract_year_writes_batch_sidecars_and_schedule_b_table_fixture(tmp_pat
     assert secondary.calls
 
 
-def _make_batch_project(tmp_path: Path) -> Path:
+@pytest.mark.m10
+def test_extract_year_full_batch_writes_partial_document_records(tmp_path):
+    root = _make_batch_project(tmp_path, manifest_docs=_default_manifest_docs())
+    primary = GenericBatchClient()
+    secondary = GenericBatchClient()
+
+    routed = extract_year(
+        year="2025",
+        root=root,
+        client=primary,
+        secondary_client=secondary,
+        config={
+            "project": {"paths": {"graph_dir": "graph", "raw_store": ".cache/raw"}},
+            "extraction": {
+                "mode": "outline_first",
+                "max_docs_per_run": 20,
+                "example_mining_limit": 10,
+                "require_critic_agreement": False,
+            },
+            "llm": {
+                "model": "family-a/mock",
+                "micro_model": "family-a/mock-micro",
+                "nversion_model": "family-b/mock-micro",
+                "temperature": 0,
+            },
+        },
+    )
+
+    assert [item.output_dir.name for item in routed] == [
+        "schedule_1_2025",
+        "schedule_1a_2025",
+        "schedule_2_2025",
+        "schedule_3_2025",
+        "schedule_a_2025",
+        "schedule_b_2025",
+        "form_6251_2025",
+    ]
+    for document_id in [item.output_dir.name for item in routed]:
+        draft_dir = root / "graph" / "2025" / "_drafts" / document_id
+        metrics = yaml.safe_load((draft_dir / "metrics.yaml").read_text(encoding="utf-8"))
+        nversion = yaml.safe_load((draft_dir / "nversion.yaml").read_text(encoding="utf-8"))
+        example_mining = yaml.safe_load((draft_dir / "example_mining.yaml").read_text(encoding="utf-8"))
+        documents = yaml.safe_load((draft_dir / "documents.yaml").read_text(encoding="utf-8"))
+
+        assert metrics["nversion"]["ran"] is True
+        assert nversion["status"] == "agreed"
+        assert example_mining["ran"] is True
+        assert documents[0]["document_id"] == document_id
+        assert documents[0]["status"] == "partial"
+        assert documents[0]["not_modeled_fields"]
+
+    schedule_1_doc = yaml.safe_load(
+        (root / "graph" / "2025" / "_drafts" / "schedule_1_2025" / "documents.yaml").read_text(encoding="utf-8")
+    )[0]
+    schedule_b_doc = yaml.safe_load(
+        (root / "graph" / "2025" / "_drafts" / "schedule_b_2025" / "documents.yaml").read_text(encoding="utf-8")
+    )[0]
+    assert {item["line_anchor"] for item in schedule_1_doc["not_modeled_fields"]} >= {"1", "8z", "9", "11", "24z", "25"}
+    assert {item["line_anchor"] for item in schedule_b_doc["not_modeled_fields"]} >= {"3", "4", "7", "8", "9", "10"}
+    assert primary.calls
+    assert secondary.calls
+
+
+def _make_batch_project(tmp_path: Path, *, manifest_docs: list[dict[str, str]] | None = None) -> Path:
     root = tmp_path / "project"
     shutil.copytree(ROOT / "config", root / "config")
     shutil.copyfile(
@@ -124,7 +251,8 @@ def _make_batch_project(tmp_path: Path) -> Path:
         yaml.safe_dump(
             {
                 "tax_year": 2025,
-                "documents": [
+                "documents": manifest_docs
+                or [
                     {
                         "document_id": "schedule_b_2025",
                         "kind": "schedule",
@@ -144,3 +272,70 @@ def _make_batch_project(tmp_path: Path) -> Path:
         newline="\n",
     )
     return root
+
+
+def _default_manifest_docs() -> list[dict[str, str]]:
+    return [
+        {
+            "document_id": "schedule_1_2025",
+            "kind": "schedule",
+            "url": "https://www.irs.gov/pub/irs-prior/f1040s1--2025.pdf",
+            "instructions_document_id": "instructions_form_1040_2025",
+        },
+        {
+            "document_id": "schedule_1a_2025",
+            "kind": "schedule",
+            "url": "https://www.irs.gov/pub/irs-prior/f1040s1a--2025.pdf",
+            "instructions_document_id": "instructions_form_1040_2025",
+        },
+        {
+            "document_id": "schedule_2_2025",
+            "kind": "schedule",
+            "url": "https://www.irs.gov/pub/irs-prior/f1040s2--2025.pdf",
+            "instructions_document_id": "instructions_form_1040_2025",
+        },
+        {
+            "document_id": "schedule_3_2025",
+            "kind": "schedule",
+            "url": "https://www.irs.gov/pub/irs-prior/f1040s3--2025.pdf",
+            "instructions_document_id": "instructions_form_1040_2025",
+        },
+        {
+            "document_id": "schedule_a_2025",
+            "kind": "schedule",
+            "url": "https://www.irs.gov/pub/irs-prior/f1040sa--2025.pdf",
+            "instructions_document_id": "instructions_schedule_a_2025",
+        },
+        {
+            "document_id": "schedule_b_2025",
+            "kind": "schedule",
+            "url": "https://www.irs.gov/pub/irs-prior/f1040sb--2025.pdf",
+            "instructions_document_id": "instructions_schedule_b_2025",
+        },
+        {
+            "document_id": "form_6251_2025",
+            "kind": "tax_form",
+            "url": "https://www.irs.gov/pub/irs-prior/f6251--2025.pdf",
+            "instructions_document_id": "instructions_form_6251_2025",
+        },
+        {
+            "document_id": "instructions_form_1040_2025",
+            "kind": "instructions",
+            "url": "https://www.irs.gov/pub/irs-prior/i1040gi--2025.pdf",
+        },
+        {
+            "document_id": "instructions_schedule_a_2025",
+            "kind": "instructions",
+            "url": "https://www.irs.gov/pub/irs-prior/i1040sca--2025.pdf",
+        },
+        {
+            "document_id": "instructions_schedule_b_2025",
+            "kind": "instructions",
+            "url": "https://www.irs.gov/pub/irs-prior/i1040sb--2025.pdf",
+        },
+        {
+            "document_id": "instructions_form_6251_2025",
+            "kind": "instructions",
+            "url": "https://www.irs.gov/pub/irs-prior/i6251--2025.pdf",
+        },
+    ]

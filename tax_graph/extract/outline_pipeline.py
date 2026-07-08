@@ -56,6 +56,7 @@ def generate_outline_first_drafts(
     objects.extend(_schedule_d_band_tables(document, outline.children, model="deterministic-schedule-d-band-detector"))
     objects.extend(_schedule_d_not_modeled_document(document, outline.children, model="deterministic-schedule-d-scope"))
     objects.extend(_line_cue_objects(document, outline.children, spans, model=model))
+    objects.extend(_generic_not_modeled_document(document, outline.children, objects=objects, model=model))
 
     return ExtractionBatch(document_id=document.document_id, year=document.year, objects=_dedupe_objects(objects))
 
@@ -388,12 +389,95 @@ def _schedule_d_not_modeled_document(
     ]
 
 
+def _generic_not_modeled_document(
+    document: SourceDocumentInput,
+    nodes: list[OutlineNode],
+    *,
+    objects: list[DraftObject],
+    model: str,
+) -> list[DraftObject]:
+    if document.document_id.startswith("schedule_d_"):
+        return []
+    anchors = sorted({node.line_anchor for node in _flatten_nodes(nodes) if node.line_anchor}, key=_line_sort_key)
+    anchors.extend(
+        anchor
+        for anchor in sorted(_field_line_anchors(document), key=_line_sort_key)
+        if anchor not in anchors
+    )
+    modeled = {
+        anchor
+        for anchor in anchors
+        if any(_object_mentions_line(obj, anchor) for obj in objects if obj.kind == "nodes")
+    }
+    not_modeled_fields = [
+        {
+            "field_id": f"{document.document_id}_{_slug(anchor)}_not_modeled",
+            "line_anchor": anchor,
+            "reason": "line remains unmodeled in the M10 Step 4 batch draft",
+        }
+        for anchor in anchors
+        if anchor not in modeled
+    ]
+    if not not_modeled_fields and any(obj.kind == "documents" for obj in objects):
+        return []
+    return [
+        DraftObject(
+            "documents",
+            {
+                "document_id": document.document_id,
+                "title": _document_title(document),
+                "tax_year": int(document.year),
+                "document_type": document.kind,
+                "source_url": document.url,
+                "status": "partial",
+                "not_modeled_fields": not_modeled_fields,
+            },
+            "",
+            model,
+            1.0,
+        )
+    ]
+
+
 def _flatten_nodes(nodes: list[OutlineNode]) -> list[OutlineNode]:
     flattened: list[OutlineNode] = []
     for node in nodes:
         flattened.append(node)
         flattened.extend(_flatten_nodes(node.children))
     return flattened
+
+
+def _field_line_anchors(document: SourceDocumentInput) -> set[str]:
+    anchors: set[str] = set()
+    for field in (document.fields or {}).get("fields", []) or []:
+        anchor = str(field.get("line_anchor", "")).strip().lower()
+        if anchor:
+            anchors.add(anchor)
+    return anchors
+
+
+def _object_mentions_line(obj: DraftObject, anchor: str) -> bool:
+    normalized = anchor.lower().replace("-", "_")
+    haystacks = [
+        str(obj.data.get("node_id", "")).lower(),
+        str(obj.data.get("label", "")).lower(),
+        str(obj.data.get("description", "")).lower(),
+    ]
+    return any(f"line_{normalized}" in value or f"line {anchor}" in value for value in haystacks)
+
+
+def _document_title(document: SourceDocumentInput) -> str:
+    for line in document.text.splitlines():
+        title = line.strip()
+        if title and not title.startswith("# Page"):
+            return title
+    return document.document_id
+
+
+def _line_sort_key(anchor: str) -> tuple[int, str]:
+    digits = "".join(ch for ch in anchor if ch.isdigit())
+    suffix = "".join(ch for ch in anchor if ch.isalpha())
+    return (int(digits or "0"), suffix)
 
 
 def _span_for_line(node: OutlineNode, spans: list[CandidateSpan]) -> CandidateSpan | None:

@@ -100,6 +100,12 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
   - `.\.venv\Scripts\python.exe -m pytest -q` -> 228 passed, 4 skipped
   - `.\.venv\Scripts\python.exe tools/check_ascii.py` -> ASCII check OK
 - **Worker note / next slice:** Step 4 still needs the remaining batch-form coverage beyond the Schedule B canary, plus a cleaner story for the deterministic completeness issues now surfacing on unmodeled Schedule B lines (currently acceptable for `_drafts`, but not yet expressed as the full per-form `not_modeled` record set the step calls for).
+- **Worker update (Codex, 2026-07-08): Step 4 second extraction slice is now green in the worktree; step still NOT complete.** Outline-first extraction now emits a generic partial `documents` draft for every non-Schedule-D batch form, with line-anchored `not_modeled_fields` derived from the outline/field grid whenever no draft node covers that line yet. This converts the formerly silent "empty draft" batch outputs into explicit partial-document records, so the full offline M10 bundle now writes `documents.yaml`, `metrics.yaml`, `nversion.yaml`, and `example_mining.yaml` for every new form fixture while preserving the richer Schedule B table canary.
+- **Worker verification (Codex, 2026-07-08):**
+  - `.\.venv\Scripts\python.exe -m pytest tests/test_batch_extraction_m10.py tests/test_batch_bundle_m10.py tests/test_schedule_d_extraction_m9.py -q` -> 13 passed
+  - `.\.venv\Scripts\python.exe -m pytest -q` -> 229 passed, 4 skipped
+  - `.\.venv\Scripts\python.exe tools/check_ascii.py` -> ASCII check OK
+- **Worker note / next slice:** Step 4 still needs stronger per-form structure beyond partial document records - especially whether any of Schedule 1/1-A/2/3/A/6251 should emit deterministic non-table line nodes in this phase instead of only `not_modeled` coverage records.
 
 ## Open for Architect
 - (none - the Step 3 freeze-policy question is ANSWERED by the DEFERRED-REVIEW policy
