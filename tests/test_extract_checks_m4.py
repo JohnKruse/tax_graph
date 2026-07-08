@@ -45,6 +45,29 @@ def test_true_line_anchors_ignore_renderer_artifacts(tmp_path):
 
 
 @pytest.mark.m4
+def test_true_line_anchors_ignore_letter_only_subline_artifacts(tmp_path):
+    text_path = tmp_path / "schedule_1_2025.txt"
+    text_path.write_text("- a: Artifact\n- 8z: Other income\n- z: Other income continuation\n", encoding="utf-8")
+    document = SourceDocumentInput(
+        document_id="schedule_1_2025",
+        kind="schedule",
+        year="2025",
+        url="https://www.irs.gov/pub/irs-pdf/f1040s1.pdf",
+        text=text_path.read_text(encoding="utf-8"),
+        text_path=text_path,
+        fields={
+            "fields": [
+                {"field_name": "Schedule1.Line8z", "line_anchor": "8z"},
+                {"field_name": "Schedule1.LineZ", "line_anchor": "z"},
+            ]
+        },
+        related_sources=[],
+    )
+
+    assert _true_line_anchors(document) == ["8z"]
+
+
+@pytest.mark.m4
 def test_line_completeness_allows_multiple_column_nodes_for_one_line(tmp_path):
     text_path = tmp_path / "form_8949_2025.txt"
     text_path.write_text("- 2: Totals. Add the amounts in columns (d), (e), (g), and (h)\n", encoding="utf-8")

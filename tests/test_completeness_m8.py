@@ -96,6 +96,24 @@ def test_not_modeled_records_are_required_for_unmapped_fields():
 
 
 @pytest.mark.m8
+def test_field_grid_completeness_ignores_letter_only_subline_fields():
+    graph = _copy_graph(load_graph("2025", ROOT))
+    report = check_loaded_graph_field_completeness(
+        graph,
+        {
+            "form_8949_2025": {
+                "fields": [
+                    {"field_name": "subline_letter_only", "line_anchor": "z"},
+                    {"field_name": "anchored_line_10", "line_anchor": "10"},
+                ]
+            }
+        },
+    )
+
+    assert not any(issue.field_name == "subline_letter_only" for issue in report.issues)
+
+
+@pytest.mark.m8
 def test_deleted_node_drill_can_be_attributed_to_field_completeness(tmp_path):
     catalog = tmp_path / "catalog.yaml"
     catalog.write_text(

@@ -55,6 +55,7 @@ def generate_outline_first_drafts(
     objects.extend(assemble_table_subunits(document, outline, objects, model="deterministic-table-detector"))
     objects.extend(_schedule_d_band_tables(document, outline.children, model="deterministic-schedule-d-band-detector"))
     objects.extend(_schedule_d_not_modeled_document(document, outline.children, model="deterministic-schedule-d-scope"))
+    objects.extend(_write_in_amount_nodes(document, outline.children, spans, objects=objects, model=model))
     objects.extend(_simple_line_objects(document, outline.children, spans, objects=objects, model=model))
     objects.extend(_line_cue_objects(document, outline.children, spans, model=model))
     objects.extend(_generic_not_modeled_document(document, outline.children, objects=objects, model=model))
@@ -268,8 +269,85 @@ def _simple_line_objects(
     return generated
 
 
+def _write_in_amount_nodes(
+    document: SourceDocumentInput,
+    nodes: list[OutlineNode],
+    spans: list[CandidateSpan],
+    *,
+    objects: list[DraftObject],
+    model: str,
+) -> list[DraftObject]:
+    flattened = _flatten_nodes(nodes)
+    generated: list[DraftObject] = []
+    for node in flattened:
+        if not _is_write_in_amount_line(node, flattened):
+            continue
+        span = _span_for_line(node, spans)
+        citation_refs: list[str] = []
+        source_span = ""
+        if span:
+            citation_id = f"cite_{_slug(span.span_id)}"
+            citation_refs.append(citation_id)
+            source_span = span.text
+            generated.append(
+                DraftObject(
+                    "citations",
+                    {
+                        "citation_id": citation_id,
+                        "document_id": span.document_id,
+                        "locator": span.locator,
+                        "quoted_text": span.text,
+                    },
+                    span.text,
+                    model,
+                    1.0,
+                )
+            )
+        line_anchor = str(node.line_anchor or "")
+        amount_node = {
+            "node_id": _slug(f"{document.document_id}_{node.outline_id}_amount"),
+            "document_id": document.document_id,
+            "label": f"Line {line_anchor}: {node.label} amount",
+            "node_type": "form_line",
+            "value_type": "currency",
+        }
+        description_node = {
+            "node_id": _slug(f"{document.document_id}_{node.outline_id}_description"),
+            "document_id": document.document_id,
+            "label": f"Line {line_anchor}: {node.label} description",
+            "node_type": "form_line",
+            "value_type": "string",
+        }
+        if citation_refs:
+            amount_node["citation_refs"] = citation_refs
+            description_node["citation_refs"] = citation_refs
+        generated.append(DraftObject("nodes", amount_node, source_span, model, 1.0))
+        generated.append(DraftObject("nodes", description_node, source_span, model, 1.0))
+    return generated
+
+
+def _is_write_in_amount_line(node: OutlineNode, nodes: list[OutlineNode]) -> bool:
+    if node.kind != "line" or not node.line_anchor:
+        return False
+    if not _addressable_anchor(str(node.line_anchor)):
+        return False
+    if "list type and amount" not in node.label.lower():
+        return False
+    anchor = str(node.line_anchor).lower()
+    return any(
+        _totals_rolls_through_anchor(candidate, anchor)
+        for candidate in nodes
+        if candidate.kind in {"line", "totals"}
+    )
+
+
+def _totals_rolls_through_anchor(node: OutlineNode, anchor: str) -> bool:
+    label = node.label.lower()
+    return f"through {anchor}" in label
+
+
 def _is_simple_line_node(node: OutlineNode) -> bool:
-    return node.kind in {"line", "totals"} and bool(node.line_anchor)
+    return node.kind in {"line", "totals"} and bool(node.line_anchor) and _addressable_anchor(str(node.line_anchor))
 
 
 def _skip_simple_line(node: OutlineNode) -> bool:
@@ -469,7 +547,14 @@ def _generic_not_modeled_document(
 ) -> list[DraftObject]:
     if document.document_id.startswith("schedule_d_"):
         return []
-    anchors = sorted({node.line_anchor for node in _flatten_nodes(nodes) if node.line_anchor}, key=_line_sort_key)
+    anchors = sorted(
+        {
+            node.line_anchor
+            for node in _flatten_nodes(nodes)
+            if node.line_anchor and _addressable_anchor(str(node.line_anchor))
+        },
+        key=_line_sort_key,
+    )
     anchors.extend(
         anchor
         for anchor in sorted(_field_line_anchors(document), key=_line_sort_key)
@@ -522,7 +607,7 @@ def _field_line_anchors(document: SourceDocumentInput) -> set[str]:
     anchors: set[str] = set()
     for field in (document.fields or {}).get("fields", []) or []:
         anchor = str(field.get("line_anchor", "")).strip().lower()
-        if anchor:
+        if anchor and _addressable_anchor(anchor):
             anchors.add(anchor)
     return anchors
 
@@ -549,6 +634,10 @@ def _line_sort_key(anchor: str) -> tuple[int, str]:
     digits = "".join(ch for ch in anchor if ch.isdigit())
     suffix = "".join(ch for ch in anchor if ch.isalpha())
     return (int(digits or "0"), suffix)
+
+
+def _addressable_anchor(anchor: str) -> bool:
+    return any(ch.isdigit() for ch in anchor)
 
 
 def _span_for_line(node: OutlineNode, spans: list[CandidateSpan]) -> CandidateSpan | None:

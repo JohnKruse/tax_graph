@@ -223,6 +223,18 @@ def test_extract_year_full_batch_writes_partial_document_records(tmp_path):
     schedule_1_nodes = yaml.safe_load(
         (root / "graph" / "2025" / "_drafts" / "schedule_1_2025" / "nodes.yaml").read_text(encoding="utf-8")
     )
+    schedule_2_doc = yaml.safe_load(
+        (root / "graph" / "2025" / "_drafts" / "schedule_2_2025" / "documents.yaml").read_text(encoding="utf-8")
+    )[0]
+    schedule_2_nodes = yaml.safe_load(
+        (root / "graph" / "2025" / "_drafts" / "schedule_2_2025" / "nodes.yaml").read_text(encoding="utf-8")
+    )
+    schedule_3_doc = yaml.safe_load(
+        (root / "graph" / "2025" / "_drafts" / "schedule_3_2025" / "documents.yaml").read_text(encoding="utf-8")
+    )[0]
+    schedule_3_nodes = yaml.safe_load(
+        (root / "graph" / "2025" / "_drafts" / "schedule_3_2025" / "nodes.yaml").read_text(encoding="utf-8")
+    )
     schedule_b_doc = yaml.safe_load(
         (root / "graph" / "2025" / "_drafts" / "schedule_b_2025" / "documents.yaml").read_text(encoding="utf-8")
     )[0]
@@ -230,13 +242,27 @@ def test_extract_year_full_batch_writes_partial_document_records(tmp_path):
         (root / "graph" / "2025" / "_drafts" / "schedule_b_2025" / "nodes.yaml").read_text(encoding="utf-8")
     )
     schedule_1_node_ids = {item["node_id"] for item in schedule_1_nodes}
+    schedule_2_node_ids = {item["node_id"] for item in schedule_2_nodes}
+    schedule_3_node_ids = {item["node_id"] for item in schedule_3_nodes}
     schedule_b_node_ids = {item["node_id"] for item in schedule_b_nodes}
 
-    assert {item["line_anchor"] for item in schedule_1_doc["not_modeled_fields"]} == {"8z", "24z"}
+    assert schedule_1_doc["not_modeled_fields"] == []
     assert "schedule_1_2025_part_i_line_1" in schedule_1_node_ids
+    assert "schedule_1_2025_part_i_line_8z_amount" in schedule_1_node_ids
+    assert "schedule_1_2025_part_i_line_8z_description" in schedule_1_node_ids
     assert "schedule_1_2025_part_i_line_9" in schedule_1_node_ids
     assert "schedule_1_2025_part_ii_line_11" in schedule_1_node_ids
+    assert "schedule_1_2025_part_ii_line_24z_amount" in schedule_1_node_ids
+    assert "schedule_1_2025_part_ii_line_24z_description" in schedule_1_node_ids
     assert "schedule_1_2025_part_ii_line_25" in schedule_1_node_ids
+    assert schedule_2_doc["not_modeled_fields"] == []
+    assert "schedule_2_2025_part_ii_line_17z_amount" in schedule_2_node_ids
+    assert "schedule_2_2025_part_ii_line_17z_description" in schedule_2_node_ids
+    assert schedule_3_doc["not_modeled_fields"] == []
+    assert "schedule_3_2025_part_i_line_6z_amount" in schedule_3_node_ids
+    assert "schedule_3_2025_part_i_line_6z_description" in schedule_3_node_ids
+    assert "schedule_3_2025_part_ii_line_13z_amount" in schedule_3_node_ids
+    assert "schedule_3_2025_part_ii_line_13z_description" in schedule_3_node_ids
     assert {item["line_anchor"] for item in schedule_b_doc["not_modeled_fields"]} == {"7", "8"}
     assert "schedule_b_2025_part_i_line_3" in schedule_b_node_ids
     assert "schedule_b_2025_part_i_line_4" in schedule_b_node_ids

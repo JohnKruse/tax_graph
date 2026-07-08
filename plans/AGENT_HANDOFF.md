@@ -15,10 +15,11 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## Current state (2026-07-08)
 
-**BALL: CODEX.** Next action: finish M10 Step 4 (residual lines, per the Architect's
-ruling in From Architect), then run Steps 5-7 straight through - the deferred-review
-policy removed every blocking human stop. Nothing is open for the Architect; nothing
-waits on John. All work through commit 66bf7b1 is verified, committed, and pushed.
+**BALL: CODEX.** Next action: start M10 Step 5 promotions in frontier order, then carry
+through Steps 6-7 straight through - the deferred-review policy removed every blocking
+human stop. Nothing is open for the Architect; nothing waits on John. All work through
+commit 66bf7b1 is verified, committed, and pushed; Step 4 closeout is now green in the
+worktree and pending commit.
 (Whoever finishes a turn: update this BALL line - it is the first thing read.)
 
 - **M0-M9 are COMPLETE and archived** (see `plans/archive/`). Operational highlights: compiled
@@ -40,8 +41,8 @@ waits on John. All work through commit 66bf7b1 is verified, committed, and pushe
   repair -> batch extraction under the full net -> frontier-sequenced promotions
   (deferred-review policy - machine-gated, NO blocking stop) -> oracle growth + live
   fuzz -> verification records + coverage report. STATUS: Steps 1, 2, 2b, 3 are DONE and
-  committed; Step 4 is in progress (three slices landed; residual-line ruling received);
-  Steps 5-7 not started.
+  committed; Step 4 is DONE in the worktree (pending closeout commit); Steps 5-7 not
+  started.
 - **Worker update (Codex, 2026-07-08): M10 Step 1 is implemented and ready in git.** Added
   `tools/step_driver.py` plus packaged logic in `tax_graph/step_driver.py`; the driver parses
   tier tags from `plans/PHASE_<id>.md`, renders tier launch commands from `config/driver.yaml`,
@@ -121,6 +122,26 @@ waits on John. All work through commit 66bf7b1 is verified, committed, and pushe
   - `.\.venv\Scripts\python.exe -m pytest -q` -> 229 passed, 4 skipped
   - `.\.venv\Scripts\python.exe tools/check_ascii.py` -> ASCII check OK
 - **Worker note / next slice:** Step 4 still needs a call on the remaining non-scalar or table-ish lines (for example Schedule B lines 7/8 and the "List type and amount" rows on Schedules 1/1-A). Those may stay as explicit `not_modeled` coverage in Step 4, but the next decision is whether any deserve deterministic rule/node treatment before Step 5 promotions begin.
+- **Worker update (Codex, 2026-07-08): M10 Step 4 is now COMPLETE in the worktree.** The
+  residual-line pass from the Architect's ruling is landed. Outline-first extraction now
+  treats only digit-bearing line anchors as addressable for deterministic coverage,
+  completeness, and generic partial-document records; prompt/disclosure lines stay typed;
+  and direct-addend write-in rows (for example Schedule 1/2/3 `z` lines) emit paired
+  amount/string nodes instead of lingering as blanket `not_modeled` gaps. The live batch
+  run over the OTS set completed, and the affected Schedule 1/2/3/B drafts were refreshed
+  after the addressable-anchor fix so their residual `not_modeled_fields` are back to the
+  intended honest holes only.
+- **Worker verification (Codex, 2026-07-08):**
+  - `.\.venv\Scripts\python.exe -m pytest tests/test_batch_extraction_m10.py tests/test_extract_checks_m4.py tests/test_completeness_m8.py tests/test_frontier_build_m7.py tests/test_link_m9.py tests/test_verify_record_m9.py -q` -> 23 passed
+  - `.\.venv\Scripts\python.exe -m pytest -q` -> 231 passed, 4 skipped
+  - `.\.venv\Scripts\python.exe tools/check_ascii.py` -> ASCII check OK
+  - `.\.venv\Scripts\python.exe -m tax_graph.cli validate 2025 --root C:\Users\devbox\projects\tax_graph` -> graph integrity OK
+- **Worker note:** while closing Step 4, full-suite regressions turned out to be bad tests,
+  not product regressions: the M7/M9 frontier/LINK/verification tests were accidentally
+  reading the whole local gitignored `_drafts/` tree, so new batch drafts polluted older
+  deterministic expectations. The tests now copy only the specific legacy draft dirs they
+  depend on and avoid exact verification-record golden comparisons against mutable local
+  metrics.
 
 ## Open for Architect
 - (none - the Step 3 freeze-policy question is ANSWERED by the DEFERRED-REVIEW policy

@@ -143,6 +143,8 @@ def _raw_line_anchors(text: str) -> list[str]:
     seen: list[str] = []
     for match in LINE_RE.finditer(text):
         anchor = match.group(1).lower()
+        if not _addressable_anchor(anchor):
+            continue
         if anchor not in seen:
             seen.append(anchor)
     return seen
@@ -164,7 +166,7 @@ def _field_anchors(document: SourceDocumentInput) -> set[str]:
         return anchors
     for field in document.fields.get("fields", []):
         anchor = str(field.get("line_anchor", "")).lower()
-        if anchor:
+        if anchor and _addressable_anchor(anchor):
             anchors.add(anchor)
     return anchors
 
@@ -188,6 +190,10 @@ def _node_mentions_line(node: DraftObject, anchor: str) -> bool:
 
 def _normalize_anchor(anchor: str) -> str:
     return anchor.lower().replace("-", "_")
+
+
+def _addressable_anchor(anchor: str) -> bool:
+    return any(ch.isdigit() for ch in anchor)
 
 
 def _not_modeled_fields(document: SourceDocumentInput, batch: ExtractionBatch) -> list[dict[str, Any]]:

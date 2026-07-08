@@ -147,7 +147,7 @@ Filer-weighted coverage currently stands at 42.4%; this set is where the power-l
   incompatible-endpoint response degrades with a clear actionable error, not 10/10
   silent unmappables. Docs: config knob.
 
-- [ ] **Step 4 [worker-standard] - Batch extraction under the full net.** For each new
+- [DONE] **Step 4 [worker-standard] - Batch extraction under the full net.** For each new
   bundle: outline-first extraction with tiers, calibration sample, `metrics.yaml`
   (now with token/cost fields); gated N-version (cross-family) and example mining.
   NO promotions in this step; exception queues and calibration samples accumulate as

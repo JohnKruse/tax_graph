@@ -94,8 +94,16 @@ def test_promoted_schedule_d_links_preserve_capital_gains_parity():
 
 def _copy_root(tmp_path: Path) -> Path:
     root = tmp_path / "project"
-    shutil.copytree(ROOT / "graph", root / "graph")
+    shutil.copytree(ROOT / "graph", root / "graph", ignore=shutil.ignore_patterns("_drafts"))
     shutil.copytree(ROOT / "schemas", root / "schemas")
     shutil.copytree(ROOT / "config", root / "config")
     shutil.copytree(ROOT / "data", root / "data")
+    _copy_required_drafts(root)
     return root
+
+
+def _copy_required_drafts(root: Path) -> None:
+    drafts_root = root / "graph" / "2025" / "_drafts"
+    drafts_root.mkdir(parents=True, exist_ok=True)
+    for document_id in ("form_8949_2025", "schedule_d_2025"):
+        shutil.copytree(ROOT / "graph" / "2025" / "_drafts" / document_id, drafts_root / document_id)

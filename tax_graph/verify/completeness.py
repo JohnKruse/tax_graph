@@ -137,6 +137,8 @@ def _parse_field(field: Mapping[str, Any], context: _MappingContext) -> _ParsedF
 def _field_maps_to_node(parsed: _ParsedField, context: _MappingContext) -> bool:
     if parsed.table_part and parsed.table_line and parsed.table_column:
         return _table_field_maps_to_node(parsed, context)
+    if parsed.line_anchor and not _addressable_anchor(parsed.line_anchor):
+        return True
     if parsed.line_anchor:
         return any(
             node.get("document_id") == context.document_id and _node_mentions_line(node, parsed.line_anchor)
@@ -280,3 +282,7 @@ def _node_mentions_line(node: Mapping[str, Any], anchor: str) -> bool:
         str(node.get("description", "")).lower(),
     ]
     return any(f"line_{normalized}" in value or f"line {anchor}" in value for value in haystacks)
+
+
+def _addressable_anchor(anchor: str) -> bool:
+    return any(ch.isdigit() for ch in anchor)
