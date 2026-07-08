@@ -56,12 +56,15 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
   and `get_document.verification`. Regeneration is byte-stable; witness absences are stated
   plainly. Verified: focused Step 6 tests green, `pytest -m m9` green, full `pytest` green,
   `validate 2025` green, ASCII green.
-- **Phase-close blockers remain external/gated, not code-local.** The phase exit still needs:
-  (1) the real `human_minutes` value filled for the promoted Schedule D review batch
-  (current draft metrics remain null); (2) the gated live `>=100` OTS fuzz pass plus corpus
-  refresh on the widened domain; and (3) the still-pending live N-version exit item if John
-  still wants it rerun. Once those land, mark `[COMPLETE]`, archive the plan, prune this
-  handoff again, single `git push`, tell John.
+- **Phase-close blockers are now mostly administrative.** The widened-domain live OTS fuzz gate
+  is fresh-green in this session (`oracle fuzz --year 2025 --n 100 --seed 2468` -> generated
+  100, agreed 100, disagreed 0, rejected 0; triage empty) and the live-diff corpus refresh is
+  already committed (`examples/oracle_corpus/corpus.yaml`, seed `20260706`, provenance
+  `live_ots_diff_report`). The phase exit still needs: (1) the real `human_minutes` value
+  filled for the promoted Schedule D review batch (current draft metrics remain null); and
+  (2) the still-pending live N-version exit item only if John still wants it rerun. Once those
+  land, mark `[COMPLETE]`, archive the plan, prune this handoff again, single `git push`,
+  tell John.
 - Phase close checklist (after Step 6): mark `[COMPLETE]`, archive the plan, prune this file
   again per the seam-hygiene rule, single `git push`, tell John. NOTE: local main is several
   commits ahead of origin - the push is overdue at phase close.
@@ -70,6 +73,22 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 - (none)
 
 ## From Architect
+- **NEW (2026-07-08) - Reviewer-tool direction from John.** Do not paper over the missing
+  Schedule D human review with invented `human_minutes` or a fake closeout ritual. John did
+  not perform the review batch manually and does not want future plans to assume a grindy
+  paper-drill workflow. Instead, future planning should leave room for a standalone reviewer
+  program that helps a human inspect the extracted structure against the rendered form and
+  instructions side by side (sections, rules, citations, gaps, promotion context, etc.).
+  Keep this DIRECTIONAL, not over-prescriptive: the review tool should be planned as a late
+  piece shaped by the project's end state, not pinned now as a detailed build spec. For the
+  current M9 closeout, `human_minutes` remains honestly null until a real review process
+  exists. John's requested design sketch is now pinned at `docs/review-workbench.md`
+  (candidate canary Fresh Eyes): highlight a region of the rendered form, see the
+  associated rules, extracted instructions, connectors, citations, tiers, and pending
+  adjudications. Deliberately vague and UNSCHEDULED; standalone by design (no
+  `tax_graph.extract` imports, consumes durable artifacts only, derives page geometry
+  itself from the PDF, emits verdict files rather than editing). It is the sketch, not a
+  build spec - the real plan stays just-in-time, late, shaped by the end state.
 - **NEW (2026-07-07) - Worker model tiers per step (John's call; token-metered Codex
   billing).** Every phase-plan step carries a tier tag: **worker-light** (mechanical
   execution of a fully pinned spec: YAML/fixture/doc authoring, pattern-following tests,
@@ -167,6 +186,12 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
   - `& '.\.venv\Scripts\python.exe' -m pytest -q` -> 200 passed, 4 skipped
   - `& '.\.venv\Scripts\python.exe' tools/check_ascii.py` -> ASCII check OK
   - Scope landed: shared verification-record generator, committed roll-up/per-form pages, MCP `get_verification` surface plus `get_document.verification`, byte-stability coverage, explicit witness-absence rendering.
+- M9 live oracle gate refresh (worker, 2026-07-08):
+  - `& '.\.venv\Scripts\python.exe' -m tax_graph.cli oracle fuzz --year 2025 --n 100 --seed 2468` -> generated 100, agreed 100, disagreed 0, rejected 0
+  - `output/oracle_fuzz/2025_seed2468/triage.yaml` -> `scenario_count: 100`, `entries: []`
+  - Existing committed corpus remains aligned with widened-domain live OTS agreement:
+    `examples/oracle_corpus/corpus.yaml` -> `scenario_count: 20`, seed `20260706`,
+    provenance `live_ots_diff_report`
 
 ## Resolved / superseded
 - All pre-M9 items: see `plans/archive/AGENT_HANDOFF_2026-07-07_full.md` and the archived
