@@ -96,6 +96,32 @@ with SOI provenance, retrieval date, and the sample-based estimate caveat.
 can refresh a normalized CSV extract through `tax_graph.acquire.soi`; runtime
 commands read only the committed YAML and do not import acquisition extras.
 
+## Step Driver
+
+M10 introduces a phase-step driver at `tools/step_driver.py`. It reads a
+`plans/PHASE_<id>.md` file, parses the `[worker-light]` /
+`[worker-standard]` / `[worker-heavy]` tags, renders the launcher command for
+each tier from `config/driver.yaml`, and runs the deterministic gate suite
+between steps.
+
+The driver is intentionally conservative:
+
+- It stops before any step marked as John's gate.
+- A gate failure blocks the next step.
+- `--dry-run` prints the planned session sequence without launching anything.
+
+Example:
+
+```powershell
+python tools/step_driver.py --phase M10 --dry-run
+```
+
+`config/driver.yaml` is John-owned and provider-agnostic. The checked-in sample
+maps each worker tier to a command template and defines the between-step gate
+suite (`pytest`, `validate`, ASCII). Templates may use `{prompt}`,
+`{prompt_file}`, `{phase_id}`, `{step_number}`, `{step_tier}`, `{root}`, and
+related step context placeholders.
+
 ## CLI Usage
 
 Phase M0 provides a package CLI named `tax-graph`:

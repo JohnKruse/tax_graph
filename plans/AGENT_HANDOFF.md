@@ -33,6 +33,20 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
   1099-B URL errand) -> example-mining endpoint repair -> batch extraction under the full
   net -> frontier-sequenced promotions (JOHN's gates; driver stops) -> oracle growth + live
   fuzz -> verification records + coverage report.
+- **Worker update (Codex, 2026-07-08): M10 Step 1 is implemented and ready in git.** Added
+  `tools/step_driver.py` plus packaged logic in `tax_graph/step_driver.py`; the driver parses
+  tier tags from `plans/PHASE_<id>.md`, renders tier launch commands from `config/driver.yaml`,
+  runs the between-step gate suite, and hard-stops before the Step 5 JOHN's gate in the real
+  M10 plan. Metrics now write additive `worker_tokens` / `worker_cost` fields beside
+  `human_minutes`; `verify report` rolls them up without pretending values exist when unknown.
+  Docs: README Step Driver section, checked-in `config/driver.yaml` sample, pytest marker `m10`.
+- **Worker verification (Codex, 2026-07-08):**
+  - `.\.venv\Scripts\python.exe -m pytest tests/test_step_driver_m10.py tests/test_trust_tiers_m8.py -q` -> 13 passed
+  - `.\.venv\Scripts\python.exe tools/step_driver.py --phase M10 --root C:\Users\devbox\projects\tax_graph --dry-run` -> steps 1-4 printed, STOP before Step 5 JOHN's gate
+  - `.\.venv\Scripts\python.exe -m tax_graph.cli validate 2025` -> graph integrity OK
+  - `.\.venv\Scripts\python.exe tools/check_ascii.py` -> ASCII check OK
+- **Worker note:** this Codex desktop session does not expose a reliable session-context % meter,
+  so no percentage is recorded here; better to leave it absent than invent one.
 
 ## Open for Architect
 - (none)

@@ -97,6 +97,8 @@ def test_metrics_capture_tiers_layers_and_telemetry(tmp_path):
     assert metrics["routing"] == {"accepted": 1, "review": 1, "calibration_sample": 1}
     assert metrics["confidence_telemetry"]["min"] == 0.5
     assert metrics["human_minutes"] is None
+    assert metrics["worker_tokens"] is None
+    assert metrics["worker_cost"] is None
 
     assert classify_flag("schema: missing property") == "schema"
     assert classify_flag("line 3 has no node") == "line_completeness"
@@ -115,6 +117,8 @@ def test_verify_report_rolls_up_metrics(tmp_path, capsys):
                 "routing": {"accepted": 3, "review": 1, "calibration_sample": 3},
                 "tiers": {"T0": 1, "T1": 3, "T2": 0, "T3": 0},
                 "human_minutes": None,
+                "worker_tokens": 321,
+                "worker_cost": 1.25,
                 "escapes": 0,
             }
         ),
@@ -128,6 +132,8 @@ def test_verify_report_rolls_up_metrics(tmp_path, capsys):
     assert "form_x: objects=4" in out
     assert "tiers(T0/T1/T2/T3)=1/3/0/0" in out
     assert "human minutes per object: not yet recorded" in out
+    assert "worker tokens recorded: 321" in out
+    assert "worker cost recorded: 1.2500" in out
     assert "escapes found in calibration audits: 0" in out
 
 

@@ -3,7 +3,7 @@
 Each extraction run writes ``metrics.yaml`` beside ``review.md`` (design:
 docs/extraction-verification.md Section 7). ``tax-graph verify report`` rolls
 the per-form files up and prints the payoff lines: human minutes per promoted
-object and the escape count.
+object, worker-machine cost telemetry, and the escape count.
 """
 
 from __future__ import annotations
@@ -74,6 +74,8 @@ def build_metrics(batch: ExtractionBatch, routed: RoutedDrafts) -> dict[str, Any
         "models_used": sorted(models_used),
         "confidence_telemetry": _confidence_telemetry(confidences),
         "human_minutes": None,
+        "worker_tokens": None,
+        "worker_cost": None,
         "escapes": 0,
     }
 
@@ -114,6 +116,10 @@ def render_report(reports: list[dict[str, Any]], *, year: str) -> str:
     total_escapes = 0
     minutes_known = 0.0
     minutes_recorded = False
+    worker_tokens = 0
+    worker_tokens_recorded = False
+    worker_cost = 0.0
+    worker_cost_recorded = False
     for report in reports:
         tiers = report.get("tiers", {})
         for tier in totals:
@@ -127,9 +133,17 @@ def render_report(reports: list[dict[str, Any]], *, year: str) -> str:
         if minutes is not None:
             minutes_known += float(minutes)
             minutes_recorded = True
+        tokens = report.get("worker_tokens")
+        if tokens is not None:
+            worker_tokens += int(tokens)
+            worker_tokens_recorded = True
+        cost = report.get("worker_cost")
+        if cost is not None:
+            worker_cost += float(cost)
+            worker_cost_recorded = True
         lines.append(
             "  {doc}: objects={objects} tiers(T0/T1/T2/T3)={t0}/{t1}/{t2}/{t3} "
-            "review={review} calibration={calibration}".format(
+            "review={review} calibration={calibration} worker_tokens={tokens} worker_cost={cost}".format(
                 doc=report.get("document_id", "?"),
                 objects=sum(int(n) for n in report.get("objects_by_kind", {}).values()),
                 t0=tiers.get("T0", 0),
@@ -138,6 +152,8 @@ def render_report(reports: list[dict[str, Any]], *, year: str) -> str:
                 t3=tiers.get("T3", 0),
                 review=routing.get("review", 0),
                 calibration=routing.get("calibration_sample", 0),
+                tokens=report.get("worker_tokens", "null"),
+                cost=report.get("worker_cost", "null"),
             )
         )
 
@@ -152,6 +168,14 @@ def render_report(reports: list[dict[str, Any]], *, year: str) -> str:
         )
     else:
         lines.append("  human minutes per object: not yet recorded (filled at promotion)")
+    if worker_tokens_recorded:
+        lines.append(f"  worker tokens recorded: {worker_tokens}")
+    else:
+        lines.append("  worker tokens recorded: not yet recorded")
+    if worker_cost_recorded:
+        lines.append(f"  worker cost recorded: {worker_cost:.4f}")
+    else:
+        lines.append("  worker cost recorded: not yet recorded")
     lines.append(f"  escapes found in calibration audits: {total_escapes}")
     return "\n".join(lines) + "\n"
 

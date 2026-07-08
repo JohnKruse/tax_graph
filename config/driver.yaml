@@ -1,0 +1,41 @@
+version: 1
+tiers:
+  worker-light:
+    command:
+      - codex
+      - exec
+      - -m
+      - gpt-5-mini
+      - "{prompt}"
+  worker-standard:
+    command:
+      - codex
+      - exec
+      - -m
+      - gpt-5
+      - "{prompt}"
+  worker-heavy:
+    command:
+      - codex
+      - exec
+      - -m
+      - gpt-5
+      - "{prompt}"
+gates:
+  - name: pytest
+    command:
+      - "{root}\\.venv\\Scripts\\python.exe"
+      - -m
+      - pytest
+      - -q
+  - name: validate
+    command:
+      - "{root}\\.venv\\Scripts\\python.exe"
+      - -m
+      - tax_graph.cli
+      - validate
+      - "2025"
+  - name: ascii
+    command:
+      - "{root}\\.venv\\Scripts\\python.exe"
+      - tools/check_ascii.py
