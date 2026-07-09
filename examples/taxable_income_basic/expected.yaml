@@ -1,0 +1,13 @@
+expected:
+  form_1040_2025_line_7_capital_gain_loss: 2000
+  form_1040_2025_root_line_z: 100000
+  form_1040_2025_root_line_2b: 50
+  form_1040_2025_root_line_3b: 75
+  form_1040_2025_root_line_8: 125
+  form_1040_2025_root_line_9: 102250
+  form_1040_2025_root_line_10: 75
+  form_1040_2025_root_line_11a: 102175
+  form_1040_2025_root_line_11b: 102175
+  form_1040_2025_root_line_13b: 40
+  form_1040_2025_root_line_14: 15040
+  form_1040_2025_root_line_15: 87135

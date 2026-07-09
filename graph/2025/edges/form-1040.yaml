@@ -1,0 +1,245 @@
+- edge_id: e_1040_1a_to_1z
+  source: form_1040_2025_root_line_1a
+  target: form_1040_2025_root_line_z
+  relationship: CALCULATES
+  rule_id: sum_currency
+  role: addend
+  citation_refs:
+  - cite_span_form_1040_2025_0017
+
+- edge_id: e_1040_1b_to_1z
+  source: form_1040_2025_root_line_b
+  target: form_1040_2025_root_line_z
+  relationship: CALCULATES
+  rule_id: sum_currency
+  role: addend
+  citation_refs:
+  - cite_span_form_1040_2025_0017
+
+- edge_id: e_1040_1c_to_1z
+  source: form_1040_2025_root_line_c
+  target: form_1040_2025_root_line_z
+  relationship: CALCULATES
+  rule_id: sum_currency
+  role: addend
+  citation_refs:
+  - cite_span_form_1040_2025_0017
+
+- edge_id: e_1040_1d_to_1z
+  source: form_1040_2025_root_line_d
+  target: form_1040_2025_root_line_z
+  relationship: CALCULATES
+  rule_id: sum_currency
+  role: addend
+  citation_refs:
+  - cite_span_form_1040_2025_0017
+
+- edge_id: e_1040_1e_to_1z
+  source: form_1040_2025_root_line_e
+  target: form_1040_2025_root_line_z
+  relationship: CALCULATES
+  rule_id: sum_currency
+  role: addend
+  citation_refs:
+  - cite_span_form_1040_2025_0017
+
+- edge_id: e_1040_1f_to_1z
+  source: form_1040_2025_root_line_f
+  target: form_1040_2025_root_line_z
+  relationship: CALCULATES
+  rule_id: sum_currency
+  role: addend
+  citation_refs:
+  - cite_span_form_1040_2025_0017
+
+- edge_id: e_1040_1g_to_1z
+  source: form_1040_2025_root_line_g
+  target: form_1040_2025_root_line_z
+  relationship: CALCULATES
+  rule_id: sum_currency
+  role: addend
+  citation_refs:
+  - cite_span_form_1040_2025_0017
+
+- edge_id: e_1040_1h_to_1z
+  source: form_1040_2025_root_line_h
+  target: form_1040_2025_root_line_z
+  relationship: CALCULATES
+  rule_id: sum_currency
+  role: addend
+  citation_refs:
+  - cite_span_form_1040_2025_0017
+
+- edge_id: e_schedule_b_4_to_1040_2b
+  source: schedule_b_2025_root_line_4
+  target: form_1040_2025_root_line_2b
+  relationship: FEEDS
+  rule_id: copy_currency_value
+  citation_refs:
+  - cite_span_schedule_b_2025_0009
+
+- edge_id: e_schedule_b_6_to_1040_3b
+  source: schedule_b_2025_root_line_6
+  target: form_1040_2025_root_line_3b
+  relationship: FEEDS
+  rule_id: copy_currency_value
+  citation_refs:
+  - cite_span_schedule_b_2025_0015
+
+- edge_id: e_schedule_1_10_to_1040_8
+  source: schedule_1_2025_part_i_line_10
+  target: form_1040_2025_root_line_8
+  relationship: FEEDS
+  rule_id: copy_currency_value
+  citation_refs:
+  - cite_span_schedule_1_2025_0044
+
+- edge_id: e_1040_1z_to_9
+  source: form_1040_2025_root_line_z
+  target: form_1040_2025_root_line_9
+  relationship: CALCULATES
+  rule_id: sum_currency
+  role: addend
+  citation_refs:
+  - cite_span_form_1040_2025_0031
+
+- edge_id: e_1040_2b_to_9
+  source: form_1040_2025_root_line_2b
+  target: form_1040_2025_root_line_9
+  relationship: CALCULATES
+  rule_id: sum_currency
+  role: addend
+  citation_refs:
+  - cite_span_form_1040_2025_0031
+
+- edge_id: e_1040_3b_to_9
+  source: form_1040_2025_root_line_3b
+  target: form_1040_2025_root_line_9
+  relationship: CALCULATES
+  rule_id: sum_currency
+  role: addend
+  citation_refs:
+  - cite_span_form_1040_2025_0031
+
+- edge_id: e_1040_7a_to_9
+  source: form_1040_2025_line_7_capital_gain_loss
+  target: form_1040_2025_root_line_9
+  relationship: CALCULATES
+  rule_id: sum_currency
+  role: addend
+  citation_refs:
+  - cite_1040_line_7
+
+- edge_id: e_1040_8_to_9
+  source: form_1040_2025_root_line_8
+  target: form_1040_2025_root_line_9
+  relationship: CALCULATES
+  rule_id: sum_currency
+  role: addend
+  citation_refs:
+  - cite_span_form_1040_2025_0031
+
+- edge_id: e_schedule_1_26_to_1040_10
+  source: schedule_1_2025_part_ii_line_26
+  target: form_1040_2025_root_line_10
+  relationship: FEEDS
+  rule_id: copy_currency_value
+  citation_refs:
+  - cite_span_schedule_1_2025_0080
+
+- edge_id: e_1040_9_to_11a
+  source: form_1040_2025_root_line_9
+  target: form_1040_2025_root_line_11a
+  relationship: CALCULATES
+  rule_id: subtract_currency
+  role: minuend
+  citation_refs:
+  - cite_span_form_1040_2025_0033
+
+- edge_id: e_1040_10_to_11a
+  source: form_1040_2025_root_line_10
+  target: form_1040_2025_root_line_11a
+  relationship: CALCULATES
+  rule_id: subtract_currency
+  role: subtrahend
+  citation_refs:
+  - cite_span_form_1040_2025_0033
+
+- edge_id: e_1040_11a_to_11b
+  source: form_1040_2025_root_line_11a
+  target: form_1040_2025_root_line_11b
+  relationship: CALCULATES
+  rule_id: copy_currency_value
+  citation_refs:
+  - cite_span_form_1040_2025_0035
+
+- edge_id: e_schedule_1a_38_to_1040_13b
+  source: schedule_1a_2025_part_vi_line_38
+  target: form_1040_2025_root_line_13b
+  relationship: FEEDS
+  rule_id: copy_currency_value
+  citation_refs:
+  - cite_span_schedule_1a_2025_0064
+
+- edge_id: e_1040_12e_to_14
+  source: form_1040_2025_root_line_12e
+  target: form_1040_2025_root_line_14
+  relationship: CALCULATES
+  rule_id: sum_currency
+  role: addend
+  citation_refs:
+  - cite_span_form_1040_2025_0042
+
+- edge_id: e_1040_13a_to_14
+  source: form_1040_2025_root_line_13a
+  target: form_1040_2025_root_line_14
+  relationship: CALCULATES
+  rule_id: sum_currency
+  role: addend
+  citation_refs:
+  - cite_span_form_1040_2025_0042
+
+- edge_id: e_1040_13b_to_14
+  source: form_1040_2025_root_line_13b
+  target: form_1040_2025_root_line_14
+  relationship: CALCULATES
+  rule_id: sum_currency
+  role: addend
+  citation_refs:
+  - cite_span_form_1040_2025_0042
+
+- edge_id: e_1040_11b_to_15_pre
+  source: form_1040_2025_root_line_11b
+  target: form_1040_2025_root_line_15_pre_floor
+  relationship: CALCULATES
+  rule_id: subtract_currency
+  role: minuend
+  citation_refs:
+  - cite_span_form_1040_2025_0043
+
+- edge_id: e_1040_14_to_15_pre
+  source: form_1040_2025_root_line_14
+  target: form_1040_2025_root_line_15_pre_floor
+  relationship: CALCULATES
+  rule_id: subtract_currency
+  role: subtrahend
+  citation_refs:
+  - cite_span_form_1040_2025_0043
+
+- edge_id: e_1040_15_pre_to_15
+  source: form_1040_2025_root_line_15_pre_floor
+  target: form_1040_2025_root_line_15
+  relationship: CALCULATES
+  rule_id: max_currency
+  role: candidate
+  citation_refs:
+  - cite_span_form_1040_2025_0043
+
+- edge_id: e_1040_zero_floor_to_15
+  source: form_1040_2025_zero_floor
+  target: form_1040_2025_root_line_15
+  relationship: CALCULATES
+  rule_id: max_currency
+  role: candidate
+  citation_refs:
+  - cite_span_form_1040_2025_0043

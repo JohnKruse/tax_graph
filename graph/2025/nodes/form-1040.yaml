@@ -1,0 +1,208 @@
+- node_id: form_1040_2025_root_line_1a
+  document_id: form_1040_2025
+  label: 'Line 1a: Total amount from Form(s) W-2, box 1'
+  node_type: form_line
+  value_type: currency
+  required: optional
+  citation_refs:
+  - cite_span_form_1040_2025_0007
+  - cite_instruction_form_1040_2025_line_1a
+
+- node_id: form_1040_2025_root_line_b
+  document_id: form_1040_2025
+  label: 'Line 1b: Household employee wages not reported on Form(s) W-2'
+  node_type: form_line
+  value_type: currency
+  required: optional
+  citation_refs:
+  - cite_span_form_1040_2025_0008
+
+- node_id: form_1040_2025_root_line_c
+  document_id: form_1040_2025
+  label: 'Line 1c: Tip income not reported on line 1a'
+  node_type: form_line
+  value_type: currency
+  required: optional
+  citation_refs:
+  - cite_span_form_1040_2025_0010
+
+- node_id: form_1040_2025_root_line_d
+  document_id: form_1040_2025
+  label: 'Line 1d: Medicaid waiver payments not reported on Form(s) W-2'
+  node_type: form_line
+  value_type: currency
+  required: optional
+  citation_refs:
+  - cite_span_form_1040_2025_0011
+
+- node_id: form_1040_2025_root_line_e
+  document_id: form_1040_2025
+  label: 'Line 1e: Taxable dependent care benefits from Form 2441, line 26'
+  node_type: form_line
+  value_type: currency
+  required: optional
+  citation_refs:
+  - cite_span_form_1040_2025_0012
+
+- node_id: form_1040_2025_root_line_f
+  document_id: form_1040_2025
+  label: 'Line 1f: Employer-provided adoption benefits from Form 8839, line 31'
+  node_type: form_line
+  value_type: currency
+  required: optional
+  citation_refs:
+  - cite_span_form_1040_2025_0013
+
+- node_id: form_1040_2025_root_line_g
+  document_id: form_1040_2025
+  label: 'Line 1g: Wages from Form 8919, line 6'
+  node_type: form_line
+  value_type: currency
+  required: optional
+  citation_refs:
+  - cite_span_form_1040_2025_0014
+
+- node_id: form_1040_2025_root_line_h
+  document_id: form_1040_2025
+  label: 'Line 1h: Other earned income'
+  node_type: form_line
+  value_type: currency
+  required: optional
+  citation_refs:
+  - cite_span_form_1040_2025_0015
+
+- node_id: form_1040_2025_root_line_z
+  document_id: form_1040_2025
+  label: 'Line 1z: Add lines 1a through 1h'
+  node_type: computed
+  value_type: currency
+  required: optional
+  citation_refs:
+  - cite_span_form_1040_2025_0017
+
+- node_id: form_1040_2025_root_line_2b
+  document_id: form_1040_2025
+  label: 'Line 2b: Taxable interest'
+  node_type: form_line
+  value_type: currency
+  required: optional
+  citation_refs:
+  - cite_span_form_1040_2025_0018
+
+- node_id: form_1040_2025_root_line_3b
+  document_id: form_1040_2025
+  label: 'Line 3b: Ordinary dividends'
+  node_type: form_line
+  value_type: currency
+  required: optional
+  citation_refs:
+  - cite_span_form_1040_2025_0019
+
+- node_id: form_1040_2025_root_line_8
+  document_id: form_1040_2025
+  label: 'Line 8: Additional income from Schedule 1, line 10'
+  node_type: form_line
+  value_type: currency
+  required: optional
+  citation_refs:
+  - cite_span_form_1040_2025_0030
+
+- node_id: form_1040_2025_root_line_9
+  document_id: form_1040_2025
+  label: 'Line 9: Add lines 1z, 2b, 3b, 4b, 5b, 6b, 7a, and 8. This is your total income'
+  node_type: computed
+  value_type: currency
+  required: optional
+  citation_refs:
+  - cite_span_form_1040_2025_0031
+
+- node_id: form_1040_2025_root_line_10
+  document_id: form_1040_2025
+  label: 'Line 10: Adjustments to income from Schedule 1, line 26'
+  node_type: form_line
+  value_type: currency
+  required: optional
+  citation_refs:
+  - cite_span_form_1040_2025_0032
+
+- node_id: form_1040_2025_root_line_11a
+  document_id: form_1040_2025
+  label: 'Line 11a: Subtract line 10 from line 9. This is your adjusted gross income'
+  node_type: computed
+  value_type: currency
+  required: optional
+  citation_refs:
+  - cite_span_form_1040_2025_0033
+
+- node_id: form_1040_2025_root_line_11b
+  document_id: form_1040_2025
+  label: 'Line 11b: Amount from line 11a (adjusted gross income)'
+  node_type: computed
+  value_type: currency
+  required: optional
+  citation_refs:
+  - cite_span_form_1040_2025_0035
+
+- node_id: form_1040_2025_root_line_12e
+  document_id: form_1040_2025
+  label: 'Line 12e: Standard deduction or itemized deductions (from Schedule A)'
+  node_type: form_line
+  value_type: currency
+  required: optional
+  citation_refs:
+  - cite_span_form_1040_2025_0038
+
+- node_id: form_1040_2025_root_line_13a
+  document_id: form_1040_2025
+  label: 'Line 13a: Qualified business income deduction from Form 8995 or Form 8995-A'
+  node_type: form_line
+  value_type: currency
+  required: optional
+  citation_refs:
+  - cite_span_form_1040_2025_0040
+
+- node_id: form_1040_2025_root_line_13b
+  document_id: form_1040_2025
+  label: 'Line 13b: Additional deductions from Schedule 1-A, line 38'
+  node_type: form_line
+  value_type: currency
+  required: optional
+  citation_refs:
+  - cite_span_form_1040_2025_0041
+
+- node_id: form_1040_2025_root_line_14
+  document_id: form_1040_2025
+  label: 'Line 14: Add lines 12e, 13a, and 13b'
+  node_type: computed
+  value_type: currency
+  required: optional
+  citation_refs:
+  - cite_span_form_1040_2025_0042
+
+- node_id: form_1040_2025_root_line_15_pre_floor
+  document_id: form_1040_2025
+  label: Form 1040 line 15 taxable income before zero floor
+  node_type: computed
+  value_type: currency
+  required: optional
+  citation_refs:
+  - cite_span_form_1040_2025_0043
+
+- node_id: form_1040_2025_zero_floor
+  document_id: form_1040_2025
+  label: Form 1040 taxable income zero floor
+  node_type: parameter
+  value_type: currency
+  required: optional
+  constant_value: 0
+  citation_refs:
+  - cite_span_form_1040_2025_0043
+
+- node_id: form_1040_2025_root_line_15
+  document_id: form_1040_2025
+  label: 'Line 15: Subtract line 14 from line 11b. If zero or less, enter -0-. This is your taxable income'
+  node_type: computed
+  value_type: currency
+  required: optional
+  citation_refs:
+  - cite_span_form_1040_2025_0043

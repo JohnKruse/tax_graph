@@ -14,9 +14,9 @@ SQLite by the build step.
 | `citations/` | citation objects grouped by branch | a list |
 | `decisions/` | decision (elicitation) nodes | a list |
 
-## What's here (v0): the capital-gains MVP slice
+## What's here (current): capital gains plus the first Form 1040 taxable-income spine
 
-The first runnable branch:
+The first runnable branches:
 
 ```
 1099-B  --COPY-->  Form 8949 (d),(e)
@@ -35,6 +35,11 @@ The first runnable branch:
 
 Supported: long-term, single covered lot, no adjustments (req. doc Section 15.1).
 The short-term path (Schedule D line 7) is a stub input (defaults to 0) for now.
+
+M11 Step 1 adds the first promoted Form 1040 liability-adjacent spine through
+line 15: wages plus linked Schedule B, Schedule 1, Schedule 1-A, and Schedule D
+inputs now compute total income, AGI, deductions, and taxable income with the
+line 15 zero floor. Line 16 tax stays deferred until the worksheet/tax-table step.
 
 ## Known v0 simplifications (eyeball list)
 

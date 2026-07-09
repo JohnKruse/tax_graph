@@ -38,6 +38,27 @@ entries:
   - ascii green
   - nversion agreed
   - example mining unmappable only
+- queue_id: promotion_review_form_1040_2025
+  kind: promotion_review
+  status: pending
+  priority: medium
+  document_id: form_1040_2025
+  created_date: '2026-07-09'
+  created_by: tax_graph.promote
+  summary: Review deferred machine-gated promotion for the Form 1040 taxable-income spine through line 15
+  artifact_dir: graph/2025/_drafts/form_1040_2025
+  artifact_paths:
+  - graph/2025/citations/form-1040.yaml
+  - graph/2025/nodes/form-1040.yaml
+  - graph/2025/edges/form-1040.yaml
+  - examples/taxable_income_basic/facts.yaml
+  - examples/taxable_income_basic/expected.yaml
+  machine_witnesses:
+  - validate green
+  - pytest green
+  - ascii green
+  - taxable income fixture green
+  - sqlite parity green
 - queue_id: flow_review_form_6251_2025_false_positive_outbound_schedule_d
   kind: flow_review
   status: pending

@@ -1,0 +1,48 @@
+# Sample scenario (fake data): wages plus taxable interest, dividends, additional
+# income, a long-term capital gain, and deductions through line 15.
+tax_year: 2025
+filing_status: single
+facts:
+  - node_id: form_1040_2025_root_line_1a
+    value: 100000
+    source:
+      extracted_by: manual
+  - node_id: form_1040_2025_root_line_12e
+    value: 15000
+    source:
+      extracted_by: manual
+  - node_id: schedule_b_2025_root_line_4
+    value: 50
+    source:
+      extracted_by: manual
+  - node_id: schedule_b_2025_root_line_6
+    value: 75
+    source:
+      extracted_by: manual
+  - node_id: schedule_1_2025_part_i_line_10
+    value: 125
+    source:
+      extracted_by: manual
+  - node_id: schedule_1_2025_part_ii_line_26
+    value: 75
+    source:
+      extracted_by: manual
+  - node_id: schedule_1a_2025_part_vi_line_38
+    value: 40
+    source:
+      extracted_by: manual
+  - node_id: schedule_d_2025_line_7_net_st
+    value: 0
+    source:
+      extracted_by: manual
+tables:
+  - table_id: form_8949_2025_part_ii_line_1
+    rows:
+      - row_key: lot_1
+        columns:
+          d: 12000
+          e: 10000
+          g: 0
+        source:
+          document_label: Sample broker 1099-B (fake)
+          extracted_by: manual

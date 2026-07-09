@@ -16,7 +16,7 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 ## Current state (2026-07-09)
 
 **BALL: CODEX (interim; one worker at a time in the clone).** Authorized action:
-M11 **Step 1** (worker-heavy 1040 spine), then 3 -> 4 -> 5b -> 6.
+M11 **Step 3** (worker-heavy engine ops + QDCGT worksheet), then 4 -> 5b -> 6.
 Step 5a REWORK (PolicyEngine PARAMETER-DIFF) is DONE (Antigravity). Live PE fetch yielded 20/20 matches.
 (Whoever finishes a turn: update this BALL line - it is the first thing read.)
 
@@ -29,6 +29,15 @@ Step 5a REWORK (PolicyEngine PARAMETER-DIFF) is DONE (Antigravity). Live PE fetc
   `42.4%`. The only remaining declared frontier item is the intentional deferred branch
   `schedule_d_2025 line 20`; rejected Form 6251 false-positive flows stay recorded as
   `rejected`, not declared.
+- **M11 Step 1 completion (Codex, 2026-07-09):** Added the first live Form 1040
+  taxable-income spine through line 15. The live graph now carries Form 1040 line 1a,
+  line 1z, linked line 2b/3b/8/10/13b carry-ins, line 9 total income, line 11a/11b AGI,
+  line 14 total deductions, and line 15 taxable income with the zero floor. The line 1a
+  extraction gap was filled with an authored form span plus instruction citation, while
+  the rest of the spine reuses promoted 1040 draft spans. New fixture:
+  `examples/taxable_income_basic/`. New tests:
+  `tests/test_form_1040_spine_m11.py`. Deferred-review queue entry added:
+  `promotion_review_form_1040_2025`.
 - **Step 7 exit-run fix summary (Codex, 2026-07-09):**
   - Hardened M7 coverage tests to derive expectations from fixture/SOI data and to use a
     synthetic unmodeled weighted-form scenario rather than assuming the live graph still has
@@ -164,6 +173,14 @@ Step 5a REWORK (PolicyEngine PARAMETER-DIFF) is DONE (Antigravity). Live PE fetc
   return.
 
 ## Latest verification
+- M11 Step 1 closeout (worker, 2026-07-09):
+  - `.\.venv\Scripts\python.exe -m pytest tests/test_form_1040_spine_m11.py -q` -> 4 passed
+  - `.\.venv\Scripts\python.exe -m pytest tests/test_capital_gains_slice.py tests/test_compile_m1.py tests/test_form_1040_spine_m11.py -q` -> 12 passed
+  - `.\.venv\Scripts\python.exe -m pytest -m m11 -q` -> 10 passed, 242 deselected
+  - `.\.venv\Scripts\python.exe -m pytest -q` -> 248 passed, 4 skipped
+  - `.\.venv\Scripts\python.exe tools/check_ascii.py` -> ASCII check OK
+  - `.\.venv\Scripts\python.exe -m tax_graph.cli validate 2025 --root C:\Users\devbox\projects\tax_graph` -> graph integrity OK
+  - `.\.venv\Scripts\python.exe -m tax_graph.cli run --facts examples\taxable_income_basic\facts.yaml --year 2025 --root C:\Users\devbox\projects\tax_graph --no-record` -> line 15 path computed; line 7 preserved at 2000
 - M10 phase close, Architect independent verification (2026-07-09) - ALL GREEN:
   - Full `pytest -q` -> 238 passed, 4 skipped (after fixing one closeout-order test
     breakage: `test_parse_phase_plan_handles_wrapped_real_plan_headers` read the LIVE
