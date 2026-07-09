@@ -175,3 +175,17 @@
   quoted_text: '- 15: Subtract line 14 from line 11b. If zero or less, enter -0-. This is your taxable income 15'
   url: https://www.irs.gov/pub/irs-prior/f1040--2025.pdf
   retrieved_date: 2026-07-09
+- citation_id: cite_1040_line_17_schedule_2
+  document_id: form_1040_2025
+  source_document_id: form_1040_2025
+  locator: page 2, line 47
+  quoted_text: '- 17: Amount from Schedule 2, line 3 17'
+  url: https://www.irs.gov/pub/irs-prior/f1040--2025.pdf
+  retrieved_date: 2026-07-09
+- citation_id: cite_1040_line_24_total_tax
+  document_id: form_1040_2025
+  source_document_id: form_1040_2025
+  locator: page 2, line 54
+  quoted_text: '- 24: Add lines 22 and 23. This is your total tax 24'
+  url: https://www.irs.gov/pub/irs-prior/f1040--2025.pdf
+  retrieved_date: 2026-07-09

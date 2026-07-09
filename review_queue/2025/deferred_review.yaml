@@ -193,3 +193,40 @@ entries:
   - ascii green
   - repeatable-table fixture green
   - example mining not configured
+- queue_id: authored_review_qdcgt_worksheet_2025
+  kind: promotion_review
+  status: pending
+  priority: high
+  document_id: form_1040_2025
+  created_date: '2026-07-09'
+  created_by: tax_graph.architect
+  summary: Review the hand-AUTHORED QDCGT worksheet subunit (qdcgt_line_1..25) and
+    line 16 routing - human-authored objects, cited per line from the 1040
+    instructions; witnessed live by OTS 100/100 at the tax line and PolicyEngine
+    20/20 on the frozen corpus, but no human has read the worksheet lines yet.
+  artifact_dir: graph/2025
+  artifact_paths:
+  - graph/2025/nodes/tax-liability.yaml
+  - graph/2025/edges/form-1040.yaml
+  - graph/2025/citations/tax-liability.yaml
+  - graph/2025/rules/core.yaml
+  machine_witnesses:
+  - live OTS fuzz 100/100 at line 16 (seed 20260710)
+  - PolicyEngine liability 20/20 (8 exact, 12 table-tolerance)
+  - pytest green
+- queue_id: decision_review_1040_deduction_method
+  kind: decision_review
+  status: pending
+  priority: top
+  document_id: form_1040_2025
+  created_date: '2026-07-09'
+  created_by: tax_graph.architect
+  summary: Review the deduction-method DECISION node (standard vs itemized via
+    Schedule A line 17) - decisions encode judgment and sit at the TOP of the
+    deferred queue by policy.
+  artifact_dir: graph/2025
+  artifact_paths:
+  - graph/2025/decisions/tax-liability.yaml
+  machine_witnesses:
+  - validate green
+  - pytest green

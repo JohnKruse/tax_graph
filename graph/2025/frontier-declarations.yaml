@@ -6,3 +6,20 @@
   status: declared
   title: Schedule D line 20 tax computation worksheet
   purpose: Deferred QDCGT tax-computation worksheet branch.
+- frontier_id: deferred_form_1040_2025_line_13a_qbi
+  document_id: form_1040_2025
+  line: "13a"
+  node_id: form_1040_2025_line_13a_frontier
+  citation_ref: cite_span_form_1040_2025_0040
+  status: declared
+  title: Form 1040 line 13a qualified business income deduction
+  purpose: Deferred QBI deduction branch (Form 8995 / 8995-A not modeled).
+- frontier_id: deferred_form_1040_2025_total_tax_chain
+  document_id: form_1040_2025
+  line: "17-24"
+  node_id: form_1040_2025_total_tax_frontier
+  citation_ref: cite_1040_line_24_total_tax
+  status: declared
+  title: Form 1040 lines 17-24 credits and total-tax chain
+  purpose: Deferred credits / other-taxes / total-tax chain, including the
+    Schedule 2 AMT computation (Form 6251 remains structural).

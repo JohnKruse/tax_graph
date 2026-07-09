@@ -109,4 +109,8 @@ def test_frontier_cli_text_and_json(tmp_path):
     assert json_result.returncode == 0, json_result.stderr
     payload = json.loads(json_result.stdout)
     assert payload["coverage"]["full_universe_percent"] > 0
-    assert payload["worklist"][0]["weight"] == 24000000
+    # Worklist is weight-sorted descending; entries come and go as walls are
+    # declared, so assert the ordering contract, not a hardcoded top entry.
+    weights = [entry["weight"] for entry in payload["worklist"] if entry["weight"] is not None]
+    assert weights == sorted(weights, reverse=True)
+    assert 24000000 in weights  # schedule_d line 20 stays declared

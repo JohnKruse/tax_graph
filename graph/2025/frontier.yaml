@@ -6,6 +6,35 @@ provenance:
   soi_note: sample-based estimate; return counts are filing-frequency weights, not
     dollar amounts
 frontiers:
+- frontier_id: deferred_form_1040_2025_line_13a_qbi
+  kind: deferred_branch
+  source:
+    document_id: form_1040_2025
+  target:
+    document_id: form_1040_2025
+    line: 13a
+    node_id: form_1040_2025_line_13a_frontier
+  target_url: https://www.irs.gov/pub/irs-prior/f1040--2025.pdf
+  citation_ref: cite_span_form_1040_2025_0040
+  status: declared
+  weight: 163100000
+  title: Form 1040 line 13a qualified business income deduction
+  purpose: Deferred QBI deduction branch (Form 8995 / 8995-A not modeled).
+- frontier_id: deferred_form_1040_2025_total_tax_chain
+  kind: deferred_branch
+  source:
+    document_id: form_1040_2025
+  target:
+    document_id: form_1040_2025
+    line: 17-24
+    node_id: form_1040_2025_total_tax_frontier
+  target_url: https://www.irs.gov/pub/irs-prior/f1040--2025.pdf
+  citation_ref: cite_1040_line_24_total_tax
+  status: declared
+  weight: 163100000
+  title: Form 1040 lines 17-24 credits and total-tax chain
+  purpose: Deferred credits / other-taxes / total-tax chain, including the Schedule
+    2 AMT computation (Form 6251 remains structural).
 - frontier_id: deferred_schedule_d_2025_line_20
   kind: deferred_branch
   source:
@@ -138,6 +167,28 @@ frontiers:
   citation_ref: cite_8949_line2_totals
   status: modeled
   weight: 24000000
+- frontier_id: ref_cite_1040_line_16_tax_methods_to_form_1040_2025
+  kind: form_reference
+  source:
+    document_id: instructions_form_1040_2025
+    citation_id: cite_1040_line_16_tax_methods
+  target:
+    document_id: form_1040_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040--2025.pdf
+  citation_ref: cite_1040_line_16_tax_methods
+  status: modeled
+  weight: 163100000
+- frontier_id: ref_cite_1040_line_17_schedule_2_to_schedule_2_2025
+  kind: form_reference
+  source:
+    document_id: form_1040_2025
+    citation_id: cite_1040_line_17_schedule_2
+  target:
+    document_id: schedule_2_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040s2--2025.pdf
+  citation_ref: cite_1040_line_17_schedule_2
+  status: modeled
+  weight: 62000000
 - frontier_id: ref_cite_1040_line_7_to_schedule_d_2025
   kind: form_reference
   source:
@@ -149,6 +200,226 @@ frontiers:
   citation_ref: cite_1040_line_7
   status: modeled
   weight: 24000000
+- frontier_id: ref_cite_1040_qdcgt_line_10_12_to_form_1040_2025
+  kind: form_reference
+  source:
+    document_id: instructions_form_1040_2025
+    citation_id: cite_1040_qdcgt_line_10_12
+  target:
+    document_id: form_1040_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040--2025.pdf
+  citation_ref: cite_1040_qdcgt_line_10_12
+  status: modeled
+  weight: 163100000
+- frontier_id: ref_cite_1040_qdcgt_line_13_17_to_form_1040_2025
+  kind: form_reference
+  source:
+    document_id: instructions_form_1040_2025
+    citation_id: cite_1040_qdcgt_line_13_17
+  target:
+    document_id: form_1040_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040--2025.pdf
+  citation_ref: cite_1040_qdcgt_line_13_17
+  status: modeled
+  weight: 163100000
+- frontier_id: ref_cite_1040_qdcgt_line_18_21_to_form_1040_2025
+  kind: form_reference
+  source:
+    document_id: instructions_form_1040_2025
+    citation_id: cite_1040_qdcgt_line_18_21
+  target:
+    document_id: form_1040_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040--2025.pdf
+  citation_ref: cite_1040_qdcgt_line_18_21
+  status: modeled
+  weight: 163100000
+- frontier_id: ref_cite_1040_qdcgt_line_1_to_form_1040_2025
+  kind: form_reference
+  source:
+    document_id: instructions_form_1040_2025
+    citation_id: cite_1040_qdcgt_line_1
+  target:
+    document_id: form_1040_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040--2025.pdf
+  citation_ref: cite_1040_qdcgt_line_1
+  status: modeled
+  weight: 163100000
+- frontier_id: ref_cite_1040_qdcgt_line_22_to_form_1040_2025
+  kind: form_reference
+  source:
+    document_id: instructions_form_1040_2025
+    citation_id: cite_1040_qdcgt_line_22
+  target:
+    document_id: form_1040_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040--2025.pdf
+  citation_ref: cite_1040_qdcgt_line_22
+  status: modeled
+  weight: 163100000
+- frontier_id: ref_cite_1040_qdcgt_line_23_25_to_form_1040_2025
+  kind: form_reference
+  source:
+    document_id: instructions_form_1040_2025
+    citation_id: cite_1040_qdcgt_line_23_25
+  target:
+    document_id: form_1040_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040--2025.pdf
+  citation_ref: cite_1040_qdcgt_line_23_25
+  status: modeled
+  weight: 163100000
+- frontier_id: ref_cite_1040_qdcgt_line_24_to_form_1040_2025
+  kind: form_reference
+  source:
+    document_id: instructions_form_1040_2025
+    citation_id: cite_1040_qdcgt_line_24
+  target:
+    document_id: form_1040_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040--2025.pdf
+  citation_ref: cite_1040_qdcgt_line_24
+  status: modeled
+  weight: 163100000
+- frontier_id: ref_cite_1040_qdcgt_line_25_to_form_1040_2025
+  kind: form_reference
+  source:
+    document_id: instructions_form_1040_2025
+    citation_id: cite_1040_qdcgt_line_25
+  target:
+    document_id: form_1040_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040--2025.pdf
+  citation_ref: cite_1040_qdcgt_line_25
+  status: modeled
+  weight: 163100000
+- frontier_id: ref_cite_1040_qdcgt_line_2_to_form_1040_2025
+  kind: form_reference
+  source:
+    document_id: instructions_form_1040_2025
+    citation_id: cite_1040_qdcgt_line_2
+  target:
+    document_id: form_1040_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040--2025.pdf
+  citation_ref: cite_1040_qdcgt_line_2
+  status: modeled
+  weight: 163100000
+- frontier_id: ref_cite_1040_qdcgt_line_3_to_form_1040_2025
+  kind: form_reference
+  source:
+    document_id: instructions_form_1040_2025
+    citation_id: cite_1040_qdcgt_line_3
+  target:
+    document_id: form_1040_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040--2025.pdf
+  citation_ref: cite_1040_qdcgt_line_3
+  status: modeled
+  weight: 163100000
+- frontier_id: ref_cite_1040_qdcgt_line_3_to_schedule_d_2025
+  kind: form_reference
+  source:
+    document_id: instructions_form_1040_2025
+    citation_id: cite_1040_qdcgt_line_3
+  target:
+    document_id: schedule_d_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040sd--2025.pdf
+  citation_ref: cite_1040_qdcgt_line_3
+  status: modeled
+  weight: 24000000
+- frontier_id: ref_cite_1040_qdcgt_line_4_to_form_1040_2025
+  kind: form_reference
+  source:
+    document_id: instructions_form_1040_2025
+    citation_id: cite_1040_qdcgt_line_4
+  target:
+    document_id: form_1040_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040--2025.pdf
+  citation_ref: cite_1040_qdcgt_line_4
+  status: modeled
+  weight: 163100000
+- frontier_id: ref_cite_1040_qdcgt_line_5_to_form_1040_2025
+  kind: form_reference
+  source:
+    document_id: instructions_form_1040_2025
+    citation_id: cite_1040_qdcgt_line_5
+  target:
+    document_id: form_1040_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040--2025.pdf
+  citation_ref: cite_1040_qdcgt_line_5
+  status: modeled
+  weight: 163100000
+- frontier_id: ref_cite_1040_qdcgt_line_6_9_to_form_1040_2025
+  kind: form_reference
+  source:
+    document_id: instructions_form_1040_2025
+    citation_id: cite_1040_qdcgt_line_6_9
+  target:
+    document_id: form_1040_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040--2025.pdf
+  citation_ref: cite_1040_qdcgt_line_6_9
+  status: modeled
+  weight: 163100000
+- frontier_id: ref_cite_1040_standard_deduction_to_form_1040_2025
+  kind: form_reference
+  source:
+    document_id: instructions_form_1040_2025
+    citation_id: cite_1040_standard_deduction
+  target:
+    document_id: form_1040_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040--2025.pdf
+  citation_ref: cite_1040_standard_deduction
+  status: modeled
+  weight: 163100000
+- frontier_id: ref_cite_1040_tax_brackets_hoh_to_form_1040_2025
+  kind: form_reference
+  source:
+    document_id: instructions_form_1040_2025
+    citation_id: cite_1040_tax_brackets_hoh
+  target:
+    document_id: form_1040_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040--2025.pdf
+  citation_ref: cite_1040_tax_brackets_hoh
+  status: modeled
+  weight: 163100000
+- frontier_id: ref_cite_1040_tax_brackets_joint_qss_to_form_1040_2025
+  kind: form_reference
+  source:
+    document_id: instructions_form_1040_2025
+    citation_id: cite_1040_tax_brackets_joint_qss
+  target:
+    document_id: form_1040_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040--2025.pdf
+  citation_ref: cite_1040_tax_brackets_joint_qss
+  status: modeled
+  weight: 163100000
+- frontier_id: ref_cite_1040_tax_brackets_mfs_to_form_1040_2025
+  kind: form_reference
+  source:
+    document_id: instructions_form_1040_2025
+    citation_id: cite_1040_tax_brackets_mfs
+  target:
+    document_id: form_1040_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040--2025.pdf
+  citation_ref: cite_1040_tax_brackets_mfs
+  status: modeled
+  weight: 163100000
+- frontier_id: ref_cite_1040_tax_brackets_single_to_form_1040_2025
+  kind: form_reference
+  source:
+    document_id: instructions_form_1040_2025
+    citation_id: cite_1040_tax_brackets_single
+  target:
+    document_id: form_1040_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040--2025.pdf
+  citation_ref: cite_1040_tax_brackets_single
+  status: modeled
+  weight: 163100000
+- frontier_id: ref_cite_1040_tax_table_to_form_1040_2025
+  kind: form_reference
+  source:
+    document_id: instructions_form_1040_2025
+    citation_id: cite_1040_tax_table
+  target:
+    document_id: form_1040_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040--2025.pdf
+  citation_ref: cite_1040_tax_table
+  status: modeled
+  weight: 163100000
 - frontier_id: ref_cite_schedule_d_16_to_1040_7_to_form_1040_2025
   kind: form_reference
   source:
@@ -193,6 +464,39 @@ frontiers:
   citation_ref: cite_schedule_d_line21_loss_limit
   status: modeled
   weight: 24000000
+- frontier_id: ref_cite_span_form_1040_2025_0030_to_schedule_1_2025
+  kind: form_reference
+  source:
+    document_id: form_1040_2025
+    citation_id: cite_span_form_1040_2025_0030
+  target:
+    document_id: schedule_1_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040s1--2025.pdf
+  citation_ref: cite_span_form_1040_2025_0030
+  status: modeled
+  weight: 74000000
+- frontier_id: ref_cite_span_form_1040_2025_0032_to_schedule_1_2025
+  kind: form_reference
+  source:
+    document_id: form_1040_2025
+    citation_id: cite_span_form_1040_2025_0032
+  target:
+    document_id: schedule_1_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040s1--2025.pdf
+  citation_ref: cite_span_form_1040_2025_0032
+  status: modeled
+  weight: 74000000
+- frontier_id: ref_cite_span_form_1040_2025_0041_to_schedule_1_2025
+  kind: form_reference
+  source:
+    document_id: form_1040_2025
+    citation_id: cite_span_form_1040_2025_0041
+  target:
+    document_id: schedule_1_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040s1--2025.pdf
+  citation_ref: cite_span_form_1040_2025_0041
+  status: modeled
+  weight: 74000000
 - frontier_id: ref_cite_span_form_6251_2025_0003_to_form_1040_2025
   kind: form_reference
   source:

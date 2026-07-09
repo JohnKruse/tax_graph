@@ -1,4 +1,20 @@
-# PHASE M11 - First liability branch   [ ]
+# PHASE M11 - First liability branch   [COMPLETE]
+
+**Closed 2026-07-09 by the Architect.** ROLE DEVIATION NOTE (M8-close precedent): Steps
+4, 5b, and 6 were completed by the ARCHITECT at John's explicit direction after Codex
+ran out of tokens mid-Step-4; Steps 2 and 5a ran on Antigravity under per-slice
+authorizations with line-by-line Architect review; Steps 1 and 3 were Codex. Close-out:
+full pytest 260 passed / 4 skipped; pytest -m m11 26 passed; ASCII OK; validate/build
+green; base-deps run + frontier green; parity 2000/250 unchanged. LIVE GATES: OTS fuzz
+100/100 AGREED AT THE TAX LINE (seed 20260710; wages, all five filing statuses, QDCGT
+breakpoints, the 100k table/formula boundary); corpus re-frozen seed 20260711 with
+live_ots_diff_report provenance; PolicyEngine liability 20/20 (8 exact, 12 within the
+documented tax-table tolerance) plus parameter-diff 20/20. Notable findings during the
+phase: OTS carries cents so whole-dollar rounding happens ONCE at line 16
+(lookup_bracket_tax now carries cents); S1/S1A/Schedule-A supplemental fuzz inputs left
+the live domain until M13 models the schedule-internal Add-lines chains (pinned in
+oracles/domain_2025.yaml + box_map notes); new walls DECLARED in the frontier: 1040
+line 13a QBI and the lines 17-24 total-tax chain (incl. AMT).
 
 **Canary:** Rate Ladder
 **Depends on:** M10 (batch surface promoted; Schedules 1/1-A/2/3/A/B + 6251 live), M9
