@@ -412,6 +412,10 @@ from M11's QDCGT precedent.
 ### M14 - Product surface (canary Open Door)
 Flesh out the two pinned stubs: self-serve extension harness
 (`docs/self-serve-extension.md`) and doc-drop intake relevance layer (`docs/intake.md`).
+Plus **packaging + distribution** per `docs/distribution.md` (pinned 2026-07-09): PyPI
+release automation (trusted publishing), the `.mcpb` Claude Desktop bundle + Connectors
+Directory submission, and the official MCP Registry `server.json`. Stable release still
+gates on M15.
 
 ### M15 - Review Workbench + review campaign (canary Fresh Eyes)
 Build `docs/review-workbench.md` against the final artifact shape; drain the

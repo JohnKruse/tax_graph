@@ -52,6 +52,14 @@ minimum. M10 is CLOSED and archived (Architect-verified 2026-07-09).
 - (none)
 
 ## From Architect
+- **NEW (2026-07-09) - Distribution plan PINNED (John's call; canonical in
+  `docs/distribution.md`).** Channels in priority order: PyPI (`tax-graph`, confirmed
+  available; alpha `0.1.0a1` built, upload pending John's PyPI token) -> `.mcpb` Claude
+  Desktop bundle + Connectors Directory -> official MCP Registry (namespace auto-owned
+  via GitHub auth) -> aggregators. Packaging work lands in M14; STABLE release gates on
+  M15. Hard lines: no taxpayer data leaves the machine, no e-file, seasonal versioning,
+  alpha releases carry the not-tax-advice disclaimer. pyproject now carries alpha
+  status + urls metadata (version `0.1.0a1`).
 - **NEW (2026-07-09) - Roadmap M11-M15 + output goal PINNED (John's calls; canonical in
   engineering-plan "Roadmap M11-M15" and "Output goal").** Sequence: M11 first liability
   branch (QDCGT + line 16 + PolicyEngine second witness) -> M12 output layer (filled

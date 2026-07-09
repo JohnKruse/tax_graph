@@ -1,16 +1,27 @@
 [project]
 name = "tax-graph"
-version = "0.1.0"
-description = "A deterministic, machine-readable computation graph for U.S. tax forms."
+version = "0.1.0a1"
+description = "A deterministic, machine-readable computation graph for U.S. tax forms, served over MCP."
 readme = "README.md"
 requires-python = ">=3.11"
 license = { file = "LICENSE" }
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Intended Audience :: End Users/Desktop",
+  "Programming Language :: Python :: 3",
+  "Topic :: Office/Business :: Financial",
+]
+keywords = ["tax", "mcp", "model-context-protocol", "irs", "computation-graph"]
 dependencies = [
   "jsonschema>=4.0",
   "mcp>=1.0",
   "pyyaml>=6.0",
   "typer>=0.12",
 ]
+
+[project.urls]
+Homepage = "https://github.com/JohnKruse/tax_graph"
+Repository = "https://github.com/JohnKruse/tax_graph"
 
 [project.optional-dependencies]
 acquire = [
