@@ -1,26 +1,25 @@
-# Form 1040 Verification Record (form_1040_2025)
+# Schedule B (Form 1040) - Interest and Ordinary Dividends Verification Record (schedule_b_2025)
 
 This page is generated from committed repository data by `tax_graph.verify.record`.
 
 ## Summary
 
-- Document id: `form_1040_2025`
-- Document type: `tax_form`
+- Document id: `schedule_b_2025`
+- Document type: `schedule`
 - Status: `partial`
 - Verification tier: independently witnessed
-- Source URL: https://www.irs.gov/forms-pubs/about-form-1040
+- Source URL: https://www.irs.gov/pub/irs-prior/f1040sb--2025.pdf
 
 ## Modeled
 
-- citations: 1
+- citations: 6
 - documents: 1
-- edges: 1
-- nodes: 2
-- rules: 1
+- nodes: 6
 
 ## Explicit Gaps
 
-- No explicit gap record is committed for this document.
+- Line 7: line remains unmodeled in the M10 Step 4 batch draft
+- Line 8: line remains unmodeled in the M10 Step 4 batch draft
 
 ## Witnesses
 

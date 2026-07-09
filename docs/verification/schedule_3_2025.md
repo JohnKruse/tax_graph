@@ -1,22 +1,20 @@
-# Form 1040 Verification Record (form_1040_2025)
+# Schedule 3 (Form 1040) - Additional Credits and Payments Verification Record (schedule_3_2025)
 
 This page is generated from committed repository data by `tax_graph.verify.record`.
 
 ## Summary
 
-- Document id: `form_1040_2025`
-- Document type: `tax_form`
+- Document id: `schedule_3_2025`
+- Document type: `schedule`
 - Status: `partial`
 - Verification tier: independently witnessed
-- Source URL: https://www.irs.gov/forms-pubs/about-form-1040
+- Source URL: https://www.irs.gov/pub/irs-prior/f1040s3--2025.pdf
 
 ## Modeled
 
-- citations: 1
+- citations: 16
 - documents: 1
-- edges: 1
-- nodes: 2
-- rules: 1
+- nodes: 16
 
 ## Explicit Gaps
 

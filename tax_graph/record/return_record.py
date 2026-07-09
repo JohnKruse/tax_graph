@@ -144,8 +144,13 @@ def build_return_record(
     resolutions = validate_decision_resolutions(decision_resolutions or {"resolutions": []}, graph)
     facts = _build_facts(facts_document, graph)
     decisions = _build_decisions(resolutions, graph)
-    trace_summary = [_trace_entry(node_id, trace, graph) for node_id, trace in sorted(result.trace.items())]
     outputs = _build_outputs(result, graph, target_node)
+    scoped_trace_ids = _scoped_trace_ids(result, target_node)
+    trace_summary = [
+        _trace_entry(node_id, result.trace[node_id], graph)
+        for node_id in sorted(scoped_trace_ids)
+        if node_id in result.trace
+    ]
     carryforward_block = _build_carryforward_block(
         result=result,
         tax_year=record_year,
@@ -153,7 +158,7 @@ def build_return_record(
         generated_date=str(generated_date),
     )
     validate_carryforward_block(carryforward_block.to_dict())
-    unsupported = _build_unsupported(result, decisions, carryforward_block)
+    unsupported = _build_unsupported(result, decisions, carryforward_block, scoped_trace_ids=scoped_trace_ids)
     return ReturnRecord(
         metadata=metadata,
         facts=facts,
@@ -460,10 +465,17 @@ def _build_unsupported(
     result: Result,
     decisions: list[DecisionLogEntry],
     carryforward_block: CarryforwardBlock,
+    *,
+    scoped_trace_ids: set[str] | None = None,
 ) -> list[str]:
+    missing_required_ids = (
+        [node_id for node_id in result.missing_required_inputs if node_id in scoped_trace_ids]
+        if scoped_trace_ids is not None
+        else result.missing_required_inputs
+    )
     items = [
         f"Missing required input: {node_id}"
-        for node_id in result.missing_required_inputs
+        for node_id in missing_required_ids
     ]
     for decision in decisions:
         if decision.chosen_option_type in {"other", "unsupported", "escalate"}:
@@ -518,6 +530,24 @@ def _build_outputs(result: Result, graph: Graph, target_node: str | None) -> lis
         for node_id, trace in sorted(result.trace.items())
         if trace.get("kind") == "computed"
     ]
+
+
+def _scoped_trace_ids(result: Result, target_node: str | None) -> set[str]:
+    if not target_node or target_node not in result.trace:
+        return set(result.trace)
+    scoped: set[str] = set()
+    stack = [target_node]
+    while stack:
+        node_id = stack.pop()
+        if node_id in scoped:
+            continue
+        scoped.add(node_id)
+        trace = result.trace.get(node_id) or {}
+        for operand in trace.get("inputs", []):
+            operand_id = operand.get("node")
+            if isinstance(operand_id, str) and operand_id in result.trace:
+                stack.append(operand_id)
+    return scoped
 
 
 def _trace_entry(node_id: str, trace: dict[str, Any], graph: Graph) -> TraceSummaryEntry:

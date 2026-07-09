@@ -70,6 +70,14 @@ def test_render_memo_matches_golden_fixture():
     assert "\r\n" not in memo
 
 
+def test_render_memo_scopes_trace_to_touched_forms_only():
+    memo = render_memo(_capital_gains_record())
+
+    assert "form_6251_2025" not in memo
+    assert "schedule_1_2025" not in memo
+    assert "schedule_b_2025" not in memo
+
+
 def test_render_memo_without_decisions_is_explicit():
     graph = Graph("2025", root=ROOT, source="yaml")
     result = Engine(graph).execute(load_facts(FACTS_PATH))

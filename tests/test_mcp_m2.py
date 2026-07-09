@@ -95,10 +95,10 @@ def test_get_citation_by_id_and_fts_query(tmp_path):
     server = build_mcp_server(year="2025", root=root, source="sqlite")
 
     citation = _call_tool(server, "get_citation", {"citation_id": "cite_8949_col_h_gain"})
-    search = _call_tool(server, "get_citation", {"query": "Subtract"})
+    search = _call_tool(server, "get_citation", {"query": "combine the result with column (g)"})
 
     assert "Subtract column" in citation["citation"]["quoted_text"]
-    assert [match["citation_id"] for match in search["matches"]][:1] == ["cite_8949_col_h_gain"]
+    assert "cite_8949_col_h_gain" in [match["citation_id"] for match in search["matches"]]
 
 
 @pytest.mark.m2

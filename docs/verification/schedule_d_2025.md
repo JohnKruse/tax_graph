@@ -28,5 +28,5 @@ This page is generated from committed repository data by `tax_graph.verify.recor
 - IRS worked examples: 1 committed IRS worked-example fixture(s); 1 pending human review.
 - N-version corroboration: No committed N-version corroboration artifact for this document.
 - Property tests: No committed per-form property-test artifact for this document.
-- Calibration audit: sample 8, escapes 0, human minutes not yet recorded.
+- Calibration audit: sample 11, escapes 0, human minutes not yet recorded.
 - Triage outcomes: No committed triage entries for this document.

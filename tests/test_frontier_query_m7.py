@@ -9,7 +9,10 @@ from pathlib import Path
 import pytest
 import yaml
 
+from tax_graph.acquire.manifest import load_manifest
 from tax_graph.frontier.build import build_frontier_registry, summarize_frontier
+from tax_graph.frontier.soi import load_soi_counts
+from tax_graph.io.loader import load_graph
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -30,11 +33,27 @@ def test_frontier_summary_worklist_and_coverage(tmp_path):
     build_frontier_registry("2025", root=root)
 
     summary = summarize_frontier("2025", root=root)
+    graph = load_graph("2025", root)
+    soi = load_soi_counts(root)
+    manifest = load_manifest(root=root)
     weights = [entry["weight"] for entry in summary["worklist"]]
+    modeled_docs = {doc["document_id"] for doc in graph.items("documents") if "document_id" in doc}
+    in_scope_docs = {entry.document_id for entry in manifest.documents if entry.document_id in soi.counts}
+    expected_full_weight = sum(soi.counts.values())
+    expected_modeled_weight = sum(weight for doc, weight in soi.counts.items() if doc in modeled_docs)
+    expected_in_scope_weight = sum(weight for doc, weight in soi.counts.items() if doc in in_scope_docs)
+    expected_in_scope_modeled_weight = sum(
+        weight for doc, weight in soi.counts.items() if doc in modeled_docs and doc in in_scope_docs
+    )
 
-    assert summary["coverage"]["full_universe_percent"] > 0
-    assert summary["coverage"]["full_universe_percent"] < 100
-    assert summary["coverage"]["in_scope_percent"] == 47.1
+    assert summary["coverage"] == {
+        "modeled_weight": expected_modeled_weight,
+        "full_universe_weight": expected_full_weight,
+        "full_universe_percent": round((expected_modeled_weight / expected_full_weight) * 100.0, 1),
+        "in_scope_modeled_weight": expected_in_scope_modeled_weight,
+        "in_scope_weight": expected_in_scope_weight,
+        "in_scope_percent": round((expected_in_scope_modeled_weight / expected_in_scope_weight) * 100.0, 1),
+    }
     assert weights == sorted(weights, reverse=True)
     assert any(entry["frontier_id"] == "deferred_schedule_d_2025_line_20" for entry in summary["worklist"])
 
@@ -42,8 +61,9 @@ def test_frontier_summary_worklist_and_coverage(tmp_path):
 @pytest.mark.m7
 def test_frontier_coverage_increases_when_weighted_form_is_modeled(tmp_path):
     root = _copy_frontier_root(tmp_path)
-    before = summarize_frontier("2025", root=root)["coverage"]["full_universe_percent"]
     documents_dir = root / "graph" / "2025" / "documents"
+    (documents_dir / "schedule-b.yaml").unlink()
+    before = summarize_frontier("2025", root=root)["coverage"]["full_universe_percent"]
     (documents_dir / "schedule-b.yaml").write_text(
         yaml.safe_dump(
             {
