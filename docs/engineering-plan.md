@@ -364,6 +364,63 @@ emits values + audit trace + Return Record.
   the Verification Record states each form's actual depth. `PHASE_M10.md` is written
   just-in-time when M9 closes, informed by M9's measured per-form economics.
 
+## Output goal (decided 2026-07-09)
+The product remains the graph-as-roadmap an AI walks with the filer over MCP. The
+session's OUTPUT ARTIFACTS are layered:
+- **Computed values + cited audit trace** (exists) and the **Return Record + carryforward
+  memo** (exists) - the working layer and the durable "why".
+- **Filled official IRS PDF forms** are the primary FILING deliverable (M12): values
+  rendered into the acquired AcroForm field grids; human-readable; paper-file or
+  transcription ready; unresolved frontier lines stay blank with an explicit note in the
+  record - never a guessed zero on an official form.
+- **OTS input sidecar** (M12, nearly free - the differential renderer exists): the user
+  can independently re-run the second-opinion oracle on their own return.
+- **E-file/MeF submission is explicitly OUT OF SCOPE** (arm's-length IRS stance, decided
+  with the oracle strategy): submission requires e-file provider enrollment + ATS
+  certification and a regulatory posture this project deliberately does not take. The MeF
+  schema remains an optional completeness witness only.
+
+## Roadmap M11-M15 (decided 2026-07-09; plans written just-in-time)
+Ordering rationale: finish the pipeline first, review last as the pre-ship gate (John's
+call) - the machine witness net carries correctness while human review is deferred to a
+single pass over the FINAL shape, where it is cheapest and the workbench fits what
+actually exists.
+
+### M11 - First liability branch (canary Rate Ladder)
+Extract/promote the Form 1040 income-to-taxable-income spine, land bracket / standard
+deduction / QDCGT threshold parameter tables and the under-$100k tax table as a compiled
+data resource, author the QDCGT worksheet as the first worksheet-shaped subunit (cited
+per line), and compute **1040 line 16 tax** for the supported profile. OTS witnesses the
+tax line live; **PolicyEngine joins as the second witness** (liability-level diff, the
+channel pinned in the oracle strategy). Credits/total-tax chain (lines 17-24), QBI
+(line 13), and AMT computation stay explicit frontier walls.
+
+### M12 - Output layer (canary Paper Trail)
+What a filing session hands the user: filled official PDFs (node -> AcroForm field map,
+validated both directions like the oracle box map; filled-form goldens; blank-with-note
+for frontier lines), the OTS input sidecar, and the return-scoped output contract
+(`run` output and every artifact scoped to the RETURN, never the graph - extends the M10
+Return Record pin). Also builds the node-to-page-geometry mapping the M15 workbench
+reuses.
+
+### M13 - Worksheet depth (canary Deep Ledger)
+Convert the remaining named frontier walls into modeled math where value justifies:
+Schedule D line 20 branch + capital loss carryover worksheet, lines 18/19 (28%-rate,
+unrecaptured 1250) as data warrants. Worksheet extraction/authoring pattern generalizes
+from M11's QDCGT precedent.
+
+### M14 - Product surface (canary Open Door)
+Flesh out the two pinned stubs: self-serve extension harness
+(`docs/self-serve-extension.md`) and doc-drop intake relevance layer (`docs/intake.md`).
+
+### M15 - Review Workbench + review campaign (canary Fresh Eyes)
+Build `docs/review-workbench.md` against the final artifact shape; drain the
+deferred-review queue in one campaign; measure real `human_minutes` / escape rates;
+upgrade trust tiers from pending to human-confirmed. **This is the pre-ship gate:
+nothing ships to users before it.** Verdict outcomes distinguish confirmed /
+pipeline-defect (fix + re-extract) / source-pathology (licenses a MARKED manual
+override with human provenance).
+
 ---
 
 ## Configuration - one-stop tuning
@@ -396,6 +453,12 @@ canary: **Ledger Llama**.
 | M7 Frontier/Coverage | Compass Rose | `pytest -m m7` (frontier registry + SOI weights + coverage %) |
 | M8 Verification ladder | Skeptical Notary | `pytest -m m8` (drill catalog 100% caught + example fixtures execute) |
 | M9 Schedule D + LINK + Verification Record | Daisy Chain | `pytest -m m9` (promoted Sched D + realized LINK edges + coverage rise + committed VERIFICATION.md) |
+| M10 Batch expansion | Assembly Line | `pytest -m m10` (batch set promoted + coverage 90.1% + widened oracle corpus + byte-stable records) |
+| M11 First liability branch | Rate Ladder | `pytest -m m11` (line 16 tax via cited parameters/worksheet; OTS live agreement at the tax line; PolicyEngine second witness) |
+| M12 Output layer | Paper Trail | `pytest -m m12` (filled-PDF goldens + field-map validated both ways + OTS sidecar + return-scoped outputs) |
+| M13 Worksheet depth | Deep Ledger | `pytest -m m13` (carryover/line-20 branch modeled + oracle agreement over widened loss domain) |
+| M14 Product surface | Open Door | `pytest -m m14` (self-serve extension + intake per fleshed-out docs) |
+| M15 Review Workbench | Fresh Eyes | queue drained + human_minutes/escape-rate measured + tiers upgraded; PRE-SHIP GATE |
 
 ## Working protocol (Architect / Worker)
 

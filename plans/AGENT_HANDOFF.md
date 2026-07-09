@@ -15,9 +15,11 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## Current state (2026-07-09)
 
-**BALL: ARCHITECT.** Next action: plan M11 (await John's direction on scope). M10 is
-CLOSED: Architect independently verified all exit criteria on 2026-07-09 (see Latest
-verification) and pushed. John has been told.
+**BALL: CODEX.** Next action: start M11 (First liability branch, canary Rate Ladder) -
+`plans/PHASE_M11.md` is the only open plan, written 2026-07-09. State the canary, then
+work Steps 1-6 in order under the deferred-review policy (no blocking stops). Read the
+plan's Supported Profile and Guardrails first; new engine ops are capped at the named
+minimum. M10 is CLOSED and archived (Architect-verified 2026-07-09).
 (Whoever finishes a turn: update this BALL line - it is the first thing read.)
 
 - **M0-M10 are COMPLETE.** M10 closed with the batch OTS-witnessed set promoted: Schedule 1,
@@ -50,6 +52,14 @@ verification) and pushed. John has been told.
 - (none)
 
 ## From Architect
+- **NEW (2026-07-09) - Roadmap M11-M15 + output goal PINNED (John's calls; canonical in
+  engineering-plan "Roadmap M11-M15" and "Output goal").** Sequence: M11 first liability
+  branch (QDCGT + line 16 + PolicyEngine second witness) -> M12 output layer (filled
+  official PDFs as the FILING deliverable, OTS input sidecar, return-scoped output
+  contract) -> M13 worksheet depth -> M14 product surface (self-serve + intake) ->
+  M15 Review Workbench + review campaign (the PRE-SHIP GATE; review debt keeps
+  accumulating in the queue until then, by design). E-file/MeF submission is explicitly
+  OUT of scope (arm's-length stance); MeF stays a completeness witness only.
 - Return Record durable pin (2026-07-09, now implemented): the Return Record is scoped to the
   return, never the full graph. It contains only supplied facts, nodes on the computed trace,
   decisions touched, carryforwards, and explicit unsupported/deferred items touched by that
