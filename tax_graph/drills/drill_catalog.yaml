@@ -122,3 +122,44 @@
     value: 3500
   expected_layers:
     - L3
+
+- id: wrong_standard_deduction
+  taxonomy: F3
+  description: Mutate the standard deduction parameter for Single filing status.
+  mutation:
+    kind: change_node_constant
+    node_id: form_1040_2025_standard_deduction_single
+    value: 16000
+  expected_layers:
+    - L3
+
+- id: wrong_bracket_value
+  taxonomy: F3
+  description: Mutate the tax bracket floor for Single filing status.
+  mutation:
+    kind: change_node_constant
+    node_id: form_1040_2025_brackets_single
+    value:
+      - rate: 0.10
+        floor: 0
+        cumulative: 0
+      - rate: 0.12
+        floor: 12000
+        cumulative: 1200
+      - rate: 0.22
+        floor: 48475
+        cumulative: 5577
+      - rate: 0.24
+        floor: 103350
+        cumulative: 17649.5
+      - rate: 0.32
+        floor: 197300
+        cumulative: 40197.5
+      - rate: 0.35
+        floor: 250525
+        cumulative: 57229.5
+      - rate: 0.37
+        floor: 626350
+        cumulative: 188768.25
+  expected_layers:
+    - L3

@@ -1,0 +1,310 @@
+# Form 1040 tax liability parameters and bracket tables for 2025.
+
+# --- Standard Deductions ---
+- node_id: form_1040_2025_standard_deduction_single
+  document_id: form_1040_2025
+  label: Form 1040 standard deduction, Single
+  node_type: parameter
+  value_type: currency
+  required: optional
+  constant_value: 15750
+  citation_refs:
+    - cite_1040_standard_deduction
+
+- node_id: form_1040_2025_standard_deduction_mfj
+  document_id: form_1040_2025
+  label: Form 1040 standard deduction, Married filing jointly
+  node_type: parameter
+  value_type: currency
+  required: optional
+  constant_value: 31500
+  citation_refs:
+    - cite_1040_standard_deduction
+
+- node_id: form_1040_2025_standard_deduction_mfs
+  document_id: form_1040_2025
+  label: Form 1040 standard deduction, Married filing separately
+  node_type: parameter
+  value_type: currency
+  required: optional
+  constant_value: 15750
+  citation_refs:
+    - cite_1040_standard_deduction
+
+- node_id: form_1040_2025_standard_deduction_hoh
+  document_id: form_1040_2025
+  label: Form 1040 standard deduction, Head of household
+  node_type: parameter
+  value_type: currency
+  required: optional
+  constant_value: 23625
+  citation_refs:
+    - cite_1040_standard_deduction
+
+- node_id: form_1040_2025_standard_deduction_qss
+  document_id: form_1040_2025
+  label: Form 1040 standard deduction, Qualifying surviving spouse
+  node_type: parameter
+  value_type: currency
+  required: optional
+  constant_value: 31500
+  citation_refs:
+    - cite_1040_standard_deduction
+
+# --- QDCGT Breakpoints (0% rate threshold) ---
+- node_id: form_1040_2025_qdcgt_breakpoint_0_single
+  document_id: form_1040_2025
+  label: QDCGT 0% tax rate breakpoint, Single
+  node_type: parameter
+  value_type: currency
+  required: optional
+  constant_value: 48350
+  citation_refs:
+    - cite_1040_qdcgt_breakpoints
+
+- node_id: form_1040_2025_qdcgt_breakpoint_0_mfj
+  document_id: form_1040_2025
+  label: QDCGT 0% tax rate breakpoint, Married filing jointly
+  node_type: parameter
+  value_type: currency
+  required: optional
+  constant_value: 96700
+  citation_refs:
+    - cite_1040_qdcgt_breakpoints
+
+- node_id: form_1040_2025_qdcgt_breakpoint_0_mfs
+  document_id: form_1040_2025
+  label: QDCGT 0% tax rate breakpoint, Married filing separately
+  node_type: parameter
+  value_type: currency
+  required: optional
+  constant_value: 48350
+  citation_refs:
+    - cite_1040_qdcgt_breakpoints
+
+- node_id: form_1040_2025_qdcgt_breakpoint_0_hoh
+  document_id: form_1040_2025
+  label: QDCGT 0% tax rate breakpoint, Head of household
+  node_type: parameter
+  value_type: currency
+  required: optional
+  constant_value: 64750
+  citation_refs:
+    - cite_1040_qdcgt_breakpoints
+
+- node_id: form_1040_2025_qdcgt_breakpoint_0_qss
+  document_id: form_1040_2025
+  label: QDCGT 0% tax rate breakpoint, Qualifying surviving spouse
+  node_type: parameter
+  value_type: currency
+  required: optional
+  constant_value: 96700
+  citation_refs:
+    - cite_1040_qdcgt_breakpoints
+
+# --- QDCGT Breakpoints (15% rate threshold) ---
+- node_id: form_1040_2025_qdcgt_breakpoint_15_single
+  document_id: form_1040_2025
+  label: QDCGT 15% tax rate breakpoint, Single
+  node_type: parameter
+  value_type: currency
+  required: optional
+  constant_value: 533400
+  citation_refs:
+    - cite_1040_qdcgt_breakpoints
+
+- node_id: form_1040_2025_qdcgt_breakpoint_15_mfj
+  document_id: form_1040_2025
+  label: QDCGT 15% tax rate breakpoint, Married filing jointly
+  node_type: parameter
+  value_type: currency
+  required: optional
+  constant_value: 600050
+  citation_refs:
+    - cite_1040_qdcgt_breakpoints
+
+- node_id: form_1040_2025_qdcgt_breakpoint_15_mfs
+  document_id: form_1040_2025
+  label: QDCGT 15% tax rate breakpoint, Married filing separately
+  node_type: parameter
+  value_type: currency
+  required: optional
+  constant_value: 300000
+  citation_refs:
+    - cite_1040_qdcgt_breakpoints
+
+- node_id: form_1040_2025_qdcgt_breakpoint_15_hoh
+  document_id: form_1040_2025
+  label: QDCGT 15% tax rate breakpoint, Head of household
+  node_type: parameter
+  value_type: currency
+  required: optional
+  constant_value: 566700
+  citation_refs:
+    - cite_1040_qdcgt_breakpoints
+
+- node_id: form_1040_2025_qdcgt_breakpoint_15_qss
+  document_id: form_1040_2025
+  label: QDCGT 15% tax rate breakpoint, Qualifying surviving spouse
+  node_type: parameter
+  value_type: currency
+  required: optional
+  constant_value: 600050
+  citation_refs:
+    - cite_1040_qdcgt_breakpoints
+
+# --- Ordinary Income Tax Brackets (LOOKUP_BRACKET tables) ---
+- node_id: form_1040_2025_brackets_single
+  document_id: form_1040_2025
+  label: Form 1040 tax brackets, Single
+  node_type: parameter
+  value_type: string
+  required: optional
+  constant_value:
+    - rate: 0.10
+      floor: 0
+      cumulative: 0
+    - rate: 0.12
+      floor: 11925
+      cumulative: 1192.5
+    - rate: 0.22
+      floor: 48475
+      cumulative: 5578.5
+    - rate: 0.24
+      floor: 103350
+      cumulative: 17651
+    - rate: 0.32
+      floor: 197300
+      cumulative: 40199
+    - rate: 0.35
+      floor: 250525
+      cumulative: 57231
+    - rate: 0.37
+      floor: 626350
+      cumulative: 188769.75
+  citation_refs:
+    - cite_1040_tax_brackets
+
+- node_id: form_1040_2025_brackets_mfj
+  document_id: form_1040_2025
+  label: Form 1040 tax brackets, Married filing jointly
+  node_type: parameter
+  value_type: string
+  required: optional
+  constant_value:
+    - rate: 0.10
+      floor: 0
+      cumulative: 0
+    - rate: 0.12
+      floor: 23850
+      cumulative: 2385
+    - rate: 0.22
+      floor: 96950
+      cumulative: 11157
+    - rate: 0.24
+      floor: 206700
+      cumulative: 35302
+    - rate: 0.32
+      floor: 394600
+      cumulative: 80398
+    - rate: 0.35
+      floor: 501050
+      cumulative: 114462
+    - rate: 0.37
+      floor: 751600
+      cumulative: 202154.5
+  citation_refs:
+    - cite_1040_tax_brackets
+
+- node_id: form_1040_2025_brackets_mfs
+  document_id: form_1040_2025
+  label: Form 1040 tax brackets, Married filing separately
+  node_type: parameter
+  value_type: string
+  required: optional
+  constant_value:
+    - rate: 0.10
+      floor: 0
+      cumulative: 0
+    - rate: 0.12
+      floor: 11925
+      cumulative: 1192.5
+    - rate: 0.22
+      floor: 48475
+      cumulative: 5578.5
+    - rate: 0.24
+      floor: 103350
+      cumulative: 17651
+    - rate: 0.32
+      floor: 197300
+      cumulative: 40199
+    - rate: 0.35
+      floor: 250525
+      cumulative: 57231
+    - rate: 0.37
+      floor: 375800
+      cumulative: 101077.25
+  citation_refs:
+    - cite_1040_tax_brackets
+
+- node_id: form_1040_2025_brackets_hoh
+  document_id: form_1040_2025
+  label: Form 1040 tax brackets, Head of household
+  node_type: parameter
+  value_type: string
+  required: optional
+  constant_value:
+    - rate: 0.10
+      floor: 0
+      cumulative: 0
+    - rate: 0.12
+      floor: 17000
+      cumulative: 1700
+    - rate: 0.22
+      floor: 64850
+      cumulative: 7442
+    - rate: 0.24
+      floor: 103350
+      cumulative: 15912
+    - rate: 0.32
+      floor: 197300
+      cumulative: 38460
+    - rate: 0.35
+      floor: 250500
+      cumulative: 55484
+    - rate: 0.37
+      floor: 626350
+      cumulative: 187031.5
+  citation_refs:
+    - cite_1040_tax_brackets
+
+- node_id: form_1040_2025_brackets_qss
+  document_id: form_1040_2025
+  label: Form 1040 tax brackets, Qualifying surviving spouse
+  node_type: parameter
+  value_type: string
+  required: optional
+  constant_value:
+    - rate: 0.10
+      floor: 0
+      cumulative: 0
+    - rate: 0.12
+      floor: 23850
+      cumulative: 2385
+    - rate: 0.22
+      floor: 96950
+      cumulative: 11157
+    - rate: 0.24
+      floor: 206700
+      cumulative: 35302
+    - rate: 0.32
+      floor: 394600
+      cumulative: 80398
+    - rate: 0.35
+      floor: 501050
+      cumulative: 114462
+    - rate: 0.37
+      floor: 751600
+      cumulative: 202154.5
+  citation_refs:
+    - cite_1040_tax_brackets

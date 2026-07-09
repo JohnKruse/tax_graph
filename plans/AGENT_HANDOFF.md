@@ -15,14 +15,11 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## Current state (2026-07-09)
 
-**BALL: ANTIGRAVITY (interim worker; Codex resumes when its tokens refresh).**
-Authorized action: M11 **Step 2 ONLY, out of order** (Architect authorization
-2026-07-09, see From Architect). State the canary (Rate Ladder), work Step 2 per its
-spec in `plans/PHASE_M11.md` MINUS anything requiring the new engine ops (MULTIPLY /
-LOOKUP_BRACKET / conditional are Step 3's, Codex's) - land the cited parameter nodes,
-bracket + QDCGT threshold data, the tax-table DATA RESOURCE (schema + compiler +
-SQLite projection + tests), and the two drills. Full pytest green before commit; do
-NOT start any other step. When Codex returns it takes Step 1, then 3-6 in order.
+**BALL: CODEX (when tokens refresh).** Next action: M11 Step 1 (1040 spine extraction +
+promotion, worker-heavy), then Steps 3-6 in order. Step 2 is DONE: implemented by
+Antigravity, Architect-reviewed line by line, ONE real error found and fixed (see
+"Step 2 review findings" in From Architect - read them; three carry directives for
+Step 3). Full pytest 242 passed / 4 skipped; both new drills caught at L3; ASCII green.
 (Whoever finishes a turn: update this BALL line - it is the first thing read.)
 
 - **M0-M10 are COMPLETE.** M10 closed with the batch OTS-witnessed set promoted: Schedule 1,
@@ -55,6 +52,34 @@ NOT start any other step. When Codex returns it takes Step 1, then 3-6 in order.
 - (none)
 
 ## From Architect
+- **Step 2 review findings (Architect, 2026-07-09; line-by-line per the QC contract,
+  net-touching diff).** Antigravity's slice was good overall; verified against the
+  cached official 1040 instruction text. Findings:
+  1. **FIXED - real value error:** the Head-of-Household 37% bracket floor was authored
+     as 375800 (the MFS figure) in ALL THREE copies (graph node, `properties.py`
+     expected dict, `tax_table.py` compiler constant). Source text confirms 626350
+     ("Over $250,500 but not over $626,350 ... 35%"; "Over $626,350 ... 37%").
+     Corrected everywhere (cumulative 187031.5). The generated tax table was
+     unaffected (error sat above the $100k table ceiling). This is the
+     same-author-both-sides circularity risk made real: the L3 expected dict CANNOT
+     catch an error authored consistently into both places.
+  2. **Directive for Step 3 (Codex): single-source the brackets.** Three copies of the
+     bracket constants now exist. The `tax_table.py` compiler must READ the bracket
+     parameter nodes from the graph instead of carrying its own copy; `properties.py`
+     stays as the independent tripwire restatement (that one is deliberate).
+  3. **Directive for Step 3/4: value-bearing citations.** `cite_1040_tax_brackets`
+     quotes only the schedule section HEADERS, so citation integrity cannot witness
+     the numbers. Add per-status citations quoting the actual schedule rows (the
+     rendered instruction text has them; the HoH error would then be
+     mechanically catchable).
+  4. **Minor, fold into Step 4:** the generated table's sub-$25 rows use five $5 bands;
+     the published table uses 0-5 / 5-15 / 15-25. Values are identical for all incomes
+     (verified), but align the structure with the published table for exactness.
+  Positive verification: generated cells match the PUBLISHED table (row 25200-25250 ->
+  2789/2550/2789/2687 confirmed against cached instructions; midpoint + schoolbook
+  rounding reproduces the IRS method); regeneration after the fix is byte-identical;
+  QDCGT breakpoints, OBBBA-updated standard deductions, and all other bracket
+  floors/cumulatives independently verified correct.
 - **AUTHORIZED (2026-07-09): M11 Step 2 runs OUT OF ORDER on Antigravity (John's
   harness call; Codex token-limited for a few hours).** Step 2 is order-independent:
   its parameter nodes and data cite the 1040 instructions directly and nothing in it

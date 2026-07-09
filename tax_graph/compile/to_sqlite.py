@@ -129,6 +129,17 @@ def _create_schema(conn: sqlite3.Connection) -> None:
             object_json TEXT NOT NULL
         );
 
+        CREATE TABLE tax_table (
+            income_min INTEGER,
+            income_max INTEGER,
+            single INTEGER,
+            married_filing_jointly INTEGER,
+            married_filing_separately INTEGER,
+            head_of_household INTEGER,
+            qualifying_surviving_spouse INTEGER,
+            PRIMARY KEY (income_min, income_max)
+        );
+
         CREATE VIRTUAL TABLE graph_fts USING fts5(
             kind UNINDEXED,
             object_id UNINDEXED,
@@ -154,6 +165,7 @@ def _insert_graph(conn: sqlite3.Connection, graph: LoadedGraph) -> None:
     _insert_rules(conn, graph.items("rules"))
     _insert_citations(conn, graph.items("citations"))
     _insert_decisions(conn, graph.items("decisions"))
+    _insert_tax_table(conn, graph.graph_dir)
     _insert_fts(conn, graph)
 
 
@@ -316,3 +328,33 @@ def _stable_objects(kind: str, objects: list[dict[str, Any]]) -> list[dict[str, 
 
 def _json(obj: dict[str, Any]) -> str:
     return json.dumps(obj, sort_keys=True, separators=(",", ":"))
+
+
+def _insert_tax_table(conn: sqlite3.Connection, graph_dir: Path) -> None:
+    path = graph_dir / "tax_table.json"
+    if not path.exists():
+        return
+    import json
+    data = json.loads(path.read_text(encoding="utf-8"))
+    rows = []
+    for entry in data.get("entries", []):
+        taxes = entry["taxes"]
+        rows.append((
+            entry["income_min"],
+            entry["income_max"],
+            taxes["single"],
+            taxes["married_filing_jointly"],
+            taxes["married_filing_separately"],
+            taxes["head_of_household"],
+            taxes["qualifying_surviving_spouse"],
+        ))
+    conn.executemany(
+        """
+        INSERT INTO tax_table(
+            income_min, income_max, single, married_filing_jointly,
+            married_filing_separately, head_of_household, qualifying_surviving_spouse
+        ) VALUES (?, ?, ?, ?, ?, ?, ?)
+        """,
+        rows,
+    )
+

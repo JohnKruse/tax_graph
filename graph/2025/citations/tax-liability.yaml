@@ -1,0 +1,37 @@
+# Citations for M11 liability calculations.
+- citation_id: cite_1040_standard_deduction
+  document_id: instructions_form_1040_2025
+  source_document_id: instructions_form_1040_2025
+  locator: Instructions for Form 1040, Standard Deduction Chart
+  quoted_text: >-
+    Single: $15,750. Married filing jointly or Qualifying surviving spouse: $31,500.
+    Head of household: $23,625. Married filing separately: $15,750.
+  url: https://www.irs.gov/instructions/i1040
+  retrieved_date: 2026-07-09
+
+- citation_id: cite_1040_tax_brackets
+  document_id: instructions_form_1040_2025
+  source_document_id: instructions_form_1040_2025
+  locator: Instructions for Form 1040, Tax Computation Worksheet
+  quoted_text: >-
+    Section A-Single. Section B-Married filing jointly or Qualifying surviving spouse. Section C-Married filing separately. Section D-Head of household.
+  url: https://www.irs.gov/instructions/i1040
+  retrieved_date: 2026-07-09
+
+- citation_id: cite_1040_qdcgt_breakpoints
+  document_id: instructions_form_1040_2025
+  source_document_id: instructions_form_1040_2025
+  locator: Instructions for Form 1040, Qualified Dividends and Capital Gain Tax Worksheet
+  quoted_text: >-
+    Qualified dividends and capital gain tax brackets are taxed at 0%, 15%, or 20%.
+  url: https://www.irs.gov/instructions/i1040
+  retrieved_date: 2026-07-09
+
+- citation_id: cite_1040_tax_table
+  document_id: instructions_form_1040_2025
+  source_document_id: instructions_form_1040_2025
+  locator: Instructions for Form 1040, Tax Table
+  quoted_text: >-
+    If taxable income is under $100,000, use the Tax Table to figure the tax.
+  url: https://www.irs.gov/instructions/i1040
+  retrieved_date: 2026-07-09

@@ -1,0 +1,46 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "tax_table.schema.json",
+  "title": "IRS Under-$100k Tax Table Data Resource",
+  "description": "A compiled representation of the Form 1040 instructions tax table for taxable incomes under $100,000.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["tax_year", "entries"],
+  "properties": {
+    "tax_year": { "type": "integer" },
+    "entries": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "income_min",
+          "income_max",
+          "taxes"
+        ],
+        "properties": {
+          "income_min": { "type": "integer" },
+          "income_max": { "type": "integer" },
+          "taxes": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "single",
+              "married_filing_jointly",
+              "married_filing_separately",
+              "head_of_household",
+              "qualifying_surviving_spouse"
+            ],
+            "properties": {
+              "single": { "type": "integer" },
+              "married_filing_jointly": { "type": "integer" },
+              "married_filing_separately": { "type": "integer" },
+              "head_of_household": { "type": "integer" },
+              "qualifying_surviving_spouse": { "type": "integer" }
+            }
+          }
+        }
+      }
+    }
+  }
+}

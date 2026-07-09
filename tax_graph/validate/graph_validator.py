@@ -88,6 +88,7 @@ def validate_loaded_graph(
     _validate_no_inline_magic_numbers(graph, errors)
     _validate_field_grid_completeness(graph, field_grids, mef_line_inventory, errors)
     _validate_acyclic_dependencies(graph, errors)
+    _validate_tax_table(graph, schemas_dir, errors)
 
     return ValidationResult(
         year=graph.year,
@@ -543,3 +544,22 @@ def _validate_acyclic_dependencies(graph: LoadedGraph, errors: list[str]) -> Non
 
     for cycle in sorted(cycles):
         errors.append("dependency cycle detected: " + " -> ".join(cycle))
+
+
+def _validate_tax_table(graph: LoadedGraph, schemas_dir: Path, errors: list[str]) -> None:
+    path = graph.graph_dir / "tax_table.json"
+    if not path.exists():
+        errors.append(f"tax table -> missing compiled data resource: {path}")
+        return
+    try:
+        data = load_yaml(path)
+    except Exception as exc:
+        errors.append(f"tax table -> failed to load JSON/YAML: {exc}")
+        return
+    if HAVE_JSONSCHEMA:
+        try:
+            jsonschema.validate(data, load_yaml(schemas_dir / "tax_table.schema.json"))
+        except jsonschema.ValidationError as exc:
+            preview = json.dumps(data, default=str)[:120]
+            errors.append(f"[schema/tax_table] {exc.message} :: {preview}")
+

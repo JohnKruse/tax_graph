@@ -86,7 +86,7 @@ QBI (line 13), credits/other-taxes/total-tax chain (lines 17-24), AMT computatio
   Test: spine computes taxable income for a wages+gains fixture on yaml AND sqlite;
   parity unchanged; frontier flips for newly modeled lines. Docs.
 
-- [ ] **Step 2 [worker-standard] - Parameter tables + data-resource tax table.** Cited
+- [x] **Step 2 [worker-standard] - Parameter tables + data-resource tax table.** Cited
   `parameter` nodes for the 2025 standard deduction (by filing status) and QDCGT
   breakpoints; bracket tables per filing status as LOOKUP_BRACKET data; the under-$100k
   tax table compiled from the official 1040 instructions table into a DATA RESOURCE
