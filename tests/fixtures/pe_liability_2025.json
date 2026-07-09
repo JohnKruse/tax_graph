@@ -1,0 +1,87 @@
+{
+ "pe_version": "unknown",
+ "generated_date": "2026-07-09",
+ "provenance": "live policyengine-us run over examples/oracle_corpus (M11 Step 5b)",
+ "scenarios": {
+  "m6_seed20260711_0000": {
+   "taxable_income": 99999.0,
+   "tax": 16913.779296875
+  },
+  "m6_seed20260711_0001": {
+   "taxable_income": 99999.0,
+   "tax": 11827.7802734375
+  },
+  "m6_seed20260711_0002": {
+   "taxable_income": 99999.0,
+   "tax": 16913.779296875
+  },
+  "m6_seed20260711_0003": {
+   "taxable_income": 99999.0,
+   "tax": 15174.7802734375
+  },
+  "m6_seed20260711_0004": {
+   "taxable_income": 99999.0,
+   "tax": 11827.7802734375
+  },
+  "m6_seed20260711_0005": {
+   "taxable_income": 100000.0,
+   "tax": 16914.0
+  },
+  "m6_seed20260711_0006": {
+   "taxable_income": 100000.0,
+   "tax": 11828.0
+  },
+  "m6_seed20260711_0007": {
+   "taxable_income": 100000.0,
+   "tax": 16914.0
+  },
+  "m6_seed20260711_0008": {
+   "taxable_income": 100000.0,
+   "tax": 15175.0
+  },
+  "m6_seed20260711_0009": {
+   "taxable_income": 100000.0,
+   "tax": 11828.0
+  },
+  "m6_seed20260711_0010": {
+   "taxable_income": 58036.0,
+   "tax": 7331.919921875
+  },
+  "m6_seed20260711_0011": {
+   "taxable_income": 96699.0,
+   "tax": 10354.4404296875
+  },
+  "m6_seed20260711_0012": {
+   "taxable_income": 48349.0,
+   "tax": 4963.3798828125
+  },
+  "m6_seed20260711_0013": {
+   "taxable_income": 64749.0,
+   "tax": 6829.8798828125
+  },
+  "m6_seed20260711_0014": {
+   "taxable_income": 106229.0,
+   "tax": 12848.3798828125
+  },
+  "m6_seed20260711_0015": {
+   "taxable_income": 65328.0,
+   "tax": 8936.16015625
+  },
+  "m6_seed20260711_0016": {
+   "taxable_income": 96938.0,
+   "tax": 10591.25957107544
+  },
+  "m6_seed20260711_0017": {
+   "taxable_income": 49551.0,
+   "tax": 5287.770111083984
+  },
+  "m6_seed20260711_0018": {
+   "taxable_income": 64751.0,
+   "tax": 6830.2701171934605
+  },
+  "m6_seed20260711_0019": {
+   "taxable_income": 107795.0,
+   "tax": 13192.900390625
+  }
+ }
+}

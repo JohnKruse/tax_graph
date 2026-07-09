@@ -571,6 +571,34 @@ def oracle_freeze_command(
     return 0
 
 
+def oracle_pe_liability_command(
+    year: str = "2025",
+    root: str | Path | None = None,
+    corpus_dir: str | Path | None = None,
+    offline_fixture: str | None = None,
+) -> int:
+    """Diff PolicyEngine liability against the frozen OTS-agreed corpus."""
+    from tax_graph.oracles.pe_liability import run_pe_liability
+
+    root_path = Path(root).resolve() if root is not None else project_root()
+    input_dir = (
+        Path(corpus_dir).resolve()
+        if corpus_dir is not None
+        else root_path / "examples" / "oracle_corpus"
+    )
+    try:
+        report = run_pe_liability(
+            year=year,
+            corpus_dir=input_dir,
+            offline_fixture=offline_fixture,
+        )
+    except Exception as exc:
+        print(f"ERROR: {exc}")
+        return 1
+    print(report.format_report(), end="")
+    return 0 if report.ok else 1
+
+
 def oracle_replay_corpus_command(
     year: str = "2025",
     root: str | Path | None = None,
@@ -978,6 +1006,20 @@ def _build_typer_app():
         if raise_code:
             raise typer.Exit(raise_code)
 
+    @oracle_cli.command("pe-liability")
+    def oracle_pe_liability_cli(
+        year: str = typer.Option("2025", "--year", "-y", help="Tax year to diff."),
+        corpus_dir: Path | None = typer.Option(None, "--corpus-dir", help="Directory for frozen corpus examples."),
+        offline_fixture: str | None = typer.Option(None, "--offline-fixture", help="Canned PE results JSON (offline mode)."),
+        root: Path | None = typer.Option(None, "--root", help="Project root override."),
+    ) -> None:
+        """Diff PolicyEngine liability against the frozen corpus (second witness)."""
+        raise_code = oracle_pe_liability_command(
+            year=year, root=root, corpus_dir=corpus_dir, offline_fixture=offline_fixture
+        )
+        if raise_code:
+            raise typer.Exit(raise_code)
+
     cli.add_typer(oracle_cli, name="oracle")
 
     frontier_cli = typer.Typer(help="Frontier registry and coverage helpers.", invoke_without_command=True)
@@ -1150,6 +1192,12 @@ def _fallback_app() -> int:
     oracle_replay_corpus_parser.add_argument("--source", choices=["sqlite", "yaml"], default=None)
     oracle_replay_corpus_parser.add_argument("--root", default=None)
 
+    oracle_pe_liability_parser = oracle_subparsers.add_parser("pe-liability")
+    oracle_pe_liability_parser.add_argument("--year", "-y", default="2025")
+    oracle_pe_liability_parser.add_argument("--corpus-dir", default=None)
+    oracle_pe_liability_parser.add_argument("--offline-fixture", default=None)
+    oracle_pe_liability_parser.add_argument("--root", default=None)
+
     acquire_parser = subparsers.add_parser("acquire")
     acquire_parser.add_argument("year", nargs="?", default="2025")
     acquire_parser.add_argument("--check", action="store_true")
@@ -1241,6 +1289,13 @@ def _fallback_app() -> int:
             root=args.root,
             corpus_dir=args.corpus_dir,
             source=args.source,
+        )
+    if args.command == "oracle" and args.oracle_command == "pe-liability":
+        return oracle_pe_liability_command(
+            year=args.year,
+            root=args.root,
+            corpus_dir=args.corpus_dir,
+            offline_fixture=args.offline_fixture,
         )
     if args.command == "acquire":
         return acquire_command(year=args.year, check=args.check, root=args.root)
