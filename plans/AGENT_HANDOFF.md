@@ -15,20 +15,15 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## Current state (2026-07-09)
 
-**BALL: ANTIGRAVITY - Step 5a REWORK (one focused fix; see "Step 5a review findings"
-in From Architect for the exact ground truth).** The offline scaffolding is committed
-and green, but the LIVE half was never exercised: the Architect installed
-`policyengine-us` and ran the live diff - all 20 mappings failed with fetch errors.
-The mapping paths and the import API were invented. The Architect then discovered the
-REAL paths and API from the installed package and live-CONFIRMED our std-deduction and
-all QDCGT values - fix per the findings, run live, report the full result here.
-After the rework: BALL goes to CODEX for Step 1, then 3 -> 4 -> 5b -> 6.
+**BALL: CODEX (interim; one worker at a time in the clone).** Authorized action:
+M11 **Step 1** (worker-heavy 1040 spine), then 3 -> 4 -> 5b -> 6.
+Step 5a REWORK (PolicyEngine PARAMETER-DIFF) is DONE (Antigravity). Live PE fetch yielded 20/20 matches.
 (Whoever finishes a turn: update this BALL line - it is the first thing read.)
 
 - **M0-M10 are COMPLETE.** M10 closed with the batch OTS-witnessed set promoted: Schedule 1,
   Schedule 1-A, Schedule 2, Schedule 3, Schedule A, Schedule B, and Form 6251 are now live beside
   the existing 1040 / 1099-B / 8949 / Schedule D surface.
-- **Step 5a completion (Antigravity, 2026-07-09):** Added `policyengine` extra, mapping schema/YAML, `parameter-diff` CLI, and offline fixtures with seeded test.
+- **Step 5a REWORK completion (Antigravity, 2026-07-09):** Fixed API import and parameter paths in the mapping YAML to reflect the live `policyengine-us` interface. Re-ran `verify parameter-diff` LIVE and recorded 20/20 matches across all mapped parameters. Offline fixtures aligned to the real paths.
 - **Coverage after M10:** `90.1%` full-universe (`435450000 / 483540000`) and `100.0%` in-scope
   (`435450000 / 435450000`), up `+47.7` and `+57.6` points from the M9 baseline `42.4%` /
   `42.4%`. The only remaining declared frontier item is the intentional deferred branch

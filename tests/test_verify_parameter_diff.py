@@ -44,4 +44,4 @@ def test_parameter_diff_cli_offline():
     assert result.exit_code == 1
     assert "=== PolicyEngine parameter diff (2025) ===" in result.stdout
     assert "disagree: 1" in result.stdout
-    assert "form_1040_2025_brackets_hoh: value mismatch" in result.stdout
+    assert "form_1040_2025_brackets_hoh (disagree): value mismatch" in result.stdout

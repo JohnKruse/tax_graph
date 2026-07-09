@@ -2,67 +2,67 @@ entries:
   # --- Standard Deductions ---
   - node_id: form_1040_2025_standard_deduction_single
     status: mapped
-    policyengine_path: gov.irs.standard_deduction.amount.single
+    policyengine_path: gov.irs.deductions.standard.amount.SINGLE
   - node_id: form_1040_2025_standard_deduction_mfj
     status: mapped
-    policyengine_path: gov.irs.standard_deduction.amount.joint
+    policyengine_path: gov.irs.deductions.standard.amount.JOINT
   - node_id: form_1040_2025_standard_deduction_mfs
     status: mapped
-    policyengine_path: gov.irs.standard_deduction.amount.separate
+    policyengine_path: gov.irs.deductions.standard.amount.SEPARATE
   - node_id: form_1040_2025_standard_deduction_hoh
     status: mapped
-    policyengine_path: gov.irs.standard_deduction.amount.head_of_household
+    policyengine_path: gov.irs.deductions.standard.amount.HEAD_OF_HOUSEHOLD
   - node_id: form_1040_2025_standard_deduction_qss
     status: mapped
-    policyengine_path: gov.irs.standard_deduction.amount.surviving_spouse
+    policyengine_path: gov.irs.deductions.standard.amount.SURVIVING_SPOUSE
 
   # --- QDCGT Breakpoints (0% rate threshold) ---
   - node_id: form_1040_2025_qdcgt_breakpoint_0_single
     status: mapped
-    policyengine_path: gov.irs.capital_gains.brackets.single_0
+    policyengine_path: gov.irs.capital_gains.thresholds.1.SINGLE
   - node_id: form_1040_2025_qdcgt_breakpoint_0_mfj
     status: mapped
-    policyengine_path: gov.irs.capital_gains.brackets.joint_0
+    policyengine_path: gov.irs.capital_gains.thresholds.1.JOINT
   - node_id: form_1040_2025_qdcgt_breakpoint_0_mfs
     status: mapped
-    policyengine_path: gov.irs.capital_gains.brackets.separate_0
+    policyengine_path: gov.irs.capital_gains.thresholds.1.SEPARATE
   - node_id: form_1040_2025_qdcgt_breakpoint_0_hoh
     status: mapped
-    policyengine_path: gov.irs.capital_gains.brackets.head_of_household_0
+    policyengine_path: gov.irs.capital_gains.thresholds.1.HEAD_OF_HOUSEHOLD
   - node_id: form_1040_2025_qdcgt_breakpoint_0_qss
     status: mapped
-    policyengine_path: gov.irs.capital_gains.brackets.surviving_spouse_0
+    policyengine_path: gov.irs.capital_gains.thresholds.1.SURVIVING_SPOUSE
 
   # --- QDCGT Breakpoints (15% rate threshold) ---
   - node_id: form_1040_2025_qdcgt_breakpoint_15_single
     status: mapped
-    policyengine_path: gov.irs.capital_gains.brackets.single_15
+    policyengine_path: gov.irs.capital_gains.thresholds.2.SINGLE
   - node_id: form_1040_2025_qdcgt_breakpoint_15_mfj
     status: mapped
-    policyengine_path: gov.irs.capital_gains.brackets.joint_15
+    policyengine_path: gov.irs.capital_gains.thresholds.2.JOINT
   - node_id: form_1040_2025_qdcgt_breakpoint_15_mfs
     status: mapped
-    policyengine_path: gov.irs.capital_gains.brackets.separate_15
+    policyengine_path: gov.irs.capital_gains.thresholds.2.SEPARATE
   - node_id: form_1040_2025_qdcgt_breakpoint_15_hoh
     status: mapped
-    policyengine_path: gov.irs.capital_gains.brackets.head_of_household_15
+    policyengine_path: gov.irs.capital_gains.thresholds.2.HEAD_OF_HOUSEHOLD
   - node_id: form_1040_2025_qdcgt_breakpoint_15_qss
     status: mapped
-    policyengine_path: gov.irs.capital_gains.brackets.surviving_spouse_15
+    policyengine_path: gov.irs.capital_gains.thresholds.2.SURVIVING_SPOUSE
 
   # --- Ordinary Income Tax Brackets ---
   - node_id: form_1040_2025_brackets_single
     status: mapped
-    policyengine_path: gov.irs.income_tax.brackets.single
+    policyengine_path: gov.irs.income.bracket|SINGLE
   - node_id: form_1040_2025_brackets_mfj
     status: mapped
-    policyengine_path: gov.irs.income_tax.brackets.joint
+    policyengine_path: gov.irs.income.bracket|JOINT
   - node_id: form_1040_2025_brackets_mfs
     status: mapped
-    policyengine_path: gov.irs.income_tax.brackets.separate
+    policyengine_path: gov.irs.income.bracket|SEPARATE
   - node_id: form_1040_2025_brackets_hoh
     status: mapped
-    policyengine_path: gov.irs.income_tax.brackets.head_of_household
+    policyengine_path: gov.irs.income.bracket|HEAD_OF_HOUSEHOLD
   - node_id: form_1040_2025_brackets_qss
     status: mapped
-    policyengine_path: gov.irs.income_tax.brackets.surviving_spouse
+    policyengine_path: gov.irs.income.bracket|SURVIVING_SPOUSE
