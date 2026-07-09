@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "policyengine_mapping.schema.json",
+  "title": "PolicyEngine Mapping",
+  "description": "Mapping from tax_graph parameter node IDs to PolicyEngine paths.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["entries"],
+  "properties": {
+    "entries": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["node_id", "status"],
+        "properties": {
+          "node_id": { "type": "string" },
+          "status": {
+            "type": "string",
+            "enum": ["mapped", "unmapped"]
+          },
+          "policyengine_path": { "type": "string" }
+        },
+        "if": {
+          "properties": { "status": { "const": "mapped" } }
+        },
+        "then": {
+          "required": ["policyengine_path"]
+        }
+      }
+    }
+  }
+}

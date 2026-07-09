@@ -24,6 +24,9 @@ Homepage = "https://github.com/JohnKruse/tax_graph"
 Repository = "https://github.com/JohnKruse/tax_graph"
 
 [project.optional-dependencies]
+policyengine = [
+  "policyengine-us>=1.0",
+]
 acquire = [
   "httpx>=0.27",
   "mistralai>=1.0",

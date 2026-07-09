@@ -427,6 +427,27 @@ def verify_diff_drafts_command(
     return 0 if delta.ok else 1
 
 
+def verify_parameter_diff_command(
+    year: str = "2025",
+    root: str | Path | None = None,
+    offline_fixture: str | Path | None = None,
+) -> int:
+    """Diff parameter nodes against PolicyEngine US."""
+    from tax_graph.verify.parameter_diff import compare_parameter_diff
+
+    root_path = Path(root).resolve() if root is not None else project_root()
+    load_config(root=root_path)
+    try:
+        offline_path = Path(offline_fixture).resolve() if offline_fixture else None
+        report = compare_parameter_diff(year=year, root=root_path, offline_fixture=offline_path)
+    except Exception as exc:
+        print(f"ERROR: {exc}")
+        return 1
+
+    print(report.format_report(), end="")
+    return 0 if report.disagree == 0 else 1
+
+
 def oracle_install_command(
     year: str = "2025",
     root: str | Path | None = None,
@@ -870,6 +891,17 @@ def _build_typer_app():
     ) -> None:
         """Diff a draft re-extraction against the promoted live graph."""
         raise_code = verify_diff_drafts_command(doc=doc, year=year, root=root)
+        if raise_code:
+            raise typer.Exit(raise_code)
+
+    @verify_cli.command("parameter-diff")
+    def verify_parameter_diff_cli(
+        year: str = typer.Option("2025", "--year", "-y", help="Tax year to diff."),
+        offline_fixture: Path | None = typer.Option(None, "--offline-fixture", help="Path to offline PE parameter JSON."),
+        root: Path | None = typer.Option(None, "--root", help="Project root override."),
+    ) -> None:
+        """Diff parameter nodes against PolicyEngine US."""
+        raise_code = verify_parameter_diff_command(year=year, root=root, offline_fixture=offline_fixture)
         if raise_code:
             raise typer.Exit(raise_code)
 

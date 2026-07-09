@@ -15,17 +15,20 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## Current state (2026-07-09)
 
-**BALL: ANTIGRAVITY (interim; one worker at a time in the clone).** Authorized action:
-M11 **Step 5a ONLY** - the PolicyEngine PARAMETER-DIFF channel (Architect authorization
-2026-07-09, split from Step 5; see From Architect). Step 2 is DONE (Antigravity,
-Architect-reviewed; one HoH bracket error found and fixed - read the review findings).
-Codex takes Step 1 (worker-heavy 1040 spine) when its tokens refresh, then 3 -> 4 ->
-5b -> 6; whoever is active updates this line first.
+**BALL: ANTIGRAVITY - Step 5a REWORK (one focused fix; see "Step 5a review findings"
+in From Architect for the exact ground truth).** The offline scaffolding is committed
+and green, but the LIVE half was never exercised: the Architect installed
+`policyengine-us` and ran the live diff - all 20 mappings failed with fetch errors.
+The mapping paths and the import API were invented. The Architect then discovered the
+REAL paths and API from the installed package and live-CONFIRMED our std-deduction and
+all QDCGT values - fix per the findings, run live, report the full result here.
+After the rework: BALL goes to CODEX for Step 1, then 3 -> 4 -> 5b -> 6.
 (Whoever finishes a turn: update this BALL line - it is the first thing read.)
 
 - **M0-M10 are COMPLETE.** M10 closed with the batch OTS-witnessed set promoted: Schedule 1,
   Schedule 1-A, Schedule 2, Schedule 3, Schedule A, Schedule B, and Form 6251 are now live beside
   the existing 1040 / 1099-B / 8949 / Schedule D surface.
+- **Step 5a completion (Antigravity, 2026-07-09):** Added `policyengine` extra, mapping schema/YAML, `parameter-diff` CLI, and offline fixtures with seeded test.
 - **Coverage after M10:** `90.1%` full-universe (`435450000 / 483540000`) and `100.0%` in-scope
   (`435450000 / 435450000`), up `+47.7` and `+57.6` points from the M9 baseline `42.4%` /
   `42.4%`. The only remaining declared frontier item is the intentional deferred branch
@@ -53,6 +56,43 @@ Codex takes Step 1 (worker-heavy 1040 spine) when its tokens refresh, then 3 -> 
 - (none)
 
 ## From Architect
+- **Step 5a review findings (Architect, 2026-07-09) - REWORK REQUIRED on the live
+  half; offline scaffolding accepted and committed.** Full pytest 244/4 green, ASCII
+  green, seeded-wrong-value test works. But the live channel was hallucinated and
+  never exercised: the Architect installed `policyengine-us` (left installed in the
+  dev venv) and ran `verify parameter-diff` live -> 20/20 fetch errors. Two defects
+  and the discovered GROUND TRUTH for the fix:
+  1. **Wrong API.** `import policyengine_us; from policyengine_us import parameters`
+     cannot read values (parameters are packaged YAML, not module attributes). The
+     working pattern, verified live: `from policyengine_us.system import system`,
+     then traverse `system.parameters` children and CALL the leaf with a date:
+     `system.parameters.gov.irs.deductions.standard.amount.SINGLE("2025-01-01")`
+     -> returns 15750 (live-confirmed).
+  2. **Invented paths.** Real paths, verified live from the installed tree:
+     - Standard deduction: `gov.irs.deductions.standard.amount.<STATUS>` with enum
+       leafs `SINGLE | JOINT | SEPARATE | HEAD_OF_HOUSEHOLD | SURVIVING_SPOUSE`.
+     - QDCGT breakpoints: `gov.irs.capital_gains.thresholds.<1|2>.<STATUS>` (1 = the
+       0% top, 2 = the 15% top). Live values CONFIRM all ten of our Step 2 breakpoints
+       exactly (e.g. 1.SINGLE=48350, 1.HEAD_OF_HOUSEHOLD=64750, 2.SEPARATE=300000,
+       2.JOINT=600050).
+     - Ordinary brackets: `gov.irs.income.bracket.rates.<1..7>` and
+       `gov.irs.income.bracket.thresholds.<1..7>.<STATUS>` (thresholds.7 = inf).
+       NOTE the offset semantics: OUR bracket entry floors correspond to PE's
+       thresholds of the PREVIOUS index (floor of our bracket N = PE thresholds.N-1;
+       our first floor 0 has no PE counterpart). The comparator must encode this
+       offset explicitly - do not force-fit shapes. In the live run, verify
+       `thresholds.6.HEAD_OF_HOUSEHOLD == 626350` and report it - that is the exact
+       cell the Step 2 review corrected.
+  3. Also fix: a PE fetch error must be its own status (`fetch_error`), not
+     `disagree` - a disagreement means VALUES were compared; conflating them poisons
+     the metric. Update the offline fixture to the REAL paths (it currently mirrors
+     the invented ones - which is why offline tests could not catch any of this),
+     regenerate, and keep the seeded-wrong-value test.
+  Meta-lesson (recorded for the tier metrics): this is the second Antigravity slice
+  whose self-checks were consistent-but-wrong (HoH value; now paths+fixture). The
+  pattern: its own fixtures mirror its own assumptions. Slices whose correctness
+  depends on an EXTERNAL interface must include a live probe or an
+  Architect-supplied ground-truth fixture in the authorization.
 - **AUTHORIZED (2026-07-09): M11 Step 5a on Antigravity - PolicyEngine PARAMETER-DIFF
   channel only (split from Step 5; 5b liability diff waits for Step 3's line 16).**
   Scope: (1) new extras group for `policyengine-us` (NEVER base deps; import-guarded);
