@@ -69,6 +69,12 @@ OTS 1040 input text file plus Form 8949 CSV. The current domain generates 1 to
 15 long-term lots, deliberately crossing the printed 11-row Form 8949 grid, and
 includes mixed gain/loss rows plus nonzero column (g) adjustments.
 
+M10 widens that oracle surface additively: the 2025 domain now also drives
+modeled witness lines from Schedule 1, Schedule 1-A, Schedule 2, Schedule 3,
+Schedule A, Schedule B, and Form 6251. The widened box map compares only labels
+the installed OTS solver actually emits (for example `B4`, `B6`, `S2_18`, and
+`AMT_Form_6251_L2g`), while guard boxes keep the still-unmodeled branches inert.
+
 The differ compares whole-dollar mapped boxes and evaluates guard boxes first.
 A guard failure marks the scenario `rejected` as outside the fenced domain; a
 mapped-box mismatch marks it `disagreed` for triage, with the full generated

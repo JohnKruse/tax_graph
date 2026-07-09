@@ -5,9 +5,9 @@ from __future__ import annotations
 import csv
 import io
 import re
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any
+from typing import Any, Mapping
 
 import yaml
 
@@ -50,6 +50,8 @@ class CapitalGainScenario:
     adjustment: int | float = 0
     holding_period: str = "long_term"
     lots: tuple[CapitalGainLot, ...] = ()
+    extra_tax_graph_facts: Mapping[str, Any] = field(default_factory=dict)
+    extra_ots_inputs: Mapping[str, Any] = field(default_factory=dict)
 
     @property
     def gain_loss(self) -> int | float:
@@ -100,11 +102,19 @@ def render_tax_graph_facts_document(scenario: CapitalGainScenario) -> dict[str, 
     ):
         if lots:
             tables.append({"table_id": table_id, "rows": _tax_graph_rows(scenario, lots)})
+    facts = [
+        {
+            "node_id": node_id,
+            "value": value,
+            "source": _source(scenario),
+        }
+        for node_id, value in sorted(scenario.extra_tax_graph_facts.items())
+    ]
     return {
         "tax_year": int(scenario.tax_year),
         "filing_status": scenario.filing_status,
         "scenario_id": scenario.scenario_id,
-        "facts": [],
+        "facts": facts,
         "tables": tables,
     }
 
@@ -148,25 +158,26 @@ def render_ots_input_text(
     csv_name = spreadsheet_name or f"{_safe_id(scenario.scenario_id)}_f8949.csv"
     status = SUPPORTED_FILING_STATUSES[scenario.filing_status]
     template = template_text or _fallback_ots_template(scenario.tax_year)
-    rendered = _fill_ots_template(
-        template,
-        {
-            "Title": f"US Federal 1040 Tax Form - {scenario.tax_year} - Tax Graph scenario {scenario.scenario_id}",
-            "Status": status,
-            "You_65+Over?": "N",
-            "You_Blind?": "N",
-            "Spouse_65+Over?": "N",
-            "Spouse_Blind?": "N",
-            "Dependents": "0",
-            "CkHomeInUS": "Y",
-            "VirtCurr?": "N",
-            "CkSepLivedApart": "N",
-            "f8949_spreadsheet-A/D": csv_name,
-            "D14": "0",
-            "D19": "0",
-            "Collectibles": "0",
-        },
-    )
+    values = {
+        "Title": f"US Federal 1040 Tax Form - {scenario.tax_year} - Tax Graph scenario {scenario.scenario_id}",
+        "Status": status,
+        "You_65+Over?": "N",
+        "You_Blind?": "N",
+        "Spouse_65+Over?": "N",
+        "Spouse_Blind?": "N",
+        "Dependents": "0",
+        "CkHomeInUS": "Y",
+        "VirtCurr?": "N",
+        "CkSepLivedApart": "N",
+        "f8949_spreadsheet-A/D": csv_name,
+        "D14": "0",
+        "D19": "0",
+        "Collectibles": "0",
+    }
+    for label, value in scenario.extra_ots_inputs.items():
+        values[str(label)] = _format_ots_value(value)
+    template = _ensure_template_fields(template, tuple(values))
+    rendered = _fill_ots_template(template, values)
     return rendered if rendered.endswith("\n") else f"{rendered}\n"
 
 
@@ -266,6 +277,16 @@ def _format_code(adjustment: int | float) -> str:
     return "" if _clean_number(adjustment) == 0 else "B"
 
 
+def _format_ots_value(value: Any) -> str:
+    if value is None:
+        return ""
+    if isinstance(value, bool):
+        return "Y" if value else "N"
+    if isinstance(value, (int, float)):
+        return _format_number(value)
+    return str(value)
+
+
 def _safe_id(value: str) -> str:
     cleaned = re.sub(r"[^A-Za-z0-9_-]+", "_", value.strip())
     return cleaned.strip("_") or "scenario"
@@ -309,6 +330,23 @@ def _fill_ots_template(template: str, values: dict[str, str]) -> str:
             use_colon=label in colon_labels,
         )
     return rendered
+
+
+def _ensure_template_fields(template: str, labels: tuple[str, ...]) -> str:
+    rendered = template.replace("\r\n", "\n").replace("\r", "\n")
+    present = set()
+    for raw_line in rendered.splitlines():
+        line = raw_line.strip()
+        if not line or line.startswith("{"):
+            continue
+        token = line.split()[0]
+        present.add(token.rstrip(":"))
+    missing = [label for label in labels if label.rstrip(":") not in present]
+    if not missing:
+        return rendered
+    extra = "\n".join(f"{label}" for label in missing)
+    suffix = "\n" if rendered.endswith("\n") else "\n"
+    return f"{rendered}{suffix}{extra}\n"
 
 
 def _replace_template_value(text: str, *, label: str, value: str, use_colon: bool) -> str:

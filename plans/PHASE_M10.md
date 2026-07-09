@@ -170,7 +170,7 @@ Filer-weighted coverage currently stands at 42.4%; this set is where the power-l
   monotonically rises; LINK idempotent; a declaration with an absent target stays
   declared. Docs: per-form promotion notes in the diff messages.
 
-- [ ] **Step 6 [worker-standard] - Oracle harness growth over the widened set.** Extend
+- [DONE] **Step 6 [worker-standard] - Oracle harness growth over the widened set.** Extend
   `oracles/box_map_2025.yaml` to every newly promoted line the OTS label inventory
   witnesses (machine-validated both ways); widen `oracles/domain_2025.yaml` to generate
   scenarios exercising the new forms where modeled, with guards fencing unmodeled

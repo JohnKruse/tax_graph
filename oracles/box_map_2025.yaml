@@ -1,6 +1,48 @@
 tax_year: 2025
 ots_label_inventory: oracles/ots_label_inventory_2025.txt
 boxes:
+  - node_id: schedule_1_2025_part_i_line_8z
+    ots_label: S1_8z
+    rounding: whole_dollar
+  - node_id: schedule_1_2025_part_ii_line_21
+    ots_label: S1_21
+    rounding: whole_dollar
+  - node_id: schedule_1a_2025_part_i_line_2a
+    ots_label: S1A_2a
+    rounding: whole_dollar
+  - node_id: schedule_2_2025_part_i_line_1a
+    ots_label: S2_1a
+    rounding: whole_dollar
+  - node_id: schedule_2_2025_part_ii_line_18
+    ots_label: S2_18
+    rounding: whole_dollar
+  - node_id: schedule_3_2025_part_i_line_1
+    ots_label: S3_1
+    rounding: whole_dollar
+  - node_id: schedule_3_2025_part_ii_line_13z
+    ots_label: S3_13z
+    rounding: whole_dollar
+  - node_id: schedule_a_2025_root_line_a
+    ots_label: A5a
+    rounding: whole_dollar
+  - node_id: schedule_a_2025_root_line_15
+    ots_label: A15
+    rounding: whole_dollar
+  - node_id: schedule_a_2025_root_line_16_amount
+    ots_label: A16
+    rounding: whole_dollar
+  - node_id: schedule_b_2025_root_line_4
+    ots_label: B4
+    rounding: whole_dollar
+  - node_id: schedule_b_2025_root_line_6
+    ots_label: B6
+    rounding: whole_dollar
+  - node_id: form_6251_2025_part_i_line_c
+    ots_label: AMT_Form_6251_L2c
+    rounding: whole_dollar
+  - node_id: form_6251_2025_part_i_line_g
+    ots_label: AMT_Form_6251_L2g
+    rounding: whole_dollar
   - node_id: form_8949_2025_part_ii_line_2_line_2_column_d_total
     ots_label: F8949_2d
     rounding: whole_dollar
@@ -36,7 +78,19 @@ boxes:
     ots_label: L7a
     rounding: whole_dollar
 guards:
-  - guard_id: schedule_1_additional_income_inert
-    ots_label: S1_8z
+  - guard_id: schedule_1_business_income_inert
+    ots_label: S1_3
+    expected: 0
+    allow_absent: true
+  - guard_id: schedule_2_amt_line_inert
+    ots_label: S2_2
+    expected: 0
+    allow_absent: true
+  - guard_id: schedule_2_self_employment_tax_inert
+    ots_label: S2_4
+    expected: 0
+    allow_absent: true
+  - guard_id: schedule_3_refundable_credit_inert
+    ots_label: S3_9
     expected: 0
     allow_absent: true

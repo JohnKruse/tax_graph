@@ -76,6 +76,51 @@ def _multi_lot_scenario() -> CapitalGainScenario:
     )
 
 
+def _widened_scenario() -> CapitalGainScenario:
+    return CapitalGainScenario(
+        scenario_id="m10_widened_oracle",
+        tax_year="2025",
+        filing_status="single",
+        description="Widened oracle scenario",
+        date_acquired="01/15/2024",
+        date_sold="06/01/2025",
+        proceeds=12000,
+        cost=10000,
+        extra_tax_graph_facts={
+            "schedule_1_2025_part_i_line_8z": 125,
+            "schedule_1_2025_part_ii_line_21": 75,
+            "schedule_1a_2025_part_i_line_2a": 40,
+            "schedule_2_2025_part_i_line_1a": 60,
+            "schedule_2_2025_part_ii_line_18": 25,
+            "schedule_3_2025_part_i_line_1": 90,
+            "schedule_3_2025_part_ii_line_13z": 35,
+            "schedule_a_2025_root_line_a": 400,
+            "schedule_a_2025_root_line_15": 20,
+            "schedule_a_2025_root_line_16_amount": 15,
+            "schedule_b_2025_root_line_4": 55,
+            "schedule_b_2025_root_line_6": 65,
+            "form_6251_2025_part_i_line_c": 45,
+            "form_6251_2025_part_i_line_g": 30,
+        },
+        extra_ots_inputs={
+            "S1_8z": 125,
+            "S1_21": 75,
+            "S1A_2a": 40,
+            "S2_1a": 60,
+            "S2_17z": 25,
+            "S3_1": 90,
+            "S3_13z": 35,
+            "A5a": 400,
+            "A15": 20,
+            "A16": 15,
+            "L2b": 55,
+            "L3b": 65,
+            "AMTws2c": 45,
+            "AMTws2g": 30,
+        },
+    )
+
+
 @pytest.mark.m6
 def test_scenario_renders_tax_graph_facts_golden():
     expected = (FIXTURES / "expected_tax_graph_facts.yaml").read_text(encoding="utf-8")
@@ -104,6 +149,16 @@ def test_multi_lot_scenario_renders_tax_graph_and_ots_goldens():
 
     assert render_tax_graph_facts_yaml(_multi_lot_scenario()) == facts
     assert render_ots_8949_csv(_multi_lot_scenario()) == csv
+
+
+@pytest.mark.m10
+def test_widened_scenario_renders_goldens():
+    expected_facts = (FIXTURES / "expected_tax_graph_facts_widened.yaml").read_text(encoding="utf-8")
+    expected_input = (FIXTURES / "expected_ots_input_widened.txt").read_text(encoding="utf-8")
+    template = (FIXTURES / "ots_widened_template.txt").read_text(encoding="utf-8")
+
+    assert render_tax_graph_facts_yaml(_widened_scenario()) == expected_facts
+    assert render_ots_input_text(_widened_scenario(), template_text=template) == expected_input
 
 
 @pytest.mark.m6

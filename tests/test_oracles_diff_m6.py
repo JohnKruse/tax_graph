@@ -15,6 +15,25 @@ ROOT = Path(__file__).resolve().parents[1]
 OTS_FIXTURES = ROOT / "tests" / "fixtures" / "ots"
 
 
+def _zero_widened_tax_graph_facts():
+    return {
+        "schedule_1_2025_part_i_line_8z": 0,
+        "schedule_1_2025_part_ii_line_21": 0,
+        "schedule_1a_2025_part_i_line_2a": 0,
+        "schedule_2_2025_part_i_line_1a": 0,
+        "schedule_2_2025_part_ii_line_18": 0,
+        "schedule_3_2025_part_i_line_1": 0,
+        "schedule_3_2025_part_ii_line_13z": 0,
+        "schedule_a_2025_root_line_a": 0,
+        "schedule_a_2025_root_line_15": 0,
+        "schedule_a_2025_root_line_16_amount": 0,
+        "schedule_b_2025_root_line_4": 0,
+        "schedule_b_2025_root_line_6": 0,
+        "form_6251_2025_part_i_line_c": 0,
+        "form_6251_2025_part_i_line_g": 0,
+    }
+
+
 def _box_map():
     return load_box_map(ROOT / "oracles" / "box_map_2025.yaml")
 
@@ -29,6 +48,7 @@ def _gain_scenario() -> CapitalGainScenario:
         date_sold="06/01/2025",
         proceeds=12000,
         cost=10000,
+        extra_tax_graph_facts=_zero_widened_tax_graph_facts(),
     )
 
 
@@ -42,6 +62,52 @@ def _loss_scenario() -> CapitalGainScenario:
         date_sold="06/01/2025",
         proceeds=0,
         cost=10000,
+        extra_tax_graph_facts=_zero_widened_tax_graph_facts(),
+    )
+
+
+def _widened_scenario() -> CapitalGainScenario:
+    return CapitalGainScenario(
+        scenario_id="m10_widened_oracle",
+        tax_year="2025",
+        filing_status="single",
+        description="Widened oracle scenario",
+        date_acquired="01/15/2024",
+        date_sold="06/01/2025",
+        proceeds=12000,
+        cost=10000,
+        extra_tax_graph_facts={
+            "schedule_1_2025_part_i_line_8z": 125,
+            "schedule_1_2025_part_ii_line_21": 75,
+            "schedule_1a_2025_part_i_line_2a": 40,
+            "schedule_2_2025_part_i_line_1a": 60,
+            "schedule_2_2025_part_ii_line_18": 25,
+            "schedule_3_2025_part_i_line_1": 90,
+            "schedule_3_2025_part_ii_line_13z": 35,
+            "schedule_a_2025_root_line_a": 400,
+            "schedule_a_2025_root_line_15": 20,
+            "schedule_a_2025_root_line_16_amount": 15,
+            "schedule_b_2025_root_line_4": 55,
+            "schedule_b_2025_root_line_6": 65,
+            "form_6251_2025_part_i_line_c": 45,
+            "form_6251_2025_part_i_line_g": 30,
+        },
+        extra_ots_inputs={
+            "S1_8z": 125,
+            "S1_21": 75,
+            "S1A_2a": 40,
+            "S2_1a": 60,
+            "S2_17z": 25,
+            "S3_1": 90,
+            "S3_13z": 35,
+            "A5a": 400,
+            "A15": 20,
+            "A16": 15,
+            "L2b": 55,
+            "L3b": 65,
+            "AMTws2c": 45,
+            "AMTws2g": 30,
+        },
     )
 
 
@@ -66,12 +132,12 @@ def test_diff_rejects_guard_violation_before_comparing_boxes():
     graph = Graph("2025", root=ROOT, source="yaml")
     result = Engine(graph).execute(load_facts_from_scenario(scenario))
     ots_values = parse_ots_output((OTS_FIXTURES / "ots_2025_single_lot_out.txt").read_text(encoding="utf-8"))
-    ots_values["S1_8z"] = 50
+    ots_values["S1_3"] = 50
 
     report = diff_engine_result(result, ots_values, _box_map(), scenario=scenario)
 
     assert report.status == "rejected"
-    assert report.guard_violations[0].guard_id == "schedule_1_additional_income_inert"
+    assert report.guard_violations[0].guard_id == "schedule_1_business_income_inert"
     assert report.guard_violations[0].scenario["scenario_id"] == scenario.scenario_id
     assert not report.comparisons
 
@@ -99,6 +165,21 @@ def test_diff_agrees_on_loss_beyond_3000_limit_now_that_line_21_is_modeled():
     graph = Graph("2025", root=ROOT, source="yaml")
     result = Engine(graph).execute(load_facts_from_scenario(scenario))
     ots_values = parse_ots_output((OTS_FIXTURES / "ots_2025_loss_limit_out.txt").read_text(encoding="utf-8"))
+
+    report = diff_engine_result(result, ots_values, _box_map(), scenario=scenario)
+
+    assert report.ok
+    assert report.status == "agreed"
+    assert not report.disagreements
+
+
+@pytest.mark.m10
+def test_diff_agrees_on_widened_canned_ots_output():
+    scenario = _widened_scenario()
+    graph = Graph("2025", root=ROOT, source="yaml")
+    facts = load_facts_from_scenario(scenario)
+    result = Engine(graph).execute(facts)
+    ots_values = parse_ots_output((OTS_FIXTURES / "ots_2025_widened_out.txt").read_text(encoding="utf-8"))
 
     report = diff_engine_result(result, ots_values, _box_map(), scenario=scenario)
 

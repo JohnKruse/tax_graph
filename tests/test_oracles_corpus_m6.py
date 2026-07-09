@@ -115,6 +115,7 @@ def test_committed_oracle_corpus_replays():
 
 def _fake_agreeing_ots_runner(input_path: str | Path, *, executable: str | Path):
     csv_path = Path(input_path).with_name(f"{Path(input_path).stem}_f8949.csv")
+    input_text = Path(input_path).read_text(encoding="utf-8")
     with csv_path.open(newline="", encoding="utf-8") as handle:
         rows = list(csv.DictReader(handle))
     short_rows = [row for row in rows if str(row["Date_Acquired"]).endswith("2025")]
@@ -126,8 +127,34 @@ def _fake_agreeing_ots_runner(input_path: str | Path, *, executable: str | Path)
     short_gain = _gain(short_rows)
     total = _clean_number(short_gain + long_gain)
     line_7 = max(total, -3000)
+    extra_inputs = _parse_numeric_inputs(
+        input_text,
+        (
+            "S1_8z",
+            "S1_21",
+            "S1A_2a",
+            "S2_1a",
+            "S2_17z",
+            "S3_1",
+            "S3_13z",
+            "A5a",
+            "A15",
+            "A16",
+            "L2b",
+            "L3b",
+            "AMTws2c",
+            "AMTws2g",
+        ),
+    )
     return SimpleNamespace(
         labels={
+            "A5a": extra_inputs.get("A5a", 0),
+            "A15": extra_inputs.get("A15", 0),
+            "A16": extra_inputs.get("A16", 0),
+            "AMT_Form_6251_L2c": extra_inputs.get("AMTws2c", 0),
+            "AMT_Form_6251_L2g": extra_inputs.get("AMTws2g", 0),
+            "B4": extra_inputs.get("L2b", 0),
+            "B6": extra_inputs.get("L3b", 0),
             "F8949_2d": proceeds,
             "F8949_2e": cost,
             "F8949_2g": adjustment,
@@ -139,6 +166,15 @@ def _fake_agreeing_ots_runner(input_path: str | Path, *, executable: str | Path)
             "D16": total,
             "D21": line_7 if total < 0 else 0,
             "L7a": line_7,
+            "S1_3": 0,
+            "S1_8z": extra_inputs.get("S1_8z", 0),
+            "S1_21": extra_inputs.get("S1_21", 0),
+            "S1A_2a": extra_inputs.get("S1A_2a", 0),
+            "S2_1a": extra_inputs.get("S2_1a", 0),
+            "S2_18": extra_inputs.get("S2_17z", 0),
+            "S3_1": extra_inputs.get("S3_1", 0),
+            "S3_9": 0,
+            "S3_13z": extra_inputs.get("S3_13z", 0),
         }
     )
 
@@ -153,3 +189,23 @@ def _gain(rows):
 def _clean_number(value):
     number = float(value or 0)
     return int(number) if number.is_integer() else number
+
+
+def _parse_numeric_inputs(text, labels):
+    values = {}
+    for raw_line in text.splitlines():
+        line = raw_line.strip()
+        for label in sorted(labels, key=len, reverse=True):
+            if not (line == label or line.startswith(f"{label} ") or line.startswith(f"{label}:")):
+                continue
+            payload = line[len(label) :].replace(":", " ").strip()
+            token = payload.split()[0] if payload else ""
+            if not token:
+                values[label] = 0
+                continue
+            try:
+                values[label] = _clean_number(token)
+            except ValueError:
+                values[label] = 0
+            break
+    return values

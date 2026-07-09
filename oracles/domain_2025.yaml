@@ -27,3 +27,74 @@ multi_lot:
     min: -25000
     max: 50000
     include: [-10000, -3000, 0, 2000, 50000]
+supplemental_inputs:
+  - node_id: schedule_1_2025_part_i_line_8z
+    ots_input: S1_8z
+    min: 0
+    max: 500
+    include: [0, 25, 125, 500]
+  - node_id: schedule_1_2025_part_ii_line_21
+    ots_input: S1_21
+    min: 0
+    max: 2500
+    include: [0, 75, 600, 2500]
+  - node_id: schedule_1a_2025_part_i_line_2a
+    ots_input: S1A_2a
+    min: 0
+    max: 800
+    include: [0, 40, 200, 800]
+  - node_id: schedule_2_2025_part_i_line_1a
+    ots_input: S2_1a
+    min: 0
+    max: 600
+    include: [0, 60, 250, 600]
+  - node_id: schedule_2_2025_part_ii_line_18
+    ots_input: S2_17z
+    min: 0
+    max: 300
+    include: [0, 25, 125, 300]
+  - node_id: schedule_3_2025_part_i_line_1
+    ots_input: S3_1
+    min: 0
+    max: 400
+    include: [0, 90, 200, 400]
+  - node_id: schedule_3_2025_part_ii_line_13z
+    ots_input: S3_13z
+    min: 0
+    max: 300
+    include: [0, 35, 120, 300]
+  - node_id: schedule_a_2025_root_line_a
+    ots_input: A5a
+    min: 0
+    max: 1200
+    include: [0, 100, 400, 1200]
+  - node_id: schedule_a_2025_root_line_15
+    ots_input: A15
+    min: 0
+    max: 300
+    include: [0, 20, 100, 300]
+  - node_id: schedule_a_2025_root_line_16_amount
+    ots_input: A16
+    min: 0
+    max: 300
+    include: [0, 15, 90, 300]
+  - node_id: schedule_b_2025_root_line_4
+    ots_input: L2b
+    min: 0
+    max: 700
+    include: [0, 55, 180, 700]
+  - node_id: schedule_b_2025_root_line_6
+    ots_input: L3b
+    min: 0
+    max: 700
+    include: [0, 65, 210, 700]
+  - node_id: form_6251_2025_part_i_line_c
+    ots_input: AMTws2c
+    min: 0
+    max: 100
+    include: [0, 10, 45, 100]
+  - node_id: form_6251_2025_part_i_line_g
+    ots_input: AMTws2g
+    min: 0
+    max: 100
+    include: [0, 12, 30, 100]

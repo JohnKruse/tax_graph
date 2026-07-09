@@ -1,4 +1,11 @@
 # M6 fixture inventory derived from OTS 1040/8949 output labels used by this slice.
+A5a
+A15
+A16
+AMT_Form_6251_L2c
+AMT_Form_6251_L2g
+B4
+B6
 F8949_2d
 F8949_2e
 F8949_2g
@@ -10,4 +17,14 @@ D15
 D16
 D21
 L7a
+S1_3
 S1_8z
+S1_21
+S1A_2a
+S2_1a
+S2_2
+S2_4
+S2_18
+S3_1
+S3_9
+S3_13z

@@ -13,16 +13,17 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
   and again at M9 close 2026-07-08 (M9 narration lives in `plans/archive/PHASE_M9.md` + git
   history). Archived phase plans: `plans/archive/PHASE_*.md`.
 
-## Current state (2026-07-08)
+## Current state (2026-07-09)
 
-**BALL: CODEX.** Next action: start M10 Step 6 (oracle harness growth over the widened
-set). Step 5 is now closed in the worktree and committed validation is green:
-Form 6251's two false-positive outbound flows are rejected by a committed
-disposition artifact, LINK skips them, frontier reports them as `rejected`
-instead of `declared`, and the driver stop mechanism is now generic policy
-language rather than `john_gate`. Nothing is open for the Architect; nothing
-waits on John. Coverage still stands at 90.1% full-universe / 100.0% in-scope,
-with only the intentional Schedule D line 20 deferred branch left `declared`.
+**BALL: CODEX.** Next action: start M10 Step 7 (verification records + coverage
+report + exit run). Step 6 is now closed in the worktree and machine-gated
+green: the widened oracle harness now witnesses modeled lines from Schedule 1,
+Schedule 1-A, Schedule 2, Schedule 3, Schedule A, Schedule B, and Form 6251;
+the live OTS fuzz gate passed 100/100 with seed `20260709`; and the frozen
+oracle corpus was re-cut with `live_ots_diff_report` provenance and replays
+offline. Nothing is open for the Architect; nothing waits on John. Coverage
+still stands at 90.1% full-universe / 100.0% in-scope, with only the
+intentional Schedule D line 20 deferred branch left `declared`.
 (Whoever finishes a turn: update this BALL line - it is the first thing read.)
 
 - **M0-M9 are COMPLETE and archived** (see `plans/archive/`). Operational highlights: compiled
@@ -46,7 +47,26 @@ with only the intentional Schedule D line 20 deferred branch left `declared`.
   fuzz -> verification records + coverage report. STATUS: Steps 1, 2, 2b, 3 are DONE and
   committed; Step 4 is DONE and committed (`4132c97`); Step 5 is now DONE in the
   worktree (all batch-form promotions committed, Form 6251 false-positive outbound
-  flows rejected by disposition, frontier/LINK/validate green); Steps 6-7 not started.
+  flows rejected by disposition, frontier/LINK/validate green); Step 6 is now DONE in
+  the worktree; Step 7 not started.
+- **Worker update (Codex, 2026-07-09): M10 Step 6 is now COMPLETE in the worktree.**
+  Widened the 2025 oracle harness additively: `oracles/box_map_2025.yaml` now
+  maps witnessed promoted-form lines from Schedule 1, Schedule 1-A, Schedule 2,
+  Schedule 3, Schedule A, Schedule B, and Form 6251; `oracles/domain_2025.yaml`
+  now generates supplemental modeled inputs for those forms alongside the
+  capital-gains lots; and `tax_graph.oracles.scenario` / `domain` /
+  `corpus` now render, freeze, and replay the widened surface cleanly,
+  including zero-vs-absent normalization when OTS omits a zero-valued label.
+  Added offline widened renderer/diff fixtures plus updated fake-oracle replay
+  coverage in the oracle pytest suite. Re-froze `examples/oracle_corpus/` from
+  the live OTS witness with seed `20260709` and `generated_date: 2026-07-09`.
+- **Worker verification (Codex, 2026-07-09):**
+  - `.\.venv\Scripts\python.exe -m pytest tests/test_oracles_scenario_boxmap_m6.py tests/test_oracles_diff_m6.py tests/test_oracles_domain_m6.py tests/test_oracles_corpus_m6.py tests/test_oracles_ots_m6.py -q` -> 25 passed, 2 skipped
+  - `.\.venv\Scripts\python.exe -m tax_graph.cli oracle fuzz --year 2025 --n 100 --seed 20260709 --source yaml` -> generated 100, agreed 100, disagreed 0, rejected 0
+  - `.\.venv\Scripts\python.exe -m tax_graph.cli oracle freeze --year 2025 --n 20 --seed 20260709 --source yaml --generated-date 2026-07-09 --oracle-version ots_2025_23.06` -> froze widened corpus batch with live-diff provenance
+  - `.\.venv\Scripts\python.exe -m tax_graph.cli oracle replay-corpus --year 2025 --source yaml` -> scenarios 20, result OK
+  - `.\.venv\Scripts\python.exe -m tax_graph.cli validate 2025 --root C:\Users\devbox\projects\tax_graph` -> graph integrity OK
+  - `.\.venv\Scripts\python.exe tools/check_ascii.py` -> ASCII check OK
 - **Worker update (Codex, 2026-07-08): M10 Step 1 is implemented and ready in git.** Added
   `tools/step_driver.py` plus packaged logic in `tax_graph/step_driver.py`; the driver parses
   tier tags from `plans/PHASE_<id>.md`, renders tier launch commands from `config/driver.yaml`,

@@ -227,7 +227,12 @@ def expected_values_from_report(report: OracleDiffReport) -> dict[str, Any]:
 
     if report.status != "agreed":
         raise ValueError(f"cannot freeze expected values from {report.status} report")
-    return {item.node_id: _clean_expected_value(item.ots_value) for item in report.comparisons}
+    return {
+        item.node_id: _clean_expected_value(
+            item.tax_graph_value if item.ots_value is None else item.ots_value
+        )
+        for item in report.comparisons
+    }
 
 
 def replay_corpus(*, year: str, root: str | Path, corpus_dir: str | Path, source: str | None = None) -> ReplayReport:

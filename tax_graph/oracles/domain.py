@@ -35,6 +35,16 @@ class DomainProfile:
     long_term_date_acquired: str
     short_term_date_acquired: str
     date_sold: str
+    supplemental_inputs: tuple["SupplementalInput", ...] = ()
+
+
+@dataclass(frozen=True)
+class SupplementalInput:
+    """One additive modeled input exercised by the oracle domain."""
+
+    node_id: str
+    ots_input: str
+    range: NumericRange
 
 
 def load_domain_profile(path: str | Path) -> DomainProfile:
@@ -54,6 +64,14 @@ def load_domain_profile(path: str | Path) -> DomainProfile:
         long_term_date_acquired=str(lot["date_acquired"]),
         short_term_date_acquired=str(lot.get("short_term_date_acquired", lot["date_acquired"])),
         date_sold=str(lot["date_sold"]),
+        supplemental_inputs=tuple(
+            SupplementalInput(
+                node_id=str(item["node_id"]),
+                ots_input=str(item["ots_input"]),
+                range=_range(item),
+            )
+            for item in data.get("supplemental_inputs", [])
+        ),
     )
 
 
@@ -79,6 +97,19 @@ def assert_scenario_in_domain(profile: DomainProfile, scenario: CapitalGainScena
         _assert_in_range("cost", lot.cost, profile.cost)
         _assert_in_range("adjustment", lot.adjustment, profile.adjustment)
     _assert_in_range("net_gain_loss", scenario.gain_loss, profile.net_gain_loss)
+    for spec in profile.supplemental_inputs:
+        if spec.node_id not in scenario.extra_tax_graph_facts:
+            raise ValueError(f"missing supplemental Tax Graph fact: {spec.node_id}")
+        if spec.ots_input not in scenario.extra_ots_inputs:
+            raise ValueError(f"missing supplemental OTS input: {spec.ots_input}")
+        fact_value = scenario.extra_tax_graph_facts[spec.node_id]
+        ots_value = scenario.extra_ots_inputs[spec.ots_input]
+        if fact_value != ots_value:
+            raise ValueError(
+                f"supplemental values diverged for {spec.node_id} / {spec.ots_input}: "
+                f"{fact_value} != {ots_value}"
+            )
+        _assert_in_range(spec.node_id, fact_value, spec.range)
 
 
 def _generate_one(profile: DomainProfile, rng: random.Random, *, seed: int, index: int) -> CapitalGainScenario:
@@ -94,6 +125,7 @@ def _generate_one(profile: DomainProfile, rng: random.Random, *, seed: int, inde
             )
             for row_index in range(count)
         )
+        supplemental_values = _supplemental_tax_graph_facts(profile, rng)
         scenario = CapitalGainScenario(
             scenario_id=f"m6_seed{seed}_{index:04d}",
             tax_year=profile.tax_year,
@@ -106,6 +138,8 @@ def _generate_one(profile: DomainProfile, rng: random.Random, *, seed: int, inde
             adjustment=lots[0].adjustment,
             holding_period=lots[0].holding_period,
             lots=lots,
+            extra_tax_graph_facts=supplemental_values,
+            extra_ots_inputs=_supplemental_ots_inputs(profile, supplemental_values),
         )
         try:
             assert_scenario_in_domain(profile, scenario)
@@ -120,6 +154,23 @@ def _draw_lot_count(profile: DomainProfile, rng: random.Random, *, index: int) -
     if index < len(includes):
         return includes[index]
     return int(_draw_number(rng, profile.lot_count))
+
+
+def _supplemental_tax_graph_facts(profile: DomainProfile, rng: random.Random) -> dict[str, int | float]:
+    return {
+        spec.node_id: _draw_number(rng, spec.range)
+        for spec in profile.supplemental_inputs
+    }
+
+
+def _supplemental_ots_inputs(
+    profile: DomainProfile,
+    values: dict[str, int | float],
+) -> dict[str, int | float]:
+    return {
+        spec.ots_input: values[spec.node_id]
+        for spec in profile.supplemental_inputs
+    }
 
 
 def _generate_lot(

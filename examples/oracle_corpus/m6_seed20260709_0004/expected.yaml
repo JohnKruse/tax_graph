@@ -1,0 +1,26 @@
+expected:
+  schedule_1_2025_part_i_line_8z: 448
+  schedule_1_2025_part_ii_line_21: 738
+  schedule_1a_2025_part_i_line_2a: 536
+  schedule_2_2025_part_i_line_1a: 60
+  schedule_2_2025_part_ii_line_18: 87
+  schedule_3_2025_part_i_line_1: 349
+  schedule_3_2025_part_ii_line_13z: 120
+  schedule_a_2025_root_line_a: 400
+  schedule_a_2025_root_line_15: 300
+  schedule_a_2025_root_line_16_amount: 204
+  schedule_b_2025_root_line_4: 435
+  schedule_b_2025_root_line_6: 191
+  form_6251_2025_part_i_line_c: 10
+  form_6251_2025_part_i_line_g: 45
+  form_8949_2025_part_ii_line_2_line_2_column_d_total: 90151
+  form_8949_2025_part_ii_line_2_line_2_column_e_total: 104989
+  form_8949_2025_part_ii_line_2_line_2_column_g_total: -832
+  form_8949_2025_part_ii_line_2_line_2_column_h_total: -15670
+  schedule_d_2025_part_i_line_1b_column_h: -4507
+  schedule_d_2025_line_7_net_st: -4507
+  schedule_d_2025_part_ii_line_8b_column_h: -15670
+  schedule_d_2025_line_15_net_lt: -15670
+  schedule_d_2025_line_16_total: -20177
+  schedule_d_2025_line_21_capital_loss_limited: -3000
+  form_1040_2025_line_7_capital_gain_loss: -3000

@@ -1,0 +1,28 @@
+Title:  US Federal 1040 Tax Form - 2025
+Status        Single
+You_65+Over?  N
+You_Blind?  N
+Spouse_65+Over?  N
+Spouse_Blind?  N
+Dependents  0
+CkHomeInUS  Y
+VirtCurr?  N
+CkSepLivedApart  N
+f8949_spreadsheet-A/D:
+D14 0
+D19 0
+Collectibles 0
+S1_8z
+S1_21
+S1A_2a
+S2_1a
+S2_17z
+S3_1
+S3_13z
+A5a
+A15
+A16
+L2b
+L3b
+AMTws2c
+AMTws2g
