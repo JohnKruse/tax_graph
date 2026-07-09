@@ -15,11 +15,12 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## Current state (2026-07-08)
 
-**BALL: CODEX.** Next action: finish the remaining M10 Step 5 seam - the `form_6251_2025`
-LINK fallback / source-node issue and the step-driver policy-marker cleanup - then move
-into Steps 6-7 straight through. Nothing is open for the Architect; nothing waits on
-John. Step 4 is committed (`4132c97`); Step 5 is in progress with the whole non-LINK
-promotion set now green through committed/uncommitted slices.
+**BALL: CODEX.** Next action: implement the flow-rejection disposition for the two
+Form 6251 false-positive flows (Architect ruling of 2026-07-09 in From Architect -
+NEITHER a synthesized source node NOR a LINK fallback), finish the step-driver
+policy-marker cleanup, close Step 5, then run Steps 6-7 straight through. Nothing is
+open for the Architect; nothing waits on John. All promotion slices are committed;
+coverage stands at 90.1% full-universe / 100.0% in-scope.
 (Whoever finishes a turn: update this BALL line - it is the first thing read.)
 
 - **M0-M9 are COMPLETE and archived** (see `plans/archive/`). Operational highlights: compiled
@@ -191,6 +192,30 @@ promotion set now green through committed/uncommitted slices.
   below; the live-acquire ruling remains answered under Step 2b.)
 
 ## From Architect
+- **ANSWERED (2026-07-09): the Form 6251 LINK seam - NEITHER option; the two flows are
+  extraction FALSE POSITIVES and get a rejection disposition.** The Architect read the
+  cited spans. Span 0251 ("Enter any adjustment ... on line 2k instead of line 3") is
+  guidance about which line OF FORM 6251 an adjustment goes on - the detector
+  pattern-matched "Schedule D ... line 3" in instruction prose and fabricated an
+  outbound flow. Span 0362 is AMT-FTC worksheet prose, same failure. Real 6251/Schedule D
+  data flow runs the OTHER direction (AMT-refigured Schedule D feeds 6251) and is already
+  covered by the deferred 6251 worksheet-branch frontier entries. Therefore: do NOT
+  synthesize the missing source node; do NOT teach LINK a fallback - either would
+  realize semantically wrong edges into Schedule D lines 2/3. Instead (worker-standard):
+  1. Add a committed **flow-disposition artifact** (parallel to `oracles/triage.yaml`;
+     worker pins home/schema, additive) where a declaration can be marked
+     `rejected: extraction_false_positive` with the span-based reason. Frontier build
+     consumes it: rejected declarations drop out of `declared` with the disposition
+     recorded, never silently.
+  2. Reject these two flows there, citing the two spans above.
+  3. Queue ONE deferred-review entry covering the rejection (non-blocking, standard
+     policy) so human eyes eventually confirm the false-positive call.
+  4. Note for later (do NOT build now): the outbound-flow detector fired on instruction
+     prose mentions with confidence 0.8; at batch scale this class recurs. Candidate
+     tightening lives with Step 6/M11 planning, not this step - the disposition
+     mechanism is the general-purpose valve.
+  After this plus the step-driver policy-marker cleanup, Step 5 closes; proceed into
+  Steps 6-7 without stopping.
 - **ANSWERED (2026-07-08): Step 4 residual-line ruling (your "next slice" question).**
   The dividing rule for the remaining non-scalar lines: **model only what the existing
   vocabulary already expresses; no new engine ops or semantics enter in Step 4.**
