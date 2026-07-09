@@ -1,4 +1,4 @@
-# PHASE M10 - Batch expansion across the OTS-witnessed set   [ ]
+# PHASE M10 - Batch expansion across the OTS-witnessed set   [COMPLETE]
 
 **Canary:** Assembly Line
 **Depends on:** M9 (all form-agnostic capabilities now exist: LINK, parameter nodes +
@@ -80,7 +80,7 @@ Filer-weighted coverage currently stands at 42.4%; this set is where the power-l
 
 ## Steps
 
-- [ ] **Step 1 [worker-standard] - Step driver + tier map + cost metrics.** The pinned
+- [DONE] **Step 1 [worker-standard] - Step driver + tier map + cost metrics.** The pinned
   M10 deliverable: a thin harness script (`tools/step_driver.py`) that parses a
   `plans/PHASE_<id>.md` for step tier tags, launches each step as a fresh
   non-interactive worker session using a tier-to-model command map from a config block
@@ -92,7 +92,7 @@ Filer-weighted coverage currently stands at 42.4%; this set is where the power-l
   prints the planned session sequence without launching; gate failure blocks the next
   step; the gate-stop is honored. Docs: README section + config example.
 
-- [ ] **Step 2 [worker-light] - Manifest growth + batch acquisition.** Fully prescriptive:
+- [DONE] **Step 2 [worker-light] - Manifest growth + batch acquisition.** Fully prescriptive:
   add manifest entries (form + instructions) for Schedule 1, Schedule 1-A, Schedule 2,
   Schedule 3, Schedule A, Schedule B, and Form 6251, following the exact shape of the
   existing `schedule_d_2025` entries (irs.gov/pub/irs-pdf URLs; the worker verifies each
@@ -157,7 +157,7 @@ Filer-weighted coverage currently stands at 42.4%; this set is where the power-l
   Test (offline, fixtures): each form's fixture slice produces schema-valid drafts;
   per-form metrics files validate; a table subunit appears for Schedule B. Docs.
 
-- [ ] **Step 5 [worker-heavy] - Sequenced promotions + LINK + frontier flips (deferred-
+- [DONE] **Step 5 [worker-heavy] - Sequenced promotions + LINK + frontier flips (deferred-
   review policy; no blocking stop).** In frontier worklist order: prepare one promotion
   diff per form (preserve every existing live edge; wire declared outbound flows;
   new thresholds enter as cited parameter nodes), verify the FULL machine witness set
@@ -179,7 +179,7 @@ Filer-weighted coverage currently stands at 42.4%; this set is where the power-l
   corpus batch (live-diff provenance only). Offline: renderer goldens + differ fixtures
   for at least one scenario touching each newly witnessed form. Docs.
 
-- [ ] **Step 7 [worker-light] - Verification Records + coverage report + exit run.**
+- [DONE] **Step 7 [worker-light] - Verification Records + coverage report + exit run.**
   Regenerate `VERIFICATION.md` + per-form pages for the full set (byte-stable, committed);
   run every exit-criteria command; record the coverage number + delta and the per-form
   machine-cost table (tokens/cost; `human_minutes` null unless real) in the handoff.
