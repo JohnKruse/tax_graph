@@ -15,11 +15,12 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## Current state (2026-07-09)
 
-**BALL: CODEX (when tokens refresh).** Next action: M11 Step 1 (1040 spine extraction +
-promotion, worker-heavy), then Steps 3-6 in order. Step 2 is DONE: implemented by
-Antigravity, Architect-reviewed line by line, ONE real error found and fixed (see
-"Step 2 review findings" in From Architect - read them; three carry directives for
-Step 3). Full pytest 242 passed / 4 skipped; both new drills caught at L3; ASCII green.
+**BALL: ANTIGRAVITY (interim; one worker at a time in the clone).** Authorized action:
+M11 **Step 5a ONLY** - the PolicyEngine PARAMETER-DIFF channel (Architect authorization
+2026-07-09, split from Step 5; see From Architect). Step 2 is DONE (Antigravity,
+Architect-reviewed; one HoH bracket error found and fixed - read the review findings).
+Codex takes Step 1 (worker-heavy 1040 spine) when its tokens refresh, then 3 -> 4 ->
+5b -> 6; whoever is active updates this line first.
 (Whoever finishes a turn: update this BALL line - it is the first thing read.)
 
 - **M0-M10 are COMPLETE.** M10 closed with the batch OTS-witnessed set promoted: Schedule 1,
@@ -52,6 +53,21 @@ Step 3). Full pytest 242 passed / 4 skipped; both new drills caught at L3; ASCII
 - (none)
 
 ## From Architect
+- **AUTHORIZED (2026-07-09): M11 Step 5a on Antigravity - PolicyEngine PARAMETER-DIFF
+  channel only (split from Step 5; 5b liability diff waits for Step 3's line 16).**
+  Scope: (1) new extras group for `policyengine-us` (NEVER base deps; import-guarded);
+  (2) a mapping file (committed, schema'd) from our parameter node ids to PolicyEngine
+  parameter paths - standard deductions, bracket rates/thresholds, QDCGT breakpoints;
+  where PE has no clean counterpart, record `unmapped` honestly, never force a match;
+  (3) `tax-graph verify parameter-diff --year 2025`: compare our `constant_value`s
+  against PE's 2025-period values, whole-dollar exact for dollar amounts, exact for
+  rates; output agree/disagree/unmapped per node with PE provenance (package version +
+  parameter path); (4) offline tests use CANNED PE parameter fixtures (live run gated
+  on the extra being installed); (5) a seeded wrong value in a fixture must be flagged
+  (this channel is the mechanical witness that would have caught the HoH error).
+  NOT in scope: scenario/liability diffing, engine changes, box map, any Step 1/3/4
+  work. Full pytest green before stopping; report the live diff result (if run) in
+  the handoff; update the BALL line to CODEX when done.
 - **Step 2 review findings (Architect, 2026-07-09; line-by-line per the QC contract,
   net-touching diff).** Antigravity's slice was good overall; verified against the
   cached official 1040 instruction text. Findings:
