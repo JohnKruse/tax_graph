@@ -15,8 +15,9 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## Current state (2026-07-09)
 
-**BALL: ARCHITECT.** Next action: plan M11. M10 is complete in the worktree and ready for the
-final push/report once the closeout commits land.
+**BALL: ARCHITECT.** Next action: plan M11 (await John's direction on scope). M10 is
+CLOSED: Architect independently verified all exit criteria on 2026-07-09 (see Latest
+verification) and pushed. John has been told.
 (Whoever finishes a turn: update this BALL line - it is the first thing read.)
 
 - **M0-M10 are COMPLETE.** M10 closed with the batch OTS-witnessed set promoted: Schedule 1,
@@ -55,6 +56,25 @@ final push/report once the closeout commits land.
   return.
 
 ## Latest verification
+- M10 phase close, Architect independent verification (2026-07-09) - ALL GREEN:
+  - Full `pytest -q` -> 238 passed, 4 skipped (after fixing one closeout-order test
+    breakage: `test_parse_phase_plan_handles_wrapped_real_plan_headers` read the LIVE
+    `plans/PHASE_M10.md`, which the archive move deleted; it now reads a frozen fixture
+    `tests/fixtures/phase_plan_wrapped_headers_m10.md` - tests must never depend on the
+    plans/ lifecycle)
+  - `validate 2025` OK; `build 2025` OK; ASCII OK
+  - Parity: line 7 = 2000 on yaml AND sqlite; multi-lot 250 on yaml
+  - Base-deps `uv run --no-dev`: run -> line 7 = 2000; frontier -> 90.1%
+  - `frontier` -> 90.1% full-universe / 100.0% in-scope (+47.7 / +57.6 vs M9 baseline)
+  - `oracle replay-corpus` -> 20 scenarios OK (widened corpus, seed 20260709,
+    `live_ots_diff_report`); `verify replay-examples` -> OK
+  - `drill run` -> 11/11 caught with expected layer attribution (incl.
+    `wrong_capital_loss_limit_parameter` at L3)
+  - `verify record` regeneration -> BYTE-STABLE (zero git drift across the 11 pages)
+- Observation noted for M11 planning (not a blocker): `run` CLI output lists
+  other-form nodes as `= None` on a capital-gains-only run (e.g.
+  `schedule_1_2025_part_i_line_7 = None`) - same graph-vs-return scoping class as the
+  fixed memo bug, but in diagnostics output; decide the intended contract in M11.
 - M10 closeout (worker, 2026-07-09):
   - `.\.venv\Scripts\python.exe -m pytest -m m10 -q` -> 20 passed, 222 deselected
   - `.\.venv\Scripts\python.exe -m pytest -q` -> 238 passed, 4 skipped

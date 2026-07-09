@@ -1,0 +1,192 @@
+# PHASE M10 - Batch expansion across the OTS-witnessed set   [ ]
+
+**Canary:** Assembly Line
+**Depends on:** M9 (all form-agnostic capabilities now exist: LINK, parameter nodes +
+comparison ops, second acquire/OCR run precedent, Verification Record generator, box-map/
+domain growth mechanics), M8 (verification net + drill gate), M7 (frontier ordering +
+coverage metric), M6 (live OTS witness).
+**Goal:** Stop building one form at a time. Grow the manifest to the full OTS-witnessed set
+(Schedules 1, 1-A, 2, 3, A, B, Form 6251 - D/8949 are already modeled), run
+acquire -> extract -> verify as a BATCH under the full M8 net, sequence PROMOTIONS by the
+frontier worklist, LINK as promotions land, and grow the oracle box map with every form.
+Human effort is DEFERRED, not demanded: every human control point converts to a queued
+non-blocking review entry for the future review workbench (John's 2026-07-08 policy);
+machine gates alone decide flow. A step DRIVER automates worker-session launching per
+step tier (pinned deliverable).
+
+## Why
+M9 proved the pipeline is form-agnostic and measured its per-form machine cost; the OTS
+metadata fence defines exactly the set where every extraction gets a differential witness
+for free. Batch is the payoff of the whole verification investment: the net checks
+correctness mechanically, so throughput is no longer bounded by bespoke per-form phases.
+Filer-weighted coverage currently stands at 42.4%; this set is where the power-law mass is.
+
+## Guardrails (do not drift)
+- **Extraction may batch; promotions stay frontier-SEQUENCED - under the DEFERRED-REVIEW
+  policy (John's call, 2026-07-08), which replaces the blocking human gate.** A promotion
+  proceeds when the FULL machine witness set is green: `validate` + `build`, the drill
+  gate, property/completeness checks, N-version agreement, oracle agreement where the box
+  map witnesses it, and the no-magic-numbers flag. Each promotion is one reviewable
+  commit AND one entry in a committed deferred-review queue artifact (worker pins the
+  home/schema; additive) that the future review workbench consumes. Provenance and the
+  Verification Record state plainly that human review is PENDING - never implied done.
+  Decision-node entries sit at the TOP of the queue (they encode judgment). Anything
+  failing ANY machine witness still BLOCKS: deferral applies to the human eyeball only,
+  never to machine gates. John may still review any diff at will; git revert is the undo.
+- **Incomplete, but never wrong - per branch.** Worksheet-heavy branches (QDCGT/tax
+  computation, 6251 AMT math, carryover worksheets, credit interactions) may remain
+  frontier entries WITHIN otherwise-modeled forms: typed `unresolved` traces, never guessed
+  zeros. The Verification Record states each form's actual modeled depth plainly.
+- **`human_minutes` stays honestly null** unless a real human review actually happened
+  (John's 2026-07-08 direction). No invented numbers, no fake closeout ritual. The review
+  workbench (`docs/review-workbench.md`) is the unscheduled circle-back that makes real
+  measurement possible. NEW in M10: metrics gain `worker_tokens` / `worker_cost` fields
+  beside `human_minutes` (pinned in AGENT_HANDOFF worker-tier rules).
+- **Parameters are nodes.** Every IRS-sourced threshold met in this set enters as a cited
+  `parameter` node via the closed ops; the no-magic-numbers validator + drill apply to
+  every promotion.
+- **No tax liability computation.** The 1040 tax line, QDCGT worksheet, and PolicyEngine
+  witnessing stay deferred (PolicyEngine arrives with the first liability branch).
+- **Worker tiers + QC contract are in force** (AGENT_HANDOFF pin, 2026-07-07): light steps
+  are fully prescriptive and never self-committed; net-touching diffs get line-by-line
+  Architect review; a stuck worker STOPS and raises in the handoff.
+- Unchanged law: drafts never committed/auto-merged; ASCII-only; schemas additive-only;
+  provider-agnostic LLM; base-deps runtime stays light; live graph referentially closed.
+
+## Exit criteria (must pass 100%)
+- `pytest -m m10` green - offline/deterministic (network/OCR/LLM/oracle gated or mocked);
+  full `pytest` green; ASCII OK; base-deps `validate`/`build`/`run`/`frontier` work.
+- Every batch form acquired, rendered, and extracted under the full net with per-form
+  `metrics.yaml` including the new `worker_tokens`/`worker_cost` fields; N-version and
+  example mining ran (gated) for every bundle; the M9 mining-endpoint defect is FIXED and
+  witnessed by at least one frozen confirmed example from a new form's instructions (or an
+  explicit recorded absence of Example blocks for that form).
+- Promotions frontier-sequenced under the deferred-review policy (machine witness set
+  green, one queue entry per promotion); after each, `validate` green, LINK realized,
+  parity examples unchanged (line 7 = 2000 / 250), frontier entries flip
+  `declared -> modeled`.
+- **Filer-weighted coverage strictly rises** (report the number and the delta from 42.4%);
+  remaining frontier entries are all intentional (named worksheet/branch deferrals).
+- Oracle: box map extended to every newly promoted form line the OTS inventory witnesses
+  (validated both ways); domain widened where modeled with guards where not; gated live
+  >= 100 fuzz over the widened domain agrees or triages (zero silent); a corpus batch
+  re-frozen with `live_ots_diff_report` provenance.
+- `VERIFICATION.md` + per-form pages regenerated byte-stable and committed for the whole
+  set; MCP `get_verification` serves them.
+- The step driver exists, drove at least one real step end-to-end, and its blocking-gate
+  stop mechanism stays proven by test (under the deferred-review policy no blocking human
+  gate remains in the M10 default flow, but the stop capability must survive for future
+  phases that declare one).
+
+## Steps
+
+- [DONE] **Step 1 [worker-standard] - Step driver + tier map + cost metrics.** The pinned
+  M10 deliverable: a thin harness script (`tools/step_driver.py`) that parses a
+  `plans/PHASE_<id>.md` for step tier tags, launches each step as a fresh
+  non-interactive worker session using a tier-to-model command map from a config block
+  John owns (`config/driver.yaml`: e.g. worker-light -> `codex exec -m <mini>`,
+  worker-standard/heavy -> stronger models; commands are templates, provider-agnostic),
+  runs the gate suite between steps (`pytest`, `validate`, ASCII), and HARD-STOPS at any
+  step marked JOHN's gate. Add `worker_tokens`/`worker_cost` to the metrics schema and
+  writer (additive; null when unknown). Test: a dry-run mode parses this file's tags and
+  prints the planned session sequence without launching; gate failure blocks the next
+  step; the gate-stop is honored. Docs: README section + config example.
+
+- [DONE] **Step 2 [worker-light] - Manifest growth + batch acquisition.** Fully prescriptive:
+  add manifest entries (form + instructions) for Schedule 1, Schedule 1-A, Schedule 2,
+  Schedule 3, Schedule A, Schedule B, and Form 6251, following the exact shape of the
+  existing `schedule_d_2025` entries (irs.gov/pub/irs-pdf URLs; the worker verifies each
+  URL resolves, HTTP 200). Fix the known `form_1099b_2025` 404 URL (this absorbs the
+  pinned worker-light trial errand - report token usage in the handoff as the first
+  light-tier data point). Gated: run acquire/OCR/render for the batch; verify per-bundle
+  artifacts (line-anchored `.txt`, `.fields.json`, instruction `.pages/` + `.links.json`,
+  front-matter preserved); commit the fixture slices offline tests need. NOT authorized:
+  any code, test-logic, or net edits beyond pattern-following fixtures. Test: input
+  loader resolves every new bundle; outline builder produces a sane tree per form.
+
+- [DONE] **Step 2b [worker-standard] - Citation-integrity hardening + source pinning (Architect
+  ruling, 2026-07-08; MUST land before Step 4).** Root cause of the Step 2 live-acquire
+  failure, diagnosed by the Architect: the IRS sources did NOT drift (fresh `f8949.pdf` is
+  byte-identical to the year-pinned `irs-prior/f8949--2025.pdf`); the failure is OURS. The
+  rendered `.txt` is DECORATED with injected `Header: ...` lines
+  (`tax_graph/acquire/render_form.py`), and the checker
+  (`tax_graph/acquire/citation_check.py`) does substring-over-normalized-whitespace against
+  that decorated text - so any shift in where headers interleave (library version, re-render)
+  breaks every quote spanning an injection site. The promoted graph is NOT invalidated; the
+  verification harness is coupled to decoration placement. Fix three things:
+  1. **Decoration-insensitive matching:** the checker verifies quotes against UNDECORATED
+     source text (strip renderer annotation lines before normalize+match). The citation
+     contract is "verbatim from the source document", so verification must not depend on
+     our own annotations' placement.
+  2. **Real drift detection:** pin the sha256 of each promoted document's fetched PDF
+     (manifest field or a lockfile beside it, worker pins which); `acquire --check` compares
+     and reports a mismatch as an EXPLICIT `source drift` error, distinct from
+     `quote not found`. Record today's hashes for all promoted docs (verified same as
+     promotion era). CLI check output must show per-citation reasons.
+  3. **Year-pin promoted-year URLs:** switch manifest URLs for year-2025 documents to the
+     stable `irs-prior/<name>--2025.pdf` variants where they exist (the bare
+     `pub/irs-pdf` URLs WILL rotate to TY2026 later this year - `f1099b` already did).
+  Exit: `acquire 2025 --check` fully green live; offline tests prove (a) a doctored
+  decorated text with shifted header interleaving still matches, (b) a doctored PDF hash
+  mismatch raises the explicit drift error, (c) a genuinely absent quote still fails.
+  Note: also reconcile the count discrepancy (CLI reported 13 failures; direct
+  `check_graph_citations` shows 7) - likely the CLI's `source_map` for span citations;
+  make the CLI report per-citation reasons so this class of confusion cannot recur. Docs.
+
+- [DONE] **Step 3 [worker-standard] - Repair example mining (known M9 defect).** M9 Step 2
+  reported 10/10 mined examples unmappable because the OpenRouter verifier endpoint
+  rejected the structured-output parameters. Fix the verifier client/config (stay
+  provider-agnostic - capability-detect or config-declare structured-output support, no
+  vendor hardcoding); prove it by re-running mining (gated) on the Schedule D
+  instructions and freezing at least one MACHINE-AGREED example (engine replay agrees
+  with the IRS-authoritative numbers) under the deferred-review policy: the worker is
+  authorized to adjust the freeze path so it records honest provenance
+  (`human_confirmed: false`, machine-agreed basis, plus a deferred-review queue entry) -
+  workers never write `human_confirmed: true`; the `--confirm` flag stays reserved for
+  actual humans. Offline replay stays green. Test: mocked verifier exercises the fixed parameter path; a canned
+  incompatible-endpoint response degrades with a clear actionable error, not 10/10
+  silent unmappables. Docs: config knob.
+
+- [DONE] **Step 4 [worker-standard] - Batch extraction under the full net.** For each new
+  bundle: outline-first extraction with tiers, calibration sample, `metrics.yaml`
+  (now with token/cost fields); gated N-version (cross-family) and example mining.
+  NO promotions in this step; exception queues and calibration samples accumulate as
+  committed review artifacts for Step 5's gates. Repeatable-table detection must fire
+  where expected (Schedule B interest/dividend lists) and stay silent where not.
+  Both-direction completeness passes or carries explicit `not_modeled` records per form.
+  Test (offline, fixtures): each form's fixture slice produces schema-valid drafts;
+  per-form metrics files validate; a table subunit appears for Schedule B. Docs.
+
+- [DONE] **Step 5 [worker-heavy] - Sequenced promotions + LINK + frontier flips (deferred-
+  review policy; no blocking stop).** In frontier worklist order: prepare one promotion
+  diff per form (preserve every existing live edge; wire declared outbound flows;
+  new thresholds enter as cited parameter nodes), verify the FULL machine witness set
+  green, then promote, LINK, rebuild the frontier, and re-run `validate` + parity
+  before the next form - recording one deferred-review queue entry per promotion
+  (decision nodes at top priority). Also update the step driver so gate stops are
+  policy-driven markers rather than hardcoded to Step 5 (the stop mechanism itself
+  stays tested for future blocking gates). Unmodeled worksheet branches become named frontier entries with typed
+  `unresolved` traces. Test: after each promotion, validate green + coverage
+  monotonically rises; LINK idempotent; a declaration with an absent target stays
+  declared. Docs: per-form promotion notes in the diff messages.
+
+- [DONE] **Step 6 [worker-standard] - Oracle harness growth over the widened set.** Extend
+  `oracles/box_map_2025.yaml` to every newly promoted line the OTS label inventory
+  witnesses (machine-validated both ways); widen `oracles/domain_2025.yaml` to generate
+  scenarios exercising the new forms where modeled, with guards fencing unmodeled
+  branches; retire/convert canaries whose branches became modeled (M9 line-21
+  precedent). Gated: live >= 100 fuzz over the widened domain, zero silent; re-freeze a
+  corpus batch (live-diff provenance only). Offline: renderer goldens + differ fixtures
+  for at least one scenario touching each newly witnessed form. Docs.
+
+- [DONE] **Step 7 [worker-light] - Verification Records + coverage report + exit run.**
+  Regenerate `VERIFICATION.md` + per-form pages for the full set (byte-stable, committed);
+  run every exit-criteria command; record the coverage number + delta and the per-form
+  machine-cost table (tokens/cost; `human_minutes` null unless real) in the handoff.
+  NOT authorized: any edits outside generated records, docs, and the handoff.
+
+When all steps are `[DONE]`: mark this phase `[COMPLETE]`, move it to `plans/archive/`,
+prune `plans/AGENT_HANDOFF.md`, single `git push`, and tell John. After M10 the pinned
+post-M10 items open: flesh out `docs/self-serve-extension.md` and `docs/intake.md`
+(directions pinned 2026-07-07), and John's review-workbench circle-back
+(`docs/review-workbench.md`) - the piece that finally makes `human_minutes` measurable.
