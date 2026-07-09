@@ -1,0 +1,31 @@
+Title:  US Federal 1040 Tax Form - 2025 - Tax Graph scenario m11_regular_tax_table
+Status  Single
+You_65+Over?  N
+You_Blind?  N
+Spouse_65+Over?  N
+Spouse_Blind?  N
+Dependents  0
+CkHomeInUS  Y
+VirtCurr?  N
+CkSepLivedApart  N
+L1a  115749
+L2b  0
+L3a  0
+L3b  0
+f8949_spreadsheet-A/D:  m11_regular_tax_table_f8949.csv
+D14  0
+D19  0
+Collectibles  0
+
+S1_8z  0
+S1_21  0
+S1A_2a  0
+S2_1a  0
+S2_17z  0
+S3_1  0
+S3_13z  0
+A5a  0
+A15  0
+A16  0
+AMTws2c  0
+AMTws2g  0

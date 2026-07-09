@@ -19,6 +19,40 @@ ROOT = Path(__file__).resolve().parents[1]
 FIXTURES = ROOT / "tests" / "fixtures" / "oracles"
 
 
+def _zero_widened_tax_graph_facts() -> dict[str, int]:
+    return {
+        "schedule_1_2025_part_i_line_8z": 0,
+        "schedule_1_2025_part_ii_line_21": 0,
+        "schedule_1a_2025_part_i_line_2a": 0,
+        "schedule_2_2025_part_i_line_1a": 0,
+        "schedule_2_2025_part_ii_line_18": 0,
+        "schedule_3_2025_part_i_line_1": 0,
+        "schedule_3_2025_part_ii_line_13z": 0,
+        "schedule_a_2025_root_line_a": 0,
+        "schedule_a_2025_root_line_15": 0,
+        "schedule_a_2025_root_line_16_amount": 0,
+        "form_6251_2025_part_i_line_c": 0,
+        "form_6251_2025_part_i_line_g": 0,
+    }
+
+
+def _zero_widened_ots_inputs() -> dict[str, int]:
+    return {
+        "S1_8z": 0,
+        "S1_21": 0,
+        "S1A_2a": 0,
+        "S2_1a": 0,
+        "S2_17z": 0,
+        "S3_1": 0,
+        "S3_13z": 0,
+        "A5a": 0,
+        "A15": 0,
+        "A16": 0,
+        "AMTws2c": 0,
+        "AMTws2g": 0,
+    }
+
+
 def _scenario() -> CapitalGainScenario:
     return CapitalGainScenario(
         scenario_id="m6_single_lot_gain",
@@ -86,6 +120,8 @@ def _widened_scenario() -> CapitalGainScenario:
         date_sold="06/01/2025",
         proceeds=12000,
         cost=10000,
+        taxable_interest=55,
+        ordinary_dividends=65,
         extra_tax_graph_facts={
             "schedule_1_2025_part_i_line_8z": 125,
             "schedule_1_2025_part_ii_line_21": 75,
@@ -97,8 +133,6 @@ def _widened_scenario() -> CapitalGainScenario:
             "schedule_a_2025_root_line_a": 400,
             "schedule_a_2025_root_line_15": 20,
             "schedule_a_2025_root_line_16_amount": 15,
-            "schedule_b_2025_root_line_4": 55,
-            "schedule_b_2025_root_line_6": 65,
             "form_6251_2025_part_i_line_c": 45,
             "form_6251_2025_part_i_line_g": 30,
         },
@@ -113,11 +147,43 @@ def _widened_scenario() -> CapitalGainScenario:
             "A5a": 400,
             "A15": 20,
             "A16": 15,
-            "L2b": 55,
-            "L3b": 65,
             "AMTws2c": 45,
             "AMTws2g": 30,
         },
+    )
+
+
+def _qdcgt_tax_scenario() -> CapitalGainScenario:
+    return CapitalGainScenario(
+        scenario_id="m11_qdcgt_tax_line",
+        tax_year="2025",
+        filing_status="single",
+        description="QDCGT tax-line oracle scenario",
+        date_acquired="01/15/2024",
+        date_sold="06/01/2025",
+        proceeds=10000,
+        cost=10000,
+        wages=60000,
+        qualified_dividends=5000,
+        ordinary_dividends=5000,
+        extra_tax_graph_facts=_zero_widened_tax_graph_facts(),
+        extra_ots_inputs=_zero_widened_ots_inputs(),
+    )
+
+
+def _regular_tax_scenario() -> CapitalGainScenario:
+    return CapitalGainScenario(
+        scenario_id="m11_regular_tax_table",
+        tax_year="2025",
+        filing_status="single",
+        description="Regular-tax table oracle scenario",
+        date_acquired="01/15/2024",
+        date_sold="06/01/2025",
+        proceeds=10000,
+        cost=10000,
+        wages=115749,
+        extra_tax_graph_facts=_zero_widened_tax_graph_facts(),
+        extra_ots_inputs=_zero_widened_ots_inputs(),
     )
 
 
@@ -161,7 +227,26 @@ def test_widened_scenario_renders_goldens():
     assert render_ots_input_text(_widened_scenario(), template_text=template) == expected_input
 
 
+@pytest.mark.m11
+def test_qdcgt_tax_scenario_renders_goldens():
+    expected_facts = (FIXTURES / "expected_tax_graph_facts_qdcgt_m11.yaml").read_text(encoding="utf-8")
+    expected_input = (FIXTURES / "expected_ots_input_qdcgt_m11.txt").read_text(encoding="utf-8")
+
+    assert render_tax_graph_facts_yaml(_qdcgt_tax_scenario()) == expected_facts
+    assert render_ots_input_text(_qdcgt_tax_scenario()) == expected_input
+
+
+@pytest.mark.m11
+def test_regular_tax_scenario_renders_goldens():
+    expected_facts = (FIXTURES / "expected_tax_graph_facts_regular_tax_m11.yaml").read_text(encoding="utf-8")
+    expected_input = (FIXTURES / "expected_ots_input_regular_tax_m11.txt").read_text(encoding="utf-8")
+
+    assert render_tax_graph_facts_yaml(_regular_tax_scenario()) == expected_facts
+    assert render_ots_input_text(_regular_tax_scenario()) == expected_input
+
+
 @pytest.mark.m6
+@pytest.mark.m11
 def test_box_map_validates_against_graph_and_inventory():
     box_map = load_box_map(ROOT / "oracles" / "box_map_2025.yaml")
     labels = load_ots_label_inventory(ROOT / box_map.label_inventory)

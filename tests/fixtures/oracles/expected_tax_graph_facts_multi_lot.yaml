@@ -1,7 +1,32 @@
 tax_year: 2025
 filing_status: single
 scenario_id: m6b_three_lot_adjusted
-facts: []
+facts:
+- node_id: form_1040_2025_deduction_method
+  value: standard
+  source:
+    document_label: Generated broker 1099-B for scenario m6b_three_lot_adjusted
+    extracted_by: m6_scenario_renderer
+- node_id: form_1040_2025_root_line_1a
+  value: 0
+  source:
+    document_label: Generated broker 1099-B for scenario m6b_three_lot_adjusted
+    extracted_by: m6_scenario_renderer
+- node_id: form_1040_2025_root_line_3a
+  value: 0
+  source:
+    document_label: Generated broker 1099-B for scenario m6b_three_lot_adjusted
+    extracted_by: m6_scenario_renderer
+- node_id: schedule_b_2025_root_line_4
+  value: 0
+  source:
+    document_label: Generated broker 1099-B for scenario m6b_three_lot_adjusted
+    extracted_by: m6_scenario_renderer
+- node_id: schedule_b_2025_root_line_6
+  value: 0
+  source:
+    document_label: Generated broker 1099-B for scenario m6b_three_lot_adjusted
+    extracted_by: m6_scenario_renderer
 tables:
 - table_id: form_8949_2025_part_i_line_1
   rows:

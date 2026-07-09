@@ -12,7 +12,13 @@ from typing import Any, Mapping
 import yaml
 
 
-SUPPORTED_FILING_STATUSES = {"single": "Single"}
+SUPPORTED_FILING_STATUSES = {
+    "single": "Single",
+    "married_filing_jointly": "Married/Joint",
+    "married_filing_separately": "Married/Sep",
+    "head_of_household": "Head_of_House",
+    "qualifying_surviving_spouse": "Widow(er)",
+}
 
 
 @dataclass(frozen=True)
@@ -49,6 +55,12 @@ class CapitalGainScenario:
     cost: int | float
     adjustment: int | float = 0
     holding_period: str = "long_term"
+    wages: int | float = 0
+    taxable_interest: int | float = 0
+    qualified_dividends: int | float = 0
+    ordinary_dividends: int | float = 0
+    deduction_method: str = "standard"
+    itemized_deductions: int | float = 0
     lots: tuple[CapitalGainLot, ...] = ()
     extra_tax_graph_facts: Mapping[str, Any] = field(default_factory=dict)
     extra_ots_inputs: Mapping[str, Any] = field(default_factory=dict)
@@ -102,13 +114,23 @@ def render_tax_graph_facts_document(scenario: CapitalGainScenario) -> dict[str, 
     ):
         if lots:
             tables.append({"table_id": table_id, "rows": _tax_graph_rows(scenario, lots)})
+    fact_values: dict[str, Any] = {
+        "form_1040_2025_root_line_1a": _clean_number(scenario.wages),
+        "schedule_b_2025_root_line_4": _clean_number(scenario.taxable_interest),
+        "form_1040_2025_root_line_3a": _clean_number(scenario.qualified_dividends),
+        "schedule_b_2025_root_line_6": _clean_number(scenario.ordinary_dividends),
+        "form_1040_2025_deduction_method": scenario.deduction_method,
+    }
+    if scenario.deduction_method == "itemized":
+        fact_values["schedule_a_2025_root_line_17"] = _clean_number(scenario.itemized_deductions)
+    fact_values.update(dict(scenario.extra_tax_graph_facts))
     facts = [
         {
             "node_id": node_id,
             "value": value,
             "source": _source(scenario),
         }
-        for node_id, value in sorted(scenario.extra_tax_graph_facts.items())
+        for node_id, value in sorted(fact_values.items())
     ]
     return {
         "tax_year": int(scenario.tax_year),
@@ -169,6 +191,10 @@ def render_ots_input_text(
         "CkHomeInUS": "Y",
         "VirtCurr?": "N",
         "CkSepLivedApart": "N",
+        "L1a": _format_ots_value(scenario.wages),
+        "L2b": _format_ots_value(scenario.taxable_interest),
+        "L3a": _format_ots_value(scenario.qualified_dividends),
+        "L3b": _format_ots_value(scenario.ordinary_dividends),
         "f8949_spreadsheet-A/D": csv_name,
         "D14": "0",
         "D19": "0",
@@ -237,19 +263,25 @@ def write_ots_input_bundle(
 
 
 def _require_supported_tax_graph_scenario(scenario: CapitalGainScenario) -> None:
-    _require_supported_ots_scenario(scenario)
+    if str(scenario.tax_year) != "2025":
+        raise ValueError(f"unsupported tax year for oracle scenario: {scenario.tax_year}")
+    if scenario.filing_status not in SUPPORTED_FILING_STATUSES:
+        raise ValueError(f"unsupported filing status for oracle scenario: {scenario.filing_status}")
     if not scenario.normalized_lots:
         raise ValueError("capital-gains scenarios require at least one lot")
     for lot in scenario.normalized_lots:
         if lot.holding_period not in {"short_term", "long_term"}:
             raise ValueError(f"unsupported holding period: {lot.holding_period}")
+    if scenario.deduction_method not in {"standard", "itemized"}:
+        raise ValueError(f"unsupported deduction method: {scenario.deduction_method}")
+    if scenario.deduction_method == "itemized" and _clean_number(scenario.itemized_deductions) < 0:
+        raise ValueError("itemized deductions must be nonnegative")
 
 
 def _require_supported_ots_scenario(scenario: CapitalGainScenario) -> None:
-    if str(scenario.tax_year) != "2025":
-        raise ValueError(f"unsupported tax year for M6 scenario: {scenario.tax_year}")
-    if scenario.filing_status not in SUPPORTED_FILING_STATUSES:
-        raise ValueError(f"unsupported filing status for M6 scenario: {scenario.filing_status}")
+    _require_supported_tax_graph_scenario(scenario)
+    if scenario.deduction_method != "standard":
+        raise ValueError("OTS scenario renderer currently supports standard deduction only")
 
 
 def _source(scenario: CapitalGainScenario) -> dict[str, str]:
@@ -344,7 +376,18 @@ def _ensure_template_fields(template: str, labels: tuple[str, ...]) -> str:
     missing = [label for label in labels if label.rstrip(":") not in present]
     if not missing:
         return rendered
-    extra = "\n".join(f"{label}" for label in missing)
+    ordered_missing = [label for label in ("L1a", "L2b", "L3a", "L3b") if label in missing]
+    trailing_missing = [label for label in missing if label not in ordered_missing]
+    if ordered_missing and "f8949_spreadsheet-A/D" in rendered:
+        ordered_block = "\n".join(ordered_missing)
+        rendered = rendered.replace(
+            "f8949_spreadsheet-A/D",
+            f"{ordered_block}\nf8949_spreadsheet-A/D",
+            1,
+        )
+    if not trailing_missing:
+        return rendered if rendered.endswith("\n") else f"{rendered}\n"
+    extra = "\n".join(f"{label}" for label in trailing_missing)
     suffix = "\n" if rendered.endswith("\n") else "\n"
     return f"{rendered}{suffix}{extra}\n"
 

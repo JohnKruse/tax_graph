@@ -71,8 +71,12 @@
 
 - rule_id: lookup_bracket_tax
   operation: LOOKUP_BRACKET
-  description: Compute tax from the selected bracket table and taxable amount.
-  rounding: dollar
+  description: >-
+    Compute tax from the selected bracket table and taxable amount. Cents are
+    carried (the Tax Computation Worksheet subtraction amounts end in .25/.50,
+    so the exact result is fractional); whole-dollar rounding happens ONCE at
+    the final line 16 entry, matching the worksheet's own entry discipline.
+  rounding: currency
 
 - rule_id: multiply_currency
   operation: MULTIPLY

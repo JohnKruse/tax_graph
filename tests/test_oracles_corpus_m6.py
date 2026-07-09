@@ -8,6 +8,7 @@ from pathlib import Path
 
 import pytest
 
+from tax_graph.compile.tax_table import compute_tax_for_midpoint, generate_tax_table_ranges, load_brackets_from_graph
 from tax_graph.oracles.corpus import (
     FreezeCandidate,
     freeze_generated_corpus,
@@ -18,6 +19,22 @@ from tax_graph.oracles.domain import generate_scenarios, load_domain_profile
 
 
 ROOT = Path(__file__).resolve().parents[1]
+BRACKETS = load_brackets_from_graph(ROOT, "2025")
+STANDARD_DEDUCTION_BY_STATUS = {
+    "Single": 15750,
+    "Married/Joint": 31500,
+    "Married/Sep": 15750,
+    "Head_of_House": 23625,
+    "Widow(er)": 31500,
+}
+STATUS_KEY_BY_OTS_STATUS = {
+    "Single": "single",
+    "Married/Joint": "married_filing_jointly",
+    "Married/Sep": "married_filing_separately",
+    "Head_of_House": "head_of_household",
+    "Widow(er)": "qualifying_surviving_spouse",
+}
+TAX_TABLE_RANGES = generate_tax_table_ranges()
 
 
 @pytest.mark.m6
@@ -130,6 +147,8 @@ def _fake_agreeing_ots_runner(input_path: str | Path, *, executable: str | Path)
     extra_inputs = _parse_numeric_inputs(
         input_text,
         (
+            "Status",
+            "L1a",
             "S1_8z",
             "S1_21",
             "S1A_2a",
@@ -141,11 +160,17 @@ def _fake_agreeing_ots_runner(input_path: str | Path, *, executable: str | Path)
             "A15",
             "A16",
             "L2b",
+            "L3a",
             "L3b",
             "AMTws2c",
             "AMTws2g",
         ),
     )
+    status = str(extra_inputs.get("Status", "Single"))
+    agi = _clean_number(extra_inputs.get("L1a", 0) + extra_inputs.get("L2b", 0) + extra_inputs.get("L3b", 0) + line_7)
+    deduction = STANDARD_DEDUCTION_BY_STATUS[status]
+    taxable_income = max(_clean_number(agi - deduction), 0)
+    tax = _regular_tax(taxable_income, STATUS_KEY_BY_OTS_STATUS[status])
     return SimpleNamespace(
         labels={
             "A5a": extra_inputs.get("A5a", 0),
@@ -166,6 +191,10 @@ def _fake_agreeing_ots_runner(input_path: str | Path, *, executable: str | Path)
             "D16": total,
             "D21": line_7 if total < 0 else 0,
             "L7a": line_7,
+            "L11b": agi,
+            "L12": deduction,
+            "L15": taxable_income,
+            "L16": tax,
             "S1_3": 0,
             "S1_8z": extra_inputs.get("S1_8z", 0),
             "S1_21": extra_inputs.get("S1_21", 0),
@@ -198,6 +227,10 @@ def _parse_numeric_inputs(text, labels):
         for label in sorted(labels, key=len, reverse=True):
             if not (line == label or line.startswith(f"{label} ") or line.startswith(f"{label}:")):
                 continue
+            if label == "Status":
+                payload = line[len(label) :].replace(":", " ").strip()
+                values[label] = payload.split()[0] if payload else "Single"
+                break
             payload = line[len(label) :].replace(":", " ").strip()
             token = payload.split()[0] if payload else ""
             if not token:
@@ -209,3 +242,22 @@ def _parse_numeric_inputs(text, labels):
                 values[label] = 0
             break
     return values
+
+
+def _regular_tax(taxable_income, filing_status):
+    if taxable_income <= 0:
+        return 0
+    if taxable_income < 100000:
+        for income_min, income_max in TAX_TABLE_RANGES:
+            if income_min <= taxable_income < income_max:
+                midpoint = (income_min + income_max) / 2.0
+                return compute_tax_for_midpoint(midpoint, filing_status, BRACKETS)
+    return _clean_number(_bracket_tax(taxable_income, filing_status))
+
+
+def _bracket_tax(taxable_income, filing_status):
+    tiers = BRACKETS[filing_status]
+    for tier in reversed(tiers):
+        if taxable_income >= tier["floor"]:
+            return tier["cumulative"] + tier["rate"] * (taxable_income - tier["floor"])
+    return 0

@@ -250,7 +250,7 @@ def replay_corpus(*, year: str, root: str | Path, corpus_dir: str | Path, source
         result = Engine(graph).execute(facts)
         for node_id, want in expected.items():
             got = result.values[node_id]
-            if got != want:
+            if not _replay_values_match(got, want):
                 issues.append(
                     ReplayIssue(
                         scenario_id=scenario_id,
@@ -260,6 +260,25 @@ def replay_corpus(*, year: str, root: str | Path, corpus_dir: str | Path, source
                     )
                 )
     return ReplayReport(scenario_count=len(manifest.get("entries", [])), issues=tuple(issues))
+
+
+def _replay_values_match(got: Any, want: Any) -> bool:
+    """Compare a replayed value against a frozen expectation.
+
+    Frozen expected values keep the live oracle's raw precision (cents) for
+    provenance; the engine's user-facing lines round once at entry. Numeric
+    comparison therefore happens at whole-dollar resolution, mirroring the
+    live differ's box rounding. Non-numeric values must match exactly.
+    """
+
+    if got == want:
+        return True
+    if isinstance(got, (int, float)) and isinstance(want, (int, float)):
+        def _half_up(value: float) -> int:
+            import math
+            return math.floor(value + 0.5) if value >= 0 else math.ceil(value - 0.5)
+        return _half_up(float(got)) == _half_up(float(want))
+    return False
 
 
 def load_triage_log(path: str | Path) -> dict[str, Any]:

@@ -14,17 +14,6 @@
     },
     {
       "income_min": 5,
-      "income_max": 10,
-      "taxes": {
-        "single": 1,
-        "married_filing_jointly": 1,
-        "married_filing_separately": 1,
-        "head_of_household": 1,
-        "qualifying_surviving_spouse": 1
-      }
-    },
-    {
-      "income_min": 10,
       "income_max": 15,
       "taxes": {
         "single": 1,
@@ -36,17 +25,6 @@
     },
     {
       "income_min": 15,
-      "income_max": 20,
-      "taxes": {
-        "single": 2,
-        "married_filing_jointly": 2,
-        "married_filing_separately": 2,
-        "head_of_household": 2,
-        "qualifying_surviving_spouse": 2
-      }
-    },
-    {
-      "income_min": 20,
       "income_max": 25,
       "taxes": {
         "single": 2,

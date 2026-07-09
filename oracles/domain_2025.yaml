@@ -2,6 +2,26 @@ tax_year: 2025
 scenario_type: capital_gains_multi_lot
 filing_statuses:
   - single
+  - married_filing_jointly
+  - married_filing_separately
+  - head_of_household
+  - qualifying_surviving_spouse
+wages:
+  min: 0
+  max: 700000
+  include: [0, 50000, 99999, 100000, 300000, 600000]
+taxable_interest:
+  min: 0
+  max: 2000
+  include: [0, 50, 500, 2000]
+qualified_dividends:
+  min: 0
+  max: 10000
+  include: [0, 5000, 10000]
+ordinary_dividends:
+  min: 0
+  max: 10000
+  include: [0, 5000, 10000]
 multi_lot:
   holding_period: long_term
   count:
@@ -27,22 +47,14 @@ multi_lot:
     min: -25000
     max: 50000
     include: [-10000, -3000, 0, 2000, 50000]
+# NOTE (M11 Step 4, Architect): Schedule 1 (8z, part II 21) and Schedule 1-A (2a)
+# supplemental inputs are REMOVED from the live domain until their internal
+# "Add lines" chains are modeled (M13): OTS aggregates them into AGI / line 13b
+# but the live graph does not yet compute those schedule-internal totals, so
+# feeding them poisons every downstream tax-line comparison. Their nodes remain
+# input-only with honest walls. S2/S3/6251 extras stay: they land beyond line 16
+# in both systems and act as pass-through echo witnesses.
 supplemental_inputs:
-  - node_id: schedule_1_2025_part_i_line_8z
-    ots_input: S1_8z
-    min: 0
-    max: 500
-    include: [0, 25, 125, 500]
-  - node_id: schedule_1_2025_part_ii_line_21
-    ots_input: S1_21
-    min: 0
-    max: 2500
-    include: [0, 75, 600, 2500]
-  - node_id: schedule_1a_2025_part_i_line_2a
-    ots_input: S1A_2a
-    min: 0
-    max: 800
-    include: [0, 40, 200, 800]
   - node_id: schedule_2_2025_part_i_line_1a
     ots_input: S2_1a
     min: 0
@@ -78,16 +90,6 @@ supplemental_inputs:
     min: 0
     max: 300
     include: [0, 15, 90, 300]
-  - node_id: schedule_b_2025_root_line_4
-    ots_input: L2b
-    min: 0
-    max: 700
-    include: [0, 55, 180, 700]
-  - node_id: schedule_b_2025_root_line_6
-    ots_input: L3b
-    min: 0
-    max: 700
-    include: [0, 65, 210, 700]
   - node_id: form_6251_2025_part_i_line_c
     ots_input: AMTws2c
     min: 0

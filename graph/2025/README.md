@@ -45,6 +45,11 @@ M11 Step 3 extends that spine through Form 1040 line 16. The live branch now:
 - executes the Qualified Dividends and Capital Gain Tax Worksheet line by line
   for the supported Schedule D / qualified-dividend profile.
 
+M11 Step 4 widens the OTS witness to the tax line. The oracle box map now
+compares the live graph against OTS not just through capital-gain carry-ins but
+also at Form 1040 `L11b` / `L12` / `L15` / `L16`, across all five filing
+statuses and threshold-straddling tax-line scenarios.
+
 ## Known v0 simplifications (eyeball list)
 
 - **Operand model:** a computed node is produced by all edges targeting it that

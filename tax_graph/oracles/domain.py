@@ -27,6 +27,10 @@ class DomainProfile:
 
     tax_year: str
     filing_statuses: tuple[str, ...]
+    wages: NumericRange
+    taxable_interest: NumericRange
+    qualified_dividends: NumericRange
+    ordinary_dividends: NumericRange
     lot_count: NumericRange
     proceeds: NumericRange
     cost: NumericRange
@@ -56,6 +60,10 @@ def load_domain_profile(path: str | Path) -> DomainProfile:
     return DomainProfile(
         tax_year=str(data["tax_year"]),
         filing_statuses=tuple(str(item) for item in data["filing_statuses"]),
+        wages=_range(data["wages"]),
+        taxable_interest=_range(data.get("taxable_interest", {"min": 0, "max": 0, "include": [0]})),
+        qualified_dividends=_range(data.get("qualified_dividends", {"min": 0, "max": 0, "include": [0]})),
+        ordinary_dividends=_range(data.get("ordinary_dividends", {"min": 0, "max": 0, "include": [0]})),
         lot_count=_range(count),
         proceeds=_range(lot["proceeds"]),
         cost=_range(lot["cost"]),
@@ -97,6 +105,10 @@ def assert_scenario_in_domain(profile: DomainProfile, scenario: CapitalGainScena
         _assert_in_range("cost", lot.cost, profile.cost)
         _assert_in_range("adjustment", lot.adjustment, profile.adjustment)
     _assert_in_range("net_gain_loss", scenario.gain_loss, profile.net_gain_loss)
+    _assert_in_range("wages", scenario.wages, profile.wages)
+    _assert_in_range("taxable_interest", scenario.taxable_interest, profile.taxable_interest)
+    _assert_in_range("qualified_dividends", scenario.qualified_dividends, profile.qualified_dividends)
+    _assert_in_range("ordinary_dividends", scenario.ordinary_dividends, profile.ordinary_dividends)
     for spec in profile.supplemental_inputs:
         if spec.node_id not in scenario.extra_tax_graph_facts:
             raise ValueError(f"missing supplemental Tax Graph fact: {spec.node_id}")
@@ -114,22 +126,32 @@ def assert_scenario_in_domain(profile: DomainProfile, scenario: CapitalGainScena
 
 def _generate_one(profile: DomainProfile, rng: random.Random, *, seed: int, index: int) -> CapitalGainScenario:
     for _attempt in range(1000):
+        filing_status = _draw_filing_status(profile, index=index)
         count = _draw_lot_count(profile, rng, index=index)
+        target_profile = _target_income_profile(index=index, filing_status=filing_status)
         lots = tuple(
             _generate_lot(
                 profile,
                 rng,
                 row_index=row_index,
-                force_sign=_forced_sign(count, row_index, scenario_index=index),
+                force_sign=_forced_sign(count, row_index, scenario_index=index, target_profile=target_profile),
                 holding_period=_forced_holding_period(count, row_index, scenario_index=index),
             )
             for row_index in range(count)
         )
         supplemental_values = _supplemental_tax_graph_facts(profile, rng)
+        wages, taxable_interest, qualified_dividends, ordinary_dividends = _core_income_values(
+            profile,
+            rng,
+            filing_status=filing_status,
+            index=index,
+            gain_loss=_clean_number(sum(lot.gain_loss for lot in lots)),
+            target_profile=target_profile,
+        )
         scenario = CapitalGainScenario(
             scenario_id=f"m6_seed{seed}_{index:04d}",
             tax_year=profile.tax_year,
-            filing_status=rng.choice(profile.filing_statuses),
+            filing_status=filing_status,
             description=f"Generated capital gains scenario {index + 1}",
             date_acquired=lots[0].date_acquired,
             date_sold=profile.date_sold,
@@ -137,6 +159,10 @@ def _generate_one(profile: DomainProfile, rng: random.Random, *, seed: int, inde
             cost=lots[0].cost,
             adjustment=lots[0].adjustment,
             holding_period=lots[0].holding_period,
+            wages=wages,
+            taxable_interest=taxable_interest,
+            qualified_dividends=qualified_dividends,
+            ordinary_dividends=ordinary_dividends,
             lots=lots,
             extra_tax_graph_facts=supplemental_values,
             extra_ots_inputs=_supplemental_ots_inputs(profile, supplemental_values),
@@ -154,6 +180,11 @@ def _draw_lot_count(profile: DomainProfile, rng: random.Random, *, index: int) -
     if index < len(includes):
         return includes[index]
     return int(_draw_number(rng, profile.lot_count))
+
+
+def _draw_filing_status(profile: DomainProfile, *, index: int) -> str:
+    statuses = profile.filing_statuses
+    return statuses[index % len(statuses)]
 
 
 def _supplemental_tax_graph_facts(profile: DomainProfile, rng: random.Random) -> dict[str, int | float]:
@@ -215,7 +246,9 @@ def _generate_lot(
     raise ValueError("could not generate an in-domain lot after 1000 attempts")
 
 
-def _forced_sign(count: int, row_index: int, *, scenario_index: int) -> str | None:
+def _forced_sign(count: int, row_index: int, *, scenario_index: int, target_profile: str | None) -> str | None:
+    if target_profile and target_profile.startswith("regular_tax"):
+        return "flat"
     if scenario_index == 0 and row_index == 0:
         return "severe_loss"
     if count < 3:
@@ -240,6 +273,8 @@ def _forced_holding_period(count: int, row_index: int, *, scenario_index: int) -
 
 
 def _draw_lot_gain(rng: random.Random, *, force_sign: str | None) -> int:
+    if force_sign == "flat":
+        return 0
     if force_sign == "severe_loss":
         return -rng.randint(3001, 10000)
     if force_sign == "gain":
@@ -249,6 +284,107 @@ def _draw_lot_gain(rng: random.Random, *, force_sign: str | None) -> int:
     if force_sign == "adjusted_gain":
         return rng.randint(100, 2000)
     return rng.randint(-8000, 5000)
+
+
+STANDARD_DEDUCTION_BY_STATUS = {
+    "single": 15750,
+    "married_filing_jointly": 31500,
+    "married_filing_separately": 15750,
+    "head_of_household": 23625,
+    "qualifying_surviving_spouse": 31500,
+}
+
+
+QDCGT_ZERO_BREAKPOINT_BY_STATUS = {
+    "single": 48350,
+    "married_filing_jointly": 96700,
+    "married_filing_separately": 48350,
+    "head_of_household": 64750,
+    "qualifying_surviving_spouse": 96700,
+}
+
+
+QDCGT_FIFTEEN_BREAKPOINT_BY_STATUS = {
+    "single": 533400,
+    "married_filing_jointly": 600050,
+    "married_filing_separately": 300000,
+    "head_of_household": 566700,
+    "qualifying_surviving_spouse": 600050,
+}
+
+
+def _target_income_profile(*, index: int, filing_status: str) -> str | None:
+    forced_slot = index // len(STANDARD_DEDUCTION_BY_STATUS)
+    if forced_slot == 0:
+        return "regular_tax_below_table_boundary"
+    if forced_slot == 1:
+        return "regular_tax_at_table_boundary"
+    if forced_slot == 2:
+        return "qdcgt_below_zero_breakpoint"
+    if forced_slot == 3:
+        return "qdcgt_above_zero_breakpoint"
+    if forced_slot == 4:
+        return "qdcgt_below_fifteen_breakpoint"
+    if forced_slot == 5:
+        return "qdcgt_above_fifteen_breakpoint"
+    return None
+
+
+def _core_income_values(
+    profile: DomainProfile,
+    rng: random.Random,
+    *,
+    filing_status: str,
+    index: int,
+    gain_loss: int | float,
+    target_profile: str | None,
+) -> tuple[int | float, int | float, int | float, int | float]:
+    if target_profile is None:
+        wages = _draw_number(rng, profile.wages)
+        taxable_interest = _draw_number(rng, profile.taxable_interest)
+        qualified_dividends = _draw_number(rng, profile.qualified_dividends)
+        ordinary_dividends = max(qualified_dividends, _draw_number(rng, profile.ordinary_dividends))
+        return (
+            _clean_number(wages),
+            _clean_number(taxable_interest),
+            _clean_number(qualified_dividends),
+            _clean_number(ordinary_dividends),
+        )
+
+    standard_deduction = STANDARD_DEDUCTION_BY_STATUS[filing_status]
+    taxable_interest = 0
+    if target_profile == "regular_tax_below_table_boundary":
+        target_taxable_income = 99999
+        ordinary_dividends = 0
+        qualified_dividends = 0
+    elif target_profile == "regular_tax_at_table_boundary":
+        target_taxable_income = 100000
+        ordinary_dividends = 0
+        qualified_dividends = 0
+    elif target_profile == "qdcgt_below_zero_breakpoint":
+        target_taxable_income = QDCGT_ZERO_BREAKPOINT_BY_STATUS[filing_status] - 1
+        ordinary_dividends = 5000
+        qualified_dividends = 5000
+    elif target_profile == "qdcgt_above_zero_breakpoint":
+        target_taxable_income = QDCGT_ZERO_BREAKPOINT_BY_STATUS[filing_status] + 1
+        ordinary_dividends = 5000
+        qualified_dividends = 5000
+    elif target_profile == "qdcgt_below_fifteen_breakpoint":
+        target_taxable_income = QDCGT_FIFTEEN_BREAKPOINT_BY_STATUS[filing_status] - 1
+        ordinary_dividends = 5000
+        qualified_dividends = 5000
+    else:
+        target_taxable_income = QDCGT_FIFTEEN_BREAKPOINT_BY_STATUS[filing_status] + 1
+        ordinary_dividends = 5000
+        qualified_dividends = 5000
+
+    wages = target_taxable_income + standard_deduction - ordinary_dividends - _clean_number(gain_loss)
+    return (
+        _clean_number(wages),
+        taxable_interest,
+        qualified_dividends,
+        ordinary_dividends,
+    )
 
 
 def _draw_number(rng: random.Random, range_: NumericRange) -> int | float:

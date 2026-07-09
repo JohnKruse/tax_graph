@@ -1,15 +1,9 @@
 tax_year: 2025
 ots_label_inventory: oracles/ots_label_inventory_2025.txt
+# NOTE (M11 Step 4, Architect): S1_8z / S1_21 / S1A_2a box entries removed with
+# their domain supplemental inputs (see domain_2025.yaml note) - an unfed,
+# unchained line cannot be witnessed. Restore at M13 with the internal sums.
 boxes:
-  - node_id: schedule_1_2025_part_i_line_8z
-    ots_label: S1_8z
-    rounding: whole_dollar
-  - node_id: schedule_1_2025_part_ii_line_21
-    ots_label: S1_21
-    rounding: whole_dollar
-  - node_id: schedule_1a_2025_part_i_line_2a
-    ots_label: S1A_2a
-    rounding: whole_dollar
   - node_id: schedule_2_2025_part_i_line_1a
     ots_label: S2_1a
     rounding: whole_dollar
@@ -76,6 +70,18 @@ boxes:
     condition: tax_graph_negative
   - node_id: form_1040_2025_line_7_capital_gain_loss
     ots_label: L7a
+    rounding: whole_dollar
+  - node_id: form_1040_2025_root_line_11b
+    ots_label: L11b
+    rounding: whole_dollar
+  - node_id: form_1040_2025_root_line_12e
+    ots_label: L12
+    rounding: whole_dollar
+  - node_id: form_1040_2025_root_line_15
+    ots_label: L15
+    rounding: whole_dollar
+  - node_id: form_1040_2025_root_line_16
+    ots_label: L16
     rounding: whole_dollar
 guards:
   - guard_id: schedule_1_business_income_inert

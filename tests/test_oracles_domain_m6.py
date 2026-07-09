@@ -56,6 +56,7 @@ def _profile():
 
 
 @pytest.mark.m6
+@pytest.mark.m11
 def test_seeded_generator_is_deterministic():
     profile = _profile()
 
@@ -66,6 +67,7 @@ def test_seeded_generator_is_deterministic():
 
 
 @pytest.mark.m6
+@pytest.mark.m11
 def test_generated_scenarios_stay_inside_profile_bounds():
     profile = _profile()
 
@@ -73,18 +75,30 @@ def test_generated_scenarios_stay_inside_profile_bounds():
 
     assert len(scenarios) == 100
     lot_counts = [len(scenario.normalized_lots) for scenario in scenarios]
+    statuses = {scenario.filing_status for scenario in scenarios}
     for scenario in scenarios:
         assert_scenario_in_domain(profile, scenario)
         render_tax_graph_facts_document(scenario)
         assert 1 <= len(scenario.normalized_lots) <= 15
         assert scenario.gain_loss >= -25000
+        assert scenario.deduction_method == "standard"
     assert max(lot_counts) > 11
+    assert statuses == set(profile.filing_statuses)
     assert any(scenario.short_term_lots for scenario in scenarios)
     assert any(scenario.long_term_lots for scenario in scenarios)
     assert any(scenario.gain_loss < -3000 for scenario in scenarios)
     assert any(lot.adjustment != 0 for scenario in scenarios for lot in scenario.normalized_lots)
-    assert all("schedule_1_2025_part_i_line_8z" in scenario.extra_tax_graph_facts for scenario in scenarios)
+    assert any(scenario.wages > 100000 for scenario in scenarios)
+    assert any(scenario.qualified_dividends > 0 for scenario in scenarios)
+    assert any(scenario.ordinary_dividends > 0 for scenario in scenarios)
+    # M11 Step 4: S1/S1A supplemental inputs left the live domain until their
+    # internal "Add lines" chains are modeled (M13); S2/S3/6251 echoes remain.
+    assert all("schedule_2_2025_part_i_line_1a" in scenario.extra_tax_graph_facts for scenario in scenarios)
+    assert all("schedule_1_2025_part_i_line_8z" not in scenario.extra_tax_graph_facts for scenario in scenarios)
     assert all("AMTws2g" in scenario.extra_ots_inputs for scenario in scenarios)
+    assert any(scenario.wages == 115749 for scenario in scenarios if scenario.filing_status == "single")
+    assert any(scenario.wages == 115750 for scenario in scenarios if scenario.filing_status == "single")
+    assert any(scenario.qualified_dividends == 5000 for scenario in scenarios if scenario.filing_status == "head_of_household")
     assert any(
         len(scenario.normalized_lots) >= 3
         and any(lot.gain_loss > 0 for lot in scenario.normalized_lots)
@@ -94,6 +108,7 @@ def test_generated_scenarios_stay_inside_profile_bounds():
 
 
 @pytest.mark.m6
+@pytest.mark.m11
 def test_out_of_profile_scenario_is_refused():
     profile = _profile()
     scenario = CapitalGainScenario(

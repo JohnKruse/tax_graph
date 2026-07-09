@@ -2,6 +2,21 @@ tax_year: 2025
 filing_status: single
 scenario_id: m10_widened_oracle
 facts:
+- node_id: form_1040_2025_deduction_method
+  value: standard
+  source:
+    document_label: Generated broker 1099-B for scenario m10_widened_oracle
+    extracted_by: m6_scenario_renderer
+- node_id: form_1040_2025_root_line_1a
+  value: 0
+  source:
+    document_label: Generated broker 1099-B for scenario m10_widened_oracle
+    extracted_by: m6_scenario_renderer
+- node_id: form_1040_2025_root_line_3a
+  value: 0
+  source:
+    document_label: Generated broker 1099-B for scenario m10_widened_oracle
+    extracted_by: m6_scenario_renderer
 - node_id: form_6251_2025_part_i_line_c
   value: 45
   source:

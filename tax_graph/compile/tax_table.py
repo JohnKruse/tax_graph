@@ -19,9 +19,8 @@ BRACKET_NODE_BY_STATUS = {
 def generate_tax_table_ranges() -> list[tuple[int, int]]:
     """Generate income ranges for the tax table under $100k."""
     ranges = []
-    # 1. Under $25 split into $5 ranges
-    for i in range(0, 25, 5):
-        ranges.append((i, i + 5))
+    # 1. Under $25 uses the published 0-5 / 5-15 / 15-25 bands.
+    ranges.extend([(0, 5), (5, 15), (15, 25)])
     # 2. $25 to $3,000 in $25 ranges
     for i in range(25, 3000, 25):
         ranges.append((i, i + 25))

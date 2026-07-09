@@ -28,7 +28,24 @@ def test_tax_table_schema_validation():
     # Should not raise any validation error
     jsonschema.validate(data, schema)
     assert data["tax_year"] == 2025
-    assert len(data["entries"]) == 2064
+    assert len(data["entries"]) == 2062
+    assert data["entries"][:3] == [
+        {
+            "income_min": 0,
+            "income_max": 5,
+            "taxes": data["entries"][0]["taxes"],
+        },
+        {
+            "income_min": 5,
+            "income_max": 15,
+            "taxes": data["entries"][1]["taxes"],
+        },
+        {
+            "income_min": 15,
+            "income_max": 25,
+            "taxes": data["entries"][2]["taxes"],
+        },
+    ]
 
 
 @pytest.mark.m11
@@ -47,7 +64,7 @@ def test_tax_table_sqlite_projection(tmp_path):
     with sqlite3.connect(result.path) as conn:
         # Check row count
         count = conn.execute("SELECT COUNT(*) FROM tax_table").fetchone()[0]
-        assert count == 2064
+        assert count == 2062
 
         # Check range 25,300 to 25,350
         row_mid = conn.execute(

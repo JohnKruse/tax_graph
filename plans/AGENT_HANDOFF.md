@@ -16,7 +16,7 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 ## Current state (2026-07-09)
 
 **BALL: CODEX (interim; one worker at a time in the clone).** Authorized action:
-M11 **Step 4**, then 5b -> 6.
+M11 **Step 4** closeout rerun (blocked on local-Python approval budget), then 5b -> 6.
 Step 5a REWORK (PolicyEngine PARAMETER-DIFF) is DONE (Antigravity). Live PE fetch yielded 20/20 matches.
 (Whoever finishes a turn: update this BALL line - it is the first thing read.)
 
@@ -51,6 +51,24 @@ Step 5a REWORK (PolicyEngine PARAMETER-DIFF) is DONE (Antigravity). Live PE fetc
   bracket / QDCGT breakpoint citations are now value-bearing instruction quotes.
   New tests: `tests/test_tax_liability_m11.py`, plus M11 updates to
   `tests/test_form_1040_spine_m11.py` and `tests/test_tax_table_m11.py`.
+- **M11 Step 4 implementation (Codex, 2026-07-09):** Widened the OTS oracle harness to
+  the tax line. The scenario/domain layer now supports all five filing statuses plus
+  wages, taxable interest, qualified dividends, ordinary dividends, and standard-deduction
+  tax-line cases. `oracles/box_map_2025.yaml` now maps `L11b` / `L12` / `L15` / `L16`,
+  and the label inventory was extended to match. Added new M11 renderer/diff fixtures for
+  a QDCGT scenario and a regular-tax-table scenario, updated the existing M6/M10 oracle
+  fixtures to the widened contract, and extended the fake OTS corpus runner so freeze/
+  replay tests keep agreeing with the widened box map. Also folded in the Step 2 review
+  follow-up: `tax_graph/compile/tax_table.py` now emits the published under-$25 bands
+  `0-5 / 5-15 / 15-25`, and `graph/2025/tax_table.json` was regenerated.
+- **M11 Step 4 live-gate note (Codex, 2026-07-09):** A first live `oracle fuzz` run
+  exposed a real renderer bug: when an OTS template omitted `L1a/L2b/L3a/L3b`, the
+  renderer appended them after the Schedule D block instead of inserting them before
+  `f8949_spreadsheet-A/D`, which OTS rejects. That insertion logic is now fixed in
+  `tax_graph/oracles/scenario.py`. I could not run the post-fix rerun because the local
+  Python approval budget was exhausted by the desktop tool reviewer. Next worker should
+  rerun the oracle/corpus suites, then `tax-graph oracle fuzz --year 2025 --n 100 --seed 20260709`,
+  and if clean re-freeze `examples/oracle_corpus/`.
 - **Step 7 exit-run fix summary (Codex, 2026-07-09):**
   - Hardened M7 coverage tests to derive expectations from fixture/SOI data and to use a
     synthetic unmodeled weighted-form scenario rather than assuming the live graph still has
@@ -200,6 +218,13 @@ Step 5a REWORK (PolicyEngine PARAMETER-DIFF) is DONE (Antigravity). Live PE fetc
   - `.\.venv\Scripts\pytest.exe -q` -> 252 passed, 4 skipped
   - `.\.venv\Scripts\tax-graph.exe validate 2025 --root C:\Users\devbox\projects\tax_graph` -> graph integrity OK
   - `.\.venv\Scripts\python.exe tools\check_ascii.py` -> ASCII check OK
+- M11 Step 4 mid-closeout (worker, 2026-07-09):
+  - `.\.venv\Scripts\pytest.exe tests\test_tax_table_m11.py tests\test_tax_liability_m11.py tests\test_oracles_scenario_boxmap_m6.py tests\test_oracles_diff_m6.py tests\test_oracles_domain_m6.py -q` -> 28 passed, 1 skipped
+  - `.\.venv\Scripts\pytest.exe -m m11 -q` -> 22 passed, 238 deselected
+  - `.\.venv\Scripts\pytest.exe -q` -> 256 passed, 4 skipped
+  - `C:\Users\devbox\AppData\Local\Programs\Python\Python313\python.exe tools\check_ascii.py` -> ASCII check OK
+  - `.\.venv\Scripts\tax-graph.exe oracle fuzz --year 2025 --n 100 --seed 20260709 --root C:\Users\devbox\projects\tax_graph` -> FAILED before diffing: OTS rejected the rendered input order (`Found 'f8949_spreadsheet-A/D:' when expecting 'L1a'`)
+  - Post-fix status: renderer insertion order fixed; re-run of oracle/corpus suites and live fuzz/freeze is still pending because the desktop approval reviewer hit the local-Python usage limit for this turn.
 - M10 phase close, Architect independent verification (2026-07-09) - ALL GREEN:
   - Full `pytest -q` -> 238 passed, 4 skipped (after fixing one closeout-order test
     breakage: `test_parse_phase_plan_handles_wrapped_real_plan_headers` read the LIVE
