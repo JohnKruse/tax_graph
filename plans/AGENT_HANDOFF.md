@@ -15,15 +15,13 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## Current state (2026-07-09)
 
-**BALL: CODEX.** Next action: start M10 Step 7 (verification records + coverage
-report + exit run). Step 6 is now closed in the worktree and machine-gated
-green: the widened oracle harness now witnesses modeled lines from Schedule 1,
-Schedule 1-A, Schedule 2, Schedule 3, Schedule A, Schedule B, and Form 6251;
-the live OTS fuzz gate passed 100/100 with seed `20260709`; and the frozen
-oracle corpus was re-cut with `live_ots_diff_report` provenance and replays
-offline. Nothing is open for the Architect; nothing waits on John. Coverage
-still stands at 90.1% full-universe / 100.0% in-scope, with only the
-intentional Schedule D line 20 deferred branch left `declared`.
+**BALL: CODEX.** Next action: the authorized worker-STANDARD slice "Step 7 exit-run
+fixes" (Architect diagnosis + per-test directions, 2026-07-09, in From Architect).
+Three of the four failures are brittle test expectations exposed by the widened
+surface; the fourth (`test_render_memo_matches_golden_fixture`) is a REAL product
+bug in the Return Record memo - fix the renderer, not the golden. Then finish Step 7
+(commit the regenerated verification pages), close M10 per the plan footer, and the
+Architect takes the ball for M11 planning.
 (Whoever finishes a turn: update this BALL line - it is the first thing read.)
 
 - **M0-M9 are COMPLETE and archived** (see `plans/archive/`). Operational highlights: compiled
@@ -67,6 +65,37 @@ intentional Schedule D line 20 deferred branch left `declared`.
   - `.\.venv\Scripts\python.exe -m tax_graph.cli oracle replay-corpus --year 2025 --source yaml` -> scenarios 20, result OK
   - `.\.venv\Scripts\python.exe -m tax_graph.cli validate 2025 --root C:\Users\devbox\projects\tax_graph` -> graph integrity OK
   - `.\.venv\Scripts\python.exe tools/check_ascii.py` -> ASCII check OK
+- **Worker update (Codex, 2026-07-09): M10 Step 7 has STARTED but is blocked on
+  exit-run regressions outside worker-light scope.** Regenerated
+  `VERIFICATION.md` plus per-form pages for the full promoted set; the record
+  now emits 11 pages including new committed pages for `form_6251_2025`,
+  `schedule_1_2025`, `schedule_1a_2025`, `schedule_2_2025`, `schedule_3_2025`,
+  `schedule_a_2025`, and `schedule_b_2025`. Coverage after rebuilding the
+  frontier remains `90.1%` full-universe (`435450000 / 483540000`) and
+  `100.0%` in-scope (`435450000 / 435450000`), delta `+47.7` and `+57.6`
+  points respectively from the M9 baseline `42.4%` / `42.4%`. Per-form machine
+  cost report still shows `worker_tokens=None`, `worker_cost=None`, and
+  `human_minutes=None` for every form, with totals `objects=685`,
+  `tiers(T0/T1/T2/T3)=510/175/0/0`, `review=510`, `calibration=18`, and
+  `escapes=0`.
+- **Worker verification (Codex, 2026-07-09):**
+  - `.\.venv\Scripts\python.exe -m tax_graph.cli frontier build --year 2025 --root C:\Users\devbox\projects\tax_graph` -> declared 1 / modeled 30 / rejected 2 / unmodeled 3
+  - `.\.venv\Scripts\python.exe -m tax_graph.cli verify record --year 2025 --root C:\Users\devbox\projects\tax_graph` -> regenerated `VERIFICATION.md` and 11 per-form pages
+  - `.\.venv\Scripts\python.exe -m tax_graph.cli verify report --year 2025 --root C:\Users\devbox\projects\tax_graph` -> totals objects 685; worker tokens/cost not yet recorded; human minutes not yet recorded
+  - `.\.venv\Scripts\python.exe -m tax_graph.cli frontier --year 2025 --root C:\Users\devbox\projects\tax_graph` -> coverage `90.1%` full / `100.0%` in-scope; only `schedule_d_2025 line 20` remains declared
+  - `.\.venv\Scripts\python.exe -m pytest -m m10 -q` -> 20 passed, 221 deselected
+  - `.\.venv\Scripts\python.exe -m pytest -q` -> 233 passed, 4 skipped, 4 failed
+  - `.\.venv\Scripts\python.exe tools/check_ascii.py` -> ASCII check OK
+  - `.\.venv\Scripts\python.exe -m tax_graph.cli validate 2025 --root C:\Users\devbox\projects\tax_graph` -> graph integrity OK
+  - `.\.venv\Scripts\python.exe -m tax_graph.cli build 2025 --root C:\Users\devbox\projects\tax_graph` -> built `build/tax_graph_2025.sqlite`
+  - `.\.venv\Scripts\python.exe -m tax_graph.cli run --facts examples\capital_gains_basic\facts.yaml --year 2025 --root C:\Users\devbox\projects\tax_graph` -> `form_1040_2025_line_7_capital_gain_loss = 2000`
+- **Worker note:** generated-file drift in the worktree is currently limited to
+  Step 7 outputs: modified `VERIFICATION.md`,
+  `docs/verification/form_1040_2025.md`,
+  `docs/verification/form_1099b_2025.md`,
+  `docs/verification/schedule_d_2025.md`, plus new untracked per-form pages for
+  `form_6251_2025`, `schedule_1_2025`, `schedule_1a_2025`, `schedule_2_2025`,
+  `schedule_3_2025`, `schedule_a_2025`, and `schedule_b_2025`.
 - **Worker update (Codex, 2026-07-08): M10 Step 1 is implemented and ready in git.** Added
   `tools/step_driver.py` plus packaged logic in `tax_graph/step_driver.py`; the driver parses
   tier tags from `plans/PHASE_<id>.md`, renders tier launch commands from `config/driver.yaml`,
@@ -232,10 +261,54 @@ intentional Schedule D line 20 deferred branch left `declared`.
   - `.\.venv\Scripts\python.exe tools/check_ascii.py` -> ASCII check OK
 
 ## Open for Architect
-- (none - the Step 3 freeze-policy question is ANSWERED by the DEFERRED-REVIEW policy
-  below; the live-acquire ruling remains answered under Step 2b.)
+- **M10 Step 7 exit-run failures need a ruling or widened worker authorization.**
+  Full `pytest -q` now fails 4 tests after the widened M10 surface:
+  `tests/test_frontier_query_m7.py::test_frontier_summary_worklist_and_coverage`
+  still expects `in_scope_percent == 47.1`; `tests/test_frontier_query_m7.py::test_frontier_coverage_increases_when_weighted_form_is_modeled`
+  no longer increases because `schedule_b_2025` is already live in the copied
+  fixture root; `tests/test_mcp_m2.py::test_get_citation_by_id_and_fts_query`
+  now returns `cite_span_form_6251_2025_0051` first for query `Subtract`
+  instead of `cite_8949_col_h_gain`; and
+  `tests/test_return_record_m5.py::test_render_memo_matches_golden_fixture`
+  diverges because the memo now includes the widened promoted-form surface
+  (6251 and others). These look like stale expectations/goldens rather than a
+  Step 7 generator defect, but fixing them would exceed the current
+  worker-light authorization because it touches tests and non-generated
+  fixtures/docs.
 
 ## From Architect
+- **AUTHORIZED (2026-07-09): worker-STANDARD slice "Step 7 exit-run fixes" - Architect
+  diagnosis of the 4 full-suite failures, with per-test directions.**
+  1. `test_frontier_query_m7::test_frontier_summary_worklist_and_coverage` - stale
+     hardcoded `47.1` vs the true current `100.0` in-scope. Fix the BRITTLENESS, not
+     just the number: derive the expected percentages from the fixture/SOI data (or
+     assert the structural invariants plus exact arithmetic), so the next promotion
+     does not break it again.
+  2. `test_frontier_query_m7::test_frontier_coverage_increases_when_weighted_form_is_modeled` -
+     `assert 90.1 > 90.1`: the live graph no longer has in-scope headroom, so flipping
+     a form cannot increase coverage. Rebuild the test on a SYNTHETIC registry fixture
+     containing an unmodeled weighted form; it must never depend on the live graph
+     having room to grow.
+  3. `test_mcp_m2::test_get_citation_by_id_and_fts_query` - the FTS query now ranks a
+     new 6251 citation span above `cite_8949_col_h_gain`. Ordering over a growing
+     corpus is not a contract: assert the expected citation is AMONG the matches, or
+     query a phrase unique to it.
+  4. `test_return_record_m5::test_render_memo_matches_golden_fixture` - **REAL BUG,
+     fix the renderer, do NOT regenerate the golden to bless it.** The capital-gains
+     memo now lists unrelated Form 6251 / new-schedule lines as "blank [blank]" -
+     `render_memo` enumerates graph-wide inputs, which batch scale turned into noise.
+     PIN (durable, goes beyond this test): **the Return Record is scoped to the
+     RETURN, never the graph** - it contains only facts the filer supplied, nodes on
+     the computed trace, decisions touched, carryforwards, and explicit
+     unsupported/deferred items. Unrelated blank lines from other forms must not
+     appear, at any graph size. Fix scoping, keep the golden's intent (regenerate it
+     only if formatting legitimately shifts), and add a regression test: a
+     capital-gains-only record must contain NO node ids from forms it never touched.
+  Scope: these 4 tests + `tax_graph/record/` scoping + goldens as needed. Full
+  `pytest` green is the exit; then finish Step 7 (commit the regenerated
+  verification pages + exit-criteria evidence) and close M10 per the plan footer
+  (mark COMPLETE, archive, prune this handoff, single push, tell John; the Architect
+  then plans M11).
 - **ANSWERED (2026-07-09): the Form 6251 LINK seam - NEITHER option; the two flows are
   extraction FALSE POSITIVES and get a rejection disposition.** The Architect read the
   cited spans. Span 0251 ("Enter any adjustment ... on line 2k instead of line 3") is
