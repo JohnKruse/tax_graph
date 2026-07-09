@@ -15,11 +15,14 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## Current state (2026-07-09)
 
-**BALL: CODEX.** Next action: start M11 (First liability branch, canary Rate Ladder) -
-`plans/PHASE_M11.md` is the only open plan, written 2026-07-09. State the canary, then
-work Steps 1-6 in order under the deferred-review policy (no blocking stops). Read the
-plan's Supported Profile and Guardrails first; new engine ops are capped at the named
-minimum. M10 is CLOSED and archived (Architect-verified 2026-07-09).
+**BALL: ANTIGRAVITY (interim worker; Codex resumes when its tokens refresh).**
+Authorized action: M11 **Step 2 ONLY, out of order** (Architect authorization
+2026-07-09, see From Architect). State the canary (Rate Ladder), work Step 2 per its
+spec in `plans/PHASE_M11.md` MINUS anything requiring the new engine ops (MULTIPLY /
+LOOKUP_BRACKET / conditional are Step 3's, Codex's) - land the cited parameter nodes,
+bracket + QDCGT threshold data, the tax-table DATA RESOURCE (schema + compiler +
+SQLite projection + tests), and the two drills. Full pytest green before commit; do
+NOT start any other step. When Codex returns it takes Step 1, then 3-6 in order.
 (Whoever finishes a turn: update this BALL line - it is the first thing read.)
 
 - **M0-M10 are COMPLETE.** M10 closed with the batch OTS-witnessed set promoted: Schedule 1,
@@ -52,6 +55,17 @@ minimum. M10 is CLOSED and archived (Architect-verified 2026-07-09).
 - (none)
 
 ## From Architect
+- **AUTHORIZED (2026-07-09): M11 Step 2 runs OUT OF ORDER on Antigravity (John's
+  harness call; Codex token-limited for a few hours).** Step 2 is order-independent:
+  its parameter nodes and data cite the 1040 instructions directly and nothing in it
+  needs Step 1's extraction outputs. Scope guard: everything in the Step 2 spec EXCEPT
+  wiring to the new engine ops - author the bracket/threshold data in the shape
+  LOOKUP_BRACKET will consume, but the op itself and any rule using it wait for Step 3
+  (Codex). Tests validate data shape, lookups-as-data, citations, and the two drills
+  (`wrong_bracket_value`, `wrong_standard_deduction` - the L0 magic-number layer or
+  parameter-diff layer may be the catcher until Step 3's execution paths exist; record
+  which). One worker at a time in the clone - Antigravity stops and updates the BALL
+  line before Codex resumes.
 - **NEW (2026-07-09) - Distribution plan PINNED (John's call; canonical in
   `docs/distribution.md`).** Channels in priority order: PyPI (`tax-graph`, confirmed
   available; alpha `0.1.0a1` built, upload pending John's PyPI token) -> `.mcpb` Claude
