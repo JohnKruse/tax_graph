@@ -208,11 +208,17 @@ def link_command(year: str = "2025", root: str | Path | None = None) -> int:
     print(f"wrote linked outbound edges: {result.path}")
     print(f"  realized: {len(result.realized)}")
     print(f"  unresolved: {len(result.unresolved)}")
+    print(f"  rejected: {len(result.rejected)}")
     for item in result.unresolved:
         print(
             "  - "
             f"{item.get('flow_id')}: {item.get('source_node_id')} -> "
             f"{item.get('target_document_id')} line {item.get('target_line')}"
+        )
+    for item in result.rejected:
+        print(
+            "  - "
+            f"{item.get('flow_id')}: rejected ({item.get('resolution')}: {item.get('reason')})"
         )
     return 0
 

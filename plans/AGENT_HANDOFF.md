@@ -15,12 +15,14 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## Current state (2026-07-08)
 
-**BALL: CODEX.** Next action: implement the flow-rejection disposition for the two
-Form 6251 false-positive flows (Architect ruling of 2026-07-09 in From Architect -
-NEITHER a synthesized source node NOR a LINK fallback), finish the step-driver
-policy-marker cleanup, close Step 5, then run Steps 6-7 straight through. Nothing is
-open for the Architect; nothing waits on John. All promotion slices are committed;
-coverage stands at 90.1% full-universe / 100.0% in-scope.
+**BALL: CODEX.** Next action: start M10 Step 6 (oracle harness growth over the widened
+set). Step 5 is now closed in the worktree and committed validation is green:
+Form 6251's two false-positive outbound flows are rejected by a committed
+disposition artifact, LINK skips them, frontier reports them as `rejected`
+instead of `declared`, and the driver stop mechanism is now generic policy
+language rather than `john_gate`. Nothing is open for the Architect; nothing
+waits on John. Coverage still stands at 90.1% full-universe / 100.0% in-scope,
+with only the intentional Schedule D line 20 deferred branch left `declared`.
 (Whoever finishes a turn: update this BALL line - it is the first thing read.)
 
 - **M0-M9 are COMPLETE and archived** (see `plans/archive/`). Operational highlights: compiled
@@ -42,9 +44,9 @@ coverage stands at 90.1% full-universe / 100.0% in-scope.
   repair -> batch extraction under the full net -> frontier-sequenced promotions
   (deferred-review policy - machine-gated, NO blocking stop) -> oracle growth + live
   fuzz -> verification records + coverage report. STATUS: Steps 1, 2, 2b, 3 are DONE and
-  committed; Step 4 is DONE and committed (`4132c97`); Step 5 is in progress (promotion
-  helper + generic deferred-review queue landed in the worktree; `schedule_1_2025`
-  promoted and validated locally); Steps 6-7 not started.
+  committed; Step 4 is DONE and committed (`4132c97`); Step 5 is now DONE in the
+  worktree (all batch-form promotions committed, Form 6251 false-positive outbound
+  flows rejected by disposition, frontier/LINK/validate green); Steps 6-7 not started.
 - **Worker update (Codex, 2026-07-08): M10 Step 1 is implemented and ready in git.** Added
   `tools/step_driver.py` plus packaged logic in `tax_graph/step_driver.py`; the driver parses
   tier tags from `plans/PHASE_<id>.md`, renders tier launch commands from `config/driver.yaml`,
@@ -186,6 +188,28 @@ coverage stands at 90.1% full-universe / 100.0% in-scope.
   `90.1%` full / `100.0%` in-scope because these forms do not carry SOI weights in the
   current committed mapping, but the live graph now includes their committed
   document/node/citation artifacts and deferred-review queue entries.
+- **Worker update (Codex, 2026-07-09): M10 Step 5 is now COMPLETE in the worktree.**
+  Added `graph/2025/flow-dispositions.yaml` plus `tax_graph/flow_dispositions.py`
+  so reviewed draft outbound-flow declarations can be marked with a committed
+  disposition. The two Form 6251 -> Schedule D declarations ruled false positives
+  by the Architect now resolve as `disposition: rejected` /
+  `resolution: extraction_false_positive`, with one deferred-review queue entry
+  covering the rejection. `tax_graph.link` now skips rejected flows and reports
+  them separately; `tax_graph.frontier.build` now records them as `status:
+  rejected` instead of leaving them in the declared worklist; the frontier schema
+  and validator understand that additive status. The step driver cleanup also
+  landed: the stop mechanism is now generic `driver_stop` wording in code/tests/
+  README rather than `john_gate`, while still honoring the existing textual
+  marker style. Rebuilt committed derived files: `graph/2025/frontier.yaml`
+  now reports `declared: 1`, `modeled: 30`, `rejected: 2`, `unmodeled: 3`;
+  `graph/2025/edges/linked-outbound.yaml` stays at 6 realized edges and now
+  reports 2 rejected flows, 0 unresolved.
+- **Worker verification (Codex, 2026-07-09):**
+  - `.\.venv\Scripts\python.exe -m pytest tests/test_step_driver_m10.py tests/test_frontier_build_m7.py tests/test_link_m9.py tests/test_promote_m10.py tests/test_graph_validator.py -q` -> 24 passed
+  - `.\.venv\Scripts\python.exe -m tax_graph.cli link --year 2025 --root C:\Users\devbox\projects\tax_graph` -> realized 6, unresolved 0, rejected 2
+  - `.\.venv\Scripts\python.exe -m tax_graph.cli frontier build --year 2025 --root C:\Users\devbox\projects\tax_graph` -> declared 1 / modeled 30 / rejected 2 / unmodeled 3
+  - `.\.venv\Scripts\python.exe -m tax_graph.cli validate 2025 --root C:\Users\devbox\projects\tax_graph` -> graph integrity OK
+  - `.\.venv\Scripts\python.exe tools/check_ascii.py` -> ASCII check OK
 
 ## Open for Architect
 - (none - the Step 3 freeze-policy question is ANSWERED by the DEFERRED-REVIEW policy

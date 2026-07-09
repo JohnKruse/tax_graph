@@ -1,0 +1,14 @@
+tax_year: 2025
+entries:
+- flow_id: flow_form_6251_2025_outbound_schedule_d_column_h_to_schedule_d_2025_line_2
+  disposition: rejected
+  resolution: extraction_false_positive
+  reason: False positive from AMT-FTC worksheet prose; no real outbound flow from Form 6251 to Schedule D line 2.
+  citation_span_ids:
+  - span_instructions_form_6251_2025_0362
+- flow_id: flow_form_6251_2025_outbound_schedule_d_column_h_to_schedule_d_2025_line_3
+  disposition: rejected
+  resolution: extraction_false_positive
+  reason: False positive from line-2k guidance prose; no real outbound flow from Form 6251 to Schedule D line 3.
+  citation_span_ids:
+  - span_instructions_form_6251_2025_0251

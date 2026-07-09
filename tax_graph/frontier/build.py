@@ -11,6 +11,7 @@ from typing import Any
 import yaml
 
 from tax_graph.acquire.manifest import load_manifest
+from tax_graph.flow_dispositions import load_flow_dispositions
 from tax_graph.frontier.soi import SoiCounts, load_form_id_map, load_soi_counts
 from tax_graph.io.loader import LoadedGraph, load_graph
 from tax_graph.link import _resolve_flow_target_node, _target_line_index
@@ -138,6 +139,7 @@ def _outbound_flow_entries(
     manifest_urls: dict[str, str],
 ) -> list[dict[str, Any]]:
     flows = _load_outbound_flows(graph.graph_dir)
+    dispositions = load_flow_dispositions(graph.year, root=graph.root)
     nodes = {node["node_id"]: node for node in graph.items("nodes") if "node_id" in node}
     citations = {citation["citation_id"]: citation for citation in graph.items("citations") if "citation_id" in citation}
     live_edges = {(edge.get("source"), edge.get("target")) for edge in graph.items("edges")}
@@ -149,32 +151,39 @@ def _outbound_flow_entries(
         source_node_id = _resolve_flow_source_node(flow, nodes)
         target_node_id = _resolve_flow_target_node(flow, line_index)
         status = "unmodeled"
+        disposition = dispositions.get(str(flow.get("flow_id") or ""))
         if target_document_id in manifest_urls or target_document_id in {doc.get("document_id") for doc in graph.items("documents")}:
             status = "declared"
         if source_node_id and target_node_id and (source_node_id, target_node_id) in live_edges:
             status = "modeled"
+        if disposition and str(disposition.get("disposition")) == "rejected":
+            status = "rejected"
         citation_ref = _best_flow_citation(source_node_id, nodes, citations)
         entries.append(
-            {
-                "frontier_id": _slug(flow.get("flow_id") or f"flow_{source_node_id}_to_{target_document_id}_{target_line}"),
-                "kind": "outbound_flow",
-                "source": {
-                    "document_id": str(flow.get("source_document_id")),
-                    "node_id": source_node_id or str(flow.get("source_node_id")),
-                    "flow_id": _slug(str(flow.get("flow_id", ""))),
-                },
-                "target": _compact(
-                    {
-                        "document_id": target_document_id,
-                        "line": target_line,
-                        "node_id": target_node_id,
-                    }
-                ),
-                "target_url": _target_url(target_document_id, manifest_urls, graph),
-                "citation_ref": citation_ref,
-                "status": status,
-                "weight": soi.counts.get(target_document_id),
-            }
+            _compact(
+                {
+                    "frontier_id": _slug(flow.get("flow_id") or f"flow_{source_node_id}_to_{target_document_id}_{target_line}"),
+                    "kind": "outbound_flow",
+                    "source": {
+                        "document_id": str(flow.get("source_document_id")),
+                        "node_id": source_node_id or str(flow.get("source_node_id")),
+                        "flow_id": _slug(str(flow.get("flow_id", ""))),
+                    },
+                    "target": _compact(
+                        {
+                            "document_id": target_document_id,
+                            "line": target_line,
+                            "node_id": target_node_id,
+                        }
+                    ),
+                    "target_url": _target_url(target_document_id, manifest_urls, graph),
+                    "citation_ref": citation_ref,
+                    "status": status,
+                    "weight": soi.counts.get(target_document_id),
+                    "disposition": disposition.get("disposition") if disposition else None,
+                    "disposition_reason": disposition.get("reason") if disposition else None,
+                }
+            )
         )
     return entries
 

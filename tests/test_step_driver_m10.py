@@ -104,7 +104,7 @@ def test_parse_phase_plan_extracts_canary_tiers_and_gate(tmp_path):
     assert plan.phase_id == "M10"
     assert plan.canary == "Assembly Line"
     assert [step.tier for step in plan.steps] == ["worker-standard", "worker-light", "worker-heavy"]
-    assert plan.steps[2].john_gate is True
+    assert plan.steps[2].driver_stop is True
 
 
 @pytest.mark.m10
@@ -112,7 +112,7 @@ def test_parse_phase_plan_handles_wrapped_real_plan_headers():
     plan = parse_phase_plan(Path(__file__).resolve().parents[1] / "plans" / "PHASE_M10.md")
 
     assert [step.number for step in plan.steps] == [1, 2, 3, 4, 5, 6, 7]
-    assert plan.steps[4].john_gate is False
+    assert plan.steps[4].driver_stop is False
     assert "frontier flips" in plan.steps[4].title.lower()
 
 
@@ -130,7 +130,7 @@ def test_run_driver_dry_run_prints_sequence_and_gate_stop(tmp_path, capsys):
     assert "Phase M10: Demo phase" in out
     assert "Step 1 [worker-standard]" in out
     assert "Step 2 [worker-light]" in out
-    assert "STOP: Step 3 is marked as John's gate" in out
+    assert "STOP: Step 3 carries a driver stop marker" in out
 
 
 @pytest.mark.m10

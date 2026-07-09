@@ -24,8 +24,8 @@
       "items": {
         "type": "object",
         "additionalProperties": false,
-        "required": ["frontier_id", "kind", "source", "target", "target_url", "citation_ref", "status", "weight"],
-        "properties": {
+          "required": ["frontier_id", "kind", "source", "target", "target_url", "citation_ref", "status", "weight"],
+          "properties": {
           "frontier_id": { "type": "string", "pattern": "^[a-z0-9_]+$" },
           "kind": {
             "type": "string",
@@ -55,12 +55,14 @@
           "citation_ref": { "type": "string", "pattern": "^[a-z0-9_]+$" },
           "status": {
             "type": "string",
-            "enum": ["modeled", "declared", "unmodeled"]
+            "enum": ["modeled", "declared", "unmodeled", "rejected"]
           },
           "weight": {
             "type": ["number", "null"],
             "minimum": 0
           },
+          "disposition": { "type": "string" },
+          "disposition_reason": { "type": "string" },
           "title": { "type": "string" },
           "purpose": { "type": "string" }
         }

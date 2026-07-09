@@ -83,6 +83,7 @@ def validate_loaded_graph(
     _validate_unique_ids(graph, errors)
     _validate_references_and_years(graph, errors)
     _validate_frontier_registry(graph, schemas_dir, errors)
+    _validate_flow_dispositions(graph, schemas_dir, errors)
     _validate_tables(graph, errors)
     _validate_no_inline_magic_numbers(graph, errors)
     _validate_field_grid_completeness(graph, field_grids, mef_line_inventory, errors)
@@ -263,6 +264,25 @@ def _load_frontier_entries(graph: LoadedGraph) -> list[dict[str, Any]]:
         return []
     registry = load_yaml(registry_path) or {}
     return list(registry.get("frontiers", []) or [])
+
+
+def _validate_flow_dispositions(graph: LoadedGraph, schemas_dir: Path, errors: list[str]) -> None:
+    path = graph.graph_dir / "flow-dispositions.yaml"
+    if not path.exists():
+        return
+    payload = load_yaml(path)
+    if HAVE_JSONSCHEMA:
+        try:
+            jsonschema.validate(payload, load_yaml(schemas_dir / "flow_dispositions.schema.json"))
+        except jsonschema.ValidationError as exc:
+            preview = json.dumps(payload, default=str)[:120]
+            errors.append(f"[schema/flow_dispositions] {exc.message} :: {preview}")
+    seen: set[str] = set()
+    for entry in payload.get("entries", []) or []:
+        flow_id = str(entry.get("flow_id", "<unknown>"))
+        if flow_id in seen:
+            errors.append(f"flow dispositions -> duplicate flow_id {flow_id}")
+        seen.add(flow_id)
 
 
 def _frontier_allows_edge(

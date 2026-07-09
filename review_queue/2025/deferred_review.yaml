@@ -38,6 +38,26 @@ entries:
   - ascii green
   - nversion agreed
   - example mining unmappable only
+- queue_id: flow_review_form_6251_2025_false_positive_outbound_schedule_d
+  kind: flow_review
+  status: pending
+  priority: medium
+  document_id: form_6251_2025
+  created_date: '2026-07-09'
+  created_by: tax_graph.frontier.build
+  summary: Review rejected false-positive Form 6251 outbound Schedule D flows
+  artifact_paths:
+  - graph/2025/flow-dispositions.yaml
+  - graph/2025/_drafts/form_6251_2025/outbound_flows.yaml
+  changed_kinds:
+  - outbound_flow
+  changed_object_ids:
+  - flow_form_6251_2025_outbound_schedule_d_column_h_to_schedule_d_2025_line_2
+  - flow_form_6251_2025_outbound_schedule_d_column_h_to_schedule_d_2025_line_3
+  machine_witnesses:
+  - architect span review
+  - frontier rejected disposition
+  - link skipped rejected flows
 - queue_id: promotion_review_schedule_1_2025
   kind: promotion_review
   status: pending

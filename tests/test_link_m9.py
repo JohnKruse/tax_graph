@@ -105,5 +105,19 @@ def _copy_root(tmp_path: Path) -> Path:
 def _copy_required_drafts(root: Path) -> None:
     drafts_root = root / "graph" / "2025" / "_drafts"
     drafts_root.mkdir(parents=True, exist_ok=True)
-    for document_id in ("form_8949_2025", "schedule_d_2025"):
+    for document_id in ("form_8949_2025", "schedule_d_2025", "form_6251_2025"):
         shutil.copytree(ROOT / "graph" / "2025" / "_drafts" / document_id, drafts_root / document_id)
+
+
+def test_link_skips_rejected_false_positive_flows(tmp_path):
+    root = _copy_root(tmp_path)
+    shutil.copy2(ROOT / "graph" / "2025" / "flow-dispositions.yaml", root / "graph" / "2025" / "flow-dispositions.yaml")
+
+    result = link_outbound_flows("2025", root=root)
+
+    assert len(result.realized) == 6
+    assert result.unresolved == []
+    assert [item["flow_id"] for item in result.rejected] == [
+        "flow_form_6251_2025_outbound_schedule_d_column_h_to_schedule_d_2025_line_2",
+        "flow_form_6251_2025_outbound_schedule_d_column_h_to_schedule_d_2025_line_3",
+    ]

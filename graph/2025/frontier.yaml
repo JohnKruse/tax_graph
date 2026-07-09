@@ -32,8 +32,11 @@ frontiers:
     node_id: schedule_d_2025_part_i_line_2_column_h
   target_url: https://www.irs.gov/pub/irs-prior/f1040sd--2025.pdf
   citation_ref: cite_8949_line2_totals
-  status: declared
+  status: rejected
   weight: 24000000
+  disposition: rejected
+  disposition_reason: False positive from AMT-FTC worksheet prose; no real outbound
+    flow from Form 6251 to Schedule D line 2.
 - frontier_id: flow_form_6251_2025_outbound_schedule_d_column_h_to_schedule_d_2025_line_3
   kind: outbound_flow
   source:
@@ -46,8 +49,11 @@ frontiers:
     node_id: schedule_d_2025_part_i_line_3_column_h
   target_url: https://www.irs.gov/pub/irs-prior/f1040sd--2025.pdf
   citation_ref: cite_8949_line2_totals
-  status: declared
+  status: rejected
   weight: 24000000
+  disposition: rejected
+  disposition_reason: False positive from line-2k guidance prose; no real outbound
+    flow from Form 6251 to Schedule D line 3.
 - frontier_id: flow_form_8949_2025_part_i_line_2_column_h_to_schedule_d_2025_line_1b
   kind: outbound_flow
   source:

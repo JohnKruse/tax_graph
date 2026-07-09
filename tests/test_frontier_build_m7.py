@@ -69,3 +69,24 @@ def test_frontier_build_detects_publication_references(tmp_path):
     pub_refs = [entry for entry in registry["frontiers"] if entry["kind"] == "pub_reference"]
     assert pub_refs[0]["target"] == {"external_id": "publication_550"}
     assert pub_refs[0]["weight"] is None
+
+
+@pytest.mark.m7
+def test_frontier_build_marks_rejected_flow_dispositions(tmp_path):
+    root = _copy_frontier_root(tmp_path)
+    shutil.copy2(ROOT / "graph" / "2025" / "flow-dispositions.yaml", root / "graph" / "2025" / "flow-dispositions.yaml")
+    shutil.copytree(ROOT / "graph" / "2025" / "_drafts" / "form_6251_2025", root / "graph" / "2025" / "_drafts" / "form_6251_2025")
+
+    registry = build_frontier_registry("2025", root=root, write=False).registry
+
+    rejected = {
+        entry["source"]["flow_id"]: entry
+        for entry in registry["frontiers"]
+        if entry["kind"] == "outbound_flow" and entry["status"] == "rejected"
+    }
+    assert set(rejected) == {
+        "flow_form_6251_2025_outbound_schedule_d_column_h_to_schedule_d_2025_line_2",
+        "flow_form_6251_2025_outbound_schedule_d_column_h_to_schedule_d_2025_line_3",
+    }
+    assert all(entry["disposition"] == "rejected" for entry in rejected.values())
+    assert all("false positive" in entry["disposition_reason"].lower() for entry in rejected.values())

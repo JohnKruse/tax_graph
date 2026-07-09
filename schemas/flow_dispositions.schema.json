@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "flow_dispositions.schema.json",
+  "title": "Outbound Flow Dispositions",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["tax_year", "entries"],
+  "properties": {
+    "tax_year": { "type": "integer", "minimum": 1900, "maximum": 2100 },
+    "entries": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["flow_id", "disposition", "resolution", "reason"],
+        "properties": {
+          "flow_id": { "type": "string" },
+          "disposition": { "type": "string", "enum": ["rejected"] },
+          "resolution": { "type": "string", "enum": ["extraction_false_positive"] },
+          "reason": { "type": "string" },
+          "citation_span_ids": {
+            "type": "array",
+            "items": { "type": "string" }
+          }
+        }
+      }
+    }
+  }
+}

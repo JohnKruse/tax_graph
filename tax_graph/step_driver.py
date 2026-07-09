@@ -2,7 +2,7 @@
 
 The driver reads a phase plan, extracts step tier tags, renders one command per
 step from ``config/driver.yaml``, and runs gate commands between steps. It
-always stops before a step marked as John's gate.
+always stops before a step marked with a driver stop marker.
 """
 
 from __future__ import annotations
@@ -41,7 +41,7 @@ class DriverStep:
     title: str
     body: str
     checked: bool
-    john_gate: bool
+    driver_stop: bool
 
 
 @dataclass(frozen=True)
@@ -162,9 +162,9 @@ def parse_phase_plan(plan_path: str | Path) -> PhasePlan:
                 title=title_text,
                 body=body_text,
                 checked=match.group("box").strip().lower() in {"x", "done", "complete"},
-                john_gate=(
+                driver_stop=(
                     "john's gate" in title_lower
-                    or "john's gates" in title_lower
+                    or "driver stop" in title_lower
                     or "driver stops here" in body_first_line
                     or "driver stops here" in title_lower
                 ),
@@ -206,9 +206,9 @@ def run_driver(
         return DriverRunResult(exit_code=0)
 
     for index, step in enumerate(executable_steps):
-        if step.john_gate:
+        if step.driver_stop:
             print(
-                f"STOP: Step {step.number} is marked as John's gate; hand off before launching it.",
+                f"STOP: Step {step.number} carries a driver stop marker; hand off before launching it.",
                 file=out,
             )
             return DriverRunResult(exit_code=0, stopped_before_step=step.number)

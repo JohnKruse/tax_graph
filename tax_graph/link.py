@@ -9,6 +9,7 @@ from typing import Any
 
 import yaml
 
+from tax_graph.flow_dispositions import load_flow_dispositions
 from tax_graph.io.loader import LoadedGraph, load_graph
 
 
@@ -19,6 +20,7 @@ class LinkResult:
     path: Path
     realized: list[dict[str, Any]]
     unresolved: list[dict[str, Any]]
+    rejected: list[dict[str, Any]]
 
 
 def link_outbound_flows(
@@ -30,6 +32,7 @@ def link_outbound_flows(
     """Resolve draft outbound-flow declarations against the promoted live graph."""
     root_path = Path(root).resolve() if root is not None else Path(__file__).resolve().parents[1]
     graph = load_graph(year, root_path)
+    dispositions = load_flow_dispositions(year, root=root_path)
     nodes = {node["node_id"]: node for node in graph.items("nodes") if "node_id" in node}
     non_link_edge_ids = {
         edge["edge_id"]
@@ -46,7 +49,19 @@ def link_outbound_flows(
 
     realized: list[dict[str, Any]] = []
     unresolved: list[dict[str, Any]] = []
+    rejected: list[dict[str, Any]] = []
     for flow in flows:
+        disposition = dispositions.get(str(flow.get("flow_id") or ""))
+        if disposition and str(disposition.get("disposition")) == "rejected":
+            rejected.append(
+                {
+                    "flow_id": flow.get("flow_id"),
+                    "document_id": flow.get("source_document_id"),
+                    "reason": disposition.get("reason"),
+                    "resolution": disposition.get("resolution"),
+                }
+            )
+            continue
         source_node_id = _resolve_flow_source_node(flow, nodes)
         target_node_id = _resolve_flow_target_node(flow, target_index)
         if not source_node_id or not target_node_id:
@@ -72,10 +87,11 @@ def link_outbound_flows(
             non_link_edge_ids.add(edge["edge_id"])
 
     realized = sorted(realized, key=lambda edge: edge["edge_id"])
+    rejected = sorted(rejected, key=lambda item: str(item.get("flow_id") or ""))
     path = graph.graph_dir / "edges" / "linked-outbound.yaml"
     if write:
         _write_yaml(path, realized)
-    return LinkResult(path=path, realized=realized, unresolved=unresolved)
+    return LinkResult(path=path, realized=realized, unresolved=unresolved, rejected=rejected)
 
 
 def _load_outbound_flows(graph_dir: Path) -> list[dict[str, Any]]:

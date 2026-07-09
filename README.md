@@ -106,7 +106,7 @@ between steps.
 
 The driver is intentionally conservative:
 
-- It stops before any step marked as John's gate.
+- It stops before any step marked with a driver stop marker.
 - A gate failure blocks the next step.
 - `--dry-run` prints the planned session sequence without launching anything.
 
@@ -207,10 +207,14 @@ After a reviewed form promotion, `tax-graph link --year 2025` resolves
 `_drafts/*/outbound_flows.yaml` declarations against the promoted live node
 index and writes deterministic FEEDS edges under `graph/2025/edges/`. A
 declaration whose target line is still absent remains a frontier entry; LINK
-does not realize edges against raw drafts.
+does not realize edges against raw drafts. A committed
+`graph/<year>/flow-dispositions.yaml` artifact can also mark a reviewed draft
+flow as rejected, which keeps it out of LINK and records the disposition in the
+derived frontier registry instead of leaving it as a live declaration forever.
 It combines promoted graph references, reviewed outbound-flow declarations,
 manifest scope, and committed SOI counts. Modeled entries name already-covered
-targets; declared entries are intentional open ends; unmodeled entries are
+targets; declared entries are intentional open ends; rejected entries are
+reviewed false positives; unmodeled entries are
 outside the current manifest scope. Coverage is reported against the full SOI
 form-count universe and the currently in-scope weighted manifest set. The
 registry is not hand-maintained. The graph validator schema-checks the registry
