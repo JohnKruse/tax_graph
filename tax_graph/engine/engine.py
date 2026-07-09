@@ -10,6 +10,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from pathlib import Path
+import sqlite3
 from typing import Any
 
 from tax_graph.engine.operations import MISSING, apply_operation, is_missing, round_value
@@ -50,6 +51,7 @@ class Graph:
         }
         self.frontiers = list(load_frontier_registry(year, self.root).get("frontiers", []) or [])
         self.rules = {rule["rule_id"]: rule for rule in sorted(loaded.items("rules"), key=lambda item: item["rule_id"])}
+        self.tax_table = _load_tax_table_resource(graph_source, self.year, self.root, loaded.graph_dir)
         self.incoming: dict[str, list[dict[str, Any]]] = {}
         for edge in sorted(loaded.items("edges"), key=lambda item: item["edge_id"]):
             self.incoming.setdefault(edge["target"], []).append(edge)
@@ -203,7 +205,7 @@ class Engine:
                 }
             )
 
-        raw_value = apply_operation(rule["operation"], operands, rule)
+        raw_value = apply_operation(rule["operation"], operands, rule, context={"tax_table": self.g.tax_table})
         value = round_value(raw_value, rule)
         result.values[node_id] = value
         citations = sorted({citation for edge in incoming for citation in edge.get("citation_refs", [])})
@@ -276,7 +278,7 @@ class Engine:
                 }
             )
         rule = self.g.rules.get("sum_currency", {"rule_id": "sum_currency", "operation": "SUM", "rounding": "currency"})
-        raw_value = apply_operation("SUM", operands, rule)
+        raw_value = apply_operation("SUM", operands, rule, context={"tax_table": self.g.tax_table})
         value = round_value(raw_value, rule)
         result.values[node_id] = value
         result.trace[node_id] = {
@@ -391,7 +393,7 @@ class Engine:
                 }
             )
 
-        raw_value = apply_operation(rule["operation"], operands, rule)
+        raw_value = apply_operation(rule["operation"], operands, rule, context={"tax_table": self.g.tax_table})
         value = round_value(raw_value, rule)
         result.values[instance_id] = value
         citations = sorted({citation for edge in incoming for citation in edge.get("citation_refs", [])})
@@ -555,3 +557,44 @@ def _infer_document_line(node_id: str, graph: Graph) -> tuple[str | None, str | 
     match = re.search(r"_line_([0-9]+[a-z]?)", node_id, flags=re.IGNORECASE)
     line = match.group(1).lower() if match else None
     return document_id, line
+
+
+def _load_tax_table_resource(graph_source: str, year: str, root: Path, graph_dir: Path) -> list[dict[str, Any]]:
+    if graph_source == "sqlite":
+        path = compiled_db_path(year, root)
+        if path.exists():
+            with sqlite3.connect(path) as conn:
+                rows = conn.execute(
+                    """
+                    SELECT
+                        income_min,
+                        income_max,
+                        single,
+                        married_filing_jointly,
+                        married_filing_separately,
+                        head_of_household,
+                        qualifying_surviving_spouse
+                    FROM tax_table
+                    ORDER BY income_min, income_max
+                    """
+                ).fetchall()
+            return [
+                {
+                    "income_min": row[0],
+                    "income_max": row[1],
+                    "taxes": {
+                        "single": row[2],
+                        "married_filing_jointly": row[3],
+                        "married_filing_separately": row[4],
+                        "head_of_household": row[5],
+                        "qualifying_surviving_spouse": row[6],
+                    },
+                }
+                for row in rows
+            ]
+
+    path = graph_dir / "tax_table.json"
+    if not path.exists():
+        return []
+    data = load_yaml(path) or {}
+    return list(data.get("entries", []) or [])

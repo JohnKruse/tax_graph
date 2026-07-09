@@ -8,7 +8,7 @@ import random
 from typing import TYPE_CHECKING, Any, Mapping, Sequence
 
 from tax_graph.engine import Engine
-from tax_graph.engine.engine import TABLE_FACTS_KEY
+from tax_graph.engine.engine import TABLE_FACTS_KEY, _load_tax_table_resource
 from tax_graph.engine.operations import MISSING, is_missing
 from tax_graph.frontier.build import load_frontier_registry
 from tax_graph.io.loader import LoadedGraph
@@ -204,6 +204,7 @@ class _ExecutableGraph:
             for rule in sorted(graph.items("rules"), key=lambda item: item.get("rule_id", ""))
             if "rule_id" in rule
         }
+        self.tax_table = _load_tax_table_resource("yaml", graph.year, graph.root, graph.graph_dir)
         self.frontiers = list(load_frontier_registry(graph.year, graph.root).get("frontiers", []) or [])
         self.incoming: dict[str, list[dict[str, Any]]] = {}
         for edge in sorted(graph.items("edges"), key=lambda item: item.get("edge_id", "")):

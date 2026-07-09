@@ -37,3 +37,58 @@
   operation: MAX
   description: Select the larger currency value from the candidate operands.
   rounding: currency
+
+- rule_id: min_currency
+  operation: MIN
+  description: Select the smaller currency value from the candidate operands.
+  rounding: currency
+
+- rule_id: min_dollar
+  operation: MIN
+  description: Select the smaller tax amount and round to whole dollars.
+  rounding: dollar
+
+- rule_id: lookup_selected_value
+  operation: LOOKUP_TABLE
+  description: Select the operand whose role matches the supplied key operand.
+  rounding: none
+
+- rule_id: lookup_selected_value_required
+  operation: LOOKUP_TABLE
+  description: Select the operand whose role matches the supplied key operand.
+  parameters:
+    selected_blank_is_missing: true
+  rounding: none
+
+- rule_id: lookup_tax_table_amount
+  operation: LOOKUP_TABLE
+  description: Look up the tax-table value for an income band and filing status.
+  parameters:
+    resource: tax_table
+  rounding: dollar
+  citation_refs:
+    - cite_1040_tax_table
+
+- rule_id: lookup_bracket_tax
+  operation: LOOKUP_BRACKET
+  description: Compute tax from the selected bracket table and taxable amount.
+  rounding: dollar
+
+- rule_id: multiply_currency
+  operation: MULTIPLY
+  description: Multiply the supplied currency amount by a cited rate parameter.
+  rounding: currency
+
+- rule_id: if_less_than_currency
+  operation: IF_ELSE
+  description: Choose between two values when the condition amount is below the threshold.
+  parameters:
+    comparison: lt
+  rounding: none
+
+- rule_id: if_greater_than_currency
+  operation: IF_ELSE
+  description: Choose between two values when the condition amount is above the threshold.
+  parameters:
+    comparison: gt
+  rounding: none

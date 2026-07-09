@@ -98,6 +98,15 @@
   citation_refs:
   - cite_span_form_1040_2025_0019
 
+- node_id: form_1040_2025_root_line_3a
+  document_id: form_1040_2025
+  label: 'Line 3a: Qualified dividends'
+  node_type: form_line
+  value_type: currency
+  required: optional
+  citation_refs:
+  - cite_span_form_1040_2025_0019
+
 - node_id: form_1040_2025_root_line_8
   document_id: form_1040_2025
   label: 'Line 8: Additional income from Schedule 1, line 10'
@@ -151,6 +160,19 @@
   required: optional
   citation_refs:
   - cite_span_form_1040_2025_0038
+
+- node_id: form_1040_2025_deduction_method
+  document_id: form_1040_2025
+  label: Form 1040 deduction method decision
+  node_type: fact
+  value_type: enum
+  required: conditional
+  enum_values:
+    - standard
+    - itemized
+  citation_refs:
+  - cite_span_form_1040_2025_0038
+  - cite_1040_standard_deduction
 
 - node_id: form_1040_2025_root_line_13a
   document_id: form_1040_2025
@@ -206,3 +228,13 @@
   required: optional
   citation_refs:
   - cite_span_form_1040_2025_0043
+
+- node_id: form_1040_2025_root_line_16
+  document_id: form_1040_2025
+  label: 'Line 16: Tax'
+  node_type: form_line
+  value_type: currency
+  required: optional
+  citation_refs:
+  - cite_1040_line_16_tax_methods
+  - cite_1040_qdcgt_line_25

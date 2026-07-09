@@ -14,7 +14,7 @@ SQLite by the build step.
 | `citations/` | citation objects grouped by branch | a list |
 | `decisions/` | decision (elicitation) nodes | a list |
 
-## What's here (current): capital gains plus the first Form 1040 taxable-income spine
+## What's here (current): capital gains plus the first Form 1040 tax-liability branch
 
 The first runnable branches:
 
@@ -36,10 +36,14 @@ The first runnable branches:
 Supported: long-term, single covered lot, no adjustments (req. doc Section 15.1).
 The short-term path (Schedule D line 7) is a stub input (defaults to 0) for now.
 
-M11 Step 1 adds the first promoted Form 1040 liability-adjacent spine through
-line 15: wages plus linked Schedule B, Schedule 1, Schedule 1-A, and Schedule D
-inputs now compute total income, AGI, deductions, and taxable income with the
-line 15 zero floor. Line 16 tax stays deferred until the worksheet/tax-table step.
+M11 Step 3 extends that spine through Form 1040 line 16. The live branch now:
+
+- selects line 12e through a first-class deduction decision (`standard` vs
+  `itemized` via Schedule A line 17),
+- computes regular tax through the under-$100k tax table or the cited bracket
+  worksheet boundary, and
+- executes the Qualified Dividends and Capital Gain Tax Worksheet line by line
+  for the supported Schedule D / qualified-dividend profile.
 
 ## Known v0 simplifications (eyeball list)
 

@@ -7,8 +7,8 @@ facts:
     value: 100000
     source:
       extracted_by: manual
-  - node_id: form_1040_2025_root_line_12e
-    value: 15000
+  - node_id: form_1040_2025_deduction_method
+    value: standard
     source:
       extracted_by: manual
   - node_id: schedule_b_2025_root_line_4

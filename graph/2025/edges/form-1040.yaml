@@ -86,6 +86,58 @@
   citation_refs:
   - cite_span_schedule_b_2025_0015
 
+- edge_id: e_filing_status_to_standard_deduction_amount
+  source: taxpayer_2025_filing_status
+  target: form_1040_2025_standard_deduction_amount
+  relationship: CALCULATES
+  rule_id: lookup_selected_value
+  role: key
+
+- edge_id: e_standard_deduction_single
+  source: form_1040_2025_standard_deduction_single
+  target: form_1040_2025_standard_deduction_amount
+  relationship: CALCULATES
+  rule_id: lookup_selected_value
+  role: single
+  citation_refs:
+  - cite_1040_standard_deduction
+
+- edge_id: e_standard_deduction_mfj
+  source: form_1040_2025_standard_deduction_mfj
+  target: form_1040_2025_standard_deduction_amount
+  relationship: CALCULATES
+  rule_id: lookup_selected_value
+  role: married_filing_jointly
+  citation_refs:
+  - cite_1040_standard_deduction
+
+- edge_id: e_standard_deduction_mfs
+  source: form_1040_2025_standard_deduction_mfs
+  target: form_1040_2025_standard_deduction_amount
+  relationship: CALCULATES
+  rule_id: lookup_selected_value
+  role: married_filing_separately
+  citation_refs:
+  - cite_1040_standard_deduction
+
+- edge_id: e_standard_deduction_hoh
+  source: form_1040_2025_standard_deduction_hoh
+  target: form_1040_2025_standard_deduction_amount
+  relationship: CALCULATES
+  rule_id: lookup_selected_value
+  role: head_of_household
+  citation_refs:
+  - cite_1040_standard_deduction
+
+- edge_id: e_standard_deduction_qss
+  source: form_1040_2025_standard_deduction_qss
+  target: form_1040_2025_standard_deduction_amount
+  relationship: CALCULATES
+  rule_id: lookup_selected_value
+  role: qualifying_surviving_spouse
+  citation_refs:
+  - cite_1040_standard_deduction
+
 - edge_id: e_schedule_1_10_to_1040_8
   source: schedule_1_2025_part_i_line_10
   target: form_1040_2025_root_line_8
@@ -173,6 +225,33 @@
   citation_refs:
   - cite_span_form_1040_2025_0035
 
+- edge_id: e_1040_deduction_method_to_12e
+  source: form_1040_2025_deduction_method
+  target: form_1040_2025_root_line_12e
+  relationship: CALCULATES
+  rule_id: lookup_selected_value_required
+  role: key
+  citation_refs:
+  - cite_span_form_1040_2025_0038
+
+- edge_id: e_1040_standard_deduction_amount_to_12e
+  source: form_1040_2025_standard_deduction_amount
+  target: form_1040_2025_root_line_12e
+  relationship: CALCULATES
+  rule_id: lookup_selected_value_required
+  role: standard
+  citation_refs:
+  - cite_1040_standard_deduction
+
+- edge_id: e_schedule_a_17_to_1040_12e
+  source: schedule_a_2025_root_line_17
+  target: form_1040_2025_root_line_12e
+  relationship: CALCULATES
+  rule_id: lookup_selected_value_required
+  role: itemized
+  citation_refs:
+  - cite_span_schedule_a_2025_0038
+
 - edge_id: e_schedule_1a_38_to_1040_13b
   source: schedule_1a_2025_part_vi_line_38
   target: form_1040_2025_root_line_13b
@@ -243,3 +322,822 @@
   role: candidate
   citation_refs:
   - cite_span_form_1040_2025_0043
+
+- edge_id: e_filing_status_to_regular_tax_brackets
+  source: taxpayer_2025_filing_status
+  target: form_1040_2025_regular_tax_brackets
+  relationship: CALCULATES
+  rule_id: lookup_selected_value
+  role: key
+
+- edge_id: e_brackets_single_to_regular_tax_brackets
+  source: form_1040_2025_brackets_single
+  target: form_1040_2025_regular_tax_brackets
+  relationship: CALCULATES
+  rule_id: lookup_selected_value
+  role: single
+  citation_refs:
+  - cite_1040_tax_brackets_single
+
+- edge_id: e_brackets_mfj_to_regular_tax_brackets
+  source: form_1040_2025_brackets_mfj
+  target: form_1040_2025_regular_tax_brackets
+  relationship: CALCULATES
+  rule_id: lookup_selected_value
+  role: married_filing_jointly
+  citation_refs:
+  - cite_1040_tax_brackets_joint_qss
+
+- edge_id: e_brackets_mfs_to_regular_tax_brackets
+  source: form_1040_2025_brackets_mfs
+  target: form_1040_2025_regular_tax_brackets
+  relationship: CALCULATES
+  rule_id: lookup_selected_value
+  role: married_filing_separately
+  citation_refs:
+  - cite_1040_tax_brackets_mfs
+
+- edge_id: e_brackets_hoh_to_regular_tax_brackets
+  source: form_1040_2025_brackets_hoh
+  target: form_1040_2025_regular_tax_brackets
+  relationship: CALCULATES
+  rule_id: lookup_selected_value
+  role: head_of_household
+  citation_refs:
+  - cite_1040_tax_brackets_hoh
+
+- edge_id: e_brackets_qss_to_regular_tax_brackets
+  source: form_1040_2025_brackets_qss
+  target: form_1040_2025_regular_tax_brackets
+  relationship: CALCULATES
+  rule_id: lookup_selected_value
+  role: qualifying_surviving_spouse
+  citation_refs:
+  - cite_1040_tax_brackets_joint_qss
+
+- edge_id: e_1040_15_to_regular_tax_table
+  source: form_1040_2025_root_line_15
+  target: form_1040_2025_regular_tax_table_amount
+  relationship: CALCULATES
+  rule_id: lookup_tax_table_amount
+  role: amount
+  citation_refs:
+  - cite_1040_tax_table
+
+- edge_id: e_filing_status_to_regular_tax_table
+  source: taxpayer_2025_filing_status
+  target: form_1040_2025_regular_tax_table_amount
+  relationship: CALCULATES
+  rule_id: lookup_tax_table_amount
+  role: status
+  citation_refs:
+  - cite_1040_tax_table
+
+- edge_id: e_1040_15_to_regular_tax_bracket_amount
+  source: form_1040_2025_root_line_15
+  target: form_1040_2025_regular_tax_bracket_amount
+  relationship: CALCULATES
+  rule_id: lookup_bracket_tax
+  role: amount
+  citation_refs:
+  - cite_1040_line_16_tax_methods
+
+- edge_id: e_regular_tax_brackets_to_regular_tax_bracket_amount
+  source: form_1040_2025_regular_tax_brackets
+  target: form_1040_2025_regular_tax_bracket_amount
+  relationship: CALCULATES
+  rule_id: lookup_bracket_tax
+  role: brackets
+  citation_refs:
+  - cite_1040_line_16_tax_methods
+
+- edge_id: e_1040_15_to_regular_tax
+  source: form_1040_2025_root_line_15
+  target: form_1040_2025_regular_tax
+  relationship: CALCULATES
+  rule_id: if_less_than_currency
+  role: condition
+  citation_refs:
+  - cite_1040_line_16_tax_methods
+
+- edge_id: e_tax_table_threshold_to_regular_tax
+  source: form_1040_2025_tax_table_threshold
+  target: form_1040_2025_regular_tax
+  relationship: CALCULATES
+  rule_id: if_less_than_currency
+  role: threshold
+  citation_refs:
+  - cite_1040_line_16_tax_methods
+
+- edge_id: e_regular_tax_table_amount_to_regular_tax
+  source: form_1040_2025_regular_tax_table_amount
+  target: form_1040_2025_regular_tax
+  relationship: CALCULATES
+  rule_id: if_less_than_currency
+  role: when_true
+  citation_refs:
+  - cite_1040_tax_table
+
+- edge_id: e_regular_tax_bracket_amount_to_regular_tax
+  source: form_1040_2025_regular_tax_bracket_amount
+  target: form_1040_2025_regular_tax
+  relationship: CALCULATES
+  rule_id: if_less_than_currency
+  role: when_false
+  citation_refs:
+  - cite_1040_line_16_tax_methods
+
+- edge_id: e_1040_15_to_qdcgt_1
+  source: form_1040_2025_root_line_15
+  target: form_1040_2025_qdcgt_line_1
+  relationship: CALCULATES
+  rule_id: copy_currency_value
+  citation_refs:
+  - cite_1040_qdcgt_line_1
+
+- edge_id: e_1040_3a_to_qdcgt_2
+  source: form_1040_2025_root_line_3a
+  target: form_1040_2025_qdcgt_line_2
+  relationship: CALCULATES
+  rule_id: copy_currency_value
+  citation_refs:
+  - cite_1040_qdcgt_line_2
+
+- edge_id: e_schedule_d_15_to_qdcgt_3_candidate
+  source: schedule_d_2025_line_15_net_lt
+  target: form_1040_2025_qdcgt_line_3_candidate
+  relationship: CALCULATES
+  rule_id: min_currency
+  role: candidate
+  citation_refs:
+  - cite_1040_qdcgt_line_3
+
+- edge_id: e_schedule_d_16_to_qdcgt_3_candidate
+  source: schedule_d_2025_line_16_total
+  target: form_1040_2025_qdcgt_line_3_candidate
+  relationship: CALCULATES
+  rule_id: min_currency
+  role: candidate
+  citation_refs:
+  - cite_1040_qdcgt_line_3
+
+- edge_id: e_qdcgt_3_candidate_to_qdcgt_3
+  source: form_1040_2025_qdcgt_line_3_candidate
+  target: form_1040_2025_qdcgt_line_3
+  relationship: CALCULATES
+  rule_id: max_currency
+  role: candidate
+  citation_refs:
+  - cite_1040_qdcgt_line_3
+
+- edge_id: e_1040_zero_floor_to_qdcgt_3
+  source: form_1040_2025_zero_floor
+  target: form_1040_2025_qdcgt_line_3
+  relationship: CALCULATES
+  rule_id: max_currency
+  role: candidate
+  citation_refs:
+  - cite_1040_qdcgt_line_3
+
+- edge_id: e_qdcgt_2_to_qdcgt_4
+  source: form_1040_2025_qdcgt_line_2
+  target: form_1040_2025_qdcgt_line_4
+  relationship: CALCULATES
+  rule_id: sum_currency
+  role: addend
+  citation_refs:
+  - cite_1040_qdcgt_line_4
+
+- edge_id: e_qdcgt_3_to_qdcgt_4
+  source: form_1040_2025_qdcgt_line_3
+  target: form_1040_2025_qdcgt_line_4
+  relationship: CALCULATES
+  rule_id: sum_currency
+  role: addend
+  citation_refs:
+  - cite_1040_qdcgt_line_4
+
+- edge_id: e_qdcgt_1_to_qdcgt_5_pre
+  source: form_1040_2025_qdcgt_line_1
+  target: form_1040_2025_qdcgt_line_5_pre_floor
+  relationship: CALCULATES
+  rule_id: subtract_currency
+  role: minuend
+  citation_refs:
+  - cite_1040_qdcgt_line_5
+
+- edge_id: e_qdcgt_4_to_qdcgt_5_pre
+  source: form_1040_2025_qdcgt_line_4
+  target: form_1040_2025_qdcgt_line_5_pre_floor
+  relationship: CALCULATES
+  rule_id: subtract_currency
+  role: subtrahend
+  citation_refs:
+  - cite_1040_qdcgt_line_5
+
+- edge_id: e_qdcgt_5_pre_to_qdcgt_5
+  source: form_1040_2025_qdcgt_line_5_pre_floor
+  target: form_1040_2025_qdcgt_line_5
+  relationship: CALCULATES
+  rule_id: max_currency
+  role: candidate
+  citation_refs:
+  - cite_1040_qdcgt_line_5
+
+- edge_id: e_1040_zero_floor_to_qdcgt_5
+  source: form_1040_2025_zero_floor
+  target: form_1040_2025_qdcgt_line_5
+  relationship: CALCULATES
+  rule_id: max_currency
+  role: candidate
+  citation_refs:
+  - cite_1040_qdcgt_line_5
+
+- edge_id: e_filing_status_to_qdcgt_6
+  source: taxpayer_2025_filing_status
+  target: form_1040_2025_qdcgt_line_6
+  relationship: CALCULATES
+  rule_id: lookup_selected_value
+  role: key
+
+- edge_id: e_qdcgt_breakpoint_0_single_to_qdcgt_6
+  source: form_1040_2025_qdcgt_breakpoint_0_single
+  target: form_1040_2025_qdcgt_line_6
+  relationship: CALCULATES
+  rule_id: lookup_selected_value
+  role: single
+  citation_refs:
+  - cite_1040_qdcgt_line_6_9
+
+- edge_id: e_qdcgt_breakpoint_0_mfj_to_qdcgt_6
+  source: form_1040_2025_qdcgt_breakpoint_0_mfj
+  target: form_1040_2025_qdcgt_line_6
+  relationship: CALCULATES
+  rule_id: lookup_selected_value
+  role: married_filing_jointly
+  citation_refs:
+  - cite_1040_qdcgt_line_6_9
+
+- edge_id: e_qdcgt_breakpoint_0_mfs_to_qdcgt_6
+  source: form_1040_2025_qdcgt_breakpoint_0_mfs
+  target: form_1040_2025_qdcgt_line_6
+  relationship: CALCULATES
+  rule_id: lookup_selected_value
+  role: married_filing_separately
+  citation_refs:
+  - cite_1040_qdcgt_line_6_9
+
+- edge_id: e_qdcgt_breakpoint_0_hoh_to_qdcgt_6
+  source: form_1040_2025_qdcgt_breakpoint_0_hoh
+  target: form_1040_2025_qdcgt_line_6
+  relationship: CALCULATES
+  rule_id: lookup_selected_value
+  role: head_of_household
+  citation_refs:
+  - cite_1040_qdcgt_line_6_9
+
+- edge_id: e_qdcgt_breakpoint_0_qss_to_qdcgt_6
+  source: form_1040_2025_qdcgt_breakpoint_0_qss
+  target: form_1040_2025_qdcgt_line_6
+  relationship: CALCULATES
+  rule_id: lookup_selected_value
+  role: qualifying_surviving_spouse
+  citation_refs:
+  - cite_1040_qdcgt_line_6_9
+
+- edge_id: e_qdcgt_1_to_qdcgt_7
+  source: form_1040_2025_qdcgt_line_1
+  target: form_1040_2025_qdcgt_line_7
+  relationship: CALCULATES
+  rule_id: min_currency
+  role: candidate
+  citation_refs:
+  - cite_1040_qdcgt_line_6_9
+
+- edge_id: e_qdcgt_6_to_qdcgt_7
+  source: form_1040_2025_qdcgt_line_6
+  target: form_1040_2025_qdcgt_line_7
+  relationship: CALCULATES
+  rule_id: min_currency
+  role: candidate
+  citation_refs:
+  - cite_1040_qdcgt_line_6_9
+
+- edge_id: e_qdcgt_5_to_qdcgt_8
+  source: form_1040_2025_qdcgt_line_5
+  target: form_1040_2025_qdcgt_line_8
+  relationship: CALCULATES
+  rule_id: min_currency
+  role: candidate
+  citation_refs:
+  - cite_1040_qdcgt_line_6_9
+
+- edge_id: e_qdcgt_7_to_qdcgt_8
+  source: form_1040_2025_qdcgt_line_7
+  target: form_1040_2025_qdcgt_line_8
+  relationship: CALCULATES
+  rule_id: min_currency
+  role: candidate
+  citation_refs:
+  - cite_1040_qdcgt_line_6_9
+
+- edge_id: e_qdcgt_7_to_qdcgt_9
+  source: form_1040_2025_qdcgt_line_7
+  target: form_1040_2025_qdcgt_line_9
+  relationship: CALCULATES
+  rule_id: subtract_currency
+  role: minuend
+  citation_refs:
+  - cite_1040_qdcgt_line_6_9
+
+- edge_id: e_qdcgt_8_to_qdcgt_9
+  source: form_1040_2025_qdcgt_line_8
+  target: form_1040_2025_qdcgt_line_9
+  relationship: CALCULATES
+  rule_id: subtract_currency
+  role: subtrahend
+  citation_refs:
+  - cite_1040_qdcgt_line_6_9
+
+- edge_id: e_qdcgt_1_to_qdcgt_10
+  source: form_1040_2025_qdcgt_line_1
+  target: form_1040_2025_qdcgt_line_10
+  relationship: CALCULATES
+  rule_id: min_currency
+  role: candidate
+  citation_refs:
+  - cite_1040_qdcgt_line_10_12
+
+- edge_id: e_qdcgt_4_to_qdcgt_10
+  source: form_1040_2025_qdcgt_line_4
+  target: form_1040_2025_qdcgt_line_10
+  relationship: CALCULATES
+  rule_id: min_currency
+  role: candidate
+  citation_refs:
+  - cite_1040_qdcgt_line_10_12
+
+- edge_id: e_qdcgt_9_to_qdcgt_11
+  source: form_1040_2025_qdcgt_line_9
+  target: form_1040_2025_qdcgt_line_11
+  relationship: CALCULATES
+  rule_id: copy_currency_value
+  citation_refs:
+  - cite_1040_qdcgt_line_10_12
+
+- edge_id: e_qdcgt_10_to_qdcgt_12
+  source: form_1040_2025_qdcgt_line_10
+  target: form_1040_2025_qdcgt_line_12
+  relationship: CALCULATES
+  rule_id: subtract_currency
+  role: minuend
+  citation_refs:
+  - cite_1040_qdcgt_line_10_12
+
+- edge_id: e_qdcgt_11_to_qdcgt_12
+  source: form_1040_2025_qdcgt_line_11
+  target: form_1040_2025_qdcgt_line_12
+  relationship: CALCULATES
+  rule_id: subtract_currency
+  role: subtrahend
+  citation_refs:
+  - cite_1040_qdcgt_line_10_12
+
+- edge_id: e_filing_status_to_qdcgt_13
+  source: taxpayer_2025_filing_status
+  target: form_1040_2025_qdcgt_line_13
+  relationship: CALCULATES
+  rule_id: lookup_selected_value
+  role: key
+
+- edge_id: e_qdcgt_breakpoint_15_single_to_qdcgt_13
+  source: form_1040_2025_qdcgt_breakpoint_15_single
+  target: form_1040_2025_qdcgt_line_13
+  relationship: CALCULATES
+  rule_id: lookup_selected_value
+  role: single
+  citation_refs:
+  - cite_1040_qdcgt_line_13_17
+
+- edge_id: e_qdcgt_breakpoint_15_mfj_to_qdcgt_13
+  source: form_1040_2025_qdcgt_breakpoint_15_mfj
+  target: form_1040_2025_qdcgt_line_13
+  relationship: CALCULATES
+  rule_id: lookup_selected_value
+  role: married_filing_jointly
+  citation_refs:
+  - cite_1040_qdcgt_line_13_17
+
+- edge_id: e_qdcgt_breakpoint_15_mfs_to_qdcgt_13
+  source: form_1040_2025_qdcgt_breakpoint_15_mfs
+  target: form_1040_2025_qdcgt_line_13
+  relationship: CALCULATES
+  rule_id: lookup_selected_value
+  role: married_filing_separately
+  citation_refs:
+  - cite_1040_qdcgt_line_13_17
+
+- edge_id: e_qdcgt_breakpoint_15_hoh_to_qdcgt_13
+  source: form_1040_2025_qdcgt_breakpoint_15_hoh
+  target: form_1040_2025_qdcgt_line_13
+  relationship: CALCULATES
+  rule_id: lookup_selected_value
+  role: head_of_household
+  citation_refs:
+  - cite_1040_qdcgt_line_13_17
+
+- edge_id: e_qdcgt_breakpoint_15_qss_to_qdcgt_13
+  source: form_1040_2025_qdcgt_breakpoint_15_qss
+  target: form_1040_2025_qdcgt_line_13
+  relationship: CALCULATES
+  rule_id: lookup_selected_value
+  role: qualifying_surviving_spouse
+  citation_refs:
+  - cite_1040_qdcgt_line_13_17
+
+- edge_id: e_qdcgt_1_to_qdcgt_14
+  source: form_1040_2025_qdcgt_line_1
+  target: form_1040_2025_qdcgt_line_14
+  relationship: CALCULATES
+  rule_id: min_currency
+  role: candidate
+  citation_refs:
+  - cite_1040_qdcgt_line_13_17
+
+- edge_id: e_qdcgt_13_to_qdcgt_14
+  source: form_1040_2025_qdcgt_line_13
+  target: form_1040_2025_qdcgt_line_14
+  relationship: CALCULATES
+  rule_id: min_currency
+  role: candidate
+  citation_refs:
+  - cite_1040_qdcgt_line_13_17
+
+- edge_id: e_qdcgt_5_to_qdcgt_15
+  source: form_1040_2025_qdcgt_line_5
+  target: form_1040_2025_qdcgt_line_15
+  relationship: CALCULATES
+  rule_id: sum_currency
+  role: addend
+  citation_refs:
+  - cite_1040_qdcgt_line_13_17
+
+- edge_id: e_qdcgt_9_to_qdcgt_15
+  source: form_1040_2025_qdcgt_line_9
+  target: form_1040_2025_qdcgt_line_15
+  relationship: CALCULATES
+  rule_id: sum_currency
+  role: addend
+  citation_refs:
+  - cite_1040_qdcgt_line_13_17
+
+- edge_id: e_qdcgt_14_to_qdcgt_16_pre
+  source: form_1040_2025_qdcgt_line_14
+  target: form_1040_2025_qdcgt_line_16_pre_floor
+  relationship: CALCULATES
+  rule_id: subtract_currency
+  role: minuend
+  citation_refs:
+  - cite_1040_qdcgt_line_13_17
+
+- edge_id: e_qdcgt_15_to_qdcgt_16_pre
+  source: form_1040_2025_qdcgt_line_15
+  target: form_1040_2025_qdcgt_line_16_pre_floor
+  relationship: CALCULATES
+  rule_id: subtract_currency
+  role: subtrahend
+  citation_refs:
+  - cite_1040_qdcgt_line_13_17
+
+- edge_id: e_qdcgt_16_pre_to_qdcgt_16
+  source: form_1040_2025_qdcgt_line_16_pre_floor
+  target: form_1040_2025_qdcgt_line_16
+  relationship: CALCULATES
+  rule_id: max_currency
+  role: candidate
+  citation_refs:
+  - cite_1040_qdcgt_line_13_17
+
+- edge_id: e_1040_zero_floor_to_qdcgt_16
+  source: form_1040_2025_zero_floor
+  target: form_1040_2025_qdcgt_line_16
+  relationship: CALCULATES
+  rule_id: max_currency
+  role: candidate
+  citation_refs:
+  - cite_1040_qdcgt_line_13_17
+
+- edge_id: e_qdcgt_12_to_qdcgt_17
+  source: form_1040_2025_qdcgt_line_12
+  target: form_1040_2025_qdcgt_line_17
+  relationship: CALCULATES
+  rule_id: min_currency
+  role: candidate
+  citation_refs:
+  - cite_1040_qdcgt_line_13_17
+
+- edge_id: e_qdcgt_16_to_qdcgt_17
+  source: form_1040_2025_qdcgt_line_16
+  target: form_1040_2025_qdcgt_line_17
+  relationship: CALCULATES
+  rule_id: min_currency
+  role: candidate
+  citation_refs:
+  - cite_1040_qdcgt_line_13_17
+
+- edge_id: e_qdcgt_17_to_qdcgt_18
+  source: form_1040_2025_qdcgt_line_17
+  target: form_1040_2025_qdcgt_line_18
+  relationship: CALCULATES
+  rule_id: multiply_currency
+  role: multiplicand
+  citation_refs:
+  - cite_1040_qdcgt_line_18_21
+
+- edge_id: e_qdcgt_rate_15_to_qdcgt_18
+  source: form_1040_2025_qdcgt_rate_15
+  target: form_1040_2025_qdcgt_line_18
+  relationship: CALCULATES
+  rule_id: multiply_currency
+  role: multiplier
+  citation_refs:
+  - cite_1040_qdcgt_line_18_21
+
+- edge_id: e_qdcgt_9_to_qdcgt_19
+  source: form_1040_2025_qdcgt_line_9
+  target: form_1040_2025_qdcgt_line_19
+  relationship: CALCULATES
+  rule_id: sum_currency
+  role: addend
+  citation_refs:
+  - cite_1040_qdcgt_line_18_21
+
+- edge_id: e_qdcgt_17_to_qdcgt_19
+  source: form_1040_2025_qdcgt_line_17
+  target: form_1040_2025_qdcgt_line_19
+  relationship: CALCULATES
+  rule_id: sum_currency
+  role: addend
+  citation_refs:
+  - cite_1040_qdcgt_line_18_21
+
+- edge_id: e_qdcgt_10_to_qdcgt_20
+  source: form_1040_2025_qdcgt_line_10
+  target: form_1040_2025_qdcgt_line_20
+  relationship: CALCULATES
+  rule_id: subtract_currency
+  role: minuend
+  citation_refs:
+  - cite_1040_qdcgt_line_18_21
+
+- edge_id: e_qdcgt_19_to_qdcgt_20
+  source: form_1040_2025_qdcgt_line_19
+  target: form_1040_2025_qdcgt_line_20
+  relationship: CALCULATES
+  rule_id: subtract_currency
+  role: subtrahend
+  citation_refs:
+  - cite_1040_qdcgt_line_18_21
+
+- edge_id: e_qdcgt_20_to_qdcgt_21
+  source: form_1040_2025_qdcgt_line_20
+  target: form_1040_2025_qdcgt_line_21
+  relationship: CALCULATES
+  rule_id: multiply_currency
+  role: multiplicand
+  citation_refs:
+  - cite_1040_qdcgt_line_18_21
+
+- edge_id: e_qdcgt_rate_20_to_qdcgt_21
+  source: form_1040_2025_qdcgt_rate_20
+  target: form_1040_2025_qdcgt_line_21
+  relationship: CALCULATES
+  rule_id: multiply_currency
+  role: multiplier
+  citation_refs:
+  - cite_1040_qdcgt_line_18_21
+
+- edge_id: e_qdcgt_5_to_qdcgt_22_tax_table
+  source: form_1040_2025_qdcgt_line_5
+  target: form_1040_2025_qdcgt_line_22_tax_table
+  relationship: CALCULATES
+  rule_id: lookup_tax_table_amount
+  role: amount
+  citation_refs:
+  - cite_1040_qdcgt_line_22
+
+- edge_id: e_filing_status_to_qdcgt_22_tax_table
+  source: taxpayer_2025_filing_status
+  target: form_1040_2025_qdcgt_line_22_tax_table
+  relationship: CALCULATES
+  rule_id: lookup_tax_table_amount
+  role: status
+  citation_refs:
+  - cite_1040_qdcgt_line_22
+
+- edge_id: e_qdcgt_5_to_qdcgt_22_tax_bracket
+  source: form_1040_2025_qdcgt_line_5
+  target: form_1040_2025_qdcgt_line_22_tax_bracket
+  relationship: CALCULATES
+  rule_id: lookup_bracket_tax
+  role: amount
+  citation_refs:
+  - cite_1040_qdcgt_line_22
+
+- edge_id: e_regular_tax_brackets_to_qdcgt_22_tax_bracket
+  source: form_1040_2025_regular_tax_brackets
+  target: form_1040_2025_qdcgt_line_22_tax_bracket
+  relationship: CALCULATES
+  rule_id: lookup_bracket_tax
+  role: brackets
+  citation_refs:
+  - cite_1040_qdcgt_line_22
+
+- edge_id: e_qdcgt_5_to_qdcgt_22
+  source: form_1040_2025_qdcgt_line_5
+  target: form_1040_2025_qdcgt_line_22
+  relationship: CALCULATES
+  rule_id: if_less_than_currency
+  role: condition
+  citation_refs:
+  - cite_1040_qdcgt_line_22
+
+- edge_id: e_tax_table_threshold_to_qdcgt_22
+  source: form_1040_2025_tax_table_threshold
+  target: form_1040_2025_qdcgt_line_22
+  relationship: CALCULATES
+  rule_id: if_less_than_currency
+  role: threshold
+  citation_refs:
+  - cite_1040_qdcgt_line_22
+
+- edge_id: e_qdcgt_22_tax_table_to_qdcgt_22
+  source: form_1040_2025_qdcgt_line_22_tax_table
+  target: form_1040_2025_qdcgt_line_22
+  relationship: CALCULATES
+  rule_id: if_less_than_currency
+  role: when_true
+  citation_refs:
+  - cite_1040_qdcgt_line_22
+
+- edge_id: e_qdcgt_22_tax_bracket_to_qdcgt_22
+  source: form_1040_2025_qdcgt_line_22_tax_bracket
+  target: form_1040_2025_qdcgt_line_22
+  relationship: CALCULATES
+  rule_id: if_less_than_currency
+  role: when_false
+  citation_refs:
+  - cite_1040_qdcgt_line_22
+
+- edge_id: e_qdcgt_18_to_qdcgt_23
+  source: form_1040_2025_qdcgt_line_18
+  target: form_1040_2025_qdcgt_line_23
+  relationship: CALCULATES
+  rule_id: sum_currency
+  role: addend
+  citation_refs:
+  - cite_1040_qdcgt_line_23_25
+
+- edge_id: e_qdcgt_21_to_qdcgt_23
+  source: form_1040_2025_qdcgt_line_21
+  target: form_1040_2025_qdcgt_line_23
+  relationship: CALCULATES
+  rule_id: sum_currency
+  role: addend
+  citation_refs:
+  - cite_1040_qdcgt_line_23_25
+
+- edge_id: e_qdcgt_22_to_qdcgt_23
+  source: form_1040_2025_qdcgt_line_22
+  target: form_1040_2025_qdcgt_line_23
+  relationship: CALCULATES
+  rule_id: sum_currency
+  role: addend
+  citation_refs:
+  - cite_1040_qdcgt_line_23_25
+
+- edge_id: e_qdcgt_1_to_qdcgt_24_tax_table
+  source: form_1040_2025_qdcgt_line_1
+  target: form_1040_2025_qdcgt_line_24_tax_table
+  relationship: CALCULATES
+  rule_id: lookup_tax_table_amount
+  role: amount
+  citation_refs:
+  - cite_1040_qdcgt_line_24
+
+- edge_id: e_filing_status_to_qdcgt_24_tax_table
+  source: taxpayer_2025_filing_status
+  target: form_1040_2025_qdcgt_line_24_tax_table
+  relationship: CALCULATES
+  rule_id: lookup_tax_table_amount
+  role: status
+  citation_refs:
+  - cite_1040_qdcgt_line_24
+
+- edge_id: e_qdcgt_1_to_qdcgt_24_tax_bracket
+  source: form_1040_2025_qdcgt_line_1
+  target: form_1040_2025_qdcgt_line_24_tax_bracket
+  relationship: CALCULATES
+  rule_id: lookup_bracket_tax
+  role: amount
+  citation_refs:
+  - cite_1040_qdcgt_line_24
+
+- edge_id: e_regular_tax_brackets_to_qdcgt_24_tax_bracket
+  source: form_1040_2025_regular_tax_brackets
+  target: form_1040_2025_qdcgt_line_24_tax_bracket
+  relationship: CALCULATES
+  rule_id: lookup_bracket_tax
+  role: brackets
+  citation_refs:
+  - cite_1040_qdcgt_line_24
+
+- edge_id: e_qdcgt_1_to_qdcgt_24
+  source: form_1040_2025_qdcgt_line_1
+  target: form_1040_2025_qdcgt_line_24
+  relationship: CALCULATES
+  rule_id: if_less_than_currency
+  role: condition
+  citation_refs:
+  - cite_1040_qdcgt_line_24
+
+- edge_id: e_tax_table_threshold_to_qdcgt_24
+  source: form_1040_2025_tax_table_threshold
+  target: form_1040_2025_qdcgt_line_24
+  relationship: CALCULATES
+  rule_id: if_less_than_currency
+  role: threshold
+  citation_refs:
+  - cite_1040_qdcgt_line_24
+
+- edge_id: e_qdcgt_24_tax_table_to_qdcgt_24
+  source: form_1040_2025_qdcgt_line_24_tax_table
+  target: form_1040_2025_qdcgt_line_24
+  relationship: CALCULATES
+  rule_id: if_less_than_currency
+  role: when_true
+  citation_refs:
+  - cite_1040_qdcgt_line_24
+
+- edge_id: e_qdcgt_24_tax_bracket_to_qdcgt_24
+  source: form_1040_2025_qdcgt_line_24_tax_bracket
+  target: form_1040_2025_qdcgt_line_24
+  relationship: CALCULATES
+  rule_id: if_less_than_currency
+  role: when_false
+  citation_refs:
+  - cite_1040_qdcgt_line_24
+
+- edge_id: e_qdcgt_23_to_qdcgt_25
+  source: form_1040_2025_qdcgt_line_23
+  target: form_1040_2025_qdcgt_line_25
+  relationship: CALCULATES
+  rule_id: min_dollar
+  role: candidate
+  citation_refs:
+  - cite_1040_qdcgt_line_23_25
+
+- edge_id: e_qdcgt_24_to_qdcgt_25
+  source: form_1040_2025_qdcgt_line_24
+  target: form_1040_2025_qdcgt_line_25
+  relationship: CALCULATES
+  rule_id: min_dollar
+  role: candidate
+  citation_refs:
+  - cite_1040_qdcgt_line_23_25
+
+- edge_id: e_qdcgt_4_to_1040_16
+  source: form_1040_2025_qdcgt_line_4
+  target: form_1040_2025_root_line_16
+  relationship: CALCULATES
+  rule_id: if_greater_than_currency
+  role: condition
+  citation_refs:
+  - cite_1040_line_16_tax_methods
+
+- edge_id: e_1040_zero_floor_to_1040_16
+  source: form_1040_2025_zero_floor
+  target: form_1040_2025_root_line_16
+  relationship: CALCULATES
+  rule_id: if_greater_than_currency
+  role: threshold
+  citation_refs:
+  - cite_1040_line_16_tax_methods
+
+- edge_id: e_qdcgt_25_to_1040_16
+  source: form_1040_2025_qdcgt_line_25
+  target: form_1040_2025_root_line_16
+  relationship: CALCULATES
+  rule_id: if_greater_than_currency
+  role: when_true
+  citation_refs:
+  - cite_1040_qdcgt_line_25
+
+- edge_id: e_regular_tax_to_1040_16
+  source: form_1040_2025_regular_tax
+  target: form_1040_2025_root_line_16
+  relationship: CALCULATES
+  rule_id: if_greater_than_currency
+  role: when_false
+  citation_refs:
+  - cite_1040_line_16_tax_methods

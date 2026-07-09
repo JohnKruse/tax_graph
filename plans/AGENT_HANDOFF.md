@@ -16,7 +16,7 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 ## Current state (2026-07-09)
 
 **BALL: CODEX (interim; one worker at a time in the clone).** Authorized action:
-M11 **Step 3** (worker-heavy engine ops + QDCGT worksheet), then 4 -> 5b -> 6.
+M11 **Step 4**, then 5b -> 6.
 Step 5a REWORK (PolicyEngine PARAMETER-DIFF) is DONE (Antigravity). Live PE fetch yielded 20/20 matches.
 (Whoever finishes a turn: update this BALL line - it is the first thing read.)
 
@@ -38,6 +38,19 @@ Step 5a REWORK (PolicyEngine PARAMETER-DIFF) is DONE (Antigravity). Live PE fetc
   `examples/taxable_income_basic/`. New tests:
   `tests/test_form_1040_spine_m11.py`. Deferred-review queue entry added:
   `promotion_review_form_1040_2025`.
+- **M11 Step 3 completion (Codex, 2026-07-09):** Landed the first live Form 1040
+  line 16 branch. Engine ops added: `MULTIPLY`, `LOOKUP_BRACKET`, and `IF_ELSE`,
+  plus a tax-table data-resource lookup seam that works on yaml and sqlite loads.
+  Form 1040 line 12e is now driven by the new decision
+  `decision_1040_deduction_method` (`standard` vs `itemized` via Schedule A line 17).
+  The graph now executes the Qualified Dividends and Capital Gain Tax Worksheet line by
+  line (`form_1040_2025_qdcgt_line_1` .. `line_25`) and routes Form 1040 line 16
+  between QDCGT, tax-table, and bracket paths with cited parameter nodes. Step 2's
+  architect directive is closed in code: `tax_graph/compile/tax_table.py` now reads the
+  authored bracket parameter nodes instead of carrying its own bracket copy, and the
+  bracket / QDCGT breakpoint citations are now value-bearing instruction quotes.
+  New tests: `tests/test_tax_liability_m11.py`, plus M11 updates to
+  `tests/test_form_1040_spine_m11.py` and `tests/test_tax_table_m11.py`.
 - **Step 7 exit-run fix summary (Codex, 2026-07-09):**
   - Hardened M7 coverage tests to derive expectations from fixture/SOI data and to use a
     synthetic unmodeled weighted-form scenario rather than assuming the live graph still has
@@ -181,6 +194,12 @@ Step 5a REWORK (PolicyEngine PARAMETER-DIFF) is DONE (Antigravity). Live PE fetc
   - `.\.venv\Scripts\python.exe tools/check_ascii.py` -> ASCII check OK
   - `.\.venv\Scripts\python.exe -m tax_graph.cli validate 2025 --root C:\Users\devbox\projects\tax_graph` -> graph integrity OK
   - `.\.venv\Scripts\python.exe -m tax_graph.cli run --facts examples\taxable_income_basic\facts.yaml --year 2025 --root C:\Users\devbox\projects\tax_graph --no-record` -> line 15 path computed; line 7 preserved at 2000
+- M11 Step 3 closeout (worker, 2026-07-09):
+  - `.\.venv\Scripts\pytest.exe tests\test_form_1040_spine_m11.py tests\test_tax_liability_m11.py tests\test_tax_table_m11.py -q` -> 12 passed
+  - `.\.venv\Scripts\pytest.exe -m m11 -q` -> 14 passed, 242 deselected
+  - `.\.venv\Scripts\pytest.exe -q` -> 252 passed, 4 skipped
+  - `.\.venv\Scripts\tax-graph.exe validate 2025 --root C:\Users\devbox\projects\tax_graph` -> graph integrity OK
+  - `.\.venv\Scripts\python.exe tools\check_ascii.py` -> ASCII check OK
 - M10 phase close, Architect independent verification (2026-07-09) - ALL GREEN:
   - Full `pytest -q` -> 238 passed, 4 skipped (after fixing one closeout-order test
     breakage: `test_parse_phase_plan_handles_wrapped_real_plan_headers` read the LIVE

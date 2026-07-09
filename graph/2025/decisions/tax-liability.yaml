@@ -1,0 +1,33 @@
+# Decision nodes for the M11 tax-liability branch.
+
+- decision_id: decision_1040_deduction_method
+  sets_node: form_1040_2025_deduction_method
+  question: >-
+    Will this return use the standard deduction, or itemized deductions from
+    Schedule A line 17?
+  citation_refs:
+    - cite_span_form_1040_2025_0038
+    - cite_1040_standard_deduction
+  options:
+    - option_id: standard
+      label: Standard deduction
+      option_type: choice
+      sets:
+        value: standard
+      downstream_effect: Use the filing-status standard deduction on Form 1040 line 12e.
+      citation_refs:
+        - cite_1040_standard_deduction
+
+    - option_id: itemized
+      label: Itemized deductions
+      option_type: choice
+      sets:
+        value: itemized
+      downstream_effect: Use Schedule A line 17 on Form 1040 line 12e.
+      citation_refs:
+        - cite_span_schedule_a_2025_0038
+
+    - option_id: not_sure
+      label: I'm not sure
+      option_type: escalate
+      downstream_effect: Pause for review rather than assume the wrong deduction path.

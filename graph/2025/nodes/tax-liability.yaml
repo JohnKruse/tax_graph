@@ -60,7 +60,7 @@
   required: optional
   constant_value: 48350
   citation_refs:
-    - cite_1040_qdcgt_breakpoints
+    - cite_1040_qdcgt_line_6_9
 
 - node_id: form_1040_2025_qdcgt_breakpoint_0_mfj
   document_id: form_1040_2025
@@ -70,7 +70,7 @@
   required: optional
   constant_value: 96700
   citation_refs:
-    - cite_1040_qdcgt_breakpoints
+    - cite_1040_qdcgt_line_6_9
 
 - node_id: form_1040_2025_qdcgt_breakpoint_0_mfs
   document_id: form_1040_2025
@@ -80,7 +80,7 @@
   required: optional
   constant_value: 48350
   citation_refs:
-    - cite_1040_qdcgt_breakpoints
+    - cite_1040_qdcgt_line_6_9
 
 - node_id: form_1040_2025_qdcgt_breakpoint_0_hoh
   document_id: form_1040_2025
@@ -90,7 +90,7 @@
   required: optional
   constant_value: 64750
   citation_refs:
-    - cite_1040_qdcgt_breakpoints
+    - cite_1040_qdcgt_line_6_9
 
 - node_id: form_1040_2025_qdcgt_breakpoint_0_qss
   document_id: form_1040_2025
@@ -100,7 +100,7 @@
   required: optional
   constant_value: 96700
   citation_refs:
-    - cite_1040_qdcgt_breakpoints
+    - cite_1040_qdcgt_line_6_9
 
 # --- QDCGT Breakpoints (15% rate threshold) ---
 - node_id: form_1040_2025_qdcgt_breakpoint_15_single
@@ -111,7 +111,7 @@
   required: optional
   constant_value: 533400
   citation_refs:
-    - cite_1040_qdcgt_breakpoints
+    - cite_1040_qdcgt_line_13_17
 
 - node_id: form_1040_2025_qdcgt_breakpoint_15_mfj
   document_id: form_1040_2025
@@ -121,7 +121,7 @@
   required: optional
   constant_value: 600050
   citation_refs:
-    - cite_1040_qdcgt_breakpoints
+    - cite_1040_qdcgt_line_13_17
 
 - node_id: form_1040_2025_qdcgt_breakpoint_15_mfs
   document_id: form_1040_2025
@@ -131,7 +131,7 @@
   required: optional
   constant_value: 300000
   citation_refs:
-    - cite_1040_qdcgt_breakpoints
+    - cite_1040_qdcgt_line_13_17
 
 - node_id: form_1040_2025_qdcgt_breakpoint_15_hoh
   document_id: form_1040_2025
@@ -141,7 +141,7 @@
   required: optional
   constant_value: 566700
   citation_refs:
-    - cite_1040_qdcgt_breakpoints
+    - cite_1040_qdcgt_line_13_17
 
 - node_id: form_1040_2025_qdcgt_breakpoint_15_qss
   document_id: form_1040_2025
@@ -151,7 +151,7 @@
   required: optional
   constant_value: 600050
   citation_refs:
-    - cite_1040_qdcgt_breakpoints
+    - cite_1040_qdcgt_line_13_17
 
 # --- Ordinary Income Tax Brackets (LOOKUP_BRACKET tables) ---
 - node_id: form_1040_2025_brackets_single
@@ -183,7 +183,7 @@
       floor: 626350
       cumulative: 188769.75
   citation_refs:
-    - cite_1040_tax_brackets
+    - cite_1040_tax_brackets_single
 
 - node_id: form_1040_2025_brackets_mfj
   document_id: form_1040_2025
@@ -214,7 +214,7 @@
       floor: 751600
       cumulative: 202154.5
   citation_refs:
-    - cite_1040_tax_brackets
+    - cite_1040_tax_brackets_joint_qss
 
 - node_id: form_1040_2025_brackets_mfs
   document_id: form_1040_2025
@@ -245,7 +245,7 @@
       floor: 375800
       cumulative: 101077.25
   citation_refs:
-    - cite_1040_tax_brackets
+    - cite_1040_tax_brackets_mfs
 
 - node_id: form_1040_2025_brackets_hoh
   document_id: form_1040_2025
@@ -276,7 +276,7 @@
       floor: 626350
       cumulative: 187031.5
   citation_refs:
-    - cite_1040_tax_brackets
+    - cite_1040_tax_brackets_hoh
 
 - node_id: form_1040_2025_brackets_qss
   document_id: form_1040_2025
@@ -307,4 +307,368 @@
       floor: 751600
       cumulative: 202154.5
   citation_refs:
-    - cite_1040_tax_brackets
+    - cite_1040_tax_brackets_joint_qss
+
+- node_id: form_1040_2025_qdcgt_rate_15
+  document_id: form_1040_2025
+  label: QDCGT worksheet 15 percent rate
+  node_type: parameter
+  value_type: percentage
+  required: optional
+  constant_value: 0.15
+  citation_refs:
+    - cite_1040_qdcgt_line_18_21
+
+- node_id: form_1040_2025_qdcgt_rate_20
+  document_id: form_1040_2025
+  label: QDCGT worksheet 20 percent rate
+  node_type: parameter
+  value_type: percentage
+  required: optional
+  constant_value: 0.20
+  citation_refs:
+    - cite_1040_qdcgt_line_18_21
+
+- node_id: form_1040_2025_tax_table_threshold
+  document_id: form_1040_2025
+  label: Form 1040 line 16 tax table threshold
+  node_type: parameter
+  value_type: currency
+  required: optional
+  constant_value: 100000
+  citation_refs:
+    - cite_1040_line_16_tax_methods
+
+- node_id: form_1040_2025_standard_deduction_amount
+  document_id: form_1040_2025
+  label: Form 1040 selected standard deduction amount
+  node_type: computed
+  value_type: currency
+  required: optional
+  citation_refs:
+    - cite_1040_standard_deduction
+
+- node_id: form_1040_2025_regular_tax_brackets
+  document_id: form_1040_2025
+  label: Form 1040 selected regular tax brackets
+  node_type: computed
+  value_type: string
+  required: optional
+
+- node_id: form_1040_2025_regular_tax_table_amount
+  document_id: form_1040_2025
+  label: Form 1040 regular tax from the tax table
+  node_type: computed
+  value_type: currency
+  required: optional
+  citation_refs:
+    - cite_1040_line_16_tax_methods
+    - cite_1040_tax_table
+
+- node_id: form_1040_2025_regular_tax_bracket_amount
+  document_id: form_1040_2025
+  label: Form 1040 regular tax from the tax computation worksheet
+  node_type: computed
+  value_type: currency
+  required: optional
+  citation_refs:
+    - cite_1040_line_16_tax_methods
+
+- node_id: form_1040_2025_regular_tax
+  document_id: form_1040_2025
+  label: Form 1040 regular tax path
+  node_type: computed
+  value_type: currency
+  required: optional
+  citation_refs:
+    - cite_1040_line_16_tax_methods
+
+- node_id: form_1040_2025_qdcgt_line_1
+  document_id: form_1040_2025
+  label: QDCGT worksheet line 1
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+    - cite_1040_qdcgt_line_1
+
+- node_id: form_1040_2025_qdcgt_line_2
+  document_id: form_1040_2025
+  label: QDCGT worksheet line 2
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+    - cite_1040_qdcgt_line_2
+
+- node_id: form_1040_2025_qdcgt_line_3_candidate
+  document_id: form_1040_2025
+  label: QDCGT worksheet line 3 before loss floor
+  node_type: computed
+  value_type: currency
+  required: optional
+  citation_refs:
+    - cite_1040_qdcgt_line_3
+
+- node_id: form_1040_2025_qdcgt_line_3
+  document_id: form_1040_2025
+  label: QDCGT worksheet line 3
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+    - cite_1040_qdcgt_line_3
+
+- node_id: form_1040_2025_qdcgt_line_4
+  document_id: form_1040_2025
+  label: QDCGT worksheet line 4
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+    - cite_1040_qdcgt_line_4
+
+- node_id: form_1040_2025_qdcgt_line_5_pre_floor
+  document_id: form_1040_2025
+  label: QDCGT worksheet line 5 before zero floor
+  node_type: computed
+  value_type: currency
+  required: optional
+  citation_refs:
+    - cite_1040_qdcgt_line_5
+
+- node_id: form_1040_2025_qdcgt_line_5
+  document_id: form_1040_2025
+  label: QDCGT worksheet line 5
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+    - cite_1040_qdcgt_line_5
+
+- node_id: form_1040_2025_qdcgt_line_6
+  document_id: form_1040_2025
+  label: QDCGT worksheet line 6
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+    - cite_1040_qdcgt_line_6_9
+
+- node_id: form_1040_2025_qdcgt_line_7
+  document_id: form_1040_2025
+  label: QDCGT worksheet line 7
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+    - cite_1040_qdcgt_line_6_9
+
+- node_id: form_1040_2025_qdcgt_line_8
+  document_id: form_1040_2025
+  label: QDCGT worksheet line 8
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+    - cite_1040_qdcgt_line_6_9
+
+- node_id: form_1040_2025_qdcgt_line_9
+  document_id: form_1040_2025
+  label: QDCGT worksheet line 9
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+    - cite_1040_qdcgt_line_6_9
+
+- node_id: form_1040_2025_qdcgt_line_10
+  document_id: form_1040_2025
+  label: QDCGT worksheet line 10
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+    - cite_1040_qdcgt_line_10_12
+
+- node_id: form_1040_2025_qdcgt_line_11
+  document_id: form_1040_2025
+  label: QDCGT worksheet line 11
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+    - cite_1040_qdcgt_line_10_12
+
+- node_id: form_1040_2025_qdcgt_line_12
+  document_id: form_1040_2025
+  label: QDCGT worksheet line 12
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+    - cite_1040_qdcgt_line_10_12
+
+- node_id: form_1040_2025_qdcgt_line_13
+  document_id: form_1040_2025
+  label: QDCGT worksheet line 13
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+    - cite_1040_qdcgt_line_13_17
+
+- node_id: form_1040_2025_qdcgt_line_14
+  document_id: form_1040_2025
+  label: QDCGT worksheet line 14
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+    - cite_1040_qdcgt_line_13_17
+
+- node_id: form_1040_2025_qdcgt_line_15
+  document_id: form_1040_2025
+  label: QDCGT worksheet line 15
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+    - cite_1040_qdcgt_line_13_17
+
+- node_id: form_1040_2025_qdcgt_line_16_pre_floor
+  document_id: form_1040_2025
+  label: QDCGT worksheet line 16 before zero floor
+  node_type: computed
+  value_type: currency
+  required: optional
+  citation_refs:
+    - cite_1040_qdcgt_line_13_17
+
+- node_id: form_1040_2025_qdcgt_line_16
+  document_id: form_1040_2025
+  label: QDCGT worksheet line 16
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+    - cite_1040_qdcgt_line_13_17
+
+- node_id: form_1040_2025_qdcgt_line_17
+  document_id: form_1040_2025
+  label: QDCGT worksheet line 17
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+    - cite_1040_qdcgt_line_13_17
+
+- node_id: form_1040_2025_qdcgt_line_18
+  document_id: form_1040_2025
+  label: QDCGT worksheet line 18
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+    - cite_1040_qdcgt_line_18_21
+
+- node_id: form_1040_2025_qdcgt_line_19
+  document_id: form_1040_2025
+  label: QDCGT worksheet line 19
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+    - cite_1040_qdcgt_line_18_21
+
+- node_id: form_1040_2025_qdcgt_line_20
+  document_id: form_1040_2025
+  label: QDCGT worksheet line 20
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+    - cite_1040_qdcgt_line_18_21
+
+- node_id: form_1040_2025_qdcgt_line_21
+  document_id: form_1040_2025
+  label: QDCGT worksheet line 21
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+    - cite_1040_qdcgt_line_18_21
+
+- node_id: form_1040_2025_qdcgt_line_22_tax_table
+  document_id: form_1040_2025
+  label: QDCGT worksheet line 22 tax table branch
+  node_type: computed
+  value_type: currency
+  required: optional
+  citation_refs:
+    - cite_1040_qdcgt_line_22
+    - cite_1040_tax_table
+
+- node_id: form_1040_2025_qdcgt_line_22_tax_bracket
+  document_id: form_1040_2025
+  label: QDCGT worksheet line 22 tax computation worksheet branch
+  node_type: computed
+  value_type: currency
+  required: optional
+  citation_refs:
+    - cite_1040_qdcgt_line_22
+
+- node_id: form_1040_2025_qdcgt_line_22
+  document_id: form_1040_2025
+  label: QDCGT worksheet line 22
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+    - cite_1040_qdcgt_line_22
+
+- node_id: form_1040_2025_qdcgt_line_23
+  document_id: form_1040_2025
+  label: QDCGT worksheet line 23
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+    - cite_1040_qdcgt_line_23_25
+
+- node_id: form_1040_2025_qdcgt_line_24_tax_table
+  document_id: form_1040_2025
+  label: QDCGT worksheet line 24 tax table branch
+  node_type: computed
+  value_type: currency
+  required: optional
+  citation_refs:
+    - cite_1040_qdcgt_line_24
+    - cite_1040_tax_table
+
+- node_id: form_1040_2025_qdcgt_line_24_tax_bracket
+  document_id: form_1040_2025
+  label: QDCGT worksheet line 24 tax computation worksheet branch
+  node_type: computed
+  value_type: currency
+  required: optional
+  citation_refs:
+    - cite_1040_qdcgt_line_24
+
+- node_id: form_1040_2025_qdcgt_line_24
+  document_id: form_1040_2025
+  label: QDCGT worksheet line 24
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+    - cite_1040_qdcgt_line_24
+
+- node_id: form_1040_2025_qdcgt_line_25
+  document_id: form_1040_2025
+  label: QDCGT worksheet line 25
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+    - cite_1040_qdcgt_line_23_25

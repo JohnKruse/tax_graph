@@ -1,30 +1,24 @@
-# Citations for M11 liability calculations.
+# Citations for the M11 liability branch.
+
 - citation_id: cite_1040_standard_deduction
   document_id: instructions_form_1040_2025
   source_document_id: instructions_form_1040_2025
-  locator: Instructions for Form 1040, Standard Deduction Chart
+  locator: Instructions for Form 1040, page 31, line 3060
   quoted_text: >-
-    Single: $15,750. Married filing jointly or Qualifying surviving spouse: $31,500.
-    Head of household: $23,625. Married filing separately: $15,750.
-  url: https://www.irs.gov/instructions/i1040
+    Single: $15,750. Married filing jointly or Qualifying surviving spouse:
+    $31,500. Head of household: $23,625. Married filing separately: $15,750.
+  url: https://www.irs.gov/pub/irs-prior/i1040gi--2025.pdf
   retrieved_date: 2026-07-09
 
-- citation_id: cite_1040_tax_brackets
+- citation_id: cite_1040_line_16_tax_methods
   document_id: instructions_form_1040_2025
   source_document_id: instructions_form_1040_2025
-  locator: Instructions for Form 1040, Tax Computation Worksheet
+  locator: Instructions for Form 1040, page 34, lines 3308-3317
   quoted_text: >-
-    Section A-Single. Section B-Married filing jointly or Qualifying surviving spouse. Section C-Married filing separately. Section D-Head of household.
-  url: https://www.irs.gov/instructions/i1040
-  retrieved_date: 2026-07-09
-
-- citation_id: cite_1040_qdcgt_breakpoints
-  document_id: instructions_form_1040_2025
-  source_document_id: instructions_form_1040_2025
-  locator: Instructions for Form 1040, Qualified Dividends and Capital Gain Tax Worksheet
-  quoted_text: >-
-    Qualified dividends and capital gain tax brackets are taxed at 0%, 15%, or 20%.
-  url: https://www.irs.gov/instructions/i1040
+    If your taxable income is less than $100,000, use the Tax Table to figure
+    the amount of tax to enter on this line. However, if you are required to
+    use a special method to figure your tax, see the instructions below.
+  url: https://www.irs.gov/pub/irs-prior/i1040gi--2025.pdf
   retrieved_date: 2026-07-09
 
 - citation_id: cite_1040_tax_table
@@ -33,5 +27,183 @@
   locator: Instructions for Form 1040, Tax Table
   quoted_text: >-
     If taxable income is under $100,000, use the Tax Table to figure the tax.
-  url: https://www.irs.gov/instructions/i1040
+  url: https://www.irs.gov/pub/irs-prior/i1040gi--2025.pdf
+  retrieved_date: 2026-07-09
+
+- citation_id: cite_1040_tax_brackets_single
+  document_id: instructions_form_1040_2025
+  source_document_id: instructions_form_1040_2025
+  locator: Instructions for Form 1040, page 100, lines 9930-9934
+  quoted_text: >-
+    Section A-Single. Over $250,525 but not over $626,350, enter $57,231.00 +
+    35% of the excess over $250,525. Over $626,350, enter $188,769.75 + 37% of
+    the excess over $626,350.
+  url: https://www.irs.gov/pub/irs-prior/i1040gi--2025.pdf
+  retrieved_date: 2026-07-09
+
+- citation_id: cite_1040_tax_brackets_joint_qss
+  document_id: instructions_form_1040_2025
+  source_document_id: instructions_form_1040_2025
+  locator: Instructions for Form 1040, page 100, lines 9952-9956
+  quoted_text: >-
+    Section B-Married filing jointly or Qualifying surviving spouse. Over
+    $501,050 but not over $751,600, enter $114,462.00 + 35% of the excess over
+    $501,050. Over $751,600, enter $202,154.50 + 37% of the excess over
+    $751,600.
+  url: https://www.irs.gov/pub/irs-prior/i1040gi--2025.pdf
+  retrieved_date: 2026-07-09
+
+- citation_id: cite_1040_tax_brackets_mfs
+  document_id: instructions_form_1040_2025
+  source_document_id: instructions_form_1040_2025
+  locator: Instructions for Form 1040, page 100, lines 9973-9977
+  quoted_text: >-
+    Section C-Married filing separately. Over $250,525 but not over $375,800,
+    enter $57,231.00 + 35% of the excess over $250,525. Over $375,800, enter
+    $101,077.25 + 37% of the excess over $375,800.
+  url: https://www.irs.gov/pub/irs-prior/i1040gi--2025.pdf
+  retrieved_date: 2026-07-09
+
+- citation_id: cite_1040_tax_brackets_hoh
+  document_id: instructions_form_1040_2025
+  source_document_id: instructions_form_1040_2025
+  locator: Instructions for Form 1040, page 100, lines 9994-9998
+  quoted_text: >-
+    Section D-Head of household. Over $250,500 but not over $626,350, enter
+    $55,484.00 + 35% of the excess over $250,500. Over $626,350, enter
+    $187,031.50 + 37% of the excess over $626,350.
+  url: https://www.irs.gov/pub/irs-prior/i1040gi--2025.pdf
+  retrieved_date: 2026-07-09
+
+- citation_id: cite_1040_qdcgt_line_1
+  document_id: instructions_form_1040_2025
+  source_document_id: instructions_form_1040_2025
+  locator: Instructions for Form 1040, page 35, line 3428
+  quoted_text: "1. Enter the amount from Form 1040, line 15."
+  url: https://www.irs.gov/pub/irs-prior/i1040gi--2025.pdf
+  retrieved_date: 2026-07-09
+
+- citation_id: cite_1040_qdcgt_line_2
+  document_id: instructions_form_1040_2025
+  source_document_id: instructions_form_1040_2025
+  locator: Instructions for Form 1040, page 35, line 3434
+  quoted_text: "2. Enter the amount from Form 1040, line 3a."
+  url: https://www.irs.gov/pub/irs-prior/i1040gi--2025.pdf
+  retrieved_date: 2026-07-09
+
+- citation_id: cite_1040_qdcgt_line_3
+  document_id: instructions_form_1040_2025
+  source_document_id: instructions_form_1040_2025
+  locator: Instructions for Form 1040, page 35, lines 3438-3440
+  quoted_text: >-
+    3. Are you filing Schedule D? If yes, enter the smaller of line 15 or line
+    16 of Schedule D. But if either line 15 or line 16 is blank or a loss,
+    enter -0-.
+  url: https://www.irs.gov/pub/irs-prior/i1040gi--2025.pdf
+  retrieved_date: 2026-07-09
+
+- citation_id: cite_1040_qdcgt_line_4
+  document_id: instructions_form_1040_2025
+  source_document_id: instructions_form_1040_2025
+  locator: Instructions for Form 1040, page 35, line 3441
+  quoted_text: "4. Add lines 2 and 3."
+  url: https://www.irs.gov/pub/irs-prior/i1040gi--2025.pdf
+  retrieved_date: 2026-07-09
+
+- citation_id: cite_1040_qdcgt_line_5
+  document_id: instructions_form_1040_2025
+  source_document_id: instructions_form_1040_2025
+  locator: Instructions for Form 1040, page 35, line 3442
+  quoted_text: "5. Subtract line 4 from line 1. If zero or less, enter -0-."
+  url: https://www.irs.gov/pub/irs-prior/i1040gi--2025.pdf
+  retrieved_date: 2026-07-09
+
+- citation_id: cite_1040_qdcgt_line_6_9
+  document_id: instructions_form_1040_2025
+  source_document_id: instructions_form_1040_2025
+  locator: Instructions for Form 1040, page 35, lines 3443-3447
+  quoted_text: >-
+    6. Enter $48,350 if single; $96,700 if married filing jointly or qualifying
+    surviving spouse; $48,350 if married filing separately; or $64,750 if head
+    of household. 7. Enter the smaller of line 1 or line 6. 8. Enter the
+    smaller of line 5 or line 7. 9. Subtract line 8 from line 7.
+  url: https://www.irs.gov/pub/irs-prior/i1040gi--2025.pdf
+  retrieved_date: 2026-07-09
+
+- citation_id: cite_1040_qdcgt_line_10_12
+  document_id: instructions_form_1040_2025
+  source_document_id: instructions_form_1040_2025
+  locator: Instructions for Form 1040, page 35, lines 3448-3450
+  quoted_text: >-
+    10. Enter the smaller of line 1 or line 4. 11. Enter the amount from line
+    9. 12. Subtract line 11 from line 10.
+  url: https://www.irs.gov/pub/irs-prior/i1040gi--2025.pdf
+  retrieved_date: 2026-07-09
+
+- citation_id: cite_1040_qdcgt_line_13_17
+  document_id: instructions_form_1040_2025
+  source_document_id: instructions_form_1040_2025
+  locator: Instructions for Form 1040, page 35, lines 3451-3455
+  quoted_text: >-
+    13. Enter $533,400 if single; $600,050 if married filing jointly or
+    qualifying surviving spouse; $300,000 if married filing separately; or
+    $566,700 if head of household. 14. Enter the smaller of line 1 or line 13.
+    15. Add lines 5 and 9. 16. Subtract line 15 from line 14. If zero or less,
+    enter -0-. 17. Enter the smaller of line 12 or line 16.
+  url: https://www.irs.gov/pub/irs-prior/i1040gi--2025.pdf
+  retrieved_date: 2026-07-09
+
+- citation_id: cite_1040_qdcgt_line_18_21
+  document_id: instructions_form_1040_2025
+  source_document_id: instructions_form_1040_2025
+  locator: Instructions for Form 1040, page 35, lines 3456-3459
+  quoted_text: >-
+    18. Multiply line 17 by 15% (0.15). 19. Add lines 9 and 17. 20. Subtract
+    line 19 from line 10. 21. Multiply line 20 by 20% (0.20).
+  url: https://www.irs.gov/pub/irs-prior/i1040gi--2025.pdf
+  retrieved_date: 2026-07-09
+
+- citation_id: cite_1040_qdcgt_line_22
+  document_id: instructions_form_1040_2025
+  source_document_id: instructions_form_1040_2025
+  locator: Instructions for Form 1040, page 35, lines 3460-3463
+  quoted_text: >-
+    22. Figure the tax on the amount on line 5. If the amount on line 5 is less
+    than $100,000, use the Tax Table. If the amount on line 5 is $100,000 or
+    more, use the Tax Computation Worksheet.
+  url: https://www.irs.gov/pub/irs-prior/i1040gi--2025.pdf
+  retrieved_date: 2026-07-09
+
+- citation_id: cite_1040_qdcgt_line_23_25
+  document_id: instructions_form_1040_2025
+  source_document_id: instructions_form_1040_2025
+  locator: Instructions for Form 1040, page 35, lines 3464-3468
+  quoted_text: >-
+    23. Add lines 18, 21, and 22. 24. Figure the tax on the amount on line 1.
+    If the amount on line 1 is less than $100,000, use the Tax Table. If the
+    amount on line 1 is $100,000 or more, use the Tax Computation Worksheet.
+    25. Tax on all taxable income. Enter the smaller of line 23 or line 24 here
+    and on Form 1040, line 16.
+  url: https://www.irs.gov/pub/irs-prior/i1040gi--2025.pdf
+  retrieved_date: 2026-07-09
+
+- citation_id: cite_1040_qdcgt_line_24
+  document_id: instructions_form_1040_2025
+  source_document_id: instructions_form_1040_2025
+  locator: Instructions for Form 1040, page 35, lines 3465-3467
+  quoted_text: >-
+    24. Figure the tax on the amount on line 1. If the amount on line 1 is less
+    than $100,000, use the Tax Table. If the amount on line 1 is $100,000 or
+    more, use the Tax Computation Worksheet.
+  url: https://www.irs.gov/pub/irs-prior/i1040gi--2025.pdf
+  retrieved_date: 2026-07-09
+
+- citation_id: cite_1040_qdcgt_line_25
+  document_id: instructions_form_1040_2025
+  source_document_id: instructions_form_1040_2025
+  locator: Instructions for Form 1040, page 35, lines 3467-3468
+  quoted_text: >-
+    25. Tax on all taxable income. Enter the smaller of line 23 or line 24 here
+    and on Form 1040, line 16.
+  url: https://www.irs.gov/pub/irs-prior/i1040gi--2025.pdf
   retrieved_date: 2026-07-09

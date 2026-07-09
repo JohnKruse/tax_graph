@@ -7,6 +7,7 @@ import jsonschema
 import pytest
 
 from tax_graph.compile import build_sqlite
+from tax_graph.compile.tax_table import load_brackets_from_graph
 from tax_graph.drills import run_drills
 from tax_graph.io.loader import load_graph, load_yaml
 from tax_graph.validate import validate_graph
@@ -67,6 +68,14 @@ def test_tax_table_sqlite_projection(tmp_path):
             """
         ).fetchone()
         assert row_upper == (16909, 11823, 16909, 15170)
+
+
+@pytest.mark.m11
+def test_tax_table_compiler_reads_brackets_from_graph_nodes():
+    brackets = load_brackets_from_graph(ROOT, "2025")
+
+    assert brackets["single"][-1] == {"rate": 0.37, "floor": 626350, "cumulative": 188769.75}
+    assert brackets["head_of_household"][-1]["floor"] == 626350
 
 
 @pytest.mark.m11
