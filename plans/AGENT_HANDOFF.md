@@ -43,6 +43,20 @@ a worker; nothing waits on John except the PyPI alpha token.
   re-ran clean (317 nodes, 251 citations) and both parity examples (line 7 = 2000 and
   250) reconfirmed against the fresh sqlite. If this recurs, check for orphaned
   `uv run python -m tax_graph.cli serve` processes before assuming a content bug.
+- **CI CORRECTION (2026-07-10, found via John's failure email):** GitHub CI had been
+  RED on every push since M9 close (2026-07-06, ~30 runs) - tests copied fixture data
+  from the gitignored `graph/2025/_drafts/`, which exists only as local extraction
+  state, so a clean checkout failed 10 tests in setup; plus M12's new sqlite-source
+  test assumed a prebuilt `build/tax_graph_2025.sqlite` CI never builds. Consequence:
+  every "full pytest green" claim in the M9-M12 close notes was true only in the dev
+  sandbox and was never verified against a clean checkout. Fixed in `df8e3b8`: frozen
+  minimal draft snapshots committed under `tests/fixtures/draft_snapshots/` (fixtures
+  for mechanics, not promotion sources; drafts-never-committed rule unchanged), test
+  helpers repointed, and the sqlite test now builds its own tmp artifact. Proof: full
+  pytest with `_drafts` and the prebuilt sqlite renamed away -> 282 passed, 4 skipped.
+  **Standing rule addition: no test may read `graph/<year>/_drafts/` or assume a
+  prebuilt `build/` artifact; phase close-outs must confirm the CI run on the pushed
+  commit is green, not just the local suite.**
 - **Dual-witness state (unchanged from M11):** live OTS fuzz 100/100 at the tax line;
   PolicyEngine liability 20/20 (8 exact, 12 within the documented tax-table tolerance)
   and parameter-diff 20/20.
@@ -77,7 +91,11 @@ a worker; nothing waits on John except the PyPI alpha token.
   engineering-plan and docs/distribution.md; PyPI alpha upload still awaits John's token);
   working directory = C:\Users\devbox\projects\tax_graph (AGENTS.md hard rule); **a phase
   whose job is producing artifacts an outside tool/user consumes needs a real live-execution
-  pass in its exit criteria, not just offline goldens** (M12 finding above).
+  pass in its exit criteria, not just offline goldens** (M12 finding above); **no test may
+  read `graph/<year>/_drafts/` or assume a prebuilt `build/` artifact - use
+  `tests/fixtures/draft_snapshots/` and build throwaway sqlite in tmp; phase close-outs
+  confirm the pushed commit's CI run is green, not just the local suite** (CI correction
+  above).
 - **Seams M13 must respect (for the Architect writing PHASE_M13):** worksheet
   extraction/authoring pattern generalizes from M11's hand-authored QDCGT precedent;
   re-admitting S1/S1A/Schedule-A supplemental fuzz inputs requires modeling the
