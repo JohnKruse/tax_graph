@@ -12,11 +12,12 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 - History: pruned 2026-07-07, at M9 close 2026-07-08, and at M11 close 2026-07-09. Full
   narration lives in `plans/archive/` (phase plans with close notes) and git history.
 
-## Current state (2026-07-09)
+## Current state (2026-07-10)
 
-**BALL: ARCHITECT.** Next action: write PHASE_M12 (Output layer, canary Paper Trail)
-just-in-time on John's go. M11 is CLOSED and archived; nothing waits on a worker;
-nothing waits on John.
+**BALL: WORKER.** PHASE_M12 (Output layer, canary Paper Trail) is written and committed
+(John's go 2026-07-10). Next action: a worker session opens `plans/PHASE_M12.md`, states
+the canary, and waits for John's go per the AGENTS.md directive. Nothing waits on the
+Architect; the PyPI alpha upload still waits on John's token.
 (Whoever finishes a turn: update this BALL line - it is the first thing read.)
 
 - **M0-M11 are COMPLETE and archived** (see `plans/archive/`, each with a close note).
