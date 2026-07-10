@@ -11,12 +11,18 @@ from tax_graph.review_queue import upsert_deferred_review_entry
 
 
 ROOT = Path(__file__).resolve().parents[1]
+DRAFT_SNAPSHOTS = ROOT / "tests" / "fixtures" / "draft_snapshots"
 
 
 @pytest.mark.m10
 def test_promote_draft_document_copies_live_yaml_with_document_override(tmp_path):
     root = tmp_path / "project"
-    shutil.copytree(ROOT / "graph", root / "graph")
+    # Live drafts are gitignored (never committed), so install the frozen
+    # snapshot fixture instead of relying on graph/<year>/_drafts existing.
+    shutil.copytree(ROOT / "graph", root / "graph", ignore=shutil.ignore_patterns("_drafts"))
+    shutil.copytree(
+        DRAFT_SNAPSHOTS / "schedule_1_2025", root / "graph" / "2025" / "_drafts" / "schedule_1_2025"
+    )
 
     result = promote_draft_document(
         "schedule_1_2025",

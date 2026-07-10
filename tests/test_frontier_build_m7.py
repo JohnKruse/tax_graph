@@ -10,6 +10,7 @@ from tax_graph.frontier.build import build_frontier_registry, load_frontier_regi
 
 
 ROOT = Path(__file__).resolve().parents[1]
+DRAFT_SNAPSHOTS = ROOT / "tests" / "fixtures" / "draft_snapshots"
 
 
 def _copy_frontier_root(tmp_path: Path) -> Path:
@@ -23,10 +24,12 @@ def _copy_frontier_root(tmp_path: Path) -> Path:
 
 
 def _copy_required_drafts(root: Path) -> None:
+    # Live drafts are gitignored (never committed), so tests copy frozen
+    # snapshots from tests/fixtures/draft_snapshots instead of graph/<year>/_drafts.
     drafts_root = root / "graph" / "2025" / "_drafts"
     drafts_root.mkdir(parents=True, exist_ok=True)
     for document_id in ("form_8949_2025", "schedule_d_2025"):
-        shutil.copytree(ROOT / "graph" / "2025" / "_drafts" / document_id, drafts_root / document_id)
+        shutil.copytree(DRAFT_SNAPSHOTS / document_id, drafts_root / document_id)
 
 
 @pytest.mark.m7
@@ -75,7 +78,7 @@ def test_frontier_build_detects_publication_references(tmp_path):
 def test_frontier_build_marks_rejected_flow_dispositions(tmp_path):
     root = _copy_frontier_root(tmp_path)
     shutil.copy2(ROOT / "graph" / "2025" / "flow-dispositions.yaml", root / "graph" / "2025" / "flow-dispositions.yaml")
-    shutil.copytree(ROOT / "graph" / "2025" / "_drafts" / "form_6251_2025", root / "graph" / "2025" / "_drafts" / "form_6251_2025")
+    shutil.copytree(DRAFT_SNAPSHOTS / "form_6251_2025", root / "graph" / "2025" / "_drafts" / "form_6251_2025")
 
     registry = build_frontier_registry("2025", root=root, write=False).registry
 

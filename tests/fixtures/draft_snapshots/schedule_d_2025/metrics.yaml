@@ -1,0 +1,47 @@
+document_id: schedule_d_2025
+tax_year: '2025'
+objects_by_kind:
+  citations: 23
+  documents: 1
+  edges: 24
+  nodes: 47
+  rules: 12
+  tables: 2
+routing:
+  accepted: 109
+  review: 0
+  calibration_sample: 11
+tiers:
+  T0: 0
+  T1: 109
+  T2: 0
+  T3: 0
+flags_by_layer: {}
+models_used:
+- deterministic-schedule-d-band-detector
+- deterministic-schedule-d-formula
+- deterministic-schedule-d-scope
+- ~google/gemini-flash-latest
+confidence_telemetry:
+  min: 1.0
+  max: 1.0
+  mean: 1.0
+human_minutes: null
+worker_tokens: null
+worker_cost: null
+escapes: 0
+nversion:
+  ran: true
+  status: agreed
+  diffs: 0
+  primary_model: ~google/gemini-flash-latest
+  secondary_model: ~openai/gpt-mini-latest
+  primary_family: google
+  secondary_family: openai
+  review_entries: []
+example_mining:
+  ran: true
+  examples: 10
+  agreed: 0
+  disagreed: 2
+  unmappable: 8

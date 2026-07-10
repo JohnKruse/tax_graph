@@ -4,11 +4,13 @@ from __future__ import annotations
 
 import asyncio
 import json
+import shutil
 from pathlib import Path
 
 import pytest
 
 from tax_graph.cli import run_command
+from tax_graph.compile import build_sqlite
 from tax_graph.io.loader import load_yaml
 from tax_graph.mcp import build_mcp_server
 from tax_graph.output import resolve_return_root
@@ -62,7 +64,13 @@ def test_return_id_cannot_escape_output_root(tmp_path: Path) -> None:
 @pytest.mark.m12
 @pytest.mark.parametrize("source", ["yaml", "sqlite"])
 def test_mcp_audit_and_record_exports_are_return_scoped(tmp_path: Path, source: str) -> None:
-    server = build_mcp_server(year="2025", root=ROOT, source=source)
+    # The sqlite source builds its own throwaway artifact (the test_mcp_m2
+    # pattern) instead of assuming build/tax_graph_2025.sqlite exists at ROOT.
+    root = ROOT
+    if source == "sqlite":
+        root = _copy_graph_project(tmp_path)
+        build_sqlite("2025", root=root)
+    server = build_mcp_server(year="2025", root=root, source=source)
     facts = load_yaml(FACTS)
     audit = _call_tool(
         server,
@@ -112,3 +120,14 @@ def test_supported_profile_exports_complete_bundle_when_cache_is_present(tmp_pat
 def _call_tool(server: object, name: str, arguments: dict) -> dict:
     _content, structured = asyncio.run(server.call_tool(name, arguments))
     return structured
+
+
+def _copy_graph_project(tmp_path: Path) -> Path:
+    root = tmp_path / "project"
+    shutil.copytree(ROOT / "graph", root / "graph", ignore=shutil.ignore_patterns("_drafts"))
+    (root / "config").mkdir()
+    (root / "config" / "tax-graph.config.yaml").write_text(
+        "project:\n  paths:\n    build_dir: compiled\n",
+        encoding="utf-8",
+    )
+    return root

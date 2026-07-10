@@ -1,0 +1,100 @@
+document_id: form_8949_2025
+tax_year: '2025'
+objects_by_kind:
+  citations: 9
+  documents: 1
+  edges: 16
+  nodes: 29
+  rules: 12
+  tables: 2
+routing:
+  accepted: 66
+  review: 3
+  calibration_sample: 7
+tiers:
+  T0: 3
+  T1: 66
+  T2: 0
+  T3: 0
+flags_by_layer:
+  citation: 6
+models_used:
+- deterministic-table-detector
+- ~google/gemini-flash-latest
+confidence_telemetry:
+  min: 1.0
+  max: 1.0
+  mean: 1.0
+human_minutes: null
+worker_tokens: null
+worker_cost: null
+escapes: 0
+nversion:
+  ran: true
+  status: disagreed
+  diffs: 18
+  primary_model: ~google/gemini-flash-latest
+  secondary_model: ~openai/gpt-mini-latest
+  primary_family: google
+  secondary_family: openai
+  review_entries:
+  - kind: edges
+    object_id: e_form_8949_2025_part_i_line_2_column_d_to_form_8949_2025_part_i_line_2_line_2_column_d_total_addend
+    reason: missing_secondary
+  - kind: edges
+    object_id: e_form_8949_2025_part_i_line_2_column_d_to_form_8949_2025_part_i_line_2_line_2_column_d_total_summand
+    reason: missing_primary
+  - kind: edges
+    object_id: e_form_8949_2025_part_i_line_2_column_e_to_form_8949_2025_part_i_line_2_line_2_column_e_total_addend
+    reason: missing_secondary
+  - kind: edges
+    object_id: e_form_8949_2025_part_i_line_2_column_e_to_form_8949_2025_part_i_line_2_line_2_column_e_total_summand
+    reason: missing_primary
+  - kind: edges
+    object_id: e_form_8949_2025_part_i_line_2_column_g_to_form_8949_2025_part_i_line_2_line_2_column_g_total_addend
+    reason: missing_secondary
+  - kind: edges
+    object_id: e_form_8949_2025_part_i_line_2_column_g_to_form_8949_2025_part_i_line_2_line_2_column_g_total_summand
+    reason: missing_primary
+  - kind: edges
+    object_id: e_form_8949_2025_part_i_line_2_column_h_to_form_8949_2025_part_i_line_2_line_2_column_h_total_addend
+    reason: missing_secondary
+  - kind: edges
+    object_id: e_form_8949_2025_part_i_line_2_column_h_to_form_8949_2025_part_i_line_2_line_2_column_h_total_summand
+    reason: missing_primary
+  - kind: edges
+    object_id: e_form_8949_2025_part_ii_line_1_column_d_minus_e_to_form_8949_2025_part_ii_line_1_column_h_addend
+    reason: missing_secondary
+  - kind: edges
+    object_id: e_form_8949_2025_part_ii_line_1_column_h_to_form_8949_2025_part_ii_line_1_column_h_partial_result
+    reason: missing_primary
+  - kind: edges
+    object_id: e_form_8949_2025_part_ii_line_2_column_d_to_form_8949_2025_part_ii_line_2_line_2_column_d_total_addend
+    reason: missing_secondary
+  - kind: edges
+    object_id: e_form_8949_2025_part_ii_line_2_column_d_to_form_8949_2025_part_ii_line_2_line_2_column_d_total_addends
+    reason: missing_primary
+  - kind: edges
+    object_id: e_form_8949_2025_part_ii_line_2_column_e_to_form_8949_2025_part_ii_line_2_line_2_column_e_total_addend
+    reason: missing_secondary
+  - kind: edges
+    object_id: e_form_8949_2025_part_ii_line_2_column_e_to_form_8949_2025_part_ii_line_2_line_2_column_e_total_addends
+    reason: missing_primary
+  - kind: edges
+    object_id: e_form_8949_2025_part_ii_line_2_column_g_to_form_8949_2025_part_ii_line_2_line_2_column_g_total_addend
+    reason: missing_secondary
+  - kind: edges
+    object_id: e_form_8949_2025_part_ii_line_2_column_g_to_form_8949_2025_part_ii_line_2_line_2_column_g_total_addends
+    reason: missing_primary
+  - kind: edges
+    object_id: e_form_8949_2025_part_ii_line_2_column_h_to_form_8949_2025_part_ii_line_2_line_2_column_h_total_addend
+    reason: missing_secondary
+  - kind: edges
+    object_id: e_form_8949_2025_part_ii_line_2_column_h_to_form_8949_2025_part_ii_line_2_line_2_column_h_total_addends
+    reason: missing_primary
+example_mining:
+  ran: true
+  examples: 7
+  agreed: 0
+  disagreed: 0
+  unmappable: 7

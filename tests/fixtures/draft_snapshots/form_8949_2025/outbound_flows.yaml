@@ -1,0 +1,54 @@
+- flow_id: flow_form_8949_2025_part_i_line_2_column_h_to_schedule_d_2025_line_1b
+  source_document_id: form_8949_2025
+  source_outline_id: part_i_line_2
+  source_node_id: form_8949_2025_part_i_line_2_column_h
+  target_document_id: schedule_d_2025
+  target_line: 1b
+  citation_span_ids:
+  - span_form_8949_2025_0001
+  confidence: 0.8
+- flow_id: flow_form_8949_2025_part_i_line_2_column_h_to_schedule_d_2025_line_2
+  source_document_id: form_8949_2025
+  source_outline_id: part_i_line_2
+  source_node_id: form_8949_2025_part_i_line_2_column_h
+  target_document_id: schedule_d_2025
+  target_line: '2'
+  citation_span_ids:
+  - span_form_8949_2025_0001
+  confidence: 0.8
+- flow_id: flow_form_8949_2025_part_i_line_2_column_h_to_schedule_d_2025_line_3
+  source_document_id: form_8949_2025
+  source_outline_id: part_i_line_2
+  source_node_id: form_8949_2025_part_i_line_2_column_h
+  target_document_id: schedule_d_2025
+  target_line: '3'
+  citation_span_ids:
+  - span_form_8949_2025_0001
+  confidence: 0.8
+- flow_id: flow_form_8949_2025_part_ii_line_2_column_h_to_schedule_d_2025_line_8b
+  source_document_id: form_8949_2025
+  source_outline_id: part_ii_line_2
+  source_node_id: form_8949_2025_part_ii_line_2_column_h
+  target_document_id: schedule_d_2025
+  target_line: 8b
+  citation_span_ids:
+  - span_form_8949_2025_0001
+  confidence: 0.8
+- flow_id: flow_form_8949_2025_part_ii_line_2_column_h_to_schedule_d_2025_line_9
+  source_document_id: form_8949_2025
+  source_outline_id: part_ii_line_2
+  source_node_id: form_8949_2025_part_ii_line_2_column_h
+  target_document_id: schedule_d_2025
+  target_line: '9'
+  citation_span_ids:
+  - span_form_8949_2025_0001
+  confidence: 0.8
+- flow_id: flow_form_8949_2025_part_ii_line_2_column_h_to_schedule_d_2025_line_10
+  source_document_id: form_8949_2025
+  source_outline_id: part_ii_line_2
+  source_node_id: form_8949_2025_part_ii_line_2_column_h
+  target_document_id: schedule_d_2025
+  target_line: '10'
+  citation_span_ids:
+  - span_form_8949_2025_0001
+  confidence: 0.8

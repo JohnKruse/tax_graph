@@ -14,6 +14,7 @@ from tax_graph.link import link_outbound_flows
 pytestmark = pytest.mark.m9
 
 ROOT = Path(__file__).resolve().parents[1]
+DRAFT_SNAPSHOTS = ROOT / "tests" / "fixtures" / "draft_snapshots"
 FACTS = ROOT / "examples" / "capital_gains_basic" / "facts.yaml"
 MULTI_FACTS = ROOT / "examples" / "capital_gains_multi_lot" / "facts.yaml"
 TARGET = "form_1040_2025_line_7_capital_gain_loss"
@@ -103,10 +104,12 @@ def _copy_root(tmp_path: Path) -> Path:
 
 
 def _copy_required_drafts(root: Path) -> None:
+    # Live drafts are gitignored (never committed), so tests copy frozen
+    # snapshots from tests/fixtures/draft_snapshots instead of graph/<year>/_drafts.
     drafts_root = root / "graph" / "2025" / "_drafts"
     drafts_root.mkdir(parents=True, exist_ok=True)
     for document_id in ("form_8949_2025", "schedule_d_2025", "form_6251_2025"):
-        shutil.copytree(ROOT / "graph" / "2025" / "_drafts" / document_id, drafts_root / document_id)
+        shutil.copytree(DRAFT_SNAPSHOTS / document_id, drafts_root / document_id)
 
 
 def test_link_skips_rejected_false_positive_flows(tmp_path):

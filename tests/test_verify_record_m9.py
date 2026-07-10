@@ -10,6 +10,7 @@ from tax_graph.verify.record import build_verification_bundle
 
 
 ROOT = Path(__file__).resolve().parents[1]
+DRAFT_SNAPSHOTS = ROOT / "tests" / "fixtures" / "draft_snapshots"
 
 
 def _copy_verification_root(tmp_path: Path) -> Path:
@@ -26,10 +27,12 @@ def _copy_verification_root(tmp_path: Path) -> Path:
 
 
 def _copy_required_drafts(root: Path) -> None:
+    # Live drafts are gitignored (never committed), so tests copy frozen
+    # snapshots from tests/fixtures/draft_snapshots instead of graph/<year>/_drafts.
     drafts_root = root / "graph" / "2025" / "_drafts"
     drafts_root.mkdir(parents=True, exist_ok=True)
     for document_id in ("form_8949_2025", "schedule_d_2025"):
-        shutil.copytree(ROOT / "graph" / "2025" / "_drafts" / document_id, drafts_root / document_id)
+        shutil.copytree(DRAFT_SNAPSHOTS / document_id, drafts_root / document_id)
 
 
 @pytest.mark.m9
