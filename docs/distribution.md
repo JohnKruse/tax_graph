@@ -53,3 +53,9 @@ the try-before-install channel and the live demo. Computation stays local-only, 
 - MCP Registry namespace: auto-owned via GitHub auth - nothing to claim preemptively.
 - GitHub repo: owned (JohnKruse/tax_graph).
 - Connectors Directory: no reservation mechanism; submit at M14.
+# PDF output extra
+
+Official IRS PDF filling is optional and keeps PyMuPDF off the base runtime
+path. Install it with `pip install "tax-graph[pdf]"`. Without that extra, PDF
+export raises a direct install instruction while validation, graph execution,
+and MCP graph tools remain available.

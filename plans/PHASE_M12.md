@@ -93,7 +93,7 @@ declared walls render blank-with-note.
   per the guardrail, wired into `validate`. Test: inventories match the cached PDFs
   (gated), maps validate, a deliberately broken map fails in each direction. Docs.
 
-- [ ] **Step 2 [worker-heavy] - Fill engine + blank-with-note + goldens.** Extras-gated
+- [DONE] **Step 2 [worker-heavy] - Fill engine + blank-with-note + goldens.** Extras-gated
   filler: computed values -> formatted field dict -> filled PDF per form; checkbox
   groups (filing status) handled; frontier/unresolved lines skipped and collected into
   the blank-with-note set; identity fields from return facts or blank. Round-trip
