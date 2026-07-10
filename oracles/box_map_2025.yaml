@@ -1,9 +1,13 @@
 tax_year: 2025
 ots_label_inventory: oracles/ots_label_inventory_2025.txt
-# NOTE (M11 Step 4, Architect): S1_8z / S1_21 / S1A_2a box entries removed with
-# their domain supplemental inputs (see domain_2025.yaml note) - an unfed,
-# unchained line cannot be witnessed. Restore at M13 with the internal sums.
+# M13 Step 1 restores the Schedule 1 totals to the live tax-line witness domain.
 boxes:
+  - node_id: schedule_1_2025_part_i_line_8z
+    ots_label: S1_8z
+    rounding: whole_dollar
+  - node_id: schedule_1a_2025_part_i_line_2a
+    ots_label: S1A_2a
+    rounding: whole_dollar
   - node_id: schedule_2_2025_part_i_line_1a
     ots_label: S2_1a
     rounding: whole_dollar

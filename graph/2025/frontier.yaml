@@ -35,6 +35,21 @@ frontiers:
   title: Form 1040 lines 17-24 credits and total-tax chain
   purpose: Deferred credits / other-taxes / total-tax chain, including the Schedule
     2 AMT computation (Form 6251 remains structural).
+- frontier_id: deferred_schedule_1_2025_student_loan_interest_deduction_worksheet
+  kind: deferred_branch
+  source:
+    document_id: schedule_1_2025
+  target:
+    document_id: schedule_1_2025
+    line: '21'
+    node_id: schedule_1_2025_student_loan_interest_deduction_worksheet_frontier
+  target_url: https://www.irs.gov/pub/irs-prior/f1040s1--2025.pdf
+  citation_ref: cite_span_schedule_1_2025_0061
+  status: declared
+  weight: 74000000
+  title: Student Loan Interest Deduction Worksheet
+  purpose: OTS S1_21 is pre-worksheet interest paid, while the graph line is the post-worksheet
+    deduction; model the worksheet before live differential injection.
 - frontier_id: deferred_schedule_d_2025_line_20
   kind: deferred_branch
   source:

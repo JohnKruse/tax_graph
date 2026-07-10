@@ -406,3 +406,21 @@ entries:
   - both-direction references green
   - geometry projection generated; validation pending M12 exit
   human_confirmed: false
+- queue_id: authored_review_schedule_1_2025_student_loan_interest_worksheet_wall
+  kind: frontier_review
+  status: pending
+  priority: high
+  document_id: schedule_1_2025
+  created_date: '2026-07-10'
+  created_by: tax_graph.m13.worker
+  summary: Review the declared Student Loan Interest Deduction Worksheet wall. The OTS S1_21 input is pre-worksheet interest paid, while Schedule 1 line 21 is the post-worksheet deduction, so direct differential injection is intentionally blocked.
+  artifact_dir: graph/2025
+  artifact_paths:
+  - graph/2025/frontier-declarations.yaml
+  - graph/2025/nodes/schedule-1.yaml
+  - graph/2025/edges/schedule-internal.yaml
+  - oracles/domain_2025.yaml
+  machine_witnesses:
+  - shipped OTS source semantics inspected
+  - offline L4 Schedule 1 line-25/26 chain fixture green
+  human_confirmed: false

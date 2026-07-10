@@ -86,7 +86,7 @@ def test_deduction_decision_selects_itemized_amount_and_is_exposed_in_graph():
         "filing_status": "single",
         "form_1040_2025_root_line_1a": 50000,
         "form_1040_2025_deduction_method": "itemized",
-        "schedule_a_2025_root_line_17": 20000,
+        "schedule_a_2025_root_line_16_amount": 20000,
         "schedule_d_2025_line_7_net_st": 0,
     }
 

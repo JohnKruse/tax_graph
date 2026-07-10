@@ -124,7 +124,6 @@ def _widened_scenario() -> CapitalGainScenario:
         ordinary_dividends=65,
         extra_tax_graph_facts={
             "schedule_1_2025_part_i_line_8z": 125,
-            "schedule_1_2025_part_ii_line_21": 75,
             "schedule_1a_2025_part_i_line_2a": 40,
             "schedule_2_2025_part_i_line_1a": 60,
             "schedule_2_2025_part_ii_line_18": 25,
@@ -138,7 +137,6 @@ def _widened_scenario() -> CapitalGainScenario:
         },
         extra_ots_inputs={
             "S1_8z": 125,
-            "S1_21": 75,
             "S1A_2a": 40,
             "S2_1a": 60,
             "S2_17z": 25,

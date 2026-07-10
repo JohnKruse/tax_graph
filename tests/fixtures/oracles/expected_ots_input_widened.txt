@@ -15,7 +15,7 @@ D14  0
 D19  0
 Collectibles  0
 S1_8z  125
-S1_21  75
+S1_21
 S1A_2a  40
 S2_1a  60
 S2_17z  25

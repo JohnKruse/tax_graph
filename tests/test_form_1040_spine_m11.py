@@ -50,7 +50,7 @@ def test_form_1040_spine_preserves_capital_gains_parity():
 def test_form_1040_spine_zero_floors_taxable_income():
     facts = load_facts(EXAMPLE / "facts.yaml")
     facts["form_1040_2025_deduction_method"] = "itemized"
-    facts["schedule_a_2025_root_line_17"] = 200000
+    facts["schedule_a_2025_root_line_16_amount"] = 200000
 
     result = Engine(Graph(2025, root=ROOT, source="yaml")).execute(facts)
 

@@ -32,11 +32,6 @@ facts:
   source:
     document_label: Generated broker 1099-B for scenario m10_widened_oracle
     extracted_by: m6_scenario_renderer
-- node_id: schedule_1_2025_part_ii_line_21
-  value: 75
-  source:
-    document_label: Generated broker 1099-B for scenario m10_widened_oracle
-    extracted_by: m6_scenario_renderer
 - node_id: schedule_1a_2025_part_i_line_2a
   value: 40
   source:

@@ -80,7 +80,7 @@
 - node_id: schedule_1_2025_part_i_line_9
   document_id: schedule_1_2025
   label: 'Line 9: Total other income. Add lines 8a through 8z 9'
-  node_type: form_line
+  node_type: computed
   value_type: currency
   citation_refs:
   - cite_span_schedule_1_2025_0043
@@ -88,7 +88,7 @@
   document_id: schedule_1_2025
   label: 'Line 10: Combine lines 1 through 7 and 9. This is your additional income.
     Enter here and on Form 1040,'
-  node_type: form_line
+  node_type: computed
   value_type: currency
   citation_refs:
   - cite_span_schedule_1_2025_0044
@@ -172,6 +172,14 @@
   value_type: currency
   citation_refs:
   - cite_span_schedule_1_2025_0061
+- node_id: schedule_1_2025_student_loan_interest_deduction_worksheet
+  document_id: schedule_1_2025
+  label: Schedule 1 student loan interest deduction worksheet
+  node_type: worksheet_field
+  value_type: currency
+  required: conditional
+  citation_refs:
+  - cite_span_schedule_1_2025_0061
 - node_id: schedule_1_2025_part_ii_line_22
   document_id: schedule_1_2025
   label: 'Line 22: Reserved for future use 22'
@@ -210,7 +218,7 @@
 - node_id: schedule_1_2025_part_ii_line_25
   document_id: schedule_1_2025
   label: 'Line 25: Total other adjustments. Add lines 24a through 24z 25'
-  node_type: form_line
+  node_type: computed
   value_type: currency
   citation_refs:
   - cite_span_schedule_1_2025_0079
@@ -218,7 +226,7 @@
   document_id: schedule_1_2025
   label: 'Line 26: Add lines 11 through 23 and 25. These are your adjustments to income.
     Enter here and on Form'
-  node_type: form_line
+  node_type: computed
   value_type: currency
   citation_refs:
   - cite_span_schedule_1_2025_0080

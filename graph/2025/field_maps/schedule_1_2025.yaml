@@ -55,6 +55,8 @@ excluded_nodes:
   reason: Not a printable form line or not mapped in the M12 supported output profile.
 - node_id: schedule_1_2025_part_ii_line_21
   reason: Not a printable form line or not mapped in the M12 supported output profile.
+- node_id: schedule_1_2025_student_loan_interest_deduction_worksheet
+  reason: Worksheet-internal frontier node; no official printable form box.
 - node_id: schedule_1_2025_part_ii_line_22
   reason: Not a printable form line or not mapped in the M12 supported output profile.
 - node_id: schedule_1_2025_part_ii_line_23

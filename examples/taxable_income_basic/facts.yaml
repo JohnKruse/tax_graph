@@ -19,11 +19,11 @@ facts:
     value: 75
     source:
       extracted_by: manual
-  - node_id: schedule_1_2025_part_i_line_10
+  - node_id: schedule_1_2025_part_i_line_8z
     value: 125
     source:
       extracted_by: manual
-  - node_id: schedule_1_2025_part_ii_line_26
+  - node_id: schedule_1_2025_part_ii_line_21
     value: 75
     source:
       extracted_by: manual

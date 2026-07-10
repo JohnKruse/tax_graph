@@ -47,14 +47,23 @@ multi_lot:
     min: -25000
     max: 50000
     include: [-10000, -3000, 0, 2000, 50000]
-# NOTE (M11 Step 4, Architect): Schedule 1 (8z, part II 21) and Schedule 1-A (2a)
-# supplemental inputs are REMOVED from the live domain until their internal
-# "Add lines" chains are modeled (M13): OTS aggregates them into AGI / line 13b
-# but the live graph does not yet compute those schedule-internal totals, so
-# feeding them poisons every downstream tax-line comparison. Their nodes remain
-# input-only with honest walls. S2/S3/6251 extras stay: they land beyond line 16
-# in both systems and act as pass-through echo witnesses.
+# M13 Step 1 injection contract: add a box to this live domain only after a
+# shipped-source or live-probe check proves OTS honors direct injection verbatim.
+# S1 8z and S1-A 2a pass that check. S1 21 does not: OTS treats its same-named
+# box as PRE-worksheet interest paid and overwrites it with a capped, MAGI-phased
+# POST-worksheet deduction. Tax Graph's S1 line 21 is the post-worksheet form
+# line, so it remains an offline L4-witnessed input until the worksheet is modeled.
 supplemental_inputs:
+  - node_id: schedule_1_2025_part_i_line_8z
+    ots_input: S1_8z
+    min: 0
+    max: 600
+    include: [0, 60, 250, 600]
+  - node_id: schedule_1a_2025_part_i_line_2a
+    ots_input: S1A_2a
+    min: 0
+    max: 600
+    include: [0, 60, 250, 600]
   - node_id: schedule_2_2025_part_i_line_1a
     ots_input: S2_1a
     min: 0

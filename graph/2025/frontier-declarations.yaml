@@ -14,6 +14,14 @@
   status: declared
   title: Form 1040 line 13a qualified business income deduction
   purpose: Deferred QBI deduction branch (Form 8995 / 8995-A not modeled).
+- frontier_id: deferred_schedule_1_2025_student_loan_interest_deduction_worksheet
+  document_id: schedule_1_2025
+  line: "21"
+  node_id: schedule_1_2025_student_loan_interest_deduction_worksheet_frontier
+  citation_ref: cite_span_schedule_1_2025_0061
+  status: declared
+  title: Student Loan Interest Deduction Worksheet
+  purpose: OTS S1_21 is pre-worksheet interest paid, while the graph line is the post-worksheet deduction; model the worksheet before live differential injection.
 - frontier_id: deferred_form_1040_2025_total_tax_chain
   document_id: form_1040_2025
   line: "17-24"

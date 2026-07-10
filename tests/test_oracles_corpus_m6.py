@@ -167,7 +167,13 @@ def _fake_agreeing_ots_runner(input_path: str | Path, *, executable: str | Path)
         ),
     )
     status = str(extra_inputs.get("Status", "Single"))
-    agi = _clean_number(extra_inputs.get("L1a", 0) + extra_inputs.get("L2b", 0) + extra_inputs.get("L3b", 0) + line_7)
+    agi = _clean_number(
+        extra_inputs.get("L1a", 0)
+        + extra_inputs.get("L2b", 0)
+        + extra_inputs.get("L3b", 0)
+        + extra_inputs.get("S1_8z", 0)
+        + line_7
+    )
     deduction = STANDARD_DEDUCTION_BY_STATUS[status]
     taxable_income = max(_clean_number(agi - deduction), 0)
     tax = _regular_tax(taxable_income, STATUS_KEY_BY_OTS_STATUS[status])

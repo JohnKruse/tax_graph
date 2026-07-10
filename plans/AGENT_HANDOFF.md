@@ -15,12 +15,12 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## Current state (2026-07-10)
 
-**BALL: WORKER.** M13 Step 1's S1_21 stop is ANSWERED (see From Architect + the ruling
-pinned in PHASE_M13 Step 1): drop S1_21 from the live domain, keep 8z/2a re-admitted, add
-the student-loan-worksheet wall + L4 example, record the injection-contract rule, then
-complete and commit Step 1. Working-tree changes from the stopped session are valid to
-build on. PyPI alpha token still waits on John; serve-lifecycle hardening spin-off still
-pending (independent).
+**BALL: WORKER.** M13 Step 1 is COMPLETE locally and ready to commit: Schedule 1,
+Schedule 1-A, and Schedule A add-lines chains now compute; 8z/2a are re-admitted
+under the pinned injection contract; direct S1_21 is a declared worksheet wall with an
+offline L4 chain witness. Next action: M13 Step 2 (Capital Loss Carryover Worksheet).
+PyPI alpha token still waits on John; serve-lifecycle hardening spin-off still pending
+(independent).
 (Whoever finishes a turn: update this BALL line - it is the first thing read.)
 
 **M13 active - STOPPED in Step 1 (2026-07-10):** Worker implemented the Schedule 1
@@ -38,6 +38,15 @@ delta 249 = S1_21. This is an external-oracle input-semantics defect, not a roun
 delta. No Step 1 commit was made; working-tree implementation changes remain for the
 Architect's decision. The two full `pytest -q` attempts exceeded 124 seconds without
 printing a failure and were terminated; collected suite size is 287.
+
+**M13 Step 1 complete (2026-07-10):** Applied the Architect ruling: removed S1_21
+from `oracles/domain_2025.yaml` and `box_map_2025.yaml`; re-admitted S1 8z and S1-A
+2a; added the named Student Loan Interest Deduction Worksheet frontier, deferred-review
+entry, and offline L4 line-25/26 regression. The domain YAML records the durable direct
+injection contract. Verification: `pytest -m m13` -> 1 passed; related regressions ->
+28 passed; `validate 2025` and ASCII green; aligned live `oracle fuzz --n 30 --seed
+1301 --source yaml` -> 30 agreed / 0 disagreed / 0 rejected; full `pytest -q` -> 283
+passed, 4 skipped in 5m30s. The pre-ruling triage remains uncommitted under `.cache/`.
 
 - **M0-M12 are COMPLETE and archived** (see `plans/archive/`, each with a close note).
 - **THE GRAPH COMPUTES TAX AND FILES IT.** M11 landed line 16 liability under dual live

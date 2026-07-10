@@ -16,7 +16,6 @@ ROOT = Path(__file__).resolve().parents[1]
 def _zero_widened_tax_graph_facts():
     return {
         "schedule_1_2025_part_i_line_8z": 0,
-        "schedule_1_2025_part_ii_line_21": 0,
         "schedule_1a_2025_part_i_line_2a": 0,
         "schedule_2_2025_part_i_line_1a": 0,
         "schedule_2_2025_part_ii_line_18": 0,
@@ -35,7 +34,6 @@ def _zero_widened_tax_graph_facts():
 def _zero_widened_ots_inputs():
     return {
         "S1_8z": 0,
-        "S1_21": 0,
         "S1A_2a": 0,
         "S2_1a": 0,
         "S2_17z": 0,
@@ -91,10 +89,9 @@ def test_generated_scenarios_stay_inside_profile_bounds():
     assert any(scenario.wages > 100000 for scenario in scenarios)
     assert any(scenario.qualified_dividends > 0 for scenario in scenarios)
     assert any(scenario.ordinary_dividends > 0 for scenario in scenarios)
-    # M11 Step 4: S1/S1A supplemental inputs left the live domain until their
-    # internal "Add lines" chains are modeled (M13); S2/S3/6251 echoes remain.
+    # M13 Step 1 restores S1 totals and the no-deduction S1-A MAGI witness.
     assert all("schedule_2_2025_part_i_line_1a" in scenario.extra_tax_graph_facts for scenario in scenarios)
-    assert all("schedule_1_2025_part_i_line_8z" not in scenario.extra_tax_graph_facts for scenario in scenarios)
+    assert all("schedule_1_2025_part_i_line_8z" in scenario.extra_tax_graph_facts for scenario in scenarios)
     assert all("AMTws2g" in scenario.extra_ots_inputs for scenario in scenarios)
     assert any(scenario.wages == 115749 for scenario in scenarios if scenario.filing_status == "single")
     assert any(scenario.wages == 115750 for scenario in scenarios if scenario.filing_status == "single")

@@ -36,14 +36,14 @@
 - node_id: schedule_1a_2025_part_i_line_e
   document_id: schedule_1a_2025
   label: 'Line e: Add lines 2a, 2b, 2c, and 2d 2e'
-  node_type: form_line
+  node_type: computed
   value_type: currency
   citation_refs:
   - cite_span_schedule_1a_2025_0008
 - node_id: schedule_1a_2025_part_i_line_3
   document_id: schedule_1a_2025
   label: 'Line 3: Add lines 1 and 2e 3'
-  node_type: form_line
+  node_type: computed
   value_type: currency
   citation_refs:
   - cite_span_schedule_1a_2025_0009
@@ -258,7 +258,7 @@
   document_id: schedule_1a_2025
   label: 'Line 38: Add lines 13, 21, 30, and 37. Enter here and on Form 1040 or 1040-SR,
     line 13b, or on Form 1040-NR,'
-  node_type: form_line
+  node_type: computed
   value_type: currency
   citation_refs:
   - cite_span_schedule_1a_2025_0064

@@ -147,8 +147,8 @@ def test_validator_allows_registered_frontier_edge(tmp_path):
                 "status": "declared",
                 "weight": 24000000,
             },
-            {
-                "frontier_id": "flow_test_to_schedule_d_line_9",
+                {
+                    "frontier_id": "flow_test_to_schedule_d_line_9",
                 "kind": "outbound_flow",
                 "source": {
                     "document_id": "form_8949_2025",
@@ -161,8 +161,22 @@ def test_validator_allows_registered_frontier_edge(tmp_path):
                 "target_url": "https://www.irs.gov/pub/irs-pdf/f1040sd.pdf",
                 "citation_ref": "cite_8949_line2_totals",
                 "status": "declared",
-                "weight": 24000000,
-            }
+                    "weight": 24000000,
+                },
+                {
+                    "frontier_id": "deferred_schedule_1_2025_student_loan_interest_deduction_worksheet",
+                    "kind": "deferred_branch",
+                    "source": {"document_id": "schedule_1_2025"},
+                    "target": {
+                        "document_id": "schedule_1_2025",
+                        "line": "21",
+                        "node_id": "schedule_1_2025_student_loan_interest_deduction_worksheet_frontier",
+                    },
+                    "target_url": "https://www.irs.gov/pub/irs-prior/f1040s1--2025.pdf",
+                    "citation_ref": "cite_span_schedule_1_2025_0061",
+                    "status": "declared",
+                    "weight": 74000000,
+                }
         ],
     }
     _write_yaml(root / "graph" / "2025" / "frontier.yaml", frontier)

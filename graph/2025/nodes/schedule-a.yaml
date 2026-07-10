@@ -71,7 +71,7 @@
 - node_id: schedule_a_2025_root_line_d
   document_id: schedule_a_2025
   label: 'Line d: Add lines 5a through 5c 5d'
-  node_type: form_line
+  node_type: computed
   value_type: currency
   citation_refs:
   - cite_span_schedule_a_2025_0012
@@ -92,7 +92,7 @@
 - node_id: schedule_a_2025_root_line_7
   document_id: schedule_a_2025
   label: 'Line 7: Add lines 5e and 6 7'
-  node_type: form_line
+  node_type: computed
   value_type: currency
   citation_refs:
   - cite_span_schedule_a_2025_0016
@@ -121,7 +121,7 @@
 - node_id: schedule_a_2025_root_line_10
   document_id: schedule_a_2025
   label: 'Line 10: Add lines 8e and 9 10'
-  node_type: form_line
+  node_type: computed
   value_type: currency
   citation_refs:
   - cite_span_schedule_a_2025_0026
@@ -142,7 +142,7 @@
 - node_id: schedule_a_2025_root_line_14
   document_id: schedule_a_2025
   label: 'Line 14: Add lines 11 through 13 14'
-  node_type: form_line
+  node_type: computed
   value_type: currency
   citation_refs:
   - cite_span_schedule_a_2025_0033
@@ -158,7 +158,7 @@
   document_id: schedule_a_2025
   label: 'Line 17: Add the amounts in the far right column for lines 4 through 16.
     Also, enter this amount'
-  node_type: form_line
+  node_type: computed
   value_type: currency
   citation_refs:
   - cite_span_schedule_a_2025_0038
