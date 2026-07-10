@@ -22,6 +22,22 @@ the PyPI alpha token still waits on John; the serve-lifecycle hardening spin-off
 pending (independent of M13).
 (Whoever finishes a turn: update this BALL line - it is the first thing read.)
 
+**M13 active - STOPPED in Step 1 (2026-07-10):** Worker implemented the Schedule 1
+and Schedule A add-lines chains locally, restored S1 8z / S1 21 / S1-A 2a to the
+oracle domain and box map, and added hermetic M13 coverage. Targeted verification is
+green (`pytest -m m13`: 1 passed; related regression selection: 18 passed, 1 skipped;
+ASCII green). The required live OTS short gate is NOT green: `oracle fuzz --n 30
+--seed 1301 --source yaml` -> 10 agreed / 20 disagreed, triage at
+`.cache/m13_step1_ots/triage.yaml` (uncommitted cache). The disagreement is exactly
+each nonzero `S1_21`: Tax Graph subtracts it in Schedule 1 line 26, while the shipped
+OTS source `src/taxsolve_US_1040_2025.c` reads `S1_21` and then calls
+`Calc_StudentLoan_Sched1L21()`, overwriting the injected direct-line amount with its
+own calculated zero. Example scenario 0000: TG line 11b 115517 versus OTS 115766,
+delta 249 = S1_21. This is an external-oracle input-semantics defect, not a rounding
+delta. No Step 1 commit was made; working-tree implementation changes remain for the
+Architect's decision. The two full `pytest -q` attempts exceeded 124 seconds without
+printing a failure and were terminated; collected suite size is 287.
+
 - **M0-M12 are COMPLETE and archived** (see `plans/archive/`, each with a close note).
 - **THE GRAPH COMPUTES TAX AND FILES IT.** M11 landed line 16 liability under dual live
   witnesses (OTS + PolicyEngine). M12 landed the output layer: filled official IRS PDFs
@@ -82,7 +98,13 @@ pending (independent of M13).
   limit (role deviation, M8/M11-close precedent, recorded in the archived plan).
 
 ## Open for Architect
-- (none)
+- **M13 Step 1 - OTS `S1_21` contract:** Should the M13 live domain (a) omit direct
+  `S1_21` until Tax Graph drives the OTS-supported underlying student-loan inputs,
+  (b) treat the OTS overwrite as a known oracle limitation and validate S1 21 with a
+  different witness, or (c) change the phase plan / oracle contract another way? The
+  current plan requires re-admission and a 30-scenario green live gate, which cannot
+  both hold with OTS's direct-line overwrite. Please pin the chosen witness policy
+  before Step 1 can be completed and committed.
 
 ## From Architect
 - **Standing directions carried forward:** DEFERRED-REVIEW POLICY (proceed on green machine
