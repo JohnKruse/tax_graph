@@ -37,13 +37,12 @@ a worker; nothing waits on John except the PyPI alpha token.
   rounding bug: **offline-green is not sufficient proof for output-layer artifacts a
   real user or a real external tool will consume; a live execution pass belongs in the
   exit criteria whenever a phase's job is "hand something to the outside world."**
-- **Known gap, non-blocking:** `tax-graph build 2025` could not be re-run at M12 close -
-  four `tax-graph serve` MCP processes already running in this dev environment hold
-  `build/tax_graph_2025.sqlite` open, and Windows blocks the delete-and-replace `build`
-  needs. Content is unaffected (M12 added no graph nodes/rules); both parity examples
-  (line 7 = 2000 and 250) were confirmed against the existing sqlite build. Whoever next
-  needs a fresh `build` should either restart those MCP server processes first or run
-  from an environment without them attached.
+- **Resolved 2026-07-10 (post-close):** the `build 2025` file lock is cleared. The four
+  stale `tax-graph serve` MCP processes (two reconnect-orphaned pairs, per-process
+  parentage confirmed via `Get-CimInstance`) were killed at John's direction; `build`
+  re-ran clean (317 nodes, 251 citations) and both parity examples (line 7 = 2000 and
+  250) reconfirmed against the fresh sqlite. If this recurs, check for orphaned
+  `uv run python -m tax_graph.cli serve` processes before assuming a content bug.
 - **Dual-witness state (unchanged from M11):** live OTS fuzz 100/100 at the tax line;
   PolicyEngine liability 20/20 (8 exact, 12 within the documented tax-table tolerance)
   and parameter-diff 20/20.
