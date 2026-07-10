@@ -97,3 +97,9 @@ M12 maps graph nodes and identity slots to official IRS AcroForm widgets under
 `graph/<year>/field_maps/`. Committed inventories record each official widget's
 type, page, and rectangle. `tax-graph validate` checks that mapped fields exist,
 mapped nodes exist, exclusions are explicit, and frontier fields have blank notes.
+
+All session artifacts default to `output/returns/<return_id>/`: Return Record,
+carryforward YAML, audit trace, run diagnostics, official forms, and OTS sidecar.
+`return_id` is a path-safe caller value or a stable id from the facts document;
+separate returns never share an artifact directory. The legacy `--record-dir`
+option remains an explicit direct-directory override.

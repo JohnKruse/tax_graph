@@ -3,7 +3,10 @@
 from __future__ import annotations
 
 import argparse
+from contextlib import redirect_stdout
 import datetime as _dt
+from io import StringIO
+import json
 from pathlib import Path
 from typing import Any, Callable
 
@@ -47,6 +50,9 @@ def run_command(
     no_record: bool = False,
     record_date: str | None = None,
     tax_graph_version: str | None = None,
+    return_id: str | None = None,
+    output_root: str | Path | None = None,
+    export_bundle: bool = False,
 ) -> int:
     """Execute a graph from taxpayer facts and print values plus trace."""
     root_path = Path(root).resolve() if root is not None else project_root()
@@ -71,6 +77,23 @@ def run_command(
         fact_values = prior_ingestion.facts
         facts_document = _facts_document_with_prior(facts_document, prior_ingestion)
     result = Engine(graph).execute(fact_values)
+    return_root = None
+    resolved_return_id = return_id or facts_document.get("return_id") or facts_document.get("scenario_id") or facts_path.stem
+    if not no_record or export_bundle:
+        if record_dir is not None:
+            from tax_graph.output import validate_direct_return_root
+
+            return_root = validate_direct_return_root(project_root=root_path, return_root=record_dir)
+            return_root.mkdir(parents=True, exist_ok=True)
+        else:
+            from tax_graph.output import resolve_return_root
+
+            resolved_return_id, return_root = resolve_return_root(
+                project_root=root_path,
+                facts_document=facts_document,
+                return_id=str(resolved_return_id),
+                output_root=output_root,
+            )
 
     print("=== computed values ===")
     for node_id in graph.nodes:
@@ -81,6 +104,19 @@ def run_command(
             print(f"  {node_id}")
     if prior_ingestion is not None:
         _print_prior_record_report(prior_ingestion)
+    bundle = None
+    if export_bundle:
+        from tax_graph.output import export_filing_bundle
+
+        bundle = export_filing_bundle(
+            facts_document=facts_document,
+            result=result,
+            year=year,
+            project_root=root_path,
+            return_root=return_root,
+        )
+        print("\n=== filing bundle ===")
+        print(f"  root: {return_root}")
     record_paths = None
     if not no_record:
         record_paths = _write_return_record(
@@ -90,15 +126,35 @@ def run_command(
             graph=graph,
             year=year,
             target=target,
-            record_dir=record_dir,
+            record_dir=return_root,
             generated_date=record_date or _dt.date.today().isoformat(),
             tax_graph_version=tax_graph_version or __version__,
+            blank_with_note=(bundle or {}).get("blank_with_note", []),
         )
         print("\n=== return record ===")
         print(f"  memo: {record_paths['memo']}")
         print(f"  carryforward: {record_paths['carryforward']}")
     print(f"\n=== audit trace: {target} ===")
-    render_trace(target, result, graph)
+    audit_buffer = StringIO()
+    with redirect_stdout(audit_buffer):
+        render_trace(target, result, graph)
+    audit_text = audit_buffer.getvalue()
+    print(audit_text, end="")
+    if return_root is not None:
+        _write_text_lf(return_root / "audit.txt", audit_text)
+        diagnostics = {
+            "return_id": str(resolved_return_id),
+            "tax_year": str(year),
+            "target": target,
+            "target_value": None if result.values.get(target) is MISSING else result.values.get(target),
+            "missing_required_inputs": result.missing_required_inputs,
+            "artifacts": {
+                "audit": str(return_root / "audit.txt"),
+                "record": {key: str(value) for key, value in (record_paths or {}).items()},
+                "bundle": bundle or {},
+            },
+        }
+        _write_text_lf(return_root / "run.json", json.dumps(diagnostics, indent=2, sort_keys=True) + "\n")
     return 1 if result.values.get(target) is MISSING else 0
 
 
@@ -119,6 +175,7 @@ def _write_return_record(
     record_dir: str | Path | None,
     generated_date: str,
     tax_graph_version: str,
+    blank_with_note: list[dict[str, str]] | None = None,
 ) -> dict[str, Path]:
     from tax_graph.record import build_return_record, render_carryforward_yaml, render_memo
 
@@ -135,6 +192,7 @@ def _write_return_record(
         tax_graph_version=tax_graph_version,
         generated_date=generated_date,
         target_node=target,
+        blank_with_note=blank_with_note,
     )
     _write_text_lf(memo_path, render_memo(record))
     _write_text_lf(carryforward_path, render_carryforward_yaml(record.carryforward_block))
@@ -783,6 +841,9 @@ def _build_typer_app():
         prior_record: Path | None = typer.Option(None, "--prior-record", help="Prior Return Record carryforward YAML."),
         record_dir: Path | None = typer.Option(None, "--record-dir", help="Directory for Return Record outputs."),
         no_record: bool = typer.Option(False, "--no-record", help="Do not write Return Record outputs."),
+        return_id: str | None = typer.Option(None, "--return-id", help="Stable id for the return output directory."),
+        output_root: Path | None = typer.Option(None, "--output-root", help="Base directory for return-scoped outputs."),
+        export_bundle: bool = typer.Option(False, "--export-bundle", help="Fill official PDFs and emit the OTS sidecar."),
         root: Path | None = typer.Option(None, "--root", help="Project root override."),
     ) -> None:
         """Execute a return graph from taxpayer facts."""
@@ -795,6 +856,9 @@ def _build_typer_app():
             prior_record=prior_record,
             record_dir=record_dir,
             no_record=no_record,
+            return_id=return_id,
+            output_root=output_root,
+            export_bundle=export_bundle,
         )
         if raise_code:
             raise typer.Exit(raise_code)
@@ -1101,6 +1165,9 @@ def _fallback_app() -> int:
     run_parser.add_argument("--prior-record", default=None)
     run_parser.add_argument("--record-dir", default=None)
     run_parser.add_argument("--no-record", action="store_true")
+    run_parser.add_argument("--return-id", default=None)
+    run_parser.add_argument("--output-root", default=None)
+    run_parser.add_argument("--export-bundle", action="store_true")
     run_parser.add_argument("--root", default=None)
 
     build_parser = subparsers.add_parser("build")
@@ -1221,6 +1288,9 @@ def _fallback_app() -> int:
             prior_record=args.prior_record,
             record_dir=args.record_dir,
             no_record=args.no_record,
+            return_id=args.return_id,
+            output_root=args.output_root,
+            export_bundle=args.export_bundle,
         )
     if args.command == "build":
         return build_command(year=args.year, root=args.root)

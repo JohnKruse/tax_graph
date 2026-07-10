@@ -12,7 +12,7 @@ project:
     schemas_dir: schemas
     raw_store: .cache/raw        # downloaded IRS docs (gitignored)
     build_dir: build             # compiled SQLite artifacts
-    output_dir: output           # return records, traces (gitignored)
+    output_dir: output           # return-scoped artifacts under returns/<return_id> (gitignored)
     manifest: config/manifest.yaml
 
 llm:

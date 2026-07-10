@@ -63,6 +63,16 @@ def test_8949_repeatable_row_maps_to_physical_slot() -> None:
 
 
 @pytest.mark.m12
+def test_identity_fields_fill_only_when_supplied() -> None:
+    document = yaml.safe_load((ROOT / "examples/taxable_income_basic/facts.yaml").read_text())
+    document["identity"] = {"taxpayer_first_name": "Ada", "taxpayer_last_name": "Lovelace"}
+    values, _notes = build_field_values(_map("form_1040_2025"), _execute(document), document, root=ROOT)
+    assert values["topmostSubform[0].Page1[0].f1_14[0]"] == "Ada"
+    assert values["topmostSubform[0].Page1[0].f1_15[0]"] == "Lovelace"
+    assert "topmostSubform[0].Page1[0].f1_16[0]" not in values
+
+
+@pytest.mark.m12
 def test_real_official_pdf_round_trip_when_cached(tmp_path: Path) -> None:
     source = ROOT / ".cache/raw/2025/form_1040_2025.pdf"
     if not source.exists():

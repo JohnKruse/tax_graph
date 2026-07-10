@@ -29,7 +29,7 @@ M2_TOOL_NAMES = (
     "explain_calculation",
     "export_audit_file",
 )
-MCP_TOOL_NAMES = M2_TOOL_NAMES + ("export_return_record", "get_verification")
+MCP_TOOL_NAMES = M2_TOOL_NAMES + ("export_return_record", "export_filled_form_bundle", "get_verification")
 
 SERVER_INSTRUCTIONS = """Tax Graph MCP server.
 
@@ -226,18 +226,34 @@ def _register_tools(server: FastMCP, context: McpGraphContext) -> None:
         }
 
     @server.tool()
-    def export_audit_file(target: str, facts: dict[str, Any] | None = None) -> dict[str, Any]:
+    def export_audit_file(
+        target: str,
+        facts: dict[str, Any] | None = None,
+        return_id: str = "mcp_return",
+        output_root: str | None = None,
+    ) -> dict[str, Any]:
         """Return a human-readable audit trace for a target node."""
         address = _parse_node_address(target)
         result = _execute(context, facts or {})
         buffer = StringIO()
         with redirect_stdout(buffer):
             render_trace(_trace_id(address), result, context.graph)
+        from tax_graph.output import resolve_return_root
+
+        _resolved_id, return_root = resolve_return_root(
+            project_root=context.root,
+            facts_document=_facts_document_for_record(facts or {}, context.year),
+            return_id=return_id,
+            output_root=output_root,
+        )
+        audit_path = return_root / "audit.txt"
+        audit_path.write_text(buffer.getvalue(), encoding="utf-8", newline="\n")
         return {
             "target": target,
             "base_node_id": address["base_node_id"],
             "row_key": address["row_key"],
             "audit_text": buffer.getvalue(),
+            "path": str(audit_path),
         }
 
     @server.tool()
@@ -246,9 +262,12 @@ def _register_tools(server: FastMCP, context: McpGraphContext) -> None:
         target: str = "form_1040_2025_line_7_capital_gain_loss",
         generated_date: str | None = None,
         tax_graph_version: str | None = None,
+        return_id: str = "mcp_return",
+        output_root: str | None = None,
     ) -> dict[str, Any]:
         """Return a Markdown memo plus structured carryforward block."""
-        from tax_graph.record import build_return_record, render_memo
+        from tax_graph.output import resolve_return_root
+        from tax_graph.record import build_return_record, render_carryforward_yaml, render_memo
 
         result = _execute(context, facts)
         record = build_return_record(
@@ -260,11 +279,51 @@ def _register_tools(server: FastMCP, context: McpGraphContext) -> None:
             generated_date=generated_date or _dt.date.today().isoformat(),
             target_node=target,
         )
+        _resolved_id, return_root = resolve_return_root(
+            project_root=context.root,
+            facts_document=_facts_document_for_record(facts, context.year),
+            return_id=return_id,
+            output_root=output_root,
+        )
+        memo_text = render_memo(record)
+        memo_path = return_root / f"return_record_{context.year}.md"
+        carryforward_path = return_root / f"return_record_{context.year}.carryforward.yaml"
+        memo_path.write_text(memo_text, encoding="utf-8", newline="\n")
+        carryforward_path.write_text(
+            render_carryforward_yaml(record.carryforward_block), encoding="utf-8", newline="\n"
+        )
         return {
             "target": target,
-            "memo_text": render_memo(record),
+            "memo_text": memo_text,
             "carryforward_block": record.carryforward_block.to_dict(),
+            "paths": {"memo": str(memo_path), "carryforward": str(carryforward_path)},
         }
+
+    @server.tool()
+    def export_filled_form_bundle(
+        facts: dict[str, Any],
+        return_id: str = "mcp_return",
+        output_root: str | None = None,
+    ) -> dict[str, Any]:
+        """Write official filled PDFs and an OTS sidecar under one return root."""
+        from tax_graph.output import export_filing_bundle, resolve_return_root
+
+        facts_document = _facts_document_for_record(facts, context.year)
+        _resolved_id, return_root = resolve_return_root(
+            project_root=context.root,
+            facts_document=facts_document,
+            return_id=return_id,
+            output_root=output_root,
+        )
+        result = _execute(context, facts)
+        bundle = export_filing_bundle(
+            facts_document=facts_document,
+            result=result,
+            year=context.year,
+            project_root=context.root,
+            return_root=return_root,
+        )
+        return {"return_root": str(return_root), **bundle}
 
     @server.tool()
     def get_verification(document_id: str) -> dict[str, Any]:

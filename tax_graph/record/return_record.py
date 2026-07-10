@@ -104,6 +104,7 @@ class ReturnRecord:
     outputs: list[TraceSummaryEntry]
     trace_summary: list[TraceSummaryEntry]
     carryforward_block: CarryforwardBlock
+    blank_with_note: list[dict[str, str]] = field(default_factory=list)
     elections: list[dict[str, Any]] = field(default_factory=list)
 
     def to_dict(self) -> dict[str, Any]:
@@ -131,6 +132,7 @@ def build_return_record(
     tax_graph_version: str = "unknown",
     generated_date: str = "unknown",
     target_node: str | None = None,
+    blank_with_note: list[dict[str, str]] | None = None,
 ) -> ReturnRecord:
     """Build a deterministic Return Record model from an engine result."""
     record_year = int(tax_year or facts_document.get("tax_year") or graph.year)
@@ -167,6 +169,7 @@ def build_return_record(
         outputs=outputs,
         trace_summary=trace_summary,
         carryforward_block=carryforward_block,
+        blank_with_note=blank_with_note or [],
         elections=[],
     )
 
@@ -304,6 +307,13 @@ def render_memo(record: ReturnRecord) -> str:
     else:
         lines.append("- No decisions were required.")
 
+    if record.blank_with_note:
+        lines.extend(["", "## Blank Official-Form Lines"])
+        for item in record.blank_with_note:
+            lines.append(
+                f"- {item.get('document_id', 'form')} / {item.get('frontier_id', 'frontier')}: "
+                f"{item.get('note', 'Left blank because this branch is unresolved.')}"
+            )
     lines.extend(["", "## Unsupported / Deferred"])
     if record.unsupported:
         lines.extend(f"- {item}" for item in record.unsupported)
