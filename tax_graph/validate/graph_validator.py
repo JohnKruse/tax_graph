@@ -15,6 +15,7 @@ from typing import Any, Mapping
 
 from tax_graph.io.loader import GRAPH_KINDS, LoadedGraph, load_graph, load_yaml
 from tax_graph.output.field_maps import validate_field_maps
+from tax_graph.output.geometry import validate_node_geometry
 from tax_graph.verify.completeness import check_loaded_graph_field_completeness
 
 try:
@@ -98,6 +99,7 @@ def validate_loaded_graph(
             frontier_ids=(entry.get("frontier_id", "") for entry in _load_frontier_entries(graph)),
         )
     )
+    errors.extend(validate_node_geometry(graph.year, graph.root))
 
     return ValidationResult(
         year=graph.year,

@@ -63,3 +63,15 @@ def test_broken_field_and_node_are_rejected(tmp_path: Path) -> None:
     errors = validate_field_maps("2025", tmp_path, node_ids=set(), frontier_ids=set())
     assert any("unknown AcroForm field" in error for error in errors)
     assert any("unknown node missing_graph_node" in error for error in errors)
+
+
+@pytest.mark.m12
+def test_unmapped_node_requires_an_explicit_exclusion() -> None:
+    graph = load_graph("2025", ROOT)
+    maps = load_field_maps("2025", ROOT)
+    form_map = next(item for item in maps if item["document_id"] == "form_1040_2025")
+    covered = {item.get("node_id") for item in form_map["mappings"]} | {
+        item["node_id"] for item in form_map["excluded_nodes"]
+    }
+    form_nodes = {node["node_id"] for node in graph.items("nodes") if node["node_id"].startswith("form_1040_2025_")}
+    assert form_nodes <= covered

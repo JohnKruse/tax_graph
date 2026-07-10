@@ -230,3 +230,179 @@ entries:
   machine_witnesses:
   - validate green
   - pytest green
+- queue_id: field_map_review_form_1040_2025
+  kind: field_map_review
+  status: pending
+  priority: high
+  document_id: form_1040_2025
+  created_date: '2026-07-10'
+  created_by: tax_graph.m12.worker
+  summary: Review authored AcroForm field mapping for form_1040_2025; machine validation and official-PDF echo are not human review.
+  artifact_paths:
+  - graph/2025/field_maps/form_1040_2025.yaml
+  - graph/2025/field_inventories/form_1040_2025.json
+  machine_witnesses:
+  - field-map schema green
+  - both-direction references green
+  - geometry projection generated; validation pending M12 exit
+  human_confirmed: false
+- queue_id: field_map_review_form_1099b_2025
+  kind: field_map_review
+  status: pending
+  priority: high
+  document_id: form_1099b_2025
+  created_date: '2026-07-10'
+  created_by: tax_graph.m12.worker
+  summary: Review authored AcroForm field mapping for form_1099b_2025; machine validation and official-PDF echo are not human review.
+  artifact_paths:
+  - graph/2025/field_maps/form_1099b_2025.yaml
+  - graph/2025/field_inventories/form_1099b_2025.json
+  machine_witnesses:
+  - field-map schema green
+  - both-direction references green
+  - geometry projection generated; validation pending M12 exit
+  human_confirmed: false
+- queue_id: field_map_review_form_6251_2025
+  kind: field_map_review
+  status: pending
+  priority: high
+  document_id: form_6251_2025
+  created_date: '2026-07-10'
+  created_by: tax_graph.m12.worker
+  summary: Review authored AcroForm field mapping for form_6251_2025; machine validation and official-PDF echo are not human review.
+  artifact_paths:
+  - graph/2025/field_maps/form_6251_2025.yaml
+  - graph/2025/field_inventories/form_6251_2025.json
+  machine_witnesses:
+  - field-map schema green
+  - both-direction references green
+  - geometry projection generated; validation pending M12 exit
+  human_confirmed: false
+- queue_id: field_map_review_form_8949_2025
+  kind: field_map_review
+  status: pending
+  priority: high
+  document_id: form_8949_2025
+  created_date: '2026-07-10'
+  created_by: tax_graph.m12.worker
+  summary: Review authored AcroForm field mapping for form_8949_2025; machine validation and official-PDF echo are not human review.
+  artifact_paths:
+  - graph/2025/field_maps/form_8949_2025.yaml
+  - graph/2025/field_inventories/form_8949_2025.json
+  machine_witnesses:
+  - field-map schema green
+  - both-direction references green
+  - geometry projection generated; validation pending M12 exit
+  human_confirmed: false
+- queue_id: field_map_review_schedule_1_2025
+  kind: field_map_review
+  status: pending
+  priority: high
+  document_id: schedule_1_2025
+  created_date: '2026-07-10'
+  created_by: tax_graph.m12.worker
+  summary: Review authored AcroForm field mapping for schedule_1_2025; machine validation and official-PDF echo are not human review.
+  artifact_paths:
+  - graph/2025/field_maps/schedule_1_2025.yaml
+  - graph/2025/field_inventories/schedule_1_2025.json
+  machine_witnesses:
+  - field-map schema green
+  - both-direction references green
+  - geometry projection generated; validation pending M12 exit
+  human_confirmed: false
+- queue_id: field_map_review_schedule_1a_2025
+  kind: field_map_review
+  status: pending
+  priority: high
+  document_id: schedule_1a_2025
+  created_date: '2026-07-10'
+  created_by: tax_graph.m12.worker
+  summary: Review authored AcroForm field mapping for schedule_1a_2025; machine validation and official-PDF echo are not human review.
+  artifact_paths:
+  - graph/2025/field_maps/schedule_1a_2025.yaml
+  - graph/2025/field_inventories/schedule_1a_2025.json
+  machine_witnesses:
+  - field-map schema green
+  - both-direction references green
+  - geometry projection generated; validation pending M12 exit
+  human_confirmed: false
+- queue_id: field_map_review_schedule_2_2025
+  kind: field_map_review
+  status: pending
+  priority: high
+  document_id: schedule_2_2025
+  created_date: '2026-07-10'
+  created_by: tax_graph.m12.worker
+  summary: Review authored AcroForm field mapping for schedule_2_2025; machine validation and official-PDF echo are not human review.
+  artifact_paths:
+  - graph/2025/field_maps/schedule_2_2025.yaml
+  - graph/2025/field_inventories/schedule_2_2025.json
+  machine_witnesses:
+  - field-map schema green
+  - both-direction references green
+  - geometry projection generated; validation pending M12 exit
+  human_confirmed: false
+- queue_id: field_map_review_schedule_3_2025
+  kind: field_map_review
+  status: pending
+  priority: high
+  document_id: schedule_3_2025
+  created_date: '2026-07-10'
+  created_by: tax_graph.m12.worker
+  summary: Review authored AcroForm field mapping for schedule_3_2025; machine validation and official-PDF echo are not human review.
+  artifact_paths:
+  - graph/2025/field_maps/schedule_3_2025.yaml
+  - graph/2025/field_inventories/schedule_3_2025.json
+  machine_witnesses:
+  - field-map schema green
+  - both-direction references green
+  - geometry projection generated; validation pending M12 exit
+  human_confirmed: false
+- queue_id: field_map_review_schedule_a_2025
+  kind: field_map_review
+  status: pending
+  priority: high
+  document_id: schedule_a_2025
+  created_date: '2026-07-10'
+  created_by: tax_graph.m12.worker
+  summary: Review authored AcroForm field mapping for schedule_a_2025; machine validation and official-PDF echo are not human review.
+  artifact_paths:
+  - graph/2025/field_maps/schedule_a_2025.yaml
+  - graph/2025/field_inventories/schedule_a_2025.json
+  machine_witnesses:
+  - field-map schema green
+  - both-direction references green
+  - geometry projection generated; validation pending M12 exit
+  human_confirmed: false
+- queue_id: field_map_review_schedule_b_2025
+  kind: field_map_review
+  status: pending
+  priority: high
+  document_id: schedule_b_2025
+  created_date: '2026-07-10'
+  created_by: tax_graph.m12.worker
+  summary: Review authored AcroForm field mapping for schedule_b_2025; machine validation and official-PDF echo are not human review.
+  artifact_paths:
+  - graph/2025/field_maps/schedule_b_2025.yaml
+  - graph/2025/field_inventories/schedule_b_2025.json
+  machine_witnesses:
+  - field-map schema green
+  - both-direction references green
+  - geometry projection generated; validation pending M12 exit
+  human_confirmed: false
+- queue_id: field_map_review_schedule_d_2025
+  kind: field_map_review
+  status: pending
+  priority: high
+  document_id: schedule_d_2025
+  created_date: '2026-07-10'
+  created_by: tax_graph.m12.worker
+  summary: Review authored AcroForm field mapping for schedule_d_2025; machine validation and official-PDF echo are not human review.
+  artifact_paths:
+  - graph/2025/field_maps/schedule_d_2025.yaml
+  - graph/2025/field_inventories/schedule_d_2025.json
+  machine_witnesses:
+  - field-map schema green
+  - both-direction references green
+  - geometry projection generated; validation pending M12 exit
+  human_confirmed: false

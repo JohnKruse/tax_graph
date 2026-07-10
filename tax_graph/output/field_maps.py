@@ -68,6 +68,13 @@ def validate_field_maps(
         overlap = mapped_nodes & excluded_nodes
         for node_id in sorted(overlap):
             errors.append(f"field map {document_id} -> node both mapped and excluded: {node_id}")
+        uncovered = {
+            node_id
+            for node_id in known_nodes
+            if node_id.startswith(f"{document_id}_") and node_id not in mapped_nodes and node_id not in excluded_nodes
+        }
+        for node_id in sorted(uncovered):
+            errors.append(f"field map {document_id} -> node is neither mapped nor explicitly excluded: {node_id}")
         for item in field_map.get("frontier_fields", []):
             if item["field_name"] not in fields:
                 errors.append(f"field map {document_id} -> frontier field missing from inventory: {item['field_name']}")

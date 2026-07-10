@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Tax Graph node-to-page geometry",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["tax_year", "entries"],
+  "properties": {
+    "tax_year": {"type": "integer"},
+    "entries": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["document_id", "slot", "field_name", "page", "rect"],
+        "properties": {
+          "document_id": {"type": "string"},
+          "slot": {"type": "string"},
+          "field_name": {"type": "string"},
+          "node_id": {"type": "string"},
+          "identity_slot": {"type": "string"},
+          "page": {"type": "integer", "minimum": 1},
+          "rect": {
+            "type": "array",
+            "prefixItems": [
+              {"type": "number"}, {"type": "number"}, {"type": "number"}, {"type": "number"}
+            ],
+            "minItems": 4,
+            "maxItems": 4
+          }
+        },
+        "oneOf": [{"required": ["node_id"]}, {"required": ["identity_slot"]}]
+      }
+    }
+  }
+}

@@ -120,3 +120,10 @@ trustworthy, and keeps promotion mechanics where they already live.
 - Not a taxpayer-facing UI. The audience is the maintainer/reviewer (John).
 - Not a coverage authority - M7's frontier registry stays canonical; the heatmap is
   a view of it, not a rival.
+# Official-form geometry seam
+
+M12 commits `graph/<year>/node_geometry.json`, a schema-validated projection
+from field maps and AcroForm inventories. The M15 workbench should use
+`tax_graph.output.resolve_node_geometry` to place node review links on the
+official form page; repeatable table templates intentionally return every
+physical printed row slot.
