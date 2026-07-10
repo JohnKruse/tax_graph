@@ -105,11 +105,31 @@ walls this phase, modeled later only as data warrants), QBI, lines 17-24, AMT.
   Schedule A's internal adds (-> line 17 total). Nodes exist from M10 - this step
   gives them their arithmetic; extract via the pipeline where drafts support it,
   else author addends with citations (provenance recorded). LINK realizes the totals
-  into their 1040 entry lines. Re-admit S1 8z / S1 21 / S1A 2a to
-  oracles/domain_2025.yaml with box-map entries (sign/aggregation probed live).
-  Gated: a short live fuzz batch (>= 30) agrees at the tax line with supplemental
-  inputs active. Field maps: new computed lines mapped or excluded. Tests (hermetic) +
-  docs + queue entries.
+  into their 1040 entry lines. Re-admit S1 8z and S1A 2a to oracles/domain_2025.yaml
+  with box-map entries (sign/aggregation probed live).
+  **ARCHITECT RULING (2026-07-10, unblocking the S1_21 stop):** S1 line 21 does NOT
+  re-enter the live OTS domain. Verified in the shipped OTS source
+  (`taxsolve_US_1040_2025.c`): the `S1_21` box is PRE-worksheet "interest paid" -
+  `Calc_StudentLoan_Sched1L21()` applies the $2,500 cap and the $85k/$170k MAGI
+  phase-out and replaces the value - while our `schedule_1_2025_part_ii_line_21` is
+  the POST-worksheet form-line deduction. Same label, different semantics; no
+  domain constraint fixes that honestly. Instead: (1) line 21 stays an input-backed
+  cited line and the **Student Loan Interest Deduction Worksheet becomes a new named
+  frontier wall** (typed unresolved trace, queue entry); (2) the line-25/26 chain
+  arithmetic with a nonzero line 21 is locked by an offline L4 example fixture
+  (compensating witness - the differential cannot see it); (3) **general oracle
+  contract, pinned:** a box enters the live domain only after a shipped-source or
+  live-probe check that OTS honors direct injection verbatim; a box OTS recomputes
+  from lower-level semantics may only be compared once our graph models the same
+  computation and drives the same underlying meaning. Record the S1_21 case as the
+  precedent in the domain YAML note. Future slice (pre-approved, NOT this phase
+  unless Steps 1-5 are green with budget left): model the student-loan worksheet
+  (cap + phase-out; small), redefine line 21 as computed-from-interest-paid, then
+  re-admit S1_21 with aligned semantics - a DIVIDE op with the phase-out-ratio
+  shape (excess / range, clamped to 1) is pre-authorized for that slice.
+  Gated: a short live fuzz batch (>= 30) agrees at the tax line with the re-admitted
+  inputs (8z, 2a) active. Field maps: new computed lines mapped or excluded. Tests
+  (hermetic) + docs + queue entries.
 
 - [ ] **Step 2 [worker-standard] - Carryover inputs + Capital Loss Carryover
   Worksheet + Return Record upgrade.** Model Schedule D lines 6 and 14 (loss

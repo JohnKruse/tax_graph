@@ -15,11 +15,12 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## Current state (2026-07-10)
 
-**BALL: WORKER.** PHASE_M13 (Worksheet depth, canary Deep Ledger) is written and committed
-(John's go 2026-07-10). Next action: a worker session opens `plans/PHASE_M13.md`, states the
-canary, and waits for John's go per the AGENTS.md directive. Nothing waits on the Architect;
-the PyPI alpha token still waits on John; the serve-lifecycle hardening spin-off task is
-pending (independent of M13).
+**BALL: WORKER.** M13 Step 1's S1_21 stop is ANSWERED (see From Architect + the ruling
+pinned in PHASE_M13 Step 1): drop S1_21 from the live domain, keep 8z/2a re-admitted, add
+the student-loan-worksheet wall + L4 example, record the injection-contract rule, then
+complete and commit Step 1. Working-tree changes from the stopped session are valid to
+build on. PyPI alpha token still waits on John; serve-lifecycle hardening spin-off still
+pending (independent).
 (Whoever finishes a turn: update this BALL line - it is the first thing read.)
 
 **M13 active - STOPPED in Step 1 (2026-07-10):** Worker implemented the Schedule 1
@@ -98,15 +99,29 @@ printing a failure and were terminated; collected suite size is 287.
   limit (role deviation, M8/M11-close precedent, recorded in the archived plan).
 
 ## Open for Architect
-- **M13 Step 1 - OTS `S1_21` contract:** Should the M13 live domain (a) omit direct
-  `S1_21` until Tax Graph drives the OTS-supported underlying student-loan inputs,
-  (b) treat the OTS overwrite as a known oracle limitation and validate S1 21 with a
-  different witness, or (c) change the phase plan / oracle contract another way? The
-  current plan requires re-admission and a 30-scenario green live gate, which cannot
-  both hold with OTS's direct-line overwrite. Please pin the chosen witness policy
-  before Step 1 can be completed and committed.
+- (none)
 
 ## From Architect
+- **ANSWERED - M13 Step 1 S1_21 ruling (2026-07-10), pinned in PHASE_M13 Step 1:**
+  option (a), refined. Architect verified the shipped source: OTS's `S1_21` box is
+  PRE-worksheet "interest paid" (`Calc_StudentLoan_Sched1L21()` applies the $2,500
+  cap + $85k/$170k MAGI phase-out and replaces the value); our line 21 node is the
+  POST-worksheet deduction - a semantic mismatch, not a rounding or defect issue.
+  Also verified: `S1_8z` and `S1A_2a` injections ARE honored verbatim (the S1A_2a
+  `GetLineF` inside `sched_1A()` is commented out, but the caller parses it at the
+  `get_parameter` site), so BOTH stay re-admitted; your diagnosis that all 20
+  disagreements were S1_21 is consistent with source. Do: drop S1_21 from the
+  domain/box map; add the Student Loan Interest Deduction Worksheet as a named
+  frontier wall with a queue entry; add an offline L4 example fixture with nonzero
+  line 21 locking the line-25/26 chain; record the injection-contract rule in the
+  domain YAML note (boxes enter the live domain only after a source/probe check that
+  OTS honors direct injection; OTS-recomputed boxes require semantic alignment
+  first). The 30-scenario gate applies to the re-admitted set (8z, 2a). Full text +
+  the pre-approved future worksheet slice (incl. DIVIDE op shape): PHASE_M13 Step 1.
+- **Full-suite runtime note for Codex:** `pytest -q` legitimately takes ~5.5 minutes
+  (287 tests); your two 124-second terminations were a sandbox timeout, not a hang.
+  Run with a >= 600s command timeout, or split the suite into halves and record both
+  results. The commit floor (full suite green) is unchanged.
 - **Standing directions carried forward:** DEFERRED-REVIEW POLICY (proceed on green machine
   witnesses, queue human review, never assert human_confirmed); worker tiers + QC contract
   (full suite green is the commit floor; external-interface slices need a live probe or
