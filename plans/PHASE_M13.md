@@ -1,0 +1,161 @@
+# PHASE M13 - Worksheet depth
+
+**Canary:** Deep Ledger
+**Depends on:** M12 (output layer; field-map completeness enforced in `validate`), M11
+(line 16 under dual witnesses; QDCGT worksheet precedent; rounding pin: cents through
+worksheets, whole-dollar once at entry lines), M10 (S1/S1A/A/S2/S3 promoted
+structurally), M9 (LINK), M5 (Return Record carryforward + prior-record ingestion).
+**Goal:** Deepen the liability branch where the remaining walls actually bite: model
+the schedule-internal "Add lines" chains so the S1/S1A/Schedule-A supplemental inputs
+re-enter the live oracle domain; land Schedule D lines 6/14 carryover inputs plus the
+Capital Loss Carryover Worksheet (upgrading the Return Record's raw-loss memo to the
+real worksheet-computed carryover); and convert the Schedule D line 20 wall into a
+modeled decision routing to the Schedule D Tax Worksheet. Roadmap context:
+engineering-plan "Roadmap M11-M15".
+
+## Why
+Three deferred debts converge here. (1) The M11 domain note (oracles/domain_2025.yaml)
+pulled S1 8z / S1 21 / S1A 2a fuzz inputs because OTS aggregates them through
+schedule-internal totals our graph declares but does not compute - that narrowed the
+live witness domain. (2) The Return Record's capital-loss carryforward is honestly
+labeled RAW, not the usable amount - the Capital Loss Carryover Worksheet is the
+cross-year payoff M5 was built for. (3) Schedule D line 20 is the last pre-existing
+liability wall: filers with 28%-rate or unrecaptured-1250 amounts route to the
+Schedule D Tax Worksheet, not the QDCGT worksheet, and today we cannot tell them that
+honestly at the tax line. This phase also proves the worksheet pattern generalizes
+beyond M11's single hand-authored QDCGT instance.
+
+## Supported profile (expansion; everything else stays a wall)
+Adds to the M11/M12 profile: prior-year ST/LT capital-loss carryovers (Schedule D
+lines 6/14, fed by input facts or an ingested prior Return Record); the modeled
+S1/S1A/Schedule-A internal chains feeding 1040 lines 8/10 and the deduction path;
+28%-rate gain (Schedule D line 18) and unrecaptured section 1250 gain (line 19) as
+INPUT-backed lines whose own feeder worksheets remain declared walls; line 20 decision
+routing; line 16 tax via the Schedule D Tax Worksheet when 18/19 are nonzero. NOT in
+scope: the 28%-Rate Gain and Unrecaptured 1250 Worksheets' internal math (input-backed
+walls this phase, modeled later only as data warrants), QBI, lines 17-24, AMT.
+
+## Guardrails (do not drift)
+- **No new engine ops expected.** The Capital Loss Carryover Worksheet is
+  SUBTRACT/MIN/MAX arithmetic; the Schedule D Tax Worksheet uses the M11 vocabulary
+  (MULTIPLY / LOOKUP_BRACKET / IF_ELSE / MIN / MAX). If a worksheet line genuinely
+  demands a new op, STOP and pin the shape with the Architect first.
+- **Worksheet provenance honesty.** Try the outline-first extractor on each worksheet;
+  where it cannot produce a clean draft, hand-author with per-line citations (M11
+  QDCGT precedent). Record which path each worksheet took in its deferred-review queue
+  entry - never blur extracted vs authored provenance.
+- **Rounding discipline unchanged:** cents carry through every worksheet; whole-dollar
+  rounding once at the form entry line (M11 pin; OTS agreement is the proof).
+- **Parameters are cited nodes; bulk tables are data resources.** Any new threshold
+  (e.g. the 28%/25% rates) enters as a cited parameter node - the L0 drill applies.
+- **OTS sign/semantics probes before trusting carryover inputs.** OTS takes D6/D14
+  (carryover) and D19/Collectibles (1250 / 28%-rate) inputs; the worker pins each
+  input's sign convention and aggregation against the shipped template comments AND a
+  live probe before wiring the box map (external-interface QC contract).
+- **Hermetic tests (pinned 2026-07-10):** no test reads `graph/<year>/_drafts/` (use
+  `tests/fixtures/draft_snapshots/`, refreshing snapshots in the same commit when
+  shapes change) or assumes a prebuilt `build/` artifact (build throwaway sqlite in
+  tmp_path).
+- **Field-map completeness is already enforced:** every newly computed node needs a
+  field-map entry or an explicit exclusion, or `validate` fails (M12 seam). New
+  worksheet-internal nodes are excluded (they have no official-form box); new form
+  lines (D 6/14/17/18/19/20/22) get mapped.
+- **Live-execution pass required (M12/M11 lesson):** offline goldens are not
+  sufficient proof; the live OTS fuzz gate over the widened domain is the pass, plus
+  one filing-bundle export for a loss-carryover scenario.
+- **Deferred-review policy in force;** queue entries for every promotion, authored
+  worksheet, and the line 20 decision node (decisions are TOP priority).
+- Unchanged law: ASCII; additive schemas; drafts never committed; live graph closed;
+  base-deps light; IRS line numbers are the spine; full suite green is the commit
+  floor; **CI on the pushed commit must be green at every step commit and phase close**.
+
+## Exit criteria (must pass 100%)
+- `pytest -m m13` green; full `pytest` green on a SIMULATED CLEAN CHECKOUT (run once
+  with `_drafts` and prebuilt sqlite absent); ASCII OK; base-deps
+  `validate`/`build`/`run`/`frontier` green; parity examples unchanged (line 7 = 2000
+  / 250); GitHub CI green on the pushed close commit.
+- Gated live: >= 100 OTS fuzz scenarios agree AT THE TAX LINE over the WIDENED domain
+  (S1/S1A/Schedule-A supplemental inputs re-admitted; ST/LT carryovers straddling the
+  -3000/-1500 limit and zero boundaries; D19/Collectibles scenarios exercising the
+  line 20 -> Schedule D Tax Worksheet branch) or triage - zero silent; corpus
+  re-frozen with live-diff provenance; PolicyEngine liability green over the new
+  frozen corpus (documented tax-table tolerance rules unchanged).
+- Carryover round-trip: a year-N return with a net loss produces a Return Record whose
+  carryforward block carries the WORKSHEET-computed ST/LT carryover (not the raw
+  loss), and ingesting that record into a year-N+1 run populates Schedule D lines 6/14
+  with correct provenance (extends the M5 round-trip test).
+- Branch routing proof: a both-18/19-zero scenario still takes the QDCGT path
+  (regression); a nonzero-19 scenario takes the Schedule D Tax Worksheet path and
+  agrees with OTS at line 16; the boundary is a cited decision/conditional, never a
+  silent default.
+- Frontier: `deferred_schedule_d_2025_line_20` flips to modeled; the 28%/1250 feeder
+  worksheets appear as NEW named walls with typed unresolved traces; coverage
+  recomputed honestly.
+- Filing bundle for a loss-carryover scenario exports with the new lines filled and
+  frontier lines blank-with-note; field maps validate both directions.
+- Verification records regenerated byte-stable; queue entries present; handoff BALL
+  updated.
+
+## Steps
+
+- [ ] **Step 1 [worker-heavy] - Schedule-internal Add-lines chains + domain
+  re-admission.** Land the SUM rules/edges for the schedule-internal totals the M11
+  domain note names: Schedule 1 part I (8a-8z -> 9 -> 10) and part II (-> 25),
+  Schedule 1-A internal part chains (-> the totals 1040 line 13b consumes), and
+  Schedule A's internal adds (-> line 17 total). Nodes exist from M10 - this step
+  gives them their arithmetic; extract via the pipeline where drafts support it,
+  else author addends with citations (provenance recorded). LINK realizes the totals
+  into their 1040 entry lines. Re-admit S1 8z / S1 21 / S1A 2a to
+  oracles/domain_2025.yaml with box-map entries (sign/aggregation probed live).
+  Gated: a short live fuzz batch (>= 30) agrees at the tax line with supplemental
+  inputs active. Field maps: new computed lines mapped or excluded. Tests (hermetic) +
+  docs + queue entries.
+
+- [ ] **Step 2 [worker-standard] - Carryover inputs + Capital Loss Carryover
+  Worksheet + Return Record upgrade.** Model Schedule D lines 6 and 14 (loss
+  carryovers, entered as negative per the form) as input-backed lines feeding lines
+  7/15; author/extract the Capital Loss Carryover Worksheet (cited per line) as a
+  worksheet subunit computing next-year ST/LT carryover from this year's return;
+  upgrade the Return Record carryforward block from `capital_loss_raw` to the
+  worksheet-computed ST/LT amounts (keep the raw figure as a secondary field for
+  continuity); prior-record ingestion maps the block onto lines 6/14. Drills:
+  `wrong_carryover_split` (ST/LT swapped) and `carryover_ignores_limit` mutations
+  caught at the expected layer. Test: round-trip year-N record -> year-N+1 lines 6/14;
+  worksheet arithmetic reproduces the instructions' example if one exists. Docs.
+
+- [ ] **Step 3 [worker-heavy] - Schedule D lines 17-22 + line 20 decision + Schedule D
+  Tax Worksheet.** Model line 17 (are both 15 and 16 gains?), lines 18/19 as
+  input-backed cited lines (feeder worksheets = new declared walls), the line 20
+  decision (both 18/19 zero-or-blank -> QDCGT worksheet; else -> Schedule D Tax
+  Worksheet; line 22 path for the loss side), and the Schedule D Tax Worksheet as a
+  cited worksheet subunit (28%/25% rate lines enter as parameter nodes). Line 16 tax
+  routing extends: QDCGT / SDTW / table / bracket, one entry point, cents-through
+  discipline. The line 20 node is a DECISION (top-priority queue entry). Test: both
+  paths compute line by line in the trace; the routing boundary flips on a one-dollar
+  change in line 19; wrong-rate drill caught. Docs.
+
+- [ ] **Step 4 [worker-standard] - Oracle widening + corpus re-freeze + PE re-run.**
+  Box map adds D6/D14/D19/Collectibles (sign conventions from Step 1's probe
+  discipline); domain adds carryover ranges straddling the loss-limit boundaries and
+  D19/Collectibles ranges exercising both line 20 outcomes; retire/convert obsoleted
+  canaries. Gated: >= 100 live fuzz at the tax line over the full widened domain -
+  zero silent; re-freeze the corpus (live-diff provenance only); `oracle pe-liability`
+  green over the new corpus; `verify parameter-diff` green including the new rate
+  parameters where PolicyEngine publishes them. Offline: differ fixtures for one
+  carryover scenario and one SDTW scenario. Docs.
+
+- [ ] **Step 5 [worker-light] - Records, frontier, field maps, exit run.** Regenerate
+  VERIFICATION.md + per-form pages (byte-stable); rebuild frontier (line 20 flips to
+  modeled; 28%/1250 feeder worksheets declared as new walls; coverage recomputed);
+  confirm field maps validate both directions; run every exit-criteria command
+  including the simulated-clean-checkout pytest and the loss-scenario bundle export;
+  after the close push, confirm the GitHub CI run is green (`gh run watch`); record
+  results in the handoff; update the BALL line. NOT authorized: edits outside
+  generated records, docs, and the handoff.
+
+When all steps are `[DONE]`: mark `[COMPLETE]`, archive to `plans/archive/`, prune
+`plans/AGENT_HANDOFF.md`, single `git push`, CONFIRM CI GREEN on that push, tell John.
+Next per the pinned roadmap: M14 (Product surface, canary Open Door) - plan written
+just-in-time; note the serve-lifecycle hardening (sqlite handle release, parent
+watchdog, orphan sweep - pinned 2026-07-10) must land in or before M14's packaging
+work if the pending spin-off task has not already done it.

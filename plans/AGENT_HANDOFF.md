@@ -15,9 +15,11 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## Current state (2026-07-10)
 
-**BALL: ARCHITECT.** M12 (Output layer, canary Paper Trail) is CLOSED and archived. Next action:
-write PHASE_M13 (Worksheet depth, canary Deep Ledger) just-in-time on John's go. Nothing waits on
-a worker; nothing waits on John except the PyPI alpha token.
+**BALL: WORKER.** PHASE_M13 (Worksheet depth, canary Deep Ledger) is written and committed
+(John's go 2026-07-10). Next action: a worker session opens `plans/PHASE_M13.md`, states the
+canary, and waits for John's go per the AGENTS.md directive. Nothing waits on the Architect;
+the PyPI alpha token still waits on John; the serve-lifecycle hardening spin-off task is
+pending (independent of M13).
 (Whoever finishes a turn: update this BALL line - it is the first thing read.)
 
 - **M0-M12 are COMPLETE and archived** (see `plans/archive/`, each with a close note).
