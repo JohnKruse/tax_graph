@@ -98,7 +98,7 @@ walls this phase, modeled later only as data warrants), QBI, lines 17-24, AMT.
 
 ## Steps
 
-- [ ] **Step 1 [worker-heavy] - Schedule-internal Add-lines chains + domain
+- [DONE] **Step 1 [worker-heavy] - Schedule-internal Add-lines chains + domain
   re-admission.** Land the SUM rules/edges for the schedule-internal totals the M11
   domain note names: Schedule 1 part I (8a-8z -> 9 -> 10) and part II (-> 25),
   Schedule 1-A internal part chains (-> the totals 1040 line 13b consumes), and
@@ -131,7 +131,7 @@ walls this phase, modeled later only as data warrants), QBI, lines 17-24, AMT.
   inputs (8z, 2a) active. Field maps: new computed lines mapped or excluded. Tests
   (hermetic) + docs + queue entries.
 
-- [ ] **Step 2 [worker-standard] - Carryover inputs + Capital Loss Carryover
+- [DONE] **Step 2 [worker-standard] - Carryover inputs + Capital Loss Carryover
   Worksheet + Return Record upgrade.** Model Schedule D lines 6 and 14 (loss
   carryovers, entered as negative per the form) as input-backed lines feeding lines
   7/15; author/extract the Capital Loss Carryover Worksheet (cited per line) as a

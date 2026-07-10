@@ -21,10 +21,11 @@ from tax_graph.io.loader import load_yaml
 
 SCHEMA_DIR = Path(__file__).resolve().parents[2] / "schemas"
 CAPITAL_LOSS_SOURCE_NODE = "schedule_d_2025_line_16_total"
-CAPITAL_LOSS_DERIVATION = (
-    "Capital Loss Carryover Worksheet / $3000 limitation is not modeled in v0; "
-    "this is the RAW net loss, not the usable carryover."
-)
+CAPITAL_LOSS_SHORT_TERM_NODE = "schedule_d_2025_carryover_worksheet_line_8"
+CAPITAL_LOSS_LONG_TERM_NODE = "schedule_d_2025_carryover_worksheet_line_13"
+CAPITAL_LOSS_SHORT_TERM_TARGET = "schedule_d_2025_line_6_st_carryover"
+CAPITAL_LOSS_LONG_TERM_TARGET = "schedule_d_2025_line_14_lt_carryover"
+CAPITAL_LOSS_DERIVATION = "Capital Loss Carryover Worksheet, cited line-by-line."
 
 
 @dataclass(frozen=True)
@@ -87,10 +88,14 @@ class CarryforwardBlock:
     generated_date: str
     carryforwards: list[dict[str, Any]] = field(default_factory=list)
     elections: list[dict[str, Any]] = field(default_factory=list)
+    capital_loss_raw: float | int | None = None
 
     def to_dict(self) -> dict[str, Any]:
         """Return a schema-shaped dictionary for YAML emission."""
-        return _json_safe(asdict(self))
+        payload = _json_safe(asdict(self))
+        if payload.get("capital_loss_raw") is None:
+            payload.pop("capital_loss_raw", None)
+        return payload
 
 
 @dataclass(frozen=True)
@@ -196,9 +201,11 @@ def ingest_prior_record(
 ) -> PriorRecordIngestion:
     """Prime input facts from a prior Return Record carryforward block.
 
-    Only entries with a resolvable ``target_node`` are ingested. Entries without
-    targets or with targets absent from the loaded graph are reported and left
-    unused. Explicit facts always override primed values with a warning.
+    Only entries with a resolvable ``target_node`` are ingested. Capital-loss
+    carryforwards are stored as positive worksheet amounts but are converted to
+    the negative Schedule D line 6 or 14 fact convention at ingestion. Entries
+    without targets or with targets absent from the loaded graph are reported
+    and left unused. Explicit facts always override primed values with a warning.
     """
     validate_carryforward_block(prior_record)
     explicit = explicit_facts or {}
@@ -230,7 +237,7 @@ def ingest_prior_record(
             continue
         entry = {
             "node_id": target_node,
-            "value": carryforward["amount"],
+            "value": _carryforward_fact_value(carryforward),
             "source": {
                 "document_label": f"from {prior_year} Return Record",
                 "extracted_by": "tax_graph_prior_record",
@@ -238,7 +245,7 @@ def ingest_prior_record(
             "confidence": 1.0,
         }
         primed_entries.append(entry)
-        primed_values[target_node] = carryforward["amount"]
+        primed_values[target_node] = entry["value"]
 
     facts = dict(primed_values)
     for node_id, value in explicit.items():
@@ -346,6 +353,11 @@ def render_memo(record: ReturnRecord) -> str:
                 lines.append(f"  - Derivation: {item['derivation']}")
     else:
         lines.append("- No carryforwards emitted.")
+    if record.carryforward_block.capital_loss_raw is not None:
+        lines.append(
+            "- Raw net capital loss (secondary continuity field): "
+            f"{_format_value(record.carryforward_block.capital_loss_raw)}"
+        )
     lines.append("- Machine payload: see paired carryforward YAML; do not parse this prose.")
 
     lines.extend(["", "## Elections"])
@@ -510,16 +522,35 @@ def _build_carryforward_block(
 ) -> CarryforwardBlock:
     carryforwards: list[dict[str, Any]] = []
     net_value = result.values.get(CAPITAL_LOSS_SOURCE_NODE)
-    if isinstance(net_value, (int, float)) and net_value < 0:
+    raw_capital_loss = abs(net_value) if isinstance(net_value, (int, float)) and net_value < 0 else None
+    short_term = result.values.get(CAPITAL_LOSS_SHORT_TERM_NODE)
+    long_term = result.values.get(CAPITAL_LOSS_LONG_TERM_NODE)
+    if isinstance(short_term, (int, float)) and short_term > 0:
         carryforwards.append(
             {
-                "carryforward_id": f"capital_loss_raw_{tax_year}",
-                "kind": "capital_loss",
-                "amount": abs(net_value),
+                "carryforward_id": f"capital_loss_short_term_{tax_year}",
+                "kind": "capital_loss_short_term",
+                "amount": short_term,
                 "originating_year": tax_year,
                 "applies_from_year": tax_year + 1,
-                "source_node": CAPITAL_LOSS_SOURCE_NODE,
+                "source_node": CAPITAL_LOSS_SHORT_TERM_NODE,
+                "target_node": CAPITAL_LOSS_SHORT_TERM_TARGET,
                 "derivation": CAPITAL_LOSS_DERIVATION,
+                "citation_refs": ["cite_schedule_d_carryover_line_5_8"],
+            }
+        )
+    if isinstance(long_term, (int, float)) and long_term > 0:
+        carryforwards.append(
+            {
+                "carryforward_id": f"capital_loss_long_term_{tax_year}",
+                "kind": "capital_loss_long_term",
+                "amount": long_term,
+                "originating_year": tax_year,
+                "applies_from_year": tax_year + 1,
+                "source_node": CAPITAL_LOSS_LONG_TERM_NODE,
+                "target_node": CAPITAL_LOSS_LONG_TERM_TARGET,
+                "derivation": CAPITAL_LOSS_DERIVATION,
+                "citation_refs": ["cite_schedule_d_carryover_line_9_13"],
             }
         )
     return CarryforwardBlock(
@@ -528,7 +559,15 @@ def _build_carryforward_block(
         generated_date=generated_date,
         carryforwards=carryforwards,
         elections=[],
+        capital_loss_raw=raw_capital_loss,
     )
+
+
+def _carryforward_fact_value(carryforward: dict[str, Any]) -> Any:
+    """Translate a positive carryover amount into its target form-line sign."""
+    if carryforward.get("kind") in {"capital_loss_short_term", "capital_loss_long_term"}:
+        return -abs(carryforward["amount"])
+    return carryforward["amount"]
 
 
 def _build_outputs(result: Result, graph: Graph, target_node: str | None) -> list[TraceSummaryEntry]:

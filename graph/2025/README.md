@@ -59,5 +59,5 @@ statuses and threshold-straddling tax-line scenarios.
   separate *instructions* document objects are a planned refinement.
 - **quoted_text** is authored from known phrasing and must be verified verbatim by
   the citation-integrity build step before this branch is marked `supported`.
-- **Capital-loss carryover** (when line 16 is a net loss) is deferred (Section 9.3); the
-  Return Record's carryforward block is where it will live.
+- **Capital-loss carryover** uses the cited Capital Loss Carryover Worksheet and is stored in
+  the Return Record as separate short-term and long-term amounts for Schedule D lines 6 and 14.

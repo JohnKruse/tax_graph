@@ -197,6 +197,9 @@ def _apply_mutation(graph: LoadedGraph, mutation: dict[str, Any]) -> None:
     if kind == "retarget_edge":
         _objects_by_id(graph, "edges", "edge_id")[mutation["edge_id"]]["target"] = mutation["target"]
         return
+    if kind == "change_edge_source":
+        _objects_by_id(graph, "edges", "edge_id")[mutation["edge_id"]]["source"] = mutation["source"]
+        return
     if kind == "corrupt_citation_quote":
         _objects_by_id(graph, "citations", "citation_id")[mutation["citation_id"]]["quoted_text"] = mutation[
             "quoted_text"

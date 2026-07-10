@@ -15,38 +15,60 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## Current state (2026-07-10)
 
-**BALL: WORKER.** M13 Step 1 is COMPLETE locally and ready to commit: Schedule 1,
-Schedule 1-A, and Schedule A add-lines chains now compute; 8z/2a are re-admitted
-under the pinned injection contract; direct S1_21 is a declared worksheet wall with an
-offline L4 chain witness. Next action: M13 Step 2 (Capital Loss Carryover Worksheet).
-PyPI alpha token still waits on John; serve-lifecycle hardening spin-off still pending
-(independent).
+**BALL: WORKER.** M13 Steps 1-2 are COMMITTED and full-suite green. Step 3
+(Schedule D lines 17-22 + line 20 decision + Schedule D Tax Worksheet) is next;
+open `plans/PHASE_M13.md`, state the canary, and proceed - John's go on the
+phase already stands, no fresh go needed per-step. PyPI alpha token still
+waits on John; serve-lifecycle hardening spin-off still pending (independent).
 (Whoever finishes a turn: update this BALL line - it is the first thing read.)
 
-**M13 active - STOPPED in Step 1 (2026-07-10):** Worker implemented the Schedule 1
-and Schedule A add-lines chains locally, restored S1 8z / S1 21 / S1-A 2a to the
-oracle domain and box map, and added hermetic M13 coverage. Targeted verification is
-green (`pytest -m m13`: 1 passed; related regression selection: 18 passed, 1 skipped;
-ASCII green). The required live OTS short gate is NOT green: `oracle fuzz --n 30
---seed 1301 --source yaml` -> 10 agreed / 20 disagreed, triage at
-`.cache/m13_step1_ots/triage.yaml` (uncommitted cache). The disagreement is exactly
-each nonzero `S1_21`: Tax Graph subtracts it in Schedule 1 line 26, while the shipped
-OTS source `src/taxsolve_US_1040_2025.c` reads `S1_21` and then calls
-`Calc_StudentLoan_Sched1L21()`, overwriting the injected direct-line amount with its
-own calculated zero. Example scenario 0000: TG line 11b 115517 versus OTS 115766,
-delta 249 = S1_21. This is an external-oracle input-semantics defect, not a rounding
-delta. No Step 1 commit was made; working-tree implementation changes remain for the
-Architect's decision. The two full `pytest -q` attempts exceeded 124 seconds without
-printing a failure and were terminated; collected suite size is 287.
+**M13 Step 1 (Codex, completed 2026-07-10):** stopped once on a genuine OTS
+input-semantics mismatch (S1_21 is pre-worksheet in OTS, post-worksheet in our
+graph - see the Architect ruling pinned in PHASE_M13 Step 1 and "Resolved"
+below), then applied the ruling and closed clean: schedule-internal add-lines
+chains land, S1 8z / S1A 2a re-admitted, S1_21 stays out with a named frontier
+wall. Live `oracle fuzz --n 30 --seed 1301 --source yaml` -> 30/30 agreed.
 
-**M13 Step 1 complete (2026-07-10):** Applied the Architect ruling: removed S1_21
-from `oracles/domain_2025.yaml` and `box_map_2025.yaml`; re-admitted S1 8z and S1-A
-2a; added the named Student Loan Interest Deduction Worksheet frontier, deferred-review
-entry, and offline L4 line-25/26 regression. The domain YAML records the durable direct
-injection contract. Verification: `pytest -m m13` -> 1 passed; related regressions ->
-28 passed; `validate 2025` and ASCII green; aligned live `oracle fuzz --n 30 --seed
-1301 --source yaml` -> 30 agreed / 0 disagreed / 0 rejected; full `pytest -q` -> 283
-passed, 4 skipped in 5m30s. The pre-ruling triage remains uncommitted under `.cache/`.
+**M13 Step 2 (Codex implementation + Architect finish, 2026-07-10):** Codex's
+session hit its usage limit with Step 2 fully implemented but uncommitted
+(Schedule D lines 6/14, the cited Capital Loss Carryover Worksheet, the Return
+Record carryforward upgrade, field maps/geometry/drills/docs) - same pattern as
+M12's Step-3 stop. Architect (Claude Sonnet 5) verified the work before
+committing: worksheet arithmetic cross-checked line-by-line against the cached
+IRS instructions text (`.cache/raw/2025/instructions_schedule_d_2025.txt`,
+lines 625-650) and citations confirmed verbatim - both correct. Found and fixed
+two defects during verification, not present in Codex's own targeted runs
+because they only surface via full-suite / cross-fixture interaction:
+1. `tax_graph/verify/properties.py::_carryover_worksheet_issues` (new in Step
+   2) called `Engine(graph).execute(...)` with no exception handling, unlike
+   the sibling sampled-facts loop three lines below it that does. A pre-
+   existing M9 drill (`retarget_outbound_flow_line_off`) legitimately produces
+   a structurally invalid mutated graph as its whole POINT (proving the
+   mismatch gets caught) - the new check's uncaught exception crashed the
+   entire drill-catalog test instead of being recorded as a finding. Fixed:
+   wrapped in the same try/except pattern, converting to a `PropertyIssue`.
+2. Same function hard-coded full-1040-graph node IDs with no existence guard
+   (unlike `_parameter_value_issues`'s established `if not node: continue`
+   pattern) - it ran unconditionally inside `check_graph_properties`, which
+   fires during single-document extraction/routing checks (M4/M9 tests) whose
+   narrow test graphs never load the Schedule D worksheet chain, so it
+   false-positived "worksheet value None != 4000" on graphs that were never
+   supposed to have that worksheet in the first place. Fixed: guard on all
+   required node IDs being present in `graph.nodes` before executing.
+   Also found (independent, pre-existing since before this session): a test
+   in `test_return_record_m5.py` had lost its `def` header at some earlier
+   point in history - the `with pytest.raises("unknown option_id")` body sat
+   as dead code after a `return` statement inside `_capital_loss_record()`,
+   so `validate_decision_resolutions`'s bad-option-id branch was never
+   exercised. Restored as its own test,
+   `test_decision_resolution_rejects_unknown_option_id`; confirmed it passes
+   against current code (the underlying validation was never actually wrong,
+   just untested).
+Verification after both fixes: `pytest -m m13` -> 2 passed; `validate 2025`
+green (340 nodes, 257 citations); ASCII OK; full `pytest -q` -> 285 passed, 4
+skipped in 6m01s (up from 283/4, net +2 for the resurrected test and the new
+Step 2 tests minus none lost). Live OTS/PE gate for the carryover domain is
+Step 4's job per the plan, not Step 2's - not yet run.
 
 - **M0-M12 are COMPLETE and archived** (see `plans/archive/`, each with a close note).
 - **THE GRAPH COMPUTES TAX AND FILES IT.** M11 landed line 16 liability under dual live

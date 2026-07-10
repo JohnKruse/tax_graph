@@ -23,6 +23,11 @@
       "type": "array",
       "items": { "$ref": "#/$defs/election" },
       "description": "Year-to-year choices that must stay consistent (e.g. FTC paid-vs-accrued)."
+    },
+    "capital_loss_raw": {
+      "type": "number",
+      "minimum": 0,
+      "description": "Secondary raw Schedule D line 16 loss retained for continuity; not an ingestible carryforward."
     }
   },
   "$defs": {

@@ -52,12 +52,14 @@
 - Form 8949 Part II, line 2, column (h) total (`form_8949_2025_part_ii_line_2_line_2_column_h_total`): 2000 [table_total] (operation=SUM; rule=sum_currency; citations=cite_8949_col_h_gain,cite_8949_line2_totals)
 - Schedule D capital loss limit, default filing statuses (`schedule_d_2025_capital_loss_limit_default`): 3000 [parameter] (citations=cite_schedule_d_line21_loss_limit)
 - Schedule D capital loss limit, married filing separately (`schedule_d_2025_capital_loss_limit_mfs`): 1500 [parameter] (citations=cite_schedule_d_line21_loss_limit)
-- Schedule D, line 15 - Net long-term capital gain or (loss) (`schedule_d_2025_line_15_net_lt`): 2000 [computed] (operation=SUM; rule=sum_currency; citations=cite_span_schedule_d_2025_0025)
+- Schedule D, line 14 - Long-term capital loss carryover (`schedule_d_2025_line_14_lt_carryover`): blank [blank]
+- Schedule D, line 15 - Net long-term capital gain or (loss) (`schedule_d_2025_line_15_net_lt`): 2000 [computed] (operation=SUM; rule=sum_currency; citations=cite_schedule_d_carryover_line_13,cite_span_schedule_d_2025_0025)
 - Schedule D, line 16 - Total capital gain or (loss) (`schedule_d_2025_line_16_total`): 2000 [computed] (operation=SUM; rule=sum_currency)
 - Schedule D, line 21 - Loss limited for Form 1040 line 7 (`schedule_d_2025_line_21_capital_loss_limited`): 2000 [computed] (operation=MAX; rule=max_currency; citations=cite_schedule_d_line21_loss_limit)
 - Schedule D, line 21 - Capital loss limit for filing status (`schedule_d_2025_line_21_loss_limit`): 3000 [computed] (operation=LOOKUP_TABLE; rule=lookup_capital_loss_limit; citations=cite_schedule_d_line21_loss_limit)
 - Schedule D, line 21 - Capital loss limit as a negative amount (`schedule_d_2025_line_21_loss_limit_negative`): -3000 [computed] (operation=NEGATE; rule=negate_currency; citations=cite_schedule_d_line21_loss_limit)
-- Schedule D, line 7 - Net short-term capital gain or (loss) (`schedule_d_2025_line_7_net_st`): 0 [computed] (operation=SUM; rule=sum_currency; citations=cite_span_schedule_d_2025_0011)
+- Schedule D, line 6 - Short-term capital loss carryover (`schedule_d_2025_line_6_st_carryover`): blank [blank]
+- Schedule D, line 7 - Net short-term capital gain or (loss) (`schedule_d_2025_line_7_net_st`): 0 [computed] (operation=SUM; rule=sum_currency; citations=cite_schedule_d_carryover_line_8,cite_span_schedule_d_2025_0011)
 - Schedule D, line 1b, column (h) - Short-term totals from Form 8949 (`schedule_d_2025_part_i_line_1b_column_h`): 0 [computed] (operation=COPY; rule=copy_currency_value; citations=cite_8949_line2_totals)
 - Schedule D, line 8b, column (h) - Long-term totals from Form 8949 (`schedule_d_2025_part_ii_line_8b_column_h`): 2000 [computed] (operation=COPY; rule=copy_currency_value; citations=cite_8949_line2_totals)
 - Taxpayer filing status (`taxpayer_2025_filing_status`): single [input]

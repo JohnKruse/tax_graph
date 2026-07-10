@@ -111,6 +111,73 @@
   url: https://www.irs.gov/instructions/i1040sd
   retrieved_date: 2026-07-07
 
+- citation_id: cite_schedule_d_carryover_line_1_2
+  document_id: instructions_schedule_d_2025
+  source_document_id: instructions_schedule_d_2025
+  locator: Instructions for Schedule D, Capital Loss Carryover Worksheet, lines 1-2
+  quoted_text: >-
+    1. Enter the amount from your 2024 Form 1040, 1040-SR, or 1040-NR, line
+    15. If the amount would have been a loss if you could enter a negative
+    number on that line, enclose the amount in parentheses. 2. Enter the loss
+    from your 2024 Schedule D, line 21, as a positive amount.
+  url: https://www.irs.gov/instructions/i1040sd
+  retrieved_date: 2026-07-10
+
+- citation_id: cite_schedule_d_carryover_line_3_4
+  document_id: instructions_schedule_d_2025
+  source_document_id: instructions_schedule_d_2025
+  locator: Instructions for Schedule D, Capital Loss Carryover Worksheet, lines 3-4
+  quoted_text: >-
+    3. Combine lines 1 and 2. If zero or less, enter -0-. 4. Enter the smaller
+    of line 2 or line 3.
+  url: https://www.irs.gov/instructions/i1040sd
+  retrieved_date: 2026-07-10
+
+- citation_id: cite_schedule_d_carryover_line_5_8
+  document_id: instructions_schedule_d_2025
+  source_document_id: instructions_schedule_d_2025
+  locator: Instructions for Schedule D, Capital Loss Carryover Worksheet, lines 5-8
+  quoted_text: >-
+    5. Enter the loss from your 2024 Schedule D, line 7, as a positive amount.
+    6. Enter any gain from your 2024 Schedule D, line 15. If a loss, enter
+    -0-. 7. Add lines 4 and 6. 8. Short-term capital loss carryover for 2025.
+    Subtract line 7 from line 5. If zero or less, enter -0-. If more than zero,
+    also enter this amount on Schedule D, line 6.
+  url: https://www.irs.gov/instructions/i1040sd
+  retrieved_date: 2026-07-10
+
+- citation_id: cite_schedule_d_carryover_line_9_13
+  document_id: instructions_schedule_d_2025
+  source_document_id: instructions_schedule_d_2025
+  locator: Instructions for Schedule D, Capital Loss Carryover Worksheet, lines 9-13
+  quoted_text: >-
+    9. Enter the loss from your 2024 Schedule D, line 15, as a positive amount.
+    10. Enter any gain from your 2024 Schedule D, line 7. If a loss, enter
+    -0-. 11. Subtract line 5 from line 4. If zero or less, enter -0-. 12. Add
+    lines 10 and 11. 13. Long-term capital loss carryover for 2025. Subtract
+    line 12 from line 9. If zero or less, enter -0-. If more than zero, also
+    enter this amount on Schedule D, line 14.
+  url: https://www.irs.gov/instructions/i1040sd
+  retrieved_date: 2026-07-10
+
+- citation_id: cite_schedule_d_carryover_line_8
+  document_id: instructions_schedule_d_2025
+  source_document_id: instructions_schedule_d_2025
+  locator: Instructions for Schedule D, Capital Loss Carryover Worksheet, line 8
+  quoted_text: >-
+    If more than zero, also enter this amount on Schedule D, line 6.
+  url: https://www.irs.gov/instructions/i1040sd
+  retrieved_date: 2026-07-10
+
+- citation_id: cite_schedule_d_carryover_line_13
+  document_id: instructions_schedule_d_2025
+  source_document_id: instructions_schedule_d_2025
+  locator: Instructions for Schedule D, Capital Loss Carryover Worksheet, line 13
+  quoted_text: >-
+    If more than zero, also enter this amount on Schedule D, line 14.
+  url: https://www.irs.gov/instructions/i1040sd
+  retrieved_date: 2026-07-10
+
 - citation_id: cite_1040_line_7
   document_id: form_1040_2025
   source_document_id: form_1040_2025

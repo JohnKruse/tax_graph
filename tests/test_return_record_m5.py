@@ -107,10 +107,9 @@ def test_gain_scenario_emits_empty_valid_carryforward_block():
     assert "\r\n" not in rendered
 
 
-def test_loss_scenario_emits_non_ingestible_raw_capital_loss():
+def test_loss_scenario_emits_worksheet_computed_long_term_capital_loss():
     graph = Graph("2025", root=ROOT, source="yaml")
-    facts_document = load_facts_document(FACTS_PATH)
-    _set_first_lot(facts_document, proceeds=10000, cost=12000)
+    facts_document = _loss_carryover_facts_document()
     fact_values = _fact_values(facts_document)
     result = Engine(graph).execute(fact_values)
 
@@ -123,15 +122,18 @@ def test_loss_scenario_emits_non_ingestible_raw_capital_loss():
         target_node=TARGET,
     )
     block = record.carryforward_block.to_dict()
-    carryforward = block["carryforwards"][0]
+    short_term, long_term = block["carryforwards"]
 
     validate_carryforward_block(block)
-    assert carryforward["kind"] == "capital_loss"
-    assert carryforward["amount"] == 2000
-    assert carryforward["source_node"] == "schedule_d_2025_line_16_total"
-    assert "target_node" not in carryforward
-    assert "RAW net loss" in carryforward["derivation"]
-    assert any("not ingestible" in item for item in record.unsupported)
+    assert short_term["kind"] == "capital_loss_short_term"
+    assert short_term["amount"] == 4000
+    assert short_term["target_node"] == "schedule_d_2025_line_6_st_carryover"
+    assert long_term["kind"] == "capital_loss_long_term"
+    assert long_term["amount"] == 3000
+    assert long_term["source_node"] == "schedule_d_2025_carryover_worksheet_line_13"
+    assert long_term["target_node"] == "schedule_d_2025_line_14_lt_carryover"
+    assert block["capital_loss_raw"] == 10000
+    assert not any("not ingestible" in item for item in record.unsupported)
     assert "Capital Loss Carryover Worksheet" in render_memo(record)
 
 
@@ -187,7 +189,7 @@ def test_prior_record_with_resolvable_target_primes_next_run(tmp_path):
     assert result.values[TARGET] == 2000
 
 
-def test_prior_record_reports_v0_capital_loss_without_ingesting():
+def test_prior_record_ingests_worksheet_capital_loss_with_form_line_sign():
     graph = Graph("2025", root=ROOT, source="yaml")
     loss_record = _capital_loss_record()
 
@@ -197,15 +199,28 @@ def test_prior_record_reports_v0_capital_loss_without_ingesting():
         explicit_facts=load_facts(FACTS_PATH),
     )
 
-    assert ingestion.not_ingested == [
+    assert ingestion.not_ingested == []
+    assert ingestion.fact_entries == [
         {
-            "carryforward_id": "capital_loss_raw_2025",
-            "reason": "no target_node",
-            "target_node": None,
+            "node_id": "schedule_d_2025_line_6_st_carryover",
+            "value": -4000,
+            "source": {
+                "document_label": "from 2025 Return Record",
+                "extracted_by": "tax_graph_prior_record",
+            },
+            "confidence": 1.0,
+        },
+        {
+            "node_id": "schedule_d_2025_line_14_lt_carryover",
+            "value": -3000,
+            "source": {
+                "document_label": "from 2025 Return Record",
+                "extracted_by": "tax_graph_prior_record",
+            },
+            "confidence": 1.0,
         }
     ]
-    assert ingestion.fact_entries == []
-    assert ingestion.facts["schedule_d_2025_line_7_net_st"] == 0
+    assert ingestion.facts["schedule_d_2025_line_14_lt_carryover"] == -3000
 
 
 def test_prior_record_explicit_fact_override_warns():
@@ -359,8 +374,7 @@ def _call_tool(server, name: str, arguments: dict):
 
 def _capital_loss_record():
     graph = Graph("2025", root=ROOT, source="yaml")
-    facts_document = load_facts_document(FACTS_PATH)
-    _set_first_lot(facts_document, proceeds=10000, cost=12000)
+    facts_document = _loss_carryover_facts_document()
     fact_values = _fact_values(facts_document)
     result = Engine(graph).execute(fact_values)
     return build_return_record(
@@ -371,6 +385,25 @@ def _capital_loss_record():
         generated_date="2026-07-05",
         target_node=TARGET,
     )
+
+
+def _loss_carryover_facts_document() -> dict:
+    """Return a loss case with the income inputs required by the worksheet."""
+    return {
+        "tax_year": 2025,
+        "filing_status": "single",
+        "facts": [
+            {"node_id": "form_1040_2025_root_line_1a", "value": 50000},
+            {"node_id": "form_1040_2025_deduction_method", "value": "standard"},
+            {"node_id": "schedule_d_2025_line_6_st_carryover", "value": -7000},
+            {"node_id": "schedule_d_2025_line_14_lt_carryover", "value": -3000},
+        ],
+        "tables": [],
+    }
+
+
+def test_decision_resolution_rejects_unknown_option_id():
+    graph = Graph("2025", root=ROOT, source="yaml")
 
     with pytest.raises(ValueError, match="unknown option_id"):
         validate_decision_resolutions(

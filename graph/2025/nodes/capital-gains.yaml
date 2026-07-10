@@ -306,12 +306,30 @@
   value_type: currency
   required: optional
 
+- node_id: schedule_d_2025_line_6_st_carryover
+  document_id: schedule_d_2025
+  label: Schedule D, line 6 - Short-term capital loss carryover
+  node_type: form_line
+  value_type: currency
+  required: optional
+  citation_refs:
+    - cite_schedule_d_carryover_line_8
+
 - node_id: schedule_d_2025_line_15_net_lt
   document_id: schedule_d_2025
   label: Schedule D, line 15 - Net long-term capital gain or (loss)
   node_type: computed
   value_type: currency
   required: optional
+
+- node_id: schedule_d_2025_line_14_lt_carryover
+  document_id: schedule_d_2025
+  label: Schedule D, line 14 - Long-term capital loss carryover
+  node_type: form_line
+  value_type: currency
+  required: optional
+  citation_refs:
+    - cite_schedule_d_carryover_line_13
 
 - node_id: schedule_d_2025_line_16_total
   document_id: schedule_d_2025
@@ -355,6 +373,189 @@
   required: conditional
   citation_refs:
     - cite_schedule_d_line20_deferred
+
+# Capital Loss Carryover Worksheet. The published 2025 worksheet is expressed
+# for 2024 -> 2025; these fields apply its cited line-by-line mechanics to the
+# current return so the Return Record carries 2025 -> 2026 values.
+- node_id: schedule_d_2025_carryover_worksheet_line_1
+  document_id: instructions_schedule_d_2025
+  label: Capital Loss Carryover Worksheet line 1 - taxable income before zero floor
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+    - cite_schedule_d_carryover_line_1_2
+
+- node_id: schedule_d_2025_carryover_worksheet_line_2_negated
+  document_id: instructions_schedule_d_2025
+  label: Capital Loss Carryover Worksheet line 2 loss before positive floor
+  node_type: computed
+  value_type: currency
+  required: optional
+  citation_refs:
+    - cite_schedule_d_carryover_line_1_2
+
+- node_id: schedule_d_2025_carryover_worksheet_line_2
+  document_id: instructions_schedule_d_2025
+  label: Capital Loss Carryover Worksheet line 2 - Schedule D line 21 loss
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+    - cite_schedule_d_carryover_line_1_2
+
+- node_id: schedule_d_2025_carryover_worksheet_line_3_pre_floor
+  document_id: instructions_schedule_d_2025
+  label: Capital Loss Carryover Worksheet line 3 before zero floor
+  node_type: computed
+  value_type: currency
+  required: optional
+  citation_refs:
+    - cite_schedule_d_carryover_line_3_4
+
+- node_id: schedule_d_2025_carryover_worksheet_line_3
+  document_id: instructions_schedule_d_2025
+  label: Capital Loss Carryover Worksheet line 3
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+    - cite_schedule_d_carryover_line_3_4
+
+- node_id: schedule_d_2025_carryover_worksheet_line_4
+  document_id: instructions_schedule_d_2025
+  label: Capital Loss Carryover Worksheet line 4
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+    - cite_schedule_d_carryover_line_3_4
+
+- node_id: schedule_d_2025_carryover_worksheet_line_5_negated
+  document_id: instructions_schedule_d_2025
+  label: Capital Loss Carryover Worksheet line 5 loss before positive floor
+  node_type: computed
+  value_type: currency
+  required: optional
+  citation_refs:
+    - cite_schedule_d_carryover_line_5_8
+
+- node_id: schedule_d_2025_carryover_worksheet_line_5
+  document_id: instructions_schedule_d_2025
+  label: Capital Loss Carryover Worksheet line 5
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+    - cite_schedule_d_carryover_line_5_8
+
+- node_id: schedule_d_2025_carryover_worksheet_line_6
+  document_id: instructions_schedule_d_2025
+  label: Capital Loss Carryover Worksheet line 6
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+    - cite_schedule_d_carryover_line_5_8
+
+- node_id: schedule_d_2025_carryover_worksheet_line_7
+  document_id: instructions_schedule_d_2025
+  label: Capital Loss Carryover Worksheet line 7
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+    - cite_schedule_d_carryover_line_5_8
+
+- node_id: schedule_d_2025_carryover_worksheet_line_8_pre_floor
+  document_id: instructions_schedule_d_2025
+  label: Capital Loss Carryover Worksheet line 8 before zero floor
+  node_type: computed
+  value_type: currency
+  required: optional
+  citation_refs:
+    - cite_schedule_d_carryover_line_5_8
+
+- node_id: schedule_d_2025_carryover_worksheet_line_8
+  document_id: instructions_schedule_d_2025
+  label: Capital Loss Carryover Worksheet line 8 - short-term carryover
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+    - cite_schedule_d_carryover_line_5_8
+
+- node_id: schedule_d_2025_carryover_worksheet_line_9_negated
+  document_id: instructions_schedule_d_2025
+  label: Capital Loss Carryover Worksheet line 9 loss before positive floor
+  node_type: computed
+  value_type: currency
+  required: optional
+  citation_refs:
+    - cite_schedule_d_carryover_line_9_13
+
+- node_id: schedule_d_2025_carryover_worksheet_line_9
+  document_id: instructions_schedule_d_2025
+  label: Capital Loss Carryover Worksheet line 9
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+    - cite_schedule_d_carryover_line_9_13
+
+- node_id: schedule_d_2025_carryover_worksheet_line_10
+  document_id: instructions_schedule_d_2025
+  label: Capital Loss Carryover Worksheet line 10
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+    - cite_schedule_d_carryover_line_9_13
+
+- node_id: schedule_d_2025_carryover_worksheet_line_11_pre_floor
+  document_id: instructions_schedule_d_2025
+  label: Capital Loss Carryover Worksheet line 11 before zero floor
+  node_type: computed
+  value_type: currency
+  required: optional
+  citation_refs:
+    - cite_schedule_d_carryover_line_9_13
+
+- node_id: schedule_d_2025_carryover_worksheet_line_11
+  document_id: instructions_schedule_d_2025
+  label: Capital Loss Carryover Worksheet line 11
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+    - cite_schedule_d_carryover_line_9_13
+
+- node_id: schedule_d_2025_carryover_worksheet_line_12
+  document_id: instructions_schedule_d_2025
+  label: Capital Loss Carryover Worksheet line 12
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+    - cite_schedule_d_carryover_line_9_13
+
+- node_id: schedule_d_2025_carryover_worksheet_line_13_pre_floor
+  document_id: instructions_schedule_d_2025
+  label: Capital Loss Carryover Worksheet line 13 before zero floor
+  node_type: computed
+  value_type: currency
+  required: optional
+  citation_refs:
+    - cite_schedule_d_carryover_line_9_13
+
+- node_id: schedule_d_2025_carryover_worksheet_line_13
+  document_id: instructions_schedule_d_2025
+  label: Capital Loss Carryover Worksheet line 13 - long-term carryover
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+    - cite_schedule_d_carryover_line_9_13
 
 # --- Form 1040 ---
 - node_id: form_1040_2025_line_7_capital_gain_loss

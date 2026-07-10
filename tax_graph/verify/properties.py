@@ -52,6 +52,7 @@ def check_graph_properties(
     issues: list[PropertyIssue] = []
     issues.extend(_parameter_value_issues(graph))
     executable = _ExecutableGraph(graph)
+    issues.extend(_carryover_worksheet_issues(executable))
     for index in range(samples):
         facts = _sample_facts(graph, seed=seed + index)
         try:
@@ -62,6 +63,53 @@ def check_graph_properties(
         issues.extend(_trace_operation_issues(result.trace))
         issues.extend(_table_relation_issues(graph, result.values))
     return PropertyReport(tuple(_dedupe_issues(issues)))
+
+
+def _carryover_worksheet_issues(graph: "_ExecutableGraph") -> list[PropertyIssue]:
+    """Check the cited capital-loss worksheet's short/long split and limit.
+
+    Narrower per-document graphs (single-form extraction/routing checks) do not
+    carry the Form 1040 / Schedule D worksheet chain this check depends on -
+    skip rather than false-positive when the required nodes are absent.
+    """
+    required_nodes = (
+        "form_1040_2025_root_line_1a",
+        "form_1040_2025_deduction_method",
+        "schedule_d_2025_line_6_st_carryover",
+        "schedule_d_2025_line_14_lt_carryover",
+        "schedule_d_2025_carryover_worksheet_line_8",
+        "schedule_d_2025_carryover_worksheet_line_13",
+    )
+    if not all(node_id in graph.nodes for node_id in required_nodes):
+        return []
+    try:
+        result = Engine(graph).execute(
+            {
+                "filing_status": "single",
+                "form_1040_2025_root_line_1a": 50000,
+                "form_1040_2025_deduction_method": "standard",
+                "schedule_d_2025_line_6_st_carryover": -7000,
+                "schedule_d_2025_line_14_lt_carryover": -3000,
+            }
+        )
+    except Exception as exc:
+        return [PropertyIssue("property_execution", "graph", str(exc))]
+    expected = {
+        "schedule_d_2025_carryover_worksheet_line_8": 4000,
+        "schedule_d_2025_carryover_worksheet_line_13": 3000,
+    }
+    issues: list[PropertyIssue] = []
+    for node_id, expected_value in expected.items():
+        actual = result.values.get(node_id)
+        if not _values_equal(actual, expected_value):
+            issues.append(
+                PropertyIssue(
+                    "capital_loss_carryover_worksheet",
+                    node_id,
+                    f"worksheet value {actual} does not equal cited fixture value {expected_value}",
+                )
+            )
+    return issues
 
 
 def _parameter_value_issues(graph: LoadedGraph) -> list[PropertyIssue]:

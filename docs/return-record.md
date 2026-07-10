@@ -68,13 +68,7 @@ A Return Record contains a person's actual decisions and dollar figures - about 
 as data gets. It is **local-first**: it lives with the user's tax documents on their machine,
 is never uploaded, and is the user's to keep. Test/example records use only fake data (Section 10.5).
 
-## MVP note
-
-Even the capital-gains MVP has a carryforward (the capital-loss carryover). The *computation*
-of that carryover is deferred for v0 (req. doc Section 9.3), but the **Return Record structure should
-exist from day one** so it isn't retrofitted - the carryforward block simply starts empty/simple.
-
-## Implemented v0
+## Implemented
 
 M5 implements a paired output from `tax-graph run`: `return_record_<year>.md` for the memo and
 `return_record_<year>.carryforward.yaml` validated by
@@ -82,10 +76,11 @@ M5 implements a paired output from `tax-graph run`: `return_record_<year>.md` fo
 the files, `--no-record` to skip emission, and `--prior-record` to ingest a previous structured
 block. The MCP server also exposes `export_return_record`.
 
-The v0 capital-loss policy is intentionally structure-only. A negative Schedule D line 16 emits a
-positive `capital_loss` amount with no `target_node`, so it is non-ingestible by construction. The
-memo and derivation both state that the Capital Loss Carryover Worksheet / $3000 limitation is not
-modeled in v0 and the amount is the raw net loss, not the usable carryover.
+For capital losses, the cited Capital Loss Carryover Worksheet emits separate positive
+`capital_loss_short_term` and `capital_loss_long_term` amounts. Prior-record ingestion maps those
+positive worksheet amounts to the negative Schedule D line 6 and 14 form-entry convention. The
+block retains `capital_loss_raw` as a secondary continuity field; it is not used to prime a later
+return.
 
 ## Open items
 

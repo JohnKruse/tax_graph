@@ -1744,6 +1744,19 @@
     },
     {
       "document_id": "schedule_d_2025",
+      "field_name": "topmostSubform[0].Page1[0].f1_21[0]",
+      "node_id": "schedule_d_2025_line_6_st_carryover",
+      "page": 1,
+      "rect": [
+        507.0,
+        396.0,
+        573.0,
+        408.0
+      ],
+      "slot": "schedule_d_2025_line_6_st_carryover"
+    },
+    {
+      "document_id": "schedule_d_2025",
       "field_name": "topmostSubform[0].Page1[0].f1_22[0]",
       "node_id": "schedule_d_2025_line_7_net_st",
       "page": 1,
@@ -1754,6 +1767,19 @@
         432.0
       ],
       "slot": "schedule_d_2025_line_7_net_st"
+    },
+    {
+      "document_id": "schedule_d_2025",
+      "field_name": "topmostSubform[0].Page1[0].f1_42[0]",
+      "node_id": "schedule_d_2025_line_14_lt_carryover",
+      "page": 1,
+      "rect": [
+        507.0,
+        708.0,
+        573.0,
+        720.0
+      ],
+      "slot": "schedule_d_2025_line_14_lt_carryover"
     },
     {
       "document_id": "schedule_d_2025",

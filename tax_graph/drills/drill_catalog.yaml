@@ -123,6 +123,26 @@
   expected_layers:
     - L3
 
+- id: wrong_carryover_split
+  taxonomy: F3
+  description: Feed the long-term loss into the short-term carryover calculation.
+  mutation:
+    kind: change_edge_source
+    edge_id: e_carryover_ws_5_to_8_pre
+    source: schedule_d_2025_carryover_worksheet_line_9
+  expected_layers:
+    - L3
+
+- id: carryover_ignores_limit
+  taxonomy: F3
+  description: Omit the Schedule D line 21 limitation from the short-term carryover calculation.
+  mutation:
+    kind: change_edge_source
+    edge_id: e_carryover_ws_4_to_7
+    source: form_1040_2025_zero_floor
+  expected_layers:
+    - L3
+
 - id: wrong_standard_deduction
   taxonomy: F3
   description: Mutate the standard deduction parameter for Single filing status.

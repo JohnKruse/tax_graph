@@ -2,6 +2,10 @@ tax_year: 2025
 document_id: schedule_d_2025
 inventory: graph/2025/field_inventories/schedule_d_2025.json
 mappings:
+- slot: schedule_d_2025_line_6_st_carryover
+  field_name: topmostSubform[0].Page1[0].f1_21[0]
+  format: dollars
+  node_id: schedule_d_2025_line_6_st_carryover
 - slot: schedule_d_2025_line_7_net_st
   field_name: topmostSubform[0].Page1[0].f1_22[0]
   format: dollars
@@ -10,6 +14,10 @@ mappings:
   field_name: topmostSubform[0].Page1[0].f1_43[0]
   format: dollars
   node_id: schedule_d_2025_line_15_net_lt
+- slot: schedule_d_2025_line_14_lt_carryover
+  field_name: topmostSubform[0].Page1[0].f1_42[0]
+  format: dollars
+  node_id: schedule_d_2025_line_14_lt_carryover
 - slot: schedule_d_2025_line_16_total
   field_name: topmostSubform[0].Page2[0].f2_1[0]
   format: dollars
@@ -19,6 +27,46 @@ mappings:
   format: dollars
   node_id: schedule_d_2025_line_21_capital_loss_limited
 excluded_nodes:
+- node_id: schedule_d_2025_carryover_worksheet_line_1
+  reason: Worksheet-internal value with no official-form box.
+- node_id: schedule_d_2025_carryover_worksheet_line_2_negated
+  reason: Worksheet-internal value with no official-form box.
+- node_id: schedule_d_2025_carryover_worksheet_line_2
+  reason: Worksheet-internal value with no official-form box.
+- node_id: schedule_d_2025_carryover_worksheet_line_3_pre_floor
+  reason: Worksheet-internal value with no official-form box.
+- node_id: schedule_d_2025_carryover_worksheet_line_3
+  reason: Worksheet-internal value with no official-form box.
+- node_id: schedule_d_2025_carryover_worksheet_line_4
+  reason: Worksheet-internal value with no official-form box.
+- node_id: schedule_d_2025_carryover_worksheet_line_5_negated
+  reason: Worksheet-internal value with no official-form box.
+- node_id: schedule_d_2025_carryover_worksheet_line_5
+  reason: Worksheet-internal value with no official-form box.
+- node_id: schedule_d_2025_carryover_worksheet_line_6
+  reason: Worksheet-internal value with no official-form box.
+- node_id: schedule_d_2025_carryover_worksheet_line_7
+  reason: Worksheet-internal value with no official-form box.
+- node_id: schedule_d_2025_carryover_worksheet_line_8_pre_floor
+  reason: Worksheet-internal value with no official-form box.
+- node_id: schedule_d_2025_carryover_worksheet_line_8
+  reason: Worksheet-internal value with no official-form box.
+- node_id: schedule_d_2025_carryover_worksheet_line_9_negated
+  reason: Worksheet-internal value with no official-form box.
+- node_id: schedule_d_2025_carryover_worksheet_line_9
+  reason: Worksheet-internal value with no official-form box.
+- node_id: schedule_d_2025_carryover_worksheet_line_10
+  reason: Worksheet-internal value with no official-form box.
+- node_id: schedule_d_2025_carryover_worksheet_line_11_pre_floor
+  reason: Worksheet-internal value with no official-form box.
+- node_id: schedule_d_2025_carryover_worksheet_line_11
+  reason: Worksheet-internal value with no official-form box.
+- node_id: schedule_d_2025_carryover_worksheet_line_12
+  reason: Worksheet-internal value with no official-form box.
+- node_id: schedule_d_2025_carryover_worksheet_line_13_pre_floor
+  reason: Worksheet-internal value with no official-form box.
+- node_id: schedule_d_2025_carryover_worksheet_line_13
+  reason: Worksheet-internal value with no official-form box.
 - node_id: schedule_d_2025_capital_loss_limit_default
   reason: Not a printable form line or not mapped in the M12 supported output profile.
 - node_id: schedule_d_2025_capital_loss_limit_mfs
