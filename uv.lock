@@ -2281,6 +2281,9 @@ llm-openai = [
 llm-openrouter = [
     { name = "openai" },
 ]
+pdf = [
+    { name = "pymupdf" },
+]
 policyengine = [
     { name = "policyengine-us" },
 ]
@@ -2315,11 +2318,12 @@ requires-dist = [
     { name = "pymupdf", marker = "extra == 'acquire'", specifier = ">=1.24" },
     { name = "pymupdf", marker = "extra == 'build'", specifier = ">=1.24" },
     { name = "pymupdf", marker = "extra == 'dev'", specifier = ">=1.24" },
+    { name = "pymupdf", marker = "extra == 'pdf'", specifier = ">=1.24" },
     { name = "pytest", marker = "extra == 'dev'", specifier = ">=8.0" },
     { name = "pyyaml", specifier = ">=6.0" },
     { name = "typer", specifier = ">=0.12" },
 ]
-provides-extras = ["policyengine", "acquire", "llm-anthropic", "llm-openai", "llm-openrouter", "llm", "extract", "oracles", "build", "dev"]
+provides-extras = ["policyengine", "pdf", "acquire", "llm-anthropic", "llm-openai", "llm-openrouter", "llm", "extract", "oracles", "build", "dev"]
 
 [package.metadata.requires-dev]
 dev = [{ name = "pytest", specifier = ">=8.0" }]

@@ -177,3 +177,9 @@ corpus-factory repo is created when M6 starts; until then nothing blocks on it.
 Decisions proposed to John: (1) create the separate corpus-factory repo at M6 start;
 (2) no IRS enrollment, public artifacts only; (3) OTS static mining is a time-boxed
 experiment, never load-bearing. Defaults adopted unless vetoed.
+# Return sidecar
+
+M12 exposes the established OpenTaxSolver differential renderer as a
+return-scoped sidecar: one US 1040 input, one Form 8949 CSV, and a README with
+the pinned executable command. It is an independent second-opinion artifact,
+not an e-file submission format.
