@@ -425,6 +425,31 @@ nothing ships to users before it.** Verdict outcomes distinguish confirmed /
 pipeline-defect (fix + re-extract) / source-pathology (licenses a MARKED manual
 override with human provenance).
 
+### Year rollover (TY2026) - pinned 2026-07-10, plan just-in-time when TY2026 docs drop
+The annual-update workflow is the delta design in `docs/extraction-verification.md`
+Section 6: acquire per manifest, re-extract, structurally diff against the prior year's
+promoted graph, and route ONLY genuine IRS deltas to human review; unchanged objects
+inherit their trust tier with the free layers re-run; parameter values (the bulk of
+annual change) arrive as clean cited-node diffs, machine-witnessed by the
+parameter-diff oracle and OTS constants before any human looks. Most machinery exists
+(M3 acquire --check; M8 verify diff-drafts with semantic-core narrowing). Known seams
+that are NOT yet coded and must not be discovered in a panic at rollover time:
+1. **Cross-year identity mapping** - object IDs are year-suffixed (`form_1040_2025`);
+   diff-drafts has only been exercised within a year. The IRS line-number spine is the
+   join key; renumbered/added/removed lines surface as explicit adds/removes, never
+   silent matches.
+2. **Tier-inheritance policy** - documented (extraction-verification Section 6) but not
+   implemented: unchanged objects inherit tier + re-run L0/L1/L3 + frozen L4 examples;
+   changed objects re-enter the ladder at the bottom.
+3. **Manifest rollover** - templated year rollout instead of hand-editing URLs; IRS
+   URL patterns are predictable but each entry needs a fetch-verify.
+4. **Oracle/witness rollover** - new-year OTS release + PolicyEngine parameter YAML
+   must be re-pinned; the frozen corpus and box map are year-scoped and re-freeze.
+The first rollover is the shakedown of this whole design and gets its own phase plan;
+sequencing: after M15 (the workbench is the surface where the delta review happens) or
+when TY2026 documents drop, whichever is later. Human effort target: review the delta
+report, nothing else twice.
+
 ---
 
 ## Configuration - one-stop tuning
