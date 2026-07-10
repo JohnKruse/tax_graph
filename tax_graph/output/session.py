@@ -78,6 +78,19 @@ def used_form_ids(facts_document: Mapping[str, Any]) -> tuple[str, ...]:
     return tuple(sorted(used))
 
 
+def _resolve_ots_template_path(project_root: Path, year: str | int) -> Path | None:
+    """Best-effort real OTS template lookup; None if OTS is not installed locally."""
+    from tax_graph.oracles.ots import OtsInstallError, find_ots_1040_template, find_ots_executable, release_from_config
+
+    try:
+        config = load_config(root=project_root)
+        release = release_from_config(config, root=project_root, year=str(year))
+        executable = find_ots_executable(release.install_dir, year=str(year), executable=release.executable)
+        return find_ots_1040_template(executable, year=str(year))
+    except (OtsInstallError, FileNotFoundError, OSError):
+        return None
+
+
 def export_filing_bundle(
     *,
     facts_document: Mapping[str, Any],
@@ -109,7 +122,10 @@ def export_filing_bundle(
             )
         )
         blank_notes.extend({"document_id": document_id, **item} for item in notes)
-    sidecar = write_ots_sidecar(facts_document, destination / "ots", root=project, template_path=template_path)
+    resolved_template_path = template_path if template_path is not None else _resolve_ots_template_path(project, year)
+    sidecar = write_ots_sidecar(
+        facts_document, destination / "ots", root=project, template_path=resolved_template_path
+    )
     manifest = {
         "forms": [str(item.output_path) for item in filled],
         "sidecar": {key: str(value) for key, value in sidecar.items()},

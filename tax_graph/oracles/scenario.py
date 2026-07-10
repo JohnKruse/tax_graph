@@ -343,9 +343,9 @@ def _fallback_ots_template(tax_year: str) -> str:
             "VirtCurr?  N",
             "CkSepLivedApart  N",
             "f8949_spreadsheet-A/D:",
-            "D14 0",
-            "D19 0",
-            "Collectibles 0",
+            "D14 0 ;",
+            "D19 0 ;",
+            "Collectibles 0 ;",
             "",
         ]
     )
@@ -379,7 +379,7 @@ def _ensure_template_fields(template: str, labels: tuple[str, ...]) -> str:
     ordered_missing = [label for label in ("L1a", "L2b", "L3a", "L3b") if label in missing]
     trailing_missing = [label for label in missing if label not in ordered_missing]
     if ordered_missing and "f8949_spreadsheet-A/D" in rendered:
-        ordered_block = "\n".join(ordered_missing)
+        ordered_block = "\n".join(f"{label} ;" for label in ordered_missing)
         rendered = rendered.replace(
             "f8949_spreadsheet-A/D",
             f"{ordered_block}\nf8949_spreadsheet-A/D",
@@ -387,7 +387,7 @@ def _ensure_template_fields(template: str, labels: tuple[str, ...]) -> str:
         )
     if not trailing_missing:
         return rendered if rendered.endswith("\n") else f"{rendered}\n"
-    extra = "\n".join(f"{label}" for label in trailing_missing)
+    extra = "\n".join(f"{label} ;" for label in trailing_missing)
     suffix = "\n" if rendered.endswith("\n") else "\n"
     return f"{rendered}{suffix}{extra}\n"
 

@@ -201,6 +201,17 @@ def test_scenario_renders_ots_input_golden():
     assert render_ots_input_text(_scenario()) == expected
 
 
+@pytest.mark.m12
+def test_fallback_template_numeric_fields_are_semicolon_terminated():
+    # The real OTS parser reads a numeric field as a value list that only
+    # ends at a ";" - an unterminated field silently swallows the next
+    # label as another value and fails with "Bad float '<label>'".
+    rendered = render_ots_input_text(_scenario())
+    for label in ("L1a", "L2b", "L3a", "L3b", "D14", "D19", "Collectibles"):
+        line = next(l for l in rendered.splitlines() if l.split()[0] == label)
+        assert line.rstrip().endswith(";"), f"{label} line is not semicolon-terminated: {line!r}"
+
+
 @pytest.mark.m6
 def test_scenario_renders_ots_8949_csv_golden():
     expected = (FIXTURES / "expected_ots_8949.csv").read_text(encoding="utf-8")

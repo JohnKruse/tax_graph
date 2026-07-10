@@ -8,11 +8,11 @@ Dependents  0
 CkHomeInUS  Y
 VirtCurr?  N
 CkSepLivedApart  N
-L1a  0
-L2b  0
-L3a  0
-L3b  0
+L1a  0 ;
+L2b  0 ;
+L3a  0 ;
+L3b  0 ;
 f8949_spreadsheet-A/D:  m6_single_lot_gain_f8949.csv
-D14  0
-D19  0
-Collectibles  0
+D14  0 ;
+D19  0 ;
+Collectibles  0 ;
