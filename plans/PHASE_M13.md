@@ -154,6 +154,86 @@ walls this phase, modeled later only as data warrants), QBI, lines 17-24, AMT.
   paths compute line by line in the trace; the routing boundary flips on a one-dollar
   change in line 19; wrong-rate drill caught. Docs.
 
+  **ARCHITECT DESIGN NOTE (2026-07-10, de-risking this step before implementation):**
+  The Architect researched this step against the shipped OTS source
+  (`taxsolve_US_1040_2025.c`, function `sched_D_tax_worksheet()` at line 1436, and
+  the routing block at line 1355 that sets `Do_SDTW`/`Do_QDCGTW`) rather than
+  hand-deriving the worksheet from instruction text alone - OTS's C code is a
+  pre-validated reference for the worksheet's exact conditional structure. Started
+  authoring the graph nodes/citations for all 47 lines, caught a real design flaw
+  before writing any edges, and reverted the inert (edge-less, non-computing)
+  scaffolding rather than commit an unverified partial worksheet. Full findings
+  below so the next session does not have to redo this research.
+
+  *Routing (verified, matches M11 exactly at the boundary):* line 17 test is
+  `MIN(SchedD[15], SchedD[16]) > 0`; if true, D18 and D19 become live and line 20
+  tests `MAX(D18, D19) > 0` (if true, run SDTW; else QDCGT). If line 17 is false
+  (or Schedule D is a loss/zero), OTS falls through to the EXISTING M11 line-22
+  gate (`qualified dividends > 0 -> QDCGT`), which is already correctly modeled as
+  `form_1040_2025_qdcgt_line_4 > 0` - no change needed there. The new routing is
+  strictly an ADDITIONAL outer IF_ELSE wrapping the current `form_1040_2025_root_line_16`
+  chain: `condition = MIN(line17_min, line20_max) > 0` -> when_true = SDTW line 47,
+  when_false = the existing (unchanged) QDCGT-vs-regular-tax chain. Verify with an
+  M11 regression run (existing QDCGT/table/bracket scenarios must produce byte-identical
+  results after the refactor) BEFORE adding the new SDTW branch.
+
+  *Worksheet line map:* SDTW line 1 = `form_1040_2025_root_line_15` (reuse, no new
+  node). Lines 3/4 (Form 4952) are out of scope - model as cited zero-constant
+  parameter nodes, not a guessed input (Form 4952 stays unmodeled project-wide).
+  Line 15 threshold reuses `form_1040_2025_qdcgt_breakpoint_0_*` (identical figures,
+  same `lookup_selected_value` pattern already used for the QDCGT worksheet - see
+  `graph/2025/edges/form-1040.yaml` lines 556-606 for the exact key/role wiring to
+  copy). Line 26 reuses `form_1040_2025_qdcgt_breakpoint_15_*` (identical figures).
+  Line 19 needs ONE new parameter set (`form_1040_2025_sdtw_breakpoint_32_*`):
+  $197,300 single/MFS/HOH, $394,600 MFJ/QSS - verified against the cited instructions
+  text AND cross-checked against the existing `form_1040_2025_brackets_single`
+  0.32-rate floor (also 197,300) as an independent internal witness.
+  **Known oracle discrepancy, do not copy:** OTS's own C source hardcodes 197390.0
+  for single/MFS at this exact line (a likely OTS-side typo, not present in the
+  IRS text or our own bracket data) - use 197,300 as authoritative per our citation
+  and flag the ~$90 single/MFS income sliver as a documented, non-blocking triage
+  entry if live fuzz ever lands exactly there (astronomically unlikely at n=100).
+  Line 44 and line 46 both need "tax on an arbitrary income amount," but only line
+  46's input (full taxable income) matches the existing `form_1040_2025_regular_tax`
+  chain exactly (reuse it directly, zero new nodes) - line 44's input is SDTW line 21,
+  a different value, so its `lookup_tax_table_amount` / `lookup_bracket_tax` /
+  `if_less_than_currency` triad must be cloned with line 21 as the amount source
+  (see `graph/2025/edges/form-1040.yaml` lines 378-449 for the exact pattern to
+  clone).
+
+  **The bug caught in design review - handle this correctly, it is the crux of the
+  step:** lines 23-43 exist only when `line 1 > line 16` (call this gate1); nested
+  inside that, lines 33-43 exist only when `line 1 == line 32` (gate2); nested
+  inside THAT, lines 35-40 additionally require `SchedD[19] != 0` and lines 41-43
+  additionally require `SchedD[18] != 0`. A naive implementation that computes each
+  gate's condition independently from possibly-ungated upstream values is WRONG:
+  if gate1 is false, line 24 (`= line 22`, itself never gated because line 22 is
+  used outside this block too) can still be nonzero, and line 32 (`= line24 + line30`)
+  can end up numerically equal to line 1 in a real edge case (when line 17's own
+  floor to zero and line 22 = line 1 coincide), which would make gate2's naive
+  `line1 == line32` test fire even though gate1 was false - silently computing 15%/
+  20%/25%/28%-rate tax that should not apply. Do not rely on any single line's
+  "natural" flooring to imply an enclosing gate's zero-ness; every value read by an
+  OUTER gate's condition test must itself already be gated by that same outer gate
+  (or the gate must be applied at every consuming line, not just the block's first
+  line) - use nested nested IF_ELSE mirroring the C code's actual brace nesting,
+  not independent flat conditions. Test this specific interaction with a scenario
+  where line 1 == line 16 (gate1 false) but line 22 alone would coincidentally
+  satisfy a naive gate2 test, to prove the nested version does NOT misfire.
+  Recommended implementation order to de-risk: (1) the line 16-vs-SDTW routing
+  refactor alone, verified against unchanged M11 behavior; (2) SDTW lines 1-22
+  (no nested gates yet, these are unconditional); (3) the gate1 wrapper around
+  lines 23-32 alone, verified with a scenario that has ONLY gate1 relevant
+  (D18=D19=0 is impossible here since that would route to QDCGT instead - use a
+  scenario where D18/D19 are nonzero but small, gate1 true, gate2/3/4 all false,
+  and confirm lines 33-43 output zero); (4) gate2 nested inside gate1 with the
+  adversarial coincidence scenario above; (5) gates 3/4 nested inside gate2 last.
+  Verify EACH stage against a hand-traced OTS run (build the exact input, run
+  `taxsolve_US_1040_2025.exe` on it directly, diff the `ws[]` trace lines it prints
+  to stderr/output against your graph's trace) before adding the next nesting
+  level - this is not optional given the blast radius (every taxpayer with 28%-rate
+  or unrecaptured-1250 gain routes through this exact logic).
+
 - [ ] **Step 4 [worker-standard] - Oracle widening + corpus re-freeze + PE re-run.**
   Box map adds D6/D14/D19/Collectibles (sign conventions from Step 1's probe
   discipline); domain adds carryover ranges straddling the loss-limit boundaries and
