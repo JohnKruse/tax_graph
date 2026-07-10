@@ -1,0 +1,310 @@
+tax_year: 2025
+document_id: form_1040_2025
+inventory: graph/2025/field_inventories/form_1040_2025.json
+mappings:
+- slot: taxpayer_first_name
+  field_name: topmostSubform[0].Page1[0].f1_14[0]
+  format: text
+  identity_slot: taxpayer_first_name
+- slot: taxpayer_last_name
+  field_name: topmostSubform[0].Page1[0].f1_15[0]
+  format: text
+  identity_slot: taxpayer_last_name
+- slot: taxpayer_ssn
+  field_name: topmostSubform[0].Page1[0].f1_16[0]
+  format: text
+  identity_slot: taxpayer_ssn
+- slot: spouse_first_name
+  field_name: topmostSubform[0].Page1[0].f1_17[0]
+  format: text
+  identity_slot: spouse_first_name
+- slot: spouse_last_name
+  field_name: topmostSubform[0].Page1[0].f1_18[0]
+  format: text
+  identity_slot: spouse_last_name
+- slot: spouse_ssn
+  field_name: topmostSubform[0].Page1[0].f1_19[0]
+  format: text
+  identity_slot: spouse_ssn
+- slot: address_line_1
+  field_name: topmostSubform[0].Page1[0].Address_ReadOrder[0].f1_20[0]
+  format: text
+  identity_slot: address_line_1
+- slot: apartment
+  field_name: topmostSubform[0].Page1[0].Address_ReadOrder[0].f1_21[0]
+  format: text
+  identity_slot: apartment
+- slot: city
+  field_name: topmostSubform[0].Page1[0].Address_ReadOrder[0].f1_22[0]
+  format: text
+  identity_slot: city
+- slot: state
+  field_name: topmostSubform[0].Page1[0].Address_ReadOrder[0].f1_23[0]
+  format: text
+  identity_slot: state
+- slot: zip_code
+  field_name: topmostSubform[0].Page1[0].Address_ReadOrder[0].f1_24[0]
+  format: text
+  identity_slot: zip_code
+- slot: filing_status
+  field_name: topmostSubform[0].Page1[0].Checkbox_ReadOrder[0].c1_8[0]
+  format: checkbox
+  identity_slot: filing_status
+  checkbox_value: single
+- slot: filing_status
+  field_name: topmostSubform[0].Page1[0].Checkbox_ReadOrder[0].c1_8[1]
+  format: checkbox
+  identity_slot: filing_status
+  checkbox_value: married_filing_jointly
+- slot: filing_status
+  field_name: topmostSubform[0].Page1[0].Checkbox_ReadOrder[0].c1_8[2]
+  format: checkbox
+  identity_slot: filing_status
+  checkbox_value: married_filing_separately
+- slot: filing_status
+  field_name: topmostSubform[0].Page1[0].c1_8[0]
+  format: checkbox
+  identity_slot: filing_status
+  checkbox_value: head_of_household
+- slot: filing_status
+  field_name: topmostSubform[0].Page1[0].c1_8[1]
+  format: checkbox
+  identity_slot: filing_status
+  checkbox_value: qualifying_surviving_spouse
+- slot: form_1040_2025_root_line_1a
+  field_name: topmostSubform[0].Page1[0].f1_47[0]
+  format: dollars
+  node_id: form_1040_2025_root_line_1a
+- slot: form_1040_2025_root_line_z
+  field_name: topmostSubform[0].Page1[0].f1_57[0]
+  format: dollars
+  node_id: form_1040_2025_root_line_z
+- slot: form_1040_2025_root_line_2b
+  field_name: topmostSubform[0].Page1[0].f1_59[0]
+  format: dollars
+  node_id: form_1040_2025_root_line_2b
+- slot: form_1040_2025_root_line_3a
+  field_name: topmostSubform[0].Page1[0].f1_60[0]
+  format: dollars
+  node_id: form_1040_2025_root_line_3a
+- slot: form_1040_2025_root_line_3b
+  field_name: topmostSubform[0].Page1[0].f1_61[0]
+  format: dollars
+  node_id: form_1040_2025_root_line_3b
+- slot: form_1040_2025_line_7_capital_gain_loss
+  field_name: topmostSubform[0].Page1[0].f1_70[0]
+  format: dollars
+  node_id: form_1040_2025_line_7_capital_gain_loss
+- slot: form_1040_2025_root_line_8
+  field_name: topmostSubform[0].Page1[0].f1_72[0]
+  format: dollars
+  node_id: form_1040_2025_root_line_8
+- slot: form_1040_2025_root_line_9
+  field_name: topmostSubform[0].Page1[0].f1_73[0]
+  format: dollars
+  node_id: form_1040_2025_root_line_9
+- slot: form_1040_2025_root_line_10
+  field_name: topmostSubform[0].Page1[0].f1_74[0]
+  format: dollars
+  node_id: form_1040_2025_root_line_10
+- slot: form_1040_2025_root_line_11a
+  field_name: topmostSubform[0].Page1[0].f1_75[0]
+  format: dollars
+  node_id: form_1040_2025_root_line_11a
+- slot: form_1040_2025_root_line_11b
+  field_name: topmostSubform[0].Page2[0].f2_01[0]
+  format: dollars
+  node_id: form_1040_2025_root_line_11b
+- slot: form_1040_2025_root_line_12e
+  field_name: topmostSubform[0].Page2[0].f2_02[0]
+  format: dollars
+  node_id: form_1040_2025_root_line_12e
+- slot: form_1040_2025_root_line_13a
+  field_name: topmostSubform[0].Page2[0].f2_03[0]
+  format: dollars
+  node_id: form_1040_2025_root_line_13a
+- slot: form_1040_2025_root_line_13b
+  field_name: topmostSubform[0].Page2[0].f2_04[0]
+  format: dollars
+  node_id: form_1040_2025_root_line_13b
+- slot: form_1040_2025_root_line_14
+  field_name: topmostSubform[0].Page2[0].f2_05[0]
+  format: dollars
+  node_id: form_1040_2025_root_line_14
+- slot: form_1040_2025_root_line_15
+  field_name: topmostSubform[0].Page2[0].f2_06[0]
+  format: dollars
+  node_id: form_1040_2025_root_line_15
+- slot: form_1040_2025_root_line_16
+  field_name: topmostSubform[0].Page2[0].f2_08[0]
+  format: dollars
+  node_id: form_1040_2025_root_line_16
+excluded_nodes:
+- node_id: form_1040_2025_brackets_hoh
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+- node_id: form_1040_2025_brackets_mfj
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+- node_id: form_1040_2025_brackets_mfs
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+- node_id: form_1040_2025_brackets_qss
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+- node_id: form_1040_2025_brackets_single
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+- node_id: form_1040_2025_deduction_method
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+- node_id: form_1040_2025_qdcgt_breakpoint_0_hoh
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+- node_id: form_1040_2025_qdcgt_breakpoint_0_mfj
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+- node_id: form_1040_2025_qdcgt_breakpoint_0_mfs
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+- node_id: form_1040_2025_qdcgt_breakpoint_0_qss
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+- node_id: form_1040_2025_qdcgt_breakpoint_0_single
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+- node_id: form_1040_2025_qdcgt_breakpoint_15_hoh
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+- node_id: form_1040_2025_qdcgt_breakpoint_15_mfj
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+- node_id: form_1040_2025_qdcgt_breakpoint_15_mfs
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+- node_id: form_1040_2025_qdcgt_breakpoint_15_qss
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+- node_id: form_1040_2025_qdcgt_breakpoint_15_single
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+- node_id: form_1040_2025_qdcgt_line_1
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+- node_id: form_1040_2025_qdcgt_line_10
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+- node_id: form_1040_2025_qdcgt_line_11
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+- node_id: form_1040_2025_qdcgt_line_12
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+- node_id: form_1040_2025_qdcgt_line_13
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+- node_id: form_1040_2025_qdcgt_line_14
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+- node_id: form_1040_2025_qdcgt_line_15
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+- node_id: form_1040_2025_qdcgt_line_16
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+- node_id: form_1040_2025_qdcgt_line_16_pre_floor
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+- node_id: form_1040_2025_qdcgt_line_17
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+- node_id: form_1040_2025_qdcgt_line_18
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+- node_id: form_1040_2025_qdcgt_line_19
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+- node_id: form_1040_2025_qdcgt_line_2
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+- node_id: form_1040_2025_qdcgt_line_20
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+- node_id: form_1040_2025_qdcgt_line_21
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+- node_id: form_1040_2025_qdcgt_line_22
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+- node_id: form_1040_2025_qdcgt_line_22_tax_bracket
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+- node_id: form_1040_2025_qdcgt_line_22_tax_table
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+- node_id: form_1040_2025_qdcgt_line_23
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+- node_id: form_1040_2025_qdcgt_line_24
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+- node_id: form_1040_2025_qdcgt_line_24_tax_bracket
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+- node_id: form_1040_2025_qdcgt_line_24_tax_table
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+- node_id: form_1040_2025_qdcgt_line_25
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+- node_id: form_1040_2025_qdcgt_line_3
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+- node_id: form_1040_2025_qdcgt_line_3_candidate
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+- node_id: form_1040_2025_qdcgt_line_4
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+- node_id: form_1040_2025_qdcgt_line_5
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+- node_id: form_1040_2025_qdcgt_line_5_pre_floor
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+- node_id: form_1040_2025_qdcgt_line_6
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+- node_id: form_1040_2025_qdcgt_line_7
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+- node_id: form_1040_2025_qdcgt_line_8
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+- node_id: form_1040_2025_qdcgt_line_9
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+- node_id: form_1040_2025_qdcgt_rate_15
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+- node_id: form_1040_2025_qdcgt_rate_20
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+- node_id: form_1040_2025_regular_tax
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+- node_id: form_1040_2025_regular_tax_bracket_amount
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+- node_id: form_1040_2025_regular_tax_brackets
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+- node_id: form_1040_2025_regular_tax_table_amount
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+- node_id: form_1040_2025_root_line_15_pre_floor
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+- node_id: form_1040_2025_root_line_b
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+- node_id: form_1040_2025_root_line_c
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+- node_id: form_1040_2025_root_line_d
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+- node_id: form_1040_2025_root_line_e
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+- node_id: form_1040_2025_root_line_f
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+- node_id: form_1040_2025_root_line_g
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+- node_id: form_1040_2025_root_line_h
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+- node_id: form_1040_2025_standard_deduction_amount
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+- node_id: form_1040_2025_standard_deduction_hoh
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+- node_id: form_1040_2025_standard_deduction_mfj
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+- node_id: form_1040_2025_standard_deduction_mfs
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+- node_id: form_1040_2025_standard_deduction_qss
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+- node_id: form_1040_2025_standard_deduction_single
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+- node_id: form_1040_2025_tax_table_threshold
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+- node_id: form_1040_2025_zero_floor
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+frontier_fields:
+- frontier_id: deferred_form_1040_2025_line_13a_qbi
+  field_name: topmostSubform[0].Page2[0].f2_03[0]
+  note: Line 13a QBI is not modeled and remains blank.
+- frontier_id: deferred_form_1040_2025_total_tax_chain
+  field_name: topmostSubform[0].Page2[0].f2_09[0]
+  note: Lines 17-24 are not modeled and remain blank.
+- frontier_id: deferred_form_1040_2025_total_tax_chain
+  field_name: topmostSubform[0].Page2[0].f2_10[0]
+  note: Lines 17-24 are not modeled and remain blank.
+- frontier_id: deferred_form_1040_2025_total_tax_chain
+  field_name: topmostSubform[0].Page2[0].f2_11[0]
+  note: Lines 17-24 are not modeled and remain blank.
+- frontier_id: deferred_form_1040_2025_total_tax_chain
+  field_name: topmostSubform[0].Page2[0].f2_12[0]
+  note: Lines 17-24 are not modeled and remain blank.
+- frontier_id: deferred_form_1040_2025_total_tax_chain
+  field_name: topmostSubform[0].Page2[0].f2_13[0]
+  note: Lines 17-24 are not modeled and remain blank.
+- frontier_id: deferred_form_1040_2025_total_tax_chain
+  field_name: topmostSubform[0].Page2[0].f2_14[0]
+  note: Lines 17-24 are not modeled and remain blank.
+- frontier_id: deferred_form_1040_2025_total_tax_chain
+  field_name: topmostSubform[0].Page2[0].f2_15[0]
+  note: Lines 17-24 are not modeled and remain blank.
+- frontier_id: deferred_form_1040_2025_total_tax_chain
+  field_name: topmostSubform[0].Page2[0].f2_16[0]
+  note: Lines 17-24 are not modeled and remain blank.

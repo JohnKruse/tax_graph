@@ -1,0 +1,82 @@
+tax_year: 2025
+document_id: schedule_1a_2025
+inventory: graph/2025/field_inventories/schedule_1a_2025.json
+mappings:
+- slot: schedule_1a_2025_part_vi_line_38
+  field_name: form1[0].Page2[0].f2_23[0]
+  format: dollars
+  node_id: schedule_1a_2025_part_vi_line_38
+excluded_nodes:
+- node_id: schedule_1a_2025_part_i_line_1
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+- node_id: schedule_1a_2025_part_i_line_2a
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+- node_id: schedule_1a_2025_part_i_line_3
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+- node_id: schedule_1a_2025_part_i_line_b
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+- node_id: schedule_1a_2025_part_i_line_c
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+- node_id: schedule_1a_2025_part_i_line_d
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+- node_id: schedule_1a_2025_part_i_line_e
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+- node_id: schedule_1a_2025_part_ii_line_10
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+- node_id: schedule_1a_2025_part_ii_line_12
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+- node_id: schedule_1a_2025_part_ii_line_4b
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+- node_id: schedule_1a_2025_part_ii_line_6
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+- node_id: schedule_1a_2025_part_ii_line_7
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+- node_id: schedule_1a_2025_part_ii_line_8
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+- node_id: schedule_1a_2025_part_ii_line_9
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+- node_id: schedule_1a_2025_part_ii_line_a
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+- node_id: schedule_1a_2025_part_iii_line_14
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+- node_id: schedule_1a_2025_part_iii_line_16
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+- node_id: schedule_1a_2025_part_iii_line_17
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+- node_id: schedule_1a_2025_part_iii_line_18
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+- node_id: schedule_1a_2025_part_iii_line_19
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+- node_id: schedule_1a_2025_part_iii_line_20
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+- node_id: schedule_1a_2025_part_iv_line_22
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+- node_id: schedule_1a_2025_part_iv_line_23
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+- node_id: schedule_1a_2025_part_iv_line_24
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+- node_id: schedule_1a_2025_part_iv_line_25
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+- node_id: schedule_1a_2025_part_iv_line_26
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+- node_id: schedule_1a_2025_part_iv_line_27
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+- node_id: schedule_1a_2025_part_iv_line_28
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+- node_id: schedule_1a_2025_part_iv_line_29
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+- node_id: schedule_1a_2025_part_v_line_31
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+- node_id: schedule_1a_2025_part_v_line_32
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+- node_id: schedule_1a_2025_part_v_line_33
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+- node_id: schedule_1a_2025_part_v_line_34
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+- node_id: schedule_1a_2025_part_v_line_36
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+- node_id: schedule_1a_2025_part_v_line_37
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+- node_id: schedule_1a_2025_part_vi_line_13c
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+frontier_fields: []

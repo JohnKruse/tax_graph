@@ -1,0 +1,58 @@
+tax_year: 2025
+document_id: form_8949_2025
+inventory: graph/2025/field_inventories/form_8949_2025.json
+mappings:
+- slot: form_8949_2025_part_i_line_2_line_2_column_d_total
+  field_name: topmostSubform[0].Page1[0].f1_92[0]
+  format: dollars
+  node_id: form_8949_2025_part_i_line_2_line_2_column_d_total
+- slot: form_8949_2025_part_i_line_2_line_2_column_e_total
+  field_name: topmostSubform[0].Page1[0].f1_93[0]
+  format: dollars
+  node_id: form_8949_2025_part_i_line_2_line_2_column_e_total
+- slot: form_8949_2025_part_i_line_2_line_2_column_g_total
+  field_name: topmostSubform[0].Page1[0].f1_94[0]
+  format: dollars
+  node_id: form_8949_2025_part_i_line_2_line_2_column_g_total
+- slot: form_8949_2025_part_i_line_2_line_2_column_h_total
+  field_name: topmostSubform[0].Page1[0].f1_95[0]
+  format: dollars
+  node_id: form_8949_2025_part_i_line_2_line_2_column_h_total
+- slot: form_8949_2025_part_ii_line_2_line_2_column_d_total
+  field_name: topmostSubform[0].Page2[0].f2_92[0]
+  format: dollars
+  node_id: form_8949_2025_part_ii_line_2_line_2_column_d_total
+- slot: form_8949_2025_part_ii_line_2_line_2_column_e_total
+  field_name: topmostSubform[0].Page2[0].f2_93[0]
+  format: dollars
+  node_id: form_8949_2025_part_ii_line_2_line_2_column_e_total
+- slot: form_8949_2025_part_ii_line_2_line_2_column_g_total
+  field_name: topmostSubform[0].Page2[0].f2_94[0]
+  format: dollars
+  node_id: form_8949_2025_part_ii_line_2_line_2_column_g_total
+- slot: form_8949_2025_part_ii_line_2_line_2_column_h_total
+  field_name: topmostSubform[0].Page2[0].f2_95[0]
+  format: dollars
+  node_id: form_8949_2025_part_ii_line_2_line_2_column_h_total
+excluded_nodes:
+- node_id: form_8949_2025_part_i_line_1_column_d
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+- node_id: form_8949_2025_part_i_line_1_column_d_minus_e
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+- node_id: form_8949_2025_part_i_line_1_column_e
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+- node_id: form_8949_2025_part_i_line_1_column_g
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+- node_id: form_8949_2025_part_i_line_1_column_h
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+- node_id: form_8949_2025_part_ii_line_1_column_d
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+- node_id: form_8949_2025_part_ii_line_1_column_d_minus_e
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+- node_id: form_8949_2025_part_ii_line_1_column_e
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+- node_id: form_8949_2025_part_ii_line_1_column_g
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+- node_id: form_8949_2025_part_ii_line_1_column_h
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+frontier_fields: []

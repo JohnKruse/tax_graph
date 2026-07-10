@@ -14,6 +14,7 @@ import re
 from typing import Any, Mapping
 
 from tax_graph.io.loader import GRAPH_KINDS, LoadedGraph, load_graph, load_yaml
+from tax_graph.output.field_maps import validate_field_maps
 from tax_graph.verify.completeness import check_loaded_graph_field_completeness
 
 try:
@@ -89,6 +90,14 @@ def validate_loaded_graph(
     _validate_field_grid_completeness(graph, field_grids, mef_line_inventory, errors)
     _validate_acyclic_dependencies(graph, errors)
     _validate_tax_table(graph, schemas_dir, errors)
+    errors.extend(
+        validate_field_maps(
+            graph.year,
+            graph.root,
+            node_ids=(node.get("node_id", "") for node in graph.items("nodes")),
+            frontier_ids=(entry.get("frontier_id", "") for entry in _load_frontier_entries(graph)),
+        )
+    )
 
     return ValidationResult(
         year=graph.year,
@@ -562,4 +571,3 @@ def _validate_tax_table(graph: LoadedGraph, schemas_dir: Path, errors: list[str]
         except jsonschema.ValidationError as exc:
             preview = json.dumps(data, default=str)[:120]
             errors.append(f"[schema/tax_table] {exc.message} :: {preview}")
-

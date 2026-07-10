@@ -96,7 +96,7 @@ markers = [
   "m9: Phase M9 Schedule D expansion tests",
   "m10: Phase M10 batch expansion tests",
   "m11: Phase M11 first liability branch tests",
+  "m12: Phase M12 output layer tests",
   "network: tests that require live network access",
   "oracle: tests that require a pinned local oracle binary",
 ]
-

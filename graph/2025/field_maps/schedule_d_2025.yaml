@@ -1,0 +1,50 @@
+tax_year: 2025
+document_id: schedule_d_2025
+inventory: graph/2025/field_inventories/schedule_d_2025.json
+mappings:
+- slot: schedule_d_2025_line_7_net_st
+  field_name: topmostSubform[0].Page1[0].f1_22[0]
+  format: dollars
+  node_id: schedule_d_2025_line_7_net_st
+- slot: schedule_d_2025_line_15_net_lt
+  field_name: topmostSubform[0].Page1[0].f1_43[0]
+  format: dollars
+  node_id: schedule_d_2025_line_15_net_lt
+- slot: schedule_d_2025_line_16_total
+  field_name: topmostSubform[0].Page2[0].f2_1[0]
+  format: dollars
+  node_id: schedule_d_2025_line_16_total
+- slot: schedule_d_2025_line_21_capital_loss_limited
+  field_name: topmostSubform[0].Page2[0].f2_4[0]
+  format: dollars
+  node_id: schedule_d_2025_line_21_capital_loss_limited
+excluded_nodes:
+- node_id: schedule_d_2025_capital_loss_limit_default
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+- node_id: schedule_d_2025_capital_loss_limit_mfs
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+- node_id: schedule_d_2025_line_20_tax_computation
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+- node_id: schedule_d_2025_line_21_loss_limit
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+- node_id: schedule_d_2025_line_21_loss_limit_negative
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+- node_id: schedule_d_2025_part_i_line_1b_column_h
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+- node_id: schedule_d_2025_part_i_line_2_column_h
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+- node_id: schedule_d_2025_part_i_line_3_column_h
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+- node_id: schedule_d_2025_part_ii_line_10_column_h
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+- node_id: schedule_d_2025_part_ii_line_8b_column_h
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+- node_id: schedule_d_2025_part_ii_line_9_column_h
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+frontier_fields:
+- frontier_id: deferred_schedule_d_2025_line_20
+  field_name: topmostSubform[0].Page2[0].c2_2[0]
+  note: Schedule D line 20 worksheet branch is not modeled.
+- frontier_id: deferred_schedule_d_2025_line_20
+  field_name: topmostSubform[0].Page2[0].c2_2[1]
+  note: Schedule D line 20 worksheet branch is not modeled.

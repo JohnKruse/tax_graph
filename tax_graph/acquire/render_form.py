@@ -67,6 +67,8 @@ def extract_field_grid(pdf_path: str | Path) -> dict[str, Any]:
                 rect = widget.rect
                 field = {
                     "field_name": widget.field_name,
+                    "field_type": widget.field_type_string,
+                    "field_value": widget.field_value or "",
                     "page": page_number,
                     "x0": round(rect.x0, 2),
                     "y0": round(rect.y0, 2),
@@ -75,6 +77,8 @@ def extract_field_grid(pdf_path: str | Path) -> dict[str, Any]:
                     "x_cluster": _cluster(rect.x0),
                     "y_cluster": _cluster(rect.y0),
                 }
+                if widget.field_type_string == "CheckBox":
+                    field["on_state"] = widget.on_state()
                 line_anchor = _nearest_line_anchor(rect.y0, line_positions)
                 if line_anchor:
                     field["line_anchor"] = line_anchor

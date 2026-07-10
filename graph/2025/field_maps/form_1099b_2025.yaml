@@ -1,0 +1,6 @@
+tax_year: 2025
+document_id: form_1099b_2025
+inventory: graph/2025/field_inventories/form_1099b_2025.json
+mappings: []
+excluded_nodes: []
+frontier_fields: []

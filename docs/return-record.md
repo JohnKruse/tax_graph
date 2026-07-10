@@ -91,3 +91,9 @@ modeled in v0 and the amount is the raw net loss, not the usable carryover.
 
 - How the agent *surfaces* last year's decisions when a consistency election recurs.
 - Redaction/fixture tooling so records can be shared for testing with fake data only.
+# Filing field maps
+
+M12 maps graph nodes and identity slots to official IRS AcroForm widgets under
+`graph/<year>/field_maps/`. Committed inventories record each official widget's
+type, page, and rectangle. `tax-graph validate` checks that mapped fields exist,
+mapped nodes exist, exclusions are explicit, and frontier fields have blank notes.

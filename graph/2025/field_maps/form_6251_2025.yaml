@@ -1,0 +1,118 @@
+tax_year: 2025
+document_id: form_6251_2025
+inventory: graph/2025/field_inventories/form_6251_2025.json
+mappings: []
+excluded_nodes:
+- node_id: form_6251_2025_part_i_line_14
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+- node_id: form_6251_2025_part_i_line_1a
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+- node_id: form_6251_2025_part_i_line_1b
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+- node_id: form_6251_2025_part_i_line_2
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+- node_id: form_6251_2025_part_i_line_4
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+- node_id: form_6251_2025_part_i_line_b
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+- node_id: form_6251_2025_part_i_line_c
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+- node_id: form_6251_2025_part_i_line_d
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+- node_id: form_6251_2025_part_i_line_e
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+- node_id: form_6251_2025_part_i_line_f
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+- node_id: form_6251_2025_part_i_line_g
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+- node_id: form_6251_2025_part_i_line_h
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+- node_id: form_6251_2025_part_i_line_i
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+- node_id: form_6251_2025_part_i_line_j
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+- node_id: form_6251_2025_part_i_line_k
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+- node_id: form_6251_2025_part_i_line_l
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+- node_id: form_6251_2025_part_i_line_m
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+- node_id: form_6251_2025_part_i_line_n
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+- node_id: form_6251_2025_part_i_line_o
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+- node_id: form_6251_2025_part_i_line_p
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+- node_id: form_6251_2025_part_i_line_q
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+- node_id: form_6251_2025_part_i_line_r
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+- node_id: form_6251_2025_part_i_line_s
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+- node_id: form_6251_2025_part_i_line_t
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+- node_id: form_6251_2025_part_ii_line_10
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+- node_id: form_6251_2025_part_ii_line_16
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+- node_id: form_6251_2025_part_ii_line_5
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+- node_id: form_6251_2025_part_ii_line_6
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+- node_id: form_6251_2025_part_ii_line_9
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+- node_id: form_6251_2025_part_iii_line_12
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+- node_id: form_6251_2025_part_iii_line_13
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+- node_id: form_6251_2025_part_iii_line_14
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+- node_id: form_6251_2025_part_iii_line_15
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+- node_id: form_6251_2025_part_iii_line_17
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+- node_id: form_6251_2025_part_iii_line_18
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+- node_id: form_6251_2025_part_iii_line_19
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+- node_id: form_6251_2025_part_iii_line_20
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+- node_id: form_6251_2025_part_iii_line_21
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+- node_id: form_6251_2025_part_iii_line_22
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+- node_id: form_6251_2025_part_iii_line_23
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+- node_id: form_6251_2025_part_iii_line_24
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+- node_id: form_6251_2025_part_iii_line_25
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+- node_id: form_6251_2025_part_iii_line_26
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+- node_id: form_6251_2025_part_iii_line_27
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+- node_id: form_6251_2025_part_iii_line_28
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+- node_id: form_6251_2025_part_iii_line_29
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+- node_id: form_6251_2025_part_iii_line_30
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+- node_id: form_6251_2025_part_iii_line_31
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+- node_id: form_6251_2025_part_iii_line_32
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+- node_id: form_6251_2025_part_iii_line_33
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+- node_id: form_6251_2025_part_iii_line_34
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+- node_id: form_6251_2025_part_iii_line_35
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+- node_id: form_6251_2025_part_iii_line_36
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+- node_id: form_6251_2025_part_iii_line_38
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+- node_id: form_6251_2025_part_iii_line_39
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+- node_id: form_6251_2025_part_iii_line_40
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+frontier_fields: []

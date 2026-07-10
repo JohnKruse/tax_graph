@@ -1,0 +1,22 @@
+tax_year: 2025
+document_id: schedule_b_2025
+inventory: graph/2025/field_inventories/schedule_b_2025.json
+mappings:
+- slot: schedule_b_2025_root_line_4
+  field_name: topmostSubform[0].Page1[0].f1_33[0]
+  format: dollars
+  node_id: schedule_b_2025_root_line_4
+- slot: schedule_b_2025_root_line_6
+  field_name: topmostSubform[0].Page1[0].f1_64[0]
+  format: dollars
+  node_id: schedule_b_2025_root_line_6
+excluded_nodes:
+- node_id: schedule_b_2025_root_line_1
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+- node_id: schedule_b_2025_root_line_2
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+- node_id: schedule_b_2025_root_line_3
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+- node_id: schedule_b_2025_root_line_5
+  reason: Not a printable form line or not mapped in the M12 supported output profile.
+frontier_fields: []

@@ -85,7 +85,7 @@ declared walls render blank-with-note.
 
 ## Steps
 
-- [ ] **Step 1 [worker-standard] - AcroForm inventory + field-map schema.** Dump the
+- [DONE] **Step 1 [worker-standard] - AcroForm inventory + field-map schema.** Dump the
   AcroForm field names/types/page/rects of every acquired form PDF into committed
   per-form inventories (ots_label_inventory precedent). Add an additive field-map
   schema and per-form field maps under `graph/2025/field_maps/` (node_id or
