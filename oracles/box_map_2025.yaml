@@ -59,15 +59,31 @@ boxes:
   - node_id: schedule_d_2025_line_7_net_st
     ots_label: D7
     rounding: whole_dollar
+  - node_id: schedule_d_2025_line_6_st_carryover
+    ots_label: D6
+    rounding: whole_dollar
+    condition: tax_graph_present
   - node_id: schedule_d_2025_part_ii_line_8b_column_h
     ots_label: D8bh
     rounding: whole_dollar
   - node_id: schedule_d_2025_line_15_net_lt
     ots_label: D15
     rounding: whole_dollar
+  - node_id: schedule_d_2025_line_14_lt_carryover
+    ots_label: D14
+    rounding: whole_dollar
+    condition: tax_graph_present
   - node_id: schedule_d_2025_line_16_total
     ots_label: D16
     rounding: whole_dollar
+  - node_id: schedule_d_2025_line_18
+    ots_label: Collectibles_Gains
+    rounding: whole_dollar
+    condition: tax_graph_present
+  - node_id: schedule_d_2025_line_19
+    ots_label: D19
+    rounding: whole_dollar
+    condition: sdtw_applies
   - node_id: schedule_d_2025_line_21_capital_loss_limited
     ots_label: D21
     rounding: whole_dollar

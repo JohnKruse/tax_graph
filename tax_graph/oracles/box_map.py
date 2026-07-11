@@ -118,7 +118,7 @@ def validate_box_map(box_map: BoxMap, graph: Any, ots_labels: set[str]) -> BoxMa
             errors.append(f"unknown OTS label: {box.ots_label}")
         if box.rounding != "whole_dollar":
             errors.append(f"unsupported rounding policy for {box.node_id}: {box.rounding}")
-        if box.condition not in {None, "tax_graph_negative"}:
+        if box.condition not in {None, "tax_graph_negative", "tax_graph_present", "sdtw_applies"}:
             errors.append(f"unsupported condition for {box.node_id}: {box.condition}")
 
     seen_guards: set[str] = set()

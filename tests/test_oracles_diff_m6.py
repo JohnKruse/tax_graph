@@ -6,13 +6,19 @@ import pytest
 
 from tax_graph.engine import TABLE_FACTS_KEY, Engine, Graph
 from tax_graph.oracles.box_map import load_box_map
-from tax_graph.oracles.diff import diff_engine_result
+from tax_graph.oracles.diff import _whole_dollar, diff_engine_result
 from tax_graph.oracles.ots import parse_ots_output
 from tax_graph.oracles.scenario import CapitalGainScenario, render_tax_graph_facts_document
 
 
 ROOT = Path(__file__).resolve().parents[1]
 OTS_FIXTURES = ROOT / "tests" / "fixtures" / "ots"
+
+
+def test_oracle_diff_rounds_half_dollars_half_up():
+    """IRS whole-dollar comparison treats a .50 amount as the next dollar."""
+    assert _whole_dollar(10162.5) == 10163
+    assert _whole_dollar(-10162.5) == -10163
 
 
 def _zero_widened_tax_graph_facts():
@@ -154,6 +160,62 @@ def _regular_tax_scenario() -> CapitalGainScenario:
     )
 
 
+def _m13_carryover_scenario() -> CapitalGainScenario:
+    return CapitalGainScenario(
+        scenario_id="m13_carryover_diff",
+        tax_year="2025",
+        filing_status="single",
+        description="M13 carryover differential fixture",
+        date_acquired="01/15/2024",
+        date_sold="06/01/2025",
+        proceeds=0,
+        cost=0,
+        wages=50000,
+        extra_tax_graph_facts={
+            **_zero_widened_tax_graph_facts(),
+            "schedule_d_2025_line_6_st_carryover": -4000,
+            "schedule_d_2025_line_14_lt_carryover": -3000,
+            "schedule_d_2025_line_18": 0,
+            "schedule_d_2025_line_19": 0,
+        },
+        extra_ots_inputs={
+            **_zero_widened_ots_inputs(),
+            "D6": 4000,
+            "D14": 3000,
+            "Collectibles": 0,
+            "D19": 0,
+        },
+    )
+
+
+def _m13_sdtw_scenario() -> CapitalGainScenario:
+    return CapitalGainScenario(
+        scenario_id="m13_sdtw_diff",
+        tax_year="2025",
+        filing_status="single",
+        description="M13 Schedule D Tax Worksheet differential fixture",
+        date_acquired="01/15/2024",
+        date_sold="06/01/2025",
+        proceeds=40000,
+        cost=10000,
+        wages=250000,
+        extra_tax_graph_facts={
+            **_zero_widened_tax_graph_facts(),
+            "schedule_d_2025_line_6_st_carryover": 0,
+            "schedule_d_2025_line_14_lt_carryover": 0,
+            "schedule_d_2025_line_18": 20000,
+            "schedule_d_2025_line_19": 10000,
+        },
+        extra_ots_inputs={
+            **_zero_widened_ots_inputs(),
+            "D6": 0,
+            "D14": 0,
+            "Collectibles": 20000,
+            "D19": 10000,
+        },
+    )
+
+
 @pytest.mark.m6
 def test_diff_agrees_on_canned_ots_output():
     scenario = _gain_scenario()
@@ -259,6 +321,34 @@ def test_diff_agrees_on_regular_tax_table_canned_output():
     assert report.ok
     assert report.status == "agreed"
     assert not report.disagreements
+
+
+@pytest.mark.m13
+def test_diff_agrees_on_m13_carryover_canned_output():
+    """Carryover sign transforms agree with the live OTS fixture."""
+    scenario = _m13_carryover_scenario()
+    result = Engine(Graph("2025", root=ROOT, source="yaml")).execute(load_facts_from_scenario(scenario))
+    ots_values = parse_ots_output((OTS_FIXTURES / "ots_2025_m13_carryover_out.txt").read_text(encoding="utf-8"))
+
+    report = diff_engine_result(result, ots_values, _box_map(), scenario=scenario)
+
+    assert report.ok
+    assert not report.disagreements
+
+
+@pytest.mark.m13
+def test_diff_records_known_ots_sdtw_gate_defect():
+    """The SDTW fixture keeps the documented OTS gate defect visible."""
+    scenario = _m13_sdtw_scenario()
+    result = Engine(Graph("2025", root=ROOT, source="yaml")).execute(load_facts_from_scenario(scenario))
+    ots_values = parse_ots_output((OTS_FIXTURES / "ots_2025_m13_sdtw_out.txt").read_text(encoding="utf-8"))
+
+    report = diff_engine_result(result, ots_values, _box_map(), scenario=scenario)
+
+    assert report.status == "disagreed"
+    assert {(item.node_id, item.tax_graph_value, item.ots_value) for item in report.disagreements} == {
+        ("form_1040_2025_root_line_16", 60123, 52023)
+    }
 
 
 def load_facts_from_scenario(scenario: CapitalGainScenario):

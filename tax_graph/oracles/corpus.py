@@ -23,6 +23,9 @@ from tax_graph.oracles.scenario import (
 
 OtsRunner = Callable[..., Any]
 
+KNOWN_OTS_SDTW_GATE_DEFECT = "ots_sdtw_gate_defect_2026_07_11"
+IRS_ADJUDICATED_EXPECTED_SOURCE = "irs_adjudicated_schedule_d_tax_worksheet"
+
 
 @dataclass(frozen=True)
 class FreezeCandidate:
@@ -32,6 +35,7 @@ class FreezeCandidate:
     status: str = "agreed"
     disposition: str | None = None
     expected: Mapping[str, Any] | None = None
+    expected_source: str | None = None
 
 
 @dataclass(frozen=True)
@@ -80,9 +84,10 @@ def freeze_generated_corpus(
     executable: str | Path | None = None,
     output_dir: str | Path | None = None,
     template_path: str | Path | None = None,
+    adjudicate_known_ots_sdtw_defects: bool = False,
     runner: OtsRunner = run_ots_1040,
 ) -> FrozenCorpusSummary:
-    """Freeze generated scenarios after live OTS agreement."""
+    """Freeze live OTS scenarios, with explicit IRS adjudication for known defects."""
 
     if executable is None:
         raise ValueError("live OTS executable is required to freeze an oracle corpus")
@@ -109,16 +114,28 @@ def freeze_generated_corpus(
         result = Engine(graph).execute(_facts_from_scenario(scenario))
         ots_result = runner(paths["input"], executable=executable)
         report = diff_engine_result(result, ots_result.labels, box_map, scenario=scenario)
-        if report.status != "agreed":
-            failures.append(f"{scenario.scenario_id}: {report.status}")
-            continue
-        candidates.append(
-            FreezeCandidate(
-                scenario=scenario,
-                status=report.status,
-                expected=expected_values_from_report(report),
+        if report.status == "agreed":
+            candidates.append(
+                FreezeCandidate(
+                    scenario=scenario,
+                    status=report.status,
+                    expected=expected_values_from_report(report),
+                    expected_source="live_ots",
+                )
             )
-        )
+            continue
+        if adjudicate_known_ots_sdtw_defects and _is_known_ots_sdtw_gate_defect(report, result.values):
+            candidates.append(
+                FreezeCandidate(
+                    scenario=scenario,
+                    status=report.status,
+                    disposition=KNOWN_OTS_SDTW_GATE_DEFECT,
+                    expected=expected_values_from_adjudicated_report(report),
+                    expected_source=IRS_ADJUDICATED_EXPECTED_SOURCE,
+                )
+            )
+            continue
+        failures.append(f"{scenario.scenario_id}: {report.status}")
     if failures:
         joined = ", ".join(failures[:5])
         more = "" if len(failures) <= 5 else f", ... ({len(failures)} total)"
@@ -176,6 +193,7 @@ def freeze_candidates(
                 "path": candidate.scenario.scenario_id,
                 "status": candidate.status,
                 "disposition": candidate.disposition,
+                "expected_source": candidate.expected_source,
             }
         )
 
@@ -212,10 +230,12 @@ def validate_freeze_candidate(candidate: FreezeCandidate) -> None:
         return
     if candidate.status == "agreed":
         raise ValueError(f"scenario {candidate.scenario.scenario_id} lacks oracle expected values")
-    if candidate.disposition and candidate.expected:
+    if candidate.disposition and candidate.expected and candidate.expected_source:
         return
     if candidate.disposition:
-        raise ValueError(f"scenario {candidate.scenario.scenario_id} lacks adjudicated expected values")
+        raise ValueError(
+            f"scenario {candidate.scenario.scenario_id} lacks adjudicated expected values or source"
+        )
     raise ValueError(
         f"scenario {candidate.scenario.scenario_id} has status {candidate.status} "
         "and no adjudicated disposition"
@@ -233,6 +253,35 @@ def expected_values_from_report(report: OracleDiffReport) -> dict[str, Any]:
         )
         for item in report.comparisons
     }
+
+
+def expected_values_from_adjudicated_report(report: OracleDiffReport) -> dict[str, Any]:
+    """Return engine values for an explicitly IRS-adjudicated disagreement."""
+
+    if report.status != "disagreed":
+        raise ValueError(f"cannot adjudicate expected values from {report.status} report")
+    return {
+        item.node_id: _clean_expected_value(
+            item.tax_graph_value if item.status != "agree" else item.ots_value
+        )
+        for item in report.comparisons
+    }
+
+
+def _is_known_ots_sdtw_gate_defect(
+    report: OracleDiffReport,
+    tax_graph_values: Mapping[str, Any],
+) -> bool:
+    """Identify only the source-verified OTS Schedule D worksheet defect."""
+
+    if report.status != "disagreed" or report.guard_violations:
+        return False
+    if {item.node_id for item in report.disagreements} != {"form_1040_2025_root_line_16"}:
+        return False
+    applies = tax_graph_values.get("schedule_d_2025_sdtw_applies")
+    line_18 = tax_graph_values.get("schedule_d_2025_line_18")
+    line_19 = tax_graph_values.get("schedule_d_2025_line_19")
+    return bool(applies) and bool(line_18 or line_19)
 
 
 def replay_corpus(*, year: str, root: str | Path, corpus_dir: str | Path, source: str | None = None) -> ReplayReport:

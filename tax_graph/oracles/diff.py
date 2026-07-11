@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from dataclasses import asdict, dataclass, field, is_dataclass
+import math
 from typing import Any, Mapping
 
 from tax_graph.engine import MISSING
@@ -175,6 +176,12 @@ def _compare_box(
 def _condition_applies(box: BoxMapping, tax_graph_values: Mapping[str, Any]) -> bool:
     if box.condition is None:
         return True
+    if box.condition == "tax_graph_present":
+        value = tax_graph_values.get(box.node_id, MISSING)
+        return value is not MISSING and value is not None
+    if box.condition == "sdtw_applies":
+        value = tax_graph_values.get("schedule_d_2025_sdtw_applies", MISSING)
+        return value is not MISSING and value is not None and float(value) > 0
     if box.condition == "tax_graph_negative":
         value = tax_graph_values.get(box.node_id, MISSING)
         return value is not MISSING and value is not None and float(value) < 0
@@ -184,7 +191,8 @@ def _condition_applies(box: BoxMapping, tax_graph_values: Mapping[str, Any]) -> 
 def _whole_dollar(value: Any) -> int | None:
     if value is None or value is MISSING:
         return None
-    return round(float(value))
+    number = float(value)
+    return math.floor(number + 0.5) if number >= 0 else math.ceil(number - 0.5)
 
 
 def _scenario_payload(scenario: Any) -> dict[str, Any]:

@@ -15,16 +15,18 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## Current state (2026-07-10)
 
-**BALL: WORKER.** M13 Step 3 is COMMITTED locally and ready to push: Schedule D
-lines 17-22, the line-20 routing decision, and the 47-line Schedule D Tax Worksheet
-are modeled. The IRS-text gate correction is pinned in `PHASE_M13.md`: OTS is a
-known incorrect witness for nonzero line-18/19 scenarios, so Step 4 needs the
-revised IRS-hand-computed verification strategy. Local proof: `pytest -m m13` ->
-8 passed; updated wall/frontier/validator/drill selection -> 21 passed; `validate
-2025` and ASCII green; full `pytest -q` -> 291 passed, 4 skipped in 7m22s. Next
-action after push/CI confirmation: M13 Step 4 (oracle widening and corpus re-freeze).
-PyPI alpha token still waits on John; serve-lifecycle hardening spin-off remains
-pending (independent).
+**BALL: ARCHITECT/JOHN.** M13 Steps 3 and 4 are COMMITTED and PUSHED to
+origin/main. Step 4 widened the live OTS domain (D6/D14 carryovers, line 18
+Collectibles, D19) with per-side sign transforms, switched the differ to IRS
+half-up rounding, and gated the source-verified OTS Schedule D gate defect behind
+`--adjudicate-known-ots-sdtw-defects`. Live widened gate: `oracle fuzz --n 100
+--seed 1315` -> 98 agreed / 2 disagreed (both the verified nonzero-18/19 OTS
+defect, retained in triage). Focused oracle/corpus/differ/domain/box-map -> 32
+passed, 1 skipped; `pytest -m m13` -> 10 passed; full `pytest -q` + pushed-commit
+CI verification in flight. ONE OPEN DECISION (see Open for Architect): the
+PolicyEngine witness evidence needed before `examples/oracle_corpus` can be
+promoted to the widened corpus. PyPI alpha token still waits on John;
+serve-lifecycle hardening spin-off remains pending (independent).
 (Whoever finishes a turn: update this BALL line - it is the first thing read.)
 
 **M13 Step 1 (Codex, completed 2026-07-10):** stopped once on a genuine OTS
@@ -89,6 +91,68 @@ updated wall/frontier/validator/drill selection -> 21 passed; `validate 2025`
 and ASCII green; full `pytest -q` -> 291 passed, 4 skipped in 7m22s. Step 4 owns
 the revised live-oracle domain and corpus work.
 
+**M13 Step 4 (Codex active, 2026-07-11):** User authorized live OTS runs despite
+known Schedule D defects, with triage retained rather than suppressed. Baseline
+`oracle fuzz --n 100 --seed 1314 --source yaml` initially returned 98 agreed / 2
+disagreed, both only Form 1040 line-16 half-dollar comparisons (Tax Graph whole
+dollar 10163/56353 versus OTS 10162.5/56352.5). Root cause was the differ using
+Python banker's rounding; local fix changes it to IRS half-up rounding, with a
+unit test. Re-run after the fix: 100 agreed / 0 disagreed / 0 rejected. Direct
+OTS probes establish the widened-input convention: OTS positive `D6` / `D14`
+maps to Tax Graph negative Schedule D facts; both probes agree at line 16 = 3515.
+The explicit nonzero-line-19 repro confirms the documented OTS defect exactly:
+Tax Graph / IRS line 16 = 57523, OTS = 55023, with OTS accepting `D19=10000`.
+Next: extend the domain renderer with per-side sign transforms for D6/D14 and
+add D19/Collectibles coverage; preserve nonzero SDTW disagreements in triage.
+Completed the widened run: `oracle fuzz --n 100 --seed 1315 --source yaml` ->
+98 agreed / 2 disagreed / 0 rejected. Both disagreements are Form 1040 line 16
+with nonzero line 18 AND line 19, matching the known OTS gate defect:
+`m6_seed1315_0022` Tax Graph 72938 versus OTS 71923.95 (Collectibles 26282,
+D19 25187), and `m6_seed1315_0072` Tax Graph 154907 versus OTS 152767.73
+(Collectibles 28792, D19 4101). Triage is retained under
+`.cache/m13_step4_ots_widened/triage.yaml`; no disagreement has been frozen or
+silently excluded. User direction: continue running OTS and deal with known
+Schedule D failures transparently.
+Independent-witness checks: the pinned offline PE liability replay is green
+(20/20: 8 exact, 12 documented tax-table-tolerance). Live PolicyEngine is not
+installed in this environment. The pinned offline parameter fixture is 19/20:
+only `form_1040_2025_brackets_hoh` differs. Tax Graph carries the cited 2025
+head-of-household top bracket floor 626350; the fixture carries 375800. Do not
+alter the cited graph parameter without source review - triage the PE fixture /
+upstream parameter separately in Step 4.
+Step 4 completion work added the D6/D14 sign transforms, D18/D19 domain inputs,
+conditional output box mappings and inventory entries, IRS half-up oracle
+rounding, and two offline OTS differ fixtures. The carryover fixture agrees;
+the SDTW fixture intentionally records the verified OTS gate defect. Focused
+oracle/domain/box-map tests -> 24 passed, 1 skipped; `pytest -m m13` -> 10
+passed; ASCII green. Re-ran the live widened gate after the completed box map:
+`oracle fuzz --n 100 --seed 1315 --source yaml` -> 98 agreed / 2 disagreed /
+0 rejected. Both remaining disagreements are line 16 only, with nonzero 18 and
+19, and remain in `output/oracle_fuzz/2025_seed1315/triage.yaml`; a first map
+attempt surfaced 92 missing D19 labels on non-SDTW paths and was corrected by
+making that output mapping conditional on `schedule_d_2025_sdtw_applies`.
+**John selected corpus option 2 (2026-07-11):** the freeze command now requires
+the explicit `--adjudicate-known-ots-sdtw-defects` flag before it can retain the
+two source-verified OTS defects. Each such corpus entry records
+`status: disagreed`, disposition `ots_sdtw_gate_defect_2026_07_11`, and expected
+source `irs_adjudicated_schedule_d_tax_worksheet`; expected values use Tax Graph
+only for the disagreement and preserve live OTS values for agreeing boxes. A
+temporary 100-scenario freeze/replay is green: 98 `live_ots` entries + 2 explicit
+adjudications, replay 100/100. Focused corpus/differ/domain/box-map tests -> 32
+passed, 1 skipped. The temporary corpus is deliberately not yet promoted over
+`examples/oracle_corpus`: doing so would invalidate the old ID-keyed offline PE
+fixture before live PE results are available.
+**Live PE attempt (2026-07-11):** John authorized the requested run. Installed
+the pinned `policyengine-us` 1.768.3 into a short temporary path because Windows
+long-path handling prevents its wheel from landing in `.venv`; the temporary
+runtime imported and ran. Over the temporary 100-case corpus, live PE returned
+6 exact/tolerance agreements, 94 disagreements, and 0 fetch errors. Every
+reported disagreement begins with taxable-income mismatch. This is not evidence
+to freeze a PE fixture: `scenario_inputs_from_facts` currently renders only
+wages, taxable interest, dividends, and 8949 gains, but the widened corpus also
+varies S1/S1-A, Schedule A, carryovers, and SDTW inputs. The live run therefore
+reveals an incomplete PE input adapter, not a trustworthy graph verdict.
+
 - **M0-M12 are COMPLETE and archived** (see `plans/archive/`, each with a close note).
 - **THE GRAPH COMPUTES TAX AND FILES IT.** M11 landed line 16 liability under dual live
   witnesses (OTS + PolicyEngine). M12 landed the output layer: filled official IRS PDFs
@@ -149,7 +213,16 @@ the revised live-oracle domain and corpus work.
   limit (role deviation, M8/M11-close precedent, recorded in the archived plan).
 
 ## Open for Architect
-- (none)
+- **M13 Step 4 PolicyEngine replacement evidence (2026-07-11):** RESOLVED corpus
+  policy = option 2 above. The remaining blocking decision is the PE evidence
+  needed before replacing `examples/oracle_corpus`: the temporary M13 corpus
+  replays 100/100, but `oracle pe-liability` with the old offline fixture returns
+  100 fetch errors because it has only `m6_seed20260711_*` records, not the new
+  `m6_seed1315_*` records. Live PolicyEngine is not installed. Please provide a
+  live PE result/fixture for the new corpus or explicitly authorize retaining the
+  old PE corpus as the pinned independent-witness evidence while the new OTS/IRS
+  corpus becomes the default. Without that, replacing the committed corpus would
+  make the PE test dishonest or red.
 
 ## From Architect
 - **ANSWERED - M13 Step 1 S1_21 ruling (2026-07-10), pinned in PHASE_M13 Step 1:**

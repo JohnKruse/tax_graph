@@ -590,8 +590,9 @@ def oracle_freeze_command(
     generated_date: str | None = None,
     oracle_version: str = "ots_2025_23.06",
     source: str | None = None,
+    adjudicate_known_ots_sdtw_defects: bool = False,
 ) -> int:
-    """Freeze generated oracle-agreed scenarios into offline examples."""
+    """Freeze generated scenarios into offline examples with explicit triage."""
     from tax_graph.oracles import freeze_generated_corpus
     from tax_graph.oracles.fuzz import resolve_ots_executable
 
@@ -617,6 +618,7 @@ def oracle_freeze_command(
             oracle_version=oracle_version,
             source=source,
             executable=executable,
+            adjudicate_known_ots_sdtw_defects=adjudicate_known_ots_sdtw_defects,
         )
     except Exception as exc:
         print(f"ERROR: {exc}")
@@ -1042,6 +1044,11 @@ def _build_typer_app():
         generated_date: str | None = typer.Option(None, "--generated-date", help="Manifest generated date override."),
         oracle_version: str = typer.Option("ots_2025_23.06", "--oracle-version", help="Pinned oracle version label."),
         source: str | None = typer.Option(None, "--source", help="Graph source: sqlite or yaml. Defaults to auto."),
+        adjudicate_known_ots_sdtw_defects: bool = typer.Option(
+            False,
+            "--adjudicate-known-ots-sdtw-defects",
+            help="Freeze only the source-verified OTS Schedule D gate defect with IRS-adjudicated values.",
+        ),
         root: Path | None = typer.Option(None, "--root", help="Project root override."),
     ) -> None:
         """Freeze agreed oracle scenarios into offline examples."""
@@ -1054,6 +1061,7 @@ def _build_typer_app():
             generated_date=generated_date,
             oracle_version=oracle_version,
             source=source,
+            adjudicate_known_ots_sdtw_defects=adjudicate_known_ots_sdtw_defects,
         )
         if raise_code:
             raise typer.Exit(raise_code)
@@ -1251,6 +1259,7 @@ def _fallback_app() -> int:
     oracle_freeze_parser.add_argument("--generated-date", default=None)
     oracle_freeze_parser.add_argument("--oracle-version", default="ots_2025_23.06")
     oracle_freeze_parser.add_argument("--source", choices=["sqlite", "yaml"], default=None)
+    oracle_freeze_parser.add_argument("--adjudicate-known-ots-sdtw-defects", action="store_true")
     oracle_freeze_parser.add_argument("--root", default=None)
 
     oracle_replay_corpus_parser = oracle_subparsers.add_parser("replay-corpus")
@@ -1352,6 +1361,7 @@ def _fallback_app() -> int:
             generated_date=args.generated_date,
             oracle_version=args.oracle_version,
             source=args.source,
+            adjudicate_known_ots_sdtw_defects=args.adjudicate_known_ots_sdtw_defects,
         )
     if args.command == "oracle" and args.oracle_command == "replay-corpus":
         return oracle_replay_corpus_command(

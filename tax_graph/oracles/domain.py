@@ -49,6 +49,8 @@ class SupplementalInput:
     node_id: str
     ots_input: str
     range: NumericRange
+    tax_graph_multiplier: int | float = 1
+    ots_multiplier: int | float = 1
 
 
 def load_domain_profile(path: str | Path) -> DomainProfile:
@@ -77,6 +79,8 @@ def load_domain_profile(path: str | Path) -> DomainProfile:
                 node_id=str(item["node_id"]),
                 ots_input=str(item["ots_input"]),
                 range=_range(item),
+                tax_graph_multiplier=item.get("tax_graph_multiplier", 1),
+                ots_multiplier=item.get("ots_multiplier", 1),
             )
             for item in data.get("supplemental_inputs", [])
         ),
@@ -116,12 +120,14 @@ def assert_scenario_in_domain(profile: DomainProfile, scenario: CapitalGainScena
             raise ValueError(f"missing supplemental OTS input: {spec.ots_input}")
         fact_value = scenario.extra_tax_graph_facts[spec.node_id]
         ots_value = scenario.extra_ots_inputs[spec.ots_input]
-        if fact_value != ots_value:
+        raw_fact = fact_value / spec.tax_graph_multiplier
+        raw_ots = ots_value / spec.ots_multiplier
+        if raw_fact != raw_ots:
             raise ValueError(
                 f"supplemental values diverged for {spec.node_id} / {spec.ots_input}: "
-                f"{fact_value} != {ots_value}"
+                f"{raw_fact} != {raw_ots}"
             )
-        _assert_in_range(spec.node_id, fact_value, spec.range)
+        _assert_in_range(spec.node_id, raw_fact, spec.range)
 
 
 def _generate_one(profile: DomainProfile, rng: random.Random, *, seed: int, index: int) -> CapitalGainScenario:
@@ -189,7 +195,7 @@ def _draw_filing_status(profile: DomainProfile, *, index: int) -> str:
 
 def _supplemental_tax_graph_facts(profile: DomainProfile, rng: random.Random) -> dict[str, int | float]:
     return {
-        spec.node_id: _draw_number(rng, spec.range)
+        spec.node_id: _draw_number(rng, spec.range) * spec.tax_graph_multiplier
         for spec in profile.supplemental_inputs
     }
 
@@ -199,7 +205,7 @@ def _supplemental_ots_inputs(
     values: dict[str, int | float],
 ) -> dict[str, int | float]:
     return {
-        spec.ots_input: values[spec.node_id]
+        spec.ots_input: (values[spec.node_id] / spec.tax_graph_multiplier) * spec.ots_multiplier
         for spec in profile.supplemental_inputs
     }
 

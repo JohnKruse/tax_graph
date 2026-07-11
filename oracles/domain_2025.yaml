@@ -54,6 +54,29 @@ multi_lot:
 # POST-worksheet deduction. Tax Graph's S1 line 21 is the post-worksheet form
 # line, so it remains an offline L4-witnessed input until the worksheet is modeled.
 supplemental_inputs:
+  # OTS accepts positive carryover entries; Schedule D form facts store losses negative.
+  - node_id: schedule_d_2025_line_6_st_carryover
+    ots_input: D6
+    min: 0
+    max: 10000
+    include: [0, 1, 3000, 10000]
+    tax_graph_multiplier: -1
+  - node_id: schedule_d_2025_line_14_lt_carryover
+    ots_input: D14
+    min: 0
+    max: 10000
+    include: [0, 1, 3000, 10000]
+    tax_graph_multiplier: -1
+  - node_id: schedule_d_2025_line_18
+    ots_input: Collectibles
+    min: 0
+    max: 30000
+    include: [0, 1, 10000, 30000]
+  - node_id: schedule_d_2025_line_19
+    ots_input: D19
+    min: 0
+    max: 30000
+    include: [0, 1, 10000, 30000]
   - node_id: schedule_1_2025_part_i_line_8z
     ots_input: S1_8z
     min: 0

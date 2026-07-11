@@ -11,11 +11,15 @@ F8949_2e
 F8949_2g
 F8949_2h
 D1bh
+D6
 D7
 D8bh
+D14
 D15
 D16
+D19
 D21
+Collectibles_Gains
 L7a
 L11b
 L12
