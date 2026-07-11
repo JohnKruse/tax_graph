@@ -1,0 +1,27 @@
+#!/bin/sh
+# Pre-push guard: block pushes that would fail the CI "Check ASCII-only authored
+# files" step (tools/check_ascii.py). AI-authored docs routinely carry em-dashes,
+# smart quotes, arrows, or the section sign; this catches them locally before they
+# reach CI (and before a red-CI notification email).
+#
+# Enable in any clone (one time):   git config core.hooksPath .githooks
+# Emergency bypass for one push:     git push --no-verify
+
+if command -v uv >/dev/null 2>&1; then
+    RUNNER="uv run python"
+elif command -v python >/dev/null 2>&1; then
+    RUNNER="python"
+elif command -v py >/dev/null 2>&1; then
+    RUNNER="py"
+else
+    echo "pre-push: no uv/python found; skipping ASCII check (CI still enforces it)" >&2
+    exit 0
+fi
+
+if ! $RUNNER tools/check_ascii.py; then
+    echo "" >&2
+    echo "pre-push BLOCKED: non-ASCII in authored files (listed above)." >&2
+    echo "Replace with ASCII ('-' not em-dash, '->' not arrow, 'Section' not the sign," >&2
+    echo "straight quotes), then push again. Emergency bypass: git push --no-verify" >&2
+    exit 1
+fi

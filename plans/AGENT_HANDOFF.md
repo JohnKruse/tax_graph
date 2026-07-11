@@ -106,6 +106,14 @@ parameter-diff HoH-floor (626350 vs 375800) source review. PyPI alpha token stil
   not just offline goldens**; **no test may read `graph/<year>/_drafts/` or assume a prebuilt
   `build/` artifact; phase close-outs confirm the pushed commit's CI run is green, not just the
   local suite**.
+- **ASCII pre-push hook (2026-07-11):** CI runs `tools/check_ascii.py` (step "Check
+  ASCII-only authored files") and FAILS fast on any non-ASCII in authored files
+  (`.md/.yaml/.yml/.json/.txt/.py/.toml` under plans/docs/config/schemas/graph/examples/
+  oracles/tests/tax_graph). A repo pre-push guard lives at `.githooks/pre-push`; enable it
+  once per clone/worktree with `git config core.hooksPath .githooks`. Do NOT assume a
+  docs-only change is CI-safe - agent-authored text often carries em-dashes, smart quotes,
+  arrows, or the section sign. Run `uv run python tools/check_ascii.py` before pushing, and
+  never skip confirming the pushed commit's CI is green (no docs exception).
 - **Full-suite runtime note for Codex:** `pytest -q` legitimately takes ~7.5 minutes; a
   ~124-second termination is a sandbox timeout, not a hang. Run with a >= 600s timeout (or split
   the suite and record both halves). The commit floor (full suite green) is unchanged.
