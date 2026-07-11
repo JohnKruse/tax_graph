@@ -23,7 +23,7 @@ This page is generated from committed repository data by `tax_graph.verify.recor
 
 ## Witnesses
 
-- Oracle differential: 20 agreed scenario(s) via OpenTaxSolver `ots_2025_23.06`.
+- Oracle differential: 100 agreed scenario(s) via OpenTaxSolver `ots_2025_23.06`.
 - IRS worked examples: No committed IRS worked-example fixture covers this document.
 - N-version corroboration: No committed N-version corroboration artifact for this document.
 - Property tests: No committed per-form property-test artifact for this document.

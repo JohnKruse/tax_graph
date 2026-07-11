@@ -12,19 +12,20 @@ This page is generated from committed repository data by `tax_graph.verify.recor
 
 ## Modeled
 
-- citations: 7
+- citations: 9
 - documents: 1
-- edges: 20
-- nodes: 15
-- rules: 5
+- edges: 29
+- nodes: 23
+- rules: 6
 
 ## Explicit Gaps
 
-- Schedule D line 20 tax computation worksheet: Deferred QDCGT tax-computation worksheet branch.
+- Schedule D 28% Rate Gain Worksheet line 18: Line 18 accepts the worksheet RESULT as input; the worksheet's own collectibles/1202 arithmetic is not modeled. Filers must compute it per the cited instructions before entering line 18.
+- Schedule D Unrecaptured Section 1250 Gain Worksheet line 19: Line 19 accepts the worksheet RESULT as input; the worksheet's own section-1250 arithmetic is not modeled. Filers must compute it per the cited instructions before entering line 19.
 
 ## Witnesses
 
-- Oracle differential: 20 agreed scenario(s) via OpenTaxSolver `ots_2025_23.06`.
+- Oracle differential: 100 agreed scenario(s) via OpenTaxSolver `ots_2025_23.06`.
 - IRS worked examples: 1 committed IRS worked-example fixture(s); 1 pending human review.
 - N-version corroboration: No committed N-version corroboration artifact for this document.
 - Property tests: No committed per-form property-test artifact for this document.

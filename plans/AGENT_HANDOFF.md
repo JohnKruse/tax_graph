@@ -15,18 +15,24 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## Current state (2026-07-11)
 
-**BALL: WORKER.** M13 Step 4 corpus work is DONE and committed under John's Option B
-(2026-07-11): the widened `m6_seed1315` corpus (100 scenarios: 98 live_ots + 2
-IRS-adjudicated OTS SDTW-gate defects) is promoted over `examples/oracle_corpus`, the
-stale 0706/0709/0711 batches are pruned, and `test_sidecar_m12` reads a dedicated
-`tests/fixtures/sidecar_sample_facts.yaml`. The PolicyEngine liability witness is
-RETIRED TO EXPLICIT-PENDING (2 skipped tests) as a NAMED GAP - definition-of-done in
-PHASE_M13 Step 4 and "From Architect" below; do NOT claim dual-witness on the widened
-domain until that gap closes. Proof: full `pytest -q` -> 294 passed, 6 skipped (7m36s);
-corpus/PE/sidecar focused -> 13 passed, 2 skipped; `replay_corpus` 100/100; committed +
-pushed, pushed-commit CI in flight. Remaining M13: the PE named gap + `verify
-parameter-diff` HoH pin, then Step 5 (records/frontier/field maps/exit run). PyPI alpha
-token still waits on John; serve-lifecycle hardening spin-off remains pending (independent).
+**BALL: WORKER.** M13 Step 5 close-out is DONE and ready to commit. Canary: Deep
+Ledger. Regenerated `VERIFICATION.md` plus 11 per-form pages, then regenerated again
+byte-stably. Frontier rebuild is green: 76 modeled, 5 declared (including the new
+Schedule D line-18 and line-19 feeder-worksheet walls), coverage 90.1% full / 100.0%
+in-scope. Graph and field-map validation: 13 documents, 417 nodes, 407 edges, 271
+citations, 2 decisions - green. `pytest -m m13 -q` -> 12 passed; normal `pytest -q`
+-> 294 passed, 6 skipped; simulated-clean `pytest -q` with both `graph/2025/_drafts`
+and `build/tax_graph_2025.sqlite` temporarily absent -> 294 passed, 6 skipped. ASCII
+and diff checks are green. Base-deps validate/build/frontier and YAML/SQLite parity
+are green (line 7 = 2000 / 250). A temporary loss-carryover filing bundle exported
+cleanly from `m6_seed1315_0000` (D6 = -7093, 1040 line 7 = -3000). Two orphaned local
+`tax-graph serve` trees were stopped after they blocked the first clean-state attempt;
+the successful retry had both prerequisites absent. Step 4 corpus work remains DONE
+under John's Option B (98 live_ots + 2 IRS-adjudicated OTS SDTW-gate defects). The
+PolicyEngine liability witness is explicit-pending (2 skipped tests); do NOT claim
+dual-witness on the widened domain. The PE named gap and the parameter-diff HoH source
+review are non-blocking follow-ups to the Option-B M13 close-out. PyPI alpha token
+still waits on John; serve-lifecycle hardening spin-off remains pending (independent).
 (Whoever finishes a turn: update this BALL line - it is the first thing read.)
 
 **M13 Step 1 (Codex, completed 2026-07-10):** stopped once on a genuine OTS
@@ -209,7 +215,7 @@ historical; the BALL line and From Architect are the current state.
   chain incl. AMT, Schedule D line 20 QDCGT-worksheet branch. Coverage 90.1% full /
   100.0% in-scope.
   **SUPERSEDED by M13 Step 3:** the Schedule D line-20 wall is RETIRED (QDCGT/SDTW
-  routing is modeled); the 28%-rate and unrecaptured-§1250 feeder worksheets are the new
+  routing is modeled); the 28%-rate and unrecaptured-section-1250 feeder worksheets are the new
   named walls. The frontier/coverage recompute is M13 Step 5's job - the numbers above
   are pre-M13.
 - **Deferred to M13 (pinned in oracles/domain_2025.yaml) - DONE in M13 Step 1:** the
