@@ -183,3 +183,26 @@ M12 exposes the established OpenTaxSolver differential renderer as a
 return-scoped sidecar: one US 1040 input, one Form 8949 CSV, and a README with
 the pinned executable command. It is an independent second-opinion artifact,
 not an e-file submission format.
+
+# Known OTS defects (verified against shipped source, 2026-07-11)
+
+The pinned OpenTaxSolver release (2025 v23.06, US_1040 module v23.05) has two
+verified transcription defects in `sched_D_tax_worksheet()` in
+`taxsolve_US_1040_2025.c`, found while modeling the Schedule D Tax Worksheet
+in M13 Step 3 and reported to the maintainer by John on 2026-07-11:
+
+1. **Lines 33-43 gate inverted** (source line 1491): the code runs the
+   20/25/28-percent block when worksheet line 1 EQUALS line 32; the IRS text
+   says to SKIP when they are the same. Concrete effect (hand-traced): single,
+   wages 250000, LT gain 30000 with 10000 unrecaptured-1250 gain -> IRS line
+   16 = 57523, OTS = 55023 (the 25% component is dropped).
+2. **Line 19 threshold typo** (source line 1466): 197390 for single/MFS where
+   the IRS text (and OTS's own bracket table) says 197300.
+
+Consequence for the witness policy: **OTS is NOT a reliable liability witness
+for scenarios where Schedule D line 18 or 19 is nonzero.** The graph follows
+the IRS instruction text (hand-traced fixtures in `tests/test_worksheet_depth_m13.py`);
+live OTS disagreements in that region triage as `oracle_defect`, and
+PolicyEngine is the primary independent witness for the SDTW branch until an
+OTS release fixes the gate. Scenarios with lines 18/19 zero route to the QDCGT
+worksheet, where OTS remains fully trusted (M11: 100/100 live agreement).

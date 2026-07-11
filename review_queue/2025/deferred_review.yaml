@@ -424,3 +424,38 @@ entries:
   - shipped OTS source semantics inspected
   - offline L4 Schedule 1 line-25/26 chain fixture green
   human_confirmed: false
+- queue_id: routing_review_schedule_d_2025_line_20_decision
+  kind: decision_review
+  status: pending
+  priority: top
+  document_id: schedule_d_2025
+  created_date: '2026-07-11'
+  created_by: tax_graph.m13.architect
+  summary: Review the Schedule D line 17/20 routing that selects the Schedule D Tax Worksheet over the QDCGT worksheet (MIN/MAX gate encoding of the form's yes/no questions), including the scope assumption that Form 4952 is never filed by supported-profile filers.
+  artifact_dir: graph/2025
+  artifact_paths:
+  - graph/2025/nodes/capital-gains.yaml
+  - graph/2025/edges/capital-gains.yaml
+  - graph/2025/edges/form-1040.yaml
+  machine_witnesses:
+  - hand-traced 1250/collectibles/adversarial scenarios green (pytest -m m13)
+  - M11 QDCGT regression byte-identical (13777)
+  human_confirmed: false
+- queue_id: authored_review_schedule_d_2025_tax_worksheet
+  kind: authored_worksheet_review
+  status: pending
+  priority: high
+  document_id: instructions_schedule_d_2025
+  created_date: '2026-07-11'
+  created_by: tax_graph.m13.architect
+  summary: Review the hand-authored 47-line Schedule D Tax Worksheet subunit (cited per line block). The shipped OTS reference INVERTS the lines-33-43 gate and hardcodes 197390 where the IRS text says 197300, so the IRS text was followed and OTS is not a witness for the 20/25/28-percent components; maintainer notified by John 2026-07-11.
+  artifact_dir: graph/2025
+  artifact_paths:
+  - graph/2025/nodes/capital-gains.yaml
+  - graph/2025/edges/capital-gains.yaml
+  - graph/2025/citations/capital-gains.yaml
+  machine_witnesses:
+  - hand-traced scenarios match line by line (pytest -m m13)
+  - parameter values cross-checked against the 0.32 bracket floor
+  - drills wrong_sdtw_25_rate_parameter and wrong_sdtw_breakpoint_parameter caught at L3
+  human_confirmed: false

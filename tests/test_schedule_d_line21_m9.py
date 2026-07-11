@@ -16,7 +16,8 @@ TARGET = "form_1040_2025_line_7_capital_gain_loss"
 LINE_21 = "schedule_d_2025_line_21_capital_loss_limited"
 LIMIT_SINGLE = "schedule_d_2025_capital_loss_limit_default"
 LIMIT_MFS = "schedule_d_2025_capital_loss_limit_mfs"
-LINE_20 = "schedule_d_2025_line_20_tax_computation"
+# M13 Step 3 modeled line 20; the walls moved to the line 18/19 feeder worksheets.
+WALL_28_RATE = "schedule_d_2025_28_rate_gain_worksheet"
 
 
 def test_schedule_d_line_21_limits_single_capital_loss(tmp_path):
@@ -56,7 +57,7 @@ def test_schedule_d_parameters_validate_without_inline_magic_numbers():
     assert result.ok, result.errors
 
 
-def test_schedule_d_line_20_deferred_branch_has_unresolved_trace():
+def test_schedule_d_feeder_worksheet_wall_has_unresolved_trace():
     result = Engine(Graph("2025", root=ROOT, source="yaml")).execute(
         {
             "filing_status": "single",
@@ -64,11 +65,11 @@ def test_schedule_d_line_20_deferred_branch_has_unresolved_trace():
         }
     )
 
-    assert result.values[LINE_20] is MISSING
-    trace = result.trace[LINE_20]
+    assert result.values[WALL_28_RATE] is MISSING
+    trace = result.trace[WALL_28_RATE]
     assert trace["kind"] == "unresolved"
-    assert trace["frontier_id"] == "deferred_schedule_d_2025_line_20"
-    assert trace["citation_ref"] == "cite_schedule_d_line20_deferred"
+    assert trace["frontier_id"] == "deferred_schedule_d_2025_28_rate_gain_worksheet"
+    assert trace["citation_ref"] == "cite_schedule_d_line18_28pct"
 
 
 def test_frontier_build_includes_schedule_d_deferred_branch(tmp_path):
@@ -76,10 +77,12 @@ def test_frontier_build_includes_schedule_d_deferred_branch(tmp_path):
     registry = result.registry
 
     entry = next(
-        item for item in registry["frontiers"] if item["frontier_id"] == "deferred_schedule_d_2025_line_20"
+        item
+        for item in registry["frontiers"]
+        if item["frontier_id"] == "deferred_schedule_d_2025_28_rate_gain_worksheet"
     )
     assert entry["kind"] == "deferred_branch"
-    assert entry["target"]["node_id"] == "schedule_d_2025_line_20_frontier"
+    assert entry["target"]["node_id"] == "schedule_d_2025_28_rate_gain_worksheet_frontier"
     assert entry["status"] == "declared"
     assert not [
         item

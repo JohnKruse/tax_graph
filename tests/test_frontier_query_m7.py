@@ -55,7 +55,10 @@ def test_frontier_summary_worklist_and_coverage(tmp_path):
         "in_scope_percent": round((expected_in_scope_modeled_weight / expected_in_scope_weight) * 100.0, 1),
     }
     assert weights == sorted(weights, reverse=True)
-    assert any(entry["frontier_id"] == "deferred_schedule_d_2025_line_20" for entry in summary["worklist"])
+    assert any(
+        entry["frontier_id"] == "deferred_schedule_d_2025_28_rate_gain_worksheet"
+        for entry in summary["worklist"]
+    )
 
 
 @pytest.mark.m7
@@ -105,7 +108,7 @@ def test_frontier_cli_text_and_json(tmp_path):
     assert text_result.returncode == 0, text_result.stderr
     assert "covers ~" in text_result.stdout
     assert "SOI provenance: 2023" in text_result.stdout
-    assert "schedule_d_2025 line 20" in text_result.stdout
+    assert "schedule_d_2025 line 18" in text_result.stdout
     assert json_result.returncode == 0, json_result.stderr
     payload = json.loads(json_result.stdout)
     assert payload["coverage"]["full_universe_percent"] > 0
@@ -113,4 +116,4 @@ def test_frontier_cli_text_and_json(tmp_path):
     # declared, so assert the ordering contract, not a hardcoded top entry.
     weights = [entry["weight"] for entry in payload["worklist"] if entry["weight"] is not None]
     assert weights == sorted(weights, reverse=True)
-    assert 24000000 in weights  # schedule_d line 20 stays declared
+    assert 24000000 in weights  # schedule_d feeder-worksheet walls stay declared

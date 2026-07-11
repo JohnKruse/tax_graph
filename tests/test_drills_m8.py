@@ -27,6 +27,8 @@ def test_default_drill_catalog_catches_expected_layers():
     assert by_id["wrong_capital_loss_limit_parameter"].actual_layers == ("L3",)
     assert by_id["wrong_carryover_split"].actual_layers == ("L3",)
     assert by_id["carryover_ignores_limit"].actual_layers == ("L3",)
+    assert by_id["wrong_sdtw_25_rate_parameter"].actual_layers == ("L3",)
+    assert by_id["wrong_sdtw_breakpoint_parameter"].actual_layers == ("L3",)
 
 
 @pytest.mark.m8

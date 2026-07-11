@@ -15,23 +15,16 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## Current state (2026-07-10)
 
-**BALL: WORKER.** M13 Steps 1-2 are COMMITTED and full-suite green (CI confirmed
-green on both pushed commits). Step 3 (Schedule D lines 17-22 + line 20 decision +
-Schedule D Tax Worksheet) is next; open `plans/PHASE_M13.md`, state the canary, and
-proceed - John's go on the phase already stands, no fresh go needed per-step.
-**Read the Architect design note under Step 3 in the plan before writing any graph
-YAML** - it verifies the exact worksheet/routing logic against the shipped OTS C
-source (function names and line numbers given), and documents a real nested-gate
-bug the Architect caught in design review (a naive per-line conditional
-implementation would silently misapply 15/20/25/28%-rate tax in a real edge case).
-The Architect authored the full 47-line worksheet's nodes/citations, found the bug
-before writing edges, and reverted the inert scaffolding rather than commit
-unverified financial-calculation code - nothing is half-built in the graph; Step 3
-starts clean. The design note gives a 5-stage incremental build order with a
-verification method (diff against `taxsolve_US_1040_2025.exe`'s own printed `ws[]`
-trace) for each stage - follow it; do not implement the nested gates in one flat
-pass. PyPI alpha token still waits on John; serve-lifecycle hardening spin-off
-still pending (independent).
+**BALL: WORKER.** M13 Step 3 is COMMITTED locally and ready to push: Schedule D
+lines 17-22, the line-20 routing decision, and the 47-line Schedule D Tax Worksheet
+are modeled. The IRS-text gate correction is pinned in `PHASE_M13.md`: OTS is a
+known incorrect witness for nonzero line-18/19 scenarios, so Step 4 needs the
+revised IRS-hand-computed verification strategy. Local proof: `pytest -m m13` ->
+8 passed; updated wall/frontier/validator/drill selection -> 21 passed; `validate
+2025` and ASCII green; full `pytest -q` -> 291 passed, 4 skipped in 7m22s. Next
+action after push/CI confirmation: M13 Step 4 (oracle widening and corpus re-freeze).
+PyPI alpha token still waits on John; serve-lifecycle hardening spin-off remains
+pending (independent).
 (Whoever finishes a turn: update this BALL line - it is the first thing read.)
 
 **M13 Step 1 (Codex, completed 2026-07-10):** stopped once on a genuine OTS
@@ -81,6 +74,20 @@ green (340 nodes, 257 citations); ASCII OK; full `pytest -q` -> 285 passed, 4
 skipped in 6m01s (up from 283/4, net +2 for the resurrected test and the new
 Step 2 tests minus none lost). Live OTS/PE gate for the carryover domain is
 Step 4's job per the plan, not Step 2's - not yet run.
+
+**M13 Step 3 (Architect implementation + Codex verification, 2026-07-11):**
+Implemented the cited 47-line Schedule D Tax Worksheet, line-17/20 routing,
+input-backed lines 18/19, and the `non_sdtw_tax` wrapper around the existing
+QDCGT/regular chain. Retired the line-20 wall; declared the 28-percent-rate and
+unrecaptured-section-1250 feeder worksheets as named walls; updated field maps,
+geometry, frontier, queue, docs, drills, and old-wall tests. Deviation from the
+original OTS-based design: IRS text cross-check proved OTS inverts gate2 and has
+a 197390/197300 threshold defect, so OTS is not a witness for nonzero 18/19
+scenarios; John reported both defects to the maintainer. Local verification:
+four hand-traced IRS scenarios execute correctly; `pytest -m m13` -> 8 passed;
+updated wall/frontier/validator/drill selection -> 21 passed; `validate 2025`
+and ASCII green; full `pytest -q` -> 291 passed, 4 skipped in 7m22s. Step 4 owns
+the revised live-oracle domain and corpus work.
 
 - **M0-M12 are COMPLETE and archived** (see `plans/archive/`, each with a close note).
 - **THE GRAPH COMPUTES TAX AND FILES IT.** M11 landed line 16 liability under dual live

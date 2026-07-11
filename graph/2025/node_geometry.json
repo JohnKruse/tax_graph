@@ -1809,6 +1809,32 @@
     },
     {
       "document_id": "schedule_d_2025",
+      "field_name": "topmostSubform[0].Page2[0].f2_2[0]",
+      "node_id": "schedule_d_2025_line_18",
+      "page": 2,
+      "rect": [
+        489.6,
+        252.0,
+        576.0,
+        264.0
+      ],
+      "slot": "schedule_d_2025_line_18"
+    },
+    {
+      "document_id": "schedule_d_2025",
+      "field_name": "topmostSubform[0].Page2[0].f2_3[0]",
+      "node_id": "schedule_d_2025_line_19",
+      "page": 2,
+      "rect": [
+        489.6,
+        288.0,
+        576.0,
+        300.0
+      ],
+      "slot": "schedule_d_2025_line_19"
+    },
+    {
+      "document_id": "schedule_d_2025",
       "field_name": "topmostSubform[0].Page2[0].f2_4[0]",
       "node_id": "schedule_d_2025_line_21_capital_loss_limited",
       "page": 2,

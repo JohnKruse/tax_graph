@@ -178,6 +178,181 @@
   url: https://www.irs.gov/instructions/i1040sd
   retrieved_date: 2026-07-10
 
+- citation_id: cite_schedule_d_line17_both_gains
+  document_id: schedule_d_2025
+  source_document_id: schedule_d_2025
+  locator: Schedule D, line 17
+  quoted_text: >-
+    Are lines 15 and 16 both gains?
+  url: https://www.irs.gov/forms-pubs/about-schedule-d-form-1040
+  retrieved_date: 2026-07-10
+
+- citation_id: cite_schedule_d_line18_28pct
+  document_id: instructions_schedule_d_2025
+  source_document_id: instructions_schedule_d_2025
+  locator: Instructions for Schedule D, Line 18
+  quoted_text: >-
+    If you checked 'Yes' on line 17, complete the 28% Rate Gain Worksheet in
+    these instructions if either of the following applies for 2025.
+  url: https://www.irs.gov/instructions/i1040sd
+  retrieved_date: 2026-07-10
+
+- citation_id: cite_schedule_d_line19_1250
+  document_id: instructions_schedule_d_2025
+  source_document_id: instructions_schedule_d_2025
+  locator: Instructions for Schedule D, Line 19
+  quoted_text: >-
+    If you checked 'Yes' on line 17, complete the Unrecaptured Section 1250
+    Gain Worksheet in these instructions if any of the following apply for
+    2025.
+  url: https://www.irs.gov/instructions/i1040sd
+  retrieved_date: 2026-07-10
+
+- citation_id: cite_schedule_d_line20_gate
+  document_id: schedule_d_2025
+  source_document_id: schedule_d_2025
+  locator: Schedule D, line 20
+  quoted_text: >-
+    Are lines 18 and 19 both zero or blank and you are not filing Form 4952?
+    No. Complete the Schedule D Tax Worksheet in the instructions. Don't
+    complete lines 21 and 22 below.
+  url: https://www.irs.gov/forms-pubs/about-schedule-d-form-1040
+  retrieved_date: 2026-07-10
+
+- citation_id: cite_sdtw_line_1_6
+  document_id: instructions_schedule_d_2025
+  source_document_id: instructions_schedule_d_2025
+  locator: Instructions for Schedule D, Schedule D Tax Worksheet, lines 1-6
+  quoted_text: >-
+    1. Enter your taxable income from Form 1040, 1040-SR, or 1040-NR, line 15.
+    2. Enter your qualified dividends from Form 1040, 1040-SR, or 1040-NR,
+    line 3a. 3. Enter the amount from Form 4952 (used to figure investment
+    interest expense deduction), line 4g. 4. Enter the amount from Form 4952,
+    line 4e. 5. Subtract line 4 from line 3. If zero or less, enter -0-.
+    6. Subtract line 5 from line 2. If zero or less, enter -0-.
+  url: https://www.irs.gov/instructions/i1040sd
+  retrieved_date: 2026-07-10
+
+- citation_id: cite_sdtw_line_7_10
+  document_id: instructions_schedule_d_2025
+  source_document_id: instructions_schedule_d_2025
+  locator: Instructions for Schedule D, Schedule D Tax Worksheet, lines 7-10
+  quoted_text: >-
+    7. Enter the smaller of line 15 or line 16 of Schedule D. 8. Enter the
+    smaller of line 3 or line 4. 9. Subtract line 8 from line 7. If zero or
+    less, enter -0-. 10. Add lines 6 and 9.
+  url: https://www.irs.gov/instructions/i1040sd
+  retrieved_date: 2026-07-10
+
+- citation_id: cite_sdtw_line_11_14
+  document_id: instructions_schedule_d_2025
+  source_document_id: instructions_schedule_d_2025
+  locator: Instructions for Schedule D, Schedule D Tax Worksheet, lines 11-14
+  quoted_text: >-
+    11. Add lines 18 and 19 of Schedule D. 12. Enter the smaller of line 9 or
+    line 11. 13. Subtract line 12 from line 10. 14. Subtract line 13 from
+    line 1. If zero or less, enter -0-.
+  url: https://www.irs.gov/instructions/i1040sd
+  retrieved_date: 2026-07-10
+
+- citation_id: cite_sdtw_line_15_22
+  document_id: instructions_schedule_d_2025
+  source_document_id: instructions_schedule_d_2025
+  locator: Instructions for Schedule D, Schedule D Tax Worksheet, lines 15-22
+  quoted_text: >-
+    15. Enter: $48,350 if single or married filing separately; $96,700 if
+    married filing jointly or qualifying surviving spouse; or $64,750 if head
+    of household. 16. Enter the smaller of line 1 or line 15. 17. Enter the
+    smaller of line 14 or line 16. 18. Subtract line 10 from line 1. If zero
+    or less, enter -0-. 20. Enter the smaller of line 14 or line 19.
+    21. Enter the larger of line 18 or line 20. 22. Subtract line 17 from
+    line 16. This amount is taxed at 0%.
+  url: https://www.irs.gov/instructions/i1040sd
+  retrieved_date: 2026-07-10
+
+- citation_id: cite_sdtw_line_19_breakpoint
+  document_id: instructions_schedule_d_2025
+  source_document_id: instructions_schedule_d_2025
+  locator: Instructions for Schedule D, Schedule D Tax Worksheet, line 19
+  quoted_text: >-
+    19. Enter the smaller of line 1 or: $197,300 if single or married filing
+    separately; $394,600 if married filing jointly or qualifying surviving
+    spouse; or $197,300 if head of household.
+  url: https://www.irs.gov/instructions/i1040sd
+  retrieved_date: 2026-07-10
+
+- citation_id: cite_sdtw_line_23_32
+  document_id: instructions_schedule_d_2025
+  source_document_id: instructions_schedule_d_2025
+  locator: Instructions for Schedule D, Schedule D Tax Worksheet, lines 23-32
+  quoted_text: >-
+    If lines 1 and 16 are the same, skip lines 23 through 43 and go to line
+    44. Otherwise, go to line 23. 23. Enter the smaller of line 1 or line 13.
+    24. Enter the amount from line 22. (If line 22 is blank, enter -0-).
+    25. Subtract line 24 from line 23. If zero or less, enter -0-. 26. Enter:
+    $533,400 if single; $300,000 if married filing separately; $600,050 if
+    married filing jointly or qualifying surviving spouse; or $566,700 if
+    head of household. 27. Enter the smaller of line 1 or line 26. 28. Add
+    lines 21 and 22. 29. Subtract line 28 from line 27. If zero or less,
+    enter -0-. 30. Enter the smaller of line 25 or line 29. 31. Multiply
+    line 30 by 15% (0.15). 32. Add lines 24 and 30.
+  url: https://www.irs.gov/instructions/i1040sd
+  retrieved_date: 2026-07-10
+
+- citation_id: cite_sdtw_line_33_34
+  document_id: instructions_schedule_d_2025
+  source_document_id: instructions_schedule_d_2025
+  locator: Instructions for Schedule D, Schedule D Tax Worksheet, lines 33-34
+  quoted_text: >-
+    If lines 1 and 32 are the same, skip lines 33 through 43 and go to line
+    44. Otherwise, go to line 33. 33. Subtract line 32 from line 23.
+    34. Multiply line 33 by 20% (0.20).
+  url: https://www.irs.gov/instructions/i1040sd
+  retrieved_date: 2026-07-10
+
+- citation_id: cite_sdtw_line_35_40
+  document_id: instructions_schedule_d_2025
+  source_document_id: instructions_schedule_d_2025
+  locator: Instructions for Schedule D, Schedule D Tax Worksheet, lines 35-40
+  quoted_text: >-
+    If Schedule D, line 19, is zero or blank, skip lines 35 through 40 and go
+    to line 41. Otherwise, go to line 35. 35. Enter the smaller of line 9
+    above or Schedule D, line 19. 36. Add lines 10 and 21. 37. Enter the
+    amount from line 1 above. 38. Subtract line 37 from line 36. If zero or
+    less, enter -0-. 39. Subtract line 38 from line 35. If zero or less,
+    enter -0-. 40. Multiply line 39 by 25% (0.25).
+  url: https://www.irs.gov/instructions/i1040sd
+  retrieved_date: 2026-07-10
+
+- citation_id: cite_sdtw_line_41_44
+  document_id: instructions_schedule_d_2025
+  source_document_id: instructions_schedule_d_2025
+  locator: Instructions for Schedule D, Schedule D Tax Worksheet, lines 41-44
+  quoted_text: >-
+    If Schedule D, line 18, is zero or blank, skip lines 41 through 43 and go
+    to line 44. Otherwise, go to line 41. 41. Add lines 21, 22, 30, 33, and
+    39. 42. Subtract line 41 from line 1. 43. Multiply line 42 by 28% (0.28).
+    44. Figure the tax on the amount on line 21. If the amount on line 21 is
+    less than $100,000, use the Tax Table to figure the tax. If the amount on
+    line 21 is $100,000 or more, use the Tax Computation Worksheet.
+  url: https://www.irs.gov/instructions/i1040sd
+  retrieved_date: 2026-07-10
+
+- citation_id: cite_sdtw_line_45_47
+  document_id: instructions_schedule_d_2025
+  source_document_id: instructions_schedule_d_2025
+  locator: Instructions for Schedule D, Schedule D Tax Worksheet, lines 45-47
+  quoted_text: >-
+    45. Add lines 31, 34, 40, 43, and 44. 46. Figure the tax on the amount on
+    line 1. If the amount on line 1 is less than $100,000, use the Tax Table
+    to figure the tax. If the amount on line 1 is $100,000 or more, use the
+    Tax Computation Worksheet. 47. Tax on all taxable income (including
+    capital gains and qualified dividends). Enter the smaller of line 45 or
+    line 46. Also, include this amount on Form 1040, 1040-SR, or 1040-NR,
+    line 16.
+  url: https://www.irs.gov/instructions/i1040sd
+  retrieved_date: 2026-07-10
+
 - citation_id: cite_1040_line_7
   document_id: form_1040_2025
   source_document_id: form_1040_2025

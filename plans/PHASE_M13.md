@@ -143,7 +143,7 @@ walls this phase, modeled later only as data warrants), QBI, lines 17-24, AMT.
   caught at the expected layer. Test: round-trip year-N record -> year-N+1 lines 6/14;
   worksheet arithmetic reproduces the instructions' example if one exists. Docs.
 
-- [ ] **Step 3 [worker-heavy] - Schedule D lines 17-22 + line 20 decision + Schedule D
+- [DONE] **Step 3 [worker-heavy] - Schedule D lines 17-22 + line 20 decision + Schedule D
   Tax Worksheet.** Model line 17 (are both 15 and 16 gains?), lines 18/19 as
   input-backed cited lines (feeder worksheets = new declared walls), the line 20
   decision (both 18/19 zero-or-blank -> QDCGT worksheet; else -> Schedule D Tax
@@ -201,9 +201,18 @@ walls this phase, modeled later only as data warrants), QBI, lines 17-24, AMT.
   (see `graph/2025/edges/form-1040.yaml` lines 378-449 for the exact pattern to
   clone).
 
+  **CORRECTION (2026-07-11, found during implementation):** the gate2 direction
+  stated below was inherited from OTS and is INVERTED - the IRS text says lines
+  33-43 run when line 1 DIFFERS from line 32 ("If lines 1 and 32 are the same,
+  skip lines 33 through 43"). OTS's own gate at source line 1491 runs the block
+  when they are EQUAL, which is a verified OTS defect (with a second: 197390 vs
+  197300 at source line 1466). The graph follows the IRS text; OTS is not a
+  witness for nonzero-line-18/19 scenarios (see docs/oracle-strategy.md; John
+  reported both defects to the OTS maintainer 2026-07-11).
   **The bug caught in design review - handle this correctly, it is the crux of the
   step:** lines 23-43 exist only when `line 1 > line 16` (call this gate1); nested
-  inside that, lines 33-43 exist only when `line 1 == line 32` (gate2); nested
+  inside that, lines 33-43 exist only when `line 1 != line 32` per the IRS text,
+  which inside gate1 reduces to `line 1 > line 32` (gate2); nested
   inside THAT, lines 35-40 additionally require `SchedD[19] != 0` and lines 41-43
   additionally require `SchedD[18] != 0`. A naive implementation that computes each
   gate's condition independently from possibly-ungated upstream values is WRONG:

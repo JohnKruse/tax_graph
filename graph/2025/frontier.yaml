@@ -50,20 +50,38 @@ frontiers:
   title: Student Loan Interest Deduction Worksheet
   purpose: OTS S1_21 is pre-worksheet interest paid, while the graph line is the post-worksheet
     deduction; model the worksheet before live differential injection.
-- frontier_id: deferred_schedule_d_2025_line_20
+- frontier_id: deferred_schedule_d_2025_28_rate_gain_worksheet
   kind: deferred_branch
   source:
     document_id: schedule_d_2025
   target:
     document_id: schedule_d_2025
-    line: '20'
-    node_id: schedule_d_2025_line_20_frontier
+    line: '18'
+    node_id: schedule_d_2025_28_rate_gain_worksheet_frontier
   target_url: https://www.irs.gov/pub/irs-prior/f1040sd--2025.pdf
-  citation_ref: cite_schedule_d_line20_deferred
+  citation_ref: cite_schedule_d_line18_28pct
   status: declared
   weight: 24000000
-  title: Schedule D line 20 tax computation worksheet
-  purpose: Deferred QDCGT tax-computation worksheet branch.
+  title: Schedule D 28% Rate Gain Worksheet
+  purpose: Line 18 accepts the worksheet RESULT as input; the worksheet's own collectibles/1202
+    arithmetic is not modeled. Filers must compute it per the cited instructions before
+    entering line 18.
+- frontier_id: deferred_schedule_d_2025_unrecaptured_1250_worksheet
+  kind: deferred_branch
+  source:
+    document_id: schedule_d_2025
+  target:
+    document_id: schedule_d_2025
+    line: '19'
+    node_id: schedule_d_2025_unrecaptured_1250_worksheet_frontier
+  target_url: https://www.irs.gov/pub/irs-prior/f1040sd--2025.pdf
+  citation_ref: cite_schedule_d_line19_1250
+  status: declared
+  weight: 24000000
+  title: Schedule D Unrecaptured Section 1250 Gain Worksheet
+  purpose: Line 19 accepts the worksheet RESULT as input; the worksheet's own section-1250
+    arithmetic is not modeled. Filers must compute it per the cited instructions before
+    entering line 19.
 - frontier_id: flow_form_6251_2025_outbound_schedule_d_column_h_to_schedule_d_2025_line_2
   kind: outbound_flow
   source:
@@ -446,6 +464,105 @@ frontiers:
   citation_ref: cite_schedule_d_16_to_1040_7
   status: modeled
   weight: 163100000
+- frontier_id: ref_cite_schedule_d_carryover_line_13_to_schedule_d_2025
+  kind: form_reference
+  source:
+    document_id: instructions_schedule_d_2025
+    citation_id: cite_schedule_d_carryover_line_13
+  target:
+    document_id: schedule_d_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040sd--2025.pdf
+  citation_ref: cite_schedule_d_carryover_line_13
+  status: modeled
+  weight: 24000000
+- frontier_id: ref_cite_schedule_d_carryover_line_1_2_to_form_1040_2025
+  kind: form_reference
+  source:
+    document_id: instructions_schedule_d_2025
+    citation_id: cite_schedule_d_carryover_line_1_2
+  target:
+    document_id: form_1040_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040--2025.pdf
+  citation_ref: cite_schedule_d_carryover_line_1_2
+  status: modeled
+  weight: 163100000
+- frontier_id: ref_cite_schedule_d_carryover_line_1_2_to_schedule_d_2025
+  kind: form_reference
+  source:
+    document_id: instructions_schedule_d_2025
+    citation_id: cite_schedule_d_carryover_line_1_2
+  target:
+    document_id: schedule_d_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040sd--2025.pdf
+  citation_ref: cite_schedule_d_carryover_line_1_2
+  status: modeled
+  weight: 24000000
+- frontier_id: ref_cite_schedule_d_carryover_line_3_4_to_schedule_d_2025
+  kind: form_reference
+  source:
+    document_id: instructions_schedule_d_2025
+    citation_id: cite_schedule_d_carryover_line_3_4
+  target:
+    document_id: schedule_d_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040sd--2025.pdf
+  citation_ref: cite_schedule_d_carryover_line_3_4
+  status: modeled
+  weight: 24000000
+- frontier_id: ref_cite_schedule_d_carryover_line_5_8_to_schedule_d_2025
+  kind: form_reference
+  source:
+    document_id: instructions_schedule_d_2025
+    citation_id: cite_schedule_d_carryover_line_5_8
+  target:
+    document_id: schedule_d_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040sd--2025.pdf
+  citation_ref: cite_schedule_d_carryover_line_5_8
+  status: modeled
+  weight: 24000000
+- frontier_id: ref_cite_schedule_d_carryover_line_8_to_schedule_d_2025
+  kind: form_reference
+  source:
+    document_id: instructions_schedule_d_2025
+    citation_id: cite_schedule_d_carryover_line_8
+  target:
+    document_id: schedule_d_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040sd--2025.pdf
+  citation_ref: cite_schedule_d_carryover_line_8
+  status: modeled
+  weight: 24000000
+- frontier_id: ref_cite_schedule_d_carryover_line_9_13_to_schedule_d_2025
+  kind: form_reference
+  source:
+    document_id: instructions_schedule_d_2025
+    citation_id: cite_schedule_d_carryover_line_9_13
+  target:
+    document_id: schedule_d_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040sd--2025.pdf
+  citation_ref: cite_schedule_d_carryover_line_9_13
+  status: modeled
+  weight: 24000000
+- frontier_id: ref_cite_schedule_d_line18_28pct_to_schedule_d_2025
+  kind: form_reference
+  source:
+    document_id: instructions_schedule_d_2025
+    citation_id: cite_schedule_d_line18_28pct
+  target:
+    document_id: schedule_d_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040sd--2025.pdf
+  citation_ref: cite_schedule_d_line18_28pct
+  status: modeled
+  weight: 24000000
+- frontier_id: ref_cite_schedule_d_line19_1250_to_schedule_d_2025
+  kind: form_reference
+  source:
+    document_id: instructions_schedule_d_2025
+    citation_id: cite_schedule_d_line19_1250
+  target:
+    document_id: schedule_d_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040sd--2025.pdf
+  citation_ref: cite_schedule_d_line19_1250
+  status: modeled
+  weight: 24000000
 - frontier_id: ref_cite_schedule_d_line20_deferred_to_form_1040_2025
   kind: form_reference
   source:
@@ -477,6 +594,138 @@ frontiers:
     document_id: schedule_d_2025
   target_url: https://www.irs.gov/pub/irs-prior/f1040sd--2025.pdf
   citation_ref: cite_schedule_d_line21_loss_limit
+  status: modeled
+  weight: 24000000
+- frontier_id: ref_cite_sdtw_line_11_14_to_schedule_d_2025
+  kind: form_reference
+  source:
+    document_id: instructions_schedule_d_2025
+    citation_id: cite_sdtw_line_11_14
+  target:
+    document_id: schedule_d_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040sd--2025.pdf
+  citation_ref: cite_sdtw_line_11_14
+  status: modeled
+  weight: 24000000
+- frontier_id: ref_cite_sdtw_line_15_22_to_schedule_d_2025
+  kind: form_reference
+  source:
+    document_id: instructions_schedule_d_2025
+    citation_id: cite_sdtw_line_15_22
+  target:
+    document_id: schedule_d_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040sd--2025.pdf
+  citation_ref: cite_sdtw_line_15_22
+  status: modeled
+  weight: 24000000
+- frontier_id: ref_cite_sdtw_line_19_breakpoint_to_schedule_d_2025
+  kind: form_reference
+  source:
+    document_id: instructions_schedule_d_2025
+    citation_id: cite_sdtw_line_19_breakpoint
+  target:
+    document_id: schedule_d_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040sd--2025.pdf
+  citation_ref: cite_sdtw_line_19_breakpoint
+  status: modeled
+  weight: 24000000
+- frontier_id: ref_cite_sdtw_line_1_6_to_form_1040_2025
+  kind: form_reference
+  source:
+    document_id: instructions_schedule_d_2025
+    citation_id: cite_sdtw_line_1_6
+  target:
+    document_id: form_1040_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040--2025.pdf
+  citation_ref: cite_sdtw_line_1_6
+  status: modeled
+  weight: 163100000
+- frontier_id: ref_cite_sdtw_line_1_6_to_schedule_d_2025
+  kind: form_reference
+  source:
+    document_id: instructions_schedule_d_2025
+    citation_id: cite_sdtw_line_1_6
+  target:
+    document_id: schedule_d_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040sd--2025.pdf
+  citation_ref: cite_sdtw_line_1_6
+  status: modeled
+  weight: 24000000
+- frontier_id: ref_cite_sdtw_line_23_32_to_schedule_d_2025
+  kind: form_reference
+  source:
+    document_id: instructions_schedule_d_2025
+    citation_id: cite_sdtw_line_23_32
+  target:
+    document_id: schedule_d_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040sd--2025.pdf
+  citation_ref: cite_sdtw_line_23_32
+  status: modeled
+  weight: 24000000
+- frontier_id: ref_cite_sdtw_line_33_34_to_schedule_d_2025
+  kind: form_reference
+  source:
+    document_id: instructions_schedule_d_2025
+    citation_id: cite_sdtw_line_33_34
+  target:
+    document_id: schedule_d_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040sd--2025.pdf
+  citation_ref: cite_sdtw_line_33_34
+  status: modeled
+  weight: 24000000
+- frontier_id: ref_cite_sdtw_line_35_40_to_schedule_d_2025
+  kind: form_reference
+  source:
+    document_id: instructions_schedule_d_2025
+    citation_id: cite_sdtw_line_35_40
+  target:
+    document_id: schedule_d_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040sd--2025.pdf
+  citation_ref: cite_sdtw_line_35_40
+  status: modeled
+  weight: 24000000
+- frontier_id: ref_cite_sdtw_line_41_44_to_schedule_d_2025
+  kind: form_reference
+  source:
+    document_id: instructions_schedule_d_2025
+    citation_id: cite_sdtw_line_41_44
+  target:
+    document_id: schedule_d_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040sd--2025.pdf
+  citation_ref: cite_sdtw_line_41_44
+  status: modeled
+  weight: 24000000
+- frontier_id: ref_cite_sdtw_line_45_47_to_form_1040_2025
+  kind: form_reference
+  source:
+    document_id: instructions_schedule_d_2025
+    citation_id: cite_sdtw_line_45_47
+  target:
+    document_id: form_1040_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040--2025.pdf
+  citation_ref: cite_sdtw_line_45_47
+  status: modeled
+  weight: 163100000
+- frontier_id: ref_cite_sdtw_line_45_47_to_schedule_d_2025
+  kind: form_reference
+  source:
+    document_id: instructions_schedule_d_2025
+    citation_id: cite_sdtw_line_45_47
+  target:
+    document_id: schedule_d_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040sd--2025.pdf
+  citation_ref: cite_sdtw_line_45_47
+  status: modeled
+  weight: 24000000
+- frontier_id: ref_cite_sdtw_line_7_10_to_schedule_d_2025
+  kind: form_reference
+  source:
+    document_id: instructions_schedule_d_2025
+    citation_id: cite_sdtw_line_7_10
+  target:
+    document_id: schedule_d_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040sd--2025.pdf
+  citation_ref: cite_sdtw_line_7_10
   status: modeled
   weight: 24000000
 - frontier_id: ref_cite_span_form_1040_2025_0030_to_schedule_1_2025

@@ -1106,14 +1106,53 @@
   citation_refs:
   - cite_1040_qdcgt_line_23_25
 
-- edge_id: e_qdcgt_4_to_1040_16
+# The QDCGT-vs-regular choice (unchanged M11 semantics) now feeds line 16
+# through non_sdtw_tax; an outer decision routes to the Schedule D Tax
+# Worksheet first when Schedule D line 20 says so (M13 Step 3).
+- edge_id: e_qdcgt_4_to_non_sdtw_tax
   source: form_1040_2025_qdcgt_line_4
-  target: form_1040_2025_root_line_16
+  target: form_1040_2025_non_sdtw_tax
   relationship: CALCULATES
   rule_id: if_greater_than_currency
   role: condition
   citation_refs:
   - cite_1040_line_16_tax_methods
+
+- edge_id: e_1040_zero_floor_to_non_sdtw_tax
+  source: form_1040_2025_zero_floor
+  target: form_1040_2025_non_sdtw_tax
+  relationship: CALCULATES
+  rule_id: if_greater_than_currency
+  role: threshold
+  citation_refs:
+  - cite_1040_line_16_tax_methods
+
+- edge_id: e_qdcgt_25_to_non_sdtw_tax
+  source: form_1040_2025_qdcgt_line_25
+  target: form_1040_2025_non_sdtw_tax
+  relationship: CALCULATES
+  rule_id: if_greater_than_currency
+  role: when_true
+  citation_refs:
+  - cite_1040_qdcgt_line_25
+
+- edge_id: e_regular_tax_to_non_sdtw_tax
+  source: form_1040_2025_regular_tax
+  target: form_1040_2025_non_sdtw_tax
+  relationship: CALCULATES
+  rule_id: if_greater_than_currency
+  role: when_false
+  citation_refs:
+  - cite_1040_line_16_tax_methods
+
+- edge_id: e_sdtw_applies_to_1040_16
+  source: schedule_d_2025_sdtw_applies
+  target: form_1040_2025_root_line_16
+  relationship: CALCULATES
+  rule_id: if_greater_than_currency
+  role: condition
+  citation_refs:
+  - cite_schedule_d_line20_gate
 
 - edge_id: e_1040_zero_floor_to_1040_16
   source: form_1040_2025_zero_floor
@@ -1124,17 +1163,17 @@
   citation_refs:
   - cite_1040_line_16_tax_methods
 
-- edge_id: e_qdcgt_25_to_1040_16
-  source: form_1040_2025_qdcgt_line_25
+- edge_id: e_sdtw_47_to_1040_16
+  source: schedule_d_2025_tax_worksheet_line_47
   target: form_1040_2025_root_line_16
   relationship: CALCULATES
   rule_id: if_greater_than_currency
   role: when_true
   citation_refs:
-  - cite_1040_qdcgt_line_25
+  - cite_sdtw_line_45_47
 
-- edge_id: e_regular_tax_to_1040_16
-  source: form_1040_2025_regular_tax
+- edge_id: e_non_sdtw_tax_to_1040_16
+  source: form_1040_2025_non_sdtw_tax
   target: form_1040_2025_root_line_16
   relationship: CALCULATES
   rule_id: if_greater_than_currency

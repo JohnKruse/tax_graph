@@ -123,6 +123,26 @@
   expected_layers:
     - L3
 
+- id: wrong_sdtw_25_rate_parameter
+  taxonomy: F3
+  description: Mutate the Schedule D Tax Worksheet 25 percent unrecaptured-1250 rate.
+  mutation:
+    kind: change_node_constant
+    node_id: schedule_d_2025_tax_worksheet_rate_25pct
+    value: 0.35
+  expected_layers:
+    - L3
+
+- id: wrong_sdtw_breakpoint_parameter
+  taxonomy: F3
+  description: Mutate the Schedule D Tax Worksheet line 19 single-filer threshold (the value OTS itself gets wrong).
+  mutation:
+    kind: change_node_constant
+    node_id: schedule_d_2025_tax_worksheet_breakpoint_32_single
+    value: 197390
+  expected_layers:
+    - L3
+
 - id: wrong_carryover_split
   taxonomy: F3
   description: Feed the long-term loss into the short-term carryover calculation.

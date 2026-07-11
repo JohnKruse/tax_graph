@@ -140,6 +140,8 @@ mappings:
   format: dollars
   node_id: form_1040_2025_root_line_16
 excluded_nodes:
+- node_id: form_1040_2025_non_sdtw_tax
+  reason: Internal tax-method selector with no official-form box.
 - node_id: form_1040_2025_brackets_hoh
   reason: Not a printable form line or not mapped in the M12 supported output profile.
 - node_id: form_1040_2025_brackets_mfj

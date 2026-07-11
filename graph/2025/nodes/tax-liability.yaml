@@ -383,6 +383,15 @@
   citation_refs:
     - cite_1040_line_16_tax_methods
 
+- node_id: form_1040_2025_non_sdtw_tax
+  document_id: form_1040_2025
+  label: Form 1040 line 16 tax when the Schedule D Tax Worksheet does not apply (QDCGT or regular)
+  node_type: computed
+  value_type: currency
+  required: optional
+  citation_refs:
+    - cite_1040_line_16_tax_methods
+
 - node_id: form_1040_2025_qdcgt_line_1
   document_id: form_1040_2025
   label: QDCGT worksheet line 1

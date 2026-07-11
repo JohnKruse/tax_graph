@@ -365,15 +365,6 @@
   citation_refs:
     - cite_schedule_d_line21_loss_limit
 
-- node_id: schedule_d_2025_line_20_tax_computation
-  document_id: schedule_d_2025
-  label: Schedule D, line 20 - Qualified Dividends and Capital Gain Tax Worksheet
-  node_type: computed
-  value_type: currency
-  required: conditional
-  citation_refs:
-    - cite_schedule_d_line20_deferred
-
 # Capital Loss Carryover Worksheet. The published 2025 worksheet is expressed
 # for 2024 -> 2025; these fields apply its cited line-by-line mechanics to the
 # current return so the Return Record carries 2025 -> 2026 values.
@@ -556,6 +547,750 @@
   required: optional
   citation_refs:
     - cite_schedule_d_carryover_line_9_13
+
+# --- Schedule D lines 17-20: routing to the QDCGT or Schedule D Tax Worksheet ---
+# Line 17 asks "Are lines 15 and 16 both gains?" - MIN(15,16) > 0 is that test.
+# Line 20 asks "Are lines 18 and 19 both zero or blank?" - MAX(18,19) > 0 means No.
+# sdtw_applies = MIN(gate17, gate20) is positive exactly when both are Yes/No
+# respectively, i.e. when the Schedule D Tax Worksheet computes the line 16 tax.
+# Form 4952 is not modeled (out of the supported profile), so the line 20 text's
+# "and you are not filing Form 4952" holds by scope.
+- node_id: schedule_d_2025_line_17_gate
+  document_id: schedule_d_2025
+  label: Schedule D line 17 - smaller of line 15 or line 16 (positive when both gains)
+  node_type: computed
+  value_type: currency
+  required: optional
+  citation_refs:
+    - cite_schedule_d_line17_both_gains
+
+- node_id: schedule_d_2025_line_18
+  document_id: schedule_d_2025
+  label: Schedule D, line 18 - 28% Rate Gain Worksheet result (worksheet not modeled; enter its result)
+  node_type: form_line
+  value_type: currency
+  required: optional
+  citation_refs:
+    - cite_schedule_d_line18_28pct
+
+- node_id: schedule_d_2025_line_19
+  document_id: schedule_d_2025
+  label: Schedule D, line 19 - Unrecaptured Section 1250 Gain Worksheet result (worksheet not modeled; enter its result)
+  node_type: form_line
+  value_type: currency
+  required: optional
+  citation_refs:
+    - cite_schedule_d_line19_1250
+
+- node_id: schedule_d_2025_line_20_gate
+  document_id: schedule_d_2025
+  label: Schedule D line 20 - larger of line 18 or line 19 (positive when not both zero)
+  node_type: computed
+  value_type: currency
+  required: optional
+  citation_refs:
+    - cite_schedule_d_line20_gate
+
+- node_id: schedule_d_2025_sdtw_applies
+  document_id: schedule_d_2025
+  label: Schedule D Tax Worksheet applies (positive when lines 15/16 both gains and line 18 or 19 nonzero)
+  node_type: computed
+  value_type: currency
+  required: optional
+  citation_refs:
+    - cite_schedule_d_line17_both_gains
+    - cite_schedule_d_line20_gate
+
+# Feeder-worksheet walls (the M13 Step 1 student-loan precedent): lines 18/19
+# accept the worksheet RESULT as input; the worksheets themselves are declared
+# frontier walls until modeled.
+- node_id: schedule_d_2025_28_rate_gain_worksheet
+  document_id: schedule_d_2025
+  label: Schedule D 28% Rate Gain Worksheet (line 18 feeder)
+  node_type: worksheet_field
+  value_type: currency
+  required: conditional
+  citation_refs:
+    - cite_schedule_d_line18_28pct
+
+- node_id: schedule_d_2025_unrecaptured_1250_worksheet
+  document_id: schedule_d_2025
+  label: Schedule D Unrecaptured Section 1250 Gain Worksheet (line 19 feeder)
+  node_type: worksheet_field
+  value_type: currency
+  required: conditional
+  citation_refs:
+    - cite_schedule_d_line19_1250
+
+# --- Schedule D Tax Worksheet (computes 1040 line 16 when line 20 routes here) ---
+# IRS-faithful per the cited 2025 instructions text. NOTE (Architect, 2026-07-10):
+# the shipped OTS reference implementation INVERTS the lines-33-43 entry condition
+# (taxsolve_US_1040_2025.c line 1491 runs 33-43 when line 1 EQUALS line 32; the
+# IRS text says SKIP when they are the same) and hardcodes 197390 where the IRS
+# text says 197300 (line 19, single/MFS). This graph follows the IRS text; OTS is
+# therefore NOT a reliable witness for scenarios where lines 33-43 carry nonzero
+# amounts - see docs/oracle-strategy.md.
+- node_id: schedule_d_2025_tax_worksheet_line_1
+  document_id: instructions_schedule_d_2025
+  label: Schedule D Tax Worksheet line 1 - taxable income
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+    - cite_sdtw_line_1_6
+
+- node_id: schedule_d_2025_tax_worksheet_line_2
+  document_id: instructions_schedule_d_2025
+  label: Schedule D Tax Worksheet line 2 - qualified dividends
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+    - cite_sdtw_line_1_6
+
+- node_id: schedule_d_2025_tax_worksheet_line_3
+  document_id: instructions_schedule_d_2025
+  label: Schedule D Tax Worksheet line 3 - Form 4952 line 4g (form not modeled; zero by supported-profile scope)
+  node_type: parameter
+  value_type: currency
+  required: optional
+  constant_value: 0
+  citation_refs:
+    - cite_sdtw_line_1_6
+
+- node_id: schedule_d_2025_tax_worksheet_line_4
+  document_id: instructions_schedule_d_2025
+  label: Schedule D Tax Worksheet line 4 - Form 4952 line 4e (form not modeled; zero by supported-profile scope)
+  node_type: parameter
+  value_type: currency
+  required: optional
+  constant_value: 0
+  citation_refs:
+    - cite_sdtw_line_1_6
+
+- node_id: schedule_d_2025_tax_worksheet_line_5_pre_floor
+  document_id: instructions_schedule_d_2025
+  label: Schedule D Tax Worksheet line 5 before zero floor
+  node_type: computed
+  value_type: currency
+  required: optional
+  citation_refs:
+    - cite_sdtw_line_1_6
+
+- node_id: schedule_d_2025_tax_worksheet_line_5
+  document_id: instructions_schedule_d_2025
+  label: Schedule D Tax Worksheet line 5 - subtract line 4 from line 3
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+    - cite_sdtw_line_1_6
+
+- node_id: schedule_d_2025_tax_worksheet_line_6_pre_floor
+  document_id: instructions_schedule_d_2025
+  label: Schedule D Tax Worksheet line 6 before zero floor
+  node_type: computed
+  value_type: currency
+  required: optional
+  citation_refs:
+    - cite_sdtw_line_1_6
+
+- node_id: schedule_d_2025_tax_worksheet_line_6
+  document_id: instructions_schedule_d_2025
+  label: Schedule D Tax Worksheet line 6 - subtract line 5 from line 2
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+    - cite_sdtw_line_1_6
+
+- node_id: schedule_d_2025_tax_worksheet_line_7
+  document_id: instructions_schedule_d_2025
+  label: Schedule D Tax Worksheet line 7 - smaller of Schedule D line 15 or line 16
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+    - cite_sdtw_line_7_10
+
+- node_id: schedule_d_2025_tax_worksheet_line_8
+  document_id: instructions_schedule_d_2025
+  label: Schedule D Tax Worksheet line 8 - smaller of line 3 or line 4
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+    - cite_sdtw_line_7_10
+
+- node_id: schedule_d_2025_tax_worksheet_line_9_pre_floor
+  document_id: instructions_schedule_d_2025
+  label: Schedule D Tax Worksheet line 9 before zero floor
+  node_type: computed
+  value_type: currency
+  required: optional
+  citation_refs:
+    - cite_sdtw_line_7_10
+
+- node_id: schedule_d_2025_tax_worksheet_line_9
+  document_id: instructions_schedule_d_2025
+  label: Schedule D Tax Worksheet line 9 - subtract line 8 from line 7
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+    - cite_sdtw_line_7_10
+
+- node_id: schedule_d_2025_tax_worksheet_line_10
+  document_id: instructions_schedule_d_2025
+  label: Schedule D Tax Worksheet line 10 - add lines 6 and 9
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+    - cite_sdtw_line_7_10
+
+- node_id: schedule_d_2025_tax_worksheet_line_11
+  document_id: instructions_schedule_d_2025
+  label: Schedule D Tax Worksheet line 11 - add Schedule D lines 18 and 19
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+    - cite_sdtw_line_11_14
+
+- node_id: schedule_d_2025_tax_worksheet_line_12
+  document_id: instructions_schedule_d_2025
+  label: Schedule D Tax Worksheet line 12 - smaller of line 9 or line 11
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+    - cite_sdtw_line_11_14
+
+- node_id: schedule_d_2025_tax_worksheet_line_13
+  document_id: instructions_schedule_d_2025
+  label: Schedule D Tax Worksheet line 13 - subtract line 12 from line 10
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+    - cite_sdtw_line_11_14
+
+- node_id: schedule_d_2025_tax_worksheet_line_14_pre_floor
+  document_id: instructions_schedule_d_2025
+  label: Schedule D Tax Worksheet line 14 before zero floor
+  node_type: computed
+  value_type: currency
+  required: optional
+  citation_refs:
+    - cite_sdtw_line_11_14
+
+- node_id: schedule_d_2025_tax_worksheet_line_14
+  document_id: instructions_schedule_d_2025
+  label: Schedule D Tax Worksheet line 14 - subtract line 13 from line 1
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+    - cite_sdtw_line_11_14
+
+- node_id: schedule_d_2025_tax_worksheet_line_15
+  document_id: instructions_schedule_d_2025
+  label: Schedule D Tax Worksheet line 15 - 0%-rate breakpoint by filing status
+  node_type: computed
+  value_type: currency
+  required: optional
+  citation_refs:
+    - cite_sdtw_line_15_22
+
+- node_id: schedule_d_2025_tax_worksheet_line_16
+  document_id: instructions_schedule_d_2025
+  label: Schedule D Tax Worksheet line 16 - smaller of line 1 or line 15
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+    - cite_sdtw_line_15_22
+
+- node_id: schedule_d_2025_tax_worksheet_line_17
+  document_id: instructions_schedule_d_2025
+  label: Schedule D Tax Worksheet line 17 - smaller of line 14 or line 16
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+    - cite_sdtw_line_15_22
+
+- node_id: schedule_d_2025_tax_worksheet_line_18_pre_floor
+  document_id: instructions_schedule_d_2025
+  label: Schedule D Tax Worksheet line 18 before zero floor
+  node_type: computed
+  value_type: currency
+  required: optional
+  citation_refs:
+    - cite_sdtw_line_15_22
+
+- node_id: schedule_d_2025_tax_worksheet_line_18
+  document_id: instructions_schedule_d_2025
+  label: Schedule D Tax Worksheet line 18 - subtract line 10 from line 1
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+    - cite_sdtw_line_15_22
+
+- node_id: schedule_d_2025_tax_worksheet_line_19_threshold
+  document_id: instructions_schedule_d_2025
+  label: Schedule D Tax Worksheet line 19 threshold by filing status
+  node_type: computed
+  value_type: currency
+  required: optional
+  citation_refs:
+    - cite_sdtw_line_19_breakpoint
+
+- node_id: schedule_d_2025_tax_worksheet_line_19
+  document_id: instructions_schedule_d_2025
+  label: Schedule D Tax Worksheet line 19 - smaller of line 1 or the threshold
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+    - cite_sdtw_line_19_breakpoint
+
+- node_id: schedule_d_2025_tax_worksheet_line_20
+  document_id: instructions_schedule_d_2025
+  label: Schedule D Tax Worksheet line 20 - smaller of line 14 or line 19
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+    - cite_sdtw_line_15_22
+
+- node_id: schedule_d_2025_tax_worksheet_line_21
+  document_id: instructions_schedule_d_2025
+  label: Schedule D Tax Worksheet line 21 - larger of line 18 or line 20
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+    - cite_sdtw_line_15_22
+
+- node_id: schedule_d_2025_tax_worksheet_line_22
+  document_id: instructions_schedule_d_2025
+  label: Schedule D Tax Worksheet line 22 - subtract line 17 from line 16 (taxed at 0%)
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+    - cite_sdtw_line_15_22
+
+# Lines 23-43 run only when line 1 differs from line 16 (IRS: "If lines 1 and 16
+# are the same, skip lines 23 through 43"). Since line 16 = MIN(line 1, line 15),
+# "differs" is exactly "line 1 > line 16". Lines 23 and 24 carry the gate as
+# IF_ELSE; every later line in the block inherits zero through them - EXCEPT
+# lines 33, 39, and 43, which need their own gates (see below).
+- node_id: schedule_d_2025_tax_worksheet_line_23_raw
+  document_id: instructions_schedule_d_2025
+  label: Schedule D Tax Worksheet line 23 before the lines-23-43 gate
+  node_type: computed
+  value_type: currency
+  required: optional
+  citation_refs:
+    - cite_sdtw_line_23_32
+
+- node_id: schedule_d_2025_tax_worksheet_line_23
+  document_id: instructions_schedule_d_2025
+  label: Schedule D Tax Worksheet line 23 - smaller of line 1 or line 13
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+    - cite_sdtw_line_23_32
+
+- node_id: schedule_d_2025_tax_worksheet_line_24
+  document_id: instructions_schedule_d_2025
+  label: Schedule D Tax Worksheet line 24 - amount from line 22
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+    - cite_sdtw_line_23_32
+
+- node_id: schedule_d_2025_tax_worksheet_line_25_pre_floor
+  document_id: instructions_schedule_d_2025
+  label: Schedule D Tax Worksheet line 25 before zero floor
+  node_type: computed
+  value_type: currency
+  required: optional
+  citation_refs:
+    - cite_sdtw_line_23_32
+
+- node_id: schedule_d_2025_tax_worksheet_line_25
+  document_id: instructions_schedule_d_2025
+  label: Schedule D Tax Worksheet line 25 - subtract line 24 from line 23
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+    - cite_sdtw_line_23_32
+
+- node_id: schedule_d_2025_tax_worksheet_line_26
+  document_id: instructions_schedule_d_2025
+  label: Schedule D Tax Worksheet line 26 - 20%-rate breakpoint by filing status
+  node_type: computed
+  value_type: currency
+  required: optional
+  citation_refs:
+    - cite_sdtw_line_23_32
+
+- node_id: schedule_d_2025_tax_worksheet_line_27
+  document_id: instructions_schedule_d_2025
+  label: Schedule D Tax Worksheet line 27 - smaller of line 1 or line 26
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+    - cite_sdtw_line_23_32
+
+- node_id: schedule_d_2025_tax_worksheet_line_28
+  document_id: instructions_schedule_d_2025
+  label: Schedule D Tax Worksheet line 28 - add lines 21 and 22
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+    - cite_sdtw_line_23_32
+
+- node_id: schedule_d_2025_tax_worksheet_line_29_pre_floor
+  document_id: instructions_schedule_d_2025
+  label: Schedule D Tax Worksheet line 29 before zero floor
+  node_type: computed
+  value_type: currency
+  required: optional
+  citation_refs:
+    - cite_sdtw_line_23_32
+
+- node_id: schedule_d_2025_tax_worksheet_line_29
+  document_id: instructions_schedule_d_2025
+  label: Schedule D Tax Worksheet line 29 - subtract line 28 from line 27
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+    - cite_sdtw_line_23_32
+
+- node_id: schedule_d_2025_tax_worksheet_line_30
+  document_id: instructions_schedule_d_2025
+  label: Schedule D Tax Worksheet line 30 - smaller of line 25 or line 29
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+    - cite_sdtw_line_23_32
+
+- node_id: schedule_d_2025_tax_worksheet_line_31
+  document_id: instructions_schedule_d_2025
+  label: Schedule D Tax Worksheet line 31 - multiply line 30 by 15%
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+    - cite_sdtw_line_23_32
+
+- node_id: schedule_d_2025_tax_worksheet_line_32
+  document_id: instructions_schedule_d_2025
+  label: Schedule D Tax Worksheet line 32 - add lines 24 and 30
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+    - cite_sdtw_line_23_32
+
+# Lines 33-43 run only when line 1 differs from line 32 (IRS: "If lines 1 and 32
+# are the same, skip lines 33 through 43"). Within the lines-23-43 block,
+# line 32 <= line 23 <= line 1, so "differs" is exactly "line 1 > line 32".
+# NOTE: the shipped OTS implementation runs this block when they are EQUAL
+# (inverted); this graph follows the IRS text.
+- node_id: schedule_d_2025_tax_worksheet_line_33_raw
+  document_id: instructions_schedule_d_2025
+  label: Schedule D Tax Worksheet line 33 before the lines-33-43 gate
+  node_type: computed
+  value_type: currency
+  required: optional
+  citation_refs:
+    - cite_sdtw_line_33_34
+
+- node_id: schedule_d_2025_tax_worksheet_line_33
+  document_id: instructions_schedule_d_2025
+  label: Schedule D Tax Worksheet line 33 - subtract line 32 from line 23
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+    - cite_sdtw_line_33_34
+
+- node_id: schedule_d_2025_tax_worksheet_line_34
+  document_id: instructions_schedule_d_2025
+  label: Schedule D Tax Worksheet line 34 - multiply line 33 by 20%
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+    - cite_sdtw_line_33_34
+
+# Lines 35-40: skip when Schedule D line 19 is zero or blank (then line 35 = 0
+# and lines 38-40 zero out arithmetically); line 39 additionally carries the
+# lines-33-43 gate because its raw value can be positive when that block is
+# skipped (line 21 = line 18 exactly makes line 38 zero).
+- node_id: schedule_d_2025_tax_worksheet_line_35
+  document_id: instructions_schedule_d_2025
+  label: Schedule D Tax Worksheet line 35 - smaller of line 9 or Schedule D line 19
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+    - cite_sdtw_line_35_40
+
+- node_id: schedule_d_2025_tax_worksheet_line_36
+  document_id: instructions_schedule_d_2025
+  label: Schedule D Tax Worksheet line 36 - add lines 10 and 21
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+    - cite_sdtw_line_35_40
+
+- node_id: schedule_d_2025_tax_worksheet_line_38_pre_floor
+  document_id: instructions_schedule_d_2025
+  label: Schedule D Tax Worksheet line 38 before zero floor
+  node_type: computed
+  value_type: currency
+  required: optional
+  citation_refs:
+    - cite_sdtw_line_35_40
+
+- node_id: schedule_d_2025_tax_worksheet_line_38
+  document_id: instructions_schedule_d_2025
+  label: Schedule D Tax Worksheet line 38 - subtract line 37 (line 1) from line 36
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+    - cite_sdtw_line_35_40
+
+- node_id: schedule_d_2025_tax_worksheet_line_39_pre_floor
+  document_id: instructions_schedule_d_2025
+  label: Schedule D Tax Worksheet line 39 before zero floor
+  node_type: computed
+  value_type: currency
+  required: optional
+  citation_refs:
+    - cite_sdtw_line_35_40
+
+- node_id: schedule_d_2025_tax_worksheet_line_39_raw
+  document_id: instructions_schedule_d_2025
+  label: Schedule D Tax Worksheet line 39 before the lines-33-43 gate
+  node_type: computed
+  value_type: currency
+  required: optional
+  citation_refs:
+    - cite_sdtw_line_35_40
+
+- node_id: schedule_d_2025_tax_worksheet_line_39
+  document_id: instructions_schedule_d_2025
+  label: Schedule D Tax Worksheet line 39 - subtract line 38 from line 35
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+    - cite_sdtw_line_35_40
+
+- node_id: schedule_d_2025_tax_worksheet_line_40
+  document_id: instructions_schedule_d_2025
+  label: Schedule D Tax Worksheet line 40 - multiply line 39 by 25%
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+    - cite_sdtw_line_35_40
+
+# Lines 41-43: skip when Schedule D line 18 is zero or blank AND when the
+# lines-33-43 block is skipped. Line 43 chains BOTH gates: line 42's raw value
+# is not naturally zero in either skip case, so relying on arithmetic here
+# would misapply the 28% rate (the bug the design review caught).
+- node_id: schedule_d_2025_tax_worksheet_line_41
+  document_id: instructions_schedule_d_2025
+  label: Schedule D Tax Worksheet line 41 - add lines 21, 22, 30, 33, and 39
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+    - cite_sdtw_line_41_44
+
+- node_id: schedule_d_2025_tax_worksheet_line_42
+  document_id: instructions_schedule_d_2025
+  label: Schedule D Tax Worksheet line 42 - subtract line 41 from line 1
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+    - cite_sdtw_line_41_44
+
+- node_id: schedule_d_2025_tax_worksheet_line_18_nonblank
+  document_id: instructions_schedule_d_2025
+  label: Schedule D line 18 coerced to zero when blank (gate condition for lines 41-43)
+  node_type: computed
+  value_type: currency
+  required: optional
+  citation_refs:
+    - cite_sdtw_line_41_44
+
+- node_id: schedule_d_2025_tax_worksheet_line_43_raw
+  document_id: instructions_schedule_d_2025
+  label: Schedule D Tax Worksheet line 43 before its gates
+  node_type: computed
+  value_type: currency
+  required: optional
+  citation_refs:
+    - cite_sdtw_line_41_44
+
+- node_id: schedule_d_2025_tax_worksheet_line_43_when_lines_33_43_run
+  document_id: instructions_schedule_d_2025
+  label: Schedule D Tax Worksheet line 43 gated by the lines-33-43 entry
+  node_type: computed
+  value_type: currency
+  required: optional
+  citation_refs:
+    - cite_sdtw_line_41_44
+
+- node_id: schedule_d_2025_tax_worksheet_line_43
+  document_id: instructions_schedule_d_2025
+  label: Schedule D Tax Worksheet line 43 - multiply line 42 by 28%
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+    - cite_sdtw_line_41_44
+
+- node_id: schedule_d_2025_tax_worksheet_line_44_table_amount
+  document_id: instructions_schedule_d_2025
+  label: Schedule D Tax Worksheet line 44 - tax on line 21 from the tax table
+  node_type: computed
+  value_type: currency
+  required: optional
+  citation_refs:
+    - cite_sdtw_line_41_44
+    - cite_1040_tax_table
+
+- node_id: schedule_d_2025_tax_worksheet_line_44_bracket_amount
+  document_id: instructions_schedule_d_2025
+  label: Schedule D Tax Worksheet line 44 - tax on line 21 from the Tax Computation Worksheet
+  node_type: computed
+  value_type: currency
+  required: optional
+  citation_refs:
+    - cite_sdtw_line_41_44
+
+- node_id: schedule_d_2025_tax_worksheet_line_44
+  document_id: instructions_schedule_d_2025
+  label: Schedule D Tax Worksheet line 44 - tax on the amount on line 21
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+    - cite_sdtw_line_41_44
+
+- node_id: schedule_d_2025_tax_worksheet_line_45
+  document_id: instructions_schedule_d_2025
+  label: Schedule D Tax Worksheet line 45 - add lines 31, 34, 40, 43, and 44
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+    - cite_sdtw_line_45_47
+
+- node_id: schedule_d_2025_tax_worksheet_line_47
+  document_id: instructions_schedule_d_2025
+  label: Schedule D Tax Worksheet line 47 - smaller of line 45 or line 46 (tax for 1040 line 16)
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+    - cite_sdtw_line_45_47
+
+# Line 46 reuses form_1040_2025_regular_tax (tax on line 1 via table or bracket
+# formula) - identical computation, no duplicate node.
+- node_id: schedule_d_2025_tax_worksheet_rate_25pct
+  document_id: instructions_schedule_d_2025
+  label: Schedule D Tax Worksheet 25 percent rate (line 40)
+  node_type: parameter
+  value_type: percentage
+  required: optional
+  constant_value: 0.25
+  citation_refs:
+    - cite_sdtw_line_35_40
+
+- node_id: schedule_d_2025_tax_worksheet_rate_28pct
+  document_id: instructions_schedule_d_2025
+  label: Schedule D Tax Worksheet 28 percent rate (line 43)
+  node_type: parameter
+  value_type: percentage
+  required: optional
+  constant_value: 0.28
+  citation_refs:
+    - cite_sdtw_line_41_44
+
+# Line 19 thresholds. NOTE: OTS hardcodes 197390 for single/MFS here; the IRS
+# text and our own 0.32-bracket floor both say 197300 - the IRS text governs.
+- node_id: schedule_d_2025_tax_worksheet_breakpoint_32_single
+  document_id: instructions_schedule_d_2025
+  label: Schedule D Tax Worksheet line 19 threshold - single
+  node_type: parameter
+  value_type: currency
+  required: optional
+  constant_value: 197300
+  citation_refs:
+    - cite_sdtw_line_19_breakpoint
+
+- node_id: schedule_d_2025_tax_worksheet_breakpoint_32_mfj
+  document_id: instructions_schedule_d_2025
+  label: Schedule D Tax Worksheet line 19 threshold - married filing jointly
+  node_type: parameter
+  value_type: currency
+  required: optional
+  constant_value: 394600
+  citation_refs:
+    - cite_sdtw_line_19_breakpoint
+
+- node_id: schedule_d_2025_tax_worksheet_breakpoint_32_mfs
+  document_id: instructions_schedule_d_2025
+  label: Schedule D Tax Worksheet line 19 threshold - married filing separately
+  node_type: parameter
+  value_type: currency
+  required: optional
+  constant_value: 197300
+  citation_refs:
+    - cite_sdtw_line_19_breakpoint
+
+- node_id: schedule_d_2025_tax_worksheet_breakpoint_32_hoh
+  document_id: instructions_schedule_d_2025
+  label: Schedule D Tax Worksheet line 19 threshold - head of household
+  node_type: parameter
+  value_type: currency
+  required: optional
+  constant_value: 197300
+  citation_refs:
+    - cite_sdtw_line_19_breakpoint
+
+- node_id: schedule_d_2025_tax_worksheet_breakpoint_32_qss
+  document_id: instructions_schedule_d_2025
+  label: Schedule D Tax Worksheet line 19 threshold - qualifying surviving spouse
+  node_type: parameter
+  value_type: currency
+  required: optional
+  constant_value: 394600
+  citation_refs:
+    - cite_sdtw_line_19_breakpoint
 
 # --- Form 1040 ---
 - node_id: form_1040_2025_line_7_capital_gain_loss

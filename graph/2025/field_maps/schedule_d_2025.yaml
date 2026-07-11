@@ -22,6 +22,14 @@ mappings:
   field_name: topmostSubform[0].Page2[0].f2_1[0]
   format: dollars
   node_id: schedule_d_2025_line_16_total
+- slot: schedule_d_2025_line_18
+  field_name: topmostSubform[0].Page2[0].f2_2[0]
+  format: dollars
+  node_id: schedule_d_2025_line_18
+- slot: schedule_d_2025_line_19
+  field_name: topmostSubform[0].Page2[0].f2_3[0]
+  format: dollars
+  node_id: schedule_d_2025_line_19
 - slot: schedule_d_2025_line_21_capital_loss_limited
   field_name: topmostSubform[0].Page2[0].f2_4[0]
   format: dollars
@@ -71,8 +79,6 @@ excluded_nodes:
   reason: Not a printable form line or not mapped in the M12 supported output profile.
 - node_id: schedule_d_2025_capital_loss_limit_mfs
   reason: Not a printable form line or not mapped in the M12 supported output profile.
-- node_id: schedule_d_2025_line_20_tax_computation
-  reason: Not a printable form line or not mapped in the M12 supported output profile.
 - node_id: schedule_d_2025_line_21_loss_limit
   reason: Not a printable form line or not mapped in the M12 supported output profile.
 - node_id: schedule_d_2025_line_21_loss_limit_negative
@@ -89,10 +95,160 @@ excluded_nodes:
   reason: Not a printable form line or not mapped in the M12 supported output profile.
 - node_id: schedule_d_2025_part_ii_line_9_column_h
   reason: Not a printable form line or not mapped in the M12 supported output profile.
+- node_id: schedule_d_2025_28_rate_gain_worksheet
+  reason: Frontier worksheet placeholder with no official-form box.
+- node_id: schedule_d_2025_line_17_gate
+  reason: Routing gate for a checkbox question; no dollar-entry box.
+- node_id: schedule_d_2025_line_20_gate
+  reason: Routing gate for a checkbox question; no dollar-entry box.
+- node_id: schedule_d_2025_sdtw_applies
+  reason: Routing gate for a checkbox question; no dollar-entry box.
+- node_id: schedule_d_2025_tax_worksheet_breakpoint_32_hoh
+  reason: Worksheet-internal value with no official-form box.
+- node_id: schedule_d_2025_tax_worksheet_breakpoint_32_mfj
+  reason: Worksheet-internal value with no official-form box.
+- node_id: schedule_d_2025_tax_worksheet_breakpoint_32_mfs
+  reason: Worksheet-internal value with no official-form box.
+- node_id: schedule_d_2025_tax_worksheet_breakpoint_32_qss
+  reason: Worksheet-internal value with no official-form box.
+- node_id: schedule_d_2025_tax_worksheet_breakpoint_32_single
+  reason: Worksheet-internal value with no official-form box.
+- node_id: schedule_d_2025_tax_worksheet_line_1
+  reason: Worksheet-internal value with no official-form box.
+- node_id: schedule_d_2025_tax_worksheet_line_10
+  reason: Worksheet-internal value with no official-form box.
+- node_id: schedule_d_2025_tax_worksheet_line_11
+  reason: Worksheet-internal value with no official-form box.
+- node_id: schedule_d_2025_tax_worksheet_line_12
+  reason: Worksheet-internal value with no official-form box.
+- node_id: schedule_d_2025_tax_worksheet_line_13
+  reason: Worksheet-internal value with no official-form box.
+- node_id: schedule_d_2025_tax_worksheet_line_14
+  reason: Worksheet-internal value with no official-form box.
+- node_id: schedule_d_2025_tax_worksheet_line_14_pre_floor
+  reason: Worksheet-internal value with no official-form box.
+- node_id: schedule_d_2025_tax_worksheet_line_15
+  reason: Worksheet-internal value with no official-form box.
+- node_id: schedule_d_2025_tax_worksheet_line_16
+  reason: Worksheet-internal value with no official-form box.
+- node_id: schedule_d_2025_tax_worksheet_line_17
+  reason: Worksheet-internal value with no official-form box.
+- node_id: schedule_d_2025_tax_worksheet_line_18
+  reason: Worksheet-internal value with no official-form box.
+- node_id: schedule_d_2025_tax_worksheet_line_18_nonblank
+  reason: Worksheet-internal value with no official-form box.
+- node_id: schedule_d_2025_tax_worksheet_line_18_pre_floor
+  reason: Worksheet-internal value with no official-form box.
+- node_id: schedule_d_2025_tax_worksheet_line_19
+  reason: Worksheet-internal value with no official-form box.
+- node_id: schedule_d_2025_tax_worksheet_line_19_threshold
+  reason: Worksheet-internal value with no official-form box.
+- node_id: schedule_d_2025_tax_worksheet_line_2
+  reason: Worksheet-internal value with no official-form box.
+- node_id: schedule_d_2025_tax_worksheet_line_20
+  reason: Worksheet-internal value with no official-form box.
+- node_id: schedule_d_2025_tax_worksheet_line_21
+  reason: Worksheet-internal value with no official-form box.
+- node_id: schedule_d_2025_tax_worksheet_line_22
+  reason: Worksheet-internal value with no official-form box.
+- node_id: schedule_d_2025_tax_worksheet_line_23
+  reason: Worksheet-internal value with no official-form box.
+- node_id: schedule_d_2025_tax_worksheet_line_23_raw
+  reason: Worksheet-internal value with no official-form box.
+- node_id: schedule_d_2025_tax_worksheet_line_24
+  reason: Worksheet-internal value with no official-form box.
+- node_id: schedule_d_2025_tax_worksheet_line_25
+  reason: Worksheet-internal value with no official-form box.
+- node_id: schedule_d_2025_tax_worksheet_line_25_pre_floor
+  reason: Worksheet-internal value with no official-form box.
+- node_id: schedule_d_2025_tax_worksheet_line_26
+  reason: Worksheet-internal value with no official-form box.
+- node_id: schedule_d_2025_tax_worksheet_line_27
+  reason: Worksheet-internal value with no official-form box.
+- node_id: schedule_d_2025_tax_worksheet_line_28
+  reason: Worksheet-internal value with no official-form box.
+- node_id: schedule_d_2025_tax_worksheet_line_29
+  reason: Worksheet-internal value with no official-form box.
+- node_id: schedule_d_2025_tax_worksheet_line_29_pre_floor
+  reason: Worksheet-internal value with no official-form box.
+- node_id: schedule_d_2025_tax_worksheet_line_3
+  reason: Worksheet-internal value with no official-form box.
+- node_id: schedule_d_2025_tax_worksheet_line_30
+  reason: Worksheet-internal value with no official-form box.
+- node_id: schedule_d_2025_tax_worksheet_line_31
+  reason: Worksheet-internal value with no official-form box.
+- node_id: schedule_d_2025_tax_worksheet_line_32
+  reason: Worksheet-internal value with no official-form box.
+- node_id: schedule_d_2025_tax_worksheet_line_33
+  reason: Worksheet-internal value with no official-form box.
+- node_id: schedule_d_2025_tax_worksheet_line_33_raw
+  reason: Worksheet-internal value with no official-form box.
+- node_id: schedule_d_2025_tax_worksheet_line_34
+  reason: Worksheet-internal value with no official-form box.
+- node_id: schedule_d_2025_tax_worksheet_line_35
+  reason: Worksheet-internal value with no official-form box.
+- node_id: schedule_d_2025_tax_worksheet_line_36
+  reason: Worksheet-internal value with no official-form box.
+- node_id: schedule_d_2025_tax_worksheet_line_38
+  reason: Worksheet-internal value with no official-form box.
+- node_id: schedule_d_2025_tax_worksheet_line_38_pre_floor
+  reason: Worksheet-internal value with no official-form box.
+- node_id: schedule_d_2025_tax_worksheet_line_39
+  reason: Worksheet-internal value with no official-form box.
+- node_id: schedule_d_2025_tax_worksheet_line_39_pre_floor
+  reason: Worksheet-internal value with no official-form box.
+- node_id: schedule_d_2025_tax_worksheet_line_39_raw
+  reason: Worksheet-internal value with no official-form box.
+- node_id: schedule_d_2025_tax_worksheet_line_4
+  reason: Worksheet-internal value with no official-form box.
+- node_id: schedule_d_2025_tax_worksheet_line_40
+  reason: Worksheet-internal value with no official-form box.
+- node_id: schedule_d_2025_tax_worksheet_line_41
+  reason: Worksheet-internal value with no official-form box.
+- node_id: schedule_d_2025_tax_worksheet_line_42
+  reason: Worksheet-internal value with no official-form box.
+- node_id: schedule_d_2025_tax_worksheet_line_43
+  reason: Worksheet-internal value with no official-form box.
+- node_id: schedule_d_2025_tax_worksheet_line_43_raw
+  reason: Worksheet-internal value with no official-form box.
+- node_id: schedule_d_2025_tax_worksheet_line_43_when_lines_33_43_run
+  reason: Worksheet-internal value with no official-form box.
+- node_id: schedule_d_2025_tax_worksheet_line_44
+  reason: Worksheet-internal value with no official-form box.
+- node_id: schedule_d_2025_tax_worksheet_line_44_bracket_amount
+  reason: Worksheet-internal value with no official-form box.
+- node_id: schedule_d_2025_tax_worksheet_line_44_table_amount
+  reason: Worksheet-internal value with no official-form box.
+- node_id: schedule_d_2025_tax_worksheet_line_45
+  reason: Worksheet-internal value with no official-form box.
+- node_id: schedule_d_2025_tax_worksheet_line_47
+  reason: Worksheet-internal value with no official-form box.
+- node_id: schedule_d_2025_tax_worksheet_line_5
+  reason: Worksheet-internal value with no official-form box.
+- node_id: schedule_d_2025_tax_worksheet_line_5_pre_floor
+  reason: Worksheet-internal value with no official-form box.
+- node_id: schedule_d_2025_tax_worksheet_line_6
+  reason: Worksheet-internal value with no official-form box.
+- node_id: schedule_d_2025_tax_worksheet_line_6_pre_floor
+  reason: Worksheet-internal value with no official-form box.
+- node_id: schedule_d_2025_tax_worksheet_line_7
+  reason: Worksheet-internal value with no official-form box.
+- node_id: schedule_d_2025_tax_worksheet_line_8
+  reason: Worksheet-internal value with no official-form box.
+- node_id: schedule_d_2025_tax_worksheet_line_9
+  reason: Worksheet-internal value with no official-form box.
+- node_id: schedule_d_2025_tax_worksheet_line_9_pre_floor
+  reason: Worksheet-internal value with no official-form box.
+- node_id: schedule_d_2025_tax_worksheet_rate_25pct
+  reason: Worksheet-internal value with no official-form box.
+- node_id: schedule_d_2025_tax_worksheet_rate_28pct
+  reason: Worksheet-internal value with no official-form box.
+- node_id: schedule_d_2025_unrecaptured_1250_worksheet
+  reason: Frontier worksheet placeholder with no official-form box.
 frontier_fields:
-- frontier_id: deferred_schedule_d_2025_line_20
-  field_name: topmostSubform[0].Page2[0].c2_2[0]
-  note: Schedule D line 20 worksheet branch is not modeled.
-- frontier_id: deferred_schedule_d_2025_line_20
-  field_name: topmostSubform[0].Page2[0].c2_2[1]
-  note: Schedule D line 20 worksheet branch is not modeled.
+- frontier_id: deferred_schedule_d_2025_28_rate_gain_worksheet
+  field_name: topmostSubform[0].Page2[0].f2_2[0]
+  note: Line 18 fills only from a filer-computed 28% Rate Gain Worksheet result; the worksheet itself is not modeled.
+- frontier_id: deferred_schedule_d_2025_unrecaptured_1250_worksheet
+  field_name: topmostSubform[0].Page2[0].f2_3[0]
+  note: Line 19 fills only from a filer-computed Unrecaptured Section 1250 Gain Worksheet result; the worksheet itself is not modeled.

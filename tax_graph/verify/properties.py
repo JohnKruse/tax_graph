@@ -116,6 +116,13 @@ def _parameter_value_issues(graph: LoadedGraph) -> list[PropertyIssue]:
     expected = {
         "schedule_d_2025_capital_loss_limit_default": 3000,
         "schedule_d_2025_capital_loss_limit_mfs": 1500,
+        "schedule_d_2025_tax_worksheet_rate_25pct": 0.25,
+        "schedule_d_2025_tax_worksheet_rate_28pct": 0.28,
+        "schedule_d_2025_tax_worksheet_breakpoint_32_single": 197300,
+        "schedule_d_2025_tax_worksheet_breakpoint_32_mfj": 394600,
+        "schedule_d_2025_tax_worksheet_breakpoint_32_mfs": 197300,
+        "schedule_d_2025_tax_worksheet_breakpoint_32_hoh": 197300,
+        "schedule_d_2025_tax_worksheet_breakpoint_32_qss": 394600,
         "form_1040_2025_standard_deduction_single": 15750,
         "form_1040_2025_standard_deduction_mfj": 31500,
         "form_1040_2025_standard_deduction_mfs": 15750,
