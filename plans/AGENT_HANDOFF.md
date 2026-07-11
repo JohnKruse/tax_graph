@@ -139,9 +139,10 @@ source `irs_adjudicated_schedule_d_tax_worksheet`; expected values use Tax Graph
 only for the disagreement and preserve live OTS values for agreeing boxes. A
 temporary 100-scenario freeze/replay is green: 98 `live_ots` entries + 2 explicit
 adjudications, replay 100/100. Focused corpus/differ/domain/box-map tests -> 32
-passed, 1 skipped. The temporary corpus is deliberately not yet promoted over
-`examples/oracle_corpus`: doing so would invalidate the old ID-keyed offline PE
-fixture before live PE results are available.
+passed, 1 skipped. This corpus was SUBSEQUENTLY PROMOTED over `examples/oracle_corpus` under John's
+Option B (2026-07-11; see BALL + From Architect): the old ID-keyed PE fixture it
+would have invalidated is retired to the explicit-pending PE-witness named gap
+rather than kept as a parallel witness.
 **Live PE attempt (2026-07-11):** John authorized the requested run. Installed
 the pinned `policyengine-us` 1.768.3 into a short temporary path because Windows
 long-path handling prevents its wheel from landing in `.venv`; the temporary
@@ -152,6 +153,13 @@ to freeze a PE fixture: `scenario_inputs_from_facts` currently renders only
 wages, taxable interest, dividends, and 8949 gains, but the widened corpus also
 varies S1/S1-A, Schedule A, carryovers, and SDTW inputs. The live run therefore
 reveals an incomplete PE input adapter, not a trustworthy graph verdict.
+**RESOLVED (Option B, John, 2026-07-11; corpus promotion + PE retirement done by
+Architect/Opus 4.8 at John's direction, committed 5bfc8b0):** the widened corpus was
+promoted under OTS + IRS adjudication and the PE liability witness retired to an
+explicit-pending named gap (widen `scenario_inputs_from_facts` -> live PE over
+seed1315 -> refreeze `pe_liability_2025.json` -> re-enable the two skipped tests).
+The chronological Step 4 narrative ABOVE this line predates that resolution and is
+historical; the BALL line and From Architect are the current state.
 
 - **M0-M12 are COMPLETE and archived** (see `plans/archive/`, each with a close note).
 - **THE GRAPH COMPUTES TAX AND FILES IT.** M11 landed line 16 liability under dual live
@@ -190,15 +198,24 @@ reveals an incomplete PE input adapter, not a trustworthy graph verdict.
   **Standing rule addition: no test may read `graph/<year>/_drafts/` or assume a
   prebuilt `build/` artifact; phase close-outs must confirm the CI run on the pushed
   commit is green, not just the local suite.**
-- **Dual-witness state (unchanged from M11):** live OTS fuzz 100/100 at the tax line;
+- **Dual-witness state (M11 baseline):** live OTS fuzz 100/100 at the tax line;
   PolicyEngine liability 20/20 (8 exact, 12 within the documented tax-table tolerance)
   and parameter-diff 20/20.
-- **Named walls (frontier-declared, unchanged - M12 did not move modeled-math
-  coverage):** 1040 line 13a QBI, 1040 lines 17-24 credits/total-tax chain incl. AMT,
-  Schedule D line 20 QDCGT-worksheet branch. Coverage 90.1% full / 100.0% in-scope.
-- **Deferred to M13 (pinned in oracles/domain_2025.yaml):** S1/S1A/Schedule-A supplemental
-  fuzz inputs are out of the live domain until the schedule-internal "Add lines" chains are
-  modeled - OTS aggregates them into AGI/line 13b; our graph does not yet.
+  **SUPERSEDED 2026-07-11 (Option B):** the PE liability witness is RETIRED to the
+  explicit-pending named gap (widened corpus), and parameter-diff is 19/20 pending the
+  HoH top-bracket-floor source review (626350 vs 375800). OTS + IRS adjudication is the
+  current live witness over the widened Schedule D domain. See From Architect.
+- **Named walls (M12 baseline):** 1040 line 13a QBI, 1040 lines 17-24 credits/total-tax
+  chain incl. AMT, Schedule D line 20 QDCGT-worksheet branch. Coverage 90.1% full /
+  100.0% in-scope.
+  **SUPERSEDED by M13 Step 3:** the Schedule D line-20 wall is RETIRED (QDCGT/SDTW
+  routing is modeled); the 28%-rate and unrecaptured-§1250 feeder worksheets are the new
+  named walls. The frontier/coverage recompute is M13 Step 5's job - the numbers above
+  are pre-M13.
+- **Deferred to M13 (pinned in oracles/domain_2025.yaml) - DONE in M13 Step 1:** the
+  schedule-internal "Add lines" chains are modeled and S1 8z / S1A 2a are re-admitted to
+  the live domain; S1_21 stays out (pre/post-worksheet semantic mismatch, its own named
+  wall). M13 Step 4 further widened the domain with D6/D14 carryovers and D18/D19.
 - **Review queue:** M10/M11 promotion entries plus M12's 11 field_map_review entries
   (high priority, pending, human_confirmed: false) plus the QDCGT worksheet (high) and
   the deduction decision node (TOP priority). `human_minutes` stays honestly null until
