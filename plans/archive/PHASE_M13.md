@@ -1,5 +1,15 @@
 # PHASE M13 - Worksheet depth
 
+**[COMPLETE 2026-07-11]** All five steps done and verified. Step 4's `oracle
+pe-liability`-green exit criterion was formally DEFERRED under John's Option B (PE
+liability witness retired to the explicit-pending named gap - see the Step 4 pin); OTS +
+IRS-text adjudication is the sole live witness over the widened Schedule D domain.
+Architect (Opus 4.8) verified the Step-5 close-out 2026-07-11: `verify record`
+byte-stable (0 diff), `validate` green (13 docs / 417 nodes / 407 edges / 271 citations /
+2 decisions), `frontier build` 76 modeled / 5 declared, `pytest -q` 294 passed / 6
+skipped. Carried-forward follow-ups (non-blocking) live in AGENT_HANDOFF: the PE-witness
+definition-of-done and the parameter-diff HoH-floor source review.
+
 **Canary:** Deep Ledger
 **Depends on:** M12 (output layer; field-map completeness enforced in `validate`), M11
 (line 16 under dual witnesses; QDCGT worksheet precedent; rounding pin: cents through
@@ -243,7 +253,7 @@ walls this phase, modeled later only as data warrants), QBI, lines 17-24, AMT.
   level - this is not optional given the blast radius (every taxpayer with 28%-rate
   or unrecaptured-1250 gain routes through this exact logic).
 
-- [ ] **Step 4 [worker-standard] - Oracle widening + corpus re-freeze + PE re-run.**
+- [DONE] **Step 4 [worker-standard] - Oracle widening + corpus re-freeze + PE re-run.**
   Box map adds D6/D14/D19/Collectibles (sign conventions from Step 1's probe
   discipline); domain adds carryover ranges straddling the loss-limit boundaries and
   D19/Collectibles ranges exercising both line 20 outcomes; retire/convert obsoleted
@@ -277,7 +287,7 @@ walls this phase, modeled later only as data warrants), QBI, lines 17-24, AMT.
   `verify parameter-diff` HoH floor 626350-vs-375800 discrepancy - source review, not a
   graph edit.)
 
-- [ ] **Step 5 [worker-light] - Records, frontier, field maps, exit run.** Regenerate
+- [DONE] **Step 5 [worker-light] - Records, frontier, field maps, exit run.** Regenerate
   VERIFICATION.md + per-form pages (byte-stable); rebuild frontier (line 20 flips to
   modeled; 28%/1250 feeder worksheets declared as new walls; coverage recomputed);
   confirm field maps validate both directions; run every exit-criteria command
