@@ -55,16 +55,26 @@ validated and packed the bundle. A clean `C:\tmp\tax-graph-m14-fresh` venv insta
 the wheel and passed `tax-graph validate 2025`, YAML `run`, `build`, and SQLite `run`.
 A real stdio MCP handshake plus `get_node` call against the fresh-wheel `serve` command
 also passed. Focused `pytest -m m14` -> 8 passed; full `pytest -q` -> 302 passed, 6
-skipped (458.52s); ASCII and `git diff --check` passed. Claude Desktop was checked at
-the standard Windows locations and is not installed, so its in-app MCPB installation
-test is the sole remaining Step 2 check and the reason the files are not committed.
+skipped (458.52s); ASCII and `git diff --check` passed.
+**CORRECTION (Architect, 2026-07-11): Claude Desktop IS installed on this machine** -
+the worker's standard-locations probe missed it because it is a Microsoft Store (MSIX)
+install at `C:\Program Files\WindowsApps\Claude_1.20186.1.0_x64__pzs8sxrjxfjjc\` (ACL-
+restricted path), profile at `%APPDATA%\Claude`, and it is running right now (this very
+Architect session lives in it; the many claude.exe processes are normal Electron
+children, not orphans). No extensions are installed yet. The Step-2 live pass is
+therefore runnable locally today - see checklist item 0.
 
 **John-only release checklist (no worker action):**
-0. FIRST, the pending Step-2 live pass: install Claude Desktop on this machine (or use
-   one that has it), install `dist/tax-graph-0.1.0a1.mcpb` in-app, confirm the Alpha
-   disclaimer shows at install, and run `get_node` for
+0. FIRST, the pending Step-2 live pass (Claude Desktop is ALREADY installed and running
+   on this machine - see correction above): in Claude Desktop open Settings ->
+   Extensions and install `dist\tax-graph-0.1.0a1.mcpb` (drag-drop works); confirm the
+   Alpha disclaimer shows at install; then in a NEW chat run `get_node` for
    `form_1040_2025_line_7_capital_gain_loss` plus one `execute_tax_tree` round trip.
-   Report the result in this handoff; that closes Step 2.
+   EVIDENCE INTEGRITY: a dev-checkout tax-graph server is already configured in this
+   app, so before recording the result confirm the responding process's command line
+   shows the EXTENSION install directory (`--directory <extension dir>`), not the
+   source checkout - or temporarily disable the dev server entry for the test. Report
+   the result in this handoff; that closes Step 2.
 1. Configure PyPI trusted publishing for project `tax-graph`, GitHub repository
    `JohnKruse/tax_graph`, workflow `.github/workflows/release.yml`, environment `pypi`
    at https://pypi.org/manage/account/publishing/. Then use GitHub Actions -> `Release
