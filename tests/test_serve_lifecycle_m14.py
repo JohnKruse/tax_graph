@@ -10,6 +10,7 @@ from pathlib import Path
 import pytest
 
 from tax_graph.cli import serve_command
+from tax_graph.compile.to_sqlite import build_sqlite
 from tax_graph.mcp.lifecycle import ParentWatchdog, ProcessInfo, orphaned_servers
 
 
@@ -58,30 +59,39 @@ def test_serve_sweep_command_does_not_start_mcp_server(monkeypatch: pytest.Monke
 
 
 @pytest.mark.m14
-def test_build_succeeds_immediately_after_serve_shutdown() -> None:
-    """A terminated stdio server must not retain a SQLite handle or build lock."""
-    subprocess.run(
-        [sys.executable, "-m", "tax_graph.cli", "build", "2025", "--root", str(ROOT)],
-        check=True,
-        cwd=ROOT,
-    )
+def test_build_succeeds_immediately_after_serve_shutdown(tmp_path: Path) -> None:
+    """A terminated stdio server must not retain a SQLite handle or build lock.
+
+    Hermetic per the standing rule: the serve/rebuild contention runs against a
+    throwaway sqlite under tmp_path, never the shared ``build/`` artifact - a
+    live dev MCP server legitimately holds that file open whenever Claude
+    Desktop is connected to this checkout, which is the normal dev state.
+    """
+    build_dir = tmp_path / "build"
+    build_sqlite("2025", root=ROOT, build_dir=build_dir)
+    assert (build_dir / "tax_graph_2025.sqlite").exists()
     server = subprocess.Popen(
-        [sys.executable, "-m", "tax_graph.cli", "serve", "--year", "2025", "--root", str(ROOT)],
+        [
+            sys.executable,
+            "-m",
+            "tax_graph.cli",
+            "serve",
+            "--year",
+            "2025",
+            "--root",
+            str(tmp_path),
+            "--source",
+            "sqlite",
+        ],
         cwd=ROOT,
         stdin=subprocess.PIPE,
         stdout=subprocess.DEVNULL,
         stderr=subprocess.DEVNULL,
     )
     try:
-        time.sleep(0.2)
+        time.sleep(0.5)
     finally:
         server.terminate()
         server.wait(timeout=5)
-    result = subprocess.run(
-        [sys.executable, "-m", "tax_graph.cli", "build", "2025", "--root", str(ROOT)],
-        check=False,
-        capture_output=True,
-        text=True,
-        cwd=ROOT,
-    )
-    assert result.returncode == 0, result.stderr
+    # Rewriting the same sqlite fails on Windows if the dead server kept its handle.
+    build_sqlite("2025", root=ROOT, build_dir=build_dir)

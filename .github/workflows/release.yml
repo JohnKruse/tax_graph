@@ -51,8 +51,17 @@ jobs:
 
       - name: Validate and pack MCP bundle
         run: |
-          mcpb validate manifest.json
-          mcpb pack . dist/tax-graph-0.1.0a1.mcpb
+          # The bundle ships the BUILT WHEEL and launches from it (uv tool run
+          # --from); it must never source-build on the user's machine. The
+          # first in-app install attempt failed exactly that way: uv run
+          # --directory triggered a hatchling editable build whose force-include
+          # dirs the bundle had (correctly) excluded.
+          mkdir -p dist/bundle
+          cp manifest.json LICENSE dist/bundle/
+          cp dist/tax_graph-0.1.0a1-py3-none-any.whl dist/bundle/
+          mcpb validate dist/bundle/manifest.json
+          mcpb pack dist/bundle dist/tax-graph-0.1.0a1.mcpb
+          rm -rf dist/bundle
           sha256sum dist/* > dist/SHA256SUMS.txt
 
       - name: Validate MCP Registry descriptor

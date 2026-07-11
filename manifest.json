@@ -18,10 +18,19 @@
   "support": "https://github.com/JohnKruse/tax_graph/issues",
   "server": {
     "type": "uv",
-    "entry_point": "tax_graph/cli.py",
+    "entry_point": "tax_graph-0.1.0a1-py3-none-any.whl",
     "mcp_config": {
       "command": "uv",
-      "args": ["run", "--directory", "${__dirname}", "tax-graph", "serve", "--year", "2025"]
+      "args": [
+        "tool",
+        "run",
+        "--from",
+        "${__dirname}/tax_graph-0.1.0a1-py3-none-any.whl",
+        "tax-graph",
+        "serve",
+        "--year",
+        "2025"
+      ]
     }
   },
   "compatibility": {

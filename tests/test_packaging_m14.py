@@ -42,6 +42,26 @@ def test_mcp_bundle_manifest_is_honest_and_uses_uv_runtime() -> None:
 
 
 @pytest.mark.m14
+def test_mcp_bundle_launches_from_wheel_never_source_builds() -> None:
+    """Regression: the first in-app install failed because `uv run --directory`
+    source-built the package inside the extension dir, where hatchling's
+    force-include dirs are (correctly) absent. The bundle must launch from the
+    shipped wheel and never trigger a build on the user's machine."""
+    manifest = json.loads((ROOT / "manifest.json").read_text(encoding="utf-8"))
+    args = manifest["server"]["mcp_config"]["args"]
+
+    wheel = f"tax_graph-{__version__}-py3-none-any.whl"
+    assert args[:3] == ["tool", "run", "--from"]
+    assert args[3] == "${__dirname}/" + wheel
+    assert "--directory" not in args
+    assert manifest["server"]["entry_point"] == wheel
+    # the release workflow must stage exactly that wheel into the bundle
+    workflow = (ROOT / ".github" / "workflows" / "release.yml").read_text(encoding="utf-8")
+    assert f"cp dist/{wheel} dist/bundle/" in workflow
+    assert "mcpb pack dist/bundle" in workflow
+
+
+@pytest.mark.m14
 def test_registry_descriptor_matches_pypi_and_readme_ownership_marker() -> None:
     """The future registry entry names the alpha PyPI distribution exactly."""
     descriptor = json.loads((ROOT / "server.json").read_text(encoding="utf-8"))

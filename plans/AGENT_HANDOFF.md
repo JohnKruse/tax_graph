@@ -65,16 +65,38 @@ children, not orphans). No extensions are installed yet. The Step-2 live pass is
 therefore runnable locally today - see checklist item 0.
 
 **John-only release checklist (no worker action):**
-0. FIRST, the pending Step-2 live pass (Claude Desktop is ALREADY installed and running
-   on this machine - see correction above): in Claude Desktop open Settings ->
-   Extensions and install `dist\tax-graph-0.1.0a1.mcpb` (drag-drop works); confirm the
-   Alpha disclaimer shows at install; then in a NEW chat run `get_node` for
-   `form_1040_2025_line_7_capital_gain_loss` plus one `execute_tax_tree` round trip.
-   EVIDENCE INTEGRITY: a dev-checkout tax-graph server is already configured in this
-   app, so before recording the result confirm the responding process's command line
-   shows the EXTENSION install directory (`--directory <extension dir>`), not the
-   source checkout - or temporarily disable the dev server entry for the test. Report
-   the result in this handoff; that closes Step 2.
+0. FIRST, the pending Step-2 live pass - RETRY with the REGENERATED bundle
+   (2026-07-11, second attempt): John's first in-app install FAILED - the live pass
+   caught a real defect, M12-lesson class. Root cause: the manifest launched
+   `uv run --directory <extension dir>`, which source-builds the package inside the
+   unpacked bundle, and hatchling's force-include dirs (docs/ etc.) are correctly
+   absent there (`FileNotFoundError: Forced include not found: ...\docs`). The bundle
+   was self-inconsistent: manifest treated it as a source checkout while .mcpbignore
+   stripped what a source build requires. FIX (Architect, committed): the bundle now
+   ships ONLY manifest + LICENSE + the built wheel (491 KB, down from a source-tree
+   bundle) and launches via `uv tool run --from <wheel>` - no build ever happens on a
+   user machine; regression test added. Local simulation of the Desktop flow PASSED:
+   bundle unpacked to a spaces-in-path dir, manifest command launched verbatim, full
+   stdio MCP round trip (initialize -> 12 tools -> get_node returns the node).
+   JOHN RETRY: Settings -> Extensions -> install the regenerated
+   `dist\tax-graph-0.1.0a1.mcpb`; confirm the Alpha disclaimer; in a NEW chat run
+   `get_node` for `form_1040_2025_line_7_capital_gain_loss` + one `execute_tax_tree`.
+   First launch resolves wheel deps from PyPI once (needs network), then cached.
+   EVIDENCE INTEGRITY (unchanged): the dev-checkout server is also configured in this
+   app - confirm the responding process cmdline shows `uv tool run --from ...whl`,
+   not the source checkout. Report here; that closes Step 2.
+   NOTE for the record: this machine has NO node/npm, so the official `mcpb` CLI
+   cannot run here - the worker's earlier "mcpb validated and packed" claim is not
+   reproducible locally (evidence discrepancy, flagged, non-blocking); the local
+   bundle is a spec-compliant plain zip and CI's release workflow packs with the
+   official CLI.
+   ALSO FIXED in the same pass: the Step-1 test
+   `test_build_succeeds_immediately_after_serve_shutdown` wrote to the SHARED
+   `build/tax_graph_2025.sqlite`, which the live dev MCP server legitimately holds
+   whenever Claude Desktop is connected to this checkout - so it failed in the normal
+   dev state (hermetic-test standing-rule violation; it had passed for the worker only
+   by timing). Rewritten against a throwaway tmp_path sqlite; `pytest -m m14` -> 9
+   passed with the dev server running.
 1. Configure PyPI trusted publishing for project `tax-graph`, GitHub repository
    `JohnKruse/tax_graph`, workflow `.github/workflows/release.yml`, environment `pypi`
    at https://pypi.org/manage/account/publishing/. Then use GitHub Actions -> `Release
