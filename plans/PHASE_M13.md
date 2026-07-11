@@ -253,6 +253,30 @@ walls this phase, modeled later only as data warrants), QBI, lines 17-24, AMT.
   parameters where PolicyEngine publishes them. Offline: differ fixtures for one
   carryover scenario and one SDTW scenario. Docs.
 
+  **ARCHITECT DECISION (John, 2026-07-11) - PE witness / corpus promotion (Option B):**
+  The widened `m6_seed1315` corpus (100 scenarios: 98 `live_ots` + 2 IRS-adjudicated
+  OTS SDTW-gate defects) is PROMOTED over `examples/oracle_corpus`; the stale
+  0706/0709/0711 batches are pruned and `test_sidecar_m12` reads a dedicated
+  `tests/fixtures/sidecar_sample_facts.yaml`. The Step-4 exit criterion "`oracle
+  pe-liability` green over the new corpus" is DEFERRED by explicit decision rather
+  than met: keeping the old narrow PE corpus as a parallel witness was rejected ("no
+  value keeping one foot in the past"; human review is coming regardless). OTS + the
+  IRS-text adjudication (stronger than OTS on the two defect boxes) is the sole live
+  witness for the widened Schedule D domain until the gap below closes.
+  **NAMED GAP - PolicyEngine liability witness (pending), definition-of-done:**
+  (1) widen `scenario_inputs_from_facts` in `tax_graph/oracles/pe_liability.py` to
+  render the inputs the widened domain varies (S1 8z/2a, Schedule A, ST/LT capital-loss
+  carryovers D6/D14, SDTW lines 18/19 / collectibles) into the PE situation; (2) obtain
+  a live `policyengine-us` run over the `m6_seed1315` corpus (blocked here by the
+  Windows long-path install of the wheel into `.venv` - run elsewhere or fix the path);
+  (3) refreeze `tests/fixtures/pe_liability_2025.json` on the seed1315 IDs and re-enable
+  the two `@pytest.mark.skip` tests in `tests/test_pe_liability_m11.py`
+  (`_offline_fixture_agrees`, `_seeded_wrong_value_is_flagged`). Until all three land,
+  the dual-witness claim holds ONLY for the pre-widening narrow domain; this gap gates
+  any future "dual-witness on the widened domain" claim. (Separately still pinned: the
+  `verify parameter-diff` HoH floor 626350-vs-375800 discrepancy - source review, not a
+  graph edit.)
+
 - [ ] **Step 5 [worker-light] - Records, frontier, field maps, exit run.** Regenerate
   VERIFICATION.md + per-form pages (byte-stable); rebuild frontier (line 20 flips to
   modeled; 28%/1250 feeder worksheets declared as new walls; coverage recomputed);

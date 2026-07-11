@@ -1,0 +1,213 @@
+tax_year: 2025
+filing_status: qualifying_surviving_spouse
+scenario_id: m6_seed1315_0074
+facts:
+- node_id: form_1040_2025_deduction_method
+  value: standard
+  source:
+    document_label: Generated broker 1099-B for scenario m6_seed1315_0074
+    extracted_by: m6_scenario_renderer
+- node_id: form_1040_2025_root_line_1a
+  value: 604146
+  source:
+    document_label: Generated broker 1099-B for scenario m6_seed1315_0074
+    extracted_by: m6_scenario_renderer
+- node_id: form_1040_2025_root_line_3a
+  value: 1420
+  source:
+    document_label: Generated broker 1099-B for scenario m6_seed1315_0074
+    extracted_by: m6_scenario_renderer
+- node_id: form_6251_2025_part_i_line_c
+  value: 10
+  source:
+    document_label: Generated broker 1099-B for scenario m6_seed1315_0074
+    extracted_by: m6_scenario_renderer
+- node_id: form_6251_2025_part_i_line_g
+  value: 6
+  source:
+    document_label: Generated broker 1099-B for scenario m6_seed1315_0074
+    extracted_by: m6_scenario_renderer
+- node_id: schedule_1_2025_part_i_line_8z
+  value: 358
+  source:
+    document_label: Generated broker 1099-B for scenario m6_seed1315_0074
+    extracted_by: m6_scenario_renderer
+- node_id: schedule_1a_2025_part_i_line_2a
+  value: 250
+  source:
+    document_label: Generated broker 1099-B for scenario m6_seed1315_0074
+    extracted_by: m6_scenario_renderer
+- node_id: schedule_2_2025_part_i_line_1a
+  value: 498
+  source:
+    document_label: Generated broker 1099-B for scenario m6_seed1315_0074
+    extracted_by: m6_scenario_renderer
+- node_id: schedule_2_2025_part_ii_line_18
+  value: 95
+  source:
+    document_label: Generated broker 1099-B for scenario m6_seed1315_0074
+    extracted_by: m6_scenario_renderer
+- node_id: schedule_3_2025_part_i_line_1
+  value: 269
+  source:
+    document_label: Generated broker 1099-B for scenario m6_seed1315_0074
+    extracted_by: m6_scenario_renderer
+- node_id: schedule_3_2025_part_ii_line_13z
+  value: 170
+  source:
+    document_label: Generated broker 1099-B for scenario m6_seed1315_0074
+    extracted_by: m6_scenario_renderer
+- node_id: schedule_a_2025_root_line_15
+  value: 11
+  source:
+    document_label: Generated broker 1099-B for scenario m6_seed1315_0074
+    extracted_by: m6_scenario_renderer
+- node_id: schedule_a_2025_root_line_16_amount
+  value: 1
+  source:
+    document_label: Generated broker 1099-B for scenario m6_seed1315_0074
+    extracted_by: m6_scenario_renderer
+- node_id: schedule_a_2025_root_line_a
+  value: 400
+  source:
+    document_label: Generated broker 1099-B for scenario m6_seed1315_0074
+    extracted_by: m6_scenario_renderer
+- node_id: schedule_b_2025_root_line_4
+  value: 1594
+  source:
+    document_label: Generated broker 1099-B for scenario m6_seed1315_0074
+    extracted_by: m6_scenario_renderer
+- node_id: schedule_b_2025_root_line_6
+  value: 1420
+  source:
+    document_label: Generated broker 1099-B for scenario m6_seed1315_0074
+    extracted_by: m6_scenario_renderer
+- node_id: schedule_d_2025_line_14_lt_carryover
+  value: -8546
+  source:
+    document_label: Generated broker 1099-B for scenario m6_seed1315_0074
+    extracted_by: m6_scenario_renderer
+- node_id: schedule_d_2025_line_18
+  value: 17338
+  source:
+    document_label: Generated broker 1099-B for scenario m6_seed1315_0074
+    extracted_by: m6_scenario_renderer
+- node_id: schedule_d_2025_line_19
+  value: 10000
+  source:
+    document_label: Generated broker 1099-B for scenario m6_seed1315_0074
+    extracted_by: m6_scenario_renderer
+- node_id: schedule_d_2025_line_6_st_carryover
+  value: -3451
+  source:
+    document_label: Generated broker 1099-B for scenario m6_seed1315_0074
+    extracted_by: m6_scenario_renderer
+tables:
+- table_id: form_8949_2025_part_i_line_1
+  rows:
+  - row_key: lot_1
+    columns:
+      d: 6293
+      e: 5015
+      g: -483
+    source:
+      document_label: Generated broker 1099-B for scenario m6_seed1315_0074
+      extracted_by: m6_scenario_renderer
+  - row_key: lot_4
+    columns:
+      d: 8889
+      e: 10386
+      g: -258
+    source:
+      document_label: Generated broker 1099-B for scenario m6_seed1315_0074
+      extracted_by: m6_scenario_renderer
+  - row_key: lot_6
+    columns:
+      d: 13857
+      e: 10933
+      g: 50
+    source:
+      document_label: Generated broker 1099-B for scenario m6_seed1315_0074
+      extracted_by: m6_scenario_renderer
+  - row_key: lot_8
+    columns:
+      d: 19295
+      e: 20210
+      g: 231
+    source:
+      document_label: Generated broker 1099-B for scenario m6_seed1315_0074
+      extracted_by: m6_scenario_renderer
+  - row_key: lot_10
+    columns:
+      d: 14450
+      e: 21670
+      g: -375
+    source:
+      document_label: Generated broker 1099-B for scenario m6_seed1315_0074
+      extracted_by: m6_scenario_renderer
+  - row_key: lot_12
+    columns:
+      d: 22147
+      e: 17978
+      g: -276
+    source:
+      document_label: Generated broker 1099-B for scenario m6_seed1315_0074
+      extracted_by: m6_scenario_renderer
+- table_id: form_8949_2025_part_ii_line_1
+  rows:
+  - row_key: lot_2
+    columns:
+      d: 19821
+      e: 22137
+      g: -156
+    source:
+      document_label: Generated broker 1099-B for scenario m6_seed1315_0074
+      extracted_by: m6_scenario_renderer
+  - row_key: lot_3
+    columns:
+      d: 9817
+      e: 8909
+      g: -362
+    source:
+      document_label: Generated broker 1099-B for scenario m6_seed1315_0074
+      extracted_by: m6_scenario_renderer
+  - row_key: lot_5
+    columns:
+      d: 19776
+      e: 24292
+      g: -418
+    source:
+      document_label: Generated broker 1099-B for scenario m6_seed1315_0074
+      extracted_by: m6_scenario_renderer
+  - row_key: lot_7
+    columns:
+      d: 14636
+      e: 10000
+      g: -500
+    source:
+      document_label: Generated broker 1099-B for scenario m6_seed1315_0074
+      extracted_by: m6_scenario_renderer
+  - row_key: lot_9
+    columns:
+      d: 11865
+      e: 17137
+      g: -50
+    source:
+      document_label: Generated broker 1099-B for scenario m6_seed1315_0074
+      extracted_by: m6_scenario_renderer
+  - row_key: lot_11
+    columns:
+      d: 23940
+      e: 19559
+      g: 500
+    source:
+      document_label: Generated broker 1099-B for scenario m6_seed1315_0074
+      extracted_by: m6_scenario_renderer
+  - row_key: lot_13
+    columns:
+      d: 5901
+      e: 5265
+      g: -500
+    source:
+      document_label: Generated broker 1099-B for scenario m6_seed1315_0074
+      extracted_by: m6_scenario_renderer

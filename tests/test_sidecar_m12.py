@@ -16,7 +16,7 @@ ROOT = Path(__file__).resolve().parents[1]
 
 @pytest.mark.m12
 def test_frozen_return_sidecar_reuses_differential_renderer(tmp_path: Path) -> None:
-    facts = yaml.safe_load((ROOT / "examples/oracle_corpus/m6_seed20260711_0000/facts.yaml").read_text())
+    facts = yaml.safe_load((ROOT / "tests/fixtures/sidecar_sample_facts.yaml").read_text())
     scenario = scenario_from_facts_document(facts, root=ROOT)
     paths = write_ots_sidecar(facts, tmp_path, root=ROOT)
     assert paths["input"].read_text(encoding="utf-8") == render_ots_input_text(
@@ -28,7 +28,7 @@ def test_frozen_return_sidecar_reuses_differential_renderer(tmp_path: Path) -> N
 
 @pytest.mark.m12
 def test_sidecar_preserves_holding_period_and_supplemental_inputs() -> None:
-    facts = yaml.safe_load((ROOT / "examples/oracle_corpus/m6_seed20260711_0000/facts.yaml").read_text())
+    facts = yaml.safe_load((ROOT / "tests/fixtures/sidecar_sample_facts.yaml").read_text())
     scenario = scenario_from_facts_document(facts, root=ROOT)
     assert scenario.normalized_lots[0].holding_period == "long_term"
     assert scenario.extra_ots_inputs["S2_1a"] == 194

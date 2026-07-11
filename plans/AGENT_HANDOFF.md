@@ -13,20 +13,20 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
   2026-07-10. Full narration lives in `plans/archive/` (phase plans with close notes) and git
   history.
 
-## Current state (2026-07-10)
+## Current state (2026-07-11)
 
-**BALL: ARCHITECT/JOHN.** M13 Steps 3 and 4 are COMMITTED and PUSHED to
-origin/main. Step 4 widened the live OTS domain (D6/D14 carryovers, line 18
-Collectibles, D19) with per-side sign transforms, switched the differ to IRS
-half-up rounding, and gated the source-verified OTS Schedule D gate defect behind
-`--adjudicate-known-ots-sdtw-defects`. Live widened gate: `oracle fuzz --n 100
---seed 1315` -> 98 agreed / 2 disagreed (both the verified nonzero-18/19 OTS
-defect, retained in triage). Focused oracle/corpus/differ/domain/box-map -> 32
-passed, 1 skipped; `pytest -m m13` -> 10 passed; full `pytest -q` + pushed-commit
-CI verification in flight. ONE OPEN DECISION (see Open for Architect): the
-PolicyEngine witness evidence needed before `examples/oracle_corpus` can be
-promoted to the widened corpus. PyPI alpha token still waits on John;
-serve-lifecycle hardening spin-off remains pending (independent).
+**BALL: WORKER.** M13 Step 4 corpus work is DONE and committed under John's Option B
+(2026-07-11): the widened `m6_seed1315` corpus (100 scenarios: 98 live_ots + 2
+IRS-adjudicated OTS SDTW-gate defects) is promoted over `examples/oracle_corpus`, the
+stale 0706/0709/0711 batches are pruned, and `test_sidecar_m12` reads a dedicated
+`tests/fixtures/sidecar_sample_facts.yaml`. The PolicyEngine liability witness is
+RETIRED TO EXPLICIT-PENDING (2 skipped tests) as a NAMED GAP - definition-of-done in
+PHASE_M13 Step 4 and "From Architect" below; do NOT claim dual-witness on the widened
+domain until that gap closes. Proof: full `pytest -q` -> 294 passed, 6 skipped (7m36s);
+corpus/PE/sidecar focused -> 13 passed, 2 skipped; `replay_corpus` 100/100; committed +
+pushed, pushed-commit CI in flight. Remaining M13: the PE named gap + `verify
+parameter-diff` HoH pin, then Step 5 (records/frontier/field maps/exit run). PyPI alpha
+token still waits on John; serve-lifecycle hardening spin-off remains pending (independent).
 (Whoever finishes a turn: update this BALL line - it is the first thing read.)
 
 **M13 Step 1 (Codex, completed 2026-07-10):** stopped once on a genuine OTS
@@ -213,18 +213,28 @@ reveals an incomplete PE input adapter, not a trustworthy graph verdict.
   limit (role deviation, M8/M11-close precedent, recorded in the archived plan).
 
 ## Open for Architect
-- **M13 Step 4 PolicyEngine replacement evidence (2026-07-11):** RESOLVED corpus
-  policy = option 2 above. The remaining blocking decision is the PE evidence
-  needed before replacing `examples/oracle_corpus`: the temporary M13 corpus
-  replays 100/100, but `oracle pe-liability` with the old offline fixture returns
-  100 fetch errors because it has only `m6_seed20260711_*` records, not the new
-  `m6_seed1315_*` records. Live PolicyEngine is not installed. Please provide a
-  live PE result/fixture for the new corpus or explicitly authorize retaining the
-  old PE corpus as the pinned independent-witness evidence while the new OTS/IRS
-  corpus becomes the default. Without that, replacing the committed corpus would
-  make the PE test dishonest or red.
+- (none) - the M13 Step 4 PE-evidence decision is RESOLVED (John chose Option B,
+  2026-07-11): promote the widened corpus under OTS + IRS adjudication and retire the
+  PolicyEngine liability witness to explicit-pending as a named gap, rather than keep
+  the old narrow PE corpus as a parallel witness. See "From Architect" below and the
+  PHASE_M13 Step 4 pin for the definition-of-done.
 
 ## From Architect
+- **DECISION - M13 Step 4 corpus promotion + PE witness (John, 2026-07-11, Option B;
+  pinned in PHASE_M13 Step 4):** the widened `m6_seed1315` corpus (100 scenarios: 98
+  `live_ots` + 2 IRS-adjudicated OTS SDTW-gate defects) is promoted over
+  `examples/oracle_corpus`; stale 0706/0709/0711 batches pruned; `test_sidecar_m12`
+  now reads `tests/fixtures/sidecar_sample_facts.yaml`. The PolicyEngine liability
+  witness is RETIRED TO EXPLICIT-PENDING (two `@pytest.mark.skip` tests in
+  `tests/test_pe_liability_m11.py`), NOT kept on the old corpus. **NAMED GAP (gates any
+  future dual-witness-on-widened-domain claim):** widen `scenario_inputs_from_facts`
+  (`pe_liability.py`) to render S1 / Schedule A / D6 / D14 / SDTW-18-19 inputs -> live
+  `policyengine-us` run over `m6_seed1315` (blocked here by Windows long-path wheel
+  install) -> refreeze `pe_liability_2025.json` on seed1315 IDs -> re-enable the two
+  skipped tests. Until then OTS + IRS adjudication is the sole live witness for the
+  widened Schedule D domain, and the parameter-diff HoH floor (626350 vs 375800) stays
+  pinned for separate source review. The old `pe_liability_2025.json` is left in place
+  (unused) as the schema template for the refreeze - delete if preferred.
 - **ANSWERED - M13 Step 1 S1_21 ruling (2026-07-10), pinned in PHASE_M13 Step 1:**
   option (a), refined. Architect verified the shipped source: OTS's `S1_21` box is
   PRE-worksheet "interest paid" (`Calc_StudentLoan_Sched1L21()` applies the $2,500
