@@ -15,7 +15,21 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## Current state (2026-07-11)
 
-**BALL: ARCHITECT.** M13 (Worksheet depth, canary Deep Ledger) is COMPLETE and archived
+**BALL: WORKER (with a John review request).** `plans/PHASE_M14.md` is WRITTEN
+(Architect/Opus 4.8, 2026-07-11): M14 Product surface, canary Open Door - Step 1
+serve-lifecycle hardening, Step 2 packaging/release automation, Step 3 self-serve
+extension harness, Step 4 intake v1 relevance layer, Step 5 close. The plan pins eight
+flesh-out decisions from the two direction stubs (overlay dir + collision hard-error;
+orthogonal `gate: project|user` provenance axis; sqlite content hash; `extend` command
+group; three additive intake kinds; bounded v1 document set W-2/1099-INT/DIV/B +
+digital-asset gate; committed classifier fixture corpus; explicit consent moment).
+JOHN: please skim the "Design pins" section - they stand unless you override. Worker
+may start Step 1 (serve-lifecycle hardening) immediately; it is decision-free and
+pinned since 2026-07-10. John-only outward actions (PyPI upload + trusted publisher,
+Connectors submission, Registry publish) are enumerated in the plan's guardrails -
+no agent publishes anything.
+
+Prior state: M13 (Worksheet depth, canary Deep Ledger) is COMPLETE and archived
 (`plans/archive/PHASE_M13.md`); all five steps [DONE]. What M13 landed: schedule-internal
 Add-lines chains (S1 8z / S1A 2a re-admitted); Schedule D lines 6/14 carryovers + Capital Loss
 Carryover Worksheet + Return Record upgrade; the 47-line Schedule D Tax Worksheet with line-17/20
