@@ -5,4 +5,4 @@ import pytest
 def test_import():
     import tax_graph
 
-    assert tax_graph.__version__ == "0.1.0"
+    assert tax_graph.__version__ == "0.1.0a1"

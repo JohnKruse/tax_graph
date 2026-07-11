@@ -1,0 +1,36 @@
+{
+  "manifest_version": "0.4",
+  "name": "tax-graph",
+  "display_name": "Tax Graph (Alpha)",
+  "version": "0.1.0-alpha.1",
+  "description": "Alpha local U.S. tax computation graph. Not tax advice; verify before filing.",
+  "long_description": "Tax Graph is an alpha local MCP server for a narrow, verified U.S. tax-form computation profile. Not tax advice; verify before filing. The runtime does not send taxpayer data to a hosted service and does not e-file returns.",
+  "author": {
+    "name": "John Kruse",
+    "url": "https://github.com/JohnKruse"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/JohnKruse/tax_graph.git"
+  },
+  "homepage": "https://github.com/JohnKruse/tax_graph",
+  "documentation": "https://github.com/JohnKruse/tax_graph#readme",
+  "support": "https://github.com/JohnKruse/tax_graph/issues",
+  "server": {
+    "type": "uv",
+    "entry_point": "tax_graph/cli.py",
+    "mcp_config": {
+      "command": "uv",
+      "args": ["run", "--directory", "${__dirname}", "tax-graph", "serve", "--year", "2025"]
+    }
+  },
+  "compatibility": {
+    "platforms": ["darwin", "linux", "win32"],
+    "runtimes": {
+      "python": ">=3.11"
+    }
+  },
+  "tools_generated": true,
+  "keywords": ["tax", "irs", "mcp", "local-first", "alpha"],
+  "license": "MIT"
+}

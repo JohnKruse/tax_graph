@@ -15,22 +15,74 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## Current state (2026-07-11)
 
-**BALL: WORKER - M14 Step 2 active (2026-07-11).** M14 Step 1 is DONE and committed
-locally: parent watchdog, explicit `serve --sweep-orphans` recovery, and the
-build-after-serve regression probe. Focused lifecycle tests passed (4 passed), ASCII
-passed, and the full suite passed (298 passed, 6 skipped, 2026-07-11). Step 2
-packaging/release automation is now active; no artifact will be published or submitted.
-`plans/PHASE_M14.md` is WRITTEN
+**BALL: WORKER - proceed to M14 Step 3 (2026-07-11, Architect ruling below).**
+Step 2's implementation is Architect-verified, COMMITTED, and pushed; Step 2 itself
+stays OPEN solely on the one live check this machine cannot run - the in-app Claude
+Desktop `.mcpb` install + MCP round trip - which is now a JOHN action (checklist item
+0 below). Do NOT mark Step 2 DONE until that check is recorded. No artifact has been
+published or submitted. Step 3 (self-serve extension harness) does not depend on the
+Desktop check: start it now per the PHASE_M14 design pins 1-4.
 
-**Worker handoff (2026-07-11):** Step 1 commit is `71c46fb` (`Harden MCP serve
-lifecycle`), unpushed per the phase rule. Step 2 discovery began: `pyproject.toml`
-already carries `0.1.0a1` Alpha metadata and `docs/distribution.md` is the pinned
-channel policy; no release workflow, `.mcpb`, or registry `server.json` exists yet.
-Continue with those deliverables and their fresh-venv/live-artifact checks. This worker
-session stopped for low context before changing Step 2 files.
-(Architect/Opus 4.8, 2026-07-11): M14 Product surface, canary Open Door - Step 1
-serve-lifecycle hardening, Step 2 packaging/release automation, Step 3 self-serve
-extension harness, Step 4 intake v1 relevance layer, Step 5 close. The plan pins eight
+**ARCHITECT VERIFICATION + RULING (Opus 4.8, 2026-07-11):** independent spot-checks of
+the Step 2 tree before commit, all green: `release.yml` publish job is triple-gated
+(manual dispatch + `publish_pypi=true` + the `pypi` environment John has not created) -
+inert until John acts; the 0.1.0a1 wheel contains NO `_drafts`, NO `.cache`, and only
+the example config (hatchling respects .gitignore in force-include); the packed `.mcpb`
+has 0 suspect entries and `.mcpbignore` explicitly excludes `graph/*/_drafts/` and the
+real `tax-graph.config.yaml` (key-leak vector covered); manifest/server.json carry the
+Alpha disclaimers and the `io.github.johnkruse/tax-graph` namespace; `config.py`'s
+source-root-else-packaged-assets fallback is the minimal change the fresh-venv exit
+criterion itself requires (dev behavior unchanged) - in scope, not a STOP; version sync
+0.1.0 -> 0.1.0a1 correct; `pytest -m m14` re-run independently -> 8 passed. Committing
+implementation with the step open follows the M13 Step 4 precedent (commit floor = full
+suite green, satisfied at 302/6); it keeps the tree clean for Step 3.
+CORRECTION to the worker note below: Step 1 `eb9dc4d` was ALREADY pushed by the
+Architect and its CI run is GREEN - the standing rule wants per-step pushed-CI
+confirmation, not batching; do not re-push or rebase it.
+
+**Worker handoff (2026-07-11):** Step 1 commit is `eb9dc4d` (`Harden MCP serve
+lifecycle`) - pushed, CI green (see correction above). Step 2 adds wheel runtime assets,
+`manifest.json` + `.mcpbignore`, `server.json`, and tag/manual release automation
+(`.github/workflows/release.yml`). The wheel embeds the graph/runtime data under
+`tax_graph/assets`, so the fresh-install commands work rather than assuming a source
+checkout. Alpha/not-tax-advice/verify-before-filing language is in README, PyPI
+metadata, and the MCPB manifest; the PyPI README has the required registry ownership
+marker `mcp-name: io.github.johnkruse/tax-graph`.
+
+Local Step 2 evidence (no publishing): `python -m build` built the sdist/wheel;
+`twine check` passed; official registry-schema validation passed; official `mcpb`
+validated and packed the bundle. A clean `C:\tmp\tax-graph-m14-fresh` venv installed
+the wheel and passed `tax-graph validate 2025`, YAML `run`, `build`, and SQLite `run`.
+A real stdio MCP handshake plus `get_node` call against the fresh-wheel `serve` command
+also passed. Focused `pytest -m m14` -> 8 passed; full `pytest -q` -> 302 passed, 6
+skipped (458.52s); ASCII and `git diff --check` passed. Claude Desktop was checked at
+the standard Windows locations and is not installed, so its in-app MCPB installation
+test is the sole remaining Step 2 check and the reason the files are not committed.
+
+**John-only release checklist (no worker action):**
+0. FIRST, the pending Step-2 live pass: install Claude Desktop on this machine (or use
+   one that has it), install `dist/tax-graph-0.1.0a1.mcpb` in-app, confirm the Alpha
+   disclaimer shows at install, and run `get_node` for
+   `form_1040_2025_line_7_capital_gain_loss` plus one `execute_tax_tree` round trip.
+   Report the result in this handoff; that closes Step 2.
+1. Configure PyPI trusted publishing for project `tax-graph`, GitHub repository
+   `JohnKruse/tax_graph`, workflow `.github/workflows/release.yml`, environment `pypi`
+   at https://pypi.org/manage/account/publishing/. Then use GitHub Actions -> `Release
+   alpha artifacts` -> Run workflow with `publish_pypi=true`; this is the only route
+   that enables the inert publish job.
+2. Download the `.mcpb` artifact from that workflow, open it in Claude Desktop, confirm
+   the Alpha disclaimer at install, then run `get_node` for
+   `form_1040_2025_line_7_capital_gain_loss` and `execute_tax_tree` with the shipped
+   capital-gains facts. Submit that same tested bundle through the Connectors Directory
+   from Claude Desktop.
+3. After the PyPI release is visible, install the official registry publisher, run
+   `mcp-publisher login github`, then from this repository run `mcp-publisher publish`
+   to publish the committed `server.json`. Verify the resulting
+   `io.github.johnkruse/tax-graph` listing at https://registry.modelcontextprotocol.io/.
+**Plan reference:** `plans/PHASE_M14.md` (Architect/Opus 4.8, 2026-07-11): M14 Product
+surface, canary Open Door - Step 1 serve-lifecycle hardening, Step 2 packaging/release
+automation, Step 3 self-serve extension harness, Step 4 intake v1 relevance layer,
+Step 5 close. The plan pins eight
 flesh-out decisions from the two direction stubs (overlay dir + collision hard-error;
 orthogonal `gate: project|user` provenance axis; sqlite content hash; `extend` command
 group; three additive intake kinds; bounded v1 document set W-2/1099-INT/DIV/B +

@@ -14,8 +14,21 @@ CONFIG_DIR_CONFIG_FILE = "config/tax-graph.config.yaml"
 
 
 def project_root() -> Path:
-    """Return the repository root when running from the source checkout."""
-    return Path(__file__).resolve().parents[1]
+    """Return the source checkout root or packaged runtime-data root.
+
+    Wheels keep the shipped graph, schemas, and runtime fixtures below
+    ``tax_graph/assets``.  A source checkout retains the established layout at
+    the repository root, so local development and installed use share one
+    root contract.
+    """
+    package_dir = Path(__file__).resolve().parent
+    source_root = package_dir.parent
+    if (source_root / "graph").is_dir():
+        return source_root
+    packaged_root = package_dir / "assets"
+    if (packaged_root / "graph").is_dir():
+        return packaged_root
+    return source_root
 
 
 def default_config_path(root: str | Path | None = None) -> Path:

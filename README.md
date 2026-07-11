@@ -13,9 +13,24 @@ deterministic computation graph. The current proof of concept covers a narrow
 The goal is for agents and tools to traverse verified tax graph data instead of
 inventing tax logic.
 
+## Alpha notice
+
+Tax Graph is an alpha product, not tax advice. Verify every result and all
+filing decisions before filing. It runs locally: the distributed runtime does
+not send taxpayer data to a hosted service, and it does not e-file a return.
+
+<!-- mcp-name: io.github.johnkruse/tax-graph -->
+
 ## Install
 
-This project is being packaged for `uv`.
+Install the alpha runtime from PyPI with `uvx tax-graph serve --year 2025`, or
+with pip:
+
+```powershell
+pip install tax-graph==0.1.0a1
+```
+
+This project is also usable from a source checkout with `uv`.
 
 ```powershell
 uv sync

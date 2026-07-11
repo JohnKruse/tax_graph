@@ -1,0 +1,86 @@
+name: Release alpha artifacts
+
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+    inputs:
+      publish_pypi:
+        description: "Publish after John configures PyPI trusted publishing"
+        required: true
+        default: false
+        type: boolean
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  package:
+    name: Build and verify release artifacts
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+
+      - name: Build source and wheel distributions
+        run: uv build
+
+      - name: Check PyPI distributions
+        run: uvx twine check dist/*
+
+      - name: Fresh-venv runtime pass
+        run: |
+          python -m venv .release-venv
+          .release-venv/bin/python -m pip install dist/*.whl
+          .release-venv/bin/tax-graph validate 2025
+          .release-venv/bin/tax-graph run --facts examples/capital_gains_basic/facts.yaml --no-record
+
+      - name: Install MCPB CLI
+        run: npm install --global @anthropic-ai/mcpb
+
+      - name: Validate and pack MCP bundle
+        run: |
+          mcpb validate manifest.json
+          mcpb pack . dist/tax-graph-0.1.0a1.mcpb
+          sha256sum dist/* > dist/SHA256SUMS.txt
+
+      - name: Validate MCP Registry descriptor
+        run: |
+          uvx check-jsonschema --schemafile https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json server.json
+
+      - name: Upload release artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: tax-graph-0.1.0a1
+          path: dist/
+
+  publish-pypi:
+    name: Publish to PyPI after explicit approval
+    needs: package
+    if: ${{ github.event_name == 'workflow_dispatch' && inputs.publish_pypi }}
+    runs-on: ubuntu-latest
+    environment:
+      name: pypi
+      url: https://pypi.org/p/tax-graph
+    permissions:
+      id-token: write
+    steps:
+      - name: Download release artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: tax-graph-0.1.0a1
+          path: dist
+
+      - name: Publish source and wheel distributions
+        uses: pypa/gh-action-pypi-publish@release/v1

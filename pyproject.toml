@@ -1,7 +1,7 @@
 [project]
 name = "tax-graph"
 version = "0.1.0a1"
-description = "A deterministic, machine-readable computation graph for U.S. tax forms, served over MCP."
+description = "Alpha: a local deterministic computation graph for U.S. tax forms, served over MCP. Not tax advice; verify before filing."
 readme = "README.md"
 requires-python = ">=3.11"
 license = { file = "LICENSE" }
@@ -81,6 +81,18 @@ dev = [
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["tax_graph"]
+
+[tool.hatch.build.targets.wheel.force-include]
+"config" = "tax_graph/assets/config"
+"data" = "tax_graph/assets/data"
+"docs" = "tax_graph/assets/docs"
+"examples" = "tax_graph/assets/examples"
+"graph" = "tax_graph/assets/graph"
+"oracles" = "tax_graph/assets/oracles"
+"schemas" = "tax_graph/assets/schemas"
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

@@ -1,0 +1,35 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.johnkruse/tax-graph",
+  "title": "Tax Graph (Alpha)",
+  "description": "Alpha local U.S. tax computation graph. Not tax advice; verify before filing.",
+  "websiteUrl": "https://github.com/JohnKruse/tax_graph#readme",
+  "repository": {
+    "url": "https://github.com/JohnKruse/tax_graph",
+    "source": "github"
+  },
+  "version": "0.1.0a1",
+  "packages": [
+    {
+      "registryType": "pypi",
+      "registryBaseUrl": "https://pypi.org",
+      "identifier": "tax-graph",
+      "version": "0.1.0a1",
+      "runtimeHint": "uvx",
+      "transport": {
+        "type": "stdio"
+      },
+      "packageArguments": [
+        {
+          "type": "positional",
+          "value": "serve"
+        },
+        {
+          "type": "named",
+          "name": "--year",
+          "value": "2025"
+        }
+      ]
+    }
+  ]
+}
