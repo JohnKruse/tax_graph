@@ -248,6 +248,13 @@ Phase M2 adds a local stdio MCP server:
 uv run tax-graph serve --year 2025
 ```
 
+If a previous MCP client was forcibly closed, recover any server processes it
+left behind before rebuilding the SQLite artifact:
+
+```powershell
+uv run tax-graph serve --sweep-orphans
+```
+
 The server loads `build/tax_graph_2025.sqlite` when present and falls back to the
 authored YAML graph otherwise. It is a runtime adapter over the graph and engine;
 it does not fetch sources, run OCR, or call an LLM.

@@ -147,7 +147,7 @@ rather than improvising.
 
 ## Steps
 
-- [ ] **Step 1 [worker-standard] - Serve-lifecycle hardening.** The pinned spin-off,
+- [DONE] **Step 1 [worker-standard] - Serve-lifecycle hardening.** The pinned spin-off,
   landed first because packaging makes it user-facing: (a) sqlite handle release on
   server shutdown (context-managed connection lifecycle); (b) parent-process
   watchdog - a stdio MCP server whose parent dies exits itself within a bounded

@@ -87,6 +87,7 @@ testpaths = ["tests"]
 pythonpath = ["."]
 markers = [
   "m13: worksheet depth phase tests",
+  "m14: product surface phase tests",
   "m0: Phase M0 foundation tests",
   "m1: Phase M1 compile/runtime artifact tests",
   "m2: Phase M2 MCP server tests",

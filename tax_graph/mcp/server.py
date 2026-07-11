@@ -16,6 +16,7 @@ from tax_graph import __version__
 from tax_graph.engine import Engine, Graph, MISSING, Result, TABLE_FACTS_KEY, render_trace
 from tax_graph.io.loader import LoadedGraph, load_graph
 from tax_graph.io.sqlite_loader import compiled_db_path, load_sqlite_graph
+from tax_graph.mcp.lifecycle import ParentWatchdog
 
 
 M2_TOOL_NAMES = (
@@ -103,8 +104,13 @@ def run_mcp_server(
     root: str | Path | None = None,
     source: str | None = None,
 ) -> None:
-    """Run the Tax Graph MCP server over stdio."""
-    build_mcp_server(year=year, root=root, source=source).run("stdio")
+    """Run the server and release all SQLite readers on every shutdown path."""
+    watchdog = ParentWatchdog()
+    watchdog.start()
+    try:
+        build_mcp_server(year=year, root=root, source=source).run("stdio")
+    finally:
+        watchdog.close()
 
 
 def _register_tools(server: FastMCP, context: McpGraphContext) -> None:

@@ -285,8 +285,15 @@ def serve_command(
     year: str = "2025",
     root: str | Path | None = None,
     source: str | None = None,
+    sweep_orphans: bool = False,
 ) -> int:
     """Start the Tax Graph MCP stdio server."""
+    if sweep_orphans:
+        from tax_graph.mcp.lifecycle import sweep_orphaned_servers
+
+        stopped = sweep_orphaned_servers()
+        print(f"stopped {len(stopped)} orphaned Tax Graph serve process(es): {stopped}")
+        return 0
     from tax_graph.mcp import run_mcp_server
 
     root_path = Path(root).resolve() if root is not None else project_root()
@@ -880,9 +887,10 @@ def _build_typer_app():
         year: str = typer.Option("2025", "--year", "-y", help="Tax year to serve."),
         source: str | None = typer.Option(None, "--source", help="Graph source: sqlite or yaml. Defaults to sqlite when built, else yaml."),
         root: Path | None = typer.Option(None, "--root", help="Project root override."),
+        sweep_orphans: bool = typer.Option(False, "--sweep-orphans", help="Stop abandoned Tax Graph serve processes and exit."),
     ) -> None:
         """Start the MCP stdio server."""
-        raise_code = serve_command(year=year, root=root, source=source)
+        raise_code = serve_command(year=year, root=root, source=source, sweep_orphans=sweep_orphans)
         if raise_code:
             raise typer.Exit(raise_code)
 
@@ -1199,6 +1207,7 @@ def _fallback_app() -> int:
     serve_parser.add_argument("--year", "-y", default="2025")
     serve_parser.add_argument("--source", choices=["sqlite", "yaml"], default=None)
     serve_parser.add_argument("--root", default=None)
+    serve_parser.add_argument("--sweep-orphans", action="store_true")
 
     drill_parser = subparsers.add_parser("drill")
     drill_subparsers = drill_parser.add_subparsers(dest="drill_command", required=True)
@@ -1310,7 +1319,7 @@ def _fallback_app() -> int:
     if args.command == "link":
         return link_command(year=args.year, root=args.root)
     if args.command == "serve":
-        return serve_command(year=args.year, root=args.root, source=args.source)
+        return serve_command(year=args.year, root=args.root, source=args.source, sweep_orphans=args.sweep_orphans)
     if args.command == "drill" and args.drill_command == "run":
         return drill_run_command(year=args.year, root=args.root, catalog=args.catalog)
     if args.command == "verify" and args.verify_command == "mine-examples":

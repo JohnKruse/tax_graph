@@ -15,7 +15,19 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## Current state (2026-07-11)
 
-**BALL: WORKER (with a John review request).** `plans/PHASE_M14.md` is WRITTEN
+**BALL: WORKER - M14 Step 2 active (2026-07-11).** M14 Step 1 is DONE and committed
+locally: parent watchdog, explicit `serve --sweep-orphans` recovery, and the
+build-after-serve regression probe. Focused lifecycle tests passed (4 passed), ASCII
+passed, and the full suite passed (298 passed, 6 skipped, 2026-07-11). Step 2
+packaging/release automation is now active; no artifact will be published or submitted.
+`plans/PHASE_M14.md` is WRITTEN
+
+**Worker handoff (2026-07-11):** Step 1 commit is `71c46fb` (`Harden MCP serve
+lifecycle`), unpushed per the phase rule. Step 2 discovery began: `pyproject.toml`
+already carries `0.1.0a1` Alpha metadata and `docs/distribution.md` is the pinned
+channel policy; no release workflow, `.mcpb`, or registry `server.json` exists yet.
+Continue with those deliverables and their fresh-venv/live-artifact checks. This worker
+session stopped for low context before changing Step 2 files.
 (Architect/Opus 4.8, 2026-07-11): M14 Product surface, canary Open Door - Step 1
 serve-lifecycle hardening, Step 2 packaging/release automation, Step 3 self-serve
 extension harness, Step 4 intake v1 relevance layer, Step 5 close. The plan pins eight
