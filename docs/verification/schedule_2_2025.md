@@ -8,6 +8,8 @@ This page is generated from committed repository data by `tax_graph.verify.recor
 - Document type: `schedule`
 - Status: `partial`
 - Verification tier: independently witnessed
+- Gate: project
+- Artifact content hash: `cc75ade7dabef4267548b2459822c3aa03dbb42a537715951b9b4b0ea33b00a5`
 - Source URL: https://www.irs.gov/pub/irs-prior/f1040s2--2025.pdf
 
 ## Modeled

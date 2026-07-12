@@ -1,6 +1,6 @@
 # Intake and Document-Driven Onboarding
 
-Status: M14 Step 4 punch list in progress. Intake is a local-first relevance layer beside
+Status: M14 Step 4 complete; M14 close records regenerated. Intake is a local-first relevance layer beside
 the computation graph. It does not add tax math or engine operations.
 
 ## Pipeline

@@ -193,7 +193,7 @@ rather than improvising.
   completeness enforced in `validate`. Live pass per exit criteria. Queue entries;
   docs update (`docs/intake.md` graduates from stub to as-built).
 
-- [ ] **Step 5 [worker-light] - Records, docs, exit run, close.** Regenerate
+- [DONE] **Step 5 [worker-light] - Records, docs, exit run, close.** Regenerate
   VERIFICATION.md + per-form pages (byte-stable); rebuild frontier (coverage
   unchanged); run every exit-criteria command including the simulated-clean
   pytest and all four live passes' evidence collection; write the John-only

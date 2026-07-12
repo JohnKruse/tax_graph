@@ -15,9 +15,9 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## Current state (2026-07-12)
 
-**BALL: WORKER - M14 Step 4 is DONE (Architect re-verification passed, 2026-07-12).
-Next: Step 5 records/docs/exit run/close. Step 2 remains open only on John's
-Desktop retry + the John-only distribution actions.**
+**BALL: WORKER - M14 Step 5 is DONE locally (records, docs, and exit run verified,
+2026-07-12). M14 remains open only on Step 2: John's Desktop retry and John-only
+distribution actions. Do not archive or push the phase until those gates close.**
 
 **ARCHITECT RE-VERIFICATION (Opus 4.8, 2026-07-12): punch list ACCEPTED; Step 4
 [DONE].** Independent checks, not taken from the worker's notes:
@@ -100,7 +100,18 @@ Evidence: `pytest -m m14` -> 22 passed / 302 deselected; clean-copy `pytest -q`
 intake citation integrity -> 26 checked / 0 mismatches; ASCII and diff checks ->
 green. The dirty checkout's two YAML/SQLite parity failures were reproduced as
 ignored `graph_ext` overlay contamination and pass in the simulated-clean copy.
-No push performed; Architect review is the next action.
+This was the pre-reverification handoff; the Architect then made the parity tests
+extension-hermetic, re-ran the dirty suite, and accepted Step 4.
+
+**WORKER UPDATE (2026-07-12): M14 Step 5 close slice complete locally.** Regenerated
+`VERIFICATION.md` plus 16 byte-stable per-form pages and rebuilt
+`graph/2025/frontier.yaml` (79 modeled, 5 declared, 2 rejected, 3 unmodeled;
+90.1% full coverage and 100.0% in-scope). Clean-checkout base-runtime gates passed:
+validate, build, SQLite run with line 7 = 2000, SQLite multi-lot run with line 7 =
+250, and frontier. Current-checkout M14 tests passed 22/22; the Architect's
+post-fix full dirty-checkout suite was green at 315 passed / 9 skipped. ASCII and
+diff checks are green. Step 5 is marked [DONE] in `PHASE_M14.md`; phase archive and
+push remain blocked only by the open John-owned Step 2 gates.
 
 **WORKER UPDATE (2026-07-12, superseded by the reopen review): Initial M14 Step 4 implementation.** Added additive graph kinds
 `routing_edges`, `triggers`, and `expectations` with schemas, cited v1 data for

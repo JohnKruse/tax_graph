@@ -453,6 +453,39 @@ frontiers:
   citation_ref: cite_1040_tax_table
   status: modeled
   weight: 163100000
+- frontier_id: ref_cite_intake_1099b_recipient_to_form_1040_2025
+  kind: form_reference
+  source:
+    document_id: form_1099b_2025
+    citation_id: cite_intake_1099b_recipient
+  target:
+    document_id: form_1040_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040--2025.pdf
+  citation_ref: cite_intake_1099b_recipient
+  status: modeled
+  weight: 163100000
+- frontier_id: ref_cite_intake_1099b_recipient_to_form_8949_2025
+  kind: form_reference
+  source:
+    document_id: form_1099b_2025
+    citation_id: cite_intake_1099b_recipient
+  target:
+    document_id: form_8949_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f8949--2025.pdf
+  citation_ref: cite_intake_1099b_recipient
+  status: modeled
+  weight: 18000000
+- frontier_id: ref_cite_intake_1099b_recipient_to_schedule_d_2025
+  kind: form_reference
+  source:
+    document_id: form_1099b_2025
+    citation_id: cite_intake_1099b_recipient
+  target:
+    document_id: schedule_d_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040sd--2025.pdf
+  citation_ref: cite_intake_1099b_recipient
+  status: modeled
+  weight: 24000000
 - frontier_id: ref_cite_schedule_d_16_to_1040_7_to_form_1040_2025
   kind: form_reference
   source:
