@@ -20,6 +20,18 @@ the read seam.
 artifact counts without writing any file. The committed `m15` boundary test walks all
 workbench Python files and rejects imports from `tax_graph` and its pipeline modules.
 
+## Step 2 artifact view
+
+`workbench.geometry.GeometryIndex` keeps the AcroForm field layer, resolved node
+provenance layer, and unresolved identity/gap layer separate. Point and rectangle
+selection is performed in PDF page coordinates, so repeated Form 8949 row slots stay
+display geometry and never become runtime node ids. `review-workbench build --year
+2025` rasterizes source PDFs with the optional PDF extra and writes a static HTML
+bundle with no CDN or API dependency. The bundle carries the public graph rows,
+citations, queue, metrics, N-version reports, and mined-example reports in an escaped
+JSON payload. A node id absent from the compiled graph is rendered as a visible gap
+finding rather than being treated as resolved.
+
 ## What it is
 
 A standalone, human-facing visual review tool. A person opens a rendered IRS form

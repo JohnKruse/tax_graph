@@ -14,9 +14,10 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## Current state (2026-07-12)
 
-**BALL: WORKER - M15 `Fresh Eyes`, Step 1 in progress (global canary: `Ledger Llama`).
-The worker has John go and is implementing the artifact-only workbench seam plus its
-enforced no-import boundary; Steps 2-3 follow without a pause if tests stay green.**
+**BALL: WORKER - M15 `Fresh Eyes`, Step 2 in progress (global canary: `Ledger Llama`).
+Step 1 is committed and green (`87e85f0`); the worker is adding the independent
+geometry layers, build-time PDF rasterization, and offline bundle. Step 3 follows if
+tests stay green.**
 JOHN: two things need your eye - (1) skim the M15 "Design pins" (workspace member not
 separate repo; prebaked page images not pdf.js; verdicts flow OUT as files, never
 edits; the confirmed/pipeline_defect/source_pathology taxonomy); (2) M15 Step 4 is

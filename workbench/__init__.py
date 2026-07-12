@@ -20,6 +20,9 @@ from workbench.artifacts import (
     load_review_queue,
     load_sqlite_graph,
 )
+from workbench.geometry import GeometryHit, GeometryIndex
+
+from workbench.builder import build_bundle
 
 __all__ = [
     "ArtifactBundle",
@@ -36,4 +39,7 @@ __all__ = [
     "load_pdf",
     "load_review_queue",
     "load_sqlite_graph",
+    "GeometryHit",
+    "GeometryIndex",
+    "build_bundle",
 ]
