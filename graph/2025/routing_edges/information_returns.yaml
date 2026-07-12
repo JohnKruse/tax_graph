@@ -1,0 +1,57 @@
+- routing_id: route_w2_box_1_to_1040_1a
+  source_document_type: w2
+  source_box: box_1
+  target: form_1040_2025_root_line_1a
+  status: modeled
+  citation_refs: [cite_intake_w2_recipient]
+
+- routing_id: route_w2_box_2_to_1040_withholding
+  source_document_type: w2
+  source_box: box_2
+  target: form_1040_2025_root_line_25a
+  status: not_modeled
+  reason: Federal withholding is outside the M14 computation profile.
+  citation_refs: [cite_intake_w2_recipient]
+
+- routing_id: route_1099_int_box_1_to_1040_2b
+  source_document_type: 1099_int
+  source_box: box_1
+  target: form_1040_2025_root_line_2b
+  status: modeled
+  citation_refs: [cite_intake_1099_int_recipient]
+
+- routing_id: route_1099_div_box_1a_to_1040_3b
+  source_document_type: 1099_div
+  source_box: box_1a
+  target: form_1040_2025_root_line_3b
+  status: modeled
+  citation_refs: [cite_intake_1099_div_recipient]
+
+- routing_id: route_1099b_box_d_to_8949_d
+  source_document_type: 1099_b
+  source_box: box_d
+  target: form_8949_2025_part_ii_line_1_column_d
+  status: modeled
+  citation_refs: [cite_intake_1099b_recipient]
+
+- routing_id: route_1099b_box_e_to_8949_e
+  source_document_type: 1099_b
+  source_box: box_e
+  target: form_8949_2025_part_ii_line_1_column_e
+  status: modeled
+  citation_refs: [cite_intake_1099b_recipient]
+
+- routing_id: route_1099b_box_g_to_8949_g
+  source_document_type: 1099_b
+  source_box: box_g
+  target: form_8949_2025_part_ii_line_1_column_g
+  status: modeled
+  citation_refs: [cite_intake_1099b_recipient]
+
+- routing_id: route_1099b_box_a_out_of_scope
+  source_document_type: 1099_b
+  source_box: box_a
+  target: form_8949_2025_part_ii_line_1_column_d
+  status: not_modeled
+  reason: Acquisition category is filing metadata, not arithmetic input.
+  citation_refs: [cite_intake_1099b_recipient]

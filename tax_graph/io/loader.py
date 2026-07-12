@@ -24,6 +24,11 @@ GRAPH_KINDS: dict[str, tuple[str, bool, str]] = {
     "rules": ("rule", True, "rule_id"),
     "citations": ("citation", True, "citation_id"),
     "decisions": ("decision", True, "decision_id"),
+    # Intake is a relevance layer in the same graph.  These are additive
+    # object kinds and deliberately do not participate in engine traversal.
+    "routing_edges": ("routing_edge", True, "routing_id"),
+    "triggers": ("trigger", True, "trigger_id"),
+    "expectations": ("expectation", True, "expectation_id"),
 }
 
 

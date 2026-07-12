@@ -131,6 +131,10 @@ def _create_schema(conn: sqlite3.Connection) -> None:
             object_json TEXT NOT NULL
         );
 
+        CREATE TABLE routing_edges (routing_id TEXT PRIMARY KEY, object_json TEXT NOT NULL);
+        CREATE TABLE triggers (trigger_id TEXT PRIMARY KEY, object_json TEXT NOT NULL);
+        CREATE TABLE expectations (expectation_id TEXT PRIMARY KEY, object_json TEXT NOT NULL);
+
         CREATE TABLE tax_table (
             income_min INTEGER,
             income_max INTEGER,
@@ -168,6 +172,9 @@ def _insert_graph(conn: sqlite3.Connection, graph: LoadedGraph) -> None:
     _insert_rules(conn, graph.items("rules"))
     _insert_citations(conn, graph.items("citations"))
     _insert_decisions(conn, graph.items("decisions"))
+    _insert_intake_objects(conn, "routing_edges", graph.items("routing_edges"))
+    _insert_intake_objects(conn, "triggers", graph.items("triggers"))
+    _insert_intake_objects(conn, "expectations", graph.items("expectations"))
     _insert_tax_table(conn, graph.graph_dir)
     _insert_fts(conn, graph)
 
@@ -296,6 +303,20 @@ def _insert_decisions(conn: sqlite3.Connection, objects: list[dict[str, Any]]) -
         "INSERT INTO decisions(decision_id, node_id, prompt, object_json) VALUES (?, ?, ?, ?)",
         rows,
     )
+
+
+def _insert_intake_objects(
+    conn: sqlite3.Connection,
+    kind: str,
+    objects: list[dict[str, Any]],
+) -> None:
+    """Insert an additive intake kind without making it engine-specific."""
+    id_field = GRAPH_KINDS[kind][2]
+    rows = [
+        (obj.get(id_field), _json(obj))
+        for obj in _stable_objects(kind, objects)
+    ]
+    conn.executemany(f"INSERT INTO {kind}({id_field}, object_json) VALUES (?, ?)", rows)
 
 
 def _insert_fts(conn: sqlite3.Connection, graph: LoadedGraph) -> None:

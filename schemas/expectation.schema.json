@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "expectation.schema.json",
+  "title": "Tax Graph Intake Expectation",
+  "description": "A cited bidirectional presence expectation between a claim and evidence.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["expectation_id", "claim", "expected_document_type", "cardinality", "citation_refs"],
+  "properties": {
+    "expectation_id": { "type": "string", "pattern": "^[a-z0-9_]+$" },
+    "claim": { "type": "string", "pattern": "^[a-z0-9_]+$" },
+    "expected_document_type": { "type": "string", "pattern": "^[a-z0-9_]+$" },
+    "cardinality": { "type": "string", "enum": ["presence", "one_or_more"] },
+    "citation_refs": { "type": "array", "items": { "type": "string", "pattern": "^[a-z0-9_]+$" } },
+    "gate": { "type": "string", "enum": ["project", "user"] }
+  }
+}

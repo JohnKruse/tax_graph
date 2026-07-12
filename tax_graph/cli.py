@@ -13,6 +13,7 @@ from typing import Any, Callable
 from tax_graph import __version__
 from tax_graph.config import get_config_value, load_config, project_root
 from tax_graph.engine import Engine, Graph, MISSING, load_facts, load_facts_document, render_trace
+from tax_graph.io.loader import load_yaml
 from tax_graph.validate import validate_graph
 
 try:
@@ -879,6 +880,48 @@ def extend_package_command(
     return 0
 
 
+def intake_command(
+    drop_dir: str | Path,
+    *,
+    year: str = "2025",
+    root: str | Path | None = None,
+    claims_path: str | Path | None = None,
+    resolutions_path: str | Path | None = None,
+    output: str | Path | None = None,
+    provider: str | None = None,
+    consent: bool = False,
+) -> int:
+    """Crawl a local document drop and run the cited intake completeness gate."""
+    from tax_graph.intake import run_intake
+
+    root_path = Path(root).resolve() if root is not None else project_root()
+    claims = load_yaml(claims_path) if claims_path else {}
+    resolutions = load_yaml(resolutions_path) if resolutions_path else {}
+    try:
+        result = run_intake(
+            drop_dir,
+            year=year,
+            root=root_path,
+            claims=claims or {},
+            resolutions=resolutions or {},
+            provider=provider,
+            consent=True if consent else None,
+        )
+    except Exception as exc:
+        print(f"ERROR: {exc}")
+        return 1
+    payload = result.to_dict()
+    if output:
+        output_path = Path(output)
+        output_path.parent.mkdir(parents=True, exist_ok=True)
+        output_path.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8", newline="\n")
+        print(f"intake result: {output_path}")
+    else:
+        print(json.dumps(payload, indent=2, sort_keys=True))
+    print(f"completeness gate: {'PASS' if result.complete else 'BLOCKED'}")
+    return 0 if result.complete else 1
+
+
 def _print_extract_summary(doc: str, routed) -> None:
     print("=== extraction review ===")
     print(f"  document: {doc}")
@@ -1264,6 +1307,31 @@ def _build_typer_app():
         if raise_code:
             raise typer.Exit(raise_code)
 
+    @cli.command("intake")
+    def intake_cli(
+        drop_dir: Path = typer.Option(..., "--drop-dir", help="Local directory containing rendered tax documents."),
+        year: str = typer.Option("2025", "--year", "-y", help="Tax year to route."),
+        claims: Path | None = typer.Option(None, "--claims", help="YAML claims/resolutions input."),
+        resolutions: Path | None = typer.Option(None, "--resolutions", help="YAML trigger resolutions."),
+        output: Path | None = typer.Option(None, "--output", help="Write machine-readable intake JSON."),
+        provider: str | None = typer.Option(None, "--provider", help="Override the configured classifier provider."),
+        consent: bool = typer.Option(False, "--consent", help="Explicitly consent to configured provider egress."),
+        root: Path | None = typer.Option(None, "--root", help="Project root override."),
+    ) -> None:
+        """Crawl, classify, route, and reconcile a local document drop."""
+        raise_code = intake_command(
+            drop_dir,
+            year=year,
+            root=root,
+            claims_path=claims,
+            resolutions_path=resolutions,
+            output=output,
+            provider=provider,
+            consent=consent,
+        )
+        if raise_code:
+            raise typer.Exit(raise_code)
+
     @cli.command(
         "extend",
         context_settings={"allow_extra_args": True, "ignore_unknown_options": True},
@@ -1452,6 +1520,16 @@ def _fallback_app() -> int:
     extract_parser.add_argument("--year", "-y", default="2025")
     extract_parser.add_argument("--root", default=None)
 
+    intake_parser = subparsers.add_parser("intake")
+    intake_parser.add_argument("--drop-dir", required=True)
+    intake_parser.add_argument("--year", "-y", default="2025")
+    intake_parser.add_argument("--claims", default=None)
+    intake_parser.add_argument("--resolutions", default=None)
+    intake_parser.add_argument("--output", default=None)
+    intake_parser.add_argument("--provider", default=None)
+    intake_parser.add_argument("--consent", action="store_true")
+    intake_parser.add_argument("--root", default=None)
+
     extend_parser = subparsers.add_parser("extend")
     extend_parser.add_argument("action_or_doc", nargs="?", default=None)
     extend_parser.add_argument("doc_id", nargs="?", default=None)
@@ -1563,6 +1641,17 @@ def _fallback_app() -> int:
         return acquire_command(year=args.year, check=args.check, root=args.root)
     if args.command == "extract":
         return extract_command(doc=args.doc, year=args.year, root=args.root)
+    if args.command == "intake":
+        return intake_command(
+            args.drop_dir,
+            year=args.year,
+            root=args.root,
+            claims_path=args.claims,
+            resolutions_path=args.resolutions,
+            output=args.output,
+            provider=args.provider,
+            consent=args.consent,
+        )
     if args.command == "extend":
         if args.action_or_doc == "doctor":
             return extend_doctor_command(root=args.root, network=args.network, network_url=args.network_url)

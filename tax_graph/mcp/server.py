@@ -32,6 +32,7 @@ M2_TOOL_NAMES = (
     "export_audit_file",
 )
 MCP_TOOL_NAMES = M2_TOOL_NAMES + ("export_return_record", "export_filled_form_bundle", "get_verification")
+MCP_TOOL_NAMES = MCP_TOOL_NAMES + ("get_intake_relevance", "list_intake_gaps")
 
 SERVER_INSTRUCTIONS = """Tax Graph MCP server.
 
@@ -245,6 +246,74 @@ def _register_tools(server: FastMCP, context: McpGraphContext) -> None:
                 node_id: context.graph.provenance_for_node(node_id)
                 for node_id in Engine(context.graph).list_required_inputs(fact_values)
                 if context.graph.provenance_for_node(node_id)
+            },
+        }
+
+    @server.tool()
+    def get_intake_relevance(
+        document_type: str | None = None,
+        source_box: str | None = None,
+    ) -> dict[str, Any]:
+        """Return cited intake routing, trigger, and expectation declarations."""
+        routing = [
+            item for item in context.loaded.items("routing_edges")
+            if (document_type is None or item.get("source_document_type") == document_type)
+            and (source_box is None or item.get("source_box") == source_box)
+        ]
+        triggers = context.loaded.items("triggers")
+        expectations = context.loaded.items("expectations")
+        relevant_objects = routing if (document_type is not None or source_box is not None) else [*routing, *triggers, *expectations]
+        citation_ids = sorted({
+            citation_id
+            for item in relevant_objects
+            for citation_id in item.get("citation_refs", [])
+        })
+        return {
+            "document_type": document_type,
+            "source_box": source_box,
+            "routing_edges": routing,
+            "triggers": triggers,
+            "expectations": expectations,
+            "citations": [context.citations[item] for item in citation_ids if item in context.citations],
+        }
+
+    @server.tool()
+    def list_intake_gaps(
+        documents: list[dict[str, Any]],
+        claims: dict[str, Any] | None = None,
+        resolutions: dict[str, Any] | None = None,
+    ) -> dict[str, Any]:
+        """Reconcile classified intake documents and return the completeness gate."""
+        from tax_graph.intake.classifier import Classification
+        from tax_graph.intake.engine import build_gap_list, load_relevance_layer, route_documents
+
+        classifications = [
+            Classification(
+                path=Path(item.get("path", "<mcp-document>")),
+                document_type=str(item["document_type"]),
+                confidence=float(item.get("confidence", 1.0)),
+                evidence=tuple(item.get("evidence", [])),
+                boxes=dict(item.get("boxes", {})),
+            )
+            for item in documents
+        ]
+        layer = load_relevance_layer(context.year, context.root)
+        routes = route_documents(classifications, layer)
+        gaps = build_gap_list(
+            classifications,
+            layer,
+            claims=claims,
+            resolutions=resolutions,
+            routes=routes,
+        )
+        return {
+            "complete": not gaps,
+            "gaps": gaps,
+            "routes": [route.__dict__ for route in routes],
+            "provenance": {
+                "gate": "project",
+                "year": context.year,
+                "citation_ids": sorted({ref for gap in gaps for ref in gap.get("citation_refs", [])}),
             },
         }
 

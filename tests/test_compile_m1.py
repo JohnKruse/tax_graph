@@ -20,7 +20,9 @@ EXAMPLE = ROOT / "examples" / "capital_gains_basic"
 @pytest.mark.m1
 def test_build_sqlite_writes_expected_row_counts(tmp_path):
     result = build_sqlite("2025", root=ROOT, build_dir=tmp_path)
-    loaded = load_graph("2025", root=ROOT)
+    # SQLite is deliberately project-only; local user extensions remain YAML
+    # overlays and must not make this row-count test environment-dependent.
+    loaded = load_graph("2025", root=ROOT, include_extensions=False)
 
     assert result.path == tmp_path / "tax_graph_2025.sqlite"
     assert result.path.exists()

@@ -15,8 +15,22 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## Current state (2026-07-12)
 
-**BALL: WORKER - M14 Step 3 is DONE (Architect ruling below). Next: Step 4, intake v1
-relevance layer, per PHASE_M14 design pins 5-8 (2026-07-12).**
+**BALL: WORKER - M14 Step 4 is DONE. Intake v1 relevance layer is implemented and
+verified. Next: Step 5 records/docs/exit run/close, with Step 2 still open only for
+John-owned distribution actions.**
+
+**WORKER UPDATE (2026-07-12): M14 Step 4 [DONE].** Added additive graph kinds
+`routing_edges`, `triggers`, and `expectations` with schemas, cited v1 data for
+W-2/1099-INT/1099-DIV/1099-B, 13614-C universal/conditional triggers, and
+bidirectional presence expectations. Added local deterministic classification over
+synthetic fixtures, fail-closed provider consent, routing/gap/completeness engine,
+Return Record intake provenance, `tax-graph intake`, and MCP relevance/gap tools.
+SQLite round-trip, clean CLI intake example, and the machine gates are green.
+Evidence: `pytest -m m14` -> 21 passed / 300 deselected in the dev checkout;
+simulated-clean `pytest -q` -> 312 passed / 9 skipped; clean validate/build/run/
+frontier -> green with line 7 = 2000; ASCII and diff checks -> green. The shared
+dev SQLite build remains locked by the live MCP server, so the build evidence used
+the clean throwaway root as required; no user extension was removed.
 
 **ARCHITECT PILOT VERDICT (Opus 4.8, 2026-07-12): Step 3 PASSES and is [DONE].**
 The pilot proved every plan-level exit criterion, two of them re-evidenced by the
@@ -287,12 +301,8 @@ parameter-diff HoH-floor (626350 vs 375800) source review. PyPI alpha token stil
   usage-limit stop - see archived plan.)
 
 ## Open for Architect
-- **M14 Step 3 scope ruling after live pilot:** the harness chain and user-gated runtime pass,
-  but the promoted outline-first draft does not meet the approved Part II lines 1-11 plus
-  AGI-lookup bound, and Part III field completeness remains flagged. The one-pass comparison
-  was closer but failed property checks and was not promoted. Decide whether to accept this
-  as an honest T0 harness pilot and carry the extraction gap forward, or require a curated
-  re-extraction before marking Step 3 [DONE].
+- No new questions from M14 Step 4. The Step 3 extraction-scope bounds are resolved by the
+  Architect ruling above and remain named M15 review-loop work, not a promotion claim.
 
 ## From Architect
 - **CARRIED-FORWARD NAMED GAP - PolicyEngine liability witness (M13 Option B; full pin in
@@ -333,6 +343,12 @@ parameter-diff HoH-floor (626350 vs 375800) source review. PyPI alpha token stil
   the suite and record both halves). The commit floor (full suite green) is unchanged.
 
 ## Latest verification
+- **M14 Step 4 worker verification (2026-07-12):** additive intake schemas/data, local
+  classifier fixtures, consent gate, routing/reconciliation/completeness engine, CLI, MCP,
+  Return Record provenance, and SQLite support landed. `pytest -m m14` -> 21 passed / 300
+  deselected; simulated-clean `pytest -q` -> 312 passed / 9 skipped; clean validate/build/run/
+  frontier and the committed synthetic CLI intake example -> green; line 7 = 2000; ASCII and
+  diff checks -> green.
 - **M14 Step 3 live pilot (2026-07-12):** doctor passed with real IRS HTTP 200 and configured
   LLM/OCR credentials; full acquire -> render/OCR -> extract -> review -> accept completed.
   Merged validate and keyless runtime parity passed; MCP provenance and package checks passed;

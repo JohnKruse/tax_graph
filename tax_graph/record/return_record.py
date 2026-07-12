@@ -111,6 +111,7 @@ class ReturnRecord:
     carryforward_block: CarryforwardBlock
     blank_with_note: list[dict[str, str]] = field(default_factory=list)
     elections: list[dict[str, Any]] = field(default_factory=list)
+    intake_resolutions: list[dict[str, Any]] = field(default_factory=list)
 
     def to_dict(self) -> dict[str, Any]:
         """Return a plain dictionary suitable for YAML or JSON rendering."""
@@ -138,6 +139,7 @@ def build_return_record(
     generated_date: str = "unknown",
     target_node: str | None = None,
     blank_with_note: list[dict[str, str]] | None = None,
+    intake_resolutions: list[dict[str, Any]] | None = None,
 ) -> ReturnRecord:
     """Build a deterministic Return Record model from an engine result."""
     record_year = int(tax_year or facts_document.get("tax_year") or graph.year)
@@ -176,6 +178,7 @@ def build_return_record(
         carryforward_block=carryforward_block,
         blank_with_note=blank_with_note or [],
         elections=[],
+        intake_resolutions=intake_resolutions or [],
     )
 
 
@@ -326,6 +329,17 @@ def render_memo(record: ReturnRecord) -> str:
         lines.extend(f"- {item}" for item in record.unsupported)
     else:
         lines.append("- No unsupported or deferred items were recorded.")
+
+    if record.intake_resolutions:
+        lines.extend(["", "## Intake Resolutions"])
+        for item in record.intake_resolutions:
+            trigger_id = item.get("trigger_id", "unknown")
+            resolution = item.get("resolution", "unresolved")
+            provenance = item.get("provenance", "not recorded")
+            citations = ",".join(item.get("citation_refs", [])) or "none"
+            lines.append(
+                f"- {trigger_id}: {resolution} [provenance={provenance}; citations={citations}]"
+            )
 
     lines.extend(["", "## Computed Outputs"])
     if record.outputs:

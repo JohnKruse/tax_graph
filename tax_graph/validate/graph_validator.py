@@ -242,6 +242,22 @@ def _validate_references_and_years(graph: LoadedGraph, errors: list[str]) -> Non
         decision_id = decision.get("decision_id", "<unknown>")
         _check_citation_refs("decision", decision_id, decision.get("citation_refs", []), citations, errors)
 
+    for routing in graph.items("routing_edges"):
+        routing_id = routing.get("routing_id", "<unknown>")
+        _check_citation_refs("routing_edge", routing_id, routing.get("citation_refs", []), citations, errors)
+        if routing.get("status") == "modeled" and routing.get("target") not in nodes:
+            errors.append(f"routing_edge {routing_id} -> missing target {routing.get('target')}")
+
+    for trigger in graph.items("triggers"):
+        trigger_id = trigger.get("trigger_id", "<unknown>")
+        _check_citation_refs("trigger", trigger_id, trigger.get("citation_refs", []), citations, errors)
+        if trigger.get("status", "modeled") == "modeled" and trigger.get("entry_point") not in nodes:
+            errors.append(f"trigger {trigger_id} -> missing entry_point {trigger.get('entry_point')}")
+
+    for expectation in graph.items("expectations"):
+        expectation_id = expectation.get("expectation_id", "<unknown>")
+        _check_citation_refs("expectation", expectation_id, expectation.get("citation_refs", []), citations, errors)
+
 
 def _validate_frontier_registry(graph: LoadedGraph, schemas_dir: Path, errors: list[str]) -> None:
     registry_path = graph.graph_dir / "frontier.yaml"

@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "routing_edge.schema.json",
+  "title": "Tax Graph Intake Routing Edge",
+  "description": "A cited information-return box to graph-line routing declaration.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["routing_id", "source_document_type", "source_box", "target", "status", "citation_refs"],
+  "properties": {
+    "routing_id": { "type": "string", "pattern": "^[a-z0-9_]+$" },
+    "source_document_type": { "type": "string", "pattern": "^[a-z0-9_]+$" },
+    "source_box": { "type": "string", "pattern": "^[a-z0-9_]+$" },
+    "target": { "type": "string", "pattern": "^[a-z0-9_]+$" },
+    "status": { "type": "string", "enum": ["modeled", "not_modeled"] },
+    "reason": { "type": "string" },
+    "citation_refs": { "type": "array", "items": { "type": "string", "pattern": "^[a-z0-9_]+$" } },
+    "gate": { "type": "string", "enum": ["project", "user"] }
+  }
+}

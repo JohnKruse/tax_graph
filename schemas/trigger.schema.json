@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "trigger.schema.json",
+  "title": "Tax Graph Intake Trigger",
+  "description": "A cited Form 13614-C intake trigger and its graph entry point.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["trigger_id", "label", "obligation_class", "entry_point", "citation_refs"],
+  "properties": {
+    "trigger_id": { "type": "string", "pattern": "^[a-z0-9_]+$" },
+    "label": { "type": "string" },
+    "obligation_class": { "type": "string", "enum": ["universal_gate", "conditional"] },
+    "entry_point": { "type": "string", "pattern": "^[a-z0-9_]+$" },
+    "activation": { "type": "array", "items": { "type": "string" } },
+    "status": { "type": "string", "enum": ["modeled", "not_modeled"] },
+    "reason": { "type": "string" },
+    "citation_refs": { "type": "array", "items": { "type": "string", "pattern": "^[a-z0-9_]+$" } },
+    "gate": { "type": "string", "enum": ["project", "user"] }
+  }
+}

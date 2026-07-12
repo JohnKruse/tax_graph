@@ -60,6 +60,10 @@ ocr:                             # IRS-document rendering (build-time; public do
   output: markdown               # store per-doc + per-page markdown and extracted hyperlinks
   cache_by_hash: true            # skip re-OCR of unchanged docs (paid API)
 
+intake:
+  classifier_provider: local_rules # local_rules is keyless; remote providers require consent
+  consent: null                    # set to always only if the user explicitly chooses standing consent
+
 acquire:
   user_agent: "tax-graph-bot/0.1 (+https://github.com/JohnKruse/tax_graph)"
   rate_limit_per_sec: 1

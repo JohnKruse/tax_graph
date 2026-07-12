@@ -1,0 +1,41 @@
+- citation_id: cite_intake_w2_recipient
+  document_id: form_w2_2025
+  source_document_id: form_w2_2025
+  locator: W-2 box 1 recipient instruction
+  quoted_text: Report the amount from box 1 on Form 1040, line 1a.
+  url: https://www.irs.gov/forms-pubs/about-form-w-2
+
+- citation_id: cite_intake_1099_int_recipient
+  document_id: form_1099_int_2025
+  source_document_id: form_1099_int_2025
+  locator: 1099-INT box 1 recipient instruction
+  quoted_text: Report taxable interest from box 1 on Schedule B and Form 1040, line 2b.
+  url: https://www.irs.gov/forms-pubs/about-form-1099-int
+
+- citation_id: cite_intake_1099_div_recipient
+  document_id: form_1099_div_2025
+  source_document_id: form_1099_div_2025
+  locator: 1099-DIV box 1a recipient instruction
+  quoted_text: Report ordinary dividends from box 1a on Schedule B and Form 1040, line 3b.
+  url: https://www.irs.gov/forms-pubs/about-form-1099-div
+
+- citation_id: cite_intake_1099b_recipient
+  document_id: form_1099b_2025
+  source_document_id: form_1099b_2025
+  locator: 1099-B recipient instruction
+  quoted_text: Report the transaction on Form 8949 and Schedule D.
+  url: https://www.irs.gov/forms-pubs/about-form-1099-b
+
+- citation_id: cite_intake_13614c_universal
+  document_id: form_13614_c_2025
+  source_document_id: form_13614_c_2025
+  locator: quality review universal questions
+  quoted_text: Every question must be answered yes, no, or unsure before filing.
+  url: https://www.irs.gov/pub/irs-pdf/f13614c.pdf
+
+- citation_id: cite_intake_1040_digital_asset
+  document_id: form_13614_c_2025
+  source_document_id: form_13614_c_2025
+  locator: digital asset universal gate
+  quoted_text: At any time during 2025, did you receive, sell, exchange, or otherwise dispose of a digital asset?
+  url: https://www.irs.gov/pub/irs-prior/f1040--2025.pdf

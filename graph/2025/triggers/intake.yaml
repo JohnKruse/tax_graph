@@ -1,0 +1,46 @@
+- trigger_id: trigger_filing_status
+  label: Filing status
+  obligation_class: universal_gate
+  entry_point: form_1040_2025_root_line_1a
+  status: modeled
+  citation_refs: [cite_intake_13614c_universal]
+
+- trigger_id: trigger_dependents
+  label: Dependents
+  obligation_class: universal_gate
+  entry_point: form_1040_2025_root_line_1a
+  status: not_modeled
+  reason: Dependent computation is outside the M14 profile, but the question must be resolved.
+  citation_refs: [cite_intake_13614c_universal]
+
+- trigger_id: trigger_digital_asset
+  label: Digital asset activity
+  obligation_class: universal_gate
+  entry_point: form_1040_2025_root_line_1a
+  status: not_modeled
+  reason: Digital asset treatment is outside the M14 profile.
+  citation_refs: [cite_intake_1040_digital_asset]
+
+- trigger_id: trigger_employee_wages
+  label: Employee wages
+  obligation_class: conditional
+  entry_point: form_1040_2025_root_line_1a
+  activation: [w2, employee_status]
+  status: modeled
+  citation_refs: [cite_intake_w2_recipient]
+
+- trigger_id: trigger_interest_income
+  label: Interest income
+  obligation_class: conditional
+  entry_point: form_1040_2025_root_line_2b
+  activation: [1099_int, interest_income]
+  status: modeled
+  citation_refs: [cite_intake_1099_int_recipient]
+
+- trigger_id: trigger_dividend_income
+  label: Dividend income
+  obligation_class: conditional
+  entry_point: form_1040_2025_root_line_3b
+  activation: [1099_div, dividend_income]
+  status: modeled
+  citation_refs: [cite_intake_1099_div_recipient]
