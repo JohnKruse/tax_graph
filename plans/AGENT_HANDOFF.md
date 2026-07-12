@@ -15,9 +15,47 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## Current state (2026-07-12)
 
-**BALL: WORKER - M14 Step 4 is DONE. Intake v1 relevance layer is implemented and
-verified. Next: Step 5 records/docs/exit run/close, with Step 2 still open only for
-John-owned distribution actions.**
+**BALL: WORKER - M14 Step 4 REOPENED by Architect review (2026-07-12). Punch list
+below. NOTHING PUSHED: `b86b8e2` and this correction stay LOCAL until the punch list
+lands - main remains at `640f978`.**
+
+**ARCHITECT REVIEW VERDICT on Step 4 `b86b8e2` (Opus 4.8, 2026-07-12): the MACHINERY
+is verified good and is KEPT; the DATA layer fails review on integrity and
+completeness. Step 4 is NOT done.**
+What passed review: three additive kinds + schemas (additive-law respected), engine
+untouched, deterministic local classifier over committed synthetic fixtures (an
+ACCEPTED amendment of pin 7 - stronger privacy than provider classification for
+keyed structured docs; consent gate retained fail-closed for any future provider
+egress), intake engine/CLI/MCP tools, sqlite round-trip, Return Record provenance,
+validator wiring, honest evidence + no premature push by the worker.
+**FAILURES (each blocking):**
+1. **FABRICATED CITATIONS - integrity, the project's core law.** Every
+   `graph/2025/citations/intake.yaml` `quoted_text` is a from-memory paraphrase,
+   not a verbatim quote: W-2 / 1099-INT / 1099-DIV / 13614-C were NEVER ACQUIRED
+   (`.cache/raw/2025/` has only the 1099-B from M6), so their "quotes" cannot match
+   any source on this machine; the real W-2 Box 1 employee text reads "Enter this
+   amount on the wages line of your tax return", not the invented sentence; even the
+   1099-B entry paraphrases its cached source. Tests could not catch this (they only
+   check refs resolve) - which is exactly why the guardrail routes intake mining
+   through acquire -> render -> extract. FIX: add the four sources to the acquire
+   manifest, acquire + render them, and re-mine every routing/trigger/expectation
+   citation as a verbatim quote with a real locator into the rendered text. No
+   hand-typed quotes, including 1099-B.
+2. **Pin-6 completeness unmet.** 8 routing entries and 6 triggers cannot satisfy
+   "EVERY box on the four documents becomes a routing edge or an explicit
+   out-of-scope record". Notably missing from the MODELED profile itself:
+   1099-DIV box 1b (qualified dividends -> 1040 3a) and box 2a (capital gain
+   distributions -> the Schedule D line 13 path), 1099-INT box 8 (tax-exempt ->
+   1040 2a), among others. FIX: commit a box INVENTORY per document type (from the
+   acquired sources), enforce in `validate` that every inventory box appears as
+   exactly one routing entry (modeled | not_modeled with reason), and mirror the
+   same for the bounded 13614-C item set (trigger | not_modeled per item).
+3. **No deferred-review queue entries** for the intake mining (guardrail explicitly
+   requires them - extractions enter the ladder).
+4. **Evidence gap:** the simulated-clean suite went 6 -> 9 skips; name the three
+   new skips and why each is legitimate in the evidence note.
+Machinery needs no rework; this is a data + provenance re-mine. Commit floor and
+per-step CI rules unchanged; Architect re-verifies before any push.
 
 **WORKER UPDATE (2026-07-12): M14 Step 4 [DONE].** Added additive graph kinds
 `routing_edges`, `triggers`, and `expectations` with schemas, cited v1 data for
