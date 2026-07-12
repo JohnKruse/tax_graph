@@ -14,7 +14,19 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## Current state (2026-07-12)
 
-**BALL: ARCHITECT.** M14 (Product surface, canary Open Door) is COMPLETE and archived
+**BALL: WORKER - M15 `Fresh Eyes`, Step 1 in progress (global canary: `Ledger Llama`).
+The worker has John go and is implementing the artifact-only workbench seam plus its
+enforced no-import boundary; Steps 2-3 follow without a pause if tests stay green.**
+JOHN: two things need your eye - (1) skim the M15 "Design pins" (workspace member not
+separate repo; prebaked page images not pdf.js; verdicts flow OUT as files, never
+edits; the confirmed/pipeline_defect/source_pathology taxonomy); (2) M15 Step 4 is
+STRUCTURALLY DIFFERENT - it is YOUR human review campaign (draining the 30-object
+queue, which produces the real human_minutes + escape-rate numbers), not a
+worker-completable step; a Codex session builds Steps 1-3 and the instrumentation,
+then hands to you. `human_confirmed: true` is the one bit only a human earns - no
+agent sets it. M15 is the pre-ship gate: stable release unblocks only after it.
+
+Prior state: M14 (Product surface, canary Open Door) is COMPLETE and archived
 (`plans/archive/PHASE_M14.md`); all five steps [DONE], every exit criterion met with real
 live passes. What M14 landed: serve-lifecycle hardening (parent watchdog - fixed twice on
 Windows, orphan sweep dogfooded live); packaging (wheel with embedded runtime assets,
@@ -31,9 +43,8 @@ triple-witnessed: John's chat, the Architect's pre-verified engine run, and the
 Architect's direct call to the extension server (MFS loss-limit scenario:
 line 16 = -4500, line 21 = -1500, 1040 line 7 = -1500).
 **Next: M15 (Review Workbench + review campaign, canary Fresh Eyes) - THE PRE-SHIP
-GATE.** Architect writes `PHASE_M15.md` just-in-time per the roadmap; the review queue
-below is its raw material. Year rollover (TY2026) stays sequenced after M15 or when
-TY2026 docs drop.
+GATE, now PLANNED in `plans/PHASE_M15.md`.** The review queue below is its raw
+material. Year rollover (TY2026) stays sequenced after M15 or when TY2026 docs drop.
 (Whoever finishes a turn: update this BALL line - it is the first thing read.)
 
 - **M0-M14 are COMPLETE and archived** (see `plans/archive/`, each with a close note).
@@ -97,7 +108,7 @@ TY2026 docs drop.
 - (none)
 
 ## From Architect
-- **M15 planning is next.** The workbench builds against the FINAL artifact shape
+- **M15 is planned (`plans/PHASE_M15.md`, 2026-07-12).** The workbench builds against the FINAL artifact shape
   (docs/review-workbench.md + M12's node-to-page geometry); the campaign drains the
   queue above and measures real `human_minutes` / escape rates; verdict outcomes
   distinguish confirmed / pipeline-defect / source-pathology per engineering-plan. It is

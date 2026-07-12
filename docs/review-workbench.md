@@ -1,8 +1,24 @@
-# Review Workbench (design note, deliberately vague)
+# Review Workbench
 
-Status: DESIGN SKETCH, 2026-07-08. No milestone number assigned; candidate canary name
-"Fresh Eyes". Nothing here is scheduled. This note exists so the idea is pinned before
-the form-set expansion makes it urgent.
+Status: M15 Step 1 as-built, 2026-07-12. Canary: "Fresh Eyes". The workbench is a
+top-level workspace member with an artifact-only read seam. UI and verdict emission
+remain in later M15 steps.
+
+## Step 1 artifact contract
+
+`workbench.artifacts` reads the published artifacts directly and never imports a
+pipeline module. The compiled SQLite graph is opened in SQLite read-only URI mode;
+graph rows are decoded from their public `object_json` columns. The node geometry
+projection and deferred review queue are validated against their committed JSON
+Schemas. Draft directories expose YAML/JSON as structured data and Markdown/HTML as
+text, while metrics, N-version reports, and mined-example reports are indexed by
+workspace-relative artifact path. Source PDFs are represented by path, byte size, and
+SHA-256 metadata; rasterization belongs to Step 2 and is not a runtime dependency of
+the read seam.
+
+`review-workbench inspect --year 2025` is the Step 1 smoke command. It reports the
+artifact counts without writing any file. The committed `m15` boundary test walks all
+workbench Python files and rejects imports from `tax_graph` and its pipeline modules.
 
 ## What it is
 
