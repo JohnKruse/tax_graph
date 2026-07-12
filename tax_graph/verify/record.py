@@ -100,6 +100,13 @@ def build_verification_bundle(year: str = "2025", root: str | Path | None = None
             triage_count=triage_counts.get(document_id, 0),
         )
         page_path = Path("docs") / "verification" / f"{document_id}.md"
+        gate = str(document.get("gate") or "project")
+        verification_tier = _verification_tier(witnesses)
+        if gate == "user":
+            verification_tier = str(
+                (graph.extension_metadata or {}).get(document_id, {}).get("verification_tier")
+                or verification_tier
+            )
         record = VerificationRecord(
             document_id=document_id,
             title=str(document.get("title") or document_id),
@@ -109,9 +116,9 @@ def build_verification_bundle(year: str = "2025", root: str | Path | None = None
             modeled_counts=modeled_counts.get(document_id, {}),
             gaps=gaps_by_document.get(document_id, ()),
             witnesses=witnesses,
-            verification_tier=_verification_tier(witnesses),
+            verification_tier=verification_tier,
             page_path=page_path,
-            gate=str(document.get("gate") or "project"),
+            gate=gate,
             artifact_hash=(graph.extension_hashes or {}).get(document_id, graph.base_content_hash),
         )
         records.append(record)

@@ -1,64 +1,292 @@
 tax_year: 2025
 entries:
-- queue_id: irs_example_review_instructions_schedule_d_2025_example_008
-  kind: irs_example_review
-  status: pending
-  priority: medium
-  document_id: schedule_d_2025
-  source_document_id: instructions_schedule_d_2025
-  example_id: example_008
-  created_date: '2026-07-08'
-  created_by: tax_graph.verify.examples
-  summary: Review machine-agreed IRS example freeze for instructions_schedule_d_2025
-    example_008
-  artifact_dir: examples/irs_examples/instructions_schedule_d_2025/example_008
-  machine_agreed: true
-  human_confirmed: false
-  expected_nodes:
-  - form_8949_2025_part_i_line_1_column_d#example_008
-  - form_8949_2025_part_i_line_1_column_d_minus_e#example_008
-  - form_8949_2025_part_i_line_1_column_e#example_008
-  - form_8949_2025_part_i_line_1_column_h#example_008
-- queue_id: promotion_review_form_6251_2025
+- queue_id: authored_review_qdcgt_worksheet_2025
   kind: promotion_review
   status: pending
-  priority: medium
-  document_id: form_6251_2025
-  created_date: '2026-07-08'
-  created_by: tax_graph.promote
-  summary: Review deferred machine-gated promotion for form_6251_2025
-  artifact_dir: graph/2025/_drafts/form_6251_2025
-  artifact_paths:
-  - graph/2025/documents/form-6251.yaml
-  - graph/2025/nodes/form-6251.yaml
-  - graph/2025/citations/form-6251.yaml
-  machine_witnesses:
-  - validate green
-  - pytest green
-  - ascii green
-  - nversion agreed
-  - example mining unmappable only
-- queue_id: promotion_review_form_1040_2025
-  kind: promotion_review
-  status: pending
-  priority: medium
+  priority: high
   document_id: form_1040_2025
   created_date: '2026-07-09'
-  created_by: tax_graph.promote
-  summary: Review deferred machine-gated promotion for the Form 1040 taxable-income spine through line 15
-  artifact_dir: graph/2025/_drafts/form_1040_2025
+  created_by: tax_graph.architect
+  summary: Review the hand-AUTHORED QDCGT worksheet subunit (qdcgt_line_1..25) and
+    line 16 routing - human-authored objects, cited per line from the 1040 instructions;
+    witnessed live by OTS 100/100 at the tax line and PolicyEngine 20/20 on the frozen
+    corpus, but no human has read the worksheet lines yet.
+  artifact_dir: graph/2025
   artifact_paths:
-  - graph/2025/citations/form-1040.yaml
-  - graph/2025/nodes/form-1040.yaml
+  - graph/2025/nodes/tax-liability.yaml
   - graph/2025/edges/form-1040.yaml
-  - examples/taxable_income_basic/facts.yaml
-  - examples/taxable_income_basic/expected.yaml
+  - graph/2025/citations/tax-liability.yaml
+  - graph/2025/rules/core.yaml
+  machine_witnesses:
+  - live OTS fuzz 100/100 at line 16 (seed 20260710)
+  - PolicyEngine liability 20/20 (8 exact, 12 table-tolerance)
+  - pytest green
+- queue_id: authored_review_schedule_1_2025_student_loan_interest_worksheet_wall
+  kind: frontier_review
+  status: pending
+  priority: high
+  document_id: schedule_1_2025
+  created_date: '2026-07-10'
+  created_by: tax_graph.m13.worker
+  summary: Review the declared Student Loan Interest Deduction Worksheet wall. The
+    OTS S1_21 input is pre-worksheet interest paid, while Schedule 1 line 21 is the
+    post-worksheet deduction, so direct differential injection is intentionally blocked.
+  artifact_dir: graph/2025
+  artifact_paths:
+  - graph/2025/frontier-declarations.yaml
+  - graph/2025/nodes/schedule-1.yaml
+  - graph/2025/edges/schedule-internal.yaml
+  - oracles/domain_2025.yaml
+  machine_witnesses:
+  - shipped OTS source semantics inspected
+  - offline L4 Schedule 1 line-25/26 chain fixture green
+  human_confirmed: false
+- queue_id: authored_review_schedule_d_2025_tax_worksheet
+  kind: authored_worksheet_review
+  status: pending
+  priority: high
+  document_id: instructions_schedule_d_2025
+  created_date: '2026-07-11'
+  created_by: tax_graph.m13.architect
+  summary: Review the hand-authored 47-line Schedule D Tax Worksheet subunit (cited
+    per line block). The shipped OTS reference INVERTS the lines-33-43 gate and hardcodes
+    197390 where the IRS text says 197300, so the IRS text was followed and OTS is
+    not a witness for the 20/25/28-percent components; maintainer notified by John
+    2026-07-11.
+  artifact_dir: graph/2025
+  artifact_paths:
+  - graph/2025/nodes/capital-gains.yaml
+  - graph/2025/edges/capital-gains.yaml
+  - graph/2025/citations/capital-gains.yaml
+  machine_witnesses:
+  - hand-traced scenarios match line by line (pytest -m m13)
+  - parameter values cross-checked against the 0.32 bracket floor
+  - drills wrong_sdtw_25_rate_parameter and wrong_sdtw_breakpoint_parameter caught
+    at L3
+  human_confirmed: false
+- queue_id: decision_review_1040_deduction_method
+  kind: decision_review
+  status: pending
+  priority: top
+  document_id: form_1040_2025
+  created_date: '2026-07-09'
+  created_by: tax_graph.architect
+  summary: Review the deduction-method DECISION node (standard vs itemized via Schedule
+    A line 17) - decisions encode judgment and sit at the TOP of the deferred queue
+    by policy.
+  artifact_dir: graph/2025
+  artifact_paths:
+  - graph/2025/decisions/tax-liability.yaml
   machine_witnesses:
   - validate green
   - pytest green
-  - ascii green
-  - taxable income fixture green
-  - sqlite parity green
+- queue_id: extension_review_form_2441_2025
+  kind: extension_promotion
+  status: accepted_local
+  priority: high
+  document_id: form_2441_2025
+  created_date: '2026-07-12'
+  created_by: tax_graph.extension
+  summary: User-gated extension accepted locally; human review remains pending.
+  artifact_dir: graph_ext/2025/form_2441_2025
+  artifact_paths:
+  - graph_ext/2025/_drafts/form_2441_2025/review.md
+  - graph_ext/2025/_drafts/form_2441_2025/review.html
+  - graph_ext/2025/_drafts/form_2441_2025/metrics.yaml
+  machine_agreed: false
+  human_confirmed: false
+  review_status: pending
+  gate: user
+  verification_tier: T0
+  source_hash: 6c3c2d19163fa4c4de829abf9a89b43f08b4f4f3cb169740fc7da43e914269ce
+  extension_hash: 522cbf19c97ff31045d9b27cb98646322d69f7c3eae0b3daf0b08596e7c86511
+- queue_id: field_map_review_form_1040_2025
+  kind: field_map_review
+  status: pending
+  priority: high
+  document_id: form_1040_2025
+  created_date: '2026-07-10'
+  created_by: tax_graph.m12.worker
+  summary: Review authored AcroForm field mapping for form_1040_2025; machine validation
+    and official-PDF echo are not human review.
+  artifact_paths:
+  - graph/2025/field_maps/form_1040_2025.yaml
+  - graph/2025/field_inventories/form_1040_2025.json
+  machine_witnesses:
+  - field-map schema green
+  - both-direction references green
+  - geometry projection generated; validation pending M12 exit
+  human_confirmed: false
+- queue_id: field_map_review_form_1099b_2025
+  kind: field_map_review
+  status: pending
+  priority: high
+  document_id: form_1099b_2025
+  created_date: '2026-07-10'
+  created_by: tax_graph.m12.worker
+  summary: Review authored AcroForm field mapping for form_1099b_2025; machine validation
+    and official-PDF echo are not human review.
+  artifact_paths:
+  - graph/2025/field_maps/form_1099b_2025.yaml
+  - graph/2025/field_inventories/form_1099b_2025.json
+  machine_witnesses:
+  - field-map schema green
+  - both-direction references green
+  - geometry projection generated; validation pending M12 exit
+  human_confirmed: false
+- queue_id: field_map_review_form_6251_2025
+  kind: field_map_review
+  status: pending
+  priority: high
+  document_id: form_6251_2025
+  created_date: '2026-07-10'
+  created_by: tax_graph.m12.worker
+  summary: Review authored AcroForm field mapping for form_6251_2025; machine validation
+    and official-PDF echo are not human review.
+  artifact_paths:
+  - graph/2025/field_maps/form_6251_2025.yaml
+  - graph/2025/field_inventories/form_6251_2025.json
+  machine_witnesses:
+  - field-map schema green
+  - both-direction references green
+  - geometry projection generated; validation pending M12 exit
+  human_confirmed: false
+- queue_id: field_map_review_form_8949_2025
+  kind: field_map_review
+  status: pending
+  priority: high
+  document_id: form_8949_2025
+  created_date: '2026-07-10'
+  created_by: tax_graph.m12.worker
+  summary: Review authored AcroForm field mapping for form_8949_2025; machine validation
+    and official-PDF echo are not human review.
+  artifact_paths:
+  - graph/2025/field_maps/form_8949_2025.yaml
+  - graph/2025/field_inventories/form_8949_2025.json
+  machine_witnesses:
+  - field-map schema green
+  - both-direction references green
+  - geometry projection generated; validation pending M12 exit
+  human_confirmed: false
+- queue_id: field_map_review_schedule_1_2025
+  kind: field_map_review
+  status: pending
+  priority: high
+  document_id: schedule_1_2025
+  created_date: '2026-07-10'
+  created_by: tax_graph.m12.worker
+  summary: Review authored AcroForm field mapping for schedule_1_2025; machine validation
+    and official-PDF echo are not human review.
+  artifact_paths:
+  - graph/2025/field_maps/schedule_1_2025.yaml
+  - graph/2025/field_inventories/schedule_1_2025.json
+  machine_witnesses:
+  - field-map schema green
+  - both-direction references green
+  - geometry projection generated; validation pending M12 exit
+  human_confirmed: false
+- queue_id: field_map_review_schedule_1a_2025
+  kind: field_map_review
+  status: pending
+  priority: high
+  document_id: schedule_1a_2025
+  created_date: '2026-07-10'
+  created_by: tax_graph.m12.worker
+  summary: Review authored AcroForm field mapping for schedule_1a_2025; machine validation
+    and official-PDF echo are not human review.
+  artifact_paths:
+  - graph/2025/field_maps/schedule_1a_2025.yaml
+  - graph/2025/field_inventories/schedule_1a_2025.json
+  machine_witnesses:
+  - field-map schema green
+  - both-direction references green
+  - geometry projection generated; validation pending M12 exit
+  human_confirmed: false
+- queue_id: field_map_review_schedule_2_2025
+  kind: field_map_review
+  status: pending
+  priority: high
+  document_id: schedule_2_2025
+  created_date: '2026-07-10'
+  created_by: tax_graph.m12.worker
+  summary: Review authored AcroForm field mapping for schedule_2_2025; machine validation
+    and official-PDF echo are not human review.
+  artifact_paths:
+  - graph/2025/field_maps/schedule_2_2025.yaml
+  - graph/2025/field_inventories/schedule_2_2025.json
+  machine_witnesses:
+  - field-map schema green
+  - both-direction references green
+  - geometry projection generated; validation pending M12 exit
+  human_confirmed: false
+- queue_id: field_map_review_schedule_3_2025
+  kind: field_map_review
+  status: pending
+  priority: high
+  document_id: schedule_3_2025
+  created_date: '2026-07-10'
+  created_by: tax_graph.m12.worker
+  summary: Review authored AcroForm field mapping for schedule_3_2025; machine validation
+    and official-PDF echo are not human review.
+  artifact_paths:
+  - graph/2025/field_maps/schedule_3_2025.yaml
+  - graph/2025/field_inventories/schedule_3_2025.json
+  machine_witnesses:
+  - field-map schema green
+  - both-direction references green
+  - geometry projection generated; validation pending M12 exit
+  human_confirmed: false
+- queue_id: field_map_review_schedule_a_2025
+  kind: field_map_review
+  status: pending
+  priority: high
+  document_id: schedule_a_2025
+  created_date: '2026-07-10'
+  created_by: tax_graph.m12.worker
+  summary: Review authored AcroForm field mapping for schedule_a_2025; machine validation
+    and official-PDF echo are not human review.
+  artifact_paths:
+  - graph/2025/field_maps/schedule_a_2025.yaml
+  - graph/2025/field_inventories/schedule_a_2025.json
+  machine_witnesses:
+  - field-map schema green
+  - both-direction references green
+  - geometry projection generated; validation pending M12 exit
+  human_confirmed: false
+- queue_id: field_map_review_schedule_b_2025
+  kind: field_map_review
+  status: pending
+  priority: high
+  document_id: schedule_b_2025
+  created_date: '2026-07-10'
+  created_by: tax_graph.m12.worker
+  summary: Review authored AcroForm field mapping for schedule_b_2025; machine validation
+    and official-PDF echo are not human review.
+  artifact_paths:
+  - graph/2025/field_maps/schedule_b_2025.yaml
+  - graph/2025/field_inventories/schedule_b_2025.json
+  machine_witnesses:
+  - field-map schema green
+  - both-direction references green
+  - geometry projection generated; validation pending M12 exit
+  human_confirmed: false
+- queue_id: field_map_review_schedule_d_2025
+  kind: field_map_review
+  status: pending
+  priority: high
+  document_id: schedule_d_2025
+  created_date: '2026-07-10'
+  created_by: tax_graph.m12.worker
+  summary: Review authored AcroForm field mapping for schedule_d_2025; machine validation
+    and official-PDF echo are not human review.
+  artifact_paths:
+  - graph/2025/field_maps/schedule_d_2025.yaml
+  - graph/2025/field_inventories/schedule_d_2025.json
+  machine_witnesses:
+  - field-map schema green
+  - both-direction references green
+  - geometry projection generated; validation pending M12 exit
+  human_confirmed: false
 - queue_id: flow_review_form_6251_2025_false_positive_outbound_schedule_d
   kind: flow_review
   status: pending
@@ -79,6 +307,66 @@ entries:
   - architect span review
   - frontier rejected disposition
   - link skipped rejected flows
+- queue_id: irs_example_review_instructions_schedule_d_2025_example_008
+  kind: irs_example_review
+  status: pending
+  priority: medium
+  document_id: schedule_d_2025
+  source_document_id: instructions_schedule_d_2025
+  example_id: example_008
+  created_date: '2026-07-08'
+  created_by: tax_graph.verify.examples
+  summary: Review machine-agreed IRS example freeze for instructions_schedule_d_2025
+    example_008
+  artifact_dir: examples/irs_examples/instructions_schedule_d_2025/example_008
+  machine_agreed: true
+  human_confirmed: false
+  expected_nodes:
+  - form_8949_2025_part_i_line_1_column_d#example_008
+  - form_8949_2025_part_i_line_1_column_d_minus_e#example_008
+  - form_8949_2025_part_i_line_1_column_e#example_008
+  - form_8949_2025_part_i_line_1_column_h#example_008
+- queue_id: promotion_review_form_1040_2025
+  kind: promotion_review
+  status: pending
+  priority: medium
+  document_id: form_1040_2025
+  created_date: '2026-07-09'
+  created_by: tax_graph.promote
+  summary: Review deferred machine-gated promotion for the Form 1040 taxable-income
+    spine through line 15
+  artifact_dir: graph/2025/_drafts/form_1040_2025
+  artifact_paths:
+  - graph/2025/citations/form-1040.yaml
+  - graph/2025/nodes/form-1040.yaml
+  - graph/2025/edges/form-1040.yaml
+  - examples/taxable_income_basic/facts.yaml
+  - examples/taxable_income_basic/expected.yaml
+  machine_witnesses:
+  - validate green
+  - pytest green
+  - ascii green
+  - taxable income fixture green
+  - sqlite parity green
+- queue_id: promotion_review_form_6251_2025
+  kind: promotion_review
+  status: pending
+  priority: medium
+  document_id: form_6251_2025
+  created_date: '2026-07-08'
+  created_by: tax_graph.promote
+  summary: Review deferred machine-gated promotion for form_6251_2025
+  artifact_dir: graph/2025/_drafts/form_6251_2025
+  artifact_paths:
+  - graph/2025/documents/form-6251.yaml
+  - graph/2025/nodes/form-6251.yaml
+  - graph/2025/citations/form-6251.yaml
+  machine_witnesses:
+  - validate green
+  - pytest green
+  - ascii green
+  - nversion agreed
+  - example mining unmappable only
 - queue_id: promotion_review_schedule_1_2025
   kind: promotion_review
   status: pending
@@ -193,237 +481,6 @@ entries:
   - ascii green
   - repeatable-table fixture green
   - example mining not configured
-- queue_id: authored_review_qdcgt_worksheet_2025
-  kind: promotion_review
-  status: pending
-  priority: high
-  document_id: form_1040_2025
-  created_date: '2026-07-09'
-  created_by: tax_graph.architect
-  summary: Review the hand-AUTHORED QDCGT worksheet subunit (qdcgt_line_1..25) and
-    line 16 routing - human-authored objects, cited per line from the 1040
-    instructions; witnessed live by OTS 100/100 at the tax line and PolicyEngine
-    20/20 on the frozen corpus, but no human has read the worksheet lines yet.
-  artifact_dir: graph/2025
-  artifact_paths:
-  - graph/2025/nodes/tax-liability.yaml
-  - graph/2025/edges/form-1040.yaml
-  - graph/2025/citations/tax-liability.yaml
-  - graph/2025/rules/core.yaml
-  machine_witnesses:
-  - live OTS fuzz 100/100 at line 16 (seed 20260710)
-  - PolicyEngine liability 20/20 (8 exact, 12 table-tolerance)
-  - pytest green
-- queue_id: decision_review_1040_deduction_method
-  kind: decision_review
-  status: pending
-  priority: top
-  document_id: form_1040_2025
-  created_date: '2026-07-09'
-  created_by: tax_graph.architect
-  summary: Review the deduction-method DECISION node (standard vs itemized via
-    Schedule A line 17) - decisions encode judgment and sit at the TOP of the
-    deferred queue by policy.
-  artifact_dir: graph/2025
-  artifact_paths:
-  - graph/2025/decisions/tax-liability.yaml
-  machine_witnesses:
-  - validate green
-  - pytest green
-- queue_id: field_map_review_form_1040_2025
-  kind: field_map_review
-  status: pending
-  priority: high
-  document_id: form_1040_2025
-  created_date: '2026-07-10'
-  created_by: tax_graph.m12.worker
-  summary: Review authored AcroForm field mapping for form_1040_2025; machine validation and official-PDF echo are not human review.
-  artifact_paths:
-  - graph/2025/field_maps/form_1040_2025.yaml
-  - graph/2025/field_inventories/form_1040_2025.json
-  machine_witnesses:
-  - field-map schema green
-  - both-direction references green
-  - geometry projection generated; validation pending M12 exit
-  human_confirmed: false
-- queue_id: field_map_review_form_1099b_2025
-  kind: field_map_review
-  status: pending
-  priority: high
-  document_id: form_1099b_2025
-  created_date: '2026-07-10'
-  created_by: tax_graph.m12.worker
-  summary: Review authored AcroForm field mapping for form_1099b_2025; machine validation and official-PDF echo are not human review.
-  artifact_paths:
-  - graph/2025/field_maps/form_1099b_2025.yaml
-  - graph/2025/field_inventories/form_1099b_2025.json
-  machine_witnesses:
-  - field-map schema green
-  - both-direction references green
-  - geometry projection generated; validation pending M12 exit
-  human_confirmed: false
-- queue_id: field_map_review_form_6251_2025
-  kind: field_map_review
-  status: pending
-  priority: high
-  document_id: form_6251_2025
-  created_date: '2026-07-10'
-  created_by: tax_graph.m12.worker
-  summary: Review authored AcroForm field mapping for form_6251_2025; machine validation and official-PDF echo are not human review.
-  artifact_paths:
-  - graph/2025/field_maps/form_6251_2025.yaml
-  - graph/2025/field_inventories/form_6251_2025.json
-  machine_witnesses:
-  - field-map schema green
-  - both-direction references green
-  - geometry projection generated; validation pending M12 exit
-  human_confirmed: false
-- queue_id: field_map_review_form_8949_2025
-  kind: field_map_review
-  status: pending
-  priority: high
-  document_id: form_8949_2025
-  created_date: '2026-07-10'
-  created_by: tax_graph.m12.worker
-  summary: Review authored AcroForm field mapping for form_8949_2025; machine validation and official-PDF echo are not human review.
-  artifact_paths:
-  - graph/2025/field_maps/form_8949_2025.yaml
-  - graph/2025/field_inventories/form_8949_2025.json
-  machine_witnesses:
-  - field-map schema green
-  - both-direction references green
-  - geometry projection generated; validation pending M12 exit
-  human_confirmed: false
-- queue_id: field_map_review_schedule_1_2025
-  kind: field_map_review
-  status: pending
-  priority: high
-  document_id: schedule_1_2025
-  created_date: '2026-07-10'
-  created_by: tax_graph.m12.worker
-  summary: Review authored AcroForm field mapping for schedule_1_2025; machine validation and official-PDF echo are not human review.
-  artifact_paths:
-  - graph/2025/field_maps/schedule_1_2025.yaml
-  - graph/2025/field_inventories/schedule_1_2025.json
-  machine_witnesses:
-  - field-map schema green
-  - both-direction references green
-  - geometry projection generated; validation pending M12 exit
-  human_confirmed: false
-- queue_id: field_map_review_schedule_1a_2025
-  kind: field_map_review
-  status: pending
-  priority: high
-  document_id: schedule_1a_2025
-  created_date: '2026-07-10'
-  created_by: tax_graph.m12.worker
-  summary: Review authored AcroForm field mapping for schedule_1a_2025; machine validation and official-PDF echo are not human review.
-  artifact_paths:
-  - graph/2025/field_maps/schedule_1a_2025.yaml
-  - graph/2025/field_inventories/schedule_1a_2025.json
-  machine_witnesses:
-  - field-map schema green
-  - both-direction references green
-  - geometry projection generated; validation pending M12 exit
-  human_confirmed: false
-- queue_id: field_map_review_schedule_2_2025
-  kind: field_map_review
-  status: pending
-  priority: high
-  document_id: schedule_2_2025
-  created_date: '2026-07-10'
-  created_by: tax_graph.m12.worker
-  summary: Review authored AcroForm field mapping for schedule_2_2025; machine validation and official-PDF echo are not human review.
-  artifact_paths:
-  - graph/2025/field_maps/schedule_2_2025.yaml
-  - graph/2025/field_inventories/schedule_2_2025.json
-  machine_witnesses:
-  - field-map schema green
-  - both-direction references green
-  - geometry projection generated; validation pending M12 exit
-  human_confirmed: false
-- queue_id: field_map_review_schedule_3_2025
-  kind: field_map_review
-  status: pending
-  priority: high
-  document_id: schedule_3_2025
-  created_date: '2026-07-10'
-  created_by: tax_graph.m12.worker
-  summary: Review authored AcroForm field mapping for schedule_3_2025; machine validation and official-PDF echo are not human review.
-  artifact_paths:
-  - graph/2025/field_maps/schedule_3_2025.yaml
-  - graph/2025/field_inventories/schedule_3_2025.json
-  machine_witnesses:
-  - field-map schema green
-  - both-direction references green
-  - geometry projection generated; validation pending M12 exit
-  human_confirmed: false
-- queue_id: field_map_review_schedule_a_2025
-  kind: field_map_review
-  status: pending
-  priority: high
-  document_id: schedule_a_2025
-  created_date: '2026-07-10'
-  created_by: tax_graph.m12.worker
-  summary: Review authored AcroForm field mapping for schedule_a_2025; machine validation and official-PDF echo are not human review.
-  artifact_paths:
-  - graph/2025/field_maps/schedule_a_2025.yaml
-  - graph/2025/field_inventories/schedule_a_2025.json
-  machine_witnesses:
-  - field-map schema green
-  - both-direction references green
-  - geometry projection generated; validation pending M12 exit
-  human_confirmed: false
-- queue_id: field_map_review_schedule_b_2025
-  kind: field_map_review
-  status: pending
-  priority: high
-  document_id: schedule_b_2025
-  created_date: '2026-07-10'
-  created_by: tax_graph.m12.worker
-  summary: Review authored AcroForm field mapping for schedule_b_2025; machine validation and official-PDF echo are not human review.
-  artifact_paths:
-  - graph/2025/field_maps/schedule_b_2025.yaml
-  - graph/2025/field_inventories/schedule_b_2025.json
-  machine_witnesses:
-  - field-map schema green
-  - both-direction references green
-  - geometry projection generated; validation pending M12 exit
-  human_confirmed: false
-- queue_id: field_map_review_schedule_d_2025
-  kind: field_map_review
-  status: pending
-  priority: high
-  document_id: schedule_d_2025
-  created_date: '2026-07-10'
-  created_by: tax_graph.m12.worker
-  summary: Review authored AcroForm field mapping for schedule_d_2025; machine validation and official-PDF echo are not human review.
-  artifact_paths:
-  - graph/2025/field_maps/schedule_d_2025.yaml
-  - graph/2025/field_inventories/schedule_d_2025.json
-  machine_witnesses:
-  - field-map schema green
-  - both-direction references green
-  - geometry projection generated; validation pending M12 exit
-  human_confirmed: false
-- queue_id: authored_review_schedule_1_2025_student_loan_interest_worksheet_wall
-  kind: frontier_review
-  status: pending
-  priority: high
-  document_id: schedule_1_2025
-  created_date: '2026-07-10'
-  created_by: tax_graph.m13.worker
-  summary: Review the declared Student Loan Interest Deduction Worksheet wall. The OTS S1_21 input is pre-worksheet interest paid, while Schedule 1 line 21 is the post-worksheet deduction, so direct differential injection is intentionally blocked.
-  artifact_dir: graph/2025
-  artifact_paths:
-  - graph/2025/frontier-declarations.yaml
-  - graph/2025/nodes/schedule-1.yaml
-  - graph/2025/edges/schedule-internal.yaml
-  - oracles/domain_2025.yaml
-  machine_witnesses:
-  - shipped OTS source semantics inspected
-  - offline L4 Schedule 1 line-25/26 chain fixture green
-  human_confirmed: false
 - queue_id: routing_review_schedule_d_2025_line_20_decision
   kind: decision_review
   status: pending
@@ -431,7 +488,10 @@ entries:
   document_id: schedule_d_2025
   created_date: '2026-07-11'
   created_by: tax_graph.m13.architect
-  summary: Review the Schedule D line 17/20 routing that selects the Schedule D Tax Worksheet over the QDCGT worksheet (MIN/MAX gate encoding of the form's yes/no questions), including the scope assumption that Form 4952 is never filed by supported-profile filers.
+  summary: Review the Schedule D line 17/20 routing that selects the Schedule D Tax
+    Worksheet over the QDCGT worksheet (MIN/MAX gate encoding of the form's yes/no
+    questions), including the scope assumption that Form 4952 is never filed by supported-profile
+    filers.
   artifact_dir: graph/2025
   artifact_paths:
   - graph/2025/nodes/capital-gains.yaml
@@ -440,22 +500,4 @@ entries:
   machine_witnesses:
   - hand-traced 1250/collectibles/adversarial scenarios green (pytest -m m13)
   - M11 QDCGT regression byte-identical (13777)
-  human_confirmed: false
-- queue_id: authored_review_schedule_d_2025_tax_worksheet
-  kind: authored_worksheet_review
-  status: pending
-  priority: high
-  document_id: instructions_schedule_d_2025
-  created_date: '2026-07-11'
-  created_by: tax_graph.m13.architect
-  summary: Review the hand-authored 47-line Schedule D Tax Worksheet subunit (cited per line block). The shipped OTS reference INVERTS the lines-33-43 gate and hardcodes 197390 where the IRS text says 197300, so the IRS text was followed and OTS is not a witness for the 20/25/28-percent components; maintainer notified by John 2026-07-11.
-  artifact_dir: graph/2025
-  artifact_paths:
-  - graph/2025/nodes/capital-gains.yaml
-  - graph/2025/edges/capital-gains.yaml
-  - graph/2025/citations/capital-gains.yaml
-  machine_witnesses:
-  - hand-traced scenarios match line by line (pytest -m m13)
-  - parameter values cross-checked against the 0.32 bracket floor
-  - drills wrong_sdtw_25_rate_parameter and wrong_sdtw_breakpoint_parameter caught at L3
   human_confirmed: false

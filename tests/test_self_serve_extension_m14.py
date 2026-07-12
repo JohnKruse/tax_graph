@@ -103,6 +103,8 @@ def test_extension_pipeline_accepts_overlay_and_exposes_user_provenance(tmp_path
     _content, node_response = asyncio.run(server.call_tool("get_node", {"node_id": "schedule_x_2025_line_1"}))
     assert node_response["provenance"]["gate"] == "user"
     assert node_response["provenance"]["artifact_hash"] == accepted.content_hash
+    _content, document_response = asyncio.run(server.call_tool("get_document", {"document_id": "schedule_x_2025"}))
+    assert document_response["verification"]["verification_tier"] == "T1"
     _content, execution = asyncio.run(server.call_tool("execute_tax_tree", {"facts": {}}))
     assert execution["provenance"]["schedule_x_2025_line_1"]["gate"] == "user"
 

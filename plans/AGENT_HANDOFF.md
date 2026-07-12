@@ -13,9 +13,9 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
   2026-07-10, and at M13 close 2026-07-11. Full narration lives in `plans/archive/` (phase plans
   with close notes) and git history.
 
-## Current state (2026-07-11)
+## Current state (2026-07-12)
 
-**BALL: WORKER - M14 Step 3 PILOT APPROVED: form_2441_2025. Run the live pilot (2026-07-12).**
+**BALL: WORKER - M14 Step 3 live pilot executed; accepted user-gated T0 overlay with pinned scope gaps (2026-07-12).**
 
 **ARCHITECT VERIFICATION + PILOT RULING (Opus 4.8, 2026-07-12) on Step 3 `05fba8d`:**
 Verified before push, all green: engine diff is scope-clean (NO new ops - gate/provenance
@@ -43,6 +43,19 @@ differential witness exists for 2441 - the pilot MUST land at the user-gated
 machine-ladder tier and say so in every surface (that honest label is the point,
 not a gap). Acceptance: the full doctor -> extend -> review -> accept chain, overlay
 load + compute, gate visible over MCP, impersonation test green, queue entry, docs.
+
+**WORKER LIVE PILOT RESULT (2026-07-12):** real IRS fetch/render/OCR/extraction completed
+for `form_2441_2025`; source hash `6c3c2d19163fa4c4de829abf9a89b43f08b4f4f3cb169740fc7da43e914269ce`.
+Outline-first produced 1 document, 24 nodes, 2 rules, 2 edges, and 22 citations; all 51
+objects routed T0 because of 40 field-grid/document checks. Explicit accept completed; the
+overlay hash is `522cbf19c97ff31045d9b27cb98646322d69f7c3eae0b3daf0b08596e7c86511`,
+`human_confirmed: false`, review status pending. Merged `validate` is green at 14 documents,
+441 nodes, 409 edges, 17 rules, 293 citations, 2 decisions. Known return execution keeps
+Form 1040 line 7 at 2000. MCP document/node/dependency/downstream/execution/verification
+checks all expose `gate: user`, tier T0, and the extension hash; the package was emitted at
+`C:\tmp\tax_graph_form2441_pilot_package\form_2441_2025_2025.tax-graph-extension.zip`.
+The one-pass comparison generated Part II lines 1-11 but failed property/line completeness
+checks, so it was not promoted; comparison artifacts are outside the repo under `C:\tmp`.
 
 Prior BALL (Step 3 implementation report, 2026-07-12):
 Step 2's implementation is Architect-verified, COMMITTED, and pushed; Step 2 itself
@@ -243,12 +256,12 @@ parameter-diff HoH-floor (626350 vs 375800) source review. PyPI alpha token stil
   usage-limit stop - see archived plan.)
 
 ## Open for Architect
-- **M14 Step 3 pilot approval:** machine-side implementation is green and committed locally,
-  but the plan requires Architect approval before a real extraction pilot. Proposed pilot:
-  `form_2441_2025` (Form 2441, Child and Dependent Care Expenses), outside the shipped
-  document set and small enough for a first extension. Approve or replace the pilot and
-  provide the live-pass window/credentials; no live IRS fetch or LLM extraction has been
-  started by this worker.
+- **M14 Step 3 scope ruling after live pilot:** the harness chain and user-gated runtime pass,
+  but the promoted outline-first draft does not meet the approved Part II lines 1-11 plus
+  AGI-lookup bound, and Part III field completeness remains flagged. The one-pass comparison
+  was closer but failed property checks and was not promoted. Decide whether to accept this
+  as an honest T0 harness pilot and carry the extraction gap forward, or require a curated
+  re-extraction before marking Step 3 [DONE].
 
 ## From Architect
 - **CARRIED-FORWARD NAMED GAP - PolicyEngine liability witness (M13 Option B; full pin in
@@ -289,12 +302,13 @@ parameter-diff HoH-floor (626350 vs 375800) source review. PyPI alpha token stil
   the suite and record both halves). The commit floor (full suite green) is unchanged.
 
 ## Latest verification
-- **M14 Step 3 worker slice (2026-07-12):** overlay loader, project/user gate provenance,
-  SQLite and extension hash stamps, `extend doctor/<doc_id>/accept/package`, frontier
-  escape-hatch fields, Verification Record fields, and MCP provenance responses landed.
-  Hermetic `pytest -m m14` -> 15 passed / 300 deselected; focused extension tests -> 4 passed.
-  The Step 3 pilot remains open pending Architect approval above. No publication or upload
-  was performed.
+- **M14 Step 3 live pilot (2026-07-12):** doctor passed with real IRS HTTP 200 and configured
+  LLM/OCR credentials; full acquire -> render/OCR -> extract -> review -> accept completed.
+  Merged validate and keyless runtime parity passed; MCP provenance and package checks passed;
+  tamper protection is covered by the M14 test. Simulated-clean `pytest -q` -> 309 passed / 6
+  skipped. `pytest -m m14` -> 15 passed / 300 deselected after the Verification Record tier
+  propagation fix. The pilot remains open only on the approved extraction-scope ruling above;
+  no publication or upload was performed.
 - **M13 phase close - Architect (Opus 4.8) re-verified 2026-07-11:**
   - `verify record` -> VERIFICATION.md + 11 per-form pages regenerated byte-stable (0 diff)
   - `validate` -> 13 documents, 417 nodes, 407 edges, 15 rules, 271 citations, 2 decisions; graph
