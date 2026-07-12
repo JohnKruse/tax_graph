@@ -1,5 +1,20 @@
 # PHASE M14 - Product surface
 
+**[COMPLETE 2026-07-12]** All five steps done and verified; every exit criterion met,
+each live pass run for real (fresh-venv wheel; in-app Claude Desktop .mcpb install +
+MCP round trip, triple-witnessed - John's chat, the Architect's pre-verified local
+engine run, and the Architect's own direct call to the extension server returning the
+MFS loss-limit values -4500 / -1500 / -1500; registry schema; release-workflow CI dry
+run with the publish job inert; form_2441 extension pilot; intake CLI example).
+Notable in-phase findings, all pinned in the handoff/archive: the .mcpb source-build
+defect (bundle now ships the wheel), the inert-Windows-watchdog defect (fixed +
+real-process tests), the fabricated-intake-citations reopen (re-mined verbatim from
+acquired sources; checker with teeth), the records/frontier hash-ordering rule, and
+the Desktop UX hazards (install-disabled default, tiny enable link, twin-name
+collision between a config dev server and the extension). John-only distribution
+actions (PyPI trusted publishing + upload, Connectors submission, Registry publish)
+carry forward as post-close actions - artifacts staged and verified.
+
 **Canary:** Open Door
 **Depends on:** M13 (worksheet depth; widened OTS corpus under Option B), M12 (output
 layer; return-scoped artifacts; live-execution lesson), M10 (frontier registry +
@@ -157,7 +172,10 @@ rather than improvising.
   Tests: lifecycle unit tests plus a live kill-the-parent probe; regression:
   build-after-serve succeeds. Docs.
 
-- [ ] **Step 2 [worker-standard] - Packaging + release automation.** Build on the
+- [DONE] **Step 2 [worker-standard; closed 2026-07-12 after the in-app Desktop live
+  pass finally ran clean - see the archive header for the three-witness evidence and
+  the two real defects the live pass caught on the way] - Packaging + release
+  automation.** Build on the
   prepared `0.1.0a1`: release workflow (tag-driven; build sdist+wheel; twine
   check; hash-stamp artifacts; PyPI trusted-publishing OIDC wiring ready but
   publish step inert until John configures the publisher); README + first-run +
