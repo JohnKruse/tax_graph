@@ -21,7 +21,10 @@ def test_form_1040_spine_computes_taxable_income_on_yaml_and_sqlite(tmp_path):
     facts = load_facts(EXAMPLE / "facts.yaml")
     expected = yaml.safe_load((EXAMPLE / "expected.yaml").read_text(encoding="utf-8"))["expected"]
 
-    yaml_result = Engine(Graph(2025, root=ROOT, source="yaml")).execute(facts)
+    # Shipped-content parity: exclude any locally installed user extension so
+    # yaml and the compiled sqlite compare the same objects (hermetic in the
+    # normal dev state, where the M14 pilot extension is present).
+    yaml_result = Engine(Graph(2025, root=ROOT, source="yaml", include_extensions=False)).execute(facts)
 
     build_root = tmp_path / "project"
     shutil.copytree(ROOT / "graph", build_root / "graph", ignore=shutil.ignore_patterns("_drafts"))

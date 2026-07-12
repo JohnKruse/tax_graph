@@ -23,7 +23,10 @@ def test_qdcgt_worksheet_trace_matches_expected_on_yaml_and_sqlite(tmp_path):
         "schedule_d_2025_line_7_net_st": 0,
     }
 
-    yaml_result = Engine(Graph(2025, root=ROOT, source="yaml")).execute(facts)
+    # Shipped-content parity: exclude any locally installed user extension so
+    # yaml and the compiled sqlite compare the same objects (hermetic in the
+    # normal dev state, where the M14 pilot extension is present).
+    yaml_result = Engine(Graph(2025, root=ROOT, source="yaml", include_extensions=False)).execute(facts)
 
     build_root = tmp_path / "project"
     shutil.copytree(ROOT / "graph", build_root / "graph", ignore=shutil.ignore_patterns("_drafts"))

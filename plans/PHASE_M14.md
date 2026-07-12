@@ -180,10 +180,10 @@ rather than improvising.
   fixtures; the live pilot is the live pass). Queue entries; docs update
   (`docs/self-serve-extension.md` graduates from stub to as-built).
 
-- [ ] **Step 4 [worker-heavy - REOPENED by Architect 2026-07-12, punch list in
-  AGENT_HANDOFF: fabricated citations must be re-mined via acquire->extract; pin-6
-  box-inventory completeness unmet; queue entries missing. Machinery verified good
-  and kept.] - Intake v1 relevance layer.** Implement design pins
+- [DONE] **Step 4 [worker-heavy; reopened once by Architect review (fabricated
+  citations, pin-6 completeness, missing queue entries) and closed after the
+  re-mine passed independent re-verification - see AGENT_HANDOFF 2026-07-12] -
+  Intake v1 relevance layer.** Implement design pins
   5-8: the three additive kinds; mine 13614-C (bounded per pin 6) and the four
   information returns' recipient instructions through the standard acquire ->
   extract -> verify net with citations; `intake` CLI (crawl -> consent -> classify

@@ -15,9 +15,36 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## Current state (2026-07-12)
 
-**BALL: WORKER - M14 Step 4 punch list implemented locally; awaiting Architect
-re-verification. NOTHING PUSHED: `b86b8e2` and this correction stay LOCAL until the
-Architect verifies - main remains at `640f978`.**
+**BALL: WORKER - M14 Step 4 is DONE (Architect re-verification passed, 2026-07-12).
+Next: Step 5 records/docs/exit run/close. Step 2 remains open only on John's
+Desktop retry + the John-only distribution actions.**
+
+**ARCHITECT RE-VERIFICATION (Opus 4.8, 2026-07-12): punch list ACCEPTED; Step 4
+[DONE].** Independent checks, not taken from the worker's notes:
+- Acquisitions REAL: all four sources (W-2, 1099-INT, 1099-DIV, 13614-C) fetched,
+  rendered (pdf/txt/json/fields), manifest entries with pinned sha256.
+- Citations VERBATIM: `check_citation_integrity` re-run by the Architect -> 26
+  checked / 0 issues; and the checker has TEETH - a deliberately planted fabricated
+  quote flips it to ok=False. (An Architect-side naive .txt substring check shows
+  25 false mismatches because the renderer interleaves columns; the checker's PDF
+  text-layer fallback is the correct oracle - noted so nobody repeats that scare.)
+- Pin-6 completeness: `graph/2025/intake-inventory.yaml` (90 boxes + 12 bounded
+  13614-C items); validator enforces exactly one routing entry per box and one
+  trigger record per item; the previously missing modeled-profile routes are
+  present (1099-DIV 1b -> 1040 3a modeled; box 2a and 1099-INT box 8 accounted
+  for honestly).
+- Queue entries present (3 pending intake_review_*, human_confirmed: false); the
+  three new evidence skips are named and justified in docs/intake.md (2 network
+  opt-in tests + 1 local-cache-dependent detector test).
+- Tests: `pytest -m m14` -> 22 passed (Architect run).
+**ONE ARCHITECT FIX in the same pass (hermetic rule):** the worker's "dirty
+checkout parity failures are ignorable" call was NOT accepted - a machine with an
+installed extension IS the normal dev state (the harness exists to create it). The
+two yaml-vs-sqlite parity tests (form-1040 spine, QDCGT trace) now load the yaml
+side with the new `Graph(..., include_extensions=False)` so shipped-content parity
+compares the same objects; both pass in the dirty checkout with the pilot
+extension installed. Full suite green in the DIRTY checkout is the bar, and it was
+re-run before push.
 
 **ARCHITECT REVIEW VERDICT on Step 4 `b86b8e2` (Opus 4.8, 2026-07-12): the MACHINERY
 is verified good and is KEPT; the DATA layer fails review on integrity and

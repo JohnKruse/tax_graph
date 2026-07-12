@@ -26,9 +26,23 @@ TABLE_FACTS_KEY = "#tables"
 class Graph:
     """Executable view of a loaded tax graph."""
 
-    def __init__(self, year: str | int, root: str | Path = ROOT, source: str | None = None):
+    def __init__(
+        self,
+        year: str | int,
+        root: str | Path = ROOT,
+        source: str | None = None,
+        *,
+        include_extensions: bool = True,
+    ):
+        """``include_extensions=False`` loads ONLY the shipped graph - the option
+        exists for shipped-content parity checks (yaml vs sqlite must compare
+        the same objects even when a local user extension is installed)."""
         graph_source = _resolve_source(year, root, source)
-        loaded = load_sqlite_graph(year, root) if graph_source == "sqlite" else load_graph(year, root)
+        loaded = (
+            load_sqlite_graph(year, root)
+            if graph_source == "sqlite"
+            else load_graph(year, root, include_extensions=include_extensions)
+        )
         self.year = loaded.year
         self.root = loaded.root
         self.source = graph_source
