@@ -394,6 +394,21 @@ parameter-diff HoH-floor (626350 vs 375800) source review. PyPI alpha token stil
   verification and close. (M12: Steps 1-3 Codex; Steps 4-6 + fixes Architect/Sonnet 5 after a
   usage-limit stop - see archived plan.)
 
+**ARCHITECT STEP-5 VERIFICATION NOTE (Opus 4.8, 2026-07-12):** the worker's Step-5
+records failed byte-stability re-check by exactly one cause: they were generated
+BEFORE the frontier rebuild, and `graph/2025/frontier.yaml` lives inside the hashed
+graph directory, so the embedded artifact content hash was stale (all 16 record
+diffs are hash-lines only; content identical). Architect regenerated after the
+rebuild and committed; regen is now byte-stable. **ORDERING RULE, pinned for every
+future close-out: `frontier build` FIRST, `verify record` SECOND, then commit both
+together.** (Longer-term option, deliberately NOT taken now: exclude derived
+registries from the content hash - that changes hash semantics and every stamp.)
+Everything else in Step 5 verified: scope was records/docs/frontier/handoff only;
+frontier 79 modeled / 5 declared byte-stable; validate green; the form_2441 page
+honestly shows Status partial / tier T0 / Gate user / extension hash (its garbled
+title line is OCR noise from the extension's own extracted label - extension
+content, already in the review queue's scope, not a generator bug).
+
 ## Open for Architect
 - No new questions from M14 Step 4. The Step 3 extraction-scope bounds are resolved by the
   Architect ruling above and remain named M15 review-loop work, not a promotion claim.

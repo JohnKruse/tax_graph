@@ -16,7 +16,7 @@ This report is generated from committed repository data by `tax_graph.verify.rec
 - Status: `partial`
 - Verification tier: independently witnessed
 - Gate: project
-- Artifact content hash: `cc75ade7dabef4267548b2459822c3aa03dbb42a537715951b9b4b0ea33b00a5`
+- Artifact content hash: `b5ce497390dfe12b300cdf7bf6607d7c6f72f2f27c9188242ce46560170baaa0`
 - Oracle witness: 100 agreed scenario(s) via OpenTaxSolver `ots_2025_23.06`.
 - IRS worked examples: No committed IRS worked-example fixture covers this document.
 - Calibration audit: sample 0, escapes 0, human minutes not yet recorded.
@@ -27,7 +27,7 @@ This report is generated from committed repository data by `tax_graph.verify.rec
 - Status: `partial`
 - Verification tier: structurally verified
 - Gate: project
-- Artifact content hash: `cc75ade7dabef4267548b2459822c3aa03dbb42a537715951b9b4b0ea33b00a5`
+- Artifact content hash: `b5ce497390dfe12b300cdf7bf6607d7c6f72f2f27c9188242ce46560170baaa0`
 - Oracle witness: No committed oracle witness covers this document.
 - IRS worked examples: No committed IRS worked-example fixture covers this document.
 - Calibration audit: sample 0, escapes 0, human minutes not yet recorded.
@@ -38,7 +38,7 @@ This report is generated from committed repository data by `tax_graph.verify.rec
 - Status: `partial`
 - Verification tier: partial
 - Gate: project
-- Artifact content hash: `cc75ade7dabef4267548b2459822c3aa03dbb42a537715951b9b4b0ea33b00a5`
+- Artifact content hash: `b5ce497390dfe12b300cdf7bf6607d7c6f72f2f27c9188242ce46560170baaa0`
 - Oracle witness: No committed oracle witness covers this document.
 - IRS worked examples: No committed IRS worked-example fixture covers this document.
 - Calibration audit: No committed calibration metrics artifact covers this document.
@@ -49,7 +49,7 @@ This report is generated from committed repository data by `tax_graph.verify.rec
 - Status: `partial`
 - Verification tier: partial
 - Gate: project
-- Artifact content hash: `cc75ade7dabef4267548b2459822c3aa03dbb42a537715951b9b4b0ea33b00a5`
+- Artifact content hash: `b5ce497390dfe12b300cdf7bf6607d7c6f72f2f27c9188242ce46560170baaa0`
 - Oracle witness: No committed oracle witness covers this document.
 - IRS worked examples: No committed IRS worked-example fixture covers this document.
 - Calibration audit: No committed calibration metrics artifact covers this document.
@@ -60,7 +60,7 @@ This report is generated from committed repository data by `tax_graph.verify.rec
 - Status: `partial`
 - Verification tier: partial
 - Gate: project
-- Artifact content hash: `cc75ade7dabef4267548b2459822c3aa03dbb42a537715951b9b4b0ea33b00a5`
+- Artifact content hash: `b5ce497390dfe12b300cdf7bf6607d7c6f72f2f27c9188242ce46560170baaa0`
 - Oracle witness: No committed oracle witness covers this document.
 - IRS worked examples: No committed IRS worked-example fixture covers this document.
 - Calibration audit: No committed calibration metrics artifact covers this document.
@@ -71,7 +71,7 @@ This report is generated from committed repository data by `tax_graph.verify.rec
 - Status: `partial`
 - Verification tier: independently witnessed
 - Gate: project
-- Artifact content hash: `cc75ade7dabef4267548b2459822c3aa03dbb42a537715951b9b4b0ea33b00a5`
+- Artifact content hash: `b5ce497390dfe12b300cdf7bf6607d7c6f72f2f27c9188242ce46560170baaa0`
 - Oracle witness: 100 agreed scenario(s) via OpenTaxSolver `ots_2025_23.06`.
 - IRS worked examples: No committed IRS worked-example fixture covers this document.
 - Calibration audit: sample 0, escapes 0, human minutes not yet recorded.
@@ -82,7 +82,7 @@ This report is generated from committed repository data by `tax_graph.verify.rec
 - Status: `partial`
 - Verification tier: independently witnessed
 - Gate: project
-- Artifact content hash: `cc75ade7dabef4267548b2459822c3aa03dbb42a537715951b9b4b0ea33b00a5`
+- Artifact content hash: `b5ce497390dfe12b300cdf7bf6607d7c6f72f2f27c9188242ce46560170baaa0`
 - Oracle witness: 100 agreed scenario(s) via OpenTaxSolver `ots_2025_23.06`.
 - IRS worked examples: 1 committed IRS worked-example fixture(s).
 - Calibration audit: sample 7, escapes 0, human minutes not yet recorded.
@@ -93,7 +93,7 @@ This report is generated from committed repository data by `tax_graph.verify.rec
 - Status: `partial`
 - Verification tier: partial
 - Gate: project
-- Artifact content hash: `cc75ade7dabef4267548b2459822c3aa03dbb42a537715951b9b4b0ea33b00a5`
+- Artifact content hash: `b5ce497390dfe12b300cdf7bf6607d7c6f72f2f27c9188242ce46560170baaa0`
 - Oracle witness: No committed oracle witness covers this document.
 - IRS worked examples: No committed IRS worked-example fixture covers this document.
 - Calibration audit: No committed calibration metrics artifact covers this document.
@@ -115,7 +115,7 @@ This report is generated from committed repository data by `tax_graph.verify.rec
 - Status: `partial`
 - Verification tier: independently witnessed
 - Gate: project
-- Artifact content hash: `cc75ade7dabef4267548b2459822c3aa03dbb42a537715951b9b4b0ea33b00a5`
+- Artifact content hash: `b5ce497390dfe12b300cdf7bf6607d7c6f72f2f27c9188242ce46560170baaa0`
 - Oracle witness: 100 agreed scenario(s) via OpenTaxSolver `ots_2025_23.06`.
 - IRS worked examples: No committed IRS worked-example fixture covers this document.
 - Calibration audit: sample 0, escapes 0, human minutes not yet recorded.
@@ -126,7 +126,7 @@ This report is generated from committed repository data by `tax_graph.verify.rec
 - Status: `partial`
 - Verification tier: independently witnessed
 - Gate: project
-- Artifact content hash: `cc75ade7dabef4267548b2459822c3aa03dbb42a537715951b9b4b0ea33b00a5`
+- Artifact content hash: `b5ce497390dfe12b300cdf7bf6607d7c6f72f2f27c9188242ce46560170baaa0`
 - Oracle witness: 100 agreed scenario(s) via OpenTaxSolver `ots_2025_23.06`.
 - IRS worked examples: No committed IRS worked-example fixture covers this document.
 - Calibration audit: sample 0, escapes 0, human minutes not yet recorded.
@@ -137,7 +137,7 @@ This report is generated from committed repository data by `tax_graph.verify.rec
 - Status: `partial`
 - Verification tier: independently witnessed
 - Gate: project
-- Artifact content hash: `cc75ade7dabef4267548b2459822c3aa03dbb42a537715951b9b4b0ea33b00a5`
+- Artifact content hash: `b5ce497390dfe12b300cdf7bf6607d7c6f72f2f27c9188242ce46560170baaa0`
 - Oracle witness: 100 agreed scenario(s) via OpenTaxSolver `ots_2025_23.06`.
 - IRS worked examples: No committed IRS worked-example fixture covers this document.
 - Calibration audit: sample 0, escapes 0, human minutes not yet recorded.
@@ -148,7 +148,7 @@ This report is generated from committed repository data by `tax_graph.verify.rec
 - Status: `partial`
 - Verification tier: independently witnessed
 - Gate: project
-- Artifact content hash: `cc75ade7dabef4267548b2459822c3aa03dbb42a537715951b9b4b0ea33b00a5`
+- Artifact content hash: `b5ce497390dfe12b300cdf7bf6607d7c6f72f2f27c9188242ce46560170baaa0`
 - Oracle witness: 100 agreed scenario(s) via OpenTaxSolver `ots_2025_23.06`.
 - IRS worked examples: No committed IRS worked-example fixture covers this document.
 - Calibration audit: sample 0, escapes 0, human minutes not yet recorded.
@@ -159,7 +159,7 @@ This report is generated from committed repository data by `tax_graph.verify.rec
 - Status: `partial`
 - Verification tier: independently witnessed
 - Gate: project
-- Artifact content hash: `cc75ade7dabef4267548b2459822c3aa03dbb42a537715951b9b4b0ea33b00a5`
+- Artifact content hash: `b5ce497390dfe12b300cdf7bf6607d7c6f72f2f27c9188242ce46560170baaa0`
 - Oracle witness: 100 agreed scenario(s) via OpenTaxSolver `ots_2025_23.06`.
 - IRS worked examples: No committed IRS worked-example fixture covers this document.
 - Calibration audit: sample 0, escapes 0, human minutes not yet recorded.
@@ -170,7 +170,7 @@ This report is generated from committed repository data by `tax_graph.verify.rec
 - Status: `partial`
 - Verification tier: independently witnessed
 - Gate: project
-- Artifact content hash: `cc75ade7dabef4267548b2459822c3aa03dbb42a537715951b9b4b0ea33b00a5`
+- Artifact content hash: `b5ce497390dfe12b300cdf7bf6607d7c6f72f2f27c9188242ce46560170baaa0`
 - Oracle witness: 100 agreed scenario(s) via OpenTaxSolver `ots_2025_23.06`.
 - IRS worked examples: No committed IRS worked-example fixture covers this document.
 - Calibration audit: sample 0, escapes 0, human minutes not yet recorded.
@@ -181,7 +181,7 @@ This report is generated from committed repository data by `tax_graph.verify.rec
 - Status: `partial`
 - Verification tier: independently witnessed
 - Gate: project
-- Artifact content hash: `cc75ade7dabef4267548b2459822c3aa03dbb42a537715951b9b4b0ea33b00a5`
+- Artifact content hash: `b5ce497390dfe12b300cdf7bf6607d7c6f72f2f27c9188242ce46560170baaa0`
 - Oracle witness: 100 agreed scenario(s) via OpenTaxSolver `ots_2025_23.06`.
 - IRS worked examples: 1 committed IRS worked-example fixture(s); 1 pending human review.
 - Calibration audit: sample 11, escapes 0, human minutes not yet recorded.
