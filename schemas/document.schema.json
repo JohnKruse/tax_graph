@@ -40,6 +40,9 @@
       "enum": ["project", "user"],
       "description": "Orthogonal provenance axis: who stood at the promotion gate."
     },
+    "human_confirmed": {"type": "boolean"},
+    "verification_tier": {"type": "string", "enum": ["T0", "T1", "T2", "T3", "human-confirmed"]},
+    "human_review": {"type": "object"},
     "not_modeled_fields": {
       "type": "array",
       "description": "AcroForm fields or field groups explicitly outside the modeled computation graph.",

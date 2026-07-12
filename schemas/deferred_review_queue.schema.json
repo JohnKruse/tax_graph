@@ -64,7 +64,15 @@
           },
           "verification_tier": {"type": "string"},
           "source_hash": {"type": "string"},
-          "extension_hash": {"type": "string"}
+          "extension_hash": {"type": "string"},
+          "verdict_id": {"type": "string"},
+          "verdict": {"type": "string"},
+          "verdict_reason": {"type": "string"},
+          "reviewer_id": {"type": "string"},
+          "reviewed_at": {"type": "string"},
+          "human_minutes": {"type": "number", "minimum": 0},
+          "verdict_hash": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+          "source_override": {"type": "object"}
           }
         }
       }

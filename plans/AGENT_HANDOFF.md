@@ -14,10 +14,10 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## Current state (2026-07-12)
 
-**BALL: WORKER - M15 `Fresh Eyes`, Step 2 in progress (global canary: `Ledger Llama`).
-Step 1 is committed and green (`87e85f0`); the worker is adding the independent
-geometry layers, build-time PDF rasterization, and offline bundle. Step 3 follows if
-tests stay green.**
+**BALL: JOHN - M15 `Fresh Eyes`, Steps 1-3 are complete. Global canary: `Ledger Llama`.
+The worker is paused at the human-only Step 4: use the offline bundle to drain the
+queue, record real human_minutes, adjudicate the blocking N-version item, and emit
+verdict files.**
 JOHN: two things need your eye - (1) skim the M15 "Design pins" (workspace member not
 separate repo; prebaked page images not pdf.js; verdicts flow OUT as files, never
 edits; the confirmed/pipeline_defect/source_pathology taxonomy); (2) M15 Step 4 is
@@ -119,6 +119,20 @@ material. Year rollover (TY2026) stays sequenced after M15 or when TY2026 docs d
   math-bearing forms yields honest T0 structure without passing worksheet math; the
   review loop needs an iterate/author-in-review story. Named limitation documented in
   `docs/self-serve-extension.md`.
+
+## From Worker
+- M15 Steps 1-3: artifact-only `workbench/` with AST-enforced no-import boundary;
+  read-only SQLite/geometry/queue/draft/PDF loaders; PyMuPDF build-time rasterization;
+  static offline HTML with field/provenance/gap overlays; append-only hashed verdict
+  emitter; and pipeline-owned `review apply-verdicts` with queue, graph provenance,
+  MCP, and Verification Record tier propagation.
+- Verification: `pytest -m m15` -> 9 passed; focused M15 + graph validator + MCP +
+  CLI + runtime-light regression set -> 37 passed; validate and no-op apply green;
+  real 2025 offline bundle built successfully. Full-suite attempts timed out after
+  overlapping pytest processes from earlier tool timeouts; no assertion failure was
+  observed. Re-run the full suite cleanly before phase close.
+- Next action for John: run `review-workbench build --year 2025`, review the queue,
+  emit one verdict per object, then run `tax-graph review apply-verdicts --year 2025`.
 
 ## Latest verification
 - **M14 phase close (Architect, Opus 4.8, 2026-07-12) - ALL GREEN:**

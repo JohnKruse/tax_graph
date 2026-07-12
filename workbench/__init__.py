@@ -21,6 +21,7 @@ from workbench.artifacts import (
     load_sqlite_graph,
 )
 from workbench.geometry import GeometryHit, GeometryIndex
+from workbench.verdicts import ReviewVerdict, emit_verdict, load_verdict
 
 from workbench.builder import build_bundle
 
@@ -42,4 +43,7 @@ __all__ = [
     "GeometryHit",
     "GeometryIndex",
     "build_bundle",
+    "ReviewVerdict",
+    "emit_verdict",
+    "load_verdict",
 ]

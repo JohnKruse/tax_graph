@@ -539,13 +539,16 @@ def _provenance_for_document(context: McpGraphContext, document_id: str) -> dict
     if document is None:
         return None
     gate = str(document.get("gate") or "project")
+    verification_tier = document.get("verification_tier")
+    if verification_tier is None and gate == "user":
+        verification_tier = context.graph.extension_metadata.get(document_id, {}).get("verification_tier")
     return {
         "gate": gate,
         "document_id": document_id,
         "artifact_hash": context.graph.extension_hashes.get(document_id, context.graph.base_content_hash),
-        "verification_tier": context.graph.extension_metadata.get(document_id, {}).get("verification_tier")
-        if gate == "user"
-        else None,
+        "human_confirmed": bool(document.get("human_confirmed")),
+        "verification_tier": verification_tier,
+        "human_review": document.get("human_review"),
     }
 
 
@@ -555,7 +558,7 @@ def _execution_provenance(result: Result, context: McpGraphContext) -> dict[str,
     for trace_id in result.trace:
         base_node_id = trace_id.partition("#")[0]
         provenance = context.graph.provenance_for_node(base_node_id)
-        if provenance and provenance.get("gate") == "user":
+        if provenance and (provenance.get("gate") == "user" or provenance.get("human_confirmed")):
             output[trace_id] = provenance
     return output
 

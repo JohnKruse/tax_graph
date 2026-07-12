@@ -86,13 +86,17 @@ class Graph:
             return None
         document_id = str(node.get("document_id") or "")
         gate = str(node.get("gate") or "project")
+        human_confirmed = bool(node.get("human_confirmed"))
+        verification_tier = node.get("verification_tier")
+        if verification_tier is None and gate == "user":
+            verification_tier = self.extension_metadata.get(document_id, {}).get("verification_tier")
         return {
             "gate": gate,
             "document_id": document_id,
             "artifact_hash": self.extension_hashes.get(document_id, self.base_content_hash),
-            "verification_tier": self.extension_metadata.get(document_id, {}).get("verification_tier")
-            if gate == "user"
-            else None,
+            "human_confirmed": human_confirmed,
+            "verification_tier": verification_tier,
+            "human_review": node.get("human_review"),
         }
 
 

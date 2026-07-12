@@ -65,6 +65,20 @@
       "type": "string",
       "enum": ["project", "user"],
       "description": "Orthogonal provenance axis: who stood at the promotion gate."
+    },
+    "human_confirmed": {"type": "boolean"},
+    "verification_tier": {"type": "string", "enum": ["T0", "T1", "T2", "T3", "human-confirmed"]},
+    "human_review": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["reviewer_id", "reviewed_at", "human_minutes", "verdict"],
+      "properties": {
+        "reviewer_id": {"type": "string", "minLength": 1},
+        "reviewed_at": {"type": "string"},
+        "human_minutes": {"type": "number", "minimum": 0},
+        "verdict": {"type": "string"},
+        "reason": {"type": "string"}
+      }
     }
   }
 }

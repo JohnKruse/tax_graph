@@ -229,6 +229,23 @@ def build_command(year: str = "2025", root: str | Path | None = None) -> int:
     return 0
 
 
+def apply_verdicts_command(
+    year: str = "2025",
+    root: str | Path | None = None,
+    verdict_dir: str | Path | None = None,
+) -> int:
+    """Apply schema'd human verdict files to the review queue and graph."""
+    from tax_graph.review import apply_verdicts
+
+    root_path = Path(root).resolve() if root is not None else project_root()
+    result = apply_verdicts(year, root=root_path, verdict_dir=verdict_dir)
+    print(f"applied review verdicts: {len(result.applied)}")
+    print(f"  confirmed: {len(result.confirmed)}")
+    print(f"  pipeline defects: {len(result.pipeline_defects)}")
+    print(f"  source pathologies: {len(result.source_pathologies)}")
+    return 0
+
+
 def frontier_build_command(year: str = "2025", root: str | Path | None = None) -> int:
     """Build the derived frontier registry."""
     from tax_graph.frontier import build_frontier_registry
@@ -1027,6 +1044,21 @@ def _build_typer_app():
         if raise_code:
             raise typer.Exit(raise_code)
 
+    review_cli = typer.Typer(help="Human review verdict helpers.")
+
+    @review_cli.command("apply-verdicts")
+    def review_apply_verdicts_cli(
+        year: str = typer.Option("2025", "--year", "-y", help="Tax year to apply."),
+        verdict_dir: Path | None = typer.Option(None, "--verdict-dir", help="Directory of append-only verdict YAML."),
+        root: Path | None = typer.Option(None, "--root", help="Project root override."),
+    ) -> None:
+        """Apply human verdict files and propagate confirmed provenance."""
+        raise_code = apply_verdicts_command(year=year, root=root, verdict_dir=verdict_dir)
+        if raise_code:
+            raise typer.Exit(raise_code)
+
+    cli.add_typer(review_cli, name="review")
+
     @cli.command("serve")
     def serve_cli(
         year: str = typer.Option("2025", "--year", "-y", help="Tax year to serve."),
@@ -1417,6 +1449,13 @@ def _fallback_app() -> int:
     build_parser.add_argument("year", nargs="?", default="2025")
     build_parser.add_argument("--root", default=None)
 
+    review_parser = subparsers.add_parser("review")
+    review_subparsers = review_parser.add_subparsers(dest="review_command", required=True)
+    review_apply_parser = review_subparsers.add_parser("apply-verdicts")
+    review_apply_parser.add_argument("--year", "-y", default="2025")
+    review_apply_parser.add_argument("--verdict-dir", default=None)
+    review_apply_parser.add_argument("--root", default=None)
+
     frontier_parser = subparsers.add_parser("frontier")
     frontier_parser.add_argument("--year", "-y", default="2025")
     frontier_parser.add_argument("--json", action="store_true")
@@ -1563,6 +1602,8 @@ def _fallback_app() -> int:
         )
     if args.command == "build":
         return build_command(year=args.year, root=args.root)
+    if args.command == "review" and args.review_command == "apply-verdicts":
+        return apply_verdicts_command(year=args.year, root=args.root, verdict_dir=args.verdict_dir)
     if args.command == "frontier" and args.frontier_command == "build":
         return frontier_build_command(year=args.year, root=args.root)
     if args.command == "frontier":

@@ -1,6 +1,6 @@
 # Review Workbench
 
-Status: M15 Step 1 as-built, 2026-07-12. Canary: "Fresh Eyes". The workbench is a
+Status: M15 Steps 1-3 as-built, 2026-07-12. Canary: "Fresh Eyes". The workbench is a
 top-level workspace member with an artifact-only read seam. UI and verdict emission
 remain in later M15 steps.
 
@@ -31,6 +31,20 @@ bundle with no CDN or API dependency. The bundle carries the public graph rows,
 citations, queue, metrics, N-version reports, and mined-example reports in an escaped
 JSON payload. A node id absent from the compiled graph is rendered as a visible gap
 finding rather than being treated as resolved.
+
+## Step 3 verdict contract
+
+The workbench emits only new files under `review_verdicts/<year>/`; it never edits the
+queue, graph, or drafts. Each verdict is schema-validated and carries a canonical
+content hash, queue id, reviewer id, ISO timestamp, and measured human minutes.
+`confirmed`, `pipeline_defect`, and `source_pathology` are the only terminal labels;
+the latter requires marked source provenance. The pipeline-owned command
+`tax-graph review apply-verdicts` validates the hash and queue reference before
+applying a verdict. Confirmed node/document/decision objects receive
+`human_confirmed: true`, `verification_tier: human-confirmed`, and the reviewer
+record; unsupported artifact kinds remain represented in the audit sidecar. A
+pipeline defect is routed back to `pending_reextract`, while source pathology remains
+a marked override and does not masquerade as a clean graph confirmation.
 
 ## What it is
 

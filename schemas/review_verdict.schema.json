@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "review_verdict.schema.json",
+  "title": "Tax Graph human review verdict",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["verdict_id", "tax_year", "queue_id", "reviewer_id", "reviewed_at", "human_minutes", "verdict", "content_hash"],
+  "properties": {
+    "verdict_id": {"type": "string", "pattern": "^[a-z0-9_]+$"},
+    "tax_year": {"type": "integer", "minimum": 1900, "maximum": 2100},
+    "queue_id": {"type": "string", "minLength": 1},
+    "object_ref": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "artifact_path": {"type": "string", "minLength": 1},
+        "object_kind": {"type": "string", "minLength": 1},
+        "object_id": {"type": "string", "minLength": 1}
+      }
+    },
+    "reviewer_id": {"type": "string", "minLength": 1},
+    "reviewed_at": {"type": "string", "format": "date-time"},
+    "human_minutes": {"type": "number", "minimum": 0},
+    "verdict": {"enum": ["confirmed", "pipeline_defect", "source_pathology"]},
+    "reason": {"type": "string"},
+    "source_override": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["provenance"],
+      "properties": {
+        "provenance": {"type": "string", "minLength": 1},
+        "marked_override": {"const": true}
+      }
+    },
+    "content_hash": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+  },
+  "allOf": [
+    {"if": {"properties": {"verdict": {"const": "pipeline_defect"}}}, "then": {"required": ["reason"]}},
+    {"if": {"properties": {"verdict": {"const": "source_pathology"}}}, "then": {"required": ["reason", "source_override"]}}
+  ]
+}

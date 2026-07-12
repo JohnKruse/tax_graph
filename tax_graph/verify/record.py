@@ -102,6 +102,8 @@ def build_verification_bundle(year: str = "2025", root: str | Path | None = None
         page_path = Path("docs") / "verification" / f"{document_id}.md"
         gate = str(document.get("gate") or "project")
         verification_tier = _verification_tier(witnesses)
+        if document.get("human_confirmed"):
+            verification_tier = str(document.get("verification_tier") or "human-confirmed")
         if gate == "user":
             verification_tier = str(
                 (graph.extension_metadata or {}).get(document_id, {}).get("verification_tier")

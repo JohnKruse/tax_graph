@@ -7,6 +7,7 @@ from pathlib import Path
 
 from workbench.artifacts import load_artifact_bundle
 from workbench.builder import build_bundle
+from workbench.verdicts import emit_verdict
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -14,10 +15,17 @@ def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(prog="review-workbench")
     parser.add_argument("--root", default=".", help="workspace root")
     parser.add_argument("--year", default="2025", help="tax year")
-    parser.add_argument("command", choices=["inspect", "build"])
+    parser.add_argument("command", choices=["inspect", "build", "verdict"])
     parser.add_argument("--output-dir", default=None, help="static bundle output directory for build")
     parser.add_argument("--db", default=None, help="compiled SQLite artifact")
     parser.add_argument("--pdf-dir", default=None, help="source PDF directory")
+    parser.add_argument("--queue-id", default=None, help="deferred-review queue id for verdict")
+    parser.add_argument("--verdict-id", default=None, help="append-only verdict id")
+    parser.add_argument("--reviewer-id", default=None, help="human reviewer id")
+    parser.add_argument("--human-minutes", type=float, default=None, help="minutes spent on review")
+    parser.add_argument("--verdict", choices=["confirmed", "pipeline_defect", "source_pathology"], default=None)
+    parser.add_argument("--reason", default=None, help="reason for a non-confirmed verdict")
+    parser.add_argument("--reviewed-at", default=None, help="ISO-8601 review timestamp")
     args = parser.parse_args(argv)
     if args.command == "build":
         path = build_bundle(
@@ -28,6 +36,25 @@ def main(argv: list[str] | None = None) -> int:
             pdf_dir=args.pdf_dir,
         )
         print(path)
+        return 0
+    if args.command == "verdict":
+        required = {
+            "--queue-id": args.queue_id,
+            "--verdict-id": args.verdict_id,
+            "--reviewer-id": args.reviewer_id,
+            "--human-minutes": args.human_minutes,
+            "--verdict": args.verdict,
+        }
+        missing = [name for name, value in required.items() if value is None]
+        if missing:
+            parser.error("verdict requires " + ", ".join(missing))
+        result = emit_verdict(
+            root=Path(args.root), year=args.year, queue_id=args.queue_id,
+            verdict_id=args.verdict_id, reviewer_id=args.reviewer_id,
+            human_minutes=args.human_minutes, verdict=args.verdict,
+            reviewed_at=args.reviewed_at, reason=args.reason,
+        )
+        print(result.path)
         return 0
     bundle = load_artifact_bundle(Path(args.root), args.year)
     print(f"review workbench artifacts - {bundle.tax_year}")
