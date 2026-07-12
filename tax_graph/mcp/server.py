@@ -8,6 +8,7 @@ import datetime as _dt
 from io import StringIO
 from pathlib import Path
 import sqlite3
+import sys
 from typing import Any
 
 from mcp.server.fastmcp import FastMCP
@@ -16,7 +17,7 @@ from tax_graph import __version__
 from tax_graph.engine import Engine, Graph, MISSING, Result, TABLE_FACTS_KEY, render_trace
 from tax_graph.io.loader import LoadedGraph, load_graph
 from tax_graph.io.sqlite_loader import compiled_db_path, load_sqlite_graph
-from tax_graph.mcp.lifecycle import ParentWatchdog
+from tax_graph.mcp.lifecycle import ParentWatchdog, _interrupt_main
 
 
 M2_TOOL_NAMES = (
@@ -104,11 +105,36 @@ def run_mcp_server(
     root: str | Path | None = None,
     source: str | None = None,
 ) -> None:
-    """Run the server and release all SQLite readers on every shutdown path."""
-    watchdog = ParentWatchdog()
+    """Run the server and release all SQLite readers on every shutdown path.
+
+    Startup/shutdown breadcrumbs go to stderr: MCP clients (Claude Desktop
+    logs stderr verbatim) surface them, which is the only way to diagnose a
+    silent early exit in a client-managed process.
+    """
+    import faulthandler
+    import os as _os
+
+    faulthandler.enable()  # hard faults become stderr tracebacks
+    _log = lambda msg: print(f"tax-graph serve: {msg}", file=sys.stderr, flush=True)  # noqa: E731
+    _log(
+        f"starting pid={_os.getpid()} ppid={_os.getppid()} year={year} "
+        f"source={source or 'auto'} cwd={_os.getcwd()} python={sys.version.split()[0]}"
+    )
+
+    def _announce_parent_exit() -> None:
+        _log("parent process gone; interrupting server for clean shutdown")
+        _interrupt_main()
+
+    watchdog = ParentWatchdog(on_parent_exit=_announce_parent_exit)
     watchdog.start()
     try:
-        build_mcp_server(year=year, root=root, source=source).run("stdio")
+        server = build_mcp_server(year=year, root=root, source=source)
+        _log("graph loaded; entering stdio loop")
+        server.run("stdio")
+        _log("stdio loop ended (client closed the transport)")
+    except BaseException as exc:
+        _log(f"exiting on {type(exc).__name__}: {exc}")
+        raise
     finally:
         watchdog.close()
 

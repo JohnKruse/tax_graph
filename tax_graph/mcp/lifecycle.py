@@ -32,9 +32,30 @@ class ProcessInfo:
 
 
 def parent_is_alive(pid: int) -> bool:
-    """Return whether ``pid`` still names a process, without platform extras."""
+    """Return whether ``pid`` still names a process, without platform extras.
+
+    Windows needs a real probe: ``os.kill(pid, 0)`` there raises OSError
+    winerror 87 for a dead pid (uncaught by the portable branch, which killed
+    the watchdog thread silently) and reports exited-but-still-handled
+    processes as alive.  OpenProcess + a zero-timeout wait answers both.
+    """
     if pid <= 0:
         return False
+    if sys.platform == "win32":
+        import ctypes
+
+        SYNCHRONIZE = 0x00100000
+        ERROR_ACCESS_DENIED = 5
+        WAIT_TIMEOUT = 0x00000102
+        kernel32 = ctypes.WinDLL("kernel32", use_last_error=True)
+        handle = kernel32.OpenProcess(SYNCHRONIZE, False, pid)
+        if not handle:
+            # Access denied means the process exists but is protected.
+            return ctypes.get_last_error() == ERROR_ACCESS_DENIED
+        try:
+            return kernel32.WaitForSingleObject(handle, 0) == WAIT_TIMEOUT
+        finally:
+            kernel32.CloseHandle(handle)
     try:
         os.kill(pid, 0)
     except ProcessLookupError:
@@ -73,7 +94,15 @@ class ParentWatchdog:
 
     def _run(self) -> None:
         while not self._stop.wait(self.interval):
-            if not self.is_alive(self.parent_pid):
+            try:
+                alive = self.is_alive(self.parent_pid)
+            except Exception as exc:  # noqa: BLE001 - a broken probe must not
+                # kill the watchdog thread silently (the pre-fix Windows probe
+                # did exactly that); treat probe errors as "alive" and keep
+                # watching rather than false-killing a healthy server.
+                print(f"tax-graph watchdog: parent probe error: {exc}", file=sys.stderr)
+                continue
+            if not alive:
                 self.on_parent_exit()
                 return
 

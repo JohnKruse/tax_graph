@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import threading
 import time
 import subprocess
 import sys
@@ -11,7 +12,12 @@ import pytest
 
 from tax_graph.cli import serve_command
 from tax_graph.compile.to_sqlite import build_sqlite
-from tax_graph.mcp.lifecycle import ParentWatchdog, ProcessInfo, orphaned_servers
+from tax_graph.mcp.lifecycle import (
+    ParentWatchdog,
+    ProcessInfo,
+    orphaned_servers,
+    parent_is_alive,
+)
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -35,6 +41,45 @@ def test_parent_watchdog_exits_within_bounded_interval() -> None:
     watchdog.close()
 
     assert calls == ["parent-exited"]
+
+
+@pytest.mark.m14
+def test_parent_is_alive_against_real_processes() -> None:
+    """Regression: the pre-fix Windows probe raised OSError winerror 87 for a
+    genuinely dead pid (uncaught -> the watchdog thread died silently, leaving
+    the watchdog inert on the exact platform the orphan incidents happened on).
+    Probe REAL processes, not injected fakes."""
+    assert parent_is_alive(subprocess.Popen(  # a live process
+        [sys.executable, "-c", "import time; time.sleep(5)"]
+    ).pid)  # noqa: it will be reaped by the OS after the sleep
+
+    dead = subprocess.Popen([sys.executable, "-c", "pass"])
+    dead.wait()
+    dead_pid = dead.pid
+    del dead  # release the handle so Windows can retire the pid object
+    import gc
+
+    gc.collect()
+    time.sleep(0.2)
+    assert parent_is_alive(dead_pid) is False
+
+
+@pytest.mark.m14
+def test_watchdog_fires_when_a_real_parent_process_dies() -> None:
+    """End-to-end watchdog check with a real short-lived parent process."""
+    parent = subprocess.Popen([sys.executable, "-c", "import time; time.sleep(0.3)"])
+    fired = threading.Event()
+    watchdog = ParentWatchdog(
+        parent_pid=parent.pid,
+        interval=0.05,
+        on_parent_exit=fired.set,
+    )
+    watchdog.start()
+    try:
+        parent.wait(timeout=5)
+        assert fired.wait(timeout=5), "watchdog never noticed the dead parent"
+    finally:
+        watchdog.close()
 
 
 @pytest.mark.m14

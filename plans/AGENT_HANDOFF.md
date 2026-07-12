@@ -97,6 +97,32 @@ therefore runnable locally today - see checklist item 0.
    dev state (hermetic-test standing-rule violation; it had passed for the worker only
    by timing). Rewritten against a throwaway tmp_path sqlite; `pytest -m m14` -> 9
    passed with the dev server running.
+   **SECOND install attempt + follow-up (2026-07-12):** the reinstall SUCCEEDED but
+   two more findings landed. (a) UX note: Claude Desktop installs extensions with
+   `isEnabled: false` and the enable affordance is a tiny link (John: bad UX, worth
+   filing as app feedback) - the first "didn't work" was simply the extension never
+   being enabled, with the dev-config server answering instead. (b) Once enabled, the
+   extension server EXITED EARLY (~2-9s, no traceback, never answered initialize).
+   Architect investigation, all empirical: Desktop's exact PATH + minimal env + warm
+   cache reproduces NOTHING - the identical command round-trips fine outside Desktop,
+   so the killer is Desktop's own process management, still unattributed. Along the
+   way, TWO REAL Step-1 defects found and fixed: (1) `parent_is_alive` used
+   `os.kill(pid, 0)`, which on Windows raises OSError winerror 87 for a dead pid -
+   UNCAUGHT, so the watchdog thread died silently and the watchdog has been INERT on
+   Windows the whole time (proved with a live orphan: repro leftovers survived their
+   parent by 50+ minutes). Fixed with a real OpenProcess/WaitForSingleObject probe,
+   an exception-hardened watchdog loop, and two REAL-process tests replacing the
+   injected-fake coverage. (2) `serve` now writes stderr breadcrumbs (starting with
+   pid/ppid/cwd/python, graph loaded, stdio loop ended, parent-gone, exit reason) +
+   faulthandler - Claude Desktop logs stderr verbatim, so the NEXT failed attempt
+   will name its own cause instead of dying silently. `serve --sweep-orphans` was
+   dogfooded live: found and stopped a real orphan (PID 22496). Wheel rebuilt,
+   bundle repacked, simulation round trip + clean stdin-EOF exit (code 0) verified.
+   JOHN RETRY #3: uninstall the extension, reinstall the regenerated
+   `dist\tax-graph-0.1.0a1.mcpb`, ENABLE it (the tiny link), new chat, same prompt.
+   If it fails again the Desktop log will now contain `tax-graph serve:` breadcrumb
+   lines - paste them here. If NO breadcrumb lines appear at all, uv reused a stale
+   cached tool env: run `uv cache clean` and retry once.
 1. Configure PyPI trusted publishing for project `tax-graph`, GitHub repository
    `JohnKruse/tax_graph`, workflow `.github/workflows/release.yml`, environment `pypi`
    at https://pypi.org/manage/account/publishing/. Then use GitHub Actions -> `Release
