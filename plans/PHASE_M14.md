@@ -168,7 +168,7 @@ rather than improvising.
   checklist of the three John-only actions with exact commands/links. STOP if any
   channel's mechanics demand a change to runtime behavior.
 
-- [ ] **Step 3 [worker-heavy] - Self-serve extension harness.** Implement design
+- [DONE] **Step 3 [worker-heavy] - Self-serve extension harness.** Implement design
   pins 1-4: overlay load with collision hard-error; `gate: project|user` axis
   through graph objects, Verification Record, and MCP responses; shipped-sqlite
   content hash stamped at build and checked at load; the `extend` command group

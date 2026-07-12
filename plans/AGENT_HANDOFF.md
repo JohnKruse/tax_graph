@@ -15,7 +15,38 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## Current state (2026-07-12)
 
-**BALL: WORKER - M14 Step 3 live pilot executed; accepted user-gated T0 overlay with pinned scope gaps (2026-07-12).**
+**BALL: WORKER - M14 Step 3 is DONE (Architect ruling below). Next: Step 4, intake v1
+relevance layer, per PHASE_M14 design pins 5-8 (2026-07-12).**
+
+**ARCHITECT PILOT VERDICT (Opus 4.8, 2026-07-12): Step 3 PASSES and is [DONE].**
+The pilot proved every plan-level exit criterion, two of them re-evidenced by the
+Architect against the REAL accepted artifact (not fixtures): live tamper of
+`graph_ext/2025/form_2441_2025/nodes.yaml` -> load fails loudly with
+"extension content hash mismatch" naming stamped vs actual; restored overlay reloads
+clean (24 user-gated nodes). Harness unit tests already cover collision/tamper/
+escape-hatch (in the 15-passing m14 set). Merged validate green (14 docs/441 nodes),
+shipped-return regression unchanged (line 7 = 2000), gate/tier/hash over MCP, queue
+entry `extension_review_form_2441_2025` (accepted_local, machine_agreed: false,
+review pending) - the deferred-review discipline holding exactly as designed.
+**Two ruling bounds were NOT met by extraction, and I am converting them to pinned
+review-loop work items rather than Step 3 blockers** (the step's deliverable was the
+HARNESS; both gaps are extension CONTENT, which is what the M15 review campaign
+exists to drain):
+- **Pilot finding A (named limitation, keep in docs):** one-pass `extend` on a
+  math-bearing form yields T0 structure + citations + internal SUMs, NOT passing
+  worksheet math - the Part II credit chain failed property/line completeness and
+  was correctly NOT promoted. Same lesson as M11 (worksheets need authoring or
+  iteration); the honest-tier machinery did its job. An extension-iteration story
+  (re-run extraction / author-in-review) is M15-adjacent backlog, not M14.
+- **Pilot finding B (first review-loop item for this extension):** the two
+  cross-gate hookup edges (2441 line 11 -> schedule_3 line 2; 2441 line 26 -> 1040
+  line 1e) were not auto-generated, so the accepted overlay is an honest ISLAND -
+  it loads and computes internally but does not flow into the return until a
+  reviewer authors those edges. Recorded on the queue entry; do NOT hand-author
+  them into the pilot now - proving the island stays honest is worth more than
+  making the credit flow.
+Step 3 committed work (`a21e03f`) verified: record.py propagates extension tier for
+user-gated docs; queue entry sane. Architect pushed both commits after this ruling.
 
 **ARCHITECT VERIFICATION + PILOT RULING (Opus 4.8, 2026-07-12) on Step 3 `05fba8d`:**
 Verified before push, all green: engine diff is scope-clean (NO new ops - gate/provenance
