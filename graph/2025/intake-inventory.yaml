@@ -1,0 +1,117 @@
+tax_year: 2025
+information_returns:
+- document_type: w2
+  source_document_id: form_w2_2025
+  boxes:
+  - {box_id: box_a, label: Employee social security number}
+  - {box_id: box_b, label: Employer identification number}
+  - {box_id: box_c, label: Employer name and address}
+  - {box_id: box_d, label: Control number}
+  - {box_id: box_e, label: Employee name}
+  - {box_id: box_f, label: Employee address}
+  - {box_id: box_1, label: Wages tips and other compensation}
+  - {box_id: box_2, label: Federal income tax withheld}
+  - {box_id: box_3, label: Social security wages}
+  - {box_id: box_4, label: Social security tax withheld}
+  - {box_id: box_5, label: Medicare wages and tips}
+  - {box_id: box_6, label: Medicare tax withheld}
+  - {box_id: box_7, label: Social security tips}
+  - {box_id: box_8, label: Allocated tips}
+  - {box_id: box_9, label: Reserved}
+  - {box_id: box_10, label: Dependent care benefits}
+  - {box_id: box_11, label: Nonqualified plans}
+  - {box_id: box_12a, label: Box 12 code and amount A}
+  - {box_id: box_12b, label: Box 12 code and amount B}
+  - {box_id: box_12c, label: Box 12 code and amount C}
+  - {box_id: box_12d, label: Box 12 code and amount D}
+  - {box_id: box_13, label: Statutory employee retirement plan third party sick pay}
+  - {box_id: box_14, label: Other}
+  - {box_id: box_15, label: State and employer state ID number}
+  - {box_id: box_16, label: State wages tips and other compensation}
+  - {box_id: box_17, label: State income tax}
+  - {box_id: box_18, label: Local wages tips and other compensation}
+  - {box_id: box_19, label: Local income tax}
+  - {box_id: box_20, label: Locality name}
+- document_type: 1099_int
+  source_document_id: form_1099_int_2025
+  boxes:
+  - {box_id: box_1, label: Interest income}
+  - {box_id: box_2, label: Early withdrawal penalty}
+  - {box_id: box_3, label: Interest on US savings bonds and Treasury obligations}
+  - {box_id: box_4, label: Federal income tax withheld}
+  - {box_id: box_5, label: Investment expenses}
+  - {box_id: box_6, label: Foreign tax paid}
+  - {box_id: box_7, label: Foreign country or US territory}
+  - {box_id: box_8, label: Tax-exempt interest}
+  - {box_id: box_9, label: Specified private activity bond interest}
+  - {box_id: box_10, label: Market discount}
+  - {box_id: box_11, label: Bond premium}
+  - {box_id: box_12, label: Bond premium on Treasury obligations}
+  - {box_id: box_13, label: Bond premium on tax-exempt bond}
+  - {box_id: box_14, label: Tax-exempt and tax credit bond CUSIP number}
+  - {box_id: box_15, label: State}
+  - {box_id: box_16, label: State identification number}
+  - {box_id: box_17, label: State tax withheld}
+- document_type: 1099_div
+  source_document_id: form_1099_div_2025
+  boxes:
+  - {box_id: box_1a, label: Total ordinary dividends}
+  - {box_id: box_1b, label: Qualified dividends}
+  - {box_id: box_2a, label: Total capital gain distributions}
+  - {box_id: box_2b, label: Unrecaptured section 1250 gain}
+  - {box_id: box_2c, label: Section 1202 gain}
+  - {box_id: box_2d, label: Collectibles 28 percent gain}
+  - {box_id: box_2e, label: Section 897 ordinary dividends}
+  - {box_id: box_2f, label: Section 897 capital gain}
+  - {box_id: box_3, label: Nondividend distributions}
+  - {box_id: box_4, label: Federal income tax withheld}
+  - {box_id: box_5, label: Section 199A dividends}
+  - {box_id: box_6, label: Investment expenses}
+  - {box_id: box_7, label: Foreign tax paid}
+  - {box_id: box_8, label: Foreign country or US possession}
+  - {box_id: box_9, label: Cash liquidation distributions}
+  - {box_id: box_10, label: Noncash liquidation distributions}
+  - {box_id: box_11, label: FATCA filing requirement}
+  - {box_id: box_12, label: Exempt-interest dividends}
+  - {box_id: box_13, label: Specified private activity bond interest dividends}
+  - {box_id: box_14, label: State}
+  - {box_id: box_15, label: State identification number}
+  - {box_id: box_16, label: State tax withheld}
+- document_type: 1099_b
+  source_document_id: form_1099b_2025
+  boxes:
+  - {box_id: box_1a, label: Description of property}
+  - {box_id: box_1b, label: Date acquired}
+  - {box_id: box_1c, label: Date sold or disposed}
+  - {box_id: box_1d, label: Proceeds}
+  - {box_id: box_1e, label: Cost or other basis}
+  - {box_id: box_1f, label: Accrued market discount}
+  - {box_id: box_1g, label: Wash sale loss disallowed}
+  - {box_id: box_2, label: Short-term or long-term gain or loss}
+  - {box_id: box_3, label: Collectibles or qualified opportunity fund}
+  - {box_id: box_4, label: Federal income tax withheld}
+  - {box_id: box_5, label: Noncovered security}
+  - {box_id: box_6, label: Reported to IRS gross or net proceeds}
+  - {box_id: box_7, label: Loss not allowed based on amount in 1d}
+  - {box_id: box_8, label: Profit or loss realized on closed contracts}
+  - {box_id: box_9, label: Unrealized profit or loss on open contracts at prior year end}
+  - {box_id: box_10, label: Unrealized profit or loss on open contracts at current year end}
+  - {box_id: box_11, label: Aggregate profit or loss on contracts}
+  - {box_id: box_12, label: Basis reported to IRS}
+  - {box_id: box_13, label: Bartering}
+  - {box_id: box_14, label: State name}
+  - {box_id: box_15, label: State identification number}
+  - {box_id: box_16, label: State tax withheld}
+trigger_items:
+- {item_id: filing_status, trigger_id: trigger_filing_status, label: Filing status, locator: page 1 marital status question}
+- {item_id: dependents, trigger_id: trigger_dependents, label: Dependents, locator: page 1 household and support questions}
+- {item_id: digital_asset, trigger_id: trigger_digital_asset, label: Digital assets, locator: page 1 digital asset question}
+- {item_id: employee_wages, trigger_id: trigger_employee_wages, label: Wages as an employee, locator: page 2 income questions}
+- {item_id: interest_income, trigger_id: trigger_interest_income, label: Interest income, locator: page 2 income questions}
+- {item_id: dividend_income, trigger_id: trigger_dividend_income, label: Dividend income, locator: page 2 income questions}
+- {item_id: capital_gains, trigger_id: trigger_capital_gains, label: Sale of stocks bonds or real estate, locator: page 2 income questions}
+- {item_id: self_employment_income, trigger_id: trigger_self_employment, label: Contract or self-employment work, locator: page 2 income questions}
+- {item_id: student_loan_interest, trigger_id: trigger_student_loan_interest, label: Student loan interest, locator: page 3 expense questions}
+- {item_id: itemized_deductions, trigger_id: trigger_itemized_deductions, label: Itemized deductions, locator: page 3 deduction questions}
+- {item_id: estimated_tax_payments, trigger_id: trigger_estimated_tax_payments, label: Estimated tax payments, locator: page 3 tax event questions}
+- {item_id: child_dependent_care, trigger_id: trigger_child_dependent_care, label: Child and dependent care, locator: page 3 expense questions}

@@ -16,7 +16,7 @@ def test_manifest_loads_seeded_capital_gains_docs():
     manifest = load_manifest(root=ROOT)
 
     assert manifest.tax_year == 2025
-    assert len(manifest.documents) == 17
+    assert len(manifest.documents) == 21
     assert set(manifest.by_document_id()) == {
         "form_8949_2025",
         "instructions_form_8949_2025",
@@ -35,6 +35,10 @@ def test_manifest_loads_seeded_capital_gains_docs():
         "form_6251_2025",
         "instructions_form_6251_2025",
         "form_1099b_2025",
+        "form_w2_2025",
+        "form_1099_int_2025",
+        "form_1099_div_2025",
+        "form_13614_c_2025",
     }
 
 

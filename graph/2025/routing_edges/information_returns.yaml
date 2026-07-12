@@ -1,57 +1,628 @@
-- routing_id: route_w2_box_1_to_1040_1a
+- routing_id: route_w2_box_1
   source_document_type: w2
   source_box: box_1
   target: form_1040_2025_root_line_1a
   status: modeled
   citation_refs: [cite_intake_w2_recipient]
 
-- routing_id: route_w2_box_2_to_1040_withholding
+- routing_id: route_w2_box_a
+  source_document_type: w2
+  source_box: box_a
+  target: intake_not_modeled_w2_box_a
+  status: not_modeled
+  reason: Employee identity is intake metadata, not a modeled tax fact.
+  citation_refs: [cite_intake_w2_box_labels]
+- routing_id: route_w2_box_b
+  source_document_type: w2
+  source_box: box_b
+  target: intake_not_modeled_w2_box_b
+  status: not_modeled
+  reason: Employer identity is intake metadata, not a modeled tax fact.
+  citation_refs: [cite_intake_w2_box_labels]
+- routing_id: route_w2_box_c
+  source_document_type: w2
+  source_box: box_c
+  target: intake_not_modeled_w2_box_c
+  status: not_modeled
+  reason: Employer identity is intake metadata, not a modeled tax fact.
+  citation_refs: [cite_intake_w2_box_labels]
+- routing_id: route_w2_box_d
+  source_document_type: w2
+  source_box: box_d
+  target: intake_not_modeled_w2_box_d
+  status: not_modeled
+  reason: Employer control number is not a modeled tax fact.
+  citation_refs: [cite_intake_w2_box_labels]
+- routing_id: route_w2_box_e
+  source_document_type: w2
+  source_box: box_e
+  target: intake_not_modeled_w2_box_e
+  status: not_modeled
+  reason: Employee identity is intake metadata, not a modeled tax fact.
+  citation_refs: [cite_intake_w2_box_labels]
+- routing_id: route_w2_box_f
+  source_document_type: w2
+  source_box: box_f
+  target: intake_not_modeled_w2_box_f
+  status: not_modeled
+  reason: Employee address is intake metadata, not a modeled tax fact.
+  citation_refs: [cite_intake_w2_box_labels]
+- routing_id: route_w2_box_2
   source_document_type: w2
   source_box: box_2
   target: form_1040_2025_root_line_25a
   status: not_modeled
-  reason: Federal withholding is outside the M14 computation profile.
-  citation_refs: [cite_intake_w2_recipient]
+  reason: Withholding is outside the M14 computation profile.
+  citation_refs: [cite_intake_w2_box_2]
+- routing_id: route_w2_box_3
+  source_document_type: w2
+  source_box: box_3
+  target: intake_not_modeled_w2_box_3
+  status: not_modeled
+  reason: Social security wage reporting is outside the M14 computation profile.
+  citation_refs: [cite_intake_w2_box_labels]
+- routing_id: route_w2_box_4
+  source_document_type: w2
+  source_box: box_4
+  target: intake_not_modeled_w2_box_4
+  status: not_modeled
+  reason: Social security withholding is outside the M14 computation profile.
+  citation_refs: [cite_intake_w2_box_labels]
+- routing_id: route_w2_box_5
+  source_document_type: w2
+  source_box: box_5
+  target: intake_not_modeled_w2_box_5
+  status: not_modeled
+  reason: Medicare wage reporting is outside the M14 computation profile.
+  citation_refs: [cite_intake_w2_box_labels]
+- routing_id: route_w2_box_6
+  source_document_type: w2
+  source_box: box_6
+  target: intake_not_modeled_w2_box_6
+  status: not_modeled
+  reason: Medicare withholding is outside the M14 computation profile.
+  citation_refs: [cite_intake_w2_box_labels]
+- routing_id: route_w2_box_7
+  source_document_type: w2
+  source_box: box_7
+  target: intake_not_modeled_w2_box_7
+  status: not_modeled
+  reason: Social security tips are outside the M14 computation profile.
+  citation_refs: [cite_intake_w2_box_labels]
+- routing_id: route_w2_box_8
+  source_document_type: w2
+  source_box: box_8
+  target: intake_not_modeled_w2_box_8
+  status: not_modeled
+  reason: Allocated-tip treatment is outside the M14 computation profile.
+  citation_refs: [cite_intake_w2_box_8]
+- routing_id: route_w2_box_9
+  source_document_type: w2
+  source_box: box_9
+  target: intake_not_modeled_w2_box_9
+  status: not_modeled
+  reason: The reserved box carries no modeled tax input.
+  citation_refs: [cite_intake_w2_box_labels]
+- routing_id: route_w2_box_10
+  source_document_type: w2
+  source_box: box_10
+  target: intake_not_modeled_w2_box_10
+  status: not_modeled
+  reason: Dependent-care benefits are outside the M14 computation profile.
+  citation_refs: [cite_intake_w2_box_10]
+- routing_id: route_w2_box_11
+  source_document_type: w2
+  source_box: box_11
+  target: intake_not_modeled_w2_box_11
+  status: not_modeled
+  reason: Nonqualified-plan reporting is outside the M14 computation profile.
+  citation_refs: [cite_intake_w2_box_11]
+- routing_id: route_w2_box_12a
+  source_document_type: w2
+  source_box: box_12a
+  target: intake_not_modeled_w2_box_12a
+  status: not_modeled
+  reason: Box 12 code treatment is outside the M14 computation profile.
+  citation_refs: [cite_intake_w2_box_12]
+- routing_id: route_w2_box_12b
+  source_document_type: w2
+  source_box: box_12b
+  target: intake_not_modeled_w2_box_12b
+  status: not_modeled
+  reason: Box 12 code treatment is outside the M14 computation profile.
+  citation_refs: [cite_intake_w2_box_12]
+- routing_id: route_w2_box_12c
+  source_document_type: w2
+  source_box: box_12c
+  target: intake_not_modeled_w2_box_12c
+  status: not_modeled
+  reason: Box 12 code treatment is outside the M14 computation profile.
+  citation_refs: [cite_intake_w2_box_12]
+- routing_id: route_w2_box_12d
+  source_document_type: w2
+  source_box: box_12d
+  target: intake_not_modeled_w2_box_12d
+  status: not_modeled
+  reason: Box 12 code treatment is outside the M14 computation profile.
+  citation_refs: [cite_intake_w2_box_12]
+- routing_id: route_w2_box_13
+  source_document_type: w2
+  source_box: box_13
+  target: intake_not_modeled_w2_box_13
+  status: not_modeled
+  reason: W-2 status checkboxes are outside the M14 computation profile.
+  citation_refs: [cite_intake_w2_box_13]
+- routing_id: route_w2_box_14
+  source_document_type: w2
+  source_box: box_14
+  target: intake_not_modeled_w2_box_14
+  status: not_modeled
+  reason: Employer-provided other information is outside the M14 computation profile.
+  citation_refs: [cite_intake_w2_box_14]
+- routing_id: route_w2_box_15
+  source_document_type: w2
+  source_box: box_15
+  target: intake_not_modeled_w2_box_15
+  status: not_modeled
+  reason: State reporting is outside the M14 computation profile.
+  citation_refs: [cite_intake_w2_box_labels]
+- routing_id: route_w2_box_16
+  source_document_type: w2
+  source_box: box_16
+  target: intake_not_modeled_w2_box_16
+  status: not_modeled
+  reason: State reporting is outside the M14 computation profile.
+  citation_refs: [cite_intake_w2_box_labels]
+- routing_id: route_w2_box_17
+  source_document_type: w2
+  source_box: box_17
+  target: intake_not_modeled_w2_box_17
+  status: not_modeled
+  reason: State reporting is outside the M14 computation profile.
+  citation_refs: [cite_intake_w2_box_labels]
+- routing_id: route_w2_box_18
+  source_document_type: w2
+  source_box: box_18
+  target: intake_not_modeled_w2_box_18
+  status: not_modeled
+  reason: Local reporting is outside the M14 computation profile.
+  citation_refs: [cite_intake_w2_box_labels]
+- routing_id: route_w2_box_19
+  source_document_type: w2
+  source_box: box_19
+  target: intake_not_modeled_w2_box_19
+  status: not_modeled
+  reason: Local reporting is outside the M14 computation profile.
+  citation_refs: [cite_intake_w2_box_labels]
+- routing_id: route_w2_box_20
+  source_document_type: w2
+  source_box: box_20
+  target: intake_not_modeled_w2_box_20
+  status: not_modeled
+  reason: Local reporting is outside the M14 computation profile.
+  citation_refs: [cite_intake_w2_box_labels]
 
-- routing_id: route_1099_int_box_1_to_1040_2b
+- routing_id: route_1099_int_box_1
   source_document_type: 1099_int
   source_box: box_1
   target: form_1040_2025_root_line_2b
   status: modeled
-  citation_refs: [cite_intake_1099_int_recipient]
+  citation_refs: [cite_intake_1099_int_box_1]
+- routing_id: route_1099_int_box_2
+  source_document_type: 1099_int
+  source_box: box_2
+  target: intake_not_modeled_1099_int_box_2
+  status: not_modeled
+  reason: Early withdrawal deductions are outside the M14 computation profile.
+  citation_refs: [cite_intake_1099_int_box_labels]
+- routing_id: route_1099_int_box_3
+  source_document_type: 1099_int
+  source_box: box_3
+  target: intake_not_modeled_1099_int_box_3
+  status: not_modeled
+  reason: Treasury-interest treatment is outside the M14 computation profile.
+  citation_refs: [cite_intake_1099_int_box_labels]
+- routing_id: route_1099_int_box_4
+  source_document_type: 1099_int
+  source_box: box_4
+  target: intake_not_modeled_1099_int_box_4
+  status: not_modeled
+  reason: Withholding is outside the M14 computation profile.
+  citation_refs: [cite_intake_1099_int_box_labels]
+- routing_id: route_1099_int_box_5
+  source_document_type: 1099_int
+  source_box: box_5
+  target: intake_not_modeled_1099_int_box_5
+  status: not_modeled
+  reason: REMIC investment expenses are outside the M14 computation profile.
+  citation_refs: [cite_intake_1099_int_box_labels]
+- routing_id: route_1099_int_box_6
+  source_document_type: 1099_int
+  source_box: box_6
+  target: intake_not_modeled_1099_int_box_6
+  status: not_modeled
+  reason: Foreign tax treatment is outside the M14 computation profile.
+  citation_refs: [cite_intake_1099_int_box_labels]
+- routing_id: route_1099_int_box_7
+  source_document_type: 1099_int
+  source_box: box_7
+  target: intake_not_modeled_1099_int_box_7
+  status: not_modeled
+  reason: Foreign-tax metadata is outside the M14 computation profile.
+  citation_refs: [cite_intake_1099_int_box_labels]
+- routing_id: route_1099_int_box_8
+  source_document_type: 1099_int
+  source_box: box_8
+  target: form_1040_2025_root_line_2a
+  status: not_modeled
+  reason: Form 1040 line 2a is outside the M14 computation profile; retain the route as an explicit wall.
+  citation_refs: [cite_intake_1099_int_box_8]
+- routing_id: route_1099_int_box_9
+  source_document_type: 1099_int
+  source_box: box_9
+  target: intake_not_modeled_1099_int_box_9
+  status: not_modeled
+  reason: AMT tax-exempt interest treatment is outside the M14 computation profile.
+  citation_refs: [cite_intake_1099_int_box_labels]
+- routing_id: route_1099_int_box_10
+  source_document_type: 1099_int
+  source_box: box_10
+  target: intake_not_modeled_1099_int_box_10
+  status: not_modeled
+  reason: Market-discount treatment is outside the M14 computation profile.
+  citation_refs: [cite_intake_1099_int_box_labels]
+- routing_id: route_1099_int_box_11
+  source_document_type: 1099_int
+  source_box: box_11
+  target: intake_not_modeled_1099_int_box_11
+  status: not_modeled
+  reason: Bond-premium treatment is outside the M14 computation profile.
+  citation_refs: [cite_intake_1099_int_box_labels]
+- routing_id: route_1099_int_box_12
+  source_document_type: 1099_int
+  source_box: box_12
+  target: intake_not_modeled_1099_int_box_12
+  status: not_modeled
+  reason: Treasury bond-premium treatment is outside the M14 computation profile.
+  citation_refs: [cite_intake_1099_int_box_labels]
+- routing_id: route_1099_int_box_13
+  source_document_type: 1099_int
+  source_box: box_13
+  target: intake_not_modeled_1099_int_box_13
+  status: not_modeled
+  reason: Tax-exempt bond-premium treatment is outside the M14 computation profile.
+  citation_refs: [cite_intake_1099_int_box_labels]
+- routing_id: route_1099_int_box_14
+  source_document_type: 1099_int
+  source_box: box_14
+  target: intake_not_modeled_1099_int_box_14
+  status: not_modeled
+  reason: CUSIP metadata is outside the M14 computation profile.
+  citation_refs: [cite_intake_1099_int_box_labels]
+- routing_id: route_1099_int_box_15
+  source_document_type: 1099_int
+  source_box: box_15
+  target: intake_not_modeled_1099_int_box_15
+  status: not_modeled
+  reason: State reporting is outside the M14 computation profile.
+  citation_refs: [cite_intake_1099_int_box_labels]
+- routing_id: route_1099_int_box_16
+  source_document_type: 1099_int
+  source_box: box_16
+  target: intake_not_modeled_1099_int_box_16
+  status: not_modeled
+  reason: State reporting is outside the M14 computation profile.
+  citation_refs: [cite_intake_1099_int_box_labels]
+- routing_id: route_1099_int_box_17
+  source_document_type: 1099_int
+  source_box: box_17
+  target: intake_not_modeled_1099_int_box_17
+  status: not_modeled
+  reason: State reporting is outside the M14 computation profile.
+  citation_refs: [cite_intake_1099_int_box_labels]
 
-- routing_id: route_1099_div_box_1a_to_1040_3b
+- routing_id: route_1099_div_box_1a
   source_document_type: 1099_div
   source_box: box_1a
   target: form_1040_2025_root_line_3b
   status: modeled
-  citation_refs: [cite_intake_1099_div_recipient]
+  citation_refs: [cite_intake_1099_div_box_1a]
+- routing_id: route_1099_div_box_1b
+  source_document_type: 1099_div
+  source_box: box_1b
+  target: form_1040_2025_root_line_3a
+  status: modeled
+  citation_refs: [cite_intake_1099_div_box_1b]
+- routing_id: route_1099_div_box_2a
+  source_document_type: 1099_div
+  source_box: box_2a
+  target: schedule_d_2025_line_13_capital_gain_distributions
+  status: not_modeled
+  reason: Schedule D line 13 capital-gain-distribution feeder logic is outside the M14 profile.
+  citation_refs: [cite_intake_1099_div_box_2a]
+- routing_id: route_1099_div_box_2b
+  source_document_type: 1099_div
+  source_box: box_2b
+  target: intake_not_modeled_1099_div_box_2b
+  status: not_modeled
+  reason: Unrecaptured section 1250 worksheet treatment is outside the M14 profile.
+  citation_refs: [cite_intake_1099_div_box_labels]
+- routing_id: route_1099_div_box_2c
+  source_document_type: 1099_div
+  source_box: box_2c
+  target: intake_not_modeled_1099_div_box_2c
+  status: not_modeled
+  reason: Section 1202 worksheet treatment is outside the M14 profile.
+  citation_refs: [cite_intake_1099_div_box_labels]
+- routing_id: route_1099_div_box_2d
+  source_document_type: 1099_div
+  source_box: box_2d
+  target: intake_not_modeled_1099_div_box_2d
+  status: not_modeled
+  reason: Collectibles worksheet treatment is outside the M14 profile.
+  citation_refs: [cite_intake_1099_div_box_labels]
+- routing_id: route_1099_div_box_2e
+  source_document_type: 1099_div
+  source_box: box_2e
+  target: intake_not_modeled_1099_div_box_2e
+  status: not_modeled
+  reason: Foreign-person section 897 treatment is outside the M14 profile.
+  citation_refs: [cite_intake_1099_div_box_labels]
+- routing_id: route_1099_div_box_2f
+  source_document_type: 1099_div
+  source_box: box_2f
+  target: intake_not_modeled_1099_div_box_2f
+  status: not_modeled
+  reason: Foreign-person section 897 treatment is outside the M14 profile.
+  citation_refs: [cite_intake_1099_div_box_labels]
+- routing_id: route_1099_div_box_3
+  source_document_type: 1099_div
+  source_box: box_3
+  target: intake_not_modeled_1099_div_box_3
+  status: not_modeled
+  reason: Return-of-capital basis treatment is outside the M14 profile.
+  citation_refs: [cite_intake_1099_div_box_labels]
+- routing_id: route_1099_div_box_4
+  source_document_type: 1099_div
+  source_box: box_4
+  target: intake_not_modeled_1099_div_box_4
+  status: not_modeled
+  reason: Withholding is outside the M14 computation profile.
+  citation_refs: [cite_intake_1099_div_box_labels]
+- routing_id: route_1099_div_box_5
+  source_document_type: 1099_div
+  source_box: box_5
+  target: intake_not_modeled_1099_div_box_5
+  status: not_modeled
+  reason: Section 199A treatment is outside the M14 profile.
+  citation_refs: [cite_intake_1099_div_box_labels]
+- routing_id: route_1099_div_box_6
+  source_document_type: 1099_div
+  source_box: box_6
+  target: intake_not_modeled_1099_div_box_6
+  status: not_modeled
+  reason: Investment-expense treatment is outside the M14 profile.
+  citation_refs: [cite_intake_1099_div_box_labels]
+- routing_id: route_1099_div_box_7
+  source_document_type: 1099_div
+  source_box: box_7
+  target: intake_not_modeled_1099_div_box_7
+  status: not_modeled
+  reason: Foreign-tax treatment is outside the M14 profile.
+  citation_refs: [cite_intake_1099_div_box_labels]
+- routing_id: route_1099_div_box_8
+  source_document_type: 1099_div
+  source_box: box_8
+  target: intake_not_modeled_1099_div_box_8
+  status: not_modeled
+  reason: Foreign-country metadata is outside the M14 profile.
+  citation_refs: [cite_intake_1099_div_box_labels]
+- routing_id: route_1099_div_box_9
+  source_document_type: 1099_div
+  source_box: box_9
+  target: intake_not_modeled_1099_div_box_9
+  status: not_modeled
+  reason: Liquidation distributions are outside the M14 profile.
+  citation_refs: [cite_intake_1099_div_box_labels]
+- routing_id: route_1099_div_box_10
+  source_document_type: 1099_div
+  source_box: box_10
+  target: intake_not_modeled_1099_div_box_10
+  status: not_modeled
+  reason: Liquidation distributions are outside the M14 profile.
+  citation_refs: [cite_intake_1099_div_box_labels]
+- routing_id: route_1099_div_box_11
+  source_document_type: 1099_div
+  source_box: box_11
+  target: intake_not_modeled_1099_div_box_11
+  status: not_modeled
+  reason: FATCA reporting is outside the M14 profile.
+  citation_refs: [cite_intake_1099_div_box_labels]
+- routing_id: route_1099_div_box_12
+  source_document_type: 1099_div
+  source_box: box_12
+  target: intake_not_modeled_1099_div_box_12
+  status: not_modeled
+  reason: Exempt-interest dividend treatment is outside the M14 profile.
+  citation_refs: [cite_intake_1099_div_box_labels]
+- routing_id: route_1099_div_box_13
+  source_document_type: 1099_div
+  source_box: box_13
+  target: intake_not_modeled_1099_div_box_13
+  status: not_modeled
+  reason: Alternative-minimum-tax dividend treatment is outside the M14 profile.
+  citation_refs: [cite_intake_1099_div_box_labels]
+- routing_id: route_1099_div_box_14
+  source_document_type: 1099_div
+  source_box: box_14
+  target: intake_not_modeled_1099_div_box_14
+  status: not_modeled
+  reason: State reporting is outside the M14 profile.
+  citation_refs: [cite_intake_1099_div_box_labels]
+- routing_id: route_1099_div_box_15
+  source_document_type: 1099_div
+  source_box: box_15
+  target: intake_not_modeled_1099_div_box_15
+  status: not_modeled
+  reason: State reporting is outside the M14 profile.
+  citation_refs: [cite_intake_1099_div_box_labels]
+- routing_id: route_1099_div_box_16
+  source_document_type: 1099_div
+  source_box: box_16
+  target: intake_not_modeled_1099_div_box_16
+  status: not_modeled
+  reason: State reporting is outside the M14 profile.
+  citation_refs: [cite_intake_1099_div_box_labels]
 
-- routing_id: route_1099b_box_d_to_8949_d
+- routing_id: route_1099b_box_1a
   source_document_type: 1099_b
-  source_box: box_d
+  source_box: box_1a
+  target: intake_not_modeled_1099b_box_1a
+  status: not_modeled
+  reason: Transaction description is filing metadata outside the arithmetic slice.
+  citation_refs: [cite_intake_1099b_box_labels]
+- routing_id: route_1099b_box_1b
+  source_document_type: 1099_b
+  source_box: box_1b
+  target: intake_not_modeled_1099b_box_1b
+  status: not_modeled
+  reason: Acquisition date is outside the arithmetic slice.
+  citation_refs: [cite_intake_1099b_box_labels]
+- routing_id: route_1099b_box_1c
+  source_document_type: 1099_b
+  source_box: box_1c
+  target: intake_not_modeled_1099b_box_1c
+  status: not_modeled
+  reason: Disposition date is outside the arithmetic slice.
+  citation_refs: [cite_intake_1099b_box_labels]
+- routing_id: route_1099b_box_1d
+  source_document_type: 1099_b
+  source_box: box_1d
   target: form_8949_2025_part_ii_line_1_column_d
   status: modeled
   citation_refs: [cite_intake_1099b_recipient]
-
-- routing_id: route_1099b_box_e_to_8949_e
+- routing_id: route_1099b_box_1e
   source_document_type: 1099_b
-  source_box: box_e
+  source_box: box_1e
   target: form_8949_2025_part_ii_line_1_column_e
   status: modeled
   citation_refs: [cite_intake_1099b_recipient]
-
-- routing_id: route_1099b_box_g_to_8949_g
+- routing_id: route_1099b_box_1f
   source_document_type: 1099_b
-  source_box: box_g
-  target: form_8949_2025_part_ii_line_1_column_g
-  status: modeled
-  citation_refs: [cite_intake_1099b_recipient]
-
-- routing_id: route_1099b_box_a_out_of_scope
-  source_document_type: 1099_b
-  source_box: box_a
-  target: form_8949_2025_part_ii_line_1_column_d
+  source_box: box_1f
+  target: intake_not_modeled_1099b_box_1f
   status: not_modeled
-  reason: Acquisition category is filing metadata, not arithmetic input.
-  citation_refs: [cite_intake_1099b_recipient]
+  reason: Accrued market discount is outside the arithmetic slice.
+  citation_refs: [cite_intake_1099b_box_labels]
+- routing_id: route_1099b_box_1g
+  source_document_type: 1099_b
+  source_box: box_1g
+  target: intake_not_modeled_1099b_box_1g
+  status: not_modeled
+  reason: Wash-sale adjustment is outside the promoted arithmetic slice.
+  citation_refs: [cite_intake_1099b_box_labels]
+- routing_id: route_1099b_box_2
+  source_document_type: 1099_b
+  source_box: box_2
+  target: intake_not_modeled_1099b_box_2
+  status: not_modeled
+  reason: Holding-period classification is filing metadata outside the arithmetic slice.
+  citation_refs: [cite_intake_1099b_box_labels]
+- routing_id: route_1099b_box_3
+  source_document_type: 1099_b
+  source_box: box_3
+  target: intake_not_modeled_1099b_box_3
+  status: not_modeled
+  reason: Collectibles and QOF classification is outside the arithmetic slice.
+  citation_refs: [cite_intake_1099b_box_labels]
+- routing_id: route_1099b_box_4
+  source_document_type: 1099_b
+  source_box: box_4
+  target: intake_not_modeled_1099b_box_4
+  status: not_modeled
+  reason: Withholding is outside the M14 computation profile.
+  citation_refs: [cite_intake_1099b_box_labels]
+- routing_id: route_1099b_box_5
+  source_document_type: 1099_b
+  source_box: box_5
+  target: intake_not_modeled_1099b_box_5
+  status: not_modeled
+  reason: Noncovered-security classification is outside the arithmetic slice.
+  citation_refs: [cite_intake_1099b_box_labels]
+- routing_id: route_1099b_box_6
+  source_document_type: 1099_b
+  source_box: box_6
+  target: intake_not_modeled_1099b_box_6
+  status: not_modeled
+  reason: Gross or net proceeds classification is outside the arithmetic slice.
+  citation_refs: [cite_intake_1099b_box_labels]
+- routing_id: route_1099b_box_7
+  source_document_type: 1099_b
+  source_box: box_7
+  target: intake_not_modeled_1099b_box_7
+  status: not_modeled
+  reason: Loss-allowance classification is outside the arithmetic slice.
+  citation_refs: [cite_intake_1099b_box_labels]
+- routing_id: route_1099b_box_8
+  source_document_type: 1099_b
+  source_box: box_8
+  target: intake_not_modeled_1099b_box_8
+  status: not_modeled
+  reason: Contract reporting is outside the promoted arithmetic slice.
+  citation_refs: [cite_intake_1099b_box_labels]
+- routing_id: route_1099b_box_9
+  source_document_type: 1099_b
+  source_box: box_9
+  target: intake_not_modeled_1099b_box_9
+  status: not_modeled
+  reason: Contract reporting is outside the promoted arithmetic slice.
+  citation_refs: [cite_intake_1099b_box_labels]
+- routing_id: route_1099b_box_10
+  source_document_type: 1099_b
+  source_box: box_10
+  target: intake_not_modeled_1099b_box_10
+  status: not_modeled
+  reason: Contract reporting is outside the promoted arithmetic slice.
+  citation_refs: [cite_intake_1099b_box_labels]
+- routing_id: route_1099b_box_11
+  source_document_type: 1099_b
+  source_box: box_11
+  target: intake_not_modeled_1099b_box_11
+  status: not_modeled
+  reason: Contract reporting is outside the promoted arithmetic slice.
+  citation_refs: [cite_intake_1099b_box_labels]
+- routing_id: route_1099b_box_12
+  source_document_type: 1099_b
+  source_box: box_12
+  target: intake_not_modeled_1099b_box_12
+  status: not_modeled
+  reason: Basis-reporting classification is outside the arithmetic slice.
+  citation_refs: [cite_intake_1099b_box_labels]
+- routing_id: route_1099b_box_13
+  source_document_type: 1099_b
+  source_box: box_13
+  target: intake_not_modeled_1099b_box_13
+  status: not_modeled
+  reason: Bartering is outside the promoted arithmetic slice.
+  citation_refs: [cite_intake_1099b_box_labels]
+- routing_id: route_1099b_box_14
+  source_document_type: 1099_b
+  source_box: box_14
+  target: intake_not_modeled_1099b_box_14
+  status: not_modeled
+  reason: State reporting is outside the M14 profile.
+  citation_refs: [cite_intake_1099b_box_labels]
+- routing_id: route_1099b_box_15
+  source_document_type: 1099_b
+  source_box: box_15
+  target: intake_not_modeled_1099b_box_15
+  status: not_modeled
+  reason: State reporting is outside the M14 profile.
+  citation_refs: [cite_intake_1099b_box_labels]
+- routing_id: route_1099b_box_16
+  source_document_type: 1099_b
+  source_box: box_16
+  target: intake_not_modeled_1099b_box_16
+  status: not_modeled
+  reason: State reporting is outside the M14 profile.
+  citation_refs: [cite_intake_1099b_box_labels]

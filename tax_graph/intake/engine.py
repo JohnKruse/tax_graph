@@ -9,7 +9,7 @@ from typing import Any, Iterable, Mapping
 from tax_graph.config import get_config_value, load_config, project_root
 from tax_graph.intake.classifier import Classification
 from tax_graph.intake.consent import ConsentReceipt, require_consent
-from tax_graph.io.loader import LoadedGraph, load_graph
+from tax_graph.io.loader import LoadedGraph, load_graph, load_yaml
 
 
 @dataclass(frozen=True)
@@ -20,6 +20,7 @@ class RelevanceLayer:
     routing_edges: tuple[dict[str, Any], ...]
     triggers: tuple[dict[str, Any], ...]
     expectations: tuple[dict[str, Any], ...]
+    inventory: dict[str, Any]
 
 
 @dataclass(frozen=True)
@@ -82,11 +83,14 @@ class IntakeResult:
 def load_relevance_layer(year: str | int = "2025", root: str | Path | None = None) -> RelevanceLayer:
     """Load intake objects from authored YAML, never from drafts."""
     graph = load_graph(year, root)
+    inventory_path = graph.graph_dir / "intake-inventory.yaml"
+    inventory = load_yaml(inventory_path) if inventory_path.exists() else {}
     return RelevanceLayer(
         graph=graph,
         routing_edges=tuple(graph.items("routing_edges")),
         triggers=tuple(graph.items("triggers")),
         expectations=tuple(graph.items("expectations")),
+        inventory=inventory or {},
     )
 
 

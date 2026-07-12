@@ -85,7 +85,7 @@ def test_acquire_command_smoke_with_mocked_components(tmp_path, capsys):
     assert "acquisition change report" in captured.out
     assert "citation integrity" in captured.out
     assert "result: OK" in captured.out
-    assert len(rendered) == 17
+    assert len(rendered) == 21
     assert not (root / ".cache" / "raw" / "2025" / "_state.json").exists()
 
 

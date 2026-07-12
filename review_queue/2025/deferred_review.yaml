@@ -307,6 +307,75 @@ entries:
   - architect span review
   - frontier rejected disposition
   - link skipped rejected flows
+- status: pending
+  priority: medium
+  created_date: '2026-07-12'
+  created_by: tax_graph.m14.worker
+  artifact_dir: graph/2025
+  machine_agreed: true
+  human_confirmed: false
+  review_status: pending
+  machine_witnesses:
+  - acquired source hashes pinned
+  - intake citation integrity green
+  - inventory validator green
+  - pytest green
+  queue_id: intake_review_expectations_v1_2025
+  kind: intake_expectation_review
+  document_id: form_1099_int_2025
+  summary: Review machine-mined intake expectations for information-return handling;
+    each expectation is cited, but human review is deferred.
+  artifact_paths:
+  - config/manifest.yaml
+  - graph/2025/intake-inventory.yaml
+  - graph/2025/expectations/intake.yaml
+  - graph/2025/citations/intake.yaml
+- status: pending
+  priority: medium
+  created_date: '2026-07-12'
+  created_by: tax_graph.m14.worker
+  artifact_dir: graph/2025
+  machine_agreed: true
+  human_confirmed: false
+  review_status: pending
+  machine_witnesses:
+  - acquired source hashes pinned
+  - intake citation integrity green
+  - inventory validator green
+  - pytest green
+  queue_id: intake_review_routing_v1_2025
+  kind: intake_routing_review
+  document_id: form_w2_2025
+  summary: Review machine-mined W-2, 1099-INT, 1099-DIV, and 1099-B box routing; every
+    inventoried box has exactly one cited route, but human review is deferred.
+  artifact_paths:
+  - config/manifest.yaml
+  - graph/2025/intake-inventory.yaml
+  - graph/2025/routing_edges/information_returns.yaml
+  - graph/2025/citations/intake.yaml
+- status: pending
+  priority: medium
+  created_date: '2026-07-12'
+  created_by: tax_graph.m14.worker
+  artifact_dir: graph/2025
+  machine_agreed: true
+  human_confirmed: false
+  review_status: pending
+  machine_witnesses:
+  - acquired source hashes pinned
+  - intake citation integrity green
+  - inventory validator green
+  - pytest green
+  queue_id: intake_review_triggers_13614_c_2025
+  kind: intake_trigger_review
+  document_id: form_13614_c_2025
+  summary: Review machine-mined Form 13614-C intake triggers; the bounded item inventory
+    is complete and cited, but human review is deferred.
+  artifact_paths:
+  - config/manifest.yaml
+  - graph/2025/intake-inventory.yaml
+  - graph/2025/triggers/intake.yaml
+  - graph/2025/citations/intake.yaml
 - queue_id: irs_example_review_instructions_schedule_d_2025_example_008
   kind: irs_example_review
   status: pending

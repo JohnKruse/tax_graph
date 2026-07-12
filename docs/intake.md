@@ -1,6 +1,6 @@
 # Intake and Document-Driven Onboarding
 
-Status: M14 Step 4 implemented. Intake is a local-first relevance layer beside
+Status: M14 Step 4 punch list in progress. Intake is a local-first relevance layer beside
 the computation graph. It does not add tax math or engine operations.
 
 ## Pipeline
@@ -32,6 +32,12 @@ Every in-bounds box or checklist item must be modeled or explicitly marked
 `not_modeled` with a reason. `load_relevance_layer` and `validate` enforce the
 object schemas and citation references. The compiler carries all three kinds
 through SQLite without making the deterministic engine aware of intake.
+
+The bounded inventory currently covers 90 boxes across W-2, 1099-INT, 1099-DIV,
+and 1099-B, plus 12 Form 13614-C trigger items. Each inventory box has exactly
+one routing declaration, and each trigger item has exactly one trigger record.
+The source manifest pins the acquired IRS PDFs by SHA-256. The intake citation
+integrity check must pass against those local PDFs before this data is promoted.
 
 ## Classifier and privacy
 
@@ -77,3 +83,16 @@ Pub 4012, Pub 17, who-must-file charts, deep multi-document reconciliation,
 remote hosted execution, and new tax computation remain outside M14. Digital
 asset treatment, 1099-NEC computation, and other unsupported branches are
 reported as explicit gaps or frontier work, never guessed.
+
+## Evidence skips
+
+The clean test run has three additional legitimate skips for intake source
+evidence:
+
+- `tests/test_acquire_fetch.py::test_network_fetch_one_small_irs_doc` requires
+  `TAX_GRAPH_RUN_NETWORK_TESTS=1` because it exercises live IRS network access.
+- `tests/test_render_ocr.py::test_network_ocr_one_public_irs_doc` requires the
+  same opt-in and remains skipped until the live Mistral OCR contract is enabled.
+- `tests/test_tables_detector_m6b.py::test_detector_groups_local_cached_8949_artifacts_when_present`
+  requires a locally cached rendered Form 8949 artifact that is intentionally
+  absent from a clean checkout.

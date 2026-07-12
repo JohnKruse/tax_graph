@@ -84,3 +84,24 @@ documents:
   - document_id: form_1099b_2025
     kind: source_document
     url: https://www.irs.gov/pub/irs-prior/f1099b--2025.pdf
+    expected_sha256: 7e334cea66c2b2be3d88615a56db288a2805cb8705076b3b282a4eabbbd788ad
+
+  - document_id: form_w2_2025
+    kind: source_document
+    url: https://www.irs.gov/pub/irs-prior/fw2--2025.pdf
+    expected_sha256: 6a52ad63693de54220a3326b22c4d0fb34f4c25084366537087312975a55ae96
+
+  - document_id: form_1099_int_2025
+    kind: source_document
+    url: https://www.irs.gov/pub/irs-pdf/f1099int.pdf
+    expected_sha256: ee7697c9b29374596fd9645b157b7312d121ae3c2f76bebf68908c3fc2b739e6
+
+  - document_id: form_1099_div_2025
+    kind: source_document
+    url: https://www.irs.gov/pub/irs-pdf/f1099div.pdf
+    expected_sha256: 4ea1de804ff1db921753bd6319beeccfe4647299e03d79816e04d852a9cd1435
+
+  - document_id: form_13614_c_2025
+    kind: source_document
+    url: https://www.irs.gov/pub/irs-pdf/f13614c.pdf
+    expected_sha256: 160507ac6daa8cc5e3126ad51ba5c2050c786337048f434f8336b48d92992c9d

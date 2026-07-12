@@ -15,9 +15,9 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## Current state (2026-07-12)
 
-**BALL: WORKER - M14 Step 4 REOPENED by Architect review (2026-07-12). Punch list
-below. NOTHING PUSHED: `b86b8e2` and this correction stay LOCAL until the punch list
-lands - main remains at `640f978`.**
+**BALL: WORKER - M14 Step 4 punch list implemented locally; awaiting Architect
+re-verification. NOTHING PUSHED: `b86b8e2` and this correction stay LOCAL until the
+Architect verifies - main remains at `640f978`.**
 
 **ARCHITECT REVIEW VERDICT on Step 4 `b86b8e2` (Opus 4.8, 2026-07-12): the MACHINERY
 is verified good and is KEPT; the DATA layer fails review on integrity and
@@ -57,7 +57,25 @@ validator wiring, honest evidence + no premature push by the worker.
 Machinery needs no rework; this is a data + provenance re-mine. Commit floor and
 per-step CI rules unchanged; Architect re-verifies before any push.
 
-**WORKER UPDATE (2026-07-12): M14 Step 4 [DONE].** Added additive graph kinds
+**WORKER UPDATE (2026-07-12): M14 Step 4 punch list implemented locally.** Acquired
+and rendered W-2, 1099-INT, 1099-DIV, and 13614-C sources; pinned all four new
+manifest hashes and the existing 1099-B hash; re-mined all 26 intake citations
+against the acquired PDFs (citation integrity: 26 checked, 0 mismatches). Added a
+90-box inventory and a 12-item bounded 13614-C trigger inventory. Validation now
+requires exactly one routing edge per inventoried box and one trigger record per
+bounded item; missing and duplicate route regressions are covered by tests. Added
+three pending deferred-review queue entries with `human_confirmed: false` for
+routing, triggers, and expectations. Documented the three new legitimate evidence
+skips in `docs/intake.md`.
+
+Evidence: `pytest -m m14` -> 22 passed / 302 deselected; clean-copy `pytest -q`
+-> 315 passed / 9 skipped; `tax-graph validate 2025` -> graph integrity OK;
+intake citation integrity -> 26 checked / 0 mismatches; ASCII and diff checks ->
+green. The dirty checkout's two YAML/SQLite parity failures were reproduced as
+ignored `graph_ext` overlay contamination and pass in the simulated-clean copy.
+No push performed; Architect review is the next action.
+
+**WORKER UPDATE (2026-07-12, superseded by the reopen review): Initial M14 Step 4 implementation.** Added additive graph kinds
 `routing_edges`, `triggers`, and `expectations` with schemas, cited v1 data for
 W-2/1099-INT/1099-DIV/1099-B, 13614-C universal/conditional triggers, and
 bidirectional presence expectations. Added local deterministic classification over

@@ -76,6 +76,28 @@ def test_routing_and_both_direction_reconciliation_are_cited():
 
 
 @pytest.mark.m14
+def test_intake_inventory_has_one_route_per_box_and_one_trigger_per_item():
+    layer = load_relevance_layer(root=ROOT)
+    inventory_keys = {
+        (document["document_type"], box["box_id"])
+        for document in layer.inventory["information_returns"]
+        for box in document["boxes"]
+    }
+    route_keys = {
+        (route["source_document_type"], route["source_box"])
+        for route in layer.routing_edges
+    }
+    assert route_keys == inventory_keys
+    assert len(layer.routing_edges) == len(inventory_keys) == 90
+
+    inventory_trigger_ids = {
+        item["trigger_id"] for item in layer.inventory["trigger_items"]
+    }
+    assert {trigger["trigger_id"] for trigger in layer.triggers} == inventory_trigger_ids
+    assert len(inventory_trigger_ids) == 12
+
+
+@pytest.mark.m14
 def test_intake_run_passes_only_after_universal_and_expectation_resolution(tmp_path):
     drop = tmp_path / "drop"
     drop.mkdir()
@@ -109,8 +131,8 @@ def test_intake_kinds_round_trip_through_sqlite(tmp_path):
     build_sqlite("2025", root=ROOT, build_dir=tmp_path)
     loaded = load_graph("2025", root=ROOT, include_extensions=False)
     compiled = load_sqlite_graph("2025", root=ROOT, db_path=tmp_path / "tax_graph_2025.sqlite")
-    assert len(loaded.items("routing_edges")) == 8
-    assert len(loaded.items("triggers")) == 6
+    assert len(loaded.items("routing_edges")) == 90
+    assert len(loaded.items("triggers")) == 12
     assert len(loaded.items("expectations")) == 4
     assert sorted(compiled.items("routing_edges"), key=lambda item: item["routing_id"]) == sorted(
         loaded.items("routing_edges"), key=lambda item: item["routing_id"]

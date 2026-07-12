@@ -1,0 +1,54 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "intake_inventory.schema.json",
+  "title": "Tax Graph Intake Inventory",
+  "description": "Bounded source-box and Form 13614-C item inventory for intake completeness.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["tax_year", "information_returns", "trigger_items"],
+  "properties": {
+    "tax_year": { "type": "integer", "minimum": 1900, "maximum": 2100 },
+    "information_returns": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["document_type", "source_document_id", "boxes"],
+        "properties": {
+          "document_type": { "type": "string", "pattern": "^[a-z0-9_]+$" },
+          "source_document_id": { "type": "string", "pattern": "^[a-z0-9_]+$" },
+          "boxes": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["box_id", "label"],
+              "properties": {
+                "box_id": { "type": "string", "pattern": "^[a-z0-9_]+$" },
+                "label": { "type": "string" },
+                "locator": { "type": "string" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "trigger_items": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["item_id", "trigger_id", "label", "locator"],
+        "properties": {
+          "item_id": { "type": "string", "pattern": "^[a-z0-9_]+$" },
+          "trigger_id": { "type": "string", "pattern": "^[a-z0-9_]+$" },
+          "label": { "type": "string" },
+          "locator": { "type": "string" }
+        }
+      }
+    }
+  }
+}

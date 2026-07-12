@@ -93,6 +93,34 @@ def test_validator_catches_cross_year_documents(tmp_path):
     assert any("tax_year 2024 does not match graph 2025" in error for error in result.errors)
 
 
+@pytest.mark.m0
+def test_validator_catches_missing_intake_route(tmp_path):
+    root = _copy_graph_root(tmp_path)
+    routes_file = root / "graph" / "2025" / "routing_edges" / "information_returns.yaml"
+    routes = _read_yaml(routes_file)
+    routes.pop()
+    _write_yaml(routes_file, routes)
+
+    result = validate_graph("2025", root=root)
+
+    assert not result.ok
+    assert any("has 0 routing entries; expected exactly one" in error for error in result.errors)
+
+
+@pytest.mark.m0
+def test_validator_catches_duplicate_intake_route(tmp_path):
+    root = _copy_graph_root(tmp_path)
+    routes_file = root / "graph" / "2025" / "routing_edges" / "information_returns.yaml"
+    routes = _read_yaml(routes_file)
+    routes.append(dict(routes[0], routing_id="route_duplicate_for_inventory_test"))
+    _write_yaml(routes_file, routes)
+
+    result = validate_graph("2025", root=root)
+
+    assert not result.ok
+    assert any("has 2 routing entries; expected exactly one" in error for error in result.errors)
+
+
 @pytest.mark.m8
 def test_validator_flags_inline_magic_number_parameters(tmp_path):
     root = _copy_graph_root(tmp_path)

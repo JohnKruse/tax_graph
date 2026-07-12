@@ -8,16 +8,16 @@
   claim: interest_income
   expected_document_type: 1099_int
   cardinality: presence
-  citation_refs: [cite_intake_1099_int_recipient]
+  citation_refs: [cite_intake_1099_int_box_1]
 
 - expectation_id: expectation_dividend_1099_div
   claim: dividend_income
   expected_document_type: 1099_div
   cardinality: presence
-  citation_refs: [cite_intake_1099_div_recipient]
+  citation_refs: [cite_intake_1099_div_box_1a]
 
 - expectation_id: expectation_self_employment_1099_nec
   claim: self_employment_income
   expected_document_type: 1099_nec
   cardinality: presence
-  citation_refs: [cite_intake_13614c_universal]
+  citation_refs: [cite_intake_13614c_income]

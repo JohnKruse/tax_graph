@@ -87,6 +87,7 @@ def validate_loaded_graph(
     _validate_frontier_registry(graph, schemas_dir, errors)
     _validate_flow_dispositions(graph, schemas_dir, errors)
     _validate_tables(graph, errors)
+    _validate_intake_inventory(graph, schemas_dir, errors)
     _validate_no_inline_magic_numbers(graph, errors)
     _validate_field_grid_completeness(graph, field_grids, mef_line_inventory, errors)
     _validate_acyclic_dependencies(graph, errors)
@@ -402,6 +403,61 @@ def _validate_tables(graph: LoadedGraph, errors: list[str]) -> None:
                 errors=errors,
                 owner=f"total {column_id}",
             )
+
+
+def _validate_intake_inventory(graph: LoadedGraph, schemas_dir: Path, errors: list[str]) -> None:
+    """Enforce both-direction completeness for the bounded intake inventory."""
+    path = graph.graph_dir / "intake-inventory.yaml"
+    if not path.exists():
+        return
+    payload = load_yaml(path) or {}
+    if HAVE_JSONSCHEMA:
+        try:
+            jsonschema.validate(payload, load_yaml(schemas_dir / "intake_inventory.schema.json"))
+        except jsonschema.ValidationError as exc:
+            preview = json.dumps(payload, default=str)[:120]
+            errors.append(f"[schema/intake_inventory] {exc.message} :: {preview}")
+
+    expected_routes: set[tuple[str, str]] = set()
+    for document in payload.get("information_returns", []) or []:
+        document_type = str(document.get("document_type", ""))
+        boxes = document.get("boxes", []) or []
+        for box in boxes:
+            key = (document_type, str(box.get("box_id", "")))
+            if key in expected_routes:
+                errors.append(f"intake inventory -> duplicate box {document_type}/{key[1]}")
+            expected_routes.add(key)
+
+    actual_routes: dict[tuple[str, str], list[dict[str, Any]]] = {}
+    bounded_types = {document_type for document_type, _box_id in expected_routes}
+    for route in graph.items("routing_edges"):
+        key = (str(route.get("source_document_type", "")), str(route.get("source_box", "")))
+        if key[0] in bounded_types:
+            actual_routes.setdefault(key, []).append(route)
+    for key in sorted(expected_routes):
+        count = len(actual_routes.get(key, []))
+        if count != 1:
+            errors.append(
+                f"intake inventory -> {key[0]}/{key[1]} has {count} routing entries; expected exactly one"
+            )
+    for key in sorted(set(actual_routes) - expected_routes):
+        errors.append(f"intake routing -> {key[0]}/{key[1]} is absent from the inventory")
+
+    expected_triggers: set[str] = set()
+    for item in payload.get("trigger_items", []) or []:
+        trigger_id = str(item.get("trigger_id", ""))
+        if trigger_id in expected_triggers:
+            errors.append(f"intake inventory -> duplicate trigger {trigger_id}")
+        expected_triggers.add(trigger_id)
+    actual_triggers = {
+        str(trigger.get("trigger_id", "")): trigger
+        for trigger in graph.items("triggers")
+    }
+    for trigger_id in sorted(expected_triggers):
+        if trigger_id not in actual_triggers:
+            errors.append(f"intake inventory -> missing trigger record {trigger_id}")
+    for trigger_id in sorted(set(actual_triggers) - expected_triggers):
+        errors.append(f"intake trigger -> {trigger_id} is absent from the bounded inventory")
 
 
 def _validate_table_member(
