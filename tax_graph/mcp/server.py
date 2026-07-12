@@ -149,6 +149,7 @@ def _register_tools(server: FastMCP, context: McpGraphContext) -> None:
             "document_id": document_id,
             "found": document is not None,
             "document": document,
+            "provenance": _provenance_for_document(context, document_id),
             "decisions": _decisions_for_document(context, document_id),
             "verification": verification,
         }
@@ -165,6 +166,7 @@ def _register_tools(server: FastMCP, context: McpGraphContext) -> None:
             "instance_note": _instance_note(address),
             "found": node is not None,
             "node": node,
+            "provenance": context.graph.provenance_for_node(address["base_node_id"]),
             "decisions": _decisions_for_node(context, address["base_node_id"]),
         }
 
@@ -178,6 +180,7 @@ def _register_tools(server: FastMCP, context: McpGraphContext) -> None:
             "base_node_id": address["base_node_id"],
             "row_key": address["row_key"],
             "instance_note": _instance_note(address),
+            "provenance": context.graph.provenance_for_node(address["base_node_id"]),
             "dependencies": [
                 {
                     "edge_id": edge["edge_id"],
@@ -187,6 +190,7 @@ def _register_tools(server: FastMCP, context: McpGraphContext) -> None:
                     "role": edge.get("role"),
                     "rule_id": edge.get("rule_id"),
                     "citation_refs": edge.get("citation_refs", []),
+                    "gate": edge.get("gate", "project"),
                 }
                 for edge in edges
             ],
@@ -203,6 +207,7 @@ def _register_tools(server: FastMCP, context: McpGraphContext) -> None:
             "base_node_id": address["base_node_id"],
             "row_key": address["row_key"],
             "instance_note": _instance_note(address),
+            "provenance": context.graph.provenance_for_node(address["base_node_id"]),
             "direct_effects": [_edge_summary(edge) for edge in direct],
             "reachable_node_ids": reachable,
         }
@@ -227,6 +232,7 @@ def _register_tools(server: FastMCP, context: McpGraphContext) -> None:
             "values": _json_safe(result.values),
             "missing_required_inputs": result.missing_required_inputs,
             "trace": _json_safe(result.trace),
+            "provenance": _execution_provenance(result, context),
         }
 
     @server.tool()
@@ -235,6 +241,11 @@ def _register_tools(server: FastMCP, context: McpGraphContext) -> None:
         fact_values = _coerce_facts(facts)
         return {
             "missing_required_inputs": Engine(context.graph).list_required_inputs(fact_values),
+            "provenance": {
+                node_id: context.graph.provenance_for_node(node_id)
+                for node_id in Engine(context.graph).list_required_inputs(fact_values)
+                if context.graph.provenance_for_node(node_id)
+            },
         }
 
     @server.tool()
@@ -255,6 +266,7 @@ def _register_tools(server: FastMCP, context: McpGraphContext) -> None:
             "trace": _json_safe(trace),
             "rule": context.graph.rules.get(rule_id) if rule_id else None,
             "citations": [context.citations[citation_id] for citation_id in citation_ids if citation_id in context.citations],
+            "provenance": context.graph.provenance_for_node(address["base_node_id"]),
         }
 
     @server.tool()
@@ -286,6 +298,7 @@ def _register_tools(server: FastMCP, context: McpGraphContext) -> None:
             "row_key": address["row_key"],
             "audit_text": buffer.getvalue(),
             "path": str(audit_path),
+            "provenance": context.graph.provenance_for_node(address["base_node_id"]),
         }
 
     @server.tool()
@@ -329,6 +342,7 @@ def _register_tools(server: FastMCP, context: McpGraphContext) -> None:
             "memo_text": memo_text,
             "carryforward_block": record.carryforward_block.to_dict(),
             "paths": {"memo": str(memo_path), "carryforward": str(carryforward_path)},
+            "provenance": _execution_provenance(result, context),
         }
 
     @server.tool()
@@ -355,7 +369,7 @@ def _register_tools(server: FastMCP, context: McpGraphContext) -> None:
             project_root=context.root,
             return_root=return_root,
         )
-        return {"return_root": str(return_root), **bundle}
+        return {"return_root": str(return_root), **bundle, "provenance": _execution_provenance(result, context)}
 
     @server.tool()
     def get_verification(document_id: str) -> dict[str, Any]:
@@ -399,6 +413,7 @@ def _edge_summary(edge: dict[str, Any]) -> dict[str, Any]:
         "role": edge.get("role"),
         "rule_id": edge.get("rule_id"),
         "citation_refs": edge.get("citation_refs", []),
+        "gate": edge.get("gate", "project"),
     }
 
 
@@ -448,6 +463,32 @@ def _verification_summary(document_id: str, context: McpGraphContext) -> dict[st
     from tax_graph.verify.record import verification_summary_for_document
 
     return verification_summary_for_document(document_id, year=context.year, root=context.root)
+
+
+def _provenance_for_document(context: McpGraphContext, document_id: str) -> dict[str, Any] | None:
+    document = context.documents.get(document_id)
+    if document is None:
+        return None
+    gate = str(document.get("gate") or "project")
+    return {
+        "gate": gate,
+        "document_id": document_id,
+        "artifact_hash": context.graph.extension_hashes.get(document_id, context.graph.base_content_hash),
+        "verification_tier": context.graph.extension_metadata.get(document_id, {}).get("verification_tier")
+        if gate == "user"
+        else None,
+    }
+
+
+def _execution_provenance(result: Result, context: McpGraphContext) -> dict[str, Any]:
+    """Return provenance only for nodes touched by the execution trace."""
+    output: dict[str, Any] = {}
+    for trace_id in result.trace:
+        base_node_id = trace_id.partition("#")[0]
+        provenance = context.graph.provenance_for_node(base_node_id)
+        if provenance and provenance.get("gate") == "user":
+            output[trace_id] = provenance
+    return output
 
 
 def _decisions_for_document(context: McpGraphContext, document_id: str) -> list[dict[str, Any]]:

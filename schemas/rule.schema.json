@@ -30,6 +30,11 @@
       "type": "array",
       "items": { "type": "string" },
       "description": "Per governance (req. doc Section 13), every supported rule must cite an IRS source."
+    },
+    "gate": {
+      "type": "string",
+      "enum": ["project", "user"],
+      "description": "Orthogonal provenance axis: who stood at the promotion gate."
     }
   }
 }

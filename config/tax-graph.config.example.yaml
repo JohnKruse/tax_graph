@@ -9,6 +9,7 @@ project:
   tax_years: [2025]
   paths:
     graph_dir: graph
+    graph_ext_dir: graph_ext     # user-gated local extension overlay; never shipped in SQLite
     schemas_dir: schemas
     raw_store: .cache/raw        # downloaded IRS docs (gitignored)
     build_dir: build             # compiled SQLite artifacts

@@ -28,6 +28,11 @@
       "description": "The verbatim source passage, stored so the agent need not re-fetch."
     },
     "url": { "type": "string", "format": "uri", "description": "Deep link to the source, if available." },
-    "retrieved_date": { "type": "string", "format": "date" }
+    "retrieved_date": { "type": "string", "format": "date" },
+    "gate": {
+      "type": "string",
+      "enum": ["project", "user"],
+      "description": "Orthogonal provenance axis: who stood at the promotion gate."
+    }
   }
 }

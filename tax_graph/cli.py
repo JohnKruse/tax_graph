@@ -777,6 +777,108 @@ def extract_command(
     return 0
 
 
+def extend_doctor_command(
+    *,
+    root: str | Path | None = None,
+    network: bool = False,
+    network_url: str | None = None,
+) -> int:
+    """Check local prerequisites for user-gated form extensions."""
+    from tax_graph.extension import doctor_extension
+
+    root_path = Path(root).resolve() if root is not None else project_root()
+    report = doctor_extension(root=root_path, check_network=network, network_url=network_url)
+    print(report.format_report(), end="")
+    return 0 if report.ok else 1
+
+
+def extend_document_command(
+    document_id: str,
+    *,
+    year: str = "2025",
+    root: str | Path | None = None,
+    url: str | None = None,
+    kind: str | None = None,
+    title: str | None = None,
+    instructions_url: str | None = None,
+    instructions_document_id: str | None = None,
+) -> int:
+    """Run the acquire -> extract -> verify pipeline into the local queue."""
+    from tax_graph.extension import run_extension
+
+    root_path = Path(root).resolve() if root is not None else project_root()
+    try:
+        result = run_extension(
+            document_id,
+            year=year,
+            root=root_path,
+            url=url,
+            kind=kind,
+            title=title,
+            instructions_url=instructions_url,
+            instructions_document_id=instructions_document_id,
+        )
+    except Exception as exc:
+        print(f"ERROR: {exc}")
+        return 1
+    print("=== extension draft ===")
+    print(f"  document: {result.document_id}")
+    print(f"  draft_dir: {result.draft_dir}")
+    print(f"  source_hash: {result.source_hash}")
+    print(f"  verification_tier: {result.verification_tier}")
+    print(f"  review_queue: {result.review_queue_path}")
+    print("  status: pending explicit local accept")
+    return 0
+
+
+def extend_accept_command(
+    document_id: str,
+    *,
+    year: str = "2025",
+    root: str | Path | None = None,
+) -> int:
+    """Explicitly accept one user-gated extension into the YAML overlay."""
+    from tax_graph.extension import accept_extension
+
+    root_path = Path(root).resolve() if root is not None else project_root()
+    try:
+        result = accept_extension(document_id, year=year, root=root_path)
+    except Exception as exc:
+        print(f"ERROR: {exc}")
+        return 1
+    print("=== extension accepted locally ===")
+    print(f"  document: {result.document_id}")
+    print(f"  overlay: {result.extension_dir}")
+    print(f"  content_hash: {result.content_hash}")
+    print("  gate: user")
+    print("  human_review: pending")
+    return 0
+
+
+def extend_package_command(
+    document_id: str,
+    *,
+    year: str = "2025",
+    root: str | Path | None = None,
+    output_dir: str | Path | None = None,
+) -> int:
+    """Package one accepted extension with its verification artifacts."""
+    from tax_graph.extension import package_extension
+
+    root_path = Path(root).resolve() if root is not None else project_root()
+    try:
+        result = package_extension(document_id, year=year, root=root_path, output_dir=output_dir)
+    except Exception as exc:
+        print(f"ERROR: {exc}")
+        return 1
+    print("=== extension package ===")
+    print(f"  document: {result.document_id}")
+    print(f"  package: {result.path}")
+    print(f"  content_hash: {result.content_hash}")
+    print("  gate: user")
+    return 0
+
+
 def _print_extract_summary(doc: str, routed) -> None:
     print("=== extraction review ===")
     print(f"  document: {doc}")
@@ -1162,7 +1264,64 @@ def _build_typer_app():
         if raise_code:
             raise typer.Exit(raise_code)
 
+    @cli.command(
+        "extend",
+        context_settings={"allow_extra_args": True, "ignore_unknown_options": True},
+    )
+    def extend_cli(ctx: typer.Context) -> None:
+        """Run ``extend doctor``, ``extend <doc_id>``, ``extend accept``, or ``extend package``."""
+        raise_code = _dispatch_extend_tokens(list(ctx.args))
+        if raise_code:
+            raise typer.Exit(raise_code)
+
     return cli
+
+
+def _dispatch_extend_tokens(tokens: list[str]) -> int:
+    """Dispatch the compact ``extend`` command surface for Typer and tests."""
+    if not tokens:
+        print("Usage: tax-graph extend doctor | <doc_id> | accept <doc_id> | package <doc_id>")
+        return 2
+    action = tokens[0]
+    if action == "doctor":
+        parser = argparse.ArgumentParser(prog="tax-graph extend doctor")
+        parser.add_argument("--network", action="store_true")
+        parser.add_argument("--network-url", default=None)
+        parser.add_argument("--root", default=None)
+        args = parser.parse_args(tokens[1:])
+        return extend_doctor_command(root=args.root, network=args.network, network_url=args.network_url)
+    if action in {"accept", "package"}:
+        parser = argparse.ArgumentParser(prog=f"tax-graph extend {action}")
+        parser.add_argument("doc_id")
+        parser.add_argument("--year", "-y", default="2025")
+        parser.add_argument("--root", default=None)
+        if action == "package":
+            parser.add_argument("--output-dir", default=None)
+        args = parser.parse_args(tokens[1:])
+        if action == "accept":
+            return extend_accept_command(args.doc_id, year=args.year, root=args.root)
+        return extend_package_command(args.doc_id, year=args.year, root=args.root, output_dir=args.output_dir)
+
+    parser = argparse.ArgumentParser(prog="tax-graph extend <doc_id>")
+    parser.add_argument("doc_id")
+    parser.add_argument("--year", "-y", default="2025")
+    parser.add_argument("--url", default=None)
+    parser.add_argument("--kind", default=None)
+    parser.add_argument("--title", default=None)
+    parser.add_argument("--instructions-url", default=None)
+    parser.add_argument("--instructions-document-id", default=None)
+    parser.add_argument("--root", default=None)
+    args = parser.parse_args(tokens)
+    return extend_document_command(
+        args.doc_id,
+        year=args.year,
+        root=args.root,
+        url=args.url,
+        kind=args.kind,
+        title=args.title,
+        instructions_url=args.instructions_url,
+        instructions_document_id=args.instructions_document_id,
+    )
 
 
 def _fallback_app() -> int:
@@ -1293,6 +1452,20 @@ def _fallback_app() -> int:
     extract_parser.add_argument("--year", "-y", default="2025")
     extract_parser.add_argument("--root", default=None)
 
+    extend_parser = subparsers.add_parser("extend")
+    extend_parser.add_argument("action_or_doc", nargs="?", default=None)
+    extend_parser.add_argument("doc_id", nargs="?", default=None)
+    extend_parser.add_argument("--year", "-y", default="2025")
+    extend_parser.add_argument("--url", default=None)
+    extend_parser.add_argument("--kind", default=None)
+    extend_parser.add_argument("--title", default=None)
+    extend_parser.add_argument("--instructions-url", default=None)
+    extend_parser.add_argument("--instructions-document-id", default=None)
+    extend_parser.add_argument("--network", action="store_true")
+    extend_parser.add_argument("--network-url", default=None)
+    extend_parser.add_argument("--output-dir", default=None)
+    extend_parser.add_argument("--root", default=None)
+
     args = parser.parse_args()
     if args.command == "validate":
         return validate_command(year=args.year, root=args.root)
@@ -1390,6 +1563,25 @@ def _fallback_app() -> int:
         return acquire_command(year=args.year, check=args.check, root=args.root)
     if args.command == "extract":
         return extract_command(doc=args.doc, year=args.year, root=args.root)
+    if args.command == "extend":
+        if args.action_or_doc == "doctor":
+            return extend_doctor_command(root=args.root, network=args.network, network_url=args.network_url)
+        if args.action_or_doc == "accept":
+            return extend_accept_command(args.doc_id, year=args.year, root=args.root)
+        if args.action_or_doc == "package":
+            return extend_package_command(args.doc_id, year=args.year, root=args.root, output_dir=args.output_dir)
+        if args.action_or_doc:
+            return extend_document_command(
+                args.action_or_doc,
+                year=args.year,
+                root=args.root,
+                url=args.url,
+                kind=args.kind,
+                title=args.title,
+                instructions_url=args.instructions_url,
+                instructions_document_id=args.instructions_document_id,
+            )
+        return 2
     return 2
 
 

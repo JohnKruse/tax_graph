@@ -28,6 +28,11 @@
           "option_type": { "enum": ["other", "unsupported", "escalate"] }
         }
       }
+    },
+    "gate": {
+      "type": "string",
+      "enum": ["project", "user"],
+      "description": "Orthogonal provenance axis: who stood at the promotion gate."
     }
   },
   "$defs": {

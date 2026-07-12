@@ -57,6 +57,14 @@
           "expected_nodes": {
             "type": "array",
             "items": {"type": "string"}
+          },
+          "gate": {
+            "type": "string",
+            "enum": ["project", "user"]
+          },
+          "verification_tier": {"type": "string"},
+          "source_hash": {"type": "string"},
+          "extension_hash": {"type": "string"}
           }
         }
       }

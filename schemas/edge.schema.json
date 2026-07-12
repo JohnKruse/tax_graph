@@ -42,6 +42,11 @@
         "equals": {}
       }
     },
-    "citation_refs": { "type": "array", "items": { "type": "string" } }
+    "citation_refs": { "type": "array", "items": { "type": "string" } },
+    "gate": {
+      "type": "string",
+      "enum": ["project", "user"],
+      "description": "Orthogonal provenance axis: who stood at the promotion gate."
+    }
   }
 }

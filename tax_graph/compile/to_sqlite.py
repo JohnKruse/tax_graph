@@ -33,7 +33,9 @@ def build_sqlite(
     """Build ``tax_graph_<year>.sqlite`` from authored YAML graph data."""
     root_path = Path(root).resolve() if root is not None else project_root()
     settings = load_config(root=root_path)
-    graph = load_graph(year, root_path)
+    # The shipped SQLite artifact is always project-only. Local extensions
+    # remain YAML overlays and must never be baked into the distributable DB.
+    graph = load_graph(year, root_path, include_extensions=False)
     output_dir = _build_dir(root_path, settings, build_dir)
     output_dir.mkdir(parents=True, exist_ok=True)
     db_path = output_dir / f"tax_graph_{graph.year}.sqlite"
@@ -156,6 +158,7 @@ def _insert_graph(conn: sqlite3.Connection, graph: LoadedGraph) -> None:
         [
             ("schema_version", str(DB_SCHEMA_VERSION)),
             ("tax_year", graph.year),
+            ("content_hash", graph.base_content_hash),
         ],
     )
     _insert_documents(conn, graph.items("documents"))
@@ -357,4 +360,3 @@ def _insert_tax_table(conn: sqlite3.Connection, graph_dir: Path) -> None:
         """,
         rows,
     )
-

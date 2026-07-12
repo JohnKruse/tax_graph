@@ -7,7 +7,7 @@ from typing import Any
 
 import yaml
 
-from tax_graph.acquire.manifest import load_manifest
+from tax_graph.acquire.manifest import AcquisitionManifest, load_manifest
 from tax_graph.config import get_config_value
 from tax_graph.config import load_config, project_root
 from tax_graph.extract.checks import run_deterministic_checks
@@ -30,12 +30,22 @@ def extract_document(
     root: str | Path | None = None,
     client: LlmClient | None = None,
     config: dict[str, Any] | None = None,
+    manifest: AcquisitionManifest | None = None,
+    raw_store: str | Path | None = None,
+    gate: str | None = None,
 ) -> RoutedDrafts:
     """Run rendered input -> generator -> critic -> checks -> draft writeout."""
     root_path = Path(root).resolve() if root is not None else project_root()
     settings = config if config is not None else load_config(root=root_path)
     llm_client = client or build_llm_client(settings)
-    document = load_document_input(document_id, year=year, root=root_path, config=settings)
+    document = load_document_input(
+        document_id,
+        year=year,
+        root=root_path,
+        config=settings,
+        raw_store=raw_store,
+        manifest=manifest,
+    )
     write_outline_artifacts(document, root=root_path, config=settings)
     mode = str(get_config_value(settings, "extraction.mode", "one_pass"))
     if mode == "one_pass":
@@ -45,6 +55,11 @@ def extract_document(
         batch = generate_outline_first_drafts(document, client=llm_client, config=settings, root=root_path)
     else:
         raise ValueError(f"unsupported extraction.mode: {mode}")
+    if gate is not None:
+        if gate not in {"project", "user"}:
+            raise ValueError(f"unsupported graph provenance gate: {gate}")
+        for obj in batch.objects:
+            obj.data["gate"] = gate
     checks = run_deterministic_checks(document, batch, root=root_path)
     tier_inputs = TierInputs(
         nversion_agreed=None,

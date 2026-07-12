@@ -38,7 +38,12 @@
       "items": { "type": "string" },
       "description": "Ids of citation objects that authorize/explain this table."
     },
-    "description": { "type": "string" }
+    "description": { "type": "string" },
+    "gate": {
+      "type": "string",
+      "enum": ["project", "user"],
+      "description": "Orthogonal provenance axis: who stood at the promotion gate."
+    }
   },
   "$defs": {
     "column": {

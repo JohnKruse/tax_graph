@@ -15,7 +15,7 @@ from typing import Any
 
 from tax_graph.engine.operations import MISSING, apply_operation, is_missing, round_value
 from tax_graph.frontier.build import load_frontier_registry
-from tax_graph.io.loader import load_graph, load_yaml
+from tax_graph.io.loader import extension_root_for_project, load_graph, load_yaml
 from tax_graph.io.sqlite_loader import compiled_db_path, load_sqlite_graph
 
 
@@ -32,38 +32,108 @@ class Graph:
         self.year = loaded.year
         self.root = loaded.root
         self.source = graph_source
+        self.base_content_hash = loaded.base_content_hash
+        self.extension_hashes = dict(loaded.extension_hashes or {})
+        self.extension_metadata = dict(loaded.extension_metadata or {})
         self.documents = {
-            document["document_id"]: document
+            document["document_id"]: _with_runtime_gate(document)
             for document in sorted(loaded.items("documents"), key=lambda item: item["document_id"])
         }
         self.citations = {
-            citation["citation_id"]: citation
+            citation["citation_id"]: _with_runtime_gate(citation)
             for citation in sorted(loaded.items("citations"), key=lambda item: item["citation_id"])
         }
         self.decisions = {
-            decision["decision_id"]: decision
+            decision["decision_id"]: _with_runtime_gate(decision)
             for decision in sorted(loaded.items("decisions"), key=lambda item: item["decision_id"])
         }
-        self.nodes = {node["node_id"]: node for node in sorted(loaded.items("nodes"), key=lambda item: item["node_id"])}
+        self.nodes = {
+            node["node_id"]: _with_runtime_gate(node)
+            for node in sorted(loaded.items("nodes"), key=lambda item: item["node_id"])
+        }
         self.tables = {
-            table["table_id"]: table
+            table["table_id"]: _with_runtime_gate(table)
             for table in sorted(loaded.items("tables"), key=lambda item: item["table_id"])
         }
         self.frontiers = list(load_frontier_registry(year, self.root).get("frontiers", []) or [])
-        self.rules = {rule["rule_id"]: rule for rule in sorted(loaded.items("rules"), key=lambda item: item["rule_id"])}
+        self.rules = {
+            rule["rule_id"]: _with_runtime_gate(rule)
+            for rule in sorted(loaded.items("rules"), key=lambda item: item["rule_id"])
+        }
         self.tax_table = _load_tax_table_resource(graph_source, self.year, self.root, loaded.graph_dir)
         self.incoming: dict[str, list[dict[str, Any]]] = {}
         for edge in sorted(loaded.items("edges"), key=lambda item: item["edge_id"]):
             self.incoming.setdefault(edge["target"], []).append(edge)
 
+    def provenance_for_node(self, node_id: str) -> dict[str, Any] | None:
+        """Return the gate and artifact hash for one static node."""
+        node = self.nodes.get(node_id)
+        if node is None:
+            return None
+        document_id = str(node.get("document_id") or "")
+        gate = str(node.get("gate") or "project")
+        return {
+            "gate": gate,
+            "document_id": document_id,
+            "artifact_hash": self.extension_hashes.get(document_id, self.base_content_hash),
+            "verification_tier": self.extension_metadata.get(document_id, {}).get("verification_tier")
+            if gate == "user"
+            else None,
+        }
+
 
 def _resolve_source(year: str | int, root: str | Path, source: str | None) -> str:
     if source in (None, "auto"):
-        return "sqlite" if compiled_db_path(year, root).exists() else "yaml"
+        db_path = compiled_db_path(year, root)
+        if _has_extensions(year, root):
+            return "yaml"
+        return "sqlite" if _compiled_artifact_is_stamped(db_path) else "yaml"
     normalized = str(source).lower()
     if normalized not in {"yaml", "sqlite"}:
         raise ValueError(f"unsupported graph source: {source}")
+    if normalized == "sqlite" and _has_extensions(year, root):
+        # Extensions are deliberately not compiled. Loading the YAML overlay
+        # keeps an explicit ``--source sqlite`` request safe and honest.
+        return "yaml"
     return normalized
+
+
+def _has_extensions(year: str | int, root: str | Path) -> bool:
+    root_path = Path(root).resolve()
+    try:
+        from tax_graph.config import get_config_value, load_config
+
+        configured = get_config_value(load_config(root=root_path), "project.paths.graph_ext_dir", "graph_ext")
+        overlay = Path(configured)
+        if not overlay.is_absolute():
+            overlay = root_path / overlay
+    except Exception:
+        overlay = extension_root_for_project(root_path)
+    year_dir = overlay / str(year)
+    return any(path.is_dir() and path.name != "_drafts" for path in year_dir.iterdir()) if year_dir.is_dir() else False
+
+
+def _compiled_artifact_is_stamped(path: Path) -> bool:
+    """Return whether an existing SQLite artifact has the M14 hash stamp.
+
+    Auto mode treats an older unstamped artifact as stale and uses authored
+    YAML. Explicit ``source=sqlite`` still raises in the loader so a caller
+    cannot accidentally rely on an unverifiable artifact.
+    """
+    if not path.exists():
+        return False
+    try:
+        with sqlite3.connect(path) as conn:
+            row = conn.execute("SELECT value FROM metadata WHERE key = 'content_hash'").fetchone()
+        return bool(row and row[0])
+    except sqlite3.Error:
+        return False
+
+
+def _with_runtime_gate(value: dict[str, Any]) -> dict[str, Any]:
+    copied = dict(value)
+    copied.setdefault("gate", "project")
+    return copied
 
 
 @dataclass
@@ -526,7 +596,8 @@ def _frontier_for_missing_source(edge: dict[str, Any], graph: Graph) -> dict[str
 
 def _unresolved_trace(edge: dict[str, Any], frontier: dict[str, Any]) -> dict[str, Any]:
     target = frontier.get("target") or {}
-    address = target.get("document_id") or target.get("external_id") or "unknown frontier"
+    target_document_id = target.get("document_id") or target.get("external_id")
+    address = target_document_id or "unknown frontier"
     if target.get("line"):
         address = f"{address} line {target['line']}"
     return {
@@ -545,6 +616,9 @@ def _unresolved_trace(edge: dict[str, Any], frontier: dict[str, Any]) -> dict[st
         "target_url": frontier.get("target_url"),
         "citation_ref": frontier.get("citation_ref"),
         "citations": [frontier.get("citation_ref")] if frontier.get("citation_ref") else [],
+        "extend_command": f"tax-graph extend {target_document_id}" if target_document_id else None,
+        "target_tier": "T1",
+        "proposed_provenance": {"gate": "user", "verification_tier": "T1"},
         "note": f"depends on {address}, not yet modeled, see {frontier.get('target_url')}",
     }
 

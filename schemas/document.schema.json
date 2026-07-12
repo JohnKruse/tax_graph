@@ -35,6 +35,11 @@
       "type": "string",
       "enum": ["supported", "partial", "planned", "unsupported"]
     },
+    "gate": {
+      "type": "string",
+      "enum": ["project", "user"],
+      "description": "Orthogonal provenance axis: who stood at the promotion gate."
+    },
     "not_modeled_fields": {
       "type": "array",
       "description": "AcroForm fields or field groups explicitly outside the modeled computation graph.",

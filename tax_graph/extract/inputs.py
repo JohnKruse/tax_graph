@@ -6,7 +6,7 @@ import json
 from pathlib import Path
 from typing import Any
 
-from tax_graph.acquire.manifest import load_manifest
+from tax_graph.acquire.manifest import AcquisitionManifest, load_manifest
 from tax_graph.config import get_config_value, load_config, project_root
 from tax_graph.extract.models import RelatedSourceInput, SourceDocumentInput
 from tax_graph.io.loader import load_graph
@@ -23,6 +23,7 @@ def load_document_input(
     root: str | Path | None = None,
     raw_store: str | Path | None = None,
     config: dict[str, Any] | None = None,
+    manifest: AcquisitionManifest | None = None,
 ) -> SourceDocumentInput:
     """Load rendered text and companion artifacts for one manifest document."""
     root_path = Path(root).resolve() if root is not None else project_root()
@@ -35,10 +36,10 @@ def load_document_input(
     if not store.is_absolute():
         store = root_path / store
 
-    manifest = load_manifest(root=root_path)
-    if str(manifest.tax_year) != str(year):
-        raise ValueError(f"manifest tax_year {manifest.tax_year} does not match requested {year}")
-    entries = manifest.by_document_id()
+    active_manifest = manifest or load_manifest(root=root_path)
+    if str(active_manifest.tax_year) != str(year):
+        raise ValueError(f"manifest tax_year {active_manifest.tax_year} does not match requested {year}")
+    entries = active_manifest.by_document_id()
     if document_id not in entries:
         raise ValueError(f"unknown manifest document_id: {document_id}")
 

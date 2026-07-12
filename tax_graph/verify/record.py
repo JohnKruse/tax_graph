@@ -44,6 +44,8 @@ class VerificationRecord:
     witnesses: WitnessSummary
     verification_tier: str
     page_path: Path
+    gate: str = "project"
+    artifact_hash: str = ""
 
 
 @dataclass(frozen=True)
@@ -109,6 +111,8 @@ def build_verification_bundle(year: str = "2025", root: str | Path | None = None
             witnesses=witnesses,
             verification_tier=_verification_tier(witnesses),
             page_path=page_path,
+            gate=str(document.get("gate") or "project"),
+            artifact_hash=(graph.extension_hashes or {}).get(document_id, graph.base_content_hash),
         )
         records.append(record)
         page_texts[document_id] = render_verification_page(record)
@@ -181,6 +185,8 @@ def render_verification_rollup(
                 f"- Document id: `{record.document_id}`",
                 f"- Status: `{record.status}`",
                 f"- Verification tier: {record.verification_tier}",
+                f"- Gate: {record.gate}",
+                f"- Artifact content hash: `{record.artifact_hash}`",
                 f"- Oracle witness: {_oracle_summary(record.witnesses)}",
                 f"- IRS worked examples: {_example_summary(record.witnesses)}",
                 f"- Calibration audit: {_calibration_summary(record.witnesses)}",
@@ -204,6 +210,8 @@ def render_verification_page(record: VerificationRecord) -> str:
         f"- Document type: `{record.document_type}`",
         f"- Status: `{record.status}`",
         f"- Verification tier: {record.verification_tier}",
+        f"- Gate: {record.gate}",
+        f"- Artifact content hash: `{record.artifact_hash}`",
         f"- Source URL: {record.source_url}",
         "",
         "## Modeled",
@@ -254,6 +262,8 @@ def verification_summary_for_document(
                 "title": record.title,
                 "status": record.status,
                 "verification_tier": record.verification_tier,
+                "gate": record.gate,
+                "artifact_hash": record.artifact_hash,
                 "modeled_counts": record.modeled_counts,
                 "gaps": list(record.gaps),
                 "witnesses": {
