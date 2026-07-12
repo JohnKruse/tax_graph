@@ -15,7 +15,36 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## Current state (2026-07-11)
 
-**BALL: WORKER - M14 Step 3 machine implementation complete; awaiting pilot approval/live pass (2026-07-12).**
+**BALL: WORKER - M14 Step 3 PILOT APPROVED: form_2441_2025. Run the live pilot (2026-07-12).**
+
+**ARCHITECT VERIFICATION + PILOT RULING (Opus 4.8, 2026-07-12) on Step 3 `05fba8d`:**
+Verified before push, all green: engine diff is scope-clean (NO new ops - gate/provenance
+plumbing via `_with_runtime_gate`, extension-aware source resolution forcing yaml when
+extensions exist per pin 1, sqlite hash-stamp awareness); loader hard-errors on ID
+collisions with shipped objects or other extensions and never loads `_drafts`; schemas
+add `gate: project|user` as an optional enum (additive-schema law respected);
+`extension.py` implements doctor / run / EXPLICIT accept / package with queue
+integration and deterministic packaging; MCP responses carry the gate; escape hatch
+emits `tax-graph extend <doc_id>` in unresolved traces (engine.py). Independent test
+runs: `pytest -m m14` -> 15 passed (matches worker claim); compile/MCP/1040-spine
+focused -> 21 passed; full suite re-run by Architect before push.
+BEHAVIOR NOTE: pre-M14 UNSTAMPED sqlite artifacts are now treated as stale (auto mode
+falls back to yaml; explicit sqlite raises) - rebuild `build/tax_graph_2025.sqlite`
+once the dev MCP server releases it (next Desktop restart), or run builds to tmp.
+**PILOT RULING: form_2441_2025 APPROVED** - it is better than a neutral pick: the
+shipped graph already names Form 2441 at two hookup points (schedule_3 line 2 "from
+Form 2441, line 11" and 1040 line 1e "from Form 2441, line 26"), so the pilot
+exercises the cross-gate edge into modeled lines AND the escape hatch naming the
+exact extend command. BOUNDS: model Part II (credit, lines 1-11, AGI percentage
+table as a cited parameter/lookup); Part I providers as input-backed; Part III
+(lines 12-26) MAY stay input-backed with declared walls inside the extension - every
+line accounted for (modeled | input-backed | declared), M8-style completeness. NO
+differential witness exists for 2441 - the pilot MUST land at the user-gated
+machine-ladder tier and say so in every surface (that honest label is the point,
+not a gap). Acceptance: the full doctor -> extend -> review -> accept chain, overlay
+load + compute, gate visible over MCP, impersonation test green, queue entry, docs.
+
+Prior BALL (Step 3 implementation report, 2026-07-12):
 Step 2's implementation is Architect-verified, COMMITTED, and pushed; Step 2 itself
 stays OPEN solely on the one live check this machine cannot run - the in-app Claude
 Desktop `.mcpb` install + MCP round trip - which is now a JOHN action (checklist item
