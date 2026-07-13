@@ -14,9 +14,41 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## Current state (2026-07-13)
 
-**BALL: ARCHITECT - M15 S2 fix is complete locally and ready for final review/push.** Origin
-still stays at `d86ca47` (S1); the amended local S2 commit is not pushed. The new
-interactive official/analog workbench is planned in `plans/PHASE_M15.md`.
+**BALL: WORKER - M15 S3 manifest builder fixed and verified locally.** S2 commit `c7026b1`
+is pushed to origin; the amended S3 commit is ready to push. S4 has not started. Plan:
+`plans/PHASE_M15.md`.
+
+**S3 RESULT (Worker, Codex, 2026-07-13):** Added `workbench/manifest.py` as an artifact-only,
+deterministic projection from the compiled graph, geometry, PDFs, queue, and `review_scope`.
+Each pending queue entry produces one or more schema-valid units with exact object refs,
+resolved official locations when a PDF hash and geometry match exist, `null` analog placement,
+structure-only reference expressions, semantic class, coverage state, source/target labels,
+and a canonical manifest hash. Added the `workbench manifest` CLI command and docs; no tax
+logic or English semantic formatter work was added. Review found that directory-valued source
+artifacts were silently omitted from the hash. S3 now recursively hashes every file in a source
+directory and fails closed on nonexistent source paths; a regression proves that changing an IRS
+example file changes the manifest hash.
+
+Verification after the fix: focused `tests/test_review_manifest_m15.py` = `3 passed`;
+`pytest -m m15 -q` = `24 passed, 324 deselected`; `tools/check_ascii.py` OK; CLI manifest write
+and `tax-graph validate 2025` succeeded; full repository pytest = `342 passed, 6 skipped in
+636.99s`. S3 is ready to push; S4 not started.
+
+**S2 FIX VERDICT (Architect, Opus 4.8, 2026-07-13): ACCEPTED on substance; push pending.**
+Independently confirmed (read-only, Bash was down) that the exact reopen concerns are fixed:
+the whole-file dump is GONE (`role: related` count = 0), replaced by 842 `primary` + 370
+`excluded` + frontier - all concrete. The line-20 entry is correctly primary-anchored on the
+`schedule_d_2025_line_20_gate` node + its feeding edges (line 20 is a MIN/MAX GATE, not a
+formal `decision` object - my reopen's "decision object absent" wording assumed an object
+that does not exist for that line; the gate + edges ARE the review target). The deduction
+decision names `decision_1040_deduction_method` + its options as primary. Empty scope is
+rejected by `_validate_scope`, so with zero `related` every entry necessarily has >=1
+primary. Field-map / frontier shapes preserved. The queue's ~1217 concrete refs across 30
+entries / 13 documents is honest scope, not bloat (my punch-list "a few hundred" estimate
+was too aggressive). REMAINING before S2 is DONE: Architect re-runs the FULL suite (worker
+reported 339 passed / 6 skipped) and confirms the amended commit dropped the 10,488-line
+over-scoped queue from history, then pushes + confirms CI. Blocked only by a transient tool
+outage; retry Bash and finish.
 
 **S2 FIX RESULT (Worker, Codex, 2026-07-13):** Removed the whole-file object-id fallback and
 regenerated the queue with targeted scopes. Decision reviews now name the decision, options,

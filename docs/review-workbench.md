@@ -4,7 +4,7 @@
 > an accepted human-review surface. The human campaign is paused. The authoritative
 > replacement design and implementation sequence are in `plans/PHASE_M15.md`.
 
-Status: M15 Steps 1-3 as-built, 2026-07-12. Canary: "Fresh Eyes". The workbench is a
+Status: M15 Steps 1-3 as-built, 2026-07-13. Canary: "Fresh Eyes". The workbench is a
 top-level workspace member with an artifact-only read seam. UI and verdict emission
 remain in later M15 steps.
 
@@ -40,6 +40,19 @@ the read seam.
 `review-workbench inspect --year 2025` is the Step 1 smoke command. It reports the
 artifact counts without writing any file. The committed `m15` boundary test walks all
 workbench Python files and rejects imports from `tax_graph` and its pipeline modules.
+
+## Step 3 review manifest
+
+`workbench.manifest.build_manifest` projects each pending queue entry and its additive
+`review_scope` into one or more concrete review units. Each unit carries exact object
+identifiers, a schema-valid structure-only reference expression, official geometry when
+the node or field resolves to a published PDF, and an explicit `null` analog placement
+until a later step adds semantic layout. The manifest hash is computed from canonical
+artifact hashes and unit data, so repeated builds are byte-stable. Build one with:
+
+`python -m workbench.cli manifest --year 2025 --output-dir .workbench_state/2025`
+
+S3 intentionally does not generate English semantic text or infer missing geometry.
 
 ## Step 2 artifact view
 

@@ -33,6 +33,7 @@ from workbench.schema import (
 )
 
 from workbench.builder import build_bundle
+from workbench.manifest import ManifestError, ManifestResult, build_manifest, write_manifest
 
 __all__ = [
     "ArtifactBundle",
@@ -52,6 +53,10 @@ __all__ = [
     "GeometryHit",
     "GeometryIndex",
     "build_bundle",
+    "ManifestError",
+    "ManifestResult",
+    "build_manifest",
+    "write_manifest",
     "ReviewVerdict",
     "emit_verdict",
     "load_verdict",

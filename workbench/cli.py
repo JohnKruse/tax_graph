@@ -7,6 +7,7 @@ from pathlib import Path
 
 from workbench.artifacts import load_artifact_bundle
 from workbench.builder import build_bundle
+from workbench.manifest import write_manifest
 from workbench.verdicts import emit_verdict
 
 
@@ -15,7 +16,7 @@ def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(prog="review-workbench")
     parser.add_argument("--root", default=".", help="workspace root")
     parser.add_argument("--year", default="2025", help="tax year")
-    parser.add_argument("command", choices=["inspect", "build", "verdict"])
+    parser.add_argument("command", choices=["inspect", "build", "manifest", "verdict"])
     parser.add_argument("--output-dir", default=None, help="static bundle output directory for build")
     parser.add_argument("--db", default=None, help="compiled SQLite artifact")
     parser.add_argument("--pdf-dir", default=None, help="source PDF directory")
@@ -36,6 +37,21 @@ def main(argv: list[str] | None = None) -> int:
             pdf_dir=args.pdf_dir,
         )
         print(path)
+        return 0
+    if args.command == "manifest":
+        output_dir = (
+            Path(args.output_dir)
+            if args.output_dir is not None
+            else Path(args.root) / ".workbench_state" / str(args.year)
+        )
+        result = write_manifest(
+            Path(args.root),
+            args.year,
+            output_path=output_dir / "review_manifest.json",
+            db_path=args.db,
+            pdf_dir=args.pdf_dir,
+        )
+        print(result.path)
         return 0
     if args.command == "verdict":
         required = {
