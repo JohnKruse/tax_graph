@@ -28,6 +28,15 @@ def render_pdf_pages(
     except ImportError as exc:  # pragma: no cover - depends on optional extra.
         raise RuntimeError("PDF rendering needs the optional 'pdf' extra (PyMuPDF)") from exc
 
+    # Some IRS-produced PDFs carry malformed accessibility/structure-tree
+    # metadata that MuPDF's C layer reports straight to stderr as
+    # "format error: No common ancestor in structure tree". This does not
+    # affect page rasterization (structure tree is unrelated to visual
+    # content) and is not a Python-catchable exception; silence the display
+    # of these known-benign warnings without suppressing real errors, which
+    # MuPDF still raises as exceptions.
+    fitz.TOOLS.mupdf_display_errors(False)
+
     pdf_file = Path(pdf_path).resolve()
     output = Path(output_dir)
     output.mkdir(parents=True, exist_ok=True)
