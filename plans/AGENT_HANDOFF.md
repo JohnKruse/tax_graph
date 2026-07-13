@@ -12,13 +12,34 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 - History: pruned at each phase close (latest: M14 close 2026-07-12). Full narration lives in
   `plans/archive/` (phase plans with close notes) and git history.
 
-## Current state (2026-07-12)
+## Current state (2026-07-13)
 
-**BALL: JOHN - M15 `Fresh Eyes` Steps 1-3 are ARCHITECT-VERIFIED and pushed; the
-human-only Step 4 (your review campaign) is ready.** Use the offline workbench bundle
-to drain the 30-object queue, record real human_minutes, adjudicate the blocking
-N-version item, and emit verdict files; then run `tax-graph review apply-verdicts` and
-re-verify.
+**BALL: JOHN - M15 human campaign is PAUSED.** The static bundle is rejected as the
+review surface. A replacement interactive official-artifact/semantic-analog plan is in
+`plans/PHASE_M15.md`; implementation awaits John's go.
+
+## 2026-07-13 - M15 product reset (Codex)
+
+- Read the handoff, current M15 plan/docs, implementation, tests, generated bundle, and
+  recent commits.
+- Confirmed the current output is a monolithic static page that renders forms plus full
+  instruction PDFs and exposes selected data mainly as raw JSON. It lacks paired
+  official/analog review, scoped review units, queue navigation, resume, and integrated
+  verdict entry.
+- Replaced `plans/PHASE_M15.md` with an implementation-ready plan for a local interactive
+  app: official artifact left, aligned semantic analog right, hover/click pairing,
+  plain-English provenance and transformations, evidence drawer, queue workflow, active
+  timing, and verdict emission.
+- Retained the artifact loaders, geometry/rendering primitives, and hardened verdict
+  pipeline as useful infrastructure. The human campaign must not start against the
+  current static bundle.
+- Added two mandatory John UX gates: a three-case vertical slice before breadth work and
+  a ten-entry rehearsal before the full campaign.
+- No implementation code was changed. Existing dirty `workbench/render.py` and untracked
+  `workbench_output/` were preserved.
+
+**Next:** John reviews the revised plan and gives the Worker a go for Step 1. Canary:
+**Fresh Eyes**.
 
 **ARCHITECT VERIFICATION of M15 Steps 1-3 (Opus 4.8, 2026-07-13) - PASS with one
 integrity fix applied inline:**

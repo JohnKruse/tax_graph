@@ -1,5 +1,9 @@
 # Review Workbench
 
+> Product reset, 2026-07-13: the current static bundle is infrastructure only and is not
+> an accepted human-review surface. The human campaign is paused. The authoritative
+> replacement design and implementation sequence are in `plans/PHASE_M15.md`.
+
 Status: M15 Steps 1-3 as-built, 2026-07-12. Canary: "Fresh Eyes". The workbench is a
 top-level workspace member with an artifact-only read seam. UI and verdict emission
 remain in later M15 steps.
