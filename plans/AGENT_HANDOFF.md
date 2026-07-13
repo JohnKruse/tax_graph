@@ -14,9 +14,22 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## Current state (2026-07-13)
 
-**BALL: WORKER - M15 S4 simple semantic formatters implemented and verified locally.** S2
-commit `c7026b1` and S3 commit `4ee0fda` are pushed to origin; S4 is ready to commit and push.
-S5 has not started. Plan: `plans/PHASE_M15.md`.
+**BALL: WORKER - M15 S5 complete semantic formatters implemented and verified locally.** S2-S4
+through commit `a9191fb` are pushed to origin; S5 is ready to commit and push. S6 has not
+started. Plan: `plans/PHASE_M15.md`.
+
+**S5 RESULT (Worker, Codex, 2026-07-13):** Completed the artifact-only semantic dispatcher for
+every operation in the current compiled graph: LOOKUP_TABLE, LOOKUP_BRACKET, MIN, MAX,
+MULTIPLY with a named parameter, and IF_ELSE join S4's COPY/SUM/SUBTRACT/NEGATE set. Added
+purpose-built repeatable-table, parameter, frontier, review-gap, input, and imported expressions.
+Unknown operations raise `SemanticFormatError`; they never degrade to raw rule JSON. Live-output
+audits preserve distinct branch-helper labels, translate chained table columns into readable
+column math, and prove all current graph operations format successfully.
+
+Verification: focused S3-S5 semantic/manifest tests = `16 passed`; `pytest -m m15 -q` =
+`37 passed, 324 deselected`; real CLI manifest write, `tax-graph validate 2025`, ASCII, and
+`git diff --check` succeeded; full repository pytest = `355 passed, 6 skipped in 651.74s`.
+S5 is ready to push; S6 not started.
 
 **S4 RESULT (Worker, Codex, 2026-07-13):** Added artifact-only COPY, SUM, SUBTRACT, and
 NEGATE formatters in `workbench/semantics.py`. Scoped computed-node units now carry concise
@@ -30,7 +43,7 @@ integration are covered too.
 Verification: focused `tests/test_review_semantics_m15.py` = `5 passed`; `pytest -m m15 -q`
 = `29 passed, 324 deselected`; real CLI manifest write, `tax-graph validate 2025`, ASCII, and
 `git diff --check` succeeded; full repository pytest = `347 passed, 6 skipped in 644.88s`.
-S4 is ready to push; S5 not started.
+S4 commit `a9191fb` is pushed.
 
 **S3 RESULT (Worker, Codex, 2026-07-13):** Added `workbench/manifest.py` as an artifact-only,
 deterministic projection from the compiled graph, geometry, PDFs, queue, and `review_scope`.

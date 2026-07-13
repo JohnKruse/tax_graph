@@ -55,7 +55,11 @@ def test_manifest_writes_stable_json_and_keeps_scope_roles_out_of_public_refs(tm
         for entry in payload["entries"]
         for unit in entry["units"]
     }
-    assert expression_kinds <= {"reference", "copy", "sum", "subtract", "negate"}
+    assert expression_kinds <= {
+        "reference", "input", "imported", "copy", "sum", "subtract", "negate",
+        "multiply", "lookup_table", "lookup_bracket", "max", "min", "if_else",
+        "repeatable_table", "parameter", "frontier", "review_gap",
+    }
 
 
 @pytest.mark.m15

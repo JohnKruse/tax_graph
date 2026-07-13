@@ -11,7 +11,7 @@ from typing import Any, Iterable
 
 from workbench.artifacts import ArtifactBundle, GRAPH_OBJECT_KINDS, load_artifact_bundle
 from workbench.schema import validate_review_manifest
-from workbench.semantics import FormattedSemantics, format_node_semantics
+from workbench.semantics import FormattedSemantics, format_scope_semantics
 
 
 class ManifestError(ValueError):
@@ -309,10 +309,7 @@ def _semantics(
     scope_ref: dict[str, Any],
     graph_index: dict[tuple[str, str], dict[str, Any]],
 ) -> FormattedSemantics | None:
-    if str(scope_ref.get("object_type", "")) not in {"node", "node_instance"}:
-        return None
-    node_id = str(scope_ref.get("object_id", "")).split("#", 1)[0]
-    return format_node_semantics(node_id, graph_index)
+    return format_scope_semantics(scope_ref, graph_index)
 
 
 def _citation_refs(object_data: dict[str, Any] | None) -> list[str]:
