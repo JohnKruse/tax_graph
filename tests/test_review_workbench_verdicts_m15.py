@@ -103,6 +103,39 @@ def test_apply_confirmed_verdict_updates_queue_graph_and_provenance(tmp_path: Pa
 
 
 @pytest.mark.m15
+def test_unbounded_verdict_refuses_to_bulk_confirm_a_multi_object_file(tmp_path: Path) -> None:
+    root = _review_root(tmp_path)
+    # The target file gains a SECOND node and the queue entry has no
+    # expected_nodes; a verdict with no object_ref must NOT confirm both.
+    (root / "graph" / "2025" / "nodes" / "review.yaml").write_text(
+        """- node_id: node_a
+  document_id: form_a_2025
+  label: Test node A
+  node_type: form_line
+  value_type: currency
+- node_id: node_b
+  document_id: form_a_2025
+  label: Test node B
+  node_type: form_line
+  value_type: currency
+""",
+        encoding="utf-8",
+    )
+    emit_verdict(
+        root=root,
+        year=2025,
+        queue_id="q_node",
+        verdict_id="verdict_q_node_1",
+        reviewer_id="john",
+        human_minutes=2.5,
+        verdict="confirmed",
+        reviewed_at="2026-07-12T10:00:00Z",
+    )
+    with pytest.raises(ValueError, match="refusing to human-confirm"):
+        apply_verdicts(2025, root=root)
+
+
+@pytest.mark.m15
 def test_edited_verdict_is_rejected_by_hash_check(tmp_path: Path) -> None:
     root = _review_root(tmp_path)
     emitted = emit_verdict(

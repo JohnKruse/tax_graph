@@ -93,6 +93,10 @@ def test_extension_pipeline_accepts_overlay_and_exposes_user_provenance(tmp_path
         "document_id": "schedule_x_2025",
         "artifact_hash": accepted.content_hash,
         "verification_tier": "T1",
+        # M15 extended provenance with the human-review axis; an unreviewed
+        # extension node is honestly not-yet-human-confirmed.
+        "human_confirmed": False,
+        "human_review": None,
     }
 
     packaged = package_extension("schedule_x_2025", root=root, config=config, output_dir=tmp_path / "dist")

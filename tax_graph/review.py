@@ -157,7 +157,8 @@ def _apply_graph_review(root: Path, entry: dict[str, Any], verdict: dict[str, An
         objects = payload if was_list else [payload]
         id_field = _ID_FIELDS[kind]
         target_id = str(object_ref.get("object_id") or "")
-        changed = False
+        bounded = bool(target_id) or (kind == "nodes" and bool(expected_nodes))
+        matches: list[dict[str, Any]] = []
         for obj in objects:
             if not isinstance(obj, dict):
                 continue
@@ -165,11 +166,22 @@ def _apply_graph_review(root: Path, entry: dict[str, Any], verdict: dict[str, An
                 continue
             if not target_id and kind == "nodes" and expected_nodes and str(obj.get(id_field)) not in expected_nodes:
                 continue
+            matches.append(obj)
+        # Fail closed: one human verdict may not silently confirm a whole
+        # multi-object file. Human confirmation must be BOUNDED to the object
+        # the reviewer actually looked at - a specific object_ref.object_id or
+        # (for nodes) the queue entry's expected_nodes set. Otherwise a single
+        # click would inflate an entire file's tier to human-confirmed.
+        if len(matches) > 1 and not bounded:
+            raise ValueError(
+                f"refusing to human-confirm {len(matches)} objects in {path} from one "
+                f"verdict without object_ref.object_id or the queue entry's expected_nodes"
+            )
+        for obj in matches:
             obj["human_confirmed"] = True
             obj["verification_tier"] = "human-confirmed"
             obj["human_review"] = dict(review)
-            changed = True
-        if changed:
+        if matches:
             _write_yaml(path, objects if was_list else objects[0])
             changed_paths.add(path)
     # The sidecar is the durable audit link for field maps, citations, edges,

@@ -14,10 +14,41 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## Current state (2026-07-12)
 
-**BALL: JOHN - M15 `Fresh Eyes`, Steps 1-3 are complete. Global canary: `Ledger Llama`.
-The worker is paused at the human-only Step 4: use the offline bundle to drain the
-queue, record real human_minutes, adjudicate the blocking N-version item, and emit
-verdict files.**
+**BALL: JOHN - M15 `Fresh Eyes` Steps 1-3 are ARCHITECT-VERIFIED and pushed; the
+human-only Step 4 (your review campaign) is ready.** Use the offline workbench bundle
+to drain the 30-object queue, record real human_minutes, adjudicate the blocking
+N-version item, and emit verdict files; then run `tax-graph review apply-verdicts` and
+re-verify.
+
+**ARCHITECT VERIFICATION of M15 Steps 1-3 (Opus 4.8, 2026-07-13) - PASS with one
+integrity fix applied inline:**
+- Core invariant HELD: `apply_verdicts` (`tax_graph/review.py`) is the only writer of
+  `human_confirmed: true`; verdicts are schema-validated + content-hashed (hand-edits
+  rejected), append-only, and `reviewer_id in {agent,codex,worker,system}` is refused -
+  an honestly-named agent CANNOT forge a confirmation.
+- No-import boundary is enforced at the strictest setting (a test fails on ANY
+  `tax_graph.*` import); the workbench imports zero pipeline code and re-derives page
+  geometry from the `node_geometry.json` ARTIFACT itself. This DEVIATES from the plan's
+  pin to reuse `resolve_node_geometry` - ACCEPTED, it is the stronger objectivity stance
+  the review-workbench doc actually asks for.
+- **FIX APPLIED (Architect):** `_apply_graph_review` would confirm EVERY object in a
+  multi-object nodes/decisions file when a verdict carried no `object_id` and the queue
+  entry had no `expected_nodes` - one click inflating a whole file's tier. Now fails
+  closed (raises unless the confirmation is bounded to a specific object_id or
+  expected_nodes); regression test added. `pytest -m m15` -> 10 passed.
+- **SECOND FIX + PROCESS NOTE (Architect):** the M15 change to `provenance_for_node`
+  (added `human_confirmed`/`human_review`) broke an M14 exact-match assertion in
+  `test_self_serve_extension_m14.py`, so the Step 1-3 commits did NOT meet the commit
+  floor as delivered (the worker ran `pytest -m m15` green but not the FULL suite; the
+  full run showed 1 failed). Behavior is correct - the stale assert now carries the two
+  new keys. STANDING REMINDER: the commit floor is the FULL suite, not the phase marker;
+  a provenance/shape change ripples into other phases' exact-match tests. Architect
+  re-ran the full suite before push.
+- **Follow-up (pre-existing, not an M15 regression):** `verify mine-examples --confirm`
+  (M6) still sets `human_confirmed: true` from a CLI flag with NO reviewer id / provenance
+  / hash - weaker than the M15 verdict discipline. Route it through verdict-grade
+  provenance during the campaign or as M15 cleanup; an agent invoking `--confirm` is the
+  one remaining soft path to the bit.
 JOHN: two things need your eye - (1) skim the M15 "Design pins" (workspace member not
 separate repo; prebaked page images not pdf.js; verdicts flow OUT as files, never
 edits; the confirmed/pipeline_defect/source_pathology taxonomy); (2) M15 Step 4 is
