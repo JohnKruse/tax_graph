@@ -48,3 +48,5 @@ config/tax-graph.config.yaml
 /output/
 graph/*/_drafts/
 graph_ext/
+workbench_output/
+.workbench_state/

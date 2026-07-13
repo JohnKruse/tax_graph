@@ -14,9 +14,31 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## Current state (2026-07-13)
 
-**BALL: JOHN - M15 human campaign is PAUSED.** The static bundle is rejected as the
-review surface. A replacement interactive official-artifact/semantic-analog plan is in
-`plans/PHASE_M15.md`; implementation awaits John's go.
+**BALL: WORKER - M15 REPLANNED + Architect-reviewed; ready for Step 1 (Luna-sized).**
+The static bundle is rejected; the new interactive official/analog workbench is planned in
+`plans/PHASE_M15.md`.
+
+**ARCHITECT REVIEW + REVISION of the M15 replan (Opus 4.8, 2026-07-13, at John's
+direction):** Codex's replan captures the vision (paired official/analog panes, hover
+pairing, plain-English per-op formatters, scoped review UNITS via a review-manifest,
+evidence drawer, queue workflow, integrated verdicts) and preserves the integrity
+constraints - accepted in substance. Three things were fixed before handing to a worker:
+- **STACK CHANGED** from React/TypeScript/Vite/Playwright(npm) to **Python Flask server +
+  vanilla no-build JS frontend + Python Playwright e2e**. Reason: this machine has NO
+  Node/npm (verified), so the npm toolchain literally cannot build or test here; and even
+  with Node it is a poor fit for GPT-5.6 Luna. Vanilla JS + Python is one-language, no
+  build step, and Luna-tractable. (If John ever wants React, install Node AND use a
+  stronger model for the frontend - noted in the plan.)
+- **STEPS DECOMPOSED** from 8 feature-dense steps into ~30 single-purpose commits (S1-S30),
+  grouped A-G, each with its own test command + acceptance, sized for a weak model. Two
+  JOHN GATES remain: Gate A after the 3-case vertical slice (S16), Gate B after the
+  rehearsal (S28); the human campaign is S29.
+- **EXIT CRITERIA FIXED** to real CLI commands (the replan invented `tax-graph compile`,
+  `verify --profile full`, `review-workbench status`, and npm targets).
+Worker may start **S1 (review-manifest schemas)** now with Luna. `human_confirmed: true`
+stays the one bit only a human earns - no agent path writes it (S27 closes the last soft
+path, `mine-examples --confirm`). Also committed this turn: the retained `workbench/
+render.py` MuPDF-stderr-noise fix, and `workbench_output/`/`.workbench_state/` gitignored.
 
 ## 2026-07-13 - M15 product reset (Codex)
 
