@@ -14,9 +14,23 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## Current state (2026-07-13)
 
-**BALL: WORKER - M15 S3 manifest builder fixed and verified locally.** S2 commit `c7026b1`
-is pushed to origin; the amended S3 commit is ready to push. S4 has not started. Plan:
-`plans/PHASE_M15.md`.
+**BALL: WORKER - M15 S4 simple semantic formatters implemented and verified locally.** S2
+commit `c7026b1` and S3 commit `4ee0fda` are pushed to origin; S4 is ready to commit and push.
+S5 has not started. Plan: `plans/PHASE_M15.md`.
+
+**S4 RESULT (Worker, Codex, 2026-07-13):** Added artifact-only COPY, SUM, SUBTRACT, and
+NEGATE formatters in `workbench/semantics.py`. Scoped computed-node units now carry concise
+English plus schema-validated expression trees, with cross-document labels such as `Schedule 1
+line 10` and full printed sublines such as `5a`/`2b`. The live manifest defers unresolved
+frontier operands and repeatable-table nodes to their explicit S5 formatters rather than
+guessing or emitting ambiguous line-only math. Golden tests pin `Add lines 1z + 2b + 3b`,
+`Subtract line 15 from line 14`, and `Copied from Schedule 1 line 10`; NEGATE and live-manifest
+integration are covered too.
+
+Verification: focused `tests/test_review_semantics_m15.py` = `5 passed`; `pytest -m m15 -q`
+= `29 passed, 324 deselected`; real CLI manifest write, `tax-graph validate 2025`, ASCII, and
+`git diff --check` succeeded; full repository pytest = `347 passed, 6 skipped in 644.88s`.
+S4 is ready to push; S5 not started.
 
 **S3 RESULT (Worker, Codex, 2026-07-13):** Added `workbench/manifest.py` as an artifact-only,
 deterministic projection from the compiled graph, geometry, PDFs, queue, and `review_scope`.
@@ -32,7 +46,7 @@ example file changes the manifest hash.
 Verification after the fix: focused `tests/test_review_manifest_m15.py` = `3 passed`;
 `pytest -m m15 -q` = `24 passed, 324 deselected`; `tools/check_ascii.py` OK; CLI manifest write
 and `tax-graph validate 2025` succeeded; full repository pytest = `342 passed, 6 skipped in
-636.99s`. S3 is ready to push; S4 not started.
+636.99s`. S3 commit `4ee0fda` is pushed.
 
 **S2 FIX VERDICT (Architect, Opus 4.8, 2026-07-13): ACCEPTED on substance; push pending.**
 Independently confirmed (read-only, Bash was down) that the exact reopen concerns are fixed:

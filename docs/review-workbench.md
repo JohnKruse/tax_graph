@@ -54,6 +54,15 @@ artifact hashes and unit data, so repeated builds are byte-stable. Build one wit
 
 S3 intentionally does not generate English semantic text or infer missing geometry.
 
+## Step 4 simple semantics
+
+The manifest now replaces structure-only node references with plain-English summaries and
+schema-validated expression trees when a scoped computed node uses COPY, SUM, SUBTRACT, or
+NEGATE. Labels are derived from the IRS document and line spine: same-document operands use
+compact `line N` labels, while cross-document copies retain names such as `Schedule 1 line 10`.
+Unsupported operations remain structure-only until their explicit Step 5 formatters land; the
+workbench never falls back to displaying raw rule JSON as an explanation.
+
 ## Step 2 artifact view
 
 `workbench.geometry.GeometryIndex` keeps the AcroForm field layer, resolved node

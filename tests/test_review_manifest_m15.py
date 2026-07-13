@@ -50,7 +50,12 @@ def test_manifest_writes_stable_json_and_keeps_scope_roles_out_of_public_refs(tm
         for unit in entry["units"]
         for object_ref in unit["object_refs"]
     )
-    assert all(unit["expression"]["kind"] == "reference" for entry in payload["entries"] for unit in entry["units"])
+    expression_kinds = {
+        unit["expression"]["kind"]
+        for entry in payload["entries"]
+        for unit in entry["units"]
+    }
+    assert expression_kinds <= {"reference", "copy", "sum", "subtract", "negate"}
 
 
 @pytest.mark.m15

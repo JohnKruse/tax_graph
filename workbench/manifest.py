@@ -11,6 +11,7 @@ from typing import Any, Iterable
 
 from workbench.artifacts import ArtifactBundle, GRAPH_OBJECT_KINDS, load_artifact_bundle
 from workbench.schema import validate_review_manifest
+from workbench.semantics import FormattedSemantics, format_node_semantics
 
 
 class ManifestError(ValueError):
@@ -128,6 +129,7 @@ def _build_payload(
                 source_paths.add(root / artifact_path)
             object_ref = _manifest_ref(scope_ref, graph_index)
             object_data = _find_object(graph_index, scope_ref)
+            semantics = _semantics(scope_ref, graph_index)
             locations = _locations(scope_ref, geometry, pdf_hashes)
             if not locations:
                 locations = [None]
@@ -141,6 +143,7 @@ def _build_payload(
                         object_ref=object_ref,
                         object_data=object_data,
                         graph_index=graph_index,
+                        semantics=semantics,
                         location=location,
                         required=_required(scope_ref),
                     )
@@ -176,6 +179,7 @@ def _unit(
     object_ref: dict[str, Any],
     object_data: dict[str, Any] | None,
     graph_index: dict[tuple[str, str], dict[str, Any]],
+    semantics: FormattedSemantics | None,
     location: dict[str, Any] | None,
     required: bool,
 ) -> dict[str, Any]:
@@ -191,9 +195,9 @@ def _unit(
         "object_refs": [object_ref],
         "official_location": location,
         "analog_placement": None,
-        "semantic_class": _semantic_class(review_kind, scope_ref, object_data),
-        "summary": str(queue_entry.get("summary", "Review scoped artifacts.")),
-        "expression": {"kind": "reference", "ref": object_ref},
+        "semantic_class": semantics.semantic_class if semantics else _semantic_class(review_kind, scope_ref, object_data),
+        "summary": semantics.summary if semantics else str(queue_entry.get("summary", "Review scoped artifacts.")),
+        "expression": semantics.expression if semantics else {"kind": "reference", "ref": object_ref},
         "coverage": {"state": "pending", "required_for_confirm": required},
     }
     if citations:
@@ -299,6 +303,16 @@ def _find_object(
     scope_ref: dict[str, Any],
 ) -> dict[str, Any] | None:
     return graph_index.get((str(scope_ref.get("object_type", "")), str(scope_ref.get("object_id", ""))))
+
+
+def _semantics(
+    scope_ref: dict[str, Any],
+    graph_index: dict[tuple[str, str], dict[str, Any]],
+) -> FormattedSemantics | None:
+    if str(scope_ref.get("object_type", "")) not in {"node", "node_instance"}:
+        return None
+    node_id = str(scope_ref.get("object_id", "")).split("#", 1)[0]
+    return format_node_semantics(node_id, graph_index)
 
 
 def _citation_refs(object_data: dict[str, Any] | None) -> list[str]:
