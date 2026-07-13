@@ -14,9 +14,24 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## Current state (2026-07-13)
 
-**BALL: WORKER - M15 REPLANNED + Architect-reviewed; ready for Step 1 (Luna-sized).**
-The static bundle is rejected; the new interactive official/analog workbench is planned in
+**BALL: WORKER - M15 S1 is DONE (Architect-verified + committed); start S2 (queue
+`review_scope` migration).** The new interactive official/analog workbench is planned in
 `plans/PHASE_M15.md`.
+
+**S1 VERDICT (Architect, Opus 4.8, 2026-07-13):** sound. The review-projection schemas +
+validation helper + 7 tests are good (valid fixtures pass; invalid ones fail closed on
+additionalProperties/empty-units/negative-time/bad-date; schema-dir override works); ASCII
+green; all four schemas valid JSON; `__init__` re-exports clean; full suite 335 passed / 6
+skipped. The "M8 drill hang" was a FALSE ALARM: `test_default_drill_catalog_catches_expected_layers`
+PASSES in 88.8s, the full suite is ~10 min, and the worker's 184s/304s timeouts were too
+short - the "sandbox timeout, not a hang; run >=600s or split in half" note is already
+pinned below. Nothing wrong with M8 or the environment.
+**WORKER RUNTIME METHOD (use on EVERY step):** you cannot run the ~10-min full suite in one
+foreground sandbox call. Either run it in the BACKGROUND, or SPLIT it into two halves each
+under your timeout (e.g. by test-file range) and record both results. Per step, YOU run
+`pytest -m m15` + the step's focused tests + `python tools/check_ascii.py`; the Architect
+runs and confirms the FULL-suite floor and pushes each step after verification. Do NOT
+commit a step on a partial suite run - S1's instinct to hold was correct.
 
 **ARCHITECT REVIEW + REVISION of the M15 replan (Opus 4.8, 2026-07-13, at John's
 direction):** Codex's replan captures the vision (paired official/analog panes, hover
@@ -180,7 +195,12 @@ material. Year rollover (TY2026) stays sequenced after M15 or when TY2026 docs d
   and the Step-5 record-hash ordering fix. Step 2's live pass was John + Architect.
 
 ## Open for Architect
-- (none)
+- (none) - the M15 S1 "full-suite blocker" is RESOLVED. It was NOT a hang:
+  `test_default_drill_catalog_catches_expected_layers` passes in 88.8s and the full suite is
+  ~10 min (335 passed / 6 skipped); the worker's 184s/304s timeouts were too short. Architect
+  verified S1 and committed it. Going forward, run the full suite in the background or split
+  it in two (see the BALL runtime method); the Architect confirms the full-suite floor at
+  push, so the worker never needs to complete the full suite in one sandbox call.
 
 ## From Architect
 - **M15 is planned (`plans/PHASE_M15.md`, 2026-07-12).** The workbench builds against the FINAL artifact shape
@@ -195,6 +215,11 @@ material. Year rollover (TY2026) stays sequenced after M15 or when TY2026 docs d
   `docs/self-serve-extension.md`.
 
 ## From Worker
+- **M15 S1 (Codex, 2026-07-13):** added strict review-manifest, review-unit,
+  review-expression, and session-state schemas plus artifact-only validation helpers and
+  fixtures. Schema references are self-contained so direct JSON Schema validation works;
+  no pipeline imports were added. Canary: Fresh Eyes. Implementation is held at S1 and
+  not committed pending the full-suite floor and the M8 blocker above.
 - M15 Steps 1-3: artifact-only `workbench/` with AST-enforced no-import boundary;
   read-only SQLite/geometry/queue/draft/PDF loaders; PyMuPDF build-time rasterization;
   static offline HTML with field/provenance/gap overlays; append-only hashed verdict

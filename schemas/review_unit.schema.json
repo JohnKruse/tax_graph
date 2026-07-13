@@ -1,0 +1,198 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "review_unit.schema.json",
+  "title": "Tax Graph review workbench unit",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "queue_id", "unit_id", "review_kind", "required", "object_refs",
+    "official_location", "analog_placement", "semantic_class", "summary",
+    "expression", "coverage"
+  ],
+  "properties": {
+    "queue_id": {"type": "string", "pattern": "^[a-z0-9_]+$"},
+    "unit_id": {"type": "string", "pattern": "^[a-z0-9_]+$"},
+    "review_kind": {"type": "string", "minLength": 1},
+    "required": {"type": "boolean"},
+    "object_refs": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/object_ref"},
+      "uniqueItems": true
+    },
+    "official_location": {
+      "oneOf": [{"$ref": "#/$defs/location"}, {"type": "null"}]
+    },
+    "analog_placement": {
+      "oneOf": [{"$ref": "#/$defs/placement"}, {"type": "null"}]
+    },
+    "semantic_class": {
+      "enum": [
+        "input", "imported", "copy", "calculation", "lookup", "branch",
+        "repeatable_table", "parameter", "frontier", "review_gap",
+        "decision", "citation", "field_map", "example", "nversion",
+        "contract"
+      ]
+    },
+    "summary": {"type": "string", "minLength": 1},
+    "expression": {"$ref": "#/$defs/expression"},
+    "source_refs": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/source_ref"}
+    },
+    "citation_refs": {
+      "type": "array",
+      "items": {"type": "string", "minLength": 1},
+      "uniqueItems": true
+    },
+    "witness_refs": {
+      "type": "array",
+      "items": {"type": "string", "minLength": 1},
+      "uniqueItems": true
+    },
+    "confidence": {"type": "number", "minimum": 0, "maximum": 1},
+    "trust": {"type": "string", "minLength": 1},
+    "nversion_refs": {
+      "type": "array",
+      "items": {"type": "string", "minLength": 1},
+      "uniqueItems": true
+    },
+    "promotion_diff_refs": {
+      "type": "array",
+      "items": {"type": "string", "minLength": 1},
+      "uniqueItems": true
+    },
+    "coverage": {"$ref": "#/$defs/coverage"}
+  },
+  "$defs": {
+    "object_ref": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["object_type", "object_id"],
+      "properties": {
+        "object_type": {"type": "string", "minLength": 1},
+        "object_id": {"type": "string", "minLength": 1},
+        "artifact_path": {"type": "string", "minLength": 1},
+        "display_label": {"type": "string"}
+      }
+    },
+    "expression": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind"],
+      "properties": {
+        "kind": {
+          "enum": [
+            "input", "imported", "copy", "sum", "subtract", "negate",
+            "multiply", "lookup_table", "lookup_bracket", "max", "min",
+            "if_else", "repeatable_table", "parameter", "frontier",
+            "review_gap", "literal", "reference"
+          ]
+        },
+        "operation": {
+          "enum": [
+            "COPY", "SUM", "SUBTRACT", "NEGATE", "MULTIPLY",
+            "LOOKUP_TABLE", "LOOKUP_BRACKET", "MAX", "MIN", "IF_ELSE"
+          ]
+        },
+        "label": {"type": "string"},
+        "text": {"type": "string"},
+        "value": {"type": ["string", "number", "boolean", "null"]},
+        "ref": {"$ref": "#/$defs/object_ref"},
+        "source": {"$ref": "#/$defs/expression"},
+        "left": {"$ref": "#/$defs/expression"},
+        "right": {"$ref": "#/$defs/expression"},
+        "factor": {"$ref": "#/$defs/expression"},
+        "operands": {
+          "type": "array",
+          "minItems": 1,
+          "items": {"$ref": "#/$defs/expression"}
+        },
+        "children": {
+          "type": "array",
+          "items": {"$ref": "#/$defs/expression"}
+        },
+        "branches": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["when", "then"],
+            "properties": {
+              "when": {"type": "string", "minLength": 1},
+              "then": {"$ref": "#/$defs/expression"}
+            }
+          }
+        },
+        "else": {"$ref": "#/$defs/expression"},
+        "parameter_ref": {"type": "string", "minLength": 1},
+        "lookup_ref": {"type": "string", "minLength": 1},
+        "citation_refs": {
+          "type": "array",
+          "items": {"type": "string", "minLength": 1},
+          "uniqueItems": true
+        },
+        "object_refs": {
+          "type": "array",
+          "items": {"$ref": "#/$defs/object_ref"},
+          "uniqueItems": true
+        },
+        "reason": {"type": "string", "minLength": 1}
+      }
+    },
+    "location": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["document_id", "source_pdf_hash", "page", "rect"],
+      "properties": {
+        "document_id": {"type": "string", "minLength": 1},
+        "source_pdf_hash": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "page": {"type": "integer", "minimum": 1},
+        "rect": {"$ref": "#/$defs/rect"},
+        "locator_text": {"type": "string"}
+      }
+    },
+    "placement": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["page", "anchor_rect", "lane", "display_order"],
+      "properties": {
+        "page": {"type": "integer", "minimum": 1},
+        "anchor_rect": {"$ref": "#/$defs/rect"},
+        "lane": {"type": "integer", "minimum": 0},
+        "display_order": {"type": "integer", "minimum": 0}
+      }
+    },
+    "rect": {
+      "type": "array",
+      "prefixItems": [
+        {"type": "number"}, {"type": "number"},
+        {"type": "number"}, {"type": "number"}
+      ],
+      "minItems": 4,
+      "maxItems": 4
+    },
+    "source_ref": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["direction", "object_type", "object_id"],
+      "properties": {
+        "direction": {"enum": ["source", "target"]},
+        "object_type": {"type": "string", "minLength": 1},
+        "object_id": {"type": "string", "minLength": 1},
+        "display_label": {"type": "string"}
+      }
+    },
+    "coverage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["state"],
+      "properties": {
+        "state": {"enum": ["pending", "visited", "complete", "not_applicable"]},
+        "required_for_confirm": {"type": "boolean"},
+        "visited_at": {"type": "string", "format": "date-time"},
+        "note": {"type": "string"}
+      }
+    }
+  }
+}

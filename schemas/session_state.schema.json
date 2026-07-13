@@ -1,0 +1,49 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "session_state.schema.json",
+  "title": "Review workbench resume session",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "tax_year", "queue_id", "current_unit_id", "page", "selection", "zoom",
+    "notes", "elapsed_active_seconds", "visited_unit_ids", "updated_at"
+  ],
+  "properties": {
+    "tax_year": {"type": "integer", "minimum": 1900, "maximum": 2100},
+    "queue_id": {"type": "string", "pattern": "^[a-z0-9_]+$"},
+    "current_unit_id": {"type": ["string", "null"]},
+    "page": {"type": "integer", "minimum": 1},
+    "selection": {
+      "oneOf": [{"$ref": "#/$defs/selection"}, {"type": "null"}]
+    },
+    "zoom": {"type": "number", "exclusiveMinimum": 0},
+    "notes": {"type": "string"},
+    "elapsed_active_seconds": {"type": "number", "minimum": 0},
+    "visited_unit_ids": {
+      "type": "array",
+      "items": {"type": "string", "pattern": "^[a-z0-9_]+$"},
+      "uniqueItems": true
+    },
+    "updated_at": {"type": "string", "format": "date-time"}
+  },
+  "$defs": {
+    "selection": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["unit_id"],
+      "properties": {
+        "unit_id": {"type": "string", "pattern": "^[a-z0-9_]+$"},
+        "side": {"enum": ["official", "analog"]},
+        "rect": {
+          "type": "array",
+          "prefixItems": [
+            {"type": "number"}, {"type": "number"},
+            {"type": "number"}, {"type": "number"}
+          ],
+          "minItems": 4,
+          "maxItems": 4
+        }
+      }
+    }
+  }
+}

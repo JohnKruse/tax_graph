@@ -22,6 +22,15 @@ from workbench.artifacts import (
 )
 from workbench.geometry import GeometryHit, GeometryIndex
 from workbench.verdicts import ReviewVerdict, emit_verdict, load_verdict
+from workbench.schema import (
+    SchemaValidationError,
+    load_schema,
+    validate_projection,
+    validate_review_expression,
+    validate_review_manifest,
+    validate_review_unit,
+    validate_session_state,
+)
 
 from workbench.builder import build_bundle
 
@@ -46,4 +55,11 @@ __all__ = [
     "ReviewVerdict",
     "emit_verdict",
     "load_verdict",
+    "SchemaValidationError",
+    "load_schema",
+    "validate_projection",
+    "validate_review_expression",
+    "validate_review_manifest",
+    "validate_review_unit",
+    "validate_session_state",
 ]

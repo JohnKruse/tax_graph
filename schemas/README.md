@@ -15,6 +15,10 @@ JSON Schema (draft 2020-12) definitions for the graph's authored YAML objects. T
 | `decision.schema.json` | **(addition)** A first-class human-judgment point. Enforces an escape hatch (`other`/`unsupported`/`escalate`) at the schema level, so a filer is never forced into a wrong choice. |
 | `taxpayer_facts.schema.json` | Normalized inputs (not canonical graph); each fact records provenance for the audit trace. |
 | `carryforward.schema.json` | **(addition)** The structured, machine-ingestible block of a Return Record (see `../docs/return-record.md`): cross-year carryforwards + consistency elections that year N emits and year N+1 ingests. |
+| `review_manifest.schema.json` | Deterministic review-workbench projection grouped by deferred-review queue entry. |
+| `review_unit.schema.json` | One scoped review target with official geometry, semantic analog placement, evidence references, and coverage state. |
+| `review_expression.schema.json` | Recursive semantic expression tree used to explain graph operations in reviewer language. |
+| `session_state.schema.json` | Non-authoritative queue-entry resume state: selection, page, zoom, notes, timing, and visited units. |
 
 ## Conventions
 
