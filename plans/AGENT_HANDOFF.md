@@ -14,9 +14,54 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## Current state (2026-07-13)
 
-**BALL: WORKER - M15 S1 is DONE (Architect-verified + committed); start S2 (queue
-`review_scope` migration).** The new interactive official/analog workbench is planned in
-`plans/PHASE_M15.md`.
+**BALL: ARCHITECT - M15 S2 fix is complete locally and ready for final review/push.** Origin
+still stays at `d86ca47` (S1); the amended local S2 commit is not pushed. The new
+interactive official/analog workbench is planned in `plans/PHASE_M15.md`.
+
+**S2 FIX RESULT (Worker, Codex, 2026-07-13):** Removed the whole-file object-id fallback and
+regenerated the queue with targeted scopes. Decision reviews now name the decision, options,
+and declared citations; worksheet reviews name their own line nodes and referenced rules;
+intake reviews name concrete routing/trigger/expectation records; every pending entry has at
+least one `primary` ref. The refresh is explicit (`tax-graph review migrate-scope --refresh`),
+and the normal command remains byte-stable (SHA256
+`27F8DC25B3D39DA98517D39B201C857C06F1CBF9C01EBCD80A64A9A0A0558122`).
+
+Verification: focused S2 `4 passed`; `pytest -m m15 -q` = `21 passed, 324 deselected`;
+`tools/check_ascii.py` OK; `validate 2025` graph integrity OK; full suite `339 passed, 6
+skipped in 581.86s`. Queue regeneration migrated all 30 pending entries and the generated
+scope test confirms every pending entry has a primary target. No S3 work started.
+
+**S2 VERDICT (Architect, Opus 4.8, 2026-07-13): REOPEN.** The migration FRAMEWORK is good -
+deterministic, idempotent (rerun 0 changes / stable SHA), additive schema, `validate 2025`
+green, and the field_map + frontier scopes are exactly right (e.g. field_map_review_schedule_d
+= 8 primary mapped + 105 excluded + 2 frontier). BUT the fallback `_collect_file_refs` in
+`tax_graph/review_scope.py` dumps EVERY object of each referenced YAML file as `role: related`,
+so any entry lacking expected_nodes / changed_object_ids / review.md gets a whole-file dump
+with NO primary object identifying what is under review:
+- `routing_review_schedule_d_2025_line_20_decision`: 518 refs, ALL related, ZERO primary,
+  and the DECISION OBJECT ITSELF IS ABSENT from its own scope - the reviewer is handed 352
+  unrelated edges and never pointed at the decision to confirm.
+- `authored_review_schedule_d_2025_tax_worksheet`: 409 refs, all related, no primary.
+- `intake_review_routing_v1_2025` (+ triggers/expectations): 154, all related, no primary.
+- The queue file ballooned to 10,488 lines / 2,449 refs; concrete scope should be a few
+  hundred total.
+PUNCH LIST (fix at S2, re-run migration, do NOT carry to S3):
+1. EVERY entry must carry >=1 `primary` object that names what is under review. Zero-primary
+   is a bug (S6 preflight will later fail it).
+2. Decision reviews: scope the DECISION object + its option nodes + their citations as
+   primary (read `graph/2025/decisions/*.yaml`), not the transitive edge closure.
+3. Authored-worksheet reviews: scope the worksheet subunit's OWN line nodes + rules as
+   primary, not every object in the dependency files.
+4. Intake reviews: scope the concrete routing_edges / triggers / expectations objects as
+   primary (from `graph/2025/routing_edges|triggers|expectations/*.yaml`).
+5. Remove or tightly bound the whole-file `related` dump - small context at most, NEVER the
+   only content. Keep the correct field_map / frontier / expected_nodes / changed_object_ids
+   / review.md paths as-is.
+6. Re-run `tax-graph review migrate-scope --year 2025`; the queue should shrink sharply and
+   stay idempotent. AMEND `c083089` (or `git reset --soft` it) after fixing so the pushed
+   history does not carry the 10,488-line over-scoped queue.
+Retest: add a focused test asserting every migrated entry has >=1 primary object; then M15
+marker + ASCII + `validate 2025`; hand back for the full-suite floor + push.
 
 **S1 VERDICT (Architect, Opus 4.8, 2026-07-13):** sound. The review-projection schemas +
 validation helper + 7 tests are good (valid fixtures pass; invalid ones fail closed on
@@ -202,6 +247,15 @@ material. Year rollover (TY2026) stays sequenced after M15 or when TY2026 docs d
   it in two (see the BALL runtime method); the Architect confirms the full-suite floor at
   push, so the worker never needs to complete the full suite in one sandbox call.
 
+**S2 VERDICT (Worker, 2026-07-13):** review queue schema now accepts strict additive
+`review_scope`; `tax-graph review migrate-scope --year 2025` deterministically backfilled
+all 30 current pending entries with explicit object refs. Existing expected nodes and
+changed ids are preserved as refs; field maps, frontiers, intake artifacts, extension
+objects, and promotion review.md bullets are scoped to concrete objects. Missing scope
+fails closed rather than defaulting to a document. Migration rerun changed 0 entries and
+the queue SHA-256 stayed stable. Focused S2 tests: 3 passed; M15 marker: 20 passed;
+ASCII: green; `validate 2025`: green; full suite: 338 passed, 6 skipped in 588.81s.
+
 ## From Architect
 - **M15 is planned (`plans/PHASE_M15.md`, 2026-07-12).** The workbench builds against the FINAL artifact shape
   (docs/review-workbench.md + M12's node-to-page geometry); the campaign drains the
@@ -215,11 +269,17 @@ material. Year rollover (TY2026) stays sequenced after M15 or when TY2026 docs d
   `docs/self-serve-extension.md`.
 
 ## From Worker
+- **M15 S2 (Codex, 2026-07-13):** added `tax_graph/review_scope.py`, the
+  `review migrate-scope` CLI command, queue schema support, 3 focused tests, the scoped
+  2025 queue projection, and the workbench contract note. Promotion scopes prefer the
+  explicit object bullets in draft `review.md` and fall back to cited artifact objects
+  only where no review manifest exists. Commit is ready for Architect verification and
+  push; do not start S3 until then.
 - **M15 S1 (Codex, 2026-07-13):** added strict review-manifest, review-unit,
   review-expression, and session-state schemas plus artifact-only validation helpers and
   fixtures. Schema references are self-contained so direct JSON Schema validation works;
-  no pipeline imports were added. Canary: Fresh Eyes. Implementation is held at S1 and
-  not committed pending the full-suite floor and the M8 blocker above.
+  no pipeline imports were added. Canary: Fresh Eyes. S1 was Architect-verified and
+  committed after the full-suite floor passed.
 - M15 Steps 1-3: artifact-only `workbench/` with AST-enforced no-import boundary;
   read-only SQLite/geometry/queue/draft/PDF loaders; PyMuPDF build-time rasterization;
   static offline HTML with field/provenance/gap overlays; append-only hashed verdict

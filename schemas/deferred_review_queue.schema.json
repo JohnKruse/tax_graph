@@ -58,6 +58,38 @@
             "type": "array",
             "items": {"type": "string"}
           },
+          "review_scope": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["scope_version", "scope_type", "object_refs"],
+            "properties": {
+              "scope_version": {"const": 1},
+              "scope_type": {
+                "enum": [
+                  "object", "field_map", "promotion", "decision", "frontier",
+                  "intake", "example", "extension"
+                ]
+              },
+              "object_refs": {
+                "type": "array",
+                "minItems": 1,
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": ["object_type", "object_id", "source_path"],
+                  "properties": {
+                    "object_type": {"type": "string", "minLength": 1},
+                    "object_id": {"type": "string", "minLength": 1},
+                    "source_path": {"type": "string", "minLength": 1},
+                    "role": {
+                      "enum": ["primary", "related", "excluded", "frontier", "expected"]
+                    }
+                  }
+                },
+                "uniqueItems": true
+              }
+            }
+          },
           "gate": {
             "type": "string",
             "enum": ["project", "user"]

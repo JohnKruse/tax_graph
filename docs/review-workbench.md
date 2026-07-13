@@ -8,6 +8,23 @@ Status: M15 Steps 1-3 as-built, 2026-07-12. Canary: "Fresh Eyes". The workbench 
 top-level workspace member with an artifact-only read seam. UI and verdict emission
 remain in later M15 steps.
 
+## Scoped queue migration
+
+M15 queue entries carry an additive `review_scope` projection. Each pending entry has a
+scope type and explicit object refs with an object type, object id, source artifact path,
+and review role. Expected nodes, changed object ids, field-map records, worksheet line
+nodes and rules, decision options and citations, intake records, and explicit review.md
+bullets are migrated deterministically. An entry that cannot resolve a targeted object
+scope fails closed; the migration never falls back to approving an entire document.
+
+Run the migration with:
+
+`tax-graph review migrate-scope --year 2025`
+
+The command is idempotent. Use `--refresh` only when rebuilding existing scopes after a
+scope-derivation code change. It updates only the deferred-review queue; it does not
+mutate graph objects, drafts, verdicts, or provenance.
+
 ## Step 1 artifact contract
 
 `workbench.artifacts` reads the published artifacts directly and never imports a

@@ -246,6 +246,22 @@ def apply_verdicts_command(
     return 0
 
 
+def migrate_review_scope_command(
+    year: str = "2025",
+    root: str | Path | None = None,
+    refresh: bool = False,
+) -> int:
+    """Backfill deterministic object scopes in the deferred-review queue."""
+    from tax_graph.review_scope import migrate_review_scope
+
+    root_path = Path(root).resolve() if root is not None else project_root()
+    result = migrate_review_scope(root=root_path, year=year, refresh=refresh)
+    print(f"migrated review scopes: {len(result.changed_entries)}")
+    print(f"  unchanged or skipped: {len(result.skipped_entries)}")
+    print(f"  queue: {result.queue_path}")
+    return 0
+
+
 def frontier_build_command(year: str = "2025", root: str | Path | None = None) -> int:
     """Build the derived frontier registry."""
     from tax_graph.frontier import build_frontier_registry
@@ -1057,6 +1073,17 @@ def _build_typer_app():
         if raise_code:
             raise typer.Exit(raise_code)
 
+    @review_cli.command("migrate-scope")
+    def review_migrate_scope_cli(
+        year: str = typer.Option("2025", "--year", "-y", help="Tax year to migrate."),
+        root: Path | None = typer.Option(None, "--root", help="Project root override."),
+        refresh: bool = typer.Option(False, "--refresh", help="Rebuild existing scopes."),
+    ) -> None:
+        """Backfill explicit object scopes for pending review entries."""
+        raise_code = migrate_review_scope_command(year=year, root=root, refresh=refresh)
+        if raise_code:
+            raise typer.Exit(raise_code)
+
     cli.add_typer(review_cli, name="review")
 
     @cli.command("serve")
@@ -1455,6 +1482,10 @@ def _fallback_app() -> int:
     review_apply_parser.add_argument("--year", "-y", default="2025")
     review_apply_parser.add_argument("--verdict-dir", default=None)
     review_apply_parser.add_argument("--root", default=None)
+    review_scope_parser = review_subparsers.add_parser("migrate-scope")
+    review_scope_parser.add_argument("--year", "-y", default="2025")
+    review_scope_parser.add_argument("--root", default=None)
+    review_scope_parser.add_argument("--refresh", action="store_true")
 
     frontier_parser = subparsers.add_parser("frontier")
     frontier_parser.add_argument("--year", "-y", default="2025")
@@ -1604,6 +1635,8 @@ def _fallback_app() -> int:
         return build_command(year=args.year, root=args.root)
     if args.command == "review" and args.review_command == "apply-verdicts":
         return apply_verdicts_command(year=args.year, root=args.root, verdict_dir=args.verdict_dir)
+    if args.command == "review" and args.review_command == "migrate-scope":
+        return migrate_review_scope_command(year=args.year, root=args.root, refresh=args.refresh)
     if args.command == "frontier" and args.frontier_command == "build":
         return frontier_build_command(year=args.year, root=args.root)
     if args.command == "frontier":
