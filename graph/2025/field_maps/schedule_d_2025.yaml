@@ -34,6 +34,30 @@ mappings:
   field_name: topmostSubform[0].Page2[0].f2_4[0]
   format: dollars
   node_id: schedule_d_2025_line_21_capital_loss_limited
+- slot: schedule_d_2025_part_i_line_1b_column_h
+  field_name: topmostSubform[0].Page1[0].Table_PartI[0].Row1a[0].f1_6[0]
+  format: dollars
+  node_id: schedule_d_2025_part_i_line_1b_column_h
+- slot: schedule_d_2025_part_i_line_2_column_h
+  field_name: topmostSubform[0].Page1[0].Table_PartI[0].Row2[0].f1_14[0]
+  format: dollars
+  node_id: schedule_d_2025_part_i_line_2_column_h
+- slot: schedule_d_2025_part_i_line_3_column_h
+  field_name: topmostSubform[0].Page1[0].Table_PartI[0].Row3[0].f1_18[0]
+  format: dollars
+  node_id: schedule_d_2025_part_i_line_3_column_h
+- slot: schedule_d_2025_part_ii_line_10_column_h
+  field_name: topmostSubform[0].Page1[0].Table_PartII[0].Row10[0].f1_38[0]
+  format: dollars
+  node_id: schedule_d_2025_part_ii_line_10_column_h
+- slot: schedule_d_2025_part_ii_line_8b_column_h
+  field_name: topmostSubform[0].Page1[0].Table_PartII[0].Row8a[0].f1_26[0]
+  format: dollars
+  node_id: schedule_d_2025_part_ii_line_8b_column_h
+- slot: schedule_d_2025_part_ii_line_9_column_h
+  field_name: topmostSubform[0].Page1[0].Table_PartII[0].Row9[0].f1_34[0]
+  format: dollars
+  node_id: schedule_d_2025_part_ii_line_9_column_h
 excluded_nodes:
 - node_id: schedule_d_2025_carryover_worksheet_line_1
   reason: Worksheet-internal value with no official-form box.
@@ -82,18 +106,6 @@ excluded_nodes:
 - node_id: schedule_d_2025_line_21_loss_limit
   reason: Not a printable form line or not mapped in the M12 supported output profile.
 - node_id: schedule_d_2025_line_21_loss_limit_negative
-  reason: Not a printable form line or not mapped in the M12 supported output profile.
-- node_id: schedule_d_2025_part_i_line_1b_column_h
-  reason: Not a printable form line or not mapped in the M12 supported output profile.
-- node_id: schedule_d_2025_part_i_line_2_column_h
-  reason: Not a printable form line or not mapped in the M12 supported output profile.
-- node_id: schedule_d_2025_part_i_line_3_column_h
-  reason: Not a printable form line or not mapped in the M12 supported output profile.
-- node_id: schedule_d_2025_part_ii_line_10_column_h
-  reason: Not a printable form line or not mapped in the M12 supported output profile.
-- node_id: schedule_d_2025_part_ii_line_8b_column_h
-  reason: Not a printable form line or not mapped in the M12 supported output profile.
-- node_id: schedule_d_2025_part_ii_line_9_column_h
   reason: Not a printable form line or not mapped in the M12 supported output profile.
 - node_id: schedule_d_2025_28_rate_gain_worksheet
   reason: Frontier worksheet placeholder with no official-form box.
@@ -248,7 +260,587 @@ excluded_nodes:
 frontier_fields:
 - frontier_id: deferred_schedule_d_2025_28_rate_gain_worksheet
   field_name: topmostSubform[0].Page2[0].f2_2[0]
-  note: Line 18 fills only from a filer-computed 28% Rate Gain Worksheet result; the worksheet itself is not modeled.
+  note: Line 18 fills only from a filer-computed 28% Rate Gain Worksheet result; the
+    worksheet itself is not modeled.
 - frontier_id: deferred_schedule_d_2025_unrecaptured_1250_worksheet
   field_name: topmostSubform[0].Page2[0].f2_3[0]
-  note: Line 19 fills only from a filer-computed Unrecaptured Section 1250 Gain Worksheet result; the worksheet itself is not modeled.
+  note: Line 19 fills only from a filer-computed Unrecaptured Section 1250 Gain Worksheet
+    result; the worksheet itself is not modeled.
+schema_version: 2
+field_dispositions:
+- field_name: topmostSubform[0].Page1[0].f1_1[0]
+  label: f1_1
+  population_policy: unsupported
+  value_format: text
+  reason: The official schedule_d_2025 control 'f1_1' has no authored graph, filer-fact,
+    or decision mapping.
+  downstream_effect: Output leaves AcroForm field topmostSubform[0].Page1[0].f1_1[0]
+    blank and reports the unsupported filing field.
+  missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
+    for topmostSubform[0].Page1[0].f1_1[0].
+- field_name: topmostSubform[0].Page1[0].f1_2[0]
+  label: f1_2
+  population_policy: unsupported
+  value_format: text
+  reason: The official schedule_d_2025 control 'f1_2' has no authored graph, filer-fact,
+    or decision mapping.
+  downstream_effect: Output leaves AcroForm field topmostSubform[0].Page1[0].f1_2[0]
+    blank and reports the unsupported filing field.
+  missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
+    for topmostSubform[0].Page1[0].f1_2[0].
+- field_name: topmostSubform[0].Page1[0].c1_1[0]
+  label: tax year? . . . . . . . . - c1_1
+  population_policy: unsupported
+  value_format: checkbox
+  reason: The official schedule_d_2025 control 'tax year? . . . . . . . . - c1_1'
+    has no authored graph, filer-fact, or decision mapping.
+  downstream_effect: Output leaves AcroForm field topmostSubform[0].Page1[0].c1_1[0]
+    blank and reports the unsupported filing field.
+  missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
+    for topmostSubform[0].Page1[0].c1_1[0].
+- field_name: topmostSubform[0].Page1[0].c1_1[1]
+  label: year? . . . . . . . . Yes - c1_1
+  population_policy: unsupported
+  value_format: checkbox
+  reason: The official schedule_d_2025 control 'year? . . . . . . . . Yes - c1_1'
+    has no authored graph, filer-fact, or decision mapping.
+  downstream_effect: Output leaves AcroForm field topmostSubform[0].Page1[0].c1_1[1]
+    blank and reports the unsupported filing field.
+  missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
+    for topmostSubform[0].Page1[0].c1_1[1].
+- field_name: topmostSubform[0].Page1[0].Table_PartI[0].Row1a[0].f1_3[0]
+  label: Line 1b - and go to line 1b . . . . . - f1_3
+  population_policy: unsupported
+  value_format: text
+  reason: The official schedule_d_2025 control 'Line 1b - and go to line 1b . . .
+    . . - f1_3' has no authored graph, filer-fact, or decision mapping.
+  downstream_effect: Output leaves AcroForm field topmostSubform[0].Page1[0].Table_PartI[0].Row1a[0].f1_3[0]
+    blank and reports the unsupported filing field.
+  missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
+    for topmostSubform[0].Page1[0].Table_PartI[0].Row1a[0].f1_3[0].
+- field_name: topmostSubform[0].Page1[0].Table_PartI[0].Row1a[0].f1_4[0]
+  label: Line 1b - and go to line 1b . . . . . - f1_4
+  population_policy: unsupported
+  value_format: text
+  reason: The official schedule_d_2025 control 'Line 1b - and go to line 1b . . .
+    . . - f1_4' has no authored graph, filer-fact, or decision mapping.
+  downstream_effect: Output leaves AcroForm field topmostSubform[0].Page1[0].Table_PartI[0].Row1a[0].f1_4[0]
+    blank and reports the unsupported filing field.
+  missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
+    for topmostSubform[0].Page1[0].Table_PartI[0].Row1a[0].f1_4[0].
+- field_name: topmostSubform[0].Page1[0].Table_PartI[0].Row1a[0].f1_5[0]
+  label: Line 1b - and go to line 1b . . . . . - f1_5
+  population_policy: unsupported
+  value_format: text
+  reason: The official schedule_d_2025 control 'Line 1b - and go to line 1b . . .
+    . . - f1_5' has no authored graph, filer-fact, or decision mapping.
+  downstream_effect: Output leaves AcroForm field topmostSubform[0].Page1[0].Table_PartI[0].Row1a[0].f1_5[0]
+    blank and reports the unsupported filing field.
+  missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
+    for topmostSubform[0].Page1[0].Table_PartI[0].Row1a[0].f1_5[0].
+- field_name: topmostSubform[0].Page1[0].Table_PartI[0].Row1a[0].f1_6[0]
+  label: Line 1b - and go to line 1b . . . . . - f1_6
+  population_policy: copied
+  value_format: dollars
+  node_id: schedule_d_2025_part_i_line_1b_column_h
+- field_name: topmostSubform[0].Page1[0].Table_PartI[0].Row1b[0].f1_7[0]
+  label: Line 1b - G checked . . . . . . . . - f1_7
+  population_policy: unsupported
+  value_format: text
+  reason: The official schedule_d_2025 control 'Line 1b - G checked . . . . . . .
+    . - f1_7' has no authored graph, filer-fact, or decision mapping.
+  downstream_effect: Output leaves AcroForm field topmostSubform[0].Page1[0].Table_PartI[0].Row1b[0].f1_7[0]
+    blank and reports the unsupported filing field.
+  missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
+    for topmostSubform[0].Page1[0].Table_PartI[0].Row1b[0].f1_7[0].
+- field_name: topmostSubform[0].Page1[0].Table_PartI[0].Row1b[0].f1_8[0]
+  label: Line 1b - G checked . . . . . . . . - f1_8
+  population_policy: unsupported
+  value_format: text
+  reason: The official schedule_d_2025 control 'Line 1b - G checked . . . . . . .
+    . - f1_8' has no authored graph, filer-fact, or decision mapping.
+  downstream_effect: Output leaves AcroForm field topmostSubform[0].Page1[0].Table_PartI[0].Row1b[0].f1_8[0]
+    blank and reports the unsupported filing field.
+  missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
+    for topmostSubform[0].Page1[0].Table_PartI[0].Row1b[0].f1_8[0].
+- field_name: topmostSubform[0].Page1[0].Table_PartI[0].Row1b[0].f1_9[0]
+  label: Line 1b - G checked . . . . . . . . - f1_9
+  population_policy: unsupported
+  value_format: text
+  reason: The official schedule_d_2025 control 'Line 1b - G checked . . . . . . .
+    . - f1_9' has no authored graph, filer-fact, or decision mapping.
+  downstream_effect: Output leaves AcroForm field topmostSubform[0].Page1[0].Table_PartI[0].Row1b[0].f1_9[0]
+    blank and reports the unsupported filing field.
+  missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
+    for topmostSubform[0].Page1[0].Table_PartI[0].Row1b[0].f1_9[0].
+- field_name: topmostSubform[0].Page1[0].Table_PartI[0].Row1b[0].f1_10[0]
+  label: Line 1b - G checked . . . . . . . . - f1_10
+  population_policy: unsupported
+  value_format: text
+  reason: The official schedule_d_2025 control 'Line 1b - G checked . . . . . . .
+    . - f1_10' has no authored graph, filer-fact, or decision mapping.
+  downstream_effect: Output leaves AcroForm field topmostSubform[0].Page1[0].Table_PartI[0].Row1b[0].f1_10[0]
+    blank and reports the unsupported filing field.
+  missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
+    for topmostSubform[0].Page1[0].Table_PartI[0].Row1b[0].f1_10[0].
+- field_name: topmostSubform[0].Page1[0].Table_PartI[0].Row2[0].f1_11[0]
+  label: Line 2 - H checked . . . . . . . . - f1_11
+  population_policy: unsupported
+  value_format: text
+  repeatable:
+    group: table_parti
+    row_slot: 2
+    column: f1_11
+    role: other
+  reason: The official schedule_d_2025 control 'Line 2 - H checked . . . . . . . .
+    - f1_11' has no authored graph, filer-fact, or decision mapping.
+  downstream_effect: Output leaves AcroForm field topmostSubform[0].Page1[0].Table_PartI[0].Row2[0].f1_11[0]
+    blank and reports the unsupported filing field.
+  missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
+    for topmostSubform[0].Page1[0].Table_PartI[0].Row2[0].f1_11[0].
+- field_name: topmostSubform[0].Page1[0].Table_PartI[0].Row2[0].f1_12[0]
+  label: Line 2 - H checked . . . . . . . . - f1_12
+  population_policy: unsupported
+  value_format: text
+  repeatable:
+    group: table_parti
+    row_slot: 2
+    column: f1_12
+    role: other
+  reason: The official schedule_d_2025 control 'Line 2 - H checked . . . . . . . .
+    - f1_12' has no authored graph, filer-fact, or decision mapping.
+  downstream_effect: Output leaves AcroForm field topmostSubform[0].Page1[0].Table_PartI[0].Row2[0].f1_12[0]
+    blank and reports the unsupported filing field.
+  missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
+    for topmostSubform[0].Page1[0].Table_PartI[0].Row2[0].f1_12[0].
+- field_name: topmostSubform[0].Page1[0].Table_PartI[0].Row2[0].f1_13[0]
+  label: Line 2 - H checked . . . . . . . . - f1_13
+  population_policy: unsupported
+  value_format: text
+  repeatable:
+    group: table_parti
+    row_slot: 2
+    column: f1_13
+    role: other
+  reason: The official schedule_d_2025 control 'Line 2 - H checked . . . . . . . .
+    - f1_13' has no authored graph, filer-fact, or decision mapping.
+  downstream_effect: Output leaves AcroForm field topmostSubform[0].Page1[0].Table_PartI[0].Row2[0].f1_13[0]
+    blank and reports the unsupported filing field.
+  missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
+    for topmostSubform[0].Page1[0].Table_PartI[0].Row2[0].f1_13[0].
+- field_name: topmostSubform[0].Page1[0].Table_PartI[0].Row2[0].f1_14[0]
+  label: Line 2 - H checked . . . . . . . . - f1_14
+  population_policy: copied
+  value_format: dollars
+  repeatable:
+    group: table_parti
+    row_slot: 2
+    column: f1_14
+    role: other
+  node_id: schedule_d_2025_part_i_line_2_column_h
+- field_name: topmostSubform[0].Page1[0].Table_PartI[0].Row3[0].f1_15[0]
+  label: Line 3 - I checked . . . . . . . . - f1_15
+  population_policy: unsupported
+  value_format: text
+  repeatable:
+    group: table_parti
+    row_slot: 3
+    column: f1_15
+    role: other
+  reason: The official schedule_d_2025 control 'Line 3 - I checked . . . . . . . .
+    - f1_15' has no authored graph, filer-fact, or decision mapping.
+  downstream_effect: Output leaves AcroForm field topmostSubform[0].Page1[0].Table_PartI[0].Row3[0].f1_15[0]
+    blank and reports the unsupported filing field.
+  missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
+    for topmostSubform[0].Page1[0].Table_PartI[0].Row3[0].f1_15[0].
+- field_name: topmostSubform[0].Page1[0].Table_PartI[0].Row3[0].f1_16[0]
+  label: Line 3 - I checked . . . . . . . . - f1_16
+  population_policy: unsupported
+  value_format: text
+  repeatable:
+    group: table_parti
+    row_slot: 3
+    column: f1_16
+    role: other
+  reason: The official schedule_d_2025 control 'Line 3 - I checked . . . . . . . .
+    - f1_16' has no authored graph, filer-fact, or decision mapping.
+  downstream_effect: Output leaves AcroForm field topmostSubform[0].Page1[0].Table_PartI[0].Row3[0].f1_16[0]
+    blank and reports the unsupported filing field.
+  missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
+    for topmostSubform[0].Page1[0].Table_PartI[0].Row3[0].f1_16[0].
+- field_name: topmostSubform[0].Page1[0].Table_PartI[0].Row3[0].f1_17[0]
+  label: Line 3 - I checked . . . . . . . . - f1_17
+  population_policy: unsupported
+  value_format: text
+  repeatable:
+    group: table_parti
+    row_slot: 3
+    column: f1_17
+    role: other
+  reason: The official schedule_d_2025 control 'Line 3 - I checked . . . . . . . .
+    - f1_17' has no authored graph, filer-fact, or decision mapping.
+  downstream_effect: Output leaves AcroForm field topmostSubform[0].Page1[0].Table_PartI[0].Row3[0].f1_17[0]
+    blank and reports the unsupported filing field.
+  missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
+    for topmostSubform[0].Page1[0].Table_PartI[0].Row3[0].f1_17[0].
+- field_name: topmostSubform[0].Page1[0].Table_PartI[0].Row3[0].f1_18[0]
+  label: Line 3 - I checked . . . . . . . . - f1_18
+  population_policy: copied
+  value_format: dollars
+  repeatable:
+    group: table_parti
+    row_slot: 3
+    column: f1_18
+    role: other
+  node_id: schedule_d_2025_part_i_line_3_column_h
+- field_name: topmostSubform[0].Page1[0].f1_19[0]
+  label: Line 4 - (loss) from Forms 4684, 6781, and 8824 . . 4 - f1_19
+  population_policy: unsupported
+  value_format: text
+  reason: The official schedule_d_2025 control 'Line 4 - (loss) from Forms 4684, 6781,
+    and 8824 . . 4 - f1_19' has no authored graph, filer-fact, or decision mapping.
+  downstream_effect: Output leaves AcroForm field topmostSubform[0].Page1[0].f1_19[0]
+    blank and reports the unsupported filing field.
+  missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
+    for topmostSubform[0].Page1[0].f1_19[0].
+- field_name: topmostSubform[0].Page1[0].f1_20[0]
+  label: Line 5 - partnerships, S corporations, estates, and trusts from Schedule(s)
+    K-1 5 - f1_20
+  population_policy: unsupported
+  value_format: text
+  reason: The official schedule_d_2025 control 'Line 5 - partnerships, S corporations,
+    estates, and trusts from Schedule(s) K-1 5 - f1_20' has no authored graph, filer-fact,
+    or decision mapping.
+  downstream_effect: Output leaves AcroForm field topmostSubform[0].Page1[0].f1_20[0]
+    blank and reports the unsupported filing field.
+  missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
+    for topmostSubform[0].Page1[0].f1_20[0].
+- field_name: topmostSubform[0].Page1[0].f1_21[0]
+  label: Line 6 - . . . . . . . . 6 ( - f1_21
+  population_policy: user_entered
+  value_format: dollars
+  node_id: schedule_d_2025_line_6_st_carryover
+- field_name: topmostSubform[0].Page1[0].f1_22[0]
+  label: Line 1a - Part III on the back . . . . 7 - f1_22
+  population_policy: computed
+  value_format: dollars
+  node_id: schedule_d_2025_line_7_net_st
+- field_name: topmostSubform[0].Page1[0].Table_PartII[0].Row8a[0].f1_23[0]
+  label: Line 8b - and go to line 8b . . . . . - f1_23
+  population_policy: unsupported
+  value_format: text
+  reason: The official schedule_d_2025 control 'Line 8b - and go to line 8b . . .
+    . . - f1_23' has no authored graph, filer-fact, or decision mapping.
+  downstream_effect: Output leaves AcroForm field topmostSubform[0].Page1[0].Table_PartII[0].Row8a[0].f1_23[0]
+    blank and reports the unsupported filing field.
+  missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
+    for topmostSubform[0].Page1[0].Table_PartII[0].Row8a[0].f1_23[0].
+- field_name: topmostSubform[0].Page1[0].Table_PartII[0].Row8a[0].f1_24[0]
+  label: Line 8b - and go to line 8b . . . . . - f1_24
+  population_policy: unsupported
+  value_format: text
+  reason: The official schedule_d_2025 control 'Line 8b - and go to line 8b . . .
+    . . - f1_24' has no authored graph, filer-fact, or decision mapping.
+  downstream_effect: Output leaves AcroForm field topmostSubform[0].Page1[0].Table_PartII[0].Row8a[0].f1_24[0]
+    blank and reports the unsupported filing field.
+  missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
+    for topmostSubform[0].Page1[0].Table_PartII[0].Row8a[0].f1_24[0].
+- field_name: topmostSubform[0].Page1[0].Table_PartII[0].Row8a[0].f1_25[0]
+  label: Line 8b - and go to line 8b . . . . . - f1_25
+  population_policy: unsupported
+  value_format: text
+  reason: The official schedule_d_2025 control 'Line 8b - and go to line 8b . . .
+    . . - f1_25' has no authored graph, filer-fact, or decision mapping.
+  downstream_effect: Output leaves AcroForm field topmostSubform[0].Page1[0].Table_PartII[0].Row8a[0].f1_25[0]
+    blank and reports the unsupported filing field.
+  missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
+    for topmostSubform[0].Page1[0].Table_PartII[0].Row8a[0].f1_25[0].
+- field_name: topmostSubform[0].Page1[0].Table_PartII[0].Row8a[0].f1_26[0]
+  label: Line 8b - and go to line 8b . . . . . - f1_26
+  population_policy: copied
+  value_format: dollars
+  node_id: schedule_d_2025_part_ii_line_8b_column_h
+- field_name: topmostSubform[0].Page1[0].Table_PartII[0].Row8b[0].f1_27[0]
+  label: Line 8b - J checked . . . . . . . . - f1_27
+  population_policy: unsupported
+  value_format: text
+  reason: The official schedule_d_2025 control 'Line 8b - J checked . . . . . . .
+    . - f1_27' has no authored graph, filer-fact, or decision mapping.
+  downstream_effect: Output leaves AcroForm field topmostSubform[0].Page1[0].Table_PartII[0].Row8b[0].f1_27[0]
+    blank and reports the unsupported filing field.
+  missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
+    for topmostSubform[0].Page1[0].Table_PartII[0].Row8b[0].f1_27[0].
+- field_name: topmostSubform[0].Page1[0].Table_PartII[0].Row8b[0].f1_28[0]
+  label: Line 8b - J checked . . . . . . . . - f1_28
+  population_policy: unsupported
+  value_format: text
+  reason: The official schedule_d_2025 control 'Line 8b - J checked . . . . . . .
+    . - f1_28' has no authored graph, filer-fact, or decision mapping.
+  downstream_effect: Output leaves AcroForm field topmostSubform[0].Page1[0].Table_PartII[0].Row8b[0].f1_28[0]
+    blank and reports the unsupported filing field.
+  missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
+    for topmostSubform[0].Page1[0].Table_PartII[0].Row8b[0].f1_28[0].
+- field_name: topmostSubform[0].Page1[0].Table_PartII[0].Row8b[0].f1_29[0]
+  label: Line 8b - J checked . . . . . . . . - f1_29
+  population_policy: unsupported
+  value_format: text
+  reason: The official schedule_d_2025 control 'Line 8b - J checked . . . . . . .
+    . - f1_29' has no authored graph, filer-fact, or decision mapping.
+  downstream_effect: Output leaves AcroForm field topmostSubform[0].Page1[0].Table_PartII[0].Row8b[0].f1_29[0]
+    blank and reports the unsupported filing field.
+  missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
+    for topmostSubform[0].Page1[0].Table_PartII[0].Row8b[0].f1_29[0].
+- field_name: topmostSubform[0].Page1[0].Table_PartII[0].Row8b[0].f1_30[0]
+  label: Line 8b - J checked . . . . . . . . - f1_30
+  population_policy: unsupported
+  value_format: text
+  reason: The official schedule_d_2025 control 'Line 8b - J checked . . . . . . .
+    . - f1_30' has no authored graph, filer-fact, or decision mapping.
+  downstream_effect: Output leaves AcroForm field topmostSubform[0].Page1[0].Table_PartII[0].Row8b[0].f1_30[0]
+    blank and reports the unsupported filing field.
+  missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
+    for topmostSubform[0].Page1[0].Table_PartII[0].Row8b[0].f1_30[0].
+- field_name: topmostSubform[0].Page1[0].Table_PartII[0].Row9[0].f1_31[0]
+  label: Line 9 - K checked . . . . . . . . - f1_31
+  population_policy: unsupported
+  value_format: text
+  repeatable:
+    group: table_partii
+    row_slot: 9
+    column: f1_31
+    role: other
+  reason: The official schedule_d_2025 control 'Line 9 - K checked . . . . . . . .
+    - f1_31' has no authored graph, filer-fact, or decision mapping.
+  downstream_effect: Output leaves AcroForm field topmostSubform[0].Page1[0].Table_PartII[0].Row9[0].f1_31[0]
+    blank and reports the unsupported filing field.
+  missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
+    for topmostSubform[0].Page1[0].Table_PartII[0].Row9[0].f1_31[0].
+- field_name: topmostSubform[0].Page1[0].Table_PartII[0].Row9[0].f1_32[0]
+  label: Line 9 - K checked . . . . . . . . - f1_32
+  population_policy: unsupported
+  value_format: text
+  repeatable:
+    group: table_partii
+    row_slot: 9
+    column: f1_32
+    role: other
+  reason: The official schedule_d_2025 control 'Line 9 - K checked . . . . . . . .
+    - f1_32' has no authored graph, filer-fact, or decision mapping.
+  downstream_effect: Output leaves AcroForm field topmostSubform[0].Page1[0].Table_PartII[0].Row9[0].f1_32[0]
+    blank and reports the unsupported filing field.
+  missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
+    for topmostSubform[0].Page1[0].Table_PartII[0].Row9[0].f1_32[0].
+- field_name: topmostSubform[0].Page1[0].Table_PartII[0].Row9[0].f1_33[0]
+  label: Line 9 - K checked . . . . . . . . - f1_33
+  population_policy: unsupported
+  value_format: text
+  repeatable:
+    group: table_partii
+    row_slot: 9
+    column: f1_33
+    role: other
+  reason: The official schedule_d_2025 control 'Line 9 - K checked . . . . . . . .
+    - f1_33' has no authored graph, filer-fact, or decision mapping.
+  downstream_effect: Output leaves AcroForm field topmostSubform[0].Page1[0].Table_PartII[0].Row9[0].f1_33[0]
+    blank and reports the unsupported filing field.
+  missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
+    for topmostSubform[0].Page1[0].Table_PartII[0].Row9[0].f1_33[0].
+- field_name: topmostSubform[0].Page1[0].Table_PartII[0].Row9[0].f1_34[0]
+  label: Line 9 - K checked . . . . . . . . - f1_34
+  population_policy: copied
+  value_format: dollars
+  repeatable:
+    group: table_partii
+    row_slot: 9
+    column: f1_34
+    role: other
+  node_id: schedule_d_2025_part_ii_line_9_column_h
+- field_name: topmostSubform[0].Page1[0].Table_PartII[0].Row10[0].f1_35[0]
+  label: Line 10 - L checked . . . . . . . . - f1_35
+  population_policy: unsupported
+  value_format: text
+  repeatable:
+    group: table_partii
+    row_slot: 10
+    column: f1_35
+    role: other
+  reason: The official schedule_d_2025 control 'Line 10 - L checked . . . . . . .
+    . - f1_35' has no authored graph, filer-fact, or decision mapping.
+  downstream_effect: Output leaves AcroForm field topmostSubform[0].Page1[0].Table_PartII[0].Row10[0].f1_35[0]
+    blank and reports the unsupported filing field.
+  missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
+    for topmostSubform[0].Page1[0].Table_PartII[0].Row10[0].f1_35[0].
+- field_name: topmostSubform[0].Page1[0].Table_PartII[0].Row10[0].f1_36[0]
+  label: Line 10 - L checked . . . . . . . . - f1_36
+  population_policy: unsupported
+  value_format: text
+  repeatable:
+    group: table_partii
+    row_slot: 10
+    column: f1_36
+    role: other
+  reason: The official schedule_d_2025 control 'Line 10 - L checked . . . . . . .
+    . - f1_36' has no authored graph, filer-fact, or decision mapping.
+  downstream_effect: Output leaves AcroForm field topmostSubform[0].Page1[0].Table_PartII[0].Row10[0].f1_36[0]
+    blank and reports the unsupported filing field.
+  missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
+    for topmostSubform[0].Page1[0].Table_PartII[0].Row10[0].f1_36[0].
+- field_name: topmostSubform[0].Page1[0].Table_PartII[0].Row10[0].f1_37[0]
+  label: Line 10 - L checked . . . . . . . . - f1_37
+  population_policy: unsupported
+  value_format: text
+  repeatable:
+    group: table_partii
+    row_slot: 10
+    column: f1_37
+    role: other
+  reason: The official schedule_d_2025 control 'Line 10 - L checked . . . . . . .
+    . - f1_37' has no authored graph, filer-fact, or decision mapping.
+  downstream_effect: Output leaves AcroForm field topmostSubform[0].Page1[0].Table_PartII[0].Row10[0].f1_37[0]
+    blank and reports the unsupported filing field.
+  missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
+    for topmostSubform[0].Page1[0].Table_PartII[0].Row10[0].f1_37[0].
+- field_name: topmostSubform[0].Page1[0].Table_PartII[0].Row10[0].f1_38[0]
+  label: Line 10 - L checked . . . . . . . . - f1_38
+  population_policy: copied
+  value_format: dollars
+  repeatable:
+    group: table_partii
+    row_slot: 10
+    column: f1_38
+    role: other
+  node_id: schedule_d_2025_part_ii_line_10_column_h
+- field_name: topmostSubform[0].Page1[0].f1_39[0]
+  label: Line 11 - . . . . . . . . . 11 - f1_39
+  population_policy: unsupported
+  value_format: text
+  reason: The official schedule_d_2025 control 'Line 11 - . . . . . . . . . 11 - f1_39'
+    has no authored graph, filer-fact, or decision mapping.
+  downstream_effect: Output leaves AcroForm field topmostSubform[0].Page1[0].f1_39[0]
+    blank and reports the unsupported filing field.
+  missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
+    for topmostSubform[0].Page1[0].f1_39[0].
+- field_name: topmostSubform[0].Page1[0].f1_40[0]
+  label: Line 12 - partnerships, S corporations, estates, and trusts from Schedule(s)
+    K-1 12 - f1_40
+  population_policy: unsupported
+  value_format: text
+  reason: The official schedule_d_2025 control 'Line 12 - partnerships, S corporations,
+    estates, and trusts from Schedule(s) K-1 12 - f1_40' has no authored graph, filer-fact,
+    or decision mapping.
+  downstream_effect: Output leaves AcroForm field topmostSubform[0].Page1[0].f1_40[0]
+    blank and reports the unsupported filing field.
+  missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
+    for topmostSubform[0].Page1[0].f1_40[0].
+- field_name: topmostSubform[0].Page1[0].f1_41[0]
+  label: Line 13 - . . . . . . . . . 13 - f1_41
+  population_policy: unsupported
+  value_format: text
+  reason: The official schedule_d_2025 control 'Line 13 - . . . . . . . . . 13 - f1_41'
+    has no authored graph, filer-fact, or decision mapping.
+  downstream_effect: Output leaves AcroForm field topmostSubform[0].Page1[0].f1_41[0]
+    blank and reports the unsupported filing field.
+  missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
+    for topmostSubform[0].Page1[0].f1_41[0].
+- field_name: topmostSubform[0].Page1[0].f1_42[0]
+  label: Line 14 - . . . . . . . . 14 ( - f1_42
+  population_policy: user_entered
+  value_format: dollars
+  node_id: schedule_d_2025_line_14_lt_carryover
+- field_name: topmostSubform[0].Page1[0].f1_43[0]
+  label: Line 15 - . . . . . . . . . 15 - f1_43
+  population_policy: computed
+  value_format: dollars
+  node_id: schedule_d_2025_line_15_net_lt
+- field_name: topmostSubform[0].Page2[0].f2_1[0]
+  label: Line 16 - . . . . . . . . . 16 - f2_1
+  population_policy: computed
+  value_format: dollars
+  node_id: schedule_d_2025_line_16_total
+- field_name: topmostSubform[0].Page2[0].c2_1[0]
+  label: Line 18 - c2_1 (page 2, control 47)
+  population_policy: unsupported
+  value_format: checkbox
+  reason: The official schedule_d_2025 control 'Line 18 - c2_1 (page 2, control 47)'
+    has no authored graph, filer-fact, or decision mapping.
+  downstream_effect: Output leaves AcroForm field topmostSubform[0].Page2[0].c2_1[0]
+    blank and reports the unsupported filing field.
+  missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
+    for topmostSubform[0].Page2[0].c2_1[0].
+- field_name: topmostSubform[0].Page2[0].c2_1[1]
+  label: Line 18 - c2_1 (page 2, control 48)
+  population_policy: unsupported
+  value_format: checkbox
+  reason: The official schedule_d_2025 control 'Line 18 - c2_1 (page 2, control 48)'
+    has no authored graph, filer-fact, or decision mapping.
+  downstream_effect: Output leaves AcroForm field topmostSubform[0].Page2[0].c2_1[1]
+    blank and reports the unsupported filing field.
+  missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
+    for topmostSubform[0].Page2[0].c2_1[1].
+- field_name: topmostSubform[0].Page2[0].f2_2[0]
+  label: Line 18 - . . . . . . . . . 18 - f2_2
+  population_policy: unsupported
+  value_format: dollars
+  node_id: schedule_d_2025_line_18
+  reason: Line 18 fills only from a filer-computed 28% Rate Gain Worksheet result;
+    the worksheet itself is not modeled.
+  downstream_effect: The affected return branch remains incomplete and this control
+    is left blank.
+  missing_capability: Implement and cite frontier deferred_schedule_d_2025_28_rate_gain_worksheet
+    before populating this control.
+- field_name: topmostSubform[0].Page2[0].f2_3[0]
+  label: Line 19 - . . . . . . . . . 19 - f2_3
+  population_policy: unsupported
+  value_format: dollars
+  node_id: schedule_d_2025_line_19
+  reason: Line 19 fills only from a filer-computed Unrecaptured Section 1250 Gain
+    Worksheet result; the worksheet itself is not modeled.
+  downstream_effect: The affected return branch remains incomplete and this control
+    is left blank.
+  missing_capability: Implement and cite frontier deferred_schedule_d_2025_unrecaptured_1250_worksheet
+    before populating this control.
+- field_name: topmostSubform[0].Page2[0].c2_2[0]
+  label: c2_2
+  population_policy: unsupported
+  value_format: checkbox
+  reason: The official schedule_d_2025 control 'c2_2' has no authored graph, filer-fact,
+    or decision mapping.
+  downstream_effect: Output leaves AcroForm field topmostSubform[0].Page2[0].c2_2[0]
+    blank and reports the unsupported filing field.
+  missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
+    for topmostSubform[0].Page2[0].c2_2[0].
+- field_name: topmostSubform[0].Page2[0].c2_2[1]
+  label: Line 22 - c2_2
+  population_policy: unsupported
+  value_format: checkbox
+  reason: The official schedule_d_2025 control 'Line 22 - c2_2' has no authored graph,
+    filer-fact, or decision mapping.
+  downstream_effect: Output leaves AcroForm field topmostSubform[0].Page2[0].c2_2[1]
+    blank and reports the unsupported filing field.
+  missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
+    for topmostSubform[0].Page2[0].c2_2[1].
+- field_name: topmostSubform[0].Page2[0].f2_4[0]
+  label: . . . . . . . . 21 ( - f2_4
+  population_policy: computed
+  value_format: dollars
+  node_id: schedule_d_2025_line_21_capital_loss_limited
+- field_name: topmostSubform[0].Page2[0].c2_3[0]
+  label: c2_3 (page 2, control 54)
+  population_policy: unsupported
+  value_format: checkbox
+  reason: The official schedule_d_2025 control 'c2_3 (page 2, control 54)' has no
+    authored graph, filer-fact, or decision mapping.
+  downstream_effect: Output leaves AcroForm field topmostSubform[0].Page2[0].c2_3[0]
+    blank and reports the unsupported filing field.
+  missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
+    for topmostSubform[0].Page2[0].c2_3[0].
+- field_name: topmostSubform[0].Page2[0].c2_3[1]
+  label: c2_3 (page 2, control 55)
+  population_policy: unsupported
+  value_format: checkbox
+  reason: The official schedule_d_2025 control 'c2_3 (page 2, control 55)' has no
+    authored graph, filer-fact, or decision mapping.
+  downstream_effect: Output leaves AcroForm field topmostSubform[0].Page2[0].c2_3[1]
+    blank and reports the unsupported filing field.
+  missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
+    for topmostSubform[0].Page2[0].c2_3[1].

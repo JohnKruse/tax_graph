@@ -8,7 +8,7 @@
   - cite_span_form_1040_2025_0017
 
 - edge_id: e_1040_1b_to_1z
-  source: form_1040_2025_root_line_b
+  source: form_1040_2025_root_line_1b
   target: form_1040_2025_root_line_z
   relationship: CALCULATES
   rule_id: sum_currency
@@ -17,7 +17,7 @@
   - cite_span_form_1040_2025_0017
 
 - edge_id: e_1040_1c_to_1z
-  source: form_1040_2025_root_line_c
+  source: form_1040_2025_root_line_1c
   target: form_1040_2025_root_line_z
   relationship: CALCULATES
   rule_id: sum_currency
@@ -26,7 +26,7 @@
   - cite_span_form_1040_2025_0017
 
 - edge_id: e_1040_1d_to_1z
-  source: form_1040_2025_root_line_d
+  source: form_1040_2025_root_line_1d
   target: form_1040_2025_root_line_z
   relationship: CALCULATES
   rule_id: sum_currency
@@ -35,7 +35,7 @@
   - cite_span_form_1040_2025_0017
 
 - edge_id: e_1040_1e_to_1z
-  source: form_1040_2025_root_line_e
+  source: form_1040_2025_root_line_1e
   target: form_1040_2025_root_line_z
   relationship: CALCULATES
   rule_id: sum_currency
@@ -44,7 +44,7 @@
   - cite_span_form_1040_2025_0017
 
 - edge_id: e_1040_1f_to_1z
-  source: form_1040_2025_root_line_f
+  source: form_1040_2025_root_line_1f
   target: form_1040_2025_root_line_z
   relationship: CALCULATES
   rule_id: sum_currency
@@ -53,7 +53,7 @@
   - cite_span_form_1040_2025_0017
 
 - edge_id: e_1040_1g_to_1z
-  source: form_1040_2025_root_line_g
+  source: form_1040_2025_root_line_1g
   target: form_1040_2025_root_line_z
   relationship: CALCULATES
   rule_id: sum_currency
@@ -62,7 +62,7 @@
   - cite_span_form_1040_2025_0017
 
 - edge_id: e_1040_1h_to_1z
-  source: form_1040_2025_root_line_h
+  source: form_1040_2025_root_line_1h
   target: form_1040_2025_root_line_z
   relationship: CALCULATES
   rule_id: sum_currency

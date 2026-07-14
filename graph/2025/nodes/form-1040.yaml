@@ -8,7 +8,7 @@
   - cite_span_form_1040_2025_0007
   - cite_instruction_form_1040_2025_line_1a
 
-- node_id: form_1040_2025_root_line_b
+- node_id: form_1040_2025_root_line_1b
   document_id: form_1040_2025
   label: 'Line 1b: Household employee wages not reported on Form(s) W-2'
   node_type: form_line
@@ -17,7 +17,7 @@
   citation_refs:
   - cite_span_form_1040_2025_0008
 
-- node_id: form_1040_2025_root_line_c
+- node_id: form_1040_2025_root_line_1c
   document_id: form_1040_2025
   label: 'Line 1c: Tip income not reported on line 1a'
   node_type: form_line
@@ -26,7 +26,7 @@
   citation_refs:
   - cite_span_form_1040_2025_0010
 
-- node_id: form_1040_2025_root_line_d
+- node_id: form_1040_2025_root_line_1d
   document_id: form_1040_2025
   label: 'Line 1d: Medicaid waiver payments not reported on Form(s) W-2'
   node_type: form_line
@@ -35,7 +35,7 @@
   citation_refs:
   - cite_span_form_1040_2025_0011
 
-- node_id: form_1040_2025_root_line_e
+- node_id: form_1040_2025_root_line_1e
   document_id: form_1040_2025
   label: 'Line 1e: Taxable dependent care benefits from Form 2441, line 26'
   node_type: form_line
@@ -44,7 +44,7 @@
   citation_refs:
   - cite_span_form_1040_2025_0012
 
-- node_id: form_1040_2025_root_line_f
+- node_id: form_1040_2025_root_line_1f
   document_id: form_1040_2025
   label: 'Line 1f: Employer-provided adoption benefits from Form 8839, line 31'
   node_type: form_line
@@ -53,7 +53,7 @@
   citation_refs:
   - cite_span_form_1040_2025_0013
 
-- node_id: form_1040_2025_root_line_g
+- node_id: form_1040_2025_root_line_1g
   document_id: form_1040_2025
   label: 'Line 1g: Wages from Form 8919, line 6'
   node_type: form_line
@@ -62,7 +62,7 @@
   citation_refs:
   - cite_span_form_1040_2025_0014
 
-- node_id: form_1040_2025_root_line_h
+- node_id: form_1040_2025_root_line_1h
   document_id: form_1040_2025
   label: 'Line 1h: Other earned income'
   node_type: form_line

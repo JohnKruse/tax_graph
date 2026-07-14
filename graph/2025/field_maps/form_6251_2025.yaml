@@ -1,14 +1,108 @@
 tax_year: 2025
 document_id: form_6251_2025
 inventory: graph/2025/field_inventories/form_6251_2025.json
-mappings: []
+mappings:
+- slot: form_6251_2025_part_i_line_14
+  field_name: topmostSubform[0].Page2[0].f2_3[0]
+  format: dollars
+  node_id: form_6251_2025_part_i_line_14
+- slot: form_6251_2025_part_i_line_1a
+  field_name: topmostSubform[0].Page1[0].f1_3[0]
+  format: dollars
+  node_id: form_6251_2025_part_i_line_1a
+- slot: form_6251_2025_part_i_line_1b
+  field_name: topmostSubform[0].Page1[0].f1_4[0]
+  format: dollars
+  node_id: form_6251_2025_part_i_line_1b
+- slot: form_6251_2025_part_ii_line_10
+  field_name: topmostSubform[0].Page1[0].f1_32[0]
+  format: dollars
+  node_id: form_6251_2025_part_ii_line_10
+- slot: form_6251_2025_part_ii_line_16
+  field_name: topmostSubform[0].Page1[0].f1_29[0]
+  format: dollars
+  node_id: form_6251_2025_part_ii_line_16
+- slot: form_6251_2025_part_ii_line_6
+  field_name: topmostSubform[0].Page1[0].f1_28[0]
+  format: dollars
+  node_id: form_6251_2025_part_ii_line_6
+- slot: form_6251_2025_part_ii_line_9
+  field_name: topmostSubform[0].Page1[0].f1_31[0]
+  format: dollars
+  node_id: form_6251_2025_part_ii_line_9
+- slot: form_6251_2025_part_iii_line_12
+  field_name: topmostSubform[0].Page2[0].f2_1[0]
+  format: dollars
+  node_id: form_6251_2025_part_iii_line_12
+- slot: form_6251_2025_part_iii_line_17
+  field_name: topmostSubform[0].Page2[0].f2_6[0]
+  format: dollars
+  node_id: form_6251_2025_part_iii_line_17
+- slot: form_6251_2025_part_iii_line_21
+  field_name: topmostSubform[0].Page2[0].f2_10[0]
+  format: dollars
+  node_id: form_6251_2025_part_iii_line_21
+- slot: form_6251_2025_part_iii_line_22
+  field_name: topmostSubform[0].Page2[0].f2_11[0]
+  format: dollars
+  node_id: form_6251_2025_part_iii_line_22
+- slot: form_6251_2025_part_iii_line_23
+  field_name: topmostSubform[0].Page2[0].f2_12[0]
+  format: dollars
+  node_id: form_6251_2025_part_iii_line_23
+- slot: form_6251_2025_part_iii_line_24
+  field_name: topmostSubform[0].Page2[0].f2_13[0]
+  format: dollars
+  node_id: form_6251_2025_part_iii_line_24
+- slot: form_6251_2025_part_iii_line_26
+  field_name: topmostSubform[0].Page2[0].f2_15[0]
+  format: dollars
+  node_id: form_6251_2025_part_iii_line_26
+- slot: form_6251_2025_part_iii_line_28
+  field_name: topmostSubform[0].Page2[0].f2_17[0]
+  format: dollars
+  node_id: form_6251_2025_part_iii_line_28
+- slot: form_6251_2025_part_iii_line_29
+  field_name: topmostSubform[0].Page2[0].f2_18[0]
+  format: dollars
+  node_id: form_6251_2025_part_iii_line_29
+- slot: form_6251_2025_part_iii_line_30
+  field_name: topmostSubform[0].Page2[0].f2_19[0]
+  format: dollars
+  node_id: form_6251_2025_part_iii_line_30
+- slot: form_6251_2025_part_iii_line_31
+  field_name: topmostSubform[0].Page2[0].f2_20[0]
+  format: dollars
+  node_id: form_6251_2025_part_iii_line_31
+- slot: form_6251_2025_part_iii_line_32
+  field_name: topmostSubform[0].Page2[0].f2_21[0]
+  format: dollars
+  node_id: form_6251_2025_part_iii_line_32
+- slot: form_6251_2025_part_iii_line_33
+  field_name: topmostSubform[0].Page2[0].f2_22[0]
+  format: dollars
+  node_id: form_6251_2025_part_iii_line_33
+- slot: form_6251_2025_part_iii_line_34
+  field_name: topmostSubform[0].Page2[0].f2_23[0]
+  format: dollars
+  node_id: form_6251_2025_part_iii_line_34
+- slot: form_6251_2025_part_iii_line_35
+  field_name: topmostSubform[0].Page2[0].f2_24[0]
+  format: dollars
+  node_id: form_6251_2025_part_iii_line_35
+- slot: form_6251_2025_part_iii_line_36
+  field_name: topmostSubform[0].Page2[0].f2_25[0]
+  format: dollars
+  node_id: form_6251_2025_part_iii_line_36
+- slot: form_6251_2025_part_iii_line_38
+  field_name: topmostSubform[0].Page2[0].f2_27[0]
+  format: dollars
+  node_id: form_6251_2025_part_iii_line_38
+- slot: form_6251_2025_part_iii_line_40
+  field_name: topmostSubform[0].Page2[0].f2_29[0]
+  format: dollars
+  node_id: form_6251_2025_part_iii_line_40
 excluded_nodes:
-- node_id: form_6251_2025_part_i_line_14
-  reason: Not a printable form line or not mapped in the M12 supported output profile.
-- node_id: form_6251_2025_part_i_line_1a
-  reason: Not a printable form line or not mapped in the M12 supported output profile.
-- node_id: form_6251_2025_part_i_line_1b
-  reason: Not a printable form line or not mapped in the M12 supported output profile.
 - node_id: form_6251_2025_part_i_line_2
   reason: Not a printable form line or not mapped in the M12 supported output profile.
 - node_id: form_6251_2025_part_i_line_4
@@ -51,17 +145,7 @@ excluded_nodes:
   reason: Not a printable form line or not mapped in the M12 supported output profile.
 - node_id: form_6251_2025_part_i_line_t
   reason: Not a printable form line or not mapped in the M12 supported output profile.
-- node_id: form_6251_2025_part_ii_line_10
-  reason: Not a printable form line or not mapped in the M12 supported output profile.
-- node_id: form_6251_2025_part_ii_line_16
-  reason: Not a printable form line or not mapped in the M12 supported output profile.
 - node_id: form_6251_2025_part_ii_line_5
-  reason: Not a printable form line or not mapped in the M12 supported output profile.
-- node_id: form_6251_2025_part_ii_line_6
-  reason: Not a printable form line or not mapped in the M12 supported output profile.
-- node_id: form_6251_2025_part_ii_line_9
-  reason: Not a printable form line or not mapped in the M12 supported output profile.
-- node_id: form_6251_2025_part_iii_line_12
   reason: Not a printable form line or not mapped in the M12 supported output profile.
 - node_id: form_6251_2025_part_iii_line_13
   reason: Not a printable form line or not mapped in the M12 supported output profile.
@@ -69,50 +153,518 @@ excluded_nodes:
   reason: Not a printable form line or not mapped in the M12 supported output profile.
 - node_id: form_6251_2025_part_iii_line_15
   reason: Not a printable form line or not mapped in the M12 supported output profile.
-- node_id: form_6251_2025_part_iii_line_17
-  reason: Not a printable form line or not mapped in the M12 supported output profile.
 - node_id: form_6251_2025_part_iii_line_18
   reason: Not a printable form line or not mapped in the M12 supported output profile.
 - node_id: form_6251_2025_part_iii_line_19
   reason: Not a printable form line or not mapped in the M12 supported output profile.
 - node_id: form_6251_2025_part_iii_line_20
   reason: Not a printable form line or not mapped in the M12 supported output profile.
-- node_id: form_6251_2025_part_iii_line_21
-  reason: Not a printable form line or not mapped in the M12 supported output profile.
-- node_id: form_6251_2025_part_iii_line_22
-  reason: Not a printable form line or not mapped in the M12 supported output profile.
-- node_id: form_6251_2025_part_iii_line_23
-  reason: Not a printable form line or not mapped in the M12 supported output profile.
-- node_id: form_6251_2025_part_iii_line_24
-  reason: Not a printable form line or not mapped in the M12 supported output profile.
 - node_id: form_6251_2025_part_iii_line_25
-  reason: Not a printable form line or not mapped in the M12 supported output profile.
-- node_id: form_6251_2025_part_iii_line_26
   reason: Not a printable form line or not mapped in the M12 supported output profile.
 - node_id: form_6251_2025_part_iii_line_27
   reason: Not a printable form line or not mapped in the M12 supported output profile.
-- node_id: form_6251_2025_part_iii_line_28
-  reason: Not a printable form line or not mapped in the M12 supported output profile.
-- node_id: form_6251_2025_part_iii_line_29
-  reason: Not a printable form line or not mapped in the M12 supported output profile.
-- node_id: form_6251_2025_part_iii_line_30
-  reason: Not a printable form line or not mapped in the M12 supported output profile.
-- node_id: form_6251_2025_part_iii_line_31
-  reason: Not a printable form line or not mapped in the M12 supported output profile.
-- node_id: form_6251_2025_part_iii_line_32
-  reason: Not a printable form line or not mapped in the M12 supported output profile.
-- node_id: form_6251_2025_part_iii_line_33
-  reason: Not a printable form line or not mapped in the M12 supported output profile.
-- node_id: form_6251_2025_part_iii_line_34
-  reason: Not a printable form line or not mapped in the M12 supported output profile.
-- node_id: form_6251_2025_part_iii_line_35
-  reason: Not a printable form line or not mapped in the M12 supported output profile.
-- node_id: form_6251_2025_part_iii_line_36
-  reason: Not a printable form line or not mapped in the M12 supported output profile.
-- node_id: form_6251_2025_part_iii_line_38
-  reason: Not a printable form line or not mapped in the M12 supported output profile.
 - node_id: form_6251_2025_part_iii_line_39
   reason: Not a printable form line or not mapped in the M12 supported output profile.
-- node_id: form_6251_2025_part_iii_line_40
-  reason: Not a printable form line or not mapped in the M12 supported output profile.
 frontier_fields: []
+schema_version: 2
+field_dispositions:
+- field_name: topmostSubform[0].Page1[0].f1_1[0]
+  label: f1_1
+  population_policy: unsupported
+  value_format: text
+  reason: The official form_6251_2025 control 'f1_1' has no authored graph, filer-fact,
+    or decision mapping.
+  downstream_effect: Output leaves AcroForm field topmostSubform[0].Page1[0].f1_1[0]
+    blank and reports the unsupported filing field.
+  missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
+    for topmostSubform[0].Page1[0].f1_1[0].
+- field_name: topmostSubform[0].Page1[0].f1_2[0]
+  label: f1_2
+  population_policy: unsupported
+  value_format: text
+  reason: The official form_6251_2025 control 'f1_2' has no authored graph, filer-fact,
+    or decision mapping.
+  downstream_effect: Output leaves AcroForm field topmostSubform[0].Page1[0].f1_2[0]
+    blank and reports the unsupported filing field.
+  missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
+    for topmostSubform[0].Page1[0].f1_2[0].
+- field_name: topmostSubform[0].Page1[0].f1_3[0]
+  label: Line 1a - . . . . . . . . . 1a - f1_3
+  population_policy: user_entered
+  value_format: dollars
+  node_id: form_6251_2025_part_i_line_1a
+- field_name: topmostSubform[0].Page1[0].f1_4[0]
+  label: Line 1b - . . . . . . . . . 1b - f1_4
+  population_policy: user_entered
+  value_format: dollars
+  node_id: form_6251_2025_part_i_line_1b
+- field_name: topmostSubform[0].Page1[0].f1_5[0]
+  label: Line 2a - . . . . . . . . . 2a - f1_5
+  population_policy: unsupported
+  value_format: text
+  reason: The official form_6251_2025 control 'Line 2a - . . . . . . . . . 2a - f1_5'
+    has no authored graph, filer-fact, or decision mapping.
+  downstream_effect: Output leaves AcroForm field topmostSubform[0].Page1[0].f1_5[0]
+    blank and reports the unsupported filing field.
+  missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
+    for topmostSubform[0].Page1[0].f1_5[0].
+- field_name: topmostSubform[0].Page1[0].f1_6[0]
+  label: Line 2b - . . . . . . . . 2b ( - f1_6
+  population_policy: unsupported
+  value_format: text
+  reason: The official form_6251_2025 control 'Line 2b - . . . . . . . . 2b ( - f1_6'
+    has no authored graph, filer-fact, or decision mapping.
+  downstream_effect: Output leaves AcroForm field topmostSubform[0].Page1[0].f1_6[0]
+    blank and reports the unsupported filing field.
+  missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
+    for topmostSubform[0].Page1[0].f1_6[0].
+- field_name: topmostSubform[0].Page1[0].f1_7[0]
+  label: Line 2c - . . . . . . . . . 2c - f1_7
+  population_policy: unsupported
+  value_format: text
+  reason: The official form_6251_2025 control 'Line 2c - . . . . . . . . . 2c - f1_7'
+    has no authored graph, filer-fact, or decision mapping.
+  downstream_effect: Output leaves AcroForm field topmostSubform[0].Page1[0].f1_7[0]
+    blank and reports the unsupported filing field.
+  missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
+    for topmostSubform[0].Page1[0].f1_7[0].
+- field_name: topmostSubform[0].Page1[0].f1_8[0]
+  label: Line 2d - . . . . . . . . . 2d - f1_8
+  population_policy: unsupported
+  value_format: text
+  reason: The official form_6251_2025 control 'Line 2d - . . . . . . . . . 2d - f1_8'
+    has no authored graph, filer-fact, or decision mapping.
+  downstream_effect: Output leaves AcroForm field topmostSubform[0].Page1[0].f1_8[0]
+    blank and reports the unsupported filing field.
+  missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
+    for topmostSubform[0].Page1[0].f1_8[0].
+- field_name: topmostSubform[0].Page1[0].f1_9[0]
+  label: Line 2e - Enter as a positive amount . . . . 2e - f1_9
+  population_policy: unsupported
+  value_format: text
+  reason: The official form_6251_2025 control 'Line 2e - Enter as a positive amount
+    . . . . 2e - f1_9' has no authored graph, filer-fact, or decision mapping.
+  downstream_effect: Output leaves AcroForm field topmostSubform[0].Page1[0].f1_9[0]
+    blank and reports the unsupported filing field.
+  missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
+    for topmostSubform[0].Page1[0].f1_9[0].
+- field_name: topmostSubform[0].Page1[0].f1_10[0]
+  label: Line 2f - . . . . . . . . 2f ( - f1_10
+  population_policy: unsupported
+  value_format: text
+  reason: The official form_6251_2025 control 'Line 2f - . . . . . . . . 2f ( - f1_10'
+    has no authored graph, filer-fact, or decision mapping.
+  downstream_effect: Output leaves AcroForm field topmostSubform[0].Page1[0].f1_10[0]
+    blank and reports the unsupported filing field.
+  missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
+    for topmostSubform[0].Page1[0].f1_10[0].
+- field_name: topmostSubform[0].Page1[0].f1_11[0]
+  label: Line 2g - . . . . . . . . . 2g - f1_11
+  population_policy: unsupported
+  value_format: text
+  reason: The official form_6251_2025 control 'Line 2g - . . . . . . . . . 2g - f1_11'
+    has no authored graph, filer-fact, or decision mapping.
+  downstream_effect: Output leaves AcroForm field topmostSubform[0].Page1[0].f1_11[0]
+    blank and reports the unsupported filing field.
+  missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
+    for topmostSubform[0].Page1[0].f1_11[0].
+- field_name: topmostSubform[0].Page1[0].f1_12[0]
+  label: Line 2h - . . . . . . . . . 2h - f1_12
+  population_policy: unsupported
+  value_format: text
+  reason: The official form_6251_2025 control 'Line 2h - . . . . . . . . . 2h - f1_12'
+    has no authored graph, filer-fact, or decision mapping.
+  downstream_effect: Output leaves AcroForm field topmostSubform[0].Page1[0].f1_12[0]
+    blank and reports the unsupported filing field.
+  missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
+    for topmostSubform[0].Page1[0].f1_12[0].
+- field_name: topmostSubform[0].Page1[0].f1_13[0]
+  label: Line 2i - income) . . . . . . . . 2i - f1_13
+  population_policy: unsupported
+  value_format: text
+  reason: The official form_6251_2025 control 'Line 2i - income) . . . . . . . . 2i
+    - f1_13' has no authored graph, filer-fact, or decision mapping.
+  downstream_effect: Output leaves AcroForm field topmostSubform[0].Page1[0].f1_13[0]
+    blank and reports the unsupported filing field.
+  missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
+    for topmostSubform[0].Page1[0].f1_13[0].
+- field_name: topmostSubform[0].Page1[0].f1_14[0]
+  label: Line 2j - . . . . . . . . . 2j - f1_14
+  population_policy: unsupported
+  value_format: text
+  reason: The official form_6251_2025 control 'Line 2j - . . . . . . . . . 2j - f1_14'
+    has no authored graph, filer-fact, or decision mapping.
+  downstream_effect: Output leaves AcroForm field topmostSubform[0].Page1[0].f1_14[0]
+    blank and reports the unsupported filing field.
+  missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
+    for topmostSubform[0].Page1[0].f1_14[0].
+- field_name: topmostSubform[0].Page1[0].f1_15[0]
+  label: Line 2k - . . . . . . . . . 2k - f1_15
+  population_policy: unsupported
+  value_format: text
+  reason: The official form_6251_2025 control 'Line 2k - . . . . . . . . . 2k - f1_15'
+    has no authored graph, filer-fact, or decision mapping.
+  downstream_effect: Output leaves AcroForm field topmostSubform[0].Page1[0].f1_15[0]
+    blank and reports the unsupported filing field.
+  missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
+    for topmostSubform[0].Page1[0].f1_15[0].
+- field_name: topmostSubform[0].Page1[0].f1_16[0]
+  label: Line 2l - regular tax and AMT) . . . . . 2l - f1_16
+  population_policy: unsupported
+  value_format: text
+  reason: The official form_6251_2025 control 'Line 2l - regular tax and AMT) . .
+    . . . 2l - f1_16' has no authored graph, filer-fact, or decision mapping.
+  downstream_effect: Output leaves AcroForm field topmostSubform[0].Page1[0].f1_16[0]
+    blank and reports the unsupported filing field.
+  missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
+    for topmostSubform[0].Page1[0].f1_16[0].
+- field_name: topmostSubform[0].Page1[0].f1_17[0]
+  label: Line 2m - . . . . . . . . . 2m - f1_17
+  population_policy: unsupported
+  value_format: text
+  reason: The official form_6251_2025 control 'Line 2m - . . . . . . . . . 2m - f1_17'
+    has no authored graph, filer-fact, or decision mapping.
+  downstream_effect: Output leaves AcroForm field topmostSubform[0].Page1[0].f1_17[0]
+    blank and reports the unsupported filing field.
+  missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
+    for topmostSubform[0].Page1[0].f1_17[0].
+- field_name: topmostSubform[0].Page1[0].f1_18[0]
+  label: Line 2n - . . . . . . . . . 2n - f1_18
+  population_policy: unsupported
+  value_format: text
+  reason: The official form_6251_2025 control 'Line 2n - . . . . . . . . . 2n - f1_18'
+    has no authored graph, filer-fact, or decision mapping.
+  downstream_effect: Output leaves AcroForm field topmostSubform[0].Page1[0].f1_18[0]
+    blank and reports the unsupported filing field.
+  missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
+    for topmostSubform[0].Page1[0].f1_18[0].
+- field_name: topmostSubform[0].Page1[0].f1_19[0]
+  label: Line 2o - . . . . . . . . . 2o - f1_19
+  population_policy: unsupported
+  value_format: text
+  reason: The official form_6251_2025 control 'Line 2o - . . . . . . . . . 2o - f1_19'
+    has no authored graph, filer-fact, or decision mapping.
+  downstream_effect: Output leaves AcroForm field topmostSubform[0].Page1[0].f1_19[0]
+    blank and reports the unsupported filing field.
+  missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
+    for topmostSubform[0].Page1[0].f1_19[0].
+- field_name: topmostSubform[0].Page1[0].f1_20[0]
+  label: Line 2p - . . . . . . . . . 2p - f1_20
+  population_policy: unsupported
+  value_format: text
+  reason: The official form_6251_2025 control 'Line 2p - . . . . . . . . . 2p - f1_20'
+    has no authored graph, filer-fact, or decision mapping.
+  downstream_effect: Output leaves AcroForm field topmostSubform[0].Page1[0].f1_20[0]
+    blank and reports the unsupported filing field.
+  missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
+    for topmostSubform[0].Page1[0].f1_20[0].
+- field_name: topmostSubform[0].Page1[0].f1_21[0]
+  label: Line 2q - . . . . . . . . . 2q - f1_21
+  population_policy: unsupported
+  value_format: text
+  reason: The official form_6251_2025 control 'Line 2q - . . . . . . . . . 2q - f1_21'
+    has no authored graph, filer-fact, or decision mapping.
+  downstream_effect: Output leaves AcroForm field topmostSubform[0].Page1[0].f1_21[0]
+    blank and reports the unsupported filing field.
+  missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
+    for topmostSubform[0].Page1[0].f1_21[0].
+- field_name: topmostSubform[0].Page1[0].f1_22[0]
+  label: Line 2r - . . . . . . . . . 2r - f1_22
+  population_policy: unsupported
+  value_format: text
+  reason: The official form_6251_2025 control 'Line 2r - . . . . . . . . . 2r - f1_22'
+    has no authored graph, filer-fact, or decision mapping.
+  downstream_effect: Output leaves AcroForm field topmostSubform[0].Page1[0].f1_22[0]
+    blank and reports the unsupported filing field.
+  missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
+    for topmostSubform[0].Page1[0].f1_22[0].
+- field_name: topmostSubform[0].Page1[0].f1_23[0]
+  label: Line 2s - . . . . . . . . 2s ( - f1_23
+  population_policy: unsupported
+  value_format: text
+  reason: The official form_6251_2025 control 'Line 2s - . . . . . . . . 2s ( - f1_23'
+    has no authored graph, filer-fact, or decision mapping.
+  downstream_effect: Output leaves AcroForm field topmostSubform[0].Page1[0].f1_23[0]
+    blank and reports the unsupported filing field.
+  missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
+    for topmostSubform[0].Page1[0].f1_23[0].
+- field_name: topmostSubform[0].Page1[0].f1_24[0]
+  label: Line 2t - . . . . . . . . . 2t - f1_24
+  population_policy: unsupported
+  value_format: text
+  reason: The official form_6251_2025 control 'Line 2t - . . . . . . . . . 2t - f1_24'
+    has no authored graph, filer-fact, or decision mapping.
+  downstream_effect: Output leaves AcroForm field topmostSubform[0].Page1[0].f1_24[0]
+    blank and reports the unsupported filing field.
+  missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
+    for topmostSubform[0].Page1[0].f1_24[0].
+- field_name: topmostSubform[0].Page1[0].f1_25[0]
+  label: Line 3 - . . . . . . . . . 3 - f1_25
+  population_policy: unsupported
+  value_format: text
+  reason: The official form_6251_2025 control 'Line 3 - . . . . . . . . . 3 - f1_25'
+    has no authored graph, filer-fact, or decision mapping.
+  downstream_effect: Output leaves AcroForm field topmostSubform[0].Page1[0].f1_25[0]
+    blank and reports the unsupported filing field.
+  missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
+    for topmostSubform[0].Page1[0].f1_25[0].
+- field_name: topmostSubform[0].Page1[0].f1_26[0]
+  label: Line 1b - . . . . . . . . . 4 - f1_26
+  population_policy: unsupported
+  value_format: text
+  reason: The official form_6251_2025 control 'Line 1b - . . . . . . . . . 4 - f1_26'
+    has no authored graph, filer-fact, or decision mapping.
+  downstream_effect: Output leaves AcroForm field topmostSubform[0].Page1[0].f1_26[0]
+    blank and reports the unsupported filing field.
+  missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
+    for topmostSubform[0].Page1[0].f1_26[0].
+- field_name: topmostSubform[0].Page1[0].f1_27[0]
+  label: 626,350 . . . . . 68,500 . . 5 - f1_27
+  population_policy: unsupported
+  value_format: text
+  reason: The official form_6251_2025 control '626,350 . . . . . 68,500 . . 5 - f1_27'
+    has no authored graph, filer-fact, or decision mapping.
+  downstream_effect: Output leaves AcroForm field topmostSubform[0].Page1[0].f1_27[0]
+    blank and reports the unsupported filing field.
+  missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
+    for topmostSubform[0].Page1[0].f1_27[0].
+- field_name: topmostSubform[0].Page1[0].f1_28[0]
+  label: Line 6 - . . . . . . . . . 6 - f1_28
+  population_policy: user_entered
+  value_format: dollars
+  node_id: form_6251_2025_part_ii_line_6
+- field_name: topmostSubform[0].Page1[0].f1_29[0]
+  label: Line 16 - necessary), complete Part III on the } . . 7 - f1_29
+  population_policy: user_entered
+  value_format: dollars
+  node_id: form_6251_2025_part_ii_line_16
+- field_name: topmostSubform[0].Page1[0].f1_30[0]
+  label: Line 8 - . . . . . . . . . 8 - f1_30
+  population_policy: unsupported
+  value_format: text
+  reason: The official form_6251_2025 control 'Line 8 - . . . . . . . . . 8 - f1_30'
+    has no authored graph, filer-fact, or decision mapping.
+  downstream_effect: Output leaves AcroForm field topmostSubform[0].Page1[0].f1_30[0]
+    blank and reports the unsupported filing field.
+  missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
+    for topmostSubform[0].Page1[0].f1_30[0].
+- field_name: topmostSubform[0].Page1[0].f1_31[0]
+  label: Line 9 - . . . . . . . . . 9 - f1_31
+  population_policy: user_entered
+  value_format: dollars
+  node_id: form_6251_2025_part_ii_line_9
+- field_name: topmostSubform[0].Page1[0].f1_32[0]
+  label: Line 10 - . . . . . . . . . 10 - f1_32
+  population_policy: user_entered
+  value_format: dollars
+  node_id: form_6251_2025_part_ii_line_10
+- field_name: topmostSubform[0].Page1[0].f1_33[0]
+  label: Line 11 - here and on Schedule 2 (Form 1040), line 2 11 - f1_33
+  population_policy: unsupported
+  value_format: text
+  reason: The official form_6251_2025 control 'Line 11 - here and on Schedule 2 (Form
+    1040), line 2 11 - f1_33' has no authored graph, filer-fact, or decision mapping.
+  downstream_effect: Output leaves AcroForm field topmostSubform[0].Page1[0].f1_33[0]
+    blank and reports the unsupported filing field.
+  missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
+    for topmostSubform[0].Page1[0].f1_33[0].
+- field_name: topmostSubform[0].Page2[0].f2_1[0]
+  label: Line 12 - . . . . . . . . . 12 - f2_1
+  population_policy: user_entered
+  value_format: dollars
+  node_id: form_6251_2025_part_iii_line_12
+- field_name: topmostSubform[0].Page2[0].f2_2[0]
+  label: . . . . . . . . . 13 - f2_2
+  population_policy: unsupported
+  value_format: text
+  reason: The official form_6251_2025 control '. . . . . . . . . 13 - f2_2' has no
+    authored graph, filer-fact, or decision mapping.
+  downstream_effect: Output leaves AcroForm field topmostSubform[0].Page2[0].f2_2[0]
+    blank and reports the unsupported filing field.
+  missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
+    for topmostSubform[0].Page2[0].f2_2[0].
+- field_name: topmostSubform[0].Page2[0].f2_3[0]
+  label: Line 14 - . . . . . . . . . 14 - f2_3
+  population_policy: user_entered
+  value_format: dollars
+  node_id: form_6251_2025_part_i_line_14
+- field_name: topmostSubform[0].Page2[0].f2_4[0]
+  label: . . . . . . . . . 15 - f2_4
+  population_policy: unsupported
+  value_format: text
+  reason: The official form_6251_2025 control '. . . . . . . . . 15 - f2_4' has no
+    authored graph, filer-fact, or decision mapping.
+  downstream_effect: Output leaves AcroForm field topmostSubform[0].Page2[0].f2_4[0]
+    blank and reports the unsupported filing field.
+  missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
+    for topmostSubform[0].Page2[0].f2_4[0].
+- field_name: topmostSubform[0].Page2[0].f2_5[0]
+  label: Line 16 - . . . . . . . . . 16 - f2_5
+  population_policy: unsupported
+  value_format: text
+  reason: The official form_6251_2025 control 'Line 16 - . . . . . . . . . 16 - f2_5'
+    has no authored graph, filer-fact, or decision mapping.
+  downstream_effect: Output leaves AcroForm field topmostSubform[0].Page2[0].f2_5[0]
+    blank and reports the unsupported filing field.
+  missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
+    for topmostSubform[0].Page2[0].f2_5[0].
+- field_name: topmostSubform[0].Page2[0].f2_6[0]
+  label: Line 17 - . . . . . . . . . 17 - f2_6
+  population_policy: user_entered
+  value_format: dollars
+  node_id: form_6251_2025_part_iii_line_17
+- field_name: topmostSubform[0].Page2[0].f2_7[0]
+  label: Line 17 - $4,782 ($2,391 if married filing separately) from the result 18
+    - f2_7
+  population_policy: unsupported
+  value_format: text
+  reason: The official form_6251_2025 control 'Line 17 - $4,782 ($2,391 if married
+    filing separately) from the result 18 - f2_7' has no authored graph, filer-fact,
+    or decision mapping.
+  downstream_effect: Output leaves AcroForm field topmostSubform[0].Page2[0].f2_7[0]
+    blank and reports the unsupported filing field.
+  missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
+    for topmostSubform[0].Page2[0].f2_7[0].
+- field_name: topmostSubform[0].Page2[0].f2_8[0]
+  label: single or married filing separately, or } . . 19 - f2_8
+  population_policy: unsupported
+  value_format: text
+  reason: The official form_6251_2025 control 'single or married filing separately,
+    or } . . 19 - f2_8' has no authored graph, filer-fact, or decision mapping.
+  downstream_effect: Output leaves AcroForm field topmostSubform[0].Page2[0].f2_8[0]
+    blank and reports the unsupported filing field.
+  missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
+    for topmostSubform[0].Page2[0].f2_8[0].
+- field_name: topmostSubform[0].Page2[0].f2_9[0]
+  label: to enter . . . . . . . 20 - f2_9
+  population_policy: unsupported
+  value_format: text
+  reason: The official form_6251_2025 control 'to enter . . . . . . . 20 - f2_9' has
+    no authored graph, filer-fact, or decision mapping.
+  downstream_effect: Output leaves AcroForm field topmostSubform[0].Page2[0].f2_9[0]
+    blank and reports the unsupported filing field.
+  missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
+    for topmostSubform[0].Page2[0].f2_9[0].
+- field_name: topmostSubform[0].Page2[0].f2_10[0]
+  label: Line 21 - . . . . . . . . . 21 - f2_10
+  population_policy: user_entered
+  value_format: dollars
+  node_id: form_6251_2025_part_iii_line_21
+- field_name: topmostSubform[0].Page2[0].f2_11[0]
+  label: Line 22 - . . . . . . . . . 22 - f2_11
+  population_policy: user_entered
+  value_format: dollars
+  node_id: form_6251_2025_part_iii_line_22
+- field_name: topmostSubform[0].Page2[0].f2_12[0]
+  label: Line 23 - . . . . . . . . . 23 - f2_12
+  population_policy: user_entered
+  value_format: dollars
+  node_id: form_6251_2025_part_iii_line_23
+- field_name: topmostSubform[0].Page2[0].f2_13[0]
+  label: Line 24 - . . . . . . . . . 24 - f2_13
+  population_policy: user_entered
+  value_format: dollars
+  node_id: form_6251_2025_part_iii_line_24
+- field_name: topmostSubform[0].Page2[0].f2_14[0]
+  label: "\u2022 $300,000 if married filing separately, } . . 25 - f2_14"
+  population_policy: unsupported
+  value_format: text
+  reason: "The official form_6251_2025 control '\u2022 $300,000 if married filing\
+    \ separately, } . . 25 - f2_14' has no authored graph, filer-fact, or decision\
+    \ mapping."
+  downstream_effect: Output leaves AcroForm field topmostSubform[0].Page2[0].f2_14[0]
+    blank and reports the unsupported filing field.
+  missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
+    for topmostSubform[0].Page2[0].f2_14[0].
+- field_name: topmostSubform[0].Page2[0].f2_15[0]
+  label: Line 26 - . . . . . . . . . 26 - f2_15
+  population_policy: user_entered
+  value_format: dollars
+  node_id: form_6251_2025_part_iii_line_26
+- field_name: topmostSubform[0].Page2[0].f2_16[0]
+  label: to enter . . . . . . . 27 - f2_16
+  population_policy: unsupported
+  value_format: text
+  reason: The official form_6251_2025 control 'to enter . . . . . . . 27 - f2_16'
+    has no authored graph, filer-fact, or decision mapping.
+  downstream_effect: Output leaves AcroForm field topmostSubform[0].Page2[0].f2_16[0]
+    blank and reports the unsupported filing field.
+  missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
+    for topmostSubform[0].Page2[0].f2_16[0].
+- field_name: topmostSubform[0].Page2[0].f2_17[0]
+  label: Line 28 - . . . . . . . . . 28 - f2_17
+  population_policy: user_entered
+  value_format: dollars
+  node_id: form_6251_2025_part_iii_line_28
+- field_name: topmostSubform[0].Page2[0].f2_18[0]
+  label: Line 29 - . . . . . . . . . 29 - f2_18
+  population_policy: user_entered
+  value_format: dollars
+  node_id: form_6251_2025_part_iii_line_29
+- field_name: topmostSubform[0].Page2[0].f2_19[0]
+  label: Line 30 - . . . . . . . . . 30 - f2_19
+  population_policy: user_entered
+  value_format: dollars
+  node_id: form_6251_2025_part_iii_line_30
+- field_name: topmostSubform[0].Page2[0].f2_20[0]
+  label: Line 31 - . . . . . . . . . 31 - f2_20
+  population_policy: user_entered
+  value_format: dollars
+  node_id: form_6251_2025_part_iii_line_31
+- field_name: topmostSubform[0].Page2[0].f2_21[0]
+  label: Line 32 - . . . . . . . . . 32 - f2_21
+  population_policy: user_entered
+  value_format: dollars
+  node_id: form_6251_2025_part_iii_line_32
+- field_name: topmostSubform[0].Page2[0].f2_22[0]
+  label: Line 33 - . . . . . . . . . 33 - f2_22
+  population_policy: user_entered
+  value_format: dollars
+  node_id: form_6251_2025_part_iii_line_33
+- field_name: topmostSubform[0].Page2[0].f2_23[0]
+  label: Line 34 - . . . . . . . . . 34 - f2_23
+  population_policy: user_entered
+  value_format: dollars
+  node_id: form_6251_2025_part_iii_line_34
+- field_name: topmostSubform[0].Page2[0].f2_24[0]
+  label: Line 35 - . . . . . . . . . 35 - f2_24
+  population_policy: user_entered
+  value_format: dollars
+  node_id: form_6251_2025_part_iii_line_35
+- field_name: topmostSubform[0].Page2[0].f2_25[0]
+  label: Line 36 - . . . . . . . . . 36 - f2_25
+  population_policy: user_entered
+  value_format: dollars
+  node_id: form_6251_2025_part_iii_line_36
+- field_name: topmostSubform[0].Page2[0].f2_26[0]
+  label: Line 37 - . . . . . . . . . 37 - f2_26
+  population_policy: unsupported
+  value_format: text
+  reason: The official form_6251_2025 control 'Line 37 - . . . . . . . . . 37 - f2_26'
+    has no authored graph, filer-fact, or decision mapping.
+  downstream_effect: Output leaves AcroForm field topmostSubform[0].Page2[0].f2_26[0]
+    blank and reports the unsupported filing field.
+  missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
+    for topmostSubform[0].Page2[0].f2_26[0].
+- field_name: topmostSubform[0].Page2[0].f2_27[0]
+  label: Line 38 - . . . . . . . . . 38 - f2_27
+  population_policy: user_entered
+  value_format: dollars
+  node_id: form_6251_2025_part_iii_line_38
+- field_name: topmostSubform[0].Page2[0].f2_28[0]
+  label: Line 12 - $4,782 ($2,391 if married filing separately) from the result 39
+    - f2_28
+  population_policy: unsupported
+  value_format: text
+  reason: The official form_6251_2025 control 'Line 12 - $4,782 ($2,391 if married
+    filing separately) from the result 39 - f2_28' has no authored graph, filer-fact,
+    or decision mapping.
+  downstream_effect: Output leaves AcroForm field topmostSubform[0].Page2[0].f2_28[0]
+    blank and reports the unsupported filing field.
+  missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
+    for topmostSubform[0].Page2[0].f2_28[0].
+- field_name: topmostSubform[0].Page2[0].f2_29[0]
+  label: Line 40 - for line 7 . . . . . . 40 - f2_29
+  population_policy: user_entered
+  value_format: dollars
+  node_id: form_6251_2025_part_iii_line_40

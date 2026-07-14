@@ -1,58 +1,634 @@
 tax_year: 2025
 document_id: schedule_2_2025
 inventory: graph/2025/field_inventories/schedule_2_2025.json
-mappings: []
+mappings:
+- slot: schedule_2_2025_part_i_line_1
+  field_name: form1[0].Page1[0].f1_15[0]
+  format: dollars
+  node_id: schedule_2_2025_part_i_line_1
+- slot: schedule_2_2025_part_i_line_1a
+  field_name: form1[0].Page1[0].Line1a_ReadOrder[0].f1_03[0]
+  format: dollars
+  node_id: schedule_2_2025_part_i_line_1a
+- slot: schedule_2_2025_part_i_line_1b
+  field_name: form1[0].Page1[0].f1_04[0]
+  format: dollars
+  node_id: schedule_2_2025_part_i_line_1b
+- slot: schedule_2_2025_part_i_line_1d
+  field_name: form1[0].Page1[0].f1_06[0]
+  format: dollars
+  node_id: schedule_2_2025_part_i_line_1d
+- slot: schedule_2_2025_part_ii_line_10
+  field_name: form1[0].Page1[0].f1_21[0]
+  format: dollars
+  node_id: schedule_2_2025_part_ii_line_10
+- slot: schedule_2_2025_part_ii_line_11
+  field_name: form1[0].Page1[0].f1_22[0]
+  format: dollars
+  node_id: schedule_2_2025_part_ii_line_11
+- slot: schedule_2_2025_part_ii_line_12
+  field_name: form1[0].Page1[0].f1_23[0]
+  format: dollars
+  node_id: schedule_2_2025_part_ii_line_12
+- slot: schedule_2_2025_part_ii_line_14
+  field_name: form1[0].Page1[0].f1_25[0]
+  format: dollars
+  node_id: schedule_2_2025_part_ii_line_14
+- slot: schedule_2_2025_part_ii_line_15
+  field_name: form1[0].Page1[0].f1_26[0]
+  format: dollars
+  node_id: schedule_2_2025_part_ii_line_15
+- slot: schedule_2_2025_part_ii_line_16
+  field_name: form1[0].Page1[0].f1_27[0]
+  format: dollars
+  node_id: schedule_2_2025_part_ii_line_16
+- slot: schedule_2_2025_part_ii_line_17a
+  field_name: form1[0].Page2[0].Line17a_ReadOrder[0].f2_02[0]
+  format: dollars
+  node_id: schedule_2_2025_part_ii_line_17a
+- slot: schedule_2_2025_part_ii_line_17d
+  field_name: form1[0].Page2[0].f2_05[0]
+  format: dollars
+  node_id: schedule_2_2025_part_ii_line_17d
+- slot: schedule_2_2025_part_ii_line_17z
+  field_name: form1[0].Page2[0].f2_21[0]
+  format: dollars
+  node_id: schedule_2_2025_part_ii_line_17z
+- slot: schedule_2_2025_part_ii_line_19
+  field_name: form1[0].Page2[0].f2_22[0]
+  format: dollars
+  node_id: schedule_2_2025_part_ii_line_19
+- slot: schedule_2_2025_part_ii_line_20
+  field_name: form1[0].Page2[0].f2_23[0]
+  format: dollars
+  node_id: schedule_2_2025_part_ii_line_20
+- slot: schedule_2_2025_part_ii_line_5
+  field_name: form1[0].Page1[0].f1_16[0]
+  format: dollars
+  node_id: schedule_2_2025_part_ii_line_5
+- slot: schedule_2_2025_part_ii_line_6
+  field_name: form1[0].Page1[0].f1_17[0]
+  format: dollars
+  node_id: schedule_2_2025_part_ii_line_6
+- slot: schedule_2_2025_part_ii_line_7
+  field_name: form1[0].Page1[0].f1_18[0]
+  format: dollars
+  node_id: schedule_2_2025_part_ii_line_7
+- slot: schedule_2_2025_part_ii_line_8
+  field_name: form1[0].Page1[0].f1_19[0]
+  format: dollars
+  node_id: schedule_2_2025_part_ii_line_8
+- slot: schedule_2_2025_part_ii_line_9
+  field_name: form1[0].Page1[0].f1_20[0]
+  format: dollars
+  node_id: schedule_2_2025_part_ii_line_9
+- slot: schedule_2_2025_root_line_2
+  field_name: form1[0].Page1[0].f1_12[0]
+  format: dollars
+  node_id: schedule_2_2025_root_line_2
 excluded_nodes:
-- node_id: schedule_2_2025_part_i_line_1
-  reason: Not a printable form line or not mapped in the M12 supported output profile.
-- node_id: schedule_2_2025_part_i_line_1a
-  reason: Not a printable form line or not mapped in the M12 supported output profile.
-- node_id: schedule_2_2025_part_i_line_1b
-  reason: Not a printable form line or not mapped in the M12 supported output profile.
-- node_id: schedule_2_2025_part_i_line_1d
-  reason: Not a printable form line or not mapped in the M12 supported output profile.
 - node_id: schedule_2_2025_part_i_line_3
-  reason: Not a printable form line or not mapped in the M12 supported output profile.
-- node_id: schedule_2_2025_part_ii_line_10
-  reason: Not a printable form line or not mapped in the M12 supported output profile.
-- node_id: schedule_2_2025_part_ii_line_11
-  reason: Not a printable form line or not mapped in the M12 supported output profile.
-- node_id: schedule_2_2025_part_ii_line_12
   reason: Not a printable form line or not mapped in the M12 supported output profile.
 - node_id: schedule_2_2025_part_ii_line_13
   reason: Not a printable form line or not mapped in the M12 supported output profile.
-- node_id: schedule_2_2025_part_ii_line_14
-  reason: Not a printable form line or not mapped in the M12 supported output profile.
-- node_id: schedule_2_2025_part_ii_line_15
-  reason: Not a printable form line or not mapped in the M12 supported output profile.
-- node_id: schedule_2_2025_part_ii_line_16
-  reason: Not a printable form line or not mapped in the M12 supported output profile.
-- node_id: schedule_2_2025_part_ii_line_17a
-  reason: Not a printable form line or not mapped in the M12 supported output profile.
-- node_id: schedule_2_2025_part_ii_line_17d
-  reason: Not a printable form line or not mapped in the M12 supported output profile.
-- node_id: schedule_2_2025_part_ii_line_17z
-  reason: Not a printable form line or not mapped in the M12 supported output profile.
 - node_id: schedule_2_2025_part_ii_line_18
-  reason: Not a printable form line or not mapped in the M12 supported output profile.
-- node_id: schedule_2_2025_part_ii_line_19
-  reason: Not a printable form line or not mapped in the M12 supported output profile.
-- node_id: schedule_2_2025_part_ii_line_20
   reason: Not a printable form line or not mapped in the M12 supported output profile.
 - node_id: schedule_2_2025_part_ii_line_21
   reason: Not a printable form line or not mapped in the M12 supported output profile.
 - node_id: schedule_2_2025_part_ii_line_4
   reason: Not a printable form line or not mapped in the M12 supported output profile.
-- node_id: schedule_2_2025_part_ii_line_5
-  reason: Not a printable form line or not mapped in the M12 supported output profile.
-- node_id: schedule_2_2025_part_ii_line_6
-  reason: Not a printable form line or not mapped in the M12 supported output profile.
-- node_id: schedule_2_2025_part_ii_line_7
-  reason: Not a printable form line or not mapped in the M12 supported output profile.
-- node_id: schedule_2_2025_part_ii_line_8
-  reason: Not a printable form line or not mapped in the M12 supported output profile.
-- node_id: schedule_2_2025_part_ii_line_9
-  reason: Not a printable form line or not mapped in the M12 supported output profile.
-- node_id: schedule_2_2025_root_line_2
-  reason: Not a printable form line or not mapped in the M12 supported output profile.
 frontier_fields: []
+schema_version: 2
+field_dispositions:
+- field_name: form1[0].Page1[0].f1_01[0]
+  label: f1_01
+  population_policy: unsupported
+  value_format: text
+  reason: The official schedule_2_2025 control 'f1_01' has no authored graph, filer-fact,
+    or decision mapping.
+  downstream_effect: Output leaves AcroForm field form1[0].Page1[0].f1_01[0] blank
+    and reports the unsupported filing field.
+  missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
+    for form1[0].Page1[0].f1_01[0].
+- field_name: form1[0].Page1[0].f1_02[0]
+  label: f1_02
+  population_policy: unsupported
+  value_format: text
+  reason: The official schedule_2_2025 control 'f1_02' has no authored graph, filer-fact,
+    or decision mapping.
+  downstream_effect: Output leaves AcroForm field form1[0].Page1[0].f1_02[0] blank
+    and reports the unsupported filing field.
+  missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
+    for form1[0].Page1[0].f1_02[0].
+- field_name: form1[0].Page1[0].Line1a_ReadOrder[0].f1_03[0]
+  label: Line 1a - credit repayment. Attach Form 8962 . . . . 1a - f1_03
+  population_policy: user_entered
+  value_format: dollars
+  node_id: schedule_2_2025_part_i_line_1a
+- field_name: form1[0].Page1[0].f1_04[0]
+  label: Line 1b - . . . . . . . . . 1b - f1_04
+  population_policy: user_entered
+  value_format: dollars
+  node_id: schedule_2_2025_part_i_line_1b
+- field_name: form1[0].Page1[0].f1_05[0]
+  label: Line 1c - . . . . . . . . . 1c - f1_05
+  population_policy: unsupported
+  value_format: text
+  reason: The official schedule_2_2025 control 'Line 1c - . . . . . . . . . 1c - f1_05'
+    has no authored graph, filer-fact, or decision mapping.
+  downstream_effect: Output leaves AcroForm field form1[0].Page1[0].f1_05[0] blank
+    and reports the unsupported filing field.
+  missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
+    for form1[0].Page1[0].f1_05[0].
+- field_name: form1[0].Page1[0].f1_06[0]
+  label: Line 1d - column (l) . . . . . . . 1d - f1_06
+  population_policy: user_entered
+  value_format: dollars
+  node_id: schedule_2_2025_part_i_line_1d
+- field_name: form1[0].Page1[0].Line1e_ReadOrder[0].c1_1[0]
+  label: Line 1c - (i) - c1_1
+  population_policy: unsupported
+  value_format: checkbox
+  reason: The official schedule_2_2025 control 'Line 1c - (i) - c1_1' has no authored
+    graph, filer-fact, or decision mapping.
+  downstream_effect: Output leaves AcroForm field form1[0].Page1[0].Line1e_ReadOrder[0].c1_1[0]
+    blank and reports the unsupported filing field.
+  missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
+    for form1[0].Page1[0].Line1e_ReadOrder[0].c1_1[0].
+- field_name: form1[0].Page1[0].Line1e_ReadOrder[0].c1_1[1]
+  label: Line 1c - (i) Line 1a (ii) - c1_1
+  population_policy: unsupported
+  value_format: checkbox
+  reason: The official schedule_2_2025 control 'Line 1c - (i) Line 1a (ii) - c1_1'
+    has no authored graph, filer-fact, or decision mapping.
+  downstream_effect: Output leaves AcroForm field form1[0].Page1[0].Line1e_ReadOrder[0].c1_1[1]
+    blank and reports the unsupported filing field.
+  missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
+    for form1[0].Page1[0].Line1e_ReadOrder[0].c1_1[1].
+- field_name: form1[0].Page1[0].Line1e_ReadOrder[0].c1_1[2]
+  label: Line 1e - (iii) - c1_1
+  population_policy: unsupported
+  value_format: checkbox
+  reason: The official schedule_2_2025 control 'Line 1e - (iii) - c1_1' has no authored
+    graph, filer-fact, or decision mapping.
+  downstream_effect: Output leaves AcroForm field form1[0].Page1[0].Line1e_ReadOrder[0].c1_1[2]
+    blank and reports the unsupported filing field.
+  missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
+    for form1[0].Page1[0].Line1e_ReadOrder[0].c1_1[2].
+- field_name: form1[0].Page1[0].Line1e_ReadOrder[0].c1_1[3]
+  label: Line 1e - (iii) Line 1d (iv) - c1_1
+  population_policy: unsupported
+  value_format: checkbox
+  reason: The official schedule_2_2025 control 'Line 1e - (iii) Line 1d (iv) - c1_1'
+    has no authored graph, filer-fact, or decision mapping.
+  downstream_effect: Output leaves AcroForm field form1[0].Page1[0].Line1e_ReadOrder[0].c1_1[3]
+    blank and reports the unsupported filing field.
+  missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
+    for form1[0].Page1[0].Line1e_ReadOrder[0].c1_1[3].
+- field_name: form1[0].Page1[0].f1_07[0]
+  label: Line 1e - . . . . . . . . . 1e - f1_07
+  population_policy: unsupported
+  value_format: text
+  reason: The official schedule_2_2025 control 'Line 1e - . . . . . . . . . 1e - f1_07'
+    has no authored graph, filer-fact, or decision mapping.
+  downstream_effect: Output leaves AcroForm field form1[0].Page1[0].f1_07[0] blank
+    and reports the unsupported filing field.
+  missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
+    for form1[0].Page1[0].f1_07[0].
+- field_name: form1[0].Page1[0].Line1f_ReadOrder[0].c1_2[0]
+  label: Line 1c - (i) - c1_2
+  population_policy: unsupported
+  value_format: checkbox
+  reason: The official schedule_2_2025 control 'Line 1c - (i) - c1_2' has no authored
+    graph, filer-fact, or decision mapping.
+  downstream_effect: Output leaves AcroForm field form1[0].Page1[0].Line1f_ReadOrder[0].c1_2[0]
+    blank and reports the unsupported filing field.
+  missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
+    for form1[0].Page1[0].Line1f_ReadOrder[0].c1_2[0].
+- field_name: form1[0].Page1[0].Line1f_ReadOrder[0].c1_2[1]
+  label: Line 1c - (i) Line 1a (ii) - c1_2
+  population_policy: unsupported
+  value_format: checkbox
+  reason: The official schedule_2_2025 control 'Line 1c - (i) Line 1a (ii) - c1_2'
+    has no authored graph, filer-fact, or decision mapping.
+  downstream_effect: Output leaves AcroForm field form1[0].Page1[0].Line1f_ReadOrder[0].c1_2[1]
+    blank and reports the unsupported filing field.
+  missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
+    for form1[0].Page1[0].Line1f_ReadOrder[0].c1_2[1].
+- field_name: form1[0].Page1[0].Line1f_ReadOrder[0].c1_2[2]
+  label: Line 1f - (iii) - c1_2
+  population_policy: unsupported
+  value_format: checkbox
+  reason: The official schedule_2_2025 control 'Line 1f - (iii) - c1_2' has no authored
+    graph, filer-fact, or decision mapping.
+  downstream_effect: Output leaves AcroForm field form1[0].Page1[0].Line1f_ReadOrder[0].c1_2[2]
+    blank and reports the unsupported filing field.
+  missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
+    for form1[0].Page1[0].Line1f_ReadOrder[0].c1_2[2].
+- field_name: form1[0].Page1[0].Line1f_ReadOrder[0].c1_2[3]
+  label: Line 1f - (iii) Line 1d (iv) - c1_2
+  population_policy: unsupported
+  value_format: checkbox
+  reason: The official schedule_2_2025 control 'Line 1f - (iii) Line 1d (iv) - c1_2'
+    has no authored graph, filer-fact, or decision mapping.
+  downstream_effect: Output leaves AcroForm field form1[0].Page1[0].Line1f_ReadOrder[0].c1_2[3]
+    blank and reports the unsupported filing field.
+  missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
+    for form1[0].Page1[0].Line1f_ReadOrder[0].c1_2[3].
+- field_name: form1[0].Page1[0].f1_08[0]
+  label: Line 1f - . . . . . . . . . 1f - f1_08
+  population_policy: unsupported
+  value_format: text
+  reason: The official schedule_2_2025 control 'Line 1f - . . . . . . . . . 1f - f1_08'
+    has no authored graph, filer-fact, or decision mapping.
+  downstream_effect: Output leaves AcroForm field form1[0].Page1[0].f1_08[0] blank
+    and reports the unsupported filing field.
+  missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
+    for form1[0].Page1[0].f1_08[0].
+- field_name: form1[0].Page1[0].f1_09[0]
+  label: 'Line 1y - y Other additions to tax (see instructions): - f1_09'
+  population_policy: unsupported
+  value_format: text
+  reason: 'The official schedule_2_2025 control ''Line 1y - y Other additions to tax
+    (see instructions): - f1_09'' has no authored graph, filer-fact, or decision mapping.'
+  downstream_effect: Output leaves AcroForm field form1[0].Page1[0].f1_09[0] blank
+    and reports the unsupported filing field.
+  missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
+    for form1[0].Page1[0].f1_09[0].
+- field_name: form1[0].Page1[0].f1_10[0]
+  label: 'Line 1y - y Other additions to tax (see instructions): 1y - f1_10'
+  population_policy: unsupported
+  value_format: text
+  reason: 'The official schedule_2_2025 control ''Line 1y - y Other additions to tax
+    (see instructions): 1y - f1_10'' has no authored graph, filer-fact, or decision
+    mapping.'
+  downstream_effect: Output leaves AcroForm field form1[0].Page1[0].f1_10[0] blank
+    and reports the unsupported filing field.
+  missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
+    for form1[0].Page1[0].f1_10[0].
+- field_name: form1[0].Page1[0].f1_11[0]
+  label: Line 1z - . . . . . . . . . 1z - f1_11
+  population_policy: unsupported
+  value_format: text
+  reason: The official schedule_2_2025 control 'Line 1z - . . . . . . . . . 1z - f1_11'
+    has no authored graph, filer-fact, or decision mapping.
+  downstream_effect: Output leaves AcroForm field form1[0].Page1[0].f1_11[0] blank
+    and reports the unsupported filing field.
+  missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
+    for form1[0].Page1[0].f1_11[0].
+- field_name: form1[0].Page1[0].f1_12[0]
+  label: Line 2 - . . . . . . . . . 2 - f1_12
+  population_policy: user_entered
+  value_format: dollars
+  node_id: schedule_2_2025_root_line_2
+- field_name: form1[0].Page1[0].f1_13[0]
+  label: Line 1z - line 17 . . . . . . . 3 - f1_13
+  population_policy: unsupported
+  value_format: text
+  reason: The official schedule_2_2025 control 'Line 1z - line 17 . . . . . . . 3
+    - f1_13' has no authored graph, filer-fact, or decision mapping.
+  downstream_effect: Output leaves AcroForm field form1[0].Page1[0].f1_13[0] blank
+    and reports the unsupported filing field.
+  missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
+    for form1[0].Page1[0].f1_13[0].
+- field_name: form1[0].Page1[0].Line4_ReadOrder[0].c1_3[0]
+  label: Line 1 - 1 - c1_3
+  population_policy: unsupported
+  value_format: checkbox
+  reason: The official schedule_2_2025 control 'Line 1 - 1 - c1_3' has no authored
+    graph, filer-fact, or decision mapping.
+  downstream_effect: Output leaves AcroForm field form1[0].Page1[0].Line4_ReadOrder[0].c1_3[0]
+    blank and reports the unsupported filing field.
+  missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
+    for form1[0].Page1[0].Line4_ReadOrder[0].c1_3[0].
+- field_name: form1[0].Page1[0].Line4_ReadOrder[0].c1_4[0]
+  label: Line 1 - 1 4361 2 - c1_4
+  population_policy: unsupported
+  value_format: checkbox
+  reason: The official schedule_2_2025 control 'Line 1 - 1 4361 2 - c1_4' has no authored
+    graph, filer-fact, or decision mapping.
+  downstream_effect: Output leaves AcroForm field form1[0].Page1[0].Line4_ReadOrder[0].c1_4[0]
+    blank and reports the unsupported filing field.
+  missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
+    for form1[0].Page1[0].Line4_ReadOrder[0].c1_4[0].
+- field_name: form1[0].Page1[0].Line4_ReadOrder[0].c1_5[0]
+  label: Line 1 - 1 4361 2 4029 3 - c1_5
+  population_policy: unsupported
+  value_format: checkbox
+  reason: The official schedule_2_2025 control 'Line 1 - 1 4361 2 4029 3 - c1_5' has
+    no authored graph, filer-fact, or decision mapping.
+  downstream_effect: Output leaves AcroForm field form1[0].Page1[0].Line4_ReadOrder[0].c1_5[0]
+    blank and reports the unsupported filing field.
+  missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
+    for form1[0].Page1[0].Line4_ReadOrder[0].c1_5[0].
+- field_name: form1[0].Page1[0].Line4_ReadOrder[0].f1_14[0]
+  label: Line 1 - 1 4361 2 4029 3 - f1_14
+  population_policy: unsupported
+  value_format: text
+  reason: The official schedule_2_2025 control 'Line 1 - 1 4361 2 4029 3 - f1_14'
+    has no authored graph, filer-fact, or decision mapping.
+  downstream_effect: Output leaves AcroForm field form1[0].Page1[0].Line4_ReadOrder[0].f1_14[0]
+    blank and reports the unsupported filing field.
+  missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
+    for form1[0].Page1[0].Line4_ReadOrder[0].f1_14[0].
+- field_name: form1[0].Page1[0].f1_15[0]
+  label: Line 1 - . . . . . . . . . 4 - f1_15
+  population_policy: user_entered
+  value_format: dollars
+  node_id: schedule_2_2025_part_i_line_1
+- field_name: form1[0].Page1[0].f1_16[0]
+  label: Line 5 - Medicare tax on unreported tip income. Attach Form 4137 5 - f1_16
+  population_policy: user_entered
+  value_format: dollars
+  node_id: schedule_2_2025_part_ii_line_5
+- field_name: form1[0].Page1[0].f1_17[0]
+  label: Line 6 - and Medicare tax on wages. Attach Form 8919 . 6 - f1_17
+  population_policy: user_entered
+  value_format: dollars
+  node_id: schedule_2_2025_part_ii_line_6
+- field_name: form1[0].Page1[0].f1_18[0]
+  label: Line 7 - . . . . . . . . . 7 - f1_18
+  population_policy: user_entered
+  value_format: dollars
+  node_id: schedule_2_2025_part_ii_line_7
+- field_name: form1[0].Page1[0].Line8_ReadOrder[0].c1_6[0]
+  label: . . . . . . . . . . - c1_6
+  population_policy: unsupported
+  value_format: checkbox
+  reason: The official schedule_2_2025 control '. . . . . . . . . . - c1_6' has no
+    authored graph, filer-fact, or decision mapping.
+  downstream_effect: Output leaves AcroForm field form1[0].Page1[0].Line8_ReadOrder[0].c1_6[0]
+    blank and reports the unsupported filing field.
+  missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
+    for form1[0].Page1[0].Line8_ReadOrder[0].c1_6[0].
+- field_name: form1[0].Page1[0].f1_19[0]
+  label: Line 8 - . . . . . . . . . 8 - f1_19
+  population_policy: user_entered
+  value_format: dollars
+  node_id: schedule_2_2025_part_ii_line_8
+- field_name: form1[0].Page1[0].f1_20[0]
+  label: Line 9 - . . . . . . . . . 9 - f1_20
+  population_policy: user_entered
+  value_format: dollars
+  node_id: schedule_2_2025_part_ii_line_9
+- field_name: form1[0].Page1[0].f1_21[0]
+  label: Line 10 - . . . . . . . . . 10 - f1_21
+  population_policy: user_entered
+  value_format: dollars
+  node_id: schedule_2_2025_part_ii_line_10
+- field_name: form1[0].Page1[0].f1_22[0]
+  label: Line 11 - . . . . . . . . . 11 - f1_22
+  population_policy: user_entered
+  value_format: dollars
+  node_id: schedule_2_2025_part_ii_line_11
+- field_name: form1[0].Page1[0].f1_23[0]
+  label: Line 12 - . . . . . . . . . 12 - f1_23
+  population_policy: user_entered
+  value_format: dollars
+  node_id: schedule_2_2025_part_ii_line_12
+- field_name: form1[0].Page1[0].f1_24[0]
+  label: Line 12 - . . . . . . . . . 13 - f1_24
+  population_policy: unsupported
+  value_format: text
+  reason: The official schedule_2_2025 control 'Line 12 - . . . . . . . . . 13 - f1_24'
+    has no authored graph, filer-fact, or decision mapping.
+  downstream_effect: Output leaves AcroForm field form1[0].Page1[0].f1_24[0] blank
+    and reports the unsupported filing field.
+  missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
+    for form1[0].Page1[0].f1_24[0].
+- field_name: form1[0].Page1[0].f1_25[0]
+  label: Line 14 - sale of certain residential lots and timeshares . . 14 - f1_25
+  population_policy: user_entered
+  value_format: dollars
+  node_id: schedule_2_2025_part_ii_line_14
+- field_name: form1[0].Page1[0].f1_26[0]
+  label: Line 15 - installment sales with a sales price over $150,000 . 15 - f1_26
+  population_policy: user_entered
+  value_format: dollars
+  node_id: schedule_2_2025_part_ii_line_15
+- field_name: form1[0].Page1[0].f1_27[0]
+  label: Line 16 - . . . . . . . . . 16 - f1_27
+  population_policy: user_entered
+  value_format: dollars
+  node_id: schedule_2_2025_part_ii_line_16
+- field_name: form1[0].Page2[0].Line17a_ReadOrder[0].Line17_ReadOrder[0].f2_01[0]
+  label: Line 17a - f2_01
+  population_policy: unsupported
+  value_format: text
+  reason: The official schedule_2_2025 control 'Line 17a - f2_01' has no authored
+    graph, filer-fact, or decision mapping.
+  downstream_effect: Output leaves AcroForm field form1[0].Page2[0].Line17a_ReadOrder[0].Line17_ReadOrder[0].f2_01[0]
+    blank and reports the unsupported filing field.
+  missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
+    for form1[0].Page2[0].Line17a_ReadOrder[0].Line17_ReadOrder[0].f2_01[0].
+- field_name: form1[0].Page2[0].Line17a_ReadOrder[0].f2_02[0]
+  label: Line 17a - 17a - f2_02
+  population_policy: user_entered
+  value_format: dollars
+  node_id: schedule_2_2025_part_ii_line_17a
+- field_name: form1[0].Page2[0].f2_03[0]
+  label: Line 17b - mortgage subsidy. If you sold your home, see instructions 17b
+    - f2_03
+  population_policy: unsupported
+  value_format: text
+  reason: The official schedule_2_2025 control 'Line 17b - mortgage subsidy. If you
+    sold your home, see instructions 17b - f2_03' has no authored graph, filer-fact,
+    or decision mapping.
+  downstream_effect: Output leaves AcroForm field form1[0].Page2[0].f2_03[0] blank
+    and reports the unsupported filing field.
+  missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
+    for form1[0].Page2[0].f2_03[0].
+- field_name: form1[0].Page2[0].f2_04[0]
+  label: Line 17c - 8889 . . . . . . . . 17c - f2_04
+  population_policy: unsupported
+  value_format: text
+  reason: The official schedule_2_2025 control 'Line 17c - 8889 . . . . . . . . 17c
+    - f2_04' has no authored graph, filer-fact, or decision mapping.
+  downstream_effect: Output leaves AcroForm field form1[0].Page2[0].f2_04[0] blank
+    and reports the unsupported filing field.
+  missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
+    for form1[0].Page2[0].f2_04[0].
+- field_name: form1[0].Page2[0].f2_05[0]
+  label: Line 17d - . . . . . . . . . 17d - f2_05
+  population_policy: user_entered
+  value_format: dollars
+  node_id: schedule_2_2025_part_ii_line_17d
+- field_name: form1[0].Page2[0].f2_06[0]
+  label: Line 17e - distributions. Attach Form 8853 . . . . . 17e - f2_06
+  population_policy: unsupported
+  value_format: text
+  reason: The official schedule_2_2025 control 'Line 17e - distributions. Attach Form
+    8853 . . . . . 17e - f2_06' has no authored graph, filer-fact, or decision mapping.
+  downstream_effect: Output leaves AcroForm field form1[0].Page2[0].f2_06[0] blank
+    and reports the unsupported filing field.
+  missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
+    for form1[0].Page2[0].f2_06[0].
+- field_name: form1[0].Page2[0].f2_07[0]
+  label: Line 17f - tax on Medicare Advantage MSA distributions. Attach Form 8853
+    17f - f2_07
+  population_policy: unsupported
+  value_format: text
+  reason: The official schedule_2_2025 control 'Line 17f - tax on Medicare Advantage
+    MSA distributions. Attach Form 8853 17f - f2_07' has no authored graph, filer-fact,
+    or decision mapping.
+  downstream_effect: Output leaves AcroForm field form1[0].Page2[0].f2_07[0] blank
+    and reports the unsupported filing field.
+  missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
+    for form1[0].Page2[0].f2_07[0].
+- field_name: form1[0].Page2[0].f2_08[0]
+  label: Line 17g - . . . . . . . . . 17g - f2_08
+  population_policy: unsupported
+  value_format: text
+  reason: The official schedule_2_2025 control 'Line 17g - . . . . . . . . . 17g -
+    f2_08' has no authored graph, filer-fact, or decision mapping.
+  downstream_effect: Output leaves AcroForm field form1[0].Page2[0].f2_08[0] blank
+    and reports the unsupported filing field.
+  missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
+    for form1[0].Page2[0].f2_08[0].
+- field_name: form1[0].Page2[0].f2_09[0]
+  label: Line 17h - . . . . . . . . . 17h - f2_09
+  population_policy: unsupported
+  value_format: text
+  reason: The official schedule_2_2025 control 'Line 17h - . . . . . . . . . 17h -
+    f2_09' has no authored graph, filer-fact, or decision mapping.
+  downstream_effect: Output leaves AcroForm field form1[0].Page2[0].f2_09[0] blank
+    and reports the unsupported filing field.
+  missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
+    for form1[0].Page2[0].f2_09[0].
+- field_name: form1[0].Page2[0].f2_10[0]
+  label: Line 17i - . . . . . . . . . 17i - f2_10
+  population_policy: unsupported
+  value_format: text
+  reason: The official schedule_2_2025 control 'Line 17i - . . . . . . . . . 17i -
+    f2_10' has no authored graph, filer-fact, or decision mapping.
+  downstream_effect: Output leaves AcroForm field form1[0].Page2[0].f2_10[0] blank
+    and reports the unsupported filing field.
+  missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
+    for form1[0].Page2[0].f2_10[0].
+- field_name: form1[0].Page2[0].f2_11[0]
+  label: Line 17j - . . . . . . . . . 17j - f2_11
+  population_policy: unsupported
+  value_format: text
+  reason: The official schedule_2_2025 control 'Line 17j - . . . . . . . . . 17j -
+    f2_11' has no authored graph, filer-fact, or decision mapping.
+  downstream_effect: Output leaves AcroForm field form1[0].Page2[0].f2_11[0] blank
+    and reports the unsupported filing field.
+  missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
+    for form1[0].Page2[0].f2_11[0].
+- field_name: form1[0].Page2[0].f2_12[0]
+  label: Line 17k - . . . . . . . . . 17k - f2_12
+  population_policy: unsupported
+  value_format: text
+  reason: The official schedule_2_2025 control 'Line 17k - . . . . . . . . . 17k -
+    f2_12' has no authored graph, filer-fact, or decision mapping.
+  downstream_effect: Output leaves AcroForm field form1[0].Page2[0].f2_12[0] blank
+    and reports the unsupported filing field.
+  missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
+    for form1[0].Page2[0].f2_12[0].
+- field_name: form1[0].Page2[0].f2_13[0]
+  label: Line 17l - . . . . . . . . . 17l - f2_13
+  population_policy: unsupported
+  value_format: text
+  reason: The official schedule_2_2025 control 'Line 17l - . . . . . . . . . 17l -
+    f2_13' has no authored graph, filer-fact, or decision mapping.
+  downstream_effect: Output leaves AcroForm field form1[0].Page2[0].f2_13[0] blank
+    and reports the unsupported filing field.
+  missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
+    for form1[0].Page2[0].f2_13[0].
+- field_name: form1[0].Page2[0].f2_14[0]
+  label: Line 17m - on insider stock compensation from an expatriated corporation
+    . 17m - f2_14
+  population_policy: unsupported
+  value_format: text
+  reason: The official schedule_2_2025 control 'Line 17m - on insider stock compensation
+    from an expatriated corporation . 17m - f2_14' has no authored graph, filer-fact,
+    or decision mapping.
+  downstream_effect: Output leaves AcroForm field form1[0].Page2[0].f2_14[0] blank
+    and reports the unsupported filing field.
+  missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
+    for form1[0].Page2[0].f2_14[0].
+- field_name: form1[0].Page2[0].f2_15[0]
+  label: Line 17n - 167(g) or 460(b) from Form 8697 or 8866 . 17n - f2_15
+  population_policy: unsupported
+  value_format: text
+  reason: The official schedule_2_2025 control 'Line 17n - 167(g) or 460(b) from Form
+    8697 or 8866 . 17n - f2_15' has no authored graph, filer-fact, or decision mapping.
+  downstream_effect: Output leaves AcroForm field form1[0].Page2[0].f2_15[0] blank
+    and reports the unsupported filing field.
+  missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
+    for form1[0].Page2[0].f2_15[0].
+- field_name: form1[0].Page2[0].f2_16[0]
+  label: Line 17o - . . . . . . . . . 17o - f2_16
+  population_policy: unsupported
+  value_format: text
+  reason: The official schedule_2_2025 control 'Line 17o - . . . . . . . . . 17o -
+    f2_16' has no authored graph, filer-fact, or decision mapping.
+  downstream_effect: Output leaves AcroForm field form1[0].Page2[0].f2_16[0] blank
+    and reports the unsupported filing field.
+  missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
+    for form1[0].Page2[0].f2_16[0].
+- field_name: form1[0].Page2[0].f2_17[0]
+  label: Line 17p - . . . . . . . . . 17p - f2_17
+  population_policy: unsupported
+  value_format: text
+  reason: The official schedule_2_2025 control 'Line 17p - . . . . . . . . . 17p -
+    f2_17' has no authored graph, filer-fact, or decision mapping.
+  downstream_effect: Output leaves AcroForm field form1[0].Page2[0].f2_17[0] blank
+    and reports the unsupported filing field.
+  missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
+    for form1[0].Page2[0].f2_17[0].
+- field_name: form1[0].Page2[0].f2_18[0]
+  label: Line 17q - . . . . . . . . . 17q - f2_18
+  population_policy: unsupported
+  value_format: text
+  reason: The official schedule_2_2025 control 'Line 17q - . . . . . . . . . 17q -
+    f2_18' has no authored graph, filer-fact, or decision mapping.
+  downstream_effect: Output leaves AcroForm field form1[0].Page2[0].f2_18[0] blank
+    and reports the unsupported filing field.
+  missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
+    for form1[0].Page2[0].f2_18[0].
+- field_name: form1[0].Page2[0].Line17z_ReadOrder[0].f2_19[0]
+  label: Line z - f2_19
+  population_policy: unsupported
+  value_format: text
+  reason: The official schedule_2_2025 control 'Line z - f2_19' has no authored graph,
+    filer-fact, or decision mapping.
+  downstream_effect: Output leaves AcroForm field form1[0].Page2[0].Line17z_ReadOrder[0].f2_19[0]
+    blank and reports the unsupported filing field.
+  missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
+    for form1[0].Page2[0].Line17z_ReadOrder[0].f2_19[0].
+- field_name: form1[0].Page2[0].f2_20[0]
+  label: Line 17z - 17z - f2_20
+  population_policy: unsupported
+  value_format: text
+  reason: The official schedule_2_2025 control 'Line 17z - 17z - f2_20' has no authored
+    graph, filer-fact, or decision mapping.
+  downstream_effect: Output leaves AcroForm field form1[0].Page2[0].f2_20[0] blank
+    and reports the unsupported filing field.
+  missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
+    for form1[0].Page2[0].f2_20[0].
+- field_name: form1[0].Page2[0].f2_21[0]
+  label: Line 17z - . . . . . . . . . 18 - f2_21
+  population_policy: user_entered
+  value_format: dollars
+  node_id: schedule_2_2025_part_ii_line_17z
+- field_name: form1[0].Page2[0].f2_22[0]
+  label: Line 19 - . . . . . . . . . 19 - f2_22
+  population_policy: user_entered
+  value_format: dollars
+  node_id: schedule_2_2025_part_ii_line_19
+- field_name: form1[0].Page2[0].f2_23[0]
+  label: Line 20 - Form 965-A . . . . . . . 20 - f2_23
+  population_policy: user_entered
+  value_format: dollars
+  node_id: schedule_2_2025_part_ii_line_20
+- field_name: form1[0].Page2[0].f2_24[0]
+  label: Line 23b - . . . . . . . . . 21 - f2_24
+  population_policy: unsupported
+  value_format: text
+  reason: The official schedule_2_2025 control 'Line 23b - . . . . . . . . . 21 -
+    f2_24' has no authored graph, filer-fact, or decision mapping.
+  downstream_effect: Output leaves AcroForm field form1[0].Page2[0].f2_24[0] blank
+    and reports the unsupported filing field.
+  missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
+    for form1[0].Page2[0].f2_24[0].

@@ -144,6 +144,22 @@ def _line_anchor_positions(words: list[tuple[Any, ...]]) -> list[tuple[str, floa
         sorted_words = sorted(row_words, key=lambda word: word[0])
         tokens = [_clean_token(str(word[4])) for word in sorted_words]
         tokens = [token for token in tokens if token and not _is_dot_leader(token)]
+        printed_anchor = next(
+            (
+                token.lower()
+                for token in reversed(tokens)
+                if re.fullmatch(r"[1-9][0-9]?[a-z]", token.lower())
+            ),
+            None,
+        )
+        if printed_anchor is not None:
+            anchor_word = next(
+                word
+                for word in reversed(sorted_words)
+                if _clean_token(str(word[4])).lower() == printed_anchor
+            )
+            positions.append((printed_anchor, float(anchor_word[1])))
+            continue
         anchor_index = _anchor_index(tokens)
         if anchor_index is not None:
             positions.append((tokens[anchor_index].lower(), float(sorted_words[anchor_index][1])))

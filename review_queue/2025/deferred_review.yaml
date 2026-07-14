@@ -878,6 +878,10 @@ entries:
       source_path: graph/2025/field_maps/form_1040_2025.yaml
       role: primary
     - object_type: field
+      object_id: line_1h_description
+      source_path: graph/2025/field_maps/form_1040_2025.yaml
+      role: primary
+    - object_type: field
       object_id: spouse_first_name
       source_path: graph/2025/field_maps/form_1040_2025.yaml
       role: primary
@@ -1186,6 +1190,34 @@ entries:
       source_path: graph/2025/field_maps/form_1040_2025.yaml
       role: primary
     - object_type: node
+      object_id: form_1040_2025_root_line_1b
+      source_path: graph/2025/field_maps/form_1040_2025.yaml
+      role: primary
+    - object_type: node
+      object_id: form_1040_2025_root_line_1c
+      source_path: graph/2025/field_maps/form_1040_2025.yaml
+      role: primary
+    - object_type: node
+      object_id: form_1040_2025_root_line_1d
+      source_path: graph/2025/field_maps/form_1040_2025.yaml
+      role: primary
+    - object_type: node
+      object_id: form_1040_2025_root_line_1e
+      source_path: graph/2025/field_maps/form_1040_2025.yaml
+      role: primary
+    - object_type: node
+      object_id: form_1040_2025_root_line_1f
+      source_path: graph/2025/field_maps/form_1040_2025.yaml
+      role: primary
+    - object_type: node
+      object_id: form_1040_2025_root_line_1g
+      source_path: graph/2025/field_maps/form_1040_2025.yaml
+      role: primary
+    - object_type: node
+      object_id: form_1040_2025_root_line_1h
+      source_path: graph/2025/field_maps/form_1040_2025.yaml
+      role: primary
+    - object_type: node
       object_id: form_1040_2025_root_line_2b
       source_path: graph/2025/field_maps/form_1040_2025.yaml
       role: primary
@@ -1205,34 +1237,6 @@ entries:
       object_id: form_1040_2025_root_line_9
       source_path: graph/2025/field_maps/form_1040_2025.yaml
       role: primary
-    - object_type: node
-      object_id: form_1040_2025_root_line_b
-      source_path: graph/2025/field_maps/form_1040_2025.yaml
-      role: excluded
-    - object_type: node
-      object_id: form_1040_2025_root_line_c
-      source_path: graph/2025/field_maps/form_1040_2025.yaml
-      role: excluded
-    - object_type: node
-      object_id: form_1040_2025_root_line_d
-      source_path: graph/2025/field_maps/form_1040_2025.yaml
-      role: excluded
-    - object_type: node
-      object_id: form_1040_2025_root_line_e
-      source_path: graph/2025/field_maps/form_1040_2025.yaml
-      role: excluded
-    - object_type: node
-      object_id: form_1040_2025_root_line_f
-      source_path: graph/2025/field_maps/form_1040_2025.yaml
-      role: excluded
-    - object_type: node
-      object_id: form_1040_2025_root_line_g
-      source_path: graph/2025/field_maps/form_1040_2025.yaml
-      role: excluded
-    - object_type: node
-      object_id: form_1040_2025_root_line_h
-      source_path: graph/2025/field_maps/form_1040_2025.yaml
-      role: excluded
     - object_type: node
       object_id: form_1040_2025_root_line_z
       source_path: graph/2025/field_maps/form_1040_2025.yaml
@@ -1267,6 +1271,10 @@ entries:
       role: excluded
     - object_type: node
       object_id: form_1040_2025_zero_floor
+      source_path: graph/2025/field_maps/form_1040_2025.yaml
+      role: excluded
+    - object_type: node
+      object_id: taxpayer_2025_filing_status
       source_path: graph/2025/field_maps/form_1040_2025.yaml
       role: excluded
 - queue_id: field_map_review_form_1099b_2025
@@ -1315,22 +1323,18 @@ entries:
     scope_version: 1
     scope_type: field_map
     object_refs:
-    - object_type: field_inventory
-      object_id: form_6251_2025
-      source_path: graph/2025/field_inventories/form_6251_2025.json
-      role: primary
     - object_type: node
       object_id: form_6251_2025_part_i_line_14
       source_path: graph/2025/field_maps/form_6251_2025.yaml
-      role: excluded
+      role: primary
     - object_type: node
       object_id: form_6251_2025_part_i_line_1a
       source_path: graph/2025/field_maps/form_6251_2025.yaml
-      role: excluded
+      role: primary
     - object_type: node
       object_id: form_6251_2025_part_i_line_1b
       source_path: graph/2025/field_maps/form_6251_2025.yaml
-      role: excluded
+      role: primary
     - object_type: node
       object_id: form_6251_2025_part_i_line_2
       source_path: graph/2025/field_maps/form_6251_2025.yaml
@@ -1418,11 +1422,11 @@ entries:
     - object_type: node
       object_id: form_6251_2025_part_ii_line_10
       source_path: graph/2025/field_maps/form_6251_2025.yaml
-      role: excluded
+      role: primary
     - object_type: node
       object_id: form_6251_2025_part_ii_line_16
       source_path: graph/2025/field_maps/form_6251_2025.yaml
-      role: excluded
+      role: primary
     - object_type: node
       object_id: form_6251_2025_part_ii_line_5
       source_path: graph/2025/field_maps/form_6251_2025.yaml
@@ -1430,15 +1434,15 @@ entries:
     - object_type: node
       object_id: form_6251_2025_part_ii_line_6
       source_path: graph/2025/field_maps/form_6251_2025.yaml
-      role: excluded
+      role: primary
     - object_type: node
       object_id: form_6251_2025_part_ii_line_9
       source_path: graph/2025/field_maps/form_6251_2025.yaml
-      role: excluded
+      role: primary
     - object_type: node
       object_id: form_6251_2025_part_iii_line_12
       source_path: graph/2025/field_maps/form_6251_2025.yaml
-      role: excluded
+      role: primary
     - object_type: node
       object_id: form_6251_2025_part_iii_line_13
       source_path: graph/2025/field_maps/form_6251_2025.yaml
@@ -1454,7 +1458,7 @@ entries:
     - object_type: node
       object_id: form_6251_2025_part_iii_line_17
       source_path: graph/2025/field_maps/form_6251_2025.yaml
-      role: excluded
+      role: primary
     - object_type: node
       object_id: form_6251_2025_part_iii_line_18
       source_path: graph/2025/field_maps/form_6251_2025.yaml
@@ -1470,19 +1474,19 @@ entries:
     - object_type: node
       object_id: form_6251_2025_part_iii_line_21
       source_path: graph/2025/field_maps/form_6251_2025.yaml
-      role: excluded
+      role: primary
     - object_type: node
       object_id: form_6251_2025_part_iii_line_22
       source_path: graph/2025/field_maps/form_6251_2025.yaml
-      role: excluded
+      role: primary
     - object_type: node
       object_id: form_6251_2025_part_iii_line_23
       source_path: graph/2025/field_maps/form_6251_2025.yaml
-      role: excluded
+      role: primary
     - object_type: node
       object_id: form_6251_2025_part_iii_line_24
       source_path: graph/2025/field_maps/form_6251_2025.yaml
-      role: excluded
+      role: primary
     - object_type: node
       object_id: form_6251_2025_part_iii_line_25
       source_path: graph/2025/field_maps/form_6251_2025.yaml
@@ -1490,7 +1494,7 @@ entries:
     - object_type: node
       object_id: form_6251_2025_part_iii_line_26
       source_path: graph/2025/field_maps/form_6251_2025.yaml
-      role: excluded
+      role: primary
     - object_type: node
       object_id: form_6251_2025_part_iii_line_27
       source_path: graph/2025/field_maps/form_6251_2025.yaml
@@ -1498,43 +1502,43 @@ entries:
     - object_type: node
       object_id: form_6251_2025_part_iii_line_28
       source_path: graph/2025/field_maps/form_6251_2025.yaml
-      role: excluded
+      role: primary
     - object_type: node
       object_id: form_6251_2025_part_iii_line_29
       source_path: graph/2025/field_maps/form_6251_2025.yaml
-      role: excluded
+      role: primary
     - object_type: node
       object_id: form_6251_2025_part_iii_line_30
       source_path: graph/2025/field_maps/form_6251_2025.yaml
-      role: excluded
+      role: primary
     - object_type: node
       object_id: form_6251_2025_part_iii_line_31
       source_path: graph/2025/field_maps/form_6251_2025.yaml
-      role: excluded
+      role: primary
     - object_type: node
       object_id: form_6251_2025_part_iii_line_32
       source_path: graph/2025/field_maps/form_6251_2025.yaml
-      role: excluded
+      role: primary
     - object_type: node
       object_id: form_6251_2025_part_iii_line_33
       source_path: graph/2025/field_maps/form_6251_2025.yaml
-      role: excluded
+      role: primary
     - object_type: node
       object_id: form_6251_2025_part_iii_line_34
       source_path: graph/2025/field_maps/form_6251_2025.yaml
-      role: excluded
+      role: primary
     - object_type: node
       object_id: form_6251_2025_part_iii_line_35
       source_path: graph/2025/field_maps/form_6251_2025.yaml
-      role: excluded
+      role: primary
     - object_type: node
       object_id: form_6251_2025_part_iii_line_36
       source_path: graph/2025/field_maps/form_6251_2025.yaml
-      role: excluded
+      role: primary
     - object_type: node
       object_id: form_6251_2025_part_iii_line_38
       source_path: graph/2025/field_maps/form_6251_2025.yaml
-      role: excluded
+      role: primary
     - object_type: node
       object_id: form_6251_2025_part_iii_line_39
       source_path: graph/2025/field_maps/form_6251_2025.yaml
@@ -1542,7 +1546,7 @@ entries:
     - object_type: node
       object_id: form_6251_2025_part_iii_line_40
       source_path: graph/2025/field_maps/form_6251_2025.yaml
-      role: excluded
+      role: primary
 - queue_id: field_map_review_form_8949_2025
   kind: field_map_review
   status: pending
@@ -1668,27 +1672,27 @@ entries:
     - object_type: node
       object_id: schedule_1_2025_part_i_line_2a
       source_path: graph/2025/field_maps/schedule_1_2025.yaml
-      role: excluded
+      role: primary
     - object_type: node
       object_id: schedule_1_2025_part_i_line_3
       source_path: graph/2025/field_maps/schedule_1_2025.yaml
-      role: excluded
+      role: primary
     - object_type: node
       object_id: schedule_1_2025_part_i_line_4
       source_path: graph/2025/field_maps/schedule_1_2025.yaml
-      role: excluded
+      role: primary
     - object_type: node
       object_id: schedule_1_2025_part_i_line_5
       source_path: graph/2025/field_maps/schedule_1_2025.yaml
-      role: excluded
+      role: primary
     - object_type: node
       object_id: schedule_1_2025_part_i_line_6
       source_path: graph/2025/field_maps/schedule_1_2025.yaml
-      role: excluded
+      role: primary
     - object_type: node
       object_id: schedule_1_2025_part_i_line_7
       source_path: graph/2025/field_maps/schedule_1_2025.yaml
-      role: excluded
+      role: primary
     - object_type: node
       object_id: schedule_1_2025_part_i_line_8
       source_path: graph/2025/field_maps/schedule_1_2025.yaml
@@ -1696,11 +1700,11 @@ entries:
     - object_type: node
       object_id: schedule_1_2025_part_i_line_8v
       source_path: graph/2025/field_maps/schedule_1_2025.yaml
-      role: excluded
+      role: primary
     - object_type: node
       object_id: schedule_1_2025_part_i_line_8z
       source_path: graph/2025/field_maps/schedule_1_2025.yaml
-      role: excluded
+      role: primary
     - object_type: node
       object_id: schedule_1_2025_part_i_line_9
       source_path: graph/2025/field_maps/schedule_1_2025.yaml
@@ -1708,55 +1712,55 @@ entries:
     - object_type: node
       object_id: schedule_1_2025_part_ii_line_11
       source_path: graph/2025/field_maps/schedule_1_2025.yaml
-      role: excluded
+      role: primary
     - object_type: node
       object_id: schedule_1_2025_part_ii_line_12
       source_path: graph/2025/field_maps/schedule_1_2025.yaml
-      role: excluded
+      role: primary
     - object_type: node
       object_id: schedule_1_2025_part_ii_line_13
       source_path: graph/2025/field_maps/schedule_1_2025.yaml
-      role: excluded
+      role: primary
     - object_type: node
       object_id: schedule_1_2025_part_ii_line_14
       source_path: graph/2025/field_maps/schedule_1_2025.yaml
-      role: excluded
+      role: primary
     - object_type: node
       object_id: schedule_1_2025_part_ii_line_15
       source_path: graph/2025/field_maps/schedule_1_2025.yaml
-      role: excluded
+      role: primary
     - object_type: node
       object_id: schedule_1_2025_part_ii_line_16
       source_path: graph/2025/field_maps/schedule_1_2025.yaml
-      role: excluded
+      role: primary
     - object_type: node
       object_id: schedule_1_2025_part_ii_line_17
       source_path: graph/2025/field_maps/schedule_1_2025.yaml
-      role: excluded
+      role: primary
     - object_type: node
       object_id: schedule_1_2025_part_ii_line_18
       source_path: graph/2025/field_maps/schedule_1_2025.yaml
-      role: excluded
+      role: primary
     - object_type: node
       object_id: schedule_1_2025_part_ii_line_19a
       source_path: graph/2025/field_maps/schedule_1_2025.yaml
-      role: excluded
+      role: primary
     - object_type: node
       object_id: schedule_1_2025_part_ii_line_20
       source_path: graph/2025/field_maps/schedule_1_2025.yaml
-      role: excluded
+      role: primary
     - object_type: node
       object_id: schedule_1_2025_part_ii_line_21
       source_path: graph/2025/field_maps/schedule_1_2025.yaml
-      role: excluded
+      role: primary
     - object_type: node
       object_id: schedule_1_2025_part_ii_line_22
       source_path: graph/2025/field_maps/schedule_1_2025.yaml
-      role: excluded
+      role: primary
     - object_type: node
       object_id: schedule_1_2025_part_ii_line_23
       source_path: graph/2025/field_maps/schedule_1_2025.yaml
-      role: excluded
+      role: primary
     - object_type: node
       object_id: schedule_1_2025_part_ii_line_24
       source_path: graph/2025/field_maps/schedule_1_2025.yaml
@@ -1764,11 +1768,11 @@ entries:
     - object_type: node
       object_id: schedule_1_2025_part_ii_line_24e
       source_path: graph/2025/field_maps/schedule_1_2025.yaml
-      role: excluded
+      role: primary
     - object_type: node
       object_id: schedule_1_2025_part_ii_line_24z
       source_path: graph/2025/field_maps/schedule_1_2025.yaml
-      role: excluded
+      role: primary
     - object_type: node
       object_id: schedule_1_2025_part_ii_line_25
       source_path: graph/2025/field_maps/schedule_1_2025.yaml
@@ -1780,7 +1784,7 @@ entries:
     - object_type: node
       object_id: schedule_1_2025_root_line_1
       source_path: graph/2025/field_maps/schedule_1_2025.yaml
-      role: excluded
+      role: primary
     - object_type: node
       object_id: schedule_1_2025_student_loan_interest_deduction_worksheet
       source_path: graph/2025/field_maps/schedule_1_2025.yaml
@@ -1813,7 +1817,7 @@ entries:
     - object_type: node
       object_id: schedule_1a_2025_part_i_line_2a
       source_path: graph/2025/field_maps/schedule_1a_2025.yaml
-      role: excluded
+      role: primary
     - object_type: node
       object_id: schedule_1a_2025_part_i_line_3
       source_path: graph/2025/field_maps/schedule_1a_2025.yaml
@@ -1837,15 +1841,15 @@ entries:
     - object_type: node
       object_id: schedule_1a_2025_part_ii_line_10
       source_path: graph/2025/field_maps/schedule_1a_2025.yaml
-      role: excluded
+      role: primary
     - object_type: node
       object_id: schedule_1a_2025_part_ii_line_12
       source_path: graph/2025/field_maps/schedule_1a_2025.yaml
-      role: excluded
+      role: primary
     - object_type: node
       object_id: schedule_1a_2025_part_ii_line_4b
       source_path: graph/2025/field_maps/schedule_1a_2025.yaml
-      role: excluded
+      role: primary
     - object_type: node
       object_id: schedule_1a_2025_part_ii_line_6
       source_path: graph/2025/field_maps/schedule_1a_2025.yaml
@@ -1853,15 +1857,15 @@ entries:
     - object_type: node
       object_id: schedule_1a_2025_part_ii_line_7
       source_path: graph/2025/field_maps/schedule_1a_2025.yaml
-      role: excluded
+      role: primary
     - object_type: node
       object_id: schedule_1a_2025_part_ii_line_8
       source_path: graph/2025/field_maps/schedule_1a_2025.yaml
-      role: excluded
+      role: primary
     - object_type: node
       object_id: schedule_1a_2025_part_ii_line_9
       source_path: graph/2025/field_maps/schedule_1a_2025.yaml
-      role: excluded
+      role: primary
     - object_type: node
       object_id: schedule_1a_2025_part_ii_line_a
       source_path: graph/2025/field_maps/schedule_1a_2025.yaml
@@ -1873,23 +1877,23 @@ entries:
     - object_type: node
       object_id: schedule_1a_2025_part_iii_line_16
       source_path: graph/2025/field_maps/schedule_1a_2025.yaml
-      role: excluded
+      role: primary
     - object_type: node
       object_id: schedule_1a_2025_part_iii_line_17
       source_path: graph/2025/field_maps/schedule_1a_2025.yaml
-      role: excluded
+      role: primary
     - object_type: node
       object_id: schedule_1a_2025_part_iii_line_18
       source_path: graph/2025/field_maps/schedule_1a_2025.yaml
-      role: excluded
+      role: primary
     - object_type: node
       object_id: schedule_1a_2025_part_iii_line_19
       source_path: graph/2025/field_maps/schedule_1a_2025.yaml
-      role: excluded
+      role: primary
     - object_type: node
       object_id: schedule_1a_2025_part_iii_line_20
       source_path: graph/2025/field_maps/schedule_1a_2025.yaml
-      role: excluded
+      role: primary
     - object_type: node
       object_id: schedule_1a_2025_part_iv_line_22
       source_path: graph/2025/field_maps/schedule_1a_2025.yaml
@@ -1901,43 +1905,43 @@ entries:
     - object_type: node
       object_id: schedule_1a_2025_part_iv_line_24
       source_path: graph/2025/field_maps/schedule_1a_2025.yaml
-      role: excluded
+      role: primary
     - object_type: node
       object_id: schedule_1a_2025_part_iv_line_25
       source_path: graph/2025/field_maps/schedule_1a_2025.yaml
-      role: excluded
+      role: primary
     - object_type: node
       object_id: schedule_1a_2025_part_iv_line_26
       source_path: graph/2025/field_maps/schedule_1a_2025.yaml
-      role: excluded
+      role: primary
     - object_type: node
       object_id: schedule_1a_2025_part_iv_line_27
       source_path: graph/2025/field_maps/schedule_1a_2025.yaml
-      role: excluded
+      role: primary
     - object_type: node
       object_id: schedule_1a_2025_part_iv_line_28
       source_path: graph/2025/field_maps/schedule_1a_2025.yaml
-      role: excluded
+      role: primary
     - object_type: node
       object_id: schedule_1a_2025_part_iv_line_29
       source_path: graph/2025/field_maps/schedule_1a_2025.yaml
-      role: excluded
+      role: primary
     - object_type: node
       object_id: schedule_1a_2025_part_v_line_31
       source_path: graph/2025/field_maps/schedule_1a_2025.yaml
-      role: excluded
+      role: primary
     - object_type: node
       object_id: schedule_1a_2025_part_v_line_32
       source_path: graph/2025/field_maps/schedule_1a_2025.yaml
-      role: excluded
+      role: primary
     - object_type: node
       object_id: schedule_1a_2025_part_v_line_33
       source_path: graph/2025/field_maps/schedule_1a_2025.yaml
-      role: excluded
+      role: primary
     - object_type: node
       object_id: schedule_1a_2025_part_v_line_34
       source_path: graph/2025/field_maps/schedule_1a_2025.yaml
-      role: excluded
+      role: primary
     - object_type: node
       object_id: schedule_1a_2025_part_v_line_36
       source_path: graph/2025/field_maps/schedule_1a_2025.yaml
@@ -1975,26 +1979,22 @@ entries:
     scope_version: 1
     scope_type: field_map
     object_refs:
-    - object_type: field_inventory
-      object_id: schedule_2_2025
-      source_path: graph/2025/field_inventories/schedule_2_2025.json
-      role: primary
     - object_type: node
       object_id: schedule_2_2025_part_i_line_1
       source_path: graph/2025/field_maps/schedule_2_2025.yaml
-      role: excluded
+      role: primary
     - object_type: node
       object_id: schedule_2_2025_part_i_line_1a
       source_path: graph/2025/field_maps/schedule_2_2025.yaml
-      role: excluded
+      role: primary
     - object_type: node
       object_id: schedule_2_2025_part_i_line_1b
       source_path: graph/2025/field_maps/schedule_2_2025.yaml
-      role: excluded
+      role: primary
     - object_type: node
       object_id: schedule_2_2025_part_i_line_1d
       source_path: graph/2025/field_maps/schedule_2_2025.yaml
-      role: excluded
+      role: primary
     - object_type: node
       object_id: schedule_2_2025_part_i_line_3
       source_path: graph/2025/field_maps/schedule_2_2025.yaml
@@ -2002,15 +2002,15 @@ entries:
     - object_type: node
       object_id: schedule_2_2025_part_ii_line_10
       source_path: graph/2025/field_maps/schedule_2_2025.yaml
-      role: excluded
+      role: primary
     - object_type: node
       object_id: schedule_2_2025_part_ii_line_11
       source_path: graph/2025/field_maps/schedule_2_2025.yaml
-      role: excluded
+      role: primary
     - object_type: node
       object_id: schedule_2_2025_part_ii_line_12
       source_path: graph/2025/field_maps/schedule_2_2025.yaml
-      role: excluded
+      role: primary
     - object_type: node
       object_id: schedule_2_2025_part_ii_line_13
       source_path: graph/2025/field_maps/schedule_2_2025.yaml
@@ -2018,27 +2018,27 @@ entries:
     - object_type: node
       object_id: schedule_2_2025_part_ii_line_14
       source_path: graph/2025/field_maps/schedule_2_2025.yaml
-      role: excluded
+      role: primary
     - object_type: node
       object_id: schedule_2_2025_part_ii_line_15
       source_path: graph/2025/field_maps/schedule_2_2025.yaml
-      role: excluded
+      role: primary
     - object_type: node
       object_id: schedule_2_2025_part_ii_line_16
       source_path: graph/2025/field_maps/schedule_2_2025.yaml
-      role: excluded
+      role: primary
     - object_type: node
       object_id: schedule_2_2025_part_ii_line_17a
       source_path: graph/2025/field_maps/schedule_2_2025.yaml
-      role: excluded
+      role: primary
     - object_type: node
       object_id: schedule_2_2025_part_ii_line_17d
       source_path: graph/2025/field_maps/schedule_2_2025.yaml
-      role: excluded
+      role: primary
     - object_type: node
       object_id: schedule_2_2025_part_ii_line_17z
       source_path: graph/2025/field_maps/schedule_2_2025.yaml
-      role: excluded
+      role: primary
     - object_type: node
       object_id: schedule_2_2025_part_ii_line_18
       source_path: graph/2025/field_maps/schedule_2_2025.yaml
@@ -2046,11 +2046,11 @@ entries:
     - object_type: node
       object_id: schedule_2_2025_part_ii_line_19
       source_path: graph/2025/field_maps/schedule_2_2025.yaml
-      role: excluded
+      role: primary
     - object_type: node
       object_id: schedule_2_2025_part_ii_line_20
       source_path: graph/2025/field_maps/schedule_2_2025.yaml
-      role: excluded
+      role: primary
     - object_type: node
       object_id: schedule_2_2025_part_ii_line_21
       source_path: graph/2025/field_maps/schedule_2_2025.yaml
@@ -2062,27 +2062,27 @@ entries:
     - object_type: node
       object_id: schedule_2_2025_part_ii_line_5
       source_path: graph/2025/field_maps/schedule_2_2025.yaml
-      role: excluded
+      role: primary
     - object_type: node
       object_id: schedule_2_2025_part_ii_line_6
       source_path: graph/2025/field_maps/schedule_2_2025.yaml
-      role: excluded
+      role: primary
     - object_type: node
       object_id: schedule_2_2025_part_ii_line_7
       source_path: graph/2025/field_maps/schedule_2_2025.yaml
-      role: excluded
+      role: primary
     - object_type: node
       object_id: schedule_2_2025_part_ii_line_8
       source_path: graph/2025/field_maps/schedule_2_2025.yaml
-      role: excluded
+      role: primary
     - object_type: node
       object_id: schedule_2_2025_part_ii_line_9
       source_path: graph/2025/field_maps/schedule_2_2025.yaml
-      role: excluded
+      role: primary
     - object_type: node
       object_id: schedule_2_2025_root_line_2
       source_path: graph/2025/field_maps/schedule_2_2025.yaml
-      role: excluded
+      role: primary
 - queue_id: field_map_review_schedule_3_2025
   kind: field_map_review
   status: pending
@@ -2104,26 +2104,22 @@ entries:
     scope_version: 1
     scope_type: field_map
     object_refs:
-    - object_type: field_inventory
-      object_id: schedule_3_2025
-      source_path: graph/2025/field_inventories/schedule_3_2025.json
-      role: primary
     - object_type: node
       object_id: schedule_3_2025_part_i_line_1
       source_path: graph/2025/field_maps/schedule_3_2025.yaml
-      role: excluded
+      role: primary
     - object_type: node
       object_id: schedule_3_2025_part_i_line_2
       source_path: graph/2025/field_maps/schedule_3_2025.yaml
-      role: excluded
+      role: primary
     - object_type: node
       object_id: schedule_3_2025_part_i_line_4
       source_path: graph/2025/field_maps/schedule_3_2025.yaml
-      role: excluded
+      role: primary
     - object_type: node
       object_id: schedule_3_2025_part_i_line_5a
       source_path: graph/2025/field_maps/schedule_3_2025.yaml
-      role: excluded
+      role: primary
     - object_type: node
       object_id: schedule_3_2025_part_i_line_6
       source_path: graph/2025/field_maps/schedule_3_2025.yaml
@@ -2131,7 +2127,7 @@ entries:
     - object_type: node
       object_id: schedule_3_2025_part_i_line_6z
       source_path: graph/2025/field_maps/schedule_3_2025.yaml
-      role: excluded
+      role: primary
     - object_type: node
       object_id: schedule_3_2025_part_i_line_7
       source_path: graph/2025/field_maps/schedule_3_2025.yaml
@@ -2139,15 +2135,15 @@ entries:
     - object_type: node
       object_id: schedule_3_2025_part_i_line_8
       source_path: graph/2025/field_maps/schedule_3_2025.yaml
-      role: excluded
+      role: primary
     - object_type: node
       object_id: schedule_3_2025_part_ii_line_10
       source_path: graph/2025/field_maps/schedule_3_2025.yaml
-      role: excluded
+      role: primary
     - object_type: node
       object_id: schedule_3_2025_part_ii_line_12
       source_path: graph/2025/field_maps/schedule_3_2025.yaml
-      role: excluded
+      role: primary
     - object_type: node
       object_id: schedule_3_2025_part_ii_line_13
       source_path: graph/2025/field_maps/schedule_3_2025.yaml
@@ -2155,11 +2151,11 @@ entries:
     - object_type: node
       object_id: schedule_3_2025_part_ii_line_13b
       source_path: graph/2025/field_maps/schedule_3_2025.yaml
-      role: excluded
+      role: primary
     - object_type: node
       object_id: schedule_3_2025_part_ii_line_13z
       source_path: graph/2025/field_maps/schedule_3_2025.yaml
-      role: excluded
+      role: primary
     - object_type: node
       object_id: schedule_3_2025_part_ii_line_14
       source_path: graph/2025/field_maps/schedule_3_2025.yaml
@@ -2167,11 +2163,11 @@ entries:
     - object_type: node
       object_id: schedule_3_2025_part_ii_line_9
       source_path: graph/2025/field_maps/schedule_3_2025.yaml
-      role: excluded
+      role: primary
     - object_type: node
       object_id: schedule_3_2025_root_line_3
       source_path: graph/2025/field_maps/schedule_3_2025.yaml
-      role: excluded
+      role: primary
 - queue_id: field_map_review_schedule_a_2025
   kind: field_map_review
   status: pending
@@ -2193,10 +2189,6 @@ entries:
     scope_version: 1
     scope_type: field_map
     object_refs:
-    - object_type: field_inventory
-      object_id: schedule_a_2025
-      source_path: graph/2025/field_inventories/schedule_a_2025.json
-      role: primary
     - object_type: node
       object_id: schedule_a_2025_root_line_10
       source_path: graph/2025/field_maps/schedule_a_2025.yaml
@@ -2204,7 +2196,7 @@ entries:
     - object_type: node
       object_id: schedule_a_2025_root_line_11b
       source_path: graph/2025/field_maps/schedule_a_2025.yaml
-      role: excluded
+      role: primary
     - object_type: node
       object_id: schedule_a_2025_root_line_12
       source_path: graph/2025/field_maps/schedule_a_2025.yaml
@@ -2212,23 +2204,23 @@ entries:
     - object_type: node
       object_id: schedule_a_2025_root_line_13
       source_path: graph/2025/field_maps/schedule_a_2025.yaml
-      role: excluded
+      role: primary
     - object_type: node
       object_id: schedule_a_2025_root_line_14
       source_path: graph/2025/field_maps/schedule_a_2025.yaml
-      role: excluded
+      role: primary
     - object_type: node
       object_id: schedule_a_2025_root_line_15
       source_path: graph/2025/field_maps/schedule_a_2025.yaml
-      role: excluded
+      role: primary
     - object_type: node
       object_id: schedule_a_2025_root_line_16_amount
       source_path: graph/2025/field_maps/schedule_a_2025.yaml
-      role: excluded
+      role: primary
     - object_type: node
       object_id: schedule_a_2025_root_line_16_description
       source_path: graph/2025/field_maps/schedule_a_2025.yaml
-      role: excluded
+      role: primary
     - object_type: node
       object_id: schedule_a_2025_root_line_17
       source_path: graph/2025/field_maps/schedule_a_2025.yaml
@@ -2244,11 +2236,11 @@ entries:
     - object_type: node
       object_id: schedule_a_2025_root_line_3
       source_path: graph/2025/field_maps/schedule_a_2025.yaml
-      role: excluded
+      role: primary
     - object_type: node
       object_id: schedule_a_2025_root_line_4
       source_path: graph/2025/field_maps/schedule_a_2025.yaml
-      role: excluded
+      role: primary
     - object_type: node
       object_id: schedule_a_2025_root_line_5
       source_path: graph/2025/field_maps/schedule_a_2025.yaml
@@ -2256,7 +2248,7 @@ entries:
     - object_type: node
       object_id: schedule_a_2025_root_line_6
       source_path: graph/2025/field_maps/schedule_a_2025.yaml
-      role: excluded
+      role: primary
     - object_type: node
       object_id: schedule_a_2025_root_line_7
       source_path: graph/2025/field_maps/schedule_a_2025.yaml
@@ -2268,11 +2260,11 @@ entries:
     - object_type: node
       object_id: schedule_a_2025_root_line_8c
       source_path: graph/2025/field_maps/schedule_a_2025.yaml
-      role: excluded
+      role: primary
     - object_type: node
       object_id: schedule_a_2025_root_line_9
       source_path: graph/2025/field_maps/schedule_a_2025.yaml
-      role: excluded
+      role: primary
     - object_type: node
       object_id: schedule_a_2025_root_line_a
       source_path: graph/2025/field_maps/schedule_a_2025.yaml
@@ -2292,7 +2284,7 @@ entries:
     - object_type: node
       object_id: schedule_a_2025_root_line_e
       source_path: graph/2025/field_maps/schedule_a_2025.yaml
-      role: excluded
+      role: primary
 - queue_id: field_map_review_schedule_b_2025
   kind: field_map_review
   status: pending
@@ -2317,15 +2309,15 @@ entries:
     - object_type: node
       object_id: schedule_b_2025_root_line_1
       source_path: graph/2025/field_maps/schedule_b_2025.yaml
-      role: excluded
+      role: primary
     - object_type: node
       object_id: schedule_b_2025_root_line_2
       source_path: graph/2025/field_maps/schedule_b_2025.yaml
-      role: excluded
+      role: primary
     - object_type: node
       object_id: schedule_b_2025_root_line_3
       source_path: graph/2025/field_maps/schedule_b_2025.yaml
-      role: excluded
+      role: primary
     - object_type: node
       object_id: schedule_b_2025_root_line_4
       source_path: graph/2025/field_maps/schedule_b_2025.yaml
@@ -2333,7 +2325,7 @@ entries:
     - object_type: node
       object_id: schedule_b_2025_root_line_5
       source_path: graph/2025/field_maps/schedule_b_2025.yaml
-      role: excluded
+      role: primary
     - object_type: node
       object_id: schedule_b_2025_root_line_6
       source_path: graph/2025/field_maps/schedule_b_2025.yaml
@@ -2510,27 +2502,27 @@ entries:
     - object_type: node
       object_id: schedule_d_2025_part_i_line_1b_column_h
       source_path: graph/2025/field_maps/schedule_d_2025.yaml
-      role: excluded
+      role: primary
     - object_type: node
       object_id: schedule_d_2025_part_i_line_2_column_h
       source_path: graph/2025/field_maps/schedule_d_2025.yaml
-      role: excluded
+      role: primary
     - object_type: node
       object_id: schedule_d_2025_part_i_line_3_column_h
       source_path: graph/2025/field_maps/schedule_d_2025.yaml
-      role: excluded
+      role: primary
     - object_type: node
       object_id: schedule_d_2025_part_ii_line_10_column_h
       source_path: graph/2025/field_maps/schedule_d_2025.yaml
-      role: excluded
+      role: primary
     - object_type: node
       object_id: schedule_d_2025_part_ii_line_8b_column_h
       source_path: graph/2025/field_maps/schedule_d_2025.yaml
-      role: excluded
+      role: primary
     - object_type: node
       object_id: schedule_d_2025_part_ii_line_9_column_h
       source_path: graph/2025/field_maps/schedule_d_2025.yaml
-      role: excluded
+      role: primary
     - object_type: node
       object_id: schedule_d_2025_sdtw_applies
       source_path: graph/2025/field_maps/schedule_d_2025.yaml

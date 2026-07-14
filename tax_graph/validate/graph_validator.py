@@ -98,6 +98,7 @@ def validate_loaded_graph(
             graph.root,
             node_ids=(node.get("node_id", "") for node in graph.items("nodes")),
             frontier_ids=(entry.get("frontier_id", "") for entry in _load_frontier_entries(graph)),
+            check_exposed_pdfs=True,
         )
     )
     errors.extend(validate_node_geometry(graph.year, graph.root))

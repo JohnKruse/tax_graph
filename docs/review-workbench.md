@@ -41,6 +41,14 @@ provable. It does not guess graph operations, frontier consequences, or policies
 unmapped controls. Build-time AcroForm preflight enumerates widgets directly from the
 official PDFs; instruction PDFs with no widgets are exempt.
 
+The 2025 sweep covers every exposed AcroForm, including source documents,
+intake, and the optional Form 2441 extension boundary. Form 1040 lines 1b-1h
+use their full IRS anchors (not bare letters); line 1h keeps separate description
+and amount controls, and line 1z continues to sum lines 1a-1h. The maintenance
+tool `tools/author_field_dispositions.py` rebuilds inventories from the official
+PDFs, preserves authored mappings, and emits actionable unsupported policies for
+controls that lack a graph, filer-fact, or decision mapping.
+
 ## Step 1 artifact contract
 
 `workbench.artifacts` reads the published artifacts directly and never imports a

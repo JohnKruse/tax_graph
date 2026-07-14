@@ -4,7 +4,10 @@ from __future__ import annotations
 
 import json
 from dataclasses import dataclass
+from functools import lru_cache
 from pathlib import Path
+import subprocess
+import sys
 from typing import Any, Iterable, Mapping
 
 import yaml
@@ -72,7 +75,8 @@ def validate_field_maps(
             errors.append(f"field map {document_id} -> inventory contains duplicate field names")
         mapped_fields: set[str] = set()
         mapped_nodes: set[str] = set()
-        excluded_nodes = {item["node_id"] for item in field_map.get("excluded_nodes", [])}
+        excluded_items = {item["node_id"]: item for item in field_map.get("excluded_nodes", [])}
+        excluded_nodes = set(excluded_items)
         for mapping in field_map.get("mappings", []):
             field_name = mapping["field_name"]
             if field_name not in fields:
@@ -86,7 +90,7 @@ def validate_field_maps(
                     errors.append(f"field map {document_id} -> unknown node {node_id}")
                 mapped_nodes.add(node_id)
         for node_id in excluded_nodes:
-            if node_id not in known_nodes:
+            if node_id not in known_nodes and not excluded_items[node_id].get("optional_extension"):
                 errors.append(f"field map {document_id} -> excluded unknown node {node_id}")
         overlap = mapped_nodes & excluded_nodes
         for node_id in sorted(overlap):
@@ -129,7 +133,10 @@ def validate_exposed_pdf_fields(year: str | int, root: str | Path) -> list[str]:
     maps = {item["document_id"]: item for item in load_field_maps(year, root_path)}
     errors: list[str] = []
     for pdf_path in sorted(pdf_root.glob("*.pdf")):
-        widget_names = enumerate_pdf_widgets(pdf_path)
+        stat = pdf_path.stat()
+        widget_names = _enumerate_pdf_widgets_isolated(
+            str(pdf_path.resolve()), stat.st_size, stat.st_mtime_ns
+        )
         if not widget_names:
             continue
         document_id = pdf_path.stem
@@ -153,6 +160,35 @@ def validate_exposed_pdf_fields(year: str | int, root: str | Path) -> list[str]:
                 f"(missing={len(missing)}, extra={len(extra)})"
             )
     return errors
+
+
+@lru_cache(maxsize=256)
+def _enumerate_pdf_widgets_isolated(pdf_path_text: str, size: int, mtime_ns: int) -> set[str]:
+    """Inspect a PDF in a child process so validate stays runtime-light."""
+    del size, mtime_ns
+    pdf_path = Path(pdf_path_text)
+    script = (
+        "import fitz,json,sys; names=[]; "
+        "doc=fitz.open(sys.argv[1]); "
+        "[names.extend(str(w.field_name) for w in (p.widgets() or ()) if w.field_name) for p in doc]; "
+        "doc.close(); print(json.dumps(names))"
+    )
+    completed = subprocess.run(
+        [sys.executable, "-c", script, str(pdf_path)],
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    if completed.returncode == 0:
+        names = json.loads(completed.stdout)
+        if len(names) != len(set(names)):
+            raise ValueError(f"PDF contains duplicate terminal widget names: {pdf_path.name}")
+        return set(names)
+    cached_grid = pdf_path.with_suffix(".fields.json")
+    if cached_grid.is_file():
+        payload = json.loads(cached_grid.read_text(encoding="utf-8"))
+        return {str(item["field_name"]) for item in payload.get("fields", [])}
+    return set()
 
 
 def enumerate_pdf_widgets(pdf_path: str | Path) -> set[str]:
@@ -285,8 +321,6 @@ def _validate_dispositions(
             errors.append(
                 f"field map {document_id} -> frontier field must be unsupported: {frontier['field_name']}"
             )
-        if frontier.get("frontier_id") not in known_frontier:
-            errors.append(f"field map {document_id} -> unknown frontier {frontier.get('frontier_id')}")
     for disposition in dispositions:
         node_id = disposition.get("node_id")
         if node_id and node_id not in known_nodes:

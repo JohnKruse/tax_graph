@@ -9,11 +9,15 @@ from pathlib import Path
 import pytest
 import yaml
 
+from tax_graph.engine import Engine, Graph
+from tax_graph.io.loader import load_graph
 from tax_graph.output.field_maps import (
     migrate_field_dispositions,
     validate_exposed_pdf_fields,
     validate_field_maps,
+    load_field_maps,
 )
+from tax_graph.output.fill import build_field_values, fill_official_pdf
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -152,5 +156,154 @@ def test_migration_is_idempotent_and_never_guesses_unmapped_policy(tmp_path: Pat
 @pytest.mark.m15
 def test_real_pdf_widget_preflight_detects_missing_maps() -> None:
     errors = validate_exposed_pdf_fields("2025", ROOT)
-    assert any("form_w2_2025" in error and "missing committed field map" in error for error in errors)
+    assert errors == []
     assert not any("instructions_form_1040_2025" in error for error in errors)
+
+
+@pytest.mark.m15
+def test_all_exposed_controls_have_one_collision_free_disposition() -> None:
+    for path in sorted((ROOT / "graph/2025/field_maps").glob("*.yaml")):
+        field_map = yaml.safe_load(path.read_text(encoding="utf-8"))
+        inventory = json.loads((ROOT / field_map["inventory"]).read_text(encoding="utf-8"))
+        widget_names = {item["field_name"] for item in inventory["fields"]}
+        dispositions = field_map["field_dispositions"]
+        assert {item["field_name"] for item in dispositions} == widget_names
+        assert len(dispositions) == len(widget_names)
+        assert len({item["label"] for item in dispositions}) == len(dispositions)
+        assert all("not mapped in the supported output profile" not in item["reason"].lower() for item in field_map["excluded_nodes"])
+
+
+@pytest.mark.m15
+def test_form_1040_lines_1a_through_1h_and_1z_have_exact_fields() -> None:
+    field_map = yaml.safe_load((ROOT / "graph/2025/field_maps/form_1040_2025.yaml").read_text())
+    by_node = {item.get("node_id"): item["field_name"] for item in field_map["mappings"] if item.get("node_id")}
+    assert by_node["form_1040_2025_root_line_1a"].endswith("f1_47[0]")
+    for offset, anchor in enumerate(("1b", "1c", "1d", "1e", "1f", "1g"), 48):
+        assert by_node[f"form_1040_2025_root_line_{anchor}"].endswith(f"f1_{offset:02d}[0]")
+    assert by_node["form_1040_2025_root_line_1h"].endswith("f1_55[0]")
+    assert by_node["form_1040_2025_root_line_z"].endswith("f1_57[0]")
+    description = next(item for item in field_map["mappings"] if item.get("identity_slot") == "line_1h_description")
+    assert description["field_name"].endswith("f1_54[0]")
+
+
+@pytest.mark.m15
+def test_form_1040_nonzero_1b_through_1h_sum_and_pdf_echo(tmp_path: Path) -> None:
+    graph = Graph(2025, root=ROOT, source="yaml")
+    facts = {f"form_1040_2025_root_line_1{letter}": index * 100 for index, letter in enumerate("abcdefgh", 1)}
+    facts["filing_status"] = "single"
+    result = Engine(graph).execute(facts)
+    assert result.values["form_1040_2025_root_line_z"] == 3600
+    field_map = next(
+        item
+        for item in load_field_maps(2025, ROOT)
+        if item["document_id"] == "form_1040_2025"
+    )
+    facts_document = {
+        "filing_status": "single",
+        "identity": {"line_1h_description": "Jury duty pay"},
+        "facts": [{"node_id": key, "value": value} for key, value in facts.items() if key != "filing_status"],
+    }
+    values, notes = build_field_values(field_map, result, facts_document, root=ROOT)
+    expected = {
+        "topmostSubform[0].Page1[0].f1_48[0]": "200",
+        "topmostSubform[0].Page1[0].f1_49[0]": "300",
+        "topmostSubform[0].Page1[0].f1_50[0]": "400",
+        "topmostSubform[0].Page1[0].f1_51[0]": "500",
+        "topmostSubform[0].Page1[0].f1_52[0]": "600",
+        "topmostSubform[0].Page1[0].f1_53[0]": "700",
+        "topmostSubform[0].Page1[0].f1_54[0]": "Jury duty pay",
+        "topmostSubform[0].Page1[0].f1_55[0]": "800",
+        "topmostSubform[0].Page1[0].f1_57[0]": "3600",
+    }
+    assert expected.items() <= values.items()
+    filled = fill_official_pdf(
+        ROOT / ".cache/raw/2025/form_1040_2025.pdf",
+        tmp_path / "form_1040_lines_1.pdf",
+        document_id="form_1040_2025",
+        field_values={key: values[key] for key in expected},
+        blank_with_note=notes,
+    )
+    assert filled.field_values == expected
+
+
+@pytest.mark.m15
+@pytest.mark.parametrize("field_type", ["text", "checkbox"])
+def test_seeded_missing_widget_type_fails_preflight(tmp_path: Path, field_type: str) -> None:
+    fitz = pytest.importorskip("fitz")
+    raw = tmp_path / ".cache/raw/2025"
+    maps = tmp_path / "graph/2025/field_maps"
+    inventories = tmp_path / "graph/2025/field_inventories"
+    raw.mkdir(parents=True)
+    maps.mkdir(parents=True)
+    inventories.mkdir(parents=True)
+    document = fitz.open()
+    page = document.new_page()
+    widget = fitz.Widget()
+    widget.field_name = f"missing_{field_type}"
+    widget.field_type = {
+        "text": fitz.PDF_WIDGET_TYPE_TEXT,
+        "checkbox": fitz.PDF_WIDGET_TYPE_CHECKBOX,
+    }[field_type]
+    widget.rect = fitz.Rect(20, 20, 80, 40)
+    page.add_widget(widget)
+    document.save(raw / "form_seed_2025.pdf")
+    document.close()
+    (inventories / "form_seed_2025.json").write_text('{"fields": []}', encoding="utf-8")
+    (maps / "form_seed_2025.yaml").write_text(
+        yaml.safe_dump(
+            {
+                "tax_year": 2025,
+                "document_id": "form_seed_2025",
+                "inventory": "graph/2025/field_inventories/form_seed_2025.json",
+                "mappings": [],
+                "excluded_nodes": [],
+                "frontier_fields": [],
+            },
+            sort_keys=False,
+        ),
+        encoding="utf-8",
+    )
+    errors = validate_exposed_pdf_fields("2025", tmp_path)
+    assert any("widget/inventory mismatch" in error and "missing=1" in error for error in errors)
+
+
+@pytest.mark.m15
+def test_seeded_missing_radio_disposition_fails_preflight(tmp_path: Path) -> None:
+    root, field_map = _fixture_root(tmp_path)
+    inventory_path = root / "graph/2025/field_inventories/form_test_2025.json"
+    inventory = json.loads(inventory_path.read_text(encoding="utf-8"))
+    inventory["fields"].append({"field_name": "f_radio", "field_type": "RadioButton", "page": 1})
+    inventory_path.write_text(json.dumps(inventory), encoding="utf-8")
+    errors = _write_map(root, field_map)
+    assert any("field has no disposition: f_radio" in error for error in errors)
+
+
+@pytest.mark.m15
+def test_entirely_missing_form_inventory_fails_preflight(tmp_path: Path) -> None:
+    fitz = pytest.importorskip("fitz")
+    raw = tmp_path / ".cache/raw/2025"
+    raw.mkdir(parents=True)
+    document = fitz.open()
+    page = document.new_page()
+    widget = fitz.Widget()
+    widget.field_name = "orphan"
+    widget.field_type = fitz.PDF_WIDGET_TYPE_TEXT
+    widget.rect = fitz.Rect(20, 20, 80, 40)
+    page.add_widget(widget)
+    document.save(raw / "form_orphan_2025.pdf")
+    document.close()
+    errors = validate_exposed_pdf_fields("2025", tmp_path)
+    assert errors == ["exposed AcroForm form_orphan_2025 -> missing committed field map and inventory"]
+
+
+@pytest.mark.m15
+def test_real_v2_maps_validate_with_pdf_coverage() -> None:
+    graph = load_graph("2025", ROOT)
+    frontier = yaml.safe_load((ROOT / "graph/2025/frontier.yaml").read_text(encoding="utf-8"))
+    assert validate_field_maps(
+        "2025",
+        ROOT,
+        node_ids=(item["node_id"] for item in graph.items("nodes")),
+        frontier_ids=(item["frontier_id"] for item in frontier["frontiers"]),
+        check_exposed_pdfs=True,
+    ) == []

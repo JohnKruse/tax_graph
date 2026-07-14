@@ -1,0 +1,1368 @@
+tax_year: 2025
+document_id: form_w2_2025
+inventory: graph/2025/field_inventories/form_w2_2025.json
+mappings: []
+excluded_nodes: []
+frontier_fields: []
+schema_version: 2
+field_dispositions:
+- field_name: topmostSubform[0].CopyA[0].Void_ReadOrder[0].c1_1[0]
+  label: Line a - 22222 VOID - c1_1
+  population_policy: imported
+  value_format: checkbox
+  source_ref: form_w2_2025.topmostsubform_0_copya_0_void_readorder_0_c1_1_0
+- field_name: topmostSubform[0].CopyA[0].BoxA_ReadOrder[0].f1_01[0]
+  label: Line a - 22222 VOID - f1_01
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copya_0_boxa_readorder_0_f1_01_0
+- field_name: topmostSubform[0].CopyA[0].Col_Left[0].f1_02[0]
+  label: Line b - f1_02
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copya_0_col_left_0_f1_02_0
+- field_name: topmostSubform[0].CopyA[0].Col_Left[0].f1_03[0]
+  label: Line c - f1_03
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copya_0_col_left_0_f1_03_0
+- field_name: topmostSubform[0].CopyA[0].Col_Left[0].f1_04[0]
+  label: Line d - f1_04
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copya_0_col_left_0_f1_04_0
+- field_name: topmostSubform[0].CopyA[0].Col_Left[0].FirstName_ReadOrder[0].f1_05[0]
+  label: Line o - f1_05
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copya_0_col_left_0_firstname_readorder_0_f1_05_0
+- field_name: topmostSubform[0].CopyA[0].Col_Left[0].LastName_ReadOrder[0].f1_06[0]
+  label: Line o - f1_06
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copya_0_col_left_0_lastname_readorder_0_f1_06_0
+- field_name: topmostSubform[0].CopyA[0].Col_Left[0].f1_07[0]
+  label: Line o - f1_07
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copya_0_col_left_0_f1_07_0
+- field_name: topmostSubform[0].CopyA[0].Col_Left[0].f1_08[0]
+  label: Line 12b - f1_08
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copya_0_col_left_0_f1_08_0
+- field_name: topmostSubform[0].CopyA[0].Col_Right[0].Box1_ReadOrder[0].f1_09[0]
+  label: Line b - f1_09
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copya_0_col_right_0_box1_readorder_0_f1_09_0
+- field_name: topmostSubform[0].CopyA[0].Col_Right[0].f1_10[0]
+  label: Line b - f1_10
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copya_0_col_right_0_f1_10_0
+- field_name: topmostSubform[0].CopyA[0].Col_Right[0].Box3_ReadOrder[0].f1_11[0]
+  label: Line c - f1_11
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copya_0_col_right_0_box3_readorder_0_f1_11_0
+- field_name: topmostSubform[0].CopyA[0].Col_Right[0].f1_12[0]
+  label: Line c - f1_12
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copya_0_col_right_0_f1_12_0
+- field_name: topmostSubform[0].CopyA[0].Col_Right[0].Box5_ReadOrder[0].f1_13[0]
+  label: Line 5 - f1_13
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copya_0_col_right_0_box5_readorder_0_f1_13_0
+- field_name: topmostSubform[0].CopyA[0].Col_Right[0].f1_14[0]
+  label: Line 5 - f1_14
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copya_0_col_right_0_f1_14_0
+- field_name: topmostSubform[0].CopyA[0].Col_Right[0].Box7_ReadOrder[0].f1_15[0]
+  label: Line 7 - f1_15
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copya_0_col_right_0_box7_readorder_0_f1_15_0
+- field_name: topmostSubform[0].CopyA[0].Col_Right[0].f1_16[0]
+  label: Line 7 - f1_16
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copya_0_col_right_0_f1_16_0
+- field_name: topmostSubform[0].CopyA[0].Col_Right[0].Box9_ReadOrder[0].f1_17[0]
+  label: Line d - f1_17
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copya_0_col_right_0_box9_readorder_0_f1_17_0
+- field_name: topmostSubform[0].CopyA[0].Col_Right[0].f1_18[0]
+  label: Line d - f1_18
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copya_0_col_right_0_f1_18_0
+- field_name: topmostSubform[0].CopyA[0].Col_Right[0].Box11_ReadOrder[0].f1_19[0]
+  label: Line o - f1_19
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copya_0_col_right_0_box11_readorder_0_f1_19_0
+- field_name: topmostSubform[0].CopyA[0].Col_Right[0].Line12_ReadOrder[0].f1_20[0]
+  label: Line o - d o e - f1_20
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copya_0_col_right_0_line12_readorder_0_f1_20_0
+- field_name: topmostSubform[0].CopyA[0].Col_Right[0].Line12_ReadOrder[0].f1_21[0]
+  label: Line o - d o e - f1_21
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copya_0_col_right_0_line12_readorder_0_f1_21_0
+- field_name: topmostSubform[0].CopyA[0].Col_Right[0].Line12_ReadOrder[0].f1_22[0]
+  label: Line o - d o e - f1_22
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copya_0_col_right_0_line12_readorder_0_f1_22_0
+- field_name: topmostSubform[0].CopyA[0].Col_Right[0].Line12_ReadOrder[0].f1_23[0]
+  label: Line o - d o e - f1_23
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copya_0_col_right_0_line12_readorder_0_f1_23_0
+- field_name: topmostSubform[0].CopyA[0].Col_Right[0].Line12_ReadOrder[0].f1_24[0]
+  label: Line o - d o e - f1_24
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copya_0_col_right_0_line12_readorder_0_f1_24_0
+- field_name: topmostSubform[0].CopyA[0].Col_Right[0].Line12_ReadOrder[0].f1_25[0]
+  label: Line o - d o e - f1_25
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copya_0_col_right_0_line12_readorder_0_f1_25_0
+- field_name: topmostSubform[0].CopyA[0].Col_Right[0].Line12_ReadOrder[0].f1_26[0]
+  label: Line o - d o e - f1_26
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copya_0_col_right_0_line12_readorder_0_f1_26_0
+- field_name: topmostSubform[0].CopyA[0].Col_Right[0].Line12_ReadOrder[0].f1_27[0]
+  label: Line o - d o e - f1_27
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copya_0_col_right_0_line12_readorder_0_f1_27_0
+- field_name: topmostSubform[0].CopyA[0].Col_Right[0].Statutory_ReadOrder[0].c1_2[0]
+  label: Line o - c1_2
+  population_policy: imported
+  value_format: checkbox
+  source_ref: form_w2_2025.topmostsubform_0_copya_0_col_right_0_statutory_readorder_0_c1_2_0
+- field_name: topmostSubform[0].CopyA[0].Col_Right[0].Retirement_ReadOrder[0].c1_3[0]
+  label: Line o - c1_3
+  population_policy: imported
+  value_format: checkbox
+  source_ref: form_w2_2025.topmostsubform_0_copya_0_col_right_0_retirement_readorder_0_c1_3_0
+- field_name: topmostSubform[0].CopyA[0].Col_Right[0].c1_4[0]
+  label: Line o - c1_4
+  population_policy: imported
+  value_format: checkbox
+  source_ref: form_w2_2025.topmostsubform_0_copya_0_col_right_0_c1_4_0
+- field_name: topmostSubform[0].CopyA[0].Col_Right[0].f1_28[0]
+  label: Line o - f1_28
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copya_0_col_right_0_f1_28_0
+- field_name: topmostSubform[0].CopyA[0].Boxes15_ReadOrder[0].Box15_ReadOrder[0].f1_29[0]
+  label: Line 15 - f1_29
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copya_0_boxes15_readorder_0_box15_readorder_0_f1_29_0
+- field_name: topmostSubform[0].CopyA[0].Boxes15_ReadOrder[0].f1_30[0]
+  label: Line 15 - f1_30
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copya_0_boxes15_readorder_0_f1_30_0
+- field_name: topmostSubform[0].CopyA[0].Boxes15_ReadOrder[0].f1_31[0]
+  label: f1_31
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copya_0_boxes15_readorder_0_f1_31_0
+- field_name: topmostSubform[0].CopyA[0].Boxes15_ReadOrder[0].f1_32[0]
+  label: f1_32
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copya_0_boxes15_readorder_0_f1_32_0
+- field_name: topmostSubform[0].CopyA[0].Box16_ReadOrder[0].f1_33[0]
+  label: Line 15 - f1_33
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copya_0_box16_readorder_0_f1_33_0
+- field_name: topmostSubform[0].CopyA[0].Box16_ReadOrder[0].f1_34[0]
+  label: f1_34
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copya_0_box16_readorder_0_f1_34_0
+- field_name: topmostSubform[0].CopyA[0].Box17_ReadOrder[0].f1_35[0]
+  label: Line 15 - f1_35
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copya_0_box17_readorder_0_f1_35_0
+- field_name: topmostSubform[0].CopyA[0].Box17_ReadOrder[0].f1_36[0]
+  label: f1_36
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copya_0_box17_readorder_0_f1_36_0
+- field_name: topmostSubform[0].CopyA[0].Box18_ReadOrder[0].f1_37[0]
+  label: Line 15 - f1_37
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copya_0_box18_readorder_0_f1_37_0
+- field_name: topmostSubform[0].CopyA[0].Box18_ReadOrder[0].f1_38[0]
+  label: f1_38
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copya_0_box18_readorder_0_f1_38_0
+- field_name: topmostSubform[0].CopyA[0].Box19_ReadOrder[0].f1_39[0]
+  label: Line 15 - f1_39
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copya_0_box19_readorder_0_f1_39_0
+- field_name: topmostSubform[0].CopyA[0].Box19_ReadOrder[0].f1_40[0]
+  label: f1_40
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copya_0_box19_readorder_0_f1_40_0
+- field_name: topmostSubform[0].CopyA[0].f1_41[0]
+  label: Line 15 - f1_41
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copya_0_f1_41_0
+- field_name: topmostSubform[0].CopyA[0].f1_42[0]
+  label: f1_42
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copya_0_f1_42_0
+- field_name: topmostSubform[0].Copy1[0].BoxA_ReadOrder[0].f2_01[0]
+  label: Line a - 22222 - f2_01
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copy1_0_boxa_readorder_0_f2_01_0
+- field_name: topmostSubform[0].Copy1[0].Col_Left[0].f2_02[0]
+  label: Line b - f2_02 (page 3, control 48)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copy1_0_col_left_0_f2_02_0
+- field_name: topmostSubform[0].Copy1[0].Col_Left[0].f2_03[0]
+  label: Line c - f2_03 (page 3, control 49)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copy1_0_col_left_0_f2_03_0
+- field_name: topmostSubform[0].Copy1[0].Col_Left[0].f2_04[0]
+  label: Line d - f2_04 (page 3, control 50)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copy1_0_col_left_0_f2_04_0
+- field_name: topmostSubform[0].Copy1[0].Col_Left[0].FirstName_ReadOrder[0].f2_05[0]
+  label: Line o - f2_05 (page 3, control 51)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copy1_0_col_left_0_firstname_readorder_0_f2_05_0
+- field_name: topmostSubform[0].Copy1[0].Col_Left[0].LastName_ReadOrder[0].f2_06[0]
+  label: Line o - f2_06 (page 3, control 52)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copy1_0_col_left_0_lastname_readorder_0_f2_06_0
+- field_name: topmostSubform[0].Copy1[0].Col_Left[0].f2_07[0]
+  label: Line o - f2_07 (page 3, control 53)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copy1_0_col_left_0_f2_07_0
+- field_name: topmostSubform[0].Copy1[0].Col_Left[0].f2_08[0]
+  label: Line 12b - f2_08 (page 3, control 54)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copy1_0_col_left_0_f2_08_0
+- field_name: topmostSubform[0].Copy1[0].Col_Right[0].Box1_ReadOrder[0].f2_09[0]
+  label: Line b - f2_09 (page 3, control 55)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copy1_0_col_right_0_box1_readorder_0_f2_09_0
+- field_name: topmostSubform[0].Copy1[0].Col_Right[0].f2_10[0]
+  label: Line b - f2_10 (page 3, control 56)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copy1_0_col_right_0_f2_10_0
+- field_name: topmostSubform[0].Copy1[0].Col_Right[0].Box3_ReadOrder[0].f2_11[0]
+  label: Line c - f2_11 (page 3, control 57)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copy1_0_col_right_0_box3_readorder_0_f2_11_0
+- field_name: topmostSubform[0].Copy1[0].Col_Right[0].f2_12[0]
+  label: Line c - f2_12 (page 3, control 58)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copy1_0_col_right_0_f2_12_0
+- field_name: topmostSubform[0].Copy1[0].Col_Right[0].Box5_ReadOrder[0].f2_13[0]
+  label: Line 5 - f2_13 (page 3, control 59)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copy1_0_col_right_0_box5_readorder_0_f2_13_0
+- field_name: topmostSubform[0].Copy1[0].Col_Right[0].f2_14[0]
+  label: Line 5 - f2_14 (page 3, control 60)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copy1_0_col_right_0_f2_14_0
+- field_name: topmostSubform[0].Copy1[0].Col_Right[0].Box7_ReadOrder[0].f2_15[0]
+  label: Line 7 - f2_15 (page 3, control 61)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copy1_0_col_right_0_box7_readorder_0_f2_15_0
+- field_name: topmostSubform[0].Copy1[0].Col_Right[0].f2_16[0]
+  label: Line 7 - f2_16 (page 3, control 62)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copy1_0_col_right_0_f2_16_0
+- field_name: topmostSubform[0].Copy1[0].Col_Right[0].Box9_ReadOrder[0].f2_17[0]
+  label: Line d - f2_17 (page 3, control 63)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copy1_0_col_right_0_box9_readorder_0_f2_17_0
+- field_name: topmostSubform[0].Copy1[0].Col_Right[0].f2_18[0]
+  label: Line d - f2_18 (page 3, control 64)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copy1_0_col_right_0_f2_18_0
+- field_name: topmostSubform[0].Copy1[0].Col_Right[0].Box11__ReadOrder[0].f2_19[0]
+  label: Line o - f2_19 (page 3, control 65)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copy1_0_col_right_0_box11_readorder_0_f2_19_0
+- field_name: topmostSubform[0].Copy1[0].Col_Right[0].Box12_ReadOrder[0].f2_20[0]
+  label: Line o - d o e - f2_20 (page 3, control 66)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copy1_0_col_right_0_box12_readorder_0_f2_20_0
+- field_name: topmostSubform[0].Copy1[0].Col_Right[0].Box12_ReadOrder[0].f2_21[0]
+  label: Line o - d o e - f2_21 (page 3, control 67)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copy1_0_col_right_0_box12_readorder_0_f2_21_0
+- field_name: topmostSubform[0].Copy1[0].Col_Right[0].Box12_ReadOrder[0].f2_22[0]
+  label: Line o - d o e - f2_22 (page 3, control 68)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copy1_0_col_right_0_box12_readorder_0_f2_22_0
+- field_name: topmostSubform[0].Copy1[0].Col_Right[0].Box12_ReadOrder[0].f2_23[0]
+  label: Line o - d o e - f2_23 (page 3, control 69)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copy1_0_col_right_0_box12_readorder_0_f2_23_0
+- field_name: topmostSubform[0].Copy1[0].Col_Right[0].Box12_ReadOrder[0].f2_24[0]
+  label: Line o - d o e - f2_24 (page 3, control 70)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copy1_0_col_right_0_box12_readorder_0_f2_24_0
+- field_name: topmostSubform[0].Copy1[0].Col_Right[0].Box12_ReadOrder[0].f2_25[0]
+  label: Line o - d o e - f2_25 (page 3, control 71)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copy1_0_col_right_0_box12_readorder_0_f2_25_0
+- field_name: topmostSubform[0].Copy1[0].Col_Right[0].Box12_ReadOrder[0].f2_26[0]
+  label: Line o - d o e - f2_26 (page 3, control 72)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copy1_0_col_right_0_box12_readorder_0_f2_26_0
+- field_name: topmostSubform[0].Copy1[0].Col_Right[0].Box12_ReadOrder[0].f2_27[0]
+  label: Line o - d o e - f2_27 (page 3, control 73)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copy1_0_col_right_0_box12_readorder_0_f2_27_0
+- field_name: topmostSubform[0].Copy1[0].Col_Right[0].Statutory_ReadOrder[0].c2_2[0]
+  label: Line o - c2_2 (page 3, control 74)
+  population_policy: imported
+  value_format: checkbox
+  source_ref: form_w2_2025.topmostsubform_0_copy1_0_col_right_0_statutory_readorder_0_c2_2_0
+- field_name: topmostSubform[0].Copy1[0].Col_Right[0].Retirement_ReadOrder[0].c2_3[0]
+  label: Line o - c2_3 (page 3, control 75)
+  population_policy: imported
+  value_format: checkbox
+  source_ref: form_w2_2025.topmostsubform_0_copy1_0_col_right_0_retirement_readorder_0_c2_3_0
+- field_name: topmostSubform[0].Copy1[0].Col_Right[0].c2_4[0]
+  label: Line o - c2_4 (page 3, control 76)
+  population_policy: imported
+  value_format: checkbox
+  source_ref: form_w2_2025.topmostsubform_0_copy1_0_col_right_0_c2_4_0
+- field_name: topmostSubform[0].Copy1[0].Col_Right[0].f2_28[0]
+  label: Line o - f2_28 (page 3, control 77)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copy1_0_col_right_0_f2_28_0
+- field_name: topmostSubform[0].Copy1[0].Boxes15_ReadOrder[0].Box15_ReadOrder[0].f2_29[0]
+  label: Line 15 - f2_29 (page 3, control 78)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copy1_0_boxes15_readorder_0_box15_readorder_0_f2_29_0
+- field_name: topmostSubform[0].Copy1[0].Boxes15_ReadOrder[0].f2_30[0]
+  label: Line 15 - f2_30 (page 3, control 79)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copy1_0_boxes15_readorder_0_f2_30_0
+- field_name: topmostSubform[0].Copy1[0].Boxes15_ReadOrder[0].f2_31[0]
+  label: f2_31 (page 3, control 80)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copy1_0_boxes15_readorder_0_f2_31_0
+- field_name: topmostSubform[0].Copy1[0].Boxes15_ReadOrder[0].f2_32[0]
+  label: f2_32 (page 3, control 81)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copy1_0_boxes15_readorder_0_f2_32_0
+- field_name: topmostSubform[0].Copy1[0].Box16_ReadOrder[0].f2_33[0]
+  label: Line 15 - f2_33 (page 3, control 82)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copy1_0_box16_readorder_0_f2_33_0
+- field_name: topmostSubform[0].Copy1[0].Box16_ReadOrder[0].f2_34[0]
+  label: f2_34 (page 3, control 83)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copy1_0_box16_readorder_0_f2_34_0
+- field_name: topmostSubform[0].Copy1[0].Box17_ReadOrder[0].f2_35[0]
+  label: Line 15 - f2_35 (page 3, control 84)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copy1_0_box17_readorder_0_f2_35_0
+- field_name: topmostSubform[0].Copy1[0].Box17_ReadOrder[0].f2_36[0]
+  label: f2_36 (page 3, control 85)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copy1_0_box17_readorder_0_f2_36_0
+- field_name: topmostSubform[0].Copy1[0].Box18_ReadOrder[0].f2_37[0]
+  label: Line 15 - f2_37 (page 3, control 86)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copy1_0_box18_readorder_0_f2_37_0
+- field_name: topmostSubform[0].Copy1[0].Box18_ReadOrder[0].f2_38[0]
+  label: f2_38 (page 3, control 87)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copy1_0_box18_readorder_0_f2_38_0
+- field_name: topmostSubform[0].Copy1[0].Box19_ReadOrder[0].f2_39[0]
+  label: Line 15 - f2_39 (page 3, control 88)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copy1_0_box19_readorder_0_f2_39_0
+- field_name: topmostSubform[0].Copy1[0].Box19_ReadOrder[0].f2_40[0]
+  label: f2_40 (page 3, control 89)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copy1_0_box19_readorder_0_f2_40_0
+- field_name: topmostSubform[0].Copy1[0].f2_41[0]
+  label: Line 15 - f2_41 (page 3, control 90)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copy1_0_f2_41_0
+- field_name: topmostSubform[0].Copy1[0].f2_42[0]
+  label: f2_42 (page 3, control 91)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copy1_0_f2_42_0
+- field_name: topmostSubform[0].CopyB[0].BoxA_ReadOrder[0].f2_01[0]
+  label: Line a - f2_01 (page 4, control 92)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copyb_0_boxa_readorder_0_f2_01_0
+- field_name: topmostSubform[0].CopyB[0].Col_Left[0].f2_02[0]
+  label: Line b - f2_02 (page 4, control 93)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copyb_0_col_left_0_f2_02_0
+- field_name: topmostSubform[0].CopyB[0].Col_Left[0].f2_03[0]
+  label: Line c - f2_03 (page 4, control 94)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copyb_0_col_left_0_f2_03_0
+- field_name: topmostSubform[0].CopyB[0].Col_Left[0].f2_04[0]
+  label: Line d - f2_04 (page 4, control 95)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copyb_0_col_left_0_f2_04_0
+- field_name: topmostSubform[0].CopyB[0].Col_Left[0].FirstName_ReadOrder[0].f2_05[0]
+  label: Line o - f2_05 (page 4, control 96)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copyb_0_col_left_0_firstname_readorder_0_f2_05_0
+- field_name: topmostSubform[0].CopyB[0].Col_Left[0].LastName_ReadOrder[0].f2_06[0]
+  label: Line o - f2_06 (page 4, control 97)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copyb_0_col_left_0_lastname_readorder_0_f2_06_0
+- field_name: topmostSubform[0].CopyB[0].Col_Left[0].f2_07[0]
+  label: Line o - f2_07 (page 4, control 98)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copyb_0_col_left_0_f2_07_0
+- field_name: topmostSubform[0].CopyB[0].Col_Left[0].f2_08[0]
+  label: Line 12b - f2_08 (page 4, control 99)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copyb_0_col_left_0_f2_08_0
+- field_name: topmostSubform[0].CopyB[0].Col_Right[0].Box1_ReadOrder[0].f2_09[0]
+  label: Line b - f2_09 (page 4, control 100)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copyb_0_col_right_0_box1_readorder_0_f2_09_0
+- field_name: topmostSubform[0].CopyB[0].Col_Right[0].f2_10[0]
+  label: Line b - f2_10 (page 4, control 101)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copyb_0_col_right_0_f2_10_0
+- field_name: topmostSubform[0].CopyB[0].Col_Right[0].Box3_ReadOrder[0].f2_11[0]
+  label: Line c - f2_11 (page 4, control 102)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copyb_0_col_right_0_box3_readorder_0_f2_11_0
+- field_name: topmostSubform[0].CopyB[0].Col_Right[0].f2_12[0]
+  label: Line c - f2_12 (page 4, control 103)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copyb_0_col_right_0_f2_12_0
+- field_name: topmostSubform[0].CopyB[0].Col_Right[0].Box5_ReadOrder[0].f2_13[0]
+  label: Line 5 - f2_13 (page 4, control 104)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copyb_0_col_right_0_box5_readorder_0_f2_13_0
+- field_name: topmostSubform[0].CopyB[0].Col_Right[0].f2_14[0]
+  label: Line 5 - f2_14 (page 4, control 105)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copyb_0_col_right_0_f2_14_0
+- field_name: topmostSubform[0].CopyB[0].Col_Right[0].Box7_ReadOrder[0].f2_15[0]
+  label: Line 7 - f2_15 (page 4, control 106)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copyb_0_col_right_0_box7_readorder_0_f2_15_0
+- field_name: topmostSubform[0].CopyB[0].Col_Right[0].f2_16[0]
+  label: Line 7 - f2_16 (page 4, control 107)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copyb_0_col_right_0_f2_16_0
+- field_name: topmostSubform[0].CopyB[0].Col_Right[0].Box9_ReadOrder[0].f2_17[0]
+  label: Line d - f2_17 (page 4, control 108)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copyb_0_col_right_0_box9_readorder_0_f2_17_0
+- field_name: topmostSubform[0].CopyB[0].Col_Right[0].f2_18[0]
+  label: Line d - f2_18 (page 4, control 109)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copyb_0_col_right_0_f2_18_0
+- field_name: topmostSubform[0].CopyB[0].Col_Right[0].Box11__ReadOrder[0].f2_19[0]
+  label: Line o - f2_19 (page 4, control 110)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copyb_0_col_right_0_box11_readorder_0_f2_19_0
+- field_name: topmostSubform[0].CopyB[0].Col_Right[0].Box12_ReadOrder[0].f2_20[0]
+  label: Line o - d o e - f2_20 (page 4, control 111)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copyb_0_col_right_0_box12_readorder_0_f2_20_0
+- field_name: topmostSubform[0].CopyB[0].Col_Right[0].Box12_ReadOrder[0].f2_21[0]
+  label: Line o - d o e - f2_21 (page 4, control 112)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copyb_0_col_right_0_box12_readorder_0_f2_21_0
+- field_name: topmostSubform[0].CopyB[0].Col_Right[0].Box12_ReadOrder[0].f2_22[0]
+  label: Line o - d o e - f2_22 (page 4, control 113)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copyb_0_col_right_0_box12_readorder_0_f2_22_0
+- field_name: topmostSubform[0].CopyB[0].Col_Right[0].Box12_ReadOrder[0].f2_23[0]
+  label: Line o - d o e - f2_23 (page 4, control 114)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copyb_0_col_right_0_box12_readorder_0_f2_23_0
+- field_name: topmostSubform[0].CopyB[0].Col_Right[0].Box12_ReadOrder[0].f2_24[0]
+  label: Line o - d o e - f2_24 (page 4, control 115)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copyb_0_col_right_0_box12_readorder_0_f2_24_0
+- field_name: topmostSubform[0].CopyB[0].Col_Right[0].Box12_ReadOrder[0].f2_25[0]
+  label: Line o - d o e - f2_25 (page 4, control 116)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copyb_0_col_right_0_box12_readorder_0_f2_25_0
+- field_name: topmostSubform[0].CopyB[0].Col_Right[0].Box12_ReadOrder[0].f2_26[0]
+  label: Line o - d o e - f2_26 (page 4, control 117)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copyb_0_col_right_0_box12_readorder_0_f2_26_0
+- field_name: topmostSubform[0].CopyB[0].Col_Right[0].Box12_ReadOrder[0].f2_27[0]
+  label: Line o - d o e - f2_27 (page 4, control 118)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copyb_0_col_right_0_box12_readorder_0_f2_27_0
+- field_name: topmostSubform[0].CopyB[0].Col_Right[0].Statutory_ReadOrder[0].c2_2[0]
+  label: Line o - c2_2 (page 4, control 119)
+  population_policy: imported
+  value_format: checkbox
+  source_ref: form_w2_2025.topmostsubform_0_copyb_0_col_right_0_statutory_readorder_0_c2_2_0
+- field_name: topmostSubform[0].CopyB[0].Col_Right[0].Retirement_ReadOrder[0].c2_3[0]
+  label: Line o - c2_3 (page 4, control 120)
+  population_policy: imported
+  value_format: checkbox
+  source_ref: form_w2_2025.topmostsubform_0_copyb_0_col_right_0_retirement_readorder_0_c2_3_0
+- field_name: topmostSubform[0].CopyB[0].Col_Right[0].c2_4[0]
+  label: Line o - c2_4 (page 4, control 121)
+  population_policy: imported
+  value_format: checkbox
+  source_ref: form_w2_2025.topmostsubform_0_copyb_0_col_right_0_c2_4_0
+- field_name: topmostSubform[0].CopyB[0].Col_Right[0].f2_28[0]
+  label: Line o - f2_28 (page 4, control 122)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copyb_0_col_right_0_f2_28_0
+- field_name: topmostSubform[0].CopyB[0].Boxes15_ReadOrder[0].Box15_ReadOrder[0].f2_29[0]
+  label: Line 15 - f2_29 (page 4, control 123)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copyb_0_boxes15_readorder_0_box15_readorder_0_f2_29_0
+- field_name: topmostSubform[0].CopyB[0].Boxes15_ReadOrder[0].f2_30[0]
+  label: Line 15 - f2_30 (page 4, control 124)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copyb_0_boxes15_readorder_0_f2_30_0
+- field_name: topmostSubform[0].CopyB[0].Boxes15_ReadOrder[0].f2_31[0]
+  label: f2_31 (page 4, control 125)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copyb_0_boxes15_readorder_0_f2_31_0
+- field_name: topmostSubform[0].CopyB[0].Boxes15_ReadOrder[0].f2_32[0]
+  label: f2_32 (page 4, control 126)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copyb_0_boxes15_readorder_0_f2_32_0
+- field_name: topmostSubform[0].CopyB[0].Box16_ReadOrder[0].f2_33[0]
+  label: Line 15 - f2_33 (page 4, control 127)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copyb_0_box16_readorder_0_f2_33_0
+- field_name: topmostSubform[0].CopyB[0].Box16_ReadOrder[0].f2_34[0]
+  label: f2_34 (page 4, control 128)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copyb_0_box16_readorder_0_f2_34_0
+- field_name: topmostSubform[0].CopyB[0].Box17_ReadOrder[0].f2_35[0]
+  label: Line 15 - f2_35 (page 4, control 129)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copyb_0_box17_readorder_0_f2_35_0
+- field_name: topmostSubform[0].CopyB[0].Box17_ReadOrder[0].f2_36[0]
+  label: f2_36 (page 4, control 130)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copyb_0_box17_readorder_0_f2_36_0
+- field_name: topmostSubform[0].CopyB[0].Box18_ReadOrder[0].f2_37[0]
+  label: Line 15 - f2_37 (page 4, control 131)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copyb_0_box18_readorder_0_f2_37_0
+- field_name: topmostSubform[0].CopyB[0].Box18_ReadOrder[0].f2_38[0]
+  label: f2_38 (page 4, control 132)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copyb_0_box18_readorder_0_f2_38_0
+- field_name: topmostSubform[0].CopyB[0].Box19_ReadOrder[0].f2_39[0]
+  label: Line 15 - f2_39 (page 4, control 133)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copyb_0_box19_readorder_0_f2_39_0
+- field_name: topmostSubform[0].CopyB[0].Box19_ReadOrder[0].f2_40[0]
+  label: f2_40 (page 4, control 134)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copyb_0_box19_readorder_0_f2_40_0
+- field_name: topmostSubform[0].CopyB[0].f2_41[0]
+  label: Line 15 - f2_41 (page 4, control 135)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copyb_0_f2_41_0
+- field_name: topmostSubform[0].CopyB[0].f2_42[0]
+  label: f2_42 (page 4, control 136)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copyb_0_f2_42_0
+- field_name: topmostSubform[0].CopyC[0].BoxA_ReadOrder[0].f2_01[0]
+  label: Line a - f2_01 (page 6, control 137)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copyc_0_boxa_readorder_0_f2_01_0
+- field_name: topmostSubform[0].CopyC[0].Col_Left[0].f2_02[0]
+  label: Line b - f2_02 (page 6, control 138)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copyc_0_col_left_0_f2_02_0
+- field_name: topmostSubform[0].CopyC[0].Col_Left[0].f2_03[0]
+  label: Line c - f2_03 (page 6, control 139)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copyc_0_col_left_0_f2_03_0
+- field_name: topmostSubform[0].CopyC[0].Col_Left[0].f2_04[0]
+  label: Line d - f2_04 (page 6, control 140)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copyc_0_col_left_0_f2_04_0
+- field_name: topmostSubform[0].CopyC[0].Col_Left[0].FirstName_ReadOrder[0].f2_05[0]
+  label: Line o - f2_05 (page 6, control 141)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copyc_0_col_left_0_firstname_readorder_0_f2_05_0
+- field_name: topmostSubform[0].CopyC[0].Col_Left[0].LastName_ReadOrder[0].f2_06[0]
+  label: Line o - f2_06 (page 6, control 142)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copyc_0_col_left_0_lastname_readorder_0_f2_06_0
+- field_name: topmostSubform[0].CopyC[0].Col_Left[0].f2_07[0]
+  label: Line o - f2_07 (page 6, control 143)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copyc_0_col_left_0_f2_07_0
+- field_name: topmostSubform[0].CopyC[0].Col_Left[0].f2_08[0]
+  label: Line 12b - f2_08 (page 6, control 144)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copyc_0_col_left_0_f2_08_0
+- field_name: topmostSubform[0].CopyC[0].Col_Right[0].Box1_ReadOrder[0].f2_09[0]
+  label: Line b - f2_09 (page 6, control 145)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copyc_0_col_right_0_box1_readorder_0_f2_09_0
+- field_name: topmostSubform[0].CopyC[0].Col_Right[0].f2_10[0]
+  label: Line b - f2_10 (page 6, control 146)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copyc_0_col_right_0_f2_10_0
+- field_name: topmostSubform[0].CopyC[0].Col_Right[0].Box3_ReadOrder[0].f2_11[0]
+  label: Line c - f2_11 (page 6, control 147)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copyc_0_col_right_0_box3_readorder_0_f2_11_0
+- field_name: topmostSubform[0].CopyC[0].Col_Right[0].f2_12[0]
+  label: Line c - f2_12 (page 6, control 148)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copyc_0_col_right_0_f2_12_0
+- field_name: topmostSubform[0].CopyC[0].Col_Right[0].Box5_ReadOrder[0].f2_13[0]
+  label: Line 5 - f2_13 (page 6, control 149)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copyc_0_col_right_0_box5_readorder_0_f2_13_0
+- field_name: topmostSubform[0].CopyC[0].Col_Right[0].f2_14[0]
+  label: Line 5 - f2_14 (page 6, control 150)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copyc_0_col_right_0_f2_14_0
+- field_name: topmostSubform[0].CopyC[0].Col_Right[0].Box7_ReadOrder[0].f2_15[0]
+  label: Line 7 - f2_15 (page 6, control 151)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copyc_0_col_right_0_box7_readorder_0_f2_15_0
+- field_name: topmostSubform[0].CopyC[0].Col_Right[0].f2_16[0]
+  label: Line 7 - f2_16 (page 6, control 152)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copyc_0_col_right_0_f2_16_0
+- field_name: topmostSubform[0].CopyC[0].Col_Right[0].Box9_ReadOrder[0].f2_17[0]
+  label: Line d - f2_17 (page 6, control 153)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copyc_0_col_right_0_box9_readorder_0_f2_17_0
+- field_name: topmostSubform[0].CopyC[0].Col_Right[0].f2_18[0]
+  label: Line d - f2_18 (page 6, control 154)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copyc_0_col_right_0_f2_18_0
+- field_name: topmostSubform[0].CopyC[0].Col_Right[0].Box11__ReadOrder[0].f2_19[0]
+  label: Line o - f2_19 (page 6, control 155)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copyc_0_col_right_0_box11_readorder_0_f2_19_0
+- field_name: topmostSubform[0].CopyC[0].Col_Right[0].Box12_ReadOrder[0].f2_20[0]
+  label: Line o - d o e - f2_20 (page 6, control 156)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copyc_0_col_right_0_box12_readorder_0_f2_20_0
+- field_name: topmostSubform[0].CopyC[0].Col_Right[0].Box12_ReadOrder[0].f2_21[0]
+  label: Line o - d o e - f2_21 (page 6, control 157)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copyc_0_col_right_0_box12_readorder_0_f2_21_0
+- field_name: topmostSubform[0].CopyC[0].Col_Right[0].Box12_ReadOrder[0].f2_22[0]
+  label: Line o - d o e - f2_22 (page 6, control 158)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copyc_0_col_right_0_box12_readorder_0_f2_22_0
+- field_name: topmostSubform[0].CopyC[0].Col_Right[0].Box12_ReadOrder[0].f2_23[0]
+  label: Line o - d o e - f2_23 (page 6, control 159)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copyc_0_col_right_0_box12_readorder_0_f2_23_0
+- field_name: topmostSubform[0].CopyC[0].Col_Right[0].Box12_ReadOrder[0].f2_24[0]
+  label: Line o - d o e - f2_24 (page 6, control 160)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copyc_0_col_right_0_box12_readorder_0_f2_24_0
+- field_name: topmostSubform[0].CopyC[0].Col_Right[0].Box12_ReadOrder[0].f2_25[0]
+  label: Line o - d o e - f2_25 (page 6, control 161)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copyc_0_col_right_0_box12_readorder_0_f2_25_0
+- field_name: topmostSubform[0].CopyC[0].Col_Right[0].Box12_ReadOrder[0].f2_26[0]
+  label: Line o - d o e - f2_26 (page 6, control 162)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copyc_0_col_right_0_box12_readorder_0_f2_26_0
+- field_name: topmostSubform[0].CopyC[0].Col_Right[0].Box12_ReadOrder[0].f2_27[0]
+  label: Line o - d o e - f2_27 (page 6, control 163)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copyc_0_col_right_0_box12_readorder_0_f2_27_0
+- field_name: topmostSubform[0].CopyC[0].Col_Right[0].Statutory_ReadOrder[0].c2_2[0]
+  label: Line o - c2_2 (page 6, control 164)
+  population_policy: imported
+  value_format: checkbox
+  source_ref: form_w2_2025.topmostsubform_0_copyc_0_col_right_0_statutory_readorder_0_c2_2_0
+- field_name: topmostSubform[0].CopyC[0].Col_Right[0].Retirement_ReadOrder[0].c2_3[0]
+  label: Line o - c2_3 (page 6, control 165)
+  population_policy: imported
+  value_format: checkbox
+  source_ref: form_w2_2025.topmostsubform_0_copyc_0_col_right_0_retirement_readorder_0_c2_3_0
+- field_name: topmostSubform[0].CopyC[0].Col_Right[0].c2_4[0]
+  label: Line o - c2_4 (page 6, control 166)
+  population_policy: imported
+  value_format: checkbox
+  source_ref: form_w2_2025.topmostsubform_0_copyc_0_col_right_0_c2_4_0
+- field_name: topmostSubform[0].CopyC[0].Col_Right[0].f2_28[0]
+  label: Line o - f2_28 (page 6, control 167)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copyc_0_col_right_0_f2_28_0
+- field_name: topmostSubform[0].CopyC[0].Boxes15_ReadOrder[0].Box15_ReadOrder[0].f2_29[0]
+  label: Line 15 - f2_29 (page 6, control 168)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copyc_0_boxes15_readorder_0_box15_readorder_0_f2_29_0
+- field_name: topmostSubform[0].CopyC[0].Boxes15_ReadOrder[0].f2_30[0]
+  label: Line 15 - f2_30 (page 6, control 169)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copyc_0_boxes15_readorder_0_f2_30_0
+- field_name: topmostSubform[0].CopyC[0].Boxes15_ReadOrder[0].f2_31[0]
+  label: f2_31 (page 6, control 170)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copyc_0_boxes15_readorder_0_f2_31_0
+- field_name: topmostSubform[0].CopyC[0].Boxes15_ReadOrder[0].f2_32[0]
+  label: f2_32 (page 6, control 171)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copyc_0_boxes15_readorder_0_f2_32_0
+- field_name: topmostSubform[0].CopyC[0].Box16_ReadOrder[0].f2_33[0]
+  label: Line 15 - f2_33 (page 6, control 172)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copyc_0_box16_readorder_0_f2_33_0
+- field_name: topmostSubform[0].CopyC[0].Box16_ReadOrder[0].f2_34[0]
+  label: f2_34 (page 6, control 173)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copyc_0_box16_readorder_0_f2_34_0
+- field_name: topmostSubform[0].CopyC[0].Box17_ReadOrder[0].f2_35[0]
+  label: Line 15 - f2_35 (page 6, control 174)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copyc_0_box17_readorder_0_f2_35_0
+- field_name: topmostSubform[0].CopyC[0].Box17_ReadOrder[0].f2_36[0]
+  label: f2_36 (page 6, control 175)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copyc_0_box17_readorder_0_f2_36_0
+- field_name: topmostSubform[0].CopyC[0].Box18_ReadOrder[0].f2_37[0]
+  label: Line 15 - f2_37 (page 6, control 176)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copyc_0_box18_readorder_0_f2_37_0
+- field_name: topmostSubform[0].CopyC[0].Box18_ReadOrder[0].f2_38[0]
+  label: f2_38 (page 6, control 177)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copyc_0_box18_readorder_0_f2_38_0
+- field_name: topmostSubform[0].CopyC[0].Box19_ReadOrder[0].f2_39[0]
+  label: Line 15 - f2_39 (page 6, control 178)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copyc_0_box19_readorder_0_f2_39_0
+- field_name: topmostSubform[0].CopyC[0].Box19_ReadOrder[0].f2_40[0]
+  label: f2_40 (page 6, control 179)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copyc_0_box19_readorder_0_f2_40_0
+- field_name: topmostSubform[0].CopyC[0].f2_41[0]
+  label: Line 15 - f2_41 (page 6, control 180)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copyc_0_f2_41_0
+- field_name: topmostSubform[0].CopyC[0].f2_42[0]
+  label: f2_42 (page 6, control 181)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copyc_0_f2_42_0
+- field_name: topmostSubform[0].Copy2[0].BoxA_ReadOrder[0].f2_01[0]
+  label: Line a - f2_01 (page 8, control 182)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copy2_0_boxa_readorder_0_f2_01_0
+- field_name: topmostSubform[0].Copy2[0].Col_Left[0].f2_02[0]
+  label: Line b - f2_02 (page 8, control 183)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copy2_0_col_left_0_f2_02_0
+- field_name: topmostSubform[0].Copy2[0].Col_Left[0].f2_03[0]
+  label: Line c - f2_03 (page 8, control 184)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copy2_0_col_left_0_f2_03_0
+- field_name: topmostSubform[0].Copy2[0].Col_Left[0].f2_04[0]
+  label: Line d - f2_04 (page 8, control 185)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copy2_0_col_left_0_f2_04_0
+- field_name: topmostSubform[0].Copy2[0].Col_Left[0].FirstName_ReadOrder[0].f2_05[0]
+  label: Line o - f2_05 (page 8, control 186)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copy2_0_col_left_0_firstname_readorder_0_f2_05_0
+- field_name: topmostSubform[0].Copy2[0].Col_Left[0].LastName_ReadOrder[0].f2_06[0]
+  label: Line o - f2_06 (page 8, control 187)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copy2_0_col_left_0_lastname_readorder_0_f2_06_0
+- field_name: topmostSubform[0].Copy2[0].Col_Left[0].f2_07[0]
+  label: Line o - f2_07 (page 8, control 188)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copy2_0_col_left_0_f2_07_0
+- field_name: topmostSubform[0].Copy2[0].Col_Left[0].f2_08[0]
+  label: Line 12b - f2_08 (page 8, control 189)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copy2_0_col_left_0_f2_08_0
+- field_name: topmostSubform[0].Copy2[0].Col_Right[0].Box1_ReadOrder[0].f2_09[0]
+  label: Line b - f2_09 (page 8, control 190)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copy2_0_col_right_0_box1_readorder_0_f2_09_0
+- field_name: topmostSubform[0].Copy2[0].Col_Right[0].f2_10[0]
+  label: Line b - f2_10 (page 8, control 191)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copy2_0_col_right_0_f2_10_0
+- field_name: topmostSubform[0].Copy2[0].Col_Right[0].Box3_ReadOrder[0].f2_11[0]
+  label: Line c - f2_11 (page 8, control 192)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copy2_0_col_right_0_box3_readorder_0_f2_11_0
+- field_name: topmostSubform[0].Copy2[0].Col_Right[0].f2_12[0]
+  label: Line c - f2_12 (page 8, control 193)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copy2_0_col_right_0_f2_12_0
+- field_name: topmostSubform[0].Copy2[0].Col_Right[0].Box5_ReadOrder[0].f2_13[0]
+  label: Line 5 - f2_13 (page 8, control 194)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copy2_0_col_right_0_box5_readorder_0_f2_13_0
+- field_name: topmostSubform[0].Copy2[0].Col_Right[0].f2_14[0]
+  label: Line 5 - f2_14 (page 8, control 195)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copy2_0_col_right_0_f2_14_0
+- field_name: topmostSubform[0].Copy2[0].Col_Right[0].Box7_ReadOrder[0].f2_15[0]
+  label: Line 7 - f2_15 (page 8, control 196)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copy2_0_col_right_0_box7_readorder_0_f2_15_0
+- field_name: topmostSubform[0].Copy2[0].Col_Right[0].f2_16[0]
+  label: Line 7 - f2_16 (page 8, control 197)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copy2_0_col_right_0_f2_16_0
+- field_name: topmostSubform[0].Copy2[0].Col_Right[0].Box9_ReadOrder[0].f2_17[0]
+  label: Line d - f2_17 (page 8, control 198)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copy2_0_col_right_0_box9_readorder_0_f2_17_0
+- field_name: topmostSubform[0].Copy2[0].Col_Right[0].f2_18[0]
+  label: Line d - f2_18 (page 8, control 199)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copy2_0_col_right_0_f2_18_0
+- field_name: topmostSubform[0].Copy2[0].Col_Right[0].Box11__ReadOrder[0].f2_19[0]
+  label: Line o - f2_19 (page 8, control 200)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copy2_0_col_right_0_box11_readorder_0_f2_19_0
+- field_name: topmostSubform[0].Copy2[0].Col_Right[0].Box12_ReadOrder[0].f2_20[0]
+  label: Line o - d o e - f2_20 (page 8, control 201)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copy2_0_col_right_0_box12_readorder_0_f2_20_0
+- field_name: topmostSubform[0].Copy2[0].Col_Right[0].Box12_ReadOrder[0].f2_21[0]
+  label: Line o - d o e - f2_21 (page 8, control 202)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copy2_0_col_right_0_box12_readorder_0_f2_21_0
+- field_name: topmostSubform[0].Copy2[0].Col_Right[0].Box12_ReadOrder[0].f2_22[0]
+  label: Line o - d o e - f2_22 (page 8, control 203)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copy2_0_col_right_0_box12_readorder_0_f2_22_0
+- field_name: topmostSubform[0].Copy2[0].Col_Right[0].Box12_ReadOrder[0].f2_23[0]
+  label: Line o - d o e - f2_23 (page 8, control 204)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copy2_0_col_right_0_box12_readorder_0_f2_23_0
+- field_name: topmostSubform[0].Copy2[0].Col_Right[0].Box12_ReadOrder[0].f2_24[0]
+  label: Line o - d o e - f2_24 (page 8, control 205)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copy2_0_col_right_0_box12_readorder_0_f2_24_0
+- field_name: topmostSubform[0].Copy2[0].Col_Right[0].Box12_ReadOrder[0].f2_25[0]
+  label: Line o - d o e - f2_25 (page 8, control 206)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copy2_0_col_right_0_box12_readorder_0_f2_25_0
+- field_name: topmostSubform[0].Copy2[0].Col_Right[0].Box12_ReadOrder[0].f2_26[0]
+  label: Line o - d o e - f2_26 (page 8, control 207)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copy2_0_col_right_0_box12_readorder_0_f2_26_0
+- field_name: topmostSubform[0].Copy2[0].Col_Right[0].Box12_ReadOrder[0].f2_27[0]
+  label: Line o - d o e - f2_27 (page 8, control 208)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copy2_0_col_right_0_box12_readorder_0_f2_27_0
+- field_name: topmostSubform[0].Copy2[0].Col_Right[0].Statutory_ReadOrder[0].c2_2[0]
+  label: Line o - c2_2 (page 8, control 209)
+  population_policy: imported
+  value_format: checkbox
+  source_ref: form_w2_2025.topmostsubform_0_copy2_0_col_right_0_statutory_readorder_0_c2_2_0
+- field_name: topmostSubform[0].Copy2[0].Col_Right[0].Retirement_ReadOrder[0].c2_3[0]
+  label: Line o - c2_3 (page 8, control 210)
+  population_policy: imported
+  value_format: checkbox
+  source_ref: form_w2_2025.topmostsubform_0_copy2_0_col_right_0_retirement_readorder_0_c2_3_0
+- field_name: topmostSubform[0].Copy2[0].Col_Right[0].c2_4[0]
+  label: Line o - c2_4 (page 8, control 211)
+  population_policy: imported
+  value_format: checkbox
+  source_ref: form_w2_2025.topmostsubform_0_copy2_0_col_right_0_c2_4_0
+- field_name: topmostSubform[0].Copy2[0].Col_Right[0].f2_28[0]
+  label: Line o - f2_28 (page 8, control 212)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copy2_0_col_right_0_f2_28_0
+- field_name: topmostSubform[0].Copy2[0].Boxes15_ReadOrder[0].Box15_ReadOrder[0].f2_29[0]
+  label: Line 15 - f2_29 (page 8, control 213)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copy2_0_boxes15_readorder_0_box15_readorder_0_f2_29_0
+- field_name: topmostSubform[0].Copy2[0].Boxes15_ReadOrder[0].f2_30[0]
+  label: Line 15 - f2_30 (page 8, control 214)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copy2_0_boxes15_readorder_0_f2_30_0
+- field_name: topmostSubform[0].Copy2[0].Boxes15_ReadOrder[0].f2_31[0]
+  label: f2_31 (page 8, control 215)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copy2_0_boxes15_readorder_0_f2_31_0
+- field_name: topmostSubform[0].Copy2[0].Boxes15_ReadOrder[0].f2_32[0]
+  label: f2_32 (page 8, control 216)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copy2_0_boxes15_readorder_0_f2_32_0
+- field_name: topmostSubform[0].Copy2[0].Box16_ReadOrder[0].f2_33[0]
+  label: Line 15 - f2_33 (page 8, control 217)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copy2_0_box16_readorder_0_f2_33_0
+- field_name: topmostSubform[0].Copy2[0].Box16_ReadOrder[0].f2_34[0]
+  label: f2_34 (page 8, control 218)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copy2_0_box16_readorder_0_f2_34_0
+- field_name: topmostSubform[0].Copy2[0].Box17_ReadOrder[0].f2_35[0]
+  label: Line 15 - f2_35 (page 8, control 219)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copy2_0_box17_readorder_0_f2_35_0
+- field_name: topmostSubform[0].Copy2[0].Box17_ReadOrder[0].f2_36[0]
+  label: f2_36 (page 8, control 220)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copy2_0_box17_readorder_0_f2_36_0
+- field_name: topmostSubform[0].Copy2[0].Box18_ReadOrder[0].f2_37[0]
+  label: Line 15 - f2_37 (page 8, control 221)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copy2_0_box18_readorder_0_f2_37_0
+- field_name: topmostSubform[0].Copy2[0].Box18_ReadOrder[0].f2_38[0]
+  label: f2_38 (page 8, control 222)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copy2_0_box18_readorder_0_f2_38_0
+- field_name: topmostSubform[0].Copy2[0].Box19_ReadOrder[0].f2_39[0]
+  label: Line 15 - f2_39 (page 8, control 223)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copy2_0_box19_readorder_0_f2_39_0
+- field_name: topmostSubform[0].Copy2[0].Box19_ReadOrder[0].f2_40[0]
+  label: f2_40 (page 8, control 224)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copy2_0_box19_readorder_0_f2_40_0
+- field_name: topmostSubform[0].Copy2[0].f2_41[0]
+  label: Line 15 - f2_41 (page 8, control 225)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copy2_0_f2_41_0
+- field_name: topmostSubform[0].Copy2[0].f2_42[0]
+  label: f2_42 (page 8, control 226)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copy2_0_f2_42_0
+- field_name: topmostSubform[0].CopyD[0].Void_ReadOrder[0].c2_1[0]
+  label: Line a - VOID - c2_1
+  population_policy: imported
+  value_format: checkbox
+  source_ref: form_w2_2025.topmostsubform_0_copyd_0_void_readorder_0_c2_1_0
+- field_name: topmostSubform[0].CopyD[0].BoxA_ReadOrder[0].f2_01[0]
+  label: Line a - VOID - f2_01
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copyd_0_boxa_readorder_0_f2_01_0
+- field_name: topmostSubform[0].CopyD[0].Col_Left[0].f2_02[0]
+  label: Line b - f2_02 (page 10, control 229)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copyd_0_col_left_0_f2_02_0
+- field_name: topmostSubform[0].CopyD[0].Col_Left[0].f2_03[0]
+  label: Line c - f2_03 (page 10, control 230)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copyd_0_col_left_0_f2_03_0
+- field_name: topmostSubform[0].CopyD[0].Col_Left[0].f2_04[0]
+  label: Line d - f2_04 (page 10, control 231)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copyd_0_col_left_0_f2_04_0
+- field_name: topmostSubform[0].CopyD[0].Col_Left[0].FirstName_ReadOrder[0].f2_05[0]
+  label: Line o - f2_05 (page 10, control 232)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copyd_0_col_left_0_firstname_readorder_0_f2_05_0
+- field_name: topmostSubform[0].CopyD[0].Col_Left[0].LastName_ReadOrder[0].f2_06[0]
+  label: Line o - f2_06 (page 10, control 233)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copyd_0_col_left_0_lastname_readorder_0_f2_06_0
+- field_name: topmostSubform[0].CopyD[0].Col_Left[0].f2_07[0]
+  label: Line o - f2_07 (page 10, control 234)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copyd_0_col_left_0_f2_07_0
+- field_name: topmostSubform[0].CopyD[0].Col_Left[0].f2_08[0]
+  label: Line 12b - f2_08 (page 10, control 235)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copyd_0_col_left_0_f2_08_0
+- field_name: topmostSubform[0].CopyD[0].Col_Right[0].Box1_ReadOrder[0].f2_09[0]
+  label: Line b - f2_09 (page 10, control 236)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copyd_0_col_right_0_box1_readorder_0_f2_09_0
+- field_name: topmostSubform[0].CopyD[0].Col_Right[0].f2_10[0]
+  label: Line b - f2_10 (page 10, control 237)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copyd_0_col_right_0_f2_10_0
+- field_name: topmostSubform[0].CopyD[0].Col_Right[0].Box3_ReadOrder[0].f2_11[0]
+  label: Line c - f2_11 (page 10, control 238)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copyd_0_col_right_0_box3_readorder_0_f2_11_0
+- field_name: topmostSubform[0].CopyD[0].Col_Right[0].f2_12[0]
+  label: Line c - f2_12 (page 10, control 239)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copyd_0_col_right_0_f2_12_0
+- field_name: topmostSubform[0].CopyD[0].Col_Right[0].Box5_ReadOrder[0].f2_13[0]
+  label: Line 5 - f2_13 (page 10, control 240)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copyd_0_col_right_0_box5_readorder_0_f2_13_0
+- field_name: topmostSubform[0].CopyD[0].Col_Right[0].f2_14[0]
+  label: Line 5 - f2_14 (page 10, control 241)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copyd_0_col_right_0_f2_14_0
+- field_name: topmostSubform[0].CopyD[0].Col_Right[0].Box7_ReadOrder[0].f2_15[0]
+  label: Line 7 - f2_15 (page 10, control 242)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copyd_0_col_right_0_box7_readorder_0_f2_15_0
+- field_name: topmostSubform[0].CopyD[0].Col_Right[0].f2_16[0]
+  label: Line 7 - f2_16 (page 10, control 243)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copyd_0_col_right_0_f2_16_0
+- field_name: topmostSubform[0].CopyD[0].Col_Right[0].Box9_ReadOrder[0].f2_17[0]
+  label: Line d - f2_17 (page 10, control 244)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copyd_0_col_right_0_box9_readorder_0_f2_17_0
+- field_name: topmostSubform[0].CopyD[0].Col_Right[0].f2_18[0]
+  label: Line d - f2_18 (page 10, control 245)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copyd_0_col_right_0_f2_18_0
+- field_name: topmostSubform[0].CopyD[0].Col_Right[0].Box11__ReadOrder[0].f2_19[0]
+  label: Line o - f2_19 (page 10, control 246)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copyd_0_col_right_0_box11_readorder_0_f2_19_0
+- field_name: topmostSubform[0].CopyD[0].Col_Right[0].Box12_ReadOrder[0].f2_20[0]
+  label: Line o - d o e - f2_20 (page 10, control 247)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copyd_0_col_right_0_box12_readorder_0_f2_20_0
+- field_name: topmostSubform[0].CopyD[0].Col_Right[0].Box12_ReadOrder[0].f2_21[0]
+  label: Line o - d o e - f2_21 (page 10, control 248)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copyd_0_col_right_0_box12_readorder_0_f2_21_0
+- field_name: topmostSubform[0].CopyD[0].Col_Right[0].Box12_ReadOrder[0].f2_22[0]
+  label: Line o - d o e - f2_22 (page 10, control 249)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copyd_0_col_right_0_box12_readorder_0_f2_22_0
+- field_name: topmostSubform[0].CopyD[0].Col_Right[0].Box12_ReadOrder[0].f2_23[0]
+  label: Line o - d o e - f2_23 (page 10, control 250)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copyd_0_col_right_0_box12_readorder_0_f2_23_0
+- field_name: topmostSubform[0].CopyD[0].Col_Right[0].Box12_ReadOrder[0].f2_24[0]
+  label: Line o - d o e - f2_24 (page 10, control 251)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copyd_0_col_right_0_box12_readorder_0_f2_24_0
+- field_name: topmostSubform[0].CopyD[0].Col_Right[0].Box12_ReadOrder[0].f2_25[0]
+  label: Line o - d o e - f2_25 (page 10, control 252)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copyd_0_col_right_0_box12_readorder_0_f2_25_0
+- field_name: topmostSubform[0].CopyD[0].Col_Right[0].Box12_ReadOrder[0].f2_26[0]
+  label: Line o - d o e - f2_26 (page 10, control 253)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copyd_0_col_right_0_box12_readorder_0_f2_26_0
+- field_name: topmostSubform[0].CopyD[0].Col_Right[0].Box12_ReadOrder[0].f2_27[0]
+  label: Line o - d o e - f2_27 (page 10, control 254)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copyd_0_col_right_0_box12_readorder_0_f2_27_0
+- field_name: topmostSubform[0].CopyD[0].Col_Right[0].Statutory_ReadOrder[0].c2_2[0]
+  label: Line o - c2_2 (page 10, control 255)
+  population_policy: imported
+  value_format: checkbox
+  source_ref: form_w2_2025.topmostsubform_0_copyd_0_col_right_0_statutory_readorder_0_c2_2_0
+- field_name: topmostSubform[0].CopyD[0].Col_Right[0].Retirement_ReadOrder[0].c2_3[0]
+  label: Line o - c2_3 (page 10, control 256)
+  population_policy: imported
+  value_format: checkbox
+  source_ref: form_w2_2025.topmostsubform_0_copyd_0_col_right_0_retirement_readorder_0_c2_3_0
+- field_name: topmostSubform[0].CopyD[0].Col_Right[0].c2_4[0]
+  label: Line o - c2_4 (page 10, control 257)
+  population_policy: imported
+  value_format: checkbox
+  source_ref: form_w2_2025.topmostsubform_0_copyd_0_col_right_0_c2_4_0
+- field_name: topmostSubform[0].CopyD[0].Col_Right[0].f2_28[0]
+  label: Line o - f2_28 (page 10, control 258)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copyd_0_col_right_0_f2_28_0
+- field_name: topmostSubform[0].CopyD[0].Boxes15_ReadOrder[0].Box15_ReadOrder[0].f2_29[0]
+  label: Line 15 - f2_29 (page 10, control 259)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copyd_0_boxes15_readorder_0_box15_readorder_0_f2_29_0
+- field_name: topmostSubform[0].CopyD[0].Boxes15_ReadOrder[0].f2_30[0]
+  label: Line 15 - f2_30 (page 10, control 260)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copyd_0_boxes15_readorder_0_f2_30_0
+- field_name: topmostSubform[0].CopyD[0].Boxes15_ReadOrder[0].f2_31[0]
+  label: f2_31 (page 10, control 261)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copyd_0_boxes15_readorder_0_f2_31_0
+- field_name: topmostSubform[0].CopyD[0].Boxes15_ReadOrder[0].f2_32[0]
+  label: f2_32 (page 10, control 262)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copyd_0_boxes15_readorder_0_f2_32_0
+- field_name: topmostSubform[0].CopyD[0].Box16_ReadOrder[0].f2_33[0]
+  label: Line 15 - f2_33 (page 10, control 263)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copyd_0_box16_readorder_0_f2_33_0
+- field_name: topmostSubform[0].CopyD[0].Box16_ReadOrder[0].f2_34[0]
+  label: f2_34 (page 10, control 264)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copyd_0_box16_readorder_0_f2_34_0
+- field_name: topmostSubform[0].CopyD[0].Box17_ReadOrder[0].f2_35[0]
+  label: Line 15 - f2_35 (page 10, control 265)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copyd_0_box17_readorder_0_f2_35_0
+- field_name: topmostSubform[0].CopyD[0].Box17_ReadOrder[0].f2_36[0]
+  label: f2_36 (page 10, control 266)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copyd_0_box17_readorder_0_f2_36_0
+- field_name: topmostSubform[0].CopyD[0].Box18_ReadOrder[0].f2_37[0]
+  label: Line 15 - f2_37 (page 10, control 267)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copyd_0_box18_readorder_0_f2_37_0
+- field_name: topmostSubform[0].CopyD[0].Box18_ReadOrder[0].f2_38[0]
+  label: f2_38 (page 10, control 268)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copyd_0_box18_readorder_0_f2_38_0
+- field_name: topmostSubform[0].CopyD[0].Box19_ReadOrder[0].f2_39[0]
+  label: Line 15 - f2_39 (page 10, control 269)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copyd_0_box19_readorder_0_f2_39_0
+- field_name: topmostSubform[0].CopyD[0].Box19_ReadOrder[0].f2_40[0]
+  label: f2_40 (page 10, control 270)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copyd_0_box19_readorder_0_f2_40_0
+- field_name: topmostSubform[0].CopyD[0].f2_41[0]
+  label: Line 15 - f2_41 (page 10, control 271)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copyd_0_f2_41_0
+- field_name: topmostSubform[0].CopyD[0].f2_42[0]
+  label: f2_42 (page 10, control 272)
+  population_policy: imported
+  value_format: text
+  source_ref: form_w2_2025.topmostsubform_0_copyd_0_f2_42_0
