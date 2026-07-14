@@ -14,9 +14,23 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## Current state (2026-07-14)
 
-**BALL: WORKER - M15 S8 page/evidence APIs implemented; verification in progress.** S2-S7
-through commit `e2e539f` are pushed to origin. Plan: `plans/PHASE_M15.md`. John authorized continuous
+**BALL: JOHN/ARCHITECT - M15 S9 complete; worker stopped before S10 as requested.** S2-S9
+are pushed to origin. Plan: `plans/PHASE_M15.md`. John authorized continuous
 work through S9, stopping only on a genuine blocker or after S9.
+
+**S9 RESULT (Worker, Codex, 2026-07-14):** Added schema-validated, atomic, non-authoritative
+session resume files under `.workbench_state` with `GET/PUT /api/sessions/<queue_id>`.
+Session references are constrained to the selected entry's unit ids. PUT and
+`POST /api/verdicts` require the per-launch `X-Workbench-Token`; missing/invalid tokens fail
+403. Verdict POST rejects unknown/tampered fields, validates the human constraints, and emits
+the existing append-only content-hashed verdict artifact. Duplicates fail 409. Tests hash the
+compiled graph, deferred queue, geometry, and review provenance around both write APIs and
+prove they remain unchanged; verdict application remains outside the server.
+
+Verification: focused `tests/test_workbench_write_api_m15.py` = `3 passed`; combined S7-S9
+API tests = `9 passed`; M15 marker = `48 passed, 324 deselected`; full repository pytest =
+`366 passed, 6 skipped in 756.82s`; ASCII and `git diff --check` succeeded. S9 is committed
+and pushed. Per John's instruction, stop after S9; do not begin S10.
 
 **S8 RESULT (Worker, Codex, 2026-07-14):** Added one-page PyMuPDF rasterization and a lazy
 content-addressed page cache keyed by source PDF hash, page, scale, and renderer version.

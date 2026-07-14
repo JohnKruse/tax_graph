@@ -250,3 +250,9 @@ Official pages are rendered lazily through
 PDF hash, one-based page, requested scale, and renderer version. Evidence lookup
 at `/api/evidence/<object_type>/<object_id>` returns the exact compiled or draft
 object plus its geometry, queue-unit references, and citation references.
+
+Resume state is non-authoritative JSON under `.workbench_state/` and is exposed
+through `GET/PUT /api/sessions/<queue_id>`. PUT and verdict emission require the
+per-launch token in `X-Workbench-Token`. `POST /api/verdicts` validates the human
+decision and emits the existing append-only, content-hashed verdict format; it
+never applies a verdict or edits graph, queue, tier, or provenance artifacts.

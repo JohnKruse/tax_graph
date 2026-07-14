@@ -13,6 +13,9 @@ from workbench.artifacts import ArtifactBundle, load_artifact_bundle
 from workbench.manifest import build_manifest
 from workbench.preflight import preflight_manifest
 from workbench.render import PageImageCache, PageRenderError, PageRenderer
+from workbench.schema import SchemaValidationError, validate_session_state
+from workbench.sessions import default_session, load_session, save_session
+from workbench.verdicts import emit_verdict
 
 
 def create_app(
@@ -24,6 +27,8 @@ def create_app(
     bundle: ArtifactBundle | None = None,
     page_renderer: PageRenderer | None = None,
     cache_dir: str | Path | None = None,
+    state_dir: str | Path | None = None,
+    verdict_dir: str | Path | None = None,
 ) -> Flask:
     """Create a preflighted, local review API application."""
     root_path = Path(root).resolve()
@@ -33,6 +38,16 @@ def create_app(
     page_cache = PageImageCache(
         cache_dir or root_path / ".workbench_state" / str(year) / "page_cache",
         renderer=page_renderer,
+    )
+    session_root = (
+        Path(state_dir)
+        if state_dir is not None
+        else root_path / ".workbench_state" / str(year) / "sessions"
+    )
+    verdict_root = (
+        Path(verdict_dir)
+        if verdict_dir is not None
+        else root_path / "review_verdicts" / str(year)
     )
 
     app = Flask(__name__)
@@ -44,6 +59,8 @@ def create_app(
         WORKBENCH_BUNDLE=artifact_bundle,
         WORKBENCH_COVERAGE=coverage,
         WORKBENCH_PAGE_CACHE=page_cache,
+        WORKBENCH_SESSION_ROOT=session_root,
+        WORKBENCH_VERDICT_ROOT=verdict_root,
     )
     entries = {
         str(entry["queue_id"]): entry
@@ -151,7 +168,99 @@ def create_app(
             "citation_refs": sorted(str(value) for value in raw.get("citation_refs", []) or []),
         })
 
+    @app.get("/api/sessions/<queue_id>")
+    def get_session(queue_id: str) -> Any:
+        entry = entries.get(queue_id)
+        if entry is None:
+            return jsonify({"error": "unknown queue_id", "queue_id": queue_id}), 404
+        try:
+            payload = load_session(session_root / f"{queue_id}.json")
+        except (ValueError, SchemaValidationError) as exc:
+            return jsonify({"error": str(exc), "queue_id": queue_id}), 409
+        return jsonify(payload or default_session(int(year), queue_id, entry.get("units", [])))
+
+    @app.put("/api/sessions/<queue_id>")
+    def put_session(queue_id: str) -> Any:
+        denied = _require_write_token(app)
+        if denied is not None:
+            return denied
+        entry = entries.get(queue_id)
+        if entry is None:
+            return jsonify({"error": "unknown queue_id", "queue_id": queue_id}), 404
+        payload = request.get_json(silent=True)
+        if not isinstance(payload, dict):
+            return jsonify({"error": "session body must be a JSON object"}), 400
+        if payload.get("queue_id") != queue_id or payload.get("tax_year") != int(year):
+            return jsonify({"error": "session queue_id and tax_year must match the request"}), 400
+        unit_ids = {str(unit.get("unit_id")) for unit in entry.get("units", []) or []}
+        referenced = set(str(value) for value in payload.get("visited_unit_ids", []) or [])
+        if payload.get("current_unit_id") is not None:
+            referenced.add(str(payload["current_unit_id"]))
+        selection = payload.get("selection")
+        if isinstance(selection, dict) and selection.get("unit_id") is not None:
+            referenced.add(str(selection["unit_id"]))
+        unknown = sorted(referenced - unit_ids)
+        if unknown:
+            return jsonify({"error": "session references units outside the queue entry", "unit_ids": unknown}), 400
+        try:
+            validate_session_state(payload)
+            save_session(session_root / f"{queue_id}.json", payload)
+        except (ValueError, SchemaValidationError) as exc:
+            return jsonify({"error": str(exc)}), 400
+        return jsonify(payload)
+
+    @app.post("/api/verdicts")
+    def post_verdict() -> Any:
+        denied = _require_write_token(app)
+        if denied is not None:
+            return denied
+        payload = request.get_json(silent=True)
+        if not isinstance(payload, dict):
+            return jsonify({"error": "verdict body must be a JSON object"}), 400
+        allowed = {
+            "queue_id", "verdict_id", "reviewer_id", "human_minutes", "verdict",
+            "reviewed_at", "reason", "object_ref", "source_override",
+        }
+        unexpected = sorted(set(payload) - allowed)
+        if unexpected:
+            return jsonify({"error": "unexpected verdict fields", "fields": unexpected}), 400
+        queue_id = str(payload.get("queue_id", ""))
+        if queue_id not in entries:
+            return jsonify({"error": "unknown queue_id", "queue_id": queue_id}), 404
+        required = ("verdict_id", "reviewer_id", "human_minutes", "verdict")
+        missing = [key for key in required if payload.get(key) is None]
+        if missing:
+            return jsonify({"error": "missing verdict fields", "fields": missing}), 400
+        try:
+            result = emit_verdict(
+                root=root_path,
+                year=year,
+                queue_id=queue_id,
+                verdict_id=str(payload["verdict_id"]),
+                reviewer_id=str(payload["reviewer_id"]),
+                human_minutes=float(payload["human_minutes"]),
+                verdict=str(payload["verdict"]),
+                reviewed_at=payload.get("reviewed_at"),
+                reason=payload.get("reason"),
+                object_ref=payload.get("object_ref"),
+                source_override=payload.get("source_override"),
+                output_path=verdict_root / f"{payload['verdict_id']}.yaml",
+            )
+        except FileExistsError as exc:
+            return jsonify({"error": str(exc)}), 409
+        except (TypeError, ValueError) as exc:
+            return jsonify({"error": str(exc)}), 400
+        return jsonify({"verdict": result.payload, "path": result.path.name}), 201
+
     return app
+
+
+def _require_write_token(app: Flask) -> Any | None:
+    supplied = request.headers.get("X-Workbench-Token", "")
+    expected = str(app.config["WORKBENCH_WRITE_TOKEN"])
+    if not supplied or not secrets.compare_digest(supplied, expected):
+        return jsonify({"error": "missing or invalid write token"}), 403
+    return None
 
 
 def _evidence_matches(

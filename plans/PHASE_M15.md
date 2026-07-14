@@ -231,7 +231,7 @@ tiny first commit (pyproject + a README note) if the worker prefers.
 - **S8 - Page + evidence APIs. [DONE]** `GET /api/documents/{doc}/pages/{page}.png` (lazy render,
   cache by pdf-hash/page/scale/renderer-version) + `GET /api/evidence/{type}/{id}`. Test:
   only the requested page renders; cache hit on repeat.
-- **S9 - Session + verdict APIs.** `GET/PUT /api/sessions/{queue_id}` (non-authoritative) +
+- **S9 - Session + verdict APIs. [DONE]** `GET/PUT /api/sessions/{queue_id}` (non-authoritative) +
   `POST /api/verdicts` (validate + emit the existing hashed verdict via `workbench/verdicts
   .py`). Tests: no endpoint mutates graph/queue/tier/provenance; tampered/duplicate verdict
   rejected; missing write token rejected.
