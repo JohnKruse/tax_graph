@@ -395,6 +395,10 @@ ASCII: green; `validate 2025`: green; full suite: 338 passed, 6 skipped in 588.8
   `docs/self-serve-extension.md`.
 
 ## From Worker
+- **M15 S11 (Codex, 2026-07-14):** queue selection now lazy-loads the exact official
+  PDF page and overlays scoped geometry while dimming surrounding context. Browser test:
+  1 passed; M15: 54 passed; full suite: 372 passed, 6 skipped; ASCII green. Next: S12
+  semantic analog pane.
 - **M15 S10 (Codex, 2026-07-14):** added the Flask-served no-build shell, ES-module
   queue client, responsive queue/pane/drawer layout, and a real Chromium e2e fixture.
   The browser lifecycle is function-scoped so it cannot leak an event loop into later

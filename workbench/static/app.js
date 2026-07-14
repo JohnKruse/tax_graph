@@ -1,4 +1,5 @@
-import {loadQueue} from "./api.js";
+import {loadEntry, loadQueue} from "./api.js";
+import {renderOfficialPane} from "./panes.js";
 
 function renderQueue(payload) {
   const queue = document.querySelector("#queue");
@@ -18,6 +19,7 @@ function renderQueue(payload) {
       const metadata = document.createElement("small");
       metadata.textContent = `${entry.unit_count} review unit${entry.unit_count === 1 ? "" : "s"}`;
       button.append(metadata);
+      button.addEventListener("click", () => selectEntry(entry.queue_id, button));
       section.append(button);
     }
     queue.append(section);
@@ -25,6 +27,14 @@ function renderQueue(payload) {
   const progress = payload.progress;
   document.querySelector("#progress").textContent =
     `${progress.remaining_entries} entries | ${progress.total_units} scoped units`;
+}
+
+async function selectEntry(queueId, button) {
+  document.querySelectorAll(".queue-entry.active").forEach((item) => item.classList.remove("active"));
+  button.classList.add("active");
+  button.setAttribute("aria-current", "true");
+  const payload = await loadEntry(queueId);
+  renderOfficialPane(document.querySelector("#official-pane"), payload.entry);
 }
 
 async function start() {
