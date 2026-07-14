@@ -14,9 +14,20 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## Current state (2026-07-14)
 
-**BALL: WORKER - M15 S6 preflight implemented; verification in progress.** S2-S5 through
-commit `e85db83` are pushed to origin. Plan: `plans/PHASE_M15.md`. John authorized continuous
+**BALL: WORKER - M15 S7 local server implemented; verification in progress.** S2-S6 through
+commit `59967b0` are pushed to origin. Plan: `plans/PHASE_M15.md`. John authorized continuous
 work through S9, stopping only on a genuine blocker or after S9.
+
+**S7 RESULT (Worker, Codex, 2026-07-14):** Added the isolated `[workbench]` Flask extra and
+`[workbench-dev]` Playwright test extra, plus a local-only Flask application that preflights
+its artifact projection at startup. The server binds to `127.0.0.1`, chooses an ephemeral
+port by default, and creates a per-launch write token. `GET /api/queue` returns stable grouped
+entries, progress, and coverage; `GET /api/entries/<queue_id>` returns only that entry's scoped
+units. Read tests hash the compiled graph, deferred queue, and geometry before/after API use.
+
+Verification: focused `tests/test_workbench_server_m15.py` = `3 passed`; M15 marker =
+`42 passed, 324 deselected`; full repository pytest = `360 passed, 6 skipped in 693.55s`;
+ASCII and `git diff --check` succeeded. S7 is ready to commit and push.
 
 **S6 RESULT (Worker, Codex, 2026-07-14):** Added fail-closed artifact-only preflight for all
 Section 4 conditions: zero-unit pending entries, ambiguous required objects and geometry,

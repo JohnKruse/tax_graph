@@ -224,7 +224,7 @@ tiny first commit (pyproject + a README note) if the worker prefers.
 
 ### Group B - Local server + read/write API (Python/Flask, no mutation)
 
-- **S7 - Server skeleton + read APIs.** Flask app in `workbench/`, `127.0.0.1` + ephemeral
+- **S7 - Server skeleton + read APIs. [DONE]** Flask app in `workbench/`, `127.0.0.1` + ephemeral
   port + per-launch write token; `GET /api/queue`, `GET /api/entries/{queue_id}`; `python -m
   workbench.cli serve`. Test (Flask test client): grouped queue + scoped units returned.
   `pytest tests/test_workbench_server_m15.py -q`.

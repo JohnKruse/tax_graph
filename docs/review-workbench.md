@@ -233,3 +233,14 @@ Preflight fails closed when pending scope, object identity, geometry identity,
 semantic formatting, promotion scope, field-map category coverage, or citation
 evidence is incomplete or ambiguous. A successful run reports unit coverage by
 review kind, source document, object type, and located/unlocated geometry.
+
+Start the local API after preflight succeeds:
+
+```text
+python -m workbench.cli serve --year 2025
+```
+
+The server binds only to `127.0.0.1`, chooses an available port unless `--port`
+is supplied, and prints a per-launch token reserved for write requests. Queue
+and scoped-entry reads are available at `/api/queue` and
+`/api/entries/<queue_id>`.

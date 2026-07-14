@@ -17,10 +17,11 @@ def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(prog="review-workbench")
     parser.add_argument("--root", default=".", help="workspace root")
     parser.add_argument("--year", default="2025", help="tax year")
-    parser.add_argument("command", choices=["inspect", "build", "manifest", "preflight", "verdict"])
+    parser.add_argument("command", choices=["inspect", "build", "manifest", "preflight", "serve", "verdict"])
     parser.add_argument("--output-dir", default=None, help="static bundle output directory for build")
     parser.add_argument("--db", default=None, help="compiled SQLite artifact")
     parser.add_argument("--pdf-dir", default=None, help="source PDF directory")
+    parser.add_argument("--port", type=int, default=0, help="loopback server port; 0 chooses an available port")
     parser.add_argument("--queue-id", default=None, help="deferred-review queue id for verdict")
     parser.add_argument("--verdict-id", default=None, help="append-only verdict id")
     parser.add_argument("--reviewer-id", default=None, help="human reviewer id")
@@ -85,6 +86,11 @@ def main(argv: list[str] | None = None) -> int:
         for dimension in ("by_kind", "by_document", "by_object", "by_geometry"):
             values = ", ".join(f"{key}={value}" for key, value in report[dimension].items())
             print(f"  {dimension}: {values}")
+        return 0
+    if args.command == "serve":
+        from workbench.server import serve
+
+        serve(Path(args.root), args.year, port=args.port)
         return 0
     bundle = load_artifact_bundle(Path(args.root), args.year)
     print(f"review workbench artifacts - {bundle.tax_year}")
