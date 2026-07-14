@@ -61,6 +61,9 @@ h1, h2, p { margin-top: 0; }
 .analog-viewport { background: #edf1ed; }
 .analog-canvas { background: linear-gradient(90deg, #eef3ef 0, #fff 16%, #fff 100%); }
 .analog-card { position: absolute; left: 12%; width: 84%; min-height: 34px; padding: 7px 10px 7px 14px; border: 1px solid #84aaa4; border-left: 4px solid var(--accent); border-radius: 5px; color: var(--ink); background: rgba(255, 255, 255, .96); box-shadow: 0 2px 6px rgba(25, 48, 53, .12); text-align: left; cursor: pointer; }
+.official-region.paired, .analog-card.paired { outline: 4px solid #edb83f; outline-offset: 2px; z-index: 200; }
+.official-region.pinned, .analog-card.pinned { outline: 4px solid #c5452d; outline-offset: 2px; z-index: 201; }
+.analog-card.paired, .analog-card.pinned { box-shadow: 0 6px 18px rgba(25, 48, 53, .28); }
 .semantic-kind { display: block; color: var(--accent); font-size: 9px; font-weight: 800; letter-spacing: .09em; text-transform: uppercase; }
 .semantic-summary { display: block; margin-top: 2px; font-size: 12px; line-height: 1.25; }
 .pair-connector { position: absolute; right: 100%; top: 50%; width: 14.5%; height: 2px; background: var(--accent); }
