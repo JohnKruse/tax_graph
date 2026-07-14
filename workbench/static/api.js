@@ -14,3 +14,7 @@ export function loadQueue() {
 export function loadEntry(queueId) {
   return requestJson(`/api/entries/${encodeURIComponent(queueId)}`);
 }
+
+export function loadEvidence(objectType, objectId) {
+  return requestJson(`/api/evidence/${encodeURIComponent(objectType)}/${encodeURIComponent(objectId)}`);
+}

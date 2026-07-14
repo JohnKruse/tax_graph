@@ -72,6 +72,18 @@ h1, h2, p { margin-top: 0; }
 .analog { background: #fbfcfa; }
 .drawer { min-height: 130px; margin-top: 16px; padding: 16px; background: var(--panel); border: 1px solid var(--line); border-radius: 8px; }
 .drawer p { margin: 12px 0 0; color: var(--muted); }
+.drawer-heading { display: flex; align-items: start; justify-content: space-between; gap: 20px; }
+.drawer-heading h2 { max-width: 900px; margin-top: 3px; line-height: 1.35; }
+.drawer-heading .eyebrow { color: var(--accent); }
+.drawer-class { padding: 5px 8px; color: var(--accent); background: var(--accent-soft); border-radius: 4px; font-size: 10px; font-weight: 800; text-transform: uppercase; }
+.drawer-tabs { display: flex; gap: 3px; margin-top: 14px; border-bottom: 1px solid var(--line); }
+.drawer-tabs button { padding: 8px 12px; border: 0; border-bottom: 3px solid transparent; color: var(--muted); background: transparent; cursor: pointer; }
+.drawer-tabs button.active { color: var(--accent); border-bottom-color: var(--accent); font-weight: 700; }
+.drawer-panels { min-height: 90px; padding: 12px 4px 2px; }
+.drawer-panels p { margin: 0 0 8px; }
+.drawer-panels pre { max-height: 260px; margin: 0; padding: 12px; overflow: auto; color: #d7e3e2; background: #14252a; border-radius: 5px; font-size: 11px; }
+.primary-explanation { color: var(--ink) !important; font-size: 15px; }
+.empty-evidence { font-style: italic; }
 
 @media (max-width: 1200px) {
   .workspace { grid-template-columns: 240px 1fr; }

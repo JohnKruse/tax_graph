@@ -395,6 +395,11 @@ ASCII: green; `validate 2025`: green; full suite: 338 passed, 6 skipped in 588.8
   `docs/self-serve-extension.md`.
 
 ## From Worker
+- **M15 S14 (Codex, 2026-07-14):** a pinned unit now opens Formula, Sources,
+  Citation, Witnesses, Diff, and Advanced JSON tabs backed by the real unit/evidence
+  APIs; raw JSON is hidden by default and artifact text is HTML-escaped. Browser test:
+  1 passed; M15: 57 passed; full suite: 375 passed, 6 skipped; ASCII green. Next: S15
+  keyboard navigation and synchronized view controls.
 - **M15 S13 (Codex, 2026-07-14):** hover/focus on either official or analog side now
   highlights the exact pair; click pins both sides and emits a selection event for the
   drawer. Browser test: 1 passed; M15: 56 passed; full suite: 374 passed, 6 skipped;

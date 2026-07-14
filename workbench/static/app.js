@@ -1,6 +1,7 @@
 import {loadEntry, loadQueue} from "./api.js";
 import {renderAnalogPane, renderOfficialPane} from "./panes.js";
 import {installPairing} from "./pairing.js";
+import {installDrawer} from "./drawer.js";
 
 function renderQueue(payload) {
   const queue = document.querySelector("#queue");
@@ -38,6 +39,7 @@ async function selectEntry(queueId, button) {
   renderOfficialPane(document.querySelector("#official-pane"), payload.entry);
   renderAnalogPane(document.querySelector("#analog-pane"), payload.entry);
   installPairing(document.querySelector(".pane-grid"));
+  installDrawer(document.querySelector("#drawer"), document.querySelector(".pane-grid"), payload.entry);
 }
 
 async function start() {
