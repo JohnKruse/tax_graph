@@ -43,6 +43,36 @@ export function installKeyboardNavigation() {
   });
 }
 
+export function installPageControls(entry, renderPage) {
+  const pages = [...new Set(
+    entry.units
+      .filter((unit) => unit.official_location)
+      .map((unit) => unit.official_location.page),
+  )].sort((left, right) => left - right);
+  let index = 0;
+  const indicator = document.querySelector("#page-level");
+  const previous = document.querySelector('[data-page-action="previous"]');
+  const next = document.querySelector('[data-page-action="next"]');
+  const update = () => {
+    indicator.textContent = pages.length ? `Page ${pages[index]}` : "Page -";
+    previous.disabled = pages.length < 2 || index === 0;
+    next.disabled = pages.length < 2 || index === pages.length - 1;
+  };
+  previous.onclick = () => {
+    if (index === 0) return;
+    index -= 1;
+    renderPage(pages[index]);
+    update();
+  };
+  next.onclick = () => {
+    if (index >= pages.length - 1) return;
+    index += 1;
+    renderPage(pages[index]);
+    update();
+  };
+  update();
+}
+
 function applyZoom() {
   for (const canvas of document.querySelectorAll(".page-canvas")) {
     canvas.style.width = `${zoom * 100}%`;

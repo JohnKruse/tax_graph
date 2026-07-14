@@ -5,7 +5,7 @@ function locatedUnits(entry) {
   return entry.units.filter((unit) => unit.official_location);
 }
 
-export function renderOfficialPane(container, entry) {
+export function renderOfficialPane(container, entry, requestedPage = null) {
   const units = locatedUnits(entry);
   container.className = "page-shell";
   container.replaceChildren();
@@ -17,7 +17,8 @@ export function renderOfficialPane(container, entry) {
     return;
   }
 
-  const first = units[0].official_location;
+  const first = units.find((unit) => unit.official_location.page === requestedPage)?.official_location
+    || units[0].official_location;
   const pageUnits = units.filter((unit) => {
     const location = unit.official_location;
     return location.document_id === first.document_id && location.page === first.page;
@@ -55,19 +56,17 @@ export function renderOfficialPane(container, entry) {
   container.append(meta, viewport);
 }
 
-export function renderAnalogPane(container, entry) {
+export function renderAnalogPane(container, entry, requestedPage = null) {
   const units = locatedUnits(entry);
   container.className = "page-shell";
   container.replaceChildren();
   if (!units.length) {
-    const gap = document.createElement("div");
-    gap.className = "page-gap";
-    gap.textContent = "Review gap: semantic evidence exists without official geometry.";
-    container.append(gap);
+    renderEvidenceOnlyAnalog(container, entry);
     return;
   }
 
-  const first = units[0].official_location;
+  const first = units.find((unit) => unit.official_location.page === requestedPage)?.official_location
+    || units[0].official_location;
   const pageUnits = units.filter((unit) => {
     const location = unit.official_location;
     return location.document_id === first.document_id && location.page === first.page;
@@ -106,4 +105,27 @@ export function renderAnalogPane(container, entry) {
   }
   viewport.append(canvas);
   container.append(meta, viewport);
+}
+
+function renderEvidenceOnlyAnalog(container, entry) {
+  const meta = document.createElement("div");
+  meta.className = "page-meta";
+  meta.innerHTML = "<strong>Semantic worksheet flow</strong><span>No field geometry</span>";
+  const list = document.createElement("div");
+  list.className = "evidence-analog-list";
+  for (const unit of entry.units) {
+    const card = document.createElement("button");
+    card.type = "button";
+    card.className = "analog-card evidence-card";
+    card.dataset.unitId = unit.unit_id;
+    const kind = document.createElement("span");
+    kind.className = "semantic-kind";
+    kind.textContent = unit.semantic_class.replaceAll("_", " ");
+    const summary = document.createElement("span");
+    summary.className = "semantic-summary";
+    summary.textContent = unit.summary;
+    card.append(kind, summary);
+    list.append(card);
+  }
+  container.append(meta, list);
 }

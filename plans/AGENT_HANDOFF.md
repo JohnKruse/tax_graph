@@ -395,6 +395,14 @@ ASCII: green; `validate 2025`: green; full suite: 338 passed, 6 skipped in 588.8
   `docs/self-serve-extension.md`.
 
 ## From Worker
+- **M15 S16 (Codex, 2026-07-14):** Gate A vertical slice now has explicit launch
+  buttons for Form 1040 operations (input/copy/calculation/lookup/branch), Form 8949
+  row-template + totals, and the Schedule D Tax Worksheet semantic flow. Official and
+  analog pages change in lockstep; no-geometry worksheets retain a scoped semantic
+  evidence view. Verdict controls are visibly disabled and labeled not yet wired.
+  E2E: 8 passed including 1280x800 and 1920x1080; M15: 60 passed; full suite: 378
+  passed, 6 skipped; ASCII green. STOPPED at JOHN UX GATE A as required. Exact feedback
+  requested: official/analog comparison, explanations, navigation, and evidence hierarchy.
 - **M15 S15 (Codex, 2026-07-14):** J/K and arrows move review units, N/P and arrows
   move queue entries with focus, both panes share zoom and scroll state, and stale async
   entry responses cannot overwrite newer navigation. Browser test: 1 passed; M15: 58

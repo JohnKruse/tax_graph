@@ -2,7 +2,7 @@ import {loadEntry, loadQueue} from "./api.js";
 import {renderAnalogPane, renderOfficialPane} from "./panes.js";
 import {installPairing} from "./pairing.js";
 import {installDrawer} from "./drawer.js";
-import {installKeyboardNavigation, installSynchronizedView} from "./keyboard.js";
+import {installKeyboardNavigation, installPageControls, installSynchronizedView} from "./keyboard.js";
 
 let selectionSequence = 0;
 
@@ -34,6 +34,18 @@ function renderQueue(payload) {
     `${progress.remaining_entries} entries | ${progress.total_units} scoped units`;
 }
 
+function wireCaseButtons() {
+  for (const button of document.querySelectorAll("[data-case-target]")) {
+    button.addEventListener("click", () => {
+      const target = document.querySelector(`[data-queue-id="${CSS.escape(button.dataset.caseTarget)}"]`);
+      if (target) {
+        target.click();
+        target.focus();
+      }
+    });
+  }
+}
+
 async function selectEntry(queueId, button) {
   const sequence = ++selectionSequence;
   document.querySelectorAll(".queue-entry.active").forEach((item) => {
@@ -44,10 +56,15 @@ async function selectEntry(queueId, button) {
   button.setAttribute("aria-current", "true");
   const payload = await loadEntry(queueId);
   if (sequence !== selectionSequence) return;
-  renderOfficialPane(document.querySelector("#official-pane"), payload.entry);
-  renderAnalogPane(document.querySelector("#analog-pane"), payload.entry);
+  renderEntry(payload.entry);
+  installPageControls(payload.entry, (page) => renderEntry(payload.entry, page));
+}
+
+function renderEntry(entry, page = null) {
+  renderOfficialPane(document.querySelector("#official-pane"), entry, page);
+  renderAnalogPane(document.querySelector("#analog-pane"), entry, page);
   installPairing(document.querySelector(".pane-grid"));
-  installDrawer(document.querySelector("#drawer"), document.querySelector(".pane-grid"), payload.entry);
+  installDrawer(document.querySelector("#drawer"), document.querySelector(".pane-grid"), entry);
   installSynchronizedView(
     document.querySelector("#official-pane .page-viewport"),
     document.querySelector("#analog-pane .page-viewport"),
@@ -57,6 +74,7 @@ async function selectEntry(queueId, button) {
 async function start() {
   try {
     renderQueue(await loadQueue());
+    wireCaseButtons();
     installKeyboardNavigation();
   } catch (error) {
     document.querySelector("#progress").textContent = "Review queue unavailable";

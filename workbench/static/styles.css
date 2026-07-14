@@ -39,11 +39,16 @@ h1, h2, p { margin-top: 0; }
 .topbar-actions { display: flex; align-items: center; gap: 20px; }
 .view-controls { display: flex; align-items: center; gap: 5px; }
 .view-controls button { min-width: 30px; padding: 5px 8px; border: 1px solid #6f878d; border-radius: 4px; color: #fff; background: #203b43; cursor: pointer; }
+.view-controls button:disabled { color: #788a8e; cursor: not-allowed; }
 .view-controls button:focus-visible { outline: 2px solid #d9a441; }
 .view-controls span { min-width: 43px; color: #c8d6d7; font-size: 12px; text-align: center; }
 .workspace { display: grid; grid-template-columns: 280px 1fr; min-height: calc(100vh - 76px); }
 .queue-rail { padding: 20px 14px; color: #fff; background: var(--rail); overflow: auto; }
 .queue-rail h2 { padding: 0 8px; font-size: 16px; }
+.case-strip { margin: 0 2px 20px; padding: 10px 8px; border: 1px solid #48636a; border-radius: 6px; background: #1a2e34; }
+.case-strip h3 { margin: 0 0 8px; color: #d9a441; font-size: 10px; letter-spacing: .1em; text-transform: uppercase; }
+.case-strip button { width: 100%; margin: 2px 0; padding: 7px 8px; border: 1px solid #58737a; border-radius: 4px; color: #edf4f3; background: #29444c; text-align: left; cursor: pointer; }
+.case-strip button:hover, .case-strip button:focus-visible { outline: 2px solid #d9a441; }
 .queue-group { margin-bottom: 18px; }
 .queue-group h3 { margin: 0 8px 6px; color: #acc7c4; font-size: 11px; letter-spacing: .08em; text-transform: uppercase; }
 .queue-entry { width: 100%; margin: 2px 0; padding: 9px 10px; border: 0; border-radius: 5px; color: #edf4f3; background: transparent; text-align: left; cursor: pointer; }
@@ -69,6 +74,8 @@ h1, h2, p { margin-top: 0; }
 .official-region.paired, .analog-card.paired { outline: 4px solid #edb83f; outline-offset: 2px; z-index: 200; }
 .official-region.pinned, .analog-card.pinned { outline: 4px solid #c5452d; outline-offset: 2px; z-index: 201; }
 .analog-card.paired, .analog-card.pinned { box-shadow: 0 6px 18px rgba(25, 48, 53, .28); }
+.evidence-analog-list { max-height: 690px; padding: 12px; overflow: auto; background: #edf1ed; }
+.analog-card.evidence-card { position: relative; left: auto; top: auto !important; width: 100%; min-height: 0 !important; margin-bottom: 8px; }
 .semantic-kind { display: block; color: var(--accent); font-size: 9px; font-weight: 800; letter-spacing: .09em; text-transform: uppercase; }
 .semantic-summary { display: block; margin-top: 2px; font-size: 12px; line-height: 1.25; }
 .pair-connector { position: absolute; right: 100%; top: 50%; width: 14.5%; height: 2px; background: var(--accent); }
@@ -89,6 +96,11 @@ h1, h2, p { margin-top: 0; }
 .drawer-panels pre { max-height: 260px; margin: 0; padding: 12px; overflow: auto; color: #d7e3e2; background: #14252a; border-radius: 5px; font-size: 11px; }
 .primary-explanation { color: var(--ink) !important; font-size: 15px; }
 .empty-evidence { font-style: italic; }
+.verdict-bar { display: flex; align-items: center; gap: 8px; margin-top: 12px; padding: 12px 14px; border: 1px solid #d7c797; border-radius: 8px; background: #fff8df; }
+.verdict-bar strong { color: #74551d; }
+.verdict-bar span { margin-right: auto; color: #766b54; font-size: 12px; }
+.verdict-bar button { padding: 7px 10px; }
+.verdict-bar button:disabled { color: #8d8a83; background: #ece9e0; border: 1px solid #d0cbc0; cursor: not-allowed; }
 
 @media (max-width: 1200px) {
   .workspace { grid-template-columns: 240px 1fr; }

@@ -14,6 +14,9 @@
     </div>
     <div class="topbar-actions">
       <div id="view-controls" class="view-controls" aria-label="Synchronized view controls">
+        <button type="button" data-page-action="previous" aria-label="Previous page">Prev</button>
+        <span id="page-level">Page -</span>
+        <button type="button" data-page-action="next" aria-label="Next page">Next</button>
         <button type="button" data-view-action="out" aria-label="Zoom out">-</button>
         <span id="zoom-level">100%</span>
         <button type="button" data-view-action="in" aria-label="Zoom in">+</button>
@@ -25,6 +28,12 @@
   <main class="workspace">
     <nav class="queue-rail" aria-label="Review queue">
       <h2>Review queue</h2>
+      <section class="case-strip" aria-labelledby="case-strip-title">
+        <h3 id="case-strip-title">Gate A cases</h3>
+        <button type="button" data-case-target="field_map_review_form_1040_2025">1040 operations</button>
+        <button type="button" data-case-target="field_map_review_form_8949_2025">8949 table</button>
+        <button type="button" data-case-target="authored_review_schedule_d_2025_tax_worksheet">Schedule D worksheet</button>
+      </section>
       <div id="queue" class="queue-list"></div>
     </nav>
     <section class="review-area">
@@ -41,6 +50,14 @@
       <section id="drawer" class="drawer" aria-labelledby="drawer-title">
         <h2 id="drawer-title">Evidence</h2>
         <p>Select a review unit to inspect its formula, sources, citations, and witnesses.</p>
+      </section>
+      <section class="verdict-bar" aria-label="Verdict controls">
+        <strong>Verdicts not yet wired</strong>
+        <span>Review-only vertical slice for Gate A</span>
+        <button type="button" disabled>Confirm</button>
+        <button type="button" disabled>Pipeline defect</button>
+        <button type="button" disabled>Source pathology</button>
+        <button type="button" disabled>Save and next</button>
       </section>
     </section>
   </main>
