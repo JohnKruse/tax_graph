@@ -7,7 +7,7 @@ from pathlib import Path
 
 from workbench.artifacts import load_artifact_bundle
 from workbench.builder import build_bundle
-from workbench.manifest import write_manifest
+from workbench.manifest import build_manifest, write_manifest
 from workbench.preflight import PreflightError, run_preflight
 from workbench.verdicts import emit_verdict
 
@@ -66,8 +66,10 @@ def main(argv: list[str] | None = None) -> int:
         missing = [name for name, value in required.items() if value is None]
         if missing:
             parser.error("verdict requires " + ", ".join(missing))
+        manifest = build_manifest(Path(args.root), args.year, db_path=args.db, pdf_dir=args.pdf_dir)
         result = emit_verdict(
             root=Path(args.root), year=args.year, queue_id=args.queue_id,
+            manifest_hash=manifest["manifest_hash"],
             verdict_id=args.verdict_id, reviewer_id=args.reviewer_id,
             human_minutes=args.human_minutes, verdict=args.verdict,
             reviewed_at=args.reviewed_at, reason=args.reason,

@@ -41,6 +41,7 @@ def apply_verdicts(
     *,
     root: str | Path,
     verdict_dir: str | Path | None = None,
+    manifest_path: str | Path | None = None,
 ) -> ApplyResult:
     """Validate and apply all new verdict files for one tax year.
 
@@ -59,6 +60,23 @@ def apply_verdicts(
     applied_by_id = {str(item.get("verdict_id")): item for item in provenance.get("entries", [])}
     verdict_root = Path(verdict_dir).resolve() if verdict_dir is not None else root_path / "review_verdicts" / str(tax_year)
     paths = sorted(verdict_root.glob("*.yaml")) if verdict_root.is_dir() else []
+    new_paths: list[Path] = []
+    for path in paths:
+        verdict = _load_verdict(path, root_path)
+        previous = applied_by_id.get(str(verdict["verdict_id"]))
+        if previous is None:
+            new_paths.append(path)
+        elif previous.get("content_hash") != verdict["content_hash"]:
+            raise ValueError(f"already-applied verdict was edited: {path}")
+    paths = new_paths
+    manifest = None
+    if paths:
+        saved_manifest = (
+            Path(manifest_path).resolve()
+            if manifest_path is not None
+            else root_path / ".workbench_state" / str(tax_year) / "review_manifest.json"
+        )
+        manifest = _load_and_verify_manifest(saved_manifest, root_path, tax_year)
 
     applied: list[str] = []
     confirmed: list[str] = []
@@ -70,14 +88,12 @@ def apply_verdicts(
         queue_id = str(verdict["queue_id"])
         if int(verdict["tax_year"]) != tax_year:
             raise ValueError(f"verdict tax year mismatch: {path}")
+        if verdict["manifest_hash"] != manifest["manifest_hash"]:
+            raise ValueError(f"verdict references a stale review manifest: {path}")
         if queue_id not in entries:
             raise ValueError(f"verdict references unknown queue entry {queue_id}: {path}")
-        if verdict_id in applied_by_id:
-            previous = applied_by_id[verdict_id]
-            if previous.get("content_hash") != verdict["content_hash"]:
-                raise ValueError(f"already-applied verdict was edited: {path}")
-            continue
         entry = entries[queue_id]
+        _validate_scoped_object_ref(entry, verdict, path)
         if entry.get("verdict_id") and entry.get("verdict_hash") != verdict["content_hash"]:
             raise ValueError(f"queue/verdict hash mismatch for {queue_id}")
         kind = str(verdict["verdict"])
@@ -137,6 +153,53 @@ def _load_verdict(path: Path, root: Path) -> dict[str, Any]:
     if reviewer in {"agent", "codex", "worker", "system"}:
         raise ValueError("reviewer_id must identify the human reviewer")
     return payload
+
+
+def _load_and_verify_manifest(path: Path, root: Path, tax_year: int) -> dict[str, Any]:
+    """Load the reviewed projection and verify every pinned source artifact."""
+    try:
+        manifest = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as exc:
+        raise ValueError(f"cannot read saved review manifest {path}: {exc}") from exc
+    _validate_schema(manifest, root / "schemas" / "review_manifest.schema.json", path)
+    if int(manifest.get("tax_year", 0)) != tax_year:
+        raise ValueError(f"review manifest tax year mismatch: {path}")
+    unsigned = {key: value for key, value in manifest.items() if key != "manifest_hash"}
+    canonical = json.dumps(unsigned, ensure_ascii=True, sort_keys=True, separators=(",", ":"))
+    actual_manifest_hash = hashlib.sha256(canonical.encode("utf-8")).hexdigest()
+    if actual_manifest_hash != manifest.get("manifest_hash"):
+        raise ValueError(f"review manifest content hash mismatch: {path}")
+    for artifact in manifest.get("source_artifacts", []) or []:
+        source = _safe_root_path(root, str(artifact.get("path", "")))
+        if source is None or not source.is_file():
+            raise ValueError(f"review manifest source artifact is missing or unsafe: {artifact.get('path')}")
+        digest = hashlib.sha256(source.read_bytes()).hexdigest()
+        if digest != artifact.get("content_hash"):
+            raise ValueError(f"review manifest source artifact changed: {artifact.get('path')}")
+    return manifest
+
+
+def _validate_scoped_object_ref(entry: dict[str, Any], verdict: dict[str, Any], path: Path) -> None:
+    """Refuse a verdict target outside its queue entry's declared review scope."""
+    object_ref = verdict.get("object_ref")
+    if not isinstance(object_ref, dict):
+        return
+    target_id = str(object_ref.get("object_id") or "")
+    target_path = str(object_ref.get("artifact_path") or "").replace("\\", "/")
+    target_kind = str(object_ref.get("object_kind") or "")
+    matches = []
+    for ref in entry.get("review_scope", {}).get("object_refs", []) or []:
+        if not isinstance(ref, dict) or str(ref.get("object_id") or "") != target_id:
+            continue
+        source_path = str(ref.get("source_path") or "").replace("\\", "/")
+        if target_path and source_path != target_path:
+            continue
+        expected_kind = Path(source_path).parent.name if source_path else f"{ref.get('object_type', '')}s"
+        if target_kind and target_kind != expected_kind:
+            continue
+        matches.append(ref)
+    if len(matches) != 1:
+        raise ValueError(f"verdict object_ref is outside the queue review scope: {path}")
 
 
 def _apply_graph_review(root: Path, entry: dict[str, Any], verdict: dict[str, Any], review: dict[str, Any]) -> None:

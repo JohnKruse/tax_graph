@@ -165,3 +165,6 @@ def test_live_manifest_formats_every_current_operation_without_raw_rule_fallback
     assert all(unit["summary"] and "{" not in unit["summary"] for unit in units)
     assert all("use line 22; otherwise use line 22" not in unit["summary"] for unit in units)
     assert all("d_minus_e" not in unit["summary"] for unit in units)
+    for unit in units:
+        expression_citations = set(unit["expression"].get("citation_refs", []))
+        assert expression_citations <= set(unit.get("citation_refs", []))

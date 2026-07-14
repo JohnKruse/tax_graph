@@ -186,7 +186,7 @@ def _unit(
     object_type = str(scope_ref.get("object_type", "object"))
     object_id = str(scope_ref.get("object_id", ""))
     review_kind = str(queue_entry.get("kind", "object"))
-    citations = _citation_refs(object_data)
+    citations = sorted(set(_citation_refs(object_data)) | set(_expression_citations(semantics)))
     unit: dict[str, Any] = {
         "queue_id": str(queue_entry.get("queue_id", "")),
         "unit_id": unit_id,
@@ -316,6 +316,25 @@ def _citation_refs(object_data: dict[str, Any] | None) -> list[str]:
     if not isinstance(object_data, dict):
         return []
     return sorted({str(value) for value in object_data.get("citation_refs", []) or []})
+
+
+def _expression_citations(semantics: FormattedSemantics | None) -> list[str]:
+    """Collect citations from every level of a formatted expression tree."""
+    if semantics is None:
+        return []
+    citations: set[str] = set()
+
+    def visit(value: Any) -> None:
+        if isinstance(value, dict):
+            citations.update(str(item) for item in value.get("citation_refs", []) or [])
+            for child in value.values():
+                visit(child)
+        elif isinstance(value, list):
+            for child in value:
+                visit(child)
+
+    visit(semantics.expression)
+    return sorted(citations)
 
 
 def _source_refs(

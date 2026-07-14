@@ -4,11 +4,12 @@
   "title": "Tax Graph human review verdict",
   "type": "object",
   "additionalProperties": false,
-  "required": ["verdict_id", "tax_year", "queue_id", "reviewer_id", "reviewed_at", "human_minutes", "verdict", "content_hash"],
+  "required": ["verdict_id", "tax_year", "queue_id", "manifest_hash", "reviewer_id", "reviewed_at", "human_minutes", "verdict", "content_hash"],
   "properties": {
     "verdict_id": {"type": "string", "pattern": "^[a-z0-9_]+$"},
     "tax_year": {"type": "integer", "minimum": 1900, "maximum": 2100},
     "queue_id": {"type": "string", "minLength": 1},
+    "manifest_hash": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
     "object_ref": {
       "type": "object",
       "additionalProperties": false,

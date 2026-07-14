@@ -37,6 +37,7 @@ def test_session_get_put_requires_token_and_round_trips_schema_valid_state(api) 
     queue_id = next(iter(app.config["WORKBENCH_MANIFEST"]["entries"]))["queue_id"]
     initial = client.get(f"/api/sessions/{queue_id}")
     state = initial.get_json()
+    assert state["manifest_hash"] == app.config["WORKBENCH_MANIFEST"]["manifest_hash"]
     state.update(notes="Check the official line.", elapsed_active_seconds=12.5, visited_unit_ids=[state["current_unit_id"]])
 
     denied = client.put(f"/api/sessions/{queue_id}", json=state)
@@ -49,6 +50,10 @@ def test_session_get_put_requires_token_and_round_trips_schema_valid_state(api) 
     assert loaded.get_json() == state
     session_path = app.config["WORKBENCH_SESSION_ROOT"] / f"{queue_id}.json"
     assert json.loads(session_path.read_text(encoding="utf-8")) == state
+
+    stale = {**state, "manifest_hash": "0" * 64}
+    rejected = client.put(f"/api/sessions/{queue_id}", json=stale, headers=_headers())
+    assert rejected.status_code == 400
 
 
 @pytest.mark.m15
@@ -75,6 +80,31 @@ def test_verdict_api_rejects_missing_token_tampering_and_duplicates(api) -> None
     path = app.config["WORKBENCH_VERDICT_ROOT"] / created.get_json()["path"]
     loaded = load_verdict(path, schema_path=ROOT / "schemas" / "review_verdict.schema.json")
     assert loaded.payload == created.get_json()["verdict"]
+    assert loaded.payload["manifest_hash"] == app.config["WORKBENCH_MANIFEST"]["manifest_hash"]
+
+
+@pytest.mark.m15
+def test_verdict_api_rejects_object_outside_selected_queue_scope(api) -> None:
+    app, client = api
+    entries = app.config["WORKBENCH_MANIFEST"]["entries"]
+    selected = entries[0]
+    foreign_ref = entries[1]["units"][0]["object_refs"][0]
+    payload = {
+        "queue_id": selected["queue_id"],
+        "verdict_id": "s9_foreign_target",
+        "reviewer_id": "john",
+        "human_minutes": 1,
+        "verdict": "confirmed",
+        "object_ref": {
+            "artifact_path": foreign_ref.get("artifact_path"),
+            "object_id": foreign_ref["object_id"],
+        },
+    }
+
+    response = client.post("/api/verdicts", json=payload, headers=_headers())
+
+    assert response.status_code == 400
+    assert "queue entry" in response.get_json()["error"]
 
 
 @pytest.mark.m15

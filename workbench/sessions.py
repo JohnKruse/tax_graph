@@ -10,7 +10,12 @@ from typing import Any, Iterable
 from workbench.schema import validate_session_state
 
 
-def default_session(year: int, queue_id: str, units: Iterable[dict[str, Any]]) -> dict[str, Any]:
+def default_session(
+    year: int,
+    queue_id: str,
+    manifest_hash: str,
+    units: Iterable[dict[str, Any]],
+) -> dict[str, Any]:
     """Create an in-memory default without claiming that review occurred."""
     unit_list = list(units)
     first = unit_list[0] if unit_list else None
@@ -18,6 +23,7 @@ def default_session(year: int, queue_id: str, units: Iterable[dict[str, Any]]) -
     return {
         "tax_year": year,
         "queue_id": queue_id,
+        "manifest_hash": manifest_hash,
         "current_unit_id": first.get("unit_id") if isinstance(first, dict) else None,
         "page": int(location.get("page", 1)) if isinstance(location, dict) else 1,
         "selection": None,

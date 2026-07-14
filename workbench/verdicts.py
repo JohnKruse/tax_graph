@@ -30,6 +30,7 @@ def emit_verdict(
     root: str | Path,
     year: str | int,
     queue_id: str,
+    manifest_hash: str,
     verdict_id: str,
     reviewer_id: str,
     human_minutes: float,
@@ -45,6 +46,7 @@ def emit_verdict(
         "verdict_id": verdict_id,
         "tax_year": int(year),
         "queue_id": queue_id,
+        "manifest_hash": manifest_hash,
         "reviewer_id": reviewer_id,
         "reviewed_at": reviewed_at or datetime.now(timezone.utc).replace(microsecond=0).isoformat(),
         "human_minutes": human_minutes,
@@ -61,12 +63,14 @@ def emit_verdict(
 
     path = Path(output_path) if output_path is not None else Path(root).resolve() / "review_verdicts" / str(year) / f"{verdict_id}.yaml"
     path = path.resolve()
-    if path.exists():
-        raise FileExistsError(f"verdict is append-only and already exists: {path}")
     path.parent.mkdir(parents=True, exist_ok=True)
     text = yaml.safe_dump(payload, sort_keys=False, allow_unicode=False)
     text.encode("ascii")
-    path.write_text(text, encoding="utf-8", newline="\n")
+    try:
+        with path.open("x", encoding="utf-8", newline="\n") as stream:
+            stream.write(text)
+    except FileExistsError as exc:
+        raise FileExistsError(f"verdict is append-only and already exists: {path}") from exc
     return ReviewVerdict(payload=payload, path=path)
 
 

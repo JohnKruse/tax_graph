@@ -177,7 +177,11 @@ def create_app(
             payload = load_session(session_root / f"{queue_id}.json")
         except (ValueError, SchemaValidationError) as exc:
             return jsonify({"error": str(exc), "queue_id": queue_id}), 409
-        return jsonify(payload or default_session(int(year), queue_id, entry.get("units", [])))
+        if payload is not None and payload.get("manifest_hash") != review_manifest["manifest_hash"]:
+            return jsonify({"error": "saved session belongs to a stale review manifest", "queue_id": queue_id}), 409
+        return jsonify(payload or default_session(
+            int(year), queue_id, review_manifest["manifest_hash"], entry.get("units", [])
+        ))
 
     @app.put("/api/sessions/<queue_id>")
     def put_session(queue_id: str) -> Any:
@@ -190,8 +194,12 @@ def create_app(
         payload = request.get_json(silent=True)
         if not isinstance(payload, dict):
             return jsonify({"error": "session body must be a JSON object"}), 400
-        if payload.get("queue_id") != queue_id or payload.get("tax_year") != int(year):
-            return jsonify({"error": "session queue_id and tax_year must match the request"}), 400
+        if (
+            payload.get("queue_id") != queue_id
+            or payload.get("tax_year") != int(year)
+            or payload.get("manifest_hash") != review_manifest["manifest_hash"]
+        ):
+            return jsonify({"error": "session queue_id, tax_year, and manifest_hash must match"}), 400
         unit_ids = {str(unit.get("unit_id")) for unit in entry.get("units", []) or []}
         referenced = set(str(value) for value in payload.get("visited_unit_ids", []) or [])
         if payload.get("current_unit_id") is not None:
@@ -232,17 +240,19 @@ def create_app(
         if missing:
             return jsonify({"error": "missing verdict fields", "fields": missing}), 400
         try:
+            object_ref = _scoped_verdict_ref(entries[queue_id], payload.get("object_ref"))
             result = emit_verdict(
                 root=root_path,
                 year=year,
                 queue_id=queue_id,
+                manifest_hash=str(review_manifest["manifest_hash"]),
                 verdict_id=str(payload["verdict_id"]),
                 reviewer_id=str(payload["reviewer_id"]),
                 human_minutes=float(payload["human_minutes"]),
                 verdict=str(payload["verdict"]),
                 reviewed_at=payload.get("reviewed_at"),
                 reason=payload.get("reason"),
-                object_ref=payload.get("object_ref"),
+                object_ref=object_ref,
                 source_override=payload.get("source_override"),
                 output_path=verdict_root / f"{payload['verdict_id']}.yaml",
             )
@@ -261,6 +271,39 @@ def _require_write_token(app: Flask) -> Any | None:
     if not supplied or not secrets.compare_digest(supplied, expected):
         return jsonify({"error": "missing or invalid write token"}), 403
     return None
+
+
+def _scoped_verdict_ref(entry: dict[str, Any], supplied: Any) -> dict[str, str] | None:
+    """Return a normalized target only when it belongs to the reviewed entry."""
+    if supplied is None:
+        return None
+    if not isinstance(supplied, dict) or not supplied.get("object_id"):
+        raise ValueError("object_ref must identify one scoped object")
+    object_id = str(supplied["object_id"])
+    artifact_path = str(supplied.get("artifact_path") or "")
+    candidates = []
+    for unit in entry.get("units", []) or []:
+        for ref in unit.get("object_refs", []) or []:
+            if not isinstance(ref, dict) or str(ref.get("object_id")) != object_id:
+                continue
+            if artifact_path and str(ref.get("artifact_path") or "") != artifact_path:
+                continue
+            candidates.append(ref)
+    unique = {
+        (str(ref.get("object_id")), str(ref.get("artifact_path") or ""), str(ref.get("object_type") or ""))
+        for ref in candidates
+    }
+    if len(unique) != 1:
+        raise ValueError("object_ref does not resolve to exactly one object in the queue entry")
+    matched_id, matched_path, object_type = next(iter(unique))
+    expected_kind = Path(matched_path).parent.name if matched_path else f"{object_type}s"
+    supplied_kind = str(supplied.get("object_kind") or "")
+    if supplied_kind and supplied_kind != expected_kind:
+        raise ValueError("object_ref object_kind does not match the scoped artifact")
+    result = {"object_id": matched_id, "object_kind": expected_kind}
+    if matched_path:
+        result["artifact_path"] = matched_path
+    return result
 
 
 def _evidence_matches(
@@ -311,6 +354,14 @@ def _evidence_matches(
 
 def serve(root: str | Path, year: str | int, *, port: int = 0) -> None:
     """Run the workbench on loopback with an ephemeral port by default."""
-    app = create_app(root, year)
+    from workbench.manifest import write_manifest
+
+    root_path = Path(root).resolve()
+    result = write_manifest(
+        root_path,
+        year,
+        output_path=root_path / ".workbench_state" / str(year) / "review_manifest.json",
+    )
+    app = create_app(root_path, year, manifest=result.payload)
     print(f"write token: {app.config['WORKBENCH_WRITE_TOKEN']}", flush=True)
     app.run(host="127.0.0.1", port=port, debug=False, use_reloader=False)

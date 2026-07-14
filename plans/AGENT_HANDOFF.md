@@ -14,9 +14,25 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## Current state (2026-07-14)
 
-**BALL: JOHN/ARCHITECT - M15 S9 complete; worker stopped before S10 as requested.** S2-S9
-are pushed to origin. Plan: `plans/PHASE_M15.md`. John authorized continuous
-work through S9, stopping only on a genuine blocker or after S9.
+**BALL: JOHN/ARCHITECT - M15 S5-S9 review corrections complete; S10 not started.** S2-S9
+are pushed to origin; the corrective commit is local pending Architect review. Plan:
+`plans/PHASE_M15.md`.
+
+**S5-S9 REVIEW CORRECTIONS (Worker, Codex, 2026-07-14):** Closed all four findings from
+the post-S9 code review. Verdicts and resume sessions now carry the exact review-manifest
+hash. `serve` persists that manifest, and `apply-verdicts` validates its canonical hash plus
+every pinned source-artifact hash before applying any new verdict; already-applied verdicts
+remain idempotent and edited verdicts still fail closed. Browser-supplied `object_ref` values
+are normalized against the selected manifest entry, and apply-time validation independently
+rejects targets outside the queue's declared `review_scope`. Semantic citations from rules
+and edges are recursively promoted into unit-level evidence, so preflight validates them.
+Verdict files use exclusive creation, including a two-thread regression proving one writer
+wins and the duplicate fails.
+
+Verification: focused S5-S9 regression set = `38 passed`; verdict-specific set = `11 passed`;
+M15 marker = `52 passed, 324 deselected`; full repository pytest = `370 passed, 6 skipped in
+770.72s`; real 2025 preflight = 30 entries / 1,331 units; `tax-graph validate 2025`, ASCII,
+and `git diff --check` all green. S10 has not started.
 
 **S9 RESULT (Worker, Codex, 2026-07-14):** Added schema-validated, atomic, non-authoritative
 session resume files under `.workbench_state` with `GET/PUT /api/sessions/<queue_id>`.

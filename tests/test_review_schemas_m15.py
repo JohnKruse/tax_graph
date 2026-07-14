@@ -103,6 +103,7 @@ def test_minimal_valid_projection_fixtures() -> None:
         {
             "tax_year": 2025,
             "queue_id": "queue_1",
+            "manifest_hash": "d" * 64,
             "current_unit_id": "queue_1_line_7",
             "page": 1,
             "selection": {"unit_id": "queue_1_line_7", "side": "official", "rect": [1, 2, 3, 4]},
@@ -130,6 +131,7 @@ def test_minimal_valid_projection_fixtures() -> None:
             {
                 "tax_year": 2025,
                 "queue_id": "queue_1",
+                "manifest_hash": "d" * 64,
                 "current_unit_id": None,
                 "page": 1,
                 "selection": None,
