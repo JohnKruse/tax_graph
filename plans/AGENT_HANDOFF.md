@@ -395,6 +395,10 @@ ASCII: green; `validate 2025`: green; full suite: 338 passed, 6 skipped in 588.8
   `docs/self-serve-extension.md`.
 
 ## From Worker
+- **M15 S12 (Codex, 2026-07-14):** added page-height semantic cards aligned to
+  official geometry, explicit semantic-class labels, and visible pair connectors.
+  Browser test: 1 passed; M15: 55 passed; full suite: 373 passed, 6 skipped; ASCII
+  green. Next: S13 bidirectional hover/click pairing.
 - **M15 S11 (Codex, 2026-07-14):** queue selection now lazy-loads the exact official
   PDF page and overlays scoped geometry while dimming surrounding context. Browser test:
   1 passed; M15: 54 passed; full suite: 372 passed, 6 skipped; ASCII green. Next: S12

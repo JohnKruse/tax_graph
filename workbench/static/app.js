@@ -1,5 +1,5 @@
 import {loadEntry, loadQueue} from "./api.js";
-import {renderOfficialPane} from "./panes.js";
+import {renderAnalogPane, renderOfficialPane} from "./panes.js";
 
 function renderQueue(payload) {
   const queue = document.querySelector("#queue");
@@ -35,6 +35,7 @@ async function selectEntry(queueId, button) {
   button.setAttribute("aria-current", "true");
   const payload = await loadEntry(queueId);
   renderOfficialPane(document.querySelector("#official-pane"), payload.entry);
+  renderAnalogPane(document.querySelector("#analog-pane"), payload.entry);
 }
 
 async function start() {

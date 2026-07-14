@@ -54,3 +54,56 @@ export function renderOfficialPane(container, entry) {
   viewport.append(canvas);
   container.append(meta, viewport);
 }
+
+export function renderAnalogPane(container, entry) {
+  const units = locatedUnits(entry);
+  container.className = "page-shell";
+  container.replaceChildren();
+  if (!units.length) {
+    const gap = document.createElement("div");
+    gap.className = "page-gap";
+    gap.textContent = "Review gap: semantic evidence exists without official geometry.";
+    container.append(gap);
+    return;
+  }
+
+  const first = units[0].official_location;
+  const pageUnits = units.filter((unit) => {
+    const location = unit.official_location;
+    return location.document_id === first.document_id && location.page === first.page;
+  });
+  const meta = document.createElement("div");
+  meta.className = "page-meta";
+  meta.innerHTML = `<strong>Semantic twin</strong><span>Aligned to page ${first.page}</span>`;
+  const viewport = document.createElement("div");
+  viewport.className = "page-viewport analog-viewport";
+  const canvas = document.createElement("div");
+  canvas.className = "page-canvas analog-canvas";
+  canvas.dataset.documentId = first.document_id;
+  canvas.dataset.page = String(first.page);
+
+  for (const [index, unit] of pageUnits.entries()) {
+    const card = document.createElement("button");
+    const location = unit.official_location;
+    const [, y0, , y1] = location.rect;
+    card.type = "button";
+    card.className = "analog-card";
+    card.dataset.unitId = unit.unit_id;
+    card.style.top = `${y0 / LETTER_HEIGHT * 100}%`;
+    card.style.minHeight = `${Math.max(y1 - y0, 22) / LETTER_HEIGHT * 100}%`;
+    card.style.zIndex = String(index + 1);
+    const kind = document.createElement("span");
+    kind.className = "semantic-kind";
+    kind.textContent = unit.semantic_class.replaceAll("_", " ");
+    const summary = document.createElement("span");
+    summary.className = "semantic-summary";
+    summary.textContent = unit.summary;
+    const connector = document.createElement("span");
+    connector.className = "pair-connector";
+    connector.setAttribute("aria-hidden", "true");
+    card.append(connector, kind, summary);
+    canvas.append(card);
+  }
+  viewport.append(canvas);
+  container.append(meta, viewport);
+}
