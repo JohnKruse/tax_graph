@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tax Graph Review Workbench</title>
+  <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <div>
+      <span class="eyebrow">Tax Graph</span>
+      <h1>Review Workbench</h1>
+    </div>
+    <div id="progress" class="progress" aria-live="polite">Loading review queue...</div>
+  </header>
+  <main class="workspace">
+    <nav class="queue-rail" aria-label="Review queue">
+      <h2>Review queue</h2>
+      <div id="queue" class="queue-list"></div>
+    </nav>
+    <section class="review-area">
+      <div class="pane-grid">
+        <section class="review-pane" aria-labelledby="official-title">
+          <header><h2 id="official-title">Official IRS artifact</h2></header>
+          <div id="official-pane" class="pane-empty">Choose a queue entry to begin.</div>
+        </section>
+        <section class="review-pane analog" aria-labelledby="analog-title">
+          <header><h2 id="analog-title">Tax graph semantic analog</h2></header>
+          <div id="analog-pane" class="pane-empty">Semantic explanations will align here.</div>
+        </section>
+      </div>
+      <section id="drawer" class="drawer" aria-labelledby="drawer-title">
+        <h2 id="drawer-title">Evidence</h2>
+        <p>Select a review unit to inspect its formula, sources, citations, and witnesses.</p>
+      </section>
+    </section>
+  </main>
+  <script type="module" src="/static/app.js"></script>
+</body>
+</html>

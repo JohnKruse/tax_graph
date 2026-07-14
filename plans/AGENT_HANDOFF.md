@@ -395,6 +395,11 @@ ASCII: green; `validate 2025`: green; full suite: 338 passed, 6 skipped in 588.8
   `docs/self-serve-extension.md`.
 
 ## From Worker
+- **M15 S10 (Codex, 2026-07-14):** added the Flask-served no-build shell, ES-module
+  queue client, responsive queue/pane/drawer layout, and a real Chromium e2e fixture.
+  The browser lifecycle is function-scoped so it cannot leak an event loop into later
+  MCP tests. Focused shell + MCP isolation: 13 passed; M15: 53 passed; full suite:
+  371 passed, 6 skipped; ASCII green. Next: S11 official pane.
 - **M15 S2 (Codex, 2026-07-13):** added `tax_graph/review_scope.py`, the
   `review migrate-scope` CLI command, queue schema support, 3 focused tests, the scoped
   2025 queue projection, and the workbench contract note. Promotion scopes prefer the

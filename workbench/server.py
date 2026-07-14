@@ -7,7 +7,7 @@ from pathlib import Path
 import secrets
 from typing import Any
 
-from flask import Flask, jsonify, request, send_file
+from flask import Flask, jsonify, request, send_file, send_from_directory
 
 from workbench.artifacts import ArtifactBundle, load_artifact_bundle
 from workbench.manifest import build_manifest
@@ -67,6 +67,13 @@ def create_app(
         for entry in review_manifest.get("entries", [])
         if isinstance(entry, dict) and entry.get("queue_id")
     }
+
+    @app.get("/")
+    def get_shell() -> Any:
+        """Serve the no-build review workbench shell."""
+        if app.static_folder is None:
+            return jsonify({"error": "workbench static assets are unavailable"}), 500
+        return send_from_directory(app.static_folder, "index.html")
 
     @app.get("/api/queue")
     def get_queue() -> Any:
