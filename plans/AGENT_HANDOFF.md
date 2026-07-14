@@ -12,11 +12,25 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 - History: pruned at each phase close (latest: M14 close 2026-07-12). Full narration lives in
   `plans/archive/` (phase plans with close notes) and git history.
 
-## Current state (2026-07-13)
+## Current state (2026-07-14)
 
-**BALL: WORKER - M15 S5 complete semantic formatters implemented and verified locally.** S2-S4
-through commit `a9191fb` are pushed to origin; S5 is ready to commit and push. S6 has not
-started. Plan: `plans/PHASE_M15.md`.
+**BALL: WORKER - M15 S6 preflight implemented; verification in progress.** S2-S5 through
+commit `e85db83` are pushed to origin. Plan: `plans/PHASE_M15.md`. John authorized continuous
+work through S9, stopping only on a genuine blocker or after S9.
+
+**S6 RESULT (Worker, Codex, 2026-07-14):** Added fail-closed artifact-only preflight for all
+Section 4 conditions: zero-unit pending entries, ambiguous required objects and geometry,
+unsupported semantic operations, unidentified promotion change sets, incomplete field-map
+categories, and citations without an exact artifact/PDF locator. Draft promotion objects
+resolve within their own draft artifact namespace; repeatable field-map rows remain physical
+geometry rather than false duplicate graph objects. The CLI reports coverage by review kind,
+document, object type, and located/unlocated geometry. Real 2025 coverage is 30 entries and
+1,331 units (190 located, 1,141 unlocated).
+
+Verification: focused `tests/test_review_preflight_m15.py` = `2 passed`; M15 marker =
+`39 passed, 324 deselected`; full repository pytest = `357 passed, 6 skipped in 679.89s`;
+real `python -m workbench.cli preflight --year 2025`, ASCII, and `git diff --check` succeeded.
+S6 is ready to commit and push.
 
 **S5 RESULT (Worker, Codex, 2026-07-13):** Completed the artifact-only semantic dispatcher for
 every operation in the current compiled graph: LOOKUP_TABLE, LOOKUP_BRACKET, MIN, MAX,

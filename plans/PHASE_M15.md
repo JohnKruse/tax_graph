@@ -217,7 +217,7 @@ tiny first commit (pyproject + a README note) if the worker prefers.
 - **S5 - Remaining formatters.** LOOKUP_TABLE, LOOKUP_BRACKET, MAX, MIN, MULTIPLY (name the
   cited parameter), IF_ELSE (branch English), plus repeatable-table, frontier, and input/
   imported classes. Unknown op -> raises (caught by preflight), never raw JSON. Golden tests.
-- **S6 - Preflight + coverage.** `python -m workbench.cli preflight --year 2025` fails on
+- **S6 - Preflight + coverage. [DONE]** `python -m workbench.cli preflight --year 2025` fails on
   every Section 4 condition; emits a coverage report by kind/document/object/geometry. Test:
   a seeded bad fixture fails with an actionable message; the real 2025 queue passes.
   `pytest tests/test_review_preflight_m15.py -q && python -m workbench.cli preflight --year 2025`.

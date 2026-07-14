@@ -8,7 +8,7 @@ from typing import Any, Mapping, Sequence
 
 
 GraphIndex = Mapping[tuple[str, str], dict[str, Any]]
-_OPERATIONS = {
+SUPPORTED_OPERATIONS = frozenset({
     "COPY",
     "SUM",
     "SUBTRACT",
@@ -19,7 +19,7 @@ _OPERATIONS = {
     "MIN",
     "MULTIPLY",
     "IF_ELSE",
-}
+})
 
 
 class SemanticFormatError(ValueError):
@@ -86,7 +86,7 @@ def format_computation(
 ) -> FormattedSemantics:
     """Format one supported operation into English and an expression tree."""
     operation = str(rule.get("operation", "")).upper()
-    if operation not in _OPERATIONS:
+    if operation not in SUPPORTED_OPERATIONS:
         raise SemanticFormatError(f"no formatter for operation {operation or '<missing>'}")
     target_document = str(target.get("document_id", ""))
     target_line = _line_number(str(target.get("node_id", "")), target)

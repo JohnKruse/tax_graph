@@ -8,6 +8,7 @@ from pathlib import Path
 from workbench.artifacts import load_artifact_bundle
 from workbench.builder import build_bundle
 from workbench.manifest import write_manifest
+from workbench.preflight import PreflightError, run_preflight
 from workbench.verdicts import emit_verdict
 
 
@@ -16,7 +17,7 @@ def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(prog="review-workbench")
     parser.add_argument("--root", default=".", help="workspace root")
     parser.add_argument("--year", default="2025", help="tax year")
-    parser.add_argument("command", choices=["inspect", "build", "manifest", "verdict"])
+    parser.add_argument("command", choices=["inspect", "build", "manifest", "preflight", "verdict"])
     parser.add_argument("--output-dir", default=None, help="static bundle output directory for build")
     parser.add_argument("--db", default=None, help="compiled SQLite artifact")
     parser.add_argument("--pdf-dir", default=None, help="source PDF directory")
@@ -71,6 +72,19 @@ def main(argv: list[str] | None = None) -> int:
             reviewed_at=args.reviewed_at, reason=args.reason,
         )
         print(result.path)
+        return 0
+    if args.command == "preflight":
+        try:
+            report = run_preflight(Path(args.root), args.year, db_path=args.db, pdf_dir=args.pdf_dir)
+        except PreflightError as exc:
+            print(str(exc))
+            return 1
+        print(f"review preflight passed - {args.year}")
+        print(f"  entries: {report['entries']}")
+        print(f"  units: {report['units']}")
+        for dimension in ("by_kind", "by_document", "by_object", "by_geometry"):
+            values = ", ".join(f"{key}={value}" for key, value in report[dimension].items())
+            print(f"  {dimension}: {values}")
         return 0
     bundle = load_artifact_bundle(Path(args.root), args.year)
     print(f"review workbench artifacts - {bundle.tax_year}")

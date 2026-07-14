@@ -220,3 +220,16 @@ from field maps and AcroForm inventories. The M15 workbench should use
 `tax_graph.output.resolve_node_geometry` to place node review links on the
 official form page; repeatable table templates intentionally return every
 physical printed row slot.
+
+## Preflight and coverage
+
+Before starting a review server, run:
+
+```text
+python -m workbench.cli preflight --year 2025
+```
+
+Preflight fails closed when pending scope, object identity, geometry identity,
+semantic formatting, promotion scope, field-map category coverage, or citation
+evidence is incomplete or ambiguous. A successful run reports unit coverage by
+review kind, source document, object type, and located/unlocated geometry.
