@@ -25,6 +25,22 @@ The command is idempotent. Use `--refresh` only when rebuilding existing scopes 
 scope-derivation code change. It updates only the deferred-review queue; it does not
 mutate graph objects, drafts, verdicts, or provenance.
 
+## Complete field dispositions
+
+Field-map schema version 2 classifies every terminal AcroForm widget with exactly one
+population policy: user-entered, imported, copied, computed, decision-required,
+intentionally blank, or unsupported. Each disposition carries a derived reviewer label
+and value format. Graph, identity, runtime-fact, and source references are explicit;
+repeatable controls also identify their group, printed row slot, column, and role.
+Intentionally blank and unsupported controls must name the reason, downstream effect,
+and capability needed to close the gap.
+
+`tax-graph review migrate-field-dispositions --year 2025` creates a deterministic
+authored-work list. It copies only legacy identity mappings whose user-entered policy is
+provable. It does not guess graph operations, frontier consequences, or policies for
+unmapped controls. Build-time AcroForm preflight enumerates widgets directly from the
+official PDFs; instruction PDFs with no widgets are exempt.
+
 ## Step 1 artifact contract
 
 `workbench.artifacts` reads the published artifacts directly and never imports a

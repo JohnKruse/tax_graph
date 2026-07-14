@@ -262,6 +262,25 @@ def migrate_review_scope_command(
     return 0
 
 
+def migrate_field_dispositions_command(
+    year: str = "2025",
+    root: str | Path | None = None,
+    output: str | Path | None = None,
+) -> int:
+    """Write a deterministic field-disposition authored-work list."""
+    from tax_graph.output.field_maps import migrate_field_dispositions
+
+    root_path = Path(root).resolve() if root is not None else project_root()
+    result = migrate_field_dispositions(year, root_path, output_path=output)
+    proposed = sum(len(item.proposed_dispositions) for item in result.documents)
+    authored = sum(len(item.authored_work) for item in result.documents)
+    print(f"field disposition migration: {len(result.documents)} documents")
+    print(f"  provable proposals: {proposed}")
+    print(f"  authored work: {authored}")
+    print(f"  worklist: {result.output_path}")
+    return 0
+
+
 def frontier_build_command(year: str = "2025", root: str | Path | None = None) -> int:
     """Build the derived frontier registry."""
     from tax_graph.frontier import build_frontier_registry
@@ -1084,6 +1103,17 @@ def _build_typer_app():
         if raise_code:
             raise typer.Exit(raise_code)
 
+    @review_cli.command("migrate-field-dispositions")
+    def review_migrate_field_dispositions_cli(
+        year: str = typer.Option("2025", "--year", "-y", help="Tax year to migrate."),
+        output: Path | None = typer.Option(None, "--output", help="Authored-work output path."),
+        root: Path | None = typer.Option(None, "--root", help="Project root override."),
+    ) -> None:
+        """Propose only provable field dispositions and list unresolved work."""
+        raise_code = migrate_field_dispositions_command(year=year, root=root, output=output)
+        if raise_code:
+            raise typer.Exit(raise_code)
+
     cli.add_typer(review_cli, name="review")
 
     @cli.command("serve")
@@ -1486,6 +1516,10 @@ def _fallback_app() -> int:
     review_scope_parser.add_argument("--year", "-y", default="2025")
     review_scope_parser.add_argument("--root", default=None)
     review_scope_parser.add_argument("--refresh", action="store_true")
+    review_field_parser = review_subparsers.add_parser("migrate-field-dispositions")
+    review_field_parser.add_argument("--year", "-y", default="2025")
+    review_field_parser.add_argument("--output", default=None)
+    review_field_parser.add_argument("--root", default=None)
 
     frontier_parser = subparsers.add_parser("frontier")
     frontier_parser.add_argument("--year", "-y", default="2025")
@@ -1637,6 +1671,8 @@ def _fallback_app() -> int:
         return apply_verdicts_command(year=args.year, root=args.root, verdict_dir=args.verdict_dir)
     if args.command == "review" and args.review_command == "migrate-scope":
         return migrate_review_scope_command(year=args.year, root=args.root, refresh=args.refresh)
+    if args.command == "review" and args.review_command == "migrate-field-dispositions":
+        return migrate_field_dispositions_command(year=args.year, root=args.root, output=args.output)
     if args.command == "frontier" and args.frontier_command == "build":
         return frontier_build_command(year=args.year, root=args.root)
     if args.command == "frontier":
