@@ -12,7 +12,15 @@
       <span class="eyebrow">Tax Graph</span>
       <h1>Review Workbench</h1>
     </div>
-    <div id="progress" class="progress" aria-live="polite">Loading review queue...</div>
+    <div class="topbar-actions">
+      <div id="view-controls" class="view-controls" aria-label="Synchronized view controls">
+        <button type="button" data-view-action="out" aria-label="Zoom out">-</button>
+        <span id="zoom-level">100%</span>
+        <button type="button" data-view-action="in" aria-label="Zoom in">+</button>
+        <button type="button" data-view-action="reset">Reset</button>
+      </div>
+      <div id="progress" class="progress" aria-live="polite">Loading review queue...</div>
+    </div>
   </header>
   <main class="workspace">
     <nav class="queue-rail" aria-label="Review queue">

@@ -395,6 +395,11 @@ ASCII: green; `validate 2025`: green; full suite: 338 passed, 6 skipped in 588.8
   `docs/self-serve-extension.md`.
 
 ## From Worker
+- **M15 S15 (Codex, 2026-07-14):** J/K and arrows move review units, N/P and arrows
+  move queue entries with focus, both panes share zoom and scroll state, and stale async
+  entry responses cannot overwrite newer navigation. Browser test: 1 passed; M15: 58
+  passed; full suite: 376 passed, 6 skipped; ASCII green. Next: S16 representative
+  vertical-slice cases and Gate A handoff.
 - **M15 S14 (Codex, 2026-07-14):** a pinned unit now opens Formula, Sources,
   Citation, Witnesses, Diff, and Advanced JSON tabs backed by the real unit/evidence
   APIs; raw JSON is hidden by default and artifact text is HTML-escaped. Browser test:

@@ -2,6 +2,9 @@ import {loadEntry, loadQueue} from "./api.js";
 import {renderAnalogPane, renderOfficialPane} from "./panes.js";
 import {installPairing} from "./pairing.js";
 import {installDrawer} from "./drawer.js";
+import {installKeyboardNavigation, installSynchronizedView} from "./keyboard.js";
+
+let selectionSequence = 0;
 
 function renderQueue(payload) {
   const queue = document.querySelector("#queue");
@@ -32,19 +35,29 @@ function renderQueue(payload) {
 }
 
 async function selectEntry(queueId, button) {
-  document.querySelectorAll(".queue-entry.active").forEach((item) => item.classList.remove("active"));
+  const sequence = ++selectionSequence;
+  document.querySelectorAll(".queue-entry.active").forEach((item) => {
+    item.classList.remove("active");
+    item.removeAttribute("aria-current");
+  });
   button.classList.add("active");
   button.setAttribute("aria-current", "true");
   const payload = await loadEntry(queueId);
+  if (sequence !== selectionSequence) return;
   renderOfficialPane(document.querySelector("#official-pane"), payload.entry);
   renderAnalogPane(document.querySelector("#analog-pane"), payload.entry);
   installPairing(document.querySelector(".pane-grid"));
   installDrawer(document.querySelector("#drawer"), document.querySelector(".pane-grid"), payload.entry);
+  installSynchronizedView(
+    document.querySelector("#official-pane .page-viewport"),
+    document.querySelector("#analog-pane .page-viewport"),
+  );
 }
 
 async function start() {
   try {
     renderQueue(await loadQueue());
+    installKeyboardNavigation();
   } catch (error) {
     document.querySelector("#progress").textContent = "Review queue unavailable";
     document.querySelector("#queue").textContent = error.message;
