@@ -14,9 +14,21 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## Current state (2026-07-14)
 
-**BALL: WORKER - M15 S7 local server implemented; verification in progress.** S2-S6 through
-commit `59967b0` are pushed to origin. Plan: `plans/PHASE_M15.md`. John authorized continuous
+**BALL: WORKER - M15 S8 page/evidence APIs implemented; verification in progress.** S2-S7
+through commit `e2e539f` are pushed to origin. Plan: `plans/PHASE_M15.md`. John authorized continuous
 work through S9, stopping only on a genuine blocker or after S9.
+
+**S8 RESULT (Worker, Codex, 2026-07-14):** Added one-page PyMuPDF rasterization and a lazy
+content-addressed page cache keyed by source PDF hash, page, scale, and renderer version.
+`GET /api/documents/<doc>/pages/<page>.png` renders only the requested page on a miss and
+serves cache hits without invoking the renderer. `GET /api/evidence/<type>/<id>` resolves
+compiled objects first and otherwise exact draft objects, returning raw public artifact data,
+official geometry, scoped queue-unit links, and citation refs. Unknown and ambiguous evidence
+fail explicitly.
+
+Verification: focused `tests/test_workbench_page_evidence_m15.py` = `3 passed`; M15 marker =
+`45 passed, 324 deselected`; full repository pytest = `363 passed, 6 skipped in 737.63s`;
+ASCII and `git diff --check` succeeded. S8 is ready to commit and push.
 
 **S7 RESULT (Worker, Codex, 2026-07-14):** Added the isolated `[workbench]` Flask extra and
 `[workbench-dev]` Playwright test extra, plus a local-only Flask application that preflights

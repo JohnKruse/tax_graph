@@ -3,7 +3,16 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+import hashlib
 from pathlib import Path
+from typing import Callable
+
+
+RENDERER_VERSION = "pymupdf-v1"
+
+
+class PageRenderError(ValueError):
+    """Raised when one requested source page cannot be rasterized."""
 
 
 @dataclass(frozen=True)
@@ -14,6 +23,62 @@ class RenderedPage:
     path: Path
     width: float
     height: float
+
+
+PageRenderer = Callable[[Path, int, float], bytes]
+
+
+class PageImageCache:
+    """Content-addressed cache that renders only explicitly requested pages."""
+
+    def __init__(
+        self,
+        cache_dir: str | Path,
+        *,
+        renderer: PageRenderer | None = None,
+        renderer_version: str = RENDERER_VERSION,
+    ) -> None:
+        self.cache_dir = Path(cache_dir)
+        self.renderer = renderer or render_pdf_page
+        self.renderer_version = renderer_version
+
+    def get(self, pdf_path: Path, pdf_hash: str, page: int, scale: float) -> Path:
+        """Return a cached PNG path, rendering one page on a cache miss."""
+        if page < 1:
+            raise PageRenderError("page numbers are one-based")
+        if not 0.5 <= scale <= 4.0:
+            raise PageRenderError("scale must be between 0.5 and 4.0")
+        key = f"{pdf_hash}:{page}:{scale:.3f}:{self.renderer_version}".encode("ascii")
+        name = hashlib.sha256(key).hexdigest() + ".png"
+        path = self.cache_dir / name
+        if path.is_file():
+            return path
+        data = self.renderer(pdf_path, page, scale)
+        self.cache_dir.mkdir(parents=True, exist_ok=True)
+        temporary = path.with_suffix(".tmp")
+        temporary.write_bytes(data)
+        temporary.replace(path)
+        return path
+
+
+def render_pdf_page(pdf_path: Path, page: int, scale: float) -> bytes:
+    """Rasterize one one-based PDF page and return PNG bytes."""
+    try:
+        import fitz  # type: ignore[import-not-found]
+    except ImportError as exc:  # pragma: no cover - depends on optional extra.
+        raise RuntimeError("PDF rendering needs the optional 'pdf' extra (PyMuPDF)") from exc
+    fitz.TOOLS.mupdf_display_errors(False)
+    try:
+        with fitz.open(str(pdf_path)) as document:
+            if page < 1 or page > document.page_count:
+                raise PageRenderError(f"page {page} is outside PDF page range 1..{document.page_count}")
+            source_page = document.load_page(page - 1)
+            pixmap = source_page.get_pixmap(matrix=fitz.Matrix(scale, scale), alpha=False)
+            return bytes(pixmap.tobytes("png"))
+    except PageRenderError:
+        raise
+    except Exception as exc:
+        raise PageRenderError(f"cannot render {pdf_path.name} page {page}: {exc}") from exc
 
 
 def render_pdf_pages(

@@ -228,7 +228,7 @@ tiny first commit (pyproject + a README note) if the worker prefers.
   port + per-launch write token; `GET /api/queue`, `GET /api/entries/{queue_id}`; `python -m
   workbench.cli serve`. Test (Flask test client): grouped queue + scoped units returned.
   `pytest tests/test_workbench_server_m15.py -q`.
-- **S8 - Page + evidence APIs.** `GET /api/documents/{doc}/pages/{page}.png` (lazy render,
+- **S8 - Page + evidence APIs. [DONE]** `GET /api/documents/{doc}/pages/{page}.png` (lazy render,
   cache by pdf-hash/page/scale/renderer-version) + `GET /api/evidence/{type}/{id}`. Test:
   only the requested page renders; cache hit on repeat.
 - **S9 - Session + verdict APIs.** `GET/PUT /api/sessions/{queue_id}` (non-authoritative) +

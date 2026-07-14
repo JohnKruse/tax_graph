@@ -244,3 +244,9 @@ The server binds only to `127.0.0.1`, chooses an available port unless `--port`
 is supplied, and prints a per-launch token reserved for write requests. Queue
 and scoped-entry reads are available at `/api/queue` and
 `/api/entries/<queue_id>`.
+
+Official pages are rendered lazily through
+`/api/documents/<document_id>/pages/<page>.png`. The cache key pins the source
+PDF hash, one-based page, requested scale, and renderer version. Evidence lookup
+at `/api/evidence/<object_type>/<object_id>` returns the exact compiled or draft
+object plus its geometry, queue-unit references, and citation references.
