@@ -26,6 +26,11 @@
       "type": "array",
       "items": { "$ref": "#/$defs/table_fact" },
       "description": "Runtime row instances for repeatable tables. Rows are keyed by row_key and values by table column id."
+    },
+    "dependents": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/dependent" },
+      "description": "Runtime dependent identity instances. row_key is separate from the four printed Form 1040 row slots."
     }
   },
   "$defs": {
@@ -95,6 +100,53 @@
           }
         },
         "confidence": { "type": "number", "minimum": 0, "maximum": 1 }
+      }
+    },
+    "dependent": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["row_key", "first_name", "last_name", "ssn", "relationship"],
+      "properties": {
+        "row_key": {"type": "string", "pattern": "^[a-z0-9_]+$"},
+        "first_name": {"type": "string", "minLength": 1},
+        "last_name": {"type": "string", "minLength": 1},
+        "ssn": {"type": "string", "pattern": "^[0-9]{3}-?[0-9]{2}-?[0-9]{4}$"},
+        "relationship": {"type": "string", "minLength": 1},
+        "eligibility_decisions": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "lived_with_you": {"$ref": "#/$defs/filer_decision"},
+            "in_us": {"$ref": "#/$defs/filer_decision"},
+            "full_time_student": {"$ref": "#/$defs/filer_decision"},
+            "permanently_disabled": {"$ref": "#/$defs/filer_decision"},
+            "child_tax_credit": {"$ref": "#/$defs/filer_decision"},
+            "other_dependent_credit": {"$ref": "#/$defs/filer_decision"}
+          }
+        },
+        "source": {"$ref": "#/$defs/source"},
+        "confidence": {"type": "number", "minimum": 0, "maximum": 1}
+      }
+    },
+    "filer_decision": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["value", "decided_by", "decided_date", "rationale"],
+      "properties": {
+        "value": {"type": "boolean"},
+        "decided_by": {"type": "string", "minLength": 1},
+        "decided_date": {"type": "string", "format": "date"},
+        "rationale": {"type": "string", "minLength": 1},
+        "citation_ref": {"type": "string", "minLength": 1}
+      }
+    },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "document_label": {"type": "string"},
+        "extracted_by": {"type": "string"},
+        "citation_ref": {"type": "string"}
       }
     }
   }

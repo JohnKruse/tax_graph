@@ -168,6 +168,13 @@ def build_return_record(
     )
     validate_carryforward_block(carryforward_block.to_dict())
     unsupported = _build_unsupported(result, decisions, carryforward_block, scoped_trace_ids=scoped_trace_ids)
+    if "dependents" in facts_document:
+        unsupported.extend(
+            [
+                "Dependent intake is a universal gate; identity rows alone do not establish filing-status or credit eligibility.",
+                "Dependent qualification and credit controls require explicit filer decisions or cited modeled rules before output.",
+            ]
+        )
     return ReturnRecord(
         metadata=metadata,
         facts=facts,
@@ -178,7 +185,7 @@ def build_return_record(
         carryforward_block=carryforward_block,
         blank_with_note=blank_with_note or [],
         elections=[],
-        intake_resolutions=intake_resolutions or [],
+        intake_resolutions=intake_resolutions or list(facts_document.get("intake_resolutions", []) or []),
     )
 
 

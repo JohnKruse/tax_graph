@@ -103,6 +103,8 @@ def author(year: str, root: Path) -> None:
             incoming=incoming,
             rules=rules,
         )
+        if document_id == "form_1040_2025":
+            _author_dependent_dispositions(field_map)
         map_path = map_dir / f"{document_id}.yaml"
         map_path.write_text(yaml.safe_dump(field_map, sort_keys=False), encoding="utf-8", newline="\n")
     write_node_geometry(year, root)
@@ -295,6 +297,67 @@ def _node_policy(
     if edges or (nodes.get(node_id) or {}).get("node_type") == "computed":
         return "computed"
     return "user_entered"
+
+
+def _author_dependent_dispositions(field_map: dict[str, Any]) -> None:
+    identity_columns = {1: "first_name", 2: "last_name", 3: "ssn", 4: "relationship"}
+    decision_columns = {
+        5: ("lived_with_you", "in_us"),
+        6: ("full_time_student", "permanently_disabled"),
+        7: ("child_tax_credit", "other_dependent_credit"),
+    }
+    for disposition in field_map.get("field_dispositions", []):
+        field_name = str(disposition["field_name"])
+        if "Table_Dependents" not in field_name:
+            continue
+        row_match = re.search(r"\.Row([1-7])\[", field_name)
+        if row_match is None:
+            continue
+        physical_row = int(row_match.group(1))
+        if physical_row <= 4:
+            number_match = re.search(r"\.f1_([0-9]+)\[", field_name)
+            if number_match is None:
+                continue
+            dependent_slot = ((int(number_match.group(1)) - 31) % 4) + 1
+            column = identity_columns[physical_row]
+            disposition.update(
+                label=f"Dependent {dependent_slot} {column.replace('_', ' ')}",
+                population_policy="user_entered",
+                runtime_fact_ref=f"dependents.{column}",
+                repeatable={
+                    "group": "dependents",
+                    "row_slot": dependent_slot,
+                    "column": column,
+                    "role": "identity",
+                },
+            )
+            for key in ("reason", "downstream_effect", "missing_capability"):
+                disposition.pop(key, None)
+            continue
+        dependent_match = re.search(r"\.Dependent([1-4])\[", field_name)
+        field_number_match = re.search(r"\.c1_([0-9]+)\[([01])\]$", field_name)
+        if dependent_match is None or field_number_match is None:
+            continue
+        dependent_slot = int(dependent_match.group(1))
+        if physical_row == 7:
+            choice_index = int(field_number_match.group(2))
+        else:
+            base_number = 12 if physical_row == 5 else 20
+            choice_index = (int(field_number_match.group(1)) - base_number) % 2
+        column = decision_columns[physical_row][choice_index]
+        disposition.update(
+            label=f"Dependent {dependent_slot} {column.replace('_', ' ')} decision",
+            population_policy="decision_required",
+            runtime_fact_ref=f"dependents.{column}",
+            repeatable={
+                "group": "dependents",
+                "row_slot": dependent_slot,
+                "column": column,
+                "role": "decision",
+            },
+        )
+        for key in ("reason", "downstream_effect", "missing_capability"):
+            disposition.pop(key, None)
 
 
 def _value_format(mapping: Mapping[str, Any] | None, field: Mapping[str, Any]) -> str:

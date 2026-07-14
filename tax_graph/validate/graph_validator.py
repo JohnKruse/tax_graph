@@ -133,6 +133,12 @@ def validate_taxpayer_facts_document(
             errors.append(f"[schema/taxpayer_facts] {exc.message} :: {preview}")
 
     tables = {table["table_id"]: table for table in graph.items("tables") if "table_id" in table}
+    seen_dependent_keys: set[str] = set()
+    for dependent in facts_document.get("dependents", []) or []:
+        row_key = str(dependent.get("row_key", "<unknown>"))
+        if row_key in seen_dependent_keys:
+            errors.append(f"facts dependents row {row_key} -> duplicate row_key")
+        seen_dependent_keys.add(row_key)
     for table_fact in facts_document.get("tables", []) or []:
         table_id = table_fact.get("table_id", "<unknown>")
         table = tables.get(table_id)

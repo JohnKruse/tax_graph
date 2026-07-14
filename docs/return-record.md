@@ -93,6 +93,15 @@ M12 maps graph nodes and identity slots to official IRS AcroForm widgets under
 type, page, and rectangle. `tax-graph validate` checks that mapped fields exist,
 mapped nodes exist, exclusions are explicit, and frontier fields have blank notes.
 
+Dependent identity uses a separate `dependents` runtime fact group with stable
+`row_key` values. The keys never become graph node ids or printed-row ids. Output
+places zero through four instances into the four Form 1040 slots in input order;
+five or more fail closed with an attached-statement requirement. Identity alone
+never selects residence, student, disability, child-tax-credit, or
+other-dependent-credit checkboxes. Those controls require explicit filer decisions
+with provenance. The Return Record states that dependent intake is a universal gate
+and that qualification and downstream credit or filing-status logic remain separate.
+
 All session artifacts default to `output/returns/<return_id>/`: Return Record,
 carryforward YAML, audit trace, run diagnostics, official forms, and OTS sidecar.
 `return_id` is a path-safe caller value or a stable id from the facts document;

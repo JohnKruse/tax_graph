@@ -18,6 +18,10 @@ class PdfExtraRequired(RuntimeError):
     """Raised when a PDF export is requested without the optional extra."""
 
 
+class DependentAttachmentRequired(ValueError):
+    """Raised when Form 1040 needs an unsupported dependent attachment."""
+
+
 @dataclass(frozen=True)
 class FilledForm:
     """Result of filling and reopening one official form."""
@@ -41,6 +45,11 @@ def build_field_values(
     blank_notes = tuple(dict(item) for item in field_map.get("frontier_fields", []))
     identity = dict(facts_document.get("identity") or {})
     identity.setdefault("filing_status", facts_document.get("filing_status"))
+    dependents = list(facts_document.get("dependents", []) or [])
+    if len(dependents) > 4:
+        raise DependentAttachmentRequired(
+            "Form 1040 supports four printed dependents; five or more require an attached dependent statement, which this output profile does not yet generate."
+        )
     values: dict[str, str] = {}
     table_rows = {
         table.get("table_id"): list(table.get("rows") or [])
@@ -64,6 +73,25 @@ def build_field_values(
         if raw_value is MISSING or raw_value is None or raw_value == "":
             continue
         values[field_name] = _format_value(raw_value, mapping.get("format", "text"))
+    for disposition in field_map.get("field_dispositions", []) or []:
+        repeatable = disposition.get("repeatable") or {}
+        if repeatable.get("group") != "dependents":
+            continue
+        index = int(repeatable["row_slot"]) - 1
+        if index >= len(dependents):
+            continue
+        dependent = dependents[index]
+        column = str(repeatable["column"])
+        if repeatable.get("role") == "identity":
+            raw_value = dependent.get(column)
+            if raw_value not in (None, ""):
+                values[str(disposition["field_name"])] = str(raw_value)
+            continue
+        decision = (dependent.get("eligibility_decisions") or {}).get(column)
+        if isinstance(decision, Mapping) and decision.get("value") is True:
+            values[str(disposition["field_name"])] = str(
+                inventory[str(disposition["field_name"])].get("on_state") or "Yes"
+            )
     return values, blank_notes
 
 
