@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "tax_year": 2025,
+  "graph_counts": {"citations": 297, "decisions": 2, "documents": 17, "edges": 407, "expectations": 4, "nodes": 417, "routing_edges": 90, "rules": 15, "tables": 2, "triggers": 12},
+  "field_inventory_counts": {"form_1040_2025": 199, "form_1099b_2025": 163, "form_1099_div_2025": 140, "form_1099_int_2025": 127, "form_13614_c_2025": 297, "form_2441_2025": 72, "form_6251_2025": 62, "form_8949_2025": 202, "form_w2_2025": 272, "schedule_1_2025": 73, "schedule_1a_2025": 54, "schedule_2_2025": 63, "schedule_3_2025": 37, "schedule_a_2025": 33, "schedule_b_2025": 72, "schedule_d_2025": 55},
+  "runtime_witnesses": [
+    {"scenario": "capital_gains_basic", "facts_git_blob": "58a5039e566986481cf7f89959fe9eb27c84c2f9", "expected_git_blob": "bd2c8625f4fb639e81d6cea6bb2e180dad19dbec", "expected_node": "form_1040_2025_line_7_capital_gain_loss", "expected_value": 2000}
+  ],
+  "legacy_line_disagreement_count": 80,
+  "note": "The disagreement count is the frozen pre-address diagnostic cited by PHASE_M15R; R3 replaces it with a reproducible migration report."
+}

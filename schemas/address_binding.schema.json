@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema", "$id": "address_binding.schema.json",
+  "title": "Tax Graph canonical address bindings", "type": "object", "additionalProperties": false,
+  "required": ["schema_version", "year", "document_id", "binding_kind", "bindings"],
+  "properties": {
+    "schema_version": {"const": 1}, "year": {"type": "integer"},
+    "document_id": {"type": "string", "pattern": "^[a-z0-9_]+$"},
+    "binding_kind": {"enum": ["widget", "node"]},
+    "bindings": {"type": "array", "items": {"type": "object"}}
+  },
+  "allOf": [
+    {"if": {"properties": {"binding_kind": {"const": "widget"}}, "required": ["binding_kind"]}, "then": {"properties": {"bindings": {"items": {"$ref": "#/$defs/widget"}}}}},
+    {"if": {"properties": {"binding_kind": {"const": "node"}}, "required": ["binding_kind"]}, "then": {"properties": {"bindings": {"items": {"$ref": "#/$defs/node"}}}}}
+  ],
+  "$defs": {
+    "widget": {"type": "object", "additionalProperties": false, "required": ["field_name", "address_id", "widget_type", "page", "rect", "status"], "properties": {
+      "field_name": {"type": "string", "minLength": 1}, "address_id": {"type": "string"}, "widget_type": {"enum": ["text", "checkbox", "radio", "choice", "signature", "other"]}, "on_state": {"type": "string"}, "page": {"type": "integer", "minimum": 1}, "rect": {"type": "array", "minItems": 4, "maxItems": 4, "items": {"type": "number"}}, "physical_row_slot": {"type": "string"}, "status": {"enum": ["exact", "provisional", "ambiguous", "unresolved"]}
+    }},
+    "node": {"type": "object", "additionalProperties": false, "required": ["node_id", "address_id", "role", "status"], "properties": {
+      "node_id": {"type": "string", "pattern": "^[a-z0-9_]+$"}, "address_id": {"type": "string"}, "role": {"enum": ["value", "description", "decision", "total", "input", "output"]}, "status": {"enum": ["exact", "provisional", "ambiguous", "unresolved"]}
+    }}
+  }
+}

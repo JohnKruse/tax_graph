@@ -2,6 +2,8 @@
 
 JSON Schema (draft 2020-12) definitions for the graph's authored YAML objects. The build step validates every YAML file against these before compiling the graph to SQLite, so a typo or a misparsed YAML scalar fails at **build time**, never at runtime.
 
+M15R adds additive canonical-address registries, widget/node bindings, and typed cross-form reference claims. Address strings are serialized from typed path components; consumers must not reconstruct official locations from display labels, node ids, or PDF field names.
+
 ## Files
 
 | Schema | Purpose |
@@ -9,6 +11,9 @@ JSON Schema (draft 2020-12) definitions for the graph's authored YAML objects. T
 | `document.schema.json` | A form / schedule / source doc / instructions / publication / worksheet (carries the tax year and version metadata for change detection). |
 | `node.schema.json` | An addressable point: form line, box, worksheet field, taxpayer fact, computed value, or concept. |
 | `table.schema.json` | A repeatable table subunit: row-template columns plus totals rows, with runtime row instances supplied in taxpayer facts. |
+| `address_registry.schema.json` | Canonical semantic form locations and their evidence. |
+| `address_binding.schema.json` | Physical widget and stable graph-node bindings to canonical addresses. |
+| `address_reference.schema.json` | Typed cross-form target claims with explicit resolution state. |
 | `edge.schema.json` | A typed directed relationship between nodes; references a rule by id. |
 | `rule.schema.json` | A reusable declarative transformation from the primitive instruction set. |
 | `citation.schema.json` | **(addition beyond req. doc Section 11)** A span-level, *quotable* pointer to source text - the artifact that powers both extraction-time verification and runtime grounded questions. |

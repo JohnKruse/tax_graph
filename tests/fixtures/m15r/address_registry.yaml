@@ -1,0 +1,109 @@
+schema_version: 1
+year: 2025
+document_id: form_1040_2025
+addresses:
+- address_id: 2025/form_1040/document=form_1040
+  logical_key: form_1040/document=form_1040
+  year: 2025
+  document_id: form_1040_2025
+  parent_address_id: null
+  kind: document
+  path: [{kind: document, token: form_1040}]
+  printed_label: Form 1040
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence: &evidence
+  - source_path: raw/2025/form_1040_2025.pdf
+    source_hash: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+    page: 1
+- address_id: 2025/form_1040/line=1/item=a/control=amount
+  logical_key: form_1040/line=1/item=a/control=amount
+  year: 2025
+  document_id: form_1040_2025
+  parent_address_id: 2025/form_1040/document=form_1040
+  kind: control
+  path: [{kind: document, token: form_1040}, {kind: line, token: "1"}, {kind: item, token: a}, {kind: control, token: amount}]
+  official_ref: 1a
+  printed_label: Total amount from Form(s) W-2, box 1
+  aliases: [wages]
+  control_role: amount
+  status: pending_review
+  evidence: *evidence
+- address_id: 2025/form_1040/line=1/item=a/control=description
+  logical_key: form_1040/line=1/item=a/control=description
+  year: 2025
+  document_id: form_1040_2025
+  parent_address_id: 2025/form_1040/document=form_1040
+  kind: control
+  path: [{kind: document, token: form_1040}, {kind: line, token: "1"}, {kind: item, token: a}, {kind: control, token: description}]
+  official_ref: 1a
+  printed_label: Description
+  aliases: []
+  control_role: description
+  status: pending_review
+  evidence: *evidence
+- address_id: 2025/form_1040/line=3/item=a/control=checkbox
+  logical_key: form_1040/line=3/item=a/control=checkbox
+  year: 2025
+  document_id: form_1040_2025
+  parent_address_id: 2025/form_1040/document=form_1040
+  kind: control
+  path: [{kind: document, token: form_1040}, {kind: line, token: "3"}, {kind: item, token: a}, {kind: control, token: checkbox}]
+  official_ref: 3a
+  printed_label: Check if qualified dividends include capital gain distributions
+  aliases: []
+  control_role: checkbox
+  status: pending_review
+  evidence: *evidence
+- address_id: 2025/form_1040/section=filing_status/option=1
+  logical_key: form_1040/section=filing_status/option=1
+  year: 2025
+  document_id: form_1040_2025
+  parent_address_id: 2025/form_1040/document=form_1040
+  kind: option
+  path: [{kind: document, token: form_1040}, {kind: section, token: filing_status}, {kind: option, token: "1"}]
+  printed_label: ""
+  aliases: []
+  control_role: radio
+  status: provisional
+  evidence: *evidence
+- address_id: 2025/form_w2/box=12/item=d/control=amount
+  logical_key: form_w2/box=12/item=d/control=amount
+  year: 2025
+  document_id: form_1040_2025
+  parent_address_id: 2025/form_1040/document=form_1040
+  kind: control
+  path: [{kind: document, token: form_w2}, {kind: box, token: "12"}, {kind: item, token: d}, {kind: control, token: amount}]
+  official_ref: Box 12 code D
+  printed_label: Elective deferrals
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence: *evidence
+- address_id: 2025/schedule_d/worksheet_step=5/control=amount
+  logical_key: schedule_d/worksheet_step=5/control=amount
+  year: 2025
+  document_id: form_1040_2025
+  parent_address_id: 2025/form_1040/document=form_1040
+  kind: control
+  path: [{kind: document, token: schedule_d}, {kind: worksheet_step, token: "5"}, {kind: control, token: amount}]
+  official_ref: "5"
+  printed_label: Enter the smaller amount
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence: *evidence
+- address_id: 2025/form_8949/table=part_i_line_1/row_template=transaction/column=d
+  logical_key: form_8949/table=part_i_line_1/row_template=transaction/column=d
+  year: 2025
+  document_id: form_1040_2025
+  parent_address_id: 2025/form_1040/document=form_1040
+  kind: column
+  path: [{kind: document, token: form_8949}, {kind: table, token: part_i_line_1}, {kind: row_template, token: transaction}, {kind: column, token: d}]
+  official_ref: Column (d)
+  printed_label: Proceeds
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence: *evidence
