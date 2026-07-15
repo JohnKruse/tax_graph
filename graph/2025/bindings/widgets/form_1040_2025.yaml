@@ -1,0 +1,1275 @@
+schema_version: 1
+year: 2025
+document_id: form_1040_2025
+binding_kind: widget
+bindings:
+- field_name: topmostSubform[0].Page1[0].f1_14[0]
+  address_id: 2025/document=form_1040/section=identity/control=taxpayer_first_name
+  widget_type: text
+  page: 1
+  rect:
+  - 36.0
+  - 94.0
+  - 251.25
+  - 108.0
+  status: exact
+- field_name: topmostSubform[0].Page1[0].f1_15[0]
+  address_id: 2025/document=form_1040/section=identity/control=taxpayer_last_name
+  widget_type: text
+  page: 1
+  rect:
+  - 253.0
+  - 94.0
+  - 467.25
+  - 108.0
+  status: exact
+- field_name: topmostSubform[0].Page1[0].f1_16[0]
+  address_id: 2025/document=form_1040/section=identity/control=taxpayer_ssn
+  widget_type: text
+  page: 1
+  rect:
+  - 469.0
+  - 94.0
+  - 576.0
+  - 108.0
+  status: exact
+- field_name: topmostSubform[0].Page1[0].f1_17[0]
+  address_id: 2025/document=form_1040/section=identity/control=spouse_first_name
+  widget_type: text
+  page: 1
+  rect:
+  - 36.0
+  - 118.0
+  - 251.25
+  - 132.0
+  status: exact
+- field_name: topmostSubform[0].Page1[0].f1_18[0]
+  address_id: 2025/document=form_1040/section=identity/control=spouse_last_name
+  widget_type: text
+  page: 1
+  rect:
+  - 253.0
+  - 118.0
+  - 467.25
+  - 132.0
+  status: exact
+- field_name: topmostSubform[0].Page1[0].f1_19[0]
+  address_id: 2025/document=form_1040/section=identity/control=spouse_ssn
+  widget_type: text
+  page: 1
+  rect:
+  - 469.0
+  - 118.0
+  - 576.0
+  - 132.0
+  status: exact
+- field_name: topmostSubform[0].Page1[0].Address_ReadOrder[0].f1_20[0]
+  address_id: 2025/document=form_1040/section=identity/control=address_line_1
+  widget_type: text
+  page: 1
+  rect:
+  - 36.0
+  - 142.0
+  - 416.85
+  - 156.0
+  status: exact
+- field_name: topmostSubform[0].Page1[0].Address_ReadOrder[0].f1_21[0]
+  address_id: 2025/document=form_1040/section=identity/control=apartment
+  widget_type: text
+  page: 1
+  rect:
+  - 418.6
+  - 142.0
+  - 467.25
+  - 156.0
+  status: exact
+- field_name: topmostSubform[0].Page1[0].Address_ReadOrder[0].f1_22[0]
+  address_id: 2025/document=form_1040/section=identity/control=city
+  widget_type: text
+  page: 1
+  rect:
+  - 36.0
+  - 166.0
+  - 330.45
+  - 180.0
+  status: exact
+- field_name: topmostSubform[0].Page1[0].Address_ReadOrder[0].f1_23[0]
+  address_id: 2025/document=form_1040/section=identity/control=state
+  widget_type: text
+  page: 1
+  rect:
+  - 332.2
+  - 166.0
+  - 395.25
+  - 180.0
+  status: exact
+- field_name: topmostSubform[0].Page1[0].Address_ReadOrder[0].f1_24[0]
+  address_id: 2025/document=form_1040/section=identity/control=zip_code
+  widget_type: text
+  page: 1
+  rect:
+  - 397.0
+  - 166.0
+  - 467.25
+  - 180.0
+  status: exact
+- field_name: topmostSubform[0].Page1[0].Checkbox_ReadOrder[0].c1_8[0]
+  address_id: 2025/document=form_1040/section=filing_status/option=single
+  widget_type: checkbox
+  page: 1
+  rect:
+  - 97.6
+  - 206.0
+  - 105.6
+  - 214.0
+  status: exact
+- field_name: topmostSubform[0].Page1[0].Checkbox_ReadOrder[0].c1_8[1]
+  address_id: 2025/document=form_1040/section=filing_status/option=married_filing_jointly
+  widget_type: checkbox
+  page: 1
+  rect:
+  - 97.6
+  - 218.0
+  - 105.6
+  - 226.0
+  status: exact
+- field_name: topmostSubform[0].Page1[0].Checkbox_ReadOrder[0].c1_8[2]
+  address_id: 2025/document=form_1040/section=filing_status/option=married_filing_separately
+  widget_type: checkbox
+  page: 1
+  rect:
+  - 97.6
+  - 230.0
+  - 105.6
+  - 238.0
+  status: exact
+- field_name: topmostSubform[0].Page1[0].c1_8[0]
+  address_id: 2025/document=form_1040/section=filing_status/option=head_of_household
+  widget_type: checkbox
+  page: 1
+  rect:
+  - 349.6
+  - 206.0
+  - 357.6
+  - 214.0
+  status: exact
+- field_name: topmostSubform[0].Page1[0].c1_8[1]
+  address_id: 2025/document=form_1040/section=filing_status/option=qualifying_surviving_spouse
+  widget_type: checkbox
+  page: 1
+  rect:
+  - 349.6
+  - 218.0
+  - 357.6
+  - 226.0
+  status: exact
+- field_name: topmostSubform[0].Page1[0].c1_10[0]
+  address_id: 2025/document=form_1040/line=1/control=checkbox
+  widget_type: checkbox
+  page: 1
+  rect:
+  - 518.4
+  - 287.0
+  - 526.4
+  - 295.0
+  status: provisional
+- field_name: topmostSubform[0].Page1[0].c1_10[1]
+  address_id: 2025/document=form_1040/line=1/control=checkbox
+  widget_type: checkbox
+  page: 1
+  rect:
+  - 554.4
+  - 287.0
+  - 562.4
+  - 295.0
+  status: provisional
+- field_name: topmostSubform[0].Page1[0].Table_Dependents[0].Row1[0].f1_31[0]
+  address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=first_name
+  widget_type: text
+  page: 1
+  rect:
+  - 145.0
+  - 309.0
+  - 251.25
+  - 321.0
+  status: provisional
+- field_name: topmostSubform[0].Page1[0].Table_Dependents[0].Row1[0].f1_32[0]
+  address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=first_name
+  widget_type: text
+  page: 1
+  rect:
+  - 253.0
+  - 309.0
+  - 359.25
+  - 321.0
+  status: provisional
+- field_name: topmostSubform[0].Page1[0].Table_Dependents[0].Row1[0].f1_33[0]
+  address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=first_name
+  widget_type: text
+  page: 1
+  rect:
+  - 361.0
+  - 309.0
+  - 467.25
+  - 321.0
+  status: provisional
+- field_name: topmostSubform[0].Page1[0].Table_Dependents[0].Row1[0].f1_34[0]
+  address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=first_name
+  widget_type: text
+  page: 1
+  rect:
+  - 469.0
+  - 309.0
+  - 576.0
+  - 321.0
+  status: provisional
+- field_name: topmostSubform[0].Page1[0].Table_Dependents[0].Row2[0].f1_35[0]
+  address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=last_name
+  widget_type: text
+  page: 1
+  rect:
+  - 145.0
+  - 321.0
+  - 251.25
+  - 333.0
+  status: provisional
+- field_name: topmostSubform[0].Page1[0].Table_Dependents[0].Row2[0].f1_36[0]
+  address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=last_name
+  widget_type: text
+  page: 1
+  rect:
+  - 253.0
+  - 321.0
+  - 359.25
+  - 333.0
+  status: provisional
+- field_name: topmostSubform[0].Page1[0].Table_Dependents[0].Row2[0].f1_37[0]
+  address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=last_name
+  widget_type: text
+  page: 1
+  rect:
+  - 361.0
+  - 321.0
+  - 467.25
+  - 333.0
+  status: provisional
+- field_name: topmostSubform[0].Page1[0].Table_Dependents[0].Row2[0].f1_38[0]
+  address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=last_name
+  widget_type: text
+  page: 1
+  rect:
+  - 469.0
+  - 321.0
+  - 576.0
+  - 333.0
+  status: provisional
+- field_name: topmostSubform[0].Page1[0].Table_Dependents[0].Row3[0].f1_39[0]
+  address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=ssn
+  widget_type: text
+  page: 1
+  rect:
+  - 145.0
+  - 333.0
+  - 251.25
+  - 345.0
+  status: provisional
+- field_name: topmostSubform[0].Page1[0].Table_Dependents[0].Row3[0].f1_40[0]
+  address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=ssn
+  widget_type: text
+  page: 1
+  rect:
+  - 253.0
+  - 333.0
+  - 359.25
+  - 345.0
+  status: provisional
+- field_name: topmostSubform[0].Page1[0].Table_Dependents[0].Row3[0].f1_41[0]
+  address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=ssn
+  widget_type: text
+  page: 1
+  rect:
+  - 361.0
+  - 333.0
+  - 467.25
+  - 345.0
+  status: provisional
+- field_name: topmostSubform[0].Page1[0].Table_Dependents[0].Row3[0].f1_42[0]
+  address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=ssn
+  widget_type: text
+  page: 1
+  rect:
+  - 469.0
+  - 333.0
+  - 576.0
+  - 345.0
+  status: provisional
+- field_name: topmostSubform[0].Page1[0].Table_Dependents[0].Row4[0].f1_43[0]
+  address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=relationship
+  widget_type: text
+  page: 1
+  rect:
+  - 145.0
+  - 345.0
+  - 251.25
+  - 356.99
+  status: provisional
+- field_name: topmostSubform[0].Page1[0].Table_Dependents[0].Row4[0].f1_44[0]
+  address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=relationship
+  widget_type: text
+  page: 1
+  rect:
+  - 253.0
+  - 345.0
+  - 359.25
+  - 356.99
+  status: provisional
+- field_name: topmostSubform[0].Page1[0].Table_Dependents[0].Row4[0].f1_45[0]
+  address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=relationship
+  widget_type: text
+  page: 1
+  rect:
+  - 361.0
+  - 345.0
+  - 467.25
+  - 356.99
+  status: provisional
+- field_name: topmostSubform[0].Page1[0].Table_Dependents[0].Row4[0].f1_46[0]
+  address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=relationship
+  widget_type: text
+  page: 1
+  rect:
+  - 469.0
+  - 345.0
+  - 576.0
+  - 356.99
+  status: provisional
+- field_name: topmostSubform[0].Page1[0].Table_Dependents[0].Row5[0].Dependent1[0].c1_12[0]
+  address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=lived_with_you
+  widget_type: checkbox
+  page: 1
+  rect:
+  - 169.6
+  - 359.0
+  - 177.6
+  - 367.0
+  status: provisional
+- field_name: topmostSubform[0].Page1[0].Table_Dependents[0].Row5[0].Dependent1[0].c1_13[0]
+  address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=in_us
+  widget_type: checkbox
+  page: 1
+  rect:
+  - 169.6
+  - 371.0
+  - 177.6
+  - 379.0
+  status: provisional
+- field_name: topmostSubform[0].Page1[0].Table_Dependents[0].Row5[0].Dependent2[0].c1_14[0]
+  address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=lived_with_you
+  widget_type: checkbox
+  page: 1
+  rect:
+  - 277.6
+  - 359.0
+  - 285.6
+  - 367.0
+  status: provisional
+- field_name: topmostSubform[0].Page1[0].Table_Dependents[0].Row5[0].Dependent2[0].c1_15[0]
+  address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=in_us
+  widget_type: checkbox
+  page: 1
+  rect:
+  - 277.6
+  - 371.0
+  - 285.6
+  - 379.0
+  status: provisional
+- field_name: topmostSubform[0].Page1[0].Table_Dependents[0].Row5[0].Dependent3[0].c1_16[0]
+  address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=lived_with_you
+  widget_type: checkbox
+  page: 1
+  rect:
+  - 385.6
+  - 359.0
+  - 393.6
+  - 367.0
+  status: provisional
+- field_name: topmostSubform[0].Page1[0].Table_Dependents[0].Row5[0].Dependent3[0].c1_17[0]
+  address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=in_us
+  widget_type: checkbox
+  page: 1
+  rect:
+  - 385.6
+  - 371.0
+  - 393.6
+  - 379.0
+  status: provisional
+- field_name: topmostSubform[0].Page1[0].Table_Dependents[0].Row5[0].Dependent4[0].c1_18[0]
+  address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=lived_with_you
+  widget_type: checkbox
+  page: 1
+  rect:
+  - 493.6
+  - 359.0
+  - 501.6
+  - 367.0
+  status: provisional
+- field_name: topmostSubform[0].Page1[0].Table_Dependents[0].Row5[0].Dependent4[0].c1_19[0]
+  address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=in_us
+  widget_type: checkbox
+  page: 1
+  rect:
+  - 493.6
+  - 371.0
+  - 501.6
+  - 379.0
+  status: provisional
+- field_name: topmostSubform[0].Page1[0].Table_Dependents[0].Row6[0].Dependent1[0].c1_20[0]
+  address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=full_time_student
+  widget_type: checkbox
+  page: 1
+  rect:
+  - 148.0
+  - 383.0
+  - 156.0
+  - 391.0
+  status: provisional
+- field_name: topmostSubform[0].Page1[0].Table_Dependents[0].Row6[0].Dependent1[0].c1_21[0]
+  address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=permanently_disabled
+  widget_type: checkbox
+  page: 1
+  rect:
+  - 198.4
+  - 383.0
+  - 206.4
+  - 391.0
+  status: provisional
+- field_name: topmostSubform[0].Page1[0].Table_Dependents[0].Row6[0].Dependent2[0].c1_22[0]
+  address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=full_time_student
+  widget_type: checkbox
+  page: 1
+  rect:
+  - 256.0
+  - 383.0
+  - 264.0
+  - 391.0
+  status: provisional
+- field_name: topmostSubform[0].Page1[0].Table_Dependents[0].Row6[0].Dependent2[0].c1_23[0]
+  address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=permanently_disabled
+  widget_type: checkbox
+  page: 1
+  rect:
+  - 306.4
+  - 383.0
+  - 314.4
+  - 391.0
+  status: provisional
+- field_name: topmostSubform[0].Page1[0].Table_Dependents[0].Row6[0].Dependent3[0].c1_24[0]
+  address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=full_time_student
+  widget_type: checkbox
+  page: 1
+  rect:
+  - 364.0
+  - 383.0
+  - 372.0
+  - 391.0
+  status: provisional
+- field_name: topmostSubform[0].Page1[0].Table_Dependents[0].Row6[0].Dependent3[0].c1_25[0]
+  address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=permanently_disabled
+  widget_type: checkbox
+  page: 1
+  rect:
+  - 414.4
+  - 383.0
+  - 422.4
+  - 391.0
+  status: provisional
+- field_name: topmostSubform[0].Page1[0].Table_Dependents[0].Row6[0].Dependent4[0].c1_26[0]
+  address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=full_time_student
+  widget_type: checkbox
+  page: 1
+  rect:
+  - 472.0
+  - 383.0
+  - 480.0
+  - 391.0
+  status: provisional
+- field_name: topmostSubform[0].Page1[0].Table_Dependents[0].Row6[0].Dependent4[0].c1_27[0]
+  address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=permanently_disabled
+  widget_type: checkbox
+  page: 1
+  rect:
+  - 522.4
+  - 383.0
+  - 530.4
+  - 391.0
+  status: provisional
+- field_name: topmostSubform[0].Page1[0].Table_Dependents[0].Row7[0].Dependent1[0].c1_28[0]
+  address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=child_tax_credit
+  widget_type: checkbox
+  page: 1
+  rect:
+  - 148.0
+  - 404.0
+  - 156.0
+  - 412.0
+  status: provisional
+- field_name: topmostSubform[0].Page1[0].Table_Dependents[0].Row7[0].Dependent1[0].c1_28[1]
+  address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=other_dependent_credit
+  widget_type: checkbox
+  page: 1
+  rect:
+  - 198.4
+  - 404.0
+  - 206.4
+  - 412.0
+  status: provisional
+- field_name: topmostSubform[0].Page1[0].Table_Dependents[0].Row7[0].Dependent2[0].c1_29[0]
+  address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=child_tax_credit
+  widget_type: checkbox
+  page: 1
+  rect:
+  - 256.0
+  - 404.0
+  - 264.0
+  - 412.0
+  status: provisional
+- field_name: topmostSubform[0].Page1[0].Table_Dependents[0].Row7[0].Dependent2[0].c1_29[1]
+  address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=other_dependent_credit
+  widget_type: checkbox
+  page: 1
+  rect:
+  - 306.4
+  - 404.0
+  - 314.4
+  - 412.0
+  status: provisional
+- field_name: topmostSubform[0].Page1[0].Table_Dependents[0].Row7[0].Dependent3[0].c1_30[0]
+  address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=child_tax_credit
+  widget_type: checkbox
+  page: 1
+  rect:
+  - 364.0
+  - 404.0
+  - 372.0
+  - 412.0
+  status: provisional
+- field_name: topmostSubform[0].Page1[0].Table_Dependents[0].Row7[0].Dependent3[0].c1_30[1]
+  address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=other_dependent_credit
+  widget_type: checkbox
+  page: 1
+  rect:
+  - 414.4
+  - 404.0
+  - 422.4
+  - 412.0
+  status: provisional
+- field_name: topmostSubform[0].Page1[0].Table_Dependents[0].Row7[0].Dependent4[0].c1_31[0]
+  address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=child_tax_credit
+  widget_type: checkbox
+  page: 1
+  rect:
+  - 472.0
+  - 404.0
+  - 480.0
+  - 412.0
+  status: provisional
+- field_name: topmostSubform[0].Page1[0].Table_Dependents[0].Row7[0].Dependent4[0].c1_31[1]
+  address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=other_dependent_credit
+  widget_type: checkbox
+  page: 1
+  rect:
+  - 522.4
+  - 404.0
+  - 530.4
+  - 412.0
+  status: provisional
+- field_name: topmostSubform[0].Page1[0].f1_47[0]
+  address_id: 2025/document=form_1040/line=1a/control=amount
+  widget_type: text
+  page: 1
+  rect:
+  - 504.0
+  - 450.0
+  - 576.0
+  - 462.0
+  status: exact
+- field_name: topmostSubform[0].Page1[0].f1_48[0]
+  address_id: 2025/document=form_1040/line=1b/control=amount
+  widget_type: text
+  page: 1
+  rect:
+  - 504.0
+  - 462.0
+  - 576.0
+  - 474.0
+  status: exact
+- field_name: topmostSubform[0].Page1[0].f1_49[0]
+  address_id: 2025/document=form_1040/line=1c/control=amount
+  widget_type: text
+  page: 1
+  rect:
+  - 504.0
+  - 474.0
+  - 576.0
+  - 486.0
+  status: exact
+- field_name: topmostSubform[0].Page1[0].f1_50[0]
+  address_id: 2025/document=form_1040/line=1d/control=amount
+  widget_type: text
+  page: 1
+  rect:
+  - 504.0
+  - 486.0
+  - 576.0
+  - 498.0
+  status: exact
+- field_name: topmostSubform[0].Page1[0].f1_51[0]
+  address_id: 2025/document=form_1040/line=1e/control=amount
+  widget_type: text
+  page: 1
+  rect:
+  - 504.0
+  - 498.0
+  - 576.0
+  - 510.0
+  status: exact
+- field_name: topmostSubform[0].Page1[0].f1_52[0]
+  address_id: 2025/document=form_1040/line=1f/control=amount
+  widget_type: text
+  page: 1
+  rect:
+  - 504.0
+  - 510.0
+  - 576.0
+  - 522.0
+  status: exact
+- field_name: topmostSubform[0].Page1[0].f1_53[0]
+  address_id: 2025/document=form_1040/line=1g/control=amount
+  widget_type: text
+  page: 1
+  rect:
+  - 504.0
+  - 522.0
+  - 576.0
+  - 534.0
+  status: exact
+- field_name: topmostSubform[0].Page1[0].f1_54[0]
+  address_id: 2025/document=form_1040/line=1h/control=description
+  widget_type: text
+  page: 1
+  rect:
+  - 344.2
+  - 534.0
+  - 475.2
+  - 545.0
+  status: exact
+- field_name: topmostSubform[0].Page1[0].f1_55[0]
+  address_id: 2025/document=form_1040/line=1h/control=amount
+  widget_type: text
+  page: 1
+  rect:
+  - 504.0
+  - 534.0
+  - 576.0
+  - 546.0
+  status: exact
+- field_name: topmostSubform[0].Page1[0].f1_56[0]
+  address_id: 2025/document=form_1040/line=1i/control=amount
+  widget_type: text
+  page: 1
+  rect:
+  - 410.4
+  - 546.0
+  - 481.65
+  - 558.0
+  status: provisional
+- field_name: topmostSubform[0].Page1[0].f1_57[0]
+  address_id: 2025/document=form_1040/line=1z/control=amount
+  widget_type: text
+  page: 1
+  rect:
+  - 504.0
+  - 558.0
+  - 576.0
+  - 570.0
+  status: exact
+- field_name: topmostSubform[0].Page1[0].f1_58[0]
+  address_id: 2025/document=form_1040/line=2b/control=amount
+  widget_type: text
+  page: 1
+  rect:
+  - 252.0
+  - 570.0
+  - 323.25
+  - 582.0
+  status: provisional
+- field_name: topmostSubform[0].Page1[0].f1_59[0]
+  address_id: 2025/document=form_1040/line=2b/control=amount
+  widget_type: text
+  page: 1
+  rect:
+  - 504.0
+  - 570.0
+  - 576.0
+  - 582.0
+  status: exact
+- field_name: topmostSubform[0].Page1[0].f1_60[0]
+  address_id: 2025/document=form_1040/line=3b/control=amount
+  widget_type: text
+  page: 1
+  rect:
+  - 252.0
+  - 582.0
+  - 323.25
+  - 594.0
+  status: exact
+- field_name: topmostSubform[0].Page1[0].f1_61[0]
+  address_id: 2025/document=form_1040/line=3b/control=amount
+  widget_type: text
+  page: 1
+  rect:
+  - 504.0
+  - 582.0
+  - 576.0
+  - 594.0
+  status: exact
+- field_name: topmostSubform[0].Page1[0].c1_33[0]
+  address_id: 2025/document=form_1040/line=3b/control=checkbox
+  widget_type: checkbox
+  page: 1
+  rect:
+  - 283.8
+  - 596.5
+  - 291.8
+  - 604.5
+  status: provisional
+- field_name: topmostSubform[0].Page1[0].c1_34[0]
+  address_id: 2025/document=form_1040/line=3b/control=checkbox
+  widget_type: checkbox
+  page: 1
+  rect:
+  - 363.0
+  - 596.5
+  - 371.0
+  - 604.5
+  status: provisional
+- field_name: topmostSubform[0].Page1[0].f1_62[0]
+  address_id: 2025/document=form_1040/line=4b/control=amount
+  widget_type: text
+  page: 1
+  rect:
+  - 252.0
+  - 606.0
+  - 323.25
+  - 618.0
+  status: provisional
+- field_name: topmostSubform[0].Page1[0].f1_63[0]
+  address_id: 2025/document=form_1040/line=4b/control=amount
+  widget_type: text
+  page: 1
+  rect:
+  - 504.0
+  - 606.0
+  - 576.0
+  - 618.0
+  status: provisional
+- field_name: topmostSubform[0].Page1[0].f1_65[0]
+  address_id: 2025/document=form_1040/line=5b/control=amount
+  widget_type: text
+  page: 1
+  rect:
+  - 252.0
+  - 630.0
+  - 323.25
+  - 642.0
+  status: provisional
+- field_name: topmostSubform[0].Page1[0].f1_66[0]
+  address_id: 2025/document=form_1040/line=5b/control=amount
+  widget_type: text
+  page: 1
+  rect:
+  - 504.0
+  - 630.0
+  - 576.0
+  - 642.0
+  status: provisional
+- field_name: topmostSubform[0].Page1[0].f1_68[0]
+  address_id: 2025/document=form_1040/line=6b/control=amount
+  widget_type: text
+  page: 1
+  rect:
+  - 252.0
+  - 654.0
+  - 323.25
+  - 666.0
+  status: provisional
+- field_name: topmostSubform[0].Page1[0].f1_69[0]
+  address_id: 2025/document=form_1040/line=6b/control=amount
+  widget_type: text
+  page: 1
+  rect:
+  - 504.0
+  - 654.0
+  - 576.0
+  - 666.0
+  status: provisional
+- field_name: topmostSubform[0].Page1[0].f1_70[0]
+  address_id: 2025/document=form_1040/line=7a/control=amount
+  widget_type: text
+  page: 1
+  rect:
+  - 504.0
+  - 690.0
+  - 576.0
+  - 702.0
+  status: exact
+- field_name: topmostSubform[0].Page1[0].f1_72[0]
+  address_id: 2025/document=form_1040/line=8/control=amount
+  widget_type: text
+  page: 1
+  rect:
+  - 504.0
+  - 714.0
+  - 576.0
+  - 726.0
+  status: exact
+- field_name: topmostSubform[0].Page1[0].f1_73[0]
+  address_id: 2025/document=form_1040/line=9/control=amount
+  widget_type: text
+  page: 1
+  rect:
+  - 504.0
+  - 726.0
+  - 576.0
+  - 738.0
+  status: exact
+- field_name: topmostSubform[0].Page1[0].f1_74[0]
+  address_id: 2025/document=form_1040/line=10/control=amount
+  widget_type: text
+  page: 1
+  rect:
+  - 504.0
+  - 738.0
+  - 576.0
+  - 750.0
+  status: exact
+- field_name: topmostSubform[0].Page1[0].f1_75[0]
+  address_id: 2025/document=form_1040/line=11a/control=amount
+  widget_type: text
+  page: 1
+  rect:
+  - 504.0
+  - 750.0
+  - 576.0
+  - 762.0
+  status: exact
+- field_name: topmostSubform[0].Page2[0].f2_01[0]
+  address_id: 2025/document=form_1040/line=11b/control=amount
+  widget_type: text
+  page: 2
+  rect:
+  - 504.0
+  - 36.0
+  - 576.0
+  - 48.0
+  status: exact
+- field_name: topmostSubform[0].Page2[0].c2_1[0]
+  address_id: 2025/document=form_1040/line=12a/control=checkbox
+  widget_type: checkbox
+  page: 2
+  rect:
+  - 203.6
+  - 50.0
+  - 211.6
+  - 58.0
+  status: provisional
+- field_name: topmostSubform[0].Page2[0].c2_2[0]
+  address_id: 2025/document=form_1040/line=12a/control=checkbox
+  widget_type: checkbox
+  page: 2
+  rect:
+  - 304.4
+  - 50.0
+  - 312.4
+  - 58.0
+  status: provisional
+- field_name: topmostSubform[0].Page2[0].c2_7[0]
+  address_id: 2025/document=form_1040/line=12e/control=checkbox
+  widget_type: checkbox
+  page: 2
+  rect:
+  - 153.2
+  - 86.0
+  - 161.2
+  - 94.0
+  status: provisional
+- field_name: topmostSubform[0].Page2[0].c2_8[0]
+  address_id: 2025/document=form_1040/line=12e/control=checkbox
+  widget_type: checkbox
+  page: 2
+  rect:
+  - 311.6
+  - 86.0
+  - 319.6
+  - 94.0
+  status: provisional
+- field_name: topmostSubform[0].Page2[0].f2_02[0]
+  address_id: 2025/document=form_1040/line=12e/control=amount
+  widget_type: text
+  page: 2
+  rect:
+  - 504.0
+  - 96.0
+  - 576.0
+  - 108.0
+  status: exact
+- field_name: topmostSubform[0].Page2[0].f2_03[0]
+  address_id: 2025/document=form_1040/line=13a/control=amount
+  widget_type: text
+  page: 2
+  rect:
+  - 504.0
+  - 108.0
+  - 576.0
+  - 120.0
+  status: exact
+- field_name: topmostSubform[0].Page2[0].f2_04[0]
+  address_id: 2025/document=form_1040/line=13b/control=amount
+  widget_type: text
+  page: 2
+  rect:
+  - 504.0
+  - 120.0
+  - 576.0
+  - 132.0
+  status: exact
+- field_name: topmostSubform[0].Page2[0].f2_05[0]
+  address_id: 2025/document=form_1040/line=13b/control=amount
+  widget_type: text
+  page: 2
+  rect:
+  - 504.0
+  - 132.0
+  - 576.0
+  - 144.0
+  status: exact
+- field_name: topmostSubform[0].Page2[0].f2_06[0]
+  address_id: 2025/document=form_1040/line=15/control=amount
+  widget_type: text
+  page: 2
+  rect:
+  - 504.0
+  - 144.0
+  - 576.0
+  - 156.0
+  status: exact
+- field_name: topmostSubform[0].Page2[0].c2_9[0]
+  address_id: 2025/document=form_1040/line=16/control=checkbox
+  widget_type: checkbox
+  page: 2
+  rect:
+  - 312.6
+  - 158.0
+  - 320.6
+  - 166.0
+  status: provisional
+- field_name: topmostSubform[0].Page2[0].c2_10[0]
+  address_id: 2025/document=form_1040/line=16/control=checkbox
+  widget_type: checkbox
+  page: 2
+  rect:
+  - 370.2
+  - 158.0
+  - 378.2
+  - 166.0
+  status: provisional
+- field_name: topmostSubform[0].Page2[0].c2_11[0]
+  address_id: 2025/document=form_1040/line=16/control=checkbox
+  widget_type: checkbox
+  page: 2
+  rect:
+  - 427.8
+  - 158.0
+  - 435.8
+  - 166.0
+  status: provisional
+- field_name: topmostSubform[0].Page2[0].f2_07[0]
+  address_id: 2025/document=form_1040/line=16/control=amount
+  widget_type: text
+  page: 2
+  rect:
+  - 439.2
+  - 156.0
+  - 475.2
+  - 168.0
+  status: provisional
+- field_name: topmostSubform[0].Page2[0].f2_08[0]
+  address_id: 2025/document=form_1040/line=16/control=amount
+  widget_type: text
+  page: 2
+  rect:
+  - 504.0
+  - 156.0
+  - 576.0
+  - 168.0
+  status: exact
+- field_name: topmostSubform[0].Page2[0].f2_09[0]
+  address_id: 2025/document=form_1040/line=17/control=amount
+  widget_type: text
+  page: 2
+  rect:
+  - 504.0
+  - 168.0
+  - 576.0
+  - 180.0
+  status: provisional
+- field_name: topmostSubform[0].Page2[0].f2_10[0]
+  address_id: 2025/document=form_1040/line=18/control=amount
+  widget_type: text
+  page: 2
+  rect:
+  - 504.0
+  - 180.0
+  - 576.0
+  - 192.0
+  status: provisional
+- field_name: topmostSubform[0].Page2[0].f2_11[0]
+  address_id: 2025/document=form_1040/line=19/control=amount
+  widget_type: text
+  page: 2
+  rect:
+  - 504.0
+  - 192.0
+  - 576.0
+  - 204.0
+  status: provisional
+- field_name: topmostSubform[0].Page2[0].f2_12[0]
+  address_id: 2025/document=form_1040/line=20/control=amount
+  widget_type: text
+  page: 2
+  rect:
+  - 504.0
+  - 204.0
+  - 576.0
+  - 216.0
+  status: provisional
+- field_name: topmostSubform[0].Page2[0].f2_14[0]
+  address_id: 2025/document=form_1040/line=22/control=amount
+  widget_type: text
+  page: 2
+  rect:
+  - 504.0
+  - 228.0
+  - 576.0
+  - 240.0
+  status: provisional
+- field_name: topmostSubform[0].Page2[0].f2_15[0]
+  address_id: 2025/document=form_1040/line=23/control=amount
+  widget_type: text
+  page: 2
+  rect:
+  - 504.0
+  - 240.0
+  - 576.0
+  - 252.0
+  status: provisional
+- field_name: topmostSubform[0].Page2[0].f2_16[0]
+  address_id: 2025/document=form_1040/line=24/control=amount
+  widget_type: text
+  page: 2
+  rect:
+  - 504.0
+  - 252.0
+  - 576.0
+  - 264.0
+  status: provisional
+- field_name: topmostSubform[0].Page2[0].f2_17[0]
+  address_id: 2025/document=form_1040/line=25a/control=amount
+  widget_type: text
+  page: 2
+  rect:
+  - 410.4
+  - 276.0
+  - 481.65
+  - 288.0
+  status: provisional
+- field_name: topmostSubform[0].Page2[0].f2_18[0]
+  address_id: 2025/document=form_1040/line=25b/control=amount
+  widget_type: text
+  page: 2
+  rect:
+  - 410.4
+  - 288.0
+  - 481.65
+  - 300.0
+  status: provisional
+- field_name: topmostSubform[0].Page2[0].f2_19[0]
+  address_id: 2025/document=form_1040/line=25c/control=amount
+  widget_type: text
+  page: 2
+  rect:
+  - 410.4
+  - 300.0
+  - 481.65
+  - 312.0
+  status: provisional
+- field_name: topmostSubform[0].Page2[0].f2_20[0]
+  address_id: 2025/document=form_1040/line=25d/control=amount
+  widget_type: text
+  page: 2
+  rect:
+  - 504.0
+  - 312.0
+  - 576.0
+  - 324.0
+  status: provisional
+- field_name: topmostSubform[0].Page2[0].f2_21[0]
+  address_id: 2025/document=form_1040/line=26/control=amount
+  widget_type: text
+  page: 2
+  rect:
+  - 504.0
+  - 324.0
+  - 576.0
+  - 336.0
+  status: provisional
+- field_name: topmostSubform[0].Page2[0].f2_23[0]
+  address_id: 2025/document=form_1040/line=27a/control=amount
+  widget_type: text
+  page: 2
+  rect:
+  - 410.4
+  - 360.0
+  - 481.65
+  - 372.0
+  status: provisional
+- field_name: topmostSubform[0].Page2[0].Line28_ReadOrder[0].c2_14[0]
+  address_id: 2025/document=form_1040/line=28/control=checkbox
+  widget_type: checkbox
+  page: 2
+  rect:
+  - 373.6
+  - 410.0
+  - 381.6
+  - 418.0
+  status: provisional
+- field_name: topmostSubform[0].Page2[0].f2_24[0]
+  address_id: 2025/document=form_1040/line=28/control=amount
+  widget_type: text
+  page: 2
+  rect:
+  - 410.4
+  - 408.0
+  - 481.65
+  - 420.0
+  status: provisional
+- field_name: topmostSubform[0].Page2[0].f2_25[0]
+  address_id: 2025/document=form_1040/line=29/control=amount
+  widget_type: text
+  page: 2
+  rect:
+  - 410.4
+  - 420.0
+  - 481.65
+  - 432.0
+  status: provisional
+- field_name: topmostSubform[0].Page2[0].f2_26[0]
+  address_id: 2025/document=form_1040/line=30/control=amount
+  widget_type: text
+  page: 2
+  rect:
+  - 410.4
+  - 432.0
+  - 481.65
+  - 444.0
+  status: provisional
+- field_name: topmostSubform[0].Page2[0].f2_27[0]
+  address_id: 2025/document=form_1040/line=31/control=amount
+  widget_type: text
+  page: 2
+  rect:
+  - 410.4
+  - 444.0
+  - 481.65
+  - 456.0
+  status: provisional
+- field_name: topmostSubform[0].Page2[0].f2_28[0]
+  address_id: 2025/document=form_1040/line=32/control=amount
+  widget_type: text
+  page: 2
+  rect:
+  - 504.0
+  - 456.0
+  - 576.0
+  - 468.0
+  status: provisional
+- field_name: topmostSubform[0].Page2[0].f2_29[0]
+  address_id: 2025/document=form_1040/line=33/control=amount
+  widget_type: text
+  page: 2
+  rect:
+  - 504.0
+  - 468.0
+  - 576.0
+  - 480.0
+  status: provisional
+- field_name: topmostSubform[0].Page2[0].f2_30[0]
+  address_id: 2025/document=form_1040/line=34/control=amount
+  widget_type: text
+  page: 2
+  rect:
+  - 504.0
+  - 480.0
+  - 576.0
+  - 492.0
+  status: provisional
+- field_name: topmostSubform[0].Page2[0].c2_15[0]
+  address_id: 2025/document=form_1040/line=35a/control=checkbox
+  widget_type: checkbox
+  page: 2
+  rect:
+  - 467.2
+  - 494.0
+  - 475.2
+  - 502.0
+  status: provisional
+- field_name: topmostSubform[0].Page2[0].f2_31[0]
+  address_id: 2025/document=form_1040/line=35a/control=amount
+  widget_type: text
+  page: 2
+  rect:
+  - 504.0
+  - 492.0
+  - 576.0
+  - 504.0
+  status: provisional
+- field_name: topmostSubform[0].Page2[0].f2_34[0]
+  address_id: 2025/document=form_1040/line=36/control=amount
+  widget_type: text
+  page: 2
+  rect:
+  - 410.4
+  - 528.0
+  - 481.65
+  - 540.0
+  status: provisional
+- field_name: topmostSubform[0].Page2[0].f2_35[0]
+  address_id: 2025/document=form_1040/line=37/control=amount
+  widget_type: text
+  page: 2
+  rect:
+  - 504.0
+  - 552.0
+  - 576.0
+  - 564.0
+  status: provisional
+- field_name: topmostSubform[0].Page2[0].f2_36[0]
+  address_id: 2025/document=form_1040/line=38/control=amount
+  widget_type: text
+  page: 2
+  rect:
+  - 410.4
+  - 564.0
+  - 481.65
+  - 576.0
+  status: provisional

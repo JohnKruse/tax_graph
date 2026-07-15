@@ -22,6 +22,7 @@
           "checkbox_value": {"type": "string"},
           "node_id": {"type": "string", "pattern": "^[a-z0-9_]+$"},
           "identity_slot": {"type": "string", "pattern": "^[a-z0-9_]+$"}
+          ,"address_id": {"type": "string", "pattern": "^[0-9]{4}/[a-z0-9_.=/%-]+$"}
         },
         "oneOf": [
           {"required": ["node_id"], "properties": {"node_id": {"type": "string", "pattern": "^[a-z0-9_]+$"}}},
@@ -90,6 +91,7 @@
         "identity_slot": {"type": "string", "pattern": "^[a-z0-9_]+$"},
         "runtime_fact_ref": {"type": "string", "pattern": "^[a-z0-9_.#]+$"},
         "source_ref": {"type": "string", "minLength": 1},
+        "address_id": {"type": "string", "pattern": "^[0-9]{4}/[a-z0-9_.=/%-]+$"},
         "reason": {"type": "string", "minLength": 1},
         "downstream_effect": {"type": "string", "minLength": 1},
         "missing_capability": {"type": "string", "minLength": 1},

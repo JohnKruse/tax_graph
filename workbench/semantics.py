@@ -411,11 +411,17 @@ def _incoming_edges(node_id: str, graph_index: GraphIndex) -> list[dict[str, Any
 
 
 def _nodes(graph_index: GraphIndex) -> dict[str, dict[str, Any]]:
-    return {
-        object_id: obj
+    nodes = {
+        object_id: dict(obj)
         for (object_type, object_id), obj in graph_index.items()
         if object_type == "node"
     }
+    for node_id, node in nodes.items():
+        binding = graph_index.get(("node_binding", node_id))
+        address = graph_index.get(("address", str((binding or {}).get("address_id", ""))))
+        if address and address.get("official_ref"):
+            node["canonical_official_ref"] = str(address["official_ref"])
+    return nodes
 
 
 def _operand_label(
@@ -454,6 +460,8 @@ def _column_label(column: str) -> str:
 
 
 def _line_number(node_id: str, node: Mapping[str, Any]) -> str | None:
+    if node.get("canonical_official_ref"):
+        return str(node["canonical_official_ref"])
     label = str(node.get("label", "")).strip()
     printed_match = re.search(r"\b([0-9]+[a-z]?)\s*$", label, flags=re.IGNORECASE)
     if printed_match:

@@ -6,171 +6,212 @@ mappings:
   field_name: topmostSubform[0].Page1[0].f1_14[0]
   format: text
   identity_slot: taxpayer_first_name
+  address_id: 2025/document=form_1040/section=identity/control=taxpayer_first_name
 - slot: taxpayer_last_name
   field_name: topmostSubform[0].Page1[0].f1_15[0]
   format: text
   identity_slot: taxpayer_last_name
+  address_id: 2025/document=form_1040/section=identity/control=taxpayer_last_name
 - slot: taxpayer_ssn
   field_name: topmostSubform[0].Page1[0].f1_16[0]
   format: text
   identity_slot: taxpayer_ssn
+  address_id: 2025/document=form_1040/section=identity/control=taxpayer_ssn
 - slot: spouse_first_name
   field_name: topmostSubform[0].Page1[0].f1_17[0]
   format: text
   identity_slot: spouse_first_name
+  address_id: 2025/document=form_1040/section=identity/control=spouse_first_name
 - slot: spouse_last_name
   field_name: topmostSubform[0].Page1[0].f1_18[0]
   format: text
   identity_slot: spouse_last_name
+  address_id: 2025/document=form_1040/section=identity/control=spouse_last_name
 - slot: spouse_ssn
   field_name: topmostSubform[0].Page1[0].f1_19[0]
   format: text
   identity_slot: spouse_ssn
+  address_id: 2025/document=form_1040/section=identity/control=spouse_ssn
 - slot: address_line_1
   field_name: topmostSubform[0].Page1[0].Address_ReadOrder[0].f1_20[0]
   format: text
   identity_slot: address_line_1
+  address_id: 2025/document=form_1040/section=identity/control=address_line_1
 - slot: apartment
   field_name: topmostSubform[0].Page1[0].Address_ReadOrder[0].f1_21[0]
   format: text
   identity_slot: apartment
+  address_id: 2025/document=form_1040/section=identity/control=apartment
 - slot: city
   field_name: topmostSubform[0].Page1[0].Address_ReadOrder[0].f1_22[0]
   format: text
   identity_slot: city
+  address_id: 2025/document=form_1040/section=identity/control=city
 - slot: state
   field_name: topmostSubform[0].Page1[0].Address_ReadOrder[0].f1_23[0]
   format: text
   identity_slot: state
+  address_id: 2025/document=form_1040/section=identity/control=state
 - slot: zip_code
   field_name: topmostSubform[0].Page1[0].Address_ReadOrder[0].f1_24[0]
   format: text
   identity_slot: zip_code
+  address_id: 2025/document=form_1040/section=identity/control=zip_code
 - slot: filing_status
   field_name: topmostSubform[0].Page1[0].Checkbox_ReadOrder[0].c1_8[0]
   format: checkbox
   identity_slot: filing_status
   checkbox_value: single
+  address_id: 2025/document=form_1040/section=filing_status/option=single
 - slot: filing_status
   field_name: topmostSubform[0].Page1[0].Checkbox_ReadOrder[0].c1_8[1]
   format: checkbox
   identity_slot: filing_status
   checkbox_value: married_filing_jointly
+  address_id: 2025/document=form_1040/section=filing_status/option=married_filing_jointly
 - slot: filing_status
   field_name: topmostSubform[0].Page1[0].Checkbox_ReadOrder[0].c1_8[2]
   format: checkbox
   identity_slot: filing_status
   checkbox_value: married_filing_separately
+  address_id: 2025/document=form_1040/section=filing_status/option=married_filing_separately
 - slot: filing_status
   field_name: topmostSubform[0].Page1[0].c1_8[0]
   format: checkbox
   identity_slot: filing_status
   checkbox_value: head_of_household
+  address_id: 2025/document=form_1040/section=filing_status/option=head_of_household
 - slot: filing_status
   field_name: topmostSubform[0].Page1[0].c1_8[1]
   format: checkbox
   identity_slot: filing_status
   checkbox_value: qualifying_surviving_spouse
+  address_id: 2025/document=form_1040/section=filing_status/option=qualifying_surviving_spouse
 - slot: form_1040_2025_root_line_1a
   field_name: topmostSubform[0].Page1[0].f1_47[0]
   format: dollars
   node_id: form_1040_2025_root_line_1a
+  address_id: 2025/document=form_1040/line=1a/control=amount
 - slot: form_1040_2025_root_line_z
   field_name: topmostSubform[0].Page1[0].f1_57[0]
   format: dollars
   node_id: form_1040_2025_root_line_z
+  address_id: 2025/document=form_1040/line=1z/control=amount
 - slot: form_1040_2025_root_line_2b
   field_name: topmostSubform[0].Page1[0].f1_59[0]
   format: dollars
   node_id: form_1040_2025_root_line_2b
+  address_id: 2025/document=form_1040/line=2b/control=amount
 - slot: form_1040_2025_root_line_3a
   field_name: topmostSubform[0].Page1[0].f1_60[0]
   format: dollars
   node_id: form_1040_2025_root_line_3a
+  address_id: 2025/document=form_1040/line=3b/control=amount
 - slot: form_1040_2025_root_line_3b
   field_name: topmostSubform[0].Page1[0].f1_61[0]
   format: dollars
   node_id: form_1040_2025_root_line_3b
+  address_id: 2025/document=form_1040/line=3b/control=amount
 - slot: form_1040_2025_line_7_capital_gain_loss
   field_name: topmostSubform[0].Page1[0].f1_70[0]
   format: dollars
   node_id: form_1040_2025_line_7_capital_gain_loss
+  address_id: 2025/document=form_1040/line=7a/control=amount
 - slot: form_1040_2025_root_line_8
   field_name: topmostSubform[0].Page1[0].f1_72[0]
   format: dollars
   node_id: form_1040_2025_root_line_8
+  address_id: 2025/document=form_1040/line=8/control=amount
 - slot: form_1040_2025_root_line_9
   field_name: topmostSubform[0].Page1[0].f1_73[0]
   format: dollars
   node_id: form_1040_2025_root_line_9
+  address_id: 2025/document=form_1040/line=9/control=amount
 - slot: form_1040_2025_root_line_10
   field_name: topmostSubform[0].Page1[0].f1_74[0]
   format: dollars
   node_id: form_1040_2025_root_line_10
+  address_id: 2025/document=form_1040/line=10/control=amount
 - slot: form_1040_2025_root_line_11a
   field_name: topmostSubform[0].Page1[0].f1_75[0]
   format: dollars
   node_id: form_1040_2025_root_line_11a
+  address_id: 2025/document=form_1040/line=11a/control=amount
 - slot: form_1040_2025_root_line_11b
   field_name: topmostSubform[0].Page2[0].f2_01[0]
   format: dollars
   node_id: form_1040_2025_root_line_11b
+  address_id: 2025/document=form_1040/line=11b/control=amount
 - slot: form_1040_2025_root_line_12e
   field_name: topmostSubform[0].Page2[0].f2_02[0]
   format: dollars
   node_id: form_1040_2025_root_line_12e
+  address_id: 2025/document=form_1040/line=12e/control=amount
 - slot: form_1040_2025_root_line_13a
   field_name: topmostSubform[0].Page2[0].f2_03[0]
   format: dollars
   node_id: form_1040_2025_root_line_13a
+  address_id: 2025/document=form_1040/line=13a/control=amount
 - slot: form_1040_2025_root_line_13b
   field_name: topmostSubform[0].Page2[0].f2_04[0]
   format: dollars
   node_id: form_1040_2025_root_line_13b
+  address_id: 2025/document=form_1040/line=13b/control=amount
 - slot: form_1040_2025_root_line_14
   field_name: topmostSubform[0].Page2[0].f2_05[0]
   format: dollars
   node_id: form_1040_2025_root_line_14
+  address_id: 2025/document=form_1040/line=13b/control=amount
 - slot: form_1040_2025_root_line_15
   field_name: topmostSubform[0].Page2[0].f2_06[0]
   format: dollars
   node_id: form_1040_2025_root_line_15
+  address_id: 2025/document=form_1040/line=15/control=amount
 - slot: form_1040_2025_root_line_16
   field_name: topmostSubform[0].Page2[0].f2_08[0]
   format: dollars
   node_id: form_1040_2025_root_line_16
+  address_id: 2025/document=form_1040/line=16/control=amount
 - slot: form_1040_2025_root_line_1b
   field_name: topmostSubform[0].Page1[0].f1_48[0]
   format: dollars
   node_id: form_1040_2025_root_line_1b
+  address_id: 2025/document=form_1040/line=1b/control=amount
 - slot: form_1040_2025_root_line_1c
   field_name: topmostSubform[0].Page1[0].f1_49[0]
   format: dollars
   node_id: form_1040_2025_root_line_1c
+  address_id: 2025/document=form_1040/line=1c/control=amount
 - slot: form_1040_2025_root_line_1d
   field_name: topmostSubform[0].Page1[0].f1_50[0]
   format: dollars
   node_id: form_1040_2025_root_line_1d
+  address_id: 2025/document=form_1040/line=1d/control=amount
 - slot: form_1040_2025_root_line_1e
   field_name: topmostSubform[0].Page1[0].f1_51[0]
   format: dollars
   node_id: form_1040_2025_root_line_1e
+  address_id: 2025/document=form_1040/line=1e/control=amount
 - slot: form_1040_2025_root_line_1f
   field_name: topmostSubform[0].Page1[0].f1_52[0]
   format: dollars
   node_id: form_1040_2025_root_line_1f
+  address_id: 2025/document=form_1040/line=1f/control=amount
 - slot: form_1040_2025_root_line_1g
   field_name: topmostSubform[0].Page1[0].f1_53[0]
   format: dollars
   node_id: form_1040_2025_root_line_1g
+  address_id: 2025/document=form_1040/line=1g/control=amount
 - slot: form_1040_2025_root_line_1h
   field_name: topmostSubform[0].Page1[0].f1_55[0]
   format: dollars
   node_id: form_1040_2025_root_line_1h
+  address_id: 2025/document=form_1040/line=1h/control=amount
 - slot: form_1040_2025_root_line_1h_description
   field_name: topmostSubform[0].Page1[0].f1_54[0]
   format: text
   identity_slot: line_1h_description
+  address_id: 2025/document=form_1040/line=1h/control=description
 excluded_nodes:
 - node_id: form_1040_2025_non_sdtw_tax
   reason: Internal tax-method selector with no official-form box.
@@ -510,56 +551,67 @@ field_dispositions:
   population_policy: user_entered
   value_format: text
   identity_slot: taxpayer_first_name
+  address_id: 2025/document=form_1040/section=identity/control=taxpayer_first_name
 - field_name: topmostSubform[0].Page1[0].f1_15[0]
   label: f1_15
   population_policy: user_entered
   value_format: text
   identity_slot: taxpayer_last_name
+  address_id: 2025/document=form_1040/section=identity/control=taxpayer_last_name
 - field_name: topmostSubform[0].Page1[0].f1_16[0]
   label: f1_16
   population_policy: user_entered
   value_format: text
   identity_slot: taxpayer_ssn
+  address_id: 2025/document=form_1040/section=identity/control=taxpayer_ssn
 - field_name: topmostSubform[0].Page1[0].f1_17[0]
   label: f1_17
   population_policy: user_entered
   value_format: text
   identity_slot: spouse_first_name
+  address_id: 2025/document=form_1040/section=identity/control=spouse_first_name
 - field_name: topmostSubform[0].Page1[0].f1_18[0]
   label: f1_18
   population_policy: user_entered
   value_format: text
   identity_slot: spouse_last_name
+  address_id: 2025/document=form_1040/section=identity/control=spouse_last_name
 - field_name: topmostSubform[0].Page1[0].f1_19[0]
   label: f1_19
   population_policy: user_entered
   value_format: text
   identity_slot: spouse_ssn
+  address_id: 2025/document=form_1040/section=identity/control=spouse_ssn
 - field_name: topmostSubform[0].Page1[0].Address_ReadOrder[0].f1_20[0]
   label: Line a - f1_20
   population_policy: user_entered
   value_format: text
   identity_slot: address_line_1
+  address_id: 2025/document=form_1040/section=identity/control=address_line_1
 - field_name: topmostSubform[0].Page1[0].Address_ReadOrder[0].f1_21[0]
   label: Line a - f1_21
   population_policy: user_entered
   value_format: text
   identity_slot: apartment
+  address_id: 2025/document=form_1040/section=identity/control=apartment
 - field_name: topmostSubform[0].Page1[0].Address_ReadOrder[0].f1_22[0]
   label: f1_22
   population_policy: user_entered
   value_format: text
   identity_slot: city
+  address_id: 2025/document=form_1040/section=identity/control=city
 - field_name: topmostSubform[0].Page1[0].Address_ReadOrder[0].f1_23[0]
   label: f1_23
   population_policy: user_entered
   value_format: text
   identity_slot: state
+  address_id: 2025/document=form_1040/section=identity/control=state
 - field_name: topmostSubform[0].Page1[0].Address_ReadOrder[0].f1_24[0]
   label: f1_24
   population_policy: user_entered
   value_format: text
   identity_slot: zip_code
+  address_id: 2025/document=form_1040/section=identity/control=zip_code
 - field_name: topmostSubform[0].Page1[0].Address_ReadOrder[0].f1_25[0]
   label: f1_25
   population_policy: unsupported
@@ -625,16 +677,19 @@ field_dispositions:
   population_policy: user_entered
   value_format: checkbox
   identity_slot: filing_status
+  address_id: 2025/document=form_1040/section=filing_status/option=single
 - field_name: topmostSubform[0].Page1[0].Checkbox_ReadOrder[0].c1_8[1]
   label: Check only - c1_8
   population_policy: user_entered
   value_format: checkbox
   identity_slot: filing_status
+  address_id: 2025/document=form_1040/section=filing_status/option=married_filing_jointly
 - field_name: topmostSubform[0].Page1[0].Checkbox_ReadOrder[0].c1_8[2]
   label: one box. - c1_8
   population_policy: user_entered
   value_format: checkbox
   identity_slot: filing_status
+  address_id: 2025/document=form_1040/section=filing_status/option=married_filing_separately
 - field_name: topmostSubform[0].Page1[0].Checkbox_ReadOrder[0].f1_28[0]
   label: 'and full name here: - f1_28'
   population_policy: unsupported
@@ -650,11 +705,13 @@ field_dispositions:
   population_policy: user_entered
   value_format: checkbox
   identity_slot: filing_status
+  address_id: 2025/document=form_1040/section=filing_status/option=head_of_household
 - field_name: topmostSubform[0].Page1[0].c1_8[1]
   label: only Married filing jointly (even if only one had income) - c1_8
   population_policy: user_entered
   value_format: checkbox
   identity_slot: filing_status
+  address_id: 2025/document=form_1040/section=filing_status/option=qualifying_surviving_spouse
 - field_name: topmostSubform[0].Page1[0].f1_29[0]
   label: 'Line a - and full name here: - f1_29'
   population_policy: unsupported
@@ -698,6 +755,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page1[0].c1_10[0].
+  address_id: 2025/document=form_1040/line=1/control=checkbox
 - field_name: topmostSubform[0].Page1[0].c1_10[1]
   label: Line 1 - interest in a digital asset)? (See instructions.) . . Yes - c1_10
   population_policy: unsupported
@@ -709,6 +767,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page1[0].c1_10[1].
+  address_id: 2025/document=form_1040/line=1/control=checkbox
 - field_name: topmostSubform[0].Page1[0].Dependents_ReadOrder[0].c1_11[0]
   label: and here check . . - c1_11
   population_policy: unsupported
@@ -729,6 +788,7 @@ field_dispositions:
     column: first_name
     role: identity
   runtime_fact_ref: dependents.first_name
+  address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=first_name
 - field_name: topmostSubform[0].Page1[0].Table_Dependents[0].Row1[0].f1_32[0]
   label: Dependent 2 first name
   population_policy: user_entered
@@ -739,6 +799,7 @@ field_dispositions:
     column: first_name
     role: identity
   runtime_fact_ref: dependents.first_name
+  address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=first_name
 - field_name: topmostSubform[0].Page1[0].Table_Dependents[0].Row1[0].f1_33[0]
   label: Dependent 3 first name
   population_policy: user_entered
@@ -749,6 +810,7 @@ field_dispositions:
     column: first_name
     role: identity
   runtime_fact_ref: dependents.first_name
+  address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=first_name
 - field_name: topmostSubform[0].Page1[0].Table_Dependents[0].Row1[0].f1_34[0]
   label: Dependent 4 first name
   population_policy: user_entered
@@ -759,6 +821,7 @@ field_dispositions:
     column: first_name
     role: identity
   runtime_fact_ref: dependents.first_name
+  address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=first_name
 - field_name: topmostSubform[0].Page1[0].Table_Dependents[0].Row2[0].f1_35[0]
   label: Dependent 1 last name
   population_policy: user_entered
@@ -769,6 +832,7 @@ field_dispositions:
     column: last_name
     role: identity
   runtime_fact_ref: dependents.last_name
+  address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=last_name
 - field_name: topmostSubform[0].Page1[0].Table_Dependents[0].Row2[0].f1_36[0]
   label: Dependent 2 last name
   population_policy: user_entered
@@ -779,6 +843,7 @@ field_dispositions:
     column: last_name
     role: identity
   runtime_fact_ref: dependents.last_name
+  address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=last_name
 - field_name: topmostSubform[0].Page1[0].Table_Dependents[0].Row2[0].f1_37[0]
   label: Dependent 3 last name
   population_policy: user_entered
@@ -789,6 +854,7 @@ field_dispositions:
     column: last_name
     role: identity
   runtime_fact_ref: dependents.last_name
+  address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=last_name
 - field_name: topmostSubform[0].Page1[0].Table_Dependents[0].Row2[0].f1_38[0]
   label: Dependent 4 last name
   population_policy: user_entered
@@ -799,6 +865,7 @@ field_dispositions:
     column: last_name
     role: identity
   runtime_fact_ref: dependents.last_name
+  address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=last_name
 - field_name: topmostSubform[0].Page1[0].Table_Dependents[0].Row3[0].f1_39[0]
   label: Dependent 1 ssn
   population_policy: user_entered
@@ -809,6 +876,7 @@ field_dispositions:
     column: ssn
     role: identity
   runtime_fact_ref: dependents.ssn
+  address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=ssn
 - field_name: topmostSubform[0].Page1[0].Table_Dependents[0].Row3[0].f1_40[0]
   label: Dependent 2 ssn
   population_policy: user_entered
@@ -819,6 +887,7 @@ field_dispositions:
     column: ssn
     role: identity
   runtime_fact_ref: dependents.ssn
+  address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=ssn
 - field_name: topmostSubform[0].Page1[0].Table_Dependents[0].Row3[0].f1_41[0]
   label: Dependent 3 ssn
   population_policy: user_entered
@@ -829,6 +898,7 @@ field_dispositions:
     column: ssn
     role: identity
   runtime_fact_ref: dependents.ssn
+  address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=ssn
 - field_name: topmostSubform[0].Page1[0].Table_Dependents[0].Row3[0].f1_42[0]
   label: Dependent 4 ssn
   population_policy: user_entered
@@ -839,6 +909,7 @@ field_dispositions:
     column: ssn
     role: identity
   runtime_fact_ref: dependents.ssn
+  address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=ssn
 - field_name: topmostSubform[0].Page1[0].Table_Dependents[0].Row4[0].f1_43[0]
   label: Dependent 1 relationship
   population_policy: user_entered
@@ -849,6 +920,7 @@ field_dispositions:
     column: relationship
     role: identity
   runtime_fact_ref: dependents.relationship
+  address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=relationship
 - field_name: topmostSubform[0].Page1[0].Table_Dependents[0].Row4[0].f1_44[0]
   label: Dependent 2 relationship
   population_policy: user_entered
@@ -859,6 +931,7 @@ field_dispositions:
     column: relationship
     role: identity
   runtime_fact_ref: dependents.relationship
+  address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=relationship
 - field_name: topmostSubform[0].Page1[0].Table_Dependents[0].Row4[0].f1_45[0]
   label: Dependent 3 relationship
   population_policy: user_entered
@@ -869,6 +942,7 @@ field_dispositions:
     column: relationship
     role: identity
   runtime_fact_ref: dependents.relationship
+  address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=relationship
 - field_name: topmostSubform[0].Page1[0].Table_Dependents[0].Row4[0].f1_46[0]
   label: Dependent 4 relationship
   population_policy: user_entered
@@ -879,6 +953,7 @@ field_dispositions:
     column: relationship
     role: identity
   runtime_fact_ref: dependents.relationship
+  address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=relationship
 - field_name: topmostSubform[0].Page1[0].Table_Dependents[0].Row5[0].Dependent1[0].c1_12[0]
   label: Dependent 1 lived with you decision
   population_policy: decision_required
@@ -889,6 +964,7 @@ field_dispositions:
     column: lived_with_you
     role: decision
   runtime_fact_ref: dependents.lived_with_you
+  address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=lived_with_you
 - field_name: topmostSubform[0].Page1[0].Table_Dependents[0].Row5[0].Dependent1[0].c1_13[0]
   label: Dependent 1 in us decision
   population_policy: decision_required
@@ -899,6 +975,7 @@ field_dispositions:
     column: in_us
     role: decision
   runtime_fact_ref: dependents.in_us
+  address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=in_us
 - field_name: topmostSubform[0].Page1[0].Table_Dependents[0].Row5[0].Dependent2[0].c1_14[0]
   label: Dependent 2 lived with you decision
   population_policy: decision_required
@@ -909,6 +986,7 @@ field_dispositions:
     column: lived_with_you
     role: decision
   runtime_fact_ref: dependents.lived_with_you
+  address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=lived_with_you
 - field_name: topmostSubform[0].Page1[0].Table_Dependents[0].Row5[0].Dependent2[0].c1_15[0]
   label: Dependent 2 in us decision
   population_policy: decision_required
@@ -919,6 +997,7 @@ field_dispositions:
     column: in_us
     role: decision
   runtime_fact_ref: dependents.in_us
+  address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=in_us
 - field_name: topmostSubform[0].Page1[0].Table_Dependents[0].Row5[0].Dependent3[0].c1_16[0]
   label: Dependent 3 lived with you decision
   population_policy: decision_required
@@ -929,6 +1008,7 @@ field_dispositions:
     column: lived_with_you
     role: decision
   runtime_fact_ref: dependents.lived_with_you
+  address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=lived_with_you
 - field_name: topmostSubform[0].Page1[0].Table_Dependents[0].Row5[0].Dependent3[0].c1_17[0]
   label: Dependent 3 in us decision
   population_policy: decision_required
@@ -939,6 +1019,7 @@ field_dispositions:
     column: in_us
     role: decision
   runtime_fact_ref: dependents.in_us
+  address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=in_us
 - field_name: topmostSubform[0].Page1[0].Table_Dependents[0].Row5[0].Dependent4[0].c1_18[0]
   label: Dependent 4 lived with you decision
   population_policy: decision_required
@@ -949,6 +1030,7 @@ field_dispositions:
     column: lived_with_you
     role: decision
   runtime_fact_ref: dependents.lived_with_you
+  address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=lived_with_you
 - field_name: topmostSubform[0].Page1[0].Table_Dependents[0].Row5[0].Dependent4[0].c1_19[0]
   label: Dependent 4 in us decision
   population_policy: decision_required
@@ -959,6 +1041,7 @@ field_dispositions:
     column: in_us
     role: decision
   runtime_fact_ref: dependents.in_us
+  address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=in_us
 - field_name: topmostSubform[0].Page1[0].Table_Dependents[0].Row6[0].Dependent1[0].c1_20[0]
   label: Dependent 1 full time student decision
   population_policy: decision_required
@@ -969,6 +1052,7 @@ field_dispositions:
     column: full_time_student
     role: decision
   runtime_fact_ref: dependents.full_time_student
+  address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=full_time_student
 - field_name: topmostSubform[0].Page1[0].Table_Dependents[0].Row6[0].Dependent1[0].c1_21[0]
   label: Dependent 1 permanently disabled decision
   population_policy: decision_required
@@ -979,6 +1063,7 @@ field_dispositions:
     column: permanently_disabled
     role: decision
   runtime_fact_ref: dependents.permanently_disabled
+  address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=permanently_disabled
 - field_name: topmostSubform[0].Page1[0].Table_Dependents[0].Row6[0].Dependent2[0].c1_22[0]
   label: Dependent 2 full time student decision
   population_policy: decision_required
@@ -989,6 +1074,7 @@ field_dispositions:
     column: full_time_student
     role: decision
   runtime_fact_ref: dependents.full_time_student
+  address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=full_time_student
 - field_name: topmostSubform[0].Page1[0].Table_Dependents[0].Row6[0].Dependent2[0].c1_23[0]
   label: Dependent 2 permanently disabled decision
   population_policy: decision_required
@@ -999,6 +1085,7 @@ field_dispositions:
     column: permanently_disabled
     role: decision
   runtime_fact_ref: dependents.permanently_disabled
+  address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=permanently_disabled
 - field_name: topmostSubform[0].Page1[0].Table_Dependents[0].Row6[0].Dependent3[0].c1_24[0]
   label: Dependent 3 full time student decision
   population_policy: decision_required
@@ -1009,6 +1096,7 @@ field_dispositions:
     column: full_time_student
     role: decision
   runtime_fact_ref: dependents.full_time_student
+  address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=full_time_student
 - field_name: topmostSubform[0].Page1[0].Table_Dependents[0].Row6[0].Dependent3[0].c1_25[0]
   label: Dependent 3 permanently disabled decision
   population_policy: decision_required
@@ -1019,6 +1107,7 @@ field_dispositions:
     column: permanently_disabled
     role: decision
   runtime_fact_ref: dependents.permanently_disabled
+  address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=permanently_disabled
 - field_name: topmostSubform[0].Page1[0].Table_Dependents[0].Row6[0].Dependent4[0].c1_26[0]
   label: Dependent 4 full time student decision
   population_policy: decision_required
@@ -1029,6 +1118,7 @@ field_dispositions:
     column: full_time_student
     role: decision
   runtime_fact_ref: dependents.full_time_student
+  address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=full_time_student
 - field_name: topmostSubform[0].Page1[0].Table_Dependents[0].Row6[0].Dependent4[0].c1_27[0]
   label: Dependent 4 permanently disabled decision
   population_policy: decision_required
@@ -1039,6 +1129,7 @@ field_dispositions:
     column: permanently_disabled
     role: decision
   runtime_fact_ref: dependents.permanently_disabled
+  address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=permanently_disabled
 - field_name: topmostSubform[0].Page1[0].Table_Dependents[0].Row7[0].Dependent1[0].c1_28[0]
   label: Dependent 1 child tax credit decision
   population_policy: decision_required
@@ -1049,6 +1140,7 @@ field_dispositions:
     column: child_tax_credit
     role: decision
   runtime_fact_ref: dependents.child_tax_credit
+  address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=child_tax_credit
 - field_name: topmostSubform[0].Page1[0].Table_Dependents[0].Row7[0].Dependent1[0].c1_28[1]
   label: Dependent 1 other dependent credit decision
   population_policy: decision_required
@@ -1059,6 +1151,7 @@ field_dispositions:
     column: other_dependent_credit
     role: decision
   runtime_fact_ref: dependents.other_dependent_credit
+  address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=other_dependent_credit
 - field_name: topmostSubform[0].Page1[0].Table_Dependents[0].Row7[0].Dependent2[0].c1_29[0]
   label: Dependent 2 child tax credit decision
   population_policy: decision_required
@@ -1069,6 +1162,7 @@ field_dispositions:
     column: child_tax_credit
     role: decision
   runtime_fact_ref: dependents.child_tax_credit
+  address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=child_tax_credit
 - field_name: topmostSubform[0].Page1[0].Table_Dependents[0].Row7[0].Dependent2[0].c1_29[1]
   label: Dependent 2 other dependent credit decision
   population_policy: decision_required
@@ -1079,6 +1173,7 @@ field_dispositions:
     column: other_dependent_credit
     role: decision
   runtime_fact_ref: dependents.other_dependent_credit
+  address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=other_dependent_credit
 - field_name: topmostSubform[0].Page1[0].Table_Dependents[0].Row7[0].Dependent3[0].c1_30[0]
   label: Dependent 3 child tax credit decision
   population_policy: decision_required
@@ -1089,6 +1184,7 @@ field_dispositions:
     column: child_tax_credit
     role: decision
   runtime_fact_ref: dependents.child_tax_credit
+  address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=child_tax_credit
 - field_name: topmostSubform[0].Page1[0].Table_Dependents[0].Row7[0].Dependent3[0].c1_30[1]
   label: Dependent 3 other dependent credit decision
   population_policy: decision_required
@@ -1099,6 +1195,7 @@ field_dispositions:
     column: other_dependent_credit
     role: decision
   runtime_fact_ref: dependents.other_dependent_credit
+  address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=other_dependent_credit
 - field_name: topmostSubform[0].Page1[0].Table_Dependents[0].Row7[0].Dependent4[0].c1_31[0]
   label: Dependent 4 child tax credit decision
   population_policy: decision_required
@@ -1109,6 +1206,7 @@ field_dispositions:
     column: child_tax_credit
     role: decision
   runtime_fact_ref: dependents.child_tax_credit
+  address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=child_tax_credit
 - field_name: topmostSubform[0].Page1[0].Table_Dependents[0].Row7[0].Dependent4[0].c1_31[1]
   label: Dependent 4 other dependent credit decision
   population_policy: decision_required
@@ -1119,6 +1217,7 @@ field_dispositions:
     column: other_dependent_credit
     role: decision
   runtime_fact_ref: dependents.other_dependent_credit
+  address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=other_dependent_credit
 - field_name: topmostSubform[0].Page1[0].c1_32[0]
   label: c1_32
   population_policy: unsupported
@@ -1134,48 +1233,57 @@ field_dispositions:
   population_policy: user_entered
   value_format: dollars
   node_id: form_1040_2025_root_line_1a
+  address_id: 2025/document=form_1040/line=1a/control=amount
 - field_name: topmostSubform[0].Page1[0].f1_48[0]
   label: Line 1b - . . . . . . . . . 1b - f1_48
   population_policy: user_entered
   value_format: dollars
   node_id: form_1040_2025_root_line_1b
+  address_id: 2025/document=form_1040/line=1b/control=amount
 - field_name: topmostSubform[0].Page1[0].f1_49[0]
   label: Line 1c - . . . . . . . . . 1c - f1_49
   population_policy: user_entered
   value_format: dollars
   node_id: form_1040_2025_root_line_1c
+  address_id: 2025/document=form_1040/line=1c/control=amount
 - field_name: topmostSubform[0].Page1[0].f1_50[0]
   label: Line 1d - instructions) . . . . . . . . 1d - f1_50
   population_policy: user_entered
   value_format: dollars
   node_id: form_1040_2025_root_line_1d
+  address_id: 2025/document=form_1040/line=1d/control=amount
 - field_name: topmostSubform[0].Page1[0].f1_51[0]
   label: Line 1e - . . . . . . . . . 1e - f1_51
   population_policy: user_entered
   value_format: dollars
   node_id: form_1040_2025_root_line_1e
+  address_id: 2025/document=form_1040/line=1e/control=amount
 - field_name: topmostSubform[0].Page1[0].f1_52[0]
   label: Line 1f - . . . . . . . . . 1f - f1_52
   population_policy: user_entered
   value_format: dollars
   node_id: form_1040_2025_root_line_1f
+  address_id: 2025/document=form_1040/line=1f/control=amount
 - field_name: topmostSubform[0].Page1[0].f1_53[0]
   label: Line 1g - . . . . . . . . . 1g - f1_53
   population_policy: user_entered
   value_format: dollars
   node_id: form_1040_2025_root_line_1g
+  address_id: 2025/document=form_1040/line=1g/control=amount
 - field_name: topmostSubform[0].Page1[0].f1_54[0]
   label: 'Line 1h - h Other earned income (see instructions). Enter type and amount:
     - f1_54'
   population_policy: user_entered
   value_format: text
   identity_slot: line_1h_description
+  address_id: 2025/document=form_1040/line=1h/control=description
 - field_name: topmostSubform[0].Page1[0].f1_55[0]
   label: 'Line 1h - Other earned income (see instructions). Enter type and amount:
     1h - f1_55'
   population_policy: user_entered
   value_format: dollars
   node_id: form_1040_2025_root_line_1h
+  address_id: 2025/document=form_1040/line=1h/control=amount
 - field_name: topmostSubform[0].Page1[0].f1_56[0]
   label: Line 1i - (see instructions) . . . . . . . 1i - f1_56
   population_policy: unsupported
@@ -1186,11 +1294,13 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page1[0].f1_56[0].
+  address_id: 2025/document=form_1040/line=1i/control=amount
 - field_name: topmostSubform[0].Page1[0].f1_57[0]
   label: Line 1z - . . . . . . . . . 1z - f1_57
   population_policy: computed
   value_format: dollars
   node_id: form_1040_2025_root_line_z
+  address_id: 2025/document=form_1040/line=1z/control=amount
 - field_name: topmostSubform[0].Page1[0].f1_58[0]
   label: Line 2b - Attach Sch. B 2a Tax-exempt interest . . . 2a - f1_58
   population_policy: unsupported
@@ -1201,21 +1311,25 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page1[0].f1_58[0].
+  address_id: 2025/document=form_1040/line=2b/control=amount
 - field_name: topmostSubform[0].Page1[0].f1_59[0]
   label: Line 2b - 2a b Taxable interest . . . . . 2b - f1_59
   population_policy: copied
   value_format: dollars
   node_id: form_1040_2025_root_line_2b
+  address_id: 2025/document=form_1040/line=2b/control=amount
 - field_name: topmostSubform[0].Page1[0].f1_60[0]
   label: Line 3b - if required. 3a Qualified dividends . . . 3a - f1_60
   population_policy: user_entered
   value_format: dollars
   node_id: form_1040_2025_root_line_3a
+  address_id: 2025/document=form_1040/line=3b/control=amount
 - field_name: topmostSubform[0].Page1[0].f1_61[0]
   label: Line 3b - 3a b Ordinary dividends . . . . . 3b - f1_61
   population_policy: copied
   value_format: dollars
   node_id: form_1040_2025_root_line_3b
+  address_id: 2025/document=form_1040/line=3b/control=amount
 - field_name: topmostSubform[0].Page1[0].c1_33[0]
   label: "Line 3b - c Check if your child\u2019s dividends are included in 1 - c1_33"
   population_policy: unsupported
@@ -1227,6 +1341,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page1[0].c1_33[0].
+  address_id: 2025/document=form_1040/line=3b/control=checkbox
 - field_name: topmostSubform[0].Page1[0].c1_34[0]
   label: "Line 3b - your child\u2019s dividends are included in 1 Line 3a 2 - c1_34"
   population_policy: unsupported
@@ -1238,6 +1353,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page1[0].c1_34[0].
+  address_id: 2025/document=form_1040/line=3b/control=checkbox
 - field_name: topmostSubform[0].Page1[0].f1_62[0]
   label: Line 4b - 4a IRA distributions . . . . 4a - f1_62
   population_policy: unsupported
@@ -1248,6 +1364,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page1[0].f1_62[0].
+  address_id: 2025/document=form_1040/line=4b/control=amount
 - field_name: topmostSubform[0].Page1[0].f1_63[0]
   label: Line 4b - b Taxable amount . . . . . . 4b - f1_63
   population_policy: unsupported
@@ -1258,6 +1375,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page1[0].f1_63[0].
+  address_id: 2025/document=form_1040/line=4b/control=amount
 - field_name: topmostSubform[0].Page1[0].c1_35[0]
   label: Line c - Check if (see instructions) . . . . . 1 - c1_35
   population_policy: unsupported
@@ -1308,6 +1426,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page1[0].f1_65[0].
+  address_id: 2025/document=form_1040/line=5b/control=amount
 - field_name: topmostSubform[0].Page1[0].f1_66[0]
   label: Line 5b - b Taxable amount . . . . . . 5b - f1_66
   population_policy: unsupported
@@ -1318,6 +1437,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page1[0].f1_66[0].
+  address_id: 2025/document=form_1040/line=5b/control=amount
 - field_name: topmostSubform[0].Page1[0].c1_38[0]
   label: Line c - Check if (see instructions) . . . . . 1 - c1_38
   population_policy: unsupported
@@ -1368,6 +1488,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page1[0].f1_68[0].
+  address_id: 2025/document=form_1040/line=6b/control=amount
 - field_name: topmostSubform[0].Page1[0].f1_69[0]
   label: Line 6b - b Taxable amount . . . . . . 6b - f1_69
   population_policy: unsupported
@@ -1378,6 +1499,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page1[0].f1_69[0].
+  address_id: 2025/document=form_1040/line=6b/control=amount
 - field_name: topmostSubform[0].Page1[0].c1_41[0]
   label: Line c - method, check here (see instructions) . . . . . - c1_41
   population_policy: unsupported
@@ -1404,6 +1526,7 @@ field_dispositions:
   population_policy: copied
   value_format: dollars
   node_id: form_1040_2025_line_7_capital_gain_loss
+  address_id: 2025/document=form_1040/line=7a/control=amount
 - field_name: topmostSubform[0].Page1[0].c1_43[0]
   label: 'Line b - b Check if: - c1_43'
   population_policy: unsupported
@@ -1441,26 +1564,31 @@ field_dispositions:
   population_policy: copied
   value_format: dollars
   node_id: form_1040_2025_root_line_8
+  address_id: 2025/document=form_1040/line=8/control=amount
 - field_name: topmostSubform[0].Page1[0].f1_73[0]
   label: Line 9 - . . . . . . . . . 9 - f1_73
   population_policy: computed
   value_format: dollars
   node_id: form_1040_2025_root_line_9
+  address_id: 2025/document=form_1040/line=9/control=amount
 - field_name: topmostSubform[0].Page1[0].f1_74[0]
   label: Line 10 - . . . . . . . . . 10 - f1_74
   population_policy: copied
   value_format: dollars
   node_id: form_1040_2025_root_line_10
+  address_id: 2025/document=form_1040/line=10/control=amount
 - field_name: topmostSubform[0].Page1[0].f1_75[0]
   label: Line 11a - . . . . . . . . . 11a - f1_75
   population_policy: computed
   value_format: dollars
   node_id: form_1040_2025_root_line_11a
+  address_id: 2025/document=form_1040/line=11a/control=amount
 - field_name: topmostSubform[0].Page2[0].f2_01[0]
   label: Line 11b - . . . . . . . . . 11b - f2_01
   population_policy: copied
   value_format: dollars
   node_id: form_1040_2025_root_line_11b
+  address_id: 2025/document=form_1040/line=11b/control=amount
 - field_name: topmostSubform[0].Page2[0].c2_1[0]
   label: Line 12a - Credits 12a Someone can claim - c2_1
   population_policy: unsupported
@@ -1471,6 +1599,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page2[0].c2_1[0].
+  address_id: 2025/document=form_1040/line=12a/control=checkbox
 - field_name: topmostSubform[0].Page2[0].c2_2[0]
   label: Line 12a - Credits 12a Someone can claim You as a dependent - c2_2
   population_policy: unsupported
@@ -1482,6 +1611,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page2[0].c2_2[0].
+  address_id: 2025/document=form_1040/line=12a/control=checkbox
 - field_name: topmostSubform[0].Page2[0].c2_3[0]
   label: Line b - b - c2_3
   population_policy: unsupported
@@ -1532,6 +1662,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page2[0].c2_7[0].
+  address_id: 2025/document=form_1040/line=12e/control=checkbox
 - field_name: topmostSubform[0].Page2[0].c2_8[0]
   label: 'Line 12e - Standard Spouse: Was born before January 2, 1961 - c2_8'
   population_policy: unsupported
@@ -1543,11 +1674,13 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page2[0].c2_8[0].
+  address_id: 2025/document=form_1040/line=12e/control=checkbox
 - field_name: topmostSubform[0].Page2[0].f2_02[0]
   label: Line 12e - . . . . . . . . . 12e - f2_02
   population_policy: computed
   value_format: dollars
   node_id: form_1040_2025_root_line_12e
+  address_id: 2025/document=form_1040/line=12e/control=amount
 - field_name: topmostSubform[0].Page2[0].f2_03[0]
   label: Line 13a - . . . . . . . . . 13a - f2_03
   population_policy: unsupported
@@ -1558,21 +1691,25 @@ field_dispositions:
     is left blank.
   missing_capability: Implement and cite frontier deferred_form_1040_2025_line_13a_qbi
     before populating this control.
+  address_id: 2025/document=form_1040/line=13a/control=amount
 - field_name: topmostSubform[0].Page2[0].f2_04[0]
   label: Line 13b - . . . . . . . . . 13b - f2_04
   population_policy: copied
   value_format: dollars
   node_id: form_1040_2025_root_line_13b
+  address_id: 2025/document=form_1040/line=13b/control=amount
 - field_name: topmostSubform[0].Page2[0].f2_05[0]
   label: Line 13b - . . . . . . . . . 14 - f2_05
   population_policy: computed
   value_format: dollars
   node_id: form_1040_2025_root_line_14
+  address_id: 2025/document=form_1040/line=13b/control=amount
 - field_name: topmostSubform[0].Page2[0].f2_06[0]
   label: Line 15 - is your taxable income . . . . . 15 - f2_06
   population_policy: computed
   value_format: dollars
   node_id: form_1040_2025_root_line_15
+  address_id: 2025/document=form_1040/line=15/control=amount
 - field_name: topmostSubform[0].Page2[0].c2_9[0]
   label: 'Line 16 - 16 Tax (see instructions). Check if any from Form(s): 1 - c2_9'
   population_policy: unsupported
@@ -1584,6 +1721,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page2[0].c2_9[0].
+  address_id: 2025/document=form_1040/line=16/control=checkbox
 - field_name: topmostSubform[0].Page2[0].c2_10[0]
   label: 'Line 16 - (see instructions). Check if any from Form(s): 1 8814 2 - c2_10'
   population_policy: unsupported
@@ -1595,6 +1733,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page2[0].c2_10[0].
+  address_id: 2025/document=form_1040/line=16/control=checkbox
 - field_name: topmostSubform[0].Page2[0].c2_11[0]
   label: 'Line 16 - Check if any from Form(s): 1 8814 2 4972 3 - c2_11'
   population_policy: unsupported
@@ -1605,6 +1744,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page2[0].c2_11[0].
+  address_id: 2025/document=form_1040/line=16/control=checkbox
 - field_name: topmostSubform[0].Page2[0].f2_07[0]
   label: 'Line 16 - Check if any from Form(s): 1 8814 2 4972 3 - f2_07'
   population_policy: unsupported
@@ -1615,11 +1755,13 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page2[0].f2_07[0].
+  address_id: 2025/document=form_1040/line=16/control=amount
 - field_name: topmostSubform[0].Page2[0].f2_08[0]
   label: 'Line 16 - if any from Form(s): 1 8814 2 4972 3 16 - f2_08'
   population_policy: computed
   value_format: dollars
   node_id: form_1040_2025_root_line_16
+  address_id: 2025/document=form_1040/line=16/control=amount
 - field_name: topmostSubform[0].Page2[0].f2_09[0]
   label: Line 17 - . . . . . . . . . 17 - f2_09
   population_policy: unsupported
@@ -1629,6 +1771,7 @@ field_dispositions:
     is left blank.
   missing_capability: Implement and cite frontier deferred_form_1040_2025_total_tax_chain
     before populating this control.
+  address_id: 2025/document=form_1040/line=17/control=amount
 - field_name: topmostSubform[0].Page2[0].f2_10[0]
   label: Line 18 - . . . . . . . . . 18 - f2_10
   population_policy: unsupported
@@ -1638,6 +1781,7 @@ field_dispositions:
     is left blank.
   missing_capability: Implement and cite frontier deferred_form_1040_2025_total_tax_chain
     before populating this control.
+  address_id: 2025/document=form_1040/line=18/control=amount
 - field_name: topmostSubform[0].Page2[0].f2_11[0]
   label: Line 19 - . . . . . . . . . 19 - f2_11
   population_policy: unsupported
@@ -1647,6 +1791,7 @@ field_dispositions:
     is left blank.
   missing_capability: Implement and cite frontier deferred_form_1040_2025_total_tax_chain
     before populating this control.
+  address_id: 2025/document=form_1040/line=19/control=amount
 - field_name: topmostSubform[0].Page2[0].f2_12[0]
   label: Line 20 - . . . . . . . . . 20 - f2_12
   population_policy: unsupported
@@ -1656,6 +1801,7 @@ field_dispositions:
     is left blank.
   missing_capability: Implement and cite frontier deferred_form_1040_2025_total_tax_chain
     before populating this control.
+  address_id: 2025/document=form_1040/line=20/control=amount
 - field_name: topmostSubform[0].Page2[0].f2_13[0]
   label: Line a - . . . . . . . . . 21 - f2_13
   population_policy: unsupported
@@ -1674,6 +1820,7 @@ field_dispositions:
     is left blank.
   missing_capability: Implement and cite frontier deferred_form_1040_2025_total_tax_chain
     before populating this control.
+  address_id: 2025/document=form_1040/line=22/control=amount
 - field_name: topmostSubform[0].Page2[0].f2_15[0]
   label: Line 23 - . . . . . . . . . 23 - f2_15
   population_policy: unsupported
@@ -1683,6 +1830,7 @@ field_dispositions:
     is left blank.
   missing_capability: Implement and cite frontier deferred_form_1040_2025_total_tax_chain
     before populating this control.
+  address_id: 2025/document=form_1040/line=23/control=amount
 - field_name: topmostSubform[0].Page2[0].f2_16[0]
   label: Line 24 - . . . . . . . . . 24 - f2_16
   population_policy: unsupported
@@ -1692,6 +1840,7 @@ field_dispositions:
     is left blank.
   missing_capability: Implement and cite frontier deferred_form_1040_2025_total_tax_chain
     before populating this control.
+  address_id: 2025/document=form_1040/line=24/control=amount
 - field_name: topmostSubform[0].Page2[0].f2_17[0]
   label: Line 25a - . . . . . . . . . 25a - f2_17
   population_policy: unsupported
@@ -1702,6 +1851,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page2[0].f2_17[0].
+  address_id: 2025/document=form_1040/line=25a/control=amount
 - field_name: topmostSubform[0].Page2[0].f2_18[0]
   label: Line 25b - . . . . . . . . . 25b - f2_18
   population_policy: unsupported
@@ -1712,6 +1862,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page2[0].f2_18[0].
+  address_id: 2025/document=form_1040/line=25b/control=amount
 - field_name: topmostSubform[0].Page2[0].f2_19[0]
   label: Line 25c - . . . . . . . . . 25c - f2_19
   population_policy: unsupported
@@ -1722,6 +1873,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page2[0].f2_19[0].
+  address_id: 2025/document=form_1040/line=25c/control=amount
 - field_name: topmostSubform[0].Page2[0].f2_20[0]
   label: Line 25d - . . . . . . . . . 25d - f2_20
   population_policy: unsupported
@@ -1732,6 +1884,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page2[0].f2_20[0].
+  address_id: 2025/document=form_1040/line=25d/control=amount
 - field_name: topmostSubform[0].Page2[0].f2_21[0]
   label: Line 26 - . . . . . . . . . 26 - f2_21
   population_policy: unsupported
@@ -1742,6 +1895,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page2[0].f2_21[0].
+  address_id: 2025/document=form_1040/line=26/control=amount
 - field_name: topmostSubform[0].Page2[0].SSN_ReadOrder[0].f2_22[0]
   label: 'Line a - If you have a enter their SSN (see instructions): - f2_22'
   population_policy: unsupported
@@ -1763,6 +1917,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page2[0].f2_23[0].
+  address_id: 2025/document=form_1040/line=27a/control=amount
 - field_name: topmostSubform[0].Page2[0].c2_12[0]
   label: Line b - . . . . . . . . . . - c2_12
   population_policy: unsupported
@@ -1793,6 +1948,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page2[0].Line28_ReadOrder[0].c2_14[0].
+  address_id: 2025/document=form_1040/line=28/control=checkbox
 - field_name: topmostSubform[0].Page2[0].f2_24[0]
   label: Line 28 - . . . . . . . . . 28 - f2_24
   population_policy: unsupported
@@ -1803,6 +1959,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page2[0].f2_24[0].
+  address_id: 2025/document=form_1040/line=28/control=amount
 - field_name: topmostSubform[0].Page2[0].f2_25[0]
   label: Line 29 - line 8 . . . . . . . 29 - f2_25
   population_policy: unsupported
@@ -1813,6 +1970,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page2[0].f2_25[0].
+  address_id: 2025/document=form_1040/line=29/control=amount
 - field_name: topmostSubform[0].Page2[0].f2_26[0]
   label: Line 30 - 8839, line 13 . . . . . . 30 - f2_26
   population_policy: unsupported
@@ -1823,6 +1981,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page2[0].f2_26[0].
+  address_id: 2025/document=form_1040/line=30/control=amount
 - field_name: topmostSubform[0].Page2[0].f2_27[0]
   label: Line 31 - . . . . . . . . . 31 - f2_27
   population_policy: unsupported
@@ -1833,6 +1992,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page2[0].f2_27[0].
+  address_id: 2025/document=form_1040/line=31/control=amount
 - field_name: topmostSubform[0].Page2[0].f2_28[0]
   label: Line 32 - are your total other payments and refundable credits . 32 - f2_28
   population_policy: unsupported
@@ -1844,6 +2004,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page2[0].f2_28[0].
+  address_id: 2025/document=form_1040/line=32/control=amount
 - field_name: topmostSubform[0].Page2[0].f2_29[0]
   label: Line 33 - . . . . . . . . . 33 - f2_29
   population_policy: unsupported
@@ -1854,6 +2015,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page2[0].f2_29[0].
+  address_id: 2025/document=form_1040/line=33/control=amount
 - field_name: topmostSubform[0].Page2[0].f2_30[0]
   label: Line 34 - 33. This is the amount you overpaid . . 34 - f2_30
   population_policy: unsupported
@@ -1864,6 +2026,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page2[0].f2_30[0].
+  address_id: 2025/document=form_1040/line=34/control=amount
 - field_name: topmostSubform[0].Page2[0].c2_15[0]
   label: Line 35a - Form 8888 is attached, check here . . . . - c2_15
   population_policy: unsupported
@@ -1874,6 +2037,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page2[0].c2_15[0].
+  address_id: 2025/document=form_1040/line=35a/control=checkbox
 - field_name: topmostSubform[0].Page2[0].f2_31[0]
   label: Line 35a - 8888 is attached, check here . . . . 35a - f2_31
   population_policy: unsupported
@@ -1884,6 +2048,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page2[0].f2_31[0].
+  address_id: 2025/document=form_1040/line=35a/control=amount
 - field_name: topmostSubform[0].Page2[0].RoutingNo[0].f2_32[0]
   label: Line b - Direct deposit? b Routing number - f2_32
   population_policy: unsupported
@@ -1935,6 +2100,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page2[0].f2_34[0].
+  address_id: 2025/document=form_1040/line=36/control=amount
 - field_name: topmostSubform[0].Page2[0].f2_35[0]
   label: Line 37 - instructions . . . . . . . . 37 - f2_35
   population_policy: unsupported
@@ -1945,6 +2111,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page2[0].f2_35[0].
+  address_id: 2025/document=form_1040/line=37/control=amount
 - field_name: topmostSubform[0].Page2[0].f2_36[0]
   label: Line 38 - . . . . . . . . . 38 - f2_36
   population_policy: unsupported
@@ -1955,6 +2122,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page2[0].f2_36[0].
+  address_id: 2025/document=form_1040/line=38/control=amount
 - field_name: topmostSubform[0].Page2[0].c2_17[0]
   label: person to discuss this return with the IRS? See instructions. - c2_17
   population_policy: unsupported

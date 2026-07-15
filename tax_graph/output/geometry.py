@@ -14,8 +14,13 @@ def build_node_geometry(year: str | int, root: str | Path) -> dict[str, Any]:
     entries: list[dict[str, Any]] = []
     for field_map in load_field_maps(year, root):
         inventory = inventory_by_name(field_map, root)
+        disposition_by_field = {
+            item["field_name"]: item for item in field_map.get("field_dispositions", []) or []
+        }
+        mapped_fields: set[str] = set()
         for mapping in field_map.get("mappings", []):
             field = inventory[mapping["field_name"]]
+            disposition = disposition_by_field.get(mapping["field_name"], {})
             entry = {
                 "document_id": field_map["document_id"],
                 "slot": mapping["slot"],
@@ -27,9 +32,35 @@ def build_node_geometry(year: str | int, root: str | Path) -> dict[str, Any]:
                 entry["node_id"] = mapping["node_id"]
             else:
                 entry["identity_slot"] = mapping["identity_slot"]
+            if "address_id" in mapping:
+                entry["address_id"] = mapping["address_id"]
+            _copy_disposition_geometry(entry, disposition)
+            entries.append(entry)
+            mapped_fields.add(mapping["field_name"])
+        for field_name, disposition in disposition_by_field.items():
+            if field_name in mapped_fields:
+                continue
+            field = inventory[field_name]
+            entry = {
+                "document_id": field_map["document_id"],
+                "slot": field_name,
+                "field_name": field_name,
+                "page": field["page"],
+                "rect": [field["x0"], field["y0"], field["x1"], field["y1"]],
+            }
+            _copy_disposition_geometry(entry, disposition)
             entries.append(entry)
     entries.sort(key=lambda item: (item["document_id"], item["page"], item["field_name"], item["slot"]))
     return {"tax_year": int(year), "entries": entries}
+
+
+def _copy_disposition_geometry(entry: dict[str, Any], disposition: dict[str, Any]) -> None:
+    for key in (
+        "label", "population_policy", "value_format", "runtime_fact_ref",
+        "source_ref", "address_id", "reason", "downstream_effect", "missing_capability", "repeatable",
+    ):
+        if key in disposition:
+            entry[key] = disposition[key]
 
 
 def write_node_geometry(year: str | int, root: str | Path) -> Path:

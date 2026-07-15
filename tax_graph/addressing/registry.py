@@ -16,8 +16,8 @@ import yaml
 KINDS = frozenset({"document", "part", "section", "line", "item", "box", "control", "option", "table", "row_template", "column", "worksheet_step"})
 ROLE_KINDS = {
     "amount": frozenset({"control", "column"}), "text": frozenset({"control", "column"}),
-    "description": frozenset({"control", "column"}), "checkbox": frozenset({"control", "option"}),
-    "radio": frozenset({"control", "option"}), "choice": frozenset({"control", "option"}),
+    "description": frozenset({"control", "column"}), "checkbox": frozenset({"control", "option", "column"}),
+    "radio": frozenset({"control", "option", "column"}), "choice": frozenset({"control", "option", "column"}),
     "date": frozenset({"control", "column"}), "identifier": frozenset({"control", "column"}),
     "signature": frozenset({"control"}), "attachment_indicator": frozenset({"control", "option"}),
     "other": frozenset({"control", "option", "column"}),

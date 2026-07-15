@@ -18,6 +18,18 @@
           "field_name": {"type": "string"},
           "node_id": {"type": "string"},
           "identity_slot": {"type": "string"},
+          "runtime_fact_ref": {"type": "string"},
+          "source_ref": {"type": "string"},
+          "address_id": {"type": "string"},
+          "label": {"type": "string", "minLength": 1},
+          "population_policy": {
+            "enum": ["user_entered", "imported", "copied", "computed", "decision_required", "intentionally_blank", "unsupported"]
+          },
+          "value_format": {"type": "string"},
+          "reason": {"type": "string"},
+          "downstream_effect": {"type": "string"},
+          "missing_capability": {"type": "string"},
+          "repeatable": {"type": "object"},
           "page": {"type": "integer", "minimum": 1},
           "rect": {
             "type": "array",
@@ -28,7 +40,13 @@
             "maxItems": 4
           }
         },
-        "oneOf": [{"required": ["node_id"]}, {"required": ["identity_slot"]}]
+        "anyOf": [
+          {"required": ["node_id"]},
+          {"required": ["identity_slot"]},
+          {"required": ["runtime_fact_ref"]},
+          {"required": ["source_ref"]},
+          {"required": ["population_policy"]}
+        ]
       }
     }
   }

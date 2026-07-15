@@ -50,6 +50,16 @@ def validate_field_maps(
     known_nodes = set(node_ids)
     known_frontier = set(frontier_ids)
     errors: list[str] = []
+    address_ids: set[str] = set()
+    widget_addresses: dict[tuple[str, str], str] = {}
+    if (root_path / "graph" / str(year) / "addresses").is_dir():
+        try:
+            from tax_graph.addressing import load_address_artifacts
+            artifacts = load_address_artifacts(year, root_path)
+            address_ids = {item.address_id for item in artifacts.addresses}
+            widget_addresses = {(item["document_id"], item["field_name"]): item["address_id"] for item in artifacts.widget_bindings}
+        except (ValueError, OSError) as exc:
+            errors.append(f"canonical addresses {year} -> {exc}")
     try:
         import jsonschema
     except ImportError:  # pragma: no cover - base dependency in supported installs.
@@ -84,6 +94,12 @@ def validate_field_maps(
             if field_name in mapped_fields:
                 errors.append(f"field map {document_id} -> field mapped more than once: {field_name}")
             mapped_fields.add(field_name)
+            address_id = mapping.get("address_id")
+            if address_id:
+                if address_id not in address_ids:
+                    errors.append(f"field map {document_id} -> unknown address {address_id}")
+                if widget_addresses.get((document_id, field_name)) != address_id:
+                    errors.append(f"field map {document_id} -> widget binding disagrees for {field_name}")
             node_id = mapping.get("node_id")
             if node_id:
                 if node_id not in known_nodes:

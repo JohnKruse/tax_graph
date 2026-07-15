@@ -9,6 +9,8 @@ from pathlib import Path
 import re
 from typing import Any, Iterable
 
+import yaml
+
 from workbench.artifacts import ArtifactBundle, GRAPH_OBJECT_KINDS, load_artifact_bundle
 from workbench.schema import validate_review_manifest
 from workbench.semantics import FormattedSemantics, format_scope_semantics
@@ -129,6 +131,10 @@ def _build_payload(
                 source_paths.add(root / artifact_path)
             object_ref = _manifest_ref(scope_ref, graph_index)
             object_data = _find_object(graph_index, scope_ref)
+            if str(scope_ref.get("object_type")) == "field_control":
+                object_data = _field_control_object(root, scope_ref)
+                if object_data and object_data.get("label"):
+                    object_ref["display_label"] = str(object_data["label"])
             semantics = _semantics(scope_ref, graph_index)
             locations = _locations(scope_ref, geometry, pdf_hashes)
             if not locations:
@@ -196,7 +202,7 @@ def _unit(
         "official_location": location,
         "analog_placement": None,
         "semantic_class": semantics.semantic_class if semantics else _semantic_class(review_kind, scope_ref, object_data),
-        "summary": semantics.summary if semantics else str(queue_entry.get("summary", "Review scoped artifacts.")),
+        "summary": semantics.summary if semantics else _unit_summary(queue_entry, object_type, object_data),
         "expression": semantics.expression if semantics else {"kind": "reference", "ref": object_ref},
         "coverage": {"state": "pending", "required_for_confirm": required},
     }
@@ -213,7 +219,41 @@ def _unit(
     changed = [str(value) for value in queue_entry.get("changed_object_ids", []) or []]
     if changed:
         unit["promotion_diff_refs"] = changed
+    if object_type == "field_control" and isinstance(object_data, dict):
+        for key in (
+            "field_name", "population_policy", "value_format", "node_id",
+            "identity_slot", "runtime_fact_ref", "source_ref", "reason",
+            "downstream_effect", "missing_capability", "repeatable",
+        ):
+            if key in object_data:
+                unit[key] = object_data[key]
     return unit
+
+
+def _unit_summary(
+    queue_entry: dict[str, Any], object_type: str, object_data: dict[str, Any] | None
+) -> str:
+    if object_type == "field_control" and isinstance(object_data, dict):
+        return str(object_data.get("label") or object_data.get("field_name") or "Official form control")
+    return str(queue_entry.get("summary", "Review scoped artifacts."))
+
+
+def _field_control_object(root: Path, scope_ref: dict[str, Any]) -> dict[str, Any] | None:
+    source = root / str(scope_ref.get("source_path", ""))
+    if not source.is_file():
+        return None
+    payload = yaml.safe_load(source.read_text(encoding="utf-8"))
+    if not isinstance(payload, dict):
+        return None
+    object_id = str(scope_ref.get("object_id", ""))
+    return next(
+        (
+            dict(item)
+            for item in payload.get("field_dispositions", []) or []
+            if isinstance(item, dict) and str(item.get("field_name")) == object_id
+        ),
+        None,
+    )
 
 
 def _manifest_ref(scope_ref: dict[str, Any], graph_index: dict[tuple[str, str], dict[str, Any]]) -> dict[str, Any]:
@@ -244,7 +284,7 @@ def _locations(
         if not isinstance(entry, dict):
             continue
         node_match = object_type in {"node", "node_instance"} and entry.get("node_id") == base_id
-        field_match = object_type in {"field", "field_inventory"} and (
+        field_match = object_type in {"field", "field_inventory", "field_control"} and (
             entry.get("identity_slot") == object_id or entry.get("field_name") == object_id
         )
         if not (node_match or field_match):
@@ -278,6 +318,15 @@ def _graph_index(bundle: ArtifactBundle) -> dict[tuple[str, str], dict[str, Any]
                 for option in obj.get("options", []) or []:
                     if isinstance(option, dict) and option.get("option_id"):
                         result[("decision_option", str(option["option_id"]))] = option
+    graph_dir = bundle.root / "graph" / str(bundle.graph.year)
+    for path in sorted((graph_dir / "addresses").glob("*.yaml")):
+        payload = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
+        for item in payload.get("addresses", []):
+            result[("address", str(item["address_id"]))] = item
+    for path in sorted((graph_dir / "bindings" / "nodes").glob("*.yaml")):
+        payload = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
+        for item in payload.get("bindings", []):
+            result[("node_binding", str(item["node_id"]))] = item
     return result
 
 
@@ -366,7 +415,16 @@ def _semantic_class(review_kind: str, scope_ref: dict[str, Any], object_data: di
     object_type = str(scope_ref.get("object_type", ""))
     role = str(scope_ref.get("role", ""))
     if review_kind.startswith("field_map") or object_type in {"field", "field_inventory"}:
-        return "field_map"
+        policy = str((object_data or {}).get("population_policy", ""))
+        return {
+            "user_entered": "input",
+            "imported": "imported",
+            "copied": "copy",
+            "computed": "calculation",
+            "decision_required": "decision",
+            "intentionally_blank": "review_gap",
+            "unsupported": "review_gap",
+        }.get(policy, "field_map")
     if review_kind.startswith("intake") or object_type in {"routing_edge", "trigger", "expectation"}:
         return "contract"
     if review_kind.startswith("decision") or object_type in {"decision", "decision_option"}:

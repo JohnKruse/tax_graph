@@ -38,16 +38,30 @@ def build_form_1040_review(root: str | Path) -> dict[str, Any]:
                                            source_path="config/manifest.yaml#form_1040_2025", source_hash=FORM_1040_SHA256,
                                            controls=controls)
     by_key = {_candidate_key(item): item for item in registry["addresses"]}
+    widget_bindings = []
+    addressed_by_field = {}
     for evidence in controls:
         address = by_key[tuple((part["kind"], part["token"]) for part in evidence["semantic_path"])]
+        addressed_by_field[evidence["field_name"]] = address
+        widget_bindings.append({"field_name": evidence["field_name"], "address_id": address["address_id"],
+                                "widget_type": _widget_type(evidence["widget_type"]), "page": evidence["page"],
+                                "rect": evidence["rect"], "status": "exact" if mappings.get(evidence["field_name"]) else "provisional"})
         review_controls.append({"field_name": evidence["field_name"], "status": address["status"],
                                 "address_id": address["address_id"], "role": evidence["control_role"],
                                 "label": evidence["printed_label"], "reason": "Explicit form structure or authored slot evidence.",
                                 "page": evidence["page"]})
     review_controls.sort(key=lambda item: (item["page"], item["field_name"]))
+    node_bindings = []
+    for field_name, mapping in sorted(mappings.items()):
+        if mapping.get("node_id") and field_name in addressed_by_field:
+            node_bindings.append({"node_id": mapping["node_id"], "address_id": addressed_by_field[field_name]["address_id"],
+                                  "role": "value", "status": "exact"})
     return {"schema_version": 1, "document_id": "form_1040_2025", "registry": registry,
             "controls": review_controls, "coverage": {"inventory": len(inventory), "addressed": len(controls),
-                                                       "exempt": len(inventory) - len(controls)}}
+                                                       "exempt": len(inventory) - len(controls)},
+            "widget_bindings": {"schema_version": 1, "year": 2025, "document_id": "form_1040_2025", "binding_kind": "widget", "bindings": widget_bindings},
+            "node_bindings": {"schema_version": 1, "year": 2025, "document_id": "form_1040_2025", "binding_kind": "node", "bindings": node_bindings},
+            "references": {"schema_version": 1, "year": 2025, "document_id": "form_1040_2025", "references": []}}
 
 
 def render_form_1040_review_html(payload: dict[str, Any]) -> str:
@@ -100,3 +114,7 @@ def _role(item: dict[str, Any], mapping: dict[str, Any] | None) -> str:
 
 def _candidate_key(item: dict[str, Any]) -> tuple[tuple[str, str], ...]:
     return tuple((part["kind"], part["token"]) for part in item["path"][1:])
+
+
+def _widget_type(value: str) -> str:
+    return {"Text": "text", "CheckBox": "checkbox", "RadioButton": "radio", "Choice": "choice", "Signature": "signature"}.get(value, "other")

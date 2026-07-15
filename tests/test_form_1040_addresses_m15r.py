@@ -44,6 +44,8 @@ def test_filing_status_dependents_and_special_distribution_controls_are_visible(
     special = [item for item in review["controls"] if any(term in item["label"] for term in ("Rollover", "QCD", "PSO"))]
     assert special and all(item["status"] == "exempt" for item in special)
     assert all("no authored graph" in item["reason"] for item in special)
+    dependent_checkbox = next(item for item in review["registry"]["addresses"] if item["address_id"].endswith("column=child_tax_credit"))
+    assert dependent_checkbox["kind"] == "column" and dependent_checkbox["control_role"] == "checkbox"
 
 
 @pytest.mark.m15r

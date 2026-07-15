@@ -388,6 +388,12 @@ changes. Never write a human-review claim on John's behalf.
 
 ### JOHN ADDRESS GATE A - approve the identity model
 
+**PASSED 2026-07-15 (John):** Reviewed the generated Form 1040 address page and
+approved continuing. The useful evidence was that specific controls, including
+dependent-grid cells, were individually intelligible. This approves the identity
+model and R7-R10 cutover; it is not blanket human confirmation of every generated
+address, which remains honestly pending review.
+
 John reviews the Form 1040 tree before any downstream semantic migration. The Worker
 stops and records exact feedback. The gate passes only when John can select awkward
 controls and unambiguously answer what their stable address is, without relying on a
@@ -395,7 +401,7 @@ formula, graph node id, PDF field name, or guessed prose meaning. Corrections am
 
 ### Group C - Bindings and consumer cutover
 
-- [ ] **R7 [worker-heavy] - Form 1040 bindings and line 1z repair.** Promote the reviewed
+- [DONE] **R7 [worker-heavy] - Form 1040 bindings and line 1z repair.** Promote the reviewed
   1040 registry with honest review provenance; author widget, node, and reference
   bindings; add address ids to dispositions/geometry; and change formula formatting to
   use bound operand addresses. The graph calculation remains node-id based. Tests prove
