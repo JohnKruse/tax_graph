@@ -155,4 +155,15 @@ def test_live_queue_migration_gives_every_pending_entry_a_primary_target(tmp_pat
     assert {"decision_1040_deduction_method", "standard", "itemized"} <= decision_ids
     routing_ids = {ref["object_id"] for ref in by_id["routing_review_schedule_d_2025_line_20_decision"]["review_scope"]["object_refs"]}
     assert "schedule_d_2025_line_20_gate" in routing_ids
-    assert sum(len(entry["review_scope"]["object_refs"]) for entry in pending) < 2000
+    refs = [ref for entry in pending for ref in entry["review_scope"]["object_refs"]]
+    field_controls = {
+        (ref["source_path"], ref["object_id"])
+        for ref in refs
+        if ref["object_type"] == "field_control"
+    }
+    inventory_count = sum(
+        len(json.loads(path.read_text(encoding="utf-8"))["fields"])
+        for path in (ROOT / "graph" / "2025" / "field_inventories").glob("*.json")
+    )
+    assert len(field_controls) == inventory_count
+    assert len(refs) < 4000

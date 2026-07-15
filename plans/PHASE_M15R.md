@@ -377,7 +377,7 @@ changes. Never write a human-review claim on John's behalf.
   rename/page move, trailing prose numbers, missing labels, multi-control lines, and
   repeated table rows do not change already-evidenced semantic paths.
 
-- [ ] **R6 [worker-heavy] - Form 1040 address tree and review surface.** Generate the
+- [DONE] **R6 [worker-heavy] - Form 1040 address tree and review surface.** Generate the
   real 2025 Form 1040 candidate tree, resolve all numbered lines/items and all inventoried
   controls, and build a focused official-page tree review view. It must show parent path,
   official ref, printed label, role, evidence, status, widget bindings, and proposed node
