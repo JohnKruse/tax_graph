@@ -1,0 +1,16 @@
+- id: swap_1040_1b_1e_bindings
+  taxonomy: F4
+  defect: swap_1b_1e
+  expected_layer: address_binding
+- id: route_amount_to_checkbox
+  taxonomy: F4
+  defect: amount_to_checkbox
+  expected_layer: address_binding
+- id: duplicate_address_option
+  taxonomy: F2
+  defect: duplicate_option
+  expected_layer: address_registry
+- id: missing_reference_target
+  taxonomy: F4
+  defect: missing_target
+  expected_layer: address_reference

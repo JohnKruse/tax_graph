@@ -45,7 +45,27 @@ def check_loaded_graph_field_completeness(
     nodes = list(graph.items("nodes"))
     tables = list(graph.items("tables"))
     issues: list[CompletenessIssue] = []
+    address_coverage: dict[str, tuple[set[str], set[str]]] = {}
+    try:
+        from tax_graph.addressing import load_address_artifacts
+        from tax_graph.output.field_maps import load_field_maps
+        artifacts = load_address_artifacts(graph.year, graph.root)
+        registered = {item.document_id for item in artifacts.addresses}
+        maps = {item["document_id"]: item for item in load_field_maps(graph.year, graph.root)}
+        for document_id in registered:
+            bound = {item["field_name"] for item in artifacts.widget_bindings if item["document_id"] == document_id}
+            exempt = {item["field_name"] for item in maps.get(document_id, {}).get("field_dispositions", []) if not item.get("address_id")}
+            address_coverage[document_id] = (bound, exempt)
+    except (OSError, ValueError):
+        address_coverage = {}
     for document_id, fields in field_grids.items():
+        if document_id in address_coverage:
+            bound, exempt = address_coverage[document_id]
+            for field in fields.get("fields", []) or []:
+                field_name = str(field.get("field_name", ""))
+                if field_name and field_name not in bound and field_name not in exempt:
+                    issues.append(CompletenessIssue(document_id, field_name, "canonical address binding or explicit exemption is missing"))
+            continue
         document = documents.get(document_id, {})
         report = check_field_grid_completeness(
             document_id=document_id,

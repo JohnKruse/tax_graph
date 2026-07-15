@@ -14,7 +14,8 @@ from tax_graph.acquire.manifest import load_manifest
 from tax_graph.flow_dispositions import load_flow_dispositions
 from tax_graph.frontier.soi import SoiCounts, load_form_id_map, load_soi_counts
 from tax_graph.io.loader import LoadedGraph, load_graph
-from tax_graph.link import _resolve_flow_target_node, _target_line_index
+from tax_graph.addressing import load_address_artifacts
+from tax_graph.link import _resolve_flow_target_node
 
 
 @dataclass(frozen=True)
@@ -143,13 +144,13 @@ def _outbound_flow_entries(
     nodes = {node["node_id"]: node for node in graph.items("nodes") if "node_id" in node}
     citations = {citation["citation_id"]: citation for citation in graph.items("citations") if "citation_id" in citation}
     live_edges = {(edge.get("source"), edge.get("target")) for edge in graph.items("edges")}
-    line_index = _target_line_index(graph)
+    addresses = load_address_artifacts(graph.year, graph.root)
     entries = []
     for flow in flows:
         target_document_id = str(flow.get("target_document_id"))
         target_line = str(flow.get("target_line"))
         source_node_id = _resolve_flow_source_node(flow, nodes)
-        target_node_id = _resolve_flow_target_node(flow, line_index)
+        target_node_id = _resolve_flow_target_node(flow, addresses)
         status = "unmodeled"
         disposition = dispositions.get(str(flow.get("flow_id") or ""))
         if target_document_id in manifest_urls or target_document_id in {doc.get("document_id") for doc in graph.items("documents")}:

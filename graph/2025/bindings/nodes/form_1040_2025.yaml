@@ -5,97 +5,121 @@ binding_kind: node
 bindings:
 - node_id: form_1040_2025_root_line_1a
   address_id: 2025/document=form_1040/line=1a/control=amount
+  expected_official_ref: 1a
   role: value
   status: exact
 - node_id: form_1040_2025_root_line_1b
   address_id: 2025/document=form_1040/line=1b/control=amount
+  expected_official_ref: 1b
   role: value
   status: exact
 - node_id: form_1040_2025_root_line_1c
   address_id: 2025/document=form_1040/line=1c/control=amount
+  expected_official_ref: 1c
   role: value
   status: exact
 - node_id: form_1040_2025_root_line_1d
   address_id: 2025/document=form_1040/line=1d/control=amount
+  expected_official_ref: 1d
   role: value
   status: exact
 - node_id: form_1040_2025_root_line_1e
   address_id: 2025/document=form_1040/line=1e/control=amount
+  expected_official_ref: 1e
   role: value
   status: exact
 - node_id: form_1040_2025_root_line_1f
   address_id: 2025/document=form_1040/line=1f/control=amount
+  expected_official_ref: 1f
   role: value
   status: exact
 - node_id: form_1040_2025_root_line_1g
   address_id: 2025/document=form_1040/line=1g/control=amount
+  expected_official_ref: 1g
   role: value
   status: exact
 - node_id: form_1040_2025_root_line_1h
   address_id: 2025/document=form_1040/line=1h/control=amount
+  expected_official_ref: 1h
   role: value
   status: exact
 - node_id: form_1040_2025_root_line_z
   address_id: 2025/document=form_1040/line=1z/control=amount
+  expected_official_ref: 1z
   role: value
   status: exact
 - node_id: form_1040_2025_root_line_2b
   address_id: 2025/document=form_1040/line=2b/control=amount
+  expected_official_ref: 2b
   role: value
   status: exact
 - node_id: form_1040_2025_root_line_3a
   address_id: 2025/document=form_1040/line=3b/control=amount
+  expected_official_ref: 3b
   role: value
   status: exact
 - node_id: form_1040_2025_root_line_3b
   address_id: 2025/document=form_1040/line=3b/control=amount
+  expected_official_ref: 3b
   role: value
   status: exact
 - node_id: form_1040_2025_line_7_capital_gain_loss
   address_id: 2025/document=form_1040/line=7a/control=amount
+  expected_official_ref: 7a
   role: value
   status: exact
 - node_id: form_1040_2025_root_line_8
   address_id: 2025/document=form_1040/line=8/control=amount
+  expected_official_ref: '8'
   role: value
   status: exact
 - node_id: form_1040_2025_root_line_9
   address_id: 2025/document=form_1040/line=9/control=amount
+  expected_official_ref: '9'
   role: value
   status: exact
 - node_id: form_1040_2025_root_line_10
   address_id: 2025/document=form_1040/line=10/control=amount
+  expected_official_ref: '10'
   role: value
   status: exact
 - node_id: form_1040_2025_root_line_11a
   address_id: 2025/document=form_1040/line=11a/control=amount
+  expected_official_ref: 11a
   role: value
   status: exact
 - node_id: form_1040_2025_root_line_11b
   address_id: 2025/document=form_1040/line=11b/control=amount
+  expected_official_ref: 11b
   role: value
   status: exact
 - node_id: form_1040_2025_root_line_12e
   address_id: 2025/document=form_1040/line=12e/control=amount
+  expected_official_ref: 12e
   role: value
   status: exact
 - node_id: form_1040_2025_root_line_13a
   address_id: 2025/document=form_1040/line=13a/control=amount
+  expected_official_ref: 13a
   role: value
   status: exact
 - node_id: form_1040_2025_root_line_13b
   address_id: 2025/document=form_1040/line=13b/control=amount
+  expected_official_ref: 13b
   role: value
   status: exact
 - node_id: form_1040_2025_root_line_14
   address_id: 2025/document=form_1040/line=13b/control=amount
+  expected_official_ref: 13b
   role: value
   status: exact
 - node_id: form_1040_2025_root_line_15
   address_id: 2025/document=form_1040/line=15/control=amount
+  expected_official_ref: '15'
   role: value
   status: exact
 - node_id: form_1040_2025_root_line_16
   address_id: 2025/document=form_1040/line=16/control=amount
+  expected_official_ref: '16'
   role: value
   status: exact

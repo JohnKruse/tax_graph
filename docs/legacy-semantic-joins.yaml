@@ -6,9 +6,6 @@ joins:
 - path: tax_graph/engine/engine.py
   category: used_form_detection
   disposition: replace_r9
-- path: tax_graph/link.py
-  category: cross_form_link
-  disposition: replace_r8
 - path: tax_graph/validate/graph_validator.py
   category: validation_identity
   disposition: replace_r8

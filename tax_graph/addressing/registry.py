@@ -217,6 +217,13 @@ def _validate_artifacts(artifacts: AddressArtifacts) -> None:
         target = by_id.get(binding["address_id"])
         if target is None or target.document_id != binding["document_id"]:
             raise AddressError(f"dangling or cross-document binding: {binding['address_id']}")
+    for binding in artifacts.node_bindings:
+        target = by_id[binding["address_id"]]
+        expected_ref = binding.get("expected_official_ref")
+        if expected_ref and target.official_ref != expected_ref:
+            raise AddressError(f"node binding official reference mismatch: {binding['node_id']}")
+        if binding.get("role") == "value" and target.control_role in {"checkbox", "radio", "choice", "signature", "attachment_indicator"}:
+            raise AddressError(f"node value binding has incompatible control role: {binding['node_id']}")
     for ref in artifacts.references:
         if ref["source_address_id"] not in by_id:
             raise AddressError(f"dangling reference source: {ref['reference_id']}")

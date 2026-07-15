@@ -409,7 +409,7 @@ formula, graph node id, PDF field name, or guessed prose meaning. Corrections am
   one disposition/address or explicit exemption, and every printable 1040 node is bound
   or has a specific non-form rationale.
 
-- [ ] **R8 [worker-heavy] - Verification/link/frontier cutover.** Replace semantic joins
+- [DONE] **R8 [worker-heavy] - Verification/link/frontier cutover.** Replace semantic joins
   in outline assembly, extraction checks, completeness, LINK, and frontier generation
   with address resolution/reference claims. Preserve structural text extraction as
   evidence, not identity. Seeded defects: swap 1b/1e, route an amount to a checkbox,

@@ -17,7 +17,7 @@
       "field_name": {"type": "string", "minLength": 1}, "address_id": {"type": "string"}, "widget_type": {"enum": ["text", "checkbox", "radio", "choice", "signature", "other"]}, "on_state": {"type": "string"}, "page": {"type": "integer", "minimum": 1}, "rect": {"type": "array", "minItems": 4, "maxItems": 4, "items": {"type": "number"}}, "physical_row_slot": {"type": "string"}, "status": {"enum": ["exact", "provisional", "ambiguous", "unresolved"]}
     }},
     "node": {"type": "object", "additionalProperties": false, "required": ["node_id", "address_id", "role", "status"], "properties": {
-      "node_id": {"type": "string", "pattern": "^[a-z0-9_]+$"}, "address_id": {"type": "string"}, "role": {"enum": ["value", "description", "decision", "total", "input", "output"]}, "status": {"enum": ["exact", "provisional", "ambiguous", "unresolved"]}
+      "node_id": {"type": "string", "pattern": "^[a-z0-9_]+$"}, "address_id": {"type": "string"}, "expected_official_ref": {"type": "string", "minLength": 1}, "role": {"enum": ["value", "description", "decision", "total", "input", "output"]}, "status": {"enum": ["exact", "provisional", "ambiguous", "unresolved"]}
     }}
   }
 }

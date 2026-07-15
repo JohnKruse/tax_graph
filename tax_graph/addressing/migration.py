@@ -56,7 +56,6 @@ def semantic_join_inventory(root: str | Path) -> tuple[dict[str, str], ...]:
     signatures = {
         "workbench/semantics.py": r"def _line_number\(",
         "tax_graph/engine/engine.py": r"re\.search\(r\"_line_",
-        "tax_graph/link.py": r"re\.search\(r\"_line_",
         "tax_graph/validate/graph_validator.py": r"re\.search\(r\"_line_",
         "tax_graph/verify/completeness.py": r"def _node_mentions_line\(",
         "tax_graph/extract/tables.py": r"ROW_COLUMN_RE\.search\(node_id\)",

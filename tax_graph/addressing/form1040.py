@@ -55,6 +55,7 @@ def build_form_1040_review(root: str | Path) -> dict[str, Any]:
     for field_name, mapping in sorted(mappings.items()):
         if mapping.get("node_id") and field_name in addressed_by_field:
             node_bindings.append({"node_id": mapping["node_id"], "address_id": addressed_by_field[field_name]["address_id"],
+                                  "expected_official_ref": addressed_by_field[field_name].get("official_ref"),
                                   "role": "value", "status": "exact"})
     return {"schema_version": 1, "document_id": "form_1040_2025", "registry": registry,
             "controls": review_controls, "coverage": {"inventory": len(inventory), "addressed": len(controls),

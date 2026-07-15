@@ -11,6 +11,7 @@ import yaml
 
 from tax_graph.flow_dispositions import load_flow_dispositions
 from tax_graph.io.loader import LoadedGraph, load_graph
+from tax_graph.addressing import AddressArtifacts, load_address_artifacts
 
 
 @dataclass(frozen=True)
@@ -44,7 +45,7 @@ def link_outbound_flows(
         for edge in graph.items("edges")
         if not str(edge.get("edge_id", "")).startswith("link_")
     }
-    target_index = _target_line_index(graph)
+    addresses = load_address_artifacts(year, root_path)
     flows = _load_outbound_flows(graph.graph_dir)
 
     realized: list[dict[str, Any]] = []
@@ -63,7 +64,7 @@ def link_outbound_flows(
             )
             continue
         source_node_id = _resolve_flow_source_node(flow, nodes)
-        target_node_id = _resolve_flow_target_node(flow, target_index)
+        target_node_id = _resolve_flow_target_node(flow, addresses)
         if not source_node_id or not target_node_id:
             unresolved.append(
                 {
@@ -89,7 +90,7 @@ def link_outbound_flows(
     realized = sorted(realized, key=lambda edge: edge["edge_id"])
     rejected = sorted(rejected, key=lambda item: str(item.get("flow_id") or ""))
     path = graph.graph_dir / "edges" / "linked-outbound.yaml"
-    if write:
+    if write and not unresolved:
         _write_yaml(path, realized)
     return LinkResult(path=path, realized=realized, unresolved=unresolved, rejected=rejected)
 
@@ -113,58 +114,20 @@ def _resolve_flow_source_node(flow: dict[str, Any], nodes: dict[str, dict[str, A
     raw_source = str(flow.get("source_node_id", ""))
     if raw_source in nodes:
         return raw_source
-    outline_id = str(flow.get("source_outline_id", ""))
-    part = "part_ii" if "part_ii" in outline_id else "part_i" if "part_i" in outline_id else ""
-    if not part:
-        part = "part_ii" if "part_ii" in raw_source else "part_i" if "part_i" in raw_source else ""
-    for node_id, node in sorted(nodes.items()):
-        if (
-            node.get("document_id") == flow.get("source_document_id")
-            and node.get("role") == "total"
-            and node.get("column") == "h"
-            and (not part or part in node_id)
-        ):
-            return node_id
     return None
 
 
 def _resolve_flow_target_node(
     flow: dict[str, Any],
-    target_index: dict[tuple[str, str, str], str],
+    artifacts: AddressArtifacts,
 ) -> str | None:
     document_id = str(flow.get("target_document_id"))
     line = str(flow.get("target_line")).lower()
-    raw_source = str(flow.get("source_node_id", ""))
-    column = _column_from_node_id(raw_source) or "h"
-    return target_index.get((document_id, line, column)) or target_index.get((document_id, line, ""))
-
-
-def _target_line_index(graph: LoadedGraph) -> dict[tuple[str, str, str], str]:
-    index: dict[tuple[str, str, str], str] = {}
-    for node in graph.items("nodes"):
-        line = _line_from_label(str(node.get("label", ""))) or _line_from_node_id(str(node.get("node_id", "")))
-        if not line:
-            continue
-        column = str(node.get("column") or _column_from_node_id(str(node.get("node_id", ""))) or "")
-        key = (str(node.get("document_id")), line, column)
-        index.setdefault(key, str(node.get("node_id")))
-        index.setdefault((str(node.get("document_id")), line, ""), str(node.get("node_id")))
-    return index
-
-
-def _line_from_label(label: str) -> str | None:
-    match = re.search(r"\bline\s+([0-9]+[a-z]?)\b", label, flags=re.IGNORECASE)
-    return match.group(1).lower() if match else None
-
-
-def _line_from_node_id(node_id: str) -> str | None:
-    match = re.search(r"_line_([0-9]+[a-z]?)", node_id, flags=re.IGNORECASE)
-    return match.group(1).lower() if match else None
-
-
-def _column_from_node_id(node_id: str) -> str | None:
-    match = re.search(r"_column_([a-z])(?:_|$)", node_id, flags=re.IGNORECASE)
-    return match.group(1).lower() if match else None
+    match = artifacts.resolve(document_id=document_id, official_ref=line, control_role="amount")
+    if match.state != "exact" or match.address is None:
+        return None
+    nodes = {item["node_id"] for item in artifacts.node_bindings if item["address_id"] == match.address.address_id and item["status"] == "exact"}
+    return next(iter(nodes)) if len(nodes) == 1 else None
 
 
 def _citation_refs_for_source(node: dict[str, Any]) -> list[str]:
