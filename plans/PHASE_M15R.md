@@ -486,11 +486,17 @@ M15 performs the full power-law corpus review.
 
 ### Group E - Rollover seam and close
 
-- [ ] **R14 [worker-standard] - Cross-year identity/delta fixtures.** Implement address
+- [DONE] **R14 [worker-standard] - Cross-year identity/delta fixtures.** Implement address
   diffs through yearless `logical_key` with explicit unchanged, added, removed,
   renumbered, split, merged, and unresolved results. Fuzzy matching may suggest a
   candidate but cannot inherit trust. Synthetic TY2025/TY2026 fixtures prove each case;
   no real TY2026 form work is pulled into this phase.
+
+  Implementation note (2026-07-15): yearless logical keys drive exact unchanged
+  identity. Renumber/split/merge/unresolved relationships require explicit hints with
+  checked cardinality; added/removed are the residual sets. Fuzzy similarity is emitted
+  only as `authoritative: false` suggestions and never changes state or inherits trust.
+  Synthetic 2025/2026 fixtures cover all seven outcomes.
 
 - [ ] **R15 [worker-light] - Records, docs, exit run, and handback to M15.** Run all exit
   criteria; regenerate affected records after frontier rebuild in the standing order;

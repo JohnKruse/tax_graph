@@ -14,8 +14,9 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## Current state (2026-07-15)
 
-**BALL: JOHN - M15R R13 COMPLETE; ADDRESS GATE B READY.** M15R R1-R12 are committed;
-R13 is ready for commit. John accepted Address Gate A on 2026-07-15. The in-progress M15
+**BALL: WORKER - M15R R14 COMPLETE; RUN R15 CLOSE.** M15R R1-R13 are committed;
+R14 is ready for commit. John accepted Address Gate A and authorized completion through
+M15R close on 2026-07-15. The in-progress M15
 A4 worktree remains preserved. `plans/PHASE_M15R.md` is the active recovery plan. Canary:
 Street Address.
 
@@ -428,6 +429,10 @@ ASCII: green; `validate 2025`: green; full suite: 338 passed, 6 skipped in 588.8
   `docs/self-serve-extension.md`.
 
 ## From Worker
+- **M15R R14 (Codex, 2026-07-15):** Added deterministic yearless-logical-key deltas
+  with unchanged, added, removed, renumbered, split, merged, and unresolved outcomes.
+  Structural changes require explicit cardinality-checked hints. Fuzzy candidates are
+  non-authoritative and never inherit trust. Synthetic TY2025/TY2026: 3 passed. Next: R15.
 - **M15R R13 (Codex, 2026-07-15):** Added schema-validated pending address artifacts to
   the existing deterministic extension package. The held-out Form 2441 registry remains
   only under the ignored extension draft boundary; no live corpus registry exists.

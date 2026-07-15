@@ -22,6 +22,7 @@ from tax_graph.addressing.campaign import (
     build_address_campaign,
     build_document_addresses,
 )
+from tax_graph.addressing.delta import DELTA_STATES, DeltaHint, address_delta
 
 __all__ = [
     "AddressArtifacts", "AddressComponent", "AddressError", "CanonicalAddress",
@@ -33,4 +34,5 @@ __all__ = [
     "build_form_1040_review", "render_form_1040_review_html",
     "CORE_RETURN_DOCUMENTS", "build_address_campaign", "build_document_addresses",
     "INFORMATION_RETURN_DOCUMENTS",
+    "DELTA_STATES", "DeltaHint", "address_delta",
 ]

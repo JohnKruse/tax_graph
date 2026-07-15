@@ -1,0 +1,9 @@
+year: 2025
+logical_keys:
+- document=form_test/line=1/control=amount
+- document=form_test/line=2/control=amount
+- document=form_test/line=3/control=amount
+- document=form_test/line=4a/control=amount
+- document=form_test/line=4b/control=amount
+- document=form_test/line=5/control=amount
+- document=form_test/line=6/control=amount
