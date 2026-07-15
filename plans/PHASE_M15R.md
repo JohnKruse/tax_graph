@@ -424,7 +424,7 @@ formula, graph node id, PDF field name, or guessed prose meaning. Corrections am
   calls retain parity with the R1 baseline; used-form detection no longer parses a node
   id prefix.
 
-- [ ] **R10 [worker-heavy] - Workbench address units.** Make review units address/control
+- [DONE] **R10 [worker-heavy] - Workbench address units.** Make review units address/control
   based. The selected address drives official markers, details, citations, rules,
   upstream/downstream bindings, and formula operands. Remove `semantics._line_number` and
   every production display fallback that derives an official ref from a label or node

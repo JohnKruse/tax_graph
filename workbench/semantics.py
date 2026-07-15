@@ -89,7 +89,7 @@ def format_computation(
     if operation not in SUPPORTED_OPERATIONS:
         raise SemanticFormatError(f"no formatter for operation {operation or '<missing>'}")
     target_document = str(target.get("document_id", ""))
-    target_line = _line_number(str(target.get("node_id", "")), target)
+    target_line = _official_ref(target)
     operands = [
         _operand(edge, nodes=nodes, target_document=target_document, target_line=target_line)
         for edge in operand_edges
@@ -434,13 +434,7 @@ def _operand_label(
     if node.get("table_id") and node.get("column"):
         return _column_label(str(node["column"]))
     document_id = str(node.get("document_id", ""))
-    semantic_suffix = re.search(
-        r"_line_[a-z0-9]+_(?:bracket|candidate|gate|pre_floor|raw|table|tax_|threshold)",
-        node_id,
-    )
-    if semantic_suffix:
-        return str(node.get("label") or node_id).strip() or node_id
-    line_number = _line_number(node_id, node)
+    line_number = _official_ref(node)
     if line_number:
         target_group = re.match(r"^([0-9]+)[a-z]$", target_line or "")
         if document_id == target_document and line_number.isalpha() and target_group:
@@ -459,15 +453,8 @@ def _column_label(column: str) -> str:
     return f"column ({column})"
 
 
-def _line_number(node_id: str, node: Mapping[str, Any]) -> str | None:
-    if node.get("canonical_official_ref"):
-        return str(node["canonical_official_ref"])
-    label = str(node.get("label", "")).strip()
-    printed_match = re.search(r"\b([0-9]+[a-z]?)\s*$", label, flags=re.IGNORECASE)
-    if printed_match:
-        return printed_match.group(1).lower()
-    id_match = re.search(r"(?:^|_)line_([a-z0-9]+)(?:_|$)", node_id)
-    return id_match.group(1) if id_match else None
+def _official_ref(node: Mapping[str, Any]) -> str | None:
+    return str(node["canonical_official_ref"]) if node.get("canonical_official_ref") else None
 
 
 def _document_title(document_id: str) -> str:

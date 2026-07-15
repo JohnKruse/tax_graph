@@ -136,7 +136,12 @@ def _build_payload(
                 if object_data and object_data.get("label"):
                     object_ref["display_label"] = str(object_data["label"])
             semantics = _semantics(scope_ref, graph_index)
-            locations = _locations(scope_ref, geometry, pdf_hashes)
+            locations = _locations(
+                scope_ref,
+                geometry,
+                pdf_hashes,
+                document_id=str(queue_entry.get("document_id", "")),
+            )
             if not locations:
                 locations = [None]
             for location_index, location in enumerate(locations):
@@ -193,17 +198,19 @@ def _unit(
     object_id = str(scope_ref.get("object_id", ""))
     review_kind = str(queue_entry.get("kind", "object"))
     citations = sorted(set(_citation_refs(object_data)) | set(_expression_citations(semantics)))
+    address_id = str(object_data.get("address_id", "")) if isinstance(object_data, dict) else ""
+    address_ref = {"object_type": "address", "object_id": address_id, "display_label": str(object_data.get("label") or address_id)} if address_id else None
     unit: dict[str, Any] = {
         "queue_id": str(queue_entry.get("queue_id", "")),
         "unit_id": unit_id,
         "review_kind": review_kind,
         "required": required,
-        "object_refs": [object_ref],
+        "object_refs": ([address_ref, object_ref] if address_ref else [object_ref]),
         "official_location": location,
         "analog_placement": None,
         "semantic_class": semantics.semantic_class if semantics else _semantic_class(review_kind, scope_ref, object_data),
         "summary": semantics.summary if semantics else _unit_summary(queue_entry, object_type, object_data),
-        "expression": semantics.expression if semantics else {"kind": "reference", "ref": object_ref},
+        "expression": semantics.expression if semantics else {"kind": "reference", "ref": address_ref or object_ref},
         "coverage": {"state": "pending", "required_for_confirm": required},
     }
     if citations:
@@ -219,6 +226,8 @@ def _unit(
     changed = [str(value) for value in queue_entry.get("changed_object_ids", []) or []]
     if changed:
         unit["promotion_diff_refs"] = changed
+    if address_id:
+        unit["address_id"] = address_id
     if object_type == "field_control" and isinstance(object_data, dict):
         for key in (
             "field_name", "population_policy", "value_format", "node_id",
@@ -275,6 +284,8 @@ def _locations(
     scope_ref: dict[str, Any],
     geometry: Iterable[dict[str, Any]],
     pdf_hashes: dict[str, str],
+    *,
+    document_id: str = "",
 ) -> list[dict[str, Any]]:
     object_type = str(scope_ref.get("object_type", ""))
     object_id = str(scope_ref.get("object_id", ""))
@@ -282,6 +293,8 @@ def _locations(
     matches: list[dict[str, Any]] = []
     for entry in geometry:
         if not isinstance(entry, dict):
+            continue
+        if document_id and str(entry.get("document_id", "")) != document_id:
             continue
         node_match = object_type in {"node", "node_instance"} and entry.get("node_id") == base_id
         field_match = object_type in {"field", "field_inventory", "field_control"} and (
@@ -299,6 +312,8 @@ def _locations(
             "page": int(entry["page"]),
             "rect": [float(value) for value in entry["rect"]],
         }
+        if entry.get("address_id"):
+            location["address_id"] = str(entry["address_id"])
         locator = entry.get("field_name") or entry.get("slot") or entry.get("identity_slot")
         if locator:
             location["locator_text"] = str(locator)
@@ -318,7 +333,7 @@ def _graph_index(bundle: ArtifactBundle) -> dict[tuple[str, str], dict[str, Any]
                 for option in obj.get("options", []) or []:
                     if isinstance(option, dict) and option.get("option_id"):
                         result[("decision_option", str(option["option_id"]))] = option
-    graph_dir = bundle.root / "graph" / str(bundle.graph.year)
+    graph_dir = bundle.root / "graph" / str(bundle.tax_year)
     for path in sorted((graph_dir / "addresses").glob("*.yaml")):
         payload = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
         for item in payload.get("addresses", []):

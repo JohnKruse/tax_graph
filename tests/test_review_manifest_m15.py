@@ -36,6 +36,19 @@ def test_live_manifest_covers_every_pending_entry_and_is_stable() -> None:
     }
     assert {entry["queue_id"] for entry in first["entries"]} == expected
 
+    form_1040_entry = next(
+        entry for entry in first["entries"]
+        if entry["queue_id"] == "field_map_review_form_1040_2025"
+    )
+    addressed = [unit for unit in form_1040_entry["units"] if unit.get("address_id")]
+    assert len(addressed) == 127
+    assert all(unit["official_location"]["address_id"] == unit["address_id"] for unit in addressed)
+    assert all(unit["expression"]["ref"]["object_type"] == "address" for unit in addressed)
+    assert all(
+        [ref["object_type"] for ref in unit["object_refs"]] == ["address", "field_control"]
+        for unit in addressed
+    )
+
 
 @pytest.mark.m15
 def test_manifest_writes_stable_json_and_keeps_scope_roles_out_of_public_refs(tmp_path: Path) -> None:

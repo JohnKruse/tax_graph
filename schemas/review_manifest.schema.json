@@ -60,7 +60,8 @@
         "source_pdf_hash": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
         "page": {"type": "integer", "minimum": 1},
         "rect": {"$ref": "#/$defs/rect"},
-        "locator_text": {"type": "string"}
+        "locator_text": {"type": "string"},
+        "address_id": {"type": "string"}
       }
     },
     "placement": {
@@ -166,6 +167,20 @@
         "trust": {"type": "string"},
         "nversion_refs": {"type": "array", "items": {"type": "string"}},
         "promotion_diff_refs": {"type": "array", "items": {"type": "string"}},
+        "field_name": {"type": "string"},
+        "address_id": {"type": "string"},
+        "population_policy": {
+          "enum": ["user_entered", "imported", "copied", "computed", "decision_required", "intentionally_blank", "unsupported"]
+        },
+        "value_format": {"type": "string"},
+        "node_id": {"type": "string"},
+        "identity_slot": {"type": "string"},
+        "runtime_fact_ref": {"type": "string"},
+        "source_ref": {"type": "string"},
+        "reason": {"type": "string"},
+        "downstream_effect": {"type": "string"},
+        "missing_capability": {"type": "string"},
+        "repeatable": {"type": "object"},
         "coverage": {"$ref": "#/$defs/coverage"}
       }
     },

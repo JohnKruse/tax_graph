@@ -1,8 +1,5 @@
 schema_version: 1
 joins:
-- path: workbench/semantics.py
-  category: display_identity
-  disposition: replace_r10
 - path: tax_graph/validate/graph_validator.py
   category: validation_identity
   disposition: replace_r8
