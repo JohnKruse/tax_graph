@@ -462,12 +462,19 @@ formula, graph node id, PDF field name, or guessed prose meaning. Corrections am
   guessed addresses. All 297 Form 13614-C controls bind through their authored intake
   runtime-fact references. Source/runtime provenance remains on every disposition.
 
-- [ ] **R13 [worker-standard] - Held-out contributor flow.** Use Form 2441 as an
+- [DONE] **R13 [worker-standard] - Held-out contributor flow.** Use Form 2441 as an
   out-of-core held-out form through `extend` candidate generation, validation, review
   package, and local user-gated acceptance. It must not enter the project-confirmed
   corpus or block M15R close. Document the contributor contract: exact machine witnesses,
   explicit unresolved list, no drafts committed, no corpus expansion without project
   review, and no human-confirmed claim from automation.
+
+  Implementation note (2026-07-15): `extend package` now adds a schema-validated
+  `review/addressing/` contribution package when an inventoried document is available.
+  Form 2441 remains solely under `graph_ext/2025/_drafts/` and the user-gated extension
+  overlay; no live address registry is created. The package pins `project_corpus: false`,
+  `human_confirmed: false`, pending address review, exact coverage, and the unresolved
+  field list. Local artifact: `workbench_output/form_2441_2025_2025.tax-graph-extension.zip`.
 
 ### JOHN ADDRESS GATE B - accept campaign readiness and bounded scope
 

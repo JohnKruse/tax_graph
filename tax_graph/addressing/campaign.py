@@ -219,8 +219,8 @@ def _form_8949_references(registry: dict[str, Any], evidence_hash: str) -> list[
 
 def _source_hash(root: Path, document_id: str) -> str:
     manifest = yaml.safe_load((root / "config/manifest.yaml").read_text(encoding="utf-8"))
-    declared = next(item for item in manifest["documents"] if item["document_id"] == document_id)
-    if declared.get("expected_sha256"):
+    declared = next((item for item in manifest["documents"] if item["document_id"] == document_id), None)
+    if declared and declared.get("expected_sha256"):
         return str(declared["expected_sha256"])
     pdf = root / ".cache" / "raw" / "2025" / f"{document_id}.pdf"
     return hashlib.sha256(pdf.read_bytes()).hexdigest()

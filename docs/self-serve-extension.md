@@ -38,7 +38,13 @@ Package an accepted extension for a contribution review with:
 
 The deterministic ZIP includes the accepted graph YAML, its content hash,
 metrics and review artifacts when present, and the generated Verification Record
-page. It is a contribution artifact, not an automatic upstream submission.
+page. When the project has a field inventory for the document, packaging also builds
+`review/addressing/`: a schema-validated pending-review address registry, widget/node
+bindings, reference claims, and an explicit unresolved-field report. These files remain
+under `graph_ext/<year>/_drafts/` before packaging. They are never copied into the live
+address corpus by `extend accept` or `extend package`. The package records
+`project_corpus: false`, `human_confirmed: false`, and `address_review_status: pending`.
+It is a contribution artifact, not an automatic upstream submission.
 
 ## Overlay and provenance contract
 

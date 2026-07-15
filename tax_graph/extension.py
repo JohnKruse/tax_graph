@@ -16,6 +16,7 @@ from typing import Any, Callable
 import urllib.request
 import zipfile
 
+import jsonschema
 import yaml
 
 from tax_graph.acquire.fetch import fetch_manifest_documents
@@ -30,6 +31,7 @@ from tax_graph.io.loader import (
 )
 from tax_graph.review_queue import upsert_deferred_review_entry
 from tax_graph.validate.graph_validator import validate_loaded_graph
+from tax_graph.addressing import build_document_addresses
 
 
 EXTENSION_GATE = "user"
@@ -99,6 +101,55 @@ class ExtensionPackageResult:
     year: str
     path: Path
     content_hash: str
+
+
+def build_address_contribution(
+    document_id: str,
+    *,
+    year: str | int = "2025",
+    root: str | Path | None = None,
+    config: dict[str, Any] | None = None,
+) -> Path:
+    """Build a machine-validated, pending-review address package outside the live corpus."""
+    _validate_document_id(document_id)
+    root_path = Path(root).resolve() if root is not None else Path.cwd().resolve()
+    settings = config if config is not None else load_config(root=root_path)
+    payload = build_document_addresses(root_path, document_id)
+    schemas = {
+        "addresses.yaml": "address_registry.schema.json",
+        "widget_bindings.yaml": "address_binding.schema.json",
+        "node_bindings.yaml": "address_binding.schema.json",
+        "references.yaml": "address_reference.schema.json",
+    }
+    artifacts = {
+        "addresses.yaml": payload["registry"],
+        "widget_bindings.yaml": payload["widget_bindings"],
+        "node_bindings.yaml": payload["node_bindings"],
+        "references.yaml": payload["references"],
+    }
+    for name, schema_name in schemas.items():
+        schema = json.loads((root_path / "schemas" / schema_name).read_text(encoding="utf-8"))
+        jsonschema.validate(artifacts[name], schema)
+    output = extension_root(root_path, settings) / str(year) / "_drafts" / document_id / "addressing"
+    output.mkdir(parents=True, exist_ok=True)
+    for name, artifact in artifacts.items():
+        (output / name).write_text(yaml.safe_dump(artifact, sort_keys=False), encoding="utf-8")
+    unresolved = sorted(
+        set(_field_disposition_names(root_path, str(year), document_id)) - set(payload["field_addresses"])
+    )
+    report = {
+        "schema_version": 1,
+        "document_id": document_id,
+        "tax_year": int(year),
+        "gate": EXTENSION_GATE,
+        "project_corpus": False,
+        "human_confirmed": False,
+        "review_status": "pending",
+        "coverage": payload["coverage"],
+        "unresolved_field_names": unresolved,
+    }
+    (output / "report.json").write_text(json.dumps(report, indent=2, sort_keys=True) + "\n", encoding="ascii")
+    return output
 
 
 def extension_root(root: str | Path, config: dict[str, Any] | None = None) -> Path:
@@ -469,10 +520,17 @@ def package_extension(
         if path.is_file():
             files[f"graph/{path.name}"] = path.read_bytes()
     draft_dir = extension_root(root_path, settings) / graph_year / "_drafts" / document_id
+    address_dir = build_address_contribution(
+        document_id, year=graph_year, root=root_path, config=settings,
+    ) if (root_path / "graph" / graph_year / "field_maps" / f"{document_id}.yaml").exists() else None
     for name in ("metrics.yaml", "review.md", "review.html", "nversion.yaml", "example_mining.yaml"):
         path = draft_dir / name
         if path.exists():
             files[f"review/{name}"] = path.read_bytes()
+    if address_dir is not None:
+        for path in sorted(address_dir.iterdir(), key=lambda item: item.name):
+            if path.is_file():
+                files[f"review/addressing/{path.name}"] = path.read_bytes()
 
     from tax_graph.verify.record import verification_summary_for_document
 
@@ -483,6 +541,9 @@ def package_extension(
         "tax_year": int(graph_year),
         "gate": EXTENSION_GATE,
         "content_hash": content_hash,
+        "address_review_status": "pending" if address_dir is not None else None,
+        "project_corpus": False,
+        "human_confirmed": False,
         "files": sorted(files),
     }
     files["package.json"] = (json.dumps(manifest, indent=2, sort_keys=True) + "\n").encode("ascii")
@@ -493,6 +554,12 @@ def package_extension(
         path=package_path,
         content_hash=content_hash,
     )
+
+
+def _field_disposition_names(root: Path, year: str, document_id: str) -> list[str]:
+    path = root / "graph" / year / "field_maps" / f"{document_id}.yaml"
+    payload = yaml.safe_load(path.read_text(encoding="utf-8"))
+    return [str(item["field_name"]) for item in payload.get("field_dispositions", [])]
 
 
 def _resolve_entries(
