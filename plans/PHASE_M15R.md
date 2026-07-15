@@ -355,7 +355,7 @@ changes. Never write a human-review claim on John's behalf.
   switch consumers yet. Tests seed trailing-number labels, renamed nodes, duplicate
   aliases, and missing targets.
 
-- [ ] **R4 [worker-standard] - Hybrid ranked candidate matcher.** Implement constrained
+- [DONE] **R4 [worker-standard] - Hybrid ranked candidate matcher.** Implement constrained
   candidate retrieval as a separate `tax_graph/addressing/search` layer: exact structured
   lookup first, lexical/trigram baseline second, and an optional pluggable compact-
   embedding ranker over only the surviving pool. Persist review diagnostics/model/input
