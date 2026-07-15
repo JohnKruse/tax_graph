@@ -416,7 +416,7 @@ formula, graph node id, PDF field name, or guessed prose meaning. Corrections am
   duplicate an option, misroute a cross-document target, and delete a target registry.
   Each fails at the responsible layer. Add those defect classes to the M8 drill catalog.
 
-- [ ] **R9 [worker-heavy] - Output/runtime/public compatibility cutover.** Compile and
+- [DONE] **R9 [worker-heavy] - Output/runtime/public compatibility cutover.** Compile and
   consume widget/node bindings in field maps, geometry, fill, sidecars, return records,
   used-form detection, oracles, and verification records. Add optional MCP/address APIs
   to resolve/list addresses while retaining all current node-id calls. Tests: current

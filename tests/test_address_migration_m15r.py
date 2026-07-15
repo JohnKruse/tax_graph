@@ -37,5 +37,5 @@ def test_migration_report_has_all_four_states_and_is_byte_stable() -> None:
 @pytest.mark.m15r
 def test_legacy_semantic_joins_are_explicit_and_bounded(tmp_path: Path) -> None:
     inventory = semantic_join_inventory(ROOT)
-    assert len(inventory) == 5
-    assert {item["disposition"] for item in inventory} == {"replace_r8", "replace_r9", "replace_r10"}
+    assert len(inventory) == 4
+    assert {item["disposition"] for item in inventory} == {"replace_r8", "replace_r10"}

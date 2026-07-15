@@ -17,6 +17,7 @@ from tax_graph.engine.operations import MISSING, apply_operation, is_missing, ro
 from tax_graph.frontier.build import load_frontier_registry
 from tax_graph.io.loader import extension_root_for_project, load_graph, load_yaml
 from tax_graph.io.sqlite_loader import compiled_db_path, load_sqlite_graph
+from tax_graph.addressing import load_address_artifacts, load_compiled_address_artifacts
 
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -49,6 +50,13 @@ class Graph:
         self.base_content_hash = loaded.base_content_hash
         self.extension_hashes = dict(loaded.extension_hashes or {})
         self.extension_metadata = dict(loaded.extension_metadata or {})
+        address_artifacts = load_compiled_address_artifacts(compiled_db_path(year, root)) if graph_source == "sqlite" else load_address_artifacts(year, self.root)
+        address_index = {item.address_id: item for item in address_artifacts.addresses}
+        self.address_by_node = {
+            item["node_id"]: address_index[item["address_id"]]
+            for item in address_artifacts.node_bindings
+            if item["status"] == "exact" and item["address_id"] in address_index
+        }
         self.documents = {
             document["document_id"]: _with_runtime_gate(document)
             for document in sorted(loaded.items("documents"), key=lambda item: item["document_id"])
@@ -642,13 +650,9 @@ def _unresolved_trace(edge: dict[str, Any], frontier: dict[str, Any]) -> dict[st
 
 
 def _infer_document_line(node_id: str, graph: Graph) -> tuple[str | None, str | None]:
-    document_ids = sorted(graph.documents, key=len, reverse=True)
-    document_id = next((candidate for candidate in document_ids if node_id.startswith(candidate)), None)
-    import re
-
-    match = re.search(r"_line_([0-9]+[a-z]?)", node_id, flags=re.IGNORECASE)
-    line = match.group(1).lower() if match else None
-    return document_id, line
+    node = graph.nodes.get(node_id)
+    address = graph.address_by_node.get(node_id)
+    return (str(node.get("document_id")) if node else None, address.official_ref if address else None)
 
 
 def _load_tax_table_resource(graph_source: str, year: str, root: Path, graph_dir: Path) -> list[dict[str, Any]]:

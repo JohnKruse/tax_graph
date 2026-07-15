@@ -56,25 +56,41 @@ def validate_direct_return_root(*, project_root: str | Path, return_root: str | 
     return destination
 
 
-def used_form_ids(facts_document: Mapping[str, Any]) -> tuple[str, ...]:
-    """Return official forms actually touched by supplied return facts."""
+def used_form_ids(facts_document: Mapping[str, Any], *, project_root: str | Path | None = None, year: str | int = 2025) -> tuple[str, ...]:
+    """Return touched forms by graph ownership and downstream traversal, never id parsing."""
+    from tax_graph.io.loader import load_graph
+    root = Path(project_root).resolve() if project_root is not None else Path(__file__).resolve().parents[2]
+    graph = load_graph(year, root)
+    eligible_documents = {item["document_id"] for item in load_field_maps(year, root)}
+    nodes = {item["node_id"]: item for item in graph.items("nodes")}
+    tables = {item["table_id"]: item for item in graph.items("tables")}
+    outgoing: dict[str, list[str]] = {}
+    for edge in graph.items("edges"):
+        outgoing.setdefault(str(edge["source"]), []).append(str(edge["target"]))
     used = {"form_1040_2025"}
+    pending = [str(fact.get("node_id")) for fact in facts_document.get("facts", []) or [] if fact.get("node_id") in nodes]
+    for table_fact in facts_document.get("tables", []) or []:
+        table = tables.get(str(table_fact.get("table_id")))
+        if table:
+            if str(table["document_id"]) in eligible_documents:
+                used.add(str(table["document_id"]))
+            pending.extend(str(column["template_node"]) for column in table.get("columns", []))
     for fact in facts_document.get("facts", []) or []:
-        node_id = str(fact.get("node_id", ""))
-        for document_id in (
-            "schedule_1_2025",
-            "schedule_1a_2025",
-            "schedule_2_2025",
-            "schedule_3_2025",
-            "schedule_a_2025",
-            "schedule_b_2025",
-            "schedule_d_2025",
-            "form_6251_2025",
-        ):
-            if node_id.startswith(f"{document_id}_"):
-                used.add(document_id)
-    if facts_document.get("tables"):
-        used.update({"form_8949_2025", "schedule_d_2025"})
+        node = nodes.get(str(fact.get("node_id", "")))
+        if node:
+            if str(node["document_id"]) in eligible_documents:
+                used.add(str(node["document_id"]))
+    seen = set()
+    while pending:
+        node_id = pending.pop()
+        if node_id in seen:
+            continue
+        seen.add(node_id)
+        node = nodes.get(node_id)
+        if node:
+            if str(node["document_id"]) in eligible_documents:
+                used.add(str(node["document_id"]))
+        pending.extend(outgoing.get(node_id, []))
     return tuple(sorted(used))
 
 
@@ -107,7 +123,7 @@ def export_filing_bundle(
     maps = {item["document_id"]: item for item in load_field_maps(year, project)}
     filled: list[FilledForm] = []
     blank_notes: list[dict[str, str]] = []
-    for document_id in used_form_ids(facts_document):
+    for document_id in used_form_ids(facts_document, project_root=project, year=year):
         source = project / ".cache" / "raw" / str(year) / f"{document_id}.pdf"
         if not source.exists():
             raise FileNotFoundError(f"official cached PDF is missing: {source}")

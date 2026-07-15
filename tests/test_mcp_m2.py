@@ -200,6 +200,7 @@ def _call_tool(server, name: str, arguments: dict[str, Any]) -> dict[str, Any]:
 def _copy_graph_project(tmp_path: Path) -> Path:
     root = tmp_path / "project"
     shutil.copytree(ROOT / "graph", root / "graph", ignore=shutil.ignore_patterns("_drafts"))
+    shutil.copytree(ROOT / "schemas", root / "schemas")
     (root / "config").mkdir()
     (root / "config" / "tax-graph.config.yaml").write_text(
         "project:\n  paths:\n    build_dir: compiled\n",

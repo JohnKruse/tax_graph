@@ -17,6 +17,7 @@ from tax_graph import __version__
 from tax_graph.engine import Engine, Graph, MISSING, Result, TABLE_FACTS_KEY, render_trace
 from tax_graph.io.loader import LoadedGraph, load_graph
 from tax_graph.io.sqlite_loader import compiled_db_path, load_sqlite_graph
+from tax_graph.addressing import AddressArtifacts, load_address_artifacts, load_compiled_address_artifacts
 from tax_graph.mcp.lifecycle import ParentWatchdog, _interrupt_main
 
 
@@ -33,6 +34,7 @@ M2_TOOL_NAMES = (
 )
 MCP_TOOL_NAMES = M2_TOOL_NAMES + ("export_return_record", "export_filled_form_bundle", "get_verification")
 MCP_TOOL_NAMES = MCP_TOOL_NAMES + ("get_intake_relevance", "list_intake_gaps")
+MCP_TOOL_NAMES = MCP_TOOL_NAMES + ("resolve_address", "list_addresses")
 
 SERVER_INSTRUCTIONS = """Tax Graph MCP server.
 
@@ -59,6 +61,7 @@ class McpGraphContext:
     citations: dict[str, dict[str, Any]]
     decisions: dict[str, dict[str, Any]]
     downstream: dict[str, list[dict[str, Any]]]
+    addresses: AddressArtifacts
 
 
 def build_context(
@@ -72,6 +75,7 @@ def build_context(
     graph = Graph(year, root=root_path, source=source)
     loaded = load_sqlite_graph(year, root_path) if graph.source == "sqlite" else load_graph(year, root_path)
     downstream: dict[str, list[dict[str, Any]]] = {}
+    addresses = load_compiled_address_artifacts(compiled_db_path(year, root_path)) if graph.source == "sqlite" else load_address_artifacts(year, root_path)
     for edge in loaded.items("edges"):
         downstream.setdefault(edge["source"], []).append(edge)
     return McpGraphContext(
@@ -84,6 +88,7 @@ def build_context(
         citations={citation["citation_id"]: citation for citation in loaded.items("citations")},
         decisions={decision["decision_id"]: decision for decision in loaded.items("decisions")},
         downstream={node_id: sorted(edges, key=lambda edge: edge["edge_id"]) for node_id, edges in downstream.items()},
+        addresses=addresses,
     )
 
 
@@ -141,6 +146,18 @@ def run_mcp_server(
 
 
 def _register_tools(server: FastMCP, context: McpGraphContext) -> None:
+    @server.tool()
+    def resolve_address(address_id: str) -> dict[str, Any]:
+        """Resolve one canonical form address exactly."""
+        result = context.addresses.resolve(address_id=address_id)
+        return {"address_id": address_id, "state": result.state, "address": result.address.raw if result.address else None}
+
+    @server.tool()
+    def list_addresses(document_id: str) -> dict[str, Any]:
+        """List canonical addresses for one document in stable order."""
+        items = [item.raw for item in context.addresses.addresses if item.document_id == document_id]
+        return {"document_id": document_id, "addresses": items, "count": len(items)}
+
     @server.tool()
     def get_document(document_id: str) -> dict[str, Any]:
         """Return a document object by id."""
