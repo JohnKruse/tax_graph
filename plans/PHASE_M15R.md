@@ -341,7 +341,7 @@ changes. Never write a human-review claim on John's behalf.
   the known 80-disagreement diagnostic. Tests: schema strictness, ASCII tokens, invalid
   parent/kind/role/status combinations, and no mutation of the current graph.
 
-- [ ] **R2 [worker-heavy] - Address registry library and compiled indexes.** Implement
+- [DONE] **R2 [worker-heavy] - Address registry library and compiled indexes.** Implement
   `tax_graph/addressing/` serializer, loader, resolver, validator, alias scoping, and
   YAML-to-SQLite compilation. Add the five additive tables from pin 4 and read APIs that
   work from YAML or compiled graphs. Tests: round trip, uniqueness, acyclic parents,

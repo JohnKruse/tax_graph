@@ -10,6 +10,7 @@ from typing import Any
 
 from tax_graph.config import get_config_value, load_config, project_root
 from tax_graph.io.loader import GRAPH_KINDS, LoadedGraph, load_graph
+from tax_graph.addressing import compile_address_artifacts, load_address_artifacts
 
 
 DB_SCHEMA_VERSION = 1
@@ -48,6 +49,7 @@ def build_sqlite(
         conn.execute("PRAGMA foreign_keys = ON")
         _create_schema(conn)
         _insert_graph(conn, graph)
+        compile_address_artifacts(conn, load_address_artifacts(year, root_path))
         conn.commit()
     finally:
         conn.close()
