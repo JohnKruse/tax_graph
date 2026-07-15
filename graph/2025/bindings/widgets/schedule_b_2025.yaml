@@ -1,0 +1,165 @@
+schema_version: 1
+year: 2025
+document_id: schedule_b_2025
+binding_kind: widget
+bindings:
+- field_name: topmostSubform[0].Page1[0].ReadOrderControl[0].f1_34[0]
+  address_id: 2025/document=schedule_b/line=5/control=amount
+  widget_type: text
+  page: 1
+  rect:
+  - 201.6
+  - 372.0
+  - 460.8
+  - 384.0
+  status: provisional
+- field_name: topmostSubform[0].Page1[0].c1_3[0]
+  address_id: 2025/document=schedule_b/line=8/control=checkbox
+  widget_type: checkbox
+  page: 1
+  rect:
+  - 539.4
+  - 745.0
+  - 549.4
+  - 755.0
+  status: provisional
+- field_name: topmostSubform[0].Page1[0].c1_3[1]
+  address_id: 2025/document=schedule_b/line=8/control=checkbox
+  widget_type: checkbox
+  page: 1
+  rect:
+  - 561.0
+  - 745.0
+  - 571.0
+  - 755.0
+  status: provisional
+- field_name: topmostSubform[0].Page1[0].f1_15[0]
+  address_id: 2025/document=schedule_b/line=1/control=amount
+  widget_type: text
+  page: 1
+  rect:
+  - 129.6
+  - 216.0
+  - 460.8
+  - 228.0
+  status: provisional
+- field_name: topmostSubform[0].Page1[0].f1_16[0]
+  address_id: 2025/document=schedule_b/line=1/control=amount
+  widget_type: text
+  page: 1
+  rect:
+  - 489.6
+  - 216.0
+  - 576.0
+  - 228.0
+  status: exact
+- field_name: topmostSubform[0].Page1[0].f1_31[0]
+  address_id: 2025/document=schedule_b/line=2/control=amount
+  widget_type: text
+  page: 1
+  rect:
+  - 489.6
+  - 312.0
+  - 576.0
+  - 324.0
+  status: exact
+- field_name: topmostSubform[0].Page1[0].f1_32[0]
+  address_id: 2025/document=schedule_b/line=3/control=amount
+  widget_type: text
+  page: 1
+  rect:
+  - 489.6
+  - 336.0
+  - 576.0
+  - 348.0
+  status: exact
+- field_name: topmostSubform[0].Page1[0].f1_33[0]
+  address_id: 2025/document=schedule_b/line=2b/control=amount
+  widget_type: text
+  page: 1
+  rect:
+  - 489.6
+  - 348.0
+  - 576.0
+  - 360.0
+  status: exact
+- field_name: topmostSubform[0].Page1[0].f1_35[0]
+  address_id: 2025/document=schedule_b/line=5/control=amount
+  widget_type: text
+  page: 1
+  rect:
+  - 489.6
+  - 372.0
+  - 576.0
+  - 384.0
+  status: exact
+- field_name: topmostSubform[0].Page1[0].f1_36[0]
+  address_id: 2025/document=schedule_b/line=5/control=amount
+  widget_type: text
+  page: 1
+  rect:
+  - 129.6
+  - 384.0
+  - 460.8
+  - 396.0
+  status: provisional
+- field_name: topmostSubform[0].Page1[0].f1_37[0]
+  address_id: 2025/document=schedule_b/line=5/control=amount
+  widget_type: text
+  page: 1
+  rect:
+  - 489.6
+  - 384.0
+  - 576.0
+  - 396.0
+  status: provisional
+- field_name: topmostSubform[0].Page1[0].f1_46[0]
+  address_id: 2025/document=schedule_b/line=5/control=amount
+  widget_type: text
+  page: 1
+  rect:
+  - 129.6
+  - 444.0
+  - 460.8
+  - 456.0
+  status: provisional
+- field_name: topmostSubform[0].Page1[0].f1_47[0]
+  address_id: 2025/document=schedule_b/line=5/control=amount
+  widget_type: text
+  page: 1
+  rect:
+  - 489.6
+  - 444.0
+  - 576.0
+  - 456.0
+  status: provisional
+- field_name: topmostSubform[0].Page1[0].f1_48[0]
+  address_id: 2025/document=schedule_b/line=5/control=amount
+  widget_type: text
+  page: 1
+  rect:
+  - 129.6
+  - 456.0
+  - 460.8
+  - 468.0
+  status: provisional
+- field_name: topmostSubform[0].Page1[0].f1_49[0]
+  address_id: 2025/document=schedule_b/line=5/control=amount
+  widget_type: text
+  page: 1
+  rect:
+  - 489.6
+  - 456.0
+  - 576.0
+  - 468.0
+  status: provisional
+- field_name: topmostSubform[0].Page1[0].f1_64[0]
+  address_id: 2025/document=schedule_b/line=3b/control=amount
+  widget_type: text
+  page: 1
+  rect:
+  - 489.6
+  - 552.0
+  - 576.0
+  - 564.0
+  status: exact

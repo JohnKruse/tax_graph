@@ -1,0 +1,646 @@
+schema_version: 1
+year: 2025
+document_id: form_8949_2025
+addresses:
+- address_id: 2025/document=form_8949
+  logical_key: document=form_8949
+  year: 2025
+  document_id: form_8949_2025
+  parent_address_id: null
+  kind: document
+  path:
+  - kind: document
+    token: form_8949
+  printed_label: form_8949
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_8949_2025
+    source_hash: 274513891e4e281d11e14286f14b9df724c24b6030fca0f0681da64fb2e7f525
+- address_id: 2025/document=form_8949/line=10
+  logical_key: document=form_8949/line=10
+  year: 2025
+  document_id: form_8949_2025
+  parent_address_id: 2025/document=form_8949
+  kind: line
+  path:
+  - kind: document
+    token: form_8949
+  - kind: line
+    token: '10'
+  printed_label: '10'
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_8949_2025
+    source_hash: 274513891e4e281d11e14286f14b9df724c24b6030fca0f0681da64fb2e7f525
+    page: 2
+- address_id: 2025/document=form_8949/line=10/control=amount
+  logical_key: document=form_8949/line=10/control=amount
+  year: 2025
+  document_id: form_8949_2025
+  parent_address_id: 2025/document=form_8949/line=10
+  kind: control
+  path:
+  - kind: document
+    token: form_8949
+  - kind: line
+    token: '10'
+  - kind: control
+    token: amount
+  printed_label: Line 10 - 10 (if Box F or Box L above is checked) - f2_91
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_8949_2025
+    source_hash: 274513891e4e281d11e14286f14b9df724c24b6030fca0f0681da64fb2e7f525
+    page: 2
+  official_ref: '10'
+- address_id: 2025/document=form_8949/line=3
+  logical_key: document=form_8949/line=3
+  year: 2025
+  document_id: form_8949_2025
+  parent_address_id: 2025/document=form_8949
+  kind: line
+  path:
+  - kind: document
+    token: form_8949
+  - kind: line
+    token: '3'
+  printed_label: '3'
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_8949_2025
+    source_hash: 274513891e4e281d11e14286f14b9df724c24b6030fca0f0681da64fb2e7f525
+    page: 1
+- address_id: 2025/document=form_8949/line=3/control=amount
+  logical_key: document=form_8949/line=3/control=amount
+  year: 2025
+  document_id: form_8949_2025
+  parent_address_id: 2025/document=form_8949/line=3
+  kind: control
+  path:
+  - kind: document
+    token: form_8949
+  - kind: line
+    token: '3'
+  - kind: control
+    token: amount
+  printed_label: Line 3 - 3 (if Box C or Box I above is checked) - f1_91
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_8949_2025
+    source_hash: 274513891e4e281d11e14286f14b9df724c24b6030fca0f0681da64fb2e7f525
+    page: 1
+  official_ref: '3'
+- address_id: 2025/document=form_8949/table=part_i_line_1
+  logical_key: document=form_8949/table=part_i_line_1
+  year: 2025
+  document_id: form_8949_2025
+  parent_address_id: 2025/document=form_8949
+  kind: table
+  path:
+  - kind: document
+    token: form_8949
+  - kind: table
+    token: part_i_line_1
+  printed_label: part_i_line_1
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_8949_2025
+    source_hash: 274513891e4e281d11e14286f14b9df724c24b6030fca0f0681da64fb2e7f525
+    page: 1
+- address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction
+  logical_key: document=form_8949/table=part_i_line_1/row_template=transaction
+  year: 2025
+  document_id: form_8949_2025
+  parent_address_id: 2025/document=form_8949/table=part_i_line_1
+  kind: row_template
+  path:
+  - kind: document
+    token: form_8949
+  - kind: table
+    token: part_i_line_1
+  - kind: row_template
+    token: transaction
+  printed_label: transaction
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_8949_2025
+    source_hash: 274513891e4e281d11e14286f14b9df724c24b6030fca0f0681da64fb2e7f525
+    page: 1
+- address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=d
+  logical_key: document=form_8949/table=part_i_line_1/row_template=transaction/column=d
+  year: 2025
+  document_id: form_8949_2025
+  parent_address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction
+  kind: column
+  path:
+  - kind: document
+    token: form_8949
+  - kind: table
+    token: part_i_line_1
+  - kind: row_template
+    token: transaction
+  - kind: column
+    token: d
+  printed_label: f1_06
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_8949_2025
+    source_hash: 274513891e4e281d11e14286f14b9df724c24b6030fca0f0681da64fb2e7f525
+    page: 1
+  official_ref: Column (d)
+- address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=e
+  logical_key: document=form_8949/table=part_i_line_1/row_template=transaction/column=e
+  year: 2025
+  document_id: form_8949_2025
+  parent_address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction
+  kind: column
+  path:
+  - kind: document
+    token: form_8949
+  - kind: table
+    token: part_i_line_1
+  - kind: row_template
+    token: transaction
+  - kind: column
+    token: e
+  printed_label: f1_07
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_8949_2025
+    source_hash: 274513891e4e281d11e14286f14b9df724c24b6030fca0f0681da64fb2e7f525
+    page: 1
+  official_ref: Column (e)
+- address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=g
+  logical_key: document=form_8949/table=part_i_line_1/row_template=transaction/column=g
+  year: 2025
+  document_id: form_8949_2025
+  parent_address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction
+  kind: column
+  path:
+  - kind: document
+    token: form_8949
+  - kind: table
+    token: part_i_line_1
+  - kind: row_template
+    token: transaction
+  - kind: column
+    token: g
+  printed_label: f1_09
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_8949_2025
+    source_hash: 274513891e4e281d11e14286f14b9df724c24b6030fca0f0681da64fb2e7f525
+    page: 1
+  official_ref: Column (g)
+- address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=h
+  logical_key: document=form_8949/table=part_i_line_1/row_template=transaction/column=h
+  year: 2025
+  document_id: form_8949_2025
+  parent_address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction
+  kind: column
+  path:
+  - kind: document
+    token: form_8949
+  - kind: table
+    token: part_i_line_1
+  - kind: row_template
+    token: transaction
+  - kind: column
+    token: h
+  printed_label: f1_10
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_8949_2025
+    source_hash: 274513891e4e281d11e14286f14b9df724c24b6030fca0f0681da64fb2e7f525
+    page: 1
+  official_ref: Column (h)
+- address_id: 2025/document=form_8949/table=part_i_line_2
+  logical_key: document=form_8949/table=part_i_line_2
+  year: 2025
+  document_id: form_8949_2025
+  parent_address_id: 2025/document=form_8949
+  kind: table
+  path:
+  - kind: document
+    token: form_8949
+  - kind: table
+    token: part_i_line_2
+  printed_label: part_i_line_2
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_8949_2025
+    source_hash: 274513891e4e281d11e14286f14b9df724c24b6030fca0f0681da64fb2e7f525
+    page: 1
+- address_id: 2025/document=form_8949/table=part_i_line_2/row_template=total
+  logical_key: document=form_8949/table=part_i_line_2/row_template=total
+  year: 2025
+  document_id: form_8949_2025
+  parent_address_id: 2025/document=form_8949/table=part_i_line_2
+  kind: row_template
+  path:
+  - kind: document
+    token: form_8949
+  - kind: table
+    token: part_i_line_2
+  - kind: row_template
+    token: total
+  printed_label: total
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_8949_2025
+    source_hash: 274513891e4e281d11e14286f14b9df724c24b6030fca0f0681da64fb2e7f525
+    page: 1
+- address_id: 2025/document=form_8949/table=part_i_line_2/row_template=total/column=d
+  logical_key: document=form_8949/table=part_i_line_2/row_template=total/column=d
+  year: 2025
+  document_id: form_8949_2025
+  parent_address_id: 2025/document=form_8949/table=part_i_line_2/row_template=total
+  kind: column
+  path:
+  - kind: document
+    token: form_8949
+  - kind: table
+    token: part_i_line_2
+  - kind: row_template
+    token: total
+  - kind: column
+    token: d
+  printed_label: Line 3 - 3 (if Box C or Box I above is checked) - f1_92
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_8949_2025
+    source_hash: 274513891e4e281d11e14286f14b9df724c24b6030fca0f0681da64fb2e7f525
+    page: 1
+  official_ref: Line 2 column (d)
+- address_id: 2025/document=form_8949/table=part_i_line_2/row_template=total/column=e
+  logical_key: document=form_8949/table=part_i_line_2/row_template=total/column=e
+  year: 2025
+  document_id: form_8949_2025
+  parent_address_id: 2025/document=form_8949/table=part_i_line_2/row_template=total
+  kind: column
+  path:
+  - kind: document
+    token: form_8949
+  - kind: table
+    token: part_i_line_2
+  - kind: row_template
+    token: total
+  - kind: column
+    token: e
+  printed_label: Line 3 - 3 (if Box C or Box I above is checked) - f1_93
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_8949_2025
+    source_hash: 274513891e4e281d11e14286f14b9df724c24b6030fca0f0681da64fb2e7f525
+    page: 1
+  official_ref: Line 2 column (e)
+- address_id: 2025/document=form_8949/table=part_i_line_2/row_template=total/column=g
+  logical_key: document=form_8949/table=part_i_line_2/row_template=total/column=g
+  year: 2025
+  document_id: form_8949_2025
+  parent_address_id: 2025/document=form_8949/table=part_i_line_2/row_template=total
+  kind: column
+  path:
+  - kind: document
+    token: form_8949
+  - kind: table
+    token: part_i_line_2
+  - kind: row_template
+    token: total
+  - kind: column
+    token: g
+  printed_label: Line 3 - 3 (if Box C or Box I above is checked) - f1_94
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_8949_2025
+    source_hash: 274513891e4e281d11e14286f14b9df724c24b6030fca0f0681da64fb2e7f525
+    page: 1
+  official_ref: Line 2 column (g)
+- address_id: 2025/document=form_8949/table=part_i_line_2/row_template=total/column=h
+  logical_key: document=form_8949/table=part_i_line_2/row_template=total/column=h
+  year: 2025
+  document_id: form_8949_2025
+  parent_address_id: 2025/document=form_8949/table=part_i_line_2/row_template=total
+  kind: column
+  path:
+  - kind: document
+    token: form_8949
+  - kind: table
+    token: part_i_line_2
+  - kind: row_template
+    token: total
+  - kind: column
+    token: h
+  printed_label: Line 3 - 3 (if Box C or Box I above is checked) - f1_95
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_8949_2025
+    source_hash: 274513891e4e281d11e14286f14b9df724c24b6030fca0f0681da64fb2e7f525
+    page: 1
+  official_ref: Line 2 column (h)
+- address_id: 2025/document=form_8949/table=part_ii_line_1
+  logical_key: document=form_8949/table=part_ii_line_1
+  year: 2025
+  document_id: form_8949_2025
+  parent_address_id: 2025/document=form_8949
+  kind: table
+  path:
+  - kind: document
+    token: form_8949
+  - kind: table
+    token: part_ii_line_1
+  printed_label: part_ii_line_1
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_8949_2025
+    source_hash: 274513891e4e281d11e14286f14b9df724c24b6030fca0f0681da64fb2e7f525
+    page: 2
+- address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction
+  logical_key: document=form_8949/table=part_ii_line_1/row_template=transaction
+  year: 2025
+  document_id: form_8949_2025
+  parent_address_id: 2025/document=form_8949/table=part_ii_line_1
+  kind: row_template
+  path:
+  - kind: document
+    token: form_8949
+  - kind: table
+    token: part_ii_line_1
+  - kind: row_template
+    token: transaction
+  printed_label: transaction
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_8949_2025
+    source_hash: 274513891e4e281d11e14286f14b9df724c24b6030fca0f0681da64fb2e7f525
+    page: 2
+- address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=d
+  logical_key: document=form_8949/table=part_ii_line_1/row_template=transaction/column=d
+  year: 2025
+  document_id: form_8949_2025
+  parent_address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction
+  kind: column
+  path:
+  - kind: document
+    token: form_8949
+  - kind: table
+    token: part_ii_line_1
+  - kind: row_template
+    token: transaction
+  - kind: column
+    token: d
+  printed_label: f2_06
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_8949_2025
+    source_hash: 274513891e4e281d11e14286f14b9df724c24b6030fca0f0681da64fb2e7f525
+    page: 2
+  official_ref: Column (d)
+- address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=e
+  logical_key: document=form_8949/table=part_ii_line_1/row_template=transaction/column=e
+  year: 2025
+  document_id: form_8949_2025
+  parent_address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction
+  kind: column
+  path:
+  - kind: document
+    token: form_8949
+  - kind: table
+    token: part_ii_line_1
+  - kind: row_template
+    token: transaction
+  - kind: column
+    token: e
+  printed_label: f2_07
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_8949_2025
+    source_hash: 274513891e4e281d11e14286f14b9df724c24b6030fca0f0681da64fb2e7f525
+    page: 2
+  official_ref: Column (e)
+- address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=g
+  logical_key: document=form_8949/table=part_ii_line_1/row_template=transaction/column=g
+  year: 2025
+  document_id: form_8949_2025
+  parent_address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction
+  kind: column
+  path:
+  - kind: document
+    token: form_8949
+  - kind: table
+    token: part_ii_line_1
+  - kind: row_template
+    token: transaction
+  - kind: column
+    token: g
+  printed_label: f2_09
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_8949_2025
+    source_hash: 274513891e4e281d11e14286f14b9df724c24b6030fca0f0681da64fb2e7f525
+    page: 2
+  official_ref: Column (g)
+- address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=h
+  logical_key: document=form_8949/table=part_ii_line_1/row_template=transaction/column=h
+  year: 2025
+  document_id: form_8949_2025
+  parent_address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction
+  kind: column
+  path:
+  - kind: document
+    token: form_8949
+  - kind: table
+    token: part_ii_line_1
+  - kind: row_template
+    token: transaction
+  - kind: column
+    token: h
+  printed_label: f2_10
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_8949_2025
+    source_hash: 274513891e4e281d11e14286f14b9df724c24b6030fca0f0681da64fb2e7f525
+    page: 2
+  official_ref: Column (h)
+- address_id: 2025/document=form_8949/table=part_ii_line_2
+  logical_key: document=form_8949/table=part_ii_line_2
+  year: 2025
+  document_id: form_8949_2025
+  parent_address_id: 2025/document=form_8949
+  kind: table
+  path:
+  - kind: document
+    token: form_8949
+  - kind: table
+    token: part_ii_line_2
+  printed_label: part_ii_line_2
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_8949_2025
+    source_hash: 274513891e4e281d11e14286f14b9df724c24b6030fca0f0681da64fb2e7f525
+    page: 2
+- address_id: 2025/document=form_8949/table=part_ii_line_2/row_template=total
+  logical_key: document=form_8949/table=part_ii_line_2/row_template=total
+  year: 2025
+  document_id: form_8949_2025
+  parent_address_id: 2025/document=form_8949/table=part_ii_line_2
+  kind: row_template
+  path:
+  - kind: document
+    token: form_8949
+  - kind: table
+    token: part_ii_line_2
+  - kind: row_template
+    token: total
+  printed_label: total
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_8949_2025
+    source_hash: 274513891e4e281d11e14286f14b9df724c24b6030fca0f0681da64fb2e7f525
+    page: 2
+- address_id: 2025/document=form_8949/table=part_ii_line_2/row_template=total/column=d
+  logical_key: document=form_8949/table=part_ii_line_2/row_template=total/column=d
+  year: 2025
+  document_id: form_8949_2025
+  parent_address_id: 2025/document=form_8949/table=part_ii_line_2/row_template=total
+  kind: column
+  path:
+  - kind: document
+    token: form_8949
+  - kind: table
+    token: part_ii_line_2
+  - kind: row_template
+    token: total
+  - kind: column
+    token: d
+  printed_label: Line 10 - 10 (if Box F or Box L above is checked) - f2_92
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_8949_2025
+    source_hash: 274513891e4e281d11e14286f14b9df724c24b6030fca0f0681da64fb2e7f525
+    page: 2
+  official_ref: Line 2 column (d)
+- address_id: 2025/document=form_8949/table=part_ii_line_2/row_template=total/column=e
+  logical_key: document=form_8949/table=part_ii_line_2/row_template=total/column=e
+  year: 2025
+  document_id: form_8949_2025
+  parent_address_id: 2025/document=form_8949/table=part_ii_line_2/row_template=total
+  kind: column
+  path:
+  - kind: document
+    token: form_8949
+  - kind: table
+    token: part_ii_line_2
+  - kind: row_template
+    token: total
+  - kind: column
+    token: e
+  printed_label: Line 10 - 10 (if Box F or Box L above is checked) - f2_93
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_8949_2025
+    source_hash: 274513891e4e281d11e14286f14b9df724c24b6030fca0f0681da64fb2e7f525
+    page: 2
+  official_ref: Line 2 column (e)
+- address_id: 2025/document=form_8949/table=part_ii_line_2/row_template=total/column=g
+  logical_key: document=form_8949/table=part_ii_line_2/row_template=total/column=g
+  year: 2025
+  document_id: form_8949_2025
+  parent_address_id: 2025/document=form_8949/table=part_ii_line_2/row_template=total
+  kind: column
+  path:
+  - kind: document
+    token: form_8949
+  - kind: table
+    token: part_ii_line_2
+  - kind: row_template
+    token: total
+  - kind: column
+    token: g
+  printed_label: Line 10 - 10 (if Box F or Box L above is checked) - f2_94
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_8949_2025
+    source_hash: 274513891e4e281d11e14286f14b9df724c24b6030fca0f0681da64fb2e7f525
+    page: 2
+  official_ref: Line 2 column (g)
+- address_id: 2025/document=form_8949/table=part_ii_line_2/row_template=total/column=h
+  logical_key: document=form_8949/table=part_ii_line_2/row_template=total/column=h
+  year: 2025
+  document_id: form_8949_2025
+  parent_address_id: 2025/document=form_8949/table=part_ii_line_2/row_template=total
+  kind: column
+  path:
+  - kind: document
+    token: form_8949
+  - kind: table
+    token: part_ii_line_2
+  - kind: row_template
+    token: total
+  - kind: column
+    token: h
+  printed_label: Line 10 - 10 (if Box F or Box L above is checked) - f2_95
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_8949_2025
+    source_hash: 274513891e4e281d11e14286f14b9df724c24b6030fca0f0681da64fb2e7f525
+    page: 2
+  official_ref: Line 2 column (h)

@@ -6,86 +6,107 @@ mappings:
   field_name: form1[0].Page1[0].f1_15[0]
   format: dollars
   node_id: schedule_2_2025_part_i_line_1
+  address_id: 2025/document=schedule_2/line=1/control=amount
 - slot: schedule_2_2025_part_i_line_1a
   field_name: form1[0].Page1[0].Line1a_ReadOrder[0].f1_03[0]
   format: dollars
   node_id: schedule_2_2025_part_i_line_1a
+  address_id: 2025/document=schedule_2/line=1a/control=amount
 - slot: schedule_2_2025_part_i_line_1b
   field_name: form1[0].Page1[0].f1_04[0]
   format: dollars
   node_id: schedule_2_2025_part_i_line_1b
+  address_id: 2025/document=schedule_2/line=1b/control=amount
 - slot: schedule_2_2025_part_i_line_1d
   field_name: form1[0].Page1[0].f1_06[0]
   format: dollars
   node_id: schedule_2_2025_part_i_line_1d
+  address_id: 2025/document=schedule_2/line=1d/control=amount
 - slot: schedule_2_2025_part_ii_line_10
   field_name: form1[0].Page1[0].f1_21[0]
   format: dollars
   node_id: schedule_2_2025_part_ii_line_10
+  address_id: 2025/document=schedule_2/line=10/control=amount
 - slot: schedule_2_2025_part_ii_line_11
   field_name: form1[0].Page1[0].f1_22[0]
   format: dollars
   node_id: schedule_2_2025_part_ii_line_11
+  address_id: 2025/document=schedule_2/line=11/control=amount
 - slot: schedule_2_2025_part_ii_line_12
   field_name: form1[0].Page1[0].f1_23[0]
   format: dollars
   node_id: schedule_2_2025_part_ii_line_12
+  address_id: 2025/document=schedule_2/line=12/control=amount
 - slot: schedule_2_2025_part_ii_line_14
   field_name: form1[0].Page1[0].f1_25[0]
   format: dollars
   node_id: schedule_2_2025_part_ii_line_14
+  address_id: 2025/document=schedule_2/line=14/control=amount
 - slot: schedule_2_2025_part_ii_line_15
   field_name: form1[0].Page1[0].f1_26[0]
   format: dollars
   node_id: schedule_2_2025_part_ii_line_15
+  address_id: 2025/document=schedule_2/line=15/control=amount
 - slot: schedule_2_2025_part_ii_line_16
   field_name: form1[0].Page1[0].f1_27[0]
   format: dollars
   node_id: schedule_2_2025_part_ii_line_16
+  address_id: 2025/document=schedule_2/line=16/control=amount
 - slot: schedule_2_2025_part_ii_line_17a
   field_name: form1[0].Page2[0].Line17a_ReadOrder[0].f2_02[0]
   format: dollars
   node_id: schedule_2_2025_part_ii_line_17a
+  address_id: 2025/document=schedule_2/line=17a/control=amount
 - slot: schedule_2_2025_part_ii_line_17d
   field_name: form1[0].Page2[0].f2_05[0]
   format: dollars
   node_id: schedule_2_2025_part_ii_line_17d
+  address_id: 2025/document=schedule_2/line=17d/control=amount
 - slot: schedule_2_2025_part_ii_line_17z
   field_name: form1[0].Page2[0].f2_21[0]
   format: dollars
   node_id: schedule_2_2025_part_ii_line_17z
+  address_id: 2025/document=schedule_2/line=17z/control=amount
 - slot: schedule_2_2025_part_ii_line_19
   field_name: form1[0].Page2[0].f2_22[0]
   format: dollars
   node_id: schedule_2_2025_part_ii_line_19
+  address_id: 2025/document=schedule_2/line=19/control=amount
 - slot: schedule_2_2025_part_ii_line_20
   field_name: form1[0].Page2[0].f2_23[0]
   format: dollars
   node_id: schedule_2_2025_part_ii_line_20
+  address_id: 2025/document=schedule_2/line=20/control=amount
 - slot: schedule_2_2025_part_ii_line_5
   field_name: form1[0].Page1[0].f1_16[0]
   format: dollars
   node_id: schedule_2_2025_part_ii_line_5
+  address_id: 2025/document=schedule_2/line=5/control=amount
 - slot: schedule_2_2025_part_ii_line_6
   field_name: form1[0].Page1[0].f1_17[0]
   format: dollars
   node_id: schedule_2_2025_part_ii_line_6
+  address_id: 2025/document=schedule_2/line=6/control=amount
 - slot: schedule_2_2025_part_ii_line_7
   field_name: form1[0].Page1[0].f1_18[0]
   format: dollars
   node_id: schedule_2_2025_part_ii_line_7
+  address_id: 2025/document=schedule_2/line=7/control=amount
 - slot: schedule_2_2025_part_ii_line_8
   field_name: form1[0].Page1[0].f1_19[0]
   format: dollars
   node_id: schedule_2_2025_part_ii_line_8
+  address_id: 2025/document=schedule_2/line=8/control=amount
 - slot: schedule_2_2025_part_ii_line_9
   field_name: form1[0].Page1[0].f1_20[0]
   format: dollars
   node_id: schedule_2_2025_part_ii_line_9
+  address_id: 2025/document=schedule_2/line=9/control=amount
 - slot: schedule_2_2025_root_line_2
   field_name: form1[0].Page1[0].f1_12[0]
   format: dollars
   node_id: schedule_2_2025_root_line_2
+  address_id: 2025/document=schedule_2/line=2/control=amount
 excluded_nodes:
 - node_id: schedule_2_2025_part_i_line_3
   reason: Not a printable form line or not mapped in the M12 supported output profile.
@@ -125,11 +146,13 @@ field_dispositions:
   population_policy: user_entered
   value_format: dollars
   node_id: schedule_2_2025_part_i_line_1a
+  address_id: 2025/document=schedule_2/line=1a/control=amount
 - field_name: form1[0].Page1[0].f1_04[0]
   label: Line 1b - . . . . . . . . . 1b - f1_04
   population_policy: user_entered
   value_format: dollars
   node_id: schedule_2_2025_part_i_line_1b
+  address_id: 2025/document=schedule_2/line=1b/control=amount
 - field_name: form1[0].Page1[0].f1_05[0]
   label: Line 1c - . . . . . . . . . 1c - f1_05
   population_policy: unsupported
@@ -140,11 +163,13 @@ field_dispositions:
     and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for form1[0].Page1[0].f1_05[0].
+  address_id: 2025/document=schedule_2/line=1c/control=amount
 - field_name: form1[0].Page1[0].f1_06[0]
   label: Line 1d - column (l) . . . . . . . 1d - f1_06
   population_policy: user_entered
   value_format: dollars
   node_id: schedule_2_2025_part_i_line_1d
+  address_id: 2025/document=schedule_2/line=1d/control=amount
 - field_name: form1[0].Page1[0].Line1e_ReadOrder[0].c1_1[0]
   label: Line 1c - (i) - c1_1
   population_policy: unsupported
@@ -155,6 +180,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for form1[0].Page1[0].Line1e_ReadOrder[0].c1_1[0].
+  address_id: 2025/document=schedule_2/line=1c/control=checkbox
 - field_name: form1[0].Page1[0].Line1e_ReadOrder[0].c1_1[1]
   label: Line 1c - (i) Line 1a (ii) - c1_1
   population_policy: unsupported
@@ -165,6 +191,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for form1[0].Page1[0].Line1e_ReadOrder[0].c1_1[1].
+  address_id: 2025/document=schedule_2/line=1c/control=checkbox
 - field_name: form1[0].Page1[0].Line1e_ReadOrder[0].c1_1[2]
   label: Line 1e - (iii) - c1_1
   population_policy: unsupported
@@ -175,6 +202,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for form1[0].Page1[0].Line1e_ReadOrder[0].c1_1[2].
+  address_id: 2025/document=schedule_2/line=1e/control=checkbox
 - field_name: form1[0].Page1[0].Line1e_ReadOrder[0].c1_1[3]
   label: Line 1e - (iii) Line 1d (iv) - c1_1
   population_policy: unsupported
@@ -185,6 +213,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for form1[0].Page1[0].Line1e_ReadOrder[0].c1_1[3].
+  address_id: 2025/document=schedule_2/line=1e/control=checkbox
 - field_name: form1[0].Page1[0].f1_07[0]
   label: Line 1e - . . . . . . . . . 1e - f1_07
   population_policy: unsupported
@@ -195,6 +224,7 @@ field_dispositions:
     and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for form1[0].Page1[0].f1_07[0].
+  address_id: 2025/document=schedule_2/line=1e/control=amount
 - field_name: form1[0].Page1[0].Line1f_ReadOrder[0].c1_2[0]
   label: Line 1c - (i) - c1_2
   population_policy: unsupported
@@ -205,6 +235,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for form1[0].Page1[0].Line1f_ReadOrder[0].c1_2[0].
+  address_id: 2025/document=schedule_2/line=1c/control=checkbox
 - field_name: form1[0].Page1[0].Line1f_ReadOrder[0].c1_2[1]
   label: Line 1c - (i) Line 1a (ii) - c1_2
   population_policy: unsupported
@@ -215,6 +246,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for form1[0].Page1[0].Line1f_ReadOrder[0].c1_2[1].
+  address_id: 2025/document=schedule_2/line=1c/control=checkbox
 - field_name: form1[0].Page1[0].Line1f_ReadOrder[0].c1_2[2]
   label: Line 1f - (iii) - c1_2
   population_policy: unsupported
@@ -225,6 +257,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for form1[0].Page1[0].Line1f_ReadOrder[0].c1_2[2].
+  address_id: 2025/document=schedule_2/line=1f/control=checkbox
 - field_name: form1[0].Page1[0].Line1f_ReadOrder[0].c1_2[3]
   label: Line 1f - (iii) Line 1d (iv) - c1_2
   population_policy: unsupported
@@ -235,6 +268,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for form1[0].Page1[0].Line1f_ReadOrder[0].c1_2[3].
+  address_id: 2025/document=schedule_2/line=1f/control=checkbox
 - field_name: form1[0].Page1[0].f1_08[0]
   label: Line 1f - . . . . . . . . . 1f - f1_08
   population_policy: unsupported
@@ -245,6 +279,7 @@ field_dispositions:
     and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for form1[0].Page1[0].f1_08[0].
+  address_id: 2025/document=schedule_2/line=1f/control=amount
 - field_name: form1[0].Page1[0].f1_09[0]
   label: 'Line 1y - y Other additions to tax (see instructions): - f1_09'
   population_policy: unsupported
@@ -255,6 +290,7 @@ field_dispositions:
     and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for form1[0].Page1[0].f1_09[0].
+  address_id: 2025/document=schedule_2/line=1y/control=amount
 - field_name: form1[0].Page1[0].f1_10[0]
   label: 'Line 1y - y Other additions to tax (see instructions): 1y - f1_10'
   population_policy: unsupported
@@ -266,6 +302,7 @@ field_dispositions:
     and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for form1[0].Page1[0].f1_10[0].
+  address_id: 2025/document=schedule_2/line=1y/control=amount
 - field_name: form1[0].Page1[0].f1_11[0]
   label: Line 1z - . . . . . . . . . 1z - f1_11
   population_policy: unsupported
@@ -276,11 +313,13 @@ field_dispositions:
     and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for form1[0].Page1[0].f1_11[0].
+  address_id: 2025/document=schedule_2/line=1z/control=amount
 - field_name: form1[0].Page1[0].f1_12[0]
   label: Line 2 - . . . . . . . . . 2 - f1_12
   population_policy: user_entered
   value_format: dollars
   node_id: schedule_2_2025_root_line_2
+  address_id: 2025/document=schedule_2/line=2/control=amount
 - field_name: form1[0].Page1[0].f1_13[0]
   label: Line 1z - line 17 . . . . . . . 3 - f1_13
   population_policy: unsupported
@@ -291,6 +330,7 @@ field_dispositions:
     and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for form1[0].Page1[0].f1_13[0].
+  address_id: 2025/document=schedule_2/line=1z/control=amount
 - field_name: form1[0].Page1[0].Line4_ReadOrder[0].c1_3[0]
   label: Line 1 - 1 - c1_3
   population_policy: unsupported
@@ -301,6 +341,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for form1[0].Page1[0].Line4_ReadOrder[0].c1_3[0].
+  address_id: 2025/document=schedule_2/line=1/control=checkbox
 - field_name: form1[0].Page1[0].Line4_ReadOrder[0].c1_4[0]
   label: Line 1 - 1 4361 2 - c1_4
   population_policy: unsupported
@@ -311,6 +352,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for form1[0].Page1[0].Line4_ReadOrder[0].c1_4[0].
+  address_id: 2025/document=schedule_2/line=1/control=checkbox
 - field_name: form1[0].Page1[0].Line4_ReadOrder[0].c1_5[0]
   label: Line 1 - 1 4361 2 4029 3 - c1_5
   population_policy: unsupported
@@ -321,6 +363,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for form1[0].Page1[0].Line4_ReadOrder[0].c1_5[0].
+  address_id: 2025/document=schedule_2/line=1/control=checkbox
 - field_name: form1[0].Page1[0].Line4_ReadOrder[0].f1_14[0]
   label: Line 1 - 1 4361 2 4029 3 - f1_14
   population_policy: unsupported
@@ -331,26 +374,31 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for form1[0].Page1[0].Line4_ReadOrder[0].f1_14[0].
+  address_id: 2025/document=schedule_2/line=1/control=amount
 - field_name: form1[0].Page1[0].f1_15[0]
   label: Line 1 - . . . . . . . . . 4 - f1_15
   population_policy: user_entered
   value_format: dollars
   node_id: schedule_2_2025_part_i_line_1
+  address_id: 2025/document=schedule_2/line=1/control=amount
 - field_name: form1[0].Page1[0].f1_16[0]
   label: Line 5 - Medicare tax on unreported tip income. Attach Form 4137 5 - f1_16
   population_policy: user_entered
   value_format: dollars
   node_id: schedule_2_2025_part_ii_line_5
+  address_id: 2025/document=schedule_2/line=5/control=amount
 - field_name: form1[0].Page1[0].f1_17[0]
   label: Line 6 - and Medicare tax on wages. Attach Form 8919 . 6 - f1_17
   population_policy: user_entered
   value_format: dollars
   node_id: schedule_2_2025_part_ii_line_6
+  address_id: 2025/document=schedule_2/line=6/control=amount
 - field_name: form1[0].Page1[0].f1_18[0]
   label: Line 7 - . . . . . . . . . 7 - f1_18
   population_policy: user_entered
   value_format: dollars
   node_id: schedule_2_2025_part_ii_line_7
+  address_id: 2025/document=schedule_2/line=7/control=amount
 - field_name: form1[0].Page1[0].Line8_ReadOrder[0].c1_6[0]
   label: . . . . . . . . . . - c1_6
   population_policy: unsupported
@@ -366,26 +414,31 @@ field_dispositions:
   population_policy: user_entered
   value_format: dollars
   node_id: schedule_2_2025_part_ii_line_8
+  address_id: 2025/document=schedule_2/line=8/control=amount
 - field_name: form1[0].Page1[0].f1_20[0]
   label: Line 9 - . . . . . . . . . 9 - f1_20
   population_policy: user_entered
   value_format: dollars
   node_id: schedule_2_2025_part_ii_line_9
+  address_id: 2025/document=schedule_2/line=9/control=amount
 - field_name: form1[0].Page1[0].f1_21[0]
   label: Line 10 - . . . . . . . . . 10 - f1_21
   population_policy: user_entered
   value_format: dollars
   node_id: schedule_2_2025_part_ii_line_10
+  address_id: 2025/document=schedule_2/line=10/control=amount
 - field_name: form1[0].Page1[0].f1_22[0]
   label: Line 11 - . . . . . . . . . 11 - f1_22
   population_policy: user_entered
   value_format: dollars
   node_id: schedule_2_2025_part_ii_line_11
+  address_id: 2025/document=schedule_2/line=11/control=amount
 - field_name: form1[0].Page1[0].f1_23[0]
   label: Line 12 - . . . . . . . . . 12 - f1_23
   population_policy: user_entered
   value_format: dollars
   node_id: schedule_2_2025_part_ii_line_12
+  address_id: 2025/document=schedule_2/line=12/control=amount
 - field_name: form1[0].Page1[0].f1_24[0]
   label: Line 12 - . . . . . . . . . 13 - f1_24
   population_policy: unsupported
@@ -396,21 +449,25 @@ field_dispositions:
     and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for form1[0].Page1[0].f1_24[0].
+  address_id: 2025/document=schedule_2/line=12/control=amount
 - field_name: form1[0].Page1[0].f1_25[0]
   label: Line 14 - sale of certain residential lots and timeshares . . 14 - f1_25
   population_policy: user_entered
   value_format: dollars
   node_id: schedule_2_2025_part_ii_line_14
+  address_id: 2025/document=schedule_2/line=14/control=amount
 - field_name: form1[0].Page1[0].f1_26[0]
   label: Line 15 - installment sales with a sales price over $150,000 . 15 - f1_26
   population_policy: user_entered
   value_format: dollars
   node_id: schedule_2_2025_part_ii_line_15
+  address_id: 2025/document=schedule_2/line=15/control=amount
 - field_name: form1[0].Page1[0].f1_27[0]
   label: Line 16 - . . . . . . . . . 16 - f1_27
   population_policy: user_entered
   value_format: dollars
   node_id: schedule_2_2025_part_ii_line_16
+  address_id: 2025/document=schedule_2/line=16/control=amount
 - field_name: form1[0].Page2[0].Line17a_ReadOrder[0].Line17_ReadOrder[0].f2_01[0]
   label: Line 17a - f2_01
   population_policy: unsupported
@@ -421,11 +478,13 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for form1[0].Page2[0].Line17a_ReadOrder[0].Line17_ReadOrder[0].f2_01[0].
+  address_id: 2025/document=schedule_2/line=17a/control=amount
 - field_name: form1[0].Page2[0].Line17a_ReadOrder[0].f2_02[0]
   label: Line 17a - 17a - f2_02
   population_policy: user_entered
   value_format: dollars
   node_id: schedule_2_2025_part_ii_line_17a
+  address_id: 2025/document=schedule_2/line=17a/control=amount
 - field_name: form1[0].Page2[0].f2_03[0]
   label: Line 17b - mortgage subsidy. If you sold your home, see instructions 17b
     - f2_03
@@ -438,6 +497,7 @@ field_dispositions:
     and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for form1[0].Page2[0].f2_03[0].
+  address_id: 2025/document=schedule_2/line=17b/control=amount
 - field_name: form1[0].Page2[0].f2_04[0]
   label: Line 17c - 8889 . . . . . . . . 17c - f2_04
   population_policy: unsupported
@@ -448,11 +508,13 @@ field_dispositions:
     and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for form1[0].Page2[0].f2_04[0].
+  address_id: 2025/document=schedule_2/line=17c/control=amount
 - field_name: form1[0].Page2[0].f2_05[0]
   label: Line 17d - . . . . . . . . . 17d - f2_05
   population_policy: user_entered
   value_format: dollars
   node_id: schedule_2_2025_part_ii_line_17d
+  address_id: 2025/document=schedule_2/line=17d/control=amount
 - field_name: form1[0].Page2[0].f2_06[0]
   label: Line 17e - distributions. Attach Form 8853 . . . . . 17e - f2_06
   population_policy: unsupported
@@ -463,6 +525,7 @@ field_dispositions:
     and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for form1[0].Page2[0].f2_06[0].
+  address_id: 2025/document=schedule_2/line=17e/control=amount
 - field_name: form1[0].Page2[0].f2_07[0]
   label: Line 17f - tax on Medicare Advantage MSA distributions. Attach Form 8853
     17f - f2_07
@@ -475,6 +538,7 @@ field_dispositions:
     and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for form1[0].Page2[0].f2_07[0].
+  address_id: 2025/document=schedule_2/line=17f/control=amount
 - field_name: form1[0].Page2[0].f2_08[0]
   label: Line 17g - . . . . . . . . . 17g - f2_08
   population_policy: unsupported
@@ -485,6 +549,7 @@ field_dispositions:
     and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for form1[0].Page2[0].f2_08[0].
+  address_id: 2025/document=schedule_2/line=17g/control=amount
 - field_name: form1[0].Page2[0].f2_09[0]
   label: Line 17h - . . . . . . . . . 17h - f2_09
   population_policy: unsupported
@@ -495,6 +560,7 @@ field_dispositions:
     and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for form1[0].Page2[0].f2_09[0].
+  address_id: 2025/document=schedule_2/line=17h/control=amount
 - field_name: form1[0].Page2[0].f2_10[0]
   label: Line 17i - . . . . . . . . . 17i - f2_10
   population_policy: unsupported
@@ -505,6 +571,7 @@ field_dispositions:
     and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for form1[0].Page2[0].f2_10[0].
+  address_id: 2025/document=schedule_2/line=17i/control=amount
 - field_name: form1[0].Page2[0].f2_11[0]
   label: Line 17j - . . . . . . . . . 17j - f2_11
   population_policy: unsupported
@@ -515,6 +582,7 @@ field_dispositions:
     and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for form1[0].Page2[0].f2_11[0].
+  address_id: 2025/document=schedule_2/line=17j/control=amount
 - field_name: form1[0].Page2[0].f2_12[0]
   label: Line 17k - . . . . . . . . . 17k - f2_12
   population_policy: unsupported
@@ -525,6 +593,7 @@ field_dispositions:
     and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for form1[0].Page2[0].f2_12[0].
+  address_id: 2025/document=schedule_2/line=17k/control=amount
 - field_name: form1[0].Page2[0].f2_13[0]
   label: Line 17l - . . . . . . . . . 17l - f2_13
   population_policy: unsupported
@@ -535,6 +604,7 @@ field_dispositions:
     and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for form1[0].Page2[0].f2_13[0].
+  address_id: 2025/document=schedule_2/line=17l/control=amount
 - field_name: form1[0].Page2[0].f2_14[0]
   label: Line 17m - on insider stock compensation from an expatriated corporation
     . 17m - f2_14
@@ -547,6 +617,7 @@ field_dispositions:
     and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for form1[0].Page2[0].f2_14[0].
+  address_id: 2025/document=schedule_2/line=17m/control=amount
 - field_name: form1[0].Page2[0].f2_15[0]
   label: Line 17n - 167(g) or 460(b) from Form 8697 or 8866 . 17n - f2_15
   population_policy: unsupported
@@ -557,6 +628,7 @@ field_dispositions:
     and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for form1[0].Page2[0].f2_15[0].
+  address_id: 2025/document=schedule_2/line=17n/control=amount
 - field_name: form1[0].Page2[0].f2_16[0]
   label: Line 17o - . . . . . . . . . 17o - f2_16
   population_policy: unsupported
@@ -567,6 +639,7 @@ field_dispositions:
     and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for form1[0].Page2[0].f2_16[0].
+  address_id: 2025/document=schedule_2/line=17o/control=amount
 - field_name: form1[0].Page2[0].f2_17[0]
   label: Line 17p - . . . . . . . . . 17p - f2_17
   population_policy: unsupported
@@ -577,6 +650,7 @@ field_dispositions:
     and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for form1[0].Page2[0].f2_17[0].
+  address_id: 2025/document=schedule_2/line=17p/control=amount
 - field_name: form1[0].Page2[0].f2_18[0]
   label: Line 17q - . . . . . . . . . 17q - f2_18
   population_policy: unsupported
@@ -587,6 +661,7 @@ field_dispositions:
     and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for form1[0].Page2[0].f2_18[0].
+  address_id: 2025/document=schedule_2/line=17q/control=amount
 - field_name: form1[0].Page2[0].Line17z_ReadOrder[0].f2_19[0]
   label: Line z - f2_19
   population_policy: unsupported
@@ -607,21 +682,25 @@ field_dispositions:
     and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for form1[0].Page2[0].f2_20[0].
+  address_id: 2025/document=schedule_2/line=17z/control=amount
 - field_name: form1[0].Page2[0].f2_21[0]
   label: Line 17z - . . . . . . . . . 18 - f2_21
   population_policy: user_entered
   value_format: dollars
   node_id: schedule_2_2025_part_ii_line_17z
+  address_id: 2025/document=schedule_2/line=17z/control=amount
 - field_name: form1[0].Page2[0].f2_22[0]
   label: Line 19 - . . . . . . . . . 19 - f2_22
   population_policy: user_entered
   value_format: dollars
   node_id: schedule_2_2025_part_ii_line_19
+  address_id: 2025/document=schedule_2/line=19/control=amount
 - field_name: form1[0].Page2[0].f2_23[0]
   label: Line 20 - Form 965-A . . . . . . . 20 - f2_23
   population_policy: user_entered
   value_format: dollars
   node_id: schedule_2_2025_part_ii_line_20
+  address_id: 2025/document=schedule_2/line=20/control=amount
 - field_name: form1[0].Page2[0].f2_24[0]
   label: Line 23b - . . . . . . . . . 21 - f2_24
   population_policy: unsupported
@@ -632,3 +711,4 @@ field_dispositions:
     and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for form1[0].Page2[0].f2_24[0].
+  address_id: 2025/document=schedule_2/line=23b/control=amount

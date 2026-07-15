@@ -1,0 +1,85 @@
+schema_version: 1
+year: 2025
+document_id: form_8949_2025
+binding_kind: node
+bindings:
+- node_id: form_8949_2025_part_i_line_1_column_d
+  address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=d
+  expected_official_ref: Column (d)
+  role: value
+  status: exact
+- node_id: form_8949_2025_part_i_line_1_column_e
+  address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=e
+  expected_official_ref: Column (e)
+  role: value
+  status: exact
+- node_id: form_8949_2025_part_i_line_1_column_g
+  address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=g
+  expected_official_ref: Column (g)
+  role: value
+  status: exact
+- node_id: form_8949_2025_part_i_line_1_column_h
+  address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=h
+  expected_official_ref: Column (h)
+  role: value
+  status: exact
+- node_id: form_8949_2025_part_i_line_2_line_2_column_d_total
+  address_id: 2025/document=form_8949/table=part_i_line_2/row_template=total/column=d
+  expected_official_ref: Line 2 column (d)
+  role: value
+  status: exact
+- node_id: form_8949_2025_part_i_line_2_line_2_column_e_total
+  address_id: 2025/document=form_8949/table=part_i_line_2/row_template=total/column=e
+  expected_official_ref: Line 2 column (e)
+  role: value
+  status: exact
+- node_id: form_8949_2025_part_i_line_2_line_2_column_g_total
+  address_id: 2025/document=form_8949/table=part_i_line_2/row_template=total/column=g
+  expected_official_ref: Line 2 column (g)
+  role: value
+  status: exact
+- node_id: form_8949_2025_part_i_line_2_line_2_column_h_total
+  address_id: 2025/document=form_8949/table=part_i_line_2/row_template=total/column=h
+  expected_official_ref: Line 2 column (h)
+  role: value
+  status: exact
+- node_id: form_8949_2025_part_ii_line_1_column_d
+  address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=d
+  expected_official_ref: Column (d)
+  role: value
+  status: exact
+- node_id: form_8949_2025_part_ii_line_1_column_e
+  address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=e
+  expected_official_ref: Column (e)
+  role: value
+  status: exact
+- node_id: form_8949_2025_part_ii_line_1_column_g
+  address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=g
+  expected_official_ref: Column (g)
+  role: value
+  status: exact
+- node_id: form_8949_2025_part_ii_line_1_column_h
+  address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=h
+  expected_official_ref: Column (h)
+  role: value
+  status: exact
+- node_id: form_8949_2025_part_ii_line_2_line_2_column_d_total
+  address_id: 2025/document=form_8949/table=part_ii_line_2/row_template=total/column=d
+  expected_official_ref: Line 2 column (d)
+  role: value
+  status: exact
+- node_id: form_8949_2025_part_ii_line_2_line_2_column_e_total
+  address_id: 2025/document=form_8949/table=part_ii_line_2/row_template=total/column=e
+  expected_official_ref: Line 2 column (e)
+  role: value
+  status: exact
+- node_id: form_8949_2025_part_ii_line_2_line_2_column_g_total
+  address_id: 2025/document=form_8949/table=part_ii_line_2/row_template=total/column=g
+  expected_official_ref: Line 2 column (g)
+  role: value
+  status: exact
+- node_id: form_8949_2025_part_ii_line_2_line_2_column_h_total
+  address_id: 2025/document=form_8949/table=part_ii_line_2/row_template=total/column=h
+  expected_official_ref: Line 2 column (h)
+  role: value
+  status: exact

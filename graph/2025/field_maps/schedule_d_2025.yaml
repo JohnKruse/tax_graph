@@ -6,30 +6,37 @@ mappings:
   field_name: topmostSubform[0].Page1[0].f1_21[0]
   format: dollars
   node_id: schedule_d_2025_line_6_st_carryover
+  address_id: 2025/document=schedule_d/line=6/control=amount
 - slot: schedule_d_2025_line_7_net_st
   field_name: topmostSubform[0].Page1[0].f1_22[0]
   format: dollars
   node_id: schedule_d_2025_line_7_net_st
+  address_id: 2025/document=schedule_d/line=1a/control=amount
 - slot: schedule_d_2025_line_15_net_lt
   field_name: topmostSubform[0].Page1[0].f1_43[0]
   format: dollars
   node_id: schedule_d_2025_line_15_net_lt
+  address_id: 2025/document=schedule_d/line=15/control=amount
 - slot: schedule_d_2025_line_14_lt_carryover
   field_name: topmostSubform[0].Page1[0].f1_42[0]
   format: dollars
   node_id: schedule_d_2025_line_14_lt_carryover
+  address_id: 2025/document=schedule_d/line=14/control=amount
 - slot: schedule_d_2025_line_16_total
   field_name: topmostSubform[0].Page2[0].f2_1[0]
   format: dollars
   node_id: schedule_d_2025_line_16_total
+  address_id: 2025/document=schedule_d/line=16/control=amount
 - slot: schedule_d_2025_line_18
   field_name: topmostSubform[0].Page2[0].f2_2[0]
   format: dollars
   node_id: schedule_d_2025_line_18
+  address_id: 2025/document=schedule_d/line=18/control=amount
 - slot: schedule_d_2025_line_19
   field_name: topmostSubform[0].Page2[0].f2_3[0]
   format: dollars
   node_id: schedule_d_2025_line_19
+  address_id: 2025/document=schedule_d/line=19/control=amount
 - slot: schedule_d_2025_line_21_capital_loss_limited
   field_name: topmostSubform[0].Page2[0].f2_4[0]
   format: dollars
@@ -38,26 +45,32 @@ mappings:
   field_name: topmostSubform[0].Page1[0].Table_PartI[0].Row1a[0].f1_6[0]
   format: dollars
   node_id: schedule_d_2025_part_i_line_1b_column_h
+  address_id: 2025/document=schedule_d/line=1b/control=amount
 - slot: schedule_d_2025_part_i_line_2_column_h
   field_name: topmostSubform[0].Page1[0].Table_PartI[0].Row2[0].f1_14[0]
   format: dollars
   node_id: schedule_d_2025_part_i_line_2_column_h
+  address_id: 2025/document=schedule_d/line=2/control=amount
 - slot: schedule_d_2025_part_i_line_3_column_h
   field_name: topmostSubform[0].Page1[0].Table_PartI[0].Row3[0].f1_18[0]
   format: dollars
   node_id: schedule_d_2025_part_i_line_3_column_h
+  address_id: 2025/document=schedule_d/line=3/control=amount
 - slot: schedule_d_2025_part_ii_line_10_column_h
   field_name: topmostSubform[0].Page1[0].Table_PartII[0].Row10[0].f1_38[0]
   format: dollars
   node_id: schedule_d_2025_part_ii_line_10_column_h
+  address_id: 2025/document=schedule_d/line=10/control=amount
 - slot: schedule_d_2025_part_ii_line_8b_column_h
   field_name: topmostSubform[0].Page1[0].Table_PartII[0].Row8a[0].f1_26[0]
   format: dollars
   node_id: schedule_d_2025_part_ii_line_8b_column_h
+  address_id: 2025/document=schedule_d/line=8b/control=amount
 - slot: schedule_d_2025_part_ii_line_9_column_h
   field_name: topmostSubform[0].Page1[0].Table_PartII[0].Row9[0].f1_34[0]
   format: dollars
   node_id: schedule_d_2025_part_ii_line_9_column_h
+  address_id: 2025/document=schedule_d/line=9/control=amount
 excluded_nodes:
 - node_id: schedule_d_2025_carryover_worksheet_line_1
   reason: Worksheet-internal value with no official-form box.
@@ -318,6 +331,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page1[0].Table_PartI[0].Row1a[0].f1_3[0].
+  address_id: 2025/document=schedule_d/line=1b/control=amount
 - field_name: topmostSubform[0].Page1[0].Table_PartI[0].Row1a[0].f1_4[0]
   label: Line 1b - and go to line 1b . . . . . - f1_4
   population_policy: unsupported
@@ -328,6 +342,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page1[0].Table_PartI[0].Row1a[0].f1_4[0].
+  address_id: 2025/document=schedule_d/line=1b/control=amount
 - field_name: topmostSubform[0].Page1[0].Table_PartI[0].Row1a[0].f1_5[0]
   label: Line 1b - and go to line 1b . . . . . - f1_5
   population_policy: unsupported
@@ -338,11 +353,13 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page1[0].Table_PartI[0].Row1a[0].f1_5[0].
+  address_id: 2025/document=schedule_d/line=1b/control=amount
 - field_name: topmostSubform[0].Page1[0].Table_PartI[0].Row1a[0].f1_6[0]
   label: Line 1b - and go to line 1b . . . . . - f1_6
   population_policy: copied
   value_format: dollars
   node_id: schedule_d_2025_part_i_line_1b_column_h
+  address_id: 2025/document=schedule_d/line=1b/control=amount
 - field_name: topmostSubform[0].Page1[0].Table_PartI[0].Row1b[0].f1_7[0]
   label: Line 1b - G checked . . . . . . . . - f1_7
   population_policy: unsupported
@@ -353,6 +370,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page1[0].Table_PartI[0].Row1b[0].f1_7[0].
+  address_id: 2025/document=schedule_d/line=1b/control=amount
 - field_name: topmostSubform[0].Page1[0].Table_PartI[0].Row1b[0].f1_8[0]
   label: Line 1b - G checked . . . . . . . . - f1_8
   population_policy: unsupported
@@ -363,6 +381,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page1[0].Table_PartI[0].Row1b[0].f1_8[0].
+  address_id: 2025/document=schedule_d/line=1b/control=amount
 - field_name: topmostSubform[0].Page1[0].Table_PartI[0].Row1b[0].f1_9[0]
   label: Line 1b - G checked . . . . . . . . - f1_9
   population_policy: unsupported
@@ -373,6 +392,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page1[0].Table_PartI[0].Row1b[0].f1_9[0].
+  address_id: 2025/document=schedule_d/line=1b/control=amount
 - field_name: topmostSubform[0].Page1[0].Table_PartI[0].Row1b[0].f1_10[0]
   label: Line 1b - G checked . . . . . . . . - f1_10
   population_policy: unsupported
@@ -383,6 +403,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page1[0].Table_PartI[0].Row1b[0].f1_10[0].
+  address_id: 2025/document=schedule_d/line=1b/control=amount
 - field_name: topmostSubform[0].Page1[0].Table_PartI[0].Row2[0].f1_11[0]
   label: Line 2 - H checked . . . . . . . . - f1_11
   population_policy: unsupported
@@ -398,6 +419,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page1[0].Table_PartI[0].Row2[0].f1_11[0].
+  address_id: 2025/document=schedule_d/line=2/control=amount
 - field_name: topmostSubform[0].Page1[0].Table_PartI[0].Row2[0].f1_12[0]
   label: Line 2 - H checked . . . . . . . . - f1_12
   population_policy: unsupported
@@ -413,6 +435,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page1[0].Table_PartI[0].Row2[0].f1_12[0].
+  address_id: 2025/document=schedule_d/line=2/control=amount
 - field_name: topmostSubform[0].Page1[0].Table_PartI[0].Row2[0].f1_13[0]
   label: Line 2 - H checked . . . . . . . . - f1_13
   population_policy: unsupported
@@ -428,6 +451,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page1[0].Table_PartI[0].Row2[0].f1_13[0].
+  address_id: 2025/document=schedule_d/line=2/control=amount
 - field_name: topmostSubform[0].Page1[0].Table_PartI[0].Row2[0].f1_14[0]
   label: Line 2 - H checked . . . . . . . . - f1_14
   population_policy: copied
@@ -438,6 +462,7 @@ field_dispositions:
     column: f1_14
     role: other
   node_id: schedule_d_2025_part_i_line_2_column_h
+  address_id: 2025/document=schedule_d/line=2/control=amount
 - field_name: topmostSubform[0].Page1[0].Table_PartI[0].Row3[0].f1_15[0]
   label: Line 3 - I checked . . . . . . . . - f1_15
   population_policy: unsupported
@@ -453,6 +478,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page1[0].Table_PartI[0].Row3[0].f1_15[0].
+  address_id: 2025/document=schedule_d/line=3/control=amount
 - field_name: topmostSubform[0].Page1[0].Table_PartI[0].Row3[0].f1_16[0]
   label: Line 3 - I checked . . . . . . . . - f1_16
   population_policy: unsupported
@@ -468,6 +494,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page1[0].Table_PartI[0].Row3[0].f1_16[0].
+  address_id: 2025/document=schedule_d/line=3/control=amount
 - field_name: topmostSubform[0].Page1[0].Table_PartI[0].Row3[0].f1_17[0]
   label: Line 3 - I checked . . . . . . . . - f1_17
   population_policy: unsupported
@@ -483,6 +510,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page1[0].Table_PartI[0].Row3[0].f1_17[0].
+  address_id: 2025/document=schedule_d/line=3/control=amount
 - field_name: topmostSubform[0].Page1[0].Table_PartI[0].Row3[0].f1_18[0]
   label: Line 3 - I checked . . . . . . . . - f1_18
   population_policy: copied
@@ -493,6 +521,7 @@ field_dispositions:
     column: f1_18
     role: other
   node_id: schedule_d_2025_part_i_line_3_column_h
+  address_id: 2025/document=schedule_d/line=3/control=amount
 - field_name: topmostSubform[0].Page1[0].f1_19[0]
   label: Line 4 - (loss) from Forms 4684, 6781, and 8824 . . 4 - f1_19
   population_policy: unsupported
@@ -503,6 +532,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page1[0].f1_19[0].
+  address_id: 2025/document=schedule_d/line=4/control=amount
 - field_name: topmostSubform[0].Page1[0].f1_20[0]
   label: Line 5 - partnerships, S corporations, estates, and trusts from Schedule(s)
     K-1 5 - f1_20
@@ -515,16 +545,19 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page1[0].f1_20[0].
+  address_id: 2025/document=schedule_d/line=5/control=amount
 - field_name: topmostSubform[0].Page1[0].f1_21[0]
   label: Line 6 - . . . . . . . . 6 ( - f1_21
   population_policy: user_entered
   value_format: dollars
   node_id: schedule_d_2025_line_6_st_carryover
+  address_id: 2025/document=schedule_d/line=6/control=amount
 - field_name: topmostSubform[0].Page1[0].f1_22[0]
   label: Line 1a - Part III on the back . . . . 7 - f1_22
   population_policy: computed
   value_format: dollars
   node_id: schedule_d_2025_line_7_net_st
+  address_id: 2025/document=schedule_d/line=1a/control=amount
 - field_name: topmostSubform[0].Page1[0].Table_PartII[0].Row8a[0].f1_23[0]
   label: Line 8b - and go to line 8b . . . . . - f1_23
   population_policy: unsupported
@@ -535,6 +568,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page1[0].Table_PartII[0].Row8a[0].f1_23[0].
+  address_id: 2025/document=schedule_d/line=8b/control=amount
 - field_name: topmostSubform[0].Page1[0].Table_PartII[0].Row8a[0].f1_24[0]
   label: Line 8b - and go to line 8b . . . . . - f1_24
   population_policy: unsupported
@@ -545,6 +579,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page1[0].Table_PartII[0].Row8a[0].f1_24[0].
+  address_id: 2025/document=schedule_d/line=8b/control=amount
 - field_name: topmostSubform[0].Page1[0].Table_PartII[0].Row8a[0].f1_25[0]
   label: Line 8b - and go to line 8b . . . . . - f1_25
   population_policy: unsupported
@@ -555,11 +590,13 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page1[0].Table_PartII[0].Row8a[0].f1_25[0].
+  address_id: 2025/document=schedule_d/line=8b/control=amount
 - field_name: topmostSubform[0].Page1[0].Table_PartII[0].Row8a[0].f1_26[0]
   label: Line 8b - and go to line 8b . . . . . - f1_26
   population_policy: copied
   value_format: dollars
   node_id: schedule_d_2025_part_ii_line_8b_column_h
+  address_id: 2025/document=schedule_d/line=8b/control=amount
 - field_name: topmostSubform[0].Page1[0].Table_PartII[0].Row8b[0].f1_27[0]
   label: Line 8b - J checked . . . . . . . . - f1_27
   population_policy: unsupported
@@ -570,6 +607,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page1[0].Table_PartII[0].Row8b[0].f1_27[0].
+  address_id: 2025/document=schedule_d/line=8b/control=amount
 - field_name: topmostSubform[0].Page1[0].Table_PartII[0].Row8b[0].f1_28[0]
   label: Line 8b - J checked . . . . . . . . - f1_28
   population_policy: unsupported
@@ -580,6 +618,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page1[0].Table_PartII[0].Row8b[0].f1_28[0].
+  address_id: 2025/document=schedule_d/line=8b/control=amount
 - field_name: topmostSubform[0].Page1[0].Table_PartII[0].Row8b[0].f1_29[0]
   label: Line 8b - J checked . . . . . . . . - f1_29
   population_policy: unsupported
@@ -590,6 +629,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page1[0].Table_PartII[0].Row8b[0].f1_29[0].
+  address_id: 2025/document=schedule_d/line=8b/control=amount
 - field_name: topmostSubform[0].Page1[0].Table_PartII[0].Row8b[0].f1_30[0]
   label: Line 8b - J checked . . . . . . . . - f1_30
   population_policy: unsupported
@@ -600,6 +640,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page1[0].Table_PartII[0].Row8b[0].f1_30[0].
+  address_id: 2025/document=schedule_d/line=8b/control=amount
 - field_name: topmostSubform[0].Page1[0].Table_PartII[0].Row9[0].f1_31[0]
   label: Line 9 - K checked . . . . . . . . - f1_31
   population_policy: unsupported
@@ -615,6 +656,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page1[0].Table_PartII[0].Row9[0].f1_31[0].
+  address_id: 2025/document=schedule_d/line=9/control=amount
 - field_name: topmostSubform[0].Page1[0].Table_PartII[0].Row9[0].f1_32[0]
   label: Line 9 - K checked . . . . . . . . - f1_32
   population_policy: unsupported
@@ -630,6 +672,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page1[0].Table_PartII[0].Row9[0].f1_32[0].
+  address_id: 2025/document=schedule_d/line=9/control=amount
 - field_name: topmostSubform[0].Page1[0].Table_PartII[0].Row9[0].f1_33[0]
   label: Line 9 - K checked . . . . . . . . - f1_33
   population_policy: unsupported
@@ -645,6 +688,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page1[0].Table_PartII[0].Row9[0].f1_33[0].
+  address_id: 2025/document=schedule_d/line=9/control=amount
 - field_name: topmostSubform[0].Page1[0].Table_PartII[0].Row9[0].f1_34[0]
   label: Line 9 - K checked . . . . . . . . - f1_34
   population_policy: copied
@@ -655,6 +699,7 @@ field_dispositions:
     column: f1_34
     role: other
   node_id: schedule_d_2025_part_ii_line_9_column_h
+  address_id: 2025/document=schedule_d/line=9/control=amount
 - field_name: topmostSubform[0].Page1[0].Table_PartII[0].Row10[0].f1_35[0]
   label: Line 10 - L checked . . . . . . . . - f1_35
   population_policy: unsupported
@@ -670,6 +715,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page1[0].Table_PartII[0].Row10[0].f1_35[0].
+  address_id: 2025/document=schedule_d/line=10/control=amount
 - field_name: topmostSubform[0].Page1[0].Table_PartII[0].Row10[0].f1_36[0]
   label: Line 10 - L checked . . . . . . . . - f1_36
   population_policy: unsupported
@@ -685,6 +731,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page1[0].Table_PartII[0].Row10[0].f1_36[0].
+  address_id: 2025/document=schedule_d/line=10/control=amount
 - field_name: topmostSubform[0].Page1[0].Table_PartII[0].Row10[0].f1_37[0]
   label: Line 10 - L checked . . . . . . . . - f1_37
   population_policy: unsupported
@@ -700,6 +747,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page1[0].Table_PartII[0].Row10[0].f1_37[0].
+  address_id: 2025/document=schedule_d/line=10/control=amount
 - field_name: topmostSubform[0].Page1[0].Table_PartII[0].Row10[0].f1_38[0]
   label: Line 10 - L checked . . . . . . . . - f1_38
   population_policy: copied
@@ -710,6 +758,7 @@ field_dispositions:
     column: f1_38
     role: other
   node_id: schedule_d_2025_part_ii_line_10_column_h
+  address_id: 2025/document=schedule_d/line=10/control=amount
 - field_name: topmostSubform[0].Page1[0].f1_39[0]
   label: Line 11 - . . . . . . . . . 11 - f1_39
   population_policy: unsupported
@@ -720,6 +769,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page1[0].f1_39[0].
+  address_id: 2025/document=schedule_d/line=11/control=amount
 - field_name: topmostSubform[0].Page1[0].f1_40[0]
   label: Line 12 - partnerships, S corporations, estates, and trusts from Schedule(s)
     K-1 12 - f1_40
@@ -732,6 +782,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page1[0].f1_40[0].
+  address_id: 2025/document=schedule_d/line=12/control=amount
 - field_name: topmostSubform[0].Page1[0].f1_41[0]
   label: Line 13 - . . . . . . . . . 13 - f1_41
   population_policy: unsupported
@@ -742,21 +793,25 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page1[0].f1_41[0].
+  address_id: 2025/document=schedule_d/line=13/control=amount
 - field_name: topmostSubform[0].Page1[0].f1_42[0]
   label: Line 14 - . . . . . . . . 14 ( - f1_42
   population_policy: user_entered
   value_format: dollars
   node_id: schedule_d_2025_line_14_lt_carryover
+  address_id: 2025/document=schedule_d/line=14/control=amount
 - field_name: topmostSubform[0].Page1[0].f1_43[0]
   label: Line 15 - . . . . . . . . . 15 - f1_43
   population_policy: computed
   value_format: dollars
   node_id: schedule_d_2025_line_15_net_lt
+  address_id: 2025/document=schedule_d/line=15/control=amount
 - field_name: topmostSubform[0].Page2[0].f2_1[0]
   label: Line 16 - . . . . . . . . . 16 - f2_1
   population_policy: computed
   value_format: dollars
   node_id: schedule_d_2025_line_16_total
+  address_id: 2025/document=schedule_d/line=16/control=amount
 - field_name: topmostSubform[0].Page2[0].c2_1[0]
   label: Line 18 - c2_1 (page 2, control 47)
   population_policy: unsupported
@@ -767,6 +822,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page2[0].c2_1[0].
+  address_id: 2025/document=schedule_d/line=18/control=checkbox
 - field_name: topmostSubform[0].Page2[0].c2_1[1]
   label: Line 18 - c2_1 (page 2, control 48)
   population_policy: unsupported
@@ -777,6 +833,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page2[0].c2_1[1].
+  address_id: 2025/document=schedule_d/line=18/control=checkbox
 - field_name: topmostSubform[0].Page2[0].f2_2[0]
   label: Line 18 - . . . . . . . . . 18 - f2_2
   population_policy: unsupported
@@ -788,6 +845,7 @@ field_dispositions:
     is left blank.
   missing_capability: Implement and cite frontier deferred_schedule_d_2025_28_rate_gain_worksheet
     before populating this control.
+  address_id: 2025/document=schedule_d/line=18/control=amount
 - field_name: topmostSubform[0].Page2[0].f2_3[0]
   label: Line 19 - . . . . . . . . . 19 - f2_3
   population_policy: unsupported
@@ -799,6 +857,7 @@ field_dispositions:
     is left blank.
   missing_capability: Implement and cite frontier deferred_schedule_d_2025_unrecaptured_1250_worksheet
     before populating this control.
+  address_id: 2025/document=schedule_d/line=19/control=amount
 - field_name: topmostSubform[0].Page2[0].c2_2[0]
   label: c2_2
   population_policy: unsupported
@@ -819,6 +878,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page2[0].c2_2[1].
+  address_id: 2025/document=schedule_d/line=22/control=checkbox
 - field_name: topmostSubform[0].Page2[0].f2_4[0]
   label: . . . . . . . . 21 ( - f2_4
   population_policy: computed

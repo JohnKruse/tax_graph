@@ -434,12 +434,20 @@ formula, graph node id, PDF field name, or guessed prose meaning. Corrections am
 
 ### Group D - Power-law corpus and contribution proof
 
-- [ ] **R11 [worker-heavy] - Core return candidate registries.** Run the proven pipeline
+- [DONE] **R11 [worker-heavy] - Core return candidate registries.** Run the proven pipeline
   over Schedules 1, 1-A, 2, 3, A, B, and D plus Forms 6251 and 8949. Commit only
   machine-valid artifacts with honest pending-review state; queue every non-exact
   decision. Prove Schedule D worksheet steps, Form 8949 row-template/column addressing,
   and all existing cross-form claims. No new tax logic. Per-document reports reconcile
   widget/address/node/reference coverage.
+
+  Implementation note (2026-07-15): the campaign is deterministic and form-first. Form
+  8949 physical transaction rows share row-template/column addresses, while its line 2
+  totals use distinct total-row column addresses. Six 8949-to-Schedule-D claims are
+  promoted as exact canonical reference records and LINK resolves all six without label
+  or node-id parsing. Schedule D carryover and tax worksheet fields use explicit
+  `worksheet_step` addresses. All artifacts remain `pending_review`; the two Form 6251
+  prose false positives remain explicitly rejected.
 
 - [ ] **R12 [worker-heavy] - Information-return and intake registries.** Apply the same
   pipeline to W-2, 1099-B, 1099-INT, 1099-DIV, and 13614-C. Box names/codes and checkbox

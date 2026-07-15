@@ -1,0 +1,2029 @@
+schema_version: 1
+year: 2025
+document_id: form_6251_2025
+addresses:
+- address_id: 2025/document=form_6251
+  logical_key: document=form_6251
+  year: 2025
+  document_id: form_6251_2025
+  parent_address_id: null
+  kind: document
+  path:
+  - kind: document
+    token: form_6251
+  printed_label: form_6251
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_6251_2025
+    source_hash: 6995bfd29c6fe1b80fdc396c9c4796c7cef58a966070db0346721eae815fea3f
+- address_id: 2025/document=form_6251/line=10
+  logical_key: document=form_6251/line=10
+  year: 2025
+  document_id: form_6251_2025
+  parent_address_id: 2025/document=form_6251
+  kind: line
+  path:
+  - kind: document
+    token: form_6251
+  - kind: line
+    token: '10'
+  printed_label: '10'
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_6251_2025
+    source_hash: 6995bfd29c6fe1b80fdc396c9c4796c7cef58a966070db0346721eae815fea3f
+    page: 1
+- address_id: 2025/document=form_6251/line=10/control=amount
+  logical_key: document=form_6251/line=10/control=amount
+  year: 2025
+  document_id: form_6251_2025
+  parent_address_id: 2025/document=form_6251/line=10
+  kind: control
+  path:
+  - kind: document
+    token: form_6251
+  - kind: line
+    token: '10'
+  - kind: control
+    token: amount
+  printed_label: Line 10 - . . . . . . . . . 10 - f1_32
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_6251_2025
+    source_hash: 6995bfd29c6fe1b80fdc396c9c4796c7cef58a966070db0346721eae815fea3f
+    page: 1
+  official_ref: '10'
+- address_id: 2025/document=form_6251/line=11
+  logical_key: document=form_6251/line=11
+  year: 2025
+  document_id: form_6251_2025
+  parent_address_id: 2025/document=form_6251
+  kind: line
+  path:
+  - kind: document
+    token: form_6251
+  - kind: line
+    token: '11'
+  printed_label: '11'
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_6251_2025
+    source_hash: 6995bfd29c6fe1b80fdc396c9c4796c7cef58a966070db0346721eae815fea3f
+    page: 1
+- address_id: 2025/document=form_6251/line=11/control=amount
+  logical_key: document=form_6251/line=11/control=amount
+  year: 2025
+  document_id: form_6251_2025
+  parent_address_id: 2025/document=form_6251/line=11
+  kind: control
+  path:
+  - kind: document
+    token: form_6251
+  - kind: line
+    token: '11'
+  - kind: control
+    token: amount
+  printed_label: Line 11 - here and on Schedule 2 (Form 1040), line 2 11 - f1_33
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_6251_2025
+    source_hash: 6995bfd29c6fe1b80fdc396c9c4796c7cef58a966070db0346721eae815fea3f
+    page: 1
+  official_ref: '11'
+- address_id: 2025/document=form_6251/line=12
+  logical_key: document=form_6251/line=12
+  year: 2025
+  document_id: form_6251_2025
+  parent_address_id: 2025/document=form_6251
+  kind: line
+  path:
+  - kind: document
+    token: form_6251
+  - kind: line
+    token: '12'
+  printed_label: '12'
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_6251_2025
+    source_hash: 6995bfd29c6fe1b80fdc396c9c4796c7cef58a966070db0346721eae815fea3f
+    page: 2
+- address_id: 2025/document=form_6251/line=12/control=amount
+  logical_key: document=form_6251/line=12/control=amount
+  year: 2025
+  document_id: form_6251_2025
+  parent_address_id: 2025/document=form_6251/line=12
+  kind: control
+  path:
+  - kind: document
+    token: form_6251
+  - kind: line
+    token: '12'
+  - kind: control
+    token: amount
+  printed_label: Line 12 - . . . . . . . . . 12 - f2_1
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_6251_2025
+    source_hash: 6995bfd29c6fe1b80fdc396c9c4796c7cef58a966070db0346721eae815fea3f
+    page: 2
+  official_ref: '12'
+- address_id: 2025/document=form_6251/line=14
+  logical_key: document=form_6251/line=14
+  year: 2025
+  document_id: form_6251_2025
+  parent_address_id: 2025/document=form_6251
+  kind: line
+  path:
+  - kind: document
+    token: form_6251
+  - kind: line
+    token: '14'
+  printed_label: '14'
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_6251_2025
+    source_hash: 6995bfd29c6fe1b80fdc396c9c4796c7cef58a966070db0346721eae815fea3f
+    page: 2
+- address_id: 2025/document=form_6251/line=14/control=amount
+  logical_key: document=form_6251/line=14/control=amount
+  year: 2025
+  document_id: form_6251_2025
+  parent_address_id: 2025/document=form_6251/line=14
+  kind: control
+  path:
+  - kind: document
+    token: form_6251
+  - kind: line
+    token: '14'
+  - kind: control
+    token: amount
+  printed_label: Line 14 - . . . . . . . . . 14 - f2_3
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_6251_2025
+    source_hash: 6995bfd29c6fe1b80fdc396c9c4796c7cef58a966070db0346721eae815fea3f
+    page: 2
+  official_ref: '14'
+- address_id: 2025/document=form_6251/line=16
+  logical_key: document=form_6251/line=16
+  year: 2025
+  document_id: form_6251_2025
+  parent_address_id: 2025/document=form_6251
+  kind: line
+  path:
+  - kind: document
+    token: form_6251
+  - kind: line
+    token: '16'
+  printed_label: '16'
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_6251_2025
+    source_hash: 6995bfd29c6fe1b80fdc396c9c4796c7cef58a966070db0346721eae815fea3f
+    page: 1
+- address_id: 2025/document=form_6251/line=16/control=amount
+  logical_key: document=form_6251/line=16/control=amount
+  year: 2025
+  document_id: form_6251_2025
+  parent_address_id: 2025/document=form_6251/line=16
+  kind: control
+  path:
+  - kind: document
+    token: form_6251
+  - kind: line
+    token: '16'
+  - kind: control
+    token: amount
+  printed_label: Line 16 - necessary), complete Part III on the } . . 7 - f1_29
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_6251_2025
+    source_hash: 6995bfd29c6fe1b80fdc396c9c4796c7cef58a966070db0346721eae815fea3f
+    page: 1
+  official_ref: '16'
+- address_id: 2025/document=form_6251/line=17
+  logical_key: document=form_6251/line=17
+  year: 2025
+  document_id: form_6251_2025
+  parent_address_id: 2025/document=form_6251
+  kind: line
+  path:
+  - kind: document
+    token: form_6251
+  - kind: line
+    token: '17'
+  printed_label: '17'
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_6251_2025
+    source_hash: 6995bfd29c6fe1b80fdc396c9c4796c7cef58a966070db0346721eae815fea3f
+    page: 2
+- address_id: 2025/document=form_6251/line=17/control=amount
+  logical_key: document=form_6251/line=17/control=amount
+  year: 2025
+  document_id: form_6251_2025
+  parent_address_id: 2025/document=form_6251/line=17
+  kind: control
+  path:
+  - kind: document
+    token: form_6251
+  - kind: line
+    token: '17'
+  - kind: control
+    token: amount
+  printed_label: Line 17 - . . . . . . . . . 17 - f2_6
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_6251_2025
+    source_hash: 6995bfd29c6fe1b80fdc396c9c4796c7cef58a966070db0346721eae815fea3f
+    page: 2
+  official_ref: '17'
+- address_id: 2025/document=form_6251/line=1a
+  logical_key: document=form_6251/line=1a
+  year: 2025
+  document_id: form_6251_2025
+  parent_address_id: 2025/document=form_6251
+  kind: line
+  path:
+  - kind: document
+    token: form_6251
+  - kind: line
+    token: 1a
+  printed_label: 1a
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_6251_2025
+    source_hash: 6995bfd29c6fe1b80fdc396c9c4796c7cef58a966070db0346721eae815fea3f
+    page: 1
+- address_id: 2025/document=form_6251/line=1a/control=amount
+  logical_key: document=form_6251/line=1a/control=amount
+  year: 2025
+  document_id: form_6251_2025
+  parent_address_id: 2025/document=form_6251/line=1a
+  kind: control
+  path:
+  - kind: document
+    token: form_6251
+  - kind: line
+    token: 1a
+  - kind: control
+    token: amount
+  printed_label: Line 1a - . . . . . . . . . 1a - f1_3
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_6251_2025
+    source_hash: 6995bfd29c6fe1b80fdc396c9c4796c7cef58a966070db0346721eae815fea3f
+    page: 1
+  official_ref: 1a
+- address_id: 2025/document=form_6251/line=1b
+  logical_key: document=form_6251/line=1b
+  year: 2025
+  document_id: form_6251_2025
+  parent_address_id: 2025/document=form_6251
+  kind: line
+  path:
+  - kind: document
+    token: form_6251
+  - kind: line
+    token: 1b
+  printed_label: 1b
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_6251_2025
+    source_hash: 6995bfd29c6fe1b80fdc396c9c4796c7cef58a966070db0346721eae815fea3f
+    page: 1
+- address_id: 2025/document=form_6251/line=1b/control=amount
+  logical_key: document=form_6251/line=1b/control=amount
+  year: 2025
+  document_id: form_6251_2025
+  parent_address_id: 2025/document=form_6251/line=1b
+  kind: control
+  path:
+  - kind: document
+    token: form_6251
+  - kind: line
+    token: 1b
+  - kind: control
+    token: amount
+  printed_label: Line 1b - . . . . . . . . . 1b - f1_4
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_6251_2025
+    source_hash: 6995bfd29c6fe1b80fdc396c9c4796c7cef58a966070db0346721eae815fea3f
+    page: 1
+  official_ref: 1b
+- address_id: 2025/document=form_6251/line=21
+  logical_key: document=form_6251/line=21
+  year: 2025
+  document_id: form_6251_2025
+  parent_address_id: 2025/document=form_6251
+  kind: line
+  path:
+  - kind: document
+    token: form_6251
+  - kind: line
+    token: '21'
+  printed_label: '21'
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_6251_2025
+    source_hash: 6995bfd29c6fe1b80fdc396c9c4796c7cef58a966070db0346721eae815fea3f
+    page: 2
+- address_id: 2025/document=form_6251/line=21/control=amount
+  logical_key: document=form_6251/line=21/control=amount
+  year: 2025
+  document_id: form_6251_2025
+  parent_address_id: 2025/document=form_6251/line=21
+  kind: control
+  path:
+  - kind: document
+    token: form_6251
+  - kind: line
+    token: '21'
+  - kind: control
+    token: amount
+  printed_label: Line 21 - . . . . . . . . . 21 - f2_10
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_6251_2025
+    source_hash: 6995bfd29c6fe1b80fdc396c9c4796c7cef58a966070db0346721eae815fea3f
+    page: 2
+  official_ref: '21'
+- address_id: 2025/document=form_6251/line=22
+  logical_key: document=form_6251/line=22
+  year: 2025
+  document_id: form_6251_2025
+  parent_address_id: 2025/document=form_6251
+  kind: line
+  path:
+  - kind: document
+    token: form_6251
+  - kind: line
+    token: '22'
+  printed_label: '22'
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_6251_2025
+    source_hash: 6995bfd29c6fe1b80fdc396c9c4796c7cef58a966070db0346721eae815fea3f
+    page: 2
+- address_id: 2025/document=form_6251/line=22/control=amount
+  logical_key: document=form_6251/line=22/control=amount
+  year: 2025
+  document_id: form_6251_2025
+  parent_address_id: 2025/document=form_6251/line=22
+  kind: control
+  path:
+  - kind: document
+    token: form_6251
+  - kind: line
+    token: '22'
+  - kind: control
+    token: amount
+  printed_label: Line 22 - . . . . . . . . . 22 - f2_11
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_6251_2025
+    source_hash: 6995bfd29c6fe1b80fdc396c9c4796c7cef58a966070db0346721eae815fea3f
+    page: 2
+  official_ref: '22'
+- address_id: 2025/document=form_6251/line=23
+  logical_key: document=form_6251/line=23
+  year: 2025
+  document_id: form_6251_2025
+  parent_address_id: 2025/document=form_6251
+  kind: line
+  path:
+  - kind: document
+    token: form_6251
+  - kind: line
+    token: '23'
+  printed_label: '23'
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_6251_2025
+    source_hash: 6995bfd29c6fe1b80fdc396c9c4796c7cef58a966070db0346721eae815fea3f
+    page: 2
+- address_id: 2025/document=form_6251/line=23/control=amount
+  logical_key: document=form_6251/line=23/control=amount
+  year: 2025
+  document_id: form_6251_2025
+  parent_address_id: 2025/document=form_6251/line=23
+  kind: control
+  path:
+  - kind: document
+    token: form_6251
+  - kind: line
+    token: '23'
+  - kind: control
+    token: amount
+  printed_label: Line 23 - . . . . . . . . . 23 - f2_12
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_6251_2025
+    source_hash: 6995bfd29c6fe1b80fdc396c9c4796c7cef58a966070db0346721eae815fea3f
+    page: 2
+  official_ref: '23'
+- address_id: 2025/document=form_6251/line=24
+  logical_key: document=form_6251/line=24
+  year: 2025
+  document_id: form_6251_2025
+  parent_address_id: 2025/document=form_6251
+  kind: line
+  path:
+  - kind: document
+    token: form_6251
+  - kind: line
+    token: '24'
+  printed_label: '24'
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_6251_2025
+    source_hash: 6995bfd29c6fe1b80fdc396c9c4796c7cef58a966070db0346721eae815fea3f
+    page: 2
+- address_id: 2025/document=form_6251/line=24/control=amount
+  logical_key: document=form_6251/line=24/control=amount
+  year: 2025
+  document_id: form_6251_2025
+  parent_address_id: 2025/document=form_6251/line=24
+  kind: control
+  path:
+  - kind: document
+    token: form_6251
+  - kind: line
+    token: '24'
+  - kind: control
+    token: amount
+  printed_label: Line 24 - . . . . . . . . . 24 - f2_13
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_6251_2025
+    source_hash: 6995bfd29c6fe1b80fdc396c9c4796c7cef58a966070db0346721eae815fea3f
+    page: 2
+  official_ref: '24'
+- address_id: 2025/document=form_6251/line=26
+  logical_key: document=form_6251/line=26
+  year: 2025
+  document_id: form_6251_2025
+  parent_address_id: 2025/document=form_6251
+  kind: line
+  path:
+  - kind: document
+    token: form_6251
+  - kind: line
+    token: '26'
+  printed_label: '26'
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_6251_2025
+    source_hash: 6995bfd29c6fe1b80fdc396c9c4796c7cef58a966070db0346721eae815fea3f
+    page: 2
+- address_id: 2025/document=form_6251/line=26/control=amount
+  logical_key: document=form_6251/line=26/control=amount
+  year: 2025
+  document_id: form_6251_2025
+  parent_address_id: 2025/document=form_6251/line=26
+  kind: control
+  path:
+  - kind: document
+    token: form_6251
+  - kind: line
+    token: '26'
+  - kind: control
+    token: amount
+  printed_label: Line 26 - . . . . . . . . . 26 - f2_15
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_6251_2025
+    source_hash: 6995bfd29c6fe1b80fdc396c9c4796c7cef58a966070db0346721eae815fea3f
+    page: 2
+  official_ref: '26'
+- address_id: 2025/document=form_6251/line=28
+  logical_key: document=form_6251/line=28
+  year: 2025
+  document_id: form_6251_2025
+  parent_address_id: 2025/document=form_6251
+  kind: line
+  path:
+  - kind: document
+    token: form_6251
+  - kind: line
+    token: '28'
+  printed_label: '28'
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_6251_2025
+    source_hash: 6995bfd29c6fe1b80fdc396c9c4796c7cef58a966070db0346721eae815fea3f
+    page: 2
+- address_id: 2025/document=form_6251/line=28/control=amount
+  logical_key: document=form_6251/line=28/control=amount
+  year: 2025
+  document_id: form_6251_2025
+  parent_address_id: 2025/document=form_6251/line=28
+  kind: control
+  path:
+  - kind: document
+    token: form_6251
+  - kind: line
+    token: '28'
+  - kind: control
+    token: amount
+  printed_label: Line 28 - . . . . . . . . . 28 - f2_17
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_6251_2025
+    source_hash: 6995bfd29c6fe1b80fdc396c9c4796c7cef58a966070db0346721eae815fea3f
+    page: 2
+  official_ref: '28'
+- address_id: 2025/document=form_6251/line=29
+  logical_key: document=form_6251/line=29
+  year: 2025
+  document_id: form_6251_2025
+  parent_address_id: 2025/document=form_6251
+  kind: line
+  path:
+  - kind: document
+    token: form_6251
+  - kind: line
+    token: '29'
+  printed_label: '29'
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_6251_2025
+    source_hash: 6995bfd29c6fe1b80fdc396c9c4796c7cef58a966070db0346721eae815fea3f
+    page: 2
+- address_id: 2025/document=form_6251/line=29/control=amount
+  logical_key: document=form_6251/line=29/control=amount
+  year: 2025
+  document_id: form_6251_2025
+  parent_address_id: 2025/document=form_6251/line=29
+  kind: control
+  path:
+  - kind: document
+    token: form_6251
+  - kind: line
+    token: '29'
+  - kind: control
+    token: amount
+  printed_label: Line 29 - . . . . . . . . . 29 - f2_18
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_6251_2025
+    source_hash: 6995bfd29c6fe1b80fdc396c9c4796c7cef58a966070db0346721eae815fea3f
+    page: 2
+  official_ref: '29'
+- address_id: 2025/document=form_6251/line=2a
+  logical_key: document=form_6251/line=2a
+  year: 2025
+  document_id: form_6251_2025
+  parent_address_id: 2025/document=form_6251
+  kind: line
+  path:
+  - kind: document
+    token: form_6251
+  - kind: line
+    token: 2a
+  printed_label: 2a
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_6251_2025
+    source_hash: 6995bfd29c6fe1b80fdc396c9c4796c7cef58a966070db0346721eae815fea3f
+    page: 1
+- address_id: 2025/document=form_6251/line=2a/control=amount
+  logical_key: document=form_6251/line=2a/control=amount
+  year: 2025
+  document_id: form_6251_2025
+  parent_address_id: 2025/document=form_6251/line=2a
+  kind: control
+  path:
+  - kind: document
+    token: form_6251
+  - kind: line
+    token: 2a
+  - kind: control
+    token: amount
+  printed_label: Line 2a - . . . . . . . . . 2a - f1_5
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_6251_2025
+    source_hash: 6995bfd29c6fe1b80fdc396c9c4796c7cef58a966070db0346721eae815fea3f
+    page: 1
+  official_ref: 2a
+- address_id: 2025/document=form_6251/line=2b
+  logical_key: document=form_6251/line=2b
+  year: 2025
+  document_id: form_6251_2025
+  parent_address_id: 2025/document=form_6251
+  kind: line
+  path:
+  - kind: document
+    token: form_6251
+  - kind: line
+    token: 2b
+  printed_label: 2b
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_6251_2025
+    source_hash: 6995bfd29c6fe1b80fdc396c9c4796c7cef58a966070db0346721eae815fea3f
+    page: 1
+- address_id: 2025/document=form_6251/line=2b/control=amount
+  logical_key: document=form_6251/line=2b/control=amount
+  year: 2025
+  document_id: form_6251_2025
+  parent_address_id: 2025/document=form_6251/line=2b
+  kind: control
+  path:
+  - kind: document
+    token: form_6251
+  - kind: line
+    token: 2b
+  - kind: control
+    token: amount
+  printed_label: Line 2b - . . . . . . . . 2b ( - f1_6
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_6251_2025
+    source_hash: 6995bfd29c6fe1b80fdc396c9c4796c7cef58a966070db0346721eae815fea3f
+    page: 1
+  official_ref: 2b
+- address_id: 2025/document=form_6251/line=2c
+  logical_key: document=form_6251/line=2c
+  year: 2025
+  document_id: form_6251_2025
+  parent_address_id: 2025/document=form_6251
+  kind: line
+  path:
+  - kind: document
+    token: form_6251
+  - kind: line
+    token: 2c
+  printed_label: 2c
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_6251_2025
+    source_hash: 6995bfd29c6fe1b80fdc396c9c4796c7cef58a966070db0346721eae815fea3f
+    page: 1
+- address_id: 2025/document=form_6251/line=2c/control=amount
+  logical_key: document=form_6251/line=2c/control=amount
+  year: 2025
+  document_id: form_6251_2025
+  parent_address_id: 2025/document=form_6251/line=2c
+  kind: control
+  path:
+  - kind: document
+    token: form_6251
+  - kind: line
+    token: 2c
+  - kind: control
+    token: amount
+  printed_label: Line 2c - . . . . . . . . . 2c - f1_7
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_6251_2025
+    source_hash: 6995bfd29c6fe1b80fdc396c9c4796c7cef58a966070db0346721eae815fea3f
+    page: 1
+  official_ref: 2c
+- address_id: 2025/document=form_6251/line=2d
+  logical_key: document=form_6251/line=2d
+  year: 2025
+  document_id: form_6251_2025
+  parent_address_id: 2025/document=form_6251
+  kind: line
+  path:
+  - kind: document
+    token: form_6251
+  - kind: line
+    token: 2d
+  printed_label: 2d
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_6251_2025
+    source_hash: 6995bfd29c6fe1b80fdc396c9c4796c7cef58a966070db0346721eae815fea3f
+    page: 1
+- address_id: 2025/document=form_6251/line=2d/control=amount
+  logical_key: document=form_6251/line=2d/control=amount
+  year: 2025
+  document_id: form_6251_2025
+  parent_address_id: 2025/document=form_6251/line=2d
+  kind: control
+  path:
+  - kind: document
+    token: form_6251
+  - kind: line
+    token: 2d
+  - kind: control
+    token: amount
+  printed_label: Line 2d - . . . . . . . . . 2d - f1_8
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_6251_2025
+    source_hash: 6995bfd29c6fe1b80fdc396c9c4796c7cef58a966070db0346721eae815fea3f
+    page: 1
+  official_ref: 2d
+- address_id: 2025/document=form_6251/line=2e
+  logical_key: document=form_6251/line=2e
+  year: 2025
+  document_id: form_6251_2025
+  parent_address_id: 2025/document=form_6251
+  kind: line
+  path:
+  - kind: document
+    token: form_6251
+  - kind: line
+    token: 2e
+  printed_label: 2e
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_6251_2025
+    source_hash: 6995bfd29c6fe1b80fdc396c9c4796c7cef58a966070db0346721eae815fea3f
+    page: 1
+- address_id: 2025/document=form_6251/line=2e/control=amount
+  logical_key: document=form_6251/line=2e/control=amount
+  year: 2025
+  document_id: form_6251_2025
+  parent_address_id: 2025/document=form_6251/line=2e
+  kind: control
+  path:
+  - kind: document
+    token: form_6251
+  - kind: line
+    token: 2e
+  - kind: control
+    token: amount
+  printed_label: Line 2e - Enter as a positive amount . . . . 2e - f1_9
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_6251_2025
+    source_hash: 6995bfd29c6fe1b80fdc396c9c4796c7cef58a966070db0346721eae815fea3f
+    page: 1
+  official_ref: 2e
+- address_id: 2025/document=form_6251/line=2f
+  logical_key: document=form_6251/line=2f
+  year: 2025
+  document_id: form_6251_2025
+  parent_address_id: 2025/document=form_6251
+  kind: line
+  path:
+  - kind: document
+    token: form_6251
+  - kind: line
+    token: 2f
+  printed_label: 2f
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_6251_2025
+    source_hash: 6995bfd29c6fe1b80fdc396c9c4796c7cef58a966070db0346721eae815fea3f
+    page: 1
+- address_id: 2025/document=form_6251/line=2f/control=amount
+  logical_key: document=form_6251/line=2f/control=amount
+  year: 2025
+  document_id: form_6251_2025
+  parent_address_id: 2025/document=form_6251/line=2f
+  kind: control
+  path:
+  - kind: document
+    token: form_6251
+  - kind: line
+    token: 2f
+  - kind: control
+    token: amount
+  printed_label: Line 2f - . . . . . . . . 2f ( - f1_10
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_6251_2025
+    source_hash: 6995bfd29c6fe1b80fdc396c9c4796c7cef58a966070db0346721eae815fea3f
+    page: 1
+  official_ref: 2f
+- address_id: 2025/document=form_6251/line=2g
+  logical_key: document=form_6251/line=2g
+  year: 2025
+  document_id: form_6251_2025
+  parent_address_id: 2025/document=form_6251
+  kind: line
+  path:
+  - kind: document
+    token: form_6251
+  - kind: line
+    token: 2g
+  printed_label: 2g
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_6251_2025
+    source_hash: 6995bfd29c6fe1b80fdc396c9c4796c7cef58a966070db0346721eae815fea3f
+    page: 1
+- address_id: 2025/document=form_6251/line=2g/control=amount
+  logical_key: document=form_6251/line=2g/control=amount
+  year: 2025
+  document_id: form_6251_2025
+  parent_address_id: 2025/document=form_6251/line=2g
+  kind: control
+  path:
+  - kind: document
+    token: form_6251
+  - kind: line
+    token: 2g
+  - kind: control
+    token: amount
+  printed_label: Line 2g - . . . . . . . . . 2g - f1_11
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_6251_2025
+    source_hash: 6995bfd29c6fe1b80fdc396c9c4796c7cef58a966070db0346721eae815fea3f
+    page: 1
+  official_ref: 2g
+- address_id: 2025/document=form_6251/line=2h
+  logical_key: document=form_6251/line=2h
+  year: 2025
+  document_id: form_6251_2025
+  parent_address_id: 2025/document=form_6251
+  kind: line
+  path:
+  - kind: document
+    token: form_6251
+  - kind: line
+    token: 2h
+  printed_label: 2h
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_6251_2025
+    source_hash: 6995bfd29c6fe1b80fdc396c9c4796c7cef58a966070db0346721eae815fea3f
+    page: 1
+- address_id: 2025/document=form_6251/line=2h/control=amount
+  logical_key: document=form_6251/line=2h/control=amount
+  year: 2025
+  document_id: form_6251_2025
+  parent_address_id: 2025/document=form_6251/line=2h
+  kind: control
+  path:
+  - kind: document
+    token: form_6251
+  - kind: line
+    token: 2h
+  - kind: control
+    token: amount
+  printed_label: Line 2h - . . . . . . . . . 2h - f1_12
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_6251_2025
+    source_hash: 6995bfd29c6fe1b80fdc396c9c4796c7cef58a966070db0346721eae815fea3f
+    page: 1
+  official_ref: 2h
+- address_id: 2025/document=form_6251/line=2i
+  logical_key: document=form_6251/line=2i
+  year: 2025
+  document_id: form_6251_2025
+  parent_address_id: 2025/document=form_6251
+  kind: line
+  path:
+  - kind: document
+    token: form_6251
+  - kind: line
+    token: 2i
+  printed_label: 2i
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_6251_2025
+    source_hash: 6995bfd29c6fe1b80fdc396c9c4796c7cef58a966070db0346721eae815fea3f
+    page: 1
+- address_id: 2025/document=form_6251/line=2i/control=amount
+  logical_key: document=form_6251/line=2i/control=amount
+  year: 2025
+  document_id: form_6251_2025
+  parent_address_id: 2025/document=form_6251/line=2i
+  kind: control
+  path:
+  - kind: document
+    token: form_6251
+  - kind: line
+    token: 2i
+  - kind: control
+    token: amount
+  printed_label: Line 2i - income) . . . . . . . . 2i - f1_13
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_6251_2025
+    source_hash: 6995bfd29c6fe1b80fdc396c9c4796c7cef58a966070db0346721eae815fea3f
+    page: 1
+  official_ref: 2i
+- address_id: 2025/document=form_6251/line=2j
+  logical_key: document=form_6251/line=2j
+  year: 2025
+  document_id: form_6251_2025
+  parent_address_id: 2025/document=form_6251
+  kind: line
+  path:
+  - kind: document
+    token: form_6251
+  - kind: line
+    token: 2j
+  printed_label: 2j
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_6251_2025
+    source_hash: 6995bfd29c6fe1b80fdc396c9c4796c7cef58a966070db0346721eae815fea3f
+    page: 1
+- address_id: 2025/document=form_6251/line=2j/control=amount
+  logical_key: document=form_6251/line=2j/control=amount
+  year: 2025
+  document_id: form_6251_2025
+  parent_address_id: 2025/document=form_6251/line=2j
+  kind: control
+  path:
+  - kind: document
+    token: form_6251
+  - kind: line
+    token: 2j
+  - kind: control
+    token: amount
+  printed_label: Line 2j - . . . . . . . . . 2j - f1_14
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_6251_2025
+    source_hash: 6995bfd29c6fe1b80fdc396c9c4796c7cef58a966070db0346721eae815fea3f
+    page: 1
+  official_ref: 2j
+- address_id: 2025/document=form_6251/line=2k
+  logical_key: document=form_6251/line=2k
+  year: 2025
+  document_id: form_6251_2025
+  parent_address_id: 2025/document=form_6251
+  kind: line
+  path:
+  - kind: document
+    token: form_6251
+  - kind: line
+    token: 2k
+  printed_label: 2k
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_6251_2025
+    source_hash: 6995bfd29c6fe1b80fdc396c9c4796c7cef58a966070db0346721eae815fea3f
+    page: 1
+- address_id: 2025/document=form_6251/line=2k/control=amount
+  logical_key: document=form_6251/line=2k/control=amount
+  year: 2025
+  document_id: form_6251_2025
+  parent_address_id: 2025/document=form_6251/line=2k
+  kind: control
+  path:
+  - kind: document
+    token: form_6251
+  - kind: line
+    token: 2k
+  - kind: control
+    token: amount
+  printed_label: Line 2k - . . . . . . . . . 2k - f1_15
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_6251_2025
+    source_hash: 6995bfd29c6fe1b80fdc396c9c4796c7cef58a966070db0346721eae815fea3f
+    page: 1
+  official_ref: 2k
+- address_id: 2025/document=form_6251/line=2l
+  logical_key: document=form_6251/line=2l
+  year: 2025
+  document_id: form_6251_2025
+  parent_address_id: 2025/document=form_6251
+  kind: line
+  path:
+  - kind: document
+    token: form_6251
+  - kind: line
+    token: 2l
+  printed_label: 2l
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_6251_2025
+    source_hash: 6995bfd29c6fe1b80fdc396c9c4796c7cef58a966070db0346721eae815fea3f
+    page: 1
+- address_id: 2025/document=form_6251/line=2l/control=amount
+  logical_key: document=form_6251/line=2l/control=amount
+  year: 2025
+  document_id: form_6251_2025
+  parent_address_id: 2025/document=form_6251/line=2l
+  kind: control
+  path:
+  - kind: document
+    token: form_6251
+  - kind: line
+    token: 2l
+  - kind: control
+    token: amount
+  printed_label: Line 2l - regular tax and AMT) . . . . . 2l - f1_16
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_6251_2025
+    source_hash: 6995bfd29c6fe1b80fdc396c9c4796c7cef58a966070db0346721eae815fea3f
+    page: 1
+  official_ref: 2l
+- address_id: 2025/document=form_6251/line=2m
+  logical_key: document=form_6251/line=2m
+  year: 2025
+  document_id: form_6251_2025
+  parent_address_id: 2025/document=form_6251
+  kind: line
+  path:
+  - kind: document
+    token: form_6251
+  - kind: line
+    token: 2m
+  printed_label: 2m
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_6251_2025
+    source_hash: 6995bfd29c6fe1b80fdc396c9c4796c7cef58a966070db0346721eae815fea3f
+    page: 1
+- address_id: 2025/document=form_6251/line=2m/control=amount
+  logical_key: document=form_6251/line=2m/control=amount
+  year: 2025
+  document_id: form_6251_2025
+  parent_address_id: 2025/document=form_6251/line=2m
+  kind: control
+  path:
+  - kind: document
+    token: form_6251
+  - kind: line
+    token: 2m
+  - kind: control
+    token: amount
+  printed_label: Line 2m - . . . . . . . . . 2m - f1_17
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_6251_2025
+    source_hash: 6995bfd29c6fe1b80fdc396c9c4796c7cef58a966070db0346721eae815fea3f
+    page: 1
+  official_ref: 2m
+- address_id: 2025/document=form_6251/line=2n
+  logical_key: document=form_6251/line=2n
+  year: 2025
+  document_id: form_6251_2025
+  parent_address_id: 2025/document=form_6251
+  kind: line
+  path:
+  - kind: document
+    token: form_6251
+  - kind: line
+    token: 2n
+  printed_label: 2n
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_6251_2025
+    source_hash: 6995bfd29c6fe1b80fdc396c9c4796c7cef58a966070db0346721eae815fea3f
+    page: 1
+- address_id: 2025/document=form_6251/line=2n/control=amount
+  logical_key: document=form_6251/line=2n/control=amount
+  year: 2025
+  document_id: form_6251_2025
+  parent_address_id: 2025/document=form_6251/line=2n
+  kind: control
+  path:
+  - kind: document
+    token: form_6251
+  - kind: line
+    token: 2n
+  - kind: control
+    token: amount
+  printed_label: Line 2n - . . . . . . . . . 2n - f1_18
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_6251_2025
+    source_hash: 6995bfd29c6fe1b80fdc396c9c4796c7cef58a966070db0346721eae815fea3f
+    page: 1
+  official_ref: 2n
+- address_id: 2025/document=form_6251/line=2o
+  logical_key: document=form_6251/line=2o
+  year: 2025
+  document_id: form_6251_2025
+  parent_address_id: 2025/document=form_6251
+  kind: line
+  path:
+  - kind: document
+    token: form_6251
+  - kind: line
+    token: 2o
+  printed_label: 2o
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_6251_2025
+    source_hash: 6995bfd29c6fe1b80fdc396c9c4796c7cef58a966070db0346721eae815fea3f
+    page: 1
+- address_id: 2025/document=form_6251/line=2o/control=amount
+  logical_key: document=form_6251/line=2o/control=amount
+  year: 2025
+  document_id: form_6251_2025
+  parent_address_id: 2025/document=form_6251/line=2o
+  kind: control
+  path:
+  - kind: document
+    token: form_6251
+  - kind: line
+    token: 2o
+  - kind: control
+    token: amount
+  printed_label: Line 2o - . . . . . . . . . 2o - f1_19
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_6251_2025
+    source_hash: 6995bfd29c6fe1b80fdc396c9c4796c7cef58a966070db0346721eae815fea3f
+    page: 1
+  official_ref: 2o
+- address_id: 2025/document=form_6251/line=2p
+  logical_key: document=form_6251/line=2p
+  year: 2025
+  document_id: form_6251_2025
+  parent_address_id: 2025/document=form_6251
+  kind: line
+  path:
+  - kind: document
+    token: form_6251
+  - kind: line
+    token: 2p
+  printed_label: 2p
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_6251_2025
+    source_hash: 6995bfd29c6fe1b80fdc396c9c4796c7cef58a966070db0346721eae815fea3f
+    page: 1
+- address_id: 2025/document=form_6251/line=2p/control=amount
+  logical_key: document=form_6251/line=2p/control=amount
+  year: 2025
+  document_id: form_6251_2025
+  parent_address_id: 2025/document=form_6251/line=2p
+  kind: control
+  path:
+  - kind: document
+    token: form_6251
+  - kind: line
+    token: 2p
+  - kind: control
+    token: amount
+  printed_label: Line 2p - . . . . . . . . . 2p - f1_20
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_6251_2025
+    source_hash: 6995bfd29c6fe1b80fdc396c9c4796c7cef58a966070db0346721eae815fea3f
+    page: 1
+  official_ref: 2p
+- address_id: 2025/document=form_6251/line=2q
+  logical_key: document=form_6251/line=2q
+  year: 2025
+  document_id: form_6251_2025
+  parent_address_id: 2025/document=form_6251
+  kind: line
+  path:
+  - kind: document
+    token: form_6251
+  - kind: line
+    token: 2q
+  printed_label: 2q
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_6251_2025
+    source_hash: 6995bfd29c6fe1b80fdc396c9c4796c7cef58a966070db0346721eae815fea3f
+    page: 1
+- address_id: 2025/document=form_6251/line=2q/control=amount
+  logical_key: document=form_6251/line=2q/control=amount
+  year: 2025
+  document_id: form_6251_2025
+  parent_address_id: 2025/document=form_6251/line=2q
+  kind: control
+  path:
+  - kind: document
+    token: form_6251
+  - kind: line
+    token: 2q
+  - kind: control
+    token: amount
+  printed_label: Line 2q - . . . . . . . . . 2q - f1_21
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_6251_2025
+    source_hash: 6995bfd29c6fe1b80fdc396c9c4796c7cef58a966070db0346721eae815fea3f
+    page: 1
+  official_ref: 2q
+- address_id: 2025/document=form_6251/line=2r
+  logical_key: document=form_6251/line=2r
+  year: 2025
+  document_id: form_6251_2025
+  parent_address_id: 2025/document=form_6251
+  kind: line
+  path:
+  - kind: document
+    token: form_6251
+  - kind: line
+    token: 2r
+  printed_label: 2r
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_6251_2025
+    source_hash: 6995bfd29c6fe1b80fdc396c9c4796c7cef58a966070db0346721eae815fea3f
+    page: 1
+- address_id: 2025/document=form_6251/line=2r/control=amount
+  logical_key: document=form_6251/line=2r/control=amount
+  year: 2025
+  document_id: form_6251_2025
+  parent_address_id: 2025/document=form_6251/line=2r
+  kind: control
+  path:
+  - kind: document
+    token: form_6251
+  - kind: line
+    token: 2r
+  - kind: control
+    token: amount
+  printed_label: Line 2r - . . . . . . . . . 2r - f1_22
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_6251_2025
+    source_hash: 6995bfd29c6fe1b80fdc396c9c4796c7cef58a966070db0346721eae815fea3f
+    page: 1
+  official_ref: 2r
+- address_id: 2025/document=form_6251/line=2s
+  logical_key: document=form_6251/line=2s
+  year: 2025
+  document_id: form_6251_2025
+  parent_address_id: 2025/document=form_6251
+  kind: line
+  path:
+  - kind: document
+    token: form_6251
+  - kind: line
+    token: 2s
+  printed_label: 2s
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_6251_2025
+    source_hash: 6995bfd29c6fe1b80fdc396c9c4796c7cef58a966070db0346721eae815fea3f
+    page: 1
+- address_id: 2025/document=form_6251/line=2s/control=amount
+  logical_key: document=form_6251/line=2s/control=amount
+  year: 2025
+  document_id: form_6251_2025
+  parent_address_id: 2025/document=form_6251/line=2s
+  kind: control
+  path:
+  - kind: document
+    token: form_6251
+  - kind: line
+    token: 2s
+  - kind: control
+    token: amount
+  printed_label: Line 2s - . . . . . . . . 2s ( - f1_23
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_6251_2025
+    source_hash: 6995bfd29c6fe1b80fdc396c9c4796c7cef58a966070db0346721eae815fea3f
+    page: 1
+  official_ref: 2s
+- address_id: 2025/document=form_6251/line=2t
+  logical_key: document=form_6251/line=2t
+  year: 2025
+  document_id: form_6251_2025
+  parent_address_id: 2025/document=form_6251
+  kind: line
+  path:
+  - kind: document
+    token: form_6251
+  - kind: line
+    token: 2t
+  printed_label: 2t
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_6251_2025
+    source_hash: 6995bfd29c6fe1b80fdc396c9c4796c7cef58a966070db0346721eae815fea3f
+    page: 1
+- address_id: 2025/document=form_6251/line=2t/control=amount
+  logical_key: document=form_6251/line=2t/control=amount
+  year: 2025
+  document_id: form_6251_2025
+  parent_address_id: 2025/document=form_6251/line=2t
+  kind: control
+  path:
+  - kind: document
+    token: form_6251
+  - kind: line
+    token: 2t
+  - kind: control
+    token: amount
+  printed_label: Line 2t - . . . . . . . . . 2t - f1_24
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_6251_2025
+    source_hash: 6995bfd29c6fe1b80fdc396c9c4796c7cef58a966070db0346721eae815fea3f
+    page: 1
+  official_ref: 2t
+- address_id: 2025/document=form_6251/line=3
+  logical_key: document=form_6251/line=3
+  year: 2025
+  document_id: form_6251_2025
+  parent_address_id: 2025/document=form_6251
+  kind: line
+  path:
+  - kind: document
+    token: form_6251
+  - kind: line
+    token: '3'
+  printed_label: '3'
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_6251_2025
+    source_hash: 6995bfd29c6fe1b80fdc396c9c4796c7cef58a966070db0346721eae815fea3f
+    page: 1
+- address_id: 2025/document=form_6251/line=3/control=amount
+  logical_key: document=form_6251/line=3/control=amount
+  year: 2025
+  document_id: form_6251_2025
+  parent_address_id: 2025/document=form_6251/line=3
+  kind: control
+  path:
+  - kind: document
+    token: form_6251
+  - kind: line
+    token: '3'
+  - kind: control
+    token: amount
+  printed_label: Line 3 - . . . . . . . . . 3 - f1_25
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_6251_2025
+    source_hash: 6995bfd29c6fe1b80fdc396c9c4796c7cef58a966070db0346721eae815fea3f
+    page: 1
+  official_ref: '3'
+- address_id: 2025/document=form_6251/line=30
+  logical_key: document=form_6251/line=30
+  year: 2025
+  document_id: form_6251_2025
+  parent_address_id: 2025/document=form_6251
+  kind: line
+  path:
+  - kind: document
+    token: form_6251
+  - kind: line
+    token: '30'
+  printed_label: '30'
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_6251_2025
+    source_hash: 6995bfd29c6fe1b80fdc396c9c4796c7cef58a966070db0346721eae815fea3f
+    page: 2
+- address_id: 2025/document=form_6251/line=30/control=amount
+  logical_key: document=form_6251/line=30/control=amount
+  year: 2025
+  document_id: form_6251_2025
+  parent_address_id: 2025/document=form_6251/line=30
+  kind: control
+  path:
+  - kind: document
+    token: form_6251
+  - kind: line
+    token: '30'
+  - kind: control
+    token: amount
+  printed_label: Line 30 - . . . . . . . . . 30 - f2_19
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_6251_2025
+    source_hash: 6995bfd29c6fe1b80fdc396c9c4796c7cef58a966070db0346721eae815fea3f
+    page: 2
+  official_ref: '30'
+- address_id: 2025/document=form_6251/line=31
+  logical_key: document=form_6251/line=31
+  year: 2025
+  document_id: form_6251_2025
+  parent_address_id: 2025/document=form_6251
+  kind: line
+  path:
+  - kind: document
+    token: form_6251
+  - kind: line
+    token: '31'
+  printed_label: '31'
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_6251_2025
+    source_hash: 6995bfd29c6fe1b80fdc396c9c4796c7cef58a966070db0346721eae815fea3f
+    page: 2
+- address_id: 2025/document=form_6251/line=31/control=amount
+  logical_key: document=form_6251/line=31/control=amount
+  year: 2025
+  document_id: form_6251_2025
+  parent_address_id: 2025/document=form_6251/line=31
+  kind: control
+  path:
+  - kind: document
+    token: form_6251
+  - kind: line
+    token: '31'
+  - kind: control
+    token: amount
+  printed_label: Line 31 - . . . . . . . . . 31 - f2_20
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_6251_2025
+    source_hash: 6995bfd29c6fe1b80fdc396c9c4796c7cef58a966070db0346721eae815fea3f
+    page: 2
+  official_ref: '31'
+- address_id: 2025/document=form_6251/line=32
+  logical_key: document=form_6251/line=32
+  year: 2025
+  document_id: form_6251_2025
+  parent_address_id: 2025/document=form_6251
+  kind: line
+  path:
+  - kind: document
+    token: form_6251
+  - kind: line
+    token: '32'
+  printed_label: '32'
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_6251_2025
+    source_hash: 6995bfd29c6fe1b80fdc396c9c4796c7cef58a966070db0346721eae815fea3f
+    page: 2
+- address_id: 2025/document=form_6251/line=32/control=amount
+  logical_key: document=form_6251/line=32/control=amount
+  year: 2025
+  document_id: form_6251_2025
+  parent_address_id: 2025/document=form_6251/line=32
+  kind: control
+  path:
+  - kind: document
+    token: form_6251
+  - kind: line
+    token: '32'
+  - kind: control
+    token: amount
+  printed_label: Line 32 - . . . . . . . . . 32 - f2_21
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_6251_2025
+    source_hash: 6995bfd29c6fe1b80fdc396c9c4796c7cef58a966070db0346721eae815fea3f
+    page: 2
+  official_ref: '32'
+- address_id: 2025/document=form_6251/line=33
+  logical_key: document=form_6251/line=33
+  year: 2025
+  document_id: form_6251_2025
+  parent_address_id: 2025/document=form_6251
+  kind: line
+  path:
+  - kind: document
+    token: form_6251
+  - kind: line
+    token: '33'
+  printed_label: '33'
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_6251_2025
+    source_hash: 6995bfd29c6fe1b80fdc396c9c4796c7cef58a966070db0346721eae815fea3f
+    page: 2
+- address_id: 2025/document=form_6251/line=33/control=amount
+  logical_key: document=form_6251/line=33/control=amount
+  year: 2025
+  document_id: form_6251_2025
+  parent_address_id: 2025/document=form_6251/line=33
+  kind: control
+  path:
+  - kind: document
+    token: form_6251
+  - kind: line
+    token: '33'
+  - kind: control
+    token: amount
+  printed_label: Line 33 - . . . . . . . . . 33 - f2_22
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_6251_2025
+    source_hash: 6995bfd29c6fe1b80fdc396c9c4796c7cef58a966070db0346721eae815fea3f
+    page: 2
+  official_ref: '33'
+- address_id: 2025/document=form_6251/line=34
+  logical_key: document=form_6251/line=34
+  year: 2025
+  document_id: form_6251_2025
+  parent_address_id: 2025/document=form_6251
+  kind: line
+  path:
+  - kind: document
+    token: form_6251
+  - kind: line
+    token: '34'
+  printed_label: '34'
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_6251_2025
+    source_hash: 6995bfd29c6fe1b80fdc396c9c4796c7cef58a966070db0346721eae815fea3f
+    page: 2
+- address_id: 2025/document=form_6251/line=34/control=amount
+  logical_key: document=form_6251/line=34/control=amount
+  year: 2025
+  document_id: form_6251_2025
+  parent_address_id: 2025/document=form_6251/line=34
+  kind: control
+  path:
+  - kind: document
+    token: form_6251
+  - kind: line
+    token: '34'
+  - kind: control
+    token: amount
+  printed_label: Line 34 - . . . . . . . . . 34 - f2_23
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_6251_2025
+    source_hash: 6995bfd29c6fe1b80fdc396c9c4796c7cef58a966070db0346721eae815fea3f
+    page: 2
+  official_ref: '34'
+- address_id: 2025/document=form_6251/line=35
+  logical_key: document=form_6251/line=35
+  year: 2025
+  document_id: form_6251_2025
+  parent_address_id: 2025/document=form_6251
+  kind: line
+  path:
+  - kind: document
+    token: form_6251
+  - kind: line
+    token: '35'
+  printed_label: '35'
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_6251_2025
+    source_hash: 6995bfd29c6fe1b80fdc396c9c4796c7cef58a966070db0346721eae815fea3f
+    page: 2
+- address_id: 2025/document=form_6251/line=35/control=amount
+  logical_key: document=form_6251/line=35/control=amount
+  year: 2025
+  document_id: form_6251_2025
+  parent_address_id: 2025/document=form_6251/line=35
+  kind: control
+  path:
+  - kind: document
+    token: form_6251
+  - kind: line
+    token: '35'
+  - kind: control
+    token: amount
+  printed_label: Line 35 - . . . . . . . . . 35 - f2_24
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_6251_2025
+    source_hash: 6995bfd29c6fe1b80fdc396c9c4796c7cef58a966070db0346721eae815fea3f
+    page: 2
+  official_ref: '35'
+- address_id: 2025/document=form_6251/line=36
+  logical_key: document=form_6251/line=36
+  year: 2025
+  document_id: form_6251_2025
+  parent_address_id: 2025/document=form_6251
+  kind: line
+  path:
+  - kind: document
+    token: form_6251
+  - kind: line
+    token: '36'
+  printed_label: '36'
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_6251_2025
+    source_hash: 6995bfd29c6fe1b80fdc396c9c4796c7cef58a966070db0346721eae815fea3f
+    page: 2
+- address_id: 2025/document=form_6251/line=36/control=amount
+  logical_key: document=form_6251/line=36/control=amount
+  year: 2025
+  document_id: form_6251_2025
+  parent_address_id: 2025/document=form_6251/line=36
+  kind: control
+  path:
+  - kind: document
+    token: form_6251
+  - kind: line
+    token: '36'
+  - kind: control
+    token: amount
+  printed_label: Line 36 - . . . . . . . . . 36 - f2_25
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_6251_2025
+    source_hash: 6995bfd29c6fe1b80fdc396c9c4796c7cef58a966070db0346721eae815fea3f
+    page: 2
+  official_ref: '36'
+- address_id: 2025/document=form_6251/line=37
+  logical_key: document=form_6251/line=37
+  year: 2025
+  document_id: form_6251_2025
+  parent_address_id: 2025/document=form_6251
+  kind: line
+  path:
+  - kind: document
+    token: form_6251
+  - kind: line
+    token: '37'
+  printed_label: '37'
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_6251_2025
+    source_hash: 6995bfd29c6fe1b80fdc396c9c4796c7cef58a966070db0346721eae815fea3f
+    page: 2
+- address_id: 2025/document=form_6251/line=37/control=amount
+  logical_key: document=form_6251/line=37/control=amount
+  year: 2025
+  document_id: form_6251_2025
+  parent_address_id: 2025/document=form_6251/line=37
+  kind: control
+  path:
+  - kind: document
+    token: form_6251
+  - kind: line
+    token: '37'
+  - kind: control
+    token: amount
+  printed_label: Line 37 - . . . . . . . . . 37 - f2_26
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_6251_2025
+    source_hash: 6995bfd29c6fe1b80fdc396c9c4796c7cef58a966070db0346721eae815fea3f
+    page: 2
+  official_ref: '37'
+- address_id: 2025/document=form_6251/line=38
+  logical_key: document=form_6251/line=38
+  year: 2025
+  document_id: form_6251_2025
+  parent_address_id: 2025/document=form_6251
+  kind: line
+  path:
+  - kind: document
+    token: form_6251
+  - kind: line
+    token: '38'
+  printed_label: '38'
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_6251_2025
+    source_hash: 6995bfd29c6fe1b80fdc396c9c4796c7cef58a966070db0346721eae815fea3f
+    page: 2
+- address_id: 2025/document=form_6251/line=38/control=amount
+  logical_key: document=form_6251/line=38/control=amount
+  year: 2025
+  document_id: form_6251_2025
+  parent_address_id: 2025/document=form_6251/line=38
+  kind: control
+  path:
+  - kind: document
+    token: form_6251
+  - kind: line
+    token: '38'
+  - kind: control
+    token: amount
+  printed_label: Line 38 - . . . . . . . . . 38 - f2_27
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_6251_2025
+    source_hash: 6995bfd29c6fe1b80fdc396c9c4796c7cef58a966070db0346721eae815fea3f
+    page: 2
+  official_ref: '38'
+- address_id: 2025/document=form_6251/line=40
+  logical_key: document=form_6251/line=40
+  year: 2025
+  document_id: form_6251_2025
+  parent_address_id: 2025/document=form_6251
+  kind: line
+  path:
+  - kind: document
+    token: form_6251
+  - kind: line
+    token: '40'
+  printed_label: '40'
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_6251_2025
+    source_hash: 6995bfd29c6fe1b80fdc396c9c4796c7cef58a966070db0346721eae815fea3f
+    page: 2
+- address_id: 2025/document=form_6251/line=40/control=amount
+  logical_key: document=form_6251/line=40/control=amount
+  year: 2025
+  document_id: form_6251_2025
+  parent_address_id: 2025/document=form_6251/line=40
+  kind: control
+  path:
+  - kind: document
+    token: form_6251
+  - kind: line
+    token: '40'
+  - kind: control
+    token: amount
+  printed_label: Line 40 - for line 7 . . . . . . 40 - f2_29
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_6251_2025
+    source_hash: 6995bfd29c6fe1b80fdc396c9c4796c7cef58a966070db0346721eae815fea3f
+    page: 2
+  official_ref: '40'
+- address_id: 2025/document=form_6251/line=6
+  logical_key: document=form_6251/line=6
+  year: 2025
+  document_id: form_6251_2025
+  parent_address_id: 2025/document=form_6251
+  kind: line
+  path:
+  - kind: document
+    token: form_6251
+  - kind: line
+    token: '6'
+  printed_label: '6'
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_6251_2025
+    source_hash: 6995bfd29c6fe1b80fdc396c9c4796c7cef58a966070db0346721eae815fea3f
+    page: 1
+- address_id: 2025/document=form_6251/line=6/control=amount
+  logical_key: document=form_6251/line=6/control=amount
+  year: 2025
+  document_id: form_6251_2025
+  parent_address_id: 2025/document=form_6251/line=6
+  kind: control
+  path:
+  - kind: document
+    token: form_6251
+  - kind: line
+    token: '6'
+  - kind: control
+    token: amount
+  printed_label: Line 6 - . . . . . . . . . 6 - f1_28
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_6251_2025
+    source_hash: 6995bfd29c6fe1b80fdc396c9c4796c7cef58a966070db0346721eae815fea3f
+    page: 1
+  official_ref: '6'
+- address_id: 2025/document=form_6251/line=8
+  logical_key: document=form_6251/line=8
+  year: 2025
+  document_id: form_6251_2025
+  parent_address_id: 2025/document=form_6251
+  kind: line
+  path:
+  - kind: document
+    token: form_6251
+  - kind: line
+    token: '8'
+  printed_label: '8'
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_6251_2025
+    source_hash: 6995bfd29c6fe1b80fdc396c9c4796c7cef58a966070db0346721eae815fea3f
+    page: 1
+- address_id: 2025/document=form_6251/line=8/control=amount
+  logical_key: document=form_6251/line=8/control=amount
+  year: 2025
+  document_id: form_6251_2025
+  parent_address_id: 2025/document=form_6251/line=8
+  kind: control
+  path:
+  - kind: document
+    token: form_6251
+  - kind: line
+    token: '8'
+  - kind: control
+    token: amount
+  printed_label: Line 8 - . . . . . . . . . 8 - f1_30
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_6251_2025
+    source_hash: 6995bfd29c6fe1b80fdc396c9c4796c7cef58a966070db0346721eae815fea3f
+    page: 1
+  official_ref: '8'
+- address_id: 2025/document=form_6251/line=9
+  logical_key: document=form_6251/line=9
+  year: 2025
+  document_id: form_6251_2025
+  parent_address_id: 2025/document=form_6251
+  kind: line
+  path:
+  - kind: document
+    token: form_6251
+  - kind: line
+    token: '9'
+  printed_label: '9'
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_6251_2025
+    source_hash: 6995bfd29c6fe1b80fdc396c9c4796c7cef58a966070db0346721eae815fea3f
+    page: 1
+- address_id: 2025/document=form_6251/line=9/control=amount
+  logical_key: document=form_6251/line=9/control=amount
+  year: 2025
+  document_id: form_6251_2025
+  parent_address_id: 2025/document=form_6251/line=9
+  kind: control
+  path:
+  - kind: document
+    token: form_6251
+  - kind: line
+    token: '9'
+  - kind: control
+    token: amount
+  printed_label: Line 9 - . . . . . . . . . 9 - f1_31
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_6251_2025
+    source_hash: 6995bfd29c6fe1b80fdc396c9c4796c7cef58a966070db0346721eae815fea3f
+    page: 1
+  official_ref: '9'

@@ -12,11 +12,39 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 - History: pruned at each phase close (latest: M14 close 2026-07-12). Full narration lives in
   `plans/archive/` (phase plans with close notes) and git history.
 
-## Current state (2026-07-14)
+## Current state (2026-07-15)
 
-**BALL: JOHN/ARCHITECT - M15 S5-S9 review corrections complete; S10 not started.** S2-S9
-are pushed to origin; the corrective commit is local pending Architect review. Plan:
-`plans/PHASE_M15.md`.
+**BALL: WORKER - M15R R11 COMPLETE; CONTINUE R12.** M15R R1-R11 are committed or
+ready for the R11 commit. John accepted Address Gate A on 2026-07-15. The in-progress M15
+A4 worktree remains preserved. `plans/PHASE_M15R.md` is the active recovery plan. Canary:
+Street Address.
+
+John's Form 1040 review exposed a foundational identity defect, not an isolated UI typo. The
+current system repeatedly reconstructs official line identity from labels, descriptions, node ids,
+and PDF field names. The Form 1040 line 1z formula therefore displayed trailing numbers from the
+descriptions of its inputs (for example W-2 box 2 and Schedule 1 line 26) instead of lines 1a-1h.
+A repository scan found 80 current nodes for which the workbench's derived line disagrees with the
+line encoded in the node id. Stop further M15 breadth until the recovery decision below is pinned.
+
+**GATE A FEEDBACK (John, 2026-07-14):** Persistent `Review authored AcroForm...` labels
+cover official IRS labels and add no field-specific value. The right semantic-analog cards
+overlap and are unreadable; the official form should be the primary surface with unobtrusive
+colored boxes, click-to-pin, and selected field detail below. Every fillable AcroForm field
+must be mapped to an explicit population policy, even if it is only `user_entered`; undefined
+is not acceptable. Form 1040 1b-1h are modeled but omitted from the PDF map (pipeline defect).
+Dependent fields are inventoried, but computation is outside the current profile and the OTS
+corpus fixes dependents at zero (real supported-domain gap). Mapping defects, fillable-only
+facts, decision-required fields, and unsupported logic must be visibly distinct. Broad
+document-level witness language must not imply whole-form coverage. John will review the
+corrected surface and iterate until it passes muster.
+
+**GATE A SCOPE CLARIFICATION (John, 2026-07-14):** The invariant applies to ALL
+fillable/checkable controls on ALL official forms/schedules exposed by the workbench, not only
+the cited Form 1040 examples. Every text field, checkbox, radio/choice control, and repeatable
+slot must have a visible policy state and be clickable. Graph-backed controls show rules and
+upstream/downstream dependencies; non-graph controls show the exact user-fact, decision, blank,
+or unsupported policy and why no computation rule exists. Policy-colored fill/outline is welcome,
+with a legend and non-color-only markers. A fillable PDF lacking an inventory/map fails preflight.
 
 **S5-S9 REVIEW CORRECTIONS (Worker, Codex, 2026-07-14):** Closed all four findings from
 the post-S9 code review. Verdicts and resume sessions now carry the exact review-manifest
@@ -366,7 +394,12 @@ material. Year rollover (TY2026) stays sequenced after M15 or when TY2026 docs d
   and the Step-5 record-hash ordering fix. Step 2's live pass was John + Architect.
 
 ## Open for Architect
-- (none) - the M15 S1 "full-suite blocker" is RESOLVED. It was NOT a hang:
+- **Claude review requested for 2026-07-16:** Review `plans/PHASE_M15R.md`, its master-plan/M15
+  interlock, and any R1+ implementation John authorizes on 2026-07-15. Pay special attention to
+  address serialization, binding cardinalities, contributor boundary, and whether the 15-surface
+  candidate corpus is the right power-law ceiling. John explicitly authorized the Worker-authored
+  plan; review and amend it rather than reconstructing the proposal from this handoff.
+- The M15 S1 "full-suite blocker" is RESOLVED. It was NOT a hang:
   `test_default_drill_catalog_catches_expected_layers` passes in 88.8s and the full suite is
   ~10 min (335 passed / 6 skipped); the worker's 184s/304s timeouts were too short. Architect
   verified S1 and committed it. Going forward, run the full suite in the background or split
@@ -395,6 +428,49 @@ ASCII: green; `validate 2025`: green; full suite: 338 passed, 6 skipped in 588.8
   `docs/self-serve-extension.md`.
 
 ## From Worker
+- **M15R R7-R11 (Codex, 2026-07-15):** Promoted Form 1040 canonical bindings; cut LINK,
+  completeness, runtime, MCP, and workbench identity over to addresses; fixed
+  document-scoped workbench geometry; and completed the nine-document core-return
+  campaign. Form 8949 uses row-template/column and distinct total-row column addresses;
+  Schedule D worksheet fields use explicit worksheet-step addresses. Six 8949-to-Schedule-D
+  canonical reference claims realize with zero unresolved; two Form 6251 prose false
+  positives remain rejected. All promoted records honestly remain pending review. Next: R12.
+- **M15R R2-R6 (Codex, 2026-07-15):** R2 canonical serializer/validator/resolver and five SQLite indexes; R3 explicit six-site legacy semantic-join inventory plus byte-stable four-state migration reports; R4 hard-filtered lexical/optional embedding candidate ranker whose scores cannot resolve; R5 deterministic form-first draft pipeline; R6 real Form 1040 Gate A tree and focused review page. Form 1040 reconciles all 199 widgets: 127 structurally addressed pending-review controls and 72 explicit exemptions; 1a-1h/1z and distinct 1h description/amount are present; dependent physical rows bind to static row-template columns; weak single-letter geometry anchors stay exempt. Gate artifact: `workbench_output/m15r_form_1040_address_review.html`; draft: `graph/2025/_drafts/addresses/form_1040_2025.yaml` (gitignored). Tests: M15R 27 passed; affected M15 28 passed; full suite 430 passed, 6 skipped in 2651.01s; ASCII/diff green. STOPPED at JOHN ADDRESS GATE A.
+- **M15R R2 (Codex, 2026-07-15):** Added the canonical serializer/parser, strict registry loader/validator/resolver, scoped alias handling, separate binding/reference loading, and five deterministic SQLite indexes with YAML/SQLite parity. Focused M15R: 15 passed; compiler/runtime-light integration: 13 passed; ASCII and diff gates green. The legacy full suite reached 86 percent with one stale M15 inventory-count failure; repaired that assertion to reconcile against the 1,921 authoritative inventory controls and reran it green. The abnormally CPU-bound suite was terminated after more than 30 minutes; clean full-suite floor deferred to R6/Gate A. Next: R3 architecture boundary and migration diagnostics.
+- **M15R R1 (Codex, 2026-07-15):** Added strict canonical address registry, widget/node binding, and cross-form reference schemas; representative fixtures cover 1040 amount/description/checkbox/unlabeled option, a 1099 box, worksheet step, and repeatable-table column. Frozen the pre-address graph, field-inventory, runtime, and 80-disagreement baseline without changing graph content. Focused M15R: 8 passed. Canary: Street Address. Next: R2 addressing library and compiled indexes.
+- **M15R canonical-address recovery (Codex, 2026-07-15):** John's explicit
+  instruction authorized a formal Worker-authored plan. The durable design, bounded
+  15-surface power-law scope, implementation steps, John gates, compatibility contract,
+  and exit criteria now live in `plans/PHASE_M15R.md`; the master plan and M15 interlock
+  point to it. R4 now pins the optional short-embedding matcher as constrained top-k
+  ranking only; deterministic structure/role validators decide every stored connection.
+  This supersedes the long proposal previously carried in this ledger.
+
+
+- **M15 A3 (Codex, 2026-07-14):** Added structured dependent runtime facts with
+  row keys separate from printed slots, mapped four Form 1040 identity rows, and
+  made residence/student/disability/credit boxes provenance-bearing
+  `decision_required` controls. Output fills 0-4 rows, rejects five with attached
+  statement guidance, and never infers a checkbox from identity. Return Records
+  disclose the universal intake gate and unsupported downstream qualification.
+  Focused: 47 passed; M15: 85 passed; full suite: 403 passed, 6 skipped; ASCII
+  green. Next: A4 official-form-first interaction.
+- **M15 A2 (Codex, 2026-07-14):** Swept all 16 exposed AcroForms and classified
+  all 1,919 widgets with one collision-free disposition. Added missing inventories
+  and maps for 1099-DIV, 1099-INT, 13614-C, 2441, and W-2; regenerated every
+  inventory directly from the PDFs; repaired Form 1040 node/field anchors 1b-1h,
+  including the separate 1h description, with line 1z sum and nonzero PDF echo.
+  Preflight now checks PDF = inventory = disposition in a runtime-light child
+  process, with an mtime-safe cache. Focused: 28 passed; M15: 77 passed; full
+  suite: 395 passed, 6 skipped; ASCII and real validate green. Next: A3 dependent
+  runtime facts and honest 0-4 row output.
+- **M15 A1 (Codex, 2026-07-14):** Added schema-versioned complete field
+  dispositions, strict inventory/disposition/ref validation, direct AcroForm widget
+  enumeration, and the fail-closed `review migrate-field-dispositions` authored-work
+  command. The migration copies only provable legacy identity facts and never guesses
+  graph operations or unsupported consequences. Focused: 9 passed; M15: 69 passed;
+  full suite: 387 passed, 6 skipped; ASCII green. Next: A2 universal disposition sweep
+  and Form 1040 lines 1b-1h repair.
 - **M15 S16 (Codex, 2026-07-14):** Gate A vertical slice now has explicit launch
   buttons for Form 1040 operations (input/copy/calculation/lookup/branch), Form 8949
   row-template + totals, and the Schedule D Tax Worksheet semantic flow. Official and

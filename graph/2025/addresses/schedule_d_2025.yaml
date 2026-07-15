@@ -1,0 +1,2001 @@
+schema_version: 1
+year: 2025
+document_id: schedule_d_2025
+addresses:
+- address_id: 2025/document=schedule_d
+  logical_key: document=schedule_d
+  year: 2025
+  document_id: schedule_d_2025
+  parent_address_id: null
+  kind: document
+  path:
+  - kind: document
+    token: schedule_d
+  printed_label: schedule_d
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_d_2025
+    source_hash: 90564c8b7e49280363612639b804d113ebedb516c2e87c70649f29c844da1d2e
+- address_id: 2025/document=schedule_d/line=10
+  logical_key: document=schedule_d/line=10
+  year: 2025
+  document_id: schedule_d_2025
+  parent_address_id: 2025/document=schedule_d
+  kind: line
+  path:
+  - kind: document
+    token: schedule_d
+  - kind: line
+    token: '10'
+  printed_label: '10'
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_d_2025
+    source_hash: 90564c8b7e49280363612639b804d113ebedb516c2e87c70649f29c844da1d2e
+    page: 1
+- address_id: 2025/document=schedule_d/line=10/control=amount
+  logical_key: document=schedule_d/line=10/control=amount
+  year: 2025
+  document_id: schedule_d_2025
+  parent_address_id: 2025/document=schedule_d/line=10
+  kind: control
+  path:
+  - kind: document
+    token: schedule_d
+  - kind: line
+    token: '10'
+  - kind: control
+    token: amount
+  printed_label: Line 10 - L checked . . . . . . . . - f1_35
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_d_2025
+    source_hash: 90564c8b7e49280363612639b804d113ebedb516c2e87c70649f29c844da1d2e
+    page: 1
+  official_ref: '10'
+- address_id: 2025/document=schedule_d/line=11
+  logical_key: document=schedule_d/line=11
+  year: 2025
+  document_id: schedule_d_2025
+  parent_address_id: 2025/document=schedule_d
+  kind: line
+  path:
+  - kind: document
+    token: schedule_d
+  - kind: line
+    token: '11'
+  printed_label: '11'
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_d_2025
+    source_hash: 90564c8b7e49280363612639b804d113ebedb516c2e87c70649f29c844da1d2e
+    page: 1
+- address_id: 2025/document=schedule_d/line=11/control=amount
+  logical_key: document=schedule_d/line=11/control=amount
+  year: 2025
+  document_id: schedule_d_2025
+  parent_address_id: 2025/document=schedule_d/line=11
+  kind: control
+  path:
+  - kind: document
+    token: schedule_d
+  - kind: line
+    token: '11'
+  - kind: control
+    token: amount
+  printed_label: Line 11 - . . . . . . . . . 11 - f1_39
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_d_2025
+    source_hash: 90564c8b7e49280363612639b804d113ebedb516c2e87c70649f29c844da1d2e
+    page: 1
+  official_ref: '11'
+- address_id: 2025/document=schedule_d/line=12
+  logical_key: document=schedule_d/line=12
+  year: 2025
+  document_id: schedule_d_2025
+  parent_address_id: 2025/document=schedule_d
+  kind: line
+  path:
+  - kind: document
+    token: schedule_d
+  - kind: line
+    token: '12'
+  printed_label: '12'
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_d_2025
+    source_hash: 90564c8b7e49280363612639b804d113ebedb516c2e87c70649f29c844da1d2e
+    page: 1
+- address_id: 2025/document=schedule_d/line=12/control=amount
+  logical_key: document=schedule_d/line=12/control=amount
+  year: 2025
+  document_id: schedule_d_2025
+  parent_address_id: 2025/document=schedule_d/line=12
+  kind: control
+  path:
+  - kind: document
+    token: schedule_d
+  - kind: line
+    token: '12'
+  - kind: control
+    token: amount
+  printed_label: Line 12 - partnerships, S corporations, estates, and trusts from
+    Schedule(s) K-1 12 - f1_40
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_d_2025
+    source_hash: 90564c8b7e49280363612639b804d113ebedb516c2e87c70649f29c844da1d2e
+    page: 1
+  official_ref: '12'
+- address_id: 2025/document=schedule_d/line=13
+  logical_key: document=schedule_d/line=13
+  year: 2025
+  document_id: schedule_d_2025
+  parent_address_id: 2025/document=schedule_d
+  kind: line
+  path:
+  - kind: document
+    token: schedule_d
+  - kind: line
+    token: '13'
+  printed_label: '13'
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_d_2025
+    source_hash: 90564c8b7e49280363612639b804d113ebedb516c2e87c70649f29c844da1d2e
+    page: 1
+- address_id: 2025/document=schedule_d/line=13/control=amount
+  logical_key: document=schedule_d/line=13/control=amount
+  year: 2025
+  document_id: schedule_d_2025
+  parent_address_id: 2025/document=schedule_d/line=13
+  kind: control
+  path:
+  - kind: document
+    token: schedule_d
+  - kind: line
+    token: '13'
+  - kind: control
+    token: amount
+  printed_label: Line 13 - . . . . . . . . . 13 - f1_41
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_d_2025
+    source_hash: 90564c8b7e49280363612639b804d113ebedb516c2e87c70649f29c844da1d2e
+    page: 1
+  official_ref: '13'
+- address_id: 2025/document=schedule_d/line=14
+  logical_key: document=schedule_d/line=14
+  year: 2025
+  document_id: schedule_d_2025
+  parent_address_id: 2025/document=schedule_d
+  kind: line
+  path:
+  - kind: document
+    token: schedule_d
+  - kind: line
+    token: '14'
+  printed_label: '14'
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_d_2025
+    source_hash: 90564c8b7e49280363612639b804d113ebedb516c2e87c70649f29c844da1d2e
+    page: 1
+- address_id: 2025/document=schedule_d/line=14/control=amount
+  logical_key: document=schedule_d/line=14/control=amount
+  year: 2025
+  document_id: schedule_d_2025
+  parent_address_id: 2025/document=schedule_d/line=14
+  kind: control
+  path:
+  - kind: document
+    token: schedule_d
+  - kind: line
+    token: '14'
+  - kind: control
+    token: amount
+  printed_label: Line 14 - . . . . . . . . 14 ( - f1_42
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_d_2025
+    source_hash: 90564c8b7e49280363612639b804d113ebedb516c2e87c70649f29c844da1d2e
+    page: 1
+  official_ref: '14'
+- address_id: 2025/document=schedule_d/line=15
+  logical_key: document=schedule_d/line=15
+  year: 2025
+  document_id: schedule_d_2025
+  parent_address_id: 2025/document=schedule_d
+  kind: line
+  path:
+  - kind: document
+    token: schedule_d
+  - kind: line
+    token: '15'
+  printed_label: '15'
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_d_2025
+    source_hash: 90564c8b7e49280363612639b804d113ebedb516c2e87c70649f29c844da1d2e
+    page: 1
+- address_id: 2025/document=schedule_d/line=15/control=amount
+  logical_key: document=schedule_d/line=15/control=amount
+  year: 2025
+  document_id: schedule_d_2025
+  parent_address_id: 2025/document=schedule_d/line=15
+  kind: control
+  path:
+  - kind: document
+    token: schedule_d
+  - kind: line
+    token: '15'
+  - kind: control
+    token: amount
+  printed_label: Line 15 - . . . . . . . . . 15 - f1_43
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_d_2025
+    source_hash: 90564c8b7e49280363612639b804d113ebedb516c2e87c70649f29c844da1d2e
+    page: 1
+  official_ref: '15'
+- address_id: 2025/document=schedule_d/line=16
+  logical_key: document=schedule_d/line=16
+  year: 2025
+  document_id: schedule_d_2025
+  parent_address_id: 2025/document=schedule_d
+  kind: line
+  path:
+  - kind: document
+    token: schedule_d
+  - kind: line
+    token: '16'
+  printed_label: '16'
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_d_2025
+    source_hash: 90564c8b7e49280363612639b804d113ebedb516c2e87c70649f29c844da1d2e
+    page: 2
+- address_id: 2025/document=schedule_d/line=16/control=amount
+  logical_key: document=schedule_d/line=16/control=amount
+  year: 2025
+  document_id: schedule_d_2025
+  parent_address_id: 2025/document=schedule_d/line=16
+  kind: control
+  path:
+  - kind: document
+    token: schedule_d
+  - kind: line
+    token: '16'
+  - kind: control
+    token: amount
+  printed_label: Line 16 - . . . . . . . . . 16 - f2_1
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_d_2025
+    source_hash: 90564c8b7e49280363612639b804d113ebedb516c2e87c70649f29c844da1d2e
+    page: 2
+  official_ref: '16'
+- address_id: 2025/document=schedule_d/line=18
+  logical_key: document=schedule_d/line=18
+  year: 2025
+  document_id: schedule_d_2025
+  parent_address_id: 2025/document=schedule_d
+  kind: line
+  path:
+  - kind: document
+    token: schedule_d
+  - kind: line
+    token: '18'
+  printed_label: '18'
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_d_2025
+    source_hash: 90564c8b7e49280363612639b804d113ebedb516c2e87c70649f29c844da1d2e
+    page: 2
+- address_id: 2025/document=schedule_d/line=18/control=amount
+  logical_key: document=schedule_d/line=18/control=amount
+  year: 2025
+  document_id: schedule_d_2025
+  parent_address_id: 2025/document=schedule_d/line=18
+  kind: control
+  path:
+  - kind: document
+    token: schedule_d
+  - kind: line
+    token: '18'
+  - kind: control
+    token: amount
+  printed_label: Line 18 - . . . . . . . . . 18 - f2_2
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_d_2025
+    source_hash: 90564c8b7e49280363612639b804d113ebedb516c2e87c70649f29c844da1d2e
+    page: 2
+  official_ref: '18'
+- address_id: 2025/document=schedule_d/line=18/control=checkbox
+  logical_key: document=schedule_d/line=18/control=checkbox
+  year: 2025
+  document_id: schedule_d_2025
+  parent_address_id: 2025/document=schedule_d/line=18
+  kind: control
+  path:
+  - kind: document
+    token: schedule_d
+  - kind: line
+    token: '18'
+  - kind: control
+    token: checkbox
+  printed_label: Line 18 - c2_1 (page 2, control 47)
+  aliases: []
+  control_role: checkbox
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_d_2025
+    source_hash: 90564c8b7e49280363612639b804d113ebedb516c2e87c70649f29c844da1d2e
+    page: 2
+  official_ref: '18'
+- address_id: 2025/document=schedule_d/line=19
+  logical_key: document=schedule_d/line=19
+  year: 2025
+  document_id: schedule_d_2025
+  parent_address_id: 2025/document=schedule_d
+  kind: line
+  path:
+  - kind: document
+    token: schedule_d
+  - kind: line
+    token: '19'
+  printed_label: '19'
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_d_2025
+    source_hash: 90564c8b7e49280363612639b804d113ebedb516c2e87c70649f29c844da1d2e
+    page: 2
+- address_id: 2025/document=schedule_d/line=19/control=amount
+  logical_key: document=schedule_d/line=19/control=amount
+  year: 2025
+  document_id: schedule_d_2025
+  parent_address_id: 2025/document=schedule_d/line=19
+  kind: control
+  path:
+  - kind: document
+    token: schedule_d
+  - kind: line
+    token: '19'
+  - kind: control
+    token: amount
+  printed_label: Line 19 - . . . . . . . . . 19 - f2_3
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_d_2025
+    source_hash: 90564c8b7e49280363612639b804d113ebedb516c2e87c70649f29c844da1d2e
+    page: 2
+  official_ref: '19'
+- address_id: 2025/document=schedule_d/line=1a
+  logical_key: document=schedule_d/line=1a
+  year: 2025
+  document_id: schedule_d_2025
+  parent_address_id: 2025/document=schedule_d
+  kind: line
+  path:
+  - kind: document
+    token: schedule_d
+  - kind: line
+    token: 1a
+  printed_label: 1a
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_d_2025
+    source_hash: 90564c8b7e49280363612639b804d113ebedb516c2e87c70649f29c844da1d2e
+    page: 1
+- address_id: 2025/document=schedule_d/line=1a/control=amount
+  logical_key: document=schedule_d/line=1a/control=amount
+  year: 2025
+  document_id: schedule_d_2025
+  parent_address_id: 2025/document=schedule_d/line=1a
+  kind: control
+  path:
+  - kind: document
+    token: schedule_d
+  - kind: line
+    token: 1a
+  - kind: control
+    token: amount
+  printed_label: Line 1a - Part III on the back . . . . 7 - f1_22
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_d_2025
+    source_hash: 90564c8b7e49280363612639b804d113ebedb516c2e87c70649f29c844da1d2e
+    page: 1
+  official_ref: 1a
+- address_id: 2025/document=schedule_d/line=1b
+  logical_key: document=schedule_d/line=1b
+  year: 2025
+  document_id: schedule_d_2025
+  parent_address_id: 2025/document=schedule_d
+  kind: line
+  path:
+  - kind: document
+    token: schedule_d
+  - kind: line
+    token: 1b
+  printed_label: 1b
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_d_2025
+    source_hash: 90564c8b7e49280363612639b804d113ebedb516c2e87c70649f29c844da1d2e
+    page: 1
+- address_id: 2025/document=schedule_d/line=1b/control=amount
+  logical_key: document=schedule_d/line=1b/control=amount
+  year: 2025
+  document_id: schedule_d_2025
+  parent_address_id: 2025/document=schedule_d/line=1b
+  kind: control
+  path:
+  - kind: document
+    token: schedule_d
+  - kind: line
+    token: 1b
+  - kind: control
+    token: amount
+  printed_label: Line 1b - and go to line 1b . . . . . - f1_3
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_d_2025
+    source_hash: 90564c8b7e49280363612639b804d113ebedb516c2e87c70649f29c844da1d2e
+    page: 1
+  official_ref: 1b
+- address_id: 2025/document=schedule_d/line=2
+  logical_key: document=schedule_d/line=2
+  year: 2025
+  document_id: schedule_d_2025
+  parent_address_id: 2025/document=schedule_d
+  kind: line
+  path:
+  - kind: document
+    token: schedule_d
+  - kind: line
+    token: '2'
+  printed_label: '2'
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_d_2025
+    source_hash: 90564c8b7e49280363612639b804d113ebedb516c2e87c70649f29c844da1d2e
+    page: 1
+- address_id: 2025/document=schedule_d/line=2/control=amount
+  logical_key: document=schedule_d/line=2/control=amount
+  year: 2025
+  document_id: schedule_d_2025
+  parent_address_id: 2025/document=schedule_d/line=2
+  kind: control
+  path:
+  - kind: document
+    token: schedule_d
+  - kind: line
+    token: '2'
+  - kind: control
+    token: amount
+  printed_label: Line 2 - H checked . . . . . . . . - f1_11
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_d_2025
+    source_hash: 90564c8b7e49280363612639b804d113ebedb516c2e87c70649f29c844da1d2e
+    page: 1
+  official_ref: '2'
+- address_id: 2025/document=schedule_d/line=22
+  logical_key: document=schedule_d/line=22
+  year: 2025
+  document_id: schedule_d_2025
+  parent_address_id: 2025/document=schedule_d
+  kind: line
+  path:
+  - kind: document
+    token: schedule_d
+  - kind: line
+    token: '22'
+  printed_label: '22'
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_d_2025
+    source_hash: 90564c8b7e49280363612639b804d113ebedb516c2e87c70649f29c844da1d2e
+    page: 2
+- address_id: 2025/document=schedule_d/line=22/control=checkbox
+  logical_key: document=schedule_d/line=22/control=checkbox
+  year: 2025
+  document_id: schedule_d_2025
+  parent_address_id: 2025/document=schedule_d/line=22
+  kind: control
+  path:
+  - kind: document
+    token: schedule_d
+  - kind: line
+    token: '22'
+  - kind: control
+    token: checkbox
+  printed_label: Line 22 - c2_2
+  aliases: []
+  control_role: checkbox
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_d_2025
+    source_hash: 90564c8b7e49280363612639b804d113ebedb516c2e87c70649f29c844da1d2e
+    page: 2
+  official_ref: '22'
+- address_id: 2025/document=schedule_d/line=3
+  logical_key: document=schedule_d/line=3
+  year: 2025
+  document_id: schedule_d_2025
+  parent_address_id: 2025/document=schedule_d
+  kind: line
+  path:
+  - kind: document
+    token: schedule_d
+  - kind: line
+    token: '3'
+  printed_label: '3'
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_d_2025
+    source_hash: 90564c8b7e49280363612639b804d113ebedb516c2e87c70649f29c844da1d2e
+    page: 1
+- address_id: 2025/document=schedule_d/line=3/control=amount
+  logical_key: document=schedule_d/line=3/control=amount
+  year: 2025
+  document_id: schedule_d_2025
+  parent_address_id: 2025/document=schedule_d/line=3
+  kind: control
+  path:
+  - kind: document
+    token: schedule_d
+  - kind: line
+    token: '3'
+  - kind: control
+    token: amount
+  printed_label: Line 3 - I checked . . . . . . . . - f1_15
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_d_2025
+    source_hash: 90564c8b7e49280363612639b804d113ebedb516c2e87c70649f29c844da1d2e
+    page: 1
+  official_ref: '3'
+- address_id: 2025/document=schedule_d/line=4
+  logical_key: document=schedule_d/line=4
+  year: 2025
+  document_id: schedule_d_2025
+  parent_address_id: 2025/document=schedule_d
+  kind: line
+  path:
+  - kind: document
+    token: schedule_d
+  - kind: line
+    token: '4'
+  printed_label: '4'
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_d_2025
+    source_hash: 90564c8b7e49280363612639b804d113ebedb516c2e87c70649f29c844da1d2e
+    page: 1
+- address_id: 2025/document=schedule_d/line=4/control=amount
+  logical_key: document=schedule_d/line=4/control=amount
+  year: 2025
+  document_id: schedule_d_2025
+  parent_address_id: 2025/document=schedule_d/line=4
+  kind: control
+  path:
+  - kind: document
+    token: schedule_d
+  - kind: line
+    token: '4'
+  - kind: control
+    token: amount
+  printed_label: Line 4 - (loss) from Forms 4684, 6781, and 8824 . . 4 - f1_19
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_d_2025
+    source_hash: 90564c8b7e49280363612639b804d113ebedb516c2e87c70649f29c844da1d2e
+    page: 1
+  official_ref: '4'
+- address_id: 2025/document=schedule_d/line=5
+  logical_key: document=schedule_d/line=5
+  year: 2025
+  document_id: schedule_d_2025
+  parent_address_id: 2025/document=schedule_d
+  kind: line
+  path:
+  - kind: document
+    token: schedule_d
+  - kind: line
+    token: '5'
+  printed_label: '5'
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_d_2025
+    source_hash: 90564c8b7e49280363612639b804d113ebedb516c2e87c70649f29c844da1d2e
+    page: 1
+- address_id: 2025/document=schedule_d/line=5/control=amount
+  logical_key: document=schedule_d/line=5/control=amount
+  year: 2025
+  document_id: schedule_d_2025
+  parent_address_id: 2025/document=schedule_d/line=5
+  kind: control
+  path:
+  - kind: document
+    token: schedule_d
+  - kind: line
+    token: '5'
+  - kind: control
+    token: amount
+  printed_label: Line 5 - partnerships, S corporations, estates, and trusts from Schedule(s)
+    K-1 5 - f1_20
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_d_2025
+    source_hash: 90564c8b7e49280363612639b804d113ebedb516c2e87c70649f29c844da1d2e
+    page: 1
+  official_ref: '5'
+- address_id: 2025/document=schedule_d/line=6
+  logical_key: document=schedule_d/line=6
+  year: 2025
+  document_id: schedule_d_2025
+  parent_address_id: 2025/document=schedule_d
+  kind: line
+  path:
+  - kind: document
+    token: schedule_d
+  - kind: line
+    token: '6'
+  printed_label: '6'
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_d_2025
+    source_hash: 90564c8b7e49280363612639b804d113ebedb516c2e87c70649f29c844da1d2e
+    page: 1
+- address_id: 2025/document=schedule_d/line=6/control=amount
+  logical_key: document=schedule_d/line=6/control=amount
+  year: 2025
+  document_id: schedule_d_2025
+  parent_address_id: 2025/document=schedule_d/line=6
+  kind: control
+  path:
+  - kind: document
+    token: schedule_d
+  - kind: line
+    token: '6'
+  - kind: control
+    token: amount
+  printed_label: Line 6 - . . . . . . . . 6 ( - f1_21
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_d_2025
+    source_hash: 90564c8b7e49280363612639b804d113ebedb516c2e87c70649f29c844da1d2e
+    page: 1
+  official_ref: '6'
+- address_id: 2025/document=schedule_d/line=8b
+  logical_key: document=schedule_d/line=8b
+  year: 2025
+  document_id: schedule_d_2025
+  parent_address_id: 2025/document=schedule_d
+  kind: line
+  path:
+  - kind: document
+    token: schedule_d
+  - kind: line
+    token: 8b
+  printed_label: 8b
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_d_2025
+    source_hash: 90564c8b7e49280363612639b804d113ebedb516c2e87c70649f29c844da1d2e
+    page: 1
+- address_id: 2025/document=schedule_d/line=8b/control=amount
+  logical_key: document=schedule_d/line=8b/control=amount
+  year: 2025
+  document_id: schedule_d_2025
+  parent_address_id: 2025/document=schedule_d/line=8b
+  kind: control
+  path:
+  - kind: document
+    token: schedule_d
+  - kind: line
+    token: 8b
+  - kind: control
+    token: amount
+  printed_label: Line 8b - and go to line 8b . . . . . - f1_23
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_d_2025
+    source_hash: 90564c8b7e49280363612639b804d113ebedb516c2e87c70649f29c844da1d2e
+    page: 1
+  official_ref: 8b
+- address_id: 2025/document=schedule_d/line=9
+  logical_key: document=schedule_d/line=9
+  year: 2025
+  document_id: schedule_d_2025
+  parent_address_id: 2025/document=schedule_d
+  kind: line
+  path:
+  - kind: document
+    token: schedule_d
+  - kind: line
+    token: '9'
+  printed_label: '9'
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_d_2025
+    source_hash: 90564c8b7e49280363612639b804d113ebedb516c2e87c70649f29c844da1d2e
+    page: 1
+- address_id: 2025/document=schedule_d/line=9/control=amount
+  logical_key: document=schedule_d/line=9/control=amount
+  year: 2025
+  document_id: schedule_d_2025
+  parent_address_id: 2025/document=schedule_d/line=9
+  kind: control
+  path:
+  - kind: document
+    token: schedule_d
+  - kind: line
+    token: '9'
+  - kind: control
+    token: amount
+  printed_label: Line 9 - K checked . . . . . . . . - f1_31
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_d_2025
+    source_hash: 90564c8b7e49280363612639b804d113ebedb516c2e87c70649f29c844da1d2e
+    page: 1
+  official_ref: '9'
+- address_id: 2025/document=schedule_d/section=carryover_worksheet
+  logical_key: document=schedule_d/section=carryover_worksheet
+  year: 2025
+  document_id: schedule_d_2025
+  parent_address_id: 2025/document=schedule_d
+  kind: section
+  path:
+  - kind: document
+    token: schedule_d
+  - kind: section
+    token: carryover_worksheet
+  printed_label: carryover_worksheet
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_d_2025
+    source_hash: 90564c8b7e49280363612639b804d113ebedb516c2e87c70649f29c844da1d2e
+- address_id: 2025/document=schedule_d/section=carryover_worksheet/worksheet_step=1
+  logical_key: document=schedule_d/section=carryover_worksheet/worksheet_step=1
+  year: 2025
+  document_id: schedule_d_2025
+  parent_address_id: 2025/document=schedule_d/section=carryover_worksheet
+  kind: worksheet_step
+  path:
+  - kind: document
+    token: schedule_d
+  - kind: section
+    token: carryover_worksheet
+  - kind: worksheet_step
+    token: '1'
+  printed_label: Capital Loss Carryover Worksheet line 1 - taxable income before zero
+    floor
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_d_2025
+    source_hash: 90564c8b7e49280363612639b804d113ebedb516c2e87c70649f29c844da1d2e
+  official_ref: '1'
+- address_id: 2025/document=schedule_d/section=carryover_worksheet/worksheet_step=10
+  logical_key: document=schedule_d/section=carryover_worksheet/worksheet_step=10
+  year: 2025
+  document_id: schedule_d_2025
+  parent_address_id: 2025/document=schedule_d/section=carryover_worksheet
+  kind: worksheet_step
+  path:
+  - kind: document
+    token: schedule_d
+  - kind: section
+    token: carryover_worksheet
+  - kind: worksheet_step
+    token: '10'
+  printed_label: Capital Loss Carryover Worksheet line 10
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_d_2025
+    source_hash: 90564c8b7e49280363612639b804d113ebedb516c2e87c70649f29c844da1d2e
+  official_ref: '10'
+- address_id: 2025/document=schedule_d/section=carryover_worksheet/worksheet_step=11
+  logical_key: document=schedule_d/section=carryover_worksheet/worksheet_step=11
+  year: 2025
+  document_id: schedule_d_2025
+  parent_address_id: 2025/document=schedule_d/section=carryover_worksheet
+  kind: worksheet_step
+  path:
+  - kind: document
+    token: schedule_d
+  - kind: section
+    token: carryover_worksheet
+  - kind: worksheet_step
+    token: '11'
+  printed_label: Capital Loss Carryover Worksheet line 11
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_d_2025
+    source_hash: 90564c8b7e49280363612639b804d113ebedb516c2e87c70649f29c844da1d2e
+  official_ref: '11'
+- address_id: 2025/document=schedule_d/section=carryover_worksheet/worksheet_step=12
+  logical_key: document=schedule_d/section=carryover_worksheet/worksheet_step=12
+  year: 2025
+  document_id: schedule_d_2025
+  parent_address_id: 2025/document=schedule_d/section=carryover_worksheet
+  kind: worksheet_step
+  path:
+  - kind: document
+    token: schedule_d
+  - kind: section
+    token: carryover_worksheet
+  - kind: worksheet_step
+    token: '12'
+  printed_label: Capital Loss Carryover Worksheet line 12
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_d_2025
+    source_hash: 90564c8b7e49280363612639b804d113ebedb516c2e87c70649f29c844da1d2e
+  official_ref: '12'
+- address_id: 2025/document=schedule_d/section=carryover_worksheet/worksheet_step=13
+  logical_key: document=schedule_d/section=carryover_worksheet/worksheet_step=13
+  year: 2025
+  document_id: schedule_d_2025
+  parent_address_id: 2025/document=schedule_d/section=carryover_worksheet
+  kind: worksheet_step
+  path:
+  - kind: document
+    token: schedule_d
+  - kind: section
+    token: carryover_worksheet
+  - kind: worksheet_step
+    token: '13'
+  printed_label: Capital Loss Carryover Worksheet line 13 - long-term carryover
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_d_2025
+    source_hash: 90564c8b7e49280363612639b804d113ebedb516c2e87c70649f29c844da1d2e
+  official_ref: '13'
+- address_id: 2025/document=schedule_d/section=carryover_worksheet/worksheet_step=2
+  logical_key: document=schedule_d/section=carryover_worksheet/worksheet_step=2
+  year: 2025
+  document_id: schedule_d_2025
+  parent_address_id: 2025/document=schedule_d/section=carryover_worksheet
+  kind: worksheet_step
+  path:
+  - kind: document
+    token: schedule_d
+  - kind: section
+    token: carryover_worksheet
+  - kind: worksheet_step
+    token: '2'
+  printed_label: Capital Loss Carryover Worksheet line 2 - Schedule D line 21 loss
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_d_2025
+    source_hash: 90564c8b7e49280363612639b804d113ebedb516c2e87c70649f29c844da1d2e
+  official_ref: '2'
+- address_id: 2025/document=schedule_d/section=carryover_worksheet/worksheet_step=3
+  logical_key: document=schedule_d/section=carryover_worksheet/worksheet_step=3
+  year: 2025
+  document_id: schedule_d_2025
+  parent_address_id: 2025/document=schedule_d/section=carryover_worksheet
+  kind: worksheet_step
+  path:
+  - kind: document
+    token: schedule_d
+  - kind: section
+    token: carryover_worksheet
+  - kind: worksheet_step
+    token: '3'
+  printed_label: Capital Loss Carryover Worksheet line 3
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_d_2025
+    source_hash: 90564c8b7e49280363612639b804d113ebedb516c2e87c70649f29c844da1d2e
+  official_ref: '3'
+- address_id: 2025/document=schedule_d/section=carryover_worksheet/worksheet_step=4
+  logical_key: document=schedule_d/section=carryover_worksheet/worksheet_step=4
+  year: 2025
+  document_id: schedule_d_2025
+  parent_address_id: 2025/document=schedule_d/section=carryover_worksheet
+  kind: worksheet_step
+  path:
+  - kind: document
+    token: schedule_d
+  - kind: section
+    token: carryover_worksheet
+  - kind: worksheet_step
+    token: '4'
+  printed_label: Capital Loss Carryover Worksheet line 4
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_d_2025
+    source_hash: 90564c8b7e49280363612639b804d113ebedb516c2e87c70649f29c844da1d2e
+  official_ref: '4'
+- address_id: 2025/document=schedule_d/section=carryover_worksheet/worksheet_step=5
+  logical_key: document=schedule_d/section=carryover_worksheet/worksheet_step=5
+  year: 2025
+  document_id: schedule_d_2025
+  parent_address_id: 2025/document=schedule_d/section=carryover_worksheet
+  kind: worksheet_step
+  path:
+  - kind: document
+    token: schedule_d
+  - kind: section
+    token: carryover_worksheet
+  - kind: worksheet_step
+    token: '5'
+  printed_label: Capital Loss Carryover Worksheet line 5
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_d_2025
+    source_hash: 90564c8b7e49280363612639b804d113ebedb516c2e87c70649f29c844da1d2e
+  official_ref: '5'
+- address_id: 2025/document=schedule_d/section=carryover_worksheet/worksheet_step=6
+  logical_key: document=schedule_d/section=carryover_worksheet/worksheet_step=6
+  year: 2025
+  document_id: schedule_d_2025
+  parent_address_id: 2025/document=schedule_d/section=carryover_worksheet
+  kind: worksheet_step
+  path:
+  - kind: document
+    token: schedule_d
+  - kind: section
+    token: carryover_worksheet
+  - kind: worksheet_step
+    token: '6'
+  printed_label: Capital Loss Carryover Worksheet line 6
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_d_2025
+    source_hash: 90564c8b7e49280363612639b804d113ebedb516c2e87c70649f29c844da1d2e
+  official_ref: '6'
+- address_id: 2025/document=schedule_d/section=carryover_worksheet/worksheet_step=7
+  logical_key: document=schedule_d/section=carryover_worksheet/worksheet_step=7
+  year: 2025
+  document_id: schedule_d_2025
+  parent_address_id: 2025/document=schedule_d/section=carryover_worksheet
+  kind: worksheet_step
+  path:
+  - kind: document
+    token: schedule_d
+  - kind: section
+    token: carryover_worksheet
+  - kind: worksheet_step
+    token: '7'
+  printed_label: Capital Loss Carryover Worksheet line 7
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_d_2025
+    source_hash: 90564c8b7e49280363612639b804d113ebedb516c2e87c70649f29c844da1d2e
+  official_ref: '7'
+- address_id: 2025/document=schedule_d/section=carryover_worksheet/worksheet_step=8
+  logical_key: document=schedule_d/section=carryover_worksheet/worksheet_step=8
+  year: 2025
+  document_id: schedule_d_2025
+  parent_address_id: 2025/document=schedule_d/section=carryover_worksheet
+  kind: worksheet_step
+  path:
+  - kind: document
+    token: schedule_d
+  - kind: section
+    token: carryover_worksheet
+  - kind: worksheet_step
+    token: '8'
+  printed_label: Capital Loss Carryover Worksheet line 8 - short-term carryover
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_d_2025
+    source_hash: 90564c8b7e49280363612639b804d113ebedb516c2e87c70649f29c844da1d2e
+  official_ref: '8'
+- address_id: 2025/document=schedule_d/section=carryover_worksheet/worksheet_step=9
+  logical_key: document=schedule_d/section=carryover_worksheet/worksheet_step=9
+  year: 2025
+  document_id: schedule_d_2025
+  parent_address_id: 2025/document=schedule_d/section=carryover_worksheet
+  kind: worksheet_step
+  path:
+  - kind: document
+    token: schedule_d
+  - kind: section
+    token: carryover_worksheet
+  - kind: worksheet_step
+    token: '9'
+  printed_label: Capital Loss Carryover Worksheet line 9
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_d_2025
+    source_hash: 90564c8b7e49280363612639b804d113ebedb516c2e87c70649f29c844da1d2e
+  official_ref: '9'
+- address_id: 2025/document=schedule_d/section=tax_worksheet
+  logical_key: document=schedule_d/section=tax_worksheet
+  year: 2025
+  document_id: schedule_d_2025
+  parent_address_id: 2025/document=schedule_d
+  kind: section
+  path:
+  - kind: document
+    token: schedule_d
+  - kind: section
+    token: tax_worksheet
+  printed_label: tax_worksheet
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_d_2025
+    source_hash: 90564c8b7e49280363612639b804d113ebedb516c2e87c70649f29c844da1d2e
+- address_id: 2025/document=schedule_d/section=tax_worksheet/worksheet_step=1
+  logical_key: document=schedule_d/section=tax_worksheet/worksheet_step=1
+  year: 2025
+  document_id: schedule_d_2025
+  parent_address_id: 2025/document=schedule_d/section=tax_worksheet
+  kind: worksheet_step
+  path:
+  - kind: document
+    token: schedule_d
+  - kind: section
+    token: tax_worksheet
+  - kind: worksheet_step
+    token: '1'
+  printed_label: Schedule D Tax Worksheet line 1 - taxable income
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_d_2025
+    source_hash: 90564c8b7e49280363612639b804d113ebedb516c2e87c70649f29c844da1d2e
+  official_ref: '1'
+- address_id: 2025/document=schedule_d/section=tax_worksheet/worksheet_step=10
+  logical_key: document=schedule_d/section=tax_worksheet/worksheet_step=10
+  year: 2025
+  document_id: schedule_d_2025
+  parent_address_id: 2025/document=schedule_d/section=tax_worksheet
+  kind: worksheet_step
+  path:
+  - kind: document
+    token: schedule_d
+  - kind: section
+    token: tax_worksheet
+  - kind: worksheet_step
+    token: '10'
+  printed_label: Schedule D Tax Worksheet line 10 - add lines 6 and 9
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_d_2025
+    source_hash: 90564c8b7e49280363612639b804d113ebedb516c2e87c70649f29c844da1d2e
+  official_ref: '10'
+- address_id: 2025/document=schedule_d/section=tax_worksheet/worksheet_step=11
+  logical_key: document=schedule_d/section=tax_worksheet/worksheet_step=11
+  year: 2025
+  document_id: schedule_d_2025
+  parent_address_id: 2025/document=schedule_d/section=tax_worksheet
+  kind: worksheet_step
+  path:
+  - kind: document
+    token: schedule_d
+  - kind: section
+    token: tax_worksheet
+  - kind: worksheet_step
+    token: '11'
+  printed_label: Schedule D Tax Worksheet line 11 - add Schedule D lines 18 and 19
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_d_2025
+    source_hash: 90564c8b7e49280363612639b804d113ebedb516c2e87c70649f29c844da1d2e
+  official_ref: '11'
+- address_id: 2025/document=schedule_d/section=tax_worksheet/worksheet_step=12
+  logical_key: document=schedule_d/section=tax_worksheet/worksheet_step=12
+  year: 2025
+  document_id: schedule_d_2025
+  parent_address_id: 2025/document=schedule_d/section=tax_worksheet
+  kind: worksheet_step
+  path:
+  - kind: document
+    token: schedule_d
+  - kind: section
+    token: tax_worksheet
+  - kind: worksheet_step
+    token: '12'
+  printed_label: Schedule D Tax Worksheet line 12 - smaller of line 9 or line 11
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_d_2025
+    source_hash: 90564c8b7e49280363612639b804d113ebedb516c2e87c70649f29c844da1d2e
+  official_ref: '12'
+- address_id: 2025/document=schedule_d/section=tax_worksheet/worksheet_step=13
+  logical_key: document=schedule_d/section=tax_worksheet/worksheet_step=13
+  year: 2025
+  document_id: schedule_d_2025
+  parent_address_id: 2025/document=schedule_d/section=tax_worksheet
+  kind: worksheet_step
+  path:
+  - kind: document
+    token: schedule_d
+  - kind: section
+    token: tax_worksheet
+  - kind: worksheet_step
+    token: '13'
+  printed_label: Schedule D Tax Worksheet line 13 - subtract line 12 from line 10
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_d_2025
+    source_hash: 90564c8b7e49280363612639b804d113ebedb516c2e87c70649f29c844da1d2e
+  official_ref: '13'
+- address_id: 2025/document=schedule_d/section=tax_worksheet/worksheet_step=14
+  logical_key: document=schedule_d/section=tax_worksheet/worksheet_step=14
+  year: 2025
+  document_id: schedule_d_2025
+  parent_address_id: 2025/document=schedule_d/section=tax_worksheet
+  kind: worksheet_step
+  path:
+  - kind: document
+    token: schedule_d
+  - kind: section
+    token: tax_worksheet
+  - kind: worksheet_step
+    token: '14'
+  printed_label: Schedule D Tax Worksheet line 14 - subtract line 13 from line 1
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_d_2025
+    source_hash: 90564c8b7e49280363612639b804d113ebedb516c2e87c70649f29c844da1d2e
+  official_ref: '14'
+- address_id: 2025/document=schedule_d/section=tax_worksheet/worksheet_step=16
+  logical_key: document=schedule_d/section=tax_worksheet/worksheet_step=16
+  year: 2025
+  document_id: schedule_d_2025
+  parent_address_id: 2025/document=schedule_d/section=tax_worksheet
+  kind: worksheet_step
+  path:
+  - kind: document
+    token: schedule_d
+  - kind: section
+    token: tax_worksheet
+  - kind: worksheet_step
+    token: '16'
+  printed_label: Schedule D Tax Worksheet line 16 - smaller of line 1 or line 15
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_d_2025
+    source_hash: 90564c8b7e49280363612639b804d113ebedb516c2e87c70649f29c844da1d2e
+  official_ref: '16'
+- address_id: 2025/document=schedule_d/section=tax_worksheet/worksheet_step=17
+  logical_key: document=schedule_d/section=tax_worksheet/worksheet_step=17
+  year: 2025
+  document_id: schedule_d_2025
+  parent_address_id: 2025/document=schedule_d/section=tax_worksheet
+  kind: worksheet_step
+  path:
+  - kind: document
+    token: schedule_d
+  - kind: section
+    token: tax_worksheet
+  - kind: worksheet_step
+    token: '17'
+  printed_label: Schedule D Tax Worksheet line 17 - smaller of line 14 or line 16
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_d_2025
+    source_hash: 90564c8b7e49280363612639b804d113ebedb516c2e87c70649f29c844da1d2e
+  official_ref: '17'
+- address_id: 2025/document=schedule_d/section=tax_worksheet/worksheet_step=18
+  logical_key: document=schedule_d/section=tax_worksheet/worksheet_step=18
+  year: 2025
+  document_id: schedule_d_2025
+  parent_address_id: 2025/document=schedule_d/section=tax_worksheet
+  kind: worksheet_step
+  path:
+  - kind: document
+    token: schedule_d
+  - kind: section
+    token: tax_worksheet
+  - kind: worksheet_step
+    token: '18'
+  printed_label: Schedule D Tax Worksheet line 18 - subtract line 10 from line 1
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_d_2025
+    source_hash: 90564c8b7e49280363612639b804d113ebedb516c2e87c70649f29c844da1d2e
+  official_ref: '18'
+- address_id: 2025/document=schedule_d/section=tax_worksheet/worksheet_step=19
+  logical_key: document=schedule_d/section=tax_worksheet/worksheet_step=19
+  year: 2025
+  document_id: schedule_d_2025
+  parent_address_id: 2025/document=schedule_d/section=tax_worksheet
+  kind: worksheet_step
+  path:
+  - kind: document
+    token: schedule_d
+  - kind: section
+    token: tax_worksheet
+  - kind: worksheet_step
+    token: '19'
+  printed_label: Schedule D Tax Worksheet line 19 - smaller of line 1 or the threshold
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_d_2025
+    source_hash: 90564c8b7e49280363612639b804d113ebedb516c2e87c70649f29c844da1d2e
+  official_ref: '19'
+- address_id: 2025/document=schedule_d/section=tax_worksheet/worksheet_step=2
+  logical_key: document=schedule_d/section=tax_worksheet/worksheet_step=2
+  year: 2025
+  document_id: schedule_d_2025
+  parent_address_id: 2025/document=schedule_d/section=tax_worksheet
+  kind: worksheet_step
+  path:
+  - kind: document
+    token: schedule_d
+  - kind: section
+    token: tax_worksheet
+  - kind: worksheet_step
+    token: '2'
+  printed_label: Schedule D Tax Worksheet line 2 - qualified dividends
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_d_2025
+    source_hash: 90564c8b7e49280363612639b804d113ebedb516c2e87c70649f29c844da1d2e
+  official_ref: '2'
+- address_id: 2025/document=schedule_d/section=tax_worksheet/worksheet_step=20
+  logical_key: document=schedule_d/section=tax_worksheet/worksheet_step=20
+  year: 2025
+  document_id: schedule_d_2025
+  parent_address_id: 2025/document=schedule_d/section=tax_worksheet
+  kind: worksheet_step
+  path:
+  - kind: document
+    token: schedule_d
+  - kind: section
+    token: tax_worksheet
+  - kind: worksheet_step
+    token: '20'
+  printed_label: Schedule D Tax Worksheet line 20 - smaller of line 14 or line 19
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_d_2025
+    source_hash: 90564c8b7e49280363612639b804d113ebedb516c2e87c70649f29c844da1d2e
+  official_ref: '20'
+- address_id: 2025/document=schedule_d/section=tax_worksheet/worksheet_step=21
+  logical_key: document=schedule_d/section=tax_worksheet/worksheet_step=21
+  year: 2025
+  document_id: schedule_d_2025
+  parent_address_id: 2025/document=schedule_d/section=tax_worksheet
+  kind: worksheet_step
+  path:
+  - kind: document
+    token: schedule_d
+  - kind: section
+    token: tax_worksheet
+  - kind: worksheet_step
+    token: '21'
+  printed_label: Schedule D Tax Worksheet line 21 - larger of line 18 or line 20
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_d_2025
+    source_hash: 90564c8b7e49280363612639b804d113ebedb516c2e87c70649f29c844da1d2e
+  official_ref: '21'
+- address_id: 2025/document=schedule_d/section=tax_worksheet/worksheet_step=22
+  logical_key: document=schedule_d/section=tax_worksheet/worksheet_step=22
+  year: 2025
+  document_id: schedule_d_2025
+  parent_address_id: 2025/document=schedule_d/section=tax_worksheet
+  kind: worksheet_step
+  path:
+  - kind: document
+    token: schedule_d
+  - kind: section
+    token: tax_worksheet
+  - kind: worksheet_step
+    token: '22'
+  printed_label: Schedule D Tax Worksheet line 22 - subtract line 17 from line 16
+    (taxed at 0%)
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_d_2025
+    source_hash: 90564c8b7e49280363612639b804d113ebedb516c2e87c70649f29c844da1d2e
+  official_ref: '22'
+- address_id: 2025/document=schedule_d/section=tax_worksheet/worksheet_step=23
+  logical_key: document=schedule_d/section=tax_worksheet/worksheet_step=23
+  year: 2025
+  document_id: schedule_d_2025
+  parent_address_id: 2025/document=schedule_d/section=tax_worksheet
+  kind: worksheet_step
+  path:
+  - kind: document
+    token: schedule_d
+  - kind: section
+    token: tax_worksheet
+  - kind: worksheet_step
+    token: '23'
+  printed_label: Schedule D Tax Worksheet line 23 - smaller of line 1 or line 13
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_d_2025
+    source_hash: 90564c8b7e49280363612639b804d113ebedb516c2e87c70649f29c844da1d2e
+  official_ref: '23'
+- address_id: 2025/document=schedule_d/section=tax_worksheet/worksheet_step=24
+  logical_key: document=schedule_d/section=tax_worksheet/worksheet_step=24
+  year: 2025
+  document_id: schedule_d_2025
+  parent_address_id: 2025/document=schedule_d/section=tax_worksheet
+  kind: worksheet_step
+  path:
+  - kind: document
+    token: schedule_d
+  - kind: section
+    token: tax_worksheet
+  - kind: worksheet_step
+    token: '24'
+  printed_label: Schedule D Tax Worksheet line 24 - amount from line 22
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_d_2025
+    source_hash: 90564c8b7e49280363612639b804d113ebedb516c2e87c70649f29c844da1d2e
+  official_ref: '24'
+- address_id: 2025/document=schedule_d/section=tax_worksheet/worksheet_step=25
+  logical_key: document=schedule_d/section=tax_worksheet/worksheet_step=25
+  year: 2025
+  document_id: schedule_d_2025
+  parent_address_id: 2025/document=schedule_d/section=tax_worksheet
+  kind: worksheet_step
+  path:
+  - kind: document
+    token: schedule_d
+  - kind: section
+    token: tax_worksheet
+  - kind: worksheet_step
+    token: '25'
+  printed_label: Schedule D Tax Worksheet line 25 - subtract line 24 from line 23
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_d_2025
+    source_hash: 90564c8b7e49280363612639b804d113ebedb516c2e87c70649f29c844da1d2e
+  official_ref: '25'
+- address_id: 2025/document=schedule_d/section=tax_worksheet/worksheet_step=27
+  logical_key: document=schedule_d/section=tax_worksheet/worksheet_step=27
+  year: 2025
+  document_id: schedule_d_2025
+  parent_address_id: 2025/document=schedule_d/section=tax_worksheet
+  kind: worksheet_step
+  path:
+  - kind: document
+    token: schedule_d
+  - kind: section
+    token: tax_worksheet
+  - kind: worksheet_step
+    token: '27'
+  printed_label: Schedule D Tax Worksheet line 27 - smaller of line 1 or line 26
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_d_2025
+    source_hash: 90564c8b7e49280363612639b804d113ebedb516c2e87c70649f29c844da1d2e
+  official_ref: '27'
+- address_id: 2025/document=schedule_d/section=tax_worksheet/worksheet_step=28
+  logical_key: document=schedule_d/section=tax_worksheet/worksheet_step=28
+  year: 2025
+  document_id: schedule_d_2025
+  parent_address_id: 2025/document=schedule_d/section=tax_worksheet
+  kind: worksheet_step
+  path:
+  - kind: document
+    token: schedule_d
+  - kind: section
+    token: tax_worksheet
+  - kind: worksheet_step
+    token: '28'
+  printed_label: Schedule D Tax Worksheet line 28 - add lines 21 and 22
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_d_2025
+    source_hash: 90564c8b7e49280363612639b804d113ebedb516c2e87c70649f29c844da1d2e
+  official_ref: '28'
+- address_id: 2025/document=schedule_d/section=tax_worksheet/worksheet_step=29
+  logical_key: document=schedule_d/section=tax_worksheet/worksheet_step=29
+  year: 2025
+  document_id: schedule_d_2025
+  parent_address_id: 2025/document=schedule_d/section=tax_worksheet
+  kind: worksheet_step
+  path:
+  - kind: document
+    token: schedule_d
+  - kind: section
+    token: tax_worksheet
+  - kind: worksheet_step
+    token: '29'
+  printed_label: Schedule D Tax Worksheet line 29 - subtract line 28 from line 27
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_d_2025
+    source_hash: 90564c8b7e49280363612639b804d113ebedb516c2e87c70649f29c844da1d2e
+  official_ref: '29'
+- address_id: 2025/document=schedule_d/section=tax_worksheet/worksheet_step=30
+  logical_key: document=schedule_d/section=tax_worksheet/worksheet_step=30
+  year: 2025
+  document_id: schedule_d_2025
+  parent_address_id: 2025/document=schedule_d/section=tax_worksheet
+  kind: worksheet_step
+  path:
+  - kind: document
+    token: schedule_d
+  - kind: section
+    token: tax_worksheet
+  - kind: worksheet_step
+    token: '30'
+  printed_label: Schedule D Tax Worksheet line 30 - smaller of line 25 or line 29
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_d_2025
+    source_hash: 90564c8b7e49280363612639b804d113ebedb516c2e87c70649f29c844da1d2e
+  official_ref: '30'
+- address_id: 2025/document=schedule_d/section=tax_worksheet/worksheet_step=31
+  logical_key: document=schedule_d/section=tax_worksheet/worksheet_step=31
+  year: 2025
+  document_id: schedule_d_2025
+  parent_address_id: 2025/document=schedule_d/section=tax_worksheet
+  kind: worksheet_step
+  path:
+  - kind: document
+    token: schedule_d
+  - kind: section
+    token: tax_worksheet
+  - kind: worksheet_step
+    token: '31'
+  printed_label: Schedule D Tax Worksheet line 31 - multiply line 30 by 15%
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_d_2025
+    source_hash: 90564c8b7e49280363612639b804d113ebedb516c2e87c70649f29c844da1d2e
+  official_ref: '31'
+- address_id: 2025/document=schedule_d/section=tax_worksheet/worksheet_step=32
+  logical_key: document=schedule_d/section=tax_worksheet/worksheet_step=32
+  year: 2025
+  document_id: schedule_d_2025
+  parent_address_id: 2025/document=schedule_d/section=tax_worksheet
+  kind: worksheet_step
+  path:
+  - kind: document
+    token: schedule_d
+  - kind: section
+    token: tax_worksheet
+  - kind: worksheet_step
+    token: '32'
+  printed_label: Schedule D Tax Worksheet line 32 - add lines 24 and 30
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_d_2025
+    source_hash: 90564c8b7e49280363612639b804d113ebedb516c2e87c70649f29c844da1d2e
+  official_ref: '32'
+- address_id: 2025/document=schedule_d/section=tax_worksheet/worksheet_step=33
+  logical_key: document=schedule_d/section=tax_worksheet/worksheet_step=33
+  year: 2025
+  document_id: schedule_d_2025
+  parent_address_id: 2025/document=schedule_d/section=tax_worksheet
+  kind: worksheet_step
+  path:
+  - kind: document
+    token: schedule_d
+  - kind: section
+    token: tax_worksheet
+  - kind: worksheet_step
+    token: '33'
+  printed_label: Schedule D Tax Worksheet line 33 - subtract line 32 from line 23
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_d_2025
+    source_hash: 90564c8b7e49280363612639b804d113ebedb516c2e87c70649f29c844da1d2e
+  official_ref: '33'
+- address_id: 2025/document=schedule_d/section=tax_worksheet/worksheet_step=34
+  logical_key: document=schedule_d/section=tax_worksheet/worksheet_step=34
+  year: 2025
+  document_id: schedule_d_2025
+  parent_address_id: 2025/document=schedule_d/section=tax_worksheet
+  kind: worksheet_step
+  path:
+  - kind: document
+    token: schedule_d
+  - kind: section
+    token: tax_worksheet
+  - kind: worksheet_step
+    token: '34'
+  printed_label: Schedule D Tax Worksheet line 34 - multiply line 33 by 20%
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_d_2025
+    source_hash: 90564c8b7e49280363612639b804d113ebedb516c2e87c70649f29c844da1d2e
+  official_ref: '34'
+- address_id: 2025/document=schedule_d/section=tax_worksheet/worksheet_step=35
+  logical_key: document=schedule_d/section=tax_worksheet/worksheet_step=35
+  year: 2025
+  document_id: schedule_d_2025
+  parent_address_id: 2025/document=schedule_d/section=tax_worksheet
+  kind: worksheet_step
+  path:
+  - kind: document
+    token: schedule_d
+  - kind: section
+    token: tax_worksheet
+  - kind: worksheet_step
+    token: '35'
+  printed_label: Schedule D Tax Worksheet line 35 - smaller of line 9 or Schedule
+    D line 19
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_d_2025
+    source_hash: 90564c8b7e49280363612639b804d113ebedb516c2e87c70649f29c844da1d2e
+  official_ref: '35'
+- address_id: 2025/document=schedule_d/section=tax_worksheet/worksheet_step=36
+  logical_key: document=schedule_d/section=tax_worksheet/worksheet_step=36
+  year: 2025
+  document_id: schedule_d_2025
+  parent_address_id: 2025/document=schedule_d/section=tax_worksheet
+  kind: worksheet_step
+  path:
+  - kind: document
+    token: schedule_d
+  - kind: section
+    token: tax_worksheet
+  - kind: worksheet_step
+    token: '36'
+  printed_label: Schedule D Tax Worksheet line 36 - add lines 10 and 21
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_d_2025
+    source_hash: 90564c8b7e49280363612639b804d113ebedb516c2e87c70649f29c844da1d2e
+  official_ref: '36'
+- address_id: 2025/document=schedule_d/section=tax_worksheet/worksheet_step=38
+  logical_key: document=schedule_d/section=tax_worksheet/worksheet_step=38
+  year: 2025
+  document_id: schedule_d_2025
+  parent_address_id: 2025/document=schedule_d/section=tax_worksheet
+  kind: worksheet_step
+  path:
+  - kind: document
+    token: schedule_d
+  - kind: section
+    token: tax_worksheet
+  - kind: worksheet_step
+    token: '38'
+  printed_label: Schedule D Tax Worksheet line 38 - subtract line 37 (line 1) from
+    line 36
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_d_2025
+    source_hash: 90564c8b7e49280363612639b804d113ebedb516c2e87c70649f29c844da1d2e
+  official_ref: '38'
+- address_id: 2025/document=schedule_d/section=tax_worksheet/worksheet_step=39
+  logical_key: document=schedule_d/section=tax_worksheet/worksheet_step=39
+  year: 2025
+  document_id: schedule_d_2025
+  parent_address_id: 2025/document=schedule_d/section=tax_worksheet
+  kind: worksheet_step
+  path:
+  - kind: document
+    token: schedule_d
+  - kind: section
+    token: tax_worksheet
+  - kind: worksheet_step
+    token: '39'
+  printed_label: Schedule D Tax Worksheet line 39 - subtract line 38 from line 35
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_d_2025
+    source_hash: 90564c8b7e49280363612639b804d113ebedb516c2e87c70649f29c844da1d2e
+  official_ref: '39'
+- address_id: 2025/document=schedule_d/section=tax_worksheet/worksheet_step=40
+  logical_key: document=schedule_d/section=tax_worksheet/worksheet_step=40
+  year: 2025
+  document_id: schedule_d_2025
+  parent_address_id: 2025/document=schedule_d/section=tax_worksheet
+  kind: worksheet_step
+  path:
+  - kind: document
+    token: schedule_d
+  - kind: section
+    token: tax_worksheet
+  - kind: worksheet_step
+    token: '40'
+  printed_label: Schedule D Tax Worksheet line 40 - multiply line 39 by 25%
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_d_2025
+    source_hash: 90564c8b7e49280363612639b804d113ebedb516c2e87c70649f29c844da1d2e
+  official_ref: '40'
+- address_id: 2025/document=schedule_d/section=tax_worksheet/worksheet_step=41
+  logical_key: document=schedule_d/section=tax_worksheet/worksheet_step=41
+  year: 2025
+  document_id: schedule_d_2025
+  parent_address_id: 2025/document=schedule_d/section=tax_worksheet
+  kind: worksheet_step
+  path:
+  - kind: document
+    token: schedule_d
+  - kind: section
+    token: tax_worksheet
+  - kind: worksheet_step
+    token: '41'
+  printed_label: Schedule D Tax Worksheet line 41 - add lines 21, 22, 30, 33, and
+    39
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_d_2025
+    source_hash: 90564c8b7e49280363612639b804d113ebedb516c2e87c70649f29c844da1d2e
+  official_ref: '41'
+- address_id: 2025/document=schedule_d/section=tax_worksheet/worksheet_step=42
+  logical_key: document=schedule_d/section=tax_worksheet/worksheet_step=42
+  year: 2025
+  document_id: schedule_d_2025
+  parent_address_id: 2025/document=schedule_d/section=tax_worksheet
+  kind: worksheet_step
+  path:
+  - kind: document
+    token: schedule_d
+  - kind: section
+    token: tax_worksheet
+  - kind: worksheet_step
+    token: '42'
+  printed_label: Schedule D Tax Worksheet line 42 - subtract line 41 from line 1
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_d_2025
+    source_hash: 90564c8b7e49280363612639b804d113ebedb516c2e87c70649f29c844da1d2e
+  official_ref: '42'
+- address_id: 2025/document=schedule_d/section=tax_worksheet/worksheet_step=43
+  logical_key: document=schedule_d/section=tax_worksheet/worksheet_step=43
+  year: 2025
+  document_id: schedule_d_2025
+  parent_address_id: 2025/document=schedule_d/section=tax_worksheet
+  kind: worksheet_step
+  path:
+  - kind: document
+    token: schedule_d
+  - kind: section
+    token: tax_worksheet
+  - kind: worksheet_step
+    token: '43'
+  printed_label: Schedule D Tax Worksheet line 43 - multiply line 42 by 28%
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_d_2025
+    source_hash: 90564c8b7e49280363612639b804d113ebedb516c2e87c70649f29c844da1d2e
+  official_ref: '43'
+- address_id: 2025/document=schedule_d/section=tax_worksheet/worksheet_step=44
+  logical_key: document=schedule_d/section=tax_worksheet/worksheet_step=44
+  year: 2025
+  document_id: schedule_d_2025
+  parent_address_id: 2025/document=schedule_d/section=tax_worksheet
+  kind: worksheet_step
+  path:
+  - kind: document
+    token: schedule_d
+  - kind: section
+    token: tax_worksheet
+  - kind: worksheet_step
+    token: '44'
+  printed_label: Schedule D Tax Worksheet line 44 - tax on the amount on line 21
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_d_2025
+    source_hash: 90564c8b7e49280363612639b804d113ebedb516c2e87c70649f29c844da1d2e
+  official_ref: '44'
+- address_id: 2025/document=schedule_d/section=tax_worksheet/worksheet_step=45
+  logical_key: document=schedule_d/section=tax_worksheet/worksheet_step=45
+  year: 2025
+  document_id: schedule_d_2025
+  parent_address_id: 2025/document=schedule_d/section=tax_worksheet
+  kind: worksheet_step
+  path:
+  - kind: document
+    token: schedule_d
+  - kind: section
+    token: tax_worksheet
+  - kind: worksheet_step
+    token: '45'
+  printed_label: Schedule D Tax Worksheet line 45 - add lines 31, 34, 40, 43, and
+    44
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_d_2025
+    source_hash: 90564c8b7e49280363612639b804d113ebedb516c2e87c70649f29c844da1d2e
+  official_ref: '45'
+- address_id: 2025/document=schedule_d/section=tax_worksheet/worksheet_step=47
+  logical_key: document=schedule_d/section=tax_worksheet/worksheet_step=47
+  year: 2025
+  document_id: schedule_d_2025
+  parent_address_id: 2025/document=schedule_d/section=tax_worksheet
+  kind: worksheet_step
+  path:
+  - kind: document
+    token: schedule_d
+  - kind: section
+    token: tax_worksheet
+  - kind: worksheet_step
+    token: '47'
+  printed_label: Schedule D Tax Worksheet line 47 - smaller of line 45 or line 46
+    (tax for 1040 line 16)
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_d_2025
+    source_hash: 90564c8b7e49280363612639b804d113ebedb516c2e87c70649f29c844da1d2e
+  official_ref: '47'
+- address_id: 2025/document=schedule_d/section=tax_worksheet/worksheet_step=5
+  logical_key: document=schedule_d/section=tax_worksheet/worksheet_step=5
+  year: 2025
+  document_id: schedule_d_2025
+  parent_address_id: 2025/document=schedule_d/section=tax_worksheet
+  kind: worksheet_step
+  path:
+  - kind: document
+    token: schedule_d
+  - kind: section
+    token: tax_worksheet
+  - kind: worksheet_step
+    token: '5'
+  printed_label: Schedule D Tax Worksheet line 5 - subtract line 4 from line 3
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_d_2025
+    source_hash: 90564c8b7e49280363612639b804d113ebedb516c2e87c70649f29c844da1d2e
+  official_ref: '5'
+- address_id: 2025/document=schedule_d/section=tax_worksheet/worksheet_step=6
+  logical_key: document=schedule_d/section=tax_worksheet/worksheet_step=6
+  year: 2025
+  document_id: schedule_d_2025
+  parent_address_id: 2025/document=schedule_d/section=tax_worksheet
+  kind: worksheet_step
+  path:
+  - kind: document
+    token: schedule_d
+  - kind: section
+    token: tax_worksheet
+  - kind: worksheet_step
+    token: '6'
+  printed_label: Schedule D Tax Worksheet line 6 - subtract line 5 from line 2
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_d_2025
+    source_hash: 90564c8b7e49280363612639b804d113ebedb516c2e87c70649f29c844da1d2e
+  official_ref: '6'
+- address_id: 2025/document=schedule_d/section=tax_worksheet/worksheet_step=7
+  logical_key: document=schedule_d/section=tax_worksheet/worksheet_step=7
+  year: 2025
+  document_id: schedule_d_2025
+  parent_address_id: 2025/document=schedule_d/section=tax_worksheet
+  kind: worksheet_step
+  path:
+  - kind: document
+    token: schedule_d
+  - kind: section
+    token: tax_worksheet
+  - kind: worksheet_step
+    token: '7'
+  printed_label: Schedule D Tax Worksheet line 7 - smaller of Schedule D line 15 or
+    line 16
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_d_2025
+    source_hash: 90564c8b7e49280363612639b804d113ebedb516c2e87c70649f29c844da1d2e
+  official_ref: '7'
+- address_id: 2025/document=schedule_d/section=tax_worksheet/worksheet_step=8
+  logical_key: document=schedule_d/section=tax_worksheet/worksheet_step=8
+  year: 2025
+  document_id: schedule_d_2025
+  parent_address_id: 2025/document=schedule_d/section=tax_worksheet
+  kind: worksheet_step
+  path:
+  - kind: document
+    token: schedule_d
+  - kind: section
+    token: tax_worksheet
+  - kind: worksheet_step
+    token: '8'
+  printed_label: Schedule D Tax Worksheet line 8 - smaller of line 3 or line 4
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_d_2025
+    source_hash: 90564c8b7e49280363612639b804d113ebedb516c2e87c70649f29c844da1d2e
+  official_ref: '8'
+- address_id: 2025/document=schedule_d/section=tax_worksheet/worksheet_step=9
+  logical_key: document=schedule_d/section=tax_worksheet/worksheet_step=9
+  year: 2025
+  document_id: schedule_d_2025
+  parent_address_id: 2025/document=schedule_d/section=tax_worksheet
+  kind: worksheet_step
+  path:
+  - kind: document
+    token: schedule_d
+  - kind: section
+    token: tax_worksheet
+  - kind: worksheet_step
+    token: '9'
+  printed_label: Schedule D Tax Worksheet line 9 - subtract line 8 from line 7
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_d_2025
+    source_hash: 90564c8b7e49280363612639b804d113ebedb516c2e87c70649f29c844da1d2e
+  official_ref: '9'

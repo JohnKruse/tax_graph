@@ -1,0 +1,985 @@
+schema_version: 1
+year: 2025
+document_id: form_8949_2025
+binding_kind: widget
+bindings:
+- field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row10[0].f1_78[0]
+  address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=d
+  widget_type: text
+  page: 1
+  rect:
+  - 273.6
+  - 624.01
+  - 337.65
+  - 636.01
+  status: exact
+- field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row10[0].f1_79[0]
+  address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=e
+  widget_type: text
+  page: 1
+  rect:
+  - 338.4
+  - 624.01
+  - 402.45
+  - 636.01
+  status: exact
+- field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row10[0].f1_81[0]
+  address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=g
+  widget_type: text
+  page: 1
+  rect:
+  - 446.4
+  - 624.01
+  - 510.45
+  - 636.01
+  status: exact
+- field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row10[0].f1_82[0]
+  address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=h
+  widget_type: text
+  page: 1
+  rect:
+  - 511.2
+  - 624.01
+  - 576.0
+  - 636.01
+  status: exact
+- field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row11[0].f1_86[0]
+  address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=d
+  widget_type: text
+  page: 1
+  rect:
+  - 273.6
+  - 648.01
+  - 337.65
+  - 660.01
+  status: exact
+- field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row11[0].f1_87[0]
+  address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=e
+  widget_type: text
+  page: 1
+  rect:
+  - 338.4
+  - 648.01
+  - 402.45
+  - 660.01
+  status: exact
+- field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row11[0].f1_89[0]
+  address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=g
+  widget_type: text
+  page: 1
+  rect:
+  - 446.4
+  - 648.01
+  - 510.45
+  - 660.01
+  status: exact
+- field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row11[0].f1_90[0]
+  address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=h
+  widget_type: text
+  page: 1
+  rect:
+  - 511.2
+  - 648.01
+  - 576.0
+  - 660.01
+  status: exact
+- field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row1[0].f1_06[0]
+  address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=d
+  widget_type: text
+  page: 1
+  rect:
+  - 273.6
+  - 408.0
+  - 337.65
+  - 420.0
+  status: exact
+- field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row1[0].f1_07[0]
+  address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=e
+  widget_type: text
+  page: 1
+  rect:
+  - 338.4
+  - 408.0
+  - 402.45
+  - 420.0
+  status: exact
+- field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row1[0].f1_09[0]
+  address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=g
+  widget_type: text
+  page: 1
+  rect:
+  - 446.4
+  - 408.0
+  - 510.45
+  - 420.0
+  status: exact
+- field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row1[0].f1_10[0]
+  address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=h
+  widget_type: text
+  page: 1
+  rect:
+  - 511.2
+  - 408.0
+  - 576.0
+  - 420.0
+  status: exact
+- field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row2[0].f1_14[0]
+  address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=d
+  widget_type: text
+  page: 1
+  rect:
+  - 273.6
+  - 432.0
+  - 337.65
+  - 444.0
+  status: exact
+- field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row2[0].f1_15[0]
+  address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=e
+  widget_type: text
+  page: 1
+  rect:
+  - 338.4
+  - 432.0
+  - 402.45
+  - 444.0
+  status: exact
+- field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row2[0].f1_17[0]
+  address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=g
+  widget_type: text
+  page: 1
+  rect:
+  - 446.4
+  - 432.0
+  - 510.45
+  - 444.0
+  status: exact
+- field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row2[0].f1_18[0]
+  address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=h
+  widget_type: text
+  page: 1
+  rect:
+  - 511.2
+  - 432.0
+  - 576.0
+  - 444.0
+  status: exact
+- field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row3[0].f1_22[0]
+  address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=d
+  widget_type: text
+  page: 1
+  rect:
+  - 273.6
+  - 456.0
+  - 337.65
+  - 468.0
+  status: exact
+- field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row3[0].f1_23[0]
+  address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=e
+  widget_type: text
+  page: 1
+  rect:
+  - 338.4
+  - 456.0
+  - 402.45
+  - 468.0
+  status: exact
+- field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row3[0].f1_25[0]
+  address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=g
+  widget_type: text
+  page: 1
+  rect:
+  - 446.4
+  - 456.0
+  - 510.45
+  - 468.0
+  status: exact
+- field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row3[0].f1_26[0]
+  address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=h
+  widget_type: text
+  page: 1
+  rect:
+  - 511.2
+  - 456.0
+  - 576.0
+  - 468.0
+  status: exact
+- field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row4[0].f1_30[0]
+  address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=d
+  widget_type: text
+  page: 1
+  rect:
+  - 273.6
+  - 480.0
+  - 337.65
+  - 492.0
+  status: exact
+- field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row4[0].f1_31[0]
+  address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=e
+  widget_type: text
+  page: 1
+  rect:
+  - 338.4
+  - 480.0
+  - 402.45
+  - 492.0
+  status: exact
+- field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row4[0].f1_33[0]
+  address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=g
+  widget_type: text
+  page: 1
+  rect:
+  - 446.4
+  - 480.0
+  - 510.45
+  - 492.0
+  status: exact
+- field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row4[0].f1_34[0]
+  address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=h
+  widget_type: text
+  page: 1
+  rect:
+  - 511.2
+  - 480.0
+  - 576.0
+  - 492.0
+  status: exact
+- field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row5[0].f1_38[0]
+  address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=d
+  widget_type: text
+  page: 1
+  rect:
+  - 273.6
+  - 504.0
+  - 337.65
+  - 516.0
+  status: exact
+- field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row5[0].f1_39[0]
+  address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=e
+  widget_type: text
+  page: 1
+  rect:
+  - 338.4
+  - 504.0
+  - 402.45
+  - 516.0
+  status: exact
+- field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row5[0].f1_41[0]
+  address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=g
+  widget_type: text
+  page: 1
+  rect:
+  - 446.4
+  - 504.0
+  - 510.45
+  - 516.0
+  status: exact
+- field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row5[0].f1_42[0]
+  address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=h
+  widget_type: text
+  page: 1
+  rect:
+  - 511.2
+  - 504.0
+  - 576.0
+  - 516.0
+  status: exact
+- field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row6[0].f1_46[0]
+  address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=d
+  widget_type: text
+  page: 1
+  rect:
+  - 273.6
+  - 528.0
+  - 337.65
+  - 540.0
+  status: exact
+- field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row6[0].f1_47[0]
+  address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=e
+  widget_type: text
+  page: 1
+  rect:
+  - 338.4
+  - 528.0
+  - 402.45
+  - 540.0
+  status: exact
+- field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row6[0].f1_49[0]
+  address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=g
+  widget_type: text
+  page: 1
+  rect:
+  - 446.4
+  - 528.0
+  - 510.45
+  - 540.0
+  status: exact
+- field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row6[0].f1_50[0]
+  address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=h
+  widget_type: text
+  page: 1
+  rect:
+  - 511.2
+  - 528.0
+  - 576.0
+  - 540.0
+  status: exact
+- field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row7[0].f1_54[0]
+  address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=d
+  widget_type: text
+  page: 1
+  rect:
+  - 273.6
+  - 552.0
+  - 337.65
+  - 564.0
+  status: exact
+- field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row7[0].f1_55[0]
+  address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=e
+  widget_type: text
+  page: 1
+  rect:
+  - 338.4
+  - 552.0
+  - 402.45
+  - 564.0
+  status: exact
+- field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row7[0].f1_57[0]
+  address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=g
+  widget_type: text
+  page: 1
+  rect:
+  - 446.4
+  - 552.0
+  - 510.45
+  - 564.0
+  status: exact
+- field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row7[0].f1_58[0]
+  address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=h
+  widget_type: text
+  page: 1
+  rect:
+  - 511.2
+  - 552.0
+  - 576.0
+  - 564.0
+  status: exact
+- field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row8[0].f1_62[0]
+  address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=d
+  widget_type: text
+  page: 1
+  rect:
+  - 273.6
+  - 576.0
+  - 337.65
+  - 588.01
+  status: exact
+- field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row8[0].f1_63[0]
+  address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=e
+  widget_type: text
+  page: 1
+  rect:
+  - 338.4
+  - 576.0
+  - 402.45
+  - 588.01
+  status: exact
+- field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row8[0].f1_65[0]
+  address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=g
+  widget_type: text
+  page: 1
+  rect:
+  - 446.4
+  - 576.0
+  - 510.45
+  - 588.01
+  status: exact
+- field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row8[0].f1_66[0]
+  address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=h
+  widget_type: text
+  page: 1
+  rect:
+  - 511.2
+  - 576.0
+  - 576.0
+  - 588.01
+  status: exact
+- field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row9[0].f1_70[0]
+  address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=d
+  widget_type: text
+  page: 1
+  rect:
+  - 273.6
+  - 600.01
+  - 337.65
+  - 612.01
+  status: exact
+- field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row9[0].f1_71[0]
+  address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=e
+  widget_type: text
+  page: 1
+  rect:
+  - 338.4
+  - 600.01
+  - 402.45
+  - 612.01
+  status: exact
+- field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row9[0].f1_73[0]
+  address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=g
+  widget_type: text
+  page: 1
+  rect:
+  - 446.4
+  - 600.01
+  - 510.45
+  - 612.01
+  status: exact
+- field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row9[0].f1_74[0]
+  address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=h
+  widget_type: text
+  page: 1
+  rect:
+  - 511.2
+  - 600.01
+  - 576.0
+  - 612.01
+  status: exact
+- field_name: topmostSubform[0].Page1[0].f1_91[0]
+  address_id: 2025/document=form_8949/line=3/control=amount
+  widget_type: text
+  page: 1
+  rect:
+  - 273.6
+  - 708.0
+  - 337.65
+  - 720.0
+  status: provisional
+- field_name: topmostSubform[0].Page1[0].f1_92[0]
+  address_id: 2025/document=form_8949/table=part_i_line_2/row_template=total/column=d
+  widget_type: text
+  page: 1
+  rect:
+  - 338.4
+  - 708.0
+  - 402.45
+  - 720.0
+  status: exact
+- field_name: topmostSubform[0].Page1[0].f1_93[0]
+  address_id: 2025/document=form_8949/table=part_i_line_2/row_template=total/column=e
+  widget_type: text
+  page: 1
+  rect:
+  - 403.2
+  - 708.0
+  - 446.4
+  - 720.0
+  status: exact
+- field_name: topmostSubform[0].Page1[0].f1_94[0]
+  address_id: 2025/document=form_8949/table=part_i_line_2/row_template=total/column=g
+  widget_type: text
+  page: 1
+  rect:
+  - 446.4
+  - 708.0
+  - 510.45
+  - 720.0
+  status: exact
+- field_name: topmostSubform[0].Page1[0].f1_95[0]
+  address_id: 2025/document=form_8949/table=part_i_line_2/row_template=total/column=h
+  widget_type: text
+  page: 1
+  rect:
+  - 511.2
+  - 708.0
+  - 576.0
+  - 720.0
+  status: exact
+- field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row10[0].f2_78[0]
+  address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=d
+  widget_type: text
+  page: 2
+  rect:
+  - 273.6
+  - 588.01
+  - 337.65
+  - 600.01
+  status: exact
+- field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row10[0].f2_79[0]
+  address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=e
+  widget_type: text
+  page: 2
+  rect:
+  - 338.4
+  - 588.01
+  - 402.45
+  - 600.01
+  status: exact
+- field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row10[0].f2_81[0]
+  address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=g
+  widget_type: text
+  page: 2
+  rect:
+  - 446.4
+  - 588.01
+  - 510.45
+  - 600.01
+  status: exact
+- field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row10[0].f2_82[0]
+  address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=h
+  widget_type: text
+  page: 2
+  rect:
+  - 511.2
+  - 588.01
+  - 576.0
+  - 600.01
+  status: exact
+- field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row11[0].f2_86[0]
+  address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=d
+  widget_type: text
+  page: 2
+  rect:
+  - 273.6
+  - 612.01
+  - 337.65
+  - 624.01
+  status: exact
+- field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row11[0].f2_87[0]
+  address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=e
+  widget_type: text
+  page: 2
+  rect:
+  - 338.4
+  - 612.01
+  - 402.45
+  - 624.01
+  status: exact
+- field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row11[0].f2_89[0]
+  address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=g
+  widget_type: text
+  page: 2
+  rect:
+  - 446.4
+  - 612.01
+  - 510.45
+  - 624.01
+  status: exact
+- field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row11[0].f2_90[0]
+  address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=h
+  widget_type: text
+  page: 2
+  rect:
+  - 511.2
+  - 612.01
+  - 576.0
+  - 624.01
+  status: exact
+- field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row1[0].f2_06[0]
+  address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=d
+  widget_type: text
+  page: 2
+  rect:
+  - 273.6
+  - 372.0
+  - 337.65
+  - 384.0
+  status: exact
+- field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row1[0].f2_07[0]
+  address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=e
+  widget_type: text
+  page: 2
+  rect:
+  - 338.4
+  - 372.0
+  - 402.45
+  - 384.0
+  status: exact
+- field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row1[0].f2_09[0]
+  address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=g
+  widget_type: text
+  page: 2
+  rect:
+  - 446.4
+  - 372.0
+  - 510.45
+  - 384.0
+  status: exact
+- field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row1[0].f2_10[0]
+  address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=h
+  widget_type: text
+  page: 2
+  rect:
+  - 511.2
+  - 372.0
+  - 576.0
+  - 384.0
+  status: exact
+- field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row2[0].f2_14[0]
+  address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=d
+  widget_type: text
+  page: 2
+  rect:
+  - 273.6
+  - 396.0
+  - 337.65
+  - 408.0
+  status: exact
+- field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row2[0].f2_15[0]
+  address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=e
+  widget_type: text
+  page: 2
+  rect:
+  - 338.4
+  - 396.0
+  - 402.45
+  - 408.0
+  status: exact
+- field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row2[0].f2_17[0]
+  address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=g
+  widget_type: text
+  page: 2
+  rect:
+  - 446.4
+  - 396.0
+  - 510.45
+  - 408.0
+  status: exact
+- field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row2[0].f2_18[0]
+  address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=h
+  widget_type: text
+  page: 2
+  rect:
+  - 511.2
+  - 396.0
+  - 576.0
+  - 408.0
+  status: exact
+- field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row3[0].f2_22[0]
+  address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=d
+  widget_type: text
+  page: 2
+  rect:
+  - 273.6
+  - 420.0
+  - 337.65
+  - 432.0
+  status: exact
+- field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row3[0].f2_23[0]
+  address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=e
+  widget_type: text
+  page: 2
+  rect:
+  - 338.4
+  - 420.0
+  - 402.45
+  - 432.0
+  status: exact
+- field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row3[0].f2_25[0]
+  address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=g
+  widget_type: text
+  page: 2
+  rect:
+  - 446.4
+  - 420.0
+  - 510.45
+  - 432.0
+  status: exact
+- field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row3[0].f2_26[0]
+  address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=h
+  widget_type: text
+  page: 2
+  rect:
+  - 511.2
+  - 420.0
+  - 576.0
+  - 432.0
+  status: exact
+- field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row4[0].f2_30[0]
+  address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=d
+  widget_type: text
+  page: 2
+  rect:
+  - 273.6
+  - 444.0
+  - 337.65
+  - 456.0
+  status: exact
+- field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row4[0].f2_31[0]
+  address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=e
+  widget_type: text
+  page: 2
+  rect:
+  - 338.4
+  - 444.0
+  - 402.45
+  - 456.0
+  status: exact
+- field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row4[0].f2_33[0]
+  address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=g
+  widget_type: text
+  page: 2
+  rect:
+  - 446.4
+  - 444.0
+  - 510.45
+  - 456.0
+  status: exact
+- field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row4[0].f2_34[0]
+  address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=h
+  widget_type: text
+  page: 2
+  rect:
+  - 511.2
+  - 444.0
+  - 576.0
+  - 456.0
+  status: exact
+- field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row5[0].f2_38[0]
+  address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=d
+  widget_type: text
+  page: 2
+  rect:
+  - 273.6
+  - 468.0
+  - 337.65
+  - 480.01
+  status: exact
+- field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row5[0].f2_39[0]
+  address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=e
+  widget_type: text
+  page: 2
+  rect:
+  - 338.4
+  - 468.0
+  - 402.45
+  - 480.01
+  status: exact
+- field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row5[0].f2_41[0]
+  address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=g
+  widget_type: text
+  page: 2
+  rect:
+  - 446.4
+  - 468.0
+  - 510.45
+  - 480.01
+  status: exact
+- field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row5[0].f2_42[0]
+  address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=h
+  widget_type: text
+  page: 2
+  rect:
+  - 511.2
+  - 468.0
+  - 576.0
+  - 480.01
+  status: exact
+- field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row6[0].f2_46[0]
+  address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=d
+  widget_type: text
+  page: 2
+  rect:
+  - 273.6
+  - 492.01
+  - 337.65
+  - 504.01
+  status: exact
+- field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row6[0].f2_47[0]
+  address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=e
+  widget_type: text
+  page: 2
+  rect:
+  - 338.4
+  - 492.01
+  - 402.45
+  - 504.01
+  status: exact
+- field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row6[0].f2_49[0]
+  address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=g
+  widget_type: text
+  page: 2
+  rect:
+  - 446.4
+  - 492.01
+  - 510.45
+  - 504.01
+  status: exact
+- field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row6[0].f2_50[0]
+  address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=h
+  widget_type: text
+  page: 2
+  rect:
+  - 511.2
+  - 492.01
+  - 576.0
+  - 504.01
+  status: exact
+- field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row7[0].f2_54[0]
+  address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=d
+  widget_type: text
+  page: 2
+  rect:
+  - 273.6
+  - 516.01
+  - 337.65
+  - 528.01
+  status: exact
+- field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row7[0].f2_55[0]
+  address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=e
+  widget_type: text
+  page: 2
+  rect:
+  - 338.4
+  - 516.01
+  - 402.45
+  - 528.01
+  status: exact
+- field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row7[0].f2_57[0]
+  address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=g
+  widget_type: text
+  page: 2
+  rect:
+  - 446.4
+  - 516.01
+  - 510.45
+  - 528.01
+  status: exact
+- field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row7[0].f2_58[0]
+  address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=h
+  widget_type: text
+  page: 2
+  rect:
+  - 511.2
+  - 516.01
+  - 576.0
+  - 528.01
+  status: exact
+- field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row8[0].f2_62[0]
+  address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=d
+  widget_type: text
+  page: 2
+  rect:
+  - 273.6
+  - 540.01
+  - 337.65
+  - 552.01
+  status: exact
+- field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row8[0].f2_63[0]
+  address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=e
+  widget_type: text
+  page: 2
+  rect:
+  - 338.4
+  - 540.01
+  - 402.45
+  - 552.01
+  status: exact
+- field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row8[0].f2_65[0]
+  address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=g
+  widget_type: text
+  page: 2
+  rect:
+  - 446.4
+  - 540.01
+  - 510.45
+  - 552.01
+  status: exact
+- field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row8[0].f2_66[0]
+  address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=h
+  widget_type: text
+  page: 2
+  rect:
+  - 511.2
+  - 540.01
+  - 576.0
+  - 552.01
+  status: exact
+- field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row9[0].f2_70[0]
+  address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=d
+  widget_type: text
+  page: 2
+  rect:
+  - 273.6
+  - 564.01
+  - 337.65
+  - 576.01
+  status: exact
+- field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row9[0].f2_71[0]
+  address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=e
+  widget_type: text
+  page: 2
+  rect:
+  - 338.4
+  - 564.01
+  - 402.45
+  - 576.01
+  status: exact
+- field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row9[0].f2_73[0]
+  address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=g
+  widget_type: text
+  page: 2
+  rect:
+  - 446.4
+  - 564.01
+  - 510.45
+  - 576.01
+  status: exact
+- field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row9[0].f2_74[0]
+  address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=h
+  widget_type: text
+  page: 2
+  rect:
+  - 511.2
+  - 564.01
+  - 576.0
+  - 576.01
+  status: exact
+- field_name: topmostSubform[0].Page2[0].f2_91[0]
+  address_id: 2025/document=form_8949/line=10/control=amount
+  widget_type: text
+  page: 2
+  rect:
+  - 273.6
+  - 672.0
+  - 337.65
+  - 684.0
+  status: provisional
+- field_name: topmostSubform[0].Page2[0].f2_92[0]
+  address_id: 2025/document=form_8949/table=part_ii_line_2/row_template=total/column=d
+  widget_type: text
+  page: 2
+  rect:
+  - 338.4
+  - 672.0
+  - 402.45
+  - 684.0
+  status: exact
+- field_name: topmostSubform[0].Page2[0].f2_93[0]
+  address_id: 2025/document=form_8949/table=part_ii_line_2/row_template=total/column=e
+  widget_type: text
+  page: 2
+  rect:
+  - 403.2
+  - 672.0
+  - 446.4
+  - 684.0
+  status: exact
+- field_name: topmostSubform[0].Page2[0].f2_94[0]
+  address_id: 2025/document=form_8949/table=part_ii_line_2/row_template=total/column=g
+  widget_type: text
+  page: 2
+  rect:
+  - 446.4
+  - 672.0
+  - 510.45
+  - 684.0
+  status: exact
+- field_name: topmostSubform[0].Page2[0].f2_95[0]
+  address_id: 2025/document=form_8949/table=part_ii_line_2/row_template=total/column=h
+  widget_type: text
+  page: 2
+  rect:
+  - 511.2
+  - 672.0
+  - 576.0
+  - 684.0
+  status: exact

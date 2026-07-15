@@ -63,7 +63,7 @@ def link_outbound_flows(
                 }
             )
             continue
-        source_node_id = _resolve_flow_source_node(flow, nodes)
+        source_node_id = _resolve_flow_source_node(flow, nodes, addresses)
         target_node_id = _resolve_flow_target_node(flow, addresses)
         if not source_node_id or not target_node_id:
             unresolved.append(
@@ -110,10 +110,24 @@ def _load_outbound_flows(graph_dir: Path) -> list[dict[str, Any]]:
     return flows
 
 
-def _resolve_flow_source_node(flow: dict[str, Any], nodes: dict[str, dict[str, Any]]) -> str | None:
+def _resolve_flow_source_node(
+    flow: dict[str, Any],
+    nodes: dict[str, dict[str, Any]],
+    artifacts: AddressArtifacts,
+) -> str | None:
     raw_source = str(flow.get("source_node_id", ""))
     if raw_source in nodes:
         return raw_source
+    flow_id = str(flow.get("flow_id", ""))
+    claims = [item for item in artifacts.references if item.get("reference_id") == flow_id and item.get("status") == "exact"]
+    if len(claims) != 1:
+        return None
+    bound = {
+        item["node_id"] for item in artifacts.node_bindings
+        if item["address_id"] == claims[0]["source_address_id"] and item["status"] == "exact"
+    }
+    if len(bound) == 1 and next(iter(bound)) in nodes:
+        return next(iter(bound))
     return None
 
 

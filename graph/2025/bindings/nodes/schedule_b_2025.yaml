@@ -1,0 +1,35 @@
+schema_version: 1
+year: 2025
+document_id: schedule_b_2025
+binding_kind: node
+bindings:
+- node_id: schedule_b_2025_root_line_1
+  address_id: 2025/document=schedule_b/line=1/control=amount
+  expected_official_ref: '1'
+  role: value
+  status: exact
+- node_id: schedule_b_2025_root_line_2
+  address_id: 2025/document=schedule_b/line=2/control=amount
+  expected_official_ref: '2'
+  role: value
+  status: exact
+- node_id: schedule_b_2025_root_line_3
+  address_id: 2025/document=schedule_b/line=3/control=amount
+  expected_official_ref: '3'
+  role: value
+  status: exact
+- node_id: schedule_b_2025_root_line_4
+  address_id: 2025/document=schedule_b/line=2b/control=amount
+  expected_official_ref: 2b
+  role: value
+  status: exact
+- node_id: schedule_b_2025_root_line_5
+  address_id: 2025/document=schedule_b/line=5/control=amount
+  expected_official_ref: '5'
+  role: value
+  status: exact
+- node_id: schedule_b_2025_root_line_6
+  address_id: 2025/document=schedule_b/line=3b/control=amount
+  expected_official_ref: 3b
+  role: value
+  status: exact

@@ -1,0 +1,455 @@
+schema_version: 1
+year: 2025
+document_id: schedule_1a_2025
+binding_kind: widget
+bindings:
+- field_name: form1[0].Page1[0].f1_03[0]
+  address_id: 2025/document=schedule_1a/line=11b/control=amount
+  widget_type: text
+  page: 1
+  rect:
+  - 504.0
+  - 120.0
+  - 576.0
+  - 132.0
+  status: provisional
+- field_name: form1[0].Page1[0].f1_04[0]
+  address_id: 2025/document=schedule_1a/line=2a/control=amount
+  widget_type: text
+  page: 1
+  rect:
+  - 410.4
+  - 132.0
+  - 481.65
+  - 144.0
+  status: exact
+- field_name: form1[0].Page1[0].f1_05[0]
+  address_id: 2025/document=schedule_1a/line=2b/control=amount
+  widget_type: text
+  page: 1
+  rect:
+  - 410.4
+  - 144.0
+  - 481.65
+  - 156.0
+  status: provisional
+- field_name: form1[0].Page1[0].f1_06[0]
+  address_id: 2025/document=schedule_1a/line=2c/control=amount
+  widget_type: text
+  page: 1
+  rect:
+  - 410.4
+  - 156.0
+  - 481.65
+  - 168.0
+  status: provisional
+- field_name: form1[0].Page1[0].f1_07[0]
+  address_id: 2025/document=schedule_1a/line=2d/control=amount
+  widget_type: text
+  page: 1
+  rect:
+  - 410.4
+  - 168.0
+  - 481.65
+  - 180.0
+  status: provisional
+- field_name: form1[0].Page1[0].f1_08[0]
+  address_id: 2025/document=schedule_1a/line=2e/control=amount
+  widget_type: text
+  page: 1
+  rect:
+  - 504.0
+  - 180.0
+  - 576.0
+  - 192.0
+  status: provisional
+- field_name: form1[0].Page1[0].f1_09[0]
+  address_id: 2025/document=schedule_1a/line=2e/control=amount
+  widget_type: text
+  page: 1
+  rect:
+  - 504.0
+  - 192.0
+  - 576.0
+  - 204.0
+  status: provisional
+- field_name: form1[0].Page1[0].f1_10[0]
+  address_id: 2025/document=schedule_1a/line=4a/control=amount
+  widget_type: text
+  page: 1
+  rect:
+  - 410.4
+  - 324.0
+  - 481.65
+  - 336.0
+  status: provisional
+- field_name: form1[0].Page1[0].f1_11[0]
+  address_id: 2025/document=schedule_1a/line=4b/control=amount
+  widget_type: text
+  page: 1
+  rect:
+  - 410.4
+  - 348.0
+  - 481.65
+  - 360.0
+  status: exact
+- field_name: form1[0].Page1[0].f1_12[0]
+  address_id: 2025/document=schedule_1a/line=4c/control=amount
+  widget_type: text
+  page: 1
+  rect:
+  - 504.0
+  - 384.0
+  - 576.0
+  - 396.0
+  status: provisional
+- field_name: form1[0].Page1[0].f1_14[0]
+  address_id: 2025/document=schedule_1a/line=4c/control=amount
+  widget_type: text
+  page: 1
+  rect:
+  - 504.0
+  - 444.0
+  - 576.0
+  - 456.0
+  status: provisional
+- field_name: form1[0].Page1[0].f1_15[0]
+  address_id: 2025/document=schedule_1a/line=7/control=amount
+  widget_type: text
+  page: 1
+  rect:
+  - 504.0
+  - 456.0
+  - 576.0
+  - 468.0
+  status: exact
+- field_name: form1[0].Page1[0].f1_16[0]
+  address_id: 2025/document=schedule_1a/line=8/control=amount
+  widget_type: text
+  page: 1
+  rect:
+  - 504.0
+  - 468.0
+  - 576.0
+  - 480.0
+  status: exact
+- field_name: form1[0].Page1[0].f1_17[0]
+  address_id: 2025/document=schedule_1a/line=9/control=amount
+  widget_type: text
+  page: 1
+  rect:
+  - 504.0
+  - 480.0
+  - 576.0
+  - 492.0
+  status: exact
+- field_name: form1[0].Page1[0].f1_18[0]
+  address_id: 2025/document=schedule_1a/line=10/control=amount
+  widget_type: text
+  page: 1
+  rect:
+  - 504.0
+  - 492.0
+  - 576.0
+  - 504.0
+  status: exact
+- field_name: form1[0].Page1[0].f1_19[0]
+  address_id: 2025/document=schedule_1a/line=11/control=amount
+  widget_type: text
+  page: 1
+  rect:
+  - 504.0
+  - 516.0
+  - 576.0
+  - 528.0
+  status: provisional
+- field_name: form1[0].Page1[0].f1_20[0]
+  address_id: 2025/document=schedule_1a/line=12/control=amount
+  widget_type: text
+  page: 1
+  rect:
+  - 504.0
+  - 528.0
+  - 576.0
+  - 540.0
+  status: exact
+- field_name: form1[0].Page1[0].f1_21[0]
+  address_id: 2025/document=schedule_1a/line=13/control=amount
+  widget_type: text
+  page: 1
+  rect:
+  - 504.0
+  - 540.0
+  - 576.0
+  - 552.0
+  status: provisional
+- field_name: form1[0].Page1[0].f1_22[0]
+  address_id: 2025/document=schedule_1a/line=14a/control=amount
+  widget_type: text
+  page: 1
+  rect:
+  - 410.4
+  - 612.0
+  - 481.65
+  - 624.0
+  status: provisional
+- field_name: form1[0].Page1[0].f1_23[0]
+  address_id: 2025/document=schedule_1a/line=14b/control=amount
+  widget_type: text
+  page: 1
+  rect:
+  - 410.4
+  - 636.0
+  - 481.65
+  - 648.0
+  status: provisional
+- field_name: form1[0].Page1[0].f1_24[0]
+  address_id: 2025/document=schedule_1a/line=14c/control=amount
+  widget_type: text
+  page: 1
+  rect:
+  - 504.0
+  - 648.0
+  - 576.0
+  - 660.0
+  status: provisional
+- field_name: form1[0].Page1[0].f1_25[0]
+  address_id: 2025/document=schedule_1a/line=14c/control=amount
+  widget_type: text
+  page: 1
+  rect:
+  - 504.0
+  - 660.0
+  - 576.0
+  - 672.0
+  status: provisional
+- field_name: form1[0].Page1[0].f1_26[0]
+  address_id: 2025/document=schedule_1a/line=16/control=amount
+  widget_type: text
+  page: 1
+  rect:
+  - 504.0
+  - 672.0
+  - 576.0
+  - 684.0
+  status: exact
+- field_name: form1[0].Page1[0].f1_27[0]
+  address_id: 2025/document=schedule_1a/line=17/control=amount
+  widget_type: text
+  page: 1
+  rect:
+  - 504.0
+  - 684.0
+  - 576.0
+  - 696.0
+  status: exact
+- field_name: form1[0].Page1[0].f1_28[0]
+  address_id: 2025/document=schedule_1a/line=18/control=amount
+  widget_type: text
+  page: 1
+  rect:
+  - 504.0
+  - 696.0
+  - 576.0
+  - 708.0
+  status: exact
+- field_name: form1[0].Page1[0].f1_29[0]
+  address_id: 2025/document=schedule_1a/line=19/control=amount
+  widget_type: text
+  page: 1
+  rect:
+  - 504.0
+  - 720.0
+  - 576.0
+  - 732.0
+  status: exact
+- field_name: form1[0].Page1[0].f1_30[0]
+  address_id: 2025/document=schedule_1a/line=20/control=amount
+  widget_type: text
+  page: 1
+  rect:
+  - 504.0
+  - 732.0
+  - 576.0
+  - 744.0
+  status: exact
+- field_name: form1[0].Page1[0].f1_31[0]
+  address_id: 2025/document=schedule_1a/line=21/control=amount
+  widget_type: text
+  page: 1
+  rect:
+  - 504.0
+  - 744.0
+  - 576.0
+  - 756.0
+  status: provisional
+- field_name: form1[0].Page2[0].f2_07[0]
+  address_id: 2025/document=schedule_1a/line=22a/control=amount
+  widget_type: text
+  page: 2
+  rect:
+  - 504.0
+  - 192.0
+  - 576.0
+  - 204.0
+  status: provisional
+- field_name: form1[0].Page2[0].f2_08[0]
+  address_id: 2025/document=schedule_1a/line=24/control=amount
+  widget_type: text
+  page: 2
+  rect:
+  - 504.0
+  - 204.0
+  - 576.0
+  - 216.0
+  status: exact
+- field_name: form1[0].Page2[0].f2_09[0]
+  address_id: 2025/document=schedule_1a/line=25/control=amount
+  widget_type: text
+  page: 2
+  rect:
+  - 504.0
+  - 216.0
+  - 576.0
+  - 228.0
+  status: exact
+- field_name: form1[0].Page2[0].f2_10[0]
+  address_id: 2025/document=schedule_1a/line=26/control=amount
+  widget_type: text
+  page: 2
+  rect:
+  - 504.0
+  - 228.0
+  - 576.0
+  - 240.0
+  status: exact
+- field_name: form1[0].Page2[0].f2_11[0]
+  address_id: 2025/document=schedule_1a/line=27/control=amount
+  widget_type: text
+  page: 2
+  rect:
+  - 504.0
+  - 240.0
+  - 576.0
+  - 252.0
+  status: exact
+- field_name: form1[0].Page2[0].f2_12[0]
+  address_id: 2025/document=schedule_1a/line=28/control=amount
+  widget_type: text
+  page: 2
+  rect:
+  - 504.0
+  - 264.0
+  - 576.0
+  - 276.0
+  status: exact
+- field_name: form1[0].Page2[0].f2_13[0]
+  address_id: 2025/document=schedule_1a/line=29/control=amount
+  widget_type: text
+  page: 2
+  rect:
+  - 504.0
+  - 276.0
+  - 576.0
+  - 288.0
+  status: exact
+- field_name: form1[0].Page2[0].f2_14[0]
+  address_id: 2025/document=schedule_1a/line=30/control=amount
+  widget_type: text
+  page: 2
+  rect:
+  - 504.0
+  - 300.0
+  - 576.0
+  - 312.0
+  status: provisional
+- field_name: form1[0].Page2[0].f2_15[0]
+  address_id: 2025/document=schedule_1a/line=31/control=amount
+  widget_type: text
+  page: 2
+  rect:
+  - 504.0
+  - 348.0
+  - 576.0
+  - 360.0
+  status: exact
+- field_name: form1[0].Page2[0].f2_16[0]
+  address_id: 2025/document=schedule_1a/line=32/control=amount
+  widget_type: text
+  page: 2
+  rect:
+  - 504.0
+  - 360.0
+  - 576.0
+  - 372.0
+  status: exact
+- field_name: form1[0].Page2[0].f2_17[0]
+  address_id: 2025/document=schedule_1a/line=33/control=amount
+  widget_type: text
+  page: 2
+  rect:
+  - 504.0
+  - 372.0
+  - 576.0
+  - 384.0
+  status: exact
+- field_name: form1[0].Page2[0].f2_18[0]
+  address_id: 2025/document=schedule_1a/line=34/control=amount
+  widget_type: text
+  page: 2
+  rect:
+  - 504.0
+  - 384.0
+  - 576.0
+  - 396.0
+  status: exact
+- field_name: form1[0].Page2[0].f2_19[0]
+  address_id: 2025/document=schedule_1a/line=35/control=amount
+  widget_type: text
+  page: 2
+  rect:
+  - 504.0
+  - 396.0
+  - 576.0
+  - 408.0
+  status: provisional
+- field_name: form1[0].Page2[0].f2_20[0]
+  address_id: 2025/document=schedule_1a/line=36a/control=amount
+  widget_type: text
+  page: 2
+  rect:
+  - 504.0
+  - 420.0
+  - 576.0
+  - 432.0
+  status: provisional
+- field_name: form1[0].Page2[0].f2_21[0]
+  address_id: 2025/document=schedule_1a/line=36b/control=amount
+  widget_type: text
+  page: 2
+  rect:
+  - 504.0
+  - 444.0
+  - 576.0
+  - 456.0
+  status: provisional
+- field_name: form1[0].Page2[0].f2_22[0]
+  address_id: 2025/document=schedule_1a/line=36b/control=amount
+  widget_type: text
+  page: 2
+  rect:
+  - 504.0
+  - 456.0
+  - 576.0
+  - 468.0
+  status: provisional
+- field_name: form1[0].Page2[0].f2_23[0]
+  address_id: 2025/document=schedule_1a/line=13c/control=amount
+  widget_type: text
+  page: 2
+  rect:
+  - 504.0
+  - 492.0
+  - 576.0
+  - 504.0
+  status: exact

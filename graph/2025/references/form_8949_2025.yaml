@@ -1,0 +1,52 @@
+schema_version: 1
+year: 2025
+document_id: form_8949_2025
+references:
+- reference_id: flow_form_8949_2025_part_i_line_2_column_h_to_schedule_d_2025_line_1b
+  source_address_id: 2025/document=form_8949/table=part_i_line_2/row_template=total/column=h
+  target_document_id: schedule_d_2025
+  target_official_ref: 1b
+  control_role: amount
+  resolved_address_id: 2025/document=schedule_d/line=1b/control=amount
+  status: exact
+  evidence_hash: 274513891e4e281d11e14286f14b9df724c24b6030fca0f0681da64fb2e7f525
+- reference_id: flow_form_8949_2025_part_i_line_2_column_h_to_schedule_d_2025_line_2
+  source_address_id: 2025/document=form_8949/table=part_i_line_2/row_template=total/column=h
+  target_document_id: schedule_d_2025
+  target_official_ref: '2'
+  control_role: amount
+  resolved_address_id: 2025/document=schedule_d/line=2/control=amount
+  status: exact
+  evidence_hash: 274513891e4e281d11e14286f14b9df724c24b6030fca0f0681da64fb2e7f525
+- reference_id: flow_form_8949_2025_part_i_line_2_column_h_to_schedule_d_2025_line_3
+  source_address_id: 2025/document=form_8949/table=part_i_line_2/row_template=total/column=h
+  target_document_id: schedule_d_2025
+  target_official_ref: '3'
+  control_role: amount
+  resolved_address_id: 2025/document=schedule_d/line=3/control=amount
+  status: exact
+  evidence_hash: 274513891e4e281d11e14286f14b9df724c24b6030fca0f0681da64fb2e7f525
+- reference_id: flow_form_8949_2025_part_ii_line_2_column_h_to_schedule_d_2025_line_8b
+  source_address_id: 2025/document=form_8949/table=part_ii_line_2/row_template=total/column=h
+  target_document_id: schedule_d_2025
+  target_official_ref: 8b
+  control_role: amount
+  resolved_address_id: 2025/document=schedule_d/line=8b/control=amount
+  status: exact
+  evidence_hash: 274513891e4e281d11e14286f14b9df724c24b6030fca0f0681da64fb2e7f525
+- reference_id: flow_form_8949_2025_part_ii_line_2_column_h_to_schedule_d_2025_line_9
+  source_address_id: 2025/document=form_8949/table=part_ii_line_2/row_template=total/column=h
+  target_document_id: schedule_d_2025
+  target_official_ref: '9'
+  control_role: amount
+  resolved_address_id: 2025/document=schedule_d/line=9/control=amount
+  status: exact
+  evidence_hash: 274513891e4e281d11e14286f14b9df724c24b6030fca0f0681da64fb2e7f525
+- reference_id: flow_form_8949_2025_part_ii_line_2_column_h_to_schedule_d_2025_line_10
+  source_address_id: 2025/document=form_8949/table=part_ii_line_2/row_template=total/column=h
+  target_document_id: schedule_d_2025
+  target_official_ref: '10'
+  control_role: amount
+  resolved_address_id: 2025/document=schedule_d/line=10/control=amount
+  status: exact
+  evidence_hash: 274513891e4e281d11e14286f14b9df724c24b6030fca0f0681da64fb2e7f525

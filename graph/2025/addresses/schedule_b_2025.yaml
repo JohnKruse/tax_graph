@@ -1,0 +1,307 @@
+schema_version: 1
+year: 2025
+document_id: schedule_b_2025
+addresses:
+- address_id: 2025/document=schedule_b
+  logical_key: document=schedule_b
+  year: 2025
+  document_id: schedule_b_2025
+  parent_address_id: null
+  kind: document
+  path:
+  - kind: document
+    token: schedule_b
+  printed_label: schedule_b
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_b_2025
+    source_hash: dd1ec3719954532bd219343d81385a2ada3c8e9573fc755a3893f1fbbecc63e2
+- address_id: 2025/document=schedule_b/line=1
+  logical_key: document=schedule_b/line=1
+  year: 2025
+  document_id: schedule_b_2025
+  parent_address_id: 2025/document=schedule_b
+  kind: line
+  path:
+  - kind: document
+    token: schedule_b
+  - kind: line
+    token: '1'
+  printed_label: '1'
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_b_2025
+    source_hash: dd1ec3719954532bd219343d81385a2ada3c8e9573fc755a3893f1fbbecc63e2
+    page: 1
+- address_id: 2025/document=schedule_b/line=1/control=amount
+  logical_key: document=schedule_b/line=1/control=amount
+  year: 2025
+  document_id: schedule_b_2025
+  parent_address_id: 2025/document=schedule_b/line=1
+  kind: control
+  path:
+  - kind: document
+    token: schedule_b
+  - kind: line
+    token: '1'
+  - kind: control
+    token: amount
+  printed_label: Line 1 - Form Form 1099-INT, 1099-OID, - f1_15
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_b_2025
+    source_hash: dd1ec3719954532bd219343d81385a2ada3c8e9573fc755a3893f1fbbecc63e2
+    page: 1
+  official_ref: '1'
+- address_id: 2025/document=schedule_b/line=2
+  logical_key: document=schedule_b/line=2
+  year: 2025
+  document_id: schedule_b_2025
+  parent_address_id: 2025/document=schedule_b
+  kind: line
+  path:
+  - kind: document
+    token: schedule_b
+  - kind: line
+    token: '2'
+  printed_label: '2'
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_b_2025
+    source_hash: dd1ec3719954532bd219343d81385a2ada3c8e9573fc755a3893f1fbbecc63e2
+    page: 1
+- address_id: 2025/document=schedule_b/line=2/control=amount
+  logical_key: document=schedule_b/line=2/control=amount
+  year: 2025
+  document_id: schedule_b_2025
+  parent_address_id: 2025/document=schedule_b/line=2
+  kind: control
+  path:
+  - kind: document
+    token: schedule_b
+  - kind: line
+    token: '2'
+  - kind: control
+    token: amount
+  printed_label: Line 2 - . . . . . . . . . 2 - f1_31
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_b_2025
+    source_hash: dd1ec3719954532bd219343d81385a2ada3c8e9573fc755a3893f1fbbecc63e2
+    page: 1
+  official_ref: '2'
+- address_id: 2025/document=schedule_b/line=2b
+  logical_key: document=schedule_b/line=2b
+  year: 2025
+  document_id: schedule_b_2025
+  parent_address_id: 2025/document=schedule_b
+  kind: line
+  path:
+  - kind: document
+    token: schedule_b
+  - kind: line
+    token: 2b
+  printed_label: 2b
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_b_2025
+    source_hash: dd1ec3719954532bd219343d81385a2ada3c8e9573fc755a3893f1fbbecc63e2
+    page: 1
+- address_id: 2025/document=schedule_b/line=2b/control=amount
+  logical_key: document=schedule_b/line=2b/control=amount
+  year: 2025
+  document_id: schedule_b_2025
+  parent_address_id: 2025/document=schedule_b/line=2b
+  kind: control
+  path:
+  - kind: document
+    token: schedule_b
+  - kind: line
+    token: 2b
+  - kind: control
+    token: amount
+  printed_label: Line 2b - here and on Form 1040 or 1040-SR, line 2b 4 - f1_33
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_b_2025
+    source_hash: dd1ec3719954532bd219343d81385a2ada3c8e9573fc755a3893f1fbbecc63e2
+    page: 1
+  official_ref: 2b
+- address_id: 2025/document=schedule_b/line=3
+  logical_key: document=schedule_b/line=3
+  year: 2025
+  document_id: schedule_b_2025
+  parent_address_id: 2025/document=schedule_b
+  kind: line
+  path:
+  - kind: document
+    token: schedule_b
+  - kind: line
+    token: '3'
+  printed_label: '3'
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_b_2025
+    source_hash: dd1ec3719954532bd219343d81385a2ada3c8e9573fc755a3893f1fbbecc63e2
+    page: 1
+- address_id: 2025/document=schedule_b/line=3/control=amount
+  logical_key: document=schedule_b/line=3/control=amount
+  year: 2025
+  document_id: schedule_b_2025
+  parent_address_id: 2025/document=schedule_b/line=3
+  kind: control
+  path:
+  - kind: document
+    token: schedule_b
+  - kind: line
+    token: '3'
+  - kind: control
+    token: amount
+  printed_label: Line 3 - . . . . . . . . . 3 - f1_32
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_b_2025
+    source_hash: dd1ec3719954532bd219343d81385a2ada3c8e9573fc755a3893f1fbbecc63e2
+    page: 1
+  official_ref: '3'
+- address_id: 2025/document=schedule_b/line=3b
+  logical_key: document=schedule_b/line=3b
+  year: 2025
+  document_id: schedule_b_2025
+  parent_address_id: 2025/document=schedule_b
+  kind: line
+  path:
+  - kind: document
+    token: schedule_b
+  - kind: line
+    token: 3b
+  printed_label: 3b
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_b_2025
+    source_hash: dd1ec3719954532bd219343d81385a2ada3c8e9573fc755a3893f1fbbecc63e2
+    page: 1
+- address_id: 2025/document=schedule_b/line=3b/control=amount
+  logical_key: document=schedule_b/line=3b/control=amount
+  year: 2025
+  document_id: schedule_b_2025
+  parent_address_id: 2025/document=schedule_b/line=3b
+  kind: control
+  path:
+  - kind: document
+    token: schedule_b
+  - kind: line
+    token: 3b
+  - kind: control
+    token: amount
+  printed_label: Line 3b - here and on Form 1040 or 1040-SR, line 3b 6 - f1_64
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_b_2025
+    source_hash: dd1ec3719954532bd219343d81385a2ada3c8e9573fc755a3893f1fbbecc63e2
+    page: 1
+  official_ref: 3b
+- address_id: 2025/document=schedule_b/line=5
+  logical_key: document=schedule_b/line=5
+  year: 2025
+  document_id: schedule_b_2025
+  parent_address_id: 2025/document=schedule_b
+  kind: line
+  path:
+  - kind: document
+    token: schedule_b
+  - kind: line
+    token: '5'
+  printed_label: '5'
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_b_2025
+    source_hash: dd1ec3719954532bd219343d81385a2ada3c8e9573fc755a3893f1fbbecc63e2
+    page: 1
+- address_id: 2025/document=schedule_b/line=5/control=amount
+  logical_key: document=schedule_b/line=5/control=amount
+  year: 2025
+  document_id: schedule_b_2025
+  parent_address_id: 2025/document=schedule_b/line=5
+  kind: control
+  path:
+  - kind: document
+    token: schedule_b
+  - kind: line
+    token: '5'
+  - kind: control
+    token: amount
+  printed_label: 'Line 5 - Part II 5 List name of payer: - f1_34'
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_b_2025
+    source_hash: dd1ec3719954532bd219343d81385a2ada3c8e9573fc755a3893f1fbbecc63e2
+    page: 1
+  official_ref: '5'
+- address_id: 2025/document=schedule_b/line=8
+  logical_key: document=schedule_b/line=8
+  year: 2025
+  document_id: schedule_b_2025
+  parent_address_id: 2025/document=schedule_b
+  kind: line
+  path:
+  - kind: document
+    token: schedule_b
+  - kind: line
+    token: '8'
+  printed_label: '8'
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_b_2025
+    source_hash: dd1ec3719954532bd219343d81385a2ada3c8e9573fc755a3893f1fbbecc63e2
+    page: 1
+- address_id: 2025/document=schedule_b/line=8/control=checkbox
+  logical_key: document=schedule_b/line=8/control=checkbox
+  year: 2025
+  document_id: schedule_b_2025
+  parent_address_id: 2025/document=schedule_b/line=8
+  kind: control
+  path:
+  - kind: document
+    token: schedule_b
+  - kind: line
+    token: '8'
+  - kind: control
+    token: checkbox
+  printed_label: Line 8 - instructions . . . . . . . . . - c1_3 (page 1, control 71)
+  aliases: []
+  control_role: checkbox
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_b_2025
+    source_hash: dd1ec3719954532bd219343d81385a2ada3c8e9573fc755a3893f1fbbecc63e2
+    page: 1
+  official_ref: '8'

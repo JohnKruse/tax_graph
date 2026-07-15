@@ -28,8 +28,8 @@ def test_link_realizes_reviewed_8949_outbound_flows_idempotently(tmp_path):
     second = link_outbound_flows("2025", root=root)
 
     assert first.path == linked_path
-    assert first.realized == []
-    assert len(first.unresolved) == 6
+    assert len(first.realized) == 6
+    assert first.unresolved == []
     assert linked_path.read_text(encoding="utf-8") == first_text
     assert second.realized == first.realized
 
@@ -57,15 +57,15 @@ def test_frontier_flip_keeps_absent_targets_declared(tmp_path):
     outbound = [entry for entry in registry["frontiers"] if entry["kind"] == "outbound_flow"]
     by_line = {entry["target"]["line"]: entry for entry in outbound}
 
-    assert len(link_result.realized) == 0
-    assert len(link_result.unresolved) == 7
-    assert link_result.unresolved[-1]["target_line"] == "99"
-    assert by_line["1b"]["status"] == "declared"
-    assert by_line["2"]["status"] == "declared"
-    assert by_line["3"]["status"] == "declared"
-    assert by_line["8b"]["status"] == "declared"
-    assert by_line["9"]["status"] == "declared"
-    assert by_line["10"]["status"] == "declared"
+    assert len(link_result.realized) == 6
+    assert len(link_result.unresolved) == 1
+    assert link_result.unresolved[0]["target_line"] == "99"
+    assert by_line["1b"]["status"] == "modeled"
+    assert by_line["2"]["status"] == "modeled"
+    assert by_line["3"]["status"] == "modeled"
+    assert by_line["8b"]["status"] == "modeled"
+    assert by_line["9"]["status"] == "modeled"
+    assert by_line["10"]["status"] == "modeled"
     assert by_line["99"]["status"] == "declared"
     assert "node_id" not in by_line["99"]["target"]
 
@@ -109,8 +109,8 @@ def test_link_skips_rejected_false_positive_flows(tmp_path):
 
     result = link_outbound_flows("2025", root=root)
 
-    assert result.realized == []
-    assert len(result.unresolved) == 6
+    assert len(result.realized) == 6
+    assert result.unresolved == []
     assert [item["flow_id"] for item in result.rejected] == [
         "flow_form_6251_2025_outbound_schedule_d_column_h_to_schedule_d_2025_line_2",
         "flow_form_6251_2025_outbound_schedule_d_column_h_to_schedule_d_2025_line_3",

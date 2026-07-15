@@ -1,0 +1,1703 @@
+schema_version: 1
+year: 2025
+document_id: schedule_1a_2025
+addresses:
+- address_id: 2025/document=schedule_1a
+  logical_key: document=schedule_1a
+  year: 2025
+  document_id: schedule_1a_2025
+  parent_address_id: null
+  kind: document
+  path:
+  - kind: document
+    token: schedule_1a
+  printed_label: schedule_1a
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_1a_2025
+    source_hash: 64f97b38ff4218e2f188fd55a8aab7043556687487c82bbefe0b6dd1a956ecd4
+- address_id: 2025/document=schedule_1a/line=10
+  logical_key: document=schedule_1a/line=10
+  year: 2025
+  document_id: schedule_1a_2025
+  parent_address_id: 2025/document=schedule_1a
+  kind: line
+  path:
+  - kind: document
+    token: schedule_1a
+  - kind: line
+    token: '10'
+  printed_label: '10'
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_1a_2025
+    source_hash: 64f97b38ff4218e2f188fd55a8aab7043556687487c82bbefe0b6dd1a956ecd4
+    page: 1
+- address_id: 2025/document=schedule_1a/line=10/control=amount
+  logical_key: document=schedule_1a/line=10/control=amount
+  year: 2025
+  document_id: schedule_1a_2025
+  parent_address_id: 2025/document=schedule_1a/line=10
+  kind: control
+  path:
+  - kind: document
+    token: schedule_1a
+  - kind: line
+    token: '10'
+  - kind: control
+    token: amount
+  printed_label: Line 10 - line 13 . . . . . . . 10 - f1_18
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_1a_2025
+    source_hash: 64f97b38ff4218e2f188fd55a8aab7043556687487c82bbefe0b6dd1a956ecd4
+    page: 1
+  official_ref: '10'
+- address_id: 2025/document=schedule_1a/line=11
+  logical_key: document=schedule_1a/line=11
+  year: 2025
+  document_id: schedule_1a_2025
+  parent_address_id: 2025/document=schedule_1a
+  kind: line
+  path:
+  - kind: document
+    token: schedule_1a
+  - kind: line
+    token: '11'
+  printed_label: '11'
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_1a_2025
+    source_hash: 64f97b38ff4218e2f188fd55a8aab7043556687487c82bbefe0b6dd1a956ecd4
+    page: 1
+- address_id: 2025/document=schedule_1a/line=11/control=amount
+  logical_key: document=schedule_1a/line=11/control=amount
+  year: 2025
+  document_id: schedule_1a_2025
+  parent_address_id: 2025/document=schedule_1a/line=11
+  kind: control
+  path:
+  - kind: document
+    token: schedule_1a
+  - kind: line
+    token: '11'
+  - kind: control
+    token: amount
+  printed_label: Line 11 - 0.) . . . . . . . . 11 - f1_19
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_1a_2025
+    source_hash: 64f97b38ff4218e2f188fd55a8aab7043556687487c82bbefe0b6dd1a956ecd4
+    page: 1
+  official_ref: '11'
+- address_id: 2025/document=schedule_1a/line=11b
+  logical_key: document=schedule_1a/line=11b
+  year: 2025
+  document_id: schedule_1a_2025
+  parent_address_id: 2025/document=schedule_1a
+  kind: line
+  path:
+  - kind: document
+    token: schedule_1a
+  - kind: line
+    token: 11b
+  printed_label: 11b
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_1a_2025
+    source_hash: 64f97b38ff4218e2f188fd55a8aab7043556687487c82bbefe0b6dd1a956ecd4
+    page: 1
+- address_id: 2025/document=schedule_1a/line=11b/control=amount
+  logical_key: document=schedule_1a/line=11b/control=amount
+  year: 2025
+  document_id: schedule_1a_2025
+  parent_address_id: 2025/document=schedule_1a/line=11b
+  kind: control
+  path:
+  - kind: document
+    token: schedule_1a
+  - kind: line
+    token: 11b
+  - kind: control
+    token: amount
+  printed_label: Line 11b - . . . . . . . . . 1 - f1_03
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_1a_2025
+    source_hash: 64f97b38ff4218e2f188fd55a8aab7043556687487c82bbefe0b6dd1a956ecd4
+    page: 1
+  official_ref: 11b
+- address_id: 2025/document=schedule_1a/line=12
+  logical_key: document=schedule_1a/line=12
+  year: 2025
+  document_id: schedule_1a_2025
+  parent_address_id: 2025/document=schedule_1a
+  kind: line
+  path:
+  - kind: document
+    token: schedule_1a
+  - kind: line
+    token: '12'
+  printed_label: '12'
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_1a_2025
+    source_hash: 64f97b38ff4218e2f188fd55a8aab7043556687487c82bbefe0b6dd1a956ecd4
+    page: 1
+- address_id: 2025/document=schedule_1a/line=12/control=amount
+  logical_key: document=schedule_1a/line=12/control=amount
+  year: 2025
+  document_id: schedule_1a_2025
+  parent_address_id: 2025/document=schedule_1a/line=12
+  kind: control
+  path:
+  - kind: document
+    token: schedule_1a
+  - kind: line
+    token: '12'
+  - kind: control
+    token: amount
+  printed_label: Line 12 - . . . . . . . . . 12 - f1_20
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_1a_2025
+    source_hash: 64f97b38ff4218e2f188fd55a8aab7043556687487c82bbefe0b6dd1a956ecd4
+    page: 1
+  official_ref: '12'
+- address_id: 2025/document=schedule_1a/line=13
+  logical_key: document=schedule_1a/line=13
+  year: 2025
+  document_id: schedule_1a_2025
+  parent_address_id: 2025/document=schedule_1a
+  kind: line
+  path:
+  - kind: document
+    token: schedule_1a
+  - kind: line
+    token: '13'
+  printed_label: '13'
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_1a_2025
+    source_hash: 64f97b38ff4218e2f188fd55a8aab7043556687487c82bbefe0b6dd1a956ecd4
+    page: 1
+- address_id: 2025/document=schedule_1a/line=13/control=amount
+  logical_key: document=schedule_1a/line=13/control=amount
+  year: 2025
+  document_id: schedule_1a_2025
+  parent_address_id: 2025/document=schedule_1a/line=13
+  kind: control
+  path:
+  - kind: document
+    token: schedule_1a
+  - kind: line
+    token: '13'
+  - kind: control
+    token: amount
+  printed_label: Line 13 - -0- . . . . . . . . 13 - f1_21
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_1a_2025
+    source_hash: 64f97b38ff4218e2f188fd55a8aab7043556687487c82bbefe0b6dd1a956ecd4
+    page: 1
+  official_ref: '13'
+- address_id: 2025/document=schedule_1a/line=13c
+  logical_key: document=schedule_1a/line=13c
+  year: 2025
+  document_id: schedule_1a_2025
+  parent_address_id: 2025/document=schedule_1a
+  kind: line
+  path:
+  - kind: document
+    token: schedule_1a
+  - kind: line
+    token: 13c
+  printed_label: 13c
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_1a_2025
+    source_hash: 64f97b38ff4218e2f188fd55a8aab7043556687487c82bbefe0b6dd1a956ecd4
+    page: 2
+- address_id: 2025/document=schedule_1a/line=13c/control=amount
+  logical_key: document=schedule_1a/line=13c/control=amount
+  year: 2025
+  document_id: schedule_1a_2025
+  parent_address_id: 2025/document=schedule_1a/line=13c
+  kind: control
+  path:
+  - kind: document
+    token: schedule_1a
+  - kind: line
+    token: 13c
+  - kind: control
+    token: amount
+  printed_label: Line 13c - . . . . . . . . . 38 - f2_23
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_1a_2025
+    source_hash: 64f97b38ff4218e2f188fd55a8aab7043556687487c82bbefe0b6dd1a956ecd4
+    page: 2
+  official_ref: 13c
+- address_id: 2025/document=schedule_1a/line=14a
+  logical_key: document=schedule_1a/line=14a
+  year: 2025
+  document_id: schedule_1a_2025
+  parent_address_id: 2025/document=schedule_1a
+  kind: line
+  path:
+  - kind: document
+    token: schedule_1a
+  - kind: line
+    token: 14a
+  printed_label: 14a
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_1a_2025
+    source_hash: 64f97b38ff4218e2f188fd55a8aab7043556687487c82bbefe0b6dd1a956ecd4
+    page: 1
+- address_id: 2025/document=schedule_1a/line=14a/control=amount
+  logical_key: document=schedule_1a/line=14a/control=amount
+  year: 2025
+  document_id: schedule_1a_2025
+  parent_address_id: 2025/document=schedule_1a/line=14a
+  kind: control
+  path:
+  - kind: document
+    token: schedule_1a
+  - kind: line
+    token: 14a
+  - kind: control
+    token: amount
+  printed_label: Line 14a - not reported on Form W-2, box 1, see instructions 14a
+    - f1_22
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_1a_2025
+    source_hash: 64f97b38ff4218e2f188fd55a8aab7043556687487c82bbefe0b6dd1a956ecd4
+    page: 1
+  official_ref: 14a
+- address_id: 2025/document=schedule_1a/line=14b
+  logical_key: document=schedule_1a/line=14b
+  year: 2025
+  document_id: schedule_1a_2025
+  parent_address_id: 2025/document=schedule_1a
+  kind: line
+  path:
+  - kind: document
+    token: schedule_1a
+  - kind: line
+    token: 14b
+  printed_label: 14b
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_1a_2025
+    source_hash: 64f97b38ff4218e2f188fd55a8aab7043556687487c82bbefe0b6dd1a956ecd4
+    page: 1
+- address_id: 2025/document=schedule_1a/line=14b/control=amount
+  logical_key: document=schedule_1a/line=14b/control=amount
+  year: 2025
+  document_id: schedule_1a_2025
+  parent_address_id: 2025/document=schedule_1a/line=14b
+  kind: control
+  path:
+  - kind: document
+    token: schedule_1a
+  - kind: line
+    token: 14b
+  - kind: control
+    token: amount
+  printed_label: Line 14b - . . . . . . . . . 14b - f1_23
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_1a_2025
+    source_hash: 64f97b38ff4218e2f188fd55a8aab7043556687487c82bbefe0b6dd1a956ecd4
+    page: 1
+  official_ref: 14b
+- address_id: 2025/document=schedule_1a/line=14c
+  logical_key: document=schedule_1a/line=14c
+  year: 2025
+  document_id: schedule_1a_2025
+  parent_address_id: 2025/document=schedule_1a
+  kind: line
+  path:
+  - kind: document
+    token: schedule_1a
+  - kind: line
+    token: 14c
+  printed_label: 14c
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_1a_2025
+    source_hash: 64f97b38ff4218e2f188fd55a8aab7043556687487c82bbefe0b6dd1a956ecd4
+    page: 1
+- address_id: 2025/document=schedule_1a/line=14c/control=amount
+  logical_key: document=schedule_1a/line=14c/control=amount
+  year: 2025
+  document_id: schedule_1a_2025
+  parent_address_id: 2025/document=schedule_1a/line=14c
+  kind: control
+  path:
+  - kind: document
+    token: schedule_1a
+  - kind: line
+    token: 14c
+  - kind: control
+    token: amount
+  printed_label: Line 14c - . . . . . . . . . 14c - f1_24
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_1a_2025
+    source_hash: 64f97b38ff4218e2f188fd55a8aab7043556687487c82bbefe0b6dd1a956ecd4
+    page: 1
+  official_ref: 14c
+- address_id: 2025/document=schedule_1a/line=16
+  logical_key: document=schedule_1a/line=16
+  year: 2025
+  document_id: schedule_1a_2025
+  parent_address_id: 2025/document=schedule_1a
+  kind: line
+  path:
+  - kind: document
+    token: schedule_1a
+  - kind: line
+    token: '16'
+  printed_label: '16'
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_1a_2025
+    source_hash: 64f97b38ff4218e2f188fd55a8aab7043556687487c82bbefe0b6dd1a956ecd4
+    page: 1
+- address_id: 2025/document=schedule_1a/line=16/control=amount
+  logical_key: document=schedule_1a/line=16/control=amount
+  year: 2025
+  document_id: schedule_1a_2025
+  parent_address_id: 2025/document=schedule_1a/line=16
+  kind: control
+  path:
+  - kind: document
+    token: schedule_1a
+  - kind: line
+    token: '16'
+  - kind: control
+    token: amount
+  printed_label: Line 16 - . . . . . . . . . 16 - f1_26
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_1a_2025
+    source_hash: 64f97b38ff4218e2f188fd55a8aab7043556687487c82bbefe0b6dd1a956ecd4
+    page: 1
+  official_ref: '16'
+- address_id: 2025/document=schedule_1a/line=17
+  logical_key: document=schedule_1a/line=17
+  year: 2025
+  document_id: schedule_1a_2025
+  parent_address_id: 2025/document=schedule_1a
+  kind: line
+  path:
+  - kind: document
+    token: schedule_1a
+  - kind: line
+    token: '17'
+  printed_label: '17'
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_1a_2025
+    source_hash: 64f97b38ff4218e2f188fd55a8aab7043556687487c82bbefe0b6dd1a956ecd4
+    page: 1
+- address_id: 2025/document=schedule_1a/line=17/control=amount
+  logical_key: document=schedule_1a/line=17/control=amount
+  year: 2025
+  document_id: schedule_1a_2025
+  parent_address_id: 2025/document=schedule_1a/line=17
+  kind: control
+  path:
+  - kind: document
+    token: schedule_1a
+  - kind: line
+    token: '17'
+  - kind: control
+    token: amount
+  printed_label: Line 17 - . . . . . . . . . 17 - f1_27
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_1a_2025
+    source_hash: 64f97b38ff4218e2f188fd55a8aab7043556687487c82bbefe0b6dd1a956ecd4
+    page: 1
+  official_ref: '17'
+- address_id: 2025/document=schedule_1a/line=18
+  logical_key: document=schedule_1a/line=18
+  year: 2025
+  document_id: schedule_1a_2025
+  parent_address_id: 2025/document=schedule_1a
+  kind: line
+  path:
+  - kind: document
+    token: schedule_1a
+  - kind: line
+    token: '18'
+  printed_label: '18'
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_1a_2025
+    source_hash: 64f97b38ff4218e2f188fd55a8aab7043556687487c82bbefe0b6dd1a956ecd4
+    page: 1
+- address_id: 2025/document=schedule_1a/line=18/control=amount
+  logical_key: document=schedule_1a/line=18/control=amount
+  year: 2025
+  document_id: schedule_1a_2025
+  parent_address_id: 2025/document=schedule_1a/line=18
+  kind: control
+  path:
+  - kind: document
+    token: schedule_1a
+  - kind: line
+    token: '18'
+  - kind: control
+    token: amount
+  printed_label: Line 18 - on line 21 . . . . . . 18 - f1_28
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_1a_2025
+    source_hash: 64f97b38ff4218e2f188fd55a8aab7043556687487c82bbefe0b6dd1a956ecd4
+    page: 1
+  official_ref: '18'
+- address_id: 2025/document=schedule_1a/line=19
+  logical_key: document=schedule_1a/line=19
+  year: 2025
+  document_id: schedule_1a_2025
+  parent_address_id: 2025/document=schedule_1a
+  kind: line
+  path:
+  - kind: document
+    token: schedule_1a
+  - kind: line
+    token: '19'
+  printed_label: '19'
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_1a_2025
+    source_hash: 64f97b38ff4218e2f188fd55a8aab7043556687487c82bbefe0b6dd1a956ecd4
+    page: 1
+- address_id: 2025/document=schedule_1a/line=19/control=amount
+  logical_key: document=schedule_1a/line=19/control=amount
+  year: 2025
+  document_id: schedule_1a_2025
+  parent_address_id: 2025/document=schedule_1a/line=19
+  kind: control
+  path:
+  - kind: document
+    token: schedule_1a
+  - kind: line
+    token: '19'
+  - kind: control
+    token: amount
+  printed_label: Line 19 - 0.) . . . . . . . . 19 - f1_29
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_1a_2025
+    source_hash: 64f97b38ff4218e2f188fd55a8aab7043556687487c82bbefe0b6dd1a956ecd4
+    page: 1
+  official_ref: '19'
+- address_id: 2025/document=schedule_1a/line=20
+  logical_key: document=schedule_1a/line=20
+  year: 2025
+  document_id: schedule_1a_2025
+  parent_address_id: 2025/document=schedule_1a
+  kind: line
+  path:
+  - kind: document
+    token: schedule_1a
+  - kind: line
+    token: '20'
+  printed_label: '20'
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_1a_2025
+    source_hash: 64f97b38ff4218e2f188fd55a8aab7043556687487c82bbefe0b6dd1a956ecd4
+    page: 1
+- address_id: 2025/document=schedule_1a/line=20/control=amount
+  logical_key: document=schedule_1a/line=20/control=amount
+  year: 2025
+  document_id: schedule_1a_2025
+  parent_address_id: 2025/document=schedule_1a/line=20
+  kind: control
+  path:
+  - kind: document
+    token: schedule_1a
+  - kind: line
+    token: '20'
+  - kind: control
+    token: amount
+  printed_label: Line 20 - . . . . . . . . . 20 - f1_30
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_1a_2025
+    source_hash: 64f97b38ff4218e2f188fd55a8aab7043556687487c82bbefe0b6dd1a956ecd4
+    page: 1
+  official_ref: '20'
+- address_id: 2025/document=schedule_1a/line=21
+  logical_key: document=schedule_1a/line=21
+  year: 2025
+  document_id: schedule_1a_2025
+  parent_address_id: 2025/document=schedule_1a
+  kind: line
+  path:
+  - kind: document
+    token: schedule_1a
+  - kind: line
+    token: '21'
+  printed_label: '21'
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_1a_2025
+    source_hash: 64f97b38ff4218e2f188fd55a8aab7043556687487c82bbefe0b6dd1a956ecd4
+    page: 1
+- address_id: 2025/document=schedule_1a/line=21/control=amount
+  logical_key: document=schedule_1a/line=21/control=amount
+  year: 2025
+  document_id: schedule_1a_2025
+  parent_address_id: 2025/document=schedule_1a/line=21
+  kind: control
+  path:
+  - kind: document
+    token: schedule_1a
+  - kind: line
+    token: '21'
+  - kind: control
+    token: amount
+  printed_label: Line 21 - from line 15. If zero or less, enter -0- 21 - f1_31
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_1a_2025
+    source_hash: 64f97b38ff4218e2f188fd55a8aab7043556687487c82bbefe0b6dd1a956ecd4
+    page: 1
+  official_ref: '21'
+- address_id: 2025/document=schedule_1a/line=22a
+  logical_key: document=schedule_1a/line=22a
+  year: 2025
+  document_id: schedule_1a_2025
+  parent_address_id: 2025/document=schedule_1a
+  kind: line
+  path:
+  - kind: document
+    token: schedule_1a
+  - kind: line
+    token: 22a
+  printed_label: 22a
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_1a_2025
+    source_hash: 64f97b38ff4218e2f188fd55a8aab7043556687487c82bbefe0b6dd1a956ecd4
+    page: 2
+- address_id: 2025/document=schedule_1a/line=22a/control=amount
+  logical_key: document=schedule_1a/line=22a/control=amount
+  year: 2025
+  document_id: schedule_1a_2025
+  parent_address_id: 2025/document=schedule_1a/line=22a
+  kind: control
+  path:
+  - kind: document
+    token: schedule_1a
+  - kind: line
+    token: 22a
+  - kind: control
+    token: amount
+  printed_label: Line 22a - . . . . . . . . . 23 - f2_07
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_1a_2025
+    source_hash: 64f97b38ff4218e2f188fd55a8aab7043556687487c82bbefe0b6dd1a956ecd4
+    page: 2
+  official_ref: 22a
+- address_id: 2025/document=schedule_1a/line=24
+  logical_key: document=schedule_1a/line=24
+  year: 2025
+  document_id: schedule_1a_2025
+  parent_address_id: 2025/document=schedule_1a
+  kind: line
+  path:
+  - kind: document
+    token: schedule_1a
+  - kind: line
+    token: '24'
+  printed_label: '24'
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_1a_2025
+    source_hash: 64f97b38ff4218e2f188fd55a8aab7043556687487c82bbefe0b6dd1a956ecd4
+    page: 2
+- address_id: 2025/document=schedule_1a/line=24/control=amount
+  logical_key: document=schedule_1a/line=24/control=amount
+  year: 2025
+  document_id: schedule_1a_2025
+  parent_address_id: 2025/document=schedule_1a/line=24
+  kind: control
+  path:
+  - kind: document
+    token: schedule_1a
+  - kind: line
+    token: '24'
+  - kind: control
+    token: amount
+  printed_label: Line 24 - . . . . . . . . . 24 - f2_08
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_1a_2025
+    source_hash: 64f97b38ff4218e2f188fd55a8aab7043556687487c82bbefe0b6dd1a956ecd4
+    page: 2
+  official_ref: '24'
+- address_id: 2025/document=schedule_1a/line=25
+  logical_key: document=schedule_1a/line=25
+  year: 2025
+  document_id: schedule_1a_2025
+  parent_address_id: 2025/document=schedule_1a
+  kind: line
+  path:
+  - kind: document
+    token: schedule_1a
+  - kind: line
+    token: '25'
+  printed_label: '25'
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_1a_2025
+    source_hash: 64f97b38ff4218e2f188fd55a8aab7043556687487c82bbefe0b6dd1a956ecd4
+    page: 2
+- address_id: 2025/document=schedule_1a/line=25/control=amount
+  logical_key: document=schedule_1a/line=25/control=amount
+  year: 2025
+  document_id: schedule_1a_2025
+  parent_address_id: 2025/document=schedule_1a/line=25
+  kind: control
+  path:
+  - kind: document
+    token: schedule_1a
+  - kind: line
+    token: '25'
+  - kind: control
+    token: amount
+  printed_label: Line 25 - . . . . . . . . . 25 - f2_09
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_1a_2025
+    source_hash: 64f97b38ff4218e2f188fd55a8aab7043556687487c82bbefe0b6dd1a956ecd4
+    page: 2
+  official_ref: '25'
+- address_id: 2025/document=schedule_1a/line=26
+  logical_key: document=schedule_1a/line=26
+  year: 2025
+  document_id: schedule_1a_2025
+  parent_address_id: 2025/document=schedule_1a
+  kind: line
+  path:
+  - kind: document
+    token: schedule_1a
+  - kind: line
+    token: '26'
+  printed_label: '26'
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_1a_2025
+    source_hash: 64f97b38ff4218e2f188fd55a8aab7043556687487c82bbefe0b6dd1a956ecd4
+    page: 2
+- address_id: 2025/document=schedule_1a/line=26/control=amount
+  logical_key: document=schedule_1a/line=26/control=amount
+  year: 2025
+  document_id: schedule_1a_2025
+  parent_address_id: 2025/document=schedule_1a/line=26
+  kind: control
+  path:
+  - kind: document
+    token: schedule_1a
+  - kind: line
+    token: '26'
+  - kind: control
+    token: amount
+  printed_label: Line 26 - . . . . . . . . . 26 - f2_10
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_1a_2025
+    source_hash: 64f97b38ff4218e2f188fd55a8aab7043556687487c82bbefe0b6dd1a956ecd4
+    page: 2
+  official_ref: '26'
+- address_id: 2025/document=schedule_1a/line=27
+  logical_key: document=schedule_1a/line=27
+  year: 2025
+  document_id: schedule_1a_2025
+  parent_address_id: 2025/document=schedule_1a
+  kind: line
+  path:
+  - kind: document
+    token: schedule_1a
+  - kind: line
+    token: '27'
+  printed_label: '27'
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_1a_2025
+    source_hash: 64f97b38ff4218e2f188fd55a8aab7043556687487c82bbefe0b6dd1a956ecd4
+    page: 2
+- address_id: 2025/document=schedule_1a/line=27/control=amount
+  logical_key: document=schedule_1a/line=27/control=amount
+  year: 2025
+  document_id: schedule_1a_2025
+  parent_address_id: 2025/document=schedule_1a/line=27
+  kind: control
+  path:
+  - kind: document
+    token: schedule_1a
+  - kind: line
+    token: '27'
+  - kind: control
+    token: amount
+  printed_label: Line 27 - on line 30 . . . . . . 27 - f2_11
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_1a_2025
+    source_hash: 64f97b38ff4218e2f188fd55a8aab7043556687487c82bbefe0b6dd1a956ecd4
+    page: 2
+  official_ref: '27'
+- address_id: 2025/document=schedule_1a/line=28
+  logical_key: document=schedule_1a/line=28
+  year: 2025
+  document_id: schedule_1a_2025
+  parent_address_id: 2025/document=schedule_1a
+  kind: line
+  path:
+  - kind: document
+    token: schedule_1a
+  - kind: line
+    token: '28'
+  printed_label: '28'
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_1a_2025
+    source_hash: 64f97b38ff4218e2f188fd55a8aab7043556687487c82bbefe0b6dd1a956ecd4
+    page: 2
+- address_id: 2025/document=schedule_1a/line=28/control=amount
+  logical_key: document=schedule_1a/line=28/control=amount
+  year: 2025
+  document_id: schedule_1a_2025
+  parent_address_id: 2025/document=schedule_1a/line=28
+  kind: control
+  path:
+  - kind: document
+    token: schedule_1a
+  - kind: line
+    token: '28'
+  - kind: control
+    token: amount
+  printed_label: Line 28 - 1.) . . . . . . . . 28 - f2_12
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_1a_2025
+    source_hash: 64f97b38ff4218e2f188fd55a8aab7043556687487c82bbefe0b6dd1a956ecd4
+    page: 2
+  official_ref: '28'
+- address_id: 2025/document=schedule_1a/line=29
+  logical_key: document=schedule_1a/line=29
+  year: 2025
+  document_id: schedule_1a_2025
+  parent_address_id: 2025/document=schedule_1a
+  kind: line
+  path:
+  - kind: document
+    token: schedule_1a
+  - kind: line
+    token: '29'
+  printed_label: '29'
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_1a_2025
+    source_hash: 64f97b38ff4218e2f188fd55a8aab7043556687487c82bbefe0b6dd1a956ecd4
+    page: 2
+- address_id: 2025/document=schedule_1a/line=29/control=amount
+  logical_key: document=schedule_1a/line=29/control=amount
+  year: 2025
+  document_id: schedule_1a_2025
+  parent_address_id: 2025/document=schedule_1a/line=29
+  kind: control
+  path:
+  - kind: document
+    token: schedule_1a
+  - kind: line
+    token: '29'
+  - kind: control
+    token: amount
+  printed_label: Line 29 - . . . . . . . . . 29 - f2_13
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_1a_2025
+    source_hash: 64f97b38ff4218e2f188fd55a8aab7043556687487c82bbefe0b6dd1a956ecd4
+    page: 2
+  official_ref: '29'
+- address_id: 2025/document=schedule_1a/line=2a
+  logical_key: document=schedule_1a/line=2a
+  year: 2025
+  document_id: schedule_1a_2025
+  parent_address_id: 2025/document=schedule_1a
+  kind: line
+  path:
+  - kind: document
+    token: schedule_1a
+  - kind: line
+    token: 2a
+  printed_label: 2a
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_1a_2025
+    source_hash: 64f97b38ff4218e2f188fd55a8aab7043556687487c82bbefe0b6dd1a956ecd4
+    page: 1
+- address_id: 2025/document=schedule_1a/line=2a/control=amount
+  logical_key: document=schedule_1a/line=2a/control=amount
+  year: 2025
+  document_id: schedule_1a_2025
+  parent_address_id: 2025/document=schedule_1a/line=2a
+  kind: control
+  path:
+  - kind: document
+    token: schedule_1a
+  - kind: line
+    token: 2a
+  - kind: control
+    token: amount
+  printed_label: Line 2a - excluded . . . . . . . . 2a - f1_04
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_1a_2025
+    source_hash: 64f97b38ff4218e2f188fd55a8aab7043556687487c82bbefe0b6dd1a956ecd4
+    page: 1
+  official_ref: 2a
+- address_id: 2025/document=schedule_1a/line=2b
+  logical_key: document=schedule_1a/line=2b
+  year: 2025
+  document_id: schedule_1a_2025
+  parent_address_id: 2025/document=schedule_1a
+  kind: line
+  path:
+  - kind: document
+    token: schedule_1a
+  - kind: line
+    token: 2b
+  printed_label: 2b
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_1a_2025
+    source_hash: 64f97b38ff4218e2f188fd55a8aab7043556687487c82bbefe0b6dd1a956ecd4
+    page: 1
+- address_id: 2025/document=schedule_1a/line=2b/control=amount
+  logical_key: document=schedule_1a/line=2b/control=amount
+  year: 2025
+  document_id: schedule_1a_2025
+  parent_address_id: 2025/document=schedule_1a/line=2b
+  kind: control
+  path:
+  - kind: document
+    token: schedule_1a
+  - kind: line
+    token: 2b
+  - kind: control
+    token: amount
+  printed_label: Line 2b - . . . . . . . . . 2b - f1_05
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_1a_2025
+    source_hash: 64f97b38ff4218e2f188fd55a8aab7043556687487c82bbefe0b6dd1a956ecd4
+    page: 1
+  official_ref: 2b
+- address_id: 2025/document=schedule_1a/line=2c
+  logical_key: document=schedule_1a/line=2c
+  year: 2025
+  document_id: schedule_1a_2025
+  parent_address_id: 2025/document=schedule_1a
+  kind: line
+  path:
+  - kind: document
+    token: schedule_1a
+  - kind: line
+    token: 2c
+  printed_label: 2c
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_1a_2025
+    source_hash: 64f97b38ff4218e2f188fd55a8aab7043556687487c82bbefe0b6dd1a956ecd4
+    page: 1
+- address_id: 2025/document=schedule_1a/line=2c/control=amount
+  logical_key: document=schedule_1a/line=2c/control=amount
+  year: 2025
+  document_id: schedule_1a_2025
+  parent_address_id: 2025/document=schedule_1a/line=2c
+  kind: control
+  path:
+  - kind: document
+    token: schedule_1a
+  - kind: line
+    token: 2c
+  - kind: control
+    token: amount
+  printed_label: Line 2c - . . . . . . . . . 2c - f1_06
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_1a_2025
+    source_hash: 64f97b38ff4218e2f188fd55a8aab7043556687487c82bbefe0b6dd1a956ecd4
+    page: 1
+  official_ref: 2c
+- address_id: 2025/document=schedule_1a/line=2d
+  logical_key: document=schedule_1a/line=2d
+  year: 2025
+  document_id: schedule_1a_2025
+  parent_address_id: 2025/document=schedule_1a
+  kind: line
+  path:
+  - kind: document
+    token: schedule_1a
+  - kind: line
+    token: 2d
+  printed_label: 2d
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_1a_2025
+    source_hash: 64f97b38ff4218e2f188fd55a8aab7043556687487c82bbefe0b6dd1a956ecd4
+    page: 1
+- address_id: 2025/document=schedule_1a/line=2d/control=amount
+  logical_key: document=schedule_1a/line=2d/control=amount
+  year: 2025
+  document_id: schedule_1a_2025
+  parent_address_id: 2025/document=schedule_1a/line=2d
+  kind: control
+  path:
+  - kind: document
+    token: schedule_1a
+  - kind: line
+    token: 2d
+  - kind: control
+    token: amount
+  printed_label: Line 2d - . . . . . . . . . 2d - f1_07
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_1a_2025
+    source_hash: 64f97b38ff4218e2f188fd55a8aab7043556687487c82bbefe0b6dd1a956ecd4
+    page: 1
+  official_ref: 2d
+- address_id: 2025/document=schedule_1a/line=2e
+  logical_key: document=schedule_1a/line=2e
+  year: 2025
+  document_id: schedule_1a_2025
+  parent_address_id: 2025/document=schedule_1a
+  kind: line
+  path:
+  - kind: document
+    token: schedule_1a
+  - kind: line
+    token: 2e
+  printed_label: 2e
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_1a_2025
+    source_hash: 64f97b38ff4218e2f188fd55a8aab7043556687487c82bbefe0b6dd1a956ecd4
+    page: 1
+- address_id: 2025/document=schedule_1a/line=2e/control=amount
+  logical_key: document=schedule_1a/line=2e/control=amount
+  year: 2025
+  document_id: schedule_1a_2025
+  parent_address_id: 2025/document=schedule_1a/line=2e
+  kind: control
+  path:
+  - kind: document
+    token: schedule_1a
+  - kind: line
+    token: 2e
+  - kind: control
+    token: amount
+  printed_label: Line 2e - . . . . . . . . . 2e - f1_08
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_1a_2025
+    source_hash: 64f97b38ff4218e2f188fd55a8aab7043556687487c82bbefe0b6dd1a956ecd4
+    page: 1
+  official_ref: 2e
+- address_id: 2025/document=schedule_1a/line=30
+  logical_key: document=schedule_1a/line=30
+  year: 2025
+  document_id: schedule_1a_2025
+  parent_address_id: 2025/document=schedule_1a
+  kind: line
+  path:
+  - kind: document
+    token: schedule_1a
+  - kind: line
+    token: '30'
+  printed_label: '30'
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_1a_2025
+    source_hash: 64f97b38ff4218e2f188fd55a8aab7043556687487c82bbefe0b6dd1a956ecd4
+    page: 2
+- address_id: 2025/document=schedule_1a/line=30/control=amount
+  logical_key: document=schedule_1a/line=30/control=amount
+  year: 2025
+  document_id: schedule_1a_2025
+  parent_address_id: 2025/document=schedule_1a/line=30
+  kind: control
+  path:
+  - kind: document
+    token: schedule_1a
+  - kind: line
+    token: '30'
+  - kind: control
+    token: amount
+  printed_label: Line 30 - . . . . . . . . . 30 - f2_14
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_1a_2025
+    source_hash: 64f97b38ff4218e2f188fd55a8aab7043556687487c82bbefe0b6dd1a956ecd4
+    page: 2
+  official_ref: '30'
+- address_id: 2025/document=schedule_1a/line=31
+  logical_key: document=schedule_1a/line=31
+  year: 2025
+  document_id: schedule_1a_2025
+  parent_address_id: 2025/document=schedule_1a
+  kind: line
+  path:
+  - kind: document
+    token: schedule_1a
+  - kind: line
+    token: '31'
+  printed_label: '31'
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_1a_2025
+    source_hash: 64f97b38ff4218e2f188fd55a8aab7043556687487c82bbefe0b6dd1a956ecd4
+    page: 2
+- address_id: 2025/document=schedule_1a/line=31/control=amount
+  logical_key: document=schedule_1a/line=31/control=amount
+  year: 2025
+  document_id: schedule_1a_2025
+  parent_address_id: 2025/document=schedule_1a/line=31
+  kind: control
+  path:
+  - kind: document
+    token: schedule_1a
+  - kind: line
+    token: '31'
+  - kind: control
+    token: amount
+  printed_label: Line 31 - . . . . . . . . . 31 - f2_15
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_1a_2025
+    source_hash: 64f97b38ff4218e2f188fd55a8aab7043556687487c82bbefe0b6dd1a956ecd4
+    page: 2
+  official_ref: '31'
+- address_id: 2025/document=schedule_1a/line=32
+  logical_key: document=schedule_1a/line=32
+  year: 2025
+  document_id: schedule_1a_2025
+  parent_address_id: 2025/document=schedule_1a
+  kind: line
+  path:
+  - kind: document
+    token: schedule_1a
+  - kind: line
+    token: '32'
+  printed_label: '32'
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_1a_2025
+    source_hash: 64f97b38ff4218e2f188fd55a8aab7043556687487c82bbefe0b6dd1a956ecd4
+    page: 2
+- address_id: 2025/document=schedule_1a/line=32/control=amount
+  logical_key: document=schedule_1a/line=32/control=amount
+  year: 2025
+  document_id: schedule_1a_2025
+  parent_address_id: 2025/document=schedule_1a/line=32
+  kind: control
+  path:
+  - kind: document
+    token: schedule_1a
+  - kind: line
+    token: '32'
+  - kind: control
+    token: amount
+  printed_label: Line 32 - . . . . . . . . . 32 - f2_16
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_1a_2025
+    source_hash: 64f97b38ff4218e2f188fd55a8aab7043556687487c82bbefe0b6dd1a956ecd4
+    page: 2
+  official_ref: '32'
+- address_id: 2025/document=schedule_1a/line=33
+  logical_key: document=schedule_1a/line=33
+  year: 2025
+  document_id: schedule_1a_2025
+  parent_address_id: 2025/document=schedule_1a
+  kind: line
+  path:
+  - kind: document
+    token: schedule_1a
+  - kind: line
+    token: '33'
+  printed_label: '33'
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_1a_2025
+    source_hash: 64f97b38ff4218e2f188fd55a8aab7043556687487c82bbefe0b6dd1a956ecd4
+    page: 2
+- address_id: 2025/document=schedule_1a/line=33/control=amount
+  logical_key: document=schedule_1a/line=33/control=amount
+  year: 2025
+  document_id: schedule_1a_2025
+  parent_address_id: 2025/document=schedule_1a/line=33
+  kind: control
+  path:
+  - kind: document
+    token: schedule_1a
+  - kind: line
+    token: '33'
+  - kind: control
+    token: amount
+  printed_label: Line 33 - . . . . . . . . . 33 - f2_17
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_1a_2025
+    source_hash: 64f97b38ff4218e2f188fd55a8aab7043556687487c82bbefe0b6dd1a956ecd4
+    page: 2
+  official_ref: '33'
+- address_id: 2025/document=schedule_1a/line=34
+  logical_key: document=schedule_1a/line=34
+  year: 2025
+  document_id: schedule_1a_2025
+  parent_address_id: 2025/document=schedule_1a
+  kind: line
+  path:
+  - kind: document
+    token: schedule_1a
+  - kind: line
+    token: '34'
+  printed_label: '34'
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_1a_2025
+    source_hash: 64f97b38ff4218e2f188fd55a8aab7043556687487c82bbefe0b6dd1a956ecd4
+    page: 2
+- address_id: 2025/document=schedule_1a/line=34/control=amount
+  logical_key: document=schedule_1a/line=34/control=amount
+  year: 2025
+  document_id: schedule_1a_2025
+  parent_address_id: 2025/document=schedule_1a/line=34
+  kind: control
+  path:
+  - kind: document
+    token: schedule_1a
+  - kind: line
+    token: '34'
+  - kind: control
+    token: amount
+  printed_label: Line 34 - . . . . . . . . . 34 - f2_18
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_1a_2025
+    source_hash: 64f97b38ff4218e2f188fd55a8aab7043556687487c82bbefe0b6dd1a956ecd4
+    page: 2
+  official_ref: '34'
+- address_id: 2025/document=schedule_1a/line=35
+  logical_key: document=schedule_1a/line=35
+  year: 2025
+  document_id: schedule_1a_2025
+  parent_address_id: 2025/document=schedule_1a
+  kind: line
+  path:
+  - kind: document
+    token: schedule_1a
+  - kind: line
+    token: '35'
+  printed_label: '35'
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_1a_2025
+    source_hash: 64f97b38ff4218e2f188fd55a8aab7043556687487c82bbefe0b6dd1a956ecd4
+    page: 2
+- address_id: 2025/document=schedule_1a/line=35/control=amount
+  logical_key: document=schedule_1a/line=35/control=amount
+  year: 2025
+  document_id: schedule_1a_2025
+  parent_address_id: 2025/document=schedule_1a/line=35
+  kind: control
+  path:
+  - kind: document
+    token: schedule_1a
+  - kind: line
+    token: '35'
+  - kind: control
+    token: amount
+  printed_label: Line 35 - . . . . . . . . . 35 - f2_19
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_1a_2025
+    source_hash: 64f97b38ff4218e2f188fd55a8aab7043556687487c82bbefe0b6dd1a956ecd4
+    page: 2
+  official_ref: '35'
+- address_id: 2025/document=schedule_1a/line=36a
+  logical_key: document=schedule_1a/line=36a
+  year: 2025
+  document_id: schedule_1a_2025
+  parent_address_id: 2025/document=schedule_1a
+  kind: line
+  path:
+  - kind: document
+    token: schedule_1a
+  - kind: line
+    token: 36a
+  printed_label: 36a
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_1a_2025
+    source_hash: 64f97b38ff4218e2f188fd55a8aab7043556687487c82bbefe0b6dd1a956ecd4
+    page: 2
+- address_id: 2025/document=schedule_1a/line=36a/control=amount
+  logical_key: document=schedule_1a/line=36a/control=amount
+  year: 2025
+  document_id: schedule_1a_2025
+  parent_address_id: 2025/document=schedule_1a/line=36a
+  kind: control
+  path:
+  - kind: document
+    token: schedule_1a
+  - kind: line
+    token: 36a
+  - kind: control
+    token: amount
+  printed_label: Line 36a - . . . . . . . . . 36a - f2_20
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_1a_2025
+    source_hash: 64f97b38ff4218e2f188fd55a8aab7043556687487c82bbefe0b6dd1a956ecd4
+    page: 2
+  official_ref: 36a
+- address_id: 2025/document=schedule_1a/line=36b
+  logical_key: document=schedule_1a/line=36b
+  year: 2025
+  document_id: schedule_1a_2025
+  parent_address_id: 2025/document=schedule_1a
+  kind: line
+  path:
+  - kind: document
+    token: schedule_1a
+  - kind: line
+    token: 36b
+  printed_label: 36b
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_1a_2025
+    source_hash: 64f97b38ff4218e2f188fd55a8aab7043556687487c82bbefe0b6dd1a956ecd4
+    page: 2
+- address_id: 2025/document=schedule_1a/line=36b/control=amount
+  logical_key: document=schedule_1a/line=36b/control=amount
+  year: 2025
+  document_id: schedule_1a_2025
+  parent_address_id: 2025/document=schedule_1a/line=36b
+  kind: control
+  path:
+  - kind: document
+    token: schedule_1a
+  - kind: line
+    token: 36b
+  - kind: control
+    token: amount
+  printed_label: Line 36b - 35 . . . . . . . . 36b - f2_21
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_1a_2025
+    source_hash: 64f97b38ff4218e2f188fd55a8aab7043556687487c82bbefe0b6dd1a956ecd4
+    page: 2
+  official_ref: 36b
+- address_id: 2025/document=schedule_1a/line=4a
+  logical_key: document=schedule_1a/line=4a
+  year: 2025
+  document_id: schedule_1a_2025
+  parent_address_id: 2025/document=schedule_1a
+  kind: line
+  path:
+  - kind: document
+    token: schedule_1a
+  - kind: line
+    token: 4a
+  printed_label: 4a
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_1a_2025
+    source_hash: 64f97b38ff4218e2f188fd55a8aab7043556687487c82bbefe0b6dd1a956ecd4
+    page: 1
+- address_id: 2025/document=schedule_1a/line=4a/control=amount
+  logical_key: document=schedule_1a/line=4a/control=amount
+  year: 2025
+  document_id: schedule_1a_2025
+  parent_address_id: 2025/document=schedule_1a/line=4a
+  kind: control
+  path:
+  - kind: document
+    token: schedule_1a
+  - kind: line
+    token: 4a
+  - kind: control
+    token: amount
+  printed_label: Line 4a - . . . . . . . . . 4a - f1_10
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_1a_2025
+    source_hash: 64f97b38ff4218e2f188fd55a8aab7043556687487c82bbefe0b6dd1a956ecd4
+    page: 1
+  official_ref: 4a
+- address_id: 2025/document=schedule_1a/line=4b
+  logical_key: document=schedule_1a/line=4b
+  year: 2025
+  document_id: schedule_1a_2025
+  parent_address_id: 2025/document=schedule_1a
+  kind: line
+  path:
+  - kind: document
+    token: schedule_1a
+  - kind: line
+    token: 4b
+  printed_label: 4b
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_1a_2025
+    source_hash: 64f97b38ff4218e2f188fd55a8aab7043556687487c82bbefe0b6dd1a956ecd4
+    page: 1
+- address_id: 2025/document=schedule_1a/line=4b/control=amount
+  logical_key: document=schedule_1a/line=4b/control=amount
+  year: 2025
+  document_id: schedule_1a_2025
+  parent_address_id: 2025/document=schedule_1a/line=4b
+  kind: control
+  path:
+  - kind: document
+    token: schedule_1a
+  - kind: line
+    token: 4b
+  - kind: control
+    token: amount
+  printed_label: Line 4b - . . . . . . . . . 4b - f1_11
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_1a_2025
+    source_hash: 64f97b38ff4218e2f188fd55a8aab7043556687487c82bbefe0b6dd1a956ecd4
+    page: 1
+  official_ref: 4b
+- address_id: 2025/document=schedule_1a/line=4c
+  logical_key: document=schedule_1a/line=4c
+  year: 2025
+  document_id: schedule_1a_2025
+  parent_address_id: 2025/document=schedule_1a
+  kind: line
+  path:
+  - kind: document
+    token: schedule_1a
+  - kind: line
+    token: 4c
+  printed_label: 4c
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_1a_2025
+    source_hash: 64f97b38ff4218e2f188fd55a8aab7043556687487c82bbefe0b6dd1a956ecd4
+    page: 1
+- address_id: 2025/document=schedule_1a/line=4c/control=amount
+  logical_key: document=schedule_1a/line=4c/control=amount
+  year: 2025
+  document_id: schedule_1a_2025
+  parent_address_id: 2025/document=schedule_1a/line=4c
+  kind: control
+  path:
+  - kind: document
+    token: schedule_1a
+  - kind: line
+    token: 4c
+  - kind: control
+    token: amount
+  printed_label: Line 4c - more than one occupation, see the instructions . . 4c -
+    f1_12
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_1a_2025
+    source_hash: 64f97b38ff4218e2f188fd55a8aab7043556687487c82bbefe0b6dd1a956ecd4
+    page: 1
+  official_ref: 4c
+- address_id: 2025/document=schedule_1a/line=7
+  logical_key: document=schedule_1a/line=7
+  year: 2025
+  document_id: schedule_1a_2025
+  parent_address_id: 2025/document=schedule_1a
+  kind: line
+  path:
+  - kind: document
+    token: schedule_1a
+  - kind: line
+    token: '7'
+  printed_label: '7'
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_1a_2025
+    source_hash: 64f97b38ff4218e2f188fd55a8aab7043556687487c82bbefe0b6dd1a956ecd4
+    page: 1
+- address_id: 2025/document=schedule_1a/line=7/control=amount
+  logical_key: document=schedule_1a/line=7/control=amount
+  year: 2025
+  document_id: schedule_1a_2025
+  parent_address_id: 2025/document=schedule_1a/line=7
+  kind: control
+  path:
+  - kind: document
+    token: schedule_1a
+  - kind: line
+    token: '7'
+  - kind: control
+    token: amount
+  printed_label: Line 7 - . . . . . . . . . 7 - f1_15
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_1a_2025
+    source_hash: 64f97b38ff4218e2f188fd55a8aab7043556687487c82bbefe0b6dd1a956ecd4
+    page: 1
+  official_ref: '7'
+- address_id: 2025/document=schedule_1a/line=8
+  logical_key: document=schedule_1a/line=8
+  year: 2025
+  document_id: schedule_1a_2025
+  parent_address_id: 2025/document=schedule_1a
+  kind: line
+  path:
+  - kind: document
+    token: schedule_1a
+  - kind: line
+    token: '8'
+  printed_label: '8'
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_1a_2025
+    source_hash: 64f97b38ff4218e2f188fd55a8aab7043556687487c82bbefe0b6dd1a956ecd4
+    page: 1
+- address_id: 2025/document=schedule_1a/line=8/control=amount
+  logical_key: document=schedule_1a/line=8/control=amount
+  year: 2025
+  document_id: schedule_1a_2025
+  parent_address_id: 2025/document=schedule_1a/line=8
+  kind: control
+  path:
+  - kind: document
+    token: schedule_1a
+  - kind: line
+    token: '8'
+  - kind: control
+    token: amount
+  printed_label: Line 8 - . . . . . . . . . 8 - f1_16
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_1a_2025
+    source_hash: 64f97b38ff4218e2f188fd55a8aab7043556687487c82bbefe0b6dd1a956ecd4
+    page: 1
+  official_ref: '8'
+- address_id: 2025/document=schedule_1a/line=9
+  logical_key: document=schedule_1a/line=9
+  year: 2025
+  document_id: schedule_1a_2025
+  parent_address_id: 2025/document=schedule_1a
+  kind: line
+  path:
+  - kind: document
+    token: schedule_1a
+  - kind: line
+    token: '9'
+  printed_label: '9'
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_1a_2025
+    source_hash: 64f97b38ff4218e2f188fd55a8aab7043556687487c82bbefe0b6dd1a956ecd4
+    page: 1
+- address_id: 2025/document=schedule_1a/line=9/control=amount
+  logical_key: document=schedule_1a/line=9/control=amount
+  year: 2025
+  document_id: schedule_1a_2025
+  parent_address_id: 2025/document=schedule_1a/line=9
+  kind: control
+  path:
+  - kind: document
+    token: schedule_1a
+  - kind: line
+    token: '9'
+  - kind: control
+    token: amount
+  printed_label: Line 9 - . . . . . . . . . 9 - f1_17
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_1a_2025
+    source_hash: 64f97b38ff4218e2f188fd55a8aab7043556687487c82bbefe0b6dd1a956ecd4
+    page: 1
+  official_ref: '9'
