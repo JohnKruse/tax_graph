@@ -368,7 +368,7 @@ changes. Never write a human-review claim on John's behalf.
 
 ### Group B - Form-first extraction and the 1040 canary
 
-- [ ] **R5 [worker-heavy] - Deterministic address candidate pipeline.** Extend form
+- [DONE] **R5 [worker-heavy] - Deterministic address candidate pipeline.** Extend form
   acquisition/rendering to emit a candidate hierarchy from official text blocks,
   AcroForm widgets, accessibility/layout evidence, and explicit source hashes. The
   deterministic stage finds structure and neutral controls; an optional configured LLM

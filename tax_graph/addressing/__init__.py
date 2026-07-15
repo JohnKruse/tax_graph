@@ -14,6 +14,7 @@ from tax_graph.addressing.registry import (
 )
 from tax_graph.addressing.migration import MigrationCandidate, migration_report, semantic_join_inventory
 from tax_graph.addressing.search import SearchQuery, ranked_candidates, recall_at_k
+from tax_graph.addressing.candidates import generate_candidate_registry, write_candidate_registry
 
 __all__ = [
     "AddressArtifacts", "AddressComponent", "AddressError", "CanonicalAddress",
@@ -21,4 +22,5 @@ __all__ = [
     "load_compiled_address_artifacts", "parse_address_id", "serialize_address_id",
     "MigrationCandidate", "migration_report", "semantic_join_inventory",
     "SearchQuery", "ranked_candidates", "recall_at_k",
+    "generate_candidate_registry", "write_candidate_registry",
 ]
