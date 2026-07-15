@@ -417,6 +417,17 @@ release automation (trusted publishing), the `.mcpb` Claude Desktop bundle + Con
 Directory submission, and the official MCP Registry `server.json`. Stable release still
 gates on M15.
 
+### M15R - Canonical form addressing recovery (canary Street Address)
+Inserted after M15 Gate A exposed that official form identity is reconstructed from
+labels, node ids, and PDF field names in multiple subsystems. Add an authoritative typed
+address tree, separate widget/node/reference bindings, and address-based semantic joins
+without renaming graph nodes or rewriting the runtime. Scope is bounded: preserve
+compatibility across the current artifact corpus, but prepare/certify only the 15-surface
+power-law candidate set. Niche forms scale through the user/contributor extension path.
+M15R must pass its representative Form 1040/table/worksheet/information-return gates before
+the M15 campaign resumes. As-built contract: `docs/canonical-addresses.md`. Archived
+subplan: `plans/archive/PHASE_M15R.md`.
+
 ### M15 - Review Workbench + review campaign (canary Fresh Eyes)
 Build `docs/review-workbench.md` against the final artifact shape; drain the
 deferred-review queue in one campaign; measure real `human_minutes` / escape rates;
@@ -435,9 +446,9 @@ parameter-diff oracle and OTS constants before any human looks. Most machinery e
 (M3 acquire --check; M8 verify diff-drafts with semantic-core narrowing). Known seams
 that are NOT yet coded and must not be discovered in a panic at rollover time:
 1. **Cross-year identity mapping** - object IDs are year-suffixed (`form_1040_2025`);
-   diff-drafts has only been exercised within a year. The IRS line-number spine is the
-   join key; renumbered/added/removed lines surface as explicit adds/removes, never
-   silent matches.
+   diff-drafts has only been exercised within a year. M15R's yearless canonical
+   `logical_key` is the join key; unchanged, renumbered, added, removed, split, and merged
+   addresses surface explicitly, never as silent fuzzy matches.
 2. **Tier-inheritance policy** - documented (extraction-verification Section 6) but not
    implemented: unchanged objects inherit tier + re-run L0/L1/L3 + frozen L4 examples;
    changed objects re-enter the ladder at the bottom.
@@ -487,6 +498,7 @@ canary: **Ledger Llama**.
 | M12 Output layer | Paper Trail | `pytest -m m12` (filled-PDF goldens + field-map validated both ways + OTS sidecar + return-scoped outputs) |
 | M13 Worksheet depth | Deep Ledger | `pytest -m m13` (carryover/line-20 branch modeled + oracle agreement over widened loss domain) |
 | M14 Product surface | Open Door | `pytest -m m14` (self-serve extension + intake per fleshed-out docs) |
+| M15R Canonical addressing | Street Address | `pytest -m m15r` + representative address gates + runtime parity |
 | M15 Review Workbench | Fresh Eyes | queue drained + human_minutes/escape-rate measured + tiers upgraded; PRE-SHIP GATE |
 
 ## Working protocol (Architect / Worker)

@@ -12,6 +12,7 @@ from tax_graph.engine.engine import TABLE_FACTS_KEY, _load_tax_table_resource
 from tax_graph.engine.operations import MISSING, is_missing
 from tax_graph.frontier.build import load_frontier_registry
 from tax_graph.io.loader import LoadedGraph
+from tax_graph.addressing import load_address_artifacts
 
 if TYPE_CHECKING:
     from tax_graph.extract.models import ExtractionBatch
@@ -229,6 +230,16 @@ class _ExecutableGraph:
         self.year = graph.year
         self.root = graph.root
         self.source = "loaded"
+        try:
+            artifacts = load_address_artifacts(graph.year, graph.root)
+            address_index = {item.address_id: item for item in artifacts.addresses}
+            self.address_by_node = {
+                item["node_id"]: address_index[item["address_id"]]
+                for item in artifacts.node_bindings
+                if item["status"] == "exact" and item["address_id"] in address_index
+            }
+        except (OSError, ValueError):
+            self.address_by_node = {}
         self.documents = {
             document["document_id"]: document
             for document in sorted(graph.items("documents"), key=lambda item: item.get("document_id", ""))

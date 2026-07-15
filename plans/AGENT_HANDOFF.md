@@ -14,11 +14,10 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## Current state (2026-07-15)
 
-**BALL: WORKER - M15R R14 COMPLETE; RUN R15 CLOSE.** M15R R1-R13 are committed;
-R14 is ready for commit. John accepted Address Gate A and authorized completion through
-M15R close on 2026-07-15. The in-progress M15
-A4 worktree remains preserved. `plans/PHASE_M15R.md` is the active recovery plan. Canary:
-Street Address.
+**BALL: WORKER/JOHN - M15R COMPLETE; RESUME M15 A4 UX REVIEW.** M15R R1-R14 are
+committed and R15 is ready for its close commit/push. John accepted Address Gate A and
+authorized completion through M15R close on 2026-07-15. The preserved in-progress M15
+A4 worktree is now active again. M15R is archived; M15's canary is Fresh Eyes.
 
 John's Form 1040 review exposed a foundational identity defect, not an isolated UI typo. The
 current system repeatedly reconstructs official line identity from labels, descriptions, node ids,
@@ -429,6 +428,13 @@ ASCII: green; `validate 2025`: green; full suite: 338 passed, 6 skipped in 588.8
   `docs/self-serve-extension.md`.
 
 ## From Worker
+- **M15R R15 close (Codex, 2026-07-15):** Added the canonical-address author/contributor
+  and compatibility contract, handed M15 A4-A7 back to canonical address units,
+  regenerated frontier and Verification Records, and passed the full exit floor: 450
+  passed, 6 skipped; M15R 47 passed; ASCII, graph validate, throwaway SQLite, and real
+  preflight green. One aggregate drill process resource exit was resolved by isolated
+  green reruns followed by the clean full suite. Next: commit/push and open M15 A4 in the
+  browser for John.
 - **M15R R14 (Codex, 2026-07-15):** Added deterministic yearless-logical-key deltas
   with unchanged, added, removed, renumbered, split, merged, and unresolved outcomes.
   Structural changes require explicit cardinality-checked hints. Fuzzy candidates are

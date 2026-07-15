@@ -51,7 +51,11 @@ def test_engine_emits_unresolved_trace_for_frontier_upstream(tmp_path):
             "frontier_id": "flow_test_schedule_d_line_9",
             "kind": "outbound_flow",
             "source": {"document_id": "form_8949_2025"},
-            "target": {"document_id": "schedule_d_2025", "line": "9"},
+            "target": {
+                "document_id": "schedule_d_2025",
+                "line": "9",
+                "node_id": "schedule_d_2025_line_9_frontier",
+            },
             "target_url": "https://www.irs.gov/pub/irs-pdf/f1040sd.pdf",
             "citation_ref": "cite_8949_line2_totals",
             "status": "declared",

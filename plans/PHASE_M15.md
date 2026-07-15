@@ -3,6 +3,10 @@
 **Status:** REPLANNED 2026-07-13 (frontend stack + step granularity revised by Architect
 for a no-Node machine and weaker-model workers). The human campaign is PAUSED. The
 static bundle is not an acceptable review surface and does not satisfy this phase.
+As of 2026-07-15, M15R has completed its canonical-address recovery and representative
+gates. Preserve A1-A3 and the in-progress A4 work. Resume A4-A7 using canonical
+address/control review units; do not reintroduce label, node-id, or PDF-field-name identity
+heuristics. M15 remains the human-confirmation campaign.
 
 **Canary:** Fresh Eyes
 
@@ -262,6 +266,184 @@ John reviews the three cases live. The Worker STOPS and records exact feedback i
 `plans/AGENT_HANDOFF.md`. Continue only after John confirms the official/analog comparison,
 explanations, navigation, and evidence hierarchy match the intended workflow. UX
 corrections land in a follow-up commit before the gate is marked passed.
+
+**Gate A result (John, 2026-07-14): NOT ACCEPTED.** S17 and later work remains blocked.
+The vertical slice proved the artifact/API seam, but not the review model. The repeated
+queue-level `Review authored AcroForm...` labels obscure the official IRS text and provide
+no field-specific information. The semantic-analog cards overlap, remain unreadable even on
+a wide display, and do not earn half of the primary workspace. John prefers the official form
+as the primary surface: unobtrusive colored field outlines, click a field, then inspect the
+specific semantic detail below. The review also exposed a coverage-integrity problem: every
+fillable AcroForm field needs an explicit population policy even if it is merely user-entered
+or unsupported. Form 1040 lines 1b-1h are modeled but omitted from the PDF mapping; dependent
+identity and eligibility fields are physically inventoried but dependent computation is outside
+the current supported profile. Those are different states and must never look like the same
+undefined cell. Document-level `independently witnessed` language must not imply whole-form
+coverage when the witness corpus fixes dependents at zero and the Verification Record is partial.
+
+### Gate A supplemental correction plan - complete fields + click-to-inspect
+
+This is an in-phase correction sequence, not Group D breadth. One item = one commit with focused
+tests, `pytest -m m15`, ASCII, and the full-suite floor. The Worker stops after A7 and reopens the
+live Gate A review. Iterate A1-A7 as needed until John explicitly accepts the gate. Do not start
+S17 while Gate A is open.
+
+#### Correction invariants
+
+1. **Every fillable/checkable field has exactly one disposition.** All text inputs, checkboxes,
+   radio controls, choice controls, and repeatable physical slots on every official form/schedule
+   exposed by the workbench are in scope. An official PDF with AcroForm widgets but no inventory
+   and field map is a preflight failure. Every inventoried control resolves to one of
+   `user_entered`, `imported`, `copied`, `computed`, `decision_required`,
+   `intentionally_blank`, or `unsupported`. There is no `undefined`, document-wide default, or
+   silent omission.
+2. **Mapped is not the same as modeled.** A physical PDF field can be fully identified and
+   fillable even when downstream tax logic is unsupported. Conversely, a modeled graph node
+   omitted from the PDF map is a pipeline defect, not a frontier.
+3. **Unsupported is specific and actionable.** `intentionally_blank` and `unsupported` require
+   a reason, downstream consequence, and the capability needed to close the gap. They never
+   become guessed zeroes or generic review text.
+4. **Repeatable filer facts stay structured.** Dependent identity rows are runtime fact instances,
+   not static graph-node copies and not physical-row ids. Printed row slots are output geometry.
+   Eligibility/credit boxes require an explicit filer decision or modeled qualification rule;
+   the system never infers them from identity data alone.
+5. **Witness claims are scope-qualified.** A document can be partial and have an independently
+   witnessed subgraph. UI badges state the witnessed output/domain and named exclusions; they do
+   not promote a partial form to whole-form confidence.
+6. **The official artifact is primary.** No persistent text may cover IRS labels or entry boxes.
+   The default view is the official page plus field outlines and a selection-driven evidence
+   drawer. A semantic flow view is optional and on demand for worksheets or calculations only.
+7. **Every control is reviewable.** Graph-backed, runtime-fact-only, decision-required,
+   intentionally blank, and unsupported controls have distinct visual states with a legend and
+   non-color-only markers. Clicking any state shows its exact policy. Graph-backed controls show
+   rules plus upstream/downstream dependencies; controls without a rule say why and show any
+   downstream blocker instead of presenting an empty panel.
+
+#### A1 - Complete field-disposition contract
+
+- Extend `field_map.schema.json` with a schema-versioned, additive `field_dispositions` array.
+  Each item pins the exact `field_name`, derived human label, `population_policy`, value format,
+  and optional node/identity/runtime-fact/source refs. Repeatable members carry group, row-slot,
+  column, and role metadata. Blank/unsupported items require `reason`, `downstream_effect`, and
+  `missing_capability`.
+- Strengthen `validate_field_maps`: inventory field names and disposition field names must be
+  equal sets; no duplicate or unclassified field; current `mappings`, `frontier_fields`, and
+  `excluded_nodes` must agree with dispositions; modeled printable nodes cannot be excluded with
+  a generic output-profile reason when a matching field exists.
+- Enumerate AcroForm widgets directly from every official form/schedule PDF exposed by the
+  workbench. A PDF with widgets but no committed inventory/map, or an inventory whose widget set
+  differs from the PDF, fails preflight. Instruction PDFs with no widgets are explicitly exempt.
+- Add a deterministic migration command that copies only provable facts from existing authored
+  maps. Current mappings and frontier fields may migrate mechanically; all remaining fields fail
+  closed into an authored-work list, never a guessed classification.
+- Tests: valid complete fixture; missing/duplicate/unknown field failures; invalid policy/ref
+  combinations; unsupported-without-consequence failure; idempotent migration.
+- Acceptance: `tax-graph validate 2025` fails until every exposed fillable/checkable official PDF
+  has an exact inventory and every control is fully disposed, and passes only when the widget =
+  inventory = disposition equality invariant is real.
+
+#### A2 - Universal disposition sweep + Form 1040 1b-1h repair
+
+- Author every disposition for every current official form/schedule exposed by the workbench,
+  including identity, filing-status, dependent, income, tax, signature, preparer, checkbox,
+  repeatable, and intentionally unused controls. Generate inventories/maps for exposed fillable
+  PDFs that currently lack them. Split work internally by document, but A2 is not complete while
+  any exposed control remains unclassified.
+- Repair the line-anchor normalization that reduced `1b`-`1h` to bare letters. Map the already
+  modeled 1b-1h nodes to the exact official fields, preserve line 1h's description + amount pair,
+  and prove line 1z still sums 1a-1h.
+- Replace every generic exclusion such as `not mapped in the supported output profile` with the
+  actual population policy or a specific unsupported boundary.
+- Tests: exact golden mappings for 1a-1h/1z; per-document widget/inventory/disposition set equality;
+  filled-PDF echo for nonzero 1b-1h; no field label/address collision; a seeded missing text field,
+  checkbox, radio control, and entirely missing form inventory each fail preflight.
+- Acceptance: clicking any fillable/checkable control on any exposed official form/schedule can
+  identify what it is and how it is populated, even when the answer is `unsupported`.
+
+#### A3 - Repeatable dependent facts and honest output behavior
+
+- Add a repeatable `dependents` runtime fact group for filer-entered first name, last name, SSN,
+  and relationship. Instance keys remain separate from printed row slots, following the existing
+  static/runtime namespace rule.
+- Map printed dependent identity cells to row slots without treating them as static tax nodes.
+  Map credit/eligibility checkboxes as `decision_required` until a cited qualification branch is
+  modeled or the filer explicitly resolves them with provenance.
+- Fill 0-4 printed dependent rows deterministically. More rows must produce an explicit attachment
+  requirement/unsupported output, never truncation. This step does not claim dependent credits or
+  filing-status qualification logic.
+- Surface the existing intake universal gate and downstream unsupported consequences in the Return
+  Record and workbench field detail.
+- Tests: zero, one, and four dependents; five dependents fails closed with attachment guidance;
+  identity facts never auto-select a credit box; no `human_confirmed` mutation.
+
+#### A4 - Official-form-first interaction
+
+- Key selection, markers, geometry, and details by canonical `address_id`; the widget
+  binding supplies physical placement and never becomes semantic identity.
+- Remove the semantic analog from the default two-pane layout and give the official page the main
+  review width. Retain queue navigation and synchronized page/zoom controls.
+- Delete persistent overlay text and the repeated queue summary from field rectangles. Show only
+  low-opacity policy-colored outlines/fills with a compact non-color-only marker; preserve readable
+  IRS text. The legend distinguishes graph-backed fields, runtime filer facts, decisions,
+  intentionally blank controls, and unsupported controls. Color never implies that a runtime fact
+  or unsupported field is a modeled graph computation.
+- Hover/focus reveals a short derived field label without obscuring adjacent fields. Click pins one
+  exact field and scrolls/focuses its detail drawer. Clicking empty form space clears transient
+  hover but not an intentional pinned selection.
+- Provide an optional `Semantic flow` action only when the selected unit has a useful worksheet or
+  multi-step expression. It is selected-only/on-demand, never a page full of overlapping cards.
+- Playwright acceptance at 1280x800 and 1920x1080: official labels remain readable; no overlay text
+  intersects an IRS field label; every visible marker is keyboard reachable; no horizontal page
+  overflow at reset zoom.
+
+#### A5 - Field-specific detail drawer
+
+- Treat the selected canonical address as the unit identity. Node ids and field names are
+  bindings shown only as advanced provenance.
+- Replace queue-summary-first content with the selected field's derived IRS label, locator,
+  population policy, value origin, format, graph/runtime fact ref, and exact write behavior.
+- For computed/copied/imported fields, show the plain-English operation and labeled sources. For
+  user-entered fields, show the expected fact and validation. For decision-required fields, show
+  options, citation, and escape hatch. For unsupported fields, lead with the missing capability
+  and downstream consequence.
+- Graph-backed controls list their direct upstream dependencies and downstream consumers. Controls
+  without a computation rule explicitly say `No computation rule - <policy>` and still show the
+  runtime fact, decision, blanking rule, or unsupported blocker that governs them.
+- Keep Formula, Sources, Citation, Witnesses, Diff, and Advanced JSON as progressive evidence, but
+  hide tabs that have no relevant content rather than filling them with generic prose.
+- Tests: representative 1a user input, 1b repaired mapping, 1z calculation, dependent identity,
+  dependent eligibility decision, and an unsupported field all show distinct truthful details.
+
+#### A6 - Coverage and witness-scope honesty
+
+- Reconcile address, widget-disposition, and review-unit counts before displaying coverage.
+- Add field coverage counts by population policy to preflight, queue API, and entry header. The sum
+  must equal the inventory count. Show modeled, fillable-only, decision-required, intentionally
+  blank, and unsupported counts separately.
+- Replace broad form-level trust display with scoped language from published artifacts: Verification
+  Record status, witnessed outputs/domain, scenario count, fixed assumptions, explicit gaps, and
+  pending human review. For the current OTS corpus, disclose that dependents are fixed at zero.
+- A field never inherits `independently witnessed` merely because another subgraph in its document
+  has that tier.
+- Tests: partial Form 1040 cannot render as whole-form witnessed; 1b-1h inherit only their actual
+  graph evidence; dependent fields show no OTS coverage; coverage counts reconcile exactly.
+
+#### A7 - Gate A replay + regression pack
+
+- Traverse canonical address units and assert each selected marker resolves to exactly one
+  widget disposition and truthful detail unit.
+- Rebuild the three Gate A cases around the corrected interaction: Form 1040 field-disposition
+  sweep, Form 8949 repeatable table/total selection, and Schedule D worksheet selected-only flow.
+- Add a traversal test for every exposed official form/schedule. It clicks every text field,
+  checkbox, radio control, choice control, and repeatable slot and asserts a nonempty derived label,
+  exactly one population policy, and either graph rules/dependencies or an explicit truthful
+  no-rule explanation. Add screenshot assertions/visual goldens for the dense Form 1040
+  filing-status/dependents area and lines 1a-1h at both target viewports.
+- Run: focused A1-A7 tests; `python -m pytest tests/e2e -q`; `python -m pytest -m m15 -q`;
+  full `pytest`; ASCII; real preflight; `tax-graph validate 2025`; filled-form echo checks.
+- Launch the local workbench with no verdict writes enabled, stop, and hand the visible surface to
+  John. Record exact feedback in `AGENT_HANDOFF.md`. Gate A remains open until John explicitly says
+  it passes; further corrections amend A1-A7 before S17 begins.
 
 ### Group D - Breadth (navigation, coverage, density)
 

@@ -44,10 +44,10 @@ def test_frontier_build_emits_8949_outbound_flows_with_schedule_d_weight(tmp_pat
     assert result.path == root / "graph" / "2025" / "frontier.yaml"
     assert result.path.exists()
     assert set(by_line) >= {"1b", "2", "3", "8b", "9", "10"}
-    assert by_line["1b"]["status"] == "declared"
-    assert by_line["8b"]["status"] == "declared"
-    assert "node_id" not in by_line["8b"]["target"]
-    assert all(entry["status"] == "declared" for entry in flows)
+    assert by_line["1b"]["status"] == "modeled"
+    assert by_line["8b"]["status"] == "modeled"
+    assert by_line["8b"]["target"]["node_id"] == "schedule_d_2025_part_ii_line_8b_column_h"
+    assert all(entry["status"] == "modeled" for entry in flows)
     assert all(entry["weight"] == 24000000 for entry in flows)
     assert all(entry["citation_ref"] == "cite_8949_line2_totals" for entry in flows)
 

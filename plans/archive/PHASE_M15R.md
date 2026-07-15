@@ -1,9 +1,6 @@
 # Phase M15R - Canonical Form Addressing Recovery
 
-**Status:** READY FOR JOHN GO. This recovery phase is inserted before the remaining
-M15 Gate A work. M15's human campaign and address-dependent A4-A7 work stay paused
-until the gates below pass. Existing M15 A1-A3 commits and the in-progress A4
-worktree are preserved, not discarded.
+**Status:** [COMPLETE] 2026-07-15. M15 resumes at its preserved in-progress A4 work.
 
 **Canary:** Street Address
 
@@ -484,6 +481,11 @@ that the pipeline generalizes across structure types and that unsupported/niche 
 remain contributor work. It does not ask John to certify all 15 forms in this phase.
 M15 performs the full power-law corpus review.
 
+**PASSED 2026-07-15 (John):** After the representative campaign and held-out package
+were presented as ready, John authorized the Worker to finish M15R using best judgment.
+This accepts campaign readiness and bounded scope; it is not human confirmation of the
+pending-review address corpus.
+
 ### Group E - Rollover seam and close
 
 - [DONE] **R14 [worker-standard] - Cross-year identity/delta fixtures.** Implement address
@@ -498,12 +500,21 @@ M15 performs the full power-law corpus review.
   only as `authoritative: false` suggestions and never changes state or inherits trust.
   Synthetic 2025/2026 fixtures cover all seven outcomes.
 
-- [ ] **R15 [worker-light] - Records, docs, exit run, and handback to M15.** Run all exit
+- [DONE] **R15 [worker-light] - Records, docs, exit run, and handback to M15.** Run all exit
   criteria; regenerate affected records after frontier rebuild in the standing order;
   document the as-built author/contributor workflow and compatibility API; reconcile the
   R1 baseline; update M15 A4-A7 to consume addresses and remove superseded heuristic
   requirements; record both John gates; mark this plan complete/archive it; then resume
   M15 Gate A work. One phase-level push after every step commit is verified.
+
+  Close note (2026-07-15): full suite 450 passed, 6 skipped in 3346.44s; M15R 47
+  passed; graph validation, ASCII, real workbench preflight, frontier rebuild, Verification
+  Record regeneration, and a throwaway SQLite build all passed. The planned CLI spelling
+  `build --output` does not exist; the equivalent supported `build_sqlite(...,
+  build_dir=C:\tmp\m15r-exit)` API produced and validated the throwaway artifact. The
+  aggregate drill subprocess hit a Windows resource exit once; every drill test passed
+  in isolated reruns and the subsequent full suite passed cleanly. The frozen R1 graph,
+  inventory, and runtime compatibility baseline remains green.
 
 ## 8. Exit criteria
 

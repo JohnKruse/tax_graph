@@ -28,6 +28,7 @@ def test_form_1040_spine_computes_taxable_income_on_yaml_and_sqlite(tmp_path):
 
     build_root = tmp_path / "project"
     shutil.copytree(ROOT / "graph", build_root / "graph", ignore=shutil.ignore_patterns("_drafts"))
+    shutil.copytree(ROOT / "schemas", build_root / "schemas")
     (build_root / "config").mkdir()
     (build_root / "config" / "tax-graph.config.yaml").write_text("", encoding="utf-8")
     build_sqlite("2025", root=build_root)
