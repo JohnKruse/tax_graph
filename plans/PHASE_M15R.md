@@ -348,7 +348,7 @@ changes. Never write a human-review claim on John's behalf.
   component order, year/document consistency, alias ambiguity, dangling bindings,
   incompatible roles, deterministic compile, and YAML/SQLite parity.
 
-- [ ] **R3 [worker-standard] - Architecture boundary and migration diagnostics.** Add
+- [DONE] **R3 [worker-standard] - Architecture boundary and migration diagnostics.** Add
   a repository check that limits semantic label/node-id parsing to explicit legacy
   migration modules; inventory and classify every current heuristic join. Implement the
   exact/provisional/ambiguous/unresolved migration report and byte-stable rerun. Do not

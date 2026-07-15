@@ -12,9 +12,11 @@ from tax_graph.addressing.registry import (
     parse_address_id,
     serialize_address_id,
 )
+from tax_graph.addressing.migration import MigrationCandidate, migration_report, semantic_join_inventory
 
 __all__ = [
     "AddressArtifacts", "AddressComponent", "AddressError", "CanonicalAddress",
     "Resolution", "compile_address_artifacts", "load_address_artifacts",
     "load_compiled_address_artifacts", "parse_address_id", "serialize_address_id",
+    "MigrationCandidate", "migration_report", "semantic_join_inventory",
 ]

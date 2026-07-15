@@ -1,0 +1,20 @@
+schema_version: 1
+joins:
+- path: workbench/semantics.py
+  category: display_identity
+  disposition: replace_r10
+- path: tax_graph/engine/engine.py
+  category: used_form_detection
+  disposition: replace_r9
+- path: tax_graph/link.py
+  category: cross_form_link
+  disposition: replace_r8
+- path: tax_graph/validate/graph_validator.py
+  category: validation_identity
+  disposition: replace_r8
+- path: tax_graph/verify/completeness.py
+  category: completeness_identity
+  disposition: replace_r8
+- path: tax_graph/extract/tables.py
+  category: table_node_identity
+  disposition: replace_r8
