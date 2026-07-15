@@ -449,11 +449,18 @@ formula, graph node id, PDF field name, or guessed prose meaning. Corrections am
   `worksheet_step` addresses. All artifacts remain `pending_review`; the two Form 6251
   prose false positives remain explicitly rejected.
 
-- [ ] **R12 [worker-heavy] - Information-return and intake registries.** Apply the same
+- [DONE] **R12 [worker-heavy] - Information-return and intake registries.** Apply the same
   pipeline to W-2, 1099-B, 1099-INT, 1099-DIV, and 13614-C. Box names/codes and checkbox
   choices are typed controls, not prose-derived node names. Verify the existing intake
   routes and universal gates resolve through addresses while retaining provenance and
   unsupported-box records.
+
+  Implementation note (2026-07-15): information-return controls receive typed `box`
+  addresses only from explicit AcroForm box containers; nearby prose line anchors never
+  create identity. Checkbox/radio/choice widgets terminate in typed `option` addresses.
+  Ambiguous headers and combined-box regions remain explicit field dispositions without
+  guessed addresses. All 297 Form 13614-C controls bind through their authored intake
+  runtime-fact references. Source/runtime provenance remains on every disposition.
 
 - [ ] **R13 [worker-standard] - Held-out contributor flow.** Use Form 2441 as an
   out-of-core held-out form through `extend` candidate generation, validation, review

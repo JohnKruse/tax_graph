@@ -1,0 +1,525 @@
+schema_version: 1
+year: 2025
+document_id: form_1099_int_2025
+binding_kind: widget
+bindings:
+- field_name: topmostSubform[0].Copy1[0].RghtCol[0].Box10[0].f2_18[0]
+  address_id: 2025/document=form_1099_int/box=10/control=f_18
+  widget_type: text
+  page: 3
+  rect:
+  - 302.4
+  - 288.0
+  - 395.0
+  - 300.0
+  status: provisional
+- field_name: topmostSubform[0].Copy1[0].RghtCol[0].Box11[0].f2_19[0]
+  address_id: 2025/document=form_1099_int/box=11/control=f_19
+  widget_type: text
+  page: 3
+  rect:
+  - 403.2
+  - 288.0
+  - 495.8
+  - 300.0
+  status: provisional
+- field_name: topmostSubform[0].Copy1[0].RghtCol[0].Box12[0].f2_20[0]
+  address_id: 2025/document=form_1099_int/box=12/control=f_20
+  widget_type: text
+  page: 3
+  rect:
+  - 302.4
+  - 312.0
+  - 395.0
+  - 324.0
+  status: provisional
+- field_name: topmostSubform[0].Copy1[0].RghtCol[0].Box13[0].f2_21[0]
+  address_id: 2025/document=form_1099_int/box=13/control=f_21
+  widget_type: text
+  page: 3
+  rect:
+  - 403.2
+  - 312.0
+  - 495.8
+  - 324.0
+  status: provisional
+- field_name: topmostSubform[0].Copy1[0].RghtCol[0].Box14[0].f2_22[0]
+  address_id: 2025/document=form_1099_int/box=14/control=f_22
+  widget_type: text
+  page: 3
+  rect:
+  - 296.2
+  - 348.0
+  - 395.0
+  - 360.0
+  status: provisional
+- field_name: topmostSubform[0].Copy1[0].RghtCol[0].Box1[0].f2_9[0]
+  address_id: 2025/document=form_1099_int/box=1/control=f_9
+  widget_type: text
+  page: 3
+  rect:
+  - 302.4
+  - 96.0
+  - 395.0
+  - 108.0
+  status: provisional
+- field_name: topmostSubform[0].Copy1[0].RghtCol[0].Box2[0].f2_10[0]
+  address_id: 2025/document=form_1099_int/box=2/control=f_10
+  widget_type: text
+  page: 3
+  rect:
+  - 302.4
+  - 132.0
+  - 495.8
+  - 144.0
+  status: provisional
+- field_name: topmostSubform[0].Copy1[0].RghtCol[0].Box3[0].f2_11[0]
+  address_id: 2025/document=form_1099_int/box=3/control=f_11
+  widget_type: text
+  page: 3
+  rect:
+  - 302.4
+  - 168.0
+  - 495.8
+  - 180.0
+  status: provisional
+- field_name: topmostSubform[0].Copy1[0].RghtCol[0].Box4[0].f2_12[0]
+  address_id: 2025/document=form_1099_int/box=4/control=f_12
+  widget_type: text
+  page: 3
+  rect:
+  - 302.4
+  - 192.0
+  - 395.0
+  - 204.0
+  status: provisional
+- field_name: topmostSubform[0].Copy1[0].RghtCol[0].Box5[0].f2_13[0]
+  address_id: 2025/document=form_1099_int/box=5/control=f_13
+  widget_type: text
+  page: 3
+  rect:
+  - 403.2
+  - 192.0
+  - 495.8
+  - 204.0
+  status: provisional
+- field_name: topmostSubform[0].Copy1[0].RghtCol[0].Box6[0].f2_14[0]
+  address_id: 2025/document=form_1099_int/box=6/control=f_14
+  widget_type: text
+  page: 3
+  rect:
+  - 302.4
+  - 216.0
+  - 395.0
+  - 228.0
+  status: provisional
+- field_name: topmostSubform[0].Copy1[0].RghtCol[0].Box8[0].f2_16[0]
+  address_id: 2025/document=form_1099_int/box=8/control=f_16
+  widget_type: text
+  page: 3
+  rect:
+  - 302.4
+  - 252.0
+  - 395.0
+  - 264.0
+  status: provisional
+- field_name: topmostSubform[0].Copy1[0].RghtCol[0].Box9[0].f2_17[0]
+  address_id: 2025/document=form_1099_int/box=9/control=f_17
+  widget_type: text
+  page: 3
+  rect:
+  - 403.2
+  - 252.0
+  - 495.8
+  - 264.0
+  status: provisional
+- field_name: topmostSubform[0].Copy2[0].RghtColumn[0].Box10[0].f2_18[0]
+  address_id: 2025/document=form_1099_int/box=10/control=f_18
+  widget_type: text
+  page: 6
+  rect:
+  - 302.4
+  - 288.0
+  - 395.0
+  - 300.0
+  status: provisional
+- field_name: topmostSubform[0].Copy2[0].RghtColumn[0].Box11[0].f2_19[0]
+  address_id: 2025/document=form_1099_int/box=11/control=f_19
+  widget_type: text
+  page: 6
+  rect:
+  - 403.2
+  - 288.0
+  - 495.8
+  - 300.0
+  status: provisional
+- field_name: topmostSubform[0].Copy2[0].RghtColumn[0].Box12[0].f2_20[0]
+  address_id: 2025/document=form_1099_int/box=12/control=f_20
+  widget_type: text
+  page: 6
+  rect:
+  - 302.4
+  - 312.0
+  - 395.0
+  - 324.0
+  status: provisional
+- field_name: topmostSubform[0].Copy2[0].RghtColumn[0].Box13[0].f2_21[0]
+  address_id: 2025/document=form_1099_int/box=13/control=f_21
+  widget_type: text
+  page: 6
+  rect:
+  - 403.2
+  - 312.0
+  - 495.8
+  - 324.0
+  status: provisional
+- field_name: topmostSubform[0].Copy2[0].RghtColumn[0].Box14[0].f2_22[0]
+  address_id: 2025/document=form_1099_int/box=14/control=f_22
+  widget_type: text
+  page: 6
+  rect:
+  - 296.2
+  - 348.0
+  - 395.0
+  - 360.0
+  status: provisional
+- field_name: topmostSubform[0].Copy2[0].RghtColumn[0].Box1[0].f2_9[0]
+  address_id: 2025/document=form_1099_int/box=1/control=f_9
+  widget_type: text
+  page: 6
+  rect:
+  - 302.4
+  - 96.0
+  - 395.0
+  - 108.0
+  status: provisional
+- field_name: topmostSubform[0].Copy2[0].RghtColumn[0].Box2[0].f2_10[0]
+  address_id: 2025/document=form_1099_int/box=2/control=f_10
+  widget_type: text
+  page: 6
+  rect:
+  - 302.4
+  - 132.0
+  - 495.8
+  - 144.0
+  status: provisional
+- field_name: topmostSubform[0].Copy2[0].RghtColumn[0].Box3[0].f2_11[0]
+  address_id: 2025/document=form_1099_int/box=3/control=f_11
+  widget_type: text
+  page: 6
+  rect:
+  - 302.4
+  - 168.0
+  - 495.8
+  - 180.0
+  status: provisional
+- field_name: topmostSubform[0].Copy2[0].RghtColumn[0].Box4[0].f2_12[0]
+  address_id: 2025/document=form_1099_int/box=4/control=f_12
+  widget_type: text
+  page: 6
+  rect:
+  - 302.4
+  - 192.0
+  - 395.0
+  - 204.0
+  status: provisional
+- field_name: topmostSubform[0].Copy2[0].RghtColumn[0].Box5[0].f2_13[0]
+  address_id: 2025/document=form_1099_int/box=5/control=f_13
+  widget_type: text
+  page: 6
+  rect:
+  - 403.2
+  - 192.0
+  - 495.8
+  - 204.0
+  status: provisional
+- field_name: topmostSubform[0].Copy2[0].RghtColumn[0].Box6[0].f2_14[0]
+  address_id: 2025/document=form_1099_int/box=6/control=f_14
+  widget_type: text
+  page: 6
+  rect:
+  - 302.4
+  - 216.0
+  - 395.0
+  - 228.0
+  status: provisional
+- field_name: topmostSubform[0].Copy2[0].RghtColumn[0].Box8[0].f2_16[0]
+  address_id: 2025/document=form_1099_int/box=8/control=f_16
+  widget_type: text
+  page: 6
+  rect:
+  - 302.4
+  - 252.0
+  - 395.0
+  - 264.0
+  status: provisional
+- field_name: topmostSubform[0].Copy2[0].RghtColumn[0].Box9[0].f2_17[0]
+  address_id: 2025/document=form_1099_int/box=9/control=f_17
+  widget_type: text
+  page: 6
+  rect:
+  - 403.2
+  - 252.0
+  - 495.8
+  - 264.0
+  status: provisional
+- field_name: topmostSubform[0].CopyA[0].RightColumn[0].Box10[0].f1_18[0]
+  address_id: 2025/document=form_1099_int/box=10/control=f_18
+  widget_type: text
+  page: 2
+  rect:
+  - 302.4
+  - 288.0
+  - 395.0
+  - 300.0
+  status: provisional
+- field_name: topmostSubform[0].CopyA[0].RightColumn[0].Box11[0].f1_19[0]
+  address_id: 2025/document=form_1099_int/box=11/control=f_19
+  widget_type: text
+  page: 2
+  rect:
+  - 403.2
+  - 288.0
+  - 495.8
+  - 300.0
+  status: provisional
+- field_name: topmostSubform[0].CopyA[0].RightColumn[0].Box12[0].f1_20[0]
+  address_id: 2025/document=form_1099_int/box=12/control=f_20
+  widget_type: text
+  page: 2
+  rect:
+  - 302.4
+  - 312.0
+  - 395.0
+  - 324.0
+  status: provisional
+- field_name: topmostSubform[0].CopyA[0].RightColumn[0].Box13[0].f1_21[0]
+  address_id: 2025/document=form_1099_int/box=13/control=f_21
+  widget_type: text
+  page: 2
+  rect:
+  - 403.2
+  - 312.0
+  - 495.8
+  - 324.0
+  status: provisional
+- field_name: topmostSubform[0].CopyA[0].RightColumn[0].Box14[0].f1_22[0]
+  address_id: 2025/document=form_1099_int/box=14/control=f_22
+  widget_type: text
+  page: 2
+  rect:
+  - 296.2
+  - 348.0
+  - 395.0
+  - 360.0
+  status: provisional
+- field_name: topmostSubform[0].CopyA[0].RightColumn[0].Box1[0].f1_9[0]
+  address_id: 2025/document=form_1099_int/box=1/control=f_9
+  widget_type: text
+  page: 2
+  rect:
+  - 302.4
+  - 96.0
+  - 395.0
+  - 108.0
+  status: provisional
+- field_name: topmostSubform[0].CopyA[0].RightColumn[0].Box2[0].f1_10[0]
+  address_id: 2025/document=form_1099_int/box=2/control=f_10
+  widget_type: text
+  page: 2
+  rect:
+  - 302.4
+  - 132.0
+  - 495.8
+  - 144.0
+  status: provisional
+- field_name: topmostSubform[0].CopyA[0].RightColumn[0].Box3[0].f1_11[0]
+  address_id: 2025/document=form_1099_int/box=3/control=f_11
+  widget_type: text
+  page: 2
+  rect:
+  - 302.4
+  - 168.0
+  - 495.8
+  - 180.0
+  status: provisional
+- field_name: topmostSubform[0].CopyA[0].RightColumn[0].Box4[0].f1_12[0]
+  address_id: 2025/document=form_1099_int/box=4/control=f_12
+  widget_type: text
+  page: 2
+  rect:
+  - 302.4
+  - 192.0
+  - 395.0
+  - 204.0
+  status: provisional
+- field_name: topmostSubform[0].CopyA[0].RightColumn[0].Box5[0].f1_13[0]
+  address_id: 2025/document=form_1099_int/box=5/control=f_13
+  widget_type: text
+  page: 2
+  rect:
+  - 403.2
+  - 192.0
+  - 495.8
+  - 204.0
+  status: provisional
+- field_name: topmostSubform[0].CopyA[0].RightColumn[0].Box6[0].f1_14[0]
+  address_id: 2025/document=form_1099_int/box=6/control=f_14
+  widget_type: text
+  page: 2
+  rect:
+  - 302.4
+  - 216.0
+  - 395.0
+  - 228.0
+  status: provisional
+- field_name: topmostSubform[0].CopyA[0].RightColumn[0].Box8[0].f1_16[0]
+  address_id: 2025/document=form_1099_int/box=8/control=f_16
+  widget_type: text
+  page: 2
+  rect:
+  - 302.4
+  - 252.0
+  - 395.0
+  - 264.0
+  status: provisional
+- field_name: topmostSubform[0].CopyA[0].RightColumn[0].Box9[0].f1_17[0]
+  address_id: 2025/document=form_1099_int/box=9/control=f_17
+  widget_type: text
+  page: 2
+  rect:
+  - 403.2
+  - 252.0
+  - 495.8
+  - 264.0
+  status: provisional
+- field_name: topmostSubform[0].CopyB[0].RghtColumn[0].Box10[0].f2_18[0]
+  address_id: 2025/document=form_1099_int/box=10/control=f_18
+  widget_type: text
+  page: 4
+  rect:
+  - 302.4
+  - 288.0
+  - 395.0
+  - 300.0
+  status: provisional
+- field_name: topmostSubform[0].CopyB[0].RghtColumn[0].Box11[0].f2_19[0]
+  address_id: 2025/document=form_1099_int/box=11/control=f_19
+  widget_type: text
+  page: 4
+  rect:
+  - 403.2
+  - 288.0
+  - 495.8
+  - 300.0
+  status: provisional
+- field_name: topmostSubform[0].CopyB[0].RghtColumn[0].Box12[0].f2_20[0]
+  address_id: 2025/document=form_1099_int/box=12/control=f_20
+  widget_type: text
+  page: 4
+  rect:
+  - 302.4
+  - 312.0
+  - 395.0
+  - 324.0
+  status: provisional
+- field_name: topmostSubform[0].CopyB[0].RghtColumn[0].Box13[0].f2_21[0]
+  address_id: 2025/document=form_1099_int/box=13/control=f_21
+  widget_type: text
+  page: 4
+  rect:
+  - 403.2
+  - 312.0
+  - 495.8
+  - 324.0
+  status: provisional
+- field_name: topmostSubform[0].CopyB[0].RghtColumn[0].Box14[0].f2_22[0]
+  address_id: 2025/document=form_1099_int/box=14/control=f_22
+  widget_type: text
+  page: 4
+  rect:
+  - 296.2
+  - 348.0
+  - 395.0
+  - 360.0
+  status: provisional
+- field_name: topmostSubform[0].CopyB[0].RghtColumn[0].Box1[0].f2_9[0]
+  address_id: 2025/document=form_1099_int/box=1/control=f_9
+  widget_type: text
+  page: 4
+  rect:
+  - 302.4
+  - 96.0
+  - 395.0
+  - 108.0
+  status: provisional
+- field_name: topmostSubform[0].CopyB[0].RghtColumn[0].Box2[0].f2_10[0]
+  address_id: 2025/document=form_1099_int/box=2/control=f_10
+  widget_type: text
+  page: 4
+  rect:
+  - 302.4
+  - 132.0
+  - 495.8
+  - 144.0
+  status: provisional
+- field_name: topmostSubform[0].CopyB[0].RghtColumn[0].Box3[0].f2_11[0]
+  address_id: 2025/document=form_1099_int/box=3/control=f_11
+  widget_type: text
+  page: 4
+  rect:
+  - 302.4
+  - 168.0
+  - 495.8
+  - 180.0
+  status: provisional
+- field_name: topmostSubform[0].CopyB[0].RghtColumn[0].Box4[0].f2_12[0]
+  address_id: 2025/document=form_1099_int/box=4/control=f_12
+  widget_type: text
+  page: 4
+  rect:
+  - 302.4
+  - 192.0
+  - 395.0
+  - 204.0
+  status: provisional
+- field_name: topmostSubform[0].CopyB[0].RghtColumn[0].Box5[0].f2_13[0]
+  address_id: 2025/document=form_1099_int/box=5/control=f_13
+  widget_type: text
+  page: 4
+  rect:
+  - 403.2
+  - 192.0
+  - 495.8
+  - 204.0
+  status: provisional
+- field_name: topmostSubform[0].CopyB[0].RghtColumn[0].Box6[0].f2_14[0]
+  address_id: 2025/document=form_1099_int/box=6/control=f_14
+  widget_type: text
+  page: 4
+  rect:
+  - 302.4
+  - 216.0
+  - 395.0
+  - 228.0
+  status: provisional
+- field_name: topmostSubform[0].CopyB[0].RghtColumn[0].Box8[0].f2_16[0]
+  address_id: 2025/document=form_1099_int/box=8/control=f_16
+  widget_type: text
+  page: 4
+  rect:
+  - 302.4
+  - 252.0
+  - 395.0
+  - 264.0
+  status: provisional
+- field_name: topmostSubform[0].CopyB[0].RghtColumn[0].Box9[0].f2_17[0]
+  address_id: 2025/document=form_1099_int/box=9/control=f_17
+  widget_type: text
+  page: 4
+  rect:
+  - 403.2
+  - 252.0
+  - 495.8
+  - 264.0
+  status: provisional

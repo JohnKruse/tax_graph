@@ -25,6 +25,14 @@ CORE_RETURN_DOCUMENTS = (
     "form_8949_2025",
 )
 
+INFORMATION_RETURN_DOCUMENTS = (
+    "form_w2_2025",
+    "form_1099b_2025",
+    "form_1099_int_2025",
+    "form_1099_div_2025",
+    "form_13614_c_2025",
+)
+
 
 def build_address_campaign(root: str | Path, document_ids: Iterable[str]) -> dict[str, dict[str, Any]]:
     """Build machine-valid pending-review artifacts for authored field maps."""
@@ -45,7 +53,9 @@ def build_document_addresses(root: str | Path, document_id: str) -> dict[str, An
     exemptions: list[dict[str, str]] = []
     for item in inventory:
         field_name = item["field_name"]
-        evidence = _control_evidence(item, mappings.get(field_name), dispositions[field_name])
+        evidence = _control_evidence(
+            item, mappings.get(field_name), dispositions[field_name], document_id=document_id,
+        )
         if evidence is None:
             exemptions.append({"field_name": field_name, "population_policy": dispositions[field_name]["population_policy"]})
         else:
@@ -116,14 +126,27 @@ def build_document_addresses(root: str | Path, document_id: str) -> dict[str, An
 
 
 def _control_evidence(item: dict[str, Any], mapping: dict[str, Any] | None,
-                      disposition: dict[str, Any]) -> dict[str, Any] | None:
+                      disposition: dict[str, Any], *, document_id: str) -> dict[str, Any] | None:
     line = item.get("line_anchor")
     role = _role(item, mapping)
     total = re.fullmatch(
         r"form_8949_2025_part_(i|ii)_line_2_line_2_column_([degh])_total",
         str(mapping.get("slot", "")) if mapping else "",
     )
-    if total:
+    runtime_ref = str(disposition.get("runtime_fact_ref", ""))
+    box = _box_token(str(item["field_name"])) if document_id in INFORMATION_RETURN_DOCUMENTS else None
+    if document_id == "form_13614_c_2025" and runtime_ref:
+        token = runtime_ref.rsplit(".", 1)[-1]
+        terminal = "option" if role in {"checkbox", "radio", "choice"} else "control"
+        path = [{"kind": "section", "token": "intake"}, {"kind": terminal, "token": token}]
+        official_ref = token
+    elif box:
+        terminal = "option" if role in {"checkbox", "radio", "choice"} else "control"
+        path = [{"kind": "box", "token": box}, {"kind": terminal, "token": _box_control_token(item, role)}]
+        official_ref = f"Box {box}"
+    elif document_id in INFORMATION_RETURN_DOCUMENTS:
+        return None
+    elif total:
         part, column = total.groups()
         path = [
             {"kind": "table", "token": f"part_{part}_line_2"},
@@ -206,9 +229,28 @@ def _source_hash(root: Path, document_id: str) -> str:
 def _role(item: dict[str, Any], mapping: dict[str, Any] | None) -> str:
     if mapping and mapping.get("format") == "checkbox" or item["field_type"] == "CheckBox":
         return "checkbox"
+    if item["field_type"] == "RadioButton":
+        return "radio"
+    if item["field_type"] == "Choice":
+        return "choice"
     if mapping and mapping.get("format") == "date":
         return "date"
     return "amount" if item.get("line_anchor") or mapping else "text"
+
+
+def _box_token(field_name: str) -> str | None:
+    matches = re.findall(r"(?:^|\.)Box(?!es)([A-Za-z0-9]+?)(?:_+ReadOrder)?\[", field_name)
+    return matches[-1].lower() if matches else None
+
+
+def _box_control_token(item: dict[str, Any], role: str) -> str:
+    leaf = str(item["field_name"]).rsplit(".", 1)[-1]
+    match = re.fullmatch(r"([A-Za-z]+)\d*(_[0-9]+)?\[([0-9]+)\]", leaf)
+    if match:
+        stem = f"{match.group(1).lower()}{match.group(2) or ''}"
+        return f"choice_{stem}_{match.group(3)}" if role in {"checkbox", "radio", "choice"} else stem
+    digest = hashlib.sha256(leaf.encode("utf-8")).hexdigest()[:12]
+    return f"choice_{digest}" if role in {"checkbox", "radio", "choice"} else f"field_{digest}"
 
 
 def _widget_type(value: str) -> str:

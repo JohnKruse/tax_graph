@@ -1,0 +1,2975 @@
+schema_version: 1
+year: 2025
+document_id: form_13614_c_2025
+binding_kind: widget
+bindings:
+- field_name: form1[0].page1[0].anyoneElseClaim[0].otherClaimNo[0]
+  address_id: 2025/document=form_13614_c/section=intake/option=form1_0_page1_0_anyoneelseclaim_0_otherclaimno_0
+  widget_type: checkbox
+  page: 1
+  rect:
+  - 648.0
+  - 222.8
+  - 656.0
+  - 230.8
+  status: provisional
+- field_name: form1[0].page1[0].anyoneElseClaim[0].otherClaimYes[0]
+  address_id: 2025/document=form_13614_c/section=intake/option=form1_0_page1_0_anyoneelseclaim_0_otherclaimyes_0
+  widget_type: checkbox
+  page: 1
+  rect:
+  - 586.8
+  - 222.8
+  - 594.8
+  - 230.8
+  status: provisional
+- field_name: form1[0].page1[0].dueARefund[0].refundCheckMail[0]
+  address_id: 2025/document=form_13614_c/section=intake/option=form1_0_page1_0_duearefund_0_refundcheckmail_0
+  widget_type: checkbox
+  page: 1
+  rect:
+  - 205.2
+  - 307.4
+  - 213.2
+  - 315.4
+  status: provisional
+- field_name: form1[0].page1[0].dueARefund[0].refundDirectDeposit[0]
+  address_id: 2025/document=form_13614_c/section=intake/option=form1_0_page1_0_duearefund_0_refunddirectdeposit_0
+  widget_type: checkbox
+  page: 1
+  rect:
+  - 18.0
+  - 307.4
+  - 26.0
+  - 315.4
+  status: provisional
+- field_name: form1[0].page1[0].dueARefund[0].refundOtherExplain[0]
+  address_id: 2025/document=form_13614_c/section=intake/control=form1_0_page1_0_duearefund_0_refundotherexplain_0
+  widget_type: text
+  page: 1
+  rect:
+  - 255.6
+  - 320.4
+  - 385.2
+  - 331.2
+  status: provisional
+- field_name: form1[0].page1[0].dueARefund[0].refundOther[0]
+  address_id: 2025/document=form_13614_c/section=intake/option=form1_0_page1_0_duearefund_0_refundother_0
+  widget_type: checkbox
+  page: 1
+  rect:
+  - 205.2
+  - 321.8
+  - 213.2
+  - 329.8
+  status: provisional
+- field_name: form1[0].page1[0].dueARefund[0].refundSplitAccounts[0]
+  address_id: 2025/document=form_13614_c/section=intake/option=form1_0_page1_0_duearefund_0_refundsplitaccounts_0
+  widget_type: checkbox
+  page: 1
+  rect:
+  - 18.0
+  - 321.8
+  - 26.0
+  - 329.8
+  status: provisional
+- field_name: form1[0].page1[0].haveBlanceDue[0].blanceBankAccount[0]
+  address_id: 2025/document=form_13614_c/section=intake/option=form1_0_page1_0_haveblancedue_0_blancebankaccount_0
+  widget_type: checkbox
+  page: 1
+  rect:
+  - 392.4
+  - 307.4
+  - 400.4
+  - 315.4
+  status: provisional
+- field_name: form1[0].page1[0].haveBlanceDue[0].blanceDirectPay[0]
+  address_id: 2025/document=form_13614_c/section=intake/option=form1_0_page1_0_haveblancedue_0_blancedirectpay_0
+  widget_type: checkbox
+  page: 1
+  rect:
+  - 586.8
+  - 307.4
+  - 594.8
+  - 315.4
+  status: provisional
+- field_name: form1[0].page1[0].haveBlanceDue[0].blanceInstallmentAgreement[0]
+  address_id: 2025/document=form_13614_c/section=intake/option=form1_0_page1_0_haveblancedue_0_blanceinstallmentagreement_0
+  widget_type: checkbox
+  page: 1
+  rect:
+  - 392.4
+  - 321.8
+  - 400.4
+  - 329.8
+  status: provisional
+- field_name: form1[0].page1[0].haveBlanceDue[0].blanceMailPayment[0]
+  address_id: 2025/document=form_13614_c/section=intake/option=form1_0_page1_0_haveblancedue_0_blancemailpayment_0
+  widget_type: checkbox
+  page: 1
+  rect:
+  - 586.8
+  - 321.8
+  - 594.8
+  - 329.8
+  status: provisional
+- field_name: form1[0].page1[0].hyperlink[0]
+  address_id: 2025/document=form_13614_c/section=intake/control=form1_0_page1_0_hyperlink_0
+  widget_type: other
+  page: 1
+  rect:
+  - 684.0
+  - 108.0
+  - 774.0
+  - 118.8
+  status: provisional
+- field_name: form1[0].page1[0].liveWorkStates[0].liveWorkNo[0]
+  address_id: 2025/document=form_13614_c/section=intake/option=form1_0_page1_0_liveworkstates_0_liveworkno_0
+  widget_type: checkbox
+  page: 1
+  rect:
+  - 586.8
+  - 208.4
+  - 594.8
+  - 216.4
+  status: provisional
+- field_name: form1[0].page1[0].liveWorkStates[0].liveWorkYes[0]
+  address_id: 2025/document=form_13614_c/section=intake/option=form1_0_page1_0_liveworkstates_0_liveworkyes_0
+  widget_type: checkbox
+  page: 1
+  rect:
+  - 536.4
+  - 208.4
+  - 544.4
+  - 216.4
+  status: provisional
+- field_name: form1[0].page1[0].mailingAddress[0]
+  address_id: 2025/document=form_13614_c/section=intake/control=form1_0_page1_0_mailingaddress_0
+  widget_type: text
+  page: 1
+  rect:
+  - 18.0
+  - 182.16
+  - 331.2
+  - 194.4
+  status: provisional
+- field_name: form1[0].page1[0].mailingCity[0]
+  address_id: 2025/document=form_13614_c/section=intake/control=form1_0_page1_0_mailingcity_0
+  widget_type: text
+  page: 1
+  rect:
+  - 392.4
+  - 182.16
+  - 594.0
+  - 194.4
+  status: provisional
+- field_name: form1[0].page1[0].mailingState[0]
+  address_id: 2025/document=form_13614_c/section=intake/control=form1_0_page1_0_mailingstate_0
+  widget_type: text
+  page: 1
+  rect:
+  - 601.2
+  - 182.16
+  - 680.4
+  - 194.4
+  status: provisional
+- field_name: form1[0].page1[0].mailingZIPCode[0]
+  address_id: 2025/document=form_13614_c/section=intake/control=form1_0_page1_0_mailingzipcode_0
+  widget_type: text
+  page: 1
+  rect:
+  - 687.6
+  - 182.16
+  - 774.0
+  - 194.4
+  status: provisional
+- field_name: form1[0].page1[0].maillingApartmentNumber[0]
+  address_id: 2025/document=form_13614_c/section=intake/control=form1_0_page1_0_maillingapartmentnumber_0
+  widget_type: text
+  page: 1
+  rect:
+  - 338.4
+  - 182.16
+  - 385.2
+  - 194.4
+  status: provisional
+- field_name: form1[0].page1[0].maritalStatus[0].lastDay[0].lastDayNo[0]
+  address_id: 2025/document=form_13614_c/section=intake/option=form1_0_page1_0_maritalstatus_0_lastday_0_lastdayno_0
+  widget_type: checkbox
+  page: 1
+  rect:
+  - 648.0
+  - 393.8
+  - 656.0
+  - 401.8
+  status: provisional
+- field_name: form1[0].page1[0].maritalStatus[0].lastDay[0].lastDayYes[0]
+  address_id: 2025/document=form_13614_c/section=intake/option=form1_0_page1_0_maritalstatus_0_lastday_0_lastdayyes_0
+  widget_type: checkbox
+  page: 1
+  rect:
+  - 586.8
+  - 393.8
+  - 594.8
+  - 401.8
+  status: provisional
+- field_name: form1[0].page1[0].maritalStatus[0].liveApart[0].liveApartNo[0]
+  address_id: 2025/document=form_13614_c/section=intake/option=form1_0_page1_0_maritalstatus_0_liveapart_0_liveapartno_0
+  widget_type: checkbox
+  page: 1
+  rect:
+  - 648.0
+  - 408.2
+  - 656.0
+  - 416.2
+  status: provisional
+- field_name: form1[0].page1[0].maritalStatus[0].liveApart[0].liveApartYes[0]
+  address_id: 2025/document=form_13614_c/section=intake/option=form1_0_page1_0_maritalstatus_0_liveapart_0_liveapartyes_0
+  widget_type: checkbox
+  page: 1
+  rect:
+  - 586.8
+  - 408.2
+  - 594.8
+  - 416.2
+  status: provisional
+- field_name: form1[0].page1[0].maritalStatus[0].statusDivorced[0].dateFinalDecree[0]
+  address_id: 2025/document=form_13614_c/section=intake/control=form1_0_page1_0_maritalstatus_0_statusdivorced_0_datefinaldecree_0
+  widget_type: text
+  page: 1
+  rect:
+  - 129.6
+  - 432.0
+  - 201.6
+  - 446.4
+  status: provisional
+- field_name: form1[0].page1[0].maritalStatus[0].statusDivorced[0].statusDivorced[0]
+  address_id: 2025/document=form_13614_c/section=intake/option=form1_0_page1_0_maritalstatus_0_statusdivorced_0_statusdivorced_0
+  widget_type: checkbox
+  page: 1
+  rect:
+  - 18.0
+  - 422.6
+  - 26.0
+  - 430.6
+  status: provisional
+- field_name: form1[0].page1[0].maritalStatus[0].statusLegallySeparated[0].dateSeparateDecree[0]
+  address_id: 2025/document=form_13614_c/section=intake/control=form1_0_page1_0_maritalstatus_0_statuslegallyseparated_0_dateseparatedecree_0
+  widget_type: text
+  page: 1
+  rect:
+  - 399.6
+  - 432.0
+  - 475.2
+  - 446.4
+  status: provisional
+- field_name: form1[0].page1[0].maritalStatus[0].statusLegallySeparated[0].statusLegallySeparated[0]
+  address_id: 2025/document=form_13614_c/section=intake/option=form1_0_page1_0_maritalstatus_0_statuslegallyseparated_0_statuslegallyseparated_0
+  widget_type: checkbox
+  page: 1
+  rect:
+  - 205.2
+  - 422.6
+  - 213.2
+  - 430.6
+  status: provisional
+- field_name: form1[0].page1[0].maritalStatus[0].statusMarried[0]
+  address_id: 2025/document=form_13614_c/section=intake/option=form1_0_page1_0_maritalstatus_0_statusmarried_0
+  widget_type: checkbox
+  page: 1
+  rect:
+  - 205.2
+  - 393.8
+  - 213.2
+  - 401.8
+  status: provisional
+- field_name: form1[0].page1[0].maritalStatus[0].statusNeverMarried[0]
+  address_id: 2025/document=form_13614_c/section=intake/option=form1_0_page1_0_maritalstatus_0_statusnevermarried_0
+  widget_type: checkbox
+  page: 1
+  rect:
+  - 18.0
+  - 393.8
+  - 26.0
+  - 401.8
+  status: provisional
+- field_name: form1[0].page1[0].maritalStatus[0].statusWidowed[0].statusWidowed[0]
+  address_id: 2025/document=form_13614_c/section=intake/option=form1_0_page1_0_maritalstatus_0_statuswidowed_0_statuswidowed_0
+  widget_type: checkbox
+  page: 1
+  rect:
+  - 586.8
+  - 422.6
+  - 594.8
+  - 430.6
+  status: provisional
+- field_name: form1[0].page1[0].maritalStatus[0].statusWidowed[0].yearSpousesDeath[0]
+  address_id: 2025/document=form_13614_c/section=intake/control=form1_0_page1_0_maritalstatus_0_statuswidowed_0_yearspousesdeath_0
+  widget_type: text
+  page: 1
+  rect:
+  - 712.8
+  - 432.0
+  - 774.0
+  - 446.4
+  status: provisional
+- field_name: form1[0].page1[0].namesOf[0].Row1[0].costMaintainingHome[0]
+  address_id: 2025/document=form_13614_c/section=intake/control=form1_0_page1_0_namesof_0_row1_0_costmaintaininghome_0
+  widget_type: text
+  page: 1
+  rect:
+  - 722.16
+  - 529.92
+  - 774.0
+  - 542.88
+  status: provisional
+- field_name: form1[0].page1[0].namesOf[0].Row1[0].dateOfBirth[0]
+  address_id: 2025/document=form_13614_c/section=intake/control=form1_0_page1_0_namesof_0_row1_0_dateofbirth_0
+  widget_type: text
+  page: 1
+  rect:
+  - 120.96
+  - 529.92
+  - 170.64
+  - 542.88
+  status: provisional
+- field_name: form1[0].page1[0].namesOf[0].Row1[0].fullTimeStudent[0]
+  address_id: 2025/document=form_13614_c/section=intake/control=form1_0_page1_0_namesof_0_row1_0_fulltimestudent_0
+  widget_type: text
+  page: 1
+  rect:
+  - 441.36
+  - 529.92
+  - 473.04
+  - 542.88
+  status: provisional
+- field_name: form1[0].page1[0].namesOf[0].Row1[0].issuedIPPIN[0]
+  address_id: 2025/document=form_13614_c/section=intake/control=form1_0_page1_0_namesof_0_row1_0_issuedippin_0
+  widget_type: text
+  page: 1
+  rect:
+  - 524.16
+  - 529.92
+  - 548.64
+  - 542.88
+  status: provisional
+- field_name: form1[0].page1[0].namesOf[0].Row1[0].lessThanIncome[0]
+  address_id: 2025/document=form_13614_c/section=intake/control=form1_0_page1_0_namesof_0_row1_0_lessthanincome_0
+  widget_type: text
+  page: 1
+  rect:
+  - 635.76
+  - 529.92
+  - 673.2
+  - 542.88
+  status: provisional
+- field_name: form1[0].page1[0].namesOf[0].Row1[0].monthsLivedHome[0]
+  address_id: 2025/document=form_13614_c/section=intake/control=form1_0_page1_0_namesof_0_row1_0_monthslivedhome_0
+  widget_type: text
+  page: 1
+  rect:
+  - 243.36
+  - 529.92
+  - 293.04
+  - 542.88
+  status: provisional
+- field_name: form1[0].page1[0].namesOf[0].Row1[0].nameFirstLast[0]
+  address_id: 2025/document=form_13614_c/section=intake/control=form1_0_page1_0_namesof_0_row1_0_namefirstlast_0
+  widget_type: text
+  page: 1
+  rect:
+  - 18.0
+  - 529.92
+  - 116.64
+  - 542.88
+  status: provisional
+- field_name: form1[0].page1[0].namesOf[0].Row1[0].ownSupport[0]
+  address_id: 2025/document=form_13614_c/section=intake/control=form1_0_page1_0_namesof_0_row1_0_ownsupport_0
+  widget_type: text
+  page: 1
+  rect:
+  - 592.56
+  - 529.92
+  - 631.44
+  - 542.88
+  status: provisional
+- field_name: form1[0].page1[0].namesOf[0].Row1[0].qualifyingChildDependent[0]
+  address_id: 2025/document=form_13614_c/section=intake/control=form1_0_page1_0_namesof_0_row1_0_qualifyingchilddependent_0
+  widget_type: text
+  page: 1
+  rect:
+  - 552.96
+  - 529.92
+  - 588.24
+  - 542.88
+  status: provisional
+- field_name: form1[0].page1[0].namesOf[0].Row1[0].relationshipToYou[0]
+  address_id: 2025/document=form_13614_c/section=intake/control=form1_0_page1_0_namesof_0_row1_0_relationshiptoyou_0
+  widget_type: text
+  page: 1
+  rect:
+  - 174.96
+  - 529.92
+  - 239.04
+  - 542.88
+  status: provisional
+- field_name: form1[0].page1[0].namesOf[0].Row1[0].residentUSCandaMexico[0]
+  address_id: 2025/document=form_13614_c/section=intake/control=form1_0_page1_0_namesof_0_row1_0_residentuscandamexico_0
+  widget_type: text
+  page: 1
+  rect:
+  - 387.36
+  - 529.92
+  - 437.04
+  - 542.88
+  status: provisional
+- field_name: form1[0].page1[0].namesOf[0].Row1[0].singleMarried[0]
+  address_id: 2025/document=form_13614_c/section=intake/control=form1_0_page1_0_namesof_0_row1_0_singlemarried_0
+  widget_type: text
+  page: 1
+  rect:
+  - 297.36
+  - 529.92
+  - 354.24
+  - 542.88
+  status: provisional
+- field_name: form1[0].page1[0].namesOf[0].Row1[0].supportForPerson[0]
+  address_id: 2025/document=form_13614_c/section=intake/control=form1_0_page1_0_namesof_0_row1_0_supportforperson_0
+  widget_type: text
+  page: 1
+  rect:
+  - 675.36
+  - 529.92
+  - 720.0
+  - 542.88
+  status: provisional
+- field_name: form1[0].page1[0].namesOf[0].Row1[0].totallyPermanentlyDisabled[0]
+  address_id: 2025/document=form_13614_c/section=intake/control=form1_0_page1_0_namesof_0_row1_0_totallypermanentlydisabled_0
+  widget_type: text
+  page: 1
+  rect:
+  - 477.36
+  - 529.92
+  - 519.84
+  - 542.88
+  status: provisional
+- field_name: form1[0].page1[0].namesOf[0].Row1[0].usCitizen[0]
+  address_id: 2025/document=form_13614_c/section=intake/control=form1_0_page1_0_namesof_0_row1_0_uscitizen_0
+  widget_type: text
+  page: 1
+  rect:
+  - 358.56
+  - 529.92
+  - 383.04
+  - 542.88
+  status: provisional
+- field_name: form1[0].page1[0].namesOf[0].Row2[0].costMaintainingHome[0]
+  address_id: 2025/document=form_13614_c/section=intake/control=form1_0_page1_0_namesof_0_row2_0_costmaintaininghome_0
+  widget_type: text
+  page: 1
+  rect:
+  - 722.16
+  - 544.32
+  - 774.0
+  - 557.28
+  status: provisional
+- field_name: form1[0].page1[0].namesOf[0].Row2[0].dateOfBirth[0]
+  address_id: 2025/document=form_13614_c/section=intake/control=form1_0_page1_0_namesof_0_row2_0_dateofbirth_0
+  widget_type: text
+  page: 1
+  rect:
+  - 120.96
+  - 544.32
+  - 170.64
+  - 557.28
+  status: provisional
+- field_name: form1[0].page1[0].namesOf[0].Row2[0].fullTimeStudent[0]
+  address_id: 2025/document=form_13614_c/section=intake/control=form1_0_page1_0_namesof_0_row2_0_fulltimestudent_0
+  widget_type: text
+  page: 1
+  rect:
+  - 441.36
+  - 544.32
+  - 473.04
+  - 557.28
+  status: provisional
+- field_name: form1[0].page1[0].namesOf[0].Row2[0].issuedIPPIN[0]
+  address_id: 2025/document=form_13614_c/section=intake/control=form1_0_page1_0_namesof_0_row2_0_issuedippin_0
+  widget_type: text
+  page: 1
+  rect:
+  - 524.16
+  - 544.32
+  - 548.64
+  - 557.28
+  status: provisional
+- field_name: form1[0].page1[0].namesOf[0].Row2[0].lessThanIncome[0]
+  address_id: 2025/document=form_13614_c/section=intake/control=form1_0_page1_0_namesof_0_row2_0_lessthanincome_0
+  widget_type: text
+  page: 1
+  rect:
+  - 635.76
+  - 544.32
+  - 673.2
+  - 557.28
+  status: provisional
+- field_name: form1[0].page1[0].namesOf[0].Row2[0].monthsLivedHome[0]
+  address_id: 2025/document=form_13614_c/section=intake/control=form1_0_page1_0_namesof_0_row2_0_monthslivedhome_0
+  widget_type: text
+  page: 1
+  rect:
+  - 243.36
+  - 544.32
+  - 293.04
+  - 557.28
+  status: provisional
+- field_name: form1[0].page1[0].namesOf[0].Row2[0].nameFirstLast[0]
+  address_id: 2025/document=form_13614_c/section=intake/control=form1_0_page1_0_namesof_0_row2_0_namefirstlast_0
+  widget_type: text
+  page: 1
+  rect:
+  - 18.0
+  - 544.32
+  - 116.64
+  - 557.28
+  status: provisional
+- field_name: form1[0].page1[0].namesOf[0].Row2[0].ownSupport[0]
+  address_id: 2025/document=form_13614_c/section=intake/control=form1_0_page1_0_namesof_0_row2_0_ownsupport_0
+  widget_type: text
+  page: 1
+  rect:
+  - 592.56
+  - 544.32
+  - 631.44
+  - 557.28
+  status: provisional
+- field_name: form1[0].page1[0].namesOf[0].Row2[0].qualifyingChildDependent[0]
+  address_id: 2025/document=form_13614_c/section=intake/control=form1_0_page1_0_namesof_0_row2_0_qualifyingchilddependent_0
+  widget_type: text
+  page: 1
+  rect:
+  - 552.96
+  - 544.32
+  - 588.24
+  - 557.28
+  status: provisional
+- field_name: form1[0].page1[0].namesOf[0].Row2[0].relationshipToYou[0]
+  address_id: 2025/document=form_13614_c/section=intake/control=form1_0_page1_0_namesof_0_row2_0_relationshiptoyou_0
+  widget_type: text
+  page: 1
+  rect:
+  - 174.96
+  - 544.32
+  - 239.04
+  - 557.28
+  status: provisional
+- field_name: form1[0].page1[0].namesOf[0].Row2[0].residentUSCandaMexico[0]
+  address_id: 2025/document=form_13614_c/section=intake/control=form1_0_page1_0_namesof_0_row2_0_residentuscandamexico_0
+  widget_type: text
+  page: 1
+  rect:
+  - 387.36
+  - 544.32
+  - 437.04
+  - 557.28
+  status: provisional
+- field_name: form1[0].page1[0].namesOf[0].Row2[0].singleMarried[0]
+  address_id: 2025/document=form_13614_c/section=intake/control=form1_0_page1_0_namesof_0_row2_0_singlemarried_0
+  widget_type: text
+  page: 1
+  rect:
+  - 297.36
+  - 544.32
+  - 354.24
+  - 557.28
+  status: provisional
+- field_name: form1[0].page1[0].namesOf[0].Row2[0].supportForPerson[0]
+  address_id: 2025/document=form_13614_c/section=intake/control=form1_0_page1_0_namesof_0_row2_0_supportforperson_0
+  widget_type: text
+  page: 1
+  rect:
+  - 675.36
+  - 544.32
+  - 720.0
+  - 557.28
+  status: provisional
+- field_name: form1[0].page1[0].namesOf[0].Row2[0].totallyPermanentlyDisabled[0]
+  address_id: 2025/document=form_13614_c/section=intake/control=form1_0_page1_0_namesof_0_row2_0_totallypermanentlydisabled_0
+  widget_type: text
+  page: 1
+  rect:
+  - 477.36
+  - 544.32
+  - 519.84
+  - 557.28
+  status: provisional
+- field_name: form1[0].page1[0].namesOf[0].Row2[0].usCitizen[0]
+  address_id: 2025/document=form_13614_c/section=intake/control=form1_0_page1_0_namesof_0_row2_0_uscitizen_0
+  widget_type: text
+  page: 1
+  rect:
+  - 358.56
+  - 544.32
+  - 383.04
+  - 557.28
+  status: provisional
+- field_name: form1[0].page1[0].namesOf[0].Row3[0].costMaintainingHome[0]
+  address_id: 2025/document=form_13614_c/section=intake/control=form1_0_page1_0_namesof_0_row3_0_costmaintaininghome_0
+  widget_type: text
+  page: 1
+  rect:
+  - 722.16
+  - 558.72
+  - 774.0
+  - 571.68
+  status: provisional
+- field_name: form1[0].page1[0].namesOf[0].Row3[0].dateOfBirth[0]
+  address_id: 2025/document=form_13614_c/section=intake/control=form1_0_page1_0_namesof_0_row3_0_dateofbirth_0
+  widget_type: text
+  page: 1
+  rect:
+  - 120.96
+  - 558.72
+  - 170.64
+  - 571.68
+  status: provisional
+- field_name: form1[0].page1[0].namesOf[0].Row3[0].fullTimeStudent[0]
+  address_id: 2025/document=form_13614_c/section=intake/control=form1_0_page1_0_namesof_0_row3_0_fulltimestudent_0
+  widget_type: text
+  page: 1
+  rect:
+  - 441.36
+  - 558.72
+  - 473.04
+  - 571.68
+  status: provisional
+- field_name: form1[0].page1[0].namesOf[0].Row3[0].issuedIPPIN[0]
+  address_id: 2025/document=form_13614_c/section=intake/control=form1_0_page1_0_namesof_0_row3_0_issuedippin_0
+  widget_type: text
+  page: 1
+  rect:
+  - 524.16
+  - 558.72
+  - 548.64
+  - 571.68
+  status: provisional
+- field_name: form1[0].page1[0].namesOf[0].Row3[0].lessThanIncome[0]
+  address_id: 2025/document=form_13614_c/section=intake/control=form1_0_page1_0_namesof_0_row3_0_lessthanincome_0
+  widget_type: text
+  page: 1
+  rect:
+  - 635.76
+  - 558.72
+  - 673.2
+  - 571.68
+  status: provisional
+- field_name: form1[0].page1[0].namesOf[0].Row3[0].monthsLivedHome[0]
+  address_id: 2025/document=form_13614_c/section=intake/control=form1_0_page1_0_namesof_0_row3_0_monthslivedhome_0
+  widget_type: text
+  page: 1
+  rect:
+  - 243.36
+  - 558.72
+  - 293.04
+  - 571.68
+  status: provisional
+- field_name: form1[0].page1[0].namesOf[0].Row3[0].nameFirstLast[0]
+  address_id: 2025/document=form_13614_c/section=intake/control=form1_0_page1_0_namesof_0_row3_0_namefirstlast_0
+  widget_type: text
+  page: 1
+  rect:
+  - 18.0
+  - 558.72
+  - 116.64
+  - 571.68
+  status: provisional
+- field_name: form1[0].page1[0].namesOf[0].Row3[0].ownSupport[0]
+  address_id: 2025/document=form_13614_c/section=intake/control=form1_0_page1_0_namesof_0_row3_0_ownsupport_0
+  widget_type: text
+  page: 1
+  rect:
+  - 592.56
+  - 558.72
+  - 631.44
+  - 571.68
+  status: provisional
+- field_name: form1[0].page1[0].namesOf[0].Row3[0].qualifyingChildDependent[0]
+  address_id: 2025/document=form_13614_c/section=intake/control=form1_0_page1_0_namesof_0_row3_0_qualifyingchilddependent_0
+  widget_type: text
+  page: 1
+  rect:
+  - 552.96
+  - 558.72
+  - 588.24
+  - 571.68
+  status: provisional
+- field_name: form1[0].page1[0].namesOf[0].Row3[0].relationshipToYou[0]
+  address_id: 2025/document=form_13614_c/section=intake/control=form1_0_page1_0_namesof_0_row3_0_relationshiptoyou_0
+  widget_type: text
+  page: 1
+  rect:
+  - 174.96
+  - 558.72
+  - 239.04
+  - 571.68
+  status: provisional
+- field_name: form1[0].page1[0].namesOf[0].Row3[0].residentUSCandaMexico[0]
+  address_id: 2025/document=form_13614_c/section=intake/control=form1_0_page1_0_namesof_0_row3_0_residentuscandamexico_0
+  widget_type: text
+  page: 1
+  rect:
+  - 387.36
+  - 558.72
+  - 437.04
+  - 571.68
+  status: provisional
+- field_name: form1[0].page1[0].namesOf[0].Row3[0].singleMarried[0]
+  address_id: 2025/document=form_13614_c/section=intake/control=form1_0_page1_0_namesof_0_row3_0_singlemarried_0
+  widget_type: text
+  page: 1
+  rect:
+  - 297.36
+  - 558.72
+  - 354.24
+  - 571.68
+  status: provisional
+- field_name: form1[0].page1[0].namesOf[0].Row3[0].supportForPerson[0]
+  address_id: 2025/document=form_13614_c/section=intake/control=form1_0_page1_0_namesof_0_row3_0_supportforperson_0
+  widget_type: text
+  page: 1
+  rect:
+  - 675.36
+  - 558.72
+  - 720.0
+  - 571.68
+  status: provisional
+- field_name: form1[0].page1[0].namesOf[0].Row3[0].totallyPermanentlyDisabled[0]
+  address_id: 2025/document=form_13614_c/section=intake/control=form1_0_page1_0_namesof_0_row3_0_totallypermanentlydisabled_0
+  widget_type: text
+  page: 1
+  rect:
+  - 477.36
+  - 558.72
+  - 519.84
+  - 571.68
+  status: provisional
+- field_name: form1[0].page1[0].namesOf[0].Row3[0].usCitizen[0]
+  address_id: 2025/document=form_13614_c/section=intake/control=form1_0_page1_0_namesof_0_row3_0_uscitizen_0
+  widget_type: text
+  page: 1
+  rect:
+  - 358.56
+  - 558.72
+  - 383.04
+  - 571.68
+  status: provisional
+- field_name: form1[0].page1[0].namesOf[0].Row4[0].costMaintainingHome[0]
+  address_id: 2025/document=form_13614_c/section=intake/control=form1_0_page1_0_namesof_0_row4_0_costmaintaininghome_0
+  widget_type: text
+  page: 1
+  rect:
+  - 722.16
+  - 573.12
+  - 774.0
+  - 586.08
+  status: provisional
+- field_name: form1[0].page1[0].namesOf[0].Row4[0].dateOfBirth[0]
+  address_id: 2025/document=form_13614_c/section=intake/control=form1_0_page1_0_namesof_0_row4_0_dateofbirth_0
+  widget_type: text
+  page: 1
+  rect:
+  - 120.96
+  - 573.12
+  - 170.64
+  - 586.08
+  status: provisional
+- field_name: form1[0].page1[0].namesOf[0].Row4[0].fullTimeStudent[0]
+  address_id: 2025/document=form_13614_c/section=intake/control=form1_0_page1_0_namesof_0_row4_0_fulltimestudent_0
+  widget_type: text
+  page: 1
+  rect:
+  - 441.36
+  - 573.12
+  - 473.04
+  - 586.08
+  status: provisional
+- field_name: form1[0].page1[0].namesOf[0].Row4[0].issuedIPPIN[0]
+  address_id: 2025/document=form_13614_c/section=intake/control=form1_0_page1_0_namesof_0_row4_0_issuedippin_0
+  widget_type: text
+  page: 1
+  rect:
+  - 524.16
+  - 573.12
+  - 548.64
+  - 586.08
+  status: provisional
+- field_name: form1[0].page1[0].namesOf[0].Row4[0].lessThanIncome[0]
+  address_id: 2025/document=form_13614_c/section=intake/control=form1_0_page1_0_namesof_0_row4_0_lessthanincome_0
+  widget_type: text
+  page: 1
+  rect:
+  - 635.76
+  - 573.12
+  - 673.2
+  - 586.08
+  status: provisional
+- field_name: form1[0].page1[0].namesOf[0].Row4[0].monthsLivedHome[0]
+  address_id: 2025/document=form_13614_c/section=intake/control=form1_0_page1_0_namesof_0_row4_0_monthslivedhome_0
+  widget_type: text
+  page: 1
+  rect:
+  - 243.36
+  - 573.12
+  - 293.04
+  - 586.08
+  status: provisional
+- field_name: form1[0].page1[0].namesOf[0].Row4[0].nameFirstLast[0]
+  address_id: 2025/document=form_13614_c/section=intake/control=form1_0_page1_0_namesof_0_row4_0_namefirstlast_0
+  widget_type: text
+  page: 1
+  rect:
+  - 18.0
+  - 573.12
+  - 116.64
+  - 586.08
+  status: provisional
+- field_name: form1[0].page1[0].namesOf[0].Row4[0].ownSupport[0]
+  address_id: 2025/document=form_13614_c/section=intake/control=form1_0_page1_0_namesof_0_row4_0_ownsupport_0
+  widget_type: text
+  page: 1
+  rect:
+  - 592.56
+  - 573.12
+  - 631.44
+  - 586.08
+  status: provisional
+- field_name: form1[0].page1[0].namesOf[0].Row4[0].qualifyingChildDependent[0]
+  address_id: 2025/document=form_13614_c/section=intake/control=form1_0_page1_0_namesof_0_row4_0_qualifyingchilddependent_0
+  widget_type: text
+  page: 1
+  rect:
+  - 552.96
+  - 573.12
+  - 588.24
+  - 586.08
+  status: provisional
+- field_name: form1[0].page1[0].namesOf[0].Row4[0].relationshipToYou[0]
+  address_id: 2025/document=form_13614_c/section=intake/control=form1_0_page1_0_namesof_0_row4_0_relationshiptoyou_0
+  widget_type: text
+  page: 1
+  rect:
+  - 174.96
+  - 573.12
+  - 239.04
+  - 586.08
+  status: provisional
+- field_name: form1[0].page1[0].namesOf[0].Row4[0].residentUSCandaMexico[0]
+  address_id: 2025/document=form_13614_c/section=intake/control=form1_0_page1_0_namesof_0_row4_0_residentuscandamexico_0
+  widget_type: text
+  page: 1
+  rect:
+  - 387.36
+  - 573.12
+  - 437.04
+  - 586.08
+  status: provisional
+- field_name: form1[0].page1[0].namesOf[0].Row4[0].singleMarried[0]
+  address_id: 2025/document=form_13614_c/section=intake/control=form1_0_page1_0_namesof_0_row4_0_singlemarried_0
+  widget_type: text
+  page: 1
+  rect:
+  - 297.36
+  - 573.12
+  - 354.24
+  - 586.08
+  status: provisional
+- field_name: form1[0].page1[0].namesOf[0].Row4[0].supportForPerson[0]
+  address_id: 2025/document=form_13614_c/section=intake/control=form1_0_page1_0_namesof_0_row4_0_supportforperson_0
+  widget_type: text
+  page: 1
+  rect:
+  - 675.36
+  - 573.12
+  - 720.0
+  - 586.08
+  status: provisional
+- field_name: form1[0].page1[0].namesOf[0].Row4[0].totallyPermanentlyDisabled[0]
+  address_id: 2025/document=form_13614_c/section=intake/control=form1_0_page1_0_namesof_0_row4_0_totallypermanentlydisabled_0
+  widget_type: text
+  page: 1
+  rect:
+  - 477.36
+  - 573.12
+  - 519.84
+  - 586.08
+  status: provisional
+- field_name: form1[0].page1[0].namesOf[0].Row4[0].usCitizen[0]
+  address_id: 2025/document=form_13614_c/section=intake/control=form1_0_page1_0_namesof_0_row4_0_uscitizen_0
+  widget_type: text
+  page: 1
+  rect:
+  - 358.56
+  - 573.12
+  - 383.04
+  - 586.08
+  status: provisional
+- field_name: form1[0].page1[0].presidentialElectionFund[0].presidentialElectionFundNo[0]
+  address_id: 2025/document=form_13614_c/section=intake/option=form1_0_page1_0_presidentialelectionfund_0_presidentialelectionfundno_0
+  widget_type: checkbox
+  page: 1
+  rect:
+  - 720.0
+  - 366.8
+  - 728.0
+  - 374.8
+  status: provisional
+- field_name: form1[0].page1[0].presidentialElectionFund[0].presidentialElectionFundSpouse[0]
+  address_id: 2025/document=form_13614_c/section=intake/option=form1_0_page1_0_presidentialelectionfund_0_presidentialelectionfundspouse_0
+  widget_type: checkbox
+  page: 1
+  rect:
+  - 648.0
+  - 366.8
+  - 656.0
+  - 374.8
+  status: provisional
+- field_name: form1[0].page1[0].presidentialElectionFund[0].presidentialElectionFundYou[0]
+  address_id: 2025/document=form_13614_c/section=intake/option=form1_0_page1_0_presidentialelectionfund_0_presidentialelectionfundyou_0
+  widget_type: checkbox
+  page: 1
+  rect:
+  - 586.8
+  - 366.8
+  - 594.8
+  - 374.8
+  status: provisional
+- field_name: form1[0].page1[0].spousesDateOfBirth[0]
+  address_id: 2025/document=form_13614_c/section=intake/control=form1_0_page1_0_spousesdateofbirth_0
+  widget_type: text
+  page: 1
+  rect:
+  - 432.0
+  - 156.96
+  - 529.2
+  - 169.2
+  status: provisional
+- field_name: form1[0].page1[0].spousesFirstName[0]
+  address_id: 2025/document=form_13614_c/section=intake/control=form1_0_page1_0_spousesfirstname_0
+  widget_type: text
+  page: 1
+  rect:
+  - 18.0
+  - 156.96
+  - 198.0
+  - 169.2
+  status: provisional
+- field_name: form1[0].page1[0].spousesJobTitle[0]
+  address_id: 2025/document=form_13614_c/section=intake/control=form1_0_page1_0_spousesjobtitle_0
+  widget_type: text
+  page: 1
+  rect:
+  - 536.4
+  - 156.96
+  - 774.0
+  - 169.2
+  status: provisional
+- field_name: form1[0].page1[0].spousesLastName[0]
+  address_id: 2025/document=form_13614_c/section=intake/control=form1_0_page1_0_spouseslastname_0
+  widget_type: text
+  page: 1
+  rect:
+  - 248.4
+  - 156.96
+  - 424.8
+  - 169.2
+  status: provisional
+- field_name: form1[0].page1[0].spousesMiddleInitial[0]
+  address_id: 2025/document=form_13614_c/section=intake/control=form1_0_page1_0_spousesmiddleinitial_0
+  widget_type: text
+  page: 1
+  rect:
+  - 205.2
+  - 156.96
+  - 241.2
+  - 169.2
+  status: provisional
+- field_name: form1[0].page1[0].spousesTelephoneNumber[0]
+  address_id: 2025/document=form_13614_c/section=intake/control=form1_0_page1_0_spousestelephonenumber_0
+  widget_type: text
+  page: 1
+  rect:
+  - 180.0
+  - 207.36
+  - 331.2
+  - 219.6
+  status: provisional
+- field_name: form1[0].page1[0].writtenCommunicationLanguage[0].otherLanguageNo[0]
+  address_id: 2025/document=form_13614_c/section=intake/option=form1_0_page1_0_writtencommunicationlanguage_0_otherlanguageno_0
+  widget_type: checkbox
+  page: 1
+  rect:
+  - 720.0
+  - 338.0
+  - 728.0
+  - 346.0
+  status: provisional
+- field_name: form1[0].page1[0].writtenCommunicationLanguage[0].otherLanguageSpouse[0]
+  address_id: 2025/document=form_13614_c/section=intake/option=form1_0_page1_0_writtencommunicationlanguage_0_otherlanguagespouse_0
+  widget_type: checkbox
+  page: 1
+  rect:
+  - 648.0
+  - 338.0
+  - 656.0
+  - 346.0
+  status: provisional
+- field_name: form1[0].page1[0].writtenCommunicationLanguage[0].otherLanguageYou[0]
+  address_id: 2025/document=form_13614_c/section=intake/option=form1_0_page1_0_writtencommunicationlanguage_0_otherlanguageyou_0
+  widget_type: checkbox
+  page: 1
+  rect:
+  - 586.8
+  - 338.0
+  - 594.8
+  - 346.0
+  status: provisional
+- field_name: form1[0].page1[0].writtenCommunicationLanguage[0].whatLanguage[0]
+  address_id: 2025/document=form_13614_c/section=intake/control=form1_0_page1_0_writtencommunicationlanguage_0_whatlanguage_0
+  widget_type: text
+  page: 1
+  rect:
+  - 97.2
+  - 349.2
+  - 241.2
+  - 360.0
+  status: provisional
+- field_name: form1[0].page1[0].youSpouseWereIn[0].column1[0].fullTimeStudent[0].studentNo[0]
+  address_id: 2025/document=form_13614_c/section=intake/option=form1_0_page1_0_youspousewerein_0_column1_0_fulltimestudent_0_studentno_0
+  widget_type: checkbox
+  page: 1
+  rect:
+  - 338.4
+  - 279.32
+  - 346.4
+  - 287.32
+  status: provisional
+- field_name: form1[0].page1[0].youSpouseWereIn[0].column1[0].fullTimeStudent[0].studentSpouse[0]
+  address_id: 2025/document=form_13614_c/section=intake/option=form1_0_page1_0_youspousewerein_0_column1_0_fulltimestudent_0_studentspouse_0
+  widget_type: checkbox
+  page: 1
+  rect:
+  - 266.4
+  - 279.32
+  - 274.4
+  - 287.32
+  status: provisional
+- field_name: form1[0].page1[0].youSpouseWereIn[0].column1[0].fullTimeStudent[0].studentYou[0]
+  address_id: 2025/document=form_13614_c/section=intake/option=form1_0_page1_0_youspousewerein_0_column1_0_fulltimestudent_0_studentyou_0
+  widget_type: checkbox
+  page: 1
+  rect:
+  - 205.2
+  - 279.32
+  - 213.2
+  - 287.32
+  status: provisional
+- field_name: form1[0].page1[0].youSpouseWereIn[0].column1[0].usCitizen[0].usCitizenNo[0]
+  address_id: 2025/document=form_13614_c/section=intake/option=form1_0_page1_0_youspousewerein_0_column1_0_uscitizen_0_uscitizenno_0
+  widget_type: checkbox
+  page: 1
+  rect:
+  - 338.4
+  - 250.52
+  - 346.4
+  - 258.52
+  status: provisional
+- field_name: form1[0].page1[0].youSpouseWereIn[0].column1[0].usCitizen[0].usCitizenSpouse[0]
+  address_id: 2025/document=form_13614_c/section=intake/option=form1_0_page1_0_youspousewerein_0_column1_0_uscitizen_0_uscitizenspouse_0
+  widget_type: checkbox
+  page: 1
+  rect:
+  - 266.4
+  - 250.52
+  - 274.4
+  - 258.52
+  status: provisional
+- field_name: form1[0].page1[0].youSpouseWereIn[0].column1[0].usCitizen[0].usCitizenYou[0]
+  address_id: 2025/document=form_13614_c/section=intake/option=form1_0_page1_0_youspousewerein_0_column1_0_uscitizen_0_uscitizenyou_0
+  widget_type: checkbox
+  page: 1
+  rect:
+  - 205.2
+  - 250.52
+  - 213.2
+  - 258.52
+  status: provisional
+- field_name: form1[0].page1[0].youSpouseWereIn[0].column1[0].usOnVisa[0].onVisaNo[0]
+  address_id: 2025/document=form_13614_c/section=intake/option=form1_0_page1_0_youspousewerein_0_column1_0_usonvisa_0_onvisano_0
+  widget_type: checkbox
+  page: 1
+  rect:
+  - 338.4
+  - 264.92
+  - 346.4
+  - 272.92
+  status: provisional
+- field_name: form1[0].page1[0].youSpouseWereIn[0].column1[0].usOnVisa[0].onVisaSpouse[0]
+  address_id: 2025/document=form_13614_c/section=intake/option=form1_0_page1_0_youspousewerein_0_column1_0_usonvisa_0_onvisaspouse_0
+  widget_type: checkbox
+  page: 1
+  rect:
+  - 266.4
+  - 264.92
+  - 274.4
+  - 272.92
+  status: provisional
+- field_name: form1[0].page1[0].youSpouseWereIn[0].column1[0].usOnVisa[0].onVisaYou[0]
+  address_id: 2025/document=form_13614_c/section=intake/option=form1_0_page1_0_youspousewerein_0_column1_0_usonvisa_0_onvisayou_0
+  widget_type: checkbox
+  page: 1
+  rect:
+  - 205.2
+  - 264.92
+  - 213.2
+  - 272.92
+  status: provisional
+- field_name: form1[0].page1[0].youSpouseWereIn[0].column2[0].holdDigitalAssets[0].digitalAssetsNo[0]
+  address_id: 2025/document=form_13614_c/section=intake/option=form1_0_page1_0_youspousewerein_0_column2_0_holddigitalassets_0_digitalassetsno_0
+  widget_type: checkbox
+  page: 1
+  rect:
+  - 720.0
+  - 279.32
+  - 728.0
+  - 287.32
+  status: provisional
+- field_name: form1[0].page1[0].youSpouseWereIn[0].column2[0].holdDigitalAssets[0].digitalAssetsSpouse[0]
+  address_id: 2025/document=form_13614_c/section=intake/option=form1_0_page1_0_youspousewerein_0_column2_0_holddigitalassets_0_digitalassetsspouse_0
+  widget_type: checkbox
+  page: 1
+  rect:
+  - 648.0
+  - 279.32
+  - 656.0
+  - 287.32
+  status: provisional
+- field_name: form1[0].page1[0].youSpouseWereIn[0].column2[0].holdDigitalAssets[0].digitalAssetsYou[0]
+  address_id: 2025/document=form_13614_c/section=intake/option=form1_0_page1_0_youspousewerein_0_column2_0_holddigitalassets_0_digitalassetsyou_0
+  widget_type: checkbox
+  page: 1
+  rect:
+  - 586.8
+  - 279.32
+  - 594.8
+  - 287.32
+  status: provisional
+- field_name: form1[0].page1[0].youSpouseWereIn[0].column2[0].issuedIdentityProtection[0].identityProtectionNo[0]
+  address_id: 2025/document=form_13614_c/section=intake/option=form1_0_page1_0_youspousewerein_0_column2_0_issuedidentityprotection_0_identityprotectionno_0
+  widget_type: checkbox
+  page: 1
+  rect:
+  - 720.0
+  - 264.92
+  - 728.0
+  - 272.92
+  status: provisional
+- field_name: form1[0].page1[0].youSpouseWereIn[0].column2[0].issuedIdentityProtection[0].identityProtectionSpouse[0]
+  address_id: 2025/document=form_13614_c/section=intake/option=form1_0_page1_0_youspousewerein_0_column2_0_issuedidentityprotection_0_identityprotectionspouse_0
+  widget_type: checkbox
+  page: 1
+  rect:
+  - 648.0
+  - 264.92
+  - 656.0
+  - 272.92
+  status: provisional
+- field_name: form1[0].page1[0].youSpouseWereIn[0].column2[0].issuedIdentityProtection[0].identityProtectionYou[0]
+  address_id: 2025/document=form_13614_c/section=intake/option=form1_0_page1_0_youspousewerein_0_column2_0_issuedidentityprotection_0_identityprotectionyou_0
+  widget_type: checkbox
+  page: 1
+  rect:
+  - 586.8
+  - 264.92
+  - 594.8
+  - 272.92
+  status: provisional
+- field_name: form1[0].page1[0].youSpouseWereIn[0].column2[0].legallyBlind[0].legallyBlindNo[0]
+  address_id: 2025/document=form_13614_c/section=intake/option=form1_0_page1_0_youspousewerein_0_column2_0_legallyblind_0_legallyblindno_0
+  widget_type: checkbox
+  page: 1
+  rect:
+  - 720.0
+  - 237.2
+  - 728.0
+  - 245.2
+  status: provisional
+- field_name: form1[0].page1[0].youSpouseWereIn[0].column2[0].legallyBlind[0].legallyBlindSpouse[0]
+  address_id: 2025/document=form_13614_c/section=intake/option=form1_0_page1_0_youspousewerein_0_column2_0_legallyblind_0_legallyblindspouse_0
+  widget_type: checkbox
+  page: 1
+  rect:
+  - 648.0
+  - 237.2
+  - 656.0
+  - 245.2
+  status: provisional
+- field_name: form1[0].page1[0].youSpouseWereIn[0].column2[0].legallyBlind[0].legallyBlindYou[0]
+  address_id: 2025/document=form_13614_c/section=intake/option=form1_0_page1_0_youspousewerein_0_column2_0_legallyblind_0_legallyblindyou_0
+  widget_type: checkbox
+  page: 1
+  rect:
+  - 586.8
+  - 237.2
+  - 594.8
+  - 245.2
+  status: provisional
+- field_name: form1[0].page1[0].youSpouseWereIn[0].column2[0].totallyPermanentlyDisabled[0].disabledNo[0]
+  address_id: 2025/document=form_13614_c/section=intake/option=form1_0_page1_0_youspousewerein_0_column2_0_totallypermanentlydisabled_0_disabledno_0
+  widget_type: checkbox
+  page: 1
+  rect:
+  - 720.0
+  - 250.52
+  - 728.0
+  - 258.52
+  status: provisional
+- field_name: form1[0].page1[0].youSpouseWereIn[0].column2[0].totallyPermanentlyDisabled[0].disabledSpouse[0]
+  address_id: 2025/document=form_13614_c/section=intake/option=form1_0_page1_0_youspousewerein_0_column2_0_totallypermanentlydisabled_0_disabledspouse_0
+  widget_type: checkbox
+  page: 1
+  rect:
+  - 648.0
+  - 250.52
+  - 656.0
+  - 258.52
+  status: provisional
+- field_name: form1[0].page1[0].youSpouseWereIn[0].column2[0].totallyPermanentlyDisabled[0].disabledYou[0]
+  address_id: 2025/document=form_13614_c/section=intake/option=form1_0_page1_0_youspousewerein_0_column2_0_totallypermanentlydisabled_0_disabledyou_0
+  widget_type: checkbox
+  page: 1
+  rect:
+  - 586.8
+  - 250.52
+  - 594.8
+  - 258.52
+  status: provisional
+- field_name: form1[0].page1[0].yourDateOfBirth[0]
+  address_id: 2025/document=form_13614_c/section=intake/control=form1_0_page1_0_yourdateofbirth_0
+  widget_type: text
+  page: 1
+  rect:
+  - 432.0
+  - 131.76
+  - 529.2
+  - 144.0
+  status: provisional
+- field_name: form1[0].page1[0].yourEmailAddress[0]
+  address_id: 2025/document=form_13614_c/section=intake/control=form1_0_page1_0_youremailaddress_0
+  widget_type: text
+  page: 1
+  rect:
+  - 338.4
+  - 207.36
+  - 529.2
+  - 219.6
+  status: provisional
+- field_name: form1[0].page1[0].yourFirstName[0]
+  address_id: 2025/document=form_13614_c/section=intake/control=form1_0_page1_0_yourfirstname_0
+  widget_type: text
+  page: 1
+  rect:
+  - 18.0
+  - 131.76
+  - 198.0
+  - 144.0
+  status: provisional
+- field_name: form1[0].page1[0].yourJobTitle[0]
+  address_id: 2025/document=form_13614_c/section=intake/control=form1_0_page1_0_yourjobtitle_0
+  widget_type: text
+  page: 1
+  rect:
+  - 536.4
+  - 131.76
+  - 774.0
+  - 144.0
+  status: provisional
+- field_name: form1[0].page1[0].yourLastName[0]
+  address_id: 2025/document=form_13614_c/section=intake/control=form1_0_page1_0_yourlastname_0
+  widget_type: text
+  page: 1
+  rect:
+  - 248.4
+  - 131.76
+  - 424.8
+  - 144.0
+  status: provisional
+- field_name: form1[0].page1[0].yourMiddleInitial[0]
+  address_id: 2025/document=form_13614_c/section=intake/control=form1_0_page1_0_yourmiddleinitial_0
+  widget_type: text
+  page: 1
+  rect:
+  - 205.2
+  - 131.76
+  - 241.2
+  - 144.0
+  status: provisional
+- field_name: form1[0].page1[0].yourTelephoneNumber[0]
+  address_id: 2025/document=form_13614_c/section=intake/control=form1_0_page1_0_yourtelephonenumber_0
+  widget_type: text
+  page: 1
+  rect:
+  - 18.0
+  - 207.36
+  - 172.8
+  - 219.6
+  status: provisional
+- field_name: form1[0].page2[0].IncomeIncludedComment[0].IncomeIncludedComments[0]
+  address_id: 2025/document=form_13614_c/section=intake/control=form1_0_page2_0_incomeincludedcomment_0_incomeincludedcomments_0
+  widget_type: text
+  page: 2
+  rect:
+  - 640.8
+  - 56.16
+  - 774.0
+  - 586.8
+  status: provisional
+- field_name: form1[0].page2[0].incomeIncluded[0].alimonyIncome[0].alimonyAmount[0]
+  address_id: 2025/document=form_13614_c/section=intake/control=form1_0_page2_0_incomeincluded_0_alimonyincome_0_alimonyamount_0
+  widget_type: text
+  page: 2
+  rect:
+  - 604.8
+  - 298.8
+  - 637.2
+  - 316.8
+  status: provisional
+- field_name: form1[0].page2[0].incomeIncluded[0].alimonyIncome[0].alimonyIncome[0]
+  address_id: 2025/document=form_13614_c/section=intake/option=form1_0_page2_0_incomeincluded_0_alimonyincome_0_alimonyincome_0
+  widget_type: checkbox
+  page: 2
+  rect:
+  - 334.8
+  - 303.8
+  - 342.8
+  - 311.8
+  status: provisional
+- field_name: form1[0].page2[0].incomeIncluded[0].alimonyIncome[0].excludedNo[0]
+  address_id: 2025/document=form_13614_c/section=intake/option=form1_0_page2_0_incomeincluded_0_alimonyincome_0_excludedno_0
+  widget_type: checkbox
+  page: 2
+  rect:
+  - 590.4
+  - 321.8
+  - 598.4
+  - 329.8
+  status: provisional
+- field_name: form1[0].page2[0].incomeIncluded[0].alimonyIncome[0].excludedYes[0]
+  address_id: 2025/document=form_13614_c/section=intake/option=form1_0_page2_0_incomeincluded_0_alimonyincome_0_excludedyes_0
+  widget_type: checkbox
+  page: 2
+  rect:
+  - 543.6
+  - 321.8
+  - 551.6
+  - 329.8
+  status: provisional
+- field_name: form1[0].page2[0].incomeIncluded[0].disabilityBenefitsNumber[0]
+  address_id: 2025/document=form_13614_c/section=intake/control=form1_0_page2_0_incomeincluded_0_disabilitybenefitsnumber_0
+  widget_type: text
+  page: 2
+  rect:
+  - 604.8
+  - 144.0
+  - 637.2
+  - 162.0
+  status: provisional
+- field_name: form1[0].page2[0].incomeIncluded[0].disabilityBenefits[0]
+  address_id: 2025/document=form_13614_c/section=intake/option=form1_0_page2_0_incomeincluded_0_disabilitybenefits_0
+  widget_type: checkbox
+  page: 2
+  rect:
+  - 334.8
+  - 149.0
+  - 342.8
+  - 157.0
+  status: provisional
+- field_name: form1[0].page2[0].incomeIncluded[0].form1099B[0].capitalLossCarryover[0].capitalLossCarryoverNo[0]
+  address_id: 2025/document=form_13614_c/section=intake/option=form1_0_page2_0_incomeincluded_0_form1099b_0_capitallosscarryover_0_capitallosscarryoverno_0
+  widget_type: checkbox
+  page: 2
+  rect:
+  - 590.4
+  - 285.8
+  - 598.4
+  - 293.8
+  status: provisional
+- field_name: form1[0].page2[0].incomeIncluded[0].form1099B[0].capitalLossCarryover[0].capitalLossCarryoverYes[0]
+  address_id: 2025/document=form_13614_c/section=intake/option=form1_0_page2_0_incomeincluded_0_form1099b_0_capitallosscarryover_0_capitallosscarryoveryes_0
+  widget_type: checkbox
+  page: 2
+  rect:
+  - 543.6
+  - 285.8
+  - 551.6
+  - 293.8
+  status: provisional
+- field_name: form1[0].page2[0].incomeIncluded[0].form1099B[0].capitalLossCarryover[0].capitalLossCarryover[0]
+  address_id: 2025/document=form_13614_c/section=intake/option=form1_0_page2_0_incomeincluded_0_form1099b_0_capitallosscarryover_0_capitallosscarryover_0
+  widget_type: checkbox
+  page: 2
+  rect:
+  - 334.8
+  - 285.8
+  - 342.8
+  - 293.8
+  status: provisional
+- field_name: form1[0].page2[0].incomeIncluded[0].form1099B[0].form1099BNumber[0]
+  address_id: 2025/document=form_13614_c/section=intake/control=form1_0_page2_0_incomeincluded_0_form1099b_0_form1099bnumber_0
+  widget_type: text
+  page: 2
+  rect:
+  - 604.8
+  - 262.8
+  - 637.2
+  - 280.8
+  status: provisional
+- field_name: form1[0].page2[0].incomeIncluded[0].form1099B[0].form1099B[0]
+  address_id: 2025/document=form_13614_c/section=intake/option=form1_0_page2_0_incomeincluded_0_form1099b_0_form1099b_0
+  widget_type: checkbox
+  page: 2
+  rect:
+  - 334.8
+  - 267.8
+  - 342.8
+  - 275.8
+  status: provisional
+- field_name: form1[0].page2[0].incomeIncluded[0].form1099GNumber[0]
+  address_id: 2025/document=form_13614_c/section=intake/control=form1_0_page2_0_incomeincluded_0_form1099gnumber_0
+  widget_type: text
+  page: 2
+  rect:
+  - 604.8
+  - 190.8
+  - 637.2
+  - 205.2
+  status: provisional
+- field_name: form1[0].page2[0].incomeIncluded[0].form1099G[0]
+  address_id: 2025/document=form_13614_c/section=intake/option=form1_0_page2_0_incomeincluded_0_form1099g_0
+  widget_type: checkbox
+  page: 2
+  rect:
+  - 334.8
+  - 195.8
+  - 342.8
+  - 203.8
+  status: provisional
+- field_name: form1[0].page2[0].incomeIncluded[0].form1099INTDIV[0].form1099DIVNumber[0]
+  address_id: 2025/document=form_13614_c/section=intake/control=form1_0_page2_0_incomeincluded_0_form1099intdiv_0_form1099divnumber_0
+  widget_type: text
+  page: 2
+  rect:
+  - 604.8
+  - 244.8
+  - 637.2
+  - 259.2
+  status: provisional
+- field_name: form1[0].page2[0].incomeIncluded[0].form1099INTDIV[0].form1099DIV[0]
+  address_id: 2025/document=form_13614_c/section=intake/option=form1_0_page2_0_incomeincluded_0_form1099intdiv_0_form1099div_0
+  widget_type: checkbox
+  page: 2
+  rect:
+  - 486.0
+  - 249.8
+  - 494.0
+  - 257.8
+  status: provisional
+- field_name: form1[0].page2[0].incomeIncluded[0].form1099INTDIV[0].form1099INTNumber[0]
+  address_id: 2025/document=form_13614_c/section=intake/control=form1_0_page2_0_incomeincluded_0_form1099intdiv_0_form1099intnumber_0
+  widget_type: text
+  page: 2
+  rect:
+  - 442.8
+  - 244.8
+  - 475.2
+  - 259.2
+  status: provisional
+- field_name: form1[0].page2[0].incomeIncluded[0].form1099INTDIV[0].form1099INT[0]
+  address_id: 2025/document=form_13614_c/section=intake/option=form1_0_page2_0_incomeincluded_0_form1099intdiv_0_form1099int_0
+  widget_type: checkbox
+  page: 2
+  rect:
+  - 334.8
+  - 249.8
+  - 342.8
+  - 257.8
+  status: provisional
+- field_name: form1[0].page2[0].incomeIncluded[0].form1099KNumber[0]
+  address_id: 2025/document=form_13614_c/section=intake/control=form1_0_page2_0_incomeincluded_0_form1099knumber_0
+  widget_type: text
+  page: 2
+  rect:
+  - 604.8
+  - 486.0
+  - 637.2
+  - 504.0
+  status: provisional
+- field_name: form1[0].page2[0].incomeIncluded[0].form1099K[0]
+  address_id: 2025/document=form_13614_c/section=intake/option=form1_0_page2_0_incomeincluded_0_form1099k_0
+  widget_type: checkbox
+  page: 2
+  rect:
+  - 352.8
+  - 491.0
+  - 360.8
+  - 499.0
+  status: provisional
+- field_name: form1[0].page2[0].incomeIncluded[0].form1099MISCNumber[0]
+  address_id: 2025/document=form_13614_c/section=intake/control=form1_0_page2_0_incomeincluded_0_form1099miscnumber_0
+  widget_type: text
+  page: 2
+  rect:
+  - 604.8
+  - 450.0
+  - 637.2
+  - 468.0
+  status: provisional
+- field_name: form1[0].page2[0].incomeIncluded[0].form1099MISC[0]
+  address_id: 2025/document=form_13614_c/section=intake/option=form1_0_page2_0_incomeincluded_0_form1099misc_0
+  widget_type: checkbox
+  page: 2
+  rect:
+  - 352.8
+  - 455.0
+  - 360.8
+  - 463.0
+  status: provisional
+- field_name: form1[0].page2[0].incomeIncluded[0].form1099NECNumber[0]
+  address_id: 2025/document=form_13614_c/section=intake/control=form1_0_page2_0_incomeincluded_0_form1099necnumber_0
+  widget_type: text
+  page: 2
+  rect:
+  - 604.8
+  - 468.0
+  - 637.2
+  - 486.0
+  status: provisional
+- field_name: form1[0].page2[0].incomeIncluded[0].form1099NEC[0]
+  address_id: 2025/document=form_13614_c/section=intake/option=form1_0_page2_0_incomeincluded_0_form1099nec_0
+  widget_type: checkbox
+  page: 2
+  rect:
+  - 352.8
+  - 473.0
+  - 360.8
+  - 481.0
+  status: provisional
+- field_name: form1[0].page2[0].incomeIncluded[0].form1099RNumber[0]
+  address_id: 2025/document=form_13614_c/section=intake/control=form1_0_page2_0_incomeincluded_0_form1099rnumber_0
+  widget_type: text
+  page: 2
+  rect:
+  - 604.8
+  - 108.0
+  - 637.2
+  - 126.0
+  status: provisional
+- field_name: form1[0].page2[0].incomeIncluded[0].form1099R[0]
+  address_id: 2025/document=form_13614_c/section=intake/option=form1_0_page2_0_incomeincluded_0_form1099r_0
+  widget_type: checkbox
+  page: 2
+  rect:
+  - 334.8
+  - 113.0
+  - 342.8
+  - 121.0
+  status: provisional
+- field_name: form1[0].page2[0].incomeIncluded[0].formW2G[0].formW2GNumber[0]
+  address_id: 2025/document=form_13614_c/section=intake/control=form1_0_page2_0_incomeincluded_0_formw2g_0_formw2gnumber_0
+  widget_type: text
+  page: 2
+  rect:
+  - 604.8
+  - 414.0
+  - 637.2
+  - 428.4
+  status: provisional
+- field_name: form1[0].page2[0].incomeIncluded[0].formW2G[0].formW2G[0]
+  address_id: 2025/document=form_13614_c/section=intake/option=form1_0_page2_0_incomeincluded_0_formw2g_0_formw2g_0
+  widget_type: checkbox
+  page: 2
+  rect:
+  - 334.86
+  - 404.6
+  - 342.86
+  - 412.6
+  status: provisional
+- field_name: form1[0].page2[0].incomeIncluded[0].formW2sNumber[0]
+  address_id: 2025/document=form_13614_c/section=intake/control=form1_0_page2_0_incomeincluded_0_formw2snumber_0
+  widget_type: text
+  page: 2
+  rect:
+  - 604.8
+  - 54.0
+  - 637.2
+  - 72.0
+  status: provisional
+- field_name: form1[0].page2[0].incomeIncluded[0].formW2s[0]
+  address_id: 2025/document=form_13614_c/section=intake/option=form1_0_page2_0_incomeincluded_0_formw2s_0
+  widget_type: checkbox
+  page: 2
+  rect:
+  - 334.8
+  - 59.0
+  - 342.8
+  - 67.0
+  status: provisional
+- field_name: form1[0].page2[0].incomeIncluded[0].itemizedLastYear[0].itemizedLastYear[0]
+  address_id: 2025/document=form_13614_c/section=intake/option=form1_0_page2_0_incomeincluded_0_itemizedlastyear_0_itemizedlastyear_0
+  widget_type: checkbox
+  page: 2
+  rect:
+  - 334.8
+  - 231.8
+  - 342.8
+  - 239.8
+  status: provisional
+- field_name: form1[0].page2[0].incomeIncluded[0].itemizedLastYear[0].itemizedNo[0]
+  address_id: 2025/document=form_13614_c/section=intake/option=form1_0_page2_0_incomeincluded_0_itemizedlastyear_0_itemizedno_0
+  widget_type: checkbox
+  page: 2
+  rect:
+  - 590.4
+  - 231.8
+  - 598.4
+  - 239.8
+  status: provisional
+- field_name: form1[0].page2[0].incomeIncluded[0].itemizedLastYear[0].itemizedYes[0]
+  address_id: 2025/document=form_13614_c/section=intake/option=form1_0_page2_0_incomeincluded_0_itemizedlastyear_0_itemizedyes_0
+  widget_type: checkbox
+  page: 2
+  rect:
+  - 543.6
+  - 231.8
+  - 551.6
+  - 239.8
+  status: provisional
+- field_name: form1[0].page2[0].incomeIncluded[0].otherIncome[0].otherIncome[0]
+  address_id: 2025/document=form_13614_c/section=intake/option=form1_0_page2_0_incomeincluded_0_otherincome_0_otherincome_0
+  widget_type: checkbox
+  page: 2
+  rect:
+  - 334.86
+  - 545.0
+  - 342.86
+  - 553.0
+  status: provisional
+- field_name: form1[0].page2[0].incomeIncluded[0].otherInomceReported[0]
+  address_id: 2025/document=form_13614_c/section=intake/option=form1_0_page2_0_incomeincluded_0_otherinomcereported_0
+  widget_type: checkbox
+  page: 2
+  rect:
+  - 352.8
+  - 509.0
+  - 360.8
+  - 517.0
+  status: provisional
+- field_name: form1[0].page2[0].incomeIncluded[0].qualifiedCharitableAmount[0]
+  address_id: 2025/document=form_13614_c/section=intake/control=form1_0_page2_0_incomeincluded_0_qualifiedcharitableamount_0
+  widget_type: text
+  page: 2
+  rect:
+  - 604.8
+  - 126.0
+  - 637.2
+  - 140.4
+  status: provisional
+- field_name: form1[0].page2[0].incomeIncluded[0].qualifiedCharitableDistribution[0]
+  address_id: 2025/document=form_13614_c/section=intake/option=form1_0_page2_0_incomeincluded_0_qualifiedcharitabledistribution_0
+  widget_type: checkbox
+  page: 2
+  rect:
+  - 334.8
+  - 131.0
+  - 342.8
+  - 139.0
+  status: provisional
+- field_name: form1[0].page2[0].incomeIncluded[0].refund[0].refundAmount[0]
+  address_id: 2025/document=form_13614_c/section=intake/control=form1_0_page2_0_incomeincluded_0_refund_0_refundamount_0
+  widget_type: text
+  page: 2
+  rect:
+  - 604.8
+  - 208.8
+  - 637.2
+  - 226.8
+  status: provisional
+- field_name: form1[0].page2[0].incomeIncluded[0].refund[0].refund[0]
+  address_id: 2025/document=form_13614_c/section=intake/option=form1_0_page2_0_incomeincluded_0_refund_0_refund_0
+  widget_type: checkbox
+  page: 2
+  rect:
+  - 334.8
+  - 213.8
+  - 342.8
+  - 221.8
+  status: provisional
+- field_name: form1[0].page2[0].incomeIncluded[0].rentalIncome[0].rentalExpenseAmount[0]
+  address_id: 2025/document=form_13614_c/section=intake/control=form1_0_page2_0_incomeincluded_0_rentalincome_0_rentalexpenseamount_0
+  widget_type: text
+  page: 2
+  rect:
+  - 604.8
+  - 363.6
+  - 637.2
+  - 381.6
+  status: provisional
+- field_name: form1[0].page2[0].incomeIncluded[0].rentalIncome[0].rentalExpense[0]
+  address_id: 2025/document=form_13614_c/section=intake/option=form1_0_page2_0_incomeincluded_0_rentalincome_0_rentalexpense_0
+  widget_type: checkbox
+  page: 2
+  rect:
+  - 334.8
+  - 368.6
+  - 342.8
+  - 376.6
+  status: provisional
+- field_name: form1[0].page2[0].incomeIncluded[0].rentalIncome[0].rentalIncome[0]
+  address_id: 2025/document=form_13614_c/section=intake/option=form1_0_page2_0_incomeincluded_0_rentalincome_0_rentalincome_0
+  widget_type: checkbox
+  page: 2
+  rect:
+  - 334.86
+  - 339.8
+  - 342.86
+  - 347.8
+  status: provisional
+- field_name: form1[0].page2[0].incomeIncluded[0].scheduleCExpensesAmount[0]
+  address_id: 2025/document=form_13614_c/section=intake/control=form1_0_page2_0_incomeincluded_0_schedulecexpensesamount_0
+  widget_type: text
+  page: 2
+  rect:
+  - 604.8
+  - 522.0
+  - 637.2
+  - 536.4
+  status: provisional
+- field_name: form1[0].page2[0].incomeIncluded[0].scheduleCExpenses[0]
+  address_id: 2025/document=form_13614_c/section=intake/option=form1_0_page2_0_incomeincluded_0_schedulecexpenses_0
+  widget_type: checkbox
+  page: 2
+  rect:
+  - 352.8
+  - 527.0
+  - 360.8
+  - 535.0
+  status: provisional
+- field_name: form1[0].page2[0].incomeIncluded[0].scheduleC[0]
+  address_id: 2025/document=form_13614_c/section=intake/option=form1_0_page2_0_incomeincluded_0_schedulec_0
+  widget_type: checkbox
+  page: 2
+  rect:
+  - 334.8
+  - 437.0
+  - 342.8
+  - 445.0
+  status: provisional
+- field_name: form1[0].page2[0].incomeIncluded[0].ssaRRB1099Number[0]
+  address_id: 2025/document=form_13614_c/section=intake/control=form1_0_page2_0_incomeincluded_0_ssarrb1099number_0
+  widget_type: text
+  page: 2
+  rect:
+  - 604.8
+  - 172.8
+  - 637.2
+  - 187.2
+  status: provisional
+- field_name: form1[0].page2[0].incomeIncluded[0].ssaRRB1099[0]
+  address_id: 2025/document=form_13614_c/section=intake/option=form1_0_page2_0_incomeincluded_0_ssarrb1099_0
+  widget_type: checkbox
+  page: 2
+  rect:
+  - 334.8
+  - 177.8
+  - 342.8
+  - 185.8
+  status: provisional
+- field_name: form1[0].page2[0].incomeIncluded[0].tipsBasicReported[0]
+  address_id: 2025/document=form_13614_c/section=intake/option=form1_0_page2_0_incomeincluded_0_tipsbasicreported_0
+  widget_type: checkbox
+  page: 2
+  rect:
+  - 334.8
+  - 95.0
+  - 342.8
+  - 103.0
+  status: provisional
+- field_name: form1[0].page2[0].receivedMoneyFrom[0].disabilityBenefits[0].disabilityBenefits[0]
+  address_id: 2025/document=form_13614_c/section=intake/option=form1_0_page2_0_receivedmoneyfrom_0_disabilitybenefits_0_disabilitybenefits_0
+  widget_type: checkbox
+  page: 2
+  rect:
+  - 18.06
+  - 149.0
+  - 26.06
+  - 157.0
+  status: provisional
+- field_name: form1[0].page2[0].receivedMoneyFrom[0].gamblingLotteryWinnings[0]
+  address_id: 2025/document=form_13614_c/section=intake/option=form1_0_page2_0_receivedmoneyfrom_0_gamblinglotterywinnings_0
+  widget_type: checkbox
+  page: 2
+  rect:
+  - 18.0
+  - 404.6
+  - 26.0
+  - 412.6
+  status: provisional
+- field_name: form1[0].page2[0].receivedMoneyFrom[0].howManyJobs[0]
+  address_id: 2025/document=form_13614_c/section=intake/control=form1_0_page2_0_receivedmoneyfrom_0_howmanyjobs_0
+  widget_type: text
+  page: 2
+  rect:
+  - 104.4
+  - 72.0
+  - 158.4
+  - 86.4
+  status: provisional
+- field_name: form1[0].page2[0].receivedMoneyFrom[0].incomeRentingHouse[0]
+  address_id: 2025/document=form_13614_c/section=intake/option=form1_0_page2_0_receivedmoneyfrom_0_incomerentinghouse_0
+  widget_type: checkbox
+  page: 2
+  rect:
+  - 18.0
+  - 339.8
+  - 26.0
+  - 347.8
+  status: provisional
+- field_name: form1[0].page2[0].receivedMoneyFrom[0].incomeRentingVehicle[0]
+  address_id: 2025/document=form_13614_c/section=intake/option=form1_0_page2_0_receivedmoneyfrom_0_incomerentingvehicle_0
+  widget_type: checkbox
+  page: 2
+  rect:
+  - 18.0
+  - 386.6
+  - 26.0
+  - 394.6
+  status: provisional
+- field_name: form1[0].page2[0].receivedMoneyFrom[0].interestOrDividends[0]
+  address_id: 2025/document=form_13614_c/section=intake/option=form1_0_page2_0_receivedmoneyfrom_0_interestordividends_0
+  widget_type: checkbox
+  page: 2
+  rect:
+  - 18.0
+  - 249.8
+  - 26.0
+  - 257.8
+  status: provisional
+- field_name: form1[0].page2[0].receivedMoneyFrom[0].lossLastReturn[0].reportLossNo[0]
+  address_id: 2025/document=form_13614_c/section=intake/option=form1_0_page2_0_receivedmoneyfrom_0_losslastreturn_0_reportlossno_0
+  widget_type: checkbox
+  page: 2
+  rect:
+  - 284.4
+  - 454.64
+  - 292.4
+  - 462.64
+  status: provisional
+- field_name: form1[0].page2[0].receivedMoneyFrom[0].lossLastReturn[0].reportLossYes[0]
+  address_id: 2025/document=form_13614_c/section=intake/option=form1_0_page2_0_receivedmoneyfrom_0_losslastreturn_0_reportlossyes_0
+  widget_type: checkbox
+  page: 2
+  rect:
+  - 237.6
+  - 454.64
+  - 245.6
+  - 462.64
+  status: provisional
+- field_name: form1[0].page2[0].receivedMoneyFrom[0].otherMoneyReceived[0].otherMoneyReceived[0]
+  address_id: 2025/document=form_13614_c/section=intake/option=form1_0_page2_0_receivedmoneyfrom_0_othermoneyreceived_0_othermoneyreceived_0
+  widget_type: checkbox
+  page: 2
+  rect:
+  - 18.06
+  - 545.0
+  - 26.06
+  - 553.0
+  status: provisional
+- field_name: form1[0].page2[0].receivedMoneyFrom[0].paymentsContractSelf[0]
+  address_id: 2025/document=form_13614_c/section=intake/option=form1_0_page2_0_receivedmoneyfrom_0_paymentscontractself_0
+  widget_type: checkbox
+  page: 2
+  rect:
+  - 18.0
+  - 437.0
+  - 26.0
+  - 445.0
+  status: provisional
+- field_name: form1[0].page2[0].receivedMoneyFrom[0].receivedAlimony[0]
+  address_id: 2025/document=form_13614_c/section=intake/option=form1_0_page2_0_receivedmoneyfrom_0_receivedalimony_0
+  widget_type: checkbox
+  page: 2
+  rect:
+  - 18.0
+  - 303.8
+  - 26.0
+  - 311.8
+  status: provisional
+- field_name: form1[0].page2[0].receivedMoneyFrom[0].receivedMoneyTimps[0]
+  address_id: 2025/document=form_13614_c/section=intake/option=form1_0_page2_0_receivedmoneyfrom_0_receivedmoneytimps_0
+  widget_type: checkbox
+  page: 2
+  rect:
+  - 18.0
+  - 95.0
+  - 26.0
+  - 103.0
+  status: provisional
+- field_name: form1[0].page2[0].receivedMoneyFrom[0].refundStateLocal[0]
+  address_id: 2025/document=form_13614_c/section=intake/option=form1_0_page2_0_receivedmoneyfrom_0_refundstatelocal_0
+  widget_type: checkbox
+  page: 2
+  rect:
+  - 18.0
+  - 213.8
+  - 26.0
+  - 221.8
+  status: provisional
+- field_name: form1[0].page2[0].receivedMoneyFrom[0].reportALoss[0].reportLossNo[0]
+  address_id: 2025/document=form_13614_c/section=intake/option=form1_0_page2_0_receivedmoneyfrom_0_reportaloss_0_reportlossno_0
+  widget_type: checkbox
+  page: 2
+  rect:
+  - 284.4
+  - 285.8
+  - 292.4
+  - 293.8
+  status: provisional
+- field_name: form1[0].page2[0].receivedMoneyFrom[0].reportALoss[0].reportLossYes[0]
+  address_id: 2025/document=form_13614_c/section=intake/option=form1_0_page2_0_receivedmoneyfrom_0_reportaloss_0_reportlossyes_0
+  widget_type: checkbox
+  page: 2
+  rect:
+  - 237.6
+  - 285.8
+  - 245.6
+  - 293.8
+  status: provisional
+- field_name: form1[0].page2[0].receivedMoneyFrom[0].retirementAccount[0]
+  address_id: 2025/document=form_13614_c/section=intake/option=form1_0_page2_0_receivedmoneyfrom_0_retirementaccount_0
+  widget_type: checkbox
+  page: 2
+  rect:
+  - 18.0
+  - 113.0
+  - 26.0
+  - 121.0
+  status: provisional
+- field_name: form1[0].page2[0].receivedMoneyFrom[0].saleStocksBonds[0]
+  address_id: 2025/document=form_13614_c/section=intake/option=form1_0_page2_0_receivedmoneyfrom_0_salestocksbonds_0
+  widget_type: checkbox
+  page: 2
+  rect:
+  - 18.0
+  - 267.8
+  - 26.0
+  - 275.8
+  status: provisional
+- field_name: form1[0].page2[0].receivedMoneyFrom[0].socialSecurityRailroad[0]
+  address_id: 2025/document=form_13614_c/section=intake/option=form1_0_page2_0_receivedmoneyfrom_0_socialsecurityrailroad_0
+  widget_type: checkbox
+  page: 2
+  rect:
+  - 18.0
+  - 177.8
+  - 26.0
+  - 185.8
+  status: provisional
+- field_name: form1[0].page2[0].receivedMoneyFrom[0].unemploymentBenefits[0]
+  address_id: 2025/document=form_13614_c/section=intake/option=form1_0_page2_0_receivedmoneyfrom_0_unemploymentbenefits_0
+  widget_type: checkbox
+  page: 2
+  rect:
+  - 18.0
+  - 195.8
+  - 26.0
+  - 203.8
+  status: provisional
+- field_name: form1[0].page2[0].receivedMoneyFrom[0].useAsPersonal[0].personalResidenceNo[0]
+  address_id: 2025/document=form_13614_c/section=intake/option=form1_0_page2_0_receivedmoneyfrom_0_useaspersonal_0_personalresidenceno_0
+  widget_type: checkbox
+  page: 2
+  rect:
+  - 284.4
+  - 368.24
+  - 292.4
+  - 376.24
+  status: provisional
+- field_name: form1[0].page2[0].receivedMoneyFrom[0].useAsPersonal[0].personalResidenceYes[0]
+  address_id: 2025/document=form_13614_c/section=intake/option=form1_0_page2_0_receivedmoneyfrom_0_useaspersonal_0_personalresidenceyes_0
+  widget_type: checkbox
+  page: 2
+  rect:
+  - 237.6
+  - 368.24
+  - 245.6
+  - 376.24
+  status: provisional
+- field_name: form1[0].page2[0].receivedMoneyFrom[0].wagesPartFull[0]
+  address_id: 2025/document=form_13614_c/section=intake/option=form1_0_page2_0_receivedmoneyfrom_0_wagespartfull_0
+  widget_type: checkbox
+  page: 2
+  rect:
+  - 18.0
+  - 59.0
+  - 26.0
+  - 67.0
+  status: provisional
+- field_name: form1[0].page3[0].expensesReportComments[0].expensesReportComments[0]
+  address_id: 2025/document=form_13614_c/section=intake/control=form1_0_page3_0_expensesreportcomments_0_expensesreportcomments_0
+  widget_type: text
+  page: 3
+  rect:
+  - 640.8
+  - 142.56
+  - 774.0
+  - 244.8
+  status: provisional
+- field_name: form1[0].page3[0].expensesToReport[0].alimonyPayments[0].adjustementNo[0]
+  address_id: 2025/document=form_13614_c/section=intake/option=form1_0_page3_0_expensestoreport_0_alimonypayments_0_adjustementno_0
+  widget_type: checkbox
+  page: 3
+  rect:
+  - 590.4
+  - 231.8
+  - 598.4
+  - 239.8
+  status: provisional
+- field_name: form1[0].page3[0].expensesToReport[0].alimonyPayments[0].adjustementYes[0]
+  address_id: 2025/document=form_13614_c/section=intake/option=form1_0_page3_0_expensestoreport_0_alimonypayments_0_adjustementyes_0
+  widget_type: checkbox
+  page: 3
+  rect:
+  - 543.6
+  - 231.8
+  - 551.6
+  - 239.8
+  status: provisional
+- field_name: form1[0].page3[0].expensesToReport[0].alimonyPayments[0].alimonyPaymentsAmount[0]
+  address_id: 2025/document=form_13614_c/section=intake/control=form1_0_page3_0_expensestoreport_0_alimonypayments_0_alimonypaymentsamount_0
+  widget_type: text
+  page: 3
+  rect:
+  - 604.8
+  - 212.4
+  - 637.2
+  - 226.8
+  status: provisional
+- field_name: form1[0].page3[0].expensesToReport[0].alimonyPayments[0].alimonyPayments[0]
+  address_id: 2025/document=form_13614_c/section=intake/option=form1_0_page3_0_expensestoreport_0_alimonypayments_0_alimonypayments_0
+  widget_type: checkbox
+  page: 3
+  rect:
+  - 334.8
+  - 217.4
+  - 342.8
+  - 225.4
+  status: provisional
+- field_name: form1[0].page3[0].expensesToReport[0].childDependentCare[0]
+  address_id: 2025/document=form_13614_c/section=intake/option=form1_0_page3_0_expensestoreport_0_childdependentcare_0
+  widget_type: checkbox
+  page: 3
+  rect:
+  - 334.8
+  - 163.4
+  - 342.8
+  - 171.4
+  status: provisional
+- field_name: form1[0].page3[0].expensesToReport[0].educatorExpensesDeductionAmount[0]
+  address_id: 2025/document=form_13614_c/section=intake/control=form1_0_page3_0_expensestoreport_0_educatorexpensesdeductionamount_0
+  widget_type: text
+  page: 3
+  rect:
+  - 604.8
+  - 194.4
+  - 637.2
+  - 208.8
+  status: provisional
+- field_name: form1[0].page3[0].expensesToReport[0].educatorExpensesDeduction[0]
+  address_id: 2025/document=form_13614_c/section=intake/option=form1_0_page3_0_expensestoreport_0_educatorexpensesdeduction_0
+  widget_type: checkbox
+  page: 3
+  rect:
+  - 334.8
+  - 199.4
+  - 342.8
+  - 207.4
+  status: provisional
+- field_name: form1[0].page3[0].expensesToReport[0].form1098E[0]
+  address_id: 2025/document=form_13614_c/section=intake/option=form1_0_page3_0_expensestoreport_0_form1098e_0
+  widget_type: checkbox
+  page: 3
+  rect:
+  - 334.8
+  - 145.4
+  - 342.8
+  - 153.4
+  status: provisional
+- field_name: form1[0].page3[0].expensesToReport[0].iraBasicRoth[0]
+  address_id: 2025/document=form_13614_c/section=intake/option=form1_0_page3_0_expensestoreport_0_irabasicroth_0
+  widget_type: checkbox
+  page: 3
+  rect:
+  - 334.8
+  - 181.4
+  - 342.8
+  - 189.4
+  status: provisional
+- field_name: form1[0].page3[0].followingHappenDuring[0].energyEfficientItems[0].energyEfficientItems[0]
+  address_id: 2025/document=form_13614_c/section=intake/option=form1_0_page3_0_followinghappenduring_0_energyefficientitems_0_energyefficientitems_0
+  widget_type: checkbox
+  page: 3
+  rect:
+  - 18.06
+  - 375.8
+  - 26.06
+  - 383.8
+  status: provisional
+- field_name: form1[0].page3[0].followingHappenDuring[0].estimatedTaxPayments[0].estimatedTaxPayments[0]
+  address_id: 2025/document=form_13614_c/section=intake/option=form1_0_page3_0_followinghappenduring_0_estimatedtaxpayments_0_estimatedtaxpayments_0
+  widget_type: checkbox
+  page: 3
+  rect:
+  - 18.06
+  - 537.8
+  - 26.06
+  - 545.8
+  status: provisional
+- field_name: form1[0].page3[0].followingHappenDuring[0].forgaveByLender[0].forgaveByLender[0]
+  address_id: 2025/document=form_13614_c/section=intake/option=form1_0_page3_0_followinghappenduring_0_forgavebylender_0_forgavebylender_0
+  widget_type: checkbox
+  page: 3
+  rect:
+  - 18.06
+  - 422.6
+  - 26.06
+  - 430.6
+  status: provisional
+- field_name: form1[0].page3[0].followingHappenDuring[0].healthSavingsAccount[0]
+  address_id: 2025/document=form_13614_c/section=intake/option=form1_0_page3_0_followinghappenduring_0_healthsavingsaccount_0
+  widget_type: checkbox
+  page: 3
+  rect:
+  - 18.0
+  - 339.8
+  - 26.0
+  - 347.8
+  status: provisional
+- field_name: form1[0].page3[0].followingHappenDuring[0].lastYearsReturn[0]
+  address_id: 2025/document=form_13614_c/section=intake/option=form1_0_page3_0_followinghappenduring_0_lastyearsreturn_0
+  widget_type: checkbox
+  page: 3
+  rect:
+  - 18.0
+  - 573.8
+  - 26.0
+  - 581.8
+  status: provisional
+- field_name: form1[0].page3[0].followingHappenDuring[0].lossRelatedDisaster[0]
+  address_id: 2025/document=form_13614_c/section=intake/option=form1_0_page3_0_followinghappenduring_0_lossrelateddisaster_0
+  widget_type: checkbox
+  page: 3
+  rect:
+  - 18.0
+  - 451.4
+  - 26.0
+  - 459.4
+  status: provisional
+- field_name: form1[0].page3[0].followingHappenDuring[0].otherPurchase[0]
+  address_id: 2025/document=form_13614_c/section=intake/option=form1_0_page3_0_followinghappenduring_0_otherpurchase_0
+  widget_type: checkbox
+  page: 3
+  rect:
+  - 18.0
+  - 404.6
+  - 26.0
+  - 412.6
+  status: provisional
+- field_name: form1[0].page3[0].followingHappenDuring[0].purchaseMarketplaceInsurance[0]
+  address_id: 2025/document=form_13614_c/section=intake/option=form1_0_page3_0_followinghappenduring_0_purchasemarketplaceinsurance_0
+  widget_type: checkbox
+  page: 3
+  rect:
+  - 18.0
+  - 357.8
+  - 26.0
+  - 365.8
+  status: provisional
+- field_name: form1[0].page3[0].followingHappenDuring[0].receivedLetterBill[0]
+  address_id: 2025/document=form_13614_c/section=intake/option=form1_0_page3_0_followinghappenduring_0_receivedletterbill_0
+  widget_type: checkbox
+  page: 3
+  rect:
+  - 18.0
+  - 519.83
+  - 26.0
+  - 527.83
+  status: provisional
+- field_name: form1[0].page3[0].followingHappenDuring[0].sellAHome[0]
+  address_id: 2025/document=form_13614_c/section=intake/option=form1_0_page3_0_followinghappenduring_0_sellahome_0
+  widget_type: checkbox
+  page: 3
+  rect:
+  - 18.0
+  - 321.8
+  - 26.0
+  - 329.8
+  status: provisional
+- field_name: form1[0].page3[0].followingHappenDuring[0].taxCreditDisallowed[0].taxCreditDisallowed[0]
+  address_id: 2025/document=form_13614_c/section=intake/option=form1_0_page3_0_followinghappenduring_0_taxcreditdisallowed_0_taxcreditdisallowed_0
+  widget_type: checkbox
+  page: 3
+  rect:
+  - 18.06
+  - 487.4
+  - 26.06
+  - 495.4
+  status: provisional
+- field_name: form1[0].page3[0].followingHappenDuring[0].tookEducationalClasses[0].tookEducationalClasses[0]
+  address_id: 2025/document=form_13614_c/section=intake/option=form1_0_page3_0_followinghappenduring_0_tookeducationalclasses_0_tookeducationalclasses_0
+  widget_type: checkbox
+  page: 3
+  rect:
+  - 18.06
+  - 267.8
+  - 26.06
+  - 275.8
+  status: provisional
+- field_name: form1[0].page3[0].informationReportComment[0].informationReportComment[0]
+  address_id: 2025/document=form_13614_c/section=intake/control=form1_0_page3_0_informationreportcomment_0_informationreportcomment_0
+  widget_type: text
+  page: 3
+  rect:
+  - 640.8
+  - 264.96
+  - 774.0
+  - 586.8
+  status: provisional
+- field_name: form1[0].page3[0].informationToReport[0].YearDisallowedReason[0].reasonDisallowed[0]
+  address_id: 2025/document=form_13614_c/section=intake/control=form1_0_page3_0_informationtoreport_0_yeardisallowedreason_0_reasondisallowed_0
+  widget_type: text
+  page: 3
+  rect:
+  - 507.6
+  - 496.8
+  - 637.2
+  - 514.8
+  status: provisional
+- field_name: form1[0].page3[0].informationToReport[0].YearDisallowedReason[0].yearDisallowed[0]
+  address_id: 2025/document=form_13614_c/section=intake/control=form1_0_page3_0_informationtoreport_0_yeardisallowedreason_0_yeardisallowed_0
+  widget_type: text
+  page: 3
+  rect:
+  - 408.96
+  - 496.8
+  - 460.8
+  - 514.8
+  status: provisional
+- field_name: form1[0].page3[0].informationToReport[0].disallowedPreviousYear[0]
+  address_id: 2025/document=form_13614_c/section=intake/option=form1_0_page3_0_informationtoreport_0_disallowedpreviousyear_0
+  widget_type: checkbox
+  page: 3
+  rect:
+  - 334.8
+  - 487.4
+  - 342.8
+  - 495.4
+  status: provisional
+- field_name: form1[0].page3[0].informationToReport[0].disasterReliefImpacts[0]
+  address_id: 2025/document=form_13614_c/section=intake/option=form1_0_page3_0_informationtoreport_0_disasterreliefimpacts_0
+  widget_type: checkbox
+  page: 3
+  rect:
+  - 334.8
+  - 469.4
+  - 342.8
+  - 477.4
+  status: provisional
+- field_name: form1[0].page3[0].informationToReport[0].educationCreditTuition[0]
+  address_id: 2025/document=form_13614_c/section=intake/option=form1_0_page3_0_informationtoreport_0_educationcredittuition_0
+  widget_type: checkbox
+  page: 3
+  rect:
+  - 334.8
+  - 302.72
+  - 342.8
+  - 310.72
+  status: provisional
+- field_name: form1[0].page3[0].informationToReport[0].efficientHomeImprovement[0].efficientHomeImprovement[0]
+  address_id: 2025/document=form_13614_c/section=intake/option=form1_0_page3_0_informationtoreport_0_efficienthomeimprovement_0_efficienthomeimprovement_0
+  widget_type: checkbox
+  page: 3
+  rect:
+  - 334.86
+  - 375.8
+  - 342.86
+  - 383.8
+  status: provisional
+- field_name: form1[0].page3[0].informationToReport[0].eligibleLITCReferral[0]
+  address_id: 2025/document=form_13614_c/section=intake/option=form1_0_page3_0_informationtoreport_0_eligiblelitcreferral_0
+  widget_type: checkbox
+  page: 3
+  rect:
+  - 334.8
+  - 519.8
+  - 342.8
+  - 527.8
+  status: provisional
+- field_name: form1[0].page3[0].informationToReport[0].estimatedTaxPayments[0].estimatedTaxPayments[0]
+  address_id: 2025/document=form_13614_c/section=intake/option=form1_0_page3_0_informationtoreport_0_estimatedtaxpayments_0_estimatedtaxpayments_0
+  widget_type: checkbox
+  page: 3
+  rect:
+  - 334.86
+  - 537.8
+  - 342.86
+  - 545.8
+  status: provisional
+- field_name: form1[0].page3[0].informationToReport[0].estimatedTaxPayments[0].taxPaymentsAmount[0]
+  address_id: 2025/document=form_13614_c/section=intake/control=form1_0_page3_0_informationtoreport_0_estimatedtaxpayments_0_taxpaymentsamount_0
+  widget_type: text
+  page: 3
+  rect:
+  - 590.4
+  - 532.8
+  - 637.2
+  - 550.8
+  status: provisional
+- field_name: form1[0].page3[0].informationToReport[0].form1095A[0]
+  address_id: 2025/document=form_13614_c/section=intake/option=form1_0_page3_0_informationtoreport_0_form1095a_0
+  widget_type: checkbox
+  page: 3
+  rect:
+  - 334.8
+  - 357.8
+  - 342.8
+  - 365.8
+  status: provisional
+- field_name: form1[0].page3[0].informationToReport[0].form1098T[0]
+  address_id: 2025/document=form_13614_c/section=intake/option=form1_0_page3_0_informationtoreport_0_form1098t_0
+  widget_type: checkbox
+  page: 3
+  rect:
+  - 334.8
+  - 284.72
+  - 342.8
+  - 292.72
+  status: provisional
+- field_name: form1[0].page3[0].informationToReport[0].form1099A[0]
+  address_id: 2025/document=form_13614_c/section=intake/option=form1_0_page3_0_informationtoreport_0_form1099a_0
+  widget_type: checkbox
+  page: 3
+  rect:
+  - 334.8
+  - 451.4
+  - 342.8
+  - 459.4
+  status: provisional
+- field_name: form1[0].page3[0].informationToReport[0].form1099C[0]
+  address_id: 2025/document=form_13614_c/section=intake/option=form1_0_page3_0_informationtoreport_0_form1099c_0
+  widget_type: checkbox
+  page: 3
+  rect:
+  - 334.8
+  - 422.6
+  - 342.8
+  - 430.6
+  status: provisional
+- field_name: form1[0].page3[0].informationToReport[0].hsaContributions[0]
+  address_id: 2025/document=form_13614_c/section=intake/option=form1_0_page3_0_informationtoreport_0_hsacontributions_0
+  widget_type: checkbox
+  page: 3
+  rect:
+  - 334.8
+  - 339.8
+  - 342.8
+  - 347.8
+  status: provisional
+- field_name: form1[0].page3[0].informationToReport[0].hsaDistributions[0]
+  address_id: 2025/document=form_13614_c/section=intake/option=form1_0_page3_0_informationtoreport_0_hsadistributions_0
+  widget_type: checkbox
+  page: 3
+  rect:
+  - 486.0
+  - 339.8
+  - 494.0
+  - 347.8
+  status: provisional
+- field_name: form1[0].page3[0].informationToReport[0].lastReturnAvailable[0]
+  address_id: 2025/document=form_13614_c/section=intake/option=form1_0_page3_0_informationtoreport_0_lastreturnavailable_0
+  widget_type: checkbox
+  page: 3
+  rect:
+  - 334.8
+  - 573.8
+  - 342.8
+  - 581.8
+  status: provisional
+- field_name: form1[0].page3[0].informationToReport[0].lastYearsRefund[0].lastYearsRefund[0]
+  address_id: 2025/document=form_13614_c/section=intake/option=form1_0_page3_0_informationtoreport_0_lastyearsrefund_0_lastyearsrefund_0
+  widget_type: checkbox
+  page: 3
+  rect:
+  - 334.86
+  - 555.8
+  - 342.86
+  - 563.8
+  status: provisional
+- field_name: form1[0].page3[0].informationToReport[0].lastYearsRefund[0].refundAmount[0]
+  address_id: 2025/document=form_13614_c/section=intake/control=form1_0_page3_0_informationtoreport_0_lastyearsrefund_0_refundamount_0
+  widget_type: text
+  page: 3
+  rect:
+  - 590.4
+  - 550.8
+  - 637.2
+  - 568.8
+  status: provisional
+- field_name: form1[0].page3[0].informationToReport[0].saleOfHome[0]
+  address_id: 2025/document=form_13614_c/section=intake/option=form1_0_page3_0_informationtoreport_0_saleofhome_0
+  widget_type: checkbox
+  page: 3
+  rect:
+  - 334.8
+  - 321.8
+  - 342.8
+  - 329.8
+  status: provisional
+- field_name: form1[0].page3[0].informationToReport[0].taxableScholarshipIncome[0]
+  address_id: 2025/document=form_13614_c/section=intake/option=form1_0_page3_0_informationtoreport_0_taxablescholarshipincome_0
+  widget_type: checkbox
+  page: 3
+  rect:
+  - 334.8
+  - 267.8
+  - 342.8
+  - 275.8
+  status: provisional
+- field_name: form1[0].page3[0].informationToReport[0].vinNumber[0].numberVIN[0]
+  address_id: 2025/document=form_13614_c/section=intake/option=form1_0_page3_0_informationtoreport_0_vinnumber_0_numbervin_0
+  widget_type: checkbox
+  page: 3
+  rect:
+  - 334.86
+  - 404.6
+  - 342.86
+  - 412.6
+  status: provisional
+- field_name: form1[0].page3[0].informationToReport[0].vinNumber[0].vinNumber[0]
+  address_id: 2025/document=form_13614_c/section=intake/control=form1_0_page3_0_informationtoreport_0_vinnumber_0_vinnumber_0
+  widget_type: text
+  page: 3
+  rect:
+  - 385.2
+  - 399.6
+  - 633.6
+  - 417.6
+  status: provisional
+- field_name: form1[0].page3[0].paidExpenses[0].alimonyPayments[0]
+  address_id: 2025/document=form_13614_c/section=intake/option=form1_0_page3_0_paidexpenses_0_alimonypayments_0
+  widget_type: checkbox
+  page: 3
+  rect:
+  - 18.0
+  - 217.4
+  - 26.0
+  - 225.4
+  status: provisional
+- field_name: form1[0].page3[0].paidExpenses[0].childDependentCare[0]
+  address_id: 2025/document=form_13614_c/section=intake/option=form1_0_page3_0_paidexpenses_0_childdependentcare_0
+  widget_type: checkbox
+  page: 3
+  rect:
+  - 18.0
+  - 163.4
+  - 26.0
+  - 171.4
+  status: provisional
+- field_name: form1[0].page3[0].paidExpenses[0].contributionsRetirementAccount[0]
+  address_id: 2025/document=form_13614_c/section=intake/option=form1_0_page3_0_paidexpenses_0_contributionsretirementaccount_0
+  widget_type: checkbox
+  page: 3
+  rect:
+  - 18.0
+  - 181.4
+  - 26.0
+  - 189.4
+  status: provisional
+- field_name: form1[0].page3[0].paidExpenses[0].schooldSupplies[0]
+  address_id: 2025/document=form_13614_c/section=intake/option=form1_0_page3_0_paidexpenses_0_schooldsupplies_0
+  widget_type: checkbox
+  page: 3
+  rect:
+  - 18.0
+  - 199.4
+  - 26.0
+  - 207.4
+  status: provisional
+- field_name: form1[0].page3[0].paidExpenses[0].studentLoanInterest[0]
+  address_id: 2025/document=form_13614_c/section=intake/option=form1_0_page3_0_paidexpenses_0_studentloaninterest_0
+  widget_type: checkbox
+  page: 3
+  rect:
+  - 18.0
+  - 145.4
+  - 26.0
+  - 153.4
+  status: provisional
+- field_name: form1[0].page3[0].paidFollowingExpenses[0].charitableContributions[0]
+  address_id: 2025/document=form_13614_c/section=intake/option=form1_0_page3_0_paidfollowingexpenses_0_charitablecontributions_0
+  widget_type: checkbox
+  page: 3
+  rect:
+  - 18.0
+  - 111.2
+  - 26.0
+  - 119.2
+  status: provisional
+- field_name: form1[0].page3[0].paidFollowingExpenses[0].mendicalDentalPrescription[0]
+  address_id: 2025/document=form_13614_c/section=intake/option=form1_0_page3_0_paidfollowingexpenses_0_mendicaldentalprescription_0
+  widget_type: checkbox
+  page: 3
+  rect:
+  - 18.0
+  - 96.8
+  - 26.0
+  - 104.8
+  status: provisional
+- field_name: form1[0].page3[0].paidFollowingExpenses[0].mortgageinterest[0]
+  address_id: 2025/document=form_13614_c/section=intake/option=form1_0_page3_0_paidfollowingexpenses_0_mortgageinterest_0
+  widget_type: checkbox
+  page: 3
+  rect:
+  - 18.0
+  - 68.0
+  - 26.0
+  - 76.0
+  status: provisional
+- field_name: form1[0].page3[0].paidFollowingExpenses[0].taxesStateLocal[0]
+  address_id: 2025/document=form_13614_c/section=intake/option=form1_0_page3_0_paidfollowingexpenses_0_taxesstatelocal_0
+  widget_type: checkbox
+  page: 3
+  rect:
+  - 18.0
+  - 82.4
+  - 26.0
+  - 90.4
+  status: provisional
+- field_name: form1[0].page3[0].stndardItemizedComments[0].stndardItemizedComments[0]
+  address_id: 2025/document=form_13614_c/section=intake/control=form1_0_page3_0_stndarditemizedcomments_0_stndarditemizedcomments_0
+  widget_type: text
+  page: 3
+  rect:
+  - 640.8
+  - 66.96
+  - 774.0
+  - 122.4
+  status: provisional
+- field_name: form1[0].page3[0].stndardItemizedDeductions[0].form1098Number[0]
+  address_id: 2025/document=form_13614_c/section=intake/control=form1_0_page3_0_stndarditemizeddeductions_0_form1098number_0
+  widget_type: text
+  page: 3
+  rect:
+  - 604.8
+  - 64.8
+  - 637.2
+  - 79.2
+  status: provisional
+- field_name: form1[0].page3[0].stndardItemizedDeductions[0].form1098[0]
+  address_id: 2025/document=form_13614_c/section=intake/option=form1_0_page3_0_stndarditemizeddeductions_0_form1098_0
+  widget_type: checkbox
+  page: 3
+  rect:
+  - 334.8
+  - 68.0
+  - 342.8
+  - 76.0
+  status: provisional
+- field_name: form1[0].page3[0].stndardItemizedDeductions[0].itemizedDeduction[0]
+  address_id: 2025/document=form_13614_c/section=intake/option=form1_0_page3_0_stndarditemizeddeductions_0_itemizeddeduction_0
+  widget_type: checkbox
+  page: 3
+  rect:
+  - 486.0
+  - 96.8
+  - 494.0
+  - 104.8
+  status: provisional
+- field_name: form1[0].page3[0].stndardItemizedDeductions[0].standardDeduction[0]
+  address_id: 2025/document=form_13614_c/section=intake/option=form1_0_page3_0_stndarditemizeddeductions_0_standarddeduction_0
+  widget_type: checkbox
+  page: 3
+  rect:
+  - 334.8
+  - 96.8
+  - 342.8
+  - 104.8
+  status: provisional
+- field_name: form1[0].page4[0].optionalQuestions[0].carryConversationEnglish[0].notAnswer[0]
+  address_id: 2025/document=form_13614_c/section=intake/option=form1_0_page4_0_optionalquestions_0_carryconversationenglish_0_notanswer_0
+  widget_type: checkbox
+  page: 4
+  rect:
+  - 658.8
+  - 73.4
+  - 666.8
+  - 81.4
+  status: provisional
+- field_name: form1[0].page4[0].optionalQuestions[0].carryConversationEnglish[0].notAtAll[0]
+  address_id: 2025/document=form_13614_c/section=intake/option=form1_0_page4_0_optionalquestions_0_carryconversationenglish_0_notatall_0
+  widget_type: checkbox
+  page: 4
+  rect:
+  - 586.8
+  - 73.4
+  - 594.8
+  - 81.4
+  status: provisional
+- field_name: form1[0].page4[0].optionalQuestions[0].carryConversationEnglish[0].notWell[0]
+  address_id: 2025/document=form_13614_c/section=intake/option=form1_0_page4_0_optionalquestions_0_carryconversationenglish_0_notwell_0
+  widget_type: checkbox
+  page: 4
+  rect:
+  - 514.8
+  - 73.4
+  - 522.8
+  - 81.4
+  status: provisional
+- field_name: form1[0].page4[0].optionalQuestions[0].carryConversationEnglish[0].veryWell[0]
+  address_id: 2025/document=form_13614_c/section=intake/option=form1_0_page4_0_optionalquestions_0_carryconversationenglish_0_verywell_0
+  widget_type: checkbox
+  page: 4
+  rect:
+  - 363.6
+  - 73.4
+  - 371.6
+  - 81.4
+  status: provisional
+- field_name: form1[0].page4[0].optionalQuestions[0].carryConversationEnglish[0].well[0]
+  address_id: 2025/document=form_13614_c/section=intake/option=form1_0_page4_0_optionalquestions_0_carryconversationenglish_0_well_0
+  widget_type: checkbox
+  page: 4
+  rect:
+  - 442.8
+  - 73.4
+  - 450.8
+  - 81.4
+  status: provisional
+- field_name: form1[0].page4[0].optionalQuestions[0].memberHouseholdDisability[0].disabilityNo[0]
+  address_id: 2025/document=form_13614_c/section=intake/option=form1_0_page4_0_optionalquestions_0_memberhouseholddisability_0_disabilityno_0
+  widget_type: checkbox
+  page: 4
+  rect:
+  - 442.8
+  - 109.4
+  - 450.8
+  - 117.4
+  status: provisional
+- field_name: form1[0].page4[0].optionalQuestions[0].memberHouseholdDisability[0].disabilityYes[0]
+  address_id: 2025/document=form_13614_c/section=intake/option=form1_0_page4_0_optionalquestions_0_memberhouseholddisability_0_disabilityyes_0
+  widget_type: checkbox
+  page: 4
+  rect:
+  - 363.6
+  - 109.4
+  - 371.6
+  - 117.4
+  status: provisional
+- field_name: form1[0].page4[0].optionalQuestions[0].memberHouseholdDisability[0].notAnswer[0]
+  address_id: 2025/document=form_13614_c/section=intake/option=form1_0_page4_0_optionalquestions_0_memberhouseholddisability_0_notanswer_0
+  widget_type: checkbox
+  page: 4
+  rect:
+  - 514.8
+  - 109.4
+  - 522.8
+  - 117.4
+  status: provisional
+- field_name: form1[0].page4[0].optionalQuestions[0].readNewspaperEnglish[0].notAnswer[0]
+  address_id: 2025/document=form_13614_c/section=intake/option=form1_0_page4_0_optionalquestions_0_readnewspaperenglish_0_notanswer_0
+  widget_type: checkbox
+  page: 4
+  rect:
+  - 658.8
+  - 91.4
+  - 666.8
+  - 99.4
+  status: provisional
+- field_name: form1[0].page4[0].optionalQuestions[0].readNewspaperEnglish[0].notAtAll[0]
+  address_id: 2025/document=form_13614_c/section=intake/option=form1_0_page4_0_optionalquestions_0_readnewspaperenglish_0_notatall_0
+  widget_type: checkbox
+  page: 4
+  rect:
+  - 586.8
+  - 91.4
+  - 594.8
+  - 99.4
+  status: provisional
+- field_name: form1[0].page4[0].optionalQuestions[0].readNewspaperEnglish[0].notWell[0]
+  address_id: 2025/document=form_13614_c/section=intake/option=form1_0_page4_0_optionalquestions_0_readnewspaperenglish_0_notwell_0
+  widget_type: checkbox
+  page: 4
+  rect:
+  - 514.8
+  - 91.4
+  - 522.8
+  - 99.4
+  status: provisional
+- field_name: form1[0].page4[0].optionalQuestions[0].readNewspaperEnglish[0].veryWell[0]
+  address_id: 2025/document=form_13614_c/section=intake/option=form1_0_page4_0_optionalquestions_0_readnewspaperenglish_0_verywell_0
+  widget_type: checkbox
+  page: 4
+  rect:
+  - 363.6
+  - 91.4
+  - 371.6
+  - 99.4
+  status: provisional
+- field_name: form1[0].page4[0].optionalQuestions[0].readNewspaperEnglish[0].well[0]
+  address_id: 2025/document=form_13614_c/section=intake/option=form1_0_page4_0_optionalquestions_0_readnewspaperenglish_0_well_0
+  widget_type: checkbox
+  page: 4
+  rect:
+  - 442.8
+  - 91.4
+  - 450.8
+  - 99.4
+  status: provisional
+- field_name: form1[0].page4[0].optionalQuestions[0].youSpouseVeteran[0].notAnswer[0]
+  address_id: 2025/document=form_13614_c/section=intake/option=form1_0_page4_0_optionalquestions_0_youspouseveteran_0_notanswer_0
+  widget_type: checkbox
+  page: 4
+  rect:
+  - 514.8
+  - 127.4
+  - 522.8
+  - 135.4
+  status: provisional
+- field_name: form1[0].page4[0].optionalQuestions[0].youSpouseVeteran[0].veteranNo[0]
+  address_id: 2025/document=form_13614_c/section=intake/option=form1_0_page4_0_optionalquestions_0_youspouseveteran_0_veteranno_0
+  widget_type: checkbox
+  page: 4
+  rect:
+  - 442.8
+  - 127.4
+  - 450.8
+  - 135.4
+  status: provisional
+- field_name: form1[0].page4[0].optionalQuestions[0].youSpouseVeteran[0].veteranYes[0]
+  address_id: 2025/document=form_13614_c/section=intake/option=form1_0_page4_0_optionalquestions_0_youspouseveteran_0_veteranyes_0
+  widget_type: checkbox
+  page: 4
+  rect:
+  - 363.6
+  - 127.4
+  - 371.6
+  - 135.4
+  status: provisional
+- field_name: form1[0].page4[0].yourRaceEthnicity[0].americanIndian[0]
+  address_id: 2025/document=form_13614_c/section=intake/option=form1_0_page4_0_yourraceethnicity_0_americanindian_0
+  widget_type: checkbox
+  page: 4
+  rect:
+  - 18.06
+  - 163.4
+  - 26.06
+  - 171.4
+  status: provisional
+- field_name: form1[0].page4[0].yourRaceEthnicity[0].asian[0]
+  address_id: 2025/document=form_13614_c/section=intake/option=form1_0_page4_0_yourraceethnicity_0_asian_0
+  widget_type: checkbox
+  page: 4
+  rect:
+  - 18.06
+  - 206.6
+  - 26.06
+  - 214.6
+  status: provisional
+- field_name: form1[0].page4[0].yourRaceEthnicity[0].blackAfricanAmerican[0]
+  address_id: 2025/document=form_13614_c/section=intake/option=form1_0_page4_0_yourraceethnicity_0_blackafricanamerican_0
+  widget_type: checkbox
+  page: 4
+  rect:
+  - 18.06
+  - 239.0
+  - 26.06
+  - 247.0
+  status: provisional
+- field_name: form1[0].page4[0].yourRaceEthnicity[0].hawaiianPacific[0]
+  address_id: 2025/document=form_13614_c/section=intake/option=form1_0_page4_0_yourraceethnicity_0_hawaiianpacific_0
+  widget_type: checkbox
+  page: 4
+  rect:
+  - 18.06
+  - 336.2
+  - 26.06
+  - 344.2
+  status: provisional
+- field_name: form1[0].page4[0].yourRaceEthnicity[0].hispanicLatino[0]
+  address_id: 2025/document=form_13614_c/section=intake/option=form1_0_page4_0_yourraceethnicity_0_hispaniclatino_0
+  widget_type: checkbox
+  page: 4
+  rect:
+  - 18.06
+  - 271.4
+  - 26.06
+  - 279.4
+  status: provisional
+- field_name: form1[0].page4[0].yourRaceEthnicity[0].middleEsternNorthAfrican[0]
+  address_id: 2025/document=form_13614_c/section=intake/option=form1_0_page4_0_yourraceethnicity_0_middleesternnorthafrican_0
+  widget_type: checkbox
+  page: 4
+  rect:
+  - 18.06
+  - 303.8
+  - 26.06
+  - 311.8
+  status: provisional
+- field_name: form1[0].page4[0].yourRaceEthnicity[0].white[0]
+  address_id: 2025/document=form_13614_c/section=intake/option=form1_0_page4_0_yourraceethnicity_0_white_0
+  widget_type: checkbox
+  page: 4
+  rect:
+  - 18.0
+  - 368.6
+  - 26.0
+  - 376.6
+  status: provisional
+- field_name: form1[0].page4[0].yourSpousesRaceEthnicity[0].americanIndian[0]
+  address_id: 2025/document=form_13614_c/section=intake/option=form1_0_page4_0_yourspousesraceethnicity_0_americanindian_0
+  widget_type: checkbox
+  page: 4
+  rect:
+  - 399.66
+  - 163.4
+  - 407.66
+  - 171.4
+  status: provisional
+- field_name: form1[0].page4[0].yourSpousesRaceEthnicity[0].asian[0]
+  address_id: 2025/document=form_13614_c/section=intake/option=form1_0_page4_0_yourspousesraceethnicity_0_asian_0
+  widget_type: checkbox
+  page: 4
+  rect:
+  - 399.66
+  - 206.6
+  - 407.66
+  - 214.6
+  status: provisional
+- field_name: form1[0].page4[0].yourSpousesRaceEthnicity[0].blackAfricanAmerican[0]
+  address_id: 2025/document=form_13614_c/section=intake/option=form1_0_page4_0_yourspousesraceethnicity_0_blackafricanamerican_0
+  widget_type: checkbox
+  page: 4
+  rect:
+  - 399.66
+  - 239.0
+  - 407.66
+  - 247.0
+  status: provisional
+- field_name: form1[0].page4[0].yourSpousesRaceEthnicity[0].hawaiianPacific[0]
+  address_id: 2025/document=form_13614_c/section=intake/option=form1_0_page4_0_yourspousesraceethnicity_0_hawaiianpacific_0
+  widget_type: checkbox
+  page: 4
+  rect:
+  - 399.66
+  - 336.2
+  - 407.66
+  - 344.2
+  status: provisional
+- field_name: form1[0].page4[0].yourSpousesRaceEthnicity[0].hispanicLatino[0]
+  address_id: 2025/document=form_13614_c/section=intake/option=form1_0_page4_0_yourspousesraceethnicity_0_hispaniclatino_0
+  widget_type: checkbox
+  page: 4
+  rect:
+  - 399.66
+  - 271.4
+  - 407.66
+  - 279.4
+  status: provisional
+- field_name: form1[0].page4[0].yourSpousesRaceEthnicity[0].middleEsternNorthAfrican[0]
+  address_id: 2025/document=form_13614_c/section=intake/option=form1_0_page4_0_yourspousesraceethnicity_0_middleesternnorthafrican_0
+  widget_type: checkbox
+  page: 4
+  rect:
+  - 399.66
+  - 303.8
+  - 407.66
+  - 311.8
+  status: provisional
+- field_name: form1[0].page4[0].yourSpousesRaceEthnicity[0].white[0]
+  address_id: 2025/document=form_13614_c/section=intake/option=form1_0_page4_0_yourspousesraceethnicity_0_white_0
+  widget_type: checkbox
+  page: 4
+  rect:
+  - 399.6
+  - 368.6
+  - 407.6
+  - 376.6
+  status: provisional
+- field_name: form1[0].page5[0].AdditionalComments[0].AdditionalNotesComments[0]
+  address_id: 2025/document=form_13614_c/section=intake/control=form1_0_page5_0_additionalcomments_0_additionalnotescomments_0
+  widget_type: text
+  page: 5
+  rect:
+  - 18.0
+  - 34.56
+  - 774.0
+  - 584.64
+  status: provisional
+- field_name: form1[0].page6[0].ifYouBelieve[0].hyperlink[0]
+  address_id: 2025/document=form_13614_c/section=intake/control=form1_0_page6_0_ifyoubelieve_0_hyperlink_0
+  widget_type: other
+  page: 6
+  rect:
+  - 288.0
+  - 741.6
+  - 525.6
+  - 752.4
+  status: provisional
+- field_name: form1[0].page6[0].primaryDateSigned[0]
+  address_id: 2025/document=form_13614_c/section=intake/control=form1_0_page6_0_primarydatesigned_0
+  widget_type: text
+  page: 6
+  rect:
+  - 507.6
+  - 634.96
+  - 594.0
+  - 658.0
+  status: provisional
+- field_name: form1[0].page6[0].primaryTaxpayer[0]
+  address_id: 2025/document=form_13614_c/section=intake/control=form1_0_page6_0_primarytaxpayer_0
+  widget_type: text
+  page: 6
+  rect:
+  - 18.0
+  - 634.96
+  - 500.4
+  - 658.0
+  status: provisional
+- field_name: form1[0].page6[0].secondaryDateSigned[0]
+  address_id: 2025/document=form_13614_c/section=intake/control=form1_0_page6_0_secondarydatesigned_0
+  widget_type: text
+  page: 6
+  rect:
+  - 507.6
+  - 674.56
+  - 594.0
+  - 697.6
+  status: provisional
+- field_name: form1[0].page6[0].secondaryTaxpayer[0]
+  address_id: 2025/document=form_13614_c/section=intake/control=form1_0_page6_0_secondarytaxpayer_0
+  widget_type: text
+  page: 6
+  rect:
+  - 18.0
+  - 674.56
+  - 500.4
+  - 697.6
+  status: provisional

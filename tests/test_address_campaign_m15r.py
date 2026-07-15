@@ -5,8 +5,9 @@ from pathlib import Path
 
 import jsonschema
 import pytest
+import yaml
 
-from tax_graph.addressing import CORE_RETURN_DOCUMENTS, build_address_campaign
+from tax_graph.addressing import CORE_RETURN_DOCUMENTS, INFORMATION_RETURN_DOCUMENTS, build_address_campaign
 from tax_graph.link import link_outbound_flows
 
 
@@ -68,3 +69,58 @@ def test_form_8949_cross_form_claims_resolve_exactly() -> None:
     assert len(result.realized) == 6
     assert result.unresolved == []
     assert len(result.rejected) == 2
+
+
+@pytest.fixture(scope="module")
+def information_campaign():
+    return build_address_campaign(ROOT, INFORMATION_RETURN_DOCUMENTS)
+
+
+@pytest.mark.m15r
+def test_information_return_campaign_uses_typed_boxes_and_choices(information_campaign) -> None:
+    schema = json.loads((ROOT / "schemas/address_registry.schema.json").read_text(encoding="utf-8"))
+    for document_id, payload in information_campaign.items():
+        coverage = payload["coverage"]
+        assert coverage["inventory"] == coverage["addressed_widgets"] + coverage["exempt_widgets"]
+        jsonschema.validate(payload["registry"], schema)
+        if document_id == "form_13614_c_2025":
+            assert coverage["addressed_widgets"] == coverage["inventory"]
+            continue
+        assert coverage["addressed_widgets"] > 0
+        assert coverage["exempt_widgets"] > 0
+        addressed = {item["address_id"]: item for item in payload["registry"]["addresses"]}
+        for binding in payload["widget_bindings"]["bindings"]:
+            path = addressed[binding["address_id"]]["path"]
+            assert path[-2]["kind"] == "box"
+            assert path[-1]["kind"] in {"control", "option"}
+
+
+@pytest.mark.m15r
+def test_intake_runtime_facts_have_one_address_per_control(information_campaign) -> None:
+    payload = information_campaign["form_13614_c_2025"]
+    bindings = payload["widget_bindings"]["bindings"]
+    assert len(bindings) == 297
+    assert len({item["field_name"] for item in bindings}) == 297
+    addresses = {item["address_id"]: item for item in payload["registry"]["addresses"]}
+    assert all(addresses[item["address_id"]]["path"][-2] == {"kind": "section", "token": "intake"} for item in bindings)
+    assert any(addresses[item["address_id"]]["kind"] == "option" for item in bindings)
+
+
+@pytest.mark.m15r
+def test_information_routes_retain_authored_provenance(information_campaign) -> None:
+    for document_id, payload in information_campaign.items():
+        field_map = yaml.safe_load(
+            (ROOT / "graph/2025/field_maps" / f"{document_id}.yaml").read_text(encoding="utf-8")
+        )
+        dispositions = {item["field_name"]: item for item in field_map["field_dispositions"]}
+        assert {item["field_name"] for item in payload["widget_bindings"]["bindings"]} == set(payload["field_addresses"])
+        assert set(payload["field_addresses"]) <= set(dispositions)
+        for field_name, address_id in payload["field_addresses"].items():
+            disposition = dispositions[field_name]
+            assert disposition["address_id"] == address_id
+            assert disposition.get("source_ref") or disposition.get("runtime_fact_ref")
+        for field_name in set(dispositions) - set(payload["field_addresses"]):
+            assert dispositions[field_name]["population_policy"] in {
+                "user_entered", "imported", "copied", "computed", "decision_required",
+                "intentionally_blank", "unsupported",
+            }

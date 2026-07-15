@@ -14,8 +14,8 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## Current state (2026-07-15)
 
-**BALL: WORKER - M15R R11 COMPLETE; CONTINUE R12.** M15R R1-R11 are committed or
-ready for the R11 commit. John accepted Address Gate A on 2026-07-15. The in-progress M15
+**BALL: WORKER - M15R R12 COMPLETE; CONTINUE R13.** M15R R1-R12 are committed or
+ready for the R12 commit. John accepted Address Gate A on 2026-07-15. The in-progress M15
 A4 worktree remains preserved. `plans/PHASE_M15R.md` is the active recovery plan. Canary:
 Street Address.
 
@@ -428,6 +428,12 @@ ASCII: green; `validate 2025`: green; full suite: 338 passed, 6 skipped in 588.8
   `docs/self-serve-extension.md`.
 
 ## From Worker
+- **M15R R12 (Codex, 2026-07-15):** Promoted pending-review registries for W-2,
+  1099-B, 1099-INT, 1099-DIV, and 13614-C. Source-document identity comes only from
+  explicit AcroForm box containers; ambiguous/combined regions retain explicit
+  dispositions without guessed addresses. Choice widgets are typed options. All 297
+  intake controls bind through authored runtime-fact references with provenance intact.
+  Focused campaign/intake/universal-gate suite: 22 passed. Next: R13.
 - **M15R R7-R11 (Codex, 2026-07-15):** Promoted Form 1040 canonical bindings; cut LINK,
   completeness, runtime, MCP, and workbench identity over to addresses; fixed
   document-scoped workbench geometry; and completed the nine-document core-return

@@ -76,31 +76,37 @@ field_dispositions:
   population_policy: imported
   value_format: text
   source_ref: form_1099_int_2025.topmostsubform_0_copya_0_rightcolumn_0_box2_0_f1_10_0
+  address_id: 2025/document=form_1099_int/box=2/control=f_10
 - field_name: topmostSubform[0].CopyA[0].RightColumn[0].Box1[0].f1_9[0]
   label: $ - f1_9
   population_policy: imported
   value_format: text
   source_ref: form_1099_int_2025.topmostsubform_0_copya_0_rightcolumn_0_box1_0_f1_9_0
+  address_id: 2025/document=form_1099_int/box=1/control=f_9
 - field_name: topmostSubform[0].CopyA[0].RightColumn[0].Box3[0].f1_11[0]
   label: $ - f1_11
   population_policy: imported
   value_format: text
   source_ref: form_1099_int_2025.topmostsubform_0_copya_0_rightcolumn_0_box3_0_f1_11_0
+  address_id: 2025/document=form_1099_int/box=3/control=f_11
 - field_name: topmostSubform[0].CopyA[0].RightColumn[0].Box4[0].f1_12[0]
   label: Line 4 - $ - f1_12
   population_policy: imported
   value_format: text
   source_ref: form_1099_int_2025.topmostsubform_0_copya_0_rightcolumn_0_box4_0_f1_12_0
+  address_id: 2025/document=form_1099_int/box=4/control=f_12
 - field_name: topmostSubform[0].CopyA[0].RightColumn[0].Box5[0].f1_13[0]
   label: Line 4 - $ $ - f1_13
   population_policy: imported
   value_format: text
   source_ref: form_1099_int_2025.topmostsubform_0_copya_0_rightcolumn_0_box5_0_f1_13_0
+  address_id: 2025/document=form_1099_int/box=5/control=f_13
 - field_name: topmostSubform[0].CopyA[0].RightColumn[0].Box6[0].f1_14[0]
   label: Line 6 - Street address (including apt. no.) $ - f1_14
   population_policy: imported
   value_format: text
   source_ref: form_1099_int_2025.topmostsubform_0_copya_0_rightcolumn_0_box6_0_f1_14_0
+  address_id: 2025/document=form_1099_int/box=6/control=f_14
 - field_name: topmostSubform[0].CopyA[0].RightColumn[0].f1_15[0]
   label: Line 6 - Street address (including apt. no.) $ - f1_15
   population_policy: imported
@@ -111,36 +117,43 @@ field_dispositions:
   population_policy: imported
   value_format: text
   source_ref: form_1099_int_2025.topmostsubform_0_copya_0_rightcolumn_0_box8_0_f1_16_0
+  address_id: 2025/document=form_1099_int/box=8/control=f_16
 - field_name: topmostSubform[0].CopyA[0].RightColumn[0].Box9[0].f1_17[0]
   label: province, country, and ZIP or foreign postal code $ $ - f1_17
   population_policy: imported
   value_format: text
   source_ref: form_1099_int_2025.topmostsubform_0_copya_0_rightcolumn_0_box9_0_f1_17_0
+  address_id: 2025/document=form_1099_int/box=9/control=f_17
 - field_name: topmostSubform[0].CopyA[0].RightColumn[0].Box10[0].f1_18[0]
   label: FATCA filing $ - f1_18
   population_policy: imported
   value_format: text
   source_ref: form_1099_int_2025.topmostsubform_0_copya_0_rightcolumn_0_box10_0_f1_18_0
+  address_id: 2025/document=form_1099_int/box=10/control=f_18
 - field_name: topmostSubform[0].CopyA[0].RightColumn[0].Box11[0].f1_19[0]
   label: FATCA filing $ $ - f1_19
   population_policy: imported
   value_format: text
   source_ref: form_1099_int_2025.topmostsubform_0_copya_0_rightcolumn_0_box11_0_f1_19_0
+  address_id: 2025/document=form_1099_int/box=11/control=f_19
 - field_name: topmostSubform[0].CopyA[0].RightColumn[0].Box12[0].f1_20[0]
   label: Line 12 - $ - f1_20
   population_policy: imported
   value_format: text
   source_ref: form_1099_int_2025.topmostsubform_0_copya_0_rightcolumn_0_box12_0_f1_20_0
+  address_id: 2025/document=form_1099_int/box=12/control=f_20
 - field_name: topmostSubform[0].CopyA[0].RightColumn[0].Box13[0].f1_21[0]
   label: Line 12 - $ $ - f1_21
   population_policy: imported
   value_format: text
   source_ref: form_1099_int_2025.topmostsubform_0_copya_0_rightcolumn_0_box13_0_f1_21_0
+  address_id: 2025/document=form_1099_int/box=13/control=f_21
 - field_name: topmostSubform[0].CopyA[0].RightColumn[0].Box14[0].f1_22[0]
   label: f1_22
   population_policy: imported
   value_format: text
   source_ref: form_1099_int_2025.topmostsubform_0_copya_0_rightcolumn_0_box14_0_f1_22_0
+  address_id: 2025/document=form_1099_int/box=14/control=f_22
 - field_name: topmostSubform[0].CopyA[0].RightColumn[0].Boxes15_16_17[0].f1_23[0]
   label: bond CUSIP no. - f1_23
   population_policy: imported
@@ -236,31 +249,37 @@ field_dispositions:
   population_policy: imported
   value_format: text
   source_ref: form_1099_int_2025.topmostsubform_0_copy1_0_rghtcol_0_box1_0_f2_9_0
+  address_id: 2025/document=form_1099_int/box=1/control=f_9
 - field_name: topmostSubform[0].Copy1[0].RghtCol[0].Box2[0].f2_10[0]
   label: "PAYER\u2019S TIN RECIPIENT\u2019S TIN $ - f2_10 (page 3, control 47)"
   population_policy: imported
   value_format: text
   source_ref: form_1099_int_2025.topmostsubform_0_copy1_0_rghtcol_0_box2_0_f2_10_0
+  address_id: 2025/document=form_1099_int/box=2/control=f_10
 - field_name: topmostSubform[0].Copy1[0].RghtCol[0].Box3[0].f2_11[0]
   label: $ - f2_11 (page 3, control 48)
   population_policy: imported
   value_format: text
   source_ref: form_1099_int_2025.topmostsubform_0_copy1_0_rghtcol_0_box3_0_f2_11_0
+  address_id: 2025/document=form_1099_int/box=3/control=f_11
 - field_name: topmostSubform[0].Copy1[0].RghtCol[0].Box4[0].f2_12[0]
   label: Line 4 - $ - f2_12 (page 3, control 49)
   population_policy: imported
   value_format: text
   source_ref: form_1099_int_2025.topmostsubform_0_copy1_0_rghtcol_0_box4_0_f2_12_0
+  address_id: 2025/document=form_1099_int/box=4/control=f_12
 - field_name: topmostSubform[0].Copy1[0].RghtCol[0].Box5[0].f2_13[0]
   label: Line 4 - $ $ - f2_13 (page 3, control 50)
   population_policy: imported
   value_format: text
   source_ref: form_1099_int_2025.topmostsubform_0_copy1_0_rghtcol_0_box5_0_f2_13_0
+  address_id: 2025/document=form_1099_int/box=5/control=f_13
 - field_name: topmostSubform[0].Copy1[0].RghtCol[0].Box6[0].f2_14[0]
   label: Line 6 - Street address (including apt. no.) $ - f2_14 (page 3, control 51)
   population_policy: imported
   value_format: text
   source_ref: form_1099_int_2025.topmostsubform_0_copy1_0_rghtcol_0_box6_0_f2_14_0
+  address_id: 2025/document=form_1099_int/box=6/control=f_14
 - field_name: topmostSubform[0].Copy1[0].RghtCol[0].f2_15[0]
   label: Line 6 - Street address (including apt. no.) $ - f2_15 (page 3, control 52)
   population_policy: imported
@@ -272,37 +291,44 @@ field_dispositions:
   population_policy: imported
   value_format: text
   source_ref: form_1099_int_2025.topmostsubform_0_copy1_0_rghtcol_0_box8_0_f2_16_0
+  address_id: 2025/document=form_1099_int/box=8/control=f_16
 - field_name: topmostSubform[0].Copy1[0].RghtCol[0].Box9[0].f2_17[0]
   label: province, country, and ZIP or foreign postal code $ $ - f2_17 (page 3, control
     54)
   population_policy: imported
   value_format: text
   source_ref: form_1099_int_2025.topmostsubform_0_copy1_0_rghtcol_0_box9_0_f2_17_0
+  address_id: 2025/document=form_1099_int/box=9/control=f_17
 - field_name: topmostSubform[0].Copy1[0].RghtCol[0].Box10[0].f2_18[0]
   label: FATCA filing $ - f2_18 (page 3, control 55)
   population_policy: imported
   value_format: text
   source_ref: form_1099_int_2025.topmostsubform_0_copy1_0_rghtcol_0_box10_0_f2_18_0
+  address_id: 2025/document=form_1099_int/box=10/control=f_18
 - field_name: topmostSubform[0].Copy1[0].RghtCol[0].Box11[0].f2_19[0]
   label: FATCA filing $ $ - f2_19 (page 3, control 56)
   population_policy: imported
   value_format: text
   source_ref: form_1099_int_2025.topmostsubform_0_copy1_0_rghtcol_0_box11_0_f2_19_0
+  address_id: 2025/document=form_1099_int/box=11/control=f_19
 - field_name: topmostSubform[0].Copy1[0].RghtCol[0].Box12[0].f2_20[0]
   label: Line 12 - $ - f2_20 (page 3, control 57)
   population_policy: imported
   value_format: text
   source_ref: form_1099_int_2025.topmostsubform_0_copy1_0_rghtcol_0_box12_0_f2_20_0
+  address_id: 2025/document=form_1099_int/box=12/control=f_20
 - field_name: topmostSubform[0].Copy1[0].RghtCol[0].Box13[0].f2_21[0]
   label: Line 12 - $ $ - f2_21 (page 3, control 58)
   population_policy: imported
   value_format: text
   source_ref: form_1099_int_2025.topmostsubform_0_copy1_0_rghtcol_0_box13_0_f2_21_0
+  address_id: 2025/document=form_1099_int/box=13/control=f_21
 - field_name: topmostSubform[0].Copy1[0].RghtCol[0].Box14[0].f2_22[0]
   label: f2_22 (page 3, control 59)
   population_policy: imported
   value_format: text
   source_ref: form_1099_int_2025.topmostsubform_0_copy1_0_rghtcol_0_box14_0_f2_22_0
+  address_id: 2025/document=form_1099_int/box=14/control=f_22
 - field_name: topmostSubform[0].Copy1[0].RghtCol[0].Boxes15_16_17[0].f2_23[0]
   label: bond CUSIP no. - f2_23 (page 3, control 60)
   population_policy: imported
@@ -393,31 +419,37 @@ field_dispositions:
   population_policy: imported
   value_format: text
   source_ref: form_1099_int_2025.topmostsubform_0_copyb_0_rghtcolumn_0_box1_0_f2_9_0
+  address_id: 2025/document=form_1099_int/box=1/control=f_9
 - field_name: topmostSubform[0].CopyB[0].RghtColumn[0].Box2[0].f2_10[0]
   label: "PAYER\u2019S TIN RECIPIENT\u2019S TIN $ - f2_10 (page 4, control 78)"
   population_policy: imported
   value_format: text
   source_ref: form_1099_int_2025.topmostsubform_0_copyb_0_rghtcolumn_0_box2_0_f2_10_0
+  address_id: 2025/document=form_1099_int/box=2/control=f_10
 - field_name: topmostSubform[0].CopyB[0].RghtColumn[0].Box3[0].f2_11[0]
   label: $ - f2_11 (page 4, control 79)
   population_policy: imported
   value_format: text
   source_ref: form_1099_int_2025.topmostsubform_0_copyb_0_rghtcolumn_0_box3_0_f2_11_0
+  address_id: 2025/document=form_1099_int/box=3/control=f_11
 - field_name: topmostSubform[0].CopyB[0].RghtColumn[0].Box4[0].f2_12[0]
   label: Line 4 - $ - f2_12 (page 4, control 80)
   population_policy: imported
   value_format: text
   source_ref: form_1099_int_2025.topmostsubform_0_copyb_0_rghtcolumn_0_box4_0_f2_12_0
+  address_id: 2025/document=form_1099_int/box=4/control=f_12
 - field_name: topmostSubform[0].CopyB[0].RghtColumn[0].Box5[0].f2_13[0]
   label: Line 4 - $ $ - f2_13 (page 4, control 81)
   population_policy: imported
   value_format: text
   source_ref: form_1099_int_2025.topmostsubform_0_copyb_0_rghtcolumn_0_box5_0_f2_13_0
+  address_id: 2025/document=form_1099_int/box=5/control=f_13
 - field_name: topmostSubform[0].CopyB[0].RghtColumn[0].Box6[0].f2_14[0]
   label: Line a - Street address (including apt. no.) $ - f2_14
   population_policy: imported
   value_format: text
   source_ref: form_1099_int_2025.topmostsubform_0_copyb_0_rghtcolumn_0_box6_0_f2_14_0
+  address_id: 2025/document=form_1099_int/box=6/control=f_14
 - field_name: topmostSubform[0].CopyB[0].RghtColumn[0].f2_15[0]
   label: Line a - Street address (including apt. no.) $ - f2_15
   population_policy: imported
@@ -429,37 +461,44 @@ field_dispositions:
   population_policy: imported
   value_format: text
   source_ref: form_1099_int_2025.topmostsubform_0_copyb_0_rghtcolumn_0_box8_0_f2_16_0
+  address_id: 2025/document=form_1099_int/box=8/control=f_16
 - field_name: topmostSubform[0].CopyB[0].RghtColumn[0].Box9[0].f2_17[0]
   label: province, country, and ZIP or foreign postal code $ $ - f2_17 (page 4, control
     85)
   population_policy: imported
   value_format: text
   source_ref: form_1099_int_2025.topmostsubform_0_copyb_0_rghtcolumn_0_box9_0_f2_17_0
+  address_id: 2025/document=form_1099_int/box=9/control=f_17
 - field_name: topmostSubform[0].CopyB[0].RghtColumn[0].Box10[0].f2_18[0]
   label: FATCA filing $ - f2_18 (page 4, control 86)
   population_policy: imported
   value_format: text
   source_ref: form_1099_int_2025.topmostsubform_0_copyb_0_rghtcolumn_0_box10_0_f2_18_0
+  address_id: 2025/document=form_1099_int/box=10/control=f_18
 - field_name: topmostSubform[0].CopyB[0].RghtColumn[0].Box11[0].f2_19[0]
   label: FATCA filing $ $ - f2_19 (page 4, control 87)
   population_policy: imported
   value_format: text
   source_ref: form_1099_int_2025.topmostsubform_0_copyb_0_rghtcolumn_0_box11_0_f2_19_0
+  address_id: 2025/document=form_1099_int/box=11/control=f_19
 - field_name: topmostSubform[0].CopyB[0].RghtColumn[0].Box12[0].f2_20[0]
   label: Line 12 - $ - f2_20 (page 4, control 88)
   population_policy: imported
   value_format: text
   source_ref: form_1099_int_2025.topmostsubform_0_copyb_0_rghtcolumn_0_box12_0_f2_20_0
+  address_id: 2025/document=form_1099_int/box=12/control=f_20
 - field_name: topmostSubform[0].CopyB[0].RghtColumn[0].Box13[0].f2_21[0]
   label: Line 12 - $ $ - f2_21 (page 4, control 89)
   population_policy: imported
   value_format: text
   source_ref: form_1099_int_2025.topmostsubform_0_copyb_0_rghtcolumn_0_box13_0_f2_21_0
+  address_id: 2025/document=form_1099_int/box=13/control=f_21
 - field_name: topmostSubform[0].CopyB[0].RghtColumn[0].Box14[0].f2_22[0]
   label: f2_22 (page 4, control 90)
   population_policy: imported
   value_format: text
   source_ref: form_1099_int_2025.topmostsubform_0_copyb_0_rghtcolumn_0_box14_0_f2_22_0
+  address_id: 2025/document=form_1099_int/box=14/control=f_22
 - field_name: topmostSubform[0].CopyB[0].RghtColumn[0].Boxes15_16_17[0].f2_23[0]
   label: bond CUSIP no. - f2_23 (page 4, control 91)
   population_policy: imported
@@ -550,31 +589,37 @@ field_dispositions:
   population_policy: imported
   value_format: text
   source_ref: form_1099_int_2025.topmostsubform_0_copy2_0_rghtcolumn_0_box1_0_f2_9_0
+  address_id: 2025/document=form_1099_int/box=1/control=f_9
 - field_name: topmostSubform[0].Copy2[0].RghtColumn[0].Box2[0].f2_10[0]
   label: "PAYER\u2019S TIN RECIPIENT\u2019S TIN $ - f2_10 (page 6, control 109)"
   population_policy: imported
   value_format: text
   source_ref: form_1099_int_2025.topmostsubform_0_copy2_0_rghtcolumn_0_box2_0_f2_10_0
+  address_id: 2025/document=form_1099_int/box=2/control=f_10
 - field_name: topmostSubform[0].Copy2[0].RghtColumn[0].Box3[0].f2_11[0]
   label: $ - f2_11 (page 6, control 110)
   population_policy: imported
   value_format: text
   source_ref: form_1099_int_2025.topmostsubform_0_copy2_0_rghtcolumn_0_box3_0_f2_11_0
+  address_id: 2025/document=form_1099_int/box=3/control=f_11
 - field_name: topmostSubform[0].Copy2[0].RghtColumn[0].Box4[0].f2_12[0]
   label: Line 4 - $ - f2_12 (page 6, control 111)
   population_policy: imported
   value_format: text
   source_ref: form_1099_int_2025.topmostsubform_0_copy2_0_rghtcolumn_0_box4_0_f2_12_0
+  address_id: 2025/document=form_1099_int/box=4/control=f_12
 - field_name: topmostSubform[0].Copy2[0].RghtColumn[0].Box5[0].f2_13[0]
   label: Line 4 - $ $ - f2_13 (page 6, control 112)
   population_policy: imported
   value_format: text
   source_ref: form_1099_int_2025.topmostsubform_0_copy2_0_rghtcolumn_0_box5_0_f2_13_0
+  address_id: 2025/document=form_1099_int/box=5/control=f_13
 - field_name: topmostSubform[0].Copy2[0].RghtColumn[0].Box6[0].f2_14[0]
   label: Line 6 - Street address (including apt. no.) $ - f2_14 (page 6, control 113)
   population_policy: imported
   value_format: text
   source_ref: form_1099_int_2025.topmostsubform_0_copy2_0_rghtcolumn_0_box6_0_f2_14_0
+  address_id: 2025/document=form_1099_int/box=6/control=f_14
 - field_name: topmostSubform[0].Copy2[0].RghtColumn[0].f2_15[0]
   label: Line 6 - Street address (including apt. no.) $ - f2_15 (page 6, control 114)
   population_policy: imported
@@ -586,37 +631,44 @@ field_dispositions:
   population_policy: imported
   value_format: text
   source_ref: form_1099_int_2025.topmostsubform_0_copy2_0_rghtcolumn_0_box8_0_f2_16_0
+  address_id: 2025/document=form_1099_int/box=8/control=f_16
 - field_name: topmostSubform[0].Copy2[0].RghtColumn[0].Box9[0].f2_17[0]
   label: province, country, and ZIP or foreign postal code $ $ - f2_17 (page 6, control
     116)
   population_policy: imported
   value_format: text
   source_ref: form_1099_int_2025.topmostsubform_0_copy2_0_rghtcolumn_0_box9_0_f2_17_0
+  address_id: 2025/document=form_1099_int/box=9/control=f_17
 - field_name: topmostSubform[0].Copy2[0].RghtColumn[0].Box10[0].f2_18[0]
   label: FATCA filing $ - f2_18 (page 6, control 117)
   population_policy: imported
   value_format: text
   source_ref: form_1099_int_2025.topmostsubform_0_copy2_0_rghtcolumn_0_box10_0_f2_18_0
+  address_id: 2025/document=form_1099_int/box=10/control=f_18
 - field_name: topmostSubform[0].Copy2[0].RghtColumn[0].Box11[0].f2_19[0]
   label: FATCA filing $ $ - f2_19 (page 6, control 118)
   population_policy: imported
   value_format: text
   source_ref: form_1099_int_2025.topmostsubform_0_copy2_0_rghtcolumn_0_box11_0_f2_19_0
+  address_id: 2025/document=form_1099_int/box=11/control=f_19
 - field_name: topmostSubform[0].Copy2[0].RghtColumn[0].Box12[0].f2_20[0]
   label: Line 12 - $ - f2_20 (page 6, control 119)
   population_policy: imported
   value_format: text
   source_ref: form_1099_int_2025.topmostsubform_0_copy2_0_rghtcolumn_0_box12_0_f2_20_0
+  address_id: 2025/document=form_1099_int/box=12/control=f_20
 - field_name: topmostSubform[0].Copy2[0].RghtColumn[0].Box13[0].f2_21[0]
   label: Line 12 - $ $ - f2_21 (page 6, control 120)
   population_policy: imported
   value_format: text
   source_ref: form_1099_int_2025.topmostsubform_0_copy2_0_rghtcolumn_0_box13_0_f2_21_0
+  address_id: 2025/document=form_1099_int/box=13/control=f_21
 - field_name: topmostSubform[0].Copy2[0].RghtColumn[0].Box14[0].f2_22[0]
   label: f2_22 (page 6, control 121)
   population_policy: imported
   value_format: text
   source_ref: form_1099_int_2025.topmostsubform_0_copy2_0_rghtcolumn_0_box14_0_f2_22_0
+  address_id: 2025/document=form_1099_int/box=14/control=f_22
 - field_name: topmostSubform[0].Copy2[0].RghtColumn[0].Boxes15_16_17[0].f2_23[0]
   label: bond CUSIP no. - f2_23 (page 6, control 122)
   population_policy: imported

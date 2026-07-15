@@ -1,0 +1,485 @@
+schema_version: 1
+year: 2025
+document_id: form_1099_div_2025
+binding_kind: widget
+bindings:
+- field_name: topmostSubform[0].Copy1[0].RghtCol[0].Box12_ReadOrder[0].f2_25[0]
+  address_id: 2025/document=form_1099_div/box=12/control=f_25
+  widget_type: text
+  page: 3
+  rect:
+  - 305.2
+  - 312.0
+  - 395.0
+  - 324.0
+  status: provisional
+- field_name: topmostSubform[0].Copy1[0].RghtCol[0].Box14_ReadOrder[0].f2_27[0]
+  address_id: 2025/document=form_1099_div/box=14/control=f_27
+  widget_type: text
+  page: 3
+  rect:
+  - 295.2
+  - 334.0
+  - 331.2
+  - 348.0
+  status: provisional
+- field_name: topmostSubform[0].Copy1[0].RghtCol[0].Box14_ReadOrder[0].f2_28[0]
+  address_id: 2025/document=form_1099_div/box=14/control=f_28
+  widget_type: text
+  page: 3
+  rect:
+  - 295.2
+  - 348.0
+  - 331.2
+  - 360.0
+  status: provisional
+- field_name: topmostSubform[0].Copy1[0].RghtCol[0].Box15_ReadOrder[0].f2_29[0]
+  address_id: 2025/document=form_1099_div/box=15/control=f_29
+  widget_type: text
+  page: 3
+  rect:
+  - 331.2
+  - 334.0
+  - 396.0
+  - 348.0
+  status: provisional
+- field_name: topmostSubform[0].Copy1[0].RghtCol[0].Box15_ReadOrder[0].f2_30[0]
+  address_id: 2025/document=form_1099_div/box=15/control=f_30
+  widget_type: text
+  page: 3
+  rect:
+  - 331.2
+  - 348.0
+  - 396.0
+  - 360.0
+  status: provisional
+- field_name: topmostSubform[0].Copy1[0].RghtCol[0].Box2a_ReadOrder[0].f2_11[0]
+  address_id: 2025/document=form_1099_div/box=2a/control=f_11
+  widget_type: text
+  page: 3
+  rect:
+  - 305.2
+  - 120.0
+  - 395.0
+  - 132.0
+  status: provisional
+- field_name: topmostSubform[0].Copy1[0].RghtCol[0].Box2c_ReadOrder[0].f2_13[0]
+  address_id: 2025/document=form_1099_div/box=2c/control=f_13
+  widget_type: text
+  page: 3
+  rect:
+  - 305.2
+  - 144.0
+  - 395.0
+  - 156.0
+  status: provisional
+- field_name: topmostSubform[0].Copy1[0].RghtCol[0].Box2e_ReadOrder[0].f2_15[0]
+  address_id: 2025/document=form_1099_div/box=2e/control=f_15
+  widget_type: text
+  page: 3
+  rect:
+  - 305.2
+  - 168.0
+  - 395.0
+  - 180.0
+  status: provisional
+- field_name: topmostSubform[0].Copy1[0].RghtCol[0].Box3_ReadOrder[0].f2_17[0]
+  address_id: 2025/document=form_1099_div/box=3/control=f_17
+  widget_type: text
+  page: 3
+  rect:
+  - 305.2
+  - 192.0
+  - 395.0
+  - 204.0
+  status: provisional
+- field_name: topmostSubform[0].Copy1[0].RghtCol[0].Box5_ReadOrder[0].f2_19[0]
+  address_id: 2025/document=form_1099_div/box=5/control=f_19
+  widget_type: text
+  page: 3
+  rect:
+  - 305.2
+  - 216.0
+  - 395.0
+  - 228.0
+  status: provisional
+- field_name: topmostSubform[0].Copy1[0].RghtCol[0].Box7_ReadOrder[0].f2_21[0]
+  address_id: 2025/document=form_1099_div/box=7/control=f_21
+  widget_type: text
+  page: 3
+  rect:
+  - 305.2
+  - 252.0
+  - 395.0
+  - 264.0
+  status: provisional
+- field_name: topmostSubform[0].Copy1[0].RghtCol[0].Box9_ReadOrder[0].f2_23[0]
+  address_id: 2025/document=form_1099_div/box=9/control=f_23
+  widget_type: text
+  page: 3
+  rect:
+  - 305.2
+  - 276.0
+  - 395.0
+  - 288.0
+  status: provisional
+- field_name: topmostSubform[0].Copy2[0].RghtCol[0].Box12_ReadOrder[0].f2_25[0]
+  address_id: 2025/document=form_1099_div/box=12/control=f_25
+  widget_type: text
+  page: 6
+  rect:
+  - 305.2
+  - 312.0
+  - 395.0
+  - 324.0
+  status: provisional
+- field_name: topmostSubform[0].Copy2[0].RghtCol[0].Box14_ReadOrder[0].f2_27[0]
+  address_id: 2025/document=form_1099_div/box=14/control=f_27
+  widget_type: text
+  page: 6
+  rect:
+  - 295.2
+  - 334.0
+  - 331.2
+  - 348.0
+  status: provisional
+- field_name: topmostSubform[0].Copy2[0].RghtCol[0].Box14_ReadOrder[0].f2_28[0]
+  address_id: 2025/document=form_1099_div/box=14/control=f_28
+  widget_type: text
+  page: 6
+  rect:
+  - 295.2
+  - 348.0
+  - 331.2
+  - 360.0
+  status: provisional
+- field_name: topmostSubform[0].Copy2[0].RghtCol[0].Box15_ReadOrder[0].f2_29[0]
+  address_id: 2025/document=form_1099_div/box=15/control=f_29
+  widget_type: text
+  page: 6
+  rect:
+  - 331.2
+  - 334.0
+  - 396.0
+  - 348.0
+  status: provisional
+- field_name: topmostSubform[0].Copy2[0].RghtCol[0].Box15_ReadOrder[0].f2_30[0]
+  address_id: 2025/document=form_1099_div/box=15/control=f_30
+  widget_type: text
+  page: 6
+  rect:
+  - 331.2
+  - 348.0
+  - 396.0
+  - 360.0
+  status: provisional
+- field_name: topmostSubform[0].Copy2[0].RghtCol[0].Box2a_ReadOrder[0].f2_11[0]
+  address_id: 2025/document=form_1099_div/box=2a/control=f_11
+  widget_type: text
+  page: 6
+  rect:
+  - 305.2
+  - 120.0
+  - 395.0
+  - 132.0
+  status: provisional
+- field_name: topmostSubform[0].Copy2[0].RghtCol[0].Box2c_ReadOrder[0].f2_13[0]
+  address_id: 2025/document=form_1099_div/box=2c/control=f_13
+  widget_type: text
+  page: 6
+  rect:
+  - 305.2
+  - 144.0
+  - 395.0
+  - 156.0
+  status: provisional
+- field_name: topmostSubform[0].Copy2[0].RghtCol[0].Box2e_ReadOrder[0].f2_15[0]
+  address_id: 2025/document=form_1099_div/box=2e/control=f_15
+  widget_type: text
+  page: 6
+  rect:
+  - 305.2
+  - 168.0
+  - 395.0
+  - 180.0
+  status: provisional
+- field_name: topmostSubform[0].Copy2[0].RghtCol[0].Box3_ReadOrder[0].f2_17[0]
+  address_id: 2025/document=form_1099_div/box=3/control=f_17
+  widget_type: text
+  page: 6
+  rect:
+  - 305.2
+  - 192.0
+  - 395.0
+  - 204.0
+  status: provisional
+- field_name: topmostSubform[0].Copy2[0].RghtCol[0].Box5_ReadOrder[0].f2_19[0]
+  address_id: 2025/document=form_1099_div/box=5/control=f_19
+  widget_type: text
+  page: 6
+  rect:
+  - 305.2
+  - 216.0
+  - 395.0
+  - 228.0
+  status: provisional
+- field_name: topmostSubform[0].Copy2[0].RghtCol[0].Box7_ReadOrder[0].f2_21[0]
+  address_id: 2025/document=form_1099_div/box=7/control=f_21
+  widget_type: text
+  page: 6
+  rect:
+  - 305.2
+  - 252.0
+  - 395.0
+  - 264.0
+  status: provisional
+- field_name: topmostSubform[0].Copy2[0].RghtCol[0].Box9_ReadOrder[0].f2_23[0]
+  address_id: 2025/document=form_1099_div/box=9/control=f_23
+  widget_type: text
+  page: 6
+  rect:
+  - 305.2
+  - 276.0
+  - 395.0
+  - 288.0
+  status: provisional
+- field_name: topmostSubform[0].CopyA[0].RghtCol[0].Box12_ReadOrder[0].f1_25[0]
+  address_id: 2025/document=form_1099_div/box=12/control=f_25
+  widget_type: text
+  page: 2
+  rect:
+  - 305.2
+  - 312.0
+  - 395.0
+  - 324.0
+  status: provisional
+- field_name: topmostSubform[0].CopyA[0].RghtCol[0].Box14_ReadOrder[0].f1_27[0]
+  address_id: 2025/document=form_1099_div/box=14/control=f_27
+  widget_type: text
+  page: 2
+  rect:
+  - 295.2
+  - 334.0
+  - 331.2
+  - 348.0
+  status: provisional
+- field_name: topmostSubform[0].CopyA[0].RghtCol[0].Box14_ReadOrder[0].f1_28[0]
+  address_id: 2025/document=form_1099_div/box=14/control=f_28
+  widget_type: text
+  page: 2
+  rect:
+  - 295.2
+  - 348.0
+  - 331.2
+  - 360.0
+  status: provisional
+- field_name: topmostSubform[0].CopyA[0].RghtCol[0].Box15_ReadOrder[0].f1_29[0]
+  address_id: 2025/document=form_1099_div/box=15/control=f_29
+  widget_type: text
+  page: 2
+  rect:
+  - 331.2
+  - 334.0
+  - 396.0
+  - 348.0
+  status: provisional
+- field_name: topmostSubform[0].CopyA[0].RghtCol[0].Box15_ReadOrder[0].f1_30[0]
+  address_id: 2025/document=form_1099_div/box=15/control=f_30
+  widget_type: text
+  page: 2
+  rect:
+  - 331.2
+  - 348.0
+  - 396.0
+  - 360.0
+  status: provisional
+- field_name: topmostSubform[0].CopyA[0].RghtCol[0].Box2a_ReadOrder[0].f1_11[0]
+  address_id: 2025/document=form_1099_div/box=2a/control=f_11
+  widget_type: text
+  page: 2
+  rect:
+  - 305.2
+  - 120.0
+  - 395.0
+  - 132.0
+  status: provisional
+- field_name: topmostSubform[0].CopyA[0].RghtCol[0].Box2c_ReadOrder[0].f1_13[0]
+  address_id: 2025/document=form_1099_div/box=2c/control=f_13
+  widget_type: text
+  page: 2
+  rect:
+  - 305.2
+  - 144.0
+  - 395.0
+  - 156.0
+  status: provisional
+- field_name: topmostSubform[0].CopyA[0].RghtCol[0].Box2e_ReadOrder[0].f1_15[0]
+  address_id: 2025/document=form_1099_div/box=2e/control=f_15
+  widget_type: text
+  page: 2
+  rect:
+  - 305.2
+  - 168.0
+  - 395.0
+  - 180.0
+  status: provisional
+- field_name: topmostSubform[0].CopyA[0].RghtCol[0].Box3_ReadOrder[0].f1_17[0]
+  address_id: 2025/document=form_1099_div/box=3/control=f_17
+  widget_type: text
+  page: 2
+  rect:
+  - 305.2
+  - 192.0
+  - 395.0
+  - 204.0
+  status: provisional
+- field_name: topmostSubform[0].CopyA[0].RghtCol[0].Box5_ReadOrder[0].f1_19[0]
+  address_id: 2025/document=form_1099_div/box=5/control=f_19
+  widget_type: text
+  page: 2
+  rect:
+  - 305.2
+  - 216.0
+  - 395.0
+  - 228.0
+  status: provisional
+- field_name: topmostSubform[0].CopyA[0].RghtCol[0].Box7_ReadOrder[0].f1_21[0]
+  address_id: 2025/document=form_1099_div/box=7/control=f_21
+  widget_type: text
+  page: 2
+  rect:
+  - 305.2
+  - 252.0
+  - 395.0
+  - 264.0
+  status: provisional
+- field_name: topmostSubform[0].CopyA[0].RghtCol[0].Box9_ReadOrder[0].f1_23[0]
+  address_id: 2025/document=form_1099_div/box=9/control=f_23
+  widget_type: text
+  page: 2
+  rect:
+  - 305.2
+  - 276.0
+  - 395.0
+  - 288.0
+  status: provisional
+- field_name: topmostSubform[0].CopyB[0].RghtCol[0].Box12_ReadOrder[0].f2_25[0]
+  address_id: 2025/document=form_1099_div/box=12/control=f_25
+  widget_type: text
+  page: 4
+  rect:
+  - 305.2
+  - 312.0
+  - 395.0
+  - 324.0
+  status: provisional
+- field_name: topmostSubform[0].CopyB[0].RghtCol[0].Box14_ReadOrder[0].f2_27[0]
+  address_id: 2025/document=form_1099_div/box=14/control=f_27
+  widget_type: text
+  page: 4
+  rect:
+  - 295.2
+  - 334.0
+  - 331.2
+  - 348.0
+  status: provisional
+- field_name: topmostSubform[0].CopyB[0].RghtCol[0].Box14_ReadOrder[0].f2_28[0]
+  address_id: 2025/document=form_1099_div/box=14/control=f_28
+  widget_type: text
+  page: 4
+  rect:
+  - 295.2
+  - 348.0
+  - 331.2
+  - 360.0
+  status: provisional
+- field_name: topmostSubform[0].CopyB[0].RghtCol[0].Box15_ReadOrder[0].f2_29[0]
+  address_id: 2025/document=form_1099_div/box=15/control=f_29
+  widget_type: text
+  page: 4
+  rect:
+  - 331.2
+  - 334.0
+  - 396.0
+  - 348.0
+  status: provisional
+- field_name: topmostSubform[0].CopyB[0].RghtCol[0].Box15_ReadOrder[0].f2_30[0]
+  address_id: 2025/document=form_1099_div/box=15/control=f_30
+  widget_type: text
+  page: 4
+  rect:
+  - 331.2
+  - 348.0
+  - 396.0
+  - 360.0
+  status: provisional
+- field_name: topmostSubform[0].CopyB[0].RghtCol[0].Box2a_ReadOrder[0].f2_11[0]
+  address_id: 2025/document=form_1099_div/box=2a/control=f_11
+  widget_type: text
+  page: 4
+  rect:
+  - 305.2
+  - 120.0
+  - 395.0
+  - 132.0
+  status: provisional
+- field_name: topmostSubform[0].CopyB[0].RghtCol[0].Box2c_ReadOrder[0].f2_13[0]
+  address_id: 2025/document=form_1099_div/box=2c/control=f_13
+  widget_type: text
+  page: 4
+  rect:
+  - 305.2
+  - 144.0
+  - 395.0
+  - 156.0
+  status: provisional
+- field_name: topmostSubform[0].CopyB[0].RghtCol[0].Box2e_ReadOrder[0].f2_15[0]
+  address_id: 2025/document=form_1099_div/box=2e/control=f_15
+  widget_type: text
+  page: 4
+  rect:
+  - 305.2
+  - 168.0
+  - 395.0
+  - 180.0
+  status: provisional
+- field_name: topmostSubform[0].CopyB[0].RghtCol[0].Box3_ReadOrder[0].f2_17[0]
+  address_id: 2025/document=form_1099_div/box=3/control=f_17
+  widget_type: text
+  page: 4
+  rect:
+  - 305.2
+  - 192.0
+  - 395.0
+  - 204.0
+  status: provisional
+- field_name: topmostSubform[0].CopyB[0].RghtCol[0].Box5_ReadOrder[0].f2_19[0]
+  address_id: 2025/document=form_1099_div/box=5/control=f_19
+  widget_type: text
+  page: 4
+  rect:
+  - 305.2
+  - 216.0
+  - 395.0
+  - 228.0
+  status: provisional
+- field_name: topmostSubform[0].CopyB[0].RghtCol[0].Box7_ReadOrder[0].f2_21[0]
+  address_id: 2025/document=form_1099_div/box=7/control=f_21
+  widget_type: text
+  page: 4
+  rect:
+  - 305.2
+  - 252.0
+  - 395.0
+  - 264.0
+  status: provisional
+- field_name: topmostSubform[0].CopyB[0].RghtCol[0].Box9_ReadOrder[0].f2_23[0]
+  address_id: 2025/document=form_1099_div/box=9/control=f_23
+  widget_type: text
+  page: 4
+  rect:
+  - 305.2
+  - 276.0
+  - 395.0
+  - 288.0
+  status: provisional

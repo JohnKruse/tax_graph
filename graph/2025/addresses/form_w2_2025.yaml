@@ -1,0 +1,795 @@
+schema_version: 1
+year: 2025
+document_id: form_w2_2025
+addresses:
+- address_id: 2025/document=form_w2
+  logical_key: document=form_w2
+  year: 2025
+  document_id: form_w2_2025
+  parent_address_id: null
+  kind: document
+  path:
+  - kind: document
+    token: form_w2
+  printed_label: form_w2
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_w2_2025
+    source_hash: 6a52ad63693de54220a3326b22c4d0fb34f4c25084366537087312975a55ae96
+- address_id: 2025/document=form_w2/box=1
+  logical_key: document=form_w2/box=1
+  year: 2025
+  document_id: form_w2_2025
+  parent_address_id: 2025/document=form_w2
+  kind: box
+  path:
+  - kind: document
+    token: form_w2
+  - kind: box
+    token: '1'
+  printed_label: '1'
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_w2_2025
+    source_hash: 6a52ad63693de54220a3326b22c4d0fb34f4c25084366537087312975a55ae96
+    page: 2
+- address_id: 2025/document=form_w2/box=1/control=f_09
+  logical_key: document=form_w2/box=1/control=f_09
+  year: 2025
+  document_id: form_w2_2025
+  parent_address_id: 2025/document=form_w2/box=1
+  kind: control
+  path:
+  - kind: document
+    token: form_w2
+  - kind: box
+    token: '1'
+  - kind: control
+    token: f_09
+  printed_label: Line b - f1_09
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_w2_2025
+    source_hash: 6a52ad63693de54220a3326b22c4d0fb34f4c25084366537087312975a55ae96
+    page: 2
+  official_ref: Box 1
+- address_id: 2025/document=form_w2/box=11
+  logical_key: document=form_w2/box=11
+  year: 2025
+  document_id: form_w2_2025
+  parent_address_id: 2025/document=form_w2
+  kind: box
+  path:
+  - kind: document
+    token: form_w2
+  - kind: box
+    token: '11'
+  printed_label: '11'
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_w2_2025
+    source_hash: 6a52ad63693de54220a3326b22c4d0fb34f4c25084366537087312975a55ae96
+    page: 2
+- address_id: 2025/document=form_w2/box=11/control=f_19
+  logical_key: document=form_w2/box=11/control=f_19
+  year: 2025
+  document_id: form_w2_2025
+  parent_address_id: 2025/document=form_w2/box=11
+  kind: control
+  path:
+  - kind: document
+    token: form_w2
+  - kind: box
+    token: '11'
+  - kind: control
+    token: f_19
+  printed_label: Line o - f1_19
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_w2_2025
+    source_hash: 6a52ad63693de54220a3326b22c4d0fb34f4c25084366537087312975a55ae96
+    page: 2
+  official_ref: Box 11
+- address_id: 2025/document=form_w2/box=12
+  logical_key: document=form_w2/box=12
+  year: 2025
+  document_id: form_w2_2025
+  parent_address_id: 2025/document=form_w2
+  kind: box
+  path:
+  - kind: document
+    token: form_w2
+  - kind: box
+    token: '12'
+  printed_label: '12'
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_w2_2025
+    source_hash: 6a52ad63693de54220a3326b22c4d0fb34f4c25084366537087312975a55ae96
+    page: 3
+- address_id: 2025/document=form_w2/box=12/control=f_20
+  logical_key: document=form_w2/box=12/control=f_20
+  year: 2025
+  document_id: form_w2_2025
+  parent_address_id: 2025/document=form_w2/box=12
+  kind: control
+  path:
+  - kind: document
+    token: form_w2
+  - kind: box
+    token: '12'
+  - kind: control
+    token: f_20
+  printed_label: Line o - d o e - f2_20 (page 3, control 66)
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_w2_2025
+    source_hash: 6a52ad63693de54220a3326b22c4d0fb34f4c25084366537087312975a55ae96
+    page: 3
+  official_ref: Box 12
+- address_id: 2025/document=form_w2/box=12/control=f_21
+  logical_key: document=form_w2/box=12/control=f_21
+  year: 2025
+  document_id: form_w2_2025
+  parent_address_id: 2025/document=form_w2/box=12
+  kind: control
+  path:
+  - kind: document
+    token: form_w2
+  - kind: box
+    token: '12'
+  - kind: control
+    token: f_21
+  printed_label: Line o - d o e - f2_21 (page 3, control 67)
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_w2_2025
+    source_hash: 6a52ad63693de54220a3326b22c4d0fb34f4c25084366537087312975a55ae96
+    page: 3
+  official_ref: Box 12
+- address_id: 2025/document=form_w2/box=12/control=f_22
+  logical_key: document=form_w2/box=12/control=f_22
+  year: 2025
+  document_id: form_w2_2025
+  parent_address_id: 2025/document=form_w2/box=12
+  kind: control
+  path:
+  - kind: document
+    token: form_w2
+  - kind: box
+    token: '12'
+  - kind: control
+    token: f_22
+  printed_label: Line o - d o e - f2_22 (page 3, control 68)
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_w2_2025
+    source_hash: 6a52ad63693de54220a3326b22c4d0fb34f4c25084366537087312975a55ae96
+    page: 3
+  official_ref: Box 12
+- address_id: 2025/document=form_w2/box=12/control=f_23
+  logical_key: document=form_w2/box=12/control=f_23
+  year: 2025
+  document_id: form_w2_2025
+  parent_address_id: 2025/document=form_w2/box=12
+  kind: control
+  path:
+  - kind: document
+    token: form_w2
+  - kind: box
+    token: '12'
+  - kind: control
+    token: f_23
+  printed_label: Line o - d o e - f2_23 (page 3, control 69)
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_w2_2025
+    source_hash: 6a52ad63693de54220a3326b22c4d0fb34f4c25084366537087312975a55ae96
+    page: 3
+  official_ref: Box 12
+- address_id: 2025/document=form_w2/box=12/control=f_24
+  logical_key: document=form_w2/box=12/control=f_24
+  year: 2025
+  document_id: form_w2_2025
+  parent_address_id: 2025/document=form_w2/box=12
+  kind: control
+  path:
+  - kind: document
+    token: form_w2
+  - kind: box
+    token: '12'
+  - kind: control
+    token: f_24
+  printed_label: Line o - d o e - f2_24 (page 3, control 70)
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_w2_2025
+    source_hash: 6a52ad63693de54220a3326b22c4d0fb34f4c25084366537087312975a55ae96
+    page: 3
+  official_ref: Box 12
+- address_id: 2025/document=form_w2/box=12/control=f_25
+  logical_key: document=form_w2/box=12/control=f_25
+  year: 2025
+  document_id: form_w2_2025
+  parent_address_id: 2025/document=form_w2/box=12
+  kind: control
+  path:
+  - kind: document
+    token: form_w2
+  - kind: box
+    token: '12'
+  - kind: control
+    token: f_25
+  printed_label: Line o - d o e - f2_25 (page 3, control 71)
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_w2_2025
+    source_hash: 6a52ad63693de54220a3326b22c4d0fb34f4c25084366537087312975a55ae96
+    page: 3
+  official_ref: Box 12
+- address_id: 2025/document=form_w2/box=12/control=f_26
+  logical_key: document=form_w2/box=12/control=f_26
+  year: 2025
+  document_id: form_w2_2025
+  parent_address_id: 2025/document=form_w2/box=12
+  kind: control
+  path:
+  - kind: document
+    token: form_w2
+  - kind: box
+    token: '12'
+  - kind: control
+    token: f_26
+  printed_label: Line o - d o e - f2_26 (page 3, control 72)
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_w2_2025
+    source_hash: 6a52ad63693de54220a3326b22c4d0fb34f4c25084366537087312975a55ae96
+    page: 3
+  official_ref: Box 12
+- address_id: 2025/document=form_w2/box=12/control=f_27
+  logical_key: document=form_w2/box=12/control=f_27
+  year: 2025
+  document_id: form_w2_2025
+  parent_address_id: 2025/document=form_w2/box=12
+  kind: control
+  path:
+  - kind: document
+    token: form_w2
+  - kind: box
+    token: '12'
+  - kind: control
+    token: f_27
+  printed_label: Line o - d o e - f2_27 (page 3, control 73)
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_w2_2025
+    source_hash: 6a52ad63693de54220a3326b22c4d0fb34f4c25084366537087312975a55ae96
+    page: 3
+  official_ref: Box 12
+- address_id: 2025/document=form_w2/box=15
+  logical_key: document=form_w2/box=15
+  year: 2025
+  document_id: form_w2_2025
+  parent_address_id: 2025/document=form_w2
+  kind: box
+  path:
+  - kind: document
+    token: form_w2
+  - kind: box
+    token: '15'
+  printed_label: '15'
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_w2_2025
+    source_hash: 6a52ad63693de54220a3326b22c4d0fb34f4c25084366537087312975a55ae96
+    page: 2
+- address_id: 2025/document=form_w2/box=15/control=f_29
+  logical_key: document=form_w2/box=15/control=f_29
+  year: 2025
+  document_id: form_w2_2025
+  parent_address_id: 2025/document=form_w2/box=15
+  kind: control
+  path:
+  - kind: document
+    token: form_w2
+  - kind: box
+    token: '15'
+  - kind: control
+    token: f_29
+  printed_label: Line 15 - f1_29
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_w2_2025
+    source_hash: 6a52ad63693de54220a3326b22c4d0fb34f4c25084366537087312975a55ae96
+    page: 2
+  official_ref: Box 15
+- address_id: 2025/document=form_w2/box=16
+  logical_key: document=form_w2/box=16
+  year: 2025
+  document_id: form_w2_2025
+  parent_address_id: 2025/document=form_w2
+  kind: box
+  path:
+  - kind: document
+    token: form_w2
+  - kind: box
+    token: '16'
+  printed_label: '16'
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_w2_2025
+    source_hash: 6a52ad63693de54220a3326b22c4d0fb34f4c25084366537087312975a55ae96
+    page: 2
+- address_id: 2025/document=form_w2/box=16/control=f_33
+  logical_key: document=form_w2/box=16/control=f_33
+  year: 2025
+  document_id: form_w2_2025
+  parent_address_id: 2025/document=form_w2/box=16
+  kind: control
+  path:
+  - kind: document
+    token: form_w2
+  - kind: box
+    token: '16'
+  - kind: control
+    token: f_33
+  printed_label: Line 15 - f1_33
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_w2_2025
+    source_hash: 6a52ad63693de54220a3326b22c4d0fb34f4c25084366537087312975a55ae96
+    page: 2
+  official_ref: Box 16
+- address_id: 2025/document=form_w2/box=16/control=f_34
+  logical_key: document=form_w2/box=16/control=f_34
+  year: 2025
+  document_id: form_w2_2025
+  parent_address_id: 2025/document=form_w2/box=16
+  kind: control
+  path:
+  - kind: document
+    token: form_w2
+  - kind: box
+    token: '16'
+  - kind: control
+    token: f_34
+  printed_label: f1_34
+  aliases: []
+  control_role: text
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_w2_2025
+    source_hash: 6a52ad63693de54220a3326b22c4d0fb34f4c25084366537087312975a55ae96
+    page: 2
+  official_ref: Box 16
+- address_id: 2025/document=form_w2/box=17
+  logical_key: document=form_w2/box=17
+  year: 2025
+  document_id: form_w2_2025
+  parent_address_id: 2025/document=form_w2
+  kind: box
+  path:
+  - kind: document
+    token: form_w2
+  - kind: box
+    token: '17'
+  printed_label: '17'
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_w2_2025
+    source_hash: 6a52ad63693de54220a3326b22c4d0fb34f4c25084366537087312975a55ae96
+    page: 2
+- address_id: 2025/document=form_w2/box=17/control=f_35
+  logical_key: document=form_w2/box=17/control=f_35
+  year: 2025
+  document_id: form_w2_2025
+  parent_address_id: 2025/document=form_w2/box=17
+  kind: control
+  path:
+  - kind: document
+    token: form_w2
+  - kind: box
+    token: '17'
+  - kind: control
+    token: f_35
+  printed_label: Line 15 - f1_35
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_w2_2025
+    source_hash: 6a52ad63693de54220a3326b22c4d0fb34f4c25084366537087312975a55ae96
+    page: 2
+  official_ref: Box 17
+- address_id: 2025/document=form_w2/box=17/control=f_36
+  logical_key: document=form_w2/box=17/control=f_36
+  year: 2025
+  document_id: form_w2_2025
+  parent_address_id: 2025/document=form_w2/box=17
+  kind: control
+  path:
+  - kind: document
+    token: form_w2
+  - kind: box
+    token: '17'
+  - kind: control
+    token: f_36
+  printed_label: f1_36
+  aliases: []
+  control_role: text
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_w2_2025
+    source_hash: 6a52ad63693de54220a3326b22c4d0fb34f4c25084366537087312975a55ae96
+    page: 2
+  official_ref: Box 17
+- address_id: 2025/document=form_w2/box=18
+  logical_key: document=form_w2/box=18
+  year: 2025
+  document_id: form_w2_2025
+  parent_address_id: 2025/document=form_w2
+  kind: box
+  path:
+  - kind: document
+    token: form_w2
+  - kind: box
+    token: '18'
+  printed_label: '18'
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_w2_2025
+    source_hash: 6a52ad63693de54220a3326b22c4d0fb34f4c25084366537087312975a55ae96
+    page: 2
+- address_id: 2025/document=form_w2/box=18/control=f_37
+  logical_key: document=form_w2/box=18/control=f_37
+  year: 2025
+  document_id: form_w2_2025
+  parent_address_id: 2025/document=form_w2/box=18
+  kind: control
+  path:
+  - kind: document
+    token: form_w2
+  - kind: box
+    token: '18'
+  - kind: control
+    token: f_37
+  printed_label: Line 15 - f1_37
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_w2_2025
+    source_hash: 6a52ad63693de54220a3326b22c4d0fb34f4c25084366537087312975a55ae96
+    page: 2
+  official_ref: Box 18
+- address_id: 2025/document=form_w2/box=18/control=f_38
+  logical_key: document=form_w2/box=18/control=f_38
+  year: 2025
+  document_id: form_w2_2025
+  parent_address_id: 2025/document=form_w2/box=18
+  kind: control
+  path:
+  - kind: document
+    token: form_w2
+  - kind: box
+    token: '18'
+  - kind: control
+    token: f_38
+  printed_label: f1_38
+  aliases: []
+  control_role: text
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_w2_2025
+    source_hash: 6a52ad63693de54220a3326b22c4d0fb34f4c25084366537087312975a55ae96
+    page: 2
+  official_ref: Box 18
+- address_id: 2025/document=form_w2/box=19
+  logical_key: document=form_w2/box=19
+  year: 2025
+  document_id: form_w2_2025
+  parent_address_id: 2025/document=form_w2
+  kind: box
+  path:
+  - kind: document
+    token: form_w2
+  - kind: box
+    token: '19'
+  printed_label: '19'
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_w2_2025
+    source_hash: 6a52ad63693de54220a3326b22c4d0fb34f4c25084366537087312975a55ae96
+    page: 2
+- address_id: 2025/document=form_w2/box=19/control=f_39
+  logical_key: document=form_w2/box=19/control=f_39
+  year: 2025
+  document_id: form_w2_2025
+  parent_address_id: 2025/document=form_w2/box=19
+  kind: control
+  path:
+  - kind: document
+    token: form_w2
+  - kind: box
+    token: '19'
+  - kind: control
+    token: f_39
+  printed_label: Line 15 - f1_39
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_w2_2025
+    source_hash: 6a52ad63693de54220a3326b22c4d0fb34f4c25084366537087312975a55ae96
+    page: 2
+  official_ref: Box 19
+- address_id: 2025/document=form_w2/box=19/control=f_40
+  logical_key: document=form_w2/box=19/control=f_40
+  year: 2025
+  document_id: form_w2_2025
+  parent_address_id: 2025/document=form_w2/box=19
+  kind: control
+  path:
+  - kind: document
+    token: form_w2
+  - kind: box
+    token: '19'
+  - kind: control
+    token: f_40
+  printed_label: f1_40
+  aliases: []
+  control_role: text
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_w2_2025
+    source_hash: 6a52ad63693de54220a3326b22c4d0fb34f4c25084366537087312975a55ae96
+    page: 2
+  official_ref: Box 19
+- address_id: 2025/document=form_w2/box=3
+  logical_key: document=form_w2/box=3
+  year: 2025
+  document_id: form_w2_2025
+  parent_address_id: 2025/document=form_w2
+  kind: box
+  path:
+  - kind: document
+    token: form_w2
+  - kind: box
+    token: '3'
+  printed_label: '3'
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_w2_2025
+    source_hash: 6a52ad63693de54220a3326b22c4d0fb34f4c25084366537087312975a55ae96
+    page: 2
+- address_id: 2025/document=form_w2/box=3/control=f_11
+  logical_key: document=form_w2/box=3/control=f_11
+  year: 2025
+  document_id: form_w2_2025
+  parent_address_id: 2025/document=form_w2/box=3
+  kind: control
+  path:
+  - kind: document
+    token: form_w2
+  - kind: box
+    token: '3'
+  - kind: control
+    token: f_11
+  printed_label: Line c - f1_11
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_w2_2025
+    source_hash: 6a52ad63693de54220a3326b22c4d0fb34f4c25084366537087312975a55ae96
+    page: 2
+  official_ref: Box 3
+- address_id: 2025/document=form_w2/box=5
+  logical_key: document=form_w2/box=5
+  year: 2025
+  document_id: form_w2_2025
+  parent_address_id: 2025/document=form_w2
+  kind: box
+  path:
+  - kind: document
+    token: form_w2
+  - kind: box
+    token: '5'
+  printed_label: '5'
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_w2_2025
+    source_hash: 6a52ad63693de54220a3326b22c4d0fb34f4c25084366537087312975a55ae96
+    page: 2
+- address_id: 2025/document=form_w2/box=5/control=f_13
+  logical_key: document=form_w2/box=5/control=f_13
+  year: 2025
+  document_id: form_w2_2025
+  parent_address_id: 2025/document=form_w2/box=5
+  kind: control
+  path:
+  - kind: document
+    token: form_w2
+  - kind: box
+    token: '5'
+  - kind: control
+    token: f_13
+  printed_label: Line 5 - f1_13
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_w2_2025
+    source_hash: 6a52ad63693de54220a3326b22c4d0fb34f4c25084366537087312975a55ae96
+    page: 2
+  official_ref: Box 5
+- address_id: 2025/document=form_w2/box=7
+  logical_key: document=form_w2/box=7
+  year: 2025
+  document_id: form_w2_2025
+  parent_address_id: 2025/document=form_w2
+  kind: box
+  path:
+  - kind: document
+    token: form_w2
+  - kind: box
+    token: '7'
+  printed_label: '7'
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_w2_2025
+    source_hash: 6a52ad63693de54220a3326b22c4d0fb34f4c25084366537087312975a55ae96
+    page: 2
+- address_id: 2025/document=form_w2/box=7/control=f_15
+  logical_key: document=form_w2/box=7/control=f_15
+  year: 2025
+  document_id: form_w2_2025
+  parent_address_id: 2025/document=form_w2/box=7
+  kind: control
+  path:
+  - kind: document
+    token: form_w2
+  - kind: box
+    token: '7'
+  - kind: control
+    token: f_15
+  printed_label: Line 7 - f1_15
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_w2_2025
+    source_hash: 6a52ad63693de54220a3326b22c4d0fb34f4c25084366537087312975a55ae96
+    page: 2
+  official_ref: Box 7
+- address_id: 2025/document=form_w2/box=9
+  logical_key: document=form_w2/box=9
+  year: 2025
+  document_id: form_w2_2025
+  parent_address_id: 2025/document=form_w2
+  kind: box
+  path:
+  - kind: document
+    token: form_w2
+  - kind: box
+    token: '9'
+  printed_label: '9'
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_w2_2025
+    source_hash: 6a52ad63693de54220a3326b22c4d0fb34f4c25084366537087312975a55ae96
+    page: 2
+- address_id: 2025/document=form_w2/box=9/control=f_17
+  logical_key: document=form_w2/box=9/control=f_17
+  year: 2025
+  document_id: form_w2_2025
+  parent_address_id: 2025/document=form_w2/box=9
+  kind: control
+  path:
+  - kind: document
+    token: form_w2
+  - kind: box
+    token: '9'
+  - kind: control
+    token: f_17
+  printed_label: Line d - f1_17
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_w2_2025
+    source_hash: 6a52ad63693de54220a3326b22c4d0fb34f4c25084366537087312975a55ae96
+    page: 2
+  official_ref: Box 9
+- address_id: 2025/document=form_w2/box=a
+  logical_key: document=form_w2/box=a
+  year: 2025
+  document_id: form_w2_2025
+  parent_address_id: 2025/document=form_w2
+  kind: box
+  path:
+  - kind: document
+    token: form_w2
+  - kind: box
+    token: a
+  printed_label: a
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_w2_2025
+    source_hash: 6a52ad63693de54220a3326b22c4d0fb34f4c25084366537087312975a55ae96
+    page: 2
+- address_id: 2025/document=form_w2/box=a/control=f_01
+  logical_key: document=form_w2/box=a/control=f_01
+  year: 2025
+  document_id: form_w2_2025
+  parent_address_id: 2025/document=form_w2/box=a
+  kind: control
+  path:
+  - kind: document
+    token: form_w2
+  - kind: box
+    token: a
+  - kind: control
+    token: f_01
+  printed_label: Line a - 22222 VOID - f1_01
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_w2_2025
+    source_hash: 6a52ad63693de54220a3326b22c4d0fb34f4c25084366537087312975a55ae96
+    page: 2
+  official_ref: Box a

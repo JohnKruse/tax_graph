@@ -76,6 +76,7 @@ field_dispositions:
   population_policy: imported
   value_format: text
   source_ref: form_1099_div_2025.topmostsubform_0_copya_0_rghtcol_0_box2a_readorder_0_f1_11_0
+  address_id: 2025/document=form_1099_div/box=2a/control=f_11
 - field_name: topmostSubform[0].CopyA[0].RghtCol[0].f1_12[0]
   label: Line 2b - $ $ - f1_12
   population_policy: imported
@@ -86,6 +87,7 @@ field_dispositions:
   population_policy: imported
   value_format: text
   source_ref: form_1099_div_2025.topmostsubform_0_copya_0_rghtcol_0_box2c_readorder_0_f1_13_0
+  address_id: 2025/document=form_1099_div/box=2c/control=f_13
 - field_name: topmostSubform[0].CopyA[0].RghtCol[0].f1_14[0]
   label: Line 2d - $ $ - f1_14
   population_policy: imported
@@ -96,6 +98,7 @@ field_dispositions:
   population_policy: imported
   value_format: text
   source_ref: form_1099_div_2025.topmostsubform_0_copya_0_rghtcol_0_box2e_readorder_0_f1_15_0
+  address_id: 2025/document=form_1099_div/box=2e/control=f_15
 - field_name: topmostSubform[0].CopyA[0].RghtCol[0].f1_16[0]
   label: Line 2f - $ $ - f1_16
   population_policy: imported
@@ -106,6 +109,7 @@ field_dispositions:
   population_policy: imported
   value_format: text
   source_ref: form_1099_div_2025.topmostsubform_0_copya_0_rghtcol_0_box3_readorder_0_f1_17_0
+  address_id: 2025/document=form_1099_div/box=3/control=f_17
 - field_name: topmostSubform[0].CopyA[0].RghtCol[0].f1_18[0]
   label: Line 3 - $ $ - f1_18
   population_policy: imported
@@ -116,6 +120,7 @@ field_dispositions:
   population_policy: imported
   value_format: text
   source_ref: form_1099_div_2025.topmostsubform_0_copya_0_rghtcol_0_box5_readorder_0_f1_19_0
+  address_id: 2025/document=form_1099_div/box=5/control=f_19
 - field_name: topmostSubform[0].CopyA[0].RghtCol[0].f1_20[0]
   label: Line 5 - Street address (including apt. no.) $ $ - f1_20
   population_policy: imported
@@ -126,6 +131,7 @@ field_dispositions:
   population_policy: imported
   value_format: text
   source_ref: form_1099_div_2025.topmostsubform_0_copya_0_rghtcol_0_box7_readorder_0_f1_21_0
+  address_id: 2025/document=form_1099_div/box=7/control=f_21
 - field_name: topmostSubform[0].CopyA[0].RghtCol[0].f1_22[0]
   label: or province, country, and ZIP or foreign postal code $ - f1_22
   population_policy: imported
@@ -136,6 +142,7 @@ field_dispositions:
   population_policy: imported
   value_format: text
   source_ref: form_1099_div_2025.topmostsubform_0_copya_0_rghtcol_0_box9_readorder_0_f1_23_0
+  address_id: 2025/document=form_1099_div/box=9/control=f_23
 - field_name: topmostSubform[0].CopyA[0].RghtCol[0].f1_24[0]
   label: Line 9 - $ $ - f1_24
   population_policy: imported
@@ -151,6 +158,7 @@ field_dispositions:
   population_policy: imported
   value_format: text
   source_ref: form_1099_div_2025.topmostsubform_0_copya_0_rghtcol_0_box12_readorder_0_f1_25_0
+  address_id: 2025/document=form_1099_div/box=12/control=f_25
 - field_name: topmostSubform[0].CopyA[0].RghtCol[0].f1_26[0]
   label: $ $ - f1_26
   population_policy: imported
@@ -161,21 +169,25 @@ field_dispositions:
   population_policy: imported
   value_format: text
   source_ref: form_1099_div_2025.topmostsubform_0_copya_0_rghtcol_0_box14_readorder_0_f1_27_0
+  address_id: 2025/document=form_1099_div/box=14/control=f_27
 - field_name: topmostSubform[0].CopyA[0].RghtCol[0].Box14_ReadOrder[0].f1_28[0]
   label: f1_28
   population_policy: imported
   value_format: text
   source_ref: form_1099_div_2025.topmostsubform_0_copya_0_rghtcol_0_box14_readorder_0_f1_28_0
+  address_id: 2025/document=form_1099_div/box=14/control=f_28
 - field_name: topmostSubform[0].CopyA[0].RghtCol[0].Box15_ReadOrder[0].f1_29[0]
   label: f1_29
   population_policy: imported
   value_format: text
   source_ref: form_1099_div_2025.topmostsubform_0_copya_0_rghtcol_0_box15_readorder_0_f1_29_0
+  address_id: 2025/document=form_1099_div/box=15/control=f_29
 - field_name: topmostSubform[0].CopyA[0].RghtCol[0].Box15_ReadOrder[0].f1_30[0]
   label: f1_30
   population_policy: imported
   value_format: text
   source_ref: form_1099_div_2025.topmostsubform_0_copya_0_rghtcol_0_box15_readorder_0_f1_30_0
+  address_id: 2025/document=form_1099_div/box=15/control=f_30
 - field_name: topmostSubform[0].CopyA[0].RghtCol[0].f1_31[0]
   label: $ - f1_31
   population_policy: imported
@@ -251,6 +263,7 @@ field_dispositions:
   population_policy: imported
   value_format: text
   source_ref: form_1099_div_2025.topmostsubform_0_copy1_0_rghtcol_0_box2a_readorder_0_f2_11_0
+  address_id: 2025/document=form_1099_div/box=2a/control=f_11
 - field_name: topmostSubform[0].Copy1[0].RghtCol[0].f2_12[0]
   label: Line 2b - $ $ - f2_12 (page 3, control 50)
   population_policy: imported
@@ -261,6 +274,7 @@ field_dispositions:
   population_policy: imported
   value_format: text
   source_ref: form_1099_div_2025.topmostsubform_0_copy1_0_rghtcol_0_box2c_readorder_0_f2_13_0
+  address_id: 2025/document=form_1099_div/box=2c/control=f_13
 - field_name: topmostSubform[0].Copy1[0].RghtCol[0].f2_14[0]
   label: Line 2d - $ $ - f2_14 (page 3, control 52)
   population_policy: imported
@@ -271,6 +285,7 @@ field_dispositions:
   population_policy: imported
   value_format: text
   source_ref: form_1099_div_2025.topmostsubform_0_copy1_0_rghtcol_0_box2e_readorder_0_f2_15_0
+  address_id: 2025/document=form_1099_div/box=2e/control=f_15
 - field_name: topmostSubform[0].Copy1[0].RghtCol[0].f2_16[0]
   label: Line 2f - $ $ - f2_16 (page 3, control 54)
   population_policy: imported
@@ -281,6 +296,7 @@ field_dispositions:
   population_policy: imported
   value_format: text
   source_ref: form_1099_div_2025.topmostsubform_0_copy1_0_rghtcol_0_box3_readorder_0_f2_17_0
+  address_id: 2025/document=form_1099_div/box=3/control=f_17
 - field_name: topmostSubform[0].Copy1[0].RghtCol[0].f2_18[0]
   label: Line 3 - $ $ - f2_18 (page 3, control 56)
   population_policy: imported
@@ -291,6 +307,7 @@ field_dispositions:
   population_policy: imported
   value_format: text
   source_ref: form_1099_div_2025.topmostsubform_0_copy1_0_rghtcol_0_box5_readorder_0_f2_19_0
+  address_id: 2025/document=form_1099_div/box=5/control=f_19
 - field_name: topmostSubform[0].Copy1[0].RghtCol[0].f2_20[0]
   label: Line 5 - Street address (including apt. no.) $ $ - f2_20 (page 3, control
     58)
@@ -303,6 +320,7 @@ field_dispositions:
   population_policy: imported
   value_format: text
   source_ref: form_1099_div_2025.topmostsubform_0_copy1_0_rghtcol_0_box7_readorder_0_f2_21_0
+  address_id: 2025/document=form_1099_div/box=7/control=f_21
 - field_name: topmostSubform[0].Copy1[0].RghtCol[0].f2_22[0]
   label: or province, country, and ZIP or foreign postal code $ - f2_22 (page 3, control
     60)
@@ -314,6 +332,7 @@ field_dispositions:
   population_policy: imported
   value_format: text
   source_ref: form_1099_div_2025.topmostsubform_0_copy1_0_rghtcol_0_box9_readorder_0_f2_23_0
+  address_id: 2025/document=form_1099_div/box=9/control=f_23
 - field_name: topmostSubform[0].Copy1[0].RghtCol[0].f2_24[0]
   label: Line 9 - $ $ - f2_24 (page 3, control 62)
   population_policy: imported
@@ -329,6 +348,7 @@ field_dispositions:
   population_policy: imported
   value_format: text
   source_ref: form_1099_div_2025.topmostsubform_0_copy1_0_rghtcol_0_box12_readorder_0_f2_25_0
+  address_id: 2025/document=form_1099_div/box=12/control=f_25
 - field_name: topmostSubform[0].Copy1[0].RghtCol[0].f2_26[0]
   label: $ $ - f2_26 (page 3, control 65)
   population_policy: imported
@@ -339,21 +359,25 @@ field_dispositions:
   population_policy: imported
   value_format: text
   source_ref: form_1099_div_2025.topmostsubform_0_copy1_0_rghtcol_0_box14_readorder_0_f2_27_0
+  address_id: 2025/document=form_1099_div/box=14/control=f_27
 - field_name: topmostSubform[0].Copy1[0].RghtCol[0].Box14_ReadOrder[0].f2_28[0]
   label: f2_28 (page 3, control 67)
   population_policy: imported
   value_format: text
   source_ref: form_1099_div_2025.topmostsubform_0_copy1_0_rghtcol_0_box14_readorder_0_f2_28_0
+  address_id: 2025/document=form_1099_div/box=14/control=f_28
 - field_name: topmostSubform[0].Copy1[0].RghtCol[0].Box15_ReadOrder[0].f2_29[0]
   label: f2_29 (page 3, control 68)
   population_policy: imported
   value_format: text
   source_ref: form_1099_div_2025.topmostsubform_0_copy1_0_rghtcol_0_box15_readorder_0_f2_29_0
+  address_id: 2025/document=form_1099_div/box=15/control=f_29
 - field_name: topmostSubform[0].Copy1[0].RghtCol[0].Box15_ReadOrder[0].f2_30[0]
   label: f2_30 (page 3, control 69)
   population_policy: imported
   value_format: text
   source_ref: form_1099_div_2025.topmostsubform_0_copy1_0_rghtcol_0_box15_readorder_0_f2_30_0
+  address_id: 2025/document=form_1099_div/box=15/control=f_30
 - field_name: topmostSubform[0].Copy1[0].RghtCol[0].f2_31[0]
   label: $ - f2_31 (page 3, control 70)
   population_policy: imported
@@ -424,6 +448,7 @@ field_dispositions:
   population_policy: imported
   value_format: text
   source_ref: form_1099_div_2025.topmostsubform_0_copyb_0_rghtcol_0_box2a_readorder_0_f2_11_0
+  address_id: 2025/document=form_1099_div/box=2a/control=f_11
 - field_name: topmostSubform[0].CopyB[0].RghtCol[0].f2_12[0]
   label: Line 2b - $ $ - f2_12 (page 4, control 84)
   population_policy: imported
@@ -434,6 +459,7 @@ field_dispositions:
   population_policy: imported
   value_format: text
   source_ref: form_1099_div_2025.topmostsubform_0_copyb_0_rghtcol_0_box2c_readorder_0_f2_13_0
+  address_id: 2025/document=form_1099_div/box=2c/control=f_13
 - field_name: topmostSubform[0].CopyB[0].RghtCol[0].f2_14[0]
   label: Line 2d - $ $ - f2_14 (page 4, control 86)
   population_policy: imported
@@ -444,6 +470,7 @@ field_dispositions:
   population_policy: imported
   value_format: text
   source_ref: form_1099_div_2025.topmostsubform_0_copyb_0_rghtcol_0_box2e_readorder_0_f2_15_0
+  address_id: 2025/document=form_1099_div/box=2e/control=f_15
 - field_name: topmostSubform[0].CopyB[0].RghtCol[0].f2_16[0]
   label: Line 2f - $ $ - f2_16 (page 4, control 88)
   population_policy: imported
@@ -454,6 +481,7 @@ field_dispositions:
   population_policy: imported
   value_format: text
   source_ref: form_1099_div_2025.topmostsubform_0_copyb_0_rghtcol_0_box3_readorder_0_f2_17_0
+  address_id: 2025/document=form_1099_div/box=3/control=f_17
 - field_name: topmostSubform[0].CopyB[0].RghtCol[0].f2_18[0]
   label: Line 3 - $ $ - f2_18 (page 4, control 90)
   population_policy: imported
@@ -464,6 +492,7 @@ field_dispositions:
   population_policy: imported
   value_format: text
   source_ref: form_1099_div_2025.topmostsubform_0_copyb_0_rghtcol_0_box5_readorder_0_f2_19_0
+  address_id: 2025/document=form_1099_div/box=5/control=f_19
 - field_name: topmostSubform[0].CopyB[0].RghtCol[0].f2_20[0]
   label: Line a - Street address (including apt. no.) $ $ - f2_20
   population_policy: imported
@@ -475,6 +504,7 @@ field_dispositions:
   population_policy: imported
   value_format: text
   source_ref: form_1099_div_2025.topmostsubform_0_copyb_0_rghtcol_0_box7_readorder_0_f2_21_0
+  address_id: 2025/document=form_1099_div/box=7/control=f_21
 - field_name: topmostSubform[0].CopyB[0].RghtCol[0].f2_22[0]
   label: or province, country, and ZIP or foreign postal code $ - f2_22 (page 4, control
     94)
@@ -486,6 +516,7 @@ field_dispositions:
   population_policy: imported
   value_format: text
   source_ref: form_1099_div_2025.topmostsubform_0_copyb_0_rghtcol_0_box9_readorder_0_f2_23_0
+  address_id: 2025/document=form_1099_div/box=9/control=f_23
 - field_name: topmostSubform[0].CopyB[0].RghtCol[0].f2_24[0]
   label: Line 9 - $ $ - f2_24 (page 4, control 96)
   population_policy: imported
@@ -501,6 +532,7 @@ field_dispositions:
   population_policy: imported
   value_format: text
   source_ref: form_1099_div_2025.topmostsubform_0_copyb_0_rghtcol_0_box12_readorder_0_f2_25_0
+  address_id: 2025/document=form_1099_div/box=12/control=f_25
 - field_name: topmostSubform[0].CopyB[0].RghtCol[0].f2_26[0]
   label: $ $ - f2_26 (page 4, control 99)
   population_policy: imported
@@ -511,21 +543,25 @@ field_dispositions:
   population_policy: imported
   value_format: text
   source_ref: form_1099_div_2025.topmostsubform_0_copyb_0_rghtcol_0_box14_readorder_0_f2_27_0
+  address_id: 2025/document=form_1099_div/box=14/control=f_27
 - field_name: topmostSubform[0].CopyB[0].RghtCol[0].Box14_ReadOrder[0].f2_28[0]
   label: f2_28 (page 4, control 101)
   population_policy: imported
   value_format: text
   source_ref: form_1099_div_2025.topmostsubform_0_copyb_0_rghtcol_0_box14_readorder_0_f2_28_0
+  address_id: 2025/document=form_1099_div/box=14/control=f_28
 - field_name: topmostSubform[0].CopyB[0].RghtCol[0].Box15_ReadOrder[0].f2_29[0]
   label: f2_29 (page 4, control 102)
   population_policy: imported
   value_format: text
   source_ref: form_1099_div_2025.topmostsubform_0_copyb_0_rghtcol_0_box15_readorder_0_f2_29_0
+  address_id: 2025/document=form_1099_div/box=15/control=f_29
 - field_name: topmostSubform[0].CopyB[0].RghtCol[0].Box15_ReadOrder[0].f2_30[0]
   label: f2_30 (page 4, control 103)
   population_policy: imported
   value_format: text
   source_ref: form_1099_div_2025.topmostsubform_0_copyb_0_rghtcol_0_box15_readorder_0_f2_30_0
+  address_id: 2025/document=form_1099_div/box=15/control=f_30
 - field_name: topmostSubform[0].CopyB[0].RghtCol[0].f2_31[0]
   label: $ - f2_31 (page 4, control 104)
   population_policy: imported
@@ -601,6 +637,7 @@ field_dispositions:
   population_policy: imported
   value_format: text
   source_ref: form_1099_div_2025.topmostsubform_0_copy2_0_rghtcol_0_box2a_readorder_0_f2_11_0
+  address_id: 2025/document=form_1099_div/box=2a/control=f_11
 - field_name: topmostSubform[0].Copy2[0].RghtCol[0].f2_12[0]
   label: Line 2b - $ $ - f2_12 (page 6, control 119)
   population_policy: imported
@@ -611,6 +648,7 @@ field_dispositions:
   population_policy: imported
   value_format: text
   source_ref: form_1099_div_2025.topmostsubform_0_copy2_0_rghtcol_0_box2c_readorder_0_f2_13_0
+  address_id: 2025/document=form_1099_div/box=2c/control=f_13
 - field_name: topmostSubform[0].Copy2[0].RghtCol[0].f2_14[0]
   label: Line 2d - $ $ - f2_14 (page 6, control 121)
   population_policy: imported
@@ -621,6 +659,7 @@ field_dispositions:
   population_policy: imported
   value_format: text
   source_ref: form_1099_div_2025.topmostsubform_0_copy2_0_rghtcol_0_box2e_readorder_0_f2_15_0
+  address_id: 2025/document=form_1099_div/box=2e/control=f_15
 - field_name: topmostSubform[0].Copy2[0].RghtCol[0].f2_16[0]
   label: Line 2f - $ $ - f2_16 (page 6, control 123)
   population_policy: imported
@@ -631,6 +670,7 @@ field_dispositions:
   population_policy: imported
   value_format: text
   source_ref: form_1099_div_2025.topmostsubform_0_copy2_0_rghtcol_0_box3_readorder_0_f2_17_0
+  address_id: 2025/document=form_1099_div/box=3/control=f_17
 - field_name: topmostSubform[0].Copy2[0].RghtCol[0].f2_18[0]
   label: Line 3 - $ $ - f2_18 (page 6, control 125)
   population_policy: imported
@@ -641,6 +681,7 @@ field_dispositions:
   population_policy: imported
   value_format: text
   source_ref: form_1099_div_2025.topmostsubform_0_copy2_0_rghtcol_0_box5_readorder_0_f2_19_0
+  address_id: 2025/document=form_1099_div/box=5/control=f_19
 - field_name: topmostSubform[0].Copy2[0].RghtCol[0].f2_20[0]
   label: Line 5 - Street address (including apt. no.) $ $ - f2_20 (page 6, control
     127)
@@ -653,6 +694,7 @@ field_dispositions:
   population_policy: imported
   value_format: text
   source_ref: form_1099_div_2025.topmostsubform_0_copy2_0_rghtcol_0_box7_readorder_0_f2_21_0
+  address_id: 2025/document=form_1099_div/box=7/control=f_21
 - field_name: topmostSubform[0].Copy2[0].RghtCol[0].f2_22[0]
   label: or province, country, and ZIP or foreign postal code $ - f2_22 (page 6, control
     129)
@@ -664,6 +706,7 @@ field_dispositions:
   population_policy: imported
   value_format: text
   source_ref: form_1099_div_2025.topmostsubform_0_copy2_0_rghtcol_0_box9_readorder_0_f2_23_0
+  address_id: 2025/document=form_1099_div/box=9/control=f_23
 - field_name: topmostSubform[0].Copy2[0].RghtCol[0].f2_24[0]
   label: Line 9 - $ $ - f2_24 (page 6, control 131)
   population_policy: imported
@@ -679,6 +722,7 @@ field_dispositions:
   population_policy: imported
   value_format: text
   source_ref: form_1099_div_2025.topmostsubform_0_copy2_0_rghtcol_0_box12_readorder_0_f2_25_0
+  address_id: 2025/document=form_1099_div/box=12/control=f_25
 - field_name: topmostSubform[0].Copy2[0].RghtCol[0].f2_26[0]
   label: $ $ - f2_26 (page 6, control 134)
   population_policy: imported
@@ -689,21 +733,25 @@ field_dispositions:
   population_policy: imported
   value_format: text
   source_ref: form_1099_div_2025.topmostsubform_0_copy2_0_rghtcol_0_box14_readorder_0_f2_27_0
+  address_id: 2025/document=form_1099_div/box=14/control=f_27
 - field_name: topmostSubform[0].Copy2[0].RghtCol[0].Box14_ReadOrder[0].f2_28[0]
   label: f2_28 (page 6, control 136)
   population_policy: imported
   value_format: text
   source_ref: form_1099_div_2025.topmostsubform_0_copy2_0_rghtcol_0_box14_readorder_0_f2_28_0
+  address_id: 2025/document=form_1099_div/box=14/control=f_28
 - field_name: topmostSubform[0].Copy2[0].RghtCol[0].Box15_ReadOrder[0].f2_29[0]
   label: f2_29 (page 6, control 137)
   population_policy: imported
   value_format: text
   source_ref: form_1099_div_2025.topmostsubform_0_copy2_0_rghtcol_0_box15_readorder_0_f2_29_0
+  address_id: 2025/document=form_1099_div/box=15/control=f_29
 - field_name: topmostSubform[0].Copy2[0].RghtCol[0].Box15_ReadOrder[0].f2_30[0]
   label: f2_30 (page 6, control 138)
   population_policy: imported
   value_format: text
   source_ref: form_1099_div_2025.topmostsubform_0_copy2_0_rghtcol_0_box15_readorder_0_f2_30_0
+  address_id: 2025/document=form_1099_div/box=15/control=f_30
 - field_name: topmostSubform[0].Copy2[0].RghtCol[0].f2_31[0]
   label: $ - f2_31 (page 6, control 139)
   population_policy: imported
