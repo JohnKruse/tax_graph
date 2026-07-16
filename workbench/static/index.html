@@ -39,12 +39,15 @@
     <section class="review-area">
       <div class="pane-grid">
         <section class="review-pane" aria-labelledby="official-title">
-          <header><h2 id="official-title">Official IRS artifact</h2></header>
+          <header class="official-header">
+            <div><h2 id="official-title">Official IRS artifact</h2><p>Choose an outlined field to inspect its review evidence.</p></div>
+            <button id="semantic-flow-toggle" type="button" aria-expanded="false" disabled>Show semantic flow</button>
+          </header>
           <div id="official-pane" class="pane-empty">Choose a queue entry to begin.</div>
         </section>
-        <section class="review-pane analog" aria-labelledby="analog-title">
-          <header><h2 id="analog-title">Tax graph semantic analog</h2></header>
-          <div id="analog-pane" class="pane-empty">Semantic explanations will align here.</div>
+        <section id="semantic-flow" class="semantic-flow" aria-labelledby="semantic-flow-title" hidden>
+          <header><h2 id="semantic-flow-title">Semantic flow</h2><button id="semantic-flow-close" type="button">Close</button></header>
+          <div id="analog-pane"></div>
         </section>
       </div>
       <section id="drawer" class="drawer" aria-labelledby="drawer-title">

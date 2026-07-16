@@ -9,311 +9,39 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 - **Architect:** answer there (and pin durable decisions into the relevant `PHASE_<id>.md`), then
   clear the item. Record active direction under **From Architect**.
 - Keep it short - move resolved items to **Resolved** or delete them.
-- History: pruned at each phase close (latest: M14 close 2026-07-12). Full narration lives in
+- History: pruned at each phase close (latest: M15R close, pruned 2026-07-16). Full narration lives in
   `plans/archive/` (phase plans with close notes) and git history.
 
-## Current state (2026-07-15)
+## Current state (2026-07-16)
 
-**BALL: WORKER/JOHN - M15R COMPLETE; RESUME M15 A4 UX REVIEW.** M15R R1-R14 are
-committed and R15 is ready for its close commit/push. John accepted Address Gate A and
-authorized completion through M15R close on 2026-07-15. The preserved in-progress M15
-A4 worktree is now active again. M15R is archived; M15's canary is Fresh Eyes.
+**BALL: WORKER/CODEX - M15 GATE A ROUND 2: A8.** The A8 pre-task is complete and ready
+for its step commit; A8 is next. M15R is complete,
+committed (close commit `baa6fd5`), and archived; the requested Architect review of M15R
+is DONE (ACCEPTED - see From Architect, 2026-07-16). John's 2026-07-16 live review
+produced Gate A round-2 feedback; the Architect cleaned `plans/PHASE_M15.md` on
+2026-07-16 and it now pins the execution order **A8 pre-task (reconcile the dirty A4
+worktree) -> A8 -> A9 -> A10 -> A11 -> A6 -> A12 -> A13**. A4/A5 are superseded with
+their surviving invariants carried forward in the plan's round-2 section; A7 is folded
+into the A13 replay. Gate A remains open through A13; S17+ stays blocked. Canary:
+Fresh Eyes. (Whoever finishes a turn: update this BALL line - it is the first thing read.)
 
-John's Form 1040 review exposed a foundational identity defect, not an isolated UI typo. The
-current system repeatedly reconstructs official line identity from labels, descriptions, node ids,
-and PDF field names. The Form 1040 line 1z formula therefore displayed trailing numbers from the
-descriptions of its inputs (for example W-2 box 2 and Schedule 1 line 26) instead of lines 1a-1h.
-A repository scan found 80 current nodes for which the workbench's derived line disagrees with the
-line encoded in the node id. Stop further M15 breadth until the recovery decision below is pinned.
+**Step ledger:** M15 S1-S16 and A1-A3 are [DONE], pushed, and marked in the plan; M15R
+R1-R15 are [DONE] and archived. Per-step verification narration was pruned 2026-07-16;
+it lives in git history and `plans/archive/PHASE_M15R.md`.
 
-**GATE A FEEDBACK (John, 2026-07-14):** Persistent `Review authored AcroForm...` labels
-cover official IRS labels and add no field-specific value. The right semantic-analog cards
-overlap and are unreadable; the official form should be the primary surface with unobtrusive
-colored boxes, click-to-pin, and selected field detail below. Every fillable AcroForm field
-must be mapped to an explicit population policy, even if it is only `user_entered`; undefined
-is not acceptable. Form 1040 1b-1h are modeled but omitted from the PDF map (pipeline defect).
-Dependent fields are inventoried, but computation is outside the current profile and the OTS
-corpus fixes dependents at zero (real supported-domain gap). Mapping defects, fillable-only
-facts, decision-required fields, and unsupported logic must be visibly distinct. Broad
-document-level witness language must not imply whole-form coverage. John will review the
-corrected surface and iterate until it passes muster.
+**Durable context:** John's 2026-07-14 Form 1040 review exposed the label/node-id/
+PDF-field-name identity defect that M15R fixed with canonical addresses. His Gate A
+feedback and the all-forms scope clarification are pinned as the correction invariants in
+`plans/PHASE_M15.md`; the 2026-07-16 round-2 feedback is pinned in that plan's Gate A
+round-2 section. Every fillable/checkable control on every exposed form must carry
+exactly one population policy and be reviewable - no undefined cells, ever.
 
-**GATE A SCOPE CLARIFICATION (John, 2026-07-14):** The invariant applies to ALL
-fillable/checkable controls on ALL official forms/schedules exposed by the workbench, not only
-the cited Form 1040 examples. Every text field, checkbox, radio/choice control, and repeatable
-slot must have a visible policy state and be clickable. Graph-backed controls show rules and
-upstream/downstream dependencies; non-graph controls show the exact user-fact, decision, blank,
-or unsupported policy and why no computation rule exists. Policy-colored fill/outline is welcome,
-with a legend and non-color-only markers. A fillable PDF lacking an inventory/map fails preflight.
-
-**S5-S9 REVIEW CORRECTIONS (Worker, Codex, 2026-07-14):** Closed all four findings from
-the post-S9 code review. Verdicts and resume sessions now carry the exact review-manifest
-hash. `serve` persists that manifest, and `apply-verdicts` validates its canonical hash plus
-every pinned source-artifact hash before applying any new verdict; already-applied verdicts
-remain idempotent and edited verdicts still fail closed. Browser-supplied `object_ref` values
-are normalized against the selected manifest entry, and apply-time validation independently
-rejects targets outside the queue's declared `review_scope`. Semantic citations from rules
-and edges are recursively promoted into unit-level evidence, so preflight validates them.
-Verdict files use exclusive creation, including a two-thread regression proving one writer
-wins and the duplicate fails.
-
-Verification: focused S5-S9 regression set = `38 passed`; verdict-specific set = `11 passed`;
-M15 marker = `52 passed, 324 deselected`; full repository pytest = `370 passed, 6 skipped in
-770.72s`; real 2025 preflight = 30 entries / 1,331 units; `tax-graph validate 2025`, ASCII,
-and `git diff --check` all green. S10 has not started.
-
-**S9 RESULT (Worker, Codex, 2026-07-14):** Added schema-validated, atomic, non-authoritative
-session resume files under `.workbench_state` with `GET/PUT /api/sessions/<queue_id>`.
-Session references are constrained to the selected entry's unit ids. PUT and
-`POST /api/verdicts` require the per-launch `X-Workbench-Token`; missing/invalid tokens fail
-403. Verdict POST rejects unknown/tampered fields, validates the human constraints, and emits
-the existing append-only content-hashed verdict artifact. Duplicates fail 409. Tests hash the
-compiled graph, deferred queue, geometry, and review provenance around both write APIs and
-prove they remain unchanged; verdict application remains outside the server.
-
-Verification: focused `tests/test_workbench_write_api_m15.py` = `3 passed`; combined S7-S9
-API tests = `9 passed`; M15 marker = `48 passed, 324 deselected`; full repository pytest =
-`366 passed, 6 skipped in 756.82s`; ASCII and `git diff --check` succeeded. S9 is committed
-and pushed. Per John's instruction, stop after S9; do not begin S10.
-
-**S8 RESULT (Worker, Codex, 2026-07-14):** Added one-page PyMuPDF rasterization and a lazy
-content-addressed page cache keyed by source PDF hash, page, scale, and renderer version.
-`GET /api/documents/<doc>/pages/<page>.png` renders only the requested page on a miss and
-serves cache hits without invoking the renderer. `GET /api/evidence/<type>/<id>` resolves
-compiled objects first and otherwise exact draft objects, returning raw public artifact data,
-official geometry, scoped queue-unit links, and citation refs. Unknown and ambiguous evidence
-fail explicitly.
-
-Verification: focused `tests/test_workbench_page_evidence_m15.py` = `3 passed`; M15 marker =
-`45 passed, 324 deselected`; full repository pytest = `363 passed, 6 skipped in 737.63s`;
-ASCII and `git diff --check` succeeded. S8 is ready to commit and push.
-
-**S7 RESULT (Worker, Codex, 2026-07-14):** Added the isolated `[workbench]` Flask extra and
-`[workbench-dev]` Playwright test extra, plus a local-only Flask application that preflights
-its artifact projection at startup. The server binds to `127.0.0.1`, chooses an ephemeral
-port by default, and creates a per-launch write token. `GET /api/queue` returns stable grouped
-entries, progress, and coverage; `GET /api/entries/<queue_id>` returns only that entry's scoped
-units. Read tests hash the compiled graph, deferred queue, and geometry before/after API use.
-
-Verification: focused `tests/test_workbench_server_m15.py` = `3 passed`; M15 marker =
-`42 passed, 324 deselected`; full repository pytest = `360 passed, 6 skipped in 693.55s`;
-ASCII and `git diff --check` succeeded. S7 is ready to commit and push.
-
-**S6 RESULT (Worker, Codex, 2026-07-14):** Added fail-closed artifact-only preflight for all
-Section 4 conditions: zero-unit pending entries, ambiguous required objects and geometry,
-unsupported semantic operations, unidentified promotion change sets, incomplete field-map
-categories, and citations without an exact artifact/PDF locator. Draft promotion objects
-resolve within their own draft artifact namespace; repeatable field-map rows remain physical
-geometry rather than false duplicate graph objects. The CLI reports coverage by review kind,
-document, object type, and located/unlocated geometry. Real 2025 coverage is 30 entries and
-1,331 units (190 located, 1,141 unlocated).
-
-Verification: focused `tests/test_review_preflight_m15.py` = `2 passed`; M15 marker =
-`39 passed, 324 deselected`; full repository pytest = `357 passed, 6 skipped in 679.89s`;
-real `python -m workbench.cli preflight --year 2025`, ASCII, and `git diff --check` succeeded.
-S6 is ready to commit and push.
-
-**S5 RESULT (Worker, Codex, 2026-07-13):** Completed the artifact-only semantic dispatcher for
-every operation in the current compiled graph: LOOKUP_TABLE, LOOKUP_BRACKET, MIN, MAX,
-MULTIPLY with a named parameter, and IF_ELSE join S4's COPY/SUM/SUBTRACT/NEGATE set. Added
-purpose-built repeatable-table, parameter, frontier, review-gap, input, and imported expressions.
-Unknown operations raise `SemanticFormatError`; they never degrade to raw rule JSON. Live-output
-audits preserve distinct branch-helper labels, translate chained table columns into readable
-column math, and prove all current graph operations format successfully.
-
-Verification: focused S3-S5 semantic/manifest tests = `16 passed`; `pytest -m m15 -q` =
-`37 passed, 324 deselected`; real CLI manifest write, `tax-graph validate 2025`, ASCII, and
-`git diff --check` succeeded; full repository pytest = `355 passed, 6 skipped in 651.74s`.
-S5 is ready to push; S6 not started.
-
-**S4 RESULT (Worker, Codex, 2026-07-13):** Added artifact-only COPY, SUM, SUBTRACT, and
-NEGATE formatters in `workbench/semantics.py`. Scoped computed-node units now carry concise
-English plus schema-validated expression trees, with cross-document labels such as `Schedule 1
-line 10` and full printed sublines such as `5a`/`2b`. The live manifest defers unresolved
-frontier operands and repeatable-table nodes to their explicit S5 formatters rather than
-guessing or emitting ambiguous line-only math. Golden tests pin `Add lines 1z + 2b + 3b`,
-`Subtract line 15 from line 14`, and `Copied from Schedule 1 line 10`; NEGATE and live-manifest
-integration are covered too.
-
-Verification: focused `tests/test_review_semantics_m15.py` = `5 passed`; `pytest -m m15 -q`
-= `29 passed, 324 deselected`; real CLI manifest write, `tax-graph validate 2025`, ASCII, and
-`git diff --check` succeeded; full repository pytest = `347 passed, 6 skipped in 644.88s`.
-S4 commit `a9191fb` is pushed.
-
-**S3 RESULT (Worker, Codex, 2026-07-13):** Added `workbench/manifest.py` as an artifact-only,
-deterministic projection from the compiled graph, geometry, PDFs, queue, and `review_scope`.
-Each pending queue entry produces one or more schema-valid units with exact object refs,
-resolved official locations when a PDF hash and geometry match exist, `null` analog placement,
-structure-only reference expressions, semantic class, coverage state, source/target labels,
-and a canonical manifest hash. Added the `workbench manifest` CLI command and docs; no tax
-logic or English semantic formatter work was added. Review found that directory-valued source
-artifacts were silently omitted from the hash. S3 now recursively hashes every file in a source
-directory and fails closed on nonexistent source paths; a regression proves that changing an IRS
-example file changes the manifest hash.
-
-Verification after the fix: focused `tests/test_review_manifest_m15.py` = `3 passed`;
-`pytest -m m15 -q` = `24 passed, 324 deselected`; `tools/check_ascii.py` OK; CLI manifest write
-and `tax-graph validate 2025` succeeded; full repository pytest = `342 passed, 6 skipped in
-636.99s`. S3 commit `4ee0fda` is pushed.
-
-**S2 FIX VERDICT (Architect, Opus 4.8, 2026-07-13): ACCEPTED on substance; push pending.**
-Independently confirmed (read-only, Bash was down) that the exact reopen concerns are fixed:
-the whole-file dump is GONE (`role: related` count = 0), replaced by 842 `primary` + 370
-`excluded` + frontier - all concrete. The line-20 entry is correctly primary-anchored on the
-`schedule_d_2025_line_20_gate` node + its feeding edges (line 20 is a MIN/MAX GATE, not a
-formal `decision` object - my reopen's "decision object absent" wording assumed an object
-that does not exist for that line; the gate + edges ARE the review target). The deduction
-decision names `decision_1040_deduction_method` + its options as primary. Empty scope is
-rejected by `_validate_scope`, so with zero `related` every entry necessarily has >=1
-primary. Field-map / frontier shapes preserved. The queue's ~1217 concrete refs across 30
-entries / 13 documents is honest scope, not bloat (my punch-list "a few hundred" estimate
-was too aggressive). REMAINING before S2 is DONE: Architect re-runs the FULL suite (worker
-reported 339 passed / 6 skipped) and confirms the amended commit dropped the 10,488-line
-over-scoped queue from history, then pushes + confirms CI. Blocked only by a transient tool
-outage; retry Bash and finish.
-
-**S2 FIX RESULT (Worker, Codex, 2026-07-13):** Removed the whole-file object-id fallback and
-regenerated the queue with targeted scopes. Decision reviews now name the decision, options,
-and declared citations; worksheet reviews name their own line nodes and referenced rules;
-intake reviews name concrete routing/trigger/expectation records; every pending entry has at
-least one `primary` ref. The refresh is explicit (`tax-graph review migrate-scope --refresh`),
-and the normal command remains byte-stable (SHA256
-`27F8DC25B3D39DA98517D39B201C857C06F1CBF9C01EBCD80A64A9A0A0558122`).
-
-Verification: focused S2 `4 passed`; `pytest -m m15 -q` = `21 passed, 324 deselected`;
-`tools/check_ascii.py` OK; `validate 2025` graph integrity OK; full suite `339 passed, 6
-skipped in 581.86s`. Queue regeneration migrated all 30 pending entries and the generated
-scope test confirms every pending entry has a primary target. No S3 work started.
-
-**S2 VERDICT (Architect, Opus 4.8, 2026-07-13): REOPEN.** The migration FRAMEWORK is good -
-deterministic, idempotent (rerun 0 changes / stable SHA), additive schema, `validate 2025`
-green, and the field_map + frontier scopes are exactly right (e.g. field_map_review_schedule_d
-= 8 primary mapped + 105 excluded + 2 frontier). BUT the fallback `_collect_file_refs` in
-`tax_graph/review_scope.py` dumps EVERY object of each referenced YAML file as `role: related`,
-so any entry lacking expected_nodes / changed_object_ids / review.md gets a whole-file dump
-with NO primary object identifying what is under review:
-- `routing_review_schedule_d_2025_line_20_decision`: 518 refs, ALL related, ZERO primary,
-  and the DECISION OBJECT ITSELF IS ABSENT from its own scope - the reviewer is handed 352
-  unrelated edges and never pointed at the decision to confirm.
-- `authored_review_schedule_d_2025_tax_worksheet`: 409 refs, all related, no primary.
-- `intake_review_routing_v1_2025` (+ triggers/expectations): 154, all related, no primary.
-- The queue file ballooned to 10,488 lines / 2,449 refs; concrete scope should be a few
-  hundred total.
-PUNCH LIST (fix at S2, re-run migration, do NOT carry to S3):
-1. EVERY entry must carry >=1 `primary` object that names what is under review. Zero-primary
-   is a bug (S6 preflight will later fail it).
-2. Decision reviews: scope the DECISION object + its option nodes + their citations as
-   primary (read `graph/2025/decisions/*.yaml`), not the transitive edge closure.
-3. Authored-worksheet reviews: scope the worksheet subunit's OWN line nodes + rules as
-   primary, not every object in the dependency files.
-4. Intake reviews: scope the concrete routing_edges / triggers / expectations objects as
-   primary (from `graph/2025/routing_edges|triggers|expectations/*.yaml`).
-5. Remove or tightly bound the whole-file `related` dump - small context at most, NEVER the
-   only content. Keep the correct field_map / frontier / expected_nodes / changed_object_ids
-   / review.md paths as-is.
-6. Re-run `tax-graph review migrate-scope --year 2025`; the queue should shrink sharply and
-   stay idempotent. AMEND `c083089` (or `git reset --soft` it) after fixing so the pushed
-   history does not carry the 10,488-line over-scoped queue.
-Retest: add a focused test asserting every migrated entry has >=1 primary object; then M15
-marker + ASCII + `validate 2025`; hand back for the full-suite floor + push.
-
-**S1 VERDICT (Architect, Opus 4.8, 2026-07-13):** sound. The review-projection schemas +
-validation helper + 7 tests are good (valid fixtures pass; invalid ones fail closed on
-additionalProperties/empty-units/negative-time/bad-date; schema-dir override works); ASCII
-green; all four schemas valid JSON; `__init__` re-exports clean; full suite 335 passed / 6
-skipped. The "M8 drill hang" was a FALSE ALARM: `test_default_drill_catalog_catches_expected_layers`
-PASSES in 88.8s, the full suite is ~10 min, and the worker's 184s/304s timeouts were too
-short - the "sandbox timeout, not a hang; run >=600s or split in half" note is already
-pinned below. Nothing wrong with M8 or the environment.
-**WORKER RUNTIME METHOD (use on EVERY step):** you cannot run the ~10-min full suite in one
-foreground sandbox call. Either run it in the BACKGROUND, or SPLIT it into two halves each
-under your timeout (e.g. by test-file range) and record both results. Per step, YOU run
-`pytest -m m15` + the step's focused tests + `python tools/check_ascii.py`; the Architect
-runs and confirms the FULL-suite floor and pushes each step after verification. Do NOT
-commit a step on a partial suite run - S1's instinct to hold was correct.
-
-**ARCHITECT REVIEW + REVISION of the M15 replan (Opus 4.8, 2026-07-13, at John's
-direction):** Codex's replan captures the vision (paired official/analog panes, hover
-pairing, plain-English per-op formatters, scoped review UNITS via a review-manifest,
-evidence drawer, queue workflow, integrated verdicts) and preserves the integrity
-constraints - accepted in substance. Three things were fixed before handing to a worker:
-- **STACK CHANGED** from React/TypeScript/Vite/Playwright(npm) to **Python Flask server +
-  vanilla no-build JS frontend + Python Playwright e2e**. Reason: this machine has NO
-  Node/npm (verified), so the npm toolchain literally cannot build or test here; and even
-  with Node it is a poor fit for GPT-5.6 Luna. Vanilla JS + Python is one-language, no
-  build step, and Luna-tractable. (If John ever wants React, install Node AND use a
-  stronger model for the frontend - noted in the plan.)
-- **STEPS DECOMPOSED** from 8 feature-dense steps into ~30 single-purpose commits (S1-S30),
-  grouped A-G, each with its own test command + acceptance, sized for a weak model. Two
-  JOHN GATES remain: Gate A after the 3-case vertical slice (S16), Gate B after the
-  rehearsal (S28); the human campaign is S29.
-- **EXIT CRITERIA FIXED** to real CLI commands (the replan invented `tax-graph compile`,
-  `verify --profile full`, `review-workbench status`, and npm targets).
-Worker may start **S1 (review-manifest schemas)** now with Luna. `human_confirmed: true`
-stays the one bit only a human earns - no agent path writes it (S27 closes the last soft
-path, `mine-examples --confirm`). Also committed this turn: the retained `workbench/
-render.py` MuPDF-stderr-noise fix, and `workbench_output/`/`.workbench_state/` gitignored.
-
-## 2026-07-13 - M15 product reset (Codex)
-
-- Read the handoff, current M15 plan/docs, implementation, tests, generated bundle, and
-  recent commits.
-- Confirmed the current output is a monolithic static page that renders forms plus full
-  instruction PDFs and exposes selected data mainly as raw JSON. It lacks paired
-  official/analog review, scoped review units, queue navigation, resume, and integrated
-  verdict entry.
-- Replaced `plans/PHASE_M15.md` with an implementation-ready plan for a local interactive
-  app: official artifact left, aligned semantic analog right, hover/click pairing,
-  plain-English provenance and transformations, evidence drawer, queue workflow, active
-  timing, and verdict emission.
-- Retained the artifact loaders, geometry/rendering primitives, and hardened verdict
-  pipeline as useful infrastructure. The human campaign must not start against the
-  current static bundle.
-- Added two mandatory John UX gates: a three-case vertical slice before breadth work and
-  a ten-entry rehearsal before the full campaign.
-- No implementation code was changed. Existing dirty `workbench/render.py` and untracked
-  `workbench_output/` were preserved.
-
-**Next:** John reviews the revised plan and gives the Worker a go for Step 1. Canary:
-**Fresh Eyes**.
-
-**ARCHITECT VERIFICATION of M15 Steps 1-3 (Opus 4.8, 2026-07-13) - PASS with one
-integrity fix applied inline:**
-- Core invariant HELD: `apply_verdicts` (`tax_graph/review.py`) is the only writer of
-  `human_confirmed: true`; verdicts are schema-validated + content-hashed (hand-edits
-  rejected), append-only, and `reviewer_id in {agent,codex,worker,system}` is refused -
-  an honestly-named agent CANNOT forge a confirmation.
-- No-import boundary is enforced at the strictest setting (a test fails on ANY
-  `tax_graph.*` import); the workbench imports zero pipeline code and re-derives page
-  geometry from the `node_geometry.json` ARTIFACT itself. This DEVIATES from the plan's
-  pin to reuse `resolve_node_geometry` - ACCEPTED, it is the stronger objectivity stance
-  the review-workbench doc actually asks for.
-- **FIX APPLIED (Architect):** `_apply_graph_review` would confirm EVERY object in a
-  multi-object nodes/decisions file when a verdict carried no `object_id` and the queue
-  entry had no `expected_nodes` - one click inflating a whole file's tier. Now fails
-  closed (raises unless the confirmation is bounded to a specific object_id or
-  expected_nodes); regression test added. `pytest -m m15` -> 10 passed.
-- **SECOND FIX + PROCESS NOTE (Architect):** the M15 change to `provenance_for_node`
-  (added `human_confirmed`/`human_review`) broke an M14 exact-match assertion in
-  `test_self_serve_extension_m14.py`, so the Step 1-3 commits did NOT meet the commit
-  floor as delivered (the worker ran `pytest -m m15` green but not the FULL suite; the
-  full run showed 1 failed). Behavior is correct - the stale assert now carries the two
-  new keys. STANDING REMINDER: the commit floor is the FULL suite, not the phase marker;
-  a provenance/shape change ripples into other phases' exact-match tests. Architect
-  re-ran the full suite before push.
-- **Follow-up (pre-existing, not an M15 regression):** `verify mine-examples --confirm`
-  (M6) still sets `human_confirmed: true` from a CLI flag with NO reviewer id / provenance
-  / hash - weaker than the M15 verdict discipline. Route it through verdict-grade
-  provenance during the campaign or as M15 cleanup; an agent invoking `--confirm` is the
-  one remaining soft path to the bit.
-JOHN: two things need your eye - (1) skim the M15 "Design pins" (workspace member not
-separate repo; prebaked page images not pdf.js; verdicts flow OUT as files, never
-edits; the confirmed/pipeline_defect/source_pathology taxonomy); (2) M15 Step 4 is
-STRUCTURALLY DIFFERENT - it is YOUR human review campaign (draining the 30-object
-queue, which produces the real human_minutes + escape-rate numbers), not a
-worker-completable step; a Codex session builds Steps 1-3 and the instrumentation,
-then hands to you. `human_confirmed: true` is the one bit only a human earns - no
-agent sets it. M15 is the pre-ship gate: stable release unblocks only after it.
+**Standing worker runtime method:** the ~10-min full suite cannot finish in one
+foreground sandbox call - run it in the background or split it in half. Per step the
+Worker runs `pytest -m m15` + the step's focused tests + ASCII; the Architect confirms
+the full-suite floor and pushes. Never commit a step on a partial suite run.
+`human_confirmed: true` is earned only through the reviewed verdict-application
+pipeline; `mine-examples --confirm` remains the last soft path until S27 removes it.
 
 Prior state: M14 (Product surface, canary Open Door) is COMPLETE and archived
 (`plans/archive/PHASE_M14.md`); all five steps [DONE], every exit criterion met with real
@@ -331,10 +59,9 @@ Return Record provenance). The in-app Claude Desktop live pass closed Step 2
 triple-witnessed: John's chat, the Architect's pre-verified engine run, and the
 Architect's direct call to the extension server (MFS loss-limit scenario:
 line 16 = -4500, line 21 = -1500, 1040 line 7 = -1500).
-**Next: M15 (Review Workbench + review campaign, canary Fresh Eyes) - THE PRE-SHIP
-GATE, now PLANNED in `plans/PHASE_M15.md`.** The review queue below is its raw
-material. Year rollover (TY2026) stays sequenced after M15 or when TY2026 docs drop.
-(Whoever finishes a turn: update this BALL line - it is the first thing read.)
+M15 (Review Workbench + review campaign) is THE PRE-SHIP GATE and is ACTIVE per the
+BALL above; the review queue below is its raw material. Year rollover (TY2026) stays
+sequenced after M15 or when TY2026 docs drop.
 
 - **M0-M14 are COMPLETE and archived** (see `plans/archive/`, each with a close note).
 - **THE GRAPH COMPUTES TAX, FILES IT, AND IS STAGED TO SHIP (alpha).** Computation and
@@ -394,28 +121,26 @@ material. Year rollover (TY2026) stays sequenced after M15 or when TY2026 docs d
   and the Step-5 record-hash ordering fix. Step 2's live pass was John + Architect.
 
 ## Open for Architect
-- **Claude review requested for 2026-07-16:** Review `plans/PHASE_M15R.md`, its master-plan/M15
-  interlock, and any R1+ implementation John authorizes on 2026-07-15. Pay special attention to
-  address serialization, binding cardinalities, contributor boundary, and whether the 15-surface
-  candidate corpus is the right power-law ceiling. John explicitly authorized the Worker-authored
-  plan; review and amend it rather than reconstructing the proposal from this handoff.
-- The M15 S1 "full-suite blocker" is RESOLVED. It was NOT a hang:
-  `test_default_drill_catalog_catches_expected_layers` passes in 88.8s and the full suite is
-  ~10 min (335 passed / 6 skipped); the worker's 184s/304s timeouts were too short. Architect
-  verified S1 and committed it. Going forward, run the full suite in the background or split
-  it in two (see the BALL runtime method); the Architect confirms the full-suite floor at
-  push, so the worker never needs to complete the full suite in one sandbox call.
-
-**S2 VERDICT (Worker, 2026-07-13):** review queue schema now accepts strict additive
-`review_scope`; `tax-graph review migrate-scope --year 2025` deterministically backfilled
-all 30 current pending entries with explicit object refs. Existing expected nodes and
-changed ids are preserved as refs; field maps, frontiers, intake artifacts, extension
-objects, and promotion review.md bullets are scoped to concrete objects. Missing scope
-fails closed rather than defaulting to a document. Migration rerun changed 0 entries and
-the queue SHA-256 stayed stable. Focused S2 tests: 3 passed; M15 marker: 20 passed;
-ASCII: green; `validate 2025`: green; full suite: 338 passed, 6 skipped in 588.81s.
+- (none)
 
 ## From Architect
+- **M15R review verdict + M15 plan cleanup (Architect, Claude Fable 5, 2026-07-16):**
+  Reviewed `plans/archive/PHASE_M15R.md` and spot-checked `tax_graph/addressing/` per the
+  open request. VERDICT: ACCEPTED; do not reopen. Address serialization is sound (typed
+  components, percent-escaped ASCII tokens, parse enforces byte-for-byte canonical
+  round-trip); registry validation covers duplicate ids/logical keys, parent path
+  prefixes and cycles, role-kind compatibility, cross-document binding rejection, and
+  per-document alias ambiguity; the contributor boundary (Form 2441 held out,
+  `project_corpus: false`, no human-confirmed claim) and the 15-surface power-law
+  ceiling are right. Two MINOR hardening notes for opportunistic M15 pickup, not
+  blockers: (1) duplicate widget bindings for one (document_id, field_name) are caught
+  only by the SQLite primary key at compile time - add the same check to
+  `_validate_artifacts` on the YAML load path; (2) node-binding cardinality per role is
+  not validated beyond role compatibility (two `value` bindings to one address would
+  pass) - add a per-role cardinality validator. Also cleaned `plans/PHASE_M15.md` for
+  round 2 (step statuses, A4/A5 supersession, pinned execution order, A8 pre-task
+  dispositioning the dirty A4 worktree) and pruned this handoff. Worker may start the
+  A8 pre-task now.
 - **M15 is planned (`plans/PHASE_M15.md`, 2026-07-12).** The workbench builds against the FINAL artifact shape
   (docs/review-workbench.md + M12's node-to-page geometry); the campaign drains the
   queue above and measures real `human_minutes` / escape rates; verdict outcomes
@@ -428,132 +153,34 @@ ASCII: green; `validate 2025`: green; full suite: 338 passed, 6 skipped in 588.8
   `docs/self-serve-extension.md`.
 
 ## From Worker
-- **M15R R15 close (Codex, 2026-07-15):** Added the canonical-address author/contributor
-  and compatibility contract, handed M15 A4-A7 back to canonical address units,
-  regenerated frontier and Verification Records, and passed the full exit floor: 450
-  passed, 6 skipped; M15R 47 passed; ASCII, graph validate, throwaway SQLite, and real
-  preflight green. One aggregate drill process resource exit was resolved by isolated
-  green reruns followed by the clean full suite. Next: commit/push and open M15 A4 in the
-  browser for John.
-- **M15R R14 (Codex, 2026-07-15):** Added deterministic yearless-logical-key deltas
-  with unchanged, added, removed, renumbered, split, merged, and unresolved outcomes.
-  Structural changes require explicit cardinality-checked hints. Fuzzy candidates are
-  non-authoritative and never inherit trust. Synthetic TY2025/TY2026: 3 passed. Next: R15.
-- **M15R R13 (Codex, 2026-07-15):** Added schema-validated pending address artifacts to
-  the existing deterministic extension package. The held-out Form 2441 registry remains
-  only under the ignored extension draft boundary; no live corpus registry exists.
-  Package provenance pins user gate, pending review, `project_corpus: false`, and
-  `human_confirmed: false`, with an explicit unresolved list. Gate B artifact:
-  `workbench_output/form_2441_2025_2025.tax-graph-extension.zip`.
-- **M15R R12 (Codex, 2026-07-15):** Promoted pending-review registries for W-2,
-  1099-B, 1099-INT, 1099-DIV, and 13614-C. Source-document identity comes only from
-  explicit AcroForm box containers; ambiguous/combined regions retain explicit
-  dispositions without guessed addresses. Choice widgets are typed options. All 297
-  intake controls bind through authored runtime-fact references with provenance intact.
-  Focused campaign/intake/universal-gate suite: 22 passed. Next: R13.
-- **M15R R7-R11 (Codex, 2026-07-15):** Promoted Form 1040 canonical bindings; cut LINK,
-  completeness, runtime, MCP, and workbench identity over to addresses; fixed
-  document-scoped workbench geometry; and completed the nine-document core-return
-  campaign. Form 8949 uses row-template/column and distinct total-row column addresses;
-  Schedule D worksheet fields use explicit worksheet-step addresses. Six 8949-to-Schedule-D
-  canonical reference claims realize with zero unresolved; two Form 6251 prose false
-  positives remain rejected. All promoted records honestly remain pending review. Next: R12.
-- **M15R R2-R6 (Codex, 2026-07-15):** R2 canonical serializer/validator/resolver and five SQLite indexes; R3 explicit six-site legacy semantic-join inventory plus byte-stable four-state migration reports; R4 hard-filtered lexical/optional embedding candidate ranker whose scores cannot resolve; R5 deterministic form-first draft pipeline; R6 real Form 1040 Gate A tree and focused review page. Form 1040 reconciles all 199 widgets: 127 structurally addressed pending-review controls and 72 explicit exemptions; 1a-1h/1z and distinct 1h description/amount are present; dependent physical rows bind to static row-template columns; weak single-letter geometry anchors stay exempt. Gate artifact: `workbench_output/m15r_form_1040_address_review.html`; draft: `graph/2025/_drafts/addresses/form_1040_2025.yaml` (gitignored). Tests: M15R 27 passed; affected M15 28 passed; full suite 430 passed, 6 skipped in 2651.01s; ASCII/diff green. STOPPED at JOHN ADDRESS GATE A.
-- **M15R R2 (Codex, 2026-07-15):** Added the canonical serializer/parser, strict registry loader/validator/resolver, scoped alias handling, separate binding/reference loading, and five deterministic SQLite indexes with YAML/SQLite parity. Focused M15R: 15 passed; compiler/runtime-light integration: 13 passed; ASCII and diff gates green. The legacy full suite reached 86 percent with one stale M15 inventory-count failure; repaired that assertion to reconcile against the 1,921 authoritative inventory controls and reran it green. The abnormally CPU-bound suite was terminated after more than 30 minutes; clean full-suite floor deferred to R6/Gate A. Next: R3 architecture boundary and migration diagnostics.
-- **M15R R1 (Codex, 2026-07-15):** Added strict canonical address registry, widget/node binding, and cross-form reference schemas; representative fixtures cover 1040 amount/description/checkbox/unlabeled option, a 1099 box, worksheet step, and repeatable-table column. Frozen the pre-address graph, field-inventory, runtime, and 80-disagreement baseline without changing graph content. Focused M15R: 8 passed. Canary: Street Address. Next: R2 addressing library and compiled indexes.
-- **M15R canonical-address recovery (Codex, 2026-07-15):** John's explicit
-  instruction authorized a formal Worker-authored plan. The durable design, bounded
-  15-surface power-law scope, implementation steps, John gates, compatibility contract,
-  and exit criteria now live in `plans/PHASE_M15R.md`; the master plan and M15 interlock
-  point to it. R4 now pins the optional short-embedding matcher as constrained top-k
-  ranking only; deterministic structure/role validators decide every stored connection.
-  This supersedes the long proposal previously carried in this ledger.
-
-
-- **M15 A3 (Codex, 2026-07-14):** Added structured dependent runtime facts with
-  row keys separate from printed slots, mapped four Form 1040 identity rows, and
-  made residence/student/disability/credit boxes provenance-bearing
-  `decision_required` controls. Output fills 0-4 rows, rejects five with attached
-  statement guidance, and never infers a checkbox from identity. Return Records
-  disclose the universal intake gate and unsupported downstream qualification.
-  Focused: 47 passed; M15: 85 passed; full suite: 403 passed, 6 skipped; ASCII
-  green. Next: A4 official-form-first interaction.
-- **M15 A2 (Codex, 2026-07-14):** Swept all 16 exposed AcroForms and classified
-  all 1,919 widgets with one collision-free disposition. Added missing inventories
-  and maps for 1099-DIV, 1099-INT, 13614-C, 2441, and W-2; regenerated every
-  inventory directly from the PDFs; repaired Form 1040 node/field anchors 1b-1h,
-  including the separate 1h description, with line 1z sum and nonzero PDF echo.
-  Preflight now checks PDF = inventory = disposition in a runtime-light child
-  process, with an mtime-safe cache. Focused: 28 passed; M15: 77 passed; full
-  suite: 395 passed, 6 skipped; ASCII and real validate green. Next: A3 dependent
-  runtime facts and honest 0-4 row output.
-- **M15 A1 (Codex, 2026-07-14):** Added schema-versioned complete field
-  dispositions, strict inventory/disposition/ref validation, direct AcroForm widget
-  enumeration, and the fail-closed `review migrate-field-dispositions` authored-work
-  command. The migration copies only provable legacy identity facts and never guesses
-  graph operations or unsupported consequences. Focused: 9 passed; M15: 69 passed;
-  full suite: 387 passed, 6 skipped; ASCII green. Next: A2 universal disposition sweep
-  and Form 1040 lines 1b-1h repair.
-- **M15 S16 (Codex, 2026-07-14):** Gate A vertical slice now has explicit launch
-  buttons for Form 1040 operations (input/copy/calculation/lookup/branch), Form 8949
-  row-template + totals, and the Schedule D Tax Worksheet semantic flow. Official and
-  analog pages change in lockstep; no-geometry worksheets retain a scoped semantic
-  evidence view. Verdict controls are visibly disabled and labeled not yet wired.
-  E2E: 8 passed including 1280x800 and 1920x1080; M15: 60 passed; full suite: 378
-  passed, 6 skipped; ASCII green. STOPPED at JOHN UX GATE A as required. Exact feedback
-  requested: official/analog comparison, explanations, navigation, and evidence hierarchy.
-- **M15 S15 (Codex, 2026-07-14):** J/K and arrows move review units, N/P and arrows
-  move queue entries with focus, both panes share zoom and scroll state, and stale async
-  entry responses cannot overwrite newer navigation. Browser test: 1 passed; M15: 58
-  passed; full suite: 376 passed, 6 skipped; ASCII green. Next: S16 representative
-  vertical-slice cases and Gate A handoff.
-- **M15 S14 (Codex, 2026-07-14):** a pinned unit now opens Formula, Sources,
-  Citation, Witnesses, Diff, and Advanced JSON tabs backed by the real unit/evidence
-  APIs; raw JSON is hidden by default and artifact text is HTML-escaped. Browser test:
-  1 passed; M15: 57 passed; full suite: 375 passed, 6 skipped; ASCII green. Next: S15
-  keyboard navigation and synchronized view controls.
-- **M15 S13 (Codex, 2026-07-14):** hover/focus on either official or analog side now
-  highlights the exact pair; click pins both sides and emits a selection event for the
-  drawer. Browser test: 1 passed; M15: 56 passed; full suite: 374 passed, 6 skipped;
-  ASCII green. Next: S14 evidence drawer.
-- **M15 S12 (Codex, 2026-07-14):** added page-height semantic cards aligned to
-  official geometry, explicit semantic-class labels, and visible pair connectors.
-  Browser test: 1 passed; M15: 55 passed; full suite: 373 passed, 6 skipped; ASCII
-  green. Next: S13 bidirectional hover/click pairing.
-- **M15 S11 (Codex, 2026-07-14):** queue selection now lazy-loads the exact official
-  PDF page and overlays scoped geometry while dimming surrounding context. Browser test:
-  1 passed; M15: 54 passed; full suite: 372 passed, 6 skipped; ASCII green. Next: S12
-  semantic analog pane.
-- **M15 S10 (Codex, 2026-07-14):** added the Flask-served no-build shell, ES-module
-  queue client, responsive queue/pane/drawer layout, and a real Chromium e2e fixture.
-  The browser lifecycle is function-scoped so it cannot leak an event loop into later
-  MCP tests. Focused shell + MCP isolation: 13 passed; M15: 53 passed; full suite:
-  371 passed, 6 skipped; ASCII green. Next: S11 official pane.
-- **M15 S2 (Codex, 2026-07-13):** added `tax_graph/review_scope.py`, the
-  `review migrate-scope` CLI command, queue schema support, 3 focused tests, the scoped
-  2025 queue projection, and the workbench contract note. Promotion scopes prefer the
-  explicit object bullets in draft `review.md` and fall back to cited artifact objects
-  only where no review manifest exists. Commit is ready for Architect verification and
-  push; do not start S3 until then.
-- **M15 S1 (Codex, 2026-07-13):** added strict review-manifest, review-unit,
-  review-expression, and session-state schemas plus artifact-only validation helpers and
-  fixtures. Schema references are self-contained so direct JSON Schema validation works;
-  no pipeline imports were added. Canary: Fresh Eyes. S1 was Architect-verified and
-  committed after the full-suite floor passed.
-- M15 Steps 1-3: artifact-only `workbench/` with AST-enforced no-import boundary;
-  read-only SQLite/geometry/queue/draft/PDF loaders; PyMuPDF build-time rasterization;
-  static offline HTML with field/provenance/gap overlays; append-only hashed verdict
-  emitter; and pipeline-owned `review apply-verdicts` with queue, graph provenance,
-  MCP, and Verification Record tier propagation.
-- Verification: `pytest -m m15` -> 9 passed; focused M15 + graph validator + MCP +
-  CLI + runtime-light regression set -> 37 passed; validate and no-op apply green;
-  real 2025 offline bundle built successfully. Full-suite attempts timed out after
-  overlapping pytest processes from earlier tool timeouts; no assertion failure was
-  observed. Re-run the full suite cleanly before phase close.
-- Next action for John: run `review-workbench build --year 2025`, review the queue,
-  emit one verdict per object, then run `tax-graph review apply-verdicts --year 2025`.
+- **M15 A8 pre-task complete (Codex, 2026-07-16):** Reconciled the dirty A4 worktree
+  without landing the rejected UI. Kept `field_control` disposition refs, deterministic
+  queue regeneration, preflight coverage, and canonical-address selection/selected-only
+  semantic-flow plumbing. Removed F/G/B marker glyphs, their text legend/styles, and tests
+  or docs that pinned them. Migration rerun reported 0 changed / 35 unchanged. Verification:
+  focused backend 9 passed; focused E2E 7 passed; all M15 partitions 85 passed; remaining
+  full-suite partitions 365 passed, 6 skipped (aggregate full floor: 450 passed, 6 skipped);
+  ASCII, `validate 2025`, and real workbench preflight all green. The monolithic M15/full
+  commands exceeded 30/20 minutes after scope growth, so the complete collections were run
+  as deterministic non-overlapping partitions per the standing split-suite method.
+- **M15 Gate A feedback round 2 plan (Codex, 2026-07-16):** John's live review rejected the
+  review-kind queue rail, bottom-stacked evidence drawer, raw-id-first field meaning, lettered
+  `G` markers, and ambiguous dead queue-level verdict controls. Added A8-A13 to
+  `plans/PHASE_M15.md`: document-first navigator + plain-English check groups; desktop 10/60/30
+  side-by-side navigator/form/field-review layout; canonical display-name contract with an explicit
+  Form 1040 `f1_14` -> `First name and middle initial` golden; one scannable evidence pane with only
+  Advanced JSON secondary; non-lettered contrast markers; field-scoped Accept/Needs correction/
+  Comment drafts with Submit/Cancel/Reset semantics; and a provider-agnostic, explicit revision
+  request/diff loop that never mutates live graph data. Planning-only; no implementation or tests
+  were run. Existing dirty A4 UI work was not modified.
+- **Pruned 2026-07-16 (Architect):** per-step M15 (S1-S16, A1-A3) and M15R (R1-R15)
+  worker logs moved to git history and `plans/archive/PHASE_M15R.md` close notes.
 
 ## Latest verification
+- **M15R close (Worker, Codex, 2026-07-15) - ALL GREEN:** full suite 450 passed, 6
+  skipped; `pytest -m m15r` 47 passed; ASCII, `validate 2025`, throwaway SQLite build,
+  real workbench preflight, frontier rebuild, and Verification Record regeneration all
+  green. Close commit `baa6fd5` pushed.
 - **M14 phase close (Architect, Opus 4.8, 2026-07-12) - ALL GREEN:**
   - Full suite in the DIRTY checkout (pilot extension installed): 318 passed, 6 skipped;
     simulated-clean (worker): 315 passed, 9 skipped (3 skips named in docs/intake.md)
@@ -570,6 +197,9 @@ ASCII: green; `validate 2025`: green; full suite: 338 passed, 6 skipped in 588.8
 - Prior phase closes: `plans/archive/PHASE_M13.md` (and earlier) - each with a close note.
 
 ## Resolved / superseded
+- 2026-07-16: the open Architect M15R review request - ANSWERED (From Architect above).
+- M15 S1 "full-suite blocker" - false alarm; the runtime method is pinned in Current state.
+- M15 S2 over-scoped-queue reopen - fixed, re-verified, and pushed; narration in git history.
 - M14 items (packaging defects, watchdog, fabricated-citations reopen, pilot findings,
   hash-ordering rule): `plans/archive/PHASE_M14.md` header + git history.
 - M13 items (S1_21 ruling, SDTW gate-defect adjudication, Option B): `plans/archive/PHASE_M13.md`.

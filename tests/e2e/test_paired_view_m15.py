@@ -1,4 +1,4 @@
-"""M15 S16 Gate A vertical-slice checks at both target desktop sizes."""
+"""M15 A4 official-first layout checks at both target desktop sizes."""
 
 from __future__ import annotations
 
@@ -9,32 +9,37 @@ pytestmark = pytest.mark.m15
 
 
 @pytest.mark.parametrize("viewport", [{"width": 1280, "height": 800}, {"width": 1920, "height": 1080}])
-def test_three_representative_cases_are_reviewable_in_the_paired_view(page, workbench_url: str, viewport) -> None:
+def test_three_representative_cases_are_reviewable_without_form_overlays(page, workbench_url: str, viewport) -> None:
     page.set_viewport_size(viewport)
     page.goto(workbench_url)
 
     page.locator('[data-case-target="field_map_review_form_1040_2025"]').click()
     page.locator('#official-pane [data-document-id="form_1040_2025"]').wait_for()
-    classes = {value.lower() for value in page.locator("#analog-pane .semantic-kind").all_inner_texts()}
+    assert page.locator("#semantic-flow").is_hidden()
+    assert page.locator("#official-pane .official-region").count() > 0
+    assert all(page.locator("#official-pane .official-region").nth(index).evaluate("element => element.tabIndex >= 0")
+               for index in range(page.locator("#official-pane .official-region").count()))
+    assert_no_persistent_labels_or_horizontal_overflow(page)
     page.get_by_role("button", name="Next page").click()
     page.locator('#official-pane [data-page="2"]').wait_for()
-    assert page.locator("#analog-pane .page-canvas").get_attribute("data-page") == "2"
-    classes.update(value.lower() for value in page.locator("#analog-pane .semantic-kind").all_inner_texts())
-    assert {"input", "copy", "calculation", "lookup", "branch"} <= classes
-    assert_side_by_side(page)
+    page.locator("#official-pane .official-region").first.focus()
+    assert page.locator(".field-hover-label").inner_text() != "Hover or focus a field for its label"
 
     page.locator('[data-case-target="field_map_review_form_8949_2025"]').click()
     page.locator('#official-pane [data-document-id="form_8949_2025"]').wait_for()
-    summaries = page.locator("#analog-pane .semantic-summary").all_inner_texts()
-    assert any("Per transaction" in summary for summary in summaries)
-    assert any("Total column" in summary for summary in summaries)
+    selected = page.locator("#official-pane .official-region").first
+    selected.click()
+    page.get_by_role("button", name="Show semantic flow").click()
+    assert page.locator("#semantic-flow .semantic-flow-card").count() == 1
+    assert_no_persistent_labels_or_horizontal_overflow(page)
 
     page.locator('[data-case-target="authored_review_schedule_d_2025_tax_worksheet"]').click()
-    worksheet = page.locator("#analog-pane .evidence-analog-list")
-    worksheet.wait_for()
-    assert worksheet.locator(".analog-card").count() > 5
+    page.locator("#official-pane .page-gap").wait_for()
     assert "Review gap" in page.locator("#official-pane").inner_text()
-    worksheet.locator(".analog-card").first.click()
+    page.get_by_role("button", name="Show semantic flow").click()
+    worksheet = page.locator("#semantic-flow .semantic-flow-card")
+    assert worksheet.count() > 5
+    worksheet.first.click()
     page.locator("#drawer .drawer-heading").wait_for()
 
     verdicts = page.locator(".verdict-bar button")
@@ -42,12 +47,7 @@ def test_three_representative_cases_are_reviewable_in_the_paired_view(page, work
     assert all(verdicts.nth(index).is_disabled() for index in range(verdicts.count()))
     assert "not yet wired" in page.locator(".verdict-bar").inner_text().lower()
 
-
-def assert_side_by_side(page) -> None:
-    official = page.locator(".review-pane").nth(0).bounding_box()
-    analog = page.locator(".review-pane").nth(1).bounding_box()
-    assert official is not None and analog is not None
-    assert official["width"] > 300
-    assert analog["width"] > 300
-    assert analog["x"] > official["x"] + official["width"]
-    assert abs(official["y"] - analog["y"]) < 2
+def assert_no_persistent_labels_or_horizontal_overflow(page) -> None:
+    region = page.locator("#official-pane .official-region").first
+    assert region.evaluate("element => getComputedStyle(element, '::after').content") in {"none", "normal"}
+    assert page.evaluate("document.documentElement.scrollWidth <= document.documentElement.clientWidth")

@@ -1,12 +1,14 @@
 # Phase M15 - Interactive Review Workbench and Human Review Campaign
 
-**Status:** REPLANNED 2026-07-13 (frontend stack + step granularity revised by Architect
-for a no-Node machine and weaker-model workers). The human campaign is PAUSED. The
-static bundle is not an acceptable review surface and does not satisfy this phase.
-As of 2026-07-15, M15R has completed its canonical-address recovery and representative
-gates. Preserve A1-A3 and the in-progress A4 work. Resume A4-A7 using canonical
-address/control review units; do not reintroduce label, node-id, or PDF-field-name identity
-heuristics. M15 remains the human-confirmation campaign.
+**Status:** ACTIVE at Gate A round 2 (cleaned by Architect 2026-07-16). S1-S16 and A1-A3
+are [DONE] and pushed. M15R (canonical-address recovery) is complete and archived at
+`plans/archive/PHASE_M15R.md`; review units are keyed by canonical address. John's
+2026-07-16 live review produced round-2 feedback: A4/A5 are SUPERSEDED (their surviving
+invariants are absorbed into A10/A11), A7 is folded into the A13 replay, and the active
+sequence is **A8 pre-task (worktree reconciliation) -> A8 -> A9 -> A10 -> A11 -> A6 ->
+A12 -> A13**. Do not reintroduce label, node-id, or PDF-field-name identity heuristics.
+The human campaign remains PAUSED until Gate A closes; S17+ stays blocked. M15 remains
+the human-confirmation campaign and the pre-ship gate.
 
 **Canary:** Fresh Eyes
 
@@ -204,21 +206,21 @@ tiny first commit (pyproject + a README note) if the worker prefers.
 
 ### Group A - Review manifest + semantics (backend, artifact-only Python)
 
-- **S1 - Schemas.** Add `review_manifest`, `review_unit`, `review_expression`,
+- **S1 - Schemas. [DONE]** Add `review_manifest`, `review_unit`, `review_expression`,
   `session_state` JSON schemas under `schemas/` + a validation helper. Test: schema-load
   + minimal valid/invalid fixtures pass. `pytest tests/test_review_schemas_m15.py -q`.
-- **S2 - Queue `review_scope`.** Add an additive `review_scope` field to the deferred-review
+- **S2 - Queue `review_scope`. [DONE]** Add an additive `review_scope` field to the deferred-review
   queue schema + a deterministic migration command that backfills object scope for the
   current pending entries (never a document-wide default). Test: migration is idempotent;
   `validate 2025` green. `pytest tests/test_review_scope_migration_m15.py -q`.
-- **S3 - Manifest builder (structure only).** `workbench/manifest.py` projects each pending
+- **S3 - Manifest builder (structure only). [DONE]** `workbench/manifest.py` projects each pending
   queue entry into >=1 `review_unit` with object ids, official geometry, analog placeholder,
   and semantic class - NO English text yet. Test: every pending 2025 entry -> >=1 unit; hash
   is stable. `pytest tests/test_review_manifest_m15.py -q`.
-- **S4 - Simple formatters.** English + structured expression tree for COPY, SUM, SUBTRACT,
+- **S4 - Simple formatters. [DONE]** English + structured expression tree for COPY, SUM, SUBTRACT,
   NEGATE. Golden tests for `Add lines 1z + 2b + 3b`, `Subtract line 15 from line 14`,
   `Copied from Schedule 1 line 10`. `pytest tests/test_review_semantics_m15.py -q`.
-- **S5 - Remaining formatters.** LOOKUP_TABLE, LOOKUP_BRACKET, MAX, MIN, MULTIPLY (name the
+- **S5 - Remaining formatters. [DONE]** LOOKUP_TABLE, LOOKUP_BRACKET, MAX, MIN, MULTIPLY (name the
   cited parameter), IF_ELSE (branch English), plus repeatable-table, frontier, and input/
   imported classes. Unknown op -> raises (caught by preflight), never raw JSON. Golden tests.
 - **S6 - Preflight + coverage. [DONE]** `python -m workbench.cli preflight --year 2025` fails on
@@ -242,21 +244,21 @@ tiny first commit (pyproject + a README note) if the worker prefers.
 
 ### Group C - Paired-view vertical slice (vanilla JS, no build)
 
-- **S10 - Static shell.** `index.html` + ES-module JS served by Flask; loads `/api/queue`
+- **S10 - Static shell. [DONE]** `index.html` + ES-module JS served by Flask; loads `/api/queue`
   into the queue rail; empty official/analog panes + drawer region. Playwright test: page
   loads, queue is populated. `pytest tests/e2e/test_shell_m15.py -q`.
-- **S11 - Official pane.** Lazy current-page image + geometry rects for the current unit;
+- **S11 - Official pane. [DONE]** Lazy current-page image + geometry rects for the current unit;
   in-scope highlighted, out-of-scope dimmed. Playwright: correct page/region shown.
-- **S12 - Analog pane.** Aligned semantic cards (primary English text) at the same page
+- **S12 - Analog pane. [DONE]** Aligned semantic cards (primary English text) at the same page
   height/coordinates, with a connector to the official region. Playwright: pair is visibly
   linked.
-- **S13 - Hover/click pairing (the core gesture).** Hovering either side highlights the
+- **S13 - Hover/click pairing (the core gesture). [DONE]** Hovering either side highlights the
   exact pair; clicking pins selection. Playwright on a 1040 unit; assert both directions.
-- **S14 - Evidence drawer.** Tabs Formula/Sources/Citation/Witnesses/Diff/Advanced-JSON,
+- **S14 - Evidence drawer. [DONE]** Tabs Formula/Sources/Citation/Witnesses/Diff/Advanced-JSON,
   JSON hidden by default. Playwright: clicking a unit pins the drawer with real content.
-- **S15 - Keyboard + synchronized scroll/zoom.** `J`/`K` units, `N`/`P` entries; panes
+- **S15 - Keyboard + synchronized scroll/zoom. [DONE]** `J`/`K` units, `N`/`P` entries; panes
   scroll/zoom/page in lockstep; focus management. Playwright.
-- **S16 - Three representative cases + e2e.** Wire (1) Form 1040 input/copy/calc/lookup/
+- **S16 - Three representative cases + e2e. [DONE]** Wire (1) Form 1040 input/copy/calc/lookup/
   branch, (2) Form 8949 repeatable row-template + total, (3) Schedule D worksheet or its
   N-version unit. Verdict controls visibly DISABLED and labeled not-yet-wired. Python
   Playwright e2e "paired view" at 1280x800 and 1920x1080.
@@ -319,7 +321,7 @@ S17 while Gate A is open.
    rules plus upstream/downstream dependencies; controls without a rule say why and show any
    downstream blocker instead of presenting an empty panel.
 
-#### A1 - Complete field-disposition contract
+#### A1 - Complete field-disposition contract [DONE]
 
 - Extend `field_map.schema.json` with a schema-versioned, additive `field_dispositions` array.
   Each item pins the exact `field_name`, derived human label, `population_policy`, value format,
@@ -342,7 +344,7 @@ S17 while Gate A is open.
   has an exact inventory and every control is fully disposed, and passes only when the widget =
   inventory = disposition equality invariant is real.
 
-#### A2 - Universal disposition sweep + Form 1040 1b-1h repair
+#### A2 - Universal disposition sweep + Form 1040 1b-1h repair [DONE]
 
 - Author every disposition for every current official form/schedule exposed by the workbench,
   including identity, filing-status, dependent, income, tax, signature, preparer, checkbox,
@@ -360,7 +362,7 @@ S17 while Gate A is open.
 - Acceptance: clicking any fillable/checkable control on any exposed official form/schedule can
   identify what it is and how it is populated, even when the answer is `unsupported`.
 
-#### A3 - Repeatable dependent facts and honest output behavior
+#### A3 - Repeatable dependent facts and honest output behavior [DONE]
 
 - Add a repeatable `dependents` runtime fact group for filer-entered first name, last name, SSN,
   and relationship. Instance keys remain separate from printed row slots, following the existing
@@ -376,7 +378,11 @@ S17 while Gate A is open.
 - Tests: zero, one, and four dependents; five dependents fails closed with attachment guidance;
   identity facts never auto-select a credit box; no `human_confirmed` mutation.
 
-#### A4 - Official-form-first interaction
+#### A4 - Official-form-first interaction [SUPERSEDED 2026-07-16 - absorbed into A10/A11]
+
+> Do not implement this step as written. Its surviving invariants are pinned in the
+> round-2 carry-forward list below; the layout and marker details are replaced by A10/A11.
+> The in-flight A4 worktree is dispositioned by the A8 pre-task.
 
 - Key selection, markers, geometry, and details by canonical `address_id`; the widget
   binding supplies physical placement and never becomes semantic identity.
@@ -396,7 +402,10 @@ S17 while Gate A is open.
   intersects an IRS field label; every visible marker is keyboard reachable; no horizontal page
   overflow at reset zoom.
 
-#### A5 - Field-specific detail drawer
+#### A5 - Field-specific detail drawer [SUPERSEDED 2026-07-16 - absorbed into A10]
+
+> Do not implement this step as written. The bottom drawer is replaced by the A10 right
+> pane; the policy-truthful content requirements carry forward via the round-2 list below.
 
 - Treat the selected canonical address as the unit identity. Node ids and field names are
   bindings shown only as advanced provenance.
@@ -414,7 +423,7 @@ S17 while Gate A is open.
 - Tests: representative 1a user input, 1b repaired mapping, 1z calculation, dependent identity,
   dependent eligibility decision, and an unsupported field all show distinct truthful details.
 
-#### A6 - Coverage and witness-scope honesty
+#### A6 - Coverage and witness-scope honesty [ACTIVE - execute between A11 and A12]
 
 - Reconcile address, widget-disposition, and review-unit counts before displaying coverage.
 - Add field coverage counts by population policy to preflight, queue API, and entry header. The sum
@@ -428,7 +437,7 @@ S17 while Gate A is open.
 - Tests: partial Form 1040 cannot render as whole-form witnessed; 1b-1h inherit only their actual
   graph evidence; dependent fields show no OTS coverage; coverage counts reconcile exactly.
 
-#### A7 - Gate A replay + regression pack
+#### A7 - Gate A replay + regression pack [FOLDED INTO A13 - do not run as a separate step]
 
 - Traverse canonical address units and assert each selected marker resolves to exactly one
   widget disposition and truthful detail unit.
@@ -444,6 +453,206 @@ S17 while Gate A is open.
 - Launch the local workbench with no verdict writes enabled, stop, and hand the visible surface to
   John. Record exact feedback in `AGENT_HANDOFF.md`. Gate A remains open until John explicitly says
   it passes; further corrections amend A1-A7 before S17 begins.
+
+### Gate A feedback round 2 - document navigator, three columns, and field review
+
+John's 2026-07-16 review replaces the A4/A5 layout details and the disabled queue-level verdict
+presentation. The completed canonical-address and field-disposition work remains authoritative.
+The next implementation slice is A8-A13 below. Do not revive the overlapping page-wide semantic
+analog, do not expose AcroForm field names as reviewer-facing labels, and do not wire the old bottom
+verdict bar. Gate A remains open through A13.
+
+**Execution order (pinned by Architect, 2026-07-16):** A8 pre-task (worktree
+reconciliation, below) -> A8 -> A9 -> A10 -> A11 -> A6 -> A12 -> A13. A6 runs after A11
+because the scoped witness/coverage language it produces is displayed by the A10 pane and
+must exist before the A12 review drafts reference it. A7 does not run as a separate step;
+its traversal test, visual goldens, and three rebuilt Gate A cases execute inside the A13
+replay. A4/A5 are superseded as written, but these invariants from them CARRY FORWARD and
+bind A10/A11:
+
+- Selection, markers, geometry, and details are keyed by canonical `address_id`; widget
+  bindings supply physical placement only, never semantic identity.
+- No persistent overlay text on the official page; IRS labels and entry boxes stay readable.
+- Click pins exactly one field; clicking empty form space clears transient hover but never
+  an intentional pinned selection.
+- The semantic flow is selected-only and on demand, never a page of cards.
+- Detail content stays policy-truthful per A5's table: computed/copied/imported fields show
+  the plain-English operation and labeled sources; user-entered fields show the expected
+  fact; decision-required fields show options, citation, and escape hatch; unsupported
+  fields lead with the missing capability and downstream consequence; controls without a
+  computation rule say `No computation rule - <policy>` explicitly.
+
+#### A8 pre-task - reconcile the uncommitted A4 worktree [DONE]
+
+The dirty worktree holds a mix of still-valid backend work and UI that round 2 has already
+rejected. Do not commit it wholesale and do not discard it wholesale.
+
+- KEEP and commit, with focused tests: the `field_control` disposition refs in
+  `tax_graph/review_scope.py`; the regenerated `review_queue/2025/deferred_review.yaml`
+  (re-run `tax-graph review migrate-scope` to prove the regeneration is deterministic and
+  idempotent, every pending entry retains >=1 `primary` ref, and `validate 2025` stays
+  green); the `workbench/preflight.py` additions; and any address-keyed selection plumbing
+  that A10 builds on.
+- Do NOT commit UI that round 2 rejects: the lettered `F`/`G`/`B` marker glyphs, the
+  text legend built from them, and related styles in `workbench/static/panes.js` /
+  `styles.css` are explicitly removed by A11. Rework or drop those hunks now rather than
+  landing them and rewriting them one step later.
+- E2E tests may only pin surviving behavior; delete or rewrite assertions that encode the
+  rejected markers or the old analog-pane layout.
+- Normal step discipline applies: focused tests + `pytest -m m15` + ASCII + the full-suite
+  floor before the commit is handed for push.
+
+#### Round-2 UX pins
+
+1. **Three persistent columns.** At desktop widths, use an approximate 10/60/30 split: document
+   navigator and checklist, official IRS form, selected-field review. The exact CSS may use minimum
+   widths so the left rail remains usable, but the official form remains the largest surface and
+   the selected-field review is beside it, never below it. At narrow widths the right pane may
+   become a drawer; this does not change the desktop Gate A target.
+2. **Documents are the visible navigation model.** The left pane lists official documents with
+   document progress and plain-English check groups. Queue ids and review-entry kinds remain
+   internal workflow/provenance. They may appear under Advanced details, not as the primary list.
+3. **The field's function is its name.** Every selected control leads with a stable, human label
+   such as `First name and middle initial`, followed by its official locator and population policy.
+   `f1_14`, node ids, address serialization, and PDF field paths are advanced provenance only.
+4. **One scannable review surface.** Formula, sources, population behavior, citations, witnesses,
+   diff, and gaps appear as relevant labeled sections in one selected-field pane. Empty sections
+   are omitted. Only genuinely long/raw material, beginning with Advanced JSON, uses a secondary
+   tab or disclosure.
+5. **Markers draw the eye without encoding jargon.** Replace lettered circles (`G`, `F`, `B`)
+   with small high-contrast solid circles and policy-colored field outlines. Selection gets a
+   larger ring. Policy remains available through the legend, outline style, tooltip, and accessible
+   name; color alone is not the only carrier. `?` and `!` may remain only where they communicate an
+   actual decision or problem, not a technical object class.
+6. **Review is field-scoped and draft-first.** Accept, Needs correction, and Comment apply to the
+   selected canonical address/review unit. Editing never affects the document as a whole. Submit is
+   explicit; Cancel leaves the last saved state unchanged; Reset clears only the current unsaved
+   draft and can never undo an append-only submitted verdict.
+7. **Feedback drives a revision loop without silent mutation.** A submitted correction records
+   structured criticism and creates a deterministic revision-request artifact for the configured,
+   provider-agnostic extraction workflow. Model output remains a draft, is machine-witnessed, and
+   returns as a diff for human review. No browser action edits live graph objects, applies verdicts,
+   or asserts human confirmation.
+
+#### A8 - Document navigator and review checklist projection
+
+- Replace the review-kind queue rail with a document-first projection. Each document row shows its
+  official title, pages, required/visited/accepted/correction counts, and overall pending state.
+- Under the selected document, show a plain-English `Things to check` list derived deterministically
+  from its review units and dispositions: identity/filer inputs, mappings and imports, calculations,
+  decisions, tables/worksheets, citations/witnesses, diffs, and unsupported/gap boundaries. Omit
+  empty groups; show counts and completion rather than repeating queue summaries.
+- Preserve the deferred-review queue as the authoritative source and submission boundary. Add API
+  projection fields rather than rewriting or duplicating queue data. One document/check group may
+  span several queue entries, and selecting it filters/highlights the corresponding form controls.
+- Remove the temporary `Gate A cases` strip from the product navigation. Representative-case entry
+  points belong in tests or a development-only route.
+- Tests: deterministic grouping independent of queue order; no raw queue id as a visible label;
+  document/check counts reconcile exactly with required review units; navigation restores the last
+  page and selected field.
+
+#### A9 - Canonical display-name and review-prompt contract
+
+- Add required reviewer-facing `display_name`, `official_locator`, and `review_prompt` fields to the
+  review-unit projection. Resolve them in this order: authored canonical-address metadata, authored
+  field-disposition label/identity slot, official locator text. AcroForm names, node ids, and address
+  tokens are never display-name fallbacks.
+- Where the canonical registry currently has only structural tokens, author the missing human label
+  once at the canonical address/control layer. Do not generate labels in JavaScript or by splitting
+  ids. Preserve the exact IRS wording when it is available and distinguish same-looking controls by
+  row/column/role.
+- Preflight fails if a visible unit's display name is blank, equals a raw PDF field name such as
+  `f1_14`, or is not unique enough within its document context to identify the selected control.
+- Repair the Form 1040 identity golden explicitly: selecting
+  `topmostSubform[0].Page1[0].f1_14[0]` must headline `First name and middle initial`, identify it as
+  a filer-entered identity fact, and never use `f1_14` outside Advanced provenance/JSON.
+- Tests cover Form 1040 identity, 1a/1h description/amount, a dependent row cell, Form 8949 repeated
+  columns/total, a checkbox choice, a worksheet step, and an unsupported control.
+
+#### A10 - Desktop 10/60/30 workspace and selected-field pane
+
+- Rebuild the desktop workspace as three side-by-side regions: document/checklist navigator,
+  official page, selected-field review. Target `10% / 60% / 30%` at 1920x1080 with practical
+  `minmax` constraints; verify at 1280x800 without covering the form or placing the review pane
+  below it.
+- The right pane header is the selected field's `display_name`. Immediately below, show the review
+  prompt, official locator, population policy, expected value/format, and exact write behavior.
+- Render relevant evidence in one vertical reading order: extracted meaning; transformation or
+  explicit no-rule explanation; labeled upstream/downstream sources; citation; scoped witnesses;
+  promotion/revision diff; unsupported consequence and missing capability. Omit irrelevant/empty
+  sections rather than producing dead tabs or generic filler.
+- Keep Advanced JSON behind one clearly secondary tab/disclosure and include raw field name, node
+  ids, canonical address, queue ids, and exact source objects there. Long citation text or diffs may
+  collapse within their inline section, but do not recreate the old row of evidence tabs.
+- Keep the optional selected-only semantic flow as an inline section/action in the right pane when
+  a multi-step expression benefits from it. It never becomes a fourth pane or a page-wide analog.
+- Playwright visual acceptance at both target viewports asserts three columns, the 10/60/30 intent,
+  no vertical stacking on desktop, stable independent scrolling, and a visible field heading while
+  the official form remains readable.
+
+#### A11 - Marker and selection-language cleanup
+
+- Remove the generic `G`, `F`, and `B` glyphs from markers. Use a high-contrast solid dot with a
+  white/dark keyline; selected/focused controls gain a larger outer ring and stronger outline.
+- Retain policy-specific outline color and a non-color cue such as solid/dashed/double outline.
+  Decision and unsupported controls may use `?`/`!` because those symbols describe required human
+  action; their accessible names still state the full policy.
+- Make markers large enough to find but position them so they do not cover IRS labels or input
+  baselines. Hover/focus exposes the field display name in a single anchored tooltip and the right
+  pane; no repeated overlay summary appears inside the field rectangle.
+- Tests: no marker contains `G`, `F`, or `B`; every marker has an accessible display name; color-blind
+  policy classes have distinct outline styles; dense identity/dependent regions remain readable.
+
+#### A12 - Field-scoped review drafts, feedback, and submission
+
+- Replace the dead bottom bar with controls inside the selected-field pane:
+  `Accept`, `Needs correction`, and `Add comment`. Keep `Source pathology` under a clearly labeled
+  advanced outcome because it is real but uncommon. Show the selected field name beside the
+  controls so scope cannot be mistaken for the whole form.
+- Extend non-authoritative session state with field drafts keyed by stable review unit/canonical
+  address. A draft contains the proposed outcome, structured issue categories, free-text criticism,
+  and optional affected evidence sections. Suggested categories include wrong field name, wrong
+  mapping, wrong population policy, wrong formula/source, wrong citation/witness claim, missing
+  information, and other.
+- `Accept` maps to the existing `confirmed` outcome for exactly the selected scoped object/unit.
+  `Needs correction` maps to `pipeline_defect` and requires actionable criticism. Comments may be
+  attached to either. A field confirmation never confirms its whole document, queue entry, or
+  unrelated objects; a queue entry becomes eligible for completion only after all required units
+  have submitted outcomes.
+- Define button behavior precisely: Submit validates and emits an append-only field-scoped verdict;
+  Cancel discards edits since the draft pane was opened/reloaded; Reset clears the current unsaved
+  draft after a local confirmation. After Submit, the verdict is immutable in the UI; a superseding
+  review is a new provenance-linked verdict, not a reset.
+- Extend the verdict contract additively with `review_unit_id`, canonical `address_id` when present,
+  structured feedback, and supersession linkage. Preserve manifest/content hashes and the existing
+  no-mutation API boundary. The apply pipeline may upgrade only the exact reviewed object after all
+  existing gates pass.
+- Tests: scope label always matches selection; switching fields preserves independent drafts;
+  correction cannot submit without criticism; Cancel/Reset semantics; stale-manifest rejection;
+  double-submit rejection; no graph/queue/tier/provenance mutation from session saves; queue-level
+  confirmation remains disabled until required unit coverage is complete.
+
+#### A13 - Provider-agnostic revision handoff and Gate A replay
+
+- Add a deterministic correction export that groups submitted `pipeline_defect` feedback by source
+  artifact/object and produces a revision-request packet containing the exact selected field,
+  authoritative objects, cited evidence, machine-witness results, reviewer criticism, and manifest
+  hashes. It contains no taxpayer data and no invented prompt context.
+- The configured extraction provider may consume that packet only through an explicit pipeline
+  command/action. Its proposed changes go to the existing gitignored draft boundary, run the full
+  witness set, and return to the workbench as a revision diff. Submitting criticism never invokes a
+  model silently and never edits promoted graph data.
+- Add an end-to-end correction loop fixture: select Form 1040 first-name field -> flag wrong display
+  meaning -> submit criticism -> export revision request -> load a simulated corrected draft/diff ->
+  re-review the exact canonical address. Also cover accepting a correct field and commenting without
+  changing the verdict.
+- Replay Gate A over Form 1040 identity and calculations, Form 8949 repeatable rows/totals, and the
+  Schedule D worksheet. Run focused A8-A13 tests, all browser tests, `pytest -m m15`, full `pytest`,
+  ASCII, real preflight, graph validation, and field-count reconciliation.
+- Launch the workbench with verdict writes directed to a temporary review directory for John. Stop
+  after the live review and record exact feedback in `AGENT_HANDOFF.md`. Do not start S17 until John
+  explicitly accepts the three-column navigation, field meaning, evidence hierarchy, marker system,
+  and field-scoped review/revision loop.
 
 ### Group D - Breadth (navigation, coverage, density)
 

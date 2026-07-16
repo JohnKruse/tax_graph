@@ -222,6 +222,9 @@ def _field_map_issues(entry: dict[str, Any], root: Path) -> list[PreflightIssue]
                 expected.add(("node", str(item["node_id"]), "primary"))
             elif item.get("identity_slot"):
                 expected.add(("field", str(item["identity_slot"]), "primary"))
+        for item in payload.get("field_dispositions", []) or []:
+            if item.get("field_name"):
+                expected.add(("field_control", str(item["field_name"]), "primary"))
         for item in payload.get("excluded_nodes", []) or []:
             if item.get("node_id"):
                 expected.add(("node", str(item["node_id"]), "excluded"))

@@ -180,6 +180,18 @@ def _collect_field_map_refs(
                 _add_ref(refs, "field", str(mapping["identity_slot"]), str(relative_path), "primary")
                 found = True
                 has_primary = True
+        for disposition in data.get("field_dispositions", []) or []:
+            if not isinstance(disposition, dict) or not disposition.get("field_name"):
+                continue
+            _add_ref(
+                refs,
+                "field_control",
+                str(disposition["field_name"]),
+                str(relative_path),
+                "primary",
+            )
+            found = True
+            has_primary = True
         for item in data.get("excluded_nodes", []) or []:
             if isinstance(item, dict) and item.get("node_id"):
                 _add_ref(refs, "node", str(item["node_id"]), str(relative_path), "excluded")

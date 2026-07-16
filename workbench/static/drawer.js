@@ -55,7 +55,7 @@ function activateTab(drawer, tabName) {
 async function renderSelection(drawer, unit) {
   let evidence = null;
   const ref = unit.object_refs?.[0];
-  if (ref) {
+  if (ref && ref.object_type !== "field_control") {
     try {
       evidence = await loadEvidence(ref.object_type, ref.object_id);
     } catch (error) {
@@ -66,6 +66,8 @@ async function renderSelection(drawer, unit) {
   const heading = document.createElement("div");
   heading.className = "drawer-heading";
   heading.innerHTML = `<div><span class="eyebrow">Selected unit</span><h2>${escapeHtml(unit.summary)}</h2></div><span class="drawer-class">${escapeHtml(unit.semantic_class.replaceAll("_", " "))}</span>`;
+  const headingTitle = heading.querySelector("h2");
+  headingTitle.tabIndex = -1;
   const tablist = document.createElement("div");
   tablist.className = "drawer-tabs";
   tablist.setAttribute("role", "tablist");
@@ -87,6 +89,8 @@ async function renderSelection(drawer, unit) {
   }
   drawer.append(heading, tablist, panels);
   activateTab(drawer, "Formula");
+  drawer.scrollIntoView({block: "nearest", behavior: "auto"});
+  headingTitle.focus({preventScroll: true});
 }
 
 export function installDrawer(drawer, pairingRoot, entry) {

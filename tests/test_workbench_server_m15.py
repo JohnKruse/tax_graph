@@ -28,8 +28,8 @@ def test_queue_api_groups_pending_entries_and_reports_progress(client) -> None:
     payload = response.get_json()
     assert payload["tax_year"] == 2025
     assert len(payload["manifest_hash"]) == 64
-    assert payload["progress"]["total_entries"] == 30
-    assert payload["progress"]["remaining_entries"] == 30
+    assert payload["progress"]["total_entries"] == 35
+    assert payload["progress"]["remaining_entries"] == 35
     assert payload["progress"]["total_units"] == payload["coverage"]["units"]
     assert payload["groups"] == sorted(payload["groups"], key=lambda group: group["review_kind"])
     assert all(group["entries"] for group in payload["groups"])

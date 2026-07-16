@@ -4,7 +4,7 @@
 > an accepted human-review surface. The human campaign is paused. The authoritative
 > replacement design and implementation sequence are in `plans/PHASE_M15.md`.
 
-Status: M15 Steps 1-3 as-built, 2026-07-13. Canary: "Fresh Eyes". The workbench is a
+Status: M15 Gate A corrections A1-A4 as-built, 2026-07-14. Canary: "Fresh Eyes". The workbench is a
 top-level workspace member with an artifact-only read seam. UI and verdict emission
 remain in later M15 steps.
 
@@ -165,9 +165,9 @@ The workbench takes the opposite stance, and this is the core design commitment:
 Highlight-to-inspect. Everything else is a workflow wrapped around it.
 
 1. Render form pages as images (PyMuPDF at build time, or pdf.js in-browser - open).
-2. Overlay two independent geometry layers: AcroForm field boxes (from the PDF) and
-   resolved provenance anchors (text spans the pipeline cited).
-3. Click or drag-select a region. Hit-test against both layers.
+2. Overlay low-opacity policy outlines. Persistent labels never cover IRS text.
+3. Hover or focus a control to show its derived label outside the page. Click to pin one
+   exact field and open its evidence. Empty page space clears hover, not the pin.
 4. A side panel shows, for the hit objects: node ids and labels, rule shape and
    parameters, citations (verbatim quote, clickable back to its own page region),
    inbound/outbound edges rendered as a small local subgraph with cross-form targets
@@ -176,6 +176,10 @@ Highlight-to-inspect. Everything else is a workflow wrapped around it.
 5. Where the reviewer has a pending decision (adjudication, calibration confirm,
    example confirm), the panel offers it inline: pick A / pick B / neither, confirm /
    reject, with a required short reason for anything other than confirm.
+
+The official form owns the main review width. Semantic flow is hidden by default and,
+when requested, shows only the selected field. A no-geometry worksheet may expose its
+scoped flow on demand. It never recreates a page-height layer of overlapping cards.
 
 ## Decisions flow OUT as artifacts, not edits
 

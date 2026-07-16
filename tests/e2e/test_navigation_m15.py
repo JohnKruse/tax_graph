@@ -8,14 +8,14 @@ import pytest
 pytestmark = pytest.mark.m15
 
 
-def test_keyboard_navigation_and_synchronized_scroll_zoom(page, workbench_url: str) -> None:
+def test_keyboard_navigation_and_official_page_zoom(page, workbench_url: str) -> None:
     page.goto(workbench_url)
     page.locator('[data-queue-id="field_map_review_form_8949_2025"]').click()
-    first = page.locator("#analog-pane .analog-card").first
+    first = page.locator("#official-pane .official-region").first
     first.wait_for()
 
     page.keyboard.press("j")
-    pinned = page.locator("#analog-pane .analog-card.pinned")
+    pinned = page.locator("#official-pane .official-region.pinned")
     assert pinned.count() == 1
     first_id = pinned.get_attribute("data-unit-id")
     page.keyboard.press("j")
@@ -40,9 +40,6 @@ def test_keyboard_navigation_and_synchronized_scroll_zoom(page, workbench_url: s
 
     page.get_by_role("button", name="Zoom in").click()
     assert page.locator("#official-pane .page-canvas").get_attribute("data-zoom") == "1.25"
-    assert page.locator("#analog-pane .page-canvas").get_attribute("data-zoom") == "1.25"
     official = page.locator("#official-pane .page-viewport")
-    analog = page.locator("#analog-pane .page-viewport")
     official.evaluate("element => { element.scrollTop = 20; element.dispatchEvent(new Event('scroll')); }")
-    page.wait_for_function("() => document.querySelector('#analog-pane .page-viewport').scrollTop === 20")
-    assert analog.evaluate("element => element.scrollTop") == 20
+    assert official.evaluate("element => element.scrollTop") == 20

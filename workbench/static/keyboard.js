@@ -15,7 +15,7 @@ function moveEntry(delta) {
 }
 
 function moveUnit(delta) {
-  const units = [...document.querySelectorAll("#analog-pane .analog-card")];
+  const units = [...document.querySelectorAll("#official-pane .official-region")];
   if (!units.length) return;
   const current = units.findIndex((unit) => unit.classList.contains("pinned"));
   const base = current < 0 ? (delta > 0 ? -1 : units.length) : current;
@@ -95,18 +95,8 @@ function wireZoomControls() {
   }
 }
 
-export function installSynchronizedView(official, analog) {
+export function installSynchronizedView(official) {
   wireZoomControls();
   applyZoom();
-  if (!official || !analog) return;
-  let syncing = false;
-  const sync = (source, target) => {
-    if (syncing) return;
-    syncing = true;
-    target.scrollTop = source.scrollTop;
-    target.scrollLeft = source.scrollLeft;
-    requestAnimationFrame(() => { syncing = false; });
-  };
-  official.addEventListener("scroll", () => sync(official, analog));
-  analog.addEventListener("scroll", () => sync(analog, official));
+  if (!official) return;
 }
