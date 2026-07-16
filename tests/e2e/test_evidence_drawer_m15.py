@@ -10,7 +10,8 @@ pytestmark = pytest.mark.m15
 
 def test_clicking_a_unit_pins_real_evidence_with_json_hidden_by_default(page, workbench_url: str) -> None:
     page.goto(workbench_url)
-    page.locator('[data-queue-id="promotion_review_form_1040_2025"]').click()
+    page.locator('[data-document-id="form_1040_2025"].document-entry').click()
+    page.locator('[data-document-id="form_1040_2025"][data-check-group="diffs"]').click()
     card = page.locator("#official-pane .official-region").last
     card.click()
 

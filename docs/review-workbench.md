@@ -164,6 +164,14 @@ The workbench takes the opposite stance, and this is the core design commitment:
 
 Highlight-to-inspect. Everything else is a workflow wrapped around it.
 
+The primary navigator is document-first. Each official document shows its pages and
+required-unit count, then expands to a deterministic `Things to check` checklist. The
+plain-English groups cover identity/filer inputs, mappings/imports, calculations,
+decisions, tables/worksheets, citations/witnesses, changes/diffs, and unsupported/gaps;
+empty groups are omitted. Queue ids and review kinds remain internal provenance. A check
+group can span several authoritative queue entries, but every projected unit appears
+exactly once and counts reconcile to the queue.
+
 1. Render form pages as images (PyMuPDF at build time, or pdf.js in-browser - open).
 2. Overlay low-opacity policy outlines. Persistent labels never cover IRS text.
 3. Hover or focus a control to show its derived label outside the page. Click to pin one

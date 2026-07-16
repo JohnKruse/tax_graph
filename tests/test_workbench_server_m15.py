@@ -36,6 +36,31 @@ def test_queue_api_groups_pending_entries_and_reports_progress(client) -> None:
 
 
 @pytest.mark.m15
+def test_queue_api_projects_deterministic_document_checklists(client) -> None:
+    payload = client.get("/api/queue").get_json()
+    documents = payload["documents"]
+
+    assert documents == sorted(
+        documents,
+        key=lambda item: (item["document_id"] == "unlocated", item["title"], item["document_id"]),
+    )
+    assert any(item["title"] == "Form 1040" for item in documents)
+    assert all(item["check_groups"] for item in documents)
+    assert all("_" not in group["label"] for item in documents for group in item["check_groups"])
+    projected = [
+        (ref["queue_id"], ref["unit_id"])
+        for item in documents
+        for group in item["check_groups"]
+        for ref in group["unit_refs"]
+    ]
+    assert len(projected) == payload["progress"]["total_units"]
+    assert len(projected) == len(set(projected))
+    assert sum(item["counts"]["required"] for item in documents) == sum(
+        entry["required_units"] for group in payload["groups"] for entry in group["entries"]
+    )
+
+
+@pytest.mark.m15
 def test_entry_api_returns_only_the_requested_scoped_units(client) -> None:
     queue = client.get("/api/queue").get_json()
     selected = queue["groups"][0]["entries"][0]

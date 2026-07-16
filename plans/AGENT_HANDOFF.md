@@ -14,8 +14,8 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## Current state (2026-07-16)
 
-**BALL: WORKER/CODEX - M15 GATE A ROUND 2: A8.** The A8 pre-task is complete and ready
-for its step commit; A8 is next. M15R is complete,
+**BALL: WORKER/CODEX - M15 GATE A ROUND 2: A9.** The A8 pre-task and A8 are complete;
+A9 is next. M15R is complete,
 committed (close commit `baa6fd5`), and archived; the requested Architect review of M15R
 is DONE (ACCEPTED - see From Architect, 2026-07-16). John's 2026-07-16 live review
 produced Gate A round-2 feedback; the Architect cleaned `plans/PHASE_M15.md` on
@@ -153,6 +153,14 @@ sequenced after M15 or when TY2026 docs drop.
   `docs/self-serve-extension.md`.
 
 ## From Worker
+- **M15 A8 complete (Codex, 2026-07-16):** Added a deterministic document-first API
+  projection with official titles/pages, exact unit reconciliation, plain-English check
+  groups, and honest cross-document fallback. Replaced the review-kind rail with document
+  rows and `Things to check`, removed Gate A product shortcuts, filtered the review surface
+  by selected group, and restored the last page/field when returning to a document.
+  Verification: 5 focused backend and 9 browser tests green; all M15 partitions 88 passed;
+  remaining full-suite partitions 365 passed, 6 skipped (aggregate: 453 passed, 6 skipped);
+  ASCII, `validate 2025`, and real preflight green.
 - **M15 A8 pre-task complete (Codex, 2026-07-16):** Reconciled the dirty A4 worktree
   without landing the rejected UI. Kept `field_control` disposition refs, deterministic
   queue regeneration, preflight coverage, and canonical-address selection/selected-only

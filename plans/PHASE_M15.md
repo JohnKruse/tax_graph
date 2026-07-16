@@ -534,7 +534,7 @@ rejected. Do not commit it wholesale and do not discard it wholesale.
    returns as a diff for human review. No browser action edits live graph objects, applies verdicts,
    or asserts human confirmation.
 
-#### A8 - Document navigator and review checklist projection
+#### A8 - Document navigator and review checklist projection [DONE]
 
 - Replace the review-kind queue rail with a document-first projection. Each document row shows its
   official title, pages, required/visited/accepted/correction counts, and overall pending state.

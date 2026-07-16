@@ -43,13 +43,13 @@ export function installKeyboardNavigation() {
   });
 }
 
-export function installPageControls(entry, renderPage) {
+export function installPageControls(entry, renderPage, requestedPage = null) {
   const pages = [...new Set(
     entry.units
       .filter((unit) => unit.official_location)
       .map((unit) => unit.official_location.page),
   )].sort((left, right) => left - right);
-  let index = 0;
+  let index = Math.max(0, pages.indexOf(requestedPage));
   const indicator = document.querySelector("#page-level");
   const previous = document.querySelector('[data-page-action="previous"]');
   const next = document.querySelector('[data-page-action="next"]');

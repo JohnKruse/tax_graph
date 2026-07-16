@@ -10,7 +10,8 @@ pytestmark = pytest.mark.m15
 
 def test_official_pane_lazily_shows_the_scoped_page_and_regions(page, workbench_url: str) -> None:
     page.goto(workbench_url)
-    entry = page.locator('[data-queue-id="field_map_review_form_8949_2025"]')
+    page.locator('[data-document-id="form_8949_2025"].document-entry').click()
+    entry = page.locator('[data-document-id="form_8949_2025"][data-check-group="calculations"]')
     entry.click()
 
     canvas = page.locator("#official-pane .page-canvas")

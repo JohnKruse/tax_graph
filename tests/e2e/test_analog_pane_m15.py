@@ -10,7 +10,8 @@ pytestmark = pytest.mark.m15
 
 def test_semantic_flow_is_hidden_until_requested_and_contains_only_selection(page, workbench_url: str) -> None:
     page.goto(workbench_url)
-    page.locator('[data-queue-id="field_map_review_form_8949_2025"]').click()
+    page.locator('[data-document-id="form_8949_2025"].document-entry').click()
+    page.locator('[data-document-id="form_8949_2025"][data-check-group="calculations"]').click()
 
     official = page.locator("#official-pane .official-region").first
     assert page.locator("#semantic-flow").is_hidden()

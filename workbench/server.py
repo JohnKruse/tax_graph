@@ -11,6 +11,7 @@ from flask import Flask, jsonify, request, send_file, send_from_directory
 
 from workbench.artifacts import ArtifactBundle, load_artifact_bundle
 from workbench.manifest import build_manifest
+from workbench.navigation import build_document_navigation
 from workbench.preflight import preflight_manifest
 from workbench.render import PageImageCache, PageRenderError, PageRenderer
 from workbench.schema import SchemaValidationError, validate_session_state
@@ -101,6 +102,7 @@ def create_app(
             {"review_kind": kind, "entries": sorted(items, key=lambda item: item["queue_id"])}
             for kind, items in sorted(groups.items())
         ]
+        navigation = build_document_navigation(entries.values(), artifact_bundle.graph.objects("documents"))
         return jsonify({
             "tax_year": int(year),
             "manifest_hash": review_manifest["manifest_hash"],
@@ -111,6 +113,7 @@ def create_app(
                 "total_units": total_units,
             },
             "groups": grouped,
+            "documents": navigation,
             "coverage": coverage,
         })
 
