@@ -85,7 +85,10 @@ def main(argv: list[str] | None = None) -> int:
         print(f"review preflight passed - {args.year}")
         print(f"  entries: {report['entries']}")
         print(f"  units: {report['units']}")
-        for dimension in ("by_kind", "by_document", "by_object", "by_geometry"):
+        for dimension in (
+            "by_kind", "by_document", "by_object", "by_geometry",
+            "by_display_name_provenance", "legacy_mined_by_document",
+        ):
             values = ", ".join(f"{key}={value}" for key, value in report[dimension].items())
             print(f"  {dimension}: {values}")
         return 0

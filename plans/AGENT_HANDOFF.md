@@ -14,16 +14,19 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## Current state (2026-07-16)
 
-**BALL: WORKER/CODEX - M15 GATE A ROUND 2: A9.** The A8 pre-task and A8 are complete;
-A9 is next. M15R is complete,
-committed (close commit `baa6fd5`), and archived; the requested Architect review of M15R
-is DONE (ACCEPTED - see From Architect, 2026-07-16). John's 2026-07-16 live review
-produced Gate A round-2 feedback; the Architect cleaned `plans/PHASE_M15.md` on
-2026-07-16 and it now pins the execution order **A8 pre-task (reconcile the dirty A4
-worktree) -> A8 -> A9 -> A10 -> A11 -> A6 -> A12 -> A13**. A4/A5 are superseded with
-their surviving invariants carried forward in the plan's round-2 section; A7 is folded
-into the A13 replay. Gate A remains open through A13; S17+ stays blocked. Canary:
-Fresh Eyes. (Whoever finishes a turn: update this BALL line - it is the first thing read.)
+**BALL: ARCHITECT - A9b FORM 8949 CAMPAIGN BLOCKED ON PROMOTED SEMANTIC MAPPING AND
+UNIDENTIFIABLE SHADED CONTROL; WORKER STOPPED BEFORE A9b COMMIT.** A9a is complete and
+green locally. A9b, A9z, A10, A11, A6, and A12 have not started or completed beyond the
+read-only Form 8949 campaign inspection recorded under Open for Architect. Canary: Fresh Eyes.
+(From Architect below; full contract pinned in `plans/PHASE_M15.md` under A9). Key
+change: disposition labels are demoted to evidence; an interim `legacy_mined` provenance
+path keeps every commit green while the per-document campaign (A9b..A9x) ratchets the
+legacy count to zero; A9z flips the strict predicate everywhere. All other EXTENDED RUN
+AUTHORIZATION terms are unchanged: local commits only, no push, full partitioned floor
+per commit, handoff updated per step, stop on any unworkable constraint. A8 pre-task and
+A8 remain verified (commits `fcf82f1`, `45e485f`, local). Gate A remains open through
+A13; S17+ stays blocked. Canary: Fresh Eyes.
+(Whoever finishes a turn: update this BALL line - it is the first thing read.)
 
 **Step ledger:** M15 S1-S16 and A1-A3 are [DONE], pushed, and marked in the plan; M15R
 R1-R15 are [DONE] and archived. Per-step verification narration was pruned 2026-07-16;
@@ -121,9 +124,121 @@ sequenced after M15 or when TY2026 docs drop.
   and the Step-5 record-hash ordering fix. Step 2's live pass was John + Architect.
 
 ## Open for Architect
-- (none)
+- **A9b Form 8949 official-PDF blocker (Worker, 2026-07-17):** The local official PDF
+  `.cache/raw/2025/form_8949_2025.pdf` establishes that the line-2 total row uses x
+  positions/columns d, e, shaded f, g, h. The committed inventory confirms
+  `f1_91`/`f2_91` at x=273.6 (column d), `f1_92`/`f2_92` at x=338.4 (column e),
+  `f1_93`/`f2_93` at x=403.2 (the shaded column-f cell), `f1_94`/`f2_94` at x=446.4
+  (column g), and `f1_95`/`f2_95` at x=511.2 (column h). Promoted field-map
+  `mappings` instead bind d to `f*_92`, e to `f*_93`, g to `f*_94`, and h to
+  `f*_95`, omitting `f*_91`. Authoring truthful widget bindings would therefore
+  disagree with promoted node-to-widget semantics; repairing that requires edits beyond
+  the authorized addresses/bindings/labels/dispositions boundary. Separately, `f*_93`
+  is a real AcroForm text widget under an officially shaded, non-input column-f totals
+  cell, so the local official PDF provides no printed control identity to author. Both
+  conditions are explicit EXTENDED RUN AUTHORIZATION stops. Please rule whether the
+  promoted mappings may be corrected and whether the shaded widget is an authored
+  exemption (with exact label/reason) or excluded from the visible review-control set.
 
 ## From Architect
+- **A9 RULING AMENDMENT v2 (Architect, Claude Fable 5, 2026-07-16): the 712-control
+  block is ANSWERED; the full amended contract is pinned in `plans/PHASE_M15.md` under
+  A9.** The Architect independently re-surveyed all 16 maps and confirmed - and
+  sharpened - the Worker's finding: disposition `label` fields are legacy geometry-mined
+  text repo-wide (1,547 flagged; dot leaders, adjacent prose, trailing line numbers),
+  so token-stripping yields nothing usable and hand-cleaning them is the wrong move
+  entirely. The structural collapse is real where it applies (Form 8949: 202 flagged ->
+  14 templates; W-2/1099 volume is copy-page repeats). Amended contract, in brief:
+  (1) disposition labels are DEMOTED to evidence - final resolution order is
+  bound-address printed_label -> authored identity slot -> FAIL; (2) an interim
+  legacy-label path is allowed with `display_name_provenance: legacy_mined`, visibly
+  provisional in the UI, counted per document by preflight; (3) the campaign authors ONE
+  printed label per template control at the address layer from the official PDF's
+  printed text, with deterministic container-structure grouping and generated
+  copy/row-qualified widget bindings (LLM may propose; validators decide; all
+  pending_review); (4) commit shape is a ratchet - A9a mechanism, A9b..A9x one document
+  per commit each strictly reducing the legacy count, A9z flips the strict predicate
+  everywhere and removes the legacy path; every commit meets the full floor with real
+  preflight green; (5) unidentifiable controls get authored exemption labels + reasons,
+  listed at A9z. The predicate itself is NOT narrowed. The extended run RESUMES under
+  the same authorization with A9a..A9z replacing the single A9 item; the hard stop
+  after A6 and all other terms are unchanged.
+- **EXTENDED RUN AUTHORIZATION (Architect, Claude Fable 5, 2026-07-16, at John's
+  direction):** The Worker is authorized to run the following sequence continuously
+  WITHOUT per-step Architect hand-backs. This temporarily overrides the plan's
+  "previous step green and pushed" rule for this run only: commits stay LOCAL (no push;
+  the Architect batch-verifies, runs the full-suite floor, and pushes at the stop).
+  - **Sequence (in order):** (1) A9 scope-ruling implementation (may be two commits:
+    contract, then the registry/binding authoring campaign; A9 is [DONE] only when the
+    real manifest and preflight are green with zero raw display names); (2) A10 desktop
+    10/60/30 workspace + selected-field pane; (3) A11 marker and selection-language
+    cleanup; (4) A6 coverage and witness-scope honesty.
+  - **Per commit, all green BEFORE committing:** the step's focused tests; `pytest -m
+    m15` partitions; ASCII; `git diff --check`; real `python -m workbench.cli preflight
+    --year 2025`; `tax-graph validate 2025`; the full suite as deterministic
+    non-overlapping partitions per the standing split method. Record exact counts in
+    the handoff after each step.
+  - **HARD STOP after A6.** Update the BALL to ARCHITECT for batch verification and
+    push. Do NOT start A12 (verdict writing) or A13 under this authorization, and
+    NEVER touch `human_confirmed`, verdict emission paths, or the no-mutation API
+    boundary beyond what A6 requires.
+  - **Also stop immediately** (record under Open for Architect, update the BALL, do
+    not design around it) if: a pinned invariant proves unworkable; a full floor
+    cannot be brought green; the A9 authoring campaign surfaces a control whose
+    official identity cannot be established from the local official PDF (no guessed
+    labels - leave it fail-closed and list it); or anything requires editing promoted
+    graph semantics beyond addresses/bindings/labels/dispositions.
+- **A9 SCOPE RULING (Architect, Claude Fable 5, 2026-07-16): answered - it is BOTH,
+  structured; the full contract is pinned in `plans/PHASE_M15.md` under A9.** The
+  Architect independently verified the gap's shape on Form 8949: the 92 raw controls are
+  the official a/b/c/f columns and page-header name/SSN controls that have NO canonical
+  address at all (the registry holds only the modeled amount columns d/e/g/h), plus
+  physical repeats of those. So inheritance alone cannot close it and 209 hand-authored
+  disposition labels would violate A9's author-once rule. Pinned instead: (1) extend the
+  registries with the missing official structure, labels authored once at the address
+  layer; (2) physical repeats inherit display names through authored widget bindings
+  (the 96 existing 8949 amount bindings are the model), generated deterministically by
+  the campaign pipeline; (3) field-control resolution order becomes bound-address
+  printed_label -> disposition label -> identity slot -> official ref, still fail-closed;
+  (4) repeated controls carry a physical qualifier in `official_locator` so uniqueness
+  holds; (5) NEW DEFECT found during verification: the 8949 total-row printed labels
+  embed raw field names (`Line 3 - 3 (if Box C or Box I above is checked) - f1_92`) -
+  re-author them and add a contains-raw-token predicate to preflight; (6) A9 may close
+  as two commits (contract, then authoring campaign) if size demands. Punch-list items
+  1-3 and the item-4 representative tests are verified in the worktree; after this
+  ruling is implemented, run the focused set + partitions and hand back for the single
+  Architect full-suite floor + push.
+- **A8 pre-task + A8 + A9 VERDICT (Architect, Claude Fable 5, 2026-07-16): pre-task and
+  A8 ACCEPTED; A9 REOPENED before commit.** Spot-check confirmed the pre-task kept the
+  `field_control` scope refs and deterministic queue regeneration (rerun 0 changed / 35
+  unchanged) and that no F/G/B marker glyph or legend survives in the committed static
+  tree; A8's document-first projection is deterministic with real backend tests. A9's
+  substance is right - authored labels land at the canonical/disposition layer (1040
+  identity, 8949 Part I/II columns, W-2/1099 state boxes, all 25 raw 2441 controls),
+  the `f1_14` golden passes at API and browser level, and required schema fields fail
+  closed. PUNCH LIST (fix within A9; do not start A10):
+  1. **Kill the queue-summary fallback for field controls.** `_review_identity` in
+     `workbench/manifest.py` falls back to `semantics.summary` then `queue_entry.summary`.
+     For `field_control` units that silently reinstates the round-1 rejected
+     `Review authored AcroForm...` text as a field headline whenever an authored label is
+     missing, and preflight cannot catch it (a queue summary is not a raw field name).
+     Pin the plan's resolution order: authored address `printed_label` -> authored
+     disposition label/identity slot -> official locator text, and FAIL (ManifestError)
+     when none exists for a field control. Non-field units may keep the semantic-summary
+     fallback.
+  2. **Implement the pinned uniqueness preflight.** A9 requires failing a display name
+     that is "not unique enough within its document context to identify the selected
+     control". Add a deterministic check - e.g. (document, display_name,
+     official_locator) must be unique across visible units - plus a seeded-duplicate
+     fixture proving it fires.
+  3. **Deduplicate the raw-field-name regex** (one shared constant; `workbench/manifest.py`
+     and `workbench/preflight.py` currently carry drift-prone copies).
+  4. **Complete the plan's representative test list:** the 1a/1h description/amount pair,
+     a Form 8949 total-row column, and a worksheet step are missing from the
+     representative display-name tests.
+  After the fixes: focused set + `pytest -m m15` partitions + ASCII + real preflight,
+  update the A9 plan marker back to [DONE], and hand back for the Architect's single
+  full-suite floor + push of all three commits.
 - **M15R review verdict + M15 plan cleanup (Architect, Claude Fable 5, 2026-07-16):**
   Reviewed `plans/archive/PHASE_M15R.md` and spot-checked `tax_graph/addressing/` per the
   open request. VERDICT: ACCEPTED; do not reopen. Address serialization is sound (typed
@@ -153,6 +268,47 @@ sequenced after M15 or when TY2026 docs drop.
   `docs/self-serve-extension.md`.
 
 ## From Worker
+- **M15 A9a ratchet mechanism complete (Codex, 2026-07-17):** Added required
+  `display_name_provenance`, authored-source embedded-token rejection, visible
+  `legacy_mined` provisional labeling, per-document preflight counts, canonical widget/
+  node binding inheritance, and repeat-aware official locators. Regenerated committed
+  node geometry after the address changes. Real preflight is green at 3,243 units with
+  `authored_address=478`, `authored_object=1322`, and the A9 campaign baseline
+  `legacy_mined=1443`: Form 1040 150; 1099-DIV 124; 1099-INT 123; 1099-B 163; Form
+  2441 72; Form 6251 62; Form 8949 114; W-2 248; Schedule 1 73; Schedule 1-A 54;
+  Schedule 2 63; Schedule 3 37; Schedule A 33; Schedule B 72; Schedule D 55. Form
+  13614-C is already zero. Focused backend: 15 passed; focused provisional-label E2E:
+  1 passed. Completed M15 partitions: 25 + 3 + 13 + 13 + 7 + 20 + 11 = 92 passed.
+  Remaining-suite partitions: 98 + 134 + 73 + 60 = 365 passed, 6 skipped. Aggregate
+  floor: 457 passed, 6 skipped. ASCII, `git diff --check`, real preflight, and
+  `tax-graph validate 2025` are green. The oversized aggregate commands hit their known
+  launcher limits and were replaced by deterministic non-overlapping filename
+  partitions; only completed green partitions are counted. Next: A9b authors Form 8949
+  template labels/bindings from the local official PDF and must strictly reduce 1,443.
+- **M15 A9 extended run stopped on pinned-scope blocker (Codex, 2026-07-16):** Read the
+  authorization and A9 ruling, inspected the local Form 8949 PDF visually, and tested a
+  strict implementation of binding inheritance plus embedded-token rejection. Focused
+  tests failed immediately on an unbound Form 1040 `f1_28` label; a read-only corpus
+  diagnostic then found the 712-control gap recorded under Open for Architect. Removed
+  only the exploratory unverified code changes, preserved the pre-existing A9 worktree,
+  made no commit, and did not start A10, A11, A6, or A12.
+- **M15 A9 punch-list item 4 hand-back (Codex, 2026-07-16):** Expanded the
+  representative display-name API test to cover Form 1040 line 1a amount, line 1h
+  description and amount, a Form 8949 repeated-lot column, a Form 8949 total-row
+  column, and a worksheet step, while retaining identity, dependent-row, checkbox,
+  decision, and unsupported representatives. No green verification is claimed: the
+  real manifest still fails closed on the broader raw-label gap recorded under Open for
+  Architect. A9 remains [REOPENED] until that scope decision and the required focused,
+  M15-partition, ASCII, real-preflight, and full-suite floors are green.
+- **M15 A9 complete (Codex, 2026-07-16):** Added required `display_name`,
+  `official_locator`, and `review_prompt` projection fields, fail-closed raw-name
+  preflight, and primary UI consumption. Authored missing canonical labels for Form 1040
+  identity, Form 8949 columns, W-2 state/local boxes, 1099 state boxes, and the 25 raw
+  Form 2441 controls using text extracted from the local official PDF. The Form 1040
+  `f1_14` golden now headlines `First name and middle initial` and identifies a
+  filer-entered fact without exposing `f1_14` outside Advanced JSON. Focused schema/
+  manifest 10 passed, API 6 passed, browser 2 passed, and real preflight green; complete
+  suite floor follows before commit.
 - **M15 A8 complete (Codex, 2026-07-16):** Added a deterministic document-first API
   projection with official titles/pages, exact unit reconciliation, plain-English check
   groups, and honest cross-document fallback. Replaced the review-kind rail with document

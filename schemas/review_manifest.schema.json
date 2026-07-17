@@ -147,7 +147,7 @@
       "required": [
         "queue_id", "unit_id", "review_kind", "required", "object_refs",
         "official_location", "analog_placement", "semantic_class", "summary",
-        "expression", "coverage"
+        "expression", "coverage", "display_name", "display_name_provenance", "official_locator", "review_prompt"
       ],
       "properties": {
         "queue_id": {"type": "string", "pattern": "^[a-z0-9_]+$"},
@@ -159,6 +159,12 @@
         "analog_placement": {"oneOf": [{"$ref": "#/$defs/placement"}, {"type": "null"}]},
         "semantic_class": {"type": "string", "minLength": 1},
         "summary": {"type": "string", "minLength": 1},
+        "display_name": {"type": "string", "minLength": 1},
+        "display_name_provenance": {
+          "enum": ["authored_address", "identity_slot", "legacy_mined", "authored_object"]
+        },
+        "official_locator": {"type": "string", "minLength": 1},
+        "review_prompt": {"type": "string", "minLength": 1},
         "expression": {"$ref": "#/$defs/expression"},
         "source_refs": {"type": "array", "items": {"$ref": "#/$defs/source_ref"}},
         "citation_refs": {"type": "array", "items": {"type": "string"}},

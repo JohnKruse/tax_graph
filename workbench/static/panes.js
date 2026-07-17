@@ -44,8 +44,8 @@ export function renderOfficialPane(container, entry, requestedPage = null) {
     region.type = "button";
     region.className = `official-region policy-${unit.field_policy || unit.semantic_class}`;
     region.dataset.unitId = unit.unit_id;
-    region.dataset.label = unit.summary;
-    region.setAttribute("aria-label", unit.summary);
+    region.dataset.label = unit.display_name;
+    region.setAttribute("aria-label", unit.display_name);
     region.style.left = `${x0 / LETTER_WIDTH * 100}%`;
     region.style.top = `${y0 / LETTER_HEIGHT * 100}%`;
     region.style.width = `${Math.max(x1 - x0, 5) / LETTER_WIDTH * 100}%`;
@@ -73,14 +73,14 @@ export function renderAnalogPane(container, entry, selectedUnitId = null) {
     card.type = "button";
     card.className = "semantic-flow-card";
     card.dataset.unitId = unit.unit_id;
-    card.dataset.label = unit.summary;
-    card.setAttribute("aria-label", unit.summary);
+    card.dataset.label = unit.display_name;
+    card.setAttribute("aria-label", unit.display_name);
     const kind = document.createElement("span");
     kind.className = "semantic-kind";
     kind.textContent = unit.semantic_class.replaceAll("_", " ");
     const summary = document.createElement("span");
     summary.className = "semantic-summary";
-    summary.textContent = unit.summary;
+    summary.textContent = unit.display_name;
     card.append(kind, summary);
     container.append(card);
   }

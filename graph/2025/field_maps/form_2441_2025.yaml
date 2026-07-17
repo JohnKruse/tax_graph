@@ -113,7 +113,7 @@ frontier_fields: []
 schema_version: 2
 field_dispositions:
 - field_name: topmostSubform[0].Page1[0].f1_1[0]
-  label: f1_1
+  label: Name(s) shown on return
   population_policy: unsupported
   value_format: text
   reason: The official form_2441_2025 control 'f1_1' has no authored graph, filer-fact,
@@ -123,7 +123,7 @@ field_dispositions:
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page1[0].f1_1[0].
 - field_name: topmostSubform[0].Page1[0].f1_2[0]
-  label: f1_2
+  label: Your social security number
   population_policy: unsupported
   value_format: text
   reason: The official form_2441_2025 control 'f1_2' has no authored graph, filer-fact,
@@ -163,7 +163,7 @@ field_dispositions:
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page1[0].PartI[0].c1_3[0].
 - field_name: topmostSubform[0].Page1[0].PartITable[0].BodyRow1[0].f1_3[0]
-  label: f1_3
+  label: Care provider 1 - Name
   population_policy: unsupported
   value_format: text
   reason: The official form_2441_2025 control 'f1_3' has no authored graph, filer-fact,
@@ -173,7 +173,7 @@ field_dispositions:
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page1[0].PartITable[0].BodyRow1[0].f1_3[0].
 - field_name: topmostSubform[0].Page1[0].PartITable[0].BodyRow1[0].ColB[0].f1_4[0]
-  label: f1_4
+  label: Care provider 1 - Address
   population_policy: unsupported
   value_format: text
   reason: The official form_2441_2025 control 'f1_4' has no authored graph, filer-fact,
@@ -183,7 +183,7 @@ field_dispositions:
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page1[0].PartITable[0].BodyRow1[0].ColB[0].f1_4[0].
 - field_name: topmostSubform[0].Page1[0].PartITable[0].BodyRow1[0].f1_5[0]
-  label: f1_5
+  label: Care provider 1 - Identifying number
   population_policy: unsupported
   value_format: text
   reason: The official form_2441_2025 control 'f1_5' has no authored graph, filer-fact,
@@ -193,7 +193,7 @@ field_dispositions:
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page1[0].PartITable[0].BodyRow1[0].f1_5[0].
 - field_name: topmostSubform[0].Page1[0].PartITable[0].BodyRow1[0].ColD[0].c1_4[0]
-  label: c1_4
+  label: Care provider 1 - Household employee, Yes
   population_policy: unsupported
   value_format: checkbox
   reason: The official form_2441_2025 control 'c1_4' has no authored graph, filer-fact,
@@ -223,7 +223,7 @@ field_dispositions:
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page1[0].PartITable[0].BodyRow1[0].f1_6[0].
 - field_name: topmostSubform[0].Page1[0].PartITable[0].BodyRow2[0].f1_7[0]
-  label: f1_7
+  label: Care provider 2 - Name
   population_policy: unsupported
   value_format: text
   reason: The official form_2441_2025 control 'f1_7' has no authored graph, filer-fact,
@@ -233,7 +233,7 @@ field_dispositions:
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page1[0].PartITable[0].BodyRow2[0].f1_7[0].
 - field_name: topmostSubform[0].Page1[0].PartITable[0].BodyRow2[0].ColB[0].f1_8[0]
-  label: f1_8
+  label: Care provider 2 - Address
   population_policy: unsupported
   value_format: text
   reason: The official form_2441_2025 control 'f1_8' has no authored graph, filer-fact,
@@ -243,7 +243,7 @@ field_dispositions:
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page1[0].PartITable[0].BodyRow2[0].ColB[0].f1_8[0].
 - field_name: topmostSubform[0].Page1[0].PartITable[0].BodyRow2[0].f1_9[0]
-  label: f1_9
+  label: Care provider 2 - Identifying number
   population_policy: unsupported
   value_format: text
   reason: The official form_2441_2025 control 'f1_9' has no authored graph, filer-fact,
@@ -253,7 +253,7 @@ field_dispositions:
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page1[0].PartITable[0].BodyRow2[0].f1_9[0].
 - field_name: topmostSubform[0].Page1[0].PartITable[0].BodyRow2[0].ColD[0].c1_5[0]
-  label: c1_5
+  label: Care provider 2 - Household employee, Yes
   population_policy: unsupported
   value_format: checkbox
   reason: The official form_2441_2025 control 'c1_5' has no authored graph, filer-fact,
@@ -283,7 +283,7 @@ field_dispositions:
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page1[0].PartITable[0].BodyRow2[0].f1_10[0].
 - field_name: topmostSubform[0].Page1[0].PartITable[0].BodyRow3[0].f1_11[0]
-  label: f1_11
+  label: Care provider 3 - Name
   population_policy: unsupported
   value_format: text
   reason: The official form_2441_2025 control 'f1_11' has no authored graph, filer-fact,
@@ -293,7 +293,7 @@ field_dispositions:
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page1[0].PartITable[0].BodyRow3[0].f1_11[0].
 - field_name: topmostSubform[0].Page1[0].PartITable[0].BodyRow3[0].ColB[0].f1_12[0]
-  label: f1_12
+  label: Care provider 3 - Address
   population_policy: unsupported
   value_format: text
   reason: The official form_2441_2025 control 'f1_12' has no authored graph, filer-fact,
@@ -303,7 +303,7 @@ field_dispositions:
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page1[0].PartITable[0].BodyRow3[0].ColB[0].f1_12[0].
 - field_name: topmostSubform[0].Page1[0].PartITable[0].BodyRow3[0].f1_13[0]
-  label: f1_13
+  label: Care provider 3 - Identifying number
   population_policy: unsupported
   value_format: text
   reason: The official form_2441_2025 control 'f1_13' has no authored graph, filer-fact,
@@ -313,7 +313,7 @@ field_dispositions:
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page1[0].PartITable[0].BodyRow3[0].f1_13[0].
 - field_name: topmostSubform[0].Page1[0].PartITable[0].BodyRow3[0].ColD[0].c1_6[0]
-  label: c1_6
+  label: Care provider 3 - Household employee, Yes
   population_policy: unsupported
   value_format: checkbox
   reason: The official form_2441_2025 control 'c1_6' has no authored graph, filer-fact,
@@ -355,7 +355,7 @@ field_dispositions:
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page1[0].c1_7[0].
 - field_name: topmostSubform[0].Page1[0].Table_Line2[0].Row1[0].f1_15[0]
-  label: f1_15
+  label: Qualifying person 1 - First name
   population_policy: unsupported
   value_format: text
   repeatable:
@@ -370,7 +370,7 @@ field_dispositions:
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page1[0].Table_Line2[0].Row1[0].f1_15[0].
 - field_name: topmostSubform[0].Page1[0].Table_Line2[0].Row1[0].f1_16[0]
-  label: f1_16
+  label: Qualifying person 1 - Last name
   population_policy: unsupported
   value_format: text
   repeatable:
@@ -385,7 +385,7 @@ field_dispositions:
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page1[0].Table_Line2[0].Row1[0].f1_16[0].
 - field_name: topmostSubform[0].Page1[0].Table_Line2[0].Row1[0].f1_17[0]
-  label: f1_17
+  label: Qualifying person 1 - Social security number
   population_policy: unsupported
   value_format: text
   repeatable:
@@ -400,7 +400,7 @@ field_dispositions:
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page1[0].Table_Line2[0].Row1[0].f1_17[0].
 - field_name: topmostSubform[0].Page1[0].Table_Line2[0].Row1[0].c1_8[0]
-  label: c1_8
+  label: Qualifying person 1 - Over age 12 and disabled
   population_policy: unsupported
   value_format: checkbox
   repeatable:
@@ -415,7 +415,7 @@ field_dispositions:
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page1[0].Table_Line2[0].Row1[0].c1_8[0].
 - field_name: topmostSubform[0].Page1[0].Table_Line2[0].Row1[0].f1_18[0]
-  label: f1_18
+  label: Qualifying person 1 - Qualified expenses
   population_policy: unsupported
   value_format: text
   repeatable:
@@ -430,7 +430,7 @@ field_dispositions:
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page1[0].Table_Line2[0].Row1[0].f1_18[0].
 - field_name: topmostSubform[0].Page1[0].Table_Line2[0].Row2[0].f1_19[0]
-  label: f1_19
+  label: Qualifying person 2 - First name
   population_policy: unsupported
   value_format: text
   repeatable:
@@ -445,7 +445,7 @@ field_dispositions:
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page1[0].Table_Line2[0].Row2[0].f1_19[0].
 - field_name: topmostSubform[0].Page1[0].Table_Line2[0].Row2[0].f1_20[0]
-  label: f1_20
+  label: Qualifying person 2 - Last name
   population_policy: unsupported
   value_format: text
   repeatable:
@@ -460,7 +460,7 @@ field_dispositions:
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page1[0].Table_Line2[0].Row2[0].f1_20[0].
 - field_name: topmostSubform[0].Page1[0].Table_Line2[0].Row2[0].f1_21[0]
-  label: f1_21
+  label: Qualifying person 2 - Social security number
   population_policy: unsupported
   value_format: text
   repeatable:
@@ -475,7 +475,7 @@ field_dispositions:
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page1[0].Table_Line2[0].Row2[0].f1_21[0].
 - field_name: topmostSubform[0].Page1[0].Table_Line2[0].Row2[0].c1_9[0]
-  label: c1_9
+  label: Qualifying person 2 - Over age 12 and disabled
   population_policy: unsupported
   value_format: checkbox
   repeatable:
@@ -490,7 +490,7 @@ field_dispositions:
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page1[0].Table_Line2[0].Row2[0].c1_9[0].
 - field_name: topmostSubform[0].Page1[0].Table_Line2[0].Row2[0].f1_22[0]
-  label: f1_22
+  label: Qualifying person 2 - Qualified expenses
   population_policy: unsupported
   value_format: text
   repeatable:
@@ -794,7 +794,7 @@ field_dispositions:
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page2[0].f2_10[0].
 - field_name: topmostSubform[0].Page2[0].c2_1[0]
-  label: c2_1
+  label: Line 22 - Yes, sole proprietorship or partnership amount
   population_policy: unsupported
   value_format: checkbox
   reason: The official form_2441_2025 control 'c2_1' has no authored graph, filer-fact,

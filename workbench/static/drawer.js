@@ -65,7 +65,10 @@ async function renderSelection(drawer, unit) {
   drawer.replaceChildren();
   const heading = document.createElement("div");
   heading.className = "drawer-heading";
-  heading.innerHTML = `<div><span class="eyebrow">Selected unit</span><h2>${escapeHtml(unit.summary)}</h2></div><span class="drawer-class">${escapeHtml(unit.semantic_class.replaceAll("_", " "))}</span>`;
+  const provisional = unit.display_name_provenance === "legacy_mined"
+    ? '<p class="legacy-label-warning"><strong>Provisional mined label:</strong> verify against the official form.</p>'
+    : "";
+  heading.innerHTML = `<div><span class="eyebrow">Selected field</span><h2>${escapeHtml(unit.display_name)}</h2>${provisional}<p>${escapeHtml(unit.review_prompt)}</p><p><strong>Official locator:</strong> ${escapeHtml(unit.official_locator)}</p></div><span class="drawer-class">${escapeHtml(unit.semantic_class.replaceAll("_", " "))}</span>`;
   const headingTitle = heading.querySelector("h2");
   headingTitle.tabIndex = -1;
   const tablist = document.createElement("div");

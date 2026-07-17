@@ -390,7 +390,7 @@ addresses:
     token: '16'
   - kind: control
     token: f_34
-  printed_label: f1_34
+  printed_label: Box 16 - State wages, tips, etc.
   aliases: []
   control_role: text
   status: pending_review
@@ -453,7 +453,7 @@ addresses:
     token: '17'
   - kind: control
     token: f_36
-  printed_label: f1_36
+  printed_label: Box 17 - State income tax
   aliases: []
   control_role: text
   status: pending_review
@@ -516,7 +516,7 @@ addresses:
     token: '18'
   - kind: control
     token: f_38
-  printed_label: f1_38
+  printed_label: Box 18 - Local wages, tips, etc.
   aliases: []
   control_role: text
   status: pending_review
@@ -579,7 +579,7 @@ addresses:
     token: '19'
   - kind: control
     token: f_40
-  printed_label: f1_40
+  printed_label: Box 19 - Local income tax
   aliases: []
   control_role: text
   status: pending_review

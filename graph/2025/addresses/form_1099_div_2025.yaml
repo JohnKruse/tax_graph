@@ -91,7 +91,7 @@ addresses:
     token: '14'
   - kind: control
     token: f_27
-  printed_label: f1_27
+  printed_label: Box 14 - State (first row)
   aliases: []
   control_role: text
   status: pending_review
@@ -113,7 +113,7 @@ addresses:
     token: '14'
   - kind: control
     token: f_28
-  printed_label: f1_28
+  printed_label: Box 14 - State (second row)
   aliases: []
   control_role: text
   status: pending_review
@@ -154,7 +154,7 @@ addresses:
     token: '15'
   - kind: control
     token: f_29
-  printed_label: f1_29
+  printed_label: Box 15 - State identification number (first row)
   aliases: []
   control_role: text
   status: pending_review
@@ -176,7 +176,7 @@ addresses:
     token: '15'
   - kind: control
     token: f_30
-  printed_label: f1_30
+  printed_label: Box 15 - State identification number (second row)
   aliases: []
   control_role: text
   status: pending_review

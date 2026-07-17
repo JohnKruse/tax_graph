@@ -551,7 +551,81 @@ rejected. Do not commit it wholesale and do not discard it wholesale.
   document/check counts reconcile exactly with required review units; navigation restores the last
   page and selected field.
 
-#### A9 - Canonical display-name and review-prompt contract
+#### A9 - Canonical display-name and review-prompt contract [REOPENED 2026-07-16 - close the Architect punch list and scope ruling below before A10]
+
+**Scope ruling (Architect, 2026-07-16) - label inheritance through authored bindings,
+registry extension for missing official structure.** The 209 raw-label dispositions are
+NOT resolved by hand-authoring 209 disposition labels, and inheritance alone cannot cover
+them either (most have no address to inherit from). The pinned contract:
+
+1. **Extend the registries where official structure is missing.** Official columns and
+   controls that exist on the form but not in the address registry (e.g. Form 8949
+   columns a/b/c/f - description, dates acquired/sold, codes - and the page-header
+   name/SSN controls) get canonical addresses with official printed labels, authored once
+   at the address layer. This is registry extension within the 15-surface corpus, not new
+   tax logic; population policies stay as already disposed.
+2. **Physical repeats inherit through authored widget bindings.** Every physical widget
+   instance of a template column binds to its row-template/column address via the existing
+   deterministic campaign pipeline (the 96 existing 8949 amount bindings are the model).
+   Display names resolve field_name -> widget binding -> address `printed_label`. A
+   binding is an authored artifact, so nothing is manufactured from ids; missing or
+   ambiguous bindings fail closed.
+3. **Resolution order for field controls** (extends the pinned A9 order, still
+   fail-closed): bound-address `printed_label` -> authored disposition label ->
+   identity slot -> official ref. Disposition-layer labels remain the authoring point
+   ONLY for explicitly exempt controls that legitimately have no canonical address;
+   keep that set small and justified.
+4. **Repeats stay unique.** The `official_locator` of a physically repeated control must
+   carry its deterministic physical qualifier (part/row slot, e.g. `... - Part I row 3`)
+   so the uniqueness preflight holds without weakening.
+5. **No embedded raw names.** Re-author the total-row printed labels that currently embed
+   raw field names (`Line 3 - 3 (if Box C or Box I above is checked) - f1_92`). Add a
+   contains-a-raw-field-name-token predicate to `workbench/reviewer_language.py` and use
+   it in preflight so a label that merely EMBEDS `f1_92`-style tokens also fails, not only
+   one that equals them.
+6. **Commit shape.** A9 may close as two commits if size demands: (a) the projection/
+   inheritance contract + preflight strengthening, (b) the registry/binding authoring
+   campaign across the 13 field maps. Both carry the A9 marker and each meets the full
+   step floor.
+
+**Scope ruling AMENDMENT v2 (Architect, 2026-07-16) - after the Worker's 712-control
+survey.** The Architect independently re-verified the surface: disposition `label`
+fields across all 16 field maps are legacy geometry-mined text (dot leaders, adjacent
+prose fragments, trailing line numbers, embedded raw tokens - 1,547 flagged repo-wide),
+and token-stripping does NOT yield usable labels. The v1 principles stand (embedded-token
+predicate, author-once at the address layer, inheritance through authored bindings); the
+method and sequencing are amended:
+
+1. **Disposition labels are demoted to evidence.** Remove the disposition `label` from
+   the field-control display-name resolution order as an identity source. Final order:
+   bound-address `printed_label` -> authored identity slot -> FAIL. Do not hand-clean
+   1,547 legacy labels; stop consuming them for identity.
+2. **Interim legacy path with visible provenance (the ratchet).** Until the campaign
+   completes, a field control without a bound address may fall back to its legacy
+   disposition label, but the unit must carry `display_name_provenance: legacy_mined`,
+   the UI must not present a legacy label as authored meaning (mark it visibly
+   provisional), and preflight must count and report legacy units per document. The
+   strict embedded-token predicate applies immediately to AUTHORED sources; it extends
+   to ALL visible units only at the final ratchet commit (A9z).
+3. **Campaign method (pinned source of truth).** Group AcroForm widgets by container
+   structure (copy pages, row containers, box containers) to separate template controls
+   from physical repeats; the survey proves the collapse (Form 8949: 202 flagged -> 14
+   templates; W-2 and 1099 volume is copy-page repeats). Author ONE `printed_label` per
+   template control at the address layer, taken from the official printed caption/
+   heading/line text of the local acquired PDF, cleaned (no dot leaders, no trailing
+   line numbers, no tokens). LLM assistance may PROPOSE labels; deterministic validators
+   and the fail-closed boundary decide; all new registry entries stay `pending_review`.
+   Generate widget bindings for every physical repeat with copy/row/slot qualifiers
+   feeding `official_locator`.
+4. **Commit shape (supersedes v1 item 6).** A9 closes as a ratcheted sequence, every
+   commit meeting the full floor with real preflight green: **A9a** mechanism +
+   provenance marking + per-document legacy counting; **A9b..A9x** one commit per
+   document (or coherent group), each strictly reducing the reported legacy count;
+   **A9z** flip the strict predicate over all visible units, remove the legacy path,
+   zero raw/legacy display names, mark A9 [DONE].
+5. **Exemptions stay small and authored.** A control whose official identity cannot be
+   established from the local PDF gets an explicitly authored exemption label + specific
+   reason, listed in the handoff at A9z - never a generated or guessed label.
 
 - Add required reviewer-facing `display_name`, `official_locator`, and `review_prompt` fields to the
   review-unit projection. Resolve them in this order: authored canonical-address metadata, authored

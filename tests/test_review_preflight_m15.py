@@ -27,9 +27,14 @@ def test_real_2025_preflight_passes_with_all_coverage_dimensions() -> None:
 
     assert report["entries"] > 0
     assert report["units"] >= report["entries"]
-    assert set(report) == {"entries", "units", "by_kind", "by_document", "by_object", "by_geometry"}
+    assert set(report) == {
+        "entries", "units", "by_kind", "by_document", "by_object", "by_geometry",
+        "by_display_name_provenance", "legacy_mined_by_document",
+    }
     assert report["by_geometry"]["located"] > 0
     assert report["by_geometry"]["unlocated"] > 0
+    assert report["by_display_name_provenance"]["legacy_mined"] > 0
+    assert sum(report["legacy_mined_by_document"].values()) == report["by_display_name_provenance"]["legacy_mined"]
 
 
 @pytest.mark.m15
@@ -75,6 +80,34 @@ def test_seeded_bad_artifacts_fail_every_section_four_condition_actionably(
     citation.pop("locator", None)
     graph_objects["citations"] = tuple(citations)
     _assert_code(original_manifest, _with_graph(original_bundle, graph_objects), "citation_unresolved")
+
+    manifest = copy.deepcopy(original_manifest)
+    located_units = [
+        unit
+        for entry in manifest["entries"]
+        for unit in entry["units"]
+        if unit.get("official_location")
+        and unit.get("address_id")
+        and unit.get("field_name")
+        and unit.get("display_name_provenance") != "legacy_mined"
+    ]
+    first = located_units[0]
+    second = next(
+        unit for unit in located_units
+        if unit["official_location"]["document_id"] == first["official_location"]["document_id"]
+        and unit.get("address_id") != first.get("address_id")
+    )
+    second["display_name"] = first["display_name"]
+    second["official_locator"] = first["official_locator"]
+    _assert_code(manifest, original_bundle, "ambiguous_display_name")
+
+    manifest = copy.deepcopy(original_manifest)
+    authored = next(
+        unit for entry in manifest["entries"] for unit in entry["units"]
+        if unit.get("display_name_provenance") == "authored_address"
+    )
+    authored["display_name"] = "Official caption - f1_92"
+    _assert_code(manifest, original_bundle, "invalid_display_name")
 
 
 def _with_graph(bundle: ArtifactBundle, objects: dict[str, tuple[dict[str, object], ...]]) -> ArtifactBundle:

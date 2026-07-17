@@ -46,6 +46,10 @@ def _unit() -> dict[str, object]:
         },
         "semantic_class": "copy",
         "summary": "Copied from Schedule 1 line 10",
+        "display_name": "Capital gain or loss",
+        "display_name_provenance": "authored_address",
+        "official_locator": "Form 1040 line 7",
+        "review_prompt": "Confirm the copied source and destination field.",
         "expression": {
             "kind": "copy",
             "source": {

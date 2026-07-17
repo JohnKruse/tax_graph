@@ -12,6 +12,7 @@ import yaml
 
 from workbench.artifacts import ArtifactBundle, GRAPH_OBJECT_KINDS, load_artifact_bundle
 from workbench.manifest import ManifestError, build_manifest
+from workbench.reviewer_language import contains_raw_field_name_token, is_raw_field_name
 from workbench.semantics import SUPPORTED_OPERATIONS, SemanticFormatError
 
 
@@ -142,9 +143,33 @@ def preflight_manifest(manifest: dict[str, Any], bundle: ArtifactBundle) -> dict
             issues.extend(_field_map_issues(entry, bundle.root))
 
     pdf_ids = {pdf.path.stem for pdf in bundle.pdfs}
+    reviewer_identities: dict[tuple[str, str, str], tuple[str, str]] = {}
     for queue_id, entry in sorted(manifest_entries.items()):
         citation_refs: dict[str, dict[str, Any]] = {}
         for unit in entry.get("units", []) or []:
+            display_name = str(unit.get("display_name") or "").strip()
+            field_name = str(unit.get("field_name") or "").strip()
+            provenance = str(unit.get("display_name_provenance") or "")
+            unsafe_authored = provenance != "legacy_mined" and (
+                is_raw_field_name(display_name) or contains_raw_field_name_token(display_name)
+            )
+            if not display_name or unsafe_authored or (field_name and display_name == field_name and provenance != "legacy_mined"):
+                issues.append(PreflightIssue(
+                    "invalid_display_name", "visible unit has a blank or raw PDF display name", queue_id
+                ))
+            if field_name and provenance != "legacy_mined":
+                location = unit.get("official_location") or {}
+                document_id = str(location.get("document_id") or "unlocated")
+                official_locator = str(unit.get("official_locator") or "").strip()
+                identity_key = (document_id, display_name, official_locator)
+                unit_identity = (str(unit.get("address_id") or ""), str(unit.get("unit_id") or ""))
+                previous = reviewer_identities.setdefault(identity_key, unit_identity)
+                if previous != unit_identity:
+                    issues.append(PreflightIssue(
+                        "ambiguous_display_name",
+                        f"reviewer identity {display_name!r} at {official_locator!r} is not unique in {document_id}",
+                        queue_id,
+                    ))
             for value in unit.get("citation_refs", []) or []:
                 citation_refs.setdefault(str(value), {"object_type": "citation", "object_id": str(value)})
             for ref in unit.get("object_refs", []) or []:
@@ -177,15 +202,21 @@ def coverage_report(manifest: dict[str, Any]) -> dict[str, Any]:
     documents: Counter[str] = Counter()
     objects: Counter[str] = Counter()
     geometry: Counter[str] = Counter()
+    provenance: Counter[str] = Counter()
+    legacy_by_document: Counter[str] = Counter()
     total = 0
     for entry in manifest.get("entries", []) or []:
         for unit in entry.get("units", []) or []:
             total += 1
+            source = str(unit.get("display_name_provenance") or "unknown")
+            provenance[source] += 1
             kinds[str(unit.get("review_kind", "unknown"))] += 1
             location = unit.get("official_location")
             if isinstance(location, dict):
                 geometry["located"] += 1
                 documents[str(location.get("document_id", "unknown"))] += 1
+                if source == "legacy_mined":
+                    legacy_by_document[str(location.get("document_id", "unknown"))] += 1
             else:
                 geometry["unlocated"] += 1
                 documents["unlocated"] += 1
@@ -199,6 +230,8 @@ def coverage_report(manifest: dict[str, Any]) -> dict[str, Any]:
         "by_document": dict(sorted(documents.items())),
         "by_object": dict(sorted(objects.items())),
         "by_geometry": dict(sorted(geometry.items())),
+        "by_display_name_provenance": dict(sorted(provenance.items())),
+        "legacy_mined_by_document": dict(sorted(legacy_by_document.items())),
     }
 
 

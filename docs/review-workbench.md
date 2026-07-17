@@ -172,6 +172,12 @@ empty groups are omitted. Queue ids and review kinds remain internal provenance.
 group can span several authoritative queue entries, but every projected unit appears
 exactly once and counts reconcile to the queue.
 
+Every review unit carries required `display_name`, `official_locator`, and
+`review_prompt` fields. Names resolve from authored canonical-address/control metadata;
+raw AcroForm names and serialized ids are never display-name fallbacks. Preflight rejects
+blank or raw field names. Population-policy prompts distinguish filer input, import, copy,
+calculation, decision, intentional blank, and unsupported behavior.
+
 1. Render form pages as images (PyMuPDF at build time, or pdf.js in-browser - open).
 2. Overlay low-opacity policy outlines. Persistent labels never cover IRS text.
 3. Hover or focus a control to show its derived label outside the page. Click to pin one
@@ -269,6 +275,11 @@ Preflight fails closed when pending scope, object identity, geometry identity,
 semantic formatting, promotion scope, field-map category coverage, or citation
 evidence is incomplete or ambiguous. A successful run reports unit coverage by
 review kind, source document, object type, and located/unlocated geometry.
+
+During the A9 address-authoring ratchet, legacy geometry-mined labels carry explicit
+`legacy_mined` provenance and appear as provisional. Preflight reports their count per
+document. Authored address labels are checked immediately for raw AcroForm tokens; the
+final A9 gate removes the legacy path and requires a zero count.
 
 Start the local API after preflight succeeds:
 

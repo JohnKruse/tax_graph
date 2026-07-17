@@ -406,7 +406,7 @@ field_dispositions:
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page1[0].f1_03[0].
 - field_name: topmostSubform[0].Page1[0].c1_1[0]
-  label: c1_1
+  label: Presidential election campaign - You
   population_policy: unsupported
   value_format: checkbox
   reason: The official form_1040_2025 control 'c1_1' has no authored graph, filer-fact,
@@ -507,7 +507,7 @@ field_dispositions:
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page1[0].f1_10[0].
 - field_name: topmostSubform[0].Page1[0].c1_4[0]
-  label: c1_4
+  label: Presidential election campaign - Spouse
   population_policy: unsupported
   value_format: checkbox
   reason: The official form_1040_2025 control 'c1_4' has no authored graph, filer-fact,
@@ -613,7 +613,7 @@ field_dispositions:
   identity_slot: zip_code
   address_id: 2025/document=form_1040/section=identity/control=zip_code
 - field_name: topmostSubform[0].Page1[0].Address_ReadOrder[0].f1_25[0]
-  label: f1_25
+  label: Foreign province, state, or county
   population_policy: unsupported
   value_format: text
   reason: The official form_1040_2025 control 'f1_25' has no authored graph, filer-fact,
@@ -623,7 +623,7 @@ field_dispositions:
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page1[0].Address_ReadOrder[0].f1_25[0].
 - field_name: topmostSubform[0].Page1[0].Address_ReadOrder[0].f1_26[0]
-  label: f1_26
+  label: Foreign postal code
   population_policy: unsupported
   value_format: text
   reason: The official form_1040_2025 control 'f1_26' has no authored graph, filer-fact,
@@ -633,7 +633,7 @@ field_dispositions:
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page1[0].Address_ReadOrder[0].f1_26[0].
 - field_name: topmostSubform[0].Page1[0].Address_ReadOrder[0].f1_27[0]
-  label: f1_27
+  label: Foreign country name
   population_policy: unsupported
   value_format: text
   reason: The official form_1040_2025 control 'f1_27' has no authored graph, filer-fact,
@@ -653,7 +653,7 @@ field_dispositions:
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page1[0].c1_5[0].
 - field_name: topmostSubform[0].Page1[0].c1_6[0]
-  label: c1_6
+  label: Digital assets - No
   population_policy: unsupported
   value_format: checkbox
   reason: The official form_1040_2025 control 'c1_6' has no authored graph, filer-fact,
@@ -1219,7 +1219,7 @@ field_dispositions:
   runtime_fact_ref: dependents.other_dependent_credit
   address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=other_dependent_credit
 - field_name: topmostSubform[0].Page1[0].c1_32[0]
-  label: c1_32
+  label: More than four dependents
   population_policy: unsupported
   value_format: checkbox
   reason: The official form_1040_2025 control 'c1_32' has no authored graph, filer-fact,
@@ -2176,7 +2176,7 @@ field_dispositions:
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page2[0].f2_39[0].
 - field_name: topmostSubform[0].Page2[0].f2_40[0]
-  label: f2_40
+  label: Paid preparer name
   population_policy: unsupported
   value_format: text
   reason: The official form_1040_2025 control 'f2_40' has no authored graph, filer-fact,

@@ -255,7 +255,7 @@ addresses:
     token: '14'
   - kind: control
     token: f_22
-  printed_label: f1_22
+  printed_label: Box 14 - State
   aliases: []
   control_role: text
   status: pending_review

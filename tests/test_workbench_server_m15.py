@@ -78,6 +78,52 @@ def test_entry_api_returns_only_the_requested_scoped_units(client) -> None:
 
 
 @pytest.mark.m15
+def test_form_1040_first_name_has_canonical_reviewer_language(client) -> None:
+    payload = client.get("/api/entries/field_map_review_form_1040_2025").get_json()
+    unit = next(
+        item for item in payload["entry"]["units"]
+        if item.get("field_name") == "topmostSubform[0].Page1[0].f1_14[0]"
+    )
+
+    assert unit["display_name"] == "First name and middle initial"
+    assert unit["population_policy"] == "user_entered"
+    assert "filer-entered fact" in unit["review_prompt"]
+    assert "f1_14" not in unit["display_name"]
+    assert unit["display_name_provenance"] == "authored_address"
+    assert "f1_14" not in unit["official_locator"]
+
+
+@pytest.mark.m15
+def test_representative_units_never_use_raw_field_names_as_display_names(client) -> None:
+    manifest = client.application.config["WORKBENCH_MANIFEST"]
+    units = [unit for entry in manifest["entries"] for unit in entry["units"]]
+    representatives = [
+        next(unit for unit in units if unit.get("identity_slot") == "taxpayer_first_name"),
+        next(unit for unit in units if unit.get("address_id") == "2025/document=form_1040/line=1a/control=amount"),
+        next(unit for unit in units if unit.get("address_id") == "2025/document=form_1040/line=1h/control=description"),
+        next(unit for unit in units if unit.get("address_id") == "2025/document=form_1040/line=1h/control=amount"),
+        next(
+            unit for unit in units
+            if unit.get("address_id")
+            == "2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=d"
+        ),
+        next(
+            unit for unit in units
+            if unit.get("address_id")
+            == "2025/document=form_8949/table=part_i_line_2/row_template=total/column=h"
+        ),
+        next(unit for unit in units if unit.get("repeatable", {}).get("row_slot") == 1),
+        next(unit for unit in units if unit.get("population_policy") == "decision_required"),
+        next(unit for unit in units if "/worksheet_step=" in unit.get("address_id", "")),
+        next(unit for unit in units if unit.get("population_policy") == "unsupported"),
+    ]
+    for unit in representatives:
+        assert unit["display_name"]
+        assert unit["display_name"] != unit.get("field_name")
+        assert "[0]" not in unit["display_name"]
+
+
+@pytest.mark.m15
 def test_read_apis_do_not_mutate_authoritative_artifacts(client) -> None:
     paths = [
         ROOT / "build" / "tax_graph_2025.sqlite",

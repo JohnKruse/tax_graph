@@ -102,6 +102,10 @@ def _write_manifest(root: Path) -> str:
                         "analog_placement": None,
                         "semantic_class": "input",
                         "summary": "Review node",
+                        "display_name": "Review node",
+                        "display_name_provenance": "authored_object",
+                        "official_locator": "Graph node node_a",
+                        "review_prompt": "Confirm this authored graph input.",
                         "expression": {
                             "kind": "reference",
                             "ref": {"object_type": "node", "object_id": "node_a"},

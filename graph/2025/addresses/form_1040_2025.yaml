@@ -2488,7 +2488,7 @@ addresses:
     token: identity
   - kind: control
     token: city
-  printed_label: f1_22
+  printed_label: City, town, or post office
   aliases: []
   control_role: text
   status: provisional
@@ -2509,7 +2509,7 @@ addresses:
     token: identity
   - kind: control
     token: spouse_first_name
-  printed_label: f1_17
+  printed_label: If joint return, spouse's first name and middle initial
   aliases: []
   control_role: text
   status: provisional
@@ -2530,7 +2530,7 @@ addresses:
     token: identity
   - kind: control
     token: spouse_last_name
-  printed_label: f1_18
+  printed_label: If joint return, spouse's last name
   aliases: []
   control_role: text
   status: provisional
@@ -2551,7 +2551,7 @@ addresses:
     token: identity
   - kind: control
     token: spouse_ssn
-  printed_label: f1_19
+  printed_label: Spouse's social security number
   aliases: []
   control_role: text
   status: provisional
@@ -2572,7 +2572,7 @@ addresses:
     token: identity
   - kind: control
     token: state
-  printed_label: f1_23
+  printed_label: State
   aliases: []
   control_role: text
   status: provisional
@@ -2593,7 +2593,7 @@ addresses:
     token: identity
   - kind: control
     token: taxpayer_first_name
-  printed_label: f1_14
+  printed_label: First name and middle initial
   aliases: []
   control_role: text
   status: provisional
@@ -2614,7 +2614,7 @@ addresses:
     token: identity
   - kind: control
     token: taxpayer_last_name
-  printed_label: f1_15
+  printed_label: Last name
   aliases: []
   control_role: text
   status: provisional
@@ -2635,7 +2635,7 @@ addresses:
     token: identity
   - kind: control
     token: taxpayer_ssn
-  printed_label: f1_16
+  printed_label: Your social security number
   aliases: []
   control_role: text
   status: provisional
@@ -2656,7 +2656,7 @@ addresses:
     token: identity
   - kind: control
     token: zip_code
-  printed_label: f1_24
+  printed_label: ZIP code
   aliases: []
   control_role: text
   status: provisional

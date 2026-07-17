@@ -155,7 +155,7 @@ addresses:
     token: transaction
   - kind: column
     token: d
-  printed_label: f1_06
+  printed_label: Part I transaction proceeds (column d)
   aliases: []
   control_role: amount
   status: pending_review
@@ -179,7 +179,7 @@ addresses:
     token: transaction
   - kind: column
     token: e
-  printed_label: f1_07
+  printed_label: Part I transaction cost or other basis (column e)
   aliases: []
   control_role: amount
   status: pending_review
@@ -203,7 +203,7 @@ addresses:
     token: transaction
   - kind: column
     token: g
-  printed_label: f1_09
+  printed_label: Part I transaction adjustment amount (column g)
   aliases: []
   control_role: amount
   status: pending_review
@@ -227,7 +227,7 @@ addresses:
     token: transaction
   - kind: column
     token: h
-  printed_label: f1_10
+  printed_label: Part I transaction gain or loss (column h)
   aliases: []
   control_role: amount
   status: pending_review
@@ -427,7 +427,7 @@ addresses:
     token: transaction
   - kind: column
     token: d
-  printed_label: f2_06
+  printed_label: Part II transaction proceeds (column d)
   aliases: []
   control_role: amount
   status: pending_review
@@ -451,7 +451,7 @@ addresses:
     token: transaction
   - kind: column
     token: e
-  printed_label: f2_07
+  printed_label: Part II transaction cost or other basis (column e)
   aliases: []
   control_role: amount
   status: pending_review
@@ -475,7 +475,7 @@ addresses:
     token: transaction
   - kind: column
     token: g
-  printed_label: f2_09
+  printed_label: Part II transaction adjustment amount (column g)
   aliases: []
   control_role: amount
   status: pending_review
@@ -499,7 +499,7 @@ addresses:
     token: transaction
   - kind: column
     token: h
-  printed_label: f2_10
+  printed_label: Part II transaction gain or loss (column h)
   aliases: []
   control_role: amount
   status: pending_review

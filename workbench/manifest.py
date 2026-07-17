@@ -13,6 +13,7 @@ import yaml
 
 from workbench.artifacts import ArtifactBundle, GRAPH_OBJECT_KINDS, load_artifact_bundle
 from workbench.schema import validate_review_manifest
+from workbench.reviewer_language import contains_raw_field_name_token, is_raw_field_name
 from workbench.semantics import FormattedSemantics, format_scope_semantics
 
 
@@ -199,7 +200,21 @@ def _unit(
     review_kind = str(queue_entry.get("kind", "object"))
     citations = sorted(set(_citation_refs(object_data)) | set(_expression_citations(semantics)))
     address_id = str(object_data.get("address_id", "")) if isinstance(object_data, dict) else ""
-    address_ref = {"object_type": "address", "object_id": address_id, "display_label": str(object_data.get("label") or address_id)} if address_id else None
+    if object_type == "node" and not address_id:
+        binding = graph_index.get(("node_binding", object_id))
+        if binding:
+            address_id = str(binding["address_id"])
+    if object_type == "field_control" and isinstance(object_data, dict):
+        field_name = str(object_data.get("field_name") or "")
+        document_id = str(queue_entry.get("document_id") or "")
+        binding = graph_index.get(("widget_binding", f"{document_id}\0{field_name}"))
+        if binding:
+            address_id = str(binding["address_id"])
+    address_data = graph_index.get(("address", address_id)) if address_id else None
+    address_ref = {"object_type": "address", "object_id": address_id, "display_label": str((address_data or {}).get("printed_label") or address_id)} if address_id else None
+    display_name, display_name_provenance, official_locator, review_prompt = _review_identity(
+        queue_entry, object_type, object_data, address_data, semantics, location
+    )
     unit: dict[str, Any] = {
         "queue_id": str(queue_entry.get("queue_id", "")),
         "unit_id": unit_id,
@@ -209,7 +224,15 @@ def _unit(
         "official_location": location,
         "analog_placement": None,
         "semantic_class": semantics.semantic_class if semantics else _semantic_class(review_kind, scope_ref, object_data),
-        "summary": semantics.summary if semantics else _unit_summary(queue_entry, object_type, object_data),
+        "summary": (
+            display_name
+            if object_type == "field_control"
+            else (semantics.summary if semantics else _unit_summary(queue_entry, object_type, object_data))
+        ),
+        "display_name": display_name,
+        "display_name_provenance": display_name_provenance,
+        "official_locator": official_locator,
+        "review_prompt": review_prompt,
         "expression": semantics.expression if semantics else {"kind": "reference", "ref": address_ref or object_ref},
         "coverage": {"state": "pending", "required_for_confirm": required},
     }
@@ -245,6 +268,105 @@ def _unit_summary(
     if object_type == "field_control" and isinstance(object_data, dict):
         return str(object_data.get("label") or object_data.get("field_name") or "Official form control")
     return str(queue_entry.get("summary", "Review scoped artifacts."))
+
+
+def _review_identity(
+    queue_entry: dict[str, Any],
+    object_type: str,
+    object_data: dict[str, Any] | None,
+    address_data: dict[str, Any] | None,
+    semantics: FormattedSemantics | None,
+    location: dict[str, Any] | None,
+) -> tuple[str, str, str, str]:
+    """Resolve authored reviewer language without deriving names from ids."""
+    if object_type == "field_control":
+        authored_label = str((address_data or {}).get("printed_label") or "").strip()
+        identity_slot = str((object_data or {}).get("identity_slot") or "").strip()
+        legacy_label = str((object_data or {}).get("label") or "").strip()
+        authored_safe = authored_label and not (
+            is_raw_field_name(authored_label) or contains_raw_field_name_token(authored_label)
+        )
+        if authored_safe:
+            display_name, provenance = authored_label, "authored_address"
+        elif authored_label and legacy_label:
+            display_name, provenance = legacy_label, "legacy_mined"
+        elif authored_label:
+            display_name, provenance = authored_label, "legacy_mined"
+        elif identity_slot:
+            display_name, provenance = identity_slot, "identity_slot"
+        elif legacy_label:
+            display_name, provenance = legacy_label, "legacy_mined"
+        else:
+            raise ManifestError("visible field_control has no reviewer-facing display name")
+    else:
+        candidates = [
+            (address_data or {}).get("printed_label"),
+            (object_data or {}).get("label"),
+            (object_data or {}).get("title"),
+            (object_data or {}).get("question"),
+            (object_data or {}).get("description"),
+            semantics.summary if semantics else None,
+            queue_entry.get("summary"),
+        ]
+        display_name = next(
+            (
+                str(value).strip()
+                for value in candidates
+                if value
+                and not is_raw_field_name(str(value))
+                and not contains_raw_field_name_token(str(value))
+            ),
+            "",
+        )
+        provenance = "authored_object"
+        if not display_name:
+            raise ManifestError(f"visible {object_type} has no authored reviewer-facing display name")
+    official_ref = str((address_data or {}).get("official_ref") or "").strip()
+    qualifier = _physical_qualifier(object_data, location)
+    if official_ref:
+        official_locator = f"{display_name} - {official_ref}"
+    elif isinstance(location, dict):
+        official_locator = f"{display_name} - page {location['page']}"
+    else:
+        official_locator = display_name
+    if qualifier:
+        official_locator = f"{official_locator} - {qualifier}"
+    policy = str((object_data or {}).get("population_policy") or "")
+    prompt = {
+        "user_entered": "Confirm the expected filer-entered fact and format.",
+        "imported": "Confirm the imported source and destination field.",
+        "copied": "Confirm the copied source and destination field.",
+        "computed": "Confirm the calculation, sources, and written result.",
+        "decision_required": "Confirm the decision options, citation, and escape hatch.",
+        "intentionally_blank": "Confirm why this control is intentionally left blank.",
+        "unsupported": "Confirm the missing capability and downstream consequence.",
+    }.get(policy, "Confirm that the scoped evidence supports this review item.")
+    return display_name, provenance, official_locator, prompt
+
+
+def _physical_qualifier(
+    object_data: dict[str, Any] | None, location: dict[str, Any] | None
+) -> str:
+    """Return a deterministic reviewer-facing qualifier for a physical repeat."""
+    repeatable = (object_data or {}).get("repeatable")
+    field_name = str((object_data or {}).get("field_name") or "")
+    parts: list[str] = []
+    copy_match = re.search(r"\.Copy([A-Za-z0-9]+)\[", field_name)
+    if copy_match:
+        parts.append(f"Copy {copy_match.group(1)}")
+    row_slot = repeatable.get("row_slot") if isinstance(repeatable, dict) else None
+    row_match = re.search(r"\.(?:Body)?Row(\d+)\[", field_name)
+    if row_slot is not None:
+        part = "Part II" if ".Page2[" in field_name or "Part2[" in field_name else "Part I"
+        parts.append(f"{part} row {row_slot}")
+    elif row_match:
+        parts.append(f"row {row_match.group(1)}")
+    leaf_index = re.search(r"\.(?:[A-Za-z0-9_-]+)\[(\d+)\]$", field_name)
+    if leaf_index and int(leaf_index.group(1)) > 0:
+        parts.append(f"choice {int(leaf_index.group(1)) + 1}")
+    if parts:
+        return ", ".join(parts)
+    return ""
 
 
 def _field_control_object(root: Path, scope_ref: dict[str, Any]) -> dict[str, Any] | None:
@@ -342,6 +464,12 @@ def _graph_index(bundle: ArtifactBundle) -> dict[tuple[str, str], dict[str, Any]
         payload = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
         for item in payload.get("bindings", []):
             result[("node_binding", str(item["node_id"]))] = item
+    for path in sorted((graph_dir / "bindings" / "widgets").glob("*.yaml")):
+        payload = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
+        document_id = str(payload.get("document_id") or "")
+        for item in payload.get("bindings", []):
+            key = f"{document_id}\0{item['field_name']}"
+            result[("widget_binding", key)] = item
     return result
 
 
