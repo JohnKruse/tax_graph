@@ -18,59 +18,18 @@ addresses:
   evidence:
   - source_path: config/manifest.yaml#form_8949_2025
     source_hash: 274513891e4e281d11e14286f14b9df724c24b6030fca0f0681da64fb2e7f525
-- address_id: 2025/document=form_8949/line=10
-  logical_key: document=form_8949/line=10
+- address_id: 2025/document=form_8949/section=header
+  logical_key: document=form_8949/section=header
   year: 2025
   document_id: form_8949_2025
   parent_address_id: 2025/document=form_8949
-  kind: line
+  kind: section
   path:
   - kind: document
     token: form_8949
-  - kind: line
-    token: '10'
-  printed_label: '10'
-  aliases: []
-  control_role: none
-  status: pending_review
-  evidence:
-  - source_path: config/manifest.yaml#form_8949_2025
-    source_hash: 274513891e4e281d11e14286f14b9df724c24b6030fca0f0681da64fb2e7f525
-    page: 2
-- address_id: 2025/document=form_8949/line=10/control=amount
-  logical_key: document=form_8949/line=10/control=amount
-  year: 2025
-  document_id: form_8949_2025
-  parent_address_id: 2025/document=form_8949/line=10
-  kind: control
-  path:
-  - kind: document
-    token: form_8949
-  - kind: line
-    token: '10'
-  - kind: control
-    token: amount
-  printed_label: Line 10 - 10 (if Box F or Box L above is checked) - f2_91
-  aliases: []
-  control_role: amount
-  status: pending_review
-  evidence:
-  - source_path: config/manifest.yaml#form_8949_2025
-    source_hash: 274513891e4e281d11e14286f14b9df724c24b6030fca0f0681da64fb2e7f525
-    page: 2
-  official_ref: '10'
-- address_id: 2025/document=form_8949/line=3
-  logical_key: document=form_8949/line=3
-  year: 2025
-  document_id: form_8949_2025
-  parent_address_id: 2025/document=form_8949
-  kind: line
-  path:
-  - kind: document
-    token: form_8949
-  - kind: line
-    token: '3'
-  printed_label: '3'
+  - kind: section
+    token: header
+  printed_label: header
   aliases: []
   control_role: none
   status: pending_review
@@ -78,28 +37,364 @@ addresses:
   - source_path: config/manifest.yaml#form_8949_2025
     source_hash: 274513891e4e281d11e14286f14b9df724c24b6030fca0f0681da64fb2e7f525
     page: 1
-- address_id: 2025/document=form_8949/line=3/control=amount
-  logical_key: document=form_8949/line=3/control=amount
+- address_id: 2025/document=form_8949/section=header/control=name
+  logical_key: document=form_8949/section=header/control=name
   year: 2025
   document_id: form_8949_2025
-  parent_address_id: 2025/document=form_8949/line=3
+  parent_address_id: 2025/document=form_8949/section=header
   kind: control
   path:
   - kind: document
     token: form_8949
-  - kind: line
-    token: '3'
+  - kind: section
+    token: header
   - kind: control
-    token: amount
-  printed_label: Line 3 - 3 (if Box C or Box I above is checked) - f1_91
+    token: name
+  printed_label: Name(s) shown on return
   aliases: []
-  control_role: amount
+  control_role: text
   status: pending_review
   evidence:
   - source_path: config/manifest.yaml#form_8949_2025
     source_hash: 274513891e4e281d11e14286f14b9df724c24b6030fca0f0681da64fb2e7f525
     page: 1
-  official_ref: '3'
+  official_ref: Header
+- address_id: 2025/document=form_8949/section=header/control=taxpayer_identification_number
+  logical_key: document=form_8949/section=header/control=taxpayer_identification_number
+  year: 2025
+  document_id: form_8949_2025
+  parent_address_id: 2025/document=form_8949/section=header
+  kind: control
+  path:
+  - kind: document
+    token: form_8949
+  - kind: section
+    token: header
+  - kind: control
+    token: taxpayer_identification_number
+  printed_label: Social security number or taxpayer identification number
+  aliases: []
+  control_role: identifier
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_8949_2025
+    source_hash: 274513891e4e281d11e14286f14b9df724c24b6030fca0f0681da64fb2e7f525
+    page: 1
+  official_ref: Header
+- address_id: 2025/document=form_8949/section=part_i_transaction_type
+  logical_key: document=form_8949/section=part_i_transaction_type
+  year: 2025
+  document_id: form_8949_2025
+  parent_address_id: 2025/document=form_8949
+  kind: section
+  path:
+  - kind: document
+    token: form_8949
+  - kind: section
+    token: part_i_transaction_type
+  printed_label: part_i_transaction_type
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_8949_2025
+    source_hash: 274513891e4e281d11e14286f14b9df724c24b6030fca0f0681da64fb2e7f525
+    page: 1
+- address_id: 2025/document=form_8949/section=part_i_transaction_type/option=a
+  logical_key: document=form_8949/section=part_i_transaction_type/option=a
+  year: 2025
+  document_id: form_8949_2025
+  parent_address_id: 2025/document=form_8949/section=part_i_transaction_type
+  kind: option
+  path:
+  - kind: document
+    token: form_8949
+  - kind: section
+    token: part_i_transaction_type
+  - kind: option
+    token: a
+  printed_label: Short-term transactions reported on Form(s) 1099-B showing basis
+    was reported to the IRS
+  aliases: []
+  control_role: checkbox
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_8949_2025
+    source_hash: 274513891e4e281d11e14286f14b9df724c24b6030fca0f0681da64fb2e7f525
+    page: 1
+  official_ref: Box A
+- address_id: 2025/document=form_8949/section=part_i_transaction_type/option=b
+  logical_key: document=form_8949/section=part_i_transaction_type/option=b
+  year: 2025
+  document_id: form_8949_2025
+  parent_address_id: 2025/document=form_8949/section=part_i_transaction_type
+  kind: option
+  path:
+  - kind: document
+    token: form_8949
+  - kind: section
+    token: part_i_transaction_type
+  - kind: option
+    token: b
+  printed_label: Short-term transactions reported on Form(s) 1099-B showing basis
+    was not reported to the IRS
+  aliases: []
+  control_role: checkbox
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_8949_2025
+    source_hash: 274513891e4e281d11e14286f14b9df724c24b6030fca0f0681da64fb2e7f525
+    page: 1
+  official_ref: Box B
+- address_id: 2025/document=form_8949/section=part_i_transaction_type/option=c
+  logical_key: document=form_8949/section=part_i_transaction_type/option=c
+  year: 2025
+  document_id: form_8949_2025
+  parent_address_id: 2025/document=form_8949/section=part_i_transaction_type
+  kind: option
+  path:
+  - kind: document
+    token: form_8949
+  - kind: section
+    token: part_i_transaction_type
+  - kind: option
+    token: c
+  printed_label: Short-term transactions, other than digital asset transactions, not
+    reported to you on Form 1099-B or Form 1099-DA
+  aliases: []
+  control_role: checkbox
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_8949_2025
+    source_hash: 274513891e4e281d11e14286f14b9df724c24b6030fca0f0681da64fb2e7f525
+    page: 1
+  official_ref: Box C
+- address_id: 2025/document=form_8949/section=part_i_transaction_type/option=g
+  logical_key: document=form_8949/section=part_i_transaction_type/option=g
+  year: 2025
+  document_id: form_8949_2025
+  parent_address_id: 2025/document=form_8949/section=part_i_transaction_type
+  kind: option
+  path:
+  - kind: document
+    token: form_8949
+  - kind: section
+    token: part_i_transaction_type
+  - kind: option
+    token: g
+  printed_label: Short-term transactions reported on Form(s) 1099-DA showing basis
+    was reported to the IRS
+  aliases: []
+  control_role: checkbox
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_8949_2025
+    source_hash: 274513891e4e281d11e14286f14b9df724c24b6030fca0f0681da64fb2e7f525
+    page: 1
+  official_ref: Box G
+- address_id: 2025/document=form_8949/section=part_i_transaction_type/option=h
+  logical_key: document=form_8949/section=part_i_transaction_type/option=h
+  year: 2025
+  document_id: form_8949_2025
+  parent_address_id: 2025/document=form_8949/section=part_i_transaction_type
+  kind: option
+  path:
+  - kind: document
+    token: form_8949
+  - kind: section
+    token: part_i_transaction_type
+  - kind: option
+    token: h
+  printed_label: Short-term transactions reported on Form(s) 1099-DA showing basis
+    was not reported to the IRS
+  aliases: []
+  control_role: checkbox
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_8949_2025
+    source_hash: 274513891e4e281d11e14286f14b9df724c24b6030fca0f0681da64fb2e7f525
+    page: 1
+  official_ref: Box H
+- address_id: 2025/document=form_8949/section=part_i_transaction_type/option=i
+  logical_key: document=form_8949/section=part_i_transaction_type/option=i
+  year: 2025
+  document_id: form_8949_2025
+  parent_address_id: 2025/document=form_8949/section=part_i_transaction_type
+  kind: option
+  path:
+  - kind: document
+    token: form_8949
+  - kind: section
+    token: part_i_transaction_type
+  - kind: option
+    token: i
+  printed_label: Short-term digital asset transactions not reported to you on Form
+    1099-DA or Form 1099-B
+  aliases: []
+  control_role: checkbox
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_8949_2025
+    source_hash: 274513891e4e281d11e14286f14b9df724c24b6030fca0f0681da64fb2e7f525
+    page: 1
+  official_ref: Box I
+- address_id: 2025/document=form_8949/section=part_ii_transaction_type
+  logical_key: document=form_8949/section=part_ii_transaction_type
+  year: 2025
+  document_id: form_8949_2025
+  parent_address_id: 2025/document=form_8949
+  kind: section
+  path:
+  - kind: document
+    token: form_8949
+  - kind: section
+    token: part_ii_transaction_type
+  printed_label: part_ii_transaction_type
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_8949_2025
+    source_hash: 274513891e4e281d11e14286f14b9df724c24b6030fca0f0681da64fb2e7f525
+    page: 2
+- address_id: 2025/document=form_8949/section=part_ii_transaction_type/option=d
+  logical_key: document=form_8949/section=part_ii_transaction_type/option=d
+  year: 2025
+  document_id: form_8949_2025
+  parent_address_id: 2025/document=form_8949/section=part_ii_transaction_type
+  kind: option
+  path:
+  - kind: document
+    token: form_8949
+  - kind: section
+    token: part_ii_transaction_type
+  - kind: option
+    token: d
+  printed_label: Long-term transactions reported on Form(s) 1099-B showing basis was
+    reported to the IRS
+  aliases: []
+  control_role: checkbox
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_8949_2025
+    source_hash: 274513891e4e281d11e14286f14b9df724c24b6030fca0f0681da64fb2e7f525
+    page: 2
+  official_ref: Box D
+- address_id: 2025/document=form_8949/section=part_ii_transaction_type/option=e
+  logical_key: document=form_8949/section=part_ii_transaction_type/option=e
+  year: 2025
+  document_id: form_8949_2025
+  parent_address_id: 2025/document=form_8949/section=part_ii_transaction_type
+  kind: option
+  path:
+  - kind: document
+    token: form_8949
+  - kind: section
+    token: part_ii_transaction_type
+  - kind: option
+    token: e
+  printed_label: Long-term transactions reported on Form(s) 1099-B showing basis was
+    not reported to the IRS
+  aliases: []
+  control_role: checkbox
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_8949_2025
+    source_hash: 274513891e4e281d11e14286f14b9df724c24b6030fca0f0681da64fb2e7f525
+    page: 2
+  official_ref: Box E
+- address_id: 2025/document=form_8949/section=part_ii_transaction_type/option=f
+  logical_key: document=form_8949/section=part_ii_transaction_type/option=f
+  year: 2025
+  document_id: form_8949_2025
+  parent_address_id: 2025/document=form_8949/section=part_ii_transaction_type
+  kind: option
+  path:
+  - kind: document
+    token: form_8949
+  - kind: section
+    token: part_ii_transaction_type
+  - kind: option
+    token: f
+  printed_label: Long-term transactions, other than digital asset transactions, not
+    reported to you on Form 1099-B or Form 1099-DA
+  aliases: []
+  control_role: checkbox
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_8949_2025
+    source_hash: 274513891e4e281d11e14286f14b9df724c24b6030fca0f0681da64fb2e7f525
+    page: 2
+  official_ref: Box F
+- address_id: 2025/document=form_8949/section=part_ii_transaction_type/option=j
+  logical_key: document=form_8949/section=part_ii_transaction_type/option=j
+  year: 2025
+  document_id: form_8949_2025
+  parent_address_id: 2025/document=form_8949/section=part_ii_transaction_type
+  kind: option
+  path:
+  - kind: document
+    token: form_8949
+  - kind: section
+    token: part_ii_transaction_type
+  - kind: option
+    token: j
+  printed_label: Long-term transactions reported on Form(s) 1099-DA showing basis
+    was reported to the IRS
+  aliases: []
+  control_role: checkbox
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_8949_2025
+    source_hash: 274513891e4e281d11e14286f14b9df724c24b6030fca0f0681da64fb2e7f525
+    page: 2
+  official_ref: Box J
+- address_id: 2025/document=form_8949/section=part_ii_transaction_type/option=k
+  logical_key: document=form_8949/section=part_ii_transaction_type/option=k
+  year: 2025
+  document_id: form_8949_2025
+  parent_address_id: 2025/document=form_8949/section=part_ii_transaction_type
+  kind: option
+  path:
+  - kind: document
+    token: form_8949
+  - kind: section
+    token: part_ii_transaction_type
+  - kind: option
+    token: k
+  printed_label: Long-term transactions reported on Form(s) 1099-DA showing basis
+    was not reported to the IRS
+  aliases: []
+  control_role: checkbox
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_8949_2025
+    source_hash: 274513891e4e281d11e14286f14b9df724c24b6030fca0f0681da64fb2e7f525
+    page: 2
+  official_ref: Box K
+- address_id: 2025/document=form_8949/section=part_ii_transaction_type/option=l
+  logical_key: document=form_8949/section=part_ii_transaction_type/option=l
+  year: 2025
+  document_id: form_8949_2025
+  parent_address_id: 2025/document=form_8949/section=part_ii_transaction_type
+  kind: option
+  path:
+  - kind: document
+    token: form_8949
+  - kind: section
+    token: part_ii_transaction_type
+  - kind: option
+    token: l
+  printed_label: Long-term digital asset transactions not reported to you on Form
+    1099-DA or Form 1099-B
+  aliases: []
+  control_role: checkbox
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_8949_2025
+    source_hash: 274513891e4e281d11e14286f14b9df724c24b6030fca0f0681da64fb2e7f525
+    page: 2
+  official_ref: Box L
 - address_id: 2025/document=form_8949/table=part_i_line_1
   logical_key: document=form_8949/table=part_i_line_1
   year: 2025
@@ -140,6 +435,78 @@ addresses:
   - source_path: config/manifest.yaml#form_8949_2025
     source_hash: 274513891e4e281d11e14286f14b9df724c24b6030fca0f0681da64fb2e7f525
     page: 1
+- address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=a
+  logical_key: document=form_8949/table=part_i_line_1/row_template=transaction/column=a
+  year: 2025
+  document_id: form_8949_2025
+  parent_address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction
+  kind: column
+  path:
+  - kind: document
+    token: form_8949
+  - kind: table
+    token: part_i_line_1
+  - kind: row_template
+    token: transaction
+  - kind: column
+    token: a
+  printed_label: Description of property
+  aliases: []
+  control_role: description
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_8949_2025
+    source_hash: 274513891e4e281d11e14286f14b9df724c24b6030fca0f0681da64fb2e7f525
+    page: 1
+  official_ref: Line 1 column (a)
+- address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=b
+  logical_key: document=form_8949/table=part_i_line_1/row_template=transaction/column=b
+  year: 2025
+  document_id: form_8949_2025
+  parent_address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction
+  kind: column
+  path:
+  - kind: document
+    token: form_8949
+  - kind: table
+    token: part_i_line_1
+  - kind: row_template
+    token: transaction
+  - kind: column
+    token: b
+  printed_label: Date acquired
+  aliases: []
+  control_role: date
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_8949_2025
+    source_hash: 274513891e4e281d11e14286f14b9df724c24b6030fca0f0681da64fb2e7f525
+    page: 1
+  official_ref: Line 1 column (b)
+- address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=c
+  logical_key: document=form_8949/table=part_i_line_1/row_template=transaction/column=c
+  year: 2025
+  document_id: form_8949_2025
+  parent_address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction
+  kind: column
+  path:
+  - kind: document
+    token: form_8949
+  - kind: table
+    token: part_i_line_1
+  - kind: row_template
+    token: transaction
+  - kind: column
+    token: c
+  printed_label: Date sold or disposed of
+  aliases: []
+  control_role: date
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_8949_2025
+    source_hash: 274513891e4e281d11e14286f14b9df724c24b6030fca0f0681da64fb2e7f525
+    page: 1
+  official_ref: Line 1 column (c)
 - address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=d
   logical_key: document=form_8949/table=part_i_line_1/row_template=transaction/column=d
   year: 2025
@@ -155,7 +522,7 @@ addresses:
     token: transaction
   - kind: column
     token: d
-  printed_label: Part I transaction proceeds (column d)
+  printed_label: Proceeds (sales price)
   aliases: []
   control_role: amount
   status: pending_review
@@ -163,7 +530,7 @@ addresses:
   - source_path: config/manifest.yaml#form_8949_2025
     source_hash: 274513891e4e281d11e14286f14b9df724c24b6030fca0f0681da64fb2e7f525
     page: 1
-  official_ref: Column (d)
+  official_ref: Line 1 column (d)
 - address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=e
   logical_key: document=form_8949/table=part_i_line_1/row_template=transaction/column=e
   year: 2025
@@ -179,7 +546,7 @@ addresses:
     token: transaction
   - kind: column
     token: e
-  printed_label: Part I transaction cost or other basis (column e)
+  printed_label: Cost or other basis
   aliases: []
   control_role: amount
   status: pending_review
@@ -187,7 +554,31 @@ addresses:
   - source_path: config/manifest.yaml#form_8949_2025
     source_hash: 274513891e4e281d11e14286f14b9df724c24b6030fca0f0681da64fb2e7f525
     page: 1
-  official_ref: Column (e)
+  official_ref: Line 1 column (e)
+- address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=f
+  logical_key: document=form_8949/table=part_i_line_1/row_template=transaction/column=f
+  year: 2025
+  document_id: form_8949_2025
+  parent_address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction
+  kind: column
+  path:
+  - kind: document
+    token: form_8949
+  - kind: table
+    token: part_i_line_1
+  - kind: row_template
+    token: transaction
+  - kind: column
+    token: f
+  printed_label: Code(s) from instructions
+  aliases: []
+  control_role: description
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_8949_2025
+    source_hash: 274513891e4e281d11e14286f14b9df724c24b6030fca0f0681da64fb2e7f525
+    page: 1
+  official_ref: Line 1 column (f)
 - address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=g
   logical_key: document=form_8949/table=part_i_line_1/row_template=transaction/column=g
   year: 2025
@@ -203,7 +594,7 @@ addresses:
     token: transaction
   - kind: column
     token: g
-  printed_label: Part I transaction adjustment amount (column g)
+  printed_label: Amount of adjustment
   aliases: []
   control_role: amount
   status: pending_review
@@ -211,7 +602,7 @@ addresses:
   - source_path: config/manifest.yaml#form_8949_2025
     source_hash: 274513891e4e281d11e14286f14b9df724c24b6030fca0f0681da64fb2e7f525
     page: 1
-  official_ref: Column (g)
+  official_ref: Line 1 column (g)
 - address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=h
   logical_key: document=form_8949/table=part_i_line_1/row_template=transaction/column=h
   year: 2025
@@ -227,7 +618,7 @@ addresses:
     token: transaction
   - kind: column
     token: h
-  printed_label: Part I transaction gain or loss (column h)
+  printed_label: Gain or (loss)
   aliases: []
   control_role: amount
   status: pending_review
@@ -235,7 +626,7 @@ addresses:
   - source_path: config/manifest.yaml#form_8949_2025
     source_hash: 274513891e4e281d11e14286f14b9df724c24b6030fca0f0681da64fb2e7f525
     page: 1
-  official_ref: Column (h)
+  official_ref: Line 1 column (h)
 - address_id: 2025/document=form_8949/table=part_i_line_2
   logical_key: document=form_8949/table=part_i_line_2
   year: 2025
@@ -291,7 +682,7 @@ addresses:
     token: total
   - kind: column
     token: d
-  printed_label: Line 3 - 3 (if Box C or Box I above is checked) - f1_92
+  printed_label: Total proceeds
   aliases: []
   control_role: amount
   status: pending_review
@@ -315,7 +706,7 @@ addresses:
     token: total
   - kind: column
     token: e
-  printed_label: Line 3 - 3 (if Box C or Box I above is checked) - f1_93
+  printed_label: Total cost or other basis
   aliases: []
   control_role: amount
   status: pending_review
@@ -339,7 +730,7 @@ addresses:
     token: total
   - kind: column
     token: g
-  printed_label: Line 3 - 3 (if Box C or Box I above is checked) - f1_94
+  printed_label: Total adjustments
   aliases: []
   control_role: amount
   status: pending_review
@@ -363,7 +754,7 @@ addresses:
     token: total
   - kind: column
     token: h
-  printed_label: Line 3 - 3 (if Box C or Box I above is checked) - f1_95
+  printed_label: Total gain or (loss)
   aliases: []
   control_role: amount
   status: pending_review
@@ -412,6 +803,78 @@ addresses:
   - source_path: config/manifest.yaml#form_8949_2025
     source_hash: 274513891e4e281d11e14286f14b9df724c24b6030fca0f0681da64fb2e7f525
     page: 2
+- address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=a
+  logical_key: document=form_8949/table=part_ii_line_1/row_template=transaction/column=a
+  year: 2025
+  document_id: form_8949_2025
+  parent_address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction
+  kind: column
+  path:
+  - kind: document
+    token: form_8949
+  - kind: table
+    token: part_ii_line_1
+  - kind: row_template
+    token: transaction
+  - kind: column
+    token: a
+  printed_label: Description of property
+  aliases: []
+  control_role: description
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_8949_2025
+    source_hash: 274513891e4e281d11e14286f14b9df724c24b6030fca0f0681da64fb2e7f525
+    page: 2
+  official_ref: Line 1 column (a)
+- address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=b
+  logical_key: document=form_8949/table=part_ii_line_1/row_template=transaction/column=b
+  year: 2025
+  document_id: form_8949_2025
+  parent_address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction
+  kind: column
+  path:
+  - kind: document
+    token: form_8949
+  - kind: table
+    token: part_ii_line_1
+  - kind: row_template
+    token: transaction
+  - kind: column
+    token: b
+  printed_label: Date acquired
+  aliases: []
+  control_role: date
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_8949_2025
+    source_hash: 274513891e4e281d11e14286f14b9df724c24b6030fca0f0681da64fb2e7f525
+    page: 2
+  official_ref: Line 1 column (b)
+- address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=c
+  logical_key: document=form_8949/table=part_ii_line_1/row_template=transaction/column=c
+  year: 2025
+  document_id: form_8949_2025
+  parent_address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction
+  kind: column
+  path:
+  - kind: document
+    token: form_8949
+  - kind: table
+    token: part_ii_line_1
+  - kind: row_template
+    token: transaction
+  - kind: column
+    token: c
+  printed_label: Date sold or disposed of
+  aliases: []
+  control_role: date
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_8949_2025
+    source_hash: 274513891e4e281d11e14286f14b9df724c24b6030fca0f0681da64fb2e7f525
+    page: 2
+  official_ref: Line 1 column (c)
 - address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=d
   logical_key: document=form_8949/table=part_ii_line_1/row_template=transaction/column=d
   year: 2025
@@ -427,7 +890,7 @@ addresses:
     token: transaction
   - kind: column
     token: d
-  printed_label: Part II transaction proceeds (column d)
+  printed_label: Proceeds (sales price)
   aliases: []
   control_role: amount
   status: pending_review
@@ -435,7 +898,7 @@ addresses:
   - source_path: config/manifest.yaml#form_8949_2025
     source_hash: 274513891e4e281d11e14286f14b9df724c24b6030fca0f0681da64fb2e7f525
     page: 2
-  official_ref: Column (d)
+  official_ref: Line 1 column (d)
 - address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=e
   logical_key: document=form_8949/table=part_ii_line_1/row_template=transaction/column=e
   year: 2025
@@ -451,7 +914,7 @@ addresses:
     token: transaction
   - kind: column
     token: e
-  printed_label: Part II transaction cost or other basis (column e)
+  printed_label: Cost or other basis
   aliases: []
   control_role: amount
   status: pending_review
@@ -459,7 +922,31 @@ addresses:
   - source_path: config/manifest.yaml#form_8949_2025
     source_hash: 274513891e4e281d11e14286f14b9df724c24b6030fca0f0681da64fb2e7f525
     page: 2
-  official_ref: Column (e)
+  official_ref: Line 1 column (e)
+- address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=f
+  logical_key: document=form_8949/table=part_ii_line_1/row_template=transaction/column=f
+  year: 2025
+  document_id: form_8949_2025
+  parent_address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction
+  kind: column
+  path:
+  - kind: document
+    token: form_8949
+  - kind: table
+    token: part_ii_line_1
+  - kind: row_template
+    token: transaction
+  - kind: column
+    token: f
+  printed_label: Code(s) from instructions
+  aliases: []
+  control_role: description
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_8949_2025
+    source_hash: 274513891e4e281d11e14286f14b9df724c24b6030fca0f0681da64fb2e7f525
+    page: 2
+  official_ref: Line 1 column (f)
 - address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=g
   logical_key: document=form_8949/table=part_ii_line_1/row_template=transaction/column=g
   year: 2025
@@ -475,7 +962,7 @@ addresses:
     token: transaction
   - kind: column
     token: g
-  printed_label: Part II transaction adjustment amount (column g)
+  printed_label: Amount of adjustment
   aliases: []
   control_role: amount
   status: pending_review
@@ -483,7 +970,7 @@ addresses:
   - source_path: config/manifest.yaml#form_8949_2025
     source_hash: 274513891e4e281d11e14286f14b9df724c24b6030fca0f0681da64fb2e7f525
     page: 2
-  official_ref: Column (g)
+  official_ref: Line 1 column (g)
 - address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=h
   logical_key: document=form_8949/table=part_ii_line_1/row_template=transaction/column=h
   year: 2025
@@ -499,7 +986,7 @@ addresses:
     token: transaction
   - kind: column
     token: h
-  printed_label: Part II transaction gain or loss (column h)
+  printed_label: Gain or (loss)
   aliases: []
   control_role: amount
   status: pending_review
@@ -507,7 +994,7 @@ addresses:
   - source_path: config/manifest.yaml#form_8949_2025
     source_hash: 274513891e4e281d11e14286f14b9df724c24b6030fca0f0681da64fb2e7f525
     page: 2
-  official_ref: Column (h)
+  official_ref: Line 1 column (h)
 - address_id: 2025/document=form_8949/table=part_ii_line_2
   logical_key: document=form_8949/table=part_ii_line_2
   year: 2025
@@ -563,7 +1050,7 @@ addresses:
     token: total
   - kind: column
     token: d
-  printed_label: Line 10 - 10 (if Box F or Box L above is checked) - f2_92
+  printed_label: Total proceeds
   aliases: []
   control_role: amount
   status: pending_review
@@ -587,7 +1074,7 @@ addresses:
     token: total
   - kind: column
     token: e
-  printed_label: Line 10 - 10 (if Box F or Box L above is checked) - f2_93
+  printed_label: Total cost or other basis
   aliases: []
   control_role: amount
   status: pending_review
@@ -611,7 +1098,7 @@ addresses:
     token: total
   - kind: column
     token: g
-  printed_label: Line 10 - 10 (if Box F or Box L above is checked) - f2_94
+  printed_label: Total adjustments
   aliases: []
   control_role: amount
   status: pending_review
@@ -635,7 +1122,7 @@ addresses:
     token: total
   - kind: column
     token: h
-  printed_label: Line 10 - 10 (if Box F or Box L above is checked) - f2_95
+  printed_label: Total gain or (loss)
   aliases: []
   control_role: amount
   status: pending_review

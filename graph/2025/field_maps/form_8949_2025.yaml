@@ -3,12 +3,12 @@ document_id: form_8949_2025
 inventory: graph/2025/field_inventories/form_8949_2025.json
 mappings:
 - slot: form_8949_2025_part_i_line_2_line_2_column_d_total
-  field_name: topmostSubform[0].Page1[0].f1_92[0]
+  field_name: topmostSubform[0].Page1[0].f1_91[0]
   format: dollars
   node_id: form_8949_2025_part_i_line_2_line_2_column_d_total
   address_id: 2025/document=form_8949/table=part_i_line_2/row_template=total/column=d
 - slot: form_8949_2025_part_i_line_2_line_2_column_e_total
-  field_name: topmostSubform[0].Page1[0].f1_93[0]
+  field_name: topmostSubform[0].Page1[0].f1_92[0]
   format: dollars
   node_id: form_8949_2025_part_i_line_2_line_2_column_e_total
   address_id: 2025/document=form_8949/table=part_i_line_2/row_template=total/column=e
@@ -23,12 +23,12 @@ mappings:
   node_id: form_8949_2025_part_i_line_2_line_2_column_h_total
   address_id: 2025/document=form_8949/table=part_i_line_2/row_template=total/column=h
 - slot: form_8949_2025_part_ii_line_2_line_2_column_d_total
-  field_name: topmostSubform[0].Page2[0].f2_92[0]
+  field_name: topmostSubform[0].Page2[0].f2_91[0]
   format: dollars
   node_id: form_8949_2025_part_ii_line_2_line_2_column_d_total
   address_id: 2025/document=form_8949/table=part_ii_line_2/row_template=total/column=d
 - slot: form_8949_2025_part_ii_line_2_line_2_column_e_total
-  field_name: topmostSubform[0].Page2[0].f2_93[0]
+  field_name: topmostSubform[0].Page2[0].f2_92[0]
   format: dollars
   node_id: form_8949_2025_part_ii_line_2_line_2_column_e_total
   address_id: 2025/document=form_8949/table=part_ii_line_2/row_template=total/column=e
@@ -500,6 +500,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page1[0].f1_01[0].
+  address_id: 2025/document=form_8949/section=header/control=name
 - field_name: topmostSubform[0].Page1[0].f1_02[0]
   label: f1_02
   population_policy: unsupported
@@ -510,6 +511,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page1[0].f1_02[0].
+  address_id: 2025/document=form_8949/section=header/control=taxpayer_identification_number
 - field_name: topmostSubform[0].Page1[0].c1_1[0]
   label: c1_1 (page 1, control 3)
   population_policy: unsupported
@@ -520,6 +522,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page1[0].c1_1[0].
+  address_id: 2025/document=form_8949/section=part_i_transaction_type/option=a
 - field_name: topmostSubform[0].Page1[0].c1_1[1]
   label: c1_1 (page 1, control 4)
   population_policy: unsupported
@@ -530,6 +533,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page1[0].c1_1[1].
+  address_id: 2025/document=form_8949/section=part_i_transaction_type/option=b
 - field_name: topmostSubform[0].Page1[0].c1_1[2]
   label: c1_1 (page 1, control 5)
   population_policy: unsupported
@@ -540,6 +544,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page1[0].c1_1[2].
+  address_id: 2025/document=form_8949/section=part_i_transaction_type/option=c
 - field_name: topmostSubform[0].Page1[0].c1_1[3]
   label: c1_1 (page 1, control 6)
   population_policy: unsupported
@@ -550,6 +555,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page1[0].c1_1[3].
+  address_id: 2025/document=form_8949/section=part_i_transaction_type/option=g
 - field_name: topmostSubform[0].Page1[0].c1_1[4]
   label: c1_1 (page 1, control 7)
   population_policy: unsupported
@@ -560,6 +566,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page1[0].c1_1[4].
+  address_id: 2025/document=form_8949/section=part_i_transaction_type/option=h
 - field_name: topmostSubform[0].Page1[0].c1_1[5]
   label: c1_1 (page 1, control 8)
   population_policy: unsupported
@@ -570,6 +577,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page1[0].c1_1[5].
+  address_id: 2025/document=form_8949/section=part_i_transaction_type/option=i
 - field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row1[0].f1_03[0]
   label: f1_03
   population_policy: unsupported
@@ -585,6 +593,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row1[0].f1_03[0].
+  address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=a
 - field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row1[0].f1_04[0]
   label: f1_04
   population_policy: unsupported
@@ -600,6 +609,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row1[0].f1_04[0].
+  address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=b
 - field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row1[0].f1_05[0]
   label: f1_05
   population_policy: unsupported
@@ -615,6 +625,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row1[0].f1_05[0].
+  address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=c
 - field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row1[0].f1_06[0]
   label: f1_06
   population_policy: user_entered
@@ -652,6 +663,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row1[0].f1_08[0].
+  address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=f
 - field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row1[0].f1_09[0]
   label: f1_09
   population_policy: user_entered
@@ -689,6 +701,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row2[0].f1_11[0].
+  address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=a
 - field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row2[0].f1_12[0]
   label: f1_12
   population_policy: unsupported
@@ -704,6 +717,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row2[0].f1_12[0].
+  address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=b
 - field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row2[0].f1_13[0]
   label: f1_13
   population_policy: unsupported
@@ -719,6 +733,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row2[0].f1_13[0].
+  address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=c
 - field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row2[0].f1_14[0]
   label: f1_14
   population_policy: user_entered
@@ -756,6 +771,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row2[0].f1_16[0].
+  address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=f
 - field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row2[0].f1_17[0]
   label: f1_17
   population_policy: user_entered
@@ -793,6 +809,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row3[0].f1_19[0].
+  address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=a
 - field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row3[0].f1_20[0]
   label: f1_20
   population_policy: unsupported
@@ -808,6 +825,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row3[0].f1_20[0].
+  address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=b
 - field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row3[0].f1_21[0]
   label: f1_21
   population_policy: unsupported
@@ -823,6 +841,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row3[0].f1_21[0].
+  address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=c
 - field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row3[0].f1_22[0]
   label: f1_22
   population_policy: user_entered
@@ -860,6 +879,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row3[0].f1_24[0].
+  address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=f
 - field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row3[0].f1_25[0]
   label: f1_25
   population_policy: user_entered
@@ -897,6 +917,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row4[0].f1_27[0].
+  address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=a
 - field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row4[0].f1_28[0]
   label: f1_28
   population_policy: unsupported
@@ -912,6 +933,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row4[0].f1_28[0].
+  address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=b
 - field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row4[0].f1_29[0]
   label: f1_29
   population_policy: unsupported
@@ -927,6 +949,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row4[0].f1_29[0].
+  address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=c
 - field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row4[0].f1_30[0]
   label: f1_30
   population_policy: user_entered
@@ -964,6 +987,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row4[0].f1_32[0].
+  address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=f
 - field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row4[0].f1_33[0]
   label: f1_33
   population_policy: user_entered
@@ -1001,6 +1025,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row5[0].f1_35[0].
+  address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=a
 - field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row5[0].f1_36[0]
   label: f1_36
   population_policy: unsupported
@@ -1016,6 +1041,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row5[0].f1_36[0].
+  address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=b
 - field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row5[0].f1_37[0]
   label: f1_37
   population_policy: unsupported
@@ -1031,6 +1057,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row5[0].f1_37[0].
+  address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=c
 - field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row5[0].f1_38[0]
   label: f1_38
   population_policy: user_entered
@@ -1068,6 +1095,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row5[0].f1_40[0].
+  address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=f
 - field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row5[0].f1_41[0]
   label: f1_41
   population_policy: user_entered
@@ -1105,6 +1133,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row6[0].f1_43[0].
+  address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=a
 - field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row6[0].f1_44[0]
   label: f1_44
   population_policy: unsupported
@@ -1120,6 +1149,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row6[0].f1_44[0].
+  address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=b
 - field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row6[0].f1_45[0]
   label: f1_45
   population_policy: unsupported
@@ -1135,6 +1165,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row6[0].f1_45[0].
+  address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=c
 - field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row6[0].f1_46[0]
   label: f1_46
   population_policy: user_entered
@@ -1172,6 +1203,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row6[0].f1_48[0].
+  address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=f
 - field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row6[0].f1_49[0]
   label: f1_49
   population_policy: user_entered
@@ -1209,6 +1241,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row7[0].f1_51[0].
+  address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=a
 - field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row7[0].f1_52[0]
   label: f1_52
   population_policy: unsupported
@@ -1224,6 +1257,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row7[0].f1_52[0].
+  address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=b
 - field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row7[0].f1_53[0]
   label: f1_53
   population_policy: unsupported
@@ -1239,6 +1273,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row7[0].f1_53[0].
+  address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=c
 - field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row7[0].f1_54[0]
   label: f1_54
   population_policy: user_entered
@@ -1276,6 +1311,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row7[0].f1_56[0].
+  address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=f
 - field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row7[0].f1_57[0]
   label: f1_57
   population_policy: user_entered
@@ -1313,6 +1349,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row8[0].f1_59[0].
+  address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=a
 - field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row8[0].f1_60[0]
   label: f1_60
   population_policy: unsupported
@@ -1328,6 +1365,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row8[0].f1_60[0].
+  address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=b
 - field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row8[0].f1_61[0]
   label: f1_61
   population_policy: unsupported
@@ -1343,6 +1381,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row8[0].f1_61[0].
+  address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=c
 - field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row8[0].f1_62[0]
   label: f1_62
   population_policy: user_entered
@@ -1380,6 +1419,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row8[0].f1_64[0].
+  address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=f
 - field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row8[0].f1_65[0]
   label: f1_65
   population_policy: user_entered
@@ -1417,6 +1457,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row9[0].f1_67[0].
+  address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=a
 - field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row9[0].f1_68[0]
   label: f1_68
   population_policy: unsupported
@@ -1432,6 +1473,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row9[0].f1_68[0].
+  address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=b
 - field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row9[0].f1_69[0]
   label: f1_69
   population_policy: unsupported
@@ -1447,6 +1489,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row9[0].f1_69[0].
+  address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=c
 - field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row9[0].f1_70[0]
   label: f1_70
   population_policy: user_entered
@@ -1484,6 +1527,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row9[0].f1_72[0].
+  address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=f
 - field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row9[0].f1_73[0]
   label: f1_73
   population_policy: user_entered
@@ -1521,6 +1565,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row10[0].f1_75[0].
+  address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=a
 - field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row10[0].f1_76[0]
   label: f1_76
   population_policy: unsupported
@@ -1536,6 +1581,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row10[0].f1_76[0].
+  address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=b
 - field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row10[0].f1_77[0]
   label: f1_77
   population_policy: unsupported
@@ -1551,6 +1597,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row10[0].f1_77[0].
+  address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=c
 - field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row10[0].f1_78[0]
   label: f1_78
   population_policy: user_entered
@@ -1588,6 +1635,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row10[0].f1_80[0].
+  address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=f
 - field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row10[0].f1_81[0]
   label: f1_81
   population_policy: user_entered
@@ -1625,6 +1673,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row11[0].f1_83[0].
+  address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=a
 - field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row11[0].f1_84[0]
   label: f1_84
   population_policy: unsupported
@@ -1640,6 +1689,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row11[0].f1_84[0].
+  address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=b
 - field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row11[0].f1_85[0]
   label: f1_85
   population_policy: unsupported
@@ -1655,6 +1705,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row11[0].f1_85[0].
+  address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=c
 - field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row11[0].f1_86[0]
   label: f1_86
   population_policy: user_entered
@@ -1692,6 +1743,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row11[0].f1_88[0].
+  address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=f
 - field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row11[0].f1_89[0]
   label: f1_89
   population_policy: user_entered
@@ -1715,28 +1767,28 @@ field_dispositions:
   node_id: form_8949_2025_part_i_line_1_column_h
   address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=h
 - field_name: topmostSubform[0].Page1[0].f1_91[0]
-  label: Line 3 - 3 (if Box C or Box I above is checked) - f1_91
-  population_policy: unsupported
-  value_format: text
-  reason: The official form_8949_2025 control 'Line 3 - 3 (if Box C or Box I above
-    is checked) - f1_91' has no authored graph, filer-fact, or decision mapping.
-  downstream_effect: Output leaves AcroForm field topmostSubform[0].Page1[0].f1_91[0]
-    blank and reports the unsupported filing field.
-  missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
-    for topmostSubform[0].Page1[0].f1_91[0].
-  address_id: 2025/document=form_8949/line=3/control=amount
-- field_name: topmostSubform[0].Page1[0].f1_92[0]
-  label: Line 3 - 3 (if Box C or Box I above is checked) - f1_92
+  label: Total proceeds
   population_policy: computed
   value_format: dollars
   node_id: form_8949_2025_part_i_line_2_line_2_column_d_total
   address_id: 2025/document=form_8949/table=part_i_line_2/row_template=total/column=d
-- field_name: topmostSubform[0].Page1[0].f1_93[0]
-  label: Line 3 - 3 (if Box C or Box I above is checked) - f1_93
+- field_name: topmostSubform[0].Page1[0].f1_92[0]
+  label: Total cost or other basis
   population_policy: computed
   value_format: dollars
   node_id: form_8949_2025_part_i_line_2_line_2_column_e_total
   address_id: 2025/document=form_8949/table=part_i_line_2/row_template=total/column=e
+- field_name: topmostSubform[0].Page1[0].f1_93[0]
+  label: Shaded no-entry cell under column (f) - totals row
+  display_name: Shaded no-entry cell under column (f) - totals row
+  population_policy: intentionally_blank
+  value_format: text
+  reason: The official form shades column (f) in the line-2 totals row and totals
+    only columns (d), (e), (g), and (h), while the AcroForm includes a text widget
+    there.
+  downstream_effect: None - no node maps to this widget and the fill pipeline never
+    writes it.
+  missing_capability: None - this is official shading, not a capability gap.
 - field_name: topmostSubform[0].Page1[0].f1_94[0]
   label: Line 3 - 3 (if Box C or Box I above is checked) - f1_94
   population_policy: computed
@@ -1759,6 +1811,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page2[0].f2_01[0].
+  address_id: 2025/document=form_8949/section=header/control=name
 - field_name: topmostSubform[0].Page2[0].f2_02[0]
   label: f2_02
   population_policy: unsupported
@@ -1769,6 +1822,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page2[0].f2_02[0].
+  address_id: 2025/document=form_8949/section=header/control=taxpayer_identification_number
 - field_name: topmostSubform[0].Page2[0].c2_1[0]
   label: c2_1 (page 2, control 104)
   population_policy: unsupported
@@ -1779,6 +1833,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page2[0].c2_1[0].
+  address_id: 2025/document=form_8949/section=part_ii_transaction_type/option=d
 - field_name: topmostSubform[0].Page2[0].c2_1[1]
   label: c2_1 (page 2, control 105)
   population_policy: unsupported
@@ -1789,6 +1844,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page2[0].c2_1[1].
+  address_id: 2025/document=form_8949/section=part_ii_transaction_type/option=e
 - field_name: topmostSubform[0].Page2[0].c2_1[2]
   label: c2_1 (page 2, control 106)
   population_policy: unsupported
@@ -1799,6 +1855,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page2[0].c2_1[2].
+  address_id: 2025/document=form_8949/section=part_ii_transaction_type/option=f
 - field_name: topmostSubform[0].Page2[0].c2_1[3]
   label: c2_1 (page 2, control 107)
   population_policy: unsupported
@@ -1809,6 +1866,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page2[0].c2_1[3].
+  address_id: 2025/document=form_8949/section=part_ii_transaction_type/option=j
 - field_name: topmostSubform[0].Page2[0].c2_1[4]
   label: c2_1 (page 2, control 108)
   population_policy: unsupported
@@ -1819,6 +1877,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page2[0].c2_1[4].
+  address_id: 2025/document=form_8949/section=part_ii_transaction_type/option=k
 - field_name: topmostSubform[0].Page2[0].c2_1[5]
   label: c2_1 (page 2, control 109)
   population_policy: unsupported
@@ -1829,6 +1888,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page2[0].c2_1[5].
+  address_id: 2025/document=form_8949/section=part_ii_transaction_type/option=l
 - field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row1[0].f2_03[0]
   label: f2_03
   population_policy: unsupported
@@ -1844,6 +1904,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row1[0].f2_03[0].
+  address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=a
 - field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row1[0].f2_04[0]
   label: f2_04
   population_policy: unsupported
@@ -1859,6 +1920,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row1[0].f2_04[0].
+  address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=b
 - field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row1[0].f2_05[0]
   label: f2_05
   population_policy: unsupported
@@ -1874,6 +1936,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row1[0].f2_05[0].
+  address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=c
 - field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row1[0].f2_06[0]
   label: f2_06
   population_policy: user_entered
@@ -1911,6 +1974,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row1[0].f2_08[0].
+  address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=f
 - field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row1[0].f2_09[0]
   label: f2_09
   population_policy: user_entered
@@ -1948,6 +2012,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row2[0].f2_11[0].
+  address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=a
 - field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row2[0].f2_12[0]
   label: f2_12
   population_policy: unsupported
@@ -1963,6 +2028,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row2[0].f2_12[0].
+  address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=b
 - field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row2[0].f2_13[0]
   label: f2_13
   population_policy: unsupported
@@ -1978,6 +2044,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row2[0].f2_13[0].
+  address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=c
 - field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row2[0].f2_14[0]
   label: f2_14
   population_policy: user_entered
@@ -2015,6 +2082,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row2[0].f2_16[0].
+  address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=f
 - field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row2[0].f2_17[0]
   label: f2_17
   population_policy: user_entered
@@ -2052,6 +2120,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row3[0].f2_19[0].
+  address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=a
 - field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row3[0].f2_20[0]
   label: f2_20
   population_policy: unsupported
@@ -2067,6 +2136,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row3[0].f2_20[0].
+  address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=b
 - field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row3[0].f2_21[0]
   label: f2_21
   population_policy: unsupported
@@ -2082,6 +2152,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row3[0].f2_21[0].
+  address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=c
 - field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row3[0].f2_22[0]
   label: f2_22
   population_policy: user_entered
@@ -2119,6 +2190,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row3[0].f2_24[0].
+  address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=f
 - field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row3[0].f2_25[0]
   label: f2_25
   population_policy: user_entered
@@ -2156,6 +2228,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row4[0].f2_27[0].
+  address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=a
 - field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row4[0].f2_28[0]
   label: f2_28
   population_policy: unsupported
@@ -2171,6 +2244,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row4[0].f2_28[0].
+  address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=b
 - field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row4[0].f2_29[0]
   label: f2_29
   population_policy: unsupported
@@ -2186,6 +2260,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row4[0].f2_29[0].
+  address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=c
 - field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row4[0].f2_30[0]
   label: f2_30
   population_policy: user_entered
@@ -2223,6 +2298,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row4[0].f2_32[0].
+  address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=f
 - field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row4[0].f2_33[0]
   label: f2_33
   population_policy: user_entered
@@ -2260,6 +2336,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row5[0].f2_35[0].
+  address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=a
 - field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row5[0].f2_36[0]
   label: f2_36
   population_policy: unsupported
@@ -2275,6 +2352,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row5[0].f2_36[0].
+  address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=b
 - field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row5[0].f2_37[0]
   label: f2_37
   population_policy: unsupported
@@ -2290,6 +2368,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row5[0].f2_37[0].
+  address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=c
 - field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row5[0].f2_38[0]
   label: f2_38
   population_policy: user_entered
@@ -2327,6 +2406,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row5[0].f2_40[0].
+  address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=f
 - field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row5[0].f2_41[0]
   label: f2_41
   population_policy: user_entered
@@ -2364,6 +2444,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row6[0].f2_43[0].
+  address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=a
 - field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row6[0].f2_44[0]
   label: f2_44
   population_policy: unsupported
@@ -2379,6 +2460,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row6[0].f2_44[0].
+  address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=b
 - field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row6[0].f2_45[0]
   label: f2_45
   population_policy: unsupported
@@ -2394,6 +2476,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row6[0].f2_45[0].
+  address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=c
 - field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row6[0].f2_46[0]
   label: f2_46
   population_policy: user_entered
@@ -2431,6 +2514,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row6[0].f2_48[0].
+  address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=f
 - field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row6[0].f2_49[0]
   label: f2_49
   population_policy: user_entered
@@ -2468,6 +2552,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row7[0].f2_51[0].
+  address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=a
 - field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row7[0].f2_52[0]
   label: f2_52
   population_policy: unsupported
@@ -2483,6 +2568,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row7[0].f2_52[0].
+  address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=b
 - field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row7[0].f2_53[0]
   label: f2_53
   population_policy: unsupported
@@ -2498,6 +2584,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row7[0].f2_53[0].
+  address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=c
 - field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row7[0].f2_54[0]
   label: f2_54
   population_policy: user_entered
@@ -2535,6 +2622,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row7[0].f2_56[0].
+  address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=f
 - field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row7[0].f2_57[0]
   label: f2_57
   population_policy: user_entered
@@ -2572,6 +2660,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row8[0].f2_59[0].
+  address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=a
 - field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row8[0].f2_60[0]
   label: f2_60
   population_policy: unsupported
@@ -2587,6 +2676,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row8[0].f2_60[0].
+  address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=b
 - field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row8[0].f2_61[0]
   label: f2_61
   population_policy: unsupported
@@ -2602,6 +2692,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row8[0].f2_61[0].
+  address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=c
 - field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row8[0].f2_62[0]
   label: f2_62
   population_policy: user_entered
@@ -2639,6 +2730,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row8[0].f2_64[0].
+  address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=f
 - field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row8[0].f2_65[0]
   label: f2_65
   population_policy: user_entered
@@ -2676,6 +2768,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row9[0].f2_67[0].
+  address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=a
 - field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row9[0].f2_68[0]
   label: f2_68
   population_policy: unsupported
@@ -2691,6 +2784,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row9[0].f2_68[0].
+  address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=b
 - field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row9[0].f2_69[0]
   label: f2_69
   population_policy: unsupported
@@ -2706,6 +2800,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row9[0].f2_69[0].
+  address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=c
 - field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row9[0].f2_70[0]
   label: f2_70
   population_policy: user_entered
@@ -2743,6 +2838,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row9[0].f2_72[0].
+  address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=f
 - field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row9[0].f2_73[0]
   label: f2_73
   population_policy: user_entered
@@ -2780,6 +2876,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row10[0].f2_75[0].
+  address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=a
 - field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row10[0].f2_76[0]
   label: f2_76
   population_policy: unsupported
@@ -2795,6 +2892,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row10[0].f2_76[0].
+  address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=b
 - field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row10[0].f2_77[0]
   label: f2_77
   population_policy: unsupported
@@ -2810,6 +2908,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row10[0].f2_77[0].
+  address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=c
 - field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row10[0].f2_78[0]
   label: f2_78
   population_policy: user_entered
@@ -2847,6 +2946,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row10[0].f2_80[0].
+  address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=f
 - field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row10[0].f2_81[0]
   label: f2_81
   population_policy: user_entered
@@ -2884,6 +2984,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row11[0].f2_83[0].
+  address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=a
 - field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row11[0].f2_84[0]
   label: f2_84
   population_policy: unsupported
@@ -2899,6 +3000,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row11[0].f2_84[0].
+  address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=b
 - field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row11[0].f2_85[0]
   label: f2_85
   population_policy: unsupported
@@ -2914,6 +3016,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row11[0].f2_85[0].
+  address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=c
 - field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row11[0].f2_86[0]
   label: f2_86
   population_policy: user_entered
@@ -2951,6 +3054,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row11[0].f2_88[0].
+  address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=f
 - field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row11[0].f2_89[0]
   label: f2_89
   population_policy: user_entered
@@ -2974,28 +3078,28 @@ field_dispositions:
   node_id: form_8949_2025_part_ii_line_1_column_h
   address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=h
 - field_name: topmostSubform[0].Page2[0].f2_91[0]
-  label: Line 10 - 10 (if Box F or Box L above is checked) - f2_91
-  population_policy: unsupported
-  value_format: text
-  reason: The official form_8949_2025 control 'Line 10 - 10 (if Box F or Box L above
-    is checked) - f2_91' has no authored graph, filer-fact, or decision mapping.
-  downstream_effect: Output leaves AcroForm field topmostSubform[0].Page2[0].f2_91[0]
-    blank and reports the unsupported filing field.
-  missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
-    for topmostSubform[0].Page2[0].f2_91[0].
-  address_id: 2025/document=form_8949/line=10/control=amount
-- field_name: topmostSubform[0].Page2[0].f2_92[0]
-  label: Line 10 - 10 (if Box F or Box L above is checked) - f2_92
+  label: Total proceeds
   population_policy: computed
   value_format: dollars
   node_id: form_8949_2025_part_ii_line_2_line_2_column_d_total
   address_id: 2025/document=form_8949/table=part_ii_line_2/row_template=total/column=d
-- field_name: topmostSubform[0].Page2[0].f2_93[0]
-  label: Line 10 - 10 (if Box F or Box L above is checked) - f2_93
+- field_name: topmostSubform[0].Page2[0].f2_92[0]
+  label: Total cost or other basis
   population_policy: computed
   value_format: dollars
   node_id: form_8949_2025_part_ii_line_2_line_2_column_e_total
   address_id: 2025/document=form_8949/table=part_ii_line_2/row_template=total/column=e
+- field_name: topmostSubform[0].Page2[0].f2_93[0]
+  label: Shaded no-entry cell under column (f) - totals row
+  display_name: Shaded no-entry cell under column (f) - totals row
+  population_policy: intentionally_blank
+  value_format: text
+  reason: The official form shades column (f) in the line-2 totals row and totals
+    only columns (d), (e), (g), and (h), while the AcroForm includes a text widget
+    there.
+  downstream_effect: None - no node maps to this widget and the fill pipeline never
+    writes it.
+  missing_capability: None - this is official shading, not a capability gap.
 - field_name: topmostSubform[0].Page2[0].f2_94[0]
   label: Line 10 - 10 (if Box F or Box L above is checked) - f2_94
   population_policy: computed

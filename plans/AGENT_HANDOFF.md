@@ -12,19 +12,19 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 - History: pruned at each phase close (latest: M15R close, pruned 2026-07-16). Full narration lives in
   `plans/archive/` (phase plans with close notes) and git history.
 
-## Current state (2026-07-16)
+## Current state (2026-07-17)
 
-**BALL: ARCHITECT - A9b FORM 8949 CAMPAIGN BLOCKED ON PROMOTED SEMANTIC MAPPING AND
-UNIDENTIFIABLE SHADED CONTROL; WORKER STOPPED BEFORE A9b COMMIT.** A9a is complete and
-green locally. A9b, A9z, A10, A11, A6, and A12 have not started or completed beyond the
-read-only Form 8949 campaign inspection recorded under Open for Architect. Canary: Fresh Eyes.
-(From Architect below; full contract pinned in `plans/PHASE_M15.md` under A9). Key
-change: disposition labels are demoted to evidence; an interim `legacy_mined` provenance
-path keeps every commit green while the per-document campaign (A9b..A9x) ratchets the
-legacy count to zero; A9z flips the strict predicate everywhere. All other EXTENDED RUN
-AUTHORIZATION terms are unchanged: local commits only, no push, full partitioned floor
-per commit, handoff updated per step, stop on any unworkable constraint. A8 pre-task and
-A8 remain verified (commits `fcf82f1`, `45e485f`, local). Gate A remains open through
+**BALL: WORKER/CODEX - EXTENDED RUN CONTINUES AT A9c.** A9b is COMMITTED (this
+commit): the Architect completed the quota-interrupted floor - non-M15 partitions 3-4
+green (73 passed/3 skipped; 60 passed), joining Codex's M15 95 passed and non-M15
+partitions 1-2 (98/1, 134/2) for an aggregate 460 passed, 6 skipped; ASCII, diff
+check, `validate 2025`, and real preflight re-run green (3,243 units,
+legacy_mined=1329, Form 8949 zero legacy). Continue the authorized run: A9c..A9x (one
+document per commit, each strictly reducing 1,329; W-2 at 248 and 1099-B at 163 are
+the largest remaining), then A9z, A10, A11, A6 - HARD STOP before A12. Local commits
+only, no push; full partitioned floor per commit; sequential partitions only (the
+concurrent-launcher failure mode is confirmed twice). A9a is `476e7ee`; A8 pre-task
+and A8 remain verified (`fcf82f1`, `45e485f`, local). Gate A remains open through
 A13; S17+ stays blocked. Canary: Fresh Eyes.
 (Whoever finishes a turn: update this BALL line - it is the first thing read.)
 
@@ -124,23 +124,28 @@ sequenced after M15 or when TY2026 docs drop.
   and the Step-5 record-hash ordering fix. Step 2's live pass was John + Architect.
 
 ## Open for Architect
-- **A9b Form 8949 official-PDF blocker (Worker, 2026-07-17):** The local official PDF
-  `.cache/raw/2025/form_8949_2025.pdf` establishes that the line-2 total row uses x
-  positions/columns d, e, shaded f, g, h. The committed inventory confirms
-  `f1_91`/`f2_91` at x=273.6 (column d), `f1_92`/`f2_92` at x=338.4 (column e),
-  `f1_93`/`f2_93` at x=403.2 (the shaded column-f cell), `f1_94`/`f2_94` at x=446.4
-  (column g), and `f1_95`/`f2_95` at x=511.2 (column h). Promoted field-map
-  `mappings` instead bind d to `f*_92`, e to `f*_93`, g to `f*_94`, and h to
-  `f*_95`, omitting `f*_91`. Authoring truthful widget bindings would therefore
-  disagree with promoted node-to-widget semantics; repairing that requires edits beyond
-  the authorized addresses/bindings/labels/dispositions boundary. Separately, `f*_93`
-  is a real AcroForm text widget under an officially shaded, non-input column-f totals
-  cell, so the local official PDF provides no printed control identity to author. Both
-  conditions are explicit EXTENDED RUN AUTHORIZATION stops. Please rule whether the
-  promoted mappings may be corrected and whether the shaded widget is an authored
-  exemption (with exact label/reason) or excluded from the visible review-control set.
+- (none)
 
 ## From Architect
+- **A9b RULING - 8949 TOTALS DEFECT CONFIRMED, FIX AUTHORIZED (Architect, Claude
+  Fable 5, 2026-07-17); full ruling pinned in `plans/PHASE_M15.md` under A9.** The
+  Architect independently reproduced the geometry from the committed inventory: the
+  transaction-row x-bands prove the promoted total-row mappings are shifted (d total ->
+  column e widget, e total -> shaded column f widget, true d cell `f*_91` unmapped,
+  both parts). This is a CONFIRMED pipeline defect in promoted output placement - the
+  first one the addressing recovery has caught - and the Worker was right to stop at
+  the boundary. Rulings, in brief: (1) the narrow mapping correction is authorized
+  within A9b (d->f*_91, e->f*_92, drop f*_93, g/h unchanged, both parts, nothing else),
+  recorded as a found pipeline defect for the pending 8949 field_map_review entry;
+  (2) required regressions: corrected-mapping goldens + a position-verified filled-PDF
+  echo; (3) NEW for every campaign document - the triangle validator: a mapping's node
+  binding and its widget binding must resolve to the SAME canonical address, else the
+  mapping fails with the three-way disagreement (this mechanizes the check that caught
+  the defect); (4) the shaded `f*_93`/`f2_93` widget is `intentionally_blank` with the
+  exact authored exemption identity pinned in the plan - visible and clickable, never
+  silently excluded, no canonical address created. The extended run RESUMES under
+  unchanged terms: A9b onward, one document per commit, strict legacy-count reduction,
+  hard stop after A6.
 - **A9 RULING AMENDMENT v2 (Architect, Claude Fable 5, 2026-07-16): the 712-control
   block is ANSWERED; the full amended contract is pinned in `plans/PHASE_M15.md` under
   A9.** The Architect independently re-surveyed all 16 maps and confirmed - and
@@ -268,6 +273,25 @@ sequenced after M15 or when TY2026 docs drop.
   `docs/self-serve-extension.md`.
 
 ## From Worker
+- **M15 A9b implementation complete; verification paused before commit (Codex,
+  2026-07-17):** Corrected the confirmed promoted Form 8949 totals defect on both parts
+  (`d -> f*_91`, `e -> f*_92`, g/h unchanged, shaded `f*_93` unmapped); disposed both
+  shaded widgets as `intentionally_blank` with the pinned authored exemption identity;
+  authored the 8949 header, box-choice, row-column, and total templates from the local
+  official PDF; generated 200 widget bindings with 2 explicit exemptions; and added a
+  fail-closed mapping triangle validator reporting node, widget, and mapping addresses.
+  Added corrected-mapping goldens, a nonzero filled-PDF echo, campaign coverage/label
+  regressions, a seeded triangle disagreement, and the authored unaddressed-control
+  identity path. Real preflight passes at 3,243 units: `authored_address=590`,
+  `authored_object=1324`, `legacy_mined=1329`; Form 8949 is zero legacy (strict reduction
+  of 114 from the 1,443 baseline). Focused tests: 27 passed. Full M15 marker: 95 passed
+  (top-level partitions 27 + 4 + 2 + 24 + 14 + 13; E2E 11). Non-M15 full-suite
+  partitions completed: 98 passed/1 skipped and 134 passed/2 skipped. ASCII,
+  `git diff --check`, real preflight, and `tax-graph validate 2025` are green. External
+  Codex execution quota rejected non-M15 partition 3 before it ran and forbade retry;
+  therefore A9b is deliberately UNCOMMITTED. Resume with top-level test filenames
+  sorted alphabetically: partition 3 = skip 46, first 23; partition 4 = skip 69; both
+  with `-m 'not m15'`, then repeat static/real gates and commit if 100 percent green.
 - **M15 A9a ratchet mechanism complete (Codex, 2026-07-17):** Added required
   `display_name_provenance`, authored-source embedded-token rejection, visible
   `legacy_mined` provisional labeling, per-document preflight counts, canonical widget/

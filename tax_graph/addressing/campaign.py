@@ -127,6 +127,8 @@ def build_document_addresses(root: str | Path, document_id: str) -> dict[str, An
 
 def _control_evidence(item: dict[str, Any], mapping: dict[str, Any] | None,
                       disposition: dict[str, Any], *, document_id: str) -> dict[str, Any] | None:
+    if document_id == "form_8949_2025":
+        return _form_8949_control_evidence(item, mapping, disposition)
     line = item.get("line_anchor")
     role = _role(item, mapping)
     total = re.fullmatch(
@@ -171,6 +173,95 @@ def _control_evidence(item: dict[str, Any], mapping: dict[str, Any] | None,
         "semantic_path": path, "official_ref": official_ref, "control_role": role,
         "printed_label": disposition.get("label", ""), "field_name": item["field_name"],
         "widget_type": item["field_type"], "page": item["page"],
+        "rect": [item["x0"], item["y0"], item["x1"], item["y1"]],
+        "semantic_status": "pending_review",
+    }
+
+
+def _form_8949_control_evidence(
+    item: dict[str, Any], mapping: dict[str, Any] | None, disposition: dict[str, Any]
+) -> dict[str, Any] | None:
+    """Project every meaningful Form 8949 widget through authored templates."""
+    field_name = str(item["field_name"])
+    page = int(item["page"])
+    part = "i" if page == 1 else "ii"
+    header = re.fullmatch(r".*\.f[12]_0([12])\[0\]", field_name)
+    choice = re.fullmatch(r".*\.c[12]_1\[([0-5])\]", field_name)
+    row = re.fullmatch(r".*\.Row([0-9]+)\[0\]\.f[12]_([0-9]+)\[0\]", field_name)
+    total = re.fullmatch(r".*\.f[12]_9([1-5])\[0\]", field_name)
+    if header:
+        token, label = {
+            "1": ("name", "Name(s) shown on return"),
+            "2": ("taxpayer_identification_number", "Social security number or taxpayer identification number"),
+        }[header.group(1)]
+        path = [{"kind": "section", "token": "header"}, {"kind": "control", "token": token}]
+        official_ref = "Header"
+        role = "identifier" if header.group(1) == "2" else "text"
+    elif choice:
+        labels = {
+            "i": (
+                ("a", "Short-term transactions reported on Form(s) 1099-B showing basis was reported to the IRS"),
+                ("b", "Short-term transactions reported on Form(s) 1099-B showing basis was not reported to the IRS"),
+                ("c", "Short-term transactions, other than digital asset transactions, not reported to you on Form 1099-B or Form 1099-DA"),
+                ("g", "Short-term transactions reported on Form(s) 1099-DA showing basis was reported to the IRS"),
+                ("h", "Short-term transactions reported on Form(s) 1099-DA showing basis was not reported to the IRS"),
+                ("i", "Short-term digital asset transactions not reported to you on Form 1099-DA or Form 1099-B"),
+            ),
+            "ii": (
+                ("d", "Long-term transactions reported on Form(s) 1099-B showing basis was reported to the IRS"),
+                ("e", "Long-term transactions reported on Form(s) 1099-B showing basis was not reported to the IRS"),
+                ("f", "Long-term transactions, other than digital asset transactions, not reported to you on Form 1099-B or Form 1099-DA"),
+                ("j", "Long-term transactions reported on Form(s) 1099-DA showing basis was reported to the IRS"),
+                ("k", "Long-term transactions reported on Form(s) 1099-DA showing basis was not reported to the IRS"),
+                ("l", "Long-term digital asset transactions not reported to you on Form 1099-DA or Form 1099-B"),
+            ),
+        }
+        token, label = labels[part][int(choice.group(1))]
+        path = [{"kind": "section", "token": f"part_{part}_transaction_type"},
+                {"kind": "option", "token": token}]
+        official_ref = f"Box {token.upper()}"
+        role = "checkbox"
+    elif row:
+        index = int(row.group(2))
+        column = "abcdefgh"[(index - 3) % 8]
+        labels = {
+            "a": "Description of property",
+            "b": "Date acquired",
+            "c": "Date sold or disposed of",
+            "d": "Proceeds (sales price)",
+            "e": "Cost or other basis",
+            "f": "Code(s) from instructions",
+            "g": "Amount of adjustment",
+            "h": "Gain or (loss)",
+        }
+        path = [{"kind": "table", "token": f"part_{part}_line_1"},
+                {"kind": "row_template", "token": "transaction"},
+                {"kind": "column", "token": column}]
+        official_ref = f"Line 1 column ({column})"
+        label = labels[column]
+        role = "description" if column in {"a", "f"} else "date" if column in {"b", "c"} else "amount"
+    elif total:
+        column = "defgh"[int(total.group(1)) - 1]
+        if column == "f":
+            return None
+        labels = {
+            "d": "Total proceeds",
+            "e": "Total cost or other basis",
+            "g": "Total adjustments",
+            "h": "Total gain or (loss)",
+        }
+        path = [{"kind": "table", "token": f"part_{part}_line_2"},
+                {"kind": "row_template", "token": "total"},
+                {"kind": "column", "token": column}]
+        official_ref = f"Line 2 column ({column})"
+        label = labels[column]
+        role = "amount"
+    else:
+        return None
+    return {
+        "semantic_path": path, "official_ref": official_ref, "control_role": role,
+        "printed_label": label, "field_name": field_name,
+        "widget_type": item["field_type"], "page": page,
         "rect": [item["x0"], item["y0"], item["x1"], item["y1"]],
         "semantic_status": "pending_review",
     }

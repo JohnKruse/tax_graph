@@ -281,6 +281,7 @@ def _review_identity(
     """Resolve authored reviewer language without deriving names from ids."""
     if object_type == "field_control":
         authored_label = str((address_data or {}).get("printed_label") or "").strip()
+        authored_identity = str((object_data or {}).get("display_name") or "").strip()
         identity_slot = str((object_data or {}).get("identity_slot") or "").strip()
         legacy_label = str((object_data or {}).get("label") or "").strip()
         authored_safe = authored_label and not (
@@ -288,6 +289,8 @@ def _review_identity(
         )
         if authored_safe:
             display_name, provenance = authored_label, "authored_address"
+        elif authored_identity:
+            display_name, provenance = authored_identity, "authored_object"
         elif authored_label and legacy_label:
             display_name, provenance = legacy_label, "legacy_mined"
         elif authored_label:
@@ -361,6 +364,14 @@ def _physical_qualifier(
         parts.append(f"{part} row {row_slot}")
     elif row_match:
         parts.append(f"row {row_match.group(1)}")
+    elif re.search(r"\.Page1\[.*\.f1_0[12]\[", field_name):
+        parts.append("Part I")
+    elif re.search(r"\.Page2\[.*\.f2_0[12]\[", field_name):
+        parts.append("Part II")
+    elif re.search(r"\.Page1\[.*\.f1_9[1-5]\[", field_name):
+        parts.append("Part I totals row")
+    elif re.search(r"\.Page2\[.*\.f2_9[1-5]\[", field_name):
+        parts.append("Part II totals row")
     leaf_index = re.search(r"\.(?:[A-Za-z0-9_-]+)\[(\d+)\]$", field_name)
     if leaf_index and int(leaf_index.group(1)) > 0:
         parts.append(f"choice {int(leaf_index.group(1)) + 1}")

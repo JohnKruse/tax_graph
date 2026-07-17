@@ -52,12 +52,15 @@ def validate_field_maps(
     errors: list[str] = []
     address_ids: set[str] = set()
     widget_addresses: dict[tuple[str, str], str] = {}
+    node_addresses: dict[tuple[str, str], set[str]] = {}
     if (root_path / "graph" / str(year) / "addresses").is_dir():
         try:
             from tax_graph.addressing import load_address_artifacts
             artifacts = load_address_artifacts(year, root_path)
             address_ids = {item.address_id for item in artifacts.addresses}
             widget_addresses = {(item["document_id"], item["field_name"]): item["address_id"] for item in artifacts.widget_bindings}
+            for item in artifacts.node_bindings:
+                node_addresses.setdefault((item["document_id"], item["node_id"]), set()).add(item["address_id"])
         except (ValueError, OSError) as exc:
             errors.append(f"canonical addresses {year} -> {exc}")
     try:
@@ -105,6 +108,15 @@ def validate_field_maps(
                 if node_id not in known_nodes:
                     errors.append(f"field map {document_id} -> unknown node {node_id}")
                 mapped_nodes.add(node_id)
+                if address_id:
+                    bound = node_addresses.get((document_id, node_id), set())
+                    if address_id not in bound:
+                        errors.append(
+                            f"field map {document_id} -> mapping triangle disagrees for {field_name}: "
+                            f"node {node_id} -> {sorted(bound) or ['<unbound>']}, "
+                            f"widget {field_name} -> {widget_addresses.get((document_id, field_name), '<unbound>')}, "
+                            f"mapping -> {address_id}"
+                        )
         for node_id in excluded_nodes:
             if node_id not in known_nodes and not excluded_items[node_id].get("optional_extension"):
                 errors.append(f"field map {document_id} -> excluded unknown node {node_id}")

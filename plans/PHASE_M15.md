@@ -627,6 +627,41 @@ method and sequencing are amended:
    established from the local PDF gets an explicitly authored exemption label + specific
    reason, listed in the handoff at A9z - never a generated or guessed label.
 
+**A9b ruling - Form 8949 totals mapping defect (Architect, 2026-07-17).** The Architect
+independently verified the Worker's geometry finding: transaction-row column x-bands
+(d=273.6, e=338.4, f=403.2, g=446.4, h=511.2) prove the promoted total-row mappings are
+shifted - the column-d total writes into column e's widget (`f*_92`), the column-e total
+writes into the shaded column-f widget (`f*_93`), and the true column-d cell (`f*_91`)
+is unmapped, on BOTH parts. This is a confirmed pipeline defect in promoted output
+placement (physical widget assignment only; no graph rule, edge, node, or value is
+touched). Rulings:
+
+1. **The mapping correction is AUTHORIZED within A9b**, narrowly: change
+   `*_column_d_total -> f*_91`, `*_column_e_total -> f*_92`, remove the `f*_93`
+   mappings, leave g/h unchanged, both parts. Nothing else in `mappings` moves. Record
+   it in the handoff as a found pipeline defect; the pending Form 8949
+   field_map_review queue entry presents the corrected mapping to John in the campaign.
+2. **Required regressions with the fix:** (a) a golden pinning the four corrected
+   total mappings per part; (b) a filled-PDF echo that fills nonzero 8949 totals and
+   asserts each value lands in the named widget (`f*_91` gets d, etc.); (c) the
+   general validator below.
+3. **New triangle validator (applies to every A9b..A9x document).** A field-map
+   mapping joins node -> widget; node bindings join node -> address; widget bindings
+   join widget -> address. The triangle must commute: the node's bound address and the
+   mapped widget's bound address must be the SAME address (or the mapping fails
+   validation with the exact three-way disagreement). This converts the manual
+   PDF-squint that caught this defect into a deterministic check that catches any
+   future column/row/box shift on any form.
+4. **The shaded `f*_93`/`f2_93` widget is `intentionally_blank`, not excluded.** It
+   stays in the visible review-control set per the Gate A invariant (every control has
+   exactly one policy and is clickable). Authored exemption identity: display label
+   `Shaded no-entry cell under column (f) - totals row`; reason: the official form
+   shades column (f) in the line-2 totals row and its printed instruction totals only
+   columns (d), (e), (g), and (h), while the AcroForm ships a text widget there anyway;
+   downstream_effect: none - no node maps to it after the correction and the fill
+   pipeline never writes it; missing_capability: none (official shading, not a
+   capability gap). No canonical address is created for it.
+
 - Add required reviewer-facing `display_name`, `official_locator`, and `review_prompt` fields to the
   review-unit projection. Resolve them in this order: authored canonical-address metadata, authored
   field-disposition label/identity slot, official locator text. AcroForm names, node ids, and address

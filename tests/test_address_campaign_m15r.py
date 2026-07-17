@@ -40,6 +40,13 @@ def test_core_campaign_reconciles_every_inventory_control(campaign) -> None:
 @pytest.mark.m15r
 def test_form_8949_uses_row_template_columns(campaign) -> None:
     payload = campaign["form_8949_2025"]
+    assert payload["coverage"] == {
+        "inventory": 202,
+        "addressed_widgets": 200,
+        "exempt_widgets": 2,
+        "node_bindings": 16,
+        "references": 6,
+    }
     paths = [item["path"] for item in payload["registry"]["addresses"]]
     assert any(
         [part["kind"] for part in path[-3:]] == ["table", "row_template", "column"]
@@ -48,6 +55,9 @@ def test_form_8949_uses_row_template_columns(campaign) -> None:
     )
     bindings = payload["widget_bindings"]["bindings"]
     assert len({item["address_id"] for item in bindings}) < len(bindings)
+    addresses = {item["address_id"]: item for item in payload["registry"]["addresses"]}
+    assert addresses["2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=a"]["printed_label"] == "Description of property"
+    assert addresses["2025/document=form_8949/table=part_ii_line_2/row_template=total/column=e"]["printed_label"] == "Total cost or other basis"
 
 
 @pytest.mark.m15r

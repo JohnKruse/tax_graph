@@ -9,11 +9,23 @@ import shutil
 import pytest
 import yaml
 
-from workbench.manifest import build_manifest
+from workbench.manifest import _review_identity, build_manifest
 from workbench.schema import validate_review_manifest
 
 
 ROOT = Path(__file__).resolve().parents[1]
+
+
+@pytest.mark.m15
+def test_authored_control_identity_precedes_legacy_disposition_label() -> None:
+    identity = _review_identity(
+        {}, "field_control",
+        {"display_name": "Official shaded cell", "label": "f1_93", "population_policy": "intentionally_blank"},
+        None, None, {"page": 1},
+    )
+    assert identity[:3] == (
+        "Official shaded cell", "authored_object", "Official shaded cell - page 1",
+    )
 
 
 @pytest.mark.m15

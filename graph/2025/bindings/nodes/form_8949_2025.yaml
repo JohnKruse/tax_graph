@@ -5,22 +5,22 @@ binding_kind: node
 bindings:
 - node_id: form_8949_2025_part_i_line_1_column_d
   address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=d
-  expected_official_ref: Column (d)
+  expected_official_ref: Line 1 column (d)
   role: value
   status: exact
 - node_id: form_8949_2025_part_i_line_1_column_e
   address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=e
-  expected_official_ref: Column (e)
+  expected_official_ref: Line 1 column (e)
   role: value
   status: exact
 - node_id: form_8949_2025_part_i_line_1_column_g
   address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=g
-  expected_official_ref: Column (g)
+  expected_official_ref: Line 1 column (g)
   role: value
   status: exact
 - node_id: form_8949_2025_part_i_line_1_column_h
   address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=h
-  expected_official_ref: Column (h)
+  expected_official_ref: Line 1 column (h)
   role: value
   status: exact
 - node_id: form_8949_2025_part_i_line_2_line_2_column_d_total
@@ -45,22 +45,22 @@ bindings:
   status: exact
 - node_id: form_8949_2025_part_ii_line_1_column_d
   address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=d
-  expected_official_ref: Column (d)
+  expected_official_ref: Line 1 column (d)
   role: value
   status: exact
 - node_id: form_8949_2025_part_ii_line_1_column_e
   address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=e
-  expected_official_ref: Column (e)
+  expected_official_ref: Line 1 column (e)
   role: value
   status: exact
 - node_id: form_8949_2025_part_ii_line_1_column_g
   address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=g
-  expected_official_ref: Column (g)
+  expected_official_ref: Line 1 column (g)
   role: value
   status: exact
 - node_id: form_8949_2025_part_ii_line_1_column_h
   address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=h
-  expected_official_ref: Column (h)
+  expected_official_ref: Line 1 column (h)
   role: value
   status: exact
 - node_id: form_8949_2025_part_ii_line_2_line_2_column_d_total

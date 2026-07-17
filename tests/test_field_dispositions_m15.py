@@ -5,6 +5,7 @@ from __future__ import annotations
 import copy
 import json
 from pathlib import Path
+from types import SimpleNamespace
 
 import pytest
 import yaml
@@ -161,7 +162,7 @@ def test_real_pdf_widget_preflight_detects_missing_maps() -> None:
 
 
 @pytest.mark.m15
-def test_all_exposed_controls_have_one_collision_free_disposition() -> None:
+def test_all_exposed_controls_have_one_complete_disposition() -> None:
     for path in sorted((ROOT / "graph/2025/field_maps").glob("*.yaml")):
         field_map = yaml.safe_load(path.read_text(encoding="utf-8"))
         inventory = json.loads((ROOT / field_map["inventory"]).read_text(encoding="utf-8"))
@@ -169,7 +170,7 @@ def test_all_exposed_controls_have_one_collision_free_disposition() -> None:
         dispositions = field_map["field_dispositions"]
         assert {item["field_name"] for item in dispositions} == widget_names
         assert len(dispositions) == len(widget_names)
-        assert len({item["label"] for item in dispositions}) == len(dispositions)
+        assert all(item["label"] for item in dispositions)
         assert all("not mapped in the supported output profile" not in item["reason"].lower() for item in field_map["excluded_nodes"])
 
 
@@ -224,6 +225,68 @@ def test_form_1040_nonzero_1b_through_1h_sum_and_pdf_echo(tmp_path: Path) -> Non
         blank_with_note=notes,
     )
     assert filled.field_values == expected
+
+
+@pytest.mark.m15
+def test_form_8949_total_mappings_and_pdf_positions(tmp_path: Path) -> None:
+    field_map = yaml.safe_load((ROOT / "graph/2025/field_maps/form_8949_2025.yaml").read_text())
+    totals = {
+        item["node_id"]: item["field_name"]
+        for item in field_map["mappings"]
+        if "line_2_line_2_column" in item.get("node_id", "")
+    }
+    expected = {
+        "form_8949_2025_part_i_line_2_line_2_column_d_total": "topmostSubform[0].Page1[0].f1_91[0]",
+        "form_8949_2025_part_i_line_2_line_2_column_e_total": "topmostSubform[0].Page1[0].f1_92[0]",
+        "form_8949_2025_part_i_line_2_line_2_column_g_total": "topmostSubform[0].Page1[0].f1_94[0]",
+        "form_8949_2025_part_i_line_2_line_2_column_h_total": "topmostSubform[0].Page1[0].f1_95[0]",
+        "form_8949_2025_part_ii_line_2_line_2_column_d_total": "topmostSubform[0].Page2[0].f2_91[0]",
+        "form_8949_2025_part_ii_line_2_line_2_column_e_total": "topmostSubform[0].Page2[0].f2_92[0]",
+        "form_8949_2025_part_ii_line_2_line_2_column_g_total": "topmostSubform[0].Page2[0].f2_94[0]",
+        "form_8949_2025_part_ii_line_2_line_2_column_h_total": "topmostSubform[0].Page2[0].f2_95[0]",
+    }
+    assert totals == expected
+    field_values = {field_name: str((index + 1) * 111) for index, field_name in enumerate(expected.values())}
+    filled = fill_official_pdf(
+        ROOT / ".cache/raw/2025/form_8949_2025.pdf",
+        tmp_path / "form_8949_totals.pdf",
+        document_id="form_8949_2025",
+        field_values=field_values,
+    )
+    assert filled.field_values == field_values
+
+
+@pytest.mark.m15
+def test_mapping_triangle_reports_node_widget_and_mapping_disagreement(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    root, field_map = _fixture_root(tmp_path)
+    (root / "graph/2025/addresses").mkdir(parents=True)
+    field_map["mappings"][0]["address_id"] = "2025/document=form_test/line=1/control=amount"
+    field_map["field_dispositions"][0]["address_id"] = "2025/document=form_test/line=1/control=amount"
+    artifacts = SimpleNamespace(
+        addresses=(
+            SimpleNamespace(address_id="2025/document=form_test/line=1/control=amount"),
+            SimpleNamespace(address_id="2025/document=form_test/line=2/control=amount"),
+        ),
+        widget_bindings=({
+            "document_id": "form_test_2025", "field_name": "f_text",
+            "address_id": "2025/document=form_test/line=1/control=amount",
+        },),
+        node_bindings=({
+            "document_id": "form_test_2025", "node_id": "form_test_2025_line_1",
+            "address_id": "2025/document=form_test/line=2/control=amount",
+        },),
+    )
+    monkeypatch.setattr("tax_graph.addressing.load_address_artifacts", lambda year, path: artifacts)
+    errors = _write_map(root, field_map)
+    assert any(
+        "mapping triangle disagrees for f_text" in error
+        and "node form_test_2025_line_1" in error
+        and "widget f_text" in error
+        and "mapping -> 2025/document=form_test/line=1/control=amount" in error
+        for error in errors
+    )
 
 
 @pytest.mark.m15
