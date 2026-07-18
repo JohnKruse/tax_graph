@@ -9,11 +9,21 @@ import shutil
 import pytest
 import yaml
 
-from workbench.manifest import _review_identity, build_manifest
+from workbench.manifest import _physical_qualifier, _review_identity, build_manifest
 from workbench.schema import validate_review_manifest
 
 
 ROOT = Path(__file__).resolve().parents[1]
+
+
+@pytest.mark.m15
+def test_w2_physical_qualifier_names_copy_and_repeated_row() -> None:
+    assert _physical_qualifier({
+        "field_name": "topmostSubform[0].CopyB[0].Line12_ReadOrder[0].f3_24[0]",
+    }, None) == "Copy B, Box 12 row 3"
+    assert _physical_qualifier({
+        "field_name": "topmostSubform[0].CopyD[0].Boxes15_ReadOrder[0].f6_40[0]",
+    }, None) == "Copy D, state/local row 2"
 
 
 @pytest.mark.m15

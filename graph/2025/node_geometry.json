@@ -23453,7 +23453,7 @@
       "value_format": "dollars"
     },
     {
-      "address_id": "2025/document=form_w2/box=16/control=f_33",
+      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=17",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyA[0].Box16_ReadOrder[0].f1_33[0]",
       "label": "Line 15 - f1_33",
@@ -23470,7 +23470,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/box=16/control=f_34",
+      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=17",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyA[0].Box16_ReadOrder[0].f1_34[0]",
       "label": "f1_34",
@@ -23487,7 +23487,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/box=17/control=f_35",
+      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=18",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyA[0].Box17_ReadOrder[0].f1_35[0]",
       "label": "Line 15 - f1_35",
@@ -23504,7 +23504,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/box=17/control=f_36",
+      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=18",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyA[0].Box17_ReadOrder[0].f1_36[0]",
       "label": "f1_36",
@@ -23521,7 +23521,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/box=18/control=f_37",
+      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=19",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyA[0].Box18_ReadOrder[0].f1_37[0]",
       "label": "Line 15 - f1_37",
@@ -23538,7 +23538,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/box=18/control=f_38",
+      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=19",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyA[0].Box18_ReadOrder[0].f1_38[0]",
       "label": "f1_38",
@@ -23555,7 +23555,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/box=19/control=f_39",
+      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=20",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyA[0].Box19_ReadOrder[0].f1_39[0]",
       "label": "Line 15 - f1_39",
@@ -23572,7 +23572,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/box=19/control=f_40",
+      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=20",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyA[0].Box19_ReadOrder[0].f1_40[0]",
       "label": "f1_40",
@@ -23589,7 +23589,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/box=a/control=f_01",
+      "address_id": "2025/document=form_w2/box=a/control=employee_ssn",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyA[0].BoxA_ReadOrder[0].f1_01[0]",
       "label": "Line a - 22222 VOID - f1_01",
@@ -23606,7 +23606,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/box=15/control=f_29",
+      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=15",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyA[0].Boxes15_ReadOrder[0].Box15_ReadOrder[0].f1_29[0]",
       "label": "Line 15 - f1_29",
@@ -23623,6 +23623,7 @@
       "value_format": "text"
     },
     {
+      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=15",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyA[0].Boxes15_ReadOrder[0].f1_30[0]",
       "label": "Line 15 - f1_30",
@@ -23639,6 +23640,7 @@
       "value_format": "text"
     },
     {
+      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=16",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyA[0].Boxes15_ReadOrder[0].f1_31[0]",
       "label": "f1_31",
@@ -23655,6 +23657,7 @@
       "value_format": "text"
     },
     {
+      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=16",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyA[0].Boxes15_ReadOrder[0].f1_32[0]",
       "label": "f1_32",
@@ -23671,6 +23674,7 @@
       "value_format": "text"
     },
     {
+      "address_id": "2025/document=form_w2/box=e/control=first_name_initial",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyA[0].Col_Left[0].FirstName_ReadOrder[0].f1_05[0]",
       "label": "Line o - f1_05",
@@ -23687,6 +23691,7 @@
       "value_format": "text"
     },
     {
+      "address_id": "2025/document=form_w2/box=e/control=last_name",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyA[0].Col_Left[0].LastName_ReadOrder[0].f1_06[0]",
       "label": "Line o - f1_06",
@@ -23703,6 +23708,7 @@
       "value_format": "text"
     },
     {
+      "address_id": "2025/document=form_w2/box=b/control=value",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyA[0].Col_Left[0].f1_02[0]",
       "label": "Line b - f1_02",
@@ -23719,6 +23725,7 @@
       "value_format": "text"
     },
     {
+      "address_id": "2025/document=form_w2/box=c/control=value",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyA[0].Col_Left[0].f1_03[0]",
       "label": "Line c - f1_03",
@@ -23735,6 +23742,7 @@
       "value_format": "text"
     },
     {
+      "address_id": "2025/document=form_w2/box=d/control=value",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyA[0].Col_Left[0].f1_04[0]",
       "label": "Line d - f1_04",
@@ -23751,6 +23759,7 @@
       "value_format": "text"
     },
     {
+      "address_id": "2025/document=form_w2/box=e/control=suffix",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyA[0].Col_Left[0].f1_07[0]",
       "label": "Line o - f1_07",
@@ -23767,6 +23776,7 @@
       "value_format": "text"
     },
     {
+      "address_id": "2025/document=form_w2/box=f/control=value",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyA[0].Col_Left[0].f1_08[0]",
       "label": "Line 12b - f1_08",
@@ -23783,7 +23793,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/box=11/control=f_19",
+      "address_id": "2025/document=form_w2/box=11/control=value",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyA[0].Col_Right[0].Box11_ReadOrder[0].f1_19[0]",
       "label": "Line o - f1_19",
@@ -23800,7 +23810,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/box=1/control=f_09",
+      "address_id": "2025/document=form_w2/box=1/control=value",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyA[0].Col_Right[0].Box1_ReadOrder[0].f1_09[0]",
       "label": "Line b - f1_09",
@@ -23817,7 +23827,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/box=3/control=f_11",
+      "address_id": "2025/document=form_w2/box=3/control=value",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyA[0].Col_Right[0].Box3_ReadOrder[0].f1_11[0]",
       "label": "Line c - f1_11",
@@ -23834,7 +23844,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/box=5/control=f_13",
+      "address_id": "2025/document=form_w2/box=5/control=value",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyA[0].Col_Right[0].Box5_ReadOrder[0].f1_13[0]",
       "label": "Line 5 - f1_13",
@@ -23851,7 +23861,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/box=7/control=f_15",
+      "address_id": "2025/document=form_w2/box=7/control=value",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyA[0].Col_Right[0].Box7_ReadOrder[0].f1_15[0]",
       "label": "Line 7 - f1_15",
@@ -23868,7 +23878,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/box=9/control=f_17",
+      "address_id": "2025/document=form_w2/box=9/control=value",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyA[0].Col_Right[0].Box9_ReadOrder[0].f1_17[0]",
       "label": "Line d - f1_17",
@@ -23885,6 +23895,7 @@
       "value_format": "text"
     },
     {
+      "address_id": "2025/document=form_w2/box=12/row_template=entry/column=code",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyA[0].Col_Right[0].Line12_ReadOrder[0].f1_20[0]",
       "label": "Line o - d o e - f1_20",
@@ -23901,6 +23912,7 @@
       "value_format": "text"
     },
     {
+      "address_id": "2025/document=form_w2/box=12/row_template=entry/column=amount",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyA[0].Col_Right[0].Line12_ReadOrder[0].f1_21[0]",
       "label": "Line o - d o e - f1_21",
@@ -23917,6 +23929,7 @@
       "value_format": "text"
     },
     {
+      "address_id": "2025/document=form_w2/box=12/row_template=entry/column=code",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyA[0].Col_Right[0].Line12_ReadOrder[0].f1_22[0]",
       "label": "Line o - d o e - f1_22",
@@ -23933,6 +23946,7 @@
       "value_format": "text"
     },
     {
+      "address_id": "2025/document=form_w2/box=12/row_template=entry/column=amount",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyA[0].Col_Right[0].Line12_ReadOrder[0].f1_23[0]",
       "label": "Line o - d o e - f1_23",
@@ -23949,6 +23963,7 @@
       "value_format": "text"
     },
     {
+      "address_id": "2025/document=form_w2/box=12/row_template=entry/column=code",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyA[0].Col_Right[0].Line12_ReadOrder[0].f1_24[0]",
       "label": "Line o - d o e - f1_24",
@@ -23965,6 +23980,7 @@
       "value_format": "text"
     },
     {
+      "address_id": "2025/document=form_w2/box=12/row_template=entry/column=amount",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyA[0].Col_Right[0].Line12_ReadOrder[0].f1_25[0]",
       "label": "Line o - d o e - f1_25",
@@ -23981,6 +23997,7 @@
       "value_format": "text"
     },
     {
+      "address_id": "2025/document=form_w2/box=12/row_template=entry/column=code",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyA[0].Col_Right[0].Line12_ReadOrder[0].f1_26[0]",
       "label": "Line o - d o e - f1_26",
@@ -23997,6 +24014,7 @@
       "value_format": "text"
     },
     {
+      "address_id": "2025/document=form_w2/box=12/row_template=entry/column=amount",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyA[0].Col_Right[0].Line12_ReadOrder[0].f1_27[0]",
       "label": "Line o - d o e - f1_27",
@@ -24013,6 +24031,7 @@
       "value_format": "text"
     },
     {
+      "address_id": "2025/document=form_w2/box=13/option=retirement_plan",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyA[0].Col_Right[0].Retirement_ReadOrder[0].c1_3[0]",
       "label": "Line o - c1_3",
@@ -24029,6 +24048,7 @@
       "value_format": "checkbox"
     },
     {
+      "address_id": "2025/document=form_w2/box=13/option=statutory_employee",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyA[0].Col_Right[0].Statutory_ReadOrder[0].c1_2[0]",
       "label": "Line o - c1_2",
@@ -24045,6 +24065,7 @@
       "value_format": "checkbox"
     },
     {
+      "address_id": "2025/document=form_w2/box=13/option=third_party_sick_pay",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyA[0].Col_Right[0].c1_4[0]",
       "label": "Line o - c1_4",
@@ -24061,6 +24082,7 @@
       "value_format": "checkbox"
     },
     {
+      "address_id": "2025/document=form_w2/box=2/control=value",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyA[0].Col_Right[0].f1_10[0]",
       "label": "Line b - f1_10",
@@ -24077,6 +24099,7 @@
       "value_format": "text"
     },
     {
+      "address_id": "2025/document=form_w2/box=4/control=value",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyA[0].Col_Right[0].f1_12[0]",
       "label": "Line c - f1_12",
@@ -24093,6 +24116,7 @@
       "value_format": "text"
     },
     {
+      "address_id": "2025/document=form_w2/box=6/control=value",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyA[0].Col_Right[0].f1_14[0]",
       "label": "Line 5 - f1_14",
@@ -24109,6 +24133,7 @@
       "value_format": "text"
     },
     {
+      "address_id": "2025/document=form_w2/box=8/control=value",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyA[0].Col_Right[0].f1_16[0]",
       "label": "Line 7 - f1_16",
@@ -24125,6 +24150,7 @@
       "value_format": "text"
     },
     {
+      "address_id": "2025/document=form_w2/box=10/control=value",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyA[0].Col_Right[0].f1_18[0]",
       "label": "Line d - f1_18",
@@ -24141,6 +24167,7 @@
       "value_format": "text"
     },
     {
+      "address_id": "2025/document=form_w2/box=14/control=value",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyA[0].Col_Right[0].f1_28[0]",
       "label": "Line o - f1_28",
@@ -24157,6 +24184,7 @@
       "value_format": "text"
     },
     {
+      "address_id": "2025/document=form_w2/box=void/option=void",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyA[0].Void_ReadOrder[0].c1_1[0]",
       "label": "Line a - 22222 VOID - c1_1",
@@ -24173,6 +24201,7 @@
       "value_format": "checkbox"
     },
     {
+      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=21",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyA[0].f1_41[0]",
       "label": "Line 15 - f1_41",
@@ -24189,6 +24218,7 @@
       "value_format": "text"
     },
     {
+      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=21",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyA[0].f1_42[0]",
       "label": "f1_42",
@@ -24205,7 +24235,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/box=16/control=f_33",
+      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=17",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].Copy1[0].Box16_ReadOrder[0].f2_33[0]",
       "label": "Line 15 - f2_33 (page 3, control 82)",
@@ -24222,7 +24252,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/box=16/control=f_34",
+      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=17",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].Copy1[0].Box16_ReadOrder[0].f2_34[0]",
       "label": "f2_34 (page 3, control 83)",
@@ -24239,7 +24269,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/box=17/control=f_35",
+      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=18",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].Copy1[0].Box17_ReadOrder[0].f2_35[0]",
       "label": "Line 15 - f2_35 (page 3, control 84)",
@@ -24256,7 +24286,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/box=17/control=f_36",
+      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=18",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].Copy1[0].Box17_ReadOrder[0].f2_36[0]",
       "label": "f2_36 (page 3, control 85)",
@@ -24273,7 +24303,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/box=18/control=f_37",
+      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=19",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].Copy1[0].Box18_ReadOrder[0].f2_37[0]",
       "label": "Line 15 - f2_37 (page 3, control 86)",
@@ -24290,7 +24320,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/box=18/control=f_38",
+      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=19",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].Copy1[0].Box18_ReadOrder[0].f2_38[0]",
       "label": "f2_38 (page 3, control 87)",
@@ -24307,7 +24337,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/box=19/control=f_39",
+      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=20",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].Copy1[0].Box19_ReadOrder[0].f2_39[0]",
       "label": "Line 15 - f2_39 (page 3, control 88)",
@@ -24324,7 +24354,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/box=19/control=f_40",
+      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=20",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].Copy1[0].Box19_ReadOrder[0].f2_40[0]",
       "label": "f2_40 (page 3, control 89)",
@@ -24341,7 +24371,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/box=a/control=f_01",
+      "address_id": "2025/document=form_w2/box=a/control=employee_ssn",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].Copy1[0].BoxA_ReadOrder[0].f2_01[0]",
       "label": "Line a - 22222 - f2_01",
@@ -24358,7 +24388,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/box=15/control=f_29",
+      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=15",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].Copy1[0].Boxes15_ReadOrder[0].Box15_ReadOrder[0].f2_29[0]",
       "label": "Line 15 - f2_29 (page 3, control 78)",
@@ -24375,6 +24405,7 @@
       "value_format": "text"
     },
     {
+      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=15",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].Copy1[0].Boxes15_ReadOrder[0].f2_30[0]",
       "label": "Line 15 - f2_30 (page 3, control 79)",
@@ -24391,6 +24422,7 @@
       "value_format": "text"
     },
     {
+      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=16",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].Copy1[0].Boxes15_ReadOrder[0].f2_31[0]",
       "label": "f2_31 (page 3, control 80)",
@@ -24407,6 +24439,7 @@
       "value_format": "text"
     },
     {
+      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=16",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].Copy1[0].Boxes15_ReadOrder[0].f2_32[0]",
       "label": "f2_32 (page 3, control 81)",
@@ -24423,6 +24456,7 @@
       "value_format": "text"
     },
     {
+      "address_id": "2025/document=form_w2/box=e/control=first_name_initial",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].Copy1[0].Col_Left[0].FirstName_ReadOrder[0].f2_05[0]",
       "label": "Line o - f2_05 (page 3, control 51)",
@@ -24439,6 +24473,7 @@
       "value_format": "text"
     },
     {
+      "address_id": "2025/document=form_w2/box=e/control=last_name",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].Copy1[0].Col_Left[0].LastName_ReadOrder[0].f2_06[0]",
       "label": "Line o - f2_06 (page 3, control 52)",
@@ -24455,6 +24490,7 @@
       "value_format": "text"
     },
     {
+      "address_id": "2025/document=form_w2/box=b/control=value",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].Copy1[0].Col_Left[0].f2_02[0]",
       "label": "Line b - f2_02 (page 3, control 48)",
@@ -24471,6 +24507,7 @@
       "value_format": "text"
     },
     {
+      "address_id": "2025/document=form_w2/box=c/control=value",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].Copy1[0].Col_Left[0].f2_03[0]",
       "label": "Line c - f2_03 (page 3, control 49)",
@@ -24487,6 +24524,7 @@
       "value_format": "text"
     },
     {
+      "address_id": "2025/document=form_w2/box=d/control=value",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].Copy1[0].Col_Left[0].f2_04[0]",
       "label": "Line d - f2_04 (page 3, control 50)",
@@ -24503,6 +24541,7 @@
       "value_format": "text"
     },
     {
+      "address_id": "2025/document=form_w2/box=e/control=suffix",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].Copy1[0].Col_Left[0].f2_07[0]",
       "label": "Line o - f2_07 (page 3, control 53)",
@@ -24519,6 +24558,7 @@
       "value_format": "text"
     },
     {
+      "address_id": "2025/document=form_w2/box=f/control=value",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].Copy1[0].Col_Left[0].f2_08[0]",
       "label": "Line 12b - f2_08 (page 3, control 54)",
@@ -24535,7 +24575,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/box=11/control=f_19",
+      "address_id": "2025/document=form_w2/box=11/control=value",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].Copy1[0].Col_Right[0].Box11__ReadOrder[0].f2_19[0]",
       "label": "Line o - f2_19 (page 3, control 65)",
@@ -24552,7 +24592,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/box=12/control=f_20",
+      "address_id": "2025/document=form_w2/box=12/row_template=entry/column=code",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].Copy1[0].Col_Right[0].Box12_ReadOrder[0].f2_20[0]",
       "label": "Line o - d o e - f2_20 (page 3, control 66)",
@@ -24569,7 +24609,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/box=12/control=f_21",
+      "address_id": "2025/document=form_w2/box=12/row_template=entry/column=amount",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].Copy1[0].Col_Right[0].Box12_ReadOrder[0].f2_21[0]",
       "label": "Line o - d o e - f2_21 (page 3, control 67)",
@@ -24586,7 +24626,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/box=12/control=f_22",
+      "address_id": "2025/document=form_w2/box=12/row_template=entry/column=code",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].Copy1[0].Col_Right[0].Box12_ReadOrder[0].f2_22[0]",
       "label": "Line o - d o e - f2_22 (page 3, control 68)",
@@ -24603,7 +24643,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/box=12/control=f_23",
+      "address_id": "2025/document=form_w2/box=12/row_template=entry/column=amount",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].Copy1[0].Col_Right[0].Box12_ReadOrder[0].f2_23[0]",
       "label": "Line o - d o e - f2_23 (page 3, control 69)",
@@ -24620,7 +24660,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/box=12/control=f_24",
+      "address_id": "2025/document=form_w2/box=12/row_template=entry/column=code",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].Copy1[0].Col_Right[0].Box12_ReadOrder[0].f2_24[0]",
       "label": "Line o - d o e - f2_24 (page 3, control 70)",
@@ -24637,7 +24677,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/box=12/control=f_25",
+      "address_id": "2025/document=form_w2/box=12/row_template=entry/column=amount",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].Copy1[0].Col_Right[0].Box12_ReadOrder[0].f2_25[0]",
       "label": "Line o - d o e - f2_25 (page 3, control 71)",
@@ -24654,7 +24694,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/box=12/control=f_26",
+      "address_id": "2025/document=form_w2/box=12/row_template=entry/column=code",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].Copy1[0].Col_Right[0].Box12_ReadOrder[0].f2_26[0]",
       "label": "Line o - d o e - f2_26 (page 3, control 72)",
@@ -24671,7 +24711,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/box=12/control=f_27",
+      "address_id": "2025/document=form_w2/box=12/row_template=entry/column=amount",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].Copy1[0].Col_Right[0].Box12_ReadOrder[0].f2_27[0]",
       "label": "Line o - d o e - f2_27 (page 3, control 73)",
@@ -24688,7 +24728,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/box=1/control=f_09",
+      "address_id": "2025/document=form_w2/box=1/control=value",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].Copy1[0].Col_Right[0].Box1_ReadOrder[0].f2_09[0]",
       "label": "Line b - f2_09 (page 3, control 55)",
@@ -24705,7 +24745,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/box=3/control=f_11",
+      "address_id": "2025/document=form_w2/box=3/control=value",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].Copy1[0].Col_Right[0].Box3_ReadOrder[0].f2_11[0]",
       "label": "Line c - f2_11 (page 3, control 57)",
@@ -24722,7 +24762,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/box=5/control=f_13",
+      "address_id": "2025/document=form_w2/box=5/control=value",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].Copy1[0].Col_Right[0].Box5_ReadOrder[0].f2_13[0]",
       "label": "Line 5 - f2_13 (page 3, control 59)",
@@ -24739,7 +24779,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/box=7/control=f_15",
+      "address_id": "2025/document=form_w2/box=7/control=value",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].Copy1[0].Col_Right[0].Box7_ReadOrder[0].f2_15[0]",
       "label": "Line 7 - f2_15 (page 3, control 61)",
@@ -24756,7 +24796,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/box=9/control=f_17",
+      "address_id": "2025/document=form_w2/box=9/control=value",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].Copy1[0].Col_Right[0].Box9_ReadOrder[0].f2_17[0]",
       "label": "Line d - f2_17 (page 3, control 63)",
@@ -24773,6 +24813,7 @@
       "value_format": "text"
     },
     {
+      "address_id": "2025/document=form_w2/box=13/option=retirement_plan",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].Copy1[0].Col_Right[0].Retirement_ReadOrder[0].c2_3[0]",
       "label": "Line o - c2_3 (page 3, control 75)",
@@ -24789,6 +24830,7 @@
       "value_format": "checkbox"
     },
     {
+      "address_id": "2025/document=form_w2/box=13/option=statutory_employee",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].Copy1[0].Col_Right[0].Statutory_ReadOrder[0].c2_2[0]",
       "label": "Line o - c2_2 (page 3, control 74)",
@@ -24805,6 +24847,7 @@
       "value_format": "checkbox"
     },
     {
+      "address_id": "2025/document=form_w2/box=13/option=third_party_sick_pay",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].Copy1[0].Col_Right[0].c2_4[0]",
       "label": "Line o - c2_4 (page 3, control 76)",
@@ -24821,6 +24864,7 @@
       "value_format": "checkbox"
     },
     {
+      "address_id": "2025/document=form_w2/box=2/control=value",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].Copy1[0].Col_Right[0].f2_10[0]",
       "label": "Line b - f2_10 (page 3, control 56)",
@@ -24837,6 +24881,7 @@
       "value_format": "text"
     },
     {
+      "address_id": "2025/document=form_w2/box=4/control=value",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].Copy1[0].Col_Right[0].f2_12[0]",
       "label": "Line c - f2_12 (page 3, control 58)",
@@ -24853,6 +24898,7 @@
       "value_format": "text"
     },
     {
+      "address_id": "2025/document=form_w2/box=6/control=value",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].Copy1[0].Col_Right[0].f2_14[0]",
       "label": "Line 5 - f2_14 (page 3, control 60)",
@@ -24869,6 +24915,7 @@
       "value_format": "text"
     },
     {
+      "address_id": "2025/document=form_w2/box=8/control=value",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].Copy1[0].Col_Right[0].f2_16[0]",
       "label": "Line 7 - f2_16 (page 3, control 62)",
@@ -24885,6 +24932,7 @@
       "value_format": "text"
     },
     {
+      "address_id": "2025/document=form_w2/box=10/control=value",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].Copy1[0].Col_Right[0].f2_18[0]",
       "label": "Line d - f2_18 (page 3, control 64)",
@@ -24901,6 +24949,7 @@
       "value_format": "text"
     },
     {
+      "address_id": "2025/document=form_w2/box=14/control=value",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].Copy1[0].Col_Right[0].f2_28[0]",
       "label": "Line o - f2_28 (page 3, control 77)",
@@ -24917,6 +24966,7 @@
       "value_format": "text"
     },
     {
+      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=21",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].Copy1[0].f2_41[0]",
       "label": "Line 15 - f2_41 (page 3, control 90)",
@@ -24933,6 +24983,7 @@
       "value_format": "text"
     },
     {
+      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=21",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].Copy1[0].f2_42[0]",
       "label": "f2_42 (page 3, control 91)",
@@ -24949,7 +25000,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/box=16/control=f_33",
+      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=17",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyB[0].Box16_ReadOrder[0].f2_33[0]",
       "label": "Line 15 - f2_33 (page 4, control 127)",
@@ -24966,7 +25017,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/box=16/control=f_34",
+      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=17",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyB[0].Box16_ReadOrder[0].f2_34[0]",
       "label": "f2_34 (page 4, control 128)",
@@ -24983,7 +25034,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/box=17/control=f_35",
+      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=18",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyB[0].Box17_ReadOrder[0].f2_35[0]",
       "label": "Line 15 - f2_35 (page 4, control 129)",
@@ -25000,7 +25051,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/box=17/control=f_36",
+      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=18",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyB[0].Box17_ReadOrder[0].f2_36[0]",
       "label": "f2_36 (page 4, control 130)",
@@ -25017,7 +25068,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/box=18/control=f_37",
+      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=19",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyB[0].Box18_ReadOrder[0].f2_37[0]",
       "label": "Line 15 - f2_37 (page 4, control 131)",
@@ -25034,7 +25085,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/box=18/control=f_38",
+      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=19",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyB[0].Box18_ReadOrder[0].f2_38[0]",
       "label": "f2_38 (page 4, control 132)",
@@ -25051,7 +25102,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/box=19/control=f_39",
+      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=20",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyB[0].Box19_ReadOrder[0].f2_39[0]",
       "label": "Line 15 - f2_39 (page 4, control 133)",
@@ -25068,7 +25119,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/box=19/control=f_40",
+      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=20",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyB[0].Box19_ReadOrder[0].f2_40[0]",
       "label": "f2_40 (page 4, control 134)",
@@ -25085,7 +25136,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/box=a/control=f_01",
+      "address_id": "2025/document=form_w2/box=a/control=employee_ssn",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyB[0].BoxA_ReadOrder[0].f2_01[0]",
       "label": "Line a - f2_01 (page 4, control 92)",
@@ -25102,7 +25153,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/box=15/control=f_29",
+      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=15",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyB[0].Boxes15_ReadOrder[0].Box15_ReadOrder[0].f2_29[0]",
       "label": "Line 15 - f2_29 (page 4, control 123)",
@@ -25119,6 +25170,7 @@
       "value_format": "text"
     },
     {
+      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=15",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyB[0].Boxes15_ReadOrder[0].f2_30[0]",
       "label": "Line 15 - f2_30 (page 4, control 124)",
@@ -25135,6 +25187,7 @@
       "value_format": "text"
     },
     {
+      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=16",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyB[0].Boxes15_ReadOrder[0].f2_31[0]",
       "label": "f2_31 (page 4, control 125)",
@@ -25151,6 +25204,7 @@
       "value_format": "text"
     },
     {
+      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=16",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyB[0].Boxes15_ReadOrder[0].f2_32[0]",
       "label": "f2_32 (page 4, control 126)",
@@ -25167,6 +25221,7 @@
       "value_format": "text"
     },
     {
+      "address_id": "2025/document=form_w2/box=e/control=first_name_initial",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyB[0].Col_Left[0].FirstName_ReadOrder[0].f2_05[0]",
       "label": "Line o - f2_05 (page 4, control 96)",
@@ -25183,6 +25238,7 @@
       "value_format": "text"
     },
     {
+      "address_id": "2025/document=form_w2/box=e/control=last_name",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyB[0].Col_Left[0].LastName_ReadOrder[0].f2_06[0]",
       "label": "Line o - f2_06 (page 4, control 97)",
@@ -25199,6 +25255,7 @@
       "value_format": "text"
     },
     {
+      "address_id": "2025/document=form_w2/box=b/control=value",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyB[0].Col_Left[0].f2_02[0]",
       "label": "Line b - f2_02 (page 4, control 93)",
@@ -25215,6 +25272,7 @@
       "value_format": "text"
     },
     {
+      "address_id": "2025/document=form_w2/box=c/control=value",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyB[0].Col_Left[0].f2_03[0]",
       "label": "Line c - f2_03 (page 4, control 94)",
@@ -25231,6 +25289,7 @@
       "value_format": "text"
     },
     {
+      "address_id": "2025/document=form_w2/box=d/control=value",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyB[0].Col_Left[0].f2_04[0]",
       "label": "Line d - f2_04 (page 4, control 95)",
@@ -25247,6 +25306,7 @@
       "value_format": "text"
     },
     {
+      "address_id": "2025/document=form_w2/box=e/control=suffix",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyB[0].Col_Left[0].f2_07[0]",
       "label": "Line o - f2_07 (page 4, control 98)",
@@ -25263,6 +25323,7 @@
       "value_format": "text"
     },
     {
+      "address_id": "2025/document=form_w2/box=f/control=value",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyB[0].Col_Left[0].f2_08[0]",
       "label": "Line 12b - f2_08 (page 4, control 99)",
@@ -25279,7 +25340,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/box=11/control=f_19",
+      "address_id": "2025/document=form_w2/box=11/control=value",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyB[0].Col_Right[0].Box11__ReadOrder[0].f2_19[0]",
       "label": "Line o - f2_19 (page 4, control 110)",
@@ -25296,7 +25357,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/box=12/control=f_20",
+      "address_id": "2025/document=form_w2/box=12/row_template=entry/column=code",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyB[0].Col_Right[0].Box12_ReadOrder[0].f2_20[0]",
       "label": "Line o - d o e - f2_20 (page 4, control 111)",
@@ -25313,7 +25374,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/box=12/control=f_21",
+      "address_id": "2025/document=form_w2/box=12/row_template=entry/column=amount",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyB[0].Col_Right[0].Box12_ReadOrder[0].f2_21[0]",
       "label": "Line o - d o e - f2_21 (page 4, control 112)",
@@ -25330,7 +25391,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/box=12/control=f_22",
+      "address_id": "2025/document=form_w2/box=12/row_template=entry/column=code",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyB[0].Col_Right[0].Box12_ReadOrder[0].f2_22[0]",
       "label": "Line o - d o e - f2_22 (page 4, control 113)",
@@ -25347,7 +25408,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/box=12/control=f_23",
+      "address_id": "2025/document=form_w2/box=12/row_template=entry/column=amount",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyB[0].Col_Right[0].Box12_ReadOrder[0].f2_23[0]",
       "label": "Line o - d o e - f2_23 (page 4, control 114)",
@@ -25364,7 +25425,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/box=12/control=f_24",
+      "address_id": "2025/document=form_w2/box=12/row_template=entry/column=code",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyB[0].Col_Right[0].Box12_ReadOrder[0].f2_24[0]",
       "label": "Line o - d o e - f2_24 (page 4, control 115)",
@@ -25381,7 +25442,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/box=12/control=f_25",
+      "address_id": "2025/document=form_w2/box=12/row_template=entry/column=amount",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyB[0].Col_Right[0].Box12_ReadOrder[0].f2_25[0]",
       "label": "Line o - d o e - f2_25 (page 4, control 116)",
@@ -25398,7 +25459,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/box=12/control=f_26",
+      "address_id": "2025/document=form_w2/box=12/row_template=entry/column=code",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyB[0].Col_Right[0].Box12_ReadOrder[0].f2_26[0]",
       "label": "Line o - d o e - f2_26 (page 4, control 117)",
@@ -25415,7 +25476,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/box=12/control=f_27",
+      "address_id": "2025/document=form_w2/box=12/row_template=entry/column=amount",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyB[0].Col_Right[0].Box12_ReadOrder[0].f2_27[0]",
       "label": "Line o - d o e - f2_27 (page 4, control 118)",
@@ -25432,7 +25493,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/box=1/control=f_09",
+      "address_id": "2025/document=form_w2/box=1/control=value",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyB[0].Col_Right[0].Box1_ReadOrder[0].f2_09[0]",
       "label": "Line b - f2_09 (page 4, control 100)",
@@ -25449,7 +25510,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/box=3/control=f_11",
+      "address_id": "2025/document=form_w2/box=3/control=value",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyB[0].Col_Right[0].Box3_ReadOrder[0].f2_11[0]",
       "label": "Line c - f2_11 (page 4, control 102)",
@@ -25466,7 +25527,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/box=5/control=f_13",
+      "address_id": "2025/document=form_w2/box=5/control=value",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyB[0].Col_Right[0].Box5_ReadOrder[0].f2_13[0]",
       "label": "Line 5 - f2_13 (page 4, control 104)",
@@ -25483,7 +25544,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/box=7/control=f_15",
+      "address_id": "2025/document=form_w2/box=7/control=value",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyB[0].Col_Right[0].Box7_ReadOrder[0].f2_15[0]",
       "label": "Line 7 - f2_15 (page 4, control 106)",
@@ -25500,7 +25561,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/box=9/control=f_17",
+      "address_id": "2025/document=form_w2/box=9/control=value",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyB[0].Col_Right[0].Box9_ReadOrder[0].f2_17[0]",
       "label": "Line d - f2_17 (page 4, control 108)",
@@ -25517,6 +25578,7 @@
       "value_format": "text"
     },
     {
+      "address_id": "2025/document=form_w2/box=13/option=retirement_plan",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyB[0].Col_Right[0].Retirement_ReadOrder[0].c2_3[0]",
       "label": "Line o - c2_3 (page 4, control 120)",
@@ -25533,6 +25595,7 @@
       "value_format": "checkbox"
     },
     {
+      "address_id": "2025/document=form_w2/box=13/option=statutory_employee",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyB[0].Col_Right[0].Statutory_ReadOrder[0].c2_2[0]",
       "label": "Line o - c2_2 (page 4, control 119)",
@@ -25549,6 +25612,7 @@
       "value_format": "checkbox"
     },
     {
+      "address_id": "2025/document=form_w2/box=13/option=third_party_sick_pay",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyB[0].Col_Right[0].c2_4[0]",
       "label": "Line o - c2_4 (page 4, control 121)",
@@ -25565,6 +25629,7 @@
       "value_format": "checkbox"
     },
     {
+      "address_id": "2025/document=form_w2/box=2/control=value",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyB[0].Col_Right[0].f2_10[0]",
       "label": "Line b - f2_10 (page 4, control 101)",
@@ -25581,6 +25646,7 @@
       "value_format": "text"
     },
     {
+      "address_id": "2025/document=form_w2/box=4/control=value",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyB[0].Col_Right[0].f2_12[0]",
       "label": "Line c - f2_12 (page 4, control 103)",
@@ -25597,6 +25663,7 @@
       "value_format": "text"
     },
     {
+      "address_id": "2025/document=form_w2/box=6/control=value",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyB[0].Col_Right[0].f2_14[0]",
       "label": "Line 5 - f2_14 (page 4, control 105)",
@@ -25613,6 +25680,7 @@
       "value_format": "text"
     },
     {
+      "address_id": "2025/document=form_w2/box=8/control=value",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyB[0].Col_Right[0].f2_16[0]",
       "label": "Line 7 - f2_16 (page 4, control 107)",
@@ -25629,6 +25697,7 @@
       "value_format": "text"
     },
     {
+      "address_id": "2025/document=form_w2/box=10/control=value",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyB[0].Col_Right[0].f2_18[0]",
       "label": "Line d - f2_18 (page 4, control 109)",
@@ -25645,6 +25714,7 @@
       "value_format": "text"
     },
     {
+      "address_id": "2025/document=form_w2/box=14/control=value",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyB[0].Col_Right[0].f2_28[0]",
       "label": "Line o - f2_28 (page 4, control 122)",
@@ -25661,6 +25731,7 @@
       "value_format": "text"
     },
     {
+      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=21",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyB[0].f2_41[0]",
       "label": "Line 15 - f2_41 (page 4, control 135)",
@@ -25677,6 +25748,7 @@
       "value_format": "text"
     },
     {
+      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=21",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyB[0].f2_42[0]",
       "label": "f2_42 (page 4, control 136)",
@@ -25693,7 +25765,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/box=16/control=f_33",
+      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=17",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyC[0].Box16_ReadOrder[0].f2_33[0]",
       "label": "Line 15 - f2_33 (page 6, control 172)",
@@ -25710,7 +25782,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/box=16/control=f_34",
+      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=17",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyC[0].Box16_ReadOrder[0].f2_34[0]",
       "label": "f2_34 (page 6, control 173)",
@@ -25727,7 +25799,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/box=17/control=f_35",
+      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=18",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyC[0].Box17_ReadOrder[0].f2_35[0]",
       "label": "Line 15 - f2_35 (page 6, control 174)",
@@ -25744,7 +25816,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/box=17/control=f_36",
+      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=18",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyC[0].Box17_ReadOrder[0].f2_36[0]",
       "label": "f2_36 (page 6, control 175)",
@@ -25761,7 +25833,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/box=18/control=f_37",
+      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=19",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyC[0].Box18_ReadOrder[0].f2_37[0]",
       "label": "Line 15 - f2_37 (page 6, control 176)",
@@ -25778,7 +25850,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/box=18/control=f_38",
+      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=19",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyC[0].Box18_ReadOrder[0].f2_38[0]",
       "label": "f2_38 (page 6, control 177)",
@@ -25795,7 +25867,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/box=19/control=f_39",
+      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=20",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyC[0].Box19_ReadOrder[0].f2_39[0]",
       "label": "Line 15 - f2_39 (page 6, control 178)",
@@ -25812,7 +25884,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/box=19/control=f_40",
+      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=20",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyC[0].Box19_ReadOrder[0].f2_40[0]",
       "label": "f2_40 (page 6, control 179)",
@@ -25829,7 +25901,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/box=a/control=f_01",
+      "address_id": "2025/document=form_w2/box=a/control=employee_ssn",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyC[0].BoxA_ReadOrder[0].f2_01[0]",
       "label": "Line a - f2_01 (page 6, control 137)",
@@ -25846,7 +25918,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/box=15/control=f_29",
+      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=15",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyC[0].Boxes15_ReadOrder[0].Box15_ReadOrder[0].f2_29[0]",
       "label": "Line 15 - f2_29 (page 6, control 168)",
@@ -25863,6 +25935,7 @@
       "value_format": "text"
     },
     {
+      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=15",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyC[0].Boxes15_ReadOrder[0].f2_30[0]",
       "label": "Line 15 - f2_30 (page 6, control 169)",
@@ -25879,6 +25952,7 @@
       "value_format": "text"
     },
     {
+      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=16",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyC[0].Boxes15_ReadOrder[0].f2_31[0]",
       "label": "f2_31 (page 6, control 170)",
@@ -25895,6 +25969,7 @@
       "value_format": "text"
     },
     {
+      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=16",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyC[0].Boxes15_ReadOrder[0].f2_32[0]",
       "label": "f2_32 (page 6, control 171)",
@@ -25911,6 +25986,7 @@
       "value_format": "text"
     },
     {
+      "address_id": "2025/document=form_w2/box=e/control=first_name_initial",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyC[0].Col_Left[0].FirstName_ReadOrder[0].f2_05[0]",
       "label": "Line o - f2_05 (page 6, control 141)",
@@ -25927,6 +26003,7 @@
       "value_format": "text"
     },
     {
+      "address_id": "2025/document=form_w2/box=e/control=last_name",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyC[0].Col_Left[0].LastName_ReadOrder[0].f2_06[0]",
       "label": "Line o - f2_06 (page 6, control 142)",
@@ -25943,6 +26020,7 @@
       "value_format": "text"
     },
     {
+      "address_id": "2025/document=form_w2/box=b/control=value",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyC[0].Col_Left[0].f2_02[0]",
       "label": "Line b - f2_02 (page 6, control 138)",
@@ -25959,6 +26037,7 @@
       "value_format": "text"
     },
     {
+      "address_id": "2025/document=form_w2/box=c/control=value",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyC[0].Col_Left[0].f2_03[0]",
       "label": "Line c - f2_03 (page 6, control 139)",
@@ -25975,6 +26054,7 @@
       "value_format": "text"
     },
     {
+      "address_id": "2025/document=form_w2/box=d/control=value",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyC[0].Col_Left[0].f2_04[0]",
       "label": "Line d - f2_04 (page 6, control 140)",
@@ -25991,6 +26071,7 @@
       "value_format": "text"
     },
     {
+      "address_id": "2025/document=form_w2/box=e/control=suffix",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyC[0].Col_Left[0].f2_07[0]",
       "label": "Line o - f2_07 (page 6, control 143)",
@@ -26007,6 +26088,7 @@
       "value_format": "text"
     },
     {
+      "address_id": "2025/document=form_w2/box=f/control=value",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyC[0].Col_Left[0].f2_08[0]",
       "label": "Line 12b - f2_08 (page 6, control 144)",
@@ -26023,7 +26105,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/box=11/control=f_19",
+      "address_id": "2025/document=form_w2/box=11/control=value",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyC[0].Col_Right[0].Box11__ReadOrder[0].f2_19[0]",
       "label": "Line o - f2_19 (page 6, control 155)",
@@ -26040,7 +26122,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/box=12/control=f_20",
+      "address_id": "2025/document=form_w2/box=12/row_template=entry/column=code",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyC[0].Col_Right[0].Box12_ReadOrder[0].f2_20[0]",
       "label": "Line o - d o e - f2_20 (page 6, control 156)",
@@ -26057,7 +26139,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/box=12/control=f_21",
+      "address_id": "2025/document=form_w2/box=12/row_template=entry/column=amount",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyC[0].Col_Right[0].Box12_ReadOrder[0].f2_21[0]",
       "label": "Line o - d o e - f2_21 (page 6, control 157)",
@@ -26074,7 +26156,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/box=12/control=f_22",
+      "address_id": "2025/document=form_w2/box=12/row_template=entry/column=code",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyC[0].Col_Right[0].Box12_ReadOrder[0].f2_22[0]",
       "label": "Line o - d o e - f2_22 (page 6, control 158)",
@@ -26091,7 +26173,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/box=12/control=f_23",
+      "address_id": "2025/document=form_w2/box=12/row_template=entry/column=amount",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyC[0].Col_Right[0].Box12_ReadOrder[0].f2_23[0]",
       "label": "Line o - d o e - f2_23 (page 6, control 159)",
@@ -26108,7 +26190,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/box=12/control=f_24",
+      "address_id": "2025/document=form_w2/box=12/row_template=entry/column=code",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyC[0].Col_Right[0].Box12_ReadOrder[0].f2_24[0]",
       "label": "Line o - d o e - f2_24 (page 6, control 160)",
@@ -26125,7 +26207,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/box=12/control=f_25",
+      "address_id": "2025/document=form_w2/box=12/row_template=entry/column=amount",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyC[0].Col_Right[0].Box12_ReadOrder[0].f2_25[0]",
       "label": "Line o - d o e - f2_25 (page 6, control 161)",
@@ -26142,7 +26224,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/box=12/control=f_26",
+      "address_id": "2025/document=form_w2/box=12/row_template=entry/column=code",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyC[0].Col_Right[0].Box12_ReadOrder[0].f2_26[0]",
       "label": "Line o - d o e - f2_26 (page 6, control 162)",
@@ -26159,7 +26241,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/box=12/control=f_27",
+      "address_id": "2025/document=form_w2/box=12/row_template=entry/column=amount",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyC[0].Col_Right[0].Box12_ReadOrder[0].f2_27[0]",
       "label": "Line o - d o e - f2_27 (page 6, control 163)",
@@ -26176,7 +26258,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/box=1/control=f_09",
+      "address_id": "2025/document=form_w2/box=1/control=value",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyC[0].Col_Right[0].Box1_ReadOrder[0].f2_09[0]",
       "label": "Line b - f2_09 (page 6, control 145)",
@@ -26193,7 +26275,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/box=3/control=f_11",
+      "address_id": "2025/document=form_w2/box=3/control=value",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyC[0].Col_Right[0].Box3_ReadOrder[0].f2_11[0]",
       "label": "Line c - f2_11 (page 6, control 147)",
@@ -26210,7 +26292,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/box=5/control=f_13",
+      "address_id": "2025/document=form_w2/box=5/control=value",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyC[0].Col_Right[0].Box5_ReadOrder[0].f2_13[0]",
       "label": "Line 5 - f2_13 (page 6, control 149)",
@@ -26227,7 +26309,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/box=7/control=f_15",
+      "address_id": "2025/document=form_w2/box=7/control=value",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyC[0].Col_Right[0].Box7_ReadOrder[0].f2_15[0]",
       "label": "Line 7 - f2_15 (page 6, control 151)",
@@ -26244,7 +26326,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/box=9/control=f_17",
+      "address_id": "2025/document=form_w2/box=9/control=value",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyC[0].Col_Right[0].Box9_ReadOrder[0].f2_17[0]",
       "label": "Line d - f2_17 (page 6, control 153)",
@@ -26261,6 +26343,7 @@
       "value_format": "text"
     },
     {
+      "address_id": "2025/document=form_w2/box=13/option=retirement_plan",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyC[0].Col_Right[0].Retirement_ReadOrder[0].c2_3[0]",
       "label": "Line o - c2_3 (page 6, control 165)",
@@ -26277,6 +26360,7 @@
       "value_format": "checkbox"
     },
     {
+      "address_id": "2025/document=form_w2/box=13/option=statutory_employee",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyC[0].Col_Right[0].Statutory_ReadOrder[0].c2_2[0]",
       "label": "Line o - c2_2 (page 6, control 164)",
@@ -26293,6 +26377,7 @@
       "value_format": "checkbox"
     },
     {
+      "address_id": "2025/document=form_w2/box=13/option=third_party_sick_pay",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyC[0].Col_Right[0].c2_4[0]",
       "label": "Line o - c2_4 (page 6, control 166)",
@@ -26309,6 +26394,7 @@
       "value_format": "checkbox"
     },
     {
+      "address_id": "2025/document=form_w2/box=2/control=value",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyC[0].Col_Right[0].f2_10[0]",
       "label": "Line b - f2_10 (page 6, control 146)",
@@ -26325,6 +26411,7 @@
       "value_format": "text"
     },
     {
+      "address_id": "2025/document=form_w2/box=4/control=value",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyC[0].Col_Right[0].f2_12[0]",
       "label": "Line c - f2_12 (page 6, control 148)",
@@ -26341,6 +26428,7 @@
       "value_format": "text"
     },
     {
+      "address_id": "2025/document=form_w2/box=6/control=value",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyC[0].Col_Right[0].f2_14[0]",
       "label": "Line 5 - f2_14 (page 6, control 150)",
@@ -26357,6 +26445,7 @@
       "value_format": "text"
     },
     {
+      "address_id": "2025/document=form_w2/box=8/control=value",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyC[0].Col_Right[0].f2_16[0]",
       "label": "Line 7 - f2_16 (page 6, control 152)",
@@ -26373,6 +26462,7 @@
       "value_format": "text"
     },
     {
+      "address_id": "2025/document=form_w2/box=10/control=value",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyC[0].Col_Right[0].f2_18[0]",
       "label": "Line d - f2_18 (page 6, control 154)",
@@ -26389,6 +26479,7 @@
       "value_format": "text"
     },
     {
+      "address_id": "2025/document=form_w2/box=14/control=value",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyC[0].Col_Right[0].f2_28[0]",
       "label": "Line o - f2_28 (page 6, control 167)",
@@ -26405,6 +26496,7 @@
       "value_format": "text"
     },
     {
+      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=21",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyC[0].f2_41[0]",
       "label": "Line 15 - f2_41 (page 6, control 180)",
@@ -26421,6 +26513,7 @@
       "value_format": "text"
     },
     {
+      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=21",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyC[0].f2_42[0]",
       "label": "f2_42 (page 6, control 181)",
@@ -26437,7 +26530,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/box=16/control=f_33",
+      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=17",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].Copy2[0].Box16_ReadOrder[0].f2_33[0]",
       "label": "Line 15 - f2_33 (page 8, control 217)",
@@ -26454,7 +26547,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/box=16/control=f_34",
+      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=17",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].Copy2[0].Box16_ReadOrder[0].f2_34[0]",
       "label": "f2_34 (page 8, control 218)",
@@ -26471,7 +26564,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/box=17/control=f_35",
+      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=18",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].Copy2[0].Box17_ReadOrder[0].f2_35[0]",
       "label": "Line 15 - f2_35 (page 8, control 219)",
@@ -26488,7 +26581,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/box=17/control=f_36",
+      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=18",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].Copy2[0].Box17_ReadOrder[0].f2_36[0]",
       "label": "f2_36 (page 8, control 220)",
@@ -26505,7 +26598,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/box=18/control=f_37",
+      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=19",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].Copy2[0].Box18_ReadOrder[0].f2_37[0]",
       "label": "Line 15 - f2_37 (page 8, control 221)",
@@ -26522,7 +26615,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/box=18/control=f_38",
+      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=19",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].Copy2[0].Box18_ReadOrder[0].f2_38[0]",
       "label": "f2_38 (page 8, control 222)",
@@ -26539,7 +26632,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/box=19/control=f_39",
+      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=20",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].Copy2[0].Box19_ReadOrder[0].f2_39[0]",
       "label": "Line 15 - f2_39 (page 8, control 223)",
@@ -26556,7 +26649,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/box=19/control=f_40",
+      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=20",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].Copy2[0].Box19_ReadOrder[0].f2_40[0]",
       "label": "f2_40 (page 8, control 224)",
@@ -26573,7 +26666,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/box=a/control=f_01",
+      "address_id": "2025/document=form_w2/box=a/control=employee_ssn",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].Copy2[0].BoxA_ReadOrder[0].f2_01[0]",
       "label": "Line a - f2_01 (page 8, control 182)",
@@ -26590,7 +26683,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/box=15/control=f_29",
+      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=15",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].Copy2[0].Boxes15_ReadOrder[0].Box15_ReadOrder[0].f2_29[0]",
       "label": "Line 15 - f2_29 (page 8, control 213)",
@@ -26607,6 +26700,7 @@
       "value_format": "text"
     },
     {
+      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=15",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].Copy2[0].Boxes15_ReadOrder[0].f2_30[0]",
       "label": "Line 15 - f2_30 (page 8, control 214)",
@@ -26623,6 +26717,7 @@
       "value_format": "text"
     },
     {
+      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=16",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].Copy2[0].Boxes15_ReadOrder[0].f2_31[0]",
       "label": "f2_31 (page 8, control 215)",
@@ -26639,6 +26734,7 @@
       "value_format": "text"
     },
     {
+      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=16",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].Copy2[0].Boxes15_ReadOrder[0].f2_32[0]",
       "label": "f2_32 (page 8, control 216)",
@@ -26655,6 +26751,7 @@
       "value_format": "text"
     },
     {
+      "address_id": "2025/document=form_w2/box=e/control=first_name_initial",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].Copy2[0].Col_Left[0].FirstName_ReadOrder[0].f2_05[0]",
       "label": "Line o - f2_05 (page 8, control 186)",
@@ -26671,6 +26768,7 @@
       "value_format": "text"
     },
     {
+      "address_id": "2025/document=form_w2/box=e/control=last_name",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].Copy2[0].Col_Left[0].LastName_ReadOrder[0].f2_06[0]",
       "label": "Line o - f2_06 (page 8, control 187)",
@@ -26687,6 +26785,7 @@
       "value_format": "text"
     },
     {
+      "address_id": "2025/document=form_w2/box=b/control=value",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].Copy2[0].Col_Left[0].f2_02[0]",
       "label": "Line b - f2_02 (page 8, control 183)",
@@ -26703,6 +26802,7 @@
       "value_format": "text"
     },
     {
+      "address_id": "2025/document=form_w2/box=c/control=value",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].Copy2[0].Col_Left[0].f2_03[0]",
       "label": "Line c - f2_03 (page 8, control 184)",
@@ -26719,6 +26819,7 @@
       "value_format": "text"
     },
     {
+      "address_id": "2025/document=form_w2/box=d/control=value",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].Copy2[0].Col_Left[0].f2_04[0]",
       "label": "Line d - f2_04 (page 8, control 185)",
@@ -26735,6 +26836,7 @@
       "value_format": "text"
     },
     {
+      "address_id": "2025/document=form_w2/box=e/control=suffix",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].Copy2[0].Col_Left[0].f2_07[0]",
       "label": "Line o - f2_07 (page 8, control 188)",
@@ -26751,6 +26853,7 @@
       "value_format": "text"
     },
     {
+      "address_id": "2025/document=form_w2/box=f/control=value",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].Copy2[0].Col_Left[0].f2_08[0]",
       "label": "Line 12b - f2_08 (page 8, control 189)",
@@ -26767,7 +26870,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/box=11/control=f_19",
+      "address_id": "2025/document=form_w2/box=11/control=value",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].Copy2[0].Col_Right[0].Box11__ReadOrder[0].f2_19[0]",
       "label": "Line o - f2_19 (page 8, control 200)",
@@ -26784,7 +26887,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/box=12/control=f_20",
+      "address_id": "2025/document=form_w2/box=12/row_template=entry/column=code",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].Copy2[0].Col_Right[0].Box12_ReadOrder[0].f2_20[0]",
       "label": "Line o - d o e - f2_20 (page 8, control 201)",
@@ -26801,7 +26904,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/box=12/control=f_21",
+      "address_id": "2025/document=form_w2/box=12/row_template=entry/column=amount",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].Copy2[0].Col_Right[0].Box12_ReadOrder[0].f2_21[0]",
       "label": "Line o - d o e - f2_21 (page 8, control 202)",
@@ -26818,7 +26921,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/box=12/control=f_22",
+      "address_id": "2025/document=form_w2/box=12/row_template=entry/column=code",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].Copy2[0].Col_Right[0].Box12_ReadOrder[0].f2_22[0]",
       "label": "Line o - d o e - f2_22 (page 8, control 203)",
@@ -26835,7 +26938,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/box=12/control=f_23",
+      "address_id": "2025/document=form_w2/box=12/row_template=entry/column=amount",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].Copy2[0].Col_Right[0].Box12_ReadOrder[0].f2_23[0]",
       "label": "Line o - d o e - f2_23 (page 8, control 204)",
@@ -26852,7 +26955,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/box=12/control=f_24",
+      "address_id": "2025/document=form_w2/box=12/row_template=entry/column=code",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].Copy2[0].Col_Right[0].Box12_ReadOrder[0].f2_24[0]",
       "label": "Line o - d o e - f2_24 (page 8, control 205)",
@@ -26869,7 +26972,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/box=12/control=f_25",
+      "address_id": "2025/document=form_w2/box=12/row_template=entry/column=amount",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].Copy2[0].Col_Right[0].Box12_ReadOrder[0].f2_25[0]",
       "label": "Line o - d o e - f2_25 (page 8, control 206)",
@@ -26886,7 +26989,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/box=12/control=f_26",
+      "address_id": "2025/document=form_w2/box=12/row_template=entry/column=code",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].Copy2[0].Col_Right[0].Box12_ReadOrder[0].f2_26[0]",
       "label": "Line o - d o e - f2_26 (page 8, control 207)",
@@ -26903,7 +27006,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/box=12/control=f_27",
+      "address_id": "2025/document=form_w2/box=12/row_template=entry/column=amount",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].Copy2[0].Col_Right[0].Box12_ReadOrder[0].f2_27[0]",
       "label": "Line o - d o e - f2_27 (page 8, control 208)",
@@ -26920,7 +27023,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/box=1/control=f_09",
+      "address_id": "2025/document=form_w2/box=1/control=value",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].Copy2[0].Col_Right[0].Box1_ReadOrder[0].f2_09[0]",
       "label": "Line b - f2_09 (page 8, control 190)",
@@ -26937,7 +27040,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/box=3/control=f_11",
+      "address_id": "2025/document=form_w2/box=3/control=value",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].Copy2[0].Col_Right[0].Box3_ReadOrder[0].f2_11[0]",
       "label": "Line c - f2_11 (page 8, control 192)",
@@ -26954,7 +27057,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/box=5/control=f_13",
+      "address_id": "2025/document=form_w2/box=5/control=value",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].Copy2[0].Col_Right[0].Box5_ReadOrder[0].f2_13[0]",
       "label": "Line 5 - f2_13 (page 8, control 194)",
@@ -26971,7 +27074,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/box=7/control=f_15",
+      "address_id": "2025/document=form_w2/box=7/control=value",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].Copy2[0].Col_Right[0].Box7_ReadOrder[0].f2_15[0]",
       "label": "Line 7 - f2_15 (page 8, control 196)",
@@ -26988,7 +27091,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/box=9/control=f_17",
+      "address_id": "2025/document=form_w2/box=9/control=value",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].Copy2[0].Col_Right[0].Box9_ReadOrder[0].f2_17[0]",
       "label": "Line d - f2_17 (page 8, control 198)",
@@ -27005,6 +27108,7 @@
       "value_format": "text"
     },
     {
+      "address_id": "2025/document=form_w2/box=13/option=retirement_plan",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].Copy2[0].Col_Right[0].Retirement_ReadOrder[0].c2_3[0]",
       "label": "Line o - c2_3 (page 8, control 210)",
@@ -27021,6 +27125,7 @@
       "value_format": "checkbox"
     },
     {
+      "address_id": "2025/document=form_w2/box=13/option=statutory_employee",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].Copy2[0].Col_Right[0].Statutory_ReadOrder[0].c2_2[0]",
       "label": "Line o - c2_2 (page 8, control 209)",
@@ -27037,6 +27142,7 @@
       "value_format": "checkbox"
     },
     {
+      "address_id": "2025/document=form_w2/box=13/option=third_party_sick_pay",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].Copy2[0].Col_Right[0].c2_4[0]",
       "label": "Line o - c2_4 (page 8, control 211)",
@@ -27053,6 +27159,7 @@
       "value_format": "checkbox"
     },
     {
+      "address_id": "2025/document=form_w2/box=2/control=value",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].Copy2[0].Col_Right[0].f2_10[0]",
       "label": "Line b - f2_10 (page 8, control 191)",
@@ -27069,6 +27176,7 @@
       "value_format": "text"
     },
     {
+      "address_id": "2025/document=form_w2/box=4/control=value",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].Copy2[0].Col_Right[0].f2_12[0]",
       "label": "Line c - f2_12 (page 8, control 193)",
@@ -27085,6 +27193,7 @@
       "value_format": "text"
     },
     {
+      "address_id": "2025/document=form_w2/box=6/control=value",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].Copy2[0].Col_Right[0].f2_14[0]",
       "label": "Line 5 - f2_14 (page 8, control 195)",
@@ -27101,6 +27210,7 @@
       "value_format": "text"
     },
     {
+      "address_id": "2025/document=form_w2/box=8/control=value",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].Copy2[0].Col_Right[0].f2_16[0]",
       "label": "Line 7 - f2_16 (page 8, control 197)",
@@ -27117,6 +27227,7 @@
       "value_format": "text"
     },
     {
+      "address_id": "2025/document=form_w2/box=10/control=value",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].Copy2[0].Col_Right[0].f2_18[0]",
       "label": "Line d - f2_18 (page 8, control 199)",
@@ -27133,6 +27244,7 @@
       "value_format": "text"
     },
     {
+      "address_id": "2025/document=form_w2/box=14/control=value",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].Copy2[0].Col_Right[0].f2_28[0]",
       "label": "Line o - f2_28 (page 8, control 212)",
@@ -27149,6 +27261,7 @@
       "value_format": "text"
     },
     {
+      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=21",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].Copy2[0].f2_41[0]",
       "label": "Line 15 - f2_41 (page 8, control 225)",
@@ -27165,6 +27278,7 @@
       "value_format": "text"
     },
     {
+      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=21",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].Copy2[0].f2_42[0]",
       "label": "f2_42 (page 8, control 226)",
@@ -27181,7 +27295,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/box=16/control=f_33",
+      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=17",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyD[0].Box16_ReadOrder[0].f2_33[0]",
       "label": "Line 15 - f2_33 (page 10, control 263)",
@@ -27198,7 +27312,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/box=16/control=f_34",
+      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=17",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyD[0].Box16_ReadOrder[0].f2_34[0]",
       "label": "f2_34 (page 10, control 264)",
@@ -27215,7 +27329,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/box=17/control=f_35",
+      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=18",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyD[0].Box17_ReadOrder[0].f2_35[0]",
       "label": "Line 15 - f2_35 (page 10, control 265)",
@@ -27232,7 +27346,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/box=17/control=f_36",
+      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=18",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyD[0].Box17_ReadOrder[0].f2_36[0]",
       "label": "f2_36 (page 10, control 266)",
@@ -27249,7 +27363,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/box=18/control=f_37",
+      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=19",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyD[0].Box18_ReadOrder[0].f2_37[0]",
       "label": "Line 15 - f2_37 (page 10, control 267)",
@@ -27266,7 +27380,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/box=18/control=f_38",
+      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=19",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyD[0].Box18_ReadOrder[0].f2_38[0]",
       "label": "f2_38 (page 10, control 268)",
@@ -27283,7 +27397,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/box=19/control=f_39",
+      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=20",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyD[0].Box19_ReadOrder[0].f2_39[0]",
       "label": "Line 15 - f2_39 (page 10, control 269)",
@@ -27300,7 +27414,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/box=19/control=f_40",
+      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=20",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyD[0].Box19_ReadOrder[0].f2_40[0]",
       "label": "f2_40 (page 10, control 270)",
@@ -27317,7 +27431,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/box=a/control=f_01",
+      "address_id": "2025/document=form_w2/box=a/control=employee_ssn",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyD[0].BoxA_ReadOrder[0].f2_01[0]",
       "label": "Line a - VOID - f2_01",
@@ -27334,7 +27448,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/box=15/control=f_29",
+      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=15",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyD[0].Boxes15_ReadOrder[0].Box15_ReadOrder[0].f2_29[0]",
       "label": "Line 15 - f2_29 (page 10, control 259)",
@@ -27351,6 +27465,7 @@
       "value_format": "text"
     },
     {
+      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=15",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyD[0].Boxes15_ReadOrder[0].f2_30[0]",
       "label": "Line 15 - f2_30 (page 10, control 260)",
@@ -27367,6 +27482,7 @@
       "value_format": "text"
     },
     {
+      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=16",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyD[0].Boxes15_ReadOrder[0].f2_31[0]",
       "label": "f2_31 (page 10, control 261)",
@@ -27383,6 +27499,7 @@
       "value_format": "text"
     },
     {
+      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=16",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyD[0].Boxes15_ReadOrder[0].f2_32[0]",
       "label": "f2_32 (page 10, control 262)",
@@ -27399,6 +27516,7 @@
       "value_format": "text"
     },
     {
+      "address_id": "2025/document=form_w2/box=e/control=first_name_initial",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyD[0].Col_Left[0].FirstName_ReadOrder[0].f2_05[0]",
       "label": "Line o - f2_05 (page 10, control 232)",
@@ -27415,6 +27533,7 @@
       "value_format": "text"
     },
     {
+      "address_id": "2025/document=form_w2/box=e/control=last_name",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyD[0].Col_Left[0].LastName_ReadOrder[0].f2_06[0]",
       "label": "Line o - f2_06 (page 10, control 233)",
@@ -27431,6 +27550,7 @@
       "value_format": "text"
     },
     {
+      "address_id": "2025/document=form_w2/box=b/control=value",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyD[0].Col_Left[0].f2_02[0]",
       "label": "Line b - f2_02 (page 10, control 229)",
@@ -27447,6 +27567,7 @@
       "value_format": "text"
     },
     {
+      "address_id": "2025/document=form_w2/box=c/control=value",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyD[0].Col_Left[0].f2_03[0]",
       "label": "Line c - f2_03 (page 10, control 230)",
@@ -27463,6 +27584,7 @@
       "value_format": "text"
     },
     {
+      "address_id": "2025/document=form_w2/box=d/control=value",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyD[0].Col_Left[0].f2_04[0]",
       "label": "Line d - f2_04 (page 10, control 231)",
@@ -27479,6 +27601,7 @@
       "value_format": "text"
     },
     {
+      "address_id": "2025/document=form_w2/box=e/control=suffix",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyD[0].Col_Left[0].f2_07[0]",
       "label": "Line o - f2_07 (page 10, control 234)",
@@ -27495,6 +27618,7 @@
       "value_format": "text"
     },
     {
+      "address_id": "2025/document=form_w2/box=f/control=value",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyD[0].Col_Left[0].f2_08[0]",
       "label": "Line 12b - f2_08 (page 10, control 235)",
@@ -27511,7 +27635,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/box=11/control=f_19",
+      "address_id": "2025/document=form_w2/box=11/control=value",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyD[0].Col_Right[0].Box11__ReadOrder[0].f2_19[0]",
       "label": "Line o - f2_19 (page 10, control 246)",
@@ -27528,7 +27652,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/box=12/control=f_20",
+      "address_id": "2025/document=form_w2/box=12/row_template=entry/column=code",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyD[0].Col_Right[0].Box12_ReadOrder[0].f2_20[0]",
       "label": "Line o - d o e - f2_20 (page 10, control 247)",
@@ -27545,7 +27669,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/box=12/control=f_21",
+      "address_id": "2025/document=form_w2/box=12/row_template=entry/column=amount",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyD[0].Col_Right[0].Box12_ReadOrder[0].f2_21[0]",
       "label": "Line o - d o e - f2_21 (page 10, control 248)",
@@ -27562,7 +27686,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/box=12/control=f_22",
+      "address_id": "2025/document=form_w2/box=12/row_template=entry/column=code",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyD[0].Col_Right[0].Box12_ReadOrder[0].f2_22[0]",
       "label": "Line o - d o e - f2_22 (page 10, control 249)",
@@ -27579,7 +27703,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/box=12/control=f_23",
+      "address_id": "2025/document=form_w2/box=12/row_template=entry/column=amount",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyD[0].Col_Right[0].Box12_ReadOrder[0].f2_23[0]",
       "label": "Line o - d o e - f2_23 (page 10, control 250)",
@@ -27596,7 +27720,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/box=12/control=f_24",
+      "address_id": "2025/document=form_w2/box=12/row_template=entry/column=code",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyD[0].Col_Right[0].Box12_ReadOrder[0].f2_24[0]",
       "label": "Line o - d o e - f2_24 (page 10, control 251)",
@@ -27613,7 +27737,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/box=12/control=f_25",
+      "address_id": "2025/document=form_w2/box=12/row_template=entry/column=amount",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyD[0].Col_Right[0].Box12_ReadOrder[0].f2_25[0]",
       "label": "Line o - d o e - f2_25 (page 10, control 252)",
@@ -27630,7 +27754,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/box=12/control=f_26",
+      "address_id": "2025/document=form_w2/box=12/row_template=entry/column=code",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyD[0].Col_Right[0].Box12_ReadOrder[0].f2_26[0]",
       "label": "Line o - d o e - f2_26 (page 10, control 253)",
@@ -27647,7 +27771,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/box=12/control=f_27",
+      "address_id": "2025/document=form_w2/box=12/row_template=entry/column=amount",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyD[0].Col_Right[0].Box12_ReadOrder[0].f2_27[0]",
       "label": "Line o - d o e - f2_27 (page 10, control 254)",
@@ -27664,7 +27788,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/box=1/control=f_09",
+      "address_id": "2025/document=form_w2/box=1/control=value",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyD[0].Col_Right[0].Box1_ReadOrder[0].f2_09[0]",
       "label": "Line b - f2_09 (page 10, control 236)",
@@ -27681,7 +27805,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/box=3/control=f_11",
+      "address_id": "2025/document=form_w2/box=3/control=value",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyD[0].Col_Right[0].Box3_ReadOrder[0].f2_11[0]",
       "label": "Line c - f2_11 (page 10, control 238)",
@@ -27698,7 +27822,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/box=5/control=f_13",
+      "address_id": "2025/document=form_w2/box=5/control=value",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyD[0].Col_Right[0].Box5_ReadOrder[0].f2_13[0]",
       "label": "Line 5 - f2_13 (page 10, control 240)",
@@ -27715,7 +27839,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/box=7/control=f_15",
+      "address_id": "2025/document=form_w2/box=7/control=value",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyD[0].Col_Right[0].Box7_ReadOrder[0].f2_15[0]",
       "label": "Line 7 - f2_15 (page 10, control 242)",
@@ -27732,7 +27856,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/box=9/control=f_17",
+      "address_id": "2025/document=form_w2/box=9/control=value",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyD[0].Col_Right[0].Box9_ReadOrder[0].f2_17[0]",
       "label": "Line d - f2_17 (page 10, control 244)",
@@ -27749,6 +27873,7 @@
       "value_format": "text"
     },
     {
+      "address_id": "2025/document=form_w2/box=13/option=retirement_plan",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyD[0].Col_Right[0].Retirement_ReadOrder[0].c2_3[0]",
       "label": "Line o - c2_3 (page 10, control 256)",
@@ -27765,6 +27890,7 @@
       "value_format": "checkbox"
     },
     {
+      "address_id": "2025/document=form_w2/box=13/option=statutory_employee",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyD[0].Col_Right[0].Statutory_ReadOrder[0].c2_2[0]",
       "label": "Line o - c2_2 (page 10, control 255)",
@@ -27781,6 +27907,7 @@
       "value_format": "checkbox"
     },
     {
+      "address_id": "2025/document=form_w2/box=13/option=third_party_sick_pay",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyD[0].Col_Right[0].c2_4[0]",
       "label": "Line o - c2_4 (page 10, control 257)",
@@ -27797,6 +27924,7 @@
       "value_format": "checkbox"
     },
     {
+      "address_id": "2025/document=form_w2/box=2/control=value",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyD[0].Col_Right[0].f2_10[0]",
       "label": "Line b - f2_10 (page 10, control 237)",
@@ -27813,6 +27941,7 @@
       "value_format": "text"
     },
     {
+      "address_id": "2025/document=form_w2/box=4/control=value",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyD[0].Col_Right[0].f2_12[0]",
       "label": "Line c - f2_12 (page 10, control 239)",
@@ -27829,6 +27958,7 @@
       "value_format": "text"
     },
     {
+      "address_id": "2025/document=form_w2/box=6/control=value",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyD[0].Col_Right[0].f2_14[0]",
       "label": "Line 5 - f2_14 (page 10, control 241)",
@@ -27845,6 +27975,7 @@
       "value_format": "text"
     },
     {
+      "address_id": "2025/document=form_w2/box=8/control=value",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyD[0].Col_Right[0].f2_16[0]",
       "label": "Line 7 - f2_16 (page 10, control 243)",
@@ -27861,6 +27992,7 @@
       "value_format": "text"
     },
     {
+      "address_id": "2025/document=form_w2/box=10/control=value",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyD[0].Col_Right[0].f2_18[0]",
       "label": "Line d - f2_18 (page 10, control 245)",
@@ -27877,6 +28009,7 @@
       "value_format": "text"
     },
     {
+      "address_id": "2025/document=form_w2/box=14/control=value",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyD[0].Col_Right[0].f2_28[0]",
       "label": "Line o - f2_28 (page 10, control 258)",
@@ -27893,6 +28026,7 @@
       "value_format": "text"
     },
     {
+      "address_id": "2025/document=form_w2/box=void/option=void",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyD[0].Void_ReadOrder[0].c2_1[0]",
       "label": "Line a - VOID - c2_1",
@@ -27909,6 +28043,7 @@
       "value_format": "checkbox"
     },
     {
+      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=21",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyD[0].f2_41[0]",
       "label": "Line 15 - f2_41 (page 10, control 271)",
@@ -27925,6 +28060,7 @@
       "value_format": "text"
     },
     {
+      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=21",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyD[0].f2_42[0]",
       "label": "f2_42 (page 10, control 272)",

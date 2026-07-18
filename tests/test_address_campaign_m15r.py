@@ -97,12 +97,40 @@ def test_information_return_campaign_uses_typed_boxes_and_choices(information_ca
             assert coverage["addressed_widgets"] == coverage["inventory"]
             continue
         assert coverage["addressed_widgets"] > 0
-        assert coverage["exempt_widgets"] > 0
+        if document_id == "form_w2_2025":
+            assert coverage["exempt_widgets"] == 0
+            continue
+        else:
+            assert coverage["exempt_widgets"] > 0
         addressed = {item["address_id"]: item for item in payload["registry"]["addresses"]}
         for binding in payload["widget_bindings"]["bindings"]:
             path = addressed[binding["address_id"]]["path"]
             assert path[-2]["kind"] == "box"
             assert path[-1]["kind"] in {"control", "option"}
+
+
+@pytest.mark.m15
+def test_w2_campaign_collapses_official_copies_and_state_rows(information_campaign) -> None:
+    payload = information_campaign["form_w2_2025"]
+    assert payload["coverage"] == {
+        "inventory": 272,
+        "addressed_widgets": 272,
+        "exempt_widgets": 0,
+        "node_bindings": 0,
+        "references": 0,
+    }
+    bindings = payload["widget_bindings"]["bindings"]
+    assert len({item["address_id"] for item in bindings}) == 33
+    addresses = {item["address_id"]: item for item in payload["registry"]["addresses"]}
+    assert addresses["2025/document=form_w2/box=1/control=value"]["printed_label"] == (
+        "Wages, tips, other compensation"
+    )
+    assert addresses[
+        "2025/document=form_w2/box=12/row_template=entry/column=code"
+    ]["printed_label"] == "Code"
+    assert addresses[
+        "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=21"
+    ]["printed_label"] == "Locality name"
 
 
 @pytest.mark.m15r

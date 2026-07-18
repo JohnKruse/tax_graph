@@ -37,8 +37,8 @@ addresses:
   - source_path: config/manifest.yaml#form_w2_2025
     source_hash: 6a52ad63693de54220a3326b22c4d0fb34f4c25084366537087312975a55ae96
     page: 2
-- address_id: 2025/document=form_w2/box=1/control=f_09
-  logical_key: document=form_w2/box=1/control=f_09
+- address_id: 2025/document=form_w2/box=1/control=value
+  logical_key: document=form_w2/box=1/control=value
   year: 2025
   document_id: form_w2_2025
   parent_address_id: 2025/document=form_w2/box=1
@@ -49,8 +49,8 @@ addresses:
   - kind: box
     token: '1'
   - kind: control
-    token: f_09
-  printed_label: Line b - f1_09
+    token: value
+  printed_label: Wages, tips, other compensation
   aliases: []
   control_role: amount
   status: pending_review
@@ -59,6 +59,47 @@ addresses:
     source_hash: 6a52ad63693de54220a3326b22c4d0fb34f4c25084366537087312975a55ae96
     page: 2
   official_ref: Box 1
+- address_id: 2025/document=form_w2/box=10
+  logical_key: document=form_w2/box=10
+  year: 2025
+  document_id: form_w2_2025
+  parent_address_id: 2025/document=form_w2
+  kind: box
+  path:
+  - kind: document
+    token: form_w2
+  - kind: box
+    token: '10'
+  printed_label: '10'
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_w2_2025
+    source_hash: 6a52ad63693de54220a3326b22c4d0fb34f4c25084366537087312975a55ae96
+    page: 2
+- address_id: 2025/document=form_w2/box=10/control=value
+  logical_key: document=form_w2/box=10/control=value
+  year: 2025
+  document_id: form_w2_2025
+  parent_address_id: 2025/document=form_w2/box=10
+  kind: control
+  path:
+  - kind: document
+    token: form_w2
+  - kind: box
+    token: '10'
+  - kind: control
+    token: value
+  printed_label: Dependent care benefits
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_w2_2025
+    source_hash: 6a52ad63693de54220a3326b22c4d0fb34f4c25084366537087312975a55ae96
+    page: 2
+  official_ref: Box 10
 - address_id: 2025/document=form_w2/box=11
   logical_key: document=form_w2/box=11
   year: 2025
@@ -78,8 +119,8 @@ addresses:
   - source_path: config/manifest.yaml#form_w2_2025
     source_hash: 6a52ad63693de54220a3326b22c4d0fb34f4c25084366537087312975a55ae96
     page: 2
-- address_id: 2025/document=form_w2/box=11/control=f_19
-  logical_key: document=form_w2/box=11/control=f_19
+- address_id: 2025/document=form_w2/box=11/control=value
+  logical_key: document=form_w2/box=11/control=value
   year: 2025
   document_id: form_w2_2025
   parent_address_id: 2025/document=form_w2/box=11
@@ -90,8 +131,8 @@ addresses:
   - kind: box
     token: '11'
   - kind: control
-    token: f_19
-  printed_label: Line o - f1_19
+    token: value
+  printed_label: Nonqualified plans
   aliases: []
   control_role: amount
   status: pending_review
@@ -118,195 +159,21 @@ addresses:
   evidence:
   - source_path: config/manifest.yaml#form_w2_2025
     source_hash: 6a52ad63693de54220a3326b22c4d0fb34f4c25084366537087312975a55ae96
-    page: 3
-- address_id: 2025/document=form_w2/box=12/control=f_20
-  logical_key: document=form_w2/box=12/control=f_20
+    page: 2
+- address_id: 2025/document=form_w2/box=12/row_template=entry
+  logical_key: document=form_w2/box=12/row_template=entry
   year: 2025
   document_id: form_w2_2025
   parent_address_id: 2025/document=form_w2/box=12
-  kind: control
+  kind: row_template
   path:
   - kind: document
     token: form_w2
   - kind: box
     token: '12'
-  - kind: control
-    token: f_20
-  printed_label: Line o - d o e - f2_20 (page 3, control 66)
-  aliases: []
-  control_role: amount
-  status: pending_review
-  evidence:
-  - source_path: config/manifest.yaml#form_w2_2025
-    source_hash: 6a52ad63693de54220a3326b22c4d0fb34f4c25084366537087312975a55ae96
-    page: 3
-  official_ref: Box 12
-- address_id: 2025/document=form_w2/box=12/control=f_21
-  logical_key: document=form_w2/box=12/control=f_21
-  year: 2025
-  document_id: form_w2_2025
-  parent_address_id: 2025/document=form_w2/box=12
-  kind: control
-  path:
-  - kind: document
-    token: form_w2
-  - kind: box
-    token: '12'
-  - kind: control
-    token: f_21
-  printed_label: Line o - d o e - f2_21 (page 3, control 67)
-  aliases: []
-  control_role: amount
-  status: pending_review
-  evidence:
-  - source_path: config/manifest.yaml#form_w2_2025
-    source_hash: 6a52ad63693de54220a3326b22c4d0fb34f4c25084366537087312975a55ae96
-    page: 3
-  official_ref: Box 12
-- address_id: 2025/document=form_w2/box=12/control=f_22
-  logical_key: document=form_w2/box=12/control=f_22
-  year: 2025
-  document_id: form_w2_2025
-  parent_address_id: 2025/document=form_w2/box=12
-  kind: control
-  path:
-  - kind: document
-    token: form_w2
-  - kind: box
-    token: '12'
-  - kind: control
-    token: f_22
-  printed_label: Line o - d o e - f2_22 (page 3, control 68)
-  aliases: []
-  control_role: amount
-  status: pending_review
-  evidence:
-  - source_path: config/manifest.yaml#form_w2_2025
-    source_hash: 6a52ad63693de54220a3326b22c4d0fb34f4c25084366537087312975a55ae96
-    page: 3
-  official_ref: Box 12
-- address_id: 2025/document=form_w2/box=12/control=f_23
-  logical_key: document=form_w2/box=12/control=f_23
-  year: 2025
-  document_id: form_w2_2025
-  parent_address_id: 2025/document=form_w2/box=12
-  kind: control
-  path:
-  - kind: document
-    token: form_w2
-  - kind: box
-    token: '12'
-  - kind: control
-    token: f_23
-  printed_label: Line o - d o e - f2_23 (page 3, control 69)
-  aliases: []
-  control_role: amount
-  status: pending_review
-  evidence:
-  - source_path: config/manifest.yaml#form_w2_2025
-    source_hash: 6a52ad63693de54220a3326b22c4d0fb34f4c25084366537087312975a55ae96
-    page: 3
-  official_ref: Box 12
-- address_id: 2025/document=form_w2/box=12/control=f_24
-  logical_key: document=form_w2/box=12/control=f_24
-  year: 2025
-  document_id: form_w2_2025
-  parent_address_id: 2025/document=form_w2/box=12
-  kind: control
-  path:
-  - kind: document
-    token: form_w2
-  - kind: box
-    token: '12'
-  - kind: control
-    token: f_24
-  printed_label: Line o - d o e - f2_24 (page 3, control 70)
-  aliases: []
-  control_role: amount
-  status: pending_review
-  evidence:
-  - source_path: config/manifest.yaml#form_w2_2025
-    source_hash: 6a52ad63693de54220a3326b22c4d0fb34f4c25084366537087312975a55ae96
-    page: 3
-  official_ref: Box 12
-- address_id: 2025/document=form_w2/box=12/control=f_25
-  logical_key: document=form_w2/box=12/control=f_25
-  year: 2025
-  document_id: form_w2_2025
-  parent_address_id: 2025/document=form_w2/box=12
-  kind: control
-  path:
-  - kind: document
-    token: form_w2
-  - kind: box
-    token: '12'
-  - kind: control
-    token: f_25
-  printed_label: Line o - d o e - f2_25 (page 3, control 71)
-  aliases: []
-  control_role: amount
-  status: pending_review
-  evidence:
-  - source_path: config/manifest.yaml#form_w2_2025
-    source_hash: 6a52ad63693de54220a3326b22c4d0fb34f4c25084366537087312975a55ae96
-    page: 3
-  official_ref: Box 12
-- address_id: 2025/document=form_w2/box=12/control=f_26
-  logical_key: document=form_w2/box=12/control=f_26
-  year: 2025
-  document_id: form_w2_2025
-  parent_address_id: 2025/document=form_w2/box=12
-  kind: control
-  path:
-  - kind: document
-    token: form_w2
-  - kind: box
-    token: '12'
-  - kind: control
-    token: f_26
-  printed_label: Line o - d o e - f2_26 (page 3, control 72)
-  aliases: []
-  control_role: amount
-  status: pending_review
-  evidence:
-  - source_path: config/manifest.yaml#form_w2_2025
-    source_hash: 6a52ad63693de54220a3326b22c4d0fb34f4c25084366537087312975a55ae96
-    page: 3
-  official_ref: Box 12
-- address_id: 2025/document=form_w2/box=12/control=f_27
-  logical_key: document=form_w2/box=12/control=f_27
-  year: 2025
-  document_id: form_w2_2025
-  parent_address_id: 2025/document=form_w2/box=12
-  kind: control
-  path:
-  - kind: document
-    token: form_w2
-  - kind: box
-    token: '12'
-  - kind: control
-    token: f_27
-  printed_label: Line o - d o e - f2_27 (page 3, control 73)
-  aliases: []
-  control_role: amount
-  status: pending_review
-  evidence:
-  - source_path: config/manifest.yaml#form_w2_2025
-    source_hash: 6a52ad63693de54220a3326b22c4d0fb34f4c25084366537087312975a55ae96
-    page: 3
-  official_ref: Box 12
-- address_id: 2025/document=form_w2/box=15
-  logical_key: document=form_w2/box=15
-  year: 2025
-  document_id: form_w2_2025
-  parent_address_id: 2025/document=form_w2
-  kind: box
-  path:
-  - kind: document
-    token: form_w2
-  - kind: box
-    token: '15'
-  printed_label: '15'
+  - kind: row_template
+    token: entry
+  printed_label: entry
   aliases: []
   control_role: none
   status: pending_review
@@ -314,20 +181,22 @@ addresses:
   - source_path: config/manifest.yaml#form_w2_2025
     source_hash: 6a52ad63693de54220a3326b22c4d0fb34f4c25084366537087312975a55ae96
     page: 2
-- address_id: 2025/document=form_w2/box=15/control=f_29
-  logical_key: document=form_w2/box=15/control=f_29
+- address_id: 2025/document=form_w2/box=12/row_template=entry/column=amount
+  logical_key: document=form_w2/box=12/row_template=entry/column=amount
   year: 2025
   document_id: form_w2_2025
-  parent_address_id: 2025/document=form_w2/box=15
-  kind: control
+  parent_address_id: 2025/document=form_w2/box=12/row_template=entry
+  kind: column
   path:
   - kind: document
     token: form_w2
   - kind: box
-    token: '15'
-  - kind: control
-    token: f_29
-  printed_label: Line 15 - f1_29
+    token: '12'
+  - kind: row_template
+    token: entry
+  - kind: column
+    token: amount
+  printed_label: Amount
   aliases: []
   control_role: amount
   status: pending_review
@@ -335,62 +204,23 @@ addresses:
   - source_path: config/manifest.yaml#form_w2_2025
     source_hash: 6a52ad63693de54220a3326b22c4d0fb34f4c25084366537087312975a55ae96
     page: 2
-  official_ref: Box 15
-- address_id: 2025/document=form_w2/box=16
-  logical_key: document=form_w2/box=16
+  official_ref: Box 12 amount
+- address_id: 2025/document=form_w2/box=12/row_template=entry/column=code
+  logical_key: document=form_w2/box=12/row_template=entry/column=code
   year: 2025
   document_id: form_w2_2025
-  parent_address_id: 2025/document=form_w2
-  kind: box
+  parent_address_id: 2025/document=form_w2/box=12/row_template=entry
+  kind: column
   path:
   - kind: document
     token: form_w2
   - kind: box
-    token: '16'
-  printed_label: '16'
-  aliases: []
-  control_role: none
-  status: pending_review
-  evidence:
-  - source_path: config/manifest.yaml#form_w2_2025
-    source_hash: 6a52ad63693de54220a3326b22c4d0fb34f4c25084366537087312975a55ae96
-    page: 2
-- address_id: 2025/document=form_w2/box=16/control=f_33
-  logical_key: document=form_w2/box=16/control=f_33
-  year: 2025
-  document_id: form_w2_2025
-  parent_address_id: 2025/document=form_w2/box=16
-  kind: control
-  path:
-  - kind: document
-    token: form_w2
-  - kind: box
-    token: '16'
-  - kind: control
-    token: f_33
-  printed_label: Line 15 - f1_33
-  aliases: []
-  control_role: amount
-  status: pending_review
-  evidence:
-  - source_path: config/manifest.yaml#form_w2_2025
-    source_hash: 6a52ad63693de54220a3326b22c4d0fb34f4c25084366537087312975a55ae96
-    page: 2
-  official_ref: Box 16
-- address_id: 2025/document=form_w2/box=16/control=f_34
-  logical_key: document=form_w2/box=16/control=f_34
-  year: 2025
-  document_id: form_w2_2025
-  parent_address_id: 2025/document=form_w2/box=16
-  kind: control
-  path:
-  - kind: document
-    token: form_w2
-  - kind: box
-    token: '16'
-  - kind: control
-    token: f_34
-  printed_label: Box 16 - State wages, tips, etc.
+    token: '12'
+  - kind: row_template
+    token: entry
+  - kind: column
+    token: code
+  printed_label: Code
   aliases: []
   control_role: text
   status: pending_review
@@ -398,9 +228,9 @@ addresses:
   - source_path: config/manifest.yaml#form_w2_2025
     source_hash: 6a52ad63693de54220a3326b22c4d0fb34f4c25084366537087312975a55ae96
     page: 2
-  official_ref: Box 16
-- address_id: 2025/document=form_w2/box=17
-  logical_key: document=form_w2/box=17
+  official_ref: Box 12 code
+- address_id: 2025/document=form_w2/box=13
+  logical_key: document=form_w2/box=13
   year: 2025
   document_id: form_w2_2025
   parent_address_id: 2025/document=form_w2
@@ -409,8 +239,8 @@ addresses:
   - kind: document
     token: form_w2
   - kind: box
-    token: '17'
-  printed_label: '17'
+    token: '13'
+  printed_label: '13'
   aliases: []
   control_role: none
   status: pending_review
@@ -418,52 +248,74 @@ addresses:
   - source_path: config/manifest.yaml#form_w2_2025
     source_hash: 6a52ad63693de54220a3326b22c4d0fb34f4c25084366537087312975a55ae96
     page: 2
-- address_id: 2025/document=form_w2/box=17/control=f_35
-  logical_key: document=form_w2/box=17/control=f_35
+- address_id: 2025/document=form_w2/box=13/option=retirement_plan
+  logical_key: document=form_w2/box=13/option=retirement_plan
   year: 2025
   document_id: form_w2_2025
-  parent_address_id: 2025/document=form_w2/box=17
-  kind: control
+  parent_address_id: 2025/document=form_w2/box=13
+  kind: option
   path:
   - kind: document
     token: form_w2
   - kind: box
-    token: '17'
-  - kind: control
-    token: f_35
-  printed_label: Line 15 - f1_35
+    token: '13'
+  - kind: option
+    token: retirement_plan
+  printed_label: Retirement plan
   aliases: []
-  control_role: amount
+  control_role: checkbox
   status: pending_review
   evidence:
   - source_path: config/manifest.yaml#form_w2_2025
     source_hash: 6a52ad63693de54220a3326b22c4d0fb34f4c25084366537087312975a55ae96
     page: 2
-  official_ref: Box 17
-- address_id: 2025/document=form_w2/box=17/control=f_36
-  logical_key: document=form_w2/box=17/control=f_36
+  official_ref: Box 13
+- address_id: 2025/document=form_w2/box=13/option=statutory_employee
+  logical_key: document=form_w2/box=13/option=statutory_employee
   year: 2025
   document_id: form_w2_2025
-  parent_address_id: 2025/document=form_w2/box=17
-  kind: control
+  parent_address_id: 2025/document=form_w2/box=13
+  kind: option
   path:
   - kind: document
     token: form_w2
   - kind: box
-    token: '17'
-  - kind: control
-    token: f_36
-  printed_label: Box 17 - State income tax
+    token: '13'
+  - kind: option
+    token: statutory_employee
+  printed_label: Statutory employee
   aliases: []
-  control_role: text
+  control_role: checkbox
   status: pending_review
   evidence:
   - source_path: config/manifest.yaml#form_w2_2025
     source_hash: 6a52ad63693de54220a3326b22c4d0fb34f4c25084366537087312975a55ae96
     page: 2
-  official_ref: Box 17
-- address_id: 2025/document=form_w2/box=18
-  logical_key: document=form_w2/box=18
+  official_ref: Box 13
+- address_id: 2025/document=form_w2/box=13/option=third_party_sick_pay
+  logical_key: document=form_w2/box=13/option=third_party_sick_pay
+  year: 2025
+  document_id: form_w2_2025
+  parent_address_id: 2025/document=form_w2/box=13
+  kind: option
+  path:
+  - kind: document
+    token: form_w2
+  - kind: box
+    token: '13'
+  - kind: option
+    token: third_party_sick_pay
+  printed_label: Third-party sick pay
+  aliases: []
+  control_role: checkbox
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_w2_2025
+    source_hash: 6a52ad63693de54220a3326b22c4d0fb34f4c25084366537087312975a55ae96
+    page: 2
+  official_ref: Box 13
+- address_id: 2025/document=form_w2/box=14
+  logical_key: document=form_w2/box=14
   year: 2025
   document_id: form_w2_2025
   parent_address_id: 2025/document=form_w2
@@ -472,8 +324,8 @@ addresses:
   - kind: document
     token: form_w2
   - kind: box
-    token: '18'
-  printed_label: '18'
+    token: '14'
+  printed_label: '14'
   aliases: []
   control_role: none
   status: pending_review
@@ -481,42 +333,20 @@ addresses:
   - source_path: config/manifest.yaml#form_w2_2025
     source_hash: 6a52ad63693de54220a3326b22c4d0fb34f4c25084366537087312975a55ae96
     page: 2
-- address_id: 2025/document=form_w2/box=18/control=f_37
-  logical_key: document=form_w2/box=18/control=f_37
+- address_id: 2025/document=form_w2/box=14/control=value
+  logical_key: document=form_w2/box=14/control=value
   year: 2025
   document_id: form_w2_2025
-  parent_address_id: 2025/document=form_w2/box=18
+  parent_address_id: 2025/document=form_w2/box=14
   kind: control
   path:
   - kind: document
     token: form_w2
   - kind: box
-    token: '18'
+    token: '14'
   - kind: control
-    token: f_37
-  printed_label: Line 15 - f1_37
-  aliases: []
-  control_role: amount
-  status: pending_review
-  evidence:
-  - source_path: config/manifest.yaml#form_w2_2025
-    source_hash: 6a52ad63693de54220a3326b22c4d0fb34f4c25084366537087312975a55ae96
-    page: 2
-  official_ref: Box 18
-- address_id: 2025/document=form_w2/box=18/control=f_38
-  logical_key: document=form_w2/box=18/control=f_38
-  year: 2025
-  document_id: form_w2_2025
-  parent_address_id: 2025/document=form_w2/box=18
-  kind: control
-  path:
-  - kind: document
-    token: form_w2
-  - kind: box
-    token: '18'
-  - kind: control
-    token: f_38
-  printed_label: Box 18 - Local wages, tips, etc.
+    token: value
+  printed_label: Other
   aliases: []
   control_role: text
   status: pending_review
@@ -524,9 +354,9 @@ addresses:
   - source_path: config/manifest.yaml#form_w2_2025
     source_hash: 6a52ad63693de54220a3326b22c4d0fb34f4c25084366537087312975a55ae96
     page: 2
-  official_ref: Box 18
-- address_id: 2025/document=form_w2/box=19
-  logical_key: document=form_w2/box=19
+  official_ref: Box 14
+- address_id: 2025/document=form_w2/box=2
+  logical_key: document=form_w2/box=2
   year: 2025
   document_id: form_w2_2025
   parent_address_id: 2025/document=form_w2
@@ -535,8 +365,8 @@ addresses:
   - kind: document
     token: form_w2
   - kind: box
-    token: '19'
-  printed_label: '19'
+    token: '2'
+  printed_label: '2'
   aliases: []
   control_role: none
   status: pending_review
@@ -544,20 +374,20 @@ addresses:
   - source_path: config/manifest.yaml#form_w2_2025
     source_hash: 6a52ad63693de54220a3326b22c4d0fb34f4c25084366537087312975a55ae96
     page: 2
-- address_id: 2025/document=form_w2/box=19/control=f_39
-  logical_key: document=form_w2/box=19/control=f_39
+- address_id: 2025/document=form_w2/box=2/control=value
+  logical_key: document=form_w2/box=2/control=value
   year: 2025
   document_id: form_w2_2025
-  parent_address_id: 2025/document=form_w2/box=19
+  parent_address_id: 2025/document=form_w2/box=2
   kind: control
   path:
   - kind: document
     token: form_w2
   - kind: box
-    token: '19'
+    token: '2'
   - kind: control
-    token: f_39
-  printed_label: Line 15 - f1_39
+    token: value
+  printed_label: Federal income tax withheld
   aliases: []
   control_role: amount
   status: pending_review
@@ -565,29 +395,7 @@ addresses:
   - source_path: config/manifest.yaml#form_w2_2025
     source_hash: 6a52ad63693de54220a3326b22c4d0fb34f4c25084366537087312975a55ae96
     page: 2
-  official_ref: Box 19
-- address_id: 2025/document=form_w2/box=19/control=f_40
-  logical_key: document=form_w2/box=19/control=f_40
-  year: 2025
-  document_id: form_w2_2025
-  parent_address_id: 2025/document=form_w2/box=19
-  kind: control
-  path:
-  - kind: document
-    token: form_w2
-  - kind: box
-    token: '19'
-  - kind: control
-    token: f_40
-  printed_label: Box 19 - Local income tax
-  aliases: []
-  control_role: text
-  status: pending_review
-  evidence:
-  - source_path: config/manifest.yaml#form_w2_2025
-    source_hash: 6a52ad63693de54220a3326b22c4d0fb34f4c25084366537087312975a55ae96
-    page: 2
-  official_ref: Box 19
+  official_ref: Box 2
 - address_id: 2025/document=form_w2/box=3
   logical_key: document=form_w2/box=3
   year: 2025
@@ -607,8 +415,8 @@ addresses:
   - source_path: config/manifest.yaml#form_w2_2025
     source_hash: 6a52ad63693de54220a3326b22c4d0fb34f4c25084366537087312975a55ae96
     page: 2
-- address_id: 2025/document=form_w2/box=3/control=f_11
-  logical_key: document=form_w2/box=3/control=f_11
+- address_id: 2025/document=form_w2/box=3/control=value
+  logical_key: document=form_w2/box=3/control=value
   year: 2025
   document_id: form_w2_2025
   parent_address_id: 2025/document=form_w2/box=3
@@ -619,8 +427,8 @@ addresses:
   - kind: box
     token: '3'
   - kind: control
-    token: f_11
-  printed_label: Line c - f1_11
+    token: value
+  printed_label: Social security wages
   aliases: []
   control_role: amount
   status: pending_review
@@ -629,6 +437,47 @@ addresses:
     source_hash: 6a52ad63693de54220a3326b22c4d0fb34f4c25084366537087312975a55ae96
     page: 2
   official_ref: Box 3
+- address_id: 2025/document=form_w2/box=4
+  logical_key: document=form_w2/box=4
+  year: 2025
+  document_id: form_w2_2025
+  parent_address_id: 2025/document=form_w2
+  kind: box
+  path:
+  - kind: document
+    token: form_w2
+  - kind: box
+    token: '4'
+  printed_label: '4'
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_w2_2025
+    source_hash: 6a52ad63693de54220a3326b22c4d0fb34f4c25084366537087312975a55ae96
+    page: 2
+- address_id: 2025/document=form_w2/box=4/control=value
+  logical_key: document=form_w2/box=4/control=value
+  year: 2025
+  document_id: form_w2_2025
+  parent_address_id: 2025/document=form_w2/box=4
+  kind: control
+  path:
+  - kind: document
+    token: form_w2
+  - kind: box
+    token: '4'
+  - kind: control
+    token: value
+  printed_label: Social security tax withheld
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_w2_2025
+    source_hash: 6a52ad63693de54220a3326b22c4d0fb34f4c25084366537087312975a55ae96
+    page: 2
+  official_ref: Box 4
 - address_id: 2025/document=form_w2/box=5
   logical_key: document=form_w2/box=5
   year: 2025
@@ -648,8 +497,8 @@ addresses:
   - source_path: config/manifest.yaml#form_w2_2025
     source_hash: 6a52ad63693de54220a3326b22c4d0fb34f4c25084366537087312975a55ae96
     page: 2
-- address_id: 2025/document=form_w2/box=5/control=f_13
-  logical_key: document=form_w2/box=5/control=f_13
+- address_id: 2025/document=form_w2/box=5/control=value
+  logical_key: document=form_w2/box=5/control=value
   year: 2025
   document_id: form_w2_2025
   parent_address_id: 2025/document=form_w2/box=5
@@ -660,8 +509,8 @@ addresses:
   - kind: box
     token: '5'
   - kind: control
-    token: f_13
-  printed_label: Line 5 - f1_13
+    token: value
+  printed_label: Medicare wages and tips
   aliases: []
   control_role: amount
   status: pending_review
@@ -670,6 +519,47 @@ addresses:
     source_hash: 6a52ad63693de54220a3326b22c4d0fb34f4c25084366537087312975a55ae96
     page: 2
   official_ref: Box 5
+- address_id: 2025/document=form_w2/box=6
+  logical_key: document=form_w2/box=6
+  year: 2025
+  document_id: form_w2_2025
+  parent_address_id: 2025/document=form_w2
+  kind: box
+  path:
+  - kind: document
+    token: form_w2
+  - kind: box
+    token: '6'
+  printed_label: '6'
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_w2_2025
+    source_hash: 6a52ad63693de54220a3326b22c4d0fb34f4c25084366537087312975a55ae96
+    page: 2
+- address_id: 2025/document=form_w2/box=6/control=value
+  logical_key: document=form_w2/box=6/control=value
+  year: 2025
+  document_id: form_w2_2025
+  parent_address_id: 2025/document=form_w2/box=6
+  kind: control
+  path:
+  - kind: document
+    token: form_w2
+  - kind: box
+    token: '6'
+  - kind: control
+    token: value
+  printed_label: Medicare tax withheld
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_w2_2025
+    source_hash: 6a52ad63693de54220a3326b22c4d0fb34f4c25084366537087312975a55ae96
+    page: 2
+  official_ref: Box 6
 - address_id: 2025/document=form_w2/box=7
   logical_key: document=form_w2/box=7
   year: 2025
@@ -689,8 +579,8 @@ addresses:
   - source_path: config/manifest.yaml#form_w2_2025
     source_hash: 6a52ad63693de54220a3326b22c4d0fb34f4c25084366537087312975a55ae96
     page: 2
-- address_id: 2025/document=form_w2/box=7/control=f_15
-  logical_key: document=form_w2/box=7/control=f_15
+- address_id: 2025/document=form_w2/box=7/control=value
+  logical_key: document=form_w2/box=7/control=value
   year: 2025
   document_id: form_w2_2025
   parent_address_id: 2025/document=form_w2/box=7
@@ -701,8 +591,8 @@ addresses:
   - kind: box
     token: '7'
   - kind: control
-    token: f_15
-  printed_label: Line 7 - f1_15
+    token: value
+  printed_label: Social security tips
   aliases: []
   control_role: amount
   status: pending_review
@@ -711,6 +601,47 @@ addresses:
     source_hash: 6a52ad63693de54220a3326b22c4d0fb34f4c25084366537087312975a55ae96
     page: 2
   official_ref: Box 7
+- address_id: 2025/document=form_w2/box=8
+  logical_key: document=form_w2/box=8
+  year: 2025
+  document_id: form_w2_2025
+  parent_address_id: 2025/document=form_w2
+  kind: box
+  path:
+  - kind: document
+    token: form_w2
+  - kind: box
+    token: '8'
+  printed_label: '8'
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_w2_2025
+    source_hash: 6a52ad63693de54220a3326b22c4d0fb34f4c25084366537087312975a55ae96
+    page: 2
+- address_id: 2025/document=form_w2/box=8/control=value
+  logical_key: document=form_w2/box=8/control=value
+  year: 2025
+  document_id: form_w2_2025
+  parent_address_id: 2025/document=form_w2/box=8
+  kind: control
+  path:
+  - kind: document
+    token: form_w2
+  - kind: box
+    token: '8'
+  - kind: control
+    token: value
+  printed_label: Allocated tips
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_w2_2025
+    source_hash: 6a52ad63693de54220a3326b22c4d0fb34f4c25084366537087312975a55ae96
+    page: 2
+  official_ref: Box 8
 - address_id: 2025/document=form_w2/box=9
   logical_key: document=form_w2/box=9
   year: 2025
@@ -730,8 +661,8 @@ addresses:
   - source_path: config/manifest.yaml#form_w2_2025
     source_hash: 6a52ad63693de54220a3326b22c4d0fb34f4c25084366537087312975a55ae96
     page: 2
-- address_id: 2025/document=form_w2/box=9/control=f_17
-  logical_key: document=form_w2/box=9/control=f_17
+- address_id: 2025/document=form_w2/box=9/control=value
+  logical_key: document=form_w2/box=9/control=value
   year: 2025
   document_id: form_w2_2025
   parent_address_id: 2025/document=form_w2/box=9
@@ -742,8 +673,8 @@ addresses:
   - kind: box
     token: '9'
   - kind: control
-    token: f_17
-  printed_label: Line d - f1_17
+    token: value
+  printed_label: Box 9
   aliases: []
   control_role: amount
   status: pending_review
@@ -771,8 +702,8 @@ addresses:
   - source_path: config/manifest.yaml#form_w2_2025
     source_hash: 6a52ad63693de54220a3326b22c4d0fb34f4c25084366537087312975a55ae96
     page: 2
-- address_id: 2025/document=form_w2/box=a/control=f_01
-  logical_key: document=form_w2/box=a/control=f_01
+- address_id: 2025/document=form_w2/box=a/control=employee_ssn
+  logical_key: document=form_w2/box=a/control=employee_ssn
   year: 2025
   document_id: form_w2_2025
   parent_address_id: 2025/document=form_w2/box=a
@@ -783,8 +714,410 @@ addresses:
   - kind: box
     token: a
   - kind: control
-    token: f_01
-  printed_label: Line a - 22222 VOID - f1_01
+    token: employee_ssn
+  printed_label: Employee's social security number
+  aliases: []
+  control_role: identifier
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_w2_2025
+    source_hash: 6a52ad63693de54220a3326b22c4d0fb34f4c25084366537087312975a55ae96
+    page: 2
+  official_ref: Box a
+- address_id: 2025/document=form_w2/box=b
+  logical_key: document=form_w2/box=b
+  year: 2025
+  document_id: form_w2_2025
+  parent_address_id: 2025/document=form_w2
+  kind: box
+  path:
+  - kind: document
+    token: form_w2
+  - kind: box
+    token: b
+  printed_label: b
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_w2_2025
+    source_hash: 6a52ad63693de54220a3326b22c4d0fb34f4c25084366537087312975a55ae96
+    page: 2
+- address_id: 2025/document=form_w2/box=b/control=value
+  logical_key: document=form_w2/box=b/control=value
+  year: 2025
+  document_id: form_w2_2025
+  parent_address_id: 2025/document=form_w2/box=b
+  kind: control
+  path:
+  - kind: document
+    token: form_w2
+  - kind: box
+    token: b
+  - kind: control
+    token: value
+  printed_label: Employer identification number (EIN)
+  aliases: []
+  control_role: identifier
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_w2_2025
+    source_hash: 6a52ad63693de54220a3326b22c4d0fb34f4c25084366537087312975a55ae96
+    page: 2
+  official_ref: Box b
+- address_id: 2025/document=form_w2/box=c
+  logical_key: document=form_w2/box=c
+  year: 2025
+  document_id: form_w2_2025
+  parent_address_id: 2025/document=form_w2
+  kind: box
+  path:
+  - kind: document
+    token: form_w2
+  - kind: box
+    token: c
+  printed_label: c
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_w2_2025
+    source_hash: 6a52ad63693de54220a3326b22c4d0fb34f4c25084366537087312975a55ae96
+    page: 2
+- address_id: 2025/document=form_w2/box=c/control=value
+  logical_key: document=form_w2/box=c/control=value
+  year: 2025
+  document_id: form_w2_2025
+  parent_address_id: 2025/document=form_w2/box=c
+  kind: control
+  path:
+  - kind: document
+    token: form_w2
+  - kind: box
+    token: c
+  - kind: control
+    token: value
+  printed_label: Employer's name, address, and ZIP code
+  aliases: []
+  control_role: text
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_w2_2025
+    source_hash: 6a52ad63693de54220a3326b22c4d0fb34f4c25084366537087312975a55ae96
+    page: 2
+  official_ref: Box c
+- address_id: 2025/document=form_w2/box=d
+  logical_key: document=form_w2/box=d
+  year: 2025
+  document_id: form_w2_2025
+  parent_address_id: 2025/document=form_w2
+  kind: box
+  path:
+  - kind: document
+    token: form_w2
+  - kind: box
+    token: d
+  printed_label: d
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_w2_2025
+    source_hash: 6a52ad63693de54220a3326b22c4d0fb34f4c25084366537087312975a55ae96
+    page: 2
+- address_id: 2025/document=form_w2/box=d/control=value
+  logical_key: document=form_w2/box=d/control=value
+  year: 2025
+  document_id: form_w2_2025
+  parent_address_id: 2025/document=form_w2/box=d
+  kind: control
+  path:
+  - kind: document
+    token: form_w2
+  - kind: box
+    token: d
+  - kind: control
+    token: value
+  printed_label: Control number
+  aliases: []
+  control_role: identifier
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_w2_2025
+    source_hash: 6a52ad63693de54220a3326b22c4d0fb34f4c25084366537087312975a55ae96
+    page: 2
+  official_ref: Box d
+- address_id: 2025/document=form_w2/box=e
+  logical_key: document=form_w2/box=e
+  year: 2025
+  document_id: form_w2_2025
+  parent_address_id: 2025/document=form_w2
+  kind: box
+  path:
+  - kind: document
+    token: form_w2
+  - kind: box
+    token: e
+  printed_label: e
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_w2_2025
+    source_hash: 6a52ad63693de54220a3326b22c4d0fb34f4c25084366537087312975a55ae96
+    page: 2
+- address_id: 2025/document=form_w2/box=e/control=first_name_initial
+  logical_key: document=form_w2/box=e/control=first_name_initial
+  year: 2025
+  document_id: form_w2_2025
+  parent_address_id: 2025/document=form_w2/box=e
+  kind: control
+  path:
+  - kind: document
+    token: form_w2
+  - kind: box
+    token: e
+  - kind: control
+    token: first_name_initial
+  printed_label: Employee's first name and initial
+  aliases: []
+  control_role: text
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_w2_2025
+    source_hash: 6a52ad63693de54220a3326b22c4d0fb34f4c25084366537087312975a55ae96
+    page: 2
+  official_ref: Box e
+- address_id: 2025/document=form_w2/box=e/control=last_name
+  logical_key: document=form_w2/box=e/control=last_name
+  year: 2025
+  document_id: form_w2_2025
+  parent_address_id: 2025/document=form_w2/box=e
+  kind: control
+  path:
+  - kind: document
+    token: form_w2
+  - kind: box
+    token: e
+  - kind: control
+    token: last_name
+  printed_label: Last name
+  aliases: []
+  control_role: text
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_w2_2025
+    source_hash: 6a52ad63693de54220a3326b22c4d0fb34f4c25084366537087312975a55ae96
+    page: 2
+  official_ref: Box e
+- address_id: 2025/document=form_w2/box=e/control=suffix
+  logical_key: document=form_w2/box=e/control=suffix
+  year: 2025
+  document_id: form_w2_2025
+  parent_address_id: 2025/document=form_w2/box=e
+  kind: control
+  path:
+  - kind: document
+    token: form_w2
+  - kind: box
+    token: e
+  - kind: control
+    token: suffix
+  printed_label: Suffix
+  aliases: []
+  control_role: text
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_w2_2025
+    source_hash: 6a52ad63693de54220a3326b22c4d0fb34f4c25084366537087312975a55ae96
+    page: 2
+  official_ref: Box e
+- address_id: 2025/document=form_w2/box=f
+  logical_key: document=form_w2/box=f
+  year: 2025
+  document_id: form_w2_2025
+  parent_address_id: 2025/document=form_w2
+  kind: box
+  path:
+  - kind: document
+    token: form_w2
+  - kind: box
+    token: f
+  printed_label: f
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_w2_2025
+    source_hash: 6a52ad63693de54220a3326b22c4d0fb34f4c25084366537087312975a55ae96
+    page: 2
+- address_id: 2025/document=form_w2/box=f/control=value
+  logical_key: document=form_w2/box=f/control=value
+  year: 2025
+  document_id: form_w2_2025
+  parent_address_id: 2025/document=form_w2/box=f
+  kind: control
+  path:
+  - kind: document
+    token: form_w2
+  - kind: box
+    token: f
+  - kind: control
+    token: value
+  printed_label: Employee's address and ZIP code
+  aliases: []
+  control_role: text
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_w2_2025
+    source_hash: 6a52ad63693de54220a3326b22c4d0fb34f4c25084366537087312975a55ae96
+    page: 2
+  official_ref: Box f
+- address_id: 2025/document=form_w2/box=void
+  logical_key: document=form_w2/box=void
+  year: 2025
+  document_id: form_w2_2025
+  parent_address_id: 2025/document=form_w2
+  kind: box
+  path:
+  - kind: document
+    token: form_w2
+  - kind: box
+    token: void
+  printed_label: void
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_w2_2025
+    source_hash: 6a52ad63693de54220a3326b22c4d0fb34f4c25084366537087312975a55ae96
+    page: 2
+- address_id: 2025/document=form_w2/box=void/option=void
+  logical_key: document=form_w2/box=void/option=void
+  year: 2025
+  document_id: form_w2_2025
+  parent_address_id: 2025/document=form_w2/box=void
+  kind: option
+  path:
+  - kind: document
+    token: form_w2
+  - kind: box
+    token: void
+  - kind: option
+    token: void
+  printed_label: VOID
+  aliases: []
+  control_role: checkbox
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_w2_2025
+    source_hash: 6a52ad63693de54220a3326b22c4d0fb34f4c25084366537087312975a55ae96
+    page: 2
+  official_ref: VOID
+- address_id: 2025/document=form_w2/table=state_local
+  logical_key: document=form_w2/table=state_local
+  year: 2025
+  document_id: form_w2_2025
+  parent_address_id: 2025/document=form_w2
+  kind: table
+  path:
+  - kind: document
+    token: form_w2
+  - kind: table
+    token: state_local
+  printed_label: state_local
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_w2_2025
+    source_hash: 6a52ad63693de54220a3326b22c4d0fb34f4c25084366537087312975a55ae96
+    page: 2
+- address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction
+  logical_key: document=form_w2/table=state_local/row_template=jurisdiction
+  year: 2025
+  document_id: form_w2_2025
+  parent_address_id: 2025/document=form_w2/table=state_local
+  kind: row_template
+  path:
+  - kind: document
+    token: form_w2
+  - kind: table
+    token: state_local
+  - kind: row_template
+    token: jurisdiction
+  printed_label: jurisdiction
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_w2_2025
+    source_hash: 6a52ad63693de54220a3326b22c4d0fb34f4c25084366537087312975a55ae96
+    page: 2
+- address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=15
+  logical_key: document=form_w2/table=state_local/row_template=jurisdiction/column=15
+  year: 2025
+  document_id: form_w2_2025
+  parent_address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction
+  kind: column
+  path:
+  - kind: document
+    token: form_w2
+  - kind: table
+    token: state_local
+  - kind: row_template
+    token: jurisdiction
+  - kind: column
+    token: '15'
+  printed_label: State
+  aliases: []
+  control_role: text
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_w2_2025
+    source_hash: 6a52ad63693de54220a3326b22c4d0fb34f4c25084366537087312975a55ae96
+    page: 2
+  official_ref: Box 15
+- address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=16
+  logical_key: document=form_w2/table=state_local/row_template=jurisdiction/column=16
+  year: 2025
+  document_id: form_w2_2025
+  parent_address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction
+  kind: column
+  path:
+  - kind: document
+    token: form_w2
+  - kind: table
+    token: state_local
+  - kind: row_template
+    token: jurisdiction
+  - kind: column
+    token: '16'
+  printed_label: Employer's state ID number
+  aliases: []
+  control_role: text
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_w2_2025
+    source_hash: 6a52ad63693de54220a3326b22c4d0fb34f4c25084366537087312975a55ae96
+    page: 2
+  official_ref: Box 16
+- address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=17
+  logical_key: document=form_w2/table=state_local/row_template=jurisdiction/column=17
+  year: 2025
+  document_id: form_w2_2025
+  parent_address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction
+  kind: column
+  path:
+  - kind: document
+    token: form_w2
+  - kind: table
+    token: state_local
+  - kind: row_template
+    token: jurisdiction
+  - kind: column
+    token: '17'
+  printed_label: State wages, tips, etc.
   aliases: []
   control_role: amount
   status: pending_review
@@ -792,4 +1125,100 @@ addresses:
   - source_path: config/manifest.yaml#form_w2_2025
     source_hash: 6a52ad63693de54220a3326b22c4d0fb34f4c25084366537087312975a55ae96
     page: 2
-  official_ref: Box a
+  official_ref: Box 17
+- address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=18
+  logical_key: document=form_w2/table=state_local/row_template=jurisdiction/column=18
+  year: 2025
+  document_id: form_w2_2025
+  parent_address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction
+  kind: column
+  path:
+  - kind: document
+    token: form_w2
+  - kind: table
+    token: state_local
+  - kind: row_template
+    token: jurisdiction
+  - kind: column
+    token: '18'
+  printed_label: State income tax
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_w2_2025
+    source_hash: 6a52ad63693de54220a3326b22c4d0fb34f4c25084366537087312975a55ae96
+    page: 2
+  official_ref: Box 18
+- address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=19
+  logical_key: document=form_w2/table=state_local/row_template=jurisdiction/column=19
+  year: 2025
+  document_id: form_w2_2025
+  parent_address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction
+  kind: column
+  path:
+  - kind: document
+    token: form_w2
+  - kind: table
+    token: state_local
+  - kind: row_template
+    token: jurisdiction
+  - kind: column
+    token: '19'
+  printed_label: Local wages, tips, etc.
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_w2_2025
+    source_hash: 6a52ad63693de54220a3326b22c4d0fb34f4c25084366537087312975a55ae96
+    page: 2
+  official_ref: Box 19
+- address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=20
+  logical_key: document=form_w2/table=state_local/row_template=jurisdiction/column=20
+  year: 2025
+  document_id: form_w2_2025
+  parent_address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction
+  kind: column
+  path:
+  - kind: document
+    token: form_w2
+  - kind: table
+    token: state_local
+  - kind: row_template
+    token: jurisdiction
+  - kind: column
+    token: '20'
+  printed_label: Local income tax
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_w2_2025
+    source_hash: 6a52ad63693de54220a3326b22c4d0fb34f4c25084366537087312975a55ae96
+    page: 2
+  official_ref: Box 20
+- address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=21
+  logical_key: document=form_w2/table=state_local/row_template=jurisdiction/column=21
+  year: 2025
+  document_id: form_w2_2025
+  parent_address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction
+  kind: column
+  path:
+  - kind: document
+    token: form_w2
+  - kind: table
+    token: state_local
+  - kind: row_template
+    token: jurisdiction
+  - kind: column
+    token: '21'
+  printed_label: Locality name
+  aliases: []
+  control_role: text
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_w2_2025
+    source_hash: 6a52ad63693de54220a3326b22c4d0fb34f4c25084366537087312975a55ae96
+    page: 2
+  official_ref: Box 21

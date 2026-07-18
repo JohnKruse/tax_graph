@@ -14,18 +14,15 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## Current state (2026-07-17)
 
-**BALL: WORKER/CODEX - EXTENDED RUN CONTINUES AT A9c.** A9b is COMMITTED (this
-commit): the Architect completed the quota-interrupted floor - non-M15 partitions 3-4
-green (73 passed/3 skipped; 60 passed), joining Codex's M15 95 passed and non-M15
-partitions 1-2 (98/1, 134/2) for an aggregate 460 passed, 6 skipped; ASCII, diff
-check, `validate 2025`, and real preflight re-run green (3,243 units,
-legacy_mined=1329, Form 8949 zero legacy). Continue the authorized run: A9c..A9x (one
-document per commit, each strictly reducing 1,329; W-2 at 248 and 1099-B at 163 are
-the largest remaining), then A9z, A10, A11, A6 - HARD STOP before A12. Local commits
-only, no push; full partitioned floor per commit; sequential partitions only (the
-concurrent-launcher failure mode is confirmed twice). A9a is `476e7ee`; A8 pre-task
-and A8 remain verified (`fcf82f1`, `45e485f`, local). Gate A remains open through
-A13; S17+ stays blocked. Canary: Fresh Eyes.
+**BALL: WORKER/CODEX - EXTENDED RUN CONTINUES AT A9d (1099-B/DIV/INT GROUP).** A9c
+is COMPLETE at HEAD: W-2 is zero legacy, and real preflight is
+green at 3,243 units with `legacy_mined=1081`, a strict reduction of 248 from A9b's
+1,329. Continue the authorized run: A9d..A9x, then A9z, A10, A11, A6 - HARD STOP
+before A12. Local commits only, no push; full partitioned floor per commit; sequential
+partitions only (the concurrent-launcher failure mode is confirmed twice). A9a is
+`476e7ee`, A9b is `0ec62ae`; A8 pre-task and A8 remain verified (`fcf82f1`,
+`45e485f`, local). Gate A remains open through A13; S17+ stays blocked. Canary: Fresh
+Eyes.
 (Whoever finishes a turn: update this BALL line - it is the first thing read.)
 
 **Step ledger:** M15 S1-S16 and A1-A3 are [DONE], pushed, and marked in the plan; M15R
@@ -273,6 +270,22 @@ sequenced after M15 or when TY2026 docs drop.
   `docs/self-serve-extension.md`.
 
 ## From Worker
+- **M15 A9c W-2 address/binding campaign complete (Codex,
+  2026-07-18):** Authored the 33 W-2 control templates from the local official PDF and
+  bound all 272 physical widgets across Copies A, 1, B, C, 2, and D. Box 12 entries and
+  the two state/local rows use deterministic row-template bindings and copy/row-qualified
+  official locators. Coverage is `inventory=272`, `addressed_widgets=272`,
+  `exempt_widgets=0`, `node_bindings=0`, `references=0`; the mapping triangle is
+  vacuously green because this information-return map has no node mappings. Regenerated
+  the committed node-geometry projection after promotion. Real preflight passes at 3,243
+  units: `authored_address=838`, `authored_object=1324`, `legacy_mined=1081`; W-2 is
+  zero legacy, a strict reduction of 248 from A9b's 1,329. Focused tests: 10 passed.
+  M15 partitions: 9 + 19 + 5 + 33 + 20 + 11 E2E = 97 passed. Non-M15 partitions:
+  98 passed/1 skipped + 134/2 + 73/3 + 60 = 365 passed, 6 skipped; aggregate floor:
+  462 passed, 6 skipped. ASCII, `git diff --check`, real preflight, and `tax-graph
+  validate 2025` are green. No authored exemptions and no promoted-artifact defect were
+  found. Next: A9d authors the coherent Form 1099-B/DIV/INT group and must strictly
+  reduce 1,081.
 - **M15 A9b implementation complete; verification paused before commit (Codex,
   2026-07-17):** Corrected the confirmed promoted Form 8949 totals defect on both parts
   (`d -> f*_91`, `e -> f*_92`, g/h unchanged, shaded `f*_93` unmapped); disposed both

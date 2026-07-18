@@ -129,6 +129,8 @@ def _control_evidence(item: dict[str, Any], mapping: dict[str, Any] | None,
                       disposition: dict[str, Any], *, document_id: str) -> dict[str, Any] | None:
     if document_id == "form_8949_2025":
         return _form_8949_control_evidence(item, mapping, disposition)
+    if document_id == "form_w2_2025":
+        return _form_w2_control_evidence(item)
     line = item.get("line_anchor")
     role = _role(item, mapping)
     total = re.fullmatch(
@@ -172,6 +174,86 @@ def _control_evidence(item: dict[str, Any], mapping: dict[str, Any] | None,
     return {
         "semantic_path": path, "official_ref": official_ref, "control_role": role,
         "printed_label": disposition.get("label", ""), "field_name": item["field_name"],
+        "widget_type": item["field_type"], "page": item["page"],
+        "rect": [item["x0"], item["y0"], item["x1"], item["y1"]],
+        "semantic_status": "pending_review",
+    }
+
+
+def _form_w2_control_evidence(item: dict[str, Any]) -> dict[str, Any] | None:
+    """Collapse the six official W-2 copies onto one authored box template."""
+    field_name = str(item["field_name"])
+    leaf = field_name.rsplit(".", 1)[-1]
+    text_match = re.fullmatch(r"f[1-6]_([0-9]{2})\[0\]", leaf)
+    check_match = re.fullmatch(r"c[1-6]_([1-4])\[0\]", leaf)
+    if check_match:
+        choice = check_match.group(1)
+        box, token, label = {
+            "1": ("void", "void", "VOID"),
+            "2": ("13", "statutory_employee", "Statutory employee"),
+            "3": ("13", "retirement_plan", "Retirement plan"),
+            "4": ("13", "third_party_sick_pay", "Third-party sick pay"),
+        }[choice]
+        path = [{"kind": "box", "token": box}, {"kind": "option", "token": token}]
+        official_ref = "VOID" if box == "void" else f"Box {box}"
+        role = "checkbox"
+    elif text_match:
+        number = int(text_match.group(1))
+        scalar = {
+            1: ("a", "employee_ssn", "Employee's social security number", "identifier"),
+            2: ("b", "value", "Employer identification number (EIN)", "identifier"),
+            3: ("c", "value", "Employer's name, address, and ZIP code", "text"),
+            4: ("d", "value", "Control number", "identifier"),
+            5: ("e", "first_name_initial", "Employee's first name and initial", "text"),
+            6: ("e", "last_name", "Last name", "text"),
+            7: ("e", "suffix", "Suffix", "text"),
+            8: ("f", "value", "Employee's address and ZIP code", "text"),
+            9: ("1", "value", "Wages, tips, other compensation", "amount"),
+            10: ("2", "value", "Federal income tax withheld", "amount"),
+            11: ("3", "value", "Social security wages", "amount"),
+            12: ("4", "value", "Social security tax withheld", "amount"),
+            13: ("5", "value", "Medicare wages and tips", "amount"),
+            14: ("6", "value", "Medicare tax withheld", "amount"),
+            15: ("7", "value", "Social security tips", "amount"),
+            16: ("8", "value", "Allocated tips", "amount"),
+            17: ("9", "value", "Box 9", "amount"),
+            18: ("10", "value", "Dependent care benefits", "amount"),
+            19: ("11", "value", "Nonqualified plans", "amount"),
+            28: ("14", "value", "Other", "text"),
+        }
+        if number in scalar:
+            box, token, label, role = scalar[number]
+            path = [{"kind": "box", "token": box}, {"kind": "control", "token": token}]
+            official_ref = f"Box {box}"
+        elif 20 <= number <= 27:
+            column = "code" if number % 2 == 0 else "amount"
+            path = [{"kind": "box", "token": "12"}, {"kind": "row_template", "token": "entry"},
+                    {"kind": "column", "token": column}]
+            official_ref = f"Box 12 {column}"
+            label = "Code" if column == "code" else "Amount"
+            role = "text" if column == "code" else "amount"
+        elif 29 <= number <= 42:
+            column_index = (number - 29) // 2
+            box = str(15 + column_index)
+            labels = {
+                "15": "State", "16": "Employer's state ID number",
+                "17": "State wages, tips, etc.", "18": "State income tax",
+                "19": "Local wages, tips, etc.", "20": "Local income tax",
+                "21": "Locality name",
+            }
+            path = [{"kind": "table", "token": "state_local"},
+                    {"kind": "row_template", "token": "jurisdiction"},
+                    {"kind": "column", "token": box}]
+            official_ref = f"Box {box}"
+            label = labels[box]
+            role = "text" if box in {"15", "16", "21"} else "amount"
+        else:
+            return None
+    else:
+        return None
+    return {
+        "semantic_path": path, "official_ref": official_ref, "control_role": role,
+        "printed_label": label, "field_name": field_name,
         "widget_type": item["field_type"], "page": item["page"],
         "rect": [item["x0"], item["y0"], item["x1"], item["y1"]],
         "semantic_status": "pending_review",

@@ -357,6 +357,13 @@ def _physical_qualifier(
     copy_match = re.search(r"\.Copy([A-Za-z0-9]+)\[", field_name)
     if copy_match:
         parts.append(f"Copy {copy_match.group(1)}")
+    w2_leaf = re.search(r"\.f[1-6]_([0-9]{2})\[0\]$", field_name)
+    if w2_leaf:
+        w2_number = int(w2_leaf.group(1))
+        if 20 <= w2_number <= 27:
+            parts.append(f"Box 12 row {(w2_number - 20) // 2 + 1}")
+        elif 29 <= w2_number <= 42:
+            parts.append(f"state/local row {(w2_number - 29) % 2 + 1}")
     row_slot = repeatable.get("row_slot") if isinstance(repeatable, dict) else None
     row_match = re.search(r"\.(?:Body)?Row(\d+)\[", field_name)
     if row_slot is not None:
