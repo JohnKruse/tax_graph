@@ -109,11 +109,16 @@ field_dispositions:
   source_ref: form_w2_2025.topmostsubform_0_copya_0_col_right_0_f1_16_0
   address_id: 2025/document=form_w2/box=8/control=value
 - field_name: topmostSubform[0].CopyA[0].Col_Right[0].Box9_ReadOrder[0].f1_17[0]
-  label: Line d - f1_17
-  population_policy: imported
+  label: Shaded no-entry box 9
+  population_policy: intentionally_blank
   value_format: text
   source_ref: form_w2_2025.topmostsubform_0_copya_0_col_right_0_box9_readorder_0_f1_17_0
-  address_id: 2025/document=form_w2/box=9/control=value
+  display_name: Shaded no-entry box 9
+  reason: The official Form W-2 shades captionless box 9 while the AcroForm includes
+    a text widget.
+  downstream_effect: None - no node maps to this widget and the fill pipeline never
+    writes it.
+  missing_capability: None - this is official shading, not a capability gap.
 - field_name: topmostSubform[0].CopyA[0].Col_Right[0].f1_18[0]
   label: Line d - f1_18
   population_policy: imported
@@ -203,85 +208,85 @@ field_dispositions:
   population_policy: imported
   value_format: text
   source_ref: form_w2_2025.topmostsubform_0_copya_0_boxes15_readorder_0_box15_readorder_0_f1_29_0
-  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=15
+  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=state
 - field_name: topmostSubform[0].CopyA[0].Boxes15_ReadOrder[0].f1_30[0]
   label: Line 15 - f1_30
   population_policy: imported
   value_format: text
   source_ref: form_w2_2025.topmostsubform_0_copya_0_boxes15_readorder_0_f1_30_0
-  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=15
+  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=employer_state_id
 - field_name: topmostSubform[0].CopyA[0].Boxes15_ReadOrder[0].f1_31[0]
   label: f1_31
   population_policy: imported
   value_format: text
   source_ref: form_w2_2025.topmostsubform_0_copya_0_boxes15_readorder_0_f1_31_0
-  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=16
+  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=state
 - field_name: topmostSubform[0].CopyA[0].Boxes15_ReadOrder[0].f1_32[0]
   label: f1_32
   population_policy: imported
   value_format: text
   source_ref: form_w2_2025.topmostsubform_0_copya_0_boxes15_readorder_0_f1_32_0
-  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=16
+  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=employer_state_id
 - field_name: topmostSubform[0].CopyA[0].Box16_ReadOrder[0].f1_33[0]
   label: Line 15 - f1_33
   population_policy: imported
   value_format: text
   source_ref: form_w2_2025.topmostsubform_0_copya_0_box16_readorder_0_f1_33_0
-  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=17
+  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=state_wages
 - field_name: topmostSubform[0].CopyA[0].Box16_ReadOrder[0].f1_34[0]
   label: f1_34
   population_policy: imported
   value_format: text
   source_ref: form_w2_2025.topmostsubform_0_copya_0_box16_readorder_0_f1_34_0
-  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=17
+  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=state_wages
 - field_name: topmostSubform[0].CopyA[0].Box17_ReadOrder[0].f1_35[0]
   label: Line 15 - f1_35
   population_policy: imported
   value_format: text
   source_ref: form_w2_2025.topmostsubform_0_copya_0_box17_readorder_0_f1_35_0
-  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=18
+  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=state_income_tax
 - field_name: topmostSubform[0].CopyA[0].Box17_ReadOrder[0].f1_36[0]
   label: f1_36
   population_policy: imported
   value_format: text
   source_ref: form_w2_2025.topmostsubform_0_copya_0_box17_readorder_0_f1_36_0
-  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=18
+  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=state_income_tax
 - field_name: topmostSubform[0].CopyA[0].Box18_ReadOrder[0].f1_37[0]
   label: Line 15 - f1_37
   population_policy: imported
   value_format: text
   source_ref: form_w2_2025.topmostsubform_0_copya_0_box18_readorder_0_f1_37_0
-  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=19
+  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=local_wages
 - field_name: topmostSubform[0].CopyA[0].Box18_ReadOrder[0].f1_38[0]
   label: f1_38
   population_policy: imported
   value_format: text
   source_ref: form_w2_2025.topmostsubform_0_copya_0_box18_readorder_0_f1_38_0
-  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=19
+  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=local_wages
 - field_name: topmostSubform[0].CopyA[0].Box19_ReadOrder[0].f1_39[0]
   label: Line 15 - f1_39
   population_policy: imported
   value_format: text
   source_ref: form_w2_2025.topmostsubform_0_copya_0_box19_readorder_0_f1_39_0
-  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=20
+  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=local_income_tax
 - field_name: topmostSubform[0].CopyA[0].Box19_ReadOrder[0].f1_40[0]
   label: f1_40
   population_policy: imported
   value_format: text
   source_ref: form_w2_2025.topmostsubform_0_copya_0_box19_readorder_0_f1_40_0
-  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=20
+  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=local_income_tax
 - field_name: topmostSubform[0].CopyA[0].f1_41[0]
   label: Line 15 - f1_41
   population_policy: imported
   value_format: text
   source_ref: form_w2_2025.topmostsubform_0_copya_0_f1_41_0
-  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=21
+  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=locality_name
 - field_name: topmostSubform[0].CopyA[0].f1_42[0]
   label: f1_42
   population_policy: imported
   value_format: text
   source_ref: form_w2_2025.topmostsubform_0_copya_0_f1_42_0
-  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=21
+  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=locality_name
 - field_name: topmostSubform[0].Copy1[0].BoxA_ReadOrder[0].f2_01[0]
   label: Line a - 22222 - f2_01
   population_policy: imported
@@ -379,11 +384,16 @@ field_dispositions:
   source_ref: form_w2_2025.topmostsubform_0_copy1_0_col_right_0_f2_16_0
   address_id: 2025/document=form_w2/box=8/control=value
 - field_name: topmostSubform[0].Copy1[0].Col_Right[0].Box9_ReadOrder[0].f2_17[0]
-  label: Line d - f2_17 (page 3, control 63)
-  population_policy: imported
+  label: Shaded no-entry box 9
+  population_policy: intentionally_blank
   value_format: text
   source_ref: form_w2_2025.topmostsubform_0_copy1_0_col_right_0_box9_readorder_0_f2_17_0
-  address_id: 2025/document=form_w2/box=9/control=value
+  display_name: Shaded no-entry box 9
+  reason: The official Form W-2 shades captionless box 9 while the AcroForm includes
+    a text widget.
+  downstream_effect: None - no node maps to this widget and the fill pipeline never
+    writes it.
+  missing_capability: None - this is official shading, not a capability gap.
 - field_name: topmostSubform[0].Copy1[0].Col_Right[0].f2_18[0]
   label: Line d - f2_18 (page 3, control 64)
   population_policy: imported
@@ -473,85 +483,85 @@ field_dispositions:
   population_policy: imported
   value_format: text
   source_ref: form_w2_2025.topmostsubform_0_copy1_0_boxes15_readorder_0_box15_readorder_0_f2_29_0
-  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=15
+  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=state
 - field_name: topmostSubform[0].Copy1[0].Boxes15_ReadOrder[0].f2_30[0]
   label: Line 15 - f2_30 (page 3, control 79)
   population_policy: imported
   value_format: text
   source_ref: form_w2_2025.topmostsubform_0_copy1_0_boxes15_readorder_0_f2_30_0
-  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=15
+  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=employer_state_id
 - field_name: topmostSubform[0].Copy1[0].Boxes15_ReadOrder[0].f2_31[0]
   label: f2_31 (page 3, control 80)
   population_policy: imported
   value_format: text
   source_ref: form_w2_2025.topmostsubform_0_copy1_0_boxes15_readorder_0_f2_31_0
-  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=16
+  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=state
 - field_name: topmostSubform[0].Copy1[0].Boxes15_ReadOrder[0].f2_32[0]
   label: f2_32 (page 3, control 81)
   population_policy: imported
   value_format: text
   source_ref: form_w2_2025.topmostsubform_0_copy1_0_boxes15_readorder_0_f2_32_0
-  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=16
+  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=employer_state_id
 - field_name: topmostSubform[0].Copy1[0].Box16_ReadOrder[0].f2_33[0]
   label: Line 15 - f2_33 (page 3, control 82)
   population_policy: imported
   value_format: text
   source_ref: form_w2_2025.topmostsubform_0_copy1_0_box16_readorder_0_f2_33_0
-  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=17
+  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=state_wages
 - field_name: topmostSubform[0].Copy1[0].Box16_ReadOrder[0].f2_34[0]
   label: f2_34 (page 3, control 83)
   population_policy: imported
   value_format: text
   source_ref: form_w2_2025.topmostsubform_0_copy1_0_box16_readorder_0_f2_34_0
-  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=17
+  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=state_wages
 - field_name: topmostSubform[0].Copy1[0].Box17_ReadOrder[0].f2_35[0]
   label: Line 15 - f2_35 (page 3, control 84)
   population_policy: imported
   value_format: text
   source_ref: form_w2_2025.topmostsubform_0_copy1_0_box17_readorder_0_f2_35_0
-  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=18
+  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=state_income_tax
 - field_name: topmostSubform[0].Copy1[0].Box17_ReadOrder[0].f2_36[0]
   label: f2_36 (page 3, control 85)
   population_policy: imported
   value_format: text
   source_ref: form_w2_2025.topmostsubform_0_copy1_0_box17_readorder_0_f2_36_0
-  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=18
+  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=state_income_tax
 - field_name: topmostSubform[0].Copy1[0].Box18_ReadOrder[0].f2_37[0]
   label: Line 15 - f2_37 (page 3, control 86)
   population_policy: imported
   value_format: text
   source_ref: form_w2_2025.topmostsubform_0_copy1_0_box18_readorder_0_f2_37_0
-  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=19
+  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=local_wages
 - field_name: topmostSubform[0].Copy1[0].Box18_ReadOrder[0].f2_38[0]
   label: f2_38 (page 3, control 87)
   population_policy: imported
   value_format: text
   source_ref: form_w2_2025.topmostsubform_0_copy1_0_box18_readorder_0_f2_38_0
-  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=19
+  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=local_wages
 - field_name: topmostSubform[0].Copy1[0].Box19_ReadOrder[0].f2_39[0]
   label: Line 15 - f2_39 (page 3, control 88)
   population_policy: imported
   value_format: text
   source_ref: form_w2_2025.topmostsubform_0_copy1_0_box19_readorder_0_f2_39_0
-  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=20
+  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=local_income_tax
 - field_name: topmostSubform[0].Copy1[0].Box19_ReadOrder[0].f2_40[0]
   label: f2_40 (page 3, control 89)
   population_policy: imported
   value_format: text
   source_ref: form_w2_2025.topmostsubform_0_copy1_0_box19_readorder_0_f2_40_0
-  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=20
+  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=local_income_tax
 - field_name: topmostSubform[0].Copy1[0].f2_41[0]
   label: Line 15 - f2_41 (page 3, control 90)
   population_policy: imported
   value_format: text
   source_ref: form_w2_2025.topmostsubform_0_copy1_0_f2_41_0
-  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=21
+  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=locality_name
 - field_name: topmostSubform[0].Copy1[0].f2_42[0]
   label: f2_42 (page 3, control 91)
   population_policy: imported
   value_format: text
   source_ref: form_w2_2025.topmostsubform_0_copy1_0_f2_42_0
-  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=21
+  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=locality_name
 - field_name: topmostSubform[0].CopyB[0].BoxA_ReadOrder[0].f2_01[0]
   label: Line a - f2_01 (page 4, control 92)
   population_policy: imported
@@ -649,11 +659,16 @@ field_dispositions:
   source_ref: form_w2_2025.topmostsubform_0_copyb_0_col_right_0_f2_16_0
   address_id: 2025/document=form_w2/box=8/control=value
 - field_name: topmostSubform[0].CopyB[0].Col_Right[0].Box9_ReadOrder[0].f2_17[0]
-  label: Line d - f2_17 (page 4, control 108)
-  population_policy: imported
+  label: Shaded no-entry box 9
+  population_policy: intentionally_blank
   value_format: text
   source_ref: form_w2_2025.topmostsubform_0_copyb_0_col_right_0_box9_readorder_0_f2_17_0
-  address_id: 2025/document=form_w2/box=9/control=value
+  display_name: Shaded no-entry box 9
+  reason: The official Form W-2 shades captionless box 9 while the AcroForm includes
+    a text widget.
+  downstream_effect: None - no node maps to this widget and the fill pipeline never
+    writes it.
+  missing_capability: None - this is official shading, not a capability gap.
 - field_name: topmostSubform[0].CopyB[0].Col_Right[0].f2_18[0]
   label: Line d - f2_18 (page 4, control 109)
   population_policy: imported
@@ -743,85 +758,85 @@ field_dispositions:
   population_policy: imported
   value_format: text
   source_ref: form_w2_2025.topmostsubform_0_copyb_0_boxes15_readorder_0_box15_readorder_0_f2_29_0
-  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=15
+  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=state
 - field_name: topmostSubform[0].CopyB[0].Boxes15_ReadOrder[0].f2_30[0]
   label: Line 15 - f2_30 (page 4, control 124)
   population_policy: imported
   value_format: text
   source_ref: form_w2_2025.topmostsubform_0_copyb_0_boxes15_readorder_0_f2_30_0
-  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=15
+  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=employer_state_id
 - field_name: topmostSubform[0].CopyB[0].Boxes15_ReadOrder[0].f2_31[0]
   label: f2_31 (page 4, control 125)
   population_policy: imported
   value_format: text
   source_ref: form_w2_2025.topmostsubform_0_copyb_0_boxes15_readorder_0_f2_31_0
-  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=16
+  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=state
 - field_name: topmostSubform[0].CopyB[0].Boxes15_ReadOrder[0].f2_32[0]
   label: f2_32 (page 4, control 126)
   population_policy: imported
   value_format: text
   source_ref: form_w2_2025.topmostsubform_0_copyb_0_boxes15_readorder_0_f2_32_0
-  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=16
+  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=employer_state_id
 - field_name: topmostSubform[0].CopyB[0].Box16_ReadOrder[0].f2_33[0]
   label: Line 15 - f2_33 (page 4, control 127)
   population_policy: imported
   value_format: text
   source_ref: form_w2_2025.topmostsubform_0_copyb_0_box16_readorder_0_f2_33_0
-  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=17
+  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=state_wages
 - field_name: topmostSubform[0].CopyB[0].Box16_ReadOrder[0].f2_34[0]
   label: f2_34 (page 4, control 128)
   population_policy: imported
   value_format: text
   source_ref: form_w2_2025.topmostsubform_0_copyb_0_box16_readorder_0_f2_34_0
-  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=17
+  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=state_wages
 - field_name: topmostSubform[0].CopyB[0].Box17_ReadOrder[0].f2_35[0]
   label: Line 15 - f2_35 (page 4, control 129)
   population_policy: imported
   value_format: text
   source_ref: form_w2_2025.topmostsubform_0_copyb_0_box17_readorder_0_f2_35_0
-  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=18
+  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=state_income_tax
 - field_name: topmostSubform[0].CopyB[0].Box17_ReadOrder[0].f2_36[0]
   label: f2_36 (page 4, control 130)
   population_policy: imported
   value_format: text
   source_ref: form_w2_2025.topmostsubform_0_copyb_0_box17_readorder_0_f2_36_0
-  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=18
+  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=state_income_tax
 - field_name: topmostSubform[0].CopyB[0].Box18_ReadOrder[0].f2_37[0]
   label: Line 15 - f2_37 (page 4, control 131)
   population_policy: imported
   value_format: text
   source_ref: form_w2_2025.topmostsubform_0_copyb_0_box18_readorder_0_f2_37_0
-  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=19
+  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=local_wages
 - field_name: topmostSubform[0].CopyB[0].Box18_ReadOrder[0].f2_38[0]
   label: f2_38 (page 4, control 132)
   population_policy: imported
   value_format: text
   source_ref: form_w2_2025.topmostsubform_0_copyb_0_box18_readorder_0_f2_38_0
-  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=19
+  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=local_wages
 - field_name: topmostSubform[0].CopyB[0].Box19_ReadOrder[0].f2_39[0]
   label: Line 15 - f2_39 (page 4, control 133)
   population_policy: imported
   value_format: text
   source_ref: form_w2_2025.topmostsubform_0_copyb_0_box19_readorder_0_f2_39_0
-  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=20
+  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=local_income_tax
 - field_name: topmostSubform[0].CopyB[0].Box19_ReadOrder[0].f2_40[0]
   label: f2_40 (page 4, control 134)
   population_policy: imported
   value_format: text
   source_ref: form_w2_2025.topmostsubform_0_copyb_0_box19_readorder_0_f2_40_0
-  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=20
+  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=local_income_tax
 - field_name: topmostSubform[0].CopyB[0].f2_41[0]
   label: Line 15 - f2_41 (page 4, control 135)
   population_policy: imported
   value_format: text
   source_ref: form_w2_2025.topmostsubform_0_copyb_0_f2_41_0
-  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=21
+  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=locality_name
 - field_name: topmostSubform[0].CopyB[0].f2_42[0]
   label: f2_42 (page 4, control 136)
   population_policy: imported
   value_format: text
   source_ref: form_w2_2025.topmostsubform_0_copyb_0_f2_42_0
-  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=21
+  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=locality_name
 - field_name: topmostSubform[0].CopyC[0].BoxA_ReadOrder[0].f2_01[0]
   label: Line a - f2_01 (page 6, control 137)
   population_policy: imported
@@ -919,11 +934,16 @@ field_dispositions:
   source_ref: form_w2_2025.topmostsubform_0_copyc_0_col_right_0_f2_16_0
   address_id: 2025/document=form_w2/box=8/control=value
 - field_name: topmostSubform[0].CopyC[0].Col_Right[0].Box9_ReadOrder[0].f2_17[0]
-  label: Line d - f2_17 (page 6, control 153)
-  population_policy: imported
+  label: Shaded no-entry box 9
+  population_policy: intentionally_blank
   value_format: text
   source_ref: form_w2_2025.topmostsubform_0_copyc_0_col_right_0_box9_readorder_0_f2_17_0
-  address_id: 2025/document=form_w2/box=9/control=value
+  display_name: Shaded no-entry box 9
+  reason: The official Form W-2 shades captionless box 9 while the AcroForm includes
+    a text widget.
+  downstream_effect: None - no node maps to this widget and the fill pipeline never
+    writes it.
+  missing_capability: None - this is official shading, not a capability gap.
 - field_name: topmostSubform[0].CopyC[0].Col_Right[0].f2_18[0]
   label: Line d - f2_18 (page 6, control 154)
   population_policy: imported
@@ -1013,85 +1033,85 @@ field_dispositions:
   population_policy: imported
   value_format: text
   source_ref: form_w2_2025.topmostsubform_0_copyc_0_boxes15_readorder_0_box15_readorder_0_f2_29_0
-  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=15
+  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=state
 - field_name: topmostSubform[0].CopyC[0].Boxes15_ReadOrder[0].f2_30[0]
   label: Line 15 - f2_30 (page 6, control 169)
   population_policy: imported
   value_format: text
   source_ref: form_w2_2025.topmostsubform_0_copyc_0_boxes15_readorder_0_f2_30_0
-  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=15
+  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=employer_state_id
 - field_name: topmostSubform[0].CopyC[0].Boxes15_ReadOrder[0].f2_31[0]
   label: f2_31 (page 6, control 170)
   population_policy: imported
   value_format: text
   source_ref: form_w2_2025.topmostsubform_0_copyc_0_boxes15_readorder_0_f2_31_0
-  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=16
+  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=state
 - field_name: topmostSubform[0].CopyC[0].Boxes15_ReadOrder[0].f2_32[0]
   label: f2_32 (page 6, control 171)
   population_policy: imported
   value_format: text
   source_ref: form_w2_2025.topmostsubform_0_copyc_0_boxes15_readorder_0_f2_32_0
-  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=16
+  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=employer_state_id
 - field_name: topmostSubform[0].CopyC[0].Box16_ReadOrder[0].f2_33[0]
   label: Line 15 - f2_33 (page 6, control 172)
   population_policy: imported
   value_format: text
   source_ref: form_w2_2025.topmostsubform_0_copyc_0_box16_readorder_0_f2_33_0
-  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=17
+  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=state_wages
 - field_name: topmostSubform[0].CopyC[0].Box16_ReadOrder[0].f2_34[0]
   label: f2_34 (page 6, control 173)
   population_policy: imported
   value_format: text
   source_ref: form_w2_2025.topmostsubform_0_copyc_0_box16_readorder_0_f2_34_0
-  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=17
+  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=state_wages
 - field_name: topmostSubform[0].CopyC[0].Box17_ReadOrder[0].f2_35[0]
   label: Line 15 - f2_35 (page 6, control 174)
   population_policy: imported
   value_format: text
   source_ref: form_w2_2025.topmostsubform_0_copyc_0_box17_readorder_0_f2_35_0
-  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=18
+  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=state_income_tax
 - field_name: topmostSubform[0].CopyC[0].Box17_ReadOrder[0].f2_36[0]
   label: f2_36 (page 6, control 175)
   population_policy: imported
   value_format: text
   source_ref: form_w2_2025.topmostsubform_0_copyc_0_box17_readorder_0_f2_36_0
-  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=18
+  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=state_income_tax
 - field_name: topmostSubform[0].CopyC[0].Box18_ReadOrder[0].f2_37[0]
   label: Line 15 - f2_37 (page 6, control 176)
   population_policy: imported
   value_format: text
   source_ref: form_w2_2025.topmostsubform_0_copyc_0_box18_readorder_0_f2_37_0
-  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=19
+  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=local_wages
 - field_name: topmostSubform[0].CopyC[0].Box18_ReadOrder[0].f2_38[0]
   label: f2_38 (page 6, control 177)
   population_policy: imported
   value_format: text
   source_ref: form_w2_2025.topmostsubform_0_copyc_0_box18_readorder_0_f2_38_0
-  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=19
+  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=local_wages
 - field_name: topmostSubform[0].CopyC[0].Box19_ReadOrder[0].f2_39[0]
   label: Line 15 - f2_39 (page 6, control 178)
   population_policy: imported
   value_format: text
   source_ref: form_w2_2025.topmostsubform_0_copyc_0_box19_readorder_0_f2_39_0
-  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=20
+  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=local_income_tax
 - field_name: topmostSubform[0].CopyC[0].Box19_ReadOrder[0].f2_40[0]
   label: f2_40 (page 6, control 179)
   population_policy: imported
   value_format: text
   source_ref: form_w2_2025.topmostsubform_0_copyc_0_box19_readorder_0_f2_40_0
-  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=20
+  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=local_income_tax
 - field_name: topmostSubform[0].CopyC[0].f2_41[0]
   label: Line 15 - f2_41 (page 6, control 180)
   population_policy: imported
   value_format: text
   source_ref: form_w2_2025.topmostsubform_0_copyc_0_f2_41_0
-  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=21
+  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=locality_name
 - field_name: topmostSubform[0].CopyC[0].f2_42[0]
   label: f2_42 (page 6, control 181)
   population_policy: imported
   value_format: text
   source_ref: form_w2_2025.topmostsubform_0_copyc_0_f2_42_0
-  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=21
+  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=locality_name
 - field_name: topmostSubform[0].Copy2[0].BoxA_ReadOrder[0].f2_01[0]
   label: Line a - f2_01 (page 8, control 182)
   population_policy: imported
@@ -1189,11 +1209,16 @@ field_dispositions:
   source_ref: form_w2_2025.topmostsubform_0_copy2_0_col_right_0_f2_16_0
   address_id: 2025/document=form_w2/box=8/control=value
 - field_name: topmostSubform[0].Copy2[0].Col_Right[0].Box9_ReadOrder[0].f2_17[0]
-  label: Line d - f2_17 (page 8, control 198)
-  population_policy: imported
+  label: Shaded no-entry box 9
+  population_policy: intentionally_blank
   value_format: text
   source_ref: form_w2_2025.topmostsubform_0_copy2_0_col_right_0_box9_readorder_0_f2_17_0
-  address_id: 2025/document=form_w2/box=9/control=value
+  display_name: Shaded no-entry box 9
+  reason: The official Form W-2 shades captionless box 9 while the AcroForm includes
+    a text widget.
+  downstream_effect: None - no node maps to this widget and the fill pipeline never
+    writes it.
+  missing_capability: None - this is official shading, not a capability gap.
 - field_name: topmostSubform[0].Copy2[0].Col_Right[0].f2_18[0]
   label: Line d - f2_18 (page 8, control 199)
   population_policy: imported
@@ -1283,85 +1308,85 @@ field_dispositions:
   population_policy: imported
   value_format: text
   source_ref: form_w2_2025.topmostsubform_0_copy2_0_boxes15_readorder_0_box15_readorder_0_f2_29_0
-  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=15
+  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=state
 - field_name: topmostSubform[0].Copy2[0].Boxes15_ReadOrder[0].f2_30[0]
   label: Line 15 - f2_30 (page 8, control 214)
   population_policy: imported
   value_format: text
   source_ref: form_w2_2025.topmostsubform_0_copy2_0_boxes15_readorder_0_f2_30_0
-  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=15
+  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=employer_state_id
 - field_name: topmostSubform[0].Copy2[0].Boxes15_ReadOrder[0].f2_31[0]
   label: f2_31 (page 8, control 215)
   population_policy: imported
   value_format: text
   source_ref: form_w2_2025.topmostsubform_0_copy2_0_boxes15_readorder_0_f2_31_0
-  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=16
+  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=state
 - field_name: topmostSubform[0].Copy2[0].Boxes15_ReadOrder[0].f2_32[0]
   label: f2_32 (page 8, control 216)
   population_policy: imported
   value_format: text
   source_ref: form_w2_2025.topmostsubform_0_copy2_0_boxes15_readorder_0_f2_32_0
-  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=16
+  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=employer_state_id
 - field_name: topmostSubform[0].Copy2[0].Box16_ReadOrder[0].f2_33[0]
   label: Line 15 - f2_33 (page 8, control 217)
   population_policy: imported
   value_format: text
   source_ref: form_w2_2025.topmostsubform_0_copy2_0_box16_readorder_0_f2_33_0
-  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=17
+  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=state_wages
 - field_name: topmostSubform[0].Copy2[0].Box16_ReadOrder[0].f2_34[0]
   label: f2_34 (page 8, control 218)
   population_policy: imported
   value_format: text
   source_ref: form_w2_2025.topmostsubform_0_copy2_0_box16_readorder_0_f2_34_0
-  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=17
+  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=state_wages
 - field_name: topmostSubform[0].Copy2[0].Box17_ReadOrder[0].f2_35[0]
   label: Line 15 - f2_35 (page 8, control 219)
   population_policy: imported
   value_format: text
   source_ref: form_w2_2025.topmostsubform_0_copy2_0_box17_readorder_0_f2_35_0
-  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=18
+  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=state_income_tax
 - field_name: topmostSubform[0].Copy2[0].Box17_ReadOrder[0].f2_36[0]
   label: f2_36 (page 8, control 220)
   population_policy: imported
   value_format: text
   source_ref: form_w2_2025.topmostsubform_0_copy2_0_box17_readorder_0_f2_36_0
-  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=18
+  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=state_income_tax
 - field_name: topmostSubform[0].Copy2[0].Box18_ReadOrder[0].f2_37[0]
   label: Line 15 - f2_37 (page 8, control 221)
   population_policy: imported
   value_format: text
   source_ref: form_w2_2025.topmostsubform_0_copy2_0_box18_readorder_0_f2_37_0
-  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=19
+  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=local_wages
 - field_name: topmostSubform[0].Copy2[0].Box18_ReadOrder[0].f2_38[0]
   label: f2_38 (page 8, control 222)
   population_policy: imported
   value_format: text
   source_ref: form_w2_2025.topmostsubform_0_copy2_0_box18_readorder_0_f2_38_0
-  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=19
+  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=local_wages
 - field_name: topmostSubform[0].Copy2[0].Box19_ReadOrder[0].f2_39[0]
   label: Line 15 - f2_39 (page 8, control 223)
   population_policy: imported
   value_format: text
   source_ref: form_w2_2025.topmostsubform_0_copy2_0_box19_readorder_0_f2_39_0
-  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=20
+  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=local_income_tax
 - field_name: topmostSubform[0].Copy2[0].Box19_ReadOrder[0].f2_40[0]
   label: f2_40 (page 8, control 224)
   population_policy: imported
   value_format: text
   source_ref: form_w2_2025.topmostsubform_0_copy2_0_box19_readorder_0_f2_40_0
-  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=20
+  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=local_income_tax
 - field_name: topmostSubform[0].Copy2[0].f2_41[0]
   label: Line 15 - f2_41 (page 8, control 225)
   population_policy: imported
   value_format: text
   source_ref: form_w2_2025.topmostsubform_0_copy2_0_f2_41_0
-  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=21
+  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=locality_name
 - field_name: topmostSubform[0].Copy2[0].f2_42[0]
   label: f2_42 (page 8, control 226)
   population_policy: imported
   value_format: text
   source_ref: form_w2_2025.topmostsubform_0_copy2_0_f2_42_0
-  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=21
+  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=locality_name
 - field_name: topmostSubform[0].CopyD[0].Void_ReadOrder[0].c2_1[0]
   label: Line a - VOID - c2_1
   population_policy: imported
@@ -1465,11 +1490,16 @@ field_dispositions:
   source_ref: form_w2_2025.topmostsubform_0_copyd_0_col_right_0_f2_16_0
   address_id: 2025/document=form_w2/box=8/control=value
 - field_name: topmostSubform[0].CopyD[0].Col_Right[0].Box9_ReadOrder[0].f2_17[0]
-  label: Line d - f2_17 (page 10, control 244)
-  population_policy: imported
+  label: Shaded no-entry box 9
+  population_policy: intentionally_blank
   value_format: text
   source_ref: form_w2_2025.topmostsubform_0_copyd_0_col_right_0_box9_readorder_0_f2_17_0
-  address_id: 2025/document=form_w2/box=9/control=value
+  display_name: Shaded no-entry box 9
+  reason: The official Form W-2 shades captionless box 9 while the AcroForm includes
+    a text widget.
+  downstream_effect: None - no node maps to this widget and the fill pipeline never
+    writes it.
+  missing_capability: None - this is official shading, not a capability gap.
 - field_name: topmostSubform[0].CopyD[0].Col_Right[0].f2_18[0]
   label: Line d - f2_18 (page 10, control 245)
   population_policy: imported
@@ -1559,82 +1589,82 @@ field_dispositions:
   population_policy: imported
   value_format: text
   source_ref: form_w2_2025.topmostsubform_0_copyd_0_boxes15_readorder_0_box15_readorder_0_f2_29_0
-  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=15
+  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=state
 - field_name: topmostSubform[0].CopyD[0].Boxes15_ReadOrder[0].f2_30[0]
   label: Line 15 - f2_30 (page 10, control 260)
   population_policy: imported
   value_format: text
   source_ref: form_w2_2025.topmostsubform_0_copyd_0_boxes15_readorder_0_f2_30_0
-  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=15
+  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=employer_state_id
 - field_name: topmostSubform[0].CopyD[0].Boxes15_ReadOrder[0].f2_31[0]
   label: f2_31 (page 10, control 261)
   population_policy: imported
   value_format: text
   source_ref: form_w2_2025.topmostsubform_0_copyd_0_boxes15_readorder_0_f2_31_0
-  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=16
+  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=state
 - field_name: topmostSubform[0].CopyD[0].Boxes15_ReadOrder[0].f2_32[0]
   label: f2_32 (page 10, control 262)
   population_policy: imported
   value_format: text
   source_ref: form_w2_2025.topmostsubform_0_copyd_0_boxes15_readorder_0_f2_32_0
-  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=16
+  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=employer_state_id
 - field_name: topmostSubform[0].CopyD[0].Box16_ReadOrder[0].f2_33[0]
   label: Line 15 - f2_33 (page 10, control 263)
   population_policy: imported
   value_format: text
   source_ref: form_w2_2025.topmostsubform_0_copyd_0_box16_readorder_0_f2_33_0
-  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=17
+  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=state_wages
 - field_name: topmostSubform[0].CopyD[0].Box16_ReadOrder[0].f2_34[0]
   label: f2_34 (page 10, control 264)
   population_policy: imported
   value_format: text
   source_ref: form_w2_2025.topmostsubform_0_copyd_0_box16_readorder_0_f2_34_0
-  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=17
+  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=state_wages
 - field_name: topmostSubform[0].CopyD[0].Box17_ReadOrder[0].f2_35[0]
   label: Line 15 - f2_35 (page 10, control 265)
   population_policy: imported
   value_format: text
   source_ref: form_w2_2025.topmostsubform_0_copyd_0_box17_readorder_0_f2_35_0
-  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=18
+  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=state_income_tax
 - field_name: topmostSubform[0].CopyD[0].Box17_ReadOrder[0].f2_36[0]
   label: f2_36 (page 10, control 266)
   population_policy: imported
   value_format: text
   source_ref: form_w2_2025.topmostsubform_0_copyd_0_box17_readorder_0_f2_36_0
-  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=18
+  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=state_income_tax
 - field_name: topmostSubform[0].CopyD[0].Box18_ReadOrder[0].f2_37[0]
   label: Line 15 - f2_37 (page 10, control 267)
   population_policy: imported
   value_format: text
   source_ref: form_w2_2025.topmostsubform_0_copyd_0_box18_readorder_0_f2_37_0
-  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=19
+  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=local_wages
 - field_name: topmostSubform[0].CopyD[0].Box18_ReadOrder[0].f2_38[0]
   label: f2_38 (page 10, control 268)
   population_policy: imported
   value_format: text
   source_ref: form_w2_2025.topmostsubform_0_copyd_0_box18_readorder_0_f2_38_0
-  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=19
+  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=local_wages
 - field_name: topmostSubform[0].CopyD[0].Box19_ReadOrder[0].f2_39[0]
   label: Line 15 - f2_39 (page 10, control 269)
   population_policy: imported
   value_format: text
   source_ref: form_w2_2025.topmostsubform_0_copyd_0_box19_readorder_0_f2_39_0
-  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=20
+  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=local_income_tax
 - field_name: topmostSubform[0].CopyD[0].Box19_ReadOrder[0].f2_40[0]
   label: f2_40 (page 10, control 270)
   population_policy: imported
   value_format: text
   source_ref: form_w2_2025.topmostsubform_0_copyd_0_box19_readorder_0_f2_40_0
-  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=20
+  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=local_income_tax
 - field_name: topmostSubform[0].CopyD[0].f2_41[0]
   label: Line 15 - f2_41 (page 10, control 271)
   population_policy: imported
   value_format: text
   source_ref: form_w2_2025.topmostsubform_0_copyd_0_f2_41_0
-  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=21
+  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=locality_name
 - field_name: topmostSubform[0].CopyD[0].f2_42[0]
   label: f2_42 (page 10, control 272)
   population_policy: imported
   value_format: text
   source_ref: form_w2_2025.topmostsubform_0_copyd_0_f2_42_0
-  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=21
+  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=locality_name

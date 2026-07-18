@@ -363,7 +363,8 @@ def _physical_qualifier(
         if 20 <= w2_number <= 27:
             parts.append(f"Box 12 row {(w2_number - 20) // 2 + 1}")
         elif 29 <= w2_number <= 42:
-            parts.append(f"state/local row {(w2_number - 29) % 2 + 1}")
+            row = (1 if w2_number <= 30 else 2) if w2_number <= 32 else (1 if w2_number % 2 else 2)
+            parts.append(f"state/local row {row}")
     row_slot = repeatable.get("row_slot") if isinstance(repeatable, dict) else None
     row_match = re.search(r"\.(?:Body)?Row(\d+)\[", field_name)
     if row_slot is not None:

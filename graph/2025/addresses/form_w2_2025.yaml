@@ -642,47 +642,6 @@ addresses:
     source_hash: 6a52ad63693de54220a3326b22c4d0fb34f4c25084366537087312975a55ae96
     page: 2
   official_ref: Box 8
-- address_id: 2025/document=form_w2/box=9
-  logical_key: document=form_w2/box=9
-  year: 2025
-  document_id: form_w2_2025
-  parent_address_id: 2025/document=form_w2
-  kind: box
-  path:
-  - kind: document
-    token: form_w2
-  - kind: box
-    token: '9'
-  printed_label: '9'
-  aliases: []
-  control_role: none
-  status: pending_review
-  evidence:
-  - source_path: config/manifest.yaml#form_w2_2025
-    source_hash: 6a52ad63693de54220a3326b22c4d0fb34f4c25084366537087312975a55ae96
-    page: 2
-- address_id: 2025/document=form_w2/box=9/control=value
-  logical_key: document=form_w2/box=9/control=value
-  year: 2025
-  document_id: form_w2_2025
-  parent_address_id: 2025/document=form_w2/box=9
-  kind: control
-  path:
-  - kind: document
-    token: form_w2
-  - kind: box
-    token: '9'
-  - kind: control
-    token: value
-  printed_label: Box 9
-  aliases: []
-  control_role: amount
-  status: pending_review
-  evidence:
-  - source_path: config/manifest.yaml#form_w2_2025
-    source_hash: 6a52ad63693de54220a3326b22c4d0fb34f4c25084366537087312975a55ae96
-    page: 2
-  official_ref: Box 9
 - address_id: 2025/document=form_w2/box=a
   logical_key: document=form_w2/box=a
   year: 2025
@@ -1054,8 +1013,8 @@ addresses:
   - source_path: config/manifest.yaml#form_w2_2025
     source_hash: 6a52ad63693de54220a3326b22c4d0fb34f4c25084366537087312975a55ae96
     page: 2
-- address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=15
-  logical_key: document=form_w2/table=state_local/row_template=jurisdiction/column=15
+- address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=employer_state_id
+  logical_key: document=form_w2/table=state_local/row_template=jurisdiction/column=employer_state_id
   year: 2025
   document_id: form_w2_2025
   parent_address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction
@@ -1068,7 +1027,103 @@ addresses:
   - kind: row_template
     token: jurisdiction
   - kind: column
-    token: '15'
+    token: employer_state_id
+  printed_label: Employer's state ID number
+  aliases: []
+  control_role: text
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_w2_2025
+    source_hash: 6a52ad63693de54220a3326b22c4d0fb34f4c25084366537087312975a55ae96
+    page: 2
+  official_ref: Box 15
+- address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=local_income_tax
+  logical_key: document=form_w2/table=state_local/row_template=jurisdiction/column=local_income_tax
+  year: 2025
+  document_id: form_w2_2025
+  parent_address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction
+  kind: column
+  path:
+  - kind: document
+    token: form_w2
+  - kind: table
+    token: state_local
+  - kind: row_template
+    token: jurisdiction
+  - kind: column
+    token: local_income_tax
+  printed_label: Local income tax
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_w2_2025
+    source_hash: 6a52ad63693de54220a3326b22c4d0fb34f4c25084366537087312975a55ae96
+    page: 2
+  official_ref: Box 19
+- address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=local_wages
+  logical_key: document=form_w2/table=state_local/row_template=jurisdiction/column=local_wages
+  year: 2025
+  document_id: form_w2_2025
+  parent_address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction
+  kind: column
+  path:
+  - kind: document
+    token: form_w2
+  - kind: table
+    token: state_local
+  - kind: row_template
+    token: jurisdiction
+  - kind: column
+    token: local_wages
+  printed_label: Local wages, tips, etc.
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_w2_2025
+    source_hash: 6a52ad63693de54220a3326b22c4d0fb34f4c25084366537087312975a55ae96
+    page: 2
+  official_ref: Box 18
+- address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=locality_name
+  logical_key: document=form_w2/table=state_local/row_template=jurisdiction/column=locality_name
+  year: 2025
+  document_id: form_w2_2025
+  parent_address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction
+  kind: column
+  path:
+  - kind: document
+    token: form_w2
+  - kind: table
+    token: state_local
+  - kind: row_template
+    token: jurisdiction
+  - kind: column
+    token: locality_name
+  printed_label: Locality name
+  aliases: []
+  control_role: text
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_w2_2025
+    source_hash: 6a52ad63693de54220a3326b22c4d0fb34f4c25084366537087312975a55ae96
+    page: 2
+  official_ref: Box 20
+- address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=state
+  logical_key: document=form_w2/table=state_local/row_template=jurisdiction/column=state
+  year: 2025
+  document_id: form_w2_2025
+  parent_address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction
+  kind: column
+  path:
+  - kind: document
+    token: form_w2
+  - kind: table
+    token: state_local
+  - kind: row_template
+    token: jurisdiction
+  - kind: column
+    token: state
   printed_label: State
   aliases: []
   control_role: text
@@ -1078,8 +1133,8 @@ addresses:
     source_hash: 6a52ad63693de54220a3326b22c4d0fb34f4c25084366537087312975a55ae96
     page: 2
   official_ref: Box 15
-- address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=16
-  logical_key: document=form_w2/table=state_local/row_template=jurisdiction/column=16
+- address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=state_income_tax
+  logical_key: document=form_w2/table=state_local/row_template=jurisdiction/column=state_income_tax
   year: 2025
   document_id: form_w2_2025
   parent_address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction
@@ -1092,55 +1147,7 @@ addresses:
   - kind: row_template
     token: jurisdiction
   - kind: column
-    token: '16'
-  printed_label: Employer's state ID number
-  aliases: []
-  control_role: text
-  status: pending_review
-  evidence:
-  - source_path: config/manifest.yaml#form_w2_2025
-    source_hash: 6a52ad63693de54220a3326b22c4d0fb34f4c25084366537087312975a55ae96
-    page: 2
-  official_ref: Box 16
-- address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=17
-  logical_key: document=form_w2/table=state_local/row_template=jurisdiction/column=17
-  year: 2025
-  document_id: form_w2_2025
-  parent_address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction
-  kind: column
-  path:
-  - kind: document
-    token: form_w2
-  - kind: table
-    token: state_local
-  - kind: row_template
-    token: jurisdiction
-  - kind: column
-    token: '17'
-  printed_label: State wages, tips, etc.
-  aliases: []
-  control_role: amount
-  status: pending_review
-  evidence:
-  - source_path: config/manifest.yaml#form_w2_2025
-    source_hash: 6a52ad63693de54220a3326b22c4d0fb34f4c25084366537087312975a55ae96
-    page: 2
-  official_ref: Box 17
-- address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=18
-  logical_key: document=form_w2/table=state_local/row_template=jurisdiction/column=18
-  year: 2025
-  document_id: form_w2_2025
-  parent_address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction
-  kind: column
-  path:
-  - kind: document
-    token: form_w2
-  - kind: table
-    token: state_local
-  - kind: row_template
-    token: jurisdiction
-  - kind: column
-    token: '18'
+    token: state_income_tax
   printed_label: State income tax
   aliases: []
   control_role: amount
@@ -1149,9 +1156,9 @@ addresses:
   - source_path: config/manifest.yaml#form_w2_2025
     source_hash: 6a52ad63693de54220a3326b22c4d0fb34f4c25084366537087312975a55ae96
     page: 2
-  official_ref: Box 18
-- address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=19
-  logical_key: document=form_w2/table=state_local/row_template=jurisdiction/column=19
+  official_ref: Box 17
+- address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=state_wages
+  logical_key: document=form_w2/table=state_local/row_template=jurisdiction/column=state_wages
   year: 2025
   document_id: form_w2_2025
   parent_address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction
@@ -1164,8 +1171,8 @@ addresses:
   - kind: row_template
     token: jurisdiction
   - kind: column
-    token: '19'
-  printed_label: Local wages, tips, etc.
+    token: state_wages
+  printed_label: State wages, tips, etc.
   aliases: []
   control_role: amount
   status: pending_review
@@ -1173,52 +1180,4 @@ addresses:
   - source_path: config/manifest.yaml#form_w2_2025
     source_hash: 6a52ad63693de54220a3326b22c4d0fb34f4c25084366537087312975a55ae96
     page: 2
-  official_ref: Box 19
-- address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=20
-  logical_key: document=form_w2/table=state_local/row_template=jurisdiction/column=20
-  year: 2025
-  document_id: form_w2_2025
-  parent_address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction
-  kind: column
-  path:
-  - kind: document
-    token: form_w2
-  - kind: table
-    token: state_local
-  - kind: row_template
-    token: jurisdiction
-  - kind: column
-    token: '20'
-  printed_label: Local income tax
-  aliases: []
-  control_role: amount
-  status: pending_review
-  evidence:
-  - source_path: config/manifest.yaml#form_w2_2025
-    source_hash: 6a52ad63693de54220a3326b22c4d0fb34f4c25084366537087312975a55ae96
-    page: 2
-  official_ref: Box 20
-- address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=21
-  logical_key: document=form_w2/table=state_local/row_template=jurisdiction/column=21
-  year: 2025
-  document_id: form_w2_2025
-  parent_address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction
-  kind: column
-  path:
-  - kind: document
-    token: form_w2
-  - kind: table
-    token: state_local
-  - kind: row_template
-    token: jurisdiction
-  - kind: column
-    token: '21'
-  printed_label: Locality name
-  aliases: []
-  control_role: text
-  status: pending_review
-  evidence:
-  - source_path: config/manifest.yaml#form_w2_2025
-    source_hash: 6a52ad63693de54220a3326b22c4d0fb34f4c25084366537087312975a55ae96
-    page: 2
-  official_ref: Box 21
+  official_ref: Box 16

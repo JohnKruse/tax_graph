@@ -24,6 +24,9 @@ def test_w2_physical_qualifier_names_copy_and_repeated_row() -> None:
     assert _physical_qualifier({
         "field_name": "topmostSubform[0].CopyD[0].Boxes15_ReadOrder[0].f6_40[0]",
     }, None) == "Copy D, state/local row 2"
+    assert _physical_qualifier({
+        "field_name": "topmostSubform[0].CopyA[0].Boxes15_ReadOrder[0].f1_31[0]",
+    }, None) == "Copy A, state/local row 2"
 
 
 @pytest.mark.m15

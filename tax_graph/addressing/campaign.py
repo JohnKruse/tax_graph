@@ -57,7 +57,16 @@ def build_document_addresses(root: str | Path, document_id: str) -> dict[str, An
             item, mappings.get(field_name), dispositions[field_name], document_id=document_id,
         )
         if evidence is None:
-            exemptions.append({"field_name": field_name, "population_policy": dispositions[field_name]["population_policy"]})
+            exemption = {"field_name": field_name, "population_policy": dispositions[field_name]["population_policy"]}
+            if document_id == "form_w2_2025" and re.fullmatch(r".*\.f[1-6]_17\[0\]", field_name):
+                exemption.update({
+                    "display_name": "Shaded no-entry box 9",
+                    "population_policy": "intentionally_blank",
+                    "reason": "The official Form W-2 shades captionless box 9 while the AcroForm includes a text widget.",
+                    "downstream_effect": "None - no node maps to this widget and the fill pipeline never writes it.",
+                    "missing_capability": "None - this is official shading, not a capability gap.",
+                })
+            exemptions.append(exemption)
         else:
             controls.append(evidence)
     worksheet_nodes = _schedule_d_worksheet_controls(root_path) if document_id == "schedule_d_2025" else []
@@ -118,6 +127,7 @@ def build_document_addresses(root: str | Path, document_id: str) -> dict[str, An
         "node_bindings": _binding_artifact(document_id, "node", list(node_bindings.values())),
         "references": {"schema_version": 1, "year": 2025, "document_id": document_id, "references": references},
         "field_addresses": {field: address["address_id"] for field, address in addressed_by_field.items()},
+        "exemptions": exemptions,
         "coverage": {
             "inventory": len(inventory), "addressed_widgets": len(controls), "exempt_widgets": len(exemptions),
             "node_bindings": len(node_bindings), "references": len(references),
@@ -216,7 +226,6 @@ def _form_w2_control_evidence(item: dict[str, Any]) -> dict[str, Any] | None:
             14: ("6", "value", "Medicare tax withheld", "amount"),
             15: ("7", "value", "Social security tips", "amount"),
             16: ("8", "value", "Allocated tips", "amount"),
-            17: ("9", "value", "Box 9", "amount"),
             18: ("10", "value", "Dependent care benefits", "amount"),
             19: ("11", "value", "Nonqualified plans", "amount"),
             28: ("14", "value", "Other", "text"),
@@ -233,20 +242,26 @@ def _form_w2_control_evidence(item: dict[str, Any]) -> dict[str, Any] | None:
             label = "Code" if column == "code" else "Amount"
             role = "text" if column == "code" else "amount"
         elif 29 <= number <= 42:
-            column_index = (number - 29) // 2
-            box = str(15 + column_index)
-            labels = {
-                "15": "State", "16": "Employer's state ID number",
-                "17": "State wages, tips, etc.", "18": "State income tax",
-                "19": "Local wages, tips, etc.", "20": "Local income tax",
-                "21": "Locality name",
-            }
+            box, token, label, role = {
+                29: ("15", "state", "State", "text"),
+                30: ("15", "employer_state_id", "Employer's state ID number", "text"),
+                31: ("15", "state", "State", "text"),
+                32: ("15", "employer_state_id", "Employer's state ID number", "text"),
+                33: ("16", "state_wages", "State wages, tips, etc.", "amount"),
+                34: ("16", "state_wages", "State wages, tips, etc.", "amount"),
+                35: ("17", "state_income_tax", "State income tax", "amount"),
+                36: ("17", "state_income_tax", "State income tax", "amount"),
+                37: ("18", "local_wages", "Local wages, tips, etc.", "amount"),
+                38: ("18", "local_wages", "Local wages, tips, etc.", "amount"),
+                39: ("19", "local_income_tax", "Local income tax", "amount"),
+                40: ("19", "local_income_tax", "Local income tax", "amount"),
+                41: ("20", "locality_name", "Locality name", "text"),
+                42: ("20", "locality_name", "Locality name", "text"),
+            }[number]
             path = [{"kind": "table", "token": "state_local"},
                     {"kind": "row_template", "token": "jurisdiction"},
-                    {"kind": "column", "token": box}]
+                    {"kind": "column", "token": token}]
             official_ref = f"Box {box}"
-            label = labels[box]
-            role = "text" if box in {"15", "16", "21"} else "amount"
         else:
             return None
     else:

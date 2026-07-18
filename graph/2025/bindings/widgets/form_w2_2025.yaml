@@ -4,7 +4,7 @@ document_id: form_w2_2025
 binding_kind: widget
 bindings:
 - field_name: topmostSubform[0].Copy1[0].Box16_ReadOrder[0].f2_33[0]
-  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=17
+  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=state_wages
   widget_type: text
   page: 3
   rect:
@@ -14,7 +14,7 @@ bindings:
   - 312.0
   status: provisional
 - field_name: topmostSubform[0].Copy1[0].Box16_ReadOrder[0].f2_34[0]
-  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=17
+  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=state_wages
   widget_type: text
   page: 3
   rect:
@@ -24,7 +24,7 @@ bindings:
   - 336.0
   status: provisional
 - field_name: topmostSubform[0].Copy1[0].Box17_ReadOrder[0].f2_35[0]
-  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=18
+  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=state_income_tax
   widget_type: text
   page: 3
   rect:
@@ -34,7 +34,7 @@ bindings:
   - 312.0
   status: provisional
 - field_name: topmostSubform[0].Copy1[0].Box17_ReadOrder[0].f2_36[0]
-  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=18
+  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=state_income_tax
   widget_type: text
   page: 3
   rect:
@@ -44,7 +44,7 @@ bindings:
   - 336.0
   status: provisional
 - field_name: topmostSubform[0].Copy1[0].Box18_ReadOrder[0].f2_37[0]
-  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=19
+  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=local_wages
   widget_type: text
   page: 3
   rect:
@@ -54,7 +54,7 @@ bindings:
   - 312.0
   status: provisional
 - field_name: topmostSubform[0].Copy1[0].Box18_ReadOrder[0].f2_38[0]
-  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=19
+  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=local_wages
   widget_type: text
   page: 3
   rect:
@@ -64,7 +64,7 @@ bindings:
   - 336.0
   status: provisional
 - field_name: topmostSubform[0].Copy1[0].Box19_ReadOrder[0].f2_39[0]
-  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=20
+  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=local_income_tax
   widget_type: text
   page: 3
   rect:
@@ -74,7 +74,7 @@ bindings:
   - 312.0
   status: provisional
 - field_name: topmostSubform[0].Copy1[0].Box19_ReadOrder[0].f2_40[0]
-  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=20
+  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=local_income_tax
   widget_type: text
   page: 3
   rect:
@@ -94,7 +94,7 @@ bindings:
   - 60.0
   status: provisional
 - field_name: topmostSubform[0].Copy1[0].Boxes15_ReadOrder[0].Box15_ReadOrder[0].f2_29[0]
-  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=15
+  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=state
   widget_type: text
   page: 3
   rect:
@@ -104,7 +104,7 @@ bindings:
   - 312.0
   status: provisional
 - field_name: topmostSubform[0].Copy1[0].Boxes15_ReadOrder[0].f2_30[0]
-  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=15
+  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=employer_state_id
   widget_type: text
   page: 3
   rect:
@@ -114,7 +114,7 @@ bindings:
   - 312.0
   status: provisional
 - field_name: topmostSubform[0].Copy1[0].Boxes15_ReadOrder[0].f2_31[0]
-  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=16
+  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=state
   widget_type: text
   page: 3
   rect:
@@ -124,7 +124,7 @@ bindings:
   - 336.0
   status: provisional
 - field_name: topmostSubform[0].Copy1[0].Boxes15_ReadOrder[0].f2_32[0]
-  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=16
+  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=employer_state_id
   widget_type: text
   page: 3
   rect:
@@ -333,16 +333,6 @@ bindings:
   - 452.6
   - 156.0
   status: provisional
-- field_name: topmostSubform[0].Copy1[0].Col_Right[0].Box9_ReadOrder[0].f2_17[0]
-  address_id: 2025/document=form_w2/box=9/control=value
-  widget_type: text
-  page: 3
-  rect:
-  - 332.2
-  - 168.0
-  - 452.6
-  - 180.0
-  status: provisional
 - field_name: topmostSubform[0].Copy1[0].Col_Right[0].Retirement_ReadOrder[0].c2_3[0]
   address_id: 2025/document=form_w2/box=13/option=retirement_plan
   widget_type: checkbox
@@ -434,7 +424,7 @@ bindings:
   - 288.0
   status: provisional
 - field_name: topmostSubform[0].Copy1[0].f2_41[0]
-  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=21
+  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=locality_name
   widget_type: text
   page: 3
   rect:
@@ -444,7 +434,7 @@ bindings:
   - 312.0
   status: provisional
 - field_name: topmostSubform[0].Copy1[0].f2_42[0]
-  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=21
+  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=locality_name
   widget_type: text
   page: 3
   rect:
@@ -454,7 +444,7 @@ bindings:
   - 336.0
   status: provisional
 - field_name: topmostSubform[0].Copy2[0].Box16_ReadOrder[0].f2_33[0]
-  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=17
+  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=state_wages
   widget_type: text
   page: 8
   rect:
@@ -464,7 +454,7 @@ bindings:
   - 312.0
   status: provisional
 - field_name: topmostSubform[0].Copy2[0].Box16_ReadOrder[0].f2_34[0]
-  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=17
+  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=state_wages
   widget_type: text
   page: 8
   rect:
@@ -474,7 +464,7 @@ bindings:
   - 336.0
   status: provisional
 - field_name: topmostSubform[0].Copy2[0].Box17_ReadOrder[0].f2_35[0]
-  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=18
+  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=state_income_tax
   widget_type: text
   page: 8
   rect:
@@ -484,7 +474,7 @@ bindings:
   - 312.0
   status: provisional
 - field_name: topmostSubform[0].Copy2[0].Box17_ReadOrder[0].f2_36[0]
-  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=18
+  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=state_income_tax
   widget_type: text
   page: 8
   rect:
@@ -494,7 +484,7 @@ bindings:
   - 336.0
   status: provisional
 - field_name: topmostSubform[0].Copy2[0].Box18_ReadOrder[0].f2_37[0]
-  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=19
+  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=local_wages
   widget_type: text
   page: 8
   rect:
@@ -504,7 +494,7 @@ bindings:
   - 312.0
   status: provisional
 - field_name: topmostSubform[0].Copy2[0].Box18_ReadOrder[0].f2_38[0]
-  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=19
+  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=local_wages
   widget_type: text
   page: 8
   rect:
@@ -514,7 +504,7 @@ bindings:
   - 336.0
   status: provisional
 - field_name: topmostSubform[0].Copy2[0].Box19_ReadOrder[0].f2_39[0]
-  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=20
+  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=local_income_tax
   widget_type: text
   page: 8
   rect:
@@ -524,7 +514,7 @@ bindings:
   - 312.0
   status: provisional
 - field_name: topmostSubform[0].Copy2[0].Box19_ReadOrder[0].f2_40[0]
-  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=20
+  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=local_income_tax
   widget_type: text
   page: 8
   rect:
@@ -544,7 +534,7 @@ bindings:
   - 60.0
   status: provisional
 - field_name: topmostSubform[0].Copy2[0].Boxes15_ReadOrder[0].Box15_ReadOrder[0].f2_29[0]
-  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=15
+  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=state
   widget_type: text
   page: 8
   rect:
@@ -554,7 +544,7 @@ bindings:
   - 312.0
   status: provisional
 - field_name: topmostSubform[0].Copy2[0].Boxes15_ReadOrder[0].f2_30[0]
-  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=15
+  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=employer_state_id
   widget_type: text
   page: 8
   rect:
@@ -564,7 +554,7 @@ bindings:
   - 312.0
   status: provisional
 - field_name: topmostSubform[0].Copy2[0].Boxes15_ReadOrder[0].f2_31[0]
-  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=16
+  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=state
   widget_type: text
   page: 8
   rect:
@@ -574,7 +564,7 @@ bindings:
   - 336.0
   status: provisional
 - field_name: topmostSubform[0].Copy2[0].Boxes15_ReadOrder[0].f2_32[0]
-  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=16
+  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=employer_state_id
   widget_type: text
   page: 8
   rect:
@@ -783,16 +773,6 @@ bindings:
   - 452.6
   - 156.0
   status: provisional
-- field_name: topmostSubform[0].Copy2[0].Col_Right[0].Box9_ReadOrder[0].f2_17[0]
-  address_id: 2025/document=form_w2/box=9/control=value
-  widget_type: text
-  page: 8
-  rect:
-  - 332.2
-  - 168.0
-  - 452.6
-  - 180.0
-  status: provisional
 - field_name: topmostSubform[0].Copy2[0].Col_Right[0].Retirement_ReadOrder[0].c2_3[0]
   address_id: 2025/document=form_w2/box=13/option=retirement_plan
   widget_type: checkbox
@@ -884,7 +864,7 @@ bindings:
   - 288.0
   status: provisional
 - field_name: topmostSubform[0].Copy2[0].f2_41[0]
-  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=21
+  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=locality_name
   widget_type: text
   page: 8
   rect:
@@ -894,7 +874,7 @@ bindings:
   - 312.0
   status: provisional
 - field_name: topmostSubform[0].Copy2[0].f2_42[0]
-  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=21
+  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=locality_name
   widget_type: text
   page: 8
   rect:
@@ -904,7 +884,7 @@ bindings:
   - 336.0
   status: provisional
 - field_name: topmostSubform[0].CopyA[0].Box16_ReadOrder[0].f1_33[0]
-  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=17
+  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=state_wages
   widget_type: text
   page: 2
   rect:
@@ -914,7 +894,7 @@ bindings:
   - 312.0
   status: provisional
 - field_name: topmostSubform[0].CopyA[0].Box16_ReadOrder[0].f1_34[0]
-  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=17
+  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=state_wages
   widget_type: text
   page: 2
   rect:
@@ -924,7 +904,7 @@ bindings:
   - 336.0
   status: provisional
 - field_name: topmostSubform[0].CopyA[0].Box17_ReadOrder[0].f1_35[0]
-  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=18
+  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=state_income_tax
   widget_type: text
   page: 2
   rect:
@@ -934,7 +914,7 @@ bindings:
   - 312.0
   status: provisional
 - field_name: topmostSubform[0].CopyA[0].Box17_ReadOrder[0].f1_36[0]
-  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=18
+  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=state_income_tax
   widget_type: text
   page: 2
   rect:
@@ -944,7 +924,7 @@ bindings:
   - 336.0
   status: provisional
 - field_name: topmostSubform[0].CopyA[0].Box18_ReadOrder[0].f1_37[0]
-  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=19
+  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=local_wages
   widget_type: text
   page: 2
   rect:
@@ -954,7 +934,7 @@ bindings:
   - 312.0
   status: provisional
 - field_name: topmostSubform[0].CopyA[0].Box18_ReadOrder[0].f1_38[0]
-  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=19
+  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=local_wages
   widget_type: text
   page: 2
   rect:
@@ -964,7 +944,7 @@ bindings:
   - 336.0
   status: provisional
 - field_name: topmostSubform[0].CopyA[0].Box19_ReadOrder[0].f1_39[0]
-  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=20
+  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=local_income_tax
   widget_type: text
   page: 2
   rect:
@@ -974,7 +954,7 @@ bindings:
   - 312.0
   status: provisional
 - field_name: topmostSubform[0].CopyA[0].Box19_ReadOrder[0].f1_40[0]
-  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=20
+  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=local_income_tax
   widget_type: text
   page: 2
   rect:
@@ -994,7 +974,7 @@ bindings:
   - 60.0
   status: provisional
 - field_name: topmostSubform[0].CopyA[0].Boxes15_ReadOrder[0].Box15_ReadOrder[0].f1_29[0]
-  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=15
+  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=state
   widget_type: text
   page: 2
   rect:
@@ -1004,7 +984,7 @@ bindings:
   - 312.0
   status: provisional
 - field_name: topmostSubform[0].CopyA[0].Boxes15_ReadOrder[0].f1_30[0]
-  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=15
+  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=employer_state_id
   widget_type: text
   page: 2
   rect:
@@ -1014,7 +994,7 @@ bindings:
   - 312.0
   status: provisional
 - field_name: topmostSubform[0].CopyA[0].Boxes15_ReadOrder[0].f1_31[0]
-  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=16
+  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=state
   widget_type: text
   page: 2
   rect:
@@ -1024,7 +1004,7 @@ bindings:
   - 336.0
   status: provisional
 - field_name: topmostSubform[0].CopyA[0].Boxes15_ReadOrder[0].f1_32[0]
-  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=16
+  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=employer_state_id
   widget_type: text
   page: 2
   rect:
@@ -1152,16 +1132,6 @@ bindings:
   - 144.0
   - 452.6
   - 156.0
-  status: provisional
-- field_name: topmostSubform[0].CopyA[0].Col_Right[0].Box9_ReadOrder[0].f1_17[0]
-  address_id: 2025/document=form_w2/box=9/control=value
-  widget_type: text
-  page: 2
-  rect:
-  - 332.2
-  - 168.0
-  - 452.6
-  - 180.0
   status: provisional
 - field_name: topmostSubform[0].CopyA[0].Col_Right[0].Line12_ReadOrder[0].f1_20[0]
   address_id: 2025/document=form_w2/box=12/row_template=entry/column=code
@@ -1344,7 +1314,7 @@ bindings:
   - 52.0
   status: provisional
 - field_name: topmostSubform[0].CopyA[0].f1_41[0]
-  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=21
+  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=locality_name
   widget_type: text
   page: 2
   rect:
@@ -1354,7 +1324,7 @@ bindings:
   - 312.0
   status: provisional
 - field_name: topmostSubform[0].CopyA[0].f1_42[0]
-  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=21
+  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=locality_name
   widget_type: text
   page: 2
   rect:
@@ -1364,7 +1334,7 @@ bindings:
   - 336.0
   status: provisional
 - field_name: topmostSubform[0].CopyB[0].Box16_ReadOrder[0].f2_33[0]
-  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=17
+  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=state_wages
   widget_type: text
   page: 4
   rect:
@@ -1374,7 +1344,7 @@ bindings:
   - 312.0
   status: provisional
 - field_name: topmostSubform[0].CopyB[0].Box16_ReadOrder[0].f2_34[0]
-  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=17
+  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=state_wages
   widget_type: text
   page: 4
   rect:
@@ -1384,7 +1354,7 @@ bindings:
   - 336.0
   status: provisional
 - field_name: topmostSubform[0].CopyB[0].Box17_ReadOrder[0].f2_35[0]
-  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=18
+  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=state_income_tax
   widget_type: text
   page: 4
   rect:
@@ -1394,7 +1364,7 @@ bindings:
   - 312.0
   status: provisional
 - field_name: topmostSubform[0].CopyB[0].Box17_ReadOrder[0].f2_36[0]
-  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=18
+  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=state_income_tax
   widget_type: text
   page: 4
   rect:
@@ -1404,7 +1374,7 @@ bindings:
   - 336.0
   status: provisional
 - field_name: topmostSubform[0].CopyB[0].Box18_ReadOrder[0].f2_37[0]
-  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=19
+  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=local_wages
   widget_type: text
   page: 4
   rect:
@@ -1414,7 +1384,7 @@ bindings:
   - 312.0
   status: provisional
 - field_name: topmostSubform[0].CopyB[0].Box18_ReadOrder[0].f2_38[0]
-  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=19
+  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=local_wages
   widget_type: text
   page: 4
   rect:
@@ -1424,7 +1394,7 @@ bindings:
   - 336.0
   status: provisional
 - field_name: topmostSubform[0].CopyB[0].Box19_ReadOrder[0].f2_39[0]
-  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=20
+  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=local_income_tax
   widget_type: text
   page: 4
   rect:
@@ -1434,7 +1404,7 @@ bindings:
   - 312.0
   status: provisional
 - field_name: topmostSubform[0].CopyB[0].Box19_ReadOrder[0].f2_40[0]
-  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=20
+  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=local_income_tax
   widget_type: text
   page: 4
   rect:
@@ -1454,7 +1424,7 @@ bindings:
   - 60.0
   status: provisional
 - field_name: topmostSubform[0].CopyB[0].Boxes15_ReadOrder[0].Box15_ReadOrder[0].f2_29[0]
-  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=15
+  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=state
   widget_type: text
   page: 4
   rect:
@@ -1464,7 +1434,7 @@ bindings:
   - 312.0
   status: provisional
 - field_name: topmostSubform[0].CopyB[0].Boxes15_ReadOrder[0].f2_30[0]
-  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=15
+  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=employer_state_id
   widget_type: text
   page: 4
   rect:
@@ -1474,7 +1444,7 @@ bindings:
   - 312.0
   status: provisional
 - field_name: topmostSubform[0].CopyB[0].Boxes15_ReadOrder[0].f2_31[0]
-  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=16
+  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=state
   widget_type: text
   page: 4
   rect:
@@ -1484,7 +1454,7 @@ bindings:
   - 336.0
   status: provisional
 - field_name: topmostSubform[0].CopyB[0].Boxes15_ReadOrder[0].f2_32[0]
-  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=16
+  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=employer_state_id
   widget_type: text
   page: 4
   rect:
@@ -1693,16 +1663,6 @@ bindings:
   - 452.6
   - 156.0
   status: provisional
-- field_name: topmostSubform[0].CopyB[0].Col_Right[0].Box9_ReadOrder[0].f2_17[0]
-  address_id: 2025/document=form_w2/box=9/control=value
-  widget_type: text
-  page: 4
-  rect:
-  - 332.2
-  - 168.0
-  - 452.6
-  - 180.0
-  status: provisional
 - field_name: topmostSubform[0].CopyB[0].Col_Right[0].Retirement_ReadOrder[0].c2_3[0]
   address_id: 2025/document=form_w2/box=13/option=retirement_plan
   widget_type: checkbox
@@ -1794,7 +1754,7 @@ bindings:
   - 288.0
   status: provisional
 - field_name: topmostSubform[0].CopyB[0].f2_41[0]
-  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=21
+  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=locality_name
   widget_type: text
   page: 4
   rect:
@@ -1804,7 +1764,7 @@ bindings:
   - 312.0
   status: provisional
 - field_name: topmostSubform[0].CopyB[0].f2_42[0]
-  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=21
+  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=locality_name
   widget_type: text
   page: 4
   rect:
@@ -1814,7 +1774,7 @@ bindings:
   - 336.0
   status: provisional
 - field_name: topmostSubform[0].CopyC[0].Box16_ReadOrder[0].f2_33[0]
-  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=17
+  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=state_wages
   widget_type: text
   page: 6
   rect:
@@ -1824,7 +1784,7 @@ bindings:
   - 312.0
   status: provisional
 - field_name: topmostSubform[0].CopyC[0].Box16_ReadOrder[0].f2_34[0]
-  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=17
+  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=state_wages
   widget_type: text
   page: 6
   rect:
@@ -1834,7 +1794,7 @@ bindings:
   - 336.0
   status: provisional
 - field_name: topmostSubform[0].CopyC[0].Box17_ReadOrder[0].f2_35[0]
-  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=18
+  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=state_income_tax
   widget_type: text
   page: 6
   rect:
@@ -1844,7 +1804,7 @@ bindings:
   - 312.0
   status: provisional
 - field_name: topmostSubform[0].CopyC[0].Box17_ReadOrder[0].f2_36[0]
-  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=18
+  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=state_income_tax
   widget_type: text
   page: 6
   rect:
@@ -1854,7 +1814,7 @@ bindings:
   - 336.0
   status: provisional
 - field_name: topmostSubform[0].CopyC[0].Box18_ReadOrder[0].f2_37[0]
-  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=19
+  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=local_wages
   widget_type: text
   page: 6
   rect:
@@ -1864,7 +1824,7 @@ bindings:
   - 312.0
   status: provisional
 - field_name: topmostSubform[0].CopyC[0].Box18_ReadOrder[0].f2_38[0]
-  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=19
+  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=local_wages
   widget_type: text
   page: 6
   rect:
@@ -1874,7 +1834,7 @@ bindings:
   - 336.0
   status: provisional
 - field_name: topmostSubform[0].CopyC[0].Box19_ReadOrder[0].f2_39[0]
-  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=20
+  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=local_income_tax
   widget_type: text
   page: 6
   rect:
@@ -1884,7 +1844,7 @@ bindings:
   - 312.0
   status: provisional
 - field_name: topmostSubform[0].CopyC[0].Box19_ReadOrder[0].f2_40[0]
-  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=20
+  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=local_income_tax
   widget_type: text
   page: 6
   rect:
@@ -1904,7 +1864,7 @@ bindings:
   - 60.0
   status: provisional
 - field_name: topmostSubform[0].CopyC[0].Boxes15_ReadOrder[0].Box15_ReadOrder[0].f2_29[0]
-  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=15
+  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=state
   widget_type: text
   page: 6
   rect:
@@ -1914,7 +1874,7 @@ bindings:
   - 312.0
   status: provisional
 - field_name: topmostSubform[0].CopyC[0].Boxes15_ReadOrder[0].f2_30[0]
-  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=15
+  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=employer_state_id
   widget_type: text
   page: 6
   rect:
@@ -1924,7 +1884,7 @@ bindings:
   - 312.0
   status: provisional
 - field_name: topmostSubform[0].CopyC[0].Boxes15_ReadOrder[0].f2_31[0]
-  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=16
+  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=state
   widget_type: text
   page: 6
   rect:
@@ -1934,7 +1894,7 @@ bindings:
   - 336.0
   status: provisional
 - field_name: topmostSubform[0].CopyC[0].Boxes15_ReadOrder[0].f2_32[0]
-  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=16
+  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=employer_state_id
   widget_type: text
   page: 6
   rect:
@@ -2143,16 +2103,6 @@ bindings:
   - 452.6
   - 156.0
   status: provisional
-- field_name: topmostSubform[0].CopyC[0].Col_Right[0].Box9_ReadOrder[0].f2_17[0]
-  address_id: 2025/document=form_w2/box=9/control=value
-  widget_type: text
-  page: 6
-  rect:
-  - 332.2
-  - 168.0
-  - 452.6
-  - 180.0
-  status: provisional
 - field_name: topmostSubform[0].CopyC[0].Col_Right[0].Retirement_ReadOrder[0].c2_3[0]
   address_id: 2025/document=form_w2/box=13/option=retirement_plan
   widget_type: checkbox
@@ -2244,7 +2194,7 @@ bindings:
   - 288.0
   status: provisional
 - field_name: topmostSubform[0].CopyC[0].f2_41[0]
-  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=21
+  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=locality_name
   widget_type: text
   page: 6
   rect:
@@ -2254,7 +2204,7 @@ bindings:
   - 312.0
   status: provisional
 - field_name: topmostSubform[0].CopyC[0].f2_42[0]
-  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=21
+  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=locality_name
   widget_type: text
   page: 6
   rect:
@@ -2264,7 +2214,7 @@ bindings:
   - 336.0
   status: provisional
 - field_name: topmostSubform[0].CopyD[0].Box16_ReadOrder[0].f2_33[0]
-  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=17
+  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=state_wages
   widget_type: text
   page: 10
   rect:
@@ -2274,7 +2224,7 @@ bindings:
   - 312.0
   status: provisional
 - field_name: topmostSubform[0].CopyD[0].Box16_ReadOrder[0].f2_34[0]
-  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=17
+  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=state_wages
   widget_type: text
   page: 10
   rect:
@@ -2284,7 +2234,7 @@ bindings:
   - 336.0
   status: provisional
 - field_name: topmostSubform[0].CopyD[0].Box17_ReadOrder[0].f2_35[0]
-  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=18
+  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=state_income_tax
   widget_type: text
   page: 10
   rect:
@@ -2294,7 +2244,7 @@ bindings:
   - 312.0
   status: provisional
 - field_name: topmostSubform[0].CopyD[0].Box17_ReadOrder[0].f2_36[0]
-  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=18
+  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=state_income_tax
   widget_type: text
   page: 10
   rect:
@@ -2304,7 +2254,7 @@ bindings:
   - 336.0
   status: provisional
 - field_name: topmostSubform[0].CopyD[0].Box18_ReadOrder[0].f2_37[0]
-  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=19
+  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=local_wages
   widget_type: text
   page: 10
   rect:
@@ -2314,7 +2264,7 @@ bindings:
   - 312.0
   status: provisional
 - field_name: topmostSubform[0].CopyD[0].Box18_ReadOrder[0].f2_38[0]
-  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=19
+  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=local_wages
   widget_type: text
   page: 10
   rect:
@@ -2324,7 +2274,7 @@ bindings:
   - 336.0
   status: provisional
 - field_name: topmostSubform[0].CopyD[0].Box19_ReadOrder[0].f2_39[0]
-  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=20
+  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=local_income_tax
   widget_type: text
   page: 10
   rect:
@@ -2334,7 +2284,7 @@ bindings:
   - 312.0
   status: provisional
 - field_name: topmostSubform[0].CopyD[0].Box19_ReadOrder[0].f2_40[0]
-  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=20
+  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=local_income_tax
   widget_type: text
   page: 10
   rect:
@@ -2354,7 +2304,7 @@ bindings:
   - 60.0
   status: provisional
 - field_name: topmostSubform[0].CopyD[0].Boxes15_ReadOrder[0].Box15_ReadOrder[0].f2_29[0]
-  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=15
+  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=state
   widget_type: text
   page: 10
   rect:
@@ -2364,7 +2314,7 @@ bindings:
   - 312.0
   status: provisional
 - field_name: topmostSubform[0].CopyD[0].Boxes15_ReadOrder[0].f2_30[0]
-  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=15
+  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=employer_state_id
   widget_type: text
   page: 10
   rect:
@@ -2374,7 +2324,7 @@ bindings:
   - 312.0
   status: provisional
 - field_name: topmostSubform[0].CopyD[0].Boxes15_ReadOrder[0].f2_31[0]
-  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=16
+  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=state
   widget_type: text
   page: 10
   rect:
@@ -2384,7 +2334,7 @@ bindings:
   - 336.0
   status: provisional
 - field_name: topmostSubform[0].CopyD[0].Boxes15_ReadOrder[0].f2_32[0]
-  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=16
+  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=employer_state_id
   widget_type: text
   page: 10
   rect:
@@ -2593,16 +2543,6 @@ bindings:
   - 452.6
   - 156.0
   status: provisional
-- field_name: topmostSubform[0].CopyD[0].Col_Right[0].Box9_ReadOrder[0].f2_17[0]
-  address_id: 2025/document=form_w2/box=9/control=value
-  widget_type: text
-  page: 10
-  rect:
-  - 332.2
-  - 168.0
-  - 452.6
-  - 180.0
-  status: provisional
 - field_name: topmostSubform[0].CopyD[0].Col_Right[0].Retirement_ReadOrder[0].c2_3[0]
   address_id: 2025/document=form_w2/box=13/option=retirement_plan
   widget_type: checkbox
@@ -2704,7 +2644,7 @@ bindings:
   - 52.0
   status: provisional
 - field_name: topmostSubform[0].CopyD[0].f2_41[0]
-  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=21
+  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=locality_name
   widget_type: text
   page: 10
   rect:
@@ -2714,7 +2654,7 @@ bindings:
   - 312.0
   status: provisional
 - field_name: topmostSubform[0].CopyD[0].f2_42[0]
-  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=21
+  address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=locality_name
   widget_type: text
   page: 10
   rect:

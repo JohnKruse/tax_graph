@@ -14,13 +14,14 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## Current state (2026-07-17)
 
-**BALL: WORKER/CODEX - EXTENDED RUN CONTINUES AT A9d (1099-B/DIV/INT GROUP).** A9c
-is COMPLETE at HEAD: W-2 is zero legacy, and real preflight is
-green at 3,243 units with `legacy_mined=1081`, a strict reduction of 248 from A9b's
-1,329. Continue the authorized run: A9d..A9x, then A9z, A10, A11, A6 - HARD STOP
-before A12. Local commits only, no push; full partitioned floor per commit; sequential
-partitions only (the concurrent-launcher failure mode is confirmed twice). A9a is
-`476e7ee`, A9b is `0ec62ae`; A8 pre-task and A8 remain verified (`fcf82f1`,
+**BALL: WORKER/CODEX - A9c CORRECTED; EXTENDED RUN CONTINUES AT A9d
+(1099-B/DIV/INT GROUP).** The W-2 reopen is fixed at HEAD: State and Employer's state
+ID are both Box 15, Boxes 16-20 are pinned verbatim, Box 21 is absent, and all six
+physical Box 9 widgets are authored `intentionally_blank` exemptions. The reusable
+official-PDF caption-adjacency check is green. Real preflight remains green at 3,243
+units with `legacy_mined=1081`. Continue A9d..A9x, A9z, A10, A11, A6 - HARD STOP
+before A12. Local commits only, no push; sequential partitions only. A9a `476e7ee`,
+A9b `0ec62ae`, original A9c `82e07aa`; A8 pre-task and A8 verified (`fcf82f1`,
 `45e485f`, local). Gate A remains open through A13; S17+ stays blocked. Canary: Fresh
 Eyes.
 (Whoever finishes a turn: update this BALL line - it is the first thing read.)
@@ -269,7 +270,57 @@ sequenced after M15 or when TY2026 docs drop.
   review loop needs an iterate/author-in-review story. Named limitation documented in
   `docs/self-serve-extension.md`.
 
+## From Architect (A9c verdict)
+- **A9c VERDICT (Architect, Claude Fable 5, 2026-07-18): REOPENED - fix within A9c
+  before starting A9d.** Diligence review against the local official PDF found two
+  authoring defects that every gate passed silently:
+  1. **State/local box numbers are fabricated by arithmetic.** The projector uses
+     `box = str(15 + column_index)`, but the official form puts BOTH `State` and
+     `Employer's state ID number` under **Box 15**, then 16=State wages, 17=State
+     income tax, 18=Local wages, 19=Local income tax, 20=Locality name. There is NO
+     Box 21 on a W-2. Six official_refs are wrong and one box number is invented -
+     the exact fabricated-identity pathology this campaign exists to kill. Fix the
+     projector mapping (two controls under box 15 with distinct control tokens; 16-20
+     for the rest), regenerate the registry/bindings/geometry, and add goldens pinning
+     all seven official refs verbatim.
+  2. **Box 9 violates the shaded-cell precedent.** The official box 9 is a bare,
+     captionless shaded box (PDF: `8 Allocated tips / 9 / 10 Dependent care
+     benefits`). It must follow the pinned Form 8949 ruling: `intentionally_blank`
+     with an authored exemption identity (e.g. `Shaded no-entry box 9`), not an
+     `amount` control with the placeholder label `Box 9`.
+  3. **Hardening for A9d (required, the 1099s have the same layout risk):** for
+     information returns, every authored box official_ref must be cross-checked
+     against the printed caption text adjacent to that box region in the local PDF -
+     add a campaign test helper that asserts number+caption adjacency (e.g. `16` next
+     to `State wages, tips, etc.`) so arithmetic box numbering can never pass again.
+  The rest of A9c is verified good: 33-template collapse, 272/272 bindings, correct
+  captions on all non-state boxes, Box 12 row-template treatment, Box 13 checkboxes,
+  and the claimed floors reconcile (the m15-marked test placement explains the
+  unchanged non-M15 counts). Amend the A9c commit or land a follow-up fix commit under
+  the A9c marker; either way the full floor reruns and legacy counts must not regress.
+
 ## From Worker
+- **M15 A9c reopen corrected; full floor green (Codex, 2026-07-18):** Replaced the
+  arithmetic W-2 state/local projection with an explicit official-PDF mapping: `State`
+  and `Employer's state ID number` are distinct controls under Box 15; Boxes 16-20 are
+  `State wages, tips, etc.`, `State income tax`, `Local wages, tips, etc.`, `Local
+  income tax`, and `Locality name`; no Box 21 survives. Reclassified all six physical
+  Box 9 widgets as `intentionally_blank` with the authored identity `Shaded no-entry
+  box 9`, the official-shading reason, no downstream effect, and no missing capability;
+  no Box 9 address remains. Regenerated registry, 266 widget bindings, field-map
+  dispositions, and node geometry. Added seven verbatim state/local official-ref
+  goldens, Box 9 exemption goldens, and a normalized spatial PDF-word helper that checks
+  every authored W-2 box caption against the adjacent printed text and is reused for the
+  1099 group. Coverage is `inventory=272`, `addressed_widgets=266`,
+  `exempt_widgets=6`, `node_bindings=0`, `references=0`, with 32 authored templates.
+  Real preflight: 3,243 units, `authored_address=832`, `authored_object=1330`,
+  `legacy_mined=1081` (unchanged and green). M15 partitions: 10 + 19 + 5 + 33 + 20 +
+  11 E2E = 98 passed. Non-M15 partitions: 98 passed/1 skipped + 134/2 + 73/3 + 60 =
+  365 passed, 6 skipped; aggregate floor: 463 passed, 6 skipped. ASCII, `git diff
+  --check`, real preflight, and `tax-graph validate 2025` are green. The A9c promoted
+  identity defects required only authorized addresses/bindings/labels/dispositions.
+  Next: A9d authors Form 1099-B/DIV/INT from their local official PDFs, uses the
+  adjacency check, and must strictly reduce 1,081.
 - **M15 A9c W-2 address/binding campaign complete (Codex,
   2026-07-18):** Authored the 33 W-2 control templates from the local official PDF and
   bound all 272 physical widgets across Copies A, 1, B, C, 2, and D. Box 12 entries and

@@ -23453,7 +23453,7 @@
       "value_format": "dollars"
     },
     {
-      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=17",
+      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=state_wages",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyA[0].Box16_ReadOrder[0].f1_33[0]",
       "label": "Line 15 - f1_33",
@@ -23470,7 +23470,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=17",
+      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=state_wages",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyA[0].Box16_ReadOrder[0].f1_34[0]",
       "label": "f1_34",
@@ -23487,7 +23487,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=18",
+      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=state_income_tax",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyA[0].Box17_ReadOrder[0].f1_35[0]",
       "label": "Line 15 - f1_35",
@@ -23504,7 +23504,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=18",
+      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=state_income_tax",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyA[0].Box17_ReadOrder[0].f1_36[0]",
       "label": "f1_36",
@@ -23521,7 +23521,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=19",
+      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=local_wages",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyA[0].Box18_ReadOrder[0].f1_37[0]",
       "label": "Line 15 - f1_37",
@@ -23538,7 +23538,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=19",
+      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=local_wages",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyA[0].Box18_ReadOrder[0].f1_38[0]",
       "label": "f1_38",
@@ -23555,7 +23555,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=20",
+      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=local_income_tax",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyA[0].Box19_ReadOrder[0].f1_39[0]",
       "label": "Line 15 - f1_39",
@@ -23572,7 +23572,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=20",
+      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=local_income_tax",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyA[0].Box19_ReadOrder[0].f1_40[0]",
       "label": "f1_40",
@@ -23606,7 +23606,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=15",
+      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=state",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyA[0].Boxes15_ReadOrder[0].Box15_ReadOrder[0].f1_29[0]",
       "label": "Line 15 - f1_29",
@@ -23623,7 +23623,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=15",
+      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=employer_state_id",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyA[0].Boxes15_ReadOrder[0].f1_30[0]",
       "label": "Line 15 - f1_30",
@@ -23640,7 +23640,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=16",
+      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=state",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyA[0].Boxes15_ReadOrder[0].f1_31[0]",
       "label": "f1_31",
@@ -23657,7 +23657,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=16",
+      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=employer_state_id",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyA[0].Boxes15_ReadOrder[0].f1_32[0]",
       "label": "f1_32",
@@ -23878,12 +23878,14 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/box=9/control=value",
       "document_id": "form_w2_2025",
+      "downstream_effect": "None - no node maps to this widget and the fill pipeline never writes it.",
       "field_name": "topmostSubform[0].CopyA[0].Col_Right[0].Box9_ReadOrder[0].f1_17[0]",
-      "label": "Line d - f1_17",
+      "label": "Shaded no-entry box 9",
+      "missing_capability": "None - this is official shading, not a capability gap.",
       "page": 2,
-      "population_policy": "imported",
+      "population_policy": "intentionally_blank",
+      "reason": "The official Form W-2 shades captionless box 9 while the AcroForm includes a text widget.",
       "rect": [
         332.2,
         168.0,
@@ -24201,7 +24203,7 @@
       "value_format": "checkbox"
     },
     {
-      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=21",
+      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=locality_name",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyA[0].f1_41[0]",
       "label": "Line 15 - f1_41",
@@ -24218,7 +24220,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=21",
+      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=locality_name",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyA[0].f1_42[0]",
       "label": "f1_42",
@@ -24235,7 +24237,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=17",
+      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=state_wages",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].Copy1[0].Box16_ReadOrder[0].f2_33[0]",
       "label": "Line 15 - f2_33 (page 3, control 82)",
@@ -24252,7 +24254,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=17",
+      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=state_wages",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].Copy1[0].Box16_ReadOrder[0].f2_34[0]",
       "label": "f2_34 (page 3, control 83)",
@@ -24269,7 +24271,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=18",
+      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=state_income_tax",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].Copy1[0].Box17_ReadOrder[0].f2_35[0]",
       "label": "Line 15 - f2_35 (page 3, control 84)",
@@ -24286,7 +24288,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=18",
+      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=state_income_tax",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].Copy1[0].Box17_ReadOrder[0].f2_36[0]",
       "label": "f2_36 (page 3, control 85)",
@@ -24303,7 +24305,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=19",
+      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=local_wages",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].Copy1[0].Box18_ReadOrder[0].f2_37[0]",
       "label": "Line 15 - f2_37 (page 3, control 86)",
@@ -24320,7 +24322,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=19",
+      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=local_wages",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].Copy1[0].Box18_ReadOrder[0].f2_38[0]",
       "label": "f2_38 (page 3, control 87)",
@@ -24337,7 +24339,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=20",
+      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=local_income_tax",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].Copy1[0].Box19_ReadOrder[0].f2_39[0]",
       "label": "Line 15 - f2_39 (page 3, control 88)",
@@ -24354,7 +24356,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=20",
+      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=local_income_tax",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].Copy1[0].Box19_ReadOrder[0].f2_40[0]",
       "label": "f2_40 (page 3, control 89)",
@@ -24388,7 +24390,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=15",
+      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=state",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].Copy1[0].Boxes15_ReadOrder[0].Box15_ReadOrder[0].f2_29[0]",
       "label": "Line 15 - f2_29 (page 3, control 78)",
@@ -24405,7 +24407,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=15",
+      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=employer_state_id",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].Copy1[0].Boxes15_ReadOrder[0].f2_30[0]",
       "label": "Line 15 - f2_30 (page 3, control 79)",
@@ -24422,7 +24424,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=16",
+      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=state",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].Copy1[0].Boxes15_ReadOrder[0].f2_31[0]",
       "label": "f2_31 (page 3, control 80)",
@@ -24439,7 +24441,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=16",
+      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=employer_state_id",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].Copy1[0].Boxes15_ReadOrder[0].f2_32[0]",
       "label": "f2_32 (page 3, control 81)",
@@ -24796,12 +24798,14 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/box=9/control=value",
       "document_id": "form_w2_2025",
+      "downstream_effect": "None - no node maps to this widget and the fill pipeline never writes it.",
       "field_name": "topmostSubform[0].Copy1[0].Col_Right[0].Box9_ReadOrder[0].f2_17[0]",
-      "label": "Line d - f2_17 (page 3, control 63)",
+      "label": "Shaded no-entry box 9",
+      "missing_capability": "None - this is official shading, not a capability gap.",
       "page": 3,
-      "population_policy": "imported",
+      "population_policy": "intentionally_blank",
+      "reason": "The official Form W-2 shades captionless box 9 while the AcroForm includes a text widget.",
       "rect": [
         332.2,
         168.0,
@@ -24966,7 +24970,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=21",
+      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=locality_name",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].Copy1[0].f2_41[0]",
       "label": "Line 15 - f2_41 (page 3, control 90)",
@@ -24983,7 +24987,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=21",
+      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=locality_name",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].Copy1[0].f2_42[0]",
       "label": "f2_42 (page 3, control 91)",
@@ -25000,7 +25004,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=17",
+      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=state_wages",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyB[0].Box16_ReadOrder[0].f2_33[0]",
       "label": "Line 15 - f2_33 (page 4, control 127)",
@@ -25017,7 +25021,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=17",
+      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=state_wages",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyB[0].Box16_ReadOrder[0].f2_34[0]",
       "label": "f2_34 (page 4, control 128)",
@@ -25034,7 +25038,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=18",
+      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=state_income_tax",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyB[0].Box17_ReadOrder[0].f2_35[0]",
       "label": "Line 15 - f2_35 (page 4, control 129)",
@@ -25051,7 +25055,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=18",
+      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=state_income_tax",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyB[0].Box17_ReadOrder[0].f2_36[0]",
       "label": "f2_36 (page 4, control 130)",
@@ -25068,7 +25072,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=19",
+      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=local_wages",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyB[0].Box18_ReadOrder[0].f2_37[0]",
       "label": "Line 15 - f2_37 (page 4, control 131)",
@@ -25085,7 +25089,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=19",
+      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=local_wages",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyB[0].Box18_ReadOrder[0].f2_38[0]",
       "label": "f2_38 (page 4, control 132)",
@@ -25102,7 +25106,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=20",
+      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=local_income_tax",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyB[0].Box19_ReadOrder[0].f2_39[0]",
       "label": "Line 15 - f2_39 (page 4, control 133)",
@@ -25119,7 +25123,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=20",
+      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=local_income_tax",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyB[0].Box19_ReadOrder[0].f2_40[0]",
       "label": "f2_40 (page 4, control 134)",
@@ -25153,7 +25157,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=15",
+      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=state",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyB[0].Boxes15_ReadOrder[0].Box15_ReadOrder[0].f2_29[0]",
       "label": "Line 15 - f2_29 (page 4, control 123)",
@@ -25170,7 +25174,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=15",
+      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=employer_state_id",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyB[0].Boxes15_ReadOrder[0].f2_30[0]",
       "label": "Line 15 - f2_30 (page 4, control 124)",
@@ -25187,7 +25191,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=16",
+      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=state",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyB[0].Boxes15_ReadOrder[0].f2_31[0]",
       "label": "f2_31 (page 4, control 125)",
@@ -25204,7 +25208,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=16",
+      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=employer_state_id",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyB[0].Boxes15_ReadOrder[0].f2_32[0]",
       "label": "f2_32 (page 4, control 126)",
@@ -25561,12 +25565,14 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/box=9/control=value",
       "document_id": "form_w2_2025",
+      "downstream_effect": "None - no node maps to this widget and the fill pipeline never writes it.",
       "field_name": "topmostSubform[0].CopyB[0].Col_Right[0].Box9_ReadOrder[0].f2_17[0]",
-      "label": "Line d - f2_17 (page 4, control 108)",
+      "label": "Shaded no-entry box 9",
+      "missing_capability": "None - this is official shading, not a capability gap.",
       "page": 4,
-      "population_policy": "imported",
+      "population_policy": "intentionally_blank",
+      "reason": "The official Form W-2 shades captionless box 9 while the AcroForm includes a text widget.",
       "rect": [
         332.2,
         168.0,
@@ -25731,7 +25737,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=21",
+      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=locality_name",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyB[0].f2_41[0]",
       "label": "Line 15 - f2_41 (page 4, control 135)",
@@ -25748,7 +25754,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=21",
+      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=locality_name",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyB[0].f2_42[0]",
       "label": "f2_42 (page 4, control 136)",
@@ -25765,7 +25771,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=17",
+      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=state_wages",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyC[0].Box16_ReadOrder[0].f2_33[0]",
       "label": "Line 15 - f2_33 (page 6, control 172)",
@@ -25782,7 +25788,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=17",
+      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=state_wages",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyC[0].Box16_ReadOrder[0].f2_34[0]",
       "label": "f2_34 (page 6, control 173)",
@@ -25799,7 +25805,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=18",
+      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=state_income_tax",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyC[0].Box17_ReadOrder[0].f2_35[0]",
       "label": "Line 15 - f2_35 (page 6, control 174)",
@@ -25816,7 +25822,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=18",
+      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=state_income_tax",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyC[0].Box17_ReadOrder[0].f2_36[0]",
       "label": "f2_36 (page 6, control 175)",
@@ -25833,7 +25839,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=19",
+      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=local_wages",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyC[0].Box18_ReadOrder[0].f2_37[0]",
       "label": "Line 15 - f2_37 (page 6, control 176)",
@@ -25850,7 +25856,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=19",
+      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=local_wages",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyC[0].Box18_ReadOrder[0].f2_38[0]",
       "label": "f2_38 (page 6, control 177)",
@@ -25867,7 +25873,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=20",
+      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=local_income_tax",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyC[0].Box19_ReadOrder[0].f2_39[0]",
       "label": "Line 15 - f2_39 (page 6, control 178)",
@@ -25884,7 +25890,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=20",
+      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=local_income_tax",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyC[0].Box19_ReadOrder[0].f2_40[0]",
       "label": "f2_40 (page 6, control 179)",
@@ -25918,7 +25924,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=15",
+      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=state",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyC[0].Boxes15_ReadOrder[0].Box15_ReadOrder[0].f2_29[0]",
       "label": "Line 15 - f2_29 (page 6, control 168)",
@@ -25935,7 +25941,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=15",
+      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=employer_state_id",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyC[0].Boxes15_ReadOrder[0].f2_30[0]",
       "label": "Line 15 - f2_30 (page 6, control 169)",
@@ -25952,7 +25958,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=16",
+      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=state",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyC[0].Boxes15_ReadOrder[0].f2_31[0]",
       "label": "f2_31 (page 6, control 170)",
@@ -25969,7 +25975,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=16",
+      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=employer_state_id",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyC[0].Boxes15_ReadOrder[0].f2_32[0]",
       "label": "f2_32 (page 6, control 171)",
@@ -26326,12 +26332,14 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/box=9/control=value",
       "document_id": "form_w2_2025",
+      "downstream_effect": "None - no node maps to this widget and the fill pipeline never writes it.",
       "field_name": "topmostSubform[0].CopyC[0].Col_Right[0].Box9_ReadOrder[0].f2_17[0]",
-      "label": "Line d - f2_17 (page 6, control 153)",
+      "label": "Shaded no-entry box 9",
+      "missing_capability": "None - this is official shading, not a capability gap.",
       "page": 6,
-      "population_policy": "imported",
+      "population_policy": "intentionally_blank",
+      "reason": "The official Form W-2 shades captionless box 9 while the AcroForm includes a text widget.",
       "rect": [
         332.2,
         168.0,
@@ -26496,7 +26504,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=21",
+      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=locality_name",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyC[0].f2_41[0]",
       "label": "Line 15 - f2_41 (page 6, control 180)",
@@ -26513,7 +26521,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=21",
+      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=locality_name",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyC[0].f2_42[0]",
       "label": "f2_42 (page 6, control 181)",
@@ -26530,7 +26538,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=17",
+      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=state_wages",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].Copy2[0].Box16_ReadOrder[0].f2_33[0]",
       "label": "Line 15 - f2_33 (page 8, control 217)",
@@ -26547,7 +26555,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=17",
+      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=state_wages",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].Copy2[0].Box16_ReadOrder[0].f2_34[0]",
       "label": "f2_34 (page 8, control 218)",
@@ -26564,7 +26572,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=18",
+      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=state_income_tax",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].Copy2[0].Box17_ReadOrder[0].f2_35[0]",
       "label": "Line 15 - f2_35 (page 8, control 219)",
@@ -26581,7 +26589,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=18",
+      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=state_income_tax",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].Copy2[0].Box17_ReadOrder[0].f2_36[0]",
       "label": "f2_36 (page 8, control 220)",
@@ -26598,7 +26606,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=19",
+      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=local_wages",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].Copy2[0].Box18_ReadOrder[0].f2_37[0]",
       "label": "Line 15 - f2_37 (page 8, control 221)",
@@ -26615,7 +26623,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=19",
+      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=local_wages",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].Copy2[0].Box18_ReadOrder[0].f2_38[0]",
       "label": "f2_38 (page 8, control 222)",
@@ -26632,7 +26640,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=20",
+      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=local_income_tax",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].Copy2[0].Box19_ReadOrder[0].f2_39[0]",
       "label": "Line 15 - f2_39 (page 8, control 223)",
@@ -26649,7 +26657,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=20",
+      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=local_income_tax",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].Copy2[0].Box19_ReadOrder[0].f2_40[0]",
       "label": "f2_40 (page 8, control 224)",
@@ -26683,7 +26691,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=15",
+      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=state",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].Copy2[0].Boxes15_ReadOrder[0].Box15_ReadOrder[0].f2_29[0]",
       "label": "Line 15 - f2_29 (page 8, control 213)",
@@ -26700,7 +26708,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=15",
+      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=employer_state_id",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].Copy2[0].Boxes15_ReadOrder[0].f2_30[0]",
       "label": "Line 15 - f2_30 (page 8, control 214)",
@@ -26717,7 +26725,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=16",
+      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=state",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].Copy2[0].Boxes15_ReadOrder[0].f2_31[0]",
       "label": "f2_31 (page 8, control 215)",
@@ -26734,7 +26742,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=16",
+      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=employer_state_id",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].Copy2[0].Boxes15_ReadOrder[0].f2_32[0]",
       "label": "f2_32 (page 8, control 216)",
@@ -27091,12 +27099,14 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/box=9/control=value",
       "document_id": "form_w2_2025",
+      "downstream_effect": "None - no node maps to this widget and the fill pipeline never writes it.",
       "field_name": "topmostSubform[0].Copy2[0].Col_Right[0].Box9_ReadOrder[0].f2_17[0]",
-      "label": "Line d - f2_17 (page 8, control 198)",
+      "label": "Shaded no-entry box 9",
+      "missing_capability": "None - this is official shading, not a capability gap.",
       "page": 8,
-      "population_policy": "imported",
+      "population_policy": "intentionally_blank",
+      "reason": "The official Form W-2 shades captionless box 9 while the AcroForm includes a text widget.",
       "rect": [
         332.2,
         168.0,
@@ -27261,7 +27271,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=21",
+      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=locality_name",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].Copy2[0].f2_41[0]",
       "label": "Line 15 - f2_41 (page 8, control 225)",
@@ -27278,7 +27288,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=21",
+      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=locality_name",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].Copy2[0].f2_42[0]",
       "label": "f2_42 (page 8, control 226)",
@@ -27295,7 +27305,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=17",
+      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=state_wages",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyD[0].Box16_ReadOrder[0].f2_33[0]",
       "label": "Line 15 - f2_33 (page 10, control 263)",
@@ -27312,7 +27322,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=17",
+      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=state_wages",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyD[0].Box16_ReadOrder[0].f2_34[0]",
       "label": "f2_34 (page 10, control 264)",
@@ -27329,7 +27339,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=18",
+      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=state_income_tax",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyD[0].Box17_ReadOrder[0].f2_35[0]",
       "label": "Line 15 - f2_35 (page 10, control 265)",
@@ -27346,7 +27356,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=18",
+      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=state_income_tax",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyD[0].Box17_ReadOrder[0].f2_36[0]",
       "label": "f2_36 (page 10, control 266)",
@@ -27363,7 +27373,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=19",
+      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=local_wages",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyD[0].Box18_ReadOrder[0].f2_37[0]",
       "label": "Line 15 - f2_37 (page 10, control 267)",
@@ -27380,7 +27390,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=19",
+      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=local_wages",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyD[0].Box18_ReadOrder[0].f2_38[0]",
       "label": "f2_38 (page 10, control 268)",
@@ -27397,7 +27407,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=20",
+      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=local_income_tax",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyD[0].Box19_ReadOrder[0].f2_39[0]",
       "label": "Line 15 - f2_39 (page 10, control 269)",
@@ -27414,7 +27424,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=20",
+      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=local_income_tax",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyD[0].Box19_ReadOrder[0].f2_40[0]",
       "label": "f2_40 (page 10, control 270)",
@@ -27448,7 +27458,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=15",
+      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=state",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyD[0].Boxes15_ReadOrder[0].Box15_ReadOrder[0].f2_29[0]",
       "label": "Line 15 - f2_29 (page 10, control 259)",
@@ -27465,7 +27475,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=15",
+      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=employer_state_id",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyD[0].Boxes15_ReadOrder[0].f2_30[0]",
       "label": "Line 15 - f2_30 (page 10, control 260)",
@@ -27482,7 +27492,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=16",
+      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=state",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyD[0].Boxes15_ReadOrder[0].f2_31[0]",
       "label": "f2_31 (page 10, control 261)",
@@ -27499,7 +27509,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=16",
+      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=employer_state_id",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyD[0].Boxes15_ReadOrder[0].f2_32[0]",
       "label": "f2_32 (page 10, control 262)",
@@ -27856,12 +27866,14 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/box=9/control=value",
       "document_id": "form_w2_2025",
+      "downstream_effect": "None - no node maps to this widget and the fill pipeline never writes it.",
       "field_name": "topmostSubform[0].CopyD[0].Col_Right[0].Box9_ReadOrder[0].f2_17[0]",
-      "label": "Line d - f2_17 (page 10, control 244)",
+      "label": "Shaded no-entry box 9",
+      "missing_capability": "None - this is official shading, not a capability gap.",
       "page": 10,
-      "population_policy": "imported",
+      "population_policy": "intentionally_blank",
+      "reason": "The official Form W-2 shades captionless box 9 while the AcroForm includes a text widget.",
       "rect": [
         332.2,
         168.0,
@@ -28043,7 +28055,7 @@
       "value_format": "checkbox"
     },
     {
-      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=21",
+      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=locality_name",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyD[0].f2_41[0]",
       "label": "Line 15 - f2_41 (page 10, control 271)",
@@ -28060,7 +28072,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=21",
+      "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=locality_name",
       "document_id": "form_w2_2025",
       "field_name": "topmostSubform[0].CopyD[0].f2_42[0]",
       "label": "f2_42 (page 10, control 272)",

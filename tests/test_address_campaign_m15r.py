@@ -2,8 +2,11 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
+import re
+import unicodedata
 
 import jsonschema
+import fitz
 import pytest
 import yaml
 
@@ -98,7 +101,7 @@ def test_information_return_campaign_uses_typed_boxes_and_choices(information_ca
             continue
         assert coverage["addressed_widgets"] > 0
         if document_id == "form_w2_2025":
-            assert coverage["exempt_widgets"] == 0
+            assert coverage["exempt_widgets"] == 6
             continue
         else:
             assert coverage["exempt_widgets"] > 0
@@ -114,13 +117,13 @@ def test_w2_campaign_collapses_official_copies_and_state_rows(information_campai
     payload = information_campaign["form_w2_2025"]
     assert payload["coverage"] == {
         "inventory": 272,
-        "addressed_widgets": 272,
-        "exempt_widgets": 0,
+        "addressed_widgets": 266,
+        "exempt_widgets": 6,
         "node_bindings": 0,
         "references": 0,
     }
     bindings = payload["widget_bindings"]["bindings"]
-    assert len({item["address_id"] for item in bindings}) == 33
+    assert len({item["address_id"] for item in bindings}) == 32
     addresses = {item["address_id"]: item for item in payload["registry"]["addresses"]}
     assert addresses["2025/document=form_w2/box=1/control=value"]["printed_label"] == (
         "Wages, tips, other compensation"
@@ -128,9 +131,79 @@ def test_w2_campaign_collapses_official_copies_and_state_rows(information_campai
     assert addresses[
         "2025/document=form_w2/box=12/row_template=entry/column=code"
     ]["printed_label"] == "Code"
-    assert addresses[
-        "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=21"
-    ]["printed_label"] == "Locality name"
+    state_local = {
+        "state": ("Box 15", "State"),
+        "employer_state_id": ("Box 15", "Employer's state ID number"),
+        "state_wages": ("Box 16", "State wages, tips, etc."),
+        "state_income_tax": ("Box 17", "State income tax"),
+        "local_wages": ("Box 18", "Local wages, tips, etc."),
+        "local_income_tax": ("Box 19", "Local income tax"),
+        "locality_name": ("Box 20", "Locality name"),
+    }
+    for token, (official_ref, printed_label) in state_local.items():
+        address = addresses[
+            f"2025/document=form_w2/table=state_local/row_template=jurisdiction/column={token}"
+        ]
+        assert (address["official_ref"], address["printed_label"]) == (official_ref, printed_label)
+    assert not any(item.get("official_ref") == "Box 21" for item in addresses.values())
+    assert all(item.get("display_name") == "Shaded no-entry box 9" for item in payload["exemptions"])
+
+
+def _rect_distance(left: fitz.Rect, right: fitz.Rect) -> float:
+    dx = max(left.x0 - right.x1, right.x0 - left.x1, 0)
+    dy = max(left.y0 - right.y1, right.y0 - left.y1, 0)
+    return (dx * dx + dy * dy) ** 0.5
+
+
+def _caption_rects(page: fitz.Page, caption: str) -> list[fitz.Rect]:
+    def tokens(value: str) -> list[str]:
+        ascii_value = unicodedata.normalize("NFKD", value).encode("ascii", "ignore").decode("ascii")
+        ascii_value = ascii_value.replace("'", "")
+        return re.findall(r"[a-z0-9]+", ascii_value.lower())
+
+    wanted = tokens(caption)
+    words = page.get_text("words")
+    flattened: list[str] = []
+    token_rects: list[fitz.Rect] = []
+    for word in words:
+        for token in tokens(str(word[4])):
+            flattened.append(token)
+            token_rects.append(fitz.Rect(word[:4]))
+    result: list[fitz.Rect] = []
+    for index in range(len(flattened) - len(wanted) + 1):
+        if flattened[index:index + len(wanted)] != wanted:
+            continue
+        rect = fitz.Rect(token_rects[index])
+        for token_rect in token_rects[index + 1:index + len(wanted)]:
+            rect.include_rect(token_rect)
+        result.append(rect)
+    return result
+
+
+@pytest.mark.m15
+def test_w2_authored_box_captions_are_adjacent_in_official_pdf(information_campaign) -> None:
+    """Cross-check authored box identity against nearby official printed captions."""
+    payload = information_campaign["form_w2_2025"]
+    addresses = {item["address_id"]: item for item in payload["registry"]["addresses"]}
+    first_binding: dict[str, dict] = {}
+    for binding in payload["widget_bindings"]["bindings"]:
+        first_binding.setdefault(binding["address_id"], binding)
+    pdf = fitz.open(ROOT / ".cache/raw/2025/form_w2_2025.pdf")
+    for address_id, address in addresses.items():
+        if not str(address.get("official_ref", "")).startswith("Box "):
+            continue
+        binding = first_binding[address_id]
+        caption = address["printed_label"]
+        if "/box=12/row_template=entry/" in address_id:
+            caption = "12a"
+        elif address_id.endswith("/box=e/control=suffix"):
+            caption = "Suff."
+        matches = _caption_rects(pdf[binding["page"] - 1], caption)
+        assert matches, f"missing official caption {caption!r} for {address['official_ref']}"
+        widget = fitz.Rect(binding["rect"])
+        assert min(_rect_distance(widget, match) for match in matches) <= 180, (
+            f"official caption {caption!r} is not adjacent to {address['official_ref']}"
+        )
 
 
 @pytest.mark.m15r

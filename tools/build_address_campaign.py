@@ -40,6 +40,14 @@ def main() -> int:
                 address_id = payload["field_addresses"].get(item["field_name"])
                 if address_id:
                     item["address_id"] = address_id
+        dispositions = {item["field_name"]: item for item in field_map.get("field_dispositions", [])}
+        for exemption in payload.get("exemptions", []):
+            if not exemption.get("display_name"):
+                continue
+            disposition = dispositions[exemption["field_name"]]
+            disposition.pop("address_id", None)
+            disposition.update({key: value for key, value in exemption.items() if key != "field_name"})
+            disposition["label"] = exemption["display_name"]
         map_path.write_text(yaml.safe_dump(field_map, sort_keys=False), encoding="utf-8")
     report = {document_id: payload["coverage"] for document_id, payload in campaign.items()}
     report_path = args.report or root / "workbench_output" / "m15r_core_address_campaign.json"
