@@ -14,16 +14,21 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## Current state (2026-07-17)
 
-**BALL: WORKER/CODEX - A9c CORRECTED; EXTENDED RUN CONTINUES AT A9d
-(1099-B/DIV/INT GROUP).** The W-2 reopen is fixed at HEAD: State and Employer's state
-ID are both Box 15, Boxes 16-20 are pinned verbatim, Box 21 is absent, and all six
-physical Box 9 widgets are authored `intentionally_blank` exemptions. The reusable
-official-PDF caption-adjacency check is green. Real preflight remains green at 3,243
-units with `legacy_mined=1081`. Continue A9d..A9x, A9z, A10, A11, A6 - HARD STOP
-before A12. Local commits only, no push; sequential partitions only. A9a `476e7ee`,
-A9b `0ec62ae`, original A9c `82e07aa`; A8 pre-task and A8 verified (`fcf82f1`,
-`45e485f`, local). Gate A remains open through A13; S17+ stays blocked. Canary: Fresh
-Eyes.
+**BALL: WORKER/CODEX - A9c CLOSED (ARCHITECT-HARDENED); EXTENDED RUN CONTINUES AT
+A9d (1099-B/DIV/INT GROUP).** The W-2 reopen fix is verified: Box 15 carries both
+State and Employer's state ID, Boxes 16-20 are pinned verbatim, Box 21 is absent, and
+all six Box 9 widgets are authored `intentionally_blank` exemptions. ARCHITECT
+AMENDMENT at HEAD: the caption-adjacency check was caption-only and could not catch a
+fabricated box number on a correct caption (the exact A9c defect class - proven by
+probe); it now matches the printed `<number> <caption>` sequence by default with an
+explicit authored caption-only exception list, plus a committed regression proving
+`21 Locality name` / `17 State wages` find no match. **A9d MUST use the check in this
+number-bearing form for every 1099 box.** Real preflight remains green,
+`legacy_mined=1081`. Continue A9d..A9x, A9z, A10, A11, A6 - HARD STOP before A12.
+Local commits only, no push; sequential partitions only. A9a `476e7ee`, A9b
+`0ec62ae`, A9c `82e07aa` + fix `1fb34b7` + hardening at HEAD; A8 pre-task and A8
+verified (`fcf82f1`, `45e485f`, local). Gate A remains open through A13; S17+ stays
+blocked. Canary: Fresh Eyes.
 (Whoever finishes a turn: update this BALL line - it is the first thing read.)
 
 **Step ledger:** M15 S1-S16 and A1-A3 are [DONE], pushed, and marked in the plan; M15R

@@ -180,9 +180,31 @@ def _caption_rects(page: fitz.Page, caption: str) -> list[fitz.Rect]:
     return result
 
 
+# Controls whose caption is printed WITHOUT its own box token run-in on the official
+# form. Every other authored box ref must match number+caption as one printed sequence,
+# so a fabricated box number cannot pass on a correct caption alone (the A9c reopen).
+_W2_CAPTION_ONLY = {
+    "/box=e/control=suffix": "Suff.",
+    "/box=e/control=last_name": "Last name",
+    "/box=13/option=retirement_plan": "Retirement plan",
+    "/box=13/option=third_party_sick_pay": "Third-party sick pay",
+    "/table=state_local/row_template=jurisdiction/column=employer_state_id": "Employer's state ID number",
+}
+
+
+def _official_search_caption(address_id: str, address: dict) -> str:
+    if "/box=12/row_template=entry/" in address_id:
+        return "12a"
+    for suffix, caption in _W2_CAPTION_ONLY.items():
+        if address_id.endswith(suffix):
+            return caption
+    token = str(address["official_ref"]).removeprefix("Box ").strip()
+    return f"{token} {address['printed_label']}"
+
+
 @pytest.mark.m15
 def test_w2_authored_box_captions_are_adjacent_in_official_pdf(information_campaign) -> None:
-    """Cross-check authored box identity against nearby official printed captions."""
+    """Cross-check authored box NUMBER and caption against the printed official text."""
     payload = information_campaign["form_w2_2025"]
     addresses = {item["address_id"]: item for item in payload["registry"]["addresses"]}
     first_binding: dict[str, dict] = {}
@@ -193,17 +215,23 @@ def test_w2_authored_box_captions_are_adjacent_in_official_pdf(information_campa
         if not str(address.get("official_ref", "")).startswith("Box "):
             continue
         binding = first_binding[address_id]
-        caption = address["printed_label"]
-        if "/box=12/row_template=entry/" in address_id:
-            caption = "12a"
-        elif address_id.endswith("/box=e/control=suffix"):
-            caption = "Suff."
+        caption = _official_search_caption(address_id, address)
         matches = _caption_rects(pdf[binding["page"] - 1], caption)
-        assert matches, f"missing official caption {caption!r} for {address['official_ref']}"
+        assert matches, f"missing official printed sequence {caption!r} for {address['official_ref']}"
         widget = fitz.Rect(binding["rect"])
         assert min(_rect_distance(widget, match) for match in matches) <= 180, (
-            f"official caption {caption!r} is not adjacent to {address['official_ref']}"
+            f"official printed sequence {caption!r} is not adjacent to {address['official_ref']}"
         )
+
+
+@pytest.mark.m15
+def test_w2_adjacency_check_rejects_a_fabricated_box_number() -> None:
+    """The A9c defect class must fail: right caption, wrong box number finds no match."""
+    page = fitz.open(ROOT / ".cache/raw/2025/form_w2_2025.pdf")[1]
+    assert _caption_rects(page, "20 Locality name")
+    assert not _caption_rects(page, "21 Locality name")
+    assert _caption_rects(page, "16 State wages, tips, etc.")
+    assert not _caption_rects(page, "17 State wages, tips, etc.")
 
 
 @pytest.mark.m15r
