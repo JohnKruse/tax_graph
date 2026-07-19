@@ -353,18 +353,31 @@ def _physical_qualifier(
     """Return a deterministic reviewer-facing qualifier for a physical repeat."""
     repeatable = (object_data or {}).get("repeatable")
     field_name = str((object_data or {}).get("field_name") or "")
+    address_id = str((object_data or {}).get("address_id") or "")
     parts: list[str] = []
     copy_match = re.search(r"\.Copy([A-Za-z0-9]+)\[", field_name)
     if copy_match:
         parts.append(f"Copy {copy_match.group(1)}")
     w2_leaf = re.search(r"\.f[1-6]_([0-9]{2})\[0\]$", field_name)
-    if w2_leaf:
+    if w2_leaf and address_id.startswith("2025/document=form_w2/"):
         w2_number = int(w2_leaf.group(1))
         if 20 <= w2_number <= 27:
             parts.append(f"Box 12 row {(w2_number - 20) // 2 + 1}")
         elif 29 <= w2_number <= 42:
             row = (1 if w2_number <= 30 else 2) if w2_number <= 32 else (1 if w2_number % 2 else 2)
             parts.append(f"state/local row {row}")
+    info_return_leaf = re.search(r"\.f[12]_([0-9]+)\[0\]$", field_name)
+    state_ranges = {
+        "2025/document=form_1099b/": range(9, 15),
+        "2025/document=form_1099_div/": range(27, 33),
+        "2025/document=form_1099_int/": range(23, 29),
+    }
+    if info_return_leaf:
+        field_number = int(info_return_leaf.group(1))
+        for prefix, field_range in state_ranges.items():
+            if address_id.startswith(prefix) and field_number in field_range:
+                parts.append(f"state row {1 if field_number % 2 else 2}")
+                break
     row_slot = repeatable.get("row_slot") if isinstance(repeatable, dict) else None
     row_match = re.search(r"\.(?:Body)?Row(\d+)\[", field_name)
     if row_slot is not None:

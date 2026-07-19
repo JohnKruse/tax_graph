@@ -103,13 +103,12 @@ def test_information_return_campaign_uses_typed_boxes_and_choices(information_ca
         if document_id == "form_w2_2025":
             assert coverage["exempt_widgets"] == 6
             continue
-        else:
-            assert coverage["exempt_widgets"] > 0
+        assert coverage["exempt_widgets"] == 0
         addressed = {item["address_id"]: item for item in payload["registry"]["addresses"]}
         for binding in payload["widget_bindings"]["bindings"]:
             path = addressed[binding["address_id"]]["path"]
-            assert path[-2]["kind"] == "box"
-            assert path[-1]["kind"] in {"control", "option"}
+            assert path[-2]["kind"] in {"box", "section", "row_template"}
+            assert path[-1]["kind"] in {"control", "option", "column"}
 
 
 @pytest.mark.m15
@@ -157,6 +156,7 @@ def _rect_distance(left: fitz.Rect, right: fitz.Rect) -> float:
 
 def _caption_rects(page: fitz.Page, caption: str) -> list[fitz.Rect]:
     def tokens(value: str) -> list[str]:
+        value = value.replace("\u2013", "-").replace("\u2014", "-")
         ascii_value = unicodedata.normalize("NFKD", value).encode("ascii", "ignore").decode("ascii")
         ascii_value = ascii_value.replace("'", "")
         return re.findall(r"[a-z0-9]+", ascii_value.lower())
@@ -192,10 +192,46 @@ _W2_CAPTION_ONLY = {
 }
 
 
+# Box choices whose official form prints the box number once for the container and
+# then prints these option captions without repeating the number. The reason is kept
+# beside each exception so the caption-only surface is explicit and reviewable.
+_FORM_1099_CAPTION_ONLY = {
+    "form_1099b_2025": {
+        "/box=2/option=long_term": (
+            "Long-term gain or loss", "Box 2 prints one run-in number above its three term choices."
+        ),
+        "/box=2/option=ordinary": (
+            "Ordinary", "Box 2 prints one run-in number above its three term choices."
+        ),
+        "/box=3/option=collectibles": (
+            "Collectibles", "Box 3 prints one run-in number above its two proceeds choices."
+        ),
+        "/box=3/option=qof": (
+            "QOF", "Box 3 prints one run-in number above its two proceeds choices."
+        ),
+        "/box=6/option=gross_proceeds": (
+            "Gross proceeds", "Box 6 prints one run-in number above its two reporting choices."
+        ),
+        "/box=6/option=net_proceeds": (
+            "Net proceeds", "Box 6 prints one run-in number above its two reporting choices."
+        ),
+    },
+}
+
+
 def _official_search_caption(address_id: str, address: dict) -> str:
     if "/box=12/row_template=entry/" in address_id:
         return "12a"
     for suffix, caption in _W2_CAPTION_ONLY.items():
+        if address_id.endswith(suffix):
+            return caption
+    token = str(address["official_ref"]).removeprefix("Box ").strip()
+    return f"{token} {address['printed_label']}"
+
+
+def _form_1099_search_caption(document_id: str, address_id: str, address: dict) -> str:
+    for suffix, (caption, reason) in _FORM_1099_CAPTION_ONLY.get(document_id, {}).items():
+        assert reason
         if address_id.endswith(suffix):
             return caption
     token = str(address["official_ref"]).removeprefix("Box ").strip()
@@ -232,6 +268,50 @@ def test_w2_adjacency_check_rejects_a_fabricated_box_number() -> None:
     assert not _caption_rects(page, "21 Locality name")
     assert _caption_rects(page, "16 State wages, tips, etc.")
     assert not _caption_rects(page, "17 State wages, tips, etc.")
+
+
+@pytest.mark.m15
+def test_1099_campaigns_collapse_copies_onto_authored_templates(information_campaign) -> None:
+    expected = {
+        "form_1099b_2025": (163, 39),
+        "form_1099_div_2025": (140, 33),
+        "form_1099_int_2025": (127, 30),
+    }
+    for document_id, (inventory, templates) in expected.items():
+        payload = information_campaign[document_id]
+        assert payload["coverage"] == {
+            "inventory": inventory, "addressed_widgets": inventory, "exempt_widgets": 0,
+            "node_bindings": 0, "references": 0,
+        }
+        assert len({item["address_id"] for item in payload["widget_bindings"]["bindings"]}) == templates
+        assert all(item["printed_label"] for item in payload["registry"]["addresses"])
+
+
+@pytest.mark.m15
+@pytest.mark.parametrize("document_id", ["form_1099b_2025", "form_1099_div_2025", "form_1099_int_2025"])
+def test_1099_authored_box_numbers_and_captions_are_adjacent_in_official_pdf(
+    information_campaign, document_id: str,
+) -> None:
+    """Cross-check every authored box number and caption against local official text."""
+    payload = information_campaign[document_id]
+    addresses = {item["address_id"]: item for item in payload["registry"]["addresses"]}
+    bindings_by_address: dict[str, list[dict]] = {}
+    for binding in payload["widget_bindings"]["bindings"]:
+        bindings_by_address.setdefault(binding["address_id"], []).append(binding)
+    pdf = fitz.open(ROOT / ".cache/raw/2025" / f"{document_id}.pdf")
+    for address_id, address in addresses.items():
+        if not str(address.get("official_ref", "")).startswith("Box "):
+            continue
+        caption = _form_1099_search_caption(document_id, address_id, address)
+        distances = []
+        for binding in bindings_by_address[address_id]:
+            matches = _caption_rects(pdf[binding["page"] - 1], caption)
+            widget = fitz.Rect(binding["rect"])
+            distances.extend(_rect_distance(widget, match) for match in matches)
+        assert distances, f"missing official printed sequence {caption!r} for {address['official_ref']}"
+        assert min(distances) <= 180, (
+            f"official printed sequence {caption!r} is not adjacent to {address['official_ref']}"
+        )
 
 
 @pytest.mark.m15r

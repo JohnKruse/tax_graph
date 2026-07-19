@@ -20,13 +20,28 @@ ROOT = Path(__file__).resolve().parents[1]
 def test_w2_physical_qualifier_names_copy_and_repeated_row() -> None:
     assert _physical_qualifier({
         "field_name": "topmostSubform[0].CopyB[0].Line12_ReadOrder[0].f3_24[0]",
+        "address_id": "2025/document=form_w2/box=12/row_template=entry/column=code",
     }, None) == "Copy B, Box 12 row 3"
     assert _physical_qualifier({
         "field_name": "topmostSubform[0].CopyD[0].Boxes15_ReadOrder[0].f6_40[0]",
+        "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=local_income_tax",
     }, None) == "Copy D, state/local row 2"
     assert _physical_qualifier({
         "field_name": "topmostSubform[0].CopyA[0].Boxes15_ReadOrder[0].f1_31[0]",
+        "address_id": "2025/document=form_w2/table=state_local/row_template=jurisdiction/column=state",
     }, None) == "Copy A, state/local row 2"
+
+
+@pytest.mark.m15
+def test_1099_physical_qualifier_names_copy_and_state_row() -> None:
+    assert _physical_qualifier({
+        "field_name": "topmostSubform[0].CopyB[0].State[0].f2_30[0]",
+        "address_id": "2025/document=form_1099_div/table=state/row_template=jurisdiction/column=state_id",
+    }, None) == "Copy B, state row 2"
+    assert _physical_qualifier({
+        "field_name": "topmostSubform[0].Copy1[0].State[0].f2_23[0]",
+        "address_id": "2025/document=form_1099_int/table=state/row_template=jurisdiction/column=state",
+    }, None) == "Copy 1, state row 1"
 
 
 @pytest.mark.m15

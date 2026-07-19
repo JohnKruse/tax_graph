@@ -37,8 +37,8 @@ addresses:
   - source_path: config/manifest.yaml#form_1099b_2025
     source_hash: 7e334cea66c2b2be3d88615a56db288a2805cb8705076b3b282a4eabbbd788ad
     page: 2
-- address_id: 2025/document=form_1099b/box=10/control=f_26
-  logical_key: document=form_1099b/box=10/control=f_26
+- address_id: 2025/document=form_1099b/box=10/control=value
+  logical_key: document=form_1099b/box=10/control=value
   year: 2025
   document_id: form_1099b_2025
   parent_address_id: 2025/document=form_1099b/box=10
@@ -49,9 +49,8 @@ addresses:
   - kind: box
     token: '10'
   - kind: control
-    token: f_26
-  printed_label: Line 14 - name 15 State identification no. 16 State tax withheld
-    $ - f1_26
+    token: value
+  printed_label: Unrealized profit or (loss) on open contracts - 12/31/2025
   aliases: []
   control_role: amount
   status: pending_review
@@ -60,6 +59,47 @@ addresses:
     source_hash: 7e334cea66c2b2be3d88615a56db288a2805cb8705076b3b282a4eabbbd788ad
     page: 2
   official_ref: Box 10
+- address_id: 2025/document=form_1099b/box=11
+  logical_key: document=form_1099b/box=11
+  year: 2025
+  document_id: form_1099b_2025
+  parent_address_id: 2025/document=form_1099b
+  kind: box
+  path:
+  - kind: document
+    token: form_1099b
+  - kind: box
+    token: '11'
+  printed_label: '11'
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_1099b_2025
+    source_hash: 7e334cea66c2b2be3d88615a56db288a2805cb8705076b3b282a4eabbbd788ad
+    page: 2
+- address_id: 2025/document=form_1099b/box=11/control=value
+  logical_key: document=form_1099b/box=11/control=value
+  year: 2025
+  document_id: form_1099b_2025
+  parent_address_id: 2025/document=form_1099b/box=11
+  kind: control
+  path:
+  - kind: document
+    token: form_1099b
+  - kind: box
+    token: '11'
+  - kind: control
+    token: value
+  printed_label: Aggregate profit or (loss) on contracts
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_1099b_2025
+    source_hash: 7e334cea66c2b2be3d88615a56db288a2805cb8705076b3b282a4eabbbd788ad
+    page: 2
+  official_ref: Box 11
 - address_id: 2025/document=form_1099b/box=12
   logical_key: document=form_1099b/box=12
   year: 2025
@@ -79,8 +119,8 @@ addresses:
   - source_path: config/manifest.yaml#form_1099b_2025
     source_hash: 7e334cea66c2b2be3d88615a56db288a2805cb8705076b3b282a4eabbbd788ad
     page: 2
-- address_id: 2025/document=form_1099b/box=12/option=choice_c_9_0
-  logical_key: document=form_1099b/box=12/option=choice_c_9_0
+- address_id: 2025/document=form_1099b/box=12/option=basis_reported
+  logical_key: document=form_1099b/box=12/option=basis_reported
   year: 2025
   document_id: form_1099b_2025
   parent_address_id: 2025/document=form_1099b/box=12
@@ -91,8 +131,8 @@ addresses:
   - kind: box
     token: '12'
   - kind: option
-    token: choice_c_9_0
-  printed_label: $ IRS - c1_9
+    token: basis_reported
+  printed_label: Check if basis reported to IRS
   aliases: []
   control_role: checkbox
   status: pending_review
@@ -101,8 +141,8 @@ addresses:
     source_hash: 7e334cea66c2b2be3d88615a56db288a2805cb8705076b3b282a4eabbbd788ad
     page: 2
   official_ref: Box 12
-- address_id: 2025/document=form_1099b/box=14
-  logical_key: document=form_1099b/box=14
+- address_id: 2025/document=form_1099b/box=13
+  logical_key: document=form_1099b/box=13
   year: 2025
   document_id: form_1099b_2025
   parent_address_id: 2025/document=form_1099b
@@ -111,8 +151,8 @@ addresses:
   - kind: document
     token: form_1099b
   - kind: box
-    token: '14'
-  printed_label: '14'
+    token: '13'
+  printed_label: '13'
   aliases: []
   control_role: none
   status: pending_review
@@ -120,20 +160,20 @@ addresses:
   - source_path: config/manifest.yaml#form_1099b_2025
     source_hash: 7e334cea66c2b2be3d88615a56db288a2805cb8705076b3b282a4eabbbd788ad
     page: 2
-- address_id: 2025/document=form_1099b/box=14/control=f_10
-  logical_key: document=form_1099b/box=14/control=f_10
+- address_id: 2025/document=form_1099b/box=13/control=value
+  logical_key: document=form_1099b/box=13/control=value
   year: 2025
   document_id: form_1099b_2025
-  parent_address_id: 2025/document=form_1099b/box=14
+  parent_address_id: 2025/document=form_1099b/box=13
   kind: control
   path:
   - kind: document
     token: form_1099b
   - kind: box
-    token: '14'
+    token: '13'
   - kind: control
-    token: f_10
-  printed_label: Line 12 - f1_10
+    token: value
+  printed_label: Bartering
   aliases: []
   control_role: amount
   status: pending_review
@@ -141,31 +181,9 @@ addresses:
   - source_path: config/manifest.yaml#form_1099b_2025
     source_hash: 7e334cea66c2b2be3d88615a56db288a2805cb8705076b3b282a4eabbbd788ad
     page: 2
-  official_ref: Box 14
-- address_id: 2025/document=form_1099b/box=14/control=f_9
-  logical_key: document=form_1099b/box=14/control=f_9
-  year: 2025
-  document_id: form_1099b_2025
-  parent_address_id: 2025/document=form_1099b/box=14
-  kind: control
-  path:
-  - kind: document
-    token: form_1099b
-  - kind: box
-    token: '14'
-  - kind: control
-    token: f_9
-  printed_label: Line 12 - f1_9
-  aliases: []
-  control_role: amount
-  status: pending_review
-  evidence:
-  - source_path: config/manifest.yaml#form_1099b_2025
-    source_hash: 7e334cea66c2b2be3d88615a56db288a2805cb8705076b3b282a4eabbbd788ad
-    page: 2
-  official_ref: Box 14
-- address_id: 2025/document=form_1099b/box=15
-  logical_key: document=form_1099b/box=15
+  official_ref: Box 13
+- address_id: 2025/document=form_1099b/box=1a
+  logical_key: document=form_1099b/box=1a
   year: 2025
   document_id: form_1099b_2025
   parent_address_id: 2025/document=form_1099b
@@ -174,8 +192,8 @@ addresses:
   - kind: document
     token: form_1099b
   - kind: box
-    token: '15'
-  printed_label: '15'
+    token: 1a
+  printed_label: 1a
   aliases: []
   control_role: none
   status: pending_review
@@ -183,52 +201,30 @@ addresses:
   - source_path: config/manifest.yaml#form_1099b_2025
     source_hash: 7e334cea66c2b2be3d88615a56db288a2805cb8705076b3b282a4eabbbd788ad
     page: 2
-- address_id: 2025/document=form_1099b/box=15/control=f_11
-  logical_key: document=form_1099b/box=15/control=f_11
+- address_id: 2025/document=form_1099b/box=1a/control=value
+  logical_key: document=form_1099b/box=1a/control=value
   year: 2025
   document_id: form_1099b_2025
-  parent_address_id: 2025/document=form_1099b/box=15
+  parent_address_id: 2025/document=form_1099b/box=1a
   kind: control
   path:
   - kind: document
     token: form_1099b
   - kind: box
-    token: '15'
+    token: 1a
   - kind: control
-    token: f_11
-  printed_label: Line 12 - f1_11
+    token: value
+  printed_label: 'Description of property (Example: 100 sh. XYZ Co.)'
   aliases: []
-  control_role: amount
+  control_role: description
   status: pending_review
   evidence:
   - source_path: config/manifest.yaml#form_1099b_2025
     source_hash: 7e334cea66c2b2be3d88615a56db288a2805cb8705076b3b282a4eabbbd788ad
     page: 2
-  official_ref: Box 15
-- address_id: 2025/document=form_1099b/box=15/control=f_12
-  logical_key: document=form_1099b/box=15/control=f_12
-  year: 2025
-  document_id: form_1099b_2025
-  parent_address_id: 2025/document=form_1099b/box=15
-  kind: control
-  path:
-  - kind: document
-    token: form_1099b
-  - kind: box
-    token: '15'
-  - kind: control
-    token: f_12
-  printed_label: Line 12 - f1_12
-  aliases: []
-  control_role: amount
-  status: pending_review
-  evidence:
-  - source_path: config/manifest.yaml#form_1099b_2025
-    source_hash: 7e334cea66c2b2be3d88615a56db288a2805cb8705076b3b282a4eabbbd788ad
-    page: 2
-  official_ref: Box 15
-- address_id: 2025/document=form_1099b/box=16
-  logical_key: document=form_1099b/box=16
+  official_ref: Box 1a
+- address_id: 2025/document=form_1099b/box=1b
+  logical_key: document=form_1099b/box=1b
   year: 2025
   document_id: form_1099b_2025
   parent_address_id: 2025/document=form_1099b
@@ -237,8 +233,8 @@ addresses:
   - kind: document
     token: form_1099b
   - kind: box
-    token: '16'
-  printed_label: '16'
+    token: 1b
+  printed_label: 1b
   aliases: []
   control_role: none
   status: pending_review
@@ -246,50 +242,69 @@ addresses:
   - source_path: config/manifest.yaml#form_1099b_2025
     source_hash: 7e334cea66c2b2be3d88615a56db288a2805cb8705076b3b282a4eabbbd788ad
     page: 2
-- address_id: 2025/document=form_1099b/box=16/control=f_13
-  logical_key: document=form_1099b/box=16/control=f_13
+- address_id: 2025/document=form_1099b/box=1b/control=value
+  logical_key: document=form_1099b/box=1b/control=value
   year: 2025
   document_id: form_1099b_2025
-  parent_address_id: 2025/document=form_1099b/box=16
+  parent_address_id: 2025/document=form_1099b/box=1b
   kind: control
   path:
   - kind: document
     token: form_1099b
   - kind: box
-    token: '16'
+    token: 1b
   - kind: control
-    token: f_13
-  printed_label: Line 12 - $ - f1_13
+    token: value
+  printed_label: Date acquired
   aliases: []
-  control_role: amount
+  control_role: date
   status: pending_review
   evidence:
   - source_path: config/manifest.yaml#form_1099b_2025
     source_hash: 7e334cea66c2b2be3d88615a56db288a2805cb8705076b3b282a4eabbbd788ad
     page: 2
-  official_ref: Box 16
-- address_id: 2025/document=form_1099b/box=16/control=f_14
-  logical_key: document=form_1099b/box=16/control=f_14
+  official_ref: Box 1b
+- address_id: 2025/document=form_1099b/box=1c
+  logical_key: document=form_1099b/box=1c
   year: 2025
   document_id: form_1099b_2025
-  parent_address_id: 2025/document=form_1099b/box=16
+  parent_address_id: 2025/document=form_1099b
+  kind: box
+  path:
+  - kind: document
+    token: form_1099b
+  - kind: box
+    token: 1c
+  printed_label: 1c
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_1099b_2025
+    source_hash: 7e334cea66c2b2be3d88615a56db288a2805cb8705076b3b282a4eabbbd788ad
+    page: 2
+- address_id: 2025/document=form_1099b/box=1c/control=value
+  logical_key: document=form_1099b/box=1c/control=value
+  year: 2025
+  document_id: form_1099b_2025
+  parent_address_id: 2025/document=form_1099b/box=1c
   kind: control
   path:
   - kind: document
     token: form_1099b
   - kind: box
-    token: '16'
+    token: 1c
   - kind: control
-    token: f_14
-  printed_label: Line 12 - $ - f1_14
+    token: value
+  printed_label: Date sold or disposed
   aliases: []
-  control_role: amount
+  control_role: date
   status: pending_review
   evidence:
   - source_path: config/manifest.yaml#form_1099b_2025
     source_hash: 7e334cea66c2b2be3d88615a56db288a2805cb8705076b3b282a4eabbbd788ad
     page: 2
-  official_ref: Box 16
+  official_ref: Box 1c
 - address_id: 2025/document=form_1099b/box=1d
   logical_key: document=form_1099b/box=1d
   year: 2025
@@ -309,8 +324,8 @@ addresses:
   - source_path: config/manifest.yaml#form_1099b_2025
     source_hash: 7e334cea66c2b2be3d88615a56db288a2805cb8705076b3b282a4eabbbd788ad
     page: 2
-- address_id: 2025/document=form_1099b/box=1d/control=f_19
-  logical_key: document=form_1099b/box=1d/control=f_19
+- address_id: 2025/document=form_1099b/box=1d/control=value
+  logical_key: document=form_1099b/box=1d/control=value
   year: 2025
   document_id: form_1099b_2025
   parent_address_id: 2025/document=form_1099b/box=1d
@@ -321,8 +336,8 @@ addresses:
   - kind: box
     token: 1d
   - kind: control
-    token: f_19
-  printed_label: Line 1e - $ - f1_19
+    token: value
+  printed_label: Proceeds
   aliases: []
   control_role: amount
   status: pending_review
@@ -331,6 +346,47 @@ addresses:
     source_hash: 7e334cea66c2b2be3d88615a56db288a2805cb8705076b3b282a4eabbbd788ad
     page: 2
   official_ref: Box 1d
+- address_id: 2025/document=form_1099b/box=1e
+  logical_key: document=form_1099b/box=1e
+  year: 2025
+  document_id: form_1099b_2025
+  parent_address_id: 2025/document=form_1099b
+  kind: box
+  path:
+  - kind: document
+    token: form_1099b
+  - kind: box
+    token: 1e
+  printed_label: 1e
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_1099b_2025
+    source_hash: 7e334cea66c2b2be3d88615a56db288a2805cb8705076b3b282a4eabbbd788ad
+    page: 2
+- address_id: 2025/document=form_1099b/box=1e/control=value
+  logical_key: document=form_1099b/box=1e/control=value
+  year: 2025
+  document_id: form_1099b_2025
+  parent_address_id: 2025/document=form_1099b/box=1e
+  kind: control
+  path:
+  - kind: document
+    token: form_1099b
+  - kind: box
+    token: 1e
+  - kind: control
+    token: value
+  printed_label: Cost or other basis
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_1099b_2025
+    source_hash: 7e334cea66c2b2be3d88615a56db288a2805cb8705076b3b282a4eabbbd788ad
+    page: 2
+  official_ref: Box 1e
 - address_id: 2025/document=form_1099b/box=1f
   logical_key: document=form_1099b/box=1f
   year: 2025
@@ -350,8 +406,8 @@ addresses:
   - source_path: config/manifest.yaml#form_1099b_2025
     source_hash: 7e334cea66c2b2be3d88615a56db288a2805cb8705076b3b282a4eabbbd788ad
     page: 2
-- address_id: 2025/document=form_1099b/box=1f/control=f_21
-  logical_key: document=form_1099b/box=1f/control=f_21
+- address_id: 2025/document=form_1099b/box=1f/control=value
+  logical_key: document=form_1099b/box=1f/control=value
   year: 2025
   document_id: form_1099b_2025
   parent_address_id: 2025/document=form_1099b/box=1f
@@ -362,8 +418,8 @@ addresses:
   - kind: box
     token: 1f
   - kind: control
-    token: f_21
-  printed_label: Line 1g - $ - f1_21
+    token: value
+  printed_label: Accrued market discount
   aliases: []
   control_role: amount
   status: pending_review
@@ -372,6 +428,47 @@ addresses:
     source_hash: 7e334cea66c2b2be3d88615a56db288a2805cb8705076b3b282a4eabbbd788ad
     page: 2
   official_ref: Box 1f
+- address_id: 2025/document=form_1099b/box=1g
+  logical_key: document=form_1099b/box=1g
+  year: 2025
+  document_id: form_1099b_2025
+  parent_address_id: 2025/document=form_1099b
+  kind: box
+  path:
+  - kind: document
+    token: form_1099b
+  - kind: box
+    token: 1g
+  printed_label: 1g
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_1099b_2025
+    source_hash: 7e334cea66c2b2be3d88615a56db288a2805cb8705076b3b282a4eabbbd788ad
+    page: 2
+- address_id: 2025/document=form_1099b/box=1g/control=value
+  logical_key: document=form_1099b/box=1g/control=value
+  year: 2025
+  document_id: form_1099b_2025
+  parent_address_id: 2025/document=form_1099b/box=1g
+  kind: control
+  path:
+  - kind: document
+    token: form_1099b
+  - kind: box
+    token: 1g
+  - kind: control
+    token: value
+  printed_label: Wash sale loss disallowed
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_1099b_2025
+    source_hash: 7e334cea66c2b2be3d88615a56db288a2805cb8705076b3b282a4eabbbd788ad
+    page: 2
+  official_ref: Box 1g
 - address_id: 2025/document=form_1099b/box=2
   logical_key: document=form_1099b/box=2
   year: 2025
@@ -391,8 +488,8 @@ addresses:
   - source_path: config/manifest.yaml#form_1099b_2025
     source_hash: 7e334cea66c2b2be3d88615a56db288a2805cb8705076b3b282a4eabbbd788ad
     page: 2
-- address_id: 2025/document=form_1099b/box=2/option=choice_c_4_0
-  logical_key: document=form_1099b/box=2/option=choice_c_4_0
+- address_id: 2025/document=form_1099b/box=2/option=long_term
+  logical_key: document=form_1099b/box=2/option=long_term
   year: 2025
   document_id: form_1099b_2025
   parent_address_id: 2025/document=form_1099b/box=2
@@ -403,8 +500,8 @@ addresses:
   - kind: box
     token: '2'
   - kind: option
-    token: choice_c_4_0
-  printed_label: "Line 2 - RECIPIENT\u2019S name 2 Short-term gain or loss - c1_4"
+    token: long_term
+  printed_label: Long-term gain or loss
   aliases: []
   control_role: checkbox
   status: pending_review
@@ -413,8 +510,8 @@ addresses:
     source_hash: 7e334cea66c2b2be3d88615a56db288a2805cb8705076b3b282a4eabbbd788ad
     page: 2
   official_ref: Box 2
-- address_id: 2025/document=form_1099b/box=2/option=choice_c_4_1
-  logical_key: document=form_1099b/box=2/option=choice_c_4_1
+- address_id: 2025/document=form_1099b/box=2/option=ordinary
+  logical_key: document=form_1099b/box=2/option=ordinary
   year: 2025
   document_id: form_1099b_2025
   parent_address_id: 2025/document=form_1099b/box=2
@@ -425,8 +522,8 @@ addresses:
   - kind: box
     token: '2'
   - kind: option
-    token: choice_c_4_1
-  printed_label: Long-term gain or loss - c1_4
+    token: ordinary
+  printed_label: Ordinary
   aliases: []
   control_role: checkbox
   status: pending_review
@@ -435,8 +532,8 @@ addresses:
     source_hash: 7e334cea66c2b2be3d88615a56db288a2805cb8705076b3b282a4eabbbd788ad
     page: 2
   official_ref: Box 2
-- address_id: 2025/document=form_1099b/box=2/option=choice_c_4_2
-  logical_key: document=form_1099b/box=2/option=choice_c_4_2
+- address_id: 2025/document=form_1099b/box=2/option=short_term
+  logical_key: document=form_1099b/box=2/option=short_term
   year: 2025
   document_id: form_1099b_2025
   parent_address_id: 2025/document=form_1099b/box=2
@@ -447,8 +544,8 @@ addresses:
   - kind: box
     token: '2'
   - kind: option
-    token: choice_c_4_2
-  printed_label: Ordinary - c1_4
+    token: short_term
+  printed_label: Short-term gain or loss
   aliases: []
   control_role: checkbox
   status: pending_review
@@ -457,6 +554,69 @@ addresses:
     source_hash: 7e334cea66c2b2be3d88615a56db288a2805cb8705076b3b282a4eabbbd788ad
     page: 2
   official_ref: Box 2
+- address_id: 2025/document=form_1099b/box=3
+  logical_key: document=form_1099b/box=3
+  year: 2025
+  document_id: form_1099b_2025
+  parent_address_id: 2025/document=form_1099b
+  kind: box
+  path:
+  - kind: document
+    token: form_1099b
+  - kind: box
+    token: '3'
+  printed_label: '3'
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_1099b_2025
+    source_hash: 7e334cea66c2b2be3d88615a56db288a2805cb8705076b3b282a4eabbbd788ad
+    page: 2
+- address_id: 2025/document=form_1099b/box=3/option=collectibles
+  logical_key: document=form_1099b/box=3/option=collectibles
+  year: 2025
+  document_id: form_1099b_2025
+  parent_address_id: 2025/document=form_1099b/box=3
+  kind: option
+  path:
+  - kind: document
+    token: form_1099b
+  - kind: box
+    token: '3'
+  - kind: option
+    token: collectibles
+  printed_label: Collectibles
+  aliases: []
+  control_role: checkbox
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_1099b_2025
+    source_hash: 7e334cea66c2b2be3d88615a56db288a2805cb8705076b3b282a4eabbbd788ad
+    page: 2
+  official_ref: Box 3
+- address_id: 2025/document=form_1099b/box=3/option=qof
+  logical_key: document=form_1099b/box=3/option=qof
+  year: 2025
+  document_id: form_1099b_2025
+  parent_address_id: 2025/document=form_1099b/box=3
+  kind: option
+  path:
+  - kind: document
+    token: form_1099b
+  - kind: box
+    token: '3'
+  - kind: option
+    token: qof
+  printed_label: QOF
+  aliases: []
+  control_role: checkbox
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_1099b_2025
+    source_hash: 7e334cea66c2b2be3d88615a56db288a2805cb8705076b3b282a4eabbbd788ad
+    page: 2
+  official_ref: Box 3
 - address_id: 2025/document=form_1099b/box=4
   logical_key: document=form_1099b/box=4
   year: 2025
@@ -476,8 +636,8 @@ addresses:
   - source_path: config/manifest.yaml#form_1099b_2025
     source_hash: 7e334cea66c2b2be3d88615a56db288a2805cb8705076b3b282a4eabbbd788ad
     page: 2
-- address_id: 2025/document=form_1099b/box=4/control=f_23
-  logical_key: document=form_1099b/box=4/control=f_23
+- address_id: 2025/document=form_1099b/box=4/control=value
+  logical_key: document=form_1099b/box=4/control=value
   year: 2025
   document_id: form_1099b_2025
   parent_address_id: 2025/document=form_1099b/box=4
@@ -488,16 +648,57 @@ addresses:
   - kind: box
     token: '4'
   - kind: control
-    token: f_23
-  printed_label: $ - f1_23
+    token: value
+  printed_label: Federal income tax withheld
   aliases: []
-  control_role: text
+  control_role: amount
   status: pending_review
   evidence:
   - source_path: config/manifest.yaml#form_1099b_2025
     source_hash: 7e334cea66c2b2be3d88615a56db288a2805cb8705076b3b282a4eabbbd788ad
     page: 2
   official_ref: Box 4
+- address_id: 2025/document=form_1099b/box=5
+  logical_key: document=form_1099b/box=5
+  year: 2025
+  document_id: form_1099b_2025
+  parent_address_id: 2025/document=form_1099b
+  kind: box
+  path:
+  - kind: document
+    token: form_1099b
+  - kind: box
+    token: '5'
+  printed_label: '5'
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_1099b_2025
+    source_hash: 7e334cea66c2b2be3d88615a56db288a2805cb8705076b3b282a4eabbbd788ad
+    page: 2
+- address_id: 2025/document=form_1099b/box=5/option=noncovered_security
+  logical_key: document=form_1099b/box=5/option=noncovered_security
+  year: 2025
+  document_id: form_1099b_2025
+  parent_address_id: 2025/document=form_1099b/box=5
+  kind: option
+  path:
+  - kind: document
+    token: form_1099b
+  - kind: box
+    token: '5'
+  - kind: option
+    token: noncovered_security
+  printed_label: Check if noncovered security
+  aliases: []
+  control_role: checkbox
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_1099b_2025
+    source_hash: 7e334cea66c2b2be3d88615a56db288a2805cb8705076b3b282a4eabbbd788ad
+    page: 2
+  official_ref: Box 5
 - address_id: 2025/document=form_1099b/box=6
   logical_key: document=form_1099b/box=6
   year: 2025
@@ -517,8 +718,8 @@ addresses:
   - source_path: config/manifest.yaml#form_1099b_2025
     source_hash: 7e334cea66c2b2be3d88615a56db288a2805cb8705076b3b282a4eabbbd788ad
     page: 2
-- address_id: 2025/document=form_1099b/box=6/option=choice_c_7_0
-  logical_key: document=form_1099b/box=6/option=choice_c_7_0
+- address_id: 2025/document=form_1099b/box=6/option=gross_proceeds
+  logical_key: document=form_1099b/box=6/option=gross_proceeds
   year: 2025
   document_id: form_1099b_2025
   parent_address_id: 2025/document=form_1099b/box=6
@@ -529,9 +730,8 @@ addresses:
   - kind: box
     token: '6'
   - kind: option
-    token: choice_c_7_0
-  printed_label: Line 1d - province, country, and ZIP or foreign postal code Gross
-    proceeds - c1_7
+    token: gross_proceeds
+  printed_label: Gross proceeds
   aliases: []
   control_role: checkbox
   status: pending_review
@@ -540,8 +740,8 @@ addresses:
     source_hash: 7e334cea66c2b2be3d88615a56db288a2805cb8705076b3b282a4eabbbd788ad
     page: 2
   official_ref: Box 6
-- address_id: 2025/document=form_1099b/box=6/option=choice_c_7_1
-  logical_key: document=form_1099b/box=6/option=choice_c_7_1
+- address_id: 2025/document=form_1099b/box=6/option=net_proceeds
+  logical_key: document=form_1099b/box=6/option=net_proceeds
   year: 2025
   document_id: form_1099b_2025
   parent_address_id: 2025/document=form_1099b/box=6
@@ -552,8 +752,8 @@ addresses:
   - kind: box
     token: '6'
   - kind: option
-    token: choice_c_7_1
-  printed_label: Line 8 - Net proceeds - c1_7
+    token: net_proceeds
+  printed_label: Net proceeds
   aliases: []
   control_role: checkbox
   status: pending_review
@@ -562,6 +762,47 @@ addresses:
     source_hash: 7e334cea66c2b2be3d88615a56db288a2805cb8705076b3b282a4eabbbd788ad
     page: 2
   official_ref: Box 6
+- address_id: 2025/document=form_1099b/box=7
+  logical_key: document=form_1099b/box=7
+  year: 2025
+  document_id: form_1099b_2025
+  parent_address_id: 2025/document=form_1099b
+  kind: box
+  path:
+  - kind: document
+    token: form_1099b
+  - kind: box
+    token: '7'
+  printed_label: '7'
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_1099b_2025
+    source_hash: 7e334cea66c2b2be3d88615a56db288a2805cb8705076b3b282a4eabbbd788ad
+    page: 2
+- address_id: 2025/document=form_1099b/box=7/option=loss_not_allowed
+  logical_key: document=form_1099b/box=7/option=loss_not_allowed
+  year: 2025
+  document_id: form_1099b_2025
+  parent_address_id: 2025/document=form_1099b/box=7
+  kind: option
+  path:
+  - kind: document
+    token: form_1099b
+  - kind: box
+    token: '7'
+  - kind: option
+    token: loss_not_allowed
+  printed_label: Check if loss is not allowed based on amount in 1d
+  aliases: []
+  control_role: checkbox
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_1099b_2025
+    source_hash: 7e334cea66c2b2be3d88615a56db288a2805cb8705076b3b282a4eabbbd788ad
+    page: 2
+  official_ref: Box 7
 - address_id: 2025/document=form_1099b/box=8
   logical_key: document=form_1099b/box=8
   year: 2025
@@ -581,8 +822,8 @@ addresses:
   - source_path: config/manifest.yaml#form_1099b_2025
     source_hash: 7e334cea66c2b2be3d88615a56db288a2805cb8705076b3b282a4eabbbd788ad
     page: 2
-- address_id: 2025/document=form_1099b/box=8/control=f_24
-  logical_key: document=form_1099b/box=8/control=f_24
+- address_id: 2025/document=form_1099b/box=8/control=value
+  logical_key: document=form_1099b/box=8/control=value
   year: 2025
   document_id: form_1099b_2025
   parent_address_id: 2025/document=form_1099b/box=8
@@ -593,8 +834,197 @@ addresses:
   - kind: box
     token: '8'
   - kind: control
-    token: f_24
-  printed_label: $ - f1_24
+    token: value
+  printed_label: Profit or (loss) realized in 2025 on closed contracts
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_1099b_2025
+    source_hash: 7e334cea66c2b2be3d88615a56db288a2805cb8705076b3b282a4eabbbd788ad
+    page: 2
+  official_ref: Box 8
+- address_id: 2025/document=form_1099b/box=9
+  logical_key: document=form_1099b/box=9
+  year: 2025
+  document_id: form_1099b_2025
+  parent_address_id: 2025/document=form_1099b
+  kind: box
+  path:
+  - kind: document
+    token: form_1099b
+  - kind: box
+    token: '9'
+  printed_label: '9'
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_1099b_2025
+    source_hash: 7e334cea66c2b2be3d88615a56db288a2805cb8705076b3b282a4eabbbd788ad
+    page: 2
+- address_id: 2025/document=form_1099b/box=9/control=value
+  logical_key: document=form_1099b/box=9/control=value
+  year: 2025
+  document_id: form_1099b_2025
+  parent_address_id: 2025/document=form_1099b/box=9
+  kind: control
+  path:
+  - kind: document
+    token: form_1099b
+  - kind: box
+    token: '9'
+  - kind: control
+    token: value
+  printed_label: Unrealized profit or (loss) on open contracts - 12/31/2024
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_1099b_2025
+    source_hash: 7e334cea66c2b2be3d88615a56db288a2805cb8705076b3b282a4eabbbd788ad
+    page: 2
+  official_ref: Box 9
+- address_id: 2025/document=form_1099b/section=header
+  logical_key: document=form_1099b/section=header
+  year: 2025
+  document_id: form_1099b_2025
+  parent_address_id: 2025/document=form_1099b
+  kind: section
+  path:
+  - kind: document
+    token: form_1099b
+  - kind: section
+    token: header
+  printed_label: header
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_1099b_2025
+    source_hash: 7e334cea66c2b2be3d88615a56db288a2805cb8705076b3b282a4eabbbd788ad
+    page: 2
+- address_id: 2025/document=form_1099b/section=header/option=corrected
+  logical_key: document=form_1099b/section=header/option=corrected
+  year: 2025
+  document_id: form_1099b_2025
+  parent_address_id: 2025/document=form_1099b/section=header
+  kind: option
+  path:
+  - kind: document
+    token: form_1099b
+  - kind: section
+    token: header
+  - kind: option
+    token: corrected
+  printed_label: CORRECTED
+  aliases: []
+  control_role: checkbox
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_1099b_2025
+    source_hash: 7e334cea66c2b2be3d88615a56db288a2805cb8705076b3b282a4eabbbd788ad
+    page: 2
+  official_ref: CORRECTED
+- address_id: 2025/document=form_1099b/section=header/option=void
+  logical_key: document=form_1099b/section=header/option=void
+  year: 2025
+  document_id: form_1099b_2025
+  parent_address_id: 2025/document=form_1099b/section=header
+  kind: option
+  path:
+  - kind: document
+    token: form_1099b
+  - kind: section
+    token: header
+  - kind: option
+    token: void
+  printed_label: VOID
+  aliases: []
+  control_role: checkbox
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_1099b_2025
+    source_hash: 7e334cea66c2b2be3d88615a56db288a2805cb8705076b3b282a4eabbbd788ad
+    page: 2
+  official_ref: VOID
+- address_id: 2025/document=form_1099b/section=recipient
+  logical_key: document=form_1099b/section=recipient
+  year: 2025
+  document_id: form_1099b_2025
+  parent_address_id: 2025/document=form_1099b
+  kind: section
+  path:
+  - kind: document
+    token: form_1099b
+  - kind: section
+    token: recipient
+  printed_label: recipient
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_1099b_2025
+    source_hash: 7e334cea66c2b2be3d88615a56db288a2805cb8705076b3b282a4eabbbd788ad
+    page: 2
+- address_id: 2025/document=form_1099b/section=recipient/control=account_number
+  logical_key: document=form_1099b/section=recipient/control=account_number
+  year: 2025
+  document_id: form_1099b_2025
+  parent_address_id: 2025/document=form_1099b/section=recipient
+  kind: control
+  path:
+  - kind: document
+    token: form_1099b
+  - kind: section
+    token: recipient
+  - kind: control
+    token: account_number
+  printed_label: Account number (see instructions)
+  aliases: []
+  control_role: identifier
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_1099b_2025
+    source_hash: 7e334cea66c2b2be3d88615a56db288a2805cb8705076b3b282a4eabbbd788ad
+    page: 2
+  official_ref: Account number (see instructions)
+- address_id: 2025/document=form_1099b/section=recipient/control=cusip_number
+  logical_key: document=form_1099b/section=recipient/control=cusip_number
+  year: 2025
+  document_id: form_1099b_2025
+  parent_address_id: 2025/document=form_1099b/section=recipient
+  kind: control
+  path:
+  - kind: document
+    token: form_1099b
+  - kind: section
+    token: recipient
+  - kind: control
+    token: cusip_number
+  printed_label: CUSIP number
+  aliases: []
+  control_role: identifier
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_1099b_2025
+    source_hash: 7e334cea66c2b2be3d88615a56db288a2805cb8705076b3b282a4eabbbd788ad
+    page: 2
+  official_ref: CUSIP number
+- address_id: 2025/document=form_1099b/section=recipient/control=form_8949_checkbox
+  logical_key: document=form_1099b/section=recipient/control=form_8949_checkbox
+  year: 2025
+  document_id: form_1099b_2025
+  parent_address_id: 2025/document=form_1099b/section=recipient
+  kind: control
+  path:
+  - kind: document
+    token: form_1099b
+  - kind: section
+    token: recipient
+  - kind: control
+    token: form_8949_checkbox
+  printed_label: Applicable checkbox on Form 8949
   aliases: []
   control_role: text
   status: pending_review
@@ -602,4 +1032,296 @@ addresses:
   - source_path: config/manifest.yaml#form_1099b_2025
     source_hash: 7e334cea66c2b2be3d88615a56db288a2805cb8705076b3b282a4eabbbd788ad
     page: 2
-  official_ref: Box 8
+  official_ref: Applicable checkbox on Form 8949
+- address_id: 2025/document=form_1099b/section=recipient/control=payer_name_address
+  logical_key: document=form_1099b/section=recipient/control=payer_name_address
+  year: 2025
+  document_id: form_1099b_2025
+  parent_address_id: 2025/document=form_1099b/section=recipient
+  kind: control
+  path:
+  - kind: document
+    token: form_1099b
+  - kind: section
+    token: recipient
+  - kind: control
+    token: payer_name_address
+  printed_label: Payer's name, street address, city or town, state or province, country,
+    ZIP or foreign postal code, and telephone number
+  aliases: []
+  control_role: text
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_1099b_2025
+    source_hash: 7e334cea66c2b2be3d88615a56db288a2805cb8705076b3b282a4eabbbd788ad
+    page: 2
+  official_ref: Payer's name, street address, city or town, state or province, country,
+    ZIP or foreign postal code, and telephone number
+- address_id: 2025/document=form_1099b/section=recipient/control=payer_tin
+  logical_key: document=form_1099b/section=recipient/control=payer_tin
+  year: 2025
+  document_id: form_1099b_2025
+  parent_address_id: 2025/document=form_1099b/section=recipient
+  kind: control
+  path:
+  - kind: document
+    token: form_1099b
+  - kind: section
+    token: recipient
+  - kind: control
+    token: payer_tin
+  printed_label: Payer's TIN
+  aliases: []
+  control_role: identifier
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_1099b_2025
+    source_hash: 7e334cea66c2b2be3d88615a56db288a2805cb8705076b3b282a4eabbbd788ad
+    page: 2
+  official_ref: Payer's TIN
+- address_id: 2025/document=form_1099b/section=recipient/control=recipient_city
+  logical_key: document=form_1099b/section=recipient/control=recipient_city
+  year: 2025
+  document_id: form_1099b_2025
+  parent_address_id: 2025/document=form_1099b/section=recipient
+  kind: control
+  path:
+  - kind: document
+    token: form_1099b
+  - kind: section
+    token: recipient
+  - kind: control
+    token: recipient_city
+  printed_label: City or town, state or province, country, and ZIP or foreign postal
+    code
+  aliases: []
+  control_role: text
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_1099b_2025
+    source_hash: 7e334cea66c2b2be3d88615a56db288a2805cb8705076b3b282a4eabbbd788ad
+    page: 2
+  official_ref: City or town, state or province, country, and ZIP or foreign postal
+    code
+- address_id: 2025/document=form_1099b/section=recipient/control=recipient_name
+  logical_key: document=form_1099b/section=recipient/control=recipient_name
+  year: 2025
+  document_id: form_1099b_2025
+  parent_address_id: 2025/document=form_1099b/section=recipient
+  kind: control
+  path:
+  - kind: document
+    token: form_1099b
+  - kind: section
+    token: recipient
+  - kind: control
+    token: recipient_name
+  printed_label: Recipient's name
+  aliases: []
+  control_role: text
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_1099b_2025
+    source_hash: 7e334cea66c2b2be3d88615a56db288a2805cb8705076b3b282a4eabbbd788ad
+    page: 2
+  official_ref: Recipient's name
+- address_id: 2025/document=form_1099b/section=recipient/control=recipient_street
+  logical_key: document=form_1099b/section=recipient/control=recipient_street
+  year: 2025
+  document_id: form_1099b_2025
+  parent_address_id: 2025/document=form_1099b/section=recipient
+  kind: control
+  path:
+  - kind: document
+    token: form_1099b
+  - kind: section
+    token: recipient
+  - kind: control
+    token: recipient_street
+  printed_label: Street address (including apt. no.)
+  aliases: []
+  control_role: text
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_1099b_2025
+    source_hash: 7e334cea66c2b2be3d88615a56db288a2805cb8705076b3b282a4eabbbd788ad
+    page: 2
+  official_ref: Street address (including apt. no.)
+- address_id: 2025/document=form_1099b/section=recipient/control=recipient_tin
+  logical_key: document=form_1099b/section=recipient/control=recipient_tin
+  year: 2025
+  document_id: form_1099b_2025
+  parent_address_id: 2025/document=form_1099b/section=recipient
+  kind: control
+  path:
+  - kind: document
+    token: form_1099b
+  - kind: section
+    token: recipient
+  - kind: control
+    token: recipient_tin
+  printed_label: Recipient's TIN
+  aliases: []
+  control_role: identifier
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_1099b_2025
+    source_hash: 7e334cea66c2b2be3d88615a56db288a2805cb8705076b3b282a4eabbbd788ad
+    page: 2
+  official_ref: Recipient's TIN
+- address_id: 2025/document=form_1099b/section=recipient/option=fatca_filing_requirement
+  logical_key: document=form_1099b/section=recipient/option=fatca_filing_requirement
+  year: 2025
+  document_id: form_1099b_2025
+  parent_address_id: 2025/document=form_1099b/section=recipient
+  kind: option
+  path:
+  - kind: document
+    token: form_1099b
+  - kind: section
+    token: recipient
+  - kind: option
+    token: fatca_filing_requirement
+  printed_label: FATCA filing requirement
+  aliases: []
+  control_role: checkbox
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_1099b_2025
+    source_hash: 7e334cea66c2b2be3d88615a56db288a2805cb8705076b3b282a4eabbbd788ad
+    page: 2
+  official_ref: FATCA filing requirement
+- address_id: 2025/document=form_1099b/section=recipient/option=second_tin_notice
+  logical_key: document=form_1099b/section=recipient/option=second_tin_notice
+  year: 2025
+  document_id: form_1099b_2025
+  parent_address_id: 2025/document=form_1099b/section=recipient
+  kind: option
+  path:
+  - kind: document
+    token: form_1099b
+  - kind: section
+    token: recipient
+  - kind: option
+    token: second_tin_notice
+  printed_label: 2nd TIN not.
+  aliases: []
+  control_role: checkbox
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_1099b_2025
+    source_hash: 7e334cea66c2b2be3d88615a56db288a2805cb8705076b3b282a4eabbbd788ad
+    page: 2
+  official_ref: 2nd TIN not.
+- address_id: 2025/document=form_1099b/table=state
+  logical_key: document=form_1099b/table=state
+  year: 2025
+  document_id: form_1099b_2025
+  parent_address_id: 2025/document=form_1099b
+  kind: table
+  path:
+  - kind: document
+    token: form_1099b
+  - kind: table
+    token: state
+  printed_label: state
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_1099b_2025
+    source_hash: 7e334cea66c2b2be3d88615a56db288a2805cb8705076b3b282a4eabbbd788ad
+    page: 2
+- address_id: 2025/document=form_1099b/table=state/row_template=jurisdiction
+  logical_key: document=form_1099b/table=state/row_template=jurisdiction
+  year: 2025
+  document_id: form_1099b_2025
+  parent_address_id: 2025/document=form_1099b/table=state
+  kind: row_template
+  path:
+  - kind: document
+    token: form_1099b
+  - kind: table
+    token: state
+  - kind: row_template
+    token: jurisdiction
+  printed_label: jurisdiction
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_1099b_2025
+    source_hash: 7e334cea66c2b2be3d88615a56db288a2805cb8705076b3b282a4eabbbd788ad
+    page: 2
+- address_id: 2025/document=form_1099b/table=state/row_template=jurisdiction/column=state
+  logical_key: document=form_1099b/table=state/row_template=jurisdiction/column=state
+  year: 2025
+  document_id: form_1099b_2025
+  parent_address_id: 2025/document=form_1099b/table=state/row_template=jurisdiction
+  kind: column
+  path:
+  - kind: document
+    token: form_1099b
+  - kind: table
+    token: state
+  - kind: row_template
+    token: jurisdiction
+  - kind: column
+    token: state
+  printed_label: State name
+  aliases: []
+  control_role: text
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_1099b_2025
+    source_hash: 7e334cea66c2b2be3d88615a56db288a2805cb8705076b3b282a4eabbbd788ad
+    page: 2
+  official_ref: Box 14
+- address_id: 2025/document=form_1099b/table=state/row_template=jurisdiction/column=state_id
+  logical_key: document=form_1099b/table=state/row_template=jurisdiction/column=state_id
+  year: 2025
+  document_id: form_1099b_2025
+  parent_address_id: 2025/document=form_1099b/table=state/row_template=jurisdiction
+  kind: column
+  path:
+  - kind: document
+    token: form_1099b
+  - kind: table
+    token: state
+  - kind: row_template
+    token: jurisdiction
+  - kind: column
+    token: state_id
+  printed_label: State identification no.
+  aliases: []
+  control_role: identifier
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_1099b_2025
+    source_hash: 7e334cea66c2b2be3d88615a56db288a2805cb8705076b3b282a4eabbbd788ad
+    page: 2
+  official_ref: Box 15
+- address_id: 2025/document=form_1099b/table=state/row_template=jurisdiction/column=state_tax
+  logical_key: document=form_1099b/table=state/row_template=jurisdiction/column=state_tax
+  year: 2025
+  document_id: form_1099b_2025
+  parent_address_id: 2025/document=form_1099b/table=state/row_template=jurisdiction
+  kind: column
+  path:
+  - kind: document
+    token: form_1099b
+  - kind: table
+    token: state
+  - kind: row_template
+    token: jurisdiction
+  - kind: column
+    token: state_tax
+  printed_label: State tax withheld
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_1099b_2025
+    source_hash: 7e334cea66c2b2be3d88615a56db288a2805cb8705076b3b282a4eabbbd788ad
+    page: 2
+  official_ref: Box 16

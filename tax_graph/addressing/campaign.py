@@ -141,6 +141,8 @@ def _control_evidence(item: dict[str, Any], mapping: dict[str, Any] | None,
         return _form_8949_control_evidence(item, mapping, disposition)
     if document_id == "form_w2_2025":
         return _form_w2_control_evidence(item)
+    if document_id in {"form_1099b_2025", "form_1099_div_2025", "form_1099_int_2025"}:
+        return _form_1099_control_evidence(item, document_id)
     line = item.get("line_anchor")
     role = _role(item, mapping)
     total = re.fullmatch(
@@ -271,6 +273,173 @@ def _form_w2_control_evidence(item: dict[str, Any]) -> dict[str, Any] | None:
         "printed_label": label, "field_name": field_name,
         "widget_type": item["field_type"], "page": item["page"],
         "rect": [item["x0"], item["y0"], item["x1"], item["y1"]],
+        "semantic_status": "pending_review",
+    }
+
+
+def _form_1099_control_evidence(item: dict[str, Any], document_id: str) -> dict[str, Any] | None:
+    """Collapse official 1099 copy pages onto one authored control template."""
+    field_name = str(item["field_name"])
+    leaf = field_name.rsplit(".", 1)[-1]
+    check = re.fullmatch(r"c[12]_([0-9]+)\[([0-9]+)\]", leaf)
+    if check:
+        key = (int(check.group(1)), int(check.group(2)), int(float(item["y0"]) + 0.5))
+        header_choices = {
+            (1, 0, 25): ("void", "VOID"),
+            (1, 1, 25): ("corrected", "CORRECTED"),
+        }
+        if key in header_choices:
+            token, label = header_choices[key]
+            return _campaign_control(item, [{"kind": "section", "token": "header"},
+                                            {"kind": "option", "token": token}],
+                                     label, label, "checkbox")
+        choice = _form_1099_choice(document_id, key)
+        if choice is None:
+            return None
+        box, token, label = choice
+        if box is None:
+            path = [{"kind": "section", "token": "recipient"}, {"kind": "option", "token": token}]
+            return _campaign_control(item, path, label, label, "checkbox")
+        path = [{"kind": "box", "token": box}, {"kind": "option", "token": token}]
+        return _campaign_control(item, path, f"Box {box}", label, "checkbox")
+
+    text = re.fullmatch(r"(?:CalendarYear[12]_)?f?([12])?_?([0-9]+)\[0\]", leaf)
+    if not text:
+        return None
+    number = int(text.group(2))
+    spec = _form_1099_text_spec(document_id, number, leaf.startswith("CalendarYear"))
+    if spec is None:
+        return None
+    box, token, label, role = spec
+    if box is None:
+        path = [{"kind": "section", "token": "header" if token == "calendar_year" else "recipient"},
+                {"kind": "control", "token": token}]
+        return _campaign_control(item, path, label, label, role)
+    if token in {"state", "state_id", "state_tax"}:
+        path = [{"kind": "table", "token": "state"}, {"kind": "row_template", "token": "jurisdiction"},
+                {"kind": "column", "token": token}]
+    else:
+        path = [{"kind": "box", "token": box}, {"kind": "control", "token": token}]
+    return _campaign_control(item, path, f"Box {box}", label, role)
+
+
+def _form_1099_choice(document_id: str, key: tuple[int, int, int]) -> tuple[str | None, str, str] | None:
+    common = {
+        (2, 0, 310): (None, "fatca_filing_requirement", "FATCA filing requirement"),
+        (3, 0, 310): (None, "fatca_filing_requirement", "FATCA filing requirement"),
+        (3, 0, 338): (None, "second_tin_notice", "2nd TIN not."),
+        (4, 0, 338): (None, "second_tin_notice", "2nd TIN not."),
+    }
+    if document_id == "form_1099b_2025":
+        return {
+            (2, 0, 302): (None, "second_tin_notice", "2nd TIN not."),
+            (3, 0, 326): (None, "fatca_filing_requirement", "FATCA filing requirement"),
+            (4, 0, 182): ("2", "short_term", "Short-term gain or loss"),
+            (4, 1, 194): ("2", "long_term", "Long-term gain or loss"),
+            (4, 2, 206): ("2", "ordinary", "Ordinary"),
+            (5, 0, 194): ("3", "collectibles", "Collectibles"),
+            (5, 1, 206): ("3", "qof", "QOF"),
+            (6, 0, 230): ("5", "noncovered_security", "Check if noncovered security"),
+            (7, 0, 254): ("6", "gross_proceeds", "Gross proceeds"),
+            (7, 1, 266): ("6", "net_proceeds", "Net proceeds"),
+            (8, 0, 266): ("7", "loss_not_allowed", "Check if loss is not allowed based on amount in 1d"),
+            (9, 0, 362): ("12", "basis_reported", "Check if basis reported to IRS"),
+        }.get(key)
+    return common.get(key)
+
+
+def _form_1099_text_spec(
+    document_id: str, number: int, calendar_year: bool,
+) -> tuple[str | None, str, str, str] | None:
+    if calendar_year:
+        return None, "calendar_year", "For calendar year", "text"
+    common = {
+        1: (None, "payer_name_address", "Payer's name, street address, city or town, state or province, country, ZIP or foreign postal code, and telephone number", "text"),
+        2: (None, "payer_tin", "Payer's TIN", "identifier"),
+        3: (None, "recipient_tin", "Recipient's TIN", "identifier"),
+        4: (None, "recipient_name", "Recipient's name", "text"),
+        5: (None, "recipient_street", "Street address (including apt. no.)", "text"),
+        6: (None, "recipient_city", "City or town, state or province, country, and ZIP or foreign postal code", "text"),
+        7: (None, "account_number", "Account number (see instructions)", "identifier"),
+    }
+    if document_id == "form_1099b_2025":
+        specs = {
+            **common,
+            8: (None, "cusip_number", "CUSIP number", "identifier"),
+            9: ("14", "state", "State name", "text"), 10: ("14", "state", "State name", "text"),
+            11: ("15", "state_id", "State identification no.", "identifier"),
+            12: ("15", "state_id", "State identification no.", "identifier"),
+            13: ("16", "state_tax", "State tax withheld", "amount"),
+            14: ("16", "state_tax", "State tax withheld", "amount"),
+            15: (None, "form_8949_checkbox", "Applicable checkbox on Form 8949", "text"),
+            16: ("1a", "value", "Description of property (Example: 100 sh. XYZ Co.)", "description"),
+            17: ("1b", "value", "Date acquired", "date"), 18: ("1c", "value", "Date sold or disposed", "date"),
+            19: ("1d", "value", "Proceeds", "amount"), 20: ("1e", "value", "Cost or other basis", "amount"),
+            21: ("1f", "value", "Accrued market discount", "amount"),
+            22: ("1g", "value", "Wash sale loss disallowed", "amount"),
+            23: ("4", "value", "Federal income tax withheld", "amount"),
+            24: ("8", "value", "Profit or (loss) realized in 2025 on closed contracts", "amount"),
+            25: ("9", "value", "Unrealized profit or (loss) on open contracts - 12/31/2024", "amount"),
+            26: ("10", "value", "Unrealized profit or (loss) on open contracts - 12/31/2025", "amount"),
+            27: ("11", "value", "Aggregate profit or (loss) on contracts", "amount"),
+            28: ("13", "value", "Bartering", "amount"),
+        }
+        return specs.get(number)
+    if document_id == "form_1099_div_2025":
+        if number == 1:
+            return None, "calendar_year", "For calendar year", "text"
+        div_common = {
+            number + 1: value for number, value in common.items()
+        }
+        boxes = {
+            9: ("1a", "Total ordinary dividends"), 10: ("1b", "Qualified dividends"),
+            11: ("2a", "Total capital gain distr."), 12: ("2b", "Unrecap. Sec. 1250 gain"),
+            13: ("2c", "Section 1202 gain"), 14: ("2d", "Collectibles (28%) gain"),
+            15: ("2e", "Section 897 ordinary dividends"), 16: ("2f", "Section 897 capital gain"),
+            17: ("3", "Nondividend distributions"), 18: ("4", "Federal income tax withheld"),
+            19: ("5", "Section 199A dividends"), 20: ("6", "Investment expenses"),
+            21: ("7", "Foreign tax paid"), 22: ("8", "Foreign country or U.S. possession"),
+            23: ("9", "Cash liquidation distributions"), 24: ("10", "Noncash liquidation distributions"),
+            25: ("12", "Exempt-interest dividends"), 26: ("13", "Specified private activity bond interest dividends"),
+        }
+        if number in boxes:
+            box, label = boxes[number]
+            return box, "value", label, "text" if box == "8" else "amount"
+        state = {27: ("14", "state", "State"), 28: ("14", "state", "State"),
+                 29: ("15", "state_id", "State identification no."), 30: ("15", "state_id", "State identification no."),
+                 31: ("16", "state_tax", "State tax withheld"), 32: ("16", "state_tax", "State tax withheld")}
+        if number in state:
+            box, token, label = state[number]
+            return box, token, label, "amount" if token == "state_tax" else "text"
+        return div_common.get(number)
+    specs = {
+        **common,
+        8: (None, "payer_rtn", "Payer's RTN (optional)", "identifier"),
+        9: ("1", "value", "Interest income", "amount"), 10: ("2", "value", "Early withdrawal penalty", "amount"),
+        11: ("3", "value", "Interest on U.S. Savings Bonds and Treasury obligations", "amount"),
+        12: ("4", "value", "Federal income tax withheld", "amount"), 13: ("5", "value", "Investment expenses", "amount"),
+        14: ("6", "value", "Foreign tax paid", "amount"), 15: ("7", "value", "Foreign country or U.S. territory", "text"),
+        16: ("8", "value", "Tax-exempt interest", "amount"), 17: ("9", "value", "Specified private activity bond interest", "amount"),
+        18: ("10", "value", "Market discount", "amount"), 19: ("11", "value", "Bond premium", "amount"),
+        20: ("12", "value", "Bond premium on Treasury obligations", "amount"),
+        21: ("13", "value", "Bond premium on tax-exempt bond", "amount"),
+        22: ("14", "value", "Tax-exempt and tax credit bond CUSIP no.", "identifier"),
+        23: ("15", "state", "State", "text"), 24: ("15", "state", "State", "text"),
+        25: ("16", "state_id", "State identification no.", "identifier"),
+        26: ("16", "state_id", "State identification no.", "identifier"),
+        27: ("17", "state_tax", "State tax withheld", "amount"),
+        28: ("17", "state_tax", "State tax withheld", "amount"),
+    }
+    return specs.get(number)
+
+
+def _campaign_control(
+    item: dict[str, Any], path: list[dict[str, str]], official_ref: str, label: str, role: str,
+) -> dict[str, Any]:
+    return {
+        "semantic_path": path, "official_ref": official_ref, "control_role": role,
+        "printed_label": label, "field_name": item["field_name"], "widget_type": item["field_type"],
+        "page": item["page"], "rect": [item["x0"], item["y0"], item["x1"], item["y1"]],
         "semantic_status": "pending_review",
     }
 

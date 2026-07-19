@@ -14,17 +14,12 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## Current state (2026-07-17)
 
-**BALL: WORKER/CODEX - A9c CLOSED (ARCHITECT-HARDENED); EXTENDED RUN CONTINUES AT
-A9d (1099-B/DIV/INT GROUP).** The W-2 reopen fix is verified: Box 15 carries both
-State and Employer's state ID, Boxes 16-20 are pinned verbatim, Box 21 is absent, and
-all six Box 9 widgets are authored `intentionally_blank` exemptions. ARCHITECT
-AMENDMENT at HEAD: the caption-adjacency check was caption-only and could not catch a
-fabricated box number on a correct caption (the exact A9c defect class - proven by
-probe); it now matches the printed `<number> <caption>` sequence by default with an
-explicit authored caption-only exception list, plus a committed regression proving
-`21 Locality name` / `17 State wages` find no match. **A9d MUST use the check in this
-number-bearing form for every 1099 box.** Real preflight remains green,
-`legacy_mined=1081`. Continue A9d..A9x, A9z, A10, A11, A6 - HARD STOP before A12.
+**BALL: WORKER/CODEX - A9d COMPLETE; EXTENDED RUN CONTINUES AT A9e (FORM 1040).**
+Form 1099-B/DIV/INT are authored from the local official PDFs: 430 physical widgets
+collapse onto 102 templates, every numbered box passes the number-bearing adjacency
+check or one of six explicit caption-only choice exceptions, and real preflight is
+green at `legacy_mined=671` (strict reduction of 410 from 1,081). Continue A9e..A9x,
+A9z, A10, A11, A6 - HARD STOP before A12.
 Local commits only, no push; sequential partitions only. A9a `476e7ee`, A9b
 `0ec62ae`, A9c `82e07aa` + fix `1fb34b7` + hardening at HEAD; A8 pre-task and A8
 verified (`fcf82f1`, `45e485f`, local). Gate A remains open through A13; S17+ stays
@@ -305,6 +300,25 @@ sequenced after M15 or when TY2026 docs drop.
   the A9c marker; either way the full floor reruns and legacy counts must not regress.
 
 ## From Worker
+- **M15 A9d Form 1099 group complete; full floor green (Codex, 2026-07-19):**
+  Authored Form 1099-B, 1099-DIV, and 1099-INT as one coherent local-PDF campaign.
+  Coverage is respectively 163/163 widgets -> 39 templates, 140/140 -> 33, and
+  127/127 -> 30; no exemptions and no node mappings, so each mapping triangle is
+  vacuously green. Promoted all registries/widget bindings/field-map address bindings
+  and regenerated node geometry. Added number-bearing PDF adjacency checks for every
+  authored numbered box. Caption-only exception list (all Form 1099-B): Box 2
+  `Long-term gain or loss` and `Ordinary` because one run-in number heads three term
+  choices; Box 3 `Collectibles` and `QOF` because one run-in number heads two proceeds
+  choices; Box 6 `Gross proceeds` and `Net proceeds` because one run-in number heads
+  two reporting choices. Copy/state repeats now carry deterministic copy + row
+  qualifiers. Real preflight: 3,243 units, `authored_address=1242`,
+  `authored_object=1330`, `legacy_mined=671`; the three documents are zero legacy, a
+  strict 410 reduction from 1,081. Focused address campaign: 14 passed; qualifier
+  regressions: 2 passed. M15 partitions: 15 + 19 + 6 manifest + 2 preflight + 31 + 20
+  + 11 E2E = 104 passed. Non-M15 partitions: 98 passed/1 skipped + 134/2 + 73/3 +
+  60 = 365 passed, 6 skipped; aggregate floor: 469 passed, 6 skipped. ASCII, `git
+  diff --check`, real preflight, and `tax-graph validate 2025` are green. No promoted
+  artifact defect was found. Next: A9e authors Form 1040 and must strictly reduce 671.
 - **M15 A9c reopen corrected; full floor green (Codex, 2026-07-18):** Replaced the
   arithmetic W-2 state/local projection with an explicit official-PDF mapping: `State`
   and `Employer's state ID number` are distinct controls under Box 15; Boxes 16-20 are
