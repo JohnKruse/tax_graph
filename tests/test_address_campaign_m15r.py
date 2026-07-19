@@ -11,6 +11,7 @@ import pytest
 import yaml
 
 from tax_graph.addressing import CORE_RETURN_DOCUMENTS, INFORMATION_RETURN_DOCUMENTS, build_address_campaign
+from tax_graph.addressing import build_document_addresses
 from tax_graph.link import link_outbound_flows
 
 
@@ -20,6 +21,181 @@ ROOT = Path(__file__).resolve().parents[1]
 @pytest.fixture(scope="module")
 def campaign():
     return build_address_campaign(ROOT, CORE_RETURN_DOCUMENTS)
+
+
+@pytest.fixture(scope="module")
+def form_1040_campaign():
+    return build_document_addresses(ROOT, "form_1040_2025")
+
+
+@pytest.mark.m15
+def test_form_1040_campaign_binds_every_widget_to_authored_form_structure(
+    form_1040_campaign,
+) -> None:
+    assert form_1040_campaign["coverage"] == {
+        "inventory": 199,
+        "addressed_widgets": 199,
+        "exempt_widgets": 0,
+        "node_bindings": 24,
+        "references": 0,
+    }
+    assert len({
+        item["address_id"] for item in form_1040_campaign["widget_bindings"]["bindings"]
+    }) == 167
+    addresses = {
+        item["address_id"]: item for item in form_1040_campaign["registry"]["addresses"]
+    }
+    assert addresses[
+        "2025/document=form_1040/section=identity/control=taxpayer_first_name"
+    ]["printed_label"] == "First name and middle initial"
+    assert addresses[
+        "2025/document=form_1040/line=3a/control=amount"
+    ]["printed_label"] == "Qualified dividends"
+    assert addresses[
+        "2025/document=form_1040/line=14/control=amount"
+    ]["printed_label"] == "Add lines 12e, 13a, and 13b"
+    assert addresses[
+        "2025/document=form_1040/table=dependents/row_template=dependent/column=child_tax_credit"
+    ]["printed_label"] == "Child tax credit"
+    field_addresses = form_1040_campaign["field_addresses"]
+    assert field_addresses["topmostSubform[0].Page1[0].f1_58[0]"] == (
+        "2025/document=form_1040/line=2a/control=amount"
+    )
+    assert field_addresses["topmostSubform[0].Page1[0].f1_60[0]"] == (
+        "2025/document=form_1040/line=3a/control=amount"
+    )
+    assert field_addresses["topmostSubform[0].Page2[0].f2_05[0]"] == (
+        "2025/document=form_1040/line=14/control=amount"
+    )
+
+
+_FORM_1040_LINE_PREFIX = {
+    "1a": "1 a", "1b": "b", "1c": "c", "1d": "d", "1e": "e", "1f": "f",
+    "1g": "g", "1h": "h", "1i": "i", "1z": "z", "2a": "2a", "2b": "b",
+    "3a": "3a", "3b": "b", "4a": "4a", "4b": "b", "5a": "5a", "5b": "b",
+    "6a": "6a", "6b": "b", "7a": "7a", "8": "8", "9": "9", "10": "10",
+    "11a": "11a", "11b": "11b", "12e": "e", "13a": "13a", "13b": "b",
+    "14": "14", "15": "15", "16": "16", "17": "17", "18": "18", "19": "19",
+    "20": "20", "21": "21", "22": "22", "23": "23", "24": "24", "25a": "a",
+    "25b": "b", "25c": "c", "25d": "d", "26": "26", "27a": "27a", "28": "28",
+    "29": "29", "30": "30", "31": "31", "32": "32", "33": "33", "34": "34",
+    "35a": "35a", "36": "36", "37": "37", "38": "38",
+}
+
+_FORM_1040_LINE_CAPTION = {
+    "1h": "h Other earned income",
+    "25a": "a Form(s) W-2",
+    "25b": "b Form(s) 1099",
+    "25c": "c Other forms (see instructions)",
+    "34": "34 If line 33 is more than line 24, subtract line 24 from line 33",
+}
+
+_FORM_1040_CAPTION_ALIAS = {
+    "/line=12d/option=spouse_blind": "Is blind",
+    "/line=12d/option=you_blind": "Are blind",
+    "/line=16/control=text": "3",
+    "/line=16/option=form_4972": "2 4972",
+    "/line=16/option=form_8814": "1 8814",
+    "/line=16/option=other_form": "3",
+    "/line=26/control=identifier": "enter their SSN (see instructions)",
+    "/line=27c/option=do_not_claim_eic": "If you do not want to claim the EIC, check here",
+    "/line=28/option=do_not_claim_actc": "If you do not want to claim the ACTC, check here",
+    "/line=3c/option=line_3a": "1 Line 3a",
+    "/line=3c/option=line_3b": "2 Line 3b",
+    "/line=4c/control=text": "3",
+    "/line=4c/option=other_word_or_code": "3",
+    "/line=5c/control=text": "3",
+    "/line=5c/option=other_word_or_code": "3",
+    "/line=6d/option=mfs_lived_apart": "If you are married filing separately and lived apart from your spouse the entire year",
+    "/section=filing_status/control=hoh_qss_child_name": "enter the child's name",
+    "/section=filing_status/control=mfs_spouse_full_name": "and full name here",
+    "/section=filing_status/control=nonresident_alien_spouse_name": "enter their name",
+    "/section=filing_status/option=mfs_hoh_lived_apart": "If your filing status is MFS or HOH and you lived apart from your spouse for the last 6 months of 2025",
+    "/section=identity/control=spouse_last_name": "Last name",
+    "/section=identity/option=presidential_election_spouse": "Spouse",
+    "/section=identity/option=presidential_election_you": "You",
+    "/section=return_header/control=combat_zone_name": "Combat zone",
+    "/section=return_header/control=other_filing_designation_text": "Other",
+    "/section=return_header/control=other_tax_year_ending": "ending",
+    "/section=return_header/control=other_tax_year_ending_suffix": "20",
+    "/section=return_header/control=spouse_deceased_day": "DD",
+    "/section=return_header/control=spouse_deceased_month": "MM",
+    "/section=return_header/control=spouse_deceased_year": "YYYY",
+    "/section=return_header/control=taxpayer_deceased_day": "DD",
+    "/section=return_header/control=taxpayer_deceased_month": "MM",
+    "/section=return_header/control=taxpayer_deceased_year": "YYYY",
+    "/section=sign_here/control=spouse_ip_pin": "Identity Protection PIN",
+    "/section=sign_here/control=your_ip_pin": "Identity Protection PIN",
+}
+
+
+@pytest.mark.m15
+def test_form_1040_line_controls_have_number_bearing_adjacent_printed_text(
+    form_1040_campaign,
+) -> None:
+    """Cross-check each feasible line ref and caption against the official 2025 PDF."""
+    addresses = {
+        item["address_id"]: item for item in form_1040_campaign["registry"]["addresses"]
+    }
+    bindings_by_address: dict[str, list[dict]] = {}
+    for binding in form_1040_campaign["widget_bindings"]["bindings"]:
+        bindings_by_address.setdefault(binding["address_id"], []).append(binding)
+    pdf = fitz.open(ROOT / ".cache/raw/2025/form_1040_2025.pdf")
+    checked = set()
+    for address_id, address in addresses.items():
+        matched = re.search(r"/line=([^/]+)/control=(amount|description)$", address_id)
+        if not matched or matched.group(1) not in _FORM_1040_LINE_PREFIX:
+            continue
+        line = matched.group(1)
+        caption = _FORM_1040_LINE_CAPTION.get(
+            line, f"{_FORM_1040_LINE_PREFIX[line]} {address['printed_label']}",
+        )
+        distances = []
+        for binding in bindings_by_address[address_id]:
+            matches = _caption_rects(pdf[binding["page"] - 1], caption)
+            widget = fitz.Rect(binding["rect"])
+            distances.extend(_rect_distance(widget, match) for match in matches)
+        assert distances, f"missing official printed line sequence {caption!r} for {address_id}"
+        assert min(distances) <= 420, f"printed line sequence {caption!r} is not adjacent to {address_id}"
+        checked.add(line)
+    assert checked == set(_FORM_1040_LINE_PREFIX)
+
+
+@pytest.mark.m15
+def test_form_1040_other_authored_captions_are_adjacent_in_official_pdf(
+    form_1040_campaign,
+) -> None:
+    """Cross-check non-line and line-choice identities against their printed captions."""
+    addresses = {
+        item["address_id"]: item for item in form_1040_campaign["registry"]["addresses"]
+        if item["kind"] in {"control", "option", "column"}
+    }
+    bindings_by_address: dict[str, list[dict]] = {}
+    for binding in form_1040_campaign["widget_bindings"]["bindings"]:
+        bindings_by_address.setdefault(binding["address_id"], []).append(binding)
+    pdf = fitz.open(ROOT / ".cache/raw/2025/form_1040_2025.pdf")
+    missing = []
+    distant = []
+    for address_id, address in addresses.items():
+        if re.search(r"/line=([^/]+)/control=(amount|description)$", address_id):
+            continue
+        caption = next(
+            (value for suffix, value in _FORM_1040_CAPTION_ALIAS.items() if address_id.endswith(suffix)),
+            address["printed_label"],
+        )
+        distances = []
+        for binding in bindings_by_address[address_id]:
+            matches = _caption_rects(pdf[binding["page"] - 1], caption)
+            widget = fitz.Rect(binding["rect"])
+            distances.extend(_rect_distance(widget, match) for match in matches)
+        if not distances:
+            missing.append((address_id, caption))
+        elif min(distances) > 280:
+            distant.append((address_id, caption, min(distances)))
+    assert not missing, "\n".join(f"{address_id}: {caption}" for address_id, caption in missing)
+    assert not distant, "\n".join(
+        f"{address_id}: {caption} ({distance})" for address_id, caption, distance in distant
+    )
 
 
 @pytest.mark.m15r

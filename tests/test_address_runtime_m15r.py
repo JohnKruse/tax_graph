@@ -26,7 +26,7 @@ def test_mcp_resolves_and_lists_canonical_addresses_without_breaking_node_tools(
     listed = _call(server, "list_addresses", {"document_id": "form_1040_2025"})
     node = _call(server, "get_node", {"node_id": "form_1040_2025_root_line_1a"})
     assert resolved["state"] == "exact" and resolved["address"]["address_id"] == address_id
-    assert listed["count"] == 141
+    assert listed["count"] == 249
     assert node["found"] is True
 
 

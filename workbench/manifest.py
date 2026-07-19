@@ -366,6 +366,12 @@ def _physical_qualifier(
         elif 29 <= w2_number <= 42:
             row = (1 if w2_number <= 30 else 2) if w2_number <= 32 else (1 if w2_number % 2 else 2)
             parts.append(f"state/local row {row}")
+    # The Form 1040 "Other" filing-designation write-in is one logical control split
+    # across three physical AcroForm segments; each unit needs a distinct locator.
+    if address_id.endswith("/section=return_header/control=other_filing_designation_text"):
+        segment = re.search(r"\.f1_1([1-3])\[0\]$", field_name)
+        if segment:
+            parts.append(f"segment {int(segment.group(1)) - 10}")
     info_return_leaf = re.search(r"\.f[12]_([0-9]+)\[0\]$", field_name)
     state_ranges = {
         "2025/document=form_1099b/": range(9, 15),

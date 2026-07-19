@@ -47,5 +47,5 @@ def test_every_1040_widget_has_binding_or_explicit_exemption() -> None:
     artifacts = load_address_artifacts(2025, ROOT)
     bound = {item["field_name"] for item in artifacts.widget_bindings if item["document_id"] == "form_1040_2025"}
     exempt = {item["field_name"] for item in field_map["field_dispositions"] if not item.get("address_id")}
-    assert len(bound) == 127 and len(exempt) == 72 and not bound & exempt
+    assert len(bound) == 199 and not exempt
     assert bound | exempt == {item["field_name"] for item in field_map["field_dispositions"]}

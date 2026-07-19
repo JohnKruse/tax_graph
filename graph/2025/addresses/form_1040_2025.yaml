@@ -18,48 +18,6 @@ addresses:
   evidence:
   - source_path: config/manifest.yaml#form_1040_2025
     source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
-- address_id: 2025/document=form_1040/line=1
-  logical_key: document=form_1040/line=1
-  year: 2025
-  document_id: form_1040_2025
-  parent_address_id: 2025/document=form_1040
-  kind: line
-  path:
-  - kind: document
-    token: form_1040
-  - kind: line
-    token: '1'
-  printed_label: '1'
-  aliases: []
-  control_role: none
-  status: pending_review
-  evidence:
-  - source_path: config/manifest.yaml#form_1040_2025
-    source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
-    page: 1
-- address_id: 2025/document=form_1040/line=1/control=checkbox
-  logical_key: document=form_1040/line=1/control=checkbox
-  year: 2025
-  document_id: form_1040_2025
-  parent_address_id: 2025/document=form_1040/line=1
-  kind: control
-  path:
-  - kind: document
-    token: form_1040
-  - kind: line
-    token: '1'
-  - kind: control
-    token: checkbox
-  printed_label: Line 1 - financial interest in a digital asset)? (See instructions.)
-    . . - c1_10
-  aliases: []
-  control_role: checkbox
-  status: pending_review
-  evidence:
-  - source_path: config/manifest.yaml#form_1040_2025
-    source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
-    page: 1
-  official_ref: '1'
 - address_id: 2025/document=form_1040/line=10
   logical_key: document=form_1040/line=10
   year: 2025
@@ -92,7 +50,7 @@ addresses:
     token: '10'
   - kind: control
     token: amount
-  printed_label: Line 10 - . . . . . . . . . 10 - f1_74
+  printed_label: Adjustments to income from Schedule 1, line 26
   aliases: []
   control_role: amount
   status: pending_review
@@ -133,7 +91,7 @@ addresses:
     token: 11a
   - kind: control
     token: amount
-  printed_label: Line 11a - . . . . . . . . . 11a - f1_75
+  printed_label: Subtract line 10 from line 9
   aliases: []
   control_role: amount
   status: pending_review
@@ -174,7 +132,7 @@ addresses:
     token: 11b
   - kind: control
     token: amount
-  printed_label: Line 11b - . . . . . . . . . 11b - f2_01
+  printed_label: Amount from line 11a (adjusted gross income)
   aliases: []
   control_role: amount
   status: pending_review
@@ -202,20 +160,20 @@ addresses:
   - source_path: config/manifest.yaml#form_1040_2025
     source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
     page: 2
-- address_id: 2025/document=form_1040/line=12a/control=checkbox
-  logical_key: document=form_1040/line=12a/control=checkbox
+- address_id: 2025/document=form_1040/line=12a/option=spouse_as_dependent
+  logical_key: document=form_1040/line=12a/option=spouse_as_dependent
   year: 2025
   document_id: form_1040_2025
   parent_address_id: 2025/document=form_1040/line=12a
-  kind: control
+  kind: option
   path:
   - kind: document
     token: form_1040
   - kind: line
     token: 12a
-  - kind: control
-    token: checkbox
-  printed_label: Line 12a - Credits 12a Someone can claim - c2_1
+  - kind: option
+    token: spouse_as_dependent
+  printed_label: Your spouse as a dependent
   aliases: []
   control_role: checkbox
   status: pending_review
@@ -224,6 +182,217 @@ addresses:
     source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
     page: 2
   official_ref: 12a
+- address_id: 2025/document=form_1040/line=12a/option=you_as_dependent
+  logical_key: document=form_1040/line=12a/option=you_as_dependent
+  year: 2025
+  document_id: form_1040_2025
+  parent_address_id: 2025/document=form_1040/line=12a
+  kind: option
+  path:
+  - kind: document
+    token: form_1040
+  - kind: line
+    token: 12a
+  - kind: option
+    token: you_as_dependent
+  printed_label: You as a dependent
+  aliases: []
+  control_role: checkbox
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_1040_2025
+    source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
+    page: 2
+  official_ref: 12a
+- address_id: 2025/document=form_1040/line=12b
+  logical_key: document=form_1040/line=12b
+  year: 2025
+  document_id: form_1040_2025
+  parent_address_id: 2025/document=form_1040
+  kind: line
+  path:
+  - kind: document
+    token: form_1040
+  - kind: line
+    token: 12b
+  printed_label: 12b
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_1040_2025
+    source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
+    page: 2
+- address_id: 2025/document=form_1040/line=12b/option=spouse_itemizes
+  logical_key: document=form_1040/line=12b/option=spouse_itemizes
+  year: 2025
+  document_id: form_1040_2025
+  parent_address_id: 2025/document=form_1040/line=12b
+  kind: option
+  path:
+  - kind: document
+    token: form_1040
+  - kind: line
+    token: 12b
+  - kind: option
+    token: spouse_itemizes
+  printed_label: Spouse itemizes on a separate return
+  aliases: []
+  control_role: checkbox
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_1040_2025
+    source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
+    page: 2
+  official_ref: 12b
+- address_id: 2025/document=form_1040/line=12c
+  logical_key: document=form_1040/line=12c
+  year: 2025
+  document_id: form_1040_2025
+  parent_address_id: 2025/document=form_1040
+  kind: line
+  path:
+  - kind: document
+    token: form_1040
+  - kind: line
+    token: 12c
+  printed_label: 12c
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_1040_2025
+    source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
+    page: 2
+- address_id: 2025/document=form_1040/line=12c/option=dual_status_alien
+  logical_key: document=form_1040/line=12c/option=dual_status_alien
+  year: 2025
+  document_id: form_1040_2025
+  parent_address_id: 2025/document=form_1040/line=12c
+  kind: option
+  path:
+  - kind: document
+    token: form_1040
+  - kind: line
+    token: 12c
+  - kind: option
+    token: dual_status_alien
+  printed_label: You were a dual-status alien
+  aliases: []
+  control_role: checkbox
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_1040_2025
+    source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
+    page: 2
+  official_ref: 12c
+- address_id: 2025/document=form_1040/line=12d
+  logical_key: document=form_1040/line=12d
+  year: 2025
+  document_id: form_1040_2025
+  parent_address_id: 2025/document=form_1040
+  kind: line
+  path:
+  - kind: document
+    token: form_1040
+  - kind: line
+    token: 12d
+  printed_label: 12d
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_1040_2025
+    source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
+    page: 2
+- address_id: 2025/document=form_1040/line=12d/option=spouse_blind
+  logical_key: document=form_1040/line=12d/option=spouse_blind
+  year: 2025
+  document_id: form_1040_2025
+  parent_address_id: 2025/document=form_1040/line=12d
+  kind: option
+  path:
+  - kind: document
+    token: form_1040
+  - kind: line
+    token: 12d
+  - kind: option
+    token: spouse_blind
+  printed_label: Spouse is blind
+  aliases: []
+  control_role: checkbox
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_1040_2025
+    source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
+    page: 2
+  official_ref: 12d
+- address_id: 2025/document=form_1040/line=12d/option=spouse_born_before_1961
+  logical_key: document=form_1040/line=12d/option=spouse_born_before_1961
+  year: 2025
+  document_id: form_1040_2025
+  parent_address_id: 2025/document=form_1040/line=12d
+  kind: option
+  path:
+  - kind: document
+    token: form_1040
+  - kind: line
+    token: 12d
+  - kind: option
+    token: spouse_born_before_1961
+  printed_label: Spouse was born before January 2, 1961
+  aliases: []
+  control_role: checkbox
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_1040_2025
+    source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
+    page: 2
+  official_ref: 12d
+- address_id: 2025/document=form_1040/line=12d/option=you_blind
+  logical_key: document=form_1040/line=12d/option=you_blind
+  year: 2025
+  document_id: form_1040_2025
+  parent_address_id: 2025/document=form_1040/line=12d
+  kind: option
+  path:
+  - kind: document
+    token: form_1040
+  - kind: line
+    token: 12d
+  - kind: option
+    token: you_blind
+  printed_label: You are blind
+  aliases: []
+  control_role: checkbox
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_1040_2025
+    source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
+    page: 2
+  official_ref: 12d
+- address_id: 2025/document=form_1040/line=12d/option=you_born_before_1961
+  logical_key: document=form_1040/line=12d/option=you_born_before_1961
+  year: 2025
+  document_id: form_1040_2025
+  parent_address_id: 2025/document=form_1040/line=12d
+  kind: option
+  path:
+  - kind: document
+    token: form_1040
+  - kind: line
+    token: 12d
+  - kind: option
+    token: you_born_before_1961
+  printed_label: You were born before January 2, 1961
+  aliases: []
+  control_role: checkbox
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_1040_2025
+    source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
+    page: 2
+  official_ref: 12d
 - address_id: 2025/document=form_1040/line=12e
   logical_key: document=form_1040/line=12e
   year: 2025
@@ -256,31 +425,9 @@ addresses:
     token: 12e
   - kind: control
     token: amount
-  printed_label: Line 12e - . . . . . . . . . 12e - f2_02
+  printed_label: Standard deduction or itemized deductions (from Schedule A)
   aliases: []
   control_role: amount
-  status: pending_review
-  evidence:
-  - source_path: config/manifest.yaml#form_1040_2025
-    source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
-    page: 2
-  official_ref: 12e
-- address_id: 2025/document=form_1040/line=12e/control=checkbox
-  logical_key: document=form_1040/line=12e/control=checkbox
-  year: 2025
-  document_id: form_1040_2025
-  parent_address_id: 2025/document=form_1040/line=12e
-  kind: control
-  path:
-  - kind: document
-    token: form_1040
-  - kind: line
-    token: 12e
-  - kind: control
-    token: checkbox
-  printed_label: 'Line 12e - Standard Spouse: - c2_7'
-  aliases: []
-  control_role: checkbox
   status: pending_review
   evidence:
   - source_path: config/manifest.yaml#form_1040_2025
@@ -319,7 +466,7 @@ addresses:
     token: 13a
   - kind: control
     token: amount
-  printed_label: Line 13a - . . . . . . . . . 13a - f2_03
+  printed_label: Qualified business income deduction from Form 8995 or Form 8995-A
   aliases: []
   control_role: amount
   status: pending_review
@@ -360,7 +507,7 @@ addresses:
     token: 13b
   - kind: control
     token: amount
-  printed_label: Line 13b - . . . . . . . . . 13b - f2_04
+  printed_label: Additional deductions from Schedule 1-A, line 38
   aliases: []
   control_role: amount
   status: pending_review
@@ -369,6 +516,47 @@ addresses:
     source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
     page: 2
   official_ref: 13b
+- address_id: 2025/document=form_1040/line=14
+  logical_key: document=form_1040/line=14
+  year: 2025
+  document_id: form_1040_2025
+  parent_address_id: 2025/document=form_1040
+  kind: line
+  path:
+  - kind: document
+    token: form_1040
+  - kind: line
+    token: '14'
+  printed_label: '14'
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_1040_2025
+    source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
+    page: 2
+- address_id: 2025/document=form_1040/line=14/control=amount
+  logical_key: document=form_1040/line=14/control=amount
+  year: 2025
+  document_id: form_1040_2025
+  parent_address_id: 2025/document=form_1040/line=14
+  kind: control
+  path:
+  - kind: document
+    token: form_1040
+  - kind: line
+    token: '14'
+  - kind: control
+    token: amount
+  printed_label: Add lines 12e, 13a, and 13b
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_1040_2025
+    source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
+    page: 2
+  official_ref: '14'
 - address_id: 2025/document=form_1040/line=15
   logical_key: document=form_1040/line=15
   year: 2025
@@ -401,7 +589,7 @@ addresses:
     token: '15'
   - kind: control
     token: amount
-  printed_label: Line 15 - is your taxable income . . . . . 15 - f2_06
+  printed_label: Subtract line 14 from line 11b
   aliases: []
   control_role: amount
   status: pending_review
@@ -442,7 +630,7 @@ addresses:
     token: '16'
   - kind: control
     token: amount
-  printed_label: 'Line 16 - Check if any from Form(s): 1 8814 2 4972 3 - f2_07'
+  printed_label: Tax
   aliases: []
   control_role: amount
   status: pending_review
@@ -451,8 +639,8 @@ addresses:
     source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
     page: 2
   official_ref: '16'
-- address_id: 2025/document=form_1040/line=16/control=checkbox
-  logical_key: document=form_1040/line=16/control=checkbox
+- address_id: 2025/document=form_1040/line=16/control=text
+  logical_key: document=form_1040/line=16/control=text
   year: 2025
   document_id: form_1040_2025
   parent_address_id: 2025/document=form_1040/line=16
@@ -463,9 +651,74 @@ addresses:
   - kind: line
     token: '16'
   - kind: control
-    token: checkbox
-  printed_label: 'Line 16 - 16 Tax (see instructions). Check if any from Form(s):
-    1 - c2_9'
+    token: text
+  printed_label: Other tax form number
+  aliases: []
+  control_role: text
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_1040_2025
+    source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
+    page: 2
+  official_ref: '16'
+- address_id: 2025/document=form_1040/line=16/option=form_4972
+  logical_key: document=form_1040/line=16/option=form_4972
+  year: 2025
+  document_id: form_1040_2025
+  parent_address_id: 2025/document=form_1040/line=16
+  kind: option
+  path:
+  - kind: document
+    token: form_1040
+  - kind: line
+    token: '16'
+  - kind: option
+    token: form_4972
+  printed_label: Form 4972
+  aliases: []
+  control_role: checkbox
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_1040_2025
+    source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
+    page: 2
+  official_ref: '16'
+- address_id: 2025/document=form_1040/line=16/option=form_8814
+  logical_key: document=form_1040/line=16/option=form_8814
+  year: 2025
+  document_id: form_1040_2025
+  parent_address_id: 2025/document=form_1040/line=16
+  kind: option
+  path:
+  - kind: document
+    token: form_1040
+  - kind: line
+    token: '16'
+  - kind: option
+    token: form_8814
+  printed_label: Form 8814
+  aliases: []
+  control_role: checkbox
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_1040_2025
+    source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
+    page: 2
+  official_ref: '16'
+- address_id: 2025/document=form_1040/line=16/option=other_form
+  logical_key: document=form_1040/line=16/option=other_form
+  year: 2025
+  document_id: form_1040_2025
+  parent_address_id: 2025/document=form_1040/line=16
+  kind: option
+  path:
+  - kind: document
+    token: form_1040
+  - kind: line
+    token: '16'
+  - kind: option
+    token: other_form
+  printed_label: Other form
   aliases: []
   control_role: checkbox
   status: pending_review
@@ -506,7 +759,7 @@ addresses:
     token: '17'
   - kind: control
     token: amount
-  printed_label: Line 17 - . . . . . . . . . 17 - f2_09
+  printed_label: Amount from Schedule 2, line 3
   aliases: []
   control_role: amount
   status: pending_review
@@ -547,7 +800,7 @@ addresses:
     token: '18'
   - kind: control
     token: amount
-  printed_label: Line 18 - . . . . . . . . . 18 - f2_10
+  printed_label: Add lines 16 and 17
   aliases: []
   control_role: amount
   status: pending_review
@@ -588,7 +841,7 @@ addresses:
     token: '19'
   - kind: control
     token: amount
-  printed_label: Line 19 - . . . . . . . . . 19 - f2_11
+  printed_label: Child tax credit or credit for other dependents from Schedule 8812
   aliases: []
   control_role: amount
   status: pending_review
@@ -629,7 +882,7 @@ addresses:
     token: 1a
   - kind: control
     token: amount
-  printed_label: Line 1a - . . . . . . . . . 1a - f1_47
+  printed_label: Total amount from Form(s) W-2, box 1
   aliases: []
   control_role: amount
   status: pending_review
@@ -670,7 +923,7 @@ addresses:
     token: 1b
   - kind: control
     token: amount
-  printed_label: Line 1b - . . . . . . . . . 1b - f1_48
+  printed_label: Household employee wages not reported on Form(s) W-2
   aliases: []
   control_role: amount
   status: pending_review
@@ -711,7 +964,7 @@ addresses:
     token: 1c
   - kind: control
     token: amount
-  printed_label: Line 1c - . . . . . . . . . 1c - f1_49
+  printed_label: Tip income not reported on line 1a
   aliases: []
   control_role: amount
   status: pending_review
@@ -752,7 +1005,7 @@ addresses:
     token: 1d
   - kind: control
     token: amount
-  printed_label: Line 1d - instructions) . . . . . . . . 1d - f1_50
+  printed_label: Medicaid waiver payments not reported on Form(s) W-2
   aliases: []
   control_role: amount
   status: pending_review
@@ -793,7 +1046,7 @@ addresses:
     token: 1e
   - kind: control
     token: amount
-  printed_label: Line 1e - . . . . . . . . . 1e - f1_51
+  printed_label: Taxable dependent care benefits from Form 2441, line 26
   aliases: []
   control_role: amount
   status: pending_review
@@ -834,7 +1087,7 @@ addresses:
     token: 1f
   - kind: control
     token: amount
-  printed_label: Line 1f - . . . . . . . . . 1f - f1_52
+  printed_label: Employer-provided adoption benefits from Form 8839, line 31
   aliases: []
   control_role: amount
   status: pending_review
@@ -875,7 +1128,7 @@ addresses:
     token: 1g
   - kind: control
     token: amount
-  printed_label: Line 1g - . . . . . . . . . 1g - f1_53
+  printed_label: Wages from Form 8919, line 6
   aliases: []
   control_role: amount
   status: pending_review
@@ -916,8 +1169,7 @@ addresses:
     token: 1h
   - kind: control
     token: amount
-  printed_label: 'Line 1h - Other earned income (see instructions). Enter type and
-    amount: 1h - f1_55'
+  printed_label: Other earned income - amount
   aliases: []
   control_role: amount
   status: pending_review
@@ -939,8 +1191,7 @@ addresses:
     token: 1h
   - kind: control
     token: description
-  printed_label: 'Line 1h - h Other earned income (see instructions). Enter type and
-    amount: - f1_54'
+  printed_label: Other earned income - type
   aliases: []
   control_role: description
   status: pending_review
@@ -981,7 +1232,7 @@ addresses:
     token: 1i
   - kind: control
     token: amount
-  printed_label: Line 1i - (see instructions) . . . . . . . 1i - f1_56
+  printed_label: Nontaxable combat pay election
   aliases: []
   control_role: amount
   status: pending_review
@@ -1022,7 +1273,7 @@ addresses:
     token: 1z
   - kind: control
     token: amount
-  printed_label: Line 1z - . . . . . . . . . 1z - f1_57
+  printed_label: Add lines 1a through 1h
   aliases: []
   control_role: amount
   status: pending_review
@@ -1063,7 +1314,7 @@ addresses:
     token: '20'
   - kind: control
     token: amount
-  printed_label: Line 20 - . . . . . . . . . 20 - f2_12
+  printed_label: Amount from Schedule 3, line 8
   aliases: []
   control_role: amount
   status: pending_review
@@ -1072,6 +1323,47 @@ addresses:
     source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
     page: 2
   official_ref: '20'
+- address_id: 2025/document=form_1040/line=21
+  logical_key: document=form_1040/line=21
+  year: 2025
+  document_id: form_1040_2025
+  parent_address_id: 2025/document=form_1040
+  kind: line
+  path:
+  - kind: document
+    token: form_1040
+  - kind: line
+    token: '21'
+  printed_label: '21'
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_1040_2025
+    source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
+    page: 2
+- address_id: 2025/document=form_1040/line=21/control=amount
+  logical_key: document=form_1040/line=21/control=amount
+  year: 2025
+  document_id: form_1040_2025
+  parent_address_id: 2025/document=form_1040/line=21
+  kind: control
+  path:
+  - kind: document
+    token: form_1040
+  - kind: line
+    token: '21'
+  - kind: control
+    token: amount
+  printed_label: Add lines 19 and 20
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_1040_2025
+    source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
+    page: 2
+  official_ref: '21'
 - address_id: 2025/document=form_1040/line=22
   logical_key: document=form_1040/line=22
   year: 2025
@@ -1104,7 +1396,7 @@ addresses:
     token: '22'
   - kind: control
     token: amount
-  printed_label: Line 22 - . . . . . . . . . 22 - f2_14
+  printed_label: Subtract line 21 from line 18
   aliases: []
   control_role: amount
   status: pending_review
@@ -1145,7 +1437,8 @@ addresses:
     token: '23'
   - kind: control
     token: amount
-  printed_label: Line 23 - . . . . . . . . . 23 - f2_15
+  printed_label: Other taxes, including self-employment tax, from Schedule 2, line
+    21
   aliases: []
   control_role: amount
   status: pending_review
@@ -1186,7 +1479,7 @@ addresses:
     token: '24'
   - kind: control
     token: amount
-  printed_label: Line 24 - . . . . . . . . . 24 - f2_16
+  printed_label: Add lines 22 and 23
   aliases: []
   control_role: amount
   status: pending_review
@@ -1227,7 +1520,7 @@ addresses:
     token: 25a
   - kind: control
     token: amount
-  printed_label: Line 25a - . . . . . . . . . 25a - f2_17
+  printed_label: Federal income tax withheld from Form(s) W-2
   aliases: []
   control_role: amount
   status: pending_review
@@ -1268,7 +1561,7 @@ addresses:
     token: 25b
   - kind: control
     token: amount
-  printed_label: Line 25b - . . . . . . . . . 25b - f2_18
+  printed_label: Federal income tax withheld from Form(s) 1099
   aliases: []
   control_role: amount
   status: pending_review
@@ -1309,7 +1602,7 @@ addresses:
     token: 25c
   - kind: control
     token: amount
-  printed_label: Line 25c - . . . . . . . . . 25c - f2_19
+  printed_label: Federal income tax withheld from other forms
   aliases: []
   control_role: amount
   status: pending_review
@@ -1350,7 +1643,7 @@ addresses:
     token: 25d
   - kind: control
     token: amount
-  printed_label: Line 25d - . . . . . . . . . 25d - f2_20
+  printed_label: Add lines 25a through 25c
   aliases: []
   control_role: amount
   status: pending_review
@@ -1391,9 +1684,31 @@ addresses:
     token: '26'
   - kind: control
     token: amount
-  printed_label: Line 26 - . . . . . . . . . 26 - f2_21
+  printed_label: 2025 estimated tax payments and amount applied from 2024 return
   aliases: []
   control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_1040_2025
+    source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
+    page: 2
+  official_ref: '26'
+- address_id: 2025/document=form_1040/line=26/control=identifier
+  logical_key: document=form_1040/line=26/control=identifier
+  year: 2025
+  document_id: form_1040_2025
+  parent_address_id: 2025/document=form_1040/line=26
+  kind: control
+  path:
+  - kind: document
+    token: form_1040
+  - kind: line
+    token: '26'
+  - kind: control
+    token: identifier
+  printed_label: Former spouse's SSN
+  aliases: []
+  control_role: identifier
   status: pending_review
   evidence:
   - source_path: config/manifest.yaml#form_1040_2025
@@ -1432,7 +1747,7 @@ addresses:
     token: 27a
   - kind: control
     token: amount
-  printed_label: Line 27a - . . . . . . . . . 27a - f2_23
+  printed_label: Earned income credit (EIC)
   aliases: []
   control_role: amount
   status: pending_review
@@ -1441,6 +1756,88 @@ addresses:
     source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
     page: 2
   official_ref: 27a
+- address_id: 2025/document=form_1040/line=27b
+  logical_key: document=form_1040/line=27b
+  year: 2025
+  document_id: form_1040_2025
+  parent_address_id: 2025/document=form_1040
+  kind: line
+  path:
+  - kind: document
+    token: form_1040
+  - kind: line
+    token: 27b
+  printed_label: 27b
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_1040_2025
+    source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
+    page: 2
+- address_id: 2025/document=form_1040/line=27b/option=clergy_schedule_se
+  logical_key: document=form_1040/line=27b/option=clergy_schedule_se
+  year: 2025
+  document_id: form_1040_2025
+  parent_address_id: 2025/document=form_1040/line=27b
+  kind: option
+  path:
+  - kind: document
+    token: form_1040
+  - kind: line
+    token: 27b
+  - kind: option
+    token: clergy_schedule_se
+  printed_label: Clergy filing Schedule SE
+  aliases: []
+  control_role: checkbox
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_1040_2025
+    source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
+    page: 2
+  official_ref: 27b
+- address_id: 2025/document=form_1040/line=27c
+  logical_key: document=form_1040/line=27c
+  year: 2025
+  document_id: form_1040_2025
+  parent_address_id: 2025/document=form_1040
+  kind: line
+  path:
+  - kind: document
+    token: form_1040
+  - kind: line
+    token: 27c
+  printed_label: 27c
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_1040_2025
+    source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
+    page: 2
+- address_id: 2025/document=form_1040/line=27c/option=do_not_claim_eic
+  logical_key: document=form_1040/line=27c/option=do_not_claim_eic
+  year: 2025
+  document_id: form_1040_2025
+  parent_address_id: 2025/document=form_1040/line=27c
+  kind: option
+  path:
+  - kind: document
+    token: form_1040
+  - kind: line
+    token: 27c
+  - kind: option
+    token: do_not_claim_eic
+  printed_label: Do not claim the EIC
+  aliases: []
+  control_role: checkbox
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_1040_2025
+    source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
+    page: 2
+  official_ref: 27c
 - address_id: 2025/document=form_1040/line=28
   logical_key: document=form_1040/line=28
   year: 2025
@@ -1473,7 +1870,7 @@ addresses:
     token: '28'
   - kind: control
     token: amount
-  printed_label: Line 28 - . . . . . . . . . 28 - f2_24
+  printed_label: Additional child tax credit (ACTC) from Schedule 8812
   aliases: []
   control_role: amount
   status: pending_review
@@ -1482,20 +1879,20 @@ addresses:
     source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
     page: 2
   official_ref: '28'
-- address_id: 2025/document=form_1040/line=28/control=checkbox
-  logical_key: document=form_1040/line=28/control=checkbox
+- address_id: 2025/document=form_1040/line=28/option=do_not_claim_actc
+  logical_key: document=form_1040/line=28/option=do_not_claim_actc
   year: 2025
   document_id: form_1040_2025
   parent_address_id: 2025/document=form_1040/line=28
-  kind: control
+  kind: option
   path:
   - kind: document
     token: form_1040
   - kind: line
     token: '28'
-  - kind: control
-    token: checkbox
-  printed_label: Line 28 - . . . . . . . . . . - c2_14
+  - kind: option
+    token: do_not_claim_actc
+  printed_label: Do not claim the ACTC
   aliases: []
   control_role: checkbox
   status: pending_review
@@ -1536,7 +1933,7 @@ addresses:
     token: '29'
   - kind: control
     token: amount
-  printed_label: Line 29 - line 8 . . . . . . . 29 - f2_25
+  printed_label: American opportunity credit from Form 8863, line 8
   aliases: []
   control_role: amount
   status: pending_review
@@ -1545,6 +1942,47 @@ addresses:
     source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
     page: 2
   official_ref: '29'
+- address_id: 2025/document=form_1040/line=2a
+  logical_key: document=form_1040/line=2a
+  year: 2025
+  document_id: form_1040_2025
+  parent_address_id: 2025/document=form_1040
+  kind: line
+  path:
+  - kind: document
+    token: form_1040
+  - kind: line
+    token: 2a
+  printed_label: 2a
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_1040_2025
+    source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
+    page: 1
+- address_id: 2025/document=form_1040/line=2a/control=amount
+  logical_key: document=form_1040/line=2a/control=amount
+  year: 2025
+  document_id: form_1040_2025
+  parent_address_id: 2025/document=form_1040/line=2a
+  kind: control
+  path:
+  - kind: document
+    token: form_1040
+  - kind: line
+    token: 2a
+  - kind: control
+    token: amount
+  printed_label: Tax-exempt interest
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_1040_2025
+    source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
+    page: 1
+  official_ref: 2a
 - address_id: 2025/document=form_1040/line=2b
   logical_key: document=form_1040/line=2b
   year: 2025
@@ -1577,7 +2015,7 @@ addresses:
     token: 2b
   - kind: control
     token: amount
-  printed_label: Line 2b - Attach Sch. B 2a Tax-exempt interest . . . 2a - f1_58
+  printed_label: Taxable interest
   aliases: []
   control_role: amount
   status: pending_review
@@ -1618,7 +2056,7 @@ addresses:
     token: '30'
   - kind: control
     token: amount
-  printed_label: Line 30 - 8839, line 13 . . . . . . 30 - f2_26
+  printed_label: Refundable adoption credit from Form 8839, line 13
   aliases: []
   control_role: amount
   status: pending_review
@@ -1659,7 +2097,7 @@ addresses:
     token: '31'
   - kind: control
     token: amount
-  printed_label: Line 31 - . . . . . . . . . 31 - f2_27
+  printed_label: Amount from Schedule 3, line 15
   aliases: []
   control_role: amount
   status: pending_review
@@ -1700,8 +2138,7 @@ addresses:
     token: '32'
   - kind: control
     token: amount
-  printed_label: Line 32 - are your total other payments and refundable credits .
-    32 - f2_28
+  printed_label: Add lines 27a, 28, 29, 30, and 31
   aliases: []
   control_role: amount
   status: pending_review
@@ -1742,7 +2179,7 @@ addresses:
     token: '33'
   - kind: control
     token: amount
-  printed_label: Line 33 - . . . . . . . . . 33 - f2_29
+  printed_label: Add lines 25d, 26, and 32
   aliases: []
   control_role: amount
   status: pending_review
@@ -1783,7 +2220,7 @@ addresses:
     token: '34'
   - kind: control
     token: amount
-  printed_label: Line 34 - 33. This is the amount you overpaid . . 34 - f2_30
+  printed_label: Subtract line 24 from line 33
   aliases: []
   control_role: amount
   status: pending_review
@@ -1824,7 +2261,7 @@ addresses:
     token: 35a
   - kind: control
     token: amount
-  printed_label: Line 35a - 8888 is attached, check here . . . . 35a - f2_31
+  printed_label: Amount of line 34 you want refunded to you
   aliases: []
   control_role: amount
   status: pending_review
@@ -1833,20 +2270,20 @@ addresses:
     source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
     page: 2
   official_ref: 35a
-- address_id: 2025/document=form_1040/line=35a/control=checkbox
-  logical_key: document=form_1040/line=35a/control=checkbox
+- address_id: 2025/document=form_1040/line=35a/option=form_8888_attached
+  logical_key: document=form_1040/line=35a/option=form_8888_attached
   year: 2025
   document_id: form_1040_2025
   parent_address_id: 2025/document=form_1040/line=35a
-  kind: control
+  kind: option
   path:
   - kind: document
     token: form_1040
   - kind: line
     token: 35a
-  - kind: control
-    token: checkbox
-  printed_label: Line 35a - Form 8888 is attached, check here . . . . - c2_15
+  - kind: option
+    token: form_8888_attached
+  printed_label: Form 8888 is attached
   aliases: []
   control_role: checkbox
   status: pending_review
@@ -1855,6 +2292,151 @@ addresses:
     source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
     page: 2
   official_ref: 35a
+- address_id: 2025/document=form_1040/line=35b
+  logical_key: document=form_1040/line=35b
+  year: 2025
+  document_id: form_1040_2025
+  parent_address_id: 2025/document=form_1040
+  kind: line
+  path:
+  - kind: document
+    token: form_1040
+  - kind: line
+    token: 35b
+  printed_label: 35b
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_1040_2025
+    source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
+    page: 2
+- address_id: 2025/document=form_1040/line=35b/control=identifier
+  logical_key: document=form_1040/line=35b/control=identifier
+  year: 2025
+  document_id: form_1040_2025
+  parent_address_id: 2025/document=form_1040/line=35b
+  kind: control
+  path:
+  - kind: document
+    token: form_1040
+  - kind: line
+    token: 35b
+  - kind: control
+    token: identifier
+  printed_label: Routing number
+  aliases: []
+  control_role: identifier
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_1040_2025
+    source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
+    page: 2
+  official_ref: 35b
+- address_id: 2025/document=form_1040/line=35c
+  logical_key: document=form_1040/line=35c
+  year: 2025
+  document_id: form_1040_2025
+  parent_address_id: 2025/document=form_1040
+  kind: line
+  path:
+  - kind: document
+    token: form_1040
+  - kind: line
+    token: 35c
+  printed_label: 35c
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_1040_2025
+    source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
+    page: 2
+- address_id: 2025/document=form_1040/line=35c/option=checking
+  logical_key: document=form_1040/line=35c/option=checking
+  year: 2025
+  document_id: form_1040_2025
+  parent_address_id: 2025/document=form_1040/line=35c
+  kind: option
+  path:
+  - kind: document
+    token: form_1040
+  - kind: line
+    token: 35c
+  - kind: option
+    token: checking
+  printed_label: Checking
+  aliases: []
+  control_role: checkbox
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_1040_2025
+    source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
+    page: 2
+  official_ref: 35c
+- address_id: 2025/document=form_1040/line=35c/option=savings
+  logical_key: document=form_1040/line=35c/option=savings
+  year: 2025
+  document_id: form_1040_2025
+  parent_address_id: 2025/document=form_1040/line=35c
+  kind: option
+  path:
+  - kind: document
+    token: form_1040
+  - kind: line
+    token: 35c
+  - kind: option
+    token: savings
+  printed_label: Savings
+  aliases: []
+  control_role: checkbox
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_1040_2025
+    source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
+    page: 2
+  official_ref: 35c
+- address_id: 2025/document=form_1040/line=35d
+  logical_key: document=form_1040/line=35d
+  year: 2025
+  document_id: form_1040_2025
+  parent_address_id: 2025/document=form_1040
+  kind: line
+  path:
+  - kind: document
+    token: form_1040
+  - kind: line
+    token: 35d
+  printed_label: 35d
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_1040_2025
+    source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
+    page: 2
+- address_id: 2025/document=form_1040/line=35d/control=identifier
+  logical_key: document=form_1040/line=35d/control=identifier
+  year: 2025
+  document_id: form_1040_2025
+  parent_address_id: 2025/document=form_1040/line=35d
+  kind: control
+  path:
+  - kind: document
+    token: form_1040
+  - kind: line
+    token: 35d
+  - kind: control
+    token: identifier
+  printed_label: Account number
+  aliases: []
+  control_role: identifier
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_1040_2025
+    source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
+    page: 2
+  official_ref: 35d
 - address_id: 2025/document=form_1040/line=36
   logical_key: document=form_1040/line=36
   year: 2025
@@ -1887,7 +2469,7 @@ addresses:
     token: '36'
   - kind: control
     token: amount
-  printed_label: Line 36 - applied to your 2026 estimated tax . . . 36 - f2_34
+  printed_label: Amount of line 34 you want applied to your 2026 estimated tax
   aliases: []
   control_role: amount
   status: pending_review
@@ -1928,7 +2510,7 @@ addresses:
     token: '37'
   - kind: control
     token: amount
-  printed_label: Line 37 - instructions . . . . . . . . 37 - f2_35
+  printed_label: Subtract line 33 from line 24
   aliases: []
   control_role: amount
   status: pending_review
@@ -1969,7 +2551,7 @@ addresses:
     token: '38'
   - kind: control
     token: amount
-  printed_label: Line 38 - . . . . . . . . . 38 - f2_36
+  printed_label: Estimated tax penalty
   aliases: []
   control_role: amount
   status: pending_review
@@ -1978,6 +2560,47 @@ addresses:
     source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
     page: 2
   official_ref: '38'
+- address_id: 2025/document=form_1040/line=3a
+  logical_key: document=form_1040/line=3a
+  year: 2025
+  document_id: form_1040_2025
+  parent_address_id: 2025/document=form_1040
+  kind: line
+  path:
+  - kind: document
+    token: form_1040
+  - kind: line
+    token: 3a
+  printed_label: 3a
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_1040_2025
+    source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
+    page: 1
+- address_id: 2025/document=form_1040/line=3a/control=amount
+  logical_key: document=form_1040/line=3a/control=amount
+  year: 2025
+  document_id: form_1040_2025
+  parent_address_id: 2025/document=form_1040/line=3a
+  kind: control
+  path:
+  - kind: document
+    token: form_1040
+  - kind: line
+    token: 3a
+  - kind: control
+    token: amount
+  printed_label: Qualified dividends
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_1040_2025
+    source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
+    page: 1
+  official_ref: 3a
 - address_id: 2025/document=form_1040/line=3b
   logical_key: document=form_1040/line=3b
   year: 2025
@@ -2010,7 +2633,7 @@ addresses:
     token: 3b
   - kind: control
     token: amount
-  printed_label: Line 3b - if required. 3a Qualified dividends . . . 3a - f1_60
+  printed_label: Ordinary dividends
   aliases: []
   control_role: amount
   status: pending_review
@@ -2019,21 +2642,39 @@ addresses:
     source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
     page: 1
   official_ref: 3b
-- address_id: 2025/document=form_1040/line=3b/control=checkbox
-  logical_key: document=form_1040/line=3b/control=checkbox
+- address_id: 2025/document=form_1040/line=3c
+  logical_key: document=form_1040/line=3c
   year: 2025
   document_id: form_1040_2025
-  parent_address_id: 2025/document=form_1040/line=3b
-  kind: control
+  parent_address_id: 2025/document=form_1040
+  kind: line
   path:
   - kind: document
     token: form_1040
   - kind: line
-    token: 3b
-  - kind: control
-    token: checkbox
-  printed_label: "Line 3b - c Check if your child\u2019s dividends are included in\
-    \ 1 - c1_33"
+    token: 3c
+  printed_label: 3c
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_1040_2025
+    source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
+    page: 1
+- address_id: 2025/document=form_1040/line=3c/option=line_3a
+  logical_key: document=form_1040/line=3c/option=line_3a
+  year: 2025
+  document_id: form_1040_2025
+  parent_address_id: 2025/document=form_1040/line=3c
+  kind: option
+  path:
+  - kind: document
+    token: form_1040
+  - kind: line
+    token: 3c
+  - kind: option
+    token: line_3a
+  printed_label: Child's dividends are included in line 1 - Line 3a
   aliases: []
   control_role: checkbox
   status: pending_review
@@ -2041,7 +2682,70 @@ addresses:
   - source_path: config/manifest.yaml#form_1040_2025
     source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
     page: 1
-  official_ref: 3b
+  official_ref: 3c
+- address_id: 2025/document=form_1040/line=3c/option=line_3b
+  logical_key: document=form_1040/line=3c/option=line_3b
+  year: 2025
+  document_id: form_1040_2025
+  parent_address_id: 2025/document=form_1040/line=3c
+  kind: option
+  path:
+  - kind: document
+    token: form_1040
+  - kind: line
+    token: 3c
+  - kind: option
+    token: line_3b
+  printed_label: Child's dividends are included in line 1 - Line 3b
+  aliases: []
+  control_role: checkbox
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_1040_2025
+    source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
+    page: 1
+  official_ref: 3c
+- address_id: 2025/document=form_1040/line=4a
+  logical_key: document=form_1040/line=4a
+  year: 2025
+  document_id: form_1040_2025
+  parent_address_id: 2025/document=form_1040
+  kind: line
+  path:
+  - kind: document
+    token: form_1040
+  - kind: line
+    token: 4a
+  printed_label: 4a
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_1040_2025
+    source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
+    page: 1
+- address_id: 2025/document=form_1040/line=4a/control=amount
+  logical_key: document=form_1040/line=4a/control=amount
+  year: 2025
+  document_id: form_1040_2025
+  parent_address_id: 2025/document=form_1040/line=4a
+  kind: control
+  path:
+  - kind: document
+    token: form_1040
+  - kind: line
+    token: 4a
+  - kind: control
+    token: amount
+  printed_label: IRA distributions
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_1040_2025
+    source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
+    page: 1
+  official_ref: 4a
 - address_id: 2025/document=form_1040/line=4b
   logical_key: document=form_1040/line=4b
   year: 2025
@@ -2074,7 +2778,7 @@ addresses:
     token: 4b
   - kind: control
     token: amount
-  printed_label: Line 4b - 4a IRA distributions . . . . 4a - f1_62
+  printed_label: Taxable amount
   aliases: []
   control_role: amount
   status: pending_review
@@ -2083,6 +2787,154 @@ addresses:
     source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
     page: 1
   official_ref: 4b
+- address_id: 2025/document=form_1040/line=4c
+  logical_key: document=form_1040/line=4c
+  year: 2025
+  document_id: form_1040_2025
+  parent_address_id: 2025/document=form_1040
+  kind: line
+  path:
+  - kind: document
+    token: form_1040
+  - kind: line
+    token: 4c
+  printed_label: 4c
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_1040_2025
+    source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
+    page: 1
+- address_id: 2025/document=form_1040/line=4c/control=text
+  logical_key: document=form_1040/line=4c/control=text
+  year: 2025
+  document_id: form_1040_2025
+  parent_address_id: 2025/document=form_1040/line=4c
+  kind: control
+  path:
+  - kind: document
+    token: form_1040
+  - kind: line
+    token: 4c
+  - kind: control
+    token: text
+  printed_label: Option 3 word or code
+  aliases: []
+  control_role: text
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_1040_2025
+    source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
+    page: 1
+  official_ref: 4c
+- address_id: 2025/document=form_1040/line=4c/option=other_word_or_code
+  logical_key: document=form_1040/line=4c/option=other_word_or_code
+  year: 2025
+  document_id: form_1040_2025
+  parent_address_id: 2025/document=form_1040/line=4c
+  kind: option
+  path:
+  - kind: document
+    token: form_1040
+  - kind: line
+    token: 4c
+  - kind: option
+    token: other_word_or_code
+  printed_label: Use another word or code
+  aliases: []
+  control_role: checkbox
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_1040_2025
+    source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
+    page: 1
+  official_ref: 4c
+- address_id: 2025/document=form_1040/line=4c/option=qcd
+  logical_key: document=form_1040/line=4c/option=qcd
+  year: 2025
+  document_id: form_1040_2025
+  parent_address_id: 2025/document=form_1040/line=4c
+  kind: option
+  path:
+  - kind: document
+    token: form_1040
+  - kind: line
+    token: 4c
+  - kind: option
+    token: qcd
+  printed_label: QCD
+  aliases: []
+  control_role: checkbox
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_1040_2025
+    source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
+    page: 1
+  official_ref: 4c
+- address_id: 2025/document=form_1040/line=4c/option=rollover
+  logical_key: document=form_1040/line=4c/option=rollover
+  year: 2025
+  document_id: form_1040_2025
+  parent_address_id: 2025/document=form_1040/line=4c
+  kind: option
+  path:
+  - kind: document
+    token: form_1040
+  - kind: line
+    token: 4c
+  - kind: option
+    token: rollover
+  printed_label: Rollover
+  aliases: []
+  control_role: checkbox
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_1040_2025
+    source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
+    page: 1
+  official_ref: 4c
+- address_id: 2025/document=form_1040/line=5a
+  logical_key: document=form_1040/line=5a
+  year: 2025
+  document_id: form_1040_2025
+  parent_address_id: 2025/document=form_1040
+  kind: line
+  path:
+  - kind: document
+    token: form_1040
+  - kind: line
+    token: 5a
+  printed_label: 5a
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_1040_2025
+    source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
+    page: 1
+- address_id: 2025/document=form_1040/line=5a/control=amount
+  logical_key: document=form_1040/line=5a/control=amount
+  year: 2025
+  document_id: form_1040_2025
+  parent_address_id: 2025/document=form_1040/line=5a
+  kind: control
+  path:
+  - kind: document
+    token: form_1040
+  - kind: line
+    token: 5a
+  - kind: control
+    token: amount
+  printed_label: Pensions and annuities
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_1040_2025
+    source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
+    page: 1
+  official_ref: 5a
 - address_id: 2025/document=form_1040/line=5b
   logical_key: document=form_1040/line=5b
   year: 2025
@@ -2115,7 +2967,7 @@ addresses:
     token: 5b
   - kind: control
     token: amount
-  printed_label: Line 5b - 5a Pensions and annuities . . 5a - f1_65
+  printed_label: Taxable amount
   aliases: []
   control_role: amount
   status: pending_review
@@ -2124,6 +2976,154 @@ addresses:
     source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
     page: 1
   official_ref: 5b
+- address_id: 2025/document=form_1040/line=5c
+  logical_key: document=form_1040/line=5c
+  year: 2025
+  document_id: form_1040_2025
+  parent_address_id: 2025/document=form_1040
+  kind: line
+  path:
+  - kind: document
+    token: form_1040
+  - kind: line
+    token: 5c
+  printed_label: 5c
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_1040_2025
+    source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
+    page: 1
+- address_id: 2025/document=form_1040/line=5c/control=text
+  logical_key: document=form_1040/line=5c/control=text
+  year: 2025
+  document_id: form_1040_2025
+  parent_address_id: 2025/document=form_1040/line=5c
+  kind: control
+  path:
+  - kind: document
+    token: form_1040
+  - kind: line
+    token: 5c
+  - kind: control
+    token: text
+  printed_label: Option 3 word or code
+  aliases: []
+  control_role: text
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_1040_2025
+    source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
+    page: 1
+  official_ref: 5c
+- address_id: 2025/document=form_1040/line=5c/option=other_word_or_code
+  logical_key: document=form_1040/line=5c/option=other_word_or_code
+  year: 2025
+  document_id: form_1040_2025
+  parent_address_id: 2025/document=form_1040/line=5c
+  kind: option
+  path:
+  - kind: document
+    token: form_1040
+  - kind: line
+    token: 5c
+  - kind: option
+    token: other_word_or_code
+  printed_label: Use another word or code
+  aliases: []
+  control_role: checkbox
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_1040_2025
+    source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
+    page: 1
+  official_ref: 5c
+- address_id: 2025/document=form_1040/line=5c/option=pso
+  logical_key: document=form_1040/line=5c/option=pso
+  year: 2025
+  document_id: form_1040_2025
+  parent_address_id: 2025/document=form_1040/line=5c
+  kind: option
+  path:
+  - kind: document
+    token: form_1040
+  - kind: line
+    token: 5c
+  - kind: option
+    token: pso
+  printed_label: PSO
+  aliases: []
+  control_role: checkbox
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_1040_2025
+    source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
+    page: 1
+  official_ref: 5c
+- address_id: 2025/document=form_1040/line=5c/option=rollover
+  logical_key: document=form_1040/line=5c/option=rollover
+  year: 2025
+  document_id: form_1040_2025
+  parent_address_id: 2025/document=form_1040/line=5c
+  kind: option
+  path:
+  - kind: document
+    token: form_1040
+  - kind: line
+    token: 5c
+  - kind: option
+    token: rollover
+  printed_label: Rollover
+  aliases: []
+  control_role: checkbox
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_1040_2025
+    source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
+    page: 1
+  official_ref: 5c
+- address_id: 2025/document=form_1040/line=6a
+  logical_key: document=form_1040/line=6a
+  year: 2025
+  document_id: form_1040_2025
+  parent_address_id: 2025/document=form_1040
+  kind: line
+  path:
+  - kind: document
+    token: form_1040
+  - kind: line
+    token: 6a
+  printed_label: 6a
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_1040_2025
+    source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
+    page: 1
+- address_id: 2025/document=form_1040/line=6a/control=amount
+  logical_key: document=form_1040/line=6a/control=amount
+  year: 2025
+  document_id: form_1040_2025
+  parent_address_id: 2025/document=form_1040/line=6a
+  kind: control
+  path:
+  - kind: document
+    token: form_1040
+  - kind: line
+    token: 6a
+  - kind: control
+    token: amount
+  printed_label: Social security benefits
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_1040_2025
+    source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
+    page: 1
+  official_ref: 6a
 - address_id: 2025/document=form_1040/line=6b
   logical_key: document=form_1040/line=6b
   year: 2025
@@ -2156,7 +3156,7 @@ addresses:
     token: 6b
   - kind: control
     token: amount
-  printed_label: Line 6b - 6a Social security benefits . . 6a - f1_68
+  printed_label: Taxable amount
   aliases: []
   control_role: amount
   status: pending_review
@@ -2165,6 +3165,89 @@ addresses:
     source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
     page: 1
   official_ref: 6b
+- address_id: 2025/document=form_1040/line=6c
+  logical_key: document=form_1040/line=6c
+  year: 2025
+  document_id: form_1040_2025
+  parent_address_id: 2025/document=form_1040
+  kind: line
+  path:
+  - kind: document
+    token: form_1040
+  - kind: line
+    token: 6c
+  printed_label: 6c
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_1040_2025
+    source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
+    page: 1
+- address_id: 2025/document=form_1040/line=6c/option=lump_sum_election
+  logical_key: document=form_1040/line=6c/option=lump_sum_election
+  year: 2025
+  document_id: form_1040_2025
+  parent_address_id: 2025/document=form_1040/line=6c
+  kind: option
+  path:
+  - kind: document
+    token: form_1040
+  - kind: line
+    token: 6c
+  - kind: option
+    token: lump_sum_election
+  printed_label: Lump-sum election method
+  aliases: []
+  control_role: checkbox
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_1040_2025
+    source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
+    page: 1
+  official_ref: 6c
+- address_id: 2025/document=form_1040/line=6d
+  logical_key: document=form_1040/line=6d
+  year: 2025
+  document_id: form_1040_2025
+  parent_address_id: 2025/document=form_1040
+  kind: line
+  path:
+  - kind: document
+    token: form_1040
+  - kind: line
+    token: 6d
+  printed_label: 6d
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_1040_2025
+    source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
+    page: 1
+- address_id: 2025/document=form_1040/line=6d/option=mfs_lived_apart
+  logical_key: document=form_1040/line=6d/option=mfs_lived_apart
+  year: 2025
+  document_id: form_1040_2025
+  parent_address_id: 2025/document=form_1040/line=6d
+  kind: option
+  path:
+  - kind: document
+    token: form_1040
+  - kind: line
+    token: 6d
+  - kind: option
+    token: mfs_lived_apart
+  printed_label: Married filing separately and lived apart from spouse the entire
+    year
+  aliases: []
+  control_role: checkbox
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_1040_2025
+    source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
+    page: 1
+  official_ref: 6d
 - address_id: 2025/document=form_1040/line=7a
   logical_key: document=form_1040/line=7a
   year: 2025
@@ -2197,7 +3280,7 @@ addresses:
     token: 7a
   - kind: control
     token: amount
-  printed_label: Line 7a - . . . . . . . . . 7a - f1_70
+  printed_label: Capital gain or (loss)
   aliases: []
   control_role: amount
   status: pending_review
@@ -2206,6 +3289,91 @@ addresses:
     source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
     page: 1
   official_ref: 7a
+- address_id: 2025/document=form_1040/line=7b
+  logical_key: document=form_1040/line=7b
+  year: 2025
+  document_id: form_1040_2025
+  parent_address_id: 2025/document=form_1040
+  kind: line
+  path:
+  - kind: document
+    token: form_1040
+  - kind: line
+    token: 7b
+  printed_label: 7b
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_1040_2025
+    source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
+    page: 1
+- address_id: 2025/document=form_1040/line=7b/control=amount
+  logical_key: document=form_1040/line=7b/control=amount
+  year: 2025
+  document_id: form_1040_2025
+  parent_address_id: 2025/document=form_1040/line=7b
+  kind: control
+  path:
+  - kind: document
+    token: form_1040
+  - kind: line
+    token: 7b
+  - kind: control
+    token: amount
+  printed_label: Child's capital gain or (loss) included in line 7a
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_1040_2025
+    source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
+    page: 1
+  official_ref: 7b
+- address_id: 2025/document=form_1040/line=7b/option=child_capital_gain
+  logical_key: document=form_1040/line=7b/option=child_capital_gain
+  year: 2025
+  document_id: form_1040_2025
+  parent_address_id: 2025/document=form_1040/line=7b
+  kind: option
+  path:
+  - kind: document
+    token: form_1040
+  - kind: line
+    token: 7b
+  - kind: option
+    token: child_capital_gain
+  printed_label: Includes child's capital gain or (loss)
+  aliases: []
+  control_role: checkbox
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_1040_2025
+    source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
+    page: 1
+  official_ref: 7b
+- address_id: 2025/document=form_1040/line=7b/option=schedule_d_not_required
+  logical_key: document=form_1040/line=7b/option=schedule_d_not_required
+  year: 2025
+  document_id: form_1040_2025
+  parent_address_id: 2025/document=form_1040/line=7b
+  kind: option
+  path:
+  - kind: document
+    token: form_1040
+  - kind: line
+    token: 7b
+  - kind: option
+    token: schedule_d_not_required
+  printed_label: Schedule D not required
+  aliases: []
+  control_role: checkbox
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_1040_2025
+    source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
+    page: 1
+  official_ref: 7b
 - address_id: 2025/document=form_1040/line=8
   logical_key: document=form_1040/line=8
   year: 2025
@@ -2238,7 +3406,7 @@ addresses:
     token: '8'
   - kind: control
     token: amount
-  printed_label: Line 8 - . . . . . . . . . 8 - f1_72
+  printed_label: Additional income from Schedule 1, line 10
   aliases: []
   control_role: amount
   status: pending_review
@@ -2279,7 +3447,7 @@ addresses:
     token: '9'
   - kind: control
     token: amount
-  printed_label: Line 9 - . . . . . . . . . 9 - f1_73
+  printed_label: Add lines 1z, 2b, 3b, 4b, 5b, 6b, 7a, and 8
   aliases: []
   control_role: amount
   status: pending_review
@@ -2288,6 +3456,69 @@ addresses:
     source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
     page: 1
   official_ref: '9'
+- address_id: 2025/document=form_1040/section=digital_assets
+  logical_key: document=form_1040/section=digital_assets
+  year: 2025
+  document_id: form_1040_2025
+  parent_address_id: 2025/document=form_1040
+  kind: section
+  path:
+  - kind: document
+    token: form_1040
+  - kind: section
+    token: digital_assets
+  printed_label: digital_assets
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_1040_2025
+    source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
+    page: 1
+- address_id: 2025/document=form_1040/section=digital_assets/option=no
+  logical_key: document=form_1040/section=digital_assets/option=no
+  year: 2025
+  document_id: form_1040_2025
+  parent_address_id: 2025/document=form_1040/section=digital_assets
+  kind: option
+  path:
+  - kind: document
+    token: form_1040
+  - kind: section
+    token: digital_assets
+  - kind: option
+    token: 'no'
+  printed_label: 'No'
+  aliases: []
+  control_role: checkbox
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_1040_2025
+    source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
+    page: 1
+  official_ref: Digital Assets
+- address_id: 2025/document=form_1040/section=digital_assets/option=yes
+  logical_key: document=form_1040/section=digital_assets/option=yes
+  year: 2025
+  document_id: form_1040_2025
+  parent_address_id: 2025/document=form_1040/section=digital_assets
+  kind: option
+  path:
+  - kind: document
+    token: form_1040
+  - kind: section
+    token: digital_assets
+  - kind: option
+    token: 'yes'
+  printed_label: 'Yes'
+  aliases: []
+  control_role: checkbox
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_1040_2025
+    source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
+    page: 1
+  official_ref: Digital Assets
 - address_id: 2025/document=form_1040/section=filing_status
   logical_key: document=form_1040/section=filing_status
   year: 2025
@@ -2307,6 +3538,72 @@ addresses:
   - source_path: config/manifest.yaml#form_1040_2025
     source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
     page: 1
+- address_id: 2025/document=form_1040/section=filing_status/control=hoh_qss_child_name
+  logical_key: document=form_1040/section=filing_status/control=hoh_qss_child_name
+  year: 2025
+  document_id: form_1040_2025
+  parent_address_id: 2025/document=form_1040/section=filing_status
+  kind: control
+  path:
+  - kind: document
+    token: form_1040
+  - kind: section
+    token: filing_status
+  - kind: control
+    token: hoh_qss_child_name
+  printed_label: HOH or QSS qualifying child's name
+  aliases: []
+  control_role: text
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_1040_2025
+    source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
+    page: 1
+  official_ref: Filing Status
+- address_id: 2025/document=form_1040/section=filing_status/control=mfs_spouse_full_name
+  logical_key: document=form_1040/section=filing_status/control=mfs_spouse_full_name
+  year: 2025
+  document_id: form_1040_2025
+  parent_address_id: 2025/document=form_1040/section=filing_status
+  kind: control
+  path:
+  - kind: document
+    token: form_1040
+  - kind: section
+    token: filing_status
+  - kind: control
+    token: mfs_spouse_full_name
+  printed_label: MFS spouse's full name
+  aliases: []
+  control_role: text
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_1040_2025
+    source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
+    page: 1
+  official_ref: Filing Status
+- address_id: 2025/document=form_1040/section=filing_status/control=nonresident_alien_spouse_name
+  logical_key: document=form_1040/section=filing_status/control=nonresident_alien_spouse_name
+  year: 2025
+  document_id: form_1040_2025
+  parent_address_id: 2025/document=form_1040/section=filing_status
+  kind: control
+  path:
+  - kind: document
+    token: form_1040
+  - kind: section
+    token: filing_status
+  - kind: control
+    token: nonresident_alien_spouse_name
+  printed_label: Nonresident alien spouse's name
+  aliases: []
+  control_role: text
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_1040_2025
+    source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
+    page: 1
+  official_ref: Filing Status
 - address_id: 2025/document=form_1040/section=filing_status/option=head_of_household
   logical_key: document=form_1040/section=filing_status/option=head_of_household
   year: 2025
@@ -2320,14 +3617,15 @@ addresses:
     token: filing_status
   - kind: option
     token: head_of_household
-  printed_label: Filing Status Single - c1_8
+  printed_label: Head of household (HOH)
   aliases: []
   control_role: checkbox
-  status: provisional
+  status: pending_review
   evidence:
   - source_path: config/manifest.yaml#form_1040_2025
     source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
     page: 1
+  official_ref: Filing Status
 - address_id: 2025/document=form_1040/section=filing_status/option=married_filing_jointly
   logical_key: document=form_1040/section=filing_status/option=married_filing_jointly
   year: 2025
@@ -2341,14 +3639,15 @@ addresses:
     token: filing_status
   - kind: option
     token: married_filing_jointly
-  printed_label: Check only - c1_8
+  printed_label: Married filing jointly (even if only one had income)
   aliases: []
   control_role: checkbox
-  status: provisional
+  status: pending_review
   evidence:
   - source_path: config/manifest.yaml#form_1040_2025
     source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
     page: 1
+  official_ref: Filing Status
 - address_id: 2025/document=form_1040/section=filing_status/option=married_filing_separately
   logical_key: document=form_1040/section=filing_status/option=married_filing_separately
   year: 2025
@@ -2362,14 +3661,60 @@ addresses:
     token: filing_status
   - kind: option
     token: married_filing_separately
-  printed_label: one box. - c1_8
+  printed_label: Married filing separately (MFS)
   aliases: []
   control_role: checkbox
-  status: provisional
+  status: pending_review
   evidence:
   - source_path: config/manifest.yaml#form_1040_2025
     source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
     page: 1
+  official_ref: Filing Status
+- address_id: 2025/document=form_1040/section=filing_status/option=mfs_hoh_lived_apart
+  logical_key: document=form_1040/section=filing_status/option=mfs_hoh_lived_apart
+  year: 2025
+  document_id: form_1040_2025
+  parent_address_id: 2025/document=form_1040/section=filing_status
+  kind: option
+  path:
+  - kind: document
+    token: form_1040
+  - kind: section
+    token: filing_status
+  - kind: option
+    token: mfs_hoh_lived_apart
+  printed_label: MFS or HOH and lived apart from spouse for the last 6 months of 2025
+  aliases: []
+  control_role: checkbox
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_1040_2025
+    source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
+    page: 1
+  official_ref: Filing Status
+- address_id: 2025/document=form_1040/section=filing_status/option=nonresident_alien_spouse_election
+  logical_key: document=form_1040/section=filing_status/option=nonresident_alien_spouse_election
+  year: 2025
+  document_id: form_1040_2025
+  parent_address_id: 2025/document=form_1040/section=filing_status
+  kind: option
+  path:
+  - kind: document
+    token: form_1040
+  - kind: section
+    token: filing_status
+  - kind: option
+    token: nonresident_alien_spouse_election
+  printed_label: Treating a nonresident alien or dual-status alien spouse as a U.S.
+    resident
+  aliases: []
+  control_role: checkbox
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_1040_2025
+    source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
+    page: 1
+  official_ref: Filing Status
 - address_id: 2025/document=form_1040/section=filing_status/option=qualifying_surviving_spouse
   logical_key: document=form_1040/section=filing_status/option=qualifying_surviving_spouse
   year: 2025
@@ -2383,14 +3728,15 @@ addresses:
     token: filing_status
   - kind: option
     token: qualifying_surviving_spouse
-  printed_label: only Married filing jointly (even if only one had income) - c1_8
+  printed_label: Qualifying surviving spouse (QSS)
   aliases: []
   control_role: checkbox
-  status: provisional
+  status: pending_review
   evidence:
   - source_path: config/manifest.yaml#form_1040_2025
     source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
     page: 1
+  official_ref: Filing Status
 - address_id: 2025/document=form_1040/section=filing_status/option=single
   logical_key: document=form_1040/section=filing_status/option=single
   year: 2025
@@ -2404,14 +3750,15 @@ addresses:
     token: filing_status
   - kind: option
     token: single
-  printed_label: Filing Status - c1_8
+  printed_label: Single
   aliases: []
   control_role: checkbox
-  status: provisional
+  status: pending_review
   evidence:
   - source_path: config/manifest.yaml#form_1040_2025
     source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
     page: 1
+  official_ref: Filing Status
 - address_id: 2025/document=form_1040/section=identity
   logical_key: document=form_1040/section=identity
   year: 2025
@@ -2444,15 +3791,15 @@ addresses:
     token: identity
   - kind: control
     token: address_line_1
-  printed_label: Line a - f1_20
+  printed_label: Home address (number and street)
   aliases: []
-  control_role: amount
+  control_role: text
   status: pending_review
   evidence:
   - source_path: config/manifest.yaml#form_1040_2025
     source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
     page: 1
-  official_ref: a
+  official_ref: Identity
 - address_id: 2025/document=form_1040/section=identity/control=apartment
   logical_key: document=form_1040/section=identity/control=apartment
   year: 2025
@@ -2466,15 +3813,15 @@ addresses:
     token: identity
   - kind: control
     token: apartment
-  printed_label: Line a - f1_21
+  printed_label: Apt. no.
   aliases: []
-  control_role: amount
+  control_role: text
   status: pending_review
   evidence:
   - source_path: config/manifest.yaml#form_1040_2025
     source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
     page: 1
-  official_ref: a
+  official_ref: Identity
 - address_id: 2025/document=form_1040/section=identity/control=city
   logical_key: document=form_1040/section=identity/control=city
   year: 2025
@@ -2491,11 +3838,78 @@ addresses:
   printed_label: City, town, or post office
   aliases: []
   control_role: text
-  status: provisional
+  status: pending_review
   evidence:
   - source_path: config/manifest.yaml#form_1040_2025
     source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
     page: 1
+  official_ref: Identity
+- address_id: 2025/document=form_1040/section=identity/control=foreign_country
+  logical_key: document=form_1040/section=identity/control=foreign_country
+  year: 2025
+  document_id: form_1040_2025
+  parent_address_id: 2025/document=form_1040/section=identity
+  kind: control
+  path:
+  - kind: document
+    token: form_1040
+  - kind: section
+    token: identity
+  - kind: control
+    token: foreign_country
+  printed_label: Foreign country name
+  aliases: []
+  control_role: text
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_1040_2025
+    source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
+    page: 1
+  official_ref: Identity
+- address_id: 2025/document=form_1040/section=identity/control=foreign_postal_code
+  logical_key: document=form_1040/section=identity/control=foreign_postal_code
+  year: 2025
+  document_id: form_1040_2025
+  parent_address_id: 2025/document=form_1040/section=identity
+  kind: control
+  path:
+  - kind: document
+    token: form_1040
+  - kind: section
+    token: identity
+  - kind: control
+    token: foreign_postal_code
+  printed_label: Foreign postal code
+  aliases: []
+  control_role: text
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_1040_2025
+    source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
+    page: 1
+  official_ref: Identity
+- address_id: 2025/document=form_1040/section=identity/control=foreign_province
+  logical_key: document=form_1040/section=identity/control=foreign_province
+  year: 2025
+  document_id: form_1040_2025
+  parent_address_id: 2025/document=form_1040/section=identity
+  kind: control
+  path:
+  - kind: document
+    token: form_1040
+  - kind: section
+    token: identity
+  - kind: control
+    token: foreign_province
+  printed_label: Foreign province/state/county
+  aliases: []
+  control_role: text
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_1040_2025
+    source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
+    page: 1
+  official_ref: Identity
 - address_id: 2025/document=form_1040/section=identity/control=spouse_first_name
   logical_key: document=form_1040/section=identity/control=spouse_first_name
   year: 2025
@@ -2509,14 +3923,15 @@ addresses:
     token: identity
   - kind: control
     token: spouse_first_name
-  printed_label: If joint return, spouse's first name and middle initial
+  printed_label: Spouse's first name and middle initial
   aliases: []
   control_role: text
-  status: provisional
+  status: pending_review
   evidence:
   - source_path: config/manifest.yaml#form_1040_2025
     source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
     page: 1
+  official_ref: Identity
 - address_id: 2025/document=form_1040/section=identity/control=spouse_last_name
   logical_key: document=form_1040/section=identity/control=spouse_last_name
   year: 2025
@@ -2530,14 +3945,15 @@ addresses:
     token: identity
   - kind: control
     token: spouse_last_name
-  printed_label: If joint return, spouse's last name
+  printed_label: Spouse's last name
   aliases: []
   control_role: text
-  status: provisional
+  status: pending_review
   evidence:
   - source_path: config/manifest.yaml#form_1040_2025
     source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
     page: 1
+  official_ref: Identity
 - address_id: 2025/document=form_1040/section=identity/control=spouse_ssn
   logical_key: document=form_1040/section=identity/control=spouse_ssn
   year: 2025
@@ -2553,12 +3969,13 @@ addresses:
     token: spouse_ssn
   printed_label: Spouse's social security number
   aliases: []
-  control_role: text
-  status: provisional
+  control_role: identifier
+  status: pending_review
   evidence:
   - source_path: config/manifest.yaml#form_1040_2025
     source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
     page: 1
+  official_ref: Identity
 - address_id: 2025/document=form_1040/section=identity/control=state
   logical_key: document=form_1040/section=identity/control=state
   year: 2025
@@ -2575,11 +3992,12 @@ addresses:
   printed_label: State
   aliases: []
   control_role: text
-  status: provisional
+  status: pending_review
   evidence:
   - source_path: config/manifest.yaml#form_1040_2025
     source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
     page: 1
+  official_ref: Identity
 - address_id: 2025/document=form_1040/section=identity/control=taxpayer_first_name
   logical_key: document=form_1040/section=identity/control=taxpayer_first_name
   year: 2025
@@ -2596,11 +4014,12 @@ addresses:
   printed_label: First name and middle initial
   aliases: []
   control_role: text
-  status: provisional
+  status: pending_review
   evidence:
   - source_path: config/manifest.yaml#form_1040_2025
     source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
     page: 1
+  official_ref: Identity
 - address_id: 2025/document=form_1040/section=identity/control=taxpayer_last_name
   logical_key: document=form_1040/section=identity/control=taxpayer_last_name
   year: 2025
@@ -2617,11 +4036,12 @@ addresses:
   printed_label: Last name
   aliases: []
   control_role: text
-  status: provisional
+  status: pending_review
   evidence:
   - source_path: config/manifest.yaml#form_1040_2025
     source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
     page: 1
+  official_ref: Identity
 - address_id: 2025/document=form_1040/section=identity/control=taxpayer_ssn
   logical_key: document=form_1040/section=identity/control=taxpayer_ssn
   year: 2025
@@ -2637,12 +4057,13 @@ addresses:
     token: taxpayer_ssn
   printed_label: Your social security number
   aliases: []
-  control_role: text
-  status: provisional
+  control_role: identifier
+  status: pending_review
   evidence:
   - source_path: config/manifest.yaml#form_1040_2025
     source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
     page: 1
+  official_ref: Identity
 - address_id: 2025/document=form_1040/section=identity/control=zip_code
   logical_key: document=form_1040/section=identity/control=zip_code
   year: 2025
@@ -2659,11 +4080,881 @@ addresses:
   printed_label: ZIP code
   aliases: []
   control_role: text
-  status: provisional
+  status: pending_review
   evidence:
   - source_path: config/manifest.yaml#form_1040_2025
     source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
     page: 1
+  official_ref: Identity
+- address_id: 2025/document=form_1040/section=identity/option=main_home_joint_return
+  logical_key: document=form_1040/section=identity/option=main_home_joint_return
+  year: 2025
+  document_id: form_1040_2025
+  parent_address_id: 2025/document=form_1040/section=identity
+  kind: option
+  path:
+  - kind: document
+    token: form_1040
+  - kind: section
+    token: identity
+  - kind: option
+    token: main_home_joint_return
+  printed_label: Check here if your main home, and your spouse's if filing a joint
+    return, was in the U.S. for more than half of 2025
+  aliases: []
+  control_role: checkbox
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_1040_2025
+    source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
+    page: 1
+  official_ref: Identity
+- address_id: 2025/document=form_1040/section=identity/option=presidential_election_spouse
+  logical_key: document=form_1040/section=identity/option=presidential_election_spouse
+  year: 2025
+  document_id: form_1040_2025
+  parent_address_id: 2025/document=form_1040/section=identity
+  kind: option
+  path:
+  - kind: document
+    token: form_1040
+  - kind: section
+    token: identity
+  - kind: option
+    token: presidential_election_spouse
+  printed_label: Presidential Election Campaign - Spouse
+  aliases: []
+  control_role: checkbox
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_1040_2025
+    source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
+    page: 1
+  official_ref: Identity
+- address_id: 2025/document=form_1040/section=identity/option=presidential_election_you
+  logical_key: document=form_1040/section=identity/option=presidential_election_you
+  year: 2025
+  document_id: form_1040_2025
+  parent_address_id: 2025/document=form_1040/section=identity
+  kind: option
+  path:
+  - kind: document
+    token: form_1040
+  - kind: section
+    token: identity
+  - kind: option
+    token: presidential_election_you
+  printed_label: Presidential Election Campaign - You
+  aliases: []
+  control_role: checkbox
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_1040_2025
+    source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
+    page: 1
+  official_ref: Identity
+- address_id: 2025/document=form_1040/section=paid_preparer
+  logical_key: document=form_1040/section=paid_preparer
+  year: 2025
+  document_id: form_1040_2025
+  parent_address_id: 2025/document=form_1040
+  kind: section
+  path:
+  - kind: document
+    token: form_1040
+  - kind: section
+    token: paid_preparer
+  printed_label: paid_preparer
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_1040_2025
+    source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
+    page: 2
+- address_id: 2025/document=form_1040/section=paid_preparer/control=firm_address
+  logical_key: document=form_1040/section=paid_preparer/control=firm_address
+  year: 2025
+  document_id: form_1040_2025
+  parent_address_id: 2025/document=form_1040/section=paid_preparer
+  kind: control
+  path:
+  - kind: document
+    token: form_1040
+  - kind: section
+    token: paid_preparer
+  - kind: control
+    token: firm_address
+  printed_label: Firm's address
+  aliases: []
+  control_role: text
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_1040_2025
+    source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
+    page: 2
+  official_ref: Paid Preparer
+- address_id: 2025/document=form_1040/section=paid_preparer/control=firm_ein
+  logical_key: document=form_1040/section=paid_preparer/control=firm_ein
+  year: 2025
+  document_id: form_1040_2025
+  parent_address_id: 2025/document=form_1040/section=paid_preparer
+  kind: control
+  path:
+  - kind: document
+    token: form_1040
+  - kind: section
+    token: paid_preparer
+  - kind: control
+    token: firm_ein
+  printed_label: Firm's EIN
+  aliases: []
+  control_role: identifier
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_1040_2025
+    source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
+    page: 2
+  official_ref: Paid Preparer
+- address_id: 2025/document=form_1040/section=paid_preparer/control=firm_name
+  logical_key: document=form_1040/section=paid_preparer/control=firm_name
+  year: 2025
+  document_id: form_1040_2025
+  parent_address_id: 2025/document=form_1040/section=paid_preparer
+  kind: control
+  path:
+  - kind: document
+    token: form_1040
+  - kind: section
+    token: paid_preparer
+  - kind: control
+    token: firm_name
+  printed_label: Firm's name
+  aliases: []
+  control_role: text
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_1040_2025
+    source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
+    page: 2
+  official_ref: Paid Preparer
+- address_id: 2025/document=form_1040/section=paid_preparer/control=name
+  logical_key: document=form_1040/section=paid_preparer/control=name
+  year: 2025
+  document_id: form_1040_2025
+  parent_address_id: 2025/document=form_1040/section=paid_preparer
+  kind: control
+  path:
+  - kind: document
+    token: form_1040
+  - kind: section
+    token: paid_preparer
+  - kind: control
+    token: name
+  printed_label: Preparer's name
+  aliases: []
+  control_role: text
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_1040_2025
+    source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
+    page: 2
+  official_ref: Paid Preparer
+- address_id: 2025/document=form_1040/section=paid_preparer/control=phone
+  logical_key: document=form_1040/section=paid_preparer/control=phone
+  year: 2025
+  document_id: form_1040_2025
+  parent_address_id: 2025/document=form_1040/section=paid_preparer
+  kind: control
+  path:
+  - kind: document
+    token: form_1040
+  - kind: section
+    token: paid_preparer
+  - kind: control
+    token: phone
+  printed_label: Phone no.
+  aliases: []
+  control_role: text
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_1040_2025
+    source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
+    page: 2
+  official_ref: Paid Preparer
+- address_id: 2025/document=form_1040/section=paid_preparer/control=ptin
+  logical_key: document=form_1040/section=paid_preparer/control=ptin
+  year: 2025
+  document_id: form_1040_2025
+  parent_address_id: 2025/document=form_1040/section=paid_preparer
+  kind: control
+  path:
+  - kind: document
+    token: form_1040
+  - kind: section
+    token: paid_preparer
+  - kind: control
+    token: ptin
+  printed_label: PTIN
+  aliases: []
+  control_role: identifier
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_1040_2025
+    source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
+    page: 2
+  official_ref: Paid Preparer
+- address_id: 2025/document=form_1040/section=paid_preparer/option=self_employed
+  logical_key: document=form_1040/section=paid_preparer/option=self_employed
+  year: 2025
+  document_id: form_1040_2025
+  parent_address_id: 2025/document=form_1040/section=paid_preparer
+  kind: option
+  path:
+  - kind: document
+    token: form_1040
+  - kind: section
+    token: paid_preparer
+  - kind: option
+    token: self_employed
+  printed_label: Self-employed
+  aliases: []
+  control_role: checkbox
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_1040_2025
+    source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
+    page: 2
+  official_ref: Paid Preparer
+- address_id: 2025/document=form_1040/section=return_header
+  logical_key: document=form_1040/section=return_header
+  year: 2025
+  document_id: form_1040_2025
+  parent_address_id: 2025/document=form_1040
+  kind: section
+  path:
+  - kind: document
+    token: form_1040
+  - kind: section
+    token: return_header
+  printed_label: return_header
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_1040_2025
+    source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
+    page: 1
+- address_id: 2025/document=form_1040/section=return_header/control=combat_zone_name
+  logical_key: document=form_1040/section=return_header/control=combat_zone_name
+  year: 2025
+  document_id: form_1040_2025
+  parent_address_id: 2025/document=form_1040/section=return_header
+  kind: control
+  path:
+  - kind: document
+    token: form_1040
+  - kind: section
+    token: return_header
+  - kind: control
+    token: combat_zone_name
+  printed_label: Combat zone name
+  aliases: []
+  control_role: text
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_1040_2025
+    source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
+    page: 1
+  official_ref: Header
+- address_id: 2025/document=form_1040/section=return_header/control=other_filing_designation_text
+  logical_key: document=form_1040/section=return_header/control=other_filing_designation_text
+  year: 2025
+  document_id: form_1040_2025
+  parent_address_id: 2025/document=form_1040/section=return_header
+  kind: control
+  path:
+  - kind: document
+    token: form_1040
+  - kind: section
+    token: return_header
+  - kind: control
+    token: other_filing_designation_text
+  printed_label: Other filing designation
+  aliases: []
+  control_role: text
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_1040_2025
+    source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
+    page: 1
+  official_ref: Header
+- address_id: 2025/document=form_1040/section=return_header/control=other_tax_year_beginning
+  logical_key: document=form_1040/section=return_header/control=other_tax_year_beginning
+  year: 2025
+  document_id: form_1040_2025
+  parent_address_id: 2025/document=form_1040/section=return_header
+  kind: control
+  path:
+  - kind: document
+    token: form_1040
+  - kind: section
+    token: return_header
+  - kind: control
+    token: other_tax_year_beginning
+  printed_label: Other tax year beginning
+  aliases: []
+  control_role: text
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_1040_2025
+    source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
+    page: 1
+  official_ref: Header
+- address_id: 2025/document=form_1040/section=return_header/control=other_tax_year_ending
+  logical_key: document=form_1040/section=return_header/control=other_tax_year_ending
+  year: 2025
+  document_id: form_1040_2025
+  parent_address_id: 2025/document=form_1040/section=return_header
+  kind: control
+  path:
+  - kind: document
+    token: form_1040
+  - kind: section
+    token: return_header
+  - kind: control
+    token: other_tax_year_ending
+  printed_label: Other tax year ending
+  aliases: []
+  control_role: text
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_1040_2025
+    source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
+    page: 1
+  official_ref: Header
+- address_id: 2025/document=form_1040/section=return_header/control=other_tax_year_ending_suffix
+  logical_key: document=form_1040/section=return_header/control=other_tax_year_ending_suffix
+  year: 2025
+  document_id: form_1040_2025
+  parent_address_id: 2025/document=form_1040/section=return_header
+  kind: control
+  path:
+  - kind: document
+    token: form_1040
+  - kind: section
+    token: return_header
+  - kind: control
+    token: other_tax_year_ending_suffix
+  printed_label: Other tax year ending year suffix
+  aliases: []
+  control_role: text
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_1040_2025
+    source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
+    page: 1
+  official_ref: Header
+- address_id: 2025/document=form_1040/section=return_header/control=spouse_deceased_day
+  logical_key: document=form_1040/section=return_header/control=spouse_deceased_day
+  year: 2025
+  document_id: form_1040_2025
+  parent_address_id: 2025/document=form_1040/section=return_header
+  kind: control
+  path:
+  - kind: document
+    token: form_1040
+  - kind: section
+    token: return_header
+  - kind: control
+    token: spouse_deceased_day
+  printed_label: Spouse deceased date - day
+  aliases: []
+  control_role: text
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_1040_2025
+    source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
+    page: 1
+  official_ref: Header
+- address_id: 2025/document=form_1040/section=return_header/control=spouse_deceased_month
+  logical_key: document=form_1040/section=return_header/control=spouse_deceased_month
+  year: 2025
+  document_id: form_1040_2025
+  parent_address_id: 2025/document=form_1040/section=return_header
+  kind: control
+  path:
+  - kind: document
+    token: form_1040
+  - kind: section
+    token: return_header
+  - kind: control
+    token: spouse_deceased_month
+  printed_label: Spouse deceased date - month
+  aliases: []
+  control_role: text
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_1040_2025
+    source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
+    page: 1
+  official_ref: Header
+- address_id: 2025/document=form_1040/section=return_header/control=spouse_deceased_year
+  logical_key: document=form_1040/section=return_header/control=spouse_deceased_year
+  year: 2025
+  document_id: form_1040_2025
+  parent_address_id: 2025/document=form_1040/section=return_header
+  kind: control
+  path:
+  - kind: document
+    token: form_1040
+  - kind: section
+    token: return_header
+  - kind: control
+    token: spouse_deceased_year
+  printed_label: Spouse deceased date - year
+  aliases: []
+  control_role: text
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_1040_2025
+    source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
+    page: 1
+  official_ref: Header
+- address_id: 2025/document=form_1040/section=return_header/control=taxpayer_deceased_day
+  logical_key: document=form_1040/section=return_header/control=taxpayer_deceased_day
+  year: 2025
+  document_id: form_1040_2025
+  parent_address_id: 2025/document=form_1040/section=return_header
+  kind: control
+  path:
+  - kind: document
+    token: form_1040
+  - kind: section
+    token: return_header
+  - kind: control
+    token: taxpayer_deceased_day
+  printed_label: Deceased date - day
+  aliases: []
+  control_role: text
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_1040_2025
+    source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
+    page: 1
+  official_ref: Header
+- address_id: 2025/document=form_1040/section=return_header/control=taxpayer_deceased_month
+  logical_key: document=form_1040/section=return_header/control=taxpayer_deceased_month
+  year: 2025
+  document_id: form_1040_2025
+  parent_address_id: 2025/document=form_1040/section=return_header
+  kind: control
+  path:
+  - kind: document
+    token: form_1040
+  - kind: section
+    token: return_header
+  - kind: control
+    token: taxpayer_deceased_month
+  printed_label: Deceased date - month
+  aliases: []
+  control_role: text
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_1040_2025
+    source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
+    page: 1
+  official_ref: Header
+- address_id: 2025/document=form_1040/section=return_header/control=taxpayer_deceased_year
+  logical_key: document=form_1040/section=return_header/control=taxpayer_deceased_year
+  year: 2025
+  document_id: form_1040_2025
+  parent_address_id: 2025/document=form_1040/section=return_header
+  kind: control
+  path:
+  - kind: document
+    token: form_1040
+  - kind: section
+    token: return_header
+  - kind: control
+    token: taxpayer_deceased_year
+  printed_label: Deceased date - year
+  aliases: []
+  control_role: text
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_1040_2025
+    source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
+    page: 1
+  official_ref: Header
+- address_id: 2025/document=form_1040/section=return_header/option=combat_zone
+  logical_key: document=form_1040/section=return_header/option=combat_zone
+  year: 2025
+  document_id: form_1040_2025
+  parent_address_id: 2025/document=form_1040/section=return_header
+  kind: option
+  path:
+  - kind: document
+    token: form_1040
+  - kind: section
+    token: return_header
+  - kind: option
+    token: combat_zone
+  printed_label: Combat zone
+  aliases: []
+  control_role: checkbox
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_1040_2025
+    source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
+    page: 1
+  official_ref: Header
+- address_id: 2025/document=form_1040/section=return_header/option=other_filing_designation
+  logical_key: document=form_1040/section=return_header/option=other_filing_designation
+  year: 2025
+  document_id: form_1040_2025
+  parent_address_id: 2025/document=form_1040/section=return_header
+  kind: option
+  path:
+  - kind: document
+    token: form_1040
+  - kind: section
+    token: return_header
+  - kind: option
+    token: other_filing_designation
+  printed_label: Other
+  aliases: []
+  control_role: checkbox
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_1040_2025
+    source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
+    page: 1
+  official_ref: Header
+- address_id: 2025/document=form_1040/section=return_header/option=section_301_9100_2
+  logical_key: document=form_1040/section=return_header/option=section_301_9100_2
+  year: 2025
+  document_id: form_1040_2025
+  parent_address_id: 2025/document=form_1040/section=return_header
+  kind: option
+  path:
+  - kind: document
+    token: form_1040
+  - kind: section
+    token: return_header
+  - kind: option
+    token: section_301_9100_2
+  printed_label: Filed pursuant to section 301.9100-2
+  aliases: []
+  control_role: checkbox
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_1040_2025
+    source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
+    page: 1
+  official_ref: Header
+- address_id: 2025/document=form_1040/section=return_header/option=taxpayer_deceased
+  logical_key: document=form_1040/section=return_header/option=taxpayer_deceased
+  year: 2025
+  document_id: form_1040_2025
+  parent_address_id: 2025/document=form_1040/section=return_header
+  kind: option
+  path:
+  - kind: document
+    token: form_1040
+  - kind: section
+    token: return_header
+  - kind: option
+    token: taxpayer_deceased
+  printed_label: Deceased
+  aliases: []
+  control_role: checkbox
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_1040_2025
+    source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
+    page: 1
+  official_ref: Header
+- address_id: 2025/document=form_1040/section=sign_here
+  logical_key: document=form_1040/section=sign_here
+  year: 2025
+  document_id: form_1040_2025
+  parent_address_id: 2025/document=form_1040
+  kind: section
+  path:
+  - kind: document
+    token: form_1040
+  - kind: section
+    token: sign_here
+  printed_label: sign_here
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_1040_2025
+    source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
+    page: 2
+- address_id: 2025/document=form_1040/section=sign_here/control=email
+  logical_key: document=form_1040/section=sign_here/control=email
+  year: 2025
+  document_id: form_1040_2025
+  parent_address_id: 2025/document=form_1040/section=sign_here
+  kind: control
+  path:
+  - kind: document
+    token: form_1040
+  - kind: section
+    token: sign_here
+  - kind: control
+    token: email
+  printed_label: Email address
+  aliases: []
+  control_role: text
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_1040_2025
+    source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
+    page: 2
+  official_ref: Sign Here
+- address_id: 2025/document=form_1040/section=sign_here/control=phone
+  logical_key: document=form_1040/section=sign_here/control=phone
+  year: 2025
+  document_id: form_1040_2025
+  parent_address_id: 2025/document=form_1040/section=sign_here
+  kind: control
+  path:
+  - kind: document
+    token: form_1040
+  - kind: section
+    token: sign_here
+  - kind: control
+    token: phone
+  printed_label: Phone no.
+  aliases: []
+  control_role: text
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_1040_2025
+    source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
+    page: 2
+  official_ref: Sign Here
+- address_id: 2025/document=form_1040/section=sign_here/control=spouse_ip_pin
+  logical_key: document=form_1040/section=sign_here/control=spouse_ip_pin
+  year: 2025
+  document_id: form_1040_2025
+  parent_address_id: 2025/document=form_1040/section=sign_here
+  kind: control
+  path:
+  - kind: document
+    token: form_1040
+  - kind: section
+    token: sign_here
+  - kind: control
+    token: spouse_ip_pin
+  printed_label: Spouse's Identity Protection PIN
+  aliases: []
+  control_role: identifier
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_1040_2025
+    source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
+    page: 2
+  official_ref: Sign Here
+- address_id: 2025/document=form_1040/section=sign_here/control=spouse_occupation
+  logical_key: document=form_1040/section=sign_here/control=spouse_occupation
+  year: 2025
+  document_id: form_1040_2025
+  parent_address_id: 2025/document=form_1040/section=sign_here
+  kind: control
+  path:
+  - kind: document
+    token: form_1040
+  - kind: section
+    token: sign_here
+  - kind: control
+    token: spouse_occupation
+  printed_label: Spouse's occupation
+  aliases: []
+  control_role: text
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_1040_2025
+    source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
+    page: 2
+  official_ref: Sign Here
+- address_id: 2025/document=form_1040/section=sign_here/control=your_ip_pin
+  logical_key: document=form_1040/section=sign_here/control=your_ip_pin
+  year: 2025
+  document_id: form_1040_2025
+  parent_address_id: 2025/document=form_1040/section=sign_here
+  kind: control
+  path:
+  - kind: document
+    token: form_1040
+  - kind: section
+    token: sign_here
+  - kind: control
+    token: your_ip_pin
+  printed_label: Your Identity Protection PIN
+  aliases: []
+  control_role: identifier
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_1040_2025
+    source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
+    page: 2
+  official_ref: Sign Here
+- address_id: 2025/document=form_1040/section=sign_here/control=your_occupation
+  logical_key: document=form_1040/section=sign_here/control=your_occupation
+  year: 2025
+  document_id: form_1040_2025
+  parent_address_id: 2025/document=form_1040/section=sign_here
+  kind: control
+  path:
+  - kind: document
+    token: form_1040
+  - kind: section
+    token: sign_here
+  - kind: control
+    token: your_occupation
+  printed_label: Your occupation
+  aliases: []
+  control_role: text
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_1040_2025
+    source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
+    page: 2
+  official_ref: Sign Here
+- address_id: 2025/document=form_1040/section=third_party_designee
+  logical_key: document=form_1040/section=third_party_designee
+  year: 2025
+  document_id: form_1040_2025
+  parent_address_id: 2025/document=form_1040
+  kind: section
+  path:
+  - kind: document
+    token: form_1040
+  - kind: section
+    token: third_party_designee
+  printed_label: third_party_designee
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_1040_2025
+    source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
+    page: 2
+- address_id: 2025/document=form_1040/section=third_party_designee/control=name
+  logical_key: document=form_1040/section=third_party_designee/control=name
+  year: 2025
+  document_id: form_1040_2025
+  parent_address_id: 2025/document=form_1040/section=third_party_designee
+  kind: control
+  path:
+  - kind: document
+    token: form_1040
+  - kind: section
+    token: third_party_designee
+  - kind: control
+    token: name
+  printed_label: Designee's name
+  aliases: []
+  control_role: text
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_1040_2025
+    source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
+    page: 2
+  official_ref: Third Party Designee
+- address_id: 2025/document=form_1040/section=third_party_designee/control=phone
+  logical_key: document=form_1040/section=third_party_designee/control=phone
+  year: 2025
+  document_id: form_1040_2025
+  parent_address_id: 2025/document=form_1040/section=third_party_designee
+  kind: control
+  path:
+  - kind: document
+    token: form_1040
+  - kind: section
+    token: third_party_designee
+  - kind: control
+    token: phone
+  printed_label: Phone no.
+  aliases: []
+  control_role: text
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_1040_2025
+    source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
+    page: 2
+  official_ref: Third Party Designee
+- address_id: 2025/document=form_1040/section=third_party_designee/control=pin
+  logical_key: document=form_1040/section=third_party_designee/control=pin
+  year: 2025
+  document_id: form_1040_2025
+  parent_address_id: 2025/document=form_1040/section=third_party_designee
+  kind: control
+  path:
+  - kind: document
+    token: form_1040
+  - kind: section
+    token: third_party_designee
+  - kind: control
+    token: pin
+  printed_label: Personal identification number (PIN)
+  aliases: []
+  control_role: identifier
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_1040_2025
+    source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
+    page: 2
+  official_ref: Third Party Designee
+- address_id: 2025/document=form_1040/section=third_party_designee/option=no
+  logical_key: document=form_1040/section=third_party_designee/option=no
+  year: 2025
+  document_id: form_1040_2025
+  parent_address_id: 2025/document=form_1040/section=third_party_designee
+  kind: option
+  path:
+  - kind: document
+    token: form_1040
+  - kind: section
+    token: third_party_designee
+  - kind: option
+    token: 'no'
+  printed_label: 'No'
+  aliases: []
+  control_role: checkbox
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_1040_2025
+    source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
+    page: 2
+  official_ref: Third Party Designee
+- address_id: 2025/document=form_1040/section=third_party_designee/option=yes
+  logical_key: document=form_1040/section=third_party_designee/option=yes
+  year: 2025
+  document_id: form_1040_2025
+  parent_address_id: 2025/document=form_1040/section=third_party_designee
+  kind: option
+  path:
+  - kind: document
+    token: form_1040
+  - kind: section
+    token: third_party_designee
+  - kind: option
+    token: 'yes'
+  printed_label: 'Yes'
+  aliases: []
+  control_role: checkbox
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_1040_2025
+    source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
+    page: 2
+  official_ref: Third Party Designee
 - address_id: 2025/document=form_1040/table=dependents
   logical_key: document=form_1040/table=dependents
   year: 2025
@@ -2683,6 +4974,28 @@ addresses:
   - source_path: config/manifest.yaml#form_1040_2025
     source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
     page: 1
+- address_id: 2025/document=form_1040/table=dependents/option=more_than_four
+  logical_key: document=form_1040/table=dependents/option=more_than_four
+  year: 2025
+  document_id: form_1040_2025
+  parent_address_id: 2025/document=form_1040/table=dependents
+  kind: option
+  path:
+  - kind: document
+    token: form_1040
+  - kind: table
+    token: dependents
+  - kind: option
+    token: more_than_four
+  printed_label: More than four dependents
+  aliases: []
+  control_role: checkbox
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_1040_2025
+    source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
+    page: 1
+  official_ref: Dependents
 - address_id: 2025/document=form_1040/table=dependents/row_template=dependent
   logical_key: document=form_1040/table=dependents/row_template=dependent
   year: 2025
@@ -2719,14 +5032,39 @@ addresses:
     token: dependent
   - kind: column
     token: child_tax_credit
-  printed_label: Dependent 1 child tax credit decision
+  printed_label: Child tax credit
   aliases: []
   control_role: checkbox
-  status: provisional
+  status: pending_review
   evidence:
   - source_path: config/manifest.yaml#form_1040_2025
     source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
     page: 1
+  official_ref: Dependents column Child tax credit
+- address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=credit_for_other_dependents
+  logical_key: document=form_1040/table=dependents/row_template=dependent/column=credit_for_other_dependents
+  year: 2025
+  document_id: form_1040_2025
+  parent_address_id: 2025/document=form_1040/table=dependents/row_template=dependent
+  kind: column
+  path:
+  - kind: document
+    token: form_1040
+  - kind: table
+    token: dependents
+  - kind: row_template
+    token: dependent
+  - kind: column
+    token: credit_for_other_dependents
+  printed_label: Credit for other dependents
+  aliases: []
+  control_role: checkbox
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_1040_2025
+    source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
+    page: 1
+  official_ref: Dependents column Credit for other dependents
 - address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=first_name
   logical_key: document=form_1040/table=dependents/row_template=dependent/column=first_name
   year: 2025
@@ -2742,15 +5080,15 @@ addresses:
     token: dependent
   - kind: column
     token: first_name
-  printed_label: Dependent 1 first name
+  printed_label: First name
   aliases: []
-  control_role: amount
+  control_role: text
   status: pending_review
   evidence:
   - source_path: config/manifest.yaml#form_1040_2025
     source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
     page: 1
-  official_ref: '1'
+  official_ref: Dependents column First name
 - address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=full_time_student
   logical_key: document=form_1040/table=dependents/row_template=dependent/column=full_time_student
   year: 2025
@@ -2766,16 +5104,17 @@ addresses:
     token: dependent
   - kind: column
     token: full_time_student
-  printed_label: Dependent 1 full time student decision
+  printed_label: Full-time student
   aliases: []
   control_role: checkbox
-  status: provisional
+  status: pending_review
   evidence:
   - source_path: config/manifest.yaml#form_1040_2025
     source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
     page: 1
-- address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=in_us
-  logical_key: document=form_1040/table=dependents/row_template=dependent/column=in_us
+  official_ref: Dependents column Full-time student
+- address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=in_the_us
+  logical_key: document=form_1040/table=dependents/row_template=dependent/column=in_the_us
   year: 2025
   document_id: form_1040_2025
   parent_address_id: 2025/document=form_1040/table=dependents/row_template=dependent
@@ -2788,15 +5127,16 @@ addresses:
   - kind: row_template
     token: dependent
   - kind: column
-    token: in_us
-  printed_label: Dependent 1 in us decision
+    token: in_the_us
+  printed_label: And in the U.S.
   aliases: []
   control_role: checkbox
-  status: provisional
+  status: pending_review
   evidence:
   - source_path: config/manifest.yaml#form_1040_2025
     source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
     page: 1
+  official_ref: Dependents column And in the U.S.
 - address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=last_name
   logical_key: document=form_1040/table=dependents/row_template=dependent/column=last_name
   year: 2025
@@ -2812,16 +5152,17 @@ addresses:
     token: dependent
   - kind: column
     token: last_name
-  printed_label: Dependent 1 last name
+  printed_label: Last name
   aliases: []
   control_role: text
-  status: provisional
+  status: pending_review
   evidence:
   - source_path: config/manifest.yaml#form_1040_2025
     source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
     page: 1
-- address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=lived_with_you
-  logical_key: document=form_1040/table=dependents/row_template=dependent/column=lived_with_you
+  official_ref: Dependents column Last name
+- address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=lived_with_you_more_than_half_2025
+  logical_key: document=form_1040/table=dependents/row_template=dependent/column=lived_with_you_more_than_half_2025
   year: 2025
   document_id: form_1040_2025
   parent_address_id: 2025/document=form_1040/table=dependents/row_template=dependent
@@ -2834,17 +5175,18 @@ addresses:
   - kind: row_template
     token: dependent
   - kind: column
-    token: lived_with_you
-  printed_label: Dependent 1 lived with you decision
+    token: lived_with_you_more_than_half_2025
+  printed_label: Lived with you more than half of 2025
   aliases: []
   control_role: checkbox
-  status: provisional
+  status: pending_review
   evidence:
   - source_path: config/manifest.yaml#form_1040_2025
     source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
     page: 1
-- address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=other_dependent_credit
-  logical_key: document=form_1040/table=dependents/row_template=dependent/column=other_dependent_credit
+  official_ref: Dependents column Lived with you more than half of 2025
+- address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=permanently_totally_disabled
+  logical_key: document=form_1040/table=dependents/row_template=dependent/column=permanently_totally_disabled
   year: 2025
   document_id: form_1040_2025
   parent_address_id: 2025/document=form_1040/table=dependents/row_template=dependent
@@ -2857,38 +5199,16 @@ addresses:
   - kind: row_template
     token: dependent
   - kind: column
-    token: other_dependent_credit
-  printed_label: Dependent 1 other dependent credit decision
+    token: permanently_totally_disabled
+  printed_label: Permanently and totally disabled
   aliases: []
   control_role: checkbox
-  status: provisional
+  status: pending_review
   evidence:
   - source_path: config/manifest.yaml#form_1040_2025
     source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
     page: 1
-- address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=permanently_disabled
-  logical_key: document=form_1040/table=dependents/row_template=dependent/column=permanently_disabled
-  year: 2025
-  document_id: form_1040_2025
-  parent_address_id: 2025/document=form_1040/table=dependents/row_template=dependent
-  kind: column
-  path:
-  - kind: document
-    token: form_1040
-  - kind: table
-    token: dependents
-  - kind: row_template
-    token: dependent
-  - kind: column
-    token: permanently_disabled
-  printed_label: Dependent 1 permanently disabled decision
-  aliases: []
-  control_role: checkbox
-  status: provisional
-  evidence:
-  - source_path: config/manifest.yaml#form_1040_2025
-    source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
-    page: 1
+  official_ref: Dependents column Permanently and totally disabled
 - address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=relationship
   logical_key: document=form_1040/table=dependents/row_template=dependent/column=relationship
   year: 2025
@@ -2904,14 +5224,15 @@ addresses:
     token: dependent
   - kind: column
     token: relationship
-  printed_label: Dependent 1 relationship
+  printed_label: Relationship
   aliases: []
   control_role: text
-  status: provisional
+  status: pending_review
   evidence:
   - source_path: config/manifest.yaml#form_1040_2025
     source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
     page: 1
+  official_ref: Dependents column Relationship
 - address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=ssn
   logical_key: document=form_1040/table=dependents/row_template=dependent/column=ssn
   year: 2025
@@ -2927,11 +5248,12 @@ addresses:
     token: dependent
   - kind: column
     token: ssn
-  printed_label: Dependent 1 ssn
+  printed_label: SSN
   aliases: []
-  control_role: text
-  status: provisional
+  control_role: identifier
+  status: pending_review
   evidence:
   - source_path: config/manifest.yaml#form_1040_2025
     source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
     page: 1
+  official_ref: Dependents column SSN

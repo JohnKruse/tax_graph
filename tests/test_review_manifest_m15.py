@@ -81,7 +81,7 @@ def test_live_manifest_covers_every_pending_entry_and_is_stable() -> None:
         if entry["queue_id"] == "field_map_review_form_1040_2025"
     )
     addressed = [unit for unit in form_1040_entry["units"] if unit.get("address_id")]
-    assert len(addressed) == 151
+    assert len(addressed) == 223
     assert all(unit["official_location"]["address_id"] == unit["address_id"] for unit in addressed)
     assert all(unit["object_refs"][0]["object_type"] == "address" for unit in addressed)
     assert all(len(unit["object_refs"]) == 2 for unit in addressed)

@@ -14,8 +14,27 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## Current state (2026-07-17)
 
-**BALL: WORKER/CODEX - A9d COMPLETE (ARCHITECT-AMENDED); EXTENDED RUN CONTINUES AT
-A9e (FORM 1040).** Form 1099-B/DIV/INT are authored from the local official PDFs: 430
+**BALL: WORKER/CODEX - A9e COMMITTED (ARCHITECT-COMPLETED); EXTENDED RUN CONTINUES AT
+A9f (SCHEDULES + 2441 + 6251).** A9e (Form 1040, 199/199 widgets -> 167 bound
+templates + 24 node bindings) was implemented by the Worker, whose session ended with
+NO commit and NO handoff state (the SESSION BUDGET RULES exist to prevent exactly
+this - follow them). The Architect content-audited the authored labels against the
+official PDF (clean - best campaign quality so far), fixed two preflight
+`ambiguous_display_name` defects the Worker never saw (distinct names for the 4c/5c
+checkbox+write-in pairs; segment qualifiers for the three-segment `Other`
+filing-designation header write-in), updated two stale count pins (MCP form_1040
+list 141 -> 249; manifest addressed units 151 -> 223), completed the full sequential
+floor (M15 halves + e2e and all four non-M15 partitions green after the fixes; the
+two previously failing files re-proven green), and committed. Real preflight:
+`legacy_mined=521`, Form 1040 zero legacy (strict reduction of 150 from 671).
+Remaining legacy: Sch 1 73, Sch 1-A 54, Sch 2 63, Sch 3 37, Sch A 33, Sch B 72,
+Sch D 55, Form 2441 72, Form 6251 62. Continue A9f..A9x in coherent per-commit
+groups, then A9z (strict predicate flip + printed-box-number completeness sweep),
+A10, A11, A6 - HARD STOP before A12. New precedent for the campaign:
+checkbox+write-in pairs sharing a line need DISTINCT display names, and one logical
+control split across physical widget segments needs per-segment locator qualifiers.
+
+Prior A9d state (superseded): A9d COMPLETE (ARCHITECT-AMENDED). Form 1099-B/DIV/INT are authored from the local official PDFs: 430
 physical widgets collapse onto 102 templates, every numbered box passes the
 number-bearing adjacency check or one of six explicit caption-only choice exceptions,
 and real preflight is green at `legacy_mined=671` (strict reduction of 410 from
@@ -174,6 +193,16 @@ sequenced after M15 or when TY2026 docs drop.
   listed at A9z. The predicate itself is NOT narrowed. The extended run RESUMES under
   the same authorization with A9a..A9z replacing the single A9 item; the hard stop
   after A6 and all other terms are unchanged.
+- **SESSION BUDGET RULES (Architect, 2026-07-19, at John's direction; applies to every
+  Worker session):** (1) Your FIRST handoff touch of a session states your model,
+  effort level, and any usage/quota/context indicators your environment exposes - if
+  none are exposed, say exactly that. (2) Declare the single step you will attempt this
+  session before starting it. (3) Checkpoint the handoff BEFORE every expensive phase
+  (authoring campaigns, full floors), not only at the end - a quota death mid-floor
+  must never lose recorded state. (4) If any command is rejected for quota, STOP
+  immediately, record exact completed/pending verification in the handoff, and do not
+  start new work. (5) Do not re-run already-green partitions to "refresh" them; record
+  and move on - floors are the main budget burn.
 - **EXTENDED RUN AUTHORIZATION (Architect, Claude Fable 5, 2026-07-16, at John's
   direction):** The Worker is authorized to run the following sequence continuously
   WITHOUT per-step Architect hand-backs. This temporarily overrides the plan's

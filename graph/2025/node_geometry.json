@@ -86,6 +86,7 @@
       "value_format": "text"
     },
     {
+      "address_id": "2025/document=form_1040/section=identity/control=foreign_country",
       "document_id": "form_1040_2025",
       "downstream_effect": "Output leaves AcroForm field topmostSubform[0].Page1[0].Address_ReadOrder[0].f1_25[0] blank and reports the unsupported filing field.",
       "field_name": "topmostSubform[0].Page1[0].Address_ReadOrder[0].f1_25[0]",
@@ -104,6 +105,7 @@
       "value_format": "text"
     },
     {
+      "address_id": "2025/document=form_1040/section=identity/control=foreign_province",
       "document_id": "form_1040_2025",
       "downstream_effect": "Output leaves AcroForm field topmostSubform[0].Page1[0].Address_ReadOrder[0].f1_26[0] blank and reports the unsupported filing field.",
       "field_name": "topmostSubform[0].Page1[0].Address_ReadOrder[0].f1_26[0]",
@@ -122,6 +124,7 @@
       "value_format": "text"
     },
     {
+      "address_id": "2025/document=form_1040/section=identity/control=foreign_postal_code",
       "document_id": "form_1040_2025",
       "downstream_effect": "Output leaves AcroForm field topmostSubform[0].Page1[0].Address_ReadOrder[0].f1_27[0] blank and reports the unsupported filing field.",
       "field_name": "topmostSubform[0].Page1[0].Address_ReadOrder[0].f1_27[0]",
@@ -191,6 +194,7 @@
       "value_format": "checkbox"
     },
     {
+      "address_id": "2025/document=form_1040/section=filing_status/control=mfs_spouse_full_name",
       "document_id": "form_1040_2025",
       "downstream_effect": "Output leaves AcroForm field topmostSubform[0].Page1[0].Checkbox_ReadOrder[0].f1_28[0] blank and reports the unsupported filing field.",
       "field_name": "topmostSubform[0].Page1[0].Checkbox_ReadOrder[0].f1_28[0]",
@@ -209,6 +213,7 @@
       "value_format": "text"
     },
     {
+      "address_id": "2025/document=form_1040/table=dependents/option=more_than_four",
       "document_id": "form_1040_2025",
       "downstream_effect": "Output leaves AcroForm field topmostSubform[0].Page1[0].Dependents_ReadOrder[0].c1_11[0] blank and reports the unsupported filing field.",
       "field_name": "topmostSubform[0].Page1[0].Dependents_ReadOrder[0].c1_11[0]",
@@ -595,7 +600,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_1040/table=dependents/row_template=dependent/column=lived_with_you",
+      "address_id": "2025/document=form_1040/table=dependents/row_template=dependent/column=lived_with_you_more_than_half_2025",
       "document_id": "form_1040_2025",
       "field_name": "topmostSubform[0].Page1[0].Table_Dependents[0].Row5[0].Dependent1[0].c1_12[0]",
       "label": "Dependent 1 lived with you decision",
@@ -618,7 +623,7 @@
       "value_format": "checkbox"
     },
     {
-      "address_id": "2025/document=form_1040/table=dependents/row_template=dependent/column=in_us",
+      "address_id": "2025/document=form_1040/table=dependents/row_template=dependent/column=in_the_us",
       "document_id": "form_1040_2025",
       "field_name": "topmostSubform[0].Page1[0].Table_Dependents[0].Row5[0].Dependent1[0].c1_13[0]",
       "label": "Dependent 1 in us decision",
@@ -641,7 +646,7 @@
       "value_format": "checkbox"
     },
     {
-      "address_id": "2025/document=form_1040/table=dependents/row_template=dependent/column=lived_with_you",
+      "address_id": "2025/document=form_1040/table=dependents/row_template=dependent/column=lived_with_you_more_than_half_2025",
       "document_id": "form_1040_2025",
       "field_name": "topmostSubform[0].Page1[0].Table_Dependents[0].Row5[0].Dependent2[0].c1_14[0]",
       "label": "Dependent 2 lived with you decision",
@@ -664,7 +669,7 @@
       "value_format": "checkbox"
     },
     {
-      "address_id": "2025/document=form_1040/table=dependents/row_template=dependent/column=in_us",
+      "address_id": "2025/document=form_1040/table=dependents/row_template=dependent/column=in_the_us",
       "document_id": "form_1040_2025",
       "field_name": "topmostSubform[0].Page1[0].Table_Dependents[0].Row5[0].Dependent2[0].c1_15[0]",
       "label": "Dependent 2 in us decision",
@@ -687,7 +692,7 @@
       "value_format": "checkbox"
     },
     {
-      "address_id": "2025/document=form_1040/table=dependents/row_template=dependent/column=lived_with_you",
+      "address_id": "2025/document=form_1040/table=dependents/row_template=dependent/column=lived_with_you_more_than_half_2025",
       "document_id": "form_1040_2025",
       "field_name": "topmostSubform[0].Page1[0].Table_Dependents[0].Row5[0].Dependent3[0].c1_16[0]",
       "label": "Dependent 3 lived with you decision",
@@ -710,7 +715,7 @@
       "value_format": "checkbox"
     },
     {
-      "address_id": "2025/document=form_1040/table=dependents/row_template=dependent/column=in_us",
+      "address_id": "2025/document=form_1040/table=dependents/row_template=dependent/column=in_the_us",
       "document_id": "form_1040_2025",
       "field_name": "topmostSubform[0].Page1[0].Table_Dependents[0].Row5[0].Dependent3[0].c1_17[0]",
       "label": "Dependent 3 in us decision",
@@ -733,7 +738,7 @@
       "value_format": "checkbox"
     },
     {
-      "address_id": "2025/document=form_1040/table=dependents/row_template=dependent/column=lived_with_you",
+      "address_id": "2025/document=form_1040/table=dependents/row_template=dependent/column=lived_with_you_more_than_half_2025",
       "document_id": "form_1040_2025",
       "field_name": "topmostSubform[0].Page1[0].Table_Dependents[0].Row5[0].Dependent4[0].c1_18[0]",
       "label": "Dependent 4 lived with you decision",
@@ -756,7 +761,7 @@
       "value_format": "checkbox"
     },
     {
-      "address_id": "2025/document=form_1040/table=dependents/row_template=dependent/column=in_us",
+      "address_id": "2025/document=form_1040/table=dependents/row_template=dependent/column=in_the_us",
       "document_id": "form_1040_2025",
       "field_name": "topmostSubform[0].Page1[0].Table_Dependents[0].Row5[0].Dependent4[0].c1_19[0]",
       "label": "Dependent 4 in us decision",
@@ -802,7 +807,7 @@
       "value_format": "checkbox"
     },
     {
-      "address_id": "2025/document=form_1040/table=dependents/row_template=dependent/column=permanently_disabled",
+      "address_id": "2025/document=form_1040/table=dependents/row_template=dependent/column=permanently_totally_disabled",
       "document_id": "form_1040_2025",
       "field_name": "topmostSubform[0].Page1[0].Table_Dependents[0].Row6[0].Dependent1[0].c1_21[0]",
       "label": "Dependent 1 permanently disabled decision",
@@ -848,7 +853,7 @@
       "value_format": "checkbox"
     },
     {
-      "address_id": "2025/document=form_1040/table=dependents/row_template=dependent/column=permanently_disabled",
+      "address_id": "2025/document=form_1040/table=dependents/row_template=dependent/column=permanently_totally_disabled",
       "document_id": "form_1040_2025",
       "field_name": "topmostSubform[0].Page1[0].Table_Dependents[0].Row6[0].Dependent2[0].c1_23[0]",
       "label": "Dependent 2 permanently disabled decision",
@@ -894,7 +899,7 @@
       "value_format": "checkbox"
     },
     {
-      "address_id": "2025/document=form_1040/table=dependents/row_template=dependent/column=permanently_disabled",
+      "address_id": "2025/document=form_1040/table=dependents/row_template=dependent/column=permanently_totally_disabled",
       "document_id": "form_1040_2025",
       "field_name": "topmostSubform[0].Page1[0].Table_Dependents[0].Row6[0].Dependent3[0].c1_25[0]",
       "label": "Dependent 3 permanently disabled decision",
@@ -940,7 +945,7 @@
       "value_format": "checkbox"
     },
     {
-      "address_id": "2025/document=form_1040/table=dependents/row_template=dependent/column=permanently_disabled",
+      "address_id": "2025/document=form_1040/table=dependents/row_template=dependent/column=permanently_totally_disabled",
       "document_id": "form_1040_2025",
       "field_name": "topmostSubform[0].Page1[0].Table_Dependents[0].Row6[0].Dependent4[0].c1_27[0]",
       "label": "Dependent 4 permanently disabled decision",
@@ -986,7 +991,7 @@
       "value_format": "checkbox"
     },
     {
-      "address_id": "2025/document=form_1040/table=dependents/row_template=dependent/column=other_dependent_credit",
+      "address_id": "2025/document=form_1040/table=dependents/row_template=dependent/column=credit_for_other_dependents",
       "document_id": "form_1040_2025",
       "field_name": "topmostSubform[0].Page1[0].Table_Dependents[0].Row7[0].Dependent1[0].c1_28[1]",
       "label": "Dependent 1 other dependent credit decision",
@@ -1032,7 +1037,7 @@
       "value_format": "checkbox"
     },
     {
-      "address_id": "2025/document=form_1040/table=dependents/row_template=dependent/column=other_dependent_credit",
+      "address_id": "2025/document=form_1040/table=dependents/row_template=dependent/column=credit_for_other_dependents",
       "document_id": "form_1040_2025",
       "field_name": "topmostSubform[0].Page1[0].Table_Dependents[0].Row7[0].Dependent2[0].c1_29[1]",
       "label": "Dependent 2 other dependent credit decision",
@@ -1078,7 +1083,7 @@
       "value_format": "checkbox"
     },
     {
-      "address_id": "2025/document=form_1040/table=dependents/row_template=dependent/column=other_dependent_credit",
+      "address_id": "2025/document=form_1040/table=dependents/row_template=dependent/column=credit_for_other_dependents",
       "document_id": "form_1040_2025",
       "field_name": "topmostSubform[0].Page1[0].Table_Dependents[0].Row7[0].Dependent3[0].c1_30[1]",
       "label": "Dependent 3 other dependent credit decision",
@@ -1124,7 +1129,7 @@
       "value_format": "checkbox"
     },
     {
-      "address_id": "2025/document=form_1040/table=dependents/row_template=dependent/column=other_dependent_credit",
+      "address_id": "2025/document=form_1040/table=dependents/row_template=dependent/column=credit_for_other_dependents",
       "document_id": "form_1040_2025",
       "field_name": "topmostSubform[0].Page1[0].Table_Dependents[0].Row7[0].Dependent4[0].c1_31[1]",
       "label": "Dependent 4 other dependent credit decision",
@@ -1147,7 +1152,7 @@
       "value_format": "checkbox"
     },
     {
-      "address_id": "2025/document=form_1040/line=1/control=checkbox",
+      "address_id": "2025/document=form_1040/section=digital_assets/option=yes",
       "document_id": "form_1040_2025",
       "downstream_effect": "Output leaves AcroForm field topmostSubform[0].Page1[0].c1_10[0] blank and reports the unsupported filing field.",
       "field_name": "topmostSubform[0].Page1[0].c1_10[0]",
@@ -1166,7 +1171,7 @@
       "value_format": "checkbox"
     },
     {
-      "address_id": "2025/document=form_1040/line=1/control=checkbox",
+      "address_id": "2025/document=form_1040/section=digital_assets/option=no",
       "document_id": "form_1040_2025",
       "downstream_effect": "Output leaves AcroForm field topmostSubform[0].Page1[0].c1_10[1] blank and reports the unsupported filing field.",
       "field_name": "topmostSubform[0].Page1[0].c1_10[1]",
@@ -1185,6 +1190,7 @@
       "value_format": "checkbox"
     },
     {
+      "address_id": "2025/document=form_1040/section=return_header/option=section_301_9100_2",
       "document_id": "form_1040_2025",
       "downstream_effect": "Output leaves AcroForm field topmostSubform[0].Page1[0].c1_1[0] blank and reports the unsupported filing field.",
       "field_name": "topmostSubform[0].Page1[0].c1_1[0]",
@@ -1203,6 +1209,7 @@
       "value_format": "checkbox"
     },
     {
+      "address_id": "2025/document=form_1040/section=return_header/option=combat_zone",
       "document_id": "form_1040_2025",
       "downstream_effect": "Output leaves AcroForm field topmostSubform[0].Page1[0].c1_2[0] blank and reports the unsupported filing field.",
       "field_name": "topmostSubform[0].Page1[0].c1_2[0]",
@@ -1221,6 +1228,7 @@
       "value_format": "checkbox"
     },
     {
+      "address_id": "2025/document=form_1040/section=filing_status/option=mfs_hoh_lived_apart",
       "document_id": "form_1040_2025",
       "downstream_effect": "Output leaves AcroForm field topmostSubform[0].Page1[0].c1_32[0] blank and reports the unsupported filing field.",
       "field_name": "topmostSubform[0].Page1[0].c1_32[0]",
@@ -1239,7 +1247,7 @@
       "value_format": "checkbox"
     },
     {
-      "address_id": "2025/document=form_1040/line=3b/control=checkbox",
+      "address_id": "2025/document=form_1040/line=3c/option=line_3a",
       "document_id": "form_1040_2025",
       "downstream_effect": "Output leaves AcroForm field topmostSubform[0].Page1[0].c1_33[0] blank and reports the unsupported filing field.",
       "field_name": "topmostSubform[0].Page1[0].c1_33[0]",
@@ -1258,7 +1266,7 @@
       "value_format": "checkbox"
     },
     {
-      "address_id": "2025/document=form_1040/line=3b/control=checkbox",
+      "address_id": "2025/document=form_1040/line=3c/option=line_3b",
       "document_id": "form_1040_2025",
       "downstream_effect": "Output leaves AcroForm field topmostSubform[0].Page1[0].c1_34[0] blank and reports the unsupported filing field.",
       "field_name": "topmostSubform[0].Page1[0].c1_34[0]",
@@ -1277,6 +1285,7 @@
       "value_format": "checkbox"
     },
     {
+      "address_id": "2025/document=form_1040/line=4c/option=rollover",
       "document_id": "form_1040_2025",
       "downstream_effect": "Output leaves AcroForm field topmostSubform[0].Page1[0].c1_35[0] blank and reports the unsupported filing field.",
       "field_name": "topmostSubform[0].Page1[0].c1_35[0]",
@@ -1295,6 +1304,7 @@
       "value_format": "checkbox"
     },
     {
+      "address_id": "2025/document=form_1040/line=4c/option=qcd",
       "document_id": "form_1040_2025",
       "downstream_effect": "Output leaves AcroForm field topmostSubform[0].Page1[0].c1_36[0] blank and reports the unsupported filing field.",
       "field_name": "topmostSubform[0].Page1[0].c1_36[0]",
@@ -1313,6 +1323,7 @@
       "value_format": "checkbox"
     },
     {
+      "address_id": "2025/document=form_1040/line=4c/option=other_word_or_code",
       "document_id": "form_1040_2025",
       "downstream_effect": "Output leaves AcroForm field topmostSubform[0].Page1[0].c1_37[0] blank and reports the unsupported filing field.",
       "field_name": "topmostSubform[0].Page1[0].c1_37[0]",
@@ -1331,6 +1342,7 @@
       "value_format": "checkbox"
     },
     {
+      "address_id": "2025/document=form_1040/line=5c/option=rollover",
       "document_id": "form_1040_2025",
       "downstream_effect": "Output leaves AcroForm field topmostSubform[0].Page1[0].c1_38[0] blank and reports the unsupported filing field.",
       "field_name": "topmostSubform[0].Page1[0].c1_38[0]",
@@ -1349,6 +1361,7 @@
       "value_format": "checkbox"
     },
     {
+      "address_id": "2025/document=form_1040/line=5c/option=pso",
       "document_id": "form_1040_2025",
       "downstream_effect": "Output leaves AcroForm field topmostSubform[0].Page1[0].c1_39[0] blank and reports the unsupported filing field.",
       "field_name": "topmostSubform[0].Page1[0].c1_39[0]",
@@ -1367,6 +1380,7 @@
       "value_format": "checkbox"
     },
     {
+      "address_id": "2025/document=form_1040/section=return_header/option=taxpayer_deceased",
       "document_id": "form_1040_2025",
       "downstream_effect": "Output leaves AcroForm field topmostSubform[0].Page1[0].c1_3[0] blank and reports the unsupported filing field.",
       "field_name": "topmostSubform[0].Page1[0].c1_3[0]",
@@ -1385,6 +1399,7 @@
       "value_format": "checkbox"
     },
     {
+      "address_id": "2025/document=form_1040/line=5c/option=other_word_or_code",
       "document_id": "form_1040_2025",
       "downstream_effect": "Output leaves AcroForm field topmostSubform[0].Page1[0].c1_40[0] blank and reports the unsupported filing field.",
       "field_name": "topmostSubform[0].Page1[0].c1_40[0]",
@@ -1403,6 +1418,7 @@
       "value_format": "checkbox"
     },
     {
+      "address_id": "2025/document=form_1040/line=6c/option=lump_sum_election",
       "document_id": "form_1040_2025",
       "downstream_effect": "Output leaves AcroForm field topmostSubform[0].Page1[0].c1_41[0] blank and reports the unsupported filing field.",
       "field_name": "topmostSubform[0].Page1[0].c1_41[0]",
@@ -1421,6 +1437,7 @@
       "value_format": "checkbox"
     },
     {
+      "address_id": "2025/document=form_1040/line=6d/option=mfs_lived_apart",
       "document_id": "form_1040_2025",
       "downstream_effect": "Output leaves AcroForm field topmostSubform[0].Page1[0].c1_42[0] blank and reports the unsupported filing field.",
       "field_name": "topmostSubform[0].Page1[0].c1_42[0]",
@@ -1439,6 +1456,7 @@
       "value_format": "checkbox"
     },
     {
+      "address_id": "2025/document=form_1040/line=7b/option=schedule_d_not_required",
       "document_id": "form_1040_2025",
       "downstream_effect": "Output leaves AcroForm field topmostSubform[0].Page1[0].c1_43[0] blank and reports the unsupported filing field.",
       "field_name": "topmostSubform[0].Page1[0].c1_43[0]",
@@ -1457,6 +1475,7 @@
       "value_format": "checkbox"
     },
     {
+      "address_id": "2025/document=form_1040/line=7b/option=child_capital_gain",
       "document_id": "form_1040_2025",
       "downstream_effect": "Output leaves AcroForm field topmostSubform[0].Page1[0].c1_44[0] blank and reports the unsupported filing field.",
       "field_name": "topmostSubform[0].Page1[0].c1_44[0]",
@@ -1475,6 +1494,7 @@
       "value_format": "checkbox"
     },
     {
+      "address_id": "2025/document=form_1040/section=return_header/option=other_filing_designation",
       "document_id": "form_1040_2025",
       "downstream_effect": "Output leaves AcroForm field topmostSubform[0].Page1[0].c1_4[0] blank and reports the unsupported filing field.",
       "field_name": "topmostSubform[0].Page1[0].c1_4[0]",
@@ -1493,6 +1513,7 @@
       "value_format": "checkbox"
     },
     {
+      "address_id": "2025/document=form_1040/section=identity/option=main_home_joint_return",
       "document_id": "form_1040_2025",
       "downstream_effect": "Output leaves AcroForm field topmostSubform[0].Page1[0].c1_5[0] blank and reports the unsupported filing field.",
       "field_name": "topmostSubform[0].Page1[0].c1_5[0]",
@@ -1511,6 +1532,7 @@
       "value_format": "checkbox"
     },
     {
+      "address_id": "2025/document=form_1040/section=identity/option=presidential_election_you",
       "document_id": "form_1040_2025",
       "downstream_effect": "Output leaves AcroForm field topmostSubform[0].Page1[0].c1_6[0] blank and reports the unsupported filing field.",
       "field_name": "topmostSubform[0].Page1[0].c1_6[0]",
@@ -1529,6 +1551,7 @@
       "value_format": "checkbox"
     },
     {
+      "address_id": "2025/document=form_1040/section=identity/option=presidential_election_spouse",
       "document_id": "form_1040_2025",
       "downstream_effect": "Output leaves AcroForm field topmostSubform[0].Page1[0].c1_7[0] blank and reports the unsupported filing field.",
       "field_name": "topmostSubform[0].Page1[0].c1_7[0]",
@@ -1581,6 +1604,7 @@
       "value_format": "checkbox"
     },
     {
+      "address_id": "2025/document=form_1040/section=filing_status/option=nonresident_alien_spouse_election",
       "document_id": "form_1040_2025",
       "downstream_effect": "Output leaves AcroForm field topmostSubform[0].Page1[0].c1_9[0] blank and reports the unsupported filing field.",
       "field_name": "topmostSubform[0].Page1[0].c1_9[0]",
@@ -1599,6 +1623,7 @@
       "value_format": "checkbox"
     },
     {
+      "address_id": "2025/document=form_1040/section=return_header/control=other_tax_year_beginning",
       "document_id": "form_1040_2025",
       "downstream_effect": "Output leaves AcroForm field topmostSubform[0].Page1[0].f1_01[0] blank and reports the unsupported filing field.",
       "field_name": "topmostSubform[0].Page1[0].f1_01[0]",
@@ -1617,6 +1642,7 @@
       "value_format": "text"
     },
     {
+      "address_id": "2025/document=form_1040/section=return_header/control=other_tax_year_ending",
       "document_id": "form_1040_2025",
       "downstream_effect": "Output leaves AcroForm field topmostSubform[0].Page1[0].f1_02[0] blank and reports the unsupported filing field.",
       "field_name": "topmostSubform[0].Page1[0].f1_02[0]",
@@ -1635,6 +1661,7 @@
       "value_format": "text"
     },
     {
+      "address_id": "2025/document=form_1040/section=return_header/control=other_tax_year_ending_suffix",
       "document_id": "form_1040_2025",
       "downstream_effect": "Output leaves AcroForm field topmostSubform[0].Page1[0].f1_03[0] blank and reports the unsupported filing field.",
       "field_name": "topmostSubform[0].Page1[0].f1_03[0]",
@@ -1653,6 +1680,7 @@
       "value_format": "text"
     },
     {
+      "address_id": "2025/document=form_1040/section=return_header/control=combat_zone_name",
       "document_id": "form_1040_2025",
       "downstream_effect": "Output leaves AcroForm field topmostSubform[0].Page1[0].f1_04[0] blank and reports the unsupported filing field.",
       "field_name": "topmostSubform[0].Page1[0].f1_04[0]",
@@ -1671,6 +1699,7 @@
       "value_format": "text"
     },
     {
+      "address_id": "2025/document=form_1040/section=return_header/control=taxpayer_deceased_month",
       "document_id": "form_1040_2025",
       "downstream_effect": "Output leaves AcroForm field topmostSubform[0].Page1[0].f1_05[0] blank and reports the unsupported filing field.",
       "field_name": "topmostSubform[0].Page1[0].f1_05[0]",
@@ -1689,6 +1718,7 @@
       "value_format": "text"
     },
     {
+      "address_id": "2025/document=form_1040/section=return_header/control=taxpayer_deceased_day",
       "document_id": "form_1040_2025",
       "downstream_effect": "Output leaves AcroForm field topmostSubform[0].Page1[0].f1_06[0] blank and reports the unsupported filing field.",
       "field_name": "topmostSubform[0].Page1[0].f1_06[0]",
@@ -1707,6 +1737,7 @@
       "value_format": "text"
     },
     {
+      "address_id": "2025/document=form_1040/section=return_header/control=taxpayer_deceased_year",
       "document_id": "form_1040_2025",
       "downstream_effect": "Output leaves AcroForm field topmostSubform[0].Page1[0].f1_07[0] blank and reports the unsupported filing field.",
       "field_name": "topmostSubform[0].Page1[0].f1_07[0]",
@@ -1725,6 +1756,7 @@
       "value_format": "text"
     },
     {
+      "address_id": "2025/document=form_1040/section=return_header/control=spouse_deceased_month",
       "document_id": "form_1040_2025",
       "downstream_effect": "Output leaves AcroForm field topmostSubform[0].Page1[0].f1_08[0] blank and reports the unsupported filing field.",
       "field_name": "topmostSubform[0].Page1[0].f1_08[0]",
@@ -1743,6 +1775,7 @@
       "value_format": "text"
     },
     {
+      "address_id": "2025/document=form_1040/section=return_header/control=spouse_deceased_day",
       "document_id": "form_1040_2025",
       "downstream_effect": "Output leaves AcroForm field topmostSubform[0].Page1[0].f1_09[0] blank and reports the unsupported filing field.",
       "field_name": "topmostSubform[0].Page1[0].f1_09[0]",
@@ -1761,6 +1794,7 @@
       "value_format": "text"
     },
     {
+      "address_id": "2025/document=form_1040/section=return_header/control=spouse_deceased_year",
       "document_id": "form_1040_2025",
       "downstream_effect": "Output leaves AcroForm field topmostSubform[0].Page1[0].f1_10[0] blank and reports the unsupported filing field.",
       "field_name": "topmostSubform[0].Page1[0].f1_10[0]",
@@ -1779,6 +1813,7 @@
       "value_format": "text"
     },
     {
+      "address_id": "2025/document=form_1040/section=return_header/control=other_filing_designation_text",
       "document_id": "form_1040_2025",
       "downstream_effect": "Output leaves AcroForm field topmostSubform[0].Page1[0].f1_11[0] blank and reports the unsupported filing field.",
       "field_name": "topmostSubform[0].Page1[0].f1_11[0]",
@@ -1797,6 +1832,7 @@
       "value_format": "text"
     },
     {
+      "address_id": "2025/document=form_1040/section=return_header/control=other_filing_designation_text",
       "document_id": "form_1040_2025",
       "downstream_effect": "Output leaves AcroForm field topmostSubform[0].Page1[0].f1_12[0] blank and reports the unsupported filing field.",
       "field_name": "topmostSubform[0].Page1[0].f1_12[0]",
@@ -1815,6 +1851,7 @@
       "value_format": "text"
     },
     {
+      "address_id": "2025/document=form_1040/section=return_header/control=other_filing_designation_text",
       "document_id": "form_1040_2025",
       "downstream_effect": "Output leaves AcroForm field topmostSubform[0].Page1[0].f1_13[0] blank and reports the unsupported filing field.",
       "field_name": "topmostSubform[0].Page1[0].f1_13[0]",
@@ -1935,6 +1972,7 @@
       "value_format": "text"
     },
     {
+      "address_id": "2025/document=form_1040/section=filing_status/control=hoh_qss_child_name",
       "document_id": "form_1040_2025",
       "downstream_effect": "Output leaves AcroForm field topmostSubform[0].Page1[0].f1_29[0] blank and reports the unsupported filing field.",
       "field_name": "topmostSubform[0].Page1[0].f1_29[0]",
@@ -1953,6 +1991,7 @@
       "value_format": "text"
     },
     {
+      "address_id": "2025/document=form_1040/section=filing_status/control=nonresident_alien_spouse_name",
       "document_id": "form_1040_2025",
       "downstream_effect": "Output leaves AcroForm field topmostSubform[0].Page1[0].f1_30[0] blank and reports the unsupported filing field.",
       "field_name": "topmostSubform[0].Page1[0].f1_30[0]",
@@ -2160,7 +2199,7 @@
       "value_format": "dollars"
     },
     {
-      "address_id": "2025/document=form_1040/line=2b/control=amount",
+      "address_id": "2025/document=form_1040/line=2a/control=amount",
       "document_id": "form_1040_2025",
       "downstream_effect": "Output leaves AcroForm field topmostSubform[0].Page1[0].f1_58[0] blank and reports the unsupported filing field.",
       "field_name": "topmostSubform[0].Page1[0].f1_58[0]",
@@ -2196,7 +2235,7 @@
       "value_format": "dollars"
     },
     {
-      "address_id": "2025/document=form_1040/line=3b/control=amount",
+      "address_id": "2025/document=form_1040/line=3a/control=amount",
       "document_id": "form_1040_2025",
       "field_name": "topmostSubform[0].Page1[0].f1_60[0]",
       "label": "Line 3b - if required. 3a Qualified dividends . . . 3a - f1_60",
@@ -2230,7 +2269,7 @@
       "value_format": "dollars"
     },
     {
-      "address_id": "2025/document=form_1040/line=4b/control=amount",
+      "address_id": "2025/document=form_1040/line=4a/control=amount",
       "document_id": "form_1040_2025",
       "downstream_effect": "Output leaves AcroForm field topmostSubform[0].Page1[0].f1_62[0] blank and reports the unsupported filing field.",
       "field_name": "topmostSubform[0].Page1[0].f1_62[0]",
@@ -2268,6 +2307,7 @@
       "value_format": "text"
     },
     {
+      "address_id": "2025/document=form_1040/line=4c/control=text",
       "document_id": "form_1040_2025",
       "downstream_effect": "Output leaves AcroForm field topmostSubform[0].Page1[0].f1_64[0] blank and reports the unsupported filing field.",
       "field_name": "topmostSubform[0].Page1[0].f1_64[0]",
@@ -2286,7 +2326,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_1040/line=5b/control=amount",
+      "address_id": "2025/document=form_1040/line=5a/control=amount",
       "document_id": "form_1040_2025",
       "downstream_effect": "Output leaves AcroForm field topmostSubform[0].Page1[0].f1_65[0] blank and reports the unsupported filing field.",
       "field_name": "topmostSubform[0].Page1[0].f1_65[0]",
@@ -2324,6 +2364,7 @@
       "value_format": "text"
     },
     {
+      "address_id": "2025/document=form_1040/line=5c/control=text",
       "document_id": "form_1040_2025",
       "downstream_effect": "Output leaves AcroForm field topmostSubform[0].Page1[0].f1_67[0] blank and reports the unsupported filing field.",
       "field_name": "topmostSubform[0].Page1[0].f1_67[0]",
@@ -2342,7 +2383,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_1040/line=6b/control=amount",
+      "address_id": "2025/document=form_1040/line=6a/control=amount",
       "document_id": "form_1040_2025",
       "downstream_effect": "Output leaves AcroForm field topmostSubform[0].Page1[0].f1_68[0] blank and reports the unsupported filing field.",
       "field_name": "topmostSubform[0].Page1[0].f1_68[0]",
@@ -2397,6 +2438,7 @@
       "value_format": "dollars"
     },
     {
+      "address_id": "2025/document=form_1040/line=7b/control=amount",
       "document_id": "form_1040_2025",
       "downstream_effect": "Output leaves AcroForm field topmostSubform[0].Page1[0].f1_71[0] blank and reports the unsupported filing field.",
       "field_name": "topmostSubform[0].Page1[0].f1_71[0]",
@@ -2483,6 +2525,7 @@
       "value_format": "dollars"
     },
     {
+      "address_id": "2025/document=form_1040/line=35d/control=identifier",
       "document_id": "form_1040_2025",
       "downstream_effect": "Output leaves AcroForm field topmostSubform[0].Page2[0].AccountNo[0].f2_33[0] blank and reports the unsupported filing field.",
       "field_name": "topmostSubform[0].Page2[0].AccountNo[0].f2_33[0]",
@@ -2501,7 +2544,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_1040/line=28/control=checkbox",
+      "address_id": "2025/document=form_1040/line=28/option=do_not_claim_actc",
       "document_id": "form_1040_2025",
       "downstream_effect": "Output leaves AcroForm field topmostSubform[0].Page2[0].Line28_ReadOrder[0].c2_14[0] blank and reports the unsupported filing field.",
       "field_name": "topmostSubform[0].Page2[0].Line28_ReadOrder[0].c2_14[0]",
@@ -2520,6 +2563,7 @@
       "value_format": "checkbox"
     },
     {
+      "address_id": "2025/document=form_1040/line=35b/control=identifier",
       "document_id": "form_1040_2025",
       "downstream_effect": "Output leaves AcroForm field topmostSubform[0].Page2[0].RoutingNo[0].f2_32[0] blank and reports the unsupported filing field.",
       "field_name": "topmostSubform[0].Page2[0].RoutingNo[0].f2_32[0]",
@@ -2538,6 +2582,7 @@
       "value_format": "text"
     },
     {
+      "address_id": "2025/document=form_1040/line=26/control=identifier",
       "document_id": "form_1040_2025",
       "downstream_effect": "Output leaves AcroForm field topmostSubform[0].Page2[0].SSN_ReadOrder[0].f2_22[0] blank and reports the unsupported filing field.",
       "field_name": "topmostSubform[0].Page2[0].SSN_ReadOrder[0].f2_22[0]",
@@ -2556,7 +2601,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_1040/line=16/control=checkbox",
+      "address_id": "2025/document=form_1040/line=16/option=form_4972",
       "document_id": "form_1040_2025",
       "downstream_effect": "Output leaves AcroForm field topmostSubform[0].Page2[0].c2_10[0] blank and reports the unsupported filing field.",
       "field_name": "topmostSubform[0].Page2[0].c2_10[0]",
@@ -2575,7 +2620,7 @@
       "value_format": "checkbox"
     },
     {
-      "address_id": "2025/document=form_1040/line=16/control=checkbox",
+      "address_id": "2025/document=form_1040/line=16/option=other_form",
       "document_id": "form_1040_2025",
       "downstream_effect": "Output leaves AcroForm field topmostSubform[0].Page2[0].c2_11[0] blank and reports the unsupported filing field.",
       "field_name": "topmostSubform[0].Page2[0].c2_11[0]",
@@ -2594,6 +2639,7 @@
       "value_format": "checkbox"
     },
     {
+      "address_id": "2025/document=form_1040/line=27b/option=clergy_schedule_se",
       "document_id": "form_1040_2025",
       "downstream_effect": "Output leaves AcroForm field topmostSubform[0].Page2[0].c2_12[0] blank and reports the unsupported filing field.",
       "field_name": "topmostSubform[0].Page2[0].c2_12[0]",
@@ -2612,6 +2658,7 @@
       "value_format": "checkbox"
     },
     {
+      "address_id": "2025/document=form_1040/line=27c/option=do_not_claim_eic",
       "document_id": "form_1040_2025",
       "downstream_effect": "Output leaves AcroForm field topmostSubform[0].Page2[0].c2_13[0] blank and reports the unsupported filing field.",
       "field_name": "topmostSubform[0].Page2[0].c2_13[0]",
@@ -2630,7 +2677,7 @@
       "value_format": "checkbox"
     },
     {
-      "address_id": "2025/document=form_1040/line=35a/control=checkbox",
+      "address_id": "2025/document=form_1040/line=35a/option=form_8888_attached",
       "document_id": "form_1040_2025",
       "downstream_effect": "Output leaves AcroForm field topmostSubform[0].Page2[0].c2_15[0] blank and reports the unsupported filing field.",
       "field_name": "topmostSubform[0].Page2[0].c2_15[0]",
@@ -2649,6 +2696,7 @@
       "value_format": "checkbox"
     },
     {
+      "address_id": "2025/document=form_1040/line=35c/option=checking",
       "document_id": "form_1040_2025",
       "downstream_effect": "Output leaves AcroForm field topmostSubform[0].Page2[0].c2_16[0] blank and reports the unsupported filing field.",
       "field_name": "topmostSubform[0].Page2[0].c2_16[0]",
@@ -2667,6 +2715,7 @@
       "value_format": "checkbox"
     },
     {
+      "address_id": "2025/document=form_1040/line=35c/option=savings",
       "document_id": "form_1040_2025",
       "downstream_effect": "Output leaves AcroForm field topmostSubform[0].Page2[0].c2_16[1] blank and reports the unsupported filing field.",
       "field_name": "topmostSubform[0].Page2[0].c2_16[1]",
@@ -2685,6 +2734,7 @@
       "value_format": "checkbox"
     },
     {
+      "address_id": "2025/document=form_1040/section=third_party_designee/option=yes",
       "document_id": "form_1040_2025",
       "downstream_effect": "Output leaves AcroForm field topmostSubform[0].Page2[0].c2_17[0] blank and reports the unsupported filing field.",
       "field_name": "topmostSubform[0].Page2[0].c2_17[0]",
@@ -2703,6 +2753,7 @@
       "value_format": "checkbox"
     },
     {
+      "address_id": "2025/document=form_1040/section=third_party_designee/option=no",
       "document_id": "form_1040_2025",
       "downstream_effect": "Output leaves AcroForm field topmostSubform[0].Page2[0].c2_17[1] blank and reports the unsupported filing field.",
       "field_name": "topmostSubform[0].Page2[0].c2_17[1]",
@@ -2721,6 +2772,7 @@
       "value_format": "checkbox"
     },
     {
+      "address_id": "2025/document=form_1040/section=paid_preparer/option=self_employed",
       "document_id": "form_1040_2025",
       "downstream_effect": "Output leaves AcroForm field topmostSubform[0].Page2[0].c2_18[0] blank and reports the unsupported filing field.",
       "field_name": "topmostSubform[0].Page2[0].c2_18[0]",
@@ -2739,7 +2791,7 @@
       "value_format": "checkbox"
     },
     {
-      "address_id": "2025/document=form_1040/line=12a/control=checkbox",
+      "address_id": "2025/document=form_1040/line=12a/option=you_as_dependent",
       "document_id": "form_1040_2025",
       "downstream_effect": "Output leaves AcroForm field topmostSubform[0].Page2[0].c2_1[0] blank and reports the unsupported filing field.",
       "field_name": "topmostSubform[0].Page2[0].c2_1[0]",
@@ -2758,7 +2810,7 @@
       "value_format": "checkbox"
     },
     {
-      "address_id": "2025/document=form_1040/line=12a/control=checkbox",
+      "address_id": "2025/document=form_1040/line=12a/option=spouse_as_dependent",
       "document_id": "form_1040_2025",
       "downstream_effect": "Output leaves AcroForm field topmostSubform[0].Page2[0].c2_2[0] blank and reports the unsupported filing field.",
       "field_name": "topmostSubform[0].Page2[0].c2_2[0]",
@@ -2777,6 +2829,7 @@
       "value_format": "checkbox"
     },
     {
+      "address_id": "2025/document=form_1040/line=12b/option=spouse_itemizes",
       "document_id": "form_1040_2025",
       "downstream_effect": "Output leaves AcroForm field topmostSubform[0].Page2[0].c2_3[0] blank and reports the unsupported filing field.",
       "field_name": "topmostSubform[0].Page2[0].c2_3[0]",
@@ -2795,6 +2848,7 @@
       "value_format": "checkbox"
     },
     {
+      "address_id": "2025/document=form_1040/line=12c/option=dual_status_alien",
       "document_id": "form_1040_2025",
       "downstream_effect": "Output leaves AcroForm field topmostSubform[0].Page2[0].c2_4[0] blank and reports the unsupported filing field.",
       "field_name": "topmostSubform[0].Page2[0].c2_4[0]",
@@ -2813,6 +2867,7 @@
       "value_format": "checkbox"
     },
     {
+      "address_id": "2025/document=form_1040/line=12d/option=you_born_before_1961",
       "document_id": "form_1040_2025",
       "downstream_effect": "Output leaves AcroForm field topmostSubform[0].Page2[0].c2_5[0] blank and reports the unsupported filing field.",
       "field_name": "topmostSubform[0].Page2[0].c2_5[0]",
@@ -2831,6 +2886,7 @@
       "value_format": "checkbox"
     },
     {
+      "address_id": "2025/document=form_1040/line=12d/option=you_blind",
       "document_id": "form_1040_2025",
       "downstream_effect": "Output leaves AcroForm field topmostSubform[0].Page2[0].c2_6[0] blank and reports the unsupported filing field.",
       "field_name": "topmostSubform[0].Page2[0].c2_6[0]",
@@ -2849,7 +2905,7 @@
       "value_format": "checkbox"
     },
     {
-      "address_id": "2025/document=form_1040/line=12e/control=checkbox",
+      "address_id": "2025/document=form_1040/line=12d/option=spouse_born_before_1961",
       "document_id": "form_1040_2025",
       "downstream_effect": "Output leaves AcroForm field topmostSubform[0].Page2[0].c2_7[0] blank and reports the unsupported filing field.",
       "field_name": "topmostSubform[0].Page2[0].c2_7[0]",
@@ -2868,7 +2924,7 @@
       "value_format": "checkbox"
     },
     {
-      "address_id": "2025/document=form_1040/line=12e/control=checkbox",
+      "address_id": "2025/document=form_1040/line=12d/option=spouse_blind",
       "document_id": "form_1040_2025",
       "downstream_effect": "Output leaves AcroForm field topmostSubform[0].Page2[0].c2_8[0] blank and reports the unsupported filing field.",
       "field_name": "topmostSubform[0].Page2[0].c2_8[0]",
@@ -2887,7 +2943,7 @@
       "value_format": "checkbox"
     },
     {
-      "address_id": "2025/document=form_1040/line=16/control=checkbox",
+      "address_id": "2025/document=form_1040/line=16/option=form_8814",
       "document_id": "form_1040_2025",
       "downstream_effect": "Output leaves AcroForm field topmostSubform[0].Page2[0].c2_9[0] blank and reports the unsupported filing field.",
       "field_name": "topmostSubform[0].Page2[0].c2_9[0]",
@@ -2977,7 +3033,7 @@
       "value_format": "dollars"
     },
     {
-      "address_id": "2025/document=form_1040/line=13b/control=amount",
+      "address_id": "2025/document=form_1040/line=14/control=amount",
       "document_id": "form_1040_2025",
       "field_name": "topmostSubform[0].Page2[0].f2_05[0]",
       "label": "Line 13b - . . . . . . . . . 14 - f2_05",
@@ -3011,7 +3067,7 @@
       "value_format": "dollars"
     },
     {
-      "address_id": "2025/document=form_1040/line=16/control=amount",
+      "address_id": "2025/document=form_1040/line=16/control=text",
       "document_id": "form_1040_2025",
       "downstream_effect": "Output leaves AcroForm field topmostSubform[0].Page2[0].f2_07[0] blank and reports the unsupported filing field.",
       "field_name": "topmostSubform[0].Page2[0].f2_07[0]",
@@ -3123,6 +3179,7 @@
       "value_format": "text"
     },
     {
+      "address_id": "2025/document=form_1040/line=21/control=amount",
       "document_id": "form_1040_2025",
       "downstream_effect": "The affected return branch remains incomplete and this control is left blank.",
       "field_name": "topmostSubform[0].Page2[0].f2_13[0]",
@@ -3521,6 +3578,7 @@
       "value_format": "text"
     },
     {
+      "address_id": "2025/document=form_1040/section=third_party_designee/control=name",
       "document_id": "form_1040_2025",
       "downstream_effect": "Output leaves AcroForm field topmostSubform[0].Page2[0].f2_37[0] blank and reports the unsupported filing field.",
       "field_name": "topmostSubform[0].Page2[0].f2_37[0]",
@@ -3539,6 +3597,7 @@
       "value_format": "text"
     },
     {
+      "address_id": "2025/document=form_1040/section=third_party_designee/control=phone",
       "document_id": "form_1040_2025",
       "downstream_effect": "Output leaves AcroForm field topmostSubform[0].Page2[0].f2_38[0] blank and reports the unsupported filing field.",
       "field_name": "topmostSubform[0].Page2[0].f2_38[0]",
@@ -3557,6 +3616,7 @@
       "value_format": "text"
     },
     {
+      "address_id": "2025/document=form_1040/section=third_party_designee/control=pin",
       "document_id": "form_1040_2025",
       "downstream_effect": "Output leaves AcroForm field topmostSubform[0].Page2[0].f2_39[0] blank and reports the unsupported filing field.",
       "field_name": "topmostSubform[0].Page2[0].f2_39[0]",
@@ -3575,6 +3635,7 @@
       "value_format": "text"
     },
     {
+      "address_id": "2025/document=form_1040/section=sign_here/control=your_occupation",
       "document_id": "form_1040_2025",
       "downstream_effect": "Output leaves AcroForm field topmostSubform[0].Page2[0].f2_40[0] blank and reports the unsupported filing field.",
       "field_name": "topmostSubform[0].Page2[0].f2_40[0]",
@@ -3593,6 +3654,7 @@
       "value_format": "text"
     },
     {
+      "address_id": "2025/document=form_1040/section=sign_here/control=your_ip_pin",
       "document_id": "form_1040_2025",
       "downstream_effect": "Output leaves AcroForm field topmostSubform[0].Page2[0].f2_41[0] blank and reports the unsupported filing field.",
       "field_name": "topmostSubform[0].Page2[0].f2_41[0]",
@@ -3611,6 +3673,7 @@
       "value_format": "text"
     },
     {
+      "address_id": "2025/document=form_1040/section=sign_here/control=spouse_occupation",
       "document_id": "form_1040_2025",
       "downstream_effect": "Output leaves AcroForm field topmostSubform[0].Page2[0].f2_42[0] blank and reports the unsupported filing field.",
       "field_name": "topmostSubform[0].Page2[0].f2_42[0]",
@@ -3629,6 +3692,7 @@
       "value_format": "text"
     },
     {
+      "address_id": "2025/document=form_1040/section=sign_here/control=spouse_ip_pin",
       "document_id": "form_1040_2025",
       "downstream_effect": "Output leaves AcroForm field topmostSubform[0].Page2[0].f2_43[0] blank and reports the unsupported filing field.",
       "field_name": "topmostSubform[0].Page2[0].f2_43[0]",
@@ -3647,6 +3711,7 @@
       "value_format": "text"
     },
     {
+      "address_id": "2025/document=form_1040/section=sign_here/control=phone",
       "document_id": "form_1040_2025",
       "downstream_effect": "Output leaves AcroForm field topmostSubform[0].Page2[0].f2_44[0] blank and reports the unsupported filing field.",
       "field_name": "topmostSubform[0].Page2[0].f2_44[0]",
@@ -3665,6 +3730,7 @@
       "value_format": "text"
     },
     {
+      "address_id": "2025/document=form_1040/section=sign_here/control=email",
       "document_id": "form_1040_2025",
       "downstream_effect": "Output leaves AcroForm field topmostSubform[0].Page2[0].f2_45[0] blank and reports the unsupported filing field.",
       "field_name": "topmostSubform[0].Page2[0].f2_45[0]",
@@ -3683,6 +3749,7 @@
       "value_format": "text"
     },
     {
+      "address_id": "2025/document=form_1040/section=paid_preparer/control=name",
       "document_id": "form_1040_2025",
       "downstream_effect": "Output leaves AcroForm field topmostSubform[0].Page2[0].f2_46[0] blank and reports the unsupported filing field.",
       "field_name": "topmostSubform[0].Page2[0].f2_46[0]",
@@ -3701,6 +3768,7 @@
       "value_format": "text"
     },
     {
+      "address_id": "2025/document=form_1040/section=paid_preparer/control=ptin",
       "document_id": "form_1040_2025",
       "downstream_effect": "Output leaves AcroForm field topmostSubform[0].Page2[0].f2_47[0] blank and reports the unsupported filing field.",
       "field_name": "topmostSubform[0].Page2[0].f2_47[0]",
@@ -3719,6 +3787,7 @@
       "value_format": "text"
     },
     {
+      "address_id": "2025/document=form_1040/section=paid_preparer/control=firm_name",
       "document_id": "form_1040_2025",
       "downstream_effect": "Output leaves AcroForm field topmostSubform[0].Page2[0].f2_48[0] blank and reports the unsupported filing field.",
       "field_name": "topmostSubform[0].Page2[0].f2_48[0]",
@@ -3737,6 +3806,7 @@
       "value_format": "text"
     },
     {
+      "address_id": "2025/document=form_1040/section=paid_preparer/control=phone",
       "document_id": "form_1040_2025",
       "downstream_effect": "Output leaves AcroForm field topmostSubform[0].Page2[0].f2_49[0] blank and reports the unsupported filing field.",
       "field_name": "topmostSubform[0].Page2[0].f2_49[0]",
@@ -3755,6 +3825,7 @@
       "value_format": "text"
     },
     {
+      "address_id": "2025/document=form_1040/section=paid_preparer/control=firm_address",
       "document_id": "form_1040_2025",
       "downstream_effect": "Output leaves AcroForm field topmostSubform[0].Page2[0].f2_50[0] blank and reports the unsupported filing field.",
       "field_name": "topmostSubform[0].Page2[0].f2_50[0]",
@@ -3773,6 +3844,7 @@
       "value_format": "text"
     },
     {
+      "address_id": "2025/document=form_1040/section=paid_preparer/control=firm_ein",
       "document_id": "form_1040_2025",
       "downstream_effect": "Output leaves AcroForm field topmostSubform[0].Page2[0].f2_51[0] blank and reports the unsupported filing field.",
       "field_name": "topmostSubform[0].Page2[0].f2_51[0]",

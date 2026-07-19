@@ -137,6 +137,8 @@ def build_document_addresses(root: str | Path, document_id: str) -> dict[str, An
 
 def _control_evidence(item: dict[str, Any], mapping: dict[str, Any] | None,
                       disposition: dict[str, Any], *, document_id: str) -> dict[str, Any] | None:
+    if document_id == "form_1040_2025":
+        return _form_1040_control_evidence(item, mapping)
     if document_id == "form_8949_2025":
         return _form_8949_control_evidence(item, mapping, disposition)
     if document_id == "form_w2_2025":
@@ -190,6 +192,344 @@ def _control_evidence(item: dict[str, Any], mapping: dict[str, Any] | None,
         "rect": [item["x0"], item["y0"], item["x1"], item["y1"]],
         "semantic_status": "pending_review",
     }
+
+
+def _form_1040_control_evidence(
+    item: dict[str, Any], mapping: dict[str, Any] | None,
+) -> dict[str, Any] | None:
+    """Project every Form 1040 widget through its own printed 2025 form identity."""
+    field_name = str(item["field_name"])
+    leaf = field_name.rsplit(".", 1)[-1]
+
+    identity = {
+        "taxpayer_first_name": "First name and middle initial",
+        "taxpayer_last_name": "Last name",
+        "taxpayer_ssn": "Your social security number",
+        "spouse_first_name": "Spouse's first name and middle initial",
+        "spouse_last_name": "Spouse's last name",
+        "spouse_ssn": "Spouse's social security number",
+        "address_line_1": "Home address (number and street)",
+        "apartment": "Apt. no.",
+        "city": "City, town, or post office",
+        "state": "State",
+        "zip_code": "ZIP code",
+    }
+    if mapping and mapping.get("identity_slot") in identity:
+        token = str(mapping["identity_slot"])
+        return _campaign_control(
+            item,
+            [{"kind": "section", "token": "identity"}, {"kind": "control", "token": token}],
+            "Identity",
+            identity[token],
+            "identifier" if token.endswith("ssn") else "text",
+        )
+    if mapping and mapping.get("identity_slot") == "filing_status":
+        token = str(mapping["checkbox_value"])
+        label = {
+            "single": "Single",
+            "married_filing_jointly": "Married filing jointly (even if only one had income)",
+            "married_filing_separately": "Married filing separately (MFS)",
+            "head_of_household": "Head of household (HOH)",
+            "qualifying_surviving_spouse": "Qualifying surviving spouse (QSS)",
+        }[token]
+        return _campaign_control(
+            item,
+            [{"kind": "section", "token": "filing_status"}, {"kind": "option", "token": token}],
+            "Filing Status",
+            label,
+            "checkbox",
+        )
+
+    header_specs = {
+        "f1_01[0]": ("other_tax_year_beginning", "Other tax year beginning", "text"),
+        "f1_02[0]": ("other_tax_year_ending", "Other tax year ending", "text"),
+        "f1_03[0]": ("other_tax_year_ending_suffix", "Other tax year ending year suffix", "text"),
+        "c1_1[0]": ("section_301_9100_2", "Filed pursuant to section 301.9100-2", "checkbox"),
+        "c1_2[0]": ("combat_zone", "Combat zone", "checkbox"),
+        "f1_04[0]": ("combat_zone_name", "Combat zone name", "text"),
+        "c1_3[0]": ("taxpayer_deceased", "Deceased", "checkbox"),
+        "f1_05[0]": ("taxpayer_deceased_month", "Deceased date - month", "text"),
+        "f1_06[0]": ("taxpayer_deceased_day", "Deceased date - day", "text"),
+        "f1_07[0]": ("taxpayer_deceased_year", "Deceased date - year", "text"),
+        "f1_08[0]": ("spouse_deceased_month", "Spouse deceased date - month", "text"),
+        "f1_09[0]": ("spouse_deceased_day", "Spouse deceased date - day", "text"),
+        "f1_10[0]": ("spouse_deceased_year", "Spouse deceased date - year", "text"),
+        "c1_4[0]": ("other_filing_designation", "Other", "checkbox"),
+        "f1_11[0]": ("other_filing_designation_text", "Other filing designation", "text"),
+        "f1_12[0]": ("other_filing_designation_text", "Other filing designation", "text"),
+        "f1_13[0]": ("other_filing_designation_text", "Other filing designation", "text"),
+    }
+    if leaf in header_specs:
+        token, label, role = header_specs[leaf]
+        terminal = "option" if role == "checkbox" else "control"
+        return _campaign_control(
+            item,
+            [{"kind": "section", "token": "return_header"}, {"kind": terminal, "token": token}],
+            "Header",
+            label,
+            role,
+        )
+
+    identity_extras = {
+        "f1_25[0]": ("foreign_country", "Foreign country name", "text"),
+        "f1_26[0]": ("foreign_province", "Foreign province/state/county", "text"),
+        "f1_27[0]": ("foreign_postal_code", "Foreign postal code", "text"),
+        "c1_5[0]": (
+            "main_home_joint_return",
+            "Check here if your main home, and your spouse's if filing a joint return, was in the U.S. for more than half of 2025",
+            "checkbox",
+        ),
+        "c1_6[0]": ("presidential_election_you", "Presidential Election Campaign - You", "checkbox"),
+        "c1_7[0]": ("presidential_election_spouse", "Presidential Election Campaign - Spouse", "checkbox"),
+    }
+    if leaf in identity_extras:
+        token, label, role = identity_extras[leaf]
+        terminal = "option" if role == "checkbox" else "control"
+        return _campaign_control(
+            item,
+            [{"kind": "section", "token": "identity"}, {"kind": terminal, "token": token}],
+            "Identity",
+            label,
+            role,
+        )
+
+    filing_extras = {
+        "f1_28[0]": ("mfs_spouse_full_name", "MFS spouse's full name", "text"),
+        "f1_29[0]": ("hoh_qss_child_name", "HOH or QSS qualifying child's name", "text"),
+        "c1_9[0]": (
+            "nonresident_alien_spouse_election",
+            "Treating a nonresident alien or dual-status alien spouse as a U.S. resident",
+            "checkbox",
+        ),
+        "f1_30[0]": ("nonresident_alien_spouse_name", "Nonresident alien spouse's name", "text"),
+    }
+    if leaf in filing_extras:
+        token, label, role = filing_extras[leaf]
+        terminal = "option" if role == "checkbox" else "control"
+        return _campaign_control(
+            item,
+            [{"kind": "section", "token": "filing_status"}, {"kind": terminal, "token": token}],
+            "Filing Status",
+            label,
+            role,
+        )
+
+    if leaf.startswith("c1_10["):
+        token, label = ("yes", "Yes") if leaf == "c1_10[0]" else ("no", "No")
+        return _campaign_control(
+            item,
+            [{"kind": "section", "token": "digital_assets"}, {"kind": "option", "token": token}],
+            "Digital Assets",
+            label,
+            "checkbox",
+        )
+
+    if leaf == "c1_11[0]":
+        return _campaign_control(
+            item,
+            [{"kind": "table", "token": "dependents"}, {"kind": "option", "token": "more_than_four"}],
+            "Dependents",
+            "More than four dependents",
+            "checkbox",
+        )
+    dependent_text = re.fullmatch(r"f1_([3-4][0-9])\[0\]", leaf)
+    if dependent_text and 31 <= int(dependent_text.group(1)) <= 46:
+        number = int(dependent_text.group(1))
+        column = ("first_name", "last_name", "ssn", "relationship")[(number - 31) // 4]
+        label = {
+            "first_name": "First name",
+            "last_name": "Last name",
+            "ssn": "SSN",
+            "relationship": "Relationship",
+        }[column]
+        return _campaign_control(
+            item,
+            [{"kind": "table", "token": "dependents"}, {"kind": "row_template", "token": "dependent"},
+             {"kind": "column", "token": column}],
+            f"Dependents column {label}",
+            label,
+            "identifier" if column == "ssn" else "text",
+        )
+    dependent_choice = re.fullmatch(r"c1_([12][0-9]|3[01])\[([01])\]", leaf)
+    if dependent_choice and 12 <= int(dependent_choice.group(1)) <= 31:
+        number = int(dependent_choice.group(1))
+        index = int(dependent_choice.group(2))
+        if number <= 19:
+            token = "lived_with_you_more_than_half_2025" if number % 2 == 0 else "in_the_us"
+            label = "Lived with you more than half of 2025" if number % 2 == 0 else "And in the U.S."
+        elif number <= 27:
+            token = "full_time_student" if number % 2 == 0 else "permanently_totally_disabled"
+            label = "Full-time student" if number % 2 == 0 else "Permanently and totally disabled"
+        else:
+            token = "child_tax_credit" if index == 0 else "credit_for_other_dependents"
+            label = "Child tax credit" if index == 0 else "Credit for other dependents"
+        return _campaign_control(
+            item,
+            [{"kind": "table", "token": "dependents"}, {"kind": "row_template", "token": "dependent"},
+             {"kind": "column", "token": token}],
+            f"Dependents column {label}",
+            label,
+            "checkbox",
+        )
+    if leaf == "c1_32[0]":
+        return _campaign_control(
+            item,
+            [{"kind": "section", "token": "filing_status"},
+             {"kind": "option", "token": "mfs_hoh_lived_apart"}],
+            "Filing Status",
+            "MFS or HOH and lived apart from spouse for the last 6 months of 2025",
+            "checkbox",
+        )
+
+    line_text_specs = {
+        "f1_47[0]": ("1a", "Total amount from Form(s) W-2, box 1", "amount"),
+        "f1_48[0]": ("1b", "Household employee wages not reported on Form(s) W-2", "amount"),
+        "f1_49[0]": ("1c", "Tip income not reported on line 1a", "amount"),
+        "f1_50[0]": ("1d", "Medicaid waiver payments not reported on Form(s) W-2", "amount"),
+        "f1_51[0]": ("1e", "Taxable dependent care benefits from Form 2441, line 26", "amount"),
+        "f1_52[0]": ("1f", "Employer-provided adoption benefits from Form 8839, line 31", "amount"),
+        "f1_53[0]": ("1g", "Wages from Form 8919, line 6", "amount"),
+        "f1_54[0]": ("1h", "Other earned income - type", "description"),
+        "f1_55[0]": ("1h", "Other earned income - amount", "amount"),
+        "f1_56[0]": ("1i", "Nontaxable combat pay election", "amount"),
+        "f1_57[0]": ("1z", "Add lines 1a through 1h", "amount"),
+        "f1_58[0]": ("2a", "Tax-exempt interest", "amount"),
+        "f1_59[0]": ("2b", "Taxable interest", "amount"),
+        "f1_60[0]": ("3a", "Qualified dividends", "amount"),
+        "f1_61[0]": ("3b", "Ordinary dividends", "amount"),
+        "f1_62[0]": ("4a", "IRA distributions", "amount"),
+        "f1_63[0]": ("4b", "Taxable amount", "amount"),
+        "f1_64[0]": ("4c", "Option 3 word or code", "text"),
+        "f1_65[0]": ("5a", "Pensions and annuities", "amount"),
+        "f1_66[0]": ("5b", "Taxable amount", "amount"),
+        "f1_67[0]": ("5c", "Option 3 word or code", "text"),
+        "f1_68[0]": ("6a", "Social security benefits", "amount"),
+        "f1_69[0]": ("6b", "Taxable amount", "amount"),
+        "f1_70[0]": ("7a", "Capital gain or (loss)", "amount"),
+        "f1_71[0]": ("7b", "Child's capital gain or (loss) included in line 7a", "amount"),
+        "f1_72[0]": ("8", "Additional income from Schedule 1, line 10", "amount"),
+        "f1_73[0]": ("9", "Add lines 1z, 2b, 3b, 4b, 5b, 6b, 7a, and 8", "amount"),
+        "f1_74[0]": ("10", "Adjustments to income from Schedule 1, line 26", "amount"),
+        "f1_75[0]": ("11a", "Subtract line 10 from line 9", "amount"),
+        "f2_01[0]": ("11b", "Amount from line 11a (adjusted gross income)", "amount"),
+        "f2_02[0]": ("12e", "Standard deduction or itemized deductions (from Schedule A)", "amount"),
+        "f2_03[0]": ("13a", "Qualified business income deduction from Form 8995 or Form 8995-A", "amount"),
+        "f2_04[0]": ("13b", "Additional deductions from Schedule 1-A, line 38", "amount"),
+        "f2_05[0]": ("14", "Add lines 12e, 13a, and 13b", "amount"),
+        "f2_06[0]": ("15", "Subtract line 14 from line 11b", "amount"),
+        "f2_07[0]": ("16", "Other tax form number", "text"),
+        "f2_08[0]": ("16", "Tax", "amount"),
+        "f2_09[0]": ("17", "Amount from Schedule 2, line 3", "amount"),
+        "f2_10[0]": ("18", "Add lines 16 and 17", "amount"),
+        "f2_11[0]": ("19", "Child tax credit or credit for other dependents from Schedule 8812", "amount"),
+        "f2_12[0]": ("20", "Amount from Schedule 3, line 8", "amount"),
+        "f2_13[0]": ("21", "Add lines 19 and 20", "amount"),
+        "f2_14[0]": ("22", "Subtract line 21 from line 18", "amount"),
+        "f2_15[0]": ("23", "Other taxes, including self-employment tax, from Schedule 2, line 21", "amount"),
+        "f2_16[0]": ("24", "Add lines 22 and 23", "amount"),
+        "f2_17[0]": ("25a", "Federal income tax withheld from Form(s) W-2", "amount"),
+        "f2_18[0]": ("25b", "Federal income tax withheld from Form(s) 1099", "amount"),
+        "f2_19[0]": ("25c", "Federal income tax withheld from other forms", "amount"),
+        "f2_20[0]": ("25d", "Add lines 25a through 25c", "amount"),
+        "f2_21[0]": ("26", "2025 estimated tax payments and amount applied from 2024 return", "amount"),
+        "f2_22[0]": ("26", "Former spouse's SSN", "identifier"),
+        "f2_23[0]": ("27a", "Earned income credit (EIC)", "amount"),
+        "f2_24[0]": ("28", "Additional child tax credit (ACTC) from Schedule 8812", "amount"),
+        "f2_25[0]": ("29", "American opportunity credit from Form 8863, line 8", "amount"),
+        "f2_26[0]": ("30", "Refundable adoption credit from Form 8839, line 13", "amount"),
+        "f2_27[0]": ("31", "Amount from Schedule 3, line 15", "amount"),
+        "f2_28[0]": ("32", "Add lines 27a, 28, 29, 30, and 31", "amount"),
+        "f2_29[0]": ("33", "Add lines 25d, 26, and 32", "amount"),
+        "f2_30[0]": ("34", "Subtract line 24 from line 33", "amount"),
+        "f2_31[0]": ("35a", "Amount of line 34 you want refunded to you", "amount"),
+        "f2_32[0]": ("35b", "Routing number", "identifier"),
+        "f2_33[0]": ("35d", "Account number", "identifier"),
+        "f2_34[0]": ("36", "Amount of line 34 you want applied to your 2026 estimated tax", "amount"),
+        "f2_35[0]": ("37", "Subtract line 33 from line 24", "amount"),
+        "f2_36[0]": ("38", "Estimated tax penalty", "amount"),
+    }
+    if leaf in line_text_specs:
+        line, label, role = line_text_specs[leaf]
+        return _campaign_control(
+            item,
+            [{"kind": "line", "token": line}, {"kind": "control", "token": role}],
+            line,
+            label,
+            role,
+        )
+
+    line_choice_specs = {
+        "c1_33[0]": ("3c", "line_3a", "Child's dividends are included in line 1 - Line 3a"),
+        "c1_34[0]": ("3c", "line_3b", "Child's dividends are included in line 1 - Line 3b"),
+        "c1_35[0]": ("4c", "rollover", "Rollover"),
+        "c1_36[0]": ("4c", "qcd", "QCD"),
+        "c1_37[0]": ("4c", "other_word_or_code", "Use another word or code"),
+        "c1_38[0]": ("5c", "rollover", "Rollover"),
+        "c1_39[0]": ("5c", "pso", "PSO"),
+        "c1_40[0]": ("5c", "other_word_or_code", "Use another word or code"),
+        "c1_41[0]": ("6c", "lump_sum_election", "Lump-sum election method"),
+        "c1_42[0]": ("6d", "mfs_lived_apart", "Married filing separately and lived apart from spouse the entire year"),
+        "c1_43[0]": ("7b", "schedule_d_not_required", "Schedule D not required"),
+        "c1_44[0]": ("7b", "child_capital_gain", "Includes child's capital gain or (loss)"),
+        "c2_1[0]": ("12a", "you_as_dependent", "You as a dependent"),
+        "c2_2[0]": ("12a", "spouse_as_dependent", "Your spouse as a dependent"),
+        "c2_3[0]": ("12b", "spouse_itemizes", "Spouse itemizes on a separate return"),
+        "c2_4[0]": ("12c", "dual_status_alien", "You were a dual-status alien"),
+        "c2_5[0]": ("12d", "you_born_before_1961", "You were born before January 2, 1961"),
+        "c2_6[0]": ("12d", "you_blind", "You are blind"),
+        "c2_7[0]": ("12d", "spouse_born_before_1961", "Spouse was born before January 2, 1961"),
+        "c2_8[0]": ("12d", "spouse_blind", "Spouse is blind"),
+        "c2_9[0]": ("16", "form_8814", "Form 8814"),
+        "c2_10[0]": ("16", "form_4972", "Form 4972"),
+        "c2_11[0]": ("16", "other_form", "Other form"),
+        "c2_12[0]": ("27b", "clergy_schedule_se", "Clergy filing Schedule SE"),
+        "c2_13[0]": ("27c", "do_not_claim_eic", "Do not claim the EIC"),
+        "c2_14[0]": ("28", "do_not_claim_actc", "Do not claim the ACTC"),
+        "c2_15[0]": ("35a", "form_8888_attached", "Form 8888 is attached"),
+        "c2_16[0]": ("35c", "checking", "Checking"),
+        "c2_16[1]": ("35c", "savings", "Savings"),
+    }
+    if leaf in line_choice_specs:
+        line, token, label = line_choice_specs[leaf]
+        return _campaign_control(
+            item,
+            [{"kind": "line", "token": line}, {"kind": "option", "token": token}],
+            line,
+            label,
+            "checkbox",
+        )
+
+    section_specs = {
+        "c2_17[0]": ("third_party_designee", "yes", "Yes", "checkbox"),
+        "c2_17[1]": ("third_party_designee", "no", "No", "checkbox"),
+        "f2_37[0]": ("third_party_designee", "name", "Designee's name", "text"),
+        "f2_38[0]": ("third_party_designee", "phone", "Phone no.", "text"),
+        "f2_39[0]": ("third_party_designee", "pin", "Personal identification number (PIN)", "identifier"),
+        "f2_40[0]": ("sign_here", "your_occupation", "Your occupation", "text"),
+        "f2_41[0]": ("sign_here", "your_ip_pin", "Your Identity Protection PIN", "identifier"),
+        "f2_42[0]": ("sign_here", "spouse_occupation", "Spouse's occupation", "text"),
+        "f2_43[0]": ("sign_here", "spouse_ip_pin", "Spouse's Identity Protection PIN", "identifier"),
+        "f2_44[0]": ("sign_here", "phone", "Phone no.", "text"),
+        "f2_45[0]": ("sign_here", "email", "Email address", "text"),
+        "f2_46[0]": ("paid_preparer", "name", "Preparer's name", "text"),
+        "f2_47[0]": ("paid_preparer", "ptin", "PTIN", "identifier"),
+        "c2_18[0]": ("paid_preparer", "self_employed", "Self-employed", "checkbox"),
+        "f2_48[0]": ("paid_preparer", "firm_name", "Firm's name", "text"),
+        "f2_49[0]": ("paid_preparer", "phone", "Phone no.", "text"),
+        "f2_50[0]": ("paid_preparer", "firm_address", "Firm's address", "text"),
+        "f2_51[0]": ("paid_preparer", "firm_ein", "Firm's EIN", "identifier"),
+    }
+    if leaf in section_specs:
+        section, token, label, role = section_specs[leaf]
+        terminal = "option" if role == "checkbox" else "control"
+        return _campaign_control(
+            item,
+            [{"kind": "section", "token": section}, {"kind": terminal, "token": token}],
+            section.replace("_", " ").title(),
+            label,
+            role,
+        )
+    return None
 
 
 def _form_w2_control_evidence(item: dict[str, Any]) -> dict[str, Any] | None:
