@@ -224,7 +224,7 @@ bindings:
   - 288.0
   status: provisional
 - field_name: topmostSubform[0].Copy1[0].RghtCol[0].TagCorrectingSubform[0].c2_3[0]
-  address_id: 2025/document=form_1099_div/section=recipient/option=fatca_filing_requirement
+  address_id: 2025/document=form_1099_div/box=11/option=fatca_filing_requirement
   widget_type: checkbox
   page: 3
   rect:
@@ -574,7 +574,7 @@ bindings:
   - 288.0
   status: provisional
 - field_name: topmostSubform[0].Copy2[0].RghtCol[0].TagCorrectingSubform[0].c2_3[0]
-  address_id: 2025/document=form_1099_div/section=recipient/option=fatca_filing_requirement
+  address_id: 2025/document=form_1099_div/box=11/option=fatca_filing_requirement
   widget_type: checkbox
   page: 6
   rect:
@@ -934,7 +934,7 @@ bindings:
   - 288.0
   status: provisional
 - field_name: topmostSubform[0].CopyA[0].RghtCol[0].TagCorrectingSubform[0].c1_3[0]
-  address_id: 2025/document=form_1099_div/section=recipient/option=fatca_filing_requirement
+  address_id: 2025/document=form_1099_div/box=11/option=fatca_filing_requirement
   widget_type: checkbox
   page: 2
   rect:
@@ -1274,7 +1274,7 @@ bindings:
   - 288.0
   status: provisional
 - field_name: topmostSubform[0].CopyB[0].RghtCol[0].TagCorrectingSubform[0].c2_3[0]
-  address_id: 2025/document=form_1099_div/section=recipient/option=fatca_filing_requirement
+  address_id: 2025/document=form_1099_div/box=11/option=fatca_filing_requirement
   widget_type: checkbox
   page: 4
   rect:

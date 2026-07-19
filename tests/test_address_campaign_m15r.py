@@ -271,6 +271,23 @@ def test_w2_adjacency_check_rejects_a_fabricated_box_number() -> None:
 
 
 @pytest.mark.m15
+def test_fatca_checkbox_numbering_matches_each_official_revision(information_campaign) -> None:
+    """Only the 1099-DIV prints a numbered FATCA box (Box 11); INT and W-2-style forms do not."""
+    expected = {
+        "form_1099_div_2025": "Box 11",
+        "form_1099_int_2025": "FATCA filing requirement",
+        "form_1099b_2025": "FATCA filing requirement",
+    }
+    for document_id, official_ref in expected.items():
+        fatca = [
+            item for item in information_campaign[document_id]["registry"]["addresses"]
+            if item["path"][-1].get("token") == "fatca_filing_requirement"
+        ]
+        assert fatca, f"missing FATCA control for {document_id}"
+        assert all(item["official_ref"] == official_ref for item in fatca)
+
+
+@pytest.mark.m15
 def test_1099_campaigns_collapse_copies_onto_authored_templates(information_campaign) -> None:
     expected = {
         "form_1099b_2025": (163, 39),

@@ -59,6 +59,47 @@ addresses:
     source_hash: 4ea1de804ff1db921753bd6319beeccfe4647299e03d79816e04d852a9cd1435
     page: 2
   official_ref: Box 10
+- address_id: 2025/document=form_1099_div/box=11
+  logical_key: document=form_1099_div/box=11
+  year: 2025
+  document_id: form_1099_div_2025
+  parent_address_id: 2025/document=form_1099_div
+  kind: box
+  path:
+  - kind: document
+    token: form_1099_div
+  - kind: box
+    token: '11'
+  printed_label: '11'
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_1099_div_2025
+    source_hash: 4ea1de804ff1db921753bd6319beeccfe4647299e03d79816e04d852a9cd1435
+    page: 2
+- address_id: 2025/document=form_1099_div/box=11/option=fatca_filing_requirement
+  logical_key: document=form_1099_div/box=11/option=fatca_filing_requirement
+  year: 2025
+  document_id: form_1099_div_2025
+  parent_address_id: 2025/document=form_1099_div/box=11
+  kind: option
+  path:
+  - kind: document
+    token: form_1099_div
+  - kind: box
+    token: '11'
+  - kind: option
+    token: fatca_filing_requirement
+  printed_label: FATCA filing requirement
+  aliases: []
+  control_role: checkbox
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#form_1099_div_2025
+    source_hash: 4ea1de804ff1db921753bd6319beeccfe4647299e03d79816e04d852a9cd1435
+    page: 2
+  official_ref: Box 11
 - address_id: 2025/document=form_1099_div/box=12
   logical_key: document=form_1099_div/box=12
   year: 2025
@@ -1018,28 +1059,6 @@ addresses:
     source_hash: 4ea1de804ff1db921753bd6319beeccfe4647299e03d79816e04d852a9cd1435
     page: 2
   official_ref: Recipient's TIN
-- address_id: 2025/document=form_1099_div/section=recipient/option=fatca_filing_requirement
-  logical_key: document=form_1099_div/section=recipient/option=fatca_filing_requirement
-  year: 2025
-  document_id: form_1099_div_2025
-  parent_address_id: 2025/document=form_1099_div/section=recipient
-  kind: option
-  path:
-  - kind: document
-    token: form_1099_div
-  - kind: section
-    token: recipient
-  - kind: option
-    token: fatca_filing_requirement
-  printed_label: FATCA filing requirement
-  aliases: []
-  control_role: checkbox
-  status: pending_review
-  evidence:
-  - source_path: config/manifest.yaml#form_1099_div_2025
-    source_hash: 4ea1de804ff1db921753bd6319beeccfe4647299e03d79816e04d852a9cd1435
-    page: 2
-  official_ref: FATCA filing requirement
 - address_id: 2025/document=form_1099_div/section=recipient/option=second_tin_notice
   logical_key: document=form_1099_div/section=recipient/option=second_tin_notice
   year: 2025

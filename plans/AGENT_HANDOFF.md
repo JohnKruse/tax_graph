@@ -14,12 +14,20 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## Current state (2026-07-17)
 
-**BALL: WORKER/CODEX - A9d COMPLETE; EXTENDED RUN CONTINUES AT A9e (FORM 1040).**
-Form 1099-B/DIV/INT are authored from the local official PDFs: 430 physical widgets
-collapse onto 102 templates, every numbered box passes the number-bearing adjacency
-check or one of six explicit caption-only choice exceptions, and real preflight is
-green at `legacy_mined=671` (strict reduction of 410 from 1,081). Continue A9e..A9x,
-A9z, A10, A11, A6 - HARD STOP before A12.
+**BALL: WORKER/CODEX - A9d COMPLETE (ARCHITECT-AMENDED); EXTENDED RUN CONTINUES AT
+A9e (FORM 1040).** Form 1099-B/DIV/INT are authored from the local official PDFs: 430
+physical widgets collapse onto 102 templates, every numbered box passes the
+number-bearing adjacency check or one of six explicit caption-only choice exceptions,
+and real preflight is green at `legacy_mined=671` (strict reduction of 410 from
+1,081). ARCHITECT AMENDMENT at HEAD: diligence review found the 1099-DIV FATCA
+checkbox authored unnumbered, but the 2021+ DIV revision prints it as **Box 11**
+(PDF-verified; INT and B correctly print theirs unnumbered) - fixed in the projector,
+DIV artifacts regenerated, and a three-form FATCA golden added. NOTE the blind spot
+this exposed: the number-bearing check only fires on refs that start with `Box `, so
+an OMITTED number evades it - at A9z, add a per-document printed-box-number
+completeness sweep (every `N`-caption run-in printed on the form must correspond to
+an authored `Box N` ref or an explicit exemption). Continue A9e..A9x, A9z, A10, A11,
+A6 - HARD STOP before A12.
 Local commits only, no push; sequential partitions only. A9a `476e7ee`, A9b
 `0ec62ae`, A9c `82e07aa` + fix `1fb34b7` + hardening at HEAD; A8 pre-task and A8
 verified (`fcf82f1`, `45e485f`, local). Gate A remains open through A13; S17+ stays

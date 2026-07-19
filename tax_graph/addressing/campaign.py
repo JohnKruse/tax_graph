@@ -324,9 +324,12 @@ def _form_1099_control_evidence(item: dict[str, Any], document_id: str) -> dict[
 
 
 def _form_1099_choice(document_id: str, key: tuple[int, int, int]) -> tuple[str | None, str, str] | None:
+    # The 2021+ Form 1099-DIV revision numbers its FATCA checkbox as Box 11; on
+    # 1099-INT and 1099-B the FATCA checkbox is printed without a box number.
+    fatca_box = "11" if document_id == "form_1099_div_2025" else None
     common = {
-        (2, 0, 310): (None, "fatca_filing_requirement", "FATCA filing requirement"),
-        (3, 0, 310): (None, "fatca_filing_requirement", "FATCA filing requirement"),
+        (2, 0, 310): (fatca_box, "fatca_filing_requirement", "FATCA filing requirement"),
+        (3, 0, 310): (fatca_box, "fatca_filing_requirement", "FATCA filing requirement"),
         (3, 0, 338): (None, "second_tin_notice", "2nd TIN not."),
         (4, 0, 338): (None, "second_tin_notice", "2nd TIN not."),
     }

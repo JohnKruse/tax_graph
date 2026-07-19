@@ -173,7 +173,7 @@ field_dispositions:
   population_policy: imported
   value_format: checkbox
   source_ref: form_1099_div_2025.topmostsubform_0_copya_0_rghtcol_0_tagcorrectingsubform_0_c1_3_0
-  address_id: 2025/document=form_1099_div/section=recipient/option=fatca_filing_requirement
+  address_id: 2025/document=form_1099_div/box=11/option=fatca_filing_requirement
 - field_name: topmostSubform[0].CopyA[0].RghtCol[0].Box12_ReadOrder[0].f1_25[0]
   label: $ - f1_25
   population_policy: imported
@@ -386,7 +386,7 @@ field_dispositions:
   population_policy: imported
   value_format: checkbox
   source_ref: form_1099_div_2025.topmostsubform_0_copy1_0_rghtcol_0_tagcorrectingsubform_0_c2_3_0
-  address_id: 2025/document=form_1099_div/section=recipient/option=fatca_filing_requirement
+  address_id: 2025/document=form_1099_div/box=11/option=fatca_filing_requirement
 - field_name: topmostSubform[0].Copy1[0].RghtCol[0].Box12_ReadOrder[0].f2_25[0]
   label: $ - f2_25 (page 3, control 64)
   population_policy: imported
@@ -592,7 +592,7 @@ field_dispositions:
   population_policy: imported
   value_format: checkbox
   source_ref: form_1099_div_2025.topmostsubform_0_copyb_0_rghtcol_0_tagcorrectingsubform_0_c2_3_0
-  address_id: 2025/document=form_1099_div/section=recipient/option=fatca_filing_requirement
+  address_id: 2025/document=form_1099_div/box=11/option=fatca_filing_requirement
 - field_name: topmostSubform[0].CopyB[0].RghtCol[0].Box12_ReadOrder[0].f2_25[0]
   label: $ - f2_25 (page 4, control 98)
   population_policy: imported
@@ -805,7 +805,7 @@ field_dispositions:
   population_policy: imported
   value_format: checkbox
   source_ref: form_1099_div_2025.topmostsubform_0_copy2_0_rghtcol_0_tagcorrectingsubform_0_c2_3_0
-  address_id: 2025/document=form_1099_div/section=recipient/option=fatca_filing_requirement
+  address_id: 2025/document=form_1099_div/box=11/option=fatca_filing_requirement
 - field_name: topmostSubform[0].Copy2[0].RghtCol[0].Box12_ReadOrder[0].f2_25[0]
   label: $ - f2_25 (page 6, control 133)
   population_policy: imported

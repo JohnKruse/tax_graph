@@ -4182,7 +4182,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_1099_div/section=recipient/option=fatca_filing_requirement",
+      "address_id": "2025/document=form_1099_div/box=11/option=fatca_filing_requirement",
       "document_id": "form_1099_div_2025",
       "field_name": "topmostSubform[0].CopyA[0].RghtCol[0].TagCorrectingSubform[0].c1_3[0]",
       "label": "c1_3",
@@ -4777,7 +4777,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_1099_div/section=recipient/option=fatca_filing_requirement",
+      "address_id": "2025/document=form_1099_div/box=11/option=fatca_filing_requirement",
       "document_id": "form_1099_div_2025",
       "field_name": "topmostSubform[0].Copy1[0].RghtCol[0].TagCorrectingSubform[0].c2_3[0]",
       "label": "c2_3 (page 3, control 63)",
@@ -5355,7 +5355,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_1099_div/section=recipient/option=fatca_filing_requirement",
+      "address_id": "2025/document=form_1099_div/box=11/option=fatca_filing_requirement",
       "document_id": "form_1099_div_2025",
       "field_name": "topmostSubform[0].CopyB[0].RghtCol[0].TagCorrectingSubform[0].c2_3[0]",
       "label": "c2_3 (page 4, control 97)",
@@ -5950,7 +5950,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=form_1099_div/section=recipient/option=fatca_filing_requirement",
+      "address_id": "2025/document=form_1099_div/box=11/option=fatca_filing_requirement",
       "document_id": "form_1099_div_2025",
       "field_name": "topmostSubform[0].Copy2[0].RghtCol[0].TagCorrectingSubform[0].c2_3[0]",
       "label": "c2_3 (page 6, control 132)",
