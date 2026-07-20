@@ -28423,7 +28423,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=schedule_1/line=7/control=checkbox",
+      "address_id": "2025/document=schedule_1/line=7/option=repaid_overpayment",
       "document_id": "schedule_1_2025",
       "downstream_effect": "Output leaves AcroForm field topmostSubform[0].Page1[0].Line7_ReadOrder[0].c1_3[0] blank and reports the unsupported filing field.",
       "field_name": "topmostSubform[0].Page1[0].Line7_ReadOrder[0].c1_3[0]",
@@ -28442,7 +28442,7 @@
       "value_format": "checkbox"
     },
     {
-      "address_id": "2025/document=schedule_1/line=7/control=amount",
+      "address_id": "2025/document=schedule_1/line=7/control=repaid_amount",
       "document_id": "schedule_1_2025",
       "downstream_effect": "Output leaves AcroForm field topmostSubform[0].Page1[0].Line7_ReadOrder[0].f1_11[0] blank and reports the unsupported filing field.",
       "field_name": "topmostSubform[0].Page1[0].Line7_ReadOrder[0].f1_11[0]",
@@ -28480,6 +28480,7 @@
       "value_format": "text"
     },
     {
+      "address_id": "2025/document=schedule_1/line=8z/control=description",
       "document_id": "schedule_1_2025",
       "downstream_effect": "Output leaves AcroForm field topmostSubform[0].Page1[0].Line8z_ReadOrder[0].f1_35[0] blank and reports the unsupported filing field.",
       "field_name": "topmostSubform[0].Page1[0].Line8z_ReadOrder[0].f1_35[0]",
@@ -28498,7 +28499,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=schedule_1/line=4/control=checkbox",
+      "address_id": "2025/document=schedule_1/line=4/option=form_4797",
       "document_id": "schedule_1_2025",
       "downstream_effect": "Output leaves AcroForm field topmostSubform[0].Page1[0].c1_1[0] blank and reports the unsupported filing field.",
       "field_name": "topmostSubform[0].Page1[0].c1_1[0]",
@@ -28517,7 +28518,7 @@
       "value_format": "checkbox"
     },
     {
-      "address_id": "2025/document=schedule_1/line=4/control=checkbox",
+      "address_id": "2025/document=schedule_1/line=4/option=form_4684",
       "document_id": "schedule_1_2025",
       "downstream_effect": "Output leaves AcroForm field topmostSubform[0].Page1[0].c1_2[0] blank and reports the unsupported filing field.",
       "field_name": "topmostSubform[0].Page1[0].c1_2[0]",
@@ -28536,6 +28537,7 @@
       "value_format": "checkbox"
     },
     {
+      "address_id": "2025/document=schedule_1/section=identity/control=name",
       "document_id": "schedule_1_2025",
       "downstream_effect": "Output leaves AcroForm field topmostSubform[0].Page1[0].f1_01[0] blank and reports the unsupported filing field.",
       "field_name": "topmostSubform[0].Page1[0].f1_01[0]",
@@ -28554,6 +28556,7 @@
       "value_format": "text"
     },
     {
+      "address_id": "2025/document=schedule_1/section=identity/control=social_security_number",
       "document_id": "schedule_1_2025",
       "downstream_effect": "Output leaves AcroForm field topmostSubform[0].Page1[0].f1_02[0] blank and reports the unsupported filing field.",
       "field_name": "topmostSubform[0].Page1[0].f1_02[0]",
@@ -28572,6 +28575,7 @@
       "value_format": "text"
     },
     {
+      "address_id": "2025/document=schedule_1/line=1a/control=amount",
       "document_id": "schedule_1_2025",
       "downstream_effect": "Output leaves AcroForm field topmostSubform[0].Page1[0].f1_03[0] blank and reports the unsupported filing field.",
       "field_name": "topmostSubform[0].Page1[0].f1_03[0]",
@@ -28624,6 +28628,7 @@
       "value_format": "dollars"
     },
     {
+      "address_id": "2025/document=schedule_1/line=2b/control=date",
       "document_id": "schedule_1_2025",
       "downstream_effect": "Output leaves AcroForm field topmostSubform[0].Page1[0].f1_06[0] blank and reports the unsupported filing field.",
       "field_name": "topmostSubform[0].Page1[0].f1_06[0]",
@@ -29126,37 +29131,35 @@
     {
       "address_id": "2025/document=schedule_1/line=8z/control=amount",
       "document_id": "schedule_1_2025",
-      "downstream_effect": "Output leaves AcroForm field topmostSubform[0].Page1[0].f1_36[0] blank and reports the unsupported filing field.",
       "field_name": "topmostSubform[0].Page1[0].f1_36[0]",
       "label": "Line 8z - 8z - f1_36",
-      "missing_capability": "Add a cited graph rule, runtime fact, or explicit decision mapping for topmostSubform[0].Page1[0].f1_36[0].",
+      "node_id": "schedule_1_2025_part_i_line_8z",
       "page": 1,
-      "population_policy": "unsupported",
-      "reason": "The official schedule_1_2025 control 'Line 8z - 8z - f1_36' has no authored graph, filer-fact, or decision mapping.",
+      "population_policy": "user_entered",
       "rect": [
         410.4,
         630.0,
         481.65,
         642.0
       ],
-      "slot": "topmostSubform[0].Page1[0].f1_36[0]",
-      "value_format": "text"
+      "slot": "schedule_1_2025_part_i_line_8z",
+      "value_format": "dollars"
     },
     {
-      "address_id": "2025/document=schedule_1/line=8z/control=amount",
+      "address_id": "2025/document=schedule_1/line=9/control=amount",
       "document_id": "schedule_1_2025",
       "field_name": "topmostSubform[0].Page1[0].f1_37[0]",
       "label": "Line 8z - . . . . . . . . . 9 - f1_37",
-      "node_id": "schedule_1_2025_part_i_line_8z",
+      "node_id": "schedule_1_2025_part_i_line_9",
       "page": 1,
-      "population_policy": "user_entered",
+      "population_policy": "computed",
       "rect": [
         504.0,
         642.0,
         576.0,
         654.0
       ],
-      "slot": "schedule_1_2025_part_i_line_8z",
+      "slot": "schedule_1_2025_part_i_line_9",
       "value_format": "dollars"
     },
     {
@@ -29177,6 +29180,7 @@
       "value_format": "dollars"
     },
     {
+      "address_id": "2025/document=schedule_1/line=19b/control=identifier",
       "document_id": "schedule_1_2025",
       "downstream_effect": "Output leaves AcroForm field topmostSubform[0].Page2[0].Line19b_CombField[0].f2_10[0] blank and reports the unsupported filing field.",
       "field_name": "topmostSubform[0].Page2[0].Line19b_CombField[0].f2_10[0]",
@@ -29214,6 +29218,7 @@
       "value_format": "text"
     },
     {
+      "address_id": "2025/document=schedule_1/line=24z/control=description",
       "document_id": "schedule_1_2025",
       "downstream_effect": "Output leaves AcroForm field topmostSubform[0].Page2[0].Line24z_ReadOrder[0].f2_27[0] blank and reports the unsupported filing field.",
       "field_name": "topmostSubform[0].Page2[0].Line24z_ReadOrder[0].f2_27[0]",
@@ -29232,7 +29237,7 @@
       "value_format": "text"
     },
     {
-      "address_id": "2025/document=schedule_1/line=15/control=checkbox",
+      "address_id": "2025/document=schedule_1/line=14/option=storage_fees_only",
       "document_id": "schedule_1_2025",
       "downstream_effect": "Output leaves AcroForm field topmostSubform[0].Page2[0].c2_1[0] blank and reports the unsupported filing field.",
       "field_name": "topmostSubform[0].Page2[0].c2_1[0]",
@@ -29251,7 +29256,7 @@
       "value_format": "checkbox"
     },
     {
-      "address_id": "2025/document=schedule_1/line=21/control=checkbox",
+      "address_id": "2025/document=schedule_1/line=21/option=mfs_lived_apart",
       "document_id": "schedule_1_2025",
       "downstream_effect": "Output leaves AcroForm field topmostSubform[0].Page2[0].c2_2[0] blank and reports the unsupported filing field.",
       "field_name": "topmostSubform[0].Page2[0].c2_2[0]",
@@ -29423,6 +29428,7 @@
       "value_format": "dollars"
     },
     {
+      "address_id": "2025/document=schedule_1/line=19c/control=date",
       "document_id": "schedule_1_2025",
       "downstream_effect": "Output leaves AcroForm field topmostSubform[0].Page2[0].f2_11[0] blank and reports the unsupported filing field.",
       "field_name": "topmostSubform[0].Page2[0].f2_11[0]",
@@ -29699,37 +29705,35 @@
     {
       "address_id": "2025/document=schedule_1/line=24z/control=amount",
       "document_id": "schedule_1_2025",
-      "downstream_effect": "Output leaves AcroForm field topmostSubform[0].Page2[0].f2_28[0] blank and reports the unsupported filing field.",
       "field_name": "topmostSubform[0].Page2[0].f2_28[0]",
       "label": "Line 24z - 24z - f2_28",
-      "missing_capability": "Add a cited graph rule, runtime fact, or explicit decision mapping for topmostSubform[0].Page2[0].f2_28[0].",
+      "node_id": "schedule_1_2025_part_ii_line_24z",
       "page": 2,
-      "population_policy": "unsupported",
-      "reason": "The official schedule_1_2025 control 'Line 24z - 24z - f2_28' has no authored graph, filer-fact, or decision mapping.",
+      "population_policy": "user_entered",
       "rect": [
         410.4,
         504.0,
         481.65,
         516.0
       ],
-      "slot": "topmostSubform[0].Page2[0].f2_28[0]",
-      "value_format": "text"
+      "slot": "schedule_1_2025_part_ii_line_24z",
+      "value_format": "dollars"
     },
     {
-      "address_id": "2025/document=schedule_1/line=24z/control=amount",
+      "address_id": "2025/document=schedule_1/line=25/control=amount",
       "document_id": "schedule_1_2025",
       "field_name": "topmostSubform[0].Page2[0].f2_29[0]",
       "label": "Line 24z - . . . . . . . . . 25 - f2_29",
-      "node_id": "schedule_1_2025_part_ii_line_24z",
+      "node_id": "schedule_1_2025_part_ii_line_25",
       "page": 2,
-      "population_policy": "user_entered",
+      "population_policy": "computed",
       "rect": [
         504.0,
         516.0,
         576.0,
         528.0
       ],
-      "slot": "schedule_1_2025_part_ii_line_24z",
+      "slot": "schedule_1_2025_part_ii_line_25",
       "value_format": "dollars"
     },
     {

@@ -48,6 +48,11 @@ bindings:
   expected_official_ref: 8z
   role: value
   status: exact
+- node_id: schedule_1_2025_part_i_line_9
+  address_id: 2025/document=schedule_1/line=9/control=amount
+  expected_official_ref: '9'
+  role: value
+  status: exact
 - node_id: schedule_1_2025_part_ii_line_11
   address_id: 2025/document=schedule_1/line=11/control=amount
   expected_official_ref: '11'
@@ -121,6 +126,11 @@ bindings:
 - node_id: schedule_1_2025_part_ii_line_24z
   address_id: 2025/document=schedule_1/line=24z/control=amount
   expected_official_ref: 24z
+  role: value
+  status: exact
+- node_id: schedule_1_2025_part_ii_line_25
+  address_id: 2025/document=schedule_1/line=25/control=amount
+  expected_official_ref: '25'
   role: value
   status: exact
 - node_id: schedule_1_2025_part_ii_line_26

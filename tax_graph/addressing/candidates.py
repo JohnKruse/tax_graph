@@ -48,7 +48,9 @@ def write_candidate_registry(payload: dict[str, Any], root: str | Path) -> Path:
     """Write a candidate only inside the gitignored draft boundary."""
     path = Path(root) / "graph" / str(payload["year"]) / "_drafts" / "addresses" / f"{payload['document_id']}.yaml"
     path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(yaml.safe_dump(payload, sort_keys=False), encoding="utf-8")
+    path.write_text(
+        yaml.safe_dump(payload, sort_keys=False), encoding="utf-8", newline="\n"
+    )
     return path
 
 

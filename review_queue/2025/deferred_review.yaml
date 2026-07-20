@@ -4500,7 +4500,7 @@ entries:
     - object_type: node
       object_id: schedule_1_2025_part_i_line_9
       source_path: graph/2025/field_maps/schedule_1_2025.yaml
-      role: excluded
+      role: primary
     - object_type: node
       object_id: schedule_1_2025_part_ii_line_11
       source_path: graph/2025/field_maps/schedule_1_2025.yaml
@@ -4568,7 +4568,7 @@ entries:
     - object_type: node
       object_id: schedule_1_2025_part_ii_line_25
       source_path: graph/2025/field_maps/schedule_1_2025.yaml
-      role: excluded
+      role: primary
     - object_type: node
       object_id: schedule_1_2025_part_ii_line_26
       source_path: graph/2025/field_maps/schedule_1_2025.yaml

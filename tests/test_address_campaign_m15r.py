@@ -28,6 +28,54 @@ def form_1040_campaign():
     return build_document_addresses(ROOT, "form_1040_2025")
 
 
+@pytest.fixture(scope="module")
+def schedule_1_campaign():
+    return build_document_addresses(ROOT, "schedule_1_2025")
+
+
+@pytest.mark.m15
+def test_schedule_1_campaign_authors_every_widget_and_corrected_totals(
+    schedule_1_campaign,
+) -> None:
+    assert schedule_1_campaign["coverage"] == {
+        "inventory": 73,
+        "addressed_widgets": 73,
+        "exempt_widgets": 0,
+        "node_bindings": 28,
+        "references": 0,
+    }
+    addresses = {
+        item["address_id"]: item for item in schedule_1_campaign["registry"]["addresses"]
+    }
+    assert addresses[
+        "2025/document=schedule_1/line=7/control=repaid_amount"
+    ]["printed_label"] == "Amount of repaid unemployment compensation"
+    assert addresses[
+        "2025/document=schedule_1/line=8z/control=description"
+    ]["printed_label"] == "Other income - type"
+    assert addresses[
+        "2025/document=schedule_1/line=9/control=amount"
+    ]["printed_label"] == "Total other income"
+    assert addresses[
+        "2025/document=schedule_1/line=24z/control=description"
+    ]["printed_label"] == "Other adjustments - type"
+    assert addresses[
+        "2025/document=schedule_1/line=25/control=amount"
+    ]["printed_label"] == "Total other adjustments"
+    assert schedule_1_campaign["field_addresses"][
+        "topmostSubform[0].Page1[0].f1_36[0]"
+    ] == "2025/document=schedule_1/line=8z/control=amount"
+    assert schedule_1_campaign["field_addresses"][
+        "topmostSubform[0].Page1[0].f1_37[0]"
+    ] == "2025/document=schedule_1/line=9/control=amount"
+    assert schedule_1_campaign["field_addresses"][
+        "topmostSubform[0].Page2[0].f2_28[0]"
+    ] == "2025/document=schedule_1/line=24z/control=amount"
+    assert schedule_1_campaign["field_addresses"][
+        "topmostSubform[0].Page2[0].f2_29[0]"
+    ] == "2025/document=schedule_1/line=25/control=amount"
+
+
 @pytest.mark.m15
 def test_form_1040_campaign_binds_every_widget_to_authored_form_structure(
     form_1040_campaign,

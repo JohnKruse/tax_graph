@@ -32,7 +32,9 @@ def main() -> int:
         }
         for target, artifact in targets.items():
             target.parent.mkdir(parents=True, exist_ok=True)
-            target.write_text(yaml.safe_dump(artifact, sort_keys=False), encoding="utf-8")
+            target.write_text(
+                yaml.safe_dump(artifact, sort_keys=False), encoding="utf-8", newline="\n"
+            )
         map_path = root / "graph/2025/field_maps" / f"{document_id}.yaml"
         field_map = yaml.safe_load(map_path.read_text(encoding="utf-8"))
         for group in (field_map.get("mappings", []), field_map.get("field_dispositions", [])):
@@ -48,11 +50,17 @@ def main() -> int:
             disposition.pop("address_id", None)
             disposition.update({key: value for key, value in exemption.items() if key != "field_name"})
             disposition["label"] = exemption["display_name"]
-        map_path.write_text(yaml.safe_dump(field_map, sort_keys=False), encoding="utf-8")
+        map_path.write_text(
+            yaml.safe_dump(field_map, sort_keys=False), encoding="utf-8", newline="\n"
+        )
     report = {document_id: payload["coverage"] for document_id, payload in campaign.items()}
     report_path = args.report or root / "workbench_output" / "m15r_core_address_campaign.json"
     report_path.parent.mkdir(parents=True, exist_ok=True)
-    report_path.write_text(json.dumps(report, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    report_path.write_text(
+        json.dumps(report, indent=2, sort_keys=True) + "\n",
+        encoding="utf-8",
+        newline="\n",
+    )
     print(json.dumps(report, indent=2, sort_keys=True))
     return 0
 

@@ -12,45 +12,23 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 - History: pruned at each phase close (latest: M15R close, pruned 2026-07-16). Full narration lives in
   `plans/archive/` (phase plans with close notes) and git history.
 
-## Current state (2026-07-17)
+## Current state (2026-07-20)
 
-**BALL: WORKER/CODEX - A9e COMMITTED (ARCHITECT-COMPLETED); EXTENDED RUN CONTINUES AT
-A9f (SCHEDULES + 2441 + 6251).** A9e (Form 1040, 199/199 widgets -> 167 bound
-templates + 24 node bindings) was implemented by the Worker, whose session ended with
-NO commit and NO handoff state (the SESSION BUDGET RULES exist to prevent exactly
-this - follow them). The Architect content-audited the authored labels against the
-official PDF (clean - best campaign quality so far), fixed two preflight
-`ambiguous_display_name` defects the Worker never saw (distinct names for the 4c/5c
-checkbox+write-in pairs; segment qualifiers for the three-segment `Other`
-filing-designation header write-in), updated two stale count pins (MCP form_1040
-list 141 -> 249; manifest addressed units 151 -> 223), completed the full sequential
-floor (M15 halves + e2e and all four non-M15 partitions green after the fixes; the
-two previously failing files re-proven green), and committed. Real preflight:
-`legacy_mined=521`, Form 1040 zero legacy (strict reduction of 150 from 671).
-Remaining legacy: Sch 1 73, Sch 1-A 54, Sch 2 63, Sch 3 37, Sch A 33, Sch B 72,
-Sch D 55, Form 2441 72, Form 6251 62. Continue A9f..A9x in coherent per-commit
-groups, then A9z (strict predicate flip + printed-box-number completeness sweep),
-A10, A11, A6 - HARD STOP before A12. New precedent for the campaign:
-checkbox+write-in pairs sharing a line need DISTINCT display names, and one logical
-control split across physical widget segments needs per-segment locator qualifiers.
-
-Prior A9d state (superseded): A9d COMPLETE (ARCHITECT-AMENDED). Form 1099-B/DIV/INT are authored from the local official PDFs: 430
-physical widgets collapse onto 102 templates, every numbered box passes the
-number-bearing adjacency check or one of six explicit caption-only choice exceptions,
-and real preflight is green at `legacy_mined=671` (strict reduction of 410 from
-1,081). ARCHITECT AMENDMENT at HEAD: diligence review found the 1099-DIV FATCA
-checkbox authored unnumbered, but the 2021+ DIV revision prints it as **Box 11**
-(PDF-verified; INT and B correctly print theirs unnumbered) - fixed in the projector,
-DIV artifacts regenerated, and a three-form FATCA golden added. NOTE the blind spot
-this exposed: the number-bearing check only fires on refs that start with `Box `, so
-an OMITTED number evades it - at A9z, add a per-document printed-box-number
-completeness sweep (every `N`-caption run-in printed on the form must correspond to
-an authored `Box N` ref or an explicit exemption). Continue A9e..A9x, A9z, A10, A11,
-A6 - HARD STOP before A12.
-Local commits only, no push; sequential partitions only. A9a `476e7ee`, A9b
-`0ec62ae`, A9c `82e07aa` + fix `1fb34b7` + hardening at HEAD; A8 pre-task and A8
-verified (`fcf82f1`, `45e485f`, local). Gate A remains open through A13; S17+ stays
-blocked. Canary: Fresh Eyes.
+**BALL: CODEX - A9f COMPLETE LOCALLY; NEXT A9g (Schedule 1-A, 54).** A9f's
+authorized Schedule 1 remaps, modeled totals, four disposition corrections, goldens,
+position-verified filled-PDF echo, and 73-control campaign are complete with the full
+floor green; see the latest From Worker entry. WORKFLOW CHANGE (John, 2026-07-20):
+headless `codex exec` runs are retired for now. Interactive Worker sessions request
+escalated approval for exact Python commands when the sandbox denies process creation.
+For A9g..A9x, a geometry-proven single-cell placement shift may be fixed in-commit
+under the five pinned conditions; anything beyond that stops. Continue Schedule 1-A
+54, Schedule 2 63, Schedule 3 37, Schedule A 33, Schedule B 72, Schedule D 55, Form
+2441 72, Form 6251 62; then A9z, A10, A11, A6 - HARD STOP before A12. Hand authoring
+ENDS with A9 per guiding invariant 6, rollover seam 5, and A9 contract item 6. Local
+commits only, no push; sequential partitions only; SESSION BUDGET RULES apply. A9a
+`476e7ee`, A9b `0ec62ae`, A9c `82e07aa`+`1fb34b7`+`1e55e72`, A9d
+`e0d367f`+`1c03019`, A9e `492698f`. Gate A open through A13; S17+ blocked.
+Canary: Fresh Eyes.
 (Whoever finishes a turn: update this BALL line - it is the first thing read.)
 
 **Step ledger:** M15 S1-S16 and A1-A3 are [DONE], pushed, and marked in the plan; M15R
@@ -152,6 +130,33 @@ sequenced after M15 or when TY2026 docs drop.
 - (none)
 
 ## From Architect
+- **FORMS-PIPELINE END-STATE PINNED (Architect, Claude Fable 5, 2026-07-20, at
+  John's direction):** The desired end-state is a valid, reliable forms pipeline
+  into the tax graph - yearly IRS document updates via the rollover re-binder,
+  user-brought forms via the extension harness - never recurring per-form hand
+  transcription. The A9 campaign's hand authoring is a bounded one-time recovery
+  whose outputs are the re-binder's ground-truth corpus. Pinned in THREE places:
+  guiding invariant 6 and Year-rollover seam 5 in `docs/engineering-plan.md`, and
+  A9 contract item 6 in `plans/PHASE_M15.md`. Hand-authoring beyond the A9b..A9x
+  list is a STOP condition, not a precedent.
+- **A9f execution environment RESTORED (Architect, Claude Fable 5, 2026-07-20):**
+  The machine restarted; `.venv/Scripts/python.exe` and pytest launch cleanly.
+  The Open-for-Architect environment block is answered and cleared. See the BALL
+  for the 16:02 untrusted-artifact caution before resuming A9f verification.
+- **A9f RULING - SCHEDULE 1 SHIFTS CONFIRMED, FIX AUTHORIZED + STANDING REMAP
+  AUTHORIZATION (Architect, Claude Fable 5, 2026-07-19); pinned in
+  `plans/PHASE_M15.md` under A9.** Independently verified from inventory geometry and
+  printed rows: 8z -> printed line 9 total cell, 24z -> printed line 25 total cell,
+  true cells disposed `unsupported`, and the MODELED nodes
+  `schedule_1_2025_part_i_line_9` / `part_ii_line_25` (both exist with feeding edges)
+  have no cells. Authorized: remap 8z -> f1_36, 24z -> f2_28, ADD line 9 -> f1_37 and
+  line 25 -> f2_29, fix the four dispositions, goldens + position-verified filled-PDF
+  echo, record for the pending schedule_1 field_map_review entry. NEW: a STANDING
+  narrow-remap authorization for the rest of A9f..A9x - a geometry-proven single-cell
+  shift may be fixed in-commit without a stop when all five pinned conditions are met
+  (see the plan); anything beyond a proven single-cell shift still stops. This is the
+  third placement defect the campaign has caught; expect more in the remaining
+  schedules - that is the campaign working.
 - **A9b RULING - 8949 TOTALS DEFECT CONFIRMED, FIX AUTHORIZED (Architect, Claude
   Fable 5, 2026-07-17); full ruling pinned in `plans/PHASE_M15.md` under A9.** The
   Architect independently reproduced the geometry from the committed inventory: the
@@ -337,6 +342,150 @@ sequenced after M15 or when TY2026 docs drop.
   the A9c marker; either way the full floor reruns and legacy counts must not regress.
 
 ## From Worker
+- **A9f Schedule 1 COMPLETE; full floor green; local commit pending this handoff
+  update (Codex GPT-5, 2026-07-20):** Completed the authorized physical-placement
+  correction only: 8z -> `f1_36`, modeled line 9 -> `f1_37`, 24z -> `f2_28`, and
+  modeled line 25 -> `f2_29`; fixed the four corresponding dispositions and changed
+  the two pending field-map-review node roles from excluded to primary. Geometry and
+  printed-row proof: page 1 `f1_36` is the line 8z amount at x 410.4..481.65,
+  y 630..642, while `f1_37` is the printed line 9 total at x 504..576, y 642..654;
+  page 2 `f2_28` is the line 24z amount at x 410.4..481.65, y 504..516, while
+  `f2_29` is the printed line 25 total at x 504..576, y 516..528. No graph node,
+  edge, rule, calculation, or promoted tax semantics changed. Authored the full
+  Schedule 1 campaign: 73 inventory, 73 addressed, 0 exempt, 28 node bindings, 0
+  references. The filled official PDF reopens with distinct values at all four exact
+  rectangles: 8z=811, line 9=911, 24z=2411, line 25=2511.
+
+  Preserved and compared the four untrusted 16:02 outputs before verification. The
+  three YAML outputs were semantically identical after newline normalization and were
+  regenerated with LF (addresses CRLF 2850 -> 0, widget bindings 735 -> 0, node
+  bindings 145 -> 0); node geometry was byte-identical. Pinned LF serialization in
+  the campaign writers so Windows reruns stay deterministic. Removed the verified
+  scratch copies before commit. Real preflight is green at 3,243 units with
+  `authored_address=1465`, `authored_object=1330`, `legacy_mined=448`; Schedule 1 is
+  zero legacy, a strict 73 reduction from 521.
+
+  Verification: focused campaign/disposition set 39 passed. M15 sequential partitions
+  20 + 20 + 6 + 2 + 24 + 7 + 20 + 11 = 110 passed. Non-M15 sorted-file partitions
+  98 passed/1 skipped + 134/2 + 73/3 + 60 = 365 passed, 6 skipped. Aggregate full
+  floor: 475 passed, 6 skipped. Real `workbench.cli preflight --year 2025`,
+  `tax_graph.cli validate 2025`, ASCII, and `git diff --check` are green. The combined
+  manifest/preflight and workbench/verdict attempts hit launcher caps and were not
+  counted; their completed split subpartitions above are the floor. A9g was not
+  started. Next: A9g authors Schedule 1-A's 54 controls under the same ratchet and
+  pipeline-end-state boundary. No push.
+- **A9f PRE-FULL-FLOOR CHECKPOINT - Schedule 1 focused verification green (Codex
+  GPT-5, 2026-07-20):** Preserved the four untrusted 16:02 artifacts under the
+  workspace-local scratch directory `.a9f_untrusted_snapshot/` after `C:\tmp`
+  creation was denied. Regenerated the promoted Schedule 1 address, widget-binding,
+  and node-binding artifacts from the campaign and regenerated node geometry. Fixed
+  the campaign writers to pin LF on Windows. Old -> regenerated comparison: addresses
+  SHA256 `668CE95A...F69E1` -> `C5DA4AB6...575B7`, CRLF 2850 -> 0; widget bindings
+  `65B793E1...E0737` -> `10B828B...40F32`, CRLF 735 -> 0; node bindings
+  `26BC414F...B9F5C` -> `B1499CD9...6C6D8`, CRLF 145 -> 0; node geometry stayed
+  byte-identical at `30795531...B14B`, CRLF 0. All four old/new pairs are identical
+  after CRLF normalization, so the untrusted writes contained no hidden semantic
+  delta. Campaign generation reports 73 inventory, 73 addressed, 0 exempt, 28 node
+  bindings, 0 references. Strengthened the filled-PDF echo with distinct 8z/9 and
+  24z/25 values plus exact re-opened page rectangles. Focused tests are green: 39
+  passed (`tests/test_address_campaign_m15r.py` +
+  `tests/test_field_dispositions_m15.py`). Pending: static gates, real preflight and
+  validation, the pinned sequential M15 and non-M15 partitions, scratch cleanup, one
+  local commit, and BALL/final handoff update. No commit or push yet.
+- **SESSION RESUME / PRE-INSPECTION CHECKPOINT - A9f Schedule 1 only (Codex
+  GPT-5, 2026-07-20):** Model is Codex GPT-5. Effort level is not exposed. No
+  usage, quota, or context indicators are exposed. The single step attempted this
+  session is A9f: preserve and regenerate the four untrusted Schedule 1 artifacts,
+  compare them before counting verification, complete the authorized remaps, totals,
+  dispositions, goldens, position-verified filled-PDF echo, and 73-control campaign,
+  run the focused and full pinned sequential floors, and create one local commit with
+  Schedule 1 at zero legacy and aggregate `legacy_mined < 521`. Re-read the BALL,
+  SESSION BUDGET RULES, EXTENDED RUN AUTHORIZATION, guiding invariant 6, rollover
+  seam 5, and the pinned A9/A9f contract. HEAD is `492698f`; the expected dirty A9f
+  campaign and Architect-owned plan/doc changes are present. No generation or
+  verification command has run this session. Pending: inspect the implementation and
+  tests, preserve byte-for-byte copies of the four generated artifacts, regenerate all
+  four with LF endings, diff old against regenerated, focused verification, pre-floor
+  checkpoint, sequential full floor, one local commit, and BALL update. No push.
+- **A9f ENVIRONMENT STOP RECURRED BEFORE REGENERATION - no commit, no floor
+  (Codex GPT-5, 2026-07-20):** The restored-execution claim does not hold in this
+  Worker environment. `.venv/Scripts/python.exe --version`, the venv pytest launcher,
+  and the base `C:/Users/devbox/AppData/Local/Programs/Python/Python313/python.exe`
+  each fail with `Access is denied`; `python`, `py`, and `uv` are not available on
+  PATH. The permitted `C:/tmp` root also rejected creation of the intended snapshot
+  directory, so no snapshot was created. Before that failure, read-only hashes/newline
+  counts confirmed the untrusted copies: addresses SHA256 `668CE95A...F69E1`
+  (2,850 CRLF), widget bindings `65B793E1...E0737` (735 CRLF), node bindings
+  `26BC414F...B9F5C` (145 CRLF), and node geometry `30795531...B14B` (0 CRLF).
+  Per the BALL caution, these do not count as generated or verified and remain
+  untouched/untrusted. No campaign generation, focused test, preflight, validation,
+  M15 partition, full-suite partition, commit, or push occurred. Pending is unchanged:
+  restore executable Python in the Worker environment; preserve the four untrusted
+  files; regenerate all four with LF; diff old against regenerated before counting any
+  verification; run the focused checks and full pinned sequential floor; require
+  `legacy_mined < 521`; commit A9f locally; update BALL. A9g was not started.
+- **SESSION RESUME / PRE-REGENERATION CHECKPOINT - A9f Schedule 1 only (Codex
+  GPT-5, 2026-07-20):** Model is Codex GPT-5. Effort level is not exposed. No
+  usage, quota, or context indicators are exposed. The single step attempted this
+  session is A9f: regenerate and compare the four untrusted Schedule 1 artifacts,
+  finish the authorized remap/totals/disposition regressions and 73-control campaign,
+  run the full pinned floor, and create one local commit with `legacy_mined < 521`.
+  Re-read the BALL, SESSION BUDGET RULES, EXTENDED RUN AUTHORIZATION, and the pinned
+  A9/A9f contract. No generation or verification command has run this session.
+  Pending: inspect worktree and generator, preserve copies of the untrusted 16:02
+  artifacts, regenerate with normalized LF, diff old against regenerated, focused
+  verification, pre-floor checkpoint, sequential full floor, local commit, and BALL
+  update. No push.
+- **A9f PARTIAL / ENVIRONMENT STOP - no commit, no floor (Codex GPT-5,
+  2026-07-19):** Applied the authorized field-map draft: 8z -> `f1_36`, line 9 ->
+  `f1_37`, 24z -> `f2_28`, line 25 -> `f2_29`; removed the two totals from
+  `excluded_nodes`; corrected the four dispositions. Added the 73-control Schedule 1
+  authored campaign projection and focused goldens for 73/73 coverage, 28 node
+  bindings, the four corrected mappings, both computed totals, and a two-page filled
+  PDF echo. Static-only checks green: `git diff --check`; changed-file ASCII scan.
+  BLOCKED before generation/focused tests: Windows refuses to create the Python
+  process (`Access is denied`) for the venv interpreter, pytest launcher, base
+  interpreter, and Git Bash route. Per the full-floor stop rule, no generated address,
+  widget-binding, node-binding, or node-geometry artifacts were written; no preflight,
+  validation, M15 partition, or full-suite partition ran; no commit or push occurred;
+  A9g was not started. Worktree also retains the pre-existing Architect-owned A9f
+  ruling edits in this handoff and `plans/PHASE_M15.md`. Next session: review the
+  partial campaign labels against the PDF, restore Python execution, generate the four
+  Schedule 1 artifacts plus node geometry and disposition address bindings, run the
+  focused tests, checkpoint before the full floor, run every pinned sequential
+  partition, require `legacy_mined < 521` with the Schedule 1 per-document count, then
+  commit A9f locally and update this handoff.
+- **SESSION RESUME / PRE-AUTHORING CHECKPOINT - A9f Schedule 1 only (Codex GPT-5,
+  2026-07-19):** Model is Codex GPT-5. Effort level is not exposed. No usage, quota,
+  or context indicators are exposed. The single step attempted this session is A9f:
+  apply the authorized Schedule 1 remap/totals/disposition regressions and author all
+  Schedule 1 controls as one local commit, strictly reducing `legacy_mined` from 521.
+  Re-read the BALL, top A9f ruling, SESSION BUDGET RULES, EXTENDED RUN AUTHORIZATION,
+  and the pinned A9 contract/A9f extension/STANDING AUTHORIZATION. HEAD is `492698f`;
+  the worktree contains only the existing Architect-owned ruling/handoff changes plus
+  this checkpoint. No campaign authoring or verification command has started in this
+  resumed session. Pending: implementation survey, authorized fix, authoring campaign,
+  focused verification, pre-floor checkpoint, sequential full floor, local commit,
+  and post-commit handoff update.
+- **A9f STOPPED PRE-AUTHORING - promoted Schedule 1 mapping defect (Codex GPT-5,
+  2026-07-19):** Audited all 73 controls against the local official two-page PDF
+  before modifying campaign code. Found the line 8z and line 24z mappings shifted to
+  printed total-row widgets (line 9 and line 25); exact evidence and requested narrow
+  ruling are under Open for Architect. Per the pinned stop condition, BALL is
+  ARCHITECT and no workaround was designed. Completed: contract/handoff review,
+  inventory/disposition/mapping survey, official-PDF visual verification. Pending:
+  all A9f authoring and every focused/full-floor command. Worktree changes are this
+  handoff checkpoint only; no commit was created and no push was attempted.
+- **SESSION START / PRE-AUTHORING CHECKPOINT - A9f Schedule 1 only (Codex GPT-5,
+  2026-07-19):** Model is Codex GPT-5. Effort level is not exposed. No usage, quota,
+  or context indicators are exposed. The single step attempted this session is A9f:
+  author Schedule 1, starting from 73 legacy units, as one local commit. Read the BALL,
+  SESSION BUDGET RULES, EXTENDED RUN AUTHORIZATION, all A9 rulings under From Architect,
+  and the pinned A9 contract in `plans/PHASE_M15.md`. Worktree is clean at `492698f`;
+  real preflight inherited from the committed A9e floor is green at
+  `legacy_mined=521`. Authoring has not started. Pending: local-PDF identity audit,
+  address/binding/disposition changes, focused verification, full sequential floor,
+  pre-commit floor checkpoint, commit, and post-commit handoff update.
 - **M15 A9d Form 1099 group complete; full floor green (Codex, 2026-07-19):**
   Authored Form 1099-B, 1099-DIV, and 1099-INT as one coherent local-PDF campaign.
   Coverage is respectively 163/163 widgets -> 39 templates, 140/140 -> 33, and
@@ -505,6 +654,8 @@ sequenced after M15 or when TY2026 docs drop.
 - Prior phase closes: `plans/archive/PHASE_M13.md` (and earlier) - each with a close note.
 
 ## Resolved / superseded
+- 2026-07-20: the A9f execution-environment block - RESOLVED by machine restart;
+  Architect verified Python execution and returned the BALL to Codex.
 - 2026-07-16: the open Architect M15R review request - ANSWERED (From Architect above).
 - M15 S1 "full-suite blocker" - false alarm; the runtime method is pinned in Current state.
 - M15 S2 over-scoped-queue reopen - fixed, re-verified, and pushed; narration in git history.

@@ -7,6 +7,7 @@ import json
 from pathlib import Path
 from types import SimpleNamespace
 
+import fitz
 import pytest
 import yaml
 
@@ -254,6 +255,86 @@ def test_form_8949_total_mappings_and_pdf_positions(tmp_path: Path) -> None:
         field_values=field_values,
     )
     assert filled.field_values == field_values
+
+
+@pytest.mark.m15
+def test_schedule_1_other_amounts_and_totals_have_distinct_pdf_positions(tmp_path: Path) -> None:
+    graph = Graph(2025, root=ROOT, source="yaml")
+    result = Engine(graph).execute({
+        "filing_status": "single",
+        "form_1040_2025_root_line_1a": 50000,
+        "schedule_1_2025_part_i_line_8v": 100,
+        "schedule_1_2025_part_i_line_8z": 811,
+        "schedule_1_2025_part_ii_line_24e": 100,
+        "schedule_1_2025_part_ii_line_24z": 2411,
+        "schedule_d_2025_line_7_net_st": 0,
+    })
+    assert result.values["schedule_1_2025_part_i_line_9"] == 911
+    assert result.values["schedule_1_2025_part_ii_line_25"] == 2511
+
+    field_map = next(
+        item for item in load_field_maps(2025, ROOT)
+        if item["document_id"] == "schedule_1_2025"
+    )
+    by_node = {
+        item["node_id"]: item["field_name"]
+        for item in field_map["mappings"]
+        if item.get("node_id")
+    }
+    expected_fields = {
+        "schedule_1_2025_part_i_line_8z": "topmostSubform[0].Page1[0].f1_36[0]",
+        "schedule_1_2025_part_i_line_9": "topmostSubform[0].Page1[0].f1_37[0]",
+        "schedule_1_2025_part_ii_line_24z": "topmostSubform[0].Page2[0].f2_28[0]",
+        "schedule_1_2025_part_ii_line_25": "topmostSubform[0].Page2[0].f2_29[0]",
+    }
+    assert expected_fields.items() <= by_node.items()
+
+    values, notes = build_field_values(
+        field_map,
+        result,
+        {
+            "filing_status": "single",
+            "facts": [
+                {"node_id": "schedule_1_2025_part_i_line_8v", "value": 100},
+                {"node_id": "schedule_1_2025_part_i_line_8z", "value": 811},
+                {"node_id": "schedule_1_2025_part_ii_line_24e", "value": 100},
+                {"node_id": "schedule_1_2025_part_ii_line_24z", "value": 2411},
+            ],
+        },
+        root=ROOT,
+    )
+    expected_values = {
+        "topmostSubform[0].Page1[0].f1_36[0]": "811",
+        "topmostSubform[0].Page1[0].f1_37[0]": "911",
+        "topmostSubform[0].Page2[0].f2_28[0]": "2411",
+        "topmostSubform[0].Page2[0].f2_29[0]": "2511",
+    }
+    assert expected_values.items() <= values.items()
+    filled = fill_official_pdf(
+        ROOT / ".cache/raw/2025/schedule_1_2025.pdf",
+        tmp_path / "schedule_1_other_and_totals.pdf",
+        document_id="schedule_1_2025",
+        field_values={key: values[key] for key in expected_values},
+        blank_with_note=notes,
+    )
+    assert filled.field_values == expected_values
+    expected_positions = {
+        "topmostSubform[0].Page1[0].f1_36[0]": (1, (410.4, 630.0, 481.65, 642.0), "811"),
+        "topmostSubform[0].Page1[0].f1_37[0]": (1, (504.0, 642.0, 576.0, 654.0), "911"),
+        "topmostSubform[0].Page2[0].f2_28[0]": (2, (410.4, 504.0, 481.65, 516.0), "2411"),
+        "topmostSubform[0].Page2[0].f2_29[0]": (2, (504.0, 516.0, 576.0, 528.0), "2511"),
+    }
+    positioned = {}
+    with fitz.open(filled.output_path) as pdf:
+        for page_number, page in enumerate(pdf, start=1):
+            for widget in page.widgets() or []:
+                if widget.field_name in expected_positions:
+                    positioned[widget.field_name] = (
+                        page_number,
+                        tuple(round(value, 2) for value in widget.rect),
+                        str(widget.field_value),
+                    )
+    assert positioned == expected_positions
 
 
 @pytest.mark.m15

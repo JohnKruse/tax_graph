@@ -50,7 +50,7 @@ addresses:
     token: '1'
   - kind: control
     token: amount
-  printed_label: Line 1 - . . . . . . . . . 1 - f1_04
+  printed_label: Taxable refunds, credits, or offsets of state and local income taxes
   aliases: []
   control_role: amount
   status: pending_review
@@ -91,7 +91,7 @@ addresses:
     token: '10'
   - kind: control
     token: amount
-  printed_label: Line 10 - . . . . . . . . . 10 - f1_38
+  printed_label: Additional income
   aliases: []
   control_role: amount
   status: pending_review
@@ -132,7 +132,7 @@ addresses:
     token: '11'
   - kind: control
     token: amount
-  printed_label: Line 11 - . . . . . . . . . 11 - f2_01
+  printed_label: Educator expenses
   aliases: []
   control_role: amount
   status: pending_review
@@ -173,7 +173,8 @@ addresses:
     token: '12'
   - kind: control
     token: amount
-  printed_label: Line 12 - . . . . . . . . . 12 - f2_02
+  printed_label: Certain business expenses of reservists, performing artists, and
+    fee-basis government officials
   aliases: []
   control_role: amount
   status: pending_review
@@ -214,7 +215,7 @@ addresses:
     token: '13'
   - kind: control
     token: amount
-  printed_label: Line 13 - . . . . . . . . . 13 - f2_03
+  printed_label: Health savings account deduction
   aliases: []
   control_role: amount
   status: pending_review
@@ -255,9 +256,31 @@ addresses:
     token: '14'
   - kind: control
     token: amount
-  printed_label: Line 14 - . . . . . . . . . 14 - f2_04
+  printed_label: Moving expenses for members of the Armed Forces
   aliases: []
   control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_1_2025
+    source_hash: 8dafec719f6a4716c259a2bdaca546d9bb9e262d1eabef885fe116a7327458fa
+    page: 2
+  official_ref: '14'
+- address_id: 2025/document=schedule_1/line=14/option=storage_fees_only
+  logical_key: document=schedule_1/line=14/option=storage_fees_only
+  year: 2025
+  document_id: schedule_1_2025
+  parent_address_id: 2025/document=schedule_1/line=14
+  kind: option
+  path:
+  - kind: document
+    token: schedule_1
+  - kind: line
+    token: '14'
+  - kind: option
+    token: storage_fees_only
+  printed_label: Claiming only storage fees for a move to a foreign country
+  aliases: []
+  control_role: checkbox
   status: pending_review
   evidence:
   - source_path: config/manifest.yaml#schedule_1_2025
@@ -296,31 +319,9 @@ addresses:
     token: '15'
   - kind: control
     token: amount
-  printed_label: Line 15 - . . . . . . . . . 15 - f2_05
+  printed_label: Deductible part of self-employment tax
   aliases: []
   control_role: amount
-  status: pending_review
-  evidence:
-  - source_path: config/manifest.yaml#schedule_1_2025
-    source_hash: 8dafec719f6a4716c259a2bdaca546d9bb9e262d1eabef885fe116a7327458fa
-    page: 2
-  official_ref: '15'
-- address_id: 2025/document=schedule_1/line=15/control=checkbox
-  logical_key: document=schedule_1/line=15/control=checkbox
-  year: 2025
-  document_id: schedule_1_2025
-  parent_address_id: 2025/document=schedule_1/line=15
-  kind: control
-  path:
-  - kind: document
-    token: schedule_1
-  - kind: line
-    token: '15'
-  - kind: control
-    token: checkbox
-  printed_label: Line 15 - (see instructions), check here - c2_1
-  aliases: []
-  control_role: checkbox
   status: pending_review
   evidence:
   - source_path: config/manifest.yaml#schedule_1_2025
@@ -359,7 +360,7 @@ addresses:
     token: '16'
   - kind: control
     token: amount
-  printed_label: Line 16 - . . . . . . . . . 16 - f2_06
+  printed_label: Self-employed SEP, SIMPLE, and qualified plans
   aliases: []
   control_role: amount
   status: pending_review
@@ -400,7 +401,7 @@ addresses:
     token: '17'
   - kind: control
     token: amount
-  printed_label: Line 17 - . . . . . . . . . 17 - f2_07
+  printed_label: Self-employed health insurance deduction
   aliases: []
   control_role: amount
   status: pending_review
@@ -441,7 +442,7 @@ addresses:
     token: '18'
   - kind: control
     token: amount
-  printed_label: Line 18 - . . . . . . . . . 18 - f2_08
+  printed_label: Penalty on early withdrawal of savings
   aliases: []
   control_role: amount
   status: pending_review
@@ -482,7 +483,7 @@ addresses:
     token: 19a
   - kind: control
     token: amount
-  printed_label: Line 19a - . . . . . . . . . 19a - f2_09
+  printed_label: Alimony paid
   aliases: []
   control_role: amount
   status: pending_review
@@ -491,6 +492,129 @@ addresses:
     source_hash: 8dafec719f6a4716c259a2bdaca546d9bb9e262d1eabef885fe116a7327458fa
     page: 2
   official_ref: 19a
+- address_id: 2025/document=schedule_1/line=19b
+  logical_key: document=schedule_1/line=19b
+  year: 2025
+  document_id: schedule_1_2025
+  parent_address_id: 2025/document=schedule_1
+  kind: line
+  path:
+  - kind: document
+    token: schedule_1
+  - kind: line
+    token: 19b
+  printed_label: 19b
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_1_2025
+    source_hash: 8dafec719f6a4716c259a2bdaca546d9bb9e262d1eabef885fe116a7327458fa
+    page: 2
+- address_id: 2025/document=schedule_1/line=19b/control=identifier
+  logical_key: document=schedule_1/line=19b/control=identifier
+  year: 2025
+  document_id: schedule_1_2025
+  parent_address_id: 2025/document=schedule_1/line=19b
+  kind: control
+  path:
+  - kind: document
+    token: schedule_1
+  - kind: line
+    token: 19b
+  - kind: control
+    token: identifier
+  printed_label: Recipient's social security number
+  aliases: []
+  control_role: identifier
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_1_2025
+    source_hash: 8dafec719f6a4716c259a2bdaca546d9bb9e262d1eabef885fe116a7327458fa
+    page: 2
+  official_ref: 19b
+- address_id: 2025/document=schedule_1/line=19c
+  logical_key: document=schedule_1/line=19c
+  year: 2025
+  document_id: schedule_1_2025
+  parent_address_id: 2025/document=schedule_1
+  kind: line
+  path:
+  - kind: document
+    token: schedule_1
+  - kind: line
+    token: 19c
+  printed_label: 19c
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_1_2025
+    source_hash: 8dafec719f6a4716c259a2bdaca546d9bb9e262d1eabef885fe116a7327458fa
+    page: 2
+- address_id: 2025/document=schedule_1/line=19c/control=date
+  logical_key: document=schedule_1/line=19c/control=date
+  year: 2025
+  document_id: schedule_1_2025
+  parent_address_id: 2025/document=schedule_1/line=19c
+  kind: control
+  path:
+  - kind: document
+    token: schedule_1
+  - kind: line
+    token: 19c
+  - kind: control
+    token: date
+  printed_label: Date of original divorce or separation agreement
+  aliases: []
+  control_role: date
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_1_2025
+    source_hash: 8dafec719f6a4716c259a2bdaca546d9bb9e262d1eabef885fe116a7327458fa
+    page: 2
+  official_ref: 19c
+- address_id: 2025/document=schedule_1/line=1a
+  logical_key: document=schedule_1/line=1a
+  year: 2025
+  document_id: schedule_1_2025
+  parent_address_id: 2025/document=schedule_1
+  kind: line
+  path:
+  - kind: document
+    token: schedule_1
+  - kind: line
+    token: 1a
+  printed_label: 1a
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_1_2025
+    source_hash: 8dafec719f6a4716c259a2bdaca546d9bb9e262d1eabef885fe116a7327458fa
+    page: 1
+- address_id: 2025/document=schedule_1/line=1a/control=amount
+  logical_key: document=schedule_1/line=1a/control=amount
+  year: 2025
+  document_id: schedule_1_2025
+  parent_address_id: 2025/document=schedule_1/line=1a
+  kind: control
+  path:
+  - kind: document
+    token: schedule_1
+  - kind: line
+    token: 1a
+  - kind: control
+    token: amount
+  printed_label: Form 1099-K amount included in error or for personal items
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_1_2025
+    source_hash: 8dafec719f6a4716c259a2bdaca546d9bb9e262d1eabef885fe116a7327458fa
+    page: 1
+  official_ref: 1a
 - address_id: 2025/document=schedule_1/line=20
   logical_key: document=schedule_1/line=20
   year: 2025
@@ -523,7 +647,7 @@ addresses:
     token: '20'
   - kind: control
     token: amount
-  printed_label: Line 20 - . . . . . . . . . 20 - f2_12
+  printed_label: IRA deduction
   aliases: []
   control_role: amount
   status: pending_review
@@ -564,7 +688,7 @@ addresses:
     token: '21'
   - kind: control
     token: amount
-  printed_label: Line 21 - . . . . . . . . . 21 - f2_13
+  printed_label: Student loan interest deduction
   aliases: []
   control_role: amount
   status: pending_review
@@ -573,20 +697,21 @@ addresses:
     source_hash: 8dafec719f6a4716c259a2bdaca546d9bb9e262d1eabef885fe116a7327458fa
     page: 2
   official_ref: '21'
-- address_id: 2025/document=schedule_1/line=21/control=checkbox
-  logical_key: document=schedule_1/line=21/control=checkbox
+- address_id: 2025/document=schedule_1/line=21/option=mfs_lived_apart
+  logical_key: document=schedule_1/line=21/option=mfs_lived_apart
   year: 2025
   document_id: schedule_1_2025
   parent_address_id: 2025/document=schedule_1/line=21
-  kind: control
+  kind: option
   path:
   - kind: document
     token: schedule_1
   - kind: line
     token: '21'
-  - kind: control
-    token: checkbox
-  printed_label: Line 21 - (see instructions), check here - c2_2
+  - kind: option
+    token: mfs_lived_apart
+  printed_label: Married filing separately and lived apart from spouse for the entire
+    year
   aliases: []
   control_role: checkbox
   status: pending_review
@@ -627,7 +752,7 @@ addresses:
     token: '22'
   - kind: control
     token: amount
-  printed_label: Line 22 - . . . . . . . . . 22 - f2_14
+  printed_label: Reserved for future use
   aliases: []
   control_role: amount
   status: pending_review
@@ -668,7 +793,7 @@ addresses:
     token: '23'
   - kind: control
     token: amount
-  printed_label: Line 23 - . . . . . . . . . 23 - f2_15
+  printed_label: Archer MSA deduction
   aliases: []
   control_role: amount
   status: pending_review
@@ -709,7 +834,7 @@ addresses:
     token: 24a
   - kind: control
     token: amount
-  printed_label: Line 24a - . . . . . . . . . 24a - f2_16
+  printed_label: Jury duty pay
   aliases: []
   control_role: amount
   status: pending_review
@@ -750,7 +875,7 @@ addresses:
     token: 24b
   - kind: control
     token: amount
-  printed_label: Line 24b - . . . . . . . . . 24b - f2_17
+  printed_label: Deductible expenses related to income reported on line 8l
   aliases: []
   control_role: amount
   status: pending_review
@@ -791,7 +916,8 @@ addresses:
     token: 24c
   - kind: control
     token: amount
-  printed_label: Line 24c - . . . . . . . . . 24c - f2_18
+  printed_label: Nontaxable value of Olympic and Paralympic medals and USOC prize
+    money
   aliases: []
   control_role: amount
   status: pending_review
@@ -832,7 +958,7 @@ addresses:
     token: 24d
   - kind: control
     token: amount
-  printed_label: Line 24d - . . . . . . . . . 24d - f2_19
+  printed_label: Reforestation amortization and expenses
   aliases: []
   control_role: amount
   status: pending_review
@@ -873,7 +999,8 @@ addresses:
     token: 24e
   - kind: control
     token: amount
-  printed_label: Line 24e - . . . . . . . . . 24e - f2_20
+  printed_label: Repayment of supplemental unemployment benefits under the Trade Act
+    of 1974
   aliases: []
   control_role: amount
   status: pending_review
@@ -914,7 +1041,7 @@ addresses:
     token: 24f
   - kind: control
     token: amount
-  printed_label: Line 24f - . . . . . . . . . 24f - f2_21
+  printed_label: Contributions to section 501(c)(18)(D) pension plans
   aliases: []
   control_role: amount
   status: pending_review
@@ -955,7 +1082,7 @@ addresses:
     token: 24g
   - kind: control
     token: amount
-  printed_label: Line 24g - 403(b) plans . . . . . . . 24g - f2_22
+  printed_label: Contributions by certain chaplains to section 403(b) plans
   aliases: []
   control_role: amount
   status: pending_review
@@ -996,7 +1123,8 @@ addresses:
     token: 24h
   - kind: control
     token: amount
-  printed_label: Line 24h - . . . . . . . . . 24h - f2_23
+  printed_label: Attorney fees and court costs for actions involving certain unlawful
+    discrimination claims
   aliases: []
   control_role: amount
   status: pending_review
@@ -1037,8 +1165,7 @@ addresses:
     token: 24i
   - kind: control
     token: amount
-  printed_label: Line 24i - provided that helped the IRS detect tax law violations
-    24i - f2_24
+  printed_label: Attorney fees and court costs paid in connection with an IRS award
   aliases: []
   control_role: amount
   status: pending_review
@@ -1079,7 +1206,7 @@ addresses:
     token: 24j
   - kind: control
     token: amount
-  printed_label: Line 24j - . . . . . . . . . 24j - f2_25
+  printed_label: Housing deduction from Form 2555
   aliases: []
   control_role: amount
   status: pending_review
@@ -1120,8 +1247,8 @@ addresses:
     token: 24k
   - kind: control
     token: amount
-  printed_label: Line 24k - of section 67(e) expenses from Schedule K-1 (Form 1041)
-    24k - f2_26
+  printed_label: Excess deductions of section 67(e) expenses from Schedule K-1 (Form
+    1041)
   aliases: []
   control_role: amount
   status: pending_review
@@ -1162,7 +1289,7 @@ addresses:
     token: 24z
   - kind: control
     token: amount
-  printed_label: Line 24z - 24z - f2_28
+  printed_label: Other adjustments - amount
   aliases: []
   control_role: amount
   status: pending_review
@@ -1171,6 +1298,69 @@ addresses:
     source_hash: 8dafec719f6a4716c259a2bdaca546d9bb9e262d1eabef885fe116a7327458fa
     page: 2
   official_ref: 24z
+- address_id: 2025/document=schedule_1/line=24z/control=description
+  logical_key: document=schedule_1/line=24z/control=description
+  year: 2025
+  document_id: schedule_1_2025
+  parent_address_id: 2025/document=schedule_1/line=24z
+  kind: control
+  path:
+  - kind: document
+    token: schedule_1
+  - kind: line
+    token: 24z
+  - kind: control
+    token: description
+  printed_label: Other adjustments - type
+  aliases: []
+  control_role: description
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_1_2025
+    source_hash: 8dafec719f6a4716c259a2bdaca546d9bb9e262d1eabef885fe116a7327458fa
+    page: 2
+  official_ref: 24z
+- address_id: 2025/document=schedule_1/line=25
+  logical_key: document=schedule_1/line=25
+  year: 2025
+  document_id: schedule_1_2025
+  parent_address_id: 2025/document=schedule_1
+  kind: line
+  path:
+  - kind: document
+    token: schedule_1
+  - kind: line
+    token: '25'
+  printed_label: '25'
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_1_2025
+    source_hash: 8dafec719f6a4716c259a2bdaca546d9bb9e262d1eabef885fe116a7327458fa
+    page: 2
+- address_id: 2025/document=schedule_1/line=25/control=amount
+  logical_key: document=schedule_1/line=25/control=amount
+  year: 2025
+  document_id: schedule_1_2025
+  parent_address_id: 2025/document=schedule_1/line=25
+  kind: control
+  path:
+  - kind: document
+    token: schedule_1
+  - kind: line
+    token: '25'
+  - kind: control
+    token: amount
+  printed_label: Total other adjustments
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_1_2025
+    source_hash: 8dafec719f6a4716c259a2bdaca546d9bb9e262d1eabef885fe116a7327458fa
+    page: 2
+  official_ref: '25'
 - address_id: 2025/document=schedule_1/line=26
   logical_key: document=schedule_1/line=26
   year: 2025
@@ -1203,7 +1393,7 @@ addresses:
     token: '26'
   - kind: control
     token: amount
-  printed_label: Line 26 - . . . . . . . . . 26 - f2_30
+  printed_label: Adjustments to income
   aliases: []
   control_role: amount
   status: pending_review
@@ -1244,7 +1434,7 @@ addresses:
     token: 2a
   - kind: control
     token: amount
-  printed_label: Line 2a - . . . . . . . . . 2a - f1_05
+  printed_label: Alimony received
   aliases: []
   control_role: amount
   status: pending_review
@@ -1253,6 +1443,47 @@ addresses:
     source_hash: 8dafec719f6a4716c259a2bdaca546d9bb9e262d1eabef885fe116a7327458fa
     page: 1
   official_ref: 2a
+- address_id: 2025/document=schedule_1/line=2b
+  logical_key: document=schedule_1/line=2b
+  year: 2025
+  document_id: schedule_1_2025
+  parent_address_id: 2025/document=schedule_1
+  kind: line
+  path:
+  - kind: document
+    token: schedule_1
+  - kind: line
+    token: 2b
+  printed_label: 2b
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_1_2025
+    source_hash: 8dafec719f6a4716c259a2bdaca546d9bb9e262d1eabef885fe116a7327458fa
+    page: 1
+- address_id: 2025/document=schedule_1/line=2b/control=date
+  logical_key: document=schedule_1/line=2b/control=date
+  year: 2025
+  document_id: schedule_1_2025
+  parent_address_id: 2025/document=schedule_1/line=2b
+  kind: control
+  path:
+  - kind: document
+    token: schedule_1
+  - kind: line
+    token: 2b
+  - kind: control
+    token: date
+  printed_label: Date of original divorce or separation agreement
+  aliases: []
+  control_role: date
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_1_2025
+    source_hash: 8dafec719f6a4716c259a2bdaca546d9bb9e262d1eabef885fe116a7327458fa
+    page: 1
+  official_ref: 2b
 - address_id: 2025/document=schedule_1/line=3
   logical_key: document=schedule_1/line=3
   year: 2025
@@ -1285,7 +1516,7 @@ addresses:
     token: '3'
   - kind: control
     token: amount
-  printed_label: Line 3 - . . . . . . . . . 3 - f1_07
+  printed_label: Business income or (loss)
   aliases: []
   control_role: amount
   status: pending_review
@@ -1326,7 +1557,7 @@ addresses:
     token: '4'
   - kind: control
     token: amount
-  printed_label: Line 4 - . . . . . . . . . 4 - f1_08
+  printed_label: Other gains or (losses)
   aliases: []
   control_role: amount
   status: pending_review
@@ -1335,21 +1566,42 @@ addresses:
     source_hash: 8dafec719f6a4716c259a2bdaca546d9bb9e262d1eabef885fe116a7327458fa
     page: 1
   official_ref: '4'
-- address_id: 2025/document=schedule_1/line=4/control=checkbox
-  logical_key: document=schedule_1/line=4/control=checkbox
+- address_id: 2025/document=schedule_1/line=4/option=form_4684
+  logical_key: document=schedule_1/line=4/option=form_4684
   year: 2025
   document_id: schedule_1_2025
   parent_address_id: 2025/document=schedule_1/line=4
-  kind: control
+  kind: option
   path:
   - kind: document
     token: schedule_1
   - kind: line
     token: '4'
-  - kind: control
-    token: checkbox
-  printed_label: 'Line 4 - 4 Other gains or (losses). Check if any from Form(s): -
-    c1_1'
+  - kind: option
+    token: form_4684
+  printed_label: Other gains or (losses) from Form 4684
+  aliases: []
+  control_role: checkbox
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_1_2025
+    source_hash: 8dafec719f6a4716c259a2bdaca546d9bb9e262d1eabef885fe116a7327458fa
+    page: 1
+  official_ref: '4'
+- address_id: 2025/document=schedule_1/line=4/option=form_4797
+  logical_key: document=schedule_1/line=4/option=form_4797
+  year: 2025
+  document_id: schedule_1_2025
+  parent_address_id: 2025/document=schedule_1/line=4
+  kind: option
+  path:
+  - kind: document
+    token: schedule_1
+  - kind: line
+    token: '4'
+  - kind: option
+    token: form_4797
+  printed_label: Other gains or (losses) from Form 4797
   aliases: []
   control_role: checkbox
   status: pending_review
@@ -1390,7 +1642,8 @@ addresses:
     token: '5'
   - kind: control
     token: amount
-  printed_label: Line 5 - etc. Attach Schedule E . . . . . 5 - f1_09
+  printed_label: Rental real estate, royalties, partnerships, S corporations, trusts,
+    etc.
   aliases: []
   control_role: amount
   status: pending_review
@@ -1431,7 +1684,7 @@ addresses:
     token: '6'
   - kind: control
     token: amount
-  printed_label: Line 6 - . . . . . . . . . 6 - f1_10
+  printed_label: Farm income or (loss)
   aliases: []
   control_role: amount
   status: pending_review
@@ -1472,7 +1725,7 @@ addresses:
     token: '7'
   - kind: control
     token: amount
-  printed_label: 'Line 7 - enter amount repaid: - f1_11'
+  printed_label: Unemployment compensation
   aliases: []
   control_role: amount
   status: pending_review
@@ -1481,8 +1734,8 @@ addresses:
     source_hash: 8dafec719f6a4716c259a2bdaca546d9bb9e262d1eabef885fe116a7327458fa
     page: 1
   official_ref: '7'
-- address_id: 2025/document=schedule_1/line=7/control=checkbox
-  logical_key: document=schedule_1/line=7/control=checkbox
+- address_id: 2025/document=schedule_1/line=7/control=repaid_amount
+  logical_key: document=schedule_1/line=7/control=repaid_amount
   year: 2025
   document_id: schedule_1_2025
   parent_address_id: 2025/document=schedule_1/line=7
@@ -1493,9 +1746,30 @@ addresses:
   - kind: line
     token: '7'
   - kind: control
-    token: checkbox
-  printed_label: Line 7 - If you repaid a 2025 overpayment (see instructions), check
-    here - c1_3
+    token: repaid_amount
+  printed_label: Amount of repaid unemployment compensation
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_1_2025
+    source_hash: 8dafec719f6a4716c259a2bdaca546d9bb9e262d1eabef885fe116a7327458fa
+    page: 1
+  official_ref: '7'
+- address_id: 2025/document=schedule_1/line=7/option=repaid_overpayment
+  logical_key: document=schedule_1/line=7/option=repaid_overpayment
+  year: 2025
+  document_id: schedule_1_2025
+  parent_address_id: 2025/document=schedule_1/line=7
+  kind: option
+  path:
+  - kind: document
+    token: schedule_1
+  - kind: line
+    token: '7'
+  - kind: option
+    token: repaid_overpayment
+  printed_label: Repaid 2025 unemployment compensation overpayment
   aliases: []
   control_role: checkbox
   status: pending_review
@@ -1536,7 +1810,7 @@ addresses:
     token: 8a
   - kind: control
     token: amount
-  printed_label: Line 8a - . . . . . . . . 8a ( - f1_13
+  printed_label: Net operating loss
   aliases: []
   control_role: amount
   status: pending_review
@@ -1577,7 +1851,7 @@ addresses:
     token: 8b
   - kind: control
     token: amount
-  printed_label: Line 8b - . . . . . . . . . 8b - f1_14
+  printed_label: Gambling
   aliases: []
   control_role: amount
   status: pending_review
@@ -1618,7 +1892,7 @@ addresses:
     token: 8c
   - kind: control
     token: amount
-  printed_label: Line 8c - . . . . . . . . . 8c - f1_15
+  printed_label: Cancellation of debt
   aliases: []
   control_role: amount
   status: pending_review
@@ -1659,7 +1933,7 @@ addresses:
     token: 8d
   - kind: control
     token: amount
-  printed_label: Line 8d - . . . . . . . . 8d ( - f1_16
+  printed_label: Foreign earned income exclusion from Form 2555
   aliases: []
   control_role: amount
   status: pending_review
@@ -1700,7 +1974,7 @@ addresses:
     token: 8e
   - kind: control
     token: amount
-  printed_label: Line 8e - . . . . . . . . . 8e - f1_17
+  printed_label: Income from Form 8853
   aliases: []
   control_role: amount
   status: pending_review
@@ -1741,7 +2015,7 @@ addresses:
     token: 8f
   - kind: control
     token: amount
-  printed_label: Line 8f - . . . . . . . . . 8f - f1_18
+  printed_label: Income from Form 8889
   aliases: []
   control_role: amount
   status: pending_review
@@ -1782,7 +2056,7 @@ addresses:
     token: 8g
   - kind: control
     token: amount
-  printed_label: Line 8g - . . . . . . . . . 8g - f1_19
+  printed_label: Alaska Permanent Fund dividends
   aliases: []
   control_role: amount
   status: pending_review
@@ -1823,7 +2097,7 @@ addresses:
     token: 8h
   - kind: control
     token: amount
-  printed_label: Line 8h - . . . . . . . . . 8h - f1_20
+  printed_label: Jury duty pay
   aliases: []
   control_role: amount
   status: pending_review
@@ -1864,7 +2138,7 @@ addresses:
     token: 8i
   - kind: control
     token: amount
-  printed_label: Line 8i - . . . . . . . . . 8i - f1_21
+  printed_label: Prizes and awards
   aliases: []
   control_role: amount
   status: pending_review
@@ -1905,7 +2179,7 @@ addresses:
     token: 8j
   - kind: control
     token: amount
-  printed_label: Line 8j - . . . . . . . . . 8j - f1_22
+  printed_label: Activity not engaged in for profit income
   aliases: []
   control_role: amount
   status: pending_review
@@ -1946,7 +2220,7 @@ addresses:
     token: 8k
   - kind: control
     token: amount
-  printed_label: Line 8k - . . . . . . . . . 8k - f1_23
+  printed_label: Stock options
   aliases: []
   control_role: amount
   status: pending_review
@@ -1987,7 +2261,7 @@ addresses:
     token: 8l
   - kind: control
     token: amount
-  printed_label: Line 8l - renting such property . . . . . . 8l - f1_24
+  printed_label: Income from the rental of personal property
   aliases: []
   control_role: amount
   status: pending_review
@@ -2028,8 +2302,7 @@ addresses:
     token: 8m
   - kind: control
     token: amount
-  printed_label: Line 8m - Paralympic medals and USOC prize money (see instructions)
-    . 8m - f1_25
+  printed_label: Olympic and Paralympic medals and USOC prize money
   aliases: []
   control_role: amount
   status: pending_review
@@ -2070,7 +2343,7 @@ addresses:
     token: 8n
   - kind: control
     token: amount
-  printed_label: Line 8n - . . . . . . . . . 8n - f1_26
+  printed_label: Section 951(a) inclusion
   aliases: []
   control_role: amount
   status: pending_review
@@ -2111,7 +2384,7 @@ addresses:
     token: 8o
   - kind: control
     token: amount
-  printed_label: Line 8o - . . . . . . . . . 8o - f1_27
+  printed_label: Section 951A(a) inclusion
   aliases: []
   control_role: amount
   status: pending_review
@@ -2152,7 +2425,7 @@ addresses:
     token: 8p
   - kind: control
     token: amount
-  printed_label: Line 8p - . . . . . . . . . 8p - f1_28
+  printed_label: Section 461(l) excess business loss adjustment
   aliases: []
   control_role: amount
   status: pending_review
@@ -2193,7 +2466,7 @@ addresses:
     token: 8q
   - kind: control
     token: amount
-  printed_label: Line 8q - ABLE account (see instructions) . . . . . 8q - f1_29
+  printed_label: Taxable distributions from an ABLE account
   aliases: []
   control_role: amount
   status: pending_review
@@ -2234,7 +2507,7 @@ addresses:
     token: 8r
   - kind: control
     token: amount
-  printed_label: Line 8r - on Form W-2 . . . . . . 8r - f1_30
+  printed_label: Scholarship and fellowship grants not reported on Form W-2
   aliases: []
   control_role: amount
   status: pending_review
@@ -2275,7 +2548,8 @@ addresses:
     token: 8s
   - kind: control
     token: amount
-  printed_label: Line 8s - . . . . . . . . 8s ( - f1_31
+  printed_label: Nontaxable Medicaid waiver payments included on Form 1040, line 1a
+    or 1d
   aliases: []
   control_role: amount
   status: pending_review
@@ -2316,7 +2590,7 @@ addresses:
     token: 8t
   - kind: control
     token: amount
-  printed_label: Line 8t - . . . . . . . . . 8t - f1_32
+  printed_label: Pension or annuity from a nonqualified deferred compensation plan
   aliases: []
   control_role: amount
   status: pending_review
@@ -2357,7 +2631,7 @@ addresses:
     token: 8u
   - kind: control
     token: amount
-  printed_label: Line 8u - . . . . . . . . . 8u - f1_33
+  printed_label: Wages earned while incarcerated
   aliases: []
   control_role: amount
   status: pending_review
@@ -2398,7 +2672,7 @@ addresses:
     token: 8v
   - kind: control
     token: amount
-  printed_label: Line 8v - . . . . . . . . . 8v - f1_34
+  printed_label: Digital assets received as ordinary income not reported elsewhere
   aliases: []
   control_role: amount
   status: pending_review
@@ -2439,7 +2713,7 @@ addresses:
     token: 8z
   - kind: control
     token: amount
-  printed_label: Line 8z - 8z - f1_36
+  printed_label: Other income - amount
   aliases: []
   control_role: amount
   status: pending_review
@@ -2448,3 +2722,129 @@ addresses:
     source_hash: 8dafec719f6a4716c259a2bdaca546d9bb9e262d1eabef885fe116a7327458fa
     page: 1
   official_ref: 8z
+- address_id: 2025/document=schedule_1/line=8z/control=description
+  logical_key: document=schedule_1/line=8z/control=description
+  year: 2025
+  document_id: schedule_1_2025
+  parent_address_id: 2025/document=schedule_1/line=8z
+  kind: control
+  path:
+  - kind: document
+    token: schedule_1
+  - kind: line
+    token: 8z
+  - kind: control
+    token: description
+  printed_label: Other income - type
+  aliases: []
+  control_role: description
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_1_2025
+    source_hash: 8dafec719f6a4716c259a2bdaca546d9bb9e262d1eabef885fe116a7327458fa
+    page: 1
+  official_ref: 8z
+- address_id: 2025/document=schedule_1/line=9
+  logical_key: document=schedule_1/line=9
+  year: 2025
+  document_id: schedule_1_2025
+  parent_address_id: 2025/document=schedule_1
+  kind: line
+  path:
+  - kind: document
+    token: schedule_1
+  - kind: line
+    token: '9'
+  printed_label: '9'
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_1_2025
+    source_hash: 8dafec719f6a4716c259a2bdaca546d9bb9e262d1eabef885fe116a7327458fa
+    page: 1
+- address_id: 2025/document=schedule_1/line=9/control=amount
+  logical_key: document=schedule_1/line=9/control=amount
+  year: 2025
+  document_id: schedule_1_2025
+  parent_address_id: 2025/document=schedule_1/line=9
+  kind: control
+  path:
+  - kind: document
+    token: schedule_1
+  - kind: line
+    token: '9'
+  - kind: control
+    token: amount
+  printed_label: Total other income
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_1_2025
+    source_hash: 8dafec719f6a4716c259a2bdaca546d9bb9e262d1eabef885fe116a7327458fa
+    page: 1
+  official_ref: '9'
+- address_id: 2025/document=schedule_1/section=identity
+  logical_key: document=schedule_1/section=identity
+  year: 2025
+  document_id: schedule_1_2025
+  parent_address_id: 2025/document=schedule_1
+  kind: section
+  path:
+  - kind: document
+    token: schedule_1
+  - kind: section
+    token: identity
+  printed_label: identity
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_1_2025
+    source_hash: 8dafec719f6a4716c259a2bdaca546d9bb9e262d1eabef885fe116a7327458fa
+    page: 1
+- address_id: 2025/document=schedule_1/section=identity/control=name
+  logical_key: document=schedule_1/section=identity/control=name
+  year: 2025
+  document_id: schedule_1_2025
+  parent_address_id: 2025/document=schedule_1/section=identity
+  kind: control
+  path:
+  - kind: document
+    token: schedule_1
+  - kind: section
+    token: identity
+  - kind: control
+    token: name
+  printed_label: Name(s) shown on Form 1040, 1040-SR, or 1040-NR
+  aliases: []
+  control_role: text
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_1_2025
+    source_hash: 8dafec719f6a4716c259a2bdaca546d9bb9e262d1eabef885fe116a7327458fa
+    page: 1
+  official_ref: Header
+- address_id: 2025/document=schedule_1/section=identity/control=social_security_number
+  logical_key: document=schedule_1/section=identity/control=social_security_number
+  year: 2025
+  document_id: schedule_1_2025
+  parent_address_id: 2025/document=schedule_1/section=identity
+  kind: control
+  path:
+  - kind: document
+    token: schedule_1
+  - kind: section
+    token: identity
+  - kind: control
+    token: social_security_number
+  printed_label: Your social security number
+  aliases: []
+  control_role: identifier
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_1_2025
+    source_hash: 8dafec719f6a4716c259a2bdaca546d9bb9e262d1eabef885fe116a7327458fa
+    page: 1
+  official_ref: Header

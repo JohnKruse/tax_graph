@@ -626,6 +626,17 @@ method and sequencing are amended:
 5. **Exemptions stay small and authored.** A control whose official identity cannot be
    established from the local PDF gets an explicitly authored exemption label + specific
    reason, listed in the handoff at A9z - never a generated or guessed label.
+6. **Scope boundary - hand authoring ends with A9 (pinned 2026-07-20, John; guiding
+   invariant 6 in `docs/engineering-plan.md`).** The desired end-state is a reliable
+   forms PIPELINE into the graph; this campaign's per-form hand transcription is a
+   one-time recovery from the mined-label defects and is authorized for the A9b..A9x
+   document list ONLY. Its outputs (authored templates, adjacency checks, triangle
+   validator, goldens) are the ground-truth corpus for the rollover re-binder pinned
+   in the engineering plan's Year rollover section, seam 5. No step after A9z may
+   hand-transcribe form controls; new forms arrive via the extension harness and
+   yearly updates via the re-binder, both fail-closed into the review workbench. If
+   campaign work appears to require hand authoring beyond the A9 list, that is a stop
+   condition, not a precedent.
 
 **A9b ruling - Form 8949 totals mapping defect (Architect, 2026-07-17).** The Architect
 independently verified the Worker's geometry finding: transaction-row column x-bands
@@ -652,6 +663,26 @@ touched). Rulings:
    validation with the exact three-way disagreement). This converts the manual
    PDF-squint that caught this defect into a deterministic check that catches any
    future column/row/box shift on any form.
+**A9f extension - Schedule 1 shift + standing narrow-remap authorization (Architect,
+2026-07-19).** Architect-verified from inventory geometry and printed rows: Schedule 1
+line 8z maps into the printed line 9 total cell (`f1_37`) and line 24z into the line 25
+total cell (`f2_29`), while the true 8z/24z cells (`f1_36`/`f2_28`) sit disposed
+`unsupported` and the MODELED total nodes `schedule_1_2025_part_i_line_9` /
+`part_ii_line_25` have no cells at all. AUTHORIZED within A9f: remap 8z -> `f1_36`,
+24z -> `f2_28`, and ADD `part_i_line_9` -> `f1_37`, `part_ii_line_25` -> `f2_29`;
+correct the four dispositions; goldens + a filled-PDF echo proving the 8z amount and
+the line 9 total land in their own cells (both parts).
+
+**STANDING AUTHORIZATION for A9f..A9x:** when campaign work on a remaining document
+proves an equivalent single-cell placement shift, the Worker MAY apply the narrow
+remap WITHOUT a new stop, provided ALL of: (a) the inventory x/y geometry proof and
+printed-row evidence are recorded in the handoff entry; (b) only the mappings for the
+proven cells change; (c) any freed cell is mapped to its true modeled node or receives
+an explicit truthful disposition; (d) corrected-mapping goldens and a position-verified
+filled-PDF echo land in the same commit; (e) the defect is recorded for the document's
+pending field_map_review entry. Anything beyond a geometry-proven single-cell shift
+(wrong node semantics, missing nodes, calculation changes) still stops for a ruling.
+
 4. **The shaded `f*_93`/`f2_93` widget is `intentionally_blank`, not excluded.** It
    stays in the visible review-control set per the Gate A invariant (every control has
    exactly one policy and is clickable). Authored exemption identity: display label

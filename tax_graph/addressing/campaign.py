@@ -139,6 +139,8 @@ def _control_evidence(item: dict[str, Any], mapping: dict[str, Any] | None,
                       disposition: dict[str, Any], *, document_id: str) -> dict[str, Any] | None:
     if document_id == "form_1040_2025":
         return _form_1040_control_evidence(item, mapping)
+    if document_id == "schedule_1_2025":
+        return _schedule_1_control_evidence(item)
     if document_id == "form_8949_2025":
         return _form_8949_control_evidence(item, mapping, disposition)
     if document_id == "form_w2_2025":
@@ -192,6 +194,127 @@ def _control_evidence(item: dict[str, Any], mapping: dict[str, Any] | None,
         "rect": [item["x0"], item["y0"], item["x1"], item["y1"]],
         "semantic_status": "pending_review",
     }
+
+
+def _schedule_1_control_evidence(item: dict[str, Any]) -> dict[str, Any] | None:
+    """Project every Schedule 1 widget through its printed 2025 line identity."""
+    leaf = str(item["field_name"]).rsplit(".", 1)[-1]
+    header_specs = {
+        "f1_01[0]": ("name", "Name(s) shown on Form 1040, 1040-SR, or 1040-NR", "text"),
+        "f1_02[0]": ("social_security_number", "Your social security number", "identifier"),
+    }
+    if leaf in header_specs:
+        token, label, role = header_specs[leaf]
+        return _campaign_control(
+            item,
+            [{"kind": "section", "token": "identity"}, {"kind": "control", "token": token}],
+            "Header",
+            label,
+            role,
+        )
+
+    line_specs = {
+        "f1_03[0]": ("1a", "Form 1099-K amount included in error or for personal items", "amount"),
+        "f1_04[0]": ("1", "Taxable refunds, credits, or offsets of state and local income taxes", "amount"),
+        "f1_05[0]": ("2a", "Alimony received", "amount"),
+        "f1_06[0]": ("2b", "Date of original divorce or separation agreement", "date"),
+        "f1_07[0]": ("3", "Business income or (loss)", "amount"),
+        "f1_08[0]": ("4", "Other gains or (losses)", "amount"),
+        "f1_09[0]": ("5", "Rental real estate, royalties, partnerships, S corporations, trusts, etc.", "amount"),
+        "f1_10[0]": ("6", "Farm income or (loss)", "amount"),
+        "f1_12[0]": ("7", "Unemployment compensation", "amount"),
+        "f1_13[0]": ("8a", "Net operating loss", "amount"),
+        "f1_14[0]": ("8b", "Gambling", "amount"),
+        "f1_15[0]": ("8c", "Cancellation of debt", "amount"),
+        "f1_16[0]": ("8d", "Foreign earned income exclusion from Form 2555", "amount"),
+        "f1_17[0]": ("8e", "Income from Form 8853", "amount"),
+        "f1_18[0]": ("8f", "Income from Form 8889", "amount"),
+        "f1_19[0]": ("8g", "Alaska Permanent Fund dividends", "amount"),
+        "f1_20[0]": ("8h", "Jury duty pay", "amount"),
+        "f1_21[0]": ("8i", "Prizes and awards", "amount"),
+        "f1_22[0]": ("8j", "Activity not engaged in for profit income", "amount"),
+        "f1_23[0]": ("8k", "Stock options", "amount"),
+        "f1_24[0]": ("8l", "Income from the rental of personal property", "amount"),
+        "f1_25[0]": ("8m", "Olympic and Paralympic medals and USOC prize money", "amount"),
+        "f1_26[0]": ("8n", "Section 951(a) inclusion", "amount"),
+        "f1_27[0]": ("8o", "Section 951A(a) inclusion", "amount"),
+        "f1_28[0]": ("8p", "Section 461(l) excess business loss adjustment", "amount"),
+        "f1_29[0]": ("8q", "Taxable distributions from an ABLE account", "amount"),
+        "f1_30[0]": ("8r", "Scholarship and fellowship grants not reported on Form W-2", "amount"),
+        "f1_31[0]": ("8s", "Nontaxable Medicaid waiver payments included on Form 1040, line 1a or 1d", "amount"),
+        "f1_32[0]": ("8t", "Pension or annuity from a nonqualified deferred compensation plan", "amount"),
+        "f1_33[0]": ("8u", "Wages earned while incarcerated", "amount"),
+        "f1_34[0]": ("8v", "Digital assets received as ordinary income not reported elsewhere", "amount"),
+        "f1_35[0]": ("8z", "Other income - type", "description"),
+        "f1_36[0]": ("8z", "Other income - amount", "amount"),
+        "f1_37[0]": ("9", "Total other income", "amount"),
+        "f1_38[0]": ("10", "Additional income", "amount"),
+        "f2_01[0]": ("11", "Educator expenses", "amount"),
+        "f2_02[0]": ("12", "Certain business expenses of reservists, performing artists, and fee-basis government officials", "amount"),
+        "f2_03[0]": ("13", "Health savings account deduction", "amount"),
+        "f2_04[0]": ("14", "Moving expenses for members of the Armed Forces", "amount"),
+        "f2_05[0]": ("15", "Deductible part of self-employment tax", "amount"),
+        "f2_06[0]": ("16", "Self-employed SEP, SIMPLE, and qualified plans", "amount"),
+        "f2_07[0]": ("17", "Self-employed health insurance deduction", "amount"),
+        "f2_08[0]": ("18", "Penalty on early withdrawal of savings", "amount"),
+        "f2_09[0]": ("19a", "Alimony paid", "amount"),
+        "f2_10[0]": ("19b", "Recipient's social security number", "identifier"),
+        "f2_11[0]": ("19c", "Date of original divorce or separation agreement", "date"),
+        "f2_12[0]": ("20", "IRA deduction", "amount"),
+        "f2_13[0]": ("21", "Student loan interest deduction", "amount"),
+        "f2_14[0]": ("22", "Reserved for future use", "amount"),
+        "f2_15[0]": ("23", "Archer MSA deduction", "amount"),
+        "f2_16[0]": ("24a", "Jury duty pay", "amount"),
+        "f2_17[0]": ("24b", "Deductible expenses related to income reported on line 8l", "amount"),
+        "f2_18[0]": ("24c", "Nontaxable value of Olympic and Paralympic medals and USOC prize money", "amount"),
+        "f2_19[0]": ("24d", "Reforestation amortization and expenses", "amount"),
+        "f2_20[0]": ("24e", "Repayment of supplemental unemployment benefits under the Trade Act of 1974", "amount"),
+        "f2_21[0]": ("24f", "Contributions to section 501(c)(18)(D) pension plans", "amount"),
+        "f2_22[0]": ("24g", "Contributions by certain chaplains to section 403(b) plans", "amount"),
+        "f2_23[0]": ("24h", "Attorney fees and court costs for actions involving certain unlawful discrimination claims", "amount"),
+        "f2_24[0]": ("24i", "Attorney fees and court costs paid in connection with an IRS award", "amount"),
+        "f2_25[0]": ("24j", "Housing deduction from Form 2555", "amount"),
+        "f2_26[0]": ("24k", "Excess deductions of section 67(e) expenses from Schedule K-1 (Form 1041)", "amount"),
+        "f2_27[0]": ("24z", "Other adjustments - type", "description"),
+        "f2_28[0]": ("24z", "Other adjustments - amount", "amount"),
+        "f2_29[0]": ("25", "Total other adjustments", "amount"),
+        "f2_30[0]": ("26", "Adjustments to income", "amount"),
+    }
+    if leaf == "f1_11[0]":
+        return _campaign_control(
+            item,
+            [{"kind": "line", "token": "7"}, {"kind": "control", "token": "repaid_amount"}],
+            "7",
+            "Amount of repaid unemployment compensation",
+            "amount",
+        )
+    if leaf in line_specs:
+        line, label, role = line_specs[leaf]
+        return _campaign_control(
+            item,
+            [{"kind": "line", "token": line}, {"kind": "control", "token": role}],
+            line,
+            label,
+            role,
+        )
+
+    choice_specs = {
+        "c1_1[0]": ("4", "form_4797", "Other gains or (losses) from Form 4797"),
+        "c1_2[0]": ("4", "form_4684", "Other gains or (losses) from Form 4684"),
+        "c1_3[0]": ("7", "repaid_overpayment", "Repaid 2025 unemployment compensation overpayment"),
+        "c2_1[0]": ("14", "storage_fees_only", "Claiming only storage fees for a move to a foreign country"),
+        "c2_2[0]": ("21", "mfs_lived_apart", "Married filing separately and lived apart from spouse for the entire year"),
+    }
+    if leaf in choice_specs:
+        line, token, label = choice_specs[leaf]
+        return _campaign_control(
+            item,
+            [{"kind": "line", "token": line}, {"kind": "option", "token": token}],
+            line,
+            label,
+            "checkbox",
+        )
+    return None
 
 
 def _form_1040_control_evidence(

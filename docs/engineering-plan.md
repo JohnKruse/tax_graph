@@ -28,6 +28,16 @@ actually wanted, flag it - it changes M2.
    hosted storage; secrets in the OS keyring, never committed.
 5. **Repeatable & resumable.** Every stage is a re-runnable command. Within-filing state
    (tree, facts, trace) persists so a session survives model throttling.
+6. **Pipeline end-state, hand work is scaffolding (pinned 2026-07-20, John).** The
+   desired end-state is a valid, reliable FORMS PIPELINE into the tax graph: new and
+   updated IRS documents (yearly rollover) and user-brought forms (extension harness)
+   are ingested by runnable pipeline stages with deterministic validators, never by
+   per-form hand transcription. Hand authoring is permitted ONLY as bounded, one-time
+   recovery work that produces durable verified corpus (e.g. the M15 A9 address
+   campaign), and every such effort MUST name the pipeline capability that makes its
+   repetition unnecessary. Any plan step that would hand-process forms as a recurring
+   practice is a design defect: stop and re-route through the pipeline. Nobody gets
+   garden-pathed into hand-crafting form ingestion again.
 
 ## Repeatable tables (decided 2026-07-01)
 
@@ -456,6 +466,19 @@ that are NOT yet coded and must not be discovered in a panic at rollover time:
    URL patterns are predictable but each entry needs a fetch-verify.
 4. **Oracle/witness rollover** - new-year OTS release + PolicyEngine parameter YAML
    must be re-pinned; the frozen corpus and box map are year-scoped and re-freeze.
+5. **Addressing-layer re-binding (pinned 2026-07-20; see guiding invariant 6).** The
+   M15 A9 campaign hand-authors printed identities per control, currently welded to
+   per-year raw AcroForm field names in `tax_graph/addressing/campaign.py` per-form
+   projection tables. That transcription is authorized ONCE, as recovery from the
+   mined-label defects; it is the golden corpus, not the method. Rollover requires a
+   re-binder: authored templates become year-independent (printed line number +
+   caption + role), a pipeline stage matches them to the new year's widget inventory
+   via geometry + printed-caption adjacency (the A9c/A9d adjacency machinery), binds
+   automatically where the match is unambiguous, and routes only genuine form deltas
+   (added/removed/renumbered/moved controls) to the review workbench, fail-closed.
+   The A9 per-form dicts and their adjacency goldens are the validation corpus for
+   this re-binder. Re-transcribing a form by hand at rollover is prohibited by
+   invariant 6.
 The first rollover is the shakedown of this whole design and gets its own phase plan;
 sequencing: after M15 (the workbench is the surface where the delta review happens) or
 when TY2026 documents drop, whichever is later. Human effort target: review the delta
