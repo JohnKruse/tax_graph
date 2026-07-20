@@ -45,6 +45,14 @@ def test_1099_physical_qualifier_names_copy_and_state_row() -> None:
 
 
 @pytest.mark.m15
+def test_schedule_1a_physical_qualifier_names_vehicle_row() -> None:
+    assert _physical_qualifier({
+        "field_name": "form1[0].Page2[0].Table_Line22[0].Line22b[0].f2_06[0]",
+        "address_id": "2025/document=schedule_1a/table=line_22/row_template=vehicle/column=schedule_1a",
+    }, None) == "line 22 row b"
+
+
+@pytest.mark.m15
 def test_authored_control_identity_precedes_legacy_disposition_label() -> None:
     identity = _review_identity(
         {}, "field_control",

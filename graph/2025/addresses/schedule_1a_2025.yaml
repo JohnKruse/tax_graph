@@ -18,6 +18,47 @@ addresses:
   evidence:
   - source_path: config/manifest.yaml#schedule_1a_2025
     source_hash: 64f97b38ff4218e2f188fd55a8aab7043556687487c82bbefe0b6dd1a956ecd4
+- address_id: 2025/document=schedule_1a/line=1
+  logical_key: document=schedule_1a/line=1
+  year: 2025
+  document_id: schedule_1a_2025
+  parent_address_id: 2025/document=schedule_1a
+  kind: line
+  path:
+  - kind: document
+    token: schedule_1a
+  - kind: line
+    token: '1'
+  printed_label: '1'
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_1a_2025
+    source_hash: 64f97b38ff4218e2f188fd55a8aab7043556687487c82bbefe0b6dd1a956ecd4
+    page: 1
+- address_id: 2025/document=schedule_1a/line=1/control=amount
+  logical_key: document=schedule_1a/line=1/control=amount
+  year: 2025
+  document_id: schedule_1a_2025
+  parent_address_id: 2025/document=schedule_1a/line=1
+  kind: control
+  path:
+  - kind: document
+    token: schedule_1a
+  - kind: line
+    token: '1'
+  - kind: control
+    token: amount
+  printed_label: Amount from Form 1040, 1040-SR, or 1040-NR, line 11b
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_1a_2025
+    source_hash: 64f97b38ff4218e2f188fd55a8aab7043556687487c82bbefe0b6dd1a956ecd4
+    page: 1
+  official_ref: '1'
 - address_id: 2025/document=schedule_1a/line=10
   logical_key: document=schedule_1a/line=10
   year: 2025
@@ -50,7 +91,7 @@ addresses:
     token: '10'
   - kind: control
     token: amount
-  printed_label: Line 10 - line 13 . . . . . . . 10 - f1_18
+  printed_label: Subtract line 9 from line 8
   aliases: []
   control_role: amount
   status: pending_review
@@ -91,7 +132,7 @@ addresses:
     token: '11'
   - kind: control
     token: amount
-  printed_label: Line 11 - 0.) . . . . . . . . 11 - f1_19
+  printed_label: Divide line 10 by $1,000
   aliases: []
   control_role: amount
   status: pending_review
@@ -100,47 +141,6 @@ addresses:
     source_hash: 64f97b38ff4218e2f188fd55a8aab7043556687487c82bbefe0b6dd1a956ecd4
     page: 1
   official_ref: '11'
-- address_id: 2025/document=schedule_1a/line=11b
-  logical_key: document=schedule_1a/line=11b
-  year: 2025
-  document_id: schedule_1a_2025
-  parent_address_id: 2025/document=schedule_1a
-  kind: line
-  path:
-  - kind: document
-    token: schedule_1a
-  - kind: line
-    token: 11b
-  printed_label: 11b
-  aliases: []
-  control_role: none
-  status: pending_review
-  evidence:
-  - source_path: config/manifest.yaml#schedule_1a_2025
-    source_hash: 64f97b38ff4218e2f188fd55a8aab7043556687487c82bbefe0b6dd1a956ecd4
-    page: 1
-- address_id: 2025/document=schedule_1a/line=11b/control=amount
-  logical_key: document=schedule_1a/line=11b/control=amount
-  year: 2025
-  document_id: schedule_1a_2025
-  parent_address_id: 2025/document=schedule_1a/line=11b
-  kind: control
-  path:
-  - kind: document
-    token: schedule_1a
-  - kind: line
-    token: 11b
-  - kind: control
-    token: amount
-  printed_label: Line 11b - . . . . . . . . . 1 - f1_03
-  aliases: []
-  control_role: amount
-  status: pending_review
-  evidence:
-  - source_path: config/manifest.yaml#schedule_1a_2025
-    source_hash: 64f97b38ff4218e2f188fd55a8aab7043556687487c82bbefe0b6dd1a956ecd4
-    page: 1
-  official_ref: 11b
 - address_id: 2025/document=schedule_1a/line=12
   logical_key: document=schedule_1a/line=12
   year: 2025
@@ -173,7 +173,7 @@ addresses:
     token: '12'
   - kind: control
     token: amount
-  printed_label: Line 12 - . . . . . . . . . 12 - f1_20
+  printed_label: Multiply line 11 by $100
   aliases: []
   control_role: amount
   status: pending_review
@@ -214,7 +214,7 @@ addresses:
     token: '13'
   - kind: control
     token: amount
-  printed_label: Line 13 - -0- . . . . . . . . 13 - f1_21
+  printed_label: Qualified tips deduction
   aliases: []
   control_role: amount
   status: pending_review
@@ -223,47 +223,6 @@ addresses:
     source_hash: 64f97b38ff4218e2f188fd55a8aab7043556687487c82bbefe0b6dd1a956ecd4
     page: 1
   official_ref: '13'
-- address_id: 2025/document=schedule_1a/line=13c
-  logical_key: document=schedule_1a/line=13c
-  year: 2025
-  document_id: schedule_1a_2025
-  parent_address_id: 2025/document=schedule_1a
-  kind: line
-  path:
-  - kind: document
-    token: schedule_1a
-  - kind: line
-    token: 13c
-  printed_label: 13c
-  aliases: []
-  control_role: none
-  status: pending_review
-  evidence:
-  - source_path: config/manifest.yaml#schedule_1a_2025
-    source_hash: 64f97b38ff4218e2f188fd55a8aab7043556687487c82bbefe0b6dd1a956ecd4
-    page: 2
-- address_id: 2025/document=schedule_1a/line=13c/control=amount
-  logical_key: document=schedule_1a/line=13c/control=amount
-  year: 2025
-  document_id: schedule_1a_2025
-  parent_address_id: 2025/document=schedule_1a/line=13c
-  kind: control
-  path:
-  - kind: document
-    token: schedule_1a
-  - kind: line
-    token: 13c
-  - kind: control
-    token: amount
-  printed_label: Line 13c - . . . . . . . . . 38 - f2_23
-  aliases: []
-  control_role: amount
-  status: pending_review
-  evidence:
-  - source_path: config/manifest.yaml#schedule_1a_2025
-    source_hash: 64f97b38ff4218e2f188fd55a8aab7043556687487c82bbefe0b6dd1a956ecd4
-    page: 2
-  official_ref: 13c
 - address_id: 2025/document=schedule_1a/line=14a
   logical_key: document=schedule_1a/line=14a
   year: 2025
@@ -296,8 +255,7 @@ addresses:
     token: 14a
   - kind: control
     token: amount
-  printed_label: Line 14a - not reported on Form W-2, box 1, see instructions 14a
-    - f1_22
+  printed_label: Qualified overtime compensation included in Form W-2, box 1
   aliases: []
   control_role: amount
   status: pending_review
@@ -338,7 +296,8 @@ addresses:
     token: 14b
   - kind: control
     token: amount
-  printed_label: Line 14b - . . . . . . . . . 14b - f1_23
+  printed_label: Qualified overtime compensation included in Form 1099-NEC, box 1,
+    or Form 1099-MISC, box 3
   aliases: []
   control_role: amount
   status: pending_review
@@ -379,7 +338,7 @@ addresses:
     token: 14c
   - kind: control
     token: amount
-  printed_label: Line 14c - . . . . . . . . . 14c - f1_24
+  printed_label: Add lines 14a and 14b
   aliases: []
   control_role: amount
   status: pending_review
@@ -388,6 +347,47 @@ addresses:
     source_hash: 64f97b38ff4218e2f188fd55a8aab7043556687487c82bbefe0b6dd1a956ecd4
     page: 1
   official_ref: 14c
+- address_id: 2025/document=schedule_1a/line=15
+  logical_key: document=schedule_1a/line=15
+  year: 2025
+  document_id: schedule_1a_2025
+  parent_address_id: 2025/document=schedule_1a
+  kind: line
+  path:
+  - kind: document
+    token: schedule_1a
+  - kind: line
+    token: '15'
+  printed_label: '15'
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_1a_2025
+    source_hash: 64f97b38ff4218e2f188fd55a8aab7043556687487c82bbefe0b6dd1a956ecd4
+    page: 1
+- address_id: 2025/document=schedule_1a/line=15/control=amount
+  logical_key: document=schedule_1a/line=15/control=amount
+  year: 2025
+  document_id: schedule_1a_2025
+  parent_address_id: 2025/document=schedule_1a/line=15
+  kind: control
+  path:
+  - kind: document
+    token: schedule_1a
+  - kind: line
+    token: '15'
+  - kind: control
+    token: amount
+  printed_label: Enter the smaller of the amount on line 14c or $12,500
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_1a_2025
+    source_hash: 64f97b38ff4218e2f188fd55a8aab7043556687487c82bbefe0b6dd1a956ecd4
+    page: 1
+  official_ref: '15'
 - address_id: 2025/document=schedule_1a/line=16
   logical_key: document=schedule_1a/line=16
   year: 2025
@@ -420,7 +420,7 @@ addresses:
     token: '16'
   - kind: control
     token: amount
-  printed_label: Line 16 - . . . . . . . . . 16 - f1_26
+  printed_label: Amount from line 3
   aliases: []
   control_role: amount
   status: pending_review
@@ -461,7 +461,7 @@ addresses:
     token: '17'
   - kind: control
     token: amount
-  printed_label: Line 17 - . . . . . . . . . 17 - f1_27
+  printed_label: $150,000 ($300,000 if married filing jointly)
   aliases: []
   control_role: amount
   status: pending_review
@@ -502,7 +502,7 @@ addresses:
     token: '18'
   - kind: control
     token: amount
-  printed_label: Line 18 - on line 21 . . . . . . 18 - f1_28
+  printed_label: Subtract line 17 from line 16
   aliases: []
   control_role: amount
   status: pending_review
@@ -543,7 +543,7 @@ addresses:
     token: '19'
   - kind: control
     token: amount
-  printed_label: Line 19 - 0.) . . . . . . . . 19 - f1_29
+  printed_label: Divide line 18 by $1,000
   aliases: []
   control_role: amount
   status: pending_review
@@ -584,7 +584,7 @@ addresses:
     token: '20'
   - kind: control
     token: amount
-  printed_label: Line 20 - . . . . . . . . . 20 - f1_30
+  printed_label: Multiply line 19 by $100
   aliases: []
   control_role: amount
   status: pending_review
@@ -625,7 +625,7 @@ addresses:
     token: '21'
   - kind: control
     token: amount
-  printed_label: Line 21 - from line 15. If zero or less, enter -0- 21 - f1_31
+  printed_label: Qualified overtime compensation deduction
   aliases: []
   control_role: amount
   status: pending_review
@@ -634,8 +634,8 @@ addresses:
     source_hash: 64f97b38ff4218e2f188fd55a8aab7043556687487c82bbefe0b6dd1a956ecd4
     page: 1
   official_ref: '21'
-- address_id: 2025/document=schedule_1a/line=22a
-  logical_key: document=schedule_1a/line=22a
+- address_id: 2025/document=schedule_1a/line=23
+  logical_key: document=schedule_1a/line=23
   year: 2025
   document_id: schedule_1a_2025
   parent_address_id: 2025/document=schedule_1a
@@ -644,8 +644,8 @@ addresses:
   - kind: document
     token: schedule_1a
   - kind: line
-    token: 22a
-  printed_label: 22a
+    token: '23'
+  printed_label: '23'
   aliases: []
   control_role: none
   status: pending_review
@@ -653,20 +653,20 @@ addresses:
   - source_path: config/manifest.yaml#schedule_1a_2025
     source_hash: 64f97b38ff4218e2f188fd55a8aab7043556687487c82bbefe0b6dd1a956ecd4
     page: 2
-- address_id: 2025/document=schedule_1a/line=22a/control=amount
-  logical_key: document=schedule_1a/line=22a/control=amount
+- address_id: 2025/document=schedule_1a/line=23/control=amount
+  logical_key: document=schedule_1a/line=23/control=amount
   year: 2025
   document_id: schedule_1a_2025
-  parent_address_id: 2025/document=schedule_1a/line=22a
+  parent_address_id: 2025/document=schedule_1a/line=23
   kind: control
   path:
   - kind: document
     token: schedule_1a
   - kind: line
-    token: 22a
+    token: '23'
   - kind: control
     token: amount
-  printed_label: Line 22a - . . . . . . . . . 23 - f2_07
+  printed_label: Add lines 22a and 22b, column (iii)
   aliases: []
   control_role: amount
   status: pending_review
@@ -674,7 +674,7 @@ addresses:
   - source_path: config/manifest.yaml#schedule_1a_2025
     source_hash: 64f97b38ff4218e2f188fd55a8aab7043556687487c82bbefe0b6dd1a956ecd4
     page: 2
-  official_ref: 22a
+  official_ref: '23'
 - address_id: 2025/document=schedule_1a/line=24
   logical_key: document=schedule_1a/line=24
   year: 2025
@@ -707,7 +707,7 @@ addresses:
     token: '24'
   - kind: control
     token: amount
-  printed_label: Line 24 - . . . . . . . . . 24 - f2_08
+  printed_label: Enter the smaller of the amount on line 23 or $10,000
   aliases: []
   control_role: amount
   status: pending_review
@@ -748,7 +748,7 @@ addresses:
     token: '25'
   - kind: control
     token: amount
-  printed_label: Line 25 - . . . . . . . . . 25 - f2_09
+  printed_label: Amount from line 3
   aliases: []
   control_role: amount
   status: pending_review
@@ -789,7 +789,7 @@ addresses:
     token: '26'
   - kind: control
     token: amount
-  printed_label: Line 26 - . . . . . . . . . 26 - f2_10
+  printed_label: $100,000 ($200,000 if married filing jointly)
   aliases: []
   control_role: amount
   status: pending_review
@@ -830,7 +830,7 @@ addresses:
     token: '27'
   - kind: control
     token: amount
-  printed_label: Line 27 - on line 30 . . . . . . 27 - f2_11
+  printed_label: Subtract line 26 from line 25
   aliases: []
   control_role: amount
   status: pending_review
@@ -871,7 +871,7 @@ addresses:
     token: '28'
   - kind: control
     token: amount
-  printed_label: Line 28 - 1.) . . . . . . . . 28 - f2_12
+  printed_label: Divide line 27 by $1,000
   aliases: []
   control_role: amount
   status: pending_review
@@ -912,7 +912,7 @@ addresses:
     token: '29'
   - kind: control
     token: amount
-  printed_label: Line 29 - . . . . . . . . . 29 - f2_13
+  printed_label: Multiply line 28 by $200
   aliases: []
   control_role: amount
   status: pending_review
@@ -953,7 +953,7 @@ addresses:
     token: 2a
   - kind: control
     token: amount
-  printed_label: Line 2a - excluded . . . . . . . . 2a - f1_04
+  printed_label: Income from Puerto Rico that you excluded
   aliases: []
   control_role: amount
   status: pending_review
@@ -994,7 +994,7 @@ addresses:
     token: 2b
   - kind: control
     token: amount
-  printed_label: Line 2b - . . . . . . . . . 2b - f1_05
+  printed_label: Amount from Form 2555, line 45
   aliases: []
   control_role: amount
   status: pending_review
@@ -1035,7 +1035,7 @@ addresses:
     token: 2c
   - kind: control
     token: amount
-  printed_label: Line 2c - . . . . . . . . . 2c - f1_06
+  printed_label: Amount from Form 2555, line 50
   aliases: []
   control_role: amount
   status: pending_review
@@ -1076,7 +1076,7 @@ addresses:
     token: 2d
   - kind: control
     token: amount
-  printed_label: Line 2d - . . . . . . . . . 2d - f1_07
+  printed_label: Amount from Form 4563, line 15
   aliases: []
   control_role: amount
   status: pending_review
@@ -1117,7 +1117,7 @@ addresses:
     token: 2e
   - kind: control
     token: amount
-  printed_label: Line 2e - . . . . . . . . . 2e - f1_08
+  printed_label: Add lines 2a, 2b, 2c, and 2d
   aliases: []
   control_role: amount
   status: pending_review
@@ -1126,6 +1126,47 @@ addresses:
     source_hash: 64f97b38ff4218e2f188fd55a8aab7043556687487c82bbefe0b6dd1a956ecd4
     page: 1
   official_ref: 2e
+- address_id: 2025/document=schedule_1a/line=3
+  logical_key: document=schedule_1a/line=3
+  year: 2025
+  document_id: schedule_1a_2025
+  parent_address_id: 2025/document=schedule_1a
+  kind: line
+  path:
+  - kind: document
+    token: schedule_1a
+  - kind: line
+    token: '3'
+  printed_label: '3'
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_1a_2025
+    source_hash: 64f97b38ff4218e2f188fd55a8aab7043556687487c82bbefe0b6dd1a956ecd4
+    page: 1
+- address_id: 2025/document=schedule_1a/line=3/control=amount
+  logical_key: document=schedule_1a/line=3/control=amount
+  year: 2025
+  document_id: schedule_1a_2025
+  parent_address_id: 2025/document=schedule_1a/line=3
+  kind: control
+  path:
+  - kind: document
+    token: schedule_1a
+  - kind: line
+    token: '3'
+  - kind: control
+    token: amount
+  printed_label: Add lines 1 and 2e
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_1a_2025
+    source_hash: 64f97b38ff4218e2f188fd55a8aab7043556687487c82bbefe0b6dd1a956ecd4
+    page: 1
+  official_ref: '3'
 - address_id: 2025/document=schedule_1a/line=30
   logical_key: document=schedule_1a/line=30
   year: 2025
@@ -1158,7 +1199,7 @@ addresses:
     token: '30'
   - kind: control
     token: amount
-  printed_label: Line 30 - . . . . . . . . . 30 - f2_14
+  printed_label: Qualified passenger vehicle loan interest deduction
   aliases: []
   control_role: amount
   status: pending_review
@@ -1199,7 +1240,7 @@ addresses:
     token: '31'
   - kind: control
     token: amount
-  printed_label: Line 31 - . . . . . . . . . 31 - f2_15
+  printed_label: Amount from line 3
   aliases: []
   control_role: amount
   status: pending_review
@@ -1240,7 +1281,7 @@ addresses:
     token: '32'
   - kind: control
     token: amount
-  printed_label: Line 32 - . . . . . . . . . 32 - f2_16
+  printed_label: $75,000 ($150,000 if married filing jointly)
   aliases: []
   control_role: amount
   status: pending_review
@@ -1281,7 +1322,7 @@ addresses:
     token: '33'
   - kind: control
     token: amount
-  printed_label: Line 33 - . . . . . . . . . 33 - f2_17
+  printed_label: Subtract line 32 from line 31
   aliases: []
   control_role: amount
   status: pending_review
@@ -1322,7 +1363,7 @@ addresses:
     token: '34'
   - kind: control
     token: amount
-  printed_label: Line 34 - . . . . . . . . . 34 - f2_18
+  printed_label: Multiply line 33 by 6% (0.06)
   aliases: []
   control_role: amount
   status: pending_review
@@ -1363,7 +1404,7 @@ addresses:
     token: '35'
   - kind: control
     token: amount
-  printed_label: Line 35 - . . . . . . . . . 35 - f2_19
+  printed_label: Subtract line 34 from $6,000
   aliases: []
   control_role: amount
   status: pending_review
@@ -1404,7 +1445,7 @@ addresses:
     token: 36a
   - kind: control
     token: amount
-  printed_label: Line 36a - . . . . . . . . . 36a - f2_20
+  printed_label: If you have a valid social security number
   aliases: []
   control_role: amount
   status: pending_review
@@ -1445,7 +1486,7 @@ addresses:
     token: 36b
   - kind: control
     token: amount
-  printed_label: Line 36b - 35 . . . . . . . . 36b - f2_21
+  printed_label: If you are married filing jointly
   aliases: []
   control_role: amount
   status: pending_review
@@ -1454,6 +1495,88 @@ addresses:
     source_hash: 64f97b38ff4218e2f188fd55a8aab7043556687487c82bbefe0b6dd1a956ecd4
     page: 2
   official_ref: 36b
+- address_id: 2025/document=schedule_1a/line=37
+  logical_key: document=schedule_1a/line=37
+  year: 2025
+  document_id: schedule_1a_2025
+  parent_address_id: 2025/document=schedule_1a
+  kind: line
+  path:
+  - kind: document
+    token: schedule_1a
+  - kind: line
+    token: '37'
+  printed_label: '37'
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_1a_2025
+    source_hash: 64f97b38ff4218e2f188fd55a8aab7043556687487c82bbefe0b6dd1a956ecd4
+    page: 2
+- address_id: 2025/document=schedule_1a/line=37/control=amount
+  logical_key: document=schedule_1a/line=37/control=amount
+  year: 2025
+  document_id: schedule_1a_2025
+  parent_address_id: 2025/document=schedule_1a/line=37
+  kind: control
+  path:
+  - kind: document
+    token: schedule_1a
+  - kind: line
+    token: '37'
+  - kind: control
+    token: amount
+  printed_label: Enhanced deduction for seniors
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_1a_2025
+    source_hash: 64f97b38ff4218e2f188fd55a8aab7043556687487c82bbefe0b6dd1a956ecd4
+    page: 2
+  official_ref: '37'
+- address_id: 2025/document=schedule_1a/line=38
+  logical_key: document=schedule_1a/line=38
+  year: 2025
+  document_id: schedule_1a_2025
+  parent_address_id: 2025/document=schedule_1a
+  kind: line
+  path:
+  - kind: document
+    token: schedule_1a
+  - kind: line
+    token: '38'
+  printed_label: '38'
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_1a_2025
+    source_hash: 64f97b38ff4218e2f188fd55a8aab7043556687487c82bbefe0b6dd1a956ecd4
+    page: 2
+- address_id: 2025/document=schedule_1a/line=38/control=amount
+  logical_key: document=schedule_1a/line=38/control=amount
+  year: 2025
+  document_id: schedule_1a_2025
+  parent_address_id: 2025/document=schedule_1a/line=38
+  kind: control
+  path:
+  - kind: document
+    token: schedule_1a
+  - kind: line
+    token: '38'
+  - kind: control
+    token: amount
+  printed_label: Add lines 13, 21, 30, and 37
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_1a_2025
+    source_hash: 64f97b38ff4218e2f188fd55a8aab7043556687487c82bbefe0b6dd1a956ecd4
+    page: 2
+  official_ref: '38'
 - address_id: 2025/document=schedule_1a/line=4a
   logical_key: document=schedule_1a/line=4a
   year: 2025
@@ -1486,7 +1609,7 @@ addresses:
     token: 4a
   - kind: control
     token: amount
-  printed_label: Line 4a - . . . . . . . . . 4a - f1_10
+  printed_label: Enter qualified tips included on Form W-2, box 7
   aliases: []
   control_role: amount
   status: pending_review
@@ -1527,7 +1650,7 @@ addresses:
     token: 4b
   - kind: control
     token: amount
-  printed_label: Line 4b - . . . . . . . . . 4b - f1_11
+  printed_label: Qualified tips included on Form 4137, line 1, row A, column (c)
   aliases: []
   control_role: amount
   status: pending_review
@@ -1568,8 +1691,7 @@ addresses:
     token: 4c
   - kind: control
     token: amount
-  printed_label: Line 4c - more than one occupation, see the instructions . . 4c -
-    f1_12
+  printed_label: If you only received qualified tips as an employee
   aliases: []
   control_role: amount
   status: pending_review
@@ -1578,6 +1700,88 @@ addresses:
     source_hash: 64f97b38ff4218e2f188fd55a8aab7043556687487c82bbefe0b6dd1a956ecd4
     page: 1
   official_ref: 4c
+- address_id: 2025/document=schedule_1a/line=5
+  logical_key: document=schedule_1a/line=5
+  year: 2025
+  document_id: schedule_1a_2025
+  parent_address_id: 2025/document=schedule_1a
+  kind: line
+  path:
+  - kind: document
+    token: schedule_1a
+  - kind: line
+    token: '5'
+  printed_label: '5'
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_1a_2025
+    source_hash: 64f97b38ff4218e2f188fd55a8aab7043556687487c82bbefe0b6dd1a956ecd4
+    page: 1
+- address_id: 2025/document=schedule_1a/line=5/control=amount
+  logical_key: document=schedule_1a/line=5/control=amount
+  year: 2025
+  document_id: schedule_1a_2025
+  parent_address_id: 2025/document=schedule_1a/line=5
+  kind: control
+  path:
+  - kind: document
+    token: schedule_1a
+  - kind: line
+    token: '5'
+  - kind: control
+    token: amount
+  printed_label: Qualified tips received in the course of a trade or business
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_1a_2025
+    source_hash: 64f97b38ff4218e2f188fd55a8aab7043556687487c82bbefe0b6dd1a956ecd4
+    page: 1
+  official_ref: '5'
+- address_id: 2025/document=schedule_1a/line=6
+  logical_key: document=schedule_1a/line=6
+  year: 2025
+  document_id: schedule_1a_2025
+  parent_address_id: 2025/document=schedule_1a
+  kind: line
+  path:
+  - kind: document
+    token: schedule_1a
+  - kind: line
+    token: '6'
+  printed_label: '6'
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_1a_2025
+    source_hash: 64f97b38ff4218e2f188fd55a8aab7043556687487c82bbefe0b6dd1a956ecd4
+    page: 1
+- address_id: 2025/document=schedule_1a/line=6/control=amount
+  logical_key: document=schedule_1a/line=6/control=amount
+  year: 2025
+  document_id: schedule_1a_2025
+  parent_address_id: 2025/document=schedule_1a/line=6
+  kind: control
+  path:
+  - kind: document
+    token: schedule_1a
+  - kind: line
+    token: '6'
+  - kind: control
+    token: amount
+  printed_label: Add lines 4c and 5
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_1a_2025
+    source_hash: 64f97b38ff4218e2f188fd55a8aab7043556687487c82bbefe0b6dd1a956ecd4
+    page: 1
+  official_ref: '6'
 - address_id: 2025/document=schedule_1a/line=7
   logical_key: document=schedule_1a/line=7
   year: 2025
@@ -1610,7 +1814,7 @@ addresses:
     token: '7'
   - kind: control
     token: amount
-  printed_label: Line 7 - . . . . . . . . . 7 - f1_15
+  printed_label: Enter the smaller of the amount on line 6 or $25,000
   aliases: []
   control_role: amount
   status: pending_review
@@ -1651,7 +1855,7 @@ addresses:
     token: '8'
   - kind: control
     token: amount
-  printed_label: Line 8 - . . . . . . . . . 8 - f1_16
+  printed_label: Amount from line 3
   aliases: []
   control_role: amount
   status: pending_review
@@ -1692,7 +1896,7 @@ addresses:
     token: '9'
   - kind: control
     token: amount
-  printed_label: Line 9 - . . . . . . . . . 9 - f1_17
+  printed_label: $150,000 ($300,000 if married filing jointly)
   aliases: []
   control_role: amount
   status: pending_review
@@ -1701,3 +1905,178 @@ addresses:
     source_hash: 64f97b38ff4218e2f188fd55a8aab7043556687487c82bbefe0b6dd1a956ecd4
     page: 1
   official_ref: '9'
+- address_id: 2025/document=schedule_1a/section=identity
+  logical_key: document=schedule_1a/section=identity
+  year: 2025
+  document_id: schedule_1a_2025
+  parent_address_id: 2025/document=schedule_1a
+  kind: section
+  path:
+  - kind: document
+    token: schedule_1a
+  - kind: section
+    token: identity
+  printed_label: identity
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_1a_2025
+    source_hash: 64f97b38ff4218e2f188fd55a8aab7043556687487c82bbefe0b6dd1a956ecd4
+    page: 1
+- address_id: 2025/document=schedule_1a/section=identity/control=name
+  logical_key: document=schedule_1a/section=identity/control=name
+  year: 2025
+  document_id: schedule_1a_2025
+  parent_address_id: 2025/document=schedule_1a/section=identity
+  kind: control
+  path:
+  - kind: document
+    token: schedule_1a
+  - kind: section
+    token: identity
+  - kind: control
+    token: name
+  printed_label: Name(s) shown on Form 1040, 1040-SR, or 1040-NR
+  aliases: []
+  control_role: text
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_1a_2025
+    source_hash: 64f97b38ff4218e2f188fd55a8aab7043556687487c82bbefe0b6dd1a956ecd4
+    page: 1
+  official_ref: Header
+- address_id: 2025/document=schedule_1a/section=identity/control=social_security_number
+  logical_key: document=schedule_1a/section=identity/control=social_security_number
+  year: 2025
+  document_id: schedule_1a_2025
+  parent_address_id: 2025/document=schedule_1a/section=identity
+  kind: control
+  path:
+  - kind: document
+    token: schedule_1a
+  - kind: section
+    token: identity
+  - kind: control
+    token: social_security_number
+  printed_label: Your social security number
+  aliases: []
+  control_role: identifier
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_1a_2025
+    source_hash: 64f97b38ff4218e2f188fd55a8aab7043556687487c82bbefe0b6dd1a956ecd4
+    page: 1
+  official_ref: Header
+- address_id: 2025/document=schedule_1a/table=line_22
+  logical_key: document=schedule_1a/table=line_22
+  year: 2025
+  document_id: schedule_1a_2025
+  parent_address_id: 2025/document=schedule_1a
+  kind: table
+  path:
+  - kind: document
+    token: schedule_1a
+  - kind: table
+    token: line_22
+  printed_label: line_22
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_1a_2025
+    source_hash: 64f97b38ff4218e2f188fd55a8aab7043556687487c82bbefe0b6dd1a956ecd4
+    page: 2
+- address_id: 2025/document=schedule_1a/table=line_22/row_template=vehicle
+  logical_key: document=schedule_1a/table=line_22/row_template=vehicle
+  year: 2025
+  document_id: schedule_1a_2025
+  parent_address_id: 2025/document=schedule_1a/table=line_22
+  kind: row_template
+  path:
+  - kind: document
+    token: schedule_1a
+  - kind: table
+    token: line_22
+  - kind: row_template
+    token: vehicle
+  printed_label: vehicle
+  aliases: []
+  control_role: none
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_1a_2025
+    source_hash: 64f97b38ff4218e2f188fd55a8aab7043556687487c82bbefe0b6dd1a956ecd4
+    page: 2
+- address_id: 2025/document=schedule_1a/table=line_22/row_template=vehicle/column=deducted_elsewhere
+  logical_key: document=schedule_1a/table=line_22/row_template=vehicle/column=deducted_elsewhere
+  year: 2025
+  document_id: schedule_1a_2025
+  parent_address_id: 2025/document=schedule_1a/table=line_22/row_template=vehicle
+  kind: column
+  path:
+  - kind: document
+    token: schedule_1a
+  - kind: table
+    token: line_22
+  - kind: row_template
+    token: vehicle
+  - kind: column
+    token: deducted_elsewhere
+  printed_label: Deducted on Schedule C, Schedule E, or Schedule F
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_1a_2025
+    source_hash: 64f97b38ff4218e2f188fd55a8aab7043556687487c82bbefe0b6dd1a956ecd4
+    page: 2
+  official_ref: Line 22a column (ii)
+- address_id: 2025/document=schedule_1a/table=line_22/row_template=vehicle/column=schedule_1a
+  logical_key: document=schedule_1a/table=line_22/row_template=vehicle/column=schedule_1a
+  year: 2025
+  document_id: schedule_1a_2025
+  parent_address_id: 2025/document=schedule_1a/table=line_22/row_template=vehicle
+  kind: column
+  path:
+  - kind: document
+    token: schedule_1a
+  - kind: table
+    token: line_22
+  - kind: row_template
+    token: vehicle
+  - kind: column
+    token: schedule_1a
+  printed_label: Schedule 1-A
+  aliases: []
+  control_role: amount
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_1a_2025
+    source_hash: 64f97b38ff4218e2f188fd55a8aab7043556687487c82bbefe0b6dd1a956ecd4
+    page: 2
+  official_ref: Line 22a column (iii)
+- address_id: 2025/document=schedule_1a/table=line_22/row_template=vehicle/column=vin
+  logical_key: document=schedule_1a/table=line_22/row_template=vehicle/column=vin
+  year: 2025
+  document_id: schedule_1a_2025
+  parent_address_id: 2025/document=schedule_1a/table=line_22/row_template=vehicle
+  kind: column
+  path:
+  - kind: document
+    token: schedule_1a
+  - kind: table
+    token: line_22
+  - kind: row_template
+    token: vehicle
+  - kind: column
+    token: vin
+  printed_label: Vehicle identification number (VIN)
+  aliases: []
+  control_role: identifier
+  status: pending_review
+  evidence:
+  - source_path: config/manifest.yaml#schedule_1a_2025
+    source_hash: 64f97b38ff4218e2f188fd55a8aab7043556687487c82bbefe0b6dd1a956ecd4
+    page: 2
+  official_ref: Line 22a column (i)

@@ -3,8 +3,28 @@ year: 2025
 document_id: schedule_1a_2025
 binding_kind: widget
 bindings:
+- field_name: form1[0].Page1[0].f1_01[0]
+  address_id: 2025/document=schedule_1a/section=identity/control=name
+  widget_type: text
+  page: 1
+  rect:
+  - 36.0
+  - 94.0
+  - 445.65
+  - 108.0
+  status: provisional
+- field_name: form1[0].Page1[0].f1_02[0]
+  address_id: 2025/document=schedule_1a/section=identity/control=social_security_number
+  widget_type: text
+  page: 1
+  rect:
+  - 447.4
+  - 94.0
+  - 576.0
+  - 108.0
+  status: provisional
 - field_name: form1[0].Page1[0].f1_03[0]
-  address_id: 2025/document=schedule_1a/line=11b/control=amount
+  address_id: 2025/document=schedule_1a/line=1/control=amount
   widget_type: text
   page: 1
   rect:
@@ -64,7 +84,7 @@ bindings:
   - 192.0
   status: provisional
 - field_name: form1[0].Page1[0].f1_09[0]
-  address_id: 2025/document=schedule_1a/line=2e/control=amount
+  address_id: 2025/document=schedule_1a/line=3/control=amount
   widget_type: text
   page: 1
   rect:
@@ -103,8 +123,18 @@ bindings:
   - 576.0
   - 396.0
   status: provisional
+- field_name: form1[0].Page1[0].f1_13[0]
+  address_id: 2025/document=schedule_1a/line=5/control=amount
+  widget_type: text
+  page: 1
+  rect:
+  - 504.0
+  - 432.0
+  - 576.0
+  - 444.0
+  status: provisional
 - field_name: form1[0].Page1[0].f1_14[0]
-  address_id: 2025/document=schedule_1a/line=4c/control=amount
+  address_id: 2025/document=schedule_1a/line=6/control=amount
   widget_type: text
   page: 1
   rect:
@@ -214,7 +244,7 @@ bindings:
   - 660.0
   status: provisional
 - field_name: form1[0].Page1[0].f1_25[0]
-  address_id: 2025/document=schedule_1a/line=14c/control=amount
+  address_id: 2025/document=schedule_1a/line=15/control=amount
   widget_type: text
   page: 1
   rect:
@@ -283,8 +313,68 @@ bindings:
   - 576.0
   - 756.0
   status: provisional
+- field_name: form1[0].Page2[0].Table_Line22[0].Line22a[0].VIN-1_Comb[0].f2_01[0]
+  address_id: 2025/document=schedule_1a/table=line_22/row_template=vehicle/column=vin
+  widget_type: text
+  page: 2
+  rect:
+  - 108.0
+  - 159.0
+  - 380.0
+  - 171.0
+  status: provisional
+- field_name: form1[0].Page2[0].Table_Line22[0].Line22a[0].f2_02[0]
+  address_id: 2025/document=schedule_1a/table=line_22/row_template=vehicle/column=deducted_elsewhere
+  widget_type: text
+  page: 2
+  rect:
+  - 432.0
+  - 162.0
+  - 503.25
+  - 174.0
+  status: provisional
+- field_name: form1[0].Page2[0].Table_Line22[0].Line22a[0].f2_03[0]
+  address_id: 2025/document=schedule_1a/table=line_22/row_template=vehicle/column=schedule_1a
+  widget_type: text
+  page: 2
+  rect:
+  - 504.0
+  - 162.0
+  - 576.0
+  - 174.0
+  status: provisional
+- field_name: form1[0].Page2[0].Table_Line22[0].Line22b[0].VIN-2_Comb[0].f2_04[0]
+  address_id: 2025/document=schedule_1a/table=line_22/row_template=vehicle/column=vin
+  widget_type: text
+  page: 2
+  rect:
+  - 108.0
+  - 177.0
+  - 380.0
+  - 189.0
+  status: provisional
+- field_name: form1[0].Page2[0].Table_Line22[0].Line22b[0].f2_05[0]
+  address_id: 2025/document=schedule_1a/table=line_22/row_template=vehicle/column=deducted_elsewhere
+  widget_type: text
+  page: 2
+  rect:
+  - 432.0
+  - 180.0
+  - 503.25
+  - 192.0
+  status: provisional
+- field_name: form1[0].Page2[0].Table_Line22[0].Line22b[0].f2_06[0]
+  address_id: 2025/document=schedule_1a/table=line_22/row_template=vehicle/column=schedule_1a
+  widget_type: text
+  page: 2
+  rect:
+  - 504.0
+  - 180.0
+  - 576.0
+  - 192.0
+  status: provisional
 - field_name: form1[0].Page2[0].f2_07[0]
-  address_id: 2025/document=schedule_1a/line=22a/control=amount
+  address_id: 2025/document=schedule_1a/line=23/control=amount
   widget_type: text
   page: 2
   rect:
@@ -434,7 +524,7 @@ bindings:
   - 456.0
   status: provisional
 - field_name: form1[0].Page2[0].f2_22[0]
-  address_id: 2025/document=schedule_1a/line=36b/control=amount
+  address_id: 2025/document=schedule_1a/line=37/control=amount
   widget_type: text
   page: 2
   rect:
@@ -444,7 +534,7 @@ bindings:
   - 468.0
   status: provisional
 - field_name: form1[0].Page2[0].f2_23[0]
-  address_id: 2025/document=schedule_1a/line=13c/control=amount
+  address_id: 2025/document=schedule_1a/line=38/control=amount
   widget_type: text
   page: 2
   rect:

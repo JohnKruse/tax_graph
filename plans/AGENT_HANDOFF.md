@@ -14,10 +14,15 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## Current state (2026-07-20)
 
-**BALL: CODEX - A9f COMPLETE LOCALLY; NEXT A9g (Schedule 1-A, 54).** A9f's
+**BALL: CODEX - A9g COMPLETE LOCALLY; NEXT A9h (Schedule 2, 63).** Schedule 1-A's
+54-control campaign is authored, promoted, fully verified, and committed locally; no
+push. A9f's
 authorized Schedule 1 remaps, modeled totals, four disposition corrections, goldens,
 position-verified filled-PDF echo, and 73-control campaign are complete with the full
-floor green; see the latest From Worker entry. WORKFLOW CHANGE (John, 2026-07-20):
+floor green; see the latest From Worker entry. ARCHITECT-VERIFIED 2026-07-20:
+independent reruns of real preflight (`legacy_mined=448`, Schedule 1 zero legacy),
+`validate 2025`, the 39 focused tests, the four authorized mappings in the committed
+field map, ASCII, and whitespace - all green on commit `29eeeed`. WORKFLOW CHANGE (John, 2026-07-20):
 headless `codex exec` runs are retired for now. Interactive Worker sessions request
 escalated approval for exact Python commands when the sandbox denies process creation.
 For A9g..A9x, a geometry-proven single-cell placement shift may be fixed in-commit
@@ -27,7 +32,8 @@ under the five pinned conditions; anything beyond that stops. Continue Schedule 
 ENDS with A9 per guiding invariant 6, rollover seam 5, and A9 contract item 6. Local
 commits only, no push; sequential partitions only; SESSION BUDGET RULES apply. A9a
 `476e7ee`, A9b `0ec62ae`, A9c `82e07aa`+`1fb34b7`+`1e55e72`, A9d
-`e0d367f`+`1c03019`, A9e `492698f`. Gate A open through A13; S17+ blocked.
+`e0d367f`+`1c03019`, A9e `492698f`, A9f `29eeeed`. Gate A open through A13; S17+
+blocked.
 Canary: Fresh Eyes.
 (Whoever finishes a turn: update this BALL line - it is the first thing read.)
 
@@ -342,6 +348,82 @@ sequenced after M15 or when TY2026 docs drop.
   the A9c marker; either way the full floor reruns and legacy counts must not regress.
 
 ## From Worker
+- **A9g COMPLETE; full floor green; one local commit created (Codex GPT-5,
+  2026-07-20):** Audited all 54 Schedule 1-A controls against the local official
+  two-page PDF before authoring. No promoted mapping shift or graph-semantic change was
+  found, so no narrow remap was needed. Authored 54/54 controls with zero exemptions:
+  48 single line/header templates plus the line 22 vehicle table collapsed to three
+  authored columns and six row-qualified physical bindings. Regenerated the address,
+  widget-binding, node-binding, field-map address links, reference, and node-geometry
+  artifacts with LF serialization. Added exhaustive number-plus-caption adjacency
+  coverage for all 46 numbered line controls and a deterministic `line 22 row a/b`
+  physical qualifier in the review manifest. Schedule 1-A is zero legacy.
+
+  Verification: focused campaign/disposition set 41 passed; final focused regression
+  22 passed; M15 partitions 14 + 28 + 6 manifest + 2 preflight + 24 semantics + 13
+  verdict/geometry/core + 1 navigation + 3 page evidence + 6 server + 4 write API +
+  11 E2E = 112 passed. Non-M15 partitions: 98 passed/1 skipped + 134/2 + 73/3 + 60
+  = 365 passed, 6 skipped. Real preflight passed at 3,243 units with
+  `authored_address=1519`, `authored_object=1330`, `legacy_mined=394`; Schedule 1-A
+  is absent from the legacy list. `tax_graph.cli validate 2025`, ASCII, and
+  `git diff --check` are green. The previously timed-out aggregate commands were not
+  counted; all listed results came from completed sequential partitions. Pending only:
+  create the single local A9g commit. No push.
+- **A9g QUOTA STOP - implemented, focused green, no commit (Codex GPT-5,
+  2026-07-20):** The approval reviewer rejected the exact command
+  `Stop-Process -Id 12816,17988 -Force` with: execution usage limit exhausted until
+  2026-07-25 08:23. Per the pinned budget rule, stopped immediately without a
+  workaround or any further command. Preserve the dirty worktree. Implementation is
+  complete: 54/54 Schedule 1-A controls authored, zero exemptions, 23 node bindings,
+  three line-22 vehicle table templates with six row-qualified physical widgets, field
+  address links and node geometry regenerated with LF. No promoted mapping shift or
+  graph-semantic change was found. The preflight-discovered duplicate line-22 locator
+  was fixed with deterministic `line 22 row a/b` qualifiers and a focused regression.
+
+  Counted green verification: initial focused campaign/disposition set 41 passed;
+  row-qualifier regression 1 passed; M15 address partitions 14 + 28; manifest tests
+  3 + 1 + 1 + 1 (all six green); preflight seeded-bad test 1 and repaired real
+  preflight test 1; schemas/scope/semantics 24; verdict/geometry/core workbench 13;
+  navigation 1. The real-preflight test proves the ratchet green at the current
+  worktree, but its exact CLI report still remains to be run and recorded. Uncounted
+  timed-out aggregate attempts were not treated as green. The page-evidence file
+  partition timed out after six minutes and left PIDs 12816 and 17988; no result from
+  its three tests is counted.
+
+  Pending floor: if still present, terminate only PIDs 12816 and 17988; run the three
+  `test_workbench_page_evidence_m15.py` tests individually, then
+  `test_workbench_server_m15.py`, `test_workbench_write_api_m15.py`, and `tests/e2e`
+  as sequential M15 partitions; run all four sorted-file non-M15 partitions; run real
+  `workbench.cli preflight --year 2025` and record Schedule 1-A zero plus total
+  `legacy_mined < 448`; run `tax_graph.cli validate 2025`, ASCII, and
+  `git diff --check`. Then update the BALL and From Worker entry and create exactly one
+  local A9g commit. No commit and no push occurred this session.
+- **A9g PRE-FLOOR CHECKPOINT - Schedule 1-A authored, focused green (Codex GPT-5,
+  2026-07-20):** Audited all 54 controls against the local official two-page PDF
+  before campaign changes. Geometry and printed rows confirm the 23 promoted mappings
+  already target their true cells; no narrow remap or graph-semantic edit is needed.
+  The audit did expose mined identity/address defects, including line 1 labeled 11b,
+  line 3 sharing line 2e, line 23 labeled 22a, line 37 sharing line 36b, and line 38
+  labeled 13c. Authored 54/54 controls with zero exemptions: 48 single line/header
+  templates plus the line 22 vehicle table collapsed to three authored columns and six
+  row-qualified physical bindings. Regenerated registry, 54 widget bindings, 23 node
+  bindings, field-map address links, and node geometry with LF serialization. Added
+  exhaustive number-plus-caption adjacency coverage for all 46 numbered line controls.
+  Focused campaign + field-disposition/triangle tests: 41 passed. Pending: pinned
+  sequential M15 and non-M15 partitions, real preflight requiring Schedule 1-A zero and
+  total `legacy_mined < 448`, `validate 2025`, ASCII, `git diff --check`, final handoff,
+  and one local commit. No push.
+- **SESSION START / PRE-AUDIT CHECKPOINT - A9g Schedule 1-A only (Codex GPT-5,
+  2026-07-20):** Model is GPT-5. Effort level is high. No numeric usage or quota
+  indicator is exposed; session context is healthy. The single step attempted this
+  session is A9g: audit and author all 54 Schedule 1-A controls from the local official
+  PDF, run the complete pinned sequential floor, and create one local commit with
+  Schedule 1-A at zero legacy and total `legacy_mined < 448`. Read the BALL, session
+  budget rules, extended-run authorization, and pinned A9 contract including the
+  standing narrow-remap conditions. No campaign code or verification command has run.
+  Pending: official-PDF inventory audit, authored address/binding campaign, focused
+  checks, pre-floor checkpoint, sequential full floor, local commit, and final BALL
+  update. No push.
 - **A9f Schedule 1 COMPLETE; full floor green; local commit pending this handoff
   update (Codex GPT-5, 2026-07-20):** Completed the authorized physical-placement
   correction only: 8z -> `f1_36`, modeled line 9 -> `f1_37`, 24z -> `f2_28`, and

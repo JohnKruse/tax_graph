@@ -114,7 +114,7 @@ bindings:
   role: value
   status: exact
 - node_id: schedule_1a_2025_part_vi_line_38
-  address_id: 2025/document=schedule_1a/line=13c/control=amount
-  expected_official_ref: 13c
+  address_id: 2025/document=schedule_1a/line=38/control=amount
+  expected_official_ref: '38'
   role: value
   status: exact

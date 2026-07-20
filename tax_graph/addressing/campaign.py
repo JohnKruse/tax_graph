@@ -141,6 +141,8 @@ def _control_evidence(item: dict[str, Any], mapping: dict[str, Any] | None,
         return _form_1040_control_evidence(item, mapping)
     if document_id == "schedule_1_2025":
         return _schedule_1_control_evidence(item)
+    if document_id == "schedule_1a_2025":
+        return _schedule_1a_control_evidence(item)
     if document_id == "form_8949_2025":
         return _form_8949_control_evidence(item, mapping, disposition)
     if document_id == "form_w2_2025":
@@ -315,6 +317,107 @@ def _schedule_1_control_evidence(item: dict[str, Any]) -> dict[str, Any] | None:
             "checkbox",
         )
     return None
+
+
+def _schedule_1a_control_evidence(item: dict[str, Any]) -> dict[str, Any] | None:
+    """Project every Schedule 1-A widget through its printed 2025 identity."""
+    field_name = str(item["field_name"])
+    leaf = field_name.rsplit(".", 1)[-1]
+    header_specs = {
+        "f1_01[0]": ("name", "Name(s) shown on Form 1040, 1040-SR, or 1040-NR", "text"),
+        "f1_02[0]": ("social_security_number", "Your social security number", "identifier"),
+    }
+    if leaf in header_specs:
+        token, label, role = header_specs[leaf]
+        return _campaign_control(
+            item,
+            [{"kind": "section", "token": "identity"}, {"kind": "control", "token": token}],
+            "Header",
+            label,
+            role,
+        )
+
+    table_match = re.search(r"Line22([ab])\[0\]", field_name)
+    if table_match:
+        row = table_match.group(1)
+        column, label, role = {
+            "f2_01[0]": ("vin", "Vehicle identification number (VIN)", "identifier"),
+            "f2_02[0]": ("deducted_elsewhere", "Deducted on Schedule C, Schedule E, or Schedule F", "amount"),
+            "f2_03[0]": ("schedule_1a", "Schedule 1-A", "amount"),
+            "f2_04[0]": ("vin", "Vehicle identification number (VIN)", "identifier"),
+            "f2_05[0]": ("deducted_elsewhere", "Deducted on Schedule C, Schedule E, or Schedule F", "amount"),
+            "f2_06[0]": ("schedule_1a", "Schedule 1-A", "amount"),
+        }[leaf]
+        return _campaign_control(
+            item,
+            [
+                {"kind": "table", "token": "line_22"},
+                {"kind": "row_template", "token": "vehicle"},
+                {"kind": "column", "token": column},
+            ],
+            f"Line 22{row} column ({'i' if column == 'vin' else 'ii' if column == 'deducted_elsewhere' else 'iii'})",
+            label,
+            role,
+        )
+
+    line_specs = {
+        "f1_03[0]": ("1", "Amount from Form 1040, 1040-SR, or 1040-NR, line 11b"),
+        "f1_04[0]": ("2a", "Income from Puerto Rico that you excluded"),
+        "f1_05[0]": ("2b", "Amount from Form 2555, line 45"),
+        "f1_06[0]": ("2c", "Amount from Form 2555, line 50"),
+        "f1_07[0]": ("2d", "Amount from Form 4563, line 15"),
+        "f1_08[0]": ("2e", "Add lines 2a, 2b, 2c, and 2d"),
+        "f1_09[0]": ("3", "Add lines 1 and 2e"),
+        "f1_10[0]": ("4a", "Enter qualified tips included on Form W-2, box 7"),
+        "f1_11[0]": ("4b", "Qualified tips included on Form 4137, line 1, row A, column (c)"),
+        "f1_12[0]": ("4c", "If you only received qualified tips as an employee"),
+        "f1_13[0]": ("5", "Qualified tips received in the course of a trade or business"),
+        "f1_14[0]": ("6", "Add lines 4c and 5"),
+        "f1_15[0]": ("7", "Enter the smaller of the amount on line 6 or $25,000"),
+        "f1_16[0]": ("8", "Amount from line 3"),
+        "f1_17[0]": ("9", "$150,000 ($300,000 if married filing jointly)"),
+        "f1_18[0]": ("10", "Subtract line 9 from line 8"),
+        "f1_19[0]": ("11", "Divide line 10 by $1,000"),
+        "f1_20[0]": ("12", "Multiply line 11 by $100"),
+        "f1_21[0]": ("13", "Qualified tips deduction"),
+        "f1_22[0]": ("14a", "Qualified overtime compensation included in Form W-2, box 1"),
+        "f1_23[0]": ("14b", "Qualified overtime compensation included in Form 1099-NEC, box 1, or Form 1099-MISC, box 3"),
+        "f1_24[0]": ("14c", "Add lines 14a and 14b"),
+        "f1_25[0]": ("15", "Enter the smaller of the amount on line 14c or $12,500"),
+        "f1_26[0]": ("16", "Amount from line 3"),
+        "f1_27[0]": ("17", "$150,000 ($300,000 if married filing jointly)"),
+        "f1_28[0]": ("18", "Subtract line 17 from line 16"),
+        "f1_29[0]": ("19", "Divide line 18 by $1,000"),
+        "f1_30[0]": ("20", "Multiply line 19 by $100"),
+        "f1_31[0]": ("21", "Qualified overtime compensation deduction"),
+        "f2_07[0]": ("23", "Add lines 22a and 22b, column (iii)"),
+        "f2_08[0]": ("24", "Enter the smaller of the amount on line 23 or $10,000"),
+        "f2_09[0]": ("25", "Amount from line 3"),
+        "f2_10[0]": ("26", "$100,000 ($200,000 if married filing jointly)"),
+        "f2_11[0]": ("27", "Subtract line 26 from line 25"),
+        "f2_12[0]": ("28", "Divide line 27 by $1,000"),
+        "f2_13[0]": ("29", "Multiply line 28 by $200"),
+        "f2_14[0]": ("30", "Qualified passenger vehicle loan interest deduction"),
+        "f2_15[0]": ("31", "Amount from line 3"),
+        "f2_16[0]": ("32", "$75,000 ($150,000 if married filing jointly)"),
+        "f2_17[0]": ("33", "Subtract line 32 from line 31"),
+        "f2_18[0]": ("34", "Multiply line 33 by 6% (0.06)"),
+        "f2_19[0]": ("35", "Subtract line 34 from $6,000"),
+        "f2_20[0]": ("36a", "If you have a valid social security number"),
+        "f2_21[0]": ("36b", "If you are married filing jointly"),
+        "f2_22[0]": ("37", "Enhanced deduction for seniors"),
+        "f2_23[0]": ("38", "Add lines 13, 21, 30, and 37"),
+    }
+    if leaf not in line_specs:
+        return None
+    line, label = line_specs[leaf]
+    return _campaign_control(
+        item,
+        [{"kind": "line", "token": line}, {"kind": "control", "token": "amount"}],
+        line,
+        label,
+        "amount",
+    )
 
 
 def _form_1040_control_evidence(

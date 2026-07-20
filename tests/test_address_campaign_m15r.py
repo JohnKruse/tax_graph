@@ -33,6 +33,11 @@ def schedule_1_campaign():
     return build_document_addresses(ROOT, "schedule_1_2025")
 
 
+@pytest.fixture(scope="module")
+def schedule_1a_campaign():
+    return build_document_addresses(ROOT, "schedule_1a_2025")
+
+
 @pytest.mark.m15
 def test_schedule_1_campaign_authors_every_widget_and_corrected_totals(
     schedule_1_campaign,
@@ -74,6 +79,69 @@ def test_schedule_1_campaign_authors_every_widget_and_corrected_totals(
     assert schedule_1_campaign["field_addresses"][
         "topmostSubform[0].Page2[0].f2_29[0]"
     ] == "2025/document=schedule_1/line=25/control=amount"
+
+
+@pytest.mark.m15
+def test_schedule_1a_campaign_authors_every_widget(schedule_1a_campaign) -> None:
+    assert schedule_1a_campaign["coverage"] == {
+        "inventory": 54,
+        "addressed_widgets": 54,
+        "exempt_widgets": 0,
+        "node_bindings": 23,
+        "references": 0,
+    }
+    addresses = {
+        item["address_id"]: item for item in schedule_1a_campaign["registry"]["addresses"]
+    }
+    assert addresses[
+        "2025/document=schedule_1a/line=3/control=amount"
+    ]["printed_label"] == "Add lines 1 and 2e"
+    assert addresses[
+        "2025/document=schedule_1a/line=38/control=amount"
+    ]["printed_label"] == "Add lines 13, 21, 30, and 37"
+    assert addresses[
+        "2025/document=schedule_1a/table=line_22/row_template=vehicle/column=vin"
+    ]["printed_label"] == "Vehicle identification number (VIN)"
+    assert schedule_1a_campaign["field_addresses"][
+        "form1[0].Page1[0].f1_03[0]"
+    ] == "2025/document=schedule_1a/line=1/control=amount"
+    assert schedule_1a_campaign["field_addresses"][
+        "form1[0].Page2[0].f2_07[0]"
+    ] == "2025/document=schedule_1a/line=23/control=amount"
+    assert schedule_1a_campaign["field_addresses"][
+        "form1[0].Page2[0].f2_23[0]"
+    ] == "2025/document=schedule_1a/line=38/control=amount"
+
+
+@pytest.mark.m15
+def test_schedule_1a_numbered_lines_have_adjacent_number_and_caption(
+    schedule_1a_campaign,
+) -> None:
+    """Cross-check every authored line number and caption against the official PDF."""
+    addresses = {
+        item["address_id"]: item for item in schedule_1a_campaign["registry"]["addresses"]
+    }
+    binding_by_address = {
+        item["address_id"]: item for item in schedule_1a_campaign["widget_bindings"]["bindings"]
+    }
+    pdf = fitz.open(ROOT / ".cache/raw/2025/schedule_1a_2025.pdf")
+    checked = set()
+    for address_id, address in addresses.items():
+        match = re.search(r"/line=([^/]+)/control=amount$", address_id)
+        if not match:
+            continue
+        line = match.group(1)
+        binding = binding_by_address[address_id]
+        page = pdf[binding["page"] - 1]
+        widget = fitz.Rect(binding["rect"])
+        number_matches = _caption_rects(page, line)
+        caption_matches = _caption_rects(page, address["printed_label"])
+        assert number_matches, f"missing printed line number {line!r} for {address_id}"
+        assert caption_matches, f"missing printed caption for {address_id}"
+        assert min(_rect_distance(widget, item) for item in number_matches) <= 420
+        assert min(_rect_distance(widget, item) for item in caption_matches) <= 420
+        checked.add(line)
+    assert len(checked) == 46
 
 
 @pytest.mark.m15

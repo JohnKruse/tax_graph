@@ -6,7 +6,7 @@ mappings:
   field_name: form1[0].Page2[0].f2_23[0]
   format: dollars
   node_id: schedule_1a_2025_part_vi_line_38
-  address_id: 2025/document=schedule_1a/line=13c/control=amount
+  address_id: 2025/document=schedule_1a/line=38/control=amount
 - slot: schedule_1a_2025_part_i_line_2a
   field_name: form1[0].Page1[0].f1_04[0]
   format: dollars
@@ -159,6 +159,7 @@ field_dispositions:
     and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for form1[0].Page1[0].f1_01[0].
+  address_id: 2025/document=schedule_1a/section=identity/control=name
 - field_name: form1[0].Page1[0].f1_02[0]
   label: f1_02
   population_policy: unsupported
@@ -169,6 +170,7 @@ field_dispositions:
     and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for form1[0].Page1[0].f1_02[0].
+  address_id: 2025/document=schedule_1a/section=identity/control=social_security_number
 - field_name: form1[0].Page1[0].f1_03[0]
   label: Line 11b - . . . . . . . . . 1 - f1_03
   population_policy: unsupported
@@ -179,7 +181,7 @@ field_dispositions:
     and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for form1[0].Page1[0].f1_03[0].
-  address_id: 2025/document=schedule_1a/line=11b/control=amount
+  address_id: 2025/document=schedule_1a/line=1/control=amount
 - field_name: form1[0].Page1[0].f1_04[0]
   label: Line 2a - excluded . . . . . . . . 2a - f1_04
   population_policy: user_entered
@@ -240,7 +242,7 @@ field_dispositions:
     and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for form1[0].Page1[0].f1_09[0].
-  address_id: 2025/document=schedule_1a/line=2e/control=amount
+  address_id: 2025/document=schedule_1a/line=3/control=amount
 - field_name: form1[0].Page1[0].f1_10[0]
   label: Line 4a - . . . . . . . . . 4a - f1_10
   population_policy: unsupported
@@ -280,6 +282,7 @@ field_dispositions:
     and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for form1[0].Page1[0].f1_13[0].
+  address_id: 2025/document=schedule_1a/line=5/control=amount
 - field_name: form1[0].Page1[0].f1_14[0]
   label: Line 4c - . . . . . . . . . 6 - f1_14
   population_policy: unsupported
@@ -290,7 +293,7 @@ field_dispositions:
     and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for form1[0].Page1[0].f1_14[0].
-  address_id: 2025/document=schedule_1a/line=4c/control=amount
+  address_id: 2025/document=schedule_1a/line=6/control=amount
 - field_name: form1[0].Page1[0].f1_15[0]
   label: Line 7 - . . . . . . . . . 7 - f1_15
   population_policy: user_entered
@@ -387,7 +390,7 @@ field_dispositions:
     and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for form1[0].Page1[0].f1_25[0].
-  address_id: 2025/document=schedule_1a/line=14c/control=amount
+  address_id: 2025/document=schedule_1a/line=15/control=amount
 - field_name: form1[0].Page1[0].f1_26[0]
   label: Line 16 - . . . . . . . . . 16 - f1_26
   population_policy: user_entered
@@ -439,6 +442,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for form1[0].Page2[0].Table_Line22[0].Line22a[0].VIN-1_Comb[0].f2_01[0].
+  address_id: 2025/document=schedule_1a/table=line_22/row_template=vehicle/column=vin
 - field_name: form1[0].Page2[0].Table_Line22[0].Line22a[0].f2_02[0]
   label: Line a - a - f2_02
   population_policy: unsupported
@@ -449,6 +453,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for form1[0].Page2[0].Table_Line22[0].Line22a[0].f2_02[0].
+  address_id: 2025/document=schedule_1a/table=line_22/row_template=vehicle/column=deducted_elsewhere
 - field_name: form1[0].Page2[0].Table_Line22[0].Line22a[0].f2_03[0]
   label: Line a - a - f2_03
   population_policy: unsupported
@@ -459,6 +464,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for form1[0].Page2[0].Table_Line22[0].Line22a[0].f2_03[0].
+  address_id: 2025/document=schedule_1a/table=line_22/row_template=vehicle/column=schedule_1a
 - field_name: form1[0].Page2[0].Table_Line22[0].Line22b[0].VIN-2_Comb[0].f2_04[0]
   label: Line b - b - f2_04
   population_policy: unsupported
@@ -469,6 +475,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for form1[0].Page2[0].Table_Line22[0].Line22b[0].VIN-2_Comb[0].f2_04[0].
+  address_id: 2025/document=schedule_1a/table=line_22/row_template=vehicle/column=vin
 - field_name: form1[0].Page2[0].Table_Line22[0].Line22b[0].f2_05[0]
   label: Line b - b - f2_05
   population_policy: unsupported
@@ -479,6 +486,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for form1[0].Page2[0].Table_Line22[0].Line22b[0].f2_05[0].
+  address_id: 2025/document=schedule_1a/table=line_22/row_template=vehicle/column=deducted_elsewhere
 - field_name: form1[0].Page2[0].Table_Line22[0].Line22b[0].f2_06[0]
   label: Line b - b - f2_06
   population_policy: unsupported
@@ -489,6 +497,7 @@ field_dispositions:
     blank and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for form1[0].Page2[0].Table_Line22[0].Line22b[0].f2_06[0].
+  address_id: 2025/document=schedule_1a/table=line_22/row_template=vehicle/column=schedule_1a
 - field_name: form1[0].Page2[0].f2_07[0]
   label: Line 22a - . . . . . . . . . 23 - f2_07
   population_policy: unsupported
@@ -499,7 +508,7 @@ field_dispositions:
     and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for form1[0].Page2[0].f2_07[0].
-  address_id: 2025/document=schedule_1a/line=22a/control=amount
+  address_id: 2025/document=schedule_1a/line=23/control=amount
 - field_name: form1[0].Page2[0].f2_08[0]
   label: Line 24 - . . . . . . . . . 24 - f2_08
   population_policy: user_entered
@@ -614,10 +623,10 @@ field_dispositions:
     and reports the unsupported filing field.
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for form1[0].Page2[0].f2_22[0].
-  address_id: 2025/document=schedule_1a/line=36b/control=amount
+  address_id: 2025/document=schedule_1a/line=37/control=amount
 - field_name: form1[0].Page2[0].f2_23[0]
   label: Line 13c - . . . . . . . . . 38 - f2_23
   population_policy: computed
   value_format: dollars
   node_id: schedule_1a_2025_part_vi_line_38
-  address_id: 2025/document=schedule_1a/line=13c/control=amount
+  address_id: 2025/document=schedule_1a/line=38/control=amount

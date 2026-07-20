@@ -384,6 +384,9 @@ def _physical_qualifier(
             if address_id.startswith(prefix) and field_number in field_range:
                 parts.append(f"state row {1 if field_number % 2 else 2}")
                 break
+    schedule_1a_row = re.search(r"\.Line22([ab])\[", field_name)
+    if address_id.startswith("2025/document=schedule_1a/table=line_22/") and schedule_1a_row:
+        parts.append(f"line 22 row {schedule_1a_row.group(1)}")
     row_slot = repeatable.get("row_slot") if isinstance(repeatable, dict) else None
     row_match = re.search(r"\.(?:Body)?Row(\d+)\[", field_name)
     if row_slot is not None:
