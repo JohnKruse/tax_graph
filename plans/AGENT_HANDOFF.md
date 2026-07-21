@@ -14,32 +14,36 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## Current state (2026-07-20)
 
-**BALL: ARCHITECT - A9h BLOCKED ON SCHEDULE 2 PROMOTED NODE SEMANTICS.** The
-official-PDF audit found `schedule_2_2025_part_i_line_1` mapped to `f1_15`, the printed
-line 4 amount cell, even though the node is the non-amount line 1 `Additions to tax`
-heading. This is beyond a geometry-backed single-cell shift and requires a ruling under
-the pinned stop condition. No campaign code or promoted artifacts were changed. See the
-latest From Worker entry for geometry and the separate authorized-shift candidate.
-Schedule 1-A's
-54-control campaign is authored, promoted, fully verified, and committed locally; no
-push. A9f's
-authorized Schedule 1 remaps, modeled totals, four disposition corrections, goldens,
-position-verified filled-PDF echo, and 73-control campaign are complete with the full
-floor green; see the latest From Worker entry. ARCHITECT-VERIFIED 2026-07-20:
-independent reruns of real preflight (`legacy_mined=448`, Schedule 1 zero legacy),
-`validate 2025`, the 39 focused tests, the four authorized mappings in the committed
-field map, ASCII, and whitespace - all green on commit `29eeeed`. WORKFLOW CHANGE (John, 2026-07-20):
-headless `codex exec` runs are retired for now. Interactive Worker sessions request
-escalated approval for exact Python commands when the sandbox denies process creation.
-For A9g..A9x, a geometry-proven single-cell placement shift may be fixed in-commit
-under the five pinned conditions; anything beyond that stops. Continue Schedule 1-A
-54, Schedule 2 63, Schedule 3 37, Schedule A 33, Schedule B 72, Schedule D 55, Form
-2441 72, Form 6251 62; then A9z, A10, A11, A6 - HARD STOP before A12. Hand authoring
-ENDS with A9 per guiding invariant 6, rollover seam 5, and A9 contract item 6. Local
-commits only, no push; sequential partitions only; SESSION BUDGET RULES apply. A9a
-`476e7ee`, A9b `0ec62ae`, A9c `82e07aa`+`1fb34b7`+`1e55e72`, A9d
-`e0d367f`+`1c03019`, A9e `492698f`, A9f `29eeeed`. Gate A open through A13; S17+
-blocked.
+**BALL: ARCHITECT - A9 HAND CAMPAIGN PAUSED AT A9h; PIVOT TO THE FIELD-IDENTITY
+PIPELINE (John, 2026-07-21).** The Schedule 2 audit surfaced a CONFIRMED
+extraction/promotion defect (not a placement shift): the heading node
+`schedule_2_2025_part_i_line_1` ("Additions to tax:", citation-confirmed) is mapped
+as a currency cell onto `f1_15`, which the PDF's own `Line4_ReadOrder` grouping +
+Form 4361/4029 exemption checkboxes prove is LINE 4 (Self-employment tax); the whole
+Part I far-right column is mis-attributed (`f1_13`=line 3 labeled "line 1z/line 17",
+`f1_11`=line 1z total, Line 4 exemption boxes labeled "Line 1"), and the line 1z
+total has NO node. Full verified evidence + ruling in the From Architect entry below.
+John's decision: STOP hand-authoring forms one at a time and FIX THE PIPELINE - build
+the structure-first field-identity resolver + fail-closed structural validators that
+A9 has been approximating by hand, with Schedule 2 Part I as the acceptance exemplar.
+This is rollover seam 5 / guiding invariant 6 pulled forward, not a detour. A9a-A9g
+(9 of 15 forms, `legacy_mined` 1443->394) STAND as the regression corpus the resolver
+must reproduce; A9h..A9z, A10, A11, A6 are PAUSED, not cancelled. John chose the FULL
+scope: fix BOTH layers - semantic extraction typing AND field-identity binding.
+Architect DRAFTED the phase: `plans/PHASE_M16.md` (canary Straight Line) + milestone
+pointer in `docs/engineering-plan.md`; first Worker task is M16-S1 (read-only
+characterization of the Schedule 2 defect turned into an xfail acceptance fixture, no
+code changes). RESOLVED (John, 2026-07-21): M16 is the ENGINE that finishes the
+remaining forms; the A9h..A9z hand campaign is RETIRED/superseded by M16 (marked in
+`plans/PHASE_M15.md`), and Gate A is DECOUPLED from remaining-form completion - it
+closes on the workbench + forms already done, the pipeline finishes the rest into the
+same surface. NEXT: launch M16-S1; no per-form hand authoring resumes. Committed campaign work
+is unchanged and unpushed. WORKFLOW: headless `codex exec` retired; interactive Worker
+sessions launched by John pasting an Architect prompt, escalate approval for denied
+commands. A9a `476e7ee`, A9b `0ec62ae`, A9c `82e07aa`+`1fb34b7`+`1e55e72`, A9d
+`e0d367f`+`1c03019`, A9e `492698f`, A9f `29eeeed`, A9g `983303f`
+(Architect-verified: preflight `legacy_mined=394`, validate, 48 focused tests, static
+gates all green). Gate A open through A13; S17+ blocked.
 Canary: Fresh Eyes.
 (Whoever finishes a turn: update this BALL line - it is the first thing read.)
 
@@ -139,25 +143,7 @@ sequenced after M15 or when TY2026 docs drop.
   and the Step-5 record-hash ordering fix. Step 2's live pass was John + Architect.
 
 ## Open for Architect
-- **A9h RULING REQUIRED - Schedule 2 wrong node semantics:** The promoted mapping
-  `schedule_2_2025_part_i_line_1 -> f1_15` targets the line 4 amount widget at page 1
-  rect `(504.0, 468.0, 576.0, 480.0)`. The official PDF prints line 1 as the `Additions
-  to tax` container heading with child amounts 1a-1y and total 1z; it has no line 1
-  amount cell. `f1_15` is horizontally in the final amount column and vertically
-  adjacent to the printed line 4 `Self-employment tax` row. The graph node's own label
-  is `Line 1: Additions to tax:`. This is not an equivalent one-cell placement shift:
-  correcting it would require deciding whether the extracted line-1 node is invalid,
-  should be excluded, or was intended to represent modeled line 4. Please rule on the
-  node/mapping disposition. The Worker did not infer or alter graph semantics.
-
-  A separate placement defect is geometry-proven and appears eligible for the standing
-  narrow-remap authorization once the semantic block is ruled: modeled line 17z maps
-  to `f2_21` at `(504.0, 516.0, 576.0, 528.0)`, the printed line 18 total cell; its true
-  amount widget is `f2_20` at `(410.4, 498.0, 481.6, 510.0)`. The freed `f2_21` belongs
-  to the existing modeled line 18 node, currently excluded. If A9h resumes, apply only
-  17z -> `f2_20`, add line 18 -> `f2_21`, correct those two dispositions, add mapping
-  goldens and a position-verified filled-PDF echo, and record the defect for the pending
-  Schedule 2 field_map_review entry.
+- (none - the Schedule 2 block is ruled below and escalated to the pipeline pivot)
 
 ## From Worker (A9h active)
 - **A9h BLOCKED after complete official-PDF audit; no authoring begun (Worker, Codex
@@ -182,6 +168,45 @@ sequenced after M15 or when TY2026 docs drop.
   before authoring and before the full floor.
 
 ## From Architect
+- **SCHEDULE 2 RULING + PIPELINE PIVOT (Architect, Claude Fable 5, 2026-07-21;
+  John decided "pause campaign, fix pipeline").** The Worker correctly stopped. I
+  verified both flagged issues independently against `.cache/raw/2025/schedule_2_2025.fields.json`
+  (raw AcroForm rects), the graph nodes (MCP get_node), and citations:
+  1. **Issue A - CONFIRMED extraction/promotion defect, broader than one cell.**
+     `f1_15` (page 1, x504-576 y468-480) is LINE 4 Self-employment tax: the PDF groups
+     the row's controls under a wrapper named `Line4_ReadOrder`, and its checkboxes
+     `c1_3/c1_4/c1_5` carry Form `4361`/`4029` (the SE-tax exemption boxes). Yet the
+     field map binds `f1_15` to `schedule_2_2025_part_i_line_1` as `user_entered`
+     currency - and that node is a bare heading (citation `cite_span_..._0004`:
+     "- 1: Additions to tax:"). The mis-attribution spans the whole Part I far-right
+     column: `f1_13` (really line 3 "Add lines 1z and 2") is labeled "Line 1z - line 17
+     ... 3"; `f1_11` is the line 1z "additions to tax" total; the Line 4 exemption boxes
+     are all labeled "Line 1". There is NO `line_1z` node though the form has a 1z total.
+     Lines 3/4/1z are all outside the M12 output profile (excluded), so the in-scope
+     hand-fix would be re-attribution + honest `unsupported` dispositions + un-mapping
+     the heading - but that is multi-control re-authoring, not a single-cell shift, and
+     it is the SECOND defect class (after mislabels) that points squarely at the
+     pipeline, not the form.
+  2. **Issue B - CONFIRMED clean single-cell shift (would have been standing-auth
+     eligible).** Line 17z binds to `f2_21` (x504-576 y516-528, the line 18 total cell);
+     its true amount cell is `f2_20` (x410-481 y498-510); freed `f2_21` belongs to the
+     line 18 total node (excluded). Same family as the Schedule 1 8z->9 shift. NOT being
+     applied now - it rides along when the resolver reprocesses Schedule 2.
+  **DECISION (John):** pause the per-form hand campaign; build the field-identity
+  pipeline. **Proposed scope (Architect to draft as a phase for John's approval):**
+  (1) a structure-first field-identity resolver that derives each control's (line, role)
+  from the AcroForm's qualified field-name grouping (`LineNN_ReadOrder`) + printed-caption
+  adjacency, replacing geometry/label mining; (2) fail-closed structural validators - a
+  heading/section node may not own an amount cell; each printed amount line resolves to
+  exactly one node OR an explicit unsupported/out-of-profile disposition; a form total
+  present on the PDF has a node or is explicitly out-of-profile; the node's bound line
+  must equal the widget's derived line (line-identity triangle); contradictions route to
+  the review queue, never silent emission; (3) Schedule 2 Part I is the acceptance
+  fixture (resolver must yield f1_15=line4, f1_13=line3, f1_11=line1z-total, Line4 boxes
+  =line4 exemptions, and FLAG heading-with-a-cell + total-with-no-node). The 9 committed
+  A9 forms become the regression corpus the resolver must reproduce. This is rollover
+  seam 5 / invariant 6 pulled forward. Next Architect action: write the phase plan +
+  first Worker task; no per-form authoring resumes until John approves it.
 - **FORMS-PIPELINE END-STATE PINNED (Architect, Claude Fable 5, 2026-07-20, at
   John's direction):** The desired end-state is a valid, reliable forms pipeline
   into the tax graph - yearly IRS document updates via the rollover re-binder,

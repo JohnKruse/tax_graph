@@ -269,6 +269,12 @@ John reviews the three cases live. The Worker STOPS and records exact feedback i
 explanations, navigation, and evidence hierarchy match the intended workflow. UX
 corrections land in a follow-up commit before the gate is marked passed.
 
+**Gate A decoupled from remaining-form completion (Architect + John, 2026-07-21).** Gate A
+is acceptance of the review MODEL and may close on the workbench plus the forms already
+complete; it does NOT wait for all 15 forms. The remaining forms' field identities arrive
+via the M16 pipeline (`plans/PHASE_M16.md`) and feed their flagged review items into the
+same accepted workbench surface. Finishing forms never blocks John's single sign-off.
+
 **Gate A result (John, 2026-07-14): NOT ACCEPTED.** S17 and later work remains blocked.
 The vertical slice proved the artifact/API seam, but not the review model. The repeated
 queue-level `Review authored AcroForm...` labels obscure the official IRS text and provide
@@ -551,7 +557,21 @@ rejected. Do not commit it wholesale and do not discard it wholesale.
   document/check counts reconcile exactly with required review units; navigation restores the last
   page and selected field.
 
-#### A9 - Canonical display-name and review-prompt contract [REOPENED 2026-07-16 - close the Architect punch list and scope ruling below before A10]
+#### A9 - Canonical display-name and review-prompt contract [A9a-A9g DONE; A9h..A9z SUPERSEDED BY M16 (2026-07-21)]
+
+**SUPERSESSION (Architect + John, 2026-07-21).** A9a-A9g are committed (9 of 15 forms;
+`legacy_mined` 1443->394; commits `476e7ee` `0ec62ae` `82e07aa`+`1fb34b7`+`1e55e72`
+`e0d367f`+`1c03019` `492698f` `29eeeed` `983303f`). A9h stopped on a Schedule 2 defect
+that was NOT a placement shift but a structural ingestion defect (heading typed as a
+currency line and bound to another line's cell; a form total with no node; a
+mis-attributed column). John's decision: STOP hand-authoring forms and fix the pipeline.
+**A9h..A9z as a hand campaign are RETIRED and replaced by `plans/PHASE_M16.md`** (Forms
+Ingestion Pipeline Correctness): the remaining forms' field identities are produced by
+the M16 pipeline, not hand-authored. The 9 committed A9 forms are the M16 regression
+corpus; their authored labels are ground truth, not the method. Do NOT resume per-form
+hand authoring. The A9 goal (every form's field identity correct, reviewable, fail-closed)
+survives as M16's acceptance bar. The scope ruling below is retained as the historical
+record of what the hand campaign established.
 
 **Scope ruling (Architect, 2026-07-16) - label inheritance through authored bindings,
 registry extension for missing official structure.** The 209 raw-label dispositions are

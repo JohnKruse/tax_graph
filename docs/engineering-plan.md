@@ -446,6 +446,18 @@ nothing ships to users before it.** Verdict outcomes distinguish confirmed /
 pipeline-defect (fix + re-extract) / source-pathology (licenses a MARKED manual
 override with human provenance).
 
+### M16 - Forms ingestion pipeline correctness (canary Straight Line; proposed 2026-07-21)
+Plan: `plans/PHASE_M16.md`. Triggered mid-M15 when the A9 address campaign surfaced a
+structural ingestion defect on Schedule 2 (a section heading typed as a currency line and
+bound to another line's cell; a form total with no node; a mis-attributed column) - a
+pipeline defect, not a placement shift. John's decision: pause the per-form hand campaign
+and fix the pipeline at both root-cause layers - semantic typing in `tax_graph/extract/`
+(headings/value-types/missing totals) and structure-first field-identity binding +
+fail-closed validators in `tax_graph/output/`. This is guiding invariant 6 / rollover seam
+5 pulled forward: the resolver IS the yearly re-binder. The 9 committed A9 forms become the
+regression corpus; A9h..A9z hand authoring is retired in favor of "run the pipeline, review
+the flagged items" through the M15 workbench. Schedule 2 Part I is the acceptance fixture.
+
 ### Year rollover (TY2026) - pinned 2026-07-10, plan just-in-time when TY2026 docs drop
 The annual-update workflow is the delta design in `docs/extraction-verification.md`
 Section 6: acquire per manifest, re-extract, structurally diff against the prior year's
