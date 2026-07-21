@@ -112,3 +112,54 @@ reconciliation) are planned just-in-time after S1 lands.
   pinned witnesses; citations stay verbatim-from-acquired-source.
 - Local commits only during the run; Architect batch-verifies and pushes at the stop.
 - ASCII only; full-suite floor is the commit floor; sequential test partitions.
+
+## M16-S1 characterization record (Worker, 2026-07-22)
+
+This section is the committed defect note and evidence index for the executable
+acceptance fixture in `tests/test_schedule_2_m16.py`. The evidence is local and
+read-only: `.cache/raw/2025/schedule_2_2025.fields.json`, the official cached PDF,
+the promoted Schedule 2 graph and field-map artifacts, and the citation file.
+
+### Raw AcroForm identity
+
+The page-1 AcroForm has a qualified wrapper named `Line4_ReadOrder`. Its children
+`c1_3`, `c1_4`, and `c1_5` are the three exemption checkboxes at the printed line-4
+row. The official PDF text at that row is `Self-employment tax` followed by the
+exemption choices `1 4361`, `2 4029`, and `3`; the far-right amount cell is printed
+as line `4`. The raw rectangles put the checkbox controls at x=79.2, 158.4, and
+237.6, and the indented `f1_14` text control at x=252.0..324.0, all at y=468..480.
+The line-4 far-right amount control is `f1_15` at x=504.0..576.0, y=468..480.
+
+Above that row, the Part-I far-right amount column is `f1_11` at the printed `1z`
+row (y=390..402), `f1_12` at line 2 (y=408..420), and `f1_13` at line 3
+(y=426..438). This interleaving is why a geometry-only or mined-label-only
+binding is unsafe: the qualified wrapper identifies line 4 while the far-right
+column is shared by the Part-I rows.
+
+### Current promoted state and citations
+
+The graph node `schedule_2_2025_part_i_line_1` is labeled `Line 1: Additions to
+tax:`, has `node_type: form_line` and `value_type: currency`, and cites
+`cite_span_schedule_2_2025_0004` (`- 1: Additions to tax:`). It is therefore a
+fillable currency node for a heading. There is no graph node for the printed
+line-1z total. `schedule_2_2025_part_i_line_3` exists and cites
+`cite_span_schedule_2_2025_0019`; the line-4 node is currently named
+`schedule_2_2025_part_ii_line_4` and cites `cite_span_schedule_2_2025_0021`.
+
+The current field map binds `f1_15` to the line-1 heading, binds `f1_13` to line
+1z, and binds `f1_11` to line 1z as well. The widget bindings label all three
+Line4 checkboxes as line 1, and label the indented `f1_14` amount as line 1.
+Thus the wrong state is both a semantic extraction defect (heading typed as a
+currency line and line-1z omitted) and a field-identity defect (mis-attribution
+across the interleaved amount columns). The current map does not fail closed.
+
+### Target and fail-closed contract
+
+The M16-S1 fixture records the Section 1 target identities: `f1_15` -> line 4,
+`f1_13` -> line 3, `f1_11` -> the line-1z total, and the `Line4_ReadOrder`
+checkboxes -> line-4 exemptions. It also requires a line-1z total node, a
+non-fillable line-1 heading that owns no amount cell, and no silent contradictions.
+Every printed amount line must resolve to exactly one node or an explicit
+out-of-profile disposition, and a bound node line must equal the widget's derived
+line. The acceptance test is intentionally a strict xfail against today's
+pipeline; later M16 Stream A and Stream B work should turn it green.

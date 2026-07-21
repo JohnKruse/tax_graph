@@ -44,7 +44,16 @@ commands. A9a `476e7ee`, A9b `0ec62ae`, A9c `82e07aa`+`1fb34b7`+`1e55e72`, A9d
 `e0d367f`+`1c03019`, A9e `492698f`, A9f `29eeeed`, A9g `983303f`
 (Architect-verified: preflight `legacy_mined=394`, validate, 48 focused tests, static
 gates all green). Gate A open through A13; S17+ blocked.
-Canary: Fresh Eyes.
+Canary: Straight Line. M16-S1 is complete locally (Worker, Codex GPT-5, 2026-07-22):
+characterized Schedule 2 Part I from the raw AcroForm, official PDF text, graph
+nodes, field map, widget bindings, and citations; added the plan-referenced defect
+note and strict xfail acceptance fixture. No extraction, resolver, field-map, or
+graph code changed. Focused fixture: 1 passed, 1 xfailed. `validate 2025`, ASCII,
+and `git diff --check` pass. M15 review-schema partition: 7 passed; first four
+manifest regressions: 4 passed. The monolithic `pytest -m m15` and larger/some
+remaining manifest/workbench partitions hit the 124-second launcher timeout with
+no test output; no M15 failure is asserted, but the complete M15 floor is not
+claimed. No preflight ratchet change. One local commit, no push.
 (Whoever finishes a turn: update this BALL line - it is the first thing read.)
 
 **Step ledger:** M15 S1-S16 and A1-A3 are [DONE], pushed, and marked in the plan; M15R
@@ -146,6 +155,20 @@ sequenced after M15 or when TY2026 docs drop.
 - (none - the Schedule 2 block is ruled below and escalated to the pipeline pivot)
 
 ## From Worker (A9h active)
+
+## From Worker (M16-S1 complete)
+
+- **M16-S1 complete (Worker, Codex GPT-5, 2026-07-22):** Added the Schedule 2 Part I
+  end-to-end characterization and executable strict-xfail acceptance fixture in
+  `plans/PHASE_M16.md` and `tests/test_schedule_2_m16.py`. The fixture locks the
+  `Line4_ReadOrder` wrapper, Form 4361/4029 controls, indented/far-right geometry,
+  current heading/line-1z mis-attribution, citation evidence, target identities,
+  and fail-closed expectations. Focused result: 1 passed, 1 xfailed. `validate 2025`,
+  ASCII, and `git diff --check` pass. M15 schema subset is 7 passed and four
+  manifest tests are 4 passed; larger M15/manifest/workbench runs timed out at the
+  launcher limit without output, so no full M15 green claim is made. No preflight
+  ratchet or implementation code changed. Local commit follows; no push.
+
 - **A9h BLOCKED after complete official-PDF audit; no authoring begun (Worker, Codex
   GPT-5, 2026-07-21):** Audited all 63 inventory widgets and all 21 promoted mappings
   against `.cache/raw/2025/schedule_2_2025.pdf`, including page, rectangle, widget type,
