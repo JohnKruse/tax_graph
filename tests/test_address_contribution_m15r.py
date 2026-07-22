@@ -10,6 +10,11 @@ from tax_graph.extension import build_address_contribution, package_extension
 
 
 ROOT = Path(__file__).resolve().parents[1]
+
+pytestmark = pytest.mark.skipif(
+    not (ROOT / "graph_ext" / "2025" / "form_2441_2025").exists(),
+    reason="form-2441 extension artifacts are not installed: parity checkouts cannot build its contribution",
+)
 DOCUMENT_ID = "form_2441_2025"
 
 

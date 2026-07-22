@@ -18,8 +18,22 @@ from tax_graph.link import link_outbound_flows
 ROOT = Path(__file__).resolve().parents[1]
 
 
+def _require_official_pdf(document_id: str) -> Path:
+    """Return the cached official PDF path or skip: fresh checkouts (CI) carry no raw cache."""
+    path = ROOT / ".cache/raw/2025" / f"{document_id}.pdf"
+    if not path.exists():
+        pytest.skip(f"official cached PDF {document_id} is required for this check")
+    return path
+
+
+def _open_official_pdf(document_id: str) -> fitz.Document:
+    return fitz.open(_require_official_pdf(document_id))
+
+
 @pytest.fixture(scope="module")
 def campaign():
+    if not (ROOT / ".cache" / "raw" / "2025").exists():
+        pytest.skip("official raw cache is required to build the core address campaign")
     return build_address_campaign(ROOT, CORE_RETURN_DOCUMENTS)
 
 
@@ -30,11 +44,13 @@ def form_1040_campaign():
 
 @pytest.fixture(scope="module")
 def schedule_1_campaign():
+    _require_official_pdf("schedule_1_2025")
     return build_document_addresses(ROOT, "schedule_1_2025")
 
 
 @pytest.fixture(scope="module")
 def schedule_1a_campaign():
+    _require_official_pdf("schedule_1a_2025")
     return build_document_addresses(ROOT, "schedule_1a_2025")
 
 
@@ -124,7 +140,7 @@ def test_schedule_1a_numbered_lines_have_adjacent_number_and_caption(
     binding_by_address = {
         item["address_id"]: item for item in schedule_1a_campaign["widget_bindings"]["bindings"]
     }
-    pdf = fitz.open(ROOT / ".cache/raw/2025/schedule_1a_2025.pdf")
+    pdf = _open_official_pdf("schedule_1a_2025")
     checked = set()
     for address_id, address in addresses.items():
         match = re.search(r"/line=([^/]+)/control=amount$", address_id)
@@ -256,7 +272,7 @@ def test_form_1040_line_controls_have_number_bearing_adjacent_printed_text(
     bindings_by_address: dict[str, list[dict]] = {}
     for binding in form_1040_campaign["widget_bindings"]["bindings"]:
         bindings_by_address.setdefault(binding["address_id"], []).append(binding)
-    pdf = fitz.open(ROOT / ".cache/raw/2025/form_1040_2025.pdf")
+    pdf = _open_official_pdf("form_1040_2025")
     checked = set()
     for address_id, address in addresses.items():
         matched = re.search(r"/line=([^/]+)/control=(amount|description)$", address_id)
@@ -289,7 +305,7 @@ def test_form_1040_other_authored_captions_are_adjacent_in_official_pdf(
     bindings_by_address: dict[str, list[dict]] = {}
     for binding in form_1040_campaign["widget_bindings"]["bindings"]:
         bindings_by_address.setdefault(binding["address_id"], []).append(binding)
-    pdf = fitz.open(ROOT / ".cache/raw/2025/form_1040_2025.pdf")
+    pdf = _open_official_pdf("form_1040_2025")
     missing = []
     distant = []
     for address_id, address in addresses.items():
@@ -370,6 +386,8 @@ def test_schedule_d_worksheet_steps_are_explicitly_bound(campaign) -> None:
 
 @pytest.mark.m15r
 def test_form_8949_cross_form_claims_resolve_exactly() -> None:
+    if not (ROOT / "graph" / "2025" / "_drafts").exists():
+        pytest.skip("live review drafts are required: fresh checkouts (CI) carry no _drafts")
     result = link_outbound_flows(2025, ROOT, write=False)
     assert len(result.realized) == 6
     assert result.unresolved == []
@@ -538,7 +556,7 @@ def test_w2_authored_box_captions_are_adjacent_in_official_pdf(information_campa
     first_binding: dict[str, dict] = {}
     for binding in payload["widget_bindings"]["bindings"]:
         first_binding.setdefault(binding["address_id"], binding)
-    pdf = fitz.open(ROOT / ".cache/raw/2025/form_w2_2025.pdf")
+    pdf = _open_official_pdf("form_w2_2025")
     for address_id, address in addresses.items():
         if not str(address.get("official_ref", "")).startswith("Box "):
             continue
@@ -555,7 +573,7 @@ def test_w2_authored_box_captions_are_adjacent_in_official_pdf(information_campa
 @pytest.mark.m15
 def test_w2_adjacency_check_rejects_a_fabricated_box_number() -> None:
     """The A9c defect class must fail: right caption, wrong box number finds no match."""
-    page = fitz.open(ROOT / ".cache/raw/2025/form_w2_2025.pdf")[1]
+    page = _open_official_pdf("form_w2_2025")[1]
     assert _caption_rects(page, "20 Locality name")
     assert not _caption_rects(page, "21 Locality name")
     assert _caption_rects(page, "16 State wages, tips, etc.")
@@ -607,7 +625,7 @@ def test_1099_authored_box_numbers_and_captions_are_adjacent_in_official_pdf(
     bindings_by_address: dict[str, list[dict]] = {}
     for binding in payload["widget_bindings"]["bindings"]:
         bindings_by_address.setdefault(binding["address_id"], []).append(binding)
-    pdf = fitz.open(ROOT / ".cache/raw/2025" / f"{document_id}.pdf")
+    pdf = _open_official_pdf(document_id)
     for address_id, address in addresses.items():
         if not str(address.get("official_ref", "")).startswith("Box "):
             continue

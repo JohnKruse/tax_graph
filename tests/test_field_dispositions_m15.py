@@ -190,6 +190,8 @@ def test_form_1040_lines_1a_through_1h_and_1z_have_exact_fields() -> None:
 
 @pytest.mark.m15
 def test_form_1040_nonzero_1b_through_1h_sum_and_pdf_echo(tmp_path: Path) -> None:
+    if not (ROOT / ".cache/raw/2025/form_1040_2025.pdf").exists():
+        pytest.skip("official cached PDF is required for the gated PDF echo")
     graph = Graph(2025, root=ROOT, source="yaml")
     facts = {f"form_1040_2025_root_line_1{letter}": index * 100 for index, letter in enumerate("abcdefgh", 1)}
     facts["filing_status"] = "single"
@@ -230,6 +232,8 @@ def test_form_1040_nonzero_1b_through_1h_sum_and_pdf_echo(tmp_path: Path) -> Non
 
 @pytest.mark.m15
 def test_form_8949_total_mappings_and_pdf_positions(tmp_path: Path) -> None:
+    if not (ROOT / ".cache/raw/2025/form_8949_2025.pdf").exists():
+        pytest.skip("official cached PDF is required for the gated PDF echo")
     field_map = yaml.safe_load((ROOT / "graph/2025/field_maps/form_8949_2025.yaml").read_text())
     totals = {
         item["node_id"]: item["field_name"]
@@ -259,6 +263,8 @@ def test_form_8949_total_mappings_and_pdf_positions(tmp_path: Path) -> None:
 
 @pytest.mark.m15
 def test_schedule_1_other_amounts_and_totals_have_distinct_pdf_positions(tmp_path: Path) -> None:
+    if not (ROOT / ".cache/raw/2025/schedule_1_2025.pdf").exists():
+        pytest.skip("official cached PDF is required for the gated PDF echo")
     graph = Graph(2025, root=ROOT, source="yaml")
     result = Engine(graph).execute({
         "filing_status": "single",

@@ -19,6 +19,11 @@ WIDGET_BINDINGS = ROOT / "graph/2025/bindings/widgets/schedule_2_2025.yaml"
 NODES = ROOT / "graph/2025/nodes/schedule-2.yaml"
 CITATIONS = ROOT / "graph/2025/citations/schedule-2.yaml"
 
+pytestmark = pytest.mark.skipif(
+    not RAW_FIELDS.exists(),
+    reason="raw Schedule 2 AcroForm cache is required: fresh checkouts (CI) carry no .cache",
+)
+
 
 def _call_tool(server, name: str, arguments: dict[str, str]) -> dict:
     _content, structured = asyncio.run(server.call_tool(name, arguments))

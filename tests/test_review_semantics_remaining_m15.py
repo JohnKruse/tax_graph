@@ -155,6 +155,10 @@ def test_unknown_operation_fails_instead_of_exposing_raw_json() -> None:
 
 
 @pytest.mark.m15
+@pytest.mark.skipif(
+    not (Path(__file__).resolve().parents[1] / "graph" / "2025" / "_drafts").exists(),
+    reason="live review drafts are required: fresh checkouts (CI) carry no _drafts",
+)
 def test_live_manifest_formats_every_current_operation_without_raw_rule_fallback() -> None:
     manifest = build_manifest(ROOT, 2025)
     units = [unit for entry in manifest["entries"] for unit in entry["units"]]

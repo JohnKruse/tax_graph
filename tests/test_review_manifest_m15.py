@@ -65,6 +65,10 @@ def test_authored_control_identity_precedes_legacy_disposition_label() -> None:
 
 
 @pytest.mark.m15
+@pytest.mark.skipif(
+    not (Path(__file__).resolve().parents[1] / "graph" / "2025" / "_drafts").exists(),
+    reason="live review drafts are required: fresh checkouts (CI) carry no _drafts",
+)
 def test_live_manifest_covers_every_pending_entry_and_is_stable() -> None:
     first = build_manifest(ROOT, 2025)
     second = build_manifest(ROOT, 2025)
@@ -97,6 +101,10 @@ def test_live_manifest_covers_every_pending_entry_and_is_stable() -> None:
 
 
 @pytest.mark.m15
+@pytest.mark.skipif(
+    not (Path(__file__).resolve().parents[1] / "graph" / "2025" / "_drafts").exists(),
+    reason="live review drafts are required: fresh checkouts (CI) carry no _drafts",
+)
 def test_manifest_writes_stable_json_and_keeps_scope_roles_out_of_public_refs(tmp_path: Path) -> None:
     output = tmp_path / "manifest.json"
     payload = build_manifest(ROOT, 2025, output_path=output)
@@ -122,6 +130,10 @@ def test_manifest_writes_stable_json_and_keeps_scope_roles_out_of_public_refs(tm
 
 
 @pytest.mark.m15
+@pytest.mark.skipif(
+    not (Path(__file__).resolve().parents[1] / "graph" / "2025" / "_drafts").exists(),
+    reason="live review drafts are required: fresh checkouts (CI) carry no _drafts",
+)
 def test_manifest_hash_pins_every_file_in_example_artifact_directory(tmp_path: Path) -> None:
     source_dir = ROOT / "examples" / "irs_examples" / "instructions_schedule_d_2025" / "example_008"
     example_dir = tmp_path / "example_008"

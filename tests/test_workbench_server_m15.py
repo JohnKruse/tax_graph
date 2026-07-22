@@ -12,6 +12,11 @@ from workbench.server import create_app
 
 ROOT = Path(__file__).resolve().parents[1]
 
+pytestmark = pytest.mark.skipif(
+    not (ROOT / "graph" / "2025" / "_drafts").exists(),
+    reason="live review drafts are required: fresh checkouts (CI) carry no _drafts",
+)
+
 
 @pytest.fixture(scope="module")
 def client():

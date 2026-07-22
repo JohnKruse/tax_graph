@@ -15,6 +15,11 @@ from workbench.verdicts import load_verdict
 ROOT = Path(__file__).resolve().parents[1]
 TOKEN = "s9-test-token"
 
+pytestmark = pytest.mark.skipif(
+    not (ROOT / "graph" / "2025" / "_drafts").exists(),
+    reason="live review drafts are required: fresh checkouts (CI) carry no _drafts",
+)
+
 
 @pytest.fixture(scope="module")
 def api(tmp_path_factory: pytest.TempPathFactory):

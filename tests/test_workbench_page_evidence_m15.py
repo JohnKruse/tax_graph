@@ -11,6 +11,11 @@ from workbench.server import create_app
 
 ROOT = Path(__file__).resolve().parents[1]
 
+pytestmark = pytest.mark.skipif(
+    not (ROOT / "graph" / "2025" / "_drafts").exists(),
+    reason="live review drafts are required: fresh checkouts (CI) carry no _drafts",
+)
+
 
 @pytest.mark.m15
 def test_page_api_renders_only_requested_page_and_reuses_cache(tmp_path: Path) -> None:

@@ -30,6 +30,8 @@ def page():
 @pytest.fixture(scope="session")
 def workbench_url() -> str:
     """Serve the real 2025 artifact projection on an ephemeral loopback port."""
+    if not (ROOT / "graph" / "2025" / "_drafts").exists():
+        pytest.skip("live review drafts are required: fresh checkouts (CI) carry no _drafts")
     app = create_app(ROOT, 2025, write_token="e2e-write-token")
     server = make_server("127.0.0.1", 0, app, threaded=True)
     thread = Thread(target=server.serve_forever, daemon=True)

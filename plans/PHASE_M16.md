@@ -1,7 +1,13 @@
 # Phase M16 - Forms Ingestion Pipeline Correctness (canary Straight Line)
 
-**Status:** PROPOSED (Architect draft 2026-07-21, at John's direction). Awaiting John's
-approval of scope + sequencing before any Worker task starts.
+**Status:** ACTIVE (approved by John 2026-07-21: M16 is the engine that finishes the
+remaining forms; the A9h..A9z hand campaign is retired/superseded, marked in
+`plans/PHASE_M15.md`; the Section 3 sequencing question is RESOLVED the same way -
+M16 fully replaces the A9h..A9z line items). M16-S1 is [DONE] (commit `17d2351`,
+Architect-verified: fixture 1 passed + 1 strict xfail). M16-CI (CI floor
+restoration, 2026-07-22) rides under this phase as infrastructure: CI had been
+red on every push since 2026-07-14; after a Worker environment stop, John chose
+direct Architect implementation. Next Worker step: M16-S2 (Stream A typing).
 
 **Why this phase exists.** The M15 A9 address campaign was hand-authoring, one form at a
 time, what a correct ingestion pipeline should generate. On 2026-07-21 the Schedule 2

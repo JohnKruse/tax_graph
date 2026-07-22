@@ -133,6 +133,10 @@ def test_cli_migrate_scope_reports_changed_entries(tmp_path: Path, capsys: pytes
 
 
 @pytest.mark.m15
+@pytest.mark.skipif(
+    not (Path(__file__).resolve().parents[1] / "graph_ext" / "2025" / "form_2441_2025").exists(),
+    reason="form-2441 extension artifacts are not installed: parity checkouts cannot derive its scope",
+)
 def test_live_queue_migration_gives_every_pending_entry_a_primary_target(tmp_path: Path) -> None:
     source = yaml.safe_load((ROOT / "review_queue" / "2025" / "deferred_review.yaml").read_text(encoding="utf-8"))
     entries = copy.deepcopy(source["entries"])

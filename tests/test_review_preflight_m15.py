@@ -15,6 +15,11 @@ from workbench.preflight import PreflightError, preflight_manifest, run_prefligh
 
 ROOT = Path(__file__).resolve().parents[1]
 
+pytestmark = pytest.mark.skipif(
+    not (ROOT / "graph" / "2025" / "_drafts").exists(),
+    reason="live review drafts are required: fresh checkouts (CI) carry no _drafts",
+)
+
 
 @pytest.fixture(scope="module")
 def artifacts() -> tuple[dict[str, object], ArtifactBundle]:

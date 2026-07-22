@@ -57,7 +57,10 @@ jobs:
           enable-cache: true
 
       - name: Sync dependencies
-        run: uv sync --extra dev
+        run: uv sync --extra dev --extra workbench --extra workbench-dev
+
+      - name: Install Playwright browsers
+        run: uv run playwright install chromium --with-deps
 
       - name: Check ASCII-only authored files
         run: uv run python tools/check_ascii.py
@@ -67,6 +70,9 @@ jobs:
 
       - name: Run capital-gains example
         run: uv run tax-graph run --facts examples/capital_gains_basic/facts.yaml
+
+      - name: Build SQLite artifact
+        run: uv run tax-graph build 2025
 
       - name: Run tests
         run: uv run pytest

@@ -134,6 +134,10 @@ def test_negate_formatter_has_structured_source() -> None:
 
 
 @pytest.mark.m15
+@pytest.mark.skipif(
+    not (Path(__file__).resolve().parents[1] / "graph" / "2025" / "_drafts").exists(),
+    reason="live review drafts are required: fresh checkouts (CI) carry no _drafts",
+)
 def test_live_manifest_uses_simple_semantics_without_formatting_later_ops() -> None:
     manifest = build_manifest(ROOT, 2025)
     units = [unit for entry in manifest["entries"] for unit in entry["units"]]

@@ -12,9 +12,48 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 - History: pruned at each phase close (latest: M15R close, pruned 2026-07-16). Full narration lives in
   `plans/archive/` (phase plans with close notes) and git history.
 
-## Current state (2026-07-20)
+## Current state (2026-07-22)
 
-**BALL: ARCHITECT - A9 HAND CAMPAIGN PAUSED AT A9h; PIVOT TO THE FIELD-IDENTITY
+**BALL: ARCHITECT - M16-CI is IMPLEMENTED and floor-verified; next actions:
+push the 16-commit batch + WATCH CI (Architect), then John restarts the machine
+to restore the Worker environment, then the M16-S2 Worker round (prompt to
+follow).** After the Worker environment stop (venv/pytest `Access is denied`,
+no `uv`; answered Open item below), John chose direct Architect implementation
+(2026-07-22). What landed (one commit at this HEAD): (1) the CI test job now
+syncs `--extra dev --extra workbench --extra workbench-dev` (the actually
+missing CI modules were `flask`/`werkzeug` via the never-synced existing
+`workbench` extra, plus playwright; no pyproject change needed), installs the
+chromium browser, and builds the sqlite artifact before pytest; (2) every
+fresh-checkout-hostile test is guarded with an explicit skip on its TRUE
+dependency: `.cache/raw/2025` official PDFs (campaign fixtures, adjacency,
+PDF-echo, schedule-2 raw fields), `graph/2025/_drafts` (live manifest/
+semantics/preflight/page-evidence/server/write-api/e2e/link cross-form), and
+`graph_ext/2025/form_2441_2025` (live queue migration + both contribution
+tests; the 2441 scope ValueError REPRODUCED at HEAD and is gated per the
+pre-ruling, not code-fixed). Verification: fresh-checkout sim (new worktree,
+fresh `uv sync`, new CI sequence) - ascii/validate/example/build green, pytest
+m15 68 passed + 45 skipped, not-m15 356 passed + 17 skipped, ZERO failures or
+errors; local floor - m15 113 passed + 0 skipped, not-m15 366 passed + 6
+skipped + 1 xfailed, plus a focused 69-passed zero-skip guard proof; ASCII,
+`git diff --check`, `validate 2025`, real preflight green at 3,243 units with
+`legacy_mined=394` (ratchet unchanged). Local coverage shrank nowhere; sim
+skips are the honest CI contract (parity checkouts have no acquired PDFs,
+drafts, or extension). `plans/PHASE_M16.md` flipped to ACTIVE with S1 [DONE].
+Op note: eight orphaned idle python processes from 13:07 (Worker session
+window) - sweep after push with `tax-graph serve --sweep-orphans`, no raw
+kills.
+
+**SESSION START CHECKPOINT - M16-CI (Worker, Codex GPT 5.6 Luna, 2026-07-22):**
+Model is GPT 5.6 Luna; effort = Medium. No usage/quota/context indicators are exposed.
+The single declared step is M16-CI: restore the fresh-checkout CI floor under all six
+binding rulings, verify the prescribed local and fresh-worktree sequences, make exactly
+one local commit, and do not push. No implementation or verification command has run in
+this session. Pending: inspect CI/worktree state, apply only authorized CI/test guards,
+checkpoint before the full-floor phase, run verification, update this handoff and BALL,
+and create the required commit.
+
+**Superseded 2026-07-20/21 BALL (kept as history this round):** A9 HAND
+CAMPAIGN PAUSED AT A9h; PIVOT TO THE FIELD-IDENTITY
 PIPELINE (John, 2026-07-21).** The Schedule 2 audit surfaced a CONFIRMED
 extraction/promotion defect (not a placement shift): the heading node
 `schedule_2_2025_part_i_line_1` ("Additions to tax:", citation-confirmed) is mapped
@@ -152,9 +191,10 @@ sequenced after M15 or when TY2026 docs drop.
   and the Step-5 record-hash ordering fix. Step 2's live pass was John + Architect.
 
 ## Open for Architect
-- (none - the Schedule 2 block is ruled below and escalated to the pipeline pivot)
-
-## From Worker (A9h active)
+- (none - the M16-CI environment stop is ANSWERED: the Worker's stop was correct
+  and cost nothing; John chose direct Architect implementation of M16-CI (done,
+  see BALL). The Worker environment restore happens via machine restart after
+  the Architect push; the M16-S2 relaunch prompt follows that.)
 
 ## From Worker (M16-S1 complete)
 
@@ -191,6 +231,78 @@ sequenced after M15 or when TY2026 docs drop.
   before authoring and before the full floor.
 
 ## From Architect
+- **M16-CI IMPLEMENTED BY ARCHITECT (Claude Opus 4.8, 2026-07-22; John's
+  decision after the Worker environment stop).** Full record in the BALL.
+  Deltas vs the original rulings, all within their letter or pre-authorized:
+  ruling 1's playwright diagnosis was incomplete - the missing CI modules were
+  `flask`/`werkzeug` (the existing `workbench` extra was never synced in CI)
+  plus playwright; fixed by syncing three extras, no pyproject change. Ruling
+  3's 2441 ValueError reproduced at HEAD; the pre-authorized narrow gate was
+  applied (skip on missing `graph_ext/2025/form_2441_2025`) and extended to the
+  two 2441 contribution tests with the same probe. Ruling 4's discovery found
+  two additional live-dependency families beyond `.cache`: `graph/2025/_drafts`
+  readers (the whole live manifest stack + `link_outbound_flows`) and
+  `graph_ext` readers - guarded with the same whole-test skip idiom on the true
+  dependency. e2e collects and runs on CI up to the drafts guard (browsers are
+  installed; the server fixture skips on parity checkouts) - the last-resort
+  e2e deselect was NOT needed. No graph/, field-map, extraction, resolver,
+  ratchet, or fixture-semantics changes anywhere.
+- **M16-CI RULING + TASK (Architect, Claude Opus 4.8, 2026-07-22; John
+  authorized one Luna Medium Worker round).** Goal: a green CI sequence
+  (check_ascii, `validate 2025`, capital-gains example, `pytest`) on a FRESH
+  checkout - i.e. real CI - while weakening nothing locally. Exactly one local
+  commit: `ci: restore green floor on fresh checkouts (M16-CI)`. Binding
+  rulings:
+  1. **Playwright/collection.** The CI test job syncs
+     `--extra dev --extra workbench-dev` (exactly the missing extra; do NOT
+     switch to `--all-extras`) and adds `uv run playwright install chromium
+     --with-deps` before pytest (CI-only behavior; the local sim may rely on
+     already-installed browsers). tests/e2e and the three failing workbench
+     modules must COLLECT and RUN on CI. Last resort ONLY if e2e cannot be made
+     runnable on CI inside this round: deselect e2e in the CI pytest invocation
+     alone, record it in the handoff AND leave an Open for Architect item -
+     never silently.
+  2. **Compiled artifact.** Add `uv run tax-graph build 2025` to the CI test
+     job before pytest (mirrors the runtime-base job). Do NOT rewrite the live
+     manifest/preflight tests onto tmp sqlite - they are intentionally live
+     gates against the real compiled artifact.
+  3. **2441 scope ValueError.** Characterize at HEAD in the fresh-checkout sim.
+     If it no longer fails, record that and move on. If it still fails, the
+     ONLY authorized fix is gating that single live migration test on the
+     presence of the form-2441 extension document (skip with an explicit reason
+     on parity checkouts). Changing scope derivation, queue data, or extension
+     policy is a STOP for Architect.
+  4. **Raw-cache guards.** Guard every ROOT-based `.cache/raw/2025/` reader
+     with the pinned whole-test skip idiom (explicit reason string; no
+     conditional asserts inside a test body). Known sites from Architect grep:
+     `tests/test_field_dispositions_m15.py` (pdf-echo ~192, 8949 totals ~232,
+     schedule-1 positions ~261), `tests/test_address_campaign_m15r.py` (six
+     fitz.open sites), `tests/test_schedule_2_m16.py` (module-level skipif on
+     the missing raw fields file is acceptable; do not alter the fixture's
+     assertions or its strict-xfail marker). The fresh-checkout run is the
+     discovery tool: guard exactly what fails for missing-gitignored-artifact
+     reasons (there may be more in extract/examples/tables tests); change
+     nothing speculatively.
+  5. **Verification protocol.** (a) `git worktree add` a fresh sim checkout of
+     HEAD, fresh `uv sync --extra dev --extra workbench-dev` there, then run
+     the NEW CI sequence: check_ascii, `tax-graph validate 2025`, the
+     capital-gains example run, `tax-graph build 2025`, full `pytest` - must be
+     GREEN there with skips visible; record exact counts. Remove the sim
+     worktree afterwards (`git worktree remove`). (b) In the main worktree:
+     focused runs of every changed test file proving guarded tests still
+     EXECUTE locally (cache present); the standard sequential partitions as
+     able (record launcher timeouts honestly - no green claims from timed-out
+     runs); ASCII; `git diff --check`; `tax_graph.cli validate 2025`; real
+     preflight expected unchanged at `legacy_mined=394` (a test+workflow diff
+     must not move the ratchet). (c) One local commit, no push, final handoff
+     and BALL update.
+  6. **Hard boundaries.** No changes to `graph/`, field maps, extraction or
+     resolver code, promoted artifacts, the preflight ratchet, or M16-S1
+     fixture semantics. Local coverage must not shrink: every guarded test
+     still runs on this machine. Session budget rules apply (state model and
+     effort first, declare the single step, checkpoint before expensive
+     phases). Uncommitted Architect-owned edits to this handoff are expected in
+     the worktree; leave them in place and fold your updates alongside.
 - **SCHEDULE 2 RULING + PIPELINE PIVOT (Architect, Claude Fable 5, 2026-07-21;
   John decided "pause campaign, fix pipeline").** The Worker correctly stopped. I
   verified both flagged issues independently against `.cache/raw/2025/schedule_2_2025.fields.json`
