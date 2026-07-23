@@ -14,12 +14,25 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## Current state (2026-07-23)
 
-**BALL: ARCHITECT - clear to draft and launch M16-S4 (Stream B fail-closed
-structural validators).** Blockers are cleared: the repo went PUBLIC on
-2026-07-23, which restored GitHub Actions (free unlimited on public repos)
-after the private-repo billing cap had blocked every run; CI on `8d9052b` is
-FULLY GREEN across all four jobs, so Tier 2 is available again and it covers
-the S3 resolver code. Standing item for John (does not block S4): review
+**BALL: ARCHITECT - M16-S4 is ACCEPTED, verified, and pushed; next is M16-S5
+(corpus regeneration), the step that turns the S1 fixture green.** The Worker's
+blocker was NOT an environment failure: it ran the console script
+`.venv\Scripts\tax-graph.exe`, whose editable-install `.pth` hardcodes an
+absolute repo path that does not resolve inside the Codex sandbox. The module
+form (`python -m tax_graph.cli` / `python -m workbench.cli`) puts CWD on
+sys.path and always works - it is what every other Worker command used. The
+Architect prompt said "tax-graph validate 2025", so the Architect caused it;
+the invocation rule is now pinned under Worker environment below. Architect
+completed the two pending gates (validate green; real preflight
+`legacy_mined=394` unchanged), reviewed the diff clean against every boundary
+(no promoted artifacts, no call sites in validate/preflight/manifest, S1
+fixture still strict-xfail), and fixed two things inline: renamed
+`structural_checks.validate_field_maps` -> `check_document_structure` (it
+collided with the existing `field_maps.validate_field_maps` and would have
+confused the S5 wiring; the collision came from ambiguous Architect phrasing),
+and fixed an operator-precedence bug that made three evidence fallbacks
+unreachable. Focused tests 10 passed / 1 strict xfail after the rename.
+Standing item for John (does not block S5): review
 `plans/M16_S3_RESOLVER_REPORT.md` - 8949 table columns, W-2 box templates, and
 13614-C wrapperless fields are honest unresolved blocks whose contracts S4/S5
 must define. Optional CI quick win, now for feedback speed rather than cost:
@@ -134,6 +147,14 @@ TY2026 docs drop.
   workspace `.pytest_tmp` basetemp (the sandbox denies the AppData temp root). Commands
   exceeding the Worker's ~124s launcher cap (notably real preflight) are Architect-side:
   the Worker records the attempt and stops clean.
+  **ALWAYS use the module form, never the console scripts** (2026-07-23, M16-S4):
+  `.venv\Scripts\python.exe -m tax_graph.cli validate 2025` and
+  `.venv\Scripts\python.exe -m workbench.cli preflight --year 2025`. The generated
+  `tax-graph.exe` / `review-workbench.exe` launchers resolve the package through the
+  editable install's `.pth`, which hardcodes an absolute repo path that does not resolve
+  inside the Codex sandbox (`ModuleNotFoundError: No module named 'tax_graph.cli'`). The
+  module form puts CWD on sys.path and works everywhere. Architects: write the module
+  form into Worker prompts.
 - **Recurring op note:** orphaned `serve` processes have first-class tooling -
   `tax-graph serve --sweep-orphans` (dogfooded live on a real orphan). The parent
   watchdog works on Windows as of M14 (OpenProcess probe; the os.kill(pid,0) probe was
@@ -143,8 +164,79 @@ TY2026 docs drop.
 ## Open for Architect
 - (none)
 
+### Worker session checkpoint - M16-S4 (2026-07-23)
+- Declared step: implement the four Stream B structural validators, focused Schedule 2 Part I
+  tests, and the read-only promoted-corpus report; no validate/preflight/manifest call sites.
+- Focused test files declared for the Tier-1 floor: `tests/test_structural_checks_m16.py`,
+  `tests/test_field_identity_m16.py`, and `tests/test_schedule_2_m16.py` (the last remains
+  strict-xfail and is not to be edited).
+- Session-start checkpoint: model GPT-5 Codex, effort high, usage/quota/context indicators not
+  exposed. Required handoff/phase/S3 documents read. Current worktree has only this expected
+  handoff edit; implementation has not started.
+- Implementation checkpoint: added `tax_graph/output/structural_checks.py` and
+  `tests/test_structural_checks_m16.py`; the new focused file is green (3 passed). No promoted
+  artifact, graph semantic, binding, citation, manifest, validate, or preflight call-site edit.
+- Pending verification: resolver regression, unchanged strict-xfail Schedule 2 file, corpus report,
+  ASCII/diff checks, `validate 2025`, and real preflight ratchet.
+
+### Open for Architect - M16-S4 environment blocker (2026-07-23)
+- Required command attempted: `.venv\\Scripts\\tax-graph.exe validate 2025`.
+- Exact failure: `ModuleNotFoundError: No module named 'tax_graph.cli'` from the generated
+  `.venv\\Scripts\\tax-graph.exe` launcher, despite `tax_graph\\cli.py` existing in the clone.
+- Completed before the stop: `tests/test_structural_checks_m16.py` 3 passed; resolver file 6
+  passed; Schedule 2 file 1 passed / 1 strict xfail; corpus report generated; ASCII and
+  `git diff --check` green. No promoted artifacts or S1 fixture changed.
+- Pending: required `validate 2025`, real preflight with `legacy_mined=394`, final handoff
+  verification, and the single local commit. No workaround launcher was attempted after the
+  environment failure, and no commit was made.
+
 ## From Architect
 
+- **M16-S4 TASK - STREAM B FAIL-CLOSED STRUCTURAL VALIDATORS (Architect, Claude
+  Opus 4.8, 2026-07-23; autonomous headless round, effort High).** Scope: the
+  validators, focused tests, and a READ-ONLY corpus report. They FLAG this round;
+  they are NOT wired as hard gates (see the ruling below).
+  1. Implement the four structural validators from `plans/PHASE_M16.md` Stream B,
+     consuming the S3 resolver (`tax_graph/output/field_identity.py`):
+     a. **Heading integrity** - a heading/section/concept node may not own an
+        amount cell.
+     b. **Line coverage** - every printed amount line resolves to exactly one node
+        OR carries an explicit out-of-profile disposition.
+     c. **Total presence** - a form total present on the PDF has a node or is
+        explicitly marked out-of-profile; never absent-and-unaccounted.
+     d. **Line-identity triangle** - the node's bound line must equal the widget's
+        resolver-derived line.
+     Each finding is a structured, review-queue-shaped record (document, control,
+     validator, observed vs expected, evidence) - never a silent pass and never a
+     bare boolean. Suggested home: a new module (e.g.
+     `tax_graph/output/structural_checks.py`) exposing a function
+     `validate_field_maps` can call LATER; do not call it from there yet.
+  2. **RULING - flag, do not enforce, this round.** The S3 report shows large
+     honest unresolved blocks (8949 table columns, W-2 box templates, 13614-C
+     wrapperless fields). Wiring these validators into `validate 2025` or preflight
+     as hard failures now would red the floor on defects that S5 artifact
+     regeneration is meant to fix. So: no call sites in `validate`, preflight, or
+     the manifest this round; `validate 2025` and preflight must stay green and the
+     ratchet must stay at `legacy_mined=394`.
+  3. Focused tests with Schedule 2 Part I as the exemplar: the validators MUST flag
+     today's real defects - the line-1 heading owning `f1_15`, the missing line-1z
+     total node, and the far-right column line-identity mismatches. Prefer inline
+     fixtures; any raw-cache read uses the ROOT-anchored skip-if-missing guard.
+  4. Read-only corpus report `plans/M16_S4_VALIDATOR_REPORT.md`: run the validators
+     over the promoted 2025 artifacts and count findings per document per validator,
+     with exemplar rows. This is the S5 work list. Findings are FINDINGS - do not
+     "fix" either side, and change no promoted artifact.
+  5. Tier-1 floor per the amended standing rule: DECLARE your focused test files in
+     this handoff, run them plus fast gates (ASCII, `git diff --check`,
+     `validate 2025`, real preflight unchanged at `legacy_mined=394`). Use
+     `.pytest_tmp` basetemp; sequential pytest only; no full partitions (Tier 2 is
+     CI on the Architect's push). If a command exceeds your launcher cap, record the
+     attempt and stop clean - the Architect completes it.
+  6. Stop conditions: any need to touch promoted artifacts, graph semantics, or the
+     M16-S1 fixture (it stays strict-xfail); a validator that cannot be made
+     deterministic; or a quota/environment failure. Stop, record under Open for
+     Architect, update the BALL. Exactly one local commit; no push. Session budget
+     rules apply.
 - **SCHEDULE 2 RULING + PIPELINE PIVOT (2026-07-21; John decided "pause campaign, fix
   pipeline") - the reason M16 exists.** Verified independently against
   `.cache/raw/2025/schedule_2_2025.fields.json` (raw AcroForm rects), MCP `get_node`, and
