@@ -14,8 +14,22 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## Current state (2026-07-23)
 
-**BALL: ARCHITECT - M16-S4 is ACCEPTED, verified, and pushed; next is M16-S5
-(corpus regeneration), the step that turns the S1 fixture green.** The Worker's
+**BALL: JOHN - M16-S4 is ACCEPTED, pushed (`90835cb`), and CI-GREEN on all four
+jobs. M16-S5 (corpus regeneration) is DELIBERATELY NOT LAUNCHED and needs John
+before it starts - it is the first M16 step that MUTATES promoted tax artifacts.**
+Why S5 breaks the autonomous pattern: S1-S4 were additive and read-only (new
+modules, tests, reports), so the worst case was a module needing revision. S5
+rewrites field maps, bindings, and addresses - the load-bearing tax data - where
+a bad regeneration can silently change what a filer's form prints. It is a Tier 3
+diff by John's own amended floor (promoted artifacts / shared surfaces), it will
+deliberately move the preflight ratchet below `legacy_mined=394` for the first
+time, and the S3/S4 reports contain judgment calls only John can make: which
+unresolved blocks get a structural contract (8949 table columns, W-2 box
+templates) versus an explicit out-of-profile disposition (13614-C's 297
+wrapperless controls). JOHN: read `plans/M16_S4_VALIDATOR_REPORT.md` (the S5 work
+list, per-document finding counts) and `plans/M16_S3_RESOLVER_REPORT.md`, then
+tell the Architect the dispositions and S5 gets drafted and sequenced.
+Historical note for the S4 round: The Worker's
 blocker was NOT an environment failure: it ran the console script
 `.venv\Scripts\tax-graph.exe`, whose editable-install `.pth` hardcodes an
 absolute repo path that does not resolve inside the Codex sandbox. The module
