@@ -43,11 +43,22 @@ contracts and fixtures, implement the bounded typing changes, checkpoint before
 the full-floor phase, run sequential verification, update this handoff and BALL,
 and commit exactly once.
 
-**BALL: WORKER - M16-S2 Stream A code and focused tests are complete locally;
-static gates, validate, S1 strict-xfail smoke, and real preflight are green.
-The full floor is not claimed because sequential M15/non-M15 partitions hit
-launcher limits and the M15 aggregate has four sandbox dependency-collection
-errors. One local commit is complete; no push.**
+**BALL: ARCHITECT->push done; next round is M16-S3 (Stream B resolver +
+structural validators) after John reviews. M16-S2 is ARCHITECT-VERIFIED and
+ACCEPTED (2026-07-23).** Verification under the NEW granular-tier floor
+(John's v2 amendment, pinned in standing rules below): diff review clean and
+in-bounds (extract-only; `concept` is a pre-existing schema node_type; the
+line-1z fix is the `_canonical_line_anchor` OCR-split repair; S1 fixture
+untouched); fresh-checkout sim (reduced, rationale: new tests are
+inline-text) - 4/4 new tests pass on a bare checkout, full-suite COLLECTION
+clean at 490 tests; gates + `validate 2025` + real preflight
+`legacy_mined=394` green; local not-m15 partition (the one exercising
+extraction) 370 passed + 6 skipped + 1 xfailed. The local m15 partition was
+deliberately NOT run - extract-only diff cannot reach it; CI's full matrix
+covers it (John's ruling). The Worker's four "sandbox dependency-collection
+errors" were its-sandbox-only (AppData temp denial); none reproduced in the
+Architect environment or the fresh sim. Worker environment fix HELD all
+session (in-workspace venv; use `.pytest_tmp` basetemp in Codex sessions).
 ENVIRONMENT FIX RECORD: the recurring denial was the venv launcher shim
 spawning the OUT-OF-WORKSPACE base interpreter (AppData Python313), which
 the Codex sandbox denies per-session; no machine restart ever occurred
@@ -224,7 +235,16 @@ sequenced after M15 or when TY2026 docs drop.
   with an installed extension IS the normal dev state (use
   `Graph(..., include_extensions=False)` for shipped-content parity); **close-out
   ordering: `frontier build` FIRST, `verify record` SECOND, commit together** (the
-  content hash covers frontier.yaml); full suite green is the commit floor; **CI on the
+  content hash covers frontier.yaml); **commit floor (AMENDED v2 by John,
+  2026-07-23, granular tiers): Tier 1 EVERY COMMIT = focused test FILES
+  covering the changed modules + any new tests (the Worker DECLARES the
+  chosen files in the handoff) + fast gates (ASCII, diff --check, validate,
+  preflight); Tier 2 EVERY PUSH = full CI matrix on the pushed commit,
+  Architect-watched to green; Tier 3 BIG SHAKEDOWN (full local partitions +
+  fresh-checkout sim) ONLY for CI-red investigation, diffs touching promoted
+  artifacts / shared surfaces (graph/, field maps, bindings, citations,
+  manifest), phase closes/gates, or at John's request. Sequential pytest
+  always - concurrent launches orphan children on this box**; **CI on the
   pushed commit must be green at every step commit and phase close** (watch it - do not
   skip for "docs-only" changes, the ASCII gate bites those too); live-execution passes
   for anything an outside tool/user consumes; drafts never committed; base-deps light;
