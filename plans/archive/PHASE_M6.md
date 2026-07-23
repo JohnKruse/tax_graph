@@ -199,6 +199,6 @@ Exit verification:
   -> 20 scenarios, OK
 - `.\.venv\Scripts\python.exe -m pytest` -> 119 passed, 5 skipped
 - `.\.venv\Scripts\python.exe tools\check_ascii.py` -> ASCII check OK
-- `uv --directory C:\Users\devbox\projects\tax_graph run --no-dev python -m tax_graph.cli run
+- `uv --directory <repo-root> run --no-dev python -m tax_graph.cli run
   --facts examples\capital_gains_basic\facts.yaml --source yaml --no-record` -> Form 1040 line 7
   = 2000

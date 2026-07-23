@@ -27,12 +27,12 @@ coordination in committed text files - no hidden side channels.
 Global project canary: **Ledger Llama**.
 
 ## Hard rules (do not violate)
-- **Work out of the local clone: `C:\Users\devbox\projects\tax_graph`.** That is the canonical
-  working copy on this machine (local disk; the `.venv` and reliable `.git` live there). The
-  SMB-mapped **`M:` drive** (Mac share) is NOT for dev work - it goes stale and git on SMB is
-  unreliable (proven in practice). Do not read, edit, or commit under `M:` unless John gives
-  specific instructions to. If a session starts under `M:` or any other path, say so and switch
-  to the local clone before doing any work; treat anything found under `M:` as possibly stale.
+- **Work out of the local-disk clone** (John names the path at session start). That is the
+  canonical working copy - the `.venv` and reliable `.git` live there. An SMB-mapped network
+  drive (Mac share) is NOT for dev work: it goes stale and git over SMB is unreliable (proven
+  in practice). Do not read, edit, or commit under a mapped network path unless John gives
+  specific instructions to. If a session starts under one, or under any path that is not the
+  local clone, say so and switch before doing any work; treat anything found there as stale.
 - **ASCII-only** in every authored file (docs/plans/config/code/data/graph labels/docstrings). Use
   "-" not em/en dashes, "->" not arrows, "Section" not the section sign, straight quotes.
   `tools/check_ascii.py` enforces it (CI gate).

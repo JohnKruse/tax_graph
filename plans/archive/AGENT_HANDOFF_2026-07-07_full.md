@@ -46,7 +46,7 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
   walkthrough as satisfying the human gate on 2026-07-05.
 - **M2 Desktop startup smoke is done.** Claude Desktop read the local `tax-graph` MCP config and
   successfully initialized/listed tools after switching the config snippet to
-  `uv --directory C:\Users\devbox\projects\tax_graph run python -m tax_graph.cli serve --year 2025`.
+  `uv --directory <repo-root> run python -m tax_graph.cli serve --year 2025`.
   A local stdio MCP client also walked the full capital-gains branch and returned 1040 line 7 =
   2000 with the 8949 SUBTRACT citation.
 - Next core phase by milestone order: **M6b** (Repeatable tables, canary Tandem Abacus; plan
@@ -513,7 +513,7 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
   - `.\.venv\Scripts\python.exe -m tax_graph.cli frontier --year 2025` -> worklist printed; coverage ~42.4% full SOI universe / 100.0% in-scope
   - `.\.venv\Scripts\python.exe -m tax_graph.cli validate 2025` -> graph integrity OK
   - `.\.venv\Scripts\python.exe -m tax_graph.cli run --facts examples\capital_gains_basic\facts.yaml --source yaml --no-record` -> Form 1040 line 7 = 2000
-  - `uv --directory C:\Users\devbox\projects\tax_graph run --no-dev python -m tax_graph.cli frontier --year 2025` -> base-runtime frontier query OK
+  - `uv --directory <repo-root> run --no-dev python -m tax_graph.cli frontier --year 2025` -> base-runtime frontier query OK
   - `.\.venv\Scripts\python.exe -m pytest` -> 180 passed, 5 skipped
   - `.\.venv\Scripts\python.exe tools\check_ascii.py` -> ASCII check OK
 - M9 Step 1:
@@ -605,7 +605,7 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
   - `.\.venv\Scripts\python.exe -m tax_graph.cli build 2025` -> built SQLite graph with tables=2
   - `.\.venv\Scripts\python.exe -m tax_graph.cli run --facts examples\capital_gains_basic\facts.yaml --source yaml --no-record` -> Form 1040 line 7 = 2000
   - `.\.venv\Scripts\python.exe -m tax_graph.cli run --facts examples\capital_gains_basic\facts.yaml --source sqlite --no-record` -> Form 1040 line 7 = 2000
-  - `uv --directory C:\Users\devbox\projects\tax_graph run --no-dev python -m tax_graph.cli run --facts examples\capital_gains_basic\facts.yaml --source yaml --no-record` -> Form 1040 line 7 = 2000
+  - `uv --directory <repo-root> run --no-dev python -m tax_graph.cli run --facts examples\capital_gains_basic\facts.yaml --source yaml --no-record` -> Form 1040 line 7 = 2000
   - `.\.venv\Scripts\python.exe -m pytest -m oracle` with `OTS_1040_2025_BIN` set -> 2 passed, 140 deselected
   - `.\.venv\Scripts\python.exe -m pytest` -> 137 passed, 5 skipped
   - `.\.venv\Scripts\python.exe tools\check_ascii.py` -> ASCII check OK
@@ -617,7 +617,7 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
   - `.\.venv\Scripts\python.exe -m tax_graph.cli oracle replay-corpus --year 2025 --source yaml` -> 20 scenarios, OK
   - `.\.venv\Scripts\python.exe -m pytest` -> 119 passed, 5 skipped
   - `.\.venv\Scripts\python.exe tools\check_ascii.py` -> ASCII check OK
-  - `uv --directory C:\Users\devbox\projects\tax_graph run --no-dev python -m tax_graph.cli run --facts examples\capital_gains_basic\facts.yaml --source yaml --no-record` -> Form 1040 line 7 = 2000
+  - `uv --directory <repo-root> run --no-dev python -m tax_graph.cli run --facts examples\capital_gains_basic\facts.yaml --source yaml --no-record` -> Form 1040 line 7 = 2000
 - M5 Step 1:
   - `.\.venv\Scripts\python.exe -m pytest -m m5` -> 2 passed, 85 deselected
   - `.\.venv\Scripts\python.exe tools\check_ascii.py` -> ASCII check OK
@@ -637,7 +637,7 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 - M5 phase exit:
   - `.\.venv\Scripts\python.exe -m pytest -m m5` -> 14 passed, 85 deselected
   - `.\.venv\Scripts\python.exe -m tax_graph.cli run --facts examples\capital_gains_basic\facts.yaml --source yaml --record-dir output\m5_exit` -> Form 1040 line 7 = 2000; memo + carryforward written
-  - `uv --directory C:\Users\devbox\projects\tax_graph run --no-dev python -m tax_graph.cli run --facts examples\capital_gains_basic\facts.yaml --source yaml --record-dir output\m5_base` -> Form 1040 line 7 = 2000; memo + carryforward written
+  - `uv --directory <repo-root> run --no-dev python -m tax_graph.cli run --facts examples\capital_gains_basic\facts.yaml --source yaml --record-dir output\m5_base` -> Form 1040 line 7 = 2000; memo + carryforward written
   - Generated `output\m5_exit\return_record_2025.carryforward.yaml` validated against `carryforward.schema.json`
   - `.\.venv\Scripts\python.exe -m pytest` -> 96 passed, 3 skipped
   - `.\.venv\Scripts\python.exe tools\check_ascii.py` -> ASCII check OK
@@ -655,7 +655,7 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
   - `.\.venv\Scripts\python.exe -m pytest -m m6` -> 22 passed, 2 skipped, 99 deselected
   - `.\.venv\Scripts\python.exe -m pytest` -> 118 passed, 5 skipped
   - `.\.venv\Scripts\python.exe tools\check_ascii.py` -> ASCII check OK
-  - `uv --directory C:\Users\devbox\projects\tax_graph run --no-dev python -m tax_graph.cli run --facts examples\capital_gains_basic\facts.yaml --source yaml --no-record` -> Form 1040 line 7 = 2000
+  - `uv --directory <repo-root> run --no-dev python -m tax_graph.cli run --facts examples\capital_gains_basic\facts.yaml --source yaml --no-record` -> Form 1040 line 7 = 2000
   - `.\.venv\Scripts\python.exe -m pytest -m oracle` -> 2 skipped, 121 deselected (no `OTS_1040_2025_BIN` configured)
   - `.\.venv\Scripts\python.exe -m tax_graph.cli oracle replay-corpus --year 2025 --source yaml` -> 20 scenarios, OK
 - M2 Step 1:

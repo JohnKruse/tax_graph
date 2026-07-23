@@ -9,241 +9,71 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 - **Architect:** answer there (and pin durable decisions into the relevant `PHASE_<id>.md`), then
   clear the item. Record active direction under **From Architect**.
 - Keep it short - move resolved items to **Resolved** or delete them.
-- History: pruned at each phase close (latest: M15R close, pruned 2026-07-16). Full narration lives in
+- History: pruned at each phase close (latest: 2026-07-23). Full narration lives in
   `plans/archive/` (phase plans with close notes) and git history.
 
 ## Current state (2026-07-23)
 
-**SESSION START CHECKPOINT - M16-S3 (Worker, Codex GPT-5, 2026-07-23):**
-Model is GPT-5; effort level is high; usage, quota, and context indicators are not
-exposed. The single declared step is M16-S3: structure-first field-identity resolver,
-focused tests, and read-only 9-form corpus comparison report; exactly one local commit,
-no push. Canary: Straight Line. No implementation or verification command has run in
-this session. Planned Tier-1 focused files: `tests/test_field_identity_m16.py` and
-`tests/test_schedule_2_m16.py`; pytest will use `.pytest_tmp` and run sequentially.
-Pending: inspect resolver/adjacency contracts, implement the bounded resolver and tests,
-checkpoint before expensive verification, run the declared focused tests plus fast gates,
-update this handoff and BALL, and commit exactly once.
+**BALL: JOHN - two items, then the M16-S4 Worker round.**
+1. **GitHub Actions is blocked on account billing.** CI for `0f7ce2c` failed at job
+   STARTUP with "recent account payments have failed or your spending limit needs to
+   be increased" - zero steps ran; this is NOT a code failure. Fix Billing and plans,
+   or make the repo public (public repos get free unlimited Actions), then
+   `gh run rerun 30001728782` and watch it green. Local Tier 1 on `0f7ce2c` was fully
+   green. No autonomous Worker round launches while Tier 2 is unavailable, per the
+   amended commit floor.
+2. **Review `plans/M16_S3_RESOLVER_REPORT.md`** - its findings define the M16-S4
+   validator contracts (8949 table columns, W-2 box templates, and 13614-C wrapperless
+   fields are the honest unresolved blocks awaiting a contract).
 
-**PRE-VERIFICATION CHECKPOINT - M16-S3 (Worker, Codex GPT-5, 2026-07-23):**
-Implemented `tax_graph/output/field_identity.py` and focused tests in
-`tests/test_field_identity_m16.py`; the untouched `tests/test_schedule_2_m16.py`
-remains strict-xfail. Focused result is 7 passed, 1 xfailed with `.pytest_tmp`.
-The resolver is read-only and uses qualified line/box wrappers, same-row qualified
-inheritance, and the pinned `z -> 1z` anchor repair; no validators, artifact
-regeneration, promoted artifacts, field maps, bindings, citations, or modeled tax
-logic changed. Pending: run the read-only 9-form comparison, write its report,
-rerun declared focused tests, then ASCII, diff check, validate 2025, and unchanged
-real preflight at `legacy_mined=394` before the single local commit.
+Then: Architect drafts **M16-S4** (Stream B fail-closed structural validators).
 
-Verification note: the foreground `workbench.cli preflight --year 2025` command
-hit the known 120-second launcher cap with no output; this is not counted as a
-pass. The read-only command will be rerun in background mode with captured output.
+**M16 status:** ACTIVE (`plans/PHASE_M16.md`, canary Straight Line).
+- **S1 [DONE] `17d2351`** - Schedule 2 Part I characterization + strict-xfail acceptance
+  fixture (`tests/test_schedule_2_m16.py`). It stays xfail until regenerated artifacts land.
+- **S2 [DONE] `fc2a6c1`** - Stream A extraction typing: headings become non-fillable
+  concepts instead of currency form_lines, `value_type` is inferred from the printed
+  control, and PDF-present totals are emitted or explicitly out-of-profile. Also fixed
+  the OCR anchor split (`z` -> `1z`) that was swallowing the Schedule 2 line 1z total.
+- **S3 [DONE] `0f7ce2c`** - Stream B resolver core, read-only:
+  `tax_graph/output/field_identity.py` derives each control's `(line, role)` from
+  qualified field-name structure, same-row wrapper inheritance, and caption adjacency -
+  never geometry or label mining - and returns `unresolved` rather than guessing. Ships
+  with the read-only 9-form corpus comparison report.
+- **NEXT: S4** - fail-closed structural validators; then S5 corpus regeneration.
 
-**SESSION START CHECKPOINT - M16-S2 (Worker, Codex GPT-5, 2026-07-23):**
-Model is GPT-5; effort level is high; usage, quota, and context indicators are not
-exposed. The single declared step is M16-S2: Stream A semantic extraction typing
-code plus focused tests only, one local commit, no push. Python executes through the
-fixed in-workspace `.venv\Scripts\python.exe`. No implementation or verification
-command had run at checkpoint. Canary: Straight Line. Pending: implement the bounded
-typing changes, checkpoint before the full-floor phase, run sequential verification,
-update this handoff and BALL, and commit exactly once.
-
-**PRE-FLOOR CHECKPOINT - M16-S2 (Worker, Codex GPT-5, 2026-07-23):**
-Stream A code and focused tests are implemented. Focused extraction plus legacy M4 and
-Schedule D partitions are green at 16 passed. The inline Schedule 2 slice now emits
-the line-1 heading as `concept/string` and the printed line-1z total as
-`form_line/currency`; the real cached Schedule 2 outline completeness smoke is green.
-The S1 fixture remains untouched and strict-xfail. No promoted artifacts, field maps,
-bindings, citations, or modeled tax logic changed. Pytest must use the workspace
-`.pytest_tmp` basetemp because the default AppData temp root is denied by this sandbox.
-Pending: sequential floor partitions, ASCII, diff check, validate 2025, unchanged real
-preflight at `legacy_mined=394`, final handoff, and the single local commit.
-
-**SESSION START CHECKPOINT - M16-S2 (Worker, Codex GPT-5, 2026-07-22):**
-Model is GPT-5 Codex; effort level is default; no usage/quota/context indicators
-are exposed. The single declared step is M16-S2: Stream A semantic extraction
-typing code plus focused tests only, one local commit, no push. No implementation
-or verification command has run in this session. Pending: inspect extraction
-contracts and fixtures, implement the bounded typing changes, checkpoint before
-the full-floor phase, run sequential verification, update this handoff and BALL,
-and commit exactly once.
-
-**BALL: ARCHITECT - M16-S3 ACCEPTED and committed/pushed by the Architect
-(2026-07-23); next round is M16-S4 (Stream B fail-closed structural
-validators) - Architect drafts the task after John reviews the resolver
-report.** The FIRST successful fully-autonomous headless round: Codex
-(Luna/High, `codex exec -s workspace-write`, 265,692 tokens) implemented the
-resolver, tests, and read-only 9-form report, then stopped honestly at real
-preflight - its sandbox's 124s per-command cap, NOT a venv failure (the
-in-workspace venv executed Python all session; the fix HOLDS in headless
-mode). Architect completed Tier 1 (focused 7 passed + 1 strict xfail; ASCII;
-diff-check; validate; real preflight `legacy_mined=394` unchanged), fixed
-one test defect inline (raw-cache guard used a CWD-relative path - now
-ROOT-anchored), and committed/pushed. DIVISION OF LABOR pinned for future
-autonomous rounds: real preflight is Architect-side whenever the Worker
-launcher cap bites; the Worker records the attempt and stops clean. Resolver
-report headline: Schedule 2 exemplar fully resolves from raw structure;
-structure-wrapped forms agree well; 8949 table columns and 13614-C
-wrapperless fields are honest unresolved findings awaiting the S4/S5
-contracts (see `plans/M16_S3_RESOLVER_REPORT.md`). M16-S2 remains
-ARCHITECT-VERIFIED and ACCEPTED.** Verification under the NEW granular-tier floor
-(John's v2 amendment, pinned in standing rules below): diff review clean and
-in-bounds (extract-only; `concept` is a pre-existing schema node_type; the
-line-1z fix is the `_canonical_line_anchor` OCR-split repair; S1 fixture
-untouched); fresh-checkout sim (reduced, rationale: new tests are
-inline-text) - 4/4 new tests pass on a bare checkout, full-suite COLLECTION
-clean at 490 tests; gates + `validate 2025` + real preflight
-`legacy_mined=394` green; local not-m15 partition (the one exercising
-extraction) 370 passed + 6 skipped + 1 xfailed. The local m15 partition was
-deliberately NOT run - extract-only diff cannot reach it; CI's full matrix
-covers it (John's ruling). The Worker's four "sandbox dependency-collection
-errors" were its-sandbox-only (AppData temp denial); none reproduced in the
-Architect environment or the fresh sim. Worker environment fix HELD all
-session (in-workspace venv; use `.pytest_tmp` basetemp in Codex sessions).
-ENVIRONMENT FIX RECORD: the recurring denial was the venv launcher shim
-spawning the OUT-OF-WORKSPACE base interpreter (AppData Python313), which
-the Codex sandbox denies per-session; no machine restart ever occurred
-(last boot 2026-07-19 20:31) and none is needed. Fix: the base interpreter
-is mirrored to `.python313/` inside the repo (gitignored) and `.venv` is
-rebuilt on it - pyvenv.cfg `home` is now in-workspace - with deps resynced
-from uv.lock under the same extras. Verified: schedule_2 fixture smoke
-(1 passed + 1 xfailed) and quick regressions (6 passed). Two idle 13:07
-orphans holding `.venv` were stopped (PIDs 10840/11384); six other idle
-orphans persist until next reboot, harmless. Old venv kept at
-`.venv_old_shim/` for rollback until S2 lands. Superseded stop record
-(kept as history):
-The task and boundaries remain in From Architect (M16-S2). `python` is not
-available on PATH, and the canonical `.venv\Scripts\python.exe --version`
-probe fails with `Access is denied`. No implementation code, focused tests,
-validation, preflight, full-floor partition, commit, or push ran in this
-session. The handoff checkpoint below and this stop record are the only edits.
-[superseded sequence removed - the environment is fixed above; no restart
-needed. John pastes the M16-S2 Architect prompt into interactive Codex.] M16-CI is IMPLEMENTED, floor-
-verified, COMMITTED (`7087d9a`) and PUSHED (`baa6fd5..7087d9a`, all 16
-commits). CI on `7087d9a`: FULLY GREEN, all four jobs (base 16s, py3.13
-32m49s, py3.11 47m30s, py3.12 53m26s) - the first fully green CI run since
-2026-07-14, Architect-watched to completion (run 29956182510). After the Worker environment stop (venv/pytest `Access is denied`,
-no `uv`; answered Open item below), John chose direct Architect implementation
-(2026-07-22). What landed (one commit at this HEAD): (1) the CI test job now
-syncs `--extra dev --extra workbench --extra workbench-dev` (the actually
-missing CI modules were `flask`/`werkzeug` via the never-synced existing
-`workbench` extra, plus playwright; no pyproject change needed), installs the
-chromium browser, and builds the sqlite artifact before pytest; (2) every
-fresh-checkout-hostile test is guarded with an explicit skip on its TRUE
-dependency: `.cache/raw/2025` official PDFs (campaign fixtures, adjacency,
-PDF-echo, schedule-2 raw fields), `graph/2025/_drafts` (live manifest/
-semantics/preflight/page-evidence/server/write-api/e2e/link cross-form), and
-`graph_ext/2025/form_2441_2025` (live queue migration + both contribution
-tests; the 2441 scope ValueError REPRODUCED at HEAD and is gated per the
-pre-ruling, not code-fixed). Verification: fresh-checkout sim (new worktree,
-fresh `uv sync`, new CI sequence) - ascii/validate/example/build green, pytest
-m15 68 passed + 45 skipped, not-m15 356 passed + 17 skipped, ZERO failures or
-errors; local floor - m15 113 passed + 0 skipped, not-m15 366 passed + 6
-skipped + 1 xfailed, plus a focused 69-passed zero-skip guard proof; ASCII,
-`git diff --check`, `validate 2025`, real preflight green at 3,243 units with
-`legacy_mined=394` (ratchet unchanged). Local coverage shrank nowhere; sim
-skips are the honest CI contract (parity checkouts have no acquired PDFs,
-drafts, or extension). `plans/PHASE_M16.md` flipped to ACTIVE with S1 [DONE].
-Op note: eight orphaned idle python processes from 13:07 (Worker session
-window) - sweep after push with `tax-graph serve --sweep-orphans`, no raw
-kills.
-
-**SESSION START CHECKPOINT - M16-CI (Worker, Codex GPT 5.6 Luna, 2026-07-22):**
-Model is GPT 5.6 Luna; effort = Medium. No usage/quota/context indicators are exposed.
-The single declared step is M16-CI: restore the fresh-checkout CI floor under all six
-binding rulings, verify the prescribed local and fresh-worktree sequences, make exactly
-one local commit, and do not push. No implementation or verification command has run in
-this session. Pending: inspect CI/worktree state, apply only authorized CI/test guards,
-checkpoint before the full-floor phase, run verification, update this handoff and BALL,
-and create the required commit.
-
-**Superseded 2026-07-20/21 BALL (kept as history this round):** A9 HAND
-CAMPAIGN PAUSED AT A9h; PIVOT TO THE FIELD-IDENTITY
-PIPELINE (John, 2026-07-21).** The Schedule 2 audit surfaced a CONFIRMED
-extraction/promotion defect (not a placement shift): the heading node
-`schedule_2_2025_part_i_line_1` ("Additions to tax:", citation-confirmed) is mapped
-as a currency cell onto `f1_15`, which the PDF's own `Line4_ReadOrder` grouping +
-Form 4361/4029 exemption checkboxes prove is LINE 4 (Self-employment tax); the whole
-Part I far-right column is mis-attributed (`f1_13`=line 3 labeled "line 1z/line 17",
-`f1_11`=line 1z total, Line 4 exemption boxes labeled "Line 1"), and the line 1z
-total has NO node. Full verified evidence + ruling in the From Architect entry below.
-John's decision: STOP hand-authoring forms one at a time and FIX THE PIPELINE - build
-the structure-first field-identity resolver + fail-closed structural validators that
-A9 has been approximating by hand, with Schedule 2 Part I as the acceptance exemplar.
-This is rollover seam 5 / guiding invariant 6 pulled forward, not a detour. A9a-A9g
-(9 of 15 forms, `legacy_mined` 1443->394) STAND as the regression corpus the resolver
-must reproduce; A9h..A9z, A10, A11, A6 are PAUSED, not cancelled. John chose the FULL
-scope: fix BOTH layers - semantic extraction typing AND field-identity binding.
-Architect DRAFTED the phase: `plans/PHASE_M16.md` (canary Straight Line) + milestone
-pointer in `docs/engineering-plan.md`; first Worker task is M16-S1 (read-only
-characterization of the Schedule 2 defect turned into an xfail acceptance fixture, no
-code changes). RESOLVED (John, 2026-07-21): M16 is the ENGINE that finishes the
-remaining forms; the A9h..A9z hand campaign is RETIRED/superseded by M16 (marked in
-`plans/PHASE_M15.md`), and Gate A is DECOUPLED from remaining-form completion - it
-closes on the workbench + forms already done, the pipeline finishes the rest into the
-same surface. NEXT: launch M16-S1; no per-form hand authoring resumes. Committed campaign work
-is unchanged and unpushed. WORKFLOW: headless `codex exec` retired; interactive Worker
-sessions launched by John pasting an Architect prompt, escalate approval for denied
-commands. A9a `476e7ee`, A9b `0ec62ae`, A9c `82e07aa`+`1fb34b7`+`1e55e72`, A9d
-`e0d367f`+`1c03019`, A9e `492698f`, A9f `29eeeed`, A9g `983303f`
-(Architect-verified: preflight `legacy_mined=394`, validate, 48 focused tests, static
-gates all green). Gate A open through A13; S17+ blocked.
-Canary: Straight Line. M16-S1 is complete locally (Worker, Codex GPT-5, 2026-07-22):
-characterized Schedule 2 Part I from the raw AcroForm, official PDF text, graph
-nodes, field map, widget bindings, and citations; added the plan-referenced defect
-note and strict xfail acceptance fixture. No extraction, resolver, field-map, or
-graph code changed. Focused fixture: 1 passed, 1 xfailed. `validate 2025`, ASCII,
-and `git diff --check` pass. M15 review-schema partition: 7 passed; first four
-manifest regressions: 4 passed. The monolithic `pytest -m m15` and larger/some
-remaining manifest/workbench partitions hit the 124-second launcher timeout with
-no test output; no M15 failure is asserted, but the complete M15 floor is not
-claimed. No preflight ratchet change. One local commit, no push.
-(Whoever finishes a turn: update this BALL line - it is the first thing read.)
-
-**Step ledger:** M15 S1-S16 and A1-A3 are [DONE], pushed, and marked in the plan; M15R
-R1-R15 are [DONE] and archived. Per-step verification narration was pruned 2026-07-16;
-it lives in git history and `plans/archive/PHASE_M15R.md`.
+**Step ledger:** M15 S1-S16 and A1-A3 are [DONE] and pushed; M15R R1-R15 are [DONE] and
+archived. M15 Gate A is PAUSED and DECOUPLED from remaining-form completion (John,
+2026-07-21): it closes on the workbench plus the forms already done, and the M16 pipeline
+finishes the rest into the same surface. The A9h..A9z hand campaign is RETIRED/superseded
+by M16 (marked in `plans/PHASE_M15.md`); A9a-A9g (9 of 15 forms, `legacy_mined` 1443 ->
+394; commits `476e7ee`, `0ec62ae`, `82e07aa`+`1fb34b7`+`1e55e72`, `e0d367f`+`1c03019`,
+`492698f`, `29eeeed`, `983303f`) STAND as the regression corpus the resolver must
+reproduce. A10, A11, A6 are PAUSED, not cancelled. Gate A open through A13; S17+ blocked.
 
 **Durable context:** John's 2026-07-14 Form 1040 review exposed the label/node-id/
 PDF-field-name identity defect that M15R fixed with canonical addresses. His Gate A
 feedback and the all-forms scope clarification are pinned as the correction invariants in
 `plans/PHASE_M15.md`; the 2026-07-16 round-2 feedback is pinned in that plan's Gate A
-round-2 section. Every fillable/checkable control on every exposed form must carry
-exactly one population policy and be reviewable - no undefined cells, ever.
+round-2 section. Every fillable/checkable control on every exposed form must carry exactly
+one population policy and be reviewable - no undefined cells, ever.
 
-**Standing worker runtime method:** the ~10-min full suite cannot finish in one
-foreground sandbox call - run it in the background or split it in half. Per step the
-Worker runs `pytest -m m15` + the step's focused tests + ASCII; the Architect confirms
-the full-suite floor and pushes. Never commit a step on a partial suite run.
-`human_confirmed: true` is earned only through the reviewed verdict-application
-pipeline; `mine-examples --confirm` remains the last soft path until S27 removes it.
+**Project state:** M0-M14 are COMPLETE and archived (`plans/archive/`, each with a close
+note). THE GRAPH COMPUTES TAX, FILES IT, AND IS STAGED TO SHIP (alpha): computation and
+witnesses through M13 (line 16 under OTS + IRS adjudication over the widened Schedule D
+domain; filled official PDFs; return-scoped outputs); M14 added the product surface
+(installable artifacts, extension harness, intake v1). M15 (Review Workbench + review
+campaign) is THE PRE-SHIP GATE. Year rollover (TY2026) stays sequenced after M15 or when
+TY2026 docs drop.
 
-Prior state: M14 (Product surface, canary Open Door) is COMPLETE and archived
-(`plans/archive/PHASE_M14.md`); all five steps [DONE], every exit criterion met with real
-live passes. What M14 landed: serve-lifecycle hardening (parent watchdog - fixed twice on
-Windows, orphan sweep dogfooded live); packaging (wheel with embedded runtime assets,
-.mcpb bundle that ships the WHEEL and never source-builds, server.json, tag/dispatch
-release workflow with a triple-gated inert publish job - dry run green in CI); the
-self-serve extension harness (overlay + collision hard-error, gate: project|user
-provenance axis end to end, content-hash no-impersonation proven by live tamper,
-extend doctor/run/accept/package, form_2441 pilot accepted as an honest user-gated T0
-island); and intake v1 (three additive relevance kinds with verbatim re-mined citations
-from acquired sources, 90-box + 13614-C inventories enforced in validate, deterministic
-local classifier over committed fixtures, fail-closed consent, intake CLI + MCP tools,
-Return Record provenance). The in-app Claude Desktop live pass closed Step 2
-triple-witnessed: John's chat, the Architect's pre-verified engine run, and the
-Architect's direct call to the extension server (MFS loss-limit scenario:
-line 16 = -4500, line 21 = -1500, 1040 line 7 = -1500).
-M15 (Review Workbench + review campaign) is THE PRE-SHIP GATE and is ACTIVE per the
-BALL above; the review queue below is its raw material. Year rollover (TY2026) stays
-sequenced after M15 or when TY2026 docs drop.
-
-- **M0-M14 are COMPLETE and archived** (see `plans/archive/`, each with a close note).
-- **THE GRAPH COMPUTES TAX, FILES IT, AND IS STAGED TO SHIP (alpha).** Computation and
-  witnesses through M13 (line 16 under OTS + IRS adjudication over the widened Schedule D
-  domain; filled official PDFs; return-scoped outputs). M14 added the product surface:
-  installable artifacts, extension harness, intake v1.
+- **Public-repo prep (John, 2026-07-23):** the repo is being readied to flip from private
+  to public. Two independent audits (Architect + Worker) found NO secrets, keys, tokens,
+  or taxpayer PII in the tree, in reachable history, or in dangling commits. Committed
+  machine paths were removed from `README.md`, `AGENTS.md`, and `plans/archive/PHASE_M6.md`,
+  and this handoff was pruned. Open judgment call left to John: commit-author emails remain
+  in history (a rewrite would invalidate every SHA this doc cites - not recommended).
+  Never include ignored local artifacts (`_drafts`, `.cache`, `output`, workbench output)
+  in any archive or upload.
 - **John-only distribution checklist (post-close actions; artifacts staged + verified):**
   1. Configure PyPI trusted publishing for project `tax-graph` (repo `JohnKruse/tax_graph`,
      workflow `.github/workflows/release.yml`, environment `pypi`) at
@@ -270,7 +100,10 @@ sequenced after M15 or when TY2026 docs drop.
   over the `m6_seed1315` corpus, refreeze `pe_liability_2025.json`, re-enable the two
   skipped tests; do NOT claim dual-witness on the widened domain until then. (2)
   parameter-diff HoH top-bracket floor (626350 cited vs 375800 fixture) - source review,
-  never edit the cited graph parameter without it.
+  never edit the cited graph parameter without it. (3) The form-2441 extension queue entry
+  cannot derive object scope on a parity checkout (no installed extension); the live
+  migration and contribution tests are GATED on `graph_ext/2025/form_2441_2025` being
+  present, not fixed - it resurfaces when that review lands.
 - **Standing rules (cumulative):** ASCII only (pre-push hook `.githooks/pre-push` +
   CI enforce; enable per clone with `git config core.hooksPath .githooks`); hermetic
   tests - no `_drafts` reads, no shared `build/` artifacts (tmp sqlite), and a machine
@@ -293,893 +126,111 @@ sequenced after M15 or when TY2026 docs drop.
   citations are verbatim-from-acquired-source ONLY - `check_citation_integrity` has
   teeth, use it (the M14 fabricated-citations reopen is the precedent); John-only
   outward actions - no agent publishes, submits, or uploads.
-- **Recurring op note:** orphaned `serve` processes now have first-class tooling -
+- **Worker environment (2026-07-23):** the recurring `Access is denied` on
+  `.venv\Scripts\python.exe` was the venv launcher shim spawning the OUT-OF-WORKSPACE base
+  interpreter, which the Codex sandbox denies per session (it is NOT a machine state and no
+  restart fixes it). Fixed by mirroring the base interpreter to `.python313/` inside the
+  repo (gitignored) and rebuilding `.venv` on it, so `pyvenv.cfg home` is in-workspace.
+  Workers call `.venv\Scripts\python.exe` directly - no `uv` needed - and must use the
+  workspace `.pytest_tmp` basetemp (the sandbox denies the AppData temp root). Commands
+  exceeding the Worker's ~124s launcher cap (notably real preflight) are Architect-side:
+  the Worker records the attempt and stops clean.
+- **Recurring op note:** orphaned `serve` processes have first-class tooling -
   `tax-graph serve --sweep-orphans` (dogfooded live on a real orphan). The parent
   watchdog works on Windows as of M14 (OpenProcess probe; the os.kill(pid,0) probe was
   inert). Serve writes stderr breadcrumbs (`tax-graph serve: starting/...`) that Claude
   Desktop logs verbatim - first stop when a client-managed server dies.
-- **Worker-attribution (tier metrics), M14:** Steps 1-5 implemented by Codex (GPT 5.6
-  Luna, Xtra High); Architect (Opus 4.8) verified every step and fixed in-line: the
-  .mcpb source-build defect + repack, the inert Windows watchdog + real-process tests,
-  serve breadcrumbs, the Step-1 shared-sqlite hermetic violation, the Step-4 reopen
-  (fabricated citations - Luna re-mined honestly), the parity include_extensions fix,
-  and the Step-5 record-hash ordering fix. Step 2's live pass was John + Architect.
 
 ## Open for Architect
-- **M16-S3 environment stop (Worker, Codex GPT-5, 2026-07-23):** Implementation,
-  focused tests, and the read-only resolver report are complete in the worktree.
-  Focused Tier-1 files `tests/test_field_identity_m16.py` and the untouched
-  `tests/test_schedule_2_m16.py` are green at 7 passed + 1 strict xfailed;
-  ASCII, `git diff --check`, and `tax_graph.cli validate 2025` are green. The
-  required real `workbench.cli preflight --year 2025` was attempted in the
-  foreground and hit the 120-second launcher cap with no result. A fresh
-  `load_artifact_bundle` completed, but `build_manifest` exceeded the same
-  window. The split validator against stale `.workbench_state/2025/review_manifest.json`
-  failed closed on existing `invalid_display_name` issues, so it is not a
-  ratchet result. Multiple background/detached launches produced no surviving
-  process or capture output. Per the environment-failure stop rule, no commit
-  was made and no push was attempted. Pending: Architect-provided runtime path
-  for the current real preflight, then require `legacy_mined=394`, final diff
-  review, and exactly one local commit. No promoted artifacts, validators,
-  regeneration, field maps, bindings, citations, or modeled tax logic changed.
-- **M16-S2 floor limitation (Worker, Codex GPT-5, 2026-07-23):** Python executed
-  through the fixed in-workspace venv. The aggregate `pytest -m m15` collection
-  hit access-denied imports for `greenlet`/Playwright and Flask in the four
-  hostile modules `tests/e2e`, `test_workbench_page_evidence_m15.py`,
-  `test_workbench_server_m15.py`, and `test_workbench_write_api_m15.py`.
-  Smaller sequential M15 partitions timed out without failures at 53 dots/180s
-  and 11 dots/120s; the first explicit non-M15 partition timed out without
-  failures at 59 dots/180s. No full-floor green claim is made. The focused and
-  core extraction partitions are green, and all required static/live gates below
-  are green. Architect should batch-verify the full floor in the normal runtime.
-
-- **M16-S2 environment stop (Worker, Codex GPT-5, 2026-07-22):** Python could
-  not execute. [ARCHITECT CORRECTION: the record originally said "after the
-  restart" - NO restart occurred; last boot is 2026-07-19 20:31 (verified via
-  Win32_OperatingSystem). The Worker inferred the restart from the BALL's
-  planned sequence. Same-boot evidence (A9g floors and M16-S1 ran Python fine
-  on this very boot) proves the denial is Codex-session sandbox state, not
-  machine state: the venv launcher shim is allowed but its spawn of the
-  out-of-workspace base interpreter is denied, and the sandbox PATH carries no
-  python/py/uv. Fix lives in Codex sandbox/approval config, an in-workspace
-  --copies venv, or edit-only Worker rounds. Workers: record only OBSERVED
-  environment facts, never assumed ones.] `python --version` failed because `python`
-  is not recognized, and `.venv\Scripts\python.exe --version` failed with
-  `Unable to create process ... Access is denied.` Per the pinned stop rule,
-  implementation and all verification stopped immediately. No focused tests,
-  validation, preflight, full-floor partition, commit, or push ran. Pending:
-  restore executable Python, then resume M16-S2 from inspection; the only
-  current worktree change is this handoff checkpoint/stop record.
-
-## From Worker (M16-S1 complete)
-
-- **M16-S2 implementation and focused tests (Worker, Codex GPT-5, 2026-07-23):**
-  Propagated outline section/heading kinds into draft nodes using schema-safe
-  non-fillable `concept` nodes, canonicalized OCR-split printed anchors such as
-  `z` -> `1z`, and emitted the printed total node. Centralized value-type inference
-  from printed labels and AcroForm control metadata for currency, text, date, and
-  checkbox controls; formula outputs remain computed currency. Added four focused
-  M16 tests in `tests/test_extract_m16.py`. Focused extraction, M4, and Schedule D
-  partitions: 16 passed. The extraction/core regression partition added 32 passed.
-  The untouched S1 fixture is 1 passed + 1 strict xfailed. ASCII, `git diff --check`,
-  `validate 2025`, and real preflight passed; preflight remains at 3,243 units with
-  `legacy_mined=394`. No promoted graph/field-map/binding/citation artifacts, S1
-  fixture, Stream B code, or modeled tax logic changed. The full-floor limitation is
-  recorded under Open for Architect. One local commit is complete; no push.
-
-- **M16-S1 complete (Worker, Codex GPT-5, 2026-07-22):** Added the Schedule 2 Part I
-  end-to-end characterization and executable strict-xfail acceptance fixture in
-  `plans/PHASE_M16.md` and `tests/test_schedule_2_m16.py`. The fixture locks the
-  `Line4_ReadOrder` wrapper, Form 4361/4029 controls, indented/far-right geometry,
-  current heading/line-1z mis-attribution, citation evidence, target identities,
-  and fail-closed expectations. Focused result: 1 passed, 1 xfailed. `validate 2025`,
-  ASCII, and `git diff --check` pass. M15 schema subset is 7 passed and four
-  manifest tests are 4 passed; larger M15/manifest/workbench runs timed out at the
-  launcher limit without output, so no full M15 green claim is made. No preflight
-  ratchet or implementation code changed. Local commit follows; no push.
-
-- **A9h BLOCKED after complete official-PDF audit; no authoring begun (Worker, Codex
-  GPT-5, 2026-07-21):** Audited all 63 inventory widgets and all 21 promoted mappings
-  against `.cache/raw/2025/schedule_2_2025.pdf`, including page, rectangle, widget type,
-  printed number/caption adjacency, and modeled node identity. The audit found the
-  stop-worthy line-1/line-4 semantic mismatch recorded under Open for Architect, plus
-  the independently geometry-proven 17z/18 single-cell shift recorded there. The other
-  19 promoted placements align with their printed rows. No exemption decisions were
-  needed because authoring did not begin. Only this handoff was edited; campaign code,
-  address/binding artifacts, field maps, goldens, and geometry remain untouched.
-  Focused tests and the pinned floor were intentionally not started after the required
-  stop. Pending: Architect ruling, then the full 63-control authoring campaign, any
-  authorized remap regressions, focused tests, pre-floor checkpoint, sequential M15 and
-  non-M15 partitions, real preflight with Schedule 2 zero and `legacy_mined < 394`,
-  validate, ASCII, whitespace, final handoff, and the A9h implementation commit. No push.
-- **Session start (Worker, Codex GPT-5, 2026-07-21):** Single declared step is A9h,
-  author Schedule 2's 63 legacy controls under the pinned A9 contract, producing one
-  local commit and no push. Effort level is not exposed by this environment; no numeric
-  context, usage, or quota indicators are exposed. Repository was clean at `983303f`.
-  Audit against the local official PDF precedes campaign-code changes. Checkpoint again
-  before authoring and before the full floor.
+- (none)
 
 ## From Architect
-- **M16-S3 TASK - STREAM B RESOLVER CORE (Architect, Claude Opus 4.8,
-  2026-07-23; autonomous headless round authorized by John, effort High).**
-  Scope for THIS round: the structure-first field-identity RESOLVER plus
-  focused tests plus a READ-ONLY corpus comparison. NO validators (that is
-  S4), NO artifact regeneration (S5), NO promoted-artifact edits.
-  1. New module under `tax_graph/output/` (suggested `field_identity.py`):
-     derive each AcroForm control's `(line, role)` identity from the
-     qualified field-name structure (`LineNN_ReadOrder`, row/copy wrappers,
-     table groupings) plus printed-caption adjacency (REUSE the A9c/A9d
-     number-bearing adjacency machinery), not geometry/label mining.
-  2. Focused tests with Schedule 2 Part I as the worked exemplar: from the
-     raw AcroForm + rendered text alone the resolver must yield f1_15 ->
-     line 4 (SE tax), f1_13 -> line 3, f1_11 -> line 1z total, and the
-     `Line4_ReadOrder` checkboxes -> line-4 exemptions. Inline/synthetic
-     fixtures where possible; any raw-cache read uses the pinned
-     skip-if-missing guard idiom (fresh checkouts carry no `.cache`).
-  3. Read-only corpus comparison: run the resolver over the 9 committed A9
-     forms and compare derived identities against the authored address
-     registries; commit a characterization report
-     (`plans/M16_S3_RESOLVER_REPORT.md`) counting agreement / disagreement /
-     unresolved per form with exemplar rows. Disagreements are FINDINGS for
-     Architect review - do not "fix" either side.
-  4. Tier-1 floor per the amended standing rule: DECLARE your focused test
-     files in this handoff, run them plus fast gates (ASCII,
-     `git diff --check`, `validate 2025`, real preflight unchanged at
-     `legacy_mined=394`). Use the `.pytest_tmp` basetemp. Sequential pytest
-     only. No full partitions - Tier 2 is CI on the Architect's push.
-  5. Stop conditions unchanged: an identity that cannot be established
-     without guessing, any need to touch promoted artifacts, or a
-     quota/environment failure -> stop, record under Open for Architect,
-     update the BALL. Exactly one local commit; no push. Session budget
-     rules apply (state model/effort first, single declared step,
-     checkpoint before expensive phases).
-- **M16-S2 TASK - STREAM A SEMANTIC EXTRACTION TYPING (Architect, Claude Opus
-  4.8, 2026-07-22).** Scope is `plans/PHASE_M16.md` Stream A, CODE + FOCUSED
-  TESTS ONLY this round:
-  1. Propagate the outline's section/heading distinction through assembly:
-     introduce a non-fillable node kind so a heading never becomes a fillable
-     currency line. The collapse point is `tax_graph/extract/assembly.py`
-     (`_node_object`, the `node_type: form_line` + `value_type: currency`
-     hardcoding around lines 171-172).
-  2. Infer `value_type` from the printed control (currency / text / date /
-     identifier / checkbox) instead of hardcoding currency; the existing
-     per-form differentiation (Schedule 1 dates, SSNs) shows the signal -
-     make it the rule.
-  3. Emit form totals present on the PDF (e.g. Schedule 2 line 1z) as nodes,
-     or mark them explicitly out-of-profile - never absent-and-unaccounted.
-  4. Prove behavior with focused extraction unit tests on committed fixtures
-     (the test_extract_m4 / outline test patterns). Schedule 2 Part I is the
-     worked example wherever a fixture is needed.
-  HARD BOUNDARIES: do NOT regenerate or edit promoted graph artifacts, field
-  maps, bindings, or citations (corpus regeneration is M16-S4); do NOT start
-  Stream B (resolver/validators); the M16-S1 fixture in
-  `tests/test_schedule_2_m16.py` must REMAIN strict-xfail (it flips only when
-  regenerated artifacts land) - do not touch its assertions or markers; no
-  modeled tax logic, edges, formulas, or cited parameters change. Floor per
-  the standing method: focused set + sequential partitions as able (SEQUENTIAL
-  ONLY - concurrent pytest orphans children on this box), record launcher
-  timeouts honestly, ASCII, `git diff --check`, `validate 2025`, real
-  preflight unchanged at `legacy_mined=394`. One local commit, no push;
-  Architect batch-verifies (including the fresh-checkout CI sim) and pushes.
-  Session budget rules apply: state model/effort first, declare the single
-  step, checkpoint before expensive phases, stop-and-record on any quota or
-  environment failure.
-- **M16-CI IMPLEMENTED BY ARCHITECT (Claude Opus 4.8, 2026-07-22; John's
-  decision after the Worker environment stop).** Full record in the BALL.
-  Deltas vs the original rulings, all within their letter or pre-authorized:
-  ruling 1's playwright diagnosis was incomplete - the missing CI modules were
-  `flask`/`werkzeug` (the existing `workbench` extra was never synced in CI)
-  plus playwright; fixed by syncing three extras, no pyproject change. Ruling
-  3's 2441 ValueError reproduced at HEAD; the pre-authorized narrow gate was
-  applied (skip on missing `graph_ext/2025/form_2441_2025`) and extended to the
-  two 2441 contribution tests with the same probe. Ruling 4's discovery found
-  two additional live-dependency families beyond `.cache`: `graph/2025/_drafts`
-  readers (the whole live manifest stack + `link_outbound_flows`) and
-  `graph_ext` readers - guarded with the same whole-test skip idiom on the true
-  dependency. e2e collects and runs on CI up to the drafts guard (browsers are
-  installed; the server fixture skips on parity checkouts) - the last-resort
-  e2e deselect was NOT needed. No graph/, field-map, extraction, resolver,
-  ratchet, or fixture-semantics changes anywhere.
-- **M16-CI RULING + TASK (Architect, Claude Opus 4.8, 2026-07-22; John
-  authorized one Luna Medium Worker round).** Goal: a green CI sequence
-  (check_ascii, `validate 2025`, capital-gains example, `pytest`) on a FRESH
-  checkout - i.e. real CI - while weakening nothing locally. Exactly one local
-  commit: `ci: restore green floor on fresh checkouts (M16-CI)`. Binding
-  rulings:
-  1. **Playwright/collection.** The CI test job syncs
-     `--extra dev --extra workbench-dev` (exactly the missing extra; do NOT
-     switch to `--all-extras`) and adds `uv run playwright install chromium
-     --with-deps` before pytest (CI-only behavior; the local sim may rely on
-     already-installed browsers). tests/e2e and the three failing workbench
-     modules must COLLECT and RUN on CI. Last resort ONLY if e2e cannot be made
-     runnable on CI inside this round: deselect e2e in the CI pytest invocation
-     alone, record it in the handoff AND leave an Open for Architect item -
-     never silently.
-  2. **Compiled artifact.** Add `uv run tax-graph build 2025` to the CI test
-     job before pytest (mirrors the runtime-base job). Do NOT rewrite the live
-     manifest/preflight tests onto tmp sqlite - they are intentionally live
-     gates against the real compiled artifact.
-  3. **2441 scope ValueError.** Characterize at HEAD in the fresh-checkout sim.
-     If it no longer fails, record that and move on. If it still fails, the
-     ONLY authorized fix is gating that single live migration test on the
-     presence of the form-2441 extension document (skip with an explicit reason
-     on parity checkouts). Changing scope derivation, queue data, or extension
-     policy is a STOP for Architect.
-  4. **Raw-cache guards.** Guard every ROOT-based `.cache/raw/2025/` reader
-     with the pinned whole-test skip idiom (explicit reason string; no
-     conditional asserts inside a test body). Known sites from Architect grep:
-     `tests/test_field_dispositions_m15.py` (pdf-echo ~192, 8949 totals ~232,
-     schedule-1 positions ~261), `tests/test_address_campaign_m15r.py` (six
-     fitz.open sites), `tests/test_schedule_2_m16.py` (module-level skipif on
-     the missing raw fields file is acceptable; do not alter the fixture's
-     assertions or its strict-xfail marker). The fresh-checkout run is the
-     discovery tool: guard exactly what fails for missing-gitignored-artifact
-     reasons (there may be more in extract/examples/tables tests); change
-     nothing speculatively.
-  5. **Verification protocol.** (a) `git worktree add` a fresh sim checkout of
-     HEAD, fresh `uv sync --extra dev --extra workbench-dev` there, then run
-     the NEW CI sequence: check_ascii, `tax-graph validate 2025`, the
-     capital-gains example run, `tax-graph build 2025`, full `pytest` - must be
-     GREEN there with skips visible; record exact counts. Remove the sim
-     worktree afterwards (`git worktree remove`). (b) In the main worktree:
-     focused runs of every changed test file proving guarded tests still
-     EXECUTE locally (cache present); the standard sequential partitions as
-     able (record launcher timeouts honestly - no green claims from timed-out
-     runs); ASCII; `git diff --check`; `tax_graph.cli validate 2025`; real
-     preflight expected unchanged at `legacy_mined=394` (a test+workflow diff
-     must not move the ratchet). (c) One local commit, no push, final handoff
-     and BALL update.
-  6. **Hard boundaries.** No changes to `graph/`, field maps, extraction or
-     resolver code, promoted artifacts, the preflight ratchet, or M16-S1
-     fixture semantics. Local coverage must not shrink: every guarded test
-     still runs on this machine. Session budget rules apply (state model and
-     effort first, declare the single step, checkpoint before expensive
-     phases). Uncommitted Architect-owned edits to this handoff are expected in
-     the worktree; leave them in place and fold your updates alongside.
-- **SCHEDULE 2 RULING + PIPELINE PIVOT (Architect, Claude Fable 5, 2026-07-21;
-  John decided "pause campaign, fix pipeline").** The Worker correctly stopped. I
-  verified both flagged issues independently against `.cache/raw/2025/schedule_2_2025.fields.json`
-  (raw AcroForm rects), the graph nodes (MCP get_node), and citations:
-  1. **Issue A - CONFIRMED extraction/promotion defect, broader than one cell.**
-     `f1_15` (page 1, x504-576 y468-480) is LINE 4 Self-employment tax: the PDF groups
-     the row's controls under a wrapper named `Line4_ReadOrder`, and its checkboxes
-     `c1_3/c1_4/c1_5` carry Form `4361`/`4029` (the SE-tax exemption boxes). Yet the
-     field map binds `f1_15` to `schedule_2_2025_part_i_line_1` as `user_entered`
-     currency - and that node is a bare heading (citation `cite_span_..._0004`:
-     "- 1: Additions to tax:"). The mis-attribution spans the whole Part I far-right
-     column: `f1_13` (really line 3 "Add lines 1z and 2") is labeled "Line 1z - line 17
-     ... 3"; `f1_11` is the line 1z "additions to tax" total; the Line 4 exemption boxes
-     are all labeled "Line 1". There is NO `line_1z` node though the form has a 1z total.
-     Lines 3/4/1z are all outside the M12 output profile (excluded), so the in-scope
-     hand-fix would be re-attribution + honest `unsupported` dispositions + un-mapping
-     the heading - but that is multi-control re-authoring, not a single-cell shift, and
-     it is the SECOND defect class (after mislabels) that points squarely at the
-     pipeline, not the form.
-  2. **Issue B - CONFIRMED clean single-cell shift (would have been standing-auth
-     eligible).** Line 17z binds to `f2_21` (x504-576 y516-528, the line 18 total cell);
-     its true amount cell is `f2_20` (x410-481 y498-510); freed `f2_21` belongs to the
-     line 18 total node (excluded). Same family as the Schedule 1 8z->9 shift. NOT being
-     applied now - it rides along when the resolver reprocesses Schedule 2.
-  **DECISION (John):** pause the per-form hand campaign; build the field-identity
-  pipeline. **Proposed scope (Architect to draft as a phase for John's approval):**
-  (1) a structure-first field-identity resolver that derives each control's (line, role)
-  from the AcroForm's qualified field-name grouping (`LineNN_ReadOrder`) + printed-caption
-  adjacency, replacing geometry/label mining; (2) fail-closed structural validators - a
-  heading/section node may not own an amount cell; each printed amount line resolves to
-  exactly one node OR an explicit unsupported/out-of-profile disposition; a form total
-  present on the PDF has a node or is explicitly out-of-profile; the node's bound line
-  must equal the widget's derived line (line-identity triangle); contradictions route to
-  the review queue, never silent emission; (3) Schedule 2 Part I is the acceptance
-  fixture (resolver must yield f1_15=line4, f1_13=line3, f1_11=line1z-total, Line4 boxes
-  =line4 exemptions, and FLAG heading-with-a-cell + total-with-no-node). The 9 committed
-  A9 forms become the regression corpus the resolver must reproduce. This is rollover
-  seam 5 / invariant 6 pulled forward. Next Architect action: write the phase plan +
-  first Worker task; no per-form authoring resumes until John approves it.
-- **FORMS-PIPELINE END-STATE PINNED (Architect, Claude Fable 5, 2026-07-20, at
-  John's direction):** The desired end-state is a valid, reliable forms pipeline
-  into the tax graph - yearly IRS document updates via the rollover re-binder,
-  user-brought forms via the extension harness - never recurring per-form hand
-  transcription. The A9 campaign's hand authoring is a bounded one-time recovery
-  whose outputs are the re-binder's ground-truth corpus. Pinned in THREE places:
-  guiding invariant 6 and Year-rollover seam 5 in `docs/engineering-plan.md`, and
-  A9 contract item 6 in `plans/PHASE_M15.md`. Hand-authoring beyond the A9b..A9x
-  list is a STOP condition, not a precedent.
-- **A9f execution environment RESTORED (Architect, Claude Fable 5, 2026-07-20):**
-  The machine restarted; `.venv/Scripts/python.exe` and pytest launch cleanly.
-  The Open-for-Architect environment block is answered and cleared. See the BALL
-  for the 16:02 untrusted-artifact caution before resuming A9f verification.
-- **A9f RULING - SCHEDULE 1 SHIFTS CONFIRMED, FIX AUTHORIZED + STANDING REMAP
-  AUTHORIZATION (Architect, Claude Fable 5, 2026-07-19); pinned in
-  `plans/PHASE_M15.md` under A9.** Independently verified from inventory geometry and
-  printed rows: 8z -> printed line 9 total cell, 24z -> printed line 25 total cell,
-  true cells disposed `unsupported`, and the MODELED nodes
-  `schedule_1_2025_part_i_line_9` / `part_ii_line_25` (both exist with feeding edges)
-  have no cells. Authorized: remap 8z -> f1_36, 24z -> f2_28, ADD line 9 -> f1_37 and
-  line 25 -> f2_29, fix the four dispositions, goldens + position-verified filled-PDF
-  echo, record for the pending schedule_1 field_map_review entry. NEW: a STANDING
-  narrow-remap authorization for the rest of A9f..A9x - a geometry-proven single-cell
-  shift may be fixed in-commit without a stop when all five pinned conditions are met
-  (see the plan); anything beyond a proven single-cell shift still stops. This is the
-  third placement defect the campaign has caught; expect more in the remaining
-  schedules - that is the campaign working.
-- **A9b RULING - 8949 TOTALS DEFECT CONFIRMED, FIX AUTHORIZED (Architect, Claude
-  Fable 5, 2026-07-17); full ruling pinned in `plans/PHASE_M15.md` under A9.** The
-  Architect independently reproduced the geometry from the committed inventory: the
-  transaction-row x-bands prove the promoted total-row mappings are shifted (d total ->
-  column e widget, e total -> shaded column f widget, true d cell `f*_91` unmapped,
-  both parts). This is a CONFIRMED pipeline defect in promoted output placement - the
-  first one the addressing recovery has caught - and the Worker was right to stop at
-  the boundary. Rulings, in brief: (1) the narrow mapping correction is authorized
-  within A9b (d->f*_91, e->f*_92, drop f*_93, g/h unchanged, both parts, nothing else),
-  recorded as a found pipeline defect for the pending 8949 field_map_review entry;
-  (2) required regressions: corrected-mapping goldens + a position-verified filled-PDF
-  echo; (3) NEW for every campaign document - the triangle validator: a mapping's node
-  binding and its widget binding must resolve to the SAME canonical address, else the
-  mapping fails with the three-way disagreement (this mechanizes the check that caught
-  the defect); (4) the shaded `f*_93`/`f2_93` widget is `intentionally_blank` with the
-  exact authored exemption identity pinned in the plan - visible and clickable, never
-  silently excluded, no canonical address created. The extended run RESUMES under
-  unchanged terms: A9b onward, one document per commit, strict legacy-count reduction,
-  hard stop after A6.
-- **A9 RULING AMENDMENT v2 (Architect, Claude Fable 5, 2026-07-16): the 712-control
-  block is ANSWERED; the full amended contract is pinned in `plans/PHASE_M15.md` under
-  A9.** The Architect independently re-surveyed all 16 maps and confirmed - and
-  sharpened - the Worker's finding: disposition `label` fields are legacy geometry-mined
-  text repo-wide (1,547 flagged; dot leaders, adjacent prose, trailing line numbers),
-  so token-stripping yields nothing usable and hand-cleaning them is the wrong move
-  entirely. The structural collapse is real where it applies (Form 8949: 202 flagged ->
-  14 templates; W-2/1099 volume is copy-page repeats). Amended contract, in brief:
-  (1) disposition labels are DEMOTED to evidence - final resolution order is
-  bound-address printed_label -> authored identity slot -> FAIL; (2) an interim
-  legacy-label path is allowed with `display_name_provenance: legacy_mined`, visibly
-  provisional in the UI, counted per document by preflight; (3) the campaign authors ONE
-  printed label per template control at the address layer from the official PDF's
-  printed text, with deterministic container-structure grouping and generated
-  copy/row-qualified widget bindings (LLM may propose; validators decide; all
-  pending_review); (4) commit shape is a ratchet - A9a mechanism, A9b..A9x one document
-  per commit each strictly reducing the legacy count, A9z flips the strict predicate
-  everywhere and removes the legacy path; every commit meets the full floor with real
-  preflight green; (5) unidentifiable controls get authored exemption labels + reasons,
-  listed at A9z. The predicate itself is NOT narrowed. The extended run RESUMES under
-  the same authorization with A9a..A9z replacing the single A9 item; the hard stop
-  after A6 and all other terms are unchanged.
-- **SESSION BUDGET RULES (Architect, 2026-07-19, at John's direction; applies to every
-  Worker session):** (1) Your FIRST handoff touch of a session states your model,
-  effort level, and any usage/quota/context indicators your environment exposes - if
-  none are exposed, say exactly that. (2) Declare the single step you will attempt this
-  session before starting it. (3) Checkpoint the handoff BEFORE every expensive phase
-  (authoring campaigns, full floors), not only at the end - a quota death mid-floor
-  must never lose recorded state. (4) If any command is rejected for quota, STOP
-  immediately, record exact completed/pending verification in the handoff, and do not
-  start new work. (5) Do not re-run already-green partitions to "refresh" them; record
-  and move on - floors are the main budget burn.
-- **EXTENDED RUN AUTHORIZATION (Architect, Claude Fable 5, 2026-07-16, at John's
-  direction):** The Worker is authorized to run the following sequence continuously
-  WITHOUT per-step Architect hand-backs. This temporarily overrides the plan's
-  "previous step green and pushed" rule for this run only: commits stay LOCAL (no push;
-  the Architect batch-verifies, runs the full-suite floor, and pushes at the stop).
-  - **Sequence (in order):** (1) A9 scope-ruling implementation (may be two commits:
-    contract, then the registry/binding authoring campaign; A9 is [DONE] only when the
-    real manifest and preflight are green with zero raw display names); (2) A10 desktop
-    10/60/30 workspace + selected-field pane; (3) A11 marker and selection-language
-    cleanup; (4) A6 coverage and witness-scope honesty.
-  - **Per commit, all green BEFORE committing:** the step's focused tests; `pytest -m
-    m15` partitions; ASCII; `git diff --check`; real `python -m workbench.cli preflight
-    --year 2025`; `tax-graph validate 2025`; the full suite as deterministic
-    non-overlapping partitions per the standing split method. Record exact counts in
-    the handoff after each step.
-  - **HARD STOP after A6.** Update the BALL to ARCHITECT for batch verification and
-    push. Do NOT start A12 (verdict writing) or A13 under this authorization, and
-    NEVER touch `human_confirmed`, verdict emission paths, or the no-mutation API
-    boundary beyond what A6 requires.
-  - **Also stop immediately** (record under Open for Architect, update the BALL, do
-    not design around it) if: a pinned invariant proves unworkable; a full floor
-    cannot be brought green; the A9 authoring campaign surfaces a control whose
-    official identity cannot be established from the local official PDF (no guessed
-    labels - leave it fail-closed and list it); or anything requires editing promoted
-    graph semantics beyond addresses/bindings/labels/dispositions.
-- **A9 SCOPE RULING (Architect, Claude Fable 5, 2026-07-16): answered - it is BOTH,
-  structured; the full contract is pinned in `plans/PHASE_M15.md` under A9.** The
-  Architect independently verified the gap's shape on Form 8949: the 92 raw controls are
-  the official a/b/c/f columns and page-header name/SSN controls that have NO canonical
-  address at all (the registry holds only the modeled amount columns d/e/g/h), plus
-  physical repeats of those. So inheritance alone cannot close it and 209 hand-authored
-  disposition labels would violate A9's author-once rule. Pinned instead: (1) extend the
-  registries with the missing official structure, labels authored once at the address
-  layer; (2) physical repeats inherit display names through authored widget bindings
-  (the 96 existing 8949 amount bindings are the model), generated deterministically by
-  the campaign pipeline; (3) field-control resolution order becomes bound-address
-  printed_label -> disposition label -> identity slot -> official ref, still fail-closed;
-  (4) repeated controls carry a physical qualifier in `official_locator` so uniqueness
-  holds; (5) NEW DEFECT found during verification: the 8949 total-row printed labels
-  embed raw field names (`Line 3 - 3 (if Box C or Box I above is checked) - f1_92`) -
-  re-author them and add a contains-raw-token predicate to preflight; (6) A9 may close
-  as two commits (contract, then authoring campaign) if size demands. Punch-list items
-  1-3 and the item-4 representative tests are verified in the worktree; after this
-  ruling is implemented, run the focused set + partitions and hand back for the single
-  Architect full-suite floor + push.
-- **A8 pre-task + A8 + A9 VERDICT (Architect, Claude Fable 5, 2026-07-16): pre-task and
-  A8 ACCEPTED; A9 REOPENED before commit.** Spot-check confirmed the pre-task kept the
-  `field_control` scope refs and deterministic queue regeneration (rerun 0 changed / 35
-  unchanged) and that no F/G/B marker glyph or legend survives in the committed static
-  tree; A8's document-first projection is deterministic with real backend tests. A9's
-  substance is right - authored labels land at the canonical/disposition layer (1040
-  identity, 8949 Part I/II columns, W-2/1099 state boxes, all 25 raw 2441 controls),
-  the `f1_14` golden passes at API and browser level, and required schema fields fail
-  closed. PUNCH LIST (fix within A9; do not start A10):
-  1. **Kill the queue-summary fallback for field controls.** `_review_identity` in
-     `workbench/manifest.py` falls back to `semantics.summary` then `queue_entry.summary`.
-     For `field_control` units that silently reinstates the round-1 rejected
-     `Review authored AcroForm...` text as a field headline whenever an authored label is
-     missing, and preflight cannot catch it (a queue summary is not a raw field name).
-     Pin the plan's resolution order: authored address `printed_label` -> authored
-     disposition label/identity slot -> official locator text, and FAIL (ManifestError)
-     when none exists for a field control. Non-field units may keep the semantic-summary
-     fallback.
-  2. **Implement the pinned uniqueness preflight.** A9 requires failing a display name
-     that is "not unique enough within its document context to identify the selected
-     control". Add a deterministic check - e.g. (document, display_name,
-     official_locator) must be unique across visible units - plus a seeded-duplicate
-     fixture proving it fires.
-  3. **Deduplicate the raw-field-name regex** (one shared constant; `workbench/manifest.py`
-     and `workbench/preflight.py` currently carry drift-prone copies).
-  4. **Complete the plan's representative test list:** the 1a/1h description/amount pair,
-     a Form 8949 total-row column, and a worksheet step are missing from the
-     representative display-name tests.
-  After the fixes: focused set + `pytest -m m15` partitions + ASCII + real preflight,
-  update the A9 plan marker back to [DONE], and hand back for the Architect's single
-  full-suite floor + push of all three commits.
-- **M15R review verdict + M15 plan cleanup (Architect, Claude Fable 5, 2026-07-16):**
-  Reviewed `plans/archive/PHASE_M15R.md` and spot-checked `tax_graph/addressing/` per the
-  open request. VERDICT: ACCEPTED; do not reopen. Address serialization is sound (typed
-  components, percent-escaped ASCII tokens, parse enforces byte-for-byte canonical
-  round-trip); registry validation covers duplicate ids/logical keys, parent path
-  prefixes and cycles, role-kind compatibility, cross-document binding rejection, and
-  per-document alias ambiguity; the contributor boundary (Form 2441 held out,
-  `project_corpus: false`, no human-confirmed claim) and the 15-surface power-law
-  ceiling are right. Two MINOR hardening notes for opportunistic M15 pickup, not
-  blockers: (1) duplicate widget bindings for one (document_id, field_name) are caught
-  only by the SQLite primary key at compile time - add the same check to
-  `_validate_artifacts` on the YAML load path; (2) node-binding cardinality per role is
-  not validated beyond role compatibility (two `value` bindings to one address would
-  pass) - add a per-role cardinality validator. Also cleaned `plans/PHASE_M15.md` for
-  round 2 (step statuses, A4/A5 supersession, pinned execution order, A8 pre-task
-  dispositioning the dirty A4 worktree) and pruned this handoff. Worker may start the
-  A8 pre-task now.
-- **M15 is planned (`plans/PHASE_M15.md`, 2026-07-12).** The workbench builds against the FINAL artifact shape
-  (docs/review-workbench.md + M12's node-to-page geometry); the campaign drains the
-  queue above and measures real `human_minutes` / escape rates; verdict outcomes
-  distinguish confirmed / pipeline-defect / source-pathology per engineering-plan. It is
-  the pre-ship gate: the alpha may be name-claimed on PyPI before it, but nothing is
-  promoted as usable-stable until M15 passes.
+
+- **SCHEDULE 2 RULING + PIPELINE PIVOT (2026-07-21; John decided "pause campaign, fix
+  pipeline") - the reason M16 exists.** Verified independently against
+  `.cache/raw/2025/schedule_2_2025.fields.json` (raw AcroForm rects), MCP `get_node`, and
+  citations:
+  1. **CONFIRMED extraction/promotion defect, broader than one cell.** `f1_15` (page 1,
+     x504-576 y468-480) is LINE 4 Self-employment tax: the PDF groups the row's controls
+     under a wrapper named `Line4_ReadOrder`, and its checkboxes `c1_3/c1_4/c1_5` carry
+     Form `4361`/`4029` (the SE-tax exemption boxes). Yet the field map binds `f1_15` to
+     `schedule_2_2025_part_i_line_1` as `user_entered` currency - and that node is a bare
+     heading (citation `cite_span_..._0004`: "- 1: Additions to tax:"). The
+     mis-attribution spans the whole Part I far-right column: `f1_13` (really line 3) is
+     labeled "Line 1z - line 17 ... 3"; `f1_11` is the line 1z total; the Line 4 exemption
+     boxes are all labeled "Line 1". There is NO `line_1z` node though the form has one.
+  2. **CONFIRMED clean single-cell shift.** Line 17z binds to `f2_21` (the line 18 total
+     cell); its true amount cell is `f2_20`. Same family as the Schedule 1 8z->9 shift.
+     NOT applied by hand - it rides along when the resolver reprocesses Schedule 2.
+  **DECISION (John):** stop hand-authoring forms one at a time; build the structure-first
+  field-identity resolver plus fail-closed structural validators. This is rollover seam 5 /
+  guiding invariant 6 pulled forward, not a detour.
+- **FORMS-PIPELINE END-STATE PINNED (2026-07-20, at John's direction):** the desired
+  end-state is a valid, reliable forms pipeline into the tax graph - yearly IRS document
+  updates via the rollover re-binder, user-brought forms via the extension harness - never
+  recurring per-form hand transcription. The A9 campaign's hand authoring was a bounded
+  one-time recovery whose outputs are the re-binder's ground-truth corpus. Pinned in THREE
+  places: guiding invariant 6 and Year-rollover seam 5 in `docs/engineering-plan.md`, and
+  A9 contract item 6 in `plans/PHASE_M15.md`. Hand-authoring beyond the retired A9 list is
+  a STOP condition, not a precedent.
+- **SESSION BUDGET RULES (2026-07-19, at John's direction; every Worker session):**
+  (1) Your FIRST handoff touch of a session states your model, effort level, and any
+  usage/quota/context indicators your environment exposes - if none are exposed, say
+  exactly that. (2) Declare the single step you will attempt before starting it.
+  (3) Checkpoint the handoff BEFORE every expensive phase, not only at the end - a quota
+  death mid-floor must never lose recorded state. (4) If any command is rejected for quota,
+  STOP immediately, record exact completed/pending verification, and do not start new work.
+  (5) Do not re-run already-green partitions to "refresh" them.
 - **Extension-iteration backlog (M15-adjacent, from the pilot):** one-pass `extend` on
-  math-bearing forms yields honest T0 structure without passing worksheet math; the
-  review loop needs an iterate/author-in-review story. Named limitation documented in
+  math-bearing forms yields honest T0 structure without passing worksheet math; the review
+  loop needs an iterate/author-in-review story. Named limitation documented in
   `docs/self-serve-extension.md`.
+- **M15R hardening notes (opportunistic pickup, not blockers):** (1) duplicate widget
+  bindings for one `(document_id, field_name)` are caught only by the SQLite primary key at
+  compile time - add the same check to `_validate_artifacts` on the YAML load path; (2)
+  node-binding cardinality per role is not validated beyond role compatibility (two `value`
+  bindings to one address would pass) - add a per-role cardinality validator.
 
-## From Architect (A9c verdict)
-- **A9c VERDICT (Architect, Claude Fable 5, 2026-07-18): REOPENED - fix within A9c
-  before starting A9d.** Diligence review against the local official PDF found two
-  authoring defects that every gate passed silently:
-  1. **State/local box numbers are fabricated by arithmetic.** The projector uses
-     `box = str(15 + column_index)`, but the official form puts BOTH `State` and
-     `Employer's state ID number` under **Box 15**, then 16=State wages, 17=State
-     income tax, 18=Local wages, 19=Local income tax, 20=Locality name. There is NO
-     Box 21 on a W-2. Six official_refs are wrong and one box number is invented -
-     the exact fabricated-identity pathology this campaign exists to kill. Fix the
-     projector mapping (two controls under box 15 with distinct control tokens; 16-20
-     for the rest), regenerate the registry/bindings/geometry, and add goldens pinning
-     all seven official refs verbatim.
-  2. **Box 9 violates the shaded-cell precedent.** The official box 9 is a bare,
-     captionless shaded box (PDF: `8 Allocated tips / 9 / 10 Dependent care
-     benefits`). It must follow the pinned Form 8949 ruling: `intentionally_blank`
-     with an authored exemption identity (e.g. `Shaded no-entry box 9`), not an
-     `amount` control with the placeholder label `Box 9`.
-  3. **Hardening for A9d (required, the 1099s have the same layout risk):** for
-     information returns, every authored box official_ref must be cross-checked
-     against the printed caption text adjacent to that box region in the local PDF -
-     add a campaign test helper that asserts number+caption adjacency (e.g. `16` next
-     to `State wages, tips, etc.`) so arithmetic box numbering can never pass again.
-  The rest of A9c is verified good: 33-template collapse, 272/272 bindings, correct
-  captions on all non-state boxes, Box 12 row-template treatment, Box 13 checkboxes,
-  and the claimed floors reconcile (the m15-marked test placement explains the
-  unchanged non-M15 counts). Amend the A9c commit or land a follow-up fix commit under
-  the A9c marker; either way the full floor reruns and legacy counts must not regress.
-
-## From Worker
-- **A9g COMPLETE; full floor green; one local commit created (Codex GPT-5,
-  2026-07-20):** Audited all 54 Schedule 1-A controls against the local official
-  two-page PDF before authoring. No promoted mapping shift or graph-semantic change was
-  found, so no narrow remap was needed. Authored 54/54 controls with zero exemptions:
-  48 single line/header templates plus the line 22 vehicle table collapsed to three
-  authored columns and six row-qualified physical bindings. Regenerated the address,
-  widget-binding, node-binding, field-map address links, reference, and node-geometry
-  artifacts with LF serialization. Added exhaustive number-plus-caption adjacency
-  coverage for all 46 numbered line controls and a deterministic `line 22 row a/b`
-  physical qualifier in the review manifest. Schedule 1-A is zero legacy.
-
-  Verification: focused campaign/disposition set 41 passed; final focused regression
-  22 passed; M15 partitions 14 + 28 + 6 manifest + 2 preflight + 24 semantics + 13
-  verdict/geometry/core + 1 navigation + 3 page evidence + 6 server + 4 write API +
-  11 E2E = 112 passed. Non-M15 partitions: 98 passed/1 skipped + 134/2 + 73/3 + 60
-  = 365 passed, 6 skipped. Real preflight passed at 3,243 units with
-  `authored_address=1519`, `authored_object=1330`, `legacy_mined=394`; Schedule 1-A
-  is absent from the legacy list. `tax_graph.cli validate 2025`, ASCII, and
-  `git diff --check` are green. The previously timed-out aggregate commands were not
-  counted; all listed results came from completed sequential partitions. Pending only:
-  create the single local A9g commit. No push.
-- **A9g QUOTA STOP - implemented, focused green, no commit (Codex GPT-5,
-  2026-07-20):** The approval reviewer rejected the exact command
-  `Stop-Process -Id 12816,17988 -Force` with: execution usage limit exhausted until
-  2026-07-25 08:23. Per the pinned budget rule, stopped immediately without a
-  workaround or any further command. Preserve the dirty worktree. Implementation is
-  complete: 54/54 Schedule 1-A controls authored, zero exemptions, 23 node bindings,
-  three line-22 vehicle table templates with six row-qualified physical widgets, field
-  address links and node geometry regenerated with LF. No promoted mapping shift or
-  graph-semantic change was found. The preflight-discovered duplicate line-22 locator
-  was fixed with deterministic `line 22 row a/b` qualifiers and a focused regression.
-
-  Counted green verification: initial focused campaign/disposition set 41 passed;
-  row-qualifier regression 1 passed; M15 address partitions 14 + 28; manifest tests
-  3 + 1 + 1 + 1 (all six green); preflight seeded-bad test 1 and repaired real
-  preflight test 1; schemas/scope/semantics 24; verdict/geometry/core workbench 13;
-  navigation 1. The real-preflight test proves the ratchet green at the current
-  worktree, but its exact CLI report still remains to be run and recorded. Uncounted
-  timed-out aggregate attempts were not treated as green. The page-evidence file
-  partition timed out after six minutes and left PIDs 12816 and 17988; no result from
-  its three tests is counted.
-
-  Pending floor: if still present, terminate only PIDs 12816 and 17988; run the three
-  `test_workbench_page_evidence_m15.py` tests individually, then
-  `test_workbench_server_m15.py`, `test_workbench_write_api_m15.py`, and `tests/e2e`
-  as sequential M15 partitions; run all four sorted-file non-M15 partitions; run real
-  `workbench.cli preflight --year 2025` and record Schedule 1-A zero plus total
-  `legacy_mined < 448`; run `tax_graph.cli validate 2025`, ASCII, and
-  `git diff --check`. Then update the BALL and From Worker entry and create exactly one
-  local A9g commit. No commit and no push occurred this session.
-- **A9g PRE-FLOOR CHECKPOINT - Schedule 1-A authored, focused green (Codex GPT-5,
-  2026-07-20):** Audited all 54 controls against the local official two-page PDF
-  before campaign changes. Geometry and printed rows confirm the 23 promoted mappings
-  already target their true cells; no narrow remap or graph-semantic edit is needed.
-  The audit did expose mined identity/address defects, including line 1 labeled 11b,
-  line 3 sharing line 2e, line 23 labeled 22a, line 37 sharing line 36b, and line 38
-  labeled 13c. Authored 54/54 controls with zero exemptions: 48 single line/header
-  templates plus the line 22 vehicle table collapsed to three authored columns and six
-  row-qualified physical bindings. Regenerated registry, 54 widget bindings, 23 node
-  bindings, field-map address links, and node geometry with LF serialization. Added
-  exhaustive number-plus-caption adjacency coverage for all 46 numbered line controls.
-  Focused campaign + field-disposition/triangle tests: 41 passed. Pending: pinned
-  sequential M15 and non-M15 partitions, real preflight requiring Schedule 1-A zero and
-  total `legacy_mined < 448`, `validate 2025`, ASCII, `git diff --check`, final handoff,
-  and one local commit. No push.
-- **SESSION START / PRE-AUDIT CHECKPOINT - A9g Schedule 1-A only (Codex GPT-5,
-  2026-07-20):** Model is GPT-5. Effort level is high. No numeric usage or quota
-  indicator is exposed; session context is healthy. The single step attempted this
-  session is A9g: audit and author all 54 Schedule 1-A controls from the local official
-  PDF, run the complete pinned sequential floor, and create one local commit with
-  Schedule 1-A at zero legacy and total `legacy_mined < 448`. Read the BALL, session
-  budget rules, extended-run authorization, and pinned A9 contract including the
-  standing narrow-remap conditions. No campaign code or verification command has run.
-  Pending: official-PDF inventory audit, authored address/binding campaign, focused
-  checks, pre-floor checkpoint, sequential full floor, local commit, and final BALL
-  update. No push.
-- **A9f Schedule 1 COMPLETE; full floor green; local commit pending this handoff
-  update (Codex GPT-5, 2026-07-20):** Completed the authorized physical-placement
-  correction only: 8z -> `f1_36`, modeled line 9 -> `f1_37`, 24z -> `f2_28`, and
-  modeled line 25 -> `f2_29`; fixed the four corresponding dispositions and changed
-  the two pending field-map-review node roles from excluded to primary. Geometry and
-  printed-row proof: page 1 `f1_36` is the line 8z amount at x 410.4..481.65,
-  y 630..642, while `f1_37` is the printed line 9 total at x 504..576, y 642..654;
-  page 2 `f2_28` is the line 24z amount at x 410.4..481.65, y 504..516, while
-  `f2_29` is the printed line 25 total at x 504..576, y 516..528. No graph node,
-  edge, rule, calculation, or promoted tax semantics changed. Authored the full
-  Schedule 1 campaign: 73 inventory, 73 addressed, 0 exempt, 28 node bindings, 0
-  references. The filled official PDF reopens with distinct values at all four exact
-  rectangles: 8z=811, line 9=911, 24z=2411, line 25=2511.
-
-  Preserved and compared the four untrusted 16:02 outputs before verification. The
-  three YAML outputs were semantically identical after newline normalization and were
-  regenerated with LF (addresses CRLF 2850 -> 0, widget bindings 735 -> 0, node
-  bindings 145 -> 0); node geometry was byte-identical. Pinned LF serialization in
-  the campaign writers so Windows reruns stay deterministic. Removed the verified
-  scratch copies before commit. Real preflight is green at 3,243 units with
-  `authored_address=1465`, `authored_object=1330`, `legacy_mined=448`; Schedule 1 is
-  zero legacy, a strict 73 reduction from 521.
-
-  Verification: focused campaign/disposition set 39 passed. M15 sequential partitions
-  20 + 20 + 6 + 2 + 24 + 7 + 20 + 11 = 110 passed. Non-M15 sorted-file partitions
-  98 passed/1 skipped + 134/2 + 73/3 + 60 = 365 passed, 6 skipped. Aggregate full
-  floor: 475 passed, 6 skipped. Real `workbench.cli preflight --year 2025`,
-  `tax_graph.cli validate 2025`, ASCII, and `git diff --check` are green. The combined
-  manifest/preflight and workbench/verdict attempts hit launcher caps and were not
-  counted; their completed split subpartitions above are the floor. A9g was not
-  started. Next: A9g authors Schedule 1-A's 54 controls under the same ratchet and
-  pipeline-end-state boundary. No push.
-- **A9f PRE-FULL-FLOOR CHECKPOINT - Schedule 1 focused verification green (Codex
-  GPT-5, 2026-07-20):** Preserved the four untrusted 16:02 artifacts under the
-  workspace-local scratch directory `.a9f_untrusted_snapshot/` after `C:\tmp`
-  creation was denied. Regenerated the promoted Schedule 1 address, widget-binding,
-  and node-binding artifacts from the campaign and regenerated node geometry. Fixed
-  the campaign writers to pin LF on Windows. Old -> regenerated comparison: addresses
-  SHA256 `668CE95A...F69E1` -> `C5DA4AB6...575B7`, CRLF 2850 -> 0; widget bindings
-  `65B793E1...E0737` -> `10B828B...40F32`, CRLF 735 -> 0; node bindings
-  `26BC414F...B9F5C` -> `B1499CD9...6C6D8`, CRLF 145 -> 0; node geometry stayed
-  byte-identical at `30795531...B14B`, CRLF 0. All four old/new pairs are identical
-  after CRLF normalization, so the untrusted writes contained no hidden semantic
-  delta. Campaign generation reports 73 inventory, 73 addressed, 0 exempt, 28 node
-  bindings, 0 references. Strengthened the filled-PDF echo with distinct 8z/9 and
-  24z/25 values plus exact re-opened page rectangles. Focused tests are green: 39
-  passed (`tests/test_address_campaign_m15r.py` +
-  `tests/test_field_dispositions_m15.py`). Pending: static gates, real preflight and
-  validation, the pinned sequential M15 and non-M15 partitions, scratch cleanup, one
-  local commit, and BALL/final handoff update. No commit or push yet.
-- **SESSION RESUME / PRE-INSPECTION CHECKPOINT - A9f Schedule 1 only (Codex
-  GPT-5, 2026-07-20):** Model is Codex GPT-5. Effort level is not exposed. No
-  usage, quota, or context indicators are exposed. The single step attempted this
-  session is A9f: preserve and regenerate the four untrusted Schedule 1 artifacts,
-  compare them before counting verification, complete the authorized remaps, totals,
-  dispositions, goldens, position-verified filled-PDF echo, and 73-control campaign,
-  run the focused and full pinned sequential floors, and create one local commit with
-  Schedule 1 at zero legacy and aggregate `legacy_mined < 521`. Re-read the BALL,
-  SESSION BUDGET RULES, EXTENDED RUN AUTHORIZATION, guiding invariant 6, rollover
-  seam 5, and the pinned A9/A9f contract. HEAD is `492698f`; the expected dirty A9f
-  campaign and Architect-owned plan/doc changes are present. No generation or
-  verification command has run this session. Pending: inspect the implementation and
-  tests, preserve byte-for-byte copies of the four generated artifacts, regenerate all
-  four with LF endings, diff old against regenerated, focused verification, pre-floor
-  checkpoint, sequential full floor, one local commit, and BALL update. No push.
-- **A9f ENVIRONMENT STOP RECURRED BEFORE REGENERATION - no commit, no floor
-  (Codex GPT-5, 2026-07-20):** The restored-execution claim does not hold in this
-  Worker environment. `.venv/Scripts/python.exe --version`, the venv pytest launcher,
-  and the base `C:/Users/devbox/AppData/Local/Programs/Python/Python313/python.exe`
-  each fail with `Access is denied`; `python`, `py`, and `uv` are not available on
-  PATH. The permitted `C:/tmp` root also rejected creation of the intended snapshot
-  directory, so no snapshot was created. Before that failure, read-only hashes/newline
-  counts confirmed the untrusted copies: addresses SHA256 `668CE95A...F69E1`
-  (2,850 CRLF), widget bindings `65B793E1...E0737` (735 CRLF), node bindings
-  `26BC414F...B9F5C` (145 CRLF), and node geometry `30795531...B14B` (0 CRLF).
-  Per the BALL caution, these do not count as generated or verified and remain
-  untouched/untrusted. No campaign generation, focused test, preflight, validation,
-  M15 partition, full-suite partition, commit, or push occurred. Pending is unchanged:
-  restore executable Python in the Worker environment; preserve the four untrusted
-  files; regenerate all four with LF; diff old against regenerated before counting any
-  verification; run the focused checks and full pinned sequential floor; require
-  `legacy_mined < 521`; commit A9f locally; update BALL. A9g was not started.
-- **SESSION RESUME / PRE-REGENERATION CHECKPOINT - A9f Schedule 1 only (Codex
-  GPT-5, 2026-07-20):** Model is Codex GPT-5. Effort level is not exposed. No
-  usage, quota, or context indicators are exposed. The single step attempted this
-  session is A9f: regenerate and compare the four untrusted Schedule 1 artifacts,
-  finish the authorized remap/totals/disposition regressions and 73-control campaign,
-  run the full pinned floor, and create one local commit with `legacy_mined < 521`.
-  Re-read the BALL, SESSION BUDGET RULES, EXTENDED RUN AUTHORIZATION, and the pinned
-  A9/A9f contract. No generation or verification command has run this session.
-  Pending: inspect worktree and generator, preserve copies of the untrusted 16:02
-  artifacts, regenerate with normalized LF, diff old against regenerated, focused
-  verification, pre-floor checkpoint, sequential full floor, local commit, and BALL
-  update. No push.
-- **A9f PARTIAL / ENVIRONMENT STOP - no commit, no floor (Codex GPT-5,
-  2026-07-19):** Applied the authorized field-map draft: 8z -> `f1_36`, line 9 ->
-  `f1_37`, 24z -> `f2_28`, line 25 -> `f2_29`; removed the two totals from
-  `excluded_nodes`; corrected the four dispositions. Added the 73-control Schedule 1
-  authored campaign projection and focused goldens for 73/73 coverage, 28 node
-  bindings, the four corrected mappings, both computed totals, and a two-page filled
-  PDF echo. Static-only checks green: `git diff --check`; changed-file ASCII scan.
-  BLOCKED before generation/focused tests: Windows refuses to create the Python
-  process (`Access is denied`) for the venv interpreter, pytest launcher, base
-  interpreter, and Git Bash route. Per the full-floor stop rule, no generated address,
-  widget-binding, node-binding, or node-geometry artifacts were written; no preflight,
-  validation, M15 partition, or full-suite partition ran; no commit or push occurred;
-  A9g was not started. Worktree also retains the pre-existing Architect-owned A9f
-  ruling edits in this handoff and `plans/PHASE_M15.md`. Next session: review the
-  partial campaign labels against the PDF, restore Python execution, generate the four
-  Schedule 1 artifacts plus node geometry and disposition address bindings, run the
-  focused tests, checkpoint before the full floor, run every pinned sequential
-  partition, require `legacy_mined < 521` with the Schedule 1 per-document count, then
-  commit A9f locally and update this handoff.
-- **SESSION RESUME / PRE-AUTHORING CHECKPOINT - A9f Schedule 1 only (Codex GPT-5,
-  2026-07-19):** Model is Codex GPT-5. Effort level is not exposed. No usage, quota,
-  or context indicators are exposed. The single step attempted this session is A9f:
-  apply the authorized Schedule 1 remap/totals/disposition regressions and author all
-  Schedule 1 controls as one local commit, strictly reducing `legacy_mined` from 521.
-  Re-read the BALL, top A9f ruling, SESSION BUDGET RULES, EXTENDED RUN AUTHORIZATION,
-  and the pinned A9 contract/A9f extension/STANDING AUTHORIZATION. HEAD is `492698f`;
-  the worktree contains only the existing Architect-owned ruling/handoff changes plus
-  this checkpoint. No campaign authoring or verification command has started in this
-  resumed session. Pending: implementation survey, authorized fix, authoring campaign,
-  focused verification, pre-floor checkpoint, sequential full floor, local commit,
-  and post-commit handoff update.
-- **A9f STOPPED PRE-AUTHORING - promoted Schedule 1 mapping defect (Codex GPT-5,
-  2026-07-19):** Audited all 73 controls against the local official two-page PDF
-  before modifying campaign code. Found the line 8z and line 24z mappings shifted to
-  printed total-row widgets (line 9 and line 25); exact evidence and requested narrow
-  ruling are under Open for Architect. Per the pinned stop condition, BALL is
-  ARCHITECT and no workaround was designed. Completed: contract/handoff review,
-  inventory/disposition/mapping survey, official-PDF visual verification. Pending:
-  all A9f authoring and every focused/full-floor command. Worktree changes are this
-  handoff checkpoint only; no commit was created and no push was attempted.
-- **SESSION START / PRE-AUTHORING CHECKPOINT - A9f Schedule 1 only (Codex GPT-5,
-  2026-07-19):** Model is Codex GPT-5. Effort level is not exposed. No usage, quota,
-  or context indicators are exposed. The single step attempted this session is A9f:
-  author Schedule 1, starting from 73 legacy units, as one local commit. Read the BALL,
-  SESSION BUDGET RULES, EXTENDED RUN AUTHORIZATION, all A9 rulings under From Architect,
-  and the pinned A9 contract in `plans/PHASE_M15.md`. Worktree is clean at `492698f`;
-  real preflight inherited from the committed A9e floor is green at
-  `legacy_mined=521`. Authoring has not started. Pending: local-PDF identity audit,
-  address/binding/disposition changes, focused verification, full sequential floor,
-  pre-commit floor checkpoint, commit, and post-commit handoff update.
-- **M15 A9d Form 1099 group complete; full floor green (Codex, 2026-07-19):**
-  Authored Form 1099-B, 1099-DIV, and 1099-INT as one coherent local-PDF campaign.
-  Coverage is respectively 163/163 widgets -> 39 templates, 140/140 -> 33, and
-  127/127 -> 30; no exemptions and no node mappings, so each mapping triangle is
-  vacuously green. Promoted all registries/widget bindings/field-map address bindings
-  and regenerated node geometry. Added number-bearing PDF adjacency checks for every
-  authored numbered box. Caption-only exception list (all Form 1099-B): Box 2
-  `Long-term gain or loss` and `Ordinary` because one run-in number heads three term
-  choices; Box 3 `Collectibles` and `QOF` because one run-in number heads two proceeds
-  choices; Box 6 `Gross proceeds` and `Net proceeds` because one run-in number heads
-  two reporting choices. Copy/state repeats now carry deterministic copy + row
-  qualifiers. Real preflight: 3,243 units, `authored_address=1242`,
-  `authored_object=1330`, `legacy_mined=671`; the three documents are zero legacy, a
-  strict 410 reduction from 1,081. Focused address campaign: 14 passed; qualifier
-  regressions: 2 passed. M15 partitions: 15 + 19 + 6 manifest + 2 preflight + 31 + 20
-  + 11 E2E = 104 passed. Non-M15 partitions: 98 passed/1 skipped + 134/2 + 73/3 +
-  60 = 365 passed, 6 skipped; aggregate floor: 469 passed, 6 skipped. ASCII, `git
-  diff --check`, real preflight, and `tax-graph validate 2025` are green. No promoted
-  artifact defect was found. Next: A9e authors Form 1040 and must strictly reduce 671.
-- **M15 A9c reopen corrected; full floor green (Codex, 2026-07-18):** Replaced the
-  arithmetic W-2 state/local projection with an explicit official-PDF mapping: `State`
-  and `Employer's state ID number` are distinct controls under Box 15; Boxes 16-20 are
-  `State wages, tips, etc.`, `State income tax`, `Local wages, tips, etc.`, `Local
-  income tax`, and `Locality name`; no Box 21 survives. Reclassified all six physical
-  Box 9 widgets as `intentionally_blank` with the authored identity `Shaded no-entry
-  box 9`, the official-shading reason, no downstream effect, and no missing capability;
-  no Box 9 address remains. Regenerated registry, 266 widget bindings, field-map
-  dispositions, and node geometry. Added seven verbatim state/local official-ref
-  goldens, Box 9 exemption goldens, and a normalized spatial PDF-word helper that checks
-  every authored W-2 box caption against the adjacent printed text and is reused for the
-  1099 group. Coverage is `inventory=272`, `addressed_widgets=266`,
-  `exempt_widgets=6`, `node_bindings=0`, `references=0`, with 32 authored templates.
-  Real preflight: 3,243 units, `authored_address=832`, `authored_object=1330`,
-  `legacy_mined=1081` (unchanged and green). M15 partitions: 10 + 19 + 5 + 33 + 20 +
-  11 E2E = 98 passed. Non-M15 partitions: 98 passed/1 skipped + 134/2 + 73/3 + 60 =
-  365 passed, 6 skipped; aggregate floor: 463 passed, 6 skipped. ASCII, `git diff
-  --check`, real preflight, and `tax-graph validate 2025` are green. The A9c promoted
-  identity defects required only authorized addresses/bindings/labels/dispositions.
-  Next: A9d authors Form 1099-B/DIV/INT from their local official PDFs, uses the
-  adjacency check, and must strictly reduce 1,081.
-- **M15 A9c W-2 address/binding campaign complete (Codex,
-  2026-07-18):** Authored the 33 W-2 control templates from the local official PDF and
-  bound all 272 physical widgets across Copies A, 1, B, C, 2, and D. Box 12 entries and
-  the two state/local rows use deterministic row-template bindings and copy/row-qualified
-  official locators. Coverage is `inventory=272`, `addressed_widgets=272`,
-  `exempt_widgets=0`, `node_bindings=0`, `references=0`; the mapping triangle is
-  vacuously green because this information-return map has no node mappings. Regenerated
-  the committed node-geometry projection after promotion. Real preflight passes at 3,243
-  units: `authored_address=838`, `authored_object=1324`, `legacy_mined=1081`; W-2 is
-  zero legacy, a strict reduction of 248 from A9b's 1,329. Focused tests: 10 passed.
-  M15 partitions: 9 + 19 + 5 + 33 + 20 + 11 E2E = 97 passed. Non-M15 partitions:
-  98 passed/1 skipped + 134/2 + 73/3 + 60 = 365 passed, 6 skipped; aggregate floor:
-  462 passed, 6 skipped. ASCII, `git diff --check`, real preflight, and `tax-graph
-  validate 2025` are green. No authored exemptions and no promoted-artifact defect were
-  found. Next: A9d authors the coherent Form 1099-B/DIV/INT group and must strictly
-  reduce 1,081.
-- **M15 A9b implementation complete; verification paused before commit (Codex,
-  2026-07-17):** Corrected the confirmed promoted Form 8949 totals defect on both parts
-  (`d -> f*_91`, `e -> f*_92`, g/h unchanged, shaded `f*_93` unmapped); disposed both
-  shaded widgets as `intentionally_blank` with the pinned authored exemption identity;
-  authored the 8949 header, box-choice, row-column, and total templates from the local
-  official PDF; generated 200 widget bindings with 2 explicit exemptions; and added a
-  fail-closed mapping triangle validator reporting node, widget, and mapping addresses.
-  Added corrected-mapping goldens, a nonzero filled-PDF echo, campaign coverage/label
-  regressions, a seeded triangle disagreement, and the authored unaddressed-control
-  identity path. Real preflight passes at 3,243 units: `authored_address=590`,
-  `authored_object=1324`, `legacy_mined=1329`; Form 8949 is zero legacy (strict reduction
-  of 114 from the 1,443 baseline). Focused tests: 27 passed. Full M15 marker: 95 passed
-  (top-level partitions 27 + 4 + 2 + 24 + 14 + 13; E2E 11). Non-M15 full-suite
-  partitions completed: 98 passed/1 skipped and 134 passed/2 skipped. ASCII,
-  `git diff --check`, real preflight, and `tax-graph validate 2025` are green. External
-  Codex execution quota rejected non-M15 partition 3 before it ran and forbade retry;
-  therefore A9b is deliberately UNCOMMITTED. Resume with top-level test filenames
-  sorted alphabetically: partition 3 = skip 46, first 23; partition 4 = skip 69; both
-  with `-m 'not m15'`, then repeat static/real gates and commit if 100 percent green.
-- **M15 A9a ratchet mechanism complete (Codex, 2026-07-17):** Added required
-  `display_name_provenance`, authored-source embedded-token rejection, visible
-  `legacy_mined` provisional labeling, per-document preflight counts, canonical widget/
-  node binding inheritance, and repeat-aware official locators. Regenerated committed
-  node geometry after the address changes. Real preflight is green at 3,243 units with
-  `authored_address=478`, `authored_object=1322`, and the A9 campaign baseline
-  `legacy_mined=1443`: Form 1040 150; 1099-DIV 124; 1099-INT 123; 1099-B 163; Form
-  2441 72; Form 6251 62; Form 8949 114; W-2 248; Schedule 1 73; Schedule 1-A 54;
-  Schedule 2 63; Schedule 3 37; Schedule A 33; Schedule B 72; Schedule D 55. Form
-  13614-C is already zero. Focused backend: 15 passed; focused provisional-label E2E:
-  1 passed. Completed M15 partitions: 25 + 3 + 13 + 13 + 7 + 20 + 11 = 92 passed.
-  Remaining-suite partitions: 98 + 134 + 73 + 60 = 365 passed, 6 skipped. Aggregate
-  floor: 457 passed, 6 skipped. ASCII, `git diff --check`, real preflight, and
-  `tax-graph validate 2025` are green. The oversized aggregate commands hit their known
-  launcher limits and were replaced by deterministic non-overlapping filename
-  partitions; only completed green partitions are counted. Next: A9b authors Form 8949
-  template labels/bindings from the local official PDF and must strictly reduce 1,443.
-- **M15 A9 extended run stopped on pinned-scope blocker (Codex, 2026-07-16):** Read the
-  authorization and A9 ruling, inspected the local Form 8949 PDF visually, and tested a
-  strict implementation of binding inheritance plus embedded-token rejection. Focused
-  tests failed immediately on an unbound Form 1040 `f1_28` label; a read-only corpus
-  diagnostic then found the 712-control gap recorded under Open for Architect. Removed
-  only the exploratory unverified code changes, preserved the pre-existing A9 worktree,
-  made no commit, and did not start A10, A11, A6, or A12.
-- **M15 A9 punch-list item 4 hand-back (Codex, 2026-07-16):** Expanded the
-  representative display-name API test to cover Form 1040 line 1a amount, line 1h
-  description and amount, a Form 8949 repeated-lot column, a Form 8949 total-row
-  column, and a worksheet step, while retaining identity, dependent-row, checkbox,
-  decision, and unsupported representatives. No green verification is claimed: the
-  real manifest still fails closed on the broader raw-label gap recorded under Open for
-  Architect. A9 remains [REOPENED] until that scope decision and the required focused,
-  M15-partition, ASCII, real-preflight, and full-suite floors are green.
-- **M15 A9 complete (Codex, 2026-07-16):** Added required `display_name`,
-  `official_locator`, and `review_prompt` projection fields, fail-closed raw-name
-  preflight, and primary UI consumption. Authored missing canonical labels for Form 1040
-  identity, Form 8949 columns, W-2 state/local boxes, 1099 state boxes, and the 25 raw
-  Form 2441 controls using text extracted from the local official PDF. The Form 1040
-  `f1_14` golden now headlines `First name and middle initial` and identifies a
-  filer-entered fact without exposing `f1_14` outside Advanced JSON. Focused schema/
-  manifest 10 passed, API 6 passed, browser 2 passed, and real preflight green; complete
-  suite floor follows before commit.
-- **M15 A8 complete (Codex, 2026-07-16):** Added a deterministic document-first API
-  projection with official titles/pages, exact unit reconciliation, plain-English check
-  groups, and honest cross-document fallback. Replaced the review-kind rail with document
-  rows and `Things to check`, removed Gate A product shortcuts, filtered the review surface
-  by selected group, and restored the last page/field when returning to a document.
-  Verification: 5 focused backend and 9 browser tests green; all M15 partitions 88 passed;
-  remaining full-suite partitions 365 passed, 6 skipped (aggregate: 453 passed, 6 skipped);
-  ASCII, `validate 2025`, and real preflight green.
-- **M15 A8 pre-task complete (Codex, 2026-07-16):** Reconciled the dirty A4 worktree
-  without landing the rejected UI. Kept `field_control` disposition refs, deterministic
-  queue regeneration, preflight coverage, and canonical-address selection/selected-only
-  semantic-flow plumbing. Removed F/G/B marker glyphs, their text legend/styles, and tests
-  or docs that pinned them. Migration rerun reported 0 changed / 35 unchanged. Verification:
-  focused backend 9 passed; focused E2E 7 passed; all M15 partitions 85 passed; remaining
-  full-suite partitions 365 passed, 6 skipped (aggregate full floor: 450 passed, 6 skipped);
-  ASCII, `validate 2025`, and real workbench preflight all green. The monolithic M15/full
-  commands exceeded 30/20 minutes after scope growth, so the complete collections were run
-  as deterministic non-overlapping partitions per the standing split-suite method.
-- **M15 Gate A feedback round 2 plan (Codex, 2026-07-16):** John's live review rejected the
-  review-kind queue rail, bottom-stacked evidence drawer, raw-id-first field meaning, lettered
-  `G` markers, and ambiguous dead queue-level verdict controls. Added A8-A13 to
-  `plans/PHASE_M15.md`: document-first navigator + plain-English check groups; desktop 10/60/30
-  side-by-side navigator/form/field-review layout; canonical display-name contract with an explicit
-  Form 1040 `f1_14` -> `First name and middle initial` golden; one scannable evidence pane with only
-  Advanced JSON secondary; non-lettered contrast markers; field-scoped Accept/Needs correction/
-  Comment drafts with Submit/Cancel/Reset semantics; and a provider-agnostic, explicit revision
-  request/diff loop that never mutates live graph data. Planning-only; no implementation or tests
-  were run. Existing dirty A4 UI work was not modified.
-- **Pruned 2026-07-16 (Architect):** per-step M15 (S1-S16, A1-A3) and M15R (R1-R15)
-  worker logs moved to git history and `plans/archive/PHASE_M15R.md` close notes.
+## Recent rounds (condensed; full narration in git history)
+- **M16-S3 (Worker Codex Luna/High headless, Architect-verified, `0f7ce2c`):** first fully
+  autonomous headless round. Resolver + focused tests (7 passed, 1 strict xfail) + the
+  read-only 9-form report. Worker stopped honestly at real preflight (its launcher cap);
+  Architect completed that gate, fixed a CWD-relative raw-cache test guard, and pushed.
+- **M16-S2 (Worker, Architect-verified, `fc2a6c1`):** Stream A typing; local not-m15
+  partition 370 passed / 6 skipped / 1 xfailed; preflight unchanged at `legacy_mined=394`.
+- **M16-CI (Architect, `7087d9a`):** CI had been silently RED on every push since
+  2026-07-14. Root causes: the `workbench` extra (flask/werkzeug) and `workbench-dev`
+  (playwright) were never synced in CI, the sqlite artifact was never built, and tests
+  requiring acquired PDFs / `_drafts` / the 2441 extension were unguarded. Fixed the
+  workflow and guarded every fresh-checkout-hostile test on its TRUE dependency. First
+  fully green matrix since 2026-07-14.
+- **M16-S1 (Worker, Architect-verified, `17d2351`):** the Schedule 2 acceptance fixture.
 
 ## Latest verification
-- **M15R close (Worker, Codex, 2026-07-15) - ALL GREEN:** full suite 450 passed, 6
-  skipped; `pytest -m m15r` 47 passed; ASCII, `validate 2025`, throwaway SQLite build,
-  real workbench preflight, frontier rebuild, and Verification Record regeneration all
-  green. Close commit `baa6fd5` pushed.
-- **M14 phase close (Architect, Opus 4.8, 2026-07-12) - ALL GREEN:**
-  - Full suite in the DIRTY checkout (pilot extension installed): 318 passed, 6 skipped;
-    simulated-clean (worker): 315 passed, 9 skipped (3 skips named in docs/intake.md)
-  - `pytest -m m14` -> 22 passed; `validate` green (18 documents incl. intake sources);
-    frontier 79 modeled / 5 declared, byte-stable; records byte-stable after the
-    hash-ordering fix; ASCII green
-  - Live passes: fresh-venv wheel (validate/run/build/sqlite-run + stdio MCP handshake);
-    in-app Claude Desktop .mcpb install + MFS loss-limit round trip (triple-witnessed,
-    dev server removed from config during the test and restored after); registry schema
-    validation; release workflow CI dry run SUCCESS (publish job inert); form_2441
-    extension pilot (tamper -> loud hash-mismatch failure); intake CLI example
-  - Pushed-commit CI green at every step commit through `b13467e`; close commit CI
-    watched on push
-- Prior phase closes: `plans/archive/PHASE_M13.md` (and earlier) - each with a close note.
+- **M16-S3 (2026-07-23):** Tier 1 green - focused `tests/test_field_identity_m16.py` +
+  `tests/test_schedule_2_m16.py` 7 passed / 1 strict xfail; ASCII; `git diff --check`;
+  `validate 2025`; real preflight 3,243 units, `legacy_mined=394` (ratchet unchanged).
+  Tier 2 CI BLOCKED by GitHub billing - see the BALL.
+- **M16-CI (2026-07-22):** fresh-checkout sim of the exact CI sequence green with zero
+  failures (m15 68 passed / 45 skipped; not-m15 356 passed / 17 skipped); local floor m15
+  113 passed / 0 skipped, not-m15 366 passed / 6 skipped / 1 xfailed; CI fully green on
+  `7087d9a` (all four jobs) and on `f704968`.
+- **M15R close (2026-07-15):** full suite 450 passed / 6 skipped; `pytest -m m15r` 47
+  passed; ASCII, `validate 2025`, throwaway SQLite build, real workbench preflight,
+  frontier rebuild, and Verification Record regeneration all green. Close commit `baa6fd5`.
+- Prior phase closes: `plans/archive/PHASE_M13.md` and earlier - each with a close note.
 
 ## Resolved / superseded
-- 2026-07-20: the A9f execution-environment block - RESOLVED by machine restart;
-  Architect verified Python execution and returned the BALL to Codex.
-- 2026-07-16: the open Architect M15R review request - ANSWERED (From Architect above).
-- M15 S1 "full-suite blocker" - false alarm; the runtime method is pinned in Current state.
-- M15 S2 over-scoped-queue reopen - fixed, re-verified, and pushed; narration in git history.
+- 2026-07-23: the recurring Worker Python `Access is denied` - RESOLVED by the
+  in-workspace interpreter rebuild (pinned under Worker environment above).
+- 2026-07-23: handoff pruned from 1,198 lines for the public-repo prep; session
+  checkpoints, superseded BALL entries, per-round Worker narration, and the retired A9
+  rulings were removed. The A9 rulings remain pinned in `plans/PHASE_M15.md`; everything
+  else lives in git history.
+- 2026-07-16: the open Architect M15R review request - ANSWERED (VERDICT: ACCEPTED; the
+  two hardening notes are carried under From Architect).
+- M15 S1 "full-suite blocker" - false alarm. M15 S2 over-scoped-queue reopen - fixed,
+  re-verified, pushed.
 - M14 items (packaging defects, watchdog, fabricated-citations reopen, pilot findings,
   hash-ordering rule): `plans/archive/PHASE_M14.md` header + git history.
 - M13 items (S1_21 ruling, SDTW gate-defect adjudication, Option B): `plans/archive/PHASE_M13.md`.

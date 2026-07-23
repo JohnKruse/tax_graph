@@ -300,7 +300,7 @@ Example Claude Desktop config while developing from this checkout:
       "command": "uv",
       "args": [
         "--directory",
-        "C:\\Users\\devbox\\projects\\tax_graph",
+        "C:\\path\\to\\tax_graph",
         "run",
         "python",
         "-m",
