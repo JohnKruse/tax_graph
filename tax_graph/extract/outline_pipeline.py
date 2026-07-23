@@ -17,6 +17,9 @@ from tax_graph.extract.outline import (
     build_candidate_spans,
     build_outbound_flows,
     build_outline_tree,
+    infer_value_type,
+    node_type_for_outline,
+    _line_anchor_variants,
 )
 from tax_graph.extract.tables import assemble_table_subunits
 
@@ -55,6 +58,7 @@ def generate_outline_first_drafts(
     objects.extend(assemble_table_subunits(document, outline, objects, model="deterministic-table-detector"))
     objects.extend(_schedule_d_band_tables(document, outline.children, model="deterministic-schedule-d-band-detector"))
     objects.extend(_schedule_d_not_modeled_document(document, outline.children, model="deterministic-schedule-d-scope"))
+    objects.extend(_outline_structure_objects(document, outline.children, spans, model=model))
     objects.extend(_write_in_amount_nodes(document, outline.children, spans, objects=objects, model=model))
     objects.extend(_simple_line_objects(document, outline.children, spans, objects=objects, model=model))
     objects.extend(_line_cue_objects(document, outline.children, spans, model=model))
@@ -210,8 +214,8 @@ def _line_cue_objects(
             "node_id": _slug(f"{document.document_id}_{node.outline_id}"),
             "document_id": document.document_id,
             "label": f"Line {node.line_anchor}: {node.label}" if node.line_anchor else node.label,
-            "node_type": "form_line",
-            "value_type": "currency",
+            "node_type": node_type_for_outline(node),
+            "value_type": infer_value_type(node, document=document),
         }
         if citation_refs:
             data["citation_refs"] = citation_refs
@@ -260,8 +264,8 @@ def _simple_line_objects(
             "node_id": _slug(f"{document.document_id}_{node.outline_id}"),
             "document_id": document.document_id,
             "label": f"Line {node.line_anchor}: {node.label}" if node.line_anchor else node.label,
-            "node_type": "form_line",
-            "value_type": _simple_line_value_type(node),
+            "node_type": node_type_for_outline(node),
+            "value_type": infer_value_type(node, document=document),
         }
         if citation_refs:
             data["citation_refs"] = citation_refs
@@ -358,12 +362,54 @@ def _skip_simple_line(node: OutlineNode) -> bool:
 
 
 def _simple_line_value_type(node: OutlineNode) -> str:
-    lowered = node.label.lower()
-    if "did you have" in lowered or lowered.startswith("at any time"):
-        return "boolean"
-    if "enter the name" in lowered:
-        return "string"
-    return "currency"
+    """Backward-compatible wrapper for callers of the old scalar helper."""
+    return infer_value_type(node)
+
+
+def _outline_structure_objects(
+    document: SourceDocumentInput,
+    nodes: list[OutlineNode],
+    spans: list[CandidateSpan],
+    *,
+    model: str,
+) -> list[DraftObject]:
+    """Emit non-fillable concepts for outline sections and printed headings."""
+    generated: list[DraftObject] = []
+    for node in _flatten_nodes(nodes):
+        if node.kind not in {"section", "heading"}:
+            continue
+        span = _span_for_line(node, spans) if node.line_anchor else None
+        citation_refs: list[str] = []
+        source_span = ""
+        if span:
+            citation_id = f"cite_{_slug(span.span_id)}"
+            citation_refs.append(citation_id)
+            source_span = span.text
+            generated.append(
+                DraftObject(
+                    "citations",
+                    {
+                        "citation_id": citation_id,
+                        "document_id": span.document_id,
+                        "locator": span.locator,
+                        "quoted_text": span.text,
+                    },
+                    span.text,
+                    model,
+                    1.0,
+                )
+            )
+        data = {
+            "node_id": _slug(f"{document.document_id}_{node.outline_id}"),
+            "document_id": document.document_id,
+            "label": f"Line {node.line_anchor}: {node.label}" if node.line_anchor else node.label,
+            "node_type": node_type_for_outline(node),
+            "value_type": infer_value_type(node, document=document),
+        }
+        if citation_refs:
+            data["citation_refs"] = citation_refs
+        generated.append(DraftObject("nodes", data, source_span, model, 1.0))
+    return generated
 
 
 def _line_cue_nodes(nodes: list[OutlineNode]) -> list[OutlineNode]:
@@ -643,9 +689,9 @@ def _addressable_anchor(anchor: str) -> bool:
 def _span_for_line(node: OutlineNode, spans: list[CandidateSpan]) -> CandidateSpan | None:
     if not node.line_anchor:
         return None
-    prefix = f"- {node.line_anchor}:"
+    prefixes = {f"- {anchor}:" for anchor in _line_anchor_variants(node.line_anchor)}
     for span in spans:
-        if span.relationship == "source" and span.text.startswith(prefix):
+        if span.relationship == "source" and any(span.text.startswith(prefix) for prefix in prefixes):
             return span
     return None
 

@@ -75,6 +75,90 @@ class OutboundFlow:
     confidence: float = 0.8
 
 
+def node_type_for_outline(node: OutlineNode) -> str:
+    """Return the schema node type implied by an outline kind."""
+    if node.kind in {"section", "heading"}:
+        return "concept"
+    return "form_line"
+
+
+def infer_value_type(node: OutlineNode, *, document: SourceDocumentInput | None = None) -> str:
+    """Infer a schema value type from the printed control represented by a node."""
+    if node.kind in {"section", "heading"}:
+        return "string"
+
+    label = node.label.lower()
+    fields = (document.fields or {}).get("fields", []) if document else []
+    line_fields = [
+        field
+        for field in fields
+        if str(field.get("line_anchor", "")).lower() in _line_anchor_variants(node.line_anchor)
+    ]
+    if line_fields and all(str(field.get("field_type", "")).lower() == "checkbox" for field in line_fields):
+        return "boolean"
+    if any(term in label for term in ("date", "dated", "mm/dd", "calendar year")):
+        return "date"
+    if any(
+        term in label
+        for term in (
+            "social security",
+            "ssn",
+            "employer identification",
+            "identification number",
+            "form number",
+        )
+    ):
+        return "string"
+    if any(
+        term in label
+        for term in (
+            "name",
+            "address",
+            "description",
+            "list type",
+            "city",
+            "state",
+            "zip",
+            "email",
+            "phone",
+        )
+    ) and not _looks_like_amount_control(label):
+        return "string"
+    if any(term in label for term in ("check", "yes or no", "did you", "are you", "have you")) and not _looks_like_amount_control(label):
+        return "boolean"
+    return "currency"
+
+
+def _looks_like_amount_control(label: str) -> bool:
+    return any(
+        term in label
+        for term in (
+            "amount",
+            "tax",
+            "wages",
+            "income",
+            "payment",
+            "credit",
+            "deduction",
+            "contribution",
+            "gain",
+            "loss",
+            "total",
+            "add lines",
+        )
+    )
+
+
+def _line_anchor_variants(anchor: str | None) -> set[str]:
+    if not anchor:
+        return {""}
+    normalized = anchor.lower()
+    variants = {normalized}
+    if len(normalized) > 1 and normalized[0].isdigit():
+        variants.add(normalized[-1])
+    return variants
+
+
 def build_outline_tree(document: SourceDocumentInput) -> OutlineTree:
     """Build a mostly deterministic outline from rendered form text."""
     tree = OutlineTree(document_id=document.document_id, kind=document.kind)
@@ -120,12 +204,19 @@ def build_outline_tree(document: SourceDocumentInput) -> OutlineTree:
         if not line_match:
             continue
 
-        anchor = line_match.group(1).lower()
+        raw_anchor = line_match.group(1).lower()
         body = line_match.group(2).strip()
+        anchor = _canonical_line_anchor(raw_anchor, body)
         columns = _unique([*_extract_columns(" ".join(recent_headers)), *_extract_columns(body)])
         node = OutlineNode(
             outline_id=_line_id(current_section, anchor, body),
-            kind=_classify_line(anchor, body, columns, headers=recent_headers, document_id=document.document_id),
+            kind=_classify_line(
+                anchor,
+                body,
+                columns,
+                headers=recent_headers,
+                document_id=document.document_id,
+            ),
             label=body or f"Line {anchor}",
             page=page,
             line_anchor=anchor,
@@ -307,11 +398,40 @@ def _classify_line(
         if anchor in FORM_8949_SCHEDULE_D_TARGETS and len(columns) >= 3:
             return "transaction_table"
         return "line"
+    if _is_heading_line(body):
+        return "heading"
     if "add the amounts" in lowered or lowered.startswith("totals."):
         return "totals"
     if len(columns) >= 3 or anchor == "1" and columns:
         return "transaction_table"
     return "line"
+
+
+def _is_heading_line(body: str) -> bool:
+    """Return whether a printed line is a non-fillable section heading."""
+    lowered = body.strip().lower()
+    if not lowered.endswith(":"):
+        return False
+    return not any(
+        phrase in lowered
+        for phrase in (
+            "check",
+            "enter",
+            "list",
+            "amount",
+            "form number",
+        )
+    )
+
+
+def _canonical_line_anchor(raw_anchor: str, body: str) -> str:
+    """Prefer a complete printed line number when OCR split off its prefix."""
+    raw_anchor = raw_anchor.lower()
+    if raw_anchor.isdigit() or len(raw_anchor) != 1 or not raw_anchor.isalpha():
+        return raw_anchor
+    matches = re.findall(r"\b([0-9]+[a-z])\b", body.lower())
+    matching = [match for match in matches if match.endswith(raw_anchor)]
+    return matching[-1] if matching else raw_anchor
 
 
 def _attach_header_to_previous_numeric_line(

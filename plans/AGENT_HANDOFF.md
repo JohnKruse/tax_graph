@@ -12,12 +12,65 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 - History: pruned at each phase close (latest: M15R close, pruned 2026-07-16). Full narration lives in
   `plans/archive/` (phase plans with close notes) and git history.
 
-## Current state (2026-07-22)
+## Current state (2026-07-23)
 
-**BALL: ARCHITECT - M16-CI is IMPLEMENTED and floor-verified; next actions:
-push the 16-commit batch + WATCH CI (Architect), then John restarts the machine
-to restore the Worker environment, then the M16-S2 Worker round (prompt to
-follow).** After the Worker environment stop (venv/pytest `Access is denied`,
+**SESSION START CHECKPOINT - M16-S2 (Worker, Codex GPT-5, 2026-07-23):**
+Model is GPT-5; effort level is high; usage, quota, and context indicators are not
+exposed. The single declared step is M16-S2: Stream A semantic extraction typing
+code plus focused tests only, one local commit, no push. Python executes through the
+fixed in-workspace `.venv\Scripts\python.exe`. No implementation or verification
+command had run at checkpoint. Canary: Straight Line. Pending: implement the bounded
+typing changes, checkpoint before the full-floor phase, run sequential verification,
+update this handoff and BALL, and commit exactly once.
+
+**PRE-FLOOR CHECKPOINT - M16-S2 (Worker, Codex GPT-5, 2026-07-23):**
+Stream A code and focused tests are implemented. Focused extraction plus legacy M4 and
+Schedule D partitions are green at 16 passed. The inline Schedule 2 slice now emits
+the line-1 heading as `concept/string` and the printed line-1z total as
+`form_line/currency`; the real cached Schedule 2 outline completeness smoke is green.
+The S1 fixture remains untouched and strict-xfail. No promoted artifacts, field maps,
+bindings, citations, or modeled tax logic changed. Pytest must use the workspace
+`.pytest_tmp` basetemp because the default AppData temp root is denied by this sandbox.
+Pending: sequential floor partitions, ASCII, diff check, validate 2025, unchanged real
+preflight at `legacy_mined=394`, final handoff, and the single local commit.
+
+**SESSION START CHECKPOINT - M16-S2 (Worker, Codex GPT-5, 2026-07-22):**
+Model is GPT-5 Codex; effort level is default; no usage/quota/context indicators
+are exposed. The single declared step is M16-S2: Stream A semantic extraction
+typing code plus focused tests only, one local commit, no push. No implementation
+or verification command has run in this session. Pending: inspect extraction
+contracts and fixtures, implement the bounded typing changes, checkpoint before
+the full-floor phase, run sequential verification, update this handoff and BALL,
+and commit exactly once.
+
+**BALL: WORKER - M16-S2 Stream A code and focused tests are complete locally;
+static gates, validate, S1 strict-xfail smoke, and real preflight are green.
+The full floor is not claimed because sequential M15/non-M15 partitions hit
+launcher limits and the M15 aggregate has four sandbox dependency-collection
+errors. One local commit is complete; no push.**
+ENVIRONMENT FIX RECORD: the recurring denial was the venv launcher shim
+spawning the OUT-OF-WORKSPACE base interpreter (AppData Python313), which
+the Codex sandbox denies per-session; no machine restart ever occurred
+(last boot 2026-07-19 20:31) and none is needed. Fix: the base interpreter
+is mirrored to `.python313/` inside the repo (gitignored) and `.venv` is
+rebuilt on it - pyvenv.cfg `home` is now in-workspace - with deps resynced
+from uv.lock under the same extras. Verified: schedule_2 fixture smoke
+(1 passed + 1 xfailed) and quick regressions (6 passed). Two idle 13:07
+orphans holding `.venv` were stopped (PIDs 10840/11384); six other idle
+orphans persist until next reboot, harmless. Old venv kept at
+`.venv_old_shim/` for rollback until S2 lands. Superseded stop record
+(kept as history):
+The task and boundaries remain in From Architect (M16-S2). `python` is not
+available on PATH, and the canonical `.venv\Scripts\python.exe --version`
+probe fails with `Access is denied`. No implementation code, focused tests,
+validation, preflight, full-floor partition, commit, or push ran in this
+session. The handoff checkpoint below and this stop record are the only edits.
+[superseded sequence removed - the environment is fixed above; no restart
+needed. John pastes the M16-S2 Architect prompt into interactive Codex.] M16-CI is IMPLEMENTED, floor-
+verified, COMMITTED (`7087d9a`) and PUSHED (`baa6fd5..7087d9a`, all 16
+commits). CI on `7087d9a`: FULLY GREEN, all four jobs (base 16s, py3.13
+32m49s, py3.11 47m30s, py3.12 53m26s) - the first fully green CI run since
+2026-07-14, Architect-watched to completion (run 29956182510). After the Worker environment stop (venv/pytest `Access is denied`,
 no `uv`; answered Open item below), John chose direct Architect implementation
 (2026-07-22). What landed (one commit at this HEAD): (1) the CI test job now
 syncs `--extra dev --extra workbench --extra workbench-dev` (the actually
@@ -191,12 +244,50 @@ sequenced after M15 or when TY2026 docs drop.
   and the Step-5 record-hash ordering fix. Step 2's live pass was John + Architect.
 
 ## Open for Architect
-- (none - the M16-CI environment stop is ANSWERED: the Worker's stop was correct
-  and cost nothing; John chose direct Architect implementation of M16-CI (done,
-  see BALL). The Worker environment restore happens via machine restart after
-  the Architect push; the M16-S2 relaunch prompt follows that.)
+- **M16-S2 floor limitation (Worker, Codex GPT-5, 2026-07-23):** Python executed
+  through the fixed in-workspace venv. The aggregate `pytest -m m15` collection
+  hit access-denied imports for `greenlet`/Playwright and Flask in the four
+  hostile modules `tests/e2e`, `test_workbench_page_evidence_m15.py`,
+  `test_workbench_server_m15.py`, and `test_workbench_write_api_m15.py`.
+  Smaller sequential M15 partitions timed out without failures at 53 dots/180s
+  and 11 dots/120s; the first explicit non-M15 partition timed out without
+  failures at 59 dots/180s. No full-floor green claim is made. The focused and
+  core extraction partitions are green, and all required static/live gates below
+  are green. Architect should batch-verify the full floor in the normal runtime.
+
+- **M16-S2 environment stop (Worker, Codex GPT-5, 2026-07-22):** Python could
+  not execute. [ARCHITECT CORRECTION: the record originally said "after the
+  restart" - NO restart occurred; last boot is 2026-07-19 20:31 (verified via
+  Win32_OperatingSystem). The Worker inferred the restart from the BALL's
+  planned sequence. Same-boot evidence (A9g floors and M16-S1 ran Python fine
+  on this very boot) proves the denial is Codex-session sandbox state, not
+  machine state: the venv launcher shim is allowed but its spawn of the
+  out-of-workspace base interpreter is denied, and the sandbox PATH carries no
+  python/py/uv. Fix lives in Codex sandbox/approval config, an in-workspace
+  --copies venv, or edit-only Worker rounds. Workers: record only OBSERVED
+  environment facts, never assumed ones.] `python --version` failed because `python`
+  is not recognized, and `.venv\Scripts\python.exe --version` failed with
+  `Unable to create process ... Access is denied.` Per the pinned stop rule,
+  implementation and all verification stopped immediately. No focused tests,
+  validation, preflight, full-floor partition, commit, or push ran. Pending:
+  restore executable Python, then resume M16-S2 from inspection; the only
+  current worktree change is this handoff checkpoint/stop record.
 
 ## From Worker (M16-S1 complete)
+
+- **M16-S2 implementation and focused tests (Worker, Codex GPT-5, 2026-07-23):**
+  Propagated outline section/heading kinds into draft nodes using schema-safe
+  non-fillable `concept` nodes, canonicalized OCR-split printed anchors such as
+  `z` -> `1z`, and emitted the printed total node. Centralized value-type inference
+  from printed labels and AcroForm control metadata for currency, text, date, and
+  checkbox controls; formula outputs remain computed currency. Added four focused
+  M16 tests in `tests/test_extract_m16.py`. Focused extraction, M4, and Schedule D
+  partitions: 16 passed. The extraction/core regression partition added 32 passed.
+  The untouched S1 fixture is 1 passed + 1 strict xfailed. ASCII, `git diff --check`,
+  `validate 2025`, and real preflight passed; preflight remains at 3,243 units with
+  `legacy_mined=394`. No promoted graph/field-map/binding/citation artifacts, S1
+  fixture, Stream B code, or modeled tax logic changed. The full-floor limitation is
+  recorded under Open for Architect. One local commit is complete; no push.
 
 - **M16-S1 complete (Worker, Codex GPT-5, 2026-07-22):** Added the Schedule 2 Part I
   end-to-end characterization and executable strict-xfail acceptance fixture in
@@ -231,6 +322,37 @@ sequenced after M15 or when TY2026 docs drop.
   before authoring and before the full floor.
 
 ## From Architect
+- **M16-S2 TASK - STREAM A SEMANTIC EXTRACTION TYPING (Architect, Claude Opus
+  4.8, 2026-07-22).** Scope is `plans/PHASE_M16.md` Stream A, CODE + FOCUSED
+  TESTS ONLY this round:
+  1. Propagate the outline's section/heading distinction through assembly:
+     introduce a non-fillable node kind so a heading never becomes a fillable
+     currency line. The collapse point is `tax_graph/extract/assembly.py`
+     (`_node_object`, the `node_type: form_line` + `value_type: currency`
+     hardcoding around lines 171-172).
+  2. Infer `value_type` from the printed control (currency / text / date /
+     identifier / checkbox) instead of hardcoding currency; the existing
+     per-form differentiation (Schedule 1 dates, SSNs) shows the signal -
+     make it the rule.
+  3. Emit form totals present on the PDF (e.g. Schedule 2 line 1z) as nodes,
+     or mark them explicitly out-of-profile - never absent-and-unaccounted.
+  4. Prove behavior with focused extraction unit tests on committed fixtures
+     (the test_extract_m4 / outline test patterns). Schedule 2 Part I is the
+     worked example wherever a fixture is needed.
+  HARD BOUNDARIES: do NOT regenerate or edit promoted graph artifacts, field
+  maps, bindings, or citations (corpus regeneration is M16-S4); do NOT start
+  Stream B (resolver/validators); the M16-S1 fixture in
+  `tests/test_schedule_2_m16.py` must REMAIN strict-xfail (it flips only when
+  regenerated artifacts land) - do not touch its assertions or markers; no
+  modeled tax logic, edges, formulas, or cited parameters change. Floor per
+  the standing method: focused set + sequential partitions as able (SEQUENTIAL
+  ONLY - concurrent pytest orphans children on this box), record launcher
+  timeouts honestly, ASCII, `git diff --check`, `validate 2025`, real
+  preflight unchanged at `legacy_mined=394`. One local commit, no push;
+  Architect batch-verifies (including the fresh-checkout CI sim) and pushes.
+  Session budget rules apply: state model/effort first, declare the single
+  step, checkpoint before expensive phases, stop-and-record on any quota or
+  environment failure.
 - **M16-CI IMPLEMENTED BY ARCHITECT (Claude Opus 4.8, 2026-07-22; John's
   decision after the Worker environment stop).** Full record in the BALL.
   Deltas vs the original rulings, all within their letter or pre-authorized:

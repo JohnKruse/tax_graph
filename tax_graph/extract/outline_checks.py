@@ -7,7 +7,13 @@ from dataclasses import dataclass
 import re
 
 from tax_graph.extract.models import SourceDocumentInput
-from tax_graph.extract.outline import CandidateSpan, OutboundFlow, OutlineNode, OutlineTree
+from tax_graph.extract.outline import (
+    CandidateSpan,
+    OutboundFlow,
+    OutlineNode,
+    OutlineTree,
+    _canonical_line_anchor,
+)
 
 
 LINE_RE = re.compile(r"^-\s+([0-9]+[a-z]?|[a-z]):", re.MULTILINE | re.IGNORECASE)
@@ -58,7 +64,11 @@ def run_outline_artifact_checks(
 
 def _outline_completeness_issues(document: SourceDocumentInput, outline: OutlineTree) -> list[OutlineIssue]:
     issues: list[OutlineIssue] = []
-    rendered_lines = Counter(match.group(1).lower() for match in LINE_RE.finditer(document.text))
+    rendered_lines: Counter[str] = Counter()
+    for raw_line in document.text.splitlines():
+        match = re.match(r"^-\s+([0-9]+[a-z]?|[a-z]):\s*(.*)$", raw_line, re.IGNORECASE)
+        if match:
+            rendered_lines[_canonical_line_anchor(match.group(1).lower(), match.group(2))] += 1
     outline_lines = Counter(
         node.line_anchor.lower()
         for node in _flatten_nodes(outline.children)

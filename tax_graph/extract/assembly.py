@@ -7,7 +7,13 @@ import re
 from typing import Any
 
 from tax_graph.extract.models import DraftObject, ExtractionBatch, SourceDocumentInput
-from tax_graph.extract.outline import CandidateSpan, OutboundFlow, OutlineNode
+from tax_graph.extract.outline import (
+    CandidateSpan,
+    OutboundFlow,
+    OutlineNode,
+    infer_value_type,
+    node_type_for_outline,
+)
 from tax_graph.extract.prompts import closed_operations
 
 
@@ -49,7 +55,17 @@ def assemble_formula_plan(
         node_ids_by_name[raw_output_name] = target_id
         node_ids_by_name[output_name] = target_id
         if target_id not in emitted_nodes:
-            objects.append(_node_object(document.document_id, target_id, output_name, citation_refs, model, computed=True))
+            objects.append(
+                _node_object(
+                    document,
+                    outline_node,
+                    target_id,
+                    output_name,
+                    citation_refs,
+                    model,
+                    computed=True,
+                )
+            )
             emitted_nodes.add(target_id)
 
         rule_id = f"rule_{_slug(target_id)}_{operation.lower()}"
@@ -75,7 +91,17 @@ def assemble_formula_plan(
                 source_id = _node_id(document.document_id, outline_node.outline_id, input_name)
                 node_ids_by_name[input_name] = source_id
                 if source_id not in emitted_nodes:
-                    objects.append(_node_object(document.document_id, source_id, input_name, citation_refs, model, computed=False))
+                    objects.append(
+                        _node_object(
+                            document,
+                            outline_node,
+                            source_id,
+                            input_name,
+                            citation_refs,
+                            model,
+                            computed=False,
+                        )
+                    )
                     emitted_nodes.add(source_id)
             role = str(input_item.get("role") or _default_role(operation, input_index))
             objects.append(
@@ -156,7 +182,8 @@ def _citation_object(citation_id: str, span: CandidateSpan, model: str) -> Draft
 
 
 def _node_object(
-    document_id: str,
+    document: SourceDocumentInput,
+    outline_node: OutlineNode,
     node_id: str,
     name: str,
     citation_refs: list[str],
@@ -166,10 +193,10 @@ def _node_object(
 ) -> DraftObject:
     data: dict[str, Any] = {
         "node_id": node_id,
-        "document_id": document_id,
+        "document_id": document.document_id,
         "label": _label(name),
-        "node_type": "computed" if computed else "form_line",
-        "value_type": "currency",
+        "node_type": "computed" if computed else node_type_for_outline(outline_node),
+        "value_type": "currency" if computed else infer_value_type(outline_node, document=document),
     }
     if citation_refs:
         data["citation_refs"] = citation_refs
