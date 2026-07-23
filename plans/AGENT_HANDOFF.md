@@ -14,6 +14,32 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## Current state (2026-07-23)
 
+**SESSION START CHECKPOINT - M16-S3 (Worker, Codex GPT-5, 2026-07-23):**
+Model is GPT-5; effort level is high; usage, quota, and context indicators are not
+exposed. The single declared step is M16-S3: structure-first field-identity resolver,
+focused tests, and read-only 9-form corpus comparison report; exactly one local commit,
+no push. Canary: Straight Line. No implementation or verification command has run in
+this session. Planned Tier-1 focused files: `tests/test_field_identity_m16.py` and
+`tests/test_schedule_2_m16.py`; pytest will use `.pytest_tmp` and run sequentially.
+Pending: inspect resolver/adjacency contracts, implement the bounded resolver and tests,
+checkpoint before expensive verification, run the declared focused tests plus fast gates,
+update this handoff and BALL, and commit exactly once.
+
+**PRE-VERIFICATION CHECKPOINT - M16-S3 (Worker, Codex GPT-5, 2026-07-23):**
+Implemented `tax_graph/output/field_identity.py` and focused tests in
+`tests/test_field_identity_m16.py`; the untouched `tests/test_schedule_2_m16.py`
+remains strict-xfail. Focused result is 7 passed, 1 xfailed with `.pytest_tmp`.
+The resolver is read-only and uses qualified line/box wrappers, same-row qualified
+inheritance, and the pinned `z -> 1z` anchor repair; no validators, artifact
+regeneration, promoted artifacts, field maps, bindings, citations, or modeled tax
+logic changed. Pending: run the read-only 9-form comparison, write its report,
+rerun declared focused tests, then ASCII, diff check, validate 2025, and unchanged
+real preflight at `legacy_mined=394` before the single local commit.
+
+Verification note: the foreground `workbench.cli preflight --year 2025` command
+hit the known 120-second launcher cap with no output; this is not counted as a
+pass. The read-only command will be rerun in background mode with captured output.
+
 **SESSION START CHECKPOINT - M16-S2 (Worker, Codex GPT-5, 2026-07-23):**
 Model is GPT-5; effort level is high; usage, quota, and context indicators are not
 exposed. The single declared step is M16-S2: Stream A semantic extraction typing
@@ -43,9 +69,25 @@ contracts and fixtures, implement the bounded typing changes, checkpoint before
 the full-floor phase, run sequential verification, update this handoff and BALL,
 and commit exactly once.
 
-**BALL: ARCHITECT->push done; next round is M16-S3 (Stream B resolver +
-structural validators) after John reviews. M16-S2 is ARCHITECT-VERIFIED and
-ACCEPTED (2026-07-23).** Verification under the NEW granular-tier floor
+**BALL: ARCHITECT - M16-S3 ACCEPTED and committed/pushed by the Architect
+(2026-07-23); next round is M16-S4 (Stream B fail-closed structural
+validators) - Architect drafts the task after John reviews the resolver
+report.** The FIRST successful fully-autonomous headless round: Codex
+(Luna/High, `codex exec -s workspace-write`, 265,692 tokens) implemented the
+resolver, tests, and read-only 9-form report, then stopped honestly at real
+preflight - its sandbox's 124s per-command cap, NOT a venv failure (the
+in-workspace venv executed Python all session; the fix HOLDS in headless
+mode). Architect completed Tier 1 (focused 7 passed + 1 strict xfail; ASCII;
+diff-check; validate; real preflight `legacy_mined=394` unchanged), fixed
+one test defect inline (raw-cache guard used a CWD-relative path - now
+ROOT-anchored), and committed/pushed. DIVISION OF LABOR pinned for future
+autonomous rounds: real preflight is Architect-side whenever the Worker
+launcher cap bites; the Worker records the attempt and stops clean. Resolver
+report headline: Schedule 2 exemplar fully resolves from raw structure;
+structure-wrapped forms agree well; 8949 table columns and 13614-C
+wrapperless fields are honest unresolved findings awaiting the S4/S5
+contracts (see `plans/M16_S3_RESOLVER_REPORT.md`). M16-S2 remains
+ARCHITECT-VERIFIED and ACCEPTED.** Verification under the NEW granular-tier floor
 (John's v2 amendment, pinned in standing rules below): diff review clean and
 in-bounds (extract-only; `concept` is a pre-existing schema node_type; the
 line-1z fix is the `_canonical_line_anchor` OCR-split repair; S1 fixture
@@ -264,6 +306,22 @@ sequenced after M15 or when TY2026 docs drop.
   and the Step-5 record-hash ordering fix. Step 2's live pass was John + Architect.
 
 ## Open for Architect
+- **M16-S3 environment stop (Worker, Codex GPT-5, 2026-07-23):** Implementation,
+  focused tests, and the read-only resolver report are complete in the worktree.
+  Focused Tier-1 files `tests/test_field_identity_m16.py` and the untouched
+  `tests/test_schedule_2_m16.py` are green at 7 passed + 1 strict xfailed;
+  ASCII, `git diff --check`, and `tax_graph.cli validate 2025` are green. The
+  required real `workbench.cli preflight --year 2025` was attempted in the
+  foreground and hit the 120-second launcher cap with no result. A fresh
+  `load_artifact_bundle` completed, but `build_manifest` exceeded the same
+  window. The split validator against stale `.workbench_state/2025/review_manifest.json`
+  failed closed on existing `invalid_display_name` issues, so it is not a
+  ratchet result. Multiple background/detached launches produced no surviving
+  process or capture output. Per the environment-failure stop rule, no commit
+  was made and no push was attempted. Pending: Architect-provided runtime path
+  for the current real preflight, then require `legacy_mined=394`, final diff
+  review, and exactly one local commit. No promoted artifacts, validators,
+  regeneration, field maps, bindings, citations, or modeled tax logic changed.
 - **M16-S2 floor limitation (Worker, Codex GPT-5, 2026-07-23):** Python executed
   through the fixed in-workspace venv. The aggregate `pytest -m m15` collection
   hit access-denied imports for `greenlet`/Playwright and Flask in the four
@@ -342,6 +400,39 @@ sequenced after M15 or when TY2026 docs drop.
   before authoring and before the full floor.
 
 ## From Architect
+- **M16-S3 TASK - STREAM B RESOLVER CORE (Architect, Claude Opus 4.8,
+  2026-07-23; autonomous headless round authorized by John, effort High).**
+  Scope for THIS round: the structure-first field-identity RESOLVER plus
+  focused tests plus a READ-ONLY corpus comparison. NO validators (that is
+  S4), NO artifact regeneration (S5), NO promoted-artifact edits.
+  1. New module under `tax_graph/output/` (suggested `field_identity.py`):
+     derive each AcroForm control's `(line, role)` identity from the
+     qualified field-name structure (`LineNN_ReadOrder`, row/copy wrappers,
+     table groupings) plus printed-caption adjacency (REUSE the A9c/A9d
+     number-bearing adjacency machinery), not geometry/label mining.
+  2. Focused tests with Schedule 2 Part I as the worked exemplar: from the
+     raw AcroForm + rendered text alone the resolver must yield f1_15 ->
+     line 4 (SE tax), f1_13 -> line 3, f1_11 -> line 1z total, and the
+     `Line4_ReadOrder` checkboxes -> line-4 exemptions. Inline/synthetic
+     fixtures where possible; any raw-cache read uses the pinned
+     skip-if-missing guard idiom (fresh checkouts carry no `.cache`).
+  3. Read-only corpus comparison: run the resolver over the 9 committed A9
+     forms and compare derived identities against the authored address
+     registries; commit a characterization report
+     (`plans/M16_S3_RESOLVER_REPORT.md`) counting agreement / disagreement /
+     unresolved per form with exemplar rows. Disagreements are FINDINGS for
+     Architect review - do not "fix" either side.
+  4. Tier-1 floor per the amended standing rule: DECLARE your focused test
+     files in this handoff, run them plus fast gates (ASCII,
+     `git diff --check`, `validate 2025`, real preflight unchanged at
+     `legacy_mined=394`). Use the `.pytest_tmp` basetemp. Sequential pytest
+     only. No full partitions - Tier 2 is CI on the Architect's push.
+  5. Stop conditions unchanged: an identity that cannot be established
+     without guessing, any need to touch promoted artifacts, or a
+     quota/environment failure -> stop, record under Open for Architect,
+     update the BALL. Exactly one local commit; no push. Session budget
+     rules apply (state model/effort first, single declared step,
+     checkpoint before expensive phases).
 - **M16-S2 TASK - STREAM A SEMANTIC EXTRACTION TYPING (Architect, Claude Opus
   4.8, 2026-07-22).** Scope is `plans/PHASE_M16.md` Stream A, CODE + FOCUSED
   TESTS ONLY this round:
