@@ -14,19 +14,18 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## Current state (2026-07-23)
 
-**BALL: JOHN - two items, then the M16-S4 Worker round.**
-1. **GitHub Actions is blocked on account billing.** CI for `0f7ce2c` failed at job
-   STARTUP with "recent account payments have failed or your spending limit needs to
-   be increased" - zero steps ran; this is NOT a code failure. Fix Billing and plans,
-   or make the repo public (public repos get free unlimited Actions), then
-   `gh run rerun 30001728782` and watch it green. Local Tier 1 on `0f7ce2c` was fully
-   green. No autonomous Worker round launches while Tier 2 is unavailable, per the
-   amended commit floor.
-2. **Review `plans/M16_S3_RESOLVER_REPORT.md`** - its findings define the M16-S4
-   validator contracts (8949 table columns, W-2 box templates, and 13614-C wrapperless
-   fields are the honest unresolved blocks awaiting a contract).
-
-Then: Architect drafts **M16-S4** (Stream B fail-closed structural validators).
+**BALL: ARCHITECT - clear to draft and launch M16-S4 (Stream B fail-closed
+structural validators).** Blockers are cleared: the repo went PUBLIC on
+2026-07-23, which restored GitHub Actions (free unlimited on public repos)
+after the private-repo billing cap had blocked every run; CI on `8d9052b` is
+FULLY GREEN across all four jobs, so Tier 2 is available again and it covers
+the S3 resolver code. Standing item for John (does not block S4): review
+`plans/M16_S3_RESOLVER_REPORT.md` - 8949 table columns, W-2 box templates, and
+13614-C wrapperless fields are honest unresolved blocks whose contracts S4/S5
+must define. Optional CI quick win, now for feedback speed rather than cost:
+the per-push matrix runs three Python versions at ~40-55 min each (3.12 is
+always the straggler); trimming per-push to 3.13 with the full matrix nightly,
+plus caching the playwright browser download, would cut the loop substantially.
 
 **M16 status:** ACTIVE (`plans/PHASE_M16.md`, canary Straight Line).
 - **S1 [DONE] `17d2351`** - Schedule 2 Part I characterization + strict-xfail acceptance
