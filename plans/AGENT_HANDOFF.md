@@ -36,7 +36,14 @@ ASCII). Real-data finding: the contract is one ref per ADDRESS, not per unit - 3
 cases are the same cell reviewed under two review_kinds and correctly share a ref;
 `ambiguous_refs` flags only a ref spanning two DISTINCT addresses (zero across the
 live 3,243-unit manifest). Tier-1 + manifest/workbench partition + gates green;
-`legacy_mined=394` unchanged.
+`legacy_mined=394` unchanged. NOTE: the first S2 push (`2103037`) went CI-RED on
+`test_workbench_has_no_pipeline_imports` - `refs.py` imported `tax_graph.addressing`,
+violating the workbench/pipeline decoupling. Fixed forward (`eeb5a73`) with a
+stdlib-only address reader; ref behavior unchanged. LESSON (Tier-1 refinement):
+a change under `workbench/` should run `tests/test_workbench_m15.py` locally (fast
+architectural/boundary tests) in addition to the manifest partition - the manifest
+partition does not exercise the import-boundary check. Verifying commit at HEAD is
+`eeb5a73`; CI watched.
 
 **Superseded (kept as history):** M17-S1 ACCEPTED/pushed BALL -
 
