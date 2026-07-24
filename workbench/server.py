@@ -15,7 +15,13 @@ from workbench.navigation import build_document_navigation
 from workbench.preflight import preflight_manifest
 from workbench.render import PageImageCache, PageRenderError, PageRenderer
 from workbench.schema import SchemaValidationError, validate_session_state
-from workbench.sessions import default_session, load_session, save_session
+from workbench.sessions import (
+    default_session,
+    load_session,
+    save_session,
+    session_progress,
+    validate_unit_review_scope,
+)
 from workbench.verdicts import emit_verdict
 
 
@@ -189,9 +195,16 @@ def create_app(
             return jsonify({"error": str(exc), "queue_id": queue_id}), 409
         if payload is not None and payload.get("manifest_hash") != review_manifest["manifest_hash"]:
             return jsonify({"error": "saved session belongs to a stale review manifest", "queue_id": queue_id}), 409
-        return jsonify(payload or default_session(
+        session = payload or default_session(
             int(year), queue_id, review_manifest["manifest_hash"], entry.get("units", [])
-        ))
+        )
+        try:
+            validate_unit_review_scope(session, entry.get("units", []))
+            response = dict(session)
+            response["progress"] = session_progress(session, entry.get("units", []))
+        except ValueError as exc:
+            return jsonify({"error": str(exc), "queue_id": queue_id}), 409
+        return jsonify(response)
 
     @app.put("/api/sessions/<queue_id>")
     def put_session(queue_id: str) -> Any:
@@ -210,22 +223,27 @@ def create_app(
             or payload.get("manifest_hash") != review_manifest["manifest_hash"]
         ):
             return jsonify({"error": "session queue_id, tax_year, and manifest_hash must match"}), 400
+        session_payload = dict(payload)
+        session_payload.pop("progress", None)
         unit_ids = {str(unit.get("unit_id")) for unit in entry.get("units", []) or []}
-        referenced = set(str(value) for value in payload.get("visited_unit_ids", []) or [])
-        if payload.get("current_unit_id") is not None:
-            referenced.add(str(payload["current_unit_id"]))
-        selection = payload.get("selection")
+        referenced = set(str(value) for value in session_payload.get("visited_unit_ids", []) or [])
+        if session_payload.get("current_unit_id") is not None:
+            referenced.add(str(session_payload["current_unit_id"]))
+        selection = session_payload.get("selection")
         if isinstance(selection, dict) and selection.get("unit_id") is not None:
             referenced.add(str(selection["unit_id"]))
         unknown = sorted(referenced - unit_ids)
         if unknown:
             return jsonify({"error": "session references units outside the queue entry", "unit_ids": unknown}), 400
         try:
-            validate_session_state(payload)
-            save_session(session_root / f"{queue_id}.json", payload)
+            validate_unit_review_scope(session_payload, entry.get("units", []))
+            validate_session_state(session_payload)
+            save_session(session_root / f"{queue_id}.json", session_payload)
         except (ValueError, SchemaValidationError) as exc:
             return jsonify({"error": str(exc)}), 400
-        return jsonify(payload)
+        response = dict(session_payload)
+        response["progress"] = session_progress(session_payload, entry.get("units", []))
+        return jsonify(response)
 
     @app.post("/api/verdicts")
     def post_verdict() -> Any:

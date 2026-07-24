@@ -14,9 +14,24 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## Current state (2026-07-23)
 
-**BALL: JOHN - M16-S4 is ACCEPTED, pushed (`90835cb`), and CI-GREEN on all four
-jobs. M16-S5 (corpus regeneration) is DELIBERATELY NOT LAUNCHED and needs John
-before it starts - it is the first M16 step that MUTATES promoted tax artifacts.**
+**BALL: ARCHITECT - M17-S1 ACCEPTED, verified, committed/pushed by the Architect;
+next is M17-S2 (quotable cell ref + submit->verdict flow) after John's go, then
+S3+ frontend. Design in `plans/PHASE_M17.md`.** The Worker's stop was environment
+only (a sandbox `PermissionError` importing flask + the 124s cap; both work in the
+Architect env). Work was complete and in-boundary: `unit_reviews` added to the
+session schema (optional -> backward-compatible; ASCII-only note; approved/open
+enum), sessions.py helpers (approve/reopen preserve note, fail closed on unknown
+unit), a derived progress summary added to the GET/PUT RESPONSE only (popped before
+persist, never schema-validated), and the existing write-api test updated to match.
+Architect ran the full Tier-1 floor: declared focused files 15 passed; ASCII;
+diff-check; module-form validate; real preflight `legacy_mined=394` unchanged. One
+commit, pushed; CI watched. M16-S5 stays PARKED behind John's dispositions from
+`plans/M16_S4_VALIDATOR_REPORT.md` (the first artifact-mutating step; resumes after
+the workbench lands).
+
+**Superseded (kept as history):** M16-S4 done + park-S5 BALL -
+was: M16-S4 ACCEPTED, pushed, CI-GREEN; M16-S5 deliberately not launched as the
+first artifact-mutating step.
 Why S5 breaks the autonomous pattern: S1-S4 were additive and read-only (new
 modules, tests, reports), so the worst case was a module needing revision. S5
 rewrites field maps, bindings, and addresses - the load-bearing tax data - where
@@ -176,7 +191,24 @@ TY2026 docs drop.
   Desktop logs verbatim - first stop when a client-managed server dies.
 
 ## Open for Architect
-- (none)
+- **M17-S1 environment blocker (2026-07-24):** the split focused run passed 10
+  schema/helper tests, then failed during the self-contained API fixture setup with
+  `PermissionError: [Errno 13] Permission denied` importing
+  `.venv\\Lib\\site-packages\\flask\\testing.py`. The earlier combined declared-file
+  run exceeded the 120-second launcher cap after 7 tests and was terminated with no
+  assertion failure output. Pending: rerun the new API test and the live
+  `tests/test_workbench_write_api_m15.py`, then all Tier-1 gates, inspect/fix any
+  failures, and make the single local commit. No commit was made.
+
+### Worker session checkpoint - M17-S1 (2026-07-24)
+- Declared step: M17-S1 per-unit review state only; backend only. Canary: Ledger Llama.
+- Session-start checkpoint: model GPT-5 Codex, effort level default, and no usage/quota/context
+  indicators are exposed.
+- Pre-expensive-work checkpoint: M17 design and existing session/schema/server mapping read.
+  Focused files declared for the Tier-1 floor: `tests/test_review_schemas_m15.py`,
+  `tests/test_workbench_write_api_m15.py`, and new `tests/test_workbench_sessions_m17.py`;
+  tests use the existing `m15` marker. Derived GET progress will not be persisted, and
+  unknown per-unit review ids will fail closed against the queue manifest.
 
 ### Worker session checkpoint - M16-S4 (2026-07-23)
 - Declared step: implement the four Stream B structural validators, focused Schedule 2 Part I
@@ -206,6 +238,39 @@ TY2026 docs drop.
 
 ## From Architect
 
+- **M17-S1 TASK - PER-UNIT REVIEW STATE (Architect, Claude Opus 4.8, 2026-07-24;
+  autonomous headless round, effort High).** Design + mapping are in
+  `plans/PHASE_M17.md` - read it first. This round is BACKEND ONLY: the mutable
+  per-cell review-state layer that the redesigned UI needs. No frontend, no
+  verdict-emission change, no manifest change.
+  1. Extend `schemas/session_state.schema.json` with per-unit review records. A
+     `unit_reviews` collection keyed by `unit_id`, each record carrying the review
+     status (approved vs open - a boolean or a small enum), a free-text `note`
+     (ASCII), and an `updated_at` timestamp. Keep sessions NON-AUTHORITATIVE (they
+     are resume state, not verdicts) and keep the existing fields.
+  2. Update `workbench/sessions.py`: `default_session` initializes an empty
+     `unit_reviews`; add small deterministic helpers to set/clear a unit's approval
+     and note; preserve the atomic write and ASCII/sorted-keys serialization.
+  3. Expose a DERIVED progress summary (approved count / total units for the
+     document) computed on READ from `unit_reviews` against the manifest unit set -
+     never stored, to avoid drift. Surface it through the session GET path (or a
+     small read helper the API uses); do not add a new authoritative artifact.
+  4. Round-trip through `GET/PUT /api/sessions/<queue_id>` in `workbench/server.py`
+     (mostly schema + default; the PUT already validates and persists the payload).
+     A note or approval for a `unit_id` not in the manifest must fail closed.
+  5. Tests (mark them `m15` to match the workbench suite, or a new `m17` marker -
+     your call, state it): schema accepts a valid `unit_reviews`; PUT then GET
+     round-trips it; approve then reopen a unit; progress count is correct; an
+     unknown `unit_id` is rejected; the note persists; nothing touches verdicts,
+     the graph, or the preflight ratchet.
+  DECLARE your focused test files in the handoff. Tier-1 floor: those files green,
+  ASCII, `git diff --check`, module-form `validate 2025`
+  (`.venv\Scripts\python.exe -m tax_graph.cli validate 2025`), and real preflight
+  unchanged at `legacy_mined=394`. Use `.pytest_tmp` basetemp; sequential pytest
+  only; no full partitions (Tier 2 is CI on the Architect's push). One local
+  commit; no push. Stop conditions: any need to change verdict emission, the
+  manifest, promoted artifacts, or graph semantics; a schema that cannot stay
+  backward-compatible with existing saved sessions; or a quota/environment failure.
 - **M16-S4 TASK - STREAM B FAIL-CLOSED STRUCTURAL VALIDATORS (Architect, Claude
   Opus 4.8, 2026-07-23; autonomous headless round, effort High).** Scope: the
   validators, focused tests, and a READ-ONLY corpus report. They FLAG this round;

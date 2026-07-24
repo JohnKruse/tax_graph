@@ -115,6 +115,13 @@ def test_minimal_valid_projection_fixtures() -> None:
             "notes": "",
             "elapsed_active_seconds": 0,
             "visited_unit_ids": [],
+            "unit_reviews": {
+                "queue_1_line_7": {
+                    "status": "approved",
+                    "note": "Checked the cited line.",
+                    "updated_at": datetime.now(timezone.utc).isoformat(),
+                }
+            },
             "updated_at": datetime.now(timezone.utc).isoformat(),
         }
     )

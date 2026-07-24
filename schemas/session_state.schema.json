@@ -25,9 +25,24 @@
       "items": {"type": "string", "pattern": "^[a-z0-9_]+$"},
       "uniqueItems": true
     },
+    "unit_reviews": {
+      "type": "object",
+      "propertyNames": {"pattern": "^[a-z0-9_]+$"},
+      "additionalProperties": {"$ref": "#/$defs/unit_review"}
+    },
     "updated_at": {"type": "string", "format": "date-time"}
   },
   "$defs": {
+    "unit_review": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "note", "updated_at"],
+      "properties": {
+        "status": {"enum": ["approved", "open"]},
+        "note": {"type": "string", "pattern": "^[\\x00-\\x7F]*$"},
+        "updated_at": {"type": "string", "format": "date-time"}
+      }
+    },
     "selection": {
       "type": "object",
       "additionalProperties": false,

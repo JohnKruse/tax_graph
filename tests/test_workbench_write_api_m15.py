@@ -54,7 +54,9 @@ def test_session_get_put_requires_token_and_round_trips_schema_valid_state(api) 
     assert saved.status_code == 200
     assert loaded.get_json() == state
     session_path = app.config["WORKBENCH_SESSION_ROOT"] / f"{queue_id}.json"
-    assert json.loads(session_path.read_text(encoding="utf-8")) == state
+    persisted = dict(state)
+    persisted.pop("progress")
+    assert json.loads(session_path.read_text(encoding="utf-8")) == persisted
 
     stale = {**state, "manifest_hash": "0" * 64}
     rejected = client.put(f"/api/sessions/{queue_id}", json=stale, headers=_headers())

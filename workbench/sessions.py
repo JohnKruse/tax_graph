@@ -10,6 +10,121 @@ from typing import Any, Iterable
 from workbench.schema import validate_session_state
 
 
+def manifest_unit_ids(units: Iterable[dict[str, Any]]) -> frozenset[str]:
+    """Return the unit ids in one manifest entry."""
+    return frozenset(
+        str(unit["unit_id"])
+        for unit in units
+        if isinstance(unit, dict) and unit.get("unit_id") is not None
+    )
+
+
+def validate_unit_review_scope(
+    payload: dict[str, Any], units: Iterable[dict[str, Any]],
+) -> None:
+    """Reject review records that are not scoped to the manifest entry."""
+    reviews = payload.get("unit_reviews", {})
+    if not isinstance(reviews, dict):
+        return
+    unknown = sorted(set(reviews) - manifest_unit_ids(units))
+    if unknown:
+        raise ValueError(
+            "session reviews units outside the queue entry: "
+            + ", ".join(unknown)
+        )
+
+
+def session_progress(
+    payload: dict[str, Any], units: Iterable[dict[str, Any]],
+) -> dict[str, int]:
+    """Derive approved and total unit counts without storing a summary."""
+    unit_list = list(units)
+    validate_unit_review_scope(payload, unit_list)
+    unit_ids = manifest_unit_ids(unit_list)
+    reviews = payload.get("unit_reviews", {})
+    approved = sum(
+        1
+        for unit_id in unit_ids
+        if isinstance(reviews, dict)
+        and isinstance(reviews.get(unit_id), dict)
+        and reviews[unit_id].get("status") == "approved"
+    )
+    return {"approved": approved, "total": len(unit_ids)}
+
+
+def set_unit_review(
+    payload: dict[str, Any],
+    unit_id: str,
+    units: Iterable[dict[str, Any]],
+    *,
+    approved: bool,
+    note: str = "",
+    updated_at: str | None = None,
+) -> dict[str, Any]:
+    """Set one scoped unit's approval and note in mutable session state."""
+    unit_ids = manifest_unit_ids(units)
+    if unit_id not in unit_ids:
+        raise ValueError(f"unit_id is outside the queue entry: {unit_id}")
+    reviews = payload.setdefault("unit_reviews", {})
+    if not isinstance(reviews, dict):
+        raise ValueError("session unit_reviews must be an object")
+    reviews[unit_id] = {
+        "status": "approved" if approved else "open",
+        "note": note,
+        "updated_at": updated_at or _now(),
+    }
+    return payload
+
+
+def set_unit_approval(
+    payload: dict[str, Any],
+    unit_id: str,
+    units: Iterable[dict[str, Any]],
+    approved: bool,
+    *,
+    updated_at: str | None = None,
+) -> dict[str, Any]:
+    """Set approval while preserving the unit's existing note."""
+    current = payload.get("unit_reviews", {}).get(unit_id, {})
+    note = current.get("note", "") if isinstance(current, dict) else ""
+    return set_unit_review(
+        payload, unit_id, units, approved=approved, note=note, updated_at=updated_at,
+    )
+
+
+def set_unit_note(
+    payload: dict[str, Any],
+    unit_id: str,
+    units: Iterable[dict[str, Any]],
+    note: str,
+    *,
+    updated_at: str | None = None,
+) -> dict[str, Any]:
+    """Set a unit note while preserving its current approval status."""
+    current = payload.get("unit_reviews", {}).get(unit_id, {})
+    approved = isinstance(current, dict) and current.get("status") == "approved"
+    return set_unit_review(
+        payload, unit_id, units, approved=approved, note=note, updated_at=updated_at,
+    )
+
+
+def clear_unit_review(
+    payload: dict[str, Any], unit_id: str, units: Iterable[dict[str, Any]],
+) -> dict[str, Any]:
+    """Clear one scoped unit's mutable approval and note."""
+    if unit_id not in manifest_unit_ids(units):
+        raise ValueError(f"unit_id is outside the queue entry: {unit_id}")
+    reviews = payload.get("unit_reviews", {})
+    if isinstance(reviews, dict):
+        reviews.pop(unit_id, None)
+    return payload
+
+
+def _now() -> str:
+    """Return a UTC timestamp suitable for a review record."""
+    return datetime.now(timezone.utc).replace(microsecond=0).isoformat()
+
+
 def default_session(
     year: int,
     queue_id: str,
@@ -31,6 +146,7 @@ def default_session(
         "notes": "",
         "elapsed_active_seconds": 0,
         "visited_unit_ids": [],
+        "unit_reviews": {},
         "updated_at": datetime.now(timezone.utc).replace(microsecond=0).isoformat(),
     }
 
@@ -45,11 +161,14 @@ def load_session(path: str | Path) -> dict[str, Any] | None:
     except (OSError, json.JSONDecodeError) as exc:
         raise ValueError(f"cannot read session state: {exc}") from exc
     validate_session_state(payload)
+    payload.setdefault("unit_reviews", {})
     return payload
 
 
 def save_session(path: str | Path, payload: dict[str, Any]) -> Path:
     """Validate and atomically replace one non-authoritative session file."""
+    payload = dict(payload)
+    payload.setdefault("unit_reviews", {})
     validate_session_state(payload)
     session_path = Path(path)
     session_path.parent.mkdir(parents=True, exist_ok=True)
