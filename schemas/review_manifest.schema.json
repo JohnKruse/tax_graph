@@ -152,6 +152,7 @@
       "properties": {
         "queue_id": {"type": "string", "pattern": "^[a-z0-9_]+$"},
         "unit_id": {"type": "string", "pattern": "^[a-z0-9_]+$"},
+        "ref": {"type": "string", "pattern": "^[\\x21-\\x7E]+$"},
         "review_kind": {"type": "string", "minLength": 1},
         "required": {"type": "boolean"},
         "object_refs": {"type": "array", "items": {"$ref": "#/$defs/object_ref"}},

@@ -14,9 +14,33 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## Current state (2026-07-23)
 
-**BALL: ARCHITECT - M17-S1 ACCEPTED, verified, committed/pushed by the Architect;
-next is M17-S2 (quotable cell ref + submit->verdict flow) after John's go, then
-S3+ frontend. Design in `plans/PHASE_M17.md`.** The Worker's stop was environment
+**BALL: ARCHITECT - M17-S2 (quotable cell ref) IMPLEMENTED BY THE ARCHITECT and
+verified; committing/pushing. Next is the frontend (S3, John-in-the-loop, uses the
+approved mockup) and the deferred S2b submit->verdict flow.** The Worker could NOT
+run this round: building the real 2025 manifest exceeds its ~124s launcher cap
+(exit 124) before any code - a STRUCTURAL block on Codex doing workbench rounds
+that need the live manifest. The ACL fix HELD (no flask PermissionError this time).
+John's env question (2026-07-24) answered: the S1 flask error was the venv-rebuild
+ACL regression; re-granted `CodexSandboxUsers` read+execute on `.venv` + `.python313`
+(re-run after any venv rebuild - pinned in the Worker environment note). WORKFLOW
+IMPLICATION for John: while the manifest-build cap stands, backend workbench rounds
+are Architect-run (or need Codex's cap raised, or a cached-manifest fixture); the
+big pipeline rounds (M16-S5) remain Codex's when John gives dispositions. M17-S1 is
+ACCEPTED, pushed (`66042d1`), CI-GREEN (run 30082666775).
+
+What M17-S2 landed: `workbench/refs.py` derives a short ASCII quotable ref per unit
+deterministically from the canonical address (`sch2/4/amount`, doc abbreviated
+injectively, role kept so two controls on one line stay distinct); `manifest.py`
+sets `unit["ref"]` on addressed units; both unit schemas gained `ref` (printable
+ASCII). Real-data finding: the contract is one ref per ADDRESS, not per unit - 386
+cases are the same cell reviewed under two review_kinds and correctly share a ref;
+`ambiguous_refs` flags only a ref spanning two DISTINCT addresses (zero across the
+live 3,243-unit manifest). Tier-1 + manifest/workbench partition + gates green;
+`legacy_mined=394` unchanged.
+
+**Superseded (kept as history):** M17-S1 ACCEPTED/pushed BALL -
+
+**Superseded (kept as history):** M17-S1 ACCEPTED/pushed BALL - The Worker's stop was environment
 only (a sandbox `PermissionError` importing flask + the 124s cap; both work in the
 Architect env). Work was complete and in-boundary: `unit_reviews` added to the
 session schema (optional -> backward-compatible; ASCII-only note; approved/open
@@ -191,6 +215,11 @@ TY2026 docs drop.
   Desktop logs verbatim - first stop when a client-managed server dies.
 
 ## Open for Architect
+- (none - the M17-S2 manifest-build launcher-cap blocker is ANSWERED: the Architect
+  implemented S2 directly, see the BALL. The structural implication - Codex cannot build
+  the live manifest within its ~124s cap, so backend workbench rounds are Architect-run
+  until the cap is raised or a cached-manifest fixture exists - is recorded in the BALL for
+  John.)
 - **M17-S1 environment blocker (2026-07-24):** the split focused run passed 10
   schema/helper tests, then failed during the self-contained API fixture setup with
   `PermissionError: [Errno 13] Permission denied` importing
@@ -238,6 +267,47 @@ TY2026 docs drop.
 
 ## From Architect
 
+- **M17-S2 TASK - QUOTABLE CELL REF (Architect, Claude Opus 4.8, 2026-07-24;
+  autonomous headless round, effort High).** Design in `plans/PHASE_M17.md` (S2).
+  BACKEND, PROJECTION ONLY - additive to the review manifest; no authoritative
+  writes, no frontend, no verdict change, no graph/promoted-artifact change.
+  1. Derive a short, human-quotable REF for each manifest unit
+     (`workbench/manifest.py`), deterministically from the unit's canonical
+     address (`address_id`). Requirements: ASCII only (notes and citations are
+     ASCII-enforced, so no middot - use `/`, `-`, or `:` separators); short and
+     readable; STABLE across runs; and UNIQUE within a document. Expose it as a
+     `ref` field on each unit (it then rides through the existing entry/manifest
+     API and into the session/frontend later). Suggested shape, but you decide and
+     state it: a document abbreviation + the line/box token + the role, e.g.
+     `sch2/4/amount` or `sch2-4-amt`. When two units would collide, append the
+     address's disambiguating qualifier (copy/row) rather than a bare counter, so
+     the ref stays meaningful and deterministic.
+  2. Enforce uniqueness: a deterministic check (test and/or a preflight predicate)
+     that no two visible units in a document share a `ref`; a collision fails
+     closed rather than silently emitting a dup.
+  3. Tests (declare the files; `m15` marker to match the workbench suite or a new
+     `m17` - your call, state it): ref is ASCII, deterministic/stable across two
+     builds, unique within each document across the real 2025 manifest, and
+     reconstructs from the address (not mined from labels). Reuse the pinned
+     raw-cache / `_drafts` skip guards where a test needs live artifacts.
+  4. Environment: the venv now grants `CodexSandboxUsers` read+execute, so Flask
+     and full imports should work in your sandbox - if a `PermissionError [Errno
+     13]` on a venv path recurs, record it under Open for Architect (it means the
+     grant did not stick or a sandbox policy blocks it) and continue with whatever
+     you can run. ALWAYS use the module form for CLIs
+     (`.venv\Scripts\python.exe -m tax_graph.cli ...` /
+     `... -m workbench.cli ...`), never the console scripts. `.pytest_tmp`
+     basetemp; sequential pytest only; background or split anything near the ~124s
+     cap and record honestly if it still cannot finish.
+  Tier-1 floor before the single local commit: declared focused files green,
+  ASCII, `git diff --check`, module-form `validate 2025`, and real preflight
+  unchanged at `legacy_mined=394`. NOTE the manifest is a shared surface, so the
+  Architect will additionally run the workbench/manifest partition at verify time -
+  you are not required to. One local commit; no push. Uncommitted Architect edits
+  to the handoff and `plans/PHASE_M17.md` are expected; leave them, they ride in
+  your commit. Stop conditions: any need to change verdict emission, graph
+  semantics, or promoted artifacts; a ref scheme that cannot be made deterministic
+  AND unique; or a quota/environment failure.
 - **M17-S1 TASK - PER-UNIT REVIEW STATE (Architect, Claude Opus 4.8, 2026-07-24;
   autonomous headless round, effort High).** Design + mapping are in
   `plans/PHASE_M17.md` - read it first. This round is BACKEND ONLY: the mutable

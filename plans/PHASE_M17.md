@@ -54,11 +54,15 @@ The gap is the per-cell review layer between the two: mutable draft approve/note
   `sessions.py` default + helpers; round-trip through the session GET/PUT API; expose a
   DERIVED progress summary (approved / total) computed on read, never stored. Tests only;
   no verdict-emission change, no manifest change, no frontend.
-- **S2 - the quotable cell ref + submit->verdict flow (backend).** A short, ASCII, stable
-  ref per unit, deterministic from the canonical address and unique within a document
-  (notes/citations are ASCII-only, so the ref must be ASCII - no middot). Wire Submit to
-  emit one verdict per approved unit through the existing verdict API; define the
-  finalize/reopen semantics and the count.
+- **S2 - the quotable cell ref (backend, projection only).** A short, ASCII, stable ref
+  per manifest unit, deterministic from the canonical address and unique within a
+  document (notes/citations are ASCII-only, so the ref must be ASCII - no middot).
+  Additive to the review projection; no authoritative writes.
+- **S2b (deferred, NOT autonomous) - submit->verdict flow.** Wire Submit to emit one
+  verdict per approved unit through the existing append-only verdict API; define the
+  finalize/reopen semantics and the count. This touches the AUTHORITATIVE verdict path
+  (the no-mutation boundary), so it is done with Architect review, not an unattended
+  round - sequence it with or after the frontend Submit button that drives it.
 - **S3+ - frontend rebuild to the approved mockup.** The three-pane shell, the dashboard +
   picker, the PDF viewer with geometry overlays + zoom, the review river with refs /
   switch / notes, bidirectional selection. Likely more than one step.

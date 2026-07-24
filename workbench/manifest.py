@@ -14,6 +14,7 @@ import yaml
 from workbench.artifacts import ArtifactBundle, GRAPH_OBJECT_KINDS, load_artifact_bundle
 from workbench.schema import validate_review_manifest
 from workbench.reviewer_language import contains_raw_field_name_token, is_raw_field_name
+from workbench.refs import unit_ref_from_address
 from workbench.semantics import FormattedSemantics, format_scope_semantics
 
 
@@ -251,6 +252,9 @@ def _unit(
         unit["promotion_diff_refs"] = changed
     if address_id:
         unit["address_id"] = address_id
+        ref = unit_ref_from_address(address_id)
+        if ref:
+            unit["ref"] = ref
     if object_type == "field_control" and isinstance(object_data, dict):
         for key in (
             "field_name", "population_policy", "value_format", "node_id",
