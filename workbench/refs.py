@@ -11,9 +11,27 @@ nothing.
 from __future__ import annotations
 
 from typing import Any, Iterable, Mapping
+from urllib.parse import unquote
 
-from tax_graph.addressing import parse_address_id
-from tax_graph.addressing.registry import AddressError
+
+def _parse_address(address_id: str) -> list[tuple[str, str]] | None:
+    """Parse a canonical year-scoped address into (kind, token) pairs, or None.
+
+    This is a read-only, stdlib-only reader of the canonical serialization
+    (``year/kind=token/...`` with urllib-quoted tokens). The workbench must not
+    import the pipeline package, so it does not reuse the addressing parser; it only
+    needs to split a string it never round-trips. Non-canonical input returns None.
+    """
+    parts = address_id.split("/")
+    if len(parts) < 2 or not parts[0].isdigit():
+        return None
+    components: list[tuple[str, str]] = []
+    for part in parts[1:]:
+        kind, separator, encoded = part.partition("=")
+        if not separator or not kind:
+            return None
+        components.append((kind, unquote(encoded)))
+    return components
 
 
 def abbreviate_document(token: str) -> str:
@@ -40,15 +58,12 @@ def unit_ref_from_address(address_id: str) -> str | None:
     """
     if not address_id:
         return None
-    try:
-        _year, components = parse_address_id(address_id)
-    except AddressError:
+    components = _parse_address(address_id)
+    if not components:
         return None
     parts = [
-        abbreviate_document(component.token)
-        if component.kind == "document"
-        else component.token
-        for component in components
+        abbreviate_document(token) if kind == "document" else token
+        for kind, token in components
     ]
     ref = "/".join(parts)
     if not ref or not ref.isascii():
