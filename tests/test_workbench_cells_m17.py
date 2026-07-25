@@ -12,8 +12,12 @@ import re
 
 import pytest
 
-from workbench.cell_inventory import build_document_cells, build_documents_index
-from workbench.server import create_app
+from workbench.cell_inventory import (
+    _citations,
+    _load_citations,
+    build_document_cells,
+    build_documents_index,
+)
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -82,68 +86,35 @@ def test_documents_index_loads_geometry_once_and_omits_empty() -> None:
     assert index[0]["title"] == "Form 1040"
     assert index[0]["cell_count"] == len(built.cells)
     assert index[0]["pages"] == built.pages
-
-
-@pytest.fixture(scope="module")
-def client():
-    app = create_app(ROOT, 2025, write_token="test-write-token")
-    app.config.update(TESTING=True)
-    return app.test_client()
+    assert sum(index[0]["policy_counts"].values()) == index[0]["cell_count"]
+    assert index[0]["policy_counts"]["user_entered"] > 0
 
 
 @pytest.mark.m17
-def test_documents_api_lists_forms(client) -> None:
-    payload = client.get("/api/documents").get_json()
-    assert payload["tax_year"] == 2025
-    assert any(item["document_id"] == "form_1040_2025" for item in payload["documents"])
-    assert all(item["cell_count"] > 0 for item in payload["documents"])
+def test_cell_carries_all_field_map_disposition_metadata() -> None:
+    cells = build_document_cells(ROOT, 2025, "form_1040_2025").cells
+    unsupported = next(cell for cell in cells if cell["population_policy"] == "unsupported")
+    assert unsupported["policy_reason"]
+    assert unsupported["downstream_effect"]
+    assert unsupported["missing_capability"]
 
 
 @pytest.mark.m17
-def test_document_cells_api_returns_ordered_cells(client) -> None:
-    response = client.get("/api/documents/form_1040_2025/cells")
-    assert response.status_code == 200
-    payload = response.get_json()
-    assert payload["document_id"] == "form_1040_2025"
-    assert payload["pages"] == sorted(payload["pages"])
-    assert payload["cells"], "the 1040 has cells"
-    assert client.get("/api/documents/not_a_form/cells").status_code == 404
-
-
-@pytest.mark.m17
-def test_document_session_round_trip_and_scope(client) -> None:
-    session = client.get("/api/documents/form_1040_2025/session").get_json()
-    assert session["queue_id"] == "form_1040_2025"
-    assert session["progress"]["total"] > 0
-    cells = client.get("/api/documents/form_1040_2025/cells").get_json()["cells"]
-    target = cells[0]["cell_id"]
-    session["unit_reviews"] = {
-        target: {"status": "approved", "note": "ok", "updated_at": "2026-07-24T00:00:00+00:00"}
-    }
-    session["current_unit_id"] = target
-    session.pop("progress", None)
-    saved = client.put(
-        "/api/documents/form_1040_2025/session",
-        json=session,
-        headers={"X-Workbench-Token": "test-write-token"},
+def test_citations_resolve_to_verbatim_text_and_provenance() -> None:
+    citations = _load_citations(ROOT / "graph" / "2025" / "citations")
+    records = _citations(
+        {"citation_refs": ["cite_span_form_1040_2025_0007", "missing_citation"]},
+        citations,
     )
-    assert saved.status_code == 200, saved.get_json()
-    assert saved.get_json()["progress"]["approved"] == 1
-    # A review keyed to a cell outside the document is rejected.
-    session["unit_reviews"]["not_a_cell_here"] = {
-        "status": "approved", "note": "", "updated_at": "2026-07-24T00:00:00+00:00"
+    assert records[0] == {
+        "citation_id": "cite_span_form_1040_2025_0007",
+        "quoted_text": "- 1: a Total amount from Form(s) W-2, box 1 (see instructions) 1a",
+        "locator": "page 1, line 8",
+        "url": "https://www.irs.gov/pub/irs-prior/f1040--2025.pdf",
+        "retrieved_date": "2026-07-09",
+        "source_document_id": "form_1040_2025",
+        "resolved": True,
     }
-    bad = client.put(
-        "/api/documents/form_1040_2025/session",
-        json=session,
-        headers={"X-Workbench-Token": "test-write-token"},
-    )
-    assert bad.status_code == 400
-
-
-@pytest.mark.m17
-def test_document_session_requires_write_token(client) -> None:
-    session = client.get("/api/documents/form_1040_2025/session").get_json()
-    session.pop("progress", None)
-    denied = client.put("/api/documents/form_1040_2025/session", json=session)
-    assert denied.status_code == 403
+    assert records[1]["citation_id"] == "missing_citation"
+    assert records[1]["quoted_text"] is None
+    assert records[1]["resolved"] is False

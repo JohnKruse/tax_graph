@@ -25,6 +25,7 @@ directly and reuses only the stdlib-only ref deriver.
 
 from __future__ import annotations
 
+from collections import Counter
 from dataclasses import dataclass, field as dataclass_field
 import json
 from pathlib import Path
@@ -82,6 +83,9 @@ def build_document_cells(
     addresses = _load_addresses(graph_dir / "addresses" / f"{document_id}.yaml")
     dispositions = _load_dispositions(graph_dir / "field_maps" / f"{document_id}.yaml")
     bindings = _load_node_bindings(graph_dir / "bindings" / "nodes" / f"{document_id}.yaml")
+    citations = _load_citations(graph_dir / "citations")
+    node_metadata = _load_node_metadata(graph_dir / "nodes")
+    operations = _load_node_operations(graph_dir)
     # The operands of a computed cell are the graph edges feeding its node; resolving
     # them to refs needs the node->address map across every document (a sum can draw
     # from another form). Only loaded when a caller renders detail, not for counts.
@@ -108,6 +112,13 @@ def build_document_cells(
         disposition = dispositions.get(str(entry.get("field_name") or ""), {})
         binding = bindings.get(address_id)
         node_id = str(binding["node_id"]) if binding and binding.get("node_id") else None
+        node_data = node_metadata.get(node_id, {}) if node_id else {}
+        citation_address = {
+            "citation_refs": [
+                *(address.get("citation_refs", []) or []),
+                *(node_data.get("citation_refs", []) or []),
+            ]
+        }
         page = int(entry["page"])
         pages.add(page)
         cells.append(
@@ -128,8 +139,11 @@ def build_document_cells(
                 "population_policy": str(disposition.get("population_policy") or "") or None,
                 "value_format": str(disposition.get("value_format") or "") or None,
                 "policy_reason": str(disposition.get("reason") or "") or None,
+                "downstream_effect": str(disposition.get("downstream_effect") or "") or None,
+                "missing_capability": str(disposition.get("missing_capability") or "") or None,
                 "node_id": node_id,
-                "citations": _citations(address),
+                "operation": operations.get(node_id),
+                "citations": _citations(citation_address, citations),
             }
         )
     return DocumentCells(document_id=document_id, cells=cells, pages=sorted(pages))
@@ -167,8 +181,33 @@ def _display_name(
     return printed or str(entry.get("field_name") or "unnamed control")
 
 
-def _citations(address: dict[str, Any]) -> list[str]:
-    return sorted({str(value) for value in address.get("citation_refs", []) or []})
+def _citations(
+    address: dict[str, Any], citation_index: dict[str, dict[str, Any]] | None = None
+) -> list[dict[str, Any]]:
+    """Resolve address citation ids to verbatim, provenance-bearing records.
+
+    An unresolved id is retained with null source fields so the workbench exposes a
+    coverage problem instead of silently dropping it or fabricating citation text.
+    """
+    citation_index = citation_index or {}
+    resolved: list[dict[str, Any]] = []
+    for value in sorted({str(value) for value in address.get("citation_refs", []) or []}):
+        record = citation_index.get(value)
+        if record is None:
+            resolved.append(
+                {
+                    "citation_id": value,
+                    "quoted_text": None,
+                    "locator": None,
+                    "url": None,
+                    "retrieved_date": None,
+                    "source_document_id": None,
+                    "resolved": False,
+                }
+            )
+            continue
+        resolved.append(dict(record, resolved=True))
+    return resolved
 
 
 def _cell_id(entry: dict[str, Any], used: set[str]) -> str:
@@ -229,6 +268,9 @@ def build_documents_index(
                 "title": titles.get(document_id, document_id),
                 "pages": built.pages,
                 "cell_count": len(built.cells),
+                "policy_counts": dict(sorted(
+                    Counter(cell.get("population_policy") or "unknown" for cell in built.cells).items()
+                )),
             }
         )
     return summaries
@@ -264,6 +306,74 @@ def _load_dispositions(path: Path) -> dict[str, dict[str, Any]]:
         for item in payload.get("field_dispositions", []) or []
         if isinstance(item, dict) and item.get("field_name")
     }
+
+
+def _load_citations(directory: Path) -> dict[str, dict[str, Any]]:
+    """Index promoted citation records without importing the pipeline package."""
+    if not directory.is_dir():
+        return {}
+    result: dict[str, dict[str, Any]] = {}
+    for path in sorted(directory.glob("*.yaml")):
+        payload = yaml.safe_load(path.read_text(encoding="utf-8")) or []
+        records = payload.get("citations", []) if isinstance(payload, dict) else payload
+        for item in records or []:
+            if not isinstance(item, dict) or not item.get("citation_id"):
+                continue
+            citation_id = str(item["citation_id"])
+            result[citation_id] = {
+                "citation_id": citation_id,
+                "quoted_text": item.get("quoted_text"),
+                "locator": item.get("locator"),
+                "url": item.get("url"),
+                "retrieved_date": _date_text(item.get("retrieved_date")),
+                "source_document_id": item.get("source_document_id") or item.get("document_id"),
+            }
+    return result
+
+
+def _load_node_metadata(directory: Path) -> dict[str, dict[str, Any]]:
+    """Load node citation metadata for graph-backed cell authority."""
+    if not directory.is_dir():
+        return {}
+    result: dict[str, dict[str, Any]] = {}
+    for path in sorted(directory.glob("*.yaml")):
+        payload = yaml.safe_load(path.read_text(encoding="utf-8")) or []
+        records = payload.get("nodes", []) if isinstance(payload, dict) else payload
+        for item in records or []:
+            if isinstance(item, dict) and item.get("node_id"):
+                result[str(item["node_id"])] = item
+    return result
+
+
+def _load_node_operations(graph_dir: Path) -> dict[str, str]:
+    """Resolve a computed node's operation from its incoming graph edge rule."""
+    rules: dict[str, str] = {}
+    rules_dir = graph_dir / "rules"
+    for path in sorted(rules_dir.glob("*.yaml")) if rules_dir.is_dir() else []:
+        payload = yaml.safe_load(path.read_text(encoding="utf-8")) or []
+        records = payload.get("rules", []) if isinstance(payload, dict) else payload
+        for item in records or []:
+            if isinstance(item, dict) and item.get("rule_id") and item.get("operation"):
+                rules[str(item["rule_id"])] = str(item["operation"])
+    operations: dict[str, str] = {}
+    edges_dir = graph_dir / "edges"
+    for path in sorted(edges_dir.glob("*.yaml")) if edges_dir.is_dir() else []:
+        payload = yaml.safe_load(path.read_text(encoding="utf-8")) or []
+        records = payload.get("edges", []) if isinstance(payload, dict) else payload
+        for item in records or []:
+            if not isinstance(item, dict) or not item.get("target"):
+                continue
+            operation = rules.get(str(item.get("rule_id") or ""))
+            if operation:
+                operations.setdefault(str(item["target"]), operation)
+    return operations
+
+
+def _date_text(value: Any) -> str | None:
+    """Normalize YAML date scalars so the JSON projection stays string-valued."""
+    if value is None:
+        return None
+    return value.isoformat() if hasattr(value, "isoformat") else str(value)
 
 
 def _cell_inputs(

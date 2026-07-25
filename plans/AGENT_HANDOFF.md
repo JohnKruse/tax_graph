@@ -14,6 +14,40 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## Current state (2026-07-23)
 
+**Worker session checkpoint - M17-S3R2 + S4 (2026-07-25):** John said go via the
+current task request. Model GPT-5 Codex, effort default; usage/quota/context indicators
+are not exposed. Single declared step: complete S4b test partition split, then implement
+S3R2 navigation/contrast and S4 citation-backed cell dossier plus focused tests, in the
+order specified in `plans/PHASE_M17.md`. Canary: Ledger Llama. Worktree was clean at
+start. Declared focused test files: `tests/test_workbench_cells_m17.py` (fast projection
+tests), the new app-dependent cells test file from S4b, and
+`tests/e2e/test_workbench_v2_m17.py`. No verdict, graph, or promoted-artifact changes.
+
+S4b checkpoint: split the original cells test file; fast projection coverage now includes
+resolved citation records, field-map disposition passthrough, and policy counts. Focused
+command `.venv\\Scripts\\python.exe -m pytest --basetemp=.pytest_tmp
+tests/test_workbench_cells_m17.py -q`: 6 passed. App-dependent API tests remain in
+`tests/test_workbench_cells_api_m17.py` for Architect-side verification.
+
+Frontend checkpoint: S3R2 and S4 are implemented in `workbench/static/app.js`,
+`river.js`, `keyboard.js`, and `styles.css`; `cell_inventory.py` now projects citation
+records, operation, disposition metadata, and per-document policy counts. Bundled Node
+syntax checks for the changed modules passed; `git diff --check` passed. Fast projection
+partition remains 6 passed. App-dependent API and live e2e verification are pending.
+
+App-dependent verification attempt: `.venv\\Scripts\\python.exe -m pytest
+--basetemp=.pytest_tmp tests/test_workbench_cells_api_m17.py -q` ran for 120 seconds and
+exited 124 with no assertion output. This is the documented launcher-cap boundary; do not
+rerun in the Worker session. Architect-side API/e2e verification remains pending.
+
+Worker implementation complete for the declared M17-S3R2 + S4 slice. Final Worker gates:
+fast projection partition 6 passed; bundled Node syntax checks passed; ASCII check OK;
+`git diff --check` passed; `.venv\\Scripts\\python.exe -m tax_graph.cli validate 2025`
+passed with graph integrity OK. Remaining handoff: Architect-side API/e2e verification,
+then the single commit may be pushed after review. No verdict, graph, or promoted-artifact
+change was made.
+
+
 **BALL: WORKER - M17-S3R2 + S4 (John's second-review corrections). John reviewed the
 live S3R UI on 2026-07-25 and returned four issues; the design is NOT rejected - the
 form-sourced cell spine stands, and every complaint is about navigation, contrast,

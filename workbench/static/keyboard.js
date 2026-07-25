@@ -15,6 +15,14 @@ function moveEntry(delta) {
 }
 
 function moveUnit(delta) {
+  const riverUnits = [...document.querySelectorAll("#river .review-unit-card")];
+  if (riverUnits.length) {
+    const current = riverUnits.findIndex((unit) => unit.classList.contains("selected"));
+    const base = current < 0 ? (delta > 0 ? -1 : riverUnits.length) : current;
+    const next = Math.max(0, Math.min(riverUnits.length - 1, base + delta));
+    riverUnits[next].querySelector(".unit-card-select")?.click();
+    return;
+  }
   const units = [...document.querySelectorAll("#official-pane .official-region")];
   if (!units.length) return;
   const current = units.findIndex((unit) => unit.classList.contains("pinned"));

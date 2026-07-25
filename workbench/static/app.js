@@ -12,6 +12,16 @@ let dirty = false;
 let syncingSelection = false;
 const navigationState = new Map();
 
+const POLICY_COUNT_LABEL = {
+  user_entered: "filer-entered",
+  imported: "imported",
+  copied: "copied",
+  computed: "computed",
+  decision_required: "decision required",
+  intentionally_blank: "intentionally blank",
+  unsupported: "no mapping authored",
+};
+
 function now() {
   return new Date().toISOString().replace(/\.\d{3}Z$/, "Z");
 }
@@ -25,6 +35,12 @@ function approvedCount() {
   return activeCells().filter((cell) => reviews[cell.cell_id]?.status === "approved").length;
 }
 
+function policySummary(counts) {
+  return Object.entries(counts || {})
+    .map(([policy, count]) => `${POLICY_COUNT_LABEL[policy] || policy}: ${count}`)
+    .join(" | ");
+}
+
 function updateDashboard() {
   const title = document.querySelector("#dashboard-title");
   const meta = document.querySelector("#selected-document-meta");
@@ -32,7 +48,8 @@ function updateDashboard() {
   const approved = approvedCount();
   title.textContent = activeDocument?.title || "Choose a form";
   meta.textContent = activeDocument
-    ? `${total} cells | page ${activePage ?? "-"} of ${activeDocument.pages.join(", ")}`
+    ? `${total} cells | page ${activePage ?? "-"} of ${activeDocument.pages.join(", ")}` +
+      (policySummary(activeDocument.policy_counts) ? ` | ${policySummary(activeDocument.policy_counts)}` : "")
     : "Your review progress stays local and resumable.";
   document.querySelector("#approved-count").textContent = `${approved} / ${total}`;
   document.querySelector("#approval-bar").style.width = total ? `${approved / total * 100}%` : "0%";
@@ -53,7 +70,8 @@ function renderDocumentList(payload) {
     button.dataset.documentId = documentItem.document_id;
     button.innerHTML =
       `<strong>${documentItem.title}</strong>` +
-      `<small>${documentItem.cell_count} cells | pages ${documentItem.pages.join(", ")}</small>`;
+      `<small>${documentItem.cell_count} cells | pages ${documentItem.pages.join(", ")}</small>` +
+      `<small class="document-policy-counts">${policySummary(documentItem.policy_counts)}</small>`;
     button.addEventListener("click", () => selectDocument(documentItem, button));
     list.append(button);
   }
@@ -78,6 +96,7 @@ async function selectDocument(documentItem, button) {
     title: cellsPayload.title,
     pages: cellsPayload.pages,
     cells: cellsPayload.cells,
+    policy_counts: documentItem.policy_counts || {},
   };
   activeSession = session;
   dirty = false;
@@ -115,6 +134,18 @@ function updateCellReview(cell, changes) {
   updateDashboard();
 }
 
+function scrollOfficialRegionIntoView(cellId) {
+  const viewport = document.querySelector("#official-pane .page-viewport");
+  const region = document.querySelector(`#official-pane [data-unit-id="${CSS.escape(cellId)}"]`);
+  if (!viewport || !region) return;
+  const viewportRect = viewport.getBoundingClientRect();
+  const regionRect = region.getBoundingClientRect();
+  const regionTop = regionRect.top - viewportRect.top + viewport.scrollTop;
+  const regionLeft = regionRect.left - viewportRect.left + viewport.scrollLeft;
+  viewport.scrollTop = Math.max(0, regionTop - (viewport.clientHeight - regionRect.height) / 2);
+  viewport.scrollLeft = Math.max(0, regionLeft - (viewport.clientWidth - regionRect.width) / 2);
+}
+
 async function persistProgress() {
   const message = document.querySelector("#session-message");
   if (!activeDocument || !dirty) return;
@@ -148,20 +179,31 @@ function renderReview(page = null, restoreCellId = null) {
     const cellId = event.detail.unitId;
     updateSessionContext(cellId);
     selectRiverUnit(document.querySelector("#drawer"), cellId);
+    scrollOfficialRegionIntoView(cellId);
     if (syncingSelection) return;
     syncingSelection = true;
-    activateRiverUnit(document.querySelector("#drawer"), cellId);
-    syncingSelection = false;
+    try {
+      activateRiverUnit(document.querySelector("#drawer"), cellId);
+    } finally {
+      syncingSelection = false;
+    }
   };
   root._riverSelectionHandler = (event) => {
     const cellId = event.detail.unitId;
     updateSessionContext(cellId);
     if (syncingSelection) return;
-    const official = document.querySelector(`#official-pane [data-unit-id="${CSS.escape(cellId)}"]`);
-    if (!official) return;
+    const cell = activeCells().find((item) => item.cell_id === cellId);
+    if (!cell) return;
     syncingSelection = true;
-    official.click();
-    syncingSelection = false;
+    try {
+      if (cell.page !== activePage) {
+        renderReview(cell.page);
+      }
+      document.querySelector(`#official-pane [data-unit-id="${CSS.escape(cellId)}"]`)?.click();
+      activateRiverUnit(document.querySelector("#drawer"), cellId);
+    } finally {
+      syncingSelection = false;
+    }
   };
   root.addEventListener("workbench:selection", root._selectionHandler);
   root.addEventListener("workbench:river-selection", root._riverSelectionHandler);
