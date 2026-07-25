@@ -50,6 +50,17 @@ Global project canary: **Ledger Llama**.
   `pyproject` extras, never base; a runtime command must not import them.
 - **IRS line numbers are the spine:** nodes are keyed on them; they drive extraction chunking and
   completeness checks.
+- **NEVER pass `--basetemp` (2026-07-25). Just run `python -m pytest tests/... -q`.** The temp
+  root is pinned for every account by the root `conftest.py` (`PYTEST_DEBUG_TEMPROOT` ->
+  `.test_tmp/`, gitignored), because the Codex sandbox denies the AppData temp root. pytest
+  puts each account in its own `.test_tmp/pytest-of-<username>/` automatically, so there is
+  nothing to configure and nothing to re-grant. `--basetemp` DELETES and recreates the directory
+  you point it at, which is what poisoned the old shared `.pytest_tmp`: its ownership flipped to
+  whichever account ran last, and every `tmp_path` test on the other account then failed with
+  `PermissionError: [WinError 5]` while the code under test was fine. `.pytest_tmp` is dead and
+  unreclaimable without elevation - ignore it.
+  DIAGNOSTIC: a `WinError 5` on temp cleanup makes GREEN tests report as ERRORS. If you see
+  errors naming `rm_rf` or `shutil` on a temp path, suspect the temp dir before the code.
 - **Never claim a test you did not run (John, 2026-07-25).** For EVERY declared focused test file,
   the handoff must state either `RAN: <exact command> -> <exact result>` or
   `NOT RUN: <reason>`. A file you could not execute is UNVERIFIED, and a step with an unverified

@@ -12,7 +12,54 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 - History: pruned at each phase close (latest: 2026-07-23). Full narration lives in
   `plans/archive/` (phase plans with close notes) and git history.
 
-## Current state (2026-07-23)
+## Current state (2026-07-25)
+
+**BALL: JOHN - M17-S3R2 + S4 ARE COMPLETE, VERIFIED, AND PUSHED (`6488b6f`). Next is
+John's live look at the workbench UI to confirm his four issues are actually closed.**
+
+**ARCHITECT VERIFICATION + PUSH (Claude Opus 5, 2026-07-25).** Four commits pushed
+(`398e4a6..6488b6f`): the Worker's three (`c421558` navigation + dossier, `c370359` D7
+river scroll + D4 test isolation, `85e8155` verification record) plus the Architect's
+`6488b6f`.
+
+- **`main` HAD BEEN CI-RED since `398e4a6`** (run 30167693589, all three Python jobs) and
+  nothing in this handoff recorded it. Cause: `create_app` read `artifact_bundle.graph`
+  EAGERLY, so `tests/test_workbench_sessions_m17.py`'s stub-bundle fixture died with
+  `AttributeError: 'object' object has no attribute 'graph'` at `server.py:257` before any
+  route ran. Fixed in `6488b6f` by resolving titles/geometry/valid-ids lazily behind a memo
+  - only the document-centric routes need the bundle. LESSON, same family as the M17-S2
+  boundary break: `create_app` must stay cheap and lazy; anything it touches eagerly becomes
+  a hard dependency for every test that builds an app.
+- `6488b6f` also pins the **Worker defect ledger (D1-D7) in `AGENTS.md`** per John's
+  2026-07-25 directive, plus the paired RAN/NOT RUN rule.
+- Architect-side gates, all GREEN: sessions + workbench boundary (D5) + fast cells = 14
+  passed; `tests/test_workbench_cells_api_m17.py` + `tests/e2e/test_workbench_v2_m17.py` =
+  6 passed (319s); module-form `validate 2025` graph integrity OK; `git diff --check`;
+  pre-push ASCII hook OK. **D7 is confirmed FIXED against the live 2025 projection** - the
+  e2e assertion that the selected river card sits inside the river viewport, which FAILED
+  last round, now passes. John's issue 1 is genuinely closed, not merely syntax-clean.
+- **WORKER PROCESS NOTE - the ledger worked.** M17-S3R2b is the first round where the
+  Worker fixed its own returned defect and reported honest `RAN:` / `NOT RUN:` lines rather
+  than declaring a capped file verified. Keep the pattern.
+- **ENV, FIXED 2026-07-25 (basetemp) - the re-grant was the WRONG fix.** Diagnosis: `--basetemp`
+  makes pytest DELETE and recreate the directory every session, so a SHARED `.pytest_tmp` hands
+  root ownership to whichever account ran last; no amount of re-granting survives the next
+  Worker run. `.pytest_tmp` is now fully denied to devbox (cannot list, write, take ownership,
+  or even read the ACL) and is unreclaimable from an unelevated shell - devbox is an admin but
+  runs on a UAC-filtered token, where `BUILTIN\Administrators` is "Group used for deny only".
+  FIX: stop using `--basetemp` entirely. The new root `conftest.py` sets
+  `PYTEST_DEBUG_TEMPROOT` to `.test_tmp/` (gitignored), which pins the temp ROOT rather than
+  the basetemp - pytest never wipes the root, and it separates the two accounts on its own via
+  `.test_tmp/pytest-of-<username>/`. No flag to remember, no ACL to re-grant, one static dir.
+  Verified: the same files that reported 5 ERRORS on `.pytest_tmp` are 8 passed with NO flag;
+  three consecutive runs rotated `pytest-0/1/2` with the root untouched.
+  LEFTOVER for John (cosmetic, NOT blocking): the dead `.pytest_tmp` directory can only be
+  removed from an ELEVATED shell - `takeown /F .pytest_tmp /R /D Y` then
+  `icacls .pytest_tmp /grant devbox:F /T` then delete. Nothing depends on it.
+- **ENV, STILL OPEN:** the app-dependent pair takes 319s Architect-side, so John's 240s cap
+  still does not cover it in one command.
+
+## Prior state (2026-07-23)
 
 **Worker session checkpoint - M17-S3R2 corrective step (2026-07-25):** John said go via the
 current task request. Model GPT-5 Codex, effort default; usage/quota/context indicators are not
@@ -144,7 +191,9 @@ reviews. Fix next round: point the session store at a tmp dir.
 file reported 3 spurious errors until re-run on a different basetemp. Workers are
 instructed to use `.pytest_tmp`, so this needs a re-grant.
 
-**BALL: WORKER - M17-S3R2 + S4 (John's second-review corrections). John reviewed the
+**Superseded BALL (kept for John's four issues, which are the review checklist) - the
+round is DONE and pushed at `6488b6f`; see Current state.** Was: BALL: WORKER -
+M17-S3R2 + S4 (John's second-review corrections). John reviewed the
 live S3R UI on 2026-07-25 and returned four issues; the design is NOT rejected - the
 form-sourced cell spine stands, and every complaint is about navigation, contrast,
 labeling, and data depth. Plan is written in `plans/PHASE_M17.md` (S3R2, S4, S4b, and
@@ -428,8 +477,11 @@ TY2026 docs drop.
   interpreter, which the Codex sandbox denies per session (it is NOT a machine state and no
   restart fixes it). Fixed by mirroring the base interpreter to `.python313/` inside the
   repo (gitignored) and rebuilding `.venv` on it, so `pyvenv.cfg home` is in-workspace.
-  Workers call `.venv\Scripts\python.exe` directly - no `uv` needed - and must use the
-  workspace `.pytest_tmp` basetemp (the sandbox denies the AppData temp root). Commands
+  Workers call `.venv\Scripts\python.exe` directly - no `uv` needed. **UPDATED 2026-07-25: do
+  NOT pass `--basetemp` any more.** The root `conftest.py` pins the temp root to `.test_tmp/`
+  for every account, and pytest separates accounts automatically via
+  `.test_tmp/pytest-of-<username>/`. The old `.pytest_tmp` is poisoned and unreclaimable; see
+  the hard rule in `AGENTS.md`. Commands
   exceeding the Worker's ~124s launcher cap (notably real preflight) are Architect-side:
   the Worker records the attempt and stops clean.
   **ALWAYS use the module form, never the console scripts** (2026-07-23, M16-S4):
@@ -499,7 +551,8 @@ TY2026 docs drop.
 
 ## From Architect
 
-- **M17-S3R2b TASK - FIX D7, THE RIVER SCROLL (Architect, Claude Opus 4.8, 2026-07-25).**
+- **[DONE `c370359`, Architect-verified live] M17-S3R2b TASK - FIX D7, THE RIVER SCROLL
+  (Architect, Claude Opus 4.8, 2026-07-25).**
   Small, surgical, and it is the fix for John's original issue 1. Read the **Worker defect
   ledger in `AGENTS.md`** first and state in your session-start checkpoint which entries
   apply - that is now a standing rule.
@@ -520,7 +573,8 @@ TY2026 docs drop.
      Node syntax check. The Architect will run it.
   Tier-1 floor: declared files with honest RAN/NOT RUN lines, ASCII, `git diff --check`,
   module-form `validate 2025`. One local commit; no push. Stop conditions unchanged.
-- **M17-S3R2 + S4 TASK - NAVIGATION, CONTRAST, AND THE CELL DOSSIER (Architect,
+- **[DONE `c421558`+`c370359`, Architect-verified] M17-S3R2 + S4 TASK - NAVIGATION,
+  CONTRAST, AND THE CELL DOSSIER (Architect,
   Claude Opus 4.8, 2026-07-25). Source: John's live review of the S3R UI.** Full
   design in `plans/PHASE_M17.md` (steps S3R2, S4b, S4) - READ IT FIRST. Scope is
   the review PROJECTION and the frontend: no verdict-emission change, no graph

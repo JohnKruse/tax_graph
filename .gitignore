@@ -53,3 +53,4 @@ workbench_output/
 .python313/
 .venv_old_shim/
 .pytest_tmp/
+.test_tmp/
