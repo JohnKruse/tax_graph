@@ -252,21 +252,33 @@ def create_app(
         response["progress"] = session_progress(session_payload, entry.get("units", []))
         return jsonify(response)
 
-    document_titles = {
-        str(document["document_id"]): str(document.get("title") or document["document_id"])
-        for document in artifact_bundle.graph.objects("documents")
-        if isinstance(document, dict) and document.get("document_id")
-    }
-    geometry_entries = artifact_bundle.geometry.get("entries", []) or []
-    valid_document_ids = frozenset(
-        str(entry["document_id"])
-        for entry in geometry_entries
-        if isinstance(entry, dict) and entry.get("document_id")
-    )
+    # Resolved lazily and cached: only the document-centric routes need the artifact
+    # bundle, so constructing the app must not read it. The session-API tests build an
+    # app with a stub bundle to exercise the queue routes in isolation, and an eager read
+    # here turned CI red on `AttributeError: 'object' object has no attribute 'graph'`.
+    _documents: dict[str, Any] = {}
+
+    def _document_context() -> dict[str, Any]:
+        if not _documents:
+            entries = artifact_bundle.geometry.get("entries", []) or []
+            _documents.update(
+                titles={
+                    str(document["document_id"]): str(document.get("title") or document["document_id"])
+                    for document in artifact_bundle.graph.objects("documents")
+                    if isinstance(document, dict) and document.get("document_id")
+                },
+                geometry_entries=entries,
+                valid_document_ids=frozenset(
+                    str(entry["document_id"])
+                    for entry in entries
+                    if isinstance(entry, dict) and entry.get("document_id")
+                ),
+            )
+        return _documents
 
     def _document_cells(document_id: str) -> list[dict[str, Any]]:
         return build_document_cells(
-            root_path, year, document_id, geometry_entries=geometry_entries
+            root_path, year, document_id, geometry_entries=_document_context()["geometry_entries"]
         ).cells
 
     def _pseudo_units(cells: list[dict[str, Any]]) -> list[dict[str, Any]]:
@@ -285,29 +297,29 @@ def create_app(
             "documents": build_documents_index(
                 root_path,
                 year,
-                sorted(valid_document_ids),
-                geometry_entries=geometry_entries,
-                titles=document_titles,
+                sorted(_document_context()["valid_document_ids"]),
+                geometry_entries=_document_context()["geometry_entries"],
+                titles=_document_context()["titles"],
             ),
         })
 
     @app.get("/api/documents/<document_id>/cells")
     def get_document_cells(document_id: str) -> Any:
-        if document_id not in valid_document_ids:
+        if document_id not in _document_context()["valid_document_ids"]:
             return jsonify({"error": "unknown document_id", "document_id": document_id}), 404
         cells = _document_cells(document_id)
         return jsonify({
             "tax_year": int(year),
             "manifest_hash": review_manifest["manifest_hash"],
             "document_id": document_id,
-            "title": document_titles.get(document_id, document_id),
+            "title": _document_context()["titles"].get(document_id, document_id),
             "pages": sorted({cell["page"] for cell in cells}),
             "cells": cells,
         })
 
     @app.get("/api/documents/<document_id>/session")
     def get_document_session(document_id: str) -> Any:
-        if document_id not in valid_document_ids:
+        if document_id not in _document_context()["valid_document_ids"]:
             return jsonify({"error": "unknown document_id", "document_id": document_id}), 404
         units = _pseudo_units(_document_cells(document_id))
         path = session_root / "documents" / f"{document_id}.json"
@@ -333,7 +345,7 @@ def create_app(
         denied = _require_write_token(app)
         if denied is not None:
             return denied
-        if document_id not in valid_document_ids:
+        if document_id not in _document_context()["valid_document_ids"]:
             return jsonify({"error": "unknown document_id", "document_id": document_id}), 404
         payload = request.get_json(silent=True)
         if not isinstance(payload, dict):

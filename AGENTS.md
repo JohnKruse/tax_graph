@@ -50,6 +50,54 @@ Global project canary: **Ledger Llama**.
   `pyproject` extras, never base; a runtime command must not import them.
 - **IRS line numbers are the spine:** nodes are keyed on them; they drive extraction chunking and
   completeness checks.
+- **Never claim a test you did not run (John, 2026-07-25).** For EVERY declared focused test file,
+  the handoff must state either `RAN: <exact command> -> <exact result>` or
+  `NOT RUN: <reason>`. A file you could not execute is UNVERIFIED, and a step with an unverified
+  declared file is NOT complete - say so plainly instead of reporting the round done. Do not
+  declare a test file you already know you cannot execute in-session (e.g. an e2e file, when the
+  launcher cap blocks it): say so up front so the Architect authors or runs it. "Bundled Node
+  syntax checks passed" is NOT test evidence; it proves the file parses, nothing more.
+- **Fix your own defects, do not let them be silently patched.** When the Architect's verification
+  finds a defect in your work, it is recorded in the Worker defect ledger below. Read the ledger
+  BEFORE declaring a step and name, in your session-start checkpoint, which entries apply to what
+  you are about to write. Repeating a ledger defect is a process failure, not a typo.
+
+## Worker defect ledger (read before declaring a step)
+
+Real defects found in Worker output by Architect verification. They live here, not in the handoff,
+because the handoff is pruned at every phase close and these lessons must outlive it. Append new
+entries; do not delete them.
+
+- **D1 - Playwright `Locator.first` is a PROPERTY, not a method.** `cards.first()` raises
+  `TypeError: 'Locator' object is not callable`. Use `cards.first`. (M17-S3, 2026-07-24)
+- **D2 - `Locator.locator(sel)` matches DESCENDANTS only.** An attribute on the element itself must
+  be part of the SAME selector. `cards.locator('[data-page="2"]')` silently resolves to nothing and
+  times out after 30s; write `page.locator('#river .review-unit-card[data-page="2"]')`.
+  (M17-S3R2, 2026-07-25)
+- **D3 - Never assert synchronously right after an action that triggers an async render.** The
+  handler may `await` before the DOM settles. Use `wait_for()` / `expect()` on the thing you are
+  asserting, not a bare `get_attribute` immediately after `click()`. (M17-S3, 2026-07-24)
+- **D4 - Tests must not write to live developer state.** `test_document_session_round_trip_and_scope`
+  wrote a real approved review into `.workbench_state/.../form_1040_2025.json`, which then showed up
+  as a phantom "1 / 159 approved" in the UI John was reviewing. Point session/artifact stores at a
+  tmp dir. Hermetic tests are a standing rule. (M17-S3R2, 2026-07-25)
+- **D5 - A change under `workbench/` MUST run `tests/test_workbench_m15.py` locally.** It carries the
+  architectural/boundary checks - notably `test_workbench_has_no_pipeline_imports`. The manifest
+  partition does NOT exercise it. Skipping it is what turned M17-S2 CI-red. (M17-S2, 2026-07-24)
+- **D7 - `offsetTop` is measured from the nearest POSITIONED ancestor, not from your scroll
+  container.** `scrollRiverUnitIntoView` set `river.scrollTop` from `card.offsetTop`, but
+  `.river-list` is `position: static` and nothing above it is positioned, so `card.offsetParent`
+  is `<body>` and `offsetTop` carries the whole page offset. Measured live on the 1040: every
+  selection overshot by a constant ~167px, leaving the selected card 92px ABOVE the visible area
+  (`inView: false` at cards 0, 5, and 20). The bug is invisible in casual use because the river
+  DOES scroll - just to the wrong place. Either use `getBoundingClientRect` deltas against the
+  container, or give the container `position: relative`. NOTE: the correct pattern was already in
+  the same commit - `scrollOfficialRegionIntoView` does the rect-delta math properly for the
+  center pane. Copy the pattern you already got right. (M17-S3R2, 2026-07-25)
+- **D6 - Always use the module form of a CLI, never the console script.**
+  `.venv\Scripts\python.exe -m tax_graph.cli ...`, not `.venv\Scripts\tax-graph.exe ...`; the
+  generated launcher resolves through an editable-install `.pth` with an absolute path that does not
+  resolve in the sandbox. (M16-S4, 2026-07-23)
 
 ## Coordination
 - Active Claude <-> Codex coordination lives in **`plans/AGENT_HANDOFF.md`** - one living ledger
