@@ -43,6 +43,18 @@ Supplemental gates: ASCII check OK; `git diff --check` OK; bundled Node syntax c
 uses `offsetTop`. The e2e and API files remain pending Architect-side verification; this step is
 not reported as fully verified by the Worker.
 
+**Worker verification update - runner limit raised (2026-07-25):** John raised the command
+allowance to 240 seconds. The previously capped app-dependent files are now fully verified:
+
+- RAN: `.venv\Scripts\python.exe -m pytest --basetemp=.pytest_tmp
+  tests/test_workbench_cells_api_m17.py -q` -> 4 passed, 1 warning in 150.99s.
+- RAN: `.venv\Scripts\python.exe -m pytest --basetemp=.pytest_tmp
+  tests/e2e/test_workbench_v2_m17.py -q` -> 2 passed, 1 warning in 165.59s.
+
+The warning in both runs is the existing pytest cache ACL warning (`WinError 5`); no test failed.
+M17-S3R2 corrective verification is complete on the Worker side. The command limit should remain
+at least 180 seconds for this corpus; 240 seconds gives adequate margin.
+
 **Worker session checkpoint - M17-S3R2 + S4 (2026-07-25):** John said go via the
 current task request. Model GPT-5 Codex, effort default; usage/quota/context indicators
 are not exposed. Single declared step: complete S4b test partition split, then implement
