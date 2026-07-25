@@ -14,6 +14,101 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## Current state (2026-07-23)
 
+**BALL: WORKER - M17-S3R2 + S4 (John's second-review corrections). John reviewed the
+live S3R UI on 2026-07-25 and returned four issues; the design is NOT rejected - the
+form-sourced cell spine stands, and every complaint is about navigation, contrast,
+labeling, and data depth. Plan is written in `plans/PHASE_M17.md` (S3R2, S4, S4b, and
+the parked S5-INSTR); the Worker task block is under From Architect.** Architect
+verified each issue against the code before planning:
+1. River does not follow form selection (`app.js` `_selectionHandler` never scrolls the
+   river) AND cross-page river selection silently no-ops (`_riverSelectionHandler` bails
+   at `if (!official) return;` when the cell is on another page) - John's "completely
+   hosed" case. Both are small, precise frontend fixes.
+2. Selection ring collides with policy color: `.official-region.policy-unsupported` is
+   `var(--danger)` and `.official-region.pinned` is `outline: 3px solid #c5452d` - red on
+   red. Confirmed in `styles.css:84-86`.
+3. "Unsupported" is a MISLABEL, and John's instinct is correct. The generated reason
+   says the control "has no authored graph, filer-fact, or decision mapping" - it is a
+   COVERAGE GAP, not a statement about the filer. 605 of 1921 corpus cells carry it
+   (~31%). The UI must say "no mapping authored" in those words. RULING: relabel in the
+   UI only this round; do NOT rename the enum in promoted artifacts - that is Tier 3
+   across 605 cells and M16-S5 regeneration is what actually fills these in. **This is
+   the direct link between John's UI review and the parked M16-S5: the workbench
+   EXPOSES the gap, S5 CLOSES it.**
+4. The dossier is genuinely thin, and worse than John knew: `cell_inventory._citations`
+   returns bare citation IDs, never the `quoted_text` the citation records already
+   carry, and the UI drops `reason` / `downstream_effect` / `missing_capability` from
+   the field maps entirely. S4 labels every datum and names its source artifact.
+On "did you not parse the instructions": the instruction PDFs ARE acquired for 7
+documents, but only ONE instruction citation exists in the promoted corpus (out of 297).
+There is no systematic per-cell instruction linkage. **JOHN RULED (2026-07-25): the
+instructions explain the purpose and treatment of nearly every cell, so ingesting them
+is ROUTINE PIPELINE WORK, not an enhancement.** Pinned as guiding invariant 7 in
+`docs/engineering-plan.md` (alongside invariant 6, the pipeline end-state). Open item is
+SEQUENCING, not whether: instruction text is also the input that lets a coverage-gap
+cell be RESOLVED rather than merely reported, so it should land BEFORE or WITH M16-S5
+regeneration. **DRAFTED: `plans/PHASE_M18.md` (Instruction ingestion), awaiting John's
+sequencing.** Survey findings already in it: 7 documents acquired with per-page markdown;
+`## Line X` anchors number 73 on the 1040 but ZERO on Schedule B, so heading conventions
+are not uniform and per-doc detection is required; column-break hyphenation must be
+repaired before any text is quoted or citation integrity will (correctly) reject it.
+Architect recommendation in the doc: run M18 S1+S2 (read-only) in parallel with the M17
+workbench rounds, then land S3 immediately BEFORE M16-S5. Three sequencing questions are
+listed at the end of PHASE_M18 for John.
+PREREQUISITE: the S3R working tree is still UNCOMMITTED (4 new files, 10 modified);
+its focused test is green (8 passed, 157s). The Architect should land S3R as the base
+commit before the Worker starts, so Codex is not building on an uncommitted tree.
+NOTE the ~124s cap now bites the workbench tests themselves (the cells file takes 157s
+because it imports `create_app`) - S4b splits it so the Worker can verify its own work.
+
+**Worker session checkpoint - M17-S3 frontend shell (2026-07-24):** John said go.
+Model GPT-5 Codex, effort default; usage/quota/context indicators are not exposed.
+Single declared step: replace the current drawer-based static UI with the approved
+three-pane review shell, using existing queue, entry, page-image, and session APIs.
+Submit/verdict emission remains out of scope. Canary: Ledger Llama. Worktree was
+clean at start.
+
+Implementation checkpoint: replaced the drawer UI with the M17 three-pane shell in
+`workbench/static/index.html`, `styles.css`, `app.js`, and new `river.js`; added
+session load/save calls in `static/api.js`; the shell receives the local write token
+from `workbench/server.py` for non-authoritative session persistence; added
+`tests/e2e/test_workbench_v2_m17.py` under the new `m17` marker. Submit/verdict
+emission remains untouched.
+
+Verification: bundled Node syntax checks for `app.js`, `river.js`, and `api.js`
+passed; ASCII, `git diff --check`, and module-form `validate 2025` passed. A
+temporary cached-manifest preview with preflight monkeypatched passed 1 UI test,
+including river selection and approve state. The real focused e2e partition hit
+the documented launcher cap (exit 124; no assertion failure output), after the
+cheaper session/ref command had emitted 8 passing dots before the same cap. The
+cached manifest preview also exposes pre-existing `invalid_display_name` preflight
+findings, so the real M17 e2e and real preflight are still pending. No commit yet.
+
+**ARCHITECT VERIFICATION (Claude Opus 4.8, 2026-07-24) - GREEN, HOLDING FOR JOHN.**
+Ran the two Architect-side gates the Worker's ~124s cap blocked:
+- Real preflight (2m18s): PASSED, 3,243 units, `legacy_mined=394` (ratchet
+  UNCHANGED). The `invalid_display_name` findings were a STALE CACHED-MANIFEST
+  artifact, not a real defect - the freshly built manifest is clean, so
+  `create_app`'s startup preflight passes and the e2e fixture builds the app.
+- Real m17 e2e against the live 2025 projection: 1 passed, AFTER fixing two
+  genuine defects in the Worker's declared test file (`tests/e2e/
+  test_workbench_v2_m17.py`) - the app itself was correct in both:
+  1. `cards.first()` / `card = cards.first()` - Playwright sync `Locator.first`
+     is a PROPERTY, not a method (`TypeError: 'Locator' object is not callable`).
+  2. `#river-detail .drawer-heading` asserted synchronously right after the
+     select click, but `renderDetail` awaits `loadEvidence` before appending the
+     heading - a race. Fixed with a `wait_for()` on the heading. (Sidenote: the
+     first `object_ref` on addressed units is an `address`, which the evidence
+     endpoint does not resolve, so it 404s and is caught gracefully - the heading
+     still renders. Not a bug, but a frontend efficiency question for John.)
+Remaining Tier-1 floor all GREEN: workbench boundary + write-api + m17 session
+partition 12 passed (incl. the import-boundary check that bit M17-S2); ASCII;
+`git diff --check`; module-form `validate 2025` (graph integrity OK). Diff is
+in-boundary: `server.py` only serves the shell with the injected local write
+token and wires session GET/PUT; no verdict, graph, or promoted-artifact change.
+NOT committed: S3 is John-in-the-loop (approved mockup) - awaiting John's review
+of the actual UI before the single commit + push.
+
 **BALL: ARCHITECT - M17-S2 (quotable cell ref) IMPLEMENTED BY THE ARCHITECT and
 verified; committing/pushing. Next is the frontend (S3, John-in-the-loop, uses the
 approved mockup) and the deferred S2b submit->verdict flow.** The Worker could NOT
@@ -274,6 +369,75 @@ TY2026 docs drop.
 
 ## From Architect
 
+- **M17-S3R2 + S4 TASK - NAVIGATION, CONTRAST, AND THE CELL DOSSIER (Architect,
+  Claude Opus 4.8, 2026-07-25). Source: John's live review of the S3R UI.** Full
+  design in `plans/PHASE_M17.md` (steps S3R2, S4b, S4) - READ IT FIRST. Scope is
+  the review PROJECTION and the frontend: no verdict-emission change, no graph
+  change, and NO promoted-artifact change (field maps, addresses, bindings, and
+  citations are read-only this round).
+  **Sequence the round in this order - S4b first, or you cannot verify yourself.**
+  1. **S4b (do first, enabler).** Split `tests/test_workbench_cells_m17.py`. The
+     file imports `create_app`, whose startup preflight + manifest build makes it
+     run ~157s - OVER your ~124s launcher cap. Put the pure `cell_inventory`
+     projection tests (no `create_app` import) in the fast file and leave the
+     app-dependent API tests in a second file. Keep the `m17` marker and the
+     existing `_drafts` skip guard on both. Declare BOTH filenames in the handoff.
+     You run the fast one; record the app-dependent one as Architect-side.
+  2. **S3R2 - navigation (issue 1).** In `workbench/static/`: after any selection,
+     scroll the selected river card into view within the RIVER's scroll container
+     (`scrollIntoView({block: "center"})`) - do not scroll the page and do not
+     steal focus while a note textarea has it. Then fix the cross-page dead end:
+     `app.js` `_riverSelectionHandler` currently does `if (!official) return;`, so
+     selecting a card for a cell on another page does nothing. Resolve the cell's
+     `page` from the model and `renderReview(cell.page, cell.cell_id)` before
+     selecting. Same for keyboard next/prev across a page boundary. CAREFUL:
+     `renderReview` rebinds both handlers - make sure the `syncingSelection`
+     re-entrancy guard cannot be left stuck `true` (a `try/finally`).
+  3. **S3R2 - contrast (issue 2).** In `styles.css`, selection currently collides
+     with the unsupported policy color (both red - lines 84-86). Make the selected
+     ring a treatment that cannot collide with ANY policy hue: a double ring (dark
+     inner + light outer halo, so it reads over black form ink and over any fill)
+     plus a non-color weight cue so it survives grayscale/color-blindness. Policy
+     keeps the fill/border hue; selection owns the ring. Also scroll the selected
+     region into view in the center pane when it is off-viewport at the current
+     zoom.
+  4. **S4 - resolve citations (issue 4).** `cell_inventory._citations` returns bare
+     ids. `graph/2025/citations/*.yaml` already carries `quoted_text`, `locator`,
+     `url`, `retrieved_date`, `source_document_id` per `citation_id`. Load and
+     resolve them (stdlib + yaml ONLY - the workbench must not import the pipeline
+     package; that is the M17-S2 boundary lesson that went CI-red). Render quoted
+     text + locator + source, id secondary. NEVER synthesize, paraphrase, or
+     "fill in" citation text - verbatim from acquired source only.
+  5. **S4 - label every datum and name its source (issue 4).** Rebuild
+     `river.js` `renderDetail` into labeled groups - Identity / On the form /
+     Population policy / Graph / Authority - per the PHASE_M17 S4 item 2 list, each
+     field tagged with the artifact it came from. Carry through the three field-map
+     fields the UI currently DROPS: `reason`, `downstream_effect`,
+     `missing_capability`. Absent data renders as an explicit "not authored" state,
+     never a blank line.
+  6. **S4 - reframe the policy vocabulary, UI ONLY (issue 3).** Split the flat badge
+     into two labeled facets: how the value is obtained (`user_entered`, `imported`,
+     `copied`, `computed`, `decision_required`) vs coverage status (`unsupported`,
+     `intentionally_blank`). Relabel `unsupported` to say plainly that no mapping has
+     been authored yet - it is a coverage gap, NOT a statement that the filer cannot
+     enter it. **STOP CONDITION: do not rename the enum values in
+     `graph/2025/field_maps/*.yaml` or any promoted artifact.** That is Tier 3 across
+     605 cells and M16-S5 owns it.
+  7. **S4 - coverage counts.** Per-document counts by policy surfaced in the left
+     rail / dashboard.
+  Tests: extend `tests/e2e/test_workbench_v2_m17.py` for the navigation and ring
+  behavior, and the fast cells file for citation resolution + disposition passthrough
+  + per-document policy counts. Tier-1 floor before the single local commit: your
+  declared focused files green, ASCII, `git diff --check`, module-form
+  `validate 2025` (`.venv\Scripts\python.exe -m tax_graph.cli validate 2025`).
+  Preflight and the app-dependent tests are Architect-side (the cap) - record the
+  attempt honestly and stop clean rather than guessing. `.pytest_tmp` basetemp;
+  sequential pytest only. ONE local commit; no push. Session budget rules apply:
+  state your model/effort/indicators on first handoff touch, declare the step,
+  checkpoint before every expensive phase.
+  Stop conditions: any need to touch promoted artifacts, verdict emission, or graph
+  semantics; a citation whose text cannot be resolved from the promoted records (do
+  NOT invent it - report it); or a quota/environment failure.
 - **M17-S2 TASK - QUOTABLE CELL REF (Architect, Claude Opus 4.8, 2026-07-24;
   autonomous headless round, effort High).** Design in `plans/PHASE_M17.md` (S2).
   BACKEND, PROJECTION ONLY - additive to the review manifest; no authoritative

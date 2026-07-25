@@ -39,6 +39,21 @@ actually wanted, flag it - it changes M2.
    practice is a design defect: stop and re-route through the pipeline. Nobody gets
    garden-pathed into hand-crafting form ingestion again.
 
+7. **The INSTRUCTIONS are a first-class pipeline input, not an afterthought (pinned
+   2026-07-25, John).** The IRS instruction documents state the purpose, operation, and
+   treatment of very nearly every cell on a form. Ingesting them is therefore ROUTINE
+   PIPELINE WORK on the same footing as ingesting the form itself: for each acquired
+   form, its instructions are acquired, mined per printed line, and promoted as cited
+   spans joined to the canonical address, so every cell can answer "what is this for and
+   how is it treated?" from the source rather than from inference. Two hard constraints:
+   instruction text is verbatim-from-acquired-source and rides the citation machinery
+   (`check_citation_integrity` has teeth; the M14 fabricated-citations reopen is the
+   precedent), and a cell with no authored mapping is a COVERAGE GAP to be closed from
+   the instructions, never a cell to be silently skipped. State of play when this was
+   pinned: instruction PDFs were acquired for 7 documents but only ONE instruction
+   citation existed out of 297 promoted citations - the acquired text was never mined.
+   Closing that is tracked as M17 S5-INSTR and sequenced with the M16 pipeline.
+
 ## Repeatable tables (decided 2026-07-01)
 
 Form 8949 forces a policy for repeatable transaction tables before M1/M2 harden the runtime
