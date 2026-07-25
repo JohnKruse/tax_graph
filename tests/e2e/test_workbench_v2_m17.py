@@ -48,10 +48,12 @@ def test_form_and_river_selection_crosses_pages_and_keeps_selection_visible(page
     cards = page.locator("#river .review-unit-card")
     cards.first.wait_for()
 
-    page_two = cards.locator('[data-page="2"]').first
+    # data-page is on the card element itself, so it must be part of the card selector -
+    # cards.locator("[data-page]") would match only DESCENDANTS of a card and never resolve.
+    page_two = page.locator('#river .review-unit-card[data-page="2"]').first
     page_two.wait_for()
     page_two.locator(".unit-card-select").click()
-    assert page.locator("#official-pane .page-canvas").get_attribute("data-page") == "2"
+    page.locator('#official-pane .page-canvas[data-page="2"]').wait_for()
     assert page_two.get_attribute("data-unit-id") == page.locator("#river .review-unit-card.selected").get_attribute("data-unit-id")
 
     official = page.locator("#official-pane .official-region").first

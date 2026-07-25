@@ -2,7 +2,8 @@
 
 These tests are intentionally separate from the pure cell-inventory projection tests:
 creating the Flask app runs the live review preflight and is too slow for the Worker
-launcher budget.
+launcher budget. The fixture also redirects all writable workbench state to pytest's
+temporary directory so API round trips cannot pollute the developer's live session.
 """
 
 from __future__ import annotations
@@ -23,8 +24,16 @@ pytestmark = pytest.mark.skipif(
 
 
 @pytest.fixture(scope="module")
-def client():
-    app = create_app(ROOT, 2025, write_token="test-write-token")
+def client(tmp_path_factory: pytest.TempPathFactory):
+    state = tmp_path_factory.mktemp("m17-workbench-state")
+    app = create_app(
+        ROOT,
+        2025,
+        write_token="test-write-token",
+        state_dir=state / "sessions",
+        cache_dir=state / "pages",
+        verdict_dir=state / "verdicts",
+    )
     app.config.update(TESTING=True)
     return app.test_client()
 

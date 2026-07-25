@@ -228,6 +228,9 @@ export function scrollRiverUnitIntoView(drawer, cellId) {
   const river = drawer.querySelector("#river");
   const card = drawer.querySelector(`.review-unit-card[data-unit-id="${CSS.escape(cellId)}"]`);
   if (!river || !card) return;
-  const target = card.offsetTop - (river.clientHeight - card.offsetHeight) / 2;
+  const riverRect = river.getBoundingClientRect();
+  const cardRect = card.getBoundingClientRect();
+  const cardTop = river.scrollTop + cardRect.top - riverRect.top;
+  const target = cardTop - (river.clientHeight - cardRect.height) / 2;
   river.scrollTop = Math.max(0, Math.min(target, river.scrollHeight - river.clientHeight));
 }

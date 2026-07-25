@@ -14,6 +14,35 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## Current state (2026-07-23)
 
+**Worker session checkpoint - M17-S3R2 corrective step (2026-07-25):** John said go via the
+current task request. Model GPT-5 Codex, effort default; usage/quota/context indicators are not
+exposed. Single declared step: fix the returned D7 river-scroll defect using container-local
+rectangle math, keep the Architect's e2e selector/async assertion corrections, isolate the API
+session round-trip test from live developer state (D4), and run the focused verification required
+by the phase. Canary: Ledger Llama. Applicable defect-ledger entries: D1-D5 and D7. Existing
+uncommitted Architect edits are preserved; no verdict, graph, or promoted-artifact changes.
+
+**Worker verification update - M17-S3R2 corrective step (2026-07-25):** D7 is fixed in
+`workbench/static/river.js`; the API fixture in `tests/test_workbench_cells_api_m17.py` now uses
+temporary state, page-cache, and verdict directories. Evidence:
+
+- RAN: `.venv\Scripts\python.exe -m pytest --basetemp=.pytest_tmp tests/test_workbench_m15.py -q`
+  -> 4 passed, 1 warning in 0.31s (pytest cache ACL warning only).
+- RAN: `.venv\Scripts\python.exe -m tax_graph.cli validate 2025`
+  -> exit 0; graph integrity OK - all references resolve.
+- RAN: `.venv\Scripts\python.exe -m pytest --basetemp=.pytest_tmp
+  tests/e2e/test_workbench_v2_m17.py::test_form_and_river_selection_crosses_pages_and_keeps_selection_visible -q`
+  -> command timed out, exit 124 after 120.2s at the documented launcher cap; no assertion output.
+- NOT RUN: `.venv\Scripts\python.exe -m pytest --basetemp=.pytest_tmp
+  tests/test_workbench_cells_api_m17.py -q` -> app startup exceeds the Worker launcher cap;
+  prior exact attempt exited 124 after 120 seconds, so the fixture-isolation edit is
+  Architect-unverified.
+
+Supplemental gates: ASCII check OK; `git diff --check` OK; bundled Node syntax checks passed for
+`workbench/static/river.js` and `workbench/static/app.js`; no other frontend scroll offset path
+uses `offsetTop`. The e2e and API files remain pending Architect-side verification; this step is
+not reported as fully verified by the Worker.
+
 **Worker session checkpoint - M17-S3R2 + S4 (2026-07-25):** John said go via the
 current task request. Model GPT-5 Codex, effort default; usage/quota/context indicators
 are not exposed. Single declared step: complete S4b test partition split, then implement
@@ -47,6 +76,61 @@ passed with graph integrity OK. Remaining handoff: Architect-side API/e2e verifi
 then the single commit may be pushed after review. No verdict, graph, or promoted-artifact
 change was made.
 
+
+**ARCHITECT VERIFICATION - M17-S3R2 + S4 (Claude Opus 4.8, 2026-07-25).** Ran the
+gates the Worker's ~124s cap blocked. Architect-side partition GREEN: API + fast
+projection + workbench boundary = **14 passed** (2m49s), including the import-boundary
+check that went CI-red on S2 - `cell_inventory.py` stayed stdlib + yaml +
+`workbench.refs`.
+Review of the diff: the navigation and contrast fixes are correct. `try/finally` on the
+re-entrancy guard as specified; cross-page selection resolves the cell from the model and
+re-renders; river scroll uses container-local `scrollTop` math so it never scrolls the
+page; `.official-region.pinned` drops the red outline for a dark 3px border + 5px white
+halo, and `box-sizing: border-box` is global so the border-width change does not shift
+cell geometry. The citation work is the strongest part: an unresolved id is RETAINED with
+`resolved: false` and null text rather than dropped or fabricated, and node-level
+`citation_refs` were added alongside address-level.
+**ONE GENUINE DEFECT, in the Worker's declared e2e test - the app was correct.**
+`tests/e2e/test_workbench_v2_m17.py` used `cards.locator('[data-page="2"]')`, but
+`data-page` is on the CARD element itself and `Locator.locator()` matches DESCENDANTS
+only, so it resolved to nothing and timed out (1 failed, 1 passed). Fixed by folding the
+attribute into the card selector (`#river .review-unit-card[data-page="2"]`) plus a
+`wait_for` on the page-canvas instead of a bare post-click `get_attribute`. Comment left
+in the test so the trap is not re-set.
+**SECOND DEFECT - A REAL APP BUG, AND IT IS JOHN'S ISSUE 1 ITSELF (ledger D7).** With the
+selector fixed, the e2e got further and failed on the substantive assertion: the selected
+river card is NOT inside the river viewport. Root cause CONFIRMED LIVE, not inferred:
+`scrollRiverUnitIntoView` computes `river.scrollTop` from `card.offsetTop`, but
+`.river-list` is `position: static` and no ancestor is positioned, so `card.offsetParent`
+is `<body>` and `offsetTop` carries the whole page offset. Measured on the live 1040:
+`offsetParentIsRiver: false`, and selecting cards 0, 5, and 20 each overshot by a CONSTANT
+~167px, leaving the card 92px ABOVE the visible area - `inView: false` every time. The bug
+hides in casual use because the river DOES scroll, just to the wrong place, so John's
+"hard to locate the selected cell" complaint is only partly addressed. The correct pattern
+was already in the SAME commit: `scrollOfficialRegionIntoView` does proper
+`getBoundingClientRect` delta math for the center pane. Fix = copy that, or give the
+container `position: relative`.
+**NOT FIXED BY THE ARCHITECT - RETURNED TO THE WORKER (John's directive, 2026-07-25).**
+John asked that Codex be made to confront its own errors rather than have them silently
+patched. So D7 is logged and this goes back for the Worker to fix. The Architect fixed ONLY
+the e2e selector (D2), because that fix was needed to expose D7 at all.
+**PATTERN - SECOND ROUND RUNNING.** S3 and now S3R2 both shipped an e2e file the Worker
+could not execute (the cap), and both times the ONLY defects were in that unrunnable
+test file while the app was correct. S4b fixed this for the projection tests; e2e is
+still out of reach. RECOMMENDATION for John: until the cap is raised, e2e authorship
+should be Architect-side, or the Worker should stop declaring e2e files it cannot run.
+**HYGIENE FINDING (not blocking):** `tests/test_workbench_cells_api_m17.py`
+`test_document_session_round_trip_and_scope` writes a real approved review into the
+DEVELOPER's live session store
+(`.workbench_state/2025/sessions/documents/form_1040_2025.json`). That is the source of
+the phantom "1 / 159 cells approved" John saw on a fresh load of the live UI - test
+residue (`note: "ok"` on `f1_01`), not a real count. Gitignored so nothing leaks into the
+repo, but it crosses the hermetic-tests standing rule and pollutes the surface John
+reviews. Fix next round: point the session store at a tmp dir.
+**ENV NOTE:** `.pytest_tmp` now fails cleanup with `PermissionError: [WinError 5]`
+(leftover Codex sandbox ACLs), which makes clean files LOOK like errors - the boundary
+file reported 3 spurious errors until re-run on a different basetemp. Workers are
+instructed to use `.pytest_tmp`, so this needs a re-grant.
 
 **BALL: WORKER - M17-S3R2 + S4 (John's second-review corrections). John reviewed the
 live S3R UI on 2026-07-25 and returned four issues; the design is NOT rejected - the
@@ -403,6 +487,27 @@ TY2026 docs drop.
 
 ## From Architect
 
+- **M17-S3R2b TASK - FIX D7, THE RIVER SCROLL (Architect, Claude Opus 4.8, 2026-07-25).**
+  Small, surgical, and it is the fix for John's original issue 1. Read the **Worker defect
+  ledger in `AGENTS.md`** first and state in your session-start checkpoint which entries
+  apply - that is now a standing rule.
+  1. Fix `scrollRiverUnitIntoView` in `workbench/static/river.js`. It uses `card.offsetTop`,
+     which is measured from the nearest POSITIONED ancestor; `.river-list` is
+     `position: static` with no positioned ancestor, so `offsetParent` is `<body>` and the
+     scroll overshoots by a constant ~167px, putting the selected card ~92px ABOVE the
+     visible area. Confirmed live on the 1040 at cards 0, 5, and 20 - `inView: false` every
+     time. Use `getBoundingClientRect` deltas against the container (the pattern YOU already
+     wrote correctly in `scrollOfficialRegionIntoView` in `app.js`), or set
+     `position: relative` on `.river-list`. Prefer the rect-delta approach: it is robust to
+     future layout changes. Clamp to `[0, scrollHeight - clientHeight]`.
+  2. Re-check the same class of bug anywhere else you compute a scroll offset this round.
+  3. Verify with `tests/e2e/test_workbench_v2_m17.py::test_form_and_river_selection_crosses_
+     pages_and_keeps_selection_visible`, which already asserts the card is within the river
+     rect and currently FAILS. **If the ~124s cap blocks that file, you MUST say
+     `NOT RUN: <reason>` and NOT report the step complete** - do not declare it verified on a
+     Node syntax check. The Architect will run it.
+  Tier-1 floor: declared files with honest RAN/NOT RUN lines, ASCII, `git diff --check`,
+  module-form `validate 2025`. One local commit; no push. Stop conditions unchanged.
 - **M17-S3R2 + S4 TASK - NAVIGATION, CONTRAST, AND THE CELL DOSSIER (Architect,
   Claude Opus 4.8, 2026-07-25). Source: John's live review of the S3R UI.** Full
   design in `plans/PHASE_M17.md` (steps S3R2, S4b, S4) - READ IT FIRST. Scope is
@@ -618,6 +723,20 @@ TY2026 docs drop.
   places: guiding invariant 6 and Year-rollover seam 5 in `docs/engineering-plan.md`, and
   A9 contract item 6 in `plans/PHASE_M15.md`. Hand-authoring beyond the retired A9 list is
   a STOP condition, not a precedent.
+- **DEFECT-LEDGER RULE (2026-07-25, at John's direction).** John: "I would prefer to force
+  Codex to take notice of its errors in the instructions." Recurring Worker defects are now
+  pinned in the **Worker defect ledger in `AGENTS.md`** (canonical, Architect-owned, and NOT
+  pruned at phase close - unlike this handoff). Every Worker session: read the ledger BEFORE
+  declaring a step, and name in your session-start checkpoint which entries apply to what you
+  are about to write. Repeating a ledger defect is a process failure to be reported as such,
+  not quietly fixed by the Architect. Paired hard rule, also in `AGENTS.md`: for EVERY declared
+  focused test file state `RAN: <command> -> <result>` or `NOT RUN: <reason>`; an unverified
+  declared file means the step is NOT complete; never declare a file you already know the cap
+  prevents you from running - say so up front so the Architect authors or runs it. Node syntax
+  checks are not test evidence. WHY THIS EXISTS: across M17-S3 and M17-S3R2 the Worker's app
+  code was CORRECT both times and every defect was in an e2e file it could not execute, which
+  the Architect then silently fixed - so the Worker never learned. Ledger entries D1-D6 are
+  seeded from those rounds.
 - **SESSION BUDGET RULES (2026-07-19, at John's direction; every Worker session):**
   (1) Your FIRST handoff touch of a session states your model, effort level, and any
   usage/quota/context indicators your environment exposes - if none are exposed, say
