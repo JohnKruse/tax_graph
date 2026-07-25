@@ -7,9 +7,10 @@ from pathlib import Path
 import secrets
 from typing import Any
 
-from flask import Flask, jsonify, request, send_file, send_from_directory
+from flask import Flask, jsonify, request, send_file
 
 from workbench.artifacts import ArtifactBundle, load_artifact_bundle
+from workbench.cell_inventory import build_document_cells, build_documents_index
 from workbench.manifest import build_manifest
 from workbench.navigation import build_document_navigation
 from workbench.preflight import preflight_manifest
@@ -80,7 +81,13 @@ def create_app(
         """Serve the no-build review workbench shell."""
         if app.static_folder is None:
             return jsonify({"error": "workbench static assets are unavailable"}), 500
-        return send_from_directory(app.static_folder, "index.html")
+        shell = (Path(app.static_folder) / "index.html").read_text(encoding="utf-8")
+        token = str(app.config["WORKBENCH_WRITE_TOKEN"])
+        shell = shell.replace(
+            '<meta name="workbench-write-token" content="">',
+            f'<meta name="workbench-write-token" content="{token}">',
+        )
+        return shell, 200, {"Content-Type": "text/html; charset=utf-8"}
 
     @app.get("/api/queue")
     def get_queue() -> Any:
@@ -243,6 +250,121 @@ def create_app(
             return jsonify({"error": str(exc)}), 400
         response = dict(session_payload)
         response["progress"] = session_progress(session_payload, entry.get("units", []))
+        return jsonify(response)
+
+    document_titles = {
+        str(document["document_id"]): str(document.get("title") or document["document_id"])
+        for document in artifact_bundle.graph.objects("documents")
+        if isinstance(document, dict) and document.get("document_id")
+    }
+    geometry_entries = artifact_bundle.geometry.get("entries", []) or []
+    valid_document_ids = frozenset(
+        str(entry["document_id"])
+        for entry in geometry_entries
+        if isinstance(entry, dict) and entry.get("document_id")
+    )
+
+    def _document_cells(document_id: str) -> list[dict[str, Any]]:
+        return build_document_cells(
+            root_path, year, document_id, geometry_entries=geometry_entries
+        ).cells
+
+    def _pseudo_units(cells: list[dict[str, Any]]) -> list[dict[str, Any]]:
+        # The session helpers only read ``unit_id`` and the first page, so the
+        # cell list projects cleanly onto them without a manifest entry.
+        return [
+            {"unit_id": cell["cell_id"], "official_location": {"page": cell["page"]}}
+            for cell in cells
+        ]
+
+    @app.get("/api/documents")
+    def get_documents() -> Any:
+        return jsonify({
+            "tax_year": int(year),
+            "manifest_hash": review_manifest["manifest_hash"],
+            "documents": build_documents_index(
+                root_path,
+                year,
+                sorted(valid_document_ids),
+                geometry_entries=geometry_entries,
+                titles=document_titles,
+            ),
+        })
+
+    @app.get("/api/documents/<document_id>/cells")
+    def get_document_cells(document_id: str) -> Any:
+        if document_id not in valid_document_ids:
+            return jsonify({"error": "unknown document_id", "document_id": document_id}), 404
+        cells = _document_cells(document_id)
+        return jsonify({
+            "tax_year": int(year),
+            "manifest_hash": review_manifest["manifest_hash"],
+            "document_id": document_id,
+            "title": document_titles.get(document_id, document_id),
+            "pages": sorted({cell["page"] for cell in cells}),
+            "cells": cells,
+        })
+
+    @app.get("/api/documents/<document_id>/session")
+    def get_document_session(document_id: str) -> Any:
+        if document_id not in valid_document_ids:
+            return jsonify({"error": "unknown document_id", "document_id": document_id}), 404
+        units = _pseudo_units(_document_cells(document_id))
+        path = session_root / "documents" / f"{document_id}.json"
+        try:
+            payload = load_session(path)
+        except (ValueError, SchemaValidationError) as exc:
+            return jsonify({"error": str(exc), "document_id": document_id}), 409
+        if payload is not None and payload.get("manifest_hash") != review_manifest["manifest_hash"]:
+            return jsonify({"error": "saved session belongs to a stale review manifest", "document_id": document_id}), 409
+        session = payload or default_session(
+            int(year), document_id, review_manifest["manifest_hash"], units
+        )
+        try:
+            validate_unit_review_scope(session, units)
+            response = dict(session)
+            response["progress"] = session_progress(session, units)
+        except ValueError as exc:
+            return jsonify({"error": str(exc), "document_id": document_id}), 409
+        return jsonify(response)
+
+    @app.put("/api/documents/<document_id>/session")
+    def put_document_session(document_id: str) -> Any:
+        denied = _require_write_token(app)
+        if denied is not None:
+            return denied
+        if document_id not in valid_document_ids:
+            return jsonify({"error": "unknown document_id", "document_id": document_id}), 404
+        payload = request.get_json(silent=True)
+        if not isinstance(payload, dict):
+            return jsonify({"error": "session body must be a JSON object"}), 400
+        if (
+            payload.get("queue_id") != document_id
+            or payload.get("tax_year") != int(year)
+            or payload.get("manifest_hash") != review_manifest["manifest_hash"]
+        ):
+            return jsonify({"error": "session queue_id, tax_year, and manifest_hash must match"}), 400
+        session_payload = dict(payload)
+        session_payload.pop("progress", None)
+        units = _pseudo_units(_document_cells(document_id))
+        cell_ids = {str(unit["unit_id"]) for unit in units}
+        referenced = set(str(value) for value in session_payload.get("visited_unit_ids", []) or [])
+        if session_payload.get("current_unit_id") is not None:
+            referenced.add(str(session_payload["current_unit_id"]))
+        selection = session_payload.get("selection")
+        if isinstance(selection, dict) and selection.get("unit_id") is not None:
+            referenced.add(str(selection["unit_id"]))
+        unknown = sorted(referenced - cell_ids)
+        if unknown:
+            return jsonify({"error": "session references cells outside the document", "unit_ids": unknown}), 400
+        try:
+            validate_unit_review_scope(session_payload, units)
+            validate_session_state(session_payload)
+            save_session(session_root / "documents" / f"{document_id}.json", session_payload)
+        except (ValueError, SchemaValidationError) as exc:
+            return jsonify({"error": str(exc)}), 400
+        response = dict(session_payload)
+        response["progress"] = session_progress(session_payload, units)
         return jsonify(response)
 
     @app.post("/api/verdicts")

@@ -3,6 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="workbench-write-token" content="">
   <title>Tax Graph Review Workbench</title>
   <link rel="stylesheet" href="/static/styles.css">
 </head>
@@ -10,7 +11,7 @@
   <header class="topbar">
     <div>
       <span class="eyebrow">Tax Graph</span>
-      <h1>Review Workbench</h1>
+      <h1>Cell review workbench</h1>
     </div>
     <div class="topbar-actions">
       <div id="view-controls" class="view-controls" aria-label="Synchronized view controls">
@@ -26,36 +27,53 @@
     </div>
   </header>
   <main class="workspace">
-    <nav class="queue-rail" aria-label="Documents and things to check">
-      <h2>Documents</h2>
+    <aside class="queue-rail" aria-label="Review dashboard and documents">
+      <section class="review-dashboard" aria-labelledby="dashboard-title">
+        <span class="eyebrow">Review dashboard</span>
+        <h2 id="dashboard-title">Choose a document</h2>
+        <p id="selected-document-meta" class="dashboard-meta">Your review progress stays local and resumable.</p>
+        <div class="approval-stat" aria-live="polite">
+          <strong id="approved-count">0 / 0</strong>
+          <span>cells approved</span>
+        </div>
+        <div class="progress-track" aria-hidden="true"><span id="approval-bar"></span></div>
+        <div class="dashboard-actions">
+          <button id="cancel-progress" type="button" class="button-secondary">Cancel</button>
+          <button id="save-progress" type="button" class="button-primary" disabled>Save progress</button>
+        </div>
+        <p id="session-message" class="session-message" aria-live="polite"></p>
+        <section class="verdict-bar" aria-label="Verdict controls">
+          <strong>Submit not yet wired</strong>
+          <span>Per-cell draft review only</span>
+          <button type="button" disabled>Confirm</button>
+          <button type="button" disabled>Pipeline defect</button>
+          <button type="button" disabled>Source pathology</button>
+          <button type="button" disabled>Save and next</button>
+        </section>
+      </section>
+      <div class="queue-heading">
+        <h2>Documents</h2>
+        <span id="queue-count" class="queue-count"></span>
+      </div>
       <div id="queue" class="queue-list"></div>
-    </nav>
+    </aside>
     <section class="review-area">
-      <div class="pane-grid">
+      <div class="review-layout">
         <section class="review-pane" aria-labelledby="official-title">
           <header class="official-header">
-            <div><h2 id="official-title">Official IRS artifact</h2><p>Choose an outlined field to inspect its review evidence.</p></div>
-            <button id="semantic-flow-toggle" type="button" aria-expanded="false" disabled>Show semantic flow</button>
+            <div><span class="eyebrow">Center pane</span><h2 id="official-title">Official IRS form</h2><p>Every cell is clickable. Walk it top to bottom, or hop anywhere.</p></div>
           </header>
-          <div id="official-pane" class="pane-empty">Choose a queue entry to begin.</div>
+          <div id="official-pane" class="pane-empty">Choose a form to begin.</div>
         </section>
-        <section id="semantic-flow" class="semantic-flow" aria-labelledby="semantic-flow-title" hidden>
-          <header><h2 id="semantic-flow-title">Semantic flow</h2><button id="semantic-flow-close" type="button">Close</button></header>
-          <div id="analog-pane"></div>
-        </section>
+        <aside id="drawer" class="review-river" aria-labelledby="river-title">
+          <header class="river-header">
+            <div><span class="eyebrow">Right pane</span><h2 id="river-title">Review cells</h2></div>
+            <span id="river-progress" class="river-progress">0 / 0</span>
+          </header>
+          <div id="river" class="river-list"><p class="pane-empty">Choose a form to see its cells.</p></div>
+          <div id="river-detail" class="river-detail" aria-live="polite"><p class="river-empty">Select a cell for its graph evidence.</p></div>
+        </aside>
       </div>
-      <section id="drawer" class="drawer" aria-labelledby="drawer-title">
-        <h2 id="drawer-title">Evidence</h2>
-        <p>Select a review unit to inspect its formula, sources, citations, and witnesses.</p>
-      </section>
-      <section class="verdict-bar" aria-label="Verdict controls">
-        <strong>Verdicts not yet wired</strong>
-        <span>Review-only vertical slice for Gate A</span>
-        <button type="button" disabled>Confirm</button>
-        <button type="button" disabled>Pipeline defect</button>
-        <button type="button" disabled>Source pathology</button>
-        <button type="button" disabled>Save and next</button>
-      </section>
     </section>
   </main>
   <script type="module" src="/static/app.js"></script>

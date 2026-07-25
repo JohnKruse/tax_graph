@@ -1,137 +1,190 @@
-import {loadEntry, loadQueue} from "./api.js";
-import {renderAnalogPane, renderOfficialPane} from "./panes.js";
+import {loadDocuments, loadDocumentCells, loadDocumentSession, saveDocumentSession} from "./api.js";
+import {renderOfficialPane} from "./panes.js";
 import {installPairing} from "./pairing.js";
-import {installDrawer} from "./drawer.js";
+import {activateRiverUnit, renderReviewRiver, selectRiverUnit} from "./river.js";
 import {installKeyboardNavigation, installPageControls, installSynchronizedView} from "./keyboard.js";
 
 let selectionSequence = 0;
-let activeEntry = null;
-let selectedUnitId = null;
-let activeDocumentId = null;
+let activeDocument = null;
+let activeSession = null;
+let activePage = null;
+let dirty = false;
+let syncingSelection = false;
 const navigationState = new Map();
 
-function renderQueue(payload) {
-  const queue = document.querySelector("#queue");
-  queue.replaceChildren();
-  for (const documentItem of payload.documents) {
-    const section = document.createElement("section");
-    section.className = "document-group";
-    section.dataset.documentId = documentItem.document_id;
-    const heading = document.createElement("button");
-    heading.type = "button";
-    heading.className = "document-entry";
-    heading.dataset.documentId = documentItem.document_id;
-    heading.setAttribute("aria-expanded", "false");
-    heading.innerHTML = `<strong>${documentItem.title}</strong><small>${documentItem.pages.length ? `Pages ${documentItem.pages.join(", ")}` : "No page geometry"} | ${documentItem.counts.required} required</small>`;
-    const checklist = document.createElement("div");
-    checklist.className = "checklist";
-    checklist.hidden = true;
-    const label = document.createElement("h3");
-    label.textContent = "Things to check";
-    checklist.append(label);
-    for (const group of documentItem.check_groups) {
-      const button = document.createElement("button");
-      button.className = "queue-entry";
-      button.type = "button";
-      button.dataset.documentId = documentItem.document_id;
-      button.dataset.checkGroup = group.group_id;
-      button.textContent = group.label;
-      const metadata = document.createElement("small");
-      metadata.textContent = `${group.counts.required} required | ${group.counts.visited} visited | ${group.counts.accepted} accepted | ${group.counts.correction} corrections`;
-      button.append(metadata);
-      button.addEventListener("click", () => selectCheckGroup(documentItem, group, button));
-      checklist.append(button);
-    }
-    heading.addEventListener("click", () => {
-      const open = checklist.hidden;
-      document.querySelectorAll(".checklist").forEach((item) => { item.hidden = true; });
-      document.querySelectorAll(".document-entry").forEach((item) => item.setAttribute("aria-expanded", "false"));
-      checklist.hidden = !open;
-      heading.setAttribute("aria-expanded", String(open));
-    });
-    section.append(heading, checklist);
-    queue.append(section);
-  }
-  const progress = payload.progress;
-  document.querySelector("#progress").textContent =
-    `${progress.remaining_entries} entries | ${progress.total_units} scoped units`;
-  document.querySelector(".document-entry")?.click();
+function now() {
+  return new Date().toISOString().replace(/\.\d{3}Z$/, "Z");
 }
 
-async function selectCheckGroup(documentItem, group, button) {
+function activeCells() {
+  return activeDocument?.cells || [];
+}
+
+function approvedCount() {
+  const reviews = activeSession?.unit_reviews || {};
+  return activeCells().filter((cell) => reviews[cell.cell_id]?.status === "approved").length;
+}
+
+function updateDashboard() {
+  const title = document.querySelector("#dashboard-title");
+  const meta = document.querySelector("#selected-document-meta");
+  const total = activeCells().length;
+  const approved = approvedCount();
+  title.textContent = activeDocument?.title || "Choose a form";
+  meta.textContent = activeDocument
+    ? `${total} cells | page ${activePage ?? "-"} of ${activeDocument.pages.join(", ")}`
+    : "Your review progress stays local and resumable.";
+  document.querySelector("#approved-count").textContent = `${approved} / ${total}`;
+  document.querySelector("#approval-bar").style.width = total ? `${approved / total * 100}%` : "0%";
+  document.querySelector("#river-progress").textContent = `${approved} / ${total}`;
+  document.querySelector("#save-progress").disabled = !activeDocument || !dirty;
+}
+
+function renderDocumentList(payload) {
+  const list = document.querySelector("#queue");
+  list.replaceChildren();
+  document.querySelector("#queue-count").textContent = `${payload.documents.length} forms`;
+  document.querySelector("#progress").textContent =
+    `${payload.documents.length} forms | ${payload.documents.reduce((sum, item) => sum + item.cell_count, 0)} cells`;
+  for (const documentItem of payload.documents) {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "document-entry";
+    button.dataset.documentId = documentItem.document_id;
+    button.innerHTML =
+      `<strong>${documentItem.title}</strong>` +
+      `<small>${documentItem.cell_count} cells | pages ${documentItem.pages.join(", ")}</small>`;
+    button.addEventListener("click", () => selectDocument(documentItem, button));
+    list.append(button);
+  }
+}
+
+async function selectDocument(documentItem, button) {
   const sequence = ++selectionSequence;
-  document.querySelectorAll(".queue-entry.active").forEach((item) => {
+  rememberNavigation();
+  document.querySelectorAll(".document-entry.active").forEach((item) => {
     item.classList.remove("active");
     item.removeAttribute("aria-current");
   });
   button.classList.add("active");
   button.setAttribute("aria-current", "true");
-  if (activeDocumentId && activeEntry) rememberNavigation();
-  activeDocumentId = documentItem.document_id;
-  const queueIds = [...new Set(group.unit_refs.map((ref) => ref.queue_id))];
-  const payloads = await Promise.all(queueIds.map((queueId) => loadEntry(queueId)));
+  const [cellsPayload, session] = await Promise.all([
+    loadDocumentCells(documentItem.document_id),
+    loadDocumentSession(documentItem.document_id),
+  ]);
   if (sequence !== selectionSequence) return;
-  const wanted = new Set(group.unit_refs.map((ref) => `${ref.queue_id}:${ref.unit_id}`));
-  const units = payloads.flatMap(({entry}) => entry.units.filter((unit) => wanted.has(`${entry.queue_id}:${unit.unit_id}`)));
-  const entry = {queue_id: queueIds[0], review_kind: "document_check", summary: group.label, units};
-  const saved = navigationState.get(documentItem.document_id) || {};
-  renderEntry(entry, saved.page, saved.unitId);
-  installPageControls(entry, (page) => renderEntry(entry, page), saved.page);
+  activeDocument = {
+    document_id: cellsPayload.document_id,
+    title: cellsPayload.title,
+    pages: cellsPayload.pages,
+    cells: cellsPayload.cells,
+  };
+  activeSession = session;
+  dirty = false;
+  const saved = navigationState.get(activeDocument.document_id) || {};
+  renderReview(saved.page ?? cellsPayload.pages[0] ?? 1, saved.cellId);
 }
 
-function renderEntry(entry, page = null, restoreUnitId = null) {
-  activeEntry = entry;
-  selectedUnitId = null;
-  setSemanticFlow(false);
-  renderOfficialPane(document.querySelector("#official-pane"), entry, page);
-  renderAnalogPane(document.querySelector("#analog-pane"), entry);
-  const root = document.querySelector(".pane-grid");
-  delete root.dataset.pinnedUnitId;
-  if (!root.dataset.selectionWired) {
-    root.dataset.selectionWired = "true";
-    root.addEventListener("workbench:selection", (event) => {
-      selectedUnitId = event.detail.unitId;
-      rememberNavigation();
-      if (!document.querySelector("#semantic-flow").hidden) {
-        renderAnalogPane(document.querySelector("#analog-pane"), activeEntry, selectedUnitId);
-        installPairing(root);
-      }
-    });
+function ensureSession() {
+  if (!activeSession) return null;
+  activeSession.unit_reviews = activeSession.unit_reviews || {};
+  return activeSession;
+}
+
+function updateSessionContext(cellId) {
+  const session = ensureSession();
+  if (!session) return;
+  session.current_unit_id = cellId;
+  session.selection = {unit_id: cellId, side: "official"};
+  session.visited_unit_ids = [...new Set([...(session.visited_unit_ids || []), cellId])];
+  session.updated_at = now();
+  dirty = true;
+  updateDashboard();
+}
+
+function updateCellReview(cell, changes) {
+  const session = ensureSession();
+  if (!session) return;
+  session.unit_reviews[cell.cell_id] = {
+    status: changes.approved ? "approved" : "open",
+    note: changes.note || "",
+    updated_at: now(),
+  };
+  session.updated_at = now();
+  dirty = true;
+  updateDashboard();
+}
+
+async function persistProgress() {
+  const message = document.querySelector("#session-message");
+  if (!activeDocument || !dirty) return;
+  message.textContent = "Saving local progress...";
+  try {
+    const saved = await saveDocumentSession(activeDocument.document_id, {...activeSession, progress: undefined});
+    activeSession = {...activeSession, ...saved, progress: undefined};
+    dirty = false;
+    message.textContent = "Progress saved locally.";
+  } catch (error) {
+    message.textContent = `Progress was not saved: ${error.message}`;
   }
+  updateDashboard();
+}
+
+function renderReview(page = null, restoreCellId = null) {
+  activePage = page;
+  const root = document.querySelector(".review-layout");
+  delete root.dataset.pinnedUnitId;
+  renderOfficialPane(document.querySelector("#official-pane"), activeDocument, page);
+  renderReviewRiver(
+    document.querySelector("#drawer"),
+    activeDocument,
+    activeSession,
+    updateCellReview,
+  );
   installPairing(root);
-  installDrawer(document.querySelector("#drawer"), root, entry);
+  if (root._selectionHandler) root.removeEventListener("workbench:selection", root._selectionHandler);
+  if (root._riverSelectionHandler) root.removeEventListener("workbench:river-selection", root._riverSelectionHandler);
+  root._selectionHandler = (event) => {
+    const cellId = event.detail.unitId;
+    updateSessionContext(cellId);
+    selectRiverUnit(document.querySelector("#drawer"), cellId);
+    if (syncingSelection) return;
+    syncingSelection = true;
+    activateRiverUnit(document.querySelector("#drawer"), cellId);
+    syncingSelection = false;
+  };
+  root._riverSelectionHandler = (event) => {
+    const cellId = event.detail.unitId;
+    updateSessionContext(cellId);
+    if (syncingSelection) return;
+    const official = document.querySelector(`#official-pane [data-unit-id="${CSS.escape(cellId)}"]`);
+    if (!official) return;
+    syncingSelection = true;
+    official.click();
+    syncingSelection = false;
+  };
+  root.addEventListener("workbench:selection", root._selectionHandler);
+  root.addEventListener("workbench:river-selection", root._riverSelectionHandler);
   installSynchronizedView(document.querySelector("#official-pane .page-viewport"));
-  const toggle = document.querySelector("#semantic-flow-toggle");
-  toggle.disabled = false;
-  toggle.onclick = () => setSemanticFlow(true);
-  if (restoreUnitId) {
-    document.querySelector(`#official-pane [data-unit-id="${CSS.escape(restoreUnitId)}"]`)?.click();
+  installPageControls(activeDocument.pages, (nextPage) => renderReview(nextPage), page);
+  updateDashboard();
+  if (restoreCellId) {
+    document.querySelector(`#official-pane [data-unit-id="${CSS.escape(restoreCellId)}"]`)?.click();
   }
 }
 
 function rememberNavigation() {
-  if (!activeDocumentId) return;
-  const page = Number(document.querySelector("#official-pane .page-canvas")?.dataset.page || 0) || null;
-  navigationState.set(activeDocumentId, {page, unitId: selectedUnitId});
-}
-
-function setSemanticFlow(open) {
-  const panel = document.querySelector("#semantic-flow");
-  const toggle = document.querySelector("#semantic-flow-toggle");
-  panel.hidden = !open;
-  toggle.setAttribute("aria-expanded", String(open));
-  toggle.textContent = open ? "Semantic flow shown" : "Show semantic flow";
-  if (open && activeEntry) {
-    renderAnalogPane(document.querySelector("#analog-pane"), activeEntry, selectedUnitId);
-    installPairing(document.querySelector(".pane-grid"));
-  }
+  if (!activeDocument) return;
+  const selected = document.querySelector("#official-pane .official-region.pinned")?.dataset.unitId || null;
+  navigationState.set(activeDocument.document_id, {page: activePage, cellId: selected});
 }
 
 async function start() {
+  document.querySelector("#save-progress").addEventListener("click", persistProgress);
+  document.querySelector("#cancel-progress").addEventListener("click", () => window.location.reload());
   try {
-    renderQueue(await loadQueue());
+    renderDocumentList(await loadDocuments());
     installKeyboardNavigation();
-    document.querySelector("#semantic-flow-close").addEventListener("click", () => setSemanticFlow(false));
   } catch (error) {
     document.querySelector("#progress").textContent = "Review queue unavailable";
     document.querySelector("#queue").textContent = error.message;

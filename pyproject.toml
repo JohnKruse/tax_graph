@@ -109,6 +109,7 @@ markers = [
   "m14: product surface phase tests",
   "m15: Phase M15 review workbench tests",
   "m15r: Phase M15R canonical addressing recovery tests",
+  "m17: Phase M17 cell-atomic review workbench tests",
   "m0: Phase M0 foundation tests",
   "m1: Phase M1 compile/runtime artifact tests",
   "m2: Phase M2 MCP server tests",

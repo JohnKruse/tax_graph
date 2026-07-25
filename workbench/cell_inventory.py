@@ -1,0 +1,360 @@
+"""Form-complete, reading-order cell inventory for the review workbench.
+
+The review unit is the form cell. The IRS designed the form as discrete cells; a
+reviewer walks it top to bottom and hops freely, and each cell carries its own
+printed instruction. So the workbench's cell list must come from the FORM - every
+addressable, clickable control on the page - not from whichever cells happened to
+land in the deferred-review queue.
+
+This module assembles that list by joining four published artifacts on a single key:
+
+- geometry (``graph/<year>/node_geometry.json``) is the spine: one physical clickable
+  field per entry, with the page + rect the center pane draws;
+- the address inventory (``graph/<year>/addresses/<doc>.yaml``) gives the authored
+  reviewer-facing label, the printed line/box ref, and the control role;
+- the field dispositions (``graph/<year>/field_maps/<doc>.yaml``) give the one
+  population policy every control carries, plus its value format and, for the
+  unsupported/blank policies, the reason;
+- the node bindings (``graph/<year>/bindings/nodes/<doc>.yaml``) give the computing
+  node an amount cell is filled from, so "what feeds this cell" is real.
+
+It is projection-only and stdlib+yaml only: the workbench must not import the pipeline
+package (the M17-S2 import-boundary lesson), so it reads the canonical serializations
+directly and reuses only the stdlib-only ref deriver.
+"""
+
+from __future__ import annotations
+
+from dataclasses import dataclass, field as dataclass_field
+import json
+from pathlib import Path
+import re
+from typing import Any
+
+import yaml
+
+from workbench.refs import unit_ref_from_address
+
+
+# Address kinds that name a reviewable cell (a control the filer/engine populates or
+# checks). Containers - document, line, section, table, row_template, column - are not
+# cells; they only supply the breadcrumb a cell hangs under.
+CELL_ADDRESS_KINDS = frozenset({"control", "option"})
+
+
+@dataclass(frozen=True)
+class DocumentCells:
+    """The ordered, form-complete reviewable cell list for one document."""
+
+    document_id: str
+    cells: list[dict[str, Any]]
+    pages: list[int] = dataclass_field(default_factory=list)
+
+
+def build_document_cells(
+    root: str | Path,
+    year: str | int,
+    document_id: str,
+    *,
+    geometry_entries: list[dict[str, Any]] | None = None,
+    include_inputs: bool = True,
+) -> DocumentCells:
+    """Assemble the reading-order cell list for one document.
+
+    Every physical field with page geometry becomes exactly one cell, ordered by
+    (page, top, left) so the list flows the way the form reads. Cells are joined to
+    their address, disposition, and node binding by identifier; a missing join is
+    surfaced on the cell (e.g. ``population_policy: None``) rather than dropping it,
+    so a coverage gap is visible in review instead of invisible.
+
+    ``geometry_entries`` may pass an already-loaded geometry list (the whole
+    document set is one 1.4 MB file, so the documents index loads it once and
+    filters per document rather than re-reading it).
+    """
+    graph_dir = Path(root) / "graph" / str(year)
+    if geometry_entries is None:
+        geometry = _load_geometry(graph_dir / "node_geometry.json", document_id)
+    else:
+        geometry = [
+            entry for entry in geometry_entries
+            if _geometry_is_cell(entry) and str(entry.get("document_id") or "") == document_id
+        ]
+    addresses = _load_addresses(graph_dir / "addresses" / f"{document_id}.yaml")
+    dispositions = _load_dispositions(graph_dir / "field_maps" / f"{document_id}.yaml")
+    bindings = _load_node_bindings(graph_dir / "bindings" / "nodes" / f"{document_id}.yaml")
+    # The operands of a computed cell are the graph edges feeding its node; resolving
+    # them to refs needs the node->address map across every document (a sum can draw
+    # from another form). Only loaded when a caller renders detail, not for counts.
+    calc_inputs = _load_calc_edges(graph_dir) if include_inputs else {}
+    node_to_ref = _load_node_ref_index(graph_dir) if include_inputs else {}
+
+    ordered = sorted(
+        geometry,
+        key=lambda entry: (
+            int(entry["page"]),
+            round(float(entry["rect"][1]), 1),
+            round(float(entry["rect"][0]), 1),
+        ),
+    )
+    cells: list[dict[str, Any]] = []
+    pages: set[int] = set()
+    used_ids: set[str] = set()
+    for order, entry in enumerate(ordered):
+        address_id = str(entry.get("address_id") or "")
+        address = addresses.get(address_id, {})
+        if str(address.get("kind") or "control") not in CELL_ADDRESS_KINDS and address:
+            # A geometry rect anchored to a container address is not a filer cell.
+            continue
+        disposition = dispositions.get(str(entry.get("field_name") or ""), {})
+        binding = bindings.get(address_id)
+        node_id = str(binding["node_id"]) if binding and binding.get("node_id") else None
+        page = int(entry["page"])
+        pages.add(page)
+        cells.append(
+            {
+                "cell_id": _cell_id(entry, used_ids),
+                "document_id": document_id,
+                "inputs": _cell_inputs(node_id, calc_inputs, node_to_ref) if include_inputs else [],
+                "address_id": address_id or None,
+                "ref": unit_ref_from_address(address_id) if address_id else None,
+                "order": order,
+                "page": page,
+                "rect": [float(value) for value in entry["rect"]],
+                "field_name": str(entry.get("field_name") or "") or None,
+                "section": _breadcrumb(address),
+                "official_ref": _official_ref(address),
+                "control_role": str(address.get("control_role") or "") or None,
+                "display_name": _display_name(address, disposition, entry),
+                "population_policy": str(disposition.get("population_policy") or "") or None,
+                "value_format": str(disposition.get("value_format") or "") or None,
+                "policy_reason": str(disposition.get("reason") or "") or None,
+                "node_id": node_id,
+                "citations": _citations(address),
+            }
+        )
+    return DocumentCells(document_id=document_id, cells=cells, pages=sorted(pages))
+
+
+def _breadcrumb(address: dict[str, Any]) -> str | None:
+    """Return the section/line token a cell hangs under, for a reading-order header."""
+    for component in address.get("path", []) or []:
+        if isinstance(component, dict) and component.get("kind") in {"section", "line", "table"}:
+            token = str(component.get("token") or "")
+            if token:
+                return token
+    return None
+
+
+def _official_ref(address: dict[str, Any]) -> str | None:
+    ref = address.get("official_ref")
+    if ref:
+        return str(ref)
+    # Section-scoped header controls have no printed line number; fall back to the
+    # section token so the reviewer still sees where it sits.
+    return _breadcrumb(address)
+
+
+def _display_name(
+    address: dict[str, Any], disposition: dict[str, Any], entry: dict[str, Any]
+) -> str:
+    """Prefer the authored, reviewer-facing label; never a raw field name."""
+    printed = str(address.get("printed_label") or "").strip()
+    if printed and printed.lower() != str(entry.get("field_name") or "").lower():
+        return printed
+    label = str(disposition.get("label") or "").strip()
+    if label:
+        return label
+    return printed or str(entry.get("field_name") or "unnamed control")
+
+
+def _citations(address: dict[str, Any]) -> list[str]:
+    return sorted({str(value) for value in address.get("citation_refs", []) or []})
+
+
+def _cell_id(entry: dict[str, Any], used: set[str]) -> str:
+    """A stable, unique, ``[a-z0-9_]`` id per physical field.
+
+    The session schema constrains review keys to ``^[a-z0-9_]+$``, so the raw
+    AcroForm field name (with dots and brackets) is sanitized. Sanitization can
+    collapse two distinct names onto one token, so a deterministic numeric suffix
+    keeps the id unique within the document without depending on iteration order
+    beyond the already-fixed reading order.
+    """
+    field_name = str(entry.get("field_name") or entry.get("address_id") or "cell")
+    base = re.sub(r"[^a-z0-9]+", "_", field_name.lower()).strip("_") or "cell"
+    candidate = base
+    suffix = 2
+    while candidate in used:
+        candidate = f"{base}_{suffix}"
+        suffix += 1
+    used.add(candidate)
+    return candidate
+
+
+def _geometry_is_cell(entry: Any) -> bool:
+    """True when a geometry entry is a placeable physical field."""
+    return (
+        isinstance(entry, dict)
+        and entry.get("page") is not None
+        and isinstance(entry.get("rect"), list)
+        and len(entry["rect"]) == 4
+    )
+
+
+def build_documents_index(
+    root: str | Path,
+    year: str | int,
+    document_ids: list[str],
+    *,
+    geometry_entries: list[dict[str, Any]],
+    titles: dict[str, str] | None = None,
+) -> list[dict[str, Any]]:
+    """Summarize each document for the left-rail picker (id, title, pages, count).
+
+    Loads no geometry itself: the caller passes the single already-loaded geometry
+    list, and each document filters it. Documents with zero placeable cells are
+    omitted so the picker never shows an unreviewable form.
+    """
+    titles = titles or {}
+    summaries: list[dict[str, Any]] = []
+    for document_id in sorted(set(document_ids)):
+        built = build_document_cells(
+            root, year, document_id, geometry_entries=geometry_entries, include_inputs=False
+        )
+        if not built.cells:
+            continue
+        summaries.append(
+            {
+                "document_id": document_id,
+                "title": titles.get(document_id, document_id),
+                "pages": built.pages,
+                "cell_count": len(built.cells),
+            }
+        )
+    return summaries
+
+
+def _load_geometry(path: Path, document_id: str) -> list[dict[str, Any]]:
+    payload = json.loads(path.read_text(encoding="utf-8"))
+    return [
+        entry
+        for entry in payload.get("entries", [])
+        if _geometry_is_cell(entry)
+        and str(entry.get("document_id") or "") == document_id
+    ]
+
+
+def _load_addresses(path: Path) -> dict[str, dict[str, Any]]:
+    if not path.is_file():
+        return {}
+    payload = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
+    return {
+        str(item["address_id"]): item
+        for item in payload.get("addresses", []) or []
+        if isinstance(item, dict) and item.get("address_id")
+    }
+
+
+def _load_dispositions(path: Path) -> dict[str, dict[str, Any]]:
+    if not path.is_file():
+        return {}
+    payload = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
+    return {
+        str(item["field_name"]): item
+        for item in payload.get("field_dispositions", []) or []
+        if isinstance(item, dict) and item.get("field_name")
+    }
+
+
+def _cell_inputs(
+    node_id: str | None,
+    calc_inputs: dict[str, list[str]],
+    node_to_ref: dict[str, dict[str, str]],
+) -> list[dict[str, Any]]:
+    """Resolve a computed cell's operand cells (the graph edges feeding its node)."""
+    if not node_id:
+        return []
+    resolved: list[dict[str, Any]] = []
+    for source_node in calc_inputs.get(node_id, []):
+        target = node_to_ref.get(source_node)
+        resolved.append(
+            {
+                "node_id": source_node,
+                "ref": (target or {}).get("ref"),
+                "display_name": (target or {}).get("display_name") or source_node,
+            }
+        )
+    return resolved
+
+
+def _load_calc_edges(graph_dir: Path) -> dict[str, list[str]]:
+    """Map each target node to the source nodes that calculate into it.
+
+    Edges are split across ``graph/<year>/edges/*.yaml`` by topic, not by document
+    (a sum can draw from another form), so every edge file is indexed by target.
+    """
+    edges_dir = graph_dir / "edges"
+    if not edges_dir.is_dir():
+        return {}
+    result: dict[str, list[str]] = {}
+    for path in sorted(edges_dir.glob("*.yaml")):
+        payload = yaml.safe_load(path.read_text(encoding="utf-8")) or []
+        edges = payload.get("edges", []) if isinstance(payload, dict) else payload
+        for edge in edges or []:
+            if not isinstance(edge, dict):
+                continue
+            relationship = str(edge.get("relationship") or "").upper()
+            if relationship and relationship not in {"CALCULATES", "SUMS", "FLOWS_TO", "COPIES"}:
+                continue
+            source = edge.get("source")
+            target = edge.get("target")
+            if source and target:
+                result.setdefault(str(target), []).append(str(source))
+    return result
+
+
+def _load_node_ref_index(graph_dir: Path) -> dict[str, dict[str, str]]:
+    """Map every value-bound node to its cell ref, across all documents.
+
+    Lets a computed cell name its operands as quotable refs the reviewer can hop to,
+    even when a source lives on another form.
+    """
+    result: dict[str, dict[str, str]] = {}
+    bindings_dir = graph_dir / "bindings" / "nodes"
+    if not bindings_dir.is_dir():
+        return result
+    addresses_dir = graph_dir / "addresses"
+    label_by_address: dict[str, str] = {}
+    for path in sorted(addresses_dir.glob("*.yaml")) if addresses_dir.is_dir() else []:
+        payload = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
+        for item in payload.get("addresses", []) or []:
+            if isinstance(item, dict) and item.get("address_id"):
+                label_by_address[str(item["address_id"])] = str(item.get("printed_label") or "")
+    for path in sorted(bindings_dir.glob("*.yaml")):
+        payload = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
+        for item in payload.get("bindings", []) or []:
+            if not isinstance(item, dict) or not item.get("node_id") or not item.get("address_id"):
+                continue
+            if str(item.get("role") or "value") != "value":
+                continue
+            address_id = str(item["address_id"])
+            ref = unit_ref_from_address(address_id)
+            result[str(item["node_id"])] = {
+                "ref": ref or address_id,
+                "display_name": label_by_address.get(address_id, ""),
+            }
+    return result
+
+
+def _load_node_bindings(path: Path) -> dict[str, dict[str, Any]]:
+    if not path.is_file():
+        return {}
+    payload = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
+    result: dict[str, dict[str, Any]] = {}
+    for item in payload.get("bindings", []) or []:
+        if not isinstance(item, dict) or not item.get("address_id"):
+            continue
+        # The value-role binding is the one that fills the printed amount cell.
+        if str(item.get("role") or "value") == "value":
+            result[str(item["address_id"])] = item
+    return result

@@ -7,7 +7,7 @@ function activeEntryIndex(entries) {
 }
 
 function moveEntry(delta) {
-  const entries = [...document.querySelectorAll(".queue-entry")];
+  const entries = [...document.querySelectorAll(".document-entry")];
   if (!entries.length) return;
   const next = Math.max(0, Math.min(entries.length - 1, activeEntryIndex(entries) + delta));
   entries[next].click();
@@ -43,12 +43,8 @@ export function installKeyboardNavigation() {
   });
 }
 
-export function installPageControls(entry, renderPage, requestedPage = null) {
-  const pages = [...new Set(
-    entry.units
-      .filter((unit) => unit.official_location)
-      .map((unit) => unit.official_location.page),
-  )].sort((left, right) => left - right);
+export function installPageControls(pageList, renderPage, requestedPage = null) {
+  const pages = [...new Set(pageList || [])].sort((left, right) => left - right);
   let index = Math.max(0, pages.indexOf(requestedPage));
   const indicator = document.querySelector("#page-level");
   const previous = document.querySelector('[data-page-action="previous"]');
