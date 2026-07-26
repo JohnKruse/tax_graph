@@ -14,8 +14,33 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## Current state (2026-07-26)
 
-**BALL: WORKER - M19-S1 (concept inventory, READ-ONLY). Plan: `plans/PHASE_M19.md`.
+**BALL: WORKER - M19-S2 (kill the positional unit_id). Plan: `plans/PHASE_M19.md` (S2).
 Task block under From Architect.**
+
+**ARCHITECT VERIFICATION - M19-S1 (Claude Opus 5, 2026-07-26). ACCEPTED.** The Worker's
+round was process-clean: ledger entries named in the checkpoint, only the three specified
+gates run, and an honest `NOT RUN:` for pytest with the correct reason rather than padding
+the round. Report is `plans/M19_S1_CONCEPT_INVENTORY.md`; nothing was minted or mutated.
+Architect re-derived the headline claim independently rather than accepting it: stripping
+line/box tokens leaves form_6251 with **49 amount controls in ONE group**, schedule_1 with
+`amount` x60 of 73, and form_1040 with `amount` x58 of 157.
+
+**THE SURVEY CORRECTED THE ARCHITECT'S SEQUENCING RULING.** The Architect had ruled "M19
+before M18" outright. S1 proved that holds only for STRUCTURED forms. Line-oriented forms
+have NO semantic material to mint a concept from - and it is not hiding in the graph
+either: node ids are line-keyed too (`form_6251_2025_part_i_line_1a`), with scraped prose
+labels, some corrupt ("Line 14: 1a"). The instructions are the only machine-readable
+source that names those lines, so **M18 is a PREREQUISITE for S3b, not a follow-on.**
+S3 is therefore split: **S3a (structured forms, no M18 dependency - this is where the 434
+hidden controls and John's SSN disambiguation land) and S3b (line-oriented, blocked on
+M18).** Revised order: S2 -> S3a -> M18 -> S3b -> S4/S5 -> M16-S5.
+
+**SECOND COVERAGE HOLE FOUND BY S1:** 166 of 1921 widgets have NO address record at all -
+**form_2441 has 72 widgets and no address registry whatsoever**, schedule_b is missing 56,
+and 38 more are scattered. This is a DIFFERENT set from the 434 hidden by container-kind
+(one class has a container address, the other has none), so roughly 600 of 1921 widgets
+are either invisible or unidentified. S2 must give the unaddressed ones stable ids without
+inventing addresses; S3a owns actually authoring them.
 
 **Worker session checkpoint - M19-S1 (2026-07-26):** John said go via the current task
 request. Model GPT-5 Codex, default effort; usage/quota/context indicators are not exposed.
@@ -370,7 +395,8 @@ token and wires session GET/PUT; no verdict, graph, or promoted-artifact change.
 NOT committed: S3 is John-in-the-loop (approved mockup) - awaiting John's review
 of the actual UI before the single commit + push.
 
-**BALL: ARCHITECT - M17-S2 (quotable cell ref) IMPLEMENTED BY THE ARCHITECT and
+**Superseded BALL (history only - the live BALL is at the top of this file):** BALL:
+ARCHITECT - M17-S2 (quotable cell ref) IMPLEMENTED BY THE ARCHITECT and
 verified; committing/pushing. Next is the frontend (S3, John-in-the-loop, uses the
 approved mockup) and the deferred S2b submit->verdict flow.** The Worker could NOT
 run this round: building the real 2025 manifest exceeds its ~124s launcher cap
@@ -589,7 +615,10 @@ TY2026 docs drop.
   authorship should be Architect-side, or the Worker should stop declaring e2e files it cannot
   run". Workers own their e2e again, and are expected to run it. No cached-manifest fixture is
   needed.
-- **M17-S1 environment blocker (2026-07-24):** the split focused run passed 10
+- **RESOLVED (kept as history) - M17-S1 environment blocker (2026-07-24):** the venv ACL
+  grant fixed the flask `PermissionError`, the 600s cap retired the launcher-cap half, and
+  the pending work below was completed and pushed long ago. Nothing here is open. Was: the
+  split focused run passed 10
   schema/helper tests, then failed during the self-contained API fixture setup with
   `PermissionError: [Errno 13] Permission denied` importing
   `.venv\\Lib\\site-packages\\flask\\testing.py`. The earlier combined declared-file
@@ -636,7 +665,60 @@ TY2026 docs drop.
 
 ## From Architect
 
-- **M19-S1 TASK - CONCEPT INVENTORY AND FLOW-SPINE DERIVATION, READ-ONLY (Architect,
+- **M19-S2 TASK - KILL THE POSITIONAL unit_id (Architect, Claude Opus 5, 2026-07-26).**
+  Design in `plans/PHASE_M19.md` (S2) - read it, plus the revised spine invariant and the
+  Worker defect ledger in `AGENTS.md`; name the applicable ledger entries in your
+  session-start checkpoint. **D5 applies directly this round: a change under `workbench/`
+  MUST run `tests/test_workbench_m15.py` locally** - it carries the import-boundary check
+  that went CI-red on M17-S2. Your cap is 600s, so you run your own app-dependent files.
+  **THIS ROUND DOES NEED TESTS.** John's "another set of tests is premature" applied to
+  S1, where concept ids were an unaccepted proposal. S2 changes real backend behavior that
+  review state depends on, so it is tested normally.
+  **The bug:** `workbench/manifest.py` `_unit_id` builds
+  `{queue_id}_ref_{ref_index:04d}_loc_{location_index:02d}_{object_id}` - the id means
+  "the Nth thing in the queue". Insert one control upstream and every saved approval in
+  `unit_reviews` silently re-points to a DIFFERENT cell. No rollover needed; it bites on
+  the next manifest rebuild.
+  1. Replace the derivation with a deterministic function of the unit's IDENTITY, not its
+     position: `address_id` plus the review-kind/role qualifier needed to keep the 386
+     known same-address/two-review-kind pairs distinct (the M17-S2 ref finding - one ref
+     per ADDRESS, not per unit). **Key on `address_id`, NOT `concept_id`** - concepts do
+     not exist until S3. Write it so the input can be swapped to `concept_id` later
+     without changing the shape.
+  2. **Units with no address (166 of 1921 widgets - all 72 of form_2441, 56 of schedule_b,
+     and 38 others).** They still need an id and must NOT get a positional one. Derive
+     from a stable within-year property (the AcroForm `field_name` is the obvious
+     candidate) and MARK the unit as unaddressed so the gap stays visible and countable.
+     Do not silently synthesize an address.
+  3. **Fail-closed checks:** no two units in a document may share an id, and no id may
+     contain a positional index. A collision fails closed rather than emitting a dup.
+  4. **Migration - the dangerous part. Never silently re-point an existing review.** Old
+     saved sessions key on positional ids. Where an old id can be mapped to its new one
+     with certainty, migrate it and record the old key in `aliases`. Where it cannot,
+     mark that review ORPHANED and surface it for re-review. A wrong mapping moves a human
+     approval onto the wrong cell, which is worse than losing it. Fail closed.
+  5. Boundary: `workbench/` must stay free of pipeline imports (stdlib + yaml +
+     `workbench.refs` only). `workbench/refs.py` already has a stdlib address reader -
+     reuse it rather than importing `tax_graph.addressing`.
+  6. Verdicts are OUT OF SCOPE: `review_verdict.schema.json` keys on `object_ref`, not
+     `unit_id`, so no emitted verdict changes. Do not touch verdict emission.
+  Tests to declare and RUN (600s cap - these are yours): the workbench boundary file
+  `tests/test_workbench_m15.py` (D5), plus focused coverage for determinism across two
+  manifest builds, uniqueness within a document, the no-positional-index check, the
+  unaddressed-unit path, and the migrate/orphan behavior. Honest `RAN:`/`NOT RUN:` lines
+  for every declared file.
+  Tier-1 floor: declared files green, ASCII, `git diff --check`, module-form
+  `validate 2025`, real preflight unchanged at `legacy_mined=394`. The manifest is a
+  SHARED SURFACE, so the Architect additionally runs the manifest/workbench partition at
+  verify time. Run pytest plainly - do NOT pass `--basetemp`. Sequential pytest only.
+  ONE local commit; no push.
+  Stop conditions: any need to touch promoted artifacts, graph semantics, or verdict
+  emission; a unit whose id cannot be made deterministic AND unique without a positional
+  fallback (report it, do not paper over it); an old review that cannot be mapped with
+  certainty (orphan it, do not guess); or a quota/environment failure.
+
+- **[DONE `e17345b`, Architect-verified] M19-S1 TASK - CONCEPT INVENTORY AND FLOW-SPINE
+  DERIVATION, READ-ONLY (Architect,
   Claude Opus 5, 2026-07-26).** Design in `plans/PHASE_M19.md` - READ IT FIRST, along with
   the revised spine invariant in `AGENTS.md` and the Worker defect ledger (name the
   applicable entries in your session-start checkpoint). **Your command cap is now 600s, so

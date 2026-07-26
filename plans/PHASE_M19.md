@@ -161,14 +161,27 @@ data, never identity. Display wants `33`; identity must not have it.
   the exemplar), every unqualified concept (a role with no owner), and every id that fails
   the never-contains test. NO artifact changes. This report is the S3 work list.
 - **S2 - Stable review identity (backend, high value, independently shippable).** Replace
-  positional `unit_id` with a derivation from concept id plus occurrence. Populate
-  `aliases` with the prior key so existing saved sessions still resolve. Add a
+  positional `unit_id` with a DETERMINISTIC derivation from the unit's identity rather
+  than its queue position. **Input is `address_id` (+ the review-kind qualifier), NOT
+  `concept_id`** - concepts do not exist until S3, and S3b is blocked on M18, so keying on
+  them now would block the one step that needs no prerequisites. The derivation is written
+  so its input can be swapped to `concept_id` in S3 without changing the shape. Add a
   fail-closed check that no two units share an id and that no id is positional. This step
-  alone stops review work from drifting and can land before the rest.
-- **S3 - Concept and placement schemas + the split.** Author the concept inventory as a
-  promoted artifact; demote the existing address records to placements carrying
-  `concept_id` + printed line/box token. Keep `logical_key` as the compatibility bridge
-  and populate `aliases` from it.
+  alone stops review work from drifting on a manifest rebuild and can land before
+  everything else.
+- **S3a - Concept minting for STRUCTURED forms (no M18 dependency).** Forms whose flow
+  already exists in the address path - the 1040 Dependents table, 8949 transaction
+  columns, W-2 boxes, 1099 copies, and the `section=identity` singletons. Author the
+  concept inventory as a promoted artifact; demote the matching address records to
+  placements carrying `concept_id` + printed line/box token. Keep `logical_key` as the
+  compatibility bridge and populate `aliases` from it.
+- **S3b - Concept minting for LINE-ORIENTED forms (BLOCKED on M18).** 6251, Schedules
+  1/1-A/2/3/A/B/D, and the ~58 bare `amount` controls on the 1040. **S1 proved these have
+  no semantic identity to mint from**: strip the line token and Form 6251's 49 amount
+  controls collapse to ONE group, and the graph nodes are line-keyed too
+  (`form_6251_2025_part_i_line_1a`) with scraped prose labels, some corrupt ("Line 14:
+  1a"). The instructions are the only machine-readable source that names these lines, so
+  M18 is a PREREQUISITE, not a follow-on.
 - **S4 - Repeatable-table occurrence contract.** Define occurrence identity for
   row-template columns (entity-keyed, not slot-indexed), and fix
   `cell_inventory.py:109` so row widgets surface as instances rather than being dropped.
@@ -185,16 +198,21 @@ data, never identity. Display wants `33`; identity must not have it.
 
 ## Sequencing
 
-**M19 must precede M16-S5 and M18.**
+**CORRECTED 2026-07-26 after the S1 survey.** The Architect originally ruled "M19 before
+M18" outright. S1 proved that holds only for STRUCTURED forms. Line-oriented forms have
+no semantic material to mint a concept from, and the instructions are the only
+machine-readable source that names their lines - so M18 is a prerequisite for S3b.
 
 - **Before M16-S5:** S5 regenerates field maps, bindings, and addresses across 605 cells.
   Regenerating onto an unstable identity scheme means doing it twice.
-- **Before M18:** instruction ingestion links instruction text per address. If addresses
-  are about to change, every link has to be re-pointed. Mine instructions once, against
-  stable ids.
+- **S3a before M18:** structured-form concepts are derivable today and deliver the
+  434-control fix; no reason to wait.
+- **M18 before S3b:** instruction text is what NAMES a line-oriented concept. Mining it
+  once, against ids that are about to stabilize, is the whole point.
 
-Recommended order: **M19-S1/S2 -> M19-S3/S4 -> M18 -> M16-S5**, with M19-S6 as the gate
-before M16-S5 starts. M19-S1 is read-only and can start immediately.
+Recommended order: **M19-S1 [DONE] -> M19-S2 -> M19-S3a -> M18 -> M19-S3b -> M19-S4/S5
+-> M16-S5**, with M19-S6 as the gate before M16-S5 starts. S2 has NO prerequisites and
+none of the open questions below block it.
 
 ## Gates and boundaries
 
