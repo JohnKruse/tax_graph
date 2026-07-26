@@ -51,7 +51,8 @@ addresses:
   - kind: control
     token: value
   printed_label: Unrealized profit or (loss) on open contracts - 12/31/2025
-  aliases: []
+  aliases:
+  - document=form_1099b/box=10/control=value
   control_role: amount
   status: pending_review
   evidence:
@@ -59,6 +60,16 @@ addresses:
     source_hash: 7e334cea66c2b2be3d88615a56db288a2805cb8705076b3b282a4eabbbd788ad
     page: 2
   official_ref: Box 10
+  concept_id: form_1099b/contract/unrealized_profit_loss_current
+  placement:
+    concept_id: form_1099b/contract/unrealized_profit_loss_current
+    printed_kind: box
+    printed_token: '10'
+    printed_ref: Box 10
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
 - address_id: 2025/document=form_1099b/box=11
   logical_key: document=form_1099b/box=11
   year: 2025
@@ -92,7 +103,8 @@ addresses:
   - kind: control
     token: value
   printed_label: Aggregate profit or (loss) on contracts
-  aliases: []
+  aliases:
+  - document=form_1099b/box=11/control=value
   control_role: amount
   status: pending_review
   evidence:
@@ -100,6 +112,16 @@ addresses:
     source_hash: 7e334cea66c2b2be3d88615a56db288a2805cb8705076b3b282a4eabbbd788ad
     page: 2
   official_ref: Box 11
+  concept_id: form_1099b/contract/aggregate_profit_loss
+  placement:
+    concept_id: form_1099b/contract/aggregate_profit_loss
+    printed_kind: box
+    printed_token: '11'
+    printed_ref: Box 11
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
 - address_id: 2025/document=form_1099b/box=12
   logical_key: document=form_1099b/box=12
   year: 2025
@@ -133,7 +155,8 @@ addresses:
   - kind: option
     token: basis_reported
   printed_label: Check if basis reported to IRS
-  aliases: []
+  aliases:
+  - document=form_1099b/box=12/option=basis_reported
   control_role: checkbox
   status: pending_review
   evidence:
@@ -141,6 +164,16 @@ addresses:
     source_hash: 7e334cea66c2b2be3d88615a56db288a2805cb8705076b3b282a4eabbbd788ad
     page: 2
   official_ref: Box 12
+  concept_id: form_1099b/classification/basis_reported
+  placement:
+    concept_id: form_1099b/classification/basis_reported
+    printed_kind: box
+    printed_token: '12'
+    printed_ref: Box 12
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
 - address_id: 2025/document=form_1099b/box=13
   logical_key: document=form_1099b/box=13
   year: 2025
@@ -174,7 +207,8 @@ addresses:
   - kind: control
     token: value
   printed_label: Bartering
-  aliases: []
+  aliases:
+  - document=form_1099b/box=13/control=value
   control_role: amount
   status: pending_review
   evidence:
@@ -182,6 +216,16 @@ addresses:
     source_hash: 7e334cea66c2b2be3d88615a56db288a2805cb8705076b3b282a4eabbbd788ad
     page: 2
   official_ref: Box 13
+  concept_id: form_1099b/transaction/bartering
+  placement:
+    concept_id: form_1099b/transaction/bartering
+    printed_kind: box
+    printed_token: '13'
+    printed_ref: Box 13
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
 - address_id: 2025/document=form_1099b/box=1a
   logical_key: document=form_1099b/box=1a
   year: 2025
@@ -215,7 +259,8 @@ addresses:
   - kind: control
     token: value
   printed_label: 'Description of property (Example: 100 sh. XYZ Co.)'
-  aliases: []
+  aliases:
+  - document=form_1099b/box=1a/control=value
   control_role: description
   status: pending_review
   evidence:
@@ -223,6 +268,16 @@ addresses:
     source_hash: 7e334cea66c2b2be3d88615a56db288a2805cb8705076b3b282a4eabbbd788ad
     page: 2
   official_ref: Box 1a
+  concept_id: form_1099b/transaction/description
+  placement:
+    concept_id: form_1099b/transaction/description
+    printed_kind: box
+    printed_token: 1a
+    printed_ref: Box 1a
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
 - address_id: 2025/document=form_1099b/box=1b
   logical_key: document=form_1099b/box=1b
   year: 2025
@@ -256,7 +311,8 @@ addresses:
   - kind: control
     token: value
   printed_label: Date acquired
-  aliases: []
+  aliases:
+  - document=form_1099b/box=1b/control=value
   control_role: date
   status: pending_review
   evidence:
@@ -264,6 +320,16 @@ addresses:
     source_hash: 7e334cea66c2b2be3d88615a56db288a2805cb8705076b3b282a4eabbbd788ad
     page: 2
   official_ref: Box 1b
+  concept_id: form_1099b/transaction/date_acquired
+  placement:
+    concept_id: form_1099b/transaction/date_acquired
+    printed_kind: box
+    printed_token: 1b
+    printed_ref: Box 1b
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
 - address_id: 2025/document=form_1099b/box=1c
   logical_key: document=form_1099b/box=1c
   year: 2025
@@ -297,7 +363,8 @@ addresses:
   - kind: control
     token: value
   printed_label: Date sold or disposed
-  aliases: []
+  aliases:
+  - document=form_1099b/box=1c/control=value
   control_role: date
   status: pending_review
   evidence:
@@ -305,6 +372,16 @@ addresses:
     source_hash: 7e334cea66c2b2be3d88615a56db288a2805cb8705076b3b282a4eabbbd788ad
     page: 2
   official_ref: Box 1c
+  concept_id: form_1099b/transaction/date_disposed
+  placement:
+    concept_id: form_1099b/transaction/date_disposed
+    printed_kind: box
+    printed_token: 1c
+    printed_ref: Box 1c
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
 - address_id: 2025/document=form_1099b/box=1d
   logical_key: document=form_1099b/box=1d
   year: 2025
@@ -338,7 +415,8 @@ addresses:
   - kind: control
     token: value
   printed_label: Proceeds
-  aliases: []
+  aliases:
+  - document=form_1099b/box=1d/control=value
   control_role: amount
   status: pending_review
   evidence:
@@ -346,6 +424,16 @@ addresses:
     source_hash: 7e334cea66c2b2be3d88615a56db288a2805cb8705076b3b282a4eabbbd788ad
     page: 2
   official_ref: Box 1d
+  concept_id: form_1099b/transaction/proceeds
+  placement:
+    concept_id: form_1099b/transaction/proceeds
+    printed_kind: box
+    printed_token: 1d
+    printed_ref: Box 1d
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
 - address_id: 2025/document=form_1099b/box=1e
   logical_key: document=form_1099b/box=1e
   year: 2025
@@ -379,7 +467,8 @@ addresses:
   - kind: control
     token: value
   printed_label: Cost or other basis
-  aliases: []
+  aliases:
+  - document=form_1099b/box=1e/control=value
   control_role: amount
   status: pending_review
   evidence:
@@ -387,6 +476,16 @@ addresses:
     source_hash: 7e334cea66c2b2be3d88615a56db288a2805cb8705076b3b282a4eabbbd788ad
     page: 2
   official_ref: Box 1e
+  concept_id: form_1099b/transaction/cost_basis
+  placement:
+    concept_id: form_1099b/transaction/cost_basis
+    printed_kind: box
+    printed_token: 1e
+    printed_ref: Box 1e
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
 - address_id: 2025/document=form_1099b/box=1f
   logical_key: document=form_1099b/box=1f
   year: 2025
@@ -420,7 +519,8 @@ addresses:
   - kind: control
     token: value
   printed_label: Accrued market discount
-  aliases: []
+  aliases:
+  - document=form_1099b/box=1f/control=value
   control_role: amount
   status: pending_review
   evidence:
@@ -428,6 +528,16 @@ addresses:
     source_hash: 7e334cea66c2b2be3d88615a56db288a2805cb8705076b3b282a4eabbbd788ad
     page: 2
   official_ref: Box 1f
+  concept_id: form_1099b/transaction/accrued_market_discount
+  placement:
+    concept_id: form_1099b/transaction/accrued_market_discount
+    printed_kind: box
+    printed_token: 1f
+    printed_ref: Box 1f
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
 - address_id: 2025/document=form_1099b/box=1g
   logical_key: document=form_1099b/box=1g
   year: 2025
@@ -461,7 +571,8 @@ addresses:
   - kind: control
     token: value
   printed_label: Wash sale loss disallowed
-  aliases: []
+  aliases:
+  - document=form_1099b/box=1g/control=value
   control_role: amount
   status: pending_review
   evidence:
@@ -469,6 +580,16 @@ addresses:
     source_hash: 7e334cea66c2b2be3d88615a56db288a2805cb8705076b3b282a4eabbbd788ad
     page: 2
   official_ref: Box 1g
+  concept_id: form_1099b/transaction/wash_sale_loss_disallowed
+  placement:
+    concept_id: form_1099b/transaction/wash_sale_loss_disallowed
+    printed_kind: box
+    printed_token: 1g
+    printed_ref: Box 1g
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
 - address_id: 2025/document=form_1099b/box=2
   logical_key: document=form_1099b/box=2
   year: 2025
@@ -502,7 +623,8 @@ addresses:
   - kind: option
     token: long_term
   printed_label: Long-term gain or loss
-  aliases: []
+  aliases:
+  - document=form_1099b/box=2/option=long_term
   control_role: checkbox
   status: pending_review
   evidence:
@@ -510,6 +632,16 @@ addresses:
     source_hash: 7e334cea66c2b2be3d88615a56db288a2805cb8705076b3b282a4eabbbd788ad
     page: 2
   official_ref: Box 2
+  concept_id: form_1099b/classification/long_term
+  placement:
+    concept_id: form_1099b/classification/long_term
+    printed_kind: box
+    printed_token: '2'
+    printed_ref: Box 2
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
 - address_id: 2025/document=form_1099b/box=2/option=ordinary
   logical_key: document=form_1099b/box=2/option=ordinary
   year: 2025
@@ -524,7 +656,8 @@ addresses:
   - kind: option
     token: ordinary
   printed_label: Ordinary
-  aliases: []
+  aliases:
+  - document=form_1099b/box=2/option=ordinary
   control_role: checkbox
   status: pending_review
   evidence:
@@ -532,6 +665,16 @@ addresses:
     source_hash: 7e334cea66c2b2be3d88615a56db288a2805cb8705076b3b282a4eabbbd788ad
     page: 2
   official_ref: Box 2
+  concept_id: form_1099b/classification/ordinary
+  placement:
+    concept_id: form_1099b/classification/ordinary
+    printed_kind: box
+    printed_token: '2'
+    printed_ref: Box 2
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
 - address_id: 2025/document=form_1099b/box=2/option=short_term
   logical_key: document=form_1099b/box=2/option=short_term
   year: 2025
@@ -546,7 +689,8 @@ addresses:
   - kind: option
     token: short_term
   printed_label: Short-term gain or loss
-  aliases: []
+  aliases:
+  - document=form_1099b/box=2/option=short_term
   control_role: checkbox
   status: pending_review
   evidence:
@@ -554,6 +698,16 @@ addresses:
     source_hash: 7e334cea66c2b2be3d88615a56db288a2805cb8705076b3b282a4eabbbd788ad
     page: 2
   official_ref: Box 2
+  concept_id: form_1099b/classification/short_term
+  placement:
+    concept_id: form_1099b/classification/short_term
+    printed_kind: box
+    printed_token: '2'
+    printed_ref: Box 2
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
 - address_id: 2025/document=form_1099b/box=3
   logical_key: document=form_1099b/box=3
   year: 2025
@@ -587,7 +741,8 @@ addresses:
   - kind: option
     token: collectibles
   printed_label: Collectibles
-  aliases: []
+  aliases:
+  - document=form_1099b/box=3/option=collectibles
   control_role: checkbox
   status: pending_review
   evidence:
@@ -595,6 +750,16 @@ addresses:
     source_hash: 7e334cea66c2b2be3d88615a56db288a2805cb8705076b3b282a4eabbbd788ad
     page: 2
   official_ref: Box 3
+  concept_id: form_1099b/classification/collectibles
+  placement:
+    concept_id: form_1099b/classification/collectibles
+    printed_kind: box
+    printed_token: '3'
+    printed_ref: Box 3
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
 - address_id: 2025/document=form_1099b/box=3/option=qof
   logical_key: document=form_1099b/box=3/option=qof
   year: 2025
@@ -609,7 +774,8 @@ addresses:
   - kind: option
     token: qof
   printed_label: QOF
-  aliases: []
+  aliases:
+  - document=form_1099b/box=3/option=qof
   control_role: checkbox
   status: pending_review
   evidence:
@@ -617,6 +783,16 @@ addresses:
     source_hash: 7e334cea66c2b2be3d88615a56db288a2805cb8705076b3b282a4eabbbd788ad
     page: 2
   official_ref: Box 3
+  concept_id: form_1099b/classification/qof
+  placement:
+    concept_id: form_1099b/classification/qof
+    printed_kind: box
+    printed_token: '3'
+    printed_ref: Box 3
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
 - address_id: 2025/document=form_1099b/box=4
   logical_key: document=form_1099b/box=4
   year: 2025
@@ -650,7 +826,8 @@ addresses:
   - kind: control
     token: value
   printed_label: Federal income tax withheld
-  aliases: []
+  aliases:
+  - document=form_1099b/box=4/control=value
   control_role: amount
   status: pending_review
   evidence:
@@ -658,6 +835,16 @@ addresses:
     source_hash: 7e334cea66c2b2be3d88615a56db288a2805cb8705076b3b282a4eabbbd788ad
     page: 2
   official_ref: Box 4
+  concept_id: form_1099b/transaction/federal_income_tax_withheld
+  placement:
+    concept_id: form_1099b/transaction/federal_income_tax_withheld
+    printed_kind: box
+    printed_token: '4'
+    printed_ref: Box 4
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
 - address_id: 2025/document=form_1099b/box=5
   logical_key: document=form_1099b/box=5
   year: 2025
@@ -691,7 +878,8 @@ addresses:
   - kind: option
     token: noncovered_security
   printed_label: Check if noncovered security
-  aliases: []
+  aliases:
+  - document=form_1099b/box=5/option=noncovered_security
   control_role: checkbox
   status: pending_review
   evidence:
@@ -699,6 +887,16 @@ addresses:
     source_hash: 7e334cea66c2b2be3d88615a56db288a2805cb8705076b3b282a4eabbbd788ad
     page: 2
   official_ref: Box 5
+  concept_id: form_1099b/classification/noncovered_security
+  placement:
+    concept_id: form_1099b/classification/noncovered_security
+    printed_kind: box
+    printed_token: '5'
+    printed_ref: Box 5
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
 - address_id: 2025/document=form_1099b/box=6
   logical_key: document=form_1099b/box=6
   year: 2025
@@ -732,7 +930,8 @@ addresses:
   - kind: option
     token: gross_proceeds
   printed_label: Gross proceeds
-  aliases: []
+  aliases:
+  - document=form_1099b/box=6/option=gross_proceeds
   control_role: checkbox
   status: pending_review
   evidence:
@@ -740,6 +939,16 @@ addresses:
     source_hash: 7e334cea66c2b2be3d88615a56db288a2805cb8705076b3b282a4eabbbd788ad
     page: 2
   official_ref: Box 6
+  concept_id: form_1099b/classification/gross_proceeds
+  placement:
+    concept_id: form_1099b/classification/gross_proceeds
+    printed_kind: box
+    printed_token: '6'
+    printed_ref: Box 6
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
 - address_id: 2025/document=form_1099b/box=6/option=net_proceeds
   logical_key: document=form_1099b/box=6/option=net_proceeds
   year: 2025
@@ -754,7 +963,8 @@ addresses:
   - kind: option
     token: net_proceeds
   printed_label: Net proceeds
-  aliases: []
+  aliases:
+  - document=form_1099b/box=6/option=net_proceeds
   control_role: checkbox
   status: pending_review
   evidence:
@@ -762,6 +972,16 @@ addresses:
     source_hash: 7e334cea66c2b2be3d88615a56db288a2805cb8705076b3b282a4eabbbd788ad
     page: 2
   official_ref: Box 6
+  concept_id: form_1099b/classification/net_proceeds
+  placement:
+    concept_id: form_1099b/classification/net_proceeds
+    printed_kind: box
+    printed_token: '6'
+    printed_ref: Box 6
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
 - address_id: 2025/document=form_1099b/box=7
   logical_key: document=form_1099b/box=7
   year: 2025
@@ -795,7 +1015,8 @@ addresses:
   - kind: option
     token: loss_not_allowed
   printed_label: Check if loss is not allowed based on amount in 1d
-  aliases: []
+  aliases:
+  - document=form_1099b/box=7/option=loss_not_allowed
   control_role: checkbox
   status: pending_review
   evidence:
@@ -803,6 +1024,16 @@ addresses:
     source_hash: 7e334cea66c2b2be3d88615a56db288a2805cb8705076b3b282a4eabbbd788ad
     page: 2
   official_ref: Box 7
+  concept_id: form_1099b/classification/loss_not_allowed
+  placement:
+    concept_id: form_1099b/classification/loss_not_allowed
+    printed_kind: box
+    printed_token: '7'
+    printed_ref: Box 7
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
 - address_id: 2025/document=form_1099b/box=8
   logical_key: document=form_1099b/box=8
   year: 2025
@@ -836,7 +1067,8 @@ addresses:
   - kind: control
     token: value
   printed_label: Profit or (loss) realized in 2025 on closed contracts
-  aliases: []
+  aliases:
+  - document=form_1099b/box=8/control=value
   control_role: amount
   status: pending_review
   evidence:
@@ -844,6 +1076,16 @@ addresses:
     source_hash: 7e334cea66c2b2be3d88615a56db288a2805cb8705076b3b282a4eabbbd788ad
     page: 2
   official_ref: Box 8
+  concept_id: form_1099b/contract/realized_profit_loss
+  placement:
+    concept_id: form_1099b/contract/realized_profit_loss
+    printed_kind: box
+    printed_token: '8'
+    printed_ref: Box 8
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
 - address_id: 2025/document=form_1099b/box=9
   logical_key: document=form_1099b/box=9
   year: 2025
@@ -877,7 +1119,8 @@ addresses:
   - kind: control
     token: value
   printed_label: Unrealized profit or (loss) on open contracts - 12/31/2024
-  aliases: []
+  aliases:
+  - document=form_1099b/box=9/control=value
   control_role: amount
   status: pending_review
   evidence:
@@ -885,6 +1128,16 @@ addresses:
     source_hash: 7e334cea66c2b2be3d88615a56db288a2805cb8705076b3b282a4eabbbd788ad
     page: 2
   official_ref: Box 9
+  concept_id: form_1099b/contract/unrealized_profit_loss_prior
+  placement:
+    concept_id: form_1099b/contract/unrealized_profit_loss_prior
+    printed_kind: box
+    printed_token: '9'
+    printed_ref: Box 9
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
 - address_id: 2025/document=form_1099b/section=header
   logical_key: document=form_1099b/section=header
   year: 2025
@@ -918,7 +1171,8 @@ addresses:
   - kind: option
     token: corrected
   printed_label: CORRECTED
-  aliases: []
+  aliases:
+  - document=form_1099b/section=header/option=corrected
   control_role: checkbox
   status: pending_review
   evidence:
@@ -926,6 +1180,16 @@ addresses:
     source_hash: 7e334cea66c2b2be3d88615a56db288a2805cb8705076b3b282a4eabbbd788ad
     page: 2
   official_ref: CORRECTED
+  concept_id: form_1099b/header/corrected
+  placement:
+    concept_id: form_1099b/header/corrected
+    printed_kind: section
+    printed_token: header
+    printed_ref: CORRECTED
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
 - address_id: 2025/document=form_1099b/section=header/option=void
   logical_key: document=form_1099b/section=header/option=void
   year: 2025
@@ -940,7 +1204,8 @@ addresses:
   - kind: option
     token: void
   printed_label: VOID
-  aliases: []
+  aliases:
+  - document=form_1099b/section=header/option=void
   control_role: checkbox
   status: pending_review
   evidence:
@@ -948,6 +1213,16 @@ addresses:
     source_hash: 7e334cea66c2b2be3d88615a56db288a2805cb8705076b3b282a4eabbbd788ad
     page: 2
   official_ref: VOID
+  concept_id: form_1099b/header/void
+  placement:
+    concept_id: form_1099b/header/void
+    printed_kind: section
+    printed_token: header
+    printed_ref: VOID
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
 - address_id: 2025/document=form_1099b/section=recipient
   logical_key: document=form_1099b/section=recipient
   year: 2025
@@ -981,7 +1256,8 @@ addresses:
   - kind: control
     token: account_number
   printed_label: Account number (see instructions)
-  aliases: []
+  aliases:
+  - document=form_1099b/section=recipient/control=account_number
   control_role: identifier
   status: pending_review
   evidence:
@@ -989,6 +1265,16 @@ addresses:
     source_hash: 7e334cea66c2b2be3d88615a56db288a2805cb8705076b3b282a4eabbbd788ad
     page: 2
   official_ref: Account number (see instructions)
+  concept_id: form_1099b/recipient/account_number
+  placement:
+    concept_id: form_1099b/recipient/account_number
+    printed_kind: section
+    printed_token: recipient
+    printed_ref: Account number (see instructions)
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
 - address_id: 2025/document=form_1099b/section=recipient/control=cusip_number
   logical_key: document=form_1099b/section=recipient/control=cusip_number
   year: 2025
@@ -1003,7 +1289,8 @@ addresses:
   - kind: control
     token: cusip_number
   printed_label: CUSIP number
-  aliases: []
+  aliases:
+  - document=form_1099b/section=recipient/control=cusip_number
   control_role: identifier
   status: pending_review
   evidence:
@@ -1011,6 +1298,16 @@ addresses:
     source_hash: 7e334cea66c2b2be3d88615a56db288a2805cb8705076b3b282a4eabbbd788ad
     page: 2
   official_ref: CUSIP number
+  concept_id: form_1099b/recipient/cusip_number
+  placement:
+    concept_id: form_1099b/recipient/cusip_number
+    printed_kind: section
+    printed_token: recipient
+    printed_ref: CUSIP number
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
 - address_id: 2025/document=form_1099b/section=recipient/control=form_8949_checkbox
   logical_key: document=form_1099b/section=recipient/control=form_8949_checkbox
   year: 2025
@@ -1025,7 +1322,8 @@ addresses:
   - kind: control
     token: form_8949_checkbox
   printed_label: Applicable checkbox on Form 8949
-  aliases: []
+  aliases:
+  - document=form_1099b/section=recipient/control=form_8949_checkbox
   control_role: text
   status: pending_review
   evidence:
@@ -1033,6 +1331,16 @@ addresses:
     source_hash: 7e334cea66c2b2be3d88615a56db288a2805cb8705076b3b282a4eabbbd788ad
     page: 2
   official_ref: Applicable checkbox on Form 8949
+  concept_id: form_1099b/recipient/form_8949_checkbox
+  placement:
+    concept_id: form_1099b/recipient/form_8949_checkbox
+    printed_kind: section
+    printed_token: recipient
+    printed_ref: Applicable checkbox on Form 8949
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
 - address_id: 2025/document=form_1099b/section=recipient/control=payer_name_address
   logical_key: document=form_1099b/section=recipient/control=payer_name_address
   year: 2025
@@ -1048,7 +1356,8 @@ addresses:
     token: payer_name_address
   printed_label: Payer's name, street address, city or town, state or province, country,
     ZIP or foreign postal code, and telephone number
-  aliases: []
+  aliases:
+  - document=form_1099b/section=recipient/control=payer_name_address
   control_role: text
   status: pending_review
   evidence:
@@ -1057,6 +1366,17 @@ addresses:
     page: 2
   official_ref: Payer's name, street address, city or town, state or province, country,
     ZIP or foreign postal code, and telephone number
+  concept_id: form_1099b/recipient/payer_name_address
+  placement:
+    concept_id: form_1099b/recipient/payer_name_address
+    printed_kind: section
+    printed_token: recipient
+    printed_ref: Payer's name, street address, city or town, state or province, country,
+      ZIP or foreign postal code, and telephone number
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
 - address_id: 2025/document=form_1099b/section=recipient/control=payer_tin
   logical_key: document=form_1099b/section=recipient/control=payer_tin
   year: 2025
@@ -1071,7 +1391,8 @@ addresses:
   - kind: control
     token: payer_tin
   printed_label: Payer's TIN
-  aliases: []
+  aliases:
+  - document=form_1099b/section=recipient/control=payer_tin
   control_role: identifier
   status: pending_review
   evidence:
@@ -1079,6 +1400,16 @@ addresses:
     source_hash: 7e334cea66c2b2be3d88615a56db288a2805cb8705076b3b282a4eabbbd788ad
     page: 2
   official_ref: Payer's TIN
+  concept_id: form_1099b/recipient/payer_tin
+  placement:
+    concept_id: form_1099b/recipient/payer_tin
+    printed_kind: section
+    printed_token: recipient
+    printed_ref: Payer's TIN
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
 - address_id: 2025/document=form_1099b/section=recipient/control=recipient_city
   logical_key: document=form_1099b/section=recipient/control=recipient_city
   year: 2025
@@ -1094,7 +1425,8 @@ addresses:
     token: recipient_city
   printed_label: City or town, state or province, country, and ZIP or foreign postal
     code
-  aliases: []
+  aliases:
+  - document=form_1099b/section=recipient/control=recipient_city
   control_role: text
   status: pending_review
   evidence:
@@ -1103,6 +1435,17 @@ addresses:
     page: 2
   official_ref: City or town, state or province, country, and ZIP or foreign postal
     code
+  concept_id: form_1099b/recipient/recipient_city
+  placement:
+    concept_id: form_1099b/recipient/recipient_city
+    printed_kind: section
+    printed_token: recipient
+    printed_ref: City or town, state or province, country, and ZIP or foreign postal
+      code
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
 - address_id: 2025/document=form_1099b/section=recipient/control=recipient_name
   logical_key: document=form_1099b/section=recipient/control=recipient_name
   year: 2025
@@ -1117,7 +1460,8 @@ addresses:
   - kind: control
     token: recipient_name
   printed_label: Recipient's name
-  aliases: []
+  aliases:
+  - document=form_1099b/section=recipient/control=recipient_name
   control_role: text
   status: pending_review
   evidence:
@@ -1125,6 +1469,16 @@ addresses:
     source_hash: 7e334cea66c2b2be3d88615a56db288a2805cb8705076b3b282a4eabbbd788ad
     page: 2
   official_ref: Recipient's name
+  concept_id: form_1099b/recipient/recipient_name
+  placement:
+    concept_id: form_1099b/recipient/recipient_name
+    printed_kind: section
+    printed_token: recipient
+    printed_ref: Recipient's name
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
 - address_id: 2025/document=form_1099b/section=recipient/control=recipient_street
   logical_key: document=form_1099b/section=recipient/control=recipient_street
   year: 2025
@@ -1139,7 +1493,8 @@ addresses:
   - kind: control
     token: recipient_street
   printed_label: Street address (including apt. no.)
-  aliases: []
+  aliases:
+  - document=form_1099b/section=recipient/control=recipient_street
   control_role: text
   status: pending_review
   evidence:
@@ -1147,6 +1502,16 @@ addresses:
     source_hash: 7e334cea66c2b2be3d88615a56db288a2805cb8705076b3b282a4eabbbd788ad
     page: 2
   official_ref: Street address (including apt. no.)
+  concept_id: form_1099b/recipient/recipient_street
+  placement:
+    concept_id: form_1099b/recipient/recipient_street
+    printed_kind: section
+    printed_token: recipient
+    printed_ref: Street address (including apt. no.)
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
 - address_id: 2025/document=form_1099b/section=recipient/control=recipient_tin
   logical_key: document=form_1099b/section=recipient/control=recipient_tin
   year: 2025
@@ -1161,7 +1526,8 @@ addresses:
   - kind: control
     token: recipient_tin
   printed_label: Recipient's TIN
-  aliases: []
+  aliases:
+  - document=form_1099b/section=recipient/control=recipient_tin
   control_role: identifier
   status: pending_review
   evidence:
@@ -1169,6 +1535,16 @@ addresses:
     source_hash: 7e334cea66c2b2be3d88615a56db288a2805cb8705076b3b282a4eabbbd788ad
     page: 2
   official_ref: Recipient's TIN
+  concept_id: form_1099b/recipient/recipient_tin
+  placement:
+    concept_id: form_1099b/recipient/recipient_tin
+    printed_kind: section
+    printed_token: recipient
+    printed_ref: Recipient's TIN
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
 - address_id: 2025/document=form_1099b/section=recipient/option=fatca_filing_requirement
   logical_key: document=form_1099b/section=recipient/option=fatca_filing_requirement
   year: 2025
@@ -1183,7 +1559,8 @@ addresses:
   - kind: option
     token: fatca_filing_requirement
   printed_label: FATCA filing requirement
-  aliases: []
+  aliases:
+  - document=form_1099b/section=recipient/option=fatca_filing_requirement
   control_role: checkbox
   status: pending_review
   evidence:
@@ -1191,6 +1568,16 @@ addresses:
     source_hash: 7e334cea66c2b2be3d88615a56db288a2805cb8705076b3b282a4eabbbd788ad
     page: 2
   official_ref: FATCA filing requirement
+  concept_id: form_1099b/recipient/fatca_filing_requirement
+  placement:
+    concept_id: form_1099b/recipient/fatca_filing_requirement
+    printed_kind: section
+    printed_token: recipient
+    printed_ref: FATCA filing requirement
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
 - address_id: 2025/document=form_1099b/section=recipient/option=second_tin_notice
   logical_key: document=form_1099b/section=recipient/option=second_tin_notice
   year: 2025
@@ -1205,7 +1592,8 @@ addresses:
   - kind: option
     token: second_tin_notice
   printed_label: 2nd TIN not.
-  aliases: []
+  aliases:
+  - document=form_1099b/section=recipient/option=second_tin_notice
   control_role: checkbox
   status: pending_review
   evidence:
@@ -1213,6 +1601,16 @@ addresses:
     source_hash: 7e334cea66c2b2be3d88615a56db288a2805cb8705076b3b282a4eabbbd788ad
     page: 2
   official_ref: 2nd TIN not.
+  concept_id: form_1099b/recipient/second_tin_notice
+  placement:
+    concept_id: form_1099b/recipient/second_tin_notice
+    printed_kind: section
+    printed_token: recipient
+    printed_ref: 2nd TIN not.
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
 - address_id: 2025/document=form_1099b/table=state
   logical_key: document=form_1099b/table=state
   year: 2025
@@ -1269,7 +1667,8 @@ addresses:
   - kind: column
     token: state
   printed_label: State name
-  aliases: []
+  aliases:
+  - document=form_1099b/table=state/row_template=jurisdiction/column=state
   control_role: text
   status: pending_review
   evidence:
@@ -1277,6 +1676,17 @@ addresses:
     source_hash: 7e334cea66c2b2be3d88615a56db288a2805cb8705076b3b282a4eabbbd788ad
     page: 2
   official_ref: Box 14
+  concept_id: form_1099b/state_local/jurisdiction/state
+  placement:
+    concept_id: form_1099b/state_local/jurisdiction/state
+    printed_kind: table
+    printed_token: state
+    printed_ref: Box 14
+  occurrence:
+    kind: entity
+    entity_key: jurisdiction
+    review_granularity: concept
+    row_policy: entity_keyed
 - address_id: 2025/document=form_1099b/table=state/row_template=jurisdiction/column=state_id
   logical_key: document=form_1099b/table=state/row_template=jurisdiction/column=state_id
   year: 2025
@@ -1293,7 +1703,8 @@ addresses:
   - kind: column
     token: state_id
   printed_label: State identification no.
-  aliases: []
+  aliases:
+  - document=form_1099b/table=state/row_template=jurisdiction/column=state_id
   control_role: identifier
   status: pending_review
   evidence:
@@ -1301,6 +1712,17 @@ addresses:
     source_hash: 7e334cea66c2b2be3d88615a56db288a2805cb8705076b3b282a4eabbbd788ad
     page: 2
   official_ref: Box 15
+  concept_id: form_1099b/state_local/jurisdiction/state_id
+  placement:
+    concept_id: form_1099b/state_local/jurisdiction/state_id
+    printed_kind: table
+    printed_token: state
+    printed_ref: Box 15
+  occurrence:
+    kind: entity
+    entity_key: jurisdiction
+    review_granularity: concept
+    row_policy: entity_keyed
 - address_id: 2025/document=form_1099b/table=state/row_template=jurisdiction/column=state_tax
   logical_key: document=form_1099b/table=state/row_template=jurisdiction/column=state_tax
   year: 2025
@@ -1317,7 +1739,8 @@ addresses:
   - kind: column
     token: state_tax
   printed_label: State tax withheld
-  aliases: []
+  aliases:
+  - document=form_1099b/table=state/row_template=jurisdiction/column=state_tax
   control_role: amount
   status: pending_review
   evidence:
@@ -1325,3 +1748,14 @@ addresses:
     source_hash: 7e334cea66c2b2be3d88615a56db288a2805cb8705076b3b282a4eabbbd788ad
     page: 2
   official_ref: Box 16
+  concept_id: form_1099b/state_local/jurisdiction/state_tax
+  placement:
+    concept_id: form_1099b/state_local/jurisdiction/state_tax
+    printed_kind: table
+    printed_token: state
+    printed_ref: Box 16
+  occurrence:
+    kind: entity
+    entity_key: jurisdiction
+    review_granularity: concept
+    row_policy: entity_keyed

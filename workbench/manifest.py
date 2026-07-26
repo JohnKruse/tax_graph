@@ -283,7 +283,7 @@ def _unit(
         for key in (
             "field_name", "population_policy", "value_format", "node_id",
             "identity_slot", "runtime_fact_ref", "source_ref", "reason",
-            "downstream_effect", "missing_capability", "repeatable",
+            "downstream_effect", "missing_capability", "repeatable", "concept_id",
         ):
             if key in object_data:
                 unit[key] = object_data[key]

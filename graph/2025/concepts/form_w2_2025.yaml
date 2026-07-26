@@ -1,0 +1,761 @@
+schema_version: 1
+year: 2025
+document_id: form_w2_2025
+concepts:
+- concept_id: form_w2/employee/address
+  document_id: form_w2_2025
+  status: active
+  flow_path:
+  - form_w2
+  - employee
+  - address
+  owner: employee
+  role: address
+  review_granularity: concept
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
+  aliases:
+  - document=form_w2/box=f/control=value
+  placements:
+  - address_id: 2025/document=form_w2/box=f/control=value
+    concept_id: form_w2/employee/address
+    printed_kind: box
+    printed_token: f
+    printed_ref: Box f
+  same_fact_as: []
+- concept_id: form_w2/employee/allocated_tips
+  document_id: form_w2_2025
+  status: active
+  flow_path:
+  - form_w2
+  - employee
+  - allocated_tips
+  owner: employee
+  role: allocated_tips
+  review_granularity: concept
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
+  aliases:
+  - document=form_w2/box=8/control=value
+  placements:
+  - address_id: 2025/document=form_w2/box=8/control=value
+    concept_id: form_w2/employee/allocated_tips
+    printed_kind: box
+    printed_token: '8'
+    printed_ref: Box 8
+  same_fact_as: []
+- concept_id: form_w2/employee/benefit_election/retirement_plan
+  document_id: form_w2_2025
+  status: active
+  flow_path:
+  - form_w2
+  - employee
+  - benefit_election
+  - retirement_plan
+  owner: benefit_election
+  role: retirement_plan
+  review_granularity: concept
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
+  aliases:
+  - document=form_w2/box=13/option=retirement_plan
+  placements:
+  - address_id: 2025/document=form_w2/box=13/option=retirement_plan
+    concept_id: form_w2/employee/benefit_election/retirement_plan
+    printed_kind: box
+    printed_token: '13'
+    printed_ref: Box 13
+  same_fact_as: []
+- concept_id: form_w2/employee/benefit_election/statutory_employee
+  document_id: form_w2_2025
+  status: active
+  flow_path:
+  - form_w2
+  - employee
+  - benefit_election
+  - statutory_employee
+  owner: benefit_election
+  role: statutory_employee
+  review_granularity: concept
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
+  aliases:
+  - document=form_w2/box=13/option=statutory_employee
+  placements:
+  - address_id: 2025/document=form_w2/box=13/option=statutory_employee
+    concept_id: form_w2/employee/benefit_election/statutory_employee
+    printed_kind: box
+    printed_token: '13'
+    printed_ref: Box 13
+  same_fact_as: []
+- concept_id: form_w2/employee/benefit_election/third_party_sick_pay
+  document_id: form_w2_2025
+  status: active
+  flow_path:
+  - form_w2
+  - employee
+  - benefit_election
+  - third_party_sick_pay
+  owner: benefit_election
+  role: third_party_sick_pay
+  review_granularity: concept
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
+  aliases:
+  - document=form_w2/box=13/option=third_party_sick_pay
+  placements:
+  - address_id: 2025/document=form_w2/box=13/option=third_party_sick_pay
+    concept_id: form_w2/employee/benefit_election/third_party_sick_pay
+    printed_kind: box
+    printed_token: '13'
+    printed_ref: Box 13
+  same_fact_as: []
+- concept_id: form_w2/employee/dependent_care_benefits
+  document_id: form_w2_2025
+  status: active
+  flow_path:
+  - form_w2
+  - employee
+  - dependent_care_benefits
+  owner: employee
+  role: dependent_care_benefits
+  review_granularity: concept
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
+  aliases:
+  - document=form_w2/box=10/control=value
+  placements:
+  - address_id: 2025/document=form_w2/box=10/control=value
+    concept_id: form_w2/employee/dependent_care_benefits
+    printed_kind: box
+    printed_token: '10'
+    printed_ref: Box 10
+  same_fact_as: []
+- concept_id: form_w2/employee/federal_income_tax_withheld
+  document_id: form_w2_2025
+  status: active
+  flow_path:
+  - form_w2
+  - employee
+  - federal_income_tax_withheld
+  owner: employee
+  role: federal_income_tax_withheld
+  review_granularity: concept
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
+  aliases:
+  - document=form_w2/box=2/control=value
+  placements:
+  - address_id: 2025/document=form_w2/box=2/control=value
+    concept_id: form_w2/employee/federal_income_tax_withheld
+    printed_kind: box
+    printed_token: '2'
+    printed_ref: Box 2
+  same_fact_as: []
+- concept_id: form_w2/employee/first_name_initial
+  document_id: form_w2_2025
+  status: active
+  flow_path:
+  - form_w2
+  - employee
+  - first_name_initial
+  owner: employee
+  role: first_name_initial
+  review_granularity: concept
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
+  aliases:
+  - document=form_w2/box=e/control=first_name_initial
+  placements:
+  - address_id: 2025/document=form_w2/box=e/control=first_name_initial
+    concept_id: form_w2/employee/first_name_initial
+    printed_kind: box
+    printed_token: e
+    printed_ref: Box e
+  same_fact_as: []
+- concept_id: form_w2/employee/last_name
+  document_id: form_w2_2025
+  status: active
+  flow_path:
+  - form_w2
+  - employee
+  - last_name
+  owner: employee
+  role: last_name
+  review_granularity: concept
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
+  aliases:
+  - document=form_w2/box=e/control=last_name
+  placements:
+  - address_id: 2025/document=form_w2/box=e/control=last_name
+    concept_id: form_w2/employee/last_name
+    printed_kind: box
+    printed_token: e
+    printed_ref: Box e
+  same_fact_as: []
+- concept_id: form_w2/employee/medicare_tax_withheld
+  document_id: form_w2_2025
+  status: active
+  flow_path:
+  - form_w2
+  - employee
+  - medicare_tax_withheld
+  owner: employee
+  role: medicare_tax_withheld
+  review_granularity: concept
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
+  aliases:
+  - document=form_w2/box=6/control=value
+  placements:
+  - address_id: 2025/document=form_w2/box=6/control=value
+    concept_id: form_w2/employee/medicare_tax_withheld
+    printed_kind: box
+    printed_token: '6'
+    printed_ref: Box 6
+  same_fact_as: []
+- concept_id: form_w2/employee/medicare_wages
+  document_id: form_w2_2025
+  status: active
+  flow_path:
+  - form_w2
+  - employee
+  - medicare_wages
+  owner: employee
+  role: medicare_wages
+  review_granularity: concept
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
+  aliases:
+  - document=form_w2/box=5/control=value
+  placements:
+  - address_id: 2025/document=form_w2/box=5/control=value
+    concept_id: form_w2/employee/medicare_wages
+    printed_kind: box
+    printed_token: '5'
+    printed_ref: Box 5
+  same_fact_as: []
+- concept_id: form_w2/employee/nonqualified_plans
+  document_id: form_w2_2025
+  status: active
+  flow_path:
+  - form_w2
+  - employee
+  - nonqualified_plans
+  owner: employee
+  role: nonqualified_plans
+  review_granularity: concept
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
+  aliases:
+  - document=form_w2/box=11/control=value
+  placements:
+  - address_id: 2025/document=form_w2/box=11/control=value
+    concept_id: form_w2/employee/nonqualified_plans
+    printed_kind: box
+    printed_token: '11'
+    printed_ref: Box 11
+  same_fact_as: []
+- concept_id: form_w2/employee/other_compensation
+  document_id: form_w2_2025
+  status: active
+  flow_path:
+  - form_w2
+  - employee
+  - other_compensation
+  owner: employee
+  role: other_compensation
+  review_granularity: concept
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
+  aliases:
+  - document=form_w2/box=14/control=value
+  placements:
+  - address_id: 2025/document=form_w2/box=14/control=value
+    concept_id: form_w2/employee/other_compensation
+    printed_kind: box
+    printed_token: '14'
+    printed_ref: Box 14
+  same_fact_as: []
+- concept_id: form_w2/employee/social_security_tax_withheld
+  document_id: form_w2_2025
+  status: active
+  flow_path:
+  - form_w2
+  - employee
+  - social_security_tax_withheld
+  owner: employee
+  role: social_security_tax_withheld
+  review_granularity: concept
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
+  aliases:
+  - document=form_w2/box=4/control=value
+  placements:
+  - address_id: 2025/document=form_w2/box=4/control=value
+    concept_id: form_w2/employee/social_security_tax_withheld
+    printed_kind: box
+    printed_token: '4'
+    printed_ref: Box 4
+  same_fact_as: []
+- concept_id: form_w2/employee/social_security_tips
+  document_id: form_w2_2025
+  status: active
+  flow_path:
+  - form_w2
+  - employee
+  - social_security_tips
+  owner: employee
+  role: social_security_tips
+  review_granularity: concept
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
+  aliases:
+  - document=form_w2/box=7/control=value
+  placements:
+  - address_id: 2025/document=form_w2/box=7/control=value
+    concept_id: form_w2/employee/social_security_tips
+    printed_kind: box
+    printed_token: '7'
+    printed_ref: Box 7
+  same_fact_as: []
+- concept_id: form_w2/employee/social_security_wages
+  document_id: form_w2_2025
+  status: active
+  flow_path:
+  - form_w2
+  - employee
+  - social_security_wages
+  owner: employee
+  role: social_security_wages
+  review_granularity: concept
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
+  aliases:
+  - document=form_w2/box=3/control=value
+  placements:
+  - address_id: 2025/document=form_w2/box=3/control=value
+    concept_id: form_w2/employee/social_security_wages
+    printed_kind: box
+    printed_token: '3'
+    printed_ref: Box 3
+  same_fact_as: []
+- concept_id: form_w2/employee/ssn
+  document_id: form_w2_2025
+  status: active
+  flow_path:
+  - form_w2
+  - employee
+  - ssn
+  owner: employee
+  role: ssn
+  review_granularity: concept
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
+  aliases:
+  - document=form_w2/box=a/control=employee_ssn
+  placements:
+  - address_id: 2025/document=form_w2/box=a/control=employee_ssn
+    concept_id: form_w2/employee/ssn
+    printed_kind: box
+    printed_token: a
+    printed_ref: Box a
+  same_fact_as: []
+- concept_id: form_w2/employee/suffix
+  document_id: form_w2_2025
+  status: active
+  flow_path:
+  - form_w2
+  - employee
+  - suffix
+  owner: employee
+  role: suffix
+  review_granularity: concept
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
+  aliases:
+  - document=form_w2/box=e/control=suffix
+  placements:
+  - address_id: 2025/document=form_w2/box=e/control=suffix
+    concept_id: form_w2/employee/suffix
+    printed_kind: box
+    printed_token: e
+    printed_ref: Box e
+  same_fact_as: []
+- concept_id: form_w2/employee/wages
+  document_id: form_w2_2025
+  status: active
+  flow_path:
+  - form_w2
+  - employee
+  - wages
+  owner: employee
+  role: wages
+  review_granularity: concept
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
+  aliases:
+  - document=form_w2/box=1/control=value
+  placements:
+  - address_id: 2025/document=form_w2/box=1/control=value
+    concept_id: form_w2/employee/wages
+    printed_kind: box
+    printed_token: '1'
+    printed_ref: Box 1
+  same_fact_as: []
+- concept_id: form_w2/employer/control_number
+  document_id: form_w2_2025
+  status: active
+  flow_path:
+  - form_w2
+  - employer
+  - control_number
+  owner: employer
+  role: control_number
+  review_granularity: concept
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
+  aliases:
+  - document=form_w2/box=d/control=value
+  placements:
+  - address_id: 2025/document=form_w2/box=d/control=value
+    concept_id: form_w2/employer/control_number
+    printed_kind: box
+    printed_token: d
+    printed_ref: Box d
+  same_fact_as: []
+- concept_id: form_w2/employer/ein
+  document_id: form_w2_2025
+  status: active
+  flow_path:
+  - form_w2
+  - employer
+  - ein
+  owner: employer
+  role: ein
+  review_granularity: concept
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
+  aliases:
+  - document=form_w2/box=b/control=value
+  placements:
+  - address_id: 2025/document=form_w2/box=b/control=value
+    concept_id: form_w2/employer/ein
+    printed_kind: box
+    printed_token: b
+    printed_ref: Box b
+  same_fact_as: []
+- concept_id: form_w2/employer/name_address
+  document_id: form_w2_2025
+  status: active
+  flow_path:
+  - form_w2
+  - employer
+  - name_address
+  owner: employer
+  role: name_address
+  review_granularity: concept
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
+  aliases:
+  - document=form_w2/box=c/control=value
+  placements:
+  - address_id: 2025/document=form_w2/box=c/control=value
+    concept_id: form_w2/employer/name_address
+    printed_kind: box
+    printed_token: c
+    printed_ref: Box c
+  same_fact_as: []
+- concept_id: form_w2/header/void
+  document_id: form_w2_2025
+  status: active
+  flow_path:
+  - form_w2
+  - header
+  - void
+  owner: header
+  role: void
+  review_granularity: concept
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
+  aliases:
+  - document=form_w2/box=void/option=void
+  placements:
+  - address_id: 2025/document=form_w2/box=void/option=void
+    concept_id: form_w2/header/void
+    printed_kind: box
+    printed_token: void
+    printed_ref: VOID
+  same_fact_as: []
+- concept_id: form_w2/other_compensation/entry/code
+  document_id: form_w2_2025
+  status: active
+  flow_path:
+  - form_w2
+  - other_compensation
+  - entry
+  - code
+  owner: entry
+  role: code
+  review_granularity: concept
+  occurrence:
+    kind: entity
+    entity_key: entry
+    review_granularity: concept
+    row_policy: entity_keyed
+  aliases:
+  - document=form_w2/box=12/row_template=entry/column=code
+  placements:
+  - address_id: 2025/document=form_w2/box=12/row_template=entry/column=code
+    concept_id: form_w2/other_compensation/entry/code
+    printed_kind: box
+    printed_token: '12'
+    printed_ref: Box 12 code
+  same_fact_as: []
+- concept_id: form_w2/other_compensation/entry/compensation_amount
+  document_id: form_w2_2025
+  status: active
+  flow_path:
+  - form_w2
+  - other_compensation
+  - entry
+  - compensation_amount
+  owner: entry
+  role: compensation_amount
+  review_granularity: concept
+  occurrence:
+    kind: entity
+    entity_key: entry
+    review_granularity: concept
+    row_policy: entity_keyed
+  aliases:
+  - document=form_w2/box=12/row_template=entry/column=amount
+  placements:
+  - address_id: 2025/document=form_w2/box=12/row_template=entry/column=amount
+    concept_id: form_w2/other_compensation/entry/compensation_amount
+    printed_kind: box
+    printed_token: '12'
+    printed_ref: Box 12 amount
+  same_fact_as: []
+- concept_id: form_w2/state_local/jurisdiction/employer_state_id
+  document_id: form_w2_2025
+  status: active
+  flow_path:
+  - form_w2
+  - state_local
+  - jurisdiction
+  - employer_state_id
+  owner: jurisdiction
+  role: employer_state_id
+  review_granularity: concept
+  occurrence:
+    kind: entity
+    entity_key: jurisdiction
+    review_granularity: concept
+    row_policy: entity_keyed
+  aliases:
+  - document=form_w2/table=state_local/row_template=jurisdiction/column=employer_state_id
+  placements:
+  - address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=employer_state_id
+    concept_id: form_w2/state_local/jurisdiction/employer_state_id
+    printed_kind: table
+    printed_token: state_local
+    printed_ref: Box 15
+  same_fact_as: []
+- concept_id: form_w2/state_local/jurisdiction/local_income_tax
+  document_id: form_w2_2025
+  status: active
+  flow_path:
+  - form_w2
+  - state_local
+  - jurisdiction
+  - local_income_tax
+  owner: jurisdiction
+  role: local_income_tax
+  review_granularity: concept
+  occurrence:
+    kind: entity
+    entity_key: jurisdiction
+    review_granularity: concept
+    row_policy: entity_keyed
+  aliases:
+  - document=form_w2/table=state_local/row_template=jurisdiction/column=local_income_tax
+  placements:
+  - address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=local_income_tax
+    concept_id: form_w2/state_local/jurisdiction/local_income_tax
+    printed_kind: table
+    printed_token: state_local
+    printed_ref: Box 19
+  same_fact_as: []
+- concept_id: form_w2/state_local/jurisdiction/local_wages
+  document_id: form_w2_2025
+  status: active
+  flow_path:
+  - form_w2
+  - state_local
+  - jurisdiction
+  - local_wages
+  owner: jurisdiction
+  role: local_wages
+  review_granularity: concept
+  occurrence:
+    kind: entity
+    entity_key: jurisdiction
+    review_granularity: concept
+    row_policy: entity_keyed
+  aliases:
+  - document=form_w2/table=state_local/row_template=jurisdiction/column=local_wages
+  placements:
+  - address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=local_wages
+    concept_id: form_w2/state_local/jurisdiction/local_wages
+    printed_kind: table
+    printed_token: state_local
+    printed_ref: Box 18
+  same_fact_as: []
+- concept_id: form_w2/state_local/jurisdiction/locality_name
+  document_id: form_w2_2025
+  status: active
+  flow_path:
+  - form_w2
+  - state_local
+  - jurisdiction
+  - locality_name
+  owner: jurisdiction
+  role: locality_name
+  review_granularity: concept
+  occurrence:
+    kind: entity
+    entity_key: jurisdiction
+    review_granularity: concept
+    row_policy: entity_keyed
+  aliases:
+  - document=form_w2/table=state_local/row_template=jurisdiction/column=locality_name
+  placements:
+  - address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=locality_name
+    concept_id: form_w2/state_local/jurisdiction/locality_name
+    printed_kind: table
+    printed_token: state_local
+    printed_ref: Box 20
+  same_fact_as: []
+- concept_id: form_w2/state_local/jurisdiction/state
+  document_id: form_w2_2025
+  status: active
+  flow_path:
+  - form_w2
+  - state_local
+  - jurisdiction
+  - state
+  owner: jurisdiction
+  role: state
+  review_granularity: concept
+  occurrence:
+    kind: entity
+    entity_key: jurisdiction
+    review_granularity: concept
+    row_policy: entity_keyed
+  aliases:
+  - document=form_w2/table=state_local/row_template=jurisdiction/column=state
+  placements:
+  - address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=state
+    concept_id: form_w2/state_local/jurisdiction/state
+    printed_kind: table
+    printed_token: state_local
+    printed_ref: Box 15
+  same_fact_as: []
+- concept_id: form_w2/state_local/jurisdiction/state_income_tax
+  document_id: form_w2_2025
+  status: active
+  flow_path:
+  - form_w2
+  - state_local
+  - jurisdiction
+  - state_income_tax
+  owner: jurisdiction
+  role: state_income_tax
+  review_granularity: concept
+  occurrence:
+    kind: entity
+    entity_key: jurisdiction
+    review_granularity: concept
+    row_policy: entity_keyed
+  aliases:
+  - document=form_w2/table=state_local/row_template=jurisdiction/column=state_income_tax
+  placements:
+  - address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=state_income_tax
+    concept_id: form_w2/state_local/jurisdiction/state_income_tax
+    printed_kind: table
+    printed_token: state_local
+    printed_ref: Box 17
+  same_fact_as: []
+- concept_id: form_w2/state_local/jurisdiction/state_wages
+  document_id: form_w2_2025
+  status: active
+  flow_path:
+  - form_w2
+  - state_local
+  - jurisdiction
+  - state_wages
+  owner: jurisdiction
+  role: state_wages
+  review_granularity: concept
+  occurrence:
+    kind: entity
+    entity_key: jurisdiction
+    review_granularity: concept
+    row_policy: entity_keyed
+  aliases:
+  - document=form_w2/table=state_local/row_template=jurisdiction/column=state_wages
+  placements:
+  - address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=state_wages
+    concept_id: form_w2/state_local/jurisdiction/state_wages
+    printed_kind: table
+    printed_token: state_local
+    printed_ref: Box 16
+  same_fact_as: []

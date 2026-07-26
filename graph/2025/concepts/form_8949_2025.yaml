@@ -1,0 +1,604 @@
+schema_version: 1
+year: 2025
+document_id: form_8949_2025
+concepts:
+- concept_id: form_8949/long_term_transactions/total/adjustment_amount_total
+  document_id: form_8949_2025
+  status: active
+  flow_path:
+  - form_8949
+  - long_term_transactions
+  - total
+  - adjustment_amount_total
+  owner: total
+  role: adjustment_amount_total
+  review_granularity: concept
+  occurrence:
+    kind: entity
+    entity_key: total
+    review_granularity: concept
+    row_policy: entity_keyed
+  aliases:
+  - document=form_8949/table=part_ii_line_2/row_template=total/column=g
+  placements:
+  - address_id: 2025/document=form_8949/table=part_ii_line_2/row_template=total/column=g
+    concept_id: form_8949/long_term_transactions/total/adjustment_amount_total
+    printed_kind: line
+    printed_token: '2'
+    printed_ref: Line 2 column (g)
+  same_fact_as: []
+- concept_id: form_8949/long_term_transactions/total/cost_basis_total
+  document_id: form_8949_2025
+  status: active
+  flow_path:
+  - form_8949
+  - long_term_transactions
+  - total
+  - cost_basis_total
+  owner: total
+  role: cost_basis_total
+  review_granularity: concept
+  occurrence:
+    kind: entity
+    entity_key: total
+    review_granularity: concept
+    row_policy: entity_keyed
+  aliases:
+  - document=form_8949/table=part_ii_line_2/row_template=total/column=e
+  placements:
+  - address_id: 2025/document=form_8949/table=part_ii_line_2/row_template=total/column=e
+    concept_id: form_8949/long_term_transactions/total/cost_basis_total
+    printed_kind: line
+    printed_token: '2'
+    printed_ref: Line 2 column (e)
+  same_fact_as: []
+- concept_id: form_8949/long_term_transactions/total/gain_or_loss_total
+  document_id: form_8949_2025
+  status: active
+  flow_path:
+  - form_8949
+  - long_term_transactions
+  - total
+  - gain_or_loss_total
+  owner: total
+  role: gain_or_loss_total
+  review_granularity: concept
+  occurrence:
+    kind: entity
+    entity_key: total
+    review_granularity: concept
+    row_policy: entity_keyed
+  aliases:
+  - document=form_8949/table=part_ii_line_2/row_template=total/column=h
+  placements:
+  - address_id: 2025/document=form_8949/table=part_ii_line_2/row_template=total/column=h
+    concept_id: form_8949/long_term_transactions/total/gain_or_loss_total
+    printed_kind: line
+    printed_token: '2'
+    printed_ref: Line 2 column (h)
+  same_fact_as: []
+- concept_id: form_8949/long_term_transactions/total/proceeds_total
+  document_id: form_8949_2025
+  status: active
+  flow_path:
+  - form_8949
+  - long_term_transactions
+  - total
+  - proceeds_total
+  owner: total
+  role: proceeds_total
+  review_granularity: concept
+  occurrence:
+    kind: entity
+    entity_key: total
+    review_granularity: concept
+    row_policy: entity_keyed
+  aliases:
+  - document=form_8949/table=part_ii_line_2/row_template=total/column=d
+  placements:
+  - address_id: 2025/document=form_8949/table=part_ii_line_2/row_template=total/column=d
+    concept_id: form_8949/long_term_transactions/total/proceeds_total
+    printed_kind: line
+    printed_token: '2'
+    printed_ref: Line 2 column (d)
+  same_fact_as: []
+- concept_id: form_8949/long_term_transactions/transaction/adjustment_amount
+  document_id: form_8949_2025
+  status: active
+  flow_path:
+  - form_8949
+  - long_term_transactions
+  - transaction
+  - adjustment_amount
+  owner: transaction
+  role: adjustment_amount
+  review_granularity: concept
+  occurrence:
+    kind: entity
+    entity_key: transaction
+    review_granularity: concept
+    row_policy: entity_keyed
+  aliases:
+  - document=form_8949/table=part_ii_line_1/row_template=transaction/column=g
+  placements:
+  - address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=g
+    concept_id: form_8949/long_term_transactions/transaction/adjustment_amount
+    printed_kind: line
+    printed_token: '1'
+    printed_ref: Line 1 column (g)
+  same_fact_as: []
+- concept_id: form_8949/long_term_transactions/transaction/adjustment_code
+  document_id: form_8949_2025
+  status: active
+  flow_path:
+  - form_8949
+  - long_term_transactions
+  - transaction
+  - adjustment_code
+  owner: transaction
+  role: adjustment_code
+  review_granularity: concept
+  occurrence:
+    kind: entity
+    entity_key: transaction
+    review_granularity: concept
+    row_policy: entity_keyed
+  aliases:
+  - document=form_8949/table=part_ii_line_1/row_template=transaction/column=f
+  placements:
+  - address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=f
+    concept_id: form_8949/long_term_transactions/transaction/adjustment_code
+    printed_kind: line
+    printed_token: '1'
+    printed_ref: Line 1 column (f)
+  same_fact_as: []
+- concept_id: form_8949/long_term_transactions/transaction/cost_basis
+  document_id: form_8949_2025
+  status: active
+  flow_path:
+  - form_8949
+  - long_term_transactions
+  - transaction
+  - cost_basis
+  owner: transaction
+  role: cost_basis
+  review_granularity: concept
+  occurrence:
+    kind: entity
+    entity_key: transaction
+    review_granularity: concept
+    row_policy: entity_keyed
+  aliases:
+  - document=form_8949/table=part_ii_line_1/row_template=transaction/column=e
+  placements:
+  - address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=e
+    concept_id: form_8949/long_term_transactions/transaction/cost_basis
+    printed_kind: line
+    printed_token: '1'
+    printed_ref: Line 1 column (e)
+  same_fact_as: []
+- concept_id: form_8949/long_term_transactions/transaction/date_acquired
+  document_id: form_8949_2025
+  status: active
+  flow_path:
+  - form_8949
+  - long_term_transactions
+  - transaction
+  - date_acquired
+  owner: transaction
+  role: date_acquired
+  review_granularity: concept
+  occurrence:
+    kind: entity
+    entity_key: transaction
+    review_granularity: concept
+    row_policy: entity_keyed
+  aliases:
+  - document=form_8949/table=part_ii_line_1/row_template=transaction/column=b
+  placements:
+  - address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=b
+    concept_id: form_8949/long_term_transactions/transaction/date_acquired
+    printed_kind: line
+    printed_token: '1'
+    printed_ref: Line 1 column (b)
+  same_fact_as: []
+- concept_id: form_8949/long_term_transactions/transaction/date_disposed
+  document_id: form_8949_2025
+  status: active
+  flow_path:
+  - form_8949
+  - long_term_transactions
+  - transaction
+  - date_disposed
+  owner: transaction
+  role: date_disposed
+  review_granularity: concept
+  occurrence:
+    kind: entity
+    entity_key: transaction
+    review_granularity: concept
+    row_policy: entity_keyed
+  aliases:
+  - document=form_8949/table=part_ii_line_1/row_template=transaction/column=c
+  placements:
+  - address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=c
+    concept_id: form_8949/long_term_transactions/transaction/date_disposed
+    printed_kind: line
+    printed_token: '1'
+    printed_ref: Line 1 column (c)
+  same_fact_as: []
+- concept_id: form_8949/long_term_transactions/transaction/description
+  document_id: form_8949_2025
+  status: active
+  flow_path:
+  - form_8949
+  - long_term_transactions
+  - transaction
+  - description
+  owner: transaction
+  role: description
+  review_granularity: concept
+  occurrence:
+    kind: entity
+    entity_key: transaction
+    review_granularity: concept
+    row_policy: entity_keyed
+  aliases:
+  - document=form_8949/table=part_ii_line_1/row_template=transaction/column=a
+  placements:
+  - address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=a
+    concept_id: form_8949/long_term_transactions/transaction/description
+    printed_kind: line
+    printed_token: '1'
+    printed_ref: Line 1 column (a)
+  same_fact_as: []
+- concept_id: form_8949/long_term_transactions/transaction/gain_or_loss
+  document_id: form_8949_2025
+  status: active
+  flow_path:
+  - form_8949
+  - long_term_transactions
+  - transaction
+  - gain_or_loss
+  owner: transaction
+  role: gain_or_loss
+  review_granularity: concept
+  occurrence:
+    kind: entity
+    entity_key: transaction
+    review_granularity: concept
+    row_policy: entity_keyed
+  aliases:
+  - document=form_8949/table=part_ii_line_1/row_template=transaction/column=h
+  placements:
+  - address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=h
+    concept_id: form_8949/long_term_transactions/transaction/gain_or_loss
+    printed_kind: line
+    printed_token: '1'
+    printed_ref: Line 1 column (h)
+  same_fact_as: []
+- concept_id: form_8949/long_term_transactions/transaction/proceeds
+  document_id: form_8949_2025
+  status: active
+  flow_path:
+  - form_8949
+  - long_term_transactions
+  - transaction
+  - proceeds
+  owner: transaction
+  role: proceeds
+  review_granularity: concept
+  occurrence:
+    kind: entity
+    entity_key: transaction
+    review_granularity: concept
+    row_policy: entity_keyed
+  aliases:
+  - document=form_8949/table=part_ii_line_1/row_template=transaction/column=d
+  placements:
+  - address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=d
+    concept_id: form_8949/long_term_transactions/transaction/proceeds
+    printed_kind: line
+    printed_token: '1'
+    printed_ref: Line 1 column (d)
+  same_fact_as: []
+- concept_id: form_8949/short_term_transactions/total/adjustment_amount_total
+  document_id: form_8949_2025
+  status: active
+  flow_path:
+  - form_8949
+  - short_term_transactions
+  - total
+  - adjustment_amount_total
+  owner: total
+  role: adjustment_amount_total
+  review_granularity: concept
+  occurrence:
+    kind: entity
+    entity_key: total
+    review_granularity: concept
+    row_policy: entity_keyed
+  aliases:
+  - document=form_8949/table=part_i_line_2/row_template=total/column=g
+  placements:
+  - address_id: 2025/document=form_8949/table=part_i_line_2/row_template=total/column=g
+    concept_id: form_8949/short_term_transactions/total/adjustment_amount_total
+    printed_kind: line
+    printed_token: '2'
+    printed_ref: Line 2 column (g)
+  same_fact_as: []
+- concept_id: form_8949/short_term_transactions/total/cost_basis_total
+  document_id: form_8949_2025
+  status: active
+  flow_path:
+  - form_8949
+  - short_term_transactions
+  - total
+  - cost_basis_total
+  owner: total
+  role: cost_basis_total
+  review_granularity: concept
+  occurrence:
+    kind: entity
+    entity_key: total
+    review_granularity: concept
+    row_policy: entity_keyed
+  aliases:
+  - document=form_8949/table=part_i_line_2/row_template=total/column=e
+  placements:
+  - address_id: 2025/document=form_8949/table=part_i_line_2/row_template=total/column=e
+    concept_id: form_8949/short_term_transactions/total/cost_basis_total
+    printed_kind: line
+    printed_token: '2'
+    printed_ref: Line 2 column (e)
+  same_fact_as: []
+- concept_id: form_8949/short_term_transactions/total/gain_or_loss_total
+  document_id: form_8949_2025
+  status: active
+  flow_path:
+  - form_8949
+  - short_term_transactions
+  - total
+  - gain_or_loss_total
+  owner: total
+  role: gain_or_loss_total
+  review_granularity: concept
+  occurrence:
+    kind: entity
+    entity_key: total
+    review_granularity: concept
+    row_policy: entity_keyed
+  aliases:
+  - document=form_8949/table=part_i_line_2/row_template=total/column=h
+  placements:
+  - address_id: 2025/document=form_8949/table=part_i_line_2/row_template=total/column=h
+    concept_id: form_8949/short_term_transactions/total/gain_or_loss_total
+    printed_kind: line
+    printed_token: '2'
+    printed_ref: Line 2 column (h)
+  same_fact_as: []
+- concept_id: form_8949/short_term_transactions/total/proceeds_total
+  document_id: form_8949_2025
+  status: active
+  flow_path:
+  - form_8949
+  - short_term_transactions
+  - total
+  - proceeds_total
+  owner: total
+  role: proceeds_total
+  review_granularity: concept
+  occurrence:
+    kind: entity
+    entity_key: total
+    review_granularity: concept
+    row_policy: entity_keyed
+  aliases:
+  - document=form_8949/table=part_i_line_2/row_template=total/column=d
+  placements:
+  - address_id: 2025/document=form_8949/table=part_i_line_2/row_template=total/column=d
+    concept_id: form_8949/short_term_transactions/total/proceeds_total
+    printed_kind: line
+    printed_token: '2'
+    printed_ref: Line 2 column (d)
+  same_fact_as: []
+- concept_id: form_8949/short_term_transactions/transaction/adjustment_amount
+  document_id: form_8949_2025
+  status: active
+  flow_path:
+  - form_8949
+  - short_term_transactions
+  - transaction
+  - adjustment_amount
+  owner: transaction
+  role: adjustment_amount
+  review_granularity: concept
+  occurrence:
+    kind: entity
+    entity_key: transaction
+    review_granularity: concept
+    row_policy: entity_keyed
+  aliases:
+  - document=form_8949/table=part_i_line_1/row_template=transaction/column=g
+  placements:
+  - address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=g
+    concept_id: form_8949/short_term_transactions/transaction/adjustment_amount
+    printed_kind: line
+    printed_token: '1'
+    printed_ref: Line 1 column (g)
+  same_fact_as: []
+- concept_id: form_8949/short_term_transactions/transaction/adjustment_code
+  document_id: form_8949_2025
+  status: active
+  flow_path:
+  - form_8949
+  - short_term_transactions
+  - transaction
+  - adjustment_code
+  owner: transaction
+  role: adjustment_code
+  review_granularity: concept
+  occurrence:
+    kind: entity
+    entity_key: transaction
+    review_granularity: concept
+    row_policy: entity_keyed
+  aliases:
+  - document=form_8949/table=part_i_line_1/row_template=transaction/column=f
+  placements:
+  - address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=f
+    concept_id: form_8949/short_term_transactions/transaction/adjustment_code
+    printed_kind: line
+    printed_token: '1'
+    printed_ref: Line 1 column (f)
+  same_fact_as: []
+- concept_id: form_8949/short_term_transactions/transaction/cost_basis
+  document_id: form_8949_2025
+  status: active
+  flow_path:
+  - form_8949
+  - short_term_transactions
+  - transaction
+  - cost_basis
+  owner: transaction
+  role: cost_basis
+  review_granularity: concept
+  occurrence:
+    kind: entity
+    entity_key: transaction
+    review_granularity: concept
+    row_policy: entity_keyed
+  aliases:
+  - document=form_8949/table=part_i_line_1/row_template=transaction/column=e
+  placements:
+  - address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=e
+    concept_id: form_8949/short_term_transactions/transaction/cost_basis
+    printed_kind: line
+    printed_token: '1'
+    printed_ref: Line 1 column (e)
+  same_fact_as: []
+- concept_id: form_8949/short_term_transactions/transaction/date_acquired
+  document_id: form_8949_2025
+  status: active
+  flow_path:
+  - form_8949
+  - short_term_transactions
+  - transaction
+  - date_acquired
+  owner: transaction
+  role: date_acquired
+  review_granularity: concept
+  occurrence:
+    kind: entity
+    entity_key: transaction
+    review_granularity: concept
+    row_policy: entity_keyed
+  aliases:
+  - document=form_8949/table=part_i_line_1/row_template=transaction/column=b
+  placements:
+  - address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=b
+    concept_id: form_8949/short_term_transactions/transaction/date_acquired
+    printed_kind: line
+    printed_token: '1'
+    printed_ref: Line 1 column (b)
+  same_fact_as: []
+- concept_id: form_8949/short_term_transactions/transaction/date_disposed
+  document_id: form_8949_2025
+  status: active
+  flow_path:
+  - form_8949
+  - short_term_transactions
+  - transaction
+  - date_disposed
+  owner: transaction
+  role: date_disposed
+  review_granularity: concept
+  occurrence:
+    kind: entity
+    entity_key: transaction
+    review_granularity: concept
+    row_policy: entity_keyed
+  aliases:
+  - document=form_8949/table=part_i_line_1/row_template=transaction/column=c
+  placements:
+  - address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=c
+    concept_id: form_8949/short_term_transactions/transaction/date_disposed
+    printed_kind: line
+    printed_token: '1'
+    printed_ref: Line 1 column (c)
+  same_fact_as: []
+- concept_id: form_8949/short_term_transactions/transaction/description
+  document_id: form_8949_2025
+  status: active
+  flow_path:
+  - form_8949
+  - short_term_transactions
+  - transaction
+  - description
+  owner: transaction
+  role: description
+  review_granularity: concept
+  occurrence:
+    kind: entity
+    entity_key: transaction
+    review_granularity: concept
+    row_policy: entity_keyed
+  aliases:
+  - document=form_8949/table=part_i_line_1/row_template=transaction/column=a
+  placements:
+  - address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=a
+    concept_id: form_8949/short_term_transactions/transaction/description
+    printed_kind: line
+    printed_token: '1'
+    printed_ref: Line 1 column (a)
+  same_fact_as: []
+- concept_id: form_8949/short_term_transactions/transaction/gain_or_loss
+  document_id: form_8949_2025
+  status: active
+  flow_path:
+  - form_8949
+  - short_term_transactions
+  - transaction
+  - gain_or_loss
+  owner: transaction
+  role: gain_or_loss
+  review_granularity: concept
+  occurrence:
+    kind: entity
+    entity_key: transaction
+    review_granularity: concept
+    row_policy: entity_keyed
+  aliases:
+  - document=form_8949/table=part_i_line_1/row_template=transaction/column=h
+  placements:
+  - address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=h
+    concept_id: form_8949/short_term_transactions/transaction/gain_or_loss
+    printed_kind: line
+    printed_token: '1'
+    printed_ref: Line 1 column (h)
+  same_fact_as: []
+- concept_id: form_8949/short_term_transactions/transaction/proceeds
+  document_id: form_8949_2025
+  status: active
+  flow_path:
+  - form_8949
+  - short_term_transactions
+  - transaction
+  - proceeds
+  owner: transaction
+  role: proceeds
+  review_granularity: concept
+  occurrence:
+    kind: entity
+    entity_key: transaction
+    review_granularity: concept
+    row_policy: entity_keyed
+  aliases:
+  - document=form_8949/table=part_i_line_1/row_template=transaction/column=d
+  placements:
+  - address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=d
+    concept_id: form_8949/short_term_transactions/transaction/proceeds
+    printed_kind: line
+    printed_token: '1'
+    printed_ref: Line 1 column (d)
+  same_fact_as: []

@@ -5,6 +5,7 @@ from tax_graph.output.fill import DependentAttachmentRequired, FilledForm, PdfEx
 from tax_graph.output.geometry import load_node_geometry, resolve_node_geometry, validate_node_geometry
 from tax_graph.output.sidecar import scenario_from_facts_document, write_ots_sidecar
 from tax_graph.output.session import export_filing_bundle, resolve_return_root, used_form_ids, validate_direct_return_root
+from tax_graph.output.concepts import ConceptError, build_document_concepts, mint_concept_id, promote_structured_concepts, validate_concept_id
 
 __all__ = [
     "FilledForm",
@@ -23,4 +24,9 @@ __all__ = [
     "validate_direct_return_root",
     "validate_node_geometry",
     "write_ots_sidecar",
+    "ConceptError",
+    "build_document_concepts",
+    "mint_concept_id",
+    "promote_structured_concepts",
+    "validate_concept_id",
 ]

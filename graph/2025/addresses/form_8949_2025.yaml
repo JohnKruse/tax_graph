@@ -451,7 +451,8 @@ addresses:
   - kind: column
     token: a
   printed_label: Description of property
-  aliases: []
+  aliases:
+  - document=form_8949/table=part_i_line_1/row_template=transaction/column=a
   control_role: description
   status: pending_review
   evidence:
@@ -459,6 +460,17 @@ addresses:
     source_hash: 274513891e4e281d11e14286f14b9df724c24b6030fca0f0681da64fb2e7f525
     page: 1
   official_ref: Line 1 column (a)
+  concept_id: form_8949/short_term_transactions/transaction/description
+  placement:
+    concept_id: form_8949/short_term_transactions/transaction/description
+    printed_kind: line
+    printed_token: '1'
+    printed_ref: Line 1 column (a)
+  occurrence:
+    kind: entity
+    entity_key: transaction
+    review_granularity: concept
+    row_policy: entity_keyed
 - address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=b
   logical_key: document=form_8949/table=part_i_line_1/row_template=transaction/column=b
   year: 2025
@@ -475,7 +487,8 @@ addresses:
   - kind: column
     token: b
   printed_label: Date acquired
-  aliases: []
+  aliases:
+  - document=form_8949/table=part_i_line_1/row_template=transaction/column=b
   control_role: date
   status: pending_review
   evidence:
@@ -483,6 +496,17 @@ addresses:
     source_hash: 274513891e4e281d11e14286f14b9df724c24b6030fca0f0681da64fb2e7f525
     page: 1
   official_ref: Line 1 column (b)
+  concept_id: form_8949/short_term_transactions/transaction/date_acquired
+  placement:
+    concept_id: form_8949/short_term_transactions/transaction/date_acquired
+    printed_kind: line
+    printed_token: '1'
+    printed_ref: Line 1 column (b)
+  occurrence:
+    kind: entity
+    entity_key: transaction
+    review_granularity: concept
+    row_policy: entity_keyed
 - address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=c
   logical_key: document=form_8949/table=part_i_line_1/row_template=transaction/column=c
   year: 2025
@@ -499,7 +523,8 @@ addresses:
   - kind: column
     token: c
   printed_label: Date sold or disposed of
-  aliases: []
+  aliases:
+  - document=form_8949/table=part_i_line_1/row_template=transaction/column=c
   control_role: date
   status: pending_review
   evidence:
@@ -507,6 +532,17 @@ addresses:
     source_hash: 274513891e4e281d11e14286f14b9df724c24b6030fca0f0681da64fb2e7f525
     page: 1
   official_ref: Line 1 column (c)
+  concept_id: form_8949/short_term_transactions/transaction/date_disposed
+  placement:
+    concept_id: form_8949/short_term_transactions/transaction/date_disposed
+    printed_kind: line
+    printed_token: '1'
+    printed_ref: Line 1 column (c)
+  occurrence:
+    kind: entity
+    entity_key: transaction
+    review_granularity: concept
+    row_policy: entity_keyed
 - address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=d
   logical_key: document=form_8949/table=part_i_line_1/row_template=transaction/column=d
   year: 2025
@@ -523,7 +559,8 @@ addresses:
   - kind: column
     token: d
   printed_label: Proceeds (sales price)
-  aliases: []
+  aliases:
+  - document=form_8949/table=part_i_line_1/row_template=transaction/column=d
   control_role: amount
   status: pending_review
   evidence:
@@ -531,6 +568,17 @@ addresses:
     source_hash: 274513891e4e281d11e14286f14b9df724c24b6030fca0f0681da64fb2e7f525
     page: 1
   official_ref: Line 1 column (d)
+  concept_id: form_8949/short_term_transactions/transaction/proceeds
+  placement:
+    concept_id: form_8949/short_term_transactions/transaction/proceeds
+    printed_kind: line
+    printed_token: '1'
+    printed_ref: Line 1 column (d)
+  occurrence:
+    kind: entity
+    entity_key: transaction
+    review_granularity: concept
+    row_policy: entity_keyed
 - address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=e
   logical_key: document=form_8949/table=part_i_line_1/row_template=transaction/column=e
   year: 2025
@@ -547,7 +595,8 @@ addresses:
   - kind: column
     token: e
   printed_label: Cost or other basis
-  aliases: []
+  aliases:
+  - document=form_8949/table=part_i_line_1/row_template=transaction/column=e
   control_role: amount
   status: pending_review
   evidence:
@@ -555,6 +604,17 @@ addresses:
     source_hash: 274513891e4e281d11e14286f14b9df724c24b6030fca0f0681da64fb2e7f525
     page: 1
   official_ref: Line 1 column (e)
+  concept_id: form_8949/short_term_transactions/transaction/cost_basis
+  placement:
+    concept_id: form_8949/short_term_transactions/transaction/cost_basis
+    printed_kind: line
+    printed_token: '1'
+    printed_ref: Line 1 column (e)
+  occurrence:
+    kind: entity
+    entity_key: transaction
+    review_granularity: concept
+    row_policy: entity_keyed
 - address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=f
   logical_key: document=form_8949/table=part_i_line_1/row_template=transaction/column=f
   year: 2025
@@ -571,7 +631,8 @@ addresses:
   - kind: column
     token: f
   printed_label: Code(s) from instructions
-  aliases: []
+  aliases:
+  - document=form_8949/table=part_i_line_1/row_template=transaction/column=f
   control_role: description
   status: pending_review
   evidence:
@@ -579,6 +640,17 @@ addresses:
     source_hash: 274513891e4e281d11e14286f14b9df724c24b6030fca0f0681da64fb2e7f525
     page: 1
   official_ref: Line 1 column (f)
+  concept_id: form_8949/short_term_transactions/transaction/adjustment_code
+  placement:
+    concept_id: form_8949/short_term_transactions/transaction/adjustment_code
+    printed_kind: line
+    printed_token: '1'
+    printed_ref: Line 1 column (f)
+  occurrence:
+    kind: entity
+    entity_key: transaction
+    review_granularity: concept
+    row_policy: entity_keyed
 - address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=g
   logical_key: document=form_8949/table=part_i_line_1/row_template=transaction/column=g
   year: 2025
@@ -595,7 +667,8 @@ addresses:
   - kind: column
     token: g
   printed_label: Amount of adjustment
-  aliases: []
+  aliases:
+  - document=form_8949/table=part_i_line_1/row_template=transaction/column=g
   control_role: amount
   status: pending_review
   evidence:
@@ -603,6 +676,17 @@ addresses:
     source_hash: 274513891e4e281d11e14286f14b9df724c24b6030fca0f0681da64fb2e7f525
     page: 1
   official_ref: Line 1 column (g)
+  concept_id: form_8949/short_term_transactions/transaction/adjustment_amount
+  placement:
+    concept_id: form_8949/short_term_transactions/transaction/adjustment_amount
+    printed_kind: line
+    printed_token: '1'
+    printed_ref: Line 1 column (g)
+  occurrence:
+    kind: entity
+    entity_key: transaction
+    review_granularity: concept
+    row_policy: entity_keyed
 - address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=h
   logical_key: document=form_8949/table=part_i_line_1/row_template=transaction/column=h
   year: 2025
@@ -619,7 +703,8 @@ addresses:
   - kind: column
     token: h
   printed_label: Gain or (loss)
-  aliases: []
+  aliases:
+  - document=form_8949/table=part_i_line_1/row_template=transaction/column=h
   control_role: amount
   status: pending_review
   evidence:
@@ -627,6 +712,17 @@ addresses:
     source_hash: 274513891e4e281d11e14286f14b9df724c24b6030fca0f0681da64fb2e7f525
     page: 1
   official_ref: Line 1 column (h)
+  concept_id: form_8949/short_term_transactions/transaction/gain_or_loss
+  placement:
+    concept_id: form_8949/short_term_transactions/transaction/gain_or_loss
+    printed_kind: line
+    printed_token: '1'
+    printed_ref: Line 1 column (h)
+  occurrence:
+    kind: entity
+    entity_key: transaction
+    review_granularity: concept
+    row_policy: entity_keyed
 - address_id: 2025/document=form_8949/table=part_i_line_2
   logical_key: document=form_8949/table=part_i_line_2
   year: 2025
@@ -683,7 +779,8 @@ addresses:
   - kind: column
     token: d
   printed_label: Total proceeds
-  aliases: []
+  aliases:
+  - document=form_8949/table=part_i_line_2/row_template=total/column=d
   control_role: amount
   status: pending_review
   evidence:
@@ -691,6 +788,17 @@ addresses:
     source_hash: 274513891e4e281d11e14286f14b9df724c24b6030fca0f0681da64fb2e7f525
     page: 1
   official_ref: Line 2 column (d)
+  concept_id: form_8949/short_term_transactions/total/proceeds_total
+  placement:
+    concept_id: form_8949/short_term_transactions/total/proceeds_total
+    printed_kind: line
+    printed_token: '2'
+    printed_ref: Line 2 column (d)
+  occurrence:
+    kind: entity
+    entity_key: total
+    review_granularity: concept
+    row_policy: entity_keyed
 - address_id: 2025/document=form_8949/table=part_i_line_2/row_template=total/column=e
   logical_key: document=form_8949/table=part_i_line_2/row_template=total/column=e
   year: 2025
@@ -707,7 +815,8 @@ addresses:
   - kind: column
     token: e
   printed_label: Total cost or other basis
-  aliases: []
+  aliases:
+  - document=form_8949/table=part_i_line_2/row_template=total/column=e
   control_role: amount
   status: pending_review
   evidence:
@@ -715,6 +824,17 @@ addresses:
     source_hash: 274513891e4e281d11e14286f14b9df724c24b6030fca0f0681da64fb2e7f525
     page: 1
   official_ref: Line 2 column (e)
+  concept_id: form_8949/short_term_transactions/total/cost_basis_total
+  placement:
+    concept_id: form_8949/short_term_transactions/total/cost_basis_total
+    printed_kind: line
+    printed_token: '2'
+    printed_ref: Line 2 column (e)
+  occurrence:
+    kind: entity
+    entity_key: total
+    review_granularity: concept
+    row_policy: entity_keyed
 - address_id: 2025/document=form_8949/table=part_i_line_2/row_template=total/column=g
   logical_key: document=form_8949/table=part_i_line_2/row_template=total/column=g
   year: 2025
@@ -731,7 +851,8 @@ addresses:
   - kind: column
     token: g
   printed_label: Total adjustments
-  aliases: []
+  aliases:
+  - document=form_8949/table=part_i_line_2/row_template=total/column=g
   control_role: amount
   status: pending_review
   evidence:
@@ -739,6 +860,17 @@ addresses:
     source_hash: 274513891e4e281d11e14286f14b9df724c24b6030fca0f0681da64fb2e7f525
     page: 1
   official_ref: Line 2 column (g)
+  concept_id: form_8949/short_term_transactions/total/adjustment_amount_total
+  placement:
+    concept_id: form_8949/short_term_transactions/total/adjustment_amount_total
+    printed_kind: line
+    printed_token: '2'
+    printed_ref: Line 2 column (g)
+  occurrence:
+    kind: entity
+    entity_key: total
+    review_granularity: concept
+    row_policy: entity_keyed
 - address_id: 2025/document=form_8949/table=part_i_line_2/row_template=total/column=h
   logical_key: document=form_8949/table=part_i_line_2/row_template=total/column=h
   year: 2025
@@ -755,7 +887,8 @@ addresses:
   - kind: column
     token: h
   printed_label: Total gain or (loss)
-  aliases: []
+  aliases:
+  - document=form_8949/table=part_i_line_2/row_template=total/column=h
   control_role: amount
   status: pending_review
   evidence:
@@ -763,6 +896,17 @@ addresses:
     source_hash: 274513891e4e281d11e14286f14b9df724c24b6030fca0f0681da64fb2e7f525
     page: 1
   official_ref: Line 2 column (h)
+  concept_id: form_8949/short_term_transactions/total/gain_or_loss_total
+  placement:
+    concept_id: form_8949/short_term_transactions/total/gain_or_loss_total
+    printed_kind: line
+    printed_token: '2'
+    printed_ref: Line 2 column (h)
+  occurrence:
+    kind: entity
+    entity_key: total
+    review_granularity: concept
+    row_policy: entity_keyed
 - address_id: 2025/document=form_8949/table=part_ii_line_1
   logical_key: document=form_8949/table=part_ii_line_1
   year: 2025
@@ -819,7 +963,8 @@ addresses:
   - kind: column
     token: a
   printed_label: Description of property
-  aliases: []
+  aliases:
+  - document=form_8949/table=part_ii_line_1/row_template=transaction/column=a
   control_role: description
   status: pending_review
   evidence:
@@ -827,6 +972,17 @@ addresses:
     source_hash: 274513891e4e281d11e14286f14b9df724c24b6030fca0f0681da64fb2e7f525
     page: 2
   official_ref: Line 1 column (a)
+  concept_id: form_8949/long_term_transactions/transaction/description
+  placement:
+    concept_id: form_8949/long_term_transactions/transaction/description
+    printed_kind: line
+    printed_token: '1'
+    printed_ref: Line 1 column (a)
+  occurrence:
+    kind: entity
+    entity_key: transaction
+    review_granularity: concept
+    row_policy: entity_keyed
 - address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=b
   logical_key: document=form_8949/table=part_ii_line_1/row_template=transaction/column=b
   year: 2025
@@ -843,7 +999,8 @@ addresses:
   - kind: column
     token: b
   printed_label: Date acquired
-  aliases: []
+  aliases:
+  - document=form_8949/table=part_ii_line_1/row_template=transaction/column=b
   control_role: date
   status: pending_review
   evidence:
@@ -851,6 +1008,17 @@ addresses:
     source_hash: 274513891e4e281d11e14286f14b9df724c24b6030fca0f0681da64fb2e7f525
     page: 2
   official_ref: Line 1 column (b)
+  concept_id: form_8949/long_term_transactions/transaction/date_acquired
+  placement:
+    concept_id: form_8949/long_term_transactions/transaction/date_acquired
+    printed_kind: line
+    printed_token: '1'
+    printed_ref: Line 1 column (b)
+  occurrence:
+    kind: entity
+    entity_key: transaction
+    review_granularity: concept
+    row_policy: entity_keyed
 - address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=c
   logical_key: document=form_8949/table=part_ii_line_1/row_template=transaction/column=c
   year: 2025
@@ -867,7 +1035,8 @@ addresses:
   - kind: column
     token: c
   printed_label: Date sold or disposed of
-  aliases: []
+  aliases:
+  - document=form_8949/table=part_ii_line_1/row_template=transaction/column=c
   control_role: date
   status: pending_review
   evidence:
@@ -875,6 +1044,17 @@ addresses:
     source_hash: 274513891e4e281d11e14286f14b9df724c24b6030fca0f0681da64fb2e7f525
     page: 2
   official_ref: Line 1 column (c)
+  concept_id: form_8949/long_term_transactions/transaction/date_disposed
+  placement:
+    concept_id: form_8949/long_term_transactions/transaction/date_disposed
+    printed_kind: line
+    printed_token: '1'
+    printed_ref: Line 1 column (c)
+  occurrence:
+    kind: entity
+    entity_key: transaction
+    review_granularity: concept
+    row_policy: entity_keyed
 - address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=d
   logical_key: document=form_8949/table=part_ii_line_1/row_template=transaction/column=d
   year: 2025
@@ -891,7 +1071,8 @@ addresses:
   - kind: column
     token: d
   printed_label: Proceeds (sales price)
-  aliases: []
+  aliases:
+  - document=form_8949/table=part_ii_line_1/row_template=transaction/column=d
   control_role: amount
   status: pending_review
   evidence:
@@ -899,6 +1080,17 @@ addresses:
     source_hash: 274513891e4e281d11e14286f14b9df724c24b6030fca0f0681da64fb2e7f525
     page: 2
   official_ref: Line 1 column (d)
+  concept_id: form_8949/long_term_transactions/transaction/proceeds
+  placement:
+    concept_id: form_8949/long_term_transactions/transaction/proceeds
+    printed_kind: line
+    printed_token: '1'
+    printed_ref: Line 1 column (d)
+  occurrence:
+    kind: entity
+    entity_key: transaction
+    review_granularity: concept
+    row_policy: entity_keyed
 - address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=e
   logical_key: document=form_8949/table=part_ii_line_1/row_template=transaction/column=e
   year: 2025
@@ -915,7 +1107,8 @@ addresses:
   - kind: column
     token: e
   printed_label: Cost or other basis
-  aliases: []
+  aliases:
+  - document=form_8949/table=part_ii_line_1/row_template=transaction/column=e
   control_role: amount
   status: pending_review
   evidence:
@@ -923,6 +1116,17 @@ addresses:
     source_hash: 274513891e4e281d11e14286f14b9df724c24b6030fca0f0681da64fb2e7f525
     page: 2
   official_ref: Line 1 column (e)
+  concept_id: form_8949/long_term_transactions/transaction/cost_basis
+  placement:
+    concept_id: form_8949/long_term_transactions/transaction/cost_basis
+    printed_kind: line
+    printed_token: '1'
+    printed_ref: Line 1 column (e)
+  occurrence:
+    kind: entity
+    entity_key: transaction
+    review_granularity: concept
+    row_policy: entity_keyed
 - address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=f
   logical_key: document=form_8949/table=part_ii_line_1/row_template=transaction/column=f
   year: 2025
@@ -939,7 +1143,8 @@ addresses:
   - kind: column
     token: f
   printed_label: Code(s) from instructions
-  aliases: []
+  aliases:
+  - document=form_8949/table=part_ii_line_1/row_template=transaction/column=f
   control_role: description
   status: pending_review
   evidence:
@@ -947,6 +1152,17 @@ addresses:
     source_hash: 274513891e4e281d11e14286f14b9df724c24b6030fca0f0681da64fb2e7f525
     page: 2
   official_ref: Line 1 column (f)
+  concept_id: form_8949/long_term_transactions/transaction/adjustment_code
+  placement:
+    concept_id: form_8949/long_term_transactions/transaction/adjustment_code
+    printed_kind: line
+    printed_token: '1'
+    printed_ref: Line 1 column (f)
+  occurrence:
+    kind: entity
+    entity_key: transaction
+    review_granularity: concept
+    row_policy: entity_keyed
 - address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=g
   logical_key: document=form_8949/table=part_ii_line_1/row_template=transaction/column=g
   year: 2025
@@ -963,7 +1179,8 @@ addresses:
   - kind: column
     token: g
   printed_label: Amount of adjustment
-  aliases: []
+  aliases:
+  - document=form_8949/table=part_ii_line_1/row_template=transaction/column=g
   control_role: amount
   status: pending_review
   evidence:
@@ -971,6 +1188,17 @@ addresses:
     source_hash: 274513891e4e281d11e14286f14b9df724c24b6030fca0f0681da64fb2e7f525
     page: 2
   official_ref: Line 1 column (g)
+  concept_id: form_8949/long_term_transactions/transaction/adjustment_amount
+  placement:
+    concept_id: form_8949/long_term_transactions/transaction/adjustment_amount
+    printed_kind: line
+    printed_token: '1'
+    printed_ref: Line 1 column (g)
+  occurrence:
+    kind: entity
+    entity_key: transaction
+    review_granularity: concept
+    row_policy: entity_keyed
 - address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=h
   logical_key: document=form_8949/table=part_ii_line_1/row_template=transaction/column=h
   year: 2025
@@ -987,7 +1215,8 @@ addresses:
   - kind: column
     token: h
   printed_label: Gain or (loss)
-  aliases: []
+  aliases:
+  - document=form_8949/table=part_ii_line_1/row_template=transaction/column=h
   control_role: amount
   status: pending_review
   evidence:
@@ -995,6 +1224,17 @@ addresses:
     source_hash: 274513891e4e281d11e14286f14b9df724c24b6030fca0f0681da64fb2e7f525
     page: 2
   official_ref: Line 1 column (h)
+  concept_id: form_8949/long_term_transactions/transaction/gain_or_loss
+  placement:
+    concept_id: form_8949/long_term_transactions/transaction/gain_or_loss
+    printed_kind: line
+    printed_token: '1'
+    printed_ref: Line 1 column (h)
+  occurrence:
+    kind: entity
+    entity_key: transaction
+    review_granularity: concept
+    row_policy: entity_keyed
 - address_id: 2025/document=form_8949/table=part_ii_line_2
   logical_key: document=form_8949/table=part_ii_line_2
   year: 2025
@@ -1051,7 +1291,8 @@ addresses:
   - kind: column
     token: d
   printed_label: Total proceeds
-  aliases: []
+  aliases:
+  - document=form_8949/table=part_ii_line_2/row_template=total/column=d
   control_role: amount
   status: pending_review
   evidence:
@@ -1059,6 +1300,17 @@ addresses:
     source_hash: 274513891e4e281d11e14286f14b9df724c24b6030fca0f0681da64fb2e7f525
     page: 2
   official_ref: Line 2 column (d)
+  concept_id: form_8949/long_term_transactions/total/proceeds_total
+  placement:
+    concept_id: form_8949/long_term_transactions/total/proceeds_total
+    printed_kind: line
+    printed_token: '2'
+    printed_ref: Line 2 column (d)
+  occurrence:
+    kind: entity
+    entity_key: total
+    review_granularity: concept
+    row_policy: entity_keyed
 - address_id: 2025/document=form_8949/table=part_ii_line_2/row_template=total/column=e
   logical_key: document=form_8949/table=part_ii_line_2/row_template=total/column=e
   year: 2025
@@ -1075,7 +1327,8 @@ addresses:
   - kind: column
     token: e
   printed_label: Total cost or other basis
-  aliases: []
+  aliases:
+  - document=form_8949/table=part_ii_line_2/row_template=total/column=e
   control_role: amount
   status: pending_review
   evidence:
@@ -1083,6 +1336,17 @@ addresses:
     source_hash: 274513891e4e281d11e14286f14b9df724c24b6030fca0f0681da64fb2e7f525
     page: 2
   official_ref: Line 2 column (e)
+  concept_id: form_8949/long_term_transactions/total/cost_basis_total
+  placement:
+    concept_id: form_8949/long_term_transactions/total/cost_basis_total
+    printed_kind: line
+    printed_token: '2'
+    printed_ref: Line 2 column (e)
+  occurrence:
+    kind: entity
+    entity_key: total
+    review_granularity: concept
+    row_policy: entity_keyed
 - address_id: 2025/document=form_8949/table=part_ii_line_2/row_template=total/column=g
   logical_key: document=form_8949/table=part_ii_line_2/row_template=total/column=g
   year: 2025
@@ -1099,7 +1363,8 @@ addresses:
   - kind: column
     token: g
   printed_label: Total adjustments
-  aliases: []
+  aliases:
+  - document=form_8949/table=part_ii_line_2/row_template=total/column=g
   control_role: amount
   status: pending_review
   evidence:
@@ -1107,6 +1372,17 @@ addresses:
     source_hash: 274513891e4e281d11e14286f14b9df724c24b6030fca0f0681da64fb2e7f525
     page: 2
   official_ref: Line 2 column (g)
+  concept_id: form_8949/long_term_transactions/total/adjustment_amount_total
+  placement:
+    concept_id: form_8949/long_term_transactions/total/adjustment_amount_total
+    printed_kind: line
+    printed_token: '2'
+    printed_ref: Line 2 column (g)
+  occurrence:
+    kind: entity
+    entity_key: total
+    review_granularity: concept
+    row_policy: entity_keyed
 - address_id: 2025/document=form_8949/table=part_ii_line_2/row_template=total/column=h
   logical_key: document=form_8949/table=part_ii_line_2/row_template=total/column=h
   year: 2025
@@ -1123,7 +1399,8 @@ addresses:
   - kind: column
     token: h
   printed_label: Total gain or (loss)
-  aliases: []
+  aliases:
+  - document=form_8949/table=part_ii_line_2/row_template=total/column=h
   control_role: amount
   status: pending_review
   evidence:
@@ -1131,3 +1408,14 @@ addresses:
     source_hash: 274513891e4e281d11e14286f14b9df724c24b6030fca0f0681da64fb2e7f525
     page: 2
   official_ref: Line 2 column (h)
+  concept_id: form_8949/long_term_transactions/total/gain_or_loss_total
+  placement:
+    concept_id: form_8949/long_term_transactions/total/gain_or_loss_total
+    printed_kind: line
+    printed_token: '2'
+    printed_ref: Line 2 column (h)
+  occurrence:
+    kind: entity
+    entity_key: total
+    review_granularity: concept
+    row_policy: entity_keyed

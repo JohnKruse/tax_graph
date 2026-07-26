@@ -7,481 +7,577 @@ mappings:
   format: dollars
   node_id: form_8949_2025_part_i_line_2_line_2_column_d_total
   address_id: 2025/document=form_8949/table=part_i_line_2/row_template=total/column=d
+  concept_id: form_8949/short_term_transactions/total/proceeds_total
 - slot: form_8949_2025_part_i_line_2_line_2_column_e_total
   field_name: topmostSubform[0].Page1[0].f1_92[0]
   format: dollars
   node_id: form_8949_2025_part_i_line_2_line_2_column_e_total
   address_id: 2025/document=form_8949/table=part_i_line_2/row_template=total/column=e
+  concept_id: form_8949/short_term_transactions/total/cost_basis_total
 - slot: form_8949_2025_part_i_line_2_line_2_column_g_total
   field_name: topmostSubform[0].Page1[0].f1_94[0]
   format: dollars
   node_id: form_8949_2025_part_i_line_2_line_2_column_g_total
   address_id: 2025/document=form_8949/table=part_i_line_2/row_template=total/column=g
+  concept_id: form_8949/short_term_transactions/total/adjustment_amount_total
 - slot: form_8949_2025_part_i_line_2_line_2_column_h_total
   field_name: topmostSubform[0].Page1[0].f1_95[0]
   format: dollars
   node_id: form_8949_2025_part_i_line_2_line_2_column_h_total
   address_id: 2025/document=form_8949/table=part_i_line_2/row_template=total/column=h
+  concept_id: form_8949/short_term_transactions/total/gain_or_loss_total
 - slot: form_8949_2025_part_ii_line_2_line_2_column_d_total
   field_name: topmostSubform[0].Page2[0].f2_91[0]
   format: dollars
   node_id: form_8949_2025_part_ii_line_2_line_2_column_d_total
   address_id: 2025/document=form_8949/table=part_ii_line_2/row_template=total/column=d
+  concept_id: form_8949/long_term_transactions/total/proceeds_total
 - slot: form_8949_2025_part_ii_line_2_line_2_column_e_total
   field_name: topmostSubform[0].Page2[0].f2_92[0]
   format: dollars
   node_id: form_8949_2025_part_ii_line_2_line_2_column_e_total
   address_id: 2025/document=form_8949/table=part_ii_line_2/row_template=total/column=e
+  concept_id: form_8949/long_term_transactions/total/cost_basis_total
 - slot: form_8949_2025_part_ii_line_2_line_2_column_g_total
   field_name: topmostSubform[0].Page2[0].f2_94[0]
   format: dollars
   node_id: form_8949_2025_part_ii_line_2_line_2_column_g_total
   address_id: 2025/document=form_8949/table=part_ii_line_2/row_template=total/column=g
+  concept_id: form_8949/long_term_transactions/total/adjustment_amount_total
 - slot: form_8949_2025_part_ii_line_2_line_2_column_h_total
   field_name: topmostSubform[0].Page2[0].f2_95[0]
   format: dollars
   node_id: form_8949_2025_part_ii_line_2_line_2_column_h_total
   address_id: 2025/document=form_8949/table=part_ii_line_2/row_template=total/column=h
+  concept_id: form_8949/long_term_transactions/total/gain_or_loss_total
 - slot: table:form_8949_2025_part_i_line_1:1:d
   field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row1[0].f1_06[0]
   format: dollars
   node_id: form_8949_2025_part_i_line_1_column_d
   address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=d
+  concept_id: form_8949/short_term_transactions/transaction/proceeds
 - slot: table:form_8949_2025_part_i_line_1:1:e
   field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row1[0].f1_07[0]
   format: dollars
   node_id: form_8949_2025_part_i_line_1_column_e
   address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=e
+  concept_id: form_8949/short_term_transactions/transaction/cost_basis
 - slot: table:form_8949_2025_part_i_line_1:1:g
   field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row1[0].f1_09[0]
   format: dollars
   node_id: form_8949_2025_part_i_line_1_column_g
   address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=g
+  concept_id: form_8949/short_term_transactions/transaction/adjustment_amount
 - slot: table:form_8949_2025_part_i_line_1:1:h
   field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row1[0].f1_10[0]
   format: dollars
   node_id: form_8949_2025_part_i_line_1_column_h
   address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=h
+  concept_id: form_8949/short_term_transactions/transaction/gain_or_loss
 - slot: table:form_8949_2025_part_i_line_1:2:d
   field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row2[0].f1_14[0]
   format: dollars
   node_id: form_8949_2025_part_i_line_1_column_d
   address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=d
+  concept_id: form_8949/short_term_transactions/transaction/proceeds
 - slot: table:form_8949_2025_part_i_line_1:2:e
   field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row2[0].f1_15[0]
   format: dollars
   node_id: form_8949_2025_part_i_line_1_column_e
   address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=e
+  concept_id: form_8949/short_term_transactions/transaction/cost_basis
 - slot: table:form_8949_2025_part_i_line_1:2:g
   field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row2[0].f1_17[0]
   format: dollars
   node_id: form_8949_2025_part_i_line_1_column_g
   address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=g
+  concept_id: form_8949/short_term_transactions/transaction/adjustment_amount
 - slot: table:form_8949_2025_part_i_line_1:2:h
   field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row2[0].f1_18[0]
   format: dollars
   node_id: form_8949_2025_part_i_line_1_column_h
   address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=h
+  concept_id: form_8949/short_term_transactions/transaction/gain_or_loss
 - slot: table:form_8949_2025_part_i_line_1:3:d
   field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row3[0].f1_22[0]
   format: dollars
   node_id: form_8949_2025_part_i_line_1_column_d
   address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=d
+  concept_id: form_8949/short_term_transactions/transaction/proceeds
 - slot: table:form_8949_2025_part_i_line_1:3:e
   field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row3[0].f1_23[0]
   format: dollars
   node_id: form_8949_2025_part_i_line_1_column_e
   address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=e
+  concept_id: form_8949/short_term_transactions/transaction/cost_basis
 - slot: table:form_8949_2025_part_i_line_1:3:g
   field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row3[0].f1_25[0]
   format: dollars
   node_id: form_8949_2025_part_i_line_1_column_g
   address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=g
+  concept_id: form_8949/short_term_transactions/transaction/adjustment_amount
 - slot: table:form_8949_2025_part_i_line_1:3:h
   field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row3[0].f1_26[0]
   format: dollars
   node_id: form_8949_2025_part_i_line_1_column_h
   address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=h
+  concept_id: form_8949/short_term_transactions/transaction/gain_or_loss
 - slot: table:form_8949_2025_part_i_line_1:4:d
   field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row4[0].f1_30[0]
   format: dollars
   node_id: form_8949_2025_part_i_line_1_column_d
   address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=d
+  concept_id: form_8949/short_term_transactions/transaction/proceeds
 - slot: table:form_8949_2025_part_i_line_1:4:e
   field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row4[0].f1_31[0]
   format: dollars
   node_id: form_8949_2025_part_i_line_1_column_e
   address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=e
+  concept_id: form_8949/short_term_transactions/transaction/cost_basis
 - slot: table:form_8949_2025_part_i_line_1:4:g
   field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row4[0].f1_33[0]
   format: dollars
   node_id: form_8949_2025_part_i_line_1_column_g
   address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=g
+  concept_id: form_8949/short_term_transactions/transaction/adjustment_amount
 - slot: table:form_8949_2025_part_i_line_1:4:h
   field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row4[0].f1_34[0]
   format: dollars
   node_id: form_8949_2025_part_i_line_1_column_h
   address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=h
+  concept_id: form_8949/short_term_transactions/transaction/gain_or_loss
 - slot: table:form_8949_2025_part_i_line_1:5:d
   field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row5[0].f1_38[0]
   format: dollars
   node_id: form_8949_2025_part_i_line_1_column_d
   address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=d
+  concept_id: form_8949/short_term_transactions/transaction/proceeds
 - slot: table:form_8949_2025_part_i_line_1:5:e
   field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row5[0].f1_39[0]
   format: dollars
   node_id: form_8949_2025_part_i_line_1_column_e
   address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=e
+  concept_id: form_8949/short_term_transactions/transaction/cost_basis
 - slot: table:form_8949_2025_part_i_line_1:5:g
   field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row5[0].f1_41[0]
   format: dollars
   node_id: form_8949_2025_part_i_line_1_column_g
   address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=g
+  concept_id: form_8949/short_term_transactions/transaction/adjustment_amount
 - slot: table:form_8949_2025_part_i_line_1:5:h
   field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row5[0].f1_42[0]
   format: dollars
   node_id: form_8949_2025_part_i_line_1_column_h
   address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=h
+  concept_id: form_8949/short_term_transactions/transaction/gain_or_loss
 - slot: table:form_8949_2025_part_i_line_1:6:d
   field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row6[0].f1_46[0]
   format: dollars
   node_id: form_8949_2025_part_i_line_1_column_d
   address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=d
+  concept_id: form_8949/short_term_transactions/transaction/proceeds
 - slot: table:form_8949_2025_part_i_line_1:6:e
   field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row6[0].f1_47[0]
   format: dollars
   node_id: form_8949_2025_part_i_line_1_column_e
   address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=e
+  concept_id: form_8949/short_term_transactions/transaction/cost_basis
 - slot: table:form_8949_2025_part_i_line_1:6:g
   field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row6[0].f1_49[0]
   format: dollars
   node_id: form_8949_2025_part_i_line_1_column_g
   address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=g
+  concept_id: form_8949/short_term_transactions/transaction/adjustment_amount
 - slot: table:form_8949_2025_part_i_line_1:6:h
   field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row6[0].f1_50[0]
   format: dollars
   node_id: form_8949_2025_part_i_line_1_column_h
   address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=h
+  concept_id: form_8949/short_term_transactions/transaction/gain_or_loss
 - slot: table:form_8949_2025_part_i_line_1:7:d
   field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row7[0].f1_54[0]
   format: dollars
   node_id: form_8949_2025_part_i_line_1_column_d
   address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=d
+  concept_id: form_8949/short_term_transactions/transaction/proceeds
 - slot: table:form_8949_2025_part_i_line_1:7:e
   field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row7[0].f1_55[0]
   format: dollars
   node_id: form_8949_2025_part_i_line_1_column_e
   address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=e
+  concept_id: form_8949/short_term_transactions/transaction/cost_basis
 - slot: table:form_8949_2025_part_i_line_1:7:g
   field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row7[0].f1_57[0]
   format: dollars
   node_id: form_8949_2025_part_i_line_1_column_g
   address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=g
+  concept_id: form_8949/short_term_transactions/transaction/adjustment_amount
 - slot: table:form_8949_2025_part_i_line_1:7:h
   field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row7[0].f1_58[0]
   format: dollars
   node_id: form_8949_2025_part_i_line_1_column_h
   address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=h
+  concept_id: form_8949/short_term_transactions/transaction/gain_or_loss
 - slot: table:form_8949_2025_part_i_line_1:8:d
   field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row8[0].f1_62[0]
   format: dollars
   node_id: form_8949_2025_part_i_line_1_column_d
   address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=d
+  concept_id: form_8949/short_term_transactions/transaction/proceeds
 - slot: table:form_8949_2025_part_i_line_1:8:e
   field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row8[0].f1_63[0]
   format: dollars
   node_id: form_8949_2025_part_i_line_1_column_e
   address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=e
+  concept_id: form_8949/short_term_transactions/transaction/cost_basis
 - slot: table:form_8949_2025_part_i_line_1:8:g
   field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row8[0].f1_65[0]
   format: dollars
   node_id: form_8949_2025_part_i_line_1_column_g
   address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=g
+  concept_id: form_8949/short_term_transactions/transaction/adjustment_amount
 - slot: table:form_8949_2025_part_i_line_1:8:h
   field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row8[0].f1_66[0]
   format: dollars
   node_id: form_8949_2025_part_i_line_1_column_h
   address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=h
+  concept_id: form_8949/short_term_transactions/transaction/gain_or_loss
 - slot: table:form_8949_2025_part_i_line_1:9:d
   field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row9[0].f1_70[0]
   format: dollars
   node_id: form_8949_2025_part_i_line_1_column_d
   address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=d
+  concept_id: form_8949/short_term_transactions/transaction/proceeds
 - slot: table:form_8949_2025_part_i_line_1:9:e
   field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row9[0].f1_71[0]
   format: dollars
   node_id: form_8949_2025_part_i_line_1_column_e
   address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=e
+  concept_id: form_8949/short_term_transactions/transaction/cost_basis
 - slot: table:form_8949_2025_part_i_line_1:9:g
   field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row9[0].f1_73[0]
   format: dollars
   node_id: form_8949_2025_part_i_line_1_column_g
   address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=g
+  concept_id: form_8949/short_term_transactions/transaction/adjustment_amount
 - slot: table:form_8949_2025_part_i_line_1:9:h
   field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row9[0].f1_74[0]
   format: dollars
   node_id: form_8949_2025_part_i_line_1_column_h
   address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=h
+  concept_id: form_8949/short_term_transactions/transaction/gain_or_loss
 - slot: table:form_8949_2025_part_i_line_1:10:d
   field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row10[0].f1_78[0]
   format: dollars
   node_id: form_8949_2025_part_i_line_1_column_d
   address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=d
+  concept_id: form_8949/short_term_transactions/transaction/proceeds
 - slot: table:form_8949_2025_part_i_line_1:10:e
   field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row10[0].f1_79[0]
   format: dollars
   node_id: form_8949_2025_part_i_line_1_column_e
   address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=e
+  concept_id: form_8949/short_term_transactions/transaction/cost_basis
 - slot: table:form_8949_2025_part_i_line_1:10:g
   field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row10[0].f1_81[0]
   format: dollars
   node_id: form_8949_2025_part_i_line_1_column_g
   address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=g
+  concept_id: form_8949/short_term_transactions/transaction/adjustment_amount
 - slot: table:form_8949_2025_part_i_line_1:10:h
   field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row10[0].f1_82[0]
   format: dollars
   node_id: form_8949_2025_part_i_line_1_column_h
   address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=h
+  concept_id: form_8949/short_term_transactions/transaction/gain_or_loss
 - slot: table:form_8949_2025_part_i_line_1:11:d
   field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row11[0].f1_86[0]
   format: dollars
   node_id: form_8949_2025_part_i_line_1_column_d
   address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=d
+  concept_id: form_8949/short_term_transactions/transaction/proceeds
 - slot: table:form_8949_2025_part_i_line_1:11:e
   field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row11[0].f1_87[0]
   format: dollars
   node_id: form_8949_2025_part_i_line_1_column_e
   address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=e
+  concept_id: form_8949/short_term_transactions/transaction/cost_basis
 - slot: table:form_8949_2025_part_i_line_1:11:g
   field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row11[0].f1_89[0]
   format: dollars
   node_id: form_8949_2025_part_i_line_1_column_g
   address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=g
+  concept_id: form_8949/short_term_transactions/transaction/adjustment_amount
 - slot: table:form_8949_2025_part_i_line_1:11:h
   field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row11[0].f1_90[0]
   format: dollars
   node_id: form_8949_2025_part_i_line_1_column_h
   address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=h
+  concept_id: form_8949/short_term_transactions/transaction/gain_or_loss
 - slot: table:form_8949_2025_part_ii_line_1:1:d
   field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row1[0].f2_06[0]
   format: dollars
   node_id: form_8949_2025_part_ii_line_1_column_d
   address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=d
+  concept_id: form_8949/long_term_transactions/transaction/proceeds
 - slot: table:form_8949_2025_part_ii_line_1:1:e
   field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row1[0].f2_07[0]
   format: dollars
   node_id: form_8949_2025_part_ii_line_1_column_e
   address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=e
+  concept_id: form_8949/long_term_transactions/transaction/cost_basis
 - slot: table:form_8949_2025_part_ii_line_1:1:g
   field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row1[0].f2_09[0]
   format: dollars
   node_id: form_8949_2025_part_ii_line_1_column_g
   address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=g
+  concept_id: form_8949/long_term_transactions/transaction/adjustment_amount
 - slot: table:form_8949_2025_part_ii_line_1:1:h
   field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row1[0].f2_10[0]
   format: dollars
   node_id: form_8949_2025_part_ii_line_1_column_h
   address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=h
+  concept_id: form_8949/long_term_transactions/transaction/gain_or_loss
 - slot: table:form_8949_2025_part_ii_line_1:2:d
   field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row2[0].f2_14[0]
   format: dollars
   node_id: form_8949_2025_part_ii_line_1_column_d
   address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=d
+  concept_id: form_8949/long_term_transactions/transaction/proceeds
 - slot: table:form_8949_2025_part_ii_line_1:2:e
   field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row2[0].f2_15[0]
   format: dollars
   node_id: form_8949_2025_part_ii_line_1_column_e
   address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=e
+  concept_id: form_8949/long_term_transactions/transaction/cost_basis
 - slot: table:form_8949_2025_part_ii_line_1:2:g
   field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row2[0].f2_17[0]
   format: dollars
   node_id: form_8949_2025_part_ii_line_1_column_g
   address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=g
+  concept_id: form_8949/long_term_transactions/transaction/adjustment_amount
 - slot: table:form_8949_2025_part_ii_line_1:2:h
   field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row2[0].f2_18[0]
   format: dollars
   node_id: form_8949_2025_part_ii_line_1_column_h
   address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=h
+  concept_id: form_8949/long_term_transactions/transaction/gain_or_loss
 - slot: table:form_8949_2025_part_ii_line_1:3:d
   field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row3[0].f2_22[0]
   format: dollars
   node_id: form_8949_2025_part_ii_line_1_column_d
   address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=d
+  concept_id: form_8949/long_term_transactions/transaction/proceeds
 - slot: table:form_8949_2025_part_ii_line_1:3:e
   field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row3[0].f2_23[0]
   format: dollars
   node_id: form_8949_2025_part_ii_line_1_column_e
   address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=e
+  concept_id: form_8949/long_term_transactions/transaction/cost_basis
 - slot: table:form_8949_2025_part_ii_line_1:3:g
   field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row3[0].f2_25[0]
   format: dollars
   node_id: form_8949_2025_part_ii_line_1_column_g
   address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=g
+  concept_id: form_8949/long_term_transactions/transaction/adjustment_amount
 - slot: table:form_8949_2025_part_ii_line_1:3:h
   field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row3[0].f2_26[0]
   format: dollars
   node_id: form_8949_2025_part_ii_line_1_column_h
   address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=h
+  concept_id: form_8949/long_term_transactions/transaction/gain_or_loss
 - slot: table:form_8949_2025_part_ii_line_1:4:d
   field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row4[0].f2_30[0]
   format: dollars
   node_id: form_8949_2025_part_ii_line_1_column_d
   address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=d
+  concept_id: form_8949/long_term_transactions/transaction/proceeds
 - slot: table:form_8949_2025_part_ii_line_1:4:e
   field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row4[0].f2_31[0]
   format: dollars
   node_id: form_8949_2025_part_ii_line_1_column_e
   address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=e
+  concept_id: form_8949/long_term_transactions/transaction/cost_basis
 - slot: table:form_8949_2025_part_ii_line_1:4:g
   field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row4[0].f2_33[0]
   format: dollars
   node_id: form_8949_2025_part_ii_line_1_column_g
   address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=g
+  concept_id: form_8949/long_term_transactions/transaction/adjustment_amount
 - slot: table:form_8949_2025_part_ii_line_1:4:h
   field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row4[0].f2_34[0]
   format: dollars
   node_id: form_8949_2025_part_ii_line_1_column_h
   address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=h
+  concept_id: form_8949/long_term_transactions/transaction/gain_or_loss
 - slot: table:form_8949_2025_part_ii_line_1:5:d
   field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row5[0].f2_38[0]
   format: dollars
   node_id: form_8949_2025_part_ii_line_1_column_d
   address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=d
+  concept_id: form_8949/long_term_transactions/transaction/proceeds
 - slot: table:form_8949_2025_part_ii_line_1:5:e
   field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row5[0].f2_39[0]
   format: dollars
   node_id: form_8949_2025_part_ii_line_1_column_e
   address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=e
+  concept_id: form_8949/long_term_transactions/transaction/cost_basis
 - slot: table:form_8949_2025_part_ii_line_1:5:g
   field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row5[0].f2_41[0]
   format: dollars
   node_id: form_8949_2025_part_ii_line_1_column_g
   address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=g
+  concept_id: form_8949/long_term_transactions/transaction/adjustment_amount
 - slot: table:form_8949_2025_part_ii_line_1:5:h
   field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row5[0].f2_42[0]
   format: dollars
   node_id: form_8949_2025_part_ii_line_1_column_h
   address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=h
+  concept_id: form_8949/long_term_transactions/transaction/gain_or_loss
 - slot: table:form_8949_2025_part_ii_line_1:6:d
   field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row6[0].f2_46[0]
   format: dollars
   node_id: form_8949_2025_part_ii_line_1_column_d
   address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=d
+  concept_id: form_8949/long_term_transactions/transaction/proceeds
 - slot: table:form_8949_2025_part_ii_line_1:6:e
   field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row6[0].f2_47[0]
   format: dollars
   node_id: form_8949_2025_part_ii_line_1_column_e
   address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=e
+  concept_id: form_8949/long_term_transactions/transaction/cost_basis
 - slot: table:form_8949_2025_part_ii_line_1:6:g
   field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row6[0].f2_49[0]
   format: dollars
   node_id: form_8949_2025_part_ii_line_1_column_g
   address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=g
+  concept_id: form_8949/long_term_transactions/transaction/adjustment_amount
 - slot: table:form_8949_2025_part_ii_line_1:6:h
   field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row6[0].f2_50[0]
   format: dollars
   node_id: form_8949_2025_part_ii_line_1_column_h
   address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=h
+  concept_id: form_8949/long_term_transactions/transaction/gain_or_loss
 - slot: table:form_8949_2025_part_ii_line_1:7:d
   field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row7[0].f2_54[0]
   format: dollars
   node_id: form_8949_2025_part_ii_line_1_column_d
   address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=d
+  concept_id: form_8949/long_term_transactions/transaction/proceeds
 - slot: table:form_8949_2025_part_ii_line_1:7:e
   field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row7[0].f2_55[0]
   format: dollars
   node_id: form_8949_2025_part_ii_line_1_column_e
   address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=e
+  concept_id: form_8949/long_term_transactions/transaction/cost_basis
 - slot: table:form_8949_2025_part_ii_line_1:7:g
   field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row7[0].f2_57[0]
   format: dollars
   node_id: form_8949_2025_part_ii_line_1_column_g
   address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=g
+  concept_id: form_8949/long_term_transactions/transaction/adjustment_amount
 - slot: table:form_8949_2025_part_ii_line_1:7:h
   field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row7[0].f2_58[0]
   format: dollars
   node_id: form_8949_2025_part_ii_line_1_column_h
   address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=h
+  concept_id: form_8949/long_term_transactions/transaction/gain_or_loss
 - slot: table:form_8949_2025_part_ii_line_1:8:d
   field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row8[0].f2_62[0]
   format: dollars
   node_id: form_8949_2025_part_ii_line_1_column_d
   address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=d
+  concept_id: form_8949/long_term_transactions/transaction/proceeds
 - slot: table:form_8949_2025_part_ii_line_1:8:e
   field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row8[0].f2_63[0]
   format: dollars
   node_id: form_8949_2025_part_ii_line_1_column_e
   address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=e
+  concept_id: form_8949/long_term_transactions/transaction/cost_basis
 - slot: table:form_8949_2025_part_ii_line_1:8:g
   field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row8[0].f2_65[0]
   format: dollars
   node_id: form_8949_2025_part_ii_line_1_column_g
   address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=g
+  concept_id: form_8949/long_term_transactions/transaction/adjustment_amount
 - slot: table:form_8949_2025_part_ii_line_1:8:h
   field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row8[0].f2_66[0]
   format: dollars
   node_id: form_8949_2025_part_ii_line_1_column_h
   address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=h
+  concept_id: form_8949/long_term_transactions/transaction/gain_or_loss
 - slot: table:form_8949_2025_part_ii_line_1:9:d
   field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row9[0].f2_70[0]
   format: dollars
   node_id: form_8949_2025_part_ii_line_1_column_d
   address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=d
+  concept_id: form_8949/long_term_transactions/transaction/proceeds
 - slot: table:form_8949_2025_part_ii_line_1:9:e
   field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row9[0].f2_71[0]
   format: dollars
   node_id: form_8949_2025_part_ii_line_1_column_e
   address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=e
+  concept_id: form_8949/long_term_transactions/transaction/cost_basis
 - slot: table:form_8949_2025_part_ii_line_1:9:g
   field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row9[0].f2_73[0]
   format: dollars
   node_id: form_8949_2025_part_ii_line_1_column_g
   address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=g
+  concept_id: form_8949/long_term_transactions/transaction/adjustment_amount
 - slot: table:form_8949_2025_part_ii_line_1:9:h
   field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row9[0].f2_74[0]
   format: dollars
   node_id: form_8949_2025_part_ii_line_1_column_h
   address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=h
+  concept_id: form_8949/long_term_transactions/transaction/gain_or_loss
 - slot: table:form_8949_2025_part_ii_line_1:10:d
   field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row10[0].f2_78[0]
   format: dollars
   node_id: form_8949_2025_part_ii_line_1_column_d
   address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=d
+  concept_id: form_8949/long_term_transactions/transaction/proceeds
 - slot: table:form_8949_2025_part_ii_line_1:10:e
   field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row10[0].f2_79[0]
   format: dollars
   node_id: form_8949_2025_part_ii_line_1_column_e
   address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=e
+  concept_id: form_8949/long_term_transactions/transaction/cost_basis
 - slot: table:form_8949_2025_part_ii_line_1:10:g
   field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row10[0].f2_81[0]
   format: dollars
   node_id: form_8949_2025_part_ii_line_1_column_g
   address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=g
+  concept_id: form_8949/long_term_transactions/transaction/adjustment_amount
 - slot: table:form_8949_2025_part_ii_line_1:10:h
   field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row10[0].f2_82[0]
   format: dollars
   node_id: form_8949_2025_part_ii_line_1_column_h
   address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=h
+  concept_id: form_8949/long_term_transactions/transaction/gain_or_loss
 - slot: table:form_8949_2025_part_ii_line_1:11:d
   field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row11[0].f2_86[0]
   format: dollars
   node_id: form_8949_2025_part_ii_line_1_column_d
   address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=d
+  concept_id: form_8949/long_term_transactions/transaction/proceeds
 - slot: table:form_8949_2025_part_ii_line_1:11:e
   field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row11[0].f2_87[0]
   format: dollars
   node_id: form_8949_2025_part_ii_line_1_column_e
   address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=e
+  concept_id: form_8949/long_term_transactions/transaction/cost_basis
 - slot: table:form_8949_2025_part_ii_line_1:11:g
   field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row11[0].f2_89[0]
   format: dollars
   node_id: form_8949_2025_part_ii_line_1_column_g
   address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=g
+  concept_id: form_8949/long_term_transactions/transaction/adjustment_amount
 - slot: table:form_8949_2025_part_ii_line_1:11:h
   field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row11[0].f2_90[0]
   format: dollars
   node_id: form_8949_2025_part_ii_line_1_column_h
   address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=h
+  concept_id: form_8949/long_term_transactions/transaction/gain_or_loss
 excluded_nodes:
 - node_id: form_8949_2025_part_i_line_1_column_d_minus_e
   reason: Not a printable form line or not mapped in the M12 supported output profile.
@@ -594,6 +690,7 @@ field_dispositions:
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row1[0].f1_03[0].
   address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=a
+  concept_id: form_8949/short_term_transactions/transaction/description
 - field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row1[0].f1_04[0]
   label: f1_04
   population_policy: unsupported
@@ -610,6 +707,7 @@ field_dispositions:
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row1[0].f1_04[0].
   address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=b
+  concept_id: form_8949/short_term_transactions/transaction/date_acquired
 - field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row1[0].f1_05[0]
   label: f1_05
   population_policy: unsupported
@@ -626,6 +724,7 @@ field_dispositions:
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row1[0].f1_05[0].
   address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=c
+  concept_id: form_8949/short_term_transactions/transaction/date_disposed
 - field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row1[0].f1_06[0]
   label: f1_06
   population_policy: user_entered
@@ -637,6 +736,7 @@ field_dispositions:
     role: value
   node_id: form_8949_2025_part_i_line_1_column_d
   address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=d
+  concept_id: form_8949/short_term_transactions/transaction/proceeds
 - field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row1[0].f1_07[0]
   label: f1_07
   population_policy: user_entered
@@ -648,6 +748,7 @@ field_dispositions:
     role: value
   node_id: form_8949_2025_part_i_line_1_column_e
   address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=e
+  concept_id: form_8949/short_term_transactions/transaction/cost_basis
 - field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row1[0].f1_08[0]
   label: f1_08
   population_policy: unsupported
@@ -664,6 +765,7 @@ field_dispositions:
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row1[0].f1_08[0].
   address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=f
+  concept_id: form_8949/short_term_transactions/transaction/adjustment_code
 - field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row1[0].f1_09[0]
   label: f1_09
   population_policy: user_entered
@@ -675,6 +777,7 @@ field_dispositions:
     role: value
   node_id: form_8949_2025_part_i_line_1_column_g
   address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=g
+  concept_id: form_8949/short_term_transactions/transaction/adjustment_amount
 - field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row1[0].f1_10[0]
   label: f1_10
   population_policy: computed
@@ -686,6 +789,7 @@ field_dispositions:
     role: value
   node_id: form_8949_2025_part_i_line_1_column_h
   address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=h
+  concept_id: form_8949/short_term_transactions/transaction/gain_or_loss
 - field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row2[0].f1_11[0]
   label: f1_11
   population_policy: unsupported
@@ -702,6 +806,7 @@ field_dispositions:
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row2[0].f1_11[0].
   address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=a
+  concept_id: form_8949/short_term_transactions/transaction/description
 - field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row2[0].f1_12[0]
   label: f1_12
   population_policy: unsupported
@@ -718,6 +823,7 @@ field_dispositions:
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row2[0].f1_12[0].
   address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=b
+  concept_id: form_8949/short_term_transactions/transaction/date_acquired
 - field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row2[0].f1_13[0]
   label: f1_13
   population_policy: unsupported
@@ -734,6 +840,7 @@ field_dispositions:
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row2[0].f1_13[0].
   address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=c
+  concept_id: form_8949/short_term_transactions/transaction/date_disposed
 - field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row2[0].f1_14[0]
   label: f1_14
   population_policy: user_entered
@@ -745,6 +852,7 @@ field_dispositions:
     role: value
   node_id: form_8949_2025_part_i_line_1_column_d
   address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=d
+  concept_id: form_8949/short_term_transactions/transaction/proceeds
 - field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row2[0].f1_15[0]
   label: f1_15
   population_policy: user_entered
@@ -756,6 +864,7 @@ field_dispositions:
     role: value
   node_id: form_8949_2025_part_i_line_1_column_e
   address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=e
+  concept_id: form_8949/short_term_transactions/transaction/cost_basis
 - field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row2[0].f1_16[0]
   label: f1_16
   population_policy: unsupported
@@ -772,6 +881,7 @@ field_dispositions:
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row2[0].f1_16[0].
   address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=f
+  concept_id: form_8949/short_term_transactions/transaction/adjustment_code
 - field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row2[0].f1_17[0]
   label: f1_17
   population_policy: user_entered
@@ -783,6 +893,7 @@ field_dispositions:
     role: value
   node_id: form_8949_2025_part_i_line_1_column_g
   address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=g
+  concept_id: form_8949/short_term_transactions/transaction/adjustment_amount
 - field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row2[0].f1_18[0]
   label: f1_18
   population_policy: computed
@@ -794,6 +905,7 @@ field_dispositions:
     role: value
   node_id: form_8949_2025_part_i_line_1_column_h
   address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=h
+  concept_id: form_8949/short_term_transactions/transaction/gain_or_loss
 - field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row3[0].f1_19[0]
   label: f1_19
   population_policy: unsupported
@@ -810,6 +922,7 @@ field_dispositions:
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row3[0].f1_19[0].
   address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=a
+  concept_id: form_8949/short_term_transactions/transaction/description
 - field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row3[0].f1_20[0]
   label: f1_20
   population_policy: unsupported
@@ -826,6 +939,7 @@ field_dispositions:
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row3[0].f1_20[0].
   address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=b
+  concept_id: form_8949/short_term_transactions/transaction/date_acquired
 - field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row3[0].f1_21[0]
   label: f1_21
   population_policy: unsupported
@@ -842,6 +956,7 @@ field_dispositions:
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row3[0].f1_21[0].
   address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=c
+  concept_id: form_8949/short_term_transactions/transaction/date_disposed
 - field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row3[0].f1_22[0]
   label: f1_22
   population_policy: user_entered
@@ -853,6 +968,7 @@ field_dispositions:
     role: value
   node_id: form_8949_2025_part_i_line_1_column_d
   address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=d
+  concept_id: form_8949/short_term_transactions/transaction/proceeds
 - field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row3[0].f1_23[0]
   label: f1_23
   population_policy: user_entered
@@ -864,6 +980,7 @@ field_dispositions:
     role: value
   node_id: form_8949_2025_part_i_line_1_column_e
   address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=e
+  concept_id: form_8949/short_term_transactions/transaction/cost_basis
 - field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row3[0].f1_24[0]
   label: f1_24
   population_policy: unsupported
@@ -880,6 +997,7 @@ field_dispositions:
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row3[0].f1_24[0].
   address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=f
+  concept_id: form_8949/short_term_transactions/transaction/adjustment_code
 - field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row3[0].f1_25[0]
   label: f1_25
   population_policy: user_entered
@@ -891,6 +1009,7 @@ field_dispositions:
     role: value
   node_id: form_8949_2025_part_i_line_1_column_g
   address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=g
+  concept_id: form_8949/short_term_transactions/transaction/adjustment_amount
 - field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row3[0].f1_26[0]
   label: f1_26
   population_policy: computed
@@ -902,6 +1021,7 @@ field_dispositions:
     role: value
   node_id: form_8949_2025_part_i_line_1_column_h
   address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=h
+  concept_id: form_8949/short_term_transactions/transaction/gain_or_loss
 - field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row4[0].f1_27[0]
   label: f1_27
   population_policy: unsupported
@@ -918,6 +1038,7 @@ field_dispositions:
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row4[0].f1_27[0].
   address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=a
+  concept_id: form_8949/short_term_transactions/transaction/description
 - field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row4[0].f1_28[0]
   label: f1_28
   population_policy: unsupported
@@ -934,6 +1055,7 @@ field_dispositions:
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row4[0].f1_28[0].
   address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=b
+  concept_id: form_8949/short_term_transactions/transaction/date_acquired
 - field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row4[0].f1_29[0]
   label: f1_29
   population_policy: unsupported
@@ -950,6 +1072,7 @@ field_dispositions:
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row4[0].f1_29[0].
   address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=c
+  concept_id: form_8949/short_term_transactions/transaction/date_disposed
 - field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row4[0].f1_30[0]
   label: f1_30
   population_policy: user_entered
@@ -961,6 +1084,7 @@ field_dispositions:
     role: value
   node_id: form_8949_2025_part_i_line_1_column_d
   address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=d
+  concept_id: form_8949/short_term_transactions/transaction/proceeds
 - field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row4[0].f1_31[0]
   label: f1_31
   population_policy: user_entered
@@ -972,6 +1096,7 @@ field_dispositions:
     role: value
   node_id: form_8949_2025_part_i_line_1_column_e
   address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=e
+  concept_id: form_8949/short_term_transactions/transaction/cost_basis
 - field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row4[0].f1_32[0]
   label: f1_32
   population_policy: unsupported
@@ -988,6 +1113,7 @@ field_dispositions:
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row4[0].f1_32[0].
   address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=f
+  concept_id: form_8949/short_term_transactions/transaction/adjustment_code
 - field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row4[0].f1_33[0]
   label: f1_33
   population_policy: user_entered
@@ -999,6 +1125,7 @@ field_dispositions:
     role: value
   node_id: form_8949_2025_part_i_line_1_column_g
   address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=g
+  concept_id: form_8949/short_term_transactions/transaction/adjustment_amount
 - field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row4[0].f1_34[0]
   label: f1_34
   population_policy: computed
@@ -1010,6 +1137,7 @@ field_dispositions:
     role: value
   node_id: form_8949_2025_part_i_line_1_column_h
   address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=h
+  concept_id: form_8949/short_term_transactions/transaction/gain_or_loss
 - field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row5[0].f1_35[0]
   label: f1_35
   population_policy: unsupported
@@ -1026,6 +1154,7 @@ field_dispositions:
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row5[0].f1_35[0].
   address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=a
+  concept_id: form_8949/short_term_transactions/transaction/description
 - field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row5[0].f1_36[0]
   label: f1_36
   population_policy: unsupported
@@ -1042,6 +1171,7 @@ field_dispositions:
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row5[0].f1_36[0].
   address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=b
+  concept_id: form_8949/short_term_transactions/transaction/date_acquired
 - field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row5[0].f1_37[0]
   label: f1_37
   population_policy: unsupported
@@ -1058,6 +1188,7 @@ field_dispositions:
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row5[0].f1_37[0].
   address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=c
+  concept_id: form_8949/short_term_transactions/transaction/date_disposed
 - field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row5[0].f1_38[0]
   label: f1_38
   population_policy: user_entered
@@ -1069,6 +1200,7 @@ field_dispositions:
     role: value
   node_id: form_8949_2025_part_i_line_1_column_d
   address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=d
+  concept_id: form_8949/short_term_transactions/transaction/proceeds
 - field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row5[0].f1_39[0]
   label: f1_39
   population_policy: user_entered
@@ -1080,6 +1212,7 @@ field_dispositions:
     role: value
   node_id: form_8949_2025_part_i_line_1_column_e
   address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=e
+  concept_id: form_8949/short_term_transactions/transaction/cost_basis
 - field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row5[0].f1_40[0]
   label: f1_40
   population_policy: unsupported
@@ -1096,6 +1229,7 @@ field_dispositions:
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row5[0].f1_40[0].
   address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=f
+  concept_id: form_8949/short_term_transactions/transaction/adjustment_code
 - field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row5[0].f1_41[0]
   label: f1_41
   population_policy: user_entered
@@ -1107,6 +1241,7 @@ field_dispositions:
     role: value
   node_id: form_8949_2025_part_i_line_1_column_g
   address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=g
+  concept_id: form_8949/short_term_transactions/transaction/adjustment_amount
 - field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row5[0].f1_42[0]
   label: f1_42
   population_policy: computed
@@ -1118,6 +1253,7 @@ field_dispositions:
     role: value
   node_id: form_8949_2025_part_i_line_1_column_h
   address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=h
+  concept_id: form_8949/short_term_transactions/transaction/gain_or_loss
 - field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row6[0].f1_43[0]
   label: f1_43
   population_policy: unsupported
@@ -1134,6 +1270,7 @@ field_dispositions:
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row6[0].f1_43[0].
   address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=a
+  concept_id: form_8949/short_term_transactions/transaction/description
 - field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row6[0].f1_44[0]
   label: f1_44
   population_policy: unsupported
@@ -1150,6 +1287,7 @@ field_dispositions:
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row6[0].f1_44[0].
   address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=b
+  concept_id: form_8949/short_term_transactions/transaction/date_acquired
 - field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row6[0].f1_45[0]
   label: f1_45
   population_policy: unsupported
@@ -1166,6 +1304,7 @@ field_dispositions:
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row6[0].f1_45[0].
   address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=c
+  concept_id: form_8949/short_term_transactions/transaction/date_disposed
 - field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row6[0].f1_46[0]
   label: f1_46
   population_policy: user_entered
@@ -1177,6 +1316,7 @@ field_dispositions:
     role: value
   node_id: form_8949_2025_part_i_line_1_column_d
   address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=d
+  concept_id: form_8949/short_term_transactions/transaction/proceeds
 - field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row6[0].f1_47[0]
   label: f1_47
   population_policy: user_entered
@@ -1188,6 +1328,7 @@ field_dispositions:
     role: value
   node_id: form_8949_2025_part_i_line_1_column_e
   address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=e
+  concept_id: form_8949/short_term_transactions/transaction/cost_basis
 - field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row6[0].f1_48[0]
   label: f1_48
   population_policy: unsupported
@@ -1204,6 +1345,7 @@ field_dispositions:
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row6[0].f1_48[0].
   address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=f
+  concept_id: form_8949/short_term_transactions/transaction/adjustment_code
 - field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row6[0].f1_49[0]
   label: f1_49
   population_policy: user_entered
@@ -1215,6 +1357,7 @@ field_dispositions:
     role: value
   node_id: form_8949_2025_part_i_line_1_column_g
   address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=g
+  concept_id: form_8949/short_term_transactions/transaction/adjustment_amount
 - field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row6[0].f1_50[0]
   label: f1_50
   population_policy: computed
@@ -1226,6 +1369,7 @@ field_dispositions:
     role: value
   node_id: form_8949_2025_part_i_line_1_column_h
   address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=h
+  concept_id: form_8949/short_term_transactions/transaction/gain_or_loss
 - field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row7[0].f1_51[0]
   label: f1_51
   population_policy: unsupported
@@ -1242,6 +1386,7 @@ field_dispositions:
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row7[0].f1_51[0].
   address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=a
+  concept_id: form_8949/short_term_transactions/transaction/description
 - field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row7[0].f1_52[0]
   label: f1_52
   population_policy: unsupported
@@ -1258,6 +1403,7 @@ field_dispositions:
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row7[0].f1_52[0].
   address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=b
+  concept_id: form_8949/short_term_transactions/transaction/date_acquired
 - field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row7[0].f1_53[0]
   label: f1_53
   population_policy: unsupported
@@ -1274,6 +1420,7 @@ field_dispositions:
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row7[0].f1_53[0].
   address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=c
+  concept_id: form_8949/short_term_transactions/transaction/date_disposed
 - field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row7[0].f1_54[0]
   label: f1_54
   population_policy: user_entered
@@ -1285,6 +1432,7 @@ field_dispositions:
     role: value
   node_id: form_8949_2025_part_i_line_1_column_d
   address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=d
+  concept_id: form_8949/short_term_transactions/transaction/proceeds
 - field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row7[0].f1_55[0]
   label: f1_55
   population_policy: user_entered
@@ -1296,6 +1444,7 @@ field_dispositions:
     role: value
   node_id: form_8949_2025_part_i_line_1_column_e
   address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=e
+  concept_id: form_8949/short_term_transactions/transaction/cost_basis
 - field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row7[0].f1_56[0]
   label: f1_56
   population_policy: unsupported
@@ -1312,6 +1461,7 @@ field_dispositions:
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row7[0].f1_56[0].
   address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=f
+  concept_id: form_8949/short_term_transactions/transaction/adjustment_code
 - field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row7[0].f1_57[0]
   label: f1_57
   population_policy: user_entered
@@ -1323,6 +1473,7 @@ field_dispositions:
     role: value
   node_id: form_8949_2025_part_i_line_1_column_g
   address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=g
+  concept_id: form_8949/short_term_transactions/transaction/adjustment_amount
 - field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row7[0].f1_58[0]
   label: f1_58
   population_policy: computed
@@ -1334,6 +1485,7 @@ field_dispositions:
     role: value
   node_id: form_8949_2025_part_i_line_1_column_h
   address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=h
+  concept_id: form_8949/short_term_transactions/transaction/gain_or_loss
 - field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row8[0].f1_59[0]
   label: f1_59
   population_policy: unsupported
@@ -1350,6 +1502,7 @@ field_dispositions:
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row8[0].f1_59[0].
   address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=a
+  concept_id: form_8949/short_term_transactions/transaction/description
 - field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row8[0].f1_60[0]
   label: f1_60
   population_policy: unsupported
@@ -1366,6 +1519,7 @@ field_dispositions:
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row8[0].f1_60[0].
   address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=b
+  concept_id: form_8949/short_term_transactions/transaction/date_acquired
 - field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row8[0].f1_61[0]
   label: f1_61
   population_policy: unsupported
@@ -1382,6 +1536,7 @@ field_dispositions:
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row8[0].f1_61[0].
   address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=c
+  concept_id: form_8949/short_term_transactions/transaction/date_disposed
 - field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row8[0].f1_62[0]
   label: f1_62
   population_policy: user_entered
@@ -1393,6 +1548,7 @@ field_dispositions:
     role: value
   node_id: form_8949_2025_part_i_line_1_column_d
   address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=d
+  concept_id: form_8949/short_term_transactions/transaction/proceeds
 - field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row8[0].f1_63[0]
   label: f1_63
   population_policy: user_entered
@@ -1404,6 +1560,7 @@ field_dispositions:
     role: value
   node_id: form_8949_2025_part_i_line_1_column_e
   address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=e
+  concept_id: form_8949/short_term_transactions/transaction/cost_basis
 - field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row8[0].f1_64[0]
   label: f1_64
   population_policy: unsupported
@@ -1420,6 +1577,7 @@ field_dispositions:
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row8[0].f1_64[0].
   address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=f
+  concept_id: form_8949/short_term_transactions/transaction/adjustment_code
 - field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row8[0].f1_65[0]
   label: f1_65
   population_policy: user_entered
@@ -1431,6 +1589,7 @@ field_dispositions:
     role: value
   node_id: form_8949_2025_part_i_line_1_column_g
   address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=g
+  concept_id: form_8949/short_term_transactions/transaction/adjustment_amount
 - field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row8[0].f1_66[0]
   label: f1_66
   population_policy: computed
@@ -1442,6 +1601,7 @@ field_dispositions:
     role: value
   node_id: form_8949_2025_part_i_line_1_column_h
   address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=h
+  concept_id: form_8949/short_term_transactions/transaction/gain_or_loss
 - field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row9[0].f1_67[0]
   label: f1_67
   population_policy: unsupported
@@ -1458,6 +1618,7 @@ field_dispositions:
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row9[0].f1_67[0].
   address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=a
+  concept_id: form_8949/short_term_transactions/transaction/description
 - field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row9[0].f1_68[0]
   label: f1_68
   population_policy: unsupported
@@ -1474,6 +1635,7 @@ field_dispositions:
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row9[0].f1_68[0].
   address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=b
+  concept_id: form_8949/short_term_transactions/transaction/date_acquired
 - field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row9[0].f1_69[0]
   label: f1_69
   population_policy: unsupported
@@ -1490,6 +1652,7 @@ field_dispositions:
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row9[0].f1_69[0].
   address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=c
+  concept_id: form_8949/short_term_transactions/transaction/date_disposed
 - field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row9[0].f1_70[0]
   label: f1_70
   population_policy: user_entered
@@ -1501,6 +1664,7 @@ field_dispositions:
     role: value
   node_id: form_8949_2025_part_i_line_1_column_d
   address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=d
+  concept_id: form_8949/short_term_transactions/transaction/proceeds
 - field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row9[0].f1_71[0]
   label: f1_71
   population_policy: user_entered
@@ -1512,6 +1676,7 @@ field_dispositions:
     role: value
   node_id: form_8949_2025_part_i_line_1_column_e
   address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=e
+  concept_id: form_8949/short_term_transactions/transaction/cost_basis
 - field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row9[0].f1_72[0]
   label: f1_72
   population_policy: unsupported
@@ -1528,6 +1693,7 @@ field_dispositions:
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row9[0].f1_72[0].
   address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=f
+  concept_id: form_8949/short_term_transactions/transaction/adjustment_code
 - field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row9[0].f1_73[0]
   label: f1_73
   population_policy: user_entered
@@ -1539,6 +1705,7 @@ field_dispositions:
     role: value
   node_id: form_8949_2025_part_i_line_1_column_g
   address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=g
+  concept_id: form_8949/short_term_transactions/transaction/adjustment_amount
 - field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row9[0].f1_74[0]
   label: f1_74
   population_policy: computed
@@ -1550,6 +1717,7 @@ field_dispositions:
     role: value
   node_id: form_8949_2025_part_i_line_1_column_h
   address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=h
+  concept_id: form_8949/short_term_transactions/transaction/gain_or_loss
 - field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row10[0].f1_75[0]
   label: f1_75
   population_policy: unsupported
@@ -1566,6 +1734,7 @@ field_dispositions:
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row10[0].f1_75[0].
   address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=a
+  concept_id: form_8949/short_term_transactions/transaction/description
 - field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row10[0].f1_76[0]
   label: f1_76
   population_policy: unsupported
@@ -1582,6 +1751,7 @@ field_dispositions:
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row10[0].f1_76[0].
   address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=b
+  concept_id: form_8949/short_term_transactions/transaction/date_acquired
 - field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row10[0].f1_77[0]
   label: f1_77
   population_policy: unsupported
@@ -1598,6 +1768,7 @@ field_dispositions:
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row10[0].f1_77[0].
   address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=c
+  concept_id: form_8949/short_term_transactions/transaction/date_disposed
 - field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row10[0].f1_78[0]
   label: f1_78
   population_policy: user_entered
@@ -1609,6 +1780,7 @@ field_dispositions:
     role: value
   node_id: form_8949_2025_part_i_line_1_column_d
   address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=d
+  concept_id: form_8949/short_term_transactions/transaction/proceeds
 - field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row10[0].f1_79[0]
   label: f1_79
   population_policy: user_entered
@@ -1620,6 +1792,7 @@ field_dispositions:
     role: value
   node_id: form_8949_2025_part_i_line_1_column_e
   address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=e
+  concept_id: form_8949/short_term_transactions/transaction/cost_basis
 - field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row10[0].f1_80[0]
   label: f1_80
   population_policy: unsupported
@@ -1636,6 +1809,7 @@ field_dispositions:
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row10[0].f1_80[0].
   address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=f
+  concept_id: form_8949/short_term_transactions/transaction/adjustment_code
 - field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row10[0].f1_81[0]
   label: f1_81
   population_policy: user_entered
@@ -1647,6 +1821,7 @@ field_dispositions:
     role: value
   node_id: form_8949_2025_part_i_line_1_column_g
   address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=g
+  concept_id: form_8949/short_term_transactions/transaction/adjustment_amount
 - field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row10[0].f1_82[0]
   label: f1_82
   population_policy: computed
@@ -1658,6 +1833,7 @@ field_dispositions:
     role: value
   node_id: form_8949_2025_part_i_line_1_column_h
   address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=h
+  concept_id: form_8949/short_term_transactions/transaction/gain_or_loss
 - field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row11[0].f1_83[0]
   label: f1_83
   population_policy: unsupported
@@ -1674,6 +1850,7 @@ field_dispositions:
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row11[0].f1_83[0].
   address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=a
+  concept_id: form_8949/short_term_transactions/transaction/description
 - field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row11[0].f1_84[0]
   label: f1_84
   population_policy: unsupported
@@ -1690,6 +1867,7 @@ field_dispositions:
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row11[0].f1_84[0].
   address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=b
+  concept_id: form_8949/short_term_transactions/transaction/date_acquired
 - field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row11[0].f1_85[0]
   label: f1_85
   population_policy: unsupported
@@ -1706,6 +1884,7 @@ field_dispositions:
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row11[0].f1_85[0].
   address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=c
+  concept_id: form_8949/short_term_transactions/transaction/date_disposed
 - field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row11[0].f1_86[0]
   label: f1_86
   population_policy: user_entered
@@ -1717,6 +1896,7 @@ field_dispositions:
     role: value
   node_id: form_8949_2025_part_i_line_1_column_d
   address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=d
+  concept_id: form_8949/short_term_transactions/transaction/proceeds
 - field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row11[0].f1_87[0]
   label: f1_87
   population_policy: user_entered
@@ -1728,6 +1908,7 @@ field_dispositions:
     role: value
   node_id: form_8949_2025_part_i_line_1_column_e
   address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=e
+  concept_id: form_8949/short_term_transactions/transaction/cost_basis
 - field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row11[0].f1_88[0]
   label: f1_88
   population_policy: unsupported
@@ -1744,6 +1925,7 @@ field_dispositions:
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row11[0].f1_88[0].
   address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=f
+  concept_id: form_8949/short_term_transactions/transaction/adjustment_code
 - field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row11[0].f1_89[0]
   label: f1_89
   population_policy: user_entered
@@ -1755,6 +1937,7 @@ field_dispositions:
     role: value
   node_id: form_8949_2025_part_i_line_1_column_g
   address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=g
+  concept_id: form_8949/short_term_transactions/transaction/adjustment_amount
 - field_name: topmostSubform[0].Page1[0].Table_Line1_Part1[0].Row11[0].f1_90[0]
   label: f1_90
   population_policy: computed
@@ -1766,18 +1949,21 @@ field_dispositions:
     role: value
   node_id: form_8949_2025_part_i_line_1_column_h
   address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=h
+  concept_id: form_8949/short_term_transactions/transaction/gain_or_loss
 - field_name: topmostSubform[0].Page1[0].f1_91[0]
   label: Total proceeds
   population_policy: computed
   value_format: dollars
   node_id: form_8949_2025_part_i_line_2_line_2_column_d_total
   address_id: 2025/document=form_8949/table=part_i_line_2/row_template=total/column=d
+  concept_id: form_8949/short_term_transactions/total/proceeds_total
 - field_name: topmostSubform[0].Page1[0].f1_92[0]
   label: Total cost or other basis
   population_policy: computed
   value_format: dollars
   node_id: form_8949_2025_part_i_line_2_line_2_column_e_total
   address_id: 2025/document=form_8949/table=part_i_line_2/row_template=total/column=e
+  concept_id: form_8949/short_term_transactions/total/cost_basis_total
 - field_name: topmostSubform[0].Page1[0].f1_93[0]
   label: Shaded no-entry cell under column (f) - totals row
   display_name: Shaded no-entry cell under column (f) - totals row
@@ -1795,12 +1981,14 @@ field_dispositions:
   value_format: dollars
   node_id: form_8949_2025_part_i_line_2_line_2_column_g_total
   address_id: 2025/document=form_8949/table=part_i_line_2/row_template=total/column=g
+  concept_id: form_8949/short_term_transactions/total/adjustment_amount_total
 - field_name: topmostSubform[0].Page1[0].f1_95[0]
   label: Line 3 - 3 (if Box C or Box I above is checked) - f1_95
   population_policy: computed
   value_format: dollars
   node_id: form_8949_2025_part_i_line_2_line_2_column_h_total
   address_id: 2025/document=form_8949/table=part_i_line_2/row_template=total/column=h
+  concept_id: form_8949/short_term_transactions/total/gain_or_loss_total
 - field_name: topmostSubform[0].Page2[0].f2_01[0]
   label: f2_01
   population_policy: unsupported
@@ -1905,6 +2093,7 @@ field_dispositions:
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row1[0].f2_03[0].
   address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=a
+  concept_id: form_8949/long_term_transactions/transaction/description
 - field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row1[0].f2_04[0]
   label: f2_04
   population_policy: unsupported
@@ -1921,6 +2110,7 @@ field_dispositions:
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row1[0].f2_04[0].
   address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=b
+  concept_id: form_8949/long_term_transactions/transaction/date_acquired
 - field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row1[0].f2_05[0]
   label: f2_05
   population_policy: unsupported
@@ -1937,6 +2127,7 @@ field_dispositions:
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row1[0].f2_05[0].
   address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=c
+  concept_id: form_8949/long_term_transactions/transaction/date_disposed
 - field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row1[0].f2_06[0]
   label: f2_06
   population_policy: user_entered
@@ -1948,6 +2139,7 @@ field_dispositions:
     role: value
   node_id: form_8949_2025_part_ii_line_1_column_d
   address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=d
+  concept_id: form_8949/long_term_transactions/transaction/proceeds
 - field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row1[0].f2_07[0]
   label: f2_07
   population_policy: user_entered
@@ -1959,6 +2151,7 @@ field_dispositions:
     role: value
   node_id: form_8949_2025_part_ii_line_1_column_e
   address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=e
+  concept_id: form_8949/long_term_transactions/transaction/cost_basis
 - field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row1[0].f2_08[0]
   label: f2_08
   population_policy: unsupported
@@ -1975,6 +2168,7 @@ field_dispositions:
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row1[0].f2_08[0].
   address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=f
+  concept_id: form_8949/long_term_transactions/transaction/adjustment_code
 - field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row1[0].f2_09[0]
   label: f2_09
   population_policy: user_entered
@@ -1986,6 +2180,7 @@ field_dispositions:
     role: value
   node_id: form_8949_2025_part_ii_line_1_column_g
   address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=g
+  concept_id: form_8949/long_term_transactions/transaction/adjustment_amount
 - field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row1[0].f2_10[0]
   label: f2_10
   population_policy: computed
@@ -1997,6 +2192,7 @@ field_dispositions:
     role: value
   node_id: form_8949_2025_part_ii_line_1_column_h
   address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=h
+  concept_id: form_8949/long_term_transactions/transaction/gain_or_loss
 - field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row2[0].f2_11[0]
   label: f2_11
   population_policy: unsupported
@@ -2013,6 +2209,7 @@ field_dispositions:
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row2[0].f2_11[0].
   address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=a
+  concept_id: form_8949/long_term_transactions/transaction/description
 - field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row2[0].f2_12[0]
   label: f2_12
   population_policy: unsupported
@@ -2029,6 +2226,7 @@ field_dispositions:
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row2[0].f2_12[0].
   address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=b
+  concept_id: form_8949/long_term_transactions/transaction/date_acquired
 - field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row2[0].f2_13[0]
   label: f2_13
   population_policy: unsupported
@@ -2045,6 +2243,7 @@ field_dispositions:
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row2[0].f2_13[0].
   address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=c
+  concept_id: form_8949/long_term_transactions/transaction/date_disposed
 - field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row2[0].f2_14[0]
   label: f2_14
   population_policy: user_entered
@@ -2056,6 +2255,7 @@ field_dispositions:
     role: value
   node_id: form_8949_2025_part_ii_line_1_column_d
   address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=d
+  concept_id: form_8949/long_term_transactions/transaction/proceeds
 - field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row2[0].f2_15[0]
   label: f2_15
   population_policy: user_entered
@@ -2067,6 +2267,7 @@ field_dispositions:
     role: value
   node_id: form_8949_2025_part_ii_line_1_column_e
   address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=e
+  concept_id: form_8949/long_term_transactions/transaction/cost_basis
 - field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row2[0].f2_16[0]
   label: f2_16
   population_policy: unsupported
@@ -2083,6 +2284,7 @@ field_dispositions:
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row2[0].f2_16[0].
   address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=f
+  concept_id: form_8949/long_term_transactions/transaction/adjustment_code
 - field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row2[0].f2_17[0]
   label: f2_17
   population_policy: user_entered
@@ -2094,6 +2296,7 @@ field_dispositions:
     role: value
   node_id: form_8949_2025_part_ii_line_1_column_g
   address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=g
+  concept_id: form_8949/long_term_transactions/transaction/adjustment_amount
 - field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row2[0].f2_18[0]
   label: f2_18
   population_policy: computed
@@ -2105,6 +2308,7 @@ field_dispositions:
     role: value
   node_id: form_8949_2025_part_ii_line_1_column_h
   address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=h
+  concept_id: form_8949/long_term_transactions/transaction/gain_or_loss
 - field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row3[0].f2_19[0]
   label: f2_19
   population_policy: unsupported
@@ -2121,6 +2325,7 @@ field_dispositions:
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row3[0].f2_19[0].
   address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=a
+  concept_id: form_8949/long_term_transactions/transaction/description
 - field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row3[0].f2_20[0]
   label: f2_20
   population_policy: unsupported
@@ -2137,6 +2342,7 @@ field_dispositions:
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row3[0].f2_20[0].
   address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=b
+  concept_id: form_8949/long_term_transactions/transaction/date_acquired
 - field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row3[0].f2_21[0]
   label: f2_21
   population_policy: unsupported
@@ -2153,6 +2359,7 @@ field_dispositions:
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row3[0].f2_21[0].
   address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=c
+  concept_id: form_8949/long_term_transactions/transaction/date_disposed
 - field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row3[0].f2_22[0]
   label: f2_22
   population_policy: user_entered
@@ -2164,6 +2371,7 @@ field_dispositions:
     role: value
   node_id: form_8949_2025_part_ii_line_1_column_d
   address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=d
+  concept_id: form_8949/long_term_transactions/transaction/proceeds
 - field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row3[0].f2_23[0]
   label: f2_23
   population_policy: user_entered
@@ -2175,6 +2383,7 @@ field_dispositions:
     role: value
   node_id: form_8949_2025_part_ii_line_1_column_e
   address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=e
+  concept_id: form_8949/long_term_transactions/transaction/cost_basis
 - field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row3[0].f2_24[0]
   label: f2_24
   population_policy: unsupported
@@ -2191,6 +2400,7 @@ field_dispositions:
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row3[0].f2_24[0].
   address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=f
+  concept_id: form_8949/long_term_transactions/transaction/adjustment_code
 - field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row3[0].f2_25[0]
   label: f2_25
   population_policy: user_entered
@@ -2202,6 +2412,7 @@ field_dispositions:
     role: value
   node_id: form_8949_2025_part_ii_line_1_column_g
   address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=g
+  concept_id: form_8949/long_term_transactions/transaction/adjustment_amount
 - field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row3[0].f2_26[0]
   label: f2_26
   population_policy: computed
@@ -2213,6 +2424,7 @@ field_dispositions:
     role: value
   node_id: form_8949_2025_part_ii_line_1_column_h
   address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=h
+  concept_id: form_8949/long_term_transactions/transaction/gain_or_loss
 - field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row4[0].f2_27[0]
   label: f2_27
   population_policy: unsupported
@@ -2229,6 +2441,7 @@ field_dispositions:
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row4[0].f2_27[0].
   address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=a
+  concept_id: form_8949/long_term_transactions/transaction/description
 - field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row4[0].f2_28[0]
   label: f2_28
   population_policy: unsupported
@@ -2245,6 +2458,7 @@ field_dispositions:
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row4[0].f2_28[0].
   address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=b
+  concept_id: form_8949/long_term_transactions/transaction/date_acquired
 - field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row4[0].f2_29[0]
   label: f2_29
   population_policy: unsupported
@@ -2261,6 +2475,7 @@ field_dispositions:
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row4[0].f2_29[0].
   address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=c
+  concept_id: form_8949/long_term_transactions/transaction/date_disposed
 - field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row4[0].f2_30[0]
   label: f2_30
   population_policy: user_entered
@@ -2272,6 +2487,7 @@ field_dispositions:
     role: value
   node_id: form_8949_2025_part_ii_line_1_column_d
   address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=d
+  concept_id: form_8949/long_term_transactions/transaction/proceeds
 - field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row4[0].f2_31[0]
   label: f2_31
   population_policy: user_entered
@@ -2283,6 +2499,7 @@ field_dispositions:
     role: value
   node_id: form_8949_2025_part_ii_line_1_column_e
   address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=e
+  concept_id: form_8949/long_term_transactions/transaction/cost_basis
 - field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row4[0].f2_32[0]
   label: f2_32
   population_policy: unsupported
@@ -2299,6 +2516,7 @@ field_dispositions:
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row4[0].f2_32[0].
   address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=f
+  concept_id: form_8949/long_term_transactions/transaction/adjustment_code
 - field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row4[0].f2_33[0]
   label: f2_33
   population_policy: user_entered
@@ -2310,6 +2528,7 @@ field_dispositions:
     role: value
   node_id: form_8949_2025_part_ii_line_1_column_g
   address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=g
+  concept_id: form_8949/long_term_transactions/transaction/adjustment_amount
 - field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row4[0].f2_34[0]
   label: f2_34
   population_policy: computed
@@ -2321,6 +2540,7 @@ field_dispositions:
     role: value
   node_id: form_8949_2025_part_ii_line_1_column_h
   address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=h
+  concept_id: form_8949/long_term_transactions/transaction/gain_or_loss
 - field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row5[0].f2_35[0]
   label: f2_35
   population_policy: unsupported
@@ -2337,6 +2557,7 @@ field_dispositions:
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row5[0].f2_35[0].
   address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=a
+  concept_id: form_8949/long_term_transactions/transaction/description
 - field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row5[0].f2_36[0]
   label: f2_36
   population_policy: unsupported
@@ -2353,6 +2574,7 @@ field_dispositions:
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row5[0].f2_36[0].
   address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=b
+  concept_id: form_8949/long_term_transactions/transaction/date_acquired
 - field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row5[0].f2_37[0]
   label: f2_37
   population_policy: unsupported
@@ -2369,6 +2591,7 @@ field_dispositions:
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row5[0].f2_37[0].
   address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=c
+  concept_id: form_8949/long_term_transactions/transaction/date_disposed
 - field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row5[0].f2_38[0]
   label: f2_38
   population_policy: user_entered
@@ -2380,6 +2603,7 @@ field_dispositions:
     role: value
   node_id: form_8949_2025_part_ii_line_1_column_d
   address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=d
+  concept_id: form_8949/long_term_transactions/transaction/proceeds
 - field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row5[0].f2_39[0]
   label: f2_39
   population_policy: user_entered
@@ -2391,6 +2615,7 @@ field_dispositions:
     role: value
   node_id: form_8949_2025_part_ii_line_1_column_e
   address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=e
+  concept_id: form_8949/long_term_transactions/transaction/cost_basis
 - field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row5[0].f2_40[0]
   label: f2_40
   population_policy: unsupported
@@ -2407,6 +2632,7 @@ field_dispositions:
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row5[0].f2_40[0].
   address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=f
+  concept_id: form_8949/long_term_transactions/transaction/adjustment_code
 - field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row5[0].f2_41[0]
   label: f2_41
   population_policy: user_entered
@@ -2418,6 +2644,7 @@ field_dispositions:
     role: value
   node_id: form_8949_2025_part_ii_line_1_column_g
   address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=g
+  concept_id: form_8949/long_term_transactions/transaction/adjustment_amount
 - field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row5[0].f2_42[0]
   label: f2_42
   population_policy: computed
@@ -2429,6 +2656,7 @@ field_dispositions:
     role: value
   node_id: form_8949_2025_part_ii_line_1_column_h
   address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=h
+  concept_id: form_8949/long_term_transactions/transaction/gain_or_loss
 - field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row6[0].f2_43[0]
   label: f2_43
   population_policy: unsupported
@@ -2445,6 +2673,7 @@ field_dispositions:
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row6[0].f2_43[0].
   address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=a
+  concept_id: form_8949/long_term_transactions/transaction/description
 - field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row6[0].f2_44[0]
   label: f2_44
   population_policy: unsupported
@@ -2461,6 +2690,7 @@ field_dispositions:
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row6[0].f2_44[0].
   address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=b
+  concept_id: form_8949/long_term_transactions/transaction/date_acquired
 - field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row6[0].f2_45[0]
   label: f2_45
   population_policy: unsupported
@@ -2477,6 +2707,7 @@ field_dispositions:
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row6[0].f2_45[0].
   address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=c
+  concept_id: form_8949/long_term_transactions/transaction/date_disposed
 - field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row6[0].f2_46[0]
   label: f2_46
   population_policy: user_entered
@@ -2488,6 +2719,7 @@ field_dispositions:
     role: value
   node_id: form_8949_2025_part_ii_line_1_column_d
   address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=d
+  concept_id: form_8949/long_term_transactions/transaction/proceeds
 - field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row6[0].f2_47[0]
   label: f2_47
   population_policy: user_entered
@@ -2499,6 +2731,7 @@ field_dispositions:
     role: value
   node_id: form_8949_2025_part_ii_line_1_column_e
   address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=e
+  concept_id: form_8949/long_term_transactions/transaction/cost_basis
 - field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row6[0].f2_48[0]
   label: f2_48
   population_policy: unsupported
@@ -2515,6 +2748,7 @@ field_dispositions:
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row6[0].f2_48[0].
   address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=f
+  concept_id: form_8949/long_term_transactions/transaction/adjustment_code
 - field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row6[0].f2_49[0]
   label: f2_49
   population_policy: user_entered
@@ -2526,6 +2760,7 @@ field_dispositions:
     role: value
   node_id: form_8949_2025_part_ii_line_1_column_g
   address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=g
+  concept_id: form_8949/long_term_transactions/transaction/adjustment_amount
 - field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row6[0].f2_50[0]
   label: f2_50
   population_policy: computed
@@ -2537,6 +2772,7 @@ field_dispositions:
     role: value
   node_id: form_8949_2025_part_ii_line_1_column_h
   address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=h
+  concept_id: form_8949/long_term_transactions/transaction/gain_or_loss
 - field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row7[0].f2_51[0]
   label: f2_51
   population_policy: unsupported
@@ -2553,6 +2789,7 @@ field_dispositions:
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row7[0].f2_51[0].
   address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=a
+  concept_id: form_8949/long_term_transactions/transaction/description
 - field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row7[0].f2_52[0]
   label: f2_52
   population_policy: unsupported
@@ -2569,6 +2806,7 @@ field_dispositions:
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row7[0].f2_52[0].
   address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=b
+  concept_id: form_8949/long_term_transactions/transaction/date_acquired
 - field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row7[0].f2_53[0]
   label: f2_53
   population_policy: unsupported
@@ -2585,6 +2823,7 @@ field_dispositions:
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row7[0].f2_53[0].
   address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=c
+  concept_id: form_8949/long_term_transactions/transaction/date_disposed
 - field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row7[0].f2_54[0]
   label: f2_54
   population_policy: user_entered
@@ -2596,6 +2835,7 @@ field_dispositions:
     role: value
   node_id: form_8949_2025_part_ii_line_1_column_d
   address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=d
+  concept_id: form_8949/long_term_transactions/transaction/proceeds
 - field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row7[0].f2_55[0]
   label: f2_55
   population_policy: user_entered
@@ -2607,6 +2847,7 @@ field_dispositions:
     role: value
   node_id: form_8949_2025_part_ii_line_1_column_e
   address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=e
+  concept_id: form_8949/long_term_transactions/transaction/cost_basis
 - field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row7[0].f2_56[0]
   label: f2_56
   population_policy: unsupported
@@ -2623,6 +2864,7 @@ field_dispositions:
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row7[0].f2_56[0].
   address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=f
+  concept_id: form_8949/long_term_transactions/transaction/adjustment_code
 - field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row7[0].f2_57[0]
   label: f2_57
   population_policy: user_entered
@@ -2634,6 +2876,7 @@ field_dispositions:
     role: value
   node_id: form_8949_2025_part_ii_line_1_column_g
   address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=g
+  concept_id: form_8949/long_term_transactions/transaction/adjustment_amount
 - field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row7[0].f2_58[0]
   label: f2_58
   population_policy: computed
@@ -2645,6 +2888,7 @@ field_dispositions:
     role: value
   node_id: form_8949_2025_part_ii_line_1_column_h
   address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=h
+  concept_id: form_8949/long_term_transactions/transaction/gain_or_loss
 - field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row8[0].f2_59[0]
   label: f2_59
   population_policy: unsupported
@@ -2661,6 +2905,7 @@ field_dispositions:
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row8[0].f2_59[0].
   address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=a
+  concept_id: form_8949/long_term_transactions/transaction/description
 - field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row8[0].f2_60[0]
   label: f2_60
   population_policy: unsupported
@@ -2677,6 +2922,7 @@ field_dispositions:
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row8[0].f2_60[0].
   address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=b
+  concept_id: form_8949/long_term_transactions/transaction/date_acquired
 - field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row8[0].f2_61[0]
   label: f2_61
   population_policy: unsupported
@@ -2693,6 +2939,7 @@ field_dispositions:
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row8[0].f2_61[0].
   address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=c
+  concept_id: form_8949/long_term_transactions/transaction/date_disposed
 - field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row8[0].f2_62[0]
   label: f2_62
   population_policy: user_entered
@@ -2704,6 +2951,7 @@ field_dispositions:
     role: value
   node_id: form_8949_2025_part_ii_line_1_column_d
   address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=d
+  concept_id: form_8949/long_term_transactions/transaction/proceeds
 - field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row8[0].f2_63[0]
   label: f2_63
   population_policy: user_entered
@@ -2715,6 +2963,7 @@ field_dispositions:
     role: value
   node_id: form_8949_2025_part_ii_line_1_column_e
   address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=e
+  concept_id: form_8949/long_term_transactions/transaction/cost_basis
 - field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row8[0].f2_64[0]
   label: f2_64
   population_policy: unsupported
@@ -2731,6 +2980,7 @@ field_dispositions:
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row8[0].f2_64[0].
   address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=f
+  concept_id: form_8949/long_term_transactions/transaction/adjustment_code
 - field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row8[0].f2_65[0]
   label: f2_65
   population_policy: user_entered
@@ -2742,6 +2992,7 @@ field_dispositions:
     role: value
   node_id: form_8949_2025_part_ii_line_1_column_g
   address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=g
+  concept_id: form_8949/long_term_transactions/transaction/adjustment_amount
 - field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row8[0].f2_66[0]
   label: f2_66
   population_policy: computed
@@ -2753,6 +3004,7 @@ field_dispositions:
     role: value
   node_id: form_8949_2025_part_ii_line_1_column_h
   address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=h
+  concept_id: form_8949/long_term_transactions/transaction/gain_or_loss
 - field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row9[0].f2_67[0]
   label: f2_67
   population_policy: unsupported
@@ -2769,6 +3021,7 @@ field_dispositions:
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row9[0].f2_67[0].
   address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=a
+  concept_id: form_8949/long_term_transactions/transaction/description
 - field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row9[0].f2_68[0]
   label: f2_68
   population_policy: unsupported
@@ -2785,6 +3038,7 @@ field_dispositions:
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row9[0].f2_68[0].
   address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=b
+  concept_id: form_8949/long_term_transactions/transaction/date_acquired
 - field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row9[0].f2_69[0]
   label: f2_69
   population_policy: unsupported
@@ -2801,6 +3055,7 @@ field_dispositions:
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row9[0].f2_69[0].
   address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=c
+  concept_id: form_8949/long_term_transactions/transaction/date_disposed
 - field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row9[0].f2_70[0]
   label: f2_70
   population_policy: user_entered
@@ -2812,6 +3067,7 @@ field_dispositions:
     role: value
   node_id: form_8949_2025_part_ii_line_1_column_d
   address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=d
+  concept_id: form_8949/long_term_transactions/transaction/proceeds
 - field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row9[0].f2_71[0]
   label: f2_71
   population_policy: user_entered
@@ -2823,6 +3079,7 @@ field_dispositions:
     role: value
   node_id: form_8949_2025_part_ii_line_1_column_e
   address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=e
+  concept_id: form_8949/long_term_transactions/transaction/cost_basis
 - field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row9[0].f2_72[0]
   label: f2_72
   population_policy: unsupported
@@ -2839,6 +3096,7 @@ field_dispositions:
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row9[0].f2_72[0].
   address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=f
+  concept_id: form_8949/long_term_transactions/transaction/adjustment_code
 - field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row9[0].f2_73[0]
   label: f2_73
   population_policy: user_entered
@@ -2850,6 +3108,7 @@ field_dispositions:
     role: value
   node_id: form_8949_2025_part_ii_line_1_column_g
   address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=g
+  concept_id: form_8949/long_term_transactions/transaction/adjustment_amount
 - field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row9[0].f2_74[0]
   label: f2_74
   population_policy: computed
@@ -2861,6 +3120,7 @@ field_dispositions:
     role: value
   node_id: form_8949_2025_part_ii_line_1_column_h
   address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=h
+  concept_id: form_8949/long_term_transactions/transaction/gain_or_loss
 - field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row10[0].f2_75[0]
   label: f2_75
   population_policy: unsupported
@@ -2877,6 +3137,7 @@ field_dispositions:
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row10[0].f2_75[0].
   address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=a
+  concept_id: form_8949/long_term_transactions/transaction/description
 - field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row10[0].f2_76[0]
   label: f2_76
   population_policy: unsupported
@@ -2893,6 +3154,7 @@ field_dispositions:
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row10[0].f2_76[0].
   address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=b
+  concept_id: form_8949/long_term_transactions/transaction/date_acquired
 - field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row10[0].f2_77[0]
   label: f2_77
   population_policy: unsupported
@@ -2909,6 +3171,7 @@ field_dispositions:
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row10[0].f2_77[0].
   address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=c
+  concept_id: form_8949/long_term_transactions/transaction/date_disposed
 - field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row10[0].f2_78[0]
   label: f2_78
   population_policy: user_entered
@@ -2920,6 +3183,7 @@ field_dispositions:
     role: value
   node_id: form_8949_2025_part_ii_line_1_column_d
   address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=d
+  concept_id: form_8949/long_term_transactions/transaction/proceeds
 - field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row10[0].f2_79[0]
   label: f2_79
   population_policy: user_entered
@@ -2931,6 +3195,7 @@ field_dispositions:
     role: value
   node_id: form_8949_2025_part_ii_line_1_column_e
   address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=e
+  concept_id: form_8949/long_term_transactions/transaction/cost_basis
 - field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row10[0].f2_80[0]
   label: f2_80
   population_policy: unsupported
@@ -2947,6 +3212,7 @@ field_dispositions:
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row10[0].f2_80[0].
   address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=f
+  concept_id: form_8949/long_term_transactions/transaction/adjustment_code
 - field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row10[0].f2_81[0]
   label: f2_81
   population_policy: user_entered
@@ -2958,6 +3224,7 @@ field_dispositions:
     role: value
   node_id: form_8949_2025_part_ii_line_1_column_g
   address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=g
+  concept_id: form_8949/long_term_transactions/transaction/adjustment_amount
 - field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row10[0].f2_82[0]
   label: f2_82
   population_policy: computed
@@ -2969,6 +3236,7 @@ field_dispositions:
     role: value
   node_id: form_8949_2025_part_ii_line_1_column_h
   address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=h
+  concept_id: form_8949/long_term_transactions/transaction/gain_or_loss
 - field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row11[0].f2_83[0]
   label: f2_83
   population_policy: unsupported
@@ -2985,6 +3253,7 @@ field_dispositions:
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row11[0].f2_83[0].
   address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=a
+  concept_id: form_8949/long_term_transactions/transaction/description
 - field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row11[0].f2_84[0]
   label: f2_84
   population_policy: unsupported
@@ -3001,6 +3270,7 @@ field_dispositions:
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row11[0].f2_84[0].
   address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=b
+  concept_id: form_8949/long_term_transactions/transaction/date_acquired
 - field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row11[0].f2_85[0]
   label: f2_85
   population_policy: unsupported
@@ -3017,6 +3287,7 @@ field_dispositions:
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row11[0].f2_85[0].
   address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=c
+  concept_id: form_8949/long_term_transactions/transaction/date_disposed
 - field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row11[0].f2_86[0]
   label: f2_86
   population_policy: user_entered
@@ -3028,6 +3299,7 @@ field_dispositions:
     role: value
   node_id: form_8949_2025_part_ii_line_1_column_d
   address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=d
+  concept_id: form_8949/long_term_transactions/transaction/proceeds
 - field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row11[0].f2_87[0]
   label: f2_87
   population_policy: user_entered
@@ -3039,6 +3311,7 @@ field_dispositions:
     role: value
   node_id: form_8949_2025_part_ii_line_1_column_e
   address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=e
+  concept_id: form_8949/long_term_transactions/transaction/cost_basis
 - field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row11[0].f2_88[0]
   label: f2_88
   population_policy: unsupported
@@ -3055,6 +3328,7 @@ field_dispositions:
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row11[0].f2_88[0].
   address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=f
+  concept_id: form_8949/long_term_transactions/transaction/adjustment_code
 - field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row11[0].f2_89[0]
   label: f2_89
   population_policy: user_entered
@@ -3066,6 +3340,7 @@ field_dispositions:
     role: value
   node_id: form_8949_2025_part_ii_line_1_column_g
   address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=g
+  concept_id: form_8949/long_term_transactions/transaction/adjustment_amount
 - field_name: topmostSubform[0].Page2[0].Table_Line1_Part2[0].Row11[0].f2_90[0]
   label: f2_90
   population_policy: computed
@@ -3077,18 +3352,21 @@ field_dispositions:
     role: value
   node_id: form_8949_2025_part_ii_line_1_column_h
   address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=h
+  concept_id: form_8949/long_term_transactions/transaction/gain_or_loss
 - field_name: topmostSubform[0].Page2[0].f2_91[0]
   label: Total proceeds
   population_policy: computed
   value_format: dollars
   node_id: form_8949_2025_part_ii_line_2_line_2_column_d_total
   address_id: 2025/document=form_8949/table=part_ii_line_2/row_template=total/column=d
+  concept_id: form_8949/long_term_transactions/total/proceeds_total
 - field_name: topmostSubform[0].Page2[0].f2_92[0]
   label: Total cost or other basis
   population_policy: computed
   value_format: dollars
   node_id: form_8949_2025_part_ii_line_2_line_2_column_e_total
   address_id: 2025/document=form_8949/table=part_ii_line_2/row_template=total/column=e
+  concept_id: form_8949/long_term_transactions/total/cost_basis_total
 - field_name: topmostSubform[0].Page2[0].f2_93[0]
   label: Shaded no-entry cell under column (f) - totals row
   display_name: Shaded no-entry cell under column (f) - totals row
@@ -3106,9 +3384,11 @@ field_dispositions:
   value_format: dollars
   node_id: form_8949_2025_part_ii_line_2_line_2_column_g_total
   address_id: 2025/document=form_8949/table=part_ii_line_2/row_template=total/column=g
+  concept_id: form_8949/long_term_transactions/total/adjustment_amount_total
 - field_name: topmostSubform[0].Page2[0].f2_95[0]
   label: Line 10 - 10 (if Box F or Box L above is checked) - f2_95
   population_policy: computed
   value_format: dollars
   node_id: form_8949_2025_part_ii_line_2_line_2_column_h_total
   address_id: 2025/document=form_8949/table=part_ii_line_2/row_template=total/column=h
+  concept_id: form_8949/long_term_transactions/total/gain_or_loss_total

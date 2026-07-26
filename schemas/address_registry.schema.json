@@ -40,6 +40,32 @@
         "kind": {"enum": ["document", "part", "section", "line", "item", "box", "control", "option", "table", "row_template", "column", "worksheet_step"]},
         "path": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/path_component"}},
         "official_ref": {"type": "string", "minLength": 1},
+        "concept_id": {"type": "string", "pattern": "^[a-z0-9_]+(?:/[a-z0-9_]+)+$"},
+        "placement": {
+          "type": "object", "additionalProperties": false,
+          "required": ["concept_id", "printed_kind", "printed_token", "printed_ref"],
+          "properties": {
+            "concept_id": {"type": "string", "pattern": "^[a-z0-9_]+(?:/[a-z0-9_]+)+$"},
+            "printed_kind": {"enum": ["section", "table", "line", "box"]},
+            "printed_token": {"type": "string", "minLength": 1},
+            "printed_ref": {"type": "string", "minLength": 1}
+          }
+        },
+        "occurrence": {
+          "type": "object", "additionalProperties": false,
+          "required": ["kind", "review_granularity", "row_policy"],
+          "properties": {
+            "kind": {"enum": ["singleton", "entity"]},
+            "entity_key": {"type": "string", "pattern": "^[a-z0-9_]+$"},
+            "review_granularity": {"const": "concept"},
+            "row_policy": {"enum": ["none", "entity_keyed"]}
+          },
+          "allOf": [
+            {"if": {"properties": {"kind": {"const": "entity"}}, "required": ["kind"]},
+             "then": {"required": ["entity_key"], "properties": {"row_policy": {"const": "entity_keyed"}}},
+             "else": {"properties": {"row_policy": {"const": "none"}}}}
+          ]
+        },
         "printed_label": {"type": "string"},
         "aliases": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
         "control_role": {"enum": ["none", "amount", "text", "description", "checkbox", "radio", "choice", "date", "identifier", "signature", "attachment_indicator", "other"]},
@@ -47,6 +73,7 @@
         "evidence": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/evidence"}}
       },
       "allOf": [
+        {"if": {"required": ["concept_id"]}, "then": {"required": ["placement", "occurrence"]}},
         {"if": {"properties": {"kind": {"const": "document"}}, "required": ["kind"]}, "then": {"properties": {"parent_address_id": {"type": "null"}, "control_role": {"const": "none"}}}, "else": {"properties": {"parent_address_id": {"type": "string", "minLength": 1}}}},
         {"if": {"properties": {"kind": {"enum": ["control", "option", "column"]}}, "required": ["kind"]}, "then": {}, "else": {"properties": {"control_role": {"const": "none"}}}}
       ]

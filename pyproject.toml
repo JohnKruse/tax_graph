@@ -108,6 +108,7 @@ markers = [
   "m13: worksheet depth phase tests",
   "m14: product surface phase tests",
   "m15: Phase M15 review workbench tests",
+  "m19: Phase M19 stable cell identity tests",
   "m15r: Phase M15R canonical addressing recovery tests",
   "m17: Phase M17 cell-atomic review workbench tests",
   "m0: Phase M0 foundation tests",

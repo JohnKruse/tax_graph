@@ -1,0 +1,771 @@
+schema_version: 1
+year: 2025
+document_id: form_1099_div_2025
+concepts:
+- concept_id: form_1099_div/capital_gain_distribution/collectibles
+  document_id: form_1099_div_2025
+  status: active
+  flow_path:
+  - form_1099_div
+  - capital_gain_distribution
+  - collectibles
+  owner: capital_gain_distribution
+  role: collectibles
+  review_granularity: concept
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
+  aliases:
+  - document=form_1099_div/box=2d/control=value
+  placements:
+  - address_id: 2025/document=form_1099_div/box=2d/control=value
+    concept_id: form_1099_div/capital_gain_distribution/collectibles
+    printed_kind: box
+    printed_token: 2d
+    printed_ref: Box 2d
+  same_fact_as: []
+- concept_id: form_1099_div/capital_gain_distribution/section_1202
+  document_id: form_1099_div_2025
+  status: active
+  flow_path:
+  - form_1099_div
+  - capital_gain_distribution
+  - section_1202
+  owner: capital_gain_distribution
+  role: section_1202
+  review_granularity: concept
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
+  aliases:
+  - document=form_1099_div/box=2c/control=value
+  placements:
+  - address_id: 2025/document=form_1099_div/box=2c/control=value
+    concept_id: form_1099_div/capital_gain_distribution/section_1202
+    printed_kind: box
+    printed_token: 2c
+    printed_ref: Box 2c
+  same_fact_as: []
+- concept_id: form_1099_div/capital_gain_distribution/section_897
+  document_id: form_1099_div_2025
+  status: active
+  flow_path:
+  - form_1099_div
+  - capital_gain_distribution
+  - section_897
+  owner: capital_gain_distribution
+  role: section_897
+  review_granularity: concept
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
+  aliases:
+  - document=form_1099_div/box=2f/control=value
+  placements:
+  - address_id: 2025/document=form_1099_div/box=2f/control=value
+    concept_id: form_1099_div/capital_gain_distribution/section_897
+    printed_kind: box
+    printed_token: 2f
+    printed_ref: Box 2f
+  same_fact_as: []
+- concept_id: form_1099_div/capital_gain_distribution/total
+  document_id: form_1099_div_2025
+  status: active
+  flow_path:
+  - form_1099_div
+  - capital_gain_distribution
+  - total
+  owner: capital_gain_distribution
+  role: total
+  review_granularity: concept
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
+  aliases:
+  - document=form_1099_div/box=2a/control=value
+  placements:
+  - address_id: 2025/document=form_1099_div/box=2a/control=value
+    concept_id: form_1099_div/capital_gain_distribution/total
+    printed_kind: box
+    printed_token: 2a
+    printed_ref: Box 2a
+  same_fact_as: []
+- concept_id: form_1099_div/capital_gain_distribution/unrecaptured_section_1250
+  document_id: form_1099_div_2025
+  status: active
+  flow_path:
+  - form_1099_div
+  - capital_gain_distribution
+  - unrecaptured_section_1250
+  owner: capital_gain_distribution
+  role: unrecaptured_section_1250
+  review_granularity: concept
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
+  aliases:
+  - document=form_1099_div/box=2b/control=value
+  placements:
+  - address_id: 2025/document=form_1099_div/box=2b/control=value
+    concept_id: form_1099_div/capital_gain_distribution/unrecaptured_section_1250
+    printed_kind: box
+    printed_token: 2b
+    printed_ref: Box 2b
+  same_fact_as: []
+- concept_id: form_1099_div/classification/fatca_filing_requirement
+  document_id: form_1099_div_2025
+  status: active
+  flow_path:
+  - form_1099_div
+  - classification
+  - fatca_filing_requirement
+  owner: classification
+  role: fatca_filing_requirement
+  review_granularity: concept
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
+  aliases:
+  - document=form_1099_div/box=11/option=fatca_filing_requirement
+  placements:
+  - address_id: 2025/document=form_1099_div/box=11/option=fatca_filing_requirement
+    concept_id: form_1099_div/classification/fatca_filing_requirement
+    printed_kind: box
+    printed_token: '11'
+    printed_ref: Box 11
+  same_fact_as: []
+- concept_id: form_1099_div/dividends/exempt_interest
+  document_id: form_1099_div_2025
+  status: active
+  flow_path:
+  - form_1099_div
+  - dividends
+  - exempt_interest
+  owner: dividends
+  role: exempt_interest
+  review_granularity: concept
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
+  aliases:
+  - document=form_1099_div/box=12/control=value
+  placements:
+  - address_id: 2025/document=form_1099_div/box=12/control=value
+    concept_id: form_1099_div/dividends/exempt_interest
+    printed_kind: box
+    printed_token: '12'
+    printed_ref: Box 12
+  same_fact_as: []
+- concept_id: form_1099_div/dividends/investment_expenses
+  document_id: form_1099_div_2025
+  status: active
+  flow_path:
+  - form_1099_div
+  - dividends
+  - investment_expenses
+  owner: dividends
+  role: investment_expenses
+  review_granularity: concept
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
+  aliases:
+  - document=form_1099_div/box=6/control=value
+  placements:
+  - address_id: 2025/document=form_1099_div/box=6/control=value
+    concept_id: form_1099_div/dividends/investment_expenses
+    printed_kind: box
+    printed_token: '6'
+    printed_ref: Box 6
+  same_fact_as: []
+- concept_id: form_1099_div/dividends/nondividend_distribution
+  document_id: form_1099_div_2025
+  status: active
+  flow_path:
+  - form_1099_div
+  - dividends
+  - nondividend_distribution
+  owner: dividends
+  role: nondividend_distribution
+  review_granularity: concept
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
+  aliases:
+  - document=form_1099_div/box=3/control=value
+  placements:
+  - address_id: 2025/document=form_1099_div/box=3/control=value
+    concept_id: form_1099_div/dividends/nondividend_distribution
+    printed_kind: box
+    printed_token: '3'
+    printed_ref: Box 3
+  same_fact_as: []
+- concept_id: form_1099_div/dividends/ordinary
+  document_id: form_1099_div_2025
+  status: active
+  flow_path:
+  - form_1099_div
+  - dividends
+  - ordinary
+  owner: dividends
+  role: ordinary
+  review_granularity: concept
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
+  aliases:
+  - document=form_1099_div/box=1a/control=value
+  placements:
+  - address_id: 2025/document=form_1099_div/box=1a/control=value
+    concept_id: form_1099_div/dividends/ordinary
+    printed_kind: box
+    printed_token: 1a
+    printed_ref: Box 1a
+  same_fact_as: []
+- concept_id: form_1099_div/dividends/qualified
+  document_id: form_1099_div_2025
+  status: active
+  flow_path:
+  - form_1099_div
+  - dividends
+  - qualified
+  owner: dividends
+  role: qualified
+  review_granularity: concept
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
+  aliases:
+  - document=form_1099_div/box=1b/control=value
+  placements:
+  - address_id: 2025/document=form_1099_div/box=1b/control=value
+    concept_id: form_1099_div/dividends/qualified
+    printed_kind: box
+    printed_token: 1b
+    printed_ref: Box 1b
+  same_fact_as: []
+- concept_id: form_1099_div/dividends/section_199a
+  document_id: form_1099_div_2025
+  status: active
+  flow_path:
+  - form_1099_div
+  - dividends
+  - section_199a
+  owner: dividends
+  role: section_199a
+  review_granularity: concept
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
+  aliases:
+  - document=form_1099_div/box=5/control=value
+  placements:
+  - address_id: 2025/document=form_1099_div/box=5/control=value
+    concept_id: form_1099_div/dividends/section_199a
+    printed_kind: box
+    printed_token: '5'
+    printed_ref: Box 5
+  same_fact_as: []
+- concept_id: form_1099_div/dividends/section_897_ordinary
+  document_id: form_1099_div_2025
+  status: active
+  flow_path:
+  - form_1099_div
+  - dividends
+  - section_897_ordinary
+  owner: dividends
+  role: section_897_ordinary
+  review_granularity: concept
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
+  aliases:
+  - document=form_1099_div/box=2e/control=value
+  placements:
+  - address_id: 2025/document=form_1099_div/box=2e/control=value
+    concept_id: form_1099_div/dividends/section_897_ordinary
+    printed_kind: box
+    printed_token: 2e
+    printed_ref: Box 2e
+  same_fact_as: []
+- concept_id: form_1099_div/dividends/specified_private_activity_bond
+  document_id: form_1099_div_2025
+  status: active
+  flow_path:
+  - form_1099_div
+  - dividends
+  - specified_private_activity_bond
+  owner: dividends
+  role: specified_private_activity_bond
+  review_granularity: concept
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
+  aliases:
+  - document=form_1099_div/box=13/control=value
+  placements:
+  - address_id: 2025/document=form_1099_div/box=13/control=value
+    concept_id: form_1099_div/dividends/specified_private_activity_bond
+    printed_kind: box
+    printed_token: '13'
+    printed_ref: Box 13
+  same_fact_as: []
+- concept_id: form_1099_div/foreign_tax/country
+  document_id: form_1099_div_2025
+  status: active
+  flow_path:
+  - form_1099_div
+  - foreign_tax
+  - country
+  owner: foreign_tax
+  role: country
+  review_granularity: concept
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
+  aliases:
+  - document=form_1099_div/box=8/control=value
+  placements:
+  - address_id: 2025/document=form_1099_div/box=8/control=value
+    concept_id: form_1099_div/foreign_tax/country
+    printed_kind: box
+    printed_token: '8'
+    printed_ref: Box 8
+  same_fact_as: []
+- concept_id: form_1099_div/foreign_tax/paid
+  document_id: form_1099_div_2025
+  status: active
+  flow_path:
+  - form_1099_div
+  - foreign_tax
+  - paid
+  owner: foreign_tax
+  role: paid
+  review_granularity: concept
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
+  aliases:
+  - document=form_1099_div/box=7/control=value
+  placements:
+  - address_id: 2025/document=form_1099_div/box=7/control=value
+    concept_id: form_1099_div/foreign_tax/paid
+    printed_kind: box
+    printed_token: '7'
+    printed_ref: Box 7
+  same_fact_as: []
+- concept_id: form_1099_div/header/calendar_year
+  document_id: form_1099_div_2025
+  status: active
+  flow_path:
+  - form_1099_div
+  - header
+  - calendar_year
+  owner: header
+  role: calendar_year
+  review_granularity: concept
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
+  aliases:
+  - document=form_1099_div/section=header/control=calendar_year
+  placements:
+  - address_id: 2025/document=form_1099_div/section=header/control=calendar_year
+    concept_id: form_1099_div/header/calendar_year
+    printed_kind: section
+    printed_token: header
+    printed_ref: For calendar year
+  same_fact_as: []
+- concept_id: form_1099_div/header/corrected
+  document_id: form_1099_div_2025
+  status: active
+  flow_path:
+  - form_1099_div
+  - header
+  - corrected
+  owner: header
+  role: corrected
+  review_granularity: concept
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
+  aliases:
+  - document=form_1099_div/section=header/option=corrected
+  placements:
+  - address_id: 2025/document=form_1099_div/section=header/option=corrected
+    concept_id: form_1099_div/header/corrected
+    printed_kind: section
+    printed_token: header
+    printed_ref: CORRECTED
+  same_fact_as: []
+- concept_id: form_1099_div/header/void
+  document_id: form_1099_div_2025
+  status: active
+  flow_path:
+  - form_1099_div
+  - header
+  - void
+  owner: header
+  role: void
+  review_granularity: concept
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
+  aliases:
+  - document=form_1099_div/section=header/option=void
+  placements:
+  - address_id: 2025/document=form_1099_div/section=header/option=void
+    concept_id: form_1099_div/header/void
+    printed_kind: section
+    printed_token: header
+    printed_ref: VOID
+  same_fact_as: []
+- concept_id: form_1099_div/liquidation/cash
+  document_id: form_1099_div_2025
+  status: active
+  flow_path:
+  - form_1099_div
+  - liquidation
+  - cash
+  owner: liquidation
+  role: cash
+  review_granularity: concept
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
+  aliases:
+  - document=form_1099_div/box=9/control=value
+  placements:
+  - address_id: 2025/document=form_1099_div/box=9/control=value
+    concept_id: form_1099_div/liquidation/cash
+    printed_kind: box
+    printed_token: '9'
+    printed_ref: Box 9
+  same_fact_as: []
+- concept_id: form_1099_div/liquidation/noncash
+  document_id: form_1099_div_2025
+  status: active
+  flow_path:
+  - form_1099_div
+  - liquidation
+  - noncash
+  owner: liquidation
+  role: noncash
+  review_granularity: concept
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
+  aliases:
+  - document=form_1099_div/box=10/control=value
+  placements:
+  - address_id: 2025/document=form_1099_div/box=10/control=value
+    concept_id: form_1099_div/liquidation/noncash
+    printed_kind: box
+    printed_token: '10'
+    printed_ref: Box 10
+  same_fact_as: []
+- concept_id: form_1099_div/payer/federal_income_tax_withheld
+  document_id: form_1099_div_2025
+  status: active
+  flow_path:
+  - form_1099_div
+  - payer
+  - federal_income_tax_withheld
+  owner: payer
+  role: federal_income_tax_withheld
+  review_granularity: concept
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
+  aliases:
+  - document=form_1099_div/box=4/control=value
+  placements:
+  - address_id: 2025/document=form_1099_div/box=4/control=value
+    concept_id: form_1099_div/payer/federal_income_tax_withheld
+    printed_kind: box
+    printed_token: '4'
+    printed_ref: Box 4
+  same_fact_as: []
+- concept_id: form_1099_div/recipient/account_number
+  document_id: form_1099_div_2025
+  status: active
+  flow_path:
+  - form_1099_div
+  - recipient
+  - account_number
+  owner: recipient
+  role: account_number
+  review_granularity: concept
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
+  aliases:
+  - document=form_1099_div/section=recipient/control=account_number
+  placements:
+  - address_id: 2025/document=form_1099_div/section=recipient/control=account_number
+    concept_id: form_1099_div/recipient/account_number
+    printed_kind: section
+    printed_token: recipient
+    printed_ref: Account number (see instructions)
+  same_fact_as: []
+- concept_id: form_1099_div/recipient/payer_name_address
+  document_id: form_1099_div_2025
+  status: active
+  flow_path:
+  - form_1099_div
+  - recipient
+  - payer_name_address
+  owner: recipient
+  role: payer_name_address
+  review_granularity: concept
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
+  aliases:
+  - document=form_1099_div/section=recipient/control=payer_name_address
+  placements:
+  - address_id: 2025/document=form_1099_div/section=recipient/control=payer_name_address
+    concept_id: form_1099_div/recipient/payer_name_address
+    printed_kind: section
+    printed_token: recipient
+    printed_ref: Payer's name, street address, city or town, state or province, country,
+      ZIP or foreign postal code, and telephone number
+  same_fact_as: []
+- concept_id: form_1099_div/recipient/payer_tin
+  document_id: form_1099_div_2025
+  status: active
+  flow_path:
+  - form_1099_div
+  - recipient
+  - payer_tin
+  owner: recipient
+  role: payer_tin
+  review_granularity: concept
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
+  aliases:
+  - document=form_1099_div/section=recipient/control=payer_tin
+  placements:
+  - address_id: 2025/document=form_1099_div/section=recipient/control=payer_tin
+    concept_id: form_1099_div/recipient/payer_tin
+    printed_kind: section
+    printed_token: recipient
+    printed_ref: Payer's TIN
+  same_fact_as: []
+- concept_id: form_1099_div/recipient/recipient_city
+  document_id: form_1099_div_2025
+  status: active
+  flow_path:
+  - form_1099_div
+  - recipient
+  - recipient_city
+  owner: recipient
+  role: recipient_city
+  review_granularity: concept
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
+  aliases:
+  - document=form_1099_div/section=recipient/control=recipient_city
+  placements:
+  - address_id: 2025/document=form_1099_div/section=recipient/control=recipient_city
+    concept_id: form_1099_div/recipient/recipient_city
+    printed_kind: section
+    printed_token: recipient
+    printed_ref: City or town, state or province, country, and ZIP or foreign postal
+      code
+  same_fact_as: []
+- concept_id: form_1099_div/recipient/recipient_name
+  document_id: form_1099_div_2025
+  status: active
+  flow_path:
+  - form_1099_div
+  - recipient
+  - recipient_name
+  owner: recipient
+  role: recipient_name
+  review_granularity: concept
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
+  aliases:
+  - document=form_1099_div/section=recipient/control=recipient_name
+  placements:
+  - address_id: 2025/document=form_1099_div/section=recipient/control=recipient_name
+    concept_id: form_1099_div/recipient/recipient_name
+    printed_kind: section
+    printed_token: recipient
+    printed_ref: Recipient's name
+  same_fact_as: []
+- concept_id: form_1099_div/recipient/recipient_street
+  document_id: form_1099_div_2025
+  status: active
+  flow_path:
+  - form_1099_div
+  - recipient
+  - recipient_street
+  owner: recipient
+  role: recipient_street
+  review_granularity: concept
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
+  aliases:
+  - document=form_1099_div/section=recipient/control=recipient_street
+  placements:
+  - address_id: 2025/document=form_1099_div/section=recipient/control=recipient_street
+    concept_id: form_1099_div/recipient/recipient_street
+    printed_kind: section
+    printed_token: recipient
+    printed_ref: Street address (including apt. no.)
+  same_fact_as: []
+- concept_id: form_1099_div/recipient/recipient_tin
+  document_id: form_1099_div_2025
+  status: active
+  flow_path:
+  - form_1099_div
+  - recipient
+  - recipient_tin
+  owner: recipient
+  role: recipient_tin
+  review_granularity: concept
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
+  aliases:
+  - document=form_1099_div/section=recipient/control=recipient_tin
+  placements:
+  - address_id: 2025/document=form_1099_div/section=recipient/control=recipient_tin
+    concept_id: form_1099_div/recipient/recipient_tin
+    printed_kind: section
+    printed_token: recipient
+    printed_ref: Recipient's TIN
+  same_fact_as: []
+- concept_id: form_1099_div/recipient/second_tin_notice
+  document_id: form_1099_div_2025
+  status: active
+  flow_path:
+  - form_1099_div
+  - recipient
+  - second_tin_notice
+  owner: recipient
+  role: second_tin_notice
+  review_granularity: concept
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
+  aliases:
+  - document=form_1099_div/section=recipient/option=second_tin_notice
+  placements:
+  - address_id: 2025/document=form_1099_div/section=recipient/option=second_tin_notice
+    concept_id: form_1099_div/recipient/second_tin_notice
+    printed_kind: section
+    printed_token: recipient
+    printed_ref: 2nd TIN not.
+  same_fact_as: []
+- concept_id: form_1099_div/state_local/jurisdiction/state
+  document_id: form_1099_div_2025
+  status: active
+  flow_path:
+  - form_1099_div
+  - state_local
+  - jurisdiction
+  - state
+  owner: jurisdiction
+  role: state
+  review_granularity: concept
+  occurrence:
+    kind: entity
+    entity_key: jurisdiction
+    review_granularity: concept
+    row_policy: entity_keyed
+  aliases:
+  - document=form_1099_div/table=state/row_template=jurisdiction/column=state
+  placements:
+  - address_id: 2025/document=form_1099_div/table=state/row_template=jurisdiction/column=state
+    concept_id: form_1099_div/state_local/jurisdiction/state
+    printed_kind: table
+    printed_token: state
+    printed_ref: Box 14
+  same_fact_as: []
+- concept_id: form_1099_div/state_local/jurisdiction/state_id
+  document_id: form_1099_div_2025
+  status: active
+  flow_path:
+  - form_1099_div
+  - state_local
+  - jurisdiction
+  - state_id
+  owner: jurisdiction
+  role: state_id
+  review_granularity: concept
+  occurrence:
+    kind: entity
+    entity_key: jurisdiction
+    review_granularity: concept
+    row_policy: entity_keyed
+  aliases:
+  - document=form_1099_div/table=state/row_template=jurisdiction/column=state_id
+  placements:
+  - address_id: 2025/document=form_1099_div/table=state/row_template=jurisdiction/column=state_id
+    concept_id: form_1099_div/state_local/jurisdiction/state_id
+    printed_kind: table
+    printed_token: state
+    printed_ref: Box 15
+  same_fact_as: []
+- concept_id: form_1099_div/state_local/jurisdiction/state_tax
+  document_id: form_1099_div_2025
+  status: active
+  flow_path:
+  - form_1099_div
+  - state_local
+  - jurisdiction
+  - state_tax
+  owner: jurisdiction
+  role: state_tax
+  review_granularity: concept
+  occurrence:
+    kind: entity
+    entity_key: jurisdiction
+    review_granularity: concept
+    row_policy: entity_keyed
+  aliases:
+  - document=form_1099_div/table=state/row_template=jurisdiction/column=state_tax
+  placements:
+  - address_id: 2025/document=form_1099_div/table=state/row_template=jurisdiction/column=state_tax
+    concept_id: form_1099_div/state_local/jurisdiction/state_tax
+    printed_kind: table
+    printed_token: state
+    printed_ref: Box 16
+  same_fact_as: []

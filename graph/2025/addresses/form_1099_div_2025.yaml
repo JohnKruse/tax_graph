@@ -51,7 +51,8 @@ addresses:
   - kind: control
     token: value
   printed_label: Noncash liquidation distributions
-  aliases: []
+  aliases:
+  - document=form_1099_div/box=10/control=value
   control_role: amount
   status: pending_review
   evidence:
@@ -59,6 +60,16 @@ addresses:
     source_hash: 4ea1de804ff1db921753bd6319beeccfe4647299e03d79816e04d852a9cd1435
     page: 2
   official_ref: Box 10
+  concept_id: form_1099_div/liquidation/noncash
+  placement:
+    concept_id: form_1099_div/liquidation/noncash
+    printed_kind: box
+    printed_token: '10'
+    printed_ref: Box 10
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
 - address_id: 2025/document=form_1099_div/box=11
   logical_key: document=form_1099_div/box=11
   year: 2025
@@ -92,7 +103,8 @@ addresses:
   - kind: option
     token: fatca_filing_requirement
   printed_label: FATCA filing requirement
-  aliases: []
+  aliases:
+  - document=form_1099_div/box=11/option=fatca_filing_requirement
   control_role: checkbox
   status: pending_review
   evidence:
@@ -100,6 +112,16 @@ addresses:
     source_hash: 4ea1de804ff1db921753bd6319beeccfe4647299e03d79816e04d852a9cd1435
     page: 2
   official_ref: Box 11
+  concept_id: form_1099_div/classification/fatca_filing_requirement
+  placement:
+    concept_id: form_1099_div/classification/fatca_filing_requirement
+    printed_kind: box
+    printed_token: '11'
+    printed_ref: Box 11
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
 - address_id: 2025/document=form_1099_div/box=12
   logical_key: document=form_1099_div/box=12
   year: 2025
@@ -133,7 +155,8 @@ addresses:
   - kind: control
     token: value
   printed_label: Exempt-interest dividends
-  aliases: []
+  aliases:
+  - document=form_1099_div/box=12/control=value
   control_role: amount
   status: pending_review
   evidence:
@@ -141,6 +164,16 @@ addresses:
     source_hash: 4ea1de804ff1db921753bd6319beeccfe4647299e03d79816e04d852a9cd1435
     page: 2
   official_ref: Box 12
+  concept_id: form_1099_div/dividends/exempt_interest
+  placement:
+    concept_id: form_1099_div/dividends/exempt_interest
+    printed_kind: box
+    printed_token: '12'
+    printed_ref: Box 12
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
 - address_id: 2025/document=form_1099_div/box=13
   logical_key: document=form_1099_div/box=13
   year: 2025
@@ -174,7 +207,8 @@ addresses:
   - kind: control
     token: value
   printed_label: Specified private activity bond interest dividends
-  aliases: []
+  aliases:
+  - document=form_1099_div/box=13/control=value
   control_role: amount
   status: pending_review
   evidence:
@@ -182,6 +216,16 @@ addresses:
     source_hash: 4ea1de804ff1db921753bd6319beeccfe4647299e03d79816e04d852a9cd1435
     page: 2
   official_ref: Box 13
+  concept_id: form_1099_div/dividends/specified_private_activity_bond
+  placement:
+    concept_id: form_1099_div/dividends/specified_private_activity_bond
+    printed_kind: box
+    printed_token: '13'
+    printed_ref: Box 13
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
 - address_id: 2025/document=form_1099_div/box=1a
   logical_key: document=form_1099_div/box=1a
   year: 2025
@@ -215,7 +259,8 @@ addresses:
   - kind: control
     token: value
   printed_label: Total ordinary dividends
-  aliases: []
+  aliases:
+  - document=form_1099_div/box=1a/control=value
   control_role: amount
   status: pending_review
   evidence:
@@ -223,6 +268,16 @@ addresses:
     source_hash: 4ea1de804ff1db921753bd6319beeccfe4647299e03d79816e04d852a9cd1435
     page: 2
   official_ref: Box 1a
+  concept_id: form_1099_div/dividends/ordinary
+  placement:
+    concept_id: form_1099_div/dividends/ordinary
+    printed_kind: box
+    printed_token: 1a
+    printed_ref: Box 1a
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
 - address_id: 2025/document=form_1099_div/box=1b
   logical_key: document=form_1099_div/box=1b
   year: 2025
@@ -256,7 +311,8 @@ addresses:
   - kind: control
     token: value
   printed_label: Qualified dividends
-  aliases: []
+  aliases:
+  - document=form_1099_div/box=1b/control=value
   control_role: amount
   status: pending_review
   evidence:
@@ -264,6 +320,16 @@ addresses:
     source_hash: 4ea1de804ff1db921753bd6319beeccfe4647299e03d79816e04d852a9cd1435
     page: 2
   official_ref: Box 1b
+  concept_id: form_1099_div/dividends/qualified
+  placement:
+    concept_id: form_1099_div/dividends/qualified
+    printed_kind: box
+    printed_token: 1b
+    printed_ref: Box 1b
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
 - address_id: 2025/document=form_1099_div/box=2a
   logical_key: document=form_1099_div/box=2a
   year: 2025
@@ -297,7 +363,8 @@ addresses:
   - kind: control
     token: value
   printed_label: Total capital gain distr.
-  aliases: []
+  aliases:
+  - document=form_1099_div/box=2a/control=value
   control_role: amount
   status: pending_review
   evidence:
@@ -305,6 +372,16 @@ addresses:
     source_hash: 4ea1de804ff1db921753bd6319beeccfe4647299e03d79816e04d852a9cd1435
     page: 2
   official_ref: Box 2a
+  concept_id: form_1099_div/capital_gain_distribution/total
+  placement:
+    concept_id: form_1099_div/capital_gain_distribution/total
+    printed_kind: box
+    printed_token: 2a
+    printed_ref: Box 2a
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
 - address_id: 2025/document=form_1099_div/box=2b
   logical_key: document=form_1099_div/box=2b
   year: 2025
@@ -338,7 +415,8 @@ addresses:
   - kind: control
     token: value
   printed_label: Unrecap. Sec. 1250 gain
-  aliases: []
+  aliases:
+  - document=form_1099_div/box=2b/control=value
   control_role: amount
   status: pending_review
   evidence:
@@ -346,6 +424,16 @@ addresses:
     source_hash: 4ea1de804ff1db921753bd6319beeccfe4647299e03d79816e04d852a9cd1435
     page: 2
   official_ref: Box 2b
+  concept_id: form_1099_div/capital_gain_distribution/unrecaptured_section_1250
+  placement:
+    concept_id: form_1099_div/capital_gain_distribution/unrecaptured_section_1250
+    printed_kind: box
+    printed_token: 2b
+    printed_ref: Box 2b
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
 - address_id: 2025/document=form_1099_div/box=2c
   logical_key: document=form_1099_div/box=2c
   year: 2025
@@ -379,7 +467,8 @@ addresses:
   - kind: control
     token: value
   printed_label: Section 1202 gain
-  aliases: []
+  aliases:
+  - document=form_1099_div/box=2c/control=value
   control_role: amount
   status: pending_review
   evidence:
@@ -387,6 +476,16 @@ addresses:
     source_hash: 4ea1de804ff1db921753bd6319beeccfe4647299e03d79816e04d852a9cd1435
     page: 2
   official_ref: Box 2c
+  concept_id: form_1099_div/capital_gain_distribution/section_1202
+  placement:
+    concept_id: form_1099_div/capital_gain_distribution/section_1202
+    printed_kind: box
+    printed_token: 2c
+    printed_ref: Box 2c
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
 - address_id: 2025/document=form_1099_div/box=2d
   logical_key: document=form_1099_div/box=2d
   year: 2025
@@ -420,7 +519,8 @@ addresses:
   - kind: control
     token: value
   printed_label: Collectibles (28%) gain
-  aliases: []
+  aliases:
+  - document=form_1099_div/box=2d/control=value
   control_role: amount
   status: pending_review
   evidence:
@@ -428,6 +528,16 @@ addresses:
     source_hash: 4ea1de804ff1db921753bd6319beeccfe4647299e03d79816e04d852a9cd1435
     page: 2
   official_ref: Box 2d
+  concept_id: form_1099_div/capital_gain_distribution/collectibles
+  placement:
+    concept_id: form_1099_div/capital_gain_distribution/collectibles
+    printed_kind: box
+    printed_token: 2d
+    printed_ref: Box 2d
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
 - address_id: 2025/document=form_1099_div/box=2e
   logical_key: document=form_1099_div/box=2e
   year: 2025
@@ -461,7 +571,8 @@ addresses:
   - kind: control
     token: value
   printed_label: Section 897 ordinary dividends
-  aliases: []
+  aliases:
+  - document=form_1099_div/box=2e/control=value
   control_role: amount
   status: pending_review
   evidence:
@@ -469,6 +580,16 @@ addresses:
     source_hash: 4ea1de804ff1db921753bd6319beeccfe4647299e03d79816e04d852a9cd1435
     page: 2
   official_ref: Box 2e
+  concept_id: form_1099_div/dividends/section_897_ordinary
+  placement:
+    concept_id: form_1099_div/dividends/section_897_ordinary
+    printed_kind: box
+    printed_token: 2e
+    printed_ref: Box 2e
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
 - address_id: 2025/document=form_1099_div/box=2f
   logical_key: document=form_1099_div/box=2f
   year: 2025
@@ -502,7 +623,8 @@ addresses:
   - kind: control
     token: value
   printed_label: Section 897 capital gain
-  aliases: []
+  aliases:
+  - document=form_1099_div/box=2f/control=value
   control_role: amount
   status: pending_review
   evidence:
@@ -510,6 +632,16 @@ addresses:
     source_hash: 4ea1de804ff1db921753bd6319beeccfe4647299e03d79816e04d852a9cd1435
     page: 2
   official_ref: Box 2f
+  concept_id: form_1099_div/capital_gain_distribution/section_897
+  placement:
+    concept_id: form_1099_div/capital_gain_distribution/section_897
+    printed_kind: box
+    printed_token: 2f
+    printed_ref: Box 2f
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
 - address_id: 2025/document=form_1099_div/box=3
   logical_key: document=form_1099_div/box=3
   year: 2025
@@ -543,7 +675,8 @@ addresses:
   - kind: control
     token: value
   printed_label: Nondividend distributions
-  aliases: []
+  aliases:
+  - document=form_1099_div/box=3/control=value
   control_role: amount
   status: pending_review
   evidence:
@@ -551,6 +684,16 @@ addresses:
     source_hash: 4ea1de804ff1db921753bd6319beeccfe4647299e03d79816e04d852a9cd1435
     page: 2
   official_ref: Box 3
+  concept_id: form_1099_div/dividends/nondividend_distribution
+  placement:
+    concept_id: form_1099_div/dividends/nondividend_distribution
+    printed_kind: box
+    printed_token: '3'
+    printed_ref: Box 3
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
 - address_id: 2025/document=form_1099_div/box=4
   logical_key: document=form_1099_div/box=4
   year: 2025
@@ -584,7 +727,8 @@ addresses:
   - kind: control
     token: value
   printed_label: Federal income tax withheld
-  aliases: []
+  aliases:
+  - document=form_1099_div/box=4/control=value
   control_role: amount
   status: pending_review
   evidence:
@@ -592,6 +736,16 @@ addresses:
     source_hash: 4ea1de804ff1db921753bd6319beeccfe4647299e03d79816e04d852a9cd1435
     page: 2
   official_ref: Box 4
+  concept_id: form_1099_div/payer/federal_income_tax_withheld
+  placement:
+    concept_id: form_1099_div/payer/federal_income_tax_withheld
+    printed_kind: box
+    printed_token: '4'
+    printed_ref: Box 4
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
 - address_id: 2025/document=form_1099_div/box=5
   logical_key: document=form_1099_div/box=5
   year: 2025
@@ -625,7 +779,8 @@ addresses:
   - kind: control
     token: value
   printed_label: Section 199A dividends
-  aliases: []
+  aliases:
+  - document=form_1099_div/box=5/control=value
   control_role: amount
   status: pending_review
   evidence:
@@ -633,6 +788,16 @@ addresses:
     source_hash: 4ea1de804ff1db921753bd6319beeccfe4647299e03d79816e04d852a9cd1435
     page: 2
   official_ref: Box 5
+  concept_id: form_1099_div/dividends/section_199a
+  placement:
+    concept_id: form_1099_div/dividends/section_199a
+    printed_kind: box
+    printed_token: '5'
+    printed_ref: Box 5
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
 - address_id: 2025/document=form_1099_div/box=6
   logical_key: document=form_1099_div/box=6
   year: 2025
@@ -666,7 +831,8 @@ addresses:
   - kind: control
     token: value
   printed_label: Investment expenses
-  aliases: []
+  aliases:
+  - document=form_1099_div/box=6/control=value
   control_role: amount
   status: pending_review
   evidence:
@@ -674,6 +840,16 @@ addresses:
     source_hash: 4ea1de804ff1db921753bd6319beeccfe4647299e03d79816e04d852a9cd1435
     page: 2
   official_ref: Box 6
+  concept_id: form_1099_div/dividends/investment_expenses
+  placement:
+    concept_id: form_1099_div/dividends/investment_expenses
+    printed_kind: box
+    printed_token: '6'
+    printed_ref: Box 6
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
 - address_id: 2025/document=form_1099_div/box=7
   logical_key: document=form_1099_div/box=7
   year: 2025
@@ -707,7 +883,8 @@ addresses:
   - kind: control
     token: value
   printed_label: Foreign tax paid
-  aliases: []
+  aliases:
+  - document=form_1099_div/box=7/control=value
   control_role: amount
   status: pending_review
   evidence:
@@ -715,6 +892,16 @@ addresses:
     source_hash: 4ea1de804ff1db921753bd6319beeccfe4647299e03d79816e04d852a9cd1435
     page: 2
   official_ref: Box 7
+  concept_id: form_1099_div/foreign_tax/paid
+  placement:
+    concept_id: form_1099_div/foreign_tax/paid
+    printed_kind: box
+    printed_token: '7'
+    printed_ref: Box 7
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
 - address_id: 2025/document=form_1099_div/box=8
   logical_key: document=form_1099_div/box=8
   year: 2025
@@ -748,7 +935,8 @@ addresses:
   - kind: control
     token: value
   printed_label: Foreign country or U.S. possession
-  aliases: []
+  aliases:
+  - document=form_1099_div/box=8/control=value
   control_role: text
   status: pending_review
   evidence:
@@ -756,6 +944,16 @@ addresses:
     source_hash: 4ea1de804ff1db921753bd6319beeccfe4647299e03d79816e04d852a9cd1435
     page: 2
   official_ref: Box 8
+  concept_id: form_1099_div/foreign_tax/country
+  placement:
+    concept_id: form_1099_div/foreign_tax/country
+    printed_kind: box
+    printed_token: '8'
+    printed_ref: Box 8
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
 - address_id: 2025/document=form_1099_div/box=9
   logical_key: document=form_1099_div/box=9
   year: 2025
@@ -789,7 +987,8 @@ addresses:
   - kind: control
     token: value
   printed_label: Cash liquidation distributions
-  aliases: []
+  aliases:
+  - document=form_1099_div/box=9/control=value
   control_role: amount
   status: pending_review
   evidence:
@@ -797,6 +996,16 @@ addresses:
     source_hash: 4ea1de804ff1db921753bd6319beeccfe4647299e03d79816e04d852a9cd1435
     page: 2
   official_ref: Box 9
+  concept_id: form_1099_div/liquidation/cash
+  placement:
+    concept_id: form_1099_div/liquidation/cash
+    printed_kind: box
+    printed_token: '9'
+    printed_ref: Box 9
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
 - address_id: 2025/document=form_1099_div/section=header
   logical_key: document=form_1099_div/section=header
   year: 2025
@@ -830,7 +1039,8 @@ addresses:
   - kind: control
     token: calendar_year
   printed_label: For calendar year
-  aliases: []
+  aliases:
+  - document=form_1099_div/section=header/control=calendar_year
   control_role: text
   status: pending_review
   evidence:
@@ -838,6 +1048,16 @@ addresses:
     source_hash: 4ea1de804ff1db921753bd6319beeccfe4647299e03d79816e04d852a9cd1435
     page: 2
   official_ref: For calendar year
+  concept_id: form_1099_div/header/calendar_year
+  placement:
+    concept_id: form_1099_div/header/calendar_year
+    printed_kind: section
+    printed_token: header
+    printed_ref: For calendar year
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
 - address_id: 2025/document=form_1099_div/section=header/option=corrected
   logical_key: document=form_1099_div/section=header/option=corrected
   year: 2025
@@ -852,7 +1072,8 @@ addresses:
   - kind: option
     token: corrected
   printed_label: CORRECTED
-  aliases: []
+  aliases:
+  - document=form_1099_div/section=header/option=corrected
   control_role: checkbox
   status: pending_review
   evidence:
@@ -860,6 +1081,16 @@ addresses:
     source_hash: 4ea1de804ff1db921753bd6319beeccfe4647299e03d79816e04d852a9cd1435
     page: 2
   official_ref: CORRECTED
+  concept_id: form_1099_div/header/corrected
+  placement:
+    concept_id: form_1099_div/header/corrected
+    printed_kind: section
+    printed_token: header
+    printed_ref: CORRECTED
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
 - address_id: 2025/document=form_1099_div/section=header/option=void
   logical_key: document=form_1099_div/section=header/option=void
   year: 2025
@@ -874,7 +1105,8 @@ addresses:
   - kind: option
     token: void
   printed_label: VOID
-  aliases: []
+  aliases:
+  - document=form_1099_div/section=header/option=void
   control_role: checkbox
   status: pending_review
   evidence:
@@ -882,6 +1114,16 @@ addresses:
     source_hash: 4ea1de804ff1db921753bd6319beeccfe4647299e03d79816e04d852a9cd1435
     page: 2
   official_ref: VOID
+  concept_id: form_1099_div/header/void
+  placement:
+    concept_id: form_1099_div/header/void
+    printed_kind: section
+    printed_token: header
+    printed_ref: VOID
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
 - address_id: 2025/document=form_1099_div/section=recipient
   logical_key: document=form_1099_div/section=recipient
   year: 2025
@@ -915,7 +1157,8 @@ addresses:
   - kind: control
     token: account_number
   printed_label: Account number (see instructions)
-  aliases: []
+  aliases:
+  - document=form_1099_div/section=recipient/control=account_number
   control_role: identifier
   status: pending_review
   evidence:
@@ -923,6 +1166,16 @@ addresses:
     source_hash: 4ea1de804ff1db921753bd6319beeccfe4647299e03d79816e04d852a9cd1435
     page: 2
   official_ref: Account number (see instructions)
+  concept_id: form_1099_div/recipient/account_number
+  placement:
+    concept_id: form_1099_div/recipient/account_number
+    printed_kind: section
+    printed_token: recipient
+    printed_ref: Account number (see instructions)
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
 - address_id: 2025/document=form_1099_div/section=recipient/control=payer_name_address
   logical_key: document=form_1099_div/section=recipient/control=payer_name_address
   year: 2025
@@ -938,7 +1191,8 @@ addresses:
     token: payer_name_address
   printed_label: Payer's name, street address, city or town, state or province, country,
     ZIP or foreign postal code, and telephone number
-  aliases: []
+  aliases:
+  - document=form_1099_div/section=recipient/control=payer_name_address
   control_role: text
   status: pending_review
   evidence:
@@ -947,6 +1201,17 @@ addresses:
     page: 2
   official_ref: Payer's name, street address, city or town, state or province, country,
     ZIP or foreign postal code, and telephone number
+  concept_id: form_1099_div/recipient/payer_name_address
+  placement:
+    concept_id: form_1099_div/recipient/payer_name_address
+    printed_kind: section
+    printed_token: recipient
+    printed_ref: Payer's name, street address, city or town, state or province, country,
+      ZIP or foreign postal code, and telephone number
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
 - address_id: 2025/document=form_1099_div/section=recipient/control=payer_tin
   logical_key: document=form_1099_div/section=recipient/control=payer_tin
   year: 2025
@@ -961,7 +1226,8 @@ addresses:
   - kind: control
     token: payer_tin
   printed_label: Payer's TIN
-  aliases: []
+  aliases:
+  - document=form_1099_div/section=recipient/control=payer_tin
   control_role: identifier
   status: pending_review
   evidence:
@@ -969,6 +1235,16 @@ addresses:
     source_hash: 4ea1de804ff1db921753bd6319beeccfe4647299e03d79816e04d852a9cd1435
     page: 2
   official_ref: Payer's TIN
+  concept_id: form_1099_div/recipient/payer_tin
+  placement:
+    concept_id: form_1099_div/recipient/payer_tin
+    printed_kind: section
+    printed_token: recipient
+    printed_ref: Payer's TIN
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
 - address_id: 2025/document=form_1099_div/section=recipient/control=recipient_city
   logical_key: document=form_1099_div/section=recipient/control=recipient_city
   year: 2025
@@ -984,7 +1260,8 @@ addresses:
     token: recipient_city
   printed_label: City or town, state or province, country, and ZIP or foreign postal
     code
-  aliases: []
+  aliases:
+  - document=form_1099_div/section=recipient/control=recipient_city
   control_role: text
   status: pending_review
   evidence:
@@ -993,6 +1270,17 @@ addresses:
     page: 2
   official_ref: City or town, state or province, country, and ZIP or foreign postal
     code
+  concept_id: form_1099_div/recipient/recipient_city
+  placement:
+    concept_id: form_1099_div/recipient/recipient_city
+    printed_kind: section
+    printed_token: recipient
+    printed_ref: City or town, state or province, country, and ZIP or foreign postal
+      code
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
 - address_id: 2025/document=form_1099_div/section=recipient/control=recipient_name
   logical_key: document=form_1099_div/section=recipient/control=recipient_name
   year: 2025
@@ -1007,7 +1295,8 @@ addresses:
   - kind: control
     token: recipient_name
   printed_label: Recipient's name
-  aliases: []
+  aliases:
+  - document=form_1099_div/section=recipient/control=recipient_name
   control_role: text
   status: pending_review
   evidence:
@@ -1015,6 +1304,16 @@ addresses:
     source_hash: 4ea1de804ff1db921753bd6319beeccfe4647299e03d79816e04d852a9cd1435
     page: 2
   official_ref: Recipient's name
+  concept_id: form_1099_div/recipient/recipient_name
+  placement:
+    concept_id: form_1099_div/recipient/recipient_name
+    printed_kind: section
+    printed_token: recipient
+    printed_ref: Recipient's name
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
 - address_id: 2025/document=form_1099_div/section=recipient/control=recipient_street
   logical_key: document=form_1099_div/section=recipient/control=recipient_street
   year: 2025
@@ -1029,7 +1328,8 @@ addresses:
   - kind: control
     token: recipient_street
   printed_label: Street address (including apt. no.)
-  aliases: []
+  aliases:
+  - document=form_1099_div/section=recipient/control=recipient_street
   control_role: text
   status: pending_review
   evidence:
@@ -1037,6 +1337,16 @@ addresses:
     source_hash: 4ea1de804ff1db921753bd6319beeccfe4647299e03d79816e04d852a9cd1435
     page: 2
   official_ref: Street address (including apt. no.)
+  concept_id: form_1099_div/recipient/recipient_street
+  placement:
+    concept_id: form_1099_div/recipient/recipient_street
+    printed_kind: section
+    printed_token: recipient
+    printed_ref: Street address (including apt. no.)
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
 - address_id: 2025/document=form_1099_div/section=recipient/control=recipient_tin
   logical_key: document=form_1099_div/section=recipient/control=recipient_tin
   year: 2025
@@ -1051,7 +1361,8 @@ addresses:
   - kind: control
     token: recipient_tin
   printed_label: Recipient's TIN
-  aliases: []
+  aliases:
+  - document=form_1099_div/section=recipient/control=recipient_tin
   control_role: identifier
   status: pending_review
   evidence:
@@ -1059,6 +1370,16 @@ addresses:
     source_hash: 4ea1de804ff1db921753bd6319beeccfe4647299e03d79816e04d852a9cd1435
     page: 2
   official_ref: Recipient's TIN
+  concept_id: form_1099_div/recipient/recipient_tin
+  placement:
+    concept_id: form_1099_div/recipient/recipient_tin
+    printed_kind: section
+    printed_token: recipient
+    printed_ref: Recipient's TIN
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
 - address_id: 2025/document=form_1099_div/section=recipient/option=second_tin_notice
   logical_key: document=form_1099_div/section=recipient/option=second_tin_notice
   year: 2025
@@ -1073,7 +1394,8 @@ addresses:
   - kind: option
     token: second_tin_notice
   printed_label: 2nd TIN not.
-  aliases: []
+  aliases:
+  - document=form_1099_div/section=recipient/option=second_tin_notice
   control_role: checkbox
   status: pending_review
   evidence:
@@ -1081,6 +1403,16 @@ addresses:
     source_hash: 4ea1de804ff1db921753bd6319beeccfe4647299e03d79816e04d852a9cd1435
     page: 2
   official_ref: 2nd TIN not.
+  concept_id: form_1099_div/recipient/second_tin_notice
+  placement:
+    concept_id: form_1099_div/recipient/second_tin_notice
+    printed_kind: section
+    printed_token: recipient
+    printed_ref: 2nd TIN not.
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
 - address_id: 2025/document=form_1099_div/table=state
   logical_key: document=form_1099_div/table=state
   year: 2025
@@ -1137,7 +1469,8 @@ addresses:
   - kind: column
     token: state
   printed_label: State
-  aliases: []
+  aliases:
+  - document=form_1099_div/table=state/row_template=jurisdiction/column=state
   control_role: text
   status: pending_review
   evidence:
@@ -1145,6 +1478,17 @@ addresses:
     source_hash: 4ea1de804ff1db921753bd6319beeccfe4647299e03d79816e04d852a9cd1435
     page: 2
   official_ref: Box 14
+  concept_id: form_1099_div/state_local/jurisdiction/state
+  placement:
+    concept_id: form_1099_div/state_local/jurisdiction/state
+    printed_kind: table
+    printed_token: state
+    printed_ref: Box 14
+  occurrence:
+    kind: entity
+    entity_key: jurisdiction
+    review_granularity: concept
+    row_policy: entity_keyed
 - address_id: 2025/document=form_1099_div/table=state/row_template=jurisdiction/column=state_id
   logical_key: document=form_1099_div/table=state/row_template=jurisdiction/column=state_id
   year: 2025
@@ -1161,7 +1505,8 @@ addresses:
   - kind: column
     token: state_id
   printed_label: State identification no.
-  aliases: []
+  aliases:
+  - document=form_1099_div/table=state/row_template=jurisdiction/column=state_id
   control_role: text
   status: pending_review
   evidence:
@@ -1169,6 +1514,17 @@ addresses:
     source_hash: 4ea1de804ff1db921753bd6319beeccfe4647299e03d79816e04d852a9cd1435
     page: 2
   official_ref: Box 15
+  concept_id: form_1099_div/state_local/jurisdiction/state_id
+  placement:
+    concept_id: form_1099_div/state_local/jurisdiction/state_id
+    printed_kind: table
+    printed_token: state
+    printed_ref: Box 15
+  occurrence:
+    kind: entity
+    entity_key: jurisdiction
+    review_granularity: concept
+    row_policy: entity_keyed
 - address_id: 2025/document=form_1099_div/table=state/row_template=jurisdiction/column=state_tax
   logical_key: document=form_1099_div/table=state/row_template=jurisdiction/column=state_tax
   year: 2025
@@ -1185,7 +1541,8 @@ addresses:
   - kind: column
     token: state_tax
   printed_label: State tax withheld
-  aliases: []
+  aliases:
+  - document=form_1099_div/table=state/row_template=jurisdiction/column=state_tax
   control_role: amount
   status: pending_review
   evidence:
@@ -1193,3 +1550,14 @@ addresses:
     source_hash: 4ea1de804ff1db921753bd6319beeccfe4647299e03d79816e04d852a9cd1435
     page: 2
   official_ref: Box 16
+  concept_id: form_1099_div/state_local/jurisdiction/state_tax
+  placement:
+    concept_id: form_1099_div/state_local/jurisdiction/state_tax
+    printed_kind: table
+    printed_token: state
+    printed_ref: Box 16
+  occurrence:
+    kind: entity
+    entity_key: jurisdiction
+    review_granularity: concept
+    row_policy: entity_keyed

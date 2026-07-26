@@ -51,7 +51,8 @@ addresses:
   - kind: control
     token: value
   printed_label: Wages, tips, other compensation
-  aliases: []
+  aliases:
+  - document=form_w2/box=1/control=value
   control_role: amount
   status: pending_review
   evidence:
@@ -59,6 +60,16 @@ addresses:
     source_hash: 6a52ad63693de54220a3326b22c4d0fb34f4c25084366537087312975a55ae96
     page: 2
   official_ref: Box 1
+  concept_id: form_w2/employee/wages
+  placement:
+    concept_id: form_w2/employee/wages
+    printed_kind: box
+    printed_token: '1'
+    printed_ref: Box 1
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
 - address_id: 2025/document=form_w2/box=10
   logical_key: document=form_w2/box=10
   year: 2025
@@ -92,7 +103,8 @@ addresses:
   - kind: control
     token: value
   printed_label: Dependent care benefits
-  aliases: []
+  aliases:
+  - document=form_w2/box=10/control=value
   control_role: amount
   status: pending_review
   evidence:
@@ -100,6 +112,16 @@ addresses:
     source_hash: 6a52ad63693de54220a3326b22c4d0fb34f4c25084366537087312975a55ae96
     page: 2
   official_ref: Box 10
+  concept_id: form_w2/employee/dependent_care_benefits
+  placement:
+    concept_id: form_w2/employee/dependent_care_benefits
+    printed_kind: box
+    printed_token: '10'
+    printed_ref: Box 10
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
 - address_id: 2025/document=form_w2/box=11
   logical_key: document=form_w2/box=11
   year: 2025
@@ -133,7 +155,8 @@ addresses:
   - kind: control
     token: value
   printed_label: Nonqualified plans
-  aliases: []
+  aliases:
+  - document=form_w2/box=11/control=value
   control_role: amount
   status: pending_review
   evidence:
@@ -141,6 +164,16 @@ addresses:
     source_hash: 6a52ad63693de54220a3326b22c4d0fb34f4c25084366537087312975a55ae96
     page: 2
   official_ref: Box 11
+  concept_id: form_w2/employee/nonqualified_plans
+  placement:
+    concept_id: form_w2/employee/nonqualified_plans
+    printed_kind: box
+    printed_token: '11'
+    printed_ref: Box 11
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
 - address_id: 2025/document=form_w2/box=12
   logical_key: document=form_w2/box=12
   year: 2025
@@ -197,7 +230,8 @@ addresses:
   - kind: column
     token: amount
   printed_label: Amount
-  aliases: []
+  aliases:
+  - document=form_w2/box=12/row_template=entry/column=amount
   control_role: amount
   status: pending_review
   evidence:
@@ -205,6 +239,17 @@ addresses:
     source_hash: 6a52ad63693de54220a3326b22c4d0fb34f4c25084366537087312975a55ae96
     page: 2
   official_ref: Box 12 amount
+  concept_id: form_w2/other_compensation/entry/compensation_amount
+  placement:
+    concept_id: form_w2/other_compensation/entry/compensation_amount
+    printed_kind: box
+    printed_token: '12'
+    printed_ref: Box 12 amount
+  occurrence:
+    kind: entity
+    entity_key: entry
+    review_granularity: concept
+    row_policy: entity_keyed
 - address_id: 2025/document=form_w2/box=12/row_template=entry/column=code
   logical_key: document=form_w2/box=12/row_template=entry/column=code
   year: 2025
@@ -221,7 +266,8 @@ addresses:
   - kind: column
     token: code
   printed_label: Code
-  aliases: []
+  aliases:
+  - document=form_w2/box=12/row_template=entry/column=code
   control_role: text
   status: pending_review
   evidence:
@@ -229,6 +275,17 @@ addresses:
     source_hash: 6a52ad63693de54220a3326b22c4d0fb34f4c25084366537087312975a55ae96
     page: 2
   official_ref: Box 12 code
+  concept_id: form_w2/other_compensation/entry/code
+  placement:
+    concept_id: form_w2/other_compensation/entry/code
+    printed_kind: box
+    printed_token: '12'
+    printed_ref: Box 12 code
+  occurrence:
+    kind: entity
+    entity_key: entry
+    review_granularity: concept
+    row_policy: entity_keyed
 - address_id: 2025/document=form_w2/box=13
   logical_key: document=form_w2/box=13
   year: 2025
@@ -262,7 +319,8 @@ addresses:
   - kind: option
     token: retirement_plan
   printed_label: Retirement plan
-  aliases: []
+  aliases:
+  - document=form_w2/box=13/option=retirement_plan
   control_role: checkbox
   status: pending_review
   evidence:
@@ -270,6 +328,16 @@ addresses:
     source_hash: 6a52ad63693de54220a3326b22c4d0fb34f4c25084366537087312975a55ae96
     page: 2
   official_ref: Box 13
+  concept_id: form_w2/employee/benefit_election/retirement_plan
+  placement:
+    concept_id: form_w2/employee/benefit_election/retirement_plan
+    printed_kind: box
+    printed_token: '13'
+    printed_ref: Box 13
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
 - address_id: 2025/document=form_w2/box=13/option=statutory_employee
   logical_key: document=form_w2/box=13/option=statutory_employee
   year: 2025
@@ -284,7 +352,8 @@ addresses:
   - kind: option
     token: statutory_employee
   printed_label: Statutory employee
-  aliases: []
+  aliases:
+  - document=form_w2/box=13/option=statutory_employee
   control_role: checkbox
   status: pending_review
   evidence:
@@ -292,6 +361,16 @@ addresses:
     source_hash: 6a52ad63693de54220a3326b22c4d0fb34f4c25084366537087312975a55ae96
     page: 2
   official_ref: Box 13
+  concept_id: form_w2/employee/benefit_election/statutory_employee
+  placement:
+    concept_id: form_w2/employee/benefit_election/statutory_employee
+    printed_kind: box
+    printed_token: '13'
+    printed_ref: Box 13
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
 - address_id: 2025/document=form_w2/box=13/option=third_party_sick_pay
   logical_key: document=form_w2/box=13/option=third_party_sick_pay
   year: 2025
@@ -306,7 +385,8 @@ addresses:
   - kind: option
     token: third_party_sick_pay
   printed_label: Third-party sick pay
-  aliases: []
+  aliases:
+  - document=form_w2/box=13/option=third_party_sick_pay
   control_role: checkbox
   status: pending_review
   evidence:
@@ -314,6 +394,16 @@ addresses:
     source_hash: 6a52ad63693de54220a3326b22c4d0fb34f4c25084366537087312975a55ae96
     page: 2
   official_ref: Box 13
+  concept_id: form_w2/employee/benefit_election/third_party_sick_pay
+  placement:
+    concept_id: form_w2/employee/benefit_election/third_party_sick_pay
+    printed_kind: box
+    printed_token: '13'
+    printed_ref: Box 13
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
 - address_id: 2025/document=form_w2/box=14
   logical_key: document=form_w2/box=14
   year: 2025
@@ -347,7 +437,8 @@ addresses:
   - kind: control
     token: value
   printed_label: Other
-  aliases: []
+  aliases:
+  - document=form_w2/box=14/control=value
   control_role: text
   status: pending_review
   evidence:
@@ -355,6 +446,16 @@ addresses:
     source_hash: 6a52ad63693de54220a3326b22c4d0fb34f4c25084366537087312975a55ae96
     page: 2
   official_ref: Box 14
+  concept_id: form_w2/employee/other_compensation
+  placement:
+    concept_id: form_w2/employee/other_compensation
+    printed_kind: box
+    printed_token: '14'
+    printed_ref: Box 14
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
 - address_id: 2025/document=form_w2/box=2
   logical_key: document=form_w2/box=2
   year: 2025
@@ -388,7 +489,8 @@ addresses:
   - kind: control
     token: value
   printed_label: Federal income tax withheld
-  aliases: []
+  aliases:
+  - document=form_w2/box=2/control=value
   control_role: amount
   status: pending_review
   evidence:
@@ -396,6 +498,16 @@ addresses:
     source_hash: 6a52ad63693de54220a3326b22c4d0fb34f4c25084366537087312975a55ae96
     page: 2
   official_ref: Box 2
+  concept_id: form_w2/employee/federal_income_tax_withheld
+  placement:
+    concept_id: form_w2/employee/federal_income_tax_withheld
+    printed_kind: box
+    printed_token: '2'
+    printed_ref: Box 2
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
 - address_id: 2025/document=form_w2/box=3
   logical_key: document=form_w2/box=3
   year: 2025
@@ -429,7 +541,8 @@ addresses:
   - kind: control
     token: value
   printed_label: Social security wages
-  aliases: []
+  aliases:
+  - document=form_w2/box=3/control=value
   control_role: amount
   status: pending_review
   evidence:
@@ -437,6 +550,16 @@ addresses:
     source_hash: 6a52ad63693de54220a3326b22c4d0fb34f4c25084366537087312975a55ae96
     page: 2
   official_ref: Box 3
+  concept_id: form_w2/employee/social_security_wages
+  placement:
+    concept_id: form_w2/employee/social_security_wages
+    printed_kind: box
+    printed_token: '3'
+    printed_ref: Box 3
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
 - address_id: 2025/document=form_w2/box=4
   logical_key: document=form_w2/box=4
   year: 2025
@@ -470,7 +593,8 @@ addresses:
   - kind: control
     token: value
   printed_label: Social security tax withheld
-  aliases: []
+  aliases:
+  - document=form_w2/box=4/control=value
   control_role: amount
   status: pending_review
   evidence:
@@ -478,6 +602,16 @@ addresses:
     source_hash: 6a52ad63693de54220a3326b22c4d0fb34f4c25084366537087312975a55ae96
     page: 2
   official_ref: Box 4
+  concept_id: form_w2/employee/social_security_tax_withheld
+  placement:
+    concept_id: form_w2/employee/social_security_tax_withheld
+    printed_kind: box
+    printed_token: '4'
+    printed_ref: Box 4
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
 - address_id: 2025/document=form_w2/box=5
   logical_key: document=form_w2/box=5
   year: 2025
@@ -511,7 +645,8 @@ addresses:
   - kind: control
     token: value
   printed_label: Medicare wages and tips
-  aliases: []
+  aliases:
+  - document=form_w2/box=5/control=value
   control_role: amount
   status: pending_review
   evidence:
@@ -519,6 +654,16 @@ addresses:
     source_hash: 6a52ad63693de54220a3326b22c4d0fb34f4c25084366537087312975a55ae96
     page: 2
   official_ref: Box 5
+  concept_id: form_w2/employee/medicare_wages
+  placement:
+    concept_id: form_w2/employee/medicare_wages
+    printed_kind: box
+    printed_token: '5'
+    printed_ref: Box 5
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
 - address_id: 2025/document=form_w2/box=6
   logical_key: document=form_w2/box=6
   year: 2025
@@ -552,7 +697,8 @@ addresses:
   - kind: control
     token: value
   printed_label: Medicare tax withheld
-  aliases: []
+  aliases:
+  - document=form_w2/box=6/control=value
   control_role: amount
   status: pending_review
   evidence:
@@ -560,6 +706,16 @@ addresses:
     source_hash: 6a52ad63693de54220a3326b22c4d0fb34f4c25084366537087312975a55ae96
     page: 2
   official_ref: Box 6
+  concept_id: form_w2/employee/medicare_tax_withheld
+  placement:
+    concept_id: form_w2/employee/medicare_tax_withheld
+    printed_kind: box
+    printed_token: '6'
+    printed_ref: Box 6
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
 - address_id: 2025/document=form_w2/box=7
   logical_key: document=form_w2/box=7
   year: 2025
@@ -593,7 +749,8 @@ addresses:
   - kind: control
     token: value
   printed_label: Social security tips
-  aliases: []
+  aliases:
+  - document=form_w2/box=7/control=value
   control_role: amount
   status: pending_review
   evidence:
@@ -601,6 +758,16 @@ addresses:
     source_hash: 6a52ad63693de54220a3326b22c4d0fb34f4c25084366537087312975a55ae96
     page: 2
   official_ref: Box 7
+  concept_id: form_w2/employee/social_security_tips
+  placement:
+    concept_id: form_w2/employee/social_security_tips
+    printed_kind: box
+    printed_token: '7'
+    printed_ref: Box 7
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
 - address_id: 2025/document=form_w2/box=8
   logical_key: document=form_w2/box=8
   year: 2025
@@ -634,7 +801,8 @@ addresses:
   - kind: control
     token: value
   printed_label: Allocated tips
-  aliases: []
+  aliases:
+  - document=form_w2/box=8/control=value
   control_role: amount
   status: pending_review
   evidence:
@@ -642,6 +810,16 @@ addresses:
     source_hash: 6a52ad63693de54220a3326b22c4d0fb34f4c25084366537087312975a55ae96
     page: 2
   official_ref: Box 8
+  concept_id: form_w2/employee/allocated_tips
+  placement:
+    concept_id: form_w2/employee/allocated_tips
+    printed_kind: box
+    printed_token: '8'
+    printed_ref: Box 8
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
 - address_id: 2025/document=form_w2/box=a
   logical_key: document=form_w2/box=a
   year: 2025
@@ -675,7 +853,8 @@ addresses:
   - kind: control
     token: employee_ssn
   printed_label: Employee's social security number
-  aliases: []
+  aliases:
+  - document=form_w2/box=a/control=employee_ssn
   control_role: identifier
   status: pending_review
   evidence:
@@ -683,6 +862,16 @@ addresses:
     source_hash: 6a52ad63693de54220a3326b22c4d0fb34f4c25084366537087312975a55ae96
     page: 2
   official_ref: Box a
+  concept_id: form_w2/employee/ssn
+  placement:
+    concept_id: form_w2/employee/ssn
+    printed_kind: box
+    printed_token: a
+    printed_ref: Box a
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
 - address_id: 2025/document=form_w2/box=b
   logical_key: document=form_w2/box=b
   year: 2025
@@ -716,7 +905,8 @@ addresses:
   - kind: control
     token: value
   printed_label: Employer identification number (EIN)
-  aliases: []
+  aliases:
+  - document=form_w2/box=b/control=value
   control_role: identifier
   status: pending_review
   evidence:
@@ -724,6 +914,16 @@ addresses:
     source_hash: 6a52ad63693de54220a3326b22c4d0fb34f4c25084366537087312975a55ae96
     page: 2
   official_ref: Box b
+  concept_id: form_w2/employer/ein
+  placement:
+    concept_id: form_w2/employer/ein
+    printed_kind: box
+    printed_token: b
+    printed_ref: Box b
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
 - address_id: 2025/document=form_w2/box=c
   logical_key: document=form_w2/box=c
   year: 2025
@@ -757,7 +957,8 @@ addresses:
   - kind: control
     token: value
   printed_label: Employer's name, address, and ZIP code
-  aliases: []
+  aliases:
+  - document=form_w2/box=c/control=value
   control_role: text
   status: pending_review
   evidence:
@@ -765,6 +966,16 @@ addresses:
     source_hash: 6a52ad63693de54220a3326b22c4d0fb34f4c25084366537087312975a55ae96
     page: 2
   official_ref: Box c
+  concept_id: form_w2/employer/name_address
+  placement:
+    concept_id: form_w2/employer/name_address
+    printed_kind: box
+    printed_token: c
+    printed_ref: Box c
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
 - address_id: 2025/document=form_w2/box=d
   logical_key: document=form_w2/box=d
   year: 2025
@@ -798,7 +1009,8 @@ addresses:
   - kind: control
     token: value
   printed_label: Control number
-  aliases: []
+  aliases:
+  - document=form_w2/box=d/control=value
   control_role: identifier
   status: pending_review
   evidence:
@@ -806,6 +1018,16 @@ addresses:
     source_hash: 6a52ad63693de54220a3326b22c4d0fb34f4c25084366537087312975a55ae96
     page: 2
   official_ref: Box d
+  concept_id: form_w2/employer/control_number
+  placement:
+    concept_id: form_w2/employer/control_number
+    printed_kind: box
+    printed_token: d
+    printed_ref: Box d
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
 - address_id: 2025/document=form_w2/box=e
   logical_key: document=form_w2/box=e
   year: 2025
@@ -839,7 +1061,8 @@ addresses:
   - kind: control
     token: first_name_initial
   printed_label: Employee's first name and initial
-  aliases: []
+  aliases:
+  - document=form_w2/box=e/control=first_name_initial
   control_role: text
   status: pending_review
   evidence:
@@ -847,6 +1070,16 @@ addresses:
     source_hash: 6a52ad63693de54220a3326b22c4d0fb34f4c25084366537087312975a55ae96
     page: 2
   official_ref: Box e
+  concept_id: form_w2/employee/first_name_initial
+  placement:
+    concept_id: form_w2/employee/first_name_initial
+    printed_kind: box
+    printed_token: e
+    printed_ref: Box e
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
 - address_id: 2025/document=form_w2/box=e/control=last_name
   logical_key: document=form_w2/box=e/control=last_name
   year: 2025
@@ -861,7 +1094,8 @@ addresses:
   - kind: control
     token: last_name
   printed_label: Last name
-  aliases: []
+  aliases:
+  - document=form_w2/box=e/control=last_name
   control_role: text
   status: pending_review
   evidence:
@@ -869,6 +1103,16 @@ addresses:
     source_hash: 6a52ad63693de54220a3326b22c4d0fb34f4c25084366537087312975a55ae96
     page: 2
   official_ref: Box e
+  concept_id: form_w2/employee/last_name
+  placement:
+    concept_id: form_w2/employee/last_name
+    printed_kind: box
+    printed_token: e
+    printed_ref: Box e
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
 - address_id: 2025/document=form_w2/box=e/control=suffix
   logical_key: document=form_w2/box=e/control=suffix
   year: 2025
@@ -883,7 +1127,8 @@ addresses:
   - kind: control
     token: suffix
   printed_label: Suffix
-  aliases: []
+  aliases:
+  - document=form_w2/box=e/control=suffix
   control_role: text
   status: pending_review
   evidence:
@@ -891,6 +1136,16 @@ addresses:
     source_hash: 6a52ad63693de54220a3326b22c4d0fb34f4c25084366537087312975a55ae96
     page: 2
   official_ref: Box e
+  concept_id: form_w2/employee/suffix
+  placement:
+    concept_id: form_w2/employee/suffix
+    printed_kind: box
+    printed_token: e
+    printed_ref: Box e
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
 - address_id: 2025/document=form_w2/box=f
   logical_key: document=form_w2/box=f
   year: 2025
@@ -924,7 +1179,8 @@ addresses:
   - kind: control
     token: value
   printed_label: Employee's address and ZIP code
-  aliases: []
+  aliases:
+  - document=form_w2/box=f/control=value
   control_role: text
   status: pending_review
   evidence:
@@ -932,6 +1188,16 @@ addresses:
     source_hash: 6a52ad63693de54220a3326b22c4d0fb34f4c25084366537087312975a55ae96
     page: 2
   official_ref: Box f
+  concept_id: form_w2/employee/address
+  placement:
+    concept_id: form_w2/employee/address
+    printed_kind: box
+    printed_token: f
+    printed_ref: Box f
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
 - address_id: 2025/document=form_w2/box=void
   logical_key: document=form_w2/box=void
   year: 2025
@@ -965,7 +1231,8 @@ addresses:
   - kind: option
     token: void
   printed_label: VOID
-  aliases: []
+  aliases:
+  - document=form_w2/box=void/option=void
   control_role: checkbox
   status: pending_review
   evidence:
@@ -973,6 +1240,16 @@ addresses:
     source_hash: 6a52ad63693de54220a3326b22c4d0fb34f4c25084366537087312975a55ae96
     page: 2
   official_ref: VOID
+  concept_id: form_w2/header/void
+  placement:
+    concept_id: form_w2/header/void
+    printed_kind: box
+    printed_token: void
+    printed_ref: VOID
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
 - address_id: 2025/document=form_w2/table=state_local
   logical_key: document=form_w2/table=state_local
   year: 2025
@@ -1029,7 +1306,8 @@ addresses:
   - kind: column
     token: employer_state_id
   printed_label: Employer's state ID number
-  aliases: []
+  aliases:
+  - document=form_w2/table=state_local/row_template=jurisdiction/column=employer_state_id
   control_role: text
   status: pending_review
   evidence:
@@ -1037,6 +1315,17 @@ addresses:
     source_hash: 6a52ad63693de54220a3326b22c4d0fb34f4c25084366537087312975a55ae96
     page: 2
   official_ref: Box 15
+  concept_id: form_w2/state_local/jurisdiction/employer_state_id
+  placement:
+    concept_id: form_w2/state_local/jurisdiction/employer_state_id
+    printed_kind: table
+    printed_token: state_local
+    printed_ref: Box 15
+  occurrence:
+    kind: entity
+    entity_key: jurisdiction
+    review_granularity: concept
+    row_policy: entity_keyed
 - address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=local_income_tax
   logical_key: document=form_w2/table=state_local/row_template=jurisdiction/column=local_income_tax
   year: 2025
@@ -1053,7 +1342,8 @@ addresses:
   - kind: column
     token: local_income_tax
   printed_label: Local income tax
-  aliases: []
+  aliases:
+  - document=form_w2/table=state_local/row_template=jurisdiction/column=local_income_tax
   control_role: amount
   status: pending_review
   evidence:
@@ -1061,6 +1351,17 @@ addresses:
     source_hash: 6a52ad63693de54220a3326b22c4d0fb34f4c25084366537087312975a55ae96
     page: 2
   official_ref: Box 19
+  concept_id: form_w2/state_local/jurisdiction/local_income_tax
+  placement:
+    concept_id: form_w2/state_local/jurisdiction/local_income_tax
+    printed_kind: table
+    printed_token: state_local
+    printed_ref: Box 19
+  occurrence:
+    kind: entity
+    entity_key: jurisdiction
+    review_granularity: concept
+    row_policy: entity_keyed
 - address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=local_wages
   logical_key: document=form_w2/table=state_local/row_template=jurisdiction/column=local_wages
   year: 2025
@@ -1077,7 +1378,8 @@ addresses:
   - kind: column
     token: local_wages
   printed_label: Local wages, tips, etc.
-  aliases: []
+  aliases:
+  - document=form_w2/table=state_local/row_template=jurisdiction/column=local_wages
   control_role: amount
   status: pending_review
   evidence:
@@ -1085,6 +1387,17 @@ addresses:
     source_hash: 6a52ad63693de54220a3326b22c4d0fb34f4c25084366537087312975a55ae96
     page: 2
   official_ref: Box 18
+  concept_id: form_w2/state_local/jurisdiction/local_wages
+  placement:
+    concept_id: form_w2/state_local/jurisdiction/local_wages
+    printed_kind: table
+    printed_token: state_local
+    printed_ref: Box 18
+  occurrence:
+    kind: entity
+    entity_key: jurisdiction
+    review_granularity: concept
+    row_policy: entity_keyed
 - address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=locality_name
   logical_key: document=form_w2/table=state_local/row_template=jurisdiction/column=locality_name
   year: 2025
@@ -1101,7 +1414,8 @@ addresses:
   - kind: column
     token: locality_name
   printed_label: Locality name
-  aliases: []
+  aliases:
+  - document=form_w2/table=state_local/row_template=jurisdiction/column=locality_name
   control_role: text
   status: pending_review
   evidence:
@@ -1109,6 +1423,17 @@ addresses:
     source_hash: 6a52ad63693de54220a3326b22c4d0fb34f4c25084366537087312975a55ae96
     page: 2
   official_ref: Box 20
+  concept_id: form_w2/state_local/jurisdiction/locality_name
+  placement:
+    concept_id: form_w2/state_local/jurisdiction/locality_name
+    printed_kind: table
+    printed_token: state_local
+    printed_ref: Box 20
+  occurrence:
+    kind: entity
+    entity_key: jurisdiction
+    review_granularity: concept
+    row_policy: entity_keyed
 - address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=state
   logical_key: document=form_w2/table=state_local/row_template=jurisdiction/column=state
   year: 2025
@@ -1125,7 +1450,8 @@ addresses:
   - kind: column
     token: state
   printed_label: State
-  aliases: []
+  aliases:
+  - document=form_w2/table=state_local/row_template=jurisdiction/column=state
   control_role: text
   status: pending_review
   evidence:
@@ -1133,6 +1459,17 @@ addresses:
     source_hash: 6a52ad63693de54220a3326b22c4d0fb34f4c25084366537087312975a55ae96
     page: 2
   official_ref: Box 15
+  concept_id: form_w2/state_local/jurisdiction/state
+  placement:
+    concept_id: form_w2/state_local/jurisdiction/state
+    printed_kind: table
+    printed_token: state_local
+    printed_ref: Box 15
+  occurrence:
+    kind: entity
+    entity_key: jurisdiction
+    review_granularity: concept
+    row_policy: entity_keyed
 - address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=state_income_tax
   logical_key: document=form_w2/table=state_local/row_template=jurisdiction/column=state_income_tax
   year: 2025
@@ -1149,7 +1486,8 @@ addresses:
   - kind: column
     token: state_income_tax
   printed_label: State income tax
-  aliases: []
+  aliases:
+  - document=form_w2/table=state_local/row_template=jurisdiction/column=state_income_tax
   control_role: amount
   status: pending_review
   evidence:
@@ -1157,6 +1495,17 @@ addresses:
     source_hash: 6a52ad63693de54220a3326b22c4d0fb34f4c25084366537087312975a55ae96
     page: 2
   official_ref: Box 17
+  concept_id: form_w2/state_local/jurisdiction/state_income_tax
+  placement:
+    concept_id: form_w2/state_local/jurisdiction/state_income_tax
+    printed_kind: table
+    printed_token: state_local
+    printed_ref: Box 17
+  occurrence:
+    kind: entity
+    entity_key: jurisdiction
+    review_granularity: concept
+    row_policy: entity_keyed
 - address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=state_wages
   logical_key: document=form_w2/table=state_local/row_template=jurisdiction/column=state_wages
   year: 2025
@@ -1173,7 +1522,8 @@ addresses:
   - kind: column
     token: state_wages
   printed_label: State wages, tips, etc.
-  aliases: []
+  aliases:
+  - document=form_w2/table=state_local/row_template=jurisdiction/column=state_wages
   control_role: amount
   status: pending_review
   evidence:
@@ -1181,3 +1531,14 @@ addresses:
     source_hash: 6a52ad63693de54220a3326b22c4d0fb34f4c25084366537087312975a55ae96
     page: 2
   official_ref: Box 16
+  concept_id: form_w2/state_local/jurisdiction/state_wages
+  placement:
+    concept_id: form_w2/state_local/jurisdiction/state_wages
+    printed_kind: table
+    printed_token: state_local
+    printed_ref: Box 16
+  occurrence:
+    kind: entity
+    entity_key: jurisdiction
+    review_granularity: concept
+    row_policy: entity_keyed

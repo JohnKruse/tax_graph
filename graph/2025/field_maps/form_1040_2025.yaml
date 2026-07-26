@@ -7,56 +7,67 @@ mappings:
   format: text
   identity_slot: taxpayer_first_name
   address_id: 2025/document=form_1040/section=identity/control=taxpayer_first_name
+  concept_id: form_1040/identity/taxpayer/first_name
 - slot: taxpayer_last_name
   field_name: topmostSubform[0].Page1[0].f1_15[0]
   format: text
   identity_slot: taxpayer_last_name
   address_id: 2025/document=form_1040/section=identity/control=taxpayer_last_name
+  concept_id: form_1040/identity/taxpayer/last_name
 - slot: taxpayer_ssn
   field_name: topmostSubform[0].Page1[0].f1_16[0]
   format: text
   identity_slot: taxpayer_ssn
   address_id: 2025/document=form_1040/section=identity/control=taxpayer_ssn
+  concept_id: form_1040/identity/taxpayer/ssn
 - slot: spouse_first_name
   field_name: topmostSubform[0].Page1[0].f1_17[0]
   format: text
   identity_slot: spouse_first_name
   address_id: 2025/document=form_1040/section=identity/control=spouse_first_name
+  concept_id: form_1040/identity/spouse/first_name
 - slot: spouse_last_name
   field_name: topmostSubform[0].Page1[0].f1_18[0]
   format: text
   identity_slot: spouse_last_name
   address_id: 2025/document=form_1040/section=identity/control=spouse_last_name
+  concept_id: form_1040/identity/spouse/last_name
 - slot: spouse_ssn
   field_name: topmostSubform[0].Page1[0].f1_19[0]
   format: text
   identity_slot: spouse_ssn
   address_id: 2025/document=form_1040/section=identity/control=spouse_ssn
+  concept_id: form_1040/identity/spouse/ssn
 - slot: address_line_1
   field_name: topmostSubform[0].Page1[0].Address_ReadOrder[0].f1_20[0]
   format: text
   identity_slot: address_line_1
   address_id: 2025/document=form_1040/section=identity/control=address_line_1
+  concept_id: form_1040/identity/filer/address_line_1
 - slot: apartment
   field_name: topmostSubform[0].Page1[0].Address_ReadOrder[0].f1_21[0]
   format: text
   identity_slot: apartment
   address_id: 2025/document=form_1040/section=identity/control=apartment
+  concept_id: form_1040/identity/filer/apartment
 - slot: city
   field_name: topmostSubform[0].Page1[0].Address_ReadOrder[0].f1_22[0]
   format: text
   identity_slot: city
   address_id: 2025/document=form_1040/section=identity/control=city
+  concept_id: form_1040/identity/filer/city
 - slot: state
   field_name: topmostSubform[0].Page1[0].Address_ReadOrder[0].f1_23[0]
   format: text
   identity_slot: state
   address_id: 2025/document=form_1040/section=identity/control=state
+  concept_id: form_1040/identity/filer/state
 - slot: zip_code
   field_name: topmostSubform[0].Page1[0].Address_ReadOrder[0].f1_24[0]
   format: text
   identity_slot: zip_code
   address_id: 2025/document=form_1040/section=identity/control=zip_code
+  concept_id: form_1040/identity/filer/zip_code
 - slot: filing_status
   field_name: topmostSubform[0].Page1[0].Checkbox_ReadOrder[0].c1_8[0]
   format: checkbox
@@ -569,66 +580,77 @@ field_dispositions:
   value_format: text
   identity_slot: taxpayer_first_name
   address_id: 2025/document=form_1040/section=identity/control=taxpayer_first_name
+  concept_id: form_1040/identity/taxpayer/first_name
 - field_name: topmostSubform[0].Page1[0].f1_15[0]
   label: f1_15
   population_policy: user_entered
   value_format: text
   identity_slot: taxpayer_last_name
   address_id: 2025/document=form_1040/section=identity/control=taxpayer_last_name
+  concept_id: form_1040/identity/taxpayer/last_name
 - field_name: topmostSubform[0].Page1[0].f1_16[0]
   label: f1_16
   population_policy: user_entered
   value_format: text
   identity_slot: taxpayer_ssn
   address_id: 2025/document=form_1040/section=identity/control=taxpayer_ssn
+  concept_id: form_1040/identity/taxpayer/ssn
 - field_name: topmostSubform[0].Page1[0].f1_17[0]
   label: f1_17
   population_policy: user_entered
   value_format: text
   identity_slot: spouse_first_name
   address_id: 2025/document=form_1040/section=identity/control=spouse_first_name
+  concept_id: form_1040/identity/spouse/first_name
 - field_name: topmostSubform[0].Page1[0].f1_18[0]
   label: f1_18
   population_policy: user_entered
   value_format: text
   identity_slot: spouse_last_name
   address_id: 2025/document=form_1040/section=identity/control=spouse_last_name
+  concept_id: form_1040/identity/spouse/last_name
 - field_name: topmostSubform[0].Page1[0].f1_19[0]
   label: f1_19
   population_policy: user_entered
   value_format: text
   identity_slot: spouse_ssn
   address_id: 2025/document=form_1040/section=identity/control=spouse_ssn
+  concept_id: form_1040/identity/spouse/ssn
 - field_name: topmostSubform[0].Page1[0].Address_ReadOrder[0].f1_20[0]
   label: Line a - f1_20
   population_policy: user_entered
   value_format: text
   identity_slot: address_line_1
   address_id: 2025/document=form_1040/section=identity/control=address_line_1
+  concept_id: form_1040/identity/filer/address_line_1
 - field_name: topmostSubform[0].Page1[0].Address_ReadOrder[0].f1_21[0]
   label: Line a - f1_21
   population_policy: user_entered
   value_format: text
   identity_slot: apartment
   address_id: 2025/document=form_1040/section=identity/control=apartment
+  concept_id: form_1040/identity/filer/apartment
 - field_name: topmostSubform[0].Page1[0].Address_ReadOrder[0].f1_22[0]
   label: f1_22
   population_policy: user_entered
   value_format: text
   identity_slot: city
   address_id: 2025/document=form_1040/section=identity/control=city
+  concept_id: form_1040/identity/filer/city
 - field_name: topmostSubform[0].Page1[0].Address_ReadOrder[0].f1_23[0]
   label: f1_23
   population_policy: user_entered
   value_format: text
   identity_slot: state
   address_id: 2025/document=form_1040/section=identity/control=state
+  concept_id: form_1040/identity/filer/state
 - field_name: topmostSubform[0].Page1[0].Address_ReadOrder[0].f1_24[0]
   label: f1_24
   population_policy: user_entered
   value_format: text
   identity_slot: zip_code
   address_id: 2025/document=form_1040/section=identity/control=zip_code
+  concept_id: form_1040/identity/filer/zip_code
 - field_name: topmostSubform[0].Page1[0].Address_ReadOrder[0].f1_25[0]
   label: Foreign province, state, or county
   population_policy: unsupported
@@ -640,6 +662,7 @@ field_dispositions:
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page1[0].Address_ReadOrder[0].f1_25[0].
   address_id: 2025/document=form_1040/section=identity/control=foreign_country
+  concept_id: form_1040/identity/filer/foreign_country
 - field_name: topmostSubform[0].Page1[0].Address_ReadOrder[0].f1_26[0]
   label: Foreign postal code
   population_policy: unsupported
@@ -651,6 +674,7 @@ field_dispositions:
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page1[0].Address_ReadOrder[0].f1_26[0].
   address_id: 2025/document=form_1040/section=identity/control=foreign_province
+  concept_id: form_1040/identity/filer/foreign_province
 - field_name: topmostSubform[0].Page1[0].Address_ReadOrder[0].f1_27[0]
   label: Foreign country name
   population_policy: unsupported
@@ -662,6 +686,7 @@ field_dispositions:
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page1[0].Address_ReadOrder[0].f1_27[0].
   address_id: 2025/document=form_1040/section=identity/control=foreign_postal_code
+  concept_id: form_1040/identity/filer/foreign_postal_code
 - field_name: topmostSubform[0].Page1[0].c1_5[0]
   label: Line a - more a than joint half return, of 2025. was in - c1_5
   population_policy: unsupported
@@ -673,6 +698,7 @@ field_dispositions:
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page1[0].c1_5[0].
   address_id: 2025/document=form_1040/section=identity/option=main_home_joint_return
+  concept_id: form_1040/identity/residence/main_home_joint_return
 - field_name: topmostSubform[0].Page1[0].c1_6[0]
   label: Digital assets - No
   population_policy: unsupported
@@ -684,6 +710,7 @@ field_dispositions:
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page1[0].c1_6[0].
   address_id: 2025/document=form_1040/section=identity/option=presidential_election_you
+  concept_id: form_1040/identity/presidential_election/taxpayer
 - field_name: topmostSubform[0].Page1[0].c1_7[0]
   label: You - c1_7
   population_policy: unsupported
@@ -695,6 +722,7 @@ field_dispositions:
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page1[0].c1_7[0].
   address_id: 2025/document=form_1040/section=identity/option=presidential_election_spouse
+  concept_id: form_1040/identity/presidential_election/spouse
 - field_name: topmostSubform[0].Page1[0].Checkbox_ReadOrder[0].c1_8[0]
   label: Filing Status - c1_8
   population_policy: user_entered
@@ -806,6 +834,7 @@ field_dispositions:
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for topmostSubform[0].Page1[0].Dependents_ReadOrder[0].c1_11[0].
   address_id: 2025/document=form_1040/table=dependents/option=more_than_four
+  concept_id: form_1040/dependents/more_than_four
 - field_name: topmostSubform[0].Page1[0].Table_Dependents[0].Row1[0].f1_31[0]
   label: Dependent 1 first name
   population_policy: user_entered
@@ -817,6 +846,7 @@ field_dispositions:
     role: identity
   runtime_fact_ref: dependents.first_name
   address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=first_name
+  concept_id: form_1040/dependents/dependent/first_name
 - field_name: topmostSubform[0].Page1[0].Table_Dependents[0].Row1[0].f1_32[0]
   label: Dependent 2 first name
   population_policy: user_entered
@@ -828,6 +858,7 @@ field_dispositions:
     role: identity
   runtime_fact_ref: dependents.first_name
   address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=first_name
+  concept_id: form_1040/dependents/dependent/first_name
 - field_name: topmostSubform[0].Page1[0].Table_Dependents[0].Row1[0].f1_33[0]
   label: Dependent 3 first name
   population_policy: user_entered
@@ -839,6 +870,7 @@ field_dispositions:
     role: identity
   runtime_fact_ref: dependents.first_name
   address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=first_name
+  concept_id: form_1040/dependents/dependent/first_name
 - field_name: topmostSubform[0].Page1[0].Table_Dependents[0].Row1[0].f1_34[0]
   label: Dependent 4 first name
   population_policy: user_entered
@@ -850,6 +882,7 @@ field_dispositions:
     role: identity
   runtime_fact_ref: dependents.first_name
   address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=first_name
+  concept_id: form_1040/dependents/dependent/first_name
 - field_name: topmostSubform[0].Page1[0].Table_Dependents[0].Row2[0].f1_35[0]
   label: Dependent 1 last name
   population_policy: user_entered
@@ -861,6 +894,7 @@ field_dispositions:
     role: identity
   runtime_fact_ref: dependents.last_name
   address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=last_name
+  concept_id: form_1040/dependents/dependent/last_name
 - field_name: topmostSubform[0].Page1[0].Table_Dependents[0].Row2[0].f1_36[0]
   label: Dependent 2 last name
   population_policy: user_entered
@@ -872,6 +906,7 @@ field_dispositions:
     role: identity
   runtime_fact_ref: dependents.last_name
   address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=last_name
+  concept_id: form_1040/dependents/dependent/last_name
 - field_name: topmostSubform[0].Page1[0].Table_Dependents[0].Row2[0].f1_37[0]
   label: Dependent 3 last name
   population_policy: user_entered
@@ -883,6 +918,7 @@ field_dispositions:
     role: identity
   runtime_fact_ref: dependents.last_name
   address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=last_name
+  concept_id: form_1040/dependents/dependent/last_name
 - field_name: topmostSubform[0].Page1[0].Table_Dependents[0].Row2[0].f1_38[0]
   label: Dependent 4 last name
   population_policy: user_entered
@@ -894,6 +930,7 @@ field_dispositions:
     role: identity
   runtime_fact_ref: dependents.last_name
   address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=last_name
+  concept_id: form_1040/dependents/dependent/last_name
 - field_name: topmostSubform[0].Page1[0].Table_Dependents[0].Row3[0].f1_39[0]
   label: Dependent 1 ssn
   population_policy: user_entered
@@ -905,6 +942,7 @@ field_dispositions:
     role: identity
   runtime_fact_ref: dependents.ssn
   address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=ssn
+  concept_id: form_1040/dependents/dependent/ssn
 - field_name: topmostSubform[0].Page1[0].Table_Dependents[0].Row3[0].f1_40[0]
   label: Dependent 2 ssn
   population_policy: user_entered
@@ -916,6 +954,7 @@ field_dispositions:
     role: identity
   runtime_fact_ref: dependents.ssn
   address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=ssn
+  concept_id: form_1040/dependents/dependent/ssn
 - field_name: topmostSubform[0].Page1[0].Table_Dependents[0].Row3[0].f1_41[0]
   label: Dependent 3 ssn
   population_policy: user_entered
@@ -927,6 +966,7 @@ field_dispositions:
     role: identity
   runtime_fact_ref: dependents.ssn
   address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=ssn
+  concept_id: form_1040/dependents/dependent/ssn
 - field_name: topmostSubform[0].Page1[0].Table_Dependents[0].Row3[0].f1_42[0]
   label: Dependent 4 ssn
   population_policy: user_entered
@@ -938,6 +978,7 @@ field_dispositions:
     role: identity
   runtime_fact_ref: dependents.ssn
   address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=ssn
+  concept_id: form_1040/dependents/dependent/ssn
 - field_name: topmostSubform[0].Page1[0].Table_Dependents[0].Row4[0].f1_43[0]
   label: Dependent 1 relationship
   population_policy: user_entered
@@ -949,6 +990,7 @@ field_dispositions:
     role: identity
   runtime_fact_ref: dependents.relationship
   address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=relationship
+  concept_id: form_1040/dependents/dependent/relationship
 - field_name: topmostSubform[0].Page1[0].Table_Dependents[0].Row4[0].f1_44[0]
   label: Dependent 2 relationship
   population_policy: user_entered
@@ -960,6 +1002,7 @@ field_dispositions:
     role: identity
   runtime_fact_ref: dependents.relationship
   address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=relationship
+  concept_id: form_1040/dependents/dependent/relationship
 - field_name: topmostSubform[0].Page1[0].Table_Dependents[0].Row4[0].f1_45[0]
   label: Dependent 3 relationship
   population_policy: user_entered
@@ -971,6 +1014,7 @@ field_dispositions:
     role: identity
   runtime_fact_ref: dependents.relationship
   address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=relationship
+  concept_id: form_1040/dependents/dependent/relationship
 - field_name: topmostSubform[0].Page1[0].Table_Dependents[0].Row4[0].f1_46[0]
   label: Dependent 4 relationship
   population_policy: user_entered
@@ -982,6 +1026,7 @@ field_dispositions:
     role: identity
   runtime_fact_ref: dependents.relationship
   address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=relationship
+  concept_id: form_1040/dependents/dependent/relationship
 - field_name: topmostSubform[0].Page1[0].Table_Dependents[0].Row5[0].Dependent1[0].c1_12[0]
   label: Dependent 1 lived with you decision
   population_policy: decision_required
@@ -993,6 +1038,7 @@ field_dispositions:
     role: decision
   runtime_fact_ref: dependents.lived_with_you
   address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=lived_with_you_more_than_half_2025
+  concept_id: form_1040/dependents/dependent/lived_with_you_more_than_half
 - field_name: topmostSubform[0].Page1[0].Table_Dependents[0].Row5[0].Dependent1[0].c1_13[0]
   label: Dependent 1 in us decision
   population_policy: decision_required
@@ -1004,6 +1050,7 @@ field_dispositions:
     role: decision
   runtime_fact_ref: dependents.in_us
   address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=in_the_us
+  concept_id: form_1040/dependents/dependent/in_the_us
 - field_name: topmostSubform[0].Page1[0].Table_Dependents[0].Row5[0].Dependent2[0].c1_14[0]
   label: Dependent 2 lived with you decision
   population_policy: decision_required
@@ -1015,6 +1062,7 @@ field_dispositions:
     role: decision
   runtime_fact_ref: dependents.lived_with_you
   address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=lived_with_you_more_than_half_2025
+  concept_id: form_1040/dependents/dependent/lived_with_you_more_than_half
 - field_name: topmostSubform[0].Page1[0].Table_Dependents[0].Row5[0].Dependent2[0].c1_15[0]
   label: Dependent 2 in us decision
   population_policy: decision_required
@@ -1026,6 +1074,7 @@ field_dispositions:
     role: decision
   runtime_fact_ref: dependents.in_us
   address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=in_the_us
+  concept_id: form_1040/dependents/dependent/in_the_us
 - field_name: topmostSubform[0].Page1[0].Table_Dependents[0].Row5[0].Dependent3[0].c1_16[0]
   label: Dependent 3 lived with you decision
   population_policy: decision_required
@@ -1037,6 +1086,7 @@ field_dispositions:
     role: decision
   runtime_fact_ref: dependents.lived_with_you
   address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=lived_with_you_more_than_half_2025
+  concept_id: form_1040/dependents/dependent/lived_with_you_more_than_half
 - field_name: topmostSubform[0].Page1[0].Table_Dependents[0].Row5[0].Dependent3[0].c1_17[0]
   label: Dependent 3 in us decision
   population_policy: decision_required
@@ -1048,6 +1098,7 @@ field_dispositions:
     role: decision
   runtime_fact_ref: dependents.in_us
   address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=in_the_us
+  concept_id: form_1040/dependents/dependent/in_the_us
 - field_name: topmostSubform[0].Page1[0].Table_Dependents[0].Row5[0].Dependent4[0].c1_18[0]
   label: Dependent 4 lived with you decision
   population_policy: decision_required
@@ -1059,6 +1110,7 @@ field_dispositions:
     role: decision
   runtime_fact_ref: dependents.lived_with_you
   address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=lived_with_you_more_than_half_2025
+  concept_id: form_1040/dependents/dependent/lived_with_you_more_than_half
 - field_name: topmostSubform[0].Page1[0].Table_Dependents[0].Row5[0].Dependent4[0].c1_19[0]
   label: Dependent 4 in us decision
   population_policy: decision_required
@@ -1070,6 +1122,7 @@ field_dispositions:
     role: decision
   runtime_fact_ref: dependents.in_us
   address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=in_the_us
+  concept_id: form_1040/dependents/dependent/in_the_us
 - field_name: topmostSubform[0].Page1[0].Table_Dependents[0].Row6[0].Dependent1[0].c1_20[0]
   label: Dependent 1 full time student decision
   population_policy: decision_required
@@ -1081,6 +1134,7 @@ field_dispositions:
     role: decision
   runtime_fact_ref: dependents.full_time_student
   address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=full_time_student
+  concept_id: form_1040/dependents/dependent/full_time_student
 - field_name: topmostSubform[0].Page1[0].Table_Dependents[0].Row6[0].Dependent1[0].c1_21[0]
   label: Dependent 1 permanently disabled decision
   population_policy: decision_required
@@ -1092,6 +1146,7 @@ field_dispositions:
     role: decision
   runtime_fact_ref: dependents.permanently_disabled
   address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=permanently_totally_disabled
+  concept_id: form_1040/dependents/dependent/permanently_totally_disabled
 - field_name: topmostSubform[0].Page1[0].Table_Dependents[0].Row6[0].Dependent2[0].c1_22[0]
   label: Dependent 2 full time student decision
   population_policy: decision_required
@@ -1103,6 +1158,7 @@ field_dispositions:
     role: decision
   runtime_fact_ref: dependents.full_time_student
   address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=full_time_student
+  concept_id: form_1040/dependents/dependent/full_time_student
 - field_name: topmostSubform[0].Page1[0].Table_Dependents[0].Row6[0].Dependent2[0].c1_23[0]
   label: Dependent 2 permanently disabled decision
   population_policy: decision_required
@@ -1114,6 +1170,7 @@ field_dispositions:
     role: decision
   runtime_fact_ref: dependents.permanently_disabled
   address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=permanently_totally_disabled
+  concept_id: form_1040/dependents/dependent/permanently_totally_disabled
 - field_name: topmostSubform[0].Page1[0].Table_Dependents[0].Row6[0].Dependent3[0].c1_24[0]
   label: Dependent 3 full time student decision
   population_policy: decision_required
@@ -1125,6 +1182,7 @@ field_dispositions:
     role: decision
   runtime_fact_ref: dependents.full_time_student
   address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=full_time_student
+  concept_id: form_1040/dependents/dependent/full_time_student
 - field_name: topmostSubform[0].Page1[0].Table_Dependents[0].Row6[0].Dependent3[0].c1_25[0]
   label: Dependent 3 permanently disabled decision
   population_policy: decision_required
@@ -1136,6 +1194,7 @@ field_dispositions:
     role: decision
   runtime_fact_ref: dependents.permanently_disabled
   address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=permanently_totally_disabled
+  concept_id: form_1040/dependents/dependent/permanently_totally_disabled
 - field_name: topmostSubform[0].Page1[0].Table_Dependents[0].Row6[0].Dependent4[0].c1_26[0]
   label: Dependent 4 full time student decision
   population_policy: decision_required
@@ -1147,6 +1206,7 @@ field_dispositions:
     role: decision
   runtime_fact_ref: dependents.full_time_student
   address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=full_time_student
+  concept_id: form_1040/dependents/dependent/full_time_student
 - field_name: topmostSubform[0].Page1[0].Table_Dependents[0].Row6[0].Dependent4[0].c1_27[0]
   label: Dependent 4 permanently disabled decision
   population_policy: decision_required
@@ -1158,6 +1218,7 @@ field_dispositions:
     role: decision
   runtime_fact_ref: dependents.permanently_disabled
   address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=permanently_totally_disabled
+  concept_id: form_1040/dependents/dependent/permanently_totally_disabled
 - field_name: topmostSubform[0].Page1[0].Table_Dependents[0].Row7[0].Dependent1[0].c1_28[0]
   label: Dependent 1 child tax credit decision
   population_policy: decision_required
@@ -1169,6 +1230,7 @@ field_dispositions:
     role: decision
   runtime_fact_ref: dependents.child_tax_credit
   address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=child_tax_credit
+  concept_id: form_1040/dependents/dependent/child_tax_credit
 - field_name: topmostSubform[0].Page1[0].Table_Dependents[0].Row7[0].Dependent1[0].c1_28[1]
   label: Dependent 1 other dependent credit decision
   population_policy: decision_required
@@ -1180,6 +1242,7 @@ field_dispositions:
     role: decision
   runtime_fact_ref: dependents.other_dependent_credit
   address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=credit_for_other_dependents
+  concept_id: form_1040/dependents/dependent/credit_for_other_dependents
 - field_name: topmostSubform[0].Page1[0].Table_Dependents[0].Row7[0].Dependent2[0].c1_29[0]
   label: Dependent 2 child tax credit decision
   population_policy: decision_required
@@ -1191,6 +1254,7 @@ field_dispositions:
     role: decision
   runtime_fact_ref: dependents.child_tax_credit
   address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=child_tax_credit
+  concept_id: form_1040/dependents/dependent/child_tax_credit
 - field_name: topmostSubform[0].Page1[0].Table_Dependents[0].Row7[0].Dependent2[0].c1_29[1]
   label: Dependent 2 other dependent credit decision
   population_policy: decision_required
@@ -1202,6 +1266,7 @@ field_dispositions:
     role: decision
   runtime_fact_ref: dependents.other_dependent_credit
   address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=credit_for_other_dependents
+  concept_id: form_1040/dependents/dependent/credit_for_other_dependents
 - field_name: topmostSubform[0].Page1[0].Table_Dependents[0].Row7[0].Dependent3[0].c1_30[0]
   label: Dependent 3 child tax credit decision
   population_policy: decision_required
@@ -1213,6 +1278,7 @@ field_dispositions:
     role: decision
   runtime_fact_ref: dependents.child_tax_credit
   address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=child_tax_credit
+  concept_id: form_1040/dependents/dependent/child_tax_credit
 - field_name: topmostSubform[0].Page1[0].Table_Dependents[0].Row7[0].Dependent3[0].c1_30[1]
   label: Dependent 3 other dependent credit decision
   population_policy: decision_required
@@ -1224,6 +1290,7 @@ field_dispositions:
     role: decision
   runtime_fact_ref: dependents.other_dependent_credit
   address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=credit_for_other_dependents
+  concept_id: form_1040/dependents/dependent/credit_for_other_dependents
 - field_name: topmostSubform[0].Page1[0].Table_Dependents[0].Row7[0].Dependent4[0].c1_31[0]
   label: Dependent 4 child tax credit decision
   population_policy: decision_required
@@ -1235,6 +1302,7 @@ field_dispositions:
     role: decision
   runtime_fact_ref: dependents.child_tax_credit
   address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=child_tax_credit
+  concept_id: form_1040/dependents/dependent/child_tax_credit
 - field_name: topmostSubform[0].Page1[0].Table_Dependents[0].Row7[0].Dependent4[0].c1_31[1]
   label: Dependent 4 other dependent credit decision
   population_policy: decision_required
@@ -1246,6 +1314,7 @@ field_dispositions:
     role: decision
   runtime_fact_ref: dependents.other_dependent_credit
   address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=credit_for_other_dependents
+  concept_id: form_1040/dependents/dependent/credit_for_other_dependents
 - field_name: topmostSubform[0].Page1[0].c1_32[0]
   label: More than four dependents
   population_policy: unsupported

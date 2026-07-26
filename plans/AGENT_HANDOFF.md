@@ -17,6 +17,35 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 **BALL: WORKER - M19-S3a (structured-form concept minting). Plan: `plans/PHASE_M19.md`
 (S3a + the new Decisions section). Task block under From Architect.**
 
+**Worker session checkpoint - M19-S3a (2026-07-26):** Codex, default effort; usage/quota/context
+indicators are not exposed. Global canary: Ledger Llama. Single declared step: mint and promote
+concept identities for the structured-form scope, demote matching addresses to placements, define
+repeatable-row occurrence behavior, and surface row-template widgets in the workbench without
+touching line-oriented forms, verdict emission, or graph semantics. Applicable defect-ledger
+entries: D4 (tests must not write live developer state), D5 (any `workbench/` change requires
+`tests/test_workbench_m15.py`), D6 (module-form CLI only), and the exact `RAN:`/`NOT RUN:` evidence
+rule. D1-D3 and D7 are not expected to apply unless this scope unexpectedly changes frontend
+behavior. John gave go via the current task request.
+
+**M19-S3a implementation checkpoint (2026-07-26):** Added provider-independent structured concept
+minting and promotion for 7 documents. Concept ids are path-style, flow-based, year/line/box/prose
+free, and owner-qualified; printed line/box data is retained only in placement metadata. Repeated
+rows carry entity-keyed occurrence metadata and concept review granularity. Promoted inventories
+and address/field-map projections are generated under `graph/2025/`; line-oriented documents are
+untouched. Workbench cell inventory now exposes reviewable row-template widgets while preserving
+the physical-widget denominator and the 166 unaddressed coverage gaps. No verdicts, graph nodes,
+or human-review claims were written.
+
+Verification evidence:
+
+- RAN: `$env:PYTEST_DEBUG_TEMPROOT = 'C:\\Users\\devbox\\.codex\\visualizations\\2026\\07\\26\\019fa012-3d6f-7953-884f-ab234aac8713\\tax_graph_m19_test_tmp'; .venv\\Scripts\\python.exe -m pytest tests/test_concepts_m19.py tests/test_workbench_m15.py tests/test_workbench_identity_m19.py -q` -> 14 passed.
+- RAN: `$env:PYTEST_DEBUG_TEMPROOT = 'C:\\Users\\devbox\\.codex\\visualizations\\2026\\07\\26\\019fa012-3d6f-7953-884f-ab234aac8713\\tax_graph_m19_test_tmp'; .venv\\Scripts\\python.exe -m pytest tests/test_address_registry_m15r.py tests/test_address_campaign_m15r.py -q` -> 28 passed.
+- RAN: `$env:PYTEST_DEBUG_TEMPROOT = 'C:\\Users\\devbox\\.codex\\visualizations\\2026\\07\\26\\019fa012-3d6f-7953-884f-ab234aac8713\\tax_graph_m19_test_tmp'; .venv\\Scripts\\python.exe -m workbench.cli --year 2025 preflight` -> review preflight passed; 35 entries, 3243 units.
+- RAN: `.venv\\Scripts\\python.exe tools/check_ascii.py` -> exit 0, `ASCII check OK`.
+- RAN: `git diff --check` -> exit 0, no output.
+- RAN: `.venv\\Scripts\\python.exe -m tax_graph.cli validate 2025` -> exit 0; graph integrity OK.
+- NOT RUN: full `tests/test_review_manifest_m15.py` verification -> external-temp attempt reached 6 passed before the 600-second worker cap; the final test is unverified and is left for Architect-side/shared-partition verification.
+
 **ARCHITECT VERIFICATION - M19-S2 (Claude Opus 5, 2026-07-26). ACCEPTED.** Reviewed the
 full diff, not just the tests. The fix is real: both `enumerate` indices are gone from the
 unit loops; ids are a SHA-256 over the canonical address plus a

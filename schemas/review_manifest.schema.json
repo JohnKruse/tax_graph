@@ -183,6 +183,8 @@
         "promotion_diff_refs": {"type": "array", "items": {"type": "string"}},
         "field_name": {"type": "string"},
         "address_id": {"type": "string"},
+        "concept_id": {"type": "string", "pattern": "^[a-z0-9_]+(?:/[a-z0-9_]+)+$"},
+        "review_granularity": {"enum": ["concept", "physical"]},
         "population_policy": {
           "enum": ["user_entered", "imported", "copied", "computed", "decision_required", "intentionally_blank", "unsupported"]
         },

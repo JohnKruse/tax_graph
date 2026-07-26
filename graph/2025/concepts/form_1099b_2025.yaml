@@ -1,0 +1,909 @@
+schema_version: 1
+year: 2025
+document_id: form_1099b_2025
+concepts:
+- concept_id: form_1099b/classification/basis_reported
+  document_id: form_1099b_2025
+  status: active
+  flow_path:
+  - form_1099b
+  - classification
+  - basis_reported
+  owner: classification
+  role: basis_reported
+  review_granularity: concept
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
+  aliases:
+  - document=form_1099b/box=12/option=basis_reported
+  placements:
+  - address_id: 2025/document=form_1099b/box=12/option=basis_reported
+    concept_id: form_1099b/classification/basis_reported
+    printed_kind: box
+    printed_token: '12'
+    printed_ref: Box 12
+  same_fact_as: []
+- concept_id: form_1099b/classification/collectibles
+  document_id: form_1099b_2025
+  status: active
+  flow_path:
+  - form_1099b
+  - classification
+  - collectibles
+  owner: classification
+  role: collectibles
+  review_granularity: concept
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
+  aliases:
+  - document=form_1099b/box=3/option=collectibles
+  placements:
+  - address_id: 2025/document=form_1099b/box=3/option=collectibles
+    concept_id: form_1099b/classification/collectibles
+    printed_kind: box
+    printed_token: '3'
+    printed_ref: Box 3
+  same_fact_as: []
+- concept_id: form_1099b/classification/gross_proceeds
+  document_id: form_1099b_2025
+  status: active
+  flow_path:
+  - form_1099b
+  - classification
+  - gross_proceeds
+  owner: classification
+  role: gross_proceeds
+  review_granularity: concept
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
+  aliases:
+  - document=form_1099b/box=6/option=gross_proceeds
+  placements:
+  - address_id: 2025/document=form_1099b/box=6/option=gross_proceeds
+    concept_id: form_1099b/classification/gross_proceeds
+    printed_kind: box
+    printed_token: '6'
+    printed_ref: Box 6
+  same_fact_as: []
+- concept_id: form_1099b/classification/long_term
+  document_id: form_1099b_2025
+  status: active
+  flow_path:
+  - form_1099b
+  - classification
+  - long_term
+  owner: classification
+  role: long_term
+  review_granularity: concept
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
+  aliases:
+  - document=form_1099b/box=2/option=long_term
+  placements:
+  - address_id: 2025/document=form_1099b/box=2/option=long_term
+    concept_id: form_1099b/classification/long_term
+    printed_kind: box
+    printed_token: '2'
+    printed_ref: Box 2
+  same_fact_as: []
+- concept_id: form_1099b/classification/loss_not_allowed
+  document_id: form_1099b_2025
+  status: active
+  flow_path:
+  - form_1099b
+  - classification
+  - loss_not_allowed
+  owner: classification
+  role: loss_not_allowed
+  review_granularity: concept
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
+  aliases:
+  - document=form_1099b/box=7/option=loss_not_allowed
+  placements:
+  - address_id: 2025/document=form_1099b/box=7/option=loss_not_allowed
+    concept_id: form_1099b/classification/loss_not_allowed
+    printed_kind: box
+    printed_token: '7'
+    printed_ref: Box 7
+  same_fact_as: []
+- concept_id: form_1099b/classification/net_proceeds
+  document_id: form_1099b_2025
+  status: active
+  flow_path:
+  - form_1099b
+  - classification
+  - net_proceeds
+  owner: classification
+  role: net_proceeds
+  review_granularity: concept
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
+  aliases:
+  - document=form_1099b/box=6/option=net_proceeds
+  placements:
+  - address_id: 2025/document=form_1099b/box=6/option=net_proceeds
+    concept_id: form_1099b/classification/net_proceeds
+    printed_kind: box
+    printed_token: '6'
+    printed_ref: Box 6
+  same_fact_as: []
+- concept_id: form_1099b/classification/noncovered_security
+  document_id: form_1099b_2025
+  status: active
+  flow_path:
+  - form_1099b
+  - classification
+  - noncovered_security
+  owner: classification
+  role: noncovered_security
+  review_granularity: concept
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
+  aliases:
+  - document=form_1099b/box=5/option=noncovered_security
+  placements:
+  - address_id: 2025/document=form_1099b/box=5/option=noncovered_security
+    concept_id: form_1099b/classification/noncovered_security
+    printed_kind: box
+    printed_token: '5'
+    printed_ref: Box 5
+  same_fact_as: []
+- concept_id: form_1099b/classification/ordinary
+  document_id: form_1099b_2025
+  status: active
+  flow_path:
+  - form_1099b
+  - classification
+  - ordinary
+  owner: classification
+  role: ordinary
+  review_granularity: concept
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
+  aliases:
+  - document=form_1099b/box=2/option=ordinary
+  placements:
+  - address_id: 2025/document=form_1099b/box=2/option=ordinary
+    concept_id: form_1099b/classification/ordinary
+    printed_kind: box
+    printed_token: '2'
+    printed_ref: Box 2
+  same_fact_as: []
+- concept_id: form_1099b/classification/qof
+  document_id: form_1099b_2025
+  status: active
+  flow_path:
+  - form_1099b
+  - classification
+  - qof
+  owner: classification
+  role: qof
+  review_granularity: concept
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
+  aliases:
+  - document=form_1099b/box=3/option=qof
+  placements:
+  - address_id: 2025/document=form_1099b/box=3/option=qof
+    concept_id: form_1099b/classification/qof
+    printed_kind: box
+    printed_token: '3'
+    printed_ref: Box 3
+  same_fact_as: []
+- concept_id: form_1099b/classification/short_term
+  document_id: form_1099b_2025
+  status: active
+  flow_path:
+  - form_1099b
+  - classification
+  - short_term
+  owner: classification
+  role: short_term
+  review_granularity: concept
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
+  aliases:
+  - document=form_1099b/box=2/option=short_term
+  placements:
+  - address_id: 2025/document=form_1099b/box=2/option=short_term
+    concept_id: form_1099b/classification/short_term
+    printed_kind: box
+    printed_token: '2'
+    printed_ref: Box 2
+  same_fact_as: []
+- concept_id: form_1099b/contract/aggregate_profit_loss
+  document_id: form_1099b_2025
+  status: active
+  flow_path:
+  - form_1099b
+  - contract
+  - aggregate_profit_loss
+  owner: contract
+  role: aggregate_profit_loss
+  review_granularity: concept
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
+  aliases:
+  - document=form_1099b/box=11/control=value
+  placements:
+  - address_id: 2025/document=form_1099b/box=11/control=value
+    concept_id: form_1099b/contract/aggregate_profit_loss
+    printed_kind: box
+    printed_token: '11'
+    printed_ref: Box 11
+  same_fact_as: []
+- concept_id: form_1099b/contract/realized_profit_loss
+  document_id: form_1099b_2025
+  status: active
+  flow_path:
+  - form_1099b
+  - contract
+  - realized_profit_loss
+  owner: contract
+  role: realized_profit_loss
+  review_granularity: concept
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
+  aliases:
+  - document=form_1099b/box=8/control=value
+  placements:
+  - address_id: 2025/document=form_1099b/box=8/control=value
+    concept_id: form_1099b/contract/realized_profit_loss
+    printed_kind: box
+    printed_token: '8'
+    printed_ref: Box 8
+  same_fact_as: []
+- concept_id: form_1099b/contract/unrealized_profit_loss_current
+  document_id: form_1099b_2025
+  status: active
+  flow_path:
+  - form_1099b
+  - contract
+  - unrealized_profit_loss_current
+  owner: contract
+  role: unrealized_profit_loss_current
+  review_granularity: concept
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
+  aliases:
+  - document=form_1099b/box=10/control=value
+  placements:
+  - address_id: 2025/document=form_1099b/box=10/control=value
+    concept_id: form_1099b/contract/unrealized_profit_loss_current
+    printed_kind: box
+    printed_token: '10'
+    printed_ref: Box 10
+  same_fact_as: []
+- concept_id: form_1099b/contract/unrealized_profit_loss_prior
+  document_id: form_1099b_2025
+  status: active
+  flow_path:
+  - form_1099b
+  - contract
+  - unrealized_profit_loss_prior
+  owner: contract
+  role: unrealized_profit_loss_prior
+  review_granularity: concept
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
+  aliases:
+  - document=form_1099b/box=9/control=value
+  placements:
+  - address_id: 2025/document=form_1099b/box=9/control=value
+    concept_id: form_1099b/contract/unrealized_profit_loss_prior
+    printed_kind: box
+    printed_token: '9'
+    printed_ref: Box 9
+  same_fact_as: []
+- concept_id: form_1099b/header/corrected
+  document_id: form_1099b_2025
+  status: active
+  flow_path:
+  - form_1099b
+  - header
+  - corrected
+  owner: header
+  role: corrected
+  review_granularity: concept
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
+  aliases:
+  - document=form_1099b/section=header/option=corrected
+  placements:
+  - address_id: 2025/document=form_1099b/section=header/option=corrected
+    concept_id: form_1099b/header/corrected
+    printed_kind: section
+    printed_token: header
+    printed_ref: CORRECTED
+  same_fact_as: []
+- concept_id: form_1099b/header/void
+  document_id: form_1099b_2025
+  status: active
+  flow_path:
+  - form_1099b
+  - header
+  - void
+  owner: header
+  role: void
+  review_granularity: concept
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
+  aliases:
+  - document=form_1099b/section=header/option=void
+  placements:
+  - address_id: 2025/document=form_1099b/section=header/option=void
+    concept_id: form_1099b/header/void
+    printed_kind: section
+    printed_token: header
+    printed_ref: VOID
+  same_fact_as: []
+- concept_id: form_1099b/recipient/account_number
+  document_id: form_1099b_2025
+  status: active
+  flow_path:
+  - form_1099b
+  - recipient
+  - account_number
+  owner: recipient
+  role: account_number
+  review_granularity: concept
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
+  aliases:
+  - document=form_1099b/section=recipient/control=account_number
+  placements:
+  - address_id: 2025/document=form_1099b/section=recipient/control=account_number
+    concept_id: form_1099b/recipient/account_number
+    printed_kind: section
+    printed_token: recipient
+    printed_ref: Account number (see instructions)
+  same_fact_as: []
+- concept_id: form_1099b/recipient/cusip_number
+  document_id: form_1099b_2025
+  status: active
+  flow_path:
+  - form_1099b
+  - recipient
+  - cusip_number
+  owner: recipient
+  role: cusip_number
+  review_granularity: concept
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
+  aliases:
+  - document=form_1099b/section=recipient/control=cusip_number
+  placements:
+  - address_id: 2025/document=form_1099b/section=recipient/control=cusip_number
+    concept_id: form_1099b/recipient/cusip_number
+    printed_kind: section
+    printed_token: recipient
+    printed_ref: CUSIP number
+  same_fact_as: []
+- concept_id: form_1099b/recipient/fatca_filing_requirement
+  document_id: form_1099b_2025
+  status: active
+  flow_path:
+  - form_1099b
+  - recipient
+  - fatca_filing_requirement
+  owner: recipient
+  role: fatca_filing_requirement
+  review_granularity: concept
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
+  aliases:
+  - document=form_1099b/section=recipient/option=fatca_filing_requirement
+  placements:
+  - address_id: 2025/document=form_1099b/section=recipient/option=fatca_filing_requirement
+    concept_id: form_1099b/recipient/fatca_filing_requirement
+    printed_kind: section
+    printed_token: recipient
+    printed_ref: FATCA filing requirement
+  same_fact_as: []
+- concept_id: form_1099b/recipient/form_8949_checkbox
+  document_id: form_1099b_2025
+  status: active
+  flow_path:
+  - form_1099b
+  - recipient
+  - form_8949_checkbox
+  owner: recipient
+  role: form_8949_checkbox
+  review_granularity: concept
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
+  aliases:
+  - document=form_1099b/section=recipient/control=form_8949_checkbox
+  placements:
+  - address_id: 2025/document=form_1099b/section=recipient/control=form_8949_checkbox
+    concept_id: form_1099b/recipient/form_8949_checkbox
+    printed_kind: section
+    printed_token: recipient
+    printed_ref: Applicable checkbox on Form 8949
+  same_fact_as: []
+- concept_id: form_1099b/recipient/payer_name_address
+  document_id: form_1099b_2025
+  status: active
+  flow_path:
+  - form_1099b
+  - recipient
+  - payer_name_address
+  owner: recipient
+  role: payer_name_address
+  review_granularity: concept
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
+  aliases:
+  - document=form_1099b/section=recipient/control=payer_name_address
+  placements:
+  - address_id: 2025/document=form_1099b/section=recipient/control=payer_name_address
+    concept_id: form_1099b/recipient/payer_name_address
+    printed_kind: section
+    printed_token: recipient
+    printed_ref: Payer's name, street address, city or town, state or province, country,
+      ZIP or foreign postal code, and telephone number
+  same_fact_as: []
+- concept_id: form_1099b/recipient/payer_tin
+  document_id: form_1099b_2025
+  status: active
+  flow_path:
+  - form_1099b
+  - recipient
+  - payer_tin
+  owner: recipient
+  role: payer_tin
+  review_granularity: concept
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
+  aliases:
+  - document=form_1099b/section=recipient/control=payer_tin
+  placements:
+  - address_id: 2025/document=form_1099b/section=recipient/control=payer_tin
+    concept_id: form_1099b/recipient/payer_tin
+    printed_kind: section
+    printed_token: recipient
+    printed_ref: Payer's TIN
+  same_fact_as: []
+- concept_id: form_1099b/recipient/recipient_city
+  document_id: form_1099b_2025
+  status: active
+  flow_path:
+  - form_1099b
+  - recipient
+  - recipient_city
+  owner: recipient
+  role: recipient_city
+  review_granularity: concept
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
+  aliases:
+  - document=form_1099b/section=recipient/control=recipient_city
+  placements:
+  - address_id: 2025/document=form_1099b/section=recipient/control=recipient_city
+    concept_id: form_1099b/recipient/recipient_city
+    printed_kind: section
+    printed_token: recipient
+    printed_ref: City or town, state or province, country, and ZIP or foreign postal
+      code
+  same_fact_as: []
+- concept_id: form_1099b/recipient/recipient_name
+  document_id: form_1099b_2025
+  status: active
+  flow_path:
+  - form_1099b
+  - recipient
+  - recipient_name
+  owner: recipient
+  role: recipient_name
+  review_granularity: concept
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
+  aliases:
+  - document=form_1099b/section=recipient/control=recipient_name
+  placements:
+  - address_id: 2025/document=form_1099b/section=recipient/control=recipient_name
+    concept_id: form_1099b/recipient/recipient_name
+    printed_kind: section
+    printed_token: recipient
+    printed_ref: Recipient's name
+  same_fact_as: []
+- concept_id: form_1099b/recipient/recipient_street
+  document_id: form_1099b_2025
+  status: active
+  flow_path:
+  - form_1099b
+  - recipient
+  - recipient_street
+  owner: recipient
+  role: recipient_street
+  review_granularity: concept
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
+  aliases:
+  - document=form_1099b/section=recipient/control=recipient_street
+  placements:
+  - address_id: 2025/document=form_1099b/section=recipient/control=recipient_street
+    concept_id: form_1099b/recipient/recipient_street
+    printed_kind: section
+    printed_token: recipient
+    printed_ref: Street address (including apt. no.)
+  same_fact_as: []
+- concept_id: form_1099b/recipient/recipient_tin
+  document_id: form_1099b_2025
+  status: active
+  flow_path:
+  - form_1099b
+  - recipient
+  - recipient_tin
+  owner: recipient
+  role: recipient_tin
+  review_granularity: concept
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
+  aliases:
+  - document=form_1099b/section=recipient/control=recipient_tin
+  placements:
+  - address_id: 2025/document=form_1099b/section=recipient/control=recipient_tin
+    concept_id: form_1099b/recipient/recipient_tin
+    printed_kind: section
+    printed_token: recipient
+    printed_ref: Recipient's TIN
+  same_fact_as: []
+- concept_id: form_1099b/recipient/second_tin_notice
+  document_id: form_1099b_2025
+  status: active
+  flow_path:
+  - form_1099b
+  - recipient
+  - second_tin_notice
+  owner: recipient
+  role: second_tin_notice
+  review_granularity: concept
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
+  aliases:
+  - document=form_1099b/section=recipient/option=second_tin_notice
+  placements:
+  - address_id: 2025/document=form_1099b/section=recipient/option=second_tin_notice
+    concept_id: form_1099b/recipient/second_tin_notice
+    printed_kind: section
+    printed_token: recipient
+    printed_ref: 2nd TIN not.
+  same_fact_as: []
+- concept_id: form_1099b/state_local/jurisdiction/state
+  document_id: form_1099b_2025
+  status: active
+  flow_path:
+  - form_1099b
+  - state_local
+  - jurisdiction
+  - state
+  owner: jurisdiction
+  role: state
+  review_granularity: concept
+  occurrence:
+    kind: entity
+    entity_key: jurisdiction
+    review_granularity: concept
+    row_policy: entity_keyed
+  aliases:
+  - document=form_1099b/table=state/row_template=jurisdiction/column=state
+  placements:
+  - address_id: 2025/document=form_1099b/table=state/row_template=jurisdiction/column=state
+    concept_id: form_1099b/state_local/jurisdiction/state
+    printed_kind: table
+    printed_token: state
+    printed_ref: Box 14
+  same_fact_as: []
+- concept_id: form_1099b/state_local/jurisdiction/state_id
+  document_id: form_1099b_2025
+  status: active
+  flow_path:
+  - form_1099b
+  - state_local
+  - jurisdiction
+  - state_id
+  owner: jurisdiction
+  role: state_id
+  review_granularity: concept
+  occurrence:
+    kind: entity
+    entity_key: jurisdiction
+    review_granularity: concept
+    row_policy: entity_keyed
+  aliases:
+  - document=form_1099b/table=state/row_template=jurisdiction/column=state_id
+  placements:
+  - address_id: 2025/document=form_1099b/table=state/row_template=jurisdiction/column=state_id
+    concept_id: form_1099b/state_local/jurisdiction/state_id
+    printed_kind: table
+    printed_token: state
+    printed_ref: Box 15
+  same_fact_as: []
+- concept_id: form_1099b/state_local/jurisdiction/state_tax
+  document_id: form_1099b_2025
+  status: active
+  flow_path:
+  - form_1099b
+  - state_local
+  - jurisdiction
+  - state_tax
+  owner: jurisdiction
+  role: state_tax
+  review_granularity: concept
+  occurrence:
+    kind: entity
+    entity_key: jurisdiction
+    review_granularity: concept
+    row_policy: entity_keyed
+  aliases:
+  - document=form_1099b/table=state/row_template=jurisdiction/column=state_tax
+  placements:
+  - address_id: 2025/document=form_1099b/table=state/row_template=jurisdiction/column=state_tax
+    concept_id: form_1099b/state_local/jurisdiction/state_tax
+    printed_kind: table
+    printed_token: state
+    printed_ref: Box 16
+  same_fact_as: []
+- concept_id: form_1099b/transaction/accrued_market_discount
+  document_id: form_1099b_2025
+  status: active
+  flow_path:
+  - form_1099b
+  - transaction
+  - accrued_market_discount
+  owner: transaction
+  role: accrued_market_discount
+  review_granularity: concept
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
+  aliases:
+  - document=form_1099b/box=1f/control=value
+  placements:
+  - address_id: 2025/document=form_1099b/box=1f/control=value
+    concept_id: form_1099b/transaction/accrued_market_discount
+    printed_kind: box
+    printed_token: 1f
+    printed_ref: Box 1f
+  same_fact_as: []
+- concept_id: form_1099b/transaction/bartering
+  document_id: form_1099b_2025
+  status: active
+  flow_path:
+  - form_1099b
+  - transaction
+  - bartering
+  owner: transaction
+  role: bartering
+  review_granularity: concept
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
+  aliases:
+  - document=form_1099b/box=13/control=value
+  placements:
+  - address_id: 2025/document=form_1099b/box=13/control=value
+    concept_id: form_1099b/transaction/bartering
+    printed_kind: box
+    printed_token: '13'
+    printed_ref: Box 13
+  same_fact_as: []
+- concept_id: form_1099b/transaction/cost_basis
+  document_id: form_1099b_2025
+  status: active
+  flow_path:
+  - form_1099b
+  - transaction
+  - cost_basis
+  owner: transaction
+  role: cost_basis
+  review_granularity: concept
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
+  aliases:
+  - document=form_1099b/box=1e/control=value
+  placements:
+  - address_id: 2025/document=form_1099b/box=1e/control=value
+    concept_id: form_1099b/transaction/cost_basis
+    printed_kind: box
+    printed_token: 1e
+    printed_ref: Box 1e
+  same_fact_as: []
+- concept_id: form_1099b/transaction/date_acquired
+  document_id: form_1099b_2025
+  status: active
+  flow_path:
+  - form_1099b
+  - transaction
+  - date_acquired
+  owner: transaction
+  role: date_acquired
+  review_granularity: concept
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
+  aliases:
+  - document=form_1099b/box=1b/control=value
+  placements:
+  - address_id: 2025/document=form_1099b/box=1b/control=value
+    concept_id: form_1099b/transaction/date_acquired
+    printed_kind: box
+    printed_token: 1b
+    printed_ref: Box 1b
+  same_fact_as: []
+- concept_id: form_1099b/transaction/date_disposed
+  document_id: form_1099b_2025
+  status: active
+  flow_path:
+  - form_1099b
+  - transaction
+  - date_disposed
+  owner: transaction
+  role: date_disposed
+  review_granularity: concept
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
+  aliases:
+  - document=form_1099b/box=1c/control=value
+  placements:
+  - address_id: 2025/document=form_1099b/box=1c/control=value
+    concept_id: form_1099b/transaction/date_disposed
+    printed_kind: box
+    printed_token: 1c
+    printed_ref: Box 1c
+  same_fact_as: []
+- concept_id: form_1099b/transaction/description
+  document_id: form_1099b_2025
+  status: active
+  flow_path:
+  - form_1099b
+  - transaction
+  - description
+  owner: transaction
+  role: description
+  review_granularity: concept
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
+  aliases:
+  - document=form_1099b/box=1a/control=value
+  placements:
+  - address_id: 2025/document=form_1099b/box=1a/control=value
+    concept_id: form_1099b/transaction/description
+    printed_kind: box
+    printed_token: 1a
+    printed_ref: Box 1a
+  same_fact_as: []
+- concept_id: form_1099b/transaction/federal_income_tax_withheld
+  document_id: form_1099b_2025
+  status: active
+  flow_path:
+  - form_1099b
+  - transaction
+  - federal_income_tax_withheld
+  owner: transaction
+  role: federal_income_tax_withheld
+  review_granularity: concept
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
+  aliases:
+  - document=form_1099b/box=4/control=value
+  placements:
+  - address_id: 2025/document=form_1099b/box=4/control=value
+    concept_id: form_1099b/transaction/federal_income_tax_withheld
+    printed_kind: box
+    printed_token: '4'
+    printed_ref: Box 4
+  same_fact_as: []
+- concept_id: form_1099b/transaction/proceeds
+  document_id: form_1099b_2025
+  status: active
+  flow_path:
+  - form_1099b
+  - transaction
+  - proceeds
+  owner: transaction
+  role: proceeds
+  review_granularity: concept
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
+  aliases:
+  - document=form_1099b/box=1d/control=value
+  placements:
+  - address_id: 2025/document=form_1099b/box=1d/control=value
+    concept_id: form_1099b/transaction/proceeds
+    printed_kind: box
+    printed_token: 1d
+    printed_ref: Box 1d
+  same_fact_as: []
+- concept_id: form_1099b/transaction/wash_sale_loss_disallowed
+  document_id: form_1099b_2025
+  status: active
+  flow_path:
+  - form_1099b
+  - transaction
+  - wash_sale_loss_disallowed
+  owner: transaction
+  role: wash_sale_loss_disallowed
+  review_granularity: concept
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
+  aliases:
+  - document=form_1099b/box=1g/control=value
+  placements:
+  - address_id: 2025/document=form_1099b/box=1g/control=value
+    concept_id: form_1099b/transaction/wash_sale_loss_disallowed
+    printed_kind: box
+    printed_token: 1g
+    printed_ref: Box 1g
+  same_fact_as: []

@@ -1938,7 +1938,8 @@ addresses:
   - kind: control
     token: name
   printed_label: Name(s) shown on Form 1040, 1040-SR, or 1040-NR
-  aliases: []
+  aliases:
+  - document=schedule_1a/section=identity/control=name
   control_role: text
   status: pending_review
   evidence:
@@ -1946,6 +1947,16 @@ addresses:
     source_hash: 64f97b38ff4218e2f188fd55a8aab7043556687487c82bbefe0b6dd1a956ecd4
     page: 1
   official_ref: Header
+  concept_id: schedule_1a/identity/filer/name
+  placement:
+    concept_id: schedule_1a/identity/filer/name
+    printed_kind: section
+    printed_token: identity
+    printed_ref: Header
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
 - address_id: 2025/document=schedule_1a/section=identity/control=social_security_number
   logical_key: document=schedule_1a/section=identity/control=social_security_number
   year: 2025
@@ -1960,7 +1971,8 @@ addresses:
   - kind: control
     token: social_security_number
   printed_label: Your social security number
-  aliases: []
+  aliases:
+  - document=schedule_1a/section=identity/control=social_security_number
   control_role: identifier
   status: pending_review
   evidence:
@@ -1968,6 +1980,16 @@ addresses:
     source_hash: 64f97b38ff4218e2f188fd55a8aab7043556687487c82bbefe0b6dd1a956ecd4
     page: 1
   official_ref: Header
+  concept_id: schedule_1a/identity/filer/ssn
+  placement:
+    concept_id: schedule_1a/identity/filer/ssn
+    printed_kind: section
+    printed_token: identity
+    printed_ref: Header
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
 - address_id: 2025/document=schedule_1a/table=line_22
   logical_key: document=schedule_1a/table=line_22
   year: 2025
@@ -2024,7 +2046,8 @@ addresses:
   - kind: column
     token: deducted_elsewhere
   printed_label: Deducted on Schedule C, Schedule E, or Schedule F
-  aliases: []
+  aliases:
+  - document=schedule_1a/table=line_22/row_template=vehicle/column=deducted_elsewhere
   control_role: amount
   status: pending_review
   evidence:
@@ -2032,6 +2055,17 @@ addresses:
     source_hash: 64f97b38ff4218e2f188fd55a8aab7043556687487c82bbefe0b6dd1a956ecd4
     page: 2
   official_ref: Line 22a column (ii)
+  concept_id: schedule_1a/vehicles/vehicle/deducted_elsewhere
+  placement:
+    concept_id: schedule_1a/vehicles/vehicle/deducted_elsewhere
+    printed_kind: line
+    printed_token: '22'
+    printed_ref: Line 22a column (ii)
+  occurrence:
+    kind: entity
+    entity_key: vehicle
+    review_granularity: concept
+    row_policy: entity_keyed
 - address_id: 2025/document=schedule_1a/table=line_22/row_template=vehicle/column=schedule_1a
   logical_key: document=schedule_1a/table=line_22/row_template=vehicle/column=schedule_1a
   year: 2025
@@ -2048,7 +2082,8 @@ addresses:
   - kind: column
     token: schedule_1a
   printed_label: Schedule 1-A
-  aliases: []
+  aliases:
+  - document=schedule_1a/table=line_22/row_template=vehicle/column=schedule_1a
   control_role: amount
   status: pending_review
   evidence:
@@ -2056,6 +2091,17 @@ addresses:
     source_hash: 64f97b38ff4218e2f188fd55a8aab7043556687487c82bbefe0b6dd1a956ecd4
     page: 2
   official_ref: Line 22a column (iii)
+  concept_id: schedule_1a/vehicles/vehicle/schedule_1a
+  placement:
+    concept_id: schedule_1a/vehicles/vehicle/schedule_1a
+    printed_kind: line
+    printed_token: '22'
+    printed_ref: Line 22a column (iii)
+  occurrence:
+    kind: entity
+    entity_key: vehicle
+    review_granularity: concept
+    row_policy: entity_keyed
 - address_id: 2025/document=schedule_1a/table=line_22/row_template=vehicle/column=vin
   logical_key: document=schedule_1a/table=line_22/row_template=vehicle/column=vin
   year: 2025
@@ -2072,7 +2118,8 @@ addresses:
   - kind: column
     token: vin
   printed_label: Vehicle identification number (VIN)
-  aliases: []
+  aliases:
+  - document=schedule_1a/table=line_22/row_template=vehicle/column=vin
   control_role: identifier
   status: pending_review
   evidence:
@@ -2080,3 +2127,14 @@ addresses:
     source_hash: 64f97b38ff4218e2f188fd55a8aab7043556687487c82bbefe0b6dd1a956ecd4
     page: 2
   official_ref: Line 22a column (i)
+  concept_id: schedule_1a/vehicles/vehicle/vin
+  placement:
+    concept_id: schedule_1a/vehicles/vehicle/vin
+    printed_kind: line
+    printed_token: '22'
+    printed_ref: Line 22a column (i)
+  occurrence:
+    kind: entity
+    entity_key: vehicle
+    review_granularity: concept
+    row_policy: entity_keyed

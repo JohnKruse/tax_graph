@@ -1,0 +1,127 @@
+schema_version: 1
+year: 2025
+document_id: schedule_1a_2025
+concepts:
+- concept_id: schedule_1a/identity/filer/name
+  document_id: schedule_1a_2025
+  status: active
+  flow_path:
+  - schedule_1a
+  - identity
+  - filer
+  - name
+  owner: filer
+  role: name
+  review_granularity: concept
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
+  aliases:
+  - document=schedule_1a/section=identity/control=name
+  placements:
+  - address_id: 2025/document=schedule_1a/section=identity/control=name
+    concept_id: schedule_1a/identity/filer/name
+    printed_kind: section
+    printed_token: identity
+    printed_ref: Header
+  same_fact_as: []
+- concept_id: schedule_1a/identity/filer/ssn
+  document_id: schedule_1a_2025
+  status: active
+  flow_path:
+  - schedule_1a
+  - identity
+  - filer
+  - ssn
+  owner: filer
+  role: ssn
+  review_granularity: concept
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
+  aliases:
+  - document=schedule_1a/section=identity/control=social_security_number
+  placements:
+  - address_id: 2025/document=schedule_1a/section=identity/control=social_security_number
+    concept_id: schedule_1a/identity/filer/ssn
+    printed_kind: section
+    printed_token: identity
+    printed_ref: Header
+  same_fact_as: []
+- concept_id: schedule_1a/vehicles/vehicle/deducted_elsewhere
+  document_id: schedule_1a_2025
+  status: active
+  flow_path:
+  - schedule_1a
+  - vehicles
+  - vehicle
+  - deducted_elsewhere
+  owner: vehicle
+  role: deducted_elsewhere
+  review_granularity: concept
+  occurrence:
+    kind: entity
+    entity_key: vehicle
+    review_granularity: concept
+    row_policy: entity_keyed
+  aliases:
+  - document=schedule_1a/table=line_22/row_template=vehicle/column=deducted_elsewhere
+  placements:
+  - address_id: 2025/document=schedule_1a/table=line_22/row_template=vehicle/column=deducted_elsewhere
+    concept_id: schedule_1a/vehicles/vehicle/deducted_elsewhere
+    printed_kind: line
+    printed_token: '22'
+    printed_ref: Line 22a column (ii)
+  same_fact_as: []
+- concept_id: schedule_1a/vehicles/vehicle/schedule_1a
+  document_id: schedule_1a_2025
+  status: active
+  flow_path:
+  - schedule_1a
+  - vehicles
+  - vehicle
+  - schedule_1a
+  owner: vehicle
+  role: schedule_1a
+  review_granularity: concept
+  occurrence:
+    kind: entity
+    entity_key: vehicle
+    review_granularity: concept
+    row_policy: entity_keyed
+  aliases:
+  - document=schedule_1a/table=line_22/row_template=vehicle/column=schedule_1a
+  placements:
+  - address_id: 2025/document=schedule_1a/table=line_22/row_template=vehicle/column=schedule_1a
+    concept_id: schedule_1a/vehicles/vehicle/schedule_1a
+    printed_kind: line
+    printed_token: '22'
+    printed_ref: Line 22a column (iii)
+  same_fact_as: []
+- concept_id: schedule_1a/vehicles/vehicle/vin
+  document_id: schedule_1a_2025
+  status: active
+  flow_path:
+  - schedule_1a
+  - vehicles
+  - vehicle
+  - vin
+  owner: vehicle
+  role: vin
+  review_granularity: concept
+  occurrence:
+    kind: entity
+    entity_key: vehicle
+    review_granularity: concept
+    row_policy: entity_keyed
+  aliases:
+  - document=schedule_1a/table=line_22/row_template=vehicle/column=vin
+  placements:
+  - address_id: 2025/document=schedule_1a/table=line_22/row_template=vehicle/column=vin
+    concept_id: schedule_1a/vehicles/vehicle/vin
+    printed_kind: line
+    printed_token: '22'
+    printed_ref: Line 22a column (i)
+  same_fact_as: []

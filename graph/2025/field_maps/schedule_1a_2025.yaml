@@ -160,6 +160,7 @@ field_dispositions:
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for form1[0].Page1[0].f1_01[0].
   address_id: 2025/document=schedule_1a/section=identity/control=name
+  concept_id: schedule_1a/identity/filer/name
 - field_name: form1[0].Page1[0].f1_02[0]
   label: f1_02
   population_policy: unsupported
@@ -171,6 +172,7 @@ field_dispositions:
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for form1[0].Page1[0].f1_02[0].
   address_id: 2025/document=schedule_1a/section=identity/control=social_security_number
+  concept_id: schedule_1a/identity/filer/ssn
 - field_name: form1[0].Page1[0].f1_03[0]
   label: Line 11b - . . . . . . . . . 1 - f1_03
   population_policy: unsupported
@@ -443,6 +445,7 @@ field_dispositions:
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for form1[0].Page2[0].Table_Line22[0].Line22a[0].VIN-1_Comb[0].f2_01[0].
   address_id: 2025/document=schedule_1a/table=line_22/row_template=vehicle/column=vin
+  concept_id: schedule_1a/vehicles/vehicle/vin
 - field_name: form1[0].Page2[0].Table_Line22[0].Line22a[0].f2_02[0]
   label: Line a - a - f2_02
   population_policy: unsupported
@@ -454,6 +457,7 @@ field_dispositions:
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for form1[0].Page2[0].Table_Line22[0].Line22a[0].f2_02[0].
   address_id: 2025/document=schedule_1a/table=line_22/row_template=vehicle/column=deducted_elsewhere
+  concept_id: schedule_1a/vehicles/vehicle/deducted_elsewhere
 - field_name: form1[0].Page2[0].Table_Line22[0].Line22a[0].f2_03[0]
   label: Line a - a - f2_03
   population_policy: unsupported
@@ -465,6 +469,7 @@ field_dispositions:
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for form1[0].Page2[0].Table_Line22[0].Line22a[0].f2_03[0].
   address_id: 2025/document=schedule_1a/table=line_22/row_template=vehicle/column=schedule_1a
+  concept_id: schedule_1a/vehicles/vehicle/schedule_1a
 - field_name: form1[0].Page2[0].Table_Line22[0].Line22b[0].VIN-2_Comb[0].f2_04[0]
   label: Line b - b - f2_04
   population_policy: unsupported
@@ -476,6 +481,7 @@ field_dispositions:
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for form1[0].Page2[0].Table_Line22[0].Line22b[0].VIN-2_Comb[0].f2_04[0].
   address_id: 2025/document=schedule_1a/table=line_22/row_template=vehicle/column=vin
+  concept_id: schedule_1a/vehicles/vehicle/vin
 - field_name: form1[0].Page2[0].Table_Line22[0].Line22b[0].f2_05[0]
   label: Line b - b - f2_05
   population_policy: unsupported
@@ -487,6 +493,7 @@ field_dispositions:
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for form1[0].Page2[0].Table_Line22[0].Line22b[0].f2_05[0].
   address_id: 2025/document=schedule_1a/table=line_22/row_template=vehicle/column=deducted_elsewhere
+  concept_id: schedule_1a/vehicles/vehicle/deducted_elsewhere
 - field_name: form1[0].Page2[0].Table_Line22[0].Line22b[0].f2_06[0]
   label: Line b - b - f2_06
   population_policy: unsupported
@@ -498,6 +505,7 @@ field_dispositions:
   missing_capability: Add a cited graph rule, runtime fact, or explicit decision mapping
     for form1[0].Page2[0].Table_Line22[0].Line22b[0].f2_06[0].
   address_id: 2025/document=schedule_1a/table=line_22/row_template=vehicle/column=schedule_1a
+  concept_id: schedule_1a/vehicles/vehicle/schedule_1a
 - field_name: form1[0].Page2[0].f2_07[0]
   label: Line 22a - . . . . . . . . . 23 - f2_07
   population_policy: unsupported

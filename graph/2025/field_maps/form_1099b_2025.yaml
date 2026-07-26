@@ -12,162 +12,189 @@ field_dispositions:
   value_format: checkbox
   source_ref: form_1099b_2025.topmostsubform_0_copya_0_copyaheader_0_c1_1_0
   address_id: 2025/document=form_1099b/section=header/option=void
+  concept_id: form_1099b/header/void
 - field_name: topmostSubform[0].CopyA[0].CopyAHeader[0].c1_1[1]
   label: 7979 VOID - c1_1
   population_policy: imported
   value_format: checkbox
   source_ref: form_1099b_2025.topmostsubform_0_copya_0_copyaheader_0_c1_1_1
   address_id: 2025/document=form_1099b/section=header/option=corrected
+  concept_id: form_1099b/header/corrected
 - field_name: topmostSubform[0].CopyA[0].LeftCol_ReadOrder[0].f1_1[0]
   label: f1_1
   population_policy: imported
   value_format: text
   source_ref: form_1099b_2025.topmostsubform_0_copya_0_leftcol_readorder_0_f1_1_0
   address_id: 2025/document=form_1099b/section=recipient/control=payer_name_address
+  concept_id: form_1099b/recipient/payer_name_address
 - field_name: topmostSubform[0].CopyA[0].LeftCol_ReadOrder[0].Payers_ReadOrder[0].f1_2[0]
   label: Line 1e - f1_2
   population_policy: imported
   value_format: text
   source_ref: form_1099b_2025.topmostsubform_0_copya_0_leftcol_readorder_0_payers_readorder_0_f1_2_0
   address_id: 2025/document=form_1099b/section=recipient/control=payer_tin
+  concept_id: form_1099b/recipient/payer_tin
 - field_name: topmostSubform[0].CopyA[0].LeftCol_ReadOrder[0].f1_3[0]
   label: Line 1e - f1_3
   population_policy: imported
   value_format: text
   source_ref: form_1099b_2025.topmostsubform_0_copya_0_leftcol_readorder_0_f1_3_0
   address_id: 2025/document=form_1099b/section=recipient/control=recipient_tin
+  concept_id: form_1099b/recipient/recipient_tin
 - field_name: topmostSubform[0].CopyA[0].LeftCol_ReadOrder[0].f1_4[0]
   label: Line 2 - f1_4
   population_policy: imported
   value_format: text
   source_ref: form_1099b_2025.topmostsubform_0_copya_0_leftcol_readorder_0_f1_4_0
   address_id: 2025/document=form_1099b/section=recipient/control=recipient_name
+  concept_id: form_1099b/recipient/recipient_name
 - field_name: topmostSubform[0].CopyA[0].LeftCol_ReadOrder[0].f1_5[0]
   label: f1_5
   population_policy: imported
   value_format: text
   source_ref: form_1099b_2025.topmostsubform_0_copya_0_leftcol_readorder_0_f1_5_0
   address_id: 2025/document=form_1099b/section=recipient/control=recipient_street
+  concept_id: form_1099b/recipient/recipient_street
 - field_name: topmostSubform[0].CopyA[0].LeftCol_ReadOrder[0].f1_6[0]
   label: f1_6
   population_policy: imported
   value_format: text
   source_ref: form_1099b_2025.topmostsubform_0_copya_0_leftcol_readorder_0_f1_6_0
   address_id: 2025/document=form_1099b/section=recipient/control=recipient_city
+  concept_id: form_1099b/recipient/recipient_city
 - field_name: topmostSubform[0].CopyA[0].LeftCol_ReadOrder[0].f1_7[0]
   label: f1_7
   population_policy: imported
   value_format: text
   source_ref: form_1099b_2025.topmostsubform_0_copya_0_leftcol_readorder_0_f1_7_0
   address_id: 2025/document=form_1099b/section=recipient/control=account_number
+  concept_id: form_1099b/recipient/account_number
 - field_name: topmostSubform[0].CopyA[0].LeftCol_ReadOrder[0].c1_2[0]
   label: c1_2
   population_policy: imported
   value_format: checkbox
   source_ref: form_1099b_2025.topmostsubform_0_copya_0_leftcol_readorder_0_c1_2_0
   address_id: 2025/document=form_1099b/section=recipient/option=second_tin_notice
+  concept_id: form_1099b/recipient/second_tin_notice
 - field_name: topmostSubform[0].CopyA[0].LeftCol_ReadOrder[0].f1_8[0]
   label: f1_8
   population_policy: imported
   value_format: text
   source_ref: form_1099b_2025.topmostsubform_0_copya_0_leftcol_readorder_0_f1_8_0
   address_id: 2025/document=form_1099b/section=recipient/control=cusip_number
+  concept_id: form_1099b/recipient/cusip_number
 - field_name: topmostSubform[0].CopyA[0].LeftCol_ReadOrder[0].c1_3[0]
   label: Line 14 - requirement - c1_3
   population_policy: imported
   value_format: checkbox
   source_ref: form_1099b_2025.topmostsubform_0_copya_0_leftcol_readorder_0_c1_3_0
   address_id: 2025/document=form_1099b/section=recipient/option=fatca_filing_requirement
+  concept_id: form_1099b/recipient/fatca_filing_requirement
 - field_name: topmostSubform[0].CopyA[0].RightCol_ReadOrder[0].f1_15[0]
   label: f1_15
   population_policy: imported
   value_format: text
   source_ref: form_1099b_2025.topmostsubform_0_copya_0_rightcol_readorder_0_f1_15_0
   address_id: 2025/document=form_1099b/section=recipient/control=form_8949_checkbox
+  concept_id: form_1099b/recipient/form_8949_checkbox
 - field_name: topmostSubform[0].CopyA[0].RightCol_ReadOrder[0].f1_16[0]
   label: Line 1a - f1_16
   population_policy: imported
   value_format: text
   source_ref: form_1099b_2025.topmostsubform_0_copya_0_rightcol_readorder_0_f1_16_0
   address_id: 2025/document=form_1099b/box=1a/control=value
+  concept_id: form_1099b/transaction/description
 - field_name: topmostSubform[0].CopyA[0].RightCol_ReadOrder[0].f1_17[0]
   label: Line 1c - f1_17
   population_policy: imported
   value_format: text
   source_ref: form_1099b_2025.topmostsubform_0_copya_0_rightcol_readorder_0_f1_17_0
   address_id: 2025/document=form_1099b/box=1b/control=value
+  concept_id: form_1099b/transaction/date_acquired
 - field_name: topmostSubform[0].CopyA[0].RightCol_ReadOrder[0].f1_18[0]
   label: Line 1c - f1_18
   population_policy: imported
   value_format: text
   source_ref: form_1099b_2025.topmostsubform_0_copya_0_rightcol_readorder_0_f1_18_0
   address_id: 2025/document=form_1099b/box=1c/control=value
+  concept_id: form_1099b/transaction/date_disposed
 - field_name: topmostSubform[0].CopyA[0].RightCol_ReadOrder[0].Box1d_ReadOrder[0].f1_19[0]
   label: Line 1e - $ - f1_19
   population_policy: imported
   value_format: text
   source_ref: form_1099b_2025.topmostsubform_0_copya_0_rightcol_readorder_0_box1d_readorder_0_f1_19_0
   address_id: 2025/document=form_1099b/box=1d/control=value
+  concept_id: form_1099b/transaction/proceeds
 - field_name: topmostSubform[0].CopyA[0].RightCol_ReadOrder[0].f1_20[0]
   label: Line 1e - $ $ - f1_20
   population_policy: imported
   value_format: text
   source_ref: form_1099b_2025.topmostsubform_0_copya_0_rightcol_readorder_0_f1_20_0
   address_id: 2025/document=form_1099b/box=1e/control=value
+  concept_id: form_1099b/transaction/cost_basis
 - field_name: topmostSubform[0].CopyA[0].RightCol_ReadOrder[0].Box1f_ReadOrder[0].f1_21[0]
   label: Line 1g - $ - f1_21
   population_policy: imported
   value_format: text
   source_ref: form_1099b_2025.topmostsubform_0_copya_0_rightcol_readorder_0_box1f_readorder_0_f1_21_0
   address_id: 2025/document=form_1099b/box=1f/control=value
+  concept_id: form_1099b/transaction/accrued_market_discount
 - field_name: topmostSubform[0].CopyA[0].RightCol_ReadOrder[0].f1_22[0]
   label: Line 1g - $ $ - f1_22
   population_policy: imported
   value_format: text
   source_ref: form_1099b_2025.topmostsubform_0_copya_0_rightcol_readorder_0_f1_22_0
   address_id: 2025/document=form_1099b/box=1g/control=value
+  concept_id: form_1099b/transaction/wash_sale_loss_disallowed
 - field_name: topmostSubform[0].CopyA[0].RightCol_ReadOrder[0].Box2_ReadOrder[0].c1_4[0]
   label: "Line 2 - RECIPIENT\u2019S name 2 Short-term gain or loss - c1_4"
   population_policy: imported
   value_format: checkbox
   source_ref: form_1099b_2025.topmostsubform_0_copya_0_rightcol_readorder_0_box2_readorder_0_c1_4_0
   address_id: 2025/document=form_1099b/box=2/option=short_term
+  concept_id: form_1099b/classification/short_term
 - field_name: topmostSubform[0].CopyA[0].RightCol_ReadOrder[0].Box2_ReadOrder[0].c1_4[1]
   label: Long-term gain or loss - c1_4
   population_policy: imported
   value_format: checkbox
   source_ref: form_1099b_2025.topmostsubform_0_copya_0_rightcol_readorder_0_box2_readorder_0_c1_4_1
   address_id: 2025/document=form_1099b/box=2/option=long_term
+  concept_id: form_1099b/classification/long_term
 - field_name: topmostSubform[0].CopyA[0].RightCol_ReadOrder[0].Box2_ReadOrder[0].c1_4[2]
   label: Ordinary - c1_4
   population_policy: imported
   value_format: checkbox
   source_ref: form_1099b_2025.topmostsubform_0_copya_0_rightcol_readorder_0_box2_readorder_0_c1_4_2
   address_id: 2025/document=form_1099b/box=2/option=ordinary
+  concept_id: form_1099b/classification/ordinary
 - field_name: topmostSubform[0].CopyA[0].RightCol_ReadOrder[0].c1_5[0]
   label: Long-term gain or loss Collectibles - c1_5
   population_policy: imported
   value_format: checkbox
   source_ref: form_1099b_2025.topmostsubform_0_copya_0_rightcol_readorder_0_c1_5_0
   address_id: 2025/document=form_1099b/box=3/option=collectibles
+  concept_id: form_1099b/classification/collectibles
 - field_name: topmostSubform[0].CopyA[0].RightCol_ReadOrder[0].c1_5[1]
   label: Ordinary QOF - c1_5
   population_policy: imported
   value_format: checkbox
   source_ref: form_1099b_2025.topmostsubform_0_copya_0_rightcol_readorder_0_c1_5_1
   address_id: 2025/document=form_1099b/box=3/option=qof
+  concept_id: form_1099b/classification/qof
 - field_name: topmostSubform[0].CopyA[0].RightCol_ReadOrder[0].Box4_ReadOrder[0].f1_23[0]
   label: $ - f1_23
   population_policy: imported
   value_format: text
   source_ref: form_1099b_2025.topmostsubform_0_copya_0_rightcol_readorder_0_box4_readorder_0_f1_23_0
   address_id: 2025/document=form_1099b/box=4/control=value
+  concept_id: form_1099b/transaction/federal_income_tax_withheld
 - field_name: topmostSubform[0].CopyA[0].RightCol_ReadOrder[0].c1_6[0]
   label: Line 6 - $ security - c1_6
   population_policy: imported
   value_format: checkbox
   source_ref: form_1099b_2025.topmostsubform_0_copya_0_rightcol_readorder_0_c1_6_0
   address_id: 2025/document=form_1099b/box=5/option=noncovered_security
+  concept_id: form_1099b/classification/noncovered_security
 - field_name: topmostSubform[0].CopyA[0].RightCol_ReadOrder[0].Box6_ReadOrder[0].c1_7[0]
   label: Line 1d - province, country, and ZIP or foreign postal code Gross proceeds
     - c1_7
@@ -175,204 +202,238 @@ field_dispositions:
   value_format: checkbox
   source_ref: form_1099b_2025.topmostsubform_0_copya_0_rightcol_readorder_0_box6_readorder_0_c1_7_0
   address_id: 2025/document=form_1099b/box=6/option=gross_proceeds
+  concept_id: form_1099b/classification/gross_proceeds
 - field_name: topmostSubform[0].CopyA[0].RightCol_ReadOrder[0].Box6_ReadOrder[0].c1_7[1]
   label: Line 8 - Net proceeds - c1_7
   population_policy: imported
   value_format: checkbox
   source_ref: form_1099b_2025.topmostsubform_0_copya_0_rightcol_readorder_0_box6_readorder_0_c1_7_1
   address_id: 2025/document=form_1099b/box=6/option=net_proceeds
+  concept_id: form_1099b/classification/net_proceeds
 - field_name: topmostSubform[0].CopyA[0].RightCol_ReadOrder[0].c1_8[0]
   label: Line 8 - Net proceeds - c1_8
   population_policy: imported
   value_format: checkbox
   source_ref: form_1099b_2025.topmostsubform_0_copya_0_rightcol_readorder_0_c1_8_0
   address_id: 2025/document=form_1099b/box=7/option=loss_not_allowed
+  concept_id: form_1099b/classification/loss_not_allowed
 - field_name: topmostSubform[0].CopyA[0].RightCol_ReadOrder[0].Box8_ReadOrder[0].f1_24[0]
   label: $ - f1_24
   population_policy: imported
   value_format: text
   source_ref: form_1099b_2025.topmostsubform_0_copya_0_rightcol_readorder_0_box8_readorder_0_f1_24_0
   address_id: 2025/document=form_1099b/box=8/control=value
+  concept_id: form_1099b/contract/realized_profit_loss
 - field_name: topmostSubform[0].CopyA[0].RightCol_ReadOrder[0].f1_25[0]
   label: $ $ - f1_25
   population_policy: imported
   value_format: text
   source_ref: form_1099b_2025.topmostsubform_0_copya_0_rightcol_readorder_0_f1_25_0
   address_id: 2025/document=form_1099b/box=9/control=value
+  concept_id: form_1099b/contract/unrealized_profit_loss_prior
 - field_name: topmostSubform[0].CopyA[0].RightCol_ReadOrder[0].Box10_ReadOrder[0].f1_26[0]
   label: Line 14 - name 15 State identification no. 16 State tax withheld $ - f1_26
   population_policy: imported
   value_format: text
   source_ref: form_1099b_2025.topmostsubform_0_copya_0_rightcol_readorder_0_box10_readorder_0_f1_26_0
   address_id: 2025/document=form_1099b/box=10/control=value
+  concept_id: form_1099b/contract/unrealized_profit_loss_current
 - field_name: topmostSubform[0].CopyA[0].RightCol_ReadOrder[0].f1_27[0]
   label: Line 14 - 15 State identification no. 16 State tax withheld $ $ - f1_27
   population_policy: imported
   value_format: text
   source_ref: form_1099b_2025.topmostsubform_0_copya_0_rightcol_readorder_0_f1_27_0
   address_id: 2025/document=form_1099b/box=11/control=value
+  concept_id: form_1099b/contract/aggregate_profit_loss
 - field_name: topmostSubform[0].CopyA[0].RightCol_ReadOrder[0].Box12_ReadOrder[0].c1_9[0]
   label: $ IRS - c1_9
   population_policy: imported
   value_format: checkbox
   source_ref: form_1099b_2025.topmostsubform_0_copya_0_rightcol_readorder_0_box12_readorder_0_c1_9_0
   address_id: 2025/document=form_1099b/box=12/option=basis_reported
+  concept_id: form_1099b/classification/basis_reported
 - field_name: topmostSubform[0].CopyA[0].RightCol_ReadOrder[0].f1_28[0]
   label: Line 12 - $ IRS $ - f1_28
   population_policy: imported
   value_format: text
   source_ref: form_1099b_2025.topmostsubform_0_copya_0_rightcol_readorder_0_f1_28_0
   address_id: 2025/document=form_1099b/box=13/control=value
+  concept_id: form_1099b/transaction/bartering
 - field_name: topmostSubform[0].CopyA[0].Box14_ReadOrder[0].f1_9[0]
   label: Line 12 - f1_9
   population_policy: imported
   value_format: text
   source_ref: form_1099b_2025.topmostsubform_0_copya_0_box14_readorder_0_f1_9_0
   address_id: 2025/document=form_1099b/table=state/row_template=jurisdiction/column=state
+  concept_id: form_1099b/state_local/jurisdiction/state
 - field_name: topmostSubform[0].CopyA[0].Box14_ReadOrder[0].f1_10[0]
   label: Line 12 - f1_10
   population_policy: imported
   value_format: text
   source_ref: form_1099b_2025.topmostsubform_0_copya_0_box14_readorder_0_f1_10_0
   address_id: 2025/document=form_1099b/table=state/row_template=jurisdiction/column=state
+  concept_id: form_1099b/state_local/jurisdiction/state
 - field_name: topmostSubform[0].CopyA[0].Box15_ReadOrder[0].f1_11[0]
   label: Line 12 - f1_11
   population_policy: imported
   value_format: text
   source_ref: form_1099b_2025.topmostsubform_0_copya_0_box15_readorder_0_f1_11_0
   address_id: 2025/document=form_1099b/table=state/row_template=jurisdiction/column=state_id
+  concept_id: form_1099b/state_local/jurisdiction/state_id
 - field_name: topmostSubform[0].CopyA[0].Box15_ReadOrder[0].f1_12[0]
   label: Line 12 - f1_12
   population_policy: imported
   value_format: text
   source_ref: form_1099b_2025.topmostsubform_0_copya_0_box15_readorder_0_f1_12_0
   address_id: 2025/document=form_1099b/table=state/row_template=jurisdiction/column=state_id
+  concept_id: form_1099b/state_local/jurisdiction/state_id
 - field_name: topmostSubform[0].CopyA[0].Box16_ReadOrder[0].f1_13[0]
   label: Line 12 - $ - f1_13
   population_policy: imported
   value_format: text
   source_ref: form_1099b_2025.topmostsubform_0_copya_0_box16_readorder_0_f1_13_0
   address_id: 2025/document=form_1099b/table=state/row_template=jurisdiction/column=state_tax
+  concept_id: form_1099b/state_local/jurisdiction/state_tax
 - field_name: topmostSubform[0].CopyA[0].Box16_ReadOrder[0].f1_14[0]
   label: Line 12 - $ - f1_14
   population_policy: imported
   value_format: text
   source_ref: form_1099b_2025.topmostsubform_0_copya_0_box16_readorder_0_f1_14_0
   address_id: 2025/document=form_1099b/table=state/row_template=jurisdiction/column=state_tax
+  concept_id: form_1099b/state_local/jurisdiction/state_tax
 - field_name: topmostSubform[0].Copy1[0].Copy1Header[0].c2_1[0]
   label: c2_1 (page 3, control 43)
   population_policy: imported
   value_format: checkbox
   source_ref: form_1099b_2025.topmostsubform_0_copy1_0_copy1header_0_c2_1_0
   address_id: 2025/document=form_1099b/section=header/option=void
+  concept_id: form_1099b/header/void
 - field_name: topmostSubform[0].Copy1[0].Copy1Header[0].c2_1[1]
   label: VOID - c2_1
   population_policy: imported
   value_format: checkbox
   source_ref: form_1099b_2025.topmostsubform_0_copy1_0_copy1header_0_c2_1_1
   address_id: 2025/document=form_1099b/section=header/option=corrected
+  concept_id: form_1099b/header/corrected
 - field_name: topmostSubform[0].Copy1[0].LeftCol[0].f2_1[0]
   label: f2_1 (page 3, control 45)
   population_policy: imported
   value_format: text
   source_ref: form_1099b_2025.topmostsubform_0_copy1_0_leftcol_0_f2_1_0
   address_id: 2025/document=form_1099b/section=recipient/control=payer_name_address
+  concept_id: form_1099b/recipient/payer_name_address
 - field_name: topmostSubform[0].Copy1[0].LeftCol[0].f2_2[0]
   label: Line 1e - f2_2 (page 3, control 46)
   population_policy: imported
   value_format: text
   source_ref: form_1099b_2025.topmostsubform_0_copy1_0_leftcol_0_f2_2_0
   address_id: 2025/document=form_1099b/section=recipient/control=payer_tin
+  concept_id: form_1099b/recipient/payer_tin
 - field_name: topmostSubform[0].Copy1[0].LeftCol[0].f2_3[0]
   label: Line 1e - f2_3 (page 3, control 47)
   population_policy: imported
   value_format: text
   source_ref: form_1099b_2025.topmostsubform_0_copy1_0_leftcol_0_f2_3_0
   address_id: 2025/document=form_1099b/section=recipient/control=recipient_tin
+  concept_id: form_1099b/recipient/recipient_tin
 - field_name: topmostSubform[0].Copy1[0].LeftCol[0].f2_4[0]
   label: Line 2 - f2_4 (page 3, control 48)
   population_policy: imported
   value_format: text
   source_ref: form_1099b_2025.topmostsubform_0_copy1_0_leftcol_0_f2_4_0
   address_id: 2025/document=form_1099b/section=recipient/control=recipient_name
+  concept_id: form_1099b/recipient/recipient_name
 - field_name: topmostSubform[0].Copy1[0].LeftCol[0].f2_5[0]
   label: f2_5 (page 3, control 49)
   population_policy: imported
   value_format: text
   source_ref: form_1099b_2025.topmostsubform_0_copy1_0_leftcol_0_f2_5_0
   address_id: 2025/document=form_1099b/section=recipient/control=recipient_street
+  concept_id: form_1099b/recipient/recipient_street
 - field_name: topmostSubform[0].Copy1[0].LeftCol[0].f2_6[0]
   label: f2_6 (page 3, control 50)
   population_policy: imported
   value_format: text
   source_ref: form_1099b_2025.topmostsubform_0_copy1_0_leftcol_0_f2_6_0
   address_id: 2025/document=form_1099b/section=recipient/control=recipient_city
+  concept_id: form_1099b/recipient/recipient_city
 - field_name: topmostSubform[0].Copy1[0].LeftCol[0].f2_7[0]
   label: f2_7 (page 3, control 51)
   population_policy: imported
   value_format: text
   source_ref: form_1099b_2025.topmostsubform_0_copy1_0_leftcol_0_f2_7_0
   address_id: 2025/document=form_1099b/section=recipient/control=account_number
+  concept_id: form_1099b/recipient/account_number
 - field_name: topmostSubform[0].Copy1[0].LeftCol[0].f2_8[0]
   label: f2_8 (page 3, control 52)
   population_policy: imported
   value_format: text
   source_ref: form_1099b_2025.topmostsubform_0_copy1_0_leftcol_0_f2_8_0
   address_id: 2025/document=form_1099b/section=recipient/control=cusip_number
+  concept_id: form_1099b/recipient/cusip_number
 - field_name: topmostSubform[0].Copy1[0].LeftCol[0].FATCA[0].c2_3[0]
   label: Line 14 - requirement - c2_3 (page 3, control 53)
   population_policy: imported
   value_format: checkbox
   source_ref: form_1099b_2025.topmostsubform_0_copy1_0_leftcol_0_fatca_0_c2_3_0
   address_id: 2025/document=form_1099b/section=recipient/option=fatca_filing_requirement
+  concept_id: form_1099b/recipient/fatca_filing_requirement
 - field_name: topmostSubform[0].Copy1[0].RightCol[0].f2_15[0]
   label: f2_15 (page 3, control 54)
   population_policy: imported
   value_format: text
   source_ref: form_1099b_2025.topmostsubform_0_copy1_0_rightcol_0_f2_15_0
   address_id: 2025/document=form_1099b/section=recipient/control=form_8949_checkbox
+  concept_id: form_1099b/recipient/form_8949_checkbox
 - field_name: topmostSubform[0].Copy1[0].RightCol[0].f2_16[0]
   label: Line 1a - f2_16 (page 3, control 55)
   population_policy: imported
   value_format: text
   source_ref: form_1099b_2025.topmostsubform_0_copy1_0_rightcol_0_f2_16_0
   address_id: 2025/document=form_1099b/box=1a/control=value
+  concept_id: form_1099b/transaction/description
 - field_name: topmostSubform[0].Copy1[0].RightCol[0].f2_17[0]
   label: Line 1c - f2_17 (page 3, control 56)
   population_policy: imported
   value_format: text
   source_ref: form_1099b_2025.topmostsubform_0_copy1_0_rightcol_0_f2_17_0
   address_id: 2025/document=form_1099b/box=1b/control=value
+  concept_id: form_1099b/transaction/date_acquired
 - field_name: topmostSubform[0].Copy1[0].RightCol[0].f2_18[0]
   label: Line 1c - f2_18 (page 3, control 57)
   population_policy: imported
   value_format: text
   source_ref: form_1099b_2025.topmostsubform_0_copy1_0_rightcol_0_f2_18_0
   address_id: 2025/document=form_1099b/box=1c/control=value
+  concept_id: form_1099b/transaction/date_disposed
 - field_name: topmostSubform[0].Copy1[0].RightCol[0].Box1d[0].f2_19[0]
   label: Line 1e - $ - f2_19 (page 3, control 58)
   population_policy: imported
   value_format: text
   source_ref: form_1099b_2025.topmostsubform_0_copy1_0_rightcol_0_box1d_0_f2_19_0
   address_id: 2025/document=form_1099b/box=1d/control=value
+  concept_id: form_1099b/transaction/proceeds
 - field_name: topmostSubform[0].Copy1[0].RightCol[0].f2_20[0]
   label: Line 1e - $ $ - f2_20 (page 3, control 59)
   population_policy: imported
   value_format: text
   source_ref: form_1099b_2025.topmostsubform_0_copy1_0_rightcol_0_f2_20_0
   address_id: 2025/document=form_1099b/box=1e/control=value
+  concept_id: form_1099b/transaction/cost_basis
 - field_name: topmostSubform[0].Copy1[0].RightCol[0].Box1f[0].f2_21[0]
   label: Line 1g - $ - f2_21 (page 3, control 60)
   population_policy: imported
   value_format: text
   source_ref: form_1099b_2025.topmostsubform_0_copy1_0_rightcol_0_box1f_0_f2_21_0
   address_id: 2025/document=form_1099b/box=1f/control=value
+  concept_id: form_1099b/transaction/accrued_market_discount
 - field_name: topmostSubform[0].Copy1[0].RightCol[0].f2_22[0]
   label: Line 1g - $ $ - f2_22 (page 3, control 61)
   population_policy: imported
   value_format: text
   source_ref: form_1099b_2025.topmostsubform_0_copy1_0_rightcol_0_f2_22_0
   address_id: 2025/document=form_1099b/box=1g/control=value
+  concept_id: form_1099b/transaction/wash_sale_loss_disallowed
 - field_name: topmostSubform[0].Copy1[0].RightCol[0].Box2[0].c2_4[0]
   label: "Line 2 - RECIPIENT\u2019S name 2 Short-term gain or loss - c2_4 (page 3,\
     \ control 62)"
@@ -380,42 +441,49 @@ field_dispositions:
   value_format: checkbox
   source_ref: form_1099b_2025.topmostsubform_0_copy1_0_rightcol_0_box2_0_c2_4_0
   address_id: 2025/document=form_1099b/box=2/option=short_term
+  concept_id: form_1099b/classification/short_term
 - field_name: topmostSubform[0].Copy1[0].RightCol[0].Box2[0].c2_4[1]
   label: Long-term gain or loss - c2_4 (page 3, control 63)
   population_policy: imported
   value_format: checkbox
   source_ref: form_1099b_2025.topmostsubform_0_copy1_0_rightcol_0_box2_0_c2_4_1
   address_id: 2025/document=form_1099b/box=2/option=long_term
+  concept_id: form_1099b/classification/long_term
 - field_name: topmostSubform[0].Copy1[0].RightCol[0].Box2[0].c2_4[2]
   label: Ordinary - c2_4 (page 3, control 64)
   population_policy: imported
   value_format: checkbox
   source_ref: form_1099b_2025.topmostsubform_0_copy1_0_rightcol_0_box2_0_c2_4_2
   address_id: 2025/document=form_1099b/box=2/option=ordinary
+  concept_id: form_1099b/classification/ordinary
 - field_name: topmostSubform[0].Copy1[0].RightCol[0].c2_5[0]
   label: Long-term gain or loss Collectibles - c2_5 (page 3, control 65)
   population_policy: imported
   value_format: checkbox
   source_ref: form_1099b_2025.topmostsubform_0_copy1_0_rightcol_0_c2_5_0
   address_id: 2025/document=form_1099b/box=3/option=collectibles
+  concept_id: form_1099b/classification/collectibles
 - field_name: topmostSubform[0].Copy1[0].RightCol[0].c2_5[1]
   label: Ordinary QOF - c2_5 (page 3, control 66)
   population_policy: imported
   value_format: checkbox
   source_ref: form_1099b_2025.topmostsubform_0_copy1_0_rightcol_0_c2_5_1
   address_id: 2025/document=form_1099b/box=3/option=qof
+  concept_id: form_1099b/classification/qof
 - field_name: topmostSubform[0].Copy1[0].RightCol[0].Box4[0].f2_23[0]
   label: $ - f2_23 (page 3, control 67)
   population_policy: imported
   value_format: text
   source_ref: form_1099b_2025.topmostsubform_0_copy1_0_rightcol_0_box4_0_f2_23_0
   address_id: 2025/document=form_1099b/box=4/control=value
+  concept_id: form_1099b/transaction/federal_income_tax_withheld
 - field_name: topmostSubform[0].Copy1[0].RightCol[0].c2_6[0]
   label: Line 6 - $ security - c2_6 (page 3, control 68)
   population_policy: imported
   value_format: checkbox
   source_ref: form_1099b_2025.topmostsubform_0_copy1_0_rightcol_0_c2_6_0
   address_id: 2025/document=form_1099b/box=5/option=noncovered_security
+  concept_id: form_1099b/classification/noncovered_security
 - field_name: topmostSubform[0].Copy1[0].RightCol[0].Box6[0].c2_7[0]
   label: Line 1d - province, country, and ZIP or foreign postal code Gross proceeds
     - c2_7 (page 3, control 69)
@@ -423,30 +491,35 @@ field_dispositions:
   value_format: checkbox
   source_ref: form_1099b_2025.topmostsubform_0_copy1_0_rightcol_0_box6_0_c2_7_0
   address_id: 2025/document=form_1099b/box=6/option=gross_proceeds
+  concept_id: form_1099b/classification/gross_proceeds
 - field_name: topmostSubform[0].Copy1[0].RightCol[0].Box6[0].c2_7[1]
   label: Line 8 - Net proceeds - c2_7 (page 3, control 70)
   population_policy: imported
   value_format: checkbox
   source_ref: form_1099b_2025.topmostsubform_0_copy1_0_rightcol_0_box6_0_c2_7_1
   address_id: 2025/document=form_1099b/box=6/option=net_proceeds
+  concept_id: form_1099b/classification/net_proceeds
 - field_name: topmostSubform[0].Copy1[0].RightCol[0].c2_8[0]
   label: Line 8 - Net proceeds - c2_8 (page 3, control 71)
   population_policy: imported
   value_format: checkbox
   source_ref: form_1099b_2025.topmostsubform_0_copy1_0_rightcol_0_c2_8_0
   address_id: 2025/document=form_1099b/box=7/option=loss_not_allowed
+  concept_id: form_1099b/classification/loss_not_allowed
 - field_name: topmostSubform[0].Copy1[0].RightCol[0].Box8[0].f2_24[0]
   label: $ - f2_24 (page 3, control 72)
   population_policy: imported
   value_format: text
   source_ref: form_1099b_2025.topmostsubform_0_copy1_0_rightcol_0_box8_0_f2_24_0
   address_id: 2025/document=form_1099b/box=8/control=value
+  concept_id: form_1099b/contract/realized_profit_loss
 - field_name: topmostSubform[0].Copy1[0].RightCol[0].f2_25[0]
   label: $ $ - f2_25 (page 3, control 73)
   population_policy: imported
   value_format: text
   source_ref: form_1099b_2025.topmostsubform_0_copy1_0_rightcol_0_f2_25_0
   address_id: 2025/document=form_1099b/box=9/control=value
+  concept_id: form_1099b/contract/unrealized_profit_loss_prior
 - field_name: topmostSubform[0].Copy1[0].RightCol[0].Box10[0].f2_26[0]
   label: Line 14 - name 15 State identification no. 16 State tax withheld $ - f2_26
     (page 3, control 74)
@@ -454,6 +527,7 @@ field_dispositions:
   value_format: text
   source_ref: form_1099b_2025.topmostsubform_0_copy1_0_rightcol_0_box10_0_f2_26_0
   address_id: 2025/document=form_1099b/box=10/control=value
+  concept_id: form_1099b/contract/unrealized_profit_loss_current
 - field_name: topmostSubform[0].Copy1[0].RightCol[0].f2_27[0]
   label: Line 14 - 15 State identification no. 16 State tax withheld $ $ - f2_27 (page
     3, control 75)
@@ -461,162 +535,189 @@ field_dispositions:
   value_format: text
   source_ref: form_1099b_2025.topmostsubform_0_copy1_0_rightcol_0_f2_27_0
   address_id: 2025/document=form_1099b/box=11/control=value
+  concept_id: form_1099b/contract/aggregate_profit_loss
 - field_name: topmostSubform[0].Copy1[0].RightCol[0].Box12[0].c2_9[0]
   label: $ to IRS - c2_9 (page 3, control 76)
   population_policy: imported
   value_format: checkbox
   source_ref: form_1099b_2025.topmostsubform_0_copy1_0_rightcol_0_box12_0_c2_9_0
   address_id: 2025/document=form_1099b/box=12/option=basis_reported
+  concept_id: form_1099b/classification/basis_reported
 - field_name: topmostSubform[0].Copy1[0].RightCol[0].f2_28[0]
   label: Line 12 - $ to IRS $ - f2_28 (page 3, control 77)
   population_policy: imported
   value_format: text
   source_ref: form_1099b_2025.topmostsubform_0_copy1_0_rightcol_0_f2_28_0
   address_id: 2025/document=form_1099b/box=13/control=value
+  concept_id: form_1099b/transaction/bartering
 - field_name: topmostSubform[0].Copy1[0].Box14[0].f2_9[0]
   label: Line 12 - f2_9 (page 3, control 78)
   population_policy: imported
   value_format: text
   source_ref: form_1099b_2025.topmostsubform_0_copy1_0_box14_0_f2_9_0
   address_id: 2025/document=form_1099b/table=state/row_template=jurisdiction/column=state
+  concept_id: form_1099b/state_local/jurisdiction/state
 - field_name: topmostSubform[0].Copy1[0].Box14[0].f2_10[0]
   label: Line 12 - f2_10 (page 3, control 79)
   population_policy: imported
   value_format: text
   source_ref: form_1099b_2025.topmostsubform_0_copy1_0_box14_0_f2_10_0
   address_id: 2025/document=form_1099b/table=state/row_template=jurisdiction/column=state
+  concept_id: form_1099b/state_local/jurisdiction/state
 - field_name: topmostSubform[0].Copy1[0].Box15[0].f2_11[0]
   label: Line 12 - f2_11 (page 3, control 80)
   population_policy: imported
   value_format: text
   source_ref: form_1099b_2025.topmostsubform_0_copy1_0_box15_0_f2_11_0
   address_id: 2025/document=form_1099b/table=state/row_template=jurisdiction/column=state_id
+  concept_id: form_1099b/state_local/jurisdiction/state_id
 - field_name: topmostSubform[0].Copy1[0].Box15[0].f2_12[0]
   label: Line 12 - f2_12 (page 3, control 81)
   population_policy: imported
   value_format: text
   source_ref: form_1099b_2025.topmostsubform_0_copy1_0_box15_0_f2_12_0
   address_id: 2025/document=form_1099b/table=state/row_template=jurisdiction/column=state_id
+  concept_id: form_1099b/state_local/jurisdiction/state_id
 - field_name: topmostSubform[0].Copy1[0].Box16[0].f2_13[0]
   label: Line 12 - $ - f2_13 (page 3, control 82)
   population_policy: imported
   value_format: text
   source_ref: form_1099b_2025.topmostsubform_0_copy1_0_box16_0_f2_13_0
   address_id: 2025/document=form_1099b/table=state/row_template=jurisdiction/column=state_tax
+  concept_id: form_1099b/state_local/jurisdiction/state_tax
 - field_name: topmostSubform[0].Copy1[0].Box16[0].f2_14[0]
   label: Line 12 - $ - f2_14 (page 3, control 83)
   population_policy: imported
   value_format: text
   source_ref: form_1099b_2025.topmostsubform_0_copy1_0_box16_0_f2_14_0
   address_id: 2025/document=form_1099b/table=state/row_template=jurisdiction/column=state_tax
+  concept_id: form_1099b/state_local/jurisdiction/state_tax
 - field_name: topmostSubform[0].CopyB[0].CopyBHeader[0].c2_1[0]
   label: c2_1 (page 4, control 84)
   population_policy: imported
   value_format: checkbox
   source_ref: form_1099b_2025.topmostsubform_0_copyb_0_copybheader_0_c2_1_0
   address_id: 2025/document=form_1099b/section=header/option=void
+  concept_id: form_1099b/header/void
 - field_name: topmostSubform[0].CopyB[0].LeftCol[0].f2_1[0]
   label: f2_1 (page 4, control 85)
   population_policy: imported
   value_format: text
   source_ref: form_1099b_2025.topmostsubform_0_copyb_0_leftcol_0_f2_1_0
   address_id: 2025/document=form_1099b/section=recipient/control=payer_name_address
+  concept_id: form_1099b/recipient/payer_name_address
 - field_name: topmostSubform[0].CopyB[0].LeftCol[0].f2_2[0]
   label: Line 1e - f2_2 (page 4, control 86)
   population_policy: imported
   value_format: text
   source_ref: form_1099b_2025.topmostsubform_0_copyb_0_leftcol_0_f2_2_0
   address_id: 2025/document=form_1099b/section=recipient/control=payer_tin
+  concept_id: form_1099b/recipient/payer_tin
 - field_name: topmostSubform[0].CopyB[0].LeftCol[0].f2_3[0]
   label: Line 1e - f2_3 (page 4, control 87)
   population_policy: imported
   value_format: text
   source_ref: form_1099b_2025.topmostsubform_0_copyb_0_leftcol_0_f2_3_0
   address_id: 2025/document=form_1099b/section=recipient/control=recipient_tin
+  concept_id: form_1099b/recipient/recipient_tin
 - field_name: topmostSubform[0].CopyB[0].LeftCol[0].f2_4[0]
   label: Line 2 - f2_4 (page 4, control 88)
   population_policy: imported
   value_format: text
   source_ref: form_1099b_2025.topmostsubform_0_copyb_0_leftcol_0_f2_4_0
   address_id: 2025/document=form_1099b/section=recipient/control=recipient_name
+  concept_id: form_1099b/recipient/recipient_name
 - field_name: topmostSubform[0].CopyB[0].LeftCol[0].f2_5[0]
   label: f2_5 (page 4, control 89)
   population_policy: imported
   value_format: text
   source_ref: form_1099b_2025.topmostsubform_0_copyb_0_leftcol_0_f2_5_0
   address_id: 2025/document=form_1099b/section=recipient/control=recipient_street
+  concept_id: form_1099b/recipient/recipient_street
 - field_name: topmostSubform[0].CopyB[0].LeftCol[0].f2_6[0]
   label: f2_6 (page 4, control 90)
   population_policy: imported
   value_format: text
   source_ref: form_1099b_2025.topmostsubform_0_copyb_0_leftcol_0_f2_6_0
   address_id: 2025/document=form_1099b/section=recipient/control=recipient_city
+  concept_id: form_1099b/recipient/recipient_city
 - field_name: topmostSubform[0].CopyB[0].LeftCol[0].f2_7[0]
   label: f2_7 (page 4, control 91)
   population_policy: imported
   value_format: text
   source_ref: form_1099b_2025.topmostsubform_0_copyb_0_leftcol_0_f2_7_0
   address_id: 2025/document=form_1099b/section=recipient/control=account_number
+  concept_id: form_1099b/recipient/account_number
 - field_name: topmostSubform[0].CopyB[0].LeftCol[0].f2_8[0]
   label: f2_8 (page 4, control 92)
   population_policy: imported
   value_format: text
   source_ref: form_1099b_2025.topmostsubform_0_copyb_0_leftcol_0_f2_8_0
   address_id: 2025/document=form_1099b/section=recipient/control=cusip_number
+  concept_id: form_1099b/recipient/cusip_number
 - field_name: topmostSubform[0].CopyB[0].LeftCol[0].FATCA[0].c2_3[0]
   label: Line 14 - requirement - c2_3 (page 4, control 93)
   population_policy: imported
   value_format: checkbox
   source_ref: form_1099b_2025.topmostsubform_0_copyb_0_leftcol_0_fatca_0_c2_3_0
   address_id: 2025/document=form_1099b/section=recipient/option=fatca_filing_requirement
+  concept_id: form_1099b/recipient/fatca_filing_requirement
 - field_name: topmostSubform[0].CopyB[0].RightCol[0].f2_15[0]
   label: f2_15 (page 4, control 94)
   population_policy: imported
   value_format: text
   source_ref: form_1099b_2025.topmostsubform_0_copyb_0_rightcol_0_f2_15_0
   address_id: 2025/document=form_1099b/section=recipient/control=form_8949_checkbox
+  concept_id: form_1099b/recipient/form_8949_checkbox
 - field_name: topmostSubform[0].CopyB[0].RightCol[0].f2_16[0]
   label: Line 1a - f2_16 (page 4, control 95)
   population_policy: imported
   value_format: text
   source_ref: form_1099b_2025.topmostsubform_0_copyb_0_rightcol_0_f2_16_0
   address_id: 2025/document=form_1099b/box=1a/control=value
+  concept_id: form_1099b/transaction/description
 - field_name: topmostSubform[0].CopyB[0].RightCol[0].f2_17[0]
   label: Line 1c - f2_17 (page 4, control 96)
   population_policy: imported
   value_format: text
   source_ref: form_1099b_2025.topmostsubform_0_copyb_0_rightcol_0_f2_17_0
   address_id: 2025/document=form_1099b/box=1b/control=value
+  concept_id: form_1099b/transaction/date_acquired
 - field_name: topmostSubform[0].CopyB[0].RightCol[0].f2_18[0]
   label: Line 1c - f2_18 (page 4, control 97)
   population_policy: imported
   value_format: text
   source_ref: form_1099b_2025.topmostsubform_0_copyb_0_rightcol_0_f2_18_0
   address_id: 2025/document=form_1099b/box=1c/control=value
+  concept_id: form_1099b/transaction/date_disposed
 - field_name: topmostSubform[0].CopyB[0].RightCol[0].Box1d[0].f2_19[0]
   label: Line 1e - $ - f2_19 (page 4, control 98)
   population_policy: imported
   value_format: text
   source_ref: form_1099b_2025.topmostsubform_0_copyb_0_rightcol_0_box1d_0_f2_19_0
   address_id: 2025/document=form_1099b/box=1d/control=value
+  concept_id: form_1099b/transaction/proceeds
 - field_name: topmostSubform[0].CopyB[0].RightCol[0].f2_20[0]
   label: Line 1e - $ $ - f2_20 (page 4, control 99)
   population_policy: imported
   value_format: text
   source_ref: form_1099b_2025.topmostsubform_0_copyb_0_rightcol_0_f2_20_0
   address_id: 2025/document=form_1099b/box=1e/control=value
+  concept_id: form_1099b/transaction/cost_basis
 - field_name: topmostSubform[0].CopyB[0].RightCol[0].Box1f[0].f2_21[0]
   label: Line 1g - $ - f2_21 (page 4, control 100)
   population_policy: imported
   value_format: text
   source_ref: form_1099b_2025.topmostsubform_0_copyb_0_rightcol_0_box1f_0_f2_21_0
   address_id: 2025/document=form_1099b/box=1f/control=value
+  concept_id: form_1099b/transaction/accrued_market_discount
 - field_name: topmostSubform[0].CopyB[0].RightCol[0].f2_22[0]
   label: Line 1g - $ $ - f2_22 (page 4, control 101)
   population_policy: imported
   value_format: text
   source_ref: form_1099b_2025.topmostsubform_0_copyb_0_rightcol_0_f2_22_0
   address_id: 2025/document=form_1099b/box=1g/control=value
+  concept_id: form_1099b/transaction/wash_sale_loss_disallowed
 - field_name: topmostSubform[0].CopyB[0].RightCol[0].Box2[0].c2_4[0]
   label: "Line 2 - RECIPIENT\u2019S name 2 Short-term gain or loss - c2_4 (page 4,\
     \ control 102)"
@@ -624,42 +725,49 @@ field_dispositions:
   value_format: checkbox
   source_ref: form_1099b_2025.topmostsubform_0_copyb_0_rightcol_0_box2_0_c2_4_0
   address_id: 2025/document=form_1099b/box=2/option=short_term
+  concept_id: form_1099b/classification/short_term
 - field_name: topmostSubform[0].CopyB[0].RightCol[0].Box2[0].c2_4[1]
   label: Long-term gain or loss - c2_4 (page 4, control 103)
   population_policy: imported
   value_format: checkbox
   source_ref: form_1099b_2025.topmostsubform_0_copyb_0_rightcol_0_box2_0_c2_4_1
   address_id: 2025/document=form_1099b/box=2/option=long_term
+  concept_id: form_1099b/classification/long_term
 - field_name: topmostSubform[0].CopyB[0].RightCol[0].Box2[0].c2_4[2]
   label: Ordinary - c2_4 (page 4, control 104)
   population_policy: imported
   value_format: checkbox
   source_ref: form_1099b_2025.topmostsubform_0_copyb_0_rightcol_0_box2_0_c2_4_2
   address_id: 2025/document=form_1099b/box=2/option=ordinary
+  concept_id: form_1099b/classification/ordinary
 - field_name: topmostSubform[0].CopyB[0].RightCol[0].c2_5[0]
   label: Long-term gain or loss Collectibles - c2_5 (page 4, control 105)
   population_policy: imported
   value_format: checkbox
   source_ref: form_1099b_2025.topmostsubform_0_copyb_0_rightcol_0_c2_5_0
   address_id: 2025/document=form_1099b/box=3/option=collectibles
+  concept_id: form_1099b/classification/collectibles
 - field_name: topmostSubform[0].CopyB[0].RightCol[0].c2_5[1]
   label: Ordinary QOF - c2_5 (page 4, control 106)
   population_policy: imported
   value_format: checkbox
   source_ref: form_1099b_2025.topmostsubform_0_copyb_0_rightcol_0_c2_5_1
   address_id: 2025/document=form_1099b/box=3/option=qof
+  concept_id: form_1099b/classification/qof
 - field_name: topmostSubform[0].CopyB[0].RightCol[0].Box4[0].f2_23[0]
   label: $ - f2_23 (page 4, control 107)
   population_policy: imported
   value_format: text
   source_ref: form_1099b_2025.topmostsubform_0_copyb_0_rightcol_0_box4_0_f2_23_0
   address_id: 2025/document=form_1099b/box=4/control=value
+  concept_id: form_1099b/transaction/federal_income_tax_withheld
 - field_name: topmostSubform[0].CopyB[0].RightCol[0].c2_6[0]
   label: Line 6 - $ security - c2_6 (page 4, control 108)
   population_policy: imported
   value_format: checkbox
   source_ref: form_1099b_2025.topmostsubform_0_copyb_0_rightcol_0_c2_6_0
   address_id: 2025/document=form_1099b/box=5/option=noncovered_security
+  concept_id: form_1099b/classification/noncovered_security
 - field_name: topmostSubform[0].CopyB[0].RightCol[0].Box6[0].c2_7[0]
   label: Line 1d - province, country, and ZIP or foreign postal code Gross proceeds
     - c2_7 (page 4, control 109)
@@ -667,30 +775,35 @@ field_dispositions:
   value_format: checkbox
   source_ref: form_1099b_2025.topmostsubform_0_copyb_0_rightcol_0_box6_0_c2_7_0
   address_id: 2025/document=form_1099b/box=6/option=gross_proceeds
+  concept_id: form_1099b/classification/gross_proceeds
 - field_name: topmostSubform[0].CopyB[0].RightCol[0].Box6[0].c2_7[1]
   label: Line 8 - Net proceeds - c2_7 (page 4, control 110)
   population_policy: imported
   value_format: checkbox
   source_ref: form_1099b_2025.topmostsubform_0_copyb_0_rightcol_0_box6_0_c2_7_1
   address_id: 2025/document=form_1099b/box=6/option=net_proceeds
+  concept_id: form_1099b/classification/net_proceeds
 - field_name: topmostSubform[0].CopyB[0].RightCol[0].c2_8[0]
   label: Line 8 - Net proceeds - c2_8 (page 4, control 111)
   population_policy: imported
   value_format: checkbox
   source_ref: form_1099b_2025.topmostsubform_0_copyb_0_rightcol_0_c2_8_0
   address_id: 2025/document=form_1099b/box=7/option=loss_not_allowed
+  concept_id: form_1099b/classification/loss_not_allowed
 - field_name: topmostSubform[0].CopyB[0].RightCol[0].Box8[0].f2_24[0]
   label: $ - f2_24 (page 4, control 112)
   population_policy: imported
   value_format: text
   source_ref: form_1099b_2025.topmostsubform_0_copyb_0_rightcol_0_box8_0_f2_24_0
   address_id: 2025/document=form_1099b/box=8/control=value
+  concept_id: form_1099b/contract/realized_profit_loss
 - field_name: topmostSubform[0].CopyB[0].RightCol[0].f2_25[0]
   label: $ $ - f2_25 (page 4, control 113)
   population_policy: imported
   value_format: text
   source_ref: form_1099b_2025.topmostsubform_0_copyb_0_rightcol_0_f2_25_0
   address_id: 2025/document=form_1099b/box=9/control=value
+  concept_id: form_1099b/contract/unrealized_profit_loss_prior
 - field_name: topmostSubform[0].CopyB[0].RightCol[0].Box10[0].f2_26[0]
   label: Line 14 - name 15 State identification no. 16 State tax withheld $ - f2_26
     (page 4, control 114)
@@ -698,6 +811,7 @@ field_dispositions:
   value_format: text
   source_ref: form_1099b_2025.topmostsubform_0_copyb_0_rightcol_0_box10_0_f2_26_0
   address_id: 2025/document=form_1099b/box=10/control=value
+  concept_id: form_1099b/contract/unrealized_profit_loss_current
 - field_name: topmostSubform[0].CopyB[0].RightCol[0].f2_27[0]
   label: Line 14 - 15 State identification no. 16 State tax withheld $ $ - f2_27 (page
     4, control 115)
@@ -705,162 +819,189 @@ field_dispositions:
   value_format: text
   source_ref: form_1099b_2025.topmostsubform_0_copyb_0_rightcol_0_f2_27_0
   address_id: 2025/document=form_1099b/box=11/control=value
+  concept_id: form_1099b/contract/aggregate_profit_loss
 - field_name: topmostSubform[0].CopyB[0].RightCol[0].Box12[0].c2_9[0]
   label: $ to IRS - c2_9 (page 4, control 116)
   population_policy: imported
   value_format: checkbox
   source_ref: form_1099b_2025.topmostsubform_0_copyb_0_rightcol_0_box12_0_c2_9_0
   address_id: 2025/document=form_1099b/box=12/option=basis_reported
+  concept_id: form_1099b/classification/basis_reported
 - field_name: topmostSubform[0].CopyB[0].RightCol[0].f2_28[0]
   label: Line 12 - $ to IRS $ - f2_28 (page 4, control 117)
   population_policy: imported
   value_format: text
   source_ref: form_1099b_2025.topmostsubform_0_copyb_0_rightcol_0_f2_28_0
   address_id: 2025/document=form_1099b/box=13/control=value
+  concept_id: form_1099b/transaction/bartering
 - field_name: topmostSubform[0].CopyB[0].Box14[0].f2_9[0]
   label: Line 12 - f2_9 (page 4, control 118)
   population_policy: imported
   value_format: text
   source_ref: form_1099b_2025.topmostsubform_0_copyb_0_box14_0_f2_9_0
   address_id: 2025/document=form_1099b/table=state/row_template=jurisdiction/column=state
+  concept_id: form_1099b/state_local/jurisdiction/state
 - field_name: topmostSubform[0].CopyB[0].Box14[0].f2_10[0]
   label: Line 12 - f2_10 (page 4, control 119)
   population_policy: imported
   value_format: text
   source_ref: form_1099b_2025.topmostsubform_0_copyb_0_box14_0_f2_10_0
   address_id: 2025/document=form_1099b/table=state/row_template=jurisdiction/column=state
+  concept_id: form_1099b/state_local/jurisdiction/state
 - field_name: topmostSubform[0].CopyB[0].Box15[0].f2_11[0]
   label: Line 12 - f2_11 (page 4, control 120)
   population_policy: imported
   value_format: text
   source_ref: form_1099b_2025.topmostsubform_0_copyb_0_box15_0_f2_11_0
   address_id: 2025/document=form_1099b/table=state/row_template=jurisdiction/column=state_id
+  concept_id: form_1099b/state_local/jurisdiction/state_id
 - field_name: topmostSubform[0].CopyB[0].Box15[0].f2_12[0]
   label: Line 12 - f2_12 (page 4, control 121)
   population_policy: imported
   value_format: text
   source_ref: form_1099b_2025.topmostsubform_0_copyb_0_box15_0_f2_12_0
   address_id: 2025/document=form_1099b/table=state/row_template=jurisdiction/column=state_id
+  concept_id: form_1099b/state_local/jurisdiction/state_id
 - field_name: topmostSubform[0].CopyB[0].Box16[0].f2_13[0]
   label: Line 12 - $ - f2_13 (page 4, control 122)
   population_policy: imported
   value_format: text
   source_ref: form_1099b_2025.topmostsubform_0_copyb_0_box16_0_f2_13_0
   address_id: 2025/document=form_1099b/table=state/row_template=jurisdiction/column=state_tax
+  concept_id: form_1099b/state_local/jurisdiction/state_tax
 - field_name: topmostSubform[0].CopyB[0].Box16[0].f2_14[0]
   label: Line 12 - $ - f2_14 (page 4, control 123)
   population_policy: imported
   value_format: text
   source_ref: form_1099b_2025.topmostsubform_0_copyb_0_box16_0_f2_14_0
   address_id: 2025/document=form_1099b/table=state/row_template=jurisdiction/column=state_tax
+  concept_id: form_1099b/state_local/jurisdiction/state_tax
 - field_name: topmostSubform[0].Copy2[0].Copy2Header[0].c2_1[0]
   label: c2_1 (page 6, control 124)
   population_policy: imported
   value_format: checkbox
   source_ref: form_1099b_2025.topmostsubform_0_copy2_0_copy2header_0_c2_1_0
   address_id: 2025/document=form_1099b/section=header/option=void
+  concept_id: form_1099b/header/void
 - field_name: topmostSubform[0].Copy2[0].LeftCol_ReadOrder[0].f2_1[0]
   label: f2_1 (page 6, control 125)
   population_policy: imported
   value_format: text
   source_ref: form_1099b_2025.topmostsubform_0_copy2_0_leftcol_readorder_0_f2_1_0
   address_id: 2025/document=form_1099b/section=recipient/control=payer_name_address
+  concept_id: form_1099b/recipient/payer_name_address
 - field_name: topmostSubform[0].Copy2[0].LeftCol_ReadOrder[0].f2_2[0]
   label: Line 1e - f2_2 (page 6, control 126)
   population_policy: imported
   value_format: text
   source_ref: form_1099b_2025.topmostsubform_0_copy2_0_leftcol_readorder_0_f2_2_0
   address_id: 2025/document=form_1099b/section=recipient/control=payer_tin
+  concept_id: form_1099b/recipient/payer_tin
 - field_name: topmostSubform[0].Copy2[0].LeftCol_ReadOrder[0].f2_3[0]
   label: Line 1e - f2_3 (page 6, control 127)
   population_policy: imported
   value_format: text
   source_ref: form_1099b_2025.topmostsubform_0_copy2_0_leftcol_readorder_0_f2_3_0
   address_id: 2025/document=form_1099b/section=recipient/control=recipient_tin
+  concept_id: form_1099b/recipient/recipient_tin
 - field_name: topmostSubform[0].Copy2[0].LeftCol_ReadOrder[0].f2_4[0]
   label: Line 2 - f2_4 (page 6, control 128)
   population_policy: imported
   value_format: text
   source_ref: form_1099b_2025.topmostsubform_0_copy2_0_leftcol_readorder_0_f2_4_0
   address_id: 2025/document=form_1099b/section=recipient/control=recipient_name
+  concept_id: form_1099b/recipient/recipient_name
 - field_name: topmostSubform[0].Copy2[0].LeftCol_ReadOrder[0].f2_5[0]
   label: f2_5 (page 6, control 129)
   population_policy: imported
   value_format: text
   source_ref: form_1099b_2025.topmostsubform_0_copy2_0_leftcol_readorder_0_f2_5_0
   address_id: 2025/document=form_1099b/section=recipient/control=recipient_street
+  concept_id: form_1099b/recipient/recipient_street
 - field_name: topmostSubform[0].Copy2[0].LeftCol_ReadOrder[0].f2_6[0]
   label: f2_6 (page 6, control 130)
   population_policy: imported
   value_format: text
   source_ref: form_1099b_2025.topmostsubform_0_copy2_0_leftcol_readorder_0_f2_6_0
   address_id: 2025/document=form_1099b/section=recipient/control=recipient_city
+  concept_id: form_1099b/recipient/recipient_city
 - field_name: topmostSubform[0].Copy2[0].LeftCol_ReadOrder[0].f2_7[0]
   label: f2_7 (page 6, control 131)
   population_policy: imported
   value_format: text
   source_ref: form_1099b_2025.topmostsubform_0_copy2_0_leftcol_readorder_0_f2_7_0
   address_id: 2025/document=form_1099b/section=recipient/control=account_number
+  concept_id: form_1099b/recipient/account_number
 - field_name: topmostSubform[0].Copy2[0].LeftCol_ReadOrder[0].f2_8[0]
   label: f2_8 (page 6, control 132)
   population_policy: imported
   value_format: text
   source_ref: form_1099b_2025.topmostsubform_0_copy2_0_leftcol_readorder_0_f2_8_0
   address_id: 2025/document=form_1099b/section=recipient/control=cusip_number
+  concept_id: form_1099b/recipient/cusip_number
 - field_name: topmostSubform[0].Copy2[0].LeftCol_ReadOrder[0].FATCA[0].c2_3[0]
   label: Line 14 - requirement - c2_3 (page 6, control 133)
   population_policy: imported
   value_format: checkbox
   source_ref: form_1099b_2025.topmostsubform_0_copy2_0_leftcol_readorder_0_fatca_0_c2_3_0
   address_id: 2025/document=form_1099b/section=recipient/option=fatca_filing_requirement
+  concept_id: form_1099b/recipient/fatca_filing_requirement
 - field_name: topmostSubform[0].Copy2[0].RightCol_ReadOrder[0].f2_15[0]
   label: f2_15 (page 6, control 134)
   population_policy: imported
   value_format: text
   source_ref: form_1099b_2025.topmostsubform_0_copy2_0_rightcol_readorder_0_f2_15_0
   address_id: 2025/document=form_1099b/section=recipient/control=form_8949_checkbox
+  concept_id: form_1099b/recipient/form_8949_checkbox
 - field_name: topmostSubform[0].Copy2[0].RightCol_ReadOrder[0].f2_16[0]
   label: Line 1a - f2_16 (page 6, control 135)
   population_policy: imported
   value_format: text
   source_ref: form_1099b_2025.topmostsubform_0_copy2_0_rightcol_readorder_0_f2_16_0
   address_id: 2025/document=form_1099b/box=1a/control=value
+  concept_id: form_1099b/transaction/description
 - field_name: topmostSubform[0].Copy2[0].RightCol_ReadOrder[0].f2_17[0]
   label: Line 1c - f2_17 (page 6, control 136)
   population_policy: imported
   value_format: text
   source_ref: form_1099b_2025.topmostsubform_0_copy2_0_rightcol_readorder_0_f2_17_0
   address_id: 2025/document=form_1099b/box=1b/control=value
+  concept_id: form_1099b/transaction/date_acquired
 - field_name: topmostSubform[0].Copy2[0].RightCol_ReadOrder[0].f2_18[0]
   label: Line 1c - f2_18 (page 6, control 137)
   population_policy: imported
   value_format: text
   source_ref: form_1099b_2025.topmostsubform_0_copy2_0_rightcol_readorder_0_f2_18_0
   address_id: 2025/document=form_1099b/box=1c/control=value
+  concept_id: form_1099b/transaction/date_disposed
 - field_name: topmostSubform[0].Copy2[0].RightCol_ReadOrder[0].Box1d_ReadOrder[0].f2_19[0]
   label: Line 1e - $ - f2_19 (page 6, control 138)
   population_policy: imported
   value_format: text
   source_ref: form_1099b_2025.topmostsubform_0_copy2_0_rightcol_readorder_0_box1d_readorder_0_f2_19_0
   address_id: 2025/document=form_1099b/box=1d/control=value
+  concept_id: form_1099b/transaction/proceeds
 - field_name: topmostSubform[0].Copy2[0].RightCol_ReadOrder[0].f2_20[0]
   label: Line 1e - $ $ - f2_20 (page 6, control 139)
   population_policy: imported
   value_format: text
   source_ref: form_1099b_2025.topmostsubform_0_copy2_0_rightcol_readorder_0_f2_20_0
   address_id: 2025/document=form_1099b/box=1e/control=value
+  concept_id: form_1099b/transaction/cost_basis
 - field_name: topmostSubform[0].Copy2[0].RightCol_ReadOrder[0].Box1f_ReadOrder[0].f2_21[0]
   label: Line 1g - $ - f2_21 (page 6, control 140)
   population_policy: imported
   value_format: text
   source_ref: form_1099b_2025.topmostsubform_0_copy2_0_rightcol_readorder_0_box1f_readorder_0_f2_21_0
   address_id: 2025/document=form_1099b/box=1f/control=value
+  concept_id: form_1099b/transaction/accrued_market_discount
 - field_name: topmostSubform[0].Copy2[0].RightCol_ReadOrder[0].f2_22[0]
   label: Line 1g - $ $ - f2_22 (page 6, control 141)
   population_policy: imported
   value_format: text
   source_ref: form_1099b_2025.topmostsubform_0_copy2_0_rightcol_readorder_0_f2_22_0
   address_id: 2025/document=form_1099b/box=1g/control=value
+  concept_id: form_1099b/transaction/wash_sale_loss_disallowed
 - field_name: topmostSubform[0].Copy2[0].RightCol_ReadOrder[0].Box2_ReadOrder[0].c2_4[0]
   label: "Line 2 - RECIPIENT\u2019S name 2 Short-term gain or loss - c2_4 (page 6,\
     \ control 142)"
@@ -868,42 +1009,49 @@ field_dispositions:
   value_format: checkbox
   source_ref: form_1099b_2025.topmostsubform_0_copy2_0_rightcol_readorder_0_box2_readorder_0_c2_4_0
   address_id: 2025/document=form_1099b/box=2/option=short_term
+  concept_id: form_1099b/classification/short_term
 - field_name: topmostSubform[0].Copy2[0].RightCol_ReadOrder[0].Box2_ReadOrder[0].c2_4[1]
   label: Long-term gain or loss - c2_4 (page 6, control 143)
   population_policy: imported
   value_format: checkbox
   source_ref: form_1099b_2025.topmostsubform_0_copy2_0_rightcol_readorder_0_box2_readorder_0_c2_4_1
   address_id: 2025/document=form_1099b/box=2/option=long_term
+  concept_id: form_1099b/classification/long_term
 - field_name: topmostSubform[0].Copy2[0].RightCol_ReadOrder[0].Box2_ReadOrder[0].c2_4[2]
   label: Ordinary - c2_4 (page 6, control 144)
   population_policy: imported
   value_format: checkbox
   source_ref: form_1099b_2025.topmostsubform_0_copy2_0_rightcol_readorder_0_box2_readorder_0_c2_4_2
   address_id: 2025/document=form_1099b/box=2/option=ordinary
+  concept_id: form_1099b/classification/ordinary
 - field_name: topmostSubform[0].Copy2[0].RightCol_ReadOrder[0].c2_5[0]
   label: Long-term gain or loss Collectibles - c2_5 (page 6, control 145)
   population_policy: imported
   value_format: checkbox
   source_ref: form_1099b_2025.topmostsubform_0_copy2_0_rightcol_readorder_0_c2_5_0
   address_id: 2025/document=form_1099b/box=3/option=collectibles
+  concept_id: form_1099b/classification/collectibles
 - field_name: topmostSubform[0].Copy2[0].RightCol_ReadOrder[0].c2_5[1]
   label: Ordinary QOF - c2_5 (page 6, control 146)
   population_policy: imported
   value_format: checkbox
   source_ref: form_1099b_2025.topmostsubform_0_copy2_0_rightcol_readorder_0_c2_5_1
   address_id: 2025/document=form_1099b/box=3/option=qof
+  concept_id: form_1099b/classification/qof
 - field_name: topmostSubform[0].Copy2[0].RightCol_ReadOrder[0].Box4_ReadOrder[0].f2_23[0]
   label: $ - f2_23 (page 6, control 147)
   population_policy: imported
   value_format: text
   source_ref: form_1099b_2025.topmostsubform_0_copy2_0_rightcol_readorder_0_box4_readorder_0_f2_23_0
   address_id: 2025/document=form_1099b/box=4/control=value
+  concept_id: form_1099b/transaction/federal_income_tax_withheld
 - field_name: topmostSubform[0].Copy2[0].RightCol_ReadOrder[0].c2_6[0]
   label: Line 6 - $ security - c2_6 (page 6, control 148)
   population_policy: imported
   value_format: checkbox
   source_ref: form_1099b_2025.topmostsubform_0_copy2_0_rightcol_readorder_0_c2_6_0
   address_id: 2025/document=form_1099b/box=5/option=noncovered_security
+  concept_id: form_1099b/classification/noncovered_security
 - field_name: topmostSubform[0].Copy2[0].RightCol_ReadOrder[0].Box6_ReadOrder[0].c2_7[0]
   label: Line 1d - province, country, and ZIP or foreign postal code Gross proceeds
     - c2_7 (page 6, control 149)
@@ -911,30 +1059,35 @@ field_dispositions:
   value_format: checkbox
   source_ref: form_1099b_2025.topmostsubform_0_copy2_0_rightcol_readorder_0_box6_readorder_0_c2_7_0
   address_id: 2025/document=form_1099b/box=6/option=gross_proceeds
+  concept_id: form_1099b/classification/gross_proceeds
 - field_name: topmostSubform[0].Copy2[0].RightCol_ReadOrder[0].Box6_ReadOrder[0].c2_7[1]
   label: Line 8 - Net proceeds - c2_7 (page 6, control 150)
   population_policy: imported
   value_format: checkbox
   source_ref: form_1099b_2025.topmostsubform_0_copy2_0_rightcol_readorder_0_box6_readorder_0_c2_7_1
   address_id: 2025/document=form_1099b/box=6/option=net_proceeds
+  concept_id: form_1099b/classification/net_proceeds
 - field_name: topmostSubform[0].Copy2[0].RightCol_ReadOrder[0].c2_8[0]
   label: Line 8 - Net proceeds - c2_8 (page 6, control 151)
   population_policy: imported
   value_format: checkbox
   source_ref: form_1099b_2025.topmostsubform_0_copy2_0_rightcol_readorder_0_c2_8_0
   address_id: 2025/document=form_1099b/box=7/option=loss_not_allowed
+  concept_id: form_1099b/classification/loss_not_allowed
 - field_name: topmostSubform[0].Copy2[0].RightCol_ReadOrder[0].Box8_ReadOrder[0].f2_24[0]
   label: $ - f2_24 (page 6, control 152)
   population_policy: imported
   value_format: text
   source_ref: form_1099b_2025.topmostsubform_0_copy2_0_rightcol_readorder_0_box8_readorder_0_f2_24_0
   address_id: 2025/document=form_1099b/box=8/control=value
+  concept_id: form_1099b/contract/realized_profit_loss
 - field_name: topmostSubform[0].Copy2[0].RightCol_ReadOrder[0].f2_25[0]
   label: $ $ - f2_25 (page 6, control 153)
   population_policy: imported
   value_format: text
   source_ref: form_1099b_2025.topmostsubform_0_copy2_0_rightcol_readorder_0_f2_25_0
   address_id: 2025/document=form_1099b/box=9/control=value
+  concept_id: form_1099b/contract/unrealized_profit_loss_prior
 - field_name: topmostSubform[0].Copy2[0].RightCol_ReadOrder[0].Box10_ReadOrder[0].f2_26[0]
   label: Line 14 - name 15 State identification no. 16 State tax withheld $ - f2_26
     (page 6, control 154)
@@ -942,6 +1095,7 @@ field_dispositions:
   value_format: text
   source_ref: form_1099b_2025.topmostsubform_0_copy2_0_rightcol_readorder_0_box10_readorder_0_f2_26_0
   address_id: 2025/document=form_1099b/box=10/control=value
+  concept_id: form_1099b/contract/unrealized_profit_loss_current
 - field_name: topmostSubform[0].Copy2[0].RightCol_ReadOrder[0].f2_27[0]
   label: Line 14 - 15 State identification no. 16 State tax withheld $ $ - f2_27 (page
     6, control 155)
@@ -949,51 +1103,60 @@ field_dispositions:
   value_format: text
   source_ref: form_1099b_2025.topmostsubform_0_copy2_0_rightcol_readorder_0_f2_27_0
   address_id: 2025/document=form_1099b/box=11/control=value
+  concept_id: form_1099b/contract/aggregate_profit_loss
 - field_name: topmostSubform[0].Copy2[0].RightCol_ReadOrder[0].Box12_ReadOrder[0].c2_9[0]
   label: $ to IRS - c2_9 (page 6, control 156)
   population_policy: imported
   value_format: checkbox
   source_ref: form_1099b_2025.topmostsubform_0_copy2_0_rightcol_readorder_0_box12_readorder_0_c2_9_0
   address_id: 2025/document=form_1099b/box=12/option=basis_reported
+  concept_id: form_1099b/classification/basis_reported
 - field_name: topmostSubform[0].Copy2[0].RightCol_ReadOrder[0].f2_28[0]
   label: Line 12 - $ to IRS $ - f2_28 (page 6, control 157)
   population_policy: imported
   value_format: text
   source_ref: form_1099b_2025.topmostsubform_0_copy2_0_rightcol_readorder_0_f2_28_0
   address_id: 2025/document=form_1099b/box=13/control=value
+  concept_id: form_1099b/transaction/bartering
 - field_name: topmostSubform[0].Copy2[0].Box14_ReadOrder[0].f2_9[0]
   label: Line 12 - f2_9 (page 6, control 158)
   population_policy: imported
   value_format: text
   source_ref: form_1099b_2025.topmostsubform_0_copy2_0_box14_readorder_0_f2_9_0
   address_id: 2025/document=form_1099b/table=state/row_template=jurisdiction/column=state
+  concept_id: form_1099b/state_local/jurisdiction/state
 - field_name: topmostSubform[0].Copy2[0].Box14_ReadOrder[0].f2_10[0]
   label: Line 12 - f2_10 (page 6, control 159)
   population_policy: imported
   value_format: text
   source_ref: form_1099b_2025.topmostsubform_0_copy2_0_box14_readorder_0_f2_10_0
   address_id: 2025/document=form_1099b/table=state/row_template=jurisdiction/column=state
+  concept_id: form_1099b/state_local/jurisdiction/state
 - field_name: topmostSubform[0].Copy2[0].Box15_ReadOrder[0].f2_11[0]
   label: Line 12 - f2_11 (page 6, control 160)
   population_policy: imported
   value_format: text
   source_ref: form_1099b_2025.topmostsubform_0_copy2_0_box15_readorder_0_f2_11_0
   address_id: 2025/document=form_1099b/table=state/row_template=jurisdiction/column=state_id
+  concept_id: form_1099b/state_local/jurisdiction/state_id
 - field_name: topmostSubform[0].Copy2[0].Box15_ReadOrder[0].f2_12[0]
   label: Line 12 - f2_12 (page 6, control 161)
   population_policy: imported
   value_format: text
   source_ref: form_1099b_2025.topmostsubform_0_copy2_0_box15_readorder_0_f2_12_0
   address_id: 2025/document=form_1099b/table=state/row_template=jurisdiction/column=state_id
+  concept_id: form_1099b/state_local/jurisdiction/state_id
 - field_name: topmostSubform[0].Copy2[0].Box16_ReadOrder[0].f2_13[0]
   label: Line 12 - $ - f2_13 (page 6, control 162)
   population_policy: imported
   value_format: text
   source_ref: form_1099b_2025.topmostsubform_0_copy2_0_box16_readorder_0_f2_13_0
   address_id: 2025/document=form_1099b/table=state/row_template=jurisdiction/column=state_tax
+  concept_id: form_1099b/state_local/jurisdiction/state_tax
 - field_name: topmostSubform[0].Copy2[0].Box16_ReadOrder[0].f2_14[0]
   label: Line 12 - $ - f2_14 (page 6, control 163)
   population_policy: imported
   value_format: text
   source_ref: form_1099b_2025.topmostsubform_0_copy2_0_box16_readorder_0_f2_14_0
   address_id: 2025/document=form_1099b/table=state/row_template=jurisdiction/column=state_tax
+  concept_id: form_1099b/state_local/jurisdiction/state_tax

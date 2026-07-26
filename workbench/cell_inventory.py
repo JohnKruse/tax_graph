@@ -38,8 +38,8 @@ from workbench.refs import unit_ref_from_address
 
 
 # Address kinds that name a reviewable cell (a control the filer/engine populates or
-# checks). Containers - document, line, section, table, row_template, column - are not
-# cells; they only supply the breadcrumb a cell hangs under.
+# checks). A promoted ``column`` is also reviewable: it is a physical instance of a
+# concept-level repeatable field. Unpromoted containers remain invisible.
 CELL_ADDRESS_KINDS = frozenset({"control", "option"})
 
 
@@ -106,8 +106,8 @@ def build_document_cells(
     for order, entry in enumerate(ordered):
         address_id = str(entry.get("address_id") or "")
         address = addresses.get(address_id, {})
-        if str(address.get("kind") or "control") not in CELL_ADDRESS_KINDS and address:
-            # A geometry rect anchored to a container address is not a filer cell.
+        if address and not _address_is_reviewable(address):
+            # A geometry rect anchored to an unpromoted container is not a filer cell.
             continue
         disposition = dispositions.get(str(entry.get("field_name") or ""), {})
         binding = bindings.get(address_id)
@@ -128,6 +128,9 @@ def build_document_cells(
                 "inputs": _cell_inputs(node_id, calc_inputs, node_to_ref) if include_inputs else [],
                 "address_id": address_id or None,
                 "ref": unit_ref_from_address(address_id) if address_id else None,
+                "concept_id": str(address.get("concept_id") or "") or None,
+                "review_granularity": "concept" if address.get("concept_id") else None,
+                "occurrence": address.get("occurrence"),
                 "order": order,
                 "page": page,
                 "rect": [float(value) for value in entry["rect"]],
@@ -138,6 +141,7 @@ def build_document_cells(
                 "display_name": _display_name(address, disposition, entry),
                 "population_policy": str(disposition.get("population_policy") or "") or None,
                 "value_format": str(disposition.get("value_format") or "") or None,
+                "repeatable": disposition.get("repeatable"),
                 "policy_reason": str(disposition.get("reason") or "") or None,
                 "downstream_effect": str(disposition.get("downstream_effect") or "") or None,
                 "missing_capability": str(disposition.get("missing_capability") or "") or None,
@@ -238,6 +242,12 @@ def _geometry_is_cell(entry: Any) -> bool:
         and isinstance(entry.get("rect"), list)
         and len(entry["rect"]) == 4
     )
+
+
+def _address_is_reviewable(address: dict[str, Any]) -> bool:
+    """Return whether an address names a control or promoted concept instance."""
+    kind = str(address.get("kind") or "control")
+    return kind in CELL_ADDRESS_KINDS or (kind == "column" and bool(address.get("concept_id")))
 
 
 def build_documents_index(

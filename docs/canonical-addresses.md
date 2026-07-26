@@ -8,13 +8,23 @@ evidence; none is allowed to reconstruct official identity in production.
 
 ## Artifact contract
 
-Each promoted document can have four artifacts under `graph/<year>/`:
+Each promoted document can have four address artifacts plus an optional stable concept
+inventory under `graph/<year>/`:
 
 - `addresses/<document_id>.yaml`: typed address hierarchy with a year-specific
   `address_id` and a yearless `logical_key`.
 - `bindings/widgets/<document_id>.yaml`: physical AcroForm widget to address bindings.
 - `bindings/nodes/<document_id>.yaml`: graph node to address bindings.
 - `references/<document_id>.yaml`: cross-form address claims and exact resolution state.
+- `concepts/<document_id>.yaml`: the year-free flow-spine concepts for structured forms.
+
+For M19 structured forms, an address is a placement, not durable meaning. Its optional
+`concept_id` is path-style and excludes years, printed line/box tokens, and prose. The
+`placement` object retains the printed token and official reference for human display;
+`aliases` includes the yearless logical key for rollover compatibility. Repeatable rows
+carry an `occurrence` contract with `row_policy: entity_keyed`, while
+`review_granularity: concept` keeps one review identity per column rather than one per
+printed row slot. Physical widgets remain visible in the workbench as occurrences.
 
 All candidate-corpus records remain pending review until M15 drains the review queue.
 Automation never writes human-confirmed provenance. A missing or ambiguous binding fails

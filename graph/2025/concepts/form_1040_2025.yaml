@@ -1,0 +1,685 @@
+schema_version: 1
+year: 2025
+document_id: form_1040_2025
+concepts:
+- concept_id: form_1040/dependents/dependent/child_tax_credit
+  document_id: form_1040_2025
+  status: active
+  flow_path:
+  - form_1040
+  - dependents
+  - dependent
+  - child_tax_credit
+  owner: dependent
+  role: child_tax_credit
+  review_granularity: concept
+  occurrence:
+    kind: entity
+    entity_key: dependent
+    review_granularity: concept
+    row_policy: entity_keyed
+  aliases:
+  - document=form_1040/table=dependents/row_template=dependent/column=child_tax_credit
+  placements:
+  - address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=child_tax_credit
+    concept_id: form_1040/dependents/dependent/child_tax_credit
+    printed_kind: table
+    printed_token: dependents
+    printed_ref: Dependents column Child tax credit
+  same_fact_as: []
+- concept_id: form_1040/dependents/dependent/credit_for_other_dependents
+  document_id: form_1040_2025
+  status: active
+  flow_path:
+  - form_1040
+  - dependents
+  - dependent
+  - credit_for_other_dependents
+  owner: dependent
+  role: credit_for_other_dependents
+  review_granularity: concept
+  occurrence:
+    kind: entity
+    entity_key: dependent
+    review_granularity: concept
+    row_policy: entity_keyed
+  aliases:
+  - document=form_1040/table=dependents/row_template=dependent/column=credit_for_other_dependents
+  placements:
+  - address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=credit_for_other_dependents
+    concept_id: form_1040/dependents/dependent/credit_for_other_dependents
+    printed_kind: table
+    printed_token: dependents
+    printed_ref: Dependents column Credit for other dependents
+  same_fact_as: []
+- concept_id: form_1040/dependents/dependent/first_name
+  document_id: form_1040_2025
+  status: active
+  flow_path:
+  - form_1040
+  - dependents
+  - dependent
+  - first_name
+  owner: dependent
+  role: first_name
+  review_granularity: concept
+  occurrence:
+    kind: entity
+    entity_key: dependent
+    review_granularity: concept
+    row_policy: entity_keyed
+  aliases:
+  - document=form_1040/table=dependents/row_template=dependent/column=first_name
+  placements:
+  - address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=first_name
+    concept_id: form_1040/dependents/dependent/first_name
+    printed_kind: table
+    printed_token: dependents
+    printed_ref: Dependents column First name
+  same_fact_as: []
+- concept_id: form_1040/dependents/dependent/full_time_student
+  document_id: form_1040_2025
+  status: active
+  flow_path:
+  - form_1040
+  - dependents
+  - dependent
+  - full_time_student
+  owner: dependent
+  role: full_time_student
+  review_granularity: concept
+  occurrence:
+    kind: entity
+    entity_key: dependent
+    review_granularity: concept
+    row_policy: entity_keyed
+  aliases:
+  - document=form_1040/table=dependents/row_template=dependent/column=full_time_student
+  placements:
+  - address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=full_time_student
+    concept_id: form_1040/dependents/dependent/full_time_student
+    printed_kind: table
+    printed_token: dependents
+    printed_ref: Dependents column Full-time student
+  same_fact_as: []
+- concept_id: form_1040/dependents/dependent/in_the_us
+  document_id: form_1040_2025
+  status: active
+  flow_path:
+  - form_1040
+  - dependents
+  - dependent
+  - in_the_us
+  owner: dependent
+  role: in_the_us
+  review_granularity: concept
+  occurrence:
+    kind: entity
+    entity_key: dependent
+    review_granularity: concept
+    row_policy: entity_keyed
+  aliases:
+  - document=form_1040/table=dependents/row_template=dependent/column=in_the_us
+  placements:
+  - address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=in_the_us
+    concept_id: form_1040/dependents/dependent/in_the_us
+    printed_kind: table
+    printed_token: dependents
+    printed_ref: Dependents column And in the U.S.
+  same_fact_as: []
+- concept_id: form_1040/dependents/dependent/last_name
+  document_id: form_1040_2025
+  status: active
+  flow_path:
+  - form_1040
+  - dependents
+  - dependent
+  - last_name
+  owner: dependent
+  role: last_name
+  review_granularity: concept
+  occurrence:
+    kind: entity
+    entity_key: dependent
+    review_granularity: concept
+    row_policy: entity_keyed
+  aliases:
+  - document=form_1040/table=dependents/row_template=dependent/column=last_name
+  placements:
+  - address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=last_name
+    concept_id: form_1040/dependents/dependent/last_name
+    printed_kind: table
+    printed_token: dependents
+    printed_ref: Dependents column Last name
+  same_fact_as: []
+- concept_id: form_1040/dependents/dependent/lived_with_you_more_than_half
+  document_id: form_1040_2025
+  status: active
+  flow_path:
+  - form_1040
+  - dependents
+  - dependent
+  - lived_with_you_more_than_half
+  owner: dependent
+  role: lived_with_you_more_than_half
+  review_granularity: concept
+  occurrence:
+    kind: entity
+    entity_key: dependent
+    review_granularity: concept
+    row_policy: entity_keyed
+  aliases:
+  - document=form_1040/table=dependents/row_template=dependent/column=lived_with_you_more_than_half_2025
+  placements:
+  - address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=lived_with_you_more_than_half_2025
+    concept_id: form_1040/dependents/dependent/lived_with_you_more_than_half
+    printed_kind: table
+    printed_token: dependents
+    printed_ref: Dependents column Lived with you more than half of 2025
+  same_fact_as: []
+- concept_id: form_1040/dependents/dependent/permanently_totally_disabled
+  document_id: form_1040_2025
+  status: active
+  flow_path:
+  - form_1040
+  - dependents
+  - dependent
+  - permanently_totally_disabled
+  owner: dependent
+  role: permanently_totally_disabled
+  review_granularity: concept
+  occurrence:
+    kind: entity
+    entity_key: dependent
+    review_granularity: concept
+    row_policy: entity_keyed
+  aliases:
+  - document=form_1040/table=dependents/row_template=dependent/column=permanently_totally_disabled
+  placements:
+  - address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=permanently_totally_disabled
+    concept_id: form_1040/dependents/dependent/permanently_totally_disabled
+    printed_kind: table
+    printed_token: dependents
+    printed_ref: Dependents column Permanently and totally disabled
+  same_fact_as: []
+- concept_id: form_1040/dependents/dependent/relationship
+  document_id: form_1040_2025
+  status: active
+  flow_path:
+  - form_1040
+  - dependents
+  - dependent
+  - relationship
+  owner: dependent
+  role: relationship
+  review_granularity: concept
+  occurrence:
+    kind: entity
+    entity_key: dependent
+    review_granularity: concept
+    row_policy: entity_keyed
+  aliases:
+  - document=form_1040/table=dependents/row_template=dependent/column=relationship
+  placements:
+  - address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=relationship
+    concept_id: form_1040/dependents/dependent/relationship
+    printed_kind: table
+    printed_token: dependents
+    printed_ref: Dependents column Relationship
+  same_fact_as: []
+- concept_id: form_1040/dependents/dependent/ssn
+  document_id: form_1040_2025
+  status: active
+  flow_path:
+  - form_1040
+  - dependents
+  - dependent
+  - ssn
+  owner: dependent
+  role: ssn
+  review_granularity: concept
+  occurrence:
+    kind: entity
+    entity_key: dependent
+    review_granularity: concept
+    row_policy: entity_keyed
+  aliases:
+  - document=form_1040/table=dependents/row_template=dependent/column=ssn
+  placements:
+  - address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=ssn
+    concept_id: form_1040/dependents/dependent/ssn
+    printed_kind: table
+    printed_token: dependents
+    printed_ref: Dependents column SSN
+  same_fact_as: []
+- concept_id: form_1040/dependents/more_than_four
+  document_id: form_1040_2025
+  status: active
+  flow_path:
+  - form_1040
+  - dependents
+  - more_than_four
+  owner: dependents
+  role: more_than_four
+  review_granularity: concept
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
+  aliases:
+  - document=form_1040/table=dependents/option=more_than_four
+  placements:
+  - address_id: 2025/document=form_1040/table=dependents/option=more_than_four
+    concept_id: form_1040/dependents/more_than_four
+    printed_kind: table
+    printed_token: dependents
+    printed_ref: Dependents
+  same_fact_as: []
+- concept_id: form_1040/identity/filer/address_line_1
+  document_id: form_1040_2025
+  status: active
+  flow_path:
+  - form_1040
+  - identity
+  - filer
+  - address_line_1
+  owner: filer
+  role: address_line_1
+  review_granularity: concept
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
+  aliases:
+  - document=form_1040/section=identity/control=address_line_1
+  placements:
+  - address_id: 2025/document=form_1040/section=identity/control=address_line_1
+    concept_id: form_1040/identity/filer/address_line_1
+    printed_kind: section
+    printed_token: identity
+    printed_ref: Identity
+  same_fact_as: []
+- concept_id: form_1040/identity/filer/apartment
+  document_id: form_1040_2025
+  status: active
+  flow_path:
+  - form_1040
+  - identity
+  - filer
+  - apartment
+  owner: filer
+  role: apartment
+  review_granularity: concept
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
+  aliases:
+  - document=form_1040/section=identity/control=apartment
+  placements:
+  - address_id: 2025/document=form_1040/section=identity/control=apartment
+    concept_id: form_1040/identity/filer/apartment
+    printed_kind: section
+    printed_token: identity
+    printed_ref: Identity
+  same_fact_as: []
+- concept_id: form_1040/identity/filer/city
+  document_id: form_1040_2025
+  status: active
+  flow_path:
+  - form_1040
+  - identity
+  - filer
+  - city
+  owner: filer
+  role: city
+  review_granularity: concept
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
+  aliases:
+  - document=form_1040/section=identity/control=city
+  placements:
+  - address_id: 2025/document=form_1040/section=identity/control=city
+    concept_id: form_1040/identity/filer/city
+    printed_kind: section
+    printed_token: identity
+    printed_ref: Identity
+  same_fact_as: []
+- concept_id: form_1040/identity/filer/foreign_country
+  document_id: form_1040_2025
+  status: active
+  flow_path:
+  - form_1040
+  - identity
+  - filer
+  - foreign_country
+  owner: filer
+  role: foreign_country
+  review_granularity: concept
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
+  aliases:
+  - document=form_1040/section=identity/control=foreign_country
+  placements:
+  - address_id: 2025/document=form_1040/section=identity/control=foreign_country
+    concept_id: form_1040/identity/filer/foreign_country
+    printed_kind: section
+    printed_token: identity
+    printed_ref: Identity
+  same_fact_as: []
+- concept_id: form_1040/identity/filer/foreign_postal_code
+  document_id: form_1040_2025
+  status: active
+  flow_path:
+  - form_1040
+  - identity
+  - filer
+  - foreign_postal_code
+  owner: filer
+  role: foreign_postal_code
+  review_granularity: concept
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
+  aliases:
+  - document=form_1040/section=identity/control=foreign_postal_code
+  placements:
+  - address_id: 2025/document=form_1040/section=identity/control=foreign_postal_code
+    concept_id: form_1040/identity/filer/foreign_postal_code
+    printed_kind: section
+    printed_token: identity
+    printed_ref: Identity
+  same_fact_as: []
+- concept_id: form_1040/identity/filer/foreign_province
+  document_id: form_1040_2025
+  status: active
+  flow_path:
+  - form_1040
+  - identity
+  - filer
+  - foreign_province
+  owner: filer
+  role: foreign_province
+  review_granularity: concept
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
+  aliases:
+  - document=form_1040/section=identity/control=foreign_province
+  placements:
+  - address_id: 2025/document=form_1040/section=identity/control=foreign_province
+    concept_id: form_1040/identity/filer/foreign_province
+    printed_kind: section
+    printed_token: identity
+    printed_ref: Identity
+  same_fact_as: []
+- concept_id: form_1040/identity/filer/state
+  document_id: form_1040_2025
+  status: active
+  flow_path:
+  - form_1040
+  - identity
+  - filer
+  - state
+  owner: filer
+  role: state
+  review_granularity: concept
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
+  aliases:
+  - document=form_1040/section=identity/control=state
+  placements:
+  - address_id: 2025/document=form_1040/section=identity/control=state
+    concept_id: form_1040/identity/filer/state
+    printed_kind: section
+    printed_token: identity
+    printed_ref: Identity
+  same_fact_as: []
+- concept_id: form_1040/identity/filer/zip_code
+  document_id: form_1040_2025
+  status: active
+  flow_path:
+  - form_1040
+  - identity
+  - filer
+  - zip_code
+  owner: filer
+  role: zip_code
+  review_granularity: concept
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
+  aliases:
+  - document=form_1040/section=identity/control=zip_code
+  placements:
+  - address_id: 2025/document=form_1040/section=identity/control=zip_code
+    concept_id: form_1040/identity/filer/zip_code
+    printed_kind: section
+    printed_token: identity
+    printed_ref: Identity
+  same_fact_as: []
+- concept_id: form_1040/identity/presidential_election/spouse
+  document_id: form_1040_2025
+  status: active
+  flow_path:
+  - form_1040
+  - identity
+  - presidential_election
+  - spouse
+  owner: presidential_election
+  role: spouse
+  review_granularity: concept
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
+  aliases:
+  - document=form_1040/section=identity/option=presidential_election_spouse
+  placements:
+  - address_id: 2025/document=form_1040/section=identity/option=presidential_election_spouse
+    concept_id: form_1040/identity/presidential_election/spouse
+    printed_kind: section
+    printed_token: identity
+    printed_ref: Identity
+  same_fact_as: []
+- concept_id: form_1040/identity/presidential_election/taxpayer
+  document_id: form_1040_2025
+  status: active
+  flow_path:
+  - form_1040
+  - identity
+  - presidential_election
+  - taxpayer
+  owner: presidential_election
+  role: taxpayer
+  review_granularity: concept
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
+  aliases:
+  - document=form_1040/section=identity/option=presidential_election_you
+  placements:
+  - address_id: 2025/document=form_1040/section=identity/option=presidential_election_you
+    concept_id: form_1040/identity/presidential_election/taxpayer
+    printed_kind: section
+    printed_token: identity
+    printed_ref: Identity
+  same_fact_as: []
+- concept_id: form_1040/identity/residence/main_home_joint_return
+  document_id: form_1040_2025
+  status: active
+  flow_path:
+  - form_1040
+  - identity
+  - residence
+  - main_home_joint_return
+  owner: residence
+  role: main_home_joint_return
+  review_granularity: concept
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
+  aliases:
+  - document=form_1040/section=identity/option=main_home_joint_return
+  placements:
+  - address_id: 2025/document=form_1040/section=identity/option=main_home_joint_return
+    concept_id: form_1040/identity/residence/main_home_joint_return
+    printed_kind: section
+    printed_token: identity
+    printed_ref: Identity
+  same_fact_as: []
+- concept_id: form_1040/identity/spouse/first_name
+  document_id: form_1040_2025
+  status: active
+  flow_path:
+  - form_1040
+  - identity
+  - spouse
+  - first_name
+  owner: spouse
+  role: first_name
+  review_granularity: concept
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
+  aliases:
+  - document=form_1040/section=identity/control=spouse_first_name
+  placements:
+  - address_id: 2025/document=form_1040/section=identity/control=spouse_first_name
+    concept_id: form_1040/identity/spouse/first_name
+    printed_kind: section
+    printed_token: identity
+    printed_ref: Identity
+  same_fact_as: []
+- concept_id: form_1040/identity/spouse/last_name
+  document_id: form_1040_2025
+  status: active
+  flow_path:
+  - form_1040
+  - identity
+  - spouse
+  - last_name
+  owner: spouse
+  role: last_name
+  review_granularity: concept
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
+  aliases:
+  - document=form_1040/section=identity/control=spouse_last_name
+  placements:
+  - address_id: 2025/document=form_1040/section=identity/control=spouse_last_name
+    concept_id: form_1040/identity/spouse/last_name
+    printed_kind: section
+    printed_token: identity
+    printed_ref: Identity
+  same_fact_as: []
+- concept_id: form_1040/identity/spouse/ssn
+  document_id: form_1040_2025
+  status: active
+  flow_path:
+  - form_1040
+  - identity
+  - spouse
+  - ssn
+  owner: spouse
+  role: ssn
+  review_granularity: concept
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
+  aliases:
+  - document=form_1040/section=identity/control=spouse_ssn
+  placements:
+  - address_id: 2025/document=form_1040/section=identity/control=spouse_ssn
+    concept_id: form_1040/identity/spouse/ssn
+    printed_kind: section
+    printed_token: identity
+    printed_ref: Identity
+  same_fact_as: []
+- concept_id: form_1040/identity/taxpayer/first_name
+  document_id: form_1040_2025
+  status: active
+  flow_path:
+  - form_1040
+  - identity
+  - taxpayer
+  - first_name
+  owner: taxpayer
+  role: first_name
+  review_granularity: concept
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
+  aliases:
+  - document=form_1040/section=identity/control=taxpayer_first_name
+  placements:
+  - address_id: 2025/document=form_1040/section=identity/control=taxpayer_first_name
+    concept_id: form_1040/identity/taxpayer/first_name
+    printed_kind: section
+    printed_token: identity
+    printed_ref: Identity
+  same_fact_as: []
+- concept_id: form_1040/identity/taxpayer/last_name
+  document_id: form_1040_2025
+  status: active
+  flow_path:
+  - form_1040
+  - identity
+  - taxpayer
+  - last_name
+  owner: taxpayer
+  role: last_name
+  review_granularity: concept
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
+  aliases:
+  - document=form_1040/section=identity/control=taxpayer_last_name
+  placements:
+  - address_id: 2025/document=form_1040/section=identity/control=taxpayer_last_name
+    concept_id: form_1040/identity/taxpayer/last_name
+    printed_kind: section
+    printed_token: identity
+    printed_ref: Identity
+  same_fact_as: []
+- concept_id: form_1040/identity/taxpayer/ssn
+  document_id: form_1040_2025
+  status: active
+  flow_path:
+  - form_1040
+  - identity
+  - taxpayer
+  - ssn
+  owner: taxpayer
+  role: ssn
+  review_granularity: concept
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
+  aliases:
+  - document=form_1040/section=identity/control=taxpayer_ssn
+  placements:
+  - address_id: 2025/document=form_1040/section=identity/control=taxpayer_ssn
+    concept_id: form_1040/identity/taxpayer/ssn
+    printed_kind: section
+    printed_token: identity
+    printed_ref: Identity
+  same_fact_as: []

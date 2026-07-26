@@ -3792,7 +3792,8 @@ addresses:
   - kind: control
     token: address_line_1
   printed_label: Home address (number and street)
-  aliases: []
+  aliases:
+  - document=form_1040/section=identity/control=address_line_1
   control_role: text
   status: pending_review
   evidence:
@@ -3800,6 +3801,16 @@ addresses:
     source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
     page: 1
   official_ref: Identity
+  concept_id: form_1040/identity/filer/address_line_1
+  placement:
+    concept_id: form_1040/identity/filer/address_line_1
+    printed_kind: section
+    printed_token: identity
+    printed_ref: Identity
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
 - address_id: 2025/document=form_1040/section=identity/control=apartment
   logical_key: document=form_1040/section=identity/control=apartment
   year: 2025
@@ -3814,7 +3825,8 @@ addresses:
   - kind: control
     token: apartment
   printed_label: Apt. no.
-  aliases: []
+  aliases:
+  - document=form_1040/section=identity/control=apartment
   control_role: text
   status: pending_review
   evidence:
@@ -3822,6 +3834,16 @@ addresses:
     source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
     page: 1
   official_ref: Identity
+  concept_id: form_1040/identity/filer/apartment
+  placement:
+    concept_id: form_1040/identity/filer/apartment
+    printed_kind: section
+    printed_token: identity
+    printed_ref: Identity
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
 - address_id: 2025/document=form_1040/section=identity/control=city
   logical_key: document=form_1040/section=identity/control=city
   year: 2025
@@ -3836,7 +3858,8 @@ addresses:
   - kind: control
     token: city
   printed_label: City, town, or post office
-  aliases: []
+  aliases:
+  - document=form_1040/section=identity/control=city
   control_role: text
   status: pending_review
   evidence:
@@ -3844,6 +3867,16 @@ addresses:
     source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
     page: 1
   official_ref: Identity
+  concept_id: form_1040/identity/filer/city
+  placement:
+    concept_id: form_1040/identity/filer/city
+    printed_kind: section
+    printed_token: identity
+    printed_ref: Identity
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
 - address_id: 2025/document=form_1040/section=identity/control=foreign_country
   logical_key: document=form_1040/section=identity/control=foreign_country
   year: 2025
@@ -3858,7 +3891,8 @@ addresses:
   - kind: control
     token: foreign_country
   printed_label: Foreign country name
-  aliases: []
+  aliases:
+  - document=form_1040/section=identity/control=foreign_country
   control_role: text
   status: pending_review
   evidence:
@@ -3866,6 +3900,16 @@ addresses:
     source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
     page: 1
   official_ref: Identity
+  concept_id: form_1040/identity/filer/foreign_country
+  placement:
+    concept_id: form_1040/identity/filer/foreign_country
+    printed_kind: section
+    printed_token: identity
+    printed_ref: Identity
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
 - address_id: 2025/document=form_1040/section=identity/control=foreign_postal_code
   logical_key: document=form_1040/section=identity/control=foreign_postal_code
   year: 2025
@@ -3880,7 +3924,8 @@ addresses:
   - kind: control
     token: foreign_postal_code
   printed_label: Foreign postal code
-  aliases: []
+  aliases:
+  - document=form_1040/section=identity/control=foreign_postal_code
   control_role: text
   status: pending_review
   evidence:
@@ -3888,6 +3933,16 @@ addresses:
     source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
     page: 1
   official_ref: Identity
+  concept_id: form_1040/identity/filer/foreign_postal_code
+  placement:
+    concept_id: form_1040/identity/filer/foreign_postal_code
+    printed_kind: section
+    printed_token: identity
+    printed_ref: Identity
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
 - address_id: 2025/document=form_1040/section=identity/control=foreign_province
   logical_key: document=form_1040/section=identity/control=foreign_province
   year: 2025
@@ -3902,7 +3957,8 @@ addresses:
   - kind: control
     token: foreign_province
   printed_label: Foreign province/state/county
-  aliases: []
+  aliases:
+  - document=form_1040/section=identity/control=foreign_province
   control_role: text
   status: pending_review
   evidence:
@@ -3910,6 +3966,16 @@ addresses:
     source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
     page: 1
   official_ref: Identity
+  concept_id: form_1040/identity/filer/foreign_province
+  placement:
+    concept_id: form_1040/identity/filer/foreign_province
+    printed_kind: section
+    printed_token: identity
+    printed_ref: Identity
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
 - address_id: 2025/document=form_1040/section=identity/control=spouse_first_name
   logical_key: document=form_1040/section=identity/control=spouse_first_name
   year: 2025
@@ -3924,7 +3990,8 @@ addresses:
   - kind: control
     token: spouse_first_name
   printed_label: Spouse's first name and middle initial
-  aliases: []
+  aliases:
+  - document=form_1040/section=identity/control=spouse_first_name
   control_role: text
   status: pending_review
   evidence:
@@ -3932,6 +3999,16 @@ addresses:
     source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
     page: 1
   official_ref: Identity
+  concept_id: form_1040/identity/spouse/first_name
+  placement:
+    concept_id: form_1040/identity/spouse/first_name
+    printed_kind: section
+    printed_token: identity
+    printed_ref: Identity
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
 - address_id: 2025/document=form_1040/section=identity/control=spouse_last_name
   logical_key: document=form_1040/section=identity/control=spouse_last_name
   year: 2025
@@ -3946,7 +4023,8 @@ addresses:
   - kind: control
     token: spouse_last_name
   printed_label: Spouse's last name
-  aliases: []
+  aliases:
+  - document=form_1040/section=identity/control=spouse_last_name
   control_role: text
   status: pending_review
   evidence:
@@ -3954,6 +4032,16 @@ addresses:
     source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
     page: 1
   official_ref: Identity
+  concept_id: form_1040/identity/spouse/last_name
+  placement:
+    concept_id: form_1040/identity/spouse/last_name
+    printed_kind: section
+    printed_token: identity
+    printed_ref: Identity
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
 - address_id: 2025/document=form_1040/section=identity/control=spouse_ssn
   logical_key: document=form_1040/section=identity/control=spouse_ssn
   year: 2025
@@ -3968,7 +4056,8 @@ addresses:
   - kind: control
     token: spouse_ssn
   printed_label: Spouse's social security number
-  aliases: []
+  aliases:
+  - document=form_1040/section=identity/control=spouse_ssn
   control_role: identifier
   status: pending_review
   evidence:
@@ -3976,6 +4065,16 @@ addresses:
     source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
     page: 1
   official_ref: Identity
+  concept_id: form_1040/identity/spouse/ssn
+  placement:
+    concept_id: form_1040/identity/spouse/ssn
+    printed_kind: section
+    printed_token: identity
+    printed_ref: Identity
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
 - address_id: 2025/document=form_1040/section=identity/control=state
   logical_key: document=form_1040/section=identity/control=state
   year: 2025
@@ -3990,7 +4089,8 @@ addresses:
   - kind: control
     token: state
   printed_label: State
-  aliases: []
+  aliases:
+  - document=form_1040/section=identity/control=state
   control_role: text
   status: pending_review
   evidence:
@@ -3998,6 +4098,16 @@ addresses:
     source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
     page: 1
   official_ref: Identity
+  concept_id: form_1040/identity/filer/state
+  placement:
+    concept_id: form_1040/identity/filer/state
+    printed_kind: section
+    printed_token: identity
+    printed_ref: Identity
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
 - address_id: 2025/document=form_1040/section=identity/control=taxpayer_first_name
   logical_key: document=form_1040/section=identity/control=taxpayer_first_name
   year: 2025
@@ -4012,7 +4122,8 @@ addresses:
   - kind: control
     token: taxpayer_first_name
   printed_label: First name and middle initial
-  aliases: []
+  aliases:
+  - document=form_1040/section=identity/control=taxpayer_first_name
   control_role: text
   status: pending_review
   evidence:
@@ -4020,6 +4131,16 @@ addresses:
     source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
     page: 1
   official_ref: Identity
+  concept_id: form_1040/identity/taxpayer/first_name
+  placement:
+    concept_id: form_1040/identity/taxpayer/first_name
+    printed_kind: section
+    printed_token: identity
+    printed_ref: Identity
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
 - address_id: 2025/document=form_1040/section=identity/control=taxpayer_last_name
   logical_key: document=form_1040/section=identity/control=taxpayer_last_name
   year: 2025
@@ -4034,7 +4155,8 @@ addresses:
   - kind: control
     token: taxpayer_last_name
   printed_label: Last name
-  aliases: []
+  aliases:
+  - document=form_1040/section=identity/control=taxpayer_last_name
   control_role: text
   status: pending_review
   evidence:
@@ -4042,6 +4164,16 @@ addresses:
     source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
     page: 1
   official_ref: Identity
+  concept_id: form_1040/identity/taxpayer/last_name
+  placement:
+    concept_id: form_1040/identity/taxpayer/last_name
+    printed_kind: section
+    printed_token: identity
+    printed_ref: Identity
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
 - address_id: 2025/document=form_1040/section=identity/control=taxpayer_ssn
   logical_key: document=form_1040/section=identity/control=taxpayer_ssn
   year: 2025
@@ -4056,7 +4188,8 @@ addresses:
   - kind: control
     token: taxpayer_ssn
   printed_label: Your social security number
-  aliases: []
+  aliases:
+  - document=form_1040/section=identity/control=taxpayer_ssn
   control_role: identifier
   status: pending_review
   evidence:
@@ -4064,6 +4197,16 @@ addresses:
     source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
     page: 1
   official_ref: Identity
+  concept_id: form_1040/identity/taxpayer/ssn
+  placement:
+    concept_id: form_1040/identity/taxpayer/ssn
+    printed_kind: section
+    printed_token: identity
+    printed_ref: Identity
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
 - address_id: 2025/document=form_1040/section=identity/control=zip_code
   logical_key: document=form_1040/section=identity/control=zip_code
   year: 2025
@@ -4078,7 +4221,8 @@ addresses:
   - kind: control
     token: zip_code
   printed_label: ZIP code
-  aliases: []
+  aliases:
+  - document=form_1040/section=identity/control=zip_code
   control_role: text
   status: pending_review
   evidence:
@@ -4086,6 +4230,16 @@ addresses:
     source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
     page: 1
   official_ref: Identity
+  concept_id: form_1040/identity/filer/zip_code
+  placement:
+    concept_id: form_1040/identity/filer/zip_code
+    printed_kind: section
+    printed_token: identity
+    printed_ref: Identity
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
 - address_id: 2025/document=form_1040/section=identity/option=main_home_joint_return
   logical_key: document=form_1040/section=identity/option=main_home_joint_return
   year: 2025
@@ -4101,7 +4255,8 @@ addresses:
     token: main_home_joint_return
   printed_label: Check here if your main home, and your spouse's if filing a joint
     return, was in the U.S. for more than half of 2025
-  aliases: []
+  aliases:
+  - document=form_1040/section=identity/option=main_home_joint_return
   control_role: checkbox
   status: pending_review
   evidence:
@@ -4109,6 +4264,16 @@ addresses:
     source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
     page: 1
   official_ref: Identity
+  concept_id: form_1040/identity/residence/main_home_joint_return
+  placement:
+    concept_id: form_1040/identity/residence/main_home_joint_return
+    printed_kind: section
+    printed_token: identity
+    printed_ref: Identity
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
 - address_id: 2025/document=form_1040/section=identity/option=presidential_election_spouse
   logical_key: document=form_1040/section=identity/option=presidential_election_spouse
   year: 2025
@@ -4123,7 +4288,8 @@ addresses:
   - kind: option
     token: presidential_election_spouse
   printed_label: Presidential Election Campaign - Spouse
-  aliases: []
+  aliases:
+  - document=form_1040/section=identity/option=presidential_election_spouse
   control_role: checkbox
   status: pending_review
   evidence:
@@ -4131,6 +4297,16 @@ addresses:
     source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
     page: 1
   official_ref: Identity
+  concept_id: form_1040/identity/presidential_election/spouse
+  placement:
+    concept_id: form_1040/identity/presidential_election/spouse
+    printed_kind: section
+    printed_token: identity
+    printed_ref: Identity
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
 - address_id: 2025/document=form_1040/section=identity/option=presidential_election_you
   logical_key: document=form_1040/section=identity/option=presidential_election_you
   year: 2025
@@ -4145,7 +4321,8 @@ addresses:
   - kind: option
     token: presidential_election_you
   printed_label: Presidential Election Campaign - You
-  aliases: []
+  aliases:
+  - document=form_1040/section=identity/option=presidential_election_you
   control_role: checkbox
   status: pending_review
   evidence:
@@ -4153,6 +4330,16 @@ addresses:
     source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
     page: 1
   official_ref: Identity
+  concept_id: form_1040/identity/presidential_election/taxpayer
+  placement:
+    concept_id: form_1040/identity/presidential_election/taxpayer
+    printed_kind: section
+    printed_token: identity
+    printed_ref: Identity
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
 - address_id: 2025/document=form_1040/section=paid_preparer
   logical_key: document=form_1040/section=paid_preparer
   year: 2025
@@ -4988,7 +5175,8 @@ addresses:
   - kind: option
     token: more_than_four
   printed_label: More than four dependents
-  aliases: []
+  aliases:
+  - document=form_1040/table=dependents/option=more_than_four
   control_role: checkbox
   status: pending_review
   evidence:
@@ -4996,6 +5184,16 @@ addresses:
     source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
     page: 1
   official_ref: Dependents
+  concept_id: form_1040/dependents/more_than_four
+  placement:
+    concept_id: form_1040/dependents/more_than_four
+    printed_kind: table
+    printed_token: dependents
+    printed_ref: Dependents
+  occurrence:
+    kind: singleton
+    review_granularity: concept
+    row_policy: none
 - address_id: 2025/document=form_1040/table=dependents/row_template=dependent
   logical_key: document=form_1040/table=dependents/row_template=dependent
   year: 2025
@@ -5033,7 +5231,8 @@ addresses:
   - kind: column
     token: child_tax_credit
   printed_label: Child tax credit
-  aliases: []
+  aliases:
+  - document=form_1040/table=dependents/row_template=dependent/column=child_tax_credit
   control_role: checkbox
   status: pending_review
   evidence:
@@ -5041,6 +5240,17 @@ addresses:
     source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
     page: 1
   official_ref: Dependents column Child tax credit
+  concept_id: form_1040/dependents/dependent/child_tax_credit
+  placement:
+    concept_id: form_1040/dependents/dependent/child_tax_credit
+    printed_kind: table
+    printed_token: dependents
+    printed_ref: Dependents column Child tax credit
+  occurrence:
+    kind: entity
+    entity_key: dependent
+    review_granularity: concept
+    row_policy: entity_keyed
 - address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=credit_for_other_dependents
   logical_key: document=form_1040/table=dependents/row_template=dependent/column=credit_for_other_dependents
   year: 2025
@@ -5057,7 +5267,8 @@ addresses:
   - kind: column
     token: credit_for_other_dependents
   printed_label: Credit for other dependents
-  aliases: []
+  aliases:
+  - document=form_1040/table=dependents/row_template=dependent/column=credit_for_other_dependents
   control_role: checkbox
   status: pending_review
   evidence:
@@ -5065,6 +5276,17 @@ addresses:
     source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
     page: 1
   official_ref: Dependents column Credit for other dependents
+  concept_id: form_1040/dependents/dependent/credit_for_other_dependents
+  placement:
+    concept_id: form_1040/dependents/dependent/credit_for_other_dependents
+    printed_kind: table
+    printed_token: dependents
+    printed_ref: Dependents column Credit for other dependents
+  occurrence:
+    kind: entity
+    entity_key: dependent
+    review_granularity: concept
+    row_policy: entity_keyed
 - address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=first_name
   logical_key: document=form_1040/table=dependents/row_template=dependent/column=first_name
   year: 2025
@@ -5081,7 +5303,8 @@ addresses:
   - kind: column
     token: first_name
   printed_label: First name
-  aliases: []
+  aliases:
+  - document=form_1040/table=dependents/row_template=dependent/column=first_name
   control_role: text
   status: pending_review
   evidence:
@@ -5089,6 +5312,17 @@ addresses:
     source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
     page: 1
   official_ref: Dependents column First name
+  concept_id: form_1040/dependents/dependent/first_name
+  placement:
+    concept_id: form_1040/dependents/dependent/first_name
+    printed_kind: table
+    printed_token: dependents
+    printed_ref: Dependents column First name
+  occurrence:
+    kind: entity
+    entity_key: dependent
+    review_granularity: concept
+    row_policy: entity_keyed
 - address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=full_time_student
   logical_key: document=form_1040/table=dependents/row_template=dependent/column=full_time_student
   year: 2025
@@ -5105,7 +5339,8 @@ addresses:
   - kind: column
     token: full_time_student
   printed_label: Full-time student
-  aliases: []
+  aliases:
+  - document=form_1040/table=dependents/row_template=dependent/column=full_time_student
   control_role: checkbox
   status: pending_review
   evidence:
@@ -5113,6 +5348,17 @@ addresses:
     source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
     page: 1
   official_ref: Dependents column Full-time student
+  concept_id: form_1040/dependents/dependent/full_time_student
+  placement:
+    concept_id: form_1040/dependents/dependent/full_time_student
+    printed_kind: table
+    printed_token: dependents
+    printed_ref: Dependents column Full-time student
+  occurrence:
+    kind: entity
+    entity_key: dependent
+    review_granularity: concept
+    row_policy: entity_keyed
 - address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=in_the_us
   logical_key: document=form_1040/table=dependents/row_template=dependent/column=in_the_us
   year: 2025
@@ -5129,7 +5375,8 @@ addresses:
   - kind: column
     token: in_the_us
   printed_label: And in the U.S.
-  aliases: []
+  aliases:
+  - document=form_1040/table=dependents/row_template=dependent/column=in_the_us
   control_role: checkbox
   status: pending_review
   evidence:
@@ -5137,6 +5384,17 @@ addresses:
     source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
     page: 1
   official_ref: Dependents column And in the U.S.
+  concept_id: form_1040/dependents/dependent/in_the_us
+  placement:
+    concept_id: form_1040/dependents/dependent/in_the_us
+    printed_kind: table
+    printed_token: dependents
+    printed_ref: Dependents column And in the U.S.
+  occurrence:
+    kind: entity
+    entity_key: dependent
+    review_granularity: concept
+    row_policy: entity_keyed
 - address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=last_name
   logical_key: document=form_1040/table=dependents/row_template=dependent/column=last_name
   year: 2025
@@ -5153,7 +5411,8 @@ addresses:
   - kind: column
     token: last_name
   printed_label: Last name
-  aliases: []
+  aliases:
+  - document=form_1040/table=dependents/row_template=dependent/column=last_name
   control_role: text
   status: pending_review
   evidence:
@@ -5161,6 +5420,17 @@ addresses:
     source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
     page: 1
   official_ref: Dependents column Last name
+  concept_id: form_1040/dependents/dependent/last_name
+  placement:
+    concept_id: form_1040/dependents/dependent/last_name
+    printed_kind: table
+    printed_token: dependents
+    printed_ref: Dependents column Last name
+  occurrence:
+    kind: entity
+    entity_key: dependent
+    review_granularity: concept
+    row_policy: entity_keyed
 - address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=lived_with_you_more_than_half_2025
   logical_key: document=form_1040/table=dependents/row_template=dependent/column=lived_with_you_more_than_half_2025
   year: 2025
@@ -5177,7 +5447,8 @@ addresses:
   - kind: column
     token: lived_with_you_more_than_half_2025
   printed_label: Lived with you more than half of 2025
-  aliases: []
+  aliases:
+  - document=form_1040/table=dependents/row_template=dependent/column=lived_with_you_more_than_half_2025
   control_role: checkbox
   status: pending_review
   evidence:
@@ -5185,6 +5456,17 @@ addresses:
     source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
     page: 1
   official_ref: Dependents column Lived with you more than half of 2025
+  concept_id: form_1040/dependents/dependent/lived_with_you_more_than_half
+  placement:
+    concept_id: form_1040/dependents/dependent/lived_with_you_more_than_half
+    printed_kind: table
+    printed_token: dependents
+    printed_ref: Dependents column Lived with you more than half of 2025
+  occurrence:
+    kind: entity
+    entity_key: dependent
+    review_granularity: concept
+    row_policy: entity_keyed
 - address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=permanently_totally_disabled
   logical_key: document=form_1040/table=dependents/row_template=dependent/column=permanently_totally_disabled
   year: 2025
@@ -5201,7 +5483,8 @@ addresses:
   - kind: column
     token: permanently_totally_disabled
   printed_label: Permanently and totally disabled
-  aliases: []
+  aliases:
+  - document=form_1040/table=dependents/row_template=dependent/column=permanently_totally_disabled
   control_role: checkbox
   status: pending_review
   evidence:
@@ -5209,6 +5492,17 @@ addresses:
     source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
     page: 1
   official_ref: Dependents column Permanently and totally disabled
+  concept_id: form_1040/dependents/dependent/permanently_totally_disabled
+  placement:
+    concept_id: form_1040/dependents/dependent/permanently_totally_disabled
+    printed_kind: table
+    printed_token: dependents
+    printed_ref: Dependents column Permanently and totally disabled
+  occurrence:
+    kind: entity
+    entity_key: dependent
+    review_granularity: concept
+    row_policy: entity_keyed
 - address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=relationship
   logical_key: document=form_1040/table=dependents/row_template=dependent/column=relationship
   year: 2025
@@ -5225,7 +5519,8 @@ addresses:
   - kind: column
     token: relationship
   printed_label: Relationship
-  aliases: []
+  aliases:
+  - document=form_1040/table=dependents/row_template=dependent/column=relationship
   control_role: text
   status: pending_review
   evidence:
@@ -5233,6 +5528,17 @@ addresses:
     source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
     page: 1
   official_ref: Dependents column Relationship
+  concept_id: form_1040/dependents/dependent/relationship
+  placement:
+    concept_id: form_1040/dependents/dependent/relationship
+    printed_kind: table
+    printed_token: dependents
+    printed_ref: Dependents column Relationship
+  occurrence:
+    kind: entity
+    entity_key: dependent
+    review_granularity: concept
+    row_policy: entity_keyed
 - address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=ssn
   logical_key: document=form_1040/table=dependents/row_template=dependent/column=ssn
   year: 2025
@@ -5249,7 +5555,8 @@ addresses:
   - kind: column
     token: ssn
   printed_label: SSN
-  aliases: []
+  aliases:
+  - document=form_1040/table=dependents/row_template=dependent/column=ssn
   control_role: identifier
   status: pending_review
   evidence:
@@ -5257,3 +5564,14 @@ addresses:
     source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
     page: 1
   official_ref: Dependents column SSN
+  concept_id: form_1040/dependents/dependent/ssn
+  placement:
+    concept_id: form_1040/dependents/dependent/ssn
+    printed_kind: table
+    printed_token: dependents
+    printed_ref: Dependents column SSN
+  occurrence:
+    kind: entity
+    entity_key: dependent
+    review_granularity: concept
+    row_policy: entity_keyed
