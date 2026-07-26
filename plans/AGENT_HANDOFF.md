@@ -14,9 +14,39 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## Current state (2026-07-26)
 
-**BALL: WORKER - M19-S3a (structured-form concept minting). Plan: `plans/PHASE_M19.md` (S3a).
-M19-S2 is complete in the local commit for this session; the next task requires a fresh
-Architect assignment/checkpoint.**
+**BALL: WORKER - M19-S3a (structured-form concept minting). Plan: `plans/PHASE_M19.md`
+(S3a + the new Decisions section). Task block under From Architect.**
+
+**ARCHITECT VERIFICATION - M19-S2 (Claude Opus 5, 2026-07-26). ACCEPTED.** Reviewed the
+full diff, not just the tests. The fix is real: both `enumerate` indices are gone from the
+unit loops; ids are a SHA-256 over the canonical address plus a
+`review_kind:role:object_type:token` qualifier, with a distinct `unit_unaddressed_` prefix
+so the 166 unaddressed widgets stay visible and countable rather than papered over. The
+collision guard fails closed on duplicates AND on positional patterns, and cannot
+false-positive (it matches literal `ref`/`loc` tokens; a hex digest contains no `r`, `l`,
+or `o`). Migration does the dangerous part correctly: a review moves only on an
+exactly-one-match with an unused target, the old id is recorded in the destination's
+`aliases`, and everything else lands in `orphaned_unit_reviews` with a reason and the
+original id - never a silent re-point. It also correctly requires the OLD manifest, since
+a positional id cannot be decoded standalone. Third clean process round running: the
+Worker declared the manifest file `NOT RUN` and handed it over rather than claiming it.
+
+**ARCHITECT-INTRODUCED REGRESSION, FOUND AND FIXED THIS ROUND.**
+`tests/test_review_manifest_m15.py::test_manifest_hash_pins_every_file_in_example_artifact_directory`
+failed (1 failed, 6 passed). Cause was the Architect's own `conftest.py` temp-root change,
+not the Worker's work: moving the pytest temp root inside the repo makes
+`_source_artifacts` relativize the example-directory paths, while the test hardcoded
+absolute ones. Product behavior is correct - every file is still pinned, just spelled
+repo-relative. Fixed by asserting the pinning INVARIANT rather than one path spelling.
+**The Worker diagnosed this correctly and the Architect initially waved it off** as a test
+assumption, reasoning that CI's 444-passing run had cleared the temp root. That reasoning
+was WRONG: the test is `skipif`'d on `graph/2025/_drafts` being present, which is exactly
+what a fresh CI checkout lacks, so CI has never executed it.
+
+**SYSTEMIC GAP WORTH SIZING (for John, not blocking):** every test gated on `_drafts` or
+acquired PDFs is invisible to CI and runs only on a developer machine. This class of test
+can regress silently on any environment change. Worth measuring how many there are before
+the review campaign leans on them.
 
 **Worker session checkpoint - M19-S2 (2026-07-26):** John said resume via the current task
 request. Model GPT-5 Codex, default effort; usage/quota/context indicators are not exposed.
@@ -727,7 +757,56 @@ TY2026 docs drop.
 
 ## From Architect
 
-- **M19-S2 TASK - KILL THE POSITIONAL unit_id (Architect, Claude Opus 5, 2026-07-26).**
+- **M19-S3a TASK - CONCEPT MINTING FOR STRUCTURED FORMS (Architect, Claude Opus 5,
+  2026-07-26).** Design in `plans/PHASE_M19.md` (S3a + the Decisions section, which is new
+  and answers the three formerly-open questions). Read it, the revised spine invariant, and
+  the Worker defect ledger in `AGENTS.md`; name applicable ledger entries in your
+  checkpoint. **D5 applies: any `workbench/` change runs `tests/test_workbench_m15.py`.**
+  Cap is 600s; you run your own app-dependent files. Tests ARE required this round.
+  **SCOPE - STRUCTURED FORMS ONLY. Do NOT touch line-oriented forms** (6251, Schedules
+  1/1-A/2/3/A/B/D, or the ~58 bare `amount` controls on the 1040). M19-S1 proved they have
+  no semantic material to mint from, and M18 is their prerequisite. In scope: the 1040
+  Dependents table, 8949 transaction columns, W-2 boxes and Box 12 rows, 1099-DIV/INT/B
+  copies and state/local rows, schedule_1a's repeatable rows, and the
+  `section=identity` singletons.
+  1. **Mint concept ids** per the decided shape: path style
+     (`form_1040/dependents/dependent/ssn`), enforcing BOTH rules with a validator, not by
+     convention - the never-contains test (no line numbers, no years, no printed prose)
+     and owner/role qualification (a bare `ssn` is never an address; the four dependent
+     SSNs collapsing onto one address is the exemplar John raised).
+  2. **Author the concept inventory as a promoted artifact** and demote the matching
+     address records to PLACEMENTS carrying `concept_id` plus the printed line/box token.
+     Keep `logical_key` as the compatibility bridge and populate `aliases` from it -
+     `aliases` is currently empty across all 1470 addresses and is the mechanism that
+     makes this survivable.
+  3. **Occurrence contract for repeatable rows.** Row identity is the ENTITY, never the
+     slot index. Define it so the four Dependents rows are occurrences of one concept.
+     **Review granularity stays at the CONCEPT** - one review per column, with row widgets
+     rendered as instances. Closing this gap must NOT multiply the review queue.
+  4. **Fix `workbench/cell_inventory.py:109`** so row-template widgets surface as
+     instances instead of being dropped as containers. Acceptance: the 434 previously
+     hidden controls become visible and counted (8949 184/202, w2 132/272, 1040 40/199,
+     1099-DIV/INT/B 24 each, schedule_1a 6), the 1040 Dependents table is fully
+     reviewable, and the per-document cell counts rise by exactly that delta - explained,
+     not drifting.
+  5. **The 166 unaddressed widgets are OUT OF SCOPE for authoring** but must not regress.
+     form_2441 (72, no registry at all) and schedule_b (56) stay reported as coverage
+     gaps. Do not invent addresses for them.
+  6. Cross-document facts use a `same_fact_as` edge; do not unify concepts across
+     documents. Retired concepts stay in the inventory marked with the year they left.
+  Tier-1 floor: declared focused files green with honest `RAN:`/`NOT RUN:` lines, ASCII,
+  `git diff --check`, module-form `validate 2025`, real preflight. **This round DOES touch
+  promoted artifacts, so it is Tier 3** - the Architect runs full local partitions and the
+  manifest/workbench partition at verify time; expect the preflight ratchet to be
+  discussed rather than assumed unchanged, and report `legacy_mined` explicitly rather
+  than asserting it held. Run pytest plainly - no `--basetemp`. ONE local commit; no push.
+  Stop conditions: any need to touch line-oriented forms, verdict emission, or graph
+  semantics; a concept that cannot satisfy both minting rules (report it, do not force
+  it); a citation whose text would change under re-keying (it must not); or a
+  quota/environment failure.
+
+- **[DONE `7b3f873`, Architect-verified] M19-S2 TASK - KILL THE POSITIONAL unit_id
+  (Architect, Claude Opus 5, 2026-07-26).**
   Design in `plans/PHASE_M19.md` (S2) - read it, plus the revised spine invariant and the
   Worker defect ledger in `AGENTS.md`; name the applicable ledger entries in your
   session-start checkpoint. **D5 applies directly this round: a change under `workbench/`

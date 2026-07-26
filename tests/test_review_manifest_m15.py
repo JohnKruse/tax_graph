@@ -150,10 +150,20 @@ def test_manifest_hash_pins_every_file_in_example_artifact_directory(tmp_path: P
 
     first = build_manifest(ROOT, 2025, queue_path=queue_path)
     pinned = {artifact["path"] for artifact in first["source_artifacts"]}
+
+    def pinned_path(path: Path) -> str:
+        # build_manifest records a path relative to ROOT when it is under ROOT and
+        # absolute otherwise. The pytest temp root is inside the repository (see the
+        # root conftest), so assert the pinning invariant, not one path spelling.
+        try:
+            return path.relative_to(ROOT).as_posix()
+        except ValueError:
+            return path.as_posix()
+
     assert {
-        (example_dir / "expected.yaml").as_posix(),
-        (example_dir / "facts.yaml").as_posix(),
-        (example_dir / "provenance.yaml").as_posix(),
+        pinned_path(example_dir / "expected.yaml"),
+        pinned_path(example_dir / "facts.yaml"),
+        pinned_path(example_dir / "provenance.yaml"),
     } <= pinned
 
     facts_path = example_dir / "facts.yaml"

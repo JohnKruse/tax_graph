@@ -231,6 +231,25 @@ none of the open questions below block it.
 - No verdict already emitted may be silently re-pointed. A concept change that invalidates
   a verdict must retire it explicitly via `supersedes`.
 
+## Decisions (John, 2026-07-26: "pick the defaults, note them as reversible")
+
+John delegated all three to the Architect's recommendation rather than blocking S3a. These
+are DECIDED for S3a and reversible before S5 promotion - flag it if implementation shows
+one to be wrong.
+
+1. **Concept id shape: PATH STYLE.** `form_1040/dependents/dependent/ssn`. Reads well,
+   sorts usefully, and stays human-quotable. The never-contains test is enforced by a
+   validator rather than by opacity. Rejected: an opaque key (`c_0a41f2`) - unbreakable by
+   a rename, but unquotable, and this project's whole review model depends on a human
+   being able to say which cell they mean.
+2. **Cross-document concepts: PER-DOCUMENT, with an explicit `same_fact_as` edge.** A W-2
+   box 1 wage and 1040 line 1a stay distinct concepts joined by an edge. True
+   cross-document unification is a larger modeling change, and the flow spine is
+   per-form by construction. The edge preserves the option without paying for it now.
+3. **Retirement: concept STAYS in the inventory, marked retired with the year it left.**
+   Keeps rollover diffs readable in one place and keeps a retired id from being minted
+   again. Revisit only if the inventory becomes unwieldy.
+
 ## Open questions for John
 
 1. **Concept id shape.** Path style (`form_1040/dependents/dependent/ssn`) reads well and
