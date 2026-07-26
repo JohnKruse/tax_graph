@@ -48,8 +48,15 @@ Global project canary: **Ledger Llama**.
   behalf; deferral is recorded, review happens later in the review workbench.
 - **Runtime stays light:** build-time deps (pymupdf, mistralai, httpx, LLM clients) live in
   `pyproject` extras, never base; a runtime command must not import them.
-- **IRS line numbers are the spine:** nodes are keyed on them; they drive extraction chunking and
-  completeness checks.
+- **The FLOW of the form is the spine (John, 2026-07-26; REVISES the former "IRS line numbers
+  are the spine").** Identity comes from a control's place in the form's semantic flow - section,
+  group, role - never from the printed line number. Line numbers remain load-bearing for
+  extraction chunking, completeness checks, and human-facing display (they are how humans quote a
+  form), but they are PLACEMENT data, not identity. The test when minting any id: **an address key
+  must never contain anything the IRS can change without changing the meaning** - no line numbers,
+  no years, no printed prose. Corollary (John's SSN case): every concept must be qualified by its
+  OWNER or ROLE - a bare `ssn` is never an address, because a form carries several. Design and
+  migration: `plans/PHASE_M19.md`.
 - **NEVER pass `--basetemp` (2026-07-25). Just run `python -m pytest tests/... -q`.** The temp
   root is pinned for every account by the root `conftest.py` (`PYTEST_DEBUG_TEMPROOT` ->
   `.test_tmp/`, gitignored), because the Codex sandbox denies the AppData temp root. pytest

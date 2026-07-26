@@ -12,10 +12,62 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 - History: pruned at each phase close (latest: 2026-07-23). Full narration lives in
   `plans/archive/` (phase plans with close notes) and git history.
 
-## Current state (2026-07-25)
+## Current state (2026-07-26)
 
-**BALL: JOHN - M17-S3R2 + S4 ARE COMPLETE, VERIFIED, AND PUSHED (`6488b6f`). Next is
-John's live look at the workbench UI to confirm his four issues are actually closed.**
+**BALL: WORKER - M19-S1 (concept inventory, READ-ONLY). Plan: `plans/PHASE_M19.md`.
+Task block under From Architect.**
+
+**JOHN'S THIRD REVIEW (2026-07-26) - THE ADDRESSING RULING.** John reviewed the live 1040
+and returned four issues. Issue 1 turned out to be a real defect with a root cause that
+reaches past the workbench into the addressing model, and John then ruled on the model
+itself: **"The spine is the flow of the form. We shouldn't be pedantic about the line
+numbers."** He also named the disambiguation case himself - "there might be 6 different
+SSNs for example. Which one?" - and rejected positional numbering for repeatable rows.
+This REVISES the pinned invariant "IRS line numbers are the spine" in `AGENTS.md`.
+
+Architect verified every issue against live data before planning:
+1. **The 1040 Dependents section shows ONE cell out of 41 widgets.** Not an acquisition or
+   extraction failure: `node_geometry.json` has all 40 rows WITH labels authored, and the
+   address inventory already carries the concepts - including
+   `column=lived_with_you_more_than_half_2025`, which drives CTC, ODC, and HoH. The drop is
+   `workbench/cell_inventory.py:109`, which skips any entry whose address `kind` is not
+   `control`/`option`; row-template widgets carry `kind: column` and are classified as
+   containers. **Corpus-wide: 434 of 1849 widgets (23%) are invisible to a reviewer -
+   form_8949 is 91% hidden (184/202), form_w2 132/272, form_1040 40/199.** This is the
+   worst form of the coverage-invariant breach: not an unmapped cell, an UNSEEABLE one, so
+   the "159 cells" denominator was misreporting itself. NOT a one-line fix - un-skipping
+   them collides all four rows onto one address and one ref.
+2. Selection needs a translucent FILL plus the existing ring; the ring-only treatment the
+   Architect specified in S3R2 is too subtle. (Architect's over-correction, owned.)
+3. The dossier is ordered by SOURCE ARTIFACT (how the machine thinks) instead of by what a
+   human reads first, and the S4 facet labels are jargon - "Obtained: not authored" is
+   close to meaningless, and "no mapping authored" describes OUR pipeline state, not the
+   filer's return. Both labels were the Architect's wording; owned. Correct order: printed
+   label -> what the form's instructions say for that line -> governing authority quote ->
+   plain-English treatment -> machine provenance collapsed. Item 2 of that list is exactly
+   M18's payoff, so the dossier has a visible hole until instruction ingestion lands.
+4. River cards must LEAD with the line number ("33 - Add lines 25d, 26, and 32"). The data
+   is already in the ref; the card just does not front it.
+
+**ARCHITECT FINDING THAT CHANGED THE PLAN - review identity is positionally keyed.**
+`workbench/manifest.py` `_unit_id` is
+`{queue_id}_ref_{ref_index:04d}_loc_{location_index:02d}_{object_id}` - literally "the Nth
+thing in the queue". Insert one control upstream and every saved approval re-points to a
+DIFFERENT cell. This needs no rollover to bite; it bites on the next manifest rebuild. Any
+review campaign run on today's scheme is corrupt as soon as the corpus changes. Also found:
+`aliases` - the schema field built for stability - is EMPTY across all 1470 addresses.
+
+**M19 IS DRAFTED (`plans/PHASE_M19.md`)** - concept / placement / occurrence, with the
+never-contains test, the owner-qualification rule, review granularity held at the CONCEPT
+(so closing the 434-cell gap does not quadruple the queue), and a rollover-simulation
+acceptance gate. **SEQUENCING RULING: M19 precedes BOTH M16-S5 and M18** - regenerating 605
+cells or mining per-address instruction text onto an identity scheme that is about to
+change means doing it twice. Three open questions for John at the end of the plan (concept
+id shape, cross-document concepts, retirement policy); S1 is read-only and does not block
+on them.
+
+**Superseded (kept as history):** BALL: JOHN - M17-S3R2 + S4 ARE COMPLETE, VERIFIED, AND
+PUSHED (`6488b6f`); John's live look at the workbench UI produced the third review above.
 
 **ARCHITECT VERIFICATION + PUSH (Claude Opus 5, 2026-07-25).** Four commits pushed
 (`398e4a6..6488b6f`): the Worker's three (`c421558` navigation + dossier, `c370359` D7
@@ -553,6 +605,47 @@ TY2026 docs drop.
   environment failure, and no commit was made.
 
 ## From Architect
+
+- **M19-S1 TASK - CONCEPT INVENTORY AND FLOW-SPINE DERIVATION, READ-ONLY (Architect,
+  Claude Opus 5, 2026-07-26).** Design in `plans/PHASE_M19.md` - READ IT FIRST, along with
+  the revised spine invariant in `AGENTS.md` and the Worker defect ledger (name the
+  applicable entries in your session-start checkpoint). **Your command cap is now 600s, so
+  you run your OWN app-dependent and e2e files this round** - the old "declare it and let
+  the Architect run it" escape hatch is retired.
+  **This step changes NO artifact. It produces a module plus a report.**
+  1. Derive each document's semantic FLOW - section / group / role - from structure that
+     already exists: the AcroForm wrapper hierarchy the M16-S3 resolver reads
+     (`tax_graph/output/field_identity.py`), the address `path` breadcrumb, and geometry
+     reading order. Structure-first only: never mine labels or guess from geometry, and
+     return `unresolved` rather than inventing a flow. That discipline is the M16-S3
+     precedent and it holds here.
+  2. Propose a CONCEPT ID per widget, applying the two rules from the plan: the
+     never-contains test (no line numbers, no years, no printed prose) and
+     owner/role qualification (a bare `ssn` is never an address).
+  3. Emit a read-only report `plans/M19_S1_CONCEPT_REPORT.md`: proposed concept per
+     control; every COLLISION (two widgets sharing a concept - the four dependent SSNs on
+     the 1040 are the exemplar, and the 434 hidden row-template widgets are the bulk);
+     every UNQUALIFIED concept (a role with no owner); every id failing the
+     never-contains test; and per-document counts. Findings are FINDINGS - do not "fix"
+     either side.
+  4. Cover the 434 hidden widgets explicitly. Report them per document
+     (8949 184/202, w2 132/272, 1040 40/199, 1099-DIV/INT/B 24 each, schedule_1a 6) and
+     propose the concept each row-template instance would map to. Do NOT change
+     `cell_inventory.py` this round - S4 owns that.
+  5. Suggested home: a new read-only module (e.g. `tax_graph/output/concepts.py`) that S3
+     can consume later. No call sites in validate, preflight, or the manifest.
+  **NO NEW TEST SUITE THIS ROUND (John, 2026-07-26: "another set of tests is premature").**
+  THE REPORT IS THE DELIVERABLE. Concept ids are a PROPOSAL until John answers the three
+  open questions in `plans/PHASE_M19.md`, so tests written against them now would only be
+  rewritten. Tests arrive with S3, when the shape is settled and something is actually
+  promoted. Do not declare focused test files, and do not pad the round with them.
+  Gates for this step, and only these: ASCII, `git diff --check`, and module-form
+  `validate 2025`. Real preflight is NOT required - this step adds no call sites in
+  validate, preflight, or the manifest, so it cannot move the ratchet. If you do run
+  something, report it with an honest `RAN:` line as always. ONE local commit; no push.
+  Stop conditions: any need to touch promoted artifacts, the workbench projection, graph
+  semantics, or verdict emission; a document whose flow cannot be derived structurally
+  (report it as unresolved, do not guess); or a quota/environment failure.
 
 - **[DONE `c370359`, Architect-verified live] M17-S3R2b TASK - FIX D7, THE RIVER SCROLL
   (Architect, Claude Opus 4.8, 2026-07-25).**
