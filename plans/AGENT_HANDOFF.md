@@ -14,8 +14,70 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## Current state (2026-07-26)
 
-**BALL: WORKER - M19-S2 (kill the positional unit_id). Plan: `plans/PHASE_M19.md` (S2).
-Task block under From Architect.**
+**BALL: WORKER - M19-S3a (structured-form concept minting). Plan: `plans/PHASE_M19.md` (S3a).
+M19-S2 is complete in the local commit for this session; the next task requires a fresh
+Architect assignment/checkpoint.**
+
+**Worker session checkpoint - M19-S2 (2026-07-26):** John said resume via the current task
+request. Model GPT-5 Codex, default effort; usage/quota/context indicators are not exposed.
+Global canary: Ledger Llama. Single declared step: replace positional manifest unit ids with
+identity-derived ids, mark unaddressed units without positional fallback, add fail-closed
+collision checks, and implement certain migration/orphan handling for saved reviews. Focused
+tests declared: `tests/test_workbench_identity_m19.py` and the mandatory `tests/test_workbench_m15.py`.
+Applicable defect-ledger entries: D4 (tests must not write live developer state), D5 (any
+`workbench/` change requires the boundary file), D6 (module-form CLI only), and the exact
+`RAN:`/`NOT RUN:` evidence rule. D1-D3 and D7 are not exercised by this backend-only slice.
+
+**M19-S2 implementation checkpoint (2026-07-26):** Manifest identity now derives from the
+canonical address plus review kind/role/object type, with document-qualified field/object
+fallbacks for unaddressed units. Units expose address status/source/qualifier and aliases;
+manifest construction rejects positional ids and duplicate ids per document. Session migration
+maps only a unique identity match, records the old id in destination aliases, and emits
+`orphaned_unit_reviews` for missing or ambiguous matches. No graph, promoted artifact, verdict,
+or live session was touched.
+
+Verification so far:
+
+- RAN: `$env:PYTEST_DEBUG_TEMPROOT = 'C:\\Users\\devbox\\projects\\tax_graph\\m19_test_tmp'; .venv\\Scripts\\python.exe -m pytest tests/test_workbench_identity_m19.py -q` -> 5 passed.
+- RAN: `$env:PYTEST_DEBUG_TEMPROOT = 'C:\\Users\\devbox\\projects\\tax_graph\\m19_test_tmp'; .venv\\Scripts\\python.exe -m pytest tests/test_workbench_m15.py -q` -> 4 passed.
+- RAN: `$env:PYTEST_DEBUG_TEMPROOT = 'C:\\Users\\devbox\\projects\\tax_graph\\m19_test_tmp'; .venv\\Scripts\\python.exe -m pytest tests/test_workbench_sessions_m17.py -q` -> 4 passed.
+- NOT RUN: `.venv\\Scripts\\python.exe -m pytest tests/test_review_manifest_m15.py -q` -> timed out at 120 seconds after four tests; rerun with the 600-second worker cap is pending.
+
+**M19-S2 correction checkpoint (2026-07-26):** The first real manifest run caught a collision:
+repeated physical controls can share one canonical address. The identity qualifier now also
+contains the stable scoped object/field token, while retaining no ref/location index. Focused
+identity + session + boundary rerun is green: 13 passed. The real manifest file is the next
+expensive check and remains pending after this correction.
+
+**M19-S2 correction 2 checkpoint (2026-07-26):** The second real manifest run caught the
+remaining repeated-location case: one scoped object may have multiple AcroForm locations. The
+identity token now includes `official_location.locator_text` when present (the stable field name,
+not a position index), and migration reconstructs it from the old location. Focused identity +
+session + boundary rerun remains green: 13 passed. The real manifest file is pending again.
+
+**M19-S2 shared-surface evidence (2026-07-26):** RAN the real manifest file under the writable
+in-repository temp root -> 6 passed, 1 failed. All identity-sensitive tests passed; the one
+failure was the pre-existing source-artifact path assertion, because this temp root is inside
+the repository while that test expects its copied example directory to be outside the root and
+therefore absolute. Rerun is pending with an external writable temp root.
+
+**M19-S2 final verification (2026-07-26):** The external-temp rerun reached 6 passed and then
+timed out at the 600-second worker cap on the final example-hash test. That file is UNVERIFIED
+as a whole; no identity-sensitive test failed. The declared focused files are green:
+
+- RAN: `$env:PYTEST_DEBUG_TEMPROOT = 'C:\\Users\\devbox\\projects\\tax_graph\\m19_test_tmp'; .venv\\Scripts\\python.exe -m pytest tests/test_workbench_identity_m19.py tests/test_workbench_m15.py tests/test_workbench_sessions_m17.py -q` -> 13 passed.
+- RAN: `.venv\\Scripts\\python.exe tools/check_ascii.py` -> exit 0, `ASCII check OK`.
+- RAN: `git diff --check` -> exit 0, no output.
+- RAN: `.venv\\Scripts\\python.exe -m tax_graph.cli validate 2025` -> exit 0; graph integrity
+  OK - all references resolve.
+- NOT RUN: full `tests/test_review_manifest_m15.py` verification -> external-temp attempt
+  reached 6 passed before the 600-second cap; the final test is unverified and is left for
+  Architect-side/shared-partition verification.
+
+**M19-S2 complete (2026-07-26):** The local commit contains the identity-derived manifest ids,
+explicit unaddressed markers, fail-closed collision checks, schema additions, session migration
+helpers, focused tests, and this evidence. No push was made. Next slice is M19-S3a, structured
+form concept minting, per the corrected sequencing ruling above.
 
 **ARCHITECT VERIFICATION - M19-S1 (Claude Opus 5, 2026-07-26). ACCEPTED.** The Worker's
 round was process-clean: ledger entries named in the checkpoint, only the three specified

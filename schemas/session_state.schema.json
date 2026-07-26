@@ -30,6 +30,11 @@
       "propertyNames": {"pattern": "^[a-z0-9_]+$"},
       "additionalProperties": {"$ref": "#/$defs/unit_review"}
     },
+    "orphaned_unit_reviews": {
+      "type": "object",
+      "propertyNames": {"pattern": "^[a-z0-9_]+$"},
+      "additionalProperties": {"$ref": "#/$defs/orphaned_unit_review"}
+    },
     "updated_at": {"type": "string", "format": "date-time"}
   },
   "$defs": {
@@ -41,6 +46,18 @@
         "status": {"enum": ["approved", "open"]},
         "note": {"type": "string", "pattern": "^[\\x00-\\x7F]*$"},
         "updated_at": {"type": "string", "format": "date-time"}
+      }
+    },
+    "orphaned_unit_review": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "note", "updated_at", "reason", "original_unit_id"],
+      "properties": {
+        "status": {"const": "orphaned"},
+        "note": {"type": "string", "pattern": "^[\\x00-\\x7F]*$"},
+        "updated_at": {"type": "string", "format": "date-time"},
+        "reason": {"type": "string", "minLength": 1},
+        "original_unit_id": {"type": "string", "pattern": "^[a-z0-9_]+$"}
       }
     },
     "selection": {

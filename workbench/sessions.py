@@ -7,6 +7,7 @@ import json
 from pathlib import Path
 from typing import Any, Iterable
 
+from workbench.manifest import unit_identity_key
 from workbench.schema import validate_session_state
 
 
@@ -118,6 +119,99 @@ def clear_unit_review(
     if isinstance(reviews, dict):
         reviews.pop(unit_id, None)
     return payload
+
+
+def migrate_session_reviews(
+    payload: dict[str, Any],
+    old_units: Iterable[dict[str, Any]],
+    new_units: list[dict[str, Any]],
+) -> dict[str, Any]:
+    """Migrate review records by identity and orphan uncertain records.
+
+    The old manifest is required because a positional unit id cannot be
+    decoded on its own. A record moves only when exactly one old unit and one
+    new unit share the same non-positional identity key. The old id is added
+    to the destination unit's ``aliases`` for auditability. Missing or
+    ambiguous matches remain visible in ``orphaned_unit_reviews`` and never
+    count as approved progress.
+    """
+    old_unit_list = list(old_units)
+    new_by_id = {
+        str(unit.get("unit_id")): unit
+        for unit in new_units
+        if isinstance(unit, dict) and unit.get("unit_id")
+    }
+    old_by_id = {
+        str(unit.get("unit_id")): unit
+        for unit in old_unit_list
+        if isinstance(unit, dict) and unit.get("unit_id")
+    }
+    identity_matches: dict[str, list[dict[str, Any]]] = {}
+    for unit in new_units:
+        if not isinstance(unit, dict):
+            continue
+        identity = unit_identity_key(unit)
+        if identity:
+            identity_matches.setdefault(identity, []).append(unit)
+
+    reviews = payload.get("unit_reviews", {})
+    if not isinstance(reviews, dict):
+        raise ValueError("session unit_reviews must be an object")
+    migrated: dict[str, Any] = {}
+    orphaned = payload.get("orphaned_unit_reviews", {})
+    if not isinstance(orphaned, dict):
+        raise ValueError("session orphaned_unit_reviews must be an object")
+    orphaned = dict(orphaned)
+    used_targets: set[str] = set()
+    for old_id, review in reviews.items():
+        old_id = str(old_id)
+        if old_id in new_by_id:
+            migrated[old_id] = review
+            used_targets.add(old_id)
+            continue
+        old_unit = old_by_id.get(old_id)
+        identity = unit_identity_key(old_unit) if old_unit else None
+        candidates = identity_matches.get(identity or "", [])
+        if len(candidates) == 1 and str(candidates[0]["unit_id"]) not in used_targets:
+            destination = candidates[0]
+            destination_id = str(destination["unit_id"])
+            migrated[destination_id] = review
+            used_targets.add(destination_id)
+            aliases = destination.setdefault("aliases", [])
+            if old_id not in aliases:
+                aliases.append(old_id)
+            continue
+        reason = "no certain identity match"
+        if len(candidates) > 1:
+            reason = "ambiguous identity match"
+        elif candidates:
+            reason = "multiple old reviews matched one destination"
+        orphaned[old_id] = {
+            "status": "orphaned",
+            "note": str(review.get("note", "")) if isinstance(review, dict) else "",
+            "updated_at": str(review.get("updated_at", _now())) if isinstance(review, dict) else _now(),
+            "reason": reason,
+            "original_unit_id": old_id,
+        }
+    payload["unit_reviews"] = migrated
+    payload["orphaned_unit_reviews"] = orphaned
+    return payload
+
+
+def migrate_manifest_session(
+    payload: dict[str, Any],
+    old_manifest: dict[str, Any],
+    new_manifest: dict[str, Any],
+    queue_id: str,
+) -> dict[str, Any]:
+    """Migrate one queue session using the old and rebuilt manifest entries."""
+    def entry_units(manifest: dict[str, Any]) -> list[dict[str, Any]]:
+        for entry in manifest.get("entries", []) or []:
+            if isinstance(entry, dict) and str(entry.get("queue_id")) == queue_id:
+                return [unit for unit in entry.get("units", []) or [] if isinstance(unit, dict)]
+        raise ValueError(f"manifest has no queue entry: {queue_id}")
+
+    return migrate_session_reviews(payload, entry_units(old_manifest), entry_units(new_manifest))
 
 
 def _now() -> str:

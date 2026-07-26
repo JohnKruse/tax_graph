@@ -127,7 +127,8 @@ def _build_payload(
         if not refs:
             raise ManifestError(f"pending queue entry {queue_id} has an empty review scope")
         units: list[dict[str, Any]] = []
-        for ref_index, scope_ref in enumerate(refs):
+        document_id = str(queue_entry.get("document_id", ""))
+        for scope_ref in refs:
             artifact_path = str(scope_ref.get("source_path", ""))
             if artifact_path:
                 source_paths.add(root / artifact_path)
@@ -138,16 +139,33 @@ def _build_payload(
                 if object_data and object_data.get("label"):
                     object_ref["display_label"] = str(object_data["label"])
             semantics = _semantics(scope_ref, graph_index)
+            address_id, identity_source = _resolved_identity_source(
+                queue_entry, scope_ref, object_data, graph_index,
+            )
             locations = _locations(
                 scope_ref,
                 geometry,
                 pdf_hashes,
-                document_id=str(queue_entry.get("document_id", "")),
+                document_id=document_id,
             )
             if not locations:
                 locations = [None]
-            for location_index, location in enumerate(locations):
-                unit_id = _unit_id(queue_id, ref_index, location_index, scope_ref)
+            for location in locations:
+                locator = str((location or {}).get("locator_text") or "") if isinstance(location, dict) else ""
+                identity_token = str(scope_ref.get("object_id", ""))
+                if locator:
+                    identity_token = f"{identity_token}|{locator}"
+                unit_id = derive_unit_id(
+                    address_id=address_id,
+                    identity_source=identity_source,
+                    document_id=document_id,
+                    field_name=_field_name(object_data),
+                    review_kind=str(queue_entry.get("kind", "object")),
+                    role=str(scope_ref.get("role", "primary")),
+                    object_type=str(scope_ref.get("object_type", "object")),
+                    object_id=str(scope_ref.get("object_id", "")),
+                    identity_token=identity_token,
+                )
                 units.append(
                     _unit(
                         queue_entry,
@@ -159,6 +177,10 @@ def _build_payload(
                         semantics=semantics,
                         location=location,
                         required=_required(scope_ref),
+                        address_id=address_id,
+                        identity_source=identity_source,
+                        identity_role=str(scope_ref.get("role", "primary")),
+                        identity_token=identity_token,
                     )
                 )
         if not units:
@@ -172,6 +194,8 @@ def _build_payload(
                 "units": units,
             }
         )
+
+    _validate_unit_id_collisions(entries)
 
     source_artifacts = _source_artifacts(root, source_paths)
     body = {
@@ -195,22 +219,15 @@ def _unit(
     semantics: FormattedSemantics | None,
     location: dict[str, Any] | None,
     required: bool,
+    address_id: str,
+    identity_source: str,
+    identity_role: str,
+    identity_token: str,
 ) -> dict[str, Any]:
     object_type = str(scope_ref.get("object_type", "object"))
     object_id = str(scope_ref.get("object_id", ""))
     review_kind = str(queue_entry.get("kind", "object"))
     citations = sorted(set(_citation_refs(object_data)) | set(_expression_citations(semantics)))
-    address_id = str(object_data.get("address_id", "")) if isinstance(object_data, dict) else ""
-    if object_type == "node" and not address_id:
-        binding = graph_index.get(("node_binding", object_id))
-        if binding:
-            address_id = str(binding["address_id"])
-    if object_type == "field_control" and isinstance(object_data, dict):
-        field_name = str(object_data.get("field_name") or "")
-        document_id = str(queue_entry.get("document_id") or "")
-        binding = graph_index.get(("widget_binding", f"{document_id}\0{field_name}"))
-        if binding:
-            address_id = str(binding["address_id"])
     address_data = graph_index.get(("address", address_id)) if address_id else None
     address_ref = {"object_type": "address", "object_id": address_id, "display_label": str((address_data or {}).get("printed_label") or address_id)} if address_id else None
     display_name, display_name_provenance, official_locator, review_prompt = _review_identity(
@@ -236,6 +253,13 @@ def _unit(
         "review_prompt": review_prompt,
         "expression": semantics.expression if semantics else {"kind": "reference", "ref": address_ref or object_ref},
         "coverage": {"state": "pending", "required_for_confirm": required},
+        "address_status": "addressed" if address_id else "unaddressed",
+        "identity_source": identity_source,
+        "identity_role": identity_role,
+        "identity_qualifier": f"{review_kind}:{identity_role}:{object_type}",
+        "identity_token": identity_token,
+        "identity_document_id": str(queue_entry.get("document_id") or ""),
+        "aliases": [],
     }
     if citations:
         unit["citation_refs"] = citations
@@ -650,9 +674,164 @@ def _pending(entry: dict[str, Any]) -> bool:
     return str(entry.get("status", "")) == "pending" or str(entry.get("review_status", "")) == "pending"
 
 
-def _unit_id(queue_id: str, ref_index: int, location_index: int, scope_ref: dict[str, Any]) -> str:
-    raw = f"{queue_id}_ref_{ref_index:04d}_loc_{location_index:02d}_{scope_ref.get('object_id', 'object')}"
-    return re.sub(r"[^a-z0-9_]", "_", raw.lower()).strip("_")
+def _field_name(object_data: dict[str, Any] | None) -> str:
+    """Return the stable AcroForm field name when the object has one."""
+    return str(object_data.get("field_name") or "") if isinstance(object_data, dict) else ""
+
+
+def _resolved_identity_source(
+    queue_entry: dict[str, Any],
+    scope_ref: dict[str, Any],
+    object_data: dict[str, Any] | None,
+    graph_index: dict[tuple[str, str], dict[str, Any]],
+) -> tuple[str, str]:
+    """Resolve an address, or a stable within-year fallback for an unaddressed unit."""
+    object_type = str(scope_ref.get("object_type", "object"))
+    object_id = str(scope_ref.get("object_id", ""))
+    address_id = str(object_data.get("address_id", "")) if isinstance(object_data, dict) else ""
+    if object_type == "node" and not address_id:
+        binding = graph_index.get(("node_binding", object_id))
+        if binding:
+            address_id = str(binding.get("address_id") or "")
+    if object_type == "field_control" and isinstance(object_data, dict):
+        field_name = _field_name(object_data)
+        document_id = str(queue_entry.get("document_id") or "")
+        binding = graph_index.get(("widget_binding", f"{document_id}\0{field_name}"))
+        if binding:
+            address_id = str(binding.get("address_id") or "")
+    if address_id:
+        return address_id, "address_id"
+    if _field_name(object_data):
+        return "", "field_name"
+    if object_id:
+        return "", "object_id"
+    raise ManifestError(
+        "unaddressed review unit has neither a field_name nor a stable object_id"
+    )
+
+
+def _identity_source_key(
+    *,
+    address_id: str,
+    identity_source: str,
+    document_id: str,
+    field_name: str,
+    object_type: str,
+    object_id: str,
+) -> str:
+    """Serialize the non-positional identity input used to derive a unit id."""
+    if address_id:
+        return f"address:{address_id}"
+    if identity_source == "field_name" and field_name:
+        return f"field:{document_id}:{field_name}"
+    if identity_source == "object_id" and object_id:
+        return f"object:{document_id}:{object_type}:{object_id}"
+    raise ManifestError("cannot derive a review unit identity without a stable source")
+
+
+def derive_unit_id(
+    *,
+    address_id: str,
+    identity_source: str,
+    document_id: str,
+    field_name: str,
+    review_kind: str,
+    role: str,
+    object_type: str,
+    object_id: str,
+    identity_token: str = "",
+) -> str:
+    """Derive a deterministic, non-positional review-unit id.
+
+    The digest is deliberately based on the canonical address when one exists.
+    Unaddressed controls use their document-qualified AcroForm field name and
+    remain visibly unaddressed in the manifest. Review kind, scope role, and
+    object type keep distinct reviews of the same address from collapsing.
+    """
+    source = _identity_source_key(
+        address_id=address_id,
+        identity_source=identity_source,
+        document_id=document_id,
+        field_name=field_name,
+        object_type=object_type,
+        object_id=object_id,
+    )
+    qualifier = f"{review_kind}:{role}:{object_type}:{identity_token or object_id}"
+    digest = hashlib.sha256(f"{source}|{qualifier}".encode("utf-8")).hexdigest()
+    prefix = "address" if address_id else "unaddressed"
+    return f"unit_{prefix}_{digest}"
+
+
+def unit_identity_key(unit: dict[str, Any]) -> str | None:
+    """Return the migration key for a projected unit, without using its id."""
+    address_id = str(unit.get("address_id") or "")
+    identity_source = str(unit.get("identity_source") or ("address_id" if address_id else ""))
+    location = unit.get("official_location")
+    document_id = str(unit.get("identity_document_id") or "")
+    if not document_id and isinstance(location, dict):
+        document_id = str(location.get("document_id") or "")
+    object_refs = [ref for ref in unit.get("object_refs", []) or [] if isinstance(ref, dict)]
+    object_ref = next((ref for ref in object_refs if ref.get("object_type") != "address"), {})
+    object_type = str(object_ref.get("object_type") or "object")
+    object_id = str(object_ref.get("object_id") or "")
+    field_name = str(unit.get("field_name") or object_id if object_type == "field_control" else "")
+    identity_token = str(unit.get("identity_token") or object_id)
+    if not unit.get("identity_token") and isinstance(location, dict):
+        locator = str(location.get("locator_text") or "")
+        if locator:
+            identity_token = f"{identity_token}|{locator}"
+    if not document_id and address_id:
+        document_id = next(
+            (part.split("=", 1)[1] for part in address_id.split("/") if part.startswith("document=")),
+            "",
+        )
+    try:
+        source = _identity_source_key(
+            address_id=address_id,
+            identity_source=identity_source,
+            document_id=document_id,
+            field_name=field_name,
+            object_type=object_type,
+            object_id=object_id,
+        )
+    except ManifestError:
+        return None
+    qualifier = unit.get("identity_qualifier")
+    if not qualifier:
+        role = str(unit.get("identity_role") or "primary")
+        qualifier = f"{unit.get('review_kind', 'object')}:{role}:{object_type}:{object_id}"
+    return f"{source}|{qualifier}|{identity_token}"
+
+
+def _validate_unit_id_collisions(entries: Iterable[dict[str, Any]]) -> None:
+    """Fail closed on duplicate or position-derived ids within a document."""
+    seen: dict[tuple[str, str], tuple[str, str]] = {}
+    positional = re.compile(r"(?:^|_)(?:ref|loc)(?:_|\d)(?:[a-z0-9_]*\d)?(?:_|$)")
+    for entry in entries:
+        for unit in entry.get("units", []) or []:
+            unit_id = str(unit.get("unit_id") or "")
+            if positional.search(unit_id):
+                raise ManifestError(f"review unit id is positional: {unit_id}")
+            location = unit.get("official_location")
+            document_id = str((location or {}).get("document_id") or "") if isinstance(location, dict) else ""
+            if not document_id:
+                address_id = str(unit.get("address_id") or "")
+                document_id = next(
+                    (part.split("=", 1)[1] for part in address_id.split("/") if part.startswith("document=")),
+                    "",
+                )
+            key = (document_id, unit_id)
+            identity = unit_identity_key(unit) or "unknown"
+            previous = seen.get(key)
+            if previous is not None and previous[1] != identity:
+                raise ManifestError(
+                    f"review unit id collision in {document_id or 'unknown document'}: {unit_id}"
+                )
+            if previous is not None:
+                raise ManifestError(
+                    f"duplicate review unit identity in {document_id or 'unknown document'}: {unit_id}"
+                )
+            seen[key] = (document_id, identity)
 
 
 def _source_artifacts(root: Path, paths: Iterable[Path]) -> list[dict[str, str]]:
