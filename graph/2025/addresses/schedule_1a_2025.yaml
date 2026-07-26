@@ -2062,10 +2062,12 @@ addresses:
     printed_token: '22'
     printed_ref: Line 22a column (ii)
   occurrence:
-    kind: entity
-    entity_key: vehicle
+    kind: slot
+    slot_key: vehicle
+    axes:
+    - row_slot
     review_granularity: concept
-    row_policy: entity_keyed
+    row_policy: slot_keyed
 - address_id: 2025/document=schedule_1a/table=line_22/row_template=vehicle/column=schedule_1a
   logical_key: document=schedule_1a/table=line_22/row_template=vehicle/column=schedule_1a
   year: 2025
@@ -2098,10 +2100,12 @@ addresses:
     printed_token: '22'
     printed_ref: Line 22a column (iii)
   occurrence:
-    kind: entity
-    entity_key: vehicle
+    kind: slot
+    slot_key: vehicle
+    axes:
+    - row_slot
     review_granularity: concept
-    row_policy: entity_keyed
+    row_policy: slot_keyed
 - address_id: 2025/document=schedule_1a/table=line_22/row_template=vehicle/column=vin
   logical_key: document=schedule_1a/table=line_22/row_template=vehicle/column=vin
   year: 2025
@@ -2134,7 +2138,9 @@ addresses:
     printed_token: '22'
     printed_ref: Line 22a column (i)
   occurrence:
-    kind: entity
-    entity_key: vehicle
+    kind: slot
+    slot_key: vehicle
+    axes:
+    - row_slot
     review_granularity: concept
-    row_policy: entity_keyed
+    row_policy: slot_keyed

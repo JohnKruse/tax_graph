@@ -13,9 +13,12 @@ concepts:
   role: address
   review_granularity: concept
   occurrence:
-    kind: singleton
+    kind: slot
+    slot_key: copy
+    axes:
+    - copy
     review_granularity: concept
-    row_policy: none
+    row_policy: slot_keyed
   aliases:
   - document=form_w2/box=f/control=value
   placements:
@@ -36,9 +39,12 @@ concepts:
   role: allocated_tips
   review_granularity: concept
   occurrence:
-    kind: singleton
+    kind: slot
+    slot_key: copy
+    axes:
+    - copy
     review_granularity: concept
-    row_policy: none
+    row_policy: slot_keyed
   aliases:
   - document=form_w2/box=8/control=value
   placements:
@@ -60,9 +66,12 @@ concepts:
   role: retirement_plan
   review_granularity: concept
   occurrence:
-    kind: singleton
+    kind: slot
+    slot_key: copy
+    axes:
+    - copy
     review_granularity: concept
-    row_policy: none
+    row_policy: slot_keyed
   aliases:
   - document=form_w2/box=13/option=retirement_plan
   placements:
@@ -84,9 +93,12 @@ concepts:
   role: statutory_employee
   review_granularity: concept
   occurrence:
-    kind: singleton
+    kind: slot
+    slot_key: copy
+    axes:
+    - copy
     review_granularity: concept
-    row_policy: none
+    row_policy: slot_keyed
   aliases:
   - document=form_w2/box=13/option=statutory_employee
   placements:
@@ -108,9 +120,12 @@ concepts:
   role: third_party_sick_pay
   review_granularity: concept
   occurrence:
-    kind: singleton
+    kind: slot
+    slot_key: copy
+    axes:
+    - copy
     review_granularity: concept
-    row_policy: none
+    row_policy: slot_keyed
   aliases:
   - document=form_w2/box=13/option=third_party_sick_pay
   placements:
@@ -131,9 +146,12 @@ concepts:
   role: dependent_care_benefits
   review_granularity: concept
   occurrence:
-    kind: singleton
+    kind: slot
+    slot_key: copy
+    axes:
+    - copy
     review_granularity: concept
-    row_policy: none
+    row_policy: slot_keyed
   aliases:
   - document=form_w2/box=10/control=value
   placements:
@@ -154,9 +172,12 @@ concepts:
   role: federal_income_tax_withheld
   review_granularity: concept
   occurrence:
-    kind: singleton
+    kind: slot
+    slot_key: copy
+    axes:
+    - copy
     review_granularity: concept
-    row_policy: none
+    row_policy: slot_keyed
   aliases:
   - document=form_w2/box=2/control=value
   placements:
@@ -177,9 +198,12 @@ concepts:
   role: first_name_initial
   review_granularity: concept
   occurrence:
-    kind: singleton
+    kind: slot
+    slot_key: copy
+    axes:
+    - copy
     review_granularity: concept
-    row_policy: none
+    row_policy: slot_keyed
   aliases:
   - document=form_w2/box=e/control=first_name_initial
   placements:
@@ -200,9 +224,12 @@ concepts:
   role: last_name
   review_granularity: concept
   occurrence:
-    kind: singleton
+    kind: slot
+    slot_key: copy
+    axes:
+    - copy
     review_granularity: concept
-    row_policy: none
+    row_policy: slot_keyed
   aliases:
   - document=form_w2/box=e/control=last_name
   placements:
@@ -223,9 +250,12 @@ concepts:
   role: medicare_tax_withheld
   review_granularity: concept
   occurrence:
-    kind: singleton
+    kind: slot
+    slot_key: copy
+    axes:
+    - copy
     review_granularity: concept
-    row_policy: none
+    row_policy: slot_keyed
   aliases:
   - document=form_w2/box=6/control=value
   placements:
@@ -246,9 +276,12 @@ concepts:
   role: medicare_wages
   review_granularity: concept
   occurrence:
-    kind: singleton
+    kind: slot
+    slot_key: copy
+    axes:
+    - copy
     review_granularity: concept
-    row_policy: none
+    row_policy: slot_keyed
   aliases:
   - document=form_w2/box=5/control=value
   placements:
@@ -269,9 +302,12 @@ concepts:
   role: nonqualified_plans
   review_granularity: concept
   occurrence:
-    kind: singleton
+    kind: slot
+    slot_key: copy
+    axes:
+    - copy
     review_granularity: concept
-    row_policy: none
+    row_policy: slot_keyed
   aliases:
   - document=form_w2/box=11/control=value
   placements:
@@ -292,9 +328,12 @@ concepts:
   role: other_compensation
   review_granularity: concept
   occurrence:
-    kind: singleton
+    kind: slot
+    slot_key: copy
+    axes:
+    - copy
     review_granularity: concept
-    row_policy: none
+    row_policy: slot_keyed
   aliases:
   - document=form_w2/box=14/control=value
   placements:
@@ -315,9 +354,12 @@ concepts:
   role: social_security_tax_withheld
   review_granularity: concept
   occurrence:
-    kind: singleton
+    kind: slot
+    slot_key: copy
+    axes:
+    - copy
     review_granularity: concept
-    row_policy: none
+    row_policy: slot_keyed
   aliases:
   - document=form_w2/box=4/control=value
   placements:
@@ -338,9 +380,12 @@ concepts:
   role: social_security_tips
   review_granularity: concept
   occurrence:
-    kind: singleton
+    kind: slot
+    slot_key: copy
+    axes:
+    - copy
     review_granularity: concept
-    row_policy: none
+    row_policy: slot_keyed
   aliases:
   - document=form_w2/box=7/control=value
   placements:
@@ -361,9 +406,12 @@ concepts:
   role: social_security_wages
   review_granularity: concept
   occurrence:
-    kind: singleton
+    kind: slot
+    slot_key: copy
+    axes:
+    - copy
     review_granularity: concept
-    row_policy: none
+    row_policy: slot_keyed
   aliases:
   - document=form_w2/box=3/control=value
   placements:
@@ -384,9 +432,12 @@ concepts:
   role: ssn
   review_granularity: concept
   occurrence:
-    kind: singleton
+    kind: slot
+    slot_key: copy
+    axes:
+    - copy
     review_granularity: concept
-    row_policy: none
+    row_policy: slot_keyed
   aliases:
   - document=form_w2/box=a/control=employee_ssn
   placements:
@@ -407,9 +458,12 @@ concepts:
   role: suffix
   review_granularity: concept
   occurrence:
-    kind: singleton
+    kind: slot
+    slot_key: copy
+    axes:
+    - copy
     review_granularity: concept
-    row_policy: none
+    row_policy: slot_keyed
   aliases:
   - document=form_w2/box=e/control=suffix
   placements:
@@ -430,9 +484,12 @@ concepts:
   role: wages
   review_granularity: concept
   occurrence:
-    kind: singleton
+    kind: slot
+    slot_key: copy
+    axes:
+    - copy
     review_granularity: concept
-    row_policy: none
+    row_policy: slot_keyed
   aliases:
   - document=form_w2/box=1/control=value
   placements:
@@ -453,9 +510,12 @@ concepts:
   role: control_number
   review_granularity: concept
   occurrence:
-    kind: singleton
+    kind: slot
+    slot_key: copy
+    axes:
+    - copy
     review_granularity: concept
-    row_policy: none
+    row_policy: slot_keyed
   aliases:
   - document=form_w2/box=d/control=value
   placements:
@@ -476,9 +536,12 @@ concepts:
   role: ein
   review_granularity: concept
   occurrence:
-    kind: singleton
+    kind: slot
+    slot_key: copy
+    axes:
+    - copy
     review_granularity: concept
-    row_policy: none
+    row_policy: slot_keyed
   aliases:
   - document=form_w2/box=b/control=value
   placements:
@@ -499,9 +562,12 @@ concepts:
   role: name_address
   review_granularity: concept
   occurrence:
-    kind: singleton
+    kind: slot
+    slot_key: copy
+    axes:
+    - copy
     review_granularity: concept
-    row_policy: none
+    row_policy: slot_keyed
   aliases:
   - document=form_w2/box=c/control=value
   placements:
@@ -522,9 +588,12 @@ concepts:
   role: void
   review_granularity: concept
   occurrence:
-    kind: singleton
+    kind: slot
+    slot_key: copy
+    axes:
+    - copy
     review_granularity: concept
-    row_policy: none
+    row_policy: slot_keyed
   aliases:
   - document=form_w2/box=void/option=void
   placements:
@@ -546,10 +615,13 @@ concepts:
   role: code
   review_granularity: concept
   occurrence:
-    kind: entity
-    entity_key: entry
+    kind: slot
+    slot_key: entry
+    axes:
+    - copy
+    - row_slot
     review_granularity: concept
-    row_policy: entity_keyed
+    row_policy: slot_keyed
   aliases:
   - document=form_w2/box=12/row_template=entry/column=code
   placements:
@@ -571,10 +643,13 @@ concepts:
   role: compensation_amount
   review_granularity: concept
   occurrence:
-    kind: entity
-    entity_key: entry
+    kind: slot
+    slot_key: entry
+    axes:
+    - copy
+    - row_slot
     review_granularity: concept
-    row_policy: entity_keyed
+    row_policy: slot_keyed
   aliases:
   - document=form_w2/box=12/row_template=entry/column=amount
   placements:
@@ -596,10 +671,13 @@ concepts:
   role: employer_state_id
   review_granularity: concept
   occurrence:
-    kind: entity
-    entity_key: jurisdiction
+    kind: slot
+    slot_key: jurisdiction
+    axes:
+    - copy
+    - row_slot
     review_granularity: concept
-    row_policy: entity_keyed
+    row_policy: slot_keyed
   aliases:
   - document=form_w2/table=state_local/row_template=jurisdiction/column=employer_state_id
   placements:
@@ -621,10 +699,13 @@ concepts:
   role: local_income_tax
   review_granularity: concept
   occurrence:
-    kind: entity
-    entity_key: jurisdiction
+    kind: slot
+    slot_key: jurisdiction
+    axes:
+    - copy
+    - row_slot
     review_granularity: concept
-    row_policy: entity_keyed
+    row_policy: slot_keyed
   aliases:
   - document=form_w2/table=state_local/row_template=jurisdiction/column=local_income_tax
   placements:
@@ -646,10 +727,13 @@ concepts:
   role: local_wages
   review_granularity: concept
   occurrence:
-    kind: entity
-    entity_key: jurisdiction
+    kind: slot
+    slot_key: jurisdiction
+    axes:
+    - copy
+    - row_slot
     review_granularity: concept
-    row_policy: entity_keyed
+    row_policy: slot_keyed
   aliases:
   - document=form_w2/table=state_local/row_template=jurisdiction/column=local_wages
   placements:
@@ -671,10 +755,13 @@ concepts:
   role: locality_name
   review_granularity: concept
   occurrence:
-    kind: entity
-    entity_key: jurisdiction
+    kind: slot
+    slot_key: jurisdiction
+    axes:
+    - copy
+    - row_slot
     review_granularity: concept
-    row_policy: entity_keyed
+    row_policy: slot_keyed
   aliases:
   - document=form_w2/table=state_local/row_template=jurisdiction/column=locality_name
   placements:
@@ -696,10 +783,13 @@ concepts:
   role: state
   review_granularity: concept
   occurrence:
-    kind: entity
-    entity_key: jurisdiction
+    kind: slot
+    slot_key: jurisdiction
+    axes:
+    - copy
+    - row_slot
     review_granularity: concept
-    row_policy: entity_keyed
+    row_policy: slot_keyed
   aliases:
   - document=form_w2/table=state_local/row_template=jurisdiction/column=state
   placements:
@@ -721,10 +811,13 @@ concepts:
   role: state_income_tax
   review_granularity: concept
   occurrence:
-    kind: entity
-    entity_key: jurisdiction
+    kind: slot
+    slot_key: jurisdiction
+    axes:
+    - copy
+    - row_slot
     review_granularity: concept
-    row_policy: entity_keyed
+    row_policy: slot_keyed
   aliases:
   - document=form_w2/table=state_local/row_template=jurisdiction/column=state_income_tax
   placements:
@@ -746,10 +839,13 @@ concepts:
   role: state_wages
   review_granularity: concept
   occurrence:
-    kind: entity
-    entity_key: jurisdiction
+    kind: slot
+    slot_key: jurisdiction
+    axes:
+    - copy
+    - row_slot
     review_granularity: concept
-    row_policy: entity_keyed
+    row_policy: slot_keyed
   aliases:
   - document=form_w2/table=state_local/row_template=jurisdiction/column=state_wages
   placements:

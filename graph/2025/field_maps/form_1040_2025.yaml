@@ -840,481 +840,761 @@ field_dispositions:
   population_policy: user_entered
   value_format: text
   repeatable:
-    group: dependents
+    group: dependent
     row_slot: 1
     column: first_name
     role: identity
   runtime_fact_ref: dependents.first_name
   address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=first_name
   concept_id: form_1040/dependents/dependent/first_name
+  occurrence:
+    kind: slot
+    axes:
+      row_slot: 1
+    review_granularity: concept
+    row_policy: slot_keyed
+    key: row_slot=1
 - field_name: topmostSubform[0].Page1[0].Table_Dependents[0].Row1[0].f1_32[0]
   label: Dependent 2 first name
   population_policy: user_entered
   value_format: text
   repeatable:
-    group: dependents
+    group: dependent
     row_slot: 2
     column: first_name
     role: identity
   runtime_fact_ref: dependents.first_name
   address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=first_name
   concept_id: form_1040/dependents/dependent/first_name
+  occurrence:
+    kind: slot
+    axes:
+      row_slot: 2
+    review_granularity: concept
+    row_policy: slot_keyed
+    key: row_slot=2
 - field_name: topmostSubform[0].Page1[0].Table_Dependents[0].Row1[0].f1_33[0]
   label: Dependent 3 first name
   population_policy: user_entered
   value_format: text
   repeatable:
-    group: dependents
+    group: dependent
     row_slot: 3
     column: first_name
     role: identity
   runtime_fact_ref: dependents.first_name
   address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=first_name
   concept_id: form_1040/dependents/dependent/first_name
+  occurrence:
+    kind: slot
+    axes:
+      row_slot: 3
+    review_granularity: concept
+    row_policy: slot_keyed
+    key: row_slot=3
 - field_name: topmostSubform[0].Page1[0].Table_Dependents[0].Row1[0].f1_34[0]
   label: Dependent 4 first name
   population_policy: user_entered
   value_format: text
   repeatable:
-    group: dependents
+    group: dependent
     row_slot: 4
     column: first_name
     role: identity
   runtime_fact_ref: dependents.first_name
   address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=first_name
   concept_id: form_1040/dependents/dependent/first_name
+  occurrence:
+    kind: slot
+    axes:
+      row_slot: 4
+    review_granularity: concept
+    row_policy: slot_keyed
+    key: row_slot=4
 - field_name: topmostSubform[0].Page1[0].Table_Dependents[0].Row2[0].f1_35[0]
   label: Dependent 1 last name
   population_policy: user_entered
   value_format: text
   repeatable:
-    group: dependents
+    group: dependent
     row_slot: 1
     column: last_name
     role: identity
   runtime_fact_ref: dependents.last_name
   address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=last_name
   concept_id: form_1040/dependents/dependent/last_name
+  occurrence:
+    kind: slot
+    axes:
+      row_slot: 1
+    review_granularity: concept
+    row_policy: slot_keyed
+    key: row_slot=1
 - field_name: topmostSubform[0].Page1[0].Table_Dependents[0].Row2[0].f1_36[0]
   label: Dependent 2 last name
   population_policy: user_entered
   value_format: text
   repeatable:
-    group: dependents
+    group: dependent
     row_slot: 2
     column: last_name
     role: identity
   runtime_fact_ref: dependents.last_name
   address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=last_name
   concept_id: form_1040/dependents/dependent/last_name
+  occurrence:
+    kind: slot
+    axes:
+      row_slot: 2
+    review_granularity: concept
+    row_policy: slot_keyed
+    key: row_slot=2
 - field_name: topmostSubform[0].Page1[0].Table_Dependents[0].Row2[0].f1_37[0]
   label: Dependent 3 last name
   population_policy: user_entered
   value_format: text
   repeatable:
-    group: dependents
+    group: dependent
     row_slot: 3
     column: last_name
     role: identity
   runtime_fact_ref: dependents.last_name
   address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=last_name
   concept_id: form_1040/dependents/dependent/last_name
+  occurrence:
+    kind: slot
+    axes:
+      row_slot: 3
+    review_granularity: concept
+    row_policy: slot_keyed
+    key: row_slot=3
 - field_name: topmostSubform[0].Page1[0].Table_Dependents[0].Row2[0].f1_38[0]
   label: Dependent 4 last name
   population_policy: user_entered
   value_format: text
   repeatable:
-    group: dependents
+    group: dependent
     row_slot: 4
     column: last_name
     role: identity
   runtime_fact_ref: dependents.last_name
   address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=last_name
   concept_id: form_1040/dependents/dependent/last_name
+  occurrence:
+    kind: slot
+    axes:
+      row_slot: 4
+    review_granularity: concept
+    row_policy: slot_keyed
+    key: row_slot=4
 - field_name: topmostSubform[0].Page1[0].Table_Dependents[0].Row3[0].f1_39[0]
   label: Dependent 1 ssn
   population_policy: user_entered
   value_format: text
   repeatable:
-    group: dependents
+    group: dependent
     row_slot: 1
     column: ssn
     role: identity
   runtime_fact_ref: dependents.ssn
   address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=ssn
   concept_id: form_1040/dependents/dependent/ssn
+  occurrence:
+    kind: slot
+    axes:
+      row_slot: 1
+    review_granularity: concept
+    row_policy: slot_keyed
+    key: row_slot=1
 - field_name: topmostSubform[0].Page1[0].Table_Dependents[0].Row3[0].f1_40[0]
   label: Dependent 2 ssn
   population_policy: user_entered
   value_format: text
   repeatable:
-    group: dependents
+    group: dependent
     row_slot: 2
     column: ssn
     role: identity
   runtime_fact_ref: dependents.ssn
   address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=ssn
   concept_id: form_1040/dependents/dependent/ssn
+  occurrence:
+    kind: slot
+    axes:
+      row_slot: 2
+    review_granularity: concept
+    row_policy: slot_keyed
+    key: row_slot=2
 - field_name: topmostSubform[0].Page1[0].Table_Dependents[0].Row3[0].f1_41[0]
   label: Dependent 3 ssn
   population_policy: user_entered
   value_format: text
   repeatable:
-    group: dependents
+    group: dependent
     row_slot: 3
     column: ssn
     role: identity
   runtime_fact_ref: dependents.ssn
   address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=ssn
   concept_id: form_1040/dependents/dependent/ssn
+  occurrence:
+    kind: slot
+    axes:
+      row_slot: 3
+    review_granularity: concept
+    row_policy: slot_keyed
+    key: row_slot=3
 - field_name: topmostSubform[0].Page1[0].Table_Dependents[0].Row3[0].f1_42[0]
   label: Dependent 4 ssn
   population_policy: user_entered
   value_format: text
   repeatable:
-    group: dependents
+    group: dependent
     row_slot: 4
     column: ssn
     role: identity
   runtime_fact_ref: dependents.ssn
   address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=ssn
   concept_id: form_1040/dependents/dependent/ssn
+  occurrence:
+    kind: slot
+    axes:
+      row_slot: 4
+    review_granularity: concept
+    row_policy: slot_keyed
+    key: row_slot=4
 - field_name: topmostSubform[0].Page1[0].Table_Dependents[0].Row4[0].f1_43[0]
   label: Dependent 1 relationship
   population_policy: user_entered
   value_format: text
   repeatable:
-    group: dependents
+    group: dependent
     row_slot: 1
     column: relationship
     role: identity
   runtime_fact_ref: dependents.relationship
   address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=relationship
   concept_id: form_1040/dependents/dependent/relationship
+  occurrence:
+    kind: slot
+    axes:
+      row_slot: 1
+    review_granularity: concept
+    row_policy: slot_keyed
+    key: row_slot=1
 - field_name: topmostSubform[0].Page1[0].Table_Dependents[0].Row4[0].f1_44[0]
   label: Dependent 2 relationship
   population_policy: user_entered
   value_format: text
   repeatable:
-    group: dependents
+    group: dependent
     row_slot: 2
     column: relationship
     role: identity
   runtime_fact_ref: dependents.relationship
   address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=relationship
   concept_id: form_1040/dependents/dependent/relationship
+  occurrence:
+    kind: slot
+    axes:
+      row_slot: 2
+    review_granularity: concept
+    row_policy: slot_keyed
+    key: row_slot=2
 - field_name: topmostSubform[0].Page1[0].Table_Dependents[0].Row4[0].f1_45[0]
   label: Dependent 3 relationship
   population_policy: user_entered
   value_format: text
   repeatable:
-    group: dependents
+    group: dependent
     row_slot: 3
     column: relationship
     role: identity
   runtime_fact_ref: dependents.relationship
   address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=relationship
   concept_id: form_1040/dependents/dependent/relationship
+  occurrence:
+    kind: slot
+    axes:
+      row_slot: 3
+    review_granularity: concept
+    row_policy: slot_keyed
+    key: row_slot=3
 - field_name: topmostSubform[0].Page1[0].Table_Dependents[0].Row4[0].f1_46[0]
   label: Dependent 4 relationship
   population_policy: user_entered
   value_format: text
   repeatable:
-    group: dependents
+    group: dependent
     row_slot: 4
     column: relationship
     role: identity
   runtime_fact_ref: dependents.relationship
   address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=relationship
   concept_id: form_1040/dependents/dependent/relationship
+  occurrence:
+    kind: slot
+    axes:
+      row_slot: 4
+    review_granularity: concept
+    row_policy: slot_keyed
+    key: row_slot=4
 - field_name: topmostSubform[0].Page1[0].Table_Dependents[0].Row5[0].Dependent1[0].c1_12[0]
   label: Dependent 1 lived with you decision
   population_policy: decision_required
   value_format: checkbox
   repeatable:
-    group: dependents
+    group: dependent
     row_slot: 1
-    column: lived_with_you
+    column: lived_with_you_more_than_half
     role: decision
   runtime_fact_ref: dependents.lived_with_you
   address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=lived_with_you_more_than_half_2025
   concept_id: form_1040/dependents/dependent/lived_with_you_more_than_half
+  occurrence:
+    kind: slot
+    axes:
+      row_slot: 1
+    review_granularity: concept
+    row_policy: slot_keyed
+    key: row_slot=1
 - field_name: topmostSubform[0].Page1[0].Table_Dependents[0].Row5[0].Dependent1[0].c1_13[0]
   label: Dependent 1 in us decision
   population_policy: decision_required
   value_format: checkbox
   repeatable:
-    group: dependents
+    group: dependent
     row_slot: 1
-    column: in_us
+    column: in_the_us
     role: decision
   runtime_fact_ref: dependents.in_us
   address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=in_the_us
   concept_id: form_1040/dependents/dependent/in_the_us
+  occurrence:
+    kind: slot
+    axes:
+      row_slot: 1
+    review_granularity: concept
+    row_policy: slot_keyed
+    key: row_slot=1
 - field_name: topmostSubform[0].Page1[0].Table_Dependents[0].Row5[0].Dependent2[0].c1_14[0]
   label: Dependent 2 lived with you decision
   population_policy: decision_required
   value_format: checkbox
   repeatable:
-    group: dependents
+    group: dependent
     row_slot: 2
-    column: lived_with_you
+    column: lived_with_you_more_than_half
     role: decision
   runtime_fact_ref: dependents.lived_with_you
   address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=lived_with_you_more_than_half_2025
   concept_id: form_1040/dependents/dependent/lived_with_you_more_than_half
+  occurrence:
+    kind: slot
+    axes:
+      row_slot: 2
+    review_granularity: concept
+    row_policy: slot_keyed
+    key: row_slot=2
 - field_name: topmostSubform[0].Page1[0].Table_Dependents[0].Row5[0].Dependent2[0].c1_15[0]
   label: Dependent 2 in us decision
   population_policy: decision_required
   value_format: checkbox
   repeatable:
-    group: dependents
+    group: dependent
     row_slot: 2
-    column: in_us
+    column: in_the_us
     role: decision
   runtime_fact_ref: dependents.in_us
   address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=in_the_us
   concept_id: form_1040/dependents/dependent/in_the_us
+  occurrence:
+    kind: slot
+    axes:
+      row_slot: 2
+    review_granularity: concept
+    row_policy: slot_keyed
+    key: row_slot=2
 - field_name: topmostSubform[0].Page1[0].Table_Dependents[0].Row5[0].Dependent3[0].c1_16[0]
   label: Dependent 3 lived with you decision
   population_policy: decision_required
   value_format: checkbox
   repeatable:
-    group: dependents
+    group: dependent
     row_slot: 3
-    column: lived_with_you
+    column: lived_with_you_more_than_half
     role: decision
   runtime_fact_ref: dependents.lived_with_you
   address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=lived_with_you_more_than_half_2025
   concept_id: form_1040/dependents/dependent/lived_with_you_more_than_half
+  occurrence:
+    kind: slot
+    axes:
+      row_slot: 3
+    review_granularity: concept
+    row_policy: slot_keyed
+    key: row_slot=3
 - field_name: topmostSubform[0].Page1[0].Table_Dependents[0].Row5[0].Dependent3[0].c1_17[0]
   label: Dependent 3 in us decision
   population_policy: decision_required
   value_format: checkbox
   repeatable:
-    group: dependents
+    group: dependent
     row_slot: 3
-    column: in_us
+    column: in_the_us
     role: decision
   runtime_fact_ref: dependents.in_us
   address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=in_the_us
   concept_id: form_1040/dependents/dependent/in_the_us
+  occurrence:
+    kind: slot
+    axes:
+      row_slot: 3
+    review_granularity: concept
+    row_policy: slot_keyed
+    key: row_slot=3
 - field_name: topmostSubform[0].Page1[0].Table_Dependents[0].Row5[0].Dependent4[0].c1_18[0]
   label: Dependent 4 lived with you decision
   population_policy: decision_required
   value_format: checkbox
   repeatable:
-    group: dependents
+    group: dependent
     row_slot: 4
-    column: lived_with_you
+    column: lived_with_you_more_than_half
     role: decision
   runtime_fact_ref: dependents.lived_with_you
   address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=lived_with_you_more_than_half_2025
   concept_id: form_1040/dependents/dependent/lived_with_you_more_than_half
+  occurrence:
+    kind: slot
+    axes:
+      row_slot: 4
+    review_granularity: concept
+    row_policy: slot_keyed
+    key: row_slot=4
 - field_name: topmostSubform[0].Page1[0].Table_Dependents[0].Row5[0].Dependent4[0].c1_19[0]
   label: Dependent 4 in us decision
   population_policy: decision_required
   value_format: checkbox
   repeatable:
-    group: dependents
+    group: dependent
     row_slot: 4
-    column: in_us
+    column: in_the_us
     role: decision
   runtime_fact_ref: dependents.in_us
   address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=in_the_us
   concept_id: form_1040/dependents/dependent/in_the_us
+  occurrence:
+    kind: slot
+    axes:
+      row_slot: 4
+    review_granularity: concept
+    row_policy: slot_keyed
+    key: row_slot=4
 - field_name: topmostSubform[0].Page1[0].Table_Dependents[0].Row6[0].Dependent1[0].c1_20[0]
   label: Dependent 1 full time student decision
   population_policy: decision_required
   value_format: checkbox
   repeatable:
-    group: dependents
+    group: dependent
     row_slot: 1
     column: full_time_student
     role: decision
   runtime_fact_ref: dependents.full_time_student
   address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=full_time_student
   concept_id: form_1040/dependents/dependent/full_time_student
+  occurrence:
+    kind: slot
+    axes:
+      row_slot: 1
+    review_granularity: concept
+    row_policy: slot_keyed
+    key: row_slot=1
 - field_name: topmostSubform[0].Page1[0].Table_Dependents[0].Row6[0].Dependent1[0].c1_21[0]
   label: Dependent 1 permanently disabled decision
   population_policy: decision_required
   value_format: checkbox
   repeatable:
-    group: dependents
+    group: dependent
     row_slot: 1
-    column: permanently_disabled
+    column: permanently_totally_disabled
     role: decision
   runtime_fact_ref: dependents.permanently_disabled
   address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=permanently_totally_disabled
   concept_id: form_1040/dependents/dependent/permanently_totally_disabled
+  occurrence:
+    kind: slot
+    axes:
+      row_slot: 1
+    review_granularity: concept
+    row_policy: slot_keyed
+    key: row_slot=1
 - field_name: topmostSubform[0].Page1[0].Table_Dependents[0].Row6[0].Dependent2[0].c1_22[0]
   label: Dependent 2 full time student decision
   population_policy: decision_required
   value_format: checkbox
   repeatable:
-    group: dependents
+    group: dependent
     row_slot: 2
     column: full_time_student
     role: decision
   runtime_fact_ref: dependents.full_time_student
   address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=full_time_student
   concept_id: form_1040/dependents/dependent/full_time_student
+  occurrence:
+    kind: slot
+    axes:
+      row_slot: 2
+    review_granularity: concept
+    row_policy: slot_keyed
+    key: row_slot=2
 - field_name: topmostSubform[0].Page1[0].Table_Dependents[0].Row6[0].Dependent2[0].c1_23[0]
   label: Dependent 2 permanently disabled decision
   population_policy: decision_required
   value_format: checkbox
   repeatable:
-    group: dependents
+    group: dependent
     row_slot: 2
-    column: permanently_disabled
+    column: permanently_totally_disabled
     role: decision
   runtime_fact_ref: dependents.permanently_disabled
   address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=permanently_totally_disabled
   concept_id: form_1040/dependents/dependent/permanently_totally_disabled
+  occurrence:
+    kind: slot
+    axes:
+      row_slot: 2
+    review_granularity: concept
+    row_policy: slot_keyed
+    key: row_slot=2
 - field_name: topmostSubform[0].Page1[0].Table_Dependents[0].Row6[0].Dependent3[0].c1_24[0]
   label: Dependent 3 full time student decision
   population_policy: decision_required
   value_format: checkbox
   repeatable:
-    group: dependents
+    group: dependent
     row_slot: 3
     column: full_time_student
     role: decision
   runtime_fact_ref: dependents.full_time_student
   address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=full_time_student
   concept_id: form_1040/dependents/dependent/full_time_student
+  occurrence:
+    kind: slot
+    axes:
+      row_slot: 3
+    review_granularity: concept
+    row_policy: slot_keyed
+    key: row_slot=3
 - field_name: topmostSubform[0].Page1[0].Table_Dependents[0].Row6[0].Dependent3[0].c1_25[0]
   label: Dependent 3 permanently disabled decision
   population_policy: decision_required
   value_format: checkbox
   repeatable:
-    group: dependents
+    group: dependent
     row_slot: 3
-    column: permanently_disabled
+    column: permanently_totally_disabled
     role: decision
   runtime_fact_ref: dependents.permanently_disabled
   address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=permanently_totally_disabled
   concept_id: form_1040/dependents/dependent/permanently_totally_disabled
+  occurrence:
+    kind: slot
+    axes:
+      row_slot: 3
+    review_granularity: concept
+    row_policy: slot_keyed
+    key: row_slot=3
 - field_name: topmostSubform[0].Page1[0].Table_Dependents[0].Row6[0].Dependent4[0].c1_26[0]
   label: Dependent 4 full time student decision
   population_policy: decision_required
   value_format: checkbox
   repeatable:
-    group: dependents
+    group: dependent
     row_slot: 4
     column: full_time_student
     role: decision
   runtime_fact_ref: dependents.full_time_student
   address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=full_time_student
   concept_id: form_1040/dependents/dependent/full_time_student
+  occurrence:
+    kind: slot
+    axes:
+      row_slot: 4
+    review_granularity: concept
+    row_policy: slot_keyed
+    key: row_slot=4
 - field_name: topmostSubform[0].Page1[0].Table_Dependents[0].Row6[0].Dependent4[0].c1_27[0]
   label: Dependent 4 permanently disabled decision
   population_policy: decision_required
   value_format: checkbox
   repeatable:
-    group: dependents
+    group: dependent
     row_slot: 4
-    column: permanently_disabled
+    column: permanently_totally_disabled
     role: decision
   runtime_fact_ref: dependents.permanently_disabled
   address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=permanently_totally_disabled
   concept_id: form_1040/dependents/dependent/permanently_totally_disabled
+  occurrence:
+    kind: slot
+    axes:
+      row_slot: 4
+    review_granularity: concept
+    row_policy: slot_keyed
+    key: row_slot=4
 - field_name: topmostSubform[0].Page1[0].Table_Dependents[0].Row7[0].Dependent1[0].c1_28[0]
   label: Dependent 1 child tax credit decision
   population_policy: decision_required
   value_format: checkbox
   repeatable:
-    group: dependents
+    group: dependent
     row_slot: 1
     column: child_tax_credit
     role: decision
   runtime_fact_ref: dependents.child_tax_credit
   address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=child_tax_credit
   concept_id: form_1040/dependents/dependent/child_tax_credit
+  occurrence:
+    kind: slot
+    axes:
+      row_slot: 1
+    review_granularity: concept
+    row_policy: slot_keyed
+    key: row_slot=1
 - field_name: topmostSubform[0].Page1[0].Table_Dependents[0].Row7[0].Dependent1[0].c1_28[1]
   label: Dependent 1 other dependent credit decision
   population_policy: decision_required
   value_format: checkbox
   repeatable:
-    group: dependents
+    group: dependent
     row_slot: 1
-    column: other_dependent_credit
+    column: credit_for_other_dependents
     role: decision
   runtime_fact_ref: dependents.other_dependent_credit
   address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=credit_for_other_dependents
   concept_id: form_1040/dependents/dependent/credit_for_other_dependents
+  occurrence:
+    kind: slot
+    axes:
+      row_slot: 1
+    review_granularity: concept
+    row_policy: slot_keyed
+    key: row_slot=1
 - field_name: topmostSubform[0].Page1[0].Table_Dependents[0].Row7[0].Dependent2[0].c1_29[0]
   label: Dependent 2 child tax credit decision
   population_policy: decision_required
   value_format: checkbox
   repeatable:
-    group: dependents
+    group: dependent
     row_slot: 2
     column: child_tax_credit
     role: decision
   runtime_fact_ref: dependents.child_tax_credit
   address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=child_tax_credit
   concept_id: form_1040/dependents/dependent/child_tax_credit
+  occurrence:
+    kind: slot
+    axes:
+      row_slot: 2
+    review_granularity: concept
+    row_policy: slot_keyed
+    key: row_slot=2
 - field_name: topmostSubform[0].Page1[0].Table_Dependents[0].Row7[0].Dependent2[0].c1_29[1]
   label: Dependent 2 other dependent credit decision
   population_policy: decision_required
   value_format: checkbox
   repeatable:
-    group: dependents
+    group: dependent
     row_slot: 2
-    column: other_dependent_credit
+    column: credit_for_other_dependents
     role: decision
   runtime_fact_ref: dependents.other_dependent_credit
   address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=credit_for_other_dependents
   concept_id: form_1040/dependents/dependent/credit_for_other_dependents
+  occurrence:
+    kind: slot
+    axes:
+      row_slot: 2
+    review_granularity: concept
+    row_policy: slot_keyed
+    key: row_slot=2
 - field_name: topmostSubform[0].Page1[0].Table_Dependents[0].Row7[0].Dependent3[0].c1_30[0]
   label: Dependent 3 child tax credit decision
   population_policy: decision_required
   value_format: checkbox
   repeatable:
-    group: dependents
+    group: dependent
     row_slot: 3
     column: child_tax_credit
     role: decision
   runtime_fact_ref: dependents.child_tax_credit
   address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=child_tax_credit
   concept_id: form_1040/dependents/dependent/child_tax_credit
+  occurrence:
+    kind: slot
+    axes:
+      row_slot: 3
+    review_granularity: concept
+    row_policy: slot_keyed
+    key: row_slot=3
 - field_name: topmostSubform[0].Page1[0].Table_Dependents[0].Row7[0].Dependent3[0].c1_30[1]
   label: Dependent 3 other dependent credit decision
   population_policy: decision_required
   value_format: checkbox
   repeatable:
-    group: dependents
+    group: dependent
     row_slot: 3
-    column: other_dependent_credit
+    column: credit_for_other_dependents
     role: decision
   runtime_fact_ref: dependents.other_dependent_credit
   address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=credit_for_other_dependents
   concept_id: form_1040/dependents/dependent/credit_for_other_dependents
+  occurrence:
+    kind: slot
+    axes:
+      row_slot: 3
+    review_granularity: concept
+    row_policy: slot_keyed
+    key: row_slot=3
 - field_name: topmostSubform[0].Page1[0].Table_Dependents[0].Row7[0].Dependent4[0].c1_31[0]
   label: Dependent 4 child tax credit decision
   population_policy: decision_required
   value_format: checkbox
   repeatable:
-    group: dependents
+    group: dependent
     row_slot: 4
     column: child_tax_credit
     role: decision
   runtime_fact_ref: dependents.child_tax_credit
   address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=child_tax_credit
   concept_id: form_1040/dependents/dependent/child_tax_credit
+  occurrence:
+    kind: slot
+    axes:
+      row_slot: 4
+    review_granularity: concept
+    row_policy: slot_keyed
+    key: row_slot=4
 - field_name: topmostSubform[0].Page1[0].Table_Dependents[0].Row7[0].Dependent4[0].c1_31[1]
   label: Dependent 4 other dependent credit decision
   population_policy: decision_required
   value_format: checkbox
   repeatable:
-    group: dependents
+    group: dependent
     row_slot: 4
-    column: other_dependent_credit
+    column: credit_for_other_dependents
     role: decision
   runtime_fact_ref: dependents.other_dependent_credit
   address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=credit_for_other_dependents
   concept_id: form_1040/dependents/dependent/credit_for_other_dependents
+  occurrence:
+    kind: slot
+    axes:
+      row_slot: 4
+    review_granularity: concept
+    row_policy: slot_keyed
+    key: row_slot=4
 - field_name: topmostSubform[0].Page1[0].c1_32[0]
   label: More than four dependents
   population_policy: unsupported

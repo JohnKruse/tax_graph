@@ -467,10 +467,12 @@ addresses:
     printed_token: '1'
     printed_ref: Line 1 column (a)
   occurrence:
-    kind: entity
-    entity_key: transaction
+    kind: slot
+    slot_key: transaction
+    axes:
+    - row_slot
     review_granularity: concept
-    row_policy: entity_keyed
+    row_policy: slot_keyed
 - address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=b
   logical_key: document=form_8949/table=part_i_line_1/row_template=transaction/column=b
   year: 2025
@@ -503,10 +505,12 @@ addresses:
     printed_token: '1'
     printed_ref: Line 1 column (b)
   occurrence:
-    kind: entity
-    entity_key: transaction
+    kind: slot
+    slot_key: transaction
+    axes:
+    - row_slot
     review_granularity: concept
-    row_policy: entity_keyed
+    row_policy: slot_keyed
 - address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=c
   logical_key: document=form_8949/table=part_i_line_1/row_template=transaction/column=c
   year: 2025
@@ -539,10 +543,12 @@ addresses:
     printed_token: '1'
     printed_ref: Line 1 column (c)
   occurrence:
-    kind: entity
-    entity_key: transaction
+    kind: slot
+    slot_key: transaction
+    axes:
+    - row_slot
     review_granularity: concept
-    row_policy: entity_keyed
+    row_policy: slot_keyed
 - address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=d
   logical_key: document=form_8949/table=part_i_line_1/row_template=transaction/column=d
   year: 2025
@@ -575,10 +581,12 @@ addresses:
     printed_token: '1'
     printed_ref: Line 1 column (d)
   occurrence:
-    kind: entity
-    entity_key: transaction
+    kind: slot
+    slot_key: transaction
+    axes:
+    - row_slot
     review_granularity: concept
-    row_policy: entity_keyed
+    row_policy: slot_keyed
 - address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=e
   logical_key: document=form_8949/table=part_i_line_1/row_template=transaction/column=e
   year: 2025
@@ -611,10 +619,12 @@ addresses:
     printed_token: '1'
     printed_ref: Line 1 column (e)
   occurrence:
-    kind: entity
-    entity_key: transaction
+    kind: slot
+    slot_key: transaction
+    axes:
+    - row_slot
     review_granularity: concept
-    row_policy: entity_keyed
+    row_policy: slot_keyed
 - address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=f
   logical_key: document=form_8949/table=part_i_line_1/row_template=transaction/column=f
   year: 2025
@@ -647,10 +657,12 @@ addresses:
     printed_token: '1'
     printed_ref: Line 1 column (f)
   occurrence:
-    kind: entity
-    entity_key: transaction
+    kind: slot
+    slot_key: transaction
+    axes:
+    - row_slot
     review_granularity: concept
-    row_policy: entity_keyed
+    row_policy: slot_keyed
 - address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=g
   logical_key: document=form_8949/table=part_i_line_1/row_template=transaction/column=g
   year: 2025
@@ -683,10 +695,12 @@ addresses:
     printed_token: '1'
     printed_ref: Line 1 column (g)
   occurrence:
-    kind: entity
-    entity_key: transaction
+    kind: slot
+    slot_key: transaction
+    axes:
+    - row_slot
     review_granularity: concept
-    row_policy: entity_keyed
+    row_policy: slot_keyed
 - address_id: 2025/document=form_8949/table=part_i_line_1/row_template=transaction/column=h
   logical_key: document=form_8949/table=part_i_line_1/row_template=transaction/column=h
   year: 2025
@@ -719,10 +733,12 @@ addresses:
     printed_token: '1'
     printed_ref: Line 1 column (h)
   occurrence:
-    kind: entity
-    entity_key: transaction
+    kind: slot
+    slot_key: transaction
+    axes:
+    - row_slot
     review_granularity: concept
-    row_policy: entity_keyed
+    row_policy: slot_keyed
 - address_id: 2025/document=form_8949/table=part_i_line_2
   logical_key: document=form_8949/table=part_i_line_2
   year: 2025
@@ -795,10 +811,12 @@ addresses:
     printed_token: '2'
     printed_ref: Line 2 column (d)
   occurrence:
-    kind: entity
-    entity_key: total
+    kind: slot
+    slot_key: total
+    axes:
+    - row_slot
     review_granularity: concept
-    row_policy: entity_keyed
+    row_policy: slot_keyed
 - address_id: 2025/document=form_8949/table=part_i_line_2/row_template=total/column=e
   logical_key: document=form_8949/table=part_i_line_2/row_template=total/column=e
   year: 2025
@@ -831,10 +849,12 @@ addresses:
     printed_token: '2'
     printed_ref: Line 2 column (e)
   occurrence:
-    kind: entity
-    entity_key: total
+    kind: slot
+    slot_key: total
+    axes:
+    - row_slot
     review_granularity: concept
-    row_policy: entity_keyed
+    row_policy: slot_keyed
 - address_id: 2025/document=form_8949/table=part_i_line_2/row_template=total/column=g
   logical_key: document=form_8949/table=part_i_line_2/row_template=total/column=g
   year: 2025
@@ -867,10 +887,12 @@ addresses:
     printed_token: '2'
     printed_ref: Line 2 column (g)
   occurrence:
-    kind: entity
-    entity_key: total
+    kind: slot
+    slot_key: total
+    axes:
+    - row_slot
     review_granularity: concept
-    row_policy: entity_keyed
+    row_policy: slot_keyed
 - address_id: 2025/document=form_8949/table=part_i_line_2/row_template=total/column=h
   logical_key: document=form_8949/table=part_i_line_2/row_template=total/column=h
   year: 2025
@@ -903,10 +925,12 @@ addresses:
     printed_token: '2'
     printed_ref: Line 2 column (h)
   occurrence:
-    kind: entity
-    entity_key: total
+    kind: slot
+    slot_key: total
+    axes:
+    - row_slot
     review_granularity: concept
-    row_policy: entity_keyed
+    row_policy: slot_keyed
 - address_id: 2025/document=form_8949/table=part_ii_line_1
   logical_key: document=form_8949/table=part_ii_line_1
   year: 2025
@@ -979,10 +1003,12 @@ addresses:
     printed_token: '1'
     printed_ref: Line 1 column (a)
   occurrence:
-    kind: entity
-    entity_key: transaction
+    kind: slot
+    slot_key: transaction
+    axes:
+    - row_slot
     review_granularity: concept
-    row_policy: entity_keyed
+    row_policy: slot_keyed
 - address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=b
   logical_key: document=form_8949/table=part_ii_line_1/row_template=transaction/column=b
   year: 2025
@@ -1015,10 +1041,12 @@ addresses:
     printed_token: '1'
     printed_ref: Line 1 column (b)
   occurrence:
-    kind: entity
-    entity_key: transaction
+    kind: slot
+    slot_key: transaction
+    axes:
+    - row_slot
     review_granularity: concept
-    row_policy: entity_keyed
+    row_policy: slot_keyed
 - address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=c
   logical_key: document=form_8949/table=part_ii_line_1/row_template=transaction/column=c
   year: 2025
@@ -1051,10 +1079,12 @@ addresses:
     printed_token: '1'
     printed_ref: Line 1 column (c)
   occurrence:
-    kind: entity
-    entity_key: transaction
+    kind: slot
+    slot_key: transaction
+    axes:
+    - row_slot
     review_granularity: concept
-    row_policy: entity_keyed
+    row_policy: slot_keyed
 - address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=d
   logical_key: document=form_8949/table=part_ii_line_1/row_template=transaction/column=d
   year: 2025
@@ -1087,10 +1117,12 @@ addresses:
     printed_token: '1'
     printed_ref: Line 1 column (d)
   occurrence:
-    kind: entity
-    entity_key: transaction
+    kind: slot
+    slot_key: transaction
+    axes:
+    - row_slot
     review_granularity: concept
-    row_policy: entity_keyed
+    row_policy: slot_keyed
 - address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=e
   logical_key: document=form_8949/table=part_ii_line_1/row_template=transaction/column=e
   year: 2025
@@ -1123,10 +1155,12 @@ addresses:
     printed_token: '1'
     printed_ref: Line 1 column (e)
   occurrence:
-    kind: entity
-    entity_key: transaction
+    kind: slot
+    slot_key: transaction
+    axes:
+    - row_slot
     review_granularity: concept
-    row_policy: entity_keyed
+    row_policy: slot_keyed
 - address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=f
   logical_key: document=form_8949/table=part_ii_line_1/row_template=transaction/column=f
   year: 2025
@@ -1159,10 +1193,12 @@ addresses:
     printed_token: '1'
     printed_ref: Line 1 column (f)
   occurrence:
-    kind: entity
-    entity_key: transaction
+    kind: slot
+    slot_key: transaction
+    axes:
+    - row_slot
     review_granularity: concept
-    row_policy: entity_keyed
+    row_policy: slot_keyed
 - address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=g
   logical_key: document=form_8949/table=part_ii_line_1/row_template=transaction/column=g
   year: 2025
@@ -1195,10 +1231,12 @@ addresses:
     printed_token: '1'
     printed_ref: Line 1 column (g)
   occurrence:
-    kind: entity
-    entity_key: transaction
+    kind: slot
+    slot_key: transaction
+    axes:
+    - row_slot
     review_granularity: concept
-    row_policy: entity_keyed
+    row_policy: slot_keyed
 - address_id: 2025/document=form_8949/table=part_ii_line_1/row_template=transaction/column=h
   logical_key: document=form_8949/table=part_ii_line_1/row_template=transaction/column=h
   year: 2025
@@ -1231,10 +1269,12 @@ addresses:
     printed_token: '1'
     printed_ref: Line 1 column (h)
   occurrence:
-    kind: entity
-    entity_key: transaction
+    kind: slot
+    slot_key: transaction
+    axes:
+    - row_slot
     review_granularity: concept
-    row_policy: entity_keyed
+    row_policy: slot_keyed
 - address_id: 2025/document=form_8949/table=part_ii_line_2
   logical_key: document=form_8949/table=part_ii_line_2
   year: 2025
@@ -1307,10 +1347,12 @@ addresses:
     printed_token: '2'
     printed_ref: Line 2 column (d)
   occurrence:
-    kind: entity
-    entity_key: total
+    kind: slot
+    slot_key: total
+    axes:
+    - row_slot
     review_granularity: concept
-    row_policy: entity_keyed
+    row_policy: slot_keyed
 - address_id: 2025/document=form_8949/table=part_ii_line_2/row_template=total/column=e
   logical_key: document=form_8949/table=part_ii_line_2/row_template=total/column=e
   year: 2025
@@ -1343,10 +1385,12 @@ addresses:
     printed_token: '2'
     printed_ref: Line 2 column (e)
   occurrence:
-    kind: entity
-    entity_key: total
+    kind: slot
+    slot_key: total
+    axes:
+    - row_slot
     review_granularity: concept
-    row_policy: entity_keyed
+    row_policy: slot_keyed
 - address_id: 2025/document=form_8949/table=part_ii_line_2/row_template=total/column=g
   logical_key: document=form_8949/table=part_ii_line_2/row_template=total/column=g
   year: 2025
@@ -1379,10 +1423,12 @@ addresses:
     printed_token: '2'
     printed_ref: Line 2 column (g)
   occurrence:
-    kind: entity
-    entity_key: total
+    kind: slot
+    slot_key: total
+    axes:
+    - row_slot
     review_granularity: concept
-    row_policy: entity_keyed
+    row_policy: slot_keyed
 - address_id: 2025/document=form_8949/table=part_ii_line_2/row_template=total/column=h
   logical_key: document=form_8949/table=part_ii_line_2/row_template=total/column=h
   year: 2025
@@ -1415,7 +1461,9 @@ addresses:
     printed_token: '2'
     printed_ref: Line 2 column (h)
   occurrence:
-    kind: entity
-    entity_key: total
+    kind: slot
+    slot_key: total
+    axes:
+    - row_slot
     review_granularity: concept
-    row_policy: entity_keyed
+    row_policy: slot_keyed

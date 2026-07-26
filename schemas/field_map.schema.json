@@ -108,6 +108,26 @@
             "column": {"type": "string", "minLength": 1},
             "role": {"enum": ["identity", "value", "decision", "description", "total", "other"]}
           }
+        },
+        "occurrence": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind", "axes", "key"],
+          "properties": {
+            "kind": {"const": "slot"},
+            "review_granularity": {"const": "concept"},
+            "row_policy": {"const": "slot_keyed"},
+            "axes": {
+              "type": "object",
+              "minProperties": 1,
+              "additionalProperties": false,
+              "properties": {
+                "copy": {"type": "string", "pattern": "^[A-Za-z0-9]+$"},
+                "row_slot": {"type": "integer", "minimum": 1}
+              }
+            },
+            "key": {"type": "string", "pattern": "^[A-Za-z0-9_=/]+$"}
+          }
         }
       },
       "allOf": [

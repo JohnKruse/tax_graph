@@ -14,10 +14,12 @@ concepts:
   role: adjustment_amount_total
   review_granularity: concept
   occurrence:
-    kind: entity
-    entity_key: total
+    kind: slot
+    slot_key: total
+    axes:
+    - row_slot
     review_granularity: concept
-    row_policy: entity_keyed
+    row_policy: slot_keyed
   aliases:
   - document=form_8949/table=part_ii_line_2/row_template=total/column=g
   placements:
@@ -39,10 +41,12 @@ concepts:
   role: cost_basis_total
   review_granularity: concept
   occurrence:
-    kind: entity
-    entity_key: total
+    kind: slot
+    slot_key: total
+    axes:
+    - row_slot
     review_granularity: concept
-    row_policy: entity_keyed
+    row_policy: slot_keyed
   aliases:
   - document=form_8949/table=part_ii_line_2/row_template=total/column=e
   placements:
@@ -64,10 +68,12 @@ concepts:
   role: gain_or_loss_total
   review_granularity: concept
   occurrence:
-    kind: entity
-    entity_key: total
+    kind: slot
+    slot_key: total
+    axes:
+    - row_slot
     review_granularity: concept
-    row_policy: entity_keyed
+    row_policy: slot_keyed
   aliases:
   - document=form_8949/table=part_ii_line_2/row_template=total/column=h
   placements:
@@ -89,10 +95,12 @@ concepts:
   role: proceeds_total
   review_granularity: concept
   occurrence:
-    kind: entity
-    entity_key: total
+    kind: slot
+    slot_key: total
+    axes:
+    - row_slot
     review_granularity: concept
-    row_policy: entity_keyed
+    row_policy: slot_keyed
   aliases:
   - document=form_8949/table=part_ii_line_2/row_template=total/column=d
   placements:
@@ -114,10 +122,12 @@ concepts:
   role: adjustment_amount
   review_granularity: concept
   occurrence:
-    kind: entity
-    entity_key: transaction
+    kind: slot
+    slot_key: transaction
+    axes:
+    - row_slot
     review_granularity: concept
-    row_policy: entity_keyed
+    row_policy: slot_keyed
   aliases:
   - document=form_8949/table=part_ii_line_1/row_template=transaction/column=g
   placements:
@@ -139,10 +149,12 @@ concepts:
   role: adjustment_code
   review_granularity: concept
   occurrence:
-    kind: entity
-    entity_key: transaction
+    kind: slot
+    slot_key: transaction
+    axes:
+    - row_slot
     review_granularity: concept
-    row_policy: entity_keyed
+    row_policy: slot_keyed
   aliases:
   - document=form_8949/table=part_ii_line_1/row_template=transaction/column=f
   placements:
@@ -164,10 +176,12 @@ concepts:
   role: cost_basis
   review_granularity: concept
   occurrence:
-    kind: entity
-    entity_key: transaction
+    kind: slot
+    slot_key: transaction
+    axes:
+    - row_slot
     review_granularity: concept
-    row_policy: entity_keyed
+    row_policy: slot_keyed
   aliases:
   - document=form_8949/table=part_ii_line_1/row_template=transaction/column=e
   placements:
@@ -189,10 +203,12 @@ concepts:
   role: date_acquired
   review_granularity: concept
   occurrence:
-    kind: entity
-    entity_key: transaction
+    kind: slot
+    slot_key: transaction
+    axes:
+    - row_slot
     review_granularity: concept
-    row_policy: entity_keyed
+    row_policy: slot_keyed
   aliases:
   - document=form_8949/table=part_ii_line_1/row_template=transaction/column=b
   placements:
@@ -214,10 +230,12 @@ concepts:
   role: date_disposed
   review_granularity: concept
   occurrence:
-    kind: entity
-    entity_key: transaction
+    kind: slot
+    slot_key: transaction
+    axes:
+    - row_slot
     review_granularity: concept
-    row_policy: entity_keyed
+    row_policy: slot_keyed
   aliases:
   - document=form_8949/table=part_ii_line_1/row_template=transaction/column=c
   placements:
@@ -239,10 +257,12 @@ concepts:
   role: description
   review_granularity: concept
   occurrence:
-    kind: entity
-    entity_key: transaction
+    kind: slot
+    slot_key: transaction
+    axes:
+    - row_slot
     review_granularity: concept
-    row_policy: entity_keyed
+    row_policy: slot_keyed
   aliases:
   - document=form_8949/table=part_ii_line_1/row_template=transaction/column=a
   placements:
@@ -264,10 +284,12 @@ concepts:
   role: gain_or_loss
   review_granularity: concept
   occurrence:
-    kind: entity
-    entity_key: transaction
+    kind: slot
+    slot_key: transaction
+    axes:
+    - row_slot
     review_granularity: concept
-    row_policy: entity_keyed
+    row_policy: slot_keyed
   aliases:
   - document=form_8949/table=part_ii_line_1/row_template=transaction/column=h
   placements:
@@ -289,10 +311,12 @@ concepts:
   role: proceeds
   review_granularity: concept
   occurrence:
-    kind: entity
-    entity_key: transaction
+    kind: slot
+    slot_key: transaction
+    axes:
+    - row_slot
     review_granularity: concept
-    row_policy: entity_keyed
+    row_policy: slot_keyed
   aliases:
   - document=form_8949/table=part_ii_line_1/row_template=transaction/column=d
   placements:
@@ -314,10 +338,12 @@ concepts:
   role: adjustment_amount_total
   review_granularity: concept
   occurrence:
-    kind: entity
-    entity_key: total
+    kind: slot
+    slot_key: total
+    axes:
+    - row_slot
     review_granularity: concept
-    row_policy: entity_keyed
+    row_policy: slot_keyed
   aliases:
   - document=form_8949/table=part_i_line_2/row_template=total/column=g
   placements:
@@ -339,10 +365,12 @@ concepts:
   role: cost_basis_total
   review_granularity: concept
   occurrence:
-    kind: entity
-    entity_key: total
+    kind: slot
+    slot_key: total
+    axes:
+    - row_slot
     review_granularity: concept
-    row_policy: entity_keyed
+    row_policy: slot_keyed
   aliases:
   - document=form_8949/table=part_i_line_2/row_template=total/column=e
   placements:
@@ -364,10 +392,12 @@ concepts:
   role: gain_or_loss_total
   review_granularity: concept
   occurrence:
-    kind: entity
-    entity_key: total
+    kind: slot
+    slot_key: total
+    axes:
+    - row_slot
     review_granularity: concept
-    row_policy: entity_keyed
+    row_policy: slot_keyed
   aliases:
   - document=form_8949/table=part_i_line_2/row_template=total/column=h
   placements:
@@ -389,10 +419,12 @@ concepts:
   role: proceeds_total
   review_granularity: concept
   occurrence:
-    kind: entity
-    entity_key: total
+    kind: slot
+    slot_key: total
+    axes:
+    - row_slot
     review_granularity: concept
-    row_policy: entity_keyed
+    row_policy: slot_keyed
   aliases:
   - document=form_8949/table=part_i_line_2/row_template=total/column=d
   placements:
@@ -414,10 +446,12 @@ concepts:
   role: adjustment_amount
   review_granularity: concept
   occurrence:
-    kind: entity
-    entity_key: transaction
+    kind: slot
+    slot_key: transaction
+    axes:
+    - row_slot
     review_granularity: concept
-    row_policy: entity_keyed
+    row_policy: slot_keyed
   aliases:
   - document=form_8949/table=part_i_line_1/row_template=transaction/column=g
   placements:
@@ -439,10 +473,12 @@ concepts:
   role: adjustment_code
   review_granularity: concept
   occurrence:
-    kind: entity
-    entity_key: transaction
+    kind: slot
+    slot_key: transaction
+    axes:
+    - row_slot
     review_granularity: concept
-    row_policy: entity_keyed
+    row_policy: slot_keyed
   aliases:
   - document=form_8949/table=part_i_line_1/row_template=transaction/column=f
   placements:
@@ -464,10 +500,12 @@ concepts:
   role: cost_basis
   review_granularity: concept
   occurrence:
-    kind: entity
-    entity_key: transaction
+    kind: slot
+    slot_key: transaction
+    axes:
+    - row_slot
     review_granularity: concept
-    row_policy: entity_keyed
+    row_policy: slot_keyed
   aliases:
   - document=form_8949/table=part_i_line_1/row_template=transaction/column=e
   placements:
@@ -489,10 +527,12 @@ concepts:
   role: date_acquired
   review_granularity: concept
   occurrence:
-    kind: entity
-    entity_key: transaction
+    kind: slot
+    slot_key: transaction
+    axes:
+    - row_slot
     review_granularity: concept
-    row_policy: entity_keyed
+    row_policy: slot_keyed
   aliases:
   - document=form_8949/table=part_i_line_1/row_template=transaction/column=b
   placements:
@@ -514,10 +554,12 @@ concepts:
   role: date_disposed
   review_granularity: concept
   occurrence:
-    kind: entity
-    entity_key: transaction
+    kind: slot
+    slot_key: transaction
+    axes:
+    - row_slot
     review_granularity: concept
-    row_policy: entity_keyed
+    row_policy: slot_keyed
   aliases:
   - document=form_8949/table=part_i_line_1/row_template=transaction/column=c
   placements:
@@ -539,10 +581,12 @@ concepts:
   role: description
   review_granularity: concept
   occurrence:
-    kind: entity
-    entity_key: transaction
+    kind: slot
+    slot_key: transaction
+    axes:
+    - row_slot
     review_granularity: concept
-    row_policy: entity_keyed
+    row_policy: slot_keyed
   aliases:
   - document=form_8949/table=part_i_line_1/row_template=transaction/column=a
   placements:
@@ -564,10 +608,12 @@ concepts:
   role: gain_or_loss
   review_granularity: concept
   occurrence:
-    kind: entity
-    entity_key: transaction
+    kind: slot
+    slot_key: transaction
+    axes:
+    - row_slot
     review_granularity: concept
-    row_policy: entity_keyed
+    row_policy: slot_keyed
   aliases:
   - document=form_8949/table=part_i_line_1/row_template=transaction/column=h
   placements:
@@ -589,10 +635,12 @@ concepts:
   role: proceeds
   review_granularity: concept
   occurrence:
-    kind: entity
-    entity_key: transaction
+    kind: slot
+    slot_key: transaction
+    axes:
+    - row_slot
     review_granularity: concept
-    row_policy: entity_keyed
+    row_policy: slot_keyed
   aliases:
   - document=form_8949/table=part_i_line_1/row_template=transaction/column=d
   placements:

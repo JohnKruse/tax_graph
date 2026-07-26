@@ -13,6 +13,13 @@ field_dispositions:
   source_ref: form_1099_int_2025.topmostsubform_0_copya_0_copyheader_0_calendaryear1_1_0
   address_id: 2025/document=form_1099_int/section=header/control=calendar_year
   concept_id: form_1099_int/header/calendar_year
+  occurrence:
+    kind: slot
+    axes:
+      copy: A
+    review_granularity: concept
+    row_policy: slot_keyed
+    key: copy=A
 - field_name: topmostSubform[0].CopyA[0].CopyHeader[0].c1_1[0]
   label: 9292 - c1_1
   population_policy: imported
@@ -20,6 +27,13 @@ field_dispositions:
   source_ref: form_1099_int_2025.topmostsubform_0_copya_0_copyheader_0_c1_1_0
   address_id: 2025/document=form_1099_int/section=header/option=void
   concept_id: form_1099_int/header/void
+  occurrence:
+    kind: slot
+    axes:
+      copy: A
+    review_granularity: concept
+    row_policy: slot_keyed
+    key: copy=A
 - field_name: topmostSubform[0].CopyA[0].CopyHeader[0].c1_1[1]
   label: 9292 VOID - c1_1
   population_policy: imported
@@ -27,6 +41,13 @@ field_dispositions:
   source_ref: form_1099_int_2025.topmostsubform_0_copya_0_copyheader_0_c1_1_1
   address_id: 2025/document=form_1099_int/section=header/option=corrected
   concept_id: form_1099_int/header/corrected
+  occurrence:
+    kind: slot
+    axes:
+      copy: A
+    review_granularity: concept
+    row_policy: slot_keyed
+    key: copy=A
 - field_name: topmostSubform[0].CopyA[0].LeftColumn[0].f1_1[0]
   label: f1_1
   population_policy: imported
@@ -34,6 +55,13 @@ field_dispositions:
   source_ref: form_1099_int_2025.topmostsubform_0_copya_0_leftcolumn_0_f1_1_0
   address_id: 2025/document=form_1099_int/section=recipient/control=payer_name_address
   concept_id: form_1099_int/recipient/payer_name_address
+  occurrence:
+    kind: slot
+    axes:
+      copy: A
+    review_granularity: concept
+    row_policy: slot_keyed
+    key: copy=A
 - field_name: topmostSubform[0].CopyA[0].LeftColumn[0].f1_2[0]
   label: Line 3 - f1_2
   population_policy: imported
@@ -41,6 +69,13 @@ field_dispositions:
   source_ref: form_1099_int_2025.topmostsubform_0_copya_0_leftcolumn_0_f1_2_0
   address_id: 2025/document=form_1099_int/section=recipient/control=payer_tin
   concept_id: form_1099_int/recipient/payer_tin
+  occurrence:
+    kind: slot
+    axes:
+      copy: A
+    review_granularity: concept
+    row_policy: slot_keyed
+    key: copy=A
 - field_name: topmostSubform[0].CopyA[0].LeftColumn[0].f1_3[0]
   label: Line 3 - f1_3
   population_policy: imported
@@ -48,6 +83,13 @@ field_dispositions:
   source_ref: form_1099_int_2025.topmostsubform_0_copya_0_leftcolumn_0_f1_3_0
   address_id: 2025/document=form_1099_int/section=recipient/control=recipient_tin
   concept_id: form_1099_int/recipient/recipient_tin
+  occurrence:
+    kind: slot
+    axes:
+      copy: A
+    review_granularity: concept
+    row_policy: slot_keyed
+    key: copy=A
 - field_name: topmostSubform[0].CopyA[0].LeftColumn[0].f1_4[0]
   label: Line 4 - f1_4
   population_policy: imported
@@ -55,6 +97,13 @@ field_dispositions:
   source_ref: form_1099_int_2025.topmostsubform_0_copya_0_leftcolumn_0_f1_4_0
   address_id: 2025/document=form_1099_int/section=recipient/control=recipient_name
   concept_id: form_1099_int/recipient/recipient_name
+  occurrence:
+    kind: slot
+    axes:
+      copy: A
+    review_granularity: concept
+    row_policy: slot_keyed
+    key: copy=A
 - field_name: topmostSubform[0].CopyA[0].LeftColumn[0].f1_5[0]
   label: Line 8 - f1_5
   population_policy: imported
@@ -62,6 +111,13 @@ field_dispositions:
   source_ref: form_1099_int_2025.topmostsubform_0_copya_0_leftcolumn_0_f1_5_0
   address_id: 2025/document=form_1099_int/section=recipient/control=recipient_street
   concept_id: form_1099_int/recipient/recipient_street
+  occurrence:
+    kind: slot
+    axes:
+      copy: A
+    review_granularity: concept
+    row_policy: slot_keyed
+    key: copy=A
 - field_name: topmostSubform[0].CopyA[0].LeftColumn[0].f1_6[0]
   label: Line 10 - f1_6
   population_policy: imported
@@ -69,6 +125,13 @@ field_dispositions:
   source_ref: form_1099_int_2025.topmostsubform_0_copya_0_leftcolumn_0_f1_6_0
   address_id: 2025/document=form_1099_int/section=recipient/control=recipient_city
   concept_id: form_1099_int/recipient/recipient_city
+  occurrence:
+    kind: slot
+    axes:
+      copy: A
+    review_granularity: concept
+    row_policy: slot_keyed
+    key: copy=A
 - field_name: topmostSubform[0].CopyA[0].LeftColumn[0].c1_2[0]
   label: Line 12 - c1_2
   population_policy: imported
@@ -76,6 +139,13 @@ field_dispositions:
   source_ref: form_1099_int_2025.topmostsubform_0_copya_0_leftcolumn_0_c1_2_0
   address_id: 2025/document=form_1099_int/section=recipient/option=fatca_filing_requirement
   concept_id: form_1099_int/recipient/fatca_filing_requirement
+  occurrence:
+    kind: slot
+    axes:
+      copy: A
+    review_granularity: concept
+    row_policy: slot_keyed
+    key: copy=A
 - field_name: topmostSubform[0].CopyA[0].LeftColumn[0].f1_7[0]
   label: f1_7
   population_policy: imported
@@ -83,6 +153,13 @@ field_dispositions:
   source_ref: form_1099_int_2025.topmostsubform_0_copya_0_leftcolumn_0_f1_7_0
   address_id: 2025/document=form_1099_int/section=recipient/control=account_number
   concept_id: form_1099_int/recipient/account_number
+  occurrence:
+    kind: slot
+    axes:
+      copy: A
+    review_granularity: concept
+    row_policy: slot_keyed
+    key: copy=A
 - field_name: topmostSubform[0].CopyA[0].LeftColumn[0].c1_3[0]
   label: c1_3
   population_policy: imported
@@ -90,6 +167,13 @@ field_dispositions:
   source_ref: form_1099_int_2025.topmostsubform_0_copya_0_leftcolumn_0_c1_3_0
   address_id: 2025/document=form_1099_int/section=recipient/option=second_tin_notice
   concept_id: form_1099_int/recipient/second_tin_notice
+  occurrence:
+    kind: slot
+    axes:
+      copy: A
+    review_granularity: concept
+    row_policy: slot_keyed
+    key: copy=A
 - field_name: topmostSubform[0].CopyA[0].LeftColumn[0].f1_8[0]
   label: f1_8
   population_policy: imported
@@ -97,6 +181,13 @@ field_dispositions:
   source_ref: form_1099_int_2025.topmostsubform_0_copya_0_leftcolumn_0_f1_8_0
   address_id: 2025/document=form_1099_int/section=recipient/control=payer_rtn
   concept_id: form_1099_int/recipient/payer_rtn
+  occurrence:
+    kind: slot
+    axes:
+      copy: A
+    review_granularity: concept
+    row_policy: slot_keyed
+    key: copy=A
 - field_name: topmostSubform[0].CopyA[0].RightColumn[0].Box2[0].f1_10[0]
   label: "PAYER\u2019S TIN RECIPIENT\u2019S TIN $ - f1_10"
   population_policy: imported
@@ -104,6 +195,13 @@ field_dispositions:
   source_ref: form_1099_int_2025.topmostsubform_0_copya_0_rightcolumn_0_box2_0_f1_10_0
   address_id: 2025/document=form_1099_int/box=2/control=value
   concept_id: form_1099_int/interest/early_withdrawal_penalty
+  occurrence:
+    kind: slot
+    axes:
+      copy: A
+    review_granularity: concept
+    row_policy: slot_keyed
+    key: copy=A
 - field_name: topmostSubform[0].CopyA[0].RightColumn[0].Box1[0].f1_9[0]
   label: $ - f1_9
   population_policy: imported
@@ -111,6 +209,13 @@ field_dispositions:
   source_ref: form_1099_int_2025.topmostsubform_0_copya_0_rightcolumn_0_box1_0_f1_9_0
   address_id: 2025/document=form_1099_int/box=1/control=value
   concept_id: form_1099_int/interest/income
+  occurrence:
+    kind: slot
+    axes:
+      copy: A
+    review_granularity: concept
+    row_policy: slot_keyed
+    key: copy=A
 - field_name: topmostSubform[0].CopyA[0].RightColumn[0].Box3[0].f1_11[0]
   label: $ - f1_11
   population_policy: imported
@@ -118,6 +223,13 @@ field_dispositions:
   source_ref: form_1099_int_2025.topmostsubform_0_copya_0_rightcolumn_0_box3_0_f1_11_0
   address_id: 2025/document=form_1099_int/box=3/control=value
   concept_id: form_1099_int/interest/us_savings_bonds
+  occurrence:
+    kind: slot
+    axes:
+      copy: A
+    review_granularity: concept
+    row_policy: slot_keyed
+    key: copy=A
 - field_name: topmostSubform[0].CopyA[0].RightColumn[0].Box4[0].f1_12[0]
   label: Line 4 - $ - f1_12
   population_policy: imported
@@ -125,6 +237,13 @@ field_dispositions:
   source_ref: form_1099_int_2025.topmostsubform_0_copya_0_rightcolumn_0_box4_0_f1_12_0
   address_id: 2025/document=form_1099_int/box=4/control=value
   concept_id: form_1099_int/payer/federal_income_tax_withheld
+  occurrence:
+    kind: slot
+    axes:
+      copy: A
+    review_granularity: concept
+    row_policy: slot_keyed
+    key: copy=A
 - field_name: topmostSubform[0].CopyA[0].RightColumn[0].Box5[0].f1_13[0]
   label: Line 4 - $ $ - f1_13
   population_policy: imported
@@ -132,6 +251,13 @@ field_dispositions:
   source_ref: form_1099_int_2025.topmostsubform_0_copya_0_rightcolumn_0_box5_0_f1_13_0
   address_id: 2025/document=form_1099_int/box=5/control=value
   concept_id: form_1099_int/interest/investment_expenses
+  occurrence:
+    kind: slot
+    axes:
+      copy: A
+    review_granularity: concept
+    row_policy: slot_keyed
+    key: copy=A
 - field_name: topmostSubform[0].CopyA[0].RightColumn[0].Box6[0].f1_14[0]
   label: Line 6 - Street address (including apt. no.) $ - f1_14
   population_policy: imported
@@ -139,6 +265,13 @@ field_dispositions:
   source_ref: form_1099_int_2025.topmostsubform_0_copya_0_rightcolumn_0_box6_0_f1_14_0
   address_id: 2025/document=form_1099_int/box=6/control=value
   concept_id: form_1099_int/foreign_tax/paid
+  occurrence:
+    kind: slot
+    axes:
+      copy: A
+    review_granularity: concept
+    row_policy: slot_keyed
+    key: copy=A
 - field_name: topmostSubform[0].CopyA[0].RightColumn[0].f1_15[0]
   label: Line 6 - Street address (including apt. no.) $ - f1_15
   population_policy: imported
@@ -146,6 +279,13 @@ field_dispositions:
   source_ref: form_1099_int_2025.topmostsubform_0_copya_0_rightcolumn_0_f1_15_0
   address_id: 2025/document=form_1099_int/box=7/control=value
   concept_id: form_1099_int/foreign_tax/country
+  occurrence:
+    kind: slot
+    axes:
+      copy: A
+    review_granularity: concept
+    row_policy: slot_keyed
+    key: copy=A
 - field_name: topmostSubform[0].CopyA[0].RightColumn[0].Box8[0].f1_16[0]
   label: or province, country, and ZIP or foreign postal code $ - f1_16
   population_policy: imported
@@ -153,6 +293,13 @@ field_dispositions:
   source_ref: form_1099_int_2025.topmostsubform_0_copya_0_rightcolumn_0_box8_0_f1_16_0
   address_id: 2025/document=form_1099_int/box=8/control=value
   concept_id: form_1099_int/interest/tax_exempt
+  occurrence:
+    kind: slot
+    axes:
+      copy: A
+    review_granularity: concept
+    row_policy: slot_keyed
+    key: copy=A
 - field_name: topmostSubform[0].CopyA[0].RightColumn[0].Box9[0].f1_17[0]
   label: province, country, and ZIP or foreign postal code $ $ - f1_17
   population_policy: imported
@@ -160,6 +307,13 @@ field_dispositions:
   source_ref: form_1099_int_2025.topmostsubform_0_copya_0_rightcolumn_0_box9_0_f1_17_0
   address_id: 2025/document=form_1099_int/box=9/control=value
   concept_id: form_1099_int/interest/specified_private_activity_bond
+  occurrence:
+    kind: slot
+    axes:
+      copy: A
+    review_granularity: concept
+    row_policy: slot_keyed
+    key: copy=A
 - field_name: topmostSubform[0].CopyA[0].RightColumn[0].Box10[0].f1_18[0]
   label: FATCA filing $ - f1_18
   population_policy: imported
@@ -167,6 +321,13 @@ field_dispositions:
   source_ref: form_1099_int_2025.topmostsubform_0_copya_0_rightcolumn_0_box10_0_f1_18_0
   address_id: 2025/document=form_1099_int/box=10/control=value
   concept_id: form_1099_int/interest/market_discount
+  occurrence:
+    kind: slot
+    axes:
+      copy: A
+    review_granularity: concept
+    row_policy: slot_keyed
+    key: copy=A
 - field_name: topmostSubform[0].CopyA[0].RightColumn[0].Box11[0].f1_19[0]
   label: FATCA filing $ $ - f1_19
   population_policy: imported
@@ -174,6 +335,13 @@ field_dispositions:
   source_ref: form_1099_int_2025.topmostsubform_0_copya_0_rightcolumn_0_box11_0_f1_19_0
   address_id: 2025/document=form_1099_int/box=11/control=value
   concept_id: form_1099_int/interest/bond_premium
+  occurrence:
+    kind: slot
+    axes:
+      copy: A
+    review_granularity: concept
+    row_policy: slot_keyed
+    key: copy=A
 - field_name: topmostSubform[0].CopyA[0].RightColumn[0].Box12[0].f1_20[0]
   label: Line 12 - $ - f1_20
   population_policy: imported
@@ -181,6 +349,13 @@ field_dispositions:
   source_ref: form_1099_int_2025.topmostsubform_0_copya_0_rightcolumn_0_box12_0_f1_20_0
   address_id: 2025/document=form_1099_int/box=12/control=value
   concept_id: form_1099_int/interest/bond_premium_treasury
+  occurrence:
+    kind: slot
+    axes:
+      copy: A
+    review_granularity: concept
+    row_policy: slot_keyed
+    key: copy=A
 - field_name: topmostSubform[0].CopyA[0].RightColumn[0].Box13[0].f1_21[0]
   label: Line 12 - $ $ - f1_21
   population_policy: imported
@@ -188,6 +363,13 @@ field_dispositions:
   source_ref: form_1099_int_2025.topmostsubform_0_copya_0_rightcolumn_0_box13_0_f1_21_0
   address_id: 2025/document=form_1099_int/box=13/control=value
   concept_id: form_1099_int/interest/bond_premium_tax_exempt
+  occurrence:
+    kind: slot
+    axes:
+      copy: A
+    review_granularity: concept
+    row_policy: slot_keyed
+    key: copy=A
 - field_name: topmostSubform[0].CopyA[0].RightColumn[0].Box14[0].f1_22[0]
   label: f1_22
   population_policy: imported
@@ -195,6 +377,13 @@ field_dispositions:
   source_ref: form_1099_int_2025.topmostsubform_0_copya_0_rightcolumn_0_box14_0_f1_22_0
   address_id: 2025/document=form_1099_int/box=14/control=value
   concept_id: form_1099_int/interest/cusip
+  occurrence:
+    kind: slot
+    axes:
+      copy: A
+    review_granularity: concept
+    row_policy: slot_keyed
+    key: copy=A
 - field_name: topmostSubform[0].CopyA[0].RightColumn[0].Boxes15_16_17[0].f1_23[0]
   label: bond CUSIP no. - f1_23
   population_policy: imported
@@ -202,6 +391,19 @@ field_dispositions:
   source_ref: form_1099_int_2025.topmostsubform_0_copya_0_rightcolumn_0_boxes15_16_17_0_f1_23_0
   address_id: 2025/document=form_1099_int/table=state/row_template=jurisdiction/column=state
   concept_id: form_1099_int/state_local/jurisdiction/state
+  occurrence:
+    kind: slot
+    axes:
+      copy: A
+      row_slot: 1
+    review_granularity: concept
+    row_policy: slot_keyed
+    key: copy=A/row_slot=1
+  repeatable:
+    group: jurisdiction
+    row_slot: 1
+    column: state
+    role: value
 - field_name: topmostSubform[0].CopyA[0].RightColumn[0].Boxes15_16_17[0].f1_24[0]
   label: f1_24
   population_policy: imported
@@ -209,6 +411,19 @@ field_dispositions:
   source_ref: form_1099_int_2025.topmostsubform_0_copya_0_rightcolumn_0_boxes15_16_17_0_f1_24_0
   address_id: 2025/document=form_1099_int/table=state/row_template=jurisdiction/column=state
   concept_id: form_1099_int/state_local/jurisdiction/state
+  occurrence:
+    kind: slot
+    axes:
+      copy: A
+      row_slot: 2
+    review_granularity: concept
+    row_policy: slot_keyed
+    key: copy=A/row_slot=2
+  repeatable:
+    group: jurisdiction
+    row_slot: 2
+    column: state
+    role: value
 - field_name: topmostSubform[0].CopyA[0].RightColumn[0].Boxes15_16_17[0].f1_25[0]
   label: bond CUSIP no. - f1_25
   population_policy: imported
@@ -216,6 +431,19 @@ field_dispositions:
   source_ref: form_1099_int_2025.topmostsubform_0_copya_0_rightcolumn_0_boxes15_16_17_0_f1_25_0
   address_id: 2025/document=form_1099_int/table=state/row_template=jurisdiction/column=state_id
   concept_id: form_1099_int/state_local/jurisdiction/state_id
+  occurrence:
+    kind: slot
+    axes:
+      copy: A
+      row_slot: 1
+    review_granularity: concept
+    row_policy: slot_keyed
+    key: copy=A/row_slot=1
+  repeatable:
+    group: jurisdiction
+    row_slot: 1
+    column: state_id
+    role: value
 - field_name: topmostSubform[0].CopyA[0].RightColumn[0].Boxes15_16_17[0].f1_26[0]
   label: f1_26
   population_policy: imported
@@ -223,6 +451,19 @@ field_dispositions:
   source_ref: form_1099_int_2025.topmostsubform_0_copya_0_rightcolumn_0_boxes15_16_17_0_f1_26_0
   address_id: 2025/document=form_1099_int/table=state/row_template=jurisdiction/column=state_id
   concept_id: form_1099_int/state_local/jurisdiction/state_id
+  occurrence:
+    kind: slot
+    axes:
+      copy: A
+      row_slot: 2
+    review_granularity: concept
+    row_policy: slot_keyed
+    key: copy=A/row_slot=2
+  repeatable:
+    group: jurisdiction
+    row_slot: 2
+    column: state_id
+    role: value
 - field_name: topmostSubform[0].CopyA[0].RightColumn[0].Boxes15_16_17[0].f1_27[0]
   label: bond CUSIP no. $ - f1_27
   population_policy: imported
@@ -230,6 +471,19 @@ field_dispositions:
   source_ref: form_1099_int_2025.topmostsubform_0_copya_0_rightcolumn_0_boxes15_16_17_0_f1_27_0
   address_id: 2025/document=form_1099_int/table=state/row_template=jurisdiction/column=state_tax
   concept_id: form_1099_int/state_local/jurisdiction/state_tax
+  occurrence:
+    kind: slot
+    axes:
+      copy: A
+      row_slot: 1
+    review_granularity: concept
+    row_policy: slot_keyed
+    key: copy=A/row_slot=1
+  repeatable:
+    group: jurisdiction
+    row_slot: 1
+    column: state_tax
+    role: value
 - field_name: topmostSubform[0].CopyA[0].RightColumn[0].Boxes15_16_17[0].f1_28[0]
   label: $ - f1_28
   population_policy: imported
@@ -237,6 +491,19 @@ field_dispositions:
   source_ref: form_1099_int_2025.topmostsubform_0_copya_0_rightcolumn_0_boxes15_16_17_0_f1_28_0
   address_id: 2025/document=form_1099_int/table=state/row_template=jurisdiction/column=state_tax
   concept_id: form_1099_int/state_local/jurisdiction/state_tax
+  occurrence:
+    kind: slot
+    axes:
+      copy: A
+      row_slot: 2
+    review_granularity: concept
+    row_policy: slot_keyed
+    key: copy=A/row_slot=2
+  repeatable:
+    group: jurisdiction
+    row_slot: 2
+    column: state_tax
+    role: value
 - field_name: topmostSubform[0].Copy1[0].CopyHeader[0].CalendarYear2_1[0]
   label: $ - CalendarYear2_1 (page 3, control 34)
   population_policy: imported
@@ -244,6 +511,13 @@ field_dispositions:
   source_ref: form_1099_int_2025.topmostsubform_0_copy1_0_copyheader_0_calendaryear2_1_0
   address_id: 2025/document=form_1099_int/section=header/control=calendar_year
   concept_id: form_1099_int/header/calendar_year
+  occurrence:
+    kind: slot
+    axes:
+      copy: '1'
+    review_granularity: concept
+    row_policy: slot_keyed
+    key: copy=1
 - field_name: topmostSubform[0].Copy1[0].CopyHeader[0].c2_1[0]
   label: c2_1 (page 3, control 35)
   population_policy: imported
@@ -251,6 +525,13 @@ field_dispositions:
   source_ref: form_1099_int_2025.topmostsubform_0_copy1_0_copyheader_0_c2_1_0
   address_id: 2025/document=form_1099_int/section=header/option=void
   concept_id: form_1099_int/header/void
+  occurrence:
+    kind: slot
+    axes:
+      copy: '1'
+    review_granularity: concept
+    row_policy: slot_keyed
+    key: copy=1
 - field_name: topmostSubform[0].Copy1[0].CopyHeader[0].c2_1[1]
   label: VOID - c2_1
   population_policy: imported
@@ -258,6 +539,13 @@ field_dispositions:
   source_ref: form_1099_int_2025.topmostsubform_0_copy1_0_copyheader_0_c2_1_1
   address_id: 2025/document=form_1099_int/section=header/option=corrected
   concept_id: form_1099_int/header/corrected
+  occurrence:
+    kind: slot
+    axes:
+      copy: '1'
+    review_granularity: concept
+    row_policy: slot_keyed
+    key: copy=1
 - field_name: topmostSubform[0].Copy1[0].LftColumn[0].f2_1[0]
   label: f2_1 (page 3, control 37)
   population_policy: imported
@@ -265,6 +553,13 @@ field_dispositions:
   source_ref: form_1099_int_2025.topmostsubform_0_copy1_0_lftcolumn_0_f2_1_0
   address_id: 2025/document=form_1099_int/section=recipient/control=payer_name_address
   concept_id: form_1099_int/recipient/payer_name_address
+  occurrence:
+    kind: slot
+    axes:
+      copy: '1'
+    review_granularity: concept
+    row_policy: slot_keyed
+    key: copy=1
 - field_name: topmostSubform[0].Copy1[0].LftColumn[0].f2_2[0]
   label: Line 3 - f2_2 (page 3, control 38)
   population_policy: imported
@@ -272,6 +567,13 @@ field_dispositions:
   source_ref: form_1099_int_2025.topmostsubform_0_copy1_0_lftcolumn_0_f2_2_0
   address_id: 2025/document=form_1099_int/section=recipient/control=payer_tin
   concept_id: form_1099_int/recipient/payer_tin
+  occurrence:
+    kind: slot
+    axes:
+      copy: '1'
+    review_granularity: concept
+    row_policy: slot_keyed
+    key: copy=1
 - field_name: topmostSubform[0].Copy1[0].LftColumn[0].f2_3[0]
   label: Line 3 - f2_3 (page 3, control 39)
   population_policy: imported
@@ -279,6 +581,13 @@ field_dispositions:
   source_ref: form_1099_int_2025.topmostsubform_0_copy1_0_lftcolumn_0_f2_3_0
   address_id: 2025/document=form_1099_int/section=recipient/control=recipient_tin
   concept_id: form_1099_int/recipient/recipient_tin
+  occurrence:
+    kind: slot
+    axes:
+      copy: '1'
+    review_granularity: concept
+    row_policy: slot_keyed
+    key: copy=1
 - field_name: topmostSubform[0].Copy1[0].LftColumn[0].f2_4[0]
   label: Line 4 - f2_4 (page 3, control 40)
   population_policy: imported
@@ -286,6 +595,13 @@ field_dispositions:
   source_ref: form_1099_int_2025.topmostsubform_0_copy1_0_lftcolumn_0_f2_4_0
   address_id: 2025/document=form_1099_int/section=recipient/control=recipient_name
   concept_id: form_1099_int/recipient/recipient_name
+  occurrence:
+    kind: slot
+    axes:
+      copy: '1'
+    review_granularity: concept
+    row_policy: slot_keyed
+    key: copy=1
 - field_name: topmostSubform[0].Copy1[0].LftColumn[0].f2_5[0]
   label: Line 8 - f2_5 (page 3, control 41)
   population_policy: imported
@@ -293,6 +609,13 @@ field_dispositions:
   source_ref: form_1099_int_2025.topmostsubform_0_copy1_0_lftcolumn_0_f2_5_0
   address_id: 2025/document=form_1099_int/section=recipient/control=recipient_street
   concept_id: form_1099_int/recipient/recipient_street
+  occurrence:
+    kind: slot
+    axes:
+      copy: '1'
+    review_granularity: concept
+    row_policy: slot_keyed
+    key: copy=1
 - field_name: topmostSubform[0].Copy1[0].LftColumn[0].f2_6[0]
   label: Line 10 - f2_6 (page 3, control 42)
   population_policy: imported
@@ -300,6 +623,13 @@ field_dispositions:
   source_ref: form_1099_int_2025.topmostsubform_0_copy1_0_lftcolumn_0_f2_6_0
   address_id: 2025/document=form_1099_int/section=recipient/control=recipient_city
   concept_id: form_1099_int/recipient/recipient_city
+  occurrence:
+    kind: slot
+    axes:
+      copy: '1'
+    review_granularity: concept
+    row_policy: slot_keyed
+    key: copy=1
 - field_name: topmostSubform[0].Copy1[0].LftColumn[0].c2_2[0]
   label: Line 12 - c2_2 (page 3, control 43)
   population_policy: imported
@@ -307,6 +637,13 @@ field_dispositions:
   source_ref: form_1099_int_2025.topmostsubform_0_copy1_0_lftcolumn_0_c2_2_0
   address_id: 2025/document=form_1099_int/section=recipient/option=fatca_filing_requirement
   concept_id: form_1099_int/recipient/fatca_filing_requirement
+  occurrence:
+    kind: slot
+    axes:
+      copy: '1'
+    review_granularity: concept
+    row_policy: slot_keyed
+    key: copy=1
 - field_name: topmostSubform[0].Copy1[0].LftColumn[0].f2_7[0]
   label: f2_7 (page 3, control 44)
   population_policy: imported
@@ -314,6 +651,13 @@ field_dispositions:
   source_ref: form_1099_int_2025.topmostsubform_0_copy1_0_lftcolumn_0_f2_7_0
   address_id: 2025/document=form_1099_int/section=recipient/control=account_number
   concept_id: form_1099_int/recipient/account_number
+  occurrence:
+    kind: slot
+    axes:
+      copy: '1'
+    review_granularity: concept
+    row_policy: slot_keyed
+    key: copy=1
 - field_name: topmostSubform[0].Copy1[0].RghtCol[0].f2_8[0]
   label: f2_8 (page 3, control 45)
   population_policy: imported
@@ -321,6 +665,13 @@ field_dispositions:
   source_ref: form_1099_int_2025.topmostsubform_0_copy1_0_rghtcol_0_f2_8_0
   address_id: 2025/document=form_1099_int/section=recipient/control=payer_rtn
   concept_id: form_1099_int/recipient/payer_rtn
+  occurrence:
+    kind: slot
+    axes:
+      copy: '1'
+    review_granularity: concept
+    row_policy: slot_keyed
+    key: copy=1
 - field_name: topmostSubform[0].Copy1[0].RghtCol[0].Box1[0].f2_9[0]
   label: $ - f2_9 (page 3, control 46)
   population_policy: imported
@@ -328,6 +679,13 @@ field_dispositions:
   source_ref: form_1099_int_2025.topmostsubform_0_copy1_0_rghtcol_0_box1_0_f2_9_0
   address_id: 2025/document=form_1099_int/box=1/control=value
   concept_id: form_1099_int/interest/income
+  occurrence:
+    kind: slot
+    axes:
+      copy: '1'
+    review_granularity: concept
+    row_policy: slot_keyed
+    key: copy=1
 - field_name: topmostSubform[0].Copy1[0].RghtCol[0].Box2[0].f2_10[0]
   label: "PAYER\u2019S TIN RECIPIENT\u2019S TIN $ - f2_10 (page 3, control 47)"
   population_policy: imported
@@ -335,6 +693,13 @@ field_dispositions:
   source_ref: form_1099_int_2025.topmostsubform_0_copy1_0_rghtcol_0_box2_0_f2_10_0
   address_id: 2025/document=form_1099_int/box=2/control=value
   concept_id: form_1099_int/interest/early_withdrawal_penalty
+  occurrence:
+    kind: slot
+    axes:
+      copy: '1'
+    review_granularity: concept
+    row_policy: slot_keyed
+    key: copy=1
 - field_name: topmostSubform[0].Copy1[0].RghtCol[0].Box3[0].f2_11[0]
   label: $ - f2_11 (page 3, control 48)
   population_policy: imported
@@ -342,6 +707,13 @@ field_dispositions:
   source_ref: form_1099_int_2025.topmostsubform_0_copy1_0_rghtcol_0_box3_0_f2_11_0
   address_id: 2025/document=form_1099_int/box=3/control=value
   concept_id: form_1099_int/interest/us_savings_bonds
+  occurrence:
+    kind: slot
+    axes:
+      copy: '1'
+    review_granularity: concept
+    row_policy: slot_keyed
+    key: copy=1
 - field_name: topmostSubform[0].Copy1[0].RghtCol[0].Box4[0].f2_12[0]
   label: Line 4 - $ - f2_12 (page 3, control 49)
   population_policy: imported
@@ -349,6 +721,13 @@ field_dispositions:
   source_ref: form_1099_int_2025.topmostsubform_0_copy1_0_rghtcol_0_box4_0_f2_12_0
   address_id: 2025/document=form_1099_int/box=4/control=value
   concept_id: form_1099_int/payer/federal_income_tax_withheld
+  occurrence:
+    kind: slot
+    axes:
+      copy: '1'
+    review_granularity: concept
+    row_policy: slot_keyed
+    key: copy=1
 - field_name: topmostSubform[0].Copy1[0].RghtCol[0].Box5[0].f2_13[0]
   label: Line 4 - $ $ - f2_13 (page 3, control 50)
   population_policy: imported
@@ -356,6 +735,13 @@ field_dispositions:
   source_ref: form_1099_int_2025.topmostsubform_0_copy1_0_rghtcol_0_box5_0_f2_13_0
   address_id: 2025/document=form_1099_int/box=5/control=value
   concept_id: form_1099_int/interest/investment_expenses
+  occurrence:
+    kind: slot
+    axes:
+      copy: '1'
+    review_granularity: concept
+    row_policy: slot_keyed
+    key: copy=1
 - field_name: topmostSubform[0].Copy1[0].RghtCol[0].Box6[0].f2_14[0]
   label: Line 6 - Street address (including apt. no.) $ - f2_14 (page 3, control 51)
   population_policy: imported
@@ -363,6 +749,13 @@ field_dispositions:
   source_ref: form_1099_int_2025.topmostsubform_0_copy1_0_rghtcol_0_box6_0_f2_14_0
   address_id: 2025/document=form_1099_int/box=6/control=value
   concept_id: form_1099_int/foreign_tax/paid
+  occurrence:
+    kind: slot
+    axes:
+      copy: '1'
+    review_granularity: concept
+    row_policy: slot_keyed
+    key: copy=1
 - field_name: topmostSubform[0].Copy1[0].RghtCol[0].f2_15[0]
   label: Line 6 - Street address (including apt. no.) $ - f2_15 (page 3, control 52)
   population_policy: imported
@@ -370,6 +763,13 @@ field_dispositions:
   source_ref: form_1099_int_2025.topmostsubform_0_copy1_0_rghtcol_0_f2_15_0
   address_id: 2025/document=form_1099_int/box=7/control=value
   concept_id: form_1099_int/foreign_tax/country
+  occurrence:
+    kind: slot
+    axes:
+      copy: '1'
+    review_granularity: concept
+    row_policy: slot_keyed
+    key: copy=1
 - field_name: topmostSubform[0].Copy1[0].RghtCol[0].Box8[0].f2_16[0]
   label: or province, country, and ZIP or foreign postal code $ - f2_16 (page 3, control
     53)
@@ -378,6 +778,13 @@ field_dispositions:
   source_ref: form_1099_int_2025.topmostsubform_0_copy1_0_rghtcol_0_box8_0_f2_16_0
   address_id: 2025/document=form_1099_int/box=8/control=value
   concept_id: form_1099_int/interest/tax_exempt
+  occurrence:
+    kind: slot
+    axes:
+      copy: '1'
+    review_granularity: concept
+    row_policy: slot_keyed
+    key: copy=1
 - field_name: topmostSubform[0].Copy1[0].RghtCol[0].Box9[0].f2_17[0]
   label: province, country, and ZIP or foreign postal code $ $ - f2_17 (page 3, control
     54)
@@ -386,6 +793,13 @@ field_dispositions:
   source_ref: form_1099_int_2025.topmostsubform_0_copy1_0_rghtcol_0_box9_0_f2_17_0
   address_id: 2025/document=form_1099_int/box=9/control=value
   concept_id: form_1099_int/interest/specified_private_activity_bond
+  occurrence:
+    kind: slot
+    axes:
+      copy: '1'
+    review_granularity: concept
+    row_policy: slot_keyed
+    key: copy=1
 - field_name: topmostSubform[0].Copy1[0].RghtCol[0].Box10[0].f2_18[0]
   label: FATCA filing $ - f2_18 (page 3, control 55)
   population_policy: imported
@@ -393,6 +807,13 @@ field_dispositions:
   source_ref: form_1099_int_2025.topmostsubform_0_copy1_0_rghtcol_0_box10_0_f2_18_0
   address_id: 2025/document=form_1099_int/box=10/control=value
   concept_id: form_1099_int/interest/market_discount
+  occurrence:
+    kind: slot
+    axes:
+      copy: '1'
+    review_granularity: concept
+    row_policy: slot_keyed
+    key: copy=1
 - field_name: topmostSubform[0].Copy1[0].RghtCol[0].Box11[0].f2_19[0]
   label: FATCA filing $ $ - f2_19 (page 3, control 56)
   population_policy: imported
@@ -400,6 +821,13 @@ field_dispositions:
   source_ref: form_1099_int_2025.topmostsubform_0_copy1_0_rghtcol_0_box11_0_f2_19_0
   address_id: 2025/document=form_1099_int/box=11/control=value
   concept_id: form_1099_int/interest/bond_premium
+  occurrence:
+    kind: slot
+    axes:
+      copy: '1'
+    review_granularity: concept
+    row_policy: slot_keyed
+    key: copy=1
 - field_name: topmostSubform[0].Copy1[0].RghtCol[0].Box12[0].f2_20[0]
   label: Line 12 - $ - f2_20 (page 3, control 57)
   population_policy: imported
@@ -407,6 +835,13 @@ field_dispositions:
   source_ref: form_1099_int_2025.topmostsubform_0_copy1_0_rghtcol_0_box12_0_f2_20_0
   address_id: 2025/document=form_1099_int/box=12/control=value
   concept_id: form_1099_int/interest/bond_premium_treasury
+  occurrence:
+    kind: slot
+    axes:
+      copy: '1'
+    review_granularity: concept
+    row_policy: slot_keyed
+    key: copy=1
 - field_name: topmostSubform[0].Copy1[0].RghtCol[0].Box13[0].f2_21[0]
   label: Line 12 - $ $ - f2_21 (page 3, control 58)
   population_policy: imported
@@ -414,6 +849,13 @@ field_dispositions:
   source_ref: form_1099_int_2025.topmostsubform_0_copy1_0_rghtcol_0_box13_0_f2_21_0
   address_id: 2025/document=form_1099_int/box=13/control=value
   concept_id: form_1099_int/interest/bond_premium_tax_exempt
+  occurrence:
+    kind: slot
+    axes:
+      copy: '1'
+    review_granularity: concept
+    row_policy: slot_keyed
+    key: copy=1
 - field_name: topmostSubform[0].Copy1[0].RghtCol[0].Box14[0].f2_22[0]
   label: f2_22 (page 3, control 59)
   population_policy: imported
@@ -421,6 +863,13 @@ field_dispositions:
   source_ref: form_1099_int_2025.topmostsubform_0_copy1_0_rghtcol_0_box14_0_f2_22_0
   address_id: 2025/document=form_1099_int/box=14/control=value
   concept_id: form_1099_int/interest/cusip
+  occurrence:
+    kind: slot
+    axes:
+      copy: '1'
+    review_granularity: concept
+    row_policy: slot_keyed
+    key: copy=1
 - field_name: topmostSubform[0].Copy1[0].RghtCol[0].Boxes15_16_17[0].f2_23[0]
   label: bond CUSIP no. - f2_23 (page 3, control 60)
   population_policy: imported
@@ -428,6 +877,19 @@ field_dispositions:
   source_ref: form_1099_int_2025.topmostsubform_0_copy1_0_rghtcol_0_boxes15_16_17_0_f2_23_0
   address_id: 2025/document=form_1099_int/table=state/row_template=jurisdiction/column=state
   concept_id: form_1099_int/state_local/jurisdiction/state
+  occurrence:
+    kind: slot
+    axes:
+      copy: '1'
+      row_slot: 1
+    review_granularity: concept
+    row_policy: slot_keyed
+    key: copy=1/row_slot=1
+  repeatable:
+    group: jurisdiction
+    row_slot: 1
+    column: state
+    role: value
 - field_name: topmostSubform[0].Copy1[0].RghtCol[0].Boxes15_16_17[0].f2_24[0]
   label: f2_24 (page 3, control 61)
   population_policy: imported
@@ -435,6 +897,19 @@ field_dispositions:
   source_ref: form_1099_int_2025.topmostsubform_0_copy1_0_rghtcol_0_boxes15_16_17_0_f2_24_0
   address_id: 2025/document=form_1099_int/table=state/row_template=jurisdiction/column=state
   concept_id: form_1099_int/state_local/jurisdiction/state
+  occurrence:
+    kind: slot
+    axes:
+      copy: '1'
+      row_slot: 2
+    review_granularity: concept
+    row_policy: slot_keyed
+    key: copy=1/row_slot=2
+  repeatable:
+    group: jurisdiction
+    row_slot: 2
+    column: state
+    role: value
 - field_name: topmostSubform[0].Copy1[0].RghtCol[0].Boxes15_16_17[0].f2_25[0]
   label: bond CUSIP no. - f2_25 (page 3, control 62)
   population_policy: imported
@@ -442,6 +917,19 @@ field_dispositions:
   source_ref: form_1099_int_2025.topmostsubform_0_copy1_0_rghtcol_0_boxes15_16_17_0_f2_25_0
   address_id: 2025/document=form_1099_int/table=state/row_template=jurisdiction/column=state_id
   concept_id: form_1099_int/state_local/jurisdiction/state_id
+  occurrence:
+    kind: slot
+    axes:
+      copy: '1'
+      row_slot: 1
+    review_granularity: concept
+    row_policy: slot_keyed
+    key: copy=1/row_slot=1
+  repeatable:
+    group: jurisdiction
+    row_slot: 1
+    column: state_id
+    role: value
 - field_name: topmostSubform[0].Copy1[0].RghtCol[0].Boxes15_16_17[0].f2_26[0]
   label: f2_26 (page 3, control 63)
   population_policy: imported
@@ -449,6 +937,19 @@ field_dispositions:
   source_ref: form_1099_int_2025.topmostsubform_0_copy1_0_rghtcol_0_boxes15_16_17_0_f2_26_0
   address_id: 2025/document=form_1099_int/table=state/row_template=jurisdiction/column=state_id
   concept_id: form_1099_int/state_local/jurisdiction/state_id
+  occurrence:
+    kind: slot
+    axes:
+      copy: '1'
+      row_slot: 2
+    review_granularity: concept
+    row_policy: slot_keyed
+    key: copy=1/row_slot=2
+  repeatable:
+    group: jurisdiction
+    row_slot: 2
+    column: state_id
+    role: value
 - field_name: topmostSubform[0].Copy1[0].RghtCol[0].Boxes15_16_17[0].f2_27[0]
   label: bond CUSIP no. $ - f2_27 (page 3, control 64)
   population_policy: imported
@@ -456,6 +957,19 @@ field_dispositions:
   source_ref: form_1099_int_2025.topmostsubform_0_copy1_0_rghtcol_0_boxes15_16_17_0_f2_27_0
   address_id: 2025/document=form_1099_int/table=state/row_template=jurisdiction/column=state_tax
   concept_id: form_1099_int/state_local/jurisdiction/state_tax
+  occurrence:
+    kind: slot
+    axes:
+      copy: '1'
+      row_slot: 1
+    review_granularity: concept
+    row_policy: slot_keyed
+    key: copy=1/row_slot=1
+  repeatable:
+    group: jurisdiction
+    row_slot: 1
+    column: state_tax
+    role: value
 - field_name: topmostSubform[0].Copy1[0].RghtCol[0].Boxes15_16_17[0].f2_28[0]
   label: $ - f2_28 (page 3, control 65)
   population_policy: imported
@@ -463,6 +977,19 @@ field_dispositions:
   source_ref: form_1099_int_2025.topmostsubform_0_copy1_0_rghtcol_0_boxes15_16_17_0_f2_28_0
   address_id: 2025/document=form_1099_int/table=state/row_template=jurisdiction/column=state_tax
   concept_id: form_1099_int/state_local/jurisdiction/state_tax
+  occurrence:
+    kind: slot
+    axes:
+      copy: '1'
+      row_slot: 2
+    review_granularity: concept
+    row_policy: slot_keyed
+    key: copy=1/row_slot=2
+  repeatable:
+    group: jurisdiction
+    row_slot: 2
+    column: state_tax
+    role: value
 - field_name: topmostSubform[0].CopyB[0].CopyBHeader[0].CalendarYear2_1[0]
   label: $ - CalendarYear2_1 (page 4, control 66)
   population_policy: imported
@@ -470,6 +997,13 @@ field_dispositions:
   source_ref: form_1099_int_2025.topmostsubform_0_copyb_0_copybheader_0_calendaryear2_1_0
   address_id: 2025/document=form_1099_int/section=header/control=calendar_year
   concept_id: form_1099_int/header/calendar_year
+  occurrence:
+    kind: slot
+    axes:
+      copy: B
+    review_granularity: concept
+    row_policy: slot_keyed
+    key: copy=B
 - field_name: topmostSubform[0].CopyB[0].CopyBHeader[0].c2_1[0]
   label: c2_1 (page 4, control 67)
   population_policy: imported
@@ -477,6 +1011,13 @@ field_dispositions:
   source_ref: form_1099_int_2025.topmostsubform_0_copyb_0_copybheader_0_c2_1_0
   address_id: 2025/document=form_1099_int/section=header/option=void
   concept_id: form_1099_int/header/void
+  occurrence:
+    kind: slot
+    axes:
+      copy: B
+    review_granularity: concept
+    row_policy: slot_keyed
+    key: copy=B
 - field_name: topmostSubform[0].CopyB[0].LeftColumn[0].f2_1[0]
   label: f2_1 (page 4, control 68)
   population_policy: imported
@@ -484,6 +1025,13 @@ field_dispositions:
   source_ref: form_1099_int_2025.topmostsubform_0_copyb_0_leftcolumn_0_f2_1_0
   address_id: 2025/document=form_1099_int/section=recipient/control=payer_name_address
   concept_id: form_1099_int/recipient/payer_name_address
+  occurrence:
+    kind: slot
+    axes:
+      copy: B
+    review_granularity: concept
+    row_policy: slot_keyed
+    key: copy=B
 - field_name: topmostSubform[0].CopyB[0].LeftColumn[0].f2_2[0]
   label: Line 3 - f2_2 (page 4, control 69)
   population_policy: imported
@@ -491,6 +1039,13 @@ field_dispositions:
   source_ref: form_1099_int_2025.topmostsubform_0_copyb_0_leftcolumn_0_f2_2_0
   address_id: 2025/document=form_1099_int/section=recipient/control=payer_tin
   concept_id: form_1099_int/recipient/payer_tin
+  occurrence:
+    kind: slot
+    axes:
+      copy: B
+    review_granularity: concept
+    row_policy: slot_keyed
+    key: copy=B
 - field_name: topmostSubform[0].CopyB[0].LeftColumn[0].f2_3[0]
   label: Line 3 - f2_3 (page 4, control 70)
   population_policy: imported
@@ -498,6 +1053,13 @@ field_dispositions:
   source_ref: form_1099_int_2025.topmostsubform_0_copyb_0_leftcolumn_0_f2_3_0
   address_id: 2025/document=form_1099_int/section=recipient/control=recipient_tin
   concept_id: form_1099_int/recipient/recipient_tin
+  occurrence:
+    kind: slot
+    axes:
+      copy: B
+    review_granularity: concept
+    row_policy: slot_keyed
+    key: copy=B
 - field_name: topmostSubform[0].CopyB[0].LeftColumn[0].f2_4[0]
   label: Line 4 - f2_4 (page 4, control 71)
   population_policy: imported
@@ -505,6 +1067,13 @@ field_dispositions:
   source_ref: form_1099_int_2025.topmostsubform_0_copyb_0_leftcolumn_0_f2_4_0
   address_id: 2025/document=form_1099_int/section=recipient/control=recipient_name
   concept_id: form_1099_int/recipient/recipient_name
+  occurrence:
+    kind: slot
+    axes:
+      copy: B
+    review_granularity: concept
+    row_policy: slot_keyed
+    key: copy=B
 - field_name: topmostSubform[0].CopyB[0].LeftColumn[0].f2_5[0]
   label: Line a - f2_5
   population_policy: imported
@@ -512,6 +1081,13 @@ field_dispositions:
   source_ref: form_1099_int_2025.topmostsubform_0_copyb_0_leftcolumn_0_f2_5_0
   address_id: 2025/document=form_1099_int/section=recipient/control=recipient_street
   concept_id: form_1099_int/recipient/recipient_street
+  occurrence:
+    kind: slot
+    axes:
+      copy: B
+    review_granularity: concept
+    row_policy: slot_keyed
+    key: copy=B
 - field_name: topmostSubform[0].CopyB[0].LeftColumn[0].f2_6[0]
   label: Line 10 - f2_6 (page 4, control 73)
   population_policy: imported
@@ -519,6 +1095,13 @@ field_dispositions:
   source_ref: form_1099_int_2025.topmostsubform_0_copyb_0_leftcolumn_0_f2_6_0
   address_id: 2025/document=form_1099_int/section=recipient/control=recipient_city
   concept_id: form_1099_int/recipient/recipient_city
+  occurrence:
+    kind: slot
+    axes:
+      copy: B
+    review_granularity: concept
+    row_policy: slot_keyed
+    key: copy=B
 - field_name: topmostSubform[0].CopyB[0].LeftColumn[0].c2_2[0]
   label: Line 12 - c2_2 (page 4, control 74)
   population_policy: imported
@@ -526,6 +1109,13 @@ field_dispositions:
   source_ref: form_1099_int_2025.topmostsubform_0_copyb_0_leftcolumn_0_c2_2_0
   address_id: 2025/document=form_1099_int/section=recipient/option=fatca_filing_requirement
   concept_id: form_1099_int/recipient/fatca_filing_requirement
+  occurrence:
+    kind: slot
+    axes:
+      copy: B
+    review_granularity: concept
+    row_policy: slot_keyed
+    key: copy=B
 - field_name: topmostSubform[0].CopyB[0].LeftColumn[0].f2_7[0]
   label: f2_7 (page 4, control 75)
   population_policy: imported
@@ -533,6 +1123,13 @@ field_dispositions:
   source_ref: form_1099_int_2025.topmostsubform_0_copyb_0_leftcolumn_0_f2_7_0
   address_id: 2025/document=form_1099_int/section=recipient/control=account_number
   concept_id: form_1099_int/recipient/account_number
+  occurrence:
+    kind: slot
+    axes:
+      copy: B
+    review_granularity: concept
+    row_policy: slot_keyed
+    key: copy=B
 - field_name: topmostSubform[0].CopyB[0].RghtColumn[0].f2_8[0]
   label: f2_8 (page 4, control 76)
   population_policy: imported
@@ -540,6 +1137,13 @@ field_dispositions:
   source_ref: form_1099_int_2025.topmostsubform_0_copyb_0_rghtcolumn_0_f2_8_0
   address_id: 2025/document=form_1099_int/section=recipient/control=payer_rtn
   concept_id: form_1099_int/recipient/payer_rtn
+  occurrence:
+    kind: slot
+    axes:
+      copy: B
+    review_granularity: concept
+    row_policy: slot_keyed
+    key: copy=B
 - field_name: topmostSubform[0].CopyB[0].RghtColumn[0].Box1[0].f2_9[0]
   label: $ - f2_9 (page 4, control 77)
   population_policy: imported
@@ -547,6 +1151,13 @@ field_dispositions:
   source_ref: form_1099_int_2025.topmostsubform_0_copyb_0_rghtcolumn_0_box1_0_f2_9_0
   address_id: 2025/document=form_1099_int/box=1/control=value
   concept_id: form_1099_int/interest/income
+  occurrence:
+    kind: slot
+    axes:
+      copy: B
+    review_granularity: concept
+    row_policy: slot_keyed
+    key: copy=B
 - field_name: topmostSubform[0].CopyB[0].RghtColumn[0].Box2[0].f2_10[0]
   label: "PAYER\u2019S TIN RECIPIENT\u2019S TIN $ - f2_10 (page 4, control 78)"
   population_policy: imported
@@ -554,6 +1165,13 @@ field_dispositions:
   source_ref: form_1099_int_2025.topmostsubform_0_copyb_0_rghtcolumn_0_box2_0_f2_10_0
   address_id: 2025/document=form_1099_int/box=2/control=value
   concept_id: form_1099_int/interest/early_withdrawal_penalty
+  occurrence:
+    kind: slot
+    axes:
+      copy: B
+    review_granularity: concept
+    row_policy: slot_keyed
+    key: copy=B
 - field_name: topmostSubform[0].CopyB[0].RghtColumn[0].Box3[0].f2_11[0]
   label: $ - f2_11 (page 4, control 79)
   population_policy: imported
@@ -561,6 +1179,13 @@ field_dispositions:
   source_ref: form_1099_int_2025.topmostsubform_0_copyb_0_rghtcolumn_0_box3_0_f2_11_0
   address_id: 2025/document=form_1099_int/box=3/control=value
   concept_id: form_1099_int/interest/us_savings_bonds
+  occurrence:
+    kind: slot
+    axes:
+      copy: B
+    review_granularity: concept
+    row_policy: slot_keyed
+    key: copy=B
 - field_name: topmostSubform[0].CopyB[0].RghtColumn[0].Box4[0].f2_12[0]
   label: Line 4 - $ - f2_12 (page 4, control 80)
   population_policy: imported
@@ -568,6 +1193,13 @@ field_dispositions:
   source_ref: form_1099_int_2025.topmostsubform_0_copyb_0_rghtcolumn_0_box4_0_f2_12_0
   address_id: 2025/document=form_1099_int/box=4/control=value
   concept_id: form_1099_int/payer/federal_income_tax_withheld
+  occurrence:
+    kind: slot
+    axes:
+      copy: B
+    review_granularity: concept
+    row_policy: slot_keyed
+    key: copy=B
 - field_name: topmostSubform[0].CopyB[0].RghtColumn[0].Box5[0].f2_13[0]
   label: Line 4 - $ $ - f2_13 (page 4, control 81)
   population_policy: imported
@@ -575,6 +1207,13 @@ field_dispositions:
   source_ref: form_1099_int_2025.topmostsubform_0_copyb_0_rghtcolumn_0_box5_0_f2_13_0
   address_id: 2025/document=form_1099_int/box=5/control=value
   concept_id: form_1099_int/interest/investment_expenses
+  occurrence:
+    kind: slot
+    axes:
+      copy: B
+    review_granularity: concept
+    row_policy: slot_keyed
+    key: copy=B
 - field_name: topmostSubform[0].CopyB[0].RghtColumn[0].Box6[0].f2_14[0]
   label: Line a - Street address (including apt. no.) $ - f2_14
   population_policy: imported
@@ -582,6 +1221,13 @@ field_dispositions:
   source_ref: form_1099_int_2025.topmostsubform_0_copyb_0_rghtcolumn_0_box6_0_f2_14_0
   address_id: 2025/document=form_1099_int/box=6/control=value
   concept_id: form_1099_int/foreign_tax/paid
+  occurrence:
+    kind: slot
+    axes:
+      copy: B
+    review_granularity: concept
+    row_policy: slot_keyed
+    key: copy=B
 - field_name: topmostSubform[0].CopyB[0].RghtColumn[0].f2_15[0]
   label: Line a - Street address (including apt. no.) $ - f2_15
   population_policy: imported
@@ -589,6 +1235,13 @@ field_dispositions:
   source_ref: form_1099_int_2025.topmostsubform_0_copyb_0_rghtcolumn_0_f2_15_0
   address_id: 2025/document=form_1099_int/box=7/control=value
   concept_id: form_1099_int/foreign_tax/country
+  occurrence:
+    kind: slot
+    axes:
+      copy: B
+    review_granularity: concept
+    row_policy: slot_keyed
+    key: copy=B
 - field_name: topmostSubform[0].CopyB[0].RghtColumn[0].Box8[0].f2_16[0]
   label: or province, country, and ZIP or foreign postal code $ - f2_16 (page 4, control
     84)
@@ -597,6 +1250,13 @@ field_dispositions:
   source_ref: form_1099_int_2025.topmostsubform_0_copyb_0_rghtcolumn_0_box8_0_f2_16_0
   address_id: 2025/document=form_1099_int/box=8/control=value
   concept_id: form_1099_int/interest/tax_exempt
+  occurrence:
+    kind: slot
+    axes:
+      copy: B
+    review_granularity: concept
+    row_policy: slot_keyed
+    key: copy=B
 - field_name: topmostSubform[0].CopyB[0].RghtColumn[0].Box9[0].f2_17[0]
   label: province, country, and ZIP or foreign postal code $ $ - f2_17 (page 4, control
     85)
@@ -605,6 +1265,13 @@ field_dispositions:
   source_ref: form_1099_int_2025.topmostsubform_0_copyb_0_rghtcolumn_0_box9_0_f2_17_0
   address_id: 2025/document=form_1099_int/box=9/control=value
   concept_id: form_1099_int/interest/specified_private_activity_bond
+  occurrence:
+    kind: slot
+    axes:
+      copy: B
+    review_granularity: concept
+    row_policy: slot_keyed
+    key: copy=B
 - field_name: topmostSubform[0].CopyB[0].RghtColumn[0].Box10[0].f2_18[0]
   label: FATCA filing $ - f2_18 (page 4, control 86)
   population_policy: imported
@@ -612,6 +1279,13 @@ field_dispositions:
   source_ref: form_1099_int_2025.topmostsubform_0_copyb_0_rghtcolumn_0_box10_0_f2_18_0
   address_id: 2025/document=form_1099_int/box=10/control=value
   concept_id: form_1099_int/interest/market_discount
+  occurrence:
+    kind: slot
+    axes:
+      copy: B
+    review_granularity: concept
+    row_policy: slot_keyed
+    key: copy=B
 - field_name: topmostSubform[0].CopyB[0].RghtColumn[0].Box11[0].f2_19[0]
   label: FATCA filing $ $ - f2_19 (page 4, control 87)
   population_policy: imported
@@ -619,6 +1293,13 @@ field_dispositions:
   source_ref: form_1099_int_2025.topmostsubform_0_copyb_0_rghtcolumn_0_box11_0_f2_19_0
   address_id: 2025/document=form_1099_int/box=11/control=value
   concept_id: form_1099_int/interest/bond_premium
+  occurrence:
+    kind: slot
+    axes:
+      copy: B
+    review_granularity: concept
+    row_policy: slot_keyed
+    key: copy=B
 - field_name: topmostSubform[0].CopyB[0].RghtColumn[0].Box12[0].f2_20[0]
   label: Line 12 - $ - f2_20 (page 4, control 88)
   population_policy: imported
@@ -626,6 +1307,13 @@ field_dispositions:
   source_ref: form_1099_int_2025.topmostsubform_0_copyb_0_rghtcolumn_0_box12_0_f2_20_0
   address_id: 2025/document=form_1099_int/box=12/control=value
   concept_id: form_1099_int/interest/bond_premium_treasury
+  occurrence:
+    kind: slot
+    axes:
+      copy: B
+    review_granularity: concept
+    row_policy: slot_keyed
+    key: copy=B
 - field_name: topmostSubform[0].CopyB[0].RghtColumn[0].Box13[0].f2_21[0]
   label: Line 12 - $ $ - f2_21 (page 4, control 89)
   population_policy: imported
@@ -633,6 +1321,13 @@ field_dispositions:
   source_ref: form_1099_int_2025.topmostsubform_0_copyb_0_rghtcolumn_0_box13_0_f2_21_0
   address_id: 2025/document=form_1099_int/box=13/control=value
   concept_id: form_1099_int/interest/bond_premium_tax_exempt
+  occurrence:
+    kind: slot
+    axes:
+      copy: B
+    review_granularity: concept
+    row_policy: slot_keyed
+    key: copy=B
 - field_name: topmostSubform[0].CopyB[0].RghtColumn[0].Box14[0].f2_22[0]
   label: f2_22 (page 4, control 90)
   population_policy: imported
@@ -640,6 +1335,13 @@ field_dispositions:
   source_ref: form_1099_int_2025.topmostsubform_0_copyb_0_rghtcolumn_0_box14_0_f2_22_0
   address_id: 2025/document=form_1099_int/box=14/control=value
   concept_id: form_1099_int/interest/cusip
+  occurrence:
+    kind: slot
+    axes:
+      copy: B
+    review_granularity: concept
+    row_policy: slot_keyed
+    key: copy=B
 - field_name: topmostSubform[0].CopyB[0].RghtColumn[0].Boxes15_16_17[0].f2_23[0]
   label: bond CUSIP no. - f2_23 (page 4, control 91)
   population_policy: imported
@@ -647,6 +1349,19 @@ field_dispositions:
   source_ref: form_1099_int_2025.topmostsubform_0_copyb_0_rghtcolumn_0_boxes15_16_17_0_f2_23_0
   address_id: 2025/document=form_1099_int/table=state/row_template=jurisdiction/column=state
   concept_id: form_1099_int/state_local/jurisdiction/state
+  occurrence:
+    kind: slot
+    axes:
+      copy: B
+      row_slot: 1
+    review_granularity: concept
+    row_policy: slot_keyed
+    key: copy=B/row_slot=1
+  repeatable:
+    group: jurisdiction
+    row_slot: 1
+    column: state
+    role: value
 - field_name: topmostSubform[0].CopyB[0].RghtColumn[0].Boxes15_16_17[0].f2_24[0]
   label: f2_24 (page 4, control 92)
   population_policy: imported
@@ -654,6 +1369,19 @@ field_dispositions:
   source_ref: form_1099_int_2025.topmostsubform_0_copyb_0_rghtcolumn_0_boxes15_16_17_0_f2_24_0
   address_id: 2025/document=form_1099_int/table=state/row_template=jurisdiction/column=state
   concept_id: form_1099_int/state_local/jurisdiction/state
+  occurrence:
+    kind: slot
+    axes:
+      copy: B
+      row_slot: 2
+    review_granularity: concept
+    row_policy: slot_keyed
+    key: copy=B/row_slot=2
+  repeatable:
+    group: jurisdiction
+    row_slot: 2
+    column: state
+    role: value
 - field_name: topmostSubform[0].CopyB[0].RghtColumn[0].Boxes15_16_17[0].f2_25[0]
   label: bond CUSIP no. - f2_25 (page 4, control 93)
   population_policy: imported
@@ -661,6 +1389,19 @@ field_dispositions:
   source_ref: form_1099_int_2025.topmostsubform_0_copyb_0_rghtcolumn_0_boxes15_16_17_0_f2_25_0
   address_id: 2025/document=form_1099_int/table=state/row_template=jurisdiction/column=state_id
   concept_id: form_1099_int/state_local/jurisdiction/state_id
+  occurrence:
+    kind: slot
+    axes:
+      copy: B
+      row_slot: 1
+    review_granularity: concept
+    row_policy: slot_keyed
+    key: copy=B/row_slot=1
+  repeatable:
+    group: jurisdiction
+    row_slot: 1
+    column: state_id
+    role: value
 - field_name: topmostSubform[0].CopyB[0].RghtColumn[0].Boxes15_16_17[0].f2_26[0]
   label: f2_26 (page 4, control 94)
   population_policy: imported
@@ -668,6 +1409,19 @@ field_dispositions:
   source_ref: form_1099_int_2025.topmostsubform_0_copyb_0_rghtcolumn_0_boxes15_16_17_0_f2_26_0
   address_id: 2025/document=form_1099_int/table=state/row_template=jurisdiction/column=state_id
   concept_id: form_1099_int/state_local/jurisdiction/state_id
+  occurrence:
+    kind: slot
+    axes:
+      copy: B
+      row_slot: 2
+    review_granularity: concept
+    row_policy: slot_keyed
+    key: copy=B/row_slot=2
+  repeatable:
+    group: jurisdiction
+    row_slot: 2
+    column: state_id
+    role: value
 - field_name: topmostSubform[0].CopyB[0].RghtColumn[0].Boxes15_16_17[0].f2_27[0]
   label: bond CUSIP no. $ - f2_27 (page 4, control 95)
   population_policy: imported
@@ -675,6 +1429,19 @@ field_dispositions:
   source_ref: form_1099_int_2025.topmostsubform_0_copyb_0_rghtcolumn_0_boxes15_16_17_0_f2_27_0
   address_id: 2025/document=form_1099_int/table=state/row_template=jurisdiction/column=state_tax
   concept_id: form_1099_int/state_local/jurisdiction/state_tax
+  occurrence:
+    kind: slot
+    axes:
+      copy: B
+      row_slot: 1
+    review_granularity: concept
+    row_policy: slot_keyed
+    key: copy=B/row_slot=1
+  repeatable:
+    group: jurisdiction
+    row_slot: 1
+    column: state_tax
+    role: value
 - field_name: topmostSubform[0].CopyB[0].RghtColumn[0].Boxes15_16_17[0].f2_28[0]
   label: $ - f2_28 (page 4, control 96)
   population_policy: imported
@@ -682,6 +1449,19 @@ field_dispositions:
   source_ref: form_1099_int_2025.topmostsubform_0_copyb_0_rghtcolumn_0_boxes15_16_17_0_f2_28_0
   address_id: 2025/document=form_1099_int/table=state/row_template=jurisdiction/column=state_tax
   concept_id: form_1099_int/state_local/jurisdiction/state_tax
+  occurrence:
+    kind: slot
+    axes:
+      copy: B
+      row_slot: 2
+    review_granularity: concept
+    row_policy: slot_keyed
+    key: copy=B/row_slot=2
+  repeatable:
+    group: jurisdiction
+    row_slot: 2
+    column: state_tax
+    role: value
 - field_name: topmostSubform[0].Copy2[0].CopyHeader[0].CalendarYear2_1[0]
   label: $ - CalendarYear2_1 (page 6, control 97)
   population_policy: imported
@@ -689,6 +1469,13 @@ field_dispositions:
   source_ref: form_1099_int_2025.topmostsubform_0_copy2_0_copyheader_0_calendaryear2_1_0
   address_id: 2025/document=form_1099_int/section=header/control=calendar_year
   concept_id: form_1099_int/header/calendar_year
+  occurrence:
+    kind: slot
+    axes:
+      copy: '2'
+    review_granularity: concept
+    row_policy: slot_keyed
+    key: copy=2
 - field_name: topmostSubform[0].Copy2[0].CopyHeader[0].c2_1[0]
   label: c2_1 (page 6, control 98)
   population_policy: imported
@@ -696,6 +1483,13 @@ field_dispositions:
   source_ref: form_1099_int_2025.topmostsubform_0_copy2_0_copyheader_0_c2_1_0
   address_id: 2025/document=form_1099_int/section=header/option=void
   concept_id: form_1099_int/header/void
+  occurrence:
+    kind: slot
+    axes:
+      copy: '2'
+    review_granularity: concept
+    row_policy: slot_keyed
+    key: copy=2
 - field_name: topmostSubform[0].Copy2[0].LeftColumn[0].f2_1[0]
   label: f2_1 (page 6, control 99)
   population_policy: imported
@@ -703,6 +1497,13 @@ field_dispositions:
   source_ref: form_1099_int_2025.topmostsubform_0_copy2_0_leftcolumn_0_f2_1_0
   address_id: 2025/document=form_1099_int/section=recipient/control=payer_name_address
   concept_id: form_1099_int/recipient/payer_name_address
+  occurrence:
+    kind: slot
+    axes:
+      copy: '2'
+    review_granularity: concept
+    row_policy: slot_keyed
+    key: copy=2
 - field_name: topmostSubform[0].Copy2[0].LeftColumn[0].f2_2[0]
   label: Line 3 - f2_2 (page 6, control 100)
   population_policy: imported
@@ -710,6 +1511,13 @@ field_dispositions:
   source_ref: form_1099_int_2025.topmostsubform_0_copy2_0_leftcolumn_0_f2_2_0
   address_id: 2025/document=form_1099_int/section=recipient/control=payer_tin
   concept_id: form_1099_int/recipient/payer_tin
+  occurrence:
+    kind: slot
+    axes:
+      copy: '2'
+    review_granularity: concept
+    row_policy: slot_keyed
+    key: copy=2
 - field_name: topmostSubform[0].Copy2[0].LeftColumn[0].f2_3[0]
   label: Line 3 - f2_3 (page 6, control 101)
   population_policy: imported
@@ -717,6 +1525,13 @@ field_dispositions:
   source_ref: form_1099_int_2025.topmostsubform_0_copy2_0_leftcolumn_0_f2_3_0
   address_id: 2025/document=form_1099_int/section=recipient/control=recipient_tin
   concept_id: form_1099_int/recipient/recipient_tin
+  occurrence:
+    kind: slot
+    axes:
+      copy: '2'
+    review_granularity: concept
+    row_policy: slot_keyed
+    key: copy=2
 - field_name: topmostSubform[0].Copy2[0].LeftColumn[0].f2_4[0]
   label: Line 4 - f2_4 (page 6, control 102)
   population_policy: imported
@@ -724,6 +1539,13 @@ field_dispositions:
   source_ref: form_1099_int_2025.topmostsubform_0_copy2_0_leftcolumn_0_f2_4_0
   address_id: 2025/document=form_1099_int/section=recipient/control=recipient_name
   concept_id: form_1099_int/recipient/recipient_name
+  occurrence:
+    kind: slot
+    axes:
+      copy: '2'
+    review_granularity: concept
+    row_policy: slot_keyed
+    key: copy=2
 - field_name: topmostSubform[0].Copy2[0].LeftColumn[0].f2_5[0]
   label: Line 8 - f2_5 (page 6, control 103)
   population_policy: imported
@@ -731,6 +1553,13 @@ field_dispositions:
   source_ref: form_1099_int_2025.topmostsubform_0_copy2_0_leftcolumn_0_f2_5_0
   address_id: 2025/document=form_1099_int/section=recipient/control=recipient_street
   concept_id: form_1099_int/recipient/recipient_street
+  occurrence:
+    kind: slot
+    axes:
+      copy: '2'
+    review_granularity: concept
+    row_policy: slot_keyed
+    key: copy=2
 - field_name: topmostSubform[0].Copy2[0].LeftColumn[0].f2_6[0]
   label: Line 10 - f2_6 (page 6, control 104)
   population_policy: imported
@@ -738,6 +1567,13 @@ field_dispositions:
   source_ref: form_1099_int_2025.topmostsubform_0_copy2_0_leftcolumn_0_f2_6_0
   address_id: 2025/document=form_1099_int/section=recipient/control=recipient_city
   concept_id: form_1099_int/recipient/recipient_city
+  occurrence:
+    kind: slot
+    axes:
+      copy: '2'
+    review_granularity: concept
+    row_policy: slot_keyed
+    key: copy=2
 - field_name: topmostSubform[0].Copy2[0].LeftColumn[0].c2_2[0]
   label: Line 12 - c2_2 (page 6, control 105)
   population_policy: imported
@@ -745,6 +1581,13 @@ field_dispositions:
   source_ref: form_1099_int_2025.topmostsubform_0_copy2_0_leftcolumn_0_c2_2_0
   address_id: 2025/document=form_1099_int/section=recipient/option=fatca_filing_requirement
   concept_id: form_1099_int/recipient/fatca_filing_requirement
+  occurrence:
+    kind: slot
+    axes:
+      copy: '2'
+    review_granularity: concept
+    row_policy: slot_keyed
+    key: copy=2
 - field_name: topmostSubform[0].Copy2[0].LeftColumn[0].f2_7[0]
   label: f2_7 (page 6, control 106)
   population_policy: imported
@@ -752,6 +1595,13 @@ field_dispositions:
   source_ref: form_1099_int_2025.topmostsubform_0_copy2_0_leftcolumn_0_f2_7_0
   address_id: 2025/document=form_1099_int/section=recipient/control=account_number
   concept_id: form_1099_int/recipient/account_number
+  occurrence:
+    kind: slot
+    axes:
+      copy: '2'
+    review_granularity: concept
+    row_policy: slot_keyed
+    key: copy=2
 - field_name: topmostSubform[0].Copy2[0].RghtColumn[0].f2_8[0]
   label: f2_8 (page 6, control 107)
   population_policy: imported
@@ -759,6 +1609,13 @@ field_dispositions:
   source_ref: form_1099_int_2025.topmostsubform_0_copy2_0_rghtcolumn_0_f2_8_0
   address_id: 2025/document=form_1099_int/section=recipient/control=payer_rtn
   concept_id: form_1099_int/recipient/payer_rtn
+  occurrence:
+    kind: slot
+    axes:
+      copy: '2'
+    review_granularity: concept
+    row_policy: slot_keyed
+    key: copy=2
 - field_name: topmostSubform[0].Copy2[0].RghtColumn[0].Box1[0].f2_9[0]
   label: $ - f2_9 (page 6, control 108)
   population_policy: imported
@@ -766,6 +1623,13 @@ field_dispositions:
   source_ref: form_1099_int_2025.topmostsubform_0_copy2_0_rghtcolumn_0_box1_0_f2_9_0
   address_id: 2025/document=form_1099_int/box=1/control=value
   concept_id: form_1099_int/interest/income
+  occurrence:
+    kind: slot
+    axes:
+      copy: '2'
+    review_granularity: concept
+    row_policy: slot_keyed
+    key: copy=2
 - field_name: topmostSubform[0].Copy2[0].RghtColumn[0].Box2[0].f2_10[0]
   label: "PAYER\u2019S TIN RECIPIENT\u2019S TIN $ - f2_10 (page 6, control 109)"
   population_policy: imported
@@ -773,6 +1637,13 @@ field_dispositions:
   source_ref: form_1099_int_2025.topmostsubform_0_copy2_0_rghtcolumn_0_box2_0_f2_10_0
   address_id: 2025/document=form_1099_int/box=2/control=value
   concept_id: form_1099_int/interest/early_withdrawal_penalty
+  occurrence:
+    kind: slot
+    axes:
+      copy: '2'
+    review_granularity: concept
+    row_policy: slot_keyed
+    key: copy=2
 - field_name: topmostSubform[0].Copy2[0].RghtColumn[0].Box3[0].f2_11[0]
   label: $ - f2_11 (page 6, control 110)
   population_policy: imported
@@ -780,6 +1651,13 @@ field_dispositions:
   source_ref: form_1099_int_2025.topmostsubform_0_copy2_0_rghtcolumn_0_box3_0_f2_11_0
   address_id: 2025/document=form_1099_int/box=3/control=value
   concept_id: form_1099_int/interest/us_savings_bonds
+  occurrence:
+    kind: slot
+    axes:
+      copy: '2'
+    review_granularity: concept
+    row_policy: slot_keyed
+    key: copy=2
 - field_name: topmostSubform[0].Copy2[0].RghtColumn[0].Box4[0].f2_12[0]
   label: Line 4 - $ - f2_12 (page 6, control 111)
   population_policy: imported
@@ -787,6 +1665,13 @@ field_dispositions:
   source_ref: form_1099_int_2025.topmostsubform_0_copy2_0_rghtcolumn_0_box4_0_f2_12_0
   address_id: 2025/document=form_1099_int/box=4/control=value
   concept_id: form_1099_int/payer/federal_income_tax_withheld
+  occurrence:
+    kind: slot
+    axes:
+      copy: '2'
+    review_granularity: concept
+    row_policy: slot_keyed
+    key: copy=2
 - field_name: topmostSubform[0].Copy2[0].RghtColumn[0].Box5[0].f2_13[0]
   label: Line 4 - $ $ - f2_13 (page 6, control 112)
   population_policy: imported
@@ -794,6 +1679,13 @@ field_dispositions:
   source_ref: form_1099_int_2025.topmostsubform_0_copy2_0_rghtcolumn_0_box5_0_f2_13_0
   address_id: 2025/document=form_1099_int/box=5/control=value
   concept_id: form_1099_int/interest/investment_expenses
+  occurrence:
+    kind: slot
+    axes:
+      copy: '2'
+    review_granularity: concept
+    row_policy: slot_keyed
+    key: copy=2
 - field_name: topmostSubform[0].Copy2[0].RghtColumn[0].Box6[0].f2_14[0]
   label: Line 6 - Street address (including apt. no.) $ - f2_14 (page 6, control 113)
   population_policy: imported
@@ -801,6 +1693,13 @@ field_dispositions:
   source_ref: form_1099_int_2025.topmostsubform_0_copy2_0_rghtcolumn_0_box6_0_f2_14_0
   address_id: 2025/document=form_1099_int/box=6/control=value
   concept_id: form_1099_int/foreign_tax/paid
+  occurrence:
+    kind: slot
+    axes:
+      copy: '2'
+    review_granularity: concept
+    row_policy: slot_keyed
+    key: copy=2
 - field_name: topmostSubform[0].Copy2[0].RghtColumn[0].f2_15[0]
   label: Line 6 - Street address (including apt. no.) $ - f2_15 (page 6, control 114)
   population_policy: imported
@@ -808,6 +1707,13 @@ field_dispositions:
   source_ref: form_1099_int_2025.topmostsubform_0_copy2_0_rghtcolumn_0_f2_15_0
   address_id: 2025/document=form_1099_int/box=7/control=value
   concept_id: form_1099_int/foreign_tax/country
+  occurrence:
+    kind: slot
+    axes:
+      copy: '2'
+    review_granularity: concept
+    row_policy: slot_keyed
+    key: copy=2
 - field_name: topmostSubform[0].Copy2[0].RghtColumn[0].Box8[0].f2_16[0]
   label: or province, country, and ZIP or foreign postal code $ - f2_16 (page 6, control
     115)
@@ -816,6 +1722,13 @@ field_dispositions:
   source_ref: form_1099_int_2025.topmostsubform_0_copy2_0_rghtcolumn_0_box8_0_f2_16_0
   address_id: 2025/document=form_1099_int/box=8/control=value
   concept_id: form_1099_int/interest/tax_exempt
+  occurrence:
+    kind: slot
+    axes:
+      copy: '2'
+    review_granularity: concept
+    row_policy: slot_keyed
+    key: copy=2
 - field_name: topmostSubform[0].Copy2[0].RghtColumn[0].Box9[0].f2_17[0]
   label: province, country, and ZIP or foreign postal code $ $ - f2_17 (page 6, control
     116)
@@ -824,6 +1737,13 @@ field_dispositions:
   source_ref: form_1099_int_2025.topmostsubform_0_copy2_0_rghtcolumn_0_box9_0_f2_17_0
   address_id: 2025/document=form_1099_int/box=9/control=value
   concept_id: form_1099_int/interest/specified_private_activity_bond
+  occurrence:
+    kind: slot
+    axes:
+      copy: '2'
+    review_granularity: concept
+    row_policy: slot_keyed
+    key: copy=2
 - field_name: topmostSubform[0].Copy2[0].RghtColumn[0].Box10[0].f2_18[0]
   label: FATCA filing $ - f2_18 (page 6, control 117)
   population_policy: imported
@@ -831,6 +1751,13 @@ field_dispositions:
   source_ref: form_1099_int_2025.topmostsubform_0_copy2_0_rghtcolumn_0_box10_0_f2_18_0
   address_id: 2025/document=form_1099_int/box=10/control=value
   concept_id: form_1099_int/interest/market_discount
+  occurrence:
+    kind: slot
+    axes:
+      copy: '2'
+    review_granularity: concept
+    row_policy: slot_keyed
+    key: copy=2
 - field_name: topmostSubform[0].Copy2[0].RghtColumn[0].Box11[0].f2_19[0]
   label: FATCA filing $ $ - f2_19 (page 6, control 118)
   population_policy: imported
@@ -838,6 +1765,13 @@ field_dispositions:
   source_ref: form_1099_int_2025.topmostsubform_0_copy2_0_rghtcolumn_0_box11_0_f2_19_0
   address_id: 2025/document=form_1099_int/box=11/control=value
   concept_id: form_1099_int/interest/bond_premium
+  occurrence:
+    kind: slot
+    axes:
+      copy: '2'
+    review_granularity: concept
+    row_policy: slot_keyed
+    key: copy=2
 - field_name: topmostSubform[0].Copy2[0].RghtColumn[0].Box12[0].f2_20[0]
   label: Line 12 - $ - f2_20 (page 6, control 119)
   population_policy: imported
@@ -845,6 +1779,13 @@ field_dispositions:
   source_ref: form_1099_int_2025.topmostsubform_0_copy2_0_rghtcolumn_0_box12_0_f2_20_0
   address_id: 2025/document=form_1099_int/box=12/control=value
   concept_id: form_1099_int/interest/bond_premium_treasury
+  occurrence:
+    kind: slot
+    axes:
+      copy: '2'
+    review_granularity: concept
+    row_policy: slot_keyed
+    key: copy=2
 - field_name: topmostSubform[0].Copy2[0].RghtColumn[0].Box13[0].f2_21[0]
   label: Line 12 - $ $ - f2_21 (page 6, control 120)
   population_policy: imported
@@ -852,6 +1793,13 @@ field_dispositions:
   source_ref: form_1099_int_2025.topmostsubform_0_copy2_0_rghtcolumn_0_box13_0_f2_21_0
   address_id: 2025/document=form_1099_int/box=13/control=value
   concept_id: form_1099_int/interest/bond_premium_tax_exempt
+  occurrence:
+    kind: slot
+    axes:
+      copy: '2'
+    review_granularity: concept
+    row_policy: slot_keyed
+    key: copy=2
 - field_name: topmostSubform[0].Copy2[0].RghtColumn[0].Box14[0].f2_22[0]
   label: f2_22 (page 6, control 121)
   population_policy: imported
@@ -859,6 +1807,13 @@ field_dispositions:
   source_ref: form_1099_int_2025.topmostsubform_0_copy2_0_rghtcolumn_0_box14_0_f2_22_0
   address_id: 2025/document=form_1099_int/box=14/control=value
   concept_id: form_1099_int/interest/cusip
+  occurrence:
+    kind: slot
+    axes:
+      copy: '2'
+    review_granularity: concept
+    row_policy: slot_keyed
+    key: copy=2
 - field_name: topmostSubform[0].Copy2[0].RghtColumn[0].Boxes15_16_17[0].f2_23[0]
   label: bond CUSIP no. - f2_23 (page 6, control 122)
   population_policy: imported
@@ -866,6 +1821,19 @@ field_dispositions:
   source_ref: form_1099_int_2025.topmostsubform_0_copy2_0_rghtcolumn_0_boxes15_16_17_0_f2_23_0
   address_id: 2025/document=form_1099_int/table=state/row_template=jurisdiction/column=state
   concept_id: form_1099_int/state_local/jurisdiction/state
+  occurrence:
+    kind: slot
+    axes:
+      copy: '2'
+      row_slot: 1
+    review_granularity: concept
+    row_policy: slot_keyed
+    key: copy=2/row_slot=1
+  repeatable:
+    group: jurisdiction
+    row_slot: 1
+    column: state
+    role: value
 - field_name: topmostSubform[0].Copy2[0].RghtColumn[0].Boxes15_16_17[0].f2_24[0]
   label: f2_24 (page 6, control 123)
   population_policy: imported
@@ -873,6 +1841,19 @@ field_dispositions:
   source_ref: form_1099_int_2025.topmostsubform_0_copy2_0_rghtcolumn_0_boxes15_16_17_0_f2_24_0
   address_id: 2025/document=form_1099_int/table=state/row_template=jurisdiction/column=state
   concept_id: form_1099_int/state_local/jurisdiction/state
+  occurrence:
+    kind: slot
+    axes:
+      copy: '2'
+      row_slot: 2
+    review_granularity: concept
+    row_policy: slot_keyed
+    key: copy=2/row_slot=2
+  repeatable:
+    group: jurisdiction
+    row_slot: 2
+    column: state
+    role: value
 - field_name: topmostSubform[0].Copy2[0].RghtColumn[0].Boxes15_16_17[0].f2_25[0]
   label: bond CUSIP no. - f2_25 (page 6, control 124)
   population_policy: imported
@@ -880,6 +1861,19 @@ field_dispositions:
   source_ref: form_1099_int_2025.topmostsubform_0_copy2_0_rghtcolumn_0_boxes15_16_17_0_f2_25_0
   address_id: 2025/document=form_1099_int/table=state/row_template=jurisdiction/column=state_id
   concept_id: form_1099_int/state_local/jurisdiction/state_id
+  occurrence:
+    kind: slot
+    axes:
+      copy: '2'
+      row_slot: 1
+    review_granularity: concept
+    row_policy: slot_keyed
+    key: copy=2/row_slot=1
+  repeatable:
+    group: jurisdiction
+    row_slot: 1
+    column: state_id
+    role: value
 - field_name: topmostSubform[0].Copy2[0].RghtColumn[0].Boxes15_16_17[0].f2_26[0]
   label: f2_26 (page 6, control 125)
   population_policy: imported
@@ -887,6 +1881,19 @@ field_dispositions:
   source_ref: form_1099_int_2025.topmostsubform_0_copy2_0_rghtcolumn_0_boxes15_16_17_0_f2_26_0
   address_id: 2025/document=form_1099_int/table=state/row_template=jurisdiction/column=state_id
   concept_id: form_1099_int/state_local/jurisdiction/state_id
+  occurrence:
+    kind: slot
+    axes:
+      copy: '2'
+      row_slot: 2
+    review_granularity: concept
+    row_policy: slot_keyed
+    key: copy=2/row_slot=2
+  repeatable:
+    group: jurisdiction
+    row_slot: 2
+    column: state_id
+    role: value
 - field_name: topmostSubform[0].Copy2[0].RghtColumn[0].Boxes15_16_17[0].f2_27[0]
   label: bond CUSIP no. $ - f2_27 (page 6, control 126)
   population_policy: imported
@@ -894,6 +1901,19 @@ field_dispositions:
   source_ref: form_1099_int_2025.topmostsubform_0_copy2_0_rghtcolumn_0_boxes15_16_17_0_f2_27_0
   address_id: 2025/document=form_1099_int/table=state/row_template=jurisdiction/column=state_tax
   concept_id: form_1099_int/state_local/jurisdiction/state_tax
+  occurrence:
+    kind: slot
+    axes:
+      copy: '2'
+      row_slot: 1
+    review_granularity: concept
+    row_policy: slot_keyed
+    key: copy=2/row_slot=1
+  repeatable:
+    group: jurisdiction
+    row_slot: 1
+    column: state_tax
+    role: value
 - field_name: topmostSubform[0].Copy2[0].RghtColumn[0].Boxes15_16_17[0].f2_28[0]
   label: $ - f2_28 (page 6, control 127)
   population_policy: imported
@@ -901,3 +1921,16 @@ field_dispositions:
   source_ref: form_1099_int_2025.topmostsubform_0_copy2_0_rghtcolumn_0_boxes15_16_17_0_f2_28_0
   address_id: 2025/document=form_1099_int/table=state/row_template=jurisdiction/column=state_tax
   concept_id: form_1099_int/state_local/jurisdiction/state_tax
+  occurrence:
+    kind: slot
+    axes:
+      copy: '2'
+      row_slot: 2
+    review_granularity: concept
+    row_policy: slot_keyed
+    key: copy=2/row_slot=2
+  repeatable:
+    group: jurisdiction
+    row_slot: 2
+    column: state_tax
+    role: value

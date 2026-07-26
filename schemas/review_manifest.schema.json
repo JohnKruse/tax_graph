@@ -197,6 +197,18 @@
         "downstream_effect": {"type": "string"},
         "missing_capability": {"type": "string"},
         "repeatable": {"type": "object"},
+        "occurrence": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind", "axes", "review_granularity", "row_policy", "key"],
+          "properties": {
+            "kind": {"const": "slot"},
+            "axes": {"type": "object", "additionalProperties": true, "minProperties": 1},
+            "review_granularity": {"const": "concept"},
+            "row_policy": {"const": "slot_keyed"},
+            "key": {"type": "string", "minLength": 1}
+          }
+        },
         "coverage": {"$ref": "#/$defs/coverage"}
       }
     },

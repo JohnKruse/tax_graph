@@ -446,6 +446,18 @@ field_dispositions:
     for form1[0].Page2[0].Table_Line22[0].Line22a[0].VIN-1_Comb[0].f2_01[0].
   address_id: 2025/document=schedule_1a/table=line_22/row_template=vehicle/column=vin
   concept_id: schedule_1a/vehicles/vehicle/vin
+  occurrence:
+    kind: slot
+    axes:
+      row_slot: 1
+    review_granularity: concept
+    row_policy: slot_keyed
+    key: row_slot=1
+  repeatable:
+    group: vehicle
+    row_slot: 1
+    column: vin
+    role: value
 - field_name: form1[0].Page2[0].Table_Line22[0].Line22a[0].f2_02[0]
   label: Line a - a - f2_02
   population_policy: unsupported
@@ -458,6 +470,18 @@ field_dispositions:
     for form1[0].Page2[0].Table_Line22[0].Line22a[0].f2_02[0].
   address_id: 2025/document=schedule_1a/table=line_22/row_template=vehicle/column=deducted_elsewhere
   concept_id: schedule_1a/vehicles/vehicle/deducted_elsewhere
+  occurrence:
+    kind: slot
+    axes:
+      row_slot: 1
+    review_granularity: concept
+    row_policy: slot_keyed
+    key: row_slot=1
+  repeatable:
+    group: vehicle
+    row_slot: 1
+    column: deducted_elsewhere
+    role: value
 - field_name: form1[0].Page2[0].Table_Line22[0].Line22a[0].f2_03[0]
   label: Line a - a - f2_03
   population_policy: unsupported
@@ -470,6 +494,18 @@ field_dispositions:
     for form1[0].Page2[0].Table_Line22[0].Line22a[0].f2_03[0].
   address_id: 2025/document=schedule_1a/table=line_22/row_template=vehicle/column=schedule_1a
   concept_id: schedule_1a/vehicles/vehicle/schedule_1a
+  occurrence:
+    kind: slot
+    axes:
+      row_slot: 1
+    review_granularity: concept
+    row_policy: slot_keyed
+    key: row_slot=1
+  repeatable:
+    group: vehicle
+    row_slot: 1
+    column: schedule_1a
+    role: value
 - field_name: form1[0].Page2[0].Table_Line22[0].Line22b[0].VIN-2_Comb[0].f2_04[0]
   label: Line b - b - f2_04
   population_policy: unsupported
@@ -482,6 +518,18 @@ field_dispositions:
     for form1[0].Page2[0].Table_Line22[0].Line22b[0].VIN-2_Comb[0].f2_04[0].
   address_id: 2025/document=schedule_1a/table=line_22/row_template=vehicle/column=vin
   concept_id: schedule_1a/vehicles/vehicle/vin
+  occurrence:
+    kind: slot
+    axes:
+      row_slot: 2
+    review_granularity: concept
+    row_policy: slot_keyed
+    key: row_slot=2
+  repeatable:
+    group: vehicle
+    row_slot: 2
+    column: vin
+    role: value
 - field_name: form1[0].Page2[0].Table_Line22[0].Line22b[0].f2_05[0]
   label: Line b - b - f2_05
   population_policy: unsupported
@@ -494,6 +542,18 @@ field_dispositions:
     for form1[0].Page2[0].Table_Line22[0].Line22b[0].f2_05[0].
   address_id: 2025/document=schedule_1a/table=line_22/row_template=vehicle/column=deducted_elsewhere
   concept_id: schedule_1a/vehicles/vehicle/deducted_elsewhere
+  occurrence:
+    kind: slot
+    axes:
+      row_slot: 2
+    review_granularity: concept
+    row_policy: slot_keyed
+    key: row_slot=2
+  repeatable:
+    group: vehicle
+    row_slot: 2
+    column: deducted_elsewhere
+    role: value
 - field_name: form1[0].Page2[0].Table_Line22[0].Line22b[0].f2_06[0]
   label: Line b - b - f2_06
   population_policy: unsupported
@@ -506,6 +566,18 @@ field_dispositions:
     for form1[0].Page2[0].Table_Line22[0].Line22b[0].f2_06[0].
   address_id: 2025/document=schedule_1a/table=line_22/row_template=vehicle/column=schedule_1a
   concept_id: schedule_1a/vehicles/vehicle/schedule_1a
+  occurrence:
+    kind: slot
+    axes:
+      row_slot: 2
+    review_granularity: concept
+    row_policy: slot_keyed
+    key: row_slot=2
+  repeatable:
+    group: vehicle
+    row_slot: 2
+    column: schedule_1a
+    role: value
 - field_name: form1[0].Page2[0].f2_07[0]
   label: Line 22a - . . . . . . . . . 23 - f2_07
   population_policy: unsupported

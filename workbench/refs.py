@@ -49,22 +49,39 @@ def abbreviate_document(token: str) -> str:
     return lowered.replace("_", "")
 
 
-def unit_ref_from_address(address_id: str) -> str | None:
+def unit_ref_from_address(address_id: str, occurrence: Mapping[str, Any] | None = None) -> str | None:
     """Derive a short ASCII ref from a canonical address, or None if not derivable.
 
     The document component is abbreviated; every other component keeps its token, so
     the ref preserves the address's distinguishing structure and stays unique within a
-    document. Returns None for a non-canonical or empty address rather than guessing.
+    document. When concrete occurrence axes are supplied, copy and row-slot selectors
+    are added to the ref. Returns None for a non-canonical or empty address rather than
+    guessing.
     """
     if not address_id:
         return None
     components = _parse_address(address_id)
     if not components:
         return None
-    parts = [
-        abbreviate_document(token) if kind == "document" else token
-        for kind, token in components
-    ]
+    if not occurrence:
+        parts = [
+            abbreviate_document(token) if kind == "document" else token
+            for kind, token in components
+        ]
+    else:
+        axes = occurrence.get("axes", {}) if isinstance(occurrence, Mapping) else {}
+        parts = []
+        for kind, token in components:
+            if kind == "document":
+                parts.append(abbreviate_document(token))
+                if isinstance(axes, Mapping) and axes.get("copy") is not None:
+                    parts.append(f"copy[{axes['copy']}]")
+            elif kind == "box":
+                parts.append(f"box{token}")
+            elif kind == "row_template" and isinstance(axes, Mapping) and axes.get("row_slot") is not None:
+                parts.append(f"{token}[{int(axes['row_slot'])}]")
+            else:
+                parts.append(token)
     ref = "/".join(parts)
     if not ref or not ref.isascii():
         return None

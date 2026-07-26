@@ -8,6 +8,7 @@ stay in placement metadata and never enter a concept id.
 
 from __future__ import annotations
 
+from collections import defaultdict
 from pathlib import Path
 import re
 from typing import Any, Iterable
@@ -313,16 +314,144 @@ def _placement(address: dict[str, Any], concept_id: str) -> dict[str, str]:
     }
 
 
-def _occurrence(address: dict[str, Any]) -> dict[str, str]:
-    row_template = _component(_components(address), "row_template")
+def _occurrence(address: dict[str, Any]) -> dict[str, Any]:
+    """Describe the physical axes that distinguish a concept's slots.
+
+    The promoted artifact is authored before a return record exists. Its row
+    positions are therefore slots, not entities; runtime code may bind a slot
+    to an entity later.
+    """
+    path = _components(address)
+    document = _document_token(str(address.get("document_id") or ""))
+    row_template = _component(path, "row_template")
+    axes: list[str] = []
+    if document in {"form_w2", "form_1099_div", "form_1099_int", "form_1099b"}:
+        axes.append("copy")
     if row_template:
-        return {
-            "kind": "entity",
-            "entity_key": row_template,
+        axes.append("row_slot")
+    if not axes:
+        return {"kind": "singleton", "review_granularity": "concept", "row_policy": "none"}
+    return {
+        "kind": "slot",
+        "slot_key": row_template or "copy",
+        "axes": axes,
+        "review_granularity": "concept",
+        "row_policy": "slot_keyed",
+    }
+
+
+_COPY_RE = re.compile(r"(?:^|\.)Copy(?P<copy>[A-Za-z0-9]+)\[")
+def _copy_axis(field_name: str) -> str | None:
+    match = _COPY_RE.search(str(field_name))
+    return match.group("copy") if match else None
+
+
+def _field_occurrences(
+    dispositions: list[dict[str, Any]],
+    addresses: dict[str, dict[str, Any]],
+) -> dict[str, dict[str, Any] | None]:
+    """Build concrete slot keys from stable field structure and row order."""
+    counters: dict[tuple[str, str | None], int] = defaultdict(int)
+    result: dict[str, dict[str, Any] | None] = {}
+    for disposition in dispositions:
+        field_name = str(disposition.get("field_name") or "")
+        address = addresses.get(str(disposition.get("address_id") or ""), {})
+        contract = address.get("occurrence") or {}
+        if contract.get("kind") != "slot":
+            result[field_name] = None
+            continue
+        axes: dict[str, Any] = {}
+        if "copy" in contract.get("axes", []):
+            copy = _copy_axis(field_name)
+            if copy is None:
+                raise ConceptError(f"repeatable field has no copy axis: {field_name}")
+            axes["copy"] = copy
+        if "row_slot" in contract.get("axes", []):
+            repeatable = disposition.get("repeatable") or {}
+            row_slot = repeatable.get("row_slot")
+            if row_slot is None:
+                counter_key = (str(disposition.get("address_id") or ""), axes.get("copy"))
+                counters[counter_key] += 1
+                row_slot = counters[counter_key]
+            axes["row_slot"] = int(row_slot)
+        key = "/".join(f"{name}={axes[name]}" for name in sorted(axes))
+        result[field_name] = {
+            "kind": "slot",
+            "axes": axes,
             "review_granularity": "concept",
-            "row_policy": "entity_keyed",
+            "row_policy": "slot_keyed",
+            "key": key,
         }
-    return {"kind": "singleton", "review_granularity": "concept", "row_policy": "none"}
+    return result
+
+
+def _repeatable_projection(
+    address: dict[str, Any], concept_id: str, old: dict[str, Any] | None, occurrence: dict[str, Any] | None
+) -> dict[str, Any] | None:
+    """Normalize row metadata without claiming entity binding at authoring time."""
+    if not occurrence or "row_slot" not in occurrence.get("axes", {}):
+        return None
+    path = _components(address)
+    row_template = _component(path, "row_template") or "repeatable_fields"
+    group = concept_id.split("/")[1] if concept_id.startswith("form_8949/") else row_template
+    return {
+        "group": group,
+        "row_slot": int(occurrence["axes"]["row_slot"]),
+        "column": concept_id.rsplit("/", 1)[-1],
+        "role": str((old or {}).get("role") or "value"),
+    }
+
+
+def _validate_field_occurrences(dispositions: list[dict[str, Any]]) -> None:
+    """Fail closed when repeated physical fields lack a discriminator."""
+    by_concept: dict[str, list[dict[str, Any]]] = defaultdict(list)
+    for item in dispositions:
+        concept_id = str(item.get("concept_id") or "")
+        if concept_id:
+            by_concept[concept_id].append(item)
+    for concept_id, items in by_concept.items():
+        if len(items) <= 1:
+            continue
+        occurrences = [item.get("occurrence") for item in items]
+        if any(not isinstance(value, dict) or value.get("kind") != "slot" or not value.get("axes") for value in occurrences):
+            raise ConceptError(f"concept maps to repeated fields without slot occurrence data: {concept_id}")
+        keys = [str(value.get("key")) for value in occurrences]
+        if len(set(keys)) != len(keys):
+            raise ConceptError(f"concept has duplicate occurrence keys: {concept_id}")
+
+
+def validate_occurrence_contract(dispositions: Iterable[dict[str, Any]]) -> None:
+    """Validate the fail-closed repeated-concept occurrence invariant."""
+    _validate_field_occurrences([item for item in dispositions if isinstance(item, dict)])
+
+
+def _apply_field_occurrences(
+    field_map: dict[str, Any],
+    addresses: dict[str, dict[str, Any]],
+    projections: dict[str, dict[str, Any]],
+) -> int:
+    dispositions = [item for item in field_map.get("field_dispositions", []) or [] if isinstance(item, dict)]
+    occurrences = _field_occurrences(dispositions, addresses)
+    updated = 0
+    for item in dispositions:
+        address_id = str(item.get("address_id") or "")
+        projection = projections.get(address_id)
+        if projection is None:
+            continue
+        occurrence = occurrences.get(str(item.get("field_name") or ""))
+        if occurrence is None:
+            item.pop("occurrence", None)
+            item.pop("repeatable", None)
+            continue
+        item["occurrence"] = occurrence
+        item["repeatable"] = _repeatable_projection(
+            addresses[address_id], str(projection["concept_id"]), item.get("repeatable"), occurrence
+        )
+        if item["repeatable"] is None:
+            item.pop("repeatable", None)
+        updated += 1
+    _validate_field_occurrences(dispositions)
+    return updated
 
 
 def build_document_concepts(
@@ -415,6 +544,11 @@ def promote_structured_concepts(
         concepts_path.write_text(yaml.safe_dump(inventory, sort_keys=False, allow_unicode=False), encoding="utf-8", newline="\n")
         field_map_path = root_path / "graph" / str(year) / "field_maps" / f"{document_id}.yaml"
         field_map = yaml.safe_load(field_map_path.read_text(encoding="utf-8")) or {}
+        address_by_id = {
+            str(address.get("address_id")): address
+            for address in addresses.get("addresses", []) or []
+            if isinstance(address, dict) and address.get("address_id")
+        }
         address_to_concept = {address_id: item["concept_id"] for address_id, item in projections.items()}
         updated_fields = 0
         for item in field_map.get("field_dispositions", []) or []:
@@ -426,9 +560,96 @@ def promote_structured_concepts(
             concept_id = address_to_concept.get(str(item.get("address_id") or ""))
             if concept_id:
                 item["concept_id"] = concept_id
+        occurrence_fields = _apply_field_occurrences(field_map, address_by_id, projections)
         field_map_path.write_text(yaml.safe_dump(field_map, sort_keys=False, allow_unicode=False), encoding="utf-8", newline="\n")
-        summary[document_id] = {"concepts": len(inventory["concepts"]), "placements": len(projections), "field_dispositions": updated_fields}
+        summary[document_id] = {
+            "concepts": len(inventory["concepts"]),
+            "placements": len(projections),
+            "field_dispositions": updated_fields,
+            "occurrence_fields": occurrence_fields,
+        }
     return summary
+
+
+def retrieve_occurrences(
+    root: str | Path,
+    year: str | int,
+    document_id: str,
+    concept_id: str,
+    *,
+    axes: dict[str, Any] | None = None,
+) -> list[dict[str, Any]]:
+    """Retrieve physical fields for a concept from promoted graph metadata.
+
+    ``axes`` filters concrete slot values such as ``{"row_slot": 3}`` or
+    ``{"copy": "A", "row_slot": 2}``. The result retains the placement,
+    field name, occurrence key, and quotable ref needed to pull a complete
+    table row without consulting a PDF or a return record.
+    """
+    root_path = Path(root)
+    address_path = root_path / "graph" / str(year) / "addresses" / f"{document_id}.yaml"
+    field_map_path = root_path / "graph" / str(year) / "field_maps" / f"{document_id}.yaml"
+    address_payload = yaml.safe_load(address_path.read_text(encoding="utf-8")) or {}
+    field_map = yaml.safe_load(field_map_path.read_text(encoding="utf-8")) or {}
+    addresses = {
+        str(item.get("address_id")): item
+        for item in address_payload.get("addresses", []) or []
+        if isinstance(item, dict) and item.get("address_id")
+    }
+    result: list[dict[str, Any]] = []
+    wanted = axes or {}
+    for item in field_map.get("field_dispositions", []) or []:
+        if not isinstance(item, dict) or str(item.get("concept_id") or "") != concept_id:
+            continue
+        occurrence = item.get("occurrence") or {}
+        actual_axes = occurrence.get("axes", {}) if isinstance(occurrence, dict) else {}
+        if any(actual_axes.get(key) != value for key, value in wanted.items()):
+            continue
+        address_id = str(item.get("address_id") or "")
+        address = addresses.get(address_id, {})
+        result.append(
+            {
+                "concept_id": concept_id,
+                "address_id": address_id,
+                "field_name": str(item.get("field_name") or ""),
+                "display_name": str(item.get("label") or address.get("printed_label") or ""),
+                "occurrence": occurrence,
+                "repeatable": item.get("repeatable"),
+                "placement": address.get("placement"),
+                "ref": _occurrence_ref(address_id, occurrence),
+            }
+        )
+    return sorted(result, key=lambda item: (str(item.get("ref") or ""), str(item.get("field_name") or "")))
+
+
+def retrieve_table_occurrence(
+    root: str | Path,
+    year: str | int,
+    document_id: str,
+    concept_prefix: str,
+    *,
+    row_slot: int,
+    copy: str | None = None,
+) -> list[dict[str, Any]]:
+    """Retrieve one complete row across all concept columns in a table."""
+    inventory_path = Path(root) / "graph" / str(year) / "concepts" / f"{document_id}.yaml"
+    inventory = yaml.safe_load(inventory_path.read_text(encoding="utf-8")) or {}
+    axes: dict[str, Any] = {"row_slot": int(row_slot)}
+    if copy is not None:
+        axes["copy"] = copy
+    result: list[dict[str, Any]] = []
+    for concept in inventory.get("concepts", []) or []:
+        concept_id = str(concept.get("concept_id") or "")
+        if concept_id.startswith(concept_prefix):
+            result.extend(retrieve_occurrences(root, year, document_id, concept_id, axes=axes))
+    return sorted(result, key=lambda item: (str(item.get("ref") or ""), str(item.get("field_name") or "")))
+
+
+def _occurrence_ref(address_id: str, occurrence: dict[str, Any]) -> str | None:
+    """Import the workbench ref projection without making it a pipeline dependency."""
+    from workbench.refs import unit_ref_from_address
+
+    return unit_ref_from_address(address_id, occurrence)
 
 
 def structured_address_ids(root: str | Path, year: str | int = 2025) -> set[str]:
@@ -445,5 +666,6 @@ def structured_address_ids(root: str | Path, year: str | int = 2025) -> set[str]
 
 __all__ = [
     "ConceptError", "STRUCTURED_DOCUMENTS", "build_document_concepts", "mint_concept_id",
-    "promote_structured_concepts", "structured_address_ids", "validate_concept_id",
+    "promote_structured_concepts", "retrieve_occurrences", "retrieve_table_occurrence",
+    "structured_address_ids", "validate_concept_id", "validate_occurrence_contract",
 ]

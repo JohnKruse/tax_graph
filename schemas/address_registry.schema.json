@@ -55,14 +55,20 @@
           "type": "object", "additionalProperties": false,
           "required": ["kind", "review_granularity", "row_policy"],
           "properties": {
-            "kind": {"enum": ["singleton", "entity"]},
-            "entity_key": {"type": "string", "pattern": "^[a-z0-9_]+$"},
+            "kind": {"enum": ["singleton", "slot"]},
+            "slot_key": {"type": "string", "pattern": "^[a-z0-9_]+$"},
+            "axes": {
+              "type": "array",
+              "minItems": 1,
+              "uniqueItems": true,
+              "items": {"enum": ["copy", "row_slot"]}
+            },
             "review_granularity": {"const": "concept"},
-            "row_policy": {"enum": ["none", "entity_keyed"]}
+            "row_policy": {"enum": ["none", "slot_keyed"]}
           },
           "allOf": [
-            {"if": {"properties": {"kind": {"const": "entity"}}, "required": ["kind"]},
-             "then": {"required": ["entity_key"], "properties": {"row_policy": {"const": "entity_keyed"}}},
+            {"if": {"properties": {"kind": {"const": "slot"}}, "required": ["kind"]},
+             "then": {"required": ["slot_key", "axes"], "properties": {"row_policy": {"const": "slot_keyed"}}},
              "else": {"properties": {"row_policy": {"const": "none"}}}}
           ]
         },

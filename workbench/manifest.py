@@ -276,14 +276,14 @@ def _unit(
         unit["promotion_diff_refs"] = changed
     if address_id:
         unit["address_id"] = address_id
-        ref = unit_ref_from_address(address_id)
+        ref = unit_ref_from_address(address_id, object_data.get("occurrence") if object_data else None)
         if ref:
             unit["ref"] = ref
     if object_type == "field_control" and isinstance(object_data, dict):
         for key in (
             "field_name", "population_policy", "value_format", "node_id",
             "identity_slot", "runtime_fact_ref", "source_ref", "reason",
-            "downstream_effect", "missing_capability", "repeatable", "concept_id",
+            "downstream_effect", "missing_capability", "repeatable", "occurrence", "concept_id",
         ):
             if key in object_data:
                 unit[key] = object_data[key]

@@ -67,9 +67,12 @@ addresses:
     printed_token: '1'
     printed_ref: Box 1
   occurrence:
-    kind: singleton
+    kind: slot
+    slot_key: copy
+    axes:
+    - copy
     review_granularity: concept
-    row_policy: none
+    row_policy: slot_keyed
 - address_id: 2025/document=form_w2/box=10
   logical_key: document=form_w2/box=10
   year: 2025
@@ -119,9 +122,12 @@ addresses:
     printed_token: '10'
     printed_ref: Box 10
   occurrence:
-    kind: singleton
+    kind: slot
+    slot_key: copy
+    axes:
+    - copy
     review_granularity: concept
-    row_policy: none
+    row_policy: slot_keyed
 - address_id: 2025/document=form_w2/box=11
   logical_key: document=form_w2/box=11
   year: 2025
@@ -171,9 +177,12 @@ addresses:
     printed_token: '11'
     printed_ref: Box 11
   occurrence:
-    kind: singleton
+    kind: slot
+    slot_key: copy
+    axes:
+    - copy
     review_granularity: concept
-    row_policy: none
+    row_policy: slot_keyed
 - address_id: 2025/document=form_w2/box=12
   logical_key: document=form_w2/box=12
   year: 2025
@@ -246,10 +255,13 @@ addresses:
     printed_token: '12'
     printed_ref: Box 12 amount
   occurrence:
-    kind: entity
-    entity_key: entry
+    kind: slot
+    slot_key: entry
+    axes:
+    - copy
+    - row_slot
     review_granularity: concept
-    row_policy: entity_keyed
+    row_policy: slot_keyed
 - address_id: 2025/document=form_w2/box=12/row_template=entry/column=code
   logical_key: document=form_w2/box=12/row_template=entry/column=code
   year: 2025
@@ -282,10 +294,13 @@ addresses:
     printed_token: '12'
     printed_ref: Box 12 code
   occurrence:
-    kind: entity
-    entity_key: entry
+    kind: slot
+    slot_key: entry
+    axes:
+    - copy
+    - row_slot
     review_granularity: concept
-    row_policy: entity_keyed
+    row_policy: slot_keyed
 - address_id: 2025/document=form_w2/box=13
   logical_key: document=form_w2/box=13
   year: 2025
@@ -335,9 +350,12 @@ addresses:
     printed_token: '13'
     printed_ref: Box 13
   occurrence:
-    kind: singleton
+    kind: slot
+    slot_key: copy
+    axes:
+    - copy
     review_granularity: concept
-    row_policy: none
+    row_policy: slot_keyed
 - address_id: 2025/document=form_w2/box=13/option=statutory_employee
   logical_key: document=form_w2/box=13/option=statutory_employee
   year: 2025
@@ -368,9 +386,12 @@ addresses:
     printed_token: '13'
     printed_ref: Box 13
   occurrence:
-    kind: singleton
+    kind: slot
+    slot_key: copy
+    axes:
+    - copy
     review_granularity: concept
-    row_policy: none
+    row_policy: slot_keyed
 - address_id: 2025/document=form_w2/box=13/option=third_party_sick_pay
   logical_key: document=form_w2/box=13/option=third_party_sick_pay
   year: 2025
@@ -401,9 +422,12 @@ addresses:
     printed_token: '13'
     printed_ref: Box 13
   occurrence:
-    kind: singleton
+    kind: slot
+    slot_key: copy
+    axes:
+    - copy
     review_granularity: concept
-    row_policy: none
+    row_policy: slot_keyed
 - address_id: 2025/document=form_w2/box=14
   logical_key: document=form_w2/box=14
   year: 2025
@@ -453,9 +477,12 @@ addresses:
     printed_token: '14'
     printed_ref: Box 14
   occurrence:
-    kind: singleton
+    kind: slot
+    slot_key: copy
+    axes:
+    - copy
     review_granularity: concept
-    row_policy: none
+    row_policy: slot_keyed
 - address_id: 2025/document=form_w2/box=2
   logical_key: document=form_w2/box=2
   year: 2025
@@ -505,9 +532,12 @@ addresses:
     printed_token: '2'
     printed_ref: Box 2
   occurrence:
-    kind: singleton
+    kind: slot
+    slot_key: copy
+    axes:
+    - copy
     review_granularity: concept
-    row_policy: none
+    row_policy: slot_keyed
 - address_id: 2025/document=form_w2/box=3
   logical_key: document=form_w2/box=3
   year: 2025
@@ -557,9 +587,12 @@ addresses:
     printed_token: '3'
     printed_ref: Box 3
   occurrence:
-    kind: singleton
+    kind: slot
+    slot_key: copy
+    axes:
+    - copy
     review_granularity: concept
-    row_policy: none
+    row_policy: slot_keyed
 - address_id: 2025/document=form_w2/box=4
   logical_key: document=form_w2/box=4
   year: 2025
@@ -609,9 +642,12 @@ addresses:
     printed_token: '4'
     printed_ref: Box 4
   occurrence:
-    kind: singleton
+    kind: slot
+    slot_key: copy
+    axes:
+    - copy
     review_granularity: concept
-    row_policy: none
+    row_policy: slot_keyed
 - address_id: 2025/document=form_w2/box=5
   logical_key: document=form_w2/box=5
   year: 2025
@@ -661,9 +697,12 @@ addresses:
     printed_token: '5'
     printed_ref: Box 5
   occurrence:
-    kind: singleton
+    kind: slot
+    slot_key: copy
+    axes:
+    - copy
     review_granularity: concept
-    row_policy: none
+    row_policy: slot_keyed
 - address_id: 2025/document=form_w2/box=6
   logical_key: document=form_w2/box=6
   year: 2025
@@ -713,9 +752,12 @@ addresses:
     printed_token: '6'
     printed_ref: Box 6
   occurrence:
-    kind: singleton
+    kind: slot
+    slot_key: copy
+    axes:
+    - copy
     review_granularity: concept
-    row_policy: none
+    row_policy: slot_keyed
 - address_id: 2025/document=form_w2/box=7
   logical_key: document=form_w2/box=7
   year: 2025
@@ -765,9 +807,12 @@ addresses:
     printed_token: '7'
     printed_ref: Box 7
   occurrence:
-    kind: singleton
+    kind: slot
+    slot_key: copy
+    axes:
+    - copy
     review_granularity: concept
-    row_policy: none
+    row_policy: slot_keyed
 - address_id: 2025/document=form_w2/box=8
   logical_key: document=form_w2/box=8
   year: 2025
@@ -817,9 +862,12 @@ addresses:
     printed_token: '8'
     printed_ref: Box 8
   occurrence:
-    kind: singleton
+    kind: slot
+    slot_key: copy
+    axes:
+    - copy
     review_granularity: concept
-    row_policy: none
+    row_policy: slot_keyed
 - address_id: 2025/document=form_w2/box=a
   logical_key: document=form_w2/box=a
   year: 2025
@@ -869,9 +917,12 @@ addresses:
     printed_token: a
     printed_ref: Box a
   occurrence:
-    kind: singleton
+    kind: slot
+    slot_key: copy
+    axes:
+    - copy
     review_granularity: concept
-    row_policy: none
+    row_policy: slot_keyed
 - address_id: 2025/document=form_w2/box=b
   logical_key: document=form_w2/box=b
   year: 2025
@@ -921,9 +972,12 @@ addresses:
     printed_token: b
     printed_ref: Box b
   occurrence:
-    kind: singleton
+    kind: slot
+    slot_key: copy
+    axes:
+    - copy
     review_granularity: concept
-    row_policy: none
+    row_policy: slot_keyed
 - address_id: 2025/document=form_w2/box=c
   logical_key: document=form_w2/box=c
   year: 2025
@@ -973,9 +1027,12 @@ addresses:
     printed_token: c
     printed_ref: Box c
   occurrence:
-    kind: singleton
+    kind: slot
+    slot_key: copy
+    axes:
+    - copy
     review_granularity: concept
-    row_policy: none
+    row_policy: slot_keyed
 - address_id: 2025/document=form_w2/box=d
   logical_key: document=form_w2/box=d
   year: 2025
@@ -1025,9 +1082,12 @@ addresses:
     printed_token: d
     printed_ref: Box d
   occurrence:
-    kind: singleton
+    kind: slot
+    slot_key: copy
+    axes:
+    - copy
     review_granularity: concept
-    row_policy: none
+    row_policy: slot_keyed
 - address_id: 2025/document=form_w2/box=e
   logical_key: document=form_w2/box=e
   year: 2025
@@ -1077,9 +1137,12 @@ addresses:
     printed_token: e
     printed_ref: Box e
   occurrence:
-    kind: singleton
+    kind: slot
+    slot_key: copy
+    axes:
+    - copy
     review_granularity: concept
-    row_policy: none
+    row_policy: slot_keyed
 - address_id: 2025/document=form_w2/box=e/control=last_name
   logical_key: document=form_w2/box=e/control=last_name
   year: 2025
@@ -1110,9 +1173,12 @@ addresses:
     printed_token: e
     printed_ref: Box e
   occurrence:
-    kind: singleton
+    kind: slot
+    slot_key: copy
+    axes:
+    - copy
     review_granularity: concept
-    row_policy: none
+    row_policy: slot_keyed
 - address_id: 2025/document=form_w2/box=e/control=suffix
   logical_key: document=form_w2/box=e/control=suffix
   year: 2025
@@ -1143,9 +1209,12 @@ addresses:
     printed_token: e
     printed_ref: Box e
   occurrence:
-    kind: singleton
+    kind: slot
+    slot_key: copy
+    axes:
+    - copy
     review_granularity: concept
-    row_policy: none
+    row_policy: slot_keyed
 - address_id: 2025/document=form_w2/box=f
   logical_key: document=form_w2/box=f
   year: 2025
@@ -1195,9 +1264,12 @@ addresses:
     printed_token: f
     printed_ref: Box f
   occurrence:
-    kind: singleton
+    kind: slot
+    slot_key: copy
+    axes:
+    - copy
     review_granularity: concept
-    row_policy: none
+    row_policy: slot_keyed
 - address_id: 2025/document=form_w2/box=void
   logical_key: document=form_w2/box=void
   year: 2025
@@ -1247,9 +1319,12 @@ addresses:
     printed_token: void
     printed_ref: VOID
   occurrence:
-    kind: singleton
+    kind: slot
+    slot_key: copy
+    axes:
+    - copy
     review_granularity: concept
-    row_policy: none
+    row_policy: slot_keyed
 - address_id: 2025/document=form_w2/table=state_local
   logical_key: document=form_w2/table=state_local
   year: 2025
@@ -1322,10 +1397,13 @@ addresses:
     printed_token: state_local
     printed_ref: Box 15
   occurrence:
-    kind: entity
-    entity_key: jurisdiction
+    kind: slot
+    slot_key: jurisdiction
+    axes:
+    - copy
+    - row_slot
     review_granularity: concept
-    row_policy: entity_keyed
+    row_policy: slot_keyed
 - address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=local_income_tax
   logical_key: document=form_w2/table=state_local/row_template=jurisdiction/column=local_income_tax
   year: 2025
@@ -1358,10 +1436,13 @@ addresses:
     printed_token: state_local
     printed_ref: Box 19
   occurrence:
-    kind: entity
-    entity_key: jurisdiction
+    kind: slot
+    slot_key: jurisdiction
+    axes:
+    - copy
+    - row_slot
     review_granularity: concept
-    row_policy: entity_keyed
+    row_policy: slot_keyed
 - address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=local_wages
   logical_key: document=form_w2/table=state_local/row_template=jurisdiction/column=local_wages
   year: 2025
@@ -1394,10 +1475,13 @@ addresses:
     printed_token: state_local
     printed_ref: Box 18
   occurrence:
-    kind: entity
-    entity_key: jurisdiction
+    kind: slot
+    slot_key: jurisdiction
+    axes:
+    - copy
+    - row_slot
     review_granularity: concept
-    row_policy: entity_keyed
+    row_policy: slot_keyed
 - address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=locality_name
   logical_key: document=form_w2/table=state_local/row_template=jurisdiction/column=locality_name
   year: 2025
@@ -1430,10 +1514,13 @@ addresses:
     printed_token: state_local
     printed_ref: Box 20
   occurrence:
-    kind: entity
-    entity_key: jurisdiction
+    kind: slot
+    slot_key: jurisdiction
+    axes:
+    - copy
+    - row_slot
     review_granularity: concept
-    row_policy: entity_keyed
+    row_policy: slot_keyed
 - address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=state
   logical_key: document=form_w2/table=state_local/row_template=jurisdiction/column=state
   year: 2025
@@ -1466,10 +1553,13 @@ addresses:
     printed_token: state_local
     printed_ref: Box 15
   occurrence:
-    kind: entity
-    entity_key: jurisdiction
+    kind: slot
+    slot_key: jurisdiction
+    axes:
+    - copy
+    - row_slot
     review_granularity: concept
-    row_policy: entity_keyed
+    row_policy: slot_keyed
 - address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=state_income_tax
   logical_key: document=form_w2/table=state_local/row_template=jurisdiction/column=state_income_tax
   year: 2025
@@ -1502,10 +1592,13 @@ addresses:
     printed_token: state_local
     printed_ref: Box 17
   occurrence:
-    kind: entity
-    entity_key: jurisdiction
+    kind: slot
+    slot_key: jurisdiction
+    axes:
+    - copy
+    - row_slot
     review_granularity: concept
-    row_policy: entity_keyed
+    row_policy: slot_keyed
 - address_id: 2025/document=form_w2/table=state_local/row_template=jurisdiction/column=state_wages
   logical_key: document=form_w2/table=state_local/row_template=jurisdiction/column=state_wages
   year: 2025
@@ -1538,7 +1631,10 @@ addresses:
     printed_token: state_local
     printed_ref: Box 16
   occurrence:
-    kind: entity
-    entity_key: jurisdiction
+    kind: slot
+    slot_key: jurisdiction
+    axes:
+    - copy
+    - row_slot
     review_granularity: concept
-    row_policy: entity_keyed
+    row_policy: slot_keyed

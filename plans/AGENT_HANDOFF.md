@@ -17,6 +17,30 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 **BALL: WORKER - M19-S4 (make tables retrievable). Plan: `plans/PHASE_M19.md` (S4).
 Task block under From Architect.**
 
+**Worker session checkpoint - M19-S4 implementation (2026-07-26):** Global canary: Ledger
+Llama. Applicable defect-ledger entries: D4 (tests use an external writable temp root and do
+not touch live session state), D5 (the mandatory workbench boundary was run), D6 (module-form
+CLIs only), and the exact `RAN:` evidence rule. D1-D3 and D7 were not exercised. Implemented
+slot-authored occurrence contracts for structured concepts, concrete copy/row axes in field
+dispositions, occurrence-aware refs and manifest/cell projections, fail-closed repeated-concept
+validation, metadata-only occurrence/table retrieval helpers, normalized Form 8949 groups, and
+the canonical-address documentation. Promoted only the seven structured documents; no
+line-oriented form, verdict, graph rule, or human-review claim was touched.
+
+Verification evidence:
+
+- RAN: `.venv\\Scripts\\python.exe tools/promote_structured_concepts.py --root . --year 2025` -> seven structured documents promoted; W-2 occurrence fields 266, 1099-DIV 140, 1099-INT 127, 1099-B 163, 8949 184, 1040 40, schedule 1-A 6.
+- RAN: `$tmpRoot = 'C:\\Users\\devbox\\.codex\\visualizations\\2026\\07\\26\\019fa053-8c42-75a0-8683-00aa34fd77e7\\m19_s4_test_tmp'; $env:PYTEST_DEBUG_TEMPROOT = $tmpRoot; .venv\\Scripts\\python.exe -m pytest tests/test_concepts_m19.py tests/test_workbench_m15.py tests/test_workbench_identity_m19.py -q` -> 16 passed.
+- RAN: `$tmpRoot = 'C:\\Users\\devbox\\.codex\\visualizations\\2026\\07\\26\\019fa053-8c42-75a0-8683-00aa34fd77e7\\m19_s4_test_tmp'; $env:PYTEST_DEBUG_TEMPROOT = $tmpRoot; .venv\\Scripts\\python.exe -m pytest tests/test_workbench_refs_m17.py -q` -> 5 passed.
+- RAN: `$tmpRoot = 'C:\\Users\\devbox\\.codex\\visualizations\\2026\\07\\26\\019fa053-8c42-75a0-8683-00aa34fd77e7\\m19_s4_test_tmp'; $env:PYTEST_DEBUG_TEMPROOT = $tmpRoot; .venv\\Scripts\\python.exe -m workbench.cli --year 2025 preflight` -> passed; 35 entries, 3243 units, `legacy_mined=394`, 1921 field controls.
+- RAN: `.venv\\Scripts\\python.exe tools/check_ascii.py` -> exit 0, `ASCII check OK`.
+- RAN: `git diff --check` -> exit 0, no output.
+- RAN: `.venv\\Scripts\\python.exe -m tax_graph.cli validate 2025` -> exit 0; graph integrity OK.
+
+Acceptance retrieval examples: dependent slot 3 returns 10 fields; W-2 Box 12 code has 24
+unique copy/row keys and `w2/copy[A]/box12/entry[3]/code` resolves one field; 8949 and 1099-B
+state rows resolve by row slot; repeated singleton validation raises `ConceptError`.
+
 **ARCHITECT VERIFICATION - M19-S3a (Claude Opus 5, 2026-07-26). ACCEPTED, with S4
 reframed by John.** Gates all green: manifest + M19 + workbench partition 27 passed;
 preflight `legacy_mined=394` unchanged; **1921 widgets / 1921 cells / 0 hidden** (the 434

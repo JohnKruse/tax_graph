@@ -62,10 +62,12 @@ concepts:
   role: deducted_elsewhere
   review_granularity: concept
   occurrence:
-    kind: entity
-    entity_key: vehicle
+    kind: slot
+    slot_key: vehicle
+    axes:
+    - row_slot
     review_granularity: concept
-    row_policy: entity_keyed
+    row_policy: slot_keyed
   aliases:
   - document=schedule_1a/table=line_22/row_template=vehicle/column=deducted_elsewhere
   placements:
@@ -87,10 +89,12 @@ concepts:
   role: schedule_1a
   review_granularity: concept
   occurrence:
-    kind: entity
-    entity_key: vehicle
+    kind: slot
+    slot_key: vehicle
+    axes:
+    - row_slot
     review_granularity: concept
-    row_policy: entity_keyed
+    row_policy: slot_keyed
   aliases:
   - document=schedule_1a/table=line_22/row_template=vehicle/column=schedule_1a
   placements:
@@ -112,10 +116,12 @@ concepts:
   role: vin
   review_granularity: concept
   occurrence:
-    kind: entity
-    entity_key: vehicle
+    kind: slot
+    slot_key: vehicle
+    axes:
+    - row_slot
     review_granularity: concept
-    row_policy: entity_keyed
+    row_policy: slot_keyed
   aliases:
   - document=schedule_1a/table=line_22/row_template=vehicle/column=vin
   placements:

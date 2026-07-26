@@ -67,9 +67,12 @@ addresses:
     printed_token: '10'
     printed_ref: Box 10
   occurrence:
-    kind: singleton
+    kind: slot
+    slot_key: copy
+    axes:
+    - copy
     review_granularity: concept
-    row_policy: none
+    row_policy: slot_keyed
 - address_id: 2025/document=form_1099b/box=11
   logical_key: document=form_1099b/box=11
   year: 2025
@@ -119,9 +122,12 @@ addresses:
     printed_token: '11'
     printed_ref: Box 11
   occurrence:
-    kind: singleton
+    kind: slot
+    slot_key: copy
+    axes:
+    - copy
     review_granularity: concept
-    row_policy: none
+    row_policy: slot_keyed
 - address_id: 2025/document=form_1099b/box=12
   logical_key: document=form_1099b/box=12
   year: 2025
@@ -171,9 +177,12 @@ addresses:
     printed_token: '12'
     printed_ref: Box 12
   occurrence:
-    kind: singleton
+    kind: slot
+    slot_key: copy
+    axes:
+    - copy
     review_granularity: concept
-    row_policy: none
+    row_policy: slot_keyed
 - address_id: 2025/document=form_1099b/box=13
   logical_key: document=form_1099b/box=13
   year: 2025
@@ -223,9 +232,12 @@ addresses:
     printed_token: '13'
     printed_ref: Box 13
   occurrence:
-    kind: singleton
+    kind: slot
+    slot_key: copy
+    axes:
+    - copy
     review_granularity: concept
-    row_policy: none
+    row_policy: slot_keyed
 - address_id: 2025/document=form_1099b/box=1a
   logical_key: document=form_1099b/box=1a
   year: 2025
@@ -275,9 +287,12 @@ addresses:
     printed_token: 1a
     printed_ref: Box 1a
   occurrence:
-    kind: singleton
+    kind: slot
+    slot_key: copy
+    axes:
+    - copy
     review_granularity: concept
-    row_policy: none
+    row_policy: slot_keyed
 - address_id: 2025/document=form_1099b/box=1b
   logical_key: document=form_1099b/box=1b
   year: 2025
@@ -327,9 +342,12 @@ addresses:
     printed_token: 1b
     printed_ref: Box 1b
   occurrence:
-    kind: singleton
+    kind: slot
+    slot_key: copy
+    axes:
+    - copy
     review_granularity: concept
-    row_policy: none
+    row_policy: slot_keyed
 - address_id: 2025/document=form_1099b/box=1c
   logical_key: document=form_1099b/box=1c
   year: 2025
@@ -379,9 +397,12 @@ addresses:
     printed_token: 1c
     printed_ref: Box 1c
   occurrence:
-    kind: singleton
+    kind: slot
+    slot_key: copy
+    axes:
+    - copy
     review_granularity: concept
-    row_policy: none
+    row_policy: slot_keyed
 - address_id: 2025/document=form_1099b/box=1d
   logical_key: document=form_1099b/box=1d
   year: 2025
@@ -431,9 +452,12 @@ addresses:
     printed_token: 1d
     printed_ref: Box 1d
   occurrence:
-    kind: singleton
+    kind: slot
+    slot_key: copy
+    axes:
+    - copy
     review_granularity: concept
-    row_policy: none
+    row_policy: slot_keyed
 - address_id: 2025/document=form_1099b/box=1e
   logical_key: document=form_1099b/box=1e
   year: 2025
@@ -483,9 +507,12 @@ addresses:
     printed_token: 1e
     printed_ref: Box 1e
   occurrence:
-    kind: singleton
+    kind: slot
+    slot_key: copy
+    axes:
+    - copy
     review_granularity: concept
-    row_policy: none
+    row_policy: slot_keyed
 - address_id: 2025/document=form_1099b/box=1f
   logical_key: document=form_1099b/box=1f
   year: 2025
@@ -535,9 +562,12 @@ addresses:
     printed_token: 1f
     printed_ref: Box 1f
   occurrence:
-    kind: singleton
+    kind: slot
+    slot_key: copy
+    axes:
+    - copy
     review_granularity: concept
-    row_policy: none
+    row_policy: slot_keyed
 - address_id: 2025/document=form_1099b/box=1g
   logical_key: document=form_1099b/box=1g
   year: 2025
@@ -587,9 +617,12 @@ addresses:
     printed_token: 1g
     printed_ref: Box 1g
   occurrence:
-    kind: singleton
+    kind: slot
+    slot_key: copy
+    axes:
+    - copy
     review_granularity: concept
-    row_policy: none
+    row_policy: slot_keyed
 - address_id: 2025/document=form_1099b/box=2
   logical_key: document=form_1099b/box=2
   year: 2025
@@ -639,9 +672,12 @@ addresses:
     printed_token: '2'
     printed_ref: Box 2
   occurrence:
-    kind: singleton
+    kind: slot
+    slot_key: copy
+    axes:
+    - copy
     review_granularity: concept
-    row_policy: none
+    row_policy: slot_keyed
 - address_id: 2025/document=form_1099b/box=2/option=ordinary
   logical_key: document=form_1099b/box=2/option=ordinary
   year: 2025
@@ -672,9 +708,12 @@ addresses:
     printed_token: '2'
     printed_ref: Box 2
   occurrence:
-    kind: singleton
+    kind: slot
+    slot_key: copy
+    axes:
+    - copy
     review_granularity: concept
-    row_policy: none
+    row_policy: slot_keyed
 - address_id: 2025/document=form_1099b/box=2/option=short_term
   logical_key: document=form_1099b/box=2/option=short_term
   year: 2025
@@ -705,9 +744,12 @@ addresses:
     printed_token: '2'
     printed_ref: Box 2
   occurrence:
-    kind: singleton
+    kind: slot
+    slot_key: copy
+    axes:
+    - copy
     review_granularity: concept
-    row_policy: none
+    row_policy: slot_keyed
 - address_id: 2025/document=form_1099b/box=3
   logical_key: document=form_1099b/box=3
   year: 2025
@@ -757,9 +799,12 @@ addresses:
     printed_token: '3'
     printed_ref: Box 3
   occurrence:
-    kind: singleton
+    kind: slot
+    slot_key: copy
+    axes:
+    - copy
     review_granularity: concept
-    row_policy: none
+    row_policy: slot_keyed
 - address_id: 2025/document=form_1099b/box=3/option=qof
   logical_key: document=form_1099b/box=3/option=qof
   year: 2025
@@ -790,9 +835,12 @@ addresses:
     printed_token: '3'
     printed_ref: Box 3
   occurrence:
-    kind: singleton
+    kind: slot
+    slot_key: copy
+    axes:
+    - copy
     review_granularity: concept
-    row_policy: none
+    row_policy: slot_keyed
 - address_id: 2025/document=form_1099b/box=4
   logical_key: document=form_1099b/box=4
   year: 2025
@@ -842,9 +890,12 @@ addresses:
     printed_token: '4'
     printed_ref: Box 4
   occurrence:
-    kind: singleton
+    kind: slot
+    slot_key: copy
+    axes:
+    - copy
     review_granularity: concept
-    row_policy: none
+    row_policy: slot_keyed
 - address_id: 2025/document=form_1099b/box=5
   logical_key: document=form_1099b/box=5
   year: 2025
@@ -894,9 +945,12 @@ addresses:
     printed_token: '5'
     printed_ref: Box 5
   occurrence:
-    kind: singleton
+    kind: slot
+    slot_key: copy
+    axes:
+    - copy
     review_granularity: concept
-    row_policy: none
+    row_policy: slot_keyed
 - address_id: 2025/document=form_1099b/box=6
   logical_key: document=form_1099b/box=6
   year: 2025
@@ -946,9 +1000,12 @@ addresses:
     printed_token: '6'
     printed_ref: Box 6
   occurrence:
-    kind: singleton
+    kind: slot
+    slot_key: copy
+    axes:
+    - copy
     review_granularity: concept
-    row_policy: none
+    row_policy: slot_keyed
 - address_id: 2025/document=form_1099b/box=6/option=net_proceeds
   logical_key: document=form_1099b/box=6/option=net_proceeds
   year: 2025
@@ -979,9 +1036,12 @@ addresses:
     printed_token: '6'
     printed_ref: Box 6
   occurrence:
-    kind: singleton
+    kind: slot
+    slot_key: copy
+    axes:
+    - copy
     review_granularity: concept
-    row_policy: none
+    row_policy: slot_keyed
 - address_id: 2025/document=form_1099b/box=7
   logical_key: document=form_1099b/box=7
   year: 2025
@@ -1031,9 +1091,12 @@ addresses:
     printed_token: '7'
     printed_ref: Box 7
   occurrence:
-    kind: singleton
+    kind: slot
+    slot_key: copy
+    axes:
+    - copy
     review_granularity: concept
-    row_policy: none
+    row_policy: slot_keyed
 - address_id: 2025/document=form_1099b/box=8
   logical_key: document=form_1099b/box=8
   year: 2025
@@ -1083,9 +1146,12 @@ addresses:
     printed_token: '8'
     printed_ref: Box 8
   occurrence:
-    kind: singleton
+    kind: slot
+    slot_key: copy
+    axes:
+    - copy
     review_granularity: concept
-    row_policy: none
+    row_policy: slot_keyed
 - address_id: 2025/document=form_1099b/box=9
   logical_key: document=form_1099b/box=9
   year: 2025
@@ -1135,9 +1201,12 @@ addresses:
     printed_token: '9'
     printed_ref: Box 9
   occurrence:
-    kind: singleton
+    kind: slot
+    slot_key: copy
+    axes:
+    - copy
     review_granularity: concept
-    row_policy: none
+    row_policy: slot_keyed
 - address_id: 2025/document=form_1099b/section=header
   logical_key: document=form_1099b/section=header
   year: 2025
@@ -1187,9 +1256,12 @@ addresses:
     printed_token: header
     printed_ref: CORRECTED
   occurrence:
-    kind: singleton
+    kind: slot
+    slot_key: copy
+    axes:
+    - copy
     review_granularity: concept
-    row_policy: none
+    row_policy: slot_keyed
 - address_id: 2025/document=form_1099b/section=header/option=void
   logical_key: document=form_1099b/section=header/option=void
   year: 2025
@@ -1220,9 +1292,12 @@ addresses:
     printed_token: header
     printed_ref: VOID
   occurrence:
-    kind: singleton
+    kind: slot
+    slot_key: copy
+    axes:
+    - copy
     review_granularity: concept
-    row_policy: none
+    row_policy: slot_keyed
 - address_id: 2025/document=form_1099b/section=recipient
   logical_key: document=form_1099b/section=recipient
   year: 2025
@@ -1272,9 +1347,12 @@ addresses:
     printed_token: recipient
     printed_ref: Account number (see instructions)
   occurrence:
-    kind: singleton
+    kind: slot
+    slot_key: copy
+    axes:
+    - copy
     review_granularity: concept
-    row_policy: none
+    row_policy: slot_keyed
 - address_id: 2025/document=form_1099b/section=recipient/control=cusip_number
   logical_key: document=form_1099b/section=recipient/control=cusip_number
   year: 2025
@@ -1305,9 +1383,12 @@ addresses:
     printed_token: recipient
     printed_ref: CUSIP number
   occurrence:
-    kind: singleton
+    kind: slot
+    slot_key: copy
+    axes:
+    - copy
     review_granularity: concept
-    row_policy: none
+    row_policy: slot_keyed
 - address_id: 2025/document=form_1099b/section=recipient/control=form_8949_checkbox
   logical_key: document=form_1099b/section=recipient/control=form_8949_checkbox
   year: 2025
@@ -1338,9 +1419,12 @@ addresses:
     printed_token: recipient
     printed_ref: Applicable checkbox on Form 8949
   occurrence:
-    kind: singleton
+    kind: slot
+    slot_key: copy
+    axes:
+    - copy
     review_granularity: concept
-    row_policy: none
+    row_policy: slot_keyed
 - address_id: 2025/document=form_1099b/section=recipient/control=payer_name_address
   logical_key: document=form_1099b/section=recipient/control=payer_name_address
   year: 2025
@@ -1374,9 +1458,12 @@ addresses:
     printed_ref: Payer's name, street address, city or town, state or province, country,
       ZIP or foreign postal code, and telephone number
   occurrence:
-    kind: singleton
+    kind: slot
+    slot_key: copy
+    axes:
+    - copy
     review_granularity: concept
-    row_policy: none
+    row_policy: slot_keyed
 - address_id: 2025/document=form_1099b/section=recipient/control=payer_tin
   logical_key: document=form_1099b/section=recipient/control=payer_tin
   year: 2025
@@ -1407,9 +1494,12 @@ addresses:
     printed_token: recipient
     printed_ref: Payer's TIN
   occurrence:
-    kind: singleton
+    kind: slot
+    slot_key: copy
+    axes:
+    - copy
     review_granularity: concept
-    row_policy: none
+    row_policy: slot_keyed
 - address_id: 2025/document=form_1099b/section=recipient/control=recipient_city
   logical_key: document=form_1099b/section=recipient/control=recipient_city
   year: 2025
@@ -1443,9 +1533,12 @@ addresses:
     printed_ref: City or town, state or province, country, and ZIP or foreign postal
       code
   occurrence:
-    kind: singleton
+    kind: slot
+    slot_key: copy
+    axes:
+    - copy
     review_granularity: concept
-    row_policy: none
+    row_policy: slot_keyed
 - address_id: 2025/document=form_1099b/section=recipient/control=recipient_name
   logical_key: document=form_1099b/section=recipient/control=recipient_name
   year: 2025
@@ -1476,9 +1569,12 @@ addresses:
     printed_token: recipient
     printed_ref: Recipient's name
   occurrence:
-    kind: singleton
+    kind: slot
+    slot_key: copy
+    axes:
+    - copy
     review_granularity: concept
-    row_policy: none
+    row_policy: slot_keyed
 - address_id: 2025/document=form_1099b/section=recipient/control=recipient_street
   logical_key: document=form_1099b/section=recipient/control=recipient_street
   year: 2025
@@ -1509,9 +1605,12 @@ addresses:
     printed_token: recipient
     printed_ref: Street address (including apt. no.)
   occurrence:
-    kind: singleton
+    kind: slot
+    slot_key: copy
+    axes:
+    - copy
     review_granularity: concept
-    row_policy: none
+    row_policy: slot_keyed
 - address_id: 2025/document=form_1099b/section=recipient/control=recipient_tin
   logical_key: document=form_1099b/section=recipient/control=recipient_tin
   year: 2025
@@ -1542,9 +1641,12 @@ addresses:
     printed_token: recipient
     printed_ref: Recipient's TIN
   occurrence:
-    kind: singleton
+    kind: slot
+    slot_key: copy
+    axes:
+    - copy
     review_granularity: concept
-    row_policy: none
+    row_policy: slot_keyed
 - address_id: 2025/document=form_1099b/section=recipient/option=fatca_filing_requirement
   logical_key: document=form_1099b/section=recipient/option=fatca_filing_requirement
   year: 2025
@@ -1575,9 +1677,12 @@ addresses:
     printed_token: recipient
     printed_ref: FATCA filing requirement
   occurrence:
-    kind: singleton
+    kind: slot
+    slot_key: copy
+    axes:
+    - copy
     review_granularity: concept
-    row_policy: none
+    row_policy: slot_keyed
 - address_id: 2025/document=form_1099b/section=recipient/option=second_tin_notice
   logical_key: document=form_1099b/section=recipient/option=second_tin_notice
   year: 2025
@@ -1608,9 +1713,12 @@ addresses:
     printed_token: recipient
     printed_ref: 2nd TIN not.
   occurrence:
-    kind: singleton
+    kind: slot
+    slot_key: copy
+    axes:
+    - copy
     review_granularity: concept
-    row_policy: none
+    row_policy: slot_keyed
 - address_id: 2025/document=form_1099b/table=state
   logical_key: document=form_1099b/table=state
   year: 2025
@@ -1683,10 +1791,13 @@ addresses:
     printed_token: state
     printed_ref: Box 14
   occurrence:
-    kind: entity
-    entity_key: jurisdiction
+    kind: slot
+    slot_key: jurisdiction
+    axes:
+    - copy
+    - row_slot
     review_granularity: concept
-    row_policy: entity_keyed
+    row_policy: slot_keyed
 - address_id: 2025/document=form_1099b/table=state/row_template=jurisdiction/column=state_id
   logical_key: document=form_1099b/table=state/row_template=jurisdiction/column=state_id
   year: 2025
@@ -1719,10 +1830,13 @@ addresses:
     printed_token: state
     printed_ref: Box 15
   occurrence:
-    kind: entity
-    entity_key: jurisdiction
+    kind: slot
+    slot_key: jurisdiction
+    axes:
+    - copy
+    - row_slot
     review_granularity: concept
-    row_policy: entity_keyed
+    row_policy: slot_keyed
 - address_id: 2025/document=form_1099b/table=state/row_template=jurisdiction/column=state_tax
   logical_key: document=form_1099b/table=state/row_template=jurisdiction/column=state_tax
   year: 2025
@@ -1755,7 +1869,10 @@ addresses:
     printed_token: state
     printed_ref: Box 16
   occurrence:
-    kind: entity
-    entity_key: jurisdiction
+    kind: slot
+    slot_key: jurisdiction
+    axes:
+    - copy
+    - row_slot
     review_granularity: concept
-    row_policy: entity_keyed
+    row_policy: slot_keyed

@@ -14,10 +14,12 @@ concepts:
   role: child_tax_credit
   review_granularity: concept
   occurrence:
-    kind: entity
-    entity_key: dependent
+    kind: slot
+    slot_key: dependent
+    axes:
+    - row_slot
     review_granularity: concept
-    row_policy: entity_keyed
+    row_policy: slot_keyed
   aliases:
   - document=form_1040/table=dependents/row_template=dependent/column=child_tax_credit
   placements:
@@ -39,10 +41,12 @@ concepts:
   role: credit_for_other_dependents
   review_granularity: concept
   occurrence:
-    kind: entity
-    entity_key: dependent
+    kind: slot
+    slot_key: dependent
+    axes:
+    - row_slot
     review_granularity: concept
-    row_policy: entity_keyed
+    row_policy: slot_keyed
   aliases:
   - document=form_1040/table=dependents/row_template=dependent/column=credit_for_other_dependents
   placements:
@@ -64,10 +68,12 @@ concepts:
   role: first_name
   review_granularity: concept
   occurrence:
-    kind: entity
-    entity_key: dependent
+    kind: slot
+    slot_key: dependent
+    axes:
+    - row_slot
     review_granularity: concept
-    row_policy: entity_keyed
+    row_policy: slot_keyed
   aliases:
   - document=form_1040/table=dependents/row_template=dependent/column=first_name
   placements:
@@ -89,10 +95,12 @@ concepts:
   role: full_time_student
   review_granularity: concept
   occurrence:
-    kind: entity
-    entity_key: dependent
+    kind: slot
+    slot_key: dependent
+    axes:
+    - row_slot
     review_granularity: concept
-    row_policy: entity_keyed
+    row_policy: slot_keyed
   aliases:
   - document=form_1040/table=dependents/row_template=dependent/column=full_time_student
   placements:
@@ -114,10 +122,12 @@ concepts:
   role: in_the_us
   review_granularity: concept
   occurrence:
-    kind: entity
-    entity_key: dependent
+    kind: slot
+    slot_key: dependent
+    axes:
+    - row_slot
     review_granularity: concept
-    row_policy: entity_keyed
+    row_policy: slot_keyed
   aliases:
   - document=form_1040/table=dependents/row_template=dependent/column=in_the_us
   placements:
@@ -139,10 +149,12 @@ concepts:
   role: last_name
   review_granularity: concept
   occurrence:
-    kind: entity
-    entity_key: dependent
+    kind: slot
+    slot_key: dependent
+    axes:
+    - row_slot
     review_granularity: concept
-    row_policy: entity_keyed
+    row_policy: slot_keyed
   aliases:
   - document=form_1040/table=dependents/row_template=dependent/column=last_name
   placements:
@@ -164,10 +176,12 @@ concepts:
   role: lived_with_you_more_than_half
   review_granularity: concept
   occurrence:
-    kind: entity
-    entity_key: dependent
+    kind: slot
+    slot_key: dependent
+    axes:
+    - row_slot
     review_granularity: concept
-    row_policy: entity_keyed
+    row_policy: slot_keyed
   aliases:
   - document=form_1040/table=dependents/row_template=dependent/column=lived_with_you_more_than_half_2025
   placements:
@@ -189,10 +203,12 @@ concepts:
   role: permanently_totally_disabled
   review_granularity: concept
   occurrence:
-    kind: entity
-    entity_key: dependent
+    kind: slot
+    slot_key: dependent
+    axes:
+    - row_slot
     review_granularity: concept
-    row_policy: entity_keyed
+    row_policy: slot_keyed
   aliases:
   - document=form_1040/table=dependents/row_template=dependent/column=permanently_totally_disabled
   placements:
@@ -214,10 +230,12 @@ concepts:
   role: relationship
   review_granularity: concept
   occurrence:
-    kind: entity
-    entity_key: dependent
+    kind: slot
+    slot_key: dependent
+    axes:
+    - row_slot
     review_granularity: concept
-    row_policy: entity_keyed
+    row_policy: slot_keyed
   aliases:
   - document=form_1040/table=dependents/row_template=dependent/column=relationship
   placements:
@@ -239,10 +257,12 @@ concepts:
   role: ssn
   review_granularity: concept
   occurrence:
-    kind: entity
-    entity_key: dependent
+    kind: slot
+    slot_key: dependent
+    axes:
+    - row_slot
     review_granularity: concept
-    row_policy: entity_keyed
+    row_policy: slot_keyed
   aliases:
   - document=form_1040/table=dependents/row_template=dependent/column=ssn
   placements:

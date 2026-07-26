@@ -13,9 +13,12 @@ concepts:
   role: basis_reported
   review_granularity: concept
   occurrence:
-    kind: singleton
+    kind: slot
+    slot_key: copy
+    axes:
+    - copy
     review_granularity: concept
-    row_policy: none
+    row_policy: slot_keyed
   aliases:
   - document=form_1099b/box=12/option=basis_reported
   placements:
@@ -36,9 +39,12 @@ concepts:
   role: collectibles
   review_granularity: concept
   occurrence:
-    kind: singleton
+    kind: slot
+    slot_key: copy
+    axes:
+    - copy
     review_granularity: concept
-    row_policy: none
+    row_policy: slot_keyed
   aliases:
   - document=form_1099b/box=3/option=collectibles
   placements:
@@ -59,9 +65,12 @@ concepts:
   role: gross_proceeds
   review_granularity: concept
   occurrence:
-    kind: singleton
+    kind: slot
+    slot_key: copy
+    axes:
+    - copy
     review_granularity: concept
-    row_policy: none
+    row_policy: slot_keyed
   aliases:
   - document=form_1099b/box=6/option=gross_proceeds
   placements:
@@ -82,9 +91,12 @@ concepts:
   role: long_term
   review_granularity: concept
   occurrence:
-    kind: singleton
+    kind: slot
+    slot_key: copy
+    axes:
+    - copy
     review_granularity: concept
-    row_policy: none
+    row_policy: slot_keyed
   aliases:
   - document=form_1099b/box=2/option=long_term
   placements:
@@ -105,9 +117,12 @@ concepts:
   role: loss_not_allowed
   review_granularity: concept
   occurrence:
-    kind: singleton
+    kind: slot
+    slot_key: copy
+    axes:
+    - copy
     review_granularity: concept
-    row_policy: none
+    row_policy: slot_keyed
   aliases:
   - document=form_1099b/box=7/option=loss_not_allowed
   placements:
@@ -128,9 +143,12 @@ concepts:
   role: net_proceeds
   review_granularity: concept
   occurrence:
-    kind: singleton
+    kind: slot
+    slot_key: copy
+    axes:
+    - copy
     review_granularity: concept
-    row_policy: none
+    row_policy: slot_keyed
   aliases:
   - document=form_1099b/box=6/option=net_proceeds
   placements:
@@ -151,9 +169,12 @@ concepts:
   role: noncovered_security
   review_granularity: concept
   occurrence:
-    kind: singleton
+    kind: slot
+    slot_key: copy
+    axes:
+    - copy
     review_granularity: concept
-    row_policy: none
+    row_policy: slot_keyed
   aliases:
   - document=form_1099b/box=5/option=noncovered_security
   placements:
@@ -174,9 +195,12 @@ concepts:
   role: ordinary
   review_granularity: concept
   occurrence:
-    kind: singleton
+    kind: slot
+    slot_key: copy
+    axes:
+    - copy
     review_granularity: concept
-    row_policy: none
+    row_policy: slot_keyed
   aliases:
   - document=form_1099b/box=2/option=ordinary
   placements:
@@ -197,9 +221,12 @@ concepts:
   role: qof
   review_granularity: concept
   occurrence:
-    kind: singleton
+    kind: slot
+    slot_key: copy
+    axes:
+    - copy
     review_granularity: concept
-    row_policy: none
+    row_policy: slot_keyed
   aliases:
   - document=form_1099b/box=3/option=qof
   placements:
@@ -220,9 +247,12 @@ concepts:
   role: short_term
   review_granularity: concept
   occurrence:
-    kind: singleton
+    kind: slot
+    slot_key: copy
+    axes:
+    - copy
     review_granularity: concept
-    row_policy: none
+    row_policy: slot_keyed
   aliases:
   - document=form_1099b/box=2/option=short_term
   placements:
@@ -243,9 +273,12 @@ concepts:
   role: aggregate_profit_loss
   review_granularity: concept
   occurrence:
-    kind: singleton
+    kind: slot
+    slot_key: copy
+    axes:
+    - copy
     review_granularity: concept
-    row_policy: none
+    row_policy: slot_keyed
   aliases:
   - document=form_1099b/box=11/control=value
   placements:
@@ -266,9 +299,12 @@ concepts:
   role: realized_profit_loss
   review_granularity: concept
   occurrence:
-    kind: singleton
+    kind: slot
+    slot_key: copy
+    axes:
+    - copy
     review_granularity: concept
-    row_policy: none
+    row_policy: slot_keyed
   aliases:
   - document=form_1099b/box=8/control=value
   placements:
@@ -289,9 +325,12 @@ concepts:
   role: unrealized_profit_loss_current
   review_granularity: concept
   occurrence:
-    kind: singleton
+    kind: slot
+    slot_key: copy
+    axes:
+    - copy
     review_granularity: concept
-    row_policy: none
+    row_policy: slot_keyed
   aliases:
   - document=form_1099b/box=10/control=value
   placements:
@@ -312,9 +351,12 @@ concepts:
   role: unrealized_profit_loss_prior
   review_granularity: concept
   occurrence:
-    kind: singleton
+    kind: slot
+    slot_key: copy
+    axes:
+    - copy
     review_granularity: concept
-    row_policy: none
+    row_policy: slot_keyed
   aliases:
   - document=form_1099b/box=9/control=value
   placements:
@@ -335,9 +377,12 @@ concepts:
   role: corrected
   review_granularity: concept
   occurrence:
-    kind: singleton
+    kind: slot
+    slot_key: copy
+    axes:
+    - copy
     review_granularity: concept
-    row_policy: none
+    row_policy: slot_keyed
   aliases:
   - document=form_1099b/section=header/option=corrected
   placements:
@@ -358,9 +403,12 @@ concepts:
   role: void
   review_granularity: concept
   occurrence:
-    kind: singleton
+    kind: slot
+    slot_key: copy
+    axes:
+    - copy
     review_granularity: concept
-    row_policy: none
+    row_policy: slot_keyed
   aliases:
   - document=form_1099b/section=header/option=void
   placements:
@@ -381,9 +429,12 @@ concepts:
   role: account_number
   review_granularity: concept
   occurrence:
-    kind: singleton
+    kind: slot
+    slot_key: copy
+    axes:
+    - copy
     review_granularity: concept
-    row_policy: none
+    row_policy: slot_keyed
   aliases:
   - document=form_1099b/section=recipient/control=account_number
   placements:
@@ -404,9 +455,12 @@ concepts:
   role: cusip_number
   review_granularity: concept
   occurrence:
-    kind: singleton
+    kind: slot
+    slot_key: copy
+    axes:
+    - copy
     review_granularity: concept
-    row_policy: none
+    row_policy: slot_keyed
   aliases:
   - document=form_1099b/section=recipient/control=cusip_number
   placements:
@@ -427,9 +481,12 @@ concepts:
   role: fatca_filing_requirement
   review_granularity: concept
   occurrence:
-    kind: singleton
+    kind: slot
+    slot_key: copy
+    axes:
+    - copy
     review_granularity: concept
-    row_policy: none
+    row_policy: slot_keyed
   aliases:
   - document=form_1099b/section=recipient/option=fatca_filing_requirement
   placements:
@@ -450,9 +507,12 @@ concepts:
   role: form_8949_checkbox
   review_granularity: concept
   occurrence:
-    kind: singleton
+    kind: slot
+    slot_key: copy
+    axes:
+    - copy
     review_granularity: concept
-    row_policy: none
+    row_policy: slot_keyed
   aliases:
   - document=form_1099b/section=recipient/control=form_8949_checkbox
   placements:
@@ -473,9 +533,12 @@ concepts:
   role: payer_name_address
   review_granularity: concept
   occurrence:
-    kind: singleton
+    kind: slot
+    slot_key: copy
+    axes:
+    - copy
     review_granularity: concept
-    row_policy: none
+    row_policy: slot_keyed
   aliases:
   - document=form_1099b/section=recipient/control=payer_name_address
   placements:
@@ -497,9 +560,12 @@ concepts:
   role: payer_tin
   review_granularity: concept
   occurrence:
-    kind: singleton
+    kind: slot
+    slot_key: copy
+    axes:
+    - copy
     review_granularity: concept
-    row_policy: none
+    row_policy: slot_keyed
   aliases:
   - document=form_1099b/section=recipient/control=payer_tin
   placements:
@@ -520,9 +586,12 @@ concepts:
   role: recipient_city
   review_granularity: concept
   occurrence:
-    kind: singleton
+    kind: slot
+    slot_key: copy
+    axes:
+    - copy
     review_granularity: concept
-    row_policy: none
+    row_policy: slot_keyed
   aliases:
   - document=form_1099b/section=recipient/control=recipient_city
   placements:
@@ -544,9 +613,12 @@ concepts:
   role: recipient_name
   review_granularity: concept
   occurrence:
-    kind: singleton
+    kind: slot
+    slot_key: copy
+    axes:
+    - copy
     review_granularity: concept
-    row_policy: none
+    row_policy: slot_keyed
   aliases:
   - document=form_1099b/section=recipient/control=recipient_name
   placements:
@@ -567,9 +639,12 @@ concepts:
   role: recipient_street
   review_granularity: concept
   occurrence:
-    kind: singleton
+    kind: slot
+    slot_key: copy
+    axes:
+    - copy
     review_granularity: concept
-    row_policy: none
+    row_policy: slot_keyed
   aliases:
   - document=form_1099b/section=recipient/control=recipient_street
   placements:
@@ -590,9 +665,12 @@ concepts:
   role: recipient_tin
   review_granularity: concept
   occurrence:
-    kind: singleton
+    kind: slot
+    slot_key: copy
+    axes:
+    - copy
     review_granularity: concept
-    row_policy: none
+    row_policy: slot_keyed
   aliases:
   - document=form_1099b/section=recipient/control=recipient_tin
   placements:
@@ -613,9 +691,12 @@ concepts:
   role: second_tin_notice
   review_granularity: concept
   occurrence:
-    kind: singleton
+    kind: slot
+    slot_key: copy
+    axes:
+    - copy
     review_granularity: concept
-    row_policy: none
+    row_policy: slot_keyed
   aliases:
   - document=form_1099b/section=recipient/option=second_tin_notice
   placements:
@@ -637,10 +718,13 @@ concepts:
   role: state
   review_granularity: concept
   occurrence:
-    kind: entity
-    entity_key: jurisdiction
+    kind: slot
+    slot_key: jurisdiction
+    axes:
+    - copy
+    - row_slot
     review_granularity: concept
-    row_policy: entity_keyed
+    row_policy: slot_keyed
   aliases:
   - document=form_1099b/table=state/row_template=jurisdiction/column=state
   placements:
@@ -662,10 +746,13 @@ concepts:
   role: state_id
   review_granularity: concept
   occurrence:
-    kind: entity
-    entity_key: jurisdiction
+    kind: slot
+    slot_key: jurisdiction
+    axes:
+    - copy
+    - row_slot
     review_granularity: concept
-    row_policy: entity_keyed
+    row_policy: slot_keyed
   aliases:
   - document=form_1099b/table=state/row_template=jurisdiction/column=state_id
   placements:
@@ -687,10 +774,13 @@ concepts:
   role: state_tax
   review_granularity: concept
   occurrence:
-    kind: entity
-    entity_key: jurisdiction
+    kind: slot
+    slot_key: jurisdiction
+    axes:
+    - copy
+    - row_slot
     review_granularity: concept
-    row_policy: entity_keyed
+    row_policy: slot_keyed
   aliases:
   - document=form_1099b/table=state/row_template=jurisdiction/column=state_tax
   placements:
@@ -711,9 +801,12 @@ concepts:
   role: accrued_market_discount
   review_granularity: concept
   occurrence:
-    kind: singleton
+    kind: slot
+    slot_key: copy
+    axes:
+    - copy
     review_granularity: concept
-    row_policy: none
+    row_policy: slot_keyed
   aliases:
   - document=form_1099b/box=1f/control=value
   placements:
@@ -734,9 +827,12 @@ concepts:
   role: bartering
   review_granularity: concept
   occurrence:
-    kind: singleton
+    kind: slot
+    slot_key: copy
+    axes:
+    - copy
     review_granularity: concept
-    row_policy: none
+    row_policy: slot_keyed
   aliases:
   - document=form_1099b/box=13/control=value
   placements:
@@ -757,9 +853,12 @@ concepts:
   role: cost_basis
   review_granularity: concept
   occurrence:
-    kind: singleton
+    kind: slot
+    slot_key: copy
+    axes:
+    - copy
     review_granularity: concept
-    row_policy: none
+    row_policy: slot_keyed
   aliases:
   - document=form_1099b/box=1e/control=value
   placements:
@@ -780,9 +879,12 @@ concepts:
   role: date_acquired
   review_granularity: concept
   occurrence:
-    kind: singleton
+    kind: slot
+    slot_key: copy
+    axes:
+    - copy
     review_granularity: concept
-    row_policy: none
+    row_policy: slot_keyed
   aliases:
   - document=form_1099b/box=1b/control=value
   placements:
@@ -803,9 +905,12 @@ concepts:
   role: date_disposed
   review_granularity: concept
   occurrence:
-    kind: singleton
+    kind: slot
+    slot_key: copy
+    axes:
+    - copy
     review_granularity: concept
-    row_policy: none
+    row_policy: slot_keyed
   aliases:
   - document=form_1099b/box=1c/control=value
   placements:
@@ -826,9 +931,12 @@ concepts:
   role: description
   review_granularity: concept
   occurrence:
-    kind: singleton
+    kind: slot
+    slot_key: copy
+    axes:
+    - copy
     review_granularity: concept
-    row_policy: none
+    row_policy: slot_keyed
   aliases:
   - document=form_1099b/box=1a/control=value
   placements:
@@ -849,9 +957,12 @@ concepts:
   role: federal_income_tax_withheld
   review_granularity: concept
   occurrence:
-    kind: singleton
+    kind: slot
+    slot_key: copy
+    axes:
+    - copy
     review_granularity: concept
-    row_policy: none
+    row_policy: slot_keyed
   aliases:
   - document=form_1099b/box=4/control=value
   placements:
@@ -872,9 +983,12 @@ concepts:
   role: proceeds
   review_granularity: concept
   occurrence:
-    kind: singleton
+    kind: slot
+    slot_key: copy
+    axes:
+    - copy
     review_granularity: concept
-    row_policy: none
+    row_policy: slot_keyed
   aliases:
   - document=form_1099b/box=1d/control=value
   placements:
@@ -895,9 +1009,12 @@ concepts:
   role: wash_sale_loss_disallowed
   review_granularity: concept
   occurrence:
-    kind: singleton
+    kind: slot
+    slot_key: copy
+    axes:
+    - copy
     review_granularity: concept
-    row_policy: none
+    row_policy: slot_keyed
   aliases:
   - document=form_1099b/box=1g/control=value
   placements:

@@ -14,6 +14,9 @@ from tax_graph.output.concepts import (
     STRUCTURED_DOCUMENTS,
     ConceptError,
     build_document_concepts,
+    retrieve_occurrences,
+    retrieve_table_occurrence,
+    validate_occurrence_contract,
     validate_concept_id,
 )
 from workbench.cell_inventory import build_document_cells
@@ -122,3 +125,42 @@ def test_address_loader_accepts_promoted_structured_placements() -> None:
     promoted = [item for item in artifacts.addresses if item.raw.get("concept_id")]
     assert len(promoted) == 191
     assert all(item.raw["placement"]["concept_id"] == item.raw["concept_id"] for item in promoted)
+
+
+@pytest.mark.m19
+def test_repeated_tables_are_retrievable_by_slot_axes() -> None:
+    dependent_row = retrieve_table_occurrence(
+        ROOT, 2025, "form_1040_2025", "form_1040/dependents/dependent/", row_slot=3
+    )
+    assert len(dependent_row) == 10
+    assert {item["occurrence"]["axes"]["row_slot"] for item in dependent_row} == {3}
+    assert "1040/dependents/dependent[3]/ssn" in {item["ref"] for item in dependent_row}
+
+    w2_code = retrieve_occurrences(
+        ROOT, 2025, "form_w2_2025", "form_w2/other_compensation/entry/code"
+    )
+    assert len(w2_code) == 24
+    assert {item["occurrence"]["axes"]["copy"] for item in w2_code} == {"A", "B", "C", "D", "1", "2"}
+    assert len({item["occurrence"]["key"] for item in w2_code}) == 24
+    row_c = retrieve_occurrences(
+        ROOT, 2025, "form_w2_2025", "form_w2/other_compensation/entry/code",
+        axes={"copy": "A", "row_slot": 3},
+    )
+    assert len(row_c) == 1
+    assert row_c[0]["ref"] == "w2/copy[A]/box12/entry[3]/code"
+
+    state_row = retrieve_occurrences(
+        ROOT, 2025, "form_1099b_2025", "form_1099b/state_local/jurisdiction/state",
+        axes={"copy": "A", "row_slot": 2},
+    )
+    assert len(state_row) == 1
+    assert state_row[0]["ref"].endswith("jurisdiction[2]/state")
+
+
+@pytest.mark.m19
+def test_repeated_singletons_fail_closed() -> None:
+    with pytest.raises(ConceptError, match="repeated fields"):
+        validate_occurrence_contract([
+            {"concept_id": "form_w2/employee/ssn", "occurrence": {"kind": "singleton"}},
+            {"concept_id": "form_w2/employee/ssn", "occurrence": {"kind": "singleton"}},
+        ])

@@ -5247,10 +5247,12 @@ addresses:
     printed_token: dependents
     printed_ref: Dependents column Child tax credit
   occurrence:
-    kind: entity
-    entity_key: dependent
+    kind: slot
+    slot_key: dependent
+    axes:
+    - row_slot
     review_granularity: concept
-    row_policy: entity_keyed
+    row_policy: slot_keyed
 - address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=credit_for_other_dependents
   logical_key: document=form_1040/table=dependents/row_template=dependent/column=credit_for_other_dependents
   year: 2025
@@ -5283,10 +5285,12 @@ addresses:
     printed_token: dependents
     printed_ref: Dependents column Credit for other dependents
   occurrence:
-    kind: entity
-    entity_key: dependent
+    kind: slot
+    slot_key: dependent
+    axes:
+    - row_slot
     review_granularity: concept
-    row_policy: entity_keyed
+    row_policy: slot_keyed
 - address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=first_name
   logical_key: document=form_1040/table=dependents/row_template=dependent/column=first_name
   year: 2025
@@ -5319,10 +5323,12 @@ addresses:
     printed_token: dependents
     printed_ref: Dependents column First name
   occurrence:
-    kind: entity
-    entity_key: dependent
+    kind: slot
+    slot_key: dependent
+    axes:
+    - row_slot
     review_granularity: concept
-    row_policy: entity_keyed
+    row_policy: slot_keyed
 - address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=full_time_student
   logical_key: document=form_1040/table=dependents/row_template=dependent/column=full_time_student
   year: 2025
@@ -5355,10 +5361,12 @@ addresses:
     printed_token: dependents
     printed_ref: Dependents column Full-time student
   occurrence:
-    kind: entity
-    entity_key: dependent
+    kind: slot
+    slot_key: dependent
+    axes:
+    - row_slot
     review_granularity: concept
-    row_policy: entity_keyed
+    row_policy: slot_keyed
 - address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=in_the_us
   logical_key: document=form_1040/table=dependents/row_template=dependent/column=in_the_us
   year: 2025
@@ -5391,10 +5399,12 @@ addresses:
     printed_token: dependents
     printed_ref: Dependents column And in the U.S.
   occurrence:
-    kind: entity
-    entity_key: dependent
+    kind: slot
+    slot_key: dependent
+    axes:
+    - row_slot
     review_granularity: concept
-    row_policy: entity_keyed
+    row_policy: slot_keyed
 - address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=last_name
   logical_key: document=form_1040/table=dependents/row_template=dependent/column=last_name
   year: 2025
@@ -5427,10 +5437,12 @@ addresses:
     printed_token: dependents
     printed_ref: Dependents column Last name
   occurrence:
-    kind: entity
-    entity_key: dependent
+    kind: slot
+    slot_key: dependent
+    axes:
+    - row_slot
     review_granularity: concept
-    row_policy: entity_keyed
+    row_policy: slot_keyed
 - address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=lived_with_you_more_than_half_2025
   logical_key: document=form_1040/table=dependents/row_template=dependent/column=lived_with_you_more_than_half_2025
   year: 2025
@@ -5463,10 +5475,12 @@ addresses:
     printed_token: dependents
     printed_ref: Dependents column Lived with you more than half of 2025
   occurrence:
-    kind: entity
-    entity_key: dependent
+    kind: slot
+    slot_key: dependent
+    axes:
+    - row_slot
     review_granularity: concept
-    row_policy: entity_keyed
+    row_policy: slot_keyed
 - address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=permanently_totally_disabled
   logical_key: document=form_1040/table=dependents/row_template=dependent/column=permanently_totally_disabled
   year: 2025
@@ -5499,10 +5513,12 @@ addresses:
     printed_token: dependents
     printed_ref: Dependents column Permanently and totally disabled
   occurrence:
-    kind: entity
-    entity_key: dependent
+    kind: slot
+    slot_key: dependent
+    axes:
+    - row_slot
     review_granularity: concept
-    row_policy: entity_keyed
+    row_policy: slot_keyed
 - address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=relationship
   logical_key: document=form_1040/table=dependents/row_template=dependent/column=relationship
   year: 2025
@@ -5535,10 +5551,12 @@ addresses:
     printed_token: dependents
     printed_ref: Dependents column Relationship
   occurrence:
-    kind: entity
-    entity_key: dependent
+    kind: slot
+    slot_key: dependent
+    axes:
+    - row_slot
     review_granularity: concept
-    row_policy: entity_keyed
+    row_policy: slot_keyed
 - address_id: 2025/document=form_1040/table=dependents/row_template=dependent/column=ssn
   logical_key: document=form_1040/table=dependents/row_template=dependent/column=ssn
   year: 2025
@@ -5571,7 +5589,9 @@ addresses:
     printed_token: dependents
     printed_ref: Dependents column SSN
   occurrence:
-    kind: entity
-    entity_key: dependent
+    kind: slot
+    slot_key: dependent
+    axes:
+    - row_slot
     review_granularity: concept
-    row_policy: entity_keyed
+    row_policy: slot_keyed

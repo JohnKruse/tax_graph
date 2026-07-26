@@ -22,9 +22,18 @@ For M19 structured forms, an address is a placement, not durable meaning. Its op
 `concept_id` is path-style and excludes years, printed line/box tokens, and prose. The
 `placement` object retains the printed token and official reference for human display;
 `aliases` includes the yearless logical key for rollover compatibility. Repeatable rows
-carry an `occurrence` contract with `row_policy: entity_keyed`, while
-`review_granularity: concept` keeps one review identity per column rather than one per
-printed row slot. Physical widgets remain visible in the workbench as occurrences.
+carry a slot-authored `occurrence` contract with `row_policy: slot_keyed`; the concrete
+field projection records every discriminator axis, such as `copy=A/row_slot=3`. Runtime
+may bind a slot to an entity later, but authoring does not claim entity binding. The
+`review_granularity: concept` contract keeps one review identity per column rather than
+one per printed row slot. Physical widgets remain visible in the workbench as occurrences
+and their refs include the slot, for example `1040/dependents/dependent[3]/ssn`.
+
+Repeated concepts are invalid without a discriminator. A W-2 Box 12 field therefore
+uses copy plus row slot, while an information-return state table uses copy plus row slot
+and a copied singleton uses copy alone. `retrieve_occurrences` and
+`retrieve_table_occurrence` read these projections from graph metadata so a complete
+table row can be selected without reopening the source PDF.
 
 All candidate-corpus records remain pending review until M15 drains the review queue.
 Automation never writes human-confirmed provenance. A missing or ambiguous binding fails
