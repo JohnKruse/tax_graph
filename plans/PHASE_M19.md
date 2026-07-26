@@ -182,11 +182,43 @@ data, never identity. Display wants `33`; identity must not have it.
   (`form_6251_2025_part_i_line_1a`) with scraped prose labels, some corrupt ("Line 14:
   1a"). The instructions are the only machine-readable source that names these lines, so
   M18 is a PREREQUISITE, not a follow-on.
-- **S4 - Repeatable-table occurrence contract.** Define occurrence identity for
-  row-template columns (entity-keyed, not slot-indexed), and fix
-  `cell_inventory.py:109` so row widgets surface as instances rather than being dropped.
-  Acceptance: the 434 hidden controls become visible and counted, the 1040 Dependents
-  table is fully reviewable, and the review-unit count does NOT quadruple.
+- **S4 - Repeatable-table occurrence contract: MAKE TABLES RETRIEVABLE.** Reframed
+  2026-07-26 by John: "when we run into a table, or a table of subtables, we get clean,
+  reliable and repeatable parsing and addressing... if you are asked about dependents,
+  numbers, SSNs, whatever, we need to be able to pull it out of the graph data/metadata."
+  The goal is PRACTICAL RETRIEVAL, not a theoretically perfect scheme.
+  S3a fixed visibility (`cell_inventory.py:109`; 1921/1921 cells, 0 hidden) but occurrence
+  coverage is UNEVEN, which is the real defect:
+  - **WORKS:** 1040 dependents (slots 1-4 across a transposed table AND the nested
+    `Row5/Row6 -> Dependent1..4` checkbox subtable) and 8949 (11 contiguous rows per part).
+    "Dependent 3" returns a complete 10-column record with correct widgets.
+  - **BROKEN:** form_w2 and the 1099s. W-2 concepts repeat **24x** (Box 12 `entry/code`,
+    `entry/compensation_amount`) and **12x** (`state_local/jurisdiction/*`), yet every one
+    carries `repeatable: null` and `occurrence.kind: "singleton"`. 24 cells share one
+    concept with NO discriminator, so "Box 12 line C" or "state row 2" cannot be
+    addressed. `form_w2/employee/ssn` repeats across the six copies and is also marked a
+    singleton. This is the same class of silent flattening as the original 434 - visible,
+    but not retrievable.
+  Required:
+  1. **THE INVARIANT (fail-closed):** a concept mapping to more than one widget in a
+     document MUST carry occurrence data with a discriminator. A concept appearing N>1
+     times with `occurrence.kind: singleton` is a PARSE FAILURE, not a valid state.
+     Validate it; do not let it pass silently.
+  2. **Multi-dimensional occurrences.** The W-2 is copy (A/B/C/D/1/2) x row - John's
+     "table of subtables". The occurrence key must express more than one axis.
+  3. **Honest naming.** Today `row_policy: "entity_keyed"` is claimed while the actual
+     discriminator is `repeatable.row_slot`, a printed slot index. At authoring time a
+     slot is all that exists (there is no return record yet), so SAY slot, and let runtime
+     bind slot -> entity. Do not advertise a contract that is not implemented.
+  4. **Normalize group naming.** 8949 currently carries two parallel schemes
+     (`form_8949_2025_part_i_line_1` and `table_line1_part1`), and the first embeds a line
+     token, failing the never-contains test.
+  5. **Put the occurrence in the quotable ref** so a human or an agent can name one:
+     `1040/dependents/dependent[3]/ssn`, `w2/box12/entry[2]/code`.
+  Acceptance is a RETRIEVAL TEST, not a count: pull dependent 3's full record, W-2 Box 12
+  line C, an 8949 row, and a 1099-B state row - each by name, from the graph metadata
+  alone. Plus: the 434 stay visible, and the review-unit count does not multiply
+  (granularity stays at the concept).
 - **S5 - Migration of promoted artifacts + workbench projection.** Field maps, bindings,
   citations, and the manifest move onto concept ids. Refs stay human-quotable and
   line-based for DISPLAY (`1040/33/amount`) while resolving to a concept underneath.

@@ -14,8 +14,43 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## Current state (2026-07-26)
 
-**BALL: WORKER - M19-S3a (structured-form concept minting). Plan: `plans/PHASE_M19.md`
-(S3a + the new Decisions section). Task block under From Architect.**
+**BALL: WORKER - M19-S4 (make tables retrievable). Plan: `plans/PHASE_M19.md` (S4).
+Task block under From Architect.**
+
+**ARCHITECT VERIFICATION - M19-S3a (Claude Opus 5, 2026-07-26). ACCEPTED, with S4
+reframed by John.** Gates all green: manifest + M19 + workbench partition 27 passed;
+preflight `legacy_mined=394` unchanged; **1921 widgets / 1921 cells / 0 hidden** (the 434
+gap is CLOSED - 1040 159->199, 8949 18->202); zero concept ids contain a year; citations
+byte-identical; field maps and addresses purely additive (only empty `aliases: []`
+replaced, 0 -> 191 populated); no duplicate `cell_id` in any document. John's SSN case is
+fixed: `identity/taxpayer/ssn` and `identity/spouse/ssn` are distinct owner-qualified
+concepts, and the dependent SSNs are one concept with four addressable occurrences.
+
+**ARCHITECT ERROR, CORRECTED MID-REVIEW (recorded so it is not repeated):** the Architect
+read the dependents table as four columns of one row and suspected Codex had mislabeled
+it. WRONG - the table is TRANSPOSED: the PDF's `RowN` wrappers are the printed COLUMNS
+(Row1=first name, Row2=last name, Row3=ssn, Row4=relationship) and the X-POSITION selects
+the dependent (x=145 -> dependent 1, 253 -> 2, 361 -> 3, 469 -> 4). The existing geometry
+labels and Codex's concept assignment were both correct. Verify layout from rects before
+alleging a mislabel.
+
+**JOHN'S RULING THAT DEFINES S4 (2026-07-26):** asked to choose between two labeling
+options, he rejected the framing - "I don't know that i care so much about the addressing
+scheme being perfect in some theoretical manner. We need to be able to refer to these
+things in a practical way... if you are asked about dependents... numbers, SSNs, whatever,
+we need to be able to pull it out of the graph data/metadata." **The bar is PRACTICAL
+RETRIEVAL of tables and tables-of-subtables.**
+
+Measured against that bar, S3a is HALF DONE and the gap is real:
+- **WORKS:** 1040 dependents (slots 1-4 across the transposed table AND the nested
+  `Row5/Row6 -> Dependent1..4` checkbox subtable) and 8949 (11 contiguous rows per part).
+  "Dependent 3" returns a complete 10-column record with correct widgets; CTC/ODC map
+  cleanly to `c1_28..c1_31` widget indices `[0]`/`[1]`.
+- **BROKEN:** form_w2 and the 1099s silently FLATTEN their repeats. W-2 concepts repeat
+  **24x** (Box 12) and **12x** (state/local) while carrying `repeatable: null` and
+  `occurrence.kind: "singleton"`; `form_w2/employee/ssn` repeats across six copies, also
+  singleton. Same class of silent flattening as the original 434 - now visible, but NOT
+  retrievable. S4 adds a fail-closed invariant so this cannot recur.
 
 **Worker session checkpoint - M19-S3a (2026-07-26):** Codex, default effort; usage/quota/context
 indicators are not exposed. Global canary: Ledger Llama. Single declared step: mint and promote
@@ -786,8 +821,51 @@ TY2026 docs drop.
 
 ## From Architect
 
-- **M19-S3a TASK - CONCEPT MINTING FOR STRUCTURED FORMS (Architect, Claude Opus 5,
-  2026-07-26).** Design in `plans/PHASE_M19.md` (S3a + the Decisions section, which is new
+- **M19-S4 TASK - MAKE TABLES RETRIEVABLE (Architect, Claude Opus 5, 2026-07-26).**
+  Design in `plans/PHASE_M19.md` (S4, rewritten today). **John's framing, which is the
+  acceptance bar: "when we run into a table, or a table of subtables, we get clean,
+  reliable and repeatable parsing and addressing... if you are asked about dependents,
+  numbers, SSNs, whatever, we need to be able to pull it out of the graph
+  data/metadata."** He explicitly does NOT want a theoretically perfect scheme - he wants
+  practical retrieval. Read the ledger and name applicable entries; D5 applies (any
+  `workbench/` change runs `tests/test_workbench_m15.py`). Tests ARE required.
+  **What S3a already got right - do not regress it:** 1040 dependents resolve by slot 1-4
+  across a TRANSPOSED table (PDF `RowN` = printed column, x-position = which dependent)
+  and across the NESTED `Row5/Row6 -> Dependent1..4` checkbox subtable; 8949 gives 11
+  contiguous rows per part. "Dependent 3" returns a complete 10-column record.
+  **The defect:** form_w2 and the 1099s silently flatten their repeats. W-2 concepts
+  repeat 24x (Box 12 `entry/code`, `entry/compensation_amount`) and 12x
+  (`state_local/jurisdiction/*`) while carrying `repeatable: null` and
+  `occurrence.kind: "singleton"`. 24 cells share one concept with no discriminator.
+  `form_w2/employee/ssn` repeats across six copies, also marked singleton.
+  1. **Add the fail-closed invariant first, so the bug cannot come back:** a concept
+     mapping to >1 widget in a document MUST carry an occurrence discriminator. N>1 with
+     `occurrence.kind: singleton` is a PARSE FAILURE. Expect it to go red on W-2 and the
+     1099s immediately - that is the point.
+  2. Fix W-2 and 1099-DIV/INT/B occurrences. The W-2 is copy (A/B/C/D/1/2) x row, so the
+     occurrence key must carry MORE THAN ONE AXIS - this is the table-of-subtables case.
+  3. **Stop overclaiming:** `row_policy: "entity_keyed"` is asserted while the real
+     discriminator is `repeatable.row_slot`, a printed slot index. Say SLOT at authoring
+     time and let runtime bind slot -> entity. Do not advertise an unimplemented contract.
+  4. Normalize 8949 group naming - two parallel schemes exist
+     (`form_8949_2025_part_i_line_1`, `table_line1_part1`) and the first embeds a line
+     token, failing the never-contains test.
+  5. Put the occurrence into the quotable ref: `1040/dependents/dependent[3]/ssn`,
+     `w2/box12/entry[2]/code`.
+  **Acceptance is a RETRIEVAL TEST, not a count.** Ship a test that pulls, by name and
+  from graph metadata alone: dependent 3's full record, W-2 Box 12 line C, an 8949 row,
+  and a 1099-B state row. Also hold the line: 1921/1921 cells with 0 hidden, and the
+  review-unit count must not multiply (granularity stays at the concept).
+  Tier 3 (promoted artifacts). Tier-1 floor plus honest `RAN:`/`NOT RUN:` lines, ASCII,
+  `git diff --check`, module-form `validate 2025`, and real preflight with `legacy_mined`
+  REPORTED EXPLICITLY (S3a asserted it without printing it). Citations must stay
+  byte-identical. Run pytest plainly - no `--basetemp`. ONE local commit; no push.
+  Stop conditions: any need to touch line-oriented forms, verdict emission, or graph
+  semantics; a repeat whose axes cannot be determined structurally (report it, do not
+  invent one); or a quota/environment failure.
+
+- **[DONE `a72d34e`, Architect-verified] M19-S3a TASK - CONCEPT MINTING FOR STRUCTURED
+  FORMS (Architect, Claude Opus 5, 2026-07-26).** Design in `plans/PHASE_M19.md` (S3a + the Decisions section, which is new
   and answers the three formerly-open questions). Read it, the revised spine invariant, and
   the Worker defect ledger in `AGENTS.md`; name applicable ledger entries in your
   checkpoint. **D5 applies: any `workbench/` change runs `tests/test_workbench_m15.py`.**
