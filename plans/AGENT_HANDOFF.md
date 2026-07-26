@@ -17,6 +17,36 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 **BALL: WORKER - M19-S1 (concept inventory, READ-ONLY). Plan: `plans/PHASE_M19.md`.
 Task block under From Architect.**
 
+**Worker session checkpoint - M19-S1 (2026-07-26):** John said go via the current task
+request. Model GPT-5 Codex, default effort; usage/quota/context indicators are not exposed.
+Single declared step: produce the read-only concept-inventory report from existing resolver,
+address, and geometry data. Global canary: Ledger Llama. Applicable defect-ledger entries:
+D4 (inspection/report work must not write live developer state), D6 (module-form CLI only),
+and the RAN/NOT RUN rule; S1 declares no new test file. No promoted artifact, graph, verdict,
+or implementation change is in scope.
+
+**M19-S1 survey checkpoint (2026-07-26):** `node_geometry.json` contains 1,921 widgets across
+16 documents. Existing address registries cover 1,755 widgets; 166 widgets have no address
+record, including all 72 `form_2441_2025` widgets because that registry is absent. Removing
+`line`/`box` placement tokens from current paths exposes generic collisions (`amount`/`value`)
+and repeatable-table collisions (Dependents, 8949, W-2, and 1099 copies). The report will
+retain those as explicit collision findings and will not mint artifacts or tests.
+
+**M19-S1 complete (2026-07-26):** Added the read-only survey report at
+`plans/M19_S1_CONCEPT_INVENTORY.md`. It records the 1,921-widget inventory, 1,755 mapped
+widgets, 166 unresolved widgets, flow-shape proposals, collision classes, never-contains
+findings, and the S3 work list. No promoted artifact, graph object, field map, verdict, or
+session was changed. No pytest file is declared for S1 per `plans/PHASE_M19.md`.
+
+Verification evidence:
+
+- RAN: `.venv\Scripts\python.exe tools\check_ascii.py` -> exit 0, `ASCII check OK`.
+- RAN: `git diff --check` -> exit 0, no output.
+- RAN: `.venv\Scripts\python.exe -m tax_graph.cli validate 2025` -> exit 0; graph
+  integrity OK - all references resolve.
+- NOT RUN: pytest -> S1 is explicitly read-only and declares no new test file; testing
+  starts at M19-S3 when promoted schema/artifact surfaces exist.
+
 **JOHN'S THIRD REVIEW (2026-07-26) - THE ADDRESSING RULING.** John reviewed the live 1040
 and returned four issues. Issue 1 turned out to be a real defect with a root cause that
 reaches past the workbench into the addressing model, and John then ruled on the model
