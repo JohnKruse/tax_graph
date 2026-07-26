@@ -65,9 +65,18 @@ Global project canary: **Ledger Llama**.
   the handoff must state either `RAN: <exact command> -> <exact result>` or
   `NOT RUN: <reason>`. A file you could not execute is UNVERIFIED, and a step with an unverified
   declared file is NOT complete - say so plainly instead of reporting the round done. Do not
-  declare a test file you already know you cannot execute in-session (e.g. an e2e file, when the
-  launcher cap blocks it): say so up front so the Architect authors or runs it. "Bundled Node
-  syntax checks passed" is NOT test evidence; it proves the file parses, nothing more.
+  declare a test file you already know you cannot execute in-session: say so up front so the
+  Architect authors or runs it. "Bundled Node syntax checks passed" is NOT test evidence; it
+  proves the file parses, nothing more.
+- **Worker command cap: 600 seconds (John, 2026-07-26; was ~124s, then 240s).** What this
+  changes: a Worker can now run a FULL workbench round in one command - app startup plus the
+  API and e2e files together measured 319s, with ~3.5x margin on the worst single file. So
+  **e2e files you author are YOURS to run and verify** - the "declare it and let the Architect
+  run it" escape hatch no longer applies to them, and ledger entries D1/D2/D3 are all defects
+  that this cap would have caught in-session. Real preflight (~138s) and manifest-building
+  tests (~150s) also fit comfortably. STILL Architect-side regardless of the cap: full local
+  partitions and Tier 3 shakedowns (CI's test job alone is ~47 min). If a command still does
+  not fit, the honest `NOT RUN:` line above is the answer - never a guess.
 - **Fix your own defects, do not let them be silently patched.** When the Architect's verification
   finds a defect in your work, it is recorded in the Worker defect ledger below. Read the ledger
   BEFORE declaring a step and name, in your session-start checkpoint, which entries apply to what

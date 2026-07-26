@@ -481,9 +481,10 @@ TY2026 docs drop.
   NOT pass `--basetemp` any more.** The root `conftest.py` pins the temp root to `.test_tmp/`
   for every account, and pytest separates accounts automatically via
   `.test_tmp/pytest-of-<username>/`. The old `.pytest_tmp` is poisoned and unreclaimable; see
-  the hard rule in `AGENTS.md`. Commands
-  exceeding the Worker's ~124s launcher cap (notably real preflight) are Architect-side:
-  the Worker records the attempt and stops clean.
+  the hard rule in `AGENTS.md`. **CAP RAISED TO 600s (John, 2026-07-26; was ~124s, then 240s)** -
+  the Worker now runs its OWN e2e and app-dependent files (the full pair measured 319s). Only
+  full partitions and Tier 3 shakedowns stay Architect-side. Anything that still does not fit
+  gets an honest `NOT RUN:` line, never a guess.
   **ALWAYS use the module form, never the console scripts** (2026-07-23, M16-S4):
   `.venv\Scripts\python.exe -m tax_graph.cli validate 2025` and
   `.venv\Scripts\python.exe -m workbench.cli preflight --year 2025`. The generated
@@ -499,11 +500,13 @@ TY2026 docs drop.
   Desktop logs verbatim - first stop when a client-managed server dies.
 
 ## Open for Architect
-- (none - the M17-S2 manifest-build launcher-cap blocker is ANSWERED: the Architect
-  implemented S2 directly, see the BALL. The structural implication - Codex cannot build
-  the live manifest within its ~124s cap, so backend workbench rounds are Architect-run
-  until the cap is raised or a cached-manifest fixture exists - is recorded in the BALL for
-  John.)
+- **RESOLVED 2026-07-26 by the 600s cap:** the manifest-build blocker that made backend
+  workbench rounds Architect-run is GONE. Codex can now build the live manifest (~150s) and
+  run its own app-dependent and e2e files. The two workflow rulings that existed only because
+  of the old cap are RETIRED: (a) "backend workbench rounds are Architect-run", and (b) "e2e
+  authorship should be Architect-side, or the Worker should stop declaring e2e files it cannot
+  run". Workers own their e2e again, and are expected to run it. No cached-manifest fixture is
+  needed.
 - **M17-S1 environment blocker (2026-07-24):** the split focused run passed 10
   schema/helper tests, then failed during the self-contained API fixture setup with
   `PermissionError: [Errno 13] Permission denied` importing
