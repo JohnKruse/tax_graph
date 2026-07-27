@@ -28,11 +28,19 @@ def page():
 
 
 @pytest.fixture(scope="session")
-def workbench_url() -> str:
+def workbench_url(tmp_path_factory: pytest.TempPathFactory) -> str:
     """Serve the real 2025 artifact projection on an ephemeral loopback port."""
     if not (ROOT / "graph" / "2025" / "_drafts").exists():
         pytest.skip("live review drafts are required: fresh checkouts (CI) carry no _drafts")
-    app = create_app(ROOT, 2025, write_token="e2e-write-token")
+    state = tmp_path_factory.mktemp("workbench-e2e-state")
+    app = create_app(
+        ROOT,
+        2025,
+        write_token="e2e-write-token",
+        cache_dir=state / "page_cache",
+        state_dir=state / "sessions",
+        verdict_dir=state / "verdicts",
+    )
     server = make_server("127.0.0.1", 0, app, threaded=True)
     thread = Thread(target=server.serve_forever, daemon=True)
     thread.start()

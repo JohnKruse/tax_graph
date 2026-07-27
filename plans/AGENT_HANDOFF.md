@@ -14,34 +14,32 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## Current state (2026-07-27)
 
-**BALL: WORKER - M19-S4b fix implemented; local commit pending. Main remains CI-RED until
-the Architect pushes this fix and watches CI. M18-S3 stays queued behind it.**
+**BALL: ARCHITECT - M17-S5 is implemented and verified locally in the local commit. No push
+was made. M17-S5 closes John's returned UI issues 2, 3, and 4 and leaves promoted
+artifacts, graph semantics, and verdicts unchanged.**
 
-**Worker session checkpoint - M19-S4b implementation (2026-07-27):** Global canary: Ledger
-Llama. Phase canary: Street Address. D8 applied: the promoted Form 1040 table group was
-renamed from `dependents` to the row-template token `dependent`, so `fill.py` skipped every
-dependent field. The projection now derives Form 1040 repeatable groups from `table=dependents`,
-the filler consumes the shared `DEPENDENTS_TABLE_GROUP` contract, and the promoted field-map
-and node-geometry projections were regenerated. Added a regression test covering both the
-promoted disposition and workbench cell projection. No 8949 groups changed.
+**Worker session checkpoint - M17-S5 implementation (2026-07-27):** Global canary: Ledger
+Llama. Phase canary: Street Address. Applicable defects were D1, D2, D3, D4, D5, D6, D7,
+and D8. The workbench now gives selected cells a translucent fill under the existing
+high-contrast ring, leads river and dossier headings with the printed line/box reference,
+explains instructions/fill behavior/authority in human order, keeps technical identity
+collapsed by default, and surfaces M19 occurrence axes (for example, `Dependent 3 of 4`).
+The e2e fixture now scopes sessions, page cache, and verdict state to pytest temp storage;
+the first browser attempt exposed that it had been reading stale live `.workbench_state`.
+No promoted artifacts, graph semantics, or verdict paths changed.
 
 Verification:
 
-- RAN: `.venv\\Scripts\\python.exe -m pytest tests/test_dependents_m15.py tests/test_concepts_m19.py -q` -> 16 passed, 1 pytest cache ACL warning (45.82s final rerun).
-- RAN: `$testRoot = 'C:\\Users\\devbox\\.codex\\visualizations\\2026\\07\\27\\019fa306-9159-7083-8d1b-23a48ed3ef1d\\m19_s4b_identity_test_tmp'; New-Item -ItemType Directory -Force -Path $testRoot | Out-Null; $env:PYTEST_DEBUG_TEMPROOT = $testRoot; .venv\\Scripts\\python.exe -m pytest tests/test_workbench_identity_m19.py -q` -> 5 passed, 1 pytest cache ACL warning.
-- RAN: `$testRoot = 'C:\\Users\\devbox\\.codex\\visualizations\\2026\\07\\27\\019fa306-9159-7083-8d1b-23a48ed3ef1d\\m19_s4b_workbench_test_tmp'; New-Item -ItemType Directory -Force -Path $testRoot | Out-Null; $env:PYTEST_DEBUG_TEMPROOT = $testRoot; .venv\\Scripts\\python.exe -m pytest tests/test_workbench_m15.py -q` -> 4 passed, 1 pytest cache ACL warning.
-- RAN: `$testRoot = 'C:\\Users\\devbox\\.codex\\visualizations\\2026\\07\\27\\019fa306-9159-7083-8d1b-23a48ed3ef1d\\m19_s4b_refs_test_tmp'; New-Item -ItemType Directory -Force -Path $testRoot | Out-Null; $env:PYTEST_DEBUG_TEMPROOT = $testRoot; .venv\\Scripts\\python.exe -m pytest tests/test_workbench_refs_m17.py -q` -> 5 passed, 1 pytest cache ACL warning (194.57s).
-- RAN: `.venv\\Scripts\\python.exe -m pytest tests/test_geometry_m12.py -q` -> 3 passed, 1 pytest cache ACL warning.
+- RAN: `$env:PYTEST_DEBUG_TEMPROOT = 'C:\\Users\\devbox\\.codex\\visualizations\\2026\\07\\27\\019fa36d-d750-7da3-8ba1-d24e86d28d89'; .venv\\Scripts\\python.exe -m pytest tests/e2e/test_workbench_v2_m17.py -q` -> 3 passed, 1 pytest cache ACL warning (232.87s final rerun).
+- RAN: `$env:PYTEST_DEBUG_TEMPROOT = 'C:\\Users\\devbox\\.codex\\visualizations\\2026\\07\\27\\019fa36d-d750-7da3-8ba1-d24e86d28d89'; .venv\\Scripts\\python.exe -m pytest tests/test_workbench_cells_m17.py -q` -> 6 passed, 1 pytest cache ACL warning (10.66s).
+- RAN: `$env:PYTEST_DEBUG_TEMPROOT = 'C:\\Users\\devbox\\.codex\\visualizations\\2026\\07\\27\\019fa36d-d750-7da3-8ba1-d24e86d28d89'; .venv\\Scripts\\python.exe -m pytest tests/test_workbench_m15.py -q` -> 4 passed, 1 pytest cache ACL warning (0.33s).
 - RAN: `.venv\\Scripts\\python.exe tools/check_ascii.py` -> `ASCII check OK`.
 - RAN: `git diff --check` -> exit 0.
-- RAN: `.venv\\Scripts\\python.exe -m tax_graph.cli validate 2025` -> exit 0; graph integrity OK after regenerating `node_geometry.json`.
-- RAN: `.venv\\Scripts\\python.exe -m workbench.cli --year 2025 preflight` -> passed; 35 entries, 3243 units, 1921 field controls, `legacy_mined=394`.
-- RAN: `rg` consumer audit for singular `dependent` group tokens -> no leftover consumer or promoted token.
-- RAN: `$testRoot = 'C:\\Users\\devbox\\.codex\\visualizations\\2026\\07\\27\\019fa317-3202-7073-9d54-0f94b5384511\\m19_s4b_manifest_test7_tmp'; New-Item -ItemType Directory -Force -Path $testRoot | Out-Null; $env:PYTEST_DEBUG_TEMPROOT = $testRoot; .venv\\Scripts\\python.exe -m pytest tests/test_review_manifest_m15.py::test_manifest_hash_pins_every_file_in_example_artifact_directory -vv -s` -> 1 passed in 359.88s; one known pytest cache ACL warning. The full file command had six passes then exceeded the 600-second cap, so the final test is verified in isolation and the file's aggregate command remains NOT RUN to completion.
+- RAN: `.venv\\Scripts\\python.exe -m tax_graph.cli validate 2025` -> exit 0; graph integrity OK.
 
-Committed locally at `8f353c3`; no push. The implementation and all declared focused tests
-are now verified, with the manifest file's seventh case run in isolation because the full
-file command exceeded the 600-second cap.
+The repository `.test_tmp\\pytest-of-devbox` ACL remains poisoned, so the exact browser and
+pytest commands above use the session's writable `PYTEST_DEBUG_TEMPROOT`; no `--basetemp` was
+used. The known `.pytest_cache` ACL warning does not affect test results.
 
 **MAIN IS CI-RED (2026-07-27, run 30250234820, all three interpreters).** The Architect
 pushed 14 commits - the first time M19's real code reached CI - and it failed:

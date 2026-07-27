@@ -89,6 +89,7 @@ h1, h2, h3, p { margin-top: 0; }
   outline: 0;
   outline-offset: 0;
   box-shadow: 0 0 0 5px #fff;
+  background-image: linear-gradient(rgba(245, 190, 40, .18), rgba(245, 190, 40, .18));
 }
 .semantic-flow-card.pinned { outline: 3px solid #c5452d; outline-offset: 2px; z-index: 201; }
 
@@ -102,6 +103,8 @@ h1, h2, h3, p { margin-top: 0; }
 .unit-card-select strong, .unit-card-select small { display: block; }
 .unit-card-select strong { font-size: 12px; line-height: 1.2; }
 .unit-card-select small { margin-top: 3px; color: var(--muted); font-size: 10px; }
+.unit-card-kicker { color: var(--accent) !important; font-size: 9px !important; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; }
+.unit-card-occurrence { color: #875a05 !important; font-weight: 700; }
 .unit-card-select code, .selected-ref { color: var(--accent); font-family: Consolas, monospace; font-size: 10px; white-space: nowrap; }
 .unit-card-status { width: 9px; height: 9px; margin-top: 3px; border: 1px solid #8a9996; border-radius: 50%; }
 .review-unit-card.approved .unit-card-status { border-color: var(--accent); background: var(--accent); }
@@ -133,6 +136,8 @@ h1, h2, h3, p { margin-top: 0; }
 .drawer-heading h2 { margin: 3px 0 5px; font-family: Georgia, serif; font-size: 17px; }
 .drawer-heading p { margin: 3px 0; color: var(--muted); font-size: 11px; line-height: 1.35; }
 .drawer-heading .eyebrow { color: var(--accent); }
+.dossier-kicker { display: block; margin-top: 5px; color: var(--accent); font-size: 9px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
+.dossier-occurrence { color: #875a05 !important; font-weight: 700; }
 .legacy-label-warning { color: #875a05 !important; }
 .drawer-tabs { display: flex; flex-wrap: wrap; gap: 4px; margin: 10px 0; }
 .drawer-tabs button { padding: 5px 6px; border: 1px solid var(--line); border-radius: 4px; color: var(--muted); background: #fff; font-size: 10px; }
@@ -145,6 +150,10 @@ h1, h2, h3, p { margin-top: 0; }
 .empty-evidence { color: var(--muted); }
 
 .cell-dossier { font-size: 11px; line-height: 1.4; color: var(--ink); }
+.technical-record { margin: 0 0 12px; }
+.technical-record summary { padding: 8px 9px; border: 1px solid var(--line); border-radius: 5px; color: var(--accent); background: #fff; cursor: pointer; font-size: 11px; font-weight: 800; }
+.technical-record[open] summary { border-radius: 5px 5px 0 0; }
+.technical-record .dossier-group { border-top: 0; border-radius: 0; margin: 0; }
 .dossier-group { margin: 0 0 12px; padding: 8px 9px; border: 1px solid var(--line); border-radius: 5px; background: #fff; }
 .dossier-group h3 { margin: 0 0 7px; color: var(--accent); font-size: 11px; letter-spacing: .04em; text-transform: uppercase; }
 .dossier-group dl { margin: 0; }

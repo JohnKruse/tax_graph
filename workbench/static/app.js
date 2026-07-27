@@ -19,7 +19,7 @@ const POLICY_COUNT_LABEL = {
   computed: "computed",
   decision_required: "decision required",
   intentionally_blank: "intentionally blank",
-  unsupported: "no mapping authored",
+  unsupported: "coverage gap - nobody has mapped this yet",
 };
 
 function now() {
