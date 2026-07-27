@@ -110,7 +110,10 @@ def test_citations_resolve_to_verbatim_text_and_provenance() -> None:
     )
     assert records[0] == {
         "citation_id": "cite_span_form_1040_2025_0007",
-        "quoted_text": "- 1: a Total amount from Form(s) W-2, box 1 (see instructions) 1a",
+        # M18-S2b re-derived this from the acquired source. The old expectation pinned the
+        # extraction wrapper ("- 1: a ... 1a") that John flagged in review, so this test was
+        # asserting the defect.
+        "quoted_text": "Total amount from Form(s) W-2, box 1 (see instructions)",
         "locator": "page 1, line 8",
         "url": "https://www.irs.gov/pub/irs-prior/f1040--2025.pdf",
         "retrieved_date": "2026-07-09",

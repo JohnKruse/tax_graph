@@ -121,6 +121,17 @@ entries; do not delete them.
   container, or give the container `position: relative`. NOTE: the correct pattern was already in
   the same commit - `scrollOfficialRegionIntoView` does the rect-delta math properly for the
   center pane. Copy the pattern you already got right. (M17-S3R2, 2026-07-25)
+- **D9 - When you change a promoted artifact's CONTENT, run the tests that PROJECT that
+  content, not just the ones you wrote.** M18-S2b re-derived 217 citation `quoted_text`
+  values correctly - the data fix was right and the integrity gate improved 37 -> 36
+  mismatches. But it declared only `tests/test_citation_cleanup_m18.py` and
+  `tests/test_graph_validator.py`, and left `tests/test_workbench_cells_m17.py` red: that
+  file hardcoded the OLD polluted string as its expected value, so it was asserting the
+  defect. The Architect caught it in the Tier 3 partition. **This is D8's sibling** - D8 was
+  renaming a value without grepping consumers; D9 is changing a value without running the
+  consumers' tests. Practical rule: `grep -rln "<a distinctive fragment of the old value>"
+  tests/` before declaring your files. A test that pins old output is not a reason to leave
+  the fix out; it is a test to update, with a comment saying why. (M18-S2b, 2026-07-27)
 - **D8 - Renaming a value in a PROMOTED ARTIFACT is an API change. Grep for every consumer
   before you rename.** M19-S4 was told to normalize 8949 group naming; it also renamed the
   1040 dependents group from the table token `dependents` to the row-template token
