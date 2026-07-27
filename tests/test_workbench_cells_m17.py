@@ -77,15 +77,17 @@ def test_documents_index_loads_geometry_once_and_omits_empty() -> None:
     built = build_document_cells(ROOT, 2025, "form_1040_2025")
     # Reuse the same geometry the index would load, filtered.
     import json
-    geometry = json.loads((ROOT / "graph" / "2025" / "node_geometry.json").read_text("utf-8"))["entries"]
+    geometry_payload = json.loads((ROOT / "graph" / "2025" / "node_geometry.json").read_text("utf-8"))
+    geometry = geometry_payload["entries"]
     index = build_documents_index(
-        ROOT, 2025, ["form_1040_2025", "does_not_exist"],
-        geometry_entries=geometry, titles={"form_1040_2025": "Form 1040"},
+        ROOT, 2025, ["form_1040_2025", "does_not_exist"], geometry_entries=geometry,
+        page_geometry=geometry_payload.get("pages", []), titles={"form_1040_2025": "Form 1040"},
     )
     assert [item["document_id"] for item in index] == ["form_1040_2025"]
     assert index[0]["title"] == "Form 1040"
     assert index[0]["cell_count"] == len(built.cells)
     assert index[0]["pages"] == built.pages
+    assert index[0]["page_geometry"] == built.page_geometry
     assert sum(index[0]["policy_counts"].values()) == index[0]["cell_count"]
     assert index[0]["policy_counts"]["user_entered"] > 0
 
@@ -134,11 +136,23 @@ def test_instruction_citations_are_separate_from_authority() -> None:
 @pytest.mark.m17
 def test_document_index_reports_citation_coverage() -> None:
     import json
-    geometry = json.loads((ROOT / "graph" / "2025" / "node_geometry.json").read_text("utf-8"))["entries"]
+    geometry_payload = json.loads((ROOT / "graph" / "2025" / "node_geometry.json").read_text("utf-8"))
+    geometry = geometry_payload["entries"]
     index = build_documents_index(
         ROOT, 2025, ["form_1040_2025"], geometry_entries=geometry,
+        page_geometry=geometry_payload.get("pages", []),
     )
     counts = index[0]["citation_counts"]
     assert counts["cited"] > 0
     assert counts["uncited"] > 0
     assert counts["cited"] + counts["uncited"] == index[0]["cell_count"]
+
+
+@pytest.mark.m17
+def test_document_cells_expose_captured_page_geometry() -> None:
+    built = build_document_cells(ROOT, 2025, "form_13614_c_2025")
+    assert built.page_geometry
+    landscape = next(item for item in built.page_geometry if item["page"] == 1)
+    assert landscape["width"] == 792.0
+    assert landscape["height"] == 612.0
+    assert landscape["rotation"] == 0

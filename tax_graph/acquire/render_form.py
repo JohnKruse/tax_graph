@@ -55,12 +55,21 @@ def extract_line_markdown(pdf_path: str | Path) -> str:
 
 
 def extract_field_grid(pdf_path: str | Path) -> dict[str, Any]:
-    """Extract AcroForm widget positions for downstream cross-checking."""
+    """Extract AcroForm widgets plus the source PDF's per-page geometry."""
     import fitz
 
     fields: list[dict[str, Any]] = []
+    pages: list[dict[str, Any]] = []
     with fitz.open(pdf_path) as document:
         for page_number, page in enumerate(document, 1):
+            pages.append(
+                {
+                    "page": page_number,
+                    "width": round(float(page.rect.width), 2),
+                    "height": round(float(page.rect.height), 2),
+                    "rotation": int(page.rotation),
+                }
+            )
             line_positions = _line_anchor_positions(page.get_text("words"))
             widgets = page.widgets() or []
             for widget in widgets:
@@ -83,7 +92,7 @@ def extract_field_grid(pdf_path: str | Path) -> dict[str, Any]:
                 if line_anchor:
                     field["line_anchor"] = line_anchor
                 fields.append(field)
-    return {"fields": fields}
+    return {"fields": fields, "pages": pages}
 
 
 def _rows_from_words(words: list[tuple[Any, ...]]) -> list[str]:

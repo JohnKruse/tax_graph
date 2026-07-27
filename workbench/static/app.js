@@ -104,6 +104,7 @@ async function selectDocument(documentItem, button) {
     document_id: cellsPayload.document_id,
     title: cellsPayload.title,
     pages: cellsPayload.pages,
+    page_geometry: cellsPayload.page_geometry || documentItem.page_geometry || [],
     cells: cellsPayload.cells,
     policy_counts: documentItem.policy_counts || {},
     citation_counts: documentItem.citation_counts || {},

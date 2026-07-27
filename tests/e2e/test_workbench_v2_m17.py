@@ -120,3 +120,33 @@ def test_selected_cell_uses_human_headers_dossier_order_and_occurrence(page, wor
     dependent_card.wait_for()
     dependent_card.locator(".unit-card-select").click()
     expect(detail.locator(".dossier-occurrence")).to_have_text("Dependent 3 of 4")
+
+
+def test_landscape_page_uses_captured_geometry_for_region_placement(page, workbench_url: str) -> None:
+    page.goto(workbench_url)
+    page.locator('[data-document-id="form_13614_c_2025"].document-entry').click()
+    canvas = page.locator('#official-pane .page-canvas[data-page="1"]')
+    canvas.wait_for()
+    page.wait_for_function(
+        """() => {
+            const canvas = document.querySelector('#official-pane .page-canvas[data-page="1"]');
+            return canvas?.querySelector('.official-region') && canvas.querySelector('img')?.complete;
+        }"""
+    )
+
+    metrics = canvas.evaluate(
+        """canvas => {
+            const box = canvas.getBoundingClientRect();
+            const region = canvas.querySelector('.official-region').getBoundingClientRect();
+            return {
+                ratio: box.width / box.height,
+                regionRight: region.right,
+                regionBottom: region.bottom,
+                canvasRight: box.right,
+                canvasBottom: box.bottom,
+            };
+        }"""
+    )
+    assert metrics["ratio"] == pytest.approx(792 / 612, rel=0.02)
+    assert metrics["regionRight"] <= metrics["canvasRight"] + 1
+    assert metrics["regionBottom"] <= metrics["canvasBottom"] + 1

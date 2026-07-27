@@ -42,6 +42,7 @@ def test_render_form_extracts_line_rows_and_fields(tmp_path):
     assert "- 2025:" not in markdown
 
     fields = json.loads((tmp_path / "form_1116_2025.fields.json").read_text(encoding="utf-8"))
+    assert fields["pages"] == [{"page": 1, "width": 612.0, "height": 792.0, "rotation": 0}]
     assert fields["fields"][0]["field_name"] == "topmostSubform[0].Page1[0].f3a_colA[0]"
     assert fields["fields"][0]["x_cluster"] == 300
     assert fields["fields"][0]["line_anchor"] == "3a"

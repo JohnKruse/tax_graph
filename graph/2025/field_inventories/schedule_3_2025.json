@@ -479,5 +479,13 @@
       "y1": 612.0,
       "y_cluster": 600
     }
+  ],
+  "pages": [
+    {
+      "height": 792.0,
+      "page": 1,
+      "rotation": 0,
+      "width": 612.0
+    }
   ]
 }

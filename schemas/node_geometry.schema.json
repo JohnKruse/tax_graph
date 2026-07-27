@@ -6,6 +6,21 @@
   "required": ["tax_year", "entries"],
   "properties": {
     "tax_year": {"type": "integer"},
+    "pages": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["document_id", "page", "width", "height", "rotation"],
+        "properties": {
+          "document_id": {"type": "string"},
+          "page": {"type": "integer", "minimum": 1},
+          "width": {"type": "number", "exclusiveMinimum": 0},
+          "height": {"type": "number", "exclusiveMinimum": 0},
+          "rotation": {"type": "integer", "enum": [0, 90, 180, 270]}
+        }
+      }
+    },
     "entries": {
       "type": "array",
       "items": {

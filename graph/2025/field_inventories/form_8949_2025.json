@@ -2446,5 +2446,19 @@
       "y1": 684.0,
       "y_cluster": 675
     }
+  ],
+  "pages": [
+    {
+      "height": 791.97,
+      "page": 1,
+      "rotation": 0,
+      "width": 611.98
+    },
+    {
+      "height": 791.97,
+      "page": 2,
+      "rotation": 0,
+      "width": 611.98
+    }
   ]
 }

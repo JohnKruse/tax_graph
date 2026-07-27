@@ -268,6 +268,7 @@ def create_app(
                     if isinstance(document, dict) and document.get("document_id")
                 },
                 geometry_entries=entries,
+                page_geometry=artifact_bundle.geometry.get("pages", []) or [],
                 valid_document_ids=frozenset(
                     str(entry["document_id"])
                     for entry in entries
@@ -278,7 +279,11 @@ def create_app(
 
     def _document_cells(document_id: str) -> list[dict[str, Any]]:
         return build_document_cells(
-            root_path, year, document_id, geometry_entries=_document_context()["geometry_entries"]
+            root_path,
+            year,
+            document_id,
+            geometry_entries=_document_context()["geometry_entries"],
+            page_geometry=_document_context()["page_geometry"],
         ).cells
 
     def _pseudo_units(cells: list[dict[str, Any]]) -> list[dict[str, Any]]:
@@ -299,6 +304,7 @@ def create_app(
                 year,
                 sorted(_document_context()["valid_document_ids"]),
                 geometry_entries=_document_context()["geometry_entries"],
+                page_geometry=_document_context()["page_geometry"],
                 titles=_document_context()["titles"],
             ),
         })
@@ -314,6 +320,14 @@ def create_app(
             "document_id": document_id,
             "title": _document_context()["titles"].get(document_id, document_id),
             "pages": sorted({cell["page"] for cell in cells}),
+            "page_geometry": build_document_cells(
+                root_path,
+                year,
+                document_id,
+                geometry_entries=_document_context()["geometry_entries"],
+                page_geometry=_document_context()["page_geometry"],
+                include_inputs=False,
+            ).page_geometry,
             "cells": cells,
         })
 

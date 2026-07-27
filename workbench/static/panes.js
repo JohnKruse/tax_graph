@@ -49,16 +49,14 @@ export function renderOfficialPane(container, documentModel, requestedPage = nul
     canvas.append(region);
   }
 
-  // Position against the page's REAL size. The rendered PNG is produced from the actual
-  // PDF page, so its natural dimensions divided by the render scale give the page's point
-  // size - portrait or landscape - without hardcoding one paper orientation.
+  const capturedPage = (documentModel.page_geometry || []).find((item) => item.page === page);
+  // Prefer dimensions captured from the source PDF. The PNG-derived size remains a
+  // fallback for older artifacts, and letter dimensions are the final fallback.
   const placeRegions = () => {
-    const pageWidth = image.naturalWidth ? image.naturalWidth / PAGE_RENDER_SCALE : LETTER_WIDTH;
-    const pageHeight = image.naturalHeight ? image.naturalHeight / PAGE_RENDER_SCALE : LETTER_HEIGHT;
-    // The canvas carries a portrait aspect-ratio in CSS. Left alone, a landscape page is
-    // letterboxed inside a portrait box by object-fit: contain - the picture shrinks and
-    // centres while the regions are positioned against the box, so correct percentages
-    // still land off the artwork. Size the box to the real page.
+    const pageWidth = capturedPage?.width ||
+      (image.naturalWidth ? image.naturalWidth / PAGE_RENDER_SCALE : LETTER_WIDTH);
+    const pageHeight = capturedPage?.height ||
+      (image.naturalHeight ? image.naturalHeight / PAGE_RENDER_SCALE : LETTER_HEIGHT);
     canvas.style.aspectRatio = `${pageWidth} / ${pageHeight}`;
     for (const [region, [x0, y0, x1, y1]] of regions) {
       region.style.left = `${x0 / pageWidth * 100}%`;

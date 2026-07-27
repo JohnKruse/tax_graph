@@ -50,6 +50,7 @@ class DocumentCells:
     document_id: str
     cells: list[dict[str, Any]]
     pages: list[int] = dataclass_field(default_factory=list)
+    page_geometry: list[dict[str, Any]] = dataclass_field(default_factory=list)
 
 
 def build_document_cells(
@@ -58,6 +59,7 @@ def build_document_cells(
     document_id: str,
     *,
     geometry_entries: list[dict[str, Any]] | None = None,
+    page_geometry: list[dict[str, Any]] | None = None,
     include_inputs: bool = True,
 ) -> DocumentCells:
     """Assemble the reading-order cell list for one document.
@@ -74,11 +76,23 @@ def build_document_cells(
     """
     graph_dir = Path(root) / "graph" / str(year)
     if geometry_entries is None:
-        geometry = _load_geometry(graph_dir / "node_geometry.json", document_id)
+        geometry_payload = _load_geometry_payload(graph_dir / "node_geometry.json")
+        geometry = [
+            entry for entry in geometry_payload.get("entries", [])
+            if _geometry_is_cell(entry) and str(entry.get("document_id") or "") == document_id
+        ]
+        page_geometry = [
+            item for item in geometry_payload.get("pages", [])
+            if isinstance(item, dict) and str(item.get("document_id") or "") == document_id
+        ]
     else:
         geometry = [
             entry for entry in geometry_entries
             if _geometry_is_cell(entry) and str(entry.get("document_id") or "") == document_id
+        ]
+        page_geometry = [
+            item for item in page_geometry or []
+            if str(item.get("document_id") or "") == document_id
         ]
     addresses = _load_addresses(graph_dir / "addresses" / f"{document_id}.yaml")
     dispositions = _load_dispositions(graph_dir / "field_maps" / f"{document_id}.yaml")
@@ -156,7 +170,12 @@ def build_document_cells(
                 "citations": authority_citations,
             }
         )
-    return DocumentCells(document_id=document_id, cells=cells, pages=sorted(pages))
+    return DocumentCells(
+        document_id=document_id,
+        cells=cells,
+        pages=sorted(pages),
+        page_geometry=sorted(page_geometry or [], key=lambda item: int(item["page"])),
+    )
 
 
 def _breadcrumb(address: dict[str, Any]) -> str | None:
@@ -284,6 +303,7 @@ def build_documents_index(
     document_ids: list[str],
     *,
     geometry_entries: list[dict[str, Any]],
+    page_geometry: list[dict[str, Any]] | None = None,
     titles: dict[str, str] | None = None,
 ) -> list[dict[str, Any]]:
     """Summarize each document for the left-rail picker (id, title, pages, count).
@@ -295,8 +315,17 @@ def build_documents_index(
     titles = titles or {}
     summaries: list[dict[str, Any]] = []
     for document_id in sorted(set(document_ids)):
+        document_page_geometry = [
+            item for item in page_geometry or []
+            if str(item.get("document_id") or "") == document_id
+        ]
         built = build_document_cells(
-            root, year, document_id, geometry_entries=geometry_entries, include_inputs=False
+            root,
+            year,
+            document_id,
+            geometry_entries=geometry_entries,
+            page_geometry=document_page_geometry,
+            include_inputs=False,
         )
         if not built.cells:
             continue
@@ -305,6 +334,7 @@ def build_documents_index(
                 "document_id": document_id,
                 "title": titles.get(document_id, document_id),
                 "pages": built.pages,
+                "page_geometry": built.page_geometry,
                 "cell_count": len(built.cells),
                 "policy_counts": dict(sorted(
                     Counter(cell.get("population_policy") or "unknown" for cell in built.cells).items()
@@ -324,14 +354,9 @@ def build_documents_index(
     return summaries
 
 
-def _load_geometry(path: Path, document_id: str) -> list[dict[str, Any]]:
+def _load_geometry_payload(path: Path) -> dict[str, Any]:
     payload = json.loads(path.read_text(encoding="utf-8"))
-    return [
-        entry
-        for entry in payload.get("entries", [])
-        if _geometry_is_cell(entry)
-        and str(entry.get("document_id") or "") == document_id
-    ]
+    return payload
 
 
 def _load_addresses(path: Path) -> dict[str, dict[str, Any]]:

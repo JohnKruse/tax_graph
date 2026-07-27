@@ -7,6 +7,7 @@ from pathlib import Path
 import pytest
 
 from tax_graph.output.geometry import (
+    _validate_page_bounds,
     build_node_geometry,
     load_node_geometry,
     resolve_node_geometry,
@@ -41,3 +42,39 @@ def test_repeatable_template_resolves_all_printed_slots() -> None:
     )
     assert len(locations) == 11
     assert {location["page"] for location in locations} == {2}
+
+
+@pytest.mark.m17
+def test_page_geometry_is_captured_per_document_page() -> None:
+    geometry = load_node_geometry("2025", ROOT)
+    pages = {
+        (item["document_id"], item["page"]): item
+        for item in geometry["pages"]
+    }
+    assert pages[("form_13614_c_2025", 1)]["width"] == 792.0
+    assert pages[("form_13614_c_2025", 1)]["height"] == 612.0
+    assert pages[("form_13614_c_2025", 6)]["width"] == 612.0
+    assert pages[("form_13614_c_2025", 6)]["height"] == 792.0
+    assert all(item["rotation"] in {0, 90, 180, 270} for item in geometry["pages"])
+
+
+@pytest.mark.m17
+def test_page_bounds_validator_fails_closed() -> None:
+    geometry = {
+        "pages": [{
+            "document_id": "form_a_2025",
+            "page": 1,
+            "width": 612.0,
+            "height": 792.0,
+            "rotation": 0,
+        }],
+        "entries": [{
+            "document_id": "form_a_2025",
+            "page": 1,
+            "field_name": "field_a",
+            "rect": [600.0, 780.0, 620.0, 800.0],
+        }],
+    }
+    errors = _validate_page_bounds(geometry)
+    assert len(errors) == 1
+    assert "outside page box" in errors[0]

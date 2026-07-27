@@ -36877,5 +36877,399 @@
       "value_format": "dollars"
     }
   ],
+  "pages": [
+    {
+      "document_id": "form_1040_2025",
+      "height": 792.0,
+      "page": 1,
+      "rotation": 0,
+      "width": 612.0
+    },
+    {
+      "document_id": "form_1040_2025",
+      "height": 792.0,
+      "page": 2,
+      "rotation": 0,
+      "width": 612.0
+    },
+    {
+      "document_id": "form_1099_div_2025",
+      "height": 792.0,
+      "page": 1,
+      "rotation": 0,
+      "width": 612.0
+    },
+    {
+      "document_id": "form_1099_div_2025",
+      "height": 792.0,
+      "page": 2,
+      "rotation": 0,
+      "width": 612.0
+    },
+    {
+      "document_id": "form_1099_div_2025",
+      "height": 792.0,
+      "page": 3,
+      "rotation": 0,
+      "width": 612.0
+    },
+    {
+      "document_id": "form_1099_div_2025",
+      "height": 792.0,
+      "page": 4,
+      "rotation": 0,
+      "width": 612.0
+    },
+    {
+      "document_id": "form_1099_div_2025",
+      "height": 792.0,
+      "page": 5,
+      "rotation": 0,
+      "width": 612.0
+    },
+    {
+      "document_id": "form_1099_div_2025",
+      "height": 792.0,
+      "page": 6,
+      "rotation": 0,
+      "width": 612.0
+    },
+    {
+      "document_id": "form_1099_int_2025",
+      "height": 792.0,
+      "page": 1,
+      "rotation": 0,
+      "width": 612.0
+    },
+    {
+      "document_id": "form_1099_int_2025",
+      "height": 792.0,
+      "page": 2,
+      "rotation": 0,
+      "width": 612.0
+    },
+    {
+      "document_id": "form_1099_int_2025",
+      "height": 792.0,
+      "page": 3,
+      "rotation": 0,
+      "width": 612.0
+    },
+    {
+      "document_id": "form_1099_int_2025",
+      "height": 792.0,
+      "page": 4,
+      "rotation": 0,
+      "width": 612.0
+    },
+    {
+      "document_id": "form_1099_int_2025",
+      "height": 792.0,
+      "page": 5,
+      "rotation": 0,
+      "width": 612.0
+    },
+    {
+      "document_id": "form_1099_int_2025",
+      "height": 792.0,
+      "page": 6,
+      "rotation": 0,
+      "width": 612.0
+    },
+    {
+      "document_id": "form_1099_int_2025",
+      "height": 792.0,
+      "page": 7,
+      "rotation": 0,
+      "width": 612.0
+    },
+    {
+      "document_id": "form_1099b_2025",
+      "height": 792.0,
+      "page": 1,
+      "rotation": 0,
+      "width": 612.0
+    },
+    {
+      "document_id": "form_1099b_2025",
+      "height": 792.0,
+      "page": 2,
+      "rotation": 0,
+      "width": 612.0
+    },
+    {
+      "document_id": "form_1099b_2025",
+      "height": 792.0,
+      "page": 3,
+      "rotation": 0,
+      "width": 612.0
+    },
+    {
+      "document_id": "form_1099b_2025",
+      "height": 792.0,
+      "page": 4,
+      "rotation": 0,
+      "width": 612.0
+    },
+    {
+      "document_id": "form_1099b_2025",
+      "height": 792.0,
+      "page": 5,
+      "rotation": 0,
+      "width": 612.0
+    },
+    {
+      "document_id": "form_1099b_2025",
+      "height": 792.0,
+      "page": 6,
+      "rotation": 0,
+      "width": 612.0
+    },
+    {
+      "document_id": "form_1099b_2025",
+      "height": 792.0,
+      "page": 7,
+      "rotation": 0,
+      "width": 612.0
+    },
+    {
+      "document_id": "form_13614_c_2025",
+      "height": 612.0,
+      "page": 1,
+      "rotation": 0,
+      "width": 792.0
+    },
+    {
+      "document_id": "form_13614_c_2025",
+      "height": 612.0,
+      "page": 2,
+      "rotation": 0,
+      "width": 792.0
+    },
+    {
+      "document_id": "form_13614_c_2025",
+      "height": 612.0,
+      "page": 3,
+      "rotation": 0,
+      "width": 792.0
+    },
+    {
+      "document_id": "form_13614_c_2025",
+      "height": 612.0,
+      "page": 4,
+      "rotation": 0,
+      "width": 792.0
+    },
+    {
+      "document_id": "form_13614_c_2025",
+      "height": 612.0,
+      "page": 5,
+      "rotation": 0,
+      "width": 792.0
+    },
+    {
+      "document_id": "form_13614_c_2025",
+      "height": 792.0,
+      "page": 6,
+      "rotation": 0,
+      "width": 612.0
+    },
+    {
+      "document_id": "form_2441_2025",
+      "height": 792.0,
+      "page": 1,
+      "rotation": 0,
+      "width": 612.0
+    },
+    {
+      "document_id": "form_2441_2025",
+      "height": 792.0,
+      "page": 2,
+      "rotation": 0,
+      "width": 612.0
+    },
+    {
+      "document_id": "form_6251_2025",
+      "height": 792.0,
+      "page": 1,
+      "rotation": 0,
+      "width": 612.0
+    },
+    {
+      "document_id": "form_6251_2025",
+      "height": 792.0,
+      "page": 2,
+      "rotation": 0,
+      "width": 612.0
+    },
+    {
+      "document_id": "form_8949_2025",
+      "height": 791.97,
+      "page": 1,
+      "rotation": 0,
+      "width": 611.98
+    },
+    {
+      "document_id": "form_8949_2025",
+      "height": 791.97,
+      "page": 2,
+      "rotation": 0,
+      "width": 611.98
+    },
+    {
+      "document_id": "form_w2_2025",
+      "height": 792.0,
+      "page": 1,
+      "rotation": 0,
+      "width": 612.0
+    },
+    {
+      "document_id": "form_w2_2025",
+      "height": 792.0,
+      "page": 2,
+      "rotation": 0,
+      "width": 612.0
+    },
+    {
+      "document_id": "form_w2_2025",
+      "height": 792.0,
+      "page": 3,
+      "rotation": 0,
+      "width": 612.0
+    },
+    {
+      "document_id": "form_w2_2025",
+      "height": 792.0,
+      "page": 4,
+      "rotation": 0,
+      "width": 612.0
+    },
+    {
+      "document_id": "form_w2_2025",
+      "height": 792.0,
+      "page": 5,
+      "rotation": 0,
+      "width": 612.0
+    },
+    {
+      "document_id": "form_w2_2025",
+      "height": 792.0,
+      "page": 6,
+      "rotation": 0,
+      "width": 612.0
+    },
+    {
+      "document_id": "form_w2_2025",
+      "height": 792.0,
+      "page": 7,
+      "rotation": 0,
+      "width": 612.0
+    },
+    {
+      "document_id": "form_w2_2025",
+      "height": 792.0,
+      "page": 8,
+      "rotation": 0,
+      "width": 612.0
+    },
+    {
+      "document_id": "form_w2_2025",
+      "height": 792.0,
+      "page": 9,
+      "rotation": 0,
+      "width": 612.0
+    },
+    {
+      "document_id": "form_w2_2025",
+      "height": 792.0,
+      "page": 10,
+      "rotation": 0,
+      "width": 612.0
+    },
+    {
+      "document_id": "form_w2_2025",
+      "height": 792.0,
+      "page": 11,
+      "rotation": 0,
+      "width": 612.0
+    },
+    {
+      "document_id": "schedule_1_2025",
+      "height": 792.0,
+      "page": 1,
+      "rotation": 0,
+      "width": 612.0
+    },
+    {
+      "document_id": "schedule_1_2025",
+      "height": 792.0,
+      "page": 2,
+      "rotation": 0,
+      "width": 612.0
+    },
+    {
+      "document_id": "schedule_1a_2025",
+      "height": 792.0,
+      "page": 1,
+      "rotation": 0,
+      "width": 612.0
+    },
+    {
+      "document_id": "schedule_1a_2025",
+      "height": 792.0,
+      "page": 2,
+      "rotation": 0,
+      "width": 612.0
+    },
+    {
+      "document_id": "schedule_2_2025",
+      "height": 792.0,
+      "page": 1,
+      "rotation": 0,
+      "width": 612.0
+    },
+    {
+      "document_id": "schedule_2_2025",
+      "height": 792.0,
+      "page": 2,
+      "rotation": 0,
+      "width": 612.0
+    },
+    {
+      "document_id": "schedule_3_2025",
+      "height": 792.0,
+      "page": 1,
+      "rotation": 0,
+      "width": 612.0
+    },
+    {
+      "document_id": "schedule_a_2025",
+      "height": 792.0,
+      "page": 1,
+      "rotation": 0,
+      "width": 612.0
+    },
+    {
+      "document_id": "schedule_b_2025",
+      "height": 792.0,
+      "page": 1,
+      "rotation": 0,
+      "width": 612.0
+    },
+    {
+      "document_id": "schedule_d_2025",
+      "height": 792.0,
+      "page": 1,
+      "rotation": 0,
+      "width": 612.0
+    },
+    {
+      "document_id": "schedule_d_2025",
+      "height": 792.0,
+      "page": 2,
+      "rotation": 0,
+      "width": 612.0
+    }
+  ],
   "tax_year": 2025
 }

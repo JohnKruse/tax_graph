@@ -3773,5 +3773,43 @@
       "y1": 752.4,
       "y_cluster": 750
     }
+  ],
+  "pages": [
+    {
+      "height": 612.0,
+      "page": 1,
+      "rotation": 0,
+      "width": 792.0
+    },
+    {
+      "height": 612.0,
+      "page": 2,
+      "rotation": 0,
+      "width": 792.0
+    },
+    {
+      "height": 612.0,
+      "page": 3,
+      "rotation": 0,
+      "width": 792.0
+    },
+    {
+      "height": 612.0,
+      "page": 4,
+      "rotation": 0,
+      "width": 792.0
+    },
+    {
+      "height": 612.0,
+      "page": 5,
+      "rotation": 0,
+      "width": 792.0
+    },
+    {
+      "height": 792.0,
+      "page": 6,
+      "rotation": 0,
+      "width": 612.0
+    }
   ]
 }

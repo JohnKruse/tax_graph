@@ -14,6 +14,49 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## Current state (2026-07-27)
 
+**Worker session checkpoint - M17-S7 artifact regeneration (2026-07-27):** Global canary:
+Ledger Llama. Phase canary: Street Address. Model: GPT-5 Codex; effort: default;
+usage/quota/context indicators are not exposed. John gave go via the current task request.
+Single declared step: complete M17-S7 end to end. Extraction now captures per-page width,
+height, and rotation; geometry projection, cells API, and panes are patched but promoted
+inventories and `node_geometry.json` are not regenerated yet. Applicable defects: D1, D2,
+D3, D4, D5, D6, D7, and D8. D8 requires `tests/test_dependents_m15.py` because the
+promoted geometry is an engine-consumed artifact; no widget rects, citations, verdicts, or
+graph semantics are in scope.
+
+**M17-S7 implementation checkpoint (2026-07-27):** `extract_field_grid` now persists
+per-page width, height, and rotation; all 16 widget-bearing promoted inventories were
+regenerated; `graph/2025/node_geometry.json` now carries 394 page records with widget
+entries unchanged; the cells API and frontend prefer captured dimensions with PNG and
+letter fallbacks; and page-bound validation is fail-closed. Focused verification is next.
+
+**M17-S7 focused fast verification checkpoint (2026-07-27):** The first run found and
+fixed a projection-only bug where the document index received the global page list. The
+rerun is green; the browser file and final gates remain.
+
+- RAN: `$testRoot = 'C:\Users\devbox\.codex\visualizations\2026\07\27\019fa47e-0476-7380-bcfa-6413d6b7c7c1\m17_s7_fast_r2'; New-Item -ItemType Directory -Force -Path $testRoot | Out-Null; $env:PYTEST_DEBUG_TEMPROOT = $testRoot; .venv\Scripts\python.exe -m pytest tests/test_render_form.py tests/test_geometry_m12.py tests/test_workbench_cells_m17.py tests/test_workbench_m15.py tests/test_dependents_m15.py -q` -> 28 passed in 50.79s; one known pytest cache ACL warning.
+
+- RAN: `$testRoot = 'C:\Users\devbox\.codex\visualizations\2026\07\27\019fa47e-0476-7380-bcfa-6413d6b7c7c1\m17_s7_e2e_r3'; New-Item -ItemType Directory -Force -Path $testRoot | Out-Null; $env:PYTEST_DEBUG_TEMPROOT = $testRoot; .venv\Scripts\python.exe -m pytest tests/e2e/test_workbench_v2_m17.py -q` -> 4 passed in 253.05s; one known pytest cache ACL warning. The first S7-specific browser attempt exposed the global-page-list filtering defect and is superseded by this rerun.
+
+- RAN: `$testRoot = 'C:\Users\devbox\.codex\visualizations\2026\07\27\019fa47e-0476-7380-bcfa-6413d6b7c7c1\m17_s7_fast_r3'; New-Item -ItemType Directory -Force -Path $testRoot | Out-Null; $env:PYTEST_DEBUG_TEMPROOT = $testRoot; .venv\Scripts\python.exe -m pytest tests/test_render_form.py tests/test_geometry_m12.py tests/test_workbench_cells_m17.py tests/test_workbench_m15.py tests/test_dependents_m15.py -q` -> 28 passed in 49.03s; one known pytest cache ACL warning.
+
+**M17-S7 final-gates checkpoint (2026-07-27):** All declared focused pytest files and the
+browser file are green after the last code change. Remaining commands are ASCII, diff-check,
+module-form graph validation, and real workbench preflight; no full partition or push yet.
+
+- RAN: `.venv\Scripts\python.exe tools\check_ascii.py` -> `ASCII check OK`.
+- RAN: `git diff --check` -> exit 0; one known line-ending normalization warning for
+  `workbench/server.py`.
+- RAN: `.venv\Scripts\python.exe -m tax_graph.cli validate 2025` -> exit 0; graph integrity
+  OK, 18 documents loaded.
+- RAN: `.venv\Scripts\python.exe -m workbench.cli --year 2025 preflight` -> passed; 35
+  entries, 3243 units, 1921 field controls, `legacy_mined=394`.
+
+M17-S7 implementation and verification are complete. No promoted widget rectangle,
+field-map value, citation, verdict, or graph semantic changed; the only promoted data
+change is extracted page geometry in the inventories and `node_geometry.json`. Committed
+locally; no push.
+
 **Worker session checkpoint - M17-S6 implementation (2026-07-27):** Global canary: Ledger
 Llama. Phase canary: Street Address. Model: GPT-5 Codex; effort: default; usage/quota/context
 indicators are not exposed. John gave go via the current task request. Single declared step:

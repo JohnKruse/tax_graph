@@ -67,7 +67,7 @@ def test_sqlite_loader_reads_public_rows_in_read_only_mode(tmp_path: Path) -> No
 @pytest.mark.m15
 def test_public_json_and_yaml_schemas_are_enforced(tmp_path: Path) -> None:
     geometry = tmp_path / "node_geometry.json"
-    geometry.write_text('{"tax_year":2025,"entries":[]}', encoding="utf-8")
+    geometry.write_text('{"tax_year":2025,"pages":[],"entries":[]}', encoding="utf-8")
     schema = ROOT / "schemas" / "node_geometry.schema.json"
     assert load_geometry(geometry, schema_path=schema)["tax_year"] == 2025
 
@@ -93,7 +93,7 @@ def test_bundle_loads_drafts_metrics_nversion_examples_and_pdfs(tmp_path: Path) 
         )
     (tmp_path / "graph" / "2025").mkdir(parents=True)
     (tmp_path / "graph" / "2025" / "node_geometry.json").write_text(
-        '{"tax_year":2025,"entries":[]}', encoding="utf-8"
+        '{"tax_year":2025,"pages":[],"entries":[]}', encoding="utf-8"
     )
     (tmp_path / "schemas").mkdir()
     (tmp_path / "schemas" / "node_geometry.schema.json").write_text(
