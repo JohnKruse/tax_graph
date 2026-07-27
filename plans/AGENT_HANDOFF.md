@@ -1120,6 +1120,45 @@ TY2026 docs drop.
 
 ## From Architect
 
+- **M17-S7 TASK - CAPTURE PAGE GEOMETRY AT EXTRACTION (Architect, Claude Opus 5,
+  2026-07-27). John's call, and he is right that the current fix is inference rather than
+  data.** He asked: "shouldn't we evaluate the PDFs that are brought in to get the aspect
+  ratio correctly? I can imagine, for instance, legacy forms that are maybe even tied to
+  punch cards or something. this seems like an easy grab, no?" It is - `page.rect` and
+  `page.rotation` are already in hand the moment the extractor opens the PDF to read
+  widgets.
+  **Why it matters beyond the browser.** `workbench/static/panes.js` positioned every
+  overlay as a percentage of hardcoded 612x792 constants, so Form 13614-C (landscape)
+  resolved to 126% horizontally and scattered off the page. That is patched by deriving
+  the page size from the rendered PNG's natural dimensions - but that only helps the ONE
+  consumer that happens to render a PNG. The fill/print path, exports, and any future
+  surface have no idea how big a page is.
+  **Measured, and it settles the design: 13614-C mixes portrait AND landscape pages inside
+  a single document** - `[(612, 792, 0), (792, 612, 0)]`. Every other form is 612x792.
+  So page geometry is a PER-PAGE fact, not per-document; a document-level field would still
+  be wrong for 13614-C.
+  1. Capture `width`, `height`, and `rotation` PER PAGE at extraction time and persist them
+     in the promoted geometry artifact. Decide and state whether that is a `pages` block in
+     `graph/2025/node_geometry.json` or a sibling inventory; prefer whichever keeps the
+     existing per-widget entries unchanged.
+  2. **Capture `rotation` too, not just the aspect ratio.** A rotated page renders correctly
+     while its widget rects are in unrotated page space - the PNG-derived workaround
+     silently absorbs that, but no other consumer would.
+  3. Expose page dimensions through the document cells API and have `panes.js` PREFER them,
+     keeping the PNG-derived value as a fallback and the 612x792 constants as a last resort.
+     Do not delete the fallbacks - a document with no captured geometry must still render.
+  4. Validator: every page referenced by a widget rect has captured dimensions, and no
+     widget rect falls outside its page box. That second check would have caught 13614-C
+     directly instead of waiting for a human to notice the display was "crazy".
+  Tier 3 (promoted artifact). Declared files must include `tests/test_workbench_cells_m17.py`
+  and `tests/e2e/test_workbench_v2_m17.py` (assert a landscape 13614-C page places its
+  regions on-page), plus `tests/test_workbench_m15.py` (D5). Honest `RAN:`/`NOT RUN:` on
+  every declared file, ASCII, `git diff --check`, module-form `validate 2025`, real
+  preflight with `legacy_mined` reported explicitly. No `--basetemp`. ONE local commit; no
+  push. Stop conditions: any need to change widget rects themselves (they are correct - only
+  the page box was missing), verdict emission, or graph semantics; or a quota/environment
+  failure.
+
 - **M17-S6 TASK - JOHN'S FOURTH REVIEW: MAKE SELECTION POP, AND STOP LYING ABOUT
   INSTRUCTIONS (Architect, Claude Opus 5, 2026-07-27).** John is mid-review; these are his
   live findings. Frontend/projection only for items 1-3. **Item 4 is a DATA defect - do NOT
