@@ -26,6 +26,60 @@ source that says what those cells are for. **Instruction text is therefore not j
 review UX - it is the input that lets a coverage gap be RESOLVED rather than reported.**
 That is why this should land BEFORE or WITH M16-S5 regeneration, not after it.
 
+## MAJOR REVISION 2026-07-27 - THE HTML CHANNEL (John caught this)
+
+John: "Aren't these instructions???? you should at least do a web search to ensure that
+there isn't a non pdf version... how can we build this into the pipeline??" He is right,
+and the Architect had assumed the acquired PDFs were the only channel without checking.
+
+**The IRS publishes every instruction document as structured HTML at
+`https://www.irs.gov/instructions/<slug>`** (e.g. `i1040gi`, `i6251`, `i1099gi`,
+`i1041si`). VERIFIED by fetching them, not assumed. This is materially better than the PDF
+path for every purpose this phase has:
+
+1. **Per-line headings carry the SEMANTIC NAME, which is exactly what M19-S3b needs.**
+   `Line 1 - Adjusted Total Income or (Loss)`, `Line 1 - Taxable Refunds, Credits, or
+   Offsets of State and Local Income Taxes`. The PDF path yields `## Line 1` plus body
+   prose to be parsed; the HTML yields a TITLED line. This is the missing semantic
+   material that blocks concept minting on line-oriented forms.
+2. **Stable anchor ids** (`id111`, `en_US_2025_publink1000285809`) are better citation
+   locators than page numbers, and they survive repagination.
+3. **The hyphenation prerequisite disappears.** This plan previously required repairing
+   column-break hyphenation before any text could be quoted, or citation integrity would
+   (correctly) reject it. HTML has no column breaks. No OCR either.
+4. **It fixes the non-uniform heading problem.** The PDF survey found 73 `## Line X`
+   anchors on the 1040 but ZERO on Schedule B, which forced per-document detection. The
+   HTML uses a consistent h2/h3/h4 structure with a table of contents.
+5. **It closes the apparent acquisition gap at zero cost.** `i1040gi` carries per-line
+   instructions for **Schedule 1, Schedule 1-A, Schedule 2, and Schedule 3** - the four
+   S3b-blocked documents that have no standalone instruction PDF. Verified headings
+   include `Instructions for Schedule 1 Additional Income and Adjustments to Income`
+   (id108), `Lines 2a and 2b` (id113), `Instructions for Schedule 2 Additional Taxes`
+   (id165), `Lines 1a Through 1z` (id167), and `Instructions for Schedule 1-A Additional
+   Deductions` (id158).
+
+**How it goes into the pipeline (this is the deliverable, not a one-off scrape):**
+
+- `config/manifest.yaml` gains an `instruction_url` per document alongside the existing
+  PDF entry. The slug is stable across years; the CONTENT is year-specific, so the URL is
+  a first-class manifest field that the rollover re-binder re-fetches.
+- Acquisition fetches the HTML into `.cache/raw/<year>/` beside the PDF, recording URL,
+  `retrieved_date`, and a content hash - the same provenance discipline as every other
+  acquired artifact. **Citations must be verbatim from the ACQUIRED file, never from a
+  live fetch at citation time**, so the stored HTML is what `check_citation_integrity`
+  verifies against.
+- Mining reads the heading tree; a per-line heading yields both the line token and its
+  semantic title, and its anchor id becomes the citation `locator`.
+- **PDF stays as fallback and cross-check**, not as the primary. Where both exist and
+  disagree, that is a finding, not a silent preference.
+- **ASCII rule applies at ingest:** IRS headings use em dashes (`Line 1-Adjusted...`
+  is really an em dash). Transliterate on the way in, or the ASCII gate bites.
+
+**Consequence for scope:** the 1099/W-2 family HAS HTML instructions too (`i1099gi`,
+`i1099div`, `i1099int`, `i1099b`, `iw2w3`), so the "different genre, skip them" argument
+weakens - acquisition is now cheap enough that the question is whether the CONTENT is
+useful, not whether obtaining it is worth the effort. Still John's ruling to make.
+
 ## What makes this tractable (surveyed, not assumed)
 
 The per-page markdown already carries machine anchors, so this is structure-first mining,
@@ -95,16 +149,23 @@ discover late:
   filer-fact mapping, an explicit decision, or an explicit out-of-profile reason. This is
   where M18 and M16-S5 regeneration converge; sequence them together.
 
-## Open sequencing questions for John
+## Sequencing - DECIDED 2026-07-27
 
-1. **M18 before, with, or inside M16?** Architect recommendation: run **S1+S2 now, in
-   parallel with the M17 workbench work** (they are read-only and touch nothing M16 owns),
-   then sequence **S3 immediately before M16-S5**, so regeneration has instruction text to
-   work from instead of regenerating twice.
-2. **Scope of the first pass:** all 7 acquired documents, or the 1040 as canary first?
-   Recommendation: 1040 as the S2 canary (73 sections, richest structure), then widen in
-   S3 - mirroring M16's Schedule 2 exemplar approach.
-3. **Acquire more instruction documents?** Only 7 of the 16 reviewable documents have
-   instructions acquired. The 1099/W-2 family are payer-facing information returns whose
-   instructions are a different genre; 13614-C is an intake sheet. Worth an explicit
-   ruling on which of the remaining documents should be acquired at all.
+1. **When: M18 runs NEXT, in full (S1+S2+S3).** [DECIDED - John took the recommendation.]
+   The M19-S1 survey settled the ordering: M18 precedes M19-S3b (line-oriented forms have
+   no semantic material to mint from without it) and precedes M16-S5. Stopping after S1+S2
+   would only add a handoff, since S3 is the part that unblocks S3b.
+2. **Scope: 1040 as canary, then widen.** [DECIDED - John took the recommendation.]
+   The 1040 general instructions are the richest case and now cover Schedules 1, 1-A, 2,
+   and 3 as well. Prove the approach on one document before committing, mirroring M16's
+   Schedule 2 exemplar. M19 justified this the hard way: S3a looked complete on the 1040
+   until the W-2 exposed a whole class of silent flattening.
+3. **Acquisition: no new PDFs - build the HTML channel instead.** [ANSWERED by the HTML
+   revision above; the remaining ruling is narrow.] The four apparently-missing documents
+   (Schedules 1, 1-A, 2, 3) are covered per-line inside `i1040gi`, verified. So nothing
+   needs acquiring that is not already reachable. **Still open for John:** whether to
+   ingest instructions for the 1099/W-2 family and 13614-C at all. They DO have HTML
+   instructions, so cost is no longer the objection; the question is whether
+   payer-facing filing instructions (how to FILE the form) help a filer-facing review
+   surface (how to READ the form). Architect leans yes for the 1099/W-2 box definitions,
+   no for 13614-C, but it is a judgment call about usefulness, not feasibility.
