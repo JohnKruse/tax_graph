@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 import json
+from html.parser import HTMLParser
 from pathlib import Path
 import re
 from typing import Any
@@ -105,6 +106,11 @@ def check_citation_integrity(
         undecorated = _undecorated_text(text)
         if _contains_normalized(undecorated, citation["quoted_text"]):
             continue
+        html_path = text_root / f"{source_document_id}.html"
+        if html_path.exists() and _contains_normalized(
+            _html_text(html_path.read_text(encoding="ascii")), citation["quoted_text"]
+        ):
+            continue
         pdf_path = text_root / f"{source_document_id}.pdf"
         pdf_text = _load_pdf_text(pdf_path)
         if pdf_text is not None and _contains_normalized(pdf_text, citation["quoted_text"]):
@@ -174,6 +180,33 @@ def _undecorated_text(value: str) -> str:
             continue
         lines.append(line)
     return "\n".join(lines)
+
+
+def _html_text(value: str) -> str:
+    """Extract stored HTML text for citation verification without network access."""
+
+    class _TextParser(HTMLParser):
+        _BLOCK_TAGS = {"br", "div", "h1", "h2", "h3", "h4", "h5", "h6", "li", "p", "table", "td", "tr"}
+
+        def __init__(self) -> None:
+            super().__init__(convert_charrefs=True)
+            self.parts: list[str] = []
+
+        def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
+            if tag.lower() in self._BLOCK_TAGS:
+                self.parts.append(" ")
+
+        def handle_endtag(self, tag: str) -> None:
+            if tag.lower() in self._BLOCK_TAGS:
+                self.parts.append(" ")
+
+        def handle_data(self, data: str) -> None:
+            self.parts.append(data)
+
+    parser = _TextParser()
+    parser.feed(value)
+    parser.close()
+    return "".join(parser.parts)
 
 
 def _normalize_ws(value: str) -> str:

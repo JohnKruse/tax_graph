@@ -59,6 +59,8 @@ addresses:
     source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
     page: 1
   official_ref: '10'
+  citation_refs:
+  - cite_instruction_form_1040_2025_en_us_2025_publink100020297
 - address_id: 2025/document=form_1040/line=11a
   logical_key: document=form_1040/line=11a
   year: 2025
@@ -182,6 +184,8 @@ addresses:
     source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
     page: 2
   official_ref: 12a
+  citation_refs:
+  - cite_instruction_form_1040_2025_en_us_2025_publink1000158382
 - address_id: 2025/document=form_1040/line=12a/option=you_as_dependent
   logical_key: document=form_1040/line=12a/option=you_as_dependent
   year: 2025
@@ -204,6 +208,8 @@ addresses:
     source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
     page: 2
   official_ref: 12a
+  citation_refs:
+  - cite_instruction_form_1040_2025_en_us_2025_publink1000158382
 - address_id: 2025/document=form_1040/line=12b
   logical_key: document=form_1040/line=12b
   year: 2025
@@ -245,6 +251,8 @@ addresses:
     source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
     page: 2
   official_ref: 12b
+  citation_refs:
+  - cite_instruction_form_1040_2025_en_us_2025_publink1000158383
 - address_id: 2025/document=form_1040/line=12c
   logical_key: document=form_1040/line=12c
   year: 2025
@@ -286,6 +294,8 @@ addresses:
     source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
     page: 2
   official_ref: 12c
+  citation_refs:
+  - cite_instruction_form_1040_2025_en_us_2025_publink1000158384
 - address_id: 2025/document=form_1040/line=12d
   logical_key: document=form_1040/line=12d
   year: 2025
@@ -327,6 +337,8 @@ addresses:
     source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
     page: 2
   official_ref: 12d
+  citation_refs:
+  - cite_instruction_form_1040_2025_en_us_2025_publink1000158385
 - address_id: 2025/document=form_1040/line=12d/option=spouse_born_before_1961
   logical_key: document=form_1040/line=12d/option=spouse_born_before_1961
   year: 2025
@@ -349,6 +361,8 @@ addresses:
     source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
     page: 2
   official_ref: 12d
+  citation_refs:
+  - cite_instruction_form_1040_2025_en_us_2025_publink1000158385
 - address_id: 2025/document=form_1040/line=12d/option=you_blind
   logical_key: document=form_1040/line=12d/option=you_blind
   year: 2025
@@ -371,6 +385,8 @@ addresses:
     source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
     page: 2
   official_ref: 12d
+  citation_refs:
+  - cite_instruction_form_1040_2025_en_us_2025_publink1000158385
 - address_id: 2025/document=form_1040/line=12d/option=you_born_before_1961
   logical_key: document=form_1040/line=12d/option=you_born_before_1961
   year: 2025
@@ -393,6 +409,8 @@ addresses:
     source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
     page: 2
   official_ref: 12d
+  citation_refs:
+  - cite_instruction_form_1040_2025_en_us_2025_publink1000158385
 - address_id: 2025/document=form_1040/line=12e
   logical_key: document=form_1040/line=12e
   year: 2025
@@ -434,6 +452,8 @@ addresses:
     source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
     page: 2
   official_ref: 12e
+  citation_refs:
+  - cite_instruction_form_1040_2025_en_us_2025_publink1000158390
 - address_id: 2025/document=form_1040/line=13a
   logical_key: document=form_1040/line=13a
   year: 2025
@@ -891,6 +911,8 @@ addresses:
     source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
     page: 1
   official_ref: 1a
+  citation_refs:
+  - cite_instruction_form_1040_2025_en_us_2025_publink24811vd0e4597
 - address_id: 2025/document=form_1040/line=1b
   logical_key: document=form_1040/line=1b
   year: 2025
@@ -932,6 +954,8 @@ addresses:
     source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
     page: 1
   official_ref: 1b
+  citation_refs:
+  - cite_instruction_form_1040_2025_en_us_2025_publink1000106118
 - address_id: 2025/document=form_1040/line=1c
   logical_key: document=form_1040/line=1c
   year: 2025
@@ -973,6 +997,8 @@ addresses:
     source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
     page: 1
   official_ref: 1c
+  citation_refs:
+  - cite_instruction_form_1040_2025_en_us_2025_publink1000106120
 - address_id: 2025/document=form_1040/line=1d
   logical_key: document=form_1040/line=1d
   year: 2025
@@ -1014,6 +1040,8 @@ addresses:
     source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
     page: 1
   official_ref: 1d
+  citation_refs:
+  - cite_instruction_form_1040_2025_en_us_2025_publink1000158310
 - address_id: 2025/document=form_1040/line=1e
   logical_key: document=form_1040/line=1e
   year: 2025
@@ -1055,6 +1083,8 @@ addresses:
     source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
     page: 1
   official_ref: 1e
+  citation_refs:
+  - cite_instruction_form_1040_2025_en_us_2025_publink1000106125
 - address_id: 2025/document=form_1040/line=1f
   logical_key: document=form_1040/line=1f
   year: 2025
@@ -1096,6 +1126,8 @@ addresses:
     source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
     page: 1
   official_ref: 1f
+  citation_refs:
+  - cite_instruction_form_1040_2025_en_us_2025_publink1000158313
 - address_id: 2025/document=form_1040/line=1g
   logical_key: document=form_1040/line=1g
   year: 2025
@@ -1137,6 +1169,8 @@ addresses:
     source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
     page: 1
   official_ref: 1g
+  citation_refs:
+  - cite_instruction_form_1040_2025_en_us_2025_publink1000106129
 - address_id: 2025/document=form_1040/line=1h
   logical_key: document=form_1040/line=1h
   year: 2025
@@ -1178,6 +1212,8 @@ addresses:
     source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
     page: 1
   official_ref: 1h
+  citation_refs:
+  - cite_instruction_form_1040_2025_en_us_2025_publink1000106131
 - address_id: 2025/document=form_1040/line=1h/control=description
   logical_key: document=form_1040/line=1h/control=description
   year: 2025
@@ -1200,6 +1236,8 @@ addresses:
     source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
     page: 1
   official_ref: 1h
+  citation_refs:
+  - cite_instruction_form_1040_2025_en_us_2025_publink1000106131
 - address_id: 2025/document=form_1040/line=1i
   logical_key: document=form_1040/line=1i
   year: 2025
@@ -1241,6 +1279,8 @@ addresses:
     source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
     page: 1
   official_ref: 1i
+  citation_refs:
+  - cite_instruction_form_1040_2025_en_us_2025_publink1000106134
 - address_id: 2025/document=form_1040/line=1z
   logical_key: document=form_1040/line=1z
   year: 2025
@@ -1529,6 +1569,8 @@ addresses:
     source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
     page: 2
   official_ref: 25a
+  citation_refs:
+  - cite_instruction_form_1040_2025_en_us_2025_publink24811vd0e13028
 - address_id: 2025/document=form_1040/line=25b
   logical_key: document=form_1040/line=25b
   year: 2025
@@ -1570,6 +1612,8 @@ addresses:
     source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
     page: 2
   official_ref: 25b
+  citation_refs:
+  - cite_instruction_form_1040_2025_en_us_2025_publink100051061
 - address_id: 2025/document=form_1040/line=25c
   logical_key: document=form_1040/line=25c
   year: 2025
@@ -1611,6 +1655,8 @@ addresses:
     source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
     page: 2
   official_ref: 25c
+  citation_refs:
+  - cite_instruction_form_1040_2025_en_us_2025_publink100051062
 - address_id: 2025/document=form_1040/line=25d
   logical_key: document=form_1040/line=25d
   year: 2025
@@ -1693,6 +1739,8 @@ addresses:
     source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
     page: 2
   official_ref: '26'
+  citation_refs:
+  - cite_instruction_form_1040_2025_en_us_2025_publink1000112725
 - address_id: 2025/document=form_1040/line=26/control=identifier
   logical_key: document=form_1040/line=26/control=identifier
   year: 2025
@@ -1715,6 +1763,8 @@ addresses:
     source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
     page: 2
   official_ref: '26'
+  citation_refs:
+  - cite_instruction_form_1040_2025_en_us_2025_publink1000112725
 - address_id: 2025/document=form_1040/line=27a
   logical_key: document=form_1040/line=27a
   year: 2025
@@ -1756,6 +1806,8 @@ addresses:
     source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
     page: 2
   official_ref: 27a
+  citation_refs:
+  - cite_instruction_form_1040_2025_id243
 - address_id: 2025/document=form_1040/line=27b
   logical_key: document=form_1040/line=27b
   year: 2025
@@ -1797,6 +1849,9 @@ addresses:
     source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
     page: 2
   official_ref: 27b
+  citation_refs:
+  - cite_instruction_form_1040_2025_en_us_2025_publink1000158425
+  - cite_instruction_form_1040_2025_id243
 - address_id: 2025/document=form_1040/line=27c
   logical_key: document=form_1040/line=27c
   year: 2025
@@ -1838,6 +1893,9 @@ addresses:
     source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
     page: 2
   official_ref: 27c
+  citation_refs:
+  - cite_instruction_form_1040_2025_en_us_2025_publink1000158426
+  - cite_instruction_form_1040_2025_id243
 - address_id: 2025/document=form_1040/line=28
   logical_key: document=form_1040/line=28
   year: 2025
@@ -1879,6 +1937,8 @@ addresses:
     source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
     page: 2
   official_ref: '28'
+  citation_refs:
+  - cite_instruction_form_1040_2025_en_us_2025_publink1000158455
 - address_id: 2025/document=form_1040/line=28/option=do_not_claim_actc
   logical_key: document=form_1040/line=28/option=do_not_claim_actc
   year: 2025
@@ -1901,6 +1961,8 @@ addresses:
     source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
     page: 2
   official_ref: '28'
+  citation_refs:
+  - cite_instruction_form_1040_2025_en_us_2025_publink1000158455
 - address_id: 2025/document=form_1040/line=29
   logical_key: document=form_1040/line=29
   year: 2025
@@ -1942,6 +2004,8 @@ addresses:
     source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
     page: 2
   official_ref: '29'
+  citation_refs:
+  - cite_instruction_form_1040_2025_en_us_2025_publink1000158460
 - address_id: 2025/document=form_1040/line=2a
   logical_key: document=form_1040/line=2a
   year: 2025
@@ -1983,6 +2047,8 @@ addresses:
     source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
     page: 1
   official_ref: 2a
+  citation_refs:
+  - cite_instruction_form_1040_2025_en_us_2025_publink24811vd0e4876
 - address_id: 2025/document=form_1040/line=2b
   logical_key: document=form_1040/line=2b
   year: 2025
@@ -2024,6 +2090,8 @@ addresses:
     source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
     page: 1
   official_ref: 2b
+  citation_refs:
+  - cite_instruction_form_1040_2025_en_us_2025_publink24811vd0e4819
 - address_id: 2025/document=form_1040/line=30
   logical_key: document=form_1040/line=30
   year: 2025
@@ -2065,6 +2133,8 @@ addresses:
     source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
     page: 2
   official_ref: '30'
+  citation_refs:
+  - cite_instruction_form_1040_2025_en_us_2025_publink1000112648
 - address_id: 2025/document=form_1040/line=31
   logical_key: document=form_1040/line=31
   year: 2025
@@ -2229,6 +2299,8 @@ addresses:
     source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
     page: 2
   official_ref: '34'
+  citation_refs:
+  - cite_instruction_form_1040_2025_en_us_2025_publink24811vd0e49292
 - address_id: 2025/document=form_1040/line=35a
   logical_key: document=form_1040/line=35a
   year: 2025
@@ -2270,6 +2342,8 @@ addresses:
     source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
     page: 2
   official_ref: 35a
+  citation_refs:
+  - cite_instruction_form_1040_2025_en_us_2025_publink24811vd0e49351
 - address_id: 2025/document=form_1040/line=35a/option=form_8888_attached
   logical_key: document=form_1040/line=35a/option=form_8888_attached
   year: 2025
@@ -2292,6 +2366,8 @@ addresses:
     source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
     page: 2
   official_ref: 35a
+  citation_refs:
+  - cite_instruction_form_1040_2025_en_us_2025_publink24811vd0e49351
 - address_id: 2025/document=form_1040/line=35b
   logical_key: document=form_1040/line=35b
   year: 2025
@@ -2333,6 +2409,8 @@ addresses:
     source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
     page: 2
   official_ref: 35b
+  citation_refs:
+  - cite_instruction_form_1040_2025_en_us_2025_publink24811vd0e49513
 - address_id: 2025/document=form_1040/line=35c
   logical_key: document=form_1040/line=35c
   year: 2025
@@ -2374,6 +2452,8 @@ addresses:
     source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
     page: 2
   official_ref: 35c
+  citation_refs:
+  - cite_instruction_form_1040_2025_en_us_2025_publink24811vd0e49539
 - address_id: 2025/document=form_1040/line=35c/option=savings
   logical_key: document=form_1040/line=35c/option=savings
   year: 2025
@@ -2396,6 +2476,8 @@ addresses:
     source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
     page: 2
   official_ref: 35c
+  citation_refs:
+  - cite_instruction_form_1040_2025_en_us_2025_publink24811vd0e49539
 - address_id: 2025/document=form_1040/line=35d
   logical_key: document=form_1040/line=35d
   year: 2025
@@ -2437,6 +2519,9 @@ addresses:
     source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
     page: 2
   official_ref: 35d
+  citation_refs:
+  - cite_instruction_form_1040_2025_en_us_2025_publink24811vd0e49351
+  - cite_instruction_form_1040_2025_en_us_2025_publink24811vd0e49557
 - address_id: 2025/document=form_1040/line=36
   logical_key: document=form_1040/line=36
   year: 2025
@@ -2478,6 +2563,8 @@ addresses:
     source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
     page: 2
   official_ref: '36'
+  citation_refs:
+  - cite_instruction_form_1040_2025_en_us_2025_publink24811vd0e49631
 - address_id: 2025/document=form_1040/line=37
   logical_key: document=form_1040/line=37
   year: 2025
@@ -2519,6 +2606,8 @@ addresses:
     source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
     page: 2
   official_ref: '37'
+  citation_refs:
+  - cite_instruction_form_1040_2025_en_us_2025_publink24811vd0e49704
 - address_id: 2025/document=form_1040/line=38
   logical_key: document=form_1040/line=38
   year: 2025
@@ -2560,6 +2649,8 @@ addresses:
     source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
     page: 2
   official_ref: '38'
+  citation_refs:
+  - cite_instruction_form_1040_2025_en_us_2025_publink24811vd0e49846
 - address_id: 2025/document=form_1040/line=3a
   logical_key: document=form_1040/line=3a
   year: 2025
@@ -2601,6 +2692,8 @@ addresses:
     source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
     page: 1
   official_ref: 3a
+  citation_refs:
+  - cite_instruction_form_1040_2025_en_us_2025_publink1000158317
 - address_id: 2025/document=form_1040/line=3b
   logical_key: document=form_1040/line=3b
   year: 2025
@@ -2642,6 +2735,8 @@ addresses:
     source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
     page: 1
   official_ref: 3b
+  citation_refs:
+  - cite_instruction_form_1040_2025_en_us_2025_publink1000158324
 - address_id: 2025/document=form_1040/line=3c
   logical_key: document=form_1040/line=3c
   year: 2025
@@ -2746,6 +2841,9 @@ addresses:
     source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
     page: 1
   official_ref: 4a
+  citation_refs:
+  - cite_instruction_form_1040_2025_en_us_2025_publink1000158329
+  - cite_instruction_form_1040_2025_en_us_2025_publink1000158330
 - address_id: 2025/document=form_1040/line=4b
   logical_key: document=form_1040/line=4b
   year: 2025
@@ -2787,6 +2885,9 @@ addresses:
     source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
     page: 1
   official_ref: 4b
+  citation_refs:
+  - cite_instruction_form_1040_2025_en_us_2025_publink1000158329
+  - cite_instruction_form_1040_2025_en_us_2025_publink1000158330
 - address_id: 2025/document=form_1040/line=4c
   logical_key: document=form_1040/line=4c
   year: 2025
@@ -2828,6 +2929,9 @@ addresses:
     source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
     page: 1
   official_ref: 4c
+  citation_refs:
+  - cite_instruction_form_1040_2025_en_us_2025_publink1000158329
+  - cite_instruction_form_1040_2025_en_us_2025_publink1000158343
 - address_id: 2025/document=form_1040/line=4c/option=other_word_or_code
   logical_key: document=form_1040/line=4c/option=other_word_or_code
   year: 2025
@@ -2850,6 +2954,9 @@ addresses:
     source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
     page: 1
   official_ref: 4c
+  citation_refs:
+  - cite_instruction_form_1040_2025_en_us_2025_publink1000158329
+  - cite_instruction_form_1040_2025_en_us_2025_publink1000158343
 - address_id: 2025/document=form_1040/line=4c/option=qcd
   logical_key: document=form_1040/line=4c/option=qcd
   year: 2025
@@ -2872,6 +2979,9 @@ addresses:
     source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
     page: 1
   official_ref: 4c
+  citation_refs:
+  - cite_instruction_form_1040_2025_en_us_2025_publink1000158329
+  - cite_instruction_form_1040_2025_en_us_2025_publink1000158343
 - address_id: 2025/document=form_1040/line=4c/option=rollover
   logical_key: document=form_1040/line=4c/option=rollover
   year: 2025
@@ -2894,6 +3004,9 @@ addresses:
     source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
     page: 1
   official_ref: 4c
+  citation_refs:
+  - cite_instruction_form_1040_2025_en_us_2025_publink1000158329
+  - cite_instruction_form_1040_2025_en_us_2025_publink1000158343
 - address_id: 2025/document=form_1040/line=5a
   logical_key: document=form_1040/line=5a
   year: 2025
@@ -2935,6 +3048,9 @@ addresses:
     source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
     page: 1
   official_ref: 5a
+  citation_refs:
+  - cite_instruction_form_1040_2025_en_us_2025_publink1000158344
+  - cite_instruction_form_1040_2025_en_us_2025_publink1000158345
 - address_id: 2025/document=form_1040/line=5b
   logical_key: document=form_1040/line=5b
   year: 2025
@@ -2976,6 +3092,9 @@ addresses:
     source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
     page: 1
   official_ref: 5b
+  citation_refs:
+  - cite_instruction_form_1040_2025_en_us_2025_publink1000158344
+  - cite_instruction_form_1040_2025_en_us_2025_publink1000158345
 - address_id: 2025/document=form_1040/line=5c
   logical_key: document=form_1040/line=5c
   year: 2025
@@ -3017,6 +3136,8 @@ addresses:
     source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
     page: 1
   official_ref: 5c
+  citation_refs:
+  - cite_instruction_form_1040_2025_en_us_2025_publink1000158344
 - address_id: 2025/document=form_1040/line=5c/option=other_word_or_code
   logical_key: document=form_1040/line=5c/option=other_word_or_code
   year: 2025
@@ -3039,6 +3160,8 @@ addresses:
     source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
     page: 1
   official_ref: 5c
+  citation_refs:
+  - cite_instruction_form_1040_2025_en_us_2025_publink1000158344
 - address_id: 2025/document=form_1040/line=5c/option=pso
   logical_key: document=form_1040/line=5c/option=pso
   year: 2025
@@ -3061,6 +3184,8 @@ addresses:
     source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
     page: 1
   official_ref: 5c
+  citation_refs:
+  - cite_instruction_form_1040_2025_en_us_2025_publink1000158344
 - address_id: 2025/document=form_1040/line=5c/option=rollover
   logical_key: document=form_1040/line=5c/option=rollover
   year: 2025
@@ -3083,6 +3208,8 @@ addresses:
     source_hash: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
     page: 1
   official_ref: 5c
+  citation_refs:
+  - cite_instruction_form_1040_2025_en_us_2025_publink1000158344
 - address_id: 2025/document=form_1040/line=6a
   logical_key: document=form_1040/line=6a
   year: 2025

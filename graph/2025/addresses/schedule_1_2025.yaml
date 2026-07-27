@@ -59,6 +59,8 @@ addresses:
     source_hash: 8dafec719f6a4716c259a2bdaca546d9bb9e262d1eabef885fe116a7327458fa
     page: 1
   official_ref: '1'
+  citation_refs:
+  - cite_instruction_schedule_1_2025_en_us_2025_publink10001772
 - address_id: 2025/document=schedule_1/line=10
   logical_key: document=schedule_1/line=10
   year: 2025
@@ -141,6 +143,8 @@ addresses:
     source_hash: 8dafec719f6a4716c259a2bdaca546d9bb9e262d1eabef885fe116a7327458fa
     page: 2
   official_ref: '11'
+  citation_refs:
+  - cite_instruction_schedule_1_2025_en_us_2025_publink1000151499
 - address_id: 2025/document=schedule_1/line=12
   logical_key: document=schedule_1/line=12
   year: 2025
@@ -183,6 +187,8 @@ addresses:
     source_hash: 8dafec719f6a4716c259a2bdaca546d9bb9e262d1eabef885fe116a7327458fa
     page: 2
   official_ref: '12'
+  citation_refs:
+  - cite_instruction_schedule_1_2025_en_us_2025_publink1000151501
 - address_id: 2025/document=schedule_1/line=13
   logical_key: document=schedule_1/line=13
   year: 2025
@@ -224,6 +230,8 @@ addresses:
     source_hash: 8dafec719f6a4716c259a2bdaca546d9bb9e262d1eabef885fe116a7327458fa
     page: 2
   official_ref: '13'
+  citation_refs:
+  - cite_instruction_schedule_1_2025_en_us_2025_publink1000151503
 - address_id: 2025/document=schedule_1/line=14
   logical_key: document=schedule_1/line=14
   year: 2025
@@ -265,6 +273,8 @@ addresses:
     source_hash: 8dafec719f6a4716c259a2bdaca546d9bb9e262d1eabef885fe116a7327458fa
     page: 2
   official_ref: '14'
+  citation_refs:
+  - cite_instruction_schedule_1_2025_en_us_2025_publink1000151505
 - address_id: 2025/document=schedule_1/line=14/option=storage_fees_only
   logical_key: document=schedule_1/line=14/option=storage_fees_only
   year: 2025
@@ -287,6 +297,8 @@ addresses:
     source_hash: 8dafec719f6a4716c259a2bdaca546d9bb9e262d1eabef885fe116a7327458fa
     page: 2
   official_ref: '14'
+  citation_refs:
+  - cite_instruction_schedule_1_2025_en_us_2025_publink1000151505
 - address_id: 2025/document=schedule_1/line=15
   logical_key: document=schedule_1/line=15
   year: 2025
@@ -328,6 +340,8 @@ addresses:
     source_hash: 8dafec719f6a4716c259a2bdaca546d9bb9e262d1eabef885fe116a7327458fa
     page: 2
   official_ref: '15'
+  citation_refs:
+  - cite_instruction_schedule_1_2025_en_us_2025_publink1000151507
 - address_id: 2025/document=schedule_1/line=16
   logical_key: document=schedule_1/line=16
   year: 2025
@@ -369,6 +383,8 @@ addresses:
     source_hash: 8dafec719f6a4716c259a2bdaca546d9bb9e262d1eabef885fe116a7327458fa
     page: 2
   official_ref: '16'
+  citation_refs:
+  - cite_instruction_schedule_1_2025_en_us_2025_publink1000151509
 - address_id: 2025/document=schedule_1/line=17
   logical_key: document=schedule_1/line=17
   year: 2025
@@ -410,6 +426,8 @@ addresses:
     source_hash: 8dafec719f6a4716c259a2bdaca546d9bb9e262d1eabef885fe116a7327458fa
     page: 2
   official_ref: '17'
+  citation_refs:
+  - cite_instruction_schedule_1_2025_en_us_2025_publink1000151511
 - address_id: 2025/document=schedule_1/line=18
   logical_key: document=schedule_1/line=18
   year: 2025
@@ -1443,6 +1461,9 @@ addresses:
     source_hash: 8dafec719f6a4716c259a2bdaca546d9bb9e262d1eabef885fe116a7327458fa
     page: 1
   official_ref: 2a
+  citation_refs:
+  - cite_instruction_schedule_1_2025_en_us_2025_publink10001776
+  - cite_instruction_schedule_1_2025_en_us_2025_publink100020386
 - address_id: 2025/document=schedule_1/line=2b
   logical_key: document=schedule_1/line=2b
   year: 2025
@@ -1484,6 +1505,9 @@ addresses:
     source_hash: 8dafec719f6a4716c259a2bdaca546d9bb9e262d1eabef885fe116a7327458fa
     page: 1
   official_ref: 2b
+  citation_refs:
+  - cite_instruction_schedule_1_2025_en_us_2025_publink10001776
+  - cite_instruction_schedule_1_2025_en_us_2025_publink100020387
 - address_id: 2025/document=schedule_1/line=3
   logical_key: document=schedule_1/line=3
   year: 2025
@@ -1525,6 +1549,8 @@ addresses:
     source_hash: 8dafec719f6a4716c259a2bdaca546d9bb9e262d1eabef885fe116a7327458fa
     page: 1
   official_ref: '3'
+  citation_refs:
+  - cite_instruction_schedule_1_2025_en_us_2025_publink10001779
 - address_id: 2025/document=schedule_1/line=4
   logical_key: document=schedule_1/line=4
   year: 2025

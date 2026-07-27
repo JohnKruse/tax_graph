@@ -27,6 +27,10 @@
       "minLength": 1,
       "description": "The verbatim source passage, stored so the agent need not re-fetch."
     },
+    "semantic_title": {
+      "type": "string",
+      "description": "The source heading's semantic title, when the acquired source provides one."
+    },
     "url": { "type": "string", "format": "uri", "description": "Deep link to the source, if available." },
     "retrieved_date": { "type": "string", "format": "date" },
     "gate": {

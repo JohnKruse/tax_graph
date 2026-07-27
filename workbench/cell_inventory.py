@@ -393,7 +393,7 @@ def _load_citations(directory: Path) -> dict[str, dict[str, Any]]:
             if not isinstance(item, dict) or not item.get("citation_id"):
                 continue
             citation_id = str(item["citation_id"])
-            result[citation_id] = {
+            record = {
                 "citation_id": citation_id,
                 "quoted_text": item.get("quoted_text"),
                 "locator": item.get("locator"),
@@ -401,6 +401,9 @@ def _load_citations(directory: Path) -> dict[str, dict[str, Any]]:
                 "retrieved_date": _date_text(item.get("retrieved_date")),
                 "source_document_id": item.get("source_document_id") or item.get("document_id"),
             }
+            if item.get("semantic_title"):
+                record["semantic_title"] = item["semantic_title"]
+            result[citation_id] = record
     return result
 
 

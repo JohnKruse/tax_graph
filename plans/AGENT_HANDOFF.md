@@ -14,6 +14,65 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## Current state (2026-07-27)
 
+**Worker session checkpoint - M18-S3 implementation (2026-07-27):** Global canary: Ledger
+Llama. Phase canary: Form 1040. Model: GPT-5 Codex; effort: default; usage/quota/context
+indicators are not exposed. John gave go via the current task request. Single declared step:
+join the stored 1040 HTML instruction sections to canonical addresses, promote only certain
+matches as citation records, and verify the affected workbench projection. Applicable
+defect-ledger entries: D4 (hermetic tests), D6 (module-form CLIs), D8 (promoted-artifact
+consumer contracts), D9 (run tests that project changed citation content), and the exact
+RAN/NOT RUN evidence rule. D1-D3, D5, and D7 are not expected unless the workbench surface
+needs an implementation change. Declared focused files: `tests/test_instruction_promotion_m18.py`,
+`tests/test_graph_validator.py`, `tests/test_workbench_cells_m17.py`,
+`tests/test_workbench_m15.py`, `tests/test_address_contract_m15r.py`,
+`tests/test_address_registry_m15r.py`, and `tests/test_dependents_m15.py`.
+
+The citation verifier is also covered by `tests/test_acquire_citation_check.py` because M18
+adds stored HTML as an acquired citation source.
+
+**M18-S3 pre-write checkpoint (2026-07-27):** S2 produced 143 stored-HTML sections for the
+1040, including 16 multi-line headings and 86 semantic titles. Before any promoted artifact
+write, the implementation will expose deterministic join results and named fail-closed
+findings, use the stored HTML as the only quote source, and preserve anchor or span locator
+provenance. No artifact has been changed in this session yet.
+
+**M18-S3 verification checkpoint (2026-07-27):** Promotion is complete and the focused
+pytest set is green. Declared focused files: `tests/test_instruction_promotion_m18.py`,
+`tests/test_graph_validator.py`, `tests/test_workbench_cells_m17.py`,
+`tests/test_workbench_m15.py`, `tests/test_address_contract_m15r.py`,
+`tests/test_address_registry_m15r.py`, and `tests/test_dependents_m15.py`.
+
+- RAN: `$testRoot = 'C:\Users\devbox\.codex\visualizations\2026\07\27\019fa542-1bc5-7552-8d8a-da35f4c85cf3\m18_s3_focused_r4'; New-Item -ItemType Directory -Force -Path $testRoot | Out-Null; $env:PYTEST_DEBUG_TEMPROOT = $testRoot; .venv\Scripts\python.exe -m pytest tests/test_instruction_promotion_m18.py tests/test_graph_validator.py tests/test_workbench_cells_m17.py tests/test_workbench_m15.py tests/test_address_contract_m15r.py tests/test_address_registry_m15r.py tests/test_dependents_m15.py -q` -> 55 passed in 173.06s; one known pytest cache ACL warning.
+
+Pending expensive gates: citation integrity, ASCII, diff-check, module-form validation, and
+real workbench preflight. No browser file is declared for this backend/projection-only step.
+
+**M18-S3 implementation and verification (2026-07-27):** The 1040 HTML canary now has a
+deterministic structure-first join and promotion path. It mined 143 sections, promoted 82
+contiguous stored-HTML citation spans, and retained 61 explicit fail-closed findings for
+worksheet/nested or currently unaddressed sections. The 82 records use stable `html#anchor`
+locators, carry `source_document_id`, preserve `semantic_title` when present, and are attached
+to terminal canonical addresses for Form 1040, Schedules 1, 2, and 3. Schedule 1-A had no
+matched section in the acquired 1040 HTML and was not guessed. Address-level coverage moved
+from `form_1040_2025=0, schedule_1_2025=0, schedule_1a_2025=0, schedule_2_2025=0,
+schedule_3_2025=0` to `58, 12, 0, 16, 15`; the broader workbench corpus remains additive.
+The citation verifier now checks stored HTML as an acquired source with block-aware whitespace,
+while retaining the existing text/PDF checks. No workbench dossier layout, field map, binding,
+geometry, graph node, verdict, or human-review claim changed.
+
+Verification:
+
+- RAN: `$testRoot = 'C:\Users\devbox\.codex\visualizations\2026\07\27\019fa542-1bc5-7552-8d8a-da35f4c85cf3\m18_s3_affected_r5'; New-Item -ItemType Directory -Force -Path $testRoot | Out-Null; $env:PYTEST_DEBUG_TEMPROOT = $testRoot; .venv\Scripts\python.exe -m pytest tests/test_instruction_promotion_m18.py tests/test_acquire_citation_check.py tests/test_graph_validator.py tests/test_workbench_cells_m17.py -q` -> 35 passed in 141.49s; one known pytest cache ACL warning.
+- RAN: `.venv\Scripts\python.exe -m pytest tests/test_instruction_promotion_m18.py tests/test_graph_validator.py tests/test_workbench_cells_m17.py tests/test_workbench_m15.py tests/test_address_contract_m15r.py tests/test_address_registry_m15r.py tests/test_dependents_m15.py -q` -> 55 passed in 173.06s; one known pytest cache ACL warning.
+- RAN: `.venv\Scripts\python.exe -m pytest tests/test_acquire_citation_check.py -q` -> 8 passed in 0.13s; one known pytest cache ACL warning.
+- RAN: `.venv\Scripts\python.exe -c "from tax_graph.acquire.citation_check import check_graph_citations; r=check_graph_citations(year='2025', raw_store='.cache/raw', root='.'); new=[m for m in r.mismatches if '_en_us_' in m.citation_id]; print(f'checked={r.checked} mismatches={len(r.mismatches)} new_mismatches={len(new)}')"` -> `checked=401 mismatches=36 new_mismatches=0`.
+- RAN: `.venv\Scripts\python.exe tools/check_ascii.py` -> `ASCII check OK`.
+- RAN: `git diff --check` -> exit 0.
+- RAN: `.venv\Scripts\python.exe -m tax_graph.cli validate 2025` -> exit 0; graph integrity OK, 18 documents loaded, 401 citations including extensions.
+- RAN: `.venv\Scripts\python.exe -m workbench.cli --year 2025 preflight` -> passed; 35 entries, 3243 units, 1921 field controls, `legacy_mined=394`.
+
+M18-S3 is complete and committed locally; no push was made.
+
 **Worker session checkpoint - M17-S7 artifact regeneration (2026-07-27):** Global canary:
 Ledger Llama. Phase canary: Street Address. Model: GPT-5 Codex; effort: default;
 usage/quota/context indicators are not exposed. John gave go via the current task request.

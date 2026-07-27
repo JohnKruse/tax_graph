@@ -137,6 +137,22 @@ def test_instruction_citations_are_separate_from_authority() -> None:
 
 
 @pytest.mark.m17
+def test_promoted_html_instruction_projects_to_the_matching_1040_cell() -> None:
+    cells = build_document_cells(ROOT, 2025, "form_1040_2025").cells
+    cell = next(
+        cell for cell in cells
+        if str(cell.get("address_id") or "").endswith("/line=1a/control=amount")
+    )
+    instruction = next(
+        citation for citation in cell["instruction_citations"]
+        if citation["citation_id"].startswith("cite_instruction_form_1040_2025_en_us_")
+    )
+    assert instruction["semantic_title"] == "Total Amount From Form(s) W-2, Box 1"
+    assert instruction["locator"].startswith("html#")
+    assert "- 1a:" not in instruction["quoted_text"]
+
+
+@pytest.mark.m17
 def test_document_index_reports_citation_coverage() -> None:
     import json
     geometry_payload = json.loads((ROOT / "graph" / "2025" / "node_geometry.json").read_text("utf-8"))

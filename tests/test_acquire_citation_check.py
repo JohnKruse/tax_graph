@@ -155,6 +155,31 @@ def test_citation_integrity_prefers_explicit_source_document_id_over_source_map(
     assert report.ok
 
 
+def test_citation_integrity_checks_stored_html_instruction_source(tmp_path):
+    text_dir = tmp_path / "2025"
+    text_dir.mkdir()
+    (text_dir / "instructions_form_1040_2025.txt").write_text(
+        "PDF extraction does not carry this HTML-only paragraph.", encoding="utf-8"
+    )
+    (text_dir / "instructions_form_1040_2025.html").write_text(
+        '<h4 id="line-1">Line 1</h4><p>Enter the HTML-acquired instruction text.</p>',
+        encoding="ascii",
+    )
+    report = check_citation_integrity(
+        [
+            {
+                "citation_id": "cite_html_source",
+                "document_id": "instructions_form_1040_2025",
+                "source_document_id": "instructions_form_1040_2025",
+                "quoted_text": "Enter the HTML-acquired instruction text.",
+            }
+        ],
+        text_dir=text_dir,
+    )
+
+    assert report.ok
+
+
 @pytest.mark.m3
 def test_citation_integrity_falls_back_to_pdf_text_when_rendered_text_misses(tmp_path, monkeypatch):
     text_dir = tmp_path / "2025"

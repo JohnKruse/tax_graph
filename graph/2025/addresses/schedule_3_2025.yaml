@@ -59,6 +59,8 @@ addresses:
     source_hash: 008cfd3fe3ebd0860452069b90fd0a3d53dda6dd8a5d870278370aa899a63f82
     page: 1
   official_ref: '1'
+  citation_refs:
+  - cite_instruction_schedule_3_2025_en_us_2025_publink10001929
 - address_id: 2025/document=schedule_3/line=10
   logical_key: document=schedule_3/line=10
   year: 2025
@@ -100,6 +102,8 @@ addresses:
     source_hash: 008cfd3fe3ebd0860452069b90fd0a3d53dda6dd8a5d870278370aa899a63f82
     page: 1
   official_ref: '10'
+  citation_refs:
+  - cite_instruction_schedule_3_2025_en_us_2025_publink100020424
 - address_id: 2025/document=schedule_3/line=11
   logical_key: document=schedule_3/line=11
   year: 2025
@@ -141,6 +145,8 @@ addresses:
     source_hash: 008cfd3fe3ebd0860452069b90fd0a3d53dda6dd8a5d870278370aa899a63f82
     page: 1
   official_ref: '11'
+  citation_refs:
+  - cite_instruction_schedule_3_2025_en_us_2025_publink100020426
 - address_id: 2025/document=schedule_3/line=12
   logical_key: document=schedule_3/line=12
   year: 2025
@@ -182,6 +188,8 @@ addresses:
     source_hash: 008cfd3fe3ebd0860452069b90fd0a3d53dda6dd8a5d870278370aa899a63f82
     page: 1
   official_ref: '12'
+  citation_refs:
+  - cite_instruction_schedule_3_2025_en_us_2025_publink100020428
 - address_id: 2025/document=schedule_3/line=13a
   logical_key: document=schedule_3/line=13a
   year: 2025
@@ -223,6 +231,8 @@ addresses:
     source_hash: 008cfd3fe3ebd0860452069b90fd0a3d53dda6dd8a5d870278370aa899a63f82
     page: 1
   official_ref: 13a
+  citation_refs:
+  - cite_instruction_schedule_3_2025_en_us_2025_publink100020430
 - address_id: 2025/document=schedule_3/line=13b
   logical_key: document=schedule_3/line=13b
   year: 2025
@@ -264,6 +274,8 @@ addresses:
     source_hash: 008cfd3fe3ebd0860452069b90fd0a3d53dda6dd8a5d870278370aa899a63f82
     page: 1
   official_ref: 13b
+  citation_refs:
+  - cite_instruction_schedule_3_2025_en_us_2025_publink100051069
 - address_id: 2025/document=schedule_3/line=13c
   logical_key: document=schedule_3/line=13c
   year: 2025
@@ -305,6 +317,8 @@ addresses:
     source_hash: 008cfd3fe3ebd0860452069b90fd0a3d53dda6dd8a5d870278370aa899a63f82
     page: 1
   official_ref: 13c
+  citation_refs:
+  - cite_instruction_schedule_3_2025_en_us_2025_publink1000124738
 - address_id: 2025/document=schedule_3/line=13d
   logical_key: document=schedule_3/line=13d
   year: 2025
@@ -346,6 +360,8 @@ addresses:
     source_hash: 008cfd3fe3ebd0860452069b90fd0a3d53dda6dd8a5d870278370aa899a63f82
     page: 1
   official_ref: 13d
+  citation_refs:
+  - cite_instruction_schedule_3_2025_en_us_2025_publink100079633
 - address_id: 2025/document=schedule_3/line=13z
   logical_key: document=schedule_3/line=13z
   year: 2025
@@ -387,6 +403,9 @@ addresses:
     source_hash: 008cfd3fe3ebd0860452069b90fd0a3d53dda6dd8a5d870278370aa899a63f82
     page: 1
   official_ref: 13z
+  citation_refs:
+  - cite_instruction_schedule_3_2025_en_us_2025_publink100020430
+  - cite_instruction_schedule_3_2025_en_us_2025_publink100079636
 - address_id: 2025/document=schedule_3/line=15
   logical_key: document=schedule_3/line=15
   year: 2025
@@ -469,6 +488,8 @@ addresses:
     source_hash: 008cfd3fe3ebd0860452069b90fd0a3d53dda6dd8a5d870278370aa899a63f82
     page: 1
   official_ref: '2'
+  citation_refs:
+  - cite_instruction_schedule_3_2025_en_us_2025_publink10001934
 - address_id: 2025/document=schedule_3/line=3
   logical_key: document=schedule_3/line=3
   year: 2025
@@ -510,6 +531,8 @@ addresses:
     source_hash: 008cfd3fe3ebd0860452069b90fd0a3d53dda6dd8a5d870278370aa899a63f82
     page: 1
   official_ref: '3'
+  citation_refs:
+  - cite_instruction_schedule_3_2025_en_us_2025_publink10001936
 - address_id: 2025/document=schedule_3/line=4
   logical_key: document=schedule_3/line=4
   year: 2025
@@ -551,6 +574,8 @@ addresses:
     source_hash: 008cfd3fe3ebd0860452069b90fd0a3d53dda6dd8a5d870278370aa899a63f82
     page: 1
   official_ref: '4'
+  citation_refs:
+  - cite_instruction_schedule_3_2025_en_us_2025_publink10001938
 - address_id: 2025/document=schedule_3/line=5a
   logical_key: document=schedule_3/line=5a
   year: 2025
@@ -674,6 +699,8 @@ addresses:
     source_hash: 008cfd3fe3ebd0860452069b90fd0a3d53dda6dd8a5d870278370aa899a63f82
     page: 1
   official_ref: 6a
+  citation_refs:
+  - cite_instruction_schedule_3_2025_en_us_2025_publink10001946
 - address_id: 2025/document=schedule_3/line=6b
   logical_key: document=schedule_3/line=6b
   year: 2025
@@ -1207,6 +1234,8 @@ addresses:
     source_hash: 008cfd3fe3ebd0860452069b90fd0a3d53dda6dd8a5d870278370aa899a63f82
     page: 1
   official_ref: 6z
+  citation_refs:
+  - cite_instruction_schedule_3_2025_en_us_2025_publink10001946
 - address_id: 2025/document=schedule_3/line=8
   logical_key: document=schedule_3/line=8
   year: 2025
@@ -1289,3 +1318,5 @@ addresses:
     source_hash: 008cfd3fe3ebd0860452069b90fd0a3d53dda6dd8a5d870278370aa899a63f82
     page: 1
   official_ref: '9'
+  citation_refs:
+  - cite_instruction_schedule_3_2025_en_us_2025_publink100020422

@@ -74,6 +74,7 @@
         },
         "printed_label": {"type": "string"},
         "aliases": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+        "citation_refs": {"type": "array", "uniqueItems": true, "items": {"type": "string", "pattern": "^[a-z0-9_]+$"}},
         "control_role": {"enum": ["none", "amount", "text", "description", "checkbox", "radio", "choice", "date", "identifier", "signature", "attachment_indicator", "other"]},
         "status": {"enum": ["confirmed", "pending_review", "provisional", "unresolved"]},
         "evidence": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/evidence"}}
