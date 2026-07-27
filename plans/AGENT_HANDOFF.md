@@ -1127,12 +1127,18 @@ TY2026 docs drop.
   punch cards or something. this seems like an easy grab, no?" It is - `page.rect` and
   `page.rotation` are already in hand the moment the extractor opens the PDF to read
   widgets.
-  **Why it matters beyond the browser.** `workbench/static/panes.js` positioned every
-  overlay as a percentage of hardcoded 612x792 constants, so Form 13614-C (landscape)
-  resolved to 126% horizontally and scattered off the page. That is patched by deriving
-  the page size from the rendered PNG's natural dimensions - but that only helps the ONE
-  consumer that happens to render a PNG. The fill/print path, exports, and any future
-  surface have no idea how big a page is.
+  **CORRECTION TO THIS TASK'S ORIGINAL FRAMING (Architect, after fixing the display):
+  the GEOMETRY WAS NEVER WRONG.** All 297 stored 13614-C rects match the raw PDF exactly,
+  with zero page mismatches. The "crazy" display was TWO separate presentation bugs, both
+  now fixed: `panes.js` positioned overlays against hardcoded 612x792 constants, and
+  `styles.css` forced `.page-canvas { aspect-ratio: 612/792 }`, which letterboxed a
+  landscape page inside a portrait box. **So S7 would NOT have caught either defect** - do
+  not sell it as the fix for them.
+  **Why it is still worth doing.** The page size is currently recovered by inference from
+  the rendered PNG, which only helps the ONE consumer that renders a PNG; the fill/print
+  path, exports, and any future surface still have no idea how big a page is. And the
+  out-of-page-box validator below is the mechanical check that WOULD have caught a genuine
+  geometry fault instead of waiting for a human to notice.
   **Measured, and it settles the design: 13614-C mixes portrait AND landscape pages inside
   a single document** - `[(612, 792, 0), (792, 612, 0)]`. Every other form is 612x792.
   So page geometry is a PER-PAGE fact, not per-document; a document-level field would still
@@ -1211,7 +1217,42 @@ TY2026 docs drop.
   Stop conditions: any need to touch promoted artifacts (item 4 below owns that), citations,
   verdict emission, or graph semantics; or a quota/environment failure.
 
-- **DATA DEFECT, SCOPED BUT NOT YET TASKED - CITATION QUOTED_TEXT IS POLLUTED (John's issue
+- **M18-S2b TASK - CLEAN THE CITATION RECORDS (Architect, Claude Opus 5, 2026-07-27).**
+  This is John's issue 2 from his 2026-07-27 review, the last of his four still open, and
+  it is visible on every cell that shows Authority. Read the scoped analysis immediately
+  below this block, then this task.
+  **The defect, measured:** 217 of 297 citations (73%) carry an extraction wrapper in
+  `quoted_text` - a leading `- <token>:` and often the line token repeated at the end.
+  John saw `- z: Add lines 1a through 1h 1z`, `- g: Wages from Form 8919, line 6 1g`,
+  `- b: Household employee wages not reported on Form(s) W-2 1b`. Separately, **194 of 297
+  citations have `source_document_id: null`** - two thirds of the corpus has no provenance.
+  **THE HARD CONSTRAINT, READ IT TWICE.** Citations are verbatim-from-acquired-source and
+  `check_citation_integrity` has teeth; the M14 fabricated-citations reopen is the
+  precedent. **A regex strip is NOT acceptable** - it would silently produce text that no
+  longer provably matches the source. RE-DERIVE each `quoted_text` from the acquired source
+  document and VERIFY the result appears in that source. A citation whose text cannot be
+  re-derived and verified is a FINDING to report, never a guess to promote and never a
+  record to quietly drop.
+  1. Re-derive `quoted_text` for the affected citations from the acquired source, removing
+     the anchor wrapper because it is an EXTRACTION artifact rather than source text. Every
+     result must verify against the acquired file.
+  2. Populate `source_document_id` where it can be determined with certainty from the
+     citation's own evidence. Where it cannot, leave it null and report the count - do not
+     infer a plausible document.
+  3. **Do NOT change any `citation_id`.** They are referenced from addresses and nodes; a
+     re-key would orphan those references.
+  4. Run `check_citation_integrity` and report its result explicitly. It is the gate that
+     matters here, not the unit tests.
+  5. Report a before/after count: citations with the wrapper, with null provenance, and any
+     that failed re-derivation.
+  Tier 3 (promoted artifacts). Declared files plus honest `RAN:`/`NOT RUN:`, ASCII,
+  `git diff --check`, module-form `validate 2025`, real preflight with `legacy_mined`
+  reported explicitly. No `--basetemp`. ONE local commit; no push.
+  Stop conditions: any citation that cannot be re-derived AND verified against its acquired
+  source (report it, leave it untouched); any need to change citation ids, verdict emission,
+  or graph semantics; or a quota/environment failure.
+
+- **DATA DEFECT ANALYSIS (now tasked as M18-S2b above) - CITATION QUOTED_TEXT IS POLLUTED (John's issue
   2, 2026-07-27).** He saw quoted text reading `- z: Add lines 1a through 1h 1z`,
   `- g: Wages from Form 8919, line 6 1g`, `- b: Household employee wages not reported on
   Form(s) W-2 1b`. **Measured: 217 of 297 citations (73%) have a leading `- <token>:`
