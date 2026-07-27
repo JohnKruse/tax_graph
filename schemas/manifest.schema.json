@@ -42,6 +42,12 @@
           "pattern": "^[a-z0-9_]+$",
           "description": "Paired instructions document to include when extracting this form or schedule."
         },
+        "instruction_url": {
+          "type": "string",
+          "format": "uri",
+          "pattern": "^https://www\\.irs\\.gov/instructions/[a-z0-9]+$",
+          "description": "Structured HTML instruction page for this acquired instruction document."
+        },
         "expected_sha256": {
           "type": "string",
           "pattern": "^[a-f0-9]{64}$",

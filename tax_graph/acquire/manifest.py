@@ -24,6 +24,7 @@ class ManifestEntry:
     kind: str
     url: str
     instructions_document_id: str | None = None
+    instruction_url: str | None = None
     expected_sha256: str | None = None
 
 
@@ -64,6 +65,7 @@ def load_manifest(path: str | Path | None = None, root: str | Path | None = None
                 kind=entry["kind"],
                 url=entry["url"],
                 instructions_document_id=entry.get("instructions_document_id"),
+                instruction_url=entry.get("instruction_url"),
                 expected_sha256=entry.get("expected_sha256"),
             )
             for entry in data["documents"]

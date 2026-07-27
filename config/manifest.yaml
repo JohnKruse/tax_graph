@@ -10,6 +10,7 @@ documents:
   - document_id: instructions_form_8949_2025
     kind: instructions
     url: https://www.irs.gov/pub/irs-prior/i8949--2025.pdf
+    instruction_url: https://www.irs.gov/instructions/i8949
     expected_sha256: f077991c83b086810c46cbad3755e0f126cb8dfd88cf8bf8ab2d5605d6e7ab45
 
   - document_id: schedule_d_2025
@@ -21,6 +22,7 @@ documents:
   - document_id: instructions_schedule_d_2025
     kind: instructions
     url: https://www.irs.gov/pub/irs-prior/i1040sd--2025.pdf
+    instruction_url: https://www.irs.gov/instructions/i1040sd
     expected_sha256: 650643a686378b7573e4f4476ee4e7c9f9bab1384314dca32dc336f7b2276002
 
   - document_id: form_1040_2025
@@ -32,6 +34,7 @@ documents:
   - document_id: instructions_form_1040_2025
     kind: instructions
     url: https://www.irs.gov/pub/irs-prior/i1040gi--2025.pdf
+    instruction_url: https://www.irs.gov/instructions/i1040gi
     expected_sha256: 482e9c487c608f1bbeaceef35bc3c0933e8b35443cfff447e4279d590468364a
 
   - document_id: schedule_1_2025
@@ -62,6 +65,7 @@ documents:
   - document_id: instructions_schedule_a_2025
     kind: instructions
     url: https://www.irs.gov/pub/irs-prior/i1040sca--2025.pdf
+    instruction_url: https://www.irs.gov/instructions/i1040sca
 
   - document_id: schedule_b_2025
     kind: schedule
@@ -71,6 +75,7 @@ documents:
   - document_id: instructions_schedule_b_2025
     kind: instructions
     url: https://www.irs.gov/pub/irs-prior/i1040sb--2025.pdf
+    instruction_url: https://www.irs.gov/instructions/i1040sb
 
   - document_id: form_6251_2025
     kind: tax_form
@@ -80,6 +85,7 @@ documents:
   - document_id: instructions_form_6251_2025
     kind: instructions
     url: https://www.irs.gov/pub/irs-prior/i6251--2025.pdf
+    instruction_url: https://www.irs.gov/instructions/i6251
 
   - document_id: form_1099b_2025
     kind: source_document

@@ -64,6 +64,49 @@ verification is the real workbench preflight, which must report the unchanged
 M18-S0 verification is complete. The step is ready for the required single local commit;
 M18-S1 remains next and is not started.
 
+**Worker session checkpoint - M18-S1 implementation (2026-07-27):** Global canary: Ledger
+Llama. Model: GPT-5 Codex; effort: default; usage/quota/context indicators are not exposed.
+S0 commit `fa8132a` is complete. John gave go via the current task request. Single declared
+step: add manifest-backed IRS instruction URLs, sequential HTML acquisition with stored
+ASCII-normalized content and provenance metadata, and a fixture-driven heading-tree parser
+plus the read-only 1040 canary survey. No citations, graph semantics, or promoted artifacts
+will be changed. Applicable defect-ledger entries: D4 (tests use isolated temp roots and
+must not write live state), D6 (module-form CLIs only), and the exact RAN/NOT RUN evidence
+rule. D1-D3, D5, and D7 are not expected for this non-workbench slice.
+
+**M18-S1 focused verification checkpoint (2026-07-27):**
+
+- RAN: `$testRoot = 'C:\Users\devbox\.codex\visualizations\2026\07\27\019fa2b2-d8cf-74e2-8a06-759b9aaaf5e0\m18_s1_test_tmp'; New-Item -ItemType Directory -Force -Path $testRoot | Out-Null; $env:PYTEST_DEBUG_TEMPROOT = $testRoot; .venv\Scripts\python.exe -m pytest tests/test_acquire_fetch.py tests/test_acquire_manifest.py tests/test_instruction_html_m18.py tests/test_cli.py -q` -> 15 passed, 1 skipped (opt-in live network test), 1 pytest cache ACL warning.
+
+The fixture-only implementation is green. The remaining S1 work is the live sequential
+HTML acquisition and read-only 1040 survey; no citation or promoted-artifact write is in
+scope.
+
+**M18-S1 acquisition checkpoint (2026-07-27):** The first live attempt without escalation
+failed at the first IRS URL with `httpx.ConnectError: [WinError 10013] ... socket ...
+forbidden by its access permissions`; it wrote no artifact. The exact escalated retry then
+ran sequentially and succeeded:
+
+- RAN: `$env:PYTHONUTF8 = '1'; .venv\Scripts\python.exe -c "import datetime as dt; from tax_graph.acquire.fetch import fetch_instruction_html_documents; from tax_graph.acquire.manifest import load_manifest; results = fetch_instruction_html_documents(load_manifest().documents, year=2025, raw_store='.cache/raw', today=dt.date(2026, 7, 27)); [print(f'{item.document_id} {item.content_hash}') for item in results]"` -> six pages stored under `.cache/raw/2025/`: `instructions_form_8949_2025` `d7c7a561f3a13ca66dd4c7a36af99f38ca6c79937175ede167de6d1f75ace6d1`; `instructions_schedule_d_2025` `4b69463fe928feeaa0033180d85e43bdabe5c3e5f85e9fd40d4d6edc18725fdb`; `instructions_form_1040_2025` `0a1a74db99d1f481b49c6d59a928dbfc16f10c640e1dd502c72f3ac816e21ec7`; `instructions_schedule_a_2025` `21888c51e68b988eadb80ba5fab444dce01eec98e069f520ae32799ad64d1511`; `instructions_schedule_b_2025` `42f6cb93af6dac53b07e2f4db6fa09f8944362fcc0be0029f77c30b28b8a3151`; `instructions_form_6251_2025` `fbe736794d6fd3f6ff9d9442d7c15356c0b311a2f07a8303870dd9fc3a4255d1`.
+
+The stored HTML is ASCII-normalized and its metadata records URL, retrieval date, stored
+hash, and paths. The cache is ignored and is not committed.
+
+**M18-S1 survey result (2026-07-27):** The committed read-only report is
+`plans/M18_S1_INSTRUCTION_SURVEY.md`. The stored 1040 HTML has 442 headings (h1=4,
+h2=31, h3=88, h4=219, h5=76, h6=24), 143 line sections, 86 titled sections, 128
+anchored line sections, and 15 anchorless line sections. Schedule coverage is: Schedule 1
+55 of 63 printed lines named, Schedule 1-A 0 of 46 (fail-closed finding), Schedule 2 18
+of 42, and Schedule 3 16 of 31. The PDF/HTML check found 103 unique PDF heading tokens
+and 118 HTML tokens, with no PDF-only tokens and 15 HTML-only tokens; the report keeps
+this as an unresolved S2/S3 cross-check finding.
+
+**M18-S1 gates (2026-07-27):**
+
+- RAN: `.venv\Scripts\python.exe tools/check_ascii.py` -> `ASCII check OK`.
+- RAN: `git diff --check` -> exit 0.
+- RAN: `.venv\Scripts\python.exe -m tax_graph.cli validate 2025` -> exit 0; graph integrity OK, 18 loaded documents.
+
 **M18-S0 correction checkpoint (2026-07-27):** The first validation run surfaced an
 existing accepted local extension for `form_2441_2025`, so the loaded graph contained 18
 documents rather than the 17 promoted project records. Its role is unambiguous (`return`);

@@ -7,7 +7,7 @@ import os
 
 import pytest
 
-from tax_graph.acquire.fetch import fetch_document
+from tax_graph.acquire.fetch import fetch_document, fetch_instruction_html
 from tax_graph.acquire.manifest import ManifestEntry
 
 
@@ -39,6 +39,33 @@ def test_fetch_document_stores_raw_text_hash_and_metadata(tmp_path):
     assert recorded["document_id"] == "form_8949_2025"
     assert recorded["url"] == entry.url
     assert recorded["content_hash"] == metadata.content_hash
+
+
+@pytest.mark.m18
+def test_fetch_instruction_html_stores_ascii_content_and_provenance(tmp_path):
+    source = "<html><h2 id=\"id1\">Line 1 - Taxable \u201cIncome\u201d \u2014 2025</h2></html>".encode("utf-8")
+    entry = ManifestEntry(
+        document_id="instructions_form_1040_2025",
+        kind="instructions",
+        url="https://www.irs.gov/pub/irs-prior/i1040gi--2025.pdf",
+        instruction_url="https://www.irs.gov/instructions/i1040gi",
+    )
+
+    metadata = fetch_instruction_html(
+        entry,
+        year=2025,
+        raw_store=tmp_path,
+        fetch_bytes=lambda url, config: source,
+        today=dt.date(2026, 7, 27),
+    )
+
+    raw_path = tmp_path / "2025" / "instructions_form_1040_2025.html"
+    metadata_path = tmp_path / "2025" / "instructions_form_1040_2025.html.json"
+    stored = raw_path.read_bytes()
+    assert stored == b'<html><h2 id="id1">Line 1 - Taxable "Income" - 2025</h2></html>'
+    assert stored.decode("ascii")
+    assert metadata.content_hash == hashlib.sha256(stored).hexdigest()
+    assert json.loads(metadata_path.read_text(encoding="utf-8"))["url"] == entry.instruction_url
 
 
 @pytest.mark.network

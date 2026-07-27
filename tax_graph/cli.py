@@ -763,7 +763,7 @@ def acquire_command(
     """Acquire source docs, render them, detect changes, and check citations."""
     from tax_graph.acquire.changes import detect_changes
     from tax_graph.acquire.citation_check import check_graph_citations
-    from tax_graph.acquire.fetch import fetch_manifest_documents
+    from tax_graph.acquire.fetch import fetch_instruction_html_documents, fetch_manifest_documents
     from tax_graph.acquire.manifest import load_manifest
 
     root_path = Path(root).resolve() if root is not None else project_root()
@@ -774,6 +774,13 @@ def acquire_command(
         raise ValueError(f"manifest tax_year {manifest.tax_year} does not match requested {year}")
 
     fetched = fetch_manifest_documents(
+        manifest.documents,
+        year=year,
+        raw_store=raw_store,
+        config=config,
+        fetch_bytes=fetch_bytes,
+    )
+    fetched_instruction_html = fetch_instruction_html_documents(
         manifest.documents,
         year=year,
         raw_store=raw_store,
@@ -799,7 +806,7 @@ def acquire_command(
             source_map=DEFAULT_CITATION_SOURCE_MAP,
         )
     )
-    _print_acquire_summary(report, citation_report)
+    _print_acquire_summary(report, citation_report, instruction_html_count=len(fetched_instruction_html))
     return 0 if citation_report.ok else 1
 
 
@@ -1007,8 +1014,9 @@ def _render_fetched_documents(
         )
 
 
-def _print_acquire_summary(report: Any, citation_report: Any) -> None:
+def _print_acquire_summary(report: Any, citation_report: Any, *, instruction_html_count: int = 0) -> None:
     print("=== acquisition change report ===")
+    print(f"  instruction_html: {instruction_html_count}")
     print("  new:", ", ".join(report.new) if report.new else "-")
     print("  changed:", ", ".join(report.changed) if report.changed else "-")
     print("  unchanged:", ", ".join(report.unchanged) if report.unchanged else "-")

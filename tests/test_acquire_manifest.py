@@ -76,6 +76,25 @@ def test_manifest_loads_form_instruction_relationships():
     assert entries["form_1040_2025"].expected_sha256 is not None
 
 
+@pytest.mark.m18
+def test_manifest_loads_structured_instruction_urls():
+    manifest = load_manifest(root=ROOT)
+
+    instruction_urls = {
+        entry.document_id: entry.instruction_url
+        for entry in manifest.documents
+        if entry.instruction_url
+    }
+    assert instruction_urls == {
+        "instructions_form_1040_2025": "https://www.irs.gov/instructions/i1040gi",
+        "instructions_form_6251_2025": "https://www.irs.gov/instructions/i6251",
+        "instructions_form_8949_2025": "https://www.irs.gov/instructions/i8949",
+        "instructions_schedule_a_2025": "https://www.irs.gov/instructions/i1040sca",
+        "instructions_schedule_b_2025": "https://www.irs.gov/instructions/i1040sb",
+        "instructions_schedule_d_2025": "https://www.irs.gov/instructions/i1040sd",
+    }
+
+
 @pytest.mark.m3
 def test_manifest_rejects_duplicate_document_ids():
     data = yaml.safe_load((ROOT / "config" / "manifest.yaml").read_text(encoding="utf-8"))
