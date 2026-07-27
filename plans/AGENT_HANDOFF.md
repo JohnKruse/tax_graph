@@ -1083,7 +1083,75 @@ TY2026 docs drop.
 
 ## From Architect
 
-- **M17-S5 TASK - CLOSE JOHN'S RETURNED UI ISSUES 2, 3, AND 4 (Architect, Claude Opus 5,
+- **M17-S6 TASK - JOHN'S FOURTH REVIEW: MAKE SELECTION POP, AND STOP LYING ABOUT
+  INSTRUCTIONS (Architect, Claude Opus 5, 2026-07-27).** John is mid-review; these are his
+  live findings. Frontend/projection only for items 1-3. **Item 4 is a DATA defect - do NOT
+  attempt it in this round; it is scoped separately below.** Read the ledger; D1/D2/D3/D7
+  apply (e2e + selection work). You run your own e2e - 600s cap.
+  1. **SELECTION MUST POP, AND SURVIVE COLORBLINDNESS (John's issue 1).** "the selected
+     cell in the PDF is still too subtle. it is kind of a pale yellow. For checkboxes, you
+     really have to hunt! Please make it something that sticks out with contrast and is
+     also apparent to someone with typical colorblindness. I want this to pop."
+     The current fill is `rgba(245,190,40,.18)` - an 18% amber wash. On a 12px checkbox
+     that is invisible. **Do not solve this with a different HUE - solve it with LUMINANCE
+     and SHAPE**, which is what survives deuteranopia/protanopia and grayscale:
+     - Raise the fill substantially (target roughly 45-60% alpha, tune by eye against both
+       black form ink and the policy colors).
+     - Keep the dark inner ring + white outer halo, and INCREASE the ring weight.
+     - **Add a non-color locator that scales independently of the cell's size** - the
+       checkbox case is the hard one, because a small target has almost no interior to
+       fill. Options: an outward marker/caret anchored to the region, or a halo whose
+       radius has a MINIMUM in px so tiny cells still read. Pick one and say which.
+     - A brief pulse/flash on selection change is allowed and helps locate without relying
+       on color at all. Must not loop forever, and must respect
+       `prefers-reduced-motion`.
+     Verify at a small checkbox, not just a wide currency cell - e.g. 1040
+     `12a/you_as_dependent`. State in your evidence WHICH cell you checked and its size.
+  2. **STOP CONTRADICTING YOURSELF ON INSTRUCTIONS (John's issue 3).** He saw
+     "What the form instructions say: Not yet ingested" and, three lines below, an
+     Authority block quoting `cite_instruction_form_1040_2025_line_1a`: "Enter the total
+     amount from Form(s) W-2, box 1..." with `source_document_id: instructions_form_1040_2025`
+     and the i1040 URL. **Instruction text EXISTS for some cells and the dossier hides it.**
+     Measured: 28 cells carry an instruction citation today (1040 2, 8949 22, schedule_d 4).
+     FIX: route citations whose `source_document_id` starts with `instructions_` into the
+     "What the form instructions say" slot. Show "not yet ingested" ONLY when the cell has
+     no instruction-sourced citation. Authority keeps the statutory/form citations.
+  3. **MAKE EMPTY AUTHORITY HONEST (John's issue 4: "Why is the Authority kinda filled in
+     for some cells and not at all for others?").** It is a real coverage gap, not a bug:
+     **only 258 of 1921 cells (13%) carry ANY citation**, and SIX documents have ZERO -
+     form_w2, all three 1099s, form_13614_c, form_2441. The UI currently renders nothing,
+     which reads like a glitch. Render an explicit state that says no authority has been
+     authored for this cell yet, in the same voice as the instruction placeholder, and
+     surface the per-document citation coverage next to the existing policy counts so the
+     gap is visible in aggregate rather than one blank cell at a time.
+  4. **Two warts from the S5 round while you are in there:** dependents cards render
+     "Dependents column First name - First name" (the `official_ref` and `display_name`
+     duplicate - collapse the repetition), and the dossier puts "How this is filled" BEFORE
+     "Authority" where the spec had authority first. Fix the order.
+  Declared files: `tests/e2e/test_workbench_v2_m17.py` (extend for the instruction-slot
+  routing and the checkbox selection treatment), `tests/test_workbench_cells_m17.py`,
+  `tests/test_workbench_m15.py` (D5). Tier-1 floor, ASCII, `git diff --check`, module-form
+  `validate 2025`. No `--basetemp`. ONE local commit; no push.
+  Stop conditions: any need to touch promoted artifacts (item 4 below owns that), citations,
+  verdict emission, or graph semantics; or a quota/environment failure.
+
+- **DATA DEFECT, SCOPED BUT NOT YET TASKED - CITATION QUOTED_TEXT IS POLLUTED (John's issue
+  2, 2026-07-27).** He saw quoted text reading `- z: Add lines 1a through 1h 1z`,
+  `- g: Wages from Form 8919, line 6 1g`, `- b: Household employee wages not reported on
+  Form(s) W-2 1b`. **Measured: 217 of 297 citations (73%) have a leading `- <token>:`
+  extraction wrapper, and many also carry the line token repeated at the end.** This is the
+  same OCR anchor-split family that M16-S2 fixed for `z` -> `1z`, baked into the promoted
+  citation records. Also found: **194 of 297 citations have `source_document_id: null`** -
+  a provenance gap on two thirds of the corpus.
+  Why this is NOT a quick strip: citations are verbatim-from-acquired-source and
+  `check_citation_integrity` has teeth (the M14 fabricated-citations reopen is the
+  precedent). The wrapper is an extraction artifact rather than source text, so the fix is
+  to RE-DERIVE `quoted_text` from the acquired source and verify each one still matches -
+  never a regex strip applied blind. Sequence it with M18-S3, which is already going to
+  touch citation authoring, or as an M16-S5 precursor. Tier 3.
+
+- **[DONE `a32e021`, Architect-verified live] M17-S5 TASK - CLOSE JOHN'S RETURNED UI ISSUES
+  2, 3, AND 4 (Architect, Claude Opus 5,
   2026-07-27). John is waiting on this to do his next UI review, so it is the priority
   after main is green.** Frontend + projection only: NO promoted-artifact change, NO graph
   change, NO verdict change. Read the ledger; **D1, D2, D3, and D7 all apply directly** -
