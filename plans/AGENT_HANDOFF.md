@@ -14,8 +14,37 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## Current state (2026-07-26)
 
-**BALL: WORKER - M19-S4 (make tables retrievable). Plan: `plans/PHASE_M19.md` (S4).
-Task block under From Architect.**
+**BALL: JOHN - M19-S4 ACCEPTED. Next round is M18 (instruction ingestion), which is the
+prerequisite for M19-S3b and also fills the hole at the top of the cell dossier from
+John's third review. Needs John's go and the M18 sequencing questions answered.**
+
+**ARCHITECT VERIFICATION - M19-S4 (Claude Opus 5, 2026-07-27). ACCEPTED. The W-2 defect
+is FIXED.** Verified against John's bar - practical retrieval - not against the Worker's
+own claims:
+- `w2/copy[A]/box12/entry[3]/code` -> `f1_24[0]`. Box 12 resolves by COPY and ROW: 24
+  widgets, **24 unique occurrence keys**, two axes (`copy`, `row_slot`). Before S4 all 24
+  shared one concept tagged `singleton` with no discriminator.
+- **0 widgets not uniquely addressable** by (concept_id, occurrence) across all 16
+  documents. **0 repeated concepts still flattened as singleton.**
+- Cells held at **1921 / 1921, 0 hidden**.
+- `node_geometry.json` showed a 2,124-line diff, which on a physical widget inventory
+  would be alarming: verified it is `address_id` re-pointing ONLY - 1921 entries before
+  and after, identical `(document, field_name)` keys, **0 rect changes**, no new fields.
+- Citations unchanged; `graph/2025/nodes/`, `bindings/`, and `review_queue/` untouched.
+- 8949 group naming normalized to `short_term_transactions` / `long_term_transactions` -
+  the two parallel schemes and the embedded line token are gone.
+- Tier 3 partition (manifest + concepts + workbench + identity + refs + cells + address
+  registry + address campaign): **62 passed**. Preflight `legacy_mined=394`, reported
+  explicitly by the Worker this time as required.
+- Honesty fix landed: occurrences now report `kind: "slot"` with explicit axes instead of
+  asserting `entity_keyed` for something that was slot-indexed.
+
+**WORKER PROCESS SLIP (not a defect, but log it):** S4's evidence never listed
+`tests/test_review_manifest_m15.py` - neither RAN nor NOT RUN. It is the shared-surface
+file most likely to catch a manifest regression, and the round changed the manifest
+projection. Silence is not an allowed third state. The Architect ran it (green). Restate
+the rule next round: EVERY declared file gets `RAN:` or `NOT RUN:`, and a shared-surface
+change implies the manifest partition is declared.
 
 **Worker session checkpoint - M19-S4 implementation (2026-07-26):** Global canary: Ledger
 Llama. Applicable defect-ledger entries: D4 (tests use an external writable temp root and do
