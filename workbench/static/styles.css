@@ -52,6 +52,17 @@ h1, h2, h3, p { margin-top: 0; }
 .document-group { margin-bottom: 7px; }
 .document-entry { width: 100%; padding: 9px 10px; border: 1px solid transparent; border-radius: 5px; color: #fff; background: transparent; text-align: left; }
 .document-entry:hover, .document-entry:focus-visible, .document-entry[aria-expanded="true"] { border-color: #58737a; background: #294851; outline: none; }
+/* The OPEN document must stay marked once the pointer leaves it (John, 2026-07-27:
+   "when i click a document to open it for review, it doesn't stay highlighted").
+   The JS sets .active + aria-current, but only :hover/:focus-visible were styled, so the
+   selection vanished on mouse-out. The inset bar uses the same orange as the selected
+   cell, so "what is selected" reads the same way in both panes. */
+.document-entry.active, .document-entry[aria-current="true"] {
+  border-color: #8fd6c8;
+  background: #17414a;
+  box-shadow: inset 3px 0 0 rgba(255, 102, 0, .95);
+}
+.document-entry.active strong, .document-entry[aria-current="true"] strong { color: #fff; }
 .document-entry strong, .document-entry small { display: block; }
 .document-entry small { margin-top: 3px; color: #acc7c4; font-size: 10px; }
 .checklist { margin: 4px 0 12px; padding-left: 8px; border-left: 2px solid #58737a; }
@@ -85,11 +96,24 @@ h1, h2, h3, p { margin-top: 0; }
 .official-region.paired, .semantic-flow-card.paired { outline: 3px solid #edb83f; outline-offset: 2px; z-index: 200; }
 .official-region.pinned {
   z-index: 201;
-  border: 4px solid #17212b;
+  /* John 2026-07-27: "dump the double ring. it hides some of the text labels in some
+     forms/cells... make the orange fill also have stripes/crosshatch/stars inside. There
+     should be no text inside of the cell, so who cares."
+     So EVERYTHING that marks selection now stays INSIDE the cell box: no box-shadow, no
+     outline, and a thin border instead of the old 4px (which swallowed a 8px checkbox).
+     Contrast comes from a repeating stripe of orange against near-black - a SHAPE cue, so
+     it reads under any colour vision and in grayscale, without occluding a neighbouring
+     printed label. Orange rather than fire-engine red on purpose: policy-unsupported is
+     var(--danger), a red, and selection must never be mistaken for a policy state. */
+  border: 2px solid #17212b;
   outline: 0;
   outline-offset: 0;
-  box-shadow: 0 0 0 3px #fff, 0 0 0 6px #17212b;
-  background-image: linear-gradient(rgba(245, 190, 40, .55), rgba(245, 190, 40, .55));
+  box-shadow: none;
+  background-image: repeating-linear-gradient(
+    45deg,
+    rgba(255, 102, 0, .78) 0 4px,
+    rgba(23, 33, 43, .62) 4px 8px
+  );
 }
 .official-region.pinned::after {
   content: "";

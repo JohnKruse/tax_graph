@@ -69,15 +69,19 @@ def test_form_and_river_selection_crosses_pages_and_keeps_selection_visible(page
         "card => { const c = card.getBoundingClientRect(); const r = card.closest('#river').getBoundingClientRect(); return c.top >= r.top && c.bottom <= r.bottom; }"
     )
     expect(official).to_have_class(re.compile(r"\bpinned\b"))
-    expect(official).to_have_css("border-width", "4px")
-    expect(official).to_have_css("background-image", re.compile("linear-gradient"))
-    expect(official).to_have_css("box-shadow", re.compile("rgb\\(255, 255, 255\\)"))
+    # Assert the selection CONTRACT, not one px value: the cue is a repeating stripe
+    # (a shape cue, so it survives colour blindness and grayscale) drawn INSIDE the cell,
+    # with nothing painted outside it. John, 2026-07-27: the old outward double ring
+    # "hides some of the text labels in some forms/cells", so box-shadow must stay none.
+    expect(official).to_have_css("background-image", re.compile("repeating-linear-gradient"))
+    expect(official).to_have_css("box-shadow", "none")
 
-    # The tiny checkbox has little interior area; the outward shape marker must
-    # remain visible independently of the region's dimensions.
+    # The tiny checkbox has almost no interior area, so verify the same in-cell treatment
+    # still applies at a sub-20px target rather than relying on the region's dimensions.
     checkbox_region = page.locator('#official-pane .official-region[data-label="You as a dependent"]')
     checkbox_region.click()
-    expect(checkbox_region).to_have_css("border-width", "4px")
+    expect(checkbox_region).to_have_css("background-image", re.compile("repeating-linear-gradient"))
+    expect(checkbox_region).to_have_css("box-shadow", "none")
     assert checkbox_region.evaluate(
         "region => { const r = region.getBoundingClientRect(); return r.width < 20 && r.height < 20; }"
     )
