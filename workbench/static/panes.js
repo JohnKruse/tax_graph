@@ -55,6 +55,11 @@ export function renderOfficialPane(container, documentModel, requestedPage = nul
   const placeRegions = () => {
     const pageWidth = image.naturalWidth ? image.naturalWidth / PAGE_RENDER_SCALE : LETTER_WIDTH;
     const pageHeight = image.naturalHeight ? image.naturalHeight / PAGE_RENDER_SCALE : LETTER_HEIGHT;
+    // The canvas carries a portrait aspect-ratio in CSS. Left alone, a landscape page is
+    // letterboxed inside a portrait box by object-fit: contain - the picture shrinks and
+    // centres while the regions are positioned against the box, so correct percentages
+    // still land off the artwork. Size the box to the real page.
+    canvas.style.aspectRatio = `${pageWidth} / ${pageHeight}`;
     for (const [region, [x0, y0, x1, y1]] of regions) {
       region.style.left = `${x0 / pageWidth * 100}%`;
       region.style.top = `${y0 / pageHeight * 100}%`;
