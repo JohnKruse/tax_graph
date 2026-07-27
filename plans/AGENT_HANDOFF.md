@@ -916,6 +916,53 @@ TY2026 docs drop.
 
 ## From Architect
 
+- **DESIGN DIRECTION - THE GRAPH AS EXTRACTION CONTRACT FOR SOURCE DOCUMENTS (John,
+  2026-07-27). Not a task yet; candidate phase after M18/M19. Captured because it is the
+  answer to how real-world input forms enter the system.**
+  John, on a real Fidelity consolidated 1099: "Fidelity maps the line numbers to the forms
+  very reliably. But they've just gotten rid of the form nature. So... if we have the graph
+  and the AI is presented with this, it could extract the info into a form (e.g., JSON)
+  that could represent the data... perhaps this is the key for input forms. I've gotten W2s
+  from different employers that look quite different and skip various fields."
+  **THE INSIGHT: for an information return, the FORM IS JUST ONE RENDERING - the CONCEPT
+  SET is the contract.** The graph does not need to recognize a payer's layout. It supplies
+  the extraction TARGET, and the AI does layout-agnostic extraction into it.
+  **Measured on John's actual Fidelity statement (8 pages, values never copied into the
+  repo - it is live taxpayer PII):**
+  - **ZERO AcroForm widgets in the entire document.** Our extraction pipeline keys on
+    AcroForm field names and their rects; none of that exists in an issued statement.
+  - It rolls FOUR IRS form types into one PDF (1099-DIV, 1099-INT, 1099-B, 1099-MISC),
+    with **1099-DIV and 1099-INT on the SAME PAGE**, plus issuer-authored sections
+    ("Realized Gain", "Summary of", "Supplemental") that are not IRS forms at all.
+  - So it breaks four modeling assumptions at once: one PDF = one document; one page =
+    one form; widgets exist; a document is a blank form with cells.
+  - **But the box labels map 1:1 onto concepts M19 already minted:** `1a Total Ordinary
+    Dividends` -> `form_1099_div/dividends/ordinary`, `2b Unrecap. Sec 1250 Gain` ->
+    `.../capital_gain_distribution/unrecaptured_section_1250`. 33 distinct 1099-DIV
+    concepts, each carrying its box token and semantic name. **The concept layer survives
+    contact with a real payer statement; the placement layer does not.**
+  **What this implies, when it becomes a phase:**
+  1. **FORM DEFINITION vs ISSUED INSTANCE is a real distinction the model lacks.** We model
+     blank official forms (cells, concepts, placements). A filer receives instances -
+     values, from a specific payer, possibly consolidating several form types. One word for
+     both today.
+  2. Each `information_return` document should EMIT a canonical extraction schema from its
+     concepts (concept id + box token + label + value type + optional). That is the AI's
+     target and the validation contract.
+  3. **Absence is NORMAL in an instance** - John's W-2 point: different employers skip
+     fields that do not apply. This INVERTS the coverage invariant, which says every cell
+     on a form DEFINITION must carry a policy. Definition: every cell accounted for.
+     Instance: most fields legitimately absent, and absent must be distinguishable from
+     zero.
+  4. A consolidated statement yields MULTIPLE instances from ONE file - so extraction must
+     emit a list of typed instances, not one document.
+  5. Per-value provenance (payer, page, locator) so an extracted number is auditable back
+     to where it was read, consistent with the witness discipline everywhere else.
+  **GAP THIS SURFACED, worth fixing whenever concepts are next touched:** `value_format` is
+  EMPTY on the 1099-DIV concepts, so every field falls back to `text` - including currency
+  boxes and TINs. An extraction contract needs real typing (currency, tin, date, string) or
+  it cannot validate what the AI returns.
+
 - **M18-S0 TASK - DOCUMENT CLASS (Architect, Claude Opus 5, 2026-07-27). DO THIS BEFORE
   S1** - S1's depth rule keys off it. Small, schema + records + validator.
   **John's ruling (2026-07-27):** "add the doc class... i think it will pay off down the
