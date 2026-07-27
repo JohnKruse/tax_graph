@@ -14,9 +14,32 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## Current state (2026-07-26)
 
-**BALL: JOHN - M19-S4 ACCEPTED. Next round is M18 (instruction ingestion), which is the
-prerequisite for M19-S3b and also fills the hole at the top of the cell dossier from
-John's third review. Needs John's go and the M18 sequencing questions answered.**
+**BALL: WORKER - M18-S1 (acquire the HTML instruction channel + 1040 canary survey).
+Plan: `plans/PHASE_M18.md`, HTML-channel revision. Task block under From Architect.**
+
+**M18 SEQUENCING RESOLVED (2026-07-27).** John took the Architect recommendations on
+questions 1 and 2: M18 runs NEXT and IN FULL (S1+S2+S3), with the 1040 as canary before
+widening. Question 3 dissolved - see the HTML channel below. The 1099/W-2 section filter
+was decided by the Architect under John's standing delegation: box/code definitions IN,
+employer filing mechanics OUT, 13614-C skipped; reversible if the split does not detect
+cleanly.
+
+**JOHN CAUGHT AN ARCHITECT ASSUMPTION (2026-07-27):** "Aren't these instructions???? you
+should at least do a web search to ensure that there isn't a non pdf version... how can we
+build this into the pipeline??" The Architect had reasoned from the 7 acquired PDFs
+without checking for another channel. **The IRS publishes every instruction document as
+structured HTML at `irs.gov/instructions/<slug>`** - verified by fetching `i1041si`,
+`i1040gi`, and `iw2w3`. It is better than the PDF path on every axis M18 cares about:
+per-line headings carry the SEMANTIC NAME (`Line 1 - Taxable Refunds, Credits, or Offsets
+of State and Local Income Taxes`) which is exactly the material M19-S3b needs and which
+exists nowhere in our current artifacts; anchor ids are stable citation locators; OCR and
+the column-break hyphenation prerequisite both disappear; and the heading tree is uniform
+where the PDFs were not (73 line anchors on the 1040, ZERO on Schedule B).
+**It also dissolved the apparent acquisition gap at zero cost:** Schedules 1, 1-A, 2, and
+3 have no standalone instruction PDF but ARE covered per-line inside `i1040gi` - verified
+down to anchor ids. Nothing new needs acquiring.
+LESSON: check for a better source channel before planning around the one we happen to
+have.
 
 **ARCHITECT VERIFICATION - M19-S4 (Claude Opus 5, 2026-07-27). ACCEPTED. The W-2 defect
 is FIXED.** Verified against John's bar - practical retrieval - not against the Worker's
@@ -874,7 +897,57 @@ TY2026 docs drop.
 
 ## From Architect
 
-- **M19-S4 TASK - MAKE TABLES RETRIEVABLE (Architect, Claude Opus 5, 2026-07-26).**
+- **M18-S1 TASK - ACQUIRE THE HTML INSTRUCTION CHANNEL (Architect, Claude Opus 5,
+  2026-07-27).** Design in `plans/PHASE_M18.md` - READ the "MAJOR REVISION 2026-07-27 -
+  THE HTML CHANNEL" section FIRST; it supersedes the PDF-centric approach in the rest of
+  that plan. Read the defect ledger and name applicable entries in your checkpoint.
+  **Context:** the IRS publishes every instruction document as structured HTML at
+  `https://www.irs.gov/instructions/<slug>` - verified by fetching `i1041si`, `i1040gi`,
+  `iw2w3`. Per-line headings carry the SEMANTIC NAME (`Line 1 - Taxable Refunds, Credits,
+  or Offsets of State and Local Income Taxes`), which is the exact material M19-S3b needs
+  and which does not exist anywhere in our current artifacts. Anchor ids (`id111`) are
+  stable citation locators. No OCR, no column-break hyphenation repair, and a consistent
+  heading tree (the PDF path had 73 line anchors on the 1040 and ZERO on Schedule B).
+  **Scope: the ACQUISITION CHANNEL plus a 1040 canary survey. Do NOT mine the whole
+  corpus and do NOT write citations yet.**
+  1. **Manifest:** add an `instruction_url` per document in `config/manifest.yaml`. The
+     slug is stable across years and the CONTENT is year-specific, so this is a first-class
+     field the rollover re-binder re-fetches - not a constant in code.
+  2. **Acquisition:** fetch each instruction HTML into `.cache/raw/<year>/` beside the
+     existing PDF, recording URL, `retrieved_date`, and a content hash, with the same
+     provenance discipline as every other acquired artifact. **Citations must later verify
+     against the STORED file, never a live fetch** - that is what gives
+     `check_citation_integrity` something to check. Be polite to irs.gov: sequential
+     fetches, no parallel hammering.
+  3. **ASCII at ingest:** IRS headings use em dashes and typographic quotes. Transliterate
+     on the way in or the ASCII gate bites (it is a CI gate, not advice).
+  4. **1040 canary survey (READ-ONLY report, `plans/M18_S1_INSTRUCTION_SURVEY.md`):** for
+     `i1040gi`, report the heading tree, how many per-line sections resolve to a line
+     token WITH a semantic title, the anchor id available per section, and - critically -
+     per-line coverage for **Schedule 1, Schedule 1-A, Schedule 2, and Schedule 3**, which
+     have no standalone instruction PDF and are the S3b blockers. Verified present:
+     `Instructions for Schedule 1...` (id108), `Lines 2a and 2b` (id113),
+     `Instructions for Schedule 2...` (id165), `Lines 1a Through 1z` (id167),
+     `Instructions for Schedule 1-A Additional Deductions` (id158).
+  5. **Report where HTML and PDF disagree** as a FINDING. PDF stays as fallback and
+     cross-check; do not silently prefer one.
+  6. **Section filter (decided, see the plan):** for the 1099/W-2 family, box and code
+     definitions are IN, employer filing mechanics are OUT, 13614-C is skipped. Report
+     whether that split is cleanly detectable from the heading tree - if it is not, say
+     so rather than forcing it.
+  No citation records, no graph changes, no promoted-artifact changes this round.
+  Tests: cover the acquisition/parse helpers with a stored FIXTURE, never a live network
+  fetch in a test. Tier-1 floor with honest `RAN:`/`NOT RUN:` lines for EVERY declared
+  file, ASCII, `git diff --check`, module-form `validate 2025`.
+  **RULE RESTATED after the S4 slip: a declared file gets `RAN:` or `NOT RUN:`. Silence is
+  not a third state.** Run pytest plainly - no `--basetemp`. ONE local commit; no push.
+  Stop conditions: irs.gov returning non-200 or a changed URL shape for any document
+  (record it, do not scrape around it); an instruction page whose structure defeats
+  heading-tree parsing (report it); any need to write citations, touch promoted artifacts,
+  or change graph semantics; or a quota/environment failure.
+
+- **[DONE `e031fd9`, Architect-verified] M19-S4 TASK - MAKE TABLES RETRIEVABLE
+  (Architect, Claude Opus 5, 2026-07-26).**
   Design in `plans/PHASE_M19.md` (S4, rewritten today). **John's framing, which is the
   acceptance bar: "when we run into a table, or a table of subtables, we get clean,
   reliable and repeatable parsing and addressing... if you are asked about dependents,

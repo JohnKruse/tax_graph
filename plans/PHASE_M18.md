@@ -167,5 +167,15 @@ discover late:
    ingest instructions for the 1099/W-2 family and 13614-C at all. They DO have HTML
    instructions, so cost is no longer the objection; the question is whether
    payer-facing filing instructions (how to FILE the form) help a filer-facing review
-   surface (how to READ the form). Architect leans yes for the 1099/W-2 box definitions,
-   no for 13614-C, but it is a judgment call about usefulness, not feasibility.
+   surface (how to READ the form). **DECIDED 2026-07-27 (Architect, on John's standing
+   "do what makes sense" delegation; reversible if mining shows the split is not clean):
+   ingest the BOX AND CODE DEFINITIONS, skip the filing mechanics, skip 13614-C.**
+   Measured on `iw2w3`: roughly 60% of the document is employer filing mechanics
+   (deadlines, Copy A mailing, penalties, e-filing thresholds) which are irrelevant to a
+   filer-facing review surface, and roughly 40% is box/code content definitions - e.g.
+   `Code D: Elective deferrals under a section 401(k) cash or deferred arrangement
+   (plan).` and `Code DD: Cost of employer-sponsored health coverage.` The latter is
+   exactly what a reviewer of the now-addressable `w2/copy[A]/box12/entry[3]/code` cell
+   needs. This is a per-SECTION filter, not a per-document choice, and M18 already walks
+   the heading tree, so it costs nothing extra. 13614-C is a VITA intake sheet with no
+   per-line authority worth citing.
