@@ -8,7 +8,7 @@ M15R adds additive canonical-address registries, widget/node bindings, and typed
 
 | Schema | Purpose |
 |---|---|
-| `document.schema.json` | A form / schedule / source doc / instructions / publication / worksheet (carries the tax year and version metadata for change detection). |
+| `document.schema.json` | A form / schedule / source doc / instructions / publication / worksheet (carries the tax year, role-axis document class, and version metadata for change detection). |
 | `node.schema.json` | An addressable point: form line, box, worksheet field, taxpayer fact, computed value, or concept. |
 | `table.schema.json` | A repeatable table subunit: row-template columns plus totals rows, with runtime row instances supplied in taxpayer facts. |
 | `address_registry.schema.json` | Canonical semantic form locations and their evidence. |

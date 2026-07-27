@@ -2,6 +2,7 @@ document_id: schedule_b_2025
 title: Schedule B (Form 1040) - Interest and Ordinary Dividends
 tax_year: 2025
 document_type: schedule
+document_class: return
 source_url: https://www.irs.gov/pub/irs-prior/f1040sb--2025.pdf
 status: partial
 not_modeled_fields:

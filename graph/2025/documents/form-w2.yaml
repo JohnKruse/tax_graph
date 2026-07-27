@@ -2,5 +2,6 @@ document_id: form_w2_2025
 title: Form W-2 Wage and Tax Statement
 tax_year: 2025
 document_type: source_document
+document_class: information_return
 source_url: https://www.irs.gov/forms-pubs/about-form-w-2
 status: partial

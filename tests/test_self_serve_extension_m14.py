@@ -126,6 +126,7 @@ def test_extension_collision_and_tamper_are_hard_errors(tmp_path: Path):
                     "title": "X",
                     "tax_year": 2025,
                     "document_type": "schedule",
+                    "document_class": "return",
                     "status": "partial",
                     "gate": "user",
                 }
@@ -168,6 +169,7 @@ def test_extension_hash_stamp_detects_graph_tampering(tmp_path: Path):
         "title": "X",
         "tax_year": 2025,
         "document_type": "schedule",
+        "document_class": "return",
         "status": "partial",
         "gate": "user",
     }

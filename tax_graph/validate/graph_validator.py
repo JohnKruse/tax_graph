@@ -13,6 +13,7 @@ from pathlib import Path
 import re
 from typing import Any, Mapping
 
+from tax_graph.documents import DOCUMENT_CLASSES
 from tax_graph.io.loader import GRAPH_KINDS, LoadedGraph, load_graph, load_yaml
 from tax_graph.output.field_maps import validate_field_maps
 from tax_graph.output.geometry import validate_node_geometry
@@ -84,6 +85,7 @@ def validate_loaded_graph(
     _validate_schemas(graph, schemas_dir, errors)
     _validate_unique_ids(graph, errors)
     _validate_references_and_years(graph, errors)
+    _validate_document_classes(graph, errors)
     _validate_frontier_registry(graph, schemas_dir, errors)
     _validate_flow_dispositions(graph, schemas_dir, errors)
     _validate_tables(graph, errors)
@@ -265,6 +267,21 @@ def _validate_references_and_years(graph: LoadedGraph, errors: list[str]) -> Non
     for expectation in graph.items("expectations"):
         expectation_id = expectation.get("expectation_id", "<unknown>")
         _check_citation_refs("expectation", expectation_id, expectation.get("citation_refs", []), citations, errors)
+
+
+def _validate_document_classes(graph: LoadedGraph, errors: list[str]) -> None:
+    """Require every document to carry a valid role-axis class."""
+    allowed = set(DOCUMENT_CLASSES)
+    for document in graph.items("documents"):
+        document_id = str(document.get("document_id", "<unknown>"))
+        document_class = document.get("document_class")
+        if not document_class:
+            errors.append(f"document {document_id} -> missing document_class")
+        elif document_class not in allowed:
+            errors.append(
+                f"document {document_id} -> invalid document_class {document_class}; "
+                f"expected one of {', '.join(DOCUMENT_CLASSES)}"
+            )
 
 
 def _validate_frontier_registry(graph: LoadedGraph, schemas_dir: Path, errors: list[str]) -> None:

@@ -23,6 +23,7 @@ from tax_graph.acquire.fetch import fetch_manifest_documents
 from tax_graph.acquire.manifest import AcquisitionManifest, ManifestEntry, load_manifest
 from tax_graph.acquire.render import render_source
 from tax_graph.config import get_config_value, load_config, resolve_secret
+from tax_graph.documents import document_class_for
 from tax_graph.extract import extract_document
 from tax_graph.io.loader import (
     GRAPH_KINDS,
@@ -667,6 +668,7 @@ def _ensure_document_draft(
             "title": title or document_id,
             "tax_year": int(year),
             "document_type": kind,
+            "document_class": document_class_for(document_id=document_id, document_type=kind),
             "source_url": url,
             "status": "partial",
             "not_modeled_fields": [],

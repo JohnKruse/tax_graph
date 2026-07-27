@@ -18,6 +18,61 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 canary survey). Plan: `plans/PHASE_M18.md`, HTML-channel revision. Task blocks under
 From Architect.**
 
+**Worker session checkpoint - M18-S0 implementation (2026-07-27):** Global canary: Ledger
+Llama. Model: GPT-5 Codex; effort: default; usage/quota/context indicators are not exposed.
+John's current task request is the go. Single declared step: add the role-axis
+`document_class` field to the document schema and all 17 document records, add the
+fail-closed validator to `validate 2025`, and report the five acquired instruction
+documents without document records. Keep `document_type` and its call sites unchanged.
+Applicable defect-ledger entries: D4 (tests must not write live developer state), D5 (any
+workbench change requires the boundary test; not expected for this slice), D6 (module-form
+CLIs only), and the exact RAN/NOT RUN evidence rule. D1-D3 and D7 are not expected to
+apply.
+
+**M18-S0 implementation checkpoint (2026-07-27):** Added required role-axis
+`document_class` with enum values `return`, `information_return`, `instructions`, and
+`intake`; populated all 17 promoted 2025 document records; and added an explicit
+fail-closed graph validator in addition to JSON Schema validation. Draft and extension
+document creation now derives the class without changing `document_type` or its call
+sites. The five acquired instruction records with no corresponding graph document are
+`instructions_form_2441_2025`, `instructions_form_6251_2025`, `instructions_form_8949_2025`,
+`instructions_schedule_a_2025`, and `instructions_schedule_b_2025`; they remain a finding
+for M18-S1 and were not authored here. Pending verification: focused pytest, ASCII,
+`git diff --check`, module-form `validate 2025`, and real workbench preflight with
+`legacy_mined` reported.
+
+**M18-S0 focused verification (2026-07-27):**
+
+- RAN: `$testRoot = 'C:\Users\devbox\.codex\visualizations\2026\07\27\019fa2b2-d8cf-74e2-8a06-759b9aaaf5e0\m18_s0_test_tmp'; New-Item -ItemType Directory -Force -Path $testRoot | Out-Null; $env:PYTEST_DEBUG_TEMPROOT = $testRoot; .venv\Scripts\python.exe -m pytest tests/test_graph_validator.py tests/test_extract_outline_m4.py tests/test_batch_extraction_m10.py tests/test_self_serve_extension_m14.py -q` -> 29 passed in 226.65s; one pytest cache ACL warning only.
+- RAN: `$testRoot = 'C:\Users\devbox\.codex\visualizations\2026\07\27\019fa2b2-d8cf-74e2-8a06-759b9aaaf5e0\m18_s0_test_tmp'; $env:PYTEST_DEBUG_TEMPROOT = $testRoot; .venv\Scripts\python.exe -m pytest tests/test_graph_validator.py tests/test_self_serve_extension_m14.py tests/test_frontier_query_m7.py -q` -> 21 passed in 162.95s; one pytest cache ACL warning only.
+- RAN: `.venv\Scripts\python.exe tools/check_ascii.py` -> exit 0, `ASCII check OK`.
+- RAN: `git diff --check` -> exit 0, no output.
+- RAN: `.venv\Scripts\python.exe -m tax_graph.cli validate 2025` -> exit 0; graph integrity OK, 18 loaded documents.
+
+Preflight and fast gates remain pending; checkpoint before that expensive phase follows.
+
+**M18-S0 fast-gate checkpoint (2026-07-27):** Focused pytest is green. Also completed
+ASCII and diff gates; module-form graph validation is green. The remaining expensive
+verification is the real workbench preflight, which must report the unchanged
+`legacy_mined=394` ratchet before this step can be declared done.
+
+- RAN: `.venv\Scripts\python.exe tools/check_ascii.py` -> exit 0, `ASCII check OK`.
+- RAN: `git diff --check` -> exit 0, no output.
+- RAN: `.venv\Scripts\python.exe -m tax_graph.cli validate 2025` -> exit 0; graph integrity OK, 18 loaded documents.
+- RAN: `.venv\Scripts\python.exe -m workbench.cli --year 2025 preflight` -> passed; 35 entries, 3243 units, 1921 field controls, `legacy_mined=394`.
+
+M18-S0 verification is complete. The step is ready for the required single local commit;
+M18-S1 remains next and is not started.
+
+**M18-S0 correction checkpoint (2026-07-27):** The first validation run surfaced an
+existing accepted local extension for `form_2441_2025`, so the loaded graph contained 18
+documents rather than the 17 promoted project records. Its role is unambiguous (`return`);
+the local extension document now carries that class and its extension hash was refreshed.
+The focused inventory test explicitly excludes extensions when asserting the promoted
+record count. The first pytest attempt also used an explicit `.test_tmp` environment
+value and hit the known ACL-poisoned `pytest-of-devbox` directory; the next attempt uses
+the writable `C:\tmp\tax_graph_test_tmp` root with no `--basetemp`.
+
 **DOCUMENT CLASS (John, 2026-07-27):** "add the doc class... it will pay off down the line
 since there are all manner of docs that we won't touch in this dev effort", and the 1099
 family should be in the graph "so that the AI utilizing it has a solid understanding of

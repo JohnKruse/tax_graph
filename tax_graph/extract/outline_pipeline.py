@@ -6,6 +6,7 @@ from pathlib import Path
 from typing import Any
 
 from tax_graph.config import get_config_value
+from tax_graph.documents import document_class_for
 from tax_graph.extract.assembly import assemble_formula_plan
 from tax_graph.extract.outline_checks import run_outline_artifact_checks
 from tax_graph.extract.llm_client import LlmClient
@@ -573,6 +574,10 @@ def _schedule_d_not_modeled_document(
                 "title": "Schedule D (Form 1040)",
                 "tax_year": int(document.year),
                 "document_type": "schedule",
+                "document_class": document_class_for(
+                    document_id=document.document_id,
+                    document_type="schedule",
+                ),
                 "source_url": document.url,
                 "status": "partial",
                 "not_modeled_fields": records,
@@ -630,6 +635,10 @@ def _generic_not_modeled_document(
                 "title": _document_title(document),
                 "tax_year": int(document.year),
                 "document_type": document.kind,
+                "document_class": document_class_for(
+                    document_id=document.document_id,
+                    document_type=document.kind,
+                ),
                 "source_url": document.url,
                 "status": "partial",
                 "not_modeled_fields": not_modeled_fields,

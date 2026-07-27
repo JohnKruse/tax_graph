@@ -521,6 +521,7 @@ def _make_outline_project(tmp_path: Path) -> Path:
                 "title: Form 8949",
                 "tax_year: 2025",
                 "document_type: tax_form",
+                "document_class: return",
                 "status: partial",
                 "not_modeled_fields:",
                 "  - field_id: form_8949_unmodeled_table_columns",

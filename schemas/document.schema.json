@@ -5,7 +5,7 @@
   "description": "A container for nodes: an IRS form, schedule, source document, instructions, publication, or worksheet for a given tax year.",
   "type": "object",
   "additionalProperties": false,
-  "required": ["document_id", "title", "tax_year", "document_type", "status"],
+  "required": ["document_id", "title", "tax_year", "document_type", "document_class", "status"],
   "properties": {
     "document_id": {
       "type": "string",
@@ -17,6 +17,11 @@
     "document_type": {
       "type": "string",
       "enum": ["tax_form", "schedule", "source_document", "instructions", "publication", "worksheet"]
+    },
+    "document_class": {
+      "type": "string",
+      "enum": ["return", "information_return", "instructions", "intake"],
+      "description": "Role axis: whether the filer computes, reads, consults, or completes this document."
     },
     "source_url": { "type": "string", "format": "uri" },
     "version_date": {

@@ -74,6 +74,7 @@ def test_frontier_coverage_increases_when_weighted_form_is_modeled(tmp_path):
                 "title": "Schedule B",
                 "tax_year": 2025,
                 "document_type": "schedule",
+                "document_class": "return",
                 "source_url": "https://www.irs.gov/pub/irs-pdf/f1040sb.pdf",
                 "status": "partial",
             },

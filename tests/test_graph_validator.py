@@ -6,7 +6,7 @@ from pathlib import Path
 import pytest
 import yaml
 
-from tax_graph.io.loader import load_yaml
+from tax_graph.io.loader import load_graph, load_yaml
 from tax_graph.validate.graph_validator import validate_graph
 
 
@@ -41,6 +41,52 @@ def test_current_2025_graph_validates():
     result = validate_graph("2025", root=ROOT)
 
     assert result.ok, result.errors
+
+
+@pytest.mark.m0
+def test_current_documents_have_role_axis_classes():
+    graph = load_graph("2025", root=ROOT, include_extensions=False)
+    documents = {item["document_id"]: item for item in graph.items("documents")}
+
+    assert len(documents) == 17
+    assert {item["document_class"] for item in documents.values()} == {
+        "return",
+        "information_return",
+        "instructions",
+        "intake",
+    }
+    assert documents["form_1040_2025"]["document_class"] == "return"
+    assert documents["form_w2_2025"]["document_class"] == "information_return"
+    assert documents["form_13614_c_2025"]["document_class"] == "intake"
+    assert documents["instructions_form_1040_2025"]["document_class"] == "instructions"
+
+
+@pytest.mark.m0
+def test_validator_rejects_missing_document_class(tmp_path):
+    root = _copy_graph_root(tmp_path)
+    document_file = root / "graph" / "2025" / "documents" / "form-1040.yaml"
+    document = _read_yaml(document_file)
+    document.pop("document_class", None)
+    _write_yaml(document_file, document)
+
+    result = validate_graph("2025", root=root)
+
+    assert not result.ok
+    assert any("document form_1040_2025 -> missing document_class" in error for error in result.errors)
+
+
+@pytest.mark.m0
+def test_validator_rejects_invalid_document_class(tmp_path):
+    root = _copy_graph_root(tmp_path)
+    document_file = root / "graph" / "2025" / "documents" / "form-1040.yaml"
+    document = _read_yaml(document_file)
+    document["document_class"] = "source_document"
+    _write_yaml(document_file, document)
+
+    result = validate_graph("2025", root=root)
+
+    assert not result.ok
+    assert any("invalid document_class source_document" in error for error in result.errors)
 
 
 @pytest.mark.m0

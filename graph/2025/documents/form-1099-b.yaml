@@ -3,5 +3,6 @@ document_id: form_1099b_2025
 title: Form 1099-B
 tax_year: 2025
 document_type: source_document
+document_class: information_return
 source_url: https://www.irs.gov/forms-pubs/about-form-1099-b
 status: partial

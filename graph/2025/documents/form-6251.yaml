@@ -2,6 +2,7 @@ document_id: form_6251_2025
 title: Form 6251 - Alternative Minimum Tax for Individuals
 tax_year: 2025
 document_type: tax_form
+document_class: return
 source_url: https://www.irs.gov/pub/irs-prior/f6251--2025.pdf
 status: partial
 not_modeled_fields: []
