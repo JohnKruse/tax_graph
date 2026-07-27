@@ -1085,7 +1085,58 @@ TY2026 docs drop.
 
 ## From Architect
 
-- **M19-S4b TASK - URGENT, MAIN IS CI-RED. FIX THE DEPENDENTS FILL REGRESSION (Architect,
+- **M17-S5 TASK - CLOSE JOHN'S RETURNED UI ISSUES 2, 3, AND 4 (Architect, Claude Opus 5,
+  2026-07-27). John is waiting on this to do his next UI review, so it is the priority
+  after main is green.** Frontend + projection only: NO promoted-artifact change, NO graph
+  change, NO verdict change. Read the ledger; **D1, D2, D3, and D7 all apply directly** -
+  this is the round type that produced them (Playwright e2e + scroll/selection work).
+  Your cap is 600s, so **you run your own e2e** - do not declare a file you then skip.
+  **Background:** John reviewed the live UI on 2026-07-26 and returned four issues. Issue 1
+  (the Dependents table showing 1 cell of 41) is FIXED by M19 - the corpus is now 1921/1921
+  cells with 0 hidden, and 8949 went from 18 to 202. Issues 2-4 were never scheduled
+  because the work pivoted to M19 addressing. Close them now.
+  1. **Issue 2 - selection needs a FILL, not just a ring.** John: "I want the
+     highlighted/selected cell to have some kind of colored fill. It still isn't as visible
+     as I'd like." The current treatment is ring-only (`styles.css` `.official-region.pinned`,
+     line 86) because the Architect over-corrected away from a hue collision with
+     `.official-region.policy-unsupported` (line 84, `var(--danger)`). Add a translucent
+     fill wash (roughly 15-20% alpha) UNDER the existing double ring. Alpha over the policy
+     color keeps both readable, so selection still cannot be confused with a policy state.
+     Keep a non-color weight cue so it survives grayscale.
+  2. **Issue 4 - river cards must LEAD with the line number.** John: "why don't you have the
+     number 33 leading this header? or even the section and then the line number? These are
+     humans doing this review." `river.js` line ~144 renders `display_name` first and puts
+     `official_ref` in a breadcrumb (line 141). Flip it: the card header reads
+     `33 - Add lines 25d, 26, and 32`, with the section as a smaller kicker where one
+     exists. Same for the selected-cell heading in the dossier (line ~88). Where a cell has
+     no printed line token, degrade gracefully - do not print a bare separator.
+  3. **Issue 3 (frontend half) - order the dossier for a HUMAN and drop the jargon.**
+     John: "it is all in an order that would make sense to you, not a person... Put yourself
+     in my shoes!" and, on the current labels, "what is Obtained: not authored? what is 'no
+     mapping authored'? this makes no sense to me." Those labels are the Architect's, and
+     they describe OUR pipeline state rather than anything about his return. Rebuild
+     `renderDetail` order to: **(a)** printed label, large; **(b)** [PLACEHOLDER - M18-S3
+     fills this] what the form's instructions say for this line; **(c)** governing authority
+     - the citation's quoted text; **(d)** how this gets filled, in plain English
+     ("computed by the graph from lines 25d, 26, 32" / "nobody has mapped this yet");
+     **(e)** collapsed by default: address id, concept id, AcroForm field, rect, node id,
+     artifact provenance. Render (b) as an explicit "not yet ingested" state - do NOT hide
+     the slot, John should see where it will land.
+  4. **Surface the new M19 data while you are in there:** a cell that is one occurrence of a
+     repeatable concept should say so plainly ("Dependent 3 of 4", "W-2 Box 12, copy A,
+     row 3") using the `occurrence` axes M19-S4 added. This is new information the dossier
+     has never shown.
+  **Do NOT rename any enum in a promoted artifact** - relabel in the UI only. That is the
+  M17-S4 ruling and it still stands; M16-S5 owns the enum.
+  Declare and RUN: `tests/e2e/test_workbench_v2_m17.py` (extend it for the fill and the
+  line-number header), the fast cells file, and `tests/test_workbench_m15.py` (D5).
+  Tier-1 floor, ASCII, `git diff --check`, module-form `validate 2025`. Run pytest plainly -
+  no `--basetemp`. ONE local commit; no push.
+  Stop conditions: any need to touch promoted artifacts, verdict emission, or graph
+  semantics; or a quota/environment failure.
+
+- **[DONE `94a2fe2`, Architect-verified] M19-S4b TASK - FIX THE DEPENDENTS FILL REGRESSION
+  (Architect,
   Claude Opus 5, 2026-07-27).** Do this BEFORE any further M18 work. **Read ledger entry D8
   in `AGENTS.md` first and state it in your checkpoint - this is your defect and you are
   fixing it, not the Architect.**
