@@ -31,7 +31,12 @@ h1, h2, h3, p { margin-top: 0; }
 .view-controls span { min-width: 44px; color: #c8d6d7; font-size: 12px; text-align: center; }
 
 .workspace { display: grid; grid-template-columns: 270px minmax(0, 1fr); min-height: calc(100vh - 76px); }
-.queue-rail { min-width: 0; padding: 16px 12px; color: #fff; background: var(--rail); overflow: auto; }
+/* The rail must scroll ON ITS OWN. It had overflow:auto but no height, so it grew to fit
+   all 16 documents (2523px against a 610px pane) and the BODY scrolled instead - John,
+   2026-07-27: "it is frozen against the PDF display and you have to go down and click on
+   one near the bottom and then scroll back up." Matching the panes' height makes the
+   overflow actually engage. */
+.queue-rail { min-width: 0; height: calc(100vh - 108px); min-height: 600px; padding: 16px 12px; color: #fff; background: var(--rail); overflow-y: auto; overscroll-behavior: contain; }
 .review-dashboard { padding: 14px; border: 1px solid #46616a; border-radius: 8px; background: #294851; }
 .review-dashboard h2 { margin: 4px 0 5px; color: #fff; font-family: Georgia, serif; font-size: 20px; line-height: 1.1; }
 .dashboard-meta { min-height: 34px; margin: 0; color: #c0d1ce; font-size: 11px; line-height: 1.4; }
