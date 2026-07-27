@@ -69,8 +69,18 @@ def test_form_and_river_selection_crosses_pages_and_keeps_selection_visible(page
         "card => { const c = card.getBoundingClientRect(); const r = card.closest('#river').getBoundingClientRect(); return c.top >= r.top && c.bottom <= r.bottom; }"
     )
     expect(official).to_have_class(re.compile(r"\bpinned\b"))
-    expect(official).to_have_css("border-width", "3px")
+    expect(official).to_have_css("border-width", "4px")
     expect(official).to_have_css("background-image", re.compile("linear-gradient"))
+    expect(official).to_have_css("box-shadow", re.compile("rgb\\(255, 255, 255\\)"))
+
+    # The tiny checkbox has little interior area; the outward shape marker must
+    # remain visible independently of the region's dimensions.
+    checkbox_region = page.locator('#official-pane .official-region[data-label="You as a dependent"]')
+    checkbox_region.click()
+    expect(checkbox_region).to_have_css("border-width", "4px")
+    assert checkbox_region.evaluate(
+        "region => { const r = region.getBoundingClientRect(); return r.width < 20 && r.height < 20; }"
+    )
 
 
 def test_selected_cell_uses_human_headers_dossier_order_and_occurrence(page, workbench_url: str) -> None:
@@ -89,9 +99,17 @@ def test_selected_cell_uses_human_headers_dossier_order_and_occurrence(page, wor
     detail = page.locator("#river-detail")
     expect(detail.locator("h2")).to_have_text(re.compile(r"^33 - "))
     expect(detail.locator(".cell-instruction")).to_contain_text("Not yet ingested")
-    expect(detail.locator(".human-dossier").nth(1)).to_contain_text("How this is filled")
     expect(detail.locator(".authority")).to_be_visible()
+    expect(detail.locator(".authority")).to_contain_text("No authority has been authored")
+    expect(detail.locator(".human-dossier").nth(1)).to_contain_text("How this is filled")
     assert detail.locator("details.technical-record").get_attribute("open") is None
+
+    # Existing instruction-sourced text belongs in the instruction slot, not in
+    # Authority. The 1040 line 1a record is the promoted canary citation.
+    line_1a = cards.filter(has_text="1a - Total amount from Form(s) W-2").first
+    line_1a.locator(".unit-card-select").click()
+    expect(detail.locator(".cell-instruction")).to_contain_text("Enter the total amount")
+    expect(detail.locator(".authority")).to_contain_text("Total amount from Form(s) W-2")
 
     # M19 occurrence axes make the repeated dependent row human-addressable.
     dependent_card = cards.filter(has_text="Dependent 3 of 4").first

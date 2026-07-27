@@ -55,7 +55,10 @@ function policyFacets(cell) {
 function officialHeading(cell) {
   const ref = String(cell.official_ref || "").trim();
   const name = String(cell.display_name || "").trim() || "Unnamed cell";
-  return ref ? `${ref} - ${name}` : name;
+  if (!ref) return name;
+  return name && ref.toLowerCase().endsWith(` ${name.toLowerCase()}`)
+    ? ref
+    : `${ref} - ${name}`;
 }
 
 function occurrenceLabel(cell, cells) {
@@ -91,15 +94,20 @@ function occurrenceLabel(cell, cells) {
 }
 
 function instructionMarkup(cell) {
-  const instruction = cell.instruction;
-  if (typeof instruction === "string" && instruction.trim()) {
-    return `<p>${authored(instruction)}</p>`;
+  const instructions = Array.isArray(cell.instruction_citations)
+    ? cell.instruction_citations
+    : [];
+  if (!instructions.length) {
+    return '<p class="not-authored">Not yet ingested - the form instruction for this line will appear here.</p>';
   }
-  if (instruction && typeof instruction === "object") {
-    const text = instruction.quoted_text || instruction.text;
-    if (text) return `<p>${authored(text)}</p>`;
-  }
-  return '<p class="not-authored">Not yet ingested - the form instruction for this line will appear here.</p>';
+  return instructions.map((citation) => {
+    const text = citation.quoted_text === null || citation.quoted_text === undefined
+      ? '<span class="not-authored">not resolved from promoted citation records</span>'
+      : `<blockquote>${escapeHtml(citation.quoted_text)}</blockquote>`;
+    return `<article class="instruction-record">${text}` +
+      `<p><strong>Locator:</strong> ${authored(citation.locator)}</p>` +
+      `<p><strong>Source:</strong> ${authored(citation.source_document_id)}</p></article>`;
+  }).join("");
 }
 
 function fillExplanationMarkup(cell) {
@@ -135,7 +143,9 @@ function inputMarkup(cell) {
 }
 
 function citationMarkup(citations) {
-  if (!citations || !citations.length) return authored(null);
+  if (!citations || !citations.length) {
+    return '<p class="not-authored">No authority has been authored for this cell yet.</p>';
+  }
   return citations.map((citation) => {
     const text = citation.quoted_text === null || citation.quoted_text === undefined
       ? '<span class="not-authored">not resolved from promoted citation records</span>'
@@ -175,12 +185,12 @@ function renderDetail(detail, cell, cells) {
       `<h3>What the form instructions say</h3>` +
       `<div class="cell-instruction">${instructionMarkup(cell)}</div>` +
     `</section>` +
+    `<section class="dossier-group authority"><h3>Authority</h3>${citationMarkup(cell.citations)}</section>` +
     `<section class="dossier-group human-dossier">` +
       `<h3>How this is filled</h3>` +
       `<div class="cell-computation"><p>${fillExplanationMarkup(cell)}</p>` +
       `<p><strong>Coverage:</strong> ${authored(facets.coverage)}</p></div>` +
-    `</section>` +
-    `<section class="dossier-group authority"><h3>Authority</h3>${citationMarkup(cell.citations)}</section>`;
+    `</section>`;
 
   const technical = document.createElement("details");
   technical.className = "technical-record";

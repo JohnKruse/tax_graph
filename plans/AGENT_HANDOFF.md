@@ -14,6 +14,43 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## Current state (2026-07-27)
 
+**Worker session checkpoint - M17-S6 implementation (2026-07-27):** Global canary: Ledger
+Llama. Phase canary: Street Address. Model: GPT-5 Codex; effort: default; usage/quota/context
+indicators are not exposed. John gave go via the current task request. Single declared step:
+complete the active M17-S6 frontend/projection task from the Architect, covering high-contrast
+selection, instruction citation routing, honest empty-authority states and per-document citation
+coverage, plus the two dossier wording/order warts. Applicable defect-ledger entries: D1, D2,
+D3, D4, D5, D6, D7, and D8. D8 is a promoted-artifact consumer contract; this round must not
+rename artifact values and must include the mandatory fill regression file if any artifact
+consumer or field-map surface is touched.
+
+**M17-S6 implementation checkpoint (2026-07-27):** Projection and frontend changes are
+implemented. The next verification phase is fast focused pytest plus the mandatory
+`tests/test_workbench_m15.py`; the declared browser file follows under the 600-second cap.
+No promoted artifact, citation record, verdict, graph node, or field-map value was edited.
+
+**M17-S6 focused verification checkpoint (2026-07-27):**
+
+- RAN: `$testRoot = 'C:\Users\devbox\.codex\visualizations\2026\07\27\019fa412-561a-7b31-9acd-b0967881be2c\m17_s6_fast'; New-Item -ItemType Directory -Force -Path $testRoot | Out-Null; $env:PYTEST_DEBUG_TEMPROOT = $testRoot; .venv\Scripts\python.exe -m pytest tests/test_workbench_cells_m17.py tests/test_workbench_m15.py tests/test_dependents_m15.py -q` -> 21 passed in 44.84s; one known `.pytest_cache` ACL warning.
+- RAN: `$testRoot = 'C:\Users\devbox\.codex\visualizations\2026\07\27\019fa412-561a-7b31-9acd-b0967881be2c\m17_s6_e2e'; New-Item -ItemType Directory -Force -Path $testRoot | Out-Null; $env:PYTEST_DEBUG_TEMPROOT = $testRoot; .venv\Scripts\python.exe -m pytest tests/e2e/test_workbench_v2_m17.py -q` -> 3 passed in 231.84s; one known `.pytest_cache` ACL warning. The browser assertions cover the sub-20px 1040 `12a/You as a dependent` checkbox and the promoted 1040 line 1a instruction citation.
+- Deviation: the first fast command using `C:\tmp\tax_graph_m17_s6_fast` was an environment attempt only and errored before the mandatory boundary tests could create pytest temp directories because that path was ACL-blocked; the exact command was rerun successfully on the writable session root above.
+
+**M17-S6 post-refinement verification (2026-07-27):** The explicit empty-authority wording was
+added and both declared test surfaces were rerun.
+
+- RAN: `$testRoot = 'C:\Users\devbox\.codex\visualizations\2026\07\27\019fa412-561a-7b31-9acd-b0967881be2c\m17_s6_fast_r2'; New-Item -ItemType Directory -Force -Path $testRoot | Out-Null; $env:PYTEST_DEBUG_TEMPROOT = $testRoot; .venv\Scripts\python.exe -m pytest tests/test_workbench_cells_m17.py tests/test_workbench_m15.py tests/test_dependents_m15.py -q` -> 21 passed in 43.00s; one known `.pytest_cache` ACL warning.
+- RAN: `$testRoot = 'C:\Users\devbox\.codex\visualizations\2026\07\27\019fa412-561a-7b31-9acd-b0967881be2c\m17_s6_e2e_r2'; New-Item -ItemType Directory -Force -Path $testRoot | Out-Null; $env:PYTEST_DEBUG_TEMPROOT = $testRoot; .venv\Scripts\python.exe -m pytest tests/e2e/test_workbench_v2_m17.py -q` -> 3 passed in 229.24s; one known `.pytest_cache` ACL warning.
+- RAN: `.venv\Scripts\python.exe tools/check_ascii.py` -> `ASCII check OK`.
+- RAN: `git diff --check` -> exit 0.
+- RAN: `.venv\Scripts\python.exe -m tax_graph.cli validate 2025` -> exit 0; graph integrity OK, 18 documents loaded.
+- RAN: `.venv\Scripts\python.exe -m workbench.cli --year 2025 preflight` -> passed; 35 entries, 3243 units, 1921 field controls, `legacy_mined=394`.
+
+M17-S6 implementation is complete: selected cells now use a high-luminance fill, a heavier
+dark/white ring, and a size-independent outward marker; instruction citations are shown in
+the instruction slot; Authority explicitly reports missing authored coverage; document-level
+citation coverage is visible beside policy counts; and the dossier heading duplication/order
+warts are fixed. No promoted artifacts, graph semantics, verdicts, or citation records changed.
+
 **BALL: ARCHITECT - M17-S5 is implemented and verified locally in the local commit. No push
 was made. M17-S5 closes John's returned UI issues 2, 3, and 4 and leaves promoted
 artifacts, graph semantics, and verdicts unchanged.**

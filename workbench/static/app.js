@@ -41,6 +41,13 @@ function policySummary(counts) {
     .join(" | ");
 }
 
+function citationSummary(counts) {
+  if (!counts) return "";
+  const cited = Number(counts.cited || 0);
+  const uncited = Number(counts.uncited || 0);
+  return `citation coverage: ${cited} cited / ${cited + uncited}`;
+}
+
 function updateDashboard() {
   const title = document.querySelector("#dashboard-title");
   const meta = document.querySelector("#selected-document-meta");
@@ -49,7 +56,8 @@ function updateDashboard() {
   title.textContent = activeDocument?.title || "Choose a form";
   meta.textContent = activeDocument
     ? `${total} cells | page ${activePage ?? "-"} of ${activeDocument.pages.join(", ")}` +
-      (policySummary(activeDocument.policy_counts) ? ` | ${policySummary(activeDocument.policy_counts)}` : "")
+    (policySummary(activeDocument.policy_counts) ? ` | ${policySummary(activeDocument.policy_counts)}` : "")
+      + (citationSummary(activeDocument.citation_counts) ? ` | ${citationSummary(activeDocument.citation_counts)}` : "")
     : "Your review progress stays local and resumable.";
   document.querySelector("#approved-count").textContent = `${approved} / ${total}`;
   document.querySelector("#approval-bar").style.width = total ? `${approved / total * 100}%` : "0%";
@@ -71,7 +79,8 @@ function renderDocumentList(payload) {
     button.innerHTML =
       `<strong>${documentItem.title}</strong>` +
       `<small>${documentItem.cell_count} cells | pages ${documentItem.pages.join(", ")}</small>` +
-      `<small class="document-policy-counts">${policySummary(documentItem.policy_counts)}</small>`;
+      `<small class="document-policy-counts">${policySummary(documentItem.policy_counts)}</small>` +
+      `<small class="document-citation-counts">${citationSummary(documentItem.citation_counts)}</small>`;
     button.addEventListener("click", () => selectDocument(documentItem, button));
     list.append(button);
   }
@@ -97,6 +106,7 @@ async function selectDocument(documentItem, button) {
     pages: cellsPayload.pages,
     cells: cellsPayload.cells,
     policy_counts: documentItem.policy_counts || {},
+    citation_counts: documentItem.citation_counts || {},
   };
   activeSession = session;
   dirty = false;

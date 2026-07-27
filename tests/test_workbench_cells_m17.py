@@ -118,3 +118,27 @@ def test_citations_resolve_to_verbatim_text_and_provenance() -> None:
     assert records[1]["citation_id"] == "missing_citation"
     assert records[1]["quoted_text"] is None
     assert records[1]["resolved"] is False
+
+
+@pytest.mark.m17
+def test_instruction_citations_are_separate_from_authority() -> None:
+    cells = build_document_cells(ROOT, 2025, "form_1040_2025").cells
+    cell = next(cell for cell in cells if cell["instruction_citations"])
+    assert cell["instruction_citations"][0]["source_document_id"].startswith("instructions_")
+    assert all(
+        not str(citation.get("source_document_id") or "").startswith("instructions_")
+        for citation in cell["citations"]
+    )
+
+
+@pytest.mark.m17
+def test_document_index_reports_citation_coverage() -> None:
+    import json
+    geometry = json.loads((ROOT / "graph" / "2025" / "node_geometry.json").read_text("utf-8"))["entries"]
+    index = build_documents_index(
+        ROOT, 2025, ["form_1040_2025"], geometry_entries=geometry,
+    )
+    counts = index[0]["citation_counts"]
+    assert counts["cited"] > 0
+    assert counts["uncited"] > 0
+    assert counts["cited"] + counts["uncited"] == index[0]["cell_count"]

@@ -119,6 +119,8 @@ def build_document_cells(
                 *(node_data.get("citation_refs", []) or []),
             ]
         }
+        citation_records = _citations(citation_address, citations)
+        instruction_citations, authority_citations = _split_citations(citation_records)
         page = int(entry["page"])
         pages.add(page)
         cells.append(
@@ -150,7 +152,8 @@ def build_document_cells(
                 "missing_capability": str(disposition.get("missing_capability") or "") or None,
                 "node_id": node_id,
                 "operation": operations.get(node_id),
-                "citations": _citations(citation_address, citations),
+                "instruction_citations": instruction_citations,
+                "citations": authority_citations,
             }
         )
     return DocumentCells(document_id=document_id, cells=cells, pages=sorted(pages))
@@ -215,6 +218,28 @@ def _citations(
             continue
         resolved.append(dict(record, resolved=True))
     return resolved
+
+
+def _split_citations(
+    citations: list[dict[str, Any]],
+) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
+    """Separate instruction citations from governing form/authority citations.
+
+    The citation records are already resolved from promoted artifacts. The source
+    document role is the only routing signal: instruction text belongs in the
+    instruction slot, while every other record remains authority for the dossier.
+    Unresolved records stay in authority because their source role is unknown and
+    the workbench must not infer it.
+    """
+    instruction: list[dict[str, Any]] = []
+    authority: list[dict[str, Any]] = []
+    for citation in citations:
+        source_document_id = str(citation.get("source_document_id") or "")
+        if source_document_id.startswith("instructions_"):
+            instruction.append(citation)
+        else:
+            authority.append(citation)
+    return instruction, authority
 
 
 def _cell_id(entry: dict[str, Any], used: set[str]) -> str:
@@ -284,6 +309,16 @@ def build_documents_index(
                 "policy_counts": dict(sorted(
                     Counter(cell.get("population_policy") or "unknown" for cell in built.cells).items()
                 )),
+                "citation_counts": {
+                    "cited": sum(
+                        bool(cell.get("citations") or cell.get("instruction_citations"))
+                        for cell in built.cells
+                    ),
+                    "uncited": sum(
+                        not bool(cell.get("citations") or cell.get("instruction_citations"))
+                        for cell in built.cells
+                    ),
+                },
             }
         )
     return summaries
