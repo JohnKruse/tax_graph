@@ -146,6 +146,28 @@ entries; do not delete them.
   before renaming it; (b) `group` names the TABLE (`table=dependents`), not the row template
   (`row_template=dependent`); (c) when a round touches field maps, addresses, or bindings,
   the fill/engine tests are in scope, not just the review-surface tests. (M19-S4, 2026-07-27)
+- **D10 - An expected document that yields NOTHING is a finding, not silence.** M18-S3
+  promoted 82 correct 1040 instruction citations and reported "Schedule 1-A had no matched
+  section in the acquired 1040 HTML and was not guessed." Not guessing was right; the stated
+  cause was wrong. The h2 `Instructions for Schedule 1-A Additional Deductions` **is** in the
+  stored HTML at `id509` - the same heading the S1 survey had already verified - but the S2
+  miner emits ZERO sections under that context, so the join never sees a candidate and
+  therefore never raises a finding. All 101 Schedule 1-A addresses ended with zero coverage
+  and zero recorded reason. **Fail-closed is about the EMPTY case too:** when a document you
+  expected to cover produces no candidates at all, that is the loudest possible signal, and
+  it is exactly the one a per-section finding loop cannot emit. Add an explicit
+  expected-vs-produced check per document. Corollary: when you report an absence, verify it
+  against the SOURCE (grep the stored file, check the survey you already committed) before
+  attributing it to the source. (M18-S3, 2026-07-28)
+- **D11 - Findings you return but never persist do not exist.** M18-S3's
+  `join_instruction_sections` produced 61 fail-closed findings and
+  `InstructionJoinFinding.as_dict` even shapes them as review-queue records with a
+  `queue_id` - but `promote_instruction_html` never wrote them anywhere, and nothing touched
+  `review_queue/`. The task required unmatched sections to fail closed INTO THE REVIEW QUEUE.
+  In-memory findings vanish with the session, so committed state cannot answer "what was
+  skipped and why". If a contract says queue it, the artifact must land on disk in the
+  round that generates it. Related: a promoted artifact needs a committed entry point that
+  regenerates it - an ad-hoc `python -c` is not reproducible. (M18-S3, 2026-07-28)
 - **D6 - Always use the module form of a CLI, never the console script.**
   `.venv\Scripts\python.exe -m tax_graph.cli ...`, not `.venv\Scripts\tax-graph.exe ...`; the
   generated launcher resolves through an editable-install `.pth` with an absolute path that does not

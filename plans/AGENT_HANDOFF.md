@@ -153,8 +153,67 @@ the instruction slot; Authority explicitly reports missing authored coverage; do
 citation coverage is visible beside policy counts; and the dossier heading duplication/order
 warts are fixed. No promoted artifacts, graph semantics, verdicts, or citation records changed.
 
-**BALL: WORKER - M18-S3 (join instruction sections to addresses and promote). Task block
-under From Architect. M18-S2b is DONE (`0fbfc08`) and Architect-verified - do not redo it.**
+**BALL: WORKER - M18-S3b (fix the Schedule 1-A silent zero and persist the join findings).
+Task block under From Architect. M18-S3 is ACCEPTED (`4ab507d`) - do not redo the promotion;
+S3b is a miner fix plus findings persistence on top of it.**
+
+**ARCHITECT VERIFICATION - M18-S3 (Claude Opus 5, 2026-07-28). ACCEPTED, with two gaps
+returned as S3b.** What was promoted is sound; what was NOT promoted is where the problems
+are. Verified against the project's gates, not the Worker's summary:
+- **All 82 promoted quotes are provably verbatim** from the stored HTML.
+  **RECORDED ARCHITECT ERROR:** an independent strip reported 4 failures
+  (`...publink1000106118`, `...158384`, `...158425`, `...24811vd0e49351`). The ARCHITECT's
+  check was wrong: it inserted a space at every inline tag, so `IRS.gov/Refunds</a>.`
+  became `Refunds .`. The Worker's block-aware normalizer is correct; under a corrected
+  strip all 82 pass. Same lesson as the S2b naive-substring proxy - replicate the
+  project's normalization or do not report the number.
+- **Citation integrity: `checked=401`, `mismatches=36`, and ZERO mismatches are S3 records**
+  (checked by set-intersection against the 82 new ids, not the Worker's `_en_us_` substring
+  filter). The 36 are exactly the pre-existing set.
+- **The 20 pre-existing `instructions_form_1040_2025` failures that S3 was warned about are
+  UNRELATED - question closed.** They all live in `tax-liability.yaml`, are hand-authored A9
+  scaffolding with PDF locators (`page 31, line 3060`), and their `quoted_text` is a
+  human SUMMARY (`Single: $15,750. Married filing jointly...: $31,500.`), never a verbatim
+  span. They predate the acquisition channel. **Follow-up opportunity:** the HTML channel
+  can now re-derive several of them; that is a citation-cleanup candidate, not an S3 defect.
+- 0 duplicate citation ids corpus-wide (379 total), 0 dangling `citation_refs` (115 refs),
+  0 non-anchor locators, all anchors resolve in the stored HTML, `source_document_id` on
+  every record, 68 of 82 carry `semantic_title`, and 0 S2b wrapper regressions.
+- **Ratchet measured through the real projection, not the artifact: 28 -> 134 cells** with an
+  instruction citation (1040 59, 8949 22, schedule_1 12, schedule_2 20, schedule_3 17,
+  schedule_d 4). Cell counts exceed address counts because several physical cells share one
+  address. Denominator held at **1921 / 1921**. Item 6 confirmed live: promoted records land
+  in the instruction slot carrying title + text (e.g. 1040 `1a` -> "Total Amount From
+  Form(s) W-2, Box 1").
+- Tier 3 partition, 18 files (wider than the 7 declared, per D9): **125 passed, 1 xfailed**.
+  ASCII OK, `git diff --check` clean, `validate 2025` exit 0 (401 citations), preflight
+  passed with `legacy_mined=394` and 3243 units unchanged.
+
+**WORKER DEFECT (ledger D10, logged) - SCHEDULE 1-A IS A SILENT ZERO, AND THE STATED CAUSE
+IS WRONG.** The Worker reported "Schedule 1-A had no matched section in the acquired 1040
+HTML and was not guessed." Not guessing was right; the explanation is not. The h2
+**`Instructions for Schedule 1-A Additional Deductions` IS present in the stored HTML at
+`id509`** - exactly the heading the M18-S1 survey verified - and there is also an h4
+`Additional Deductions From Schedule 1-A, Line 38`. The **S2 miner emits ZERO sections under
+that context** (mined contexts are Schedule 1 x58, 1040 x54, Schedule 2 x16, Schedule 3 x15,
+Schedule 1-A **absent**), so the join never sees a candidate and therefore raises no finding.
+All **101 Schedule 1-A addresses** end with zero coverage and zero recorded reason. Fail
+closed means an expected document that yields nothing is a FINDING; silence is the one
+outcome the design forbids. Root cause is in the S2 miner, exposed by S3.
+
+**WORKER DEFECT (ledger D11, logged) - THE 61 FINDINGS ARE COMPUTED AND DISCARDED.**
+`join_instruction_sections` returns 61 findings (57 `unresolved_document_context`, 4
+`missing_canonical_address`) and `InstructionJoinFinding.as_dict` even emits a
+review-queue-shaped record with a `queue_id`. But `promote_instruction_html` never persists
+them and nothing writes to `review_queue/`. Task item 1 required unmatched/ambiguous
+sections to fail closed INTO THE REVIEW QUEUE as named findings. The skipping itself is
+defensible (57 are worksheet-nested sections that are not 1040 addresses); the amnesia is
+not - after the session ends, nothing in committed state records what was skipped or why.
+
+**ARCHITECT NOTE (not a defect, fix it in S3b):** there is no committed entry point that
+regenerates this artifact. `promote_instruction_html` is reachable only from an ad-hoc
+`python -c`, unlike S2b which shipped a reproducible tool. A promoted artifact nobody can
+re-derive from a committed command is a rollover hazard.
 
 **ARCHITECT VERIFICATION - M18-S2b (Claude Opus 5, 2026-07-27). ACCEPTED.** John's review
 issue 2 is closed. Verified against the project's own gate rather than the Worker's summary:
@@ -1327,6 +1386,55 @@ TY2026 docs drop.
   environment failure, and no commit was made.
 
 ## From Architect
+
+- **M18-S3b TASK - FIX THE SCHEDULE 1-A SILENT ZERO AND PERSIST THE FINDINGS (Architect,
+  Claude Opus 5, 2026-07-28).** M18-S3 is ACCEPTED (`4ab507d`) - **do NOT redo the
+  promotion, do NOT re-derive the 82 existing records, do NOT change a citation id.** This
+  round is the two gaps its verification returned. Read the ledger: **D10 and D11 are yours
+  and were logged from this exact round**; D4, D6, D8, D9 and the exact RAN/NOT RUN evidence
+  rule also apply.
+  1. **Schedule 1-A: find out why the miner emits nothing, then fix the miner.** The h2
+     `Instructions for Schedule 1-A Additional Deductions` is in the stored HTML at `id509`,
+     and an h4 `Additional Deductions From Schedule 1-A, Line 38` exists too, but
+     `mine_instruction_html_file` produces ZERO sections whose parent chain names Schedule
+     1-A (contexts today: Schedule 1 x58, 1040 x54, Schedule 2 x16, Schedule 3 x15).
+     `_target_document_id` already has a `schedule_1a_2025` branch, so the join is not the
+     problem - the sections never arrive. Diagnose it in the miner's heading tree before
+     changing anything, and SAY what the structural cause was. Note Schedule 1 carries 58
+     mined sections but only 12 joins; check whether 1-A content is being swallowed into the
+     Schedule 1 context rather than dropped, because that changes the fix.
+     If sections do materialize, promote them through the SAME verified path S3 used -
+     verbatim from the stored HTML, `html#anchor` locator, `source_document_id`,
+     `semantic_title` preserved. If after diagnosis the source genuinely has no per-line
+     Schedule 1-A material, that is an acceptable outcome - but it must land as a recorded
+     finding with the evidence, never as silence.
+  2. **Persist the findings (D11).** `join_instruction_sections` already returns
+     review-queue-shaped records with a `queue_id`. Write them to the review queue in the
+     same round that generates them, including the 57 `unresolved_document_context`
+     (worksheet-nested) and 4 `missing_canonical_address` entries. Do not suppress the
+     worksheet ones because they are expected - "expected and skipped" is exactly what
+     committed state should be able to tell a later reader.
+  3. **Add the per-document empty-result check (D10).** For each document the join is
+     expected to cover, an outcome of zero promoted sections must be an explicit named
+     finding. Give it a negative test that feeds a context yielding nothing and asserts the
+     finding is raised - a validator nobody can see fail is inert (the M16-S4 precedent).
+  4. **Ship a committed entry point.** `promote_instruction_html` is currently reachable only
+     from an ad-hoc `python -c`. Add the module-form command or tool that regenerates the
+     artifact, so the promotion is reproducible from committed state the way S2b's cleanup
+     tool is.
+  5. **Coverage ratchet:** report addresses-with-an-instruction-citation per document before
+     and after, and the corpus cell count. Today's verified baseline is **134 cells**
+     (1040 59, 8949 22, schedule_1 12, schedule_2 20, schedule_3 17, schedule_d 4) with
+     **schedule_1a at 0 of 101 addresses**. It only moves up.
+  Tier 3 (promoted artifacts). Declared files plus honest `RAN:`/`NOT RUN:` on every one, and
+  per D9 **grep the tests for anything that pins the counts you are about to change** before
+  you declare your list. ASCII, `git diff --check`, module-form `validate 2025`, real
+  preflight with `legacy_mined` reported explicitly, and `check_citation_integrity` reported
+  explicitly - the existing 36 pre-existing mismatches are the baseline and must not grow.
+  No `--basetemp`. ONE local commit; no push.
+  Stop conditions: any section whose text cannot be quoted verbatim from the stored file; any
+  need to change an existing citation id, the 82 promoted records, widget geometry, verdict
+  emission, or graph semantics; or a quota/environment failure.
 
 - **M17-S7 TASK - CAPTURE PAGE GEOMETRY AT EXTRACTION (Architect, Claude Opus 5,
   2026-07-27). John's call, and he is right that the current fix is inference rather than
