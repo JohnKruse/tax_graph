@@ -94,9 +94,38 @@ the instruction slot; Authority explicitly reports missing authored coverage; do
 citation coverage is visible beside policy counts; and the dossier heading duplication/order
 warts are fixed. No promoted artifacts, graph semantics, verdicts, or citation records changed.
 
-**BALL: ARCHITECT - M17-S5 is implemented and verified locally in the local commit. No push
-was made. M17-S5 closes John's returned UI issues 2, 3, and 4 and leaves promoted
-artifacts, graph semantics, and verdicts unchanged.**
+**BALL: WORKER - M18-S2b (clean the citation records) FIRST, then M18-S3 (join instruction
+sections to addresses and promote). Both task blocks are under From Architect. Run them in
+that order: S2b cleans the existing citation corpus, S3 writes new citations into it.**
+
+**ARCHITECT VERIFICATION - M17-S7 (Claude Opus 5, 2026-07-27). ACCEPTED, pushed `658f7e2`,
+CI watched.** Tier 3 partition (e2e + cells + workbench boundary + dependents + geometry +
+render + manifest): **39 passed**. Independent checks, not taken on trust:
+- **56 pages captured, 0 mismatches** against the raw PDFs - width, height AND rotation.
+- **1921 widget rects UNTOUCHED** - identical keys, zero rect changes. That was the round's
+  real risk, since it rewrites `node_geometry.json`; D8 is the precedent for a promoted
+  artifact quietly breaking a consumer.
+- Validator is wired into `graph_validator.py` and checks BOTH missing page dimensions and
+  rects outside the page box, with a negative test (`test_page_bounds_validator_fails_closed`)
+  feeding a doctored artifact - so it is not inert. The M16-S4 precedent was a validator
+  made unreachable by an operator-precedence bug; "the code exists" is not evidence.
+- The mixed-orientation case is now pinned mechanically: 13614-C page 1 at 792x612 and
+  page 6 at 612x792, plus an e2e asserting a landscape page keeps its regions on-canvas.
+- Layering is right: captured dimensions preferred, PNG-derived fallback, letter constants
+  last - so an artifact without captured geometry still renders.
+- The Worker caught its own defect mid-round (the global-page-list filtering fault) and
+  re-ran rather than shipping it.
+**RECORDED CORRECTION:** the geometry was NEVER wrong - all 297 stored 13614-C rects match
+the raw PDF exactly. John's "crazy" display was TWO presentation bugs, both Architect-fixed
+(`panes.js` hardcoded 612x792 constants, and `styles.css` forcing
+`.page-canvas { aspect-ratio: 612/792 }`, which letterboxed a landscape page inside a
+portrait box). S7 would not have caught either; its value is that other consumers now have
+page dimensions, and that the out-of-page-box check would catch a REAL geometry fault
+mechanically instead of waiting for a human to notice.
+
+**Superseded (kept as history):** BALL: ARCHITECT - M17-S5 is implemented and verified
+locally in the local commit. No push was made. M17-S5 closes John's returned UI issues 2,
+3, and 4 and leaves promoted artifacts, graph semantics, and verdicts unchanged.
 
 **Worker session checkpoint - M17-S5 implementation (2026-07-27):** Global canary: Ledger
 Llama. Phase canary: Street Address. Applicable defects were D1, D2, D3, D4, D5, D6, D7,
@@ -1259,6 +1288,51 @@ TY2026 docs drop.
   `validate 2025`. No `--basetemp`. ONE local commit; no push.
   Stop conditions: any need to touch promoted artifacts (item 4 below owns that), citations,
   verdict emission, or graph semantics; or a quota/environment failure.
+
+- **M18-S3 TASK - JOIN INSTRUCTION SECTIONS TO ADDRESSES AND PROMOTE (Architect, Claude
+  Opus 5, 2026-07-27). RUN M18-S2b FIRST** - S2b cleans the existing citation corpus, and
+  S3 writes NEW citations; doing S3 first means auditing a moving target. Design in
+  `plans/PHASE_M18.md` (S3 + the HTML-channel revision). **This is the FIRST
+  artifact-writing step of M18 and is Architect-reviewed before it counts as done.**
+  **What S2 already gives you (measured on the stored 1040 HTML, do not re-survey):**
+  143 mined sections, every one carrying `line_tokens`; **16 carry MULTIPLE tokens** -
+  `('4a','4b','4c')`, `('5a','5b','5c')` - which is the multi-line-heading expansion case;
+  86 of 143 carry a `semantic_title` such as "Total Amount From Form(s) W-2, Box 1";
+  blocks expose `block_type`, `text`, `source_start`, `source_end`.
+  **SCOPE: the 1040 canary only** (John's decision - prove it on the richest document
+  before widening). Do NOT promote for the other six acquired instruction documents.
+  1. **Join** each mined section to canonical addresses on the printed line/box token,
+     expanding a multi-token heading to EACH address it names. A section that matches no
+     address, or matches ambiguously, **fails closed into the review queue** as a named
+     finding - never a best guess.
+  2. **Promote** matched sections as citation records carrying `quoted_text`, `locator`,
+     `url`, `retrieved_date`, and **`source_document_id`** (194 of 297 existing citations
+     have none - do not add to that pile).
+     **The quoted text must be verbatim from the STORED HTML file** - never a live fetch,
+     never reconstructed. `check_citation_integrity` is the gate and it has teeth; the M14
+     fabricated-citations reopen is the precedent.
+     **Do NOT reintroduce the S2b defect:** no `- <token>:` wrapper, no trailing repeated
+     line token. If your promoted text needs cleaning after the fact, the derivation is
+     wrong - fix the derivation.
+  3. **Locator.** The miner currently exposes character spans but no HTML anchor id. Anchor
+     ids are the stable locator that survives repagination. Either capture the section's
+     anchor during mining and use it, or use page + span and SAY SO explicitly in your
+     handoff entry with the reason. State which you chose.
+  4. **Preserve `semantic_title` on the promoted record.** Those 86 titles are the naming
+     material M19-S3b needs for line-oriented concepts; losing them here means mining twice.
+  5. **Coverage ratchet:** report a named, counted coverage number - 1040 addresses with an
+     instruction citation, before and after. It only moves up. Today the whole corpus has
+     **28 cells with an instruction citation** (1040 2, 8949 22, schedule_d 4).
+  6. Do NOT touch the workbench dossier - S4 owns surfacing, and M17-S6 already routes
+     `instructions_*` citations into the instruction slot, so correctly promoted records
+     appear there automatically. Verify that they do, and say so.
+  Tier 3 (promoted artifacts). Declared files plus honest `RAN:`/`NOT RUN:` on every one,
+  ASCII, `git diff --check`, module-form `validate 2025`, real preflight with
+  `legacy_mined` reported explicitly, and **`check_citation_integrity` reported explicitly**
+  - that is the gate that matters this round. No `--basetemp`. ONE local commit; no push.
+  Stop conditions: a section whose text cannot be quoted verbatim from the stored file; a
+  join that cannot be made unambiguous (queue it, do not guess); any need to change widget
+  geometry, verdict emission, or graph semantics; or a quota/environment failure.
 
 - **M18-S2b TASK - CLEAN THE CITATION RECORDS (Architect, Claude Opus 5, 2026-07-27).**
   This is John's issue 2 from his 2026-07-27 review, the last of his four still open, and
