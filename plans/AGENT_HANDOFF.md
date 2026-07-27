@@ -94,9 +94,30 @@ the instruction slot; Authority explicitly reports missing authored coverage; do
 citation coverage is visible beside policy counts; and the dossier heading duplication/order
 warts are fixed. No promoted artifacts, graph semantics, verdicts, or citation records changed.
 
-**BALL: WORKER - M18-S2b (clean the citation records) FIRST, then M18-S3 (join instruction
-sections to addresses and promote). Both task blocks are under From Architect. Run them in
-that order: S2b cleans the existing citation corpus, S3 writes new citations into it.**
+**BALL: WORKER - M18-S3 (join instruction sections to addresses and promote). Task block
+under From Architect. M18-S2b is DONE (`0fbfc08`) and Architect-verified - do not redo it.**
+
+**ARCHITECT VERIFICATION - M18-S2b (Claude Opus 5, 2026-07-27). ACCEPTED.** John's review
+issue 2 is closed. Verified against the project's own gate rather than the Worker's summary:
+- **Citation integrity 37 -> 36 mismatches.** 217 `quoted_text` values re-derived, ZERO new
+  failures introduced, and one pre-existing failure fixed. Confirmed by running
+  `check_graph_citations` against the pre-S2b tree and the post-S2b tree.
+- Wrapper-bearing records **217 -> 0**; null `source_document_id` **194 -> 0**; citation ids
+  **identical**, so nothing on the address or node side is orphaned.
+- The 36 remaining are the pre-existing findings the task told the Worker to REPORT rather
+  than guess at: 20 `instructions_form_1040_2025`, 15 `instructions_schedule_d_2025`, 1
+  `schedule_d_2025`. **Relevant to S3:** those 20 sit exactly where S3 is about to write new
+  1040 instruction citations. Understand why they fail before assuming your derivation is
+  sound - if S3's promoted text fails the same way, that is a signal, not a coincidence.
+- Architect note: an initial naive substring check suggested 63 failures. That check was
+  WRONG - it did not replicate the project's normalization. `check_graph_citations` is the
+  authority; the proxy was discarded rather than reported.
+**WORKER DEFECT (ledger D9, logged):** S2b declared only the two test files it wrote and
+left `tests/test_workbench_cells_m17.py` RED - that file hardcoded the old polluted string
+as its expected value, so it was asserting the defect John reported. Architect caught it in
+the Tier 3 partition and fixed the expectation (`b84c942`). D9 is D8's sibling: D8 was
+renaming a promoted value without grepping consumers, D9 is changing one without running
+the consumers' tests.
 
 **Worker session checkpoint - M18-S2b implementation (2026-07-27):** Global canary: Ledger
 Llama. Phase canary: Form 1040. Model: GPT-5 Codex; effort: default; usage/quota/context
