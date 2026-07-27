@@ -12,11 +12,17 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 - History: pruned at each phase close (latest: 2026-07-23). Full narration lives in
   `plans/archive/` (phase plans with close notes) and git history.
 
-## Current state (2026-07-26)
+## Current state (2026-07-27)
 
-**BALL: WORKER - M18-S0 (document class), THEN M18-S1 (HTML instruction channel + 1040
-canary survey). Plan: `plans/PHASE_M18.md`, HTML-channel revision. Task blocks under
-From Architect.**
+**BALL: WORKER - M18-S3 (address join + promotion), after completed M18-S0/S1/S2. Plan:
+`plans/PHASE_M18.md`, HTML-channel revision. S3 is the first artifact-writing step and is
+Architect-reviewed before promotion.**
+
+**Latest status (2026-07-27):** S0 commit `fa8132a`, S1 commit `667c07e`, and S2 commit
+`3e4e50f` are complete locally; no push has been made. S1 acquired six manifest-backed IRS
+HTML pages and recorded the 1040 survey. S2 mines the stored 1040 HTML into line-addressed,
+typed candidates without writing citations or graph artifacts. Next work requires review of
+the S3 join and promotion contract before any live artifact is changed.
 
 **Worker session checkpoint - M18-S0 implementation (2026-07-27):** Global canary: Ledger
 Llama. Model: GPT-5 Codex; effort: default; usage/quota/context indicators are not exposed.
@@ -106,6 +112,25 @@ this as an unresolved S2/S3 cross-check finding.
 - RAN: `.venv\Scripts\python.exe tools/check_ascii.py` -> `ASCII check OK`.
 - RAN: `git diff --check` -> exit 0.
 - RAN: `.venv\Scripts\python.exe -m tax_graph.cli validate 2025` -> exit 0; graph integrity OK, 18 loaded documents.
+
+**Worker session checkpoint - M18-S2 implementation (2026-07-27):** Global canary: Ledger
+Llama. Model: GPT-5 Codex; effort: default; usage/quota/context indicators are not exposed.
+S1 commit `667c07e` is complete. Single declared step: implement the read-only acquired-HTML
+section miner for the 1040 canary, including typed body blocks, source anchors, and stable
+character spans, with fixture tests. No citations, graph semantics, or promoted artifacts
+will be changed. Applicable defect-ledger entries remain D4, D6, and the exact RAN/NOT RUN
+evidence rule; D1-D3, D5, and D7 are not expected for this non-workbench slice.
+
+**M18-S2 verification checkpoint (2026-07-27):**
+
+- RAN: `$testRoot = 'C:\Users\devbox\.codex\visualizations\2026\07\27\019fa2b2-d8cf-74e2-8a06-759b9aaaf5e0\m18_s2_test_tmp'; $env:PYTEST_DEBUG_TEMPROOT = $testRoot; .venv\Scripts\python.exe -m pytest tests/test_instruction_html_m18.py tests/test_instruction_sections_m18.py -q` -> 3 passed, 1 pytest cache ACL warning.
+- RAN: `$testRoot = 'C:\Users\devbox\.codex\visualizations\2026\07\27\019fa2b2-d8cf-74e2-8a06-759b9aaaf5e0\m18_s2_full_test_tmp'; New-Item -ItemType Directory -Force -Path $testRoot | Out-Null; $env:PYTEST_DEBUG_TEMPROOT = $testRoot; .venv\Scripts\python.exe -m pytest tests/test_acquire_fetch.py tests/test_acquire_manifest.py tests/test_instruction_html_m18.py tests/test_instruction_sections_m18.py tests/test_cli.py -q` -> 17 passed, 1 skipped (opt-in live network test), 1 pytest cache ACL warning.
+- RAN: real stored 1040 probe with `.venv\Scripts\python.exe -c ... mine_instruction_html_file(...)` -> 143 sections, 138 with blocks, 1117 blocks; block types `cross_reference`, `example`, `exception`, `list_item`, `paragraph`, `table`, `worksheet`.
+- RAN: `.venv\Scripts\python.exe tools/check_ascii.py` -> `ASCII check OK`.
+- RAN: `git diff --check` -> exit 0.
+
+The initial S2 probe exposed and fixed stale-anchor carryover and semantic-heading
+boundary errors before the green rerun. S2 changes are not committed yet.
 
 **M18-S0 correction checkpoint (2026-07-27):** The first validation run surfaced an
 existing accepted local extension for `form_2441_2025`, so the loaded graph contained 18

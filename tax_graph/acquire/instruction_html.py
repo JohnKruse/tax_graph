@@ -20,6 +20,8 @@ class InstructionHeading:
     level: int
     anchor_id: str
     text: str
+    source_start: int = 0
+    source_end: int = 0
 
 
 @dataclass(frozen=True)
@@ -37,24 +39,54 @@ class _HeadingParser(HTMLParser):
         super().__init__(convert_charrefs=True)
         self.headings: list[InstructionHeading] = []
         self._active: tuple[int, str] | None = None
+        self._active_start = 0
         self._parts: list[str] = []
         self._pending_anchor = ""
+        self._pending_anchor_start = 0
+        self._source = ""
+        self._line_starts: list[int] = [0]
+
+    def set_source(self, source: str) -> None:
+        """Provide source text so headings can carry deterministic character spans."""
+        self._source = source
+        self._line_starts = [0]
+        for index, char in enumerate(source):
+            if char == "\n":
+                self._line_starts.append(index + 1)
+
+    def _offset(self) -> int:
+        line, column = self.getpos()
+        return self._line_starts[line - 1] + column
 
     def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
         if tag.lower() == "a":
             attributes = dict(attrs)
-            self._pending_anchor = str(attributes.get("name") or attributes.get("id") or "")
+            anchor = str(attributes.get("name") or attributes.get("id") or "")
+            if self._active is not None and anchor:
+                self._active = (self._active[0], anchor)
+                self._active_start = self._offset()
+            else:
+                self._pending_anchor = anchor
+                self._pending_anchor_start = self._offset()
             return
         match = re.fullmatch(r"h([1-6])", tag.lower())
         if not match:
+            if self._active is None:
+                self._pending_anchor = ""
+                self._pending_anchor_start = 0
             return
         attributes = dict(attrs)
         self._active = (
             int(match.group(1)),
             str(attributes.get("id") or self._pending_anchor or ""),
         )
+        start = self._offset()
+        if self._pending_anchor:
+            start = self._pending_anchor_start
+        self._active_start = start
         self._parts = []
         self._pending_anchor = ""
+        self._pending_anchor_start = 0
 
     def handle_endtag(self, tag: str) -> None:
         if self._active is None or not re.fullmatch(r"h[1-6]", tag.lower()):
@@ -62,18 +94,32 @@ class _HeadingParser(HTMLParser):
         level, anchor_id = self._active
         text = " ".join("".join(self._parts).split())
         if text:
-            self.headings.append(InstructionHeading(level, anchor_id, text))
+            end = self._offset()
+            close_end = self._source.find(">", end)
+            self.headings.append(
+                InstructionHeading(
+                    level,
+                    anchor_id,
+                    text,
+                    source_start=self._active_start,
+                    source_end=(close_end + 1 if close_end >= 0 else end),
+                )
+            )
         self._active = None
         self._parts = []
 
     def handle_data(self, data: str) -> None:
         if self._active is not None:
             self._parts.append(data)
+        elif data.strip():
+            self._pending_anchor = ""
+            self._pending_anchor_start = 0
 
 
 def parse_headings(html_text: str) -> tuple[InstructionHeading, ...]:
     """Return the ordered HTML heading tree in source order."""
     parser = _HeadingParser()
+    parser.set_source(html_text)
     parser.feed(html_text)
     parser.close()
     return tuple(parser.headings)

@@ -39,3 +39,12 @@ def test_instruction_html_parser_preserves_heading_anchors_and_line_tokens():
         "    - Line 1 - Taxable income [id200]",
         "      - Line 2 - Taxable income [source-anchor]",
     ]
+
+
+@pytest.mark.m18
+def test_instruction_html_parser_does_not_carry_unrelated_anchor():
+    html = '<a name="stale"></a><div>unrelated content</div><h4><a name="inner"></a>Line 3</h4>'
+
+    headings = parse_headings(html)
+
+    assert headings[0].anchor_id == "inner"
