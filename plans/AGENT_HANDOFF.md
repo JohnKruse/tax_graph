@@ -14,9 +14,29 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## Current state (2026-07-27)
 
-**BALL: WORKER - M18-S3 (address join + promotion), after completed M18-S0/S1/S2. Plan:
-`plans/PHASE_M18.md`, HTML-channel revision. S3 is the first artifact-writing step and is
-Architect-reviewed before promotion.**
+**BALL: WORKER - M19-S4b (URGENT: main is CI-RED, dependents do not fill). Task block under
+From Architect. M18-S3 is QUEUED BEHIND IT - do not start S3 until main is green again.**
+
+**MAIN IS CI-RED (2026-07-27, run 30250234820, all three interpreters).** The Architect
+pushed 14 commits - the first time M19's real code reached CI - and it failed:
+`tests/test_dependents_m15.py` 3 failed / 5 passed. **M19-S4 renamed the 1040 dependents
+`repeatable.group` from `dependents` to `dependent`, but `tax_graph/output/fill.py:78`
+hard-compares against `"dependents"`, so every dependent disposition is skipped and ZERO
+dependent fields are written to the 1040.** Dependents do not print - filing correctness.
+Architect bisected: `8ef228d` 8 passed, `a72d34e` (S3a) 8 passed, `e031fd9` (S4) 3 failed.
+Reproduces locally in ~31 seconds. Logged as ledger entry **D8** and returned to the Worker
+per John's standing directive that Codex confronts its own defects.
+**WHY BOTH OF US MISSED IT:** the Architect verified retrieval, uniqueness, visibility,
+citations, and the geometry - and never ran the FILL tests, because both Worker and
+Architect reasoned about the review surface and forgot the ENGINE consumes the same
+promoted artifacts. Local Tier 3 partitions were 62 passed and all green; they simply did
+not include `tests/test_dependents_m15.py`. **This is the vindication of pushing:** three
+rounds of promoted-artifact work looked fully verified locally and were not.
+
+**Superseded (kept as history):** BALL: WORKER - M18-S3 (address join + promotion), after
+completed M18-S0/S1/S2. S0 `fa8132a`, S1 `667c07e`, S2 `806d40e` are complete locally and
+unpushed; the Worker's entry cites S2 as `3e4e50f`, a pre-amend hash that is not in the log.
+S3 remains the first artifact-writing step and is Architect-reviewed before promotion.
 
 **Latest status (2026-07-27):** S0 commit `fa8132a`, S1 commit `667c07e`, and S2 commit
 `3e4e50f` are complete locally; no push has been made. S1 acquired six manifest-backed IRS
@@ -1038,6 +1058,45 @@ TY2026 docs drop.
   environment failure, and no commit was made.
 
 ## From Architect
+
+- **M19-S4b TASK - URGENT, MAIN IS CI-RED. FIX THE DEPENDENTS FILL REGRESSION (Architect,
+  Claude Opus 5, 2026-07-27).** Do this BEFORE any further M18 work. **Read ledger entry D8
+  in `AGENTS.md` first and state it in your checkpoint - this is your defect and you are
+  fixing it, not the Architect.**
+  **What happened.** M19-S4 was asked to normalize 8949 group naming. It also renamed the
+  1040 DEPENDENTS group from the table token `dependents` to the row-template token
+  `dependent` across `graph/2025/field_maps/form_1040_2025.yaml`. `tax_graph/output/fill.py`
+  line 78 hard-compares `if repeatable.get("group") != "dependents": continue`, so every
+  dependent disposition is now skipped: **zero dependent fields are written to the 1040.**
+  Dependents do not print. That is filing correctness, not cosmetics.
+  Evidence: CI run 30250234820 FAILED on all three interpreters -
+  `tests/test_dependents_m15.py` 3 failed / 5 passed
+  (`assert 0 == (1 * 4)`, `assert 0 == (4 * 4)`, and the credit-box widget absent).
+  Architect bisected it: `8ef228d` 8 passed, `a72d34e` (S3a) 8 passed, `e031fd9` (S4)
+  3 failed. Reproduces locally in ~31s.
+  1. **Restore `group: dependents`** in the 1040 field maps. `group` names the TABLE
+     (`table=dependents`), not the row template (`row_template=dependent`) - so this is
+     also the semantically correct value, not merely a revert. Keep the 8949 normalization
+     you did (`short_term_transactions` / `long_term_transactions`); that part was right
+     and had no consumer coupling.
+  2. **Fix the same inconsistency in the workbench projection** so field maps and
+     `cell_inventory` agree on the group token. They currently BOTH say `dependent`; both
+     must say `dependents`.
+  3. **Grep before you conclude:** `grep -rn "dependents\"\|'dependents'" tax_graph/
+     workbench/` and confirm every consumer of the group token agrees. Report any OTHER
+     value S4 renamed that has a consumer - check the 8949 groups too, since you renamed
+     those as well.
+  4. **Add a regression test** that fails if a promoted `repeatable.group` value stops
+     matching what `fill.py` consumes. A test that pins the CONTRACT, not just the current
+     string.
+  **Declared test files MUST include `tests/test_dependents_m15.py`** - the file nobody ran.
+  Also run the M19 files and the workbench boundary (D5). Tier-1 floor plus ASCII,
+  `git diff --check`, module-form `validate 2025`, real preflight with `legacy_mined`
+  reported explicitly. Run pytest plainly - no `--basetemp`. ONE local commit; no push -
+  the Architect pushes and watches CI to green, since main is currently red.
+  Stop conditions: any need to change verdict emission or graph semantics; a consumer whose
+  correct token is genuinely ambiguous (report it, do not guess); or a quota/environment
+  failure.
 
 - **DESIGN DIRECTION - THE GRAPH AS EXTRACTION CONTRACT FOR SOURCE DOCUMENTS (John,
   2026-07-27). Not a task yet; candidate phase after M18/M19. Captured because it is the

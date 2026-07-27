@@ -121,6 +121,20 @@ entries; do not delete them.
   container, or give the container `position: relative`. NOTE: the correct pattern was already in
   the same commit - `scrollOfficialRegionIntoView` does the rect-delta math properly for the
   center pane. Copy the pattern you already got right. (M17-S3R2, 2026-07-25)
+- **D8 - Renaming a value in a PROMOTED ARTIFACT is an API change. Grep for every consumer
+  before you rename.** M19-S4 was told to normalize 8949 group naming; it also renamed the
+  1040 dependents group from the table token `dependents` to the row-template token
+  `dependent` in `graph/2025/field_maps/form_1040_2025.yaml`. But `tax_graph/output/fill.py`
+  line 78 hard-compares `if repeatable.get("group") != "dependents": continue`, so EVERY
+  dependent disposition was silently skipped and **zero dependent fields were written to the
+  1040** - a filing-correctness regression, not a cosmetic one. It went CI-red on all three
+  interpreters (`tests/test_dependents_m15.py`, 3 failed) and reproduces locally in 31
+  seconds. Neither Worker nor Architect ran that file, because both reasoned about the
+  workbench projection and forgot the ENGINE also consumes these artifacts. Rules: (a) a
+  promoted-artifact value is a contract - `grep -rn "<old-value>" tax_graph/ workbench/`
+  before renaming it; (b) `group` names the TABLE (`table=dependents`), not the row template
+  (`row_template=dependent`); (c) when a round touches field maps, addresses, or bindings,
+  the fill/engine tests are in scope, not just the review-surface tests. (M19-S4, 2026-07-27)
 - **D6 - Always use the module form of a CLI, never the console script.**
   `.venv\Scripts\python.exe -m tax_graph.cli ...`, not `.venv\Scripts\tax-graph.exe ...`; the
   generated launcher resolves through an editable-install `.pth` with an absolute path that does not
