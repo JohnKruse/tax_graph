@@ -167,15 +167,33 @@ discover late:
    ingest instructions for the 1099/W-2 family and 13614-C at all. They DO have HTML
    instructions, so cost is no longer the objection; the question is whether
    payer-facing filing instructions (how to FILE the form) help a filer-facing review
-   surface (how to READ the form). **DECIDED 2026-07-27 (Architect, on John's standing
-   "do what makes sense" delegation; reversible if mining shows the split is not clean):
-   ingest the BOX AND CODE DEFINITIONS, skip the filing mechanics, skip 13614-C.**
-   Measured on `iw2w3`: roughly 60% of the document is employer filing mechanics
-   (deadlines, Copy A mailing, penalties, e-filing thresholds) which are irrelevant to a
-   filer-facing review surface, and roughly 40% is box/code content definitions - e.g.
-   `Code D: Elective deferrals under a section 401(k) cash or deferred arrangement
-   (plan).` and `Code DD: Cost of employer-sponsored health coverage.` The latter is
-   exactly what a reviewer of the now-addressable `w2/copy[A]/box12/entry[3]/code` cell
-   needs. This is a per-SECTION filter, not a per-document choice, and M18 already walks
-   the heading tree, so it costs nothing extra. 13614-C is a VITA intake sheet with no
-   per-line authority worth citing.
+   surface. **RULED BY JOHN, 2026-07-27 - and the framing matters more than the answer:
+   "the W2 is just a data sink for the filer to pull from. I don't think we need to go too
+   deeply on this."**
+
+   **THE DOCUMENT-CLASS DISTINCTION (John's point, generalized - it reaches past M18):**
+   - **RETURN documents** (1040, Schedules 1/1-A/2/3/A/B/D, 6251, 8949, 2441) are
+     COMPUTED by the filer. Every line needs full instruction and authority depth, because
+     the graph has to justify a number it produced.
+   - **SOURCE documents** (W-2, 1099-DIV/INT/B, and every information return a bank or
+     employer will send) are READ by the filer. They are data sinks. Tax Graph must
+     understand them well enough to IDENTIFY the form and EXTRACT each box correctly -
+     nothing more. How the ISSUER produced the number is not our subject.
+   - **The exception that defines the boundary:** issuer method or qualifier fields that
+     change the TAX TREATMENT of the value are in scope. John's example is cost-basis
+     method - LIFO vs FIFO on a 1099-B changes gain or loss. Same class: covered vs
+     noncovered securities, wash-sale adjustments, and the Box 12 codes that drive a
+     downstream form. Ingest those; skip deadlines, Copy A mailing, penalties, and
+     e-filing thresholds (measured at roughly 60% of `iw2w3`).
+
+   So for source documents M18 takes a SHALLOW pass: box/code semantics sufficient for
+   extraction, plus the tax-relevant method flags. Not the full per-line treatment the
+   return documents get. 13614-C is skipped entirely - a VITA intake sheet with no
+   per-line authority to cite.
+
+   **MODELING GAP THIS EXPOSES (not M18's to fix; flagged for the backlog):** the graph has
+   no `document_class` field. The distinction currently survives only as a comment in
+   `graph/2025/documents/form-1099-b.yaml` ("Form 1099-B (source document)"). It deserves
+   to be a real field, because it should drive instruction depth, review expectations
+   (a source-document cell is reviewed for EXTRACTION correctness, not computation), and
+   population policy - source cells are `imported`, never `computed`.

@@ -931,10 +931,17 @@ TY2026 docs drop.
      `Instructions for Schedule 1-A Additional Deductions` (id158).
   5. **Report where HTML and PDF disagree** as a FINDING. PDF stays as fallback and
      cross-check; do not silently prefer one.
-  6. **Section filter (decided, see the plan):** for the 1099/W-2 family, box and code
-     definitions are IN, employer filing mechanics are OUT, 13614-C is skipped. Report
-     whether that split is cleanly detectable from the heading tree - if it is not, say
-     so rather than forcing it.
+  6. **Depth by DOCUMENT CLASS (John's ruling, 2026-07-27 - see the plan).** RETURN
+     documents (1040, Schedules, 6251, 8949, 2441) are computed by the filer and get full
+     per-line depth. SOURCE documents (W-2, 1099-DIV/INT/B) are data sinks the filer pulls
+     FROM: understand them enough to IDENTIFY the form and EXTRACT each box, and no more -
+     "I don't think we need to go too deeply on this." The exception that defines the
+     boundary is issuer method/qualifier fields that change TAX TREATMENT: cost-basis
+     method (LIFO vs FIFO on a 1099-B), covered vs noncovered, wash-sale adjustments, and
+     Box 12 codes that drive a downstream form. Skip deadlines, Copy A mailing, penalties,
+     e-filing thresholds. Skip 13614-C entirely. **For S1 just REPORT whether this split is
+     cleanly detectable from the heading tree** - if it is not, say so rather than forcing
+     it.
   No citation records, no graph changes, no promoted-artifact changes this round.
   Tests: cover the acquisition/parse helpers with a stored FIXTURE, never a live network
   fetch in a test. Tier-1 floor with honest `RAN:`/`NOT RUN:` lines for EVERY declared
