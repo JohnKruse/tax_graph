@@ -98,6 +98,62 @@ warts are fixed. No promoted artifacts, graph semantics, verdicts, or citation r
 sections to addresses and promote). Both task blocks are under From Architect. Run them in
 that order: S2b cleans the existing citation corpus, S3 writes new citations into it.**
 
+**Worker session checkpoint - M18-S2b implementation (2026-07-27):** Global canary: Ledger
+Llama. Phase canary: Form 1040. Model: GPT-5 Codex; effort: default; usage/quota/context
+indicators are not exposed. John gave go via the current task request. Single declared step:
+source-verify and clean the 297 promoted citation records, add only certain
+`source_document_id` values, preserve every `citation_id`, add focused tests and the
+reproducible cleanup tool, then run the Tier-3 verification floor. Applicable defect-ledger
+entries: D4 (tests are read-only and use no live state), D6 (module-form commands only), D8
+(promoted artifact values are contracts; no consumer value is being renamed), and the exact
+RAN/NOT RUN evidence rule. D1-D3, D5, and D7 are not expected for this non-workbench slice.
+
+**M18-S2b artifact checkpoint (2026-07-27):** The source-verified pass found 297 promoted
+citations, 217 wrapper-bearing quotes, and 194 null provenance fields, matching the scoped
+analysis. The deterministic cleanup helper verifies each derived quote against the acquired
+source text before allowing a rewrite. The artifact rewrite changed 217 `quoted_text` values,
+added 194 exact form `source_document_id` values, changed no citation IDs, and found zero
+failed re-derivations. The focused helper/corpus test is green (7 passed). Remaining expensive
+verification is the explicit citation-integrity check, declared pytest files, ASCII,
+diff-check, module-form validation, and real workbench preflight with `legacy_mined`.
+Declared focused test files for this step: `tests/test_citation_cleanup_m18.py` and
+`tests/test_graph_validator.py`.
+
+**M18-S2b focused pytest verification (2026-07-27):**
+
+- NOT GREEN (environment setup): `.venv\Scripts\python.exe -m pytest tests/test_citation_cleanup_m18.py tests/test_graph_validator.py -q` -> 9 passed, 12 errors during `tmp_path` setup with `PermissionError: [WinError 5]` scanning the poisoned `.test_tmp\pytest-of-devbox` root.
+- RAN: `$testRoot = 'C:\Users\devbox\.codex\visualizations\2026\07\27\019fa4f9-9f45-7151-9ebf-ee8862e330f6\m18_s2b_pytest_r2'; New-Item -ItemType Directory -Force -Path $testRoot | Out-Null; $env:PYTEST_DEBUG_TEMPROOT = $testRoot; .venv\Scripts\python.exe -m pytest tests/test_citation_cleanup_m18.py tests/test_graph_validator.py -q` -> 21 passed in 134.63s; one known pytest cache ACL warning.
+
+**M18-S2b citation-integrity verification (2026-07-27):**
+
+- RAN: `.venv\Scripts\python.exe -c "... check_citation_integrity(affected, text_dir='.cache/raw/2025') ..."` -> 217 affected citations checked, 0 mismatches. The 217 are exactly the wrapper-bearing and null-provenance records from the committed baseline.
+- RAN: `.venv\Scripts\python.exe -c "... check_graph_citations(year='2025', raw_store='.cache/raw') ..."` -> 319 citations checked including the local extension overlay, 36 existing mismatches. All 36 are untouched non-S2b records: 16 Schedule D worksheet/instruction citations and 20 Form 1040 instruction/worksheet citations. They remain explicit findings rather than guessed edits; S2b re-derivation failures are 0.
+
+The focused gate is green. Before/after counts for the promoted 297-record corpus are:
+wrapper-bearing `217 -> 0`, null `source_document_id` `194 -> 0`, failed S2b
+re-derivations `0`, and citation IDs unchanged. The full integrity findings above are
+the remaining pre-existing source-text gaps and are not silently dropped.
+
+- RAN: `.venv\Scripts\python.exe tools/check_ascii.py` -> exit 0, `ASCII check OK`.
+- RAN: `git diff --check` -> exit 0, no output.
+- RAN: `.venv\Scripts\python.exe -m tax_graph.cli validate 2025` -> exit 0; graph integrity OK, 18 documents loaded, 319 citations including extensions.
+
+**M18-S2b fast-gate checkpoint (2026-07-27):** Focused pytest and affected-citation
+integrity are green. Remaining commands are ASCII, `git diff --check`, module-form
+`validate 2025`, and the real workbench preflight with `legacy_mined` reported. No
+full partition or push yet.
+
+- RAN: `.venv\Scripts\python.exe -m workbench.cli --year 2025 preflight` -> passed; 35
+  entries, 3243 units, 1921 field controls, `legacy_mined=394` unchanged.
+
+M18-S2b implementation and Tier-1 floor are complete locally. The 36 unrelated full
+integrity findings remain open and untouched for a later citation-source cleanup; they
+are not S2b wrapper/provenance records. The step is ready for its single local commit;
+M18-S3 remains next and must be reviewed before any new citation promotion.
+
+**M18-S2b close checkpoint (2026-07-27):** Committed locally with the citation artifacts,
+source-verification helper, focused tests, cleanup tool, and this handoff update. No push.
+
 **ARCHITECT VERIFICATION - M17-S7 (Claude Opus 5, 2026-07-27). ACCEPTED, pushed `658f7e2`,
 CI watched.** Tier 3 partition (e2e + cells + workbench boundary + dependents + geometry +
 render + manifest): **39 passed**. Independent checks, not taken on trust:
