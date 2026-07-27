@@ -840,7 +840,7 @@ field_dispositions:
   population_policy: user_entered
   value_format: text
   repeatable:
-    group: dependent
+    group: dependents
     row_slot: 1
     column: first_name
     role: identity
@@ -859,7 +859,7 @@ field_dispositions:
   population_policy: user_entered
   value_format: text
   repeatable:
-    group: dependent
+    group: dependents
     row_slot: 2
     column: first_name
     role: identity
@@ -878,7 +878,7 @@ field_dispositions:
   population_policy: user_entered
   value_format: text
   repeatable:
-    group: dependent
+    group: dependents
     row_slot: 3
     column: first_name
     role: identity
@@ -897,7 +897,7 @@ field_dispositions:
   population_policy: user_entered
   value_format: text
   repeatable:
-    group: dependent
+    group: dependents
     row_slot: 4
     column: first_name
     role: identity
@@ -916,7 +916,7 @@ field_dispositions:
   population_policy: user_entered
   value_format: text
   repeatable:
-    group: dependent
+    group: dependents
     row_slot: 1
     column: last_name
     role: identity
@@ -935,7 +935,7 @@ field_dispositions:
   population_policy: user_entered
   value_format: text
   repeatable:
-    group: dependent
+    group: dependents
     row_slot: 2
     column: last_name
     role: identity
@@ -954,7 +954,7 @@ field_dispositions:
   population_policy: user_entered
   value_format: text
   repeatable:
-    group: dependent
+    group: dependents
     row_slot: 3
     column: last_name
     role: identity
@@ -973,7 +973,7 @@ field_dispositions:
   population_policy: user_entered
   value_format: text
   repeatable:
-    group: dependent
+    group: dependents
     row_slot: 4
     column: last_name
     role: identity
@@ -992,7 +992,7 @@ field_dispositions:
   population_policy: user_entered
   value_format: text
   repeatable:
-    group: dependent
+    group: dependents
     row_slot: 1
     column: ssn
     role: identity
@@ -1011,7 +1011,7 @@ field_dispositions:
   population_policy: user_entered
   value_format: text
   repeatable:
-    group: dependent
+    group: dependents
     row_slot: 2
     column: ssn
     role: identity
@@ -1030,7 +1030,7 @@ field_dispositions:
   population_policy: user_entered
   value_format: text
   repeatable:
-    group: dependent
+    group: dependents
     row_slot: 3
     column: ssn
     role: identity
@@ -1049,7 +1049,7 @@ field_dispositions:
   population_policy: user_entered
   value_format: text
   repeatable:
-    group: dependent
+    group: dependents
     row_slot: 4
     column: ssn
     role: identity
@@ -1068,7 +1068,7 @@ field_dispositions:
   population_policy: user_entered
   value_format: text
   repeatable:
-    group: dependent
+    group: dependents
     row_slot: 1
     column: relationship
     role: identity
@@ -1087,7 +1087,7 @@ field_dispositions:
   population_policy: user_entered
   value_format: text
   repeatable:
-    group: dependent
+    group: dependents
     row_slot: 2
     column: relationship
     role: identity
@@ -1106,7 +1106,7 @@ field_dispositions:
   population_policy: user_entered
   value_format: text
   repeatable:
-    group: dependent
+    group: dependents
     row_slot: 3
     column: relationship
     role: identity
@@ -1125,7 +1125,7 @@ field_dispositions:
   population_policy: user_entered
   value_format: text
   repeatable:
-    group: dependent
+    group: dependents
     row_slot: 4
     column: relationship
     role: identity
@@ -1144,7 +1144,7 @@ field_dispositions:
   population_policy: decision_required
   value_format: checkbox
   repeatable:
-    group: dependent
+    group: dependents
     row_slot: 1
     column: lived_with_you_more_than_half
     role: decision
@@ -1163,7 +1163,7 @@ field_dispositions:
   population_policy: decision_required
   value_format: checkbox
   repeatable:
-    group: dependent
+    group: dependents
     row_slot: 1
     column: in_the_us
     role: decision
@@ -1182,7 +1182,7 @@ field_dispositions:
   population_policy: decision_required
   value_format: checkbox
   repeatable:
-    group: dependent
+    group: dependents
     row_slot: 2
     column: lived_with_you_more_than_half
     role: decision
@@ -1201,7 +1201,7 @@ field_dispositions:
   population_policy: decision_required
   value_format: checkbox
   repeatable:
-    group: dependent
+    group: dependents
     row_slot: 2
     column: in_the_us
     role: decision
@@ -1220,7 +1220,7 @@ field_dispositions:
   population_policy: decision_required
   value_format: checkbox
   repeatable:
-    group: dependent
+    group: dependents
     row_slot: 3
     column: lived_with_you_more_than_half
     role: decision
@@ -1239,7 +1239,7 @@ field_dispositions:
   population_policy: decision_required
   value_format: checkbox
   repeatable:
-    group: dependent
+    group: dependents
     row_slot: 3
     column: in_the_us
     role: decision
@@ -1258,7 +1258,7 @@ field_dispositions:
   population_policy: decision_required
   value_format: checkbox
   repeatable:
-    group: dependent
+    group: dependents
     row_slot: 4
     column: lived_with_you_more_than_half
     role: decision
@@ -1277,7 +1277,7 @@ field_dispositions:
   population_policy: decision_required
   value_format: checkbox
   repeatable:
-    group: dependent
+    group: dependents
     row_slot: 4
     column: in_the_us
     role: decision
@@ -1296,7 +1296,7 @@ field_dispositions:
   population_policy: decision_required
   value_format: checkbox
   repeatable:
-    group: dependent
+    group: dependents
     row_slot: 1
     column: full_time_student
     role: decision
@@ -1315,7 +1315,7 @@ field_dispositions:
   population_policy: decision_required
   value_format: checkbox
   repeatable:
-    group: dependent
+    group: dependents
     row_slot: 1
     column: permanently_totally_disabled
     role: decision
@@ -1334,7 +1334,7 @@ field_dispositions:
   population_policy: decision_required
   value_format: checkbox
   repeatable:
-    group: dependent
+    group: dependents
     row_slot: 2
     column: full_time_student
     role: decision
@@ -1353,7 +1353,7 @@ field_dispositions:
   population_policy: decision_required
   value_format: checkbox
   repeatable:
-    group: dependent
+    group: dependents
     row_slot: 2
     column: permanently_totally_disabled
     role: decision
@@ -1372,7 +1372,7 @@ field_dispositions:
   population_policy: decision_required
   value_format: checkbox
   repeatable:
-    group: dependent
+    group: dependents
     row_slot: 3
     column: full_time_student
     role: decision
@@ -1391,7 +1391,7 @@ field_dispositions:
   population_policy: decision_required
   value_format: checkbox
   repeatable:
-    group: dependent
+    group: dependents
     row_slot: 3
     column: permanently_totally_disabled
     role: decision
@@ -1410,7 +1410,7 @@ field_dispositions:
   population_policy: decision_required
   value_format: checkbox
   repeatable:
-    group: dependent
+    group: dependents
     row_slot: 4
     column: full_time_student
     role: decision
@@ -1429,7 +1429,7 @@ field_dispositions:
   population_policy: decision_required
   value_format: checkbox
   repeatable:
-    group: dependent
+    group: dependents
     row_slot: 4
     column: permanently_totally_disabled
     role: decision
@@ -1448,7 +1448,7 @@ field_dispositions:
   population_policy: decision_required
   value_format: checkbox
   repeatable:
-    group: dependent
+    group: dependents
     row_slot: 1
     column: child_tax_credit
     role: decision
@@ -1467,7 +1467,7 @@ field_dispositions:
   population_policy: decision_required
   value_format: checkbox
   repeatable:
-    group: dependent
+    group: dependents
     row_slot: 1
     column: credit_for_other_dependents
     role: decision
@@ -1486,7 +1486,7 @@ field_dispositions:
   population_policy: decision_required
   value_format: checkbox
   repeatable:
-    group: dependent
+    group: dependents
     row_slot: 2
     column: child_tax_credit
     role: decision
@@ -1505,7 +1505,7 @@ field_dispositions:
   population_policy: decision_required
   value_format: checkbox
   repeatable:
-    group: dependent
+    group: dependents
     row_slot: 2
     column: credit_for_other_dependents
     role: decision
@@ -1524,7 +1524,7 @@ field_dispositions:
   population_policy: decision_required
   value_format: checkbox
   repeatable:
-    group: dependent
+    group: dependents
     row_slot: 3
     column: child_tax_credit
     role: decision
@@ -1543,7 +1543,7 @@ field_dispositions:
   population_policy: decision_required
   value_format: checkbox
   repeatable:
-    group: dependent
+    group: dependents
     row_slot: 3
     column: credit_for_other_dependents
     role: decision
@@ -1562,7 +1562,7 @@ field_dispositions:
   population_policy: decision_required
   value_format: checkbox
   repeatable:
-    group: dependent
+    group: dependents
     row_slot: 4
     column: child_tax_credit
     role: decision
@@ -1581,7 +1581,7 @@ field_dispositions:
   population_policy: decision_required
   value_format: checkbox
   repeatable:
-    group: dependent
+    group: dependents
     row_slot: 4
     column: credit_for_other_dependents
     role: decision

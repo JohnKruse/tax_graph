@@ -14,6 +14,9 @@ from tax_graph.engine import MISSING, Result
 from tax_graph.output.field_maps import inventory_by_name
 
 
+DEPENDENTS_TABLE_GROUP = "dependents"
+
+
 class PdfExtraRequired(RuntimeError):
     """Raised when a PDF export is requested without the optional extra."""
 
@@ -75,7 +78,7 @@ def build_field_values(
         values[field_name] = _format_value(raw_value, mapping.get("format", "text"))
     for disposition in field_map.get("field_dispositions", []) or []:
         repeatable = disposition.get("repeatable") or {}
-        if repeatable.get("group") != "dependents":
+        if repeatable.get("group") != DEPENDENTS_TABLE_GROUP:
             continue
         index = int(repeatable["row_slot"]) - 1
         if index >= len(dependents):

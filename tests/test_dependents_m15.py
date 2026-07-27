@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import copy
+import json
 from pathlib import Path
 
 import pytest
@@ -10,6 +11,8 @@ import pytest
 from tax_graph.engine import Engine, Graph
 from tax_graph.io.loader import load_graph
 from tax_graph.output import DependentAttachmentRequired, build_field_values, load_field_maps
+from tax_graph.output.fill import DEPENDENTS_TABLE_GROUP
+from workbench.cell_inventory import build_document_cells
 from tax_graph.record import build_return_record
 from tax_graph.validate import validate_taxpayer_facts_document
 
@@ -70,6 +73,32 @@ def test_zero_one_and_four_dependents_validate_and_fill_deterministically(count:
             assert values[identity_fields[4]] == "First2"
         else:
             assert identity_fields[4] not in values
+
+
+@pytest.mark.m15
+def test_dependents_table_group_matches_filler_and_workbench_projection() -> None:
+    field_map = next(
+        item for item in load_field_maps(2025, ROOT) if item["document_id"] == "form_1040_2025"
+    )
+    dispositions = [
+        item
+        for item in field_map["field_dispositions"]
+        if (item.get("repeatable") or {}).get("column") == "first_name"
+    ]
+    assert dispositions
+    assert {item["repeatable"]["group"] for item in dispositions} == {DEPENDENTS_TABLE_GROUP}
+
+    geometry = json.loads(
+        (ROOT / "graph" / "2025" / "node_geometry.json").read_text(encoding="utf-8")
+    )["entries"]
+    cells = build_document_cells(
+        ROOT, 2025, "form_1040_2025", geometry_entries=geometry, include_inputs=False
+    ).cells
+    projected = [
+        cell for cell in cells if cell.get("concept_id") == "form_1040/dependents/dependent/first_name"
+    ]
+    assert projected
+    assert {cell["repeatable"]["group"] for cell in projected} == {DEPENDENTS_TABLE_GROUP}
 
 
 @pytest.mark.m15

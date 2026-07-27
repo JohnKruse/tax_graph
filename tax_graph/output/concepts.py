@@ -393,7 +393,15 @@ def _repeatable_projection(
         return None
     path = _components(address)
     row_template = _component(path, "row_template") or "repeatable_fields"
-    group = concept_id.split("/")[1] if concept_id.startswith("form_8949/") else row_template
+    if concept_id.startswith("form_8949/"):
+        # Form 8949 uses the normalized concept group as its table contract.
+        group = concept_id.split("/")[1]
+    elif _component(path, "document") == "form_1040":
+        # ``group`` names the table, while ``row_template`` names its row shape.
+        # The filler and workbench both consume the table token.
+        group = _component(path, "table") or row_template
+    else:
+        group = row_template
     return {
         "group": group,
         "row_slot": int(occurrence["axes"]["row_slot"]),
