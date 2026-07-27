@@ -14,8 +14,27 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## Current state (2026-07-26)
 
-**BALL: WORKER - M18-S1 (acquire the HTML instruction channel + 1040 canary survey).
-Plan: `plans/PHASE_M18.md`, HTML-channel revision. Task block under From Architect.**
+**BALL: WORKER - M18-S0 (document class), THEN M18-S1 (HTML instruction channel + 1040
+canary survey). Plan: `plans/PHASE_M18.md`, HTML-channel revision. Task blocks under
+From Architect.**
+
+**DOCUMENT CLASS (John, 2026-07-27):** "add the doc class... it will pay off down the line
+since there are all manner of docs that we won't touch in this dev effort", and the 1099
+family should be in the graph "so that the AI utilizing it has a solid understanding of
+the fields". **ARCHITECT CORRECTION: `document_type` already exists and is load-bearing**
+(required by schema, on all 17 records, consumed by the intake classifier, the extension
+harness, and the MCP server) - the Architect had claimed the distinction survived only as
+a comment, having grepped for the wrong names. The real problem is that `document_type`
+CONFLATES two axes: `tax_form` vs `schedule` is SHAPE (drives nothing - 1040, 6251, 8949,
+and the schedules are all filer-computed), while `source_document`/`instructions` is ROLE.
+And 13614-C sits under `source_document` though it is an intake questionnaire. So S0 adds
+a separate `document_class` on the role axis - `return` / `information_return` /
+`instructions` / `intake` - and leaves `document_type` untouched.
+On John's second point: 1099-DIV/INT/B are ALREADY in the graph with concepts minted by
+M19-S3a/S4 (140/127/163 widgets), so an AI consuming the graph can already resolve their
+fields; `document_class` makes that role explicit and leaves room for the rest of the
+family (1099-MISC/NEC/R/G/K/OID/SA/Q, 1098s, 5498, W-2G, K-1s) to slot in later without a
+remodel.
 
 **M18 SEQUENCING RESOLVED (2026-07-27).** John took the Architect recommendations on
 questions 1 and 2: M18 runs NEXT and IN FULL (S1+S2+S3), with the 1040 as canary before
@@ -896,6 +915,49 @@ TY2026 docs drop.
   environment failure, and no commit was made.
 
 ## From Architect
+
+- **M18-S0 TASK - DOCUMENT CLASS (Architect, Claude Opus 5, 2026-07-27). DO THIS BEFORE
+  S1** - S1's depth rule keys off it. Small, schema + records + validator.
+  **John's ruling (2026-07-27):** "add the doc class... i think it will pay off down the
+  line since there are all manner of docs that we won't touch in this dev effort." Plus:
+  the 1099 family belongs in the graph "so that the AI utilizing it has a solid
+  understanding of the fields".
+  **Correction to an earlier Architect claim: `document_type` ALREADY EXISTS**, is required
+  by `schemas/document.schema.json`, is populated on all 17 documents, and is consumed by
+  `tax_graph/intake/classifier.py`, `tax_graph/extension.py`, and `tax_graph/mcp/server.py`.
+  Do NOT redefine or repurpose it - you would break those call sites.
+  **The problem is that it conflates two axes:** `tax_form` (1040, 6251, 8949) vs
+  `schedule` (the 7) is a SHAPE distinction that drives nothing, while `source_document`
+  and `instructions` are ROLE. And 13614-C is filed as `source_document` when it is an
+  intake questionnaire nobody pulls numbers from.
+  1. **Add a NEW field `document_class`** alongside `document_type`, on the ROLE axis.
+     Required, enum, one of:
+     - `return` - the FILER COMPUTES it; the graph must justify a number it produced.
+       1040, all schedules, 6251, 8949, 2441.
+     - `information_return` - issued by a THIRD PARTY; the filer READS values from it.
+       W-2 and the whole 1099 family. John's "data sink".
+     - `instructions` - authority text.
+     - `intake` - questionnaires. 13614-C moves HERE, off `source_document`.
+     Leave the enum open to extension: there are "all manner of docs we won't touch in
+     this dev effort" (1099-MISC/NEC/R/G/K/OID/SA/Q, 1098 family, 5498, W-2G, K-1s), and
+     the point of the field is that they slot in without a remodel.
+  2. Populate it on all 17 records. Keep `document_type` exactly as-is.
+  3. Fail-closed validator: every document has a `document_class`; the value is in the
+     enum. Wire it into `validate 2025`.
+  4. **Do NOT change behavior off it this round** beyond the validator - no policy
+     changes, no review-expectation changes, no call-site rewiring. Recording the fact is
+     the deliverable. Note in your handoff entry where it SHOULD eventually drive
+     behavior: M18 instruction depth, review expectations (an `information_return` cell is
+     reviewed for EXTRACTION correctness, not computation), and population policy
+     (`information_return` cells are `imported`, never `computed`).
+  5. Report the 5 acquired instruction documents that have NO document record (7 acquired,
+     2 modeled) as a finding. Do not author them - M18-S1 owns acquisition.
+  Tier 3 (promoted artifacts). Tier-1 floor with `RAN:`/`NOT RUN:` on every declared file,
+  ASCII, `git diff --check`, module-form `validate 2025`, real preflight with
+  `legacy_mined` reported explicitly. Run pytest plainly - no `--basetemp`. ONE local
+  commit; no push. Stop conditions: any need to change `document_type` or its call sites;
+  a document whose class is genuinely ambiguous (report it, do not guess); or a
+  quota/environment failure.
 
 - **M18-S1 TASK - ACQUIRE THE HTML INSTRUCTION CHANNEL (Architect, Claude Opus 5,
   2026-07-27).** Design in `plans/PHASE_M18.md` - READ the "MAJOR REVISION 2026-07-27 -
