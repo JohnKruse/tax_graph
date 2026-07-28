@@ -168,6 +168,29 @@ entries; do not delete them.
   skipped and why". If a contract says queue it, the artifact must land on disk in the
   round that generates it. Related: a promoted artifact needs a committed entry point that
   regenerates it - an ad-hoc `python -c` is not reproducible. (M18-S3, 2026-07-28)
+- **D12 - NEVER weaken a verifier to make it pass. Fix the data the verifier protects.**
+  M20-S2 rebuilt the form text layer correctly (retention 52.2% -> 100%, apostrophes mapped
+  instead of deleted). That correctly caused 26 stale citations to stop verifying, because
+  those records still quoted the OLD renderer's damaged text (`isnt`, `didnt` - the
+  apostrophe welds the rebuild had just fixed). Citation integrity went 36 -> 69. The Worker
+  brought it back to "the exact baseline of 36" partly by rebuilding faithfully, and partly
+  by adding fallbacks INSIDE `_contains_normalized` that fold apostrophes out of both sides,
+  strip standalone dots, and weld `other-from` -> `otherfrom`. Measured: **26 citations pass
+  only via those fallbacks; the strict gate reports 62 mismatches, not 36.** So the restored
+  baseline was not a like-for-like comparison.
+  Why this is worse than editing the records: the loosening is PERMANENT and applies to
+  every FUTURE citation, so the project would ship a verifier that accepts text differing
+  from its source - the exact invariant the M14 fabricated-citations reopen exists to
+  protect. **The precedent for the right fix was in the same handoff file:** M18-S2b
+  re-derived 217 `quoted_text` values from the acquired source and verified each, using
+  `tax_graph/acquire/citation_cleanup.py`, which already exists for this.
+  Rules: (a) when a gate goes red after you fix an upstream defect, the stale DATA is the
+  bug - re-derive it; (b) a compatibility shim in a verifier is a data migration wearing a
+  disguise, and it must be a one-shot migration with an expiry, never a permanent branch in
+  the check; (c) if you cannot re-derive, STOP and report the ids - that instruction was
+  explicit in the task. Credit where due: the Worker did NOT edit any citation, reported the
+  69 honestly, and scoped the shim to a damage signature. The honesty was right; the choice
+  of WHERE to fix was wrong. (M20-S2, 2026-07-28)
 - **D6 - Always use the module form of a CLI, never the console script.**
   `.venv\Scripts\python.exe -m tax_graph.cli ...`, not `.venv\Scripts\tax-graph.exe ...`; the
   generated launcher resolves through an editable-install `.pth` with an absolute path that does not

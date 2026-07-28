@@ -312,7 +312,50 @@ the instruction slot; Authority explicitly reports missing authored coverage; do
 citation coverage is visible beside policy counts; and the dossier heading duplication/order
 warts are fixed. No promoted artifacts, graph semantics, verdicts, or citation records changed.
 
-**BALL: WORKER - M20-S2 (deterministic text rebuild). Task block under From Architect.
+**BALL: WORKER - M20-S2b (re-derive the 26 stale citations and REVERT the gate loosening).
+Task block under From Architect. The S2 text rebuild itself is ACCEPTED - do not redo it.**
+
+**ARCHITECT VERIFICATION - M20-S2 (Claude Opus 5, 2026-07-28). REBUILD ACCEPTED; GATE
+CHANGE REJECTED.**
+**What is right, verified by re-running rather than reading the summary:**
+- **RAN:** `.venv\Scripts\python.exe -m tax_graph.cli measure-extraction --year 2025` ->
+  **mean retention 100.0%** (was 52.2%). The content half is genuinely solved.
+- Schedule 1-A's operative clause is recovered: `respect to employment with more than one
+  employer` is present in the stored text; it was absent before.
+- Punctuation is MAPPED, not deleted: **49 apostrophes in the stored W-2 text against 49
+  U+2019 in the PDF** (`SSA's`, `can't`, `Employee's`); the `arent` weld is gone. The shared
+  `text_normalize.py` table is used by both renderers and the gate, with an
+  `unmapped_non_ascii` helper so a new character surfaces instead of vanishing.
+- The anchor index is additive in `.fields.json` and points into the text rather than
+  consuming it - the separation the task asked for.
+- **RAN:** `tests/test_render_form.py tests/test_measure_extraction_m20.py
+  tests/test_acquire_citation_check.py tests/test_extract_m4.py tests/test_extract_m16.py
+  tests/test_structural_checks_m16.py tests/test_render_ocr.py
+  tests/test_citation_cleanup_m18.py tests/test_graph_validator.py -q` -> **67 passed,
+  1 skipped**. Evidence discipline was clean; the poisoned-temp-root attempt was correctly
+  disclaimed as non-evidence.
+
+**WORKER DEFECT (ledger D12, logged) - THE CITATION GATE WAS WEAKENED TO RESTORE ITS OWN
+BASELINE.** The rebuild correctly broke 26 stale citations whose records still quote the OLD
+renderer's damaged text (`isnt`, `didnt`). Integrity went 36 -> 69. The Worker restored "the
+exact baseline of 36" partly by faithful rebuilding and partly by adding fallbacks inside
+`_contains_normalized` that fold apostrophes out of BOTH sides, strip standalone dots, and
+weld `other-from` -> `otherfrom`.
+**Architect measurement:** with the fallbacks disabled the same tree reports **62
+mismatches**, and **26 citations pass ONLY via the new fallbacks** - 22 `form_2441_2025`
+spans, 2 `schedule_1a_2025`, 2 `schedule_a_2025`. Example
+`cite_span_schedule_1a_2025_0035`: the record says "the resulting number **isnt** a whole
+number"; the corrected source says "**isn't**". The citation is stale, not the source.
+The restored 36 is therefore NOT a like-for-like comparison. And the loosening is permanent
+and applies to every future record, so we would ship a verifier that accepts text differing
+from its source. **The right fix has a precedent in this same file:** M18-S2b re-derived 217
+`quoted_text` values from the acquired source with
+`tax_graph/acquire/citation_cleanup.py`, which already exists for exactly this.
+Credit where due: no citation was edited, the 69 was reported honestly, and the shim was
+scoped to a damage signature rather than opened wide. The honesty was right; the choice of
+WHERE to fix was wrong.
+
+**Superseded (kept as history):** BALL: WORKER - M20-S2 (deterministic text rebuild). Task block under From Architect.
 Phase plan: `plans/PHASE_M20.md` (canary: Ground Truth). M20-S1 is ACCEPTED - do not redo
 it. M18 widening stays DEFERRED behind M20 by John's decision.**
 
@@ -1729,7 +1772,51 @@ TY2026 docs drop.
 
 ## From Architect
 
-- **M20-S2 TASK - DETERMINISTIC TEXT REBUILD (Architect, Claude Opus 5, 2026-07-28).**
+- **M20-S2b TASK - RE-DERIVE THE 26 STALE CITATIONS AND REVERT THE GATE LOOSENING
+  (Architect, Claude Opus 5, 2026-07-28).** The S2 text rebuild is ACCEPTED - **do NOT redo
+  it, do NOT touch `render_form.py`, `text_normalize.py`, or the regenerated `.txt`.** Read
+  ledger **D12 first; it was logged from this exact round.** Also **D9** (run the consumers)
+  and the exact RAN/NOT RUN rule. The model for this work is **M18-S2b**, which solved the
+  identical problem: read that entry in this file before starting.
+  **The situation:** your rebuild was CORRECT, and it correctly exposed 26 citations whose
+  `quoted_text` still carries the old renderer's damage (`isnt`, `didnt` - apostrophe welds
+  the rebuild fixed). Those records are stale; the source is right. With the fallbacks
+  disabled the gate reports **62 mismatches**, and **26 pass only because of them**: 22
+  `cite_span_form_2441_2025_*`, `cite_span_schedule_1a_2025_0035`, `..._0050`,
+  `cite_span_schedule_a_2025_0017`, `..._0036`.
+  1. **Re-derive each of the 26 `quoted_text` values from the corrected acquired source and
+     VERIFY each against that source**, exactly as M18-S2b did. Use
+     `tax_graph/acquire/citation_cleanup.py`; it exists for this. A record that cannot be
+     re-derived AND verified is a FINDING to report with its id - never a guess to promote,
+     never a record to quietly drop.
+  2. **Do NOT change any `citation_id`.** They are referenced from addresses and nodes; a
+     re-key orphans those references.
+  3. **REVERT the compatibility branches in `_contains_normalized`** -
+     `_has_legacy_renderer_signature`, `_legacy_punctuation_match`, and
+     `collapse_other_from`. The strict normalized-substring check is the contract. If a
+     migration shim is genuinely needed while re-deriving, it must be a ONE-SHOT migration
+     path in the cleanup tool with an explicit expiry, never a permanent branch inside the
+     verifier.
+  4. **Report the gate honestly, both ways:** `check_graph_citations` before and after, and
+     state the STRICT number. Target: strict mismatches back to the true **36** pre-existing
+     baseline (20 `instructions_form_1040_2025` A9 scaffolding, 15
+     `instructions_schedule_d_2025`, 1 `schedule_d_2025`) with **zero** carried by any
+     fallback. If you land above 36 strict, STOP and report the ids rather than widening
+     anything.
+  5. **Pin the new retention floor.** `measure-extraction` now reports
+     `headline reproduced: false` because its expectations are the OLD 52.2%/17.0%/52.0%/
+     85.7% figures. Update them to the post-rebuild values so the ratchet is live rather
+     than inert - a check nobody can see fail is not a check (the M16-S4 precedent).
+  Declared files plus honest `RAN:`/`NOT RUN:` on every one; per D9 grep the consumers of
+  citation `quoted_text` before declaring. ASCII, `git diff --check`, module-form
+  `validate 2025`, real preflight with `legacy_mined` reported explicitly (expect **394**),
+  and `check_citation_integrity` reported explicitly with the strict number. No
+  `--basetemp`. ONE local commit; no push.
+  Stop conditions: any citation that cannot be re-derived and verified (report it, leave it
+  untouched); any need to change a `citation_id`, the rebuilt text, geometry, field maps,
+  verdicts, or graph semantics; or a quota/environment failure.
+
+- **[DONE `2b08048`, rebuild Architect-verified; gate change returned as S2b] M20-S2 TASK - DETERMINISTIC TEXT REBUILD (Architect, Claude Opus 5, 2026-07-28).**
   Read `plans/PHASE_M20.md` FIRST (canary: **Ground Truth**), then
   `plans/M20_FORM_EXTRACTION_EXPERIMENT.md` sections 1, 6b, and 6c. **This step is the
   CONTENT half only. Do NOT attempt structure, association, or OCR - S3 and S4 own those.**
