@@ -196,7 +196,10 @@ nine forms at **98.7% - 100%**, mean **99.6%**. One outlier: **schedule_e at 76.
    STRUCTURE carried by the address tree's parent/child. Consistent with the standing rule
    that line numbers are PLACEMENT, not identity - it would only break if `"17a"` were ever
    used as an identity key, which that rule already forbids.
-2. **schedule_e page 1 is a REAL OCR FAILURE - confirmed.** OCR read **289 of 570 words**;
+2. **CORRECTED 2026-07-28 (see section 6c) - most of this was TRANSIENT.** The claim below
+   stands only for line 4; the other eleven drops recovered on rerun. Left in place because
+   the correction matters more than the original claim.
+   **schedule_e page 1 is a REAL OCR FAILURE - confirmed.** OCR read **289 of 570 words**;
    page 2 was perfect (642 = 642). John verified against the printed form that OCR silently
    dropped real line labels and cross-references: line 4 `Royalties received`, `1a Physical
    address of each property` (with A/B/C sublines), line 21 (`file Form 6198`), line 22
@@ -233,6 +236,41 @@ extractor is sufficient alone: deterministic is right on CONTENT and wrong on ST
 demonstrably drops CONTENT (schedule_e p1). **The two-witness cross-check is therefore the
 verification mechanism, not a fallback** - it surfaced roughly 20 real issues across 10
 unseen forms, and a human confirmed them in minutes. That is the coverage contract working.
+
+## 6c. THREE CORRECTIONS after rerunning Schedule E (2026-07-28)
+
+John: "can u run sched E thru the OCR again? i am wondering if there was a hiccup... i'd be
+inclined to run the OCR thrice per doc and then vote." He was right to ask, and the reruns
+overturn part of section 6b.
+
+**Correction 1 - eleven of the twelve schedule_e drops were TRANSIENT.** Three fresh runs
+recovered lines 20, 21, 22, 23a-e, 24, 25, and 26. The original call was an outlier at 289
+words against a stable ~480. The Architect built an argument on a single flaky run and
+should have rerun before reporting it.
+
+**Correction 2 - OCR IS NONDETERMINISTIC.** Four runs produced three distinct outputs
+(original 5,544 chars; run1 and run2 byte-identical at 8,721; run3 at 8,844). Any promoted
+artifact derived from OCR must therefore be reproducible from a HASH-PINNED stored
+response, never from re-calling the model. This mirrors the M18 stored-HTML pattern.
+
+**Correction 3 - line 4 is a STABLE blind spot, and CONFIDENCE CANNOT SEE IT.**
+`Royalties received` was dropped in **all four runs**; John independently reproduced it in
+Mistral Studio, observing that it parses the income lines as a list and draws a box around
+lines 3 and 4 while emitting only 3. The rich-parameter call confirms it exactly: the block
+is correctly DETECTED (`type=list`, bbox `(43,440)-(741,469)`, about two rows tall) but its
+transcribed content holds only line 3. Page confidence was avg **0.9921** / min **0.4915**,
+and every low-confidence token was a dot leader or a newline - **nothing near line 4,
+because a dropped row emits no tokens to be unconfident about.**
+
+**Consequences for the design (now in `PHASE_M20.md`):**
+- **Voting fixes VARIANCE, not BIAS.** N runs recover the eleven transient drops and never
+  recover line 4 - and three agreeing runs would raise FALSE confidence in an output
+  missing an income line.
+- **OCR confidence scores are not a usable gate for omissions.** The Architect had proposed
+  them as the fail-closed hook; that proposal is dead.
+- What does catch line 4: content accountability against the deterministic text, and a
+  line-number contiguity check (`3 -> 5` is a gap) which needs no second source at all.
+- Cross-run word-count variance IS a usable signal (289 vs ~480 would trip immediately).
 
 ## 7. Reproducibility gap - closed by M20-S1
 

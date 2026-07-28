@@ -248,8 +248,28 @@ the instruction slot; Authority explicitly reports missing authored coverage; do
 citation coverage is visible beside policy counts; and the dossier heading duplication/order
 warts are fixed. No promoted artifacts, graph semantics, verdicts, or citation records changed.
 
-**BALL: JOHN - M20-S1 is ACCEPTED. S2 (deterministic `render_form.py` rewrite) is ready to
-task; two new S1 findings below sharpen it.**
+**BALL: WORKER - M20-S2 (deterministic text rebuild). Task block under From Architect.
+Phase plan: `plans/PHASE_M20.md` (canary: Ground Truth). M20-S1 is ACCEPTED - do not redo
+it. M18 widening stays DEFERRED behind M20 by John's decision.**
+
+**M20 PLAN WRITTEN AND APPROVED (John, 2026-07-28).** `plans/PHASE_M20.md` carries the
+two-witness reconciliation design: deterministic is the ONLY content authority; OCR and
+deterministic geometry are both structure PROPOSALS with authority from neither; three
+mechanical checks (content accountability, line-number contiguity, fabrication) each catch
+a failure we actually observed; consequence tiers A/B/C set strictness proportional to
+filing impact per John's requirement. Confidence scores are explicitly NOT a check -
+measured useless for omissions. Steps: S1 done, **S2 text rebuild (next)**, S3 structure and
+association, S4 OCR as second witness, S5 coverage contract.
+**John on human review:** it "should be light but some of these forms are so badly designed
+that I view it as inevitable that there will be problems found by a reviewer." Design
+consequence pinned in the phase plan: reviewer attention is routed to a ranked FINDINGS
+queue, never to browsing 1,921 cells, with findings-raised vs findings-upheld vs reviewer
+minutes measured per form as the ratchet on review cost.
+**John's disagreement-overlay idea is IN the plan (S4 surface, prepared in S3):** show
+where the two passes disagree directly on the page canvas to draw the reviewer's eye. Nearly
+free - OCR blocks carry bboxes, deterministic words carry rects, and M17-S7 already captured
+per-page geometry. Requirement that matters most: an UNASSIGNED-text region must be drawable
+even though no cell owns it, because that is exactly the Schedule E line-4 signature.
 
 **ARCHITECT VERIFICATION - M20-S1 (Claude Opus 5, 2026-07-28). ACCEPTED.** Verified by
 re-running the harness, not by reading the snapshot:
@@ -1645,7 +1665,53 @@ TY2026 docs drop.
 
 ## From Architect
 
-- **M20-S1 TASK - COMMIT THE EXTRACTION MEASUREMENT HARNESS AND A PRODUCER-ROBUSTNESS
+- **M20-S2 TASK - DETERMINISTIC TEXT REBUILD (Architect, Claude Opus 5, 2026-07-28).**
+  Read `plans/PHASE_M20.md` FIRST (canary: **Ground Truth**), then
+  `plans/M20_FORM_EXTRACTION_EXPERIMENT.md` sections 1, 6b, and 6c. **This step is the
+  CONTENT half only. Do NOT attempt structure, association, or OCR - S3 and S4 own those.**
+  Read the ledger: **D4** (hermetic tests), **D6** (module-form CLIs), **D8** (promoted
+  artifact values are contracts - grep consumers before renaming), **D9** (run the tests
+  that PROJECT changed content, not just the ones you wrote), **D10/D11** (empty expected
+  results are findings; findings must be persisted), and the exact RAN/NOT RUN rule.
+  **THE RISK, READ IT TWICE.** This step changes `.cache/raw/<year>/*.txt` for all 16 forms,
+  and that file is what `check_citation_integrity` validates FORM citations against. The
+  existing citations were derived from the LOSSY text, so some may no longer verify.
+  **`check_citation_integrity` is the gate that matters this round** - report it explicitly,
+  before and after. The current baseline is **36 pre-existing mismatches** (20
+  `instructions_form_1040_2025` hand-authored A9 scaffolding, 15 `instructions_schedule_d_2025`,
+  1 `schedule_d_2025`); that number must not grow. A citation that stops verifying is a
+  FINDING to report with its id, never a citation to quietly edit or drop.
+  1. **Emit a COMPLETE verbatim text layer.** No row dropped, no token discarded. Today
+     `_rows_from_words` (`render_form.py:96-115`) throws away every token before a detected
+     anchor and drops anchorless rows entirely; that is the 52.2% loss.
+  2. **Separate the anchor index from the content.** The line-anchor index must POINT INTO
+     the text, never consume it. Anchor detection and text emission are two jobs.
+  3. **Map non-ASCII, never delete it.** `_ascii_normalize` (`render_form.py:201`) is
+     `encode("ascii", errors="ignore")`, which deletes the separator and welds the
+     neighbours: `aren't -> arent`, `employee's -> employees`, `Treasury-Internal`. Exactly
+     6 distinct non-ASCII characters exist across all 16 forms (309 occurrences): U+2019
+     (170), U+2014 (79), U+2022 (28), U+201C/U+201D (14 each), U+2013 (4). **The correct
+     mapping already exists in this repo** - `_normalize_punctuation` in
+     `citation_check.py:216` handles 5 of the 6 (add the bullet). Promote it to a shared
+     module and use ONE table everywhere; `render_ocr.py` has the identical defect.
+     Anything unmapped after that is a named finding, not a silent drop.
+  4. **Ratchet.** Per-document text retention reported via the S1 `measure-extraction`
+     command, before and after. Baseline mean **52.2%**; target ~100%. It only moves up.
+     **Also fix the S1 harness tokenizer**, which splits currency on the comma
+     (`$1,000` -> `$1` + `000`) and makes its disagreement counts untrustworthy.
+  5. **Do NOT change** widget geometry, field maps, addresses, bindings, verdicts, graph
+     semantics, or any citation id.
+  Declared files plus honest `RAN:`/`NOT RUN:` on every one. **Per D9, grep for consumers of
+  the stored text before declaring your list** - `check_citation_integrity`,
+  `tax_graph/extract/inputs.py`, and `tax_graph/output/structural_checks.py` all read
+  `.cache/raw/<year>/<id>.txt`. ASCII, `git diff --check`, module-form `validate 2025`, real
+  preflight with `legacy_mined` reported explicitly (expect **394**), and
+  `check_citation_integrity` before/after. No `--basetemp`. ONE local commit; no push.
+  Stop conditions: citation mismatches rising above the 36 baseline (STOP and report the
+  ids - do not edit citations to make the gate pass); any need to touch geometry, field
+  maps, verdicts, or graph semantics; or a quota/environment failure.
+
+- **[DONE `cdb209c`, Architect-verified `f1771e0`] M20-S1 TASK - COMMIT THE EXTRACTION MEASUREMENT HARNESS AND A PRODUCER-ROBUSTNESS
   CORPUS (Architect, Claude Opus 5, 2026-07-28).** Read
   `plans/M20_FORM_EXTRACTION_EXPERIMENT.md` FIRST - it is the finding this step makes
   reproducible. **This step is READ-ONLY: it changes NO promoted artifact, no citation, no

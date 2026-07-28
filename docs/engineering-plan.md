@@ -511,8 +511,8 @@ sequencing: after M15 (the workbench is the surface where the delta review happe
 when TY2026 documents drop, whichever is later. Human effort target: review the delta
 report, nothing else twice.
 
-### M20 - Form text extraction rebuild (measured 2026-07-28; proposed, not yet scheduled)
-Report: `plans/M20_FORM_EXTRACTION_EXPERIMENT.md`. Triggered when John challenged the
+### M20 - Form extraction rebuild + two-witness reconciliation (canary Ground Truth; ACTIVE 2026-07-28)
+Plan: `plans/PHASE_M20.md`. Evidence: `plans/M20_FORM_EXTRACTION_EXPERIMENT.md`. Triggered when John challenged the
 pipeline's soundness ("I keep having the feeling that our pipeline is really shoddy") and
 the measurement proved him right at the acquisition layer, not the join layer.
 **`render_form.py` retains a mean of 52.2% of each form's printed text** (13614-C 17%, the
