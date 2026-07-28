@@ -96,7 +96,39 @@ lands, so it cannot serve as a gate in the interim.** That is a genuine loss of 
 every round between now and then. S3b is therefore accepted WITHOUT the preflight gate, with
 this recorded as a known open finding rather than waved through.
 
-**ARCHITECT VERIFICATION - M20-S3b (Claude Opus 5, 2026-07-28). ACCEPTED.** Measured by
+**ACCEPTANCE RETRACTED - M20-S3b IS PARTIAL, NOT DONE (Claude Opus 5, 2026-07-28).**
+The acceptance below was premature: it rested on node counts plus ONE spot check (line 16,
+which happens to be correct) and generalized from it. A proper read-and-compare of the
+anchor assignments finds a **12% mis-anchoring rate**, and anchor identity is exactly what
+citations key on. **S3a MUST NOT regenerate on this.**
+**Method - an INDEPENDENT check the structure layer does not use:** on IRS line rows the
+token at the right edge is the printed box reference, i.e. the row's true line. Comparing it
+against the minted anchor gives **13 disagreements across 112 checkable rows (12%)**:
+`schedule_a` 2, `form_1040` 8, `schedule_1a` 2, `form_8949` 1; `schedule_d` and
+`schedule_1` are clean.
+**Three defect classes, all measured:**
+1. **Reference mistaken for definition.** `'d Add lines 5a through 5c 5d'` mints **`5a`**
+   though the row IS line **`5d`**. Also `8a`->`8e`, `14a`->`14c`, `13c`->`38`. Cause:
+   `_REJECTED_PRECEDERS` (`structure.py:22`) blocks `box/code/option/page` but **not `line`
+   / `lines`**, so a token inside "Add lines 5a through..." is eligible to mint the anchor.
+   **This is the identical `5a -> 5d` failure the Worker found in its own earlier adapter
+   and removed it for; the shipped version reintroduces it.** Cheapest fix of the three.
+2. **Two-column merged rows** - `'4a IRA distributions 4a b Taxable amount 4b'` carries
+   lines 4a AND 4b in one visual row (also 2a/2b, 3a/3b, 5a/5b). Not a mis-assignment to
+   patch: the row needs SPLITTING. This is the column conflation the 10-form experiment
+   already measured at 34 rows.
+3. **Table headers minting anchors** - `'Dependents Dependent 1 Dependent 2 Dependent 3
+   Dependent 4'` mints `1`. A header must mint nothing.
+**Why the citation gate cannot save us here:** every one of these rows is genuinely present
+in the source, so `check_citation_integrity` passes all of them. This is D13 at corpus
+scale - verbatim but mis-anchored - and it is precisely why the printed-box cross-check
+should become a committed validator rather than a scratch script.
+**WHAT STANDS AND IS GENUINELY GOOD:** caption coverage is **100%** on every document
+(schedule_a 33/33, form_1040 199/199, schedule_1a 54/54), well above the 82-85% geometry
+baseline; the outline is non-empty everywhere it was 0; and 13614-C degrades honestly to
+209 unanchored nodes. The structure layer works - its ANCHOR IDENTITY does not yet.
+
+**Superseded (kept as history) - ARCHITECT VERIFICATION - M20-S3b (Claude Opus 5, 2026-07-28). ACCEPTED.** Measured by
 running `build_outline_tree` directly, not by reading the summary. Outline nodes produced
 from the corrected text, where **every document was previously 0**:
 | document | outline nodes | with line anchor |
@@ -590,9 +622,9 @@ the instruction slot; Authority explicitly reports missing authored coverage; do
 citation coverage is visible beside policy counts; and the dossier heading duplication/order
 warts are fixed. No promoted artifacts, graph semantics, verdicts, or citation records changed.
 
-**BALL: WORKER - M20-S3a (regenerate from the corrected text, and reconcile the review
-queue). S2e is DONE and main is GREEN at `e3e2a1b`. S3b is ACCEPTED - its code is already on
-main; do not redo it.**
+**BALL: WORKER - M20-S3b-2 (fix anchor identity; 12% of anchors are wrong). S3a stays
+BLOCKED - regenerating on a 12% mis-anchoring rate would be D13 at corpus scale. Task block
+under From Architect. S2e is DONE and main is GREEN at `e3e2a1b`.**
 
 **MAIN IS CI-RED (run 30378244576, all three interpreters), AND IT IS THE ARCHITECT'S MISS.**
 `tests/test_batch_extraction_m10.py` fails with
@@ -2338,8 +2370,53 @@ TY2026 docs drop.
   Stop conditions: any need to reintroduce per-anchor fatality, weaken the document-level
   zero-node check, or touch a promoted artifact; or a quota/environment failure.
 
-- **[BLOCKED behind M20-S2e - the resolver aborts on anchorless documents, and 13614-C is
-  exactly that case] M20-S3b TASK - BUILD THE STRUCTURE LAYER (Architect, Claude Opus 5, 2026-07-28).**
+- **M20-S3b-2 TASK - FIX ANCHOR IDENTITY (Architect, Claude Opus 5, 2026-07-28).**
+  Your structure layer WORKS - 100% caption coverage on every document, non-empty outlines
+  where all were 0, honest degradation on 13614-C. **The gap is anchor IDENTITY, which is
+  what citations key on, and it is 12% wrong.** Read the retraction ruling above; the
+  premature acceptance was the Architect's. Ledger: **D13** (verbatim is necessary, not
+  sufficient - anchoring is what matters), D10, D14, D4, D6, D9.
+  **Measured: 13 disagreements across 112 checkable rows.** The method, which you should
+  make permanent: on a line row the token at the RIGHT EDGE is the printed box reference -
+  the row's true line - and it is independent of the leading-token rule you mint from.
+  1. **Reference vs definition (cheapest, fixes 4).** `'d Add lines 5a through 5c 5d'` mints
+     `5a`; the row is `5d`. `_REJECTED_PRECEDERS` (`structure.py:22`) lacks **`line` and
+     `lines`**, so a token inside "Add lines 5a through ..." can mint the anchor. Also
+     `8a`->`8e`, `14a`->`14c`, `13c`->`38`. **This is the same `5a -> 5d` failure you found
+     in your own earlier adapter and correctly removed it for** - it returned in the shipped
+     rule. Consider preferring the TRAILING printed box reference when it disagrees with the
+     leading token, rather than extending a blacklist indefinitely.
+  2. **Two-column merged rows (the real work, about 6 rows).**
+     `'4a IRA distributions 4a b Taxable amount 4b'` holds lines 4a AND 4b; also 2a/2b,
+     3a/3b, 5a/5b. These must be SPLIT, not assigned one anchor. The 10-form experiment
+     measured this class at 34 rows corpus-wide, so it is not confined to the 1040. Widget
+     x-positions are the evidence: two input widgets on one visual row means two logical
+     rows.
+  3. **Headers must mint nothing.** `'Dependents Dependent 1 Dependent 2 Dependent 3
+     Dependent 4'` mints `1`. `_HEADER_PHRASES` catches "Part I" and similar but not a
+     column-header row like this one.
+  4. **Make the cross-check a committed validator.** The printed-box-reference comparison
+     must live in the pipeline and FAIL CLOSED on disagreement, not in a scratch script.
+     **The citation gate cannot catch this class** - every one of these rows is genuinely in
+     the source, so `check_citation_integrity` passes all 13. That is exactly D13, and this
+     validator is the mechanical answer to it.
+  5. **Report the disagreement count per document, before and after.** Baseline: schedule_a
+     2, form_1040 8, schedule_1a 2, form_8949 1, schedule_d 0, schedule_1 0 - 13 of 112
+     (12%). Target zero; any residual must be a named finding with its reason, never a
+     silent pass. **Hold caption coverage at 100%** while fixing identity.
+  6. **Promote NOTHING** - no regeneration, no drafts, no citations. S3a runs after this and
+     only once the disagreement count is zero or explicitly accepted.
+  Tier 3 (pipeline behaviour). Declared files plus honest `RAN:`/`NOT RUN:` on every one.
+  ASCII, `git diff --check`, module-form `validate 2025`. **Real preflight is RED for an
+  unrelated reason** (the review queue references stale draft ids; S3a owns it), so report
+  it as a known-red gate rather than treating it as your failure. No `--basetemp`. ONE local
+  commit; no push.
+  Stop conditions: caption coverage regressing below 100%; a rule you cannot justify against
+  the three defect classes above; any need to touch the text layer, citation gate, or a
+  promoted artifact; or a quota/environment failure.
+
+- **[PARTIAL - implementation landed in `fc337d0`; anchor identity returned as S3b-2]
+  M20-S3b TASK - BUILD THE STRUCTURE LAYER (Architect, Claude Opus 5, 2026-07-28).**
   **This is the phase's hard round and it unblocks S3a.** Read `plans/PHASE_M20.md`
   (sequencing correction) and the S3a-attempt ruling above. Ledger: **D10** (a silent empty
   is the forbidden outcome), **D13** (verbatim is necessary, not sufficient - anchoring is
