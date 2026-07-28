@@ -1,0 +1,609 @@
+{
+  "corpus_directory": "tests/fixtures/m20_producer_corpus",
+  "expected_mean_retention_percent": 52.2,
+  "form_count": 16,
+  "forms": [
+    {
+      "creator": "Designer 6.5",
+      "document_id": "form_1040_2025",
+      "fabricated_words": 7,
+      "fabrication": 0.008215962441314555,
+      "ground_truth_words": 1625,
+      "layers": {
+        "structure": {
+          "status": "present",
+          "table_count": 7
+        },
+        "text": {
+          "status": "present",
+          "word_count": 1625
+        },
+        "widgets": {
+          "count": 199,
+          "status": "present"
+        }
+      },
+      "missing_words": 780,
+      "page_count": 2,
+      "preserved_words": 845,
+      "producer": "Designer 6.5",
+      "retention": 0.52,
+      "sha256": "3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982",
+      "shipped_words": 852,
+      "source_path": ".cache/raw/2025/form_1040_2025.pdf",
+      "table_count": 7,
+      "table_probe_status": "ok",
+      "widget_count": 199
+    },
+    {
+      "creator": "Designer 6.5",
+      "document_id": "form_1099_div_2025",
+      "fabricated_words": 10,
+      "fabrication": 0.019569471624266144,
+      "ground_truth_words": 2062,
+      "layers": {
+        "structure": {
+          "status": "present",
+          "table_count": 4
+        },
+        "text": {
+          "status": "present",
+          "word_count": 2062
+        },
+        "widgets": {
+          "count": 140,
+          "status": "present"
+        }
+      },
+      "missing_words": 1561,
+      "page_count": 6,
+      "preserved_words": 501,
+      "producer": "Designer 6.5",
+      "retention": 0.24296799224054316,
+      "sha256": "4ea1de804ff1db921753bd6319beeccfe4647299e03d79816e04d852a9cd1435",
+      "shipped_words": 511,
+      "source_path": ".cache/raw/2025/form_1099_div_2025.pdf",
+      "table_count": 4,
+      "table_probe_status": "ok",
+      "widget_count": 140
+    },
+    {
+      "creator": "Designer 6.5",
+      "document_id": "form_1099_int_2025",
+      "fabricated_words": 24,
+      "fabrication": 0.02699662542182227,
+      "ground_truth_words": 2725,
+      "layers": {
+        "structure": {
+          "status": "present",
+          "table_count": 4
+        },
+        "text": {
+          "status": "present",
+          "word_count": 2725
+        },
+        "widgets": {
+          "count": 127,
+          "status": "present"
+        }
+      },
+      "missing_words": 1860,
+      "page_count": 7,
+      "preserved_words": 865,
+      "producer": "Designer 6.5",
+      "retention": 0.3174311926605505,
+      "sha256": "ee7697c9b29374596fd9645b157b7312d121ae3c2f76bebf68908c3fc2b739e6",
+      "shipped_words": 889,
+      "source_path": ".cache/raw/2025/form_1099_int_2025.pdf",
+      "table_count": 4,
+      "table_probe_status": "ok",
+      "widget_count": 127
+    },
+    {
+      "creator": "Designer 6.5",
+      "document_id": "form_1099b_2025",
+      "fabricated_words": 22,
+      "fabrication": 0.02890932982917214,
+      "ground_truth_words": 2826,
+      "layers": {
+        "structure": {
+          "status": "present",
+          "table_count": 4
+        },
+        "text": {
+          "status": "present",
+          "word_count": 2826
+        },
+        "widgets": {
+          "count": 163,
+          "status": "present"
+        }
+      },
+      "missing_words": 2087,
+      "page_count": 7,
+      "preserved_words": 739,
+      "producer": "Designer 6.5",
+      "retention": 0.26150035385704173,
+      "sha256": "7e334cea66c2b2be3d88615a56db288a2805cb8705076b3b282a4eabbbd788ad",
+      "shipped_words": 761,
+      "source_path": ".cache/raw/2025/form_1099b_2025.pdf",
+      "table_count": 4,
+      "table_probe_status": "ok",
+      "widget_count": 163
+    },
+    {
+      "creator": "Designer 6.5",
+      "document_id": "form_13614_c_2025",
+      "fabricated_words": 34,
+      "fabrication": 0.06746031746031746,
+      "ground_truth_words": 2761,
+      "layers": {
+        "structure": {
+          "status": "present",
+          "table_count": 9
+        },
+        "text": {
+          "status": "present",
+          "word_count": 2761
+        },
+        "widgets": {
+          "count": 297,
+          "status": "present"
+        }
+      },
+      "missing_words": 2291,
+      "page_count": 6,
+      "preserved_words": 470,
+      "producer": "Designer 6.5",
+      "retention": 0.17022817819630567,
+      "sha256": "160507ac6daa8cc5e3126ad51ba5c2050c786337048f434f8336b48d92992c9d",
+      "shipped_words": 504,
+      "source_path": ".cache/raw/2025/form_13614_c_2025.pdf",
+      "table_count": 9,
+      "table_probe_status": "ok",
+      "widget_count": 297
+    },
+    {
+      "creator": "Designer 6.5",
+      "document_id": "form_2441_2025",
+      "fabricated_words": 22,
+      "fabrication": 0.029451137884872823,
+      "ground_truth_words": 1311,
+      "layers": {
+        "structure": {
+          "status": "present",
+          "table_count": 8
+        },
+        "text": {
+          "status": "present",
+          "word_count": 1311
+        },
+        "widgets": {
+          "count": 72,
+          "status": "present"
+        }
+      },
+      "missing_words": 586,
+      "page_count": 2,
+      "preserved_words": 725,
+      "producer": "Designer 6.5",
+      "retention": 0.5530129672006102,
+      "sha256": "6c3c2d19163fa4c4de829abf9a89b43f08b4f4f3cb169740fc7da43e914269ce",
+      "shipped_words": 747,
+      "source_path": ".cache/raw/2025/form_2441_2025.pdf",
+      "table_count": 8,
+      "table_probe_status": "ok",
+      "widget_count": 72
+    },
+    {
+      "creator": "Designer 6.5",
+      "document_id": "form_6251_2025",
+      "fabricated_words": 8,
+      "fabrication": 0.007326007326007326,
+      "ground_truth_words": 1605,
+      "layers": {
+        "structure": {
+          "status": "present",
+          "table_count": 3
+        },
+        "text": {
+          "status": "present",
+          "word_count": 1605
+        },
+        "widgets": {
+          "count": 62,
+          "status": "present"
+        }
+      },
+      "missing_words": 521,
+      "page_count": 2,
+      "preserved_words": 1084,
+      "producer": "Designer 6.5",
+      "retention": 0.6753894080996885,
+      "sha256": "6995bfd29c6fe1b80fdc396c9c4796c7cef58a966070db0346721eae815fea3f",
+      "shipped_words": 1092,
+      "source_path": ".cache/raw/2025/form_6251_2025.pdf",
+      "table_count": 3,
+      "table_probe_status": "ok",
+      "widget_count": 62
+    },
+    {
+      "creator": "Designer 6.5",
+      "document_id": "form_8949_2025",
+      "fabricated_words": 45,
+      "fabrication": 0.05090497737556561,
+      "ground_truth_words": 1244,
+      "layers": {
+        "structure": {
+          "status": "present",
+          "table_count": 4
+        },
+        "text": {
+          "status": "present",
+          "word_count": 1244
+        },
+        "widgets": {
+          "count": 202,
+          "status": "present"
+        }
+      },
+      "missing_words": 405,
+      "page_count": 2,
+      "preserved_words": 839,
+      "producer": "Designer 6.5",
+      "retention": 0.6744372990353698,
+      "sha256": "274513891e4e281d11e14286f14b9df724c24b6030fca0f0681da64fb2e7f525",
+      "shipped_words": 884,
+      "source_path": ".cache/raw/2025/form_8949_2025.pdf",
+      "table_count": 4,
+      "table_probe_status": "ok",
+      "widget_count": 202
+    },
+    {
+      "creator": "Designer 6.5",
+      "document_id": "form_w2_2025",
+      "fabricated_words": 57,
+      "fabrication": 0.04411764705882353,
+      "ground_truth_words": 3761,
+      "layers": {
+        "structure": {
+          "status": "present",
+          "table_count": 6
+        },
+        "text": {
+          "status": "present",
+          "word_count": 3761
+        },
+        "widgets": {
+          "count": 272,
+          "status": "present"
+        }
+      },
+      "missing_words": 2526,
+      "page_count": 11,
+      "preserved_words": 1235,
+      "producer": "Designer 6.5",
+      "retention": 0.32837011433129487,
+      "sha256": "6a52ad63693de54220a3326b22c4d0fb34f4c25084366537087312975a55ae96",
+      "shipped_words": 1292,
+      "source_path": ".cache/raw/2025/form_w2_2025.pdf",
+      "table_count": 6,
+      "table_probe_status": "ok",
+      "widget_count": 272
+    },
+    {
+      "creator": "Designer 6.5",
+      "document_id": "schedule_1_2025",
+      "fabricated_words": 9,
+      "fabrication": 0.01293103448275862,
+      "ground_truth_words": 853,
+      "layers": {
+        "structure": {
+          "status": "present",
+          "table_count": 2
+        },
+        "text": {
+          "status": "present",
+          "word_count": 853
+        },
+        "widgets": {
+          "count": 73,
+          "status": "present"
+        }
+      },
+      "missing_words": 166,
+      "page_count": 2,
+      "preserved_words": 687,
+      "producer": "Designer 6.5",
+      "retention": 0.8053927315357562,
+      "sha256": "8dafec719f6a4716c259a2bdaca546d9bb9e262d1eabef885fe116a7327458fa",
+      "shipped_words": 696,
+      "source_path": ".cache/raw/2025/schedule_1_2025.pdf",
+      "table_count": 2,
+      "table_probe_status": "ok",
+      "widget_count": 73
+    },
+    {
+      "creator": "Designer 6.5",
+      "document_id": "schedule_1a_2025",
+      "fabricated_words": 13,
+      "fabrication": 0.016602809706257982,
+      "ground_truth_words": 1251,
+      "layers": {
+        "structure": {
+          "status": "present",
+          "table_count": 5
+        },
+        "text": {
+          "status": "present",
+          "word_count": 1251
+        },
+        "widgets": {
+          "count": 54,
+          "status": "present"
+        }
+      },
+      "missing_words": 481,
+      "page_count": 2,
+      "preserved_words": 770,
+      "producer": "Designer 6.5",
+      "retention": 0.6155075939248601,
+      "sha256": "64f97b38ff4218e2f188fd55a8aab7043556687487c82bbefe0b6dd1a956ecd4",
+      "shipped_words": 783,
+      "source_path": ".cache/raw/2025/schedule_1a_2025.pdf",
+      "table_count": 5,
+      "table_probe_status": "ok",
+      "widget_count": 54
+    },
+    {
+      "creator": "Designer 6.5",
+      "document_id": "schedule_2_2025",
+      "fabricated_words": 7,
+      "fabrication": 0.011146496815286623,
+      "ground_truth_words": 797,
+      "layers": {
+        "structure": {
+          "status": "present",
+          "table_count": 3
+        },
+        "text": {
+          "status": "present",
+          "word_count": 797
+        },
+        "widgets": {
+          "count": 63,
+          "status": "present"
+        }
+      },
+      "missing_words": 176,
+      "page_count": 2,
+      "preserved_words": 621,
+      "producer": "Designer 6.5",
+      "retention": 0.7791718946047679,
+      "sha256": "64d867b683334cfc533993e37ccb0d143449ec29428a78206be2e4de333941e8",
+      "shipped_words": 628,
+      "source_path": ".cache/raw/2025/schedule_2_2025.pdf",
+      "table_count": 3,
+      "table_probe_status": "ok",
+      "widget_count": 63
+    },
+    {
+      "creator": "Designer 6.5",
+      "document_id": "schedule_3_2025",
+      "fabricated_words": 5,
+      "fabrication": 0.012254901960784314,
+      "ground_truth_words": 470,
+      "layers": {
+        "structure": {
+          "status": "present",
+          "table_count": 1
+        },
+        "text": {
+          "status": "present",
+          "word_count": 470
+        },
+        "widgets": {
+          "count": 37,
+          "status": "present"
+        }
+      },
+      "missing_words": 67,
+      "page_count": 1,
+      "preserved_words": 403,
+      "producer": "Designer 6.5",
+      "retention": 0.8574468085106383,
+      "sha256": "008cfd3fe3ebd0860452069b90fd0a3d53dda6dd8a5d870278370aa899a63f82",
+      "shipped_words": 408,
+      "source_path": ".cache/raw/2025/schedule_3_2025.pdf",
+      "table_count": 1,
+      "table_probe_status": "ok",
+      "widget_count": 37
+    },
+    {
+      "creator": "Designer 6.5",
+      "document_id": "schedule_a_2025",
+      "fabricated_words": 6,
+      "fabrication": 0.01791044776119403,
+      "ground_truth_words": 622,
+      "layers": {
+        "structure": {
+          "status": "present",
+          "table_count": 1
+        },
+        "text": {
+          "status": "present",
+          "word_count": 622
+        },
+        "widgets": {
+          "count": 33,
+          "status": "present"
+        }
+      },
+      "missing_words": 293,
+      "page_count": 1,
+      "preserved_words": 329,
+      "producer": "Designer 6.5",
+      "retention": 0.5289389067524116,
+      "sha256": "c14acf3478f4c33f27ac6e8ecd9f94b6fb25b16745b341728bd27847d2ef56bb",
+      "shipped_words": 335,
+      "source_path": ".cache/raw/2025/schedule_a_2025.pdf",
+      "table_count": 1,
+      "table_probe_status": "ok",
+      "widget_count": 33
+    },
+    {
+      "creator": "Designer 6.5",
+      "document_id": "schedule_b_2025",
+      "fabricated_words": 7,
+      "fabrication": 0.03125,
+      "ground_truth_words": 532,
+      "layers": {
+        "structure": {
+          "status": "present",
+          "table_count": 2
+        },
+        "text": {
+          "status": "present",
+          "word_count": 532
+        },
+        "widgets": {
+          "count": 72,
+          "status": "present"
+        }
+      },
+      "missing_words": 315,
+      "page_count": 1,
+      "preserved_words": 217,
+      "producer": "Designer 6.5",
+      "retention": 0.40789473684210525,
+      "sha256": "dd1ec3719954532bd219343d81385a2ada3c8e9573fc755a3893f1fbbecc63e2",
+      "shipped_words": 224,
+      "source_path": ".cache/raw/2025/schedule_b_2025.pdf",
+      "table_count": 2,
+      "table_probe_status": "ok",
+      "widget_count": 72
+    },
+    {
+      "creator": "Designer 6.5",
+      "document_id": "schedule_d_2025",
+      "fabricated_words": 25,
+      "fabrication": 0.03698224852071006,
+      "ground_truth_words": 1066,
+      "layers": {
+        "structure": {
+          "status": "present",
+          "table_count": 4
+        },
+        "text": {
+          "status": "present",
+          "word_count": 1066
+        },
+        "widgets": {
+          "count": 55,
+          "status": "present"
+        }
+      },
+      "missing_words": 415,
+      "page_count": 2,
+      "preserved_words": 651,
+      "producer": "Designer 6.5",
+      "retention": 0.6106941838649156,
+      "sha256": "90564c8b7e49280363612639b804d113ebedb516c2e87c70649f29c844da1d2e",
+      "shipped_words": 676,
+      "source_path": ".cache/raw/2025/schedule_d_2025.pdf",
+      "table_count": 4,
+      "table_probe_status": "ok",
+      "widget_count": 55
+    }
+  ],
+  "ground_truth": "PyMuPDF page.get_text()",
+  "headline": {
+    "form_1040_2025": {
+      "expected_percent": 52.0,
+      "measured_percent": 52.0,
+      "reproduced": true
+    },
+    "form_13614_c_2025": {
+      "expected_percent": 17.0,
+      "measured_percent": 17.0,
+      "reproduced": true
+    },
+    "schedule_3_2025": {
+      "expected_percent": 85.7,
+      "measured_percent": 85.7,
+      "reproduced": true
+    }
+  },
+  "mean_reproduced": true,
+  "mean_retention_percent": 52.2,
+  "metric": "lowercase word-multiset intersection and difference",
+  "robustness_corpus": [
+    {
+      "creator": "Adobe InDesign 16.0 (Windows)",
+      "document_id": "california_form_540_2024",
+      "fabricated_words": 12,
+      "fabrication": 0.015345268542199489,
+      "ground_truth_words": 2025,
+      "layers": {
+        "structure": {
+          "status": "present",
+          "table_count": 3
+        },
+        "text": {
+          "status": "present",
+          "word_count": 2025
+        },
+        "widgets": {
+          "count": 180,
+          "status": "present"
+        }
+      },
+      "missing_words": 1255,
+      "page_count": 6,
+      "preserved_words": 770,
+      "producer": "Adobe PDF Library 15.0",
+      "retention": 0.3802469135802469,
+      "sha256": "7729c31d62b474ccc9ae5d1351d5ff72cf5fe5ddcd647f3fb954c0703de49c05",
+      "shipped_words": 782,
+      "source_path": "tests/fixtures/m20_producer_corpus/california_form_540_2024.pdf",
+      "table_count": 3,
+      "table_probe_status": "ok",
+      "widget_count": 180
+    },
+    {
+      "creator": "Mecca III(TM) 9.40",
+      "document_id": "irs_form_1040_1999",
+      "fabricated_words": 6,
+      "fabrication": 0.006389776357827476,
+      "ground_truth_words": 1498,
+      "layers": {
+        "structure": {
+          "status": "present",
+          "table_count": 9
+        },
+        "text": {
+          "status": "present",
+          "word_count": 1498
+        },
+        "widgets": {
+          "count": 265,
+          "status": "present"
+        }
+      },
+      "missing_words": 565,
+      "page_count": 2,
+      "preserved_words": 933,
+      "producer": "APJavaScript 2.2.1 Windows SPDF_1112 Oct  3 2005",
+      "retention": 0.62283044058745,
+      "sha256": "90e8e460288ba116df7a4442a19e751c98bbda11933a094ff31d7672eabb6caf",
+      "shipped_words": 939,
+      "source_path": "tests/fixtures/m20_producer_corpus/irs_form_1040_1999.pdf",
+      "table_count": 9,
+      "table_probe_status": "ok",
+      "widget_count": 265
+    }
+  ],
+  "schema_version": 1,
+  "source_directory": ".cache/raw/2025",
+  "token_pattern": "[a-z0-9$%]+"
+}

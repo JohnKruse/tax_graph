@@ -172,10 +172,12 @@ primary, instructions supplementary) -> M18 widening last.
 - Whether to acquire 2-3 forms from other agencies/eras to actually test producer
   robustness - the cheapest way to convert section 3's caveat from argument to measurement.
 
-## 7. Reproducibility gap in THIS report
+## 7. Reproducibility gap - closed by M20-S1
 
-The measurements above were produced by throwaway scripts in a scratch directory; they are
-NOT committed, so this report is currently evidence, not a reproducible harness. The
-phase that acts on it must ship the retention/fabrication harness as committed tooling
-(Worker task - the Architect does not write implementation code). Until then, treat
-section 2 and 4 numbers as one-time measurements with the method described here.
+M20-S1 committed the measurement harness at `tax_graph/acquire/measure_form.py` and the
+module-form command `python -m tax_graph.cli measure-extraction`. The command writes the
+machine-readable and human-readable snapshots under `plans/m20_s1_measurements/` and never
+writes beside the source PDFs. The committed snapshot reproduces the 52.2% mean and the
+17.0%, 52.0%, and 85.7% headline form figures. The separate producer corpus is pinned by
+hash under `tests/fixtures/m20_producer_corpus/`; it is test data only and is not in the
+acquisition manifest or graph.

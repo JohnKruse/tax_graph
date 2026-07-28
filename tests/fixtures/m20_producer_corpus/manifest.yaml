@@ -1,0 +1,13 @@
+# Deliberately awkward PDFs for M20 producer-layer measurement only.
+# This directory is not an acquisition manifest and never enters graph data.
+documents:
+  - document_id: california_form_540_2024
+    filename: california_form_540_2024.pdf
+    source_url: https://www.ftb.ca.gov/forms/2024/2024-540.pdf
+    sha256: 7729c31d62b474ccc9ae5d1351d5ff72cf5fe5ddcd647f3fb954c0703de49c05
+    kind: state_return
+  - document_id: irs_form_1040_1999
+    filename: irs_form_1040_1999.pdf
+    source_url: https://www.irs.gov/pub/irs-prior/f1040--1999.pdf
+    sha256: 90e8e460288ba116df7a4442a19e751c98bbda11933a094ff31d7672eabb6caf
+    kind: pre_2000_irs_form

@@ -112,6 +112,7 @@ markers = [
   "m15r: Phase M15R canonical addressing recovery tests",
   "m17: Phase M17 cell-atomic review workbench tests",
   "m18: Phase M18 instruction ingestion tests",
+  "m20: Phase M20 form extraction measurement tests",
   "m0: Phase M0 foundation tests",
   "m1: Phase M1 compile/runtime artifact tests",
   "m2: Phase M2 MCP server tests",

@@ -14,6 +14,34 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## Current state (2026-07-27)
 
+**M20-S1 implementation and verification checkpoint (2026-07-28):** Global canary: Ledger
+Llama. Phase canary: Ground Truth. John gave go via the current task request. The committed
+measurement harness lives in `tax_graph/acquire/measure_form.py` and is exposed through the
+module-form command `python -m tax_graph.cli measure-extraction`. It compares the shipped
+`render_form.py` text against PyMuPDF `page.get_text()` using the report's lowercase word
+multiset metrics, records producer/creator metadata, page and widget counts, and probes
+`find_tables()` structure. It writes only a JSON and Markdown snapshot under
+`plans/m20_s1_measurements/`; it does not write `.cache/raw/<year>/*.txt`, promoted artifacts,
+citations, addresses, or graph semantics.
+
+The separate producer corpus is under `tests/fixtures/m20_producer_corpus/`, hash-pinned and
+explicitly absent from `config/manifest.yaml`. It contains California Form 540 (2024) and IRS
+Form 1040 (1999), both with text, widgets, and detected tables in this environment. The
+snapshot measures all 16 local form PDFs, reproduces the 52.2% mean and the 17.0%, 52.0%, and
+85.7% headline figures, and records the alternate-producer layer results. M20-S1 is complete
+once the local commit below is made; no push is planned for this step.
+
+Declared focused files and evidence:
+
+- RAN: `$testRoot = 'C:\Users\devbox\.codex\visualizations\2026\07\28\019fa80e-ebab-74b2-b7a8-386226624a0e\m20_s1_focused_r1'; New-Item -ItemType Directory -Force -Path $testRoot | Out-Null; $env:PYTEST_DEBUG_TEMPROOT = $testRoot; .venv\Scripts\python.exe -m pytest tests/test_measure_extraction_m20.py tests/test_cli.py tests/test_render_form.py -q` -> 10 passed in 20.01s; one known pytest cache ACL warning. Covers `tests/test_measure_extraction_m20.py`, `tests/test_cli.py`, and `tests/test_render_form.py`.
+- RAN: `$testRoot = 'C:\Users\devbox\.codex\visualizations\2026\07\28\019fa80e-ebab-74b2-b7a8-386226624a0e\m20_s1_final_unit_r1'; New-Item -ItemType Directory -Force -Path $testRoot | Out-Null; $env:PYTEST_DEBUG_TEMPROOT = $testRoot; .venv\Scripts\python.exe -m pytest -m m20 -q` -> 4 passed, 564 deselected in 3.52s; one known pytest cache ACL warning.
+- RAN: `.venv\Scripts\python.exe -m tax_graph.cli measure-extraction --year 2025` -> exit 0; 16 form PDFs, mean retention 52.2%, headline reproduced true, 2 robustness PDFs; snapshots written to `plans/m20_s1_measurements/`.
+- RAN: `.venv\Scripts\python.exe tools/check_ascii.py` -> `ASCII check OK`.
+- RAN: `git diff --check` -> exit 0.
+- RAN: `.venv\Scripts\python.exe -m tax_graph.cli validate 2025` -> exit 0; graph integrity OK; 18 documents, 441 nodes, 401 citations.
+- RAN: `.venv\Scripts\python.exe -m workbench.cli --year 2025 preflight` -> exit 0; 35 entries, 3,243 units, `legacy_mined=394`.
+- NOT RUN: none of the declared focused files.
+
 **Worker session checkpoint - M18-S3b implementation (2026-07-28):** Global canary: Ledger
 Llama. Phase canary: Form 1040. Model: GPT-5 Codex; effort: default; usage/quota/context
 indicators are not exposed. John gave go via the current task request. Single declared step:

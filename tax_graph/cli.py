@@ -260,6 +260,52 @@ def promote_instruction_command(
     return 0
 
 
+def measure_extraction_command(
+    year: str = "2025",
+    root: str | Path | None = None,
+    input_dir: str | Path | None = None,
+    corpus_dir: str | Path | None = None,
+    output_dir: str | Path | None = None,
+) -> int:
+    """Measure shipped form-text retention without writing to the raw store."""
+    from tax_graph.acquire.measure_form import (
+        build_snapshot,
+        measure_directory,
+        measure_robustness_corpus,
+        write_snapshot,
+    )
+
+    root_path = Path(root).resolve() if root is not None else project_root()
+    source_dir = Path(input_dir) if input_dir is not None else root_path / ".cache" / "raw" / str(year)
+    corpus_root = Path(corpus_dir) if corpus_dir is not None else root_path / "tests" / "fixtures" / "m20_producer_corpus"
+    destination = Path(output_dir) if output_dir is not None else root_path / "plans" / "m20_s1_measurements"
+    forms = measure_directory(source_dir, root=root_path)
+    robustness = measure_robustness_corpus(corpus_root, root=root_path) if corpus_root.exists() else []
+    snapshot = build_snapshot(
+        forms,
+        robustness=robustness,
+        source_directory=_relative_snapshot_path(source_dir, root_path),
+        corpus_directory=_relative_snapshot_path(corpus_root, root_path) if corpus_root.exists() else None,
+    )
+    json_path, markdown_path = write_snapshot(snapshot, destination)
+    print(f"measured form PDFs: {len(forms)}")
+    print(f"mean retention: {snapshot['mean_retention_percent']:.1f}%")
+    print(f"headline reproduced: {str(snapshot['mean_reproduced']).lower()}")
+    print(f"robustness PDFs: {len(robustness)}")
+    print(f"machine snapshot: {json_path}")
+    print(f"report snapshot: {markdown_path}")
+    return 0
+
+
+def _relative_snapshot_path(path: str | Path, root: Path) -> str:
+    """Keep committed measurement snapshots portable across developer machines."""
+    resolved = Path(path).resolve()
+    try:
+        return resolved.relative_to(root).as_posix()
+    except ValueError:
+        return str(resolved)
+
+
 def apply_verdicts_command(
     year: str = "2025",
     root: str | Path | None = None,
@@ -1141,6 +1187,25 @@ def _build_typer_app():
         if raise_code:
             raise typer.Exit(raise_code)
 
+    @cli.command("measure-extraction")
+    def measure_extraction_cli(
+        year: str = typer.Option("2025", "--year", "-y", help="Tax year to measure."),
+        input_dir: Path | None = typer.Option(None, "--input-dir", help="Directory containing source PDFs."),
+        corpus_dir: Path | None = typer.Option(None, "--corpus-dir", help="Separate producer-robustness corpus."),
+        output_dir: Path | None = typer.Option(None, "--output-dir", help="Snapshot output directory."),
+        root: Path | None = typer.Option(None, "--root", help="Project root override."),
+    ) -> None:
+        """Measure form-text retention and PDF producer layers."""
+        raise_code = measure_extraction_command(
+            year=year,
+            root=root,
+            input_dir=input_dir,
+            corpus_dir=corpus_dir,
+            output_dir=output_dir,
+        )
+        if raise_code:
+            raise typer.Exit(raise_code)
+
     review_cli = typer.Typer(help="Human review verdict helpers.")
 
     @review_cli.command("apply-verdicts")
@@ -1696,6 +1761,13 @@ def _fallback_app() -> int:
     )
     promote_instructions_parser.add_argument("--root", default=None)
 
+    measure_extraction_parser = subparsers.add_parser("measure-extraction")
+    measure_extraction_parser.add_argument("--year", "-y", default="2025")
+    measure_extraction_parser.add_argument("--input-dir", default=None)
+    measure_extraction_parser.add_argument("--corpus-dir", default=None)
+    measure_extraction_parser.add_argument("--output-dir", default=None)
+    measure_extraction_parser.add_argument("--root", default=None)
+
     intake_parser = subparsers.add_parser("intake")
     intake_parser.add_argument("--drop-dir", required=True)
     intake_parser.add_argument("--year", "-y", default="2025")
@@ -1830,6 +1902,14 @@ def _fallback_app() -> int:
             source_document_id=args.source_document_id,
             html_path=args.html_path,
             citation_filename=args.citation_filename,
+        )
+    if args.command == "measure-extraction":
+        return measure_extraction_command(
+            year=args.year,
+            root=args.root,
+            input_dir=args.input_dir,
+            corpus_dir=args.corpus_dir,
+            output_dir=args.output_dir,
         )
     if args.command == "intake":
         return intake_command(
