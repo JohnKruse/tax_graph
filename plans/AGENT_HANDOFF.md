@@ -220,9 +220,86 @@ the instruction slot; Authority explicitly reports missing authored coverage; do
 citation coverage is visible beside policy counts; and the dossier heading duplication/order
 warts are fixed. No promoted artifacts, graph semantics, verdicts, or citation records changed.
 
-**BALL: WORKER - M18-S3b (fix the Schedule 1-A silent zero and persist the join findings).
-Task block under From Architect. M18-S3 is ACCEPTED (`4ab507d`) - do not redo the promotion;
-S3b is a miner fix plus findings persistence on top of it.**
+**BALL: JOHN - M18-S3b is ACCEPTED. Before widening M18 to the other six instruction
+documents, John is deciding on the coverage-contract work below (Architect recommendation:
+do NOT widen yet).**
+
+**ARCHITECT VERIFICATION - M18-S3b (Claude Opus 5, 2026-07-28). ACCEPTED, pushed with the
+frontier fix.** Both returned defects are properly closed:
+- **D10 closed, and the diagnosis is CORRECT - verified independently.** The Architect
+  extracted the Schedule 1-A region from the stored HTML: **95,954 characters, 17 headings,
+  and ZERO `Line N` headings.** Every heading is Part-level or worksheet-level (`Part I
+  Modified Adjusted Gross Income`, `Part II No Tax on Tips`, `Part III No Tax on Overtime`,
+  `Part V Enhanced Deduction for Seniors`). Contrast Schedule 3: 30 headings in its region,
+  15 sections mined. So the line-token miner was RIGHT to emit nothing, and the Worker's
+  "part-level headings only" diagnosis is precise rather than a rationalization.
+  The finding now persists with real evidence: `anchor=id509`,
+  `source_span=2239392:2239468`, `context_heading`, `promoted_section_count=0`.
+- **D11 closed.** 62 findings written to `review_queue/2025/deferred_review.yaml` (57
+  `unresolved_document_context`, 4 `missing_canonical_address`, 1 `empty_expected_document`),
+  all `status: deferred` so nothing fakes human review.
+- **The accepted 82 are untouched:** `git diff f8d42d5^..f8d42d5 -- graph/` is EMPTY. No
+  citation id, address binding, or re-derivation changed. `promote-instructions` is now a
+  committed module-form entry point, so the artifact is reproducible.
+- **RAN (clearing the Worker's honest NOT RUN):** `tests/test_review_manifest_m15.py` plus
+  `tests/test_frontier_build_m7.py` -> 9 passed, 1 failed in 928s; the single failure was the
+  frontier test below, and every manifest test passed. The Worker's 600s cap was the only
+  reason it could not verify that file - the report was honest and correct.
+- **RAN:** `tests/test_frontier_build_m7.py tests/test_frontier_query_m7.py` -> 6 passed
+  after the fix. ASCII OK, `git diff --check` exit 0.
+
+**ARCHITECT DEFECT - MAIN WENT CI-RED ON THE M18-S3 PUSH, AND IT WAS THE ARCHITECT'S MISS
+(run 30334129749, 1 failed / 475 passed, all three interpreters).**
+`tests/test_frontier_build_m7.py::test_frontier_build_detects_publication_references`
+asserted `pub_refs[0]["target"] == publication_550` - a POSITIONAL assumption.
+`tax_graph/frontier/build.py:249` scans citation `quoted_text` for publication references,
+and the 82 promoted instruction citations legitimately name **Pub. 504, 517, 525, 531, 550,
+560, and 970**, so `publication_531` now sorts ahead of the injected record. The product
+behavior is CORRECT and desirable - the frontier registry is exactly the inventory of what
+lies beyond the modeled graph. Fixed by asserting the INVARIANT (the injected
+`cite_pub_550_reference` is detected with `weight is None`) instead of its position, the
+same shape as the M19-S2 path-spelling fix.
+**This is D9 applied to the Architect and missed by the Architect.** The partition was
+widened to 18 files precisely because of D9 and still omitted a citation-text consumer;
+`frontier/build.py` reads `quoted_text` and would have surfaced in the very grep the ledger
+tells the Worker to run. Not logged against the Worker - the miss was the verifier's.
+**PRE-EXISTING FINDING (separate task, not fixed here):** `_publication_id` uses
+`re.search`, so it captures only the FIRST publication per citation - a citation naming both
+Pub. 550 and Pub. 525 silently drops one.
+
+**ARCHITECTURE FINDING FOR JOHN - SCHEDULE 1-A REFRAMES THE WIDENING DECISION
+(Architect, 2026-07-28).** Schedule 1-A is not missing instruction material; it has ~96KB of
+it, covering the new tips/overtime/senior deductions. It is organized **by Part, not by
+line**, and the S3 join is line-token-based BY DESIGN. Those 101 addresses cannot be covered
+by the current mechanism at all.
+**John's standing fear, stated 2026-07-28:** that the pipeline is shoddy and will "fail
+miserably on the second form a user tries to add." The Architect's assessment, with the
+conflation separated:
+- **Form extraction is NOT the weak point and Schedule 1-A is NOT being skipped.** It has
+  **54 cells, 54 addressed, 54 with a population policy**; the corpus is 1921 widgets ->
+  1921 cells, 0 hidden. AcroForm widget enumeration is mechanical and complete.
+- **The weak point is joining EXTERNAL explanatory documents by a printed line token.** It
+  met its first structural variant - a Part-organized schedule - and returned empty. That is
+  John's "second form" scenario, and it already happened on the fifth document of the first
+  form family. The indictment is fair.
+- **Bounded severity:** the failure mode is missing EXPLANATION, not wrong math. A cell with
+  no instruction citation still has its address, geometry, and fill policy. And it failed
+  closed - nothing was guessed. But until D10 it failed SILENTLY, which is the real fault.
+- **The object model largely exists** (document -> address -> cell -> concept with
+  occurrences, per M19). What is missing is that instruction authority is a HEURISTIC join
+  rather than a declared relation with multiple resolution strategies (line token, Part,
+  worksheet, prose reference).
+**RECOMMENDATION: do NOT widen M18 to the other six instruction documents yet.** Build (a) a
+per-document, fail-closed COVERAGE CONTRACT with a CI ratchet - each document declares the
+surfaces it expects (cells, addresses, policies, authority), the pipeline reports
+produced-vs-expected every run, and CI fails on a regression or an unexpected empty; and (b)
+the Part-level resolution strategy Schedule 1-A is asking for. D10 forced exactly this check
+into existence for ONE case; generalize it. Widening first would replicate a line-token
+assumption we have already watched break.
+**Honest state for self-serve:** a novel IRS fillable form would extract cleanly today and
+arrive with ZERO authority and no population policies (13% of cells carry any citation; six
+documents have none). That is an acceptable limit; the unacceptable part is that the system
+would not SAY so. Honest-state reporting outranks widening.
 
 **ARCHITECT VERIFICATION - M18-S3 (Claude Opus 5, 2026-07-28). ACCEPTED, with two gaps
 returned as S3b.** What was promoted is sound; what was NOT promoted is where the problems

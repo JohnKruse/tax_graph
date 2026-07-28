@@ -70,8 +70,14 @@ def test_frontier_build_detects_publication_references(tmp_path):
     registry = build_frontier_registry("2025", root=root).registry
 
     pub_refs = [entry for entry in registry["frontiers"] if entry["kind"] == "pub_reference"]
-    assert pub_refs[0]["target"] == {"external_id": "publication_550"}
-    assert pub_refs[0]["weight"] is None
+    # Assert the INVARIANT (the injected citation is detected), not its position. This
+    # originally read pub_refs[0] and broke when M18-S3 promoted the 1040 instruction
+    # text, which legitimately names Pub. 504/517/525/531/550/560/970 - a real corpus
+    # gain that ordered publication_531 ahead of the injected record.
+    injected = [entry for entry in pub_refs if entry["citation_ref"] == "cite_pub_550_reference"]
+    assert len(injected) == 1
+    assert injected[0]["target"] == {"external_id": "publication_550"}
+    assert injected[0]["weight"] is None
 
 
 @pytest.mark.m7
