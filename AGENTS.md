@@ -222,6 +222,20 @@ entries; do not delete them.
   ones. **Standing rule: before repairing a promoted artifact by hand, establish whether a
   generator produces it. If one does, regeneration is the fix and hand editing is a
   defect.** (M20-S2b, 2026-07-28)
+- **D14 (ARCHITECT defect) - A producer change needs the consumers of its SHAPE, not only of
+  its PATH.** M20-S2 rebuilt the stored form text and deliberately removed the old inline
+  `- 16:` anchor wrapper. The Architect required a D9 consumer sweep, and the Worker ran it
+  correctly, finding every module that READS `.cache/raw/<year>/<id>.txt`
+  (`citation_check.py`, `extract/inputs.py`, `structural_checks.py`). It missed
+  `_span_for_line` (`outline_pipeline.py:701`), which never opens the file but matches
+  `span.text.startswith(f"- {anchor}:")` - it depends on the text's FORMAT. Result: the
+  extraction pipeline could no longer anchor any span, the outline came back
+  `children: []`, and `extract` **exited 0 while producing nothing**. Two lessons: (a) when
+  you change a producer's output FORMAT, grep for the format's literal markers (here
+  `"- "` + anchor patterns), not just for readers of the path; (b) a step that removes a
+  convention must name and rewire the consumers of that convention in the same task - the
+  S2 task specified the new anchor index but never required updating the code that depended
+  on the old one. (M20-S2/S3a, 2026-07-28)
 - **D6 - Always use the module form of a CLI, never the console script.**
   `.venv\Scripts\python.exe -m tax_graph.cli ...`, not `.venv\Scripts\tax-graph.exe ...`; the
   generated launcher resolves through an editable-install `.pth` with an absolute path that does not

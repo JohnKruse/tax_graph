@@ -14,15 +14,37 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## Current state (2026-07-27)
 
-**Worker session checkpoint - M20-S2b implementation (2026-07-28):** Global canary: Ledger
+**Worker session checkpoint - M20-S3a implementation (2026-07-28):** Global canary: Ledger
 Llama. Phase canary: Ground Truth. Model: GPT-5 Codex; effort: default; usage/quota/context
 indicators are not exposed. John gave go via the current task request. Single declared step:
-re-derive the 26 stale citations from the corrected acquired form text, remove the permanent
-legacy-format fallbacks from the citation verifier, update the live retention ratchet, and run
-the changed-content consumers before one local commit. Applicable defect-ledger entries: D4,
-D6, D8, D9, D12, and the exact RAN/NOT RUN evidence rule. D1-D3, D5, and D7 are not expected
-unless the workbench surface changes. The rebuilt form text, field grids, geometry, field maps,
-addresses, bindings, verdicts, graph semantics, and drafts are out of scope.
+regenerate affected derived artifacts from the corrected form text through the committed
+pipeline, account for every changed citation and label anchor, verify the known Schedule A
+line-16 citation, and run every changed-content consumer before one local commit. Applicable
+defect-ledger entries: D4, D6, D8, D9, D10, D11, D12, D13, and the exact RAN/NOT RUN evidence
+rule. D1-D3, D5, and D7 are not expected unless the workbench surface changes. No hand edits
+to generated citations, labels, or display names; no geometry, field-map, address, binding,
+verdict, graph-semantic, or human-review changes.
+
+**M20-S3a pre-write checkpoint (2026-07-28):** The committed pipeline entry point and its
+artifact boundaries are being inspected before generation. The expensive generation and
+verification round is pending; no test evidence is claimed yet.
+
+**M20-S3a blocker (2026-07-28):** The first committed-pipeline regeneration exposed a
+fail-closed defect before any promotion. `extract --doc schedule_a_2025 --year 2025` exited
+0, but the corrected text's outline is empty (`graph/2025/_drafts/schedule_a_2025/outline.yaml`
+has `children: []`) and the batch emitted no replacement `nodes.yaml` or `citations.yaml`.
+The candidate span is present and source-derived as `span_schedule_a_2025_0083` with text
+`Other 16 Other-from list in instructions. List type and amount:`. The current parser's
+`_span_for_line` only matches `- 16:` prefixes, so it cannot regenerate the known line-16
+node/citation from the corrected text. The draft writer leaves the old stale draft files in
+place when a batch kind is empty. No live graph artifact was changed and no generated output
+was hand-edited. This is a real pipeline/structure boundary defect, not a promotion decision;
+S3a cannot proceed until the Architect decides whether the parser adaptation belongs in S3a or
+is explicitly deferred to S3b.
+
+- RAN: `.venv\Scripts\python.exe -m tax_graph.cli extract --doc schedule_a_2025 --year 2025` -> exit 0; `auto_accepted=0`, `human_review=1`, `deterministic_issues=12`; no replacement nodes/citations emitted.
+- RAN: `.venv\Scripts\python.exe -c "from pathlib import Path; from tax_graph.extract.inputs import load_document_input; from tax_graph.extract.outline import build_candidate_spans; from tax_graph.config import load_config; d=load_document_input('schedule_a_2025', year='2025', root=Path('.').resolve(), config=load_config(root=Path('.').resolve())); s=build_candidate_spans(d); print(repr(d.text.splitlines()[82])); print([(x.span_id, x.text) for x in s if 'Other-from' in x.text])"` -> corrected source row and `span_schedule_a_2025_0083` confirmed.
+- NOT RUN: `tests/test_citation_cleanup_m18.py`, `tests/test_acquire_citation_check.py`, `tests/test_measure_extraction_m20.py`, `tests/test_graph_validator.py`, and `tests/test_workbench_cells_m17.py` -> implementation stopped at the pipeline blocker before consumer verification; no test evidence is claimed.
 
 Pre-write consumer grep found no stale-quote assertions in tests. Declared focused files:
 `tests/test_citation_cleanup_m18.py`, `tests/test_acquire_citation_check.py`,
@@ -354,9 +376,37 @@ the instruction slot; Authority explicitly reports missing authored coverage; do
 citation coverage is visible beside policy counts; and the dossier heading duplication/order
 warts are fixed. No promoted artifacts, graph semantics, verdicts, or citation records changed.
 
-**BALL: WORKER - M20-S3a (REGENERATE derived artifacts from the corrected text through the
-pipeline). Task block under From Architect. S2 and S2b are pushed and accepted; D12 is
-CLOSED.**
+**BALL: WORKER - M20-S2d (rewire the span matcher to the line-anchor index). S3a is BLOCKED
+behind it. Task block under From Architect.**
+
+**ARCHITECT RULING - THE S3a BLOCKER IS REAL, AND IT IS AN ARCHITECT SCOPING ERROR
+(Claude Opus 5, 2026-07-28).** The Worker's block report is CORRECT and was verified
+independently.
+**What broke:** `_span_for_line` (`tax_graph/extract/outline_pipeline.py:701`) finds a
+node's source span by STRING PREFIX -
+`prefixes = {f"- {anchor}:" for anchor in _line_anchor_variants(node.line_anchor)}` then
+`span.text.startswith(prefix)`. That depends on the old renderer's inline `- 16:` wrapper,
+**the exact artifact S2 removed by design**. No wrapper -> no match -> empty outline
+(`children: []`) -> nothing regenerated. The extraction pipeline's anchoring was resting on
+the damaged renderer's format convention, so the rot ran one layer deeper than we had
+traced: the wrapper polluted citation TEXT (fixed in M18-S2b) and was simultaneously
+load-bearing STRUCTURE for the parser.
+**Why the D9 sweep missed it.** The Architect told the Worker to grep consumers of the
+stored text; it correctly found `citation_check.py`, `extract/inputs.py`, and
+`structural_checks.py` - everything that READS the file. `_span_for_line` never reads the
+file, it depends on the file's FORMAT. **Standing lesson: a producer change needs the
+consumers of its SHAPE, not only of its path.** The S2 task required separating the anchor
+index from the content and never required rewiring the consumer that depended on the old
+inline format; that omission is the Architect's.
+**The material already exists.** S2 shipped `line_anchors` in `.fields.json` - 27 entries
+for `schedule_a_2025`, each carrying `anchor`, `page`, `text_offset`, `text_length`, and
+rect coordinates. Resolving through that index is strictly better than prefix matching:
+positional truth instead of a string convention, and it fixes anchoring at the root.
+**Placement: this is S2d, the missing half of S2** - not S3a (blocked by it) and not S3b
+(which owns caption-to-cell association, a different problem).
+**Worker process credit:** hit a fail-closed condition, changed no artifact, hand-edited no
+generated output, and reported `NOT RUN` on all five declared test files rather than
+claiming partial evidence. That is exactly what the ledger asks for.
 
 **M20-S2c IS CANCELLED, AND THE REASON MATTERS (John, 2026-07-28).** John reiterated the
 standing goal: "our ultimate goal is to build a valid and reliable pipeline, not a bunch of
@@ -1890,7 +1940,48 @@ TY2026 docs drop.
 
 ## From Architect
 
-- **M20-S3a TASK - REGENERATE DERIVED ARTIFACTS FROM THE CORRECTED TEXT (Architect, Claude
+- **M20-S2d TASK - REWIRE THE SPAN MATCHER TO THE LINE-ANCHOR INDEX (Architect, Claude
+  Opus 5, 2026-07-28). Small, mechanical, unblocks S3a.** Your own S3a block report
+  diagnosed this correctly - it is an Architect scoping error in the S2 task, not a defect
+  in your work. Read the ruling directly above this block. Ledger: **D8** (a promoted
+  artifact's SHAPE is a contract), **D9** (run the consumers - and note the lesson that a
+  format consumer will not show up in a file-reader grep), D4, D6, and the RAN/NOT RUN rule.
+  **The problem:** `_span_for_line` (`tax_graph/extract/outline_pipeline.py:698-705`)
+  resolves a node's source span with `span.text.startswith(f"- {anchor}:")`. S2 deliberately
+  removed that inline wrapper, so the match never fires and the outline comes back empty.
+  **The material:** `.fields.json` now carries `line_anchors` - entries with `anchor`,
+  `page`, `text_offset`, `text_length`, and rect coordinates, pointing INTO the emitted text.
+  1. **Resolve spans through the index, not through a text prefix.** A node with
+     `line_anchor` "16" should find its span via the `line_anchors` entry for "16" and that
+     entry's offset into the text - positional truth rather than a string convention. Keep
+     `_line_anchor_variants` behaviour for anchor spelling (`16` / `16a`); it is the
+     PREFIX-matching that goes, not variant handling.
+  2. **Fail closed and say so.** A node whose anchor has no index entry, or an index entry
+     that resolves to no span, is a named finding - never a silent `None` that empties the
+     outline. The current failure mode is precisely a silent empty (ledger D10), and
+     `extract` exited **0** while producing nothing, which is the worst combination.
+  3. **Pin it with a test that would have caught this.** A line-16 node on
+     `schedule_a_2025` must resolve to the span containing
+     `Other-from list in instructions. List type and amount:`. Add a negative test too: a
+     node whose anchor is absent from the index raises/reports rather than returning empty.
+  4. **Do NOT** regenerate artifacts, promote drafts, hand-edit any generated citation or
+     label, or touch the rebuilt text, the citation gate, geometry, field maps, or verdicts.
+     S3a owns regeneration and runs after this.
+  5. **Leave the stale draft files alone** for now, but report the second defect you found -
+     that the draft writer leaves old draft files in place when a batch kind is empty. That
+     is a real fail-open and S3a will need it fixed; state whether you consider it in scope
+     here or better handled in S3a, and why.
+  Declared files plus honest `RAN:`/`NOT RUN:` on every one. Per D9, grep for consumers of
+  the span/outline SHAPE, not just of the files. ASCII, `git diff --check`, module-form
+  `validate 2025`, and real preflight with `legacy_mined` reported explicitly (expect
+  **394**, unchanged - this round promotes nothing). No `--basetemp`. ONE local commit; no
+  push.
+  Stop conditions: any need to change the rebuilt text, the citation gate, or a promoted
+  artifact; the index proving insufficient to anchor spans (report what is missing rather
+  than reintroducing prefix matching); or a quota/environment failure.
+
+- **[BLOCKED behind M20-S2d - the span matcher cannot anchor against the corrected text]
+  M20-S3a TASK - REGENERATE DERIVED ARTIFACTS FROM THE CORRECTED TEXT (Architect, Claude
   Opus 5, 2026-07-28).** **Do NOT hand-edit a single citation, label, or display name in
   this round.** Everything below is fixed by re-running the generator whose input changed.
   Read ledger **D13 first** (both halves - the Worker defect AND the Architect instruction
