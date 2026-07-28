@@ -511,6 +511,27 @@ sequencing: after M15 (the workbench is the surface where the delta review happe
 when TY2026 documents drop, whichever is later. Human effort target: review the delta
 report, nothing else twice.
 
+### M20 - Form text extraction rebuild (measured 2026-07-28; proposed, not yet scheduled)
+Report: `plans/M20_FORM_EXTRACTION_EXPERIMENT.md`. Triggered when John challenged the
+pipeline's soundness ("I keep having the feeling that our pipeline is really shoddy") and
+the measurement proved him right at the acquisition layer, not the join layer.
+**`render_form.py` retains a mean of 52.2% of each form's printed text** (13614-C 17%, the
+1040 52%): `_rows_from_words` discards every token before a detected line anchor and drops
+anchorless rows entirely, and its anchor regex misreads `box 5` as line 5. That stored
+`.txt` is what `check_citation_integrity` validates form citations against, so only
+surviving fragments are citable - this is the upstream source of the `- <token>:` wrapper
+pollution cleaned in M18-S2b and of the M16-S2 anchor-split family. Measured alternatives:
+deterministic `find_tables()` 67.9% (and **producer-sensitive** - zero tables on 2 of the 7
+Antenna House instruction PDFs), Mistral OCR **99.4% at 0.2% fabrication** with zero
+invented figures. Design: the deterministic text layer stays ground truth and keeps the
+verbatim invariant; OCR is a hash-pinned STRUCTURE proposal verified against it three ways
+(word-level fabrication check, block bbox vs trusted widget geometry, confidence
+thresholds); a per-document text-retention ratchet lands in CI. Sequence: this rebuild ->
+coverage contract -> two-tier authority (form caption primary, instructions supplementary)
+-> M18 widening last. Open for John: extending the Mistral vendor exception into the form
+path, and whether to acquire non-IRS/older forms to test producer robustness (the corpus is
+100% `Designer 6.5`, so robustness across authoring tools is UNTESTED).
+
 ---
 
 ## Configuration - one-stop tuning

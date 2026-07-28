@@ -296,6 +296,20 @@ produced-vs-expected every run, and CI fails on a regression or an unexpected em
 the Part-level resolution strategy Schedule 1-A is asking for. D10 forced exactly this check
 into existence for ONE case; generalize it. Widening first would replicate a line-token
 assumption we have already watched break.
+
+**SUPERSEDED IN PART, 2026-07-28 - see `plans/M20_FORM_EXTRACTION_EXPERIMENT.md`.** The
+"Part-level resolution strategy" in item (b) above was reasoned from the assumption that
+our FORM text was sound and only the instruction join was weak. Measurement disproved
+that: `render_form.py` retains a mean of **52.2%** of each form's text (13614-C 17%, the
+1040 52%), discarding pre-anchor tokens and dropping anchorless rows outright, while
+Mistral OCR retains **99.4% at 0.2% fabrication** - all of it markdown image syntax,
+dehyphenation gains, and recovered line labels, with ZERO invented figures. Schedule 1-A's
+own form captions carry the operative rules (John's point), so the fix is to stop
+destroying the text we already acquired, not to chase a Part-level instruction join. The
+coverage contract in item (a) SURVIVES and gains its first concrete metric (a per-document
+text-retention ratchet). Corrected sequence: form extraction rebuild -> coverage contract
+-> two-tier authority -> M18 widening last. Full method, per-form numbers, producer
+analysis, and four defects found in the existing OCR path are in the M20 report.
 **Honest state for self-serve:** a novel IRS fillable form would extract cleanly today and
 arrive with ZERO authority and no population policies (13% of cells carry any citation; six
 documents have none). That is an acceptable limit; the unacceptable part is that the system
