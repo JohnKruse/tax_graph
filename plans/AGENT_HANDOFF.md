@@ -475,9 +475,9 @@ the instruction slot; Authority explicitly reports missing authored coverage; do
 citation coverage is visible beside policy counts; and the dossier heading duplication/order
 warts are fixed. No promoted artifacts, graph semantics, verdicts, or citation records changed.
 
-**BALL: ARCHITECT then WORKER - M20-S3b (build the structure layer) must run BEFORE S3a.
-S3a is BLOCKED again, correctly. The two mechanical fixes from the S3a attempt are accepted
-and committed.**
+**BALL: WORKER - M20-S3b (build the structure layer). Task block under From Architect. It
+must run BEFORE S3a, which stays blocked. The two mechanical fixes from the S3a attempt are
+accepted and pushed in `414ccda`.**
 
 **ARCHITECT VERIFICATION - M20-S3a ATTEMPT (Claude Opus 5, 2026-07-28). BLOCKER UPHELD;
 MECHANICAL FIXES ACCEPTED; THE PHASE SEQUENCE WAS WRONG AND IS NOW CORRECTED.**
@@ -2164,7 +2164,77 @@ TY2026 docs drop.
   artifact; the index proving insufficient to anchor spans (report what is missing rather
   than reintroducing prefix matching); or a quota/environment failure.
 
-- **[BLOCKED behind M20-S2d - the span matcher cannot anchor against the corrected text]
+- **M20-S3b TASK - BUILD THE STRUCTURE LAYER (Architect, Claude Opus 5, 2026-07-28).**
+  **This is the phase's hard round and it unblocks S3a.** Read `plans/PHASE_M20.md`
+  (sequencing correction) and the S3a-attempt ruling above. Ledger: **D10** (a silent empty
+  is the forbidden outcome), **D13** (verbatim is necessary, not sufficient - anchoring is
+  what matters), **D14** (consumers of a FORMAT, not just a path), D4, D6, D8, D9.
+  **The problem in one line:** this pipeline never had a structure layer -
+  `render_form.py`'s `- 16:` wrapper WAS the structure, and removing it (correctly) left
+  `build_outline_tree` parsing markup that no longer exists. Outline children are **0** on
+  every document. Structure must now be built for real.
+  **DESIGN DIRECTION - INVERT THE OLD APPROACH.** The old pipeline parsed TEXT to derive
+  structure. That is convention-dependent and it just broke. **Build structure from
+  GEOMETRY, and use text only for captions.** Geometry is spec-level and producer-robust:
+  1,921 AcroForm widgets enumerate cleanly across three distinct producers
+  (`Designer 6.5`, `Adobe PDF Library 15.0`, and a 1999 `APJavaScript` form). Text parsing
+  is a convention we no longer control.
+  **MEASURED FACTS - do not re-survey, build against these:**
+  - **Anchors are NOT at row starts.** `schedule_a_2025`: 9 anchors at line start, **18
+    mid-line**. `form_1040_2025`: 22 vs **21**. A row like
+    `'and 1 Medical and dental expenses (see instructions) 1'` carries left-column spillover
+    (`and`), the defining anchor (`1`), the caption, and a trailing printed box reference.
+  - **A row can contain several anchors, and the index entry is not always the row's
+    defining line.** Index anchor `1a` points at the row `'z Add lines 1a through 1h 1z'` -
+    that is line **1z**, and `1a`/`1h` there are REFERENCES inside the caption. Same family
+    as the M16-S2 `z -> 1z` defect, and exactly why the Worker's adapter put Schedule A
+    `5a` on the `5d` body. **Distinguishing a row's DEFINING anchor from anchors MENTIONED
+    in its caption is the core problem of this round.**
+  - **Some documents have NO line anchors at all.** `form_13614_c_2025`: **0** line_anchors,
+    209 text lines, 297 widgets. Any design keyed solely on line anchors yields nothing
+    there. It is the intake questionnaire and it must degrade to geometry.
+  - Prior geometry measurement (Architect, same-row/left-of widgets): **85%** on
+    schedule_1a, **82%** on the 1040, **51%** on 13614-C, with named failure modes -
+    multi-widget rows overshooting, and checkbox matrices whose caption is a column header
+    ABOVE rather than left.
+  1. **Emit a structure model the pipeline can consume** - whatever `build_outline_tree`
+     needs (sections, line nodes with `line_anchor`, page) - derived from widget geometry
+     plus word rects, not from synthetic text markup. Keep the emitted text layer untouched;
+     S2 owns it and it is complete.
+  2. **Resolve a row's DEFINING anchor** and do not be fooled by referenced anchors in the
+     caption. State the rule you use and why it is not a heuristic that silently
+     mis-assigns. The printed box reference beside the input widget is likely stronger
+     evidence than token order in the text - the widget knows where it is.
+  3. **Fail closed, loudly.** A row that cannot be assigned a defining anchor, or a widget
+     with no caption, is a NAMED finding. **A zero-node outline with exit code 0 is the
+     forbidden outcome** (D10) - that is precisely how S3a failed twice.
+  4. **Degrade honestly with no anchors.** For `form_13614_c_2025` structure must come from
+     geometry alone. Report what fraction of its 297 widgets get a caption, and treat the
+     remainder as findings rather than pretending coverage.
+  5. **Report association coverage per document** - widgets with a resolved caption over
+     total widgets - as the ratcheted number this phase has been building toward. Include
+     the three documents above plus at least one from the producer-robustness corpus
+     (`tests/fixtures/m20_producer_corpus/`) to check the approach is not `Designer 6.5`
+     -specific.
+  6. **Prove it end to end:** `build_outline_tree` must return a NON-EMPTY outline for
+     `schedule_a_2025`, and Schedule A line 16 must resolve to the row carrying
+     `Other-from list in instructions. List type and amount:` - the record D13 got wrong.
+  7. **Promote NOTHING.** No regeneration, no draft promotion, no citation or label writes -
+     S3a owns all of that and runs after this. `legacy_mined` stays **394**, citations stay
+     **36 strict**, cells stay **1,921**.
+  Tier 3 (pipeline behaviour). Declared files plus honest `RAN:`/`NOT RUN:` on every one;
+  per D14 grep for consumers of the outline's SHAPE, not just its path. ASCII,
+  `git diff --check`, module-form `validate 2025`, real preflight with `legacy_mined`
+  reported explicitly. No `--basetemp`. ONE local commit; no push.
+  **This round is allowed to be big, and it is allowed to come back with a partial result
+  plus honest findings.** If association lands well below the measured geometry baselines,
+  report the number and the failure modes rather than widening a heuristic to hit a target -
+  a silent mis-assignment here becomes a wrong citation on every form.
+  Stop conditions: any need to change the emitted text layer, the citation gate, or a
+  promoted artifact; a rule you cannot justify against the mis-assignment failures above;
+  or a quota/environment failure.
+
+- **[BLOCKED behind M20-S3b - the outline cannot be built from the corrected text]
   M20-S3a TASK - REGENERATE DERIVED ARTIFACTS FROM THE CORRECTED TEXT (Architect, Claude
   Opus 5, 2026-07-28).** **Do NOT hand-edit a single citation, label, or display name in
   this round.** Everything below is fixed by re-running the generator whose input changed.
