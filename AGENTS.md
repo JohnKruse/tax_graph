@@ -191,6 +191,25 @@ entries; do not delete them.
   explicit in the task. Credit where due: the Worker did NOT edit any citation, reported the
   69 honestly, and scoped the shim to a damage signature. The honesty was right; the choice
   of WHERE to fix was wrong. (M20-S2, 2026-07-28)
+- **D13 - Verbatim is NECESSARY but NOT SUFFICIENT. A re-derived citation must preserve the
+  ANCHOR, not merely pass the substring check.** M20-S2b correctly re-derived 25 of 26 stale
+  citations (apostrophe welds `isnt -> isn't`), but for `cite_span_schedule_a_2025_0036` it
+  replaced the damaged `Otherfrom list in instructions. List type and amount:` with
+  `Other taxes. List type and amount:`. Both are real substrings of Schedule A, so the gate
+  passed - but they are DIFFERENT LINES: the node is
+  `schedule_a_2025_root_line_16_amount` (Other Itemized Deductions), and the new quote is
+  **line 6**, in the Taxes You Paid section. Authority for line 16 now cites line 6.
+  **The faithful string was available:** `Other-from list in instructions. List type and
+  amount:` IS present in the rebuilt text - the em dash had mapped to a hyphen correctly, so
+  the correct answer was one character away from the damaged one.
+  **The gate cannot catch this class.** `check_citation_integrity` proves a quote came from
+  the source; it cannot prove it is the RIGHT quote for the node. Rules: (a) a re-derivation
+  must be anchored - the new text must come from the same location/meaning as the old, and a
+  change that is not explainable as punctuation restoration needs an explicit justification;
+  (b) when the old text is damaged, reconstruct what it WAS (map the deleted character back)
+  rather than searching for any nearby string that verifies; (c) check the re-derived text
+  against the referencing node's label and printed line before accepting it.
+  (M20-S2b, 2026-07-28)
 - **D6 - Always use the module form of a CLI, never the console script.**
   `.venv\Scripts\python.exe -m tax_graph.cli ...`, not `.venv\Scripts\tax-graph.exe ...`; the
   generated launcher resolves through an editable-install `.pth` with an absolute path that does not

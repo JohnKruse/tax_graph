@@ -354,8 +354,58 @@ the instruction slot; Authority explicitly reports missing authored coverage; do
 citation coverage is visible beside policy counts; and the dossier heading duplication/order
 warts are fixed. No promoted artifacts, graph semantics, verdicts, or citation records changed.
 
-**BALL: WORKER - M20-S2b (re-derive the 26 stale citations and REVERT the gate loosening).
-Task block under From Architect. The S2 text rebuild itself is ACCEPTED - do not redo it.**
+**BALL: WORKER - M20-S2c (fix ONE mis-anchored citation; small round). Task block under
+From Architect. D12 is CLOSED - the gate revert and 25 of 26 re-derivations are accepted.**
+
+**ARCHITECT VERIFICATION - M20-S2b (Claude Opus 5, 2026-07-28). D12 CLOSED; ONE NEW DEFECT
+(D13) RETURNED AS S2c.**
+**What is right, measured rather than read:**
+- **The gate is genuinely strict again.** Architect re-ran its own audit: shipped gate
+  **36** mismatches, strict-substring gate **36**, and **ZERO citations pass only via a
+  fallback** (it was 26 with strict at 62). `_has_legacy_renderer_signature`,
+  `_legacy_punctuation_match`, and `collapse_other_from` are DELETED, and
+  `_contains_normalized` is back to a one-line normalized substring check. Grep confirms no
+  residual symbols. This is exactly what the task asked for and D12 is closed.
+- **25 of 26 re-derivations are correct** - genuine apostrophe restoration
+  (`isnt -> isn't`, `didnt -> didn't`, `Don't`), each an exact substring of the corrected
+  source, with **zero** records still carrying welded apostrophes.
+- **The retention ratchet is now live**, pinned at 100.0% mean and 100.0% for the three
+  headline documents, replacing the stale 52.2%/17.0%/52.0%/85.7% expectations. A check
+  nobody can see fail is not a check (M16-S4 precedent); this one can now fail.
+- **RAN:** `tests/test_acquire_citation_check.py tests/test_citation_cleanup_m18.py
+  tests/test_measure_extraction_m20.py tests/test_render_form.py
+  tests/test_graph_validator.py -q` -> **39 passed**. `validate 2025` -> exit 0, integrity
+  OK, 401 citations.
+
+**WORKER DEFECT (ledger D13, logged) - ONE CITATION WAS RE-ANCHORED TO A DIFFERENT LINE.**
+`cite_span_schedule_a_2025_0036` previously held the damaged `Otherfrom list in
+instructions. List type and amount:` - the old renderer's version of Schedule A **line 16**
+(Other Itemized Deductions), where the deleted em dash welded `Other` to `from`. S2b
+replaced it with `Other taxes. List type and amount:`, which is Schedule A **line 6**, in
+the Taxes You Paid section. The referencing node is `schedule_a_2025_root_line_16_amount`
+and its label still reads `Line 16: Otherfrom list in instructions`, so **authority for
+line 16 now quotes line 6.** The gate passes because both strings are genuinely in the
+source - `check_citation_integrity` proves verbatimness, never correctness of attachment.
+**The faithful string was one character away:** `Other-from list in instructions. List type
+and amount:` IS in the rebuilt text, because the em dash mapped to a hyphen correctly.
+
+**SYSTEMIC FINDING, not a Worker defect - 22 OF THE 26 FIXES ARE UNREVIEWABLE.** The
+`form_2441_2025` citations live in `graph_ext/2025/form_2441_2025/citations.yaml`, and
+**`graph_ext/` is gitignored** (`.gitignore:50`). Those 22 re-derivations are therefore
+absent from the diff, invisible to CI, and have no before-state to compare against - the
+Architect spot-checked three and they verify exactly against source, but the change cannot
+be reviewed the way the four tracked records could. They also exist only on this machine.
+Worth a decision from John: an accepted local extension carrying promoted citations that
+CI never loads and review never sees is a durability gap independent of this round.
+
+**RELATED SCOPE FOR S3 (surfaced by this round):** promoted NODE LABELS still carry the old
+renderer's damage - `Line 16: Otherfrom list in instructions`, `Line 4: through 11 31`,
+`Part Iii Line 28`. The text layer is fixed but everything previously derived FROM it is
+not. That is the same family as `legacy_mined=394` and belongs in the S3 re-derivation
+sweep.
+
+**Superseded (kept as history):** BALL: WORKER - M20-S2b (re-derive the 26 stale citations
+and REVERT the gate loosening). Task block under From Architect.
 
 **ARCHITECT VERIFICATION - M20-S2 (Claude Opus 5, 2026-07-28). REBUILD ACCEPTED; GATE
 CHANGE REJECTED.**
@@ -1814,7 +1864,37 @@ TY2026 docs drop.
 
 ## From Architect
 
-- **M20-S2b TASK - RE-DERIVE THE 26 STALE CITATIONS AND REVERT THE GATE LOOSENING
+- **M20-S2c TASK - RE-ANCHOR ONE CITATION (small, surgical round) (Architect, Claude Opus 5,
+  2026-07-28).** S2b is otherwise ACCEPTED - **do NOT touch the gate (it is correctly strict
+  now), the other 25 re-derivations, the rebuilt text, or the retention ratchet.** Read
+  ledger **D13; it was logged from this exact round.**
+  1. **Fix `cite_span_schedule_a_2025_0036`.** Its node is
+     `schedule_a_2025_root_line_16_amount` (Schedule A **line 16**, Other Itemized
+     Deductions). Its `quoted_text` is currently `Other taxes. List type and amount:`, which
+     is **line 6** (Taxes You Paid). Re-derive it from line 16 - the faithful string
+     `Other-from list in instructions. List type and amount:` is present in the rebuilt
+     `.cache/raw/2025/schedule_a_2025.txt`. Verify the result is an exact substring of that
+     file. Do NOT change the `citation_id`.
+  2. **Sweep for the same class before declaring done.** For every citation whose
+     `quoted_text` changed in S2b (`139a1bc`, plus the 22 in
+     `graph_ext/2025/form_2441_2025/citations.yaml`), confirm the new text is explainable as
+     PUNCTUATION RESTORATION of the old text. Any change that is not - a different span, a
+     shorter or longer phrase, different words - must be justified against the referencing
+     node's label and the printed line, or re-derived properly. **The gate cannot catch this
+     class**, so it is a read-and-compare job, not a test run.
+  3. **Report the count** of changed citations that were pure punctuation restoration versus
+     any others found, with ids.
+  4. Node labels carrying old damage (`Line 16: Otherfrom list in instructions`) are **NOT**
+     in scope - S3 owns that sweep. Leave them.
+  Declared files plus honest `RAN:`/`NOT RUN:`. ASCII, `git diff --check`, module-form
+  `validate 2025`, real preflight with `legacy_mined` (expect **394**), and
+  `check_citation_integrity` reported explicitly - it must stay at **36 strict**, with zero
+  carried by any fallback. No `--basetemp`. ONE local commit; no push.
+  Stop conditions: any citation that cannot be re-derived and verified (report the id);
+  any need to reintroduce a gate fallback, change a `citation_id`, or touch the rebuilt
+  text; or a quota/environment failure.
+
+- **[DONE `139a1bc`, D12 closed; one defect returned as S2c] M20-S2b TASK - RE-DERIVE THE 26 STALE CITATIONS AND REVERT THE GATE LOOSENING
   (Architect, Claude Opus 5, 2026-07-28).** The S2 text rebuild is ACCEPTED - **do NOT redo
   it, do NOT touch `render_form.py`, `text_normalize.py`, or the regenerated `.txt`.** Read
   ledger **D12 first; it was logged from this exact round.** Also **D9** (run the consumers)
