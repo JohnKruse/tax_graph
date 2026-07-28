@@ -229,6 +229,37 @@ def build_command(year: str = "2025", root: str | Path | None = None) -> int:
     return 0
 
 
+def promote_instruction_command(
+    year: str = "2025",
+    root: str | Path | None = None,
+    source_document_id: str | None = None,
+    html_path: str | Path | None = None,
+    citation_filename: str = "instruction-form-1040-html.yaml",
+) -> int:
+    """Regenerate the stored 1040 HTML instruction promotion and its findings."""
+    from tax_graph.ingest.instruction_promotion import promote_instruction_html
+
+    root_path = Path(root).resolve() if root is not None else project_root()
+    source_id = source_document_id or f"instructions_form_1040_{year}"
+    source_path = (
+        Path(html_path)
+        if html_path is not None
+        else root_path / ".cache" / "raw" / str(year) / f"{source_id}.html"
+    )
+    result = promote_instruction_html(
+        root_path,
+        year=year,
+        source_document_id=source_id,
+        html_path=source_path,
+        citation_filename=citation_filename,
+    )
+    print(f"promoted instruction sections: {len(result.joins)}")
+    print(f"  findings persisted: {len(result.findings)}")
+    print(f"  coverage before: {result.coverage_before}")
+    print(f"  coverage after: {result.coverage_after}")
+    return 0
+
+
 def apply_verdicts_command(
     year: str = "2025",
     root: str | Path | None = None,
@@ -1087,6 +1118,29 @@ def _build_typer_app():
         if raise_code:
             raise typer.Exit(raise_code)
 
+    @cli.command("promote-instructions")
+    def promote_instruction_cli(
+        year: str = typer.Option("2025", "--year", "-y", help="Tax year to promote."),
+        source_document_id: str | None = typer.Option(None, "--source-document-id", help="Acquired instruction source id."),
+        html_path: Path | None = typer.Option(None, "--html-path", help="Stored acquired HTML path."),
+        citation_filename: str = typer.Option(
+            "instruction-form-1040-html.yaml",
+            "--citation-filename",
+            help="Citation artifact filename to update.",
+        ),
+        root: Path | None = typer.Option(None, "--root", help="Project root override."),
+    ) -> None:
+        """Regenerate stored HTML instruction citations and review findings."""
+        raise_code = promote_instruction_command(
+            year=year,
+            root=root,
+            source_document_id=source_document_id,
+            html_path=html_path,
+            citation_filename=citation_filename,
+        )
+        if raise_code:
+            raise typer.Exit(raise_code)
+
     review_cli = typer.Typer(help="Human review verdict helpers.")
 
     @review_cli.command("apply-verdicts")
@@ -1632,6 +1686,16 @@ def _fallback_app() -> int:
     extract_parser.add_argument("--year", "-y", default="2025")
     extract_parser.add_argument("--root", default=None)
 
+    promote_instructions_parser = subparsers.add_parser("promote-instructions")
+    promote_instructions_parser.add_argument("--year", "-y", default="2025")
+    promote_instructions_parser.add_argument("--source-document-id", default=None)
+    promote_instructions_parser.add_argument("--html-path", default=None)
+    promote_instructions_parser.add_argument(
+        "--citation-filename",
+        default="instruction-form-1040-html.yaml",
+    )
+    promote_instructions_parser.add_argument("--root", default=None)
+
     intake_parser = subparsers.add_parser("intake")
     intake_parser.add_argument("--drop-dir", required=True)
     intake_parser.add_argument("--year", "-y", default="2025")
@@ -1759,6 +1823,14 @@ def _fallback_app() -> int:
         return acquire_command(year=args.year, check=args.check, root=args.root)
     if args.command == "extract":
         return extract_command(doc=args.doc, year=args.year, root=args.root)
+    if args.command == "promote-instructions":
+        return promote_instruction_command(
+            year=args.year,
+            root=args.root,
+            source_document_id=args.source_document_id,
+            html_path=args.html_path,
+            citation_filename=args.citation_filename,
+        )
     if args.command == "intake":
         return intake_command(
             args.drop_dir,

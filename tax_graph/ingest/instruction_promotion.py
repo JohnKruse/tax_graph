@@ -17,7 +17,13 @@ from typing import Any, Iterable, Mapping
 import yaml
 
 from tax_graph.addressing.registry import CanonicalAddress, load_address_artifacts
-from tax_graph.ingest.instruction_sections import MinedInstructionSection, mine_instruction_html_file
+from tax_graph.ingest.instruction_sections import (
+    InstructionDocumentContext,
+    MinedInstructionSection,
+    instruction_document_contexts,
+    mine_instruction_html_file,
+)
+from tax_graph.review_queue import upsert_deferred_review_entries
 
 
 CANARY_DOCUMENTS = frozenset(
@@ -83,6 +89,8 @@ def join_instruction_sections(
     addresses: Iterable[CanonicalAddress],
     *,
     source_document_id: str,
+    expected_document_ids: Iterable[str] = (),
+    expected_contexts: Mapping[str, InstructionDocumentContext] | None = None,
 ) -> InstructionJoinResult:
     """Join mined sections to terminal addresses without writing artifacts.
 
@@ -203,6 +211,17 @@ def join_instruction_sections(
             )
         )
 
+    joined_documents = {join.target_document_id for join in joins}
+    for document_id in sorted(set(expected_document_ids) - joined_documents):
+        context = (expected_contexts or {}).get(document_id)
+        findings.append(
+            _empty_document_finding(
+                source_document_id,
+                document_id,
+                context=context,
+            )
+        )
+
     cited_ids = {address_id for join in joins for address_id in join.address_ids}
     coverage_after = {
         document_id: sum(
@@ -247,33 +266,35 @@ def promote_instruction_html(
     source_path = Path(html_path)
     html_text = source_path.read_text(encoding="ascii")
     sections = mine_instruction_html_file(source_path, document_id=source_document_id)
+    contexts = instruction_document_contexts(html_text, year=year)
     address_artifacts = load_address_artifacts(year, root_path)
     result = join_instruction_sections(
         sections,
         address_artifacts.addresses,
         source_document_id=source_document_id,
+        expected_document_ids=(context.document_id for context in contexts),
+        expected_contexts={context.document_id: context for context in contexts},
     )
-    if not result.joins:
-        raise ValueError("instruction promotion produced no matched sections")
 
     metadata_path = source_path.with_name(source_path.name + ".json")
     metadata = json.loads(metadata_path.read_text(encoding="ascii"))
     _verify_quotes_are_from_html(result.joins, html_text)
 
     citation_path = root_path / "graph" / str(year) / "citations" / citation_filename
-    existing = _load_list(citation_path)
-    existing_by_id = {str(item.get("citation_id")): item for item in existing}
-    new_records = [_citation_record(join, metadata) for join in result.joins]
-    for record in new_records:
-        old = existing_by_id.get(str(record["citation_id"]))
-        if old is not None and old != record:
-            if not (
-                old.get("source_document_id") == source_document_id
-                and str(old.get("locator") or "").startswith("html#")
-            ):
-                raise ValueError(f"citation id collision with different content: {record['citation_id']}")
-        existing_by_id[str(record["citation_id"])] = record
-    _write_yaml(citation_path, [existing_by_id[key] for key in sorted(existing_by_id)])
+    if result.joins:
+        existing = _load_list(citation_path)
+        existing_by_id = {str(item.get("citation_id")): item for item in existing}
+        new_records = [_citation_record(join, metadata) for join in result.joins]
+        for record in new_records:
+            old = existing_by_id.get(str(record["citation_id"]))
+            if old is not None and old != record:
+                if not (
+                    old.get("source_document_id") == source_document_id
+                    and str(old.get("locator") or "").startswith("html#")
+                ):
+                    raise ValueError(f"citation id collision with different content: {record['citation_id']}")
+            existing_by_id[str(record["citation_id"])] = record
+        _write_yaml(citation_path, [existing_by_id[key] for key in sorted(existing_by_id)])
 
     by_address: dict[str, list[str]] = {}
     for join in result.joins:
@@ -289,6 +310,22 @@ def promote_instruction_html(
             if refs:
                 address["citation_refs"] = sorted(refs)
         _write_yaml(address_path, payload)
+    if result.findings:
+        upsert_deferred_review_entries(
+            root=root_path,
+            year=year,
+            entries=(
+                _finding_queue_entry(
+                    finding,
+                    root=root_path,
+                    source_document_id=source_document_id,
+                    html_path=source_path,
+                    citation_path=citation_path,
+                    metadata=metadata,
+                )
+                for finding in result.findings
+            ),
+        )
     return result
 
 
@@ -314,6 +351,34 @@ def _target_document_id(section: MinedInstructionSection) -> str | None:
     if any("worksheet" in parent for parent in lowered[context_index + 1 :]):
         return None
     return target
+
+
+def _empty_document_finding(
+    source_document_id: str,
+    target_document_id: str,
+    *,
+    context: InstructionDocumentContext | None,
+) -> InstructionJoinFinding:
+    """Create a finding when an expected document produced zero joins."""
+    heading = context.heading if context is not None else None
+    anchor = heading.anchor_id if heading is not None else "missing"
+    evidence = [
+        f"source_document_id={source_document_id}",
+        f"expected_document_id={target_document_id}",
+        f"context_heading={heading.text if heading is not None else 'not found'}",
+        f"anchor={anchor}",
+        f"source_span={heading.source_start}:{heading.source_end}" if heading is not None else "source_span=unknown",
+        "promoted_section_count=0",
+    ]
+    return InstructionJoinFinding(
+        queue_id=f"instruction_join_{source_document_id}_{target_document_id}_empty_document",
+        document_id=target_document_id,
+        control=anchor,
+        reason="empty_expected_document",
+        observed="promoted_section_count=0",
+        expected="at least one promoted instruction section or an explicit source finding",
+        evidence=tuple(evidence),
+    )
 
 
 def _citation_id(target_document_id: str, section: MinedInstructionSection) -> str:
@@ -398,6 +463,48 @@ def _finding(
         expected=expected,
         evidence=tuple(evidence),
     )
+
+
+def _finding_queue_entry(
+    finding: InstructionJoinFinding,
+    *,
+    root: Path,
+    source_document_id: str,
+    html_path: Path,
+    citation_path: Path,
+    metadata: Mapping[str, Any],
+) -> dict[str, Any]:
+    """Shape one deterministic finding as a deferred-review queue entry."""
+    return {
+        "queue_id": finding.queue_id,
+        "kind": "instruction_join_review",
+        "status": "deferred",
+        "priority": "medium",
+        "document_id": finding.document_id,
+        "source_document_id": source_document_id,
+        "created_date": str(metadata.get("retrieved_date") or "unknown"),
+        "created_by": "tax_graph.ingest.instruction_promotion",
+        "summary": (
+            f"Instruction join finding {finding.reason} for {finding.document_id}: "
+            f"{finding.observed}; expected {finding.expected}."
+        ),
+        "artifact_paths": [
+            _relative_path(root, html_path),
+            _relative_path(root, citation_path),
+        ],
+        "reason": finding.reason,
+        "observed": finding.observed,
+        "expected": finding.expected,
+        "evidence": list(finding.evidence),
+    }
+
+
+def _relative_path(root: Path, path: Path) -> str:
+    """Return a stable repository-relative path when possible."""
+    try:
+        return path.resolve().relative_to(root.resolve()).as_posix()
+    except ValueError:
+        return str(path.resolve())
 
 
 def _load_list(path: Path) -> list[dict[str, Any]]:

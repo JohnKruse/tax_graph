@@ -13426,3 +13426,1524 @@ entries:
       object_id: topmostSubform[0].CopyD[0].f2_42[0]
       source_path: graph/2025/field_maps/form_w2_2025.yaml
       role: primary
+- queue_id: instruction_join_instructions_form_1040_2025_en_us_2025_publink1000149535_missing_canonical_address
+  kind: instruction_join_review
+  status: deferred
+  priority: medium
+  document_id: instructions_form_1040_2025
+  source_document_id: instructions_form_1040_2025
+  created_date: '2026-07-27'
+  created_by: tax_graph.ingest.instruction_promotion
+  summary: 'Instruction join finding missing_canonical_address for instructions_form_1040_2025:
+    schedule_2_2025:4; expected at least one terminal canonical address.'
+  artifact_paths:
+  - .cache/raw/2025/instructions_form_1040_2025.html
+  - graph/2025/citations/instruction-form-1040-html.yaml
+  reason: missing_canonical_address
+  observed: schedule_2_2025:4
+  expected: at least one terminal canonical address
+  evidence:
+  - source_document_id=instructions_form_1040_2025
+  - anchor=en_US_2025_publink1000149535
+  - source_span=2344909:2346933
+  - line_tokens=4
+- queue_id: instruction_join_instructions_form_1040_2025_en_us_2025_publink1000151046_unresolved_document_context
+  kind: instruction_join_review
+  status: deferred
+  priority: medium
+  document_id: instructions_form_1040_2025
+  source_document_id: instructions_form_1040_2025
+  created_date: '2026-07-27'
+  created_by: tax_graph.ingest.instruction_promotion
+  summary: 'Instruction join finding unresolved_document_context for instructions_form_1040_2025:
+    1040 - Main Contents; Instructions for Schedule 1 Additional Income and Adjustments
+    to Income; State and Local Income Tax Refund Worksheet-Schedule 1, Line 1; Other
+    Income; expected one canary return-document instruction context.'
+  artifact_paths:
+  - .cache/raw/2025/instructions_form_1040_2025.html
+  - graph/2025/citations/instruction-form-1040-html.yaml
+  reason: unresolved_document_context
+  observed: 1040 - Main Contents; Instructions for Schedule 1 Additional Income and
+    Adjustments to Income; State and Local Income Tax Refund Worksheet-Schedule 1,
+    Line 1; Other Income
+  expected: one canary return-document instruction context
+  evidence:
+  - source_document_id=instructions_form_1040_2025
+  - anchor=en_US_2025_publink1000151046
+  - source_span=2149877:2150618
+  - line_tokens=8a
+- queue_id: instruction_join_instructions_form_1040_2025_en_us_2025_publink1000151048_unresolved_document_context
+  kind: instruction_join_review
+  status: deferred
+  priority: medium
+  document_id: instructions_form_1040_2025
+  source_document_id: instructions_form_1040_2025
+  created_date: '2026-07-27'
+  created_by: tax_graph.ingest.instruction_promotion
+  summary: 'Instruction join finding unresolved_document_context for instructions_form_1040_2025:
+    1040 - Main Contents; Instructions for Schedule 1 Additional Income and Adjustments
+    to Income; State and Local Income Tax Refund Worksheet-Schedule 1, Line 1; Other
+    Income; expected one canary return-document instruction context.'
+  artifact_paths:
+  - .cache/raw/2025/instructions_form_1040_2025.html
+  - graph/2025/citations/instruction-form-1040-html.yaml
+  reason: unresolved_document_context
+  observed: 1040 - Main Contents; Instructions for Schedule 1 Additional Income and
+    Adjustments to Income; State and Local Income Tax Refund Worksheet-Schedule 1,
+    Line 1; Other Income
+  expected: one canary return-document instruction context
+  evidence:
+  - source_document_id=instructions_form_1040_2025
+  - anchor=en_US_2025_publink1000151048
+  - source_span=2150618:2151739
+  - line_tokens=8b
+- queue_id: instruction_join_instructions_form_1040_2025_en_us_2025_publink1000151051_unresolved_document_context
+  kind: instruction_join_review
+  status: deferred
+  priority: medium
+  document_id: instructions_form_1040_2025
+  source_document_id: instructions_form_1040_2025
+  created_date: '2026-07-27'
+  created_by: tax_graph.ingest.instruction_promotion
+  summary: 'Instruction join finding unresolved_document_context for instructions_form_1040_2025:
+    1040 - Main Contents; Instructions for Schedule 1 Additional Income and Adjustments
+    to Income; State and Local Income Tax Refund Worksheet-Schedule 1, Line 1; Other
+    Income; expected one canary return-document instruction context.'
+  artifact_paths:
+  - .cache/raw/2025/instructions_form_1040_2025.html
+  - graph/2025/citations/instruction-form-1040-html.yaml
+  reason: unresolved_document_context
+  observed: 1040 - Main Contents; Instructions for Schedule 1 Additional Income and
+    Adjustments to Income; State and Local Income Tax Refund Worksheet-Schedule 1,
+    Line 1; Other Income
+  expected: one canary return-document instruction context
+  evidence:
+  - source_document_id=instructions_form_1040_2025
+  - anchor=en_US_2025_publink1000151051
+  - source_span=2151739:2152434
+  - line_tokens=8c
+- queue_id: instruction_join_instructions_form_1040_2025_en_us_2025_publink1000151053_unresolved_document_context
+  kind: instruction_join_review
+  status: deferred
+  priority: medium
+  document_id: instructions_form_1040_2025
+  source_document_id: instructions_form_1040_2025
+  created_date: '2026-07-27'
+  created_by: tax_graph.ingest.instruction_promotion
+  summary: 'Instruction join finding unresolved_document_context for instructions_form_1040_2025:
+    1040 - Main Contents; Instructions for Schedule 1 Additional Income and Adjustments
+    to Income; State and Local Income Tax Refund Worksheet-Schedule 1, Line 1; Other
+    Income; expected one canary return-document instruction context.'
+  artifact_paths:
+  - .cache/raw/2025/instructions_form_1040_2025.html
+  - graph/2025/citations/instruction-form-1040-html.yaml
+  reason: unresolved_document_context
+  observed: 1040 - Main Contents; Instructions for Schedule 1 Additional Income and
+    Adjustments to Income; State and Local Income Tax Refund Worksheet-Schedule 1,
+    Line 1; Other Income
+  expected: one canary return-document instruction context
+  evidence:
+  - source_document_id=instructions_form_1040_2025
+  - anchor=en_US_2025_publink1000151053
+  - source_span=2152434:2153291
+  - line_tokens=8d
+- queue_id: instruction_join_instructions_form_1040_2025_en_us_2025_publink1000151055_unresolved_document_context
+  kind: instruction_join_review
+  status: deferred
+  priority: medium
+  document_id: instructions_form_1040_2025
+  source_document_id: instructions_form_1040_2025
+  created_date: '2026-07-27'
+  created_by: tax_graph.ingest.instruction_promotion
+  summary: 'Instruction join finding unresolved_document_context for instructions_form_1040_2025:
+    1040 - Main Contents; Instructions for Schedule 1 Additional Income and Adjustments
+    to Income; State and Local Income Tax Refund Worksheet-Schedule 1, Line 1; Other
+    Income; expected one canary return-document instruction context.'
+  artifact_paths:
+  - .cache/raw/2025/instructions_form_1040_2025.html
+  - graph/2025/citations/instruction-form-1040-html.yaml
+  reason: unresolved_document_context
+  observed: 1040 - Main Contents; Instructions for Schedule 1 Additional Income and
+    Adjustments to Income; State and Local Income Tax Refund Worksheet-Schedule 1,
+    Line 1; Other Income
+  expected: one canary return-document instruction context
+  evidence:
+  - source_document_id=instructions_form_1040_2025
+  - anchor=en_US_2025_publink1000151055
+  - source_span=2153291:2154267
+  - line_tokens=8e
+- queue_id: instruction_join_instructions_form_1040_2025_en_us_2025_publink1000151058_unresolved_document_context
+  kind: instruction_join_review
+  status: deferred
+  priority: medium
+  document_id: instructions_form_1040_2025
+  source_document_id: instructions_form_1040_2025
+  created_date: '2026-07-27'
+  created_by: tax_graph.ingest.instruction_promotion
+  summary: 'Instruction join finding unresolved_document_context for instructions_form_1040_2025:
+    1040 - Main Contents; Instructions for Schedule 1 Additional Income and Adjustments
+    to Income; State and Local Income Tax Refund Worksheet-Schedule 1, Line 1; Other
+    Income; expected one canary return-document instruction context.'
+  artifact_paths:
+  - .cache/raw/2025/instructions_form_1040_2025.html
+  - graph/2025/citations/instruction-form-1040-html.yaml
+  reason: unresolved_document_context
+  observed: 1040 - Main Contents; Instructions for Schedule 1 Additional Income and
+    Adjustments to Income; State and Local Income Tax Refund Worksheet-Schedule 1,
+    Line 1; Other Income
+  expected: one canary return-document instruction context
+  evidence:
+  - source_document_id=instructions_form_1040_2025
+  - anchor=en_US_2025_publink1000151058
+  - source_span=2154267:2155134
+  - line_tokens=8f
+- queue_id: instruction_join_instructions_form_1040_2025_en_us_2025_publink1000151061_unresolved_document_context
+  kind: instruction_join_review
+  status: deferred
+  priority: medium
+  document_id: instructions_form_1040_2025
+  source_document_id: instructions_form_1040_2025
+  created_date: '2026-07-27'
+  created_by: tax_graph.ingest.instruction_promotion
+  summary: 'Instruction join finding unresolved_document_context for instructions_form_1040_2025:
+    1040 - Main Contents; Instructions for Schedule 1 Additional Income and Adjustments
+    to Income; State and Local Income Tax Refund Worksheet-Schedule 1, Line 1; Other
+    Income; expected one canary return-document instruction context.'
+  artifact_paths:
+  - .cache/raw/2025/instructions_form_1040_2025.html
+  - graph/2025/citations/instruction-form-1040-html.yaml
+  reason: unresolved_document_context
+  observed: 1040 - Main Contents; Instructions for Schedule 1 Additional Income and
+    Adjustments to Income; State and Local Income Tax Refund Worksheet-Schedule 1,
+    Line 1; Other Income
+  expected: one canary return-document instruction context
+  evidence:
+  - source_document_id=instructions_form_1040_2025
+  - anchor=en_US_2025_publink1000151061
+  - source_span=2155134:2155634
+  - line_tokens=8h
+- queue_id: instruction_join_instructions_form_1040_2025_en_us_2025_publink1000151063_unresolved_document_context
+  kind: instruction_join_review
+  status: deferred
+  priority: medium
+  document_id: instructions_form_1040_2025
+  source_document_id: instructions_form_1040_2025
+  created_date: '2026-07-27'
+  created_by: tax_graph.ingest.instruction_promotion
+  summary: 'Instruction join finding unresolved_document_context for instructions_form_1040_2025:
+    1040 - Main Contents; Instructions for Schedule 1 Additional Income and Adjustments
+    to Income; State and Local Income Tax Refund Worksheet-Schedule 1, Line 1; Other
+    Income; expected one canary return-document instruction context.'
+  artifact_paths:
+  - .cache/raw/2025/instructions_form_1040_2025.html
+  - graph/2025/citations/instruction-form-1040-html.yaml
+  reason: unresolved_document_context
+  observed: 1040 - Main Contents; Instructions for Schedule 1 Additional Income and
+    Adjustments to Income; State and Local Income Tax Refund Worksheet-Schedule 1,
+    Line 1; Other Income
+  expected: one canary return-document instruction context
+  evidence:
+  - source_document_id=instructions_form_1040_2025
+  - anchor=en_US_2025_publink1000151063
+  - source_span=2155634:2156263
+  - line_tokens=8i
+- queue_id: instruction_join_instructions_form_1040_2025_en_us_2025_publink1000151065_unresolved_document_context
+  kind: instruction_join_review
+  status: deferred
+  priority: medium
+  document_id: instructions_form_1040_2025
+  source_document_id: instructions_form_1040_2025
+  created_date: '2026-07-27'
+  created_by: tax_graph.ingest.instruction_promotion
+  summary: 'Instruction join finding unresolved_document_context for instructions_form_1040_2025:
+    1040 - Main Contents; Instructions for Schedule 1 Additional Income and Adjustments
+    to Income; State and Local Income Tax Refund Worksheet-Schedule 1, Line 1; Other
+    Income; expected one canary return-document instruction context.'
+  artifact_paths:
+  - .cache/raw/2025/instructions_form_1040_2025.html
+  - graph/2025/citations/instruction-form-1040-html.yaml
+  reason: unresolved_document_context
+  observed: 1040 - Main Contents; Instructions for Schedule 1 Additional Income and
+    Adjustments to Income; State and Local Income Tax Refund Worksheet-Schedule 1,
+    Line 1; Other Income
+  expected: one canary return-document instruction context
+  evidence:
+  - source_document_id=instructions_form_1040_2025
+  - anchor=en_US_2025_publink1000151065
+  - source_span=2156263:2156704
+  - line_tokens=8j
+- queue_id: instruction_join_instructions_form_1040_2025_en_us_2025_publink1000151067_unresolved_document_context
+  kind: instruction_join_review
+  status: deferred
+  priority: medium
+  document_id: instructions_form_1040_2025
+  source_document_id: instructions_form_1040_2025
+  created_date: '2026-07-27'
+  created_by: tax_graph.ingest.instruction_promotion
+  summary: 'Instruction join finding unresolved_document_context for instructions_form_1040_2025:
+    1040 - Main Contents; Instructions for Schedule 1 Additional Income and Adjustments
+    to Income; State and Local Income Tax Refund Worksheet-Schedule 1, Line 1; Other
+    Income; expected one canary return-document instruction context.'
+  artifact_paths:
+  - .cache/raw/2025/instructions_form_1040_2025.html
+  - graph/2025/citations/instruction-form-1040-html.yaml
+  reason: unresolved_document_context
+  observed: 1040 - Main Contents; Instructions for Schedule 1 Additional Income and
+    Adjustments to Income; State and Local Income Tax Refund Worksheet-Schedule 1,
+    Line 1; Other Income
+  expected: one canary return-document instruction context
+  evidence:
+  - source_document_id=instructions_form_1040_2025
+  - anchor=en_US_2025_publink1000151067
+  - source_span=2156704:2157212
+  - line_tokens=8k
+- queue_id: instruction_join_instructions_form_1040_2025_en_us_2025_publink1000151069_unresolved_document_context
+  kind: instruction_join_review
+  status: deferred
+  priority: medium
+  document_id: instructions_form_1040_2025
+  source_document_id: instructions_form_1040_2025
+  created_date: '2026-07-27'
+  created_by: tax_graph.ingest.instruction_promotion
+  summary: 'Instruction join finding unresolved_document_context for instructions_form_1040_2025:
+    1040 - Main Contents; Instructions for Schedule 1 Additional Income and Adjustments
+    to Income; State and Local Income Tax Refund Worksheet-Schedule 1, Line 1; Other
+    Income; expected one canary return-document instruction context.'
+  artifact_paths:
+  - .cache/raw/2025/instructions_form_1040_2025.html
+  - graph/2025/citations/instruction-form-1040-html.yaml
+  reason: unresolved_document_context
+  observed: 1040 - Main Contents; Instructions for Schedule 1 Additional Income and
+    Adjustments to Income; State and Local Income Tax Refund Worksheet-Schedule 1,
+    Line 1; Other Income
+  expected: one canary return-document instruction context
+  evidence:
+  - source_document_id=instructions_form_1040_2025
+  - anchor=en_US_2025_publink1000151069
+  - source_span=2157212:2157782
+  - line_tokens=8l
+- queue_id: instruction_join_instructions_form_1040_2025_en_us_2025_publink1000151071_unresolved_document_context
+  kind: instruction_join_review
+  status: deferred
+  priority: medium
+  document_id: instructions_form_1040_2025
+  source_document_id: instructions_form_1040_2025
+  created_date: '2026-07-27'
+  created_by: tax_graph.ingest.instruction_promotion
+  summary: 'Instruction join finding unresolved_document_context for instructions_form_1040_2025:
+    1040 - Main Contents; Instructions for Schedule 1 Additional Income and Adjustments
+    to Income; State and Local Income Tax Refund Worksheet-Schedule 1, Line 1; Other
+    Income; expected one canary return-document instruction context.'
+  artifact_paths:
+  - .cache/raw/2025/instructions_form_1040_2025.html
+  - graph/2025/citations/instruction-form-1040-html.yaml
+  reason: unresolved_document_context
+  observed: 1040 - Main Contents; Instructions for Schedule 1 Additional Income and
+    Adjustments to Income; State and Local Income Tax Refund Worksheet-Schedule 1,
+    Line 1; Other Income
+  expected: one canary return-document instruction context
+  evidence:
+  - source_document_id=instructions_form_1040_2025
+  - anchor=en_US_2025_publink1000151071
+  - source_span=2157782:2158904
+  - line_tokens=8m
+- queue_id: instruction_join_instructions_form_1040_2025_en_us_2025_publink1000151073_unresolved_document_context
+  kind: instruction_join_review
+  status: deferred
+  priority: medium
+  document_id: instructions_form_1040_2025
+  source_document_id: instructions_form_1040_2025
+  created_date: '2026-07-27'
+  created_by: tax_graph.ingest.instruction_promotion
+  summary: 'Instruction join finding unresolved_document_context for instructions_form_1040_2025:
+    1040 - Main Contents; Instructions for Schedule 1 Additional Income and Adjustments
+    to Income; State and Local Income Tax Refund Worksheet-Schedule 1, Line 1; Other
+    Income; expected one canary return-document instruction context.'
+  artifact_paths:
+  - .cache/raw/2025/instructions_form_1040_2025.html
+  - graph/2025/citations/instruction-form-1040-html.yaml
+  reason: unresolved_document_context
+  observed: 1040 - Main Contents; Instructions for Schedule 1 Additional Income and
+    Adjustments to Income; State and Local Income Tax Refund Worksheet-Schedule 1,
+    Line 1; Other Income
+  expected: one canary return-document instruction context
+  evidence:
+  - source_document_id=instructions_form_1040_2025
+  - anchor=en_US_2025_publink1000151073
+  - source_span=2158904:2159643
+  - line_tokens=8n
+- queue_id: instruction_join_instructions_form_1040_2025_en_us_2025_publink1000151075_unresolved_document_context
+  kind: instruction_join_review
+  status: deferred
+  priority: medium
+  document_id: instructions_form_1040_2025
+  source_document_id: instructions_form_1040_2025
+  created_date: '2026-07-27'
+  created_by: tax_graph.ingest.instruction_promotion
+  summary: 'Instruction join finding unresolved_document_context for instructions_form_1040_2025:
+    1040 - Main Contents; Instructions for Schedule 1 Additional Income and Adjustments
+    to Income; State and Local Income Tax Refund Worksheet-Schedule 1, Line 1; Other
+    Income; expected one canary return-document instruction context.'
+  artifact_paths:
+  - .cache/raw/2025/instructions_form_1040_2025.html
+  - graph/2025/citations/instruction-form-1040-html.yaml
+  reason: unresolved_document_context
+  observed: 1040 - Main Contents; Instructions for Schedule 1 Additional Income and
+    Adjustments to Income; State and Local Income Tax Refund Worksheet-Schedule 1,
+    Line 1; Other Income
+  expected: one canary return-document instruction context
+  evidence:
+  - source_document_id=instructions_form_1040_2025
+  - anchor=en_US_2025_publink1000151075
+  - source_span=2159643:2160976
+  - line_tokens=8o
+- queue_id: instruction_join_instructions_form_1040_2025_en_us_2025_publink1000151078_unresolved_document_context
+  kind: instruction_join_review
+  status: deferred
+  priority: medium
+  document_id: instructions_form_1040_2025
+  source_document_id: instructions_form_1040_2025
+  created_date: '2026-07-27'
+  created_by: tax_graph.ingest.instruction_promotion
+  summary: 'Instruction join finding unresolved_document_context for instructions_form_1040_2025:
+    1040 - Main Contents; Instructions for Schedule 1 Additional Income and Adjustments
+    to Income; State and Local Income Tax Refund Worksheet-Schedule 1, Line 1; Other
+    Income; expected one canary return-document instruction context.'
+  artifact_paths:
+  - .cache/raw/2025/instructions_form_1040_2025.html
+  - graph/2025/citations/instruction-form-1040-html.yaml
+  reason: unresolved_document_context
+  observed: 1040 - Main Contents; Instructions for Schedule 1 Additional Income and
+    Adjustments to Income; State and Local Income Tax Refund Worksheet-Schedule 1,
+    Line 1; Other Income
+  expected: one canary return-document instruction context
+  evidence:
+  - source_document_id=instructions_form_1040_2025
+  - anchor=en_US_2025_publink1000151078
+  - source_span=2160976:2161470
+  - line_tokens=8p
+- queue_id: instruction_join_instructions_form_1040_2025_en_us_2025_publink10002132_unresolved_document_context
+  kind: instruction_join_review
+  status: deferred
+  priority: medium
+  document_id: instructions_form_1040_2025
+  source_document_id: instructions_form_1040_2025
+  created_date: '2026-07-27'
+  created_by: tax_graph.ingest.instruction_promotion
+  summary: 'Instruction join finding unresolved_document_context for instructions_form_1040_2025:
+    1040 - Main Contents; Instructions for Schedule 1 Additional Income and Adjustments
+    to Income; Student Loan Interest Deduction Worksheet-Schedule 1, Line 21; expected
+    one canary return-document instruction context.'
+  artifact_paths:
+  - .cache/raw/2025/instructions_form_1040_2025.html
+  - graph/2025/citations/instruction-form-1040-html.yaml
+  reason: unresolved_document_context
+  observed: 1040 - Main Contents; Instructions for Schedule 1 Additional Income and
+    Adjustments to Income; Student Loan Interest Deduction Worksheet-Schedule 1, Line
+    21
+  expected: one canary return-document instruction context
+  evidence:
+  - source_document_id=instructions_form_1040_2025
+  - anchor=en_US_2025_publink10002132
+  - source_span=2234743:2239392
+  - line_tokens=24a,24z
+- queue_id: instruction_join_instructions_form_1040_2025_en_us_2025_publink100079548_unresolved_document_context
+  kind: instruction_join_review
+  status: deferred
+  priority: medium
+  document_id: instructions_form_1040_2025
+  source_document_id: instructions_form_1040_2025
+  created_date: '2026-07-27'
+  created_by: tax_graph.ingest.instruction_promotion
+  summary: 'Instruction join finding unresolved_document_context for instructions_form_1040_2025:
+    1040 - Main Contents; Instructions for Schedule 1 Additional Income and Adjustments
+    to Income; Student Loan Interest Deduction Worksheet-Schedule 1, Line 21; Lines
+    24a Through 24z; expected one canary return-document instruction context.'
+  artifact_paths:
+  - .cache/raw/2025/instructions_form_1040_2025.html
+  - graph/2025/citations/instruction-form-1040-html.yaml
+  reason: unresolved_document_context
+  observed: 1040 - Main Contents; Instructions for Schedule 1 Additional Income and
+    Adjustments to Income; Student Loan Interest Deduction Worksheet-Schedule 1, Line
+    21; Lines 24a Through 24z
+  expected: one canary return-document instruction context
+  evidence:
+  - source_document_id=instructions_form_1040_2025
+  - anchor=en_US_2025_publink100079548
+  - source_span=2234954:2235483
+  - line_tokens=24a
+- queue_id: instruction_join_instructions_form_1040_2025_en_us_2025_publink100079550_unresolved_document_context
+  kind: instruction_join_review
+  status: deferred
+  priority: medium
+  document_id: instructions_form_1040_2025
+  source_document_id: instructions_form_1040_2025
+  created_date: '2026-07-27'
+  created_by: tax_graph.ingest.instruction_promotion
+  summary: 'Instruction join finding unresolved_document_context for instructions_form_1040_2025:
+    1040 - Main Contents; Instructions for Schedule 1 Additional Income and Adjustments
+    to Income; Student Loan Interest Deduction Worksheet-Schedule 1, Line 21; Lines
+    24a Through 24z; expected one canary return-document instruction context.'
+  artifact_paths:
+  - .cache/raw/2025/instructions_form_1040_2025.html
+  - graph/2025/citations/instruction-form-1040-html.yaml
+  reason: unresolved_document_context
+  observed: 1040 - Main Contents; Instructions for Schedule 1 Additional Income and
+    Adjustments to Income; Student Loan Interest Deduction Worksheet-Schedule 1, Line
+    21; Lines 24a Through 24z
+  expected: one canary return-document instruction context
+  evidence:
+  - source_document_id=instructions_form_1040_2025
+  - anchor=en_US_2025_publink100079550
+  - source_span=2235483:2235906
+  - line_tokens=24b
+- queue_id: instruction_join_instructions_form_1040_2025_en_us_2025_publink100079552_unresolved_document_context
+  kind: instruction_join_review
+  status: deferred
+  priority: medium
+  document_id: instructions_form_1040_2025
+  source_document_id: instructions_form_1040_2025
+  created_date: '2026-07-27'
+  created_by: tax_graph.ingest.instruction_promotion
+  summary: 'Instruction join finding unresolved_document_context for instructions_form_1040_2025:
+    1040 - Main Contents; Instructions for Schedule 1 Additional Income and Adjustments
+    to Income; Student Loan Interest Deduction Worksheet-Schedule 1, Line 21; Lines
+    24a Through 24z; expected one canary return-document instruction context.'
+  artifact_paths:
+  - .cache/raw/2025/instructions_form_1040_2025.html
+  - graph/2025/citations/instruction-form-1040-html.yaml
+  reason: unresolved_document_context
+  observed: 1040 - Main Contents; Instructions for Schedule 1 Additional Income and
+    Adjustments to Income; Student Loan Interest Deduction Worksheet-Schedule 1, Line
+    21; Lines 24a Through 24z
+  expected: one canary return-document instruction context
+  evidence:
+  - source_document_id=instructions_form_1040_2025
+  - anchor=en_US_2025_publink100079552
+  - source_span=2235906:2236259
+  - line_tokens=24c
+- queue_id: instruction_join_instructions_form_1040_2025_en_us_2025_publink100079553_unresolved_document_context
+  kind: instruction_join_review
+  status: deferred
+  priority: medium
+  document_id: instructions_form_1040_2025
+  source_document_id: instructions_form_1040_2025
+  created_date: '2026-07-27'
+  created_by: tax_graph.ingest.instruction_promotion
+  summary: 'Instruction join finding unresolved_document_context for instructions_form_1040_2025:
+    1040 - Main Contents; Instructions for Schedule 1 Additional Income and Adjustments
+    to Income; Student Loan Interest Deduction Worksheet-Schedule 1, Line 21; Lines
+    24a Through 24z; expected one canary return-document instruction context.'
+  artifact_paths:
+  - .cache/raw/2025/instructions_form_1040_2025.html
+  - graph/2025/citations/instruction-form-1040-html.yaml
+  reason: unresolved_document_context
+  observed: 1040 - Main Contents; Instructions for Schedule 1 Additional Income and
+    Adjustments to Income; Student Loan Interest Deduction Worksheet-Schedule 1, Line
+    21; Lines 24a Through 24z
+  expected: one canary return-document instruction context
+  evidence:
+  - source_document_id=instructions_form_1040_2025
+  - anchor=en_US_2025_publink100079553
+  - source_span=2236259:2236580
+  - line_tokens=24d
+- queue_id: instruction_join_instructions_form_1040_2025_en_us_2025_publink100079554_unresolved_document_context
+  kind: instruction_join_review
+  status: deferred
+  priority: medium
+  document_id: instructions_form_1040_2025
+  source_document_id: instructions_form_1040_2025
+  created_date: '2026-07-27'
+  created_by: tax_graph.ingest.instruction_promotion
+  summary: 'Instruction join finding unresolved_document_context for instructions_form_1040_2025:
+    1040 - Main Contents; Instructions for Schedule 1 Additional Income and Adjustments
+    to Income; Student Loan Interest Deduction Worksheet-Schedule 1, Line 21; Lines
+    24a Through 24z; expected one canary return-document instruction context.'
+  artifact_paths:
+  - .cache/raw/2025/instructions_form_1040_2025.html
+  - graph/2025/citations/instruction-form-1040-html.yaml
+  reason: unresolved_document_context
+  observed: 1040 - Main Contents; Instructions for Schedule 1 Additional Income and
+    Adjustments to Income; Student Loan Interest Deduction Worksheet-Schedule 1, Line
+    21; Lines 24a Through 24z
+  expected: one canary return-document instruction context
+  evidence:
+  - source_document_id=instructions_form_1040_2025
+  - anchor=en_US_2025_publink100079554
+  - source_span=2236580:2236915
+  - line_tokens=24e
+- queue_id: instruction_join_instructions_form_1040_2025_en_us_2025_publink100079555_unresolved_document_context
+  kind: instruction_join_review
+  status: deferred
+  priority: medium
+  document_id: instructions_form_1040_2025
+  source_document_id: instructions_form_1040_2025
+  created_date: '2026-07-27'
+  created_by: tax_graph.ingest.instruction_promotion
+  summary: 'Instruction join finding unresolved_document_context for instructions_form_1040_2025:
+    1040 - Main Contents; Instructions for Schedule 1 Additional Income and Adjustments
+    to Income; Student Loan Interest Deduction Worksheet-Schedule 1, Line 21; Lines
+    24a Through 24z; expected one canary return-document instruction context.'
+  artifact_paths:
+  - .cache/raw/2025/instructions_form_1040_2025.html
+  - graph/2025/citations/instruction-form-1040-html.yaml
+  reason: unresolved_document_context
+  observed: 1040 - Main Contents; Instructions for Schedule 1 Additional Income and
+    Adjustments to Income; Student Loan Interest Deduction Worksheet-Schedule 1, Line
+    21; Lines 24a Through 24z
+  expected: one canary return-document instruction context
+  evidence:
+  - source_document_id=instructions_form_1040_2025
+  - anchor=en_US_2025_publink100079555
+  - source_span=2236915:2237227
+  - line_tokens=24f
+- queue_id: instruction_join_instructions_form_1040_2025_en_us_2025_publink100079556_unresolved_document_context
+  kind: instruction_join_review
+  status: deferred
+  priority: medium
+  document_id: instructions_form_1040_2025
+  source_document_id: instructions_form_1040_2025
+  created_date: '2026-07-27'
+  created_by: tax_graph.ingest.instruction_promotion
+  summary: 'Instruction join finding unresolved_document_context for instructions_form_1040_2025:
+    1040 - Main Contents; Instructions for Schedule 1 Additional Income and Adjustments
+    to Income; Student Loan Interest Deduction Worksheet-Schedule 1, Line 21; Lines
+    24a Through 24z; expected one canary return-document instruction context.'
+  artifact_paths:
+  - .cache/raw/2025/instructions_form_1040_2025.html
+  - graph/2025/citations/instruction-form-1040-html.yaml
+  reason: unresolved_document_context
+  observed: 1040 - Main Contents; Instructions for Schedule 1 Additional Income and
+    Adjustments to Income; Student Loan Interest Deduction Worksheet-Schedule 1, Line
+    21; Lines 24a Through 24z
+  expected: one canary return-document instruction context
+  evidence:
+  - source_document_id=instructions_form_1040_2025
+  - anchor=en_US_2025_publink100079556
+  - source_span=2237227:2237545
+  - line_tokens=24g
+- queue_id: instruction_join_instructions_form_1040_2025_en_us_2025_publink100079557_unresolved_document_context
+  kind: instruction_join_review
+  status: deferred
+  priority: medium
+  document_id: instructions_form_1040_2025
+  source_document_id: instructions_form_1040_2025
+  created_date: '2026-07-27'
+  created_by: tax_graph.ingest.instruction_promotion
+  summary: 'Instruction join finding unresolved_document_context for instructions_form_1040_2025:
+    1040 - Main Contents; Instructions for Schedule 1 Additional Income and Adjustments
+    to Income; Student Loan Interest Deduction Worksheet-Schedule 1, Line 21; Lines
+    24a Through 24z; expected one canary return-document instruction context.'
+  artifact_paths:
+  - .cache/raw/2025/instructions_form_1040_2025.html
+  - graph/2025/citations/instruction-form-1040-html.yaml
+  reason: unresolved_document_context
+  observed: 1040 - Main Contents; Instructions for Schedule 1 Additional Income and
+    Adjustments to Income; Student Loan Interest Deduction Worksheet-Schedule 1, Line
+    21; Lines 24a Through 24z
+  expected: one canary return-document instruction context
+  evidence:
+  - source_document_id=instructions_form_1040_2025
+  - anchor=en_US_2025_publink100079557
+  - source_span=2237545:2237953
+  - line_tokens=24h
+- queue_id: instruction_join_instructions_form_1040_2025_en_us_2025_publink100079558_unresolved_document_context
+  kind: instruction_join_review
+  status: deferred
+  priority: medium
+  document_id: instructions_form_1040_2025
+  source_document_id: instructions_form_1040_2025
+  created_date: '2026-07-27'
+  created_by: tax_graph.ingest.instruction_promotion
+  summary: 'Instruction join finding unresolved_document_context for instructions_form_1040_2025:
+    1040 - Main Contents; Instructions for Schedule 1 Additional Income and Adjustments
+    to Income; Student Loan Interest Deduction Worksheet-Schedule 1, Line 21; Lines
+    24a Through 24z; expected one canary return-document instruction context.'
+  artifact_paths:
+  - .cache/raw/2025/instructions_form_1040_2025.html
+  - graph/2025/citations/instruction-form-1040-html.yaml
+  reason: unresolved_document_context
+  observed: 1040 - Main Contents; Instructions for Schedule 1 Additional Income and
+    Adjustments to Income; Student Loan Interest Deduction Worksheet-Schedule 1, Line
+    21; Lines 24a Through 24z
+  expected: one canary return-document instruction context
+  evidence:
+  - source_document_id=instructions_form_1040_2025
+  - anchor=en_US_2025_publink100079558
+  - source_span=2237953:2238416
+  - line_tokens=24i
+- queue_id: instruction_join_instructions_form_1040_2025_en_us_2025_publink100079559_unresolved_document_context
+  kind: instruction_join_review
+  status: deferred
+  priority: medium
+  document_id: instructions_form_1040_2025
+  source_document_id: instructions_form_1040_2025
+  created_date: '2026-07-27'
+  created_by: tax_graph.ingest.instruction_promotion
+  summary: 'Instruction join finding unresolved_document_context for instructions_form_1040_2025:
+    1040 - Main Contents; Instructions for Schedule 1 Additional Income and Adjustments
+    to Income; Student Loan Interest Deduction Worksheet-Schedule 1, Line 21; Lines
+    24a Through 24z; expected one canary return-document instruction context.'
+  artifact_paths:
+  - .cache/raw/2025/instructions_form_1040_2025.html
+  - graph/2025/citations/instruction-form-1040-html.yaml
+  reason: unresolved_document_context
+  observed: 1040 - Main Contents; Instructions for Schedule 1 Additional Income and
+    Adjustments to Income; Student Loan Interest Deduction Worksheet-Schedule 1, Line
+    21; Lines 24a Through 24z
+  expected: one canary return-document instruction context
+  evidence:
+  - source_document_id=instructions_form_1040_2025
+  - anchor=en_US_2025_publink100079559
+  - source_span=2238697:2239082
+  - line_tokens=24k
+- queue_id: instruction_join_instructions_form_1040_2025_en_us_2025_publink100079560_unresolved_document_context
+  kind: instruction_join_review
+  status: deferred
+  priority: medium
+  document_id: instructions_form_1040_2025
+  source_document_id: instructions_form_1040_2025
+  created_date: '2026-07-27'
+  created_by: tax_graph.ingest.instruction_promotion
+  summary: 'Instruction join finding unresolved_document_context for instructions_form_1040_2025:
+    1040 - Main Contents; Instructions for Schedule 1 Additional Income and Adjustments
+    to Income; Student Loan Interest Deduction Worksheet-Schedule 1, Line 21; Lines
+    24a Through 24z; expected one canary return-document instruction context.'
+  artifact_paths:
+  - .cache/raw/2025/instructions_form_1040_2025.html
+  - graph/2025/citations/instruction-form-1040-html.yaml
+  reason: unresolved_document_context
+  observed: 1040 - Main Contents; Instructions for Schedule 1 Additional Income and
+    Adjustments to Income; Student Loan Interest Deduction Worksheet-Schedule 1, Line
+    21; Lines 24a Through 24z
+  expected: one canary return-document instruction context
+  evidence:
+  - source_document_id=instructions_form_1040_2025
+  - anchor=en_US_2025_publink100079560
+  - source_span=2239082:2239392
+  - line_tokens=24z
+- queue_id: instruction_join_instructions_form_1040_2025_en_us_2025_publink100082079_unresolved_document_context
+  kind: instruction_join_review
+  status: deferred
+  priority: medium
+  document_id: instructions_form_1040_2025
+  source_document_id: instructions_form_1040_2025
+  created_date: '2026-07-27'
+  created_by: tax_graph.ingest.instruction_promotion
+  summary: 'Instruction join finding unresolved_document_context for instructions_form_1040_2025:
+    1040 - Main Contents; Instructions for Schedule 1 Additional Income and Adjustments
+    to Income; Student Loan Interest Deduction Worksheet-Schedule 1, Line 21; Lines
+    24a Through 24z; expected one canary return-document instruction context.'
+  artifact_paths:
+  - .cache/raw/2025/instructions_form_1040_2025.html
+  - graph/2025/citations/instruction-form-1040-html.yaml
+  reason: unresolved_document_context
+  observed: 1040 - Main Contents; Instructions for Schedule 1 Additional Income and
+    Adjustments to Income; Student Loan Interest Deduction Worksheet-Schedule 1, Line
+    21; Lines 24a Through 24z
+  expected: one canary return-document instruction context
+  evidence:
+  - source_document_id=instructions_form_1040_2025
+  - anchor=en_US_2025_publink100082079
+  - source_span=2238416:2238697
+  - line_tokens=24j
+- queue_id: instruction_join_instructions_form_1040_2025_en_us_2025_publink100082080_missing_canonical_address
+  kind: instruction_join_review
+  status: deferred
+  priority: medium
+  document_id: instructions_form_1040_2025
+  source_document_id: instructions_form_1040_2025
+  created_date: '2026-07-27'
+  created_by: tax_graph.ingest.instruction_promotion
+  summary: 'Instruction join finding missing_canonical_address for instructions_form_1040_2025:
+    schedule_2_2025:13; expected at least one terminal canonical address.'
+  artifact_paths:
+  - .cache/raw/2025/instructions_form_1040_2025.html
+  - graph/2025/citations/instruction-form-1040-html.yaml
+  reason: missing_canonical_address
+  observed: schedule_2_2025:13
+  expected: at least one terminal canonical address
+  evidence:
+  - source_document_id=instructions_form_1040_2025
+  - anchor=en_US_2025_publink100082080
+  - source_span=2357091:2357591
+  - line_tokens=13
+- queue_id: instruction_join_instructions_form_1040_2025_en_us_2025_publink24811vd0e13023_missing_canonical_address
+  kind: instruction_join_review
+  status: deferred
+  priority: medium
+  document_id: instructions_form_1040_2025
+  source_document_id: instructions_form_1040_2025
+  created_date: '2026-07-27'
+  created_by: tax_graph.ingest.instruction_promotion
+  summary: 'Instruction join finding missing_canonical_address for instructions_form_1040_2025:
+    form_1040_2025:25; expected at least one terminal canonical address.'
+  artifact_paths:
+  - .cache/raw/2025/instructions_form_1040_2025.html
+  - graph/2025/citations/instruction-form-1040-html.yaml
+  reason: missing_canonical_address
+  observed: form_1040_2025:25
+  expected: at least one terminal canonical address
+  evidence:
+  - source_document_id=instructions_form_1040_2025
+  - anchor=en_US_2025_publink24811vd0e13023
+  - source_span=474323:474521
+  - line_tokens=25
+- queue_id: instruction_join_instructions_form_1040_2025_schedule_1a_2025_empty_document
+  kind: instruction_join_review
+  status: deferred
+  priority: medium
+  document_id: schedule_1a_2025
+  source_document_id: instructions_form_1040_2025
+  created_date: '2026-07-27'
+  created_by: tax_graph.ingest.instruction_promotion
+  summary: 'Instruction join finding empty_expected_document for schedule_1a_2025:
+    promoted_section_count=0; expected at least one promoted instruction section or
+    an explicit source finding.'
+  artifact_paths:
+  - .cache/raw/2025/instructions_form_1040_2025.html
+  - graph/2025/citations/instruction-form-1040-html.yaml
+  reason: empty_expected_document
+  observed: promoted_section_count=0
+  expected: at least one promoted instruction section or an explicit source finding
+  evidence:
+  - source_document_id=instructions_form_1040_2025
+  - expected_document_id=schedule_1a_2025
+  - context_heading=Instructions for Schedule 1-A Additional Deductions
+  - anchor=id509
+  - source_span=2239392:2239468
+  - promoted_section_count=0
+- queue_id: instruction_join_instructions_form_1040_2025_en_us_2025_publink1000158363_unresolved_document_context
+  kind: instruction_join_review
+  status: deferred
+  priority: medium
+  document_id: instructions_form_1040_2025
+  source_document_id: instructions_form_1040_2025
+  created_date: '2026-07-27'
+  created_by: tax_graph.ingest.instruction_promotion
+  summary: 'Instruction join finding unresolved_document_context for instructions_form_1040_2025:
+    1040 - Introductory Material; Line Instructions for Forms 1040 and 1040-SR; Simplified
+    Method Worksheet-Lines 5a and 5b; expected one canary return-document instruction
+    context.'
+  artifact_paths:
+  - .cache/raw/2025/instructions_form_1040_2025.html
+  - graph/2025/citations/instruction-form-1040-html.yaml
+  reason: unresolved_document_context
+  observed: 1040 - Introductory Material; Line Instructions for Forms 1040 and 1040-SR;
+    Simplified Method Worksheet-Lines 5a and 5b
+  expected: one canary return-document instruction context
+  evidence:
+  - source_document_id=instructions_form_1040_2025
+  - anchor=en_US_2025_publink1000158363
+  - source_span=387412:388439
+  - line_tokens=5c
+- queue_id: instruction_join_instructions_form_1040_2025_en_us_2025_publink1000158364_unresolved_document_context
+  kind: instruction_join_review
+  status: deferred
+  priority: medium
+  document_id: instructions_form_1040_2025
+  source_document_id: instructions_form_1040_2025
+  created_date: '2026-07-27'
+  created_by: tax_graph.ingest.instruction_promotion
+  summary: 'Instruction join finding unresolved_document_context for instructions_form_1040_2025:
+    1040 - Introductory Material; Line Instructions for Forms 1040 and 1040-SR; Simplified
+    Method Worksheet-Lines 5a and 5b; expected one canary return-document instruction
+    context.'
+  artifact_paths:
+  - .cache/raw/2025/instructions_form_1040_2025.html
+  - graph/2025/citations/instruction-form-1040-html.yaml
+  reason: unresolved_document_context
+  observed: 1040 - Introductory Material; Line Instructions for Forms 1040 and 1040-SR;
+    Simplified Method Worksheet-Lines 5a and 5b
+  expected: one canary return-document instruction context
+  evidence:
+  - source_document_id=instructions_form_1040_2025
+  - anchor=en_US_2025_publink1000158364
+  - source_span=388439:388622
+  - line_tokens=6a,6b,6c,6d
+- queue_id: instruction_join_instructions_form_1040_2025_en_us_2025_publink1000158365_unresolved_document_context
+  kind: instruction_join_review
+  status: deferred
+  priority: medium
+  document_id: instructions_form_1040_2025
+  source_document_id: instructions_form_1040_2025
+  created_date: '2026-07-27'
+  created_by: tax_graph.ingest.instruction_promotion
+  summary: 'Instruction join finding unresolved_document_context for instructions_form_1040_2025:
+    1040 - Introductory Material; Line Instructions for Forms 1040 and 1040-SR; Simplified
+    Method Worksheet-Lines 5a and 5b; expected one canary return-document instruction
+    context.'
+  artifact_paths:
+  - .cache/raw/2025/instructions_form_1040_2025.html
+  - graph/2025/citations/instruction-form-1040-html.yaml
+  reason: unresolved_document_context
+  observed: 1040 - Introductory Material; Line Instructions for Forms 1040 and 1040-SR;
+    Simplified Method Worksheet-Lines 5a and 5b
+  expected: one canary return-document instruction context
+  evidence:
+  - source_document_id=instructions_form_1040_2025
+  - anchor=en_US_2025_publink1000158365
+  - source_span=388622:394179
+  - line_tokens=6a,6b
+- queue_id: instruction_join_instructions_form_1040_2025_en_us_2025_publink1000158373_unresolved_document_context
+  kind: instruction_join_review
+  status: deferred
+  priority: medium
+  document_id: instructions_form_1040_2025
+  source_document_id: instructions_form_1040_2025
+  created_date: '2026-07-27'
+  created_by: tax_graph.ingest.instruction_promotion
+  summary: 'Instruction join finding unresolved_document_context for instructions_form_1040_2025:
+    1040 - Introductory Material; Line Instructions for Forms 1040 and 1040-SR; Social
+    Security Benefits Worksheet-Lines 6a and 6b; expected one canary return-document
+    instruction context.'
+  artifact_paths:
+  - .cache/raw/2025/instructions_form_1040_2025.html
+  - graph/2025/citations/instruction-form-1040-html.yaml
+  reason: unresolved_document_context
+  observed: 1040 - Introductory Material; Line Instructions for Forms 1040 and 1040-SR;
+    Social Security Benefits Worksheet-Lines 6a and 6b
+  expected: one canary return-document instruction context
+  evidence:
+  - source_document_id=instructions_form_1040_2025
+  - anchor=en_US_2025_publink1000158373
+  - source_span=409185:409733
+  - line_tokens=6c
+- queue_id: instruction_join_instructions_form_1040_2025_en_us_2025_publink1000158374_unresolved_document_context
+  kind: instruction_join_review
+  status: deferred
+  priority: medium
+  document_id: instructions_form_1040_2025
+  source_document_id: instructions_form_1040_2025
+  created_date: '2026-07-27'
+  created_by: tax_graph.ingest.instruction_promotion
+  summary: 'Instruction join finding unresolved_document_context for instructions_form_1040_2025:
+    1040 - Introductory Material; Line Instructions for Forms 1040 and 1040-SR; Social
+    Security Benefits Worksheet-Lines 6a and 6b; expected one canary return-document
+    instruction context.'
+  artifact_paths:
+  - .cache/raw/2025/instructions_form_1040_2025.html
+  - graph/2025/citations/instruction-form-1040-html.yaml
+  reason: unresolved_document_context
+  observed: 1040 - Introductory Material; Line Instructions for Forms 1040 and 1040-SR;
+    Social Security Benefits Worksheet-Lines 6a and 6b
+  expected: one canary return-document instruction context
+  evidence:
+  - source_document_id=instructions_form_1040_2025
+  - anchor=en_US_2025_publink1000158374
+  - source_span=409733:410128
+  - line_tokens=6d
+- queue_id: instruction_join_instructions_form_1040_2025_en_us_2025_publink1000158375_unresolved_document_context
+  kind: instruction_join_review
+  status: deferred
+  priority: medium
+  document_id: instructions_form_1040_2025
+  source_document_id: instructions_form_1040_2025
+  created_date: '2026-07-27'
+  created_by: tax_graph.ingest.instruction_promotion
+  summary: 'Instruction join finding unresolved_document_context for instructions_form_1040_2025:
+    1040 - Introductory Material; Line Instructions for Forms 1040 and 1040-SR; Social
+    Security Benefits Worksheet-Lines 6a and 6b; expected one canary return-document
+    instruction context.'
+  artifact_paths:
+  - .cache/raw/2025/instructions_form_1040_2025.html
+  - graph/2025/citations/instruction-form-1040-html.yaml
+  reason: unresolved_document_context
+  observed: 1040 - Introductory Material; Line Instructions for Forms 1040 and 1040-SR;
+    Social Security Benefits Worksheet-Lines 6a and 6b
+  expected: one canary return-document instruction context
+  evidence:
+  - source_document_id=instructions_form_1040_2025
+  - anchor=en_US_2025_publink1000158375
+  - source_span=410128:413942
+  - line_tokens=7a
+- queue_id: instruction_join_instructions_form_1040_2025_en_us_2025_publink1000158380_unresolved_document_context
+  kind: instruction_join_review
+  status: deferred
+  priority: medium
+  document_id: instructions_form_1040_2025
+  source_document_id: instructions_form_1040_2025
+  created_date: '2026-07-27'
+  created_by: tax_graph.ingest.instruction_promotion
+  summary: 'Instruction join finding unresolved_document_context for instructions_form_1040_2025:
+    1040 - Introductory Material; Line Instructions for Forms 1040 and 1040-SR; Social
+    Security Benefits Worksheet-Lines 6a and 6b; expected one canary return-document
+    instruction context.'
+  artifact_paths:
+  - .cache/raw/2025/instructions_form_1040_2025.html
+  - graph/2025/citations/instruction-form-1040-html.yaml
+  reason: unresolved_document_context
+  observed: 1040 - Introductory Material; Line Instructions for Forms 1040 and 1040-SR;
+    Social Security Benefits Worksheet-Lines 6a and 6b
+  expected: one canary return-document instruction context
+  evidence:
+  - source_document_id=instructions_form_1040_2025
+  - anchor=en_US_2025_publink1000158380
+  - source_span=413942:414581
+  - line_tokens=7b
+- queue_id: instruction_join_instructions_form_1040_2025_en_us_2025_publink1000158402_unresolved_document_context
+  kind: instruction_join_review
+  status: deferred
+  priority: medium
+  document_id: instructions_form_1040_2025
+  source_document_id: instructions_form_1040_2025
+  created_date: '2026-07-27'
+  created_by: tax_graph.ingest.instruction_promotion
+  summary: 'Instruction join finding unresolved_document_context for instructions_form_1040_2025:
+    1040 - Introductory Material; Line Instructions for Forms 1040 and 1040-SR; Standard
+    Deduction Worksheet for Dependents-Line 12e; expected one canary return-document
+    instruction context.'
+  artifact_paths:
+  - .cache/raw/2025/instructions_form_1040_2025.html
+  - graph/2025/citations/instruction-form-1040-html.yaml
+  reason: unresolved_document_context
+  observed: 1040 - Introductory Material; Line Instructions for Forms 1040 and 1040-SR;
+    Standard Deduction Worksheet for Dependents-Line 12e
+  expected: one canary return-document instruction context
+  evidence:
+  - source_document_id=instructions_form_1040_2025
+  - anchor=en_US_2025_publink1000158402
+  - source_span=439458:440920
+  - line_tokens=13a
+- queue_id: instruction_join_instructions_form_1040_2025_en_us_2025_publink1000158606_unresolved_document_context
+  kind: instruction_join_review
+  status: deferred
+  priority: medium
+  document_id: instructions_form_1040_2025
+  source_document_id: instructions_form_1040_2025
+  created_date: '2026-07-27'
+  created_by: tax_graph.ingest.instruction_promotion
+  summary: 'Instruction join finding unresolved_document_context for instructions_form_1040_2025:
+    1040 - Introductory Material; Line Instructions for Forms 1040 and 1040-SR; Standard
+    Deduction Worksheet for Dependents-Line 12e; expected one canary return-document
+    instruction context.'
+  artifact_paths:
+  - .cache/raw/2025/instructions_form_1040_2025.html
+  - graph/2025/citations/instruction-form-1040-html.yaml
+  reason: unresolved_document_context
+  observed: 1040 - Introductory Material; Line Instructions for Forms 1040 and 1040-SR;
+    Standard Deduction Worksheet for Dependents-Line 12e
+  expected: one canary return-document instruction context
+  evidence:
+  - source_document_id=instructions_form_1040_2025
+  - anchor=en_US_2025_publink1000158606
+  - source_span=440920:441655
+  - line_tokens=13b
+- queue_id: instruction_join_instructions_form_1040_2025_en_us_2025_publink1000158404_unresolved_document_context
+  kind: instruction_join_review
+  status: deferred
+  priority: medium
+  document_id: instructions_form_1040_2025
+  source_document_id: instructions_form_1040_2025
+  created_date: '2026-07-27'
+  created_by: tax_graph.ingest.instruction_promotion
+  summary: 'Instruction join finding unresolved_document_context for instructions_form_1040_2025:
+    1040 - Introductory Material; Line Instructions for Forms 1040 and 1040-SR; Standard
+    Deduction Worksheet for Dependents-Line 12e; expected one canary return-document
+    instruction context.'
+  artifact_paths:
+  - .cache/raw/2025/instructions_form_1040_2025.html
+  - graph/2025/citations/instruction-form-1040-html.yaml
+  reason: unresolved_document_context
+  observed: 1040 - Introductory Material; Line Instructions for Forms 1040 and 1040-SR;
+    Standard Deduction Worksheet for Dependents-Line 12e
+  expected: one canary return-document instruction context
+  evidence:
+  - source_document_id=instructions_form_1040_2025
+  - anchor=en_US_2025_publink1000158404
+  - source_span=441655:450111
+  - line_tokens=16
+- queue_id: instruction_join_instructions_form_1040_2025_en_us_2025_publink1000158416_unresolved_document_context
+  kind: instruction_join_review
+  status: deferred
+  priority: medium
+  document_id: instructions_form_1040_2025
+  source_document_id: instructions_form_1040_2025
+  created_date: '2026-07-27'
+  created_by: tax_graph.ingest.instruction_promotion
+  summary: 'Instruction join finding unresolved_document_context for instructions_form_1040_2025:
+    1040 - Introductory Material; Line Instructions for Forms 1040 and 1040-SR; Qualified
+    Dividends and Capital Gain Tax Worksheet-Line 16; expected one canary return-document
+    instruction context.'
+  artifact_paths:
+  - .cache/raw/2025/instructions_form_1040_2025.html
+  - graph/2025/citations/instruction-form-1040-html.yaml
+  reason: unresolved_document_context
+  observed: 1040 - Introductory Material; Line Instructions for Forms 1040 and 1040-SR;
+    Qualified Dividends and Capital Gain Tax Worksheet-Line 16
+  expected: one canary return-document instruction context
+  evidence:
+  - source_document_id=instructions_form_1040_2025
+  - anchor=en_US_2025_publink1000158416
+  - source_span=470382:474096
+  - line_tokens=19
+- queue_id: instruction_join_instructions_form_1040_2025_en_us_2025_publink1000151493_unresolved_document_context
+  kind: instruction_join_review
+  status: deferred
+  priority: medium
+  document_id: instructions_form_1040_2025
+  source_document_id: instructions_form_1040_2025
+  created_date: '2026-07-27'
+  created_by: tax_graph.ingest.instruction_promotion
+  summary: 'Instruction join finding unresolved_document_context for instructions_form_1040_2025:
+    1040 - Main Contents; Instructions for Schedule 1 Additional Income and Adjustments
+    to Income; State and Local Income Tax Refund Worksheet-Schedule 1, Line 1; expected
+    one canary return-document instruction context.'
+  artifact_paths:
+  - .cache/raw/2025/instructions_form_1040_2025.html
+  - graph/2025/citations/instruction-form-1040-html.yaml
+  reason: unresolved_document_context
+  observed: 1040 - Main Contents; Instructions for Schedule 1 Additional Income and
+    Adjustments to Income; State and Local Income Tax Refund Worksheet-Schedule 1,
+    Line 1
+  expected: one canary return-document instruction context
+  evidence:
+  - source_document_id=instructions_form_1040_2025
+  - anchor=en_US_2025_publink1000151493
+  - source_span=2144804:2145633
+  - line_tokens=4
+- queue_id: instruction_join_instructions_form_1040_2025_en_us_2025_publink1000151495_unresolved_document_context
+  kind: instruction_join_review
+  status: deferred
+  priority: medium
+  document_id: instructions_form_1040_2025
+  source_document_id: instructions_form_1040_2025
+  created_date: '2026-07-27'
+  created_by: tax_graph.ingest.instruction_promotion
+  summary: 'Instruction join finding unresolved_document_context for instructions_form_1040_2025:
+    1040 - Main Contents; Instructions for Schedule 1 Additional Income and Adjustments
+    to Income; State and Local Income Tax Refund Worksheet-Schedule 1, Line 1; expected
+    one canary return-document instruction context.'
+  artifact_paths:
+  - .cache/raw/2025/instructions_form_1040_2025.html
+  - graph/2025/citations/instruction-form-1040-html.yaml
+  reason: unresolved_document_context
+  observed: 1040 - Main Contents; Instructions for Schedule 1 Additional Income and
+    Adjustments to Income; State and Local Income Tax Refund Worksheet-Schedule 1,
+    Line 1
+  expected: one canary return-document instruction context
+  evidence:
+  - source_document_id=instructions_form_1040_2025
+  - anchor=en_US_2025_publink1000151495
+  - source_span=2145633:2148301
+  - line_tokens=7
+- queue_id: instruction_join_instructions_form_1040_2025_en_us_2025_publink1000151497_unresolved_document_context
+  kind: instruction_join_review
+  status: deferred
+  priority: medium
+  document_id: instructions_form_1040_2025
+  source_document_id: instructions_form_1040_2025
+  created_date: '2026-07-27'
+  created_by: tax_graph.ingest.instruction_promotion
+  summary: 'Instruction join finding unresolved_document_context for instructions_form_1040_2025:
+    1040 - Main Contents; Instructions for Schedule 1 Additional Income and Adjustments
+    to Income; State and Local Income Tax Refund Worksheet-Schedule 1, Line 1; expected
+    one canary return-document instruction context.'
+  artifact_paths:
+  - .cache/raw/2025/instructions_form_1040_2025.html
+  - graph/2025/citations/instruction-form-1040-html.yaml
+  reason: unresolved_document_context
+  observed: 1040 - Main Contents; Instructions for Schedule 1 Additional Income and
+    Adjustments to Income; State and Local Income Tax Refund Worksheet-Schedule 1,
+    Line 1
+  expected: one canary return-document instruction context
+  evidence:
+  - source_document_id=instructions_form_1040_2025
+  - anchor=en_US_2025_publink1000151497
+  - source_span=2148301:2173333
+  - line_tokens=8a,8z
+- queue_id: instruction_join_instructions_form_1040_2025_en_us_2025_publink1000151080_unresolved_document_context
+  kind: instruction_join_review
+  status: deferred
+  priority: medium
+  document_id: instructions_form_1040_2025
+  source_document_id: instructions_form_1040_2025
+  created_date: '2026-07-27'
+  created_by: tax_graph.ingest.instruction_promotion
+  summary: 'Instruction join finding unresolved_document_context for instructions_form_1040_2025:
+    1040 - Main Contents; Instructions for Schedule 1 Additional Income and Adjustments
+    to Income; State and Local Income Tax Refund Worksheet-Schedule 1, Line 1; Other
+    Income; expected one canary return-document instruction context.'
+  artifact_paths:
+  - .cache/raw/2025/instructions_form_1040_2025.html
+  - graph/2025/citations/instruction-form-1040-html.yaml
+  reason: unresolved_document_context
+  observed: 1040 - Main Contents; Instructions for Schedule 1 Additional Income and
+    Adjustments to Income; State and Local Income Tax Refund Worksheet-Schedule 1,
+    Line 1; Other Income
+  expected: one canary return-document instruction context
+  evidence:
+  - source_document_id=instructions_form_1040_2025
+  - anchor=en_US_2025_publink1000151080
+  - source_span=2161470:2162641
+  - line_tokens=8q
+- queue_id: instruction_join_instructions_form_1040_2025_en_us_2025_publink1000151083_unresolved_document_context
+  kind: instruction_join_review
+  status: deferred
+  priority: medium
+  document_id: instructions_form_1040_2025
+  source_document_id: instructions_form_1040_2025
+  created_date: '2026-07-27'
+  created_by: tax_graph.ingest.instruction_promotion
+  summary: 'Instruction join finding unresolved_document_context for instructions_form_1040_2025:
+    1040 - Main Contents; Instructions for Schedule 1 Additional Income and Adjustments
+    to Income; State and Local Income Tax Refund Worksheet-Schedule 1, Line 1; Other
+    Income; expected one canary return-document instruction context.'
+  artifact_paths:
+  - .cache/raw/2025/instructions_form_1040_2025.html
+  - graph/2025/citations/instruction-form-1040-html.yaml
+  reason: unresolved_document_context
+  observed: 1040 - Main Contents; Instructions for Schedule 1 Additional Income and
+    Adjustments to Income; State and Local Income Tax Refund Worksheet-Schedule 1,
+    Line 1; Other Income
+  expected: one canary return-document instruction context
+  evidence:
+  - source_document_id=instructions_form_1040_2025
+  - anchor=en_US_2025_publink1000151083
+  - source_span=2162641:2163395
+  - line_tokens=8r
+- queue_id: instruction_join_instructions_form_1040_2025_en_us_2025_publink1000151085_unresolved_document_context
+  kind: instruction_join_review
+  status: deferred
+  priority: medium
+  document_id: instructions_form_1040_2025
+  source_document_id: instructions_form_1040_2025
+  created_date: '2026-07-27'
+  created_by: tax_graph.ingest.instruction_promotion
+  summary: 'Instruction join finding unresolved_document_context for instructions_form_1040_2025:
+    1040 - Main Contents; Instructions for Schedule 1 Additional Income and Adjustments
+    to Income; State and Local Income Tax Refund Worksheet-Schedule 1, Line 1; Other
+    Income; expected one canary return-document instruction context.'
+  artifact_paths:
+  - .cache/raw/2025/instructions_form_1040_2025.html
+  - graph/2025/citations/instruction-form-1040-html.yaml
+  reason: unresolved_document_context
+  observed: 1040 - Main Contents; Instructions for Schedule 1 Additional Income and
+    Adjustments to Income; State and Local Income Tax Refund Worksheet-Schedule 1,
+    Line 1; Other Income
+  expected: one canary return-document instruction context
+  evidence:
+  - source_document_id=instructions_form_1040_2025
+  - anchor=en_US_2025_publink1000151085
+  - source_span=2163395:2165026
+  - line_tokens=8s
+- queue_id: instruction_join_instructions_form_1040_2025_en_us_2025_publink1000151087_unresolved_document_context
+  kind: instruction_join_review
+  status: deferred
+  priority: medium
+  document_id: instructions_form_1040_2025
+  source_document_id: instructions_form_1040_2025
+  created_date: '2026-07-27'
+  created_by: tax_graph.ingest.instruction_promotion
+  summary: 'Instruction join finding unresolved_document_context for instructions_form_1040_2025:
+    1040 - Main Contents; Instructions for Schedule 1 Additional Income and Adjustments
+    to Income; State and Local Income Tax Refund Worksheet-Schedule 1, Line 1; Other
+    Income; expected one canary return-document instruction context.'
+  artifact_paths:
+  - .cache/raw/2025/instructions_form_1040_2025.html
+  - graph/2025/citations/instruction-form-1040-html.yaml
+  reason: unresolved_document_context
+  observed: 1040 - Main Contents; Instructions for Schedule 1 Additional Income and
+    Adjustments to Income; State and Local Income Tax Refund Worksheet-Schedule 1,
+    Line 1; Other Income
+  expected: one canary return-document instruction context
+  evidence:
+  - source_document_id=instructions_form_1040_2025
+  - anchor=en_US_2025_publink1000151087
+  - source_span=2165026:2165806
+  - line_tokens=8t
+- queue_id: instruction_join_instructions_form_1040_2025_en_us_2025_publink1000151089_unresolved_document_context
+  kind: instruction_join_review
+  status: deferred
+  priority: medium
+  document_id: instructions_form_1040_2025
+  source_document_id: instructions_form_1040_2025
+  created_date: '2026-07-27'
+  created_by: tax_graph.ingest.instruction_promotion
+  summary: 'Instruction join finding unresolved_document_context for instructions_form_1040_2025:
+    1040 - Main Contents; Instructions for Schedule 1 Additional Income and Adjustments
+    to Income; State and Local Income Tax Refund Worksheet-Schedule 1, Line 1; Other
+    Income; expected one canary return-document instruction context.'
+  artifact_paths:
+  - .cache/raw/2025/instructions_form_1040_2025.html
+  - graph/2025/citations/instruction-form-1040-html.yaml
+  reason: unresolved_document_context
+  observed: 1040 - Main Contents; Instructions for Schedule 1 Additional Income and
+    Adjustments to Income; State and Local Income Tax Refund Worksheet-Schedule 1,
+    Line 1; Other Income
+  expected: one canary return-document instruction context
+  evidence:
+  - source_document_id=instructions_form_1040_2025
+  - anchor=en_US_2025_publink1000151089
+  - source_span=2165806:2166366
+  - line_tokens=8u
+- queue_id: instruction_join_instructions_form_1040_2025_en_us_2025_publink1000151091_unresolved_document_context
+  kind: instruction_join_review
+  status: deferred
+  priority: medium
+  document_id: instructions_form_1040_2025
+  source_document_id: instructions_form_1040_2025
+  created_date: '2026-07-27'
+  created_by: tax_graph.ingest.instruction_promotion
+  summary: 'Instruction join finding unresolved_document_context for instructions_form_1040_2025:
+    1040 - Main Contents; Instructions for Schedule 1 Additional Income and Adjustments
+    to Income; State and Local Income Tax Refund Worksheet-Schedule 1, Line 1; Other
+    Income; expected one canary return-document instruction context.'
+  artifact_paths:
+  - .cache/raw/2025/instructions_form_1040_2025.html
+  - graph/2025/citations/instruction-form-1040-html.yaml
+  reason: unresolved_document_context
+  observed: 1040 - Main Contents; Instructions for Schedule 1 Additional Income and
+    Adjustments to Income; State and Local Income Tax Refund Worksheet-Schedule 1,
+    Line 1; Other Income
+  expected: one canary return-document instruction context
+  evidence:
+  - source_document_id=instructions_form_1040_2025
+  - anchor=en_US_2025_publink1000151091
+  - source_span=2166366:2167575
+  - line_tokens=8v
+- queue_id: instruction_join_instructions_form_1040_2025_en_us_2025_publink1000151093_unresolved_document_context
+  kind: instruction_join_review
+  status: deferred
+  priority: medium
+  document_id: instructions_form_1040_2025
+  source_document_id: instructions_form_1040_2025
+  created_date: '2026-07-27'
+  created_by: tax_graph.ingest.instruction_promotion
+  summary: 'Instruction join finding unresolved_document_context for instructions_form_1040_2025:
+    1040 - Main Contents; Instructions for Schedule 1 Additional Income and Adjustments
+    to Income; State and Local Income Tax Refund Worksheet-Schedule 1, Line 1; Other
+    Income; expected one canary return-document instruction context.'
+  artifact_paths:
+  - .cache/raw/2025/instructions_form_1040_2025.html
+  - graph/2025/citations/instruction-form-1040-html.yaml
+  reason: unresolved_document_context
+  observed: 1040 - Main Contents; Instructions for Schedule 1 Additional Income and
+    Adjustments to Income; State and Local Income Tax Refund Worksheet-Schedule 1,
+    Line 1; Other Income
+  expected: one canary return-document instruction context
+  evidence:
+  - source_document_id=instructions_form_1040_2025
+  - anchor=en_US_2025_publink1000151093
+  - source_span=2167575:2173333
+  - line_tokens=8z
+- queue_id: instruction_join_instructions_form_1040_2025_en_us_2025_publink1000151513_unresolved_document_context
+  kind: instruction_join_review
+  status: deferred
+  priority: medium
+  document_id: instructions_form_1040_2025
+  source_document_id: instructions_form_1040_2025
+  created_date: '2026-07-27'
+  created_by: tax_graph.ingest.instruction_promotion
+  summary: 'Instruction join finding unresolved_document_context for instructions_form_1040_2025:
+    1040 - Main Contents; Instructions for Schedule 1 Additional Income and Adjustments
+    to Income; Self-Employed Health Insurance Deduction Worksheet-Schedule 1, Line
+    17; expected one canary return-document instruction context.'
+  artifact_paths:
+  - .cache/raw/2025/instructions_form_1040_2025.html
+  - graph/2025/citations/instruction-form-1040-html.yaml
+  reason: unresolved_document_context
+  observed: 1040 - Main Contents; Instructions for Schedule 1 Additional Income and
+    Adjustments to Income; Self-Employed Health Insurance Deduction Worksheet-Schedule
+    1, Line 17
+  expected: one canary return-document instruction context
+  evidence:
+  - source_document_id=instructions_form_1040_2025
+  - anchor=en_US_2025_publink1000151513
+  - source_span=2191166:2191855
+  - line_tokens=18
+- queue_id: instruction_join_instructions_form_1040_2025_en_us_2025_publink1000151515_unresolved_document_context
+  kind: instruction_join_review
+  status: deferred
+  priority: medium
+  document_id: instructions_form_1040_2025
+  source_document_id: instructions_form_1040_2025
+  created_date: '2026-07-27'
+  created_by: tax_graph.ingest.instruction_promotion
+  summary: 'Instruction join finding unresolved_document_context for instructions_form_1040_2025:
+    1040 - Main Contents; Instructions for Schedule 1 Additional Income and Adjustments
+    to Income; Self-Employed Health Insurance Deduction Worksheet-Schedule 1, Line
+    17; expected one canary return-document instruction context.'
+  artifact_paths:
+  - .cache/raw/2025/instructions_form_1040_2025.html
+  - graph/2025/citations/instruction-form-1040-html.yaml
+  reason: unresolved_document_context
+  observed: 1040 - Main Contents; Instructions for Schedule 1 Additional Income and
+    Adjustments to Income; Self-Employed Health Insurance Deduction Worksheet-Schedule
+    1, Line 17
+  expected: one canary return-document instruction context
+  evidence:
+  - source_document_id=instructions_form_1040_2025
+  - anchor=en_US_2025_publink1000151515
+  - source_span=2191855:2193566
+  - line_tokens=19a,19b,19c
+- queue_id: instruction_join_instructions_form_1040_2025_en_us_2025_publink1000170111_unresolved_document_context
+  kind: instruction_join_review
+  status: deferred
+  priority: medium
+  document_id: instructions_form_1040_2025
+  source_document_id: instructions_form_1040_2025
+  created_date: '2026-07-27'
+  created_by: tax_graph.ingest.instruction_promotion
+  summary: 'Instruction join finding unresolved_document_context for instructions_form_1040_2025:
+    1040 - Main Contents; Instructions for Schedule 1 Additional Income and Adjustments
+    to Income; Self-Employed Health Insurance Deduction Worksheet-Schedule 1, Line
+    17; Alimony Paid; expected one canary return-document instruction context.'
+  artifact_paths:
+  - .cache/raw/2025/instructions_form_1040_2025.html
+  - graph/2025/citations/instruction-form-1040-html.yaml
+  reason: unresolved_document_context
+  observed: 1040 - Main Contents; Instructions for Schedule 1 Additional Income and
+    Adjustments to Income; Self-Employed Health Insurance Deduction Worksheet-Schedule
+    1, Line 17; Alimony Paid
+  expected: one canary return-document instruction context
+  evidence:
+  - source_document_id=instructions_form_1040_2025
+  - anchor=en_US_2025_publink1000170111
+  - source_span=2192279:2193218
+  - line_tokens=19a
+- queue_id: instruction_join_instructions_form_1040_2025_en_us_2025_publink1000151103_unresolved_document_context
+  kind: instruction_join_review
+  status: deferred
+  priority: medium
+  document_id: instructions_form_1040_2025
+  source_document_id: instructions_form_1040_2025
+  created_date: '2026-07-27'
+  created_by: tax_graph.ingest.instruction_promotion
+  summary: 'Instruction join finding unresolved_document_context for instructions_form_1040_2025:
+    1040 - Main Contents; Instructions for Schedule 1 Additional Income and Adjustments
+    to Income; Self-Employed Health Insurance Deduction Worksheet-Schedule 1, Line
+    17; Alimony Paid; expected one canary return-document instruction context.'
+  artifact_paths:
+  - .cache/raw/2025/instructions_form_1040_2025.html
+  - graph/2025/citations/instruction-form-1040-html.yaml
+  reason: unresolved_document_context
+  observed: 1040 - Main Contents; Instructions for Schedule 1 Additional Income and
+    Adjustments to Income; Self-Employed Health Insurance Deduction Worksheet-Schedule
+    1, Line 17; Alimony Paid
+  expected: one canary return-document instruction context
+  evidence:
+  - source_document_id=instructions_form_1040_2025
+  - anchor=en_US_2025_publink1000151103
+  - source_span=2193218:2193566
+  - line_tokens=19c
+- queue_id: instruction_join_instructions_form_1040_2025_en_us_2025_publink1000151517_unresolved_document_context
+  kind: instruction_join_review
+  status: deferred
+  priority: medium
+  document_id: instructions_form_1040_2025
+  source_document_id: instructions_form_1040_2025
+  created_date: '2026-07-27'
+  created_by: tax_graph.ingest.instruction_promotion
+  summary: 'Instruction join finding unresolved_document_context for instructions_form_1040_2025:
+    1040 - Main Contents; Instructions for Schedule 1 Additional Income and Adjustments
+    to Income; Self-Employed Health Insurance Deduction Worksheet-Schedule 1, Line
+    17; expected one canary return-document instruction context.'
+  artifact_paths:
+  - .cache/raw/2025/instructions_form_1040_2025.html
+  - graph/2025/citations/instruction-form-1040-html.yaml
+  reason: unresolved_document_context
+  observed: 1040 - Main Contents; Instructions for Schedule 1 Additional Income and
+    Adjustments to Income; Self-Employed Health Insurance Deduction Worksheet-Schedule
+    1, Line 17
+  expected: one canary return-document instruction context
+  evidence:
+  - source_document_id=instructions_form_1040_2025
+  - anchor=en_US_2025_publink1000151517
+  - source_span=2193566:2199216
+  - line_tokens=20
+- queue_id: instruction_join_instructions_form_1040_2025_en_us_2025_publink1000151519_unresolved_document_context
+  kind: instruction_join_review
+  status: deferred
+  priority: medium
+  document_id: instructions_form_1040_2025
+  source_document_id: instructions_form_1040_2025
+  created_date: '2026-07-27'
+  created_by: tax_graph.ingest.instruction_promotion
+  summary: 'Instruction join finding unresolved_document_context for instructions_form_1040_2025:
+    1040 - Main Contents; Instructions for Schedule 1 Additional Income and Adjustments
+    to Income; IRA Deduction Worksheet-Continued; expected one canary return-document
+    instruction context.'
+  artifact_paths:
+  - .cache/raw/2025/instructions_form_1040_2025.html
+  - graph/2025/citations/instruction-form-1040-html.yaml
+  reason: unresolved_document_context
+  observed: 1040 - Main Contents; Instructions for Schedule 1 Additional Income and
+    Adjustments to Income; IRA Deduction Worksheet-Continued
+  expected: one canary return-document instruction context
+  evidence:
+  - source_document_id=instructions_form_1040_2025
+  - anchor=en_US_2025_publink1000151519
+  - source_span=2222889:2226986
+  - line_tokens=21
+- queue_id: instruction_join_instructions_form_1040_2025_en_us_2025_publink1000151521_unresolved_document_context
+  kind: instruction_join_review
+  status: deferred
+  priority: medium
+  document_id: instructions_form_1040_2025
+  source_document_id: instructions_form_1040_2025
+  created_date: '2026-07-27'
+  created_by: tax_graph.ingest.instruction_promotion
+  summary: 'Instruction join finding unresolved_document_context for instructions_form_1040_2025:
+    1040 - Main Contents; Instructions for Schedule 1 Additional Income and Adjustments
+    to Income; Student Loan Interest Deduction Worksheet-Schedule 1, Line 21; expected
+    one canary return-document instruction context.'
+  artifact_paths:
+  - .cache/raw/2025/instructions_form_1040_2025.html
+  - graph/2025/citations/instruction-form-1040-html.yaml
+  reason: unresolved_document_context
+  observed: 1040 - Main Contents; Instructions for Schedule 1 Additional Income and
+    Adjustments to Income; Student Loan Interest Deduction Worksheet-Schedule 1, Line
+    21
+  expected: one canary return-document instruction context
+  evidence:
+  - source_document_id=instructions_form_1040_2025
+  - anchor=en_US_2025_publink1000151521
+  - source_span=2234128:2234356
+  - line_tokens=22
+- queue_id: instruction_join_instructions_form_1040_2025_en_us_2025_publink1000151522_unresolved_document_context
+  kind: instruction_join_review
+  status: deferred
+  priority: medium
+  document_id: instructions_form_1040_2025
+  source_document_id: instructions_form_1040_2025
+  created_date: '2026-07-27'
+  created_by: tax_graph.ingest.instruction_promotion
+  summary: 'Instruction join finding unresolved_document_context for instructions_form_1040_2025:
+    1040 - Main Contents; Instructions for Schedule 1 Additional Income and Adjustments
+    to Income; Student Loan Interest Deduction Worksheet-Schedule 1, Line 21; expected
+    one canary return-document instruction context.'
+  artifact_paths:
+  - .cache/raw/2025/instructions_form_1040_2025.html
+  - graph/2025/citations/instruction-form-1040-html.yaml
+  reason: unresolved_document_context
+  observed: 1040 - Main Contents; Instructions for Schedule 1 Additional Income and
+    Adjustments to Income; Student Loan Interest Deduction Worksheet-Schedule 1, Line
+    21
+  expected: one canary return-document instruction context
+  evidence:
+  - source_document_id=instructions_form_1040_2025
+  - anchor=en_US_2025_publink1000151522
+  - source_span=2234356:2234743
+  - line_tokens=23
+- queue_id: instruction_join_instructions_form_1040_2025_en_us_2025_publink10001940_missing_canonical_address
+  kind: instruction_join_review
+  status: deferred
+  priority: medium
+  document_id: instructions_form_1040_2025
+  source_document_id: instructions_form_1040_2025
+  created_date: '2026-07-27'
+  created_by: tax_graph.ingest.instruction_promotion
+  summary: 'Instruction join finding missing_canonical_address for instructions_form_1040_2025:
+    schedule_3_2025:5; expected at least one terminal canonical address.'
+  artifact_paths:
+  - .cache/raw/2025/instructions_form_1040_2025.html
+  - graph/2025/citations/instruction-form-1040-html.yaml
+  reason: missing_canonical_address
+  observed: schedule_3_2025:5
+  expected: at least one terminal canonical address
+  evidence:
+  - source_document_id=instructions_form_1040_2025
+  - anchor=en_US_2025_publink10001940
+  - source_span=2383233:2385208
+  - line_tokens=5

@@ -4,11 +4,12 @@ import shutil
 import subprocess
 import sys
 from pathlib import Path
+from types import SimpleNamespace
 
 import pytest
 
 from tax_graph.acquire.citation_check import CitationIntegrityReport
-from tax_graph.cli import acquire_command
+from tax_graph.cli import acquire_command, promote_instruction_command
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -57,6 +58,26 @@ def test_cli_run_reports_line_7_value():
 
     assert result.returncode == 0
     assert "form_1040_2025_line_7_capital_gain_loss = 2000" in result.stdout
+
+
+@pytest.mark.m18
+def test_promote_instruction_command_has_reproducible_defaults(tmp_path, monkeypatch, capsys):
+    called = {}
+
+    def fake_promote(root, **kwargs):
+        called["root"] = root
+        called.update(kwargs)
+        return SimpleNamespace(joins=(object(),), findings=(object(),), coverage_before={}, coverage_after={})
+
+    monkeypatch.setattr("tax_graph.ingest.instruction_promotion.promote_instruction_html", fake_promote)
+
+    exit_code = promote_instruction_command(root=tmp_path, year="2025")
+
+    assert exit_code == 0
+    assert called["root"] == tmp_path.resolve()
+    assert called["source_document_id"] == "instructions_form_1040_2025"
+    assert called["html_path"] == tmp_path / ".cache" / "raw" / "2025" / "instructions_form_1040_2025.html"
+    assert "findings persisted: 1" in capsys.readouterr().out
 
 
 @pytest.mark.m3

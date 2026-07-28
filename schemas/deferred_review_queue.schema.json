@@ -34,6 +34,13 @@
           "created_date": {"type": "string"},
           "created_by": {"type": "string"},
           "summary": {"type": "string"},
+          "reason": {"type": "string"},
+          "observed": {"type": "string"},
+          "expected": {"type": "string"},
+          "evidence": {
+            "type": "array",
+            "items": {"type": "string"}
+          },
           "artifact_dir": {"type": "string"},
           "artifact_paths": {
             "type": "array",

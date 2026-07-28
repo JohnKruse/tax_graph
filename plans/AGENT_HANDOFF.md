@@ -14,6 +14,73 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## Current state (2026-07-27)
 
+**Worker session checkpoint - M18-S3b implementation (2026-07-28):** Global canary: Ledger
+Llama. Phase canary: Form 1040. Model: GPT-5 Codex; effort: default; usage/quota/context
+indicators are not exposed. John gave go via the current task request. Single declared step:
+diagnose and fix the Schedule 1-A miner empty-result defect, add the per-document fail-closed
+finding, persist all join findings to the review queue, and add a committed module-form
+regeneration entry point without changing the 82 accepted citation records or any citation id.
+Applicable defect-ledger entries: D4 (hermetic tests), D6 (module-form commands), D8 (promoted
+artifact consumer contracts), D9 (run every changed-content consumer), D10 (empty expected
+documents are findings), D11 (findings must be persisted), and the exact RAN/NOT RUN evidence
+rule. D1-D3, D5, and D7 are not expected unless the workbench surface changes. Focused test
+files will be finalized after the required consumer grep; the expected surfaces are the M18
+miner/promotion tests, citation integrity, graph validation, and all changed promoted-artifact
+consumers.
+
+**M18-S3b pre-write checkpoint (2026-07-28):** Diagnosis confirms Schedule 1-A is not
+swallowed by Schedule 1. The stored HTML has top-level h2 `id509`, followed by part-level
+headings only; it has no line-naming headings under that context, so the line miner correctly
+emits no Schedule 1-A sections. The implementation now exposes recognized top-level contexts,
+adds an `empty_expected_document` finding with the h2 anchor/span evidence, persists every
+join finding as a `deferred` queue record, and adds `promote-instructions` as the committed
+module-form regeneration command. No live artifact has been regenerated yet.
+
+Declared focused files after the D9 consumer grep: `tests/test_instruction_sections_m18.py`,
+`tests/test_instruction_promotion_m18.py`, `tests/test_cli.py`, `tests/test_acquire_citation_check.py`,
+`tests/test_graph_validator.py`, `tests/test_workbench_cells_m17.py`, `tests/test_workbench_m15.py`,
+`tests/test_review_manifest_m15.py`, `tests/test_promote_m10.py`, `tests/test_address_contract_m15r.py`,
+`tests/test_address_registry_m15r.py`, and `tests/test_dependents_m15.py`.
+
+- RAN: `$testRoot = 'C:\Users\devbox\.codex\visualizations\2026\07\28\019fa75b-cfe8-7193-b999-4e12f311ac40\m18_s3b_unit_r1'; New-Item -ItemType Directory -Force -Path $testRoot | Out-Null; $env:PYTEST_DEBUG_TEMPROOT = $testRoot; .venv\Scripts\python.exe -m pytest tests/test_instruction_sections_m18.py tests/test_instruction_promotion_m18.py tests/test_cli.py -m m18 -k 'not real_instruction_findings' -q` -> 7 passed, 5 deselected in 1.78s; one known pytest cache ACL warning.
+- NOT RUN: the combined declared consumer command timed out at 600.2s after 53 dots, before pytest emitted a result; it is unverified as an aggregate and is being split by surface below.
+- RAN: `$testRoot = 'C:\Users\devbox\.codex\visualizations\2026\07\28\019fa75b-cfe8-7193-b999-4e12f311ac40\m18_s3b_m15_r1'; New-Item -ItemType Directory -Force -Path $testRoot | Out-Null; $env:PYTEST_DEBUG_TEMPROOT = $testRoot; .venv\Scripts\python.exe -m pytest tests/test_workbench_m15.py -q` -> 4 passed in 0.33s; one known pytest cache ACL warning.
+- NOT RUN: `.venv\Scripts\python.exe -m pytest tests/test_review_manifest_m15.py -q` -> timed out at 600.2s after 6 dots with no pytest result; this declared file remains UNVERIFIED.
+- RAN: `$testRoot = 'C:\Users\devbox\.codex\visualizations\2026\07\28\019fa75b-cfe8-7193-b999-4e12f311ac40\m18_s3b_remaining_r1'; New-Item -ItemType Directory -Force -Path $testRoot | Out-Null; $env:PYTEST_DEBUG_TEMPROOT = $testRoot; .venv\Scripts\python.exe -m pytest tests/test_promote_m10.py tests/test_address_contract_m15r.py tests/test_address_registry_m15r.py tests/test_dependents_m15.py -q` -> 26 passed in 32.49s; one known pytest cache ACL warning.
+- RAN: `$testRoot = 'C:\Users\devbox\.codex\visualizations\2026\07\28\019fa75b-cfe8-7193-b999-4e12f311ac40\m18_s3b_m18_r2'; New-Item -ItemType Directory -Force -Path $testRoot | Out-Null; $env:PYTEST_DEBUG_TEMPROOT = $testRoot; .venv\Scripts\python.exe -m pytest tests/test_instruction_sections_m18.py tests/test_instruction_promotion_m18.py tests/test_cli.py -q` -> 12 passed in 20.21s; one known pytest cache ACL warning.
+- RAN: `$testRoot = 'C:\Users\devbox\.codex\visualizations\2026\07\28\019fa75b-cfe8-7193-b999-4e12f311ac40\m18_s3b_projection_r1'; New-Item -ItemType Directory -Force -Path $testRoot | Out-Null; $env:PYTEST_DEBUG_TEMPROOT = $testRoot; .venv\Scripts\python.exe -m pytest tests/test_acquire_citation_check.py tests/test_graph_validator.py tests/test_workbench_cells_m17.py -q` -> 32 passed in 142.02s; one known pytest cache ACL warning.
+
+**M18-S3b artifact checkpoint (2026-07-28):** The committed regeneration command was run
+after the pre-write checkpoint and reported 82 joins and 62 findings. The queue now contains
+all 62 records (57 `unresolved_document_context`, 4 `missing_canonical_address`, and 1
+`empty_expected_document`) with the Schedule 1-A `id509` evidence. The queue writer preserves
+existing entry order; no accepted citation id or address binding changed.
+
+- RAN: `.venv\Scripts\python.exe -m tax_graph.cli promote-instructions --year 2025` -> exit 0; 82 promoted instruction sections, 62 findings persisted, coverage before/after unchanged at address counts `form_1040_2025=58`, `schedule_1_2025=12`, `schedule_1a_2025=0`, `schedule_2_2025=16`, `schedule_3_2025=15`.
+- RAN: `$testRoot = 'C:\Users\devbox\.codex\visualizations\2026\07\28\019fa75b-cfe8-7193-b999-4e12f311ac40\m18_s3b_postartifact_r1'; New-Item -ItemType Directory -Force -Path $testRoot | Out-Null; $env:PYTEST_DEBUG_TEMPROOT = $testRoot; .venv\Scripts\python.exe -m pytest tests/test_instruction_promotion_m18.py tests/test_workbench_m15.py -q` -> 9 passed in 2.38s; one known pytest cache ACL warning.
+
+**M18-S3b final-gates checkpoint (2026-07-28):** The machine gates are green. The accepted
+82 citations remain free of new integrity mismatches, the graph remains valid, the queue
+findings do not enter the active workbench because they are explicitly deferred, and the
+legacy preflight ratchet remains `legacy_mined=394` with 3,243 units.
+
+- RAN: `.venv\Scripts\python.exe tools/check_ascii.py` -> `ASCII check OK`.
+- RAN: `git diff --check` -> exit 0.
+- RAN: `.venv\Scripts\python.exe -m tax_graph.cli validate 2025` -> exit 0; graph integrity OK, 18 documents, 401 citations.
+- RAN: `.venv\Scripts\python.exe -c "from tax_graph.acquire.citation_check import check_graph_citations; r=check_graph_citations(year='2025', raw_store='.cache/raw', root='.'); ids={'cite_instruction_form_1040_2025_en_us_2025_publink1000106118','cite_instruction_form_1040_2025_en_us_2025_publink1000158384','cite_instruction_form_1040_2025_en_us_2025_publink1000158425','cite_instruction_form_1040_2025_en_us_2025_publink100024811vd0e49351'}; new=[m for m in r.mismatches if m.citation_id in ids]; print(f'checked={r.checked} mismatches={len(r.mismatches)} new_s3b_mismatches={len(new)}')"` -> `checked=401 mismatches=36 new_s3b_mismatches=0`.
+- RAN: `.venv\Scripts\python.exe -m workbench.cli --year 2025 preflight` -> passed; 35 entries, 3,243 units, 1,921 field controls, `legacy_mined=394`.
+- RAN: `$testRoot = 'C:\Users\devbox\.codex\visualizations\2026\07\28\019fa75b-cfe8-7193-b999-4e12f311ac40\m18_s3b_final_fast_r1'; New-Item -ItemType Directory -Force -Path $testRoot | Out-Null; $env:PYTEST_DEBUG_TEMPROOT = $testRoot; .venv\Scripts\python.exe -m pytest tests/test_instruction_promotion_m18.py tests/test_cli.py -q; .venv\Scripts\python.exe tools/check_ascii.py; git diff --check` -> 10 passed in 21.24s; `ASCII check OK`; diff-check exit 0; one known pytest cache ACL warning.
+
+**M18-S3b implementation and verification are complete (2026-07-28):** The miner now exposes
+top-level instruction contexts even when they have no line headings; Schedule 1-A therefore
+fails closed with a recorded `id509` empty-result finding instead of disappearing. The
+promotion path persists all 62 findings in the deferred review queue, preserves the accepted
+82 citation records and ids, and is reproducible through the module-form
+`promote-instructions` command. No graph semantics, verdicts, geometry, or human-review claim
+changed. One declared test file remains unverified: `tests/test_review_manifest_m15.py` timed
+out at the 600-second cap after six dots; it is recorded above rather than claimed green. The
+step is committed locally; no push was made.
+
 **Worker session checkpoint - M18-S3 implementation (2026-07-27):** Global canary: Ledger
 Llama. Phase canary: Form 1040. Model: GPT-5 Codex; effort: default; usage/quota/context
 indicators are not exposed. John gave go via the current task request. Single declared step:

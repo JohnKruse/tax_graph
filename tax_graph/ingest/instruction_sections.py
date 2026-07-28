@@ -12,6 +12,14 @@ from tax_graph.acquire.instruction_html import InstructionHeading, line_sections
 
 
 @dataclass(frozen=True)
+class InstructionDocumentContext:
+    """A top-level acquired instruction context that maps to a return document."""
+
+    document_id: str
+    heading: InstructionHeading
+
+
+@dataclass(frozen=True)
 class InstructionBlock:
     """One typed body block with a span into the acquired HTML source."""
 
@@ -33,6 +41,27 @@ class MinedInstructionSection:
     source_start: int
     source_end: int
     blocks: tuple[InstructionBlock, ...]
+
+
+def instruction_document_contexts(
+    html_text: str,
+    *,
+    year: str | int = "2025",
+) -> tuple[InstructionDocumentContext, ...]:
+    """Return recognized top-level instruction contexts in source order.
+
+    A context can exist without any line-naming headings below it.  Keeping the
+    context inventory separate from mined line sections lets the join report an
+    empty expected document instead of silently treating it as absent.
+    """
+    contexts: list[InstructionDocumentContext] = []
+    for heading in parse_headings(html_text):
+        if heading.level != 2:
+            continue
+        document_id = _context_document_id(heading.text, year=year)
+        if document_id is not None:
+            contexts.append(InstructionDocumentContext(document_id, heading))
+    return tuple(contexts)
 
 
 def mine_instruction_html(html_text: str, *, document_id: str) -> tuple[MinedInstructionSection, ...]:
@@ -66,6 +95,23 @@ def mine_instruction_html_file(path: str | Path, *, document_id: str) -> tuple[M
     """Read one acquired HTML file and mine it without contacting the source URL."""
     source_path = Path(path)
     return mine_instruction_html(source_path.read_text(encoding="ascii"), document_id=document_id)
+
+
+def _context_document_id(text: str, *, year: str | int) -> str | None:
+    """Map a recognized top-level instruction heading to its target document."""
+    lowered = text.lower()
+    year_token = str(year)
+    if "line instructions for forms 1040" in lowered:
+        return f"form_1040_{year_token}"
+    if lowered.startswith("instructions for schedule 1-a"):
+        return f"schedule_1a_{year_token}"
+    if lowered.startswith("instructions for schedule 1 additional"):
+        return f"schedule_1_{year_token}"
+    if lowered.startswith("instructions for schedule 2 additional"):
+        return f"schedule_2_{year_token}"
+    if lowered.startswith("instructions for schedule 3 additional"):
+        return f"schedule_3_{year_token}"
+    return None
 
 
 def _next_heading_start(

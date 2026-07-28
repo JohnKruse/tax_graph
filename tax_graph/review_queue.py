@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Any
+from typing import Any, Iterable
 
 import yaml
 
@@ -15,18 +15,35 @@ def upsert_deferred_review_entry(
     entry: dict[str, Any],
 ) -> Path:
     """Insert or replace one deferred-review entry by ``queue_id``."""
+    return upsert_deferred_review_entries(root=root, year=year, entries=(entry,))
+
+
+def upsert_deferred_review_entries(
+    *,
+    root: str | Path,
+    year: str | int,
+    entries: Iterable[dict[str, Any]],
+) -> Path:
+    """Insert or replace multiple deferred-review entries in one write."""
+    new_entries = tuple(dict(entry) for entry in entries)
     root_path = Path(root).resolve()
     queue_path = root_path / "review_queue" / str(year) / "deferred_review.yaml"
     payload = _load_yaml(queue_path)
     if not isinstance(payload, dict):
         payload = {}
-    entries = payload.get("entries")
-    if not isinstance(entries, list):
-        entries = []
-    queue_id = str(entry["queue_id"])
-    updated = [item for item in entries if isinstance(item, dict) and str(item.get("queue_id")) != queue_id]
-    updated.append(dict(entry))
-    updated.sort(key=lambda item: str(item.get("queue_id") or ""))
+    existing_entries = payload.get("entries")
+    if not isinstance(existing_entries, list):
+        existing_entries = []
+    updated = [item for item in existing_entries if isinstance(item, dict)]
+    for entry in new_entries:
+        queue_id = str(entry["queue_id"])
+        replacement = dict(entry)
+        for index, item in enumerate(updated):
+            if str(item.get("queue_id")) == queue_id:
+                updated[index] = replacement
+                break
+        else:
+            updated.append(replacement)
     _write_yaml(
         queue_path,
         {
