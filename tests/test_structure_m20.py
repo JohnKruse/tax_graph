@@ -42,6 +42,7 @@ def test_schedule_a_structure_is_geometry_derived_and_line_16_is_anchored():
 
     outline = build_outline_tree(document)
     nodes = _flatten(outline.children)
+    assert any(item.get("anchor") == "5d" for item in document.fields["line_anchors"])
     line_16 = [node for node in nodes if node.line_anchor == "16"]
     assert len(line_16) == 1
     assert "Other-from list in instructions. List type and amount:" in line_16[0].label
@@ -56,6 +57,7 @@ def test_form_1040_structure_uses_left_defining_token_for_1z():
     document = _document_or_skip("form_1040_2025")
     outline = build_outline_tree(document)
     nodes = _flatten(outline.children)
+    assert any(item.get("anchor") == "1z" for item in document.fields["line_anchors"])
     line_1z = [node for node in nodes if node.line_anchor == "1z"]
     assert len(line_1z) == 1
     assert line_1z[0].label.startswith("z Add lines 1a through 1h")
@@ -63,6 +65,35 @@ def test_form_1040_structure_uses_left_defining_token_for_1z():
     span = _span_for_line(document, line_1z[0], build_candidate_spans(document))
     assert span is not None
     assert "Add lines 1a through 1h 1z" in span.text
+
+
+@pytest.mark.m20
+def test_geometry_anchor_identity_rejects_references_and_splits_sibling_columns():
+    schedule_a = _document_or_skip("schedule_a_2025")
+    schedule_a_model = build_structure_model(schedule_a)
+    assert schedule_a_model is not None
+    line_5d = [row for row in schedule_a_model.rows if "Add lines 5a through 5c" in row.text]
+    assert [row.line_anchor for row in line_5d] == ["5d"]
+    assert not any(row.line_anchor == "5a" for row in line_5d)
+
+    form_1040 = _document_or_skip("form_1040_2025")
+    form_1040_model = build_structure_model(form_1040)
+    assert form_1040_model is not None
+    line_1z = [row for row in form_1040_model.rows if "Add lines 1a through 1h" in row.text]
+    assert [row.line_anchor for row in line_1z] == ["1z"]
+    left_column = [row for row in form_1040_model.rows if "IRA distributions" in row.text]
+    right_column = [row for row in form_1040_model.rows if "Taxable amount 4b" in row.text]
+    assert [row.line_anchor for row in left_column] == ["4a"]
+    assert [row.line_anchor for row in right_column] == ["4b"]
+    assert any(row.text.startswith("Dependents") and row.line_anchor is None for row in form_1040_model.rows)
+
+    schedule_1a = _document_or_skip("schedule_1a_2025")
+    schedule_1a_model = build_structure_model(schedule_1a)
+    assert schedule_1a_model is not None
+    line_14c = [row for row in schedule_1a_model.rows if "Add lines 14a and 14b" in row.text]
+    assert [row.line_anchor for row in line_14c] == ["14c"]
+    line_36a = [row for row in schedule_1a_model.rows if row.text.startswith("36 a If you have")]
+    assert [row.line_anchor for row in line_36a] == ["36a"]
 
 
 @pytest.mark.m20

@@ -311,20 +311,24 @@ def _build_geometry_outline(document: SourceDocumentInput, structure) -> Outline
 
 
 def _merge_structure_anchor_index(document: SourceDocumentInput, records: list[dict[str, Any]] | tuple[dict[str, Any], ...]) -> None:
-    """Make geometry-discovered anchors available to the positional resolver."""
+    """Replace legacy anchors with the current geometry-derived index in memory.
+
+    The old renderer's index can contain a same-anchor entry at the wrong visual
+    row. Appending geometry records leaves that stale entry first, so positional
+    span resolution still cites the old location. Geometry is the S3b proposal
+    for acquired PDFs; this replacement is in memory only and never rewrites the
+    acquired field grid.
+    """
     if document.fields is None:
         document.fields = {}
-    existing = document.fields.setdefault("line_anchors", [])
-    seen = {
-        (str(item.get("anchor", "")).lower(), item.get("page"), item.get("text_offset"))
-        for item in existing
-        if isinstance(item, dict)
-    }
+    existing: list[dict[str, Any]] = []
+    seen: set[tuple[str, Any, Any]] = set()
     for record in records:
         key = (str(record.get("anchor", "")).lower(), record.get("page"), record.get("text_offset"))
         if key not in seen:
-            existing.append(record)
+            existing.append(dict(record))
             seen.add(key)
+    document.fields["line_anchors"] = existing
 
 
 def build_candidate_spans(document: SourceDocumentInput) -> list[CandidateSpan]:

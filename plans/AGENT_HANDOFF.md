@@ -14,6 +14,49 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## Current state (2026-07-27)
 
+**Worker session checkpoint - M20-S3b-2 implementation (2026-07-28):** Global canary: Ledger
+Llama. Phase canary: Ground Truth. Model: GPT-5 Codex; effort: default; usage/quota/context
+indicators are not exposed. John gave go via the current task request. Single declared step:
+repair geometry-derived anchor identity, including reference-token rejection, two-column row
+splitting, and header exclusion; add the focused corpus cross-checks; then run the declared
+tests and non-promoting gates before one local commit. Applicable defect-ledger entries: D6,
+D9, D13, D14, and the exact RAN/NOT RUN evidence rule. D1-D5, D7-D8, D10-D12 are not
+expected unless the implementation unexpectedly crosses those surfaces. No S3a regeneration,
+promotion, citation hand edits, graph changes, or verdict changes are in scope.
+
+**M20-S3b-2 pre-write checkpoint (2026-07-28):** The prior S3b geometry layer is being
+corrected from the Architect's independent 13-of-112 anchor identity finding. No new test or
+generation evidence is claimed yet.
+
+**M20-S3b-2 consumer checkpoint (2026-07-28):** Geometry anchor selection now rejects line
+references after `line(s)`/`through`, uses the right-edge printed token for row identity,
+splits only same-base sibling columns such as `4a`/`4b`, qualifies wrapped suffix rows from
+the preceding numeric base, and excludes intake numeric answers and form headers. The outline
+consumer now replaces the legacy line-anchor index in memory so stale same-anchor entries cannot
+win positional span resolution. Acquired artifacts remain unchanged.
+
+- RAN: `$testRoot = 'C:\\Users\\devbox\\.codex\\visualizations\\2026\\07\\28\\019faa66-6108-76c3-9112-bb3b0b835edf\\m20_s3b2_consumer_fix'; New-Item -ItemType Directory -Force -Path $testRoot | Out-Null; $env:PYTEST_DEBUG_TEMPROOT = $testRoot; .venv\\Scripts\\python.exe -m pytest tests/test_structure_m20.py tests/test_outline_span_resolution_m20.py tests/test_render_form.py tests/test_extract_outline_m4.py tests/test_extract_m16.py tests/test_schedule_d_extraction_m9.py tests/test_tables_detector_m6b.py tests/test_nversion_m8.py -q` -> 38 passed, 1 skipped in 12.28s; one known pytest cache ACL warning.
+- RAN: `$testRoot = 'C:\\Users\\devbox\\.codex\\visualizations\\2026\\07\\28\\019faa66-6108-76c3-9112-bb3b0b835edf\\m20_s3b2_marker2'; New-Item -ItemType Directory -Force -Path $testRoot | Out-Null; $env:PYTEST_DEBUG_TEMPROOT = $testRoot; .venv\\Scripts\\python.exe -m pytest -m m20 -q` -> 22 passed, 564 deselected in 7.50s; one known pytest cache ACL warning.
+
+**M20-S3b-2 preflight checkpoint (2026-07-28):** Declared focused tests, the M20 marker,
+ASCII, diff, and graph validation are green. The real workbench preflight is the remaining
+expensive gate; no draft generation or promotion will be run by this slice.
+
+- RAN: `$testRoot = 'C:\\Users\\devbox\\.codex\\visualizations\\2026\\07\\28\\019faa66-6108-76c3-9112-bb3b0b835edf\\m20_s3b2_preflight'; New-Item -ItemType Directory -Force -Path $testRoot | Out-Null; $env:PYTEST_DEBUG_TEMPROOT = $testRoot; .venv\\Scripts\\python.exe -m workbench.cli --year 2025 preflight` -> exit 1 after 192.5s; fail-closed review projection reports required current review citations/nodes resolving to zero source objects, matching the pre-existing S3a queue reconciliation blocker. No artifacts were generated or promoted.
+
+**M20-S3b-2 implementation complete for this slice (2026-07-28):** The structure proposal
+now keeps complete row text while deriving anchors from geometry, rejects references and form
+headers, splits real same-base sibling columns, and qualifies wrapped suffixes. The outline
+consumer uses only the in-memory geometry index for acquired PDFs. No generated draft, raw
+cache, promoted artifact, citation record, graph semantic, or verdict changed. The preflight
+failure remains assigned to S3a queue reconciliation; S3a regeneration stays blocked until
+the independent anchor identity review is accepted.
+
+- RAN: `.venv\\Scripts\\python.exe tools/check_ascii.py` -> `ASCII check OK`.
+- RAN: `git diff --check` -> exit 0.
+- RAN: `.venv\\Scripts\\python.exe -m tax_graph.cli validate 2025` -> exit 0; graph integrity OK; 18 documents, 441 nodes, 2 tables, 409 edges, 401 citations.
+- NOT RUN: none of the declared focused files.
+
 **Worker session checkpoint - M20-S3b implementation (2026-07-28):** Global canary: Ledger
 Llama. Phase canary: Ground Truth. Model: GPT-5 Codex; effort: default; usage/quota/context
 indicators are not exposed. John gave go via the current task request. Single declared step:

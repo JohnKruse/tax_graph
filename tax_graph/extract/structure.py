@@ -20,6 +20,7 @@ from tax_graph.extract.models import SourceDocumentInput
 _LINE_TOKEN_RE = re.compile(r"^(?:[1-9][0-9]?[a-z]?|[a-z])$", re.IGNORECASE)
 _FULL_LINE_RE = re.compile(r"^[1-9][0-9]?[a-z]$", re.IGNORECASE)
 _REJECTED_PRECEDERS = {"box", "boxes", "code", "codes", "option", "options", "page"}
+_REFERENCE_PRECEDERS = _REJECTED_PRECEDERS | {"line", "lines", "through"}
 _HEADER_PHRASES = (
     "complete this part",
     "instructions for",
@@ -126,7 +127,14 @@ def build_structure_model(document: SourceDocumentInput) -> StructureModel | Non
         for page_number, page in enumerate(pdf, 1):
             page_words = page.get_text("words")
             page_text = text_pages[page_number - 1] if page_number <= len(text_pages) else ""
-            page_rows = _page_rows(page_words, page_number=page_number, page_text=page_text, text_cursor=text_cursor)
+            page_rows = _page_rows(
+                page_words,
+                page_number=page_number,
+                page_text=page_text,
+                text_cursor=text_cursor,
+                page_width=float(page.rect.width),
+                allow_line_anchors=bool((document.fields or {}).get("line_anchors")),
+            )
             rows.extend(page_rows)
             text_cursor += len(page_text) + (1 if page_text else 0)
             for row in page_rows:
@@ -185,9 +193,12 @@ def _page_rows(
     page_number: int,
     page_text: str,
     text_cursor: int,
+    page_width: float = 612.0,
+    allow_line_anchors: bool = True,
 ) -> list[StructureRow]:
     rows: list[StructureRow] = []
     cursor = 0
+    prior_anchor: str | None = None
     for word_row in _group_words_by_y(words):
         sorted_words = sorted(word_row, key=lambda word: word[0])
         rendered = _rendered_row_strings(sorted_words)
@@ -197,63 +208,203 @@ def _page_rows(
         if not content or _is_dot_leader(content):
             cursor += sum(len(item) + 1 for item in rendered)
             continue
-        x0 = min(float(word[0]) for word in sorted_words)
-        y0 = min(float(word[1]) for word in sorted_words)
-        x1 = max(float(word[2]) for word in sorted_words)
-        y1 = max(float(word[3]) for word in sorted_words)
-        offset = page_text.find(content, cursor)
-        if offset < 0:
-            offset = cursor
-        candidates = _anchor_candidates(sorted_words)
-        anchor = _defining_anchor(candidates, content)
-        rows.append(
-            StructureRow(
-                page=page_number,
-                text=content,
-                x0=round(x0, 2),
-                y0=round(y0, 2),
-                x1=round(x1, 2),
-                y1=round(y1, 2),
-                text_offset=text_cursor + offset,
-                line_anchor=anchor,
-            )
+        row_offset = page_text.find(content, cursor)
+        if row_offset < 0:
+            row_offset = cursor
+        groups = (
+            _row_anchor_groups(sorted_words, page_width=page_width, prior_anchor=prior_anchor)
+            if allow_line_anchors
+            else []
         )
-        cursor = offset + sum(len(item) + 1 for item in rendered)
+        if not groups:
+            rows.append(
+                _make_structure_row(
+                    sorted_words,
+                    page=page_number,
+                    page_text=page_text,
+                    text_cursor=text_cursor,
+                    search_from=row_offset,
+                    anchor=None,
+                )
+            )
+        else:
+            search_from = row_offset
+            for group_words, anchor in groups:
+                rows.append(
+                    _make_structure_row(
+                        group_words,
+                        page=page_number,
+                        page_text=page_text,
+                        text_cursor=text_cursor,
+                        search_from=search_from,
+                        anchor=anchor,
+                    )
+                )
+                group_text = _rendered_row_strings(group_words)[0]
+                group_offset = page_text.find(group_text, search_from)
+                if group_offset >= 0:
+                    search_from = group_offset + len(group_text)
+                prior_anchor = anchor
+        cursor = row_offset + sum(len(item) + 1 for item in rendered)
+        if groups:
+            prior_anchor = groups[-1][1]
     return rows
 
 
 def _anchor_candidates(words: list[tuple[Any, ...]]) -> list[tuple[str, float]]:
-    candidates: list[tuple[str, float]] = []
-    tokens = [normalize_punctuation(str(word[4]).strip()) for word in words]
-    # The first visual tokens are the row's left label. Later numeric tokens
-    # are commonly references inside a caption (for example 1a and 1h in the
-    # 1z caption) or ordinary prose such as "6 months". The full row geometry
-    # remains available for caption association; only this bounded prefix is
-    # eligible to mint a defining line anchor.
-    for index, token in enumerate(tokens[:4]):
-        if not _LINE_TOKEN_RE.fullmatch(token):
-            continue
-        if token.isalpha() and token.lower() != "z":
-            continue
-        if index and tokens[index - 1].lower().rstrip(":") in _REJECTED_PRECEDERS:
-            continue
-        row = " ".join(tokens).lower()
-        if any(phrase in row for phrase in _HEADER_PHRASES):
-            continue
-        candidates.append((token.lower(), float(words[index][0])))
-    return candidates
+    return [(item["anchor"], item["x0"]) for item in _anchor_token_candidates(words)]
 
 
 def _defining_anchor(candidates: list[tuple[str, float]], row_text: str) -> str | None:
     if not candidates:
         return None
-    raw_anchor = min(candidates, key=lambda item: item[1])[0]
-    if len(raw_anchor) == 1 and raw_anchor.isalpha():
-        matches = re.findall(r"\b([0-9]+[a-z])\b", row_text.lower())
-        matching = [match for match in matches if match.endswith(raw_anchor)]
-        if matching:
-            return matching[-1]
-    return raw_anchor
+    return max(candidates, key=lambda item: item[1])[0]
+
+
+def _anchor_token_candidates(words: list[tuple[Any, ...]]) -> list[dict[str, Any]]:
+    """Return line-like tokens after removing caption references and headers.
+
+    A line reference in prose is not a row identity. In particular, the token
+    after ``Add lines`` must not beat the printed row reference at the far
+    right. The returned positions let the row splitter distinguish genuine
+    side-by-side columns from those references.
+    """
+    tokens = [normalize_punctuation(str(word[4]).strip()) for word in words]
+    row = " ".join(tokens).strip().lower()
+    if _is_header_text(row):
+        return []
+    candidates: list[dict[str, Any]] = []
+    for index, token in enumerate(tokens):
+        if not _LINE_TOKEN_RE.fullmatch(token):
+            continue
+        lowered = token.lower()
+        if token.isalpha() and lowered != "z":
+            continue
+        previous = tokens[index - 1].lower().rstrip(":") if index else ""
+        if previous in _REFERENCE_PRECEDERS:
+            continue
+        anchor = lowered
+        if token.isdigit() and index + 1 < len(tokens):
+            suffix = tokens[index + 1].lower()
+            gap = float(words[index + 1][0]) - float(words[index][2])
+            if len(suffix) == 1 and suffix.isalpha() and gap <= 18:
+                anchor = f"{anchor}{suffix}"
+        candidates.append(
+            {
+                "anchor": anchor,
+                "index": index,
+                "x0": float(words[index][0]),
+                "x1": float(words[index][2]),
+            }
+        )
+    return candidates
+
+
+def _row_anchor_groups(
+    words: list[tuple[Any, ...]],
+    *,
+    page_width: float,
+    prior_anchor: str | None,
+) -> list[tuple[list[tuple[Any, ...]], str]]:
+    """Return one or two geometry-backed row groups with canonical anchors.
+
+    The right half is authoritative when a row has a printed right-edge
+    reference. Two groups are emitted only for sibling suffixes sharing a
+    numeric base, such as 4a and 4b. This prevents prose references like
+    ``1a or 1d`` from becoming a second row while preserving real two-column
+    form rows.
+    """
+    candidates = _anchor_token_candidates(words)
+    if not candidates:
+        return []
+    boundary = page_width / 2
+    row_text = " ".join(normalize_punctuation(str(word[4]).strip()) for word in words).lower()
+    if "check if" in row_text and not any(item["x0"] >= page_width * 0.75 for item in candidates):
+        return []
+    left_candidates = [item for item in candidates if item["x0"] < boundary * 0.42]
+    right_candidates = [item for item in candidates if item["x0"] >= boundary]
+    left = _canonical_candidate(left_candidates[0] if left_candidates else None, prior_anchor)
+    right = _canonical_candidate(right_candidates[-1] if right_candidates else None, prior_anchor)
+
+    if left and right and left != right and _same_numeric_base(left, right):
+        split = [word for word in words if float(word[0]) < boundary]
+        remainder = [word for word in words if float(word[0]) >= boundary]
+        if split and remainder:
+            return [(split, left), (remainder, right)]
+    if right:
+        return [(words, right)]
+    if left:
+        return [(words, left)]
+
+    # A wrapped suffix row can carry only ``z``/``e`` at its left edge. Qualify
+    # it with the numeric base of the preceding visual row instead of minting
+    # a bare letter address.
+    suffix = _canonical_candidate(candidates[0], prior_anchor)
+    return [(words, suffix)] if suffix else []
+
+
+def _canonical_candidate(candidate: dict[str, Any] | None, prior_anchor: str | None) -> str | None:
+    if candidate is None:
+        return None
+    anchor = str(candidate["anchor"]).lower()
+    if anchor.isalpha() and prior_anchor:
+        base = "".join(char for char in prior_anchor if char.isdigit())
+        if base:
+            return f"{base}{anchor}"
+    return anchor
+
+
+def _same_numeric_base(left: str, right: str) -> bool:
+    left_base = "".join(char for char in left if char.isdigit())
+    right_base = "".join(char for char in right if char.isdigit())
+    return bool(left_base and left_base == right_base and left != right)
+
+
+def _is_header_text(row: str) -> bool:
+    lowered = row.strip().lower()
+    if not lowered:
+        return True
+    if lowered.startswith(
+        (
+            "schedule ",
+            "part ",
+            "section ",
+            "dependents",
+            "for the year",
+            "go to www",
+            "file with",
+        )
+    ):
+        return True
+    if "dependent 1" in lowered and "dependent 2" in lowered:
+        return True
+    return any(phrase in lowered for phrase in _HEADER_PHRASES)
+
+
+def _make_structure_row(
+    words: list[tuple[Any, ...]],
+    *,
+    page: int,
+    page_text: str,
+    text_cursor: int,
+    search_from: int,
+    anchor: str | None,
+) -> StructureRow:
+    rendered = _rendered_row_strings(words)
+    content = rendered[0] if rendered else ""
+    offset = page_text.find(content, search_from) if content else -1
+    if offset < 0:
+        offset = search_from
+    return StructureRow(
+        page=page,
+        text=content,
+        x0=round(min(float(word[0]) for word in words), 2),
+        y0=round(min(float(word[1]) for word in words), 2),
+        x1=round(max(float(word[2]) for word in words), 2),
+        y1=round(max(float(word[3]) for word in words), 2),
+        text_offset=text_cursor + offset,
+        line_anchor=anchor,
+    )
 
 
 def _nearest_row(field: dict[str, Any], rows: list[StructureRow]) -> StructureRow | None:
