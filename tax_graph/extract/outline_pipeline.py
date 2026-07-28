@@ -25,6 +25,10 @@ from tax_graph.extract.outline import (
 from tax_graph.extract.tables import assemble_table_subunits
 
 
+class SpanResolutionError(ValueError):
+    """Raised when a printed line cannot be anchored to source evidence."""
+
+
 def generate_outline_first_drafts(
     document: SourceDocumentInput,
     *,
@@ -41,7 +45,12 @@ def generate_outline_first_drafts(
 
     objects: list[DraftObject] = []
     for outline_node in _formula_outline_nodes(outline.children):
-        node_spans = _spans_for_outline_node(outline_node, spans, document_id=document.document_id)
+        node_spans = _spans_for_outline_node(
+            document,
+            outline_node,
+            spans,
+            document_id=document.document_id,
+        )
         plan = _deterministic_schedule_d_formula_plan(document, outline_node, node_spans)
         formula_model = str(model)
         if plan is None:
@@ -124,6 +133,7 @@ def _deterministic_schedule_d_formula_plan(
 
 
 def _spans_for_outline_node(
+    document: SourceDocumentInput,
     node: OutlineNode,
     spans: list[CandidateSpan],
     *,
@@ -132,12 +142,12 @@ def _spans_for_outline_node(
     """Select a small evidence packet for one micro-extraction prompt."""
     selected: list[CandidateSpan] = []
     if node.line_anchor:
-        line_prefix = f"- {node.line_anchor}:"
         line_phrase = f"line {node.line_anchor}"
         instruction_hits: list[CandidateSpan] = []
+        source_span = _span_for_line(document, node, spans)
         for span in spans:
             lowered = span.text.lower()
-            if span.relationship == "source" and span.text.startswith(line_prefix):
+            if span is source_span:
                 selected.append(span)
             elif line_phrase in lowered and _direct_line_evidence(span.text, node.line_anchor):
                 instruction_hits.append(span)
@@ -190,7 +200,7 @@ def _line_cue_objects(
 ) -> list[DraftObject]:
     objects: list[DraftObject] = []
     for node in _line_cue_nodes(nodes):
-        span = _span_for_line(node, spans)
+        span = _span_for_line(document, node, spans)
         citation_refs: list[str] = []
         source_span = ""
         if span:
@@ -240,7 +250,7 @@ def _simple_line_objects(
             continue
         if _skip_simple_line(node):
             continue
-        span = _span_for_line(node, spans)
+        span = _span_for_line(document, node, spans)
         citation_refs: list[str] = []
         source_span = ""
         if span:
@@ -287,7 +297,7 @@ def _write_in_amount_nodes(
     for node in flattened:
         if not _is_write_in_amount_line(node, flattened):
             continue
-        span = _span_for_line(node, spans)
+        span = _span_for_line(document, node, spans)
         citation_refs: list[str] = []
         source_span = ""
         if span:
@@ -379,7 +389,7 @@ def _outline_structure_objects(
     for node in _flatten_nodes(nodes):
         if node.kind not in {"section", "heading"}:
             continue
-        span = _span_for_line(node, spans) if node.line_anchor else None
+        span = _span_for_line(document, node, spans) if node.line_anchor else None
         citation_refs: list[str] = []
         source_span = ""
         if span:
@@ -695,14 +705,78 @@ def _addressable_anchor(anchor: str) -> bool:
     return any(ch.isdigit() for ch in anchor)
 
 
-def _span_for_line(node: OutlineNode, spans: list[CandidateSpan]) -> CandidateSpan | None:
+def _span_for_line(
+    document: SourceDocumentInput,
+    node: OutlineNode,
+    spans: list[CandidateSpan],
+) -> CandidateSpan | None:
+    """Resolve a line node through the rendered line-anchor index.
+
+    The text layer is complete and intentionally has no synthetic line prefix.
+    ``line_anchors`` is therefore the positional authority: its offset identifies
+    the source-text line whose generated candidate span is the evidence packet.
+    Missing or malformed index entries fail closed instead of returning an empty
+    outline that looks like a successful extraction.
+    """
     if not node.line_anchor:
         return None
-    prefixes = {f"- {anchor}:" for anchor in _line_anchor_variants(node.line_anchor)}
+    index = (document.fields or {}).get("line_anchors")
+    if not isinstance(index, list):
+        raise SpanResolutionError(
+            f"{document.document_id}: line anchor index missing for line {node.line_anchor}"
+        )
+
+    normalized_anchor = node.line_anchor.lower()
+    variants = _line_anchor_variants(node.line_anchor)
+    exact_entries = [
+        entry
+        for entry in index
+        if isinstance(entry, dict) and str(entry.get("anchor", "")).lower() == normalized_anchor
+    ]
+    matching_entries = exact_entries or [
+        entry
+        for entry in index
+        if isinstance(entry, dict) and str(entry.get("anchor", "")).lower() in variants
+    ]
+    if not matching_entries:
+        raise SpanResolutionError(
+            f"{document.document_id}: line anchor {node.line_anchor} absent from line anchor index"
+        )
+
+    source_line_numbers = {
+        _line_number_at_offset(document.text, entry.get("text_offset"))
+        for entry in matching_entries
+        if _valid_text_offset(document.text, entry.get("text_offset"))
+    }
     for span in spans:
-        if span.relationship == "source" and any(span.text.startswith(prefix) for prefix in prefixes):
+        if span.relationship != "source" or span.document_id != document.document_id:
+            continue
+        line_number = _locator_line_number(span.locator)
+        if line_number in source_line_numbers:
             return span
-    return None
+
+    raise SpanResolutionError(
+        f"{document.document_id}: line anchor {node.line_anchor} index entry resolves to no source span"
+    )
+
+
+def _valid_text_offset(text: str, value: Any) -> bool:
+    return isinstance(value, int) and 0 <= value < len(text)
+
+
+def _line_number_at_offset(text: str, offset: int) -> int:
+    prefix = text[:offset]
+    line_number = len(prefix.splitlines())
+    if not prefix or prefix[-1] in "\n\r\v\f\x1c\x1d\x1e\x85\u2028\u2029":
+        line_number += 1
+    return line_number
+
+
+def _locator_line_number(locator: str) -> int | None:
+    import re
+
+    match = re.search(r"\bline\s+(\d+)\b", locator.lower())
+    return int(match.group(1)) if match else None
 
 
 def _micro_model(settings: dict[str, Any]) -> str:

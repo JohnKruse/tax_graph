@@ -14,6 +14,38 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## Current state (2026-07-27)
 
+**Worker session checkpoint - M20-S2d implementation (2026-07-28):** Global canary: Ledger
+Llama. Phase canary: Ground Truth. Model: GPT-5 Codex; effort: default; usage/quota/context
+indicators are not exposed. John gave go via the current task request. Single declared step:
+rewire `_span_for_line` to resolve through the corrected `line_anchors` index, add positive and
+negative focused tests, and verify the non-promoting gates. Applicable defect-ledger entries:
+D4, D6, D8, D9, D10, and the exact RAN/NOT RUN evidence rule. D1-D3, D5, D7, D11-D14 are
+not expected unless the implementation unexpectedly crosses those surfaces. No regenerated
+artifacts, promoted artifacts, citations, labels, text, field maps, bindings, verdicts, or
+graph semantics will be changed.
+
+**M20-S2d implementation checkpoint (2026-07-28):** The outline span resolver now uses the
+corrected `line_anchors` positional index and exact-anchor priority, and the micro-extraction
+evidence selector uses the same resolver instead of the removed `- <anchor>:` text prefix.
+Missing indexes, absent anchors, and index entries with no source span raise the named
+`SpanResolutionError` finding. The focused resolver tests cover a real Schedule A line-16
+source and the absent-index case. The consumer round exposed and fixed the required call
+plumbing and made synthetic fixtures provide explicit positional indexes.
+
+- RAN: `$testRoot = 'C:\\Users\\devbox\\.codex\\visualizations\\2026\\07\\28\\019fa971-0065-73b2-846f-4d4a9740e72c\\m20_s2d_consumers_r3'; New-Item -ItemType Directory -Force -Path $testRoot | Out-Null; $env:PYTEST_DEBUG_TEMPROOT = $testRoot; .venv\\Scripts\\python.exe -m pytest tests/test_outline_span_resolution_m20.py tests/test_extract_outline_m4.py tests/test_extract_m16.py tests/test_schedule_d_extraction_m9.py tests/test_tables_detector_m6b.py tests/test_nversion_m8.py -q` -> 26 passed, 1 skipped in 9.15s; one known pytest cache ACL warning. The skipped test is the optional local Form 8949 cache with corrected text and no legacy outline markers; S3b owns that structure migration.
+- RAN: `$testRoot = 'C:\\Users\\devbox\\.codex\\visualizations\\2026\\07\\28\\019fa971-0065-73b2-846f-4d4a9740e72c\\m20_s2d_final_focused_r1'; New-Item -ItemType Directory -Force -Path $testRoot | Out-Null; $env:PYTEST_DEBUG_TEMPROOT = $testRoot; .venv\\Scripts\\python.exe -m pytest tests/test_outline_span_resolution_m20.py tests/test_render_form.py tests/test_extract_outline_m4.py tests/test_extract_m16.py tests/test_schedule_d_extraction_m9.py tests/test_tables_detector_m6b.py tests/test_nversion_m8.py -q` -> 29 passed, 1 skipped in 9.31s; one known pytest cache ACL warning. The skipped test remains the optional stale local Form 8949 cache described above.
+- RAN: `.venv\\Scripts\\python.exe tools/check_ascii.py` -> `ASCII check OK`.
+- RAN: `git diff --check` -> exit 0.
+- RAN: `.venv\\Scripts\\python.exe -m tax_graph.cli validate 2025` -> exit 0; graph integrity OK; 18 documents, 441 nodes, 2 tables, 409 edges, 401 citations.
+- RAN: `.venv\\Scripts\\python.exe -m workbench.cli --year 2025 preflight` -> exit 0 in 193.6s; 35 entries, 3,243 units, 1,921 field controls, `legacy_mined=394` unchanged.
+
+M20-S2d is implementation-complete and committed locally; no push was made.
+
+The second defect from the S3a attempt remains out of S2d scope and is reported for S3a:
+the draft writer leaves stale `nodes.yaml`/`citations.yaml` files in place when a regenerated
+batch kind is empty. S2d changes no draft writer or draft artifact.
+
+
 **Worker session checkpoint - M20-S3a implementation (2026-07-28):** Global canary: Ledger
 Llama. Phase canary: Ground Truth. Model: GPT-5 Codex; effort: default; usage/quota/context
 indicators are not exposed. John gave go via the current task request. Single declared step:

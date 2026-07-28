@@ -134,6 +134,8 @@ def test_detector_groups_local_cached_8949_artifacts_when_present():
     instructions_text = raw_dir / "instructions_form_8949_2025.txt"
     if not form_text.exists() or not form_fields.exists() or not instructions_text.exists():
         pytest.skip("local rendered Form 8949 cache not present")
+    if "- 1:" not in form_text.read_text(encoding="utf-8"):
+        pytest.skip("local cache uses corrected text without legacy outline markers; S3b owns structure")
     document = SourceDocumentInput(
         document_id="form_8949_2025",
         kind="tax_form",
@@ -153,6 +155,7 @@ def test_detector_groups_local_cached_8949_artifacts_when_present():
             )
         ],
     )
+    document.fields["line_anchors"] = _line_anchor_index(document.text)
 
     batch = generate_outline_first_drafts(
         document,
@@ -196,7 +199,10 @@ def _document(tmp_path: Path, *, totals_columns: str = "(d), (e), (g), and (h)",
         url="https://www.irs.gov/pub/irs-pdf/f8949.pdf",
         text=text,
         text_path=text_path,
-        fields={"fields": _form_8949_row_fields(row_count=row_count)},
+        fields={
+            "fields": _form_8949_row_fields(row_count=row_count),
+            "line_anchors": _line_anchor_index(text),
+        },
         related_sources=[
             RelatedSourceInput(
                 document_id="instructions_form_8949_2025",
@@ -235,3 +241,15 @@ def _form_8949_row_fields(*, row_count: int) -> list[dict[str, Any]]:
                     }
                 )
     return fields
+
+
+def _line_anchor_index(text: str) -> list[dict[str, int | str]]:
+    return [
+        {
+            "anchor": match.group(1).lower(),
+            "page": 1,
+            "text_offset": match.start(1),
+            "text_length": len(match.group(1)),
+        }
+        for match in re.finditer(r"^[-]\s+([0-9]+[a-z]?|[a-z]):", text, re.IGNORECASE | re.MULTILINE)
+    ]

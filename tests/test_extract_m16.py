@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from pathlib import Path
+import re
 
 import pytest
 
@@ -25,6 +26,8 @@ class NoCallClient:
 
 
 def _document(text: str, *, fields: dict | None = None) -> SourceDocumentInput:
+    field_data = fields or {"fields": []}
+    field_data.setdefault("line_anchors", _line_anchor_index(text))
     return SourceDocumentInput(
         document_id="schedule_2_2025",
         kind="schedule",
@@ -32,8 +35,20 @@ def _document(text: str, *, fields: dict | None = None) -> SourceDocumentInput:
         url="https://www.irs.gov/pub/irs-pdf/f1040s2.pdf",
         text=text,
         text_path=ROOT / ".cache" / "raw" / "2025" / "schedule_2_2025.txt",
-        fields=fields or {"fields": []},
+        fields=field_data,
     )
+
+
+def _line_anchor_index(text: str) -> list[dict[str, int | str]]:
+    return [
+        {
+            "anchor": match.group(1).lower(),
+            "page": 1,
+            "text_offset": match.start(1),
+            "text_length": len(match.group(1)),
+        }
+        for match in re.finditer(r"^[-]\s+([0-9]+[a-z]?|[a-z]):", text, re.IGNORECASE | re.MULTILINE)
+    ]
 
 
 def test_schedule_2_outline_preserves_heading_and_printed_total_anchor():

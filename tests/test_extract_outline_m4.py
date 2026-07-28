@@ -570,7 +570,7 @@ def _make_outline_project(tmp_path: Path) -> Path:
     )
     (raw_dir / "form_8949_2025.txt").write_text(form_text, encoding="utf-8")
     (raw_dir / "form_8949_2025.fields.json").write_text(
-        json.dumps({"fields": _form_8949_row_fields()}),
+        json.dumps({"fields": _form_8949_row_fields(), "line_anchors": _line_anchor_index(form_text)}),
         encoding="utf-8",
     )
     (raw_dir / "instructions_form_8949_2025.txt").write_text(instructions_text, encoding="utf-8")
@@ -592,3 +592,15 @@ def _form_8949_row_fields() -> list[dict]:
                     }
                 )
     return fields
+
+
+def _line_anchor_index(text: str) -> list[dict[str, int | str]]:
+    return [
+        {
+            "anchor": match.group(1).lower(),
+            "page": 1,
+            "text_offset": match.start(1),
+            "text_length": len(match.group(1)),
+        }
+        for match in re.finditer(r"^[-]\s+([0-9]+[a-z]?|[a-z]):", text, re.IGNORECASE | re.MULTILINE)
+    ]

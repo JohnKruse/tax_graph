@@ -47,6 +47,7 @@ class ScheduleDMicroClient:
 def test_schedule_d_outline_first_fixture_routes_and_writes_metrics(tmp_path):
     root = _copy_project(tmp_path)
     document = load_document_input("schedule_d_2025", year="2025", root=root, raw_store=FIXTURE_RAW)
+    document.fields["line_anchors"] = _line_anchor_index(document.text)
     batch = generate_outline_first_drafts(
         document,
         client=ScheduleDMicroClient(),
@@ -75,6 +76,7 @@ def test_schedule_d_outline_first_fixture_routes_and_writes_metrics(tmp_path):
 def test_schedule_d_fixture_drafts_include_schema_valid_band_tables(tmp_path):
     root = _copy_project(tmp_path)
     document = load_document_input("schedule_d_2025", year="2025", root=root, raw_store=FIXTURE_RAW)
+    document.fields["line_anchors"] = _line_anchor_index(document.text)
     client = ScheduleDMicroClient()
     batch = generate_outline_first_drafts(
         document,
@@ -101,6 +103,7 @@ def test_schedule_d_fixture_drafts_include_schema_valid_band_tables(tmp_path):
 def test_schedule_d_unmapped_field_flags_review(tmp_path):
     root = _copy_project(tmp_path)
     document = load_document_input("schedule_d_2025", year="2025", root=root, raw_store=FIXTURE_RAW)
+    document.fields["line_anchors"] = _line_anchor_index(document.text)
     batch = generate_outline_first_drafts(
         document,
         client=ScheduleDMicroClient(),
@@ -131,3 +134,15 @@ def _copy_project(tmp_path: Path) -> Path:
     shutil.copytree(ROOT / "schemas", root / "schemas")
     shutil.copytree(ROOT / "graph", root / "graph", ignore=shutil.ignore_patterns("_drafts"))
     return root
+
+
+def _line_anchor_index(text: str) -> list[dict[str, int | str]]:
+    return [
+        {
+            "anchor": match.group(1).lower(),
+            "page": 1,
+            "text_offset": match.start(1),
+            "text_length": len(match.group(1)),
+        }
+        for match in re.finditer(r"^[-]\s+([0-9]+[a-z]?|[a-z]):", text, re.IGNORECASE | re.MULTILINE)
+    ]

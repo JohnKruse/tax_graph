@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from pathlib import Path
+import json
 import re
 import shutil
 
@@ -183,7 +184,7 @@ def _document(tmp_path: Path) -> SourceDocumentInput:
         url="https://www.irs.gov/pub/irs-pdf/f8949.pdf",
         text=text,
         text_path=text_path,
-        fields={"fields": _row_fields()},
+        fields={"fields": _row_fields(), "line_anchors": _line_anchor_index(text)},
         related_sources=[
             RelatedSourceInput(
                 document_id="instructions_form_8949_2025",
@@ -209,7 +210,10 @@ def _make_project(tmp_path: Path) -> Path:
     raw_dir.mkdir(parents=True)
     document = _document(raw_dir)
     (raw_dir / "form_8949_2025.txt").write_text(document.text, encoding="utf-8")
-    (raw_dir / "form_8949_2025.fields.json").write_text('{"fields": []}\n', encoding="utf-8")
+    (raw_dir / "form_8949_2025.fields.json").write_text(
+        json.dumps({"fields": [], "line_anchors": _line_anchor_index(document.text)}) + "\n",
+        encoding="utf-8",
+    )
     (raw_dir / "instructions_form_8949_2025.txt").write_text(
         "Column (h). Subtract column (e) from column (d), and include column (g).\n",
         encoding="utf-8",
@@ -234,3 +238,15 @@ def _row_fields() -> list[dict]:
                 }
             )
     return fields
+
+
+def _line_anchor_index(text: str) -> list[dict[str, int | str]]:
+    return [
+        {
+            "anchor": match.group(1).lower(),
+            "page": 1,
+            "text_offset": match.start(1),
+            "text_length": len(match.group(1)),
+        }
+        for match in re.finditer(r"^[-]\s+([0-9]+[a-z]?|[a-z]):", text, re.IGNORECASE | re.MULTILINE)
+    ]
