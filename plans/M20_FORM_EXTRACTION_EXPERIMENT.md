@@ -172,6 +172,68 @@ primary, instructions supplementary) -> M18 widening last.
 - Whether to acquire 2-3 forms from other agencies/eras to actually test producer
   robustness - the cheapest way to convert section 3's caveat from argument to measurement.
 
+## 6b. Blind agreement experiment on 10 UNSEEN forms (2026-07-28), John-adjudicated
+
+Ten IRS forms never previously touched (Schedules C/E/SE/8812, Forms 8863/8962/5695/8889/
+4137/8606) were extracted deterministically and by OCR, and every disagreement was put to
+John for visual check against the printed form. **This is the first time the pipeline's
+output was adjudicated by a human against source.**
+
+Token-multiset agreement (order-independent, so OCR's table restructuring does not skew it):
+nine forms at **98.7% - 100%**, mean **99.6%**. One outlier: **schedule_e at 76.8%**.
+
+**JOHN'S VERDICTS.**
+
+1. **Label splits - OCR IS RIGHT (confirmed visually).** On 7 of 10 forms the deterministic
+   path reads the printed label as two tokens (`"17"` + `"a"`) because the PDF draws them as
+   separate positioned runs; OCR reads `17a`. John: "There's no way that I'd view these as
+   split from my visual read." Affected: 5695 `17a/21a/23a/24a`, 8606 `15a/25a`,
+   8889 `14a/17a`, 8962 `8a`, schedule_c `27a`, schedule_se `1a/4a/5a/8a`.
+   **S2 needs a label-joining rule.** Same family as the M16-S2 `z -> 1z` fix.
+   **John's follow-up:** "if there is an a, there is a b and so it would kinda go against our
+   breakout scheme." Resolution: these are different layers and do not conflict. `17a` is the
+   PRINTED LABEL (what a human quotes, what goes in `official_ref`); the a/b sub-items are
+   STRUCTURE carried by the address tree's parent/child. Consistent with the standing rule
+   that line numbers are PLACEMENT, not identity - it would only break if `"17a"` were ever
+   used as an identity key, which that rule already forbids.
+2. **schedule_e page 1 is a REAL OCR FAILURE - confirmed.** OCR read **289 of 570 words**;
+   page 2 was perfect (642 = 642). John verified against the printed form that OCR silently
+   dropped real line labels and cross-references: line 4 `Royalties received`, `1a Physical
+   address of each property` (with A/B/C sublines), line 21 (`file Form 6198`), line 22
+   (`on Form 8582`), and `23a` through `23e`. **OCR cannot be trusted as a sole source.**
+3. **Non-issue:** form_4137 `CAUTION` is a GIF icon (triangle/exclamation) with a caption -
+   "not really germane".
+
+**TWO DEFECTS IN THE ARCHITECT'S OWN LOCALIZATION PROBE (John caught both).**
+
+- **Section headers inherit the preceding line's anchor.** The probe reported form_8606
+  text as "line 15c"; it is actually the **Part II subheader** ("Complete this part if you
+  converted part or all of your traditional IRAs to a Roth IRA in 2025").
+- **Option codes are misread as line anchors.** The probe reported schedule_e "line 2"; that
+  is the **Type of Property list** (codes 1-8 - Single Family Residence, Multi-Family, ...),
+  not a line number.
+
+Both are the SAME family as `render_form.py` reading `box 5` as line 5 (section 1). The
+Architect reproduced the defect it is proposing to fix, inside the tool built to measure it.
+**S2 HARD REQUIREMENT: anchor detection must distinguish printed line numbers from option
+codes and column letters, and a section/Part header must never inherit a preceding line's
+anchor.**
+
+**MEASUREMENT ARTIFACT (not an extraction defect).** `x $1,000` on 5695 line 10 splits into
+`$1` + `000` because the harness token regex `[a-z0-9$%]+` breaks on the comma. Currency
+amounts therefore inflate disagreement counts corpus-wide. **The S1 harness tokenizer must
+be fixed before its disagreement counts are trusted**; the retention percentages, which are
+dominated by prose, are not materially affected.
+
+**WHAT THE EXPERIMENT SETTLES.** Every disagreement investigated turned out to be a real
+defect on one side or the other (excepting the icon and the tokenizer artifact). Neither
+extractor is sufficient alone: deterministic is right on CONTENT and wrong on STRUCTURE
+(column conflation - 34 rows where a y-grouped row glues two form columns, e.g. schedule_c
+`Advertising ... Office expense`; plus the label splits); OCR is right on STRUCTURE and
+demonstrably drops CONTENT (schedule_e p1). **The two-witness cross-check is therefore the
+verification mechanism, not a fallback** - it surfaced roughly 20 real issues across 10
+unseen forms, and a human confirmed them in minutes. That is the coverage contract working.
+
 ## 7. Reproducibility gap - closed by M20-S1
 
 M20-S1 committed the measurement harness at `tax_graph/acquire/measure_form.py` and the
