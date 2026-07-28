@@ -248,8 +248,64 @@ the instruction slot; Authority explicitly reports missing authored coverage; do
 citation coverage is visible beside policy counts; and the dossier heading duplication/order
 warts are fixed. No promoted artifacts, graph semantics, verdicts, or citation records changed.
 
-**BALL: WORKER - M20-S1 (commit the extraction measurement harness + producer-robustness
-corpus). Task block under From Architect. M18-S3 and M18-S3b are both ACCEPTED and
+**BALL: JOHN - M20-S1 is ACCEPTED. S2 (deterministic `render_form.py` rewrite) is ready to
+task; two new S1 findings below sharpen it.**
+
+**ARCHITECT VERIFICATION - M20-S1 (Claude Opus 5, 2026-07-28). ACCEPTED.** Verified by
+re-running the harness, not by reading the snapshot:
+- **RAN:** `.venv\Scripts\python.exe -m tax_graph.cli measure-extraction --year 2025` ->
+  16 form PDFs, **mean retention 52.2%**, `headline reproduced: true`, 2 robustness PDFs.
+  The Architect's scratch-script numbers are now reproduced by committed tooling; the
+  reproducibility gap in M20 section 7 is genuinely closed.
+- **RAN:** `tests/test_measure_extraction_m20.py tests/test_cli.py tests/test_render_form.py
+  tests/test_acquire_fetch.py tests/test_acquire_manifest.py tests/test_acquire_citation_check.py`
+  -> **28 passed, 1 skipped** (the opt-in live-network test).
+- **Corpus isolation verified independently:** the producer corpus is absent from
+  `config/manifest.yaml`, and `git diff 40cec02..HEAD -- graph/ .cache/` is **empty**. The
+  hard constraint held - test data did not leak into graph content.
+- Evidence discipline: **`NOT RUN: none`** - every declared file was executed. First clean
+  sweep since the cap was raised.
+- Boundary note, not a defect: the Worker edited `plans/M20_FORM_EXTRACTION_EXPERIMENT.md`
+  (Architect-owned) to close section 7. Substantively correct and invited by the task,
+  which asked it to close that gap. Accepted.
+
+**NEW FINDING 1 - OUR DETERMINISTIC RENDERER FABRICATES MORE THAN THE AI DID.** The S1
+harness added a fabrication column for `render_form.py` that the Architect's experiment had
+only computed for OCR, and the comparison inverts the intuition:
+**`render_form.py` fabricates 0.7% - 6.7%** (13614-C 6.7%, 8949 5.1%, W-2 4.4%) against
+**Mistral OCR's 0.0% - 0.4%**. Architect breakdown of the invented tokens:
+- `Header:` (29x/43x/14x) and `# Page` - our own scaffolding, benign, the direct analogue of
+  OCR's markdown image syntax;
+- **apostrophe destruction**: `aren't -> arent`, `didn't -> didnt`, `shouldn't -> shouldnt`,
+  `employee's -> employees`, `employer's -> employers`, `spouse's -> spouses`;
+- at least one genuine word-merge corruption: **`delective`**.
+Root cause: **`_ascii_normalize` in `render_form.py:201` is
+`value.encode("ascii", errors="ignore")`** - it DELETES non-ASCII characters instead of
+mapping them, so a curly apostrophe silently welds two words together. This is the SAME
+defect logged as item 1 of M20 section 5 for `render_ocr.py`; **it is in BOTH renderers**,
+and it is now measured rather than theoretical. S2 must map (right single quote -> `'`,
+curly doubles -> `"`, en/em dash -> `-`), never delete. The project's ASCII-only rule is
+about AUTHORED files; it must not be enforced by silently corrupting acquired source text.
+
+**NEW FINDING 2 - PRODUCER ROBUSTNESS IS PARTIALLY ANSWERED, IN THE REASSURING DIRECTION.**
+Three distinct producers are now measured, and all three layers survive on all of them:
+| producer | document | text | widgets | structure |
+| --- | --- | --- | --- | --- |
+| `Designer 6.5` | the 16-form corpus | yes | 33-297 | yes |
+| `Adobe PDF Library 15.0` | California Form 540 (2024) | 2025 words | 180 | 3 tables |
+| `APJavaScript 2.2.1 ... 2005` | IRS Form 1040 (1999) | 1498 words | 265 | 9 tables |
+A **27-year-old form from a long-dead toolchain** still yields text, widgets, AND tables.
+That is materially better than the Architect's caveat assumed and answers part of John's
+"second form" fear.
+**HONEST LIMIT, and it matters for S2/S4:** the probe measures PRESENCE, not CORRECTNESS -
+`find_tables()` returning 3 tables is scored the same whether those tables are right or
+garbage. The Antenna House failure was a ZERO. So this evidence rules out total structural
+collapse on other producers; it does NOT establish that the structure is usable. A
+correctness measure (are the detected cells the real cells?) is still missing and should be
+part of S2's acceptance rather than assumed.
+
+**Superseded (kept as history):** BALL: WORKER - M20-S1 (commit the extraction measurement
+harness + producer-robustness corpus). Task block under From Architect. M18-S3 and M18-S3b are both ACCEPTED and
 Architect-verified - do not redo them. M18 widening is DEFERRED behind M20 by John's
 decision, 2026-07-28.**
 
