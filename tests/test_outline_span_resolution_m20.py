@@ -74,6 +74,29 @@ def test_line_span_resolution_fails_closed_when_anchor_is_absent_from_index():
 
 
 @pytest.mark.m20
+def test_numeric_anchor_does_not_fall_back_to_shorter_suffix():
+    text = "Other 6 Other taxes. List type and amount:\n"
+    document = _document(
+        text,
+        line_anchors=[
+            {
+                "anchor": "6",
+                "page": 1,
+                "text_offset": text.index("6"),
+                "text_length": 1,
+            }
+        ],
+    )
+
+    with pytest.raises(SpanResolutionError, match="line anchor 16 absent"):
+        _span_for_line(
+            document,
+            OutlineNode("root_line_16", "line", "Other deductions", line_anchor="16"),
+            build_candidate_spans(document),
+        )
+
+
+@pytest.mark.m20
 def test_real_schedule_a_line_16_resolves_from_local_index():
     raw_text = ROOT / ".cache" / "raw" / "2025" / "schedule_a_2025.txt"
     fields_path = ROOT / ".cache" / "raw" / "2025" / "schedule_a_2025.fields.json"

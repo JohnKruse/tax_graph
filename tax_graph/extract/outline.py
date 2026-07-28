@@ -150,13 +150,16 @@ def _looks_like_amount_control(label: str) -> bool:
 
 
 def _line_anchor_variants(anchor: str | None) -> set[str]:
+    """Return the exact normalized spelling accepted for a line anchor.
+
+    A numeric suffix fallback (for example, treating ``16`` as ``6``) was a
+    legacy workaround for lossy text extraction. The corrected line-anchor
+    index carries the complete printed anchor, so accepting a shorter numeric
+    spelling can silently cite the wrong line.
+    """
     if not anchor:
         return {""}
-    normalized = anchor.lower()
-    variants = {normalized}
-    if len(normalized) > 1 and normalized[0].isdigit():
-        variants.add(normalized[-1])
-    return variants
+    return {anchor.lower()}
 
 
 def build_outline_tree(document: SourceDocumentInput) -> OutlineTree:

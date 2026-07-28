@@ -57,7 +57,8 @@ def test_schedule_2_outline_preserves_heading_and_printed_total_anchor():
             [
                 "Header: Part I Tax",
                 "- 1: Additions to tax:",
-                "- z: Add lines 1a through 1y 1z",
+                # The corrected renderer preserves the complete printed anchor.
+                "- 1z: Add lines 1a through 1y 1z",
             ]
         )
     )
@@ -129,7 +130,8 @@ def test_outline_first_emits_nonfillable_heading_and_printed_total_node():
             [
                 "Header: Part I Tax",
                 "- 1: Additions to tax:",
-                "- z: Add lines 1a through 1y 1z",
+                # The corrected renderer preserves the complete printed anchor.
+                "- 1z: Add lines 1a through 1y 1z",
             ]
         )
     )

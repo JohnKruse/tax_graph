@@ -159,6 +159,26 @@ Requirements when this lands (S4, with the overlay surface prepared in S3):
   form text path to emit a COMPLETE verbatim text layer plus a SEPARATE line-anchor index
   that points into it - anchor detection must never consume content. Map non-ASCII, never
   delete. No OCR, no vendor, no cost. Target ~100% retention with a per-document ratchet.
+- **SEQUENCING CORRECTED 2026-07-28 - S3b MUST PRECEDE S3a.** The plan below originally
+  put re-derivation (S3a) before association (S3b), on the reasoning that re-deriving was
+  "mechanical, follows directly from S2". **That was wrong, and the pipeline proved it
+  twice.** Regeneration runs the extraction pipeline; the pipeline needs an outline;
+  `build_outline_tree` parses the outline with
+  `LINE_RE = ^-\s+([0-9]+[a-z]?|[a-z]):\s*(.*)$` plus a `Header:` prefix - both of which are
+  the LEGACY RENDERER'S SYNTHETIC MARKUP that S2 removed. Measured on the corrected text:
+  **outline children = 0** for `schedule_a_2025` (92 lines) and `form_1040_2025` (222
+  lines), with zero `Header:` lines present. So nothing can be regenerated until the outline
+  can be built from real text.
+  **THE ARCHITECTURAL FINDING, and it explains the whole phase:** this pipeline never had an
+  independent STRUCTURE layer. The anchor wrapper WAS the structure layer, and
+  `render_form.py` was doing double duty - lossy text extraction AND structure annotation in
+  one pass. **That is why it discarded 52% of the text: it was optimizing for structure
+  annotation at the cost of content.** Removing the wrapper (correct - it was destroying
+  content and polluting citations) means the structure step must now exist as a real thing
+  for the first time. Building it IS S3b.
+  Order is therefore: S2/S2b/S2d (done) -> **S3b structure and association** -> **S3a
+  regeneration** -> S4 -> S5.
+
 - **S3 - STRUCTURE AND ASSOCIATION (the hard half).** Caption-to-cell association from
   deterministic geometry first, with explicit ambiguity signals; label joining; column
   separation; option codes and section headers excluded from anchor detection. Report

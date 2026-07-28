@@ -98,8 +98,11 @@ def write_routed_drafts(
 
     for kind in WRITE_KINDS:
         items = [obj.data for obj in batch.items(kind)]
+        path = draft_dir / f"{kind}.yaml"
         if items:
-            _write_yaml(draft_dir / f"{kind}.yaml", items)
+            _write_yaml(path, items)
+        elif path.exists():
+            path.unlink()
 
     _write_yaml(draft_dir / "provenance.yaml", [_provenance(obj) for obj in batch.objects])
     (draft_dir / "review.md").write_text(render_review(batch, routed), encoding="utf-8", newline="\n")

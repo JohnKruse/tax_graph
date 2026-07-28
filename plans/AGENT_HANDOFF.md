@@ -45,6 +45,73 @@ The second defect from the S3a attempt remains out of S2d scope and is reported 
 the draft writer leaves stale `nodes.yaml`/`citations.yaml` files in place when a regenerated
 batch kind is empty. S2d changes no draft writer or draft artifact.
 
+**Worker session checkpoint - M20-S3a implementation (2026-07-28, resumed):** Global canary:
+Ground Truth. Model: GPT-5 Codex; effort: default; usage/quota/context indicators are not
+exposed. John gave go via the current task request. Single declared step: complete M20-S3a
+through the committed extraction pipeline - first remove the silent digit-suffix anchor
+fallback and fix stale draft cleanup, then regenerate affected derived artifacts, account for
+all changed generated citations and labels, and run every changed-content consumer plus the
+required gates before one local commit. Applicable defect-ledger entries: D4, D6, D8, D9,
+D10, D11, D12, D13, and the exact RAN/NOT RUN evidence rule. D1-D3, D5, and D7 are not
+expected unless the workbench surface changes. No hand edits to generated citations, labels,
+display names, or promoted artifacts; no geometry, field-map, address, binding, verdict,
+graph-semantic, or human-review changes.
+
+**M20-S3a pre-expensive-work checkpoint (2026-07-28, resumed):** The S2d span-index fix is
+accepted at `HEAD`; the S3a prerequisite and draft-writer boundaries are being inspected
+before any regeneration. No new test or generation evidence is claimed yet.
+
+**M20-S3a implementation checkpoint (2026-07-28, resumed):** Removed the digit-suffix
+anchor fallback and made empty regenerated draft kinds delete stale exact YAML files. Added
+the numeric-anchor regression and stale-draft regression. The first plain pytest attempt
+hit the known poisoned `.test_tmp` ACL during `tmp_path` setup; it is not test evidence.
+
+- RAN: `$testRoot = 'C:\\Users\\devbox\\.codex\\visualizations\\2026\\07\\28\\019fa98c-5728-7cc1-a0c5-191e92aefd98\\m20_s3a_focused_r1'; New-Item -ItemType Directory -Force -Path $testRoot | Out-Null; $env:PYTEST_DEBUG_TEMPROOT = $testRoot; .venv\\Scripts\\python.exe -m pytest tests/test_outline_span_resolution_m20.py tests/test_draft_route_m20.py -q` -> 5 passed in 0.64s; one known pytest cache ACL warning.
+- RAN: `$testRoot = 'C:\\Users\\devbox\\.codex\\visualizations\\2026\\07\\28\\019fa98c-5728-7cc1-a0c5-191e92aefd98\\m20_s3a_consumers_r2'; New-Item -ItemType Directory -Force -Path $testRoot | Out-Null; $env:PYTEST_DEBUG_TEMPROOT = $testRoot; .venv\\Scripts\\python.exe -m pytest tests/test_outline_span_resolution_m20.py tests/test_draft_route_m20.py tests/test_extract_outline_m4.py tests/test_extract_m16.py tests/test_schedule_d_extraction_m9.py tests/test_tables_detector_m6b.py tests/test_nversion_m8.py -q` -> 28 passed, 1 skipped in 9.32s; one known pytest cache ACL warning.
+- RAN: `.venv\\Scripts\\python.exe -c "from tax_graph.acquire.citation_check import check_graph_citations; from tax_graph.cli import DEFAULT_CITATION_SOURCE_MAP; r=check_graph_citations(year='2025', raw_store='.cache/raw', root='.', source_map=DEFAULT_CITATION_SOURCE_MAP); print(f'checked={r.checked} strict_mismatches={len(r.mismatches)}')"` -> checked=401, strict_mismatches=36 (baseline).
+
+**M20-S3a pre-regeneration checkpoint (2026-07-28, resumed):** Code and focused consumers
+are green. The next expensive phase is committed-pipeline extraction into the gitignored
+`graph/2025/_drafts/` boundary, followed by a generated-output diff against live artifacts.
+No promoted artifact has been changed; model/config availability and the resulting affected
+document set remain to be verified by the pipeline run.
+
+**M20-S3a blocker (2026-07-28, resumed):** The mechanical fixes are green, but regeneration
+cannot be accepted safely until the corrected plain-text producer has a structure consumer.
+`build_outline_tree` still recognizes only legacy `- <anchor>:` wrappers. A provisional
+in-memory adapter using `line_anchors` was tested and removed because the current positional
+records do not identify the semantic row reliably: Schedule A `5a` resolved to the `5d`
+row body, and line 16 produced duplicate nodes (`Other-from...` and `Deductions`). That is
+S3b structure/association work, not a safe S3a text-fix regeneration. No provisional adapter
+or generated artifact is committed or promoted. The generated drafts remain local under
+`graph/2025/_drafts/` for inspection only; they are not authoritative.
+
+Generation evidence:
+
+- NOT RUN: `.venv\\Scripts\\python.exe -m tax_graph.cli extract --year 2025` (sandboxed) ->
+  provider socket blocked with `WinError 10013`; this was the environment failure before
+  the approved retry.
+- NOT RUN: `.venv\\Scripts\\python.exe -m tax_graph.cli extract --year 2025` (approved
+  unsandboxed retry) -> command timed out at the 600-second cap, exit 124, after partial
+  draft output.
+- RAN: `.venv\\Scripts\\python.exe -m tax_graph.cli extract --doc form_6251_2025 --year 2025`
+  (approved network) -> exit 0; auto_accepted=0, human_review=75, deterministic_issues=29.
+- RAN: approved per-document loop for `form_1099b_2025`, `form_w2_2025`,
+  `form_1099_int_2025`, `form_1099_div_2025`, and `form_13614_c_2025` -> all exit 0;
+  summaries were 19/83, 19/122, 15/79, 15/104, and 1/297 for human_review/issues.
+- RAN: approved per-document loop for `schedule_2_2025`, `schedule_3_2025`, and
+  `schedule_b_2025` -> all exit 0; summaries were 53/25, 33/17, and 17/58 for
+  human_review/issues.
+- RAN: per-draft citation integrity sweep over all 15 form/source documents -> every
+  present draft citation matched its corrected source (0 mismatches); Form 13614-C had no
+  `citations.yaml` after the empty-kind cleanup.
+- RAN: `.venv\\Scripts\\python.exe -m workbench.cli --year 2025 preflight` -> exit 1;
+  fail-closed unresolved draft references are expected while these unpromoted regenerated
+  objects do not match the existing review queue. The live graph remains unchanged.
+- RAN: live strict citation check -> checked=401, strict_mismatches=36 (unchanged).
+
+No local commit was made because the whole S3a step is blocked at the structure boundary.
+
 
 **Worker session checkpoint - M20-S3a implementation (2026-07-28):** Global canary: Ledger
 Llama. Phase canary: Ground Truth. Model: GPT-5 Codex; effort: default; usage/quota/context
@@ -408,8 +475,46 @@ the instruction slot; Authority explicitly reports missing authored coverage; do
 citation coverage is visible beside policy counts; and the dossier heading duplication/order
 warts are fixed. No promoted artifacts, graph semantics, verdicts, or citation records changed.
 
-**BALL: WORKER - M20-S3a (regenerate from the corrected text). S2d is ACCEPTED and the
-blocker is cleared. Task block under From Architect, with a new prerequisite item 0.**
+**BALL: ARCHITECT then WORKER - M20-S3b (build the structure layer) must run BEFORE S3a.
+S3a is BLOCKED again, correctly. The two mechanical fixes from the S3a attempt are accepted
+and committed.**
+
+**ARCHITECT VERIFICATION - M20-S3a ATTEMPT (Claude Opus 5, 2026-07-28). BLOCKER UPHELD;
+MECHANICAL FIXES ACCEPTED; THE PHASE SEQUENCE WAS WRONG AND IS NOW CORRECTED.**
+**Accepted and committed from the attempt** (both verified, **47 passed, 1 skipped**):
+- **Item 0 done:** `_line_anchor_variants` no longer expands `16` to `{16, 6}`; it returns
+  the exact normalized anchor, with a docstring recording that the suffix fallback was a
+  legacy workaround for lossy extraction. The latent D13-by-code is gone.
+- **Stale-draft fail-open fixed:** `write_routed_drafts` now DELETES an existing
+  `<kind>.yaml` when a regenerated batch kind is empty, instead of leaving the previous file
+  in place where it would present stale content as current.
+
+**THE BLOCKER IS REAL AND THE WORKER HANDLED IT CORRECTLY.** `build_outline_tree` parses the
+outline with `LINE_RE = ^-\s+([0-9]+[a-z]?|[a-z]):\s*(.*)$` and a `Header:` prefix - the
+legacy renderer's SYNTHETIC MARKUP, which S2 removed by design. Architect measurement on the
+corrected text: **outline children = 0** for `schedule_a_2025` (92 lines) and
+`form_1040_2025` (222 lines); zero `Header:` lines exist. Nothing can be regenerated.
+The Worker built a provisional `line_anchors` adapter, TESTED it, found it wrong - Schedule A
+`5a` resolved to the `5d` row body and line 16 produced duplicate nodes (`Other-from...` and
+`Deductions`) - and **removed it rather than shipping it**. That is exactly right: an
+adapter that silently mis-assigns rows would have baked D13-class errors into every
+regenerated citation. No provisional adapter, generated artifact, or promotion was
+committed.
+
+**ARCHITECT SEQUENCING ERROR, CORRECTED IN `plans/PHASE_M20.md`.** The plan put S3a
+(re-derivation) before S3b (association), calling re-derivation "mechanical". It is not:
+regeneration runs the pipeline, the pipeline needs an outline, and the outline needs
+structure parsing - which IS the association problem. **S3b must precede S3a.**
+**THE FINDING THAT EXPLAINS THE WHOLE PHASE:** this pipeline never had an independent
+structure layer. **The anchor wrapper WAS the structure layer**, and `render_form.py` was
+doing double duty - lossy text extraction AND structure annotation in a single pass. That is
+WHY it discarded 52% of the text: it was optimizing for structure annotation at the cost of
+content. Removing the wrapper was correct and unavoidable, and it means the structure step
+must now exist as a real thing for the first time. Building it is S3b. Codex's two failed
+adapter attempts are evidence of the shape of that work, not of a shortcut we missed.
+
+**Superseded (kept as history):** BALL: WORKER - M20-S3a (regenerate from the corrected
+text). S2d is ACCEPTED and the blocker is cleared.
 
 **ARCHITECT VERIFICATION - M20-S2d (Claude Opus 5, 2026-07-28). ACCEPTED.** Verified by
 running the resolver directly, not by reading the summary:
@@ -1956,6 +2061,11 @@ TY2026 docs drop.
   Desktop logs verbatim - first stop when a client-managed server dies.
 
 ## Open for Architect
+- **M20-S3a -> S3b decision needed (2026-07-28):** Should the structure step own a
+  deterministic corrected-text outline adapter (using page/geometry plus `line_anchors`)
+  before S3a regeneration resumes? The bare positional index is not enough: its offsets are
+  exact strings but can point at repeated anchor text in another semantic row. S3a therefore
+  stops fail-closed; no generated draft is promoted, and no citation/label is hand-edited.
 - **RESOLVED 2026-07-26 by the 600s cap:** the manifest-build blocker that made backend
   workbench rounds Architect-run is GONE. Codex can now build the live manifest (~150s) and
   run its own app-dependent and e2e files. The two workflow rulings that existed only because
