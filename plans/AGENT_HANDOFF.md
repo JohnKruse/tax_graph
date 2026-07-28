@@ -220,9 +220,25 @@ the instruction slot; Authority explicitly reports missing authored coverage; do
 citation coverage is visible beside policy counts; and the dossier heading duplication/order
 warts are fixed. No promoted artifacts, graph semantics, verdicts, or citation records changed.
 
-**BALL: JOHN - M18-S3b is ACCEPTED. Before widening M18 to the other six instruction
-documents, John is deciding on the coverage-contract work below (Architect recommendation:
-do NOT widen yet).**
+**BALL: WORKER - M20-S1 (commit the extraction measurement harness + producer-robustness
+corpus). Task block under From Architect. M18-S3 and M18-S3b are both ACCEPTED and
+Architect-verified - do not redo them. M18 widening is DEFERRED behind M20 by John's
+decision, 2026-07-28.**
+
+**SEQUENCING DECIDED (John, 2026-07-28).** John approved the M20 sequence and the
+producer-robustness acquisition. Key Architect correction that shaped it: **the 52% -> 99%
+gap does NOT make OCR necessary for CONTENT.** The experiment's ground truth is the PDF's
+own text layer, which is already 100% complete, deterministic, and free - so a renderer
+that merely stops discarding rows recovers essentially all of it with no vendor, no cost,
+and no nondeterminism. OCR won on STRUCTURE, not content. The two problems were riding
+together and are now split, which defers the vendor decision to M20-S4 instead of taking it
+under pressure from a scary number.
+Sequence: **S1** measurement harness (read-only) -> **S2** deterministic `render_form.py`
+rewrite -> **S3** re-derive `printed_label`s and the 394 `legacy_mined` display names ->
+**S4** decide on OCR for structure only. The Mistral vendor exception and the broken
+`mistralai` install both wait for S4; neither is decided today.
+Full method and numbers: `plans/M20_FORM_EXTRACTION_EXPERIMENT.md`. Commit `34f7c41` is
+local and unpushed at John's discretion; main is green through `398beed`.
 
 **ARCHITECT VERIFICATION - M18-S3b (Claude Opus 5, 2026-07-28). ACCEPTED, pushed with the
 frontier fix.** Both returned defects are properly closed:
@@ -1544,6 +1560,61 @@ TY2026 docs drop.
   environment failure, and no commit was made.
 
 ## From Architect
+
+- **M20-S1 TASK - COMMIT THE EXTRACTION MEASUREMENT HARNESS AND A PRODUCER-ROBUSTNESS
+  CORPUS (Architect, Claude Opus 5, 2026-07-28).** Read
+  `plans/M20_FORM_EXTRACTION_EXPERIMENT.md` FIRST - it is the finding this step makes
+  reproducible. **This step is READ-ONLY: it changes NO promoted artifact, no citation, no
+  address, no graph semantic, and no `.cache/raw/<year>/*.txt`.** It is the "read before
+  write" step; S2 does the rewrite. Read the ledger: **D4** (hermetic tests, no live
+  developer state), **D6** (module-form CLIs only), **D10** (an expected document that
+  yields nothing is a FINDING, not silence), **D11** (findings must be persisted, and a
+  promoted/derived artifact needs a committed entry point), and the exact RAN/NOT RUN
+  evidence rule. D1-D3, D5, D7 are not expected on this non-workbench slice.
+  **Why this exists:** the M20 numbers were produced by throwaway scratch scripts and are
+  currently evidence, not a harness. Section 7 of the report says so. Until this lands,
+  nobody can re-run or trust them.
+  1. **Ship the measurement as committed tooling** with a module-form command. Per
+     document it reports, against the PDF's own text layer as ground truth
+     (PyMuPDF `get_text`):
+     - **retention/recall** - word-multiset fraction of ground-truth words preserved;
+     - **fabrication** - word-multiset fraction of output words ABSENT from ground truth;
+     - the PDF **producer/creator** metadata, the page count, and the widget count.
+     Use the exact metric definitions in the M20 report so the numbers are comparable -
+     word tokens `[a-z0-9$%]+`, lowercased, multiset intersection/difference. Reproduce the
+     report's headline figures (`render_form.py` mean **52.2%**; per-document
+     `form_13614_c_2025` **17.0%**, `form_1040_2025` **52.0%**, `schedule_3_2025` **85.7%**)
+     and SAY whether you reproduced them. A mismatch is a finding to report, not a number
+     to quietly adopt.
+  2. **Emit a committed snapshot report** plus a machine-readable artifact the later
+     ratchet can consume. This is the first concrete metric of the coverage contract, so
+     shape it to be diffable and thresholdable, not just human-readable.
+  3. **Do NOT write into `.cache/raw/<year>/`.** The M20 report records the hazard: the OCR
+     helper writes `<document_id>.txt` into its output dir, which pointed at the raw store
+     would OVERWRITE the form text `check_citation_integrity` validates against. Any
+     harness output goes somewhere else entirely.
+  4. **Producer-robustness corpus (John approved).** Acquire **2-3 deliberately awkward
+     forms** - a state return, a pre-2000 IRS form, and/or a flattened non-fillable PDF -
+     and run all three layers against them (text via `get_text`, widgets via AcroForm,
+     structure via `find_tables()`). Purpose: our 16 forms are **100% `Designer 6.5`**, so
+     robustness across authoring tools is currently UNTESTED and the M20 report says so
+     explicitly.
+     **HARD CONSTRAINT: these are a test corpus, NOT graph content.** Do not add them to
+     `config/manifest.yaml`, do not mint documents, addresses, concepts, citations, or
+     geometry, and do not let them touch `graph/<year>/`. Store them under a clearly
+     separate path. If that separation is awkward, STOP and say so rather than improvising.
+     Report per form which layers survived; a layer that fails is the RESULT, not a
+     problem to fix in this step.
+  5. **Report, do not fix.** If the harness surfaces further extraction defects, record
+     them as named findings. S2 owns the rewrite.
+  Declared files plus honest `RAN:`/`NOT RUN:` on every one, ASCII, `git diff --check`,
+  module-form `validate 2025` (must be unchanged - this step touches no graph), and real
+  preflight with `legacy_mined` reported explicitly (expect **394**, unchanged). No
+  `--basetemp`. ONE local commit; no push.
+  Stop conditions: any need to modify `.cache/raw/<year>/*.txt`, a promoted artifact, a
+  citation, or graph semantics; the robustness corpus not being cleanly separable from
+  graph content; a network/acquisition failure on the awkward forms (report it and deliver
+  the harness anyway - item 1 does not depend on item 4); or a quota/environment failure.
 
 - **M18-S3b TASK - FIX THE SCHEDULE 1-A SILENT ZERO AND PERSIST THE FINDINGS (Architect,
   Claude Opus 5, 2026-07-28).** M18-S3 is ACCEPTED (`4ab507d`) - **do NOT redo the
