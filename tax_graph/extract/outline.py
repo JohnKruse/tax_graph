@@ -163,7 +163,13 @@ def _line_anchor_variants(anchor: str | None) -> set[str]:
 
 
 def build_outline_tree(document: SourceDocumentInput) -> OutlineTree:
-    """Build a mostly deterministic outline from rendered form text."""
+    """Build a deterministic outline, preferring geometry for acquired forms."""
+    from tax_graph.extract.structure import build_structure_model
+
+    structure = build_structure_model(document)
+    if structure is not None:
+        return _build_geometry_outline(document, structure)
+
     tree = OutlineTree(document_id=document.document_id, kind=document.kind)
     current_section: OutlineNode | None = None
     recent_headers: list[str] = []
@@ -232,6 +238,93 @@ def build_outline_tree(document: SourceDocumentInput) -> OutlineTree:
 
     _attach_outbound_flow_cues(tree, document)
     return tree
+
+
+def _build_geometry_outline(document: SourceDocumentInput, structure) -> OutlineTree:
+    """Convert geometry rows into the outline shape consumed by extraction."""
+    tree = OutlineTree(document_id=document.document_id, kind=document.kind)
+    current_section: OutlineNode | None = None
+    seen_ids: set[str] = set()
+    geometry_only = not any(row.line_anchor for row in structure.rows)
+
+    for row in structure.rows:
+        lowered = row.text.lower().strip()
+        if lowered.startswith("part ") or lowered.startswith("schedule "):
+            section = OutlineNode(
+                outline_id=_slug(f"section_{row.page}_{row.text}"),
+                kind="section",
+                label=row.text,
+                page=row.page,
+                boxes=_extract_boxes(row.text),
+            )
+            if section.outline_id not in seen_ids:
+                tree.children.append(section)
+                seen_ids.add(section.outline_id)
+            current_section = section
+            continue
+
+        # A right-side printed reference with no caption is not a second row.
+        if row.line_anchor and len(row.text.split()) <= 1:
+            continue
+        if not row.line_anchor:
+            if row.text and (geometry_only or not tree.children):
+                outline_id = _slug(f"row_{row.page}_{row.text}")
+                if outline_id not in seen_ids:
+                    tree.children.append(
+                        OutlineNode(
+                            outline_id=outline_id,
+                            kind="heading",
+                            label=row.text,
+                            page=row.page,
+                        )
+                    )
+                    seen_ids.add(outline_id)
+            continue
+
+        outline_id = _line_id(current_section, row.line_anchor, row.text)
+        if outline_id in seen_ids:
+            continue
+        node = OutlineNode(
+            outline_id=outline_id,
+            kind=_classify_line(
+                row.line_anchor,
+                row.text,
+                [],
+                headers=[],
+                document_id=document.document_id,
+            ),
+            label=row.text,
+            page=row.page,
+            line_anchor=row.line_anchor,
+        )
+        if current_section is not None:
+            current_section.children.append(node)
+        else:
+            tree.children.append(node)
+        seen_ids.add(outline_id)
+
+    _merge_structure_anchor_index(document, structure.line_anchors)
+    if not tree.children:
+        raise ValueError(f"{document.document_id}: geometry structure produced no outline nodes")
+    _attach_outbound_flow_cues(tree, document)
+    return tree
+
+
+def _merge_structure_anchor_index(document: SourceDocumentInput, records: list[dict[str, Any]] | tuple[dict[str, Any], ...]) -> None:
+    """Make geometry-discovered anchors available to the positional resolver."""
+    if document.fields is None:
+        document.fields = {}
+    existing = document.fields.setdefault("line_anchors", [])
+    seen = {
+        (str(item.get("anchor", "")).lower(), item.get("page"), item.get("text_offset"))
+        for item in existing
+        if isinstance(item, dict)
+    }
+    for record in records:
+        key = (str(record.get("anchor", "")).lower(), record.get("page"), record.get("text_offset"))
+        if key not in seen:
+            existing.append(record)
+            seen.add(key)
 
 
 def build_candidate_spans(document: SourceDocumentInput) -> list[CandidateSpan]:

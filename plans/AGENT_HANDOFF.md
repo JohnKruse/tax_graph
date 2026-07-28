@@ -14,6 +14,74 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## Current state (2026-07-27)
 
+**Worker session checkpoint - M20-S3b implementation (2026-07-28):** Global canary: Ledger
+Llama. Phase canary: Ground Truth. Model: GPT-5 Codex; effort: default; usage/quota/context
+indicators are not exposed. John gave go via the current task request. Single declared step:
+build the geometry-derived structure layer and its outline consumer, add focused positive,
+negative, and coverage tests, and verify the non-promoting gates before one local commit.
+Applicable defect-ledger entries: D4, D6, D8, D9, D10, D13, D14, and the exact RAN/NOT RUN
+evidence rule. D1-D3, D5, D7, D11-D12 are not expected unless the implementation unexpectedly
+crosses those surfaces. No regenerated artifacts, promoted artifacts, citations, labels, text,
+field maps, bindings, verdicts, or graph semantics will be changed.
+
+**M20-S3b pre-write checkpoint (2026-07-28):** The current implementation and geometry inputs
+are being surveyed before code changes. No new test or generation evidence is claimed yet.
+
+**M20-S3b implementation checkpoint (2026-07-28):** Added `tax_graph/extract/structure.py`
+with geometry-derived visual rows, positional anchor proposals, named findings, and per-document
+caption coverage. `build_outline_tree` now consumes this model when the acquired PDF is present;
+synthetic fixtures retain the legacy text path. The model recovers Schedule A line 16 and 1040
+line 1z without changing the corrected text, and exposes geometry-only rows for 13614-C. The
+structure anchor additions are merged in memory only so the existing span resolver can consume
+them; no raw or promoted artifact was rewritten.
+
+- RAN: `$testRoot = 'C:\\Users\\devbox\\.codex\\visualizations\\2026\\07\\28\\019fa9ba-211e-7503-bcc3-8288ed197c77\\m20_s3b_focused_r2'; New-Item -ItemType Directory -Force -Path $testRoot | Out-Null; $env:PYTEST_DEBUG_TEMPROOT = $testRoot; .venv\\Scripts\\python.exe -m pytest tests/test_structure_m20.py tests/test_outline_span_resolution_m20.py tests/test_render_form.py -q` -> 10 passed in 2.19s; one known pytest cache ACL warning.
+
+The next slice is producer-corpus coverage plus the existing outline/extraction consumer files;
+the non-promoting gates and full preflight remain pending. No generation or promotion evidence is
+claimed yet.
+
+Declared focused files for the consumer round: `tests/test_structure_m20.py`,
+`tests/test_outline_span_resolution_m20.py`, `tests/test_render_form.py`,
+`tests/test_extract_outline_m4.py`, `tests/test_extract_m16.py`,
+`tests/test_schedule_d_extraction_m9.py`, `tests/test_tables_detector_m6b.py`, and
+`tests/test_nversion_m8.py`.
+
+**M20-S3b consumer checkpoint (2026-07-28):** Page-offset handling now uses the exact
+form-feed-separated source pages, so added positional records cannot drift on page 2.
+Form 8949's 28.7% association is retained as an explicit residual: repeated transaction
+widgets without row-level captions produce named `missing_caption` findings; no broad nearest
+row fallback was added. The other acquired line forms surveyed at 100%, and 13614-C remains
+geometry-only at 99.7%.
+
+- RAN: `$testRoot = 'C:\\Users\\devbox\\.codex\\visualizations\\2026\\07\\28\\019fa9ba-211e-7503-bcc3-8288ed197c77\\m20_s3b_consumers_r1'; New-Item -ItemType Directory -Force -Path $testRoot | Out-Null; $env:PYTEST_DEBUG_TEMPROOT = $testRoot; .venv\\Scripts\\python.exe -m pytest tests/test_structure_m20.py tests/test_outline_span_resolution_m20.py tests/test_render_form.py tests/test_extract_outline_m4.py tests/test_extract_m16.py tests/test_schedule_d_extraction_m9.py tests/test_tables_detector_m6b.py tests/test_nversion_m8.py -q` -> 35 passed, 1 skipped in 11.46s; one known pytest cache ACL warning.
+- RAN: `$testRoot = 'C:\\Users\\devbox\\.codex\\visualizations\\2026\\07\\28\\019fa9ba-211e-7503-bcc3-8288ed197c77\\m20_s3b_m20_r1'; New-Item -ItemType Directory -Force -Path $testRoot | Out-Null; $env:PYTEST_DEBUG_TEMPROOT = $testRoot; .venv\\Scripts\\python.exe -m pytest -m m20 -q` -> 19 passed, 564 deselected in 6.58s; one known pytest cache ACL warning.
+
+The corpus-wide read-only survey passed all outline checks for the 15 acquired form documents;
+the only named residual is the Form 8949 caption gap above. Required ASCII, diff, validate, and
+preflight gates are pending.
+
+**M20-S3b preflight checkpoint (2026-07-28):** Focused tests, full `m20`, ASCII, diff, and graph
+validation are green. The remaining command is the real workbench preflight; no generated draft
+or promoted artifact will be written by this round.
+
+- RAN: `.venv\\Scripts\\python.exe tools/check_ascii.py` -> `ASCII check OK`.
+- RAN: `git diff --check` -> exit 0.
+- RAN: `.venv\\Scripts\\python.exe -m tax_graph.cli validate 2025` -> exit 0; 18 documents,
+  441 nodes, 2 tables, 409 edges, 401 citations; graph integrity OK.
+- RAN: `$testRoot = 'C:\\Users\\devbox\\.codex\\visualizations\\2026\\07\\28\\019fa9ba-211e-7503-bcc3-8288ed197c77\\m20_s3b_preflight'; New-Item -ItemType Directory -Force -Path $testRoot | Out-Null; $env:PYTEST_DEBUG_TEMPROOT = $testRoot; .venv\\Scripts\\python.exe -m workbench.cli --year 2025 preflight` -> exit 1 after 196.1s; fail-closed review projection reports required live citations and nodes resolving to zero source objects. This is an implementation defect under investigation, not accepted evidence.
+
+- RAN: diagnostic extension-inclusive SQLite build under
+  `C:\\Users\\devbox\\.codex\\visualizations\\2026\\07\\28\\019fa9ba-211e-7503-bcc3-8288ed197c77\\m20_s3b_extdiag` followed by module-form preflight with `--db` -> exit 1 after 287.4s; the projection still fails on pending queue refs such as `cite_span_form_1040_2025_0001` and `form_1040_2025_root_line_a`, which are absent from the promoted graph. The temporary diagnostic DB was not used as a repository artifact.
+
+**Open for Architect - M20-S3b preflight blocker (2026-07-28):** The active review queue is
+not reconciled with the promoted graph: pending entries reference old generated `cite_span_*`
+and `root_line_*` ids that resolve to zero objects even against an extension-inclusive compiled
+projection. This is outside S3b's geometry layer and cannot be fixed by changing structure
+without violating the no-hand-edit/no-promotion boundary. Please decide whether the queue should
+be regenerated after S3a or whether a separate artifact/queue reconciliation step owns it.
+S3b is otherwise test-complete but not gate-complete and has no local commit.
+
 **Worker session checkpoint - M20-S2d implementation (2026-07-28):** Global canary: Ledger
 Llama. Phase canary: Ground Truth. Model: GPT-5 Codex; effort: default; usage/quota/context
 indicators are not exposed. John gave go via the current task request. Single declared step:
@@ -475,9 +543,36 @@ the instruction slot; Authority explicitly reports missing authored coverage; do
 citation coverage is visible beside policy counts; and the dossier heading duplication/order
 warts are fixed. No promoted artifacts, graph semantics, verdicts, or citation records changed.
 
-**BALL: WORKER - M20-S3b (build the structure layer). Task block under From Architect. It
-must run BEFORE S3a, which stays blocked. The two mechanical fixes from the S3a attempt are
-accepted and pushed in `414ccda`.**
+**BALL: WORKER - M20-S2e (MAIN IS CI-RED; fix the fail-fatal span resolver). S3b is BLOCKED
+behind it. Task block under From Architect.**
+
+**MAIN IS CI-RED (run 30378244576, all three interpreters), AND IT IS THE ARCHITECT'S MISS.**
+`tests/test_batch_extraction_m10.py` fails with
+`SpanResolutionError: schedule_b_2025: line anchor index missing for line 2` and
+`schedule_1_2025: line anchor index missing for line 8z`. It reproduces locally in **2.6
+seconds**. Neither the Worker's declared list nor the Architect's verification partition
+included that file: S2d changed the FAILURE MODE of a function used across extraction
+(returning `None` -> raising), and every test exercising a document without the new index
+was going to break. **That is D14 one round after logging it** - the Architect checked
+consumers of the resolver's RESULT and not of its FAILURE BEHAVIOUR. The `414ccda` push
+inherits the same failure; it was pushed before the earlier run reported.
+
+**THE DEEPER DEFECT, AND THE SPEC ERROR IS THE ARCHITECT'S.** The S2d task said "raises /
+reports", and the implementation collapsed three different situations into one fatal error:
+| situation | current | correct |
+| --- | --- | --- |
+| document has NO index at all | raises, aborts the batch | degrade to `None` + named finding |
+| index present, anchor absent | raises | named finding, no abort |
+| anchor present, resolves to no span | raises | named finding, no abort |
+The first case is **not a defect at all**: `form_13614_c_2025` legitimately has **zero**
+line anchors (297 widgets, no printed line numbers). Under the current code any anchorless
+document becomes unprocessable rather than reportable. That is not fail-closed, it is
+fail-fatal, and it would block S3b's hardest case on day one.
+**The correct granularity: fail closed at the DOCUMENT level, not per anchor.** A document
+that yields a ZERO-NODE outline is the forbidden outcome (D10) and must be a hard, named
+failure. A single unresolvable anchor inside an otherwise-populated document is a finding
+that flows through the existing route/findings mechanism - visible, counted, and not an
+unhandled exception that kills the run.
 
 **ARCHITECT VERIFICATION - M20-S3a ATTEMPT (Claude Opus 5, 2026-07-28). BLOCKER UPHELD;
 MECHANICAL FIXES ACCEPTED; THE PHASE SEQUENCE WAS WRONG AND IS NOW CORRECTED.**
@@ -2164,7 +2259,39 @@ TY2026 docs drop.
   artifact; the index proving insufficient to anchor spans (report what is missing rather
   than reintroducing prefix matching); or a quota/environment failure.
 
-- **M20-S3b TASK - BUILD THE STRUCTURE LAYER (Architect, Claude Opus 5, 2026-07-28).**
+- **M20-S2e TASK - MAIN IS RED: MAKE THE SPAN RESOLVER FAIL CLOSED AT THE RIGHT GRANULARITY
+  (Architect, Claude Opus 5, 2026-07-28). Small and urgent - it unblocks S3b.** Read the
+  CI-red ruling directly above; the spec error that caused this is the Architect's, not
+  yours. Ledger: **D10** (a zero-node outline is the forbidden outcome), **D14** (a change
+  to a function's FAILURE BEHAVIOUR needs the consumers of that behaviour), D4, D6, D9.
+  **Reproduce first:** `.venv\Scripts\python.exe -m pytest tests/test_batch_extraction_m10.py -q`
+  -> 2 failed in ~2.6s.
+  1. **A document with NO line-anchor index is legitimate, not an error.**
+     `form_13614_c_2025` has **zero** anchors and 297 widgets. Return `None` for the node
+     and record a named finding; do NOT raise and do NOT abort the batch.
+  2. **An unresolvable anchor inside a document that HAS an index is a finding, not a
+     crash.** Route it through the existing findings/route mechanism so it is visible and
+     counted. `SpanResolutionError` should stop being thrown from `_span_for_line` on these
+     paths.
+  3. **Keep fail-closed where it belongs: the DOCUMENT level.** A document whose outline
+     comes back with **zero nodes** is a hard, named failure - that is the D10 outcome and
+     it is exactly how S3a died twice. Do not let this fix reopen the silent-empty hole; a
+     zero-node outline must never coexist with exit code 0.
+  4. **Declare `tests/test_batch_extraction_m10.py`** and any other test that drives
+     extraction over documents lacking the index. Per D14, grep for callers of
+     `_span_for_line` and `SpanResolutionError`, and for tests that run `extract` over
+     fixture documents - the failure-behaviour consumers, not just the result consumers.
+  5. **Do not** change the emitted text layer, the citation gate, promoted artifacts, or the
+     anchor-variant fix from `414ccda`. This is a narrow behaviour correction.
+  Declared files plus honest `RAN:`/`NOT RUN:` on every one. ASCII, `git diff --check`,
+  module-form `validate 2025`, real preflight with `legacy_mined` reported explicitly
+  (expect **394**). No `--basetemp`. ONE local commit; no push - the Architect pushes this
+  one and watches CI, since main is currently red.
+  Stop conditions: any need to reintroduce per-anchor fatality, weaken the document-level
+  zero-node check, or touch a promoted artifact; or a quota/environment failure.
+
+- **[BLOCKED behind M20-S2e - the resolver aborts on anchorless documents, and 13614-C is
+  exactly that case] M20-S3b TASK - BUILD THE STRUCTURE LAYER (Architect, Claude Opus 5, 2026-07-28).**
   **This is the phase's hard round and it unblocks S3a.** Read `plans/PHASE_M20.md`
   (sequencing correction) and the S3a-attempt ruling above. Ledger: **D10** (a silent empty
   is the forbidden outcome), **D13** (verbatim is necessary, not sufficient - anchoring is
