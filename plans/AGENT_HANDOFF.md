@@ -665,9 +665,44 @@ the instruction slot; Authority explicitly reports missing authored coverage; do
 citation coverage is visible beside policy counts; and the dossier heading duplication/order
 warts are fixed. No promoted artifacts, graph semantics, verdicts, or citation records changed.
 
-**BALL: WORKER - M20-S3b-2 (fix anchor identity; 12% of anchors are wrong). S3a stays
-BLOCKED - regenerating on a 12% mis-anchoring rate would be D13 at corpus scale. Task block
-under From Architect. S2e is DONE and main is GREEN at `e3e2a1b`.**
+**BALL: WORKER - M20-S3a (regenerate from the corrected text + reconcile the review queue).
+S3b-2 is ACCEPTED; anchor identity is now sound. Task block under From Architect.**
+
+**ARCHITECT VERIFICATION - M20-S3b-2 (Claude Opus 5, 2026-07-28). ACCEPTED.** Re-measured
+with the Architect's own cross-check rather than read from the report:
+- **Anchor disagreements: 13 of 112 (12%) -> 1 of 192 (1%).** Checkable rows nearly DOUBLED
+  (112 -> 192), so the improvement is not coverage being dropped to hide disagreements -
+  more rows now carry both an anchor and a printed box reference. Per document:
+  `schedule_a` 2->0, `form_1040` 8->0, `schedule_1a` 2->0, `form_8949` 1->0, `schedule_d`
+  and `schedule_1` still clean.
+- **Caption coverage HELD at 100%** on every line-oriented document (schedule_a 33/33,
+  form_1040 199/199, schedule_1a 54/54, schedule_d 55/55, schedule_1 73/73), and
+  `form_13614_c` is 296/297 with the single uncaptioned widget reported as a finding rather
+  than hidden. Identity was fixed without trading away association.
+- **Node counts ROSE** (schedule_a 22->29, form_1040 41->60, schedule_1a 53->60,
+  schedule_d 28->31), which is the two-column splitting working - merged rows like
+  `'4a IRA distributions 4a b Taxable amount 4b'` becoming two logical rows.
+- **Resolution verified in pipeline order:** `schedule_1` line 1 -> the real line-1 row (not
+  the title), `schedule_a` line 16 -> `Other 16 Other-from list in instructions...` (the
+  D13 record), `form_1040` line 1a -> the 1a row.
+- **RAN:** `tests/test_structure_m20.py tests/test_outline_span_resolution_m20.py
+  tests/test_batch_extraction_m10.py tests/test_extract_outline_m4.py tests/test_extract_m4.py
+  tests/test_extract_m16.py tests/test_schedule_d_extraction_m9.py
+  tests/test_tables_detector_m6b.py tests/test_nversion_m8.py tests/test_draft_route_m20.py -q`
+  -> **57 passed, 1 skipped**. `validate 2025` clean.
+**ARCHITECT FALSE ALARM, RECORDED SO IT IS NOT REPEATED:** the Architect first measured
+`_span_for_line` WITHOUT calling `build_outline_tree`, saw `schedule_1` line 1 resolve to
+the document title `SCHEDULE 1`, and nearly reported it as a high-severity defect. The
+Worker had already handled it: `_merge_structure_anchor_index` (`outline.py:313`) REPLACES
+the stale `.fields.json` index in memory, and its docstring names this exact failure - "the
+old renderer's index can contain a same-anchor entry at the wrong visual row... positional
+span resolution still cites the old location". In pipeline order the resolution is correct.
+Lesson: exercise a pipeline component in pipeline order before calling its output a defect.
+**MINOR OPEN FINDING (not blocking):** the `schedule_1` footer row
+(`'For Paperwork Reduction Act Notice... Schedule 1 (Form 1040) 2025'`) still mints anchor
+`1` from the form's own name, giving that document two anchor-`1` entries. The real line-1
+row wins in pipeline order, so nothing is currently mis-cited, but a header/footer minting
+a line anchor is the residual of defect class 3 and should be closed when convenient.
 
 **MAIN IS CI-RED (run 30378244576, all three interpreters), AND IT IS THE ARCHITECT'S MISS.**
 `tests/test_batch_extraction_m10.py` fails with
