@@ -21,11 +21,11 @@ from tax_graph.io.loader import load_yaml
 
 WORD_TOKEN_RE = re.compile(r"(?:\$[0-9][0-9,]*(?:\.[0-9]+)?|[a-z0-9%]+)", re.IGNORECASE)
 EXPECTED_HEADLINE_RETENTION = {
-    "form_13614_c_2025": 17.0,
-    "form_1040_2025": 52.0,
-    "schedule_3_2025": 85.7,
+    "form_13614_c_2025": 100.0,
+    "form_1040_2025": 100.0,
+    "schedule_3_2025": 100.0,
 }
-EXPECTED_MEAN_RETENTION = 52.2
+EXPECTED_MEAN_RETENTION = 100.0
 
 
 @dataclass(frozen=True)

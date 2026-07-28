@@ -205,7 +205,7 @@ def test_citation_integrity_falls_back_to_pdf_text_when_rendered_text_misses(tmp
 
 
 @pytest.mark.m20
-def test_citation_integrity_accepts_legacy_row_renderer_formatting(tmp_path):
+def test_citation_integrity_rejects_legacy_row_renderer_formatting(tmp_path):
     text_dir = tmp_path / "2025"
     text_dir.mkdir()
     (text_dir / "form_2441_2025.txt").write_text(
@@ -235,4 +235,5 @@ def test_citation_integrity_accepts_legacy_row_renderer_formatting(tmp_path):
         text_dir=text_dir,
     )
 
-    assert report.ok
+    assert not report.ok
+    assert {m.citation_id for m in report.mismatches} == {"legacy_wrapper", "legacy_quotes"}

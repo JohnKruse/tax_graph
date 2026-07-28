@@ -4,7 +4,7 @@ Ground truth: PyMuPDF page.get_text().
 Metric: lowercase word-multiset intersection and difference using token pattern `(?:\$[0-9][0-9,]*(?:\.[0-9]+)?|[a-z0-9%]+)`.
 
 - Form PDFs measured: 16
-- Mean shipped-text retention: 100.0% (expected 52.2%; reproduced: false)
+- Mean shipped-text retention: 100.0% (expected 100.0%; reproduced: true)
 
 ## Form corpus
 
@@ -29,9 +29,9 @@ Metric: lowercase word-multiset intersection and difference using token pattern 
 
 ## Headline reproduction
 
-- form_13614_c_2025: measured 100.0%, expected 17.0%, reproduced: false
-- form_1040_2025: measured 100.0%, expected 52.0%, reproduced: false
-- schedule_3_2025: measured 100.0%, expected 85.7%, reproduced: false
+- form_13614_c_2025: measured 100.0%, expected 100.0%, reproduced: true
+- form_1040_2025: measured 100.0%, expected 100.0%, reproduced: true
+- schedule_3_2025: measured 100.0%, expected 100.0%, reproduced: true
 
 ## Producer-robustness corpus
 

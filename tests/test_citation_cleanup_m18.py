@@ -5,6 +5,7 @@ from pathlib import Path
 import pytest
 
 from tax_graph.acquire.citation_cleanup import derive_clean_quote, infer_source_document_id
+from tax_graph.acquire.citation_check import _contains_normalized
 from tax_graph.io.loader import load_graph
 
 
@@ -68,3 +69,32 @@ def test_real_citation_corpus_has_source_verified_cleanups():
         assert result.changed is True, citation["citation_id"]
         cleaned += 1
     assert wrapped == cleaned
+
+
+@pytest.mark.m20
+def test_m20_s2b_rederived_quotes_are_strictly_source_verified():
+    raw_root = Path(".cache/raw/2025")
+    if not raw_root.exists():
+        pytest.skip("acquired 2025 raw corpus is not present")
+    graph = load_graph("2025")
+    target_ids = {
+        citation["citation_id"]
+        for citation in graph.items("citations")
+        if citation["citation_id"].startswith("cite_span_form_2441_2025_")
+        or citation["citation_id"]
+        in {
+            "cite_span_schedule_1a_2025_0035",
+            "cite_span_schedule_1a_2025_0050",
+            "cite_span_schedule_a_2025_0017",
+            "cite_span_schedule_a_2025_0036",
+        }
+    }
+    assert len(target_ids) == 26
+
+    for citation in graph.items("citations"):
+        if citation["citation_id"] not in target_ids:
+            continue
+        source_id = citation.get("source_document_id") or citation["document_id"]
+        source_text = (raw_root / f"{source_id}.txt").read_text(encoding="utf-8")
+        assert not citation["quoted_text"].startswith("- "), citation["citation_id"]
+        assert _contains_normalized(source_text, citation["quoted_text"]), citation["citation_id"]

@@ -1,6 +1,6 @@
 {
   "corpus_directory": "tests/fixtures/m20_producer_corpus",
-  "expected_mean_retention_percent": 52.2,
+  "expected_mean_retention_percent": 100.0,
   "form_count": 16,
   "forms": [
     {
@@ -519,22 +519,22 @@
   "ground_truth": "PyMuPDF page.get_text()",
   "headline": {
     "form_1040_2025": {
-      "expected_percent": 52.0,
+      "expected_percent": 100.0,
       "measured_percent": 100.0,
-      "reproduced": false
+      "reproduced": true
     },
     "form_13614_c_2025": {
-      "expected_percent": 17.0,
+      "expected_percent": 100.0,
       "measured_percent": 100.0,
-      "reproduced": false
+      "reproduced": true
     },
     "schedule_3_2025": {
-      "expected_percent": 85.7,
+      "expected_percent": 100.0,
       "measured_percent": 100.0,
-      "reproduced": false
+      "reproduced": true
     }
   },
-  "mean_reproduced": false,
+  "mean_reproduced": true,
   "mean_retention_percent": 100.0,
   "metric": "lowercase word-multiset intersection and difference",
   "robustness_corpus": [

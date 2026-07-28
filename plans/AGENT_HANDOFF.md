@@ -14,6 +14,48 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## Current state (2026-07-27)
 
+**Worker session checkpoint - M20-S2b implementation (2026-07-28):** Global canary: Ledger
+Llama. Phase canary: Ground Truth. Model: GPT-5 Codex; effort: default; usage/quota/context
+indicators are not exposed. John gave go via the current task request. Single declared step:
+re-derive the 26 stale citations from the corrected acquired form text, remove the permanent
+legacy-format fallbacks from the citation verifier, update the live retention ratchet, and run
+the changed-content consumers before one local commit. Applicable defect-ledger entries: D4,
+D6, D8, D9, D12, and the exact RAN/NOT RUN evidence rule. D1-D3, D5, and D7 are not expected
+unless the workbench surface changes. The rebuilt form text, field grids, geometry, field maps,
+addresses, bindings, verdicts, graph semantics, and drafts are out of scope.
+
+Pre-write consumer grep found no stale-quote assertions in tests. Declared focused files:
+`tests/test_citation_cleanup_m18.py`, `tests/test_acquire_citation_check.py`,
+`tests/test_measure_extraction_m20.py`, `tests/test_graph_validator.py`, and
+`tests/test_workbench_cells_m17.py`. Before the expensive verification round, the code and
+promoted citation edits are in place; no test evidence is claimed yet.
+
+**M20-S2b citation checkpoint (2026-07-28):** The 26 target quotes are now source-derived and
+strictly verifiable without verifier fallbacks. A read-only reconstruction of the pre-migration
+records reports `checked=401`, strict `mismatches=62` (36 pre-existing plus 26 stale records);
+the live post-migration check reports `checked=401`, strict `mismatches=36`, with only the
+pre-existing Schedule D and Form 1040 instruction findings. The accepted local Form 2441
+extension hash was refreshed after its citation file changed; `graph_ext/` is gitignored by
+the extension contract and remains local state, not a draft commit.
+
+- NOT RUN: `$testRoot = 'C:\\tmp\\tax_graph_m20_s2b_citations'; New-Item -ItemType Directory -Force -Path $testRoot | Out-Null; $env:PYTEST_DEBUG_TEMPROOT = $testRoot; .venv\\Scripts\\python.exe -m pytest tests/test_citation_cleanup_m18.py tests/test_acquire_citation_check.py -q` -> setup could not create `C:\\tmp` under the sandbox; the command is not test evidence.
+- RAN: `$testRoot = 'C:\\Users\\devbox\\.codex\\visualizations\\2026\\07\\28\\019fa91a-8c07-7313-ad89-e1442710ab01\\m20_s2b_citations_r1'; New-Item -ItemType Directory -Force -Path $testRoot | Out-Null; $env:PYTEST_DEBUG_TEMPROOT = $testRoot; .venv\\Scripts\\python.exe -m pytest tests/test_citation_cleanup_m18.py tests/test_acquire_citation_check.py -q` -> 17 passed in 1.07s; one known pytest cache ACL warning.
+- RAN: `$testRoot = 'C:\\Users\\devbox\\.codex\\visualizations\\2026\\07\\28\\019fa91a-8c07-7313-ad89-e1442710ab01\\m20_s2b_projection_r1'; New-Item -ItemType Directory -Force -Path $testRoot | Out-Null; $env:PYTEST_DEBUG_TEMPROOT = $testRoot; .venv\\Scripts\\python.exe -m pytest tests/test_graph_validator.py tests/test_workbench_cells_m17.py -q` -> 24 passed in 141.88s; one known pytest cache ACL warning.
+
+The citation and projection consumers are green. Before the remaining expensive measurement and
+full-floor commands, the next declared file is `tests/test_measure_extraction_m20.py`; the
+measurement command will also rewrite the committed M20 snapshot to the post-rebuild 100.0%
+retention floor.
+
+- RAN: `.venv\\Scripts\\python.exe -m tax_graph.cli measure-extraction --year 2025` -> exit 0; 16 form PDFs, mean retention 100.0%, headline reproduced true, 2 robustness PDFs; snapshots rewritten under `plans/m20_s1_measurements/`.
+- RAN: `$testRoot = 'C:\\Users\\devbox\\.codex\\visualizations\\2026\\07\\28\\019fa91a-8c07-7313-ad89-e1442710ab01\\m20_s2b_measure_r1'; New-Item -ItemType Directory -Force -Path $testRoot | Out-Null; $env:PYTEST_DEBUG_TEMPROOT = $testRoot; .venv\\Scripts\\python.exe -m pytest tests/test_measure_extraction_m20.py tests/test_cli.py -q` -> 10 passed in 20.09s; one known pytest cache ACL warning.
+- RAN: `.venv\\Scripts\\python.exe tools/check_ascii.py` -> `ASCII check OK`.
+- RAN: `git diff --check` -> exit 0.
+- RAN: `.venv\\Scripts\\python.exe -m tax_graph.cli validate 2025` -> exit 0; graph integrity OK; 18 documents, 441 nodes, 401 citations.
+- RAN: `.venv\\Scripts\\python.exe -m workbench.cli --year 2025 preflight` -> exit 0 in 194.6s; 35 entries, 3,243 units, `legacy_mined=394` unchanged.
+
+M20-S2b is implementation-complete and committed locally; no push was performed.
+
 **M20-S1 implementation and verification checkpoint (2026-07-28):** Global canary: Ledger
 Llama. Phase canary: Ground Truth. John gave go via the current task request. The committed
 measurement harness lives in `tax_graph/acquire/measure_form.py` and is exposed through the

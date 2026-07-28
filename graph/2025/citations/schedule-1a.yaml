@@ -101,7 +101,7 @@
   document_id: schedule_1a_2025
   source_document_id: schedule_1a_2025
   locator: page 1, line 36
-  quoted_text: Divide line 18 by $1,000. If the resulting number isnt a whole number,
+  quoted_text: Divide line 18 by $1,000. If the resulting number isn't a whole number,
     decrease the result to the next
 - citation_id: cite_span_schedule_1a_2025_0036
   document_id: schedule_1a_2025
@@ -144,7 +144,7 @@
   document_id: schedule_1a_2025
   source_document_id: schedule_1a_2025
   locator: page 2, line 52
-  quoted_text: Divide line 27 by $1,000. If the resulting number isnt a whole number,
+  quoted_text: Divide line 27 by $1,000. If the resulting number isn't a whole number,
     increase the result to the next
 - citation_id: cite_span_schedule_1a_2025_0051
   document_id: schedule_1a_2025
