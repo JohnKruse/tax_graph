@@ -408,8 +408,49 @@ the instruction slot; Authority explicitly reports missing authored coverage; do
 citation coverage is visible beside policy counts; and the dossier heading duplication/order
 warts are fixed. No promoted artifacts, graph semantics, verdicts, or citation records changed.
 
-**BALL: WORKER - M20-S2d (rewire the span matcher to the line-anchor index). S3a is BLOCKED
-behind it. Task block under From Architect.**
+**BALL: WORKER - M20-S3a (regenerate from the corrected text). S2d is ACCEPTED and the
+blocker is cleared. Task block under From Architect, with a new prerequisite item 0.**
+
+**ARCHITECT VERIFICATION - M20-S2d (Claude Opus 5, 2026-07-28). ACCEPTED.** Verified by
+running the resolver directly, not by reading the summary:
+- **The record D13 got wrong now anchors correctly.** `_span_for_line` for Schedule A line
+  16 returns `span_schedule_a_2025_0083`, text `Other 16 Other-from list in instructions.
+  List type and amount:` - resolved by POSITION through the index, not by a string
+  convention.
+- **Every indexed anchor resolves, none fail closed:** schedule_a 22/22, form_1040 42/42,
+  schedule_d 22/22, schedule_1a 42/42. The rewire did not trade a silent empty for a noisy
+  break.
+- **It genuinely fails closed** - a missing index, an absent anchor, or an entry resolving to
+  no span each raise the named `SpanResolutionError`. The prior failure mode was the worst
+  possible combination: `children: []` with `extract` exiting **0**.
+- No prefix matching remains in the resolution path; the micro-extraction evidence selector
+  delegates to the same resolver.
+- **RAN (Architect):** `tests/test_outline_span_resolution_m20.py tests/test_extract_m16.py
+  tests/test_extract_outline_m4.py tests/test_extract_m4.py tests/test_nversion_m8.py
+  tests/test_schedule_d_extraction_m9.py tests/test_tables_detector_m6b.py -q` -> **45
+  passed, 1 skipped**. Nothing promoted: `legacy_mined=394`, 401 citations, 1,921 controls,
+  `validate 2025` clean.
+- Correct scope judgment: the stale-draft fail-open was held OUT of S2d and reported for
+  S3a. That is a draft-writer fix and belongs with regeneration.
+
+**ARCHITECT-CAUSED HAZARD FOUND DURING VERIFICATION - THE ANCHOR VARIANT FALLBACK IS A
+LATENT D13.** `_line_anchor_variants` (`outline.py:152-159`) strips a multi-character anchor
+to its LAST character, so **`"16"` expands to `{"16", "6"}`**. Exact match is preferred, and
+today every anchor resolves exactly - so this is **not an active bug**. But if an exact index
+entry were ever missing, **line 16 would silently resolve to line 6's span**, which is
+exactly the D13 defect reproduced mechanically by code instead of by hand.
+Measured exposure if exact matching ever fails: schedule_a **8** anchors, form_1040 **8**,
+schedule_d **7**, schedule_1a **26**.
+**This is the Architect's:** the S2d task said "keep `_line_anchor_variants` behaviour for
+anchor spelling; it is the PREFIX-matching that goes" - preserved without checking what it
+did. The rule is legacy compensation for the OLD split-label defect (`16` + `a` emitted
+separately, the same defect the 10-form experiment measured). Now that the index carries
+properly joined labels (`11b` is a single anchor), the digit-suffix fallback is obsolete for
+numeric anchors and dangerous. **Folded into S3a as item 0**, because S3a is precisely when
+a missing entry would get baked into hundreds of regenerated citations.
+
+**Superseded (kept as history):** BALL: WORKER - M20-S2d (rewire the span matcher to the
+line-anchor index). S3a is BLOCKED behind it.
 
 **ARCHITECT RULING - THE S3a BLOCKER IS REAL, AND IT IS AN ARCHITECT SCOPING ERROR
 (Claude Opus 5, 2026-07-28).** The Worker's block report is CORRECT and was verified
@@ -1999,7 +2040,8 @@ TY2026 docs drop.
   4. **Do NOT** regenerate artifacts, promote drafts, hand-edit any generated citation or
      label, or touch the rebuilt text, the citation gate, geometry, field maps, or verdicts.
      S3a owns regeneration and runs after this.
-  5. **Leave the stale draft files alone** for now, but report the second defect you found -
+  5. **[ANSWERED - the Worker correctly kept this out of S2d and reported it for S3a; S3a
+     item 1 now owns it.]** **Leave the stale draft files alone** for now, but report the second defect you found -
      that the draft writer leaves old draft files in place when a batch kind is empty. That
      is a real fail-open and S3a will need it fixed; state whether you consider it in scope
      here or better handled in S3a, and why.
@@ -2023,7 +2065,23 @@ TY2026 docs drop.
   (`Line 16: Otherfrom list in instructions`, `Line 4: through 11 31`, `Part Iii Line 28`),
   display names, and the 394 `legacy_mined` entries. One regeneration fixes the whole class.
   This is where the long-planned M16-S5 regeneration converges.
-  1. **Re-run extraction against the corrected text** for the affected documents. Output
+  0. **PREREQUISITE - remove the digit-suffix anchor fallback BEFORE regenerating.**
+     `_line_anchor_variants` (`tax_graph/extract/outline.py:152-159`) expands `"16"` to
+     `{"16", "6"}`. Exact match wins today so nothing depends on it, but a missing index
+     entry would silently resolve line 16 to line 6 - D13 by code. Exposure if exact
+     matching ever fails: schedule_a 8, form_1040 8, schedule_d 7, schedule_1a 26 anchors.
+     The rule was legacy compensation for the OLD split-label defect, which the corrected
+     index has already fixed (`11b` is one anchor). Remove the digit-suffix fallback, or
+     make it a reported finding rather than a silent alternate match - never a quiet second
+     choice. Prove no anchor regresses (all four documents currently resolve 100%
+     exactly), and pin it with a test that a numeric anchor does NOT match a shorter one.
+     Do this FIRST: regenerating on top of it would bake a mis-anchoring into hundreds of
+     citations.
+  1. **Re-run extraction against the corrected text** for the affected documents. **Fix the
+     stale-draft fail-open you reported first:** the draft writer leaves the previous
+     `nodes.yaml` / `citations.yaml` in place when a regenerated batch kind is empty, so an
+     empty regeneration silently presents old content as current. That is a fail-open on the
+     exact artifact this round rewrites. Output
      goes to `graph/<year>/_drafts/` as always - **drafts are NEVER auto-merged**, and
      promotion requires the full machine witness set green. Under the deferred-review policy
      the human review may be recorded as pending in the review queue, never asserted as
