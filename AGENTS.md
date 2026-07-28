@@ -209,7 +209,19 @@ entries; do not delete them.
   (b) when the old text is damaged, reconstruct what it WAS (map the deleted character back)
   rather than searching for any nearby string that verifies; (c) check the re-derived text
   against the referencing node's label and printed line before accepting it.
-  (M20-S2b, 2026-07-28)
+  **ROOT CAUSE, and it is the ARCHITECT'S (John, 2026-07-28: "our ultimate goal is to build
+  a valid and reliable pipeline, not a bunch of hand crafted forms feeding into the
+  graph").** `cite_span_*` records are PIPELINE OUTPUT, not authored data -
+  `outline_pipeline.py:197` mints `citation_id = f"cite_{_slug(span.span_id)}"` with
+  `source_span = span.text`, matching the span TO THE NODE, so anchoring holds by
+  construction. They went stale only because their input (the stored text) was rebuilt. The
+  correct response to "the generator's input changed" is **RE-RUN THE GENERATOR**, never
+  hand-patch its output - and hand-patching is exactly what removed the anchor and produced
+  this defect. The Architect's S2b task instructed the hand re-derivation, wrongly citing
+  the M18-S2b precedent, which applied to ACQUIRED-SOURCE citations rather than generated
+  ones. **Standing rule: before repairing a promoted artifact by hand, establish whether a
+  generator produces it. If one does, regeneration is the fix and hand editing is a
+  defect.** (M20-S2b, 2026-07-28)
 - **D6 - Always use the module form of a CLI, never the console script.**
   `.venv\Scripts\python.exe -m tax_graph.cli ...`, not `.venv\Scripts\tax-graph.exe ...`; the
   generated launcher resolves through an editable-install `.pth` with an absolute path that does not
