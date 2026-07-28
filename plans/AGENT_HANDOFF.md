@@ -74,7 +74,54 @@ or promoted artifact will be written by this round.
 - RAN: diagnostic extension-inclusive SQLite build under
   `C:\\Users\\devbox\\.codex\\visualizations\\2026\\07\\28\\019fa9ba-211e-7503-bcc3-8288ed197c77\\m20_s3b_extdiag` followed by module-form preflight with `--db` -> exit 1 after 287.4s; the projection still fails on pending queue refs such as `cite_span_form_1040_2025_0001` and `form_1040_2025_root_line_a`, which are absent from the promoted graph. The temporary diagnostic DB was not used as a repository artifact.
 
-**Open for Architect - M20-S3b preflight blocker (2026-07-28):** The active review queue is
+**ARCHITECT RULING - THE QUEUE BLOCKER IS NOT S3b's, AND MUST NOT BE FIXED NOW
+(Claude Opus 5, 2026-07-28). ANSWERED: queue reconciliation belongs to S3a.**
+**Diagnosis, verified independently:** the queue's pending entries reference DRAFT-derived
+ids (`cite_span_form_1040_2025_0001`, `form_1040_2025_root_line_a`) from an OLD extraction
+run. The drafts under `graph/2025/_drafts/form_1040_2025/` were **regenerated at 18:40**
+during the S3a attempts, with new ids, because the text changed in S2 and the spans changed
+in S2d/S3b. Architect grep confirms those ids are absent from `graph/2025/` AND from the
+current drafts. The queue was last touched by `f8d42d5`; M20 never edited it. **This is the
+same class as the 26 stale citations - a derived-artifact consumer orphaned by the text
+rebuild - and the review queue is simply the last one we found.**
+**Why fixing it now would be waste:** S3a regenerates again, properly, and the ids move
+AGAIN. Reconciling against ids that are about to change is throwaway work, and worse, it
+invites hand-editing a generated artifact - the D13 anti-pattern.
+**Assigned to S3a as an explicit item, following the M19-S2 precedent** (saved reviews
+migrated when unit ids changed): a unique match moves and records the old id in `aliases`;
+anything ambiguous or missing lands in an orphaned bucket with a reason. **Never a silent
+re-point.**
+**HONEST CONSEQUENCE, stated rather than glossed: real workbench preflight is RED until S3a
+lands, so it cannot serve as a gate in the interim.** That is a genuine loss of signal on
+every round between now and then. S3b is therefore accepted WITHOUT the preflight gate, with
+this recorded as a known open finding rather than waved through.
+
+**ARCHITECT VERIFICATION - M20-S3b (Claude Opus 5, 2026-07-28). ACCEPTED.** Measured by
+running `build_outline_tree` directly, not by reading the summary. Outline nodes produced
+from the corrected text, where **every document was previously 0**:
+| document | outline nodes | with line anchor |
+| --- | --- | --- |
+| `schedule_a_2025` | **22** | 21 |
+| `form_1040_2025` | **41** | 40 |
+| `schedule_1a_2025` | **53** | 41 |
+| `schedule_d_2025` | **28** | 21 |
+| `form_13614_c_2025` | **209** | **0** - degrades to geometry, exactly as required |
+**The acceptance case passes:** Schedule A line 16 resolves to
+`section_1_schedule_a_itemized_deductions_line_16` with label
+`Other 16 Other-from list in instructions. List type and amount:` - the row D13 got wrong,
+now correct from geometry rather than from a string convention. 13614-C producing 209
+unanchored nodes is the honest degradation the task asked for: structure without line
+numbers, rather than a silent empty.
+**PROVENANCE CORRECTION, AND IT IS THE ARCHITECT'S FAULT:** S3b's implementation
+(`tax_graph/extract/structure.py`, the `build_outline_tree` change, and
+`tests/test_structure_m20.py` - 490 lines) is ALREADY ON MAIN, swept into the Architect's
+commit `fc337d0` whose message describes an unrelated S2e fix. Cause: the Architect ran
+`git add -A` while the Worker was live in the shared working tree, having earlier promised
+to stay clear of it. History is not being rewritten (main is shared and CI has since gone
+green on `e3e2a1b`); this note is the correction of record. **Standing rule from here:
+`git add <explicit paths>`, never `git add -A`, whenever the Worker may be active.**
+
+**Superseded (kept as history):** Open for Architect - M20-S3b preflight blocker (2026-07-28): The active review queue is
 not reconciled with the promoted graph: pending entries reference old generated `cite_span_*`
 and `root_line_*` ids that resolve to zero objects even against an extension-inclusive compiled
 projection. This is outside S3b's geometry layer and cannot be fixed by changing structure
@@ -543,8 +590,9 @@ the instruction slot; Authority explicitly reports missing authored coverage; do
 citation coverage is visible beside policy counts; and the dossier heading duplication/order
 warts are fixed. No promoted artifacts, graph semantics, verdicts, or citation records changed.
 
-**BALL: WORKER - M20-S2e (MAIN IS CI-RED; fix the fail-fatal span resolver). S3b is BLOCKED
-behind it. Task block under From Architect.**
+**BALL: WORKER - M20-S3a (regenerate from the corrected text, and reconcile the review
+queue). S2e is DONE and main is GREEN at `e3e2a1b`. S3b is ACCEPTED - its code is already on
+main; do not redo it.**
 
 **MAIN IS CI-RED (run 30378244576, all three interpreters), AND IT IS THE ARCHITECT'S MISS.**
 `tests/test_batch_extraction_m10.py` fails with
@@ -2372,6 +2420,17 @@ TY2026 docs drop.
   (`Line 16: Otherfrom list in instructions`, `Line 4: through 11 31`, `Part Iii Line 28`),
   display names, and the 394 `legacy_mined` entries. One regeneration fixes the whole class.
   This is where the long-planned M16-S5 regeneration converges.
+  0b. **RECONCILE THE REVIEW QUEUE - assigned here by Architect ruling, 2026-07-28.** The
+     queue's pending entries reference draft-derived ids from an old extraction run
+     (`cite_span_form_1040_2025_0001`, `form_1040_2025_root_line_a`) that no longer exist in
+     the graph or the current drafts, because the text and spans moved under them. **Real
+     workbench preflight is RED until this is fixed**, so it cannot gate any round in the
+     meantime. Reconcile AFTER regenerating, so you migrate against final ids rather than
+     ids that are about to change again. **Follow the M19-S2 precedent exactly:** a unique
+     match moves and records the old id in `aliases`; anything ambiguous or missing lands in
+     an orphaned bucket with an explicit reason. **Never silently re-point a review** - a
+     deferred human judgement attached to the wrong object is worse than an orphaned one.
+     Report counts: migrated, orphaned, and by reason.
   0. **PREREQUISITE - remove the digit-suffix anchor fallback BEFORE regenerating.**
      `_line_anchor_variants` (`tax_graph/extract/outline.py:152-159`) expands `"16"` to
      `{"16", "6"}`. Exact match wins today so nothing depends on it, but a missing index
