@@ -56,10 +56,34 @@ def run_outline_artifact_checks(
 ) -> OutlineReport:
     """Check outline, evidence, and outbound-flow intermediate artifacts."""
     issues: list[OutlineIssue] = []
+    issues.extend(_outline_empty_issues(document, outline))
     issues.extend(_outline_completeness_issues(document, outline))
     issues.extend(_candidate_span_issues(spans))
     issues.extend(_outbound_flow_issues(outline, spans, flows))
     return OutlineReport(issues=issues)
+
+
+def _outline_empty_issues(document: SourceDocumentInput, outline: OutlineTree) -> list[OutlineIssue]:
+    """A document with real text must not produce an empty outline.
+
+    This is the fail-closed boundary for structure. A zero-node outline previously
+    coexisted with a successful exit, so extraction reported success while producing
+    nothing - the M20-S3a failure. Per-anchor gaps are coverage findings; a document
+    that yields no structure at all is an error.
+    """
+    if _flatten_nodes(outline.children):
+        return []
+    if len(document.text.strip().splitlines()) < 5:
+        return []
+    return [
+        OutlineIssue(
+            artifact="outline_empty",
+            reason=(
+                f"{document.document_id}: outline produced zero nodes from "
+                f"{len(document.text.splitlines())} lines of source text"
+            ),
+        )
+    ]
 
 
 def _outline_completeness_issues(document: SourceDocumentInput, outline: OutlineTree) -> list[OutlineIssue]:

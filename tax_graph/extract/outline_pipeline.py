@@ -722,9 +722,11 @@ def _span_for_line(
         return None
     index = (document.fields or {}).get("line_anchors")
     if not isinstance(index, list):
-        raise SpanResolutionError(
-            f"{document.document_id}: line anchor index missing for line {node.line_anchor}"
-        )
+        # A document may legitimately carry no anchor index at all - form_13614_c_2025 is
+        # an intake questionnaire with 297 widgets and zero printed line numbers. That is a
+        # coverage fact to report, not a reason to abort the batch. Fail-closed lives at the
+        # DOCUMENT level (an empty outline is an error, see outline_checks), not here.
+        return None
 
     normalized_anchor = node.line_anchor.lower()
     variants = _line_anchor_variants(node.line_anchor)
@@ -739,9 +741,9 @@ def _span_for_line(
         if isinstance(entry, dict) and str(entry.get("anchor", "")).lower() in variants
     ]
     if not matching_entries:
-        raise SpanResolutionError(
-            f"{document.document_id}: line anchor {node.line_anchor} absent from line anchor index"
-        )
+        # An anchor the index does not carry is an unresolved line, reported through the
+        # document-level completeness check rather than as a fatal error mid-batch.
+        return None
 
     source_line_numbers = {
         _line_number_at_offset(document.text, entry.get("text_offset"))
@@ -755,9 +757,7 @@ def _span_for_line(
         if line_number in source_line_numbers:
             return span
 
-    raise SpanResolutionError(
-        f"{document.document_id}: line anchor {node.line_anchor} index entry resolves to no source span"
-    )
+    return None
 
 
 def _valid_text_offset(text: str, value: Any) -> bool:

@@ -7,7 +7,8 @@ import pytest
 from tax_graph.extract.inputs import load_document_input
 from tax_graph.extract.models import SourceDocumentInput
 from tax_graph.extract.outline import OutlineNode, build_candidate_spans
-from tax_graph.extract.outline_pipeline import SpanResolutionError, _span_for_line
+from tax_graph.extract.outline_checks import run_outline_artifact_checks
+from tax_graph.extract.outline_pipeline import _span_for_line
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -51,7 +52,13 @@ def test_line_span_resolution_uses_corrected_schedule_a_line_anchor_index():
 
 
 @pytest.mark.m20
-def test_line_span_resolution_fails_closed_when_anchor_is_absent_from_index():
+def test_unresolved_anchor_reports_no_span_without_aborting_the_batch():
+    """An anchor the index does not carry yields no span - it must not raise.
+
+    Raising here made every document lacking an index unprocessable, which is not
+    fail-closed but fail-fatal: form_13614_c_2025 legitimately has zero anchors.
+    The fail-closed boundary is the document-level empty-outline check instead.
+    """
     text = "Other 16 Other-from list in instructions. List type and amount:\n"
     document = _document(
         text,
@@ -65,12 +72,37 @@ def test_line_span_resolution_fails_closed_when_anchor_is_absent_from_index():
         ],
     )
 
-    with pytest.raises(SpanResolutionError, match="line anchor 16 absent"):
+    assert (
         _span_for_line(
             document,
             OutlineNode("root_line_16", "line", "Other-from list", line_anchor="16"),
             build_candidate_spans(document),
         )
+        is None
+    )
+
+
+@pytest.mark.m20
+def test_document_without_any_anchor_index_resolves_to_no_span():
+    text = "Are you a US citizen? Yes No\nDid anyone else live with you?\n"
+    document = SourceDocumentInput(
+        document_id="form_13614_c_2025",
+        kind="intake",
+        year="2025",
+        url="https://www.irs.gov/pub/irs-pdf/f13614c.pdf",
+        text=text,
+        text_path=ROOT / ".cache" / "raw" / "2025" / "form_13614_c_2025.txt",
+        fields={"fields": []},
+    )
+
+    assert (
+        _span_for_line(
+            document,
+            OutlineNode("root_line_1", "line", "citizenship", line_anchor="1"),
+            build_candidate_spans(document),
+        )
+        is None
+    )
 
 
 @pytest.mark.m20
@@ -88,12 +120,35 @@ def test_numeric_anchor_does_not_fall_back_to_shorter_suffix():
         ],
     )
 
-    with pytest.raises(SpanResolutionError, match="line anchor 16 absent"):
+    # "16" must not silently resolve through "6" - that is the D13 mis-anchoring.
+    assert (
         _span_for_line(
             document,
             OutlineNode("root_line_16", "line", "Other deductions", line_anchor="16"),
             build_candidate_spans(document),
         )
+        is None
+    )
+
+
+@pytest.mark.m20
+def test_empty_outline_on_real_text_is_a_document_level_failure():
+    """The fail-closed boundary: zero structure from real text is an error.
+
+    This is the M20-S3a failure mode - an empty outline coexisting with a
+    successful exit, so extraction reported success while producing nothing.
+    """
+    from tax_graph.extract.outline import OutlineTree
+
+    text = "\n".join(f"line {n} of real form text with content" for n in range(1, 12))
+    document = _document(text, line_anchors=[])
+    report = run_outline_artifact_checks(
+        document, OutlineTree(document_id="schedule_a_2025", kind="schedule"), [], []
+    )
+
+    assert any(issue.artifact == "outline_empty" for issue in report.issues)
+    with pytest.raises(Exception):
+        report.raise_for_issues()
 
 
 @pytest.mark.m20
