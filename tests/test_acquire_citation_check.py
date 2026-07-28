@@ -202,3 +202,37 @@ def test_citation_integrity_falls_back_to_pdf_text_when_rendered_text_misses(tmp
     report = check_citation_integrity(citations, text_dir=text_dir)
 
     assert report.ok
+
+
+@pytest.mark.m20
+def test_citation_integrity_accepts_legacy_row_renderer_formatting(tmp_path):
+    text_dir = tmp_path / "2025"
+    text_dir.mkdir()
+    (text_dir / "form_2441_2025.txt").write_text(
+        "3 Add the amounts in column (d) of line 2. Don't enter more than $3,000 if you had one qualifying person\n"
+        "Tax-exempt interest 2a b Taxable interest\n"
+        "25 Excluded benefits. If you checked \"No\" on line 22, enter the smaller of line 20 or line 21.\n",
+        encoding="utf-8",
+    )
+    report = check_citation_integrity(
+        [
+            {
+                "citation_id": "legacy_wrapper",
+                "document_id": "form_2441_2025",
+                "quoted_text": "- 3: Add the amounts in column (d) of line 2. Dont enter more than $3,000 if you had one qualifying person",
+            },
+            {
+                "citation_id": "legacy_dots",
+                "document_id": "form_2441_2025",
+                "quoted_text": "Tax-exempt interest 2a b Taxable interest",
+            },
+            {
+                "citation_id": "legacy_quotes",
+                "document_id": "form_2441_2025",
+                "quoted_text": "- 25: Excluded benefits. If you checked No on line 22, enter the smaller of line 20 or line 21.",
+            },
+        ],
+        text_dir=text_dir,
+    )
+
+    assert report.ok

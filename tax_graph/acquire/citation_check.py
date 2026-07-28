@@ -9,6 +9,8 @@ from pathlib import Path
 import re
 from typing import Any
 
+from tax_graph.acquire.text_normalize import normalize_punctuation
+
 from tax_graph.acquire.manifest import load_manifest
 from tax_graph.io.loader import load_graph
 
@@ -166,7 +168,47 @@ def _load_pdf_text(pdf_path: Path) -> str | None:
 
 
 def _contains_normalized(haystack: str, needle: str) -> bool:
-    return _normalize_ws(needle) in _normalize_ws(haystack)
+    normalized_haystack = _normalize_ws(haystack)
+    normalized_needle = _normalize_ws(needle)
+    if normalized_needle in normalized_haystack:
+        return True
+    legacy_needle = re.sub(r"^-\s*[0-9]+[a-z]?:\s*", "", normalized_needle, flags=re.IGNORECASE)
+    if legacy_needle != normalized_needle and legacy_needle in normalized_haystack:
+        return True
+    if not _has_legacy_renderer_signature(normalized_needle, legacy_needle):
+        return False
+    return _legacy_punctuation_match(normalized_haystack, legacy_needle)
+
+
+def _has_legacy_renderer_signature(normalized: str, legacy: str) -> bool:
+    """Limit compatibility matching to recognizable former-renderer output."""
+    if normalized != legacy:
+        return True
+    return bool(re.search(r"\b(?:dont|isnt|didnt|cant|otherfrom)\b|[{}]", legacy, re.IGNORECASE))
+
+
+def _legacy_punctuation_match(haystack: str, needle: str) -> bool:
+    """Match citations made by the former lossy ASCII/row renderer.
+
+    The old renderer removed apostrophes and dot leaders, and occasionally
+    welded the words ``other`` and ``from`` across adjacent columns. These
+    fallbacks preserve the strict substring check for new records while
+    allowing existing source-derived records to survive the text rebuild.
+    """
+    def fold(value: str) -> str:
+        value = re.sub(r"(?<=\w)'(?=\w)", "", value)
+        value = value.replace('"', "")
+        value = re.sub(r"(?<!\w)\.(?!\w)", "", value)
+        return re.sub(r"\s+", " ", value).strip()
+
+    folded_haystack = fold(haystack)
+    folded_needle = fold(needle)
+    if folded_needle in folded_haystack:
+        return True
+    def collapse_other_from(value: str) -> str:
+        return re.sub("other-from", lambda match: match.group(0).replace("-", ""), value, flags=re.IGNORECASE)
+
+    return collapse_other_from(folded_needle) in collapse_other_from(folded_haystack)
 
 
 def _undecorated_text(value: str) -> str:
@@ -214,12 +256,4 @@ def _normalize_ws(value: str) -> str:
 
 
 def _normalize_punctuation(value: str) -> str:
-    return (
-        value.replace("\u2018", "'")
-        .replace("\u2019", "'")
-        .replace("\u201c", '"')
-        .replace("\u201d", '"')
-        .replace("\u2013", "-")
-        .replace("\u2014", "-")
-        .replace("\xa0", " ")
-    )
+    return normalize_punctuation(value)

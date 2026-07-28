@@ -42,6 +42,70 @@ Declared focused files and evidence:
 - RAN: `.venv\Scripts\python.exe -m workbench.cli --year 2025 preflight` -> exit 0; 35 entries, 3,243 units, `legacy_mined=394`.
 - NOT RUN: none of the declared focused files.
 
+**Worker session checkpoint - M20-S2 implementation (2026-07-28):** Global canary: Ledger
+Llama. Phase canary: Ground Truth. Model: GPT-5 Codex; effort: default; usage/quota/context
+indicators are not exposed. John gave go via the current task request. Single declared step:
+rebuild deterministic form text as complete page-separated content, add a separate line-anchor
+index, promote shared punctuation normalization without deleting non-ASCII source text, fix the
+measurement tokenizer, regenerate only the 16 form text artifacts, and verify every stored-text
+consumer including citation integrity before and after. Applicable defect-ledger entries: D4,
+D6, D8, D9, D10/D11, and the exact RAN/NOT RUN evidence rule. D1-D3, D5, and D7 are not
+expected unless the workbench surface changes. No geometry, field map, address, binding, verdict,
+graph, or OCR changes are in scope.
+
+**M20-S2 pre-write checkpoint (2026-07-28):** Consumer sweep found the stored form text readers
+in `tax_graph/acquire/citation_check.py`, `tax_graph/extract/inputs.py`, and
+`tax_graph/output/structural_checks.py`; no additional production consumers were found. The
+existing `.txt` path remains the downstream API. The planned additive index is
+`line_anchors` in each form `.fields.json`, with entries pointing to emitted page/text content;
+anchor detection will not remove tokens from that content. Baseline citation integrity, the
+16-form retention snapshot, and focused test declarations are pending before implementation.
+
+**M20-S2 implementation checkpoint (2026-07-28):** The in-memory renderer now emits complete
+page-separated text with no injected anchor wrappers, and `.fields.json` carries additive
+`line_anchors` entries with offsets into that text. A shared punctuation table maps the six
+measured source characters (including bullet) without deletion; OCR normalization and citation
+comparison use the same table. Anchor tests cover split labels, box numbers, section headers,
+and option-code rows. The corrected tokenizer keeps comma-separated currency amounts intact.
+Baseline evidence: `check_graph_citations` checked 401 citations with 36 mismatches; the S1
+measurement command reported 52.2% mean retention and reproduced the 17.0%, 52.0%, and 85.7%
+headline figures. Post-change in-memory measurement is 100.0% mean retention; live `.cache/raw`
+form text has not been regenerated yet.
+
+Declared focused files: `tests/test_render_form.py`, `tests/test_measure_extraction_m20.py`,
+`tests/test_acquire_citation_check.py`, `tests/test_extract_m4.py`, `tests/test_extract_m16.py`,
+`tests/test_structural_checks_m16.py`, `tests/test_render_ocr.py`, and
+`tests/test_citation_cleanup_m18.py`. The first pytest attempt used the poisoned default
+`.test_tmp` root and failed during pytest setup with `WinError 5`; it is not test evidence.
+The writable-root rerun is the declared evidence.
+
+**M20-S2 artifact checkpoint (2026-07-28):** The 16 form PDFs were regenerated through the
+committed `render_form_pdf` path. The text layer retains every extracted word; visual rows are
+kept together for citation compatibility, and dot leaders are emitted separately rather than
+dropped. The additive line-anchor index is written with each regenerated field grid. The first
+post-write citation check rose to 69 while plain PDF text reading order was in use; no citations
+were edited. After the word-row rebuild and narrowly scoped legacy-format comparison, the gate
+is back to `checked=401 mismatches=36`, the exact baseline. New form mismatches are zero. The
+after measurement command reports 100.0% mean retention; the three old headline expectations
+therefore correctly report `reproduced: false` because they are historical baseline figures.
+
+**M20-S2 final verification checkpoint (2026-07-28):** The index implementation was corrected
+to compute offsets from emitted visual-row positions, avoid double-counting page separators,
+exclude page-header numbers, and keep numeric spans free of trailing whitespace. All 16
+regenerated field grids now pass the offset audit: `anchors=...`, `bad_offsets=0`. The expanded
+consumer run first caught `tests/test_citation_cleanup_m18.py` assuming the old wrapper-only
+source shape; `derive_clean_quote` now verifies both the cleaned candidate and the original
+legacy wrapper through the shared compatibility matcher. The rerun is green.
+
+- RAN: `$testRoot = 'C:\Users\devbox\.codex\visualizations\2026\07\28\019fa8c1-6528-7543-9058-606555d2e0cd\m20_s2_final_tests_r2'; New-Item -ItemType Directory -Force -Path $testRoot | Out-Null; $env:PYTEST_DEBUG_TEMPROOT = $testRoot; .venv\Scripts\python.exe -m pytest tests/test_render_form.py tests/test_measure_extraction_m20.py tests/test_acquire_citation_check.py tests/test_extract_m4.py tests/test_extract_m16.py tests/test_structural_checks_m16.py tests/test_render_ocr.py tests/test_citation_cleanup_m18.py tests/test_cli.py -q` -> 58 passed, 1 skipped in 23.73s; one known pytest cache ACL warning.
+- RAN: `.venv\Scripts\python.exe -c "from tax_graph.acquire.citation_check import check_graph_citations; r=check_graph_citations(year='2025', raw_store='.cache/raw', root='.'); print(f'checked={r.checked} mismatches={len(r.mismatches)}'); [print(m.citation_id) for m in r.mismatches]"` -> `checked=401 mismatches=36`; all 36 are the pre-existing Schedule D/SDTW/Form 1040 records; no new form mismatch.
+- RAN: `.venv\Scripts\python.exe -c "from pathlib import Path; import json; root=Path('.cache/raw/2025'); bad=[]; [((lambda t,f,p: ([bad.append((p.name,a['anchor'],repr(t[a['text_offset']:a['text_offset']+a['text_length']]))) for a in f.get('line_anchors',[]) if t[a['text_offset']:a['text_offset']+a['text_length']].replace('\\n','').lower()!=a['anchor']], None))(root.joinpath(p.stem+'.txt').read_text(encoding='utf-8'),json.loads(root.joinpath(p.stem+'.fields.json').read_text(encoding='utf-8')),p)) for p in sorted(root.glob('*.pdf')) if not p.name.startswith('instructions_')]; print(f'bad_offsets={len(bad)} sample={bad[:5]}')"` -> `bad_offsets=0` across all regenerated form field grids.
+- RAN: `.venv\Scripts\python.exe tools/check_ascii.py; git diff --check; .venv\Scripts\python.exe -m tax_graph.cli validate 2025; .venv\Scripts\python.exe -m workbench.cli --year 2025 preflight` -> `ASCII check OK`; diff-check exit 0; graph integrity OK; preflight passed with 3,243 units and `legacy_mined=394`.
+
+M20-S2 is implementation-complete and ready for its single local commit. No declared focused
+file is unverified; the only skip is the existing guarded test in the final consumer round. No
+push is planned for this step.
+
 **Worker session checkpoint - M18-S3b implementation (2026-07-28):** Global canary: Ledger
 Llama. Phase canary: Form 1040. Model: GPT-5 Codex; effort: default; usage/quota/context
 indicators are not exposed. John gave go via the current task request. Single declared step:

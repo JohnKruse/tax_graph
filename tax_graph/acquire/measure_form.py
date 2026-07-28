@@ -19,7 +19,7 @@ from tax_graph.acquire.render_form import extract_line_markdown
 from tax_graph.io.loader import load_yaml
 
 
-WORD_TOKEN_RE = re.compile(r"[a-z0-9$%]+", re.IGNORECASE)
+WORD_TOKEN_RE = re.compile(r"(?:\$[0-9][0-9,]*(?:\.[0-9]+)?|[a-z0-9%]+)", re.IGNORECASE)
 EXPECTED_HEADLINE_RETENTION = {
     "form_13614_c_2025": 17.0,
     "form_1040_2025": 52.0,
@@ -243,7 +243,7 @@ def render_snapshot_markdown(snapshot: dict[str, Any]) -> str:
         "",
         "Ground truth: PyMuPDF page.get_text().",
         "Metric: lowercase word-multiset intersection and difference using token pattern "
-        "`[a-z0-9$%]+`.",
+        "`(?:\\$[0-9][0-9,]*(?:\\.[0-9]+)?|[a-z0-9%]+)`.",
         "",
         f"- Form PDFs measured: {snapshot['form_count']}",
         f"- Mean shipped-text retention: {snapshot['mean_retention_percent']:.1f}% "

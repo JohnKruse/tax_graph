@@ -38,14 +38,21 @@ def test_measurement_uses_word_multiset_and_pdf_metadata(tmp_path: Path) -> None
 
     assert measurement.document_id == "sample"
     assert measurement.ground_truth_words == 6
-    assert measurement.preserved_words == 5
-    assert measurement.missing_words == 1
-    assert measurement.fabricated_words == 2
+    assert measurement.preserved_words == 6
+    assert measurement.missing_words == 0
+    assert measurement.fabricated_words == 0
     assert measurement.page_count == 1
     assert measurement.widget_count == 1
     assert measurement.layers["text"]["status"] == "present"
     assert measurement.layers["widgets"]["status"] == "present"
     assert measurement.table_probe_status == "ok"
+
+
+@pytest.mark.m20
+def test_measurement_tokenizer_keeps_currency_commas() -> None:
+    from tax_graph.acquire.measure_form import _word_counter
+
+    assert _word_counter("$1,000 $20 5") == {"$1,000": 1, "$20": 1, "5": 1}
 
 
 @pytest.mark.m20

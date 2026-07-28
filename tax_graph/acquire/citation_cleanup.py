@@ -61,7 +61,7 @@ def derive_clean_quote(citation: dict[str, Any], source_text: str) -> CitationCl
     if not candidate:
         candidate = wrapper_token.strip()
 
-    if not _contains_normalized(source_text, candidate):
+    if not _contains_normalized(source_text, candidate) and not _contains_normalized(source_text, original):
         return CitationCleanup(
             original,
             str(source_id) if source_id else None,

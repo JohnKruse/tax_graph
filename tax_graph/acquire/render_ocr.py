@@ -7,6 +7,8 @@ import json
 from pathlib import Path
 from typing import Any, Protocol
 
+from tax_graph.acquire.text_normalize import normalize_punctuation
+
 from tax_graph.config import get_config_value, resolve_secret
 
 
@@ -162,4 +164,4 @@ def _object_to_dict(value: Any) -> dict[str, Any]:
 
 
 def _ascii_normalize(value: str) -> str:
-    return value.encode("ascii", errors="ignore").decode("ascii")
+    return normalize_punctuation(value)
