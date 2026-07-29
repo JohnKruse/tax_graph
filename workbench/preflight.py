@@ -11,6 +11,8 @@ from typing import Any, Iterable
 import yaml
 
 from workbench.artifacts import ArtifactBundle, GRAPH_OBJECT_KINDS, load_artifact_bundle
+from workbench.address_verdicts import load_address_verdicts, unit_address, verdict_store_path
+from workbench.derived_reviews import build_derived_coverage
 from workbench.manifest import ManifestError, build_manifest
 from workbench.reviewer_language import contains_raw_field_name_token, is_raw_field_name
 from workbench.semantics import SUPPORTED_OPERATIONS, SemanticFormatError
@@ -191,9 +193,77 @@ def preflight_manifest(manifest: dict[str, Any], bundle: ArtifactBundle) -> dict
                     queue_id,
                 ))
 
+    try:
+        history = load_address_verdicts(verdict_store_path(bundle.root, bundle.tax_year))
+        derived = build_derived_coverage(
+            bundle.root,
+            bundle.tax_year,
+            history,
+            geometry_entries=bundle.geometry.get("entries", []) or [],
+            page_geometry=bundle.geometry.get("pages", []) or [],
+        )
+    except (OSError, ValueError) as exc:
+        issues.append(PreflightIssue("derived_coverage_failed", str(exc)))
+        derived = None
+
+    if derived is not None:
+        geometry_total = sum(
+            1
+            for item in bundle.geometry.get("entries", []) or []
+            if isinstance(item, dict) and item.get("document_id")
+        )
+        if geometry_total and derived.get("denominator") != geometry_total:
+            issues.append(PreflightIssue(
+                "derived_cell_denominator",
+                f"derived coverage has {derived.get('denominator', 0)} cells but geometry has {geometry_total}",
+            ))
+        state_total = sum(int(derived.get("states", {}).get(state, 0)) for state in ("unreviewed", "approved", "needs_recheck"))
+        if state_total != int(derived.get("denominator", 0)):
+            issues.append(PreflightIssue(
+                "derived_cell_state_gap",
+                f"derived coverage states total {state_total} but denominator is {derived.get('denominator', 0)}",
+            ))
+
     if issues:
         raise PreflightError(issues)
-    return coverage_report(manifest)
+    queue_coverage = coverage_report(manifest)
+    queue_addresses = {
+        address
+        for entry in manifest.get("entries", []) or []
+        for unit in entry.get("units", []) or []
+        if isinstance(unit, dict)
+        if unit.get("field_name") or any(
+            isinstance(ref, dict) and ref.get("object_type") == "field_control"
+            for ref in unit.get("object_refs", []) or []
+        )
+        for address in (unit_address(unit),)
+        if address
+    }
+    derived_addresses = {
+        address
+        for item in (derived or {}).get("cells", [])
+        if isinstance(item, dict)
+        for address in (str(item.get("address") or ""), str(item.get("base_address") or ""))
+        if address
+    }
+    divergence = [
+        {
+            "code": "queue_cell_missing_from_derived",
+            "address": address,
+            "reason": "queue review scope has no matching graph-derived cell",
+        }
+        for address in sorted(queue_addresses - derived_addresses)
+    ]
+    return {
+        **queue_coverage,
+        "queue": queue_coverage,
+        "derived": derived or {
+            "denominator": 0,
+            "states": {"unreviewed": 0, "approved": 0, "needs_recheck": 0},
+            "cells": [],
+        },
+        "divergence_findings": divergence,
+    }
 
 
 def coverage_report(manifest: dict[str, Any]) -> dict[str, Any]:

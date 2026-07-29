@@ -34,12 +34,18 @@ def test_real_2025_preflight_passes_with_all_coverage_dimensions() -> None:
     assert report["units"] >= report["entries"]
     assert set(report) == {
         "entries", "units", "by_kind", "by_document", "by_object", "by_geometry",
-        "by_display_name_provenance", "legacy_mined_by_document",
+        "by_display_name_provenance", "legacy_mined_by_document", "queue", "derived",
+        "divergence_findings",
     }
     assert report["by_geometry"]["located"] > 0
     assert report["by_geometry"]["unlocated"] > 0
     assert report["by_display_name_provenance"]["legacy_mined"] > 0
     assert sum(report["legacy_mined_by_document"].values()) == report["by_display_name_provenance"]["legacy_mined"]
+    assert report["queue"]["units"] == report["units"]
+    assert report["derived"]["denominator"] == 1921
+    assert report["derived"]["states"] == {"unreviewed": 1921, "approved": 0, "needs_recheck": 0}
+    assert report["derived"]["blast_radius"]["invalidated"] == 0
+    assert report["divergence_findings"] == []
 
 
 @pytest.mark.m15

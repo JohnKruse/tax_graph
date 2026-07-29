@@ -1,0 +1,42 @@
+tax_year: 2025
+entries:
+- queue_id: authored_review_qdcgt_worksheet_2025
+  kind: promotion_review
+  document_id: form_1040_2025
+  created_date: '2026-07-09'
+  created_by: tax_graph.architect
+  summary: Review the hand-AUTHORED QDCGT worksheet subunit (qdcgt_line_1..25) and
+    line 16 routing - human-authored objects, cited per line from the 1040 instructions;
+    witnessed live by OTS 100/100 at the tax line and PolicyEngine 20/20 on the frozen
+    corpus, but no human has read the worksheet lines yet.
+  machine_witnesses:
+  - live OTS fuzz 100/100 at line 16 (seed 20260710)
+  - PolicyEngine liability 20/20 (8 exact, 12 table-tolerance)
+  - pytest green
+- queue_id: authored_review_schedule_d_2025_tax_worksheet
+  kind: authored_worksheet_review
+  document_id: instructions_schedule_d_2025
+  created_date: '2026-07-11'
+  created_by: tax_graph.m13.architect
+  summary: Review the hand-authored 47-line Schedule D Tax Worksheet subunit (cited
+    per line block). The shipped OTS reference INVERTS the lines-33-43 gate and hardcodes
+    197390 where the IRS text says 197300, so the IRS text was followed and OTS is
+    not a witness for the 20/25/28-percent components; maintainer notified by John
+    2026-07-11.
+  machine_witnesses:
+  - hand-traced scenarios match line by line (pytest -m m13)
+  - parameter values cross-checked against the 0.32 bracket floor
+  - drills wrong_sdtw_25_rate_parameter and wrong_sdtw_breakpoint_parameter caught
+    at L3
+- queue_id: routing_review_schedule_d_2025_line_20_decision
+  kind: decision_review
+  document_id: schedule_d_2025
+  created_date: '2026-07-11'
+  created_by: tax_graph.m13.architect
+  summary: Review the Schedule D line 17/20 routing that selects the Schedule D Tax
+    Worksheet over the QDCGT worksheet (MIN/MAX gate encoding of the form's yes/no
+    questions), including the scope assumption that Form 4952 is never filed by supported-profile
+    filers.
+  machine_witnesses:
+  - hand-traced 1250/collectibles/adversarial scenarios green (pytest -m m13)
+  - M11 QDCGT regression byte-identical (13777)

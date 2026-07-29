@@ -14,6 +14,81 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## Current state (2026-07-27)
 
+**Worker session checkpoint - M20-S5-1 implementation (2026-07-29):** Global canary: Ledger
+Llama. Phase canary: Ground Truth. Model: GPT-5 Codex; effort: default; usage/quota/context
+indicators are not exposed. John gave go via the current task request. Single declared step:
+add the address-keyed verdict ledger, normalized fingerprints, graph-derived three-state cell
+coverage, blast-radius report, rollover seam, and the three authored-record carryover ALONGSIDE
+the existing queue path. Keep the existing queue gate, queue file, reconciler, and CLI untouched;
+S5-2 owns retirement after this round is accepted. Applicable defect-ledger entries: D11, D13,
+D4, D6, D8, D9, D10, and the exact RAN/NOT RUN evidence rule. D1-D3, D5, and D7 are not
+expected unless the implementation unexpectedly crosses the frontend or session scroll surfaces.
+No draft promotion, generated citation or label hand edit, graph semantic change, geometry
+change, field-map change, or human-review claim is in scope.
+
+**M20-S5-1 pre-write checkpoint (2026-07-29):** Read-only consumer mapping found the queue is
+loaded by the workbench bundle, manifest, preflight, CLI, legacy verdict applier, scope migrator,
+example verifier, extension path, and instruction promotion. This round will add the derived
+path without removing or rewiring any of those consumers. Focused files declared for this round
+are the new `tests/test_review_verdicts_m20.py`, `tests/test_review_preflight_m15.py`,
+`tests/test_review_manifest_m15.py`, `tests/test_workbench_m15.py`, and
+`tests/test_workbench_server_m15.py`; the existing queue reconciliation test remains in scope
+and is not deleted or replaced in S5-1. No implementation or test result is claimed yet.
+
+**M20-S5-1 implementation checkpoint (2026-07-29):** Added `workbench/address_verdicts.py` and
+its schema for append-only JSONL address verdicts, normalized label/citation fingerprints,
+three-state derived coverage, blast-radius reporting, and explicit rollover candidates. Added
+`workbench/derived_reviews.py` to walk the 1,921 physical controls without reading the queue,
+added dual-path derived coverage to preflight and CLI reporting, and preserved the three curated
+Architect records in `review_context/2025/authored_reviews.yaml`. The existing queue gate,
+manifest, reconciler, queue file, and queue CLI remain unchanged.
+
+- RAN: `$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\.codex\visualizations\2026\07\29\019fad2c-003b-7471-a819-62a031ceac62\m20_s5_1_pytest2'; .venv\Scripts\python.exe -m pytest tests/test_review_verdicts_m20.py -q` -> 6 passed in 7.55s; one known pytest cache ACL warning.
+- RAN: `$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\.codex\visualizations\2026\07\29\019fad2c-003b-7471-a819-62a031ceac62\m20_s5_1_preflight'; .venv\Scripts\python.exe -m pytest tests/test_review_preflight_m15.py -q` -> 2 passed in 482.05s; one known pytest cache ACL warning.
+
+**M20-S5-1 pre-consumer checkpoint (2026-07-29):** The new ledger and dual gate are green on
+the focused files. Before the remaining consumer tests and non-promoting gates, the expected
+production invariants are unchanged: queue report `entries=35`, `units=2980`, derived denominator
+`1921`, `derived states=unreviewed:1921, approved:0, needs_recheck:0`, `legacy_mined=394`, and
+strict citation mismatches `36`. S5-2 queue retirement remains out of scope.
+
+- NOT RUN as evidence: `$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\.codex\visualizations\2026\07\29\019fad2c-003b-7471-a819-62a031ceac62\m20_s5_1_consumers'; .venv\Scripts\python.exe -m pytest tests/test_workbench_m15.py tests/test_workbench_server_m15.py -q` -> 7 passed, 3 setup errors in 198.60s because the declared temp-root directory did not exist; rerun required.
+- RAN: `$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\.codex\visualizations\2026\07\29\019fad2c-003b-7471-a819-62a031ceac62\m20_s5_1_consumers2'; .venv\Scripts\python.exe -m pytest tests/test_workbench_m15.py tests/test_workbench_server_m15.py -q` -> 10 passed in 202.61s; one known pytest cache ACL warning. This covers both declared consumer files.
+- RAN: `$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\.codex\visualizations\2026\07\29\019fad2c-003b-7471-a819-62a031ceac62\m20_s5_1_manifest_a'; .venv\Scripts\python.exe -m pytest tests/test_review_manifest_m15.py -q -k "not manifest_writes_stable_json_and_keeps_scope_roles_out_of_public_refs and not manifest_hash_pins_every_file_in_example_artifact_directory"` -> 5 passed, 2 deselected in 360.12s; one known pytest cache ACL warning.
+- RAN: `$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\.codex\visualizations\2026\07\29\019fad2c-003b-7471-a819-62a031ceac62\m20_s5_1_manifest_b'; .venv\Scripts\python.exe -m pytest tests/test_review_manifest_m15.py::test_manifest_writes_stable_json_and_keeps_scope_roles_out_of_public_refs -q` -> 1 passed in 182.09s; one known pytest cache ACL warning.
+- RAN: `$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\.codex\visualizations\2026\07\29\019fad2c-003b-7471-a819-62a031ceac62\m20_s5_1_manifest_c'; .venv\Scripts\python.exe -m pytest tests/test_review_manifest_m15.py::test_manifest_hash_pins_every_file_in_example_artifact_directory -q` -> 1 passed in 358.68s; one known pytest cache ACL warning. Together these three commands verify all 7 tests in `tests/test_review_manifest_m15.py`.
+- RAN: `$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\.codex\visualizations\2026\07\29\019fad2c-003b-7471-a819-62a031ceac62\m20_s5_1_queue'; .venv\Scripts\python.exe -m pytest tests/test_review_queue_reconciliation_m20.py -q` -> 2 passed in 0.18s; one known pytest cache ACL warning. The existing reconciler test remains green and unchanged, as required by S5-1.
+
+**M20-S5-1 pre-gate checkpoint (2026-07-29):** All declared focused and consumer pytest files
+are green, including the unchanged queue reconciler. The remaining checks are the module-form
+real preflight/CLI output, graph validation, strict citation integrity, ASCII, and diff checks.
+No queue file, generated draft, promoted artifact, graph semantic, geometry, field-map, or
+reconciler code has been changed. S5-2 retirement is not being started.
+
+**M20-S5-1 divergence correction checkpoint (2026-07-29):** The first production report counted
+non-cell queue scopes as divergence and did not match repeatable cells through their base address.
+The comparison now limits queue-side addresses to field-control units and accepts both the
+derived physical address and its base address. The real preflight command passed before this
+correction; it must be rerun, along with the focused preflight test, before the final evidence is
+declared. The existing queue gate remains unchanged.
+
+- NOT RUN as evidence: `$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\.codex\visualizations\2026\07\29\019fad2c-003b-7471-a819-62a031ceac62\m20_s5_1_preflight_correction'; .venv\Scripts\python.exe -m pytest tests/test_review_preflight_m15.py::test_real_2025_preflight_passes_with_all_coverage_dimensions -q` -> 1 failed in 241.37s because the first comparison correction still omitted a geometry-only node address (`schedule_d_2025_line_21_capital_loss_limited`); code was then corrected to recover node ids from geometry.
+- RAN: `$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\.codex\visualizations\2026\07\29\019fad2c-003b-7471-a819-62a031ceac62\m20_s5_1_verdict_fix'; .venv\Scripts\python.exe -m pytest tests/test_review_verdicts_m20.py -q` -> 6 passed in 7.68s; one known pytest cache ACL warning.
+- RAN: `$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\.codex\visualizations\2026\07\29\019fad2c-003b-7471-a819-62a031ceac62\m20_s5_1_preflight_final'; .venv\Scripts\python.exe -m pytest tests/test_review_preflight_m15.py::test_real_2025_preflight_passes_with_all_coverage_dimensions -q` -> 1 passed in 201.05s; one known pytest cache ACL warning. This is the focused preflight verification after the geometry-only node correction.
+- RAN: `.venv\Scripts\python.exe -m workbench.cli --year 2025 preflight` -> exit 0 in 198.1s; queue entries 35 and units 2980; derived cells 1921 with approved=0, needs_recheck=0, unreviewed=1921; derived blast radius 0; queue/derived divergence findings 0; legacy_mined=394; strict citation mismatches remain 36.
+- RAN: `.venv\Scripts\python.exe tools/check_ascii.py` -> ASCII check OK.
+- RAN: `git diff --check` -> exit 0.
+- RAN: `.venv\Scripts\python.exe -m tax_graph.cli validate 2025` -> graph integrity OK; 18 documents, 441 nodes, 2 tables, 409 edges, 17 rules, 401 citations, 2 decisions, 90 routing edges, 12 triggers, 4 expectations; jsonschema ON.
+- RAN: `.venv\Scripts\python.exe -c "from tax_graph.acquire.citation_check import check_graph_citations; from tax_graph.cli import DEFAULT_CITATION_SOURCE_MAP; r=check_graph_citations(year='2025', raw_store='.cache/raw', root='.', source_map=DEFAULT_CITATION_SOURCE_MAP); print(f'checked={r.checked} strict_mismatches={len(r.mismatches)}')"` -> checked=401 strict_mismatches=36.
+- **M20-S5-1 rollover seam correction (2026-07-29):** Final diff review caught that the first
+  year-removal regex could corrupt legitimate identifiers such as `form_1040`. It now removes
+  only a leading year, explicit `year=`/`tax_year=` components, and the known legacy
+  `column=..._YYYY` token. It does not edit any graph artifact.
+- RAN: `$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\.codex\visualizations\2026\07\29\019fad2c-003b-7471-a819-62a031ceac62\m20_s5_1_rollover_fix'; .venv\Scripts\python.exe -m pytest tests/test_review_verdicts_m20.py -q` -> 7 passed in 7.59s; one known pytest cache ACL warning.
+- RAN: `$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\.codex\visualizations\2026\07\29\019fad2c-003b-7471-a819-62a031ceac62\m20_s5_1_rollover_fix_final'; .venv\Scripts\python.exe -m pytest tests/test_review_verdicts_m20.py -q` -> 7 passed in 7.51s; one known pytest cache ACL warning. This is the final focused result after tightening the year-token regex to 19xx/20xx.
+- RAN: `.venv\Scripts\python.exe tools/check_ascii.py` -> ASCII check OK after the final rollover edit.
+- RAN: `git diff --check` -> exit 0 after the final rollover edit.
+
 **Worker session checkpoint - M20-S3a-1 implementation (2026-07-29):** Global canary: Ledger
 Llama. Phase canary: Ground Truth. Model: GPT-5 Codex; effort: default; usage/quota/context
 indicators are not exposed. John gave go via the current task request. Single declared step:
@@ -812,9 +887,66 @@ the instruction slot; Authority explicitly reports missing authored coverage; do
 citation coverage is visible beside policy counts; and the dossier heading duplication/order
 warts are fixed. No promoted artifacts, graph semantics, verdicts, or citation records changed.
 
-**BALL: WORKER - M20-S3a-2 (reconcile the queue against settled ids, restore preflight).
-S3a-1 is ACCEPTED. One open question for John below: `form_8949_2025` caption coverage is
-**28.7%** and needs a ruling before any promotion.**
+**BALL: WORKER - M20-S5-1 (build the address-keyed derived verdict path ALONGSIDE the queue;
+preflight gates on both). S3a-2 is ACCEPTED and is also SUPERSEDED BY DESIGN - see John's
+ruling below. S5 was SPLIT on John's call so preflight never goes dark: S5-1 adds the derived
+path and touches no existing gate; S5-2 retires the queue only after S5-1 is accepted.**
+
+**ARCHITECT VERIFICATION - M20-S3a-2 (Claude Opus 5, 2026-07-29). ACCEPTED.** Re-measured
+independently rather than read from the report:
+- **Counts confirmed exactly:** 198 refs re-pointed with aliases, 263 orphaned, and all eight
+  orphan-reason counts match the Worker's report.
+- **Uniqueness holds:** 198 distinct old ids aliased, **0** non-unique re-points, **0**
+  destination collisions, **0** ids both aliased and orphaned. The core invariant of the round
+  ("never silently re-point a review") is satisfied.
+- **Reproducible AND idempotent** - the claim most worth testing independently. Re-running
+  `tax-graph review reconcile-queue` against the committed state produced the same 198/263 and
+  a **byte-identical** file (`git diff --quiet` clean). This is a real reconciler, not a
+  one-shot script whose output happened to be committed.
+- **D13 held:** `cite_span_schedule_a_2025_0036` is orphaned as `no_certain_content_match`,
+  appears in ZERO alias lists, and carries no auto-suggested replacement - correct, even though
+  the answer was known.
+- **Ratchets exact:** `legacy_mined=394`, strict citation mismatches **36**, `field_control`
+  **1,921**, `validate 2025` clean (441 nodes, 401 citations), preflight exit 0
+  (`entries=35`, `units=2980`), 17 focused/consumer tests pass, ASCII OK.
+- **An Architect false positive, recorded so it is not re-raised:** a suspected review-coverage
+  hole (209 live citation ids losing active refs) is NOT real. These refs point at
+  `graph/2025/_drafts/<id>/review.md` BY DESIGN - they are promotion reviews OF drafts - and
+  draft ids share a namespace with promoted ids, so a naive liveness test looks alarming and
+  is not.
+- **Two findings, neither blocking:** (a) 123 of 263 orphans carry no `candidate_object_ids`
+  (`no_certain_content_match`=42, `same_id_reused_with_changed_citation_evidence`=51,
+  `missing_old_source`=30); the reconciler DID the matching analysis and discarded everything
+  except the word "uncertain", which is a soft D11 gap. (b) **"D13 closed by generation" is
+  true of the DRAFT and false of the promoted graph** - the wrong record is still live at
+  `graph/2025/citations/schedule-a.yaml:1` and still carried by the line-16 node at
+  `graph/2025/nodes/schedule-a.yaml:7`; `cite_span_schedule_a_2025_0083` exists only under
+  `_drafts/`. That is the correct state (nothing should be promoted yet), but the wording
+  reads as though the graph is fixed. Neither finding is worth acting on, because of the
+  ruling below.
+
+**JOHN'S RULING - THE REVIEW QUEUE IS THE WRONG SHAPE (2026-07-29). This supersedes the
+reconciler.** Established in conversation, and verified against the repo before adoption:
+- **There are ZERO human verdicts anywhere.** No verdict/reviewed_by/disposition field exists
+  in the queue; `.workbench_state/2025/sessions` is EMPTY and gitignored. The queue's
+  `pending`/`deferred`/`accepted_local` statuses are all machine-set. **The 198 re-points and
+  263 orphan records therefore preserved no human judgement at all.** John has reviewed only
+  the review UI to date.
+- **The churn was an identity defect, not a matcher defect.** The queue keys review points on
+  generated sequence ids (`cite_span_schedule_a_2025_0036`), which are an artifact of the
+  order the extractor emitted spans. Proof from the same run: **100% of the 461 citation refs
+  churned, while the 1,921 field-control refs keyed on canonical addresses churned 0%.** This
+  violates the project's own rule that identity comes only via canonical addresses.
+- **The graph already has stable cell identity.** `node_id:
+  schedule_a_2025_root_line_16_amount` IS a canonical address (document, structural path,
+  line, role), derived from form shape and stable across regeneration. The queue is a second
+  copy of what the graph already knows, and coverage should be a traversal, not a migrated
+  file.
+- **Verdicts must bind to CONTENT, not only to address.** Same `node_id` cites `0036` (wrong
+  line-6 text) before regeneration and `0083` (correct line-16 text) after. A boolean hung on
+  the node id would silently transfer a human sign-off onto text nobody read - worse than 263
+  orphans, because it is invisible. This is the one property the orphan bucket was protecting
+  and the one thing that must survive the redesign.
 
 **ARCHITECT VERIFICATION - M20-S3a-1 (Claude Opus 5, 2026-07-29). ACCEPTED.** Re-measured
 rather than read from the report:
@@ -2592,6 +2724,121 @@ TY2026 docs drop.
 
 ## From Architect
 
+- **M20-S5-1 TASK - BUILD THE DERIVED VERDICT PATH ALONGSIDE THE QUEUE (Architect, Claude
+  Opus 5, 2026-07-29). John's ruling; supersedes the S3a-2 reconciler. SPLIT on John's call
+  so that preflight NEVER GOES DARK - this round ADDS the derived path and changes nothing
+  about the existing gate; M20-S5-2 retires the queue only once both are green together.**
+  Read the ACCEPTED-but-superseded S3a-2 verification and John's ruling in Current state
+  first - especially the two verified facts this round rests on: **zero human verdicts exist
+  anywhere**, and **100% of generated-id refs churned while 0% of address-keyed refs did**.
+  Ledger: **D11** (records must persist - here as append-only history), **D13** (never
+  hand-patch generated output; the corollary this round adds is that human data must never
+  live in a machine-rewritten file), D4, D6, D8, D9, D10, and the RAN/NOT RUN rule.
+  **The problem:** `review_queue/2025/deferred_review.yaml` is a materialized worklist keyed
+  on unstable generated ids. Every regeneration invalidates it wholesale, and reconciling it
+  is a permanent tax on running the pipeline - which is supposed to be the end state, not a
+  thing we tiptoe around. Nothing of human value is stored in it today, so this is the LAST
+  CHEAP MOMENT to change the shape. Once real verdicts exist, wiping stops being free.
+  1. **Stand up an append-only verdict store, keyed by canonical address.** A verdict records
+     the address (`node_id` / control address), a **content fingerprint of what was actually
+     reviewed** (label plus cited text), the judgement, who, and when. **Never delete a
+     verdict** - superseded ones are the audit trail of what a human saw and approved, which
+     is exactly the record tax software most regrets discarding. Current state is a query for
+     the newest verdict matching current content.
+  2. **Do NOT store verdicts inside the generated node/citation YAML.** Those files are
+     rewritten by the pipeline; human data there is clobbered on the next regeneration. This
+     is D13's corollary. Keep the store separate and key it on address - because node ids are
+     stable, that join is TOTAL and cannot orphan the way the citation-keyed queue did.
+  3. **Normalize before fingerprinting** - collapse whitespace, normalize dashes and quotes.
+     If the extraction METHOD changes (new model, different quote characters), an unnormalized
+     hash shifts on every cell and you get a spurious full wipe with no semantic change. Given
+     this project has already been through a 52%->100% text migration, that is not
+     hypothetical. Pin it with a test: same semantic text, different whitespace/quoting, same
+     fingerprint.
+  4. **Make coverage a graph walk, computing three states per cell.** No verdict ->
+     `unreviewed`. Verdict with matching fingerprint -> `approved`. Verdict whose fingerprint
+     no longer matches -> `approved, content changed, needs recheck`. **That third state IS
+     the orphan bucket, derived at read time instead of migrated and stored** - so there is
+     nothing to reconcile and nothing to clean out, ever. A -> B -> A content flip revalidates
+     the original approval for free.
+  5. **Report reingest blast radius BEFORE it lands.** Reingest must stop being scary: with
+     content fingerprinting, blast radius is proportional to actual text change, not to the
+     act of regenerating. Emit "this reingest invalidates N of M approvals, here they are" so
+     it is a decision rather than a surprise.
+  6. **Carry the three hand-authored entries across by hand.** Nearly all 97 queue entries are
+     machine-emitted and regenerable (62 `instruction_join_review` from
+     `tax_graph.ingest.instruction_promotion`, 9 `promotion_review` from `tax_graph.promote`,
+     the field maps). **Three carry curated Architect prose that is NOT derivable and must be
+     preserved:** `authored_review_qdcgt_worksheet_2025` and the two `decision_review` entries
+     (`created_by: tax_graph.m13.architect`) - their `summary` and `machine_witnesses` text.
+     Everything else is wiped and re-derived.
+  7. **Year rollover is the same mechanism plus one rule - build the seam, do not exercise it.**
+     Match on address-minus-year plus fingerprint, so an unchanged TY2026 line can inherit its
+     TY2025 approval. **A carried approval is its OWN visible state with provenance**
+     ("carried from TY2025, approved by X on <date>, text identical"), bulk-acceptable and
+     per-cell revocable - never a silent copy. Identical text across a year boundary is weaker
+     evidence than within one: "Enter the amount from line 15" can be character-identical
+     while line 15's computation changed underneath it. Within a year, identical text can mean
+     still-approved; across years it means probably.
+  8. **PREFLIGHT GATES ON BOTH, AND THE QUEUE PATH IS UNTOUCHED. This is the point of the
+     split.** Add the derived coverage check as a SECOND preflight assertion beside the
+     existing queue check; both must pass in the same run. **Do NOT remove, weaken, or rewire
+     the existing queue gate, do NOT delete `review_queue/2025/deferred_review.yaml`, and do
+     NOT touch `reconcile_generated_review_queue` or `tax-graph review reconcile-queue`** -
+     all of that is S5-2's job, after this round proves the derived path in production. The
+     failure this ordering exists to prevent is a window where neither gate is trustworthy.
+  9. **Report the two paths side by side; do NOT expect them to agree.** The queue currently
+     carries 263 orphans and stale draft-era state, so equality is the WRONG gate and forcing
+     it would mean corrupting the derived path to match a broken artifact. What must hold is
+     that the derived path covers **the same cell denominator the graph reports (1,921
+     controls)** with every cell landing in exactly one of the three states, and that any cell
+     the queue covers but the derived path does not is a NAMED finding with a reason. Print
+     both counts. Divergence is expected and is the data S5-2 needs.
+  10. **Do NOT** promote any draft, hand-edit any generated citation or label, change graph
+     semantics, or alter geometry/field maps in this round. Promotion is gated on the derived
+     reviews actually being worked, and that is a later round.
+  Tier 3. Declared files plus honest `RAN:`/`NOT RUN:` on every one. Per D9, grep for
+  consumers of the queue SHAPE (workbench manifest, preflight, sessions, verdicts), not just
+  of the file. ASCII, `git diff --check`, module-form `validate 2025`, real preflight with
+  `legacy_mined` reported explicitly (expect **394** - this round promotes nothing), and
+  `check_citation_integrity` with the STRICT number (expect **36**). Short pytest temp root;
+  no `--basetemp`. ONE local commit; no push.
+  Stop conditions: any design that puts a verdict inside a generated file; any fingerprint
+  scheme that cannot survive a whitespace/quoting change; the three authored entries not being
+  preservable (stop and report rather than dropping them); **any need to modify the existing
+  queue gate to make the derived path pass** (that is the signal the split was right - report
+  it and stop); `legacy_mined` rising, strict mismatches above 36, or the 1,921 cell
+  denominator changing; or a quota/environment failure.
+
+- **M20-S5-2 TASK - RETIRE THE QUEUE AND THE RECONCILER (Architect, Claude Opus 5,
+  2026-07-29). Runs ONLY after S5-1 lands and John accepts the side-by-side report. Small and
+  mostly deletion.** Ledger: **D8** (a promoted artifact's SHAPE is a contract - the queue
+  file IS such a contract until this round removes it), **D9** (grep for consumers of the
+  SHAPE, not the file - the M20-S2d lesson was that a format consumer does not show up in a
+  file-reader grep), D4, D6, D11.
+  **Precondition, verify before touching anything:** S5-1's dual-gate preflight is green on
+  main, and the side-by-side divergence report has been read and accepted. If the derived path
+  has ANY unexplained cell, stop - that is what this round's precondition exists to catch.
+  1. **Flip preflight to gate on the DERIVED coverage alone**, then remove the queue
+     assertion. In that order, in the same commit, so no intermediate state has zero gates.
+  2. **Delete the superseded machinery:** `reconcile_generated_review_queue`,
+     `tax-graph review reconcile-queue`, the `orphaned` bucket in
+     `schemas/deferred_review_queue.schema.json`, and `review_queue/2025/deferred_review.yaml`
+     itself.
+  3. **Do NOT delete `tests/test_review_queue_reconciliation_m20.py` silently** - state
+     explicitly what derived-path test replaces each behaviour it pinned, and delete it only
+     once that replacement exists and is green. A deleted test with no named successor is a
+     silent coverage loss (D11).
+  4. **The three authored entries must already be carried** by S5-1. Re-verify they survive
+     the queue file's deletion; if they do not, STOP - they are not derivable and cannot be
+     regenerated.
+  Tier 3. Declared files plus honest `RAN:`/`NOT RUN:`. ASCII, `git diff --check`,
+  module-form `validate 2025`, real preflight with `legacy_mined` (expect **394**), and
+  `check_citation_integrity` STRICT (expect **36**). Short pytest temp root. ONE local commit;
+  no push.
+  Stop conditions: S5-1 not accepted; any moment where preflight asserts nothing; any authored
+  entry not surviving; a deleted test with no named successor; or a quota/environment failure.
+
 - **M20-S2d TASK - REWIRE THE SPAN MATCHER TO THE LINE-ANCHOR INDEX (Architect, Claude
   Opus 5, 2026-07-28). Small, mechanical, unblocks S3a.** Your own S3a block report
   diagnosed this correctly - it is an Architect scoping error in the S2 task, not a defect
@@ -2831,7 +3078,11 @@ TY2026 docs drop.
   exists to avoid); `legacy_mined` rising, strict citation mismatches above 36, or the 1,921
   cell denominator changing; or a quota/environment failure.
 
-- **[DONE] M20-S3a-2 TASK - RECONCILE THE REVIEW QUEUE AND RESTORE PREFLIGHT (Architect, Claude
+- **[DONE `d59cbe5`, Architect-verified and ACCEPTED - but SUPERSEDED BY DESIGN in M20-S5.
+  The work was correct; the artifact it reconciled is the wrong shape. Kept as history and as
+  the evidence for the redesign: 100% of generated-id refs churned, 0% of address-keyed refs
+  did, and zero human verdicts existed to preserve.]
+  M20-S3a-2 TASK - RECONCILE THE REVIEW QUEUE AND RESTORE PREFLIGHT (Architect, Claude
   Opus 5, 2026-07-29). Runs AFTER S3a-1 lands, against settled ids.** Ledger: **D11**
   (findings/records must persist), D10, D4, D6, D9.
   **The problem:** the queue's pending entries reference draft-derived ids from an old

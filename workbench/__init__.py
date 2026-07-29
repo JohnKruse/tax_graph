@@ -22,6 +22,18 @@ from workbench.artifacts import (
 )
 from workbench.geometry import GeometryHit, GeometryIndex
 from workbench.verdicts import ReviewVerdict, emit_verdict, load_verdict
+from workbench.address_verdicts import (
+    address_without_year,
+    append_address_verdict,
+    derive_cell_coverage,
+    load_address_verdicts,
+    report_blast_radius,
+    review_content_fingerprint,
+    rollover_candidates,
+    unit_address,
+    unit_fingerprint,
+    verdict_store_path,
+)
 from workbench.schema import (
     SchemaValidationError,
     load_schema,
@@ -60,6 +72,16 @@ __all__ = [
     "ReviewVerdict",
     "emit_verdict",
     "load_verdict",
+    "append_address_verdict",
+    "load_address_verdicts",
+    "review_content_fingerprint",
+    "derive_cell_coverage",
+    "report_blast_radius",
+    "rollover_candidates",
+    "address_without_year",
+    "unit_address",
+    "unit_fingerprint",
+    "verdict_store_path",
     "SchemaValidationError",
     "load_schema",
     "validate_projection",

@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "review_address_verdict.schema.json",
+  "title": "Address-keyed human review verdict",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "verdict_id", "tax_year", "address", "content_fingerprint",
+    "reviewed_content", "judgement", "reviewer_id", "reviewed_at"
+  ],
+  "properties": {
+    "verdict_id": {"type": "string", "pattern": "^[a-z0-9_]+$"},
+    "tax_year": {"type": "integer", "minimum": 1900, "maximum": 2100},
+    "address": {"type": "string", "minLength": 1},
+    "content_fingerprint": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "reviewed_content": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["label", "cited_text"],
+      "properties": {
+        "label": {"type": "string"},
+        "cited_text": {"type": "array", "items": {"type": "string"}}
+      }
+    },
+    "judgement": {"type": "string", "minLength": 1},
+    "reviewer_id": {"type": "string", "minLength": 1},
+    "reviewed_at": {"type": "string", "format": "date-time"},
+    "provenance": {"type": "object", "additionalProperties": true}
+  }
+}

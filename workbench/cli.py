@@ -83,8 +83,16 @@ def main(argv: list[str] | None = None) -> int:
             print(str(exc))
             return 1
         print(f"review preflight passed - {args.year}")
-        print(f"  entries: {report['entries']}")
-        print(f"  units: {report['units']}")
+        print(f"  queue entries: {report['queue']['entries']}")
+        print(f"  queue units: {report['queue']['units']}")
+        derived = report["derived"]
+        print(f"  derived cells: {derived['denominator']}")
+        print(
+            "  derived states: "
+            + ", ".join(f"{key}={value}" for key, value in sorted(derived["states"].items()))
+        )
+        print(f"  derived blast radius: {derived['blast_radius']['invalidated']}")
+        print(f"  queue/derived divergence findings: {len(report['divergence_findings'])}")
         for dimension in (
             "by_kind", "by_document", "by_object", "by_geometry",
             "by_display_name_provenance", "legacy_mined_by_document",
