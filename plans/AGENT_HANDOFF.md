@@ -665,8 +665,16 @@ the instruction slot; Authority explicitly reports missing authored coverage; do
 citation coverage is visible beside policy counts; and the dossier heading duplication/order
 warts are fixed. No promoted artifacts, graph semantics, verdicts, or citation records changed.
 
-**BALL: WORKER - M20-S3a (regenerate from the corrected text + reconcile the review queue).
-S3b-2 is ACCEPTED; anchor identity is now sound. Task block under From Architect.**
+**BALL: WORKER - M20-S3a-1 (regenerate + account for every diff). S3a is SPLIT on John's
+call, 2026-07-29: S3a-1 regeneration, then S3a-2 queue reconciliation. S3b-2 is ACCEPTED,
+anchor identity is sound, and main is GREEN at `3a5b753`.**
+
+**WHY THE SPLIT (John, 2026-07-29):** this phase's own record. Every big round needed
+follow-ups - S2 required S2b, S2d, and S2e - while every single-purpose round (S2d, S2e,
+S3b-2) landed clean on the first pass. **S3a-1 writes to hundreds of promoted citations**,
+which is the most expensive place in the project to bundle a mistake. The cost of splitting
+is that preflight stays red one round longer; that is worth paying, since preflight is
+already red and a botched regeneration is far more expensive than a delayed gate.
 
 **ARCHITECT VERIFICATION - M20-S3b-2 (Claude Opus 5, 2026-07-28). ACCEPTED.** Re-measured
 with the Architect's own cross-check rather than read from the report:
@@ -2564,7 +2572,80 @@ TY2026 docs drop.
   promoted artifact; a rule you cannot justify against the mis-assignment failures above;
   or a quota/environment failure.
 
-- **[BLOCKED behind M20-S3b - the outline cannot be built from the corrected text]
+- **M20-S3a-1 TASK - REGENERATE, AND ACCOUNT FOR EVERY DIFF (Architect, Claude Opus 5,
+  2026-07-29). Split from the old single S3a on John's call.** This is the round that writes
+  to HUNDREDS of promoted citations, so scope is deliberately narrow: regenerate and account.
+  **Queue reconciliation is S3a-2 - do not attempt it here.** Read `plans/PHASE_M20.md` and
+  the S3b-2 acceptance above. Ledger: **D13** (verbatim is necessary, not sufficient -
+  anchoring is what matters), **D12** (never weaken a gate to make it pass), D8, D9, D10,
+  D11, D4, D6.
+  **Foundation is now sound and verified:** text retention 100%, caption coverage 100%,
+  anchor disagreement 1% (was 12%), citation gate strict at 36 pre-existing mismatches.
+  The prerequisites from the old task are DONE - the digit-suffix anchor fallback and the
+  stale-draft fail-open both landed in `414ccda`.
+  1. **Re-run extraction against the corrected text.** Output goes to
+     `graph/<year>/_drafts/` - **drafts are NEVER auto-merged**, promotion requires the full
+     machine witness set green, and under the deferred-review policy human review is
+     recorded as PENDING in the queue, never asserted. Never write `human_confirmed` or any
+     equivalent.
+  2. **THE DIFF IS THE DELIVERABLE, not the regeneration.** Compare every regenerated
+     citation and label against the current one and account for each change. Expected: text
+     restored by S2 (punctuation, previously-dropped rows), and labels losing the old
+     renderer's damage (`Line 16: Otherfrom list in instructions`, `Part Iii Line 28`).
+     **A changed ANCHOR - different line or section - is a FINDING, not an accepted
+     change.** That distinction is the whole reason we regenerate rather than patch.
+  3. **Verify the known-wrong record explicitly:** `cite_span_schedule_a_2025_0036` must come
+     back anchored to Schedule A **line 16** (`Other-from list in instructions. List type and
+     amount:`), not line 6. Say so in your evidence with the resulting text.
+  4. **Ship the anchor cross-check as a committed fail-closed validator.** On a line row the
+     token at the right edge is the printed box reference - the row's true line - and it is
+     independent of the rule that mints the anchor. The Architect's scratch version found
+     13 mis-anchorings the citation gate could never see, because every quoted row is
+     genuinely in the source. **This validator is the mechanical answer to D13** and it must
+     exist before hundreds of citations depend on it. Current baseline: 1 of 192 (the
+     `schedule_1` footer minting `1` from the form's own name).
+  5. **Report the ratchets, before and after:** `legacy_mined` (currently **394** - this
+     round should move it DOWN and it must never rise), strict `check_citation_integrity`
+     (currently **36**, must not grow), cells (**1,921**, denominator must hold), and the
+     count of citations whose text changed versus whose anchor changed.
+  6. **Regeneration is an LLM operation and is not trustworthy on a single pass.** State the
+     model used. If a document's output disagrees with the current promoted artifact beyond
+     the expected text-fix explanations, STOP and report rather than promoting.
+  **Real workbench preflight is KNOWN-RED** (stale queue ids; S3a-2 owns it). Report it as a
+  known-red gate, not as your failure, and do not try to make it pass.
+  Tier 3 (promoted artifacts). Declared files plus honest `RAN:`/`NOT RUN:` on every one;
+  per D9 and D14 grep for consumers of both the VALUES and the SHAPE of what you regenerate.
+  ASCII, `git diff --check`, module-form `validate 2025`, and `check_citation_integrity`
+  reported explicitly with the STRICT number. No `--basetemp`. Use a SHORT pytest temp root.
+  ONE local commit; no push.
+  Stop conditions: any regenerated citation whose anchor moved without an explanation; any
+  temptation to hand-edit a generated artifact (that is D13, and it is what this round
+  exists to avoid); `legacy_mined` rising, strict citation mismatches above 36, or the 1,921
+  cell denominator changing; or a quota/environment failure.
+
+- **M20-S3a-2 TASK - RECONCILE THE REVIEW QUEUE AND RESTORE PREFLIGHT (Architect, Claude
+  Opus 5, 2026-07-29). Runs AFTER S3a-1 lands, against settled ids.** Ledger: **D11**
+  (findings/records must persist), D10, D4, D6, D9.
+  **The problem:** the queue's pending entries reference draft-derived ids from an old
+  extraction run (`cite_span_form_1040_2025_0001`, `form_1040_2025_root_line_a`) that exist
+  neither in the graph nor in the current drafts, because the text and spans moved under
+  them. **Real workbench preflight has been RED since, and could not gate any round in
+  between** - restoring that signal is this round's point.
+  1. **Migrate against the ids S3a-1 settled**, never against intermediate ones.
+  2. **Follow the M19-S2 precedent exactly** (it solved this same problem for manifest unit
+     ids): a UNIQUE match moves and records the old id in `aliases`; anything ambiguous or
+     missing lands in an orphaned bucket with an explicit reason. **Never silently
+     re-point a review** - a deferred human judgement attached to the wrong object is worse
+     than an orphaned one, because it looks reviewed.
+  3. **Report counts:** migrated, orphaned, and orphaned-by-reason.
+  4. **Restore preflight to green** and report it explicitly with `legacy_mined`.
+  Tier 3. Declared files plus honest `RAN:`/`NOT RUN:`. ASCII, `git diff --check`,
+  module-form `validate 2025`, real preflight, and `check_citation_integrity` with the
+  strict number. Short pytest temp root. ONE local commit; no push.
+  Stop conditions: any review that cannot be matched uniquely being re-pointed anyway; any
+  need to edit a generated artifact by hand; or a quota/environment failure.
+
+- **[SPLIT into S3a-1 and S3a-2 on John's call, 2026-07-29]
   M20-S3a TASK - REGENERATE DERIVED ARTIFACTS FROM THE CORRECTED TEXT (Architect, Claude
   Opus 5, 2026-07-28).** **Do NOT hand-edit a single citation, label, or display name in
   this round.** Everything below is fixed by re-running the generator whose input changed.
