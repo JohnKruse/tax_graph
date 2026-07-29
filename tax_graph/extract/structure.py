@@ -21,6 +21,7 @@ _LINE_TOKEN_RE = re.compile(r"^(?:[1-9][0-9]?[a-z]?|[a-z])$", re.IGNORECASE)
 _FULL_LINE_RE = re.compile(r"^[1-9][0-9]?[a-z]$", re.IGNORECASE)
 _REJECTED_PRECEDERS = {"box", "boxes", "code", "codes", "option", "options", "page"}
 _REFERENCE_PRECEDERS = _REJECTED_PRECEDERS | {"line", "lines", "through"}
+_RIGHT_EDGE_TOLERANCE = 24.0
 _HEADER_PHRASES = (
     "complete this part",
     "instructions for",
@@ -29,6 +30,7 @@ _HEADER_PHRASES = (
     "part iii",
     "part iv",
     "section ",
+    "for paperwork reduction act notice",
 )
 
 
@@ -55,6 +57,7 @@ class StructureRow:
     y1: float
     text_offset: int
     line_anchor: str | None = None
+    printed_anchor: str | None = None
     widget_names: tuple[str, ...] = ()
 
 
@@ -87,6 +90,7 @@ class StructureModel:
                     "page": row.page,
                     "text": row.text,
                     "line_anchor": row.line_anchor,
+                    "printed_anchor": row.printed_anchor,
                     "widget_names": list(row.widget_names),
                 }
                 for row in self.rows
@@ -167,6 +171,7 @@ def build_structure_model(document: SourceDocumentInput) -> StructureModel | Non
                 "document has no printed line anchors; geometry-only association is in use",
             )
         )
+    findings.extend(_anchor_identity_findings(rows))
 
     return StructureModel(
         rows=tuple(rows),
@@ -175,6 +180,35 @@ def build_structure_model(document: SourceDocumentInput) -> StructureModel | Non
         captioned_fields=captioned_fields,
         total_fields=len(fields),
     )
+
+
+def validate_anchor_identity(model: StructureModel) -> tuple[StructureFinding, ...]:
+    """Return named findings when a minted anchor disagrees with print geometry.
+
+    The line anchor is minted by the structure splitter. The independent witness
+    is the right-edge printed token captured on the same visual row. A caller
+    that requires a safe outline must treat any returned finding as a failure;
+    this function never repairs or silently chooses between competing anchors.
+    """
+    return tuple(_anchor_identity_findings(model.rows))
+
+
+def _anchor_identity_findings(rows: list[StructureRow]) -> list[StructureFinding]:
+    findings: list[StructureFinding] = []
+    for row in rows:
+        if not row.line_anchor or not row.printed_anchor:
+            continue
+        if row.line_anchor == row.printed_anchor:
+            continue
+        findings.append(
+            StructureFinding(
+                "anchor_identity_disagreement",
+                row.page,
+                f"minted anchor {row.line_anchor} disagrees with right-edge printed anchor {row.printed_anchor}",
+                row_text=row.text,
+            )
+        )
+    return findings
 
 
 def _pdf_path(document: SourceDocumentInput) -> Path | None:
@@ -404,7 +438,50 @@ def _make_structure_row(
         y1=round(max(float(word[3]) for word in words), 2),
         text_offset=text_cursor + offset,
         line_anchor=anchor,
+        printed_anchor=_right_edge_printed_anchor(words, anchor),
     )
+
+
+def _right_edge_printed_anchor(
+    words: list[tuple[Any, ...]],
+    derived_anchor: str | None,
+) -> str | None:
+    """Read the independent right-edge line token from one visual row."""
+    tokens = [normalize_punctuation(str(word[4]).strip()) for word in words]
+    row = " ".join(tokens).strip().lower()
+    if _is_header_text(row):
+        return None
+    candidates: list[dict[str, Any]] = []
+    for index, token in enumerate(tokens):
+        if not _LINE_TOKEN_RE.fullmatch(token):
+            continue
+        lowered = token.lower()
+        if token.isalpha() and lowered != "z":
+            continue
+        previous = tokens[index - 1].lower().rstrip(":") if index else ""
+        if previous in _REFERENCE_PRECEDERS:
+            continue
+        anchor = lowered
+        if token.isdigit() and index + 1 < len(tokens):
+            suffix = tokens[index + 1].lower()
+            gap = float(words[index + 1][0]) - float(words[index][2])
+            if len(suffix) == 1 and suffix.isalpha() and gap <= 18:
+                anchor = f"{anchor}{suffix}"
+        candidates.append({"anchor": anchor, "x1": float(words[index][2])})
+    if not candidates:
+        return None
+    right_edge = max(float(word[2]) for word in words)
+    right_edge_candidates = [
+        item for item in candidates if item["x1"] >= right_edge - _RIGHT_EDGE_TOLERANCE
+    ]
+    if not right_edge_candidates:
+        return None
+    anchor = str(max(right_edge_candidates, key=lambda item: item["x1"])["anchor"])
+    if anchor.isalpha() and derived_anchor:
+        base = "".join(char for char in derived_anchor if char.isdigit())
+        if base:
+            return f"{base}{anchor}"
+    return anchor
 
 
 def _nearest_row(field: dict[str, Any], rows: list[StructureRow]) -> StructureRow | None:

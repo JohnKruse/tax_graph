@@ -9,7 +9,12 @@ from tax_graph.extract.inputs import load_document_input
 from tax_graph.extract.models import SourceDocumentInput
 from tax_graph.extract.outline import build_candidate_spans, build_outline_tree
 from tax_graph.extract.outline_pipeline import _span_for_line
-from tax_graph.extract.structure import build_structure_model
+from tax_graph.extract.structure import (
+    StructureModel,
+    StructureRow,
+    build_structure_model,
+    validate_anchor_identity,
+)
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -94,6 +99,45 @@ def test_geometry_anchor_identity_rejects_references_and_splits_sibling_columns(
     assert [row.line_anchor for row in line_14c] == ["14c"]
     line_36a = [row for row in schedule_1a_model.rows if row.text.startswith("36 a If you have")]
     assert [row.line_anchor for row in line_36a] == ["36a"]
+
+    schedule_1 = _document_or_skip("schedule_1_2025")
+    schedule_1_model = build_structure_model(schedule_1)
+    assert schedule_1_model is not None
+    assert not validate_anchor_identity(schedule_1_model)
+
+    schedule_d = _document_or_skip("schedule_d_2025")
+    schedule_d_model = build_structure_model(schedule_d)
+    assert schedule_d_model is not None
+    assert not validate_anchor_identity(schedule_d_model)
+
+
+@pytest.mark.m20
+def test_anchor_identity_validator_reports_mismatch_without_repairing_it():
+    model = StructureModel(
+        rows=(
+            StructureRow(
+                page=1,
+                text="5a Add lines 1 through 4 5d",
+                x0=1.0,
+                y0=1.0,
+                x1=100.0,
+                y1=12.0,
+                text_offset=0,
+                line_anchor="5a",
+                printed_anchor="5d",
+            ),
+        ),
+        line_anchors=(),
+        findings=(),
+        captioned_fields=0,
+        total_fields=0,
+    )
+
+    findings = validate_anchor_identity(model)
+    assert len(findings) == 1
+    assert findings[0].code == "anchor_identity_disagreement"
+    assert "minted anchor 5a" in findings[0].detail
+    assert "printed anchor 5d" in findings[0].detail
 
 
 @pytest.mark.m20

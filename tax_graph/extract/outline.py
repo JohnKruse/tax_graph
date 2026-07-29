@@ -164,10 +164,14 @@ def _line_anchor_variants(anchor: str | None) -> set[str]:
 
 def build_outline_tree(document: SourceDocumentInput) -> OutlineTree:
     """Build a deterministic outline, preferring geometry for acquired forms."""
-    from tax_graph.extract.structure import build_structure_model
+    from tax_graph.extract.structure import build_structure_model, validate_anchor_identity
 
     structure = build_structure_model(document)
     if structure is not None:
+        anchor_findings = validate_anchor_identity(structure)
+        if anchor_findings:
+            details = "; ".join(finding.detail for finding in anchor_findings)
+            raise ValueError(f"{document.document_id}: anchor identity disagreement: {details}")
         return _build_geometry_outline(document, structure)
 
     tree = OutlineTree(document_id=document.document_id, kind=document.kind)

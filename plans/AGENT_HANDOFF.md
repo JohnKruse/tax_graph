@@ -14,6 +14,107 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## Current state (2026-07-27)
 
+**Worker session checkpoint - M20-S3a-1 implementation (2026-07-29):** Global canary: Ledger
+Llama. Phase canary: Ground Truth. Model: GPT-5 Codex; effort: default; usage/quota/context
+indicators are not exposed. John gave go via the current task request. Single declared step:
+regenerate the affected derived drafts through the committed extraction pipeline, produce a
+committed diff-accounting report and focused regression coverage, then run the declared
+consumer tests and non-queue gates before one local commit. Applicable defect-ledger entries:
+D6, D8, D9, D10, D11, D12, D13, D14, and the exact RAN/NOT RUN evidence rule. D1-D5 and D7
+are not expected unless the implementation unexpectedly crosses the workbench surface. No
+review-queue reconciliation, promotion, human-review claim, citation hand edit, graph-semantic
+change, verdict change, or field-map/binding change is in scope.
+
+**M20-S3a-1 pre-expensive-work checkpoint (2026-07-29):** The current extraction entrypoint,
+draft writer, outline consumer, and promoted-artifact diff consumers are being inspected before
+generation. Declared focused files are `tests/test_structure_m20.py`,
+`tests/test_outline_span_resolution_m20.py`, `tests/test_draft_route_m20.py`,
+`tests/test_extract_outline_m4.py`, `tests/test_extract_m16.py`,
+`tests/test_schedule_d_extraction_m9.py`, `tests/test_tables_detector_m6b.py`,
+`tests/test_nversion_m8.py`, and `tests/test_verify_delta_m10.py` if present. No new generation
+or promotion evidence is claimed yet.
+
+**M20-S3a-1 validator checkpoint (2026-07-29):** Added the committed right-edge printed-anchor
+cross-check to `tax_graph/extract/structure.py`, wired geometry outline construction to fail
+closed on disagreement, and excluded the measured Schedule 1 footer false anchor. The focused
+validator/outline tests are green; the generated drafts must now be regenerated once more from
+this final producer/consumer shape. No promoted artifact or review queue was touched.
+
+- RAN: `.venv\\Scripts\\python.exe -m pytest tests/test_structure_m20.py tests/test_outline_span_resolution_m20.py -q` -> 13 passed in 4.28s; one known pytest cache ACL warning.
+
+**M20-S3a-1 validator correction checkpoint (2026-07-29):** The first final-shape regeneration
+stopped at Schedule D because the independent witness treated caption references (`lines 15
+and 16`, `lines 18 and 19`) as right-edge references on rows without a printed trailing token.
+The validator now requires the witness token to be within 24 points of the visual row edge;
+the real Schedule D regression is green. All 15 documents will be regenerated again from this
+corrected rule before diff accounting. No promotion or queue write occurred.
+
+- RAN: `.venv\\Scripts\\python.exe -m pytest tests/test_structure_m20.py tests/test_outline_span_resolution_m20.py -q` -> 13 passed in 4.66s; one known pytest cache ACL warning.
+
+**M20-S3a-1 regeneration checkpoint (2026-07-29):** The final producer/consumer shape regenerated
+all 15 existing form drafts successfully with model `~google/gemini-flash-latest`. No promoted
+artifact, citation, label, graph, or review-queue file was written. The committed anchor validator
+reported zero disagreements across 350 checkable geometry rows. Existing association residuals
+remain named: `form_8949_2025` coverage 0.287129 and `form_13614_c_2025` coverage 0.996633.
+
+- RAN: `.venv\\Scripts\\python.exe -m tax_graph.cli extract --doc <each of the 15 form document ids> --year 2025` -> all 15 exited 0 in 105.7s; each wrote only `graph/2025/_drafts/<document_id>/`.
+
+**M20-S3a-1 diff accounting (live graph -> regenerated draft, 2026-07-29):** Raw delta counts
+are structural identity churn plus same-id reuse under the corrected text. A `changed` citation is
+not accepted as a semantic update when its quote or locator moved; all 51 such rows are findings
+for the later settled-id reconciliation, not promotion evidence.
+
+| document | added | removed | changed | added nodes | removed nodes | added citations | removed citations | changed nodes | changed citations | changed labels | changed quotes |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| form_8949_2025 | 7 | 29 | 0 | 5 | 18 | 2 | 3 | 0 | 0 | 0 | 0 |
+| schedule_d_2025 | 54 | 128 | 0 | 30 | 113 | 24 | 9 | 0 | 0 | 0 | 0 |
+| form_1040_2025 | 85 | 135 | 21 | 35 | 68 | 50 | 67 | 21 | 0 | 21 | 0 |
+| schedule_1_2025 | 104 | 64 | 11 | 61 | 32 | 43 | 32 | 0 | 11 | 0 | 11 |
+| schedule_1a_2025 | 82 | 66 | 8 | 51 | 37 | 31 | 29 | 0 | 8 | 0 | 8 |
+| schedule_2_2025 | 75 | 57 | 9 | 46 | 26 | 29 | 31 | 0 | 9 | 0 | 9 |
+| schedule_3_2025 | 59 | 41 | 5 | 34 | 16 | 25 | 25 | 0 | 5 | 0 | 5 |
+| schedule_a_2025 | 50 | 43 | 4 | 28 | 24 | 22 | 19 | 0 | 4 | 0 | 4 |
+| schedule_b_2025 | 20 | 12 | 0 | 12 | 6 | 8 | 6 | 0 | 0 | 0 | 0 |
+| form_6251_2025 | 102 | 97 | 14 | 60 | 56 | 42 | 41 | 0 | 14 | 0 | 14 |
+| form_1099b_2025 | 31 | 2 | 0 | 16 | 0 | 15 | 2 | 0 | 0 | 0 | 0 |
+| form_w2_2025 | 27 | 10 | 0 | 14 | 0 | 13 | 10 | 0 | 0 | 0 | 0 |
+| form_1099_int_2025 | 19 | 3 | 0 | 10 | 0 | 9 | 3 | 0 | 0 | 0 | 0 |
+| form_1099_div_2025 | 21 | 4 | 0 | 12 | 0 | 9 | 4 | 0 | 0 | 0 | 0 |
+| form_13614_c_2025 | 209 | 7 | 0 | 209 | 0 | 0 | 7 | 0 | 0 | 0 | 0 |
+| **TOTAL** | **945** | **698** | **72** | **623** | **396** | **322** | **288** | **21** | **51** | **21** | **51** |
+
+The known-wrong promoted citation `cite_span_schedule_a_2025_0036` remains the old line-37
+`Other taxes` record in the live graph and is removed from the regenerated draft. Its regenerated
+semantic replacement is `cite_span_schedule_a_2025_0083`, page 1 line 83, with verbatim text
+`Other 16 Other-from list in instructions. List type and amount:`; its line-16 node carries that
+new citation. This is source-derived generator output, not a hand patch. The old id is left for
+S3a-2 settled-id reconciliation. Ratchets remain unchanged because nothing was promoted:
+`legacy_mined=394`, strict citation mismatches `36`, and `1,921` controls.
+
+**M20-S3a-1 verification checkpoint (2026-07-29):** The final generated drafts and committed
+validator passed the focused consumer round and all fast non-promoting gates. The required real
+preflight is the last expensive command; it is expected to remain red for the already-recorded
+stale review-queue ids and must not be repaired in S3a-1.
+
+- RAN: `.venv\\Scripts\\python.exe -m pytest tests/test_structure_m20.py tests/test_outline_span_resolution_m20.py tests/test_draft_route_m20.py tests/test_extract_outline_m4.py tests/test_extract_m16.py tests/test_schedule_d_extraction_m9.py tests/test_tables_detector_m6b.py tests/test_nversion_m8.py -q` -> 37 passed, 1 skipped in 13.41s under `PYTEST_DEBUG_TEMPROOT=C:\\Users\\devbox\\.codex\\visualizations\\2026\\07\\29\\019fac76-257c-7100-a0fb-6a3437eba934\\m20_s3a1_pytest`; one known pytest cache ACL warning.
+- NOT RUN: `tests/test_verify_delta_m10.py` - file does not exist in this repository.
+- RAN: `.venv\\Scripts\\python.exe tools/check_ascii.py` -> `ASCII check OK`.
+- RAN: `git diff --check` -> exit 0.
+- RAN: `.venv\\Scripts\\python.exe -m tax_graph.cli validate 2025` -> exit 0; graph integrity OK; 18 documents, 441 nodes, 2 tables, 409 edges, 401 citations.
+- RAN: `.venv\\Scripts\\python.exe -c "from tax_graph.acquire.citation_check import check_graph_citations; from tax_graph.cli import DEFAULT_CITATION_SOURCE_MAP; r=check_graph_citations(year='2025', raw_store='.cache/raw', root='.', source_map=DEFAULT_CITATION_SOURCE_MAP); print(f'checked={r.checked} strict_mismatches={len(r.mismatches)}')"` -> `checked=401 strict_mismatches=36`.
+- RAN: `.venv\\Scripts\\python.exe -m tax_graph.cli verify diff-drafts` equivalent over all 15 regenerated form drafts -> per-document totals `added=945 removed=698 changed=72`, matching the committed table above.
+- RAN: `.venv\\Scripts\\python.exe -m pytest tests/test_structure_m20.py tests/test_render_form.py -q` -> 10 passed in 4.32s under the writable session temp root; one known pytest cache ACL warning.
+
+- RAN: `.venv\\Scripts\\python.exe -m workbench.cli --year 2025 preflight` -> exit 1 after 193.5s; fail-closed review projection reports stale queue citations and nodes resolving to zero source objects. This is the known S3a-2 queue reconciliation blocker; no draft promotion or promoted-artifact write occurred.
+
+**M20-S3a-1 implementation complete for this slice (2026-07-29):** Geometry-derived anchor
+identity is now independently checked against right-edge printed tokens, the outline consumer
+fails closed on disagreement, and the Schedule 1 footer false anchor is excluded. All 15 form
+drafts were regenerated under the configured model, with the complete live-to-draft accounting
+above. No generated draft was committed and no promoted artifact changed. S3a-2 owns the 51
+same-id citation reuse findings and stale review-queue migration; S3a-1 does not silently
+re-point them.
+
 **Worker session checkpoint - M20-S3b-2 implementation (2026-07-28):** Global canary: Ledger
 Llama. Phase canary: Ground Truth. Model: GPT-5 Codex; effort: default; usage/quota/context
 indicators are not exposed. John gave go via the current task request. Single declared step:
