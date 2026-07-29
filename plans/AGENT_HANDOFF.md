@@ -766,9 +766,57 @@ the instruction slot; Authority explicitly reports missing authored coverage; do
 citation coverage is visible beside policy counts; and the dossier heading duplication/order
 warts are fixed. No promoted artifacts, graph semantics, verdicts, or citation records changed.
 
-**BALL: WORKER - M20-S3a-1 (regenerate + account for every diff). S3a is SPLIT on John's
-call, 2026-07-29: S3a-1 regeneration, then S3a-2 queue reconciliation. S3b-2 is ACCEPTED,
-anchor identity is sound, and main is GREEN at `3a5b753`.**
+**BALL: WORKER - M20-S3a-2 (reconcile the queue against settled ids, restore preflight).
+S3a-1 is ACCEPTED. One open question for John below: `form_8949_2025` caption coverage is
+**28.7%** and needs a ruling before any promotion.**
+
+**ARCHITECT VERIFICATION - M20-S3a-1 (Claude Opus 5, 2026-07-29). ACCEPTED.** Re-measured
+rather than read from the report:
+- **The committed validator works: 0 disagreements across 191 checkable rows** (Architect's
+  own cross-check), down from 1 of 192 after S3b-2 and 13 of 112 before it. The `schedule_1`
+  footer false anchor is gone. The Worker reported 0 across 350 rows on its wider sweep.
+- **Nothing was promoted.** `git diff 3a5b753..HEAD -- graph/ review_queue/` is EMPTY.
+  Ratchets held exactly: `legacy_mined=394`, strict citation mismatches **36**, **1,921**
+  controls, `validate 2025` clean.
+- **All 15 form drafts regenerated** with `~google/gemini-flash-latest`, each writing only
+  `graph/2025/_drafts/<id>/`.
+- **The accounting discipline is right, and it is the point of the round:** live-to-draft
+  delta `added=945 removed=698 changed=72`, and **the 51 citations whose quote or locator
+  moved are held as FINDINGS for settled-id reconciliation, not accepted as semantic
+  updates.** That is exactly the rule the task set - a changed ANCHOR is a finding, never a
+  silent update.
+- **The known-wrong record is resolved by generation, not by hand:**
+  `cite_span_schedule_a_2025_0036` (the line-6 text on a line-16 node) is REMOVED from the
+  regenerated draft; its semantic replacement is `cite_span_schedule_a_2025_0083`, page 1
+  line 83, verbatim `Other 16 Other-from list in instructions. List type and amount:`, and
+  the line-16 node carries it. The old id is left for S3a-2 rather than re-pointed. **This
+  closes D13 the way the standing rule requires - regenerate the generator's output, never
+  patch it.**
+- **Good self-correction mid-round:** the first final-shape regeneration stopped at Schedule
+  D because the validator treated caption references (`lines 15 and 16`) as right-edge
+  tokens; the Worker added a 24-point row-edge proximity requirement and re-ran all 15
+  documents rather than loosening the check. Note for the record that 24 points is a TUNED
+  THRESHOLD - a heuristic constant that should be revisited if a form with unusual column
+  spacing appears.
+- **RAN (Architect):** anchor cross-check -> 0/191; coverage sweep; `validate 2025` clean.
+  Worker declared files 37 passed, 1 skipped, with an honest `NOT RUN` for
+  `tests/test_verify_delta_m10.py` (file does not exist).
+
+**OPEN FOR JOHN - `form_8949_2025` CAPTION COVERAGE IS 28.7% (58 of 202).** Every other
+document is at or near 100% (1040 199/199, schedule_a 33/33, schedule_d 55/55, form_w2
+272/272, 13614-C 296/297). The Worker named this residual explicitly rather than hiding it.
+**Cause (Architect reading):** 8949 is a transaction TABLE - its widgets are grid cells whose
+caption is a COLUMN HEADER above, not text to the left, so left-of/same-row association finds
+nothing. It is the same failure class as the 51% the 10-form experiment measured on the
+13614-C questionnaire, and the checkbox-matrix case named in the S3b task.
+**Why it may not block:** M19 already gave 8949 widgets concepts and occurrences
+(`short_term_transactions` / `long_term_transactions` with row slots), so those cells have
+identity even without a geometry caption - 8949 went 18 -> 202 cells in M19-S3a.
+**The decision:** accept 28.7% for 8949 with a recorded reason and promote, or add column-header
+association (an S3b-3) before promotion. The Architect recommends **accepting it for now with
+the reason recorded**, because the concept layer already addresses identity there and
+column-header association is a genuinely separate problem that would delay the settled-id
+reconciliation preflight has been waiting on.
 
 **WHY THE SPLIT (John, 2026-07-29):** this phase's own record. Every big round needed
 follow-ups - S2 required S2b, S2d, and S2e - while every single-purpose round (S2d, S2e,
