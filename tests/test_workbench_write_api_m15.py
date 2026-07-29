@@ -115,11 +115,12 @@ def test_verdict_api_rejects_object_outside_selected_queue_scope(api) -> None:
 
 
 @pytest.mark.m15
-def test_write_apis_never_mutate_graph_queue_tier_or_provenance(api) -> None:
+def test_write_apis_never_mutate_graph_tier_or_provenance(api) -> None:
     app, client = api
+    queue_path = ROOT / "review_queue" / "2025" / "deferred_review.yaml"
+    assert not queue_path.exists()
     paths = [
         ROOT / "build" / "tax_graph_2025.sqlite",
-        ROOT / "review_queue" / "2025" / "deferred_review.yaml",
         ROOT / "graph" / "2025" / "node_geometry.json",
     ]
     provenance = sorted((ROOT / "review_provenance").rglob("*")) if (ROOT / "review_provenance").exists() else []

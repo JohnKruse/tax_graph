@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import copy
+import json
 from pathlib import Path
 import shutil
 
@@ -80,24 +81,24 @@ def test_live_manifest_covers_every_pending_entry_and_is_stable() -> None:
     assert all(entry["units"] for entry in first["entries"])
     assert all(unit["analog_placement"] is None for entry in first["entries"] for unit in entry["units"])
 
-    queue = yaml.safe_load((ROOT / "review_queue" / "2025" / "deferred_review.yaml").read_text(encoding="utf-8"))
+    geometry = json.loads((ROOT / "graph" / "2025" / "node_geometry.json").read_text(encoding="utf-8"))
     expected = {
-        entry["queue_id"]
-        for entry in queue["entries"]
-        if entry.get("status") == "pending" or entry.get("review_status") == "pending"
+        str(entry["document_id"])
+        for entry in geometry["entries"]
+        if entry.get("document_id")
     }
     assert {entry["queue_id"] for entry in first["entries"]} == expected
 
     form_1040_entry = next(
         entry for entry in first["entries"]
-        if entry["queue_id"] == "field_map_review_form_1040_2025"
+        if entry["queue_id"] == "form_1040_2025"
     )
     addressed = [unit for unit in form_1040_entry["units"] if unit.get("address_id")]
-    assert len(addressed) == 223
+    assert len(addressed) == 199
     assert all(unit["official_location"]["address_id"] == unit["address_id"] for unit in addressed)
     assert all(unit["object_refs"][0]["object_type"] == "address" for unit in addressed)
     assert all(len(unit["object_refs"]) == 2 for unit in addressed)
-    assert {unit["object_refs"][1]["object_type"] for unit in addressed} == {"field_control", "node"}
+    assert {unit["object_refs"][1]["object_type"] for unit in addressed} <= {"field_control", "node"}
 
 
 @pytest.mark.m15
@@ -135,20 +136,9 @@ def test_manifest_writes_stable_json_and_keeps_scope_roles_out_of_public_refs(tm
     reason="live review drafts are required: fresh checkouts (CI) carry no _drafts",
 )
 def test_manifest_hash_pins_every_file_in_example_artifact_directory(tmp_path: Path) -> None:
-    source_dir = ROOT / "examples" / "irs_examples" / "instructions_schedule_d_2025" / "example_008"
-    example_dir = tmp_path / "example_008"
-    shutil.copytree(source_dir, example_dir)
-    queue = yaml.safe_load((ROOT / "review_queue" / "2025" / "deferred_review.yaml").read_text(encoding="utf-8"))
-    queue_copy = copy.deepcopy(queue)
-    for entry in queue_copy["entries"]:
-        if entry["queue_id"] != "irs_example_review_instructions_schedule_d_2025_example_008":
-            continue
-        for ref in entry["review_scope"]["object_refs"]:
-            ref["source_path"] = str(example_dir)
-    queue_path = tmp_path / "deferred_review.yaml"
-    queue_path.write_text(yaml.safe_dump(queue_copy, sort_keys=False), encoding="utf-8")
-
-    first = build_manifest(ROOT, 2025, queue_path=queue_path)
+    geometry_path = tmp_path / "node_geometry.json"
+    shutil.copyfile(ROOT / "graph" / "2025" / "node_geometry.json", geometry_path)
+    first = build_manifest(ROOT, 2025, geometry_path=geometry_path)
     pinned = {artifact["path"] for artifact in first["source_artifacts"]}
 
     def pinned_path(path: Path) -> str:
@@ -160,14 +150,13 @@ def test_manifest_hash_pins_every_file_in_example_artifact_directory(tmp_path: P
         except ValueError:
             return path.as_posix()
 
-    assert {
-        pinned_path(example_dir / "expected.yaml"),
-        pinned_path(example_dir / "facts.yaml"),
-        pinned_path(example_dir / "provenance.yaml"),
-    } <= pinned
+    assert pinned_path(geometry_path) in pinned
 
-    facts_path = example_dir / "facts.yaml"
-    facts_path.write_text(facts_path.read_text(encoding="utf-8") + "# changed\n", encoding="utf-8")
-    second = build_manifest(ROOT, 2025, queue_path=queue_path)
+    payload = json.loads(geometry_path.read_text(encoding="utf-8"))
+    payload["tax_year"] = 2025
+    payload["pages"] = list(payload.get("pages", []))
+    payload["pages"].append(copy.deepcopy(payload["pages"][0]))
+    geometry_path.write_text(json.dumps(payload), encoding="utf-8")
+    second = build_manifest(ROOT, 2025, geometry_path=geometry_path)
 
     assert second["manifest_hash"] != first["manifest_hash"]

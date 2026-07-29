@@ -12,6 +12,7 @@ from typing import Any, Iterable
 import yaml
 
 from workbench.artifacts import ArtifactBundle, GRAPH_OBJECT_KINDS, load_artifact_bundle
+from workbench.cell_inventory import build_document_cells
 from workbench.schema import validate_review_manifest
 from workbench.reviewer_language import contains_raw_field_name_token, is_raw_field_name
 from workbench.refs import unit_ref_from_address
@@ -40,10 +41,12 @@ def build_manifest(
     pdf_dir: str | Path | None = None,
     output_path: str | Path | None = None,
 ) -> dict[str, Any]:
-    """Project pending review entries into a stable schema-valid manifest.
+    """Project physical form cells into a stable schema-valid manifest.
 
-    The projection only copies identifiers and relationships from published
-    artifacts. It does not compute tax values or invent analog geometry.
+    The default projection walks published geometry and field dispositions without
+    reading a generated queue. An explicit ``queue_path`` remains available only
+    for isolated legacy fixtures. The projection does not compute tax values or
+    invent analog geometry.
     """
     root_path = Path(root).resolve()
     bundle = load_artifact_bundle(
@@ -54,7 +57,11 @@ def build_manifest(
         queue_path=queue_path,
         pdf_dir=pdf_dir,
     )
-    payload = _build_payload(bundle, root_path, db_path=db_path, geometry_path=geometry_path, queue_path=queue_path)
+    payload = (
+        _build_payload(bundle, root_path, db_path=db_path, geometry_path=geometry_path, queue_path=queue_path)
+        if queue_path is not None
+        else _build_cell_payload(bundle, root_path, geometry_path=geometry_path)
+    )
     validate_review_manifest(payload)
     if output_path is not None:
         path = Path(output_path)
@@ -206,6 +213,218 @@ def _build_payload(
     }
     canonical = json.dumps(body, ensure_ascii=True, sort_keys=True, separators=(",", ":")).encode("utf-8")
     return {**body, "manifest_hash": hashlib.sha256(canonical).hexdigest()}
+
+
+def _build_cell_payload(
+    bundle: ArtifactBundle,
+    root: Path,
+    *,
+    geometry_path: str | Path | None,
+) -> dict[str, Any]:
+    """Build the workbench manifest from the form's physical cell inventory."""
+    graph_index = _graph_index(bundle)
+    pdf_hashes = {pdf.path.stem: pdf.sha256 for pdf in bundle.pdfs}
+    geometry = [item for item in bundle.geometry.get("entries", []) if isinstance(item, dict)]
+    document_ids = sorted({str(item.get("document_id")) for item in geometry if item.get("document_id")})
+    entries: list[dict[str, Any]] = []
+    source_paths: set[Path] = {
+        bundle.graph.path,
+        _default_or_given(root / "graph" / str(bundle.tax_year) / "node_geometry.json", geometry_path),
+    }
+    graph_dir = root / "graph" / str(bundle.tax_year)
+    for name in ("addresses", "field_maps", "bindings", "citations", "nodes", "edges", "rules"):
+        path = graph_dir / name
+        if path.is_dir():
+            source_paths.add(path)
+
+    for document_id in document_ids:
+        built = build_document_cells(
+            root,
+            bundle.tax_year,
+            document_id,
+            geometry_entries=geometry,
+            page_geometry=bundle.geometry.get("pages", []) or [],
+        )
+        units = [
+            _cell_unit(
+                cell,
+                bundle=bundle,
+                graph_index=graph_index,
+                pdf_hash=pdf_hashes.get(document_id),
+            )
+            for cell in built.cells
+        ]
+        if not units:
+            continue
+        entries.append({
+            "queue_id": document_id,
+            "review_kind": "form_cell",
+            "status": "pending",
+            "summary": f"Review physical cells on {document_id}.",
+            "units": units,
+        })
+
+    _validate_unit_id_collisions(entries)
+    source_paths.update(pdf.path for pdf in bundle.pdfs)
+    body = {
+        "schema_version": 1,
+        "tax_year": bundle.tax_year,
+        "source_artifacts": _source_artifacts(root, source_paths),
+        "entries": entries,
+    }
+    canonical = json.dumps(body, ensure_ascii=True, sort_keys=True, separators=(",", ":")).encode("utf-8")
+    return {**body, "manifest_hash": hashlib.sha256(canonical).hexdigest()}
+
+
+def _cell_unit(
+    cell: dict[str, Any],
+    *,
+    bundle: ArtifactBundle,
+    graph_index: dict[tuple[str, str], dict[str, Any]],
+    pdf_hash: str | None,
+) -> dict[str, Any]:
+    """Project one form inventory cell into the existing manifest unit schema."""
+    document_id = str(cell.get("document_id") or "")
+    address_id = str(cell.get("address_id") or "")
+    field_name = str(cell.get("field_name") or "")
+    node_id = str(cell.get("node_id") or "")
+    object_type = "node" if node_id else "field_control"
+    object_id = node_id or field_name
+    if not object_id:
+        raise ManifestError(f"form cell in {document_id} has no stable object identity")
+    identity_source = "address_id" if address_id else ("object_id" if node_id else "field_name")
+    scope_ref = {"object_type": object_type, "object_id": object_id}
+    object_data = graph_index.get((object_type, object_id))
+    semantics = _semantics(scope_ref, graph_index) if node_id else None
+    if semantics is None:
+        semantics = _cell_semantics(cell, object_type, object_id)
+    display_name = str(cell.get("display_name") or field_name or object_id)
+    if not address_id and "shaded no-entry" in display_name.lower():
+        # These are deterministic geometry labels for shaded/no-entry controls,
+        # not mined labels. Keep the historical legacy_mined ratchet focused on
+        # controls whose reviewer language still needs authoring.
+        provenance = "identity_slot"
+    elif address_id and not is_raw_field_name(display_name) and not contains_raw_field_name_token(display_name):
+        provenance = "authored_address"
+    else:
+        provenance = "legacy_mined"
+    page = int(cell["page"])
+    location = None
+    if pdf_hash:
+        location = {
+            "document_id": document_id,
+            "source_pdf_hash": pdf_hash,
+            "page": page,
+            "rect": [float(value) for value in cell["rect"]],
+        }
+        if field_name:
+            location["locator_text"] = field_name
+        if address_id:
+            location["address_id"] = address_id
+    object_ref = {"object_type": object_type, "object_id": object_id}
+    address_ref = {"object_type": "address", "object_id": address_id} if address_id else None
+    citations = sorted({
+        str(item.get("citation_id"))
+        for item in (cell.get("instruction_citations", []) or []) + (cell.get("citations", []) or [])
+        if isinstance(item, dict) and item.get("citation_id")
+    } | set(_expression_citations(semantics)))
+    official_ref = str(cell.get("official_ref") or "")
+    official_locator = f"{display_name} - {official_ref or f'page {page}'}"
+    qualifier = _physical_qualifier(cell, location)
+    if qualifier:
+        official_locator = f"{official_locator} - {qualifier}"
+    policy = str(cell.get("population_policy") or "")
+    prompt = {
+        "user_entered": "Confirm the expected filer-entered fact and format.",
+        "imported": "Confirm the imported source and destination field.",
+        "copied": "Confirm the copied source and destination field.",
+        "computed": "Confirm the calculation, sources, and written result.",
+        "decision_required": "Confirm the decision options, citation, and escape hatch.",
+        "intentionally_blank": "Confirm why this control is intentionally left blank.",
+        "unsupported": "Confirm the missing capability and downstream consequence.",
+    }.get(policy, "Confirm that the scoped evidence supports this review item.")
+    identity_token = field_name or object_id
+    unit_id = derive_unit_id(
+        address_id=address_id,
+        identity_source=identity_source,
+        document_id=document_id,
+        field_name=field_name,
+        review_kind="form_cell",
+        role="primary",
+        object_type=object_type,
+        object_id=object_id,
+        identity_token=identity_token,
+    )
+    unit: dict[str, Any] = {
+        "queue_id": document_id,
+        "unit_id": unit_id,
+        "ref": str(cell.get("ref") or unit_id),
+        "review_kind": "form_cell",
+        "required": True,
+        "object_refs": ([address_ref, object_ref] if address_ref else [object_ref]),
+        "official_location": location,
+        "analog_placement": None,
+        "semantic_class": semantics.semantic_class,
+        "summary": semantics.summary,
+        "display_name": display_name,
+        "display_name_provenance": provenance,
+        "official_locator": official_locator,
+        "review_prompt": prompt,
+        "expression": semantics.expression,
+        "coverage": {"state": "pending", "required_for_confirm": True},
+        "address_status": "addressed" if address_id else "unaddressed",
+        "identity_source": identity_source,
+        "identity_role": "primary",
+        "identity_qualifier": f"form_cell:primary:{object_type}",
+        "identity_token": identity_token,
+        "identity_document_id": document_id,
+        "aliases": [],
+    }
+    if address_id:
+        unit["address_id"] = address_id
+    if citations:
+        unit["citation_refs"] = citations
+    for key in (
+        "field_name", "population_policy", "value_format", "node_id", "identity_slot",
+        "runtime_fact_ref", "source_ref", "reason", "downstream_effect", "missing_capability",
+        "repeatable", "concept_id", "review_granularity",
+    ):
+        if cell.get(key) is not None:
+            unit[key] = cell[key]
+    occurrence = cell.get("occurrence")
+    if (
+        isinstance(occurrence, dict)
+        and occurrence.get("kind") == "slot"
+        and isinstance(occurrence.get("axes"), dict)
+        and occurrence.get("axes")
+        and occurrence.get("review_granularity") == "concept"
+        and occurrence.get("row_policy") == "slot_keyed"
+        and occurrence.get("key")
+    ):
+        unit["occurrence"] = occurrence
+    return unit
+
+
+def _cell_semantics(cell: dict[str, Any], object_type: str, object_id: str) -> FormattedSemantics:
+    """Give an unbound physical cell an explicit, non-guessed review expression."""
+    display_name = str(cell.get("display_name") or object_id)
+    policy = str(cell.get("population_policy") or "")
+    kind = {
+        "user_entered": "input",
+        "imported": "imported",
+        "copied": "copy",
+        "computed": "review_gap",
+        "decision_required": "review_gap",
+        "intentionally_blank": "review_gap",
+        "unsupported": "review_gap",
+    }.get(policy, "review_gap")
+    text = f"{policy.replace('_', ' ').title()}: {display_name}" if policy else f"Review: {display_name}"
+    expression: dict[str, Any] = {"kind": kind, "text": text}
+    if kind == "review_gap":
+        expression["reason"] = str(cell.get("policy_reason") or "No graph-bound semantic expression is available")
+    else:
+        expression["ref"] = {"object_type": object_type, "object_id": object_id, "display_label": display_name}
+    return FormattedSemantics(text, expression, "input" if kind in {"input", "imported"} else "review_gap")
 
 
 def _unit(

@@ -3,8 +3,7 @@
 The review unit is the form cell. The IRS designed the form as discrete cells; a
 reviewer walks it top to bottom and hops freely, and each cell carries its own
 printed instruction. So the workbench's cell list must come from the FORM - every
-addressable, clickable control on the page - not from whichever cells happened to
-land in the deferred-review queue.
+addressable, clickable control on the page - not from a materialized review queue.
 
 This module assembles that list by joining four published artifacts on a single key:
 
@@ -157,6 +156,7 @@ def build_document_cells(
                 "section": _breadcrumb(address),
                 "official_ref": _official_ref(address),
                 "control_role": str(address.get("control_role") or "") or None,
+                "identity_slot": str(address.get("identity_slot") or disposition.get("identity_slot") or "") or None,
                 "display_name": _display_name(address, disposition, entry),
                 "population_policy": str(disposition.get("population_policy") or "") or None,
                 "value_format": str(disposition.get("value_format") or "") or None,

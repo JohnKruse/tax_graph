@@ -26,22 +26,22 @@ def client():
 
 
 @pytest.mark.m15
-def test_queue_api_groups_pending_entries_and_reports_progress(client) -> None:
+def test_derived_api_groups_pending_entries_and_reports_progress(client) -> None:
     response = client.get("/api/queue")
 
     assert response.status_code == 200
     payload = response.get_json()
     assert payload["tax_year"] == 2025
     assert len(payload["manifest_hash"]) == 64
-    assert payload["progress"]["total_entries"] == 35
-    assert payload["progress"]["remaining_entries"] == 35
+    assert payload["progress"]["total_entries"] == 16
+    assert payload["progress"]["remaining_entries"] == 16
     assert payload["progress"]["total_units"] == payload["coverage"]["units"]
     assert payload["groups"] == sorted(payload["groups"], key=lambda group: group["review_kind"])
     assert all(group["entries"] for group in payload["groups"])
 
 
 @pytest.mark.m15
-def test_queue_api_projects_deterministic_document_checklists(client) -> None:
+def test_derived_api_projects_deterministic_document_checklists(client) -> None:
     payload = client.get("/api/queue").get_json()
     documents = payload["documents"]
 
@@ -66,7 +66,7 @@ def test_queue_api_projects_deterministic_document_checklists(client) -> None:
 
 
 @pytest.mark.m15
-def test_entry_api_returns_only_the_requested_scoped_units(client) -> None:
+def test_derived_entry_api_returns_only_the_requested_scoped_units(client) -> None:
     queue = client.get("/api/queue").get_json()
     selected = queue["groups"][0]["entries"][0]
 
@@ -84,7 +84,7 @@ def test_entry_api_returns_only_the_requested_scoped_units(client) -> None:
 
 @pytest.mark.m15
 def test_form_1040_first_name_has_canonical_reviewer_language(client) -> None:
-    payload = client.get("/api/entries/field_map_review_form_1040_2025").get_json()
+    payload = client.get("/api/entries/form_1040_2025").get_json()
     unit = next(
         item for item in payload["entry"]["units"]
         if item.get("field_name") == "topmostSubform[0].Page1[0].f1_14[0]"
@@ -119,7 +119,7 @@ def test_representative_units_never_use_raw_field_names_as_display_names(client)
         ),
         next(unit for unit in units if unit.get("repeatable", {}).get("row_slot") == 1),
         next(unit for unit in units if unit.get("population_policy") == "decision_required"),
-        next(unit for unit in units if "/worksheet_step=" in unit.get("address_id", "")),
+        next(unit for unit in units if unit.get("population_policy") == "computed"),
         next(unit for unit in units if unit.get("population_policy") == "unsupported"),
     ]
     for unit in representatives:
@@ -132,7 +132,6 @@ def test_representative_units_never_use_raw_field_names_as_display_names(client)
 def test_read_apis_do_not_mutate_authoritative_artifacts(client) -> None:
     paths = [
         ROOT / "build" / "tax_graph_2025.sqlite",
-        ROOT / "review_queue" / "2025" / "deferred_review.yaml",
         ROOT / "graph" / "2025" / "node_geometry.json",
     ]
     before = {path: hashlib.sha256(path.read_bytes()).hexdigest() for path in paths}
@@ -143,3 +142,4 @@ def test_read_apis_do_not_mutate_authoritative_artifacts(client) -> None:
 
     after = {path: hashlib.sha256(path.read_bytes()).hexdigest() for path in paths}
     assert after == before
+    assert not (ROOT / "review_queue" / "2025" / "deferred_review.yaml").exists()

@@ -40,3 +40,14 @@ entries:
   machine_witnesses:
   - hand-traced 1250/collectibles/adversarial scenarios green (pytest -m m13)
   - M11 QDCGT regression byte-identical (13777)
+- queue_id: decision_review_1040_deduction_method
+  kind: decision_review
+  document_id: form_1040_2025
+  created_date: '2026-07-09'
+  created_by: tax_graph.architect
+  summary: Review the deduction-method DECISION node (standard vs itemized via Schedule
+    A line 17) - decisions encode judgment and sit at the TOP of the deferred queue
+    by policy.
+  machine_witnesses:
+  - validate green
+  - pytest green

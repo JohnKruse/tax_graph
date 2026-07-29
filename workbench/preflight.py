@@ -11,14 +11,11 @@ from typing import Any, Iterable
 import yaml
 
 from workbench.artifacts import ArtifactBundle, GRAPH_OBJECT_KINDS, load_artifact_bundle
-from workbench.address_verdicts import load_address_verdicts, unit_address, verdict_store_path
+from workbench.address_verdicts import load_address_verdicts, verdict_store_path
 from workbench.derived_reviews import build_derived_coverage
 from workbench.manifest import ManifestError, build_manifest
 from workbench.reviewer_language import contains_raw_field_name_token, is_raw_field_name
 from workbench.semantics import SUPPORTED_OPERATIONS, SemanticFormatError
-
-
-GRAPH_TYPES = frozenset(kind[:-1] if kind.endswith("s") else kind for kind in GRAPH_OBJECT_KINDS)
 
 
 @dataclass(frozen=True)
@@ -81,41 +78,11 @@ def run_preflight(
 def preflight_manifest(manifest: dict[str, Any], bundle: ArtifactBundle) -> dict[str, Any]:
     """Validate a built manifest against its public source artifacts."""
     issues: list[PreflightIssue] = []
-    pending = {
-        str(entry.get("queue_id", "")): entry
-        for entry in bundle.review_queue.get("entries", [])
-        if isinstance(entry, dict) and _pending(entry)
-    }
     manifest_entries = {
         str(entry.get("queue_id", "")): entry
         for entry in manifest.get("entries", [])
         if isinstance(entry, dict)
     }
-
-    for queue_id in sorted(pending):
-        entry = manifest_entries.get(queue_id)
-        if not entry or not entry.get("units"):
-            issues.append(PreflightIssue("zero_units", "pending entry resolves to zero review units", queue_id))
-
-    for queue_id, entry in sorted(pending.items()):
-        for ref in entry.get("review_scope", {}).get("object_refs", []) or []:
-            if not isinstance(ref, dict) or not _required(ref):
-                continue
-            object_type = str(ref.get("object_type", ""))
-            object_id = str(ref.get("object_id", ""))
-            matches = _resolve_objects(ref, bundle)
-            if object_type in GRAPH_TYPES | {"node_instance", "decision_option"} and len(matches) != 1:
-                issues.append(PreflightIssue(
-                    "ambiguous_object",
-                    f"required {object_type} {object_id} resolves to {len(matches)} source objects",
-                    queue_id,
-                ))
-            elif object_type not in GRAPH_TYPES | {"node_instance", "decision_option"}:
-                source = bundle.root / str(ref.get("source_path", ""))
-                if not source.is_file():
-                    issues.append(PreflightIssue(
-                        "ambiguous_object", f"required {object_type} {object_id} has no resolvable artifact", queue_id
-                    ))
 
     geometry_keys = Counter(_geometry_key(item) for item in bundle.geometry.get("entries", []) if isinstance(item, dict))
     for key, count in sorted(geometry_keys.items(), key=lambda item: str(item[0])):
@@ -132,18 +99,6 @@ def preflight_manifest(manifest: dict[str, Any], bundle: ArtifactBundle) -> dict
                 f"rule {rule.get('rule_id', '<unknown>')} uses unsupported operation {operation or '<missing>'}",
             ))
 
-    for queue_id, entry in sorted(pending.items()):
-        if entry.get("kind") in {"promotion_review", "extension_promotion"}:
-            refs = entry.get("review_scope", {}).get("object_refs", []) or []
-            changed = entry.get("changed_object_ids", []) or []
-            primary = [ref for ref in refs if isinstance(ref, dict) and _required(ref)]
-            if not changed and not primary:
-                issues.append(PreflightIssue(
-                    "promotion_scope_missing", "promotion review cannot identify its changed object set", queue_id
-                ))
-        if entry.get("kind") == "field_map_review":
-            issues.extend(_field_map_issues(entry, bundle.root))
-
     pdf_ids = {pdf.path.stem for pdf in bundle.pdfs}
     reviewer_identities: dict[tuple[str, str, str], tuple[str, str]] = {}
     for queue_id, entry in sorted(manifest_entries.items()):
@@ -152,14 +107,15 @@ def preflight_manifest(manifest: dict[str, Any], bundle: ArtifactBundle) -> dict
             display_name = str(unit.get("display_name") or "").strip()
             field_name = str(unit.get("field_name") or "").strip()
             provenance = str(unit.get("display_name_provenance") or "")
-            unsafe_authored = provenance != "legacy_mined" and (
+            derived_label = provenance in {"legacy_mined", "identity_slot"}
+            unsafe_authored = not derived_label and (
                 is_raw_field_name(display_name) or contains_raw_field_name_token(display_name)
             )
-            if not display_name or unsafe_authored or (field_name and display_name == field_name and provenance != "legacy_mined"):
+            if not display_name or unsafe_authored or (field_name and display_name == field_name and not derived_label):
                 issues.append(PreflightIssue(
                     "invalid_display_name", "visible unit has a blank or raw PDF display name", queue_id
                 ))
-            if field_name and provenance != "legacy_mined":
+            if field_name and not derived_label:
                 location = unit.get("official_location") or {}
                 document_id = str(location.get("document_id") or "unlocated")
                 official_locator = str(unit.get("official_locator") or "").strip()
@@ -226,43 +182,13 @@ def preflight_manifest(manifest: dict[str, Any], bundle: ArtifactBundle) -> dict
 
     if issues:
         raise PreflightError(issues)
-    queue_coverage = coverage_report(manifest)
-    queue_addresses = {
-        address
-        for entry in manifest.get("entries", []) or []
-        for unit in entry.get("units", []) or []
-        if isinstance(unit, dict)
-        if unit.get("field_name") or any(
-            isinstance(ref, dict) and ref.get("object_type") == "field_control"
-            for ref in unit.get("object_refs", []) or []
-        )
-        for address in (unit_address(unit),)
-        if address
-    }
-    derived_addresses = {
-        address
-        for item in (derived or {}).get("cells", [])
-        if isinstance(item, dict)
-        for address in (str(item.get("address") or ""), str(item.get("base_address") or ""))
-        if address
-    }
-    divergence = [
-        {
-            "code": "queue_cell_missing_from_derived",
-            "address": address,
-            "reason": "queue review scope has no matching graph-derived cell",
-        }
-        for address in sorted(queue_addresses - derived_addresses)
-    ]
     return {
-        **queue_coverage,
-        "queue": queue_coverage,
+        **coverage_report(manifest),
         "derived": derived or {
             "denominator": 0,
             "states": {"unreviewed": 0, "approved": 0, "needs_recheck": 0},
             "cells": [],
         },
-        "divergence_findings": divergence,
     }
 
 
@@ -303,48 +229,6 @@ def coverage_report(manifest: dict[str, Any]) -> dict[str, Any]:
         "by_display_name_provenance": dict(sorted(provenance.items())),
         "legacy_mined_by_document": dict(sorted(legacy_by_document.items())),
     }
-
-
-def _field_map_issues(entry: dict[str, Any], root: Path) -> list[PreflightIssue]:
-    queue_id = str(entry.get("queue_id", ""))
-    actual = {
-        (str(ref.get("object_type", "")), str(ref.get("object_id", "")), str(ref.get("role", "primary")))
-        for ref in entry.get("review_scope", {}).get("object_refs", []) or []
-        if isinstance(ref, dict)
-    }
-    expected: set[tuple[str, str, str]] = set()
-    for relative in entry.get("artifact_paths", []) or []:
-        path = root / str(relative)
-        if path.suffix.lower() not in {".yaml", ".yml"} or not path.is_file():
-            continue
-        payload = yaml.safe_load(path.read_text(encoding="utf-8"))
-        if not isinstance(payload, dict) or "mappings" not in payload:
-            continue
-        for item in payload.get("mappings", []) or []:
-            if item.get("node_id"):
-                expected.add(("node", str(item["node_id"]), "primary"))
-            elif item.get("identity_slot"):
-                expected.add(("field", str(item["identity_slot"]), "primary"))
-        for item in payload.get("field_dispositions", []) or []:
-            if item.get("field_name"):
-                expected.add(("field_control", str(item["field_name"]), "primary"))
-        for item in payload.get("excluded_nodes", []) or []:
-            if item.get("node_id"):
-                expected.add(("node", str(item["node_id"]), "excluded"))
-        for item in payload.get("frontier_fields", []) or []:
-            if item.get("frontier_id"):
-                expected.add(("frontier_field", str(item["frontier_id"]), "frontier"))
-        if not any(role == "primary" for _, _, role in expected):
-            document_id = str(payload.get("document_id") or entry.get("document_id") or "")
-            expected.add(("field_inventory", document_id, "primary"))
-    missing = sorted(expected - actual)
-    if not missing:
-        return []
-    preview = ", ".join(f"{kind}:{object_id} ({role})" for kind, object_id, role in missing[:5])
-    suffix = f" and {len(missing) - 5} more" if len(missing) > 5 else ""
-    return [PreflightIssue(
-        "field_map_incomplete", f"field-map scope omits {preview}{suffix}", queue_id
-    )]
 
 
 def _resolve_objects(ref: dict[str, Any], bundle: ArtifactBundle) -> tuple[dict[str, Any], ...]:
@@ -428,11 +312,3 @@ def _geometry_key(item: dict[str, Any]) -> tuple[Any, ...]:
         item.get("node_id"), item.get("identity_slot"), item.get("field_name"),
         item.get("document_id"), item.get("page"), tuple(item.get("rect", []) or []),
     )
-
-
-def _pending(entry: dict[str, Any]) -> bool:
-    return str(entry.get("status", "")) == "pending" or str(entry.get("review_status", "")) == "pending"
-
-
-def _required(ref: dict[str, Any]) -> bool:
-    return str(ref.get("role", "primary")) in {"primary", "expected"}

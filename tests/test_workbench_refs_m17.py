@@ -88,4 +88,7 @@ def test_live_2025_manifest_refs_are_unique_ascii_and_cover_addressed_units() ->
             assert ref, f"addressed unit {unit['unit_id']} is missing a ref"
             assert ref.isascii() and " " not in ref
         if unit.get("ref"):
-            assert unit["ref"] == unit_ref_from_address(unit["address_id"], unit.get("occurrence"))
+            if unit.get("address_id"):
+                assert unit["ref"] == unit_ref_from_address(unit["address_id"], unit.get("occurrence"))
+            else:
+                assert unit["ref"] == unit["unit_id"]

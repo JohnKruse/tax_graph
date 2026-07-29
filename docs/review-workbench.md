@@ -8,41 +8,21 @@ Status: M15 Gate A corrections A1-A4 as-built, 2026-07-14. Canary: "Fresh Eyes".
 top-level workspace member with an artifact-only read seam. UI and verdict emission
 remain in later M15 steps.
 
-## Scoped queue migration
+## Legacy scoped queue migration
 
-M15 queue entries carry an additive `review_scope` projection. Each pending entry has a
-scope type and explicit object refs with an object type, object id, source artifact path,
-and review role. Expected nodes, changed object ids, field-map records, worksheet line
-nodes and rules, decision options and citations, intake records, and explicit review.md
-bullets are migrated deterministically. An entry that cannot resolve a targeted object
-scope fails closed; the migration never falls back to approving an entire document.
+Older isolated producer fixtures may still carry an additive `review_scope` projection.
+Each pending entry has a scope type and explicit object refs with an object type,
+object id, source artifact path, and review role. The live workbench no longer reads
+or writes a generated queue; current review coverage comes from the physical-cell
+projection and the address-keyed verdict ledger.
 
-Run the migration with:
+## Derived review coverage
 
-`tax-graph review migrate-scope --year 2025`
-
-The command is idempotent. Use `--refresh` only when rebuilding existing scopes after a
-scope-derivation code change. It updates only the deferred-review queue; it does not
-mutate graph objects, drafts, verdicts, or provenance.
-
-## Settled extraction queue reconciliation
-
-After a form draft is regenerated, generated node and citation ids may move or be
-reused. The reconciliation command compares the old promoted payload with the settled
-draft evidence in the same document. It moves a ref only on one unique content match
-and records the old id in the destination ref's `aliases`. Same-id citation evidence
-changes, ambiguous matches, missing objects, and unsafe node dependencies are removed
-from the active scope and persisted under the queue-level `orphaned` bucket with a
-reason. This keeps preflight fail-closed without silently presenting a new object as
-already reviewed.
-
-Run it with:
-
-`tax-graph review reconcile-queue --year 2025`
-
-The command is idempotent and writes only `review_queue/<year>/deferred_review.yaml`.
-It never edits generated drafts, promoted graph artifacts, verdicts, or human-review
-provenance. Reported counts include migrated refs and orphaned refs grouped by reason.
+The workbench derives one review unit per physical form control from the published
+geometry, addresses, field dispositions, and bindings. It does not read a generated
+deferred-review queue. Human decisions live in the append-only address-keyed verdict
+ledger, where the reviewed content fingerprint makes regenerated cells require review
+again when their content changes.
 
 ## Complete field dispositions
 
@@ -73,8 +53,8 @@ controls that lack a graph, filer-fact, or decision mapping.
 `workbench.artifacts` reads the published artifacts directly and never imports a
 pipeline module. The compiled SQLite graph is opened in SQLite read-only URI mode;
 graph rows are decoded from their public `object_json` columns. The node geometry
-projection and deferred review queue are validated against their committed JSON
-Schemas. Draft directories expose YAML/JSON as structured data and Markdown/HTML as
+projection is validated against its committed JSON Schema. Draft directories expose
+YAML/JSON as structured data and Markdown/HTML as
 text, while metrics, N-version reports, and mined-example reports are indexed by
 workspace-relative artifact path. Source PDFs are represented by path, byte size, and
 SHA-256 metadata; rasterization belongs to Step 2 and is not a runtime dependency of
@@ -86,12 +66,12 @@ workbench Python files and rejects imports from `tax_graph` and its pipeline mod
 
 ## Step 3 review manifest
 
-`workbench.manifest.build_manifest` projects each pending queue entry and its additive
-`review_scope` into one or more concrete review units. Each unit carries exact object
-identifiers, a schema-valid structure-only reference expression, official geometry when
-the node or field resolves to a published PDF, and an explicit `null` analog placement
-until a later step adds semantic layout. The manifest hash is computed from canonical
-artifact hashes and unit data, so repeated builds are byte-stable. Build one with:
+`workbench.manifest.build_manifest` projects the physical form-cell inventory into one
+entry per document and one concrete review unit per cell. Each unit carries exact
+object identifiers, a schema-valid review expression, official geometry, and an
+explicit `null` analog placement until a later step adds semantic layout. The manifest
+hash is computed from canonical artifact hashes and unit data, so repeated builds are
+byte-stable. Build one with:
 
 `python -m workbench.cli manifest --year 2025 --output-dir .workbench_state/2025`
 
@@ -122,23 +102,18 @@ selection is performed in PDF page coordinates, so repeated Form 8949 row slots 
 display geometry and never become runtime node ids. `review-workbench build --year
 2025` rasterizes source PDFs with the optional PDF extra and writes a static HTML
 bundle with no CDN or API dependency. The bundle carries the public graph rows,
-citations, queue, metrics, N-version reports, and mined-example reports in an escaped
+citation data, derived review units, metrics, N-version reports, and mined-example reports in an escaped
 JSON payload. A node id absent from the compiled graph is rendered as a visible gap
 finding rather than being treated as resolved.
 
 ## Step 3 verdict contract
 
-The workbench emits only new files under `review_verdicts/<year>/`; it never edits the
-queue, graph, or drafts. Each verdict is schema-validated and carries a canonical
-content hash, queue id, reviewer id, ISO timestamp, and measured human minutes.
-`confirmed`, `pipeline_defect`, and `source_pathology` are the only terminal labels;
-the latter requires marked source provenance. The pipeline-owned command
-`tax-graph review apply-verdicts` validates the hash and queue reference before
-applying a verdict. Confirmed node/document/decision objects receive
-`human_confirmed: true`, `verification_tier: human-confirmed`, and the reviewer
-record; unsupported artifact kinds remain represented in the audit sidecar. A
-pipeline defect is routed back to `pending_reextract`, while source pathology remains
-a marked override and does not masquerade as a clean graph confirmation.
+The workbench emits only new records under `review_verdicts/<year>/`; it never edits
+the derived cell inventory, graph, or drafts. Each address-keyed verdict is
+schema-validated and carries the reviewed content, its canonical fingerprint, the
+judgement, reviewer id, and UTC timestamp. A changed fingerprint produces a derived
+`needs_recheck` state. No workbench action asserts a human-review claim on the user's
+behalf.
 
 ## What it is
 
@@ -147,7 +122,7 @@ A standalone, human-facing visual review tool. A person opens a rendered IRS for
 and the tool shows everything the system believes about that region: the extracted
 nodes and rules, the instruction text they came from, the connectors (FEEDS edges in
 and out, including cross-form targets), citations with verbatim quotes, trust tier and
-which verification layers passed or flagged, open review-queue items, and any mined
+which verification layers passed or flagged, open findings and verdict states, and any mined
 IRS examples that execute through those nodes.
 
 It is the workbench for every moment M8 routes a human to: the exception queue, the
@@ -167,8 +142,8 @@ The workbench takes the opposite stance, and this is the core design commitment:
 
 - It is a SEPARATE effort (own module or own repo - open question below) that does
   not import `tax_graph.extract` internals. It consumes only durable on-disk
-  artifacts: the source PDFs, the compiled SQLite graph, draft directories, the
-  review queue, `metrics.yaml`, and N-version reports.
+  artifacts: the source PDFs, the compiled SQLite graph, draft directories, geometry,
+  field dispositions, address-keyed verdicts, `metrics.yaml`, and N-version reports.
 - It derives page geometry ITSELF, from the PDF: AcroForm field rects and text-span
   search resolve the pipeline's line/field anchors to pixel regions. The pipeline's
   provenance says "this rule came from source line N / field X"; the workbench
@@ -187,9 +162,9 @@ The primary navigator is document-first. Each official document shows its pages 
 required-unit count, then expands to a deterministic `Things to check` checklist. The
 plain-English groups cover identity/filer inputs, mappings/imports, calculations,
 decisions, tables/worksheets, citations/witnesses, changes/diffs, and unsupported/gaps;
-empty groups are omitted. Queue ids and review kinds remain internal provenance. A check
-group can span several authoritative queue entries, but every projected unit appears
-exactly once and counts reconcile to the queue.
+empty groups are omitted. Queue ids and review kinds remain internal API provenance. A
+check group can span several documents, but every derived physical cell appears
+exactly once and counts reconcile to the cell inventory.
 
 Every review unit carries required `display_name`, `official_locator`, and
 `review_prompt` fields. Names resolve from authored canonical-address/control metadata;
@@ -204,7 +179,7 @@ calculation, decision, intentional blank, and unsupported behavior.
 4. A side panel shows, for the hit objects: node ids and labels, rule shape and
    parameters, citations (verbatim quote, clickable back to its own page region),
    inbound/outbound edges rendered as a small local subgraph with cross-form targets
-   named, trust tier + per-layer check outcomes (L0-L5), any open review-queue or
+   named, trust tier + per-layer check outcomes (L0-L5), any open finding or
    N-version disagreement entries, and mined examples touching the node.
 5. Where the reviewer has a pending decision (adjudication, calibration confirm,
    example confirm), the panel offers it inline: pick A / pick B / neither, confirm /
@@ -216,9 +191,9 @@ scoped flow on demand. It never recreates a page-height layer of overlapping car
 
 ## Decisions flow OUT as artifacts, not edits
 
-The workbench never writes the graph, drafts, or queue files directly. It emits small
-append-only verdict files (YAML, schema'd) that the existing pipeline commands
-consume - the same pattern as `--confirm` on example mining. This keeps the tool
+The workbench never writes the graph, drafts, or derived cell inventory directly. It
+emits small append-only, address-keyed verdict files (JSONL, schema'd) that later
+promotion workflows can consume - the same pattern as `--confirm` on example mining. This keeps the tool
 read-only with respect to everything it displays, which is what makes its stance
 trustworthy, and keeps promotion mechanics where they already live.
 
@@ -229,7 +204,7 @@ trustworthy, and keeps promotion mechanics where they already live.
   compiled artifacts) or a tiny local server (`review-workbench serve --year 2025`).
   Lean static-first; a server only if adjudication write-back demands it.
 - Input contract = published artifact formats only (SQLite schema, draft dir layout,
-  queue/report YAML schemas). Any information the workbench needs that artifacts do
+  geometry, field disposition, and verdict schemas). Any information the workbench needs that artifacts do
   not carry becomes an ADDITIVE field request on the pipeline side - the workbench
   never reverse-engineers pipeline internals.
 - Respects the pinned addressing rules: physical row slots (part_i.line_1.row_01...)
@@ -239,7 +214,7 @@ trustworthy, and keeps promotion mechanics where they already live.
 
 ## Candidate v1 workflows (pick two, defer the rest)
 
-1. Draft promotion review: walk the exception queue + calibration sample for one
+1. Draft promotion review: walk machine findings + calibration samples for one
    form, spatially, on the form itself.
 2. N-version adjudication: side-by-side semantic-core diff anchored to the disputed
    region of the page (the pending Part I/II line-2 totals disagreement is the live
@@ -269,7 +244,7 @@ trustworthy, and keeps promotion mechanics where they already live.
 
 ## What this is NOT
 
-- Not an editor. It never mutates graph YAML, drafts, or queues.
+- Not an editor. It never mutates graph YAML, drafts, or generated review state.
 - Not part of extraction or CI. Pipelines must stay fully runnable without it.
 - Not a taxpayer-facing UI. The audience is the maintainer/reviewer (John).
 - Not a coverage authority - M7's frontier registry stays canonical; the heatmap is
@@ -290,10 +265,9 @@ Before starting a review server, run:
 python -m workbench.cli preflight --year 2025
 ```
 
-Preflight fails closed when pending scope, object identity, geometry identity,
-semantic formatting, promotion scope, field-map category coverage, or citation
-evidence is incomplete or ambiguous. A successful run reports unit coverage by
-review kind, source document, object type, and located/unlocated geometry.
+Preflight fails closed when object identity, geometry identity, semantic formatting,
+or citation evidence is incomplete or ambiguous. A successful run reports derived
+cell coverage by review kind, source document, object type, and geometry state.
 
 During the A9 address-authoring ratchet, legacy geometry-mined labels carry explicit
 `legacy_mined` provenance and appear as provisional. Preflight reports their count per
@@ -307,18 +281,18 @@ python -m workbench.cli serve --year 2025
 ```
 
 The server binds only to `127.0.0.1`, chooses an available port unless `--port`
-is supplied, and prints a per-launch token reserved for write requests. Queue
-and scoped-entry reads are available at `/api/queue` and
+is supplied, and prints a per-launch token reserved for write requests. Derived
+entry and scoped-entry reads are available at `/api/queue` and
 `/api/entries/<queue_id>`.
 
 Official pages are rendered lazily through
 `/api/documents/<document_id>/pages/<page>.png`. The cache key pins the source
 PDF hash, one-based page, requested scale, and renderer version. Evidence lookup
 at `/api/evidence/<object_type>/<object_id>` returns the exact compiled or draft
-object plus its geometry, queue-unit references, and citation references.
+object plus its geometry, derived-unit references, and citation references.
 
 Resume state is non-authoritative JSON under `.workbench_state/` and is exposed
 through `GET/PUT /api/sessions/<queue_id>`. PUT and verdict emission require the
 per-launch token in `X-Workbench-Token`. `POST /api/verdicts` validates the human
 decision and emits the existing append-only, content-hashed verdict format; it
-never applies a verdict or edits graph, queue, tier, or provenance artifacts.
+never applies a verdict or edits graph, derived cells, tier, or provenance artifacts.

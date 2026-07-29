@@ -98,19 +98,21 @@ def append_address_verdict(
         raise ValueError("reviewer_id must identify the human reviewer")
     if not judgement_value:
         raise ValueError("judgement is required")
+    reviewed_at_value, reviewed_at_epoch = _normalize_reviewed_at(reviewed_at)
     content = {
         "label": str(label),
         "cited_text": [str(value) for value in normalize_cited_text(cited_text)],
     }
     record: dict[str, Any] = {
-        "verdict_id": verdict_id or _make_verdict_id(address_value, reviewed_at),
+        "verdict_id": verdict_id or _make_verdict_id(address_value, reviewed_at_value),
         "tax_year": int(year),
         "address": address_value,
         "content_fingerprint": review_content_fingerprint(label, cited_text),
         "reviewed_content": content,
         "judgement": judgement_value,
         "reviewer_id": reviewer_value,
-        "reviewed_at": reviewed_at or _now(),
+        "reviewed_at": reviewed_at_value,
+        "reviewed_at_epoch": reviewed_at_epoch,
     }
     if provenance:
         record["provenance"] = dict(provenance)
@@ -320,17 +322,35 @@ def load_authored_review_context(root: str | Path, year: str | int) -> dict[str,
 
 
 def _validate_record(record: Mapping[str, Any], *, source: str = "address verdict") -> None:
-    required = ("verdict_id", "tax_year", "address", "content_fingerprint", "judgement", "reviewer_id", "reviewed_at")
+    required = (
+        "verdict_id", "tax_year", "address", "content_fingerprint", "reviewed_content",
+        "judgement", "reviewer_id", "reviewed_at", "reviewed_at_epoch",
+    )
     missing = [key for key in required if record.get(key) in (None, "")]
     if missing:
         raise ValueError(f"{source} missing fields: {', '.join(missing)}")
     if not _HEX64.fullmatch(str(record["content_fingerprint"])):
         raise ValueError(f"{source} has invalid content_fingerprint")
     reviewed_content = record.get("reviewed_content")
-    if isinstance(reviewed_content, Mapping):
-        actual = review_content_fingerprint(reviewed_content.get("label", ""), reviewed_content.get("cited_text", []))
-        if actual != record["content_fingerprint"]:
-            raise ValueError(f"{source} content_fingerprint does not match reviewed_content")
+    if not isinstance(reviewed_content, Mapping):
+        raise ValueError(f"{source} reviewed_content is required")
+    if "label" not in reviewed_content or "cited_text" not in reviewed_content:
+        raise ValueError(f"{source} reviewed_content must contain label and cited_text")
+    if not isinstance(reviewed_content.get("label"), str) or not isinstance(reviewed_content.get("cited_text"), list):
+        raise ValueError(f"{source} reviewed_content has invalid shape")
+    actual = review_content_fingerprint(reviewed_content.get("label", ""), reviewed_content.get("cited_text", []))
+    if actual != record["content_fingerprint"]:
+        raise ValueError(f"{source} content_fingerprint does not match reviewed_content")
+    try:
+        reviewed_at, reviewed_at_epoch = _normalize_reviewed_at(str(record["reviewed_at"]))
+    except ValueError as exc:
+        raise ValueError(f"{source} has invalid reviewed_at: {exc}") from exc
+    if reviewed_at != str(record["reviewed_at"]):
+        raise ValueError(f"{source} reviewed_at must be normalized UTC ISO-8601")
+    if isinstance(record["reviewed_at_epoch"], bool) or not isinstance(record["reviewed_at_epoch"], int):
+        raise ValueError(f"{source} reviewed_at_epoch must be an integer")
+    if int(record["reviewed_at_epoch"]) != reviewed_at_epoch:
+        raise ValueError(f"{source} reviewed_at and reviewed_at_epoch disagree")
 
 
 def _latest_by_address(history: Iterable[Mapping[str, Any]]) -> dict[str, dict[str, Any]]:
@@ -340,7 +360,11 @@ def _latest_by_address(history: Iterable[Mapping[str, Any]]) -> dict[str, dict[s
         _validate_record(record)
         address = str(record["address"])
         previous = latest.get(address)
-        if previous is None or (str(record["reviewed_at"]), index) >= (str(previous["reviewed_at"]), int(previous.get("_order", -1))):
+        if previous is None or (
+            int(record["reviewed_at_epoch"]), index
+        ) >= (
+            int(previous["reviewed_at_epoch"]), int(previous.get("_order", -1))
+        ):
             record["_order"] = index
             latest[address] = record
     for record in latest.values():
@@ -402,3 +426,17 @@ def _make_verdict_id(address: str, reviewed_at: str | None) -> str:
 
 def _now() -> str:
     return datetime.now(timezone.utc).replace(microsecond=0).isoformat()
+
+
+def _normalize_reviewed_at(value: str | None) -> tuple[str, int]:
+    """Return UTC ISO-8601 plus truncated whole UTC seconds for ordering."""
+    raw = value or _now()
+    try:
+        parsed = datetime.fromisoformat(str(raw).replace("Z", "+00:00"))
+    except ValueError as exc:
+        raise ValueError("reviewed_at must be ISO-8601") from exc
+    if parsed.tzinfo is None or parsed.utcoffset() is None:
+        raise ValueError("reviewed_at must include a timezone")
+    epoch = int(parsed.timestamp())
+    normalized = datetime.fromtimestamp(epoch, timezone.utc).isoformat()
+    return normalized, epoch

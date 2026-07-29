@@ -9,6 +9,7 @@ from typing import Any
 
 from workbench.artifacts import ArtifactBundle, load_artifact_bundle
 from workbench.geometry import GeometryIndex
+from workbench.manifest import build_manifest
 from workbench.render import RenderedPage, render_pdf_pages
 
 
@@ -25,12 +26,13 @@ def build_bundle(
     output = Path(output_dir) if output_dir is not None else root_path / "output" / "review-workbench" / str(year)
     output.mkdir(parents=True, exist_ok=True)
     bundle = load_artifact_bundle(root_path, year, db_path=db_path, pdf_dir=pdf_dir)
+    manifest = build_manifest(root_path, year, db_path=db_path, pdf_dir=pdf_dir)
     pages_root = output / "pages"
     rendered: dict[str, tuple[RenderedPage, ...]] = {}
     for pdf in bundle.pdfs:
         rendered[pdf.path.stem] = render_pdf_pages(pdf.path, pages_root)
 
-    document = _build_document(bundle, rendered, output)
+    document = _build_document(bundle, rendered, output, manifest)
     index_path = output / "index.html"
     index_path.write_text(document, encoding="utf-8", newline="\n")
     return index_path
@@ -40,6 +42,7 @@ def _build_document(
     bundle: ArtifactBundle,
     rendered: dict[str, tuple[RenderedPage, ...]],
     output: Path,
+    manifest: dict[str, Any],
 ) -> str:
     index = GeometryIndex(bundle.geometry)
     known_nodes = {str(item.get("node_id")) for item in bundle.graph.objects("nodes")}
@@ -72,7 +75,7 @@ def _build_document(
     payload = {
         "tax_year": bundle.tax_year,
         "geometry": bundle.geometry,
-        "queue": bundle.review_queue,
+        "manifest": manifest,
         "graph": {
             kind: list(bundle.graph.objects(kind))
             for kind in ("nodes", "rules", "edges", "citations", "decisions")
@@ -115,11 +118,14 @@ function esc(value) {{ const node = document.createElement("span"); node.textCon
 function inspect(entry, layer) {{
   const nodeId = entry.node_id;
   const node = (ARTIFACTS.graph.nodes || []).find(item => item.node_id === nodeId);
-  const queues = (ARTIFACTS.queue.entries || []).filter(item => (item.expected_nodes || []).includes(nodeId) || item.document_id === entry.document_id);
+  const reviewItems = (ARTIFACTS.manifest.entries || []).flatMap(item => (item.units || []).filter(unit =>
+    (unit.object_refs || []).some(ref => ref.object_type === "node" && ref.object_id === nodeId) ||
+    (unit.official_location || {}).document_id === entry.document_id
+  ));
   const gaps = !nodeId || entry.unresolvable;
   panel.innerHTML = gaps ? `<h2>Unresolved form region</h2><div class="finding">${esc(entry.identity_slot || entry.slot)} is visible as a finding; no static node is claimed.</div>` :
     `<h2>${esc(nodeId)}</h2><p>Layer: ${esc(layer)}</p><p>${esc(node && (node.label || node.node_type) || "node not present in compiled graph")}</p>`;
-  const detail = { entry, node, queue_items: queues };
+  const detail = { entry, node, review_items: reviewItems };
   panel.insertAdjacentHTML("beforeend", `<pre>${esc(JSON.stringify(detail, null, 2))}</pre>`);
 }}
 document.querySelectorAll("svg rect").forEach(rect => rect.addEventListener("click", event => {{

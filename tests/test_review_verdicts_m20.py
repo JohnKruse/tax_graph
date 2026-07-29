@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import json
 from pathlib import Path
 
 import pytest
@@ -112,6 +113,43 @@ def test_content_flip_back_revalidates_original_approval(tmp_path: Path) -> None
     assert derive_cell_coverage([unit_a], load_address_verdicts(path))["approved"] == 1
 
 
+def test_latest_verdict_orders_by_utc_epoch_and_file_order(tmp_path: Path) -> None:
+    address = "2025/document=form_a/section=income/control=amount"
+    path = tmp_path / "address_verdicts.jsonl"
+    append_address_verdict(
+        root=tmp_path, year=2025, address=address, label="Amount", cited_text=["Enter amount."],
+        reviewer_id="john", judgement="approved", reviewed_at="2026-07-29T12:00:00+02:00",
+        verdict_id="verdict_early", store_path=path,
+    )
+    append_address_verdict(
+        root=tmp_path, year=2025, address=address, label="Amount", cited_text=["Enter amount."],
+        reviewer_id="john", judgement="rejected", reviewed_at="2026-07-29T11:00:00+00:00",
+        verdict_id="verdict_late", store_path=path,
+    )
+    records = load_address_verdicts(path)
+    assert records[0]["reviewed_at"] == "2026-07-29T10:00:00+00:00"
+    assert records[0]["reviewed_at_epoch"] == 1785319200
+    from jsonschema import validate
+
+    validate(records[0], json.loads((ROOT / "schemas" / "review_address_verdict.schema.json").read_text()))
+    coverage = derive_cell_coverage([_unit(address, "Amount", ["Enter amount."])], records)
+    assert coverage["cells"][0]["judgement"] == "rejected"
+
+
+def test_verdict_rejects_missing_or_tampered_reviewed_content(tmp_path: Path) -> None:
+    address = "2025/document=form_a/section=income/control=amount"
+    path = tmp_path / "address_verdicts.jsonl"
+    record = append_address_verdict(
+        root=tmp_path, year=2025, address=address, label="Amount", cited_text=["Enter amount."],
+        reviewer_id="john", reviewed_at="2026-07-29T10:00:00+00:00", verdict_id="verdict_amount_1",
+        store_path=path,
+    )
+    record.pop("reviewed_content")
+    path.write_text(json.dumps(record) + "\n", encoding="utf-8")
+    with pytest.raises(ValueError, match="reviewed_content"):
+        load_address_verdicts(path)
+
+
 def test_rollover_returns_explicit_candidates_without_copying(tmp_path: Path) -> None:
     old = _unit("2025/document=form_a/section=income/control=amount", "Amount", ["Enter amount."])
     current = _unit("2026/document=form_a/section=income/control=amount", "Amount", ["Enter amount."])
@@ -150,16 +188,45 @@ def test_real_derived_projection_covers_all_1921_controls() -> None:
     assert sum(coverage["identity_sources"].values()) == 1921
 
 
-def test_authored_review_context_preserves_the_three_curated_records() -> None:
+def test_derived_projection_replaces_queue_matching_and_orphan_persistence() -> None:
+    """Generated-id matching is replaced by a pure address/content projection.
+
+    This covers the retired reconciler's unique-match, changed-content, and
+    idempotence behaviors without persisting aliases or orphan records.
+    """
+    address = "2025/document=form_a/section=income/control=amount"
+    current = _unit(address, "Amount", ["Enter amount."])
+    changed = _unit(address, "Amount", ["Enter the amount."])
+    history = [{
+        "verdict_id": "verdict_amount_1",
+        "tax_year": 2025,
+        "address": address,
+        "content_fingerprint": review_content_fingerprint("Amount", ["Enter amount."]),
+        "reviewed_content": {"label": "Amount", "cited_text": ["Enter amount."]},
+        "judgement": "approved",
+        "reviewer_id": "john",
+        "reviewed_at": "2026-07-29T10:00:00+00:00",
+        "reviewed_at_epoch": 1785319200,
+    }]
+    first = derive_cell_coverage([changed], history)
+    second = derive_cell_coverage([changed], history)
+    assert first == second
+    assert first["states"] == {"unreviewed": 0, "approved": 0, "needs_recheck": 1}
+    assert "orphaned" not in first
+    assert derive_cell_coverage([current], history)["approved"] == 1
+
+
+def test_authored_review_context_preserves_all_four_curated_records() -> None:
     import yaml
 
     payload = yaml.safe_load(
         (ROOT / "review_context" / "2025" / "authored_reviews.yaml").read_text(encoding="utf-8")
     )
-    assert len(payload["entries"]) == 3
+    assert len(payload["entries"]) == 4
     assert {entry["queue_id"] for entry in payload["entries"]} == {
         "authored_review_qdcgt_worksheet_2025",
         "authored_review_schedule_d_2025_tax_worksheet",
         "routing_review_schedule_d_2025_line_20_decision",
+        "decision_review_1040_deduction_method",
     }
     assert all(entry.get("summary") and entry.get("machine_witnesses") for entry in payload["entries"])

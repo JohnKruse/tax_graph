@@ -170,7 +170,7 @@ def load_geometry(path: str | Path, *, schema_path: str | Path | None = None) ->
 
 
 def load_review_queue(path: str | Path, *, schema_path: str | Path | None = None) -> dict[str, Any]:
-    """Load and validate the deferred review queue."""
+    """Load and validate an explicitly supplied legacy deferred-review fixture."""
     return _load_yaml_schema_artifact(path, schema_path=schema_path, label="review queue")
 
 
@@ -244,11 +244,13 @@ def load_artifact_bundle(
         else root_path / "graph" / str(tax_year) / "node_geometry.json",
         schema_path=schema_dir / "node_geometry.schema.json",
     )
-    queue = load_review_queue(
-        queue_path
+    # The generated deferred queue is retired. Keep an explicit path override for
+    # isolated legacy-artifact fixtures, but never make the deleted live file a
+    # workbench dependency.
+    queue = (
+        load_review_queue(queue_path, schema_path=schema_dir / "deferred_review_queue.schema.json")
         if queue_path is not None
-        else root_path / "review_queue" / str(tax_year) / "deferred_review.yaml",
-        schema_path=schema_dir / "deferred_review_queue.schema.json",
+        else {"tax_year": tax_year, "entries": []}
     )
     pdf_root = Path(pdf_dir) if pdf_dir is not None else root_path / ".cache" / "raw" / str(tax_year)
     pdfs = tuple(load_pdf(path) for path in sorted(pdf_root.glob("*.pdf"))) if pdf_root.is_dir() else ()

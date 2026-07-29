@@ -83,8 +83,8 @@ def main(argv: list[str] | None = None) -> int:
             print(str(exc))
             return 1
         print(f"review preflight passed - {args.year}")
-        print(f"  queue entries: {report['queue']['entries']}")
-        print(f"  queue units: {report['queue']['units']}")
+        print(f"  derived manifest entries: {report['entries']}")
+        print(f"  derived manifest units: {report['units']}")
         derived = report["derived"]
         print(f"  derived cells: {derived['denominator']}")
         print(
@@ -92,7 +92,6 @@ def main(argv: list[str] | None = None) -> int:
             + ", ".join(f"{key}={value}" for key, value in sorted(derived["states"].items()))
         )
         print(f"  derived blast radius: {derived['blast_radius']['invalidated']}")
-        print(f"  queue/derived divergence findings: {len(report['divergence_findings'])}")
         for dimension in (
             "by_kind", "by_document", "by_object", "by_geometry",
             "by_display_name_provenance", "legacy_mined_by_document",
@@ -108,7 +107,7 @@ def main(argv: list[str] | None = None) -> int:
     bundle = load_artifact_bundle(Path(args.root), args.year)
     print(f"review workbench artifacts - {bundle.tax_year}")
     print(f"  graph objects: {sum(len(items) for items in bundle.graph.objects_by_kind.values())}")
-    print(f"  queue entries: {len(bundle.review_queue.get('entries', []))}")
+    print("  review entries: derived from physical form cells (run preflight for counts)")
     print(f"  draft directories: {len(bundle.drafts)}")
     print(f"  source PDFs: {len(bundle.pdfs)}")
     return 0

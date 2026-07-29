@@ -6,7 +6,7 @@
   "additionalProperties": false,
   "required": [
     "verdict_id", "tax_year", "address", "content_fingerprint",
-    "reviewed_content", "judgement", "reviewer_id", "reviewed_at"
+    "reviewed_content", "judgement", "reviewer_id", "reviewed_at", "reviewed_at_epoch"
   ],
   "properties": {
     "verdict_id": {"type": "string", "pattern": "^[a-z0-9_]+$"},
@@ -25,6 +25,7 @@
     "judgement": {"type": "string", "minLength": 1},
     "reviewer_id": {"type": "string", "minLength": 1},
     "reviewed_at": {"type": "string", "format": "date-time"},
+    "reviewed_at_epoch": {"type": "integer"},
     "provenance": {"type": "object", "additionalProperties": true}
   }
 }

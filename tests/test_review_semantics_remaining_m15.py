@@ -159,13 +159,15 @@ def test_unknown_operation_fails_instead_of_exposing_raw_json() -> None:
     not (Path(__file__).resolve().parents[1] / "graph" / "2025" / "_drafts").exists(),
     reason="live review drafts are required: fresh checkouts (CI) carry no _drafts",
 )
-def test_live_manifest_formats_every_current_operation_without_raw_rule_fallback() -> None:
+def test_live_derived_manifest_uses_review_expressions_without_raw_fallback() -> None:
     manifest = build_manifest(ROOT, 2025)
     units = [unit for entry in manifest["entries"] for unit in entry["units"]]
     kinds = {unit["expression"]["kind"] for unit in units}
 
-    assert {"lookup_table", "lookup_bracket", "min", "max", "multiply", "if_else"} <= kinds
-    assert {"repeatable_table", "frontier", "input", "parameter", "review_gap"} <= kinds
+    # The derived manifest contains physical cells only; graph operations without a
+    # physical cell are covered by the formatter tests above, not projected here.
+    assert {"lookup_table", "if_else", "max"} <= kinds
+    assert {"input", "review_gap"} <= kinds
     assert all(unit["summary"] and "{" not in unit["summary"] for unit in units)
     assert all("use line 22; otherwise use line 22" not in unit["summary"] for unit in units)
     assert all("d_minus_e" not in unit["summary"] for unit in units)

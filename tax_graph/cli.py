@@ -339,23 +339,6 @@ def migrate_review_scope_command(
     return 0
 
 
-def reconcile_review_queue_command(
-    year: str = "2025",
-    root: str | Path | None = None,
-) -> int:
-    """Reconcile generated review refs and persist fail-closed orphans."""
-    from tax_graph.review_queue import reconcile_generated_review_queue
-
-    root_path = Path(root).resolve() if root is not None else project_root()
-    result = reconcile_generated_review_queue(root=root_path, year=year)
-    print(f"reconciled generated review queue: {result.queue_path}")
-    print(f"  migrated: {result.migrated}")
-    print(f"  orphaned: {result.orphaned}")
-    for reason, count in result.orphaned_by_reason.items():
-        print(f"  orphaned_by_reason[{reason}]: {count}")
-    return 0
-
-
 def migrate_field_dispositions_command(
     year: str = "2025",
     root: str | Path | None = None,
@@ -1247,16 +1230,6 @@ def _build_typer_app():
         if raise_code:
             raise typer.Exit(raise_code)
 
-    @review_cli.command("reconcile-queue")
-    def review_reconcile_queue_cli(
-        year: str = typer.Option("2025", "--year", "-y", help="Tax year to reconcile."),
-        root: Path | None = typer.Option(None, "--root", help="Project root override."),
-    ) -> None:
-        """Reconcile generated draft refs and persist orphaned findings."""
-        raise_code = reconcile_review_queue_command(year=year, root=root)
-        if raise_code:
-            raise typer.Exit(raise_code)
-
     @review_cli.command("migrate-field-dispositions")
     def review_migrate_field_dispositions_cli(
         year: str = typer.Option("2025", "--year", "-y", help="Tax year to migrate."),
@@ -1670,9 +1643,6 @@ def _fallback_app() -> int:
     review_scope_parser.add_argument("--year", "-y", default="2025")
     review_scope_parser.add_argument("--root", default=None)
     review_scope_parser.add_argument("--refresh", action="store_true")
-    review_reconcile_parser = review_subparsers.add_parser("reconcile-queue")
-    review_reconcile_parser.add_argument("--year", "-y", default="2025")
-    review_reconcile_parser.add_argument("--root", default=None)
     review_field_parser = review_subparsers.add_parser("migrate-field-dispositions")
     review_field_parser.add_argument("--year", "-y", default="2025")
     review_field_parser.add_argument("--output", default=None)
@@ -1845,8 +1815,6 @@ def _fallback_app() -> int:
         return apply_verdicts_command(year=args.year, root=args.root, verdict_dir=args.verdict_dir)
     if args.command == "review" and args.review_command == "migrate-scope":
         return migrate_review_scope_command(year=args.year, root=args.root, refresh=args.refresh)
-    if args.command == "review" and args.review_command == "reconcile-queue":
-        return reconcile_review_queue_command(year=args.year, root=args.root)
     if args.command == "review" and args.review_command == "migrate-field-dispositions":
         return migrate_field_dispositions_command(year=args.year, root=args.root, output=args.output)
     if args.command == "frontier" and args.frontier_command == "build":
