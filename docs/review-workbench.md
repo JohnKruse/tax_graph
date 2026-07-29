@@ -25,6 +25,25 @@ The command is idempotent. Use `--refresh` only when rebuilding existing scopes 
 scope-derivation code change. It updates only the deferred-review queue; it does not
 mutate graph objects, drafts, verdicts, or provenance.
 
+## Settled extraction queue reconciliation
+
+After a form draft is regenerated, generated node and citation ids may move or be
+reused. The reconciliation command compares the old promoted payload with the settled
+draft evidence in the same document. It moves a ref only on one unique content match
+and records the old id in the destination ref's `aliases`. Same-id citation evidence
+changes, ambiguous matches, missing objects, and unsafe node dependencies are removed
+from the active scope and persisted under the queue-level `orphaned` bucket with a
+reason. This keeps preflight fail-closed without silently presenting a new object as
+already reviewed.
+
+Run it with:
+
+`tax-graph review reconcile-queue --year 2025`
+
+The command is idempotent and writes only `review_queue/<year>/deferred_review.yaml`.
+It never edits generated drafts, promoted graph artifacts, verdicts, or human-review
+provenance. Reported counts include migrated refs and orphaned refs grouped by reason.
+
 ## Complete field dispositions
 
 Field-map schema version 2 classifies every terminal AcroForm widget with exactly one

@@ -25,6 +25,52 @@ are not expected unless the implementation unexpectedly crosses the workbench su
 review-queue reconciliation, promotion, human-review claim, citation hand edit, graph-semantic
 change, verdict change, or field-map/binding change is in scope.
 
+**Worker session checkpoint - M20-S3a-2 implementation (2026-07-29):** Global canary: Ledger
+Llama. Phase canary: Ground Truth. Model: GPT-5 Codex; effort: default; usage/quota/context
+indicators are not exposed. John gave go via the current task request. Single declared step:
+build and run a reproducible review-queue reconciliation against the S3a-1 settled draft IDs,
+persist unique aliases and explicit orphan records/reasons, restore real preflight, run every
+declared consumer/gate command with exact evidence, and make one local commit. Applicable
+defect-ledger entries: D11, D10, D4, D6, D9, and the exact RAN/NOT RUN evidence rule. No
+generated-draft hand edits, promotion, human-review claim, verdict change, or graph-semantic
+change is in scope. The phase canary remains Ground Truth; stop on any non-unique re-point,
+quota/environment failure, or need to alter generated artifacts by hand.
+
+**M20-S3a-2 pre-expensive-work checkpoint (2026-07-29):** The implementation will add a
+reproducible queue reconciler plus its module-form CLI entry point, extend the deferred-review
+queue schema with an alias-bearing settled reference and a persisted orphan bucket, and update
+the committed queue only from the reconciler. Declared focused files are the new
+`tests/test_review_queue_reconciliation_m20.py`, `tests/test_review_preflight_m15.py`,
+`tests/test_review_manifest_m15.py`, `tests/test_review_schemas_m15.py`, and
+`tests/test_workbench_m15.py`. Consumer files `tests/test_review_scope_migration_m15.py` and
+other workbench partitions will be run if the changed schema or manifest seam reaches them; no
+test result is claimed yet.
+
+**M20-S3a-2 implementation checkpoint (2026-07-29):** The committed queue is reconciled
+against the settled S3a-1 drafts through `tax-graph review reconcile-queue`. Exactly 198 active
+refs have unique evidence matches and preserve their old ids in `aliases`; 263 refs are
+fail-closed in the queue-level `orphaned` bucket. Reasons are
+`ambiguous_content_match=8`, `insufficient_evidence_for_unique_match=49`,
+`missing_old_source=30`, `multiple_old_reviews_matched_one_destination=3`,
+`no_certain_content_match=42`, `same_id_reused_with_changed_citation_evidence=51`,
+`supporting_citation_changed=22`, and `supporting_citation_not_settled=58`. The known
+`cite_span_schedule_a_2025_0036` record is orphaned as `no_certain_content_match` with no
+candidate and no alias to `cite_span_schedule_a_2025_0083`. The writer uses an atomic sibling
+file replacement, and a second real CLI run produced the same counts and valid queue.
+
+- RAN: `$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\.codex\visualizations\2026\07\29\019fac76-257c-7100-a0fb-6a3437eba934\m20_s3a2_pytest'; .venv\Scripts\python.exe -m pytest tests/test_review_queue_reconciliation_m20.py tests/test_review_schemas_m15.py tests/test_workbench_m15.py tests/test_review_scope_migration_m15.py -q` -> 17 passed in 4.25s; one known pytest cache ACL warning.
+- RAN: `$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\.codex\visualizations\2026\07\29\019fac76-257c-7100-a0fb-6a3437eba934\m20_s3a2_pytest'; .venv\Scripts\python.exe -m pytest tests/test_review_manifest_m15.py -q -k "not manifest_writes_stable_json_and_keeps_scope_roles_out_of_public_refs and not manifest_hash_pins_every_file_in_example_artifact_directory"` -> 5 passed, 2 deselected in 368.96s; one known pytest cache ACL warning.
+- RAN: `$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\.codex\visualizations\2026\07\29\019fac76-257c-7100-a0fb-6a3437eba934\m20_s3a2_pytest'; .venv\Scripts\python.exe -m pytest tests/test_review_manifest_m15.py::test_manifest_writes_stable_json_and_keeps_scope_roles_out_of_public_refs -q` -> 1 passed in 206.00s; one known pytest cache ACL warning.
+- RAN: `$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\.codex\visualizations\2026\07\29\019fac76-257c-7100-a0fb-6a3437eba934\m20_s3a2_pytest'; .venv\Scripts\python.exe -m pytest tests/test_review_manifest_m15.py::test_manifest_hash_pins_every_file_in_example_artifact_directory -q` -> 1 passed in 420.01s; one known pytest cache ACL warning. Together these three commands verify all 7 tests in `tests/test_review_manifest_m15.py`.
+- RAN: `$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\.codex\visualizations\2026\07\29\019fac76-257c-7100-a0fb-6a3437eba934\m20_s3a2_pytest'; .venv\Scripts\python.exe -m pytest tests/test_review_preflight_m15.py -q` -> 2 passed in 451.77s; one known pytest cache ACL warning.
+- RAN: `.venv\Scripts\python.exe -m pytest tests/test_review_queue_reconciliation_m20.py -q` after the atomic-writer correction -> 2 passed in 0.22s; one known pytest cache ACL warning.
+- RAN: `.venv\Scripts\python.exe -m workbench.cli --root . --year 2025 preflight` -> exit 0 in 189.4s; `entries=35`, `units=2980`, `legacy_mined=394`.
+- RAN: `.venv\Scripts\python.exe -m tax_graph.cli validate 2025` -> graph integrity OK; 18 documents, 441 nodes, 2 tables, 409 edges, 401 citations.
+- RAN: `.venv\Scripts\python.exe -c "from tax_graph.acquire.citation_check import check_graph_citations; from tax_graph.cli import DEFAULT_CITATION_SOURCE_MAP; r=check_graph_citations(year='2025', raw_store='.cache/raw', root='.', source_map=DEFAULT_CITATION_SOURCE_MAP); print(f'checked={r.checked} strict_mismatches={len(r.mismatches)}')"` -> `checked=401 strict_mismatches=36`.
+- RAN: `.venv\Scripts\python.exe tools/check_ascii.py` -> `ASCII check OK`.
+- RAN: `git diff --check` -> exit 0.
+- NOT RUN as a result: the first combined six-file pytest command timed out at 600.2s after partial dots, so it is not test evidence. Every declared file was subsequently run to completion in the bounded partitions above.
+
 **M20-S3a-1 pre-expensive-work checkpoint (2026-07-29):** The current extraction entrypoint,
 draft writer, outline consumer, and promoted-artifact diff consumers are being inspected before
 generation. Declared focused files are `tests/test_structure_m20.py`,
@@ -2785,7 +2831,7 @@ TY2026 docs drop.
   exists to avoid); `legacy_mined` rising, strict citation mismatches above 36, or the 1,921
   cell denominator changing; or a quota/environment failure.
 
-- **M20-S3a-2 TASK - RECONCILE THE REVIEW QUEUE AND RESTORE PREFLIGHT (Architect, Claude
+- **[DONE] M20-S3a-2 TASK - RECONCILE THE REVIEW QUEUE AND RESTORE PREFLIGHT (Architect, Claude
   Opus 5, 2026-07-29). Runs AFTER S3a-1 lands, against settled ids.** Ledger: **D11**
   (findings/records must persist), D10, D4, D6, D9.
   **The problem:** the queue's pending entries reference draft-derived ids from an old

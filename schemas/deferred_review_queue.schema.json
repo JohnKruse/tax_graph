@@ -8,6 +8,61 @@
     "tax_year": {
       "type": "integer"
     },
+    "orphaned": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["queue_id", "document_id", "status", "reason", "original_ref"],
+        "properties": {
+          "queue_id": {"type": "string", "minLength": 1},
+          "document_id": {"type": "string", "minLength": 1},
+          "status": {"const": "orphaned"},
+          "reason": {"type": "string", "minLength": 1},
+          "original_ref": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["object_type", "object_id", "source_path"],
+            "properties": {
+              "object_type": {"type": "string", "minLength": 1},
+              "object_id": {"type": "string", "minLength": 1},
+              "source_path": {"type": "string", "minLength": 1},
+              "role": {
+                "enum": ["primary", "related", "excluded", "frontier", "expected"]
+              },
+              "aliases": {
+                "type": "array",
+                "uniqueItems": true,
+                "items": {"type": "string", "minLength": 1}
+              }
+            }
+          },
+          "settled_ref": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["object_type", "object_id", "source_path"],
+            "properties": {
+              "object_type": {"type": "string", "minLength": 1},
+              "object_id": {"type": "string", "minLength": 1},
+              "source_path": {"type": "string", "minLength": 1},
+              "role": {
+                "enum": ["primary", "related", "excluded", "frontier", "expected"]
+              },
+              "aliases": {
+                "type": "array",
+                "uniqueItems": true,
+                "items": {"type": "string", "minLength": 1}
+              }
+            }
+          },
+          "candidate_object_ids": {
+            "type": "array",
+            "uniqueItems": true,
+            "items": {"type": "string", "minLength": 1}
+          }
+        }
+      }
+    },
     "entries": {
       "type": "array",
       "items": {
@@ -90,6 +145,11 @@
                     "source_path": {"type": "string", "minLength": 1},
                     "role": {
                       "enum": ["primary", "related", "excluded", "frontier", "expected"]
+                    },
+                    "aliases": {
+                      "type": "array",
+                      "uniqueItems": true,
+                      "items": {"type": "string", "minLength": 1}
                     }
                   }
                 },
