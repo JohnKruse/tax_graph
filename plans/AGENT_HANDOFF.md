@@ -818,6 +818,19 @@ the reason recorded**, because the concept layer already addresses identity ther
 column-header association is a genuinely separate problem that would delay the settled-id
 reconciliation preflight has been waiting on.
 
+**DECIDED (Architect, on John's delegation "use your best judgement", 2026-07-29): ACCEPT
+28.7% for `form_8949_2025`, with the reason recorded and a follow-up named.** Rationale:
+those 144 uncaptioned widgets are grid cells that ALREADY have identity from M19 concepts
+and row-slot occurrences, so accepting the geometry-caption gap does not leave them
+unaddressable; column-header association is a separate problem class (it also governs the
+13614-C questionnaire residual); and blocking on it keeps preflight red across every
+intervening round, which is a live loss of signal rather than a theoretical one.
+**Recorded honestly as a coverage LIMIT, not a success:** 8949 citations will be sparse
+until column-header association exists, and capital gains is not a peripheral form. Follow-up
+is **S3b-3 - column-header caption association** (8949 grid cells and 13614-C checkbox
+matrices), unscheduled, to be sequenced after preflight is restored. The coverage contract
+(M20-S5) must report 8949's number rather than let a corpus average hide it.
+
 **WHY THE SPLIT (John, 2026-07-29):** this phase's own record. Every big round needed
 follow-ups - S2 required S2b, S2d, and S2e - while every single-purpose round (S2d, S2e,
 S3b-2) landed clean on the first pass. **S3a-1 writes to hundreds of promoted citations**,
@@ -2780,6 +2793,15 @@ TY2026 docs drop.
   neither in the graph nor in the current drafts, because the text and spans moved under
   them. **Real workbench preflight has been RED since, and could not gate any round in
   between** - restoring that signal is this round's point.
+  **WHAT S3a-1 SETTLED, build on these exact facts:** all 15 form drafts were regenerated
+  (model `~google/gemini-flash-latest`); live-to-draft delta is `added=945 removed=698
+  changed=72`; **51 citations whose quote or locator moved are already recorded as FINDINGS**
+  and must be resolved here, not re-pointed silently; 21 changed labels on `form_1040_2025`
+  are damage-shedding and expected. **The `cite_span_schedule_a_2025_0036` case is your
+  worked example:** the old id holds line-6 text on a line-16 node, the regenerated draft
+  drops it and carries `cite_span_schedule_a_2025_0083` with the correct line-16 text. That
+  is a REPLACEMENT, not a rename - the old id must be retired through the orphan path with
+  its reason, never aliased onto the new one as though they were the same evidence.
   1. **Migrate against the ids S3a-1 settled**, never against intermediate ones.
   2. **Follow the M19-S2 precedent exactly** (it solved this same problem for manifest unit
      ids): a UNIQUE match moves and records the old id in `aliases`; anything ambiguous or
