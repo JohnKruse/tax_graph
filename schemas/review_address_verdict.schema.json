@@ -16,10 +16,12 @@
     "reviewed_content": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["label", "cited_text"],
+      "required": ["label", "expression", "form_citations", "instruction_citations"],
       "properties": {
         "label": {"type": "string"},
-        "cited_text": {"type": "array", "items": {"type": "string"}}
+        "expression": {"$ref": "#/$defs/expression"},
+        "form_citations": {"type": "array", "items": {"type": "string"}},
+        "instruction_citations": {"type": "array", "items": {"type": "string"}}
       }
     },
     "judgement": {"type": "string", "minLength": 1},
@@ -27,5 +29,61 @@
     "reviewed_at": {"type": "string", "format": "date-time"},
     "reviewed_at_epoch": {"type": "integer"},
     "provenance": {"type": "object", "additionalProperties": true}
+  },
+  "$defs": {
+    "object_ref": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["object_type", "object_id"],
+      "properties": {
+        "object_type": {"type": "string", "minLength": 1},
+        "object_id": {"type": "string", "minLength": 1},
+        "display_label": {"type": "string"}
+      }
+    },
+    "expression": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind"],
+      "properties": {
+        "kind": {
+          "enum": [
+            "input", "imported", "copy", "sum", "subtract", "negate",
+            "multiply", "lookup_table", "lookup_bracket", "max", "min",
+            "if_else", "repeatable_table", "parameter", "frontier",
+            "review_gap", "literal", "reference"
+          ]
+        },
+        "operation": {"type": "string"},
+        "label": {"type": "string"},
+        "text": {"type": "string"},
+        "value": {"type": ["string", "number", "boolean", "null"]},
+        "ref": {"$ref": "#/$defs/object_ref"},
+        "source": {"$ref": "#/$defs/expression"},
+        "left": {"$ref": "#/$defs/expression"},
+        "right": {"$ref": "#/$defs/expression"},
+        "factor": {"$ref": "#/$defs/expression"},
+        "operands": {"type": "array", "items": {"$ref": "#/$defs/expression"}},
+        "children": {"type": "array", "items": {"$ref": "#/$defs/expression"}},
+        "branches": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["when", "then"],
+            "properties": {
+              "when": {"type": "string", "minLength": 1},
+              "then": {"$ref": "#/$defs/expression"}
+            }
+          }
+        },
+        "else": {"$ref": "#/$defs/expression"},
+        "parameter_ref": {"type": "string", "minLength": 1},
+        "lookup_ref": {"type": "string", "minLength": 1},
+        "citation_refs": {"type": "array", "items": {"type": "string"}},
+        "object_refs": {"type": "array", "items": {"$ref": "#/$defs/object_ref"}},
+        "reason": {"type": "string", "minLength": 1}
+      }
+    }
   }
 }

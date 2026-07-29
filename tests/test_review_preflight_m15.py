@@ -37,12 +37,14 @@ def test_real_2025_preflight_passes_with_all_coverage_dimensions() -> None:
         "by_display_name_provenance", "legacy_mined_by_document", "derived",
     }
     assert report["by_geometry"]["located"] > 0
-    assert report["by_geometry"].get("unlocated", 0) == 0
+    assert report["by_geometry"]["unlocated"] > 0
     assert report["by_display_name_provenance"]["legacy_mined"] > 0
     assert sum(report["legacy_mined_by_document"].values()) == report["by_display_name_provenance"]["legacy_mined"]
-    assert report["units"] == 1921
-    assert report["derived"]["denominator"] == 1921
-    assert report["derived"]["states"] == {"unreviewed": 1921, "approved": 0, "needs_recheck": 0}
+    assert report["units"] == 2224
+    assert report["derived"]["denominator"] == 2120
+    assert report["derived"]["states"] == {
+        "unreviewed": 1529, "approved": 0, "needs_recheck": 0, "review_gap": 591,
+    }
     assert report["derived"]["blast_radius"]["invalidated"] == 0
     assert report["derived"]["findings"]
 
@@ -60,6 +62,23 @@ def test_seeded_bad_artifacts_fail_every_section_four_condition_actionably(
     graph_objects = dict(original_bundle.graph.objects_by_kind)
     graph_objects["rules"] = (*graph_objects["rules"], {"rule_id": "bad_rule", "operation": "MYSTERY"})
     _assert_code(original_manifest, _with_graph(original_bundle, graph_objects), "missing_formatter")
+
+    graph_objects = dict(original_bundle.graph.objects_by_kind)
+    decision = next(
+        item for item in graph_objects["decisions"]
+        if item.get("decision_id") == "decision_1040_deduction_method"
+    )
+    graph_objects["decisions"] = (*graph_objects["decisions"], copy.deepcopy(decision))
+    _assert_code(original_manifest, _with_graph(original_bundle, graph_objects), "ambiguous_object")
+
+    empty_manifest = copy.deepcopy(original_manifest)
+    empty_manifest["entries"].append({
+        "queue_id": "empty_review",
+        "review_kind": "form_cell",
+        "status": "pending",
+        "units": [],
+    })
+    _assert_code(empty_manifest, original_bundle, "zero_units")
 
     graph_objects = dict(original_bundle.graph.objects_by_kind)
     citations = [copy.deepcopy(item) for item in graph_objects["citations"]]

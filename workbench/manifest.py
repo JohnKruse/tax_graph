@@ -11,6 +11,7 @@ from typing import Any, Iterable
 
 import yaml
 
+from workbench.address_verdicts import expression_kind_bucket, make_review_content
 from workbench.artifacts import ArtifactBundle, GRAPH_OBJECT_KINDS, load_artifact_bundle
 from workbench.cell_inventory import build_document_cells
 from workbench.schema import validate_review_manifest
@@ -225,7 +226,12 @@ def _build_cell_payload(
     graph_index = _graph_index(bundle)
     pdf_hashes = {pdf.path.stem: pdf.sha256 for pdf in bundle.pdfs}
     geometry = [item for item in bundle.geometry.get("entries", []) if isinstance(item, dict)]
-    document_ids = sorted({str(item.get("document_id")) for item in geometry if item.get("document_id")})
+    geometry_node_ids = {str(item.get("node_id")) for item in geometry if item.get("node_id")}
+    unlocated_nodes = _unlocated_cell_nodes(bundle, geometry_node_ids)
+    document_ids = sorted(
+        {str(item.get("document_id")) for item in geometry if item.get("document_id")}
+        | set(unlocated_nodes)
+    )
     entries: list[dict[str, Any]] = []
     source_paths: set[Path] = {
         bundle.graph.path,
@@ -254,15 +260,27 @@ def _build_cell_payload(
             )
             for cell in built.cells
         ]
+        units.extend(
+            _unlocated_cell_unit(
+                node,
+                bundle=bundle,
+                graph_index=graph_index,
+            )
+            for node in unlocated_nodes.get(document_id, [])
+        )
         if not units:
             continue
         entries.append({
             "queue_id": document_id,
             "review_kind": "form_cell",
             "status": "pending",
-            "summary": f"Review physical cells on {document_id}.",
+            "summary": f"Review graph cells on {document_id}.",
             "units": units,
         })
+
+    routing_entry = _routing_entry(bundle, graph_index)
+    if routing_entry["units"]:
+        entries.append(routing_entry)
 
     _validate_unit_id_collisions(entries)
     source_paths.update(pdf.path for pdf in bundle.pdfs)
@@ -371,6 +389,7 @@ def _cell_unit(
         "official_locator": official_locator,
         "review_prompt": prompt,
         "expression": semantics.expression,
+        "kind_bucket": expression_kind_bucket(semantics.expression.get("kind")),
         "coverage": {"state": "pending", "required_for_confirm": True},
         "address_status": "addressed" if address_id else "unaddressed",
         "identity_source": identity_source,
@@ -384,6 +403,20 @@ def _cell_unit(
         unit["address_id"] = address_id
     if citations:
         unit["citation_refs"] = citations
+    form_citations = [dict(item) for item in cell.get("citations", []) or [] if isinstance(item, dict)]
+    instruction_citations = [
+        dict(item) for item in cell.get("instruction_citations", []) or [] if isinstance(item, dict)
+    ]
+    unit["form_citations"] = form_citations
+    unit["instruction_citations"] = instruction_citations
+    unit["review_content"] = make_review_content(
+        display_name,
+        expression=semantics.expression,
+        form_citations=[item.get("quoted_text") for item in form_citations if item.get("quoted_text")],
+        instruction_citations=[
+            item.get("quoted_text") for item in instruction_citations if item.get("quoted_text")
+        ],
+    )
     for key in (
         "field_name", "population_policy", "value_format", "node_id", "identity_slot",
         "runtime_fact_ref", "source_ref", "reason", "downstream_effect", "missing_capability",
@@ -403,6 +436,219 @@ def _cell_unit(
     ):
         unit["occurrence"] = occurrence
     return unit
+
+
+_UNLOCATED_CELL_NODE_TYPES = frozenset({"form_line", "worksheet_field", "computed"})
+
+
+def _unlocated_cell_nodes(
+    bundle: ArtifactBundle,
+    geometry_node_ids: set[str],
+) -> dict[str, list[dict[str, Any]]]:
+    """Return graph-backed cell nodes that have no official page geometry."""
+    result: dict[str, list[dict[str, Any]]] = {}
+    for node in bundle.graph.objects("nodes"):
+        node_id = str(node.get("node_id") or "")
+        document_id = str(node.get("document_id") or "")
+        if (
+            node_id
+            and document_id
+            and node_id not in geometry_node_ids
+            and str(node.get("node_type") or "") in _UNLOCATED_CELL_NODE_TYPES
+        ):
+            result.setdefault(document_id, []).append(dict(node))
+    for nodes in result.values():
+        nodes.sort(key=lambda item: str(item.get("node_id")))
+    return result
+
+
+def _unlocated_cell_unit(
+    node: dict[str, Any],
+    *,
+    bundle: ArtifactBundle,
+    graph_index: dict[tuple[str, str], dict[str, Any]],
+) -> dict[str, Any]:
+    """Project one graph cell without inventing page geometry."""
+    node_id = str(node.get("node_id") or "")
+    document_id = str(node.get("document_id") or "")
+    scope_ref = {"object_type": "node", "object_id": node_id}
+    semantics = _semantics(scope_ref, graph_index)
+    if semantics is None:
+        display_name = _display_label(node, node_id)
+        semantics = FormattedSemantics(
+            display_name,
+            {"kind": "reference", "ref": {"object_type": "node", "object_id": node_id}},
+            "calculation",
+        )
+    queue_entry = {
+        "queue_id": document_id,
+        "document_id": document_id,
+        "kind": "form_cell",
+        "summary": f"Review graph cells on {document_id}.",
+    }
+    unit = _unit(
+        queue_entry,
+        unit_id=derive_unit_id(
+            address_id="",
+            identity_source="object_id",
+            document_id=document_id,
+            field_name="",
+            review_kind="form_cell",
+            role="primary",
+            object_type="node",
+            object_id=node_id,
+            identity_token=node_id,
+        ),
+        scope_ref=scope_ref,
+        object_ref={"object_type": "node", "object_id": node_id, "display_label": _display_label(node, node_id)},
+        object_data=node,
+        graph_index=graph_index,
+        semantics=semantics,
+        location=None,
+        required=True,
+        address_id="",
+        identity_source="object_id",
+        identity_role="primary",
+        identity_token=node_id,
+    )
+    citations = _citation_records(
+        sorted(set(_citation_refs(node)) | set(_expression_citations(semantics))),
+        graph_index,
+    )
+    form_citations, instruction_citations = _split_citation_records(citations)
+    unit["node_id"] = node_id
+    unit["kind_bucket"] = expression_kind_bucket(semantics.expression.get("kind"))
+    unit["form_citations"] = form_citations
+    unit["instruction_citations"] = instruction_citations
+    unit["review_content"] = make_review_content(
+        unit["display_name"],
+        expression=semantics.expression,
+        form_citations=[item.get("quoted_text") for item in form_citations if item.get("quoted_text")],
+        instruction_citations=[
+            item.get("quoted_text") for item in instruction_citations if item.get("quoted_text")
+        ],
+    )
+    return unit
+
+
+def _routing_entry(
+    bundle: ArtifactBundle,
+    graph_index: dict[tuple[str, str], dict[str, Any]],
+) -> dict[str, Any]:
+    """Project routing edges, intake triggers, and decisions as a separate review set."""
+    specs = [
+        ("routing_edge", item)
+        for item in bundle.graph.objects("routing_edges")
+    ] + [
+        ("trigger", item)
+        for item in bundle.graph.objects("triggers")
+    ] + [
+        ("decision", item)
+        for item in bundle.graph.objects("decisions")
+    ]
+    units: list[dict[str, Any]] = []
+    queue_id = f"routing_review_{bundle.tax_year}"
+    for object_type, raw in sorted(specs, key=lambda pair: (pair[0], str(_object_id(pair[0], pair[1]) or ""))):
+        object_id = str(_object_id(object_type, raw) or "")
+        if not object_id:
+            continue
+        label = _routing_label(object_type, raw, object_id)
+        ref = {"object_type": object_type, "object_id": object_id, "display_label": label}
+        citation_ids = _citation_refs(raw)
+        citations = _citation_records(citation_ids, graph_index)
+        form_citations, instruction_citations = _split_citation_records(citations)
+        expression = {"kind": "reference", "ref": ref}
+        unit: dict[str, Any] = {
+            "queue_id": queue_id,
+            "unit_id": derive_unit_id(
+                address_id="",
+                identity_source="object_id",
+                document_id="routing",
+                field_name="",
+                review_kind="routing",
+                role="primary",
+                object_type=object_type,
+                object_id=object_id,
+                identity_token=object_id,
+            ),
+            "review_kind": "routing",
+            "required": True,
+            "object_refs": [ref],
+            "official_location": None,
+            "analog_placement": None,
+            "semantic_class": "decision" if object_type == "decision" else "contract",
+            "summary": label,
+            "display_name": label,
+            "display_name_provenance": "authored_object",
+            "official_locator": label,
+            "review_prompt": "Confirm the routing object, its source, and its destination.",
+            "expression": expression,
+            "kind_bucket": "NOT_REVIEWABLE",
+            "coverage": {"state": "pending", "required_for_confirm": True},
+            "address_status": "unaddressed",
+            "identity_source": "object_id",
+            "identity_role": "primary",
+            "identity_qualifier": f"routing:primary:{object_type}",
+            "identity_token": object_id,
+            "identity_document_id": "routing",
+            "aliases": [],
+            "review_content": make_review_content(
+                label,
+                expression=expression,
+                form_citations=[item.get("quoted_text") for item in form_citations if item.get("quoted_text")],
+                instruction_citations=[
+                    item.get("quoted_text") for item in instruction_citations if item.get("quoted_text")
+                ],
+            ),
+            "form_citations": form_citations,
+            "instruction_citations": instruction_citations,
+        }
+        if citation_ids:
+            unit["citation_refs"] = sorted(citation_ids)
+        units.append(unit)
+    return {
+        "queue_id": queue_id,
+        "review_kind": "routing",
+        "status": "pending",
+        "summary": "Review intake routing edges, triggers, and decisions.",
+        "units": units,
+    }
+
+
+def _routing_label(object_type: str, object_data: dict[str, Any], object_id: str) -> str:
+    """Build a stable routing label from authored object fields."""
+    for key in ("label", "question", "title", "description"):
+        value = object_data.get(key)
+        if isinstance(value, str) and value.strip():
+            return value.strip()
+    if object_type == "routing_edge":
+        source = str(object_data.get("source_box") or object_data.get("source") or "source")
+        target = str(object_data.get("target") or "target")
+        return f"Route {source} -> {target}"
+    return f"{object_type.replace('_', ' ').title()}: {object_id}"
+
+
+def _citation_records(
+    citation_ids: Iterable[str],
+    graph_index: dict[tuple[str, str], dict[str, Any]],
+) -> list[dict[str, Any]]:
+    """Resolve citation ids from compiled graph artifacts without importing the pipeline."""
+    return [
+        dict(graph_index[("citation", citation_id)])
+        for citation_id in sorted(set(str(value) for value in citation_ids))
+        if ("citation", citation_id) in graph_index
+    ]
+
+
+def _split_citation_records(
+    citations: Iterable[dict[str, Any]],
+) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
+    form: list[dict[str, Any]] = []
+    instruction: list[dict[str, Any]] = []
+    for citation in citations:
+        source = str(citation.get("source_document_id") or citation.get("document_id") or "")
+        (instruction if source.startswith("instructions_") else form).append(dict(citation))
+    return form, instruction
 
 
 def _cell_semantics(cell: dict[str, Any], object_type: str, object_id: str) -> FormattedSemantics:

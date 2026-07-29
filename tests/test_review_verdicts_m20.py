@@ -1,4 +1,4 @@
-"""M20 S5-1 tests for address-keyed verdict history and derived coverage."""
+"""M20 S6-1 tests for expression-bound verdict history and derived coverage."""
 
 from __future__ import annotations
 
@@ -11,7 +11,9 @@ from workbench.address_verdicts import (
     address_without_year,
     append_address_verdict,
     derive_cell_coverage,
+    expression_kind_bucket,
     load_address_verdicts,
+    make_review_content,
     report_blast_radius,
     review_content_fingerprint,
     rollover_candidates,
@@ -24,13 +26,27 @@ ROOT = Path(__file__).resolve().parents[1]
 pytestmark = pytest.mark.m20
 
 
-def _unit(address: str, label: str, cited_text: list[str]) -> dict[str, object]:
+def _unit(
+    address: str,
+    label: str,
+    cited_text: list[str],
+    *,
+    expression: dict[str, object] | None = None,
+) -> dict[str, object]:
+    expression = expression or {
+        "kind": "reference",
+        "ref": {"object_type": "address", "object_id": address},
+    }
+    content = make_review_content(label, expression=expression, form_citations=cited_text)
     return {
         "unit_id": "unit_" + address.replace("/", "_"),
         "address_id": address,
         "display_name": label,
-        "review_content": {"label": label, "cited_text": cited_text},
-        "content_fingerprint": review_content_fingerprint(label, cited_text),
+        "expression": expression,
+        "review_content": content,
+        "content_fingerprint": review_content_fingerprint(
+            label, expression=expression, form_citations=cited_text,
+        ),
     }
 
 
@@ -40,7 +56,66 @@ def test_fingerprint_survives_whitespace_dashes_and_quotes() -> None:
     assert first == second
 
 
-def test_ledger_is_append_only_and_coverage_has_three_states(tmp_path: Path) -> None:
+def test_fingerprint_binds_expression_and_normalizes_equivalent_operands() -> None:
+    first_expression = {
+        "kind": "sum",
+        "operation": "SUM",
+        "operands": [
+            {"kind": "reference", "ref": {"object_type": "node", "object_id": "a"}},
+            {"kind": "reference", "ref": {"object_type": "node", "object_id": "b"}},
+        ],
+    }
+    equivalent_expression = {
+        "operation": " SUM ",
+        "kind": "sum",
+        "operands": [
+            {"ref": {"object_id": "b", "object_type": "node"}, "kind": "reference"},
+            {"kind": "reference", "ref": {"object_type": "node", "object_id": "a"}},
+        ],
+    }
+    changed_expression = {
+        **first_expression,
+        "operands": [*first_expression["operands"], {"kind": "literal", "value": 1}],
+    }
+    first = review_content_fingerprint(
+        "Total", expression=first_expression, form_citations=["Line 1"],
+    )
+    assert first == review_content_fingerprint(
+        " Total ", expression=equivalent_expression, form_citations=[" Line 1 "],
+    )
+    assert first != review_content_fingerprint(
+        "Total", expression=changed_expression, form_citations=["Line 1"],
+    )
+    assert first != review_content_fingerprint(
+        "Total",
+        expression={**first_expression, "operation": "SUBTRACT"},
+        form_citations=["Line 1"],
+    )
+    subtract = {
+        "kind": "subtract",
+        "operands": first_expression["operands"],
+    }
+    reversed_subtract = {
+        "kind": "subtract",
+        "operands": list(reversed(first_expression["operands"])),
+    }
+    assert review_content_fingerprint("Difference", expression=subtract) != review_content_fingerprint(
+        "Difference", expression=reversed_subtract,
+    )
+
+
+def test_expression_kind_buckets_are_explicit_and_fail_closed() -> None:
+    assert expression_kind_bucket("sum") == "ARITHMETIC"
+    assert expression_kind_bucket("copy") == "COPY"
+    assert expression_kind_bucket("input") == "USER_ENTRY"
+    assert expression_kind_bucket("imported") == "IMPORTED"
+    assert expression_kind_bucket("repeatable_table") == "PER_ROW"
+    assert expression_kind_bucket("review_gap") == "NOT_REVIEWABLE"
+    with pytest.raises(ValueError, match="unsupported review expression kind"):
+        expression_kind_bucket("invented")
+
+
+def test_ledger_is_append_only_and_coverage_has_four_states(tmp_path: Path) -> None:
     address = "2025/document=form_a/section=income/control=amount"
     changed_address = "2025/document=form_a/section=income/control=changed_amount"
     unit_a = _unit(address, "Amount", ["Enter amount."])
@@ -84,7 +159,7 @@ def test_ledger_is_append_only_and_coverage_has_three_states(tmp_path: Path) -> 
     changed = _unit(changed_address, "Changed amount", ["Enter amount."])
     other = _unit("2025/document=form_a/section=income/control=other", "Other", [])
     coverage = derive_cell_coverage([unit_a, changed, other], load_address_verdicts(path))
-    assert coverage["states"] == {"unreviewed": 1, "approved": 1, "needs_recheck": 1}
+    assert coverage["states"] == {"unreviewed": 1, "approved": 1, "needs_recheck": 1, "review_gap": 0}
     assert next(item for item in coverage["cells"] if item["unit_id"] == changed["unit_id"])["needs_recheck"] is True
 
     blast = report_blast_radius([unit_a, changed, other], load_address_verdicts(path))
@@ -150,9 +225,38 @@ def test_verdict_rejects_missing_or_tampered_reviewed_content(tmp_path: Path) ->
         load_address_verdicts(path)
 
 
+def test_verdict_rejects_reviewed_content_without_expression_slot(tmp_path: Path) -> None:
+    address = "2025/document=form_a/section=income/control=amount"
+    path = tmp_path / "address_verdicts.jsonl"
+    record = append_address_verdict(
+        root=tmp_path, year=2025, address=address, label="Amount", cited_text=["Enter amount."],
+        reviewer_id="john", reviewed_at="2026-07-29T10:00:00+00:00", verdict_id="verdict_amount_1",
+        store_path=path,
+    )
+    record["reviewed_content"].pop("expression")
+    path.write_text(json.dumps(record) + "\n", encoding="utf-8")
+    with pytest.raises(ValueError, match="expression"):
+        load_address_verdicts(path)
+
+
+def test_review_gap_is_explicitly_not_reviewable() -> None:
+    address = "2025/document=form_a/section=income/control=unsupported"
+    gap = _unit(address, "Unsupported", [], expression={"kind": "review_gap", "reason": "not modeled"})
+    coverage = derive_cell_coverage([gap], [])
+    assert coverage["states"] == {"unreviewed": 0, "approved": 0, "needs_recheck": 0, "review_gap": 1}
+    assert coverage["cells"][0]["kind_bucket"] == "NOT_REVIEWABLE"
+
+
 def test_rollover_returns_explicit_candidates_without_copying(tmp_path: Path) -> None:
-    old = _unit("2025/document=form_a/section=income/control=amount", "Amount", ["Enter amount."])
-    current = _unit("2026/document=form_a/section=income/control=amount", "Amount", ["Enter amount."])
+    expression = {"kind": "input", "text": "amount"}
+    old = _unit(
+        "2025/document=form_a/section=income/control=amount", "Amount", ["Enter amount."],
+        expression=expression,
+    )
+    current = _unit(
+        "2026/document=form_a/section=income/control=amount", "Amount", ["Enter amount."],
+        expression=expression,
+    )
     path = tmp_path / "address_verdicts.jsonl"
     append_address_verdict(
         root=tmp_path,
@@ -160,6 +264,7 @@ def test_rollover_returns_explicit_candidates_without_copying(tmp_path: Path) ->
         address=old["address_id"],
         label="Amount",
         cited_text=["Enter amount."],
+        expression=expression,
         reviewer_id="john",
         reviewed_at="2026-07-29T10:00:00+00:00",
         verdict_id="verdict_amount_1",
@@ -181,11 +286,21 @@ def test_rollover_year_stripping_does_not_corrupt_form_numbers() -> None:
     ) == "document=form_1040/table=dependents/row_template=dependent/column=lived_with_you_more_than_half"
 
 
-def test_real_derived_projection_covers_all_1921_controls() -> None:
+def test_real_derived_projection_covers_graph_cells_and_routing() -> None:
     coverage = build_derived_coverage(ROOT, 2025, [])
-    assert coverage["denominator"] == 1921
-    assert coverage["states"] == {"unreviewed": 1921, "approved": 0, "needs_recheck": 0}
-    assert sum(coverage["identity_sources"].values()) == 1921
+    assert coverage["denominator"] == 2120
+    assert coverage["states"] == {
+        "unreviewed": 1529, "approved": 0, "needs_recheck": 0, "review_gap": 591,
+    }
+    assert sum(coverage["identity_sources"].values()) == 2120
+    assert coverage["kind_buckets"] == {
+        "ARITHMETIC": 139,
+        "COPY": 49,
+        "USER_ENTRY": 547,
+        "IMPORTED": 696,
+        "PER_ROW": 98,
+        "NOT_REVIEWABLE": 591,
+    }
 
 
 def test_derived_projection_replaces_queue_matching_and_orphan_persistence() -> None:
@@ -201,8 +316,16 @@ def test_derived_projection_replaces_queue_matching_and_orphan_persistence() -> 
         "verdict_id": "verdict_amount_1",
         "tax_year": 2025,
         "address": address,
-        "content_fingerprint": review_content_fingerprint("Amount", ["Enter amount."]),
-        "reviewed_content": {"label": "Amount", "cited_text": ["Enter amount."]},
+        "content_fingerprint": review_content_fingerprint(
+            "Amount",
+            expression={"kind": "reference", "ref": {"object_type": "address", "object_id": address}},
+            form_citations=["Enter amount."],
+        ),
+        "reviewed_content": make_review_content(
+            "Amount",
+            expression={"kind": "reference", "ref": {"object_type": "address", "object_id": address}},
+            form_citations=["Enter amount."],
+        ),
         "judgement": "approved",
         "reviewer_id": "john",
         "reviewed_at": "2026-07-29T10:00:00+00:00",
@@ -211,7 +334,7 @@ def test_derived_projection_replaces_queue_matching_and_orphan_persistence() -> 
     first = derive_cell_coverage([changed], history)
     second = derive_cell_coverage([changed], history)
     assert first == second
-    assert first["states"] == {"unreviewed": 0, "approved": 0, "needs_recheck": 1}
+    assert first["states"] == {"unreviewed": 0, "approved": 0, "needs_recheck": 1, "review_gap": 0}
     assert "orphaned" not in first
     assert derive_cell_coverage([current], history)["approved"] == 1
 

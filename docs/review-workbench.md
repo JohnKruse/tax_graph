@@ -14,15 +14,17 @@ Older isolated producer fixtures may still carry an additive `review_scope` proj
 Each pending entry has a scope type and explicit object refs with an object type,
 object id, source artifact path, and review role. The live workbench no longer reads
 or writes a generated queue; current review coverage comes from the physical-cell
-projection and the address-keyed verdict ledger.
+projection, graph cells without page geometry, and a separate routing review set.
+The address-keyed verdict ledger remains the human-history seam.
 
 ## Derived review coverage
 
-The workbench derives one review unit per physical form control from the published
-geometry, addresses, field dispositions, and bindings. It does not read a generated
+The workbench derives one review unit per physical form control and one unlocated unit
+per published graph cell without page geometry. It also projects routing edges, intake
+triggers, and decisions into a separate routing review set. It does not read a generated
 deferred-review queue. Human decisions live in the append-only address-keyed verdict
-ledger, where the reviewed content fingerprint makes regenerated cells require review
-again when their content changes.
+ledger, where the reviewed content fingerprint binds the label, expression tree, form
+citations, and instruction citations, making changed content require review again.
 
 ## Complete field dispositions
 
@@ -66,12 +68,12 @@ workbench Python files and rejects imports from `tax_graph` and its pipeline mod
 
 ## Step 3 review manifest
 
-`workbench.manifest.build_manifest` projects the physical form-cell inventory into one
-entry per document and one concrete review unit per cell. Each unit carries exact
-object identifiers, a schema-valid review expression, official geometry, and an
-explicit `null` analog placement until a later step adds semantic layout. The manifest
-hash is computed from canonical artifact hashes and unit data, so repeated builds are
-byte-stable. Build one with:
+`workbench.manifest.build_manifest` projects the physical form-cell inventory and
+geometry-free graph cells into document entries, then adds a separate routing entry.
+Each unit carries exact object identifiers, a schema-valid review expression, split form
+and instruction citation slots, and either official geometry or explicit `null`
+geometry. The manifest hash is computed from canonical artifact hashes and unit data,
+so repeated builds are byte-stable. Build one with:
 
 `python -m workbench.cli manifest --year 2025 --output-dir .workbench_state/2025`
 
@@ -110,10 +112,11 @@ finding rather than being treated as resolved.
 
 The workbench emits only new records under `review_verdicts/<year>/`; it never edits
 the derived cell inventory, graph, or drafts. Each address-keyed verdict is
-schema-validated and carries the reviewed content, its canonical fingerprint, the
-judgement, reviewer id, and UTC timestamp. A changed fingerprint produces a derived
-`needs_recheck` state. No workbench action asserts a human-review claim on the user's
-behalf.
+schema-validated and carries the reviewed label, expression, separated form and
+instruction citation slots, canonical fingerprint, judgement, reviewer id, and UTC
+timestamp. A changed fingerprint produces a derived `needs_recheck` state.
+Review-gap expressions are counted explicitly as `NOT_REVIEWABLE` rather than as
+unreviewed work. No workbench action asserts a human-review claim on the user's behalf.
 
 ## What it is
 
@@ -163,8 +166,9 @@ required-unit count, then expands to a deterministic `Things to check` checklist
 plain-English groups cover identity/filer inputs, mappings/imports, calculations,
 decisions, tables/worksheets, citations/witnesses, changes/diffs, and unsupported/gaps;
 empty groups are omitted. Queue ids and review kinds remain internal API provenance. A
-check group can span several documents, but every derived physical cell appears
-exactly once and counts reconcile to the cell inventory.
+check group can span several documents, but every projected graph cell appears exactly
+once and counts reconcile to the manifest cell inventory; unlocated cells remain
+visible as unlocated rather than receiving invented geometry.
 
 Every review unit carries required `display_name`, `official_locator`, and
 `review_prompt` fields. Names resolve from authored canonical-address/control metadata;
@@ -267,7 +271,8 @@ python -m workbench.cli preflight --year 2025
 
 Preflight fails closed when object identity, geometry identity, semantic formatting,
 or citation evidence is incomplete or ambiguous. A successful run reports derived
-cell coverage by review kind, source document, object type, and geometry state.
+cell coverage by review kind, source document, object type, geometry state, and
+explicit expression kind bucket.
 
 During the A9 address-authoring ratchet, legacy geometry-mined labels carry explicit
 `legacy_mined` provenance and appear as provisional. Preflight reports their count per

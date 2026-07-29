@@ -18,6 +18,12 @@ from workbench.reviewer_language import contains_raw_field_name_token, is_raw_fi
 from workbench.semantics import SUPPORTED_OPERATIONS, SemanticFormatError
 
 
+_GRAPH_REF_TYPES = frozenset({
+    "document", "node", "node_instance", "table", "edge", "rule", "citation",
+    "decision", "decision_option", "routing_edge", "trigger", "expectation",
+})
+
+
 @dataclass(frozen=True)
 class PreflightIssue:
     """One actionable reason the review workbench must not start."""
@@ -102,8 +108,15 @@ def preflight_manifest(manifest: dict[str, Any], bundle: ArtifactBundle) -> dict
     pdf_ids = {pdf.path.stem for pdf in bundle.pdfs}
     reviewer_identities: dict[tuple[str, str, str], tuple[str, str]] = {}
     for queue_id, entry in sorted(manifest_entries.items()):
+        units = entry.get("units", []) or []
+        if not units:
+            issues.append(PreflightIssue(
+                "zero_units", "review entry produced no review units", queue_id
+            ))
         citation_refs: dict[str, dict[str, Any]] = {}
-        for unit in entry.get("units", []) or []:
+        for unit in units:
+            if not isinstance(unit, dict):
+                continue
             display_name = str(unit.get("display_name") or "").strip()
             field_name = str(unit.get("field_name") or "").strip()
             provenance = str(unit.get("display_name_provenance") or "")
@@ -131,8 +144,19 @@ def preflight_manifest(manifest: dict[str, Any], bundle: ArtifactBundle) -> dict
             for value in unit.get("citation_refs", []) or []:
                 citation_refs.setdefault(str(value), {"object_type": "citation", "object_id": str(value)})
             for ref in unit.get("object_refs", []) or []:
-                if isinstance(ref, dict) and ref.get("object_type") == "citation":
+                if not isinstance(ref, dict):
+                    continue
+                object_type = str(ref.get("object_type") or "")
+                if object_type == "citation":
                     citation_refs[str(ref.get("object_id"))] = ref
+                if object_type in _GRAPH_REF_TYPES:
+                    matches = _resolve_objects(ref, bundle)
+                    if len(matches) != 1:
+                        issues.append(PreflightIssue(
+                            "ambiguous_object",
+                            f"{object_type} {ref.get('object_id', '<missing>')} resolves to {len(matches)} artifacts",
+                            queue_id,
+                        ))
         for citation_id, ref in sorted(citation_refs.items()):
             matches = _resolve_objects(ref, bundle)
             if len(matches) != 1:
@@ -157,23 +181,27 @@ def preflight_manifest(manifest: dict[str, Any], bundle: ArtifactBundle) -> dict
             history,
             geometry_entries=bundle.geometry.get("entries", []) or [],
             page_geometry=bundle.geometry.get("pages", []) or [],
+            manifest=manifest,
         )
     except (OSError, ValueError) as exc:
         issues.append(PreflightIssue("derived_coverage_failed", str(exc)))
         derived = None
 
     if derived is not None:
-        geometry_total = sum(
-            1
-            for item in bundle.geometry.get("entries", []) or []
-            if isinstance(item, dict) and item.get("document_id")
+        manifest_cell_total = sum(
+            len(entry.get("units", []) or [])
+            for entry in manifest.get("entries", []) or []
+            if isinstance(entry, dict) and str(entry.get("review_kind")) == "form_cell"
         )
-        if geometry_total and derived.get("denominator") != geometry_total:
+        if derived.get("denominator") != manifest_cell_total:
             issues.append(PreflightIssue(
                 "derived_cell_denominator",
-                f"derived coverage has {derived.get('denominator', 0)} cells but geometry has {geometry_total}",
+                f"derived coverage has {derived.get('denominator', 0)} cells but manifest has {manifest_cell_total}",
             ))
-        state_total = sum(int(derived.get("states", {}).get(state, 0)) for state in ("unreviewed", "approved", "needs_recheck"))
+        state_total = sum(
+            int(derived.get("states", {}).get(state, 0))
+            for state in ("unreviewed", "approved", "needs_recheck", "review_gap")
+        )
         if state_total != int(derived.get("denominator", 0)):
             issues.append(PreflightIssue(
                 "derived_cell_state_gap",
@@ -186,7 +214,7 @@ def preflight_manifest(manifest: dict[str, Any], bundle: ArtifactBundle) -> dict
         **coverage_report(manifest),
         "derived": derived or {
             "denominator": 0,
-            "states": {"unreviewed": 0, "approved": 0, "needs_recheck": 0},
+            "states": {"unreviewed": 0, "approved": 0, "needs_recheck": 0, "review_gap": 0},
             "cells": [],
         },
     }

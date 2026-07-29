@@ -141,6 +141,17 @@
         "reason": {"type": "string", "minLength": 1}
       }
     },
+    "review_content": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["label", "expression", "form_citations", "instruction_citations"],
+      "properties": {
+        "label": {"type": "string"},
+        "expression": {"$ref": "#/$defs/expression"},
+        "form_citations": {"type": "array", "items": {"type": "string"}},
+        "instruction_citations": {"type": "array", "items": {"type": "string"}}
+      }
+    },
     "unit": {
       "type": "object",
       "additionalProperties": false,
@@ -167,6 +178,12 @@
         "official_locator": {"type": "string", "minLength": 1},
         "review_prompt": {"type": "string", "minLength": 1},
         "expression": {"$ref": "#/$defs/expression"},
+        "kind_bucket": {
+          "enum": ["ARITHMETIC", "COPY", "USER_ENTRY", "IMPORTED", "PER_ROW", "NOT_REVIEWABLE"]
+        },
+        "review_content": {"$ref": "#/$defs/review_content"},
+        "form_citations": {"type": "array", "items": {"type": "object", "additionalProperties": true}},
+        "instruction_citations": {"type": "array", "items": {"type": "object", "additionalProperties": true}},
         "address_status": {"enum": ["addressed", "unaddressed"]},
         "identity_source": {"enum": ["address_id", "field_name", "object_id"]},
         "identity_role": {"type": "string", "minLength": 1},

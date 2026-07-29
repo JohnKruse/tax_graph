@@ -21,6 +21,27 @@ _HEX64 = re.compile(r"^[a-f0-9]{64}$")
 _YEAR_COMPONENT = re.compile(r"^(?:tax_year|year)=(?:19|20)\d{2}$")
 _LEADING_YEAR = re.compile(r"^(?:19|20)\d{2}/")
 _LEGACY_COLUMN_YEAR = re.compile(r"_(?:19|20)\d{2}$")
+_EXPRESSION_KIND_BUCKETS = {
+    "sum": "ARITHMETIC",
+    "subtract": "ARITHMETIC",
+    "multiply": "ARITHMETIC",
+    "negate": "ARITHMETIC",
+    "min": "ARITHMETIC",
+    "max": "ARITHMETIC",
+    "if_else": "ARITHMETIC",
+    "lookup_table": "ARITHMETIC",
+    "lookup_bracket": "ARITHMETIC",
+    "copy": "COPY",
+    "input": "USER_ENTRY",
+    "imported": "IMPORTED",
+    "repeatable_table": "PER_ROW",
+    "review_gap": "NOT_REVIEWABLE",
+    "parameter": "NOT_REVIEWABLE",
+    "frontier": "NOT_REVIEWABLE",
+    "literal": "NOT_REVIEWABLE",
+    "reference": "NOT_REVIEWABLE",
+}
+_COMMUTATIVE_EXPRESSION_KINDS = frozenset({"sum", "multiply", "min", "max"})
 _PUNCTUATION = str.maketrans({
     "\u2010": "-",
     "\u2011": "-",
@@ -59,13 +80,92 @@ def normalize_cited_text(value: Any) -> list[str]:
     return [normalize_review_text(item) for item in values if normalize_review_text(item)]
 
 
-def review_content_fingerprint(label: Any, cited_text: Any = None) -> str:
-    """Hash the reviewed label and cited text after stable normalization."""
-    content = {
-        "label": normalize_review_text(label),
-        "cited_text": normalize_cited_text(cited_text),
+def normalize_expression(value: Any) -> dict[str, Any]:
+    """Normalize an expression without changing its graph meaning."""
+    if not isinstance(value, Mapping):
+        return {}
+
+    def normalize(
+        item: Any,
+        key: str | None = None,
+        parent_kind: str | None = None,
+    ) -> Any:
+        if isinstance(item, Mapping):
+            item_kind = str(item.get("kind") or item.get("operation") or "")
+            return {
+                str(item_key): normalize(item_value, str(item_key), item_kind)
+                for item_key, item_value in sorted(item.items(), key=lambda pair: str(pair[0]))
+            }
+        if isinstance(item, list):
+            values = [normalize(child, key, parent_kind) for child in item]
+            if (
+                key in {"object_refs", "citation_refs"}
+                or key == "operands" and parent_kind in _COMMUTATIVE_EXPRESSION_KINDS
+            ):
+                values.sort(key=lambda child: json.dumps(child, ensure_ascii=True, sort_keys=True, separators=(",", ":")))
+            return values
+        if isinstance(item, str):
+            return normalize_review_text(item)
+        return item
+
+    result = normalize(value)
+    return result if isinstance(result, dict) else {}
+
+
+def expression_kind_bucket(kind: Any) -> str:
+    """Return the explicit UI bucket for an expression kind or fail closed."""
+    value = str(kind or "")
+    try:
+        return _EXPRESSION_KIND_BUCKETS[value]
+    except KeyError as exc:
+        raise ValueError(f"unsupported review expression kind: {value or '<missing>'}") from exc
+
+
+def make_review_content(
+    label: Any,
+    *,
+    expression: Mapping[str, Any] | None = None,
+    form_citations: Any = None,
+    instruction_citations: Any = None,
+    cited_text: Any = None,
+) -> dict[str, Any]:
+    """Shape the exact content a human approval is about."""
+    if form_citations is None:
+        form_citations = cited_text
+    expression_value = dict(expression) if isinstance(expression, Mapping) else {"kind": "reference"}
+    if not expression_value.get("kind"):
+        raise ValueError("review expression must contain kind")
+    return {
+        "label": str(label),
+        "expression": expression_value,
+        "form_citations": [str(value) for value in normalize_cited_text(form_citations)],
+        "instruction_citations": [str(value) for value in normalize_cited_text(instruction_citations)],
     }
-    canonical = json.dumps(content, ensure_ascii=True, sort_keys=True, separators=(",", ":"))
+
+
+def review_content_fingerprint(
+    label: Any,
+    cited_text: Any = None,
+    *,
+    expression: Mapping[str, Any] | None = None,
+    form_citations: Any = None,
+    instruction_citations: Any = None,
+) -> str:
+    """Hash label, expression, and separated citation slots after normalization."""
+    content = make_review_content(
+        label,
+        expression=expression,
+        form_citations=form_citations,
+        instruction_citations=instruction_citations,
+        cited_text=cited_text,
+    )
+    canonical_content = {
+        "label": normalize_review_text(content["label"]),
+        "expression": normalize_expression(content["expression"]),
+        "form_citations": normalize_cited_text(content["form_citations"]),
+        "instruction_citations": normalize_cited_text(content["instruction_citations"]),
+    }
+    canonical = json.dumps(canonical_content, ensure_ascii=True, sort_keys=True, separators=(",", ":"))
     return hashlib.sha256(canonical.encode("utf-8")).hexdigest()
 
 
@@ -81,6 +181,9 @@ def append_address_verdict(
     address: str,
     label: str,
     cited_text: Any = None,
+    expression: Mapping[str, Any] | None = None,
+    form_citations: Any = None,
+    instruction_citations: Any = None,
     judgement: str = "approved",
     reviewer_id: str,
     reviewed_at: str | None = None,
@@ -99,15 +202,27 @@ def append_address_verdict(
     if not judgement_value:
         raise ValueError("judgement is required")
     reviewed_at_value, reviewed_at_epoch = _normalize_reviewed_at(reviewed_at)
-    content = {
-        "label": str(label),
-        "cited_text": [str(value) for value in normalize_cited_text(cited_text)],
+    expression_value = expression or {
+        "kind": "reference",
+        "ref": {"object_type": "address", "object_id": address_value},
     }
+    content = make_review_content(
+        label,
+        expression=expression_value,
+        form_citations=form_citations,
+        instruction_citations=instruction_citations,
+        cited_text=cited_text,
+    )
     record: dict[str, Any] = {
         "verdict_id": verdict_id or _make_verdict_id(address_value, reviewed_at_value),
         "tax_year": int(year),
         "address": address_value,
-        "content_fingerprint": review_content_fingerprint(label, cited_text),
+        "content_fingerprint": review_content_fingerprint(
+            label,
+            expression=expression_value,
+            form_citations=content["form_citations"],
+            instruction_citations=content["instruction_citations"],
+        ),
         "reviewed_content": content,
         "judgement": judgement_value,
         "reviewer_id": reviewer_value,
@@ -170,6 +285,15 @@ def derive_cell_coverage(
             raise ValueError(f"duplicate derived review address: {address}")
         seen_addresses.add(address)
         current_fingerprint = unit_fingerprint(unit)
+        expression = unit.get("expression")
+        if not isinstance(expression, Mapping):
+            review_content = unit.get("review_content")
+            expression = review_content.get("expression") if isinstance(review_content, Mapping) else None
+        expression_kind = expression.get("kind") if isinstance(expression, Mapping) else ""
+        kind_bucket = expression_kind_bucket(expression_kind)
+        if expression_kind == "review_gap":
+            results.append(_state(unit, "review_gap", current_fingerprint, kind_bucket=kind_bucket))
+            continue
         verdict = latest.get(address)
         if verdict is None:
             result = _state(unit, "unreviewed", current_fingerprint)
@@ -183,12 +307,16 @@ def derive_cell_coverage(
             result["content_changed"] = True
             result["needs_recheck"] = True
         results.append(result)
-    counts = {state: sum(item["state"] == state for item in results) for state in ("unreviewed", "approved", "needs_recheck")}
+    counts = {
+        state: sum(item["state"] == state for item in results)
+        for state in ("unreviewed", "approved", "needs_recheck", "review_gap")
+    }
     return {
         "total_cells": len(results),
         "approved": counts["approved"],
         "unreviewed": counts["unreviewed"],
         "needs_recheck": counts["needs_recheck"],
+        "review_gap": counts["review_gap"],
         "states": counts,
         "by_document": _count_by_document(results),
         "cells": results,
@@ -292,12 +420,19 @@ def unit_address(unit: Mapping[str, Any]) -> str:
 
 def unit_fingerprint(unit: Mapping[str, Any]) -> str:
     """Compute or retrieve the current content fingerprint for one unit."""
+    content = unit.get("review_content")
+    if isinstance(content, Mapping):
+        if "expression" in content:
+            return review_content_fingerprint(
+                content.get("label", unit.get("display_name", "")),
+                expression=content.get("expression"),
+                form_citations=content.get("form_citations", []),
+                instruction_citations=content.get("instruction_citations", []),
+            )
+        return review_content_fingerprint(content.get("label", unit.get("display_name", "")), content.get("cited_text", []))
     existing = str(unit.get("content_fingerprint") or "")
     if _HEX64.fullmatch(existing):
         return existing
-    content = unit.get("review_content")
-    if isinstance(content, Mapping):
-        return review_content_fingerprint(content.get("label", unit.get("display_name", "")), content.get("cited_text", []))
     cited: list[str] = []
     for citation in unit.get("citations", []) or []:
         if isinstance(citation, Mapping) and citation.get("quoted_text"):
@@ -334,11 +469,29 @@ def _validate_record(record: Mapping[str, Any], *, source: str = "address verdic
     reviewed_content = record.get("reviewed_content")
     if not isinstance(reviewed_content, Mapping):
         raise ValueError(f"{source} reviewed_content is required")
-    if "label" not in reviewed_content or "cited_text" not in reviewed_content:
-        raise ValueError(f"{source} reviewed_content must contain label and cited_text")
-    if not isinstance(reviewed_content.get("label"), str) or not isinstance(reviewed_content.get("cited_text"), list):
+    required_content = ("label", "expression", "form_citations", "instruction_citations")
+    if any(key not in reviewed_content for key in required_content):
+        raise ValueError(f"{source} reviewed_content must contain label, expression, form_citations, and instruction_citations")
+    if (
+        not isinstance(reviewed_content.get("label"), str)
+        or not isinstance(reviewed_content.get("expression"), Mapping)
+        or not isinstance(reviewed_content.get("form_citations"), list)
+        or not isinstance(reviewed_content.get("instruction_citations"), list)
+        or any(not isinstance(value, str) for value in reviewed_content.get("form_citations", []))
+        or any(not isinstance(value, str) for value in reviewed_content.get("instruction_citations", []))
+    ):
         raise ValueError(f"{source} reviewed_content has invalid shape")
-    actual = review_content_fingerprint(reviewed_content.get("label", ""), reviewed_content.get("cited_text", []))
+    expression = reviewed_content.get("expression")
+    try:
+        expression_kind_bucket(expression.get("kind") if isinstance(expression, Mapping) else "")
+    except ValueError as exc:
+        raise ValueError(f"{source} reviewed_content has invalid expression kind") from exc
+    actual = review_content_fingerprint(
+        reviewed_content.get("label", ""),
+        expression=reviewed_content.get("expression"),
+        form_citations=reviewed_content.get("form_citations", []),
+        instruction_citations=reviewed_content.get("instruction_citations", []),
+    )
     if actual != record["content_fingerprint"]:
         raise ValueError(f"{source} content_fingerprint does not match reviewed_content")
     try:
@@ -384,7 +537,13 @@ def _state(
     current_fingerprint: str,
     *,
     verdict: Mapping[str, Any] | None = None,
+    kind_bucket: str | None = None,
 ) -> dict[str, Any]:
+    expression = unit.get("expression")
+    if not isinstance(expression, Mapping):
+        content = unit.get("review_content")
+        expression = content.get("expression") if isinstance(content, Mapping) else {}
+    expression_kind = str(expression.get("kind") or "") if isinstance(expression, Mapping) else ""
     result: dict[str, Any] = {
         "unit_id": str(unit.get("unit_id", "")),
         "address": unit_address(unit),
@@ -394,6 +553,8 @@ def _state(
         "content_changed": state == "needs_recheck",
         "needs_recheck": state == "needs_recheck",
         "content_fingerprint": current_fingerprint,
+        "expression_kind": expression_kind,
+        "kind_bucket": kind_bucket or expression_kind_bucket(expression_kind),
     }
     if unit.get("base_address_id"):
         result["base_address"] = str(unit["base_address_id"])
@@ -414,7 +575,10 @@ def _count_by_document(results: Iterable[Mapping[str, Any]]) -> dict[str, dict[s
         address = str(item.get("address", ""))
         document = next((part.split("=", 1)[1] for part in address.split("/") if part.startswith("document=")), "unlocated")
         state = str(item.get("state", "unreviewed"))
-        counts.setdefault(document, {"total": 0, "unreviewed": 0, "approved": 0, "needs_recheck": 0})["total"] += 1
+        counts.setdefault(
+            document,
+            {"total": 0, "unreviewed": 0, "approved": 0, "needs_recheck": 0, "review_gap": 0},
+        )["total"] += 1
         counts[document][state] = counts[document].get(state, 0) + 1
     return {key: counts[key] for key in sorted(counts)}
 

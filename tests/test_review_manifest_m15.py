@@ -87,6 +87,7 @@ def test_live_manifest_covers_every_pending_entry_and_is_stable() -> None:
         for entry in geometry["entries"]
         if entry.get("document_id")
     }
+    expected.update({"instructions_schedule_d_2025", "routing_review_2025"})
     assert {entry["queue_id"] for entry in first["entries"]} == expected
 
     form_1040_entry = next(
@@ -99,6 +100,20 @@ def test_live_manifest_covers_every_pending_entry_and_is_stable() -> None:
     assert all(unit["object_refs"][0]["object_type"] == "address" for unit in addressed)
     assert all(len(unit["object_refs"]) == 2 for unit in addressed)
     assert {unit["object_refs"][1]["object_type"] for unit in addressed} <= {"field_control", "node"}
+    assert any(unit.get("official_location") is None for unit in form_1040_entry["units"])
+    routing = next(entry for entry in first["entries"] if entry["queue_id"] == "routing_review_2025")
+    assert len(routing["units"]) == 104
+    assert all(
+        unit["review_content"]["expression"] == unit["expression"]
+        and unit["review_content"]["form_citations"] == [
+            item["quoted_text"] for item in unit["form_citations"] if item.get("quoted_text")
+        ]
+        and unit["review_content"]["instruction_citations"] == [
+            item["quoted_text"] for item in unit["instruction_citations"] if item.get("quoted_text")
+        ]
+        for entry in first["entries"]
+        for unit in entry["units"]
+    )
 
 
 @pytest.mark.m15

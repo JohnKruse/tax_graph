@@ -4,10 +4,17 @@ from __future__ import annotations
 
 import hashlib
 from pathlib import Path
+from collections import Counter
 from typing import Any
 
-from workbench.address_verdicts import derive_cell_coverage, report_blast_radius, review_content_fingerprint
-from workbench.cell_inventory import build_document_cells
+from workbench.address_verdicts import (
+    derive_cell_coverage,
+    expression_kind_bucket,
+    report_blast_radius,
+    unit_address,
+    unit_fingerprint,
+)
+from workbench.manifest import build_manifest
 
 
 def build_derived_cell_units(
@@ -16,74 +23,65 @@ def build_derived_cell_units(
     *,
     geometry_entries: list[dict[str, Any]] | None = None,
     page_geometry: list[dict[str, Any]] | None = None,
+    manifest: dict[str, Any] | None = None,
 ) -> list[dict[str, Any]]:
-    """Return one address-keyed review unit for every physical form control."""
+    """Return one address-keyed review unit for every reviewable graph cell."""
     root_path = Path(root).resolve()
-    if geometry_entries is None:
-        import json
-
-        geometry_payload = json.loads(
-            (root_path / "graph" / str(year) / "node_geometry.json").read_text(encoding="utf-8")
-        )
-        geometry_entries = [item for item in geometry_payload.get("entries", []) if isinstance(item, dict)]
-        page_geometry = [item for item in geometry_payload.get("pages", []) if isinstance(item, dict)]
-    documents = sorted({str(item.get("document_id")) for item in geometry_entries if item.get("document_id")})
-    geometry_node_ids = {
-        (str(item.get("document_id") or ""), str(item.get("field_name") or "")): str(item.get("node_id") or "")
-        for item in geometry_entries
-        if isinstance(item, dict) and item.get("node_id") and item.get("field_name")
-    }
+    del geometry_entries, page_geometry
+    manifest = manifest or build_manifest(root_path, year)
+    sources = [
+        source
+        for entry in manifest.get("entries", []) or []
+        if isinstance(entry, dict) and str(entry.get("review_kind")) == "form_cell"
+        for source in entry.get("units", []) or []
+        if isinstance(source, dict)
+    ]
+    address_counts = Counter(
+        str(source.get("address_id") or "")
+        for source in sources
+        if str(source.get("address_id") or "")
+    )
     units: list[dict[str, Any]] = []
-    for document_id in documents:
-        cells = build_document_cells(
-            root_path,
-            year,
-            document_id,
-            geometry_entries=geometry_entries,
-            page_geometry=page_geometry,
-            include_inputs=False,
-        ).cells
-        base_counts: dict[str, int] = {}
-        for cell in cells:
-            base = str(cell.get("address_id") or "").strip()
-            if base:
-                base_counts[base] = base_counts.get(base, 0) + 1
-        for cell in cells:
-            node_id = str(cell.get("node_id") or geometry_node_ids.get((document_id, str(cell.get("field_name") or ""))) or "")
+    for source in sources:
+        base_address = str(source.get("address_id") or "")
+        if base_address or source.get("node_id"):
             address = _cell_address(
-                cell,
+                source,
                 year,
-                node_id=node_id,
-                duplicate=base_counts.get(str(cell.get("address_id") or ""), 0) > 1,
+                node_id=str(source.get("node_id") or ""),
+                duplicate=bool(base_address and address_counts[base_address] > 1),
             )
-            cited_text = [
-                str(item["quoted_text"])
-                for item in (cell.get("instruction_citations", []) or []) + (cell.get("citations", []) or [])
-                if isinstance(item, dict) and item.get("quoted_text")
-            ]
-            label = str(cell.get("display_name") or cell.get("field_name") or address)
-            unit_id = "derived_" + hashlib.sha256(address.encode("utf-8")).hexdigest()[:32]
-            unit: dict[str, Any] = {
-                "unit_id": unit_id,
-                "document_id": document_id,
-                "address": address,
-                "address_id": address,
-                "base_address_id": str(cell.get("address_id") or "") or None,
-                "node_id": node_id or None,
-                "field_name": str(cell.get("field_name") or "") or None,
-                "display_name": label,
-                "review_content": {"label": label, "cited_text": cited_text},
-                "content_fingerprint": review_content_fingerprint(label, cited_text),
-                "page": int(cell["page"]),
-                "rect": list(cell["rect"]),
-                "citation_refs": sorted({
-                    str(item.get("citation_id"))
-                    for item in (cell.get("instruction_citations", []) or []) + (cell.get("citations", []) or [])
-                    if isinstance(item, dict) and item.get("citation_id")
-                }),
-                "identity_source": "address_id" if cell.get("address_id") else ("node_id" if node_id else "field_name"),
-            }
-            units.append(unit)
+        else:
+            address = _fallback_address(source, year)
+        address = address or unit_address(source) or _fallback_address(source, year)
+        if not address:
+            raise ValueError(f"derived review unit has no canonical address: {source.get('unit_id', '<unknown>')}")
+        unit_id = "derived_" + hashlib.sha256(address.encode("utf-8")).hexdigest()[:32]
+        location = source.get("official_location")
+        expression = source.get("expression") or {"kind": "reference"}
+        kind_bucket = expression_kind_bucket(expression.get("kind"))
+        unit: dict[str, Any] = {
+            "unit_id": unit_id,
+            "document_id": _document_id(source, source),
+            "address": address,
+            "address_id": address,
+            "base_address_id": str(source.get("address_id") or "") or None,
+            "node_id": str(source.get("node_id") or "") or None,
+            "field_name": str(source.get("field_name") or "") or None,
+            "display_name": str(source.get("display_name") or address),
+            "expression": expression,
+            "review_content": source.get("review_content") or {},
+            "content_fingerprint": unit_fingerprint(source),
+            "citation_refs": sorted(str(value) for value in source.get("citation_refs", []) or []),
+            "identity_source": str(source.get("identity_source") or "object_id"),
+            "kind_bucket": kind_bucket,
+            "form_citations": list(source.get("form_citations", []) or []),
+            "instruction_citations": list(source.get("instruction_citations", []) or []),
+        }
+        if isinstance(location, dict):
+            unit["page"] = int(location["page"])
+            unit["rect"] = list(location["rect"])
+        units.append(unit)
     return units
 
 
@@ -94,13 +92,15 @@ def build_derived_coverage(
     *,
     geometry_entries: list[dict[str, Any]] | None = None,
     page_geometry: list[dict[str, Any]] | None = None,
+    manifest: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
-    """Walk current cells against verdict history and return coverage plus findings."""
+    """Walk current graph cells against verdict history and return coverage plus findings."""
     units = build_derived_cell_units(
         root,
         year,
         geometry_entries=geometry_entries,
         page_geometry=page_geometry,
+        manifest=manifest,
     )
     coverage = derive_cell_coverage(units, history)
     coverage["blast_radius"] = report_blast_radius(units, history)
@@ -118,10 +118,31 @@ def build_derived_coverage(
     coverage["findings"] = fallback
     coverage["identity_sources"] = {
         source: sum(unit["identity_source"] == source for unit in units)
-        for source in ("address_id", "node_id", "field_name")
+        for source in ("address_id", "object_id", "node_id", "field_name")
+    }
+    coverage["kind_buckets"] = {
+        bucket: sum(unit["kind_bucket"] == bucket for unit in units)
+        for bucket in ("ARITHMETIC", "COPY", "USER_ENTRY", "IMPORTED", "PER_ROW", "NOT_REVIEWABLE")
     }
     coverage["denominator"] = len(units)
     return coverage
+
+
+def _document_id(unit: dict[str, Any], entry: dict[str, Any]) -> str:
+    location = unit.get("official_location")
+    if isinstance(location, dict) and location.get("document_id"):
+        return str(location["document_id"])
+    if unit.get("identity_document_id"):
+        return str(unit["identity_document_id"])
+    return str(entry.get("queue_id") or "unlocated")
+
+
+def _fallback_address(unit: dict[str, Any], year: str | int) -> str:
+    field_name = str(unit.get("field_name") or "")
+    document_id = _document_id(unit, unit)
+    if field_name:
+        return f"control/{document_id}/{field_name}"
+    return ""
 
 
 def _cell_address(

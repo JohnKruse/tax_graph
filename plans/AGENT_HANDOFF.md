@@ -12,7 +12,63 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 - History: pruned at each phase close (latest: 2026-07-23). Full narration lives in
   `plans/archive/` (phase plans with close notes) and git history.
 
-## Current state (2026-07-27)
+## Current state (2026-07-29)
+
+**Worker session checkpoint - M20-S6-1 implementation (2026-07-29):** Global canary: Ledger
+Llama. Phase canary: Ground Truth. Model: GPT-5 Codex; effort: default; usage/quota/context
+indicators are not exposed. John gave go via the current task request. Single declared step:
+make expression content (including normalized operation and operand refs) part of the approval
+fingerprint, split form and instruction citations, restore geometry-free graph cells and the
+separate routing review set, restore `zero_units`/`ambiguous_object`, emit `review_gap` and
+`kind_bucket` projection data, and add/update tests and docs before one local commit. The
+2025 address verdict store is absent (zero records), so the breaking fingerprint has no human
+judgement migration. Applicable defect-ledger entries: D11, D4, D6, D8, D9, and the exact
+RAN/NOT RUN evidence rule. D1-D3, D5, and D7 are not expected because `workbench/static/`
+is out of scope. No draft promotion, generated citation or label hand edit, graph semantic,
+geometry, field-map, or human-review claim is in scope.
+
+**M20-S6-1 focused-test declaration (2026-07-29):** The implementation and first focused
+round are complete enough for the consumer sweep. Declared files are
+`tests/test_review_verdicts_m20.py`, `tests/test_review_preflight_m15.py`,
+`tests/test_review_manifest_m15.py`, `tests/test_review_schemas_m15.py`,
+`tests/test_workbench_m15.py`, `tests/test_workbench_server_m15.py`,
+`tests/test_workbench_write_api_m15.py`, `tests/test_review_semantics_m15.py`,
+`tests/test_review_semantics_remaining_m15.py`, `tests/test_workbench_identity_m19.py`,
+`tests/test_workbench_refs_m17.py`, and `tests/test_workbench_cells_m17.py`.
+`tests/test_workbench_cells_api_m17.py` is also declared because the manifest is exposed
+through the document API. All will be run sequentially with a fresh writable
+`PYTEST_DEBUG_TEMPROOT`; no `--basetemp` will be used. The exact final results are
+recorded below.
+
+- RAN: `$testRoot='C:\Users\devbox\.codex\visualizations\2026\07\29\019faf5e-23ff-7d43-bcb7-f54ac64ac203\pytest-m20-r3'; New-Item -ItemType Directory -Force -Path $testRoot | Out-Null; $env:PYTEST_DEBUG_TEMPROOT=$testRoot; & .venv\Scripts\python.exe -m pytest tests/test_review_verdicts_m20.py -q` -> 14 passed, 1 warning in 44.71s.
+- RAN: `$testRoot='C:\Users\devbox\.codex\visualizations\2026\07\29\019faf5e-23ff-7d43-bcb7-f54ac64ac203\pytest-preflight-r2'; New-Item -ItemType Directory -Force -Path $testRoot | Out-Null; $env:PYTEST_DEBUG_TEMPROOT=$testRoot; & .venv\Scripts\python.exe -m pytest tests/test_review_preflight_m15.py -q` -> 2 passed, 1 warning in 106.08s.
+- RAN: `$testRoot='C:\Users\devbox\.codex\visualizations\2026\07\29\019faf5e-23ff-7d43-bcb7-f54ac64ac203\pytest-manifest-r3'; New-Item -ItemType Directory -Force -Path $testRoot | Out-Null; $env:PYTEST_DEBUG_TEMPROOT=$testRoot; & .venv\Scripts\python.exe -m pytest tests/test_review_manifest_m15.py -q` -> 7 passed, 1 warning in 212.92s.
+- RAN: `$testRoot='C:\Users\devbox\.codex\visualizations\2026\07\29\019faf5e-23ff-7d43-bcb7-f54ac64ac203\pytest-schema-r2'; New-Item -ItemType Directory -Force -Path $testRoot | Out-Null; $env:PYTEST_DEBUG_TEMPROOT=$testRoot; & .venv\Scripts\python.exe -m pytest tests/test_review_schemas_m15.py -q` -> 7 passed, 1 warning in 0.47s.
+- RAN: `$testRoot='C:\Users\devbox\.codex\visualizations\2026\07\29\019faf5e-23ff-7d43-bcb7-f54ac64ac203\pytest-workbench-r2'; New-Item -ItemType Directory -Force -Path $testRoot | Out-Null; $env:PYTEST_DEBUG_TEMPROOT=$testRoot; & .venv\Scripts\python.exe -m pytest tests/test_workbench_m15.py -q` -> 4 passed, 1 warning in 0.34s.
+- RAN: `$testRoot='C:\Users\devbox\.codex\visualizations\2026\07\29\019faf5e-23ff-7d43-bcb7-f54ac64ac203\pytest-server-r1'; New-Item -ItemType Directory -Force -Path $testRoot | Out-Null; $env:PYTEST_DEBUG_TEMPROOT=$testRoot; & .venv\Scripts\python.exe -m pytest tests/test_workbench_server_m15.py -q` -> 6 passed, 1 warning in 52.10s.
+- RAN: `$testRoot='C:\Users\devbox\.codex\visualizations\2026\07\29\019faf5e-23ff-7d43-bcb7-f54ac64ac203\pytest-consumers-r1'; New-Item -ItemType Directory -Force -Path $testRoot | Out-Null; $env:PYTEST_DEBUG_TEMPROOT=$testRoot; & .venv\Scripts\python.exe -m pytest tests/test_workbench_write_api_m15.py tests/test_review_semantics_m15.py tests/test_review_semantics_remaining_m15.py tests/test_workbench_identity_m19.py tests/test_workbench_refs_m17.py tests/test_workbench_cells_m17.py tests/test_workbench_cells_api_m17.py -q` -> 41 passed, 1 warning in 270.85s.
+
+**M20-S6-1 machine gates (2026-07-29):**
+
+- RAN: `& .venv\Scripts\python.exe -m workbench.cli --root . --year 2025 preflight` ->
+  exit 0; entries=18, units=2224, derived cells=2120, states approved=0,
+  needs_recheck=0, review_gap=591, unreviewed=1529, legacy_mined=394.
+- RAN: `& .venv\Scripts\python.exe -m tax_graph.cli validate 2025` -> exit 0; graph
+  integrity OK, documents=18, nodes=441, tables=2, edges=409, rules=17, citations=401.
+- RAN: `& .venv\Scripts\python.exe -c "from tax_graph.acquire.citation_check import check_graph_citations; report=check_graph_citations(year='2025', raw_store='.cache/raw', root='.'); print(f'checked={report.checked}, strict_mismatches={len(report.mismatches)}')"` ->
+  checked=401, strict_mismatches=36.
+- RAN: `& .venv\Scripts\python.exe tools\check_ascii.py` -> ASCII check OK.
+- RAN: `git diff --check` -> exit 0.
+- `workbench/static/` has no changed files; no static/UI work is included in S6-1.
+
+**M20-S6-1 implementation complete (2026-07-29):** The review contract now fingerprints
+the normalized expression and separated citation slots, and the manifest carries those
+same slots for physical and unlocated graph cells. The live projection is 2,120 form
+cells plus a separate 104-unit routing set; 303 units are intentionally unlocated and
+591 cells are explicit review gaps. Preflight restores zero-unit and ambiguous-object
+fail-closed checks. No verdict migration was needed because the 2025 verdict store is
+absent, no promoted artifact or generated citation was hand-edited, and no push was made.
+One local commit is the remaining handoff action.
 
 **Worker session checkpoint - M20-S5-2 implementation (2026-07-29):** Global canary: Ledger
 Llama. Phase canary: Ground Truth. Model: GPT-5 Codex; effort: default; usage/quota/context
