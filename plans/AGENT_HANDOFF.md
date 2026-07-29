@@ -990,9 +990,45 @@ the instruction slot; Authority explicitly reports missing authored coverage; do
 citation coverage is visible beside policy counts; and the dossier heading duplication/order
 warts are fixed. No promoted artifacts, graph semantics, verdicts, or citation records changed.
 
-**BALL: WORKER - M20-S5-2 (carry the FOURTH authored entry, fix verdict ordering to epoch
-seconds, then retire the queue). S5-1 is ACCEPTED at `48af95b`; the dual gate is green and
-the queue path is untouched.**
+**BALL: WORKER - M20-S6 (make the EXPRESSION the approved object; split form vs
+instruction-page citations; worksheet lines in; routing gets its own list; consolidate the
+review panel). S5-2 is ACCEPTED at `6561819` - both blocking fixes verified - but it also
+NARROWED THE REVIEW SURFACE without authorization, and S6 restores it.**
+
+**ARCHITECT VERIFICATION - M20-S5-2 (Claude Opus 5, 2026-07-29). ACCEPTED, with a scope
+regression routed to S6.** Re-measured independently:
+- **Both blocking fixes are correct.** All FOUR authored entries are carried with prose
+  intact, including the 167-char `decision_review_1040_deduction_method` the Architect missed.
+  The ordering fix works: re-running the exact failing case now picks the later `rejected`
+  over the earlier `approved`, **and it is order-independent** (same answer with the input
+  list reversed). Naive timestamps are rejected outright, `reviewed_at`/`reviewed_at_epoch`
+  disagreement raises, and `reviewed_content` is now mandatory - the soft validation hole is
+  closed.
+- **Ratchets hold:** `validate 2025` clean, strict citation mismatches **36**,
+  `legacy_mined=394`, ASCII OK, preflight exit 0.
+- **Evidence discipline was genuinely good** - six honest `NOT RUN as final evidence` entries
+  where a test failed first, each followed by the fix and a clean rerun, plus a named
+  successor for the deleted reconciliation test as the task required.
+- **SCOPE REGRESSION, unauthorized, routed to S6:** the reviewable surface fell from
+  **2,980 units across 11 review kinds to 1,921 `form_cell` units**. `by_geometry.unlocated`
+  went 773 -> 0, and the test asserting `unlocated > 0` was FLIPPED to assert `== 0`.
+  Dropped: `promotion_review` 265, `intake_routing_review` 90, `authored_worksheet_review`
+  75, `decision_review` 12, `intake_trigger_review` 12, plus flows, frontier, expectations,
+  examples, rules. The graph still holds all of it (441 nodes, 90 routing edges, 12 triggers,
+  4 expectations, 2 decisions); it is simply no longer projected for review.
+- **The sharpest instance:** the QDCGT worksheet now projects **0** review units. Its authored
+  entry - the prose S5-2 carefully preserved, which says "no human has read the worksheet
+  lines yet" - survived while the 75 units it refers to became unreachable. **The note saying
+  review is needed was kept; the thing to review was removed.**
+- **Root cause is an Architect wording failure, not Worker overreach:** John's ruling and the
+  S5 specs both said review hangs off "cells". The implementation read "cell" as *physical PDF
+  control with geometry*. That is a defensible reading of the words and is not what was meant
+  - `form_1040_2025_qdcgt_line_1` is a stable canonical address that simply has no rectangle
+  on a page. S6 item 3 fixes the definition.
+- **Also removed, and not queue-specific:** the `zero_units` and `ambiguous_object` preflight
+  validators. `ambiguous_object` seeded a duplicate graph decision and expected preflight to
+  reject it - graph integrity, now with no named home. Restored by S6 item 5.
+  (`promotion_scope_missing` and `field_map_incomplete` were queue-specific; those stay gone.)
 
 **ARCHITECT VERIFICATION - M20-S5-1 (Claude Opus 5, 2026-07-29). ACCEPTED, with two defects
 routed to S5-2.** Re-measured independently:
@@ -2858,6 +2894,117 @@ TY2026 docs drop.
   environment failure, and no commit was made.
 
 ## From Architect
+
+- **M20-S6 TASK - MAKE THE EXPRESSION THE THING BEING APPROVED (Architect, Claude Opus 5,
+  2026-07-29). John's design ruling; the review model's final shape.** Ledger: **D11**, D4,
+  D6, D8, D9, and the RAN/NOT RUN rule.
+  **John's ruling:** a cell is a discrete entity with its own instructions and links, because
+  the IRS authors forms as a one-step-at-a-time operation. If every cell is right AND the
+  operations joining them (sum, copy, etc.) are right, the return is right by composition.
+  **Therefore the EXPRESSION is the top-level thing being approved**, with the form
+  instruction and the instruction-page text shown as supporting context.
+  **Terminology, settled:** `operation` is the graph verb (`SUM`, `COPY`, `SUBTRACT`, `MIN`,
+  `MAX`, `MULTIPLY`, `NEGATE`, `IF_ELSE`, `LOOKUP_TABLE`, `LOOKUP_BRACKET`). `expression`
+  wraps it and carries the OPERANDS. **Approve the expression, not the operation** - `SUM`
+  alone is meaningless without "sum of what". `expression.kind` is the discriminator John
+  identified: it spans the computed verbs plus `input` (user entry), `imported` (from a
+  1099/W-2), `repeatable_table` (per-row), and `review_gap` (no authored graph).
+  **The measured shape of the work, which should drive the UI (Architect-measured, 1,921
+  cells):** `imported` 696 (36.2%), `review_gap` 591 (30.8%), `input` 484 (25.2%),
+  `repeatable_table` 96 (5.0%), and **all computed kinds together just 54 (2.8%)**. **The
+  entire arithmetic of the return is 54 expressions.** Treating all 1,921 as equal review
+  units is the wrong shape for the workload.
+  1. **Put the expression into `review_content` and therefore into the fingerprint.** Today
+     `review_content` is `{label, cited_text}` only (`workbench/derived_reviews.py`), so the
+     OPERATION IS NOT PART OF WHAT GETS APPROVED. Worked example: line 1z
+     (`2025/document=form_1040/line=1z/control=amount`) is `sum` over operands 1a..1h with
+     label `Add lines 1a through 1h`. **Drop operand 1g and the label, the citation, and the
+     fingerprint are all unchanged - the cell stays `approved` while computing a different
+     number.** That is the exact silent-drift failure this design exists to prevent, and it is
+     live today. Fingerprint the operation AND the structured operand refs, normalized, so
+     operand order/formatting churn does not cause false invalidation but a changed operand
+     set does.
+  2. **Split form citations from instruction-page citations - they are merged today.**
+     `derived_reviews.py:61` and `:81` concatenate `instruction_citations + citations` into
+     one flat `cited_text`, losing which quote came from the form face versus the instruction
+     booklet. John wants BOTH, distinguished. Carry two named slots through the projection and
+     into `review_content`; the upstream data already keeps them apart.
+  3. **Worksheet lines are cells - bring them in.** The QDCGT worksheet currently projects
+     **0** units because the projection keys on PDF geometry. `form_1040_2025_qdcgt_line_1` is
+     a stable canonical address and is exactly "one step at a time with its own instruction".
+     Project graph nodes that have no geometry as cells too, marked unlocated. This also fixes
+     the S5-2 regression where the carried authored entry says "no human has read the
+     worksheet lines yet" while the units it refers to are unreachable.
+  4. **Routing is NOT a cell and needs its own small review set.** Correct cells compose into
+     a correct form; they do not tell you WHICH forms apply. Whether this filer files
+     Schedule B at all is not a cell - every Schedule B cell can be perfect and the return
+     still wrong. That is **90 routing edges + 12 triggers + 2 decisions = 104 objects**,
+     small enough to review as its own list. It must not silently be nobody's job, which is
+     where S5-2 left it.
+  5. **Restore the two non-queue-specific validators S5-2 removed:** `zero_units` and
+     `ambiguous_object`. The second seeded a duplicate graph decision and expected preflight
+     to reject it - that is graph integrity, not queue plumbing, and it currently has no named
+     home. (`promotion_scope_missing` and `field_map_incomplete` were queue-specific and stay
+     gone.)
+  6. **UI - John's layout ruling.** The review panel must hold **the expression, the
+     instructions, the accept/reject controls, and the comment box TOGETHER**. Today the
+     verdict controls live in the LEFT rail (`workbench/static/index.html:45`,
+     `.verdict-bar`), far from the cell content in the right-hand river (`#river-detail`).
+     Move them together. **Amplifying info - sources, metadata, graph evidence - stays in a
+     SEPARATE panel below**, which is roughly what `#river-detail` already is. Keep the
+     existing 15/40/45 three-column proportions.
+  7. **Distinguish "nothing to approve" from "unreviewed" in the UI.** A `review_gap` cell has
+     no authored graph, so approving it is meaningless - 591 cells (30.8%) are in this state.
+     They need AUTHORING, not review, and must not sit in the reviewer's queue looking like
+     work. Surface them as their own bucket.
+  8. **The fingerprint change is breaking, and it is free exactly once.**
+     `review_verdicts/2025/address_verdicts.jsonl` still has ZERO records, so changing the
+     fingerprint inputs invalidates nothing today. **Confirm the store is empty before
+     starting.** If any real verdict exists by then, STOP and report - it becomes a migration
+     of human judgements and needs its own round.
+  9. **Do NOT** promote any draft, hand-edit generated citations or labels, change graph
+     semantics, or alter geometry/field maps.
+  10. **VISUAL KEY BY CELL KIND - John's ruling. Read the two constraints first; they change
+     the obvious implementation.**
+     **(a) The critical set is 15, not 54.** John asked for the critical cells flagged
+     red/orange with copies coloured differently - and copy is 39 OF the 54. Splitting them as
+     he intended gives: **ARITHMETIC 15** (`sum` 11, `subtract` 1, `max` 1, `if_else` 1,
+     `lookup_table` 1) - the entire computed arithmetic of the return - and **COPY 39**
+     separately. That is the right line: a copy is checkable against ONE source ref, a formula
+     needs operands and structure checked.
+     **(b) RED IS ALREADY TAKEN - do not reuse it.** `--danger` currently means
+     `policy-unsupported` on the form overlay (`workbench/static/styles.css:100`), and
+     `styles.css:112` carries an explicit standing warning that `--danger` and selection must
+     never be mistaken for a policy state. Note the trap: `review_gap` maps to
+     `policy-unsupported`, so red today marks the **591 cells that CANNOT be reviewed** -
+     roughly the opposite of "critical". **Put the cell-kind key on a SEPARATE VISUAL CHANNEL:
+     a labelled badge on the review cell card, NOT the region outline colour**, which stays
+     owned by policy state. Two systems, two channels, neither competing.
+     **The buckets, derived from `expression.kind` - never hardcode the counts, they are
+     2025 measurements and will move:**
+     - ARITHMETIC (`sum`, `subtract`, `multiply`, `negate`, `min`, `max`, `if_else`,
+       `lookup_table`, `lookup_bracket`) - the hottest badge, orange/red-orange
+     - COPY (`copy`) - distinct warm colour; `--gold` fits the existing palette
+     - USER ENTRY (`input`)
+     - IMPORTED (`imported`) - arrives from a 1099/W-2
+     - PER-ROW (`repeatable_table`)
+     - NOT REVIEWABLE (`review_gap`) - muted/hatched, and per item 7 it is a separate bucket,
+       not a colour on a reviewable cell
+     **Colour must never be the only signal** - every badge carries a short text label too
+     (it is a label flag, so this is free), for colourblind reviewers and for print. Add a
+     legend keyed to the same tokens, and pin the kind->bucket mapping in a test so a new
+     `expression.kind` cannot silently fall through to an unlabelled default.
+  Tier 3. Declared files plus honest `RAN:`/`NOT RUN:` on every one. Per D9, grep for
+  consumers of the `review_content`/expression SHAPE, not just the files. ASCII,
+  `git diff --check`, module-form `validate 2025`, real preflight with `legacy_mined` reported
+  explicitly (expect **394**), and `check_citation_integrity` STRICT (expect **36**). Short
+  pytest temp root; no `--basetemp`. ONE local commit; no push.
+  Stop conditions: any real verdict existing in the store when item 8 is checked; the
+  fingerprint being made so strict that formatting churn invalidates approvals (test both
+  directions - changed operand set invalidates, reordered/reformatted equivalent does not);
+  **any cell-kind badge reusing `--danger` or otherwise colliding with the policy-state
+  channel** (item 10b); `legacy_mined` rising, strict mismatches above 36, or the 1,921 cell
+  denominator dropping; or a quota/environment failure.
 
 - **[DONE `48af95b`, Architect-verified and ACCEPTED 2026-07-29. Two defects found and routed
   to S5-2: the missed FOURTH authored entry (item 6 below - Architect error) and
