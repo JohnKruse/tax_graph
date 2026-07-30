@@ -1046,13 +1046,28 @@ the instruction slot; Authority explicitly reports missing authored coverage; do
 citation coverage is visible beside policy counts; and the dossier heading duplication/order
 warts are fixed. No promoted artifacts, graph semantics, verdicts, or citation records changed.
 
-**BALL: WORKER - M20-S6-1 (make the EXPRESSION the approved object; split form vs
-instruction-page citations; worksheet lines back in as cells; routing gets its own list;
-restore two validators). S5-2 is ACCEPTED at `6561819` - both blocking fixes verified - but it
-also NARROWED THE REVIEW SURFACE without authorization, and S6-1 restores it. S6 was SPLIT on
-John's call: S6-1 is backend and provable by tests; S6-2 is the review-panel consolidation and
-cell-kind visual key, which needs John to look at it. S6-1 must not touch
-`workbench/static/`.**
+**BALL: WORKER - M20-S7 (generate the expression layer, then MEASURE it against the handcrafted
+set). Task block under From Architect. S6-1 is ACCEPTED at `30e9a0b` - Architect re-ran every
+gate independently on 2026-07-30 and re-derived the fingerprint contract against live data;
+the round is green. S6-2 is PARKED, not next. The motivating finding: the pipeline emits nodes
+and citations ONLY - no `edges.yaml`/`rules.yaml` in any of the 16 draft directories - so it has
+never produced an expression, and the live 409 edges / 15 rules are hand-authored with zero
+provenance. START WITH STEP 1 (the cheap diagnostic on `form_1040_2025`) and record both raw
+counts here before step 2. The handcrafted set is now the PROTECTED TEST SET:
+`graph/2025/{nodes,edges,rules}/` must be byte-identical at round end.**
+
+**Environment preconditions for M20-S7 - CHECK THESE FIRST, they are new for this round:**
+S7 is the first round in a long while that needs LIVE model calls, so the usual
+offline/test-only assumptions do not hold.
+- `config/tax-graph.config.yaml` -> provider `openrouter`, model `~google/gemini-flash-latest`,
+  key via `api_key_env: OPENROUTER_API_KEY` (or keyring `tax-graph/openrouter`).
+- `OPENROUTER_API_KEY` IS set in John's shell as of 2026-07-30. **Confirm it is visible from
+  YOUR process before starting** - do not assume inheritance.
+- **Confirm outbound HTTPS to `openrouter.ai` actually works from the sandbox** with one cheap
+  call before attempting a document. If egress is blocked, STOP and report - that is an
+  environment blocker for John, not a code problem, and it should not burn a session.
+- Step 1 is ONE document by design. Report expected spend for the full 16-document run before
+  starting step 2/3.
 
 **ARCHITECT VERIFICATION - M20-S5-2 (Claude Opus 5, 2026-07-29). ACCEPTED, with a scope
 regression routed to S6.** Re-measured independently:
