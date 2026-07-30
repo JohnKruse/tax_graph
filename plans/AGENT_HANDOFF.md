@@ -1109,15 +1109,20 @@ the instruction slot; Authority explicitly reports missing authored coverage; do
 citation coverage is visible beside policy counts; and the dossier heading duplication/order
 warts are fixed. No promoted artifacts, graph semantics, verdicts, or citation records changed.
 
-**BALL: WORKER - M20-S7 (generate the expression layer, then MEASURE it against the handcrafted
-set). Task block under From Architect. S6-1 is ACCEPTED at `30e9a0b` - Architect re-ran every
-gate independently on 2026-07-30 and re-derived the fingerprint contract against live data;
-the round is green. S6-2 is PARKED, not next. The motivating finding: the pipeline emits nodes
-and citations ONLY - no `edges.yaml`/`rules.yaml` in any of the 16 draft directories - so it has
-never produced an expression, and the live 409 edges / 15 rules are hand-authored with zero
-provenance. START WITH STEP 1 (the cheap diagnostic on `form_1040_2025`) and record both raw
-counts here before step 2. The handcrafted set is now the PROTECTED TEST SET:
-`graph/2025/{nodes,edges,rules}/` must be byte-identical at round end.**
+**BALL: WORKER - M20-S8 (make the measurement work: canonical-address id bridge + operand roles,
+then re-measure reporting COVERAGE and ACCURACY separately). Task block under From Architect.
+S7 is ACCEPTED at `78d38ac` - the round did what was asked, the protected test set is
+byte-identical, all gates are green, and the Worker correctly REFUSED to hand-repair the join to
+inflate the number. But its `expression_agreement=0` is an UNSCORABLE result, not a quality
+score: `operation_disagreement` is also 0, which means nothing was ever compared. S8 buys the
+ability to measure and deliberately does NOT try to raise the score. S6-2 remains PARKED. The
+handcrafted set remains the PROTECTED TEST SET: `graph/2025/{nodes,edges,rules}/` must be
+byte-identical at round end.**
+
+**Note for S8 - the number that actually matters is COVERAGE, not agreement.** S7's 1040 run
+emitted `edges=4, rules=3` against 80 live expressions. A percentage computed over only the
+paired cells can read high while the pipeline derived almost nothing, so S8 must report coverage
+and accuracy as two separate numbers and must not collapse them.
 
 **Environment preconditions for M20-S7 - CHECK THESE FIRST, they are new for this round:**
 S7 is the first round in a long while that needs LIVE model calls, so the usual
@@ -3031,6 +3036,66 @@ TY2026 docs drop.
   environment failure, and no commit was made.
 
 ## From Architect
+
+- **M20-S8 TASK - MAKE THE MEASUREMENT WORK: ID BRIDGE + OPERAND ROLES, THEN RE-MEASURE
+  (Architect, Claude Opus 5, 2026-07-30). John's go. S7 produced an UNSCORABLE result; this
+  round exists to make the number real, and NOTHING else.** Ledger: the exact RAN/NOT RUN
+  evidence rule, and D9 (grep for consumers of the SHAPE, not just the files). Re-read D4, D6,
+  D8, D11 before starting.
+  **PRIME DIRECTIVE FRAMING (`AGENTS.md` section 1):** we cannot know whether the pipeline
+  reaches ~98% until it can be scored against the protected set. This round buys the ability to
+  measure. It does NOT try to raise the score.
+  **WHAT S7 ACTUALLY FOUND (Architect-read, 2026-07-30).** `expression_agreement=0` is **NOT a
+  quality score - it is a failed join.** `operation_disagreement` is ALSO `0`; zero agreements
+  AND zero disagreements together mean nothing was ever compared. `missing_in_draft=80`,
+  `extra_in_draft=35`. The Worker diagnosed two causes and correctly refused to hand-repair
+  either: (a) generated ids do not match the protected canonical ids, so edges never pair -
+  note that draft NODE ids already match (`form_1040_2025_root_line_1a` is in both), so this is
+  an EDGE-TARGET id convention problem, not a general identity problem; and (b) generated edges
+  omitted operand roles, so operand sets cannot be reconstructed even where ids do match.
+  1. **STEP 1 - BRIDGE GENERATED IDS TO CANONICAL ADDRESSES.** Identity must go through the
+     canonical address path - that is the standing invariant and it is what makes human
+     judgement survive regeneration. `graph/2025/addresses/` and `graph/2025/_drafts/addresses/`
+     already exist; use them rather than inventing a second mapping. Diagnose FIRST and report
+     what the generated edge-target convention actually is before writing the bridge. **A
+     hardcoded per-form id lookup table is NOT acceptable** - next year's forms would break it,
+     which defeats the point of the pipeline.
+  2. **STEP 2 - EMIT OPERAND ROLES ON GENERATED EDGES.** Required for scoring: `addend`,
+     `minuend`, `subtrahend`, etc. **Scope discipline: structural changes needed to make the
+     output SCORABLE are in scope; prompt tuning to make the output BETTER is NOT.** If you find
+     an obvious quality win, write it down as a finding for the next round and leave it. We are
+     not tuning against a score we cannot yet see.
+  3. **STEP 3 - RE-MEASURE, AND REPORT COVERAGE AND ACCURACY SEPARATELY. Do not collapse them
+     into one percentage.** This is the most important instruction in the round. S7's 1040 run
+     emitted `edges=4, rules=3` against **80** live expressions. If that holds, a naive
+     "agreement %" computed over only the paired cells could read 100% while the pipeline
+     derived almost nothing. Report both, per document and in total:
+     - **COVERAGE** - of the live expressions in the protected set, how many have ANY generated
+       counterpart. (S7 baseline: 0 of 80.)
+     - **ACCURACY** - of those that pair, how many match on operation, and how many match on
+       operation AND operand set.
+     - Keep `missing_in_draft` / `extra_in_draft` as-is.
+     Commutative comparison rule is unchanged from S7: order-insensitive for `SUM`, `MULTIPLY`,
+     `MIN`, `MAX`, order-sensitive otherwise, reusing the semantics in
+     `workbench/address_verdicts.py` `normalize_expression` rather than a second copy.
+     Update `output/m20_s7_expression_agreement.yaml` or supersede it with a clearly named S8
+     report; state the headline COVERAGE and ACCURACY numbers in this file.
+  4. **What this round does NOT do.** No prompt tuning for quality. No model swap (Flash stays -
+     John's call, and it has still not had a fair scored trial). No operation-enum change. No
+     draft promotion. No hand-authoring or hand-editing of any generated or live artifact. No
+     review UI - S6-2 stays parked. No change to the review/verdict contract, still FROZEN.
+  **THE PROTECTED TEST SET IS UNCHANGED AS A HARD GATE:** `graph/2025/{nodes,edges,rules}/` must
+  be byte-identical at round end; `git diff --stat` on those three directories must be EMPTY.
+  Tier 3. Declared files plus honest `RAN:`/`NOT RUN:` on every one. ASCII, `git diff --check`,
+  module-form `validate 2025`, real preflight with `legacy_mined` reported explicitly (expect
+  **394**), `check_citation_integrity` STRICT (expect **36**). Short pytest temp root; no
+  `--basetemp`. ONE local commit; no push.
+  **Stop conditions:** any diff in `graph/2025/{nodes,edges,rules}/`; any draft promoted; a
+  hardcoded per-form id table instead of a canonical-address bridge; collapsing coverage and
+  accuracy into a single number; tuning the prompt for quality; `legacy_mined` above 394; strict
+  mismatches above 36; or an API/quota/egress failure. **If the bridge turns out to require
+  changing how the generator NAMES things rather than how the scorer READS them, stop and report
+  before doing it** - that is a pipeline-shape decision for John, not a scoring fix.
 
 - **M20-S7 TASK - GENERATE THE EXPRESSION LAYER AND MEASURE IT AGAINST THE HANDCRAFTED SET
   (Architect, Claude Opus 5, 2026-07-30). John's direction. This round exists to produce ONE
