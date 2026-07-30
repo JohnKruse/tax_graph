@@ -1215,8 +1215,17 @@ the instruction slot; Authority explicitly reports missing authored coverage; do
 citation coverage is visible beside policy counts; and the dossier heading duplication/order
 warts are fixed. No promoted artifacts, graph semantics, verdicts, or citation records changed.
 
-**BALL: WORKER - M20-S9 (capture usage + resolved model id, switch to the PINNED model
-`z-ai/glm-5.2`, then re-baseline coverage and accuracy). Task block under From Architect.
+**BALL: WORKER - M20-S9b (fix the empty-prompt bug, add fail-fast guards, THEN finish the
+baseline S9 could not run). Task block under From Architect. READ THE S9b BLOCK BEFORE THE S9
+ONE - the S9 diagnosis was wrong and S9b supersedes it.** The S9 instrumentation half is
+committed at `cdcbd65` and Architect-verified (49 tests green), including the pinned
+`z-ai/glm-5.2` config and working token/cost telemetry. What remains is the baseline, which
+stopped at 62.6s. **Do NOT re-attempt the baseline before fixing the empty-prompt bug** - it
+will fail the same way.
+
+**Superseded (kept as history):** BALL: WORKER - M20-S9 (capture usage + resolved model id,
+switch to the PINNED model `z-ai/glm-5.2`, then re-baseline coverage and accuracy).
+Task block under From Architect.
 S8 is ACCEPTED at `2699cad` - Architect independently re-verified on 2026-07-30: protected test
 set byte-identical, `validate 2025` green with the live graph unchanged (441 nodes / 409 edges /
 17 rules), ASCII and diff-check clean, no secrets, and NO hardcoded per-form id table in the
@@ -3149,7 +3158,71 @@ TY2026 docs drop.
 
 ## From Architect
 
-- **M20-S9 TASK - MAKE THE NUMBERS ATTRIBUTABLE, THEN RE-BASELINE ON A PINNED MODEL
+- **M20-S9b TASK - FIX THE EMPTY-PROMPT BUG, ADD FAIL-FAST GUARDS, THEN FINISH THE BASELINE
+  (Architect, Claude Opus 5, 2026-07-30). John's go. SUPERSEDES the diagnosis in the S9 block
+  below - read this first.** Ledger: the exact RAN/NOT RUN evidence rule, and D9.
+  **THE S9 DIAGNOSIS WAS WRONG, AND SO WAS MINE.** S9 stopped with
+  `LlmUnavailable: OpenRouter response did not contain JSON` and we both read it as a
+  GLM structured-output problem. **It is not.** John's OpenRouter log settles it: all fifteen
+  02:29 calls billed **1 prompt token and 1 completion token**, uniform $0.0000058, 0.1-2.2
+  tok/s, **no finish reason**. A real extraction prompt is 6,500-9,700 tokens (visible in the
+  12:42-12:44 Flash entries). **The prompt never reached the model.** GLM returned one token,
+  which naturally was not JSON. **We have still never seen GLM attempt a single expression -
+  do not draw any conclusion about the model, and do not swap it out.**
+  The 02:27 probe sent 31 tokens and finished `stop`, so the client CAN send content; the
+  difference is the pipeline path, not the model.
+  1. **STEP 1 - FIND WHY `prompt_tokens == 1` ON THE BATCH PATH. Diagnose before fixing.**
+     The probe path works and the batch path does not. Candidate causes, none confirmed: the
+     prompt arriving empty from template assembly on that path; OpenRouter rejecting the request
+     and billing a stub; or the `provider: {require_parameters: true}` routing
+     (`llm.require_parameters: auto` in the live config) producing a degenerate route when no
+     endpoint supports the sent parameters. **Capture the actual outbound request body** - we
+     have been diagnosing from a billing page and that must stop. Report what you find before
+     changing behavior.
+  2. **STEP 2 - ADD THE FAIL-FAST GUARDS (guiding invariant 8, `AGENTS.md` /
+     `docs/engineering-plan.md`).** Both belong in `tax_graph/extract/llm_client.py`:
+     - **Assert `prompt_tokens` is plausible.** A ~1-token prompt must fail loudly and
+       immediately with a named error. This would have caught today's failure in one second
+       instead of 62.
+     - **Treat `finish_reason: length` as a NAMED hard error.** Today it is only consulted when
+       content is not text, so truncation surfaces as a confusing JSON parse failure.
+  3. **STEP 3 - RAISE `max_tokens`; TRUNCATION IS A REAL SECOND BUG.** Three of five Flash calls
+     in John's log finished with reason `length`, cut off at ~3,980-4,026 completion tokens, so
+     the effective cap is ~4,000. A full form's nodes + edges + rules + citations does not fit.
+     `_balanced_json_object` returns the unbalanced remainder when braces never close, so those
+     calls failed outright rather than silently truncating - **but this is a plausible
+     contributor to S8's 8.75% coverage** and must be fixed before the baseline is meaningful.
+     Raise the cap, or chunk per document, and report which and why.
+  4. **STEP 4 - FINISH THE BASELINE.** Only after 1-3. Re-run the 15 manifest forms draft-only
+     on the pinned `z-ai/glm-5.2`, then `verify expression-agreement`. Report COVERAGE and
+     ACCURACY separately - do not collapse them - alongside the resolved model id, total tokens,
+     and total cost. **The telemetry to report all of that is already committed and working**
+     (`cdcbd65`); "spend is not exposed by the client" is no longer a valid answer.
+  5. **Logging is NOT this round, but note it exists as a requirement.** Guiding invariant 8 and
+     a project-level exit gate were added on 2026-07-30: zero modules currently use `logging`,
+     the `logging: {level: INFO}` config stub is read by nothing, and there is no `logs/` dir.
+     It need not land here, but the bar is recorded: a failed model call must be diagnosable
+     from repo artifacts alone, with no vendor dashboard. Steps 1-2 move toward it; do not
+     build the full logging subsystem in this round unless step 1 is trivial.
+  6. **What this round does NOT do.** No model swap. No prompt tuning for quality. No coverage
+     work beyond fixing truncation. No operation-enum change. No draft promotion. No
+     hand-authoring. No rollover implementation (recorded in `docs/review-workbench.md`, for the
+     2026 boundary). No review UI; S6-2 stays parked. Review/verdict contract still FROZEN.
+  **PROTECTED TEST SET, unchanged hard gate:** `graph/2025/{nodes,edges,rules}/` byte-identical
+  at round end; `git diff --stat` on those three directories EMPTY.
+  Tier 3. Declared files plus honest `RAN:`/`NOT RUN:`. ASCII, `git diff --check`, module-form
+  `validate 2025`, real preflight with `legacy_mined` explicit (expect **394**),
+  `check_citation_integrity` STRICT (expect **36**). **Short pytest temp root** - the Architect
+  hit `WinError 206` (path too long) with a deep root today; keep it short. No `--basetemp`.
+  ONE local commit; no push.
+  **Stop conditions:** any diff in `graph/2025/{nodes,edges,rules}/`; any draft promoted;
+  swapping the model away from `z-ai/glm-5.2`; collapsing coverage and accuracy; tuning the
+  prompt for quality; `legacy_mined` above 394; strict mismatches above 36. **If step 1 shows
+  the empty prompt is caused by OpenRouter routing rather than by our code, STOP and report** -
+  that is a provider/config decision for John, not a code fix to improvise.
+
+- **M20-S9 TASK (SUPERSEDED BY S9b ABOVE - its diagnosis was wrong; kept for the instrumentation
+  requirements, which landed at `cdcbd65`) - MAKE THE NUMBERS ATTRIBUTABLE, THEN RE-BASELINE ON A PINNED MODEL
   (Architect, Claude Opus 5, 2026-07-30). John's go. Small round, and it is a PREREQUISITE for
   every number that follows.** Ledger: the exact RAN/NOT RUN evidence rule, and D9. Re-read D4,
   D6, D8, D11.
