@@ -1632,8 +1632,16 @@ the instruction slot; Authority explicitly reports missing authored coverage; do
 citation coverage is visible beside policy counts; and the dossier heading duplication/order
 warts are fixed. No promoted artifacts, graph semantics, verdicts, or citation records changed.
 
-**BALL: WORKER - M20-S14 (RETIRE THE HANDCRAFTED SET AS A SCORE; COMPLETE 3 FORMS FOR HUMAN
-REVIEW). Task block under From Architect. S13 is ACCEPTED at `a3214fc` - Architect re-verified:
+**BALL: WORKER - M20-S15 (FIX THE TWO BLOCKERS, THEN PUT THE GENERATED CELLS IN FRONT OF JOHN).
+Task block under From Architect. S14 is ACCEPTED at `eb99447` - Architect re-verified: 40 passed
+/ 1 skipped, protected set byte-identical. **Form 1040 is 17/17 COMPLETE and Schedule A is 7/7
+COMPLETE** - every computed line carries an expression AND a verbatim citation, zero
+expression-without-citation cells, $0.109 for all three forms. THIS IS THE ROUND JOHN HAS BEEN
+WAITING FOR SINCE THE MORNING: the review surface. The reviewable set is ~28 formula cells, not
+2,120 - a single sitting.**
+
+**Superseded (kept as history):** BALL: WORKER - M20-S14 (RETIRE THE HANDCRAFTED SET AS A SCORE;
+COMPLETE 3 FORMS FOR HUMAN REVIEW). S13 is ACCEPTED at `a3214fc` - Architect re-verified:
 36 passed / 1 skipped, protected set byte-identical. S13 moved full expression agreement OFF ZERO
 for the first time (0/11 -> 2/7) and cut the 1z prompt from 1,202 to 354 tokens. The 1z answer
 was PERFECT. John's call: the handcrafted set is too flawed to score against and has outlived its
@@ -3609,7 +3617,81 @@ TY2026 docs drop.
 
 ## From Architect
 
-- **M20-S14 TASK - RETIRE THE HANDCRAFTED SET AS A SCORE; COMPLETE 3 FORMS FOR REVIEW
+- **M20-S15 TASK - FIX THE TWO BLOCKERS, THEN PUT THE GENERATED CELLS IN FRONT OF JOHN
+  (Architect, Claude Opus 5, 2026-07-30). John's go. THE REVIEW SURFACE IS THE POINT OF THIS
+  ROUND - the two fixes exist to make the reviewed set complete.** Ledger: the exact
+  RAN/NOT RUN evidence rule, D4, D6, D9, D11.
+  **PRIME DIRECTIVE FRAMING (`AGENTS.md` section 1):** human review is how the last ~2% gets
+  directed, and it has NEVER RUN - `review_verdicts/2025/address_verdicts.jsonl` still has zero
+  records. Not because review is unimportant, but because the contract kept changing (see
+  John, 2026-07-30). It is stable now and there are finally generated cells worth reviewing.
+  1. **FIX 1 - THE OUTLINE INDEX IS MISSING LETTERED SUB-LINES. This is all four Schedule 1
+     gaps.** Every gap reports `source line is not present in the deterministic outline index`:
+     line 9 ("Add lines 8a through 8z") references `8n`; line 26 references `24f`; others
+     reference `2` and `19`. The MODEL read those lines correctly and the resolver could not map
+     them, so it failed closed with a named gap - correct behavior, wrong index. Index the
+     lettered sub-lines and re-measure. **Target: Schedule 1 goes from 0/4 to complete**, or
+     produces a DIFFERENT and reasoned gap. Keep failing closed; never fabricate a line.
+  2. **FIX 2 - INSTRUCTION SPANS ARE JOINED BY MENTION, NOT OWNERSHIP. 146 wrong-owner spans**
+     across the three forms - 89 on the 1040 alone, touching 15 addresses including 1z, 9, 11a,
+     14, 15. Line 1z was sent the **line 27b** instructions because they mention 1z. The forms
+     still reached 100% because the form face carried the structure, **but these are the
+     citations John will READ during review** - a cell can be structurally right and cite the
+     wrong paragraph. Fix the join so a line gets ITS OWN instruction entry; report the
+     wrong-owner count after (expect a large drop from 146).
+  3. **THE REVIEW SURFACE.** Scope it to the ~28 formula cells across `form_1040_2025`,
+     `schedule_1_2025`, and `schedule_a_2025`. **Not 2,120 cells** - a set John can finish in
+     one sitting is the whole point.
+     a. **SHOW THE GENERATED CELLS, AND MARK THEM AS GENERATED.** The workbench currently
+        surfaces the hand-authored live graph, which carries ZERO provenance. Reviewing that
+        would have John approving scaffolding, which the prime directive forbids. Every cell in
+        this surface must show it is pipeline-generated, with resolved model and provider.
+     b. **JOHN'S LAYOUT RULING (from the parked S6-2, still binding):** the review panel holds
+        **the expression, the two instruction sources, the verdict controls, AND the comment box
+        TOGETHER.** Today the controls sit in the LEFT rail (`workbench/static/index.html:45`)
+        while content is in the right-hand river - a reviewer reads right and reaches far left
+        to approve. Move them together. Amplifying detail stays in a separate panel below.
+        Keep the 15/40/45 proportions.
+     c. **SHOW THE TWO INSTRUCTION SOURCES SEPARATELY** - form face and instruction page, the
+        same two slots as `form_citations` / `instruction_citations`, never concatenated. The
+        reviewer must see exactly what the model saw.
+     d. **WIRE THE FOUR BUTTONS THAT ALREADY EXIST.** `index.html:48-51` has Confirm /
+        Pipeline defect / Source pathology / Save and next, `disabled` since M15 Gate A and
+        never functional in either location. `POST /api/verdicts` is already built and tested.
+        Wire them. **Keep John's labels** - "Pipeline defect" vs "Source pathology" is his
+        rework routing, not a generic reject.
+     e. **ADD THE COMMENT FIELD - it does not exist anywhere today**, not in the UI, not in
+        `workbench/address_verdicts.py`, not in `schemas/review_address_verdict.schema.json`.
+        This is what lets John say "this fails because the instruction says X and this does Y".
+  4. **THE REVIEW CONTRACT IS UNFROZEN ONLY FOR THE ADDITIVE COMMENT FIELD.** Everything else
+     stays exactly as verified on 2026-07-30. **CRITICAL: the comment MUST NOT enter
+     `content_fingerprint`.** The comment is metadata ABOUT the review, not part of the content
+     being approved; folding it in would invalidate approvals whenever a note is edited. Add it
+     to the schema and the append path as an optional field, and prove with a test that a
+     verdict's fingerprint is identical with and without a comment.
+  5. **VERIFY IN THE BROWSER, NOT ONLY IN TESTS.** This is UI work and John has to look at it.
+     Load the page, click through a cell, record a verdict with a comment, confirm it lands in
+     `review_verdicts/2025/address_verdicts.jsonl`, and include a screenshot. **A round that
+     passes tests but cannot record one real verdict end to end has failed.**
+  6. **What this round does NOT do.** No draft PROMOTION - review-as-promotion is the next
+     milestone; here the verdict is recorded, not applied to the live graph. No hand-authoring.
+     No live graph edit. No operation-enum change. No rollover implementation. No prompt tuning
+     for quality beyond fix 2.
+  **PROTECTED TEST SET, unchanged hard gate:** `graph/2025/{nodes,edges,rules}/` byte-identical
+  at round end.
+  Tier 3. Declared files plus honest `RAN:`/`NOT RUN:`. ASCII, `git diff --check`, module-form
+  `validate 2025`, real preflight with `legacy_mined` explicit (expect **394**),
+  `check_citation_integrity` STRICT (expect **36**). Short pytest temp root; no `--basetemp`.
+  ONE local commit; no push. Cite the ACTUAL commit hash.
+  **Config note: `extraction.expression_mode` stays `none`** - it disables the whole-document
+  generator; the per-cell micro path is not gated by it. The S9 instruction to set it to
+  `generator` is OBSOLETE.
+  **Stop conditions:** any diff in `graph/2025/{nodes,edges,rules}/`; any draft promoted; the
+  comment entering `content_fingerprint`; hand-authoring any expression or citation; fabricating
+  a line to close a gap; `legacy_mined` above 394; strict mismatches above 36. **A model or
+  provider failure is NOT a stop condition** - `google/gemini-3.6-flash` is known good.
+
+- **M20-S14 TASK (COMPLETE, accepted at `eb99447`; 1040 17/17, Schedule A 7/7) - RETIRE THE HANDCRAFTED SET AS A SCORE; COMPLETE 3 FORMS FOR REVIEW
   (Architect, Claude Opus 5, 2026-07-30). John's call.** Ledger: the exact RAN/NOT RUN evidence
   rule, and D9.
   **WHY THE YARDSTICK IS BEING RETIRED - the S13 evidence.** Of seven paired cells, most
