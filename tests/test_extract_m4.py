@@ -12,7 +12,7 @@ import yaml
 from tax_graph.cli import extract_command
 from tax_graph.extract.checks import run_deterministic_checks
 from tax_graph.extract.critic import apply_critic_report
-from tax_graph.extract.generator import ExtractionError, parse_generator_response
+from tax_graph.extract.generator import ExtractionError, complete_expression_roles, parse_generator_response
 from tax_graph.extract.inputs import load_document_input
 from tax_graph.extract.llm_client import LlmUnavailable, OpenAILlmClient, build_llm_client, supported_providers
 from tax_graph.extract.models import CriticReport, ExtractionBatch, SourceDocumentInput
@@ -233,6 +233,59 @@ def test_expression_edge_without_operand_role_is_flagged(tmp_path):
     report = run_deterministic_checks(document, batch, root=ROOT)
 
     assert any("expression edge role" in issue.reason for issue in report.issues)
+
+
+@pytest.mark.m20
+def test_generator_boundary_completes_safe_expression_roles(tmp_path):
+    document = _source_document(tmp_path)
+    response = _good_response(confidence=0.98)
+    response["rules"] = [
+        {
+            "rule_id": "rule_expression_sum",
+            "operation": "SUM",
+            "description": "Add the operands.",
+            "citation_refs": ["cite_8949_line_1"],
+        },
+        {
+            "rule_id": "rule_expression_subtract",
+            "operation": "SUBTRACT",
+            "description": "Subtract the operands.",
+            "citation_refs": ["cite_8949_line_1"],
+        },
+    ]
+    response["edges"] = [
+        {
+            "edge_id": "edge_sum",
+            "source": "form_8949_2025_a",
+            "target": "form_8949_2025_sum",
+            "relationship": "CALCULATES",
+            "rule_id": "rule_expression_sum",
+        },
+        {
+            "edge_id": "edge_subtract_left",
+            "source": "form_8949_2025_a",
+            "target": "form_8949_2025_difference",
+            "relationship": "CALCULATES",
+            "rule_id": "rule_expression_subtract",
+        },
+        {
+            "edge_id": "edge_subtract_right",
+            "source": "form_8949_2025_b",
+            "target": "form_8949_2025_difference",
+            "relationship": "CALCULATES",
+            "rule_id": "rule_expression_subtract",
+        },
+    ]
+
+    batch = parse_generator_response(response, document=document, model="generator", root=ROOT)
+    complete_expression_roles(batch)
+
+    roles = {obj.object_id: obj.data.get("role") for obj in batch.items("edges")}
+    assert roles == {
+        "edge_sum": "addend",
+        "edge_subtract_left": "minuend",
+        "edge_subtract_right": "subtrahend",
+    }
 
 
 @pytest.mark.m4

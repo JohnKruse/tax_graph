@@ -592,6 +592,16 @@ def verify_expression_agreement_command(
     report = build_expression_agreement_report(year=year, root=root_path)
     path = write_expression_agreement_report(report, root=root_path)
     print(f"expression agreement report: {path}")
+    coverage = report["coverage"]
+    accuracy = report["accuracy"]
+    print(
+        "  coverage: {paired_expressions}/{live_expressions} "
+        "({rate:.1%})".format(**coverage)
+    )
+    print(
+        "  accuracy: operation {operation_agreement}/{paired_expressions}; "
+        "expression {expression_agreement}/{paired_expressions}".format(**accuracy)
+    )
     for category, count in report["totals"].items():
         print(f"  {category}: {count}")
     return 0

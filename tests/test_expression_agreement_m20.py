@@ -4,7 +4,12 @@ from pathlib import Path
 
 import pytest
 
-from tax_graph.verify.expressions import build_expression_agreement_report, write_expression_agreement_report
+from tax_graph.addressing import AddressComponent, CanonicalAddress
+from tax_graph.verify.expressions import (
+    _CanonicalAddressBridge,
+    build_expression_agreement_report,
+    write_expression_agreement_report,
+)
 
 
 pytestmark = pytest.mark.m20
@@ -119,6 +124,46 @@ def test_expression_agreement_normalizes_commutative_operands_and_reports_missin
     assert report["totals"]["missing_in_draft"] == 1
     assert report["totals"]["operation_agreement_operands_differ"] == 0
     assert report["by_document"]["form_1040_2025"]["expression_agreement"] == 1
+    assert report["coverage"] == {
+        "live_expressions": 2,
+        "paired_expressions": 1,
+        "unpaired_live_expressions": 1,
+        "rate": 0.5,
+    }
+    assert report["accuracy"]["paired_expressions"] == 1
+    assert report["accuracy"]["operation_agreement"] == 1
+    assert report["accuracy"]["expression_agreement"] == 1
+
+
+def test_canonical_address_bridge_maps_generated_id_without_form_lookup_table():
+    address_id = "2025/document=form_1040/line=1/control=amount"
+    address = CanonicalAddress(
+        address_id=address_id,
+        logical_key="document=form_1040/line=1/control=amount",
+        year=2025,
+        document_id="form_1040_2025",
+        parent_address_id="2025/document=form_1040/line=1",
+        kind="control",
+        path=(
+            AddressComponent("document", "form_1040"),
+            AddressComponent("line", "1"),
+            AddressComponent("control", "amount"),
+        ),
+        official_ref="1",
+        control_role="amount",
+        status="pending_review",
+        raw={"aliases": []},
+    )
+    bridge = _CanonicalAddressBridge(
+        live_node_ids={"live_target"},
+        node_documents={"live_target": "form_1040_2025"},
+        addresses=(address,),
+        nodes_by_address={address_id: ("live_target",)},
+        document_aliases={"form1040": ("form_1040_2025",)},
+    )
+
+    assert bridge.map("form_1040_2025_line_1") == "live_target"
+    assert bridge.report()["mapped"] == 1
 
 
 def test_expression_agreement_distinguishes_wrong_operation_and_extra_target(tmp_path: Path):

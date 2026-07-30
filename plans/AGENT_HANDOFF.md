@@ -14,14 +14,69 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## Current state (2026-07-30)
 
-**Worker session checkpoint - M20-S7 implementation (2026-07-30):** Global canary: Ledger
+**Worker session checkpoint - M20-S8 implementation (2026-07-30):** Global canary: Ledger
 Llama. Phase canary: Ground Truth. Model: GPT-5 Codex; effort: default; usage/quota/context
 indicators are not exposed. John gave go via the current task request. Single declared step:
-diagnose the missing expression layer, make the generator/critic emit schema-valid edges and
-rules if needed, and produce the committed expression-agreement report against the protected
-handcrafted graph. Applicable defect-ledger entries: D4, D6, D8, D9, D11, and the exact
-RAN/NOT RUN evidence rule. No live graph edit, draft promotion, generated citation or label
-hand edit, operation-enum change, review-contract change, or UI change is in scope.
+diagnose the generated edge-target convention, implement only a data-driven canonical-address
+bridge and operand-role emission needed to make expression scoring real, then re-measure and
+commit the coverage/accuracy report. Applicable defect-ledger entries: D4, D6, D8, D9, D11,
+and the exact RAN/NOT RUN evidence rule. No live graph edit, draft promotion, generated
+artifact hand edit, prompt quality tuning, operation-enum change, review-contract change, or
+UI change is in scope.
+
+**M20-S8 focused-test declaration (2026-07-30):** Declared files are
+`tests/test_expression_agreement_m20.py`, `tests/test_extract_m4.py`,
+`tests/test_draft_route_m20.py`, and `tests/test_cli.py`. The first covers the
+canonical-address bridge and separate coverage/accuracy report; the second covers generator
+boundary role completion; the latter two are consumers of the draft/report output contract.
+All will be run with a fresh writable `PYTEST_DEBUG_TEMPROOT`, sequentially, with no
+`--basetemp`. Final evidence will be recorded as exact `RAN:` or `NOT RUN:` lines below.
+
+**M20-S8 pre-expensive regeneration checkpoint (2026-07-30):** The bridge-only measurement
+over the existing S7 drafts is now real: coverage is 7/80 (8.75%); among paired expressions,
+operation agreement is 6/7 and full expression agreement is 0/7. The bridge resolved 39 of 80
+unique generated endpoints through canonical address bindings and left 41 unresolved; no
+hardcoded per-form map was used. The next command will regenerate the 15 manifest form
+documents with the existing configured Flash/OpenRouter model, four concurrent workers, and
+draft-only output. API spend is not exposed by the client. No live graph diff has occurred.
+
+**M20-S8 regeneration correction (2026-07-30):** The first 15-document command completed
+successfully but produced zero expression files because the local gitignored config omits the
+example config's `extraction.expression_mode: generator`; its default is `none`. This is a
+configuration-selection error, not a model or parser result. The corrective rerun will set that
+existing mode explicitly in the in-memory settings, preserving draft-only output and the
+protected live graph.
+
+**M20-S8 expression-mode smoke checkpoint (2026-07-30):** The explicit generator-mode Form
+1040 smoke run succeeded after approved network execution: `edges=7`, `rules=5`, and the
+draft writer emitted both expression files. The sandbox-only attempt is NOT test evidence for
+pipeline behavior; it failed before writing expressions with `WinError 10013`. The full
+15-document rerun is now authorized in the same in-memory mode with four concurrent workers.
+
+**M20-S8 regeneration and measurement result (2026-07-30):** RAN: the approved four-worker
+generator-mode command using `FORM_KINDS` -> 15/15 manifest form documents completed in
+495.5s; output remained under `graph/2025/_drafts/`. RAN: module-form `verify expression-agreement
+--year 2025` -> coverage `7/80` (8.75%), operation accuracy `7/7` among paired expressions,
+full expression accuracy `0/7`, categories `expression_agreement=0`,
+`operation_agreement_operands_differ=7`, `operation_disagreement=0`, `missing_in_draft=73`,
+`extra_in_draft=20`. The bridge resolved 27 of 49 unique generated endpoints through canonical
+address bindings; 22 remained unresolved. Draft inventory is `edges=56`, `rules=26`, with 25
+CALCULATES edges and zero missing roles. The protected live graph is unchanged.
+
+**M20-S8 focused-test evidence (2026-07-30):** Final rerun used a fresh writable
+`PYTEST_DEBUG_TEMPROOT` and no `--basetemp`:
+
+- RAN: `$testRoot='C:\Users\devbox\.codex\visualizations\2026\07\30\019fb286-e5f2-70c1-bc8e-50405160b1b3\pytest-m20-s8-final'; New-Item -ItemType Directory -Force -Path $testRoot | Out-Null; $env:PYTEST_DEBUG_TEMPROOT=$testRoot; & .venv\Scripts\python.exe -m pytest tests/test_expression_agreement_m20.py -q` -> 4 passed, 1 warning in 0.27s.
+- RAN: `$testRoot='C:\Users\devbox\.codex\visualizations\2026\07\30\019fb286-e5f2-70c1-bc8e-50405160b1b3\pytest-m20-s8-final'; New-Item -ItemType Directory -Force -Path $testRoot | Out-Null; $env:PYTEST_DEBUG_TEMPROOT=$testRoot; & .venv\Scripts\python.exe -m pytest tests/test_extract_m4.py -q` -> 23 passed, 1 warning in 5.74s.
+- RAN: `$testRoot='C:\Users\devbox\.codex\visualizations\2026\07\30\019fb286-e5f2-70c1-bc8e-50405160b1b3\pytest-m20-s8-final'; New-Item -ItemType Directory -Force -Path $testRoot | Out-Null; $env:PYTEST_DEBUG_TEMPROOT=$testRoot; & .venv\Scripts\python.exe -m pytest tests/test_draft_route_m20.py -q` -> 2 passed, 1 warning in 0.23s.
+- RAN: `$testRoot='C:\Users\devbox\.codex\visualizations\2026\07\30\019fb286-e5f2-70c1-bc8e-50405160b1b3\pytest-m20-s8-final'; New-Item -ItemType Directory -Force -Path $testRoot | Out-Null; $env:PYTEST_DEBUG_TEMPROOT=$testRoot; & .venv\Scripts\python.exe -m pytest tests/test_cli.py -q` -> 6 passed, 1 warning in 18.51s.
+
+**M20-S8 machine gates (2026-07-30):** RAN: `tools/check_ascii.py` -> ASCII check OK;
+`git diff --check` -> exit 0; module-form `tax_graph.cli validate 2025` -> graph integrity OK,
+documents=18, nodes=441, tables=2, edges=409, rules=17, citations=401; module-form
+`workbench.cli --root . --year 2025 preflight` -> exit 0, entries=18, units=2224,
+derived cells=2120, review_gap=591, unreviewed=1529, legacy_mined=394; strict citation
+report -> checked=401, strict_mismatches=36; protected graph diff -> empty.
 
 **M20-S7 pre-expensive regeneration checkpoint (2026-07-30):** The expression-enabled
 `form_1040_2025` run completed in 115.6s and wrote `edges=4` and `rules=3` to its ignored
