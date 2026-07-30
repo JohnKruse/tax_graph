@@ -14,6 +14,23 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## Current state (2026-07-30)
 
+**Worker session checkpoint - M20-S13 implementation (2026-07-30):** Global canary: Ledger
+Llama. Phase canary: Ground Truth. Model: GPT-5 Codex; effort/quota/context indicators are not
+exposed by this environment. John gave go via the current task request. Single declared step:
+replace the per-cell expression prompt with the human question, return source line numbers and
+required quote, resolve identities deterministically with fail-closed findings, add target-cell
+and normal-level request/response logging, then measure Form 1040 and the 15-form draft-only run.
+Applicable defect-ledger entries: D4, D6, D9, D11, and the exact RAN/NOT RUN evidence rule. No
+operation-enum change, node-id model vocabulary, draft promotion, hand-authoring, live graph
+edit, rollover implementation, review-contract change, or UI change is in scope.
+
+**M20-S13 focused-test declaration (2026-07-30):** Declared files are
+`tests/test_extract_outline_m4.py`, `tests/test_llm_attribution_m20.py`,
+`tests/test_draft_route_m20.py`, `tests/test_batch_extraction_m10.py`,
+`tests/test_schedule_d_extraction_m9.py`, and `tests/test_cli.py`. They cover the micro prompt
+and line-index consumer, telemetry/logging and draft provenance, batch and Schedule D consumers,
+and the expression-agreement CLI. Final evidence for every declared file will be recorded below.
+
 **Worker session checkpoint - M20-S12 implementation (2026-07-30):** Global canary: Ledger
 Llama. Phase canary: Ground Truth. Model: GPT-5 Codex; effort/quota/context indicators are not
 exposed by this environment. John gave go via the current task request. Single declared step:
@@ -3472,6 +3489,30 @@ TY2026 docs drop.
      instructions from the generic path - three of the six current instruction lines are
      8949-specific and are noise on a 1040 sum line. Keep 8949's special handling on an
      8949-specific path if it is still needed; report if it is.
+     **THE TWO INSTRUCTION SOURCES ARE NAMED SECTIONS, NOT A FLAT LIST (John, 2026-07-30).**
+     They play different roles: the FORM FACE is terse and authoritative on STRUCTURE ("Add
+     lines 1a through 1h"); the INSTRUCTION PAGE is verbose and authoritative on TREATMENT (what
+     counts, exclusions, edge cases). Merged into one anonymous list, neither the model nor the
+     reviewer can tell which is which. Shape:
+     ```
+     Line 1z on Form 1040 (2025).
+
+     On the form:
+       "z  Add lines 1a through 1h"
+
+     From the instructions for line 1z:
+       [i1] "<paragraph>"
+       [i2] "<paragraph>"
+     ```
+     Named sections at top level; a LIST only WITHIN a section when there are several spans,
+     each carrying its span id.
+     **These are the SAME TWO SLOTS S6-1 already split** (`form_citations` vs
+     `instruction_citations` in `review_content` and the fingerprint). Use the same split end to
+     end, so what we send the model and what the review panel shows the human are the same
+     shape - the reviewer then sees exactly what the model saw.
+     **Volume discipline - this is the round about sending LESS.** Use the spans already mined
+     and joined to that address, NOT the whole instruction-booklet section. If a line's
+     instruction text is genuinely large, REPORT it rather than silently truncating mid-sentence.
   2. **STEP 2 - ASK FOR LINE NUMBERS, NOT IDS - the form's own vocabulary.** Target output shape:
      `{"operation": <closed enum>, "source_lines": ["1a","1b",...], "quote": "<the instruction
      sentence relied on>"}`. Cross-form references stay natural: `{"form": "schedule_1", "line":
@@ -3481,6 +3522,11 @@ TY2026 docs drop.
      **`quote` is required, not decorative.** It grounds the answer in cited instruction text and
      it is what the review workbench needs so a human can say "the instruction says X and this
      does Y" - John's original ask from 2026-07-30.
+     **RETURN THE SPAN ID ALONGSIDE THE QUOTE.** `quote` alone can drift or paraphrase and is
+     then unverifiable prose. The span id lets us check the quote is VERBATIM against a real
+     mined span, which is what `check_citation_integrity` already enforces (the M14
+     fabricated-citations reopen is the precedent). Keep the existing `citation_span_ids`
+     mechanism for this; do not replace it with free text.
   3. **STEP 3 - RESOLVE IDENTITY DETERMINISTICALLY IN CODE.** Map `1a` ->
      `form_1040_2025_root_line_1a` from the outline's own line index, which already exists.
      **Fix `assembly.py` so an unresolved operand is recorded as a FINDING and never fabricates
