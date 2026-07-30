@@ -9,7 +9,7 @@ from tax_graph.config import get_config_value
 from tax_graph.documents import document_class_for
 from tax_graph.extract.assembly import assemble_formula_plan
 from tax_graph.extract.outline_checks import run_outline_artifact_checks
-from tax_graph.extract.llm_client import LlmClient
+from tax_graph.extract.llm_client import LlmClient, response_telemetry
 from tax_graph.extract.micro import extract_formula_plan
 from tax_graph.extract.models import DraftObject, ExtractionBatch, SourceDocumentInput
 from tax_graph.extract.outline import (
@@ -42,6 +42,7 @@ def generate_outline_first_drafts(
     flows = build_outbound_flows(document, outline=outline, spans=spans)
     run_outline_artifact_checks(document, outline, spans, flows).raise_for_issues()
     model = _micro_model(config or {})
+    llm_calls = []
 
     objects: list[DraftObject] = []
     for outline_node in _formula_outline_nodes(outline.children):
@@ -61,6 +62,10 @@ def generate_outline_first_drafts(
                 config=config,
                 root=root,
             )
+            telemetry = response_telemetry(plan)
+            if telemetry is not None:
+                llm_calls.append(telemetry)
+                formula_model = telemetry.resolved_model or formula_model
         else:
             formula_model = "deterministic-schedule-d-formula"
         batch = assemble_formula_plan(document, outline_node, plan, node_spans, model=formula_model, root=root)
@@ -74,7 +79,12 @@ def generate_outline_first_drafts(
     objects.extend(_line_cue_objects(document, outline.children, spans, model=model))
     objects.extend(_generic_not_modeled_document(document, outline.children, objects=objects, model=model))
 
-    return ExtractionBatch(document_id=document.document_id, year=document.year, objects=_dedupe_objects(objects))
+    return ExtractionBatch(
+        document_id=document.document_id,
+        year=document.year,
+        objects=_dedupe_objects(objects),
+        llm_calls=llm_calls,
+    )
 
 
 def _formula_outline_nodes(nodes: list[OutlineNode]) -> list[OutlineNode]:

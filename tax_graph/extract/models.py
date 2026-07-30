@@ -63,6 +63,8 @@ class DraftObject:
     critic_agrees: bool = True
     flags: list[str] = field(default_factory=list)
     tier: str | None = None
+    requested_model: str | None = None
+    resolved_model: str | None = None
 
     @property
     def object_id(self) -> str:
@@ -82,6 +84,7 @@ class ExtractionBatch:
     document_id: str
     year: str
     objects: list[DraftObject]
+    llm_calls: list["LlmCallTelemetry"] = field(default_factory=list)
 
     def items(self, kind: str) -> list[DraftObject]:
         """Return draft objects for a graph kind."""
@@ -90,6 +93,31 @@ class ExtractionBatch:
     def by_identity(self) -> dict[tuple[str, str], DraftObject]:
         """Index draft objects by kind and object id."""
         return {(obj.kind, obj.object_id): obj for obj in self.objects}
+
+
+@dataclass(frozen=True)
+class LlmCallTelemetry:
+    """Resolved model and usage returned for one live model call."""
+
+    provider: str
+    requested_model: str
+    resolved_model: str | None
+    prompt_tokens: int | None = None
+    completion_tokens: int | None = None
+    total_tokens: int | None = None
+    cost: float | None = None
+
+    def as_dict(self) -> dict[str, Any]:
+        """Return the ASCII-safe serialized call record."""
+        return {
+            "provider": self.provider,
+            "requested_model": self.requested_model,
+            "resolved_model": self.resolved_model,
+            "prompt_tokens": self.prompt_tokens,
+            "completion_tokens": self.completion_tokens,
+            "total_tokens": self.total_tokens,
+            "cost": self.cost,
+        }
 
 
 @dataclass(frozen=True)

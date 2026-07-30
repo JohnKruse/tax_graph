@@ -60,6 +60,13 @@ def build_metrics(batch: ExtractionBatch, routed: RoutedDrafts) -> dict[str, Any
         layer = classify_flag(issue.reason)
         flags_by_layer[layer] = flags_by_layer.get(layer, 0) + 1
 
+    llm_calls = [call.as_dict() for call in batch.llm_calls]
+    token_values = [call.total_tokens for call in batch.llm_calls if call.total_tokens is not None]
+    cost_values = [call.cost for call in batch.llm_calls if call.cost is not None]
+    for call in batch.llm_calls:
+        if call.resolved_model:
+            models_used.add(call.resolved_model)
+
     return {
         "document_id": batch.document_id,
         "tax_year": batch.year,
@@ -72,10 +79,11 @@ def build_metrics(batch: ExtractionBatch, routed: RoutedDrafts) -> dict[str, Any
         "tiers": tier_distribution(batch.objects),
         "flags_by_layer": dict(sorted(flags_by_layer.items())),
         "models_used": sorted(models_used),
+        "llm_calls": llm_calls,
         "confidence_telemetry": _confidence_telemetry(confidences),
         "human_minutes": None,
-        "worker_tokens": None,
-        "worker_cost": None,
+        "worker_tokens": sum(token_values) if token_values else None,
+        "worker_cost": sum(cost_values) if cost_values else None,
         "escapes": 0,
     }
 

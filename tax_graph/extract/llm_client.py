@@ -6,10 +6,19 @@ import json
 from typing import Any, Protocol
 
 from tax_graph.config import get_config_value, resolve_secret
+from tax_graph.extract.models import LlmCallTelemetry
 
 
 class LlmUnavailable(RuntimeError):
     """Raised when extraction needs an LLM but none is configured."""
+
+
+class StructuredCompletionResult(dict[str, Any]):
+    """Dict-compatible structured output with response-envelope telemetry."""
+
+    def __init__(self, payload: dict[str, Any], metadata: LlmCallTelemetry):
+        super().__init__(payload)
+        self.metadata = metadata
 
 
 class LlmClient(Protocol):
@@ -177,9 +186,15 @@ class AnthropicLlmClient:
             block_name = getattr(block, "name", None)
             block_input = getattr(block, "input", None)
             if block_type == "tool_use" and block_name == tool_name and isinstance(block_input, dict):
-                return block_input
+                return StructuredCompletionResult(
+                    block_input,
+                    _response_telemetry(response, requested_model=model, provider="Anthropic"),
+                )
             if isinstance(block, dict) and block.get("type") == "tool_use" and block.get("name") == tool_name:
-                return dict(block.get("input", {}))
+                return StructuredCompletionResult(
+                    dict(block.get("input", {})),
+                    _response_telemetry(response, requested_model=model, provider="Anthropic"),
+                )
         raise LlmUnavailable("Anthropic response did not contain the required tool output")
 
 
@@ -251,7 +266,10 @@ class OpenAICompatibleLlmClient:
             raise LlmUnavailable(f"{self.provider_name} response did not contain JSON") from exc
         if not isinstance(parsed, dict):
             raise LlmUnavailable(f"{self.provider_name} response JSON was not an object")
-        return parsed
+        return StructuredCompletionResult(
+            parsed,
+            _response_telemetry(response, requested_model=model, provider=self.provider_name),
+        )
 
     def _should_retry_without_provider_hints(self, exc: Exception, extra_body: dict[str, Any]) -> bool:
         if self.parameter_mode != "auto":
@@ -270,6 +288,56 @@ class OpenAICompatibleLlmClient:
 
 
 OpenAILlmClient = OpenAICompatibleLlmClient
+
+
+def response_telemetry(value: Any) -> LlmCallTelemetry | None:
+    """Return adapter telemetry when a structured response carries it."""
+    metadata = getattr(value, "metadata", None)
+    return metadata if isinstance(metadata, LlmCallTelemetry) else None
+
+
+def _response_telemetry(
+    response: Any,
+    *,
+    requested_model: str,
+    provider: str,
+) -> LlmCallTelemetry:
+    """Extract provider response metadata without changing the model payload."""
+    usage = _get(response, "usage", None)
+    prompt_tokens = _as_int(_get(usage, "prompt_tokens", _get(usage, "input_tokens", None)))
+    completion_tokens = _as_int(_get(usage, "completion_tokens", _get(usage, "output_tokens", None)))
+    total_tokens = _as_int(_get(usage, "total_tokens", None))
+    if total_tokens is None and prompt_tokens is not None and completion_tokens is not None:
+        total_tokens = prompt_tokens + completion_tokens
+    cost = _as_float(_get(usage, "cost", _get(response, "cost", None)))
+    resolved_model = _get(response, "model", None)
+    return LlmCallTelemetry(
+        provider=provider,
+        requested_model=str(requested_model),
+        resolved_model=str(resolved_model) if resolved_model else None,
+        prompt_tokens=prompt_tokens,
+        completion_tokens=completion_tokens,
+        total_tokens=total_tokens,
+        cost=cost,
+    )
+
+
+def _as_int(value: Any) -> int | None:
+    if value is None or value == "":
+        return None
+    try:
+        return int(value)
+    except (TypeError, ValueError):
+        return None
+
+
+def _as_float(value: Any) -> float | None:
+    if value is None or value == "":
+        return None
+    try:
+        return float(value)
+    except (TypeError, ValueError):
+        return None
 
 
 def _openai_message_content(response: Any, *, provider_name: str = "OpenAI") -> str:

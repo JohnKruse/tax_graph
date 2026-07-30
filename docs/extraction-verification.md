@@ -181,8 +181,11 @@ the free layers + human-review the genuine deltas the IRS actually made.
 ## 7. Economics: what we track
 
 Per extraction run, write `metrics.yaml` beside `review.md`: objects by kind, tier
-distribution, flags by layer, model calls/tokens by model, examples mined/confirmed,
-and (filled at promotion) human minutes spent + escapes found. A `tax-graph verify
+distribution, flags by layer, resolved model calls/tokens/cost by call, examples
+mined/confirmed, and (filled at promotion) human minutes spent + escapes found. The
+draft provenance records the requested and resolved model for objects produced by a
+live call; if the provider omits a resolved model or usage value, the field remains
+null rather than claiming attribution. A `tax-graph verify
 report` rolls these up across forms. The payoff condition in Section 1 becomes a
 dashboard line, reviewed at each phase gate: **human minutes per promoted object,
 trending down; escape rate, at or near zero.**

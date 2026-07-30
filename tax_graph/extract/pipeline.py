@@ -115,6 +115,7 @@ def _merge_expression_batch(base: Any, expression_batch: Any) -> Any:
         document_id=base.document_id,
         year=base.year,
         objects=merged,
+        llm_calls=[*base.llm_calls, *expression_batch.llm_calls],
     )
 
 

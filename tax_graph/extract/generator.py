@@ -6,7 +6,7 @@ from pathlib import Path
 from typing import Any
 
 from tax_graph.config import get_config_value
-from tax_graph.extract.llm_client import LlmClient
+from tax_graph.extract.llm_client import LlmClient, response_telemetry
 from tax_graph.extract.models import DRAFT_KINDS, ID_FIELDS, DraftObject, ExtractionBatch, SourceDocumentInput
 from tax_graph.extract.prompts import assemble_generator_prompt, closed_operations, draft_response_schema
 
@@ -33,7 +33,7 @@ def generate_drafts(
         temperature=_optional_float(get_config_value(settings, "llm.temperature", 0)),
         purpose="tax_graph_draft",
     )
-    batch = parse_generator_response(response, document=document, model=model, root=root)
+    batch = parse_generator_response(response, document=document, model=str(model), root=root)
     complete_expression_roles(batch)
     return batch
 
@@ -48,6 +48,8 @@ def parse_generator_response(
     """Parse and validate the generator response into draft objects."""
     allowed_operations = set(closed_operations(root=root))
     provenance = _provenance_map(response.get("provenance", []))
+    telemetry = response_telemetry(response)
+    resolved_model = telemetry.resolved_model if telemetry and telemetry.resolved_model else model
     objects: list[DraftObject] = []
 
     for kind in DRAFT_KINDS:
@@ -68,12 +70,19 @@ def parse_generator_response(
                     kind=kind,
                     data=data,
                     source_span=str(metadata.get("source_span", "")),
-                    extracted_by=model,
+                    extracted_by=str(resolved_model),
                     confidence=float(metadata.get("confidence", 0)),
+                    requested_model=str(model),
+                    resolved_model=telemetry.resolved_model if telemetry else None,
                 )
             )
 
-    return ExtractionBatch(document_id=document.document_id, year=document.year, objects=objects)
+    return ExtractionBatch(
+        document_id=document.document_id,
+        year=document.year,
+        objects=objects,
+        llm_calls=[telemetry] if telemetry else [],
+    )
 
 
 def _provenance_map(items: Any) -> dict[tuple[str, str], dict[str, Any]]:

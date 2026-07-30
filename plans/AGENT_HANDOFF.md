@@ -14,6 +14,57 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## Current state (2026-07-30)
 
+**Worker session checkpoint - M20-S9 implementation (2026-07-30):** Global canary: Ledger
+Llama. Phase canary: Ground Truth. Model: GPT-5 Codex; effort: default; usage/quota/context
+indicators are not exposed. John gave go via the current task request. Single declared step:
+capture provider response usage and resolved model ids, carry them through draft provenance and
+metrics, switch the ignored live config to the pinned `z-ai/glm-5.2` with generator expression
+mode, verify one cheap document call, then re-baseline the 15 manifest forms draft-only.
+Applicable defect-ledger entries: D4, D6, D8, D9, D11, and the exact RAN/NOT RUN evidence rule.
+No prompt tuning, coverage work, operation-enum change, draft promotion, hand-authoring, live
+graph edit, review-contract change, rollover implementation, or UI change is in scope.
+
+**M20-S9 focused-test declaration (2026-07-30):** Declared files are
+`tests/test_llm_attribution_m20.py`, `tests/test_extract_m4.py`, `tests/test_draft_route_m20.py`,
+`tests/test_extract_outline_m4.py`, `tests/test_batch_extraction_m10.py`,
+`tests/test_schedule_d_extraction_m9.py`, and `tests/test_trust_tiers_m8.py`. The first two
+cover response-envelope capture, resolved-model provenance, and generator behavior; the next
+four cover batch propagation and metrics consumers; the last covers legacy null telemetry.
+All will be run with a fresh writable `PYTEST_DEBUG_TEMPROOT`, sequentially, with no
+`--basetemp`. Final evidence will be recorded as exact `RAN:` or `NOT RUN:` lines below.
+
+**M20-S9 implementation checkpoint (2026-07-30):** The adapter now preserves a dict-compatible
+structured response plus typed provider metadata; generator and critic calls append telemetry to
+the extraction batch; resolved model fields flow into object provenance; and `metrics.yaml`
+computes worker token/cost totals and records per-call telemetry. Initial RAN:
+`$testRoot='C:\Users\devbox\.codex\visualizations\2026\07\30\019fb2f4-74b3-7d10-925c-c4251310f17a\pytest-m20-s9-initial'; New-Item -ItemType Directory -Force -Path $testRoot | Out-Null; $env:PYTEST_DEBUG_TEMPROOT=$testRoot; & .venv\Scripts\python.exe -m pytest tests/test_llm_attribution_m20.py tests/test_extract_m4.py tests/test_draft_route_m20.py -q` -> 28 passed, 1 warning in 6.02s. The outline, batch, Schedule D, and trust-tier consumer sweep remains pending before the live call.
+
+**M20-S9 pre-live checkpoint (2026-07-30):** RAN:
+`$testRoot='C:\Users\devbox\.codex\visualizations\2026\07\30\019fb2f4-74b3-7d10-925c-c4251310f17a\pytest-m20-s9-consumers'; New-Item -ItemType Directory -Force -Path $testRoot | Out-Null; $env:PYTEST_DEBUG_TEMPROOT=$testRoot; & .venv\Scripts\python.exe -m pytest tests/test_extract_outline_m4.py tests/test_batch_extraction_m10.py tests/test_schedule_d_extraction_m9.py tests/test_trust_tiers_m8.py -q` -> 21 passed, 1 warning in 89.83s. The ignored `config/tax-graph.config.yaml` now has exact model `z-ai/glm-5.2` and `extraction.expression_mode: generator`; the example config remains unchanged. No live call or draft regeneration has started. Next is the required cheap model-resolution call; if it fails, stop without a substitute.
+
+**M20-S9 model probe checkpoint (2026-07-30):** RAN: approved direct OpenRouter structured
+probe with requested `z-ai/glm-5.2` and purpose `m20_s9_model_probe` -> resolved model
+`z-ai/glm-5.2`, prompt_tokens=31, completion_tokens=26, total_tokens=57, cost=0.00008648.
+The pinned id resolves exactly. The next command is the approved four-worker, 15-form,
+draft-only baseline; it will write only under `graph/2025/_drafts/` and will be followed by
+the expression report. No live graph artifact has been touched.
+
+**M20-S9 stop checkpoint (2026-07-30):** The four-worker 15-form draft-only command was
+started after the successful probe, but stopped at 62.6s when a full extraction response could
+not be parsed: `tax_graph.extract.llm_client.LlmUnavailable: OpenRouter response did not contain
+JSON` from `structured_completion` while generating `tax_graph_draft`. This is an API/model
+response failure under the S9 stop conditions; no retry, substitute model, prompt tuning, or
+second baseline was attempted. The existing 16 ignored draft directories are prior-round state;
+the new S9 run produced no `resolved_model` provenance records. Protected live graph diff is
+empty. The 15-form S9 coverage/accuracy report and final machine gates are NOT RUN because of
+this failure.
+
+**M20-S9 focused-test evidence (2026-07-30):**
+
+- RAN: `$testRoot='C:\Users\devbox\.codex\visualizations\2026\07\30\019fb2f4-74b3-7d10-925c-c4251310f17a\pytest-m20-s9-initial'; New-Item -ItemType Directory -Force -Path $testRoot | Out-Null; $env:PYTEST_DEBUG_TEMPROOT=$testRoot; & .venv\Scripts\python.exe -m pytest tests/test_llm_attribution_m20.py tests/test_extract_m4.py tests/test_draft_route_m20.py -q` -> 28 passed, 1 warning in 6.02s.
+- RAN: `$testRoot='C:\Users\devbox\.codex\visualizations\2026\07\30\019fb2f4-74b3-7d10-925c-c4251310f17a\pytest-m20-s9-consumers'; New-Item -ItemType Directory -Force -Path $testRoot | Out-Null; $env:PYTEST_DEBUG_TEMPROOT=$testRoot; & .venv\Scripts\python.exe -m pytest tests/test_extract_outline_m4.py tests/test_batch_extraction_m10.py tests/test_schedule_d_extraction_m9.py tests/test_trust_tiers_m8.py -q` -> 21 passed, 1 warning in 89.83s.
+- NOT RUN: final machine gates and the S9 expression baseline/report -> the pinned-model full extraction stopped on the non-JSON response above.
+
 **Worker session checkpoint - M20-S8 implementation (2026-07-30):** Global canary: Ledger
 Llama. Phase canary: Ground Truth. Model: GPT-5 Codex; effort: default; usage/quota/context
 indicators are not exposed. John gave go via the current task request. Single declared step:

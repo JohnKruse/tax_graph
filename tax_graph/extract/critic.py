@@ -6,7 +6,7 @@ from pathlib import Path
 from typing import Any
 
 from tax_graph.config import get_config_value
-from tax_graph.extract.llm_client import LlmClient, LlmUnavailable
+from tax_graph.extract.llm_client import LlmClient, LlmUnavailable, response_telemetry
 from tax_graph.extract.models import CriticFinding, CriticReport, ExtractionBatch, SourceDocumentInput
 from tax_graph.extract.prompts import assemble_critic_prompt, critic_response_schema
 
@@ -35,6 +35,9 @@ def critique_drafts(
         report = _unavailable_critic_report(batch, str(exc))
         apply_critic_report(batch, report)
         return report
+    telemetry = response_telemetry(response)
+    if telemetry is not None:
+        batch.llm_calls.append(telemetry)
     report = parse_critic_response(response)
     apply_critic_report(batch, report)
     return report

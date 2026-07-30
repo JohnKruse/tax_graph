@@ -158,7 +158,7 @@ def _object_lines(objects: list[DraftObject], *, include_flags: bool) -> list[st
 
 
 def _provenance(obj: DraftObject) -> dict[str, Any]:
-    return {
+    record = {
         "kind": obj.kind,
         "object_id": obj.object_id,
         "source_span": obj.source_span,
@@ -168,6 +168,11 @@ def _provenance(obj: DraftObject) -> dict[str, Any]:
         "flags": obj.flags,
         "tier": obj.tier,
     }
+    if obj.requested_model is not None:
+        record["requested_model"] = obj.requested_model
+    if obj.resolved_model is not None:
+        record["resolved_model"] = obj.resolved_model
+    return record
 
 
 def _write_yaml(path: Path, data: Any) -> None:

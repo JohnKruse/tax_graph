@@ -486,6 +486,46 @@ def test_openai_adapter_parses_structured_json():
     assert completions.kwargs["response_format"]["json_schema"]["strict"] is False
 
 
+@pytest.mark.m20
+def test_openai_adapter_preserves_resolved_model_and_usage_telemetry():
+    class FakeCompletions:
+        def create(self, **kwargs):
+            return {
+                "model": "z-ai/glm-5.2",
+                "usage": {
+                    "prompt_tokens": 11,
+                    "completion_tokens": 7,
+                    "total_tokens": 18,
+                    "cost": 0.0125,
+                },
+                "choices": [
+                    {
+                        "message": {
+                            "content": json.dumps({"nodes": [], "edges": [], "rules": [], "citations": [], "decisions": [], "provenance": []})
+                        }
+                    }
+                ],
+            }
+
+    fake_client = SimpleNamespace(chat=SimpleNamespace(completions=FakeCompletions()))
+    client = OpenAILlmClient(fake_client, provider_name="OpenRouter")
+
+    result = client.structured_completion(
+        prompt="extract",
+        schema={"type": "object"},
+        model="~google/gemini-flash-latest",
+        max_tokens=100,
+        temperature=0,
+        purpose="tax_graph_draft",
+    )
+
+    assert result["nodes"] == []
+    assert result.metadata.resolved_model == "z-ai/glm-5.2"
+    assert result.metadata.requested_model == "~google/gemini-flash-latest"
+    assert result.metadata.total_tokens == 18
+    assert result.metadata.cost == 0.0125
+
+
 @pytest.mark.m4
 def test_openai_adapter_tolerates_fenced_json():
     class FakeCompletions:
