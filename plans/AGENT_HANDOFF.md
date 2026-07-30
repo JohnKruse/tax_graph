@@ -30,6 +30,97 @@ edit, rollover implementation, review-contract change, or UI change is in scope.
 `tests/test_schedule_d_extraction_m9.py`, and `tests/test_cli.py`. They cover the micro prompt
 and line-index consumer, telemetry/logging and draft provenance, batch and Schedule D consumers,
 and the expression-agreement CLI. Final evidence for every declared file will be recorded below.
+The consumer sweep additionally declares `tests/test_nversion_m8.py` and
+`tests/test_tables_detector_m6b.py` because both exercise the outline micro route.
+
+**M20-S13 pre-live checkpoint (2026-07-30):** The implementation is green on the declared
+focused command plus the two additional micro consumers. RAN: `$testRoot =
+'C:\Users\devbox\.codex\visualizations\2026\07\30\019fb469-6d33-7d61-a2d5-eddcf974c9b1\m20_s13_tests_r4';
+New-Item -ItemType Directory -Force -Path $testRoot | Out-Null; $env:PYTEST_DEBUG_TEMPROOT =
+$testRoot; & .venv\Scripts\python.exe -m pytest tests/test_extract_outline_m4.py
+tests/test_llm_attribution_m20.py tests/test_draft_route_m20.py tests/test_batch_extraction_m10.py
+tests/test_schedule_d_extraction_m9.py tests/test_cli.py -q` -> 29 passed, 1 warning in 95.99s;
+the additional `tests/test_nversion_m8.py tests/test_tables_detector_m6b.py` command -> 7 passed,
+1 skipped, 1 warning in 2.01s. No protected graph directories changed. The retained table-specific
+path is explicit for transaction-table/totals nodes; ordinary formula lines use the new shape.
+The next command is the single Form 1040 draft-only live diagnostic, followed by log inspection.
+
+**M20-S13 Form 1040 exchange (2026-07-30):** The final successful 1z micro exchange is
+recorded here so John can inspect exactly what the model saw and returned. The JSONL source is
+`output/logs/f59672d67d1544d18fa57e61a6e6a53b.jsonl`; `target_cell_id` is
+`form_1040_2025_root_line_1z`.
+
+Request prompt:
+```text
+Answer the human question for one form line.
+Which printed lines does this line use, and what operation combines them?
+Return operation, source_lines, and quote.
+Use the form's printed line numbers in source_lines, never internal ids.
+
+target line label: z Add lines 1a through 1h 1z
+
+form face line:
+z Add lines 1a through 1h 1z
+
+instruction text:
+|  ** Earned income includes wages, salaries, tips, professional fees, and other compensation received for personal services you performed. It also includes any taxable scholarship or fellowship grant. Generally, your earned income is the total of the amount(s) you reported on Form 1040 or 1040-SR, line 1z, and Schedule 1, lines 3, 6, 8r, 8t, and 8u minus the amount, if any, on Schedule 1, line 15.*  |   |
+1. Enter the amount from Form 1040 or 1040-SR, line 1z ... 1. \_\_\_\_\_
+Check the box on line 27b if you are (1) a minister, member of a religious order who has not taken a vow of poverty, or a Christian Science practitioner; and (2) filing Schedule SE and the amount on line 2 of that schedule includes an amount that was also reported on Form 1040 or 1040-SR, line 1z. See the instructions under Clergy, later, for how to determine the amount of your earned income.
+```
+
+Response content:
+```json
+{"operation":"SUM","source_lines":["1a","1b","1c","1d","1e","1f","1g","1h"],"quote":"Add lines 1a through 1h"}
+```
+
+Response telemetry: `finish_reason=stop`, `model=google/gemini-3.6-flash`,
+`provider=Google AI Studio`, `prompt_tokens=354`, `completion_tokens=333`, `total_tokens=687`,
+`cost=0.0030285`. The answer has the correct eight source lines and is resolved by code to
+deterministic node ids; no internal id was sent to the model.
+
+**M20-S13 final focused-test evidence (2026-07-30):** RAN: `$testRoot =
+'C:\Users\devbox\.codex\visualizations\2026\07\30\019fb469-6d33-7d61-a2d5-eddcf974c9b1\m20_s13_tests_final_r2';
+New-Item -ItemType Directory -Force -Path $testRoot | Out-Null; $env:PYTEST_DEBUG_TEMPROOT =
+$testRoot; & .venv\Scripts\python.exe -m pytest tests/test_extract_outline_m4.py
+tests/test_llm_attribution_m20.py tests/test_draft_route_m20.py tests/test_batch_extraction_m10.py
+tests/test_schedule_d_extraction_m9.py tests/test_cli.py tests/test_nversion_m8.py
+tests/test_tables_detector_m6b.py -q` -> 36 passed, 1 skipped, 1 warning in 96.57s. Every
+declared focused file is covered by that exact command. The skip is the existing guarded
+environment-dependent test; no declared file is unverified.
+
+**M20-S13 final live measurement (2026-07-30):** The sandbox-only Form 1040 command is NOT
+RUN as final evidence: all 17 requests failed with a connection error before provider response.
+RAN with approved network execution: the final Form 1040 command
+`& .venv\Scripts\python.exe -m tax_graph.cli extract --doc form_1040_2025 --year 2025 --root .`
+completed with 17/17 provider successes, no truncation, resolved model
+`google/gemini-3.6-flash`, provider `Google AI Studio`. The cell result was 16 assembled
+successes and 1 fail-closed self-reference finding. The final 1040 run averaged 273.5 prompt
+tokens (range 127-499), with 1z at 354 tokens; its prompts were 432-1713 characters, average
+936.7. Form 1040 expression report: coverage 10/80 (12.5%),
+operation accuracy 8/10, full expression accuracy 2/10, `extra_in_draft=65`.
+
+**M20-S13 15-form draft-only measurement (2026-07-30):** RAN in parallel, one exact
+module-form command per manifest form document:
+`& .venv\Scripts\python.exe -m tax_graph.cli extract --doc <document_id> --year 2025 --root .`.
+All 15 run envelopes ended `success`; the set made 74 micro calls, 74 provider successes,
+0 provider failures, 0 truncations, and 57 assembled cell successes with 17 fail-closed
+identity findings/failures. Resolved model was `google/gemini-3.6-flash`; provider was
+`Google AI Studio`. Prompt tokens fell from the prior S12 average/max 888.6/1542 to
+247.3/596 in this round; current prompt chars averaged 858.9 with a 2280 maximum. Final
+expression report: coverage 7/80 (8.8%), operation accuracy 5/7, full expression accuracy
+2/7, `extra_in_draft=50`. The lower coverage is honest model variance plus fail-closed
+identity resolution; no node id was requested from the model and no unresolved id was
+fabricated.
+
+**M20-S13 final machine gates (2026-07-30):** RAN: `& .venv\Scripts\python.exe
+tools/check_ascii.py` -> ASCII check OK; `git diff --check` -> exit 0; module-form
+`tax_graph.cli validate 2025` -> graph integrity OK, documents=18, nodes=441, tables=2,
+edges=409, rules=17, citations=401; module-form `workbench.cli --root . --year 2025 preflight`
+-> exit 0, entries=18, units=2224, derived cells=2120, review_gap=591, unreviewed=1529,
+legacy_mined=394; strict citation command -> checked=401, strict_mismatches=36. Protected
+`graph/2025/{nodes,edges,rules}/` diff is empty. The tracked
+`output/m20_s8_expression_agreement.yaml` contains the final 15-form report. The single local
+commit was created; its final hash is reported in the Worker response. No push was performed.
 
 **Worker session checkpoint - M20-S12 implementation (2026-07-30):** Global canary: Ledger
 Llama. Phase canary: Ground Truth. Model: GPT-5 Codex; effort/quota/context indicators are not

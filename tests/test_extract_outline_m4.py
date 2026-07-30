@@ -8,7 +8,7 @@ import shutil
 import jsonschema
 import pytest
 
-from tax_graph.extract.assembly import assemble_formula_plan, realize_outbound_flows
+from tax_graph.extract.assembly import FormulaAssemblyFinding, assemble_formula_plan, realize_outbound_flows
 from tax_graph.extract.outline_pipeline import _formula_outline_nodes, generate_outline_first_drafts
 from tax_graph.extract.pipeline import extract_document
 from tax_graph.extract.micro import MicroExtractionError, extract_formula_plan, validate_formula_plan
@@ -111,7 +111,7 @@ def test_formula_line_micro_path_is_bounded_and_isolates_failed_cells(tmp_path):
             "Header: Part I",
             "- 1z: Add lines 1a through 1h",
             "- 2: Add lines 1z and 2b",
-            "- 3: Ordinary input",
+            "- 2b: Ordinary input",
             "",
         ]
     )
@@ -144,19 +144,10 @@ def test_formula_line_micro_path_is_bounded_and_isolates_failed_cells(tmp_path):
             self.calls.append({"prompt": prompt, "max_tokens": max_tokens, "purpose": purpose})
             if len(self.calls) == 1:
                 raise RuntimeError("cell failed")
-            span_id = re.search(r"- (span_[a-z0-9_]+):", prompt).group(1)
             return {
-                "operation_plan": [
-                    {
-                        "output": "line_2",
-                        "operation": "SUM",
-                        "inputs": [
-                            {"name": "line_1z", "role": "addend"},
-                            {"name": "line_2b", "role": "addend"},
-                        ],
-                        "citation_span_ids": [span_id],
-                    }
-                ]
+                "operation": "SUM",
+                "source_lines": ["1z", "2b"],
+                "quote": "Add lines 1z and 2b",
             }
 
     client = FailingCellClient()
@@ -172,8 +163,56 @@ def test_formula_line_micro_path_is_bounded_and_isolates_failed_cells(tmp_path):
     assert batch.micro_stats["cells_failed"] == 1
     assert "RuntimeError" in batch.micro_stats["failure_reasons_by_kind"]
     assert all(call["max_tokens"] == 4000 for call in client.calls)
-    assert "addressable_operand_candidates:" in client.calls[1]["prompt"]
-    assert "line_1z:" in client.calls[1]["prompt"]
+    assert "target line label:" in client.calls[1]["prompt"]
+    assert "Add lines 1z and 2b" in client.calls[1]["prompt"]
+    assert "addressable_operand_candidates:" not in client.calls[1]["prompt"]
+    assert "outline_id:" not in client.calls[1]["prompt"]
+
+
+@pytest.mark.m20
+def test_human_formula_answer_resolves_printed_lines_and_fails_closed(tmp_path):
+    document = SourceDocumentInput(
+        document_id="form_1040_2025",
+        kind="tax_form",
+        year="2025",
+        url="https://example.test/form.pdf",
+        text="1a Wages\n9 Total income\n",
+        text_path=tmp_path / "form.txt",
+    )
+    span = CandidateSpan(
+        span_id="span_form_1040_2025_0001",
+        document_id=document.document_id,
+        relationship="source",
+        locator="page 1, line 1",
+        text="9 Total income: Add lines 1a and 2b",
+    )
+    node = OutlineNode("root_line_9", "line", "Add lines 1a and 2b", line_anchor="9")
+    plan = {
+        "operation": "SUM",
+        "source_lines": [{"form": "Form 1040 or 1040-SR", "line": "1a"}, "2b"],
+        "quote": "Add lines 1a and 2b",
+    }
+    line_index = {
+        (document.document_id, "1a"): "form_1040_2025_root_line_1a",
+        (document.document_id, "2b"): "form_1040_2025_root_line_2b",
+    }
+
+    batch = assemble_formula_plan(document, node, plan, [span], line_index=line_index)
+    assert {edge.data["source"] for edge in batch.items("edges")} == {
+        "form_1040_2025_root_line_1a",
+        "form_1040_2025_root_line_2b",
+    }
+    assert {edge.data["target"] for edge in batch.items("edges")} == {"form_1040_2025_root_line_9"}
+    assert not any("root_line_9_root_line" in node.data["node_id"] for node in batch.items("nodes"))
+
+    with pytest.raises(FormulaAssemblyFinding, match="not present"):
+        assemble_formula_plan(
+            document,
+            node,
+            {**plan, "source_lines": ["missing"]},
+            [span],
+            line_index=line_index,
+        )
 
 
 @pytest.mark.m4

@@ -27,6 +27,10 @@ _CURRENT_RUN: contextvars.ContextVar["RunLogger | None"] = contextvars.ContextVa
     "tax_graph_extraction_run",
     default=None,
 )
+_CURRENT_TARGET_CELL: contextvars.ContextVar[str | None] = contextvars.ContextVar(
+    "tax_graph_extraction_target_cell",
+    default=None,
+)
 _MAX_LOG_STRING_CHARS = 60_000
 _REDACTED = "[redacted]"
 _SENSITIVE_KEYS = {
@@ -137,6 +141,7 @@ class RunLogger:
         self,
         *,
         document_id: str,
+        target_cell_id: str | None = None,
         purpose: str,
         requested_model: str,
         telemetry: Any = None,
@@ -164,6 +169,7 @@ class RunLogger:
 
         call: dict[str, Any] = {
             "document_id": document_id,
+            "target_cell_id": target_cell_id or _CURRENT_TARGET_CELL.get(),
             "purpose": purpose,
             "requested_model": requested_model,
             "resolved_model": _value(telemetry, "resolved_model"),
@@ -178,7 +184,11 @@ class RunLogger:
         }
         if error:
             call["error"] = error
-        include_bodies = outcome != "success" or self._logger.isEnabledFor(logging.DEBUG)
+        include_bodies = (
+            purpose == "tax_graph_micro_formula"
+            or outcome != "success"
+            or self._logger.isEnabledFor(logging.DEBUG)
+        )
         if include_bodies:
             call["request_body"] = _safe_value(request_body)
             call["response_body"] = _safe_value(response_body)
@@ -228,12 +238,23 @@ def current_run() -> RunLogger | None:
     return _CURRENT_RUN.get()
 
 
+@contextmanager
+def llm_call_target(target_cell_id: str | None) -> Iterator[None]:
+    """Attach the stable target cell to calls made inside this context."""
+    token = _CURRENT_TARGET_CELL.set(target_cell_id)
+    try:
+        yield
+    finally:
+        _CURRENT_TARGET_CELL.reset(token)
+
+
 def log_llm_call(**kwargs: Any) -> None:
     """Record a provider call when the caller is inside an extraction run."""
     recorder = current_run()
     if recorder is not None:
         if kwargs.get("document_id") in {None, "", "unknown"}:
             kwargs["document_id"] = recorder.document_id
+        kwargs.setdefault("target_cell_id", _CURRENT_TARGET_CELL.get())
         recorder.record_call(**kwargs)
 
 

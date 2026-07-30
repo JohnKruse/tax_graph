@@ -7,7 +7,7 @@ from typing import Any
 
 from tax_graph.config import get_config_value
 from tax_graph.documents import document_class_for
-from tax_graph.extract.assembly import assemble_formula_plan
+from tax_graph.extract.assembly import FormulaAssemblyFinding, assemble_formula_plan
 from tax_graph.extract.outline_checks import run_outline_artifact_checks
 from tax_graph.extract.llm_client import LlmClient, response_telemetry
 from tax_graph.extract.micro import extract_formula_plan
@@ -50,27 +50,30 @@ def generate_outline_first_drafts(
         "cells_succeeded": 0,
         "cells_failed": 0,
         "failure_reasons_by_kind": {},
+        "findings": [],
     }
+    line_index = _outline_line_index(document.document_id, outline.children)
     for outline_node in _formula_outline_nodes(outline.children):
         node_spans = _spans_for_outline_node(
             document,
             outline_node,
             spans,
             document_id=document.document_id,
+            table_mode=outline_node.kind in {"transaction_table", "totals"},
         )
         plan = _deterministic_schedule_d_formula_plan(document, outline_node, node_spans)
         formula_model = str(model)
         if plan is None:
             micro_stats["cells_attempted"] += 1
             try:
-                operand_candidates = _operand_candidates(outline.children, outline_node)
                 plan = extract_formula_plan(
                     outline_node=outline_node,
                     spans=node_spans,
                     client=client,
                     config=config,
                     root=root,
-                    operand_candidates=operand_candidates,
+                    target_cell_id=_outline_node_id(document.document_id, outline_node),
+                    table_mode=outline_node.kind in {"transaction_table", "totals"},
                 )
                 micro_stats["cells_succeeded"] += 1
                 telemetry = response_telemetry(plan)
@@ -84,7 +87,22 @@ def generate_outline_first_drafts(
         else:
             formula_model = "deterministic-schedule-d-formula"
         try:
-            batch = assemble_formula_plan(document, outline_node, plan, node_spans, model=formula_model, root=root)
+            batch = assemble_formula_plan(
+                document,
+                outline_node,
+                plan,
+                node_spans,
+                model=formula_model,
+                root=root,
+                line_index=line_index,
+            )
+        except FormulaAssemblyFinding as exc:
+            if plan is not None and formula_model != "deterministic-schedule-d-formula":
+                micro_stats["cells_succeeded"] -= 1
+                micro_stats["cells_failed"] += 1
+            _record_micro_finding(micro_stats, exc.finding)
+            _record_micro_failure(micro_stats, outline_node, exc)
+            continue
         except Exception as exc:
             if plan is not None and formula_model != "deterministic-schedule-d-formula":
                 micro_stats["cells_succeeded"] -= 1
@@ -101,7 +119,13 @@ def generate_outline_first_drafts(
             obj
             for obj in batch.objects
             if obj.kind in {"citations", "edges", "rules"}
-            or (obj.kind == "nodes" and outline_node.kind in {"transaction_table", "totals"})
+            or (
+                obj.kind == "nodes"
+                and (
+                    outline_node.kind in {"transaction_table", "totals"}
+                    or ("operation_plan" not in plan and obj.data.get("node_type") == "computed")
+                )
+            )
         )
     objects.extend(assemble_table_subunits(document, outline, objects, model="deterministic-table-detector"))
     objects.extend(_schedule_d_band_tables(document, outline.children, model="deterministic-schedule-d-band-detector"))
@@ -152,42 +176,6 @@ def _is_formula_node(node: OutlineNode) -> bool:
     )
 
 
-def _operand_candidates(nodes: list[OutlineNode], target: OutlineNode) -> list[dict[str, str]]:
-    """Return stable line refs explicitly named by one formula cell."""
-    all_candidates: dict[str, dict[str, str]] = {}
-    seen: set[str] = set()
-    for node in _flatten_nodes(nodes):
-        if not node.line_anchor or node.kind in {"section", "heading", "outbound_flow_cue"}:
-            continue
-        ref = f"line_{node.line_anchor.lower()}"
-        if ref in seen:
-            continue
-        seen.add(ref)
-        all_candidates[ref] = {"ref": ref, "label": node.label}
-
-    import re
-
-    label = target.label.lower()
-    cue = re.search(
-        r"\b(?:add|subtract|amount\s+from|amount\s+of|more\s+than|less\s+than)\b.*",
-        label,
-    )
-    if cue is None:
-        return list(all_candidates.values())
-    explicit = re.findall(r"\b([0-9]+[a-z]?)\b", cue.group(0))
-    refs = {f"line_{value}" for value in explicit if f"line_{value}" in all_candidates}
-    for start_number, start_letter, end_number, end_letter in re.findall(
-        r"\b([0-9]+)([a-z])\s+through\s+([0-9]+)([a-z])\b", cue.group(0)
-    ):
-        if start_number != end_number:
-            continue
-        for code in range(ord(start_letter), ord(end_letter) + 1):
-            ref = f"line_{start_number}{chr(code)}"
-            if ref in all_candidates:
-                refs.add(ref)
-    return [all_candidates[ref] for ref in all_candidates if ref in refs]
-
-
 def _record_micro_failure(stats: dict[str, Any], node: OutlineNode, error: Exception) -> None:
     """Record one isolated cell failure without allowing it to kill the document."""
     kind = type(error).__name__
@@ -200,6 +188,36 @@ def _record_micro_failure(stats: dict[str, Any], node: OutlineNode, error: Excep
             "reason": reason,
         }
     )
+
+
+def _record_micro_finding(stats: dict[str, Any], finding: dict[str, Any]) -> None:
+    """Persist a fail-closed identity finding beside the draft metrics."""
+    stats.setdefault("findings", []).append({str(key): value for key, value in finding.items()})
+
+
+def _outline_line_index(document_id: str, nodes: list[OutlineNode]) -> dict[tuple[str, str], str]:
+    """Build an unambiguous printed-line to canonical-node index."""
+    index: dict[tuple[str, str], str] = {}
+    ambiguous: set[tuple[str, str]] = set()
+    for node in _flatten_nodes(nodes):
+        if not node.line_anchor:
+            continue
+        key = (document_id.lower(), str(node.line_anchor).lower())
+        value = _outline_node_id(document_id, node)
+        if key in index and index[key] != value:
+            ambiguous.add(key)
+        else:
+            index[key] = value
+    for key in ambiguous:
+        index.pop(key, None)
+    return index
+
+
+def _outline_node_id(document_id: str, node: OutlineNode) -> str:
+    """Return the same stable id used by the outline projection."""
+    import re
+
+    return re.sub(r"[^a-z0-9]+", "_", f"{document_id}_{node.outline_id}".lower()).strip("_")
 
 
 def _deterministic_schedule_d_formula_plan(
@@ -248,6 +266,7 @@ def _spans_for_outline_node(
     spans: list[CandidateSpan],
     *,
     document_id: str = "",
+    table_mode: bool = False,
 ) -> list[CandidateSpan]:
     """Select a small evidence packet for one micro-extraction prompt."""
     selected: list[CandidateSpan] = []
@@ -262,7 +281,7 @@ def _spans_for_outline_node(
             elif line_phrase in lowered and _direct_line_evidence(span.text, node.line_anchor):
                 instruction_hits.append(span)
         selected.extend(instruction_hits[:3])
-    if node.columns:
+    if table_mode and node.columns:
         column_terms = [f"({column})" for column in node.columns]
         column_hits: list[CandidateSpan] = []
         for span in spans:

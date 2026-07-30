@@ -17,6 +17,14 @@ from tax_graph.extract.outline import (
 from tax_graph.extract.prompts import closed_operations
 
 
+class FormulaAssemblyFinding(ValueError):
+    """Raised when a model line reference cannot be resolved safely."""
+
+    def __init__(self, finding: dict[str, Any]):
+        self.finding = finding
+        super().__init__(str(finding.get("reason", "formula assembly finding")))
+
+
 def assemble_formula_plan(
     document: SourceDocumentInput,
     outline_node: OutlineNode,
@@ -25,16 +33,25 @@ def assemble_formula_plan(
     *,
     model: str = "micro-extraction",
     root: str | Path | None = None,
+    line_index: dict[Any, str] | None = None,
 ) -> ExtractionBatch:
     """Convert an intermediate operation plan into canonical draft objects."""
     allowed_operations = set(closed_operations(root=root))
     spans_by_id = {span.span_id: span for span in spans}
+    human_answer = "operation_plan" not in plan
+    steps = _steps_for_plan(
+        document,
+        outline_node,
+        plan,
+        spans,
+        line_index=line_index,
+    )
     objects: list[DraftObject] = []
     node_ids_by_name: dict[str, str] = {}
     emitted_nodes: set[str] = set()
     emitted_citations: set[str] = set()
 
-    for step_index, step in enumerate(plan.get("operation_plan", []), 1):
+    for step_index, step in enumerate(steps, 1):
         operation = str(step.get("operation", ""))
         if operation not in allowed_operations:
             raise ValueError(f"unsupported operation: {operation}")
@@ -51,7 +68,11 @@ def assemble_formula_plan(
 
         raw_output_name = str(step.get("output", f"step_{step_index}"))
         output_name = _normalized_output_name(step, raw_output_name)
-        target_id = _node_id(document.document_id, outline_node.outline_id, output_name)
+        target_id = (
+            _canonical_target_id(document, outline_node)
+            if human_answer
+            else _node_id(document.document_id, outline_node.outline_id, output_name)
+        )
         node_ids_by_name[raw_output_name] = target_id
         node_ids_by_name[output_name] = target_id
         if target_id not in emitted_nodes:
@@ -86,7 +107,7 @@ def assemble_formula_plan(
 
         for input_index, input_item in enumerate(step.get("inputs", []), 1):
             input_name = str(input_item.get("name", f"input_{input_index}"))
-            source_id = node_ids_by_name.get(input_name)
+            source_id = input_name if human_answer else node_ids_by_name.get(input_name)
             if source_id is None:
                 source_id = _node_id(document.document_id, outline_node.outline_id, input_name)
                 node_ids_by_name[input_name] = source_id
@@ -104,6 +125,15 @@ def assemble_formula_plan(
                     )
                     emitted_nodes.add(source_id)
             role = str(input_item.get("role") or _default_role(operation, input_index))
+            if human_answer and source_id == target_id:
+                raise FormulaAssemblyFinding(
+                    {
+                        "code": "self_referential_source_line",
+                        "target_cell_id": target_id,
+                        "source_line": input_name,
+                        "reason": "source line resolves to the target cell",
+                    }
+                )
             objects.append(
                 DraftObject(
                     "edges",
@@ -123,6 +153,95 @@ def assemble_formula_plan(
             )
 
     return ExtractionBatch(document_id=document.document_id, year=document.year, objects=objects)
+
+
+def _steps_for_plan(
+    document: SourceDocumentInput,
+    outline_node: OutlineNode,
+    plan: dict[str, Any],
+    spans: list[CandidateSpan],
+    *,
+    line_index: dict[Any, str] | None,
+) -> list[dict[str, Any]]:
+    """Translate line-number output into one deterministic operation step."""
+    if "operation_plan" in plan:
+        return list(plan.get("operation_plan", []))
+
+    source_lines = plan.get("source_lines", [])
+    inputs: list[dict[str, str]] = []
+    for source_line in source_lines:
+        source_id = _resolve_source_line(document, source_line, line_index=line_index)
+        if source_id is None:
+            raise FormulaAssemblyFinding(
+                {
+                    "code": "unresolved_source_line",
+                    "target_cell_id": _canonical_target_id(document, outline_node),
+                    "source_line": source_line,
+                    "reason": "source line is not present in the deterministic outline index",
+                }
+            )
+        inputs.append({"name": source_id, "role": "addend"})
+
+    quote = str(plan.get("quote", ""))
+    citation_span_ids = [
+        span.span_id
+        for span in spans
+        if _quote_matches(quote, span.text)
+    ][:1]
+    output = f"line_{outline_node.line_anchor}" if outline_node.line_anchor else outline_node.outline_id
+    return [
+        {
+            "output": output,
+            "operation": str(plan.get("operation", "")),
+            "inputs": inputs,
+            "citation_span_ids": citation_span_ids,
+        }
+    ]
+
+
+def _resolve_source_line(
+    document: SourceDocumentInput,
+    source_line: Any,
+    *,
+    line_index: dict[Any, str] | None,
+) -> str | None:
+    """Resolve a printed line through the supplied outline index only."""
+    if isinstance(source_line, str):
+        form = document.document_id
+        anchor = source_line.strip().lower().removeprefix("line ").strip()
+    elif isinstance(source_line, dict):
+        form = str(source_line.get("form", "")).strip().lower()
+        anchor = str(source_line.get("line", "")).strip().lower().removeprefix("line ").strip()
+    else:
+        return None
+    if not anchor:
+        return None
+    current_form = document.document_id.lower()
+    normalized_form = re.sub(r"[^a-z0-9]+", "", form)
+    normalized_current = re.sub(r"[^a-z0-9]+", "", current_form)
+    same_form_alias = "1040" in normalized_form and "1040" in normalized_current
+    if form in {"", current_form, current_form.removesuffix(f"_{document.year}"), current_form.removesuffix("_2025")} or same_form_alias:
+        form = current_form
+    elif not form.endswith(f"_{document.year}"):
+        form = f"{form}_{document.year}"
+
+    index = line_index or {}
+    for key in ((form, anchor), anchor):
+        if key in index:
+            return index[key]
+    if form == current_form and line_index is None:
+        return _slug(f"{document.document_id}_root_line_{anchor}")
+    return None
+
+
+def _canonical_target_id(document: SourceDocumentInput, outline_node: OutlineNode) -> str:
+    """Return the stable outline-derived id for the formula cell."""
+    return _slug(f"{document.document_id}_{outline_node.outline_id}")
+
+
+def _quote_matches(quote: str, source: str) -> bool:
+    normalize = lambda value: " ".join(str(value).split())
+    return normalize(quote) in normalize(source) or normalize(source) in normalize(quote)
 
 
 def realize_outbound_flows(

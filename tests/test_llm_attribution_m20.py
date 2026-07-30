@@ -15,7 +15,7 @@ from tax_graph.extract.llm_client import (
     StructuredCompletionResult,
 )
 from tax_graph.extract.models import DraftObject, ExtractionBatch, LlmCallTelemetry, RoutedDrafts, SourceDocumentInput
-from tax_graph.extract.observability import extraction_run
+from tax_graph.extract.observability import extraction_run, llm_call_target
 from tax_graph.extract.route import write_routed_drafts
 
 
@@ -216,4 +216,29 @@ def test_finish_reason_length_is_named_and_logged_at_info(tmp_path: Path):
     call = next(record for record in _log_records(tmp_path) if record["event"] == "llm_call")
     assert call["finish_reason"] == "length"
     assert call["outcome"] == "truncated"
+    assert call["response_body"]
+
+
+def test_micro_call_logs_target_and_bodies_at_info(tmp_path: Path):
+    client = _live_client(_provider_response(prompt_tokens=12))
+
+    with extraction_run(
+        root=tmp_path,
+        document_id="form_1040_2025",
+        year="2025",
+        config=_run_config(),
+    ):
+        with llm_call_target("form_1040_2025_root_line_1z"):
+            client.structured_completion(
+                prompt="human question",
+                schema={"type": "object"},
+                model="z-ai/glm-5.2",
+                max_tokens=4000,
+                temperature=0,
+                purpose="tax_graph_micro_formula",
+            )
+
+    call = next(record for record in _log_records(tmp_path) if record["event"] == "llm_call")
+    assert call["target_cell_id"] == "form_1040_2025_root_line_1z"
+    assert call["request_body"]
     assert call["response_body"]
