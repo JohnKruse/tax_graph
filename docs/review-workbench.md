@@ -118,6 +118,46 @@ timestamp. A changed fingerprint produces a derived `needs_recheck` state.
 Review-gap expressions are counted explicitly as `NOT_REVIEWABLE` rather than as
 unreviewed work. No workbench action asserts a human-review claim on the user's behalf.
 
+## Year-to-year rollover review (John's decisions, 2026-07-30)
+
+Settled design for the tax-year boundary. Not yet built; it matters at the 2026 boundary,
+and the address + fingerprint machinery it depends on already exists and is verified.
+
+**The shape.** Process the new year's forms through the pipeline, then compare cell by cell
+against the previous year's approvals. Carry the approval where the cell is essentially the
+same; put changes and additions in front of the reviewer.
+
+**Carry identical cells WITHOUT an AI query.** Where the content fingerprint matches after
+normalization, the cells are provably identical - same label, same expression, same operands,
+same citations. A model query there can only introduce a false "changed" on content we know
+did not change. Deterministic wins where the deterministic answer is exact. `rollover_candidates`
+in `workbench/address_verdicts.py` already does this match; the open change is that John wants
+identical cells CARRIED, not returned for per-cell reconfirmation. Thousands of clicks to learn
+nothing is how a reviewer disengages.
+
+**Use the AI only on the changed set, with a tunable bar.** Where the fingerprint differs,
+a model call judges materiality and returns STRUCTURE, not prose:
+`{materiality: none|cosmetic|substantive, reason, recommendation}`. John moves the bar by
+editing what counts as which - a changed dollar threshold or a changed operand set is
+substantive; rewording, renumbered cross-references, and punctuation are cosmetic. This makes
+model volume proportional to CHANGES rather than to the ~2,000-cell inventory: tens to low
+hundreds of calls at a year boundary.
+
+**Show old vs new, plus the recommendation.** For any changed cell the reviewer sees both
+versions and the AI's read. The AI recommends; it never decides.
+
+**Deletions are explicitly OUT OF SCOPE - John's call, 2026-07-30.** A previously approved
+cell with no counterpart in the new year is dropped silently. Rationale: you process the new
+form, cells are either approved or not, and a handful of stragglers per form is a trivial
+review cost. Do not build a removal bucket.
+
+**UX note, deliberately deferred.** Rollover review is a different and much smaller surface
+than first-year review - "here are the 60 things that changed, with a diff and a
+recommendation" rather than 2,000 cells in address order. It likely deserves its own focused
+view rather than being forced into the three-column river, which exists for exhaustive first
+pass. Two modes, one contract underneath. Do not design this until John has used the current
+page.
+
 ## What it is
 
 A standalone, human-facing visual review tool. A person opens a rendered IRS form

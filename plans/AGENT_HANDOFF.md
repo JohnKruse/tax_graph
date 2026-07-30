@@ -1164,15 +1164,21 @@ the instruction slot; Authority explicitly reports missing authored coverage; do
 citation coverage is visible beside policy counts; and the dossier heading duplication/order
 warts are fixed. No promoted artifacts, graph semantics, verdicts, or citation records changed.
 
-**BALL: WORKER - M20-S8 (make the measurement work: canonical-address id bridge + operand roles,
-then re-measure reporting COVERAGE and ACCURACY separately). Task block under From Architect.
-S7 is ACCEPTED at `78d38ac` - the round did what was asked, the protected test set is
-byte-identical, all gates are green, and the Worker correctly REFUSED to hand-repair the join to
-inflate the number. But its `expression_agreement=0` is an UNSCORABLE result, not a quality
-score: `operation_disagreement` is also 0, which means nothing was ever compared. S8 buys the
-ability to measure and deliberately does NOT try to raise the score. S6-2 remains PARKED. The
-handcrafted set remains the PROTECTED TEST SET: `graph/2025/{nodes,edges,rules}/` must be
-byte-identical at round end.**
+**BALL: WORKER - M20-S9 (capture usage + resolved model id, switch to the PINNED model
+`z-ai/glm-5.2`, then re-baseline coverage and accuracy). Task block under From Architect.
+S8 is ACCEPTED at `2699cad` - Architect independently re-verified on 2026-07-30: protected test
+set byte-identical, `validate 2025` green with the live graph unchanged (441 nodes / 409 edges /
+17 rules), ASCII and diff-check clean, no secrets, and NO hardcoded per-form id table in the
+bridge or generator. S8 delivered the first real numbers: coverage **7/80 = 8.75%**, operation
+accuracy **7/7**, full expression accuracy **0/7**. Read that correctly - the model picks the
+VERB reliably and gets the OPERANDS wrong every time, on a sample of 7. Coverage is the real
+problem. **But none of those numbers are attributable**: John's billing shows one config value
+served by a MIX of Flash 3 preview, 3.5, and 3.6. S9 fixes attribution and re-baselines on a
+pinned model; S10 will chase coverage. S6-2 remains PARKED. The handcrafted set remains the
+PROTECTED TEST SET: `graph/2025/{nodes,edges,rules}/` must be byte-identical at round end.**
+
+**Confirmed spend: $1.95 for three live runs (~$0.65 per 15-document run). Cost is NOT a
+constraint - iterate freely and do not optimize for it.**
 
 **Note for S8 - the number that actually matters is COVERAGE, not agreement.** S7's 1040 run
 emitted `edges=4, rules=3` against 80 live expressions. A percentage computed over only the
@@ -3091,6 +3097,61 @@ TY2026 docs drop.
   environment failure, and no commit was made.
 
 ## From Architect
+
+- **M20-S9 TASK - MAKE THE NUMBERS ATTRIBUTABLE, THEN RE-BASELINE ON A PINNED MODEL
+  (Architect, Claude Opus 5, 2026-07-30). John's go. Small round, and it is a PREREQUISITE for
+  every number that follows.** Ledger: the exact RAN/NOT RUN evidence rule, and D9. Re-read D4,
+  D6, D8, D11.
+  **PRIME DIRECTIVE FRAMING (`AGENTS.md` section 1):** a pipeline whose output cannot be
+  attributed to a specific model is not reliable and cannot be measured year to year. S8 gave us
+  our first real numbers (coverage 7/80 = 8.75%; operation accuracy 7/7; expression accuracy
+  0/7) but they are NOT attributable - John's OpenRouter billing shows the same config value
+  served by a MIX of Flash 3 preview, 3.5, and 3.6, possibly varying within one 15-document run
+  across the four concurrent workers. This round buys attribution and a clean baseline.
+  **Confirmed spend to date: $1.95 total for three live runs. Cost is NOT a constraint on this
+  project** - roughly $0.65 per 15-document run. Iterate freely; do not optimize for cost.
+  1. **CAPTURE `usage` AND THE RESOLVED MODEL ID IN `tax_graph/extract/llm_client.py`.** Today
+     the file has ZERO references to `usage`, `prompt_tokens`, `completion_tokens`, or cost, and
+     it discards the resolved `model` field that OpenRouter returns on every response. The
+     downstream plumbing already exists and sits null: `tax_graph/verify/metrics.py` has
+     `worker_tokens` and `worker_cost`. Populate them, and record the RESOLVED model per call in
+     draft provenance. **Today provenance records the ALIAS** (`extracted_by:
+     ~google/gemini-flash-latest`), so no existing draft can be attributed to the model that
+     actually produced it. Fix that going forward; do not attempt to backfill history.
+  2. **SWITCH THE MODEL TO `z-ai/glm-5.2` - John's call.** He judges it cheaper and comparable.
+     Do NOT argue the choice; DO verify it mechanically.
+     - **Verify the id resolves with ONE cheap single-document call before any 15-document run.**
+       A bad id either errors or gets silently routed somewhere John did not choose. If it does
+       not resolve, STOP and report - do not substitute a model.
+     - Note the string is a CONCRETE VERSION, not a floating alias: no `~`, no `-latest`. That is
+       deliberate and it is what makes attribution possible. **Do not "helpfully" convert it to a
+       latest-style alias.**
+     - Also set `extraction.expression_mode: generator` in the real config. John's
+       `config/tax-graph.config.yaml` is gitignored and LACKS it; the default is `none`, which is
+       what made S8's first full run produce zero expressions with no error. **A model swap
+       without this line yields a fast, clean, completely empty run.** Consider whether a silent
+       `none` default is the right default at all and report a recommendation - do not change it
+       in this round.
+  3. **RE-BASELINE.** Re-run the 15 manifest form documents on the pinned model, draft-only, then
+     re-run `verify expression-agreement`. Report COVERAGE and ACCURACY separately exactly as S8
+     did - do not collapse them - and state the resolved model id and total token usage alongside
+     the numbers. The S8 Flash numbers do not transfer and must not be reused as a baseline.
+  4. **What this round does NOT do.** No prompt tuning for quality. No coverage work (that is the
+     next round). No operation-enum change. No draft promotion. No hand-authoring. No rollover
+     implementation - those decisions are recorded in `docs/review-workbench.md` and are for the
+     2026 boundary. No review UI; S6-2 stays parked. Review/verdict contract still FROZEN.
+  **PROTECTED TEST SET, unchanged hard gate:** `graph/2025/{nodes,edges,rules}/` byte-identical
+  at round end; `git diff --stat` on those three directories EMPTY.
+  Tier 3. Declared files plus honest `RAN:`/`NOT RUN:`. ASCII, `git diff --check`, module-form
+  `validate 2025`, real preflight with `legacy_mined` explicit (expect **394**),
+  `check_citation_integrity` STRICT (expect **36**). Short pytest temp root; no `--basetemp`.
+  ONE local commit; no push.
+  **Stop conditions:** `z-ai/glm-5.2` not resolving (stop, do not substitute); any diff in
+  `graph/2025/{nodes,edges,rules}/`; any draft promoted; collapsing coverage and accuracy;
+  tuning the prompt for quality; converting the pinned model id to a floating alias;
+  `legacy_mined` above 394; strict mismatches above 36; or an API/quota/egress failure.
+  **Spend is now measurable - report actual token usage and, if the response exposes it, cost,
+  rather than "spend is not exposed by the client."**
 
 - **M20-S8 TASK - MAKE THE MEASUREMENT WORK: ID BRIDGE + OPERAND ROLES, THEN RE-MEASURE
   (Architect, Claude Opus 5, 2026-07-30). John's go. S7 produced an UNSCORABLE result; this
