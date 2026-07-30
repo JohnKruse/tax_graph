@@ -153,6 +153,7 @@ def build_document_cells(
                 "page": page,
                 "rect": [float(value) for value in entry["rect"]],
                 "field_name": str(entry.get("field_name") or "") or None,
+                "geometry_label": str(entry.get("label") or "") or None,
                 "section": _breadcrumb(address),
                 "official_ref": _official_ref(address),
                 "control_role": str(address.get("control_role") or "") or None,
@@ -305,6 +306,7 @@ def build_documents_index(
     geometry_entries: list[dict[str, Any]],
     page_geometry: list[dict[str, Any]] | None = None,
     titles: dict[str, str] | None = None,
+    generated_documents: set[str] | frozenset[str] | None = None,
 ) -> list[dict[str, Any]]:
     """Summarize each document for the left-rail picker (id, title, pages, count).
 
@@ -313,13 +315,20 @@ def build_documents_index(
     omitted so the picker never shows an unreviewable form.
     """
     titles = titles or {}
+    generated_documents = generated_documents or set()
+    generated_builder = None
+    if generated_documents:
+        from workbench.generated_review import build_generated_document_cells
+
+        generated_builder = build_generated_document_cells
     summaries: list[dict[str, Any]] = []
     for document_id in sorted(set(document_ids)):
         document_page_geometry = [
             item for item in page_geometry or []
             if str(item.get("document_id") or "") == document_id
         ]
-        built = build_document_cells(
+        builder = generated_builder if document_id in generated_documents else build_document_cells
+        built = builder(
             root,
             year,
             document_id,
@@ -336,6 +345,7 @@ def build_documents_index(
                 "pages": built.pages,
                 "page_geometry": built.page_geometry,
                 "cell_count": len(built.cells),
+                "review_mode": "generated_draft" if document_id in generated_documents else "live_projection",
                 "policy_counts": dict(sorted(
                     Counter(cell.get("population_policy") or "unknown" for cell in built.cells).items()
                 )),

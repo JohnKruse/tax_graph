@@ -1,4 +1,4 @@
-import {loadDocuments, loadDocumentCells, loadDocumentSession, saveDocumentSession} from "./api.js";
+import {loadDocuments, loadDocumentCells, loadDocumentSession, saveDocumentSession, submitVerdict} from "./api.js";
 import {renderOfficialPane} from "./panes.js";
 import {installPairing} from "./pairing.js";
 import {activateRiverUnit, renderReviewRiver, selectRiverUnit} from "./river.js";
@@ -186,6 +186,7 @@ function renderReview(page = null, restoreCellId = null) {
   installPairing(root);
   if (root._selectionHandler) root.removeEventListener("workbench:selection", root._selectionHandler);
   if (root._riverSelectionHandler) root.removeEventListener("workbench:river-selection", root._riverSelectionHandler);
+  if (root._verdictHandler) root.removeEventListener("workbench:submit-verdict", root._verdictHandler);
   root._selectionHandler = (event) => {
     const cellId = event.detail.unitId;
     updateSessionContext(cellId);
@@ -216,8 +217,52 @@ function renderReview(page = null, restoreCellId = null) {
       syncingSelection = false;
     }
   };
+  root._verdictHandler = async (event) => {
+    const detail = event.detail || {};
+    const cell = detail.cell;
+    const verdict = String(detail.verdict || "");
+    const reviewerId = String(detail.reviewerId || "").trim();
+    const comment = String(detail.comment || "").trim();
+    const message = document.querySelector("#session-message");
+    if (!cell || !reviewerId) {
+      message.textContent = "Enter a human reviewer id before recording the verdict.";
+      return;
+    }
+    if (verdict !== "confirmed" && !comment) {
+      message.textContent = "A pipeline defect or source pathology needs a comment.";
+      return;
+    }
+    const safeId = `review_${activeDocument.document_id}_${cell.cell_id}_${Date.now()}`.toLowerCase().replace(/[^a-z0-9_]+/g, "_");
+    message.textContent = "Recording verdict...";
+    try {
+      await submitVerdict({
+        queue_id: activeDocument.document_id,
+        verdict_id: safeId,
+        reviewer_id: reviewerId,
+        human_minutes: 0,
+        verdict,
+        reviewed_at: now(),
+        reason: verdict === "confirmed" ? undefined : comment,
+        comment: comment || undefined,
+        object_ref: {object_id: cell.address_id},
+        source_override: verdict === "source_pathology"
+          ? {provenance: comment, marked_override: true}
+          : undefined,
+      });
+      if (verdict === "confirmed") updateCellReview(cell, {approved: true, note: comment});
+      message.textContent = `Verdict recorded for ${cell.official_ref || cell.cell_id}.`;
+      if (detail.advance) {
+        const index = activeCells().findIndex((item) => item.cell_id === cell.cell_id);
+        const next = activeCells()[index + 1];
+        if (next) renderReview(next.page, next.cell_id);
+      }
+    } catch (error) {
+      message.textContent = `Verdict was not recorded: ${error.message}`;
+    }
+  };
   root.addEventListener("workbench:selection", root._selectionHandler);
   root.addEventListener("workbench:river-selection", root._riverSelectionHandler);
+  root.addEventListener("workbench:submit-verdict", root._verdictHandler);
   installSynchronizedView(document.querySelector("#official-pane .page-viewport"));
   installPageControls(activeDocument.pages, (nextPage) => renderReview(nextPage), page);
   updateDashboard();

@@ -412,7 +412,10 @@ def _is_header_text(row: str) -> bool:
         return True
     if "dependent 1" in lowered and "dependent 2" in lowered:
         return True
-    return any(phrase in lowered for phrase in _HEADER_PHRASES)
+    # A caption can legitimately mention a section (for example, Schedule 1
+    # line 8n).  Only a row that starts with a known header phrase is a header;
+    # substring matching suppresses real lettered line anchors.
+    return any(lowered.startswith(phrase) for phrase in _HEADER_PHRASES)
 
 
 def _make_structure_row(

@@ -190,6 +190,7 @@ def append_address_verdict(
     verdict_id: str | None = None,
     store_path: str | Path | None = None,
     provenance: Mapping[str, Any] | None = None,
+    comment: str | None = None,
 ) -> dict[str, Any]:
     """Append one address verdict and refuse duplicate ids or empty identity."""
     address_value = str(address).strip()
@@ -231,6 +232,8 @@ def append_address_verdict(
     }
     if provenance:
         record["provenance"] = dict(provenance)
+    if comment is not None and str(comment).strip():
+        record["comment"] = str(comment).strip()
     _validate_record(record)
     path = Path(store_path).resolve() if store_path is not None else verdict_store_path(root, year)
     with _WRITE_LOCK:

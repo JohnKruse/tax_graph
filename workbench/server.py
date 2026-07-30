@@ -11,6 +11,7 @@ from flask import Flask, jsonify, request, send_file
 
 from workbench.artifacts import ArtifactBundle, load_artifact_bundle
 from workbench.cell_inventory import build_document_cells, build_documents_index
+from workbench.generated_review import GENERATED_REVIEW_DOCUMENTS, build_generated_document_cells
 from workbench.manifest import build_manifest
 from workbench.navigation import build_document_navigation
 from workbench.preflight import preflight_manifest
@@ -24,6 +25,7 @@ from workbench.sessions import (
     validate_unit_review_scope,
 )
 from workbench.verdicts import emit_verdict
+from workbench.address_verdicts import append_address_verdict
 
 
 def create_app(
@@ -278,7 +280,8 @@ def create_app(
         return _documents
 
     def _document_cells(document_id: str) -> list[dict[str, Any]]:
-        return build_document_cells(
+        builder = build_generated_document_cells if document_id in GENERATED_REVIEW_DOCUMENTS else build_document_cells
+        return builder(
             root_path,
             year,
             document_id,
@@ -306,6 +309,7 @@ def create_app(
                 geometry_entries=_document_context()["geometry_entries"],
                 page_geometry=_document_context()["page_geometry"],
                 titles=_document_context()["titles"],
+                generated_documents=GENERATED_REVIEW_DOCUMENTS,
             ),
         })
 
@@ -403,7 +407,7 @@ def create_app(
             return jsonify({"error": "verdict body must be a JSON object"}), 400
         allowed = {
             "queue_id", "verdict_id", "reviewer_id", "human_minutes", "verdict",
-            "reviewed_at", "reason", "object_ref", "source_override",
+            "reviewed_at", "reason", "object_ref", "source_override", "comment",
         }
         unexpected = sorted(set(payload) - allowed)
         if unexpected:
@@ -430,7 +434,17 @@ def create_app(
                 reason=payload.get("reason"),
                 object_ref=object_ref,
                 source_override=payload.get("source_override"),
+                comment=payload.get("comment"),
                 output_path=verdict_root / f"{payload['verdict_id']}.yaml",
+            )
+            _append_address_review_if_applicable(
+                root=root_path,
+                year=year,
+                queue_id=queue_id,
+                object_ref=object_ref,
+                verdict_payload=payload,
+                cells=_document_cells(queue_id) if queue_id in GENERATED_REVIEW_DOCUMENTS else [],
+                store_path=verdict_root / "address_verdicts.jsonl",
             )
         except FileExistsError as exc:
             return jsonify({"error": str(exc)}), 409
@@ -480,6 +494,48 @@ def _scoped_verdict_ref(entry: dict[str, Any], supplied: Any) -> dict[str, str] 
     if matched_path:
         result["artifact_path"] = matched_path
     return result
+
+
+def _append_address_review_if_applicable(
+    *,
+    root: str | Path,
+    year: str | int,
+    queue_id: str,
+    object_ref: dict[str, str] | None,
+    verdict_payload: dict[str, Any],
+    cells: list[dict[str, Any]],
+    store_path: str | Path,
+) -> None:
+    """Mirror generated-cell verdicts into the durable address ledger."""
+    if not object_ref or not cells:
+        return
+    address = str(object_ref.get("object_id") or "")
+    cell = next((item for item in cells if str(item.get("address_id") or "") == address), None)
+    if cell is None:
+        return
+    judgement = str(verdict_payload.get("verdict") or "")
+    comment = verdict_payload.get("comment")
+    append_address_verdict(
+        root=root,
+        year=year,
+        address=address,
+        label=str(cell.get("display_name") or cell.get("official_ref") or address),
+        expression=cell.get("expression"),
+        form_citations=[item.get("quoted_text") for item in cell.get("form_citations", []) or []],
+        instruction_citations=[item.get("quoted_text") for item in cell.get("instruction_citations", []) or []],
+        judgement=judgement,
+        reviewer_id=str(verdict_payload.get("reviewer_id") or ""),
+        reviewed_at=verdict_payload.get("reviewed_at"),
+        verdict_id=str(verdict_payload.get("verdict_id") or ""),
+        store_path=store_path,
+        provenance={
+            "queue_id": queue_id,
+            "generated_model": cell.get("generated_model"),
+            "generated_provider": cell.get("generated_provider"),
+            "review_source": cell.get("review_source"),
+        },
+        comment=str(comment) if comment is not None else None,
+    )
 
 
 def _evidence_matches(

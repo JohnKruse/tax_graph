@@ -25,6 +25,61 @@ entries: D4, D6, D9, D11, and the exact RAN/NOT RUN evidence rule. No draft prom
 hand-authoring, live graph edit, rollover implementation, review-contract change, UI change, or
 operation-enum change is in scope.
 
+**Worker session checkpoint - M20-S15 implementation (2026-07-30):** Global canary: Ledger
+Llama. Phase canary: Ground Truth. Model: GPT-5 Codex; effort/quota/context indicators are not
+exposed by this environment. John gave go via the current task request. Single declared step:
+fix the geometry outline's lettered sub-lines, make instruction-span ownership contextual, and
+put the generated draft cells and verdict/comment controls in the review surface. Applicable
+defect-ledger entries: D4, D5, D6, D9, D11, and the exact RAN/NOT RUN evidence rule. Declared
+focused files: the outline tests, generated-review tests, review-verdict tests, workbench API
+write/cell tests, workbench boundary tests, and any authored browser test. No draft promotion,
+hand-authored expression/citation, live graph edit, or push is in scope.
+
+**M20-S15 implementation result (2026-07-30):** The geometry header classifier now preserves
+lettered rows whose captions mention a section. The outline-first micro prompt receives a
+bounded neighboring form-line window, and instruction bodies inherit only their nearest
+explicit line heading. Draft-only regeneration produced Form 1040 `17/17` complete, Schedule
+1 `2/4` complete with explicit unresolved-source gaps for lines `2` and `19`, and Schedule A
+`7/7` complete. Wrong-owner instruction spans fell from the prior `146` total to `139`
+(`88` Form 1040, `37` Schedule 1, `14` Schedule A). No live graph artifact was edited.
+
+**M20-S15 generated review surface (2026-07-30):** RAN: generated workbench projection ->
+`17 + 4 + 7 = 28` draft-only formula cells, each carrying resolved model
+`google/gemini-3.6-flash` and provider `Google AI Studio`. The right pane keeps the generated
+expression, form-face citation slot, instruction-page citation slot, provenance, reviewer id,
+comment, and the four verdict controls together. `POST /api/verdicts` accepts the optional
+comment and mirrors generated address verdicts into the append-only JSONL ledger without
+including the comment in `content_fingerprint`.
+
+**M20-S15 browser verification (2026-07-30):** RAN in the local in-app browser against the
+workbench server. Selected Form 1040 generated cell `1z`, confirmed the expression, separate
+source slots, model/provider provenance, and enabled `Confirm`, `Pipeline defect`, `Source
+pathology`, and `Save and next` controls. Entered reviewer `john` and comment `Generated
+formula source is clear; confirming for pipeline review.` and submitted `Confirm`. The real
+record landed at `review_verdicts/2025/address_verdicts.jsonl`; the review surface screenshot
+was captured in the session.
+
+**M20-S15 final focused-test evidence (2026-07-30):** RAN: `$testRoot =
+'C:\Users\devbox\.codex\visualizations\2026\07\30\019fb4c9-2688-7903-a6dd-abd1329cbfd0\m20_s15_tests_final';
+New-Item -ItemType Directory -Force -Path $testRoot | Out-Null; $env:PYTEST_DEBUG_TEMPROOT =
+$testRoot; & .venv\Scripts\python.exe -m pytest tests/test_extract_outline_m4.py
+tests/test_generated_review_m20.py tests/test_review_verdicts_m20.py
+tests/test_workbench_cells_api_m17.py tests/test_workbench_write_api_m15.py
+tests/test_workbench_m15.py tests/test_form_completeness_m20.py tests/test_llm_attribution_m20.py
+tests/test_draft_route_m20.py tests/test_batch_extraction_m10.py
+tests/test_schedule_d_extraction_m9.py tests/test_nversion_m8.py tests/test_tables_detector_m6b.py
+tests/test_cli.py -q` -> 69 passed, 1 skipped, 1 warning in 289.90s. Every declared focused
+file is covered by this exact command; no browser e2e file was authored.
+
+**M20-S15 final machine evidence (2026-07-30):** RAN: `& .venv\Scripts\python.exe
+tools/check_ascii.py` -> ASCII check OK; `git diff --check` -> exit 0; module-form
+`tax_graph.cli validate 2025` -> graph integrity OK, documents=18, nodes=441, tables=2,
+edges=409, rules=17, citations=401; module-form `workbench.cli --root . --year 2025 preflight`
+-> exit 0, entries=18, units=2224, derived cells=2120, review_gap=591, unreviewed=1529,
+legacy_mined=394; direct strict citation report -> checked=401, strict_mismatches=36.
+Protected `graph/2025/{nodes,edges,rules}/` diff is empty. One local commit contains this
+implementation and the durable review verdict; no push was performed.
+
 **M20-S14 final focused-test evidence (2026-07-30):** RAN: `$testRoot =
 'C:\Users\devbox\.codex\visualizations\2026\07\30\019fb499-a143-7863-b5f8-8429b9be8574\m20_s14_tests_final_r2';
 New-Item -ItemType Directory -Force -Path $testRoot | Out-Null; $env:PYTEST_DEBUG_TEMPROOT =

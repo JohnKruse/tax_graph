@@ -164,7 +164,7 @@ def _formula_prompt(
 ) -> str:
     form_spans = [span for span in spans if span.relationship == "source"]
     instruction_spans = [span for span in spans if span.relationship != "source"]
-    rendered_form = "\n".join(span.text for span in form_spans[:1]) or "(not available)"
+    rendered_form = "\n".join(span.text for span in form_spans[:40]) or "(not available)"
     rendered_instructions = "\n".join(span.text for span in instruction_spans[:6]) or "(not available)"
     return "\n".join(
         [

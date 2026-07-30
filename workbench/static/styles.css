@@ -173,6 +173,15 @@ h1, h2, h3, p { margin-top: 0; }
 .instruction-reason { color: var(--muted); }
 .cell-computation { margin-top: 8px; padding: 8px 10px; border-left: 3px solid var(--accent); background: var(--accent-soft); border-radius: 4px; }
 .cell-computation ul { margin: 4px 0; padding-left: 18px; }
+.generated-expression { border-color: #84aaa4; }
+.generated-provenance, .generated-status { margin: 4px 0; color: var(--muted); font-size: 10px; }
+.generated-verdict label { display: grid; gap: 4px; margin-top: 7px; color: var(--muted); font-size: 10px; font-weight: 700; }
+.generated-verdict input, .generated-verdict textarea { width: 100%; box-sizing: border-box; padding: 6px; border: 1px solid var(--line); border-radius: 4px; color: var(--ink); background: #fff; font: inherit; font-weight: 400; }
+.verdict-controls { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 5px; margin-top: 8px; }
+.verdict-button { padding: 6px; border: 1px solid var(--accent); border-radius: 4px; color: var(--accent); background: #fff; font-size: 10px; font-weight: 700; cursor: pointer; }
+.verdict-button:hover, .verdict-button:focus-visible { color: #fff; background: var(--accent); }
+.verdict-defect { border-color: #875a05; color: #875a05; }
+.verdict-pathology { border-color: var(--danger); color: var(--danger); }
 .empty-evidence { margin: 4px 0; color: var(--muted); font-size: 11px; }
 .drawer-heading { display: flex; align-items: start; justify-content: space-between; gap: 8px; }
 .drawer-heading h2 { margin: 3px 0 5px; font-family: Georgia, serif; font-size: 17px; }
@@ -221,10 +230,7 @@ h1, h2, h3, p { margin-top: 0; }
 .semantic-kind { color: var(--accent); font-size: 9px; font-weight: 800; letter-spacing: .09em; text-transform: uppercase; }
 .semantic-summary { margin-top: 2px; font-size: 11px; }
 
-.verdict-bar { display: grid; gap: 4px; margin-top: 12px; padding-top: 10px; border-top: 1px solid #46616a; font-size: 10px; }
-.verdict-bar strong { color: #fff; }
-.verdict-bar span { color: #acc7c4; }
-.verdict-bar button { padding: 5px; border: 1px solid #58737a; border-radius: 4px; color: #acc7c4; background: transparent; font-size: 10px; cursor: not-allowed; }
+.verdict-bar { margin-top: 12px; padding-top: 10px; border-top: 1px solid #46616a; color: #acc7c4; font-size: 10px; line-height: 1.35; }
 
 @media (max-width: 1160px) {
   .workspace { grid-template-columns: 235px minmax(0, 1fr); }

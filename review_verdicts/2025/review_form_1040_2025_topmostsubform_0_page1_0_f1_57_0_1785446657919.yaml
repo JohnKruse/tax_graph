@@ -1,0 +1,13 @@
+verdict_id: review_form_1040_2025_topmostsubform_0_page1_0_f1_57_0_1785446657919
+tax_year: 2025
+queue_id: form_1040_2025
+manifest_hash: f8147c4d107c230a4d6731c85f5e2d6eedbb46df7a934f9a292226e007b2a38e
+reviewer_id: john
+reviewed_at: '2026-07-30T21:24:17Z'
+human_minutes: 0.0
+verdict: confirmed
+object_ref:
+  object_id: 2025/document=form_1040/line=1z/control=amount
+  object_kind: addresss
+comment: Generated formula source is clear; confirming for pipeline review.
+content_hash: 464a3a97d24df26c10fc2a7fcb6a72b1556039cfecd1db75fef43b4f2fe1f4f7

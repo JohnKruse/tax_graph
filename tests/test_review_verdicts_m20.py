@@ -56,6 +56,28 @@ def test_fingerprint_survives_whitespace_dashes_and_quotes() -> None:
     assert first == second
 
 
+def test_comment_is_review_metadata_not_content_identity(tmp_path: Path) -> None:
+    common = {
+        "root": tmp_path,
+        "year": 2025,
+        "address": "2025/document=form_a/line=1/control=amount",
+        "label": "Amount",
+        "cited_text": ["Enter amount."],
+        "reviewer_id": "john",
+        "reviewed_at": "2026-07-29T10:00:00Z",
+    }
+    first = append_address_verdict(
+        **common, verdict_id="comment_identity_without", store_path=tmp_path / "one.jsonl",
+    )
+    second = append_address_verdict(
+        **common, verdict_id="comment_identity_with", comment="Needs a second look.",
+        store_path=tmp_path / "two.jsonl",
+    )
+    assert first["content_fingerprint"] == second["content_fingerprint"]
+    assert "comment" not in first
+    assert second["comment"] == "Needs a second look."
+
+
 def test_fingerprint_binds_expression_and_normalizes_equivalent_operands() -> None:
     first_expression = {
         "kind": "sum",

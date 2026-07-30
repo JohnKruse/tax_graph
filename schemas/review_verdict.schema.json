@@ -24,6 +24,7 @@
     "human_minutes": {"type": "number", "minimum": 0},
     "verdict": {"enum": ["confirmed", "pipeline_defect", "source_pathology"]},
     "reason": {"type": "string"},
+    "comment": {"type": "string"},
     "source_override": {
       "type": "object",
       "additionalProperties": false,

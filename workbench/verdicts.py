@@ -39,6 +39,7 @@ def emit_verdict(
     reason: str | None = None,
     object_ref: dict[str, str] | None = None,
     source_override: dict[str, Any] | None = None,
+    comment: str | None = None,
     output_path: str | Path | None = None,
 ) -> ReviewVerdict:
     """Write one new verdict file; never overwrite an existing verdict."""
@@ -58,6 +59,8 @@ def emit_verdict(
         payload["reason"] = reason
     if source_override:
         payload["source_override"] = dict(source_override)
+    if comment is not None and str(comment).strip():
+        payload["comment"] = str(comment).strip()
     payload["content_hash"] = verdict_content_hash(payload)
     validate_verdict(payload, schema_path=Path(root).resolve() / "schemas" / "review_verdict.schema.json")
 

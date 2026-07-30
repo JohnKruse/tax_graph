@@ -161,6 +161,40 @@ function citationMarkup(citations) {
   }).join("");
 }
 
+function generatedExpressionMarkup(cell) {
+  const expression = cell.expression && typeof cell.expression === "object"
+    ? cell.expression
+    : {};
+  const operands = Array.isArray(expression.operands) ? expression.operands : [];
+  const operandMarkup = operands.length
+    ? `<ul class="operand-list">${operands.map((item) =>
+      `<li><code>${escapeHtml(item.node_id || "unresolved")}</code>` +
+      (item.role ? ` <span>${escapeHtml(item.role)}</span>` : "") +
+      `</li>`
+    ).join("")}</ul>`
+    : '<p class="not-authored">No generated operands.</p>';
+  return `<p><strong>Operation:</strong> ${authored(cell.operation)}</p>` +
+    `<p>${authored(expression.description || cell.review_gap || "")}</p>` +
+    `<p><strong>Operands:</strong></p>${operandMarkup}`;
+}
+
+function generatedVerdictMarkup(cell) {
+  if (!cell.generated) return "";
+  return `<section class="dossier-group generated-verdict" data-generated-cell="${escapeHtml(cell.cell_id)}">` +
+    `<h3>Pipeline review</h3>` +
+    `<p class="generated-provenance"><strong>Generated draft:</strong> ${escapeHtml(cell.generated_model || "unknown model")} / ${escapeHtml(cell.generated_provider || "unknown provider")}</p>` +
+    `<p class="generated-status"><strong>Status:</strong> ${escapeHtml(cell.generated_status || "review_gap")}</p>` +
+    `<label>Reviewer id<input class="verdict-reviewer" type="text" placeholder="Your reviewer id" autocomplete="off"></label>` +
+    `<label>Comment<textarea class="verdict-comment" rows="3" placeholder="Optional for confirmation; required for a defect or source pathology"></textarea></label>` +
+    `<div class="verdict-controls" role="group" aria-label="Generated cell verdict">` +
+      `<button type="button" class="verdict-button verdict-confirm" data-verdict="confirmed">Confirm</button>` +
+      `<button type="button" class="verdict-button verdict-defect" data-verdict="pipeline_defect">Pipeline defect</button>` +
+      `<button type="button" class="verdict-button verdict-pathology" data-verdict="source_pathology">Source pathology</button>` +
+      `<button type="button" class="verdict-button verdict-next" data-verdict="confirmed">Save and next</button>` +
+    `</div>` +
+    `</section>`;
+}
+
 function renderDetail(detail, cell, cells) {
   detail.replaceChildren();
   const heading = document.createElement("div");
@@ -180,17 +214,21 @@ function renderDetail(detail, cell, cells) {
   const body = document.createElement("div");
   body.className = "cell-dossier";
   const facets = policyFacets(cell);
-  body.innerHTML =
-    `<section class="dossier-group human-dossier">` +
-      `<h3>What the form instructions say</h3>` +
-      `<div class="cell-instruction">${instructionMarkup(cell)}</div>` +
-    `</section>` +
-    `<section class="dossier-group authority"><h3>Authority</h3>${citationMarkup(cell.citations)}</section>` +
-    `<section class="dossier-group human-dossier">` +
-      `<h3>How this is filled</h3>` +
-      `<div class="cell-computation"><p>${fillExplanationMarkup(cell)}</p>` +
-      `<p><strong>Coverage:</strong> ${authored(facets.coverage)}</p></div>` +
-    `</section>`;
+  body.innerHTML = cell.generated
+    ? `<section class="dossier-group generated-expression"><h3>Generated expression</h3>${generatedExpressionMarkup(cell)}</section>` +
+      `<section class="dossier-group authority"><h3>Form face source</h3>${citationMarkup(cell.form_citations || cell.citations)}</section>` +
+      `<section class="dossier-group human-dossier"><h3>Instruction page source</h3><div class="cell-instruction">${instructionMarkup(cell)}</div></section>` +
+      generatedVerdictMarkup(cell)
+    : `<section class="dossier-group human-dossier">` +
+        `<h3>What the form instructions say</h3>` +
+        `<div class="cell-instruction">${instructionMarkup(cell)}</div>` +
+      `</section>` +
+      `<section class="dossier-group authority"><h3>Authority</h3>${citationMarkup(cell.citations)}</section>` +
+      `<section class="dossier-group human-dossier">` +
+        `<h3>How this is filled</h3>` +
+        `<div class="cell-computation"><p>${fillExplanationMarkup(cell)}</p>` +
+        `<p><strong>Coverage:</strong> ${authored(facets.coverage)}</p></div>` +
+      `</section>`;
 
   const technical = document.createElement("details");
   technical.className = "technical-record";
@@ -226,6 +264,22 @@ function renderDetail(detail, cell, cells) {
     ]);
 
   detail.append(heading, body, technical);
+  body.querySelectorAll("[data-verdict]").forEach((button) => {
+    button.addEventListener("click", () => {
+      const reviewer = body.querySelector(".verdict-reviewer")?.value.trim() || "";
+      const comment = body.querySelector(".verdict-comment")?.value.trim() || "";
+      detail.dispatchEvent(new CustomEvent("workbench:submit-verdict", {
+        bubbles: true,
+        detail: {
+          cell,
+          verdict: button.dataset.verdict,
+          comment,
+          reviewerId: reviewer,
+          advance: button.classList.contains("verdict-next"),
+        },
+      }));
+    });
+  });
   headingTitle.focus({preventScroll: true});
 }
 

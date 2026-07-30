@@ -28,7 +28,8 @@
     "reviewer_id": {"type": "string", "minLength": 1},
     "reviewed_at": {"type": "string", "format": "date-time"},
     "reviewed_at_epoch": {"type": "integer"},
-    "provenance": {"type": "object", "additionalProperties": true}
+    "provenance": {"type": "object", "additionalProperties": true},
+    "comment": {"type": "string"}
   },
   "$defs": {
     "object_ref": {

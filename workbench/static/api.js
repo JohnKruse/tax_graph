@@ -66,3 +66,19 @@ export async function saveDocumentSession(documentId, payload) {
   if (!response.ok) throw new Error(result.error || `Save failed: ${response.status}`);
   return result;
 }
+
+export async function submitVerdict(payload) {
+  const token = document.querySelector('meta[name="workbench-write-token"]')?.content || "";
+  const response = await fetch("/api/verdicts", {
+    method: "POST",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+      "X-Workbench-Token": token,
+    },
+    body: JSON.stringify(payload),
+  });
+  const result = await response.json().catch(() => ({}));
+  if (!response.ok) throw new Error(result.error || `Verdict failed: ${response.status}`);
+  return result;
+}

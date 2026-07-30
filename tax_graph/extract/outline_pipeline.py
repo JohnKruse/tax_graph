@@ -59,6 +59,7 @@ def generate_outline_first_drafts(
         "review_gaps": [],
     }
     line_index = _outline_line_index(document.document_id, outline.children)
+    instruction_owners = _instruction_owner_map(spans)
     for outline_node in _formula_outline_nodes(outline.children, document_id=document.document_id):
         node_spans = _spans_for_outline_node(
             document,
@@ -66,9 +67,10 @@ def generate_outline_first_drafts(
             spans,
             document_id=document.document_id,
             table_mode=outline_node.kind in {"transaction_table", "totals"},
+            instruction_owners=instruction_owners,
         )
         target_cell_id = _outline_node_id(document.document_id, outline_node)
-        wrong_owner_spans = _wrong_owner_instruction_spans(outline_node, spans)
+        wrong_owner_spans = _wrong_owner_instruction_spans(outline_node, spans, instruction_owners)
         if wrong_owner_spans:
             micro_stats["wrong_owner_instruction_span_count"] += len(wrong_owner_spans)
             micro_stats["wrong_owner_instruction_addresses"].append(target_cell_id)
@@ -81,6 +83,9 @@ def generate_outline_first_drafts(
             "has_verbatim_citation": False,
             "review_gap": "no expression produced",
             "wrong_owner_instruction_spans": len(wrong_owner_spans),
+            "instruction_span_ids": [
+                span.span_id for span in node_spans if span.relationship != "source"
+            ],
         }
         micro_stats["formula_cells"].append(cell_record)
         plan = _deterministic_schedule_d_formula_plan(document, outline_node, node_spans)
@@ -318,6 +323,7 @@ def _spans_for_outline_node(
     *,
     document_id: str = "",
     table_mode: bool = False,
+    instruction_owners: dict[str, str] | None = None,
 ) -> list[CandidateSpan]:
     """Select a small evidence packet for one micro-extraction prompt."""
     selected: list[CandidateSpan] = []
@@ -332,8 +338,14 @@ def _spans_for_outline_node(
             if span.relationship == "source":
                 continue
             lowered = span.text.lower()
-            if _instruction_span_belongs_to_line(span, node.line_anchor):
+            if _instruction_span_belongs_to_line(span, node.line_anchor, instruction_owners):
                 instruction_hits.append(span)
+        if source_span is not None:
+            source_spans = [span for span in spans if span.relationship == "source"]
+            source_index = source_spans.index(source_span) if source_span in source_spans else -1
+            if source_index >= 0:
+                context = source_spans[max(0, source_index - 20): source_index + 21]
+                selected.extend(span for span in context if span not in selected)
         selected.extend(instruction_hits[:3])
     if table_mode and node.columns:
         column_terms = [f"({column})" for column in node.columns]
@@ -362,7 +374,11 @@ def _direct_line_evidence(text: str, anchor: str) -> bool:
     return any(token in lowered for token in direct_tokens)
 
 
-def _instruction_span_belongs_to_line(span: CandidateSpan, anchor: str) -> bool:
+def _instruction_span_belongs_to_line(
+    span: CandidateSpan,
+    anchor: str,
+    instruction_owners: dict[str, str] | None = None,
+) -> bool:
     """Accept an instruction span only when its own entry is this line.
 
     Mentioning a line in a different line's instructions is not ownership. The
@@ -370,7 +386,7 @@ def _instruction_span_belongs_to_line(span: CandidateSpan, anchor: str) -> bool:
     1z because it mentioned 1z. Explicit headings and table-row prefixes are
     the deterministic ownership signals; a bare mention remains excluded.
     """
-    owner = _explicit_instruction_owner(span.text)
+    owner = (instruction_owners or {}).get(span.span_id) or _explicit_instruction_owner(span.text)
     if owner != anchor.lower():
         return False
     return _direct_line_evidence(span.text, anchor) or owner == anchor.lower()
@@ -391,7 +407,42 @@ def _explicit_instruction_owner(text: str) -> str | None:
     return None
 
 
-def _wrong_owner_instruction_spans(node: OutlineNode, spans: list[CandidateSpan]) -> list[CandidateSpan]:
+def _instruction_owner_map(spans: list[CandidateSpan]) -> dict[str, str]:
+    """Assign each instruction body to its nearest explicit line heading.
+
+    Instruction documents commonly put a line heading on one span and the
+    actual prose on following spans.  A mention-only join treated every such
+    prose span as belonging to every line it mentioned.  Carrying the heading
+    owner forward preserves the source's local structure while resetting at a
+    non-line Markdown heading or at a new related document.
+    """
+    owners: dict[str, str] = {}
+    current_document = ""
+    current_owner: str | None = None
+    for span in spans:
+        if span.relationship == "source":
+            continue
+        if span.document_id != current_document:
+            current_document = span.document_id
+            current_owner = None
+        explicit = _explicit_instruction_owner(span.text)
+        if explicit:
+            current_owner = explicit
+            owners[span.span_id] = explicit
+            continue
+        if re.match(r"^\s*#{1,6}\s*", span.text):
+            current_owner = None
+            continue
+        if current_owner:
+            owners[span.span_id] = current_owner
+    return owners
+
+
+def _wrong_owner_instruction_spans(
+    node: OutlineNode,
+    spans: list[CandidateSpan],
+    instruction_owners: dict[str, str] | None = None,
+) -> list[CandidateSpan]:
     """Find instruction mentions that were previously eligible but are not owned."""
     anchor = str(node.line_anchor or "").lower()
     if not anchor:
@@ -403,7 +454,7 @@ def _wrong_owner_instruction_spans(node: OutlineNode, spans: list[CandidateSpan]
             continue
         if not _direct_line_evidence(span.text, anchor):
             continue
-        owner = _explicit_instruction_owner(span.text)
+        owner = (instruction_owners or {}).get(span.span_id) or _explicit_instruction_owner(span.text)
         if owner != anchor:
             wrong.append(span)
     return wrong
