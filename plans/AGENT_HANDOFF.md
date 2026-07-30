@@ -1395,8 +1395,15 @@ the instruction slot; Authority explicitly reports missing authored coverage; do
 citation coverage is visible beside policy counts; and the dossier heading duplication/order
 warts are fixed. No promoted artifacts, graph semantics, verdicts, or citation records changed.
 
-**BALL: WORKER - M20-S11 (try `x-ai/grok-4.5`; if it fails, FALL BACK TO PINNED FLASH IN THE
-SAME SESSION and get the number either way). Task block under From Architect. S10 is ACCEPTED
+**BALL: WORKER - M20-S12 (derive expressions through the PER-CELL MICRO PATH, then measure).
+Task block under From Architect. S11 is ACCEPTED at `fb8d87f` - its diagnosis is the most
+valuable finding of the day: the whole-document generator was the wrong-shaped call, and the
+correctly-scoped per-cell path (`tax_graph_micro_formula`) already exists in the outline-first
+pipeline. SIX ROUNDS have now produced no valid number. This round has ONE deliverable: the
+number. Model and provider problems are handled by falling back, never by stopping.**
+
+**Superseded (kept as history):** BALL: WORKER - M20-S11 (try `x-ai/grok-4.5`; if it fails,
+FALL BACK TO PINNED FLASH IN THE SAME SESSION and get the number either way). S10 is ACCEPTED
 at `4c40375` - Architect re-verified: 58 tests green, protected set byte-identical, gates green,
 provider routing genuinely works. But S10 produced NO NUMBER: Decart returned
 `502 Upstream error`, after Baidu had returned `finish_reason=error`. Three rounds have now
@@ -3349,7 +3356,67 @@ TY2026 docs drop.
 
 ## From Architect
 
-- **M20-S11 TASK - GET THE NUMBER. TRY GROK, FALL BACK TO FLASH, DO NOT COME BACK EMPTY
+- **M20-S12 TASK - DERIVE EXPRESSIONS THROUGH THE PER-CELL MICRO PATH, THEN MEASURE
+  (Architect, Claude Opus 5, 2026-07-30). John's go.** Ledger: the exact RAN/NOT RUN evidence
+  rule, and D9.
+  **READ THIS FIRST - IT IS WHY SIX ROUNDS FAILED.** S7-S11 each chased the previous symptom:
+  a join failure, then an "empty prompt", then a provider, then truncation. **The actual defect
+  was the SHAPE OF THE CALL.** The `expression_mode=generator` branch sends the whole rendered
+  document, field grid, links, related sources, and schema summary in ONE prompt and asks for
+  every graph kind back at once - which pinned the response at 23,911 / 23,937 completion
+  tokens against a 24,000 cap. Raising the cap (which the Architect specced) treated the
+  symptom. **The correctly-scoped call already exists**: the outline-first pipeline's
+  `tax_graph_micro_formula` carries ONE node and its candidate spans. The generator branch was
+  calling the whole-document route redundantly on top of it.
+  **THIS IS ALSO EXACTLY WHAT JOHN DESCRIBED ON 2026-07-30:** for a cell, collect that cell's
+  instructions from the form and the instruction PDF, then construct the expression against a
+  bounding schema. Per cell. That is the simple, valid, reliable shape, and the code already
+  had it.
+  1. **STEP 1 - ROUTE EXPRESSION DERIVATION THROUGH THE MICRO PATH. Do NOT use the
+     whole-document generator for expressions at all.** One call per formula-bearing cell,
+     carrying only: that cell's label and address, its citations / candidate spans (form face
+     AND instruction page), the closed operation enum, and the addressable operand candidates
+     on that form. It returns ONLY the expression - operation plus operand refs. Everything
+     else (nodes, citations, structure) continues to come from the deterministic outline path,
+     which S11 proved runs clean: exit 0 in 8.4s with zero LLM calls.
+  2. **STEP 2 - PER-CELL FAILURE ISOLATION.** A failed cell is recorded and skipped; it must
+     NEVER fail the document or the run. Report `cells_attempted`, `cells_succeeded`,
+     `cells_failed`, and the failure reasons grouped by kind. This is the property the
+     whole-document call could never have: one bad cell cost us the entire form.
+  3. **STEP 3 - `max_tokens` IS NOW A CANARY, NOT A DIAL.** Keep `micro_max_tokens` bounded at
+     4000. **If a per-cell call needs more than that, the scoping is wrong again - STOP AND
+     REPORT rather than raising it.** Do not raise the cap to make a call fit. That mistake is
+     what produced this round.
+  4. **STEP 4 - `form_1040_2025` FIRST, then all 15.** Report calls, successes, failures,
+     tokens, cost, resolved model and resolved provider for the single form; then run the 15
+     manifest forms draft-only and `verify expression-agreement`.
+     **Report COVERAGE and ACCURACY separately - do not collapse them.** State which model
+     produced the number. **Report honestly even if it is bad.**
+  5. **MODEL/PROVIDER TROUBLE IS HANDLED BY FALLING BACK, NEVER BY STOPPING.** Do not hard-pin
+     a provider. If the configured model fails for any provider-side reason, switch to a pinned
+     CONCRETE alternative (a specific Flash version, not a `~...-latest` alias) and continue,
+     recording that the fallback fired and why. **Coming back without a number is the failure
+     mode of this round.**
+  6. **What this round does NOT do.** No prompt tuning for quality beyond what the per-cell
+     scope requires. No operation-enum change. No draft promotion. No hand-authoring. No live
+     graph edit. No rollover implementation. No review UI; S6-2 stays parked. Review/verdict
+     contract still FROZEN. Do not loosen `strict_schema` or `require_parameters` to force a
+     route - switch models instead.
+  **PROTECTED TEST SET, unchanged hard gate:** `graph/2025/{nodes,edges,rules}/` byte-identical
+  at round end; `git diff --stat` on those three directories EMPTY.
+  Tier 3. Declared files plus honest `RAN:`/`NOT RUN:`. ASCII, `git diff --check`, module-form
+  `validate 2025`, real preflight with `legacy_mined` explicit (expect **394**),
+  `check_citation_integrity` STRICT (expect **36**). Short pytest temp root; no `--basetemp`.
+  ONE local commit; no push. Cite the ACTUAL commit hash in your notes.
+  **Stop conditions - deliberately minimal:** any diff in `graph/2025/{nodes,edges,rules}/`;
+  any draft promoted; collapsing coverage and accuracy; loosening `strict_schema` or
+  `require_parameters`; a per-cell call needing more than 4000 response tokens (step 3);
+  `legacy_mined` above 394; strict mismatches above 36. **A model or provider failure is NOT a
+  stop condition - that is what step 5 is for.** Cost is not a constraint at this scale, but
+  per-cell calls should be small; if the 1040 run's cost looks wildly out of line with ~$0.65
+  for a whole 15-form Flash run, report it before running all 15.
+
+- **M20-S11 TASK (COMPLETE, accepted at `fb8d87f`; produced no number, but diagnosed the real defect) - GET THE NUMBER. TRY GROK, FALL BACK TO FLASH, DO NOT COME BACK EMPTY
   (Architect, Claude Opus 5, 2026-07-30). John's go: `x-ai/grok-4.5`, he reports it is a good
   buy.** Ledger: the exact RAN/NOT RUN evidence rule, and D9.
   **WHY THIS ROUND IS SHAPED DIFFERENTLY.** S9b, S10, and S9 all ended with no measurement
