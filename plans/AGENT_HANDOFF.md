@@ -14,6 +14,51 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## Current state (2026-07-30)
 
+**Worker session checkpoint - M20-S14 implementation (2026-07-30):** Global canary: Ledger
+Llama. Phase canary: Ground Truth. Model: GPT-5 Codex; effort/quota/context indicators are not
+exposed by this environment. John gave go via the current task request. Single declared step:
+retire the handcrafted expression set as a score while retaining its diff as a review flag,
+measure completeness against all formula-bearing lines, complete Form 1040, Schedule 1, and
+Schedule A through draft-only generation with explicit review gaps, fix instruction-span
+ownership, and resolve printed line references deterministically. Applicable defect-ledger
+entries: D4, D6, D9, D11, and the exact RAN/NOT RUN evidence rule. No draft promotion,
+hand-authoring, live graph edit, rollover implementation, review-contract change, UI change, or
+operation-enum change is in scope.
+
+**M20-S14 final focused-test evidence (2026-07-30):** RAN: `$testRoot =
+'C:\Users\devbox\.codex\visualizations\2026\07\30\019fb499-a143-7863-b5f8-8429b9be8574\m20_s14_tests_final_r2';
+New-Item -ItemType Directory -Force -Path $testRoot | Out-Null; $env:PYTEST_DEBUG_TEMPROOT =
+$testRoot; & .venv\Scripts\python.exe -m pytest tests/test_extract_outline_m4.py
+tests/test_form_completeness_m20.py tests/test_llm_attribution_m20.py tests/test_draft_route_m20.py
+tests/test_batch_extraction_m10.py tests/test_schedule_d_extraction_m9.py tests/test_nversion_m8.py
+tests/test_tables_detector_m6b.py tests/test_cli.py -q` -> 40 passed, 1 skipped, 1 warning in
+96.28s. Every declared focused file is covered by this exact command. The initial plain pytest
+attempt is NOT RUN as evidence because the repository `.test_tmp` root failed with WinError 5;
+the final command used the writable per-session `PYTEST_DEBUG_TEMPROOT` without `--basetemp`.
+
+**M20-S14 final live measurement (2026-07-30):** RAN, with approved network execution, one
+exact module-form draft-only command each for `form_1040_2025`, `schedule_1_2025`, and
+`schedule_a_2025`, followed by `& .venv\Scripts\python.exe -m tax_graph.cli verify
+form-completeness --year 2025 --root .`. All three run envelopes ended success. The report
+`output/m20_s14_form_completeness.yaml` measures 24/28 formula cells complete (expression plus
+verbatim citation): Form 1040 17/17, Schedule 1 0/4 with four explicit unresolved-line review
+gaps (`8n`, `2`, `24f`, `19`), and Schedule A 7/7. There were zero expression-without-citation
+cells. All successful calls resolved to `google/gemini-3.6-flash` via Google AI Studio. The
+handcrafted comparison remains under `handcrafted_diff.flag_only: true` and is not an accuracy
+score. The final per-form telemetry is: Form 1040 17 calls, 11,642 total tokens, cost
+0.070221; Schedule 1 4 calls, 2,989 total tokens, cost 0.0172335; Schedule A 7 calls, 3,669
+total tokens, cost 0.0217455.
+
+**M20-S14 final machine gates (2026-07-30):** RAN after the final code and draft measurement:
+`& .venv\Scripts\python.exe tools/check_ascii.py` -> ASCII check OK; `git diff --check` ->
+exit 0; module-form `tax_graph.cli validate 2025` -> graph integrity OK, documents=18,
+nodes=441, tables=2, edges=409, rules=17, citations=401; module-form
+`workbench.cli --root . --year 2025 preflight` -> exit 0, entries=18, units=2224,
+derived cells=2120, review_gap=591, unreviewed=1529, legacy_mined=394; strict citation
+report -> checked=401, strict_mismatches=36. Protected `graph/2025/{nodes,edges,rules}/`
+diff is empty. One local commit contains the implementation, focused tests, report tooling, and
+this evidence; no push.
+
 **Worker session checkpoint - M20-S13 implementation (2026-07-30):** Global canary: Ledger
 Llama. Phase canary: Ground Truth. Model: GPT-5 Codex; effort/quota/context indicators are not
 exposed by this environment. John gave go via the current task request. Single declared step:

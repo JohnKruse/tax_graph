@@ -115,6 +115,37 @@ def test_draft_metrics_and_provenance_record_resolved_call(tmp_path: Path):
     assert provenance[0]["resolved_provider"] == "Decart"
 
 
+def test_review_gaps_are_persisted_as_draft_sidecar(tmp_path: Path):
+    batch = ExtractionBatch(
+        document_id="form_1040_2025",
+        year="2025",
+        objects=[],
+        micro_stats={
+            "formula_cells": [
+                {
+                    "target_cell_id": "form_1040_2025_root_line_9",
+                    "line_anchor": "9",
+                    "status": "review_gap",
+                    "review_gap": "unresolved source line",
+                }
+            ],
+            "review_gaps": [
+                {
+                    "target_cell_id": "form_1040_2025_root_line_9",
+                    "line_anchor": "9",
+                    "status": "review_gap",
+                    "review_gap": "unresolved source line",
+                }
+            ],
+        },
+    )
+    routed = RoutedDrafts(accepted=[], review=[], issues=[])
+
+    written = write_routed_drafts(batch, routed, root=tmp_path)
+
+    assert yaml.safe_load((written.output_dir / "review_gaps.yaml").read_text(encoding="ascii"))[0]["line_anchor"] == "9"
+
+
 def _provider_response(*, prompt_tokens: int, finish_reason: str = "stop") -> dict:
     return {
         "model": "z-ai/glm-5.2",

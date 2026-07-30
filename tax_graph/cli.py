@@ -607,6 +607,28 @@ def verify_expression_agreement_command(
     return 0
 
 
+def verify_form_completeness_command(
+    year: str = "2025",
+    root: str | Path | None = None,
+    *,
+    documents: tuple[str, ...] = ("form_1040_2025", "schedule_1_2025", "schedule_a_2025"),
+) -> int:
+    """Write the form-completeness report and retain handcrafted diffs as flags."""
+    from tax_graph.verify.form_completeness import build_form_completeness_report, write_form_completeness_report
+
+    root_path = Path(root).resolve() if root is not None else project_root()
+    report = build_form_completeness_report(year=year, root=root_path, documents=documents)
+    path = write_form_completeness_report(report, root=root_path)
+    totals = report["totals"]
+    print(f"form completeness report: {path}")
+    print(
+        "  completeness: {expression_and_verbatim_citation}/{formula_cells} "
+        "({completeness_rate:.1%})".format(**totals)
+    )
+    print("  handcrafted expression set: review flag only")
+    return 0
+
+
 def verify_record_command(
     year: str = "2025",
     root: str | Path | None = None,
@@ -1367,6 +1389,16 @@ def _build_typer_app():
     ) -> None:
         """Compare generated expressions with the protected live graph."""
         raise_code = verify_expression_agreement_command(year=year, root=root)
+        if raise_code:
+            raise typer.Exit(raise_code)
+
+    @verify_cli.command("form-completeness")
+    def verify_form_completeness_cli(
+        year: str = typer.Option("2025", "--year", "-y", help="Tax year to report."),
+        root: Path | None = typer.Option(None, "--root", help="Project root override."),
+    ) -> None:
+        """Measure expressions plus verbatim citations against form cells."""
+        raise_code = verify_form_completeness_command(year=year, root=root)
         if raise_code:
             raise typer.Exit(raise_code)
 

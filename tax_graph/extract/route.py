@@ -113,6 +113,11 @@ def write_routed_drafts(
     _write_yaml(draft_dir / "provenance.yaml", [_provenance(obj) for obj in batch.objects])
     if batch.micro_stats:
         _write_yaml(draft_dir / "micro_extraction.yaml", batch.micro_stats)
+        review_gaps = batch.micro_stats.get("review_gaps", [])
+        if review_gaps:
+            _write_yaml(draft_dir / "review_gaps.yaml", review_gaps)
+        elif (draft_dir / "review_gaps.yaml").exists():
+            (draft_dir / "review_gaps.yaml").unlink()
     (draft_dir / "review.md").write_text(render_review(batch, routed), encoding="utf-8", newline="\n")
     write_metrics(draft_dir, build_metrics(batch, routed))
     if document is not None:

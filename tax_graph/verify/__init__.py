@@ -22,6 +22,7 @@ from tax_graph.verify.nversion import (
 )
 from tax_graph.verify.delta import DraftDelta, diff_drafts_against_live, render_delta
 from tax_graph.verify.metrics import build_metrics, collect_metrics, render_report, write_metrics
+from tax_graph.verify.form_completeness import build_form_completeness_report, write_form_completeness_report
 from tax_graph.verify.record import (
     build_verification_bundle,
     render_verification_page,

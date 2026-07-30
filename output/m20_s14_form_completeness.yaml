@@ -1,0 +1,168 @@
+schema_version: 1
+measurement: m20_s14_form_completeness
+tax_year: 2025
+primary_metric: expression_and_verbatim_citation_over_formula_cells
+handcrafted_expression_set:
+  status: review_flag_only
+  note: Disagreements are retained to direct human review; they are not scored as
+    accuracy.
+totals:
+  formula_cells: 28
+  expression_and_verbatim_citation: 24
+  completeness_rate: 0.8571428571428571
+by_document:
+  form_1040_2025:
+    formula_cells: 17
+    expression_and_verbatim_citation: 17
+    expression_without_citation: 0
+    neither_expression_nor_citation: 0
+    completeness_rate: 1.0
+    expression_without_citation_cells: []
+    review_gaps: []
+    wrong_owner_instruction_spans: 89
+    wrong_owner_instruction_addresses:
+    - form_1040_2025_root_line_11a
+    - form_1040_2025_root_line_11b
+    - form_1040_2025_root_line_14
+    - form_1040_2025_root_line_15
+    - form_1040_2025_root_line_18
+    - form_1040_2025_root_line_1z
+    - form_1040_2025_root_line_21
+    - form_1040_2025_root_line_22
+    - form_1040_2025_root_line_24
+    - form_1040_2025_root_line_25d
+    - form_1040_2025_root_line_34
+    - form_1040_2025_root_line_35a
+    - form_1040_2025_root_line_36
+    - form_1040_2025_root_line_37
+    - form_1040_2025_root_line_9
+    unresolved_line_refs: []
+    resolved_models:
+    - google/gemini-3.6-flash
+    resolved_providers:
+    - Google AI Studio
+    prompt_tokens: 2849
+    completion_tokens: 8793
+    total_tokens: 11642
+    cost: 0.070221
+    handcrafted_diff:
+      flag_only: true
+      note: The handcrafted set is a review-prioritization flag, not a grade.
+      counts:
+        expression_agreement: 2
+        extra_in_draft: 11
+        missing_in_draft: 14
+        operation_agreement_operands_differ: 3
+        operation_disagreement: 1
+  schedule_1_2025:
+    formula_cells: 4
+    expression_and_verbatim_citation: 0
+    expression_without_citation: 0
+    neither_expression_nor_citation: 4
+    completeness_rate: 0.0
+    expression_without_citation_cells: []
+    review_gaps:
+    - target_cell_id: schedule_1_2025_section_1_part_i_additional_income_line_9
+      line_anchor: '9'
+      label: 9 Total other income. Add lines 8a through 8z 9
+      status: review_gap
+      has_expression: false
+      has_verbatim_citation: false
+      review_gap: source line is not present in the deterministic outline index
+      wrong_owner_instruction_spans: 12
+    - target_cell_id: schedule_1_2025_section_1_part_i_additional_income_line_10
+      line_anchor: '10'
+      label: 10 Combine lines 1 through 7 and 9. This is your additional income. Enter
+        here and on Form 1040,
+      status: review_gap
+      has_expression: false
+      has_verbatim_citation: false
+      review_gap: source line is not present in the deterministic outline index
+      wrong_owner_instruction_spans: 14
+    - target_cell_id: schedule_1_2025_section_2_part_ii_adjustments_to_income_line_25
+      line_anchor: '25'
+      label: 25 Total other adjustments. Add lines 24a through 24z 25
+      status: review_gap
+      has_expression: false
+      has_verbatim_citation: false
+      review_gap: source line is not present in the deterministic outline index
+      wrong_owner_instruction_spans: 7
+    - target_cell_id: schedule_1_2025_section_2_part_ii_adjustments_to_income_line_26
+      line_anchor: '26'
+      label: 26 Add lines 11 through 23 and 25. These are your adjustments to income.
+        Enter here and on Form
+      status: review_gap
+      has_expression: false
+      has_verbatim_citation: false
+      review_gap: source line is not present in the deterministic outline index
+      wrong_owner_instruction_spans: 5
+    wrong_owner_instruction_spans: 38
+    wrong_owner_instruction_addresses:
+    - schedule_1_2025_section_1_part_i_additional_income_line_10
+    - schedule_1_2025_section_1_part_i_additional_income_line_9
+    - schedule_1_2025_section_2_part_ii_adjustments_to_income_line_25
+    - schedule_1_2025_section_2_part_ii_adjustments_to_income_line_26
+    unresolved_line_refs:
+    - code: unresolved_source_line
+      target_cell_id: schedule_1_2025_section_1_part_i_additional_income_line_9
+      source_line: 8n
+      candidates: []
+      reason: source line is not present in the deterministic outline index
+    - code: unresolved_source_line
+      target_cell_id: schedule_1_2025_section_1_part_i_additional_income_line_10
+      source_line: '2'
+      candidates: []
+      reason: source line is not present in the deterministic outline index
+    - code: unresolved_source_line
+      target_cell_id: schedule_1_2025_section_2_part_ii_adjustments_to_income_line_25
+      source_line: 24f
+      candidates: []
+      reason: source line is not present in the deterministic outline index
+    - code: unresolved_source_line
+      target_cell_id: schedule_1_2025_section_2_part_ii_adjustments_to_income_line_26
+      source_line: '19'
+      candidates: []
+      reason: source line is not present in the deterministic outline index
+    resolved_models:
+    - google/gemini-3.6-flash
+    resolved_providers:
+    - Google AI Studio
+    prompt_tokens: 864
+    completion_tokens: 2125
+    total_tokens: 2989
+    cost: 0.0172335
+    handcrafted_diff:
+      flag_only: true
+      note: The handcrafted set is a review-prioritization flag, not a grade.
+      counts:
+        missing_in_draft: 4
+  schedule_a_2025:
+    formula_cells: 7
+    expression_and_verbatim_citation: 7
+    expression_without_citation: 0
+    neither_expression_nor_citation: 0
+    completeness_rate: 1.0
+    expression_without_citation_cells: []
+    review_gaps: []
+    wrong_owner_instruction_spans: 19
+    wrong_owner_instruction_addresses:
+    - schedule_a_2025_section_1_schedule_a_itemized_deductions_line_3
+    - schedule_a_2025_section_1_schedule_a_itemized_deductions_line_4
+    - schedule_a_2025_section_1_schedule_a_itemized_deductions_line_5d
+    - schedule_a_2025_section_1_schedule_a_itemized_deductions_line_7
+    unresolved_line_refs: []
+    resolved_models:
+    - google/gemini-3.6-flash
+    resolved_providers:
+    - Google AI Studio
+    prompt_tokens: 962
+    completion_tokens: 2707
+    total_tokens: 3669
+    cost: 0.0217455
+    handcrafted_diff:
+      flag_only: true
+      note: The handcrafted set is a review-prioritization flag, not a grade.
+      counts:
+        extra_in_draft: 6
+        missing_in_draft: 4
+        operation_agreement_operands_differ: 1

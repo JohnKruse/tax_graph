@@ -172,12 +172,19 @@ def _steps_for_plan(
     for source_line in source_lines:
         source_id = _resolve_source_line(document, source_line, line_index=line_index)
         if source_id is None:
+            candidates = _line_ref_candidates(document, source_line, line_index=line_index)
+            code = "ambiguous_parent_source_line" if candidates else "unresolved_source_line"
             raise FormulaAssemblyFinding(
                 {
-                    "code": "unresolved_source_line",
+                    "code": code,
                     "target_cell_id": _canonical_target_id(document, outline_node),
                     "source_line": source_line,
-                    "reason": "source line is not present in the deterministic outline index",
+                    "candidates": candidates,
+                    "reason": (
+                        "bare source line is ambiguous because only lettered child lines exist"
+                        if candidates
+                        else "source line is not present in the deterministic outline index"
+                    ),
                 }
             )
         inputs.append({"name": source_id, "role": "addend"})
@@ -219,8 +226,11 @@ def _resolve_source_line(
     current_form = document.document_id.lower()
     normalized_form = re.sub(r"[^a-z0-9]+", "", form)
     normalized_current = re.sub(r"[^a-z0-9]+", "", current_form)
-    same_form_alias = "1040" in normalized_form and "1040" in normalized_current
-    if form in {"", current_form, current_form.removesuffix(f"_{document.year}"), current_form.removesuffix("_2025")} or same_form_alias:
+    current_stem = current_form.removesuffix(f"_{document.year}")
+    same_form_alias = normalized_form in {"", _compact(current_form), _compact(current_stem)}
+    if "form1040" in normalized_form and "form1040" in normalized_current:
+        same_form_alias = True
+    if same_form_alias:
         form = current_form
     elif not form.endswith(f"_{document.year}"):
         form = f"{form}_{document.year}"
@@ -232,6 +242,36 @@ def _resolve_source_line(
     if form == current_form and line_index is None:
         return _slug(f"{document.document_id}_root_line_{anchor}")
     return None
+
+
+def _line_ref_candidates(
+    document: SourceDocumentInput,
+    source_line: Any,
+    *,
+    line_index: dict[Any, str] | None,
+) -> list[str]:
+    """Return lettered children when a bare parent reference cannot be chosen."""
+    if not isinstance(source_line, (str, dict)):
+        return []
+    raw_form = source_line if isinstance(source_line, str) else source_line.get("form", "")
+    raw_anchor = source_line if isinstance(source_line, str) else source_line.get("line", "")
+    anchor = str(raw_anchor).strip().lower().removeprefix("line ").strip()
+    form = str(raw_form or document.document_id).strip().lower()
+    current_form = document.document_id.lower()
+    if _compact(form) in {_compact(current_form), _compact(current_form.removesuffix(f"_{document.year}"))}:
+        form = current_form
+    index = line_index or {}
+    candidates = [
+        value
+        for key, value in index.items()
+        if isinstance(key, tuple)
+        and len(key) == 2
+        and key[0] == form
+        and str(key[1]).startswith(anchor)
+        and len(str(key[1])) == len(anchor) + 1
+        and str(key[1])[-1].isalpha()
+    ]
+    return sorted(set(candidates))
 
 
 def _canonical_target_id(document: SourceDocumentInput, outline_node: OutlineNode) -> str:
@@ -366,3 +406,8 @@ def _label(name: str) -> str:
 def _slug(value: str) -> str:
     slug = re.sub(r"[^a-z0-9]+", "_", value.lower()).strip("_")
     return slug or "item"
+
+
+def _compact(value: str) -> str:
+    """Normalize a human form label for deterministic same-form matching."""
+    return re.sub(r"[^a-z0-9]+", "", value.lower())

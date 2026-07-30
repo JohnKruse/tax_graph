@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from pathlib import Path
+import re
 from typing import Any
 
 from tax_graph.config import get_config_value
@@ -51,9 +52,14 @@ def generate_outline_first_drafts(
         "cells_failed": 0,
         "failure_reasons_by_kind": {},
         "findings": [],
+        "formula_cells": [],
+        "wrong_owner_instruction_span_count": 0,
+        "wrong_owner_instruction_addresses": [],
+        "unresolved_line_refs": [],
+        "review_gaps": [],
     }
     line_index = _outline_line_index(document.document_id, outline.children)
-    for outline_node in _formula_outline_nodes(outline.children):
+    for outline_node in _formula_outline_nodes(outline.children, document_id=document.document_id):
         node_spans = _spans_for_outline_node(
             document,
             outline_node,
@@ -61,6 +67,22 @@ def generate_outline_first_drafts(
             document_id=document.document_id,
             table_mode=outline_node.kind in {"transaction_table", "totals"},
         )
+        target_cell_id = _outline_node_id(document.document_id, outline_node)
+        wrong_owner_spans = _wrong_owner_instruction_spans(outline_node, spans)
+        if wrong_owner_spans:
+            micro_stats["wrong_owner_instruction_span_count"] += len(wrong_owner_spans)
+            micro_stats["wrong_owner_instruction_addresses"].append(target_cell_id)
+        cell_record = {
+            "target_cell_id": target_cell_id,
+            "line_anchor": str(outline_node.line_anchor or ""),
+            "label": outline_node.label,
+            "status": "review_gap",
+            "has_expression": False,
+            "has_verbatim_citation": False,
+            "review_gap": "no expression produced",
+            "wrong_owner_instruction_spans": len(wrong_owner_spans),
+        }
+        micro_stats["formula_cells"].append(cell_record)
         plan = _deterministic_schedule_d_formula_plan(document, outline_node, node_spans)
         formula_model = str(model)
         if plan is None:
@@ -72,7 +94,7 @@ def generate_outline_first_drafts(
                     client=client,
                     config=config,
                     root=root,
-                    target_cell_id=_outline_node_id(document.document_id, outline_node),
+                    target_cell_id=target_cell_id,
                     table_mode=outline_node.kind in {"transaction_table", "totals"},
                 )
                 micro_stats["cells_succeeded"] += 1
@@ -83,6 +105,7 @@ def generate_outline_first_drafts(
             except Exception as exc:
                 micro_stats["cells_failed"] += 1
                 _record_micro_failure(micro_stats, outline_node, exc)
+                _record_review_gap(micro_stats, cell_record, f"micro extraction failed: {type(exc).__name__}: {exc}")
                 continue
         else:
             formula_model = "deterministic-schedule-d-formula"
@@ -102,14 +125,30 @@ def generate_outline_first_drafts(
                 micro_stats["cells_failed"] += 1
             _record_micro_finding(micro_stats, exc.finding)
             _record_micro_failure(micro_stats, outline_node, exc)
+            if exc.finding.get("code") in {"unresolved_source_line", "ambiguous_parent_source_line"}:
+                micro_stats["unresolved_line_refs"].append(dict(exc.finding))
+            _record_review_gap(micro_stats, cell_record, str(exc.finding.get("reason", exc)))
             continue
         except Exception as exc:
             if plan is not None and formula_model != "deterministic-schedule-d-formula":
                 micro_stats["cells_succeeded"] -= 1
                 micro_stats["cells_failed"] += 1
                 _record_micro_failure(micro_stats, outline_node, exc)
+                _record_review_gap(micro_stats, cell_record, f"assembly failed: {type(exc).__name__}: {exc}")
                 continue
             raise
+        rules = batch.items("rules")
+        citations = {ref for rule in rules for ref in rule.data.get("citation_refs", [])}
+        cell_record["has_expression"] = bool(rules)
+        cell_record["has_verbatim_citation"] = bool(citations)
+        cell_record["citation_refs"] = sorted(citations)
+        if rules and citations:
+            cell_record["status"] = "complete"
+            cell_record.pop("review_gap", None)
+        elif rules:
+            _record_review_gap(micro_stats, cell_record, "expression produced without a matching verbatim citation")
+        else:
+            _record_review_gap(micro_stats, cell_record, "no expression rule produced")
         # The outline pass owns the deterministic cell/node spine for ordinary
         # lines. Micro extraction contributes only the expression and its source
         # evidence there; allowing it to emit nodes would let a model response
@@ -145,12 +184,12 @@ def generate_outline_first_drafts(
     )
 
 
-def _formula_outline_nodes(nodes: list[OutlineNode]) -> list[OutlineNode]:
+def _formula_outline_nodes(nodes: list[OutlineNode], *, document_id: str = "") -> list[OutlineNode]:
     selected: list[OutlineNode] = []
     for node in nodes:
-        if _is_formula_node(node):
+        if _is_formula_node(node) and not (document_id.startswith("schedule_d_") and node.kind == "line"):
             selected.append(node)
-        selected.extend(_formula_outline_nodes(node.children))
+        selected.extend(_formula_outline_nodes(node.children, document_id=document_id))
     return selected
 
 
@@ -172,6 +211,11 @@ def _is_formula_node(node: OutlineNode) -> bool:
             "amount of line",
             "more than line",
             "less than line",
+            "combine line",
+            "multiply line",
+            "smaller of line",
+            "larger of line",
+            "one-half of line",
         )
     )
 
@@ -193,6 +237,13 @@ def _record_micro_failure(stats: dict[str, Any], node: OutlineNode, error: Excep
 def _record_micro_finding(stats: dict[str, Any], finding: dict[str, Any]) -> None:
     """Persist a fail-closed identity finding beside the draft metrics."""
     stats.setdefault("findings", []).append({str(key): value for key, value in finding.items()})
+
+
+def _record_review_gap(stats: dict[str, Any], cell: dict[str, Any], reason: str) -> None:
+    """Record an explicit per-cell gap instead of silently omitting a formula."""
+    cell["status"] = "expression_without_citation" if cell.get("has_expression") else "review_gap"
+    cell["review_gap"] = str(reason).encode("ascii", errors="replace").decode("ascii")[:500]
+    stats.setdefault("review_gaps", []).append(dict(cell))
 
 
 def _outline_line_index(document_id: str, nodes: list[OutlineNode]) -> dict[tuple[str, str], str]:
@@ -275,10 +326,13 @@ def _spans_for_outline_node(
         instruction_hits: list[CandidateSpan] = []
         source_span = _span_for_line(document, node, spans)
         for span in spans:
-            lowered = span.text.lower()
             if span is source_span:
                 selected.append(span)
-            elif line_phrase in lowered and _direct_line_evidence(span.text, node.line_anchor):
+                continue
+            if span.relationship == "source":
+                continue
+            lowered = span.text.lower()
+            if _instruction_span_belongs_to_line(span, node.line_anchor):
                 instruction_hits.append(span)
         selected.extend(instruction_hits[:3])
     if table_mode and node.columns:
@@ -306,6 +360,53 @@ def _direct_line_evidence(text: str, anchor: str) -> bool:
         return False
     direct_tokens = ("enter", "report", "include", "combine", "total", "add", "subtract")
     return any(token in lowered for token in direct_tokens)
+
+
+def _instruction_span_belongs_to_line(span: CandidateSpan, anchor: str) -> bool:
+    """Accept an instruction span only when its own entry is this line.
+
+    Mentioning a line in a different line's instructions is not ownership. The
+    old mention-based join attached the line 27b paragraph to Form 1040 line
+    1z because it mentioned 1z. Explicit headings and table-row prefixes are
+    the deterministic ownership signals; a bare mention remains excluded.
+    """
+    owner = _explicit_instruction_owner(span.text)
+    if owner != anchor.lower():
+        return False
+    return _direct_line_evidence(span.text, anchor) or owner == anchor.lower()
+
+
+def _explicit_instruction_owner(text: str) -> str | None:
+    """Return the printed line owned by an instruction entry, if explicit."""
+    patterns = (
+        r"^\s*#{1,6}\s*(?:\*\*)?lines?\s+([0-9]+[a-z]?|[a-z])\b",
+        r"^\s*\*\*lines?\s+([0-9]+[a-z]?|[a-z])\b",
+        r"^\s*\|\s*(?:\*\*)?\s*([0-9]+[a-z]?)\.",
+        r"^\s*(?:\*\*)?([0-9]+[a-z]?)\.\s+(?:enter|add|subtract|multiply|combine|is|are)\b",
+    )
+    for pattern in patterns:
+        match = re.match(pattern, text, flags=re.IGNORECASE)
+        if match:
+            return match.group(1).lower()
+    return None
+
+
+def _wrong_owner_instruction_spans(node: OutlineNode, spans: list[CandidateSpan]) -> list[CandidateSpan]:
+    """Find instruction mentions that were previously eligible but are not owned."""
+    anchor = str(node.line_anchor or "").lower()
+    if not anchor:
+        return []
+    phrase = f"line {anchor}"
+    wrong: list[CandidateSpan] = []
+    for span in spans:
+        if span.relationship == "source" or phrase not in span.text.lower():
+            continue
+        if not _direct_line_evidence(span.text, anchor):
+            continue
+        owner = _explicit_instruction_owner(span.text)
+        if owner != anchor:
+            wrong.append(span)
+    return wrong
 
 
 def _dedupe_objects(objects: list[DraftObject]) -> list[DraftObject]:

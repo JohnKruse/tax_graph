@@ -10,6 +10,7 @@ import pytest
 
 from tax_graph.extract.assembly import FormulaAssemblyFinding, assemble_formula_plan, realize_outbound_flows
 from tax_graph.extract.outline_pipeline import _formula_outline_nodes, generate_outline_first_drafts
+from tax_graph.extract.outline_pipeline import _spans_for_outline_node
 from tax_graph.extract.pipeline import extract_document
 from tax_graph.extract.micro import MicroExtractionError, extract_formula_plan, validate_formula_plan
 from tax_graph.extract.models import RelatedSourceInput, SourceDocumentInput
@@ -213,6 +214,97 @@ def test_human_formula_answer_resolves_printed_lines_and_fails_closed(tmp_path):
             [span],
             line_index=line_index,
         )
+
+
+@pytest.mark.m20
+def test_instruction_join_requires_line_ownership_not_mentions(tmp_path):
+    document = SourceDocumentInput(
+        document_id="form_1040_2025",
+        kind="tax_form",
+        year="2025",
+        url="https://example.test/form-1040.pdf",
+        text="1z Add lines 1a through 1h\n",
+        text_path=tmp_path / "form.txt",
+        fields={"line_anchors": [{"anchor": "1z", "page": 1, "text_offset": 0}]},
+    )
+    source = CandidateSpan(
+        "span_form_1040_2025_0001", document.document_id, "source", "page 1, line 1", "1z Add lines 1a through 1h"
+    )
+    wrong_heading = CandidateSpan(
+        "span_instructions_form_1040_2025_0001",
+        "instructions_form_1040_2025",
+        "instructions",
+        "page 35, line 1",
+        "### Line 27b",
+    )
+    wrong_body = CandidateSpan(
+        "span_instructions_form_1040_2025_0002",
+        "instructions_form_1040_2025",
+        "instructions",
+        "page 35, line 2",
+        "Check the box on line 27b if the amount was also reported on Form 1040, line 1z.",
+    )
+    owned = CandidateSpan(
+        "span_instructions_form_1040_2025_0003",
+        "instructions_form_1040_2025",
+        "instructions",
+        "page 3, line 3",
+        "|  1z. Add lines 1a through 1h  |",
+    )
+    node = OutlineNode("root_line_1z", "line", "Add lines 1a through 1h", line_anchor="1z")
+
+    selected = _spans_for_outline_node(document, node, [source, wrong_heading, wrong_body, owned])
+
+    assert source in selected
+    assert owned in selected
+    assert wrong_body not in selected
+
+
+@pytest.mark.m20
+def test_line_reference_resolves_schedule_alias_and_reports_bare_parent(tmp_path):
+    document = SourceDocumentInput(
+        document_id="schedule_a_2025",
+        kind="schedule",
+        year="2025",
+        url="https://example.test/schedule-a.pdf",
+        text="11a A\n11b B\n14 Total\n",
+        text_path=tmp_path / "schedule-a.txt",
+    )
+    span = CandidateSpan(
+        "span_schedule_a_2025_0001", document.document_id, "source", "page 1, line 3", "14 Total: Add lines 11 through 13"
+    )
+    node = OutlineNode("section_1_line_15", "line", "Add lines 11 through 13", line_anchor="15")
+    line_index = {
+        (document.document_id, "11a"): "schedule_a_2025_section_1_line_11a",
+        (document.document_id, "11b"): "schedule_a_2025_section_1_line_11b",
+        (document.document_id, "14"): "schedule_a_2025_section_1_line_14",
+    }
+    plan = {
+        "operation": "SUM",
+        "source_lines": [
+            {"form": "Schedule A", "line": "11"},
+            {"form": "Schedule A", "line": "14"},
+        ],
+        "quote": "Add lines 11 through 13",
+    }
+
+    alias_batch = assemble_formula_plan(
+        document,
+        node,
+        {**plan, "source_lines": [{"form": "Schedule A", "line": "14"}]},
+        [span],
+        line_index=line_index,
+    )
+    assert alias_batch.items("edges")[0].data["source"] == "schedule_a_2025_section_1_line_14"
+
+    with pytest.raises(FormulaAssemblyFinding, match="bare source line is ambiguous") as exc_info:
+        assemble_formula_plan(document, node, plan, [span], line_index=line_index)
+
+    assert exc_info.value.finding["code"] == "ambiguous_parent_source_line"
+    assert exc_info.value.finding["candidates"] == [
+        "schedule_a_2025_section_1_line_11a",
+        "schedule_a_2025_section_1_line_11b",
+    ]
 
 
 @pytest.mark.m4
