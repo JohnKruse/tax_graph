@@ -14,6 +14,47 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## Current state (2026-07-30)
 
+**Worker session checkpoint - M20-S10 implementation (2026-07-30):** Global canary: Ledger
+Llama. Phase canary: Ground Truth. John gave go via the current task request. Single declared
+step: verify current OpenRouter raw routing fields, expose provider routing and router metadata
+in config, carry the resolved provider through telemetry/provenance/metrics, pin the ignored local
+config to `decart` plus `fp4` with fallbacks disabled and strict parameter requirements, then run
+the Form 1040 diagnostic and the 15-form draft-only baseline with separate coverage and accuracy.
+Applicable defect-ledger entries: D4, D6, D8, D9, D11, and the exact RAN/NOT RUN evidence rule.
+No prompt tuning, model swap, operation-enum change, draft promotion, hand-authoring, live graph
+edit, rollover implementation, review-contract change, or UI change is in scope.
+
+**M20-S10 focused-test declaration (2026-07-30):** Declared files are
+`tests/test_extract_m4.py`, `tests/test_llm_attribution_m20.py`, `tests/test_draft_route_m20.py`,
+`tests/test_extract_outline_m4.py`, `tests/test_batch_extraction_m10.py`,
+`tests/test_schedule_d_extraction_m9.py`, `tests/test_trust_tiers_m8.py`, and `tests/test_cli.py`.
+They cover the raw OpenRouter routing contract, resolved-provider telemetry/provenance, and all
+consumer paths touched by the attribution shape. Each file will have exact final `RAN:` or
+`NOT RUN:` evidence below; the local config and live graph remain protected.
+
+**M20-S10 implementation checkpoint (2026-07-30):** Provider routing now emits the raw
+OpenRouter `order`, `only`, `ignore`, `allow_fallbacks`, `quantizations`, and
+`require_parameters` fields from `llm.provider_routing` / `llm.require_parameters`. The
+`X-OpenRouter-Metadata: enabled` response envelope is requested by default for OpenRouter.
+Selected provider identity flows through `LlmCallTelemetry`, JSONL calls, draft provenance,
+and `metrics.yaml`; the run envelope records the routing preferences. The ignored local config
+is pinned to `z-ai/glm-5.2`, `only/order=[decart]`, `allow_fallbacks=false`, `quantizations=[fp4]`,
+`require_parameters=true`, and generator expression mode. No live graph artifact was edited.
+
+**M20-S10 live diagnostic result (2026-07-30):** The sandbox-only attempt is NOT RUN as
+pipeline evidence because socket access failed with `WinError 10013`. RAN with approved network
+execution: `& .venv\Scripts\python.exe -m tax_graph.cli extract --doc form_1040_2025 --year 2025 --root .`
+-> exit 1 after 9.2s with `LlmUnavailable: OpenAI response did not contain choices`; the retained
+provider body is `502 Upstream error from Decart: Internal server error`. The log is
+`output/logs/9409b7ad5450434aad089a7a03f83894.jsonl` and records the exact hard route, strict
+schema request, 24000-token cap, and no fallback. No draft was written. Per the stop condition,
+the provider was not retried, constraints were not loosened, the model was not swapped, and the
+15-form baseline plus expression-agreement report are NOT RUN.
+
+**M20-S10 focused-test evidence (2026-07-30):** RAN: `$testRoot='C:\Users\devbox\.codex\visualizations\2026\07\30\019fb3c8-07f0-72f2-8a3a-a79a9e082e17\m20-s10-tests-r2'; New-Item -ItemType Directory -Force -Path $testRoot | Out-Null; $env:PYTEST_DEBUG_TEMPROOT=$testRoot; & .venv\Scripts\python.exe -m pytest tests/test_extract_m4.py tests/test_llm_attribution_m20.py tests/test_draft_route_m20.py tests/test_extract_outline_m4.py tests/test_batch_extraction_m10.py tests/test_schedule_d_extraction_m9.py tests/test_trust_tiers_m8.py tests/test_cli.py -q` -> 58 passed, 1 warning in 105.88s. The first sweep was NOT RUN as final evidence because it found the test fixture omitted the new optional `resolved_provider` field; the fixture was corrected and the final rerun above passed. All declared files are covered by that exact command.
+
+**M20-S10 final machine evidence (2026-07-30):** RAN: `& .venv\Scripts\python.exe tools/check_ascii.py` -> ASCII check OK; `git diff --check` -> exit 0; module-form `tax_graph.cli validate 2025` -> graph integrity OK, documents=18, nodes=441, tables=2, edges=409, rules=17, citations=401, decisions=2, routing_edges=90, triggers=12, expectations=4; module-form `workbench.cli --root . --year 2025 preflight` -> exit 0, entries=18, units=2224, derived cells=2120, review_gap=591, unreviewed=1529, legacy_mined=394; direct strict citation report -> checked=401, strict_mismatches=36; protected live graph diff -> empty. Local commit `1d9766d` was created; no push.
+
 **Worker session checkpoint - M20-S9b implementation (2026-07-30):** Global canary: Ledger
 Llama. Phase canary: Ground Truth. Model: GPT-5 Codex; effort: default; usage/quota/context
 indicators are not exposed. John gave go via the current task request. Single declared step:

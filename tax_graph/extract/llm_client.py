@@ -142,6 +142,9 @@ def _openrouter_headers(config: dict[str, Any]) -> dict[str, str]:
         headers["HTTP-Referer"] = str(site_url)
     if app_name:
         headers["X-Title"] = str(app_name)
+    router_metadata = get_config_value(config, "llm.router_metadata", True)
+    if _as_bool(router_metadata):
+        headers["X-OpenRouter-Metadata"] = "enabled"
     return headers
 
 
@@ -157,9 +160,47 @@ def _openrouter_extra_body(config: dict[str, Any]) -> dict[str, Any]:
         reasoning["exclude"] = bool(reasoning_exclude)
     if reasoning:
         extra_body["reasoning"] = reasoning
+    provider_preferences = _openrouter_provider_preferences(config)
     if parameter_mode in {"auto", "require"}:
-        extra_body["provider"] = {"require_parameters": True}
+        provider_preferences["require_parameters"] = True
+    if provider_preferences:
+        extra_body["provider"] = provider_preferences
     return extra_body
+
+
+def _openrouter_provider_preferences(config: dict[str, Any]) -> dict[str, Any]:
+    """Build raw OpenRouter provider preferences from the local config.
+
+    The OpenAI SDK forwards this mapping without renaming keys, so these are
+    the snake_case fields used by the OpenRouter HTTP API, not SDK aliases.
+    Empty preferences are omitted to preserve gateway defaults.
+    """
+    routing = get_config_value(config, "llm.provider_routing", {})
+    if routing is None:
+        routing = {}
+    if not isinstance(routing, dict):
+        raise LlmUnavailable("llm.provider_routing must be a mapping")
+
+    preferences: dict[str, Any] = {}
+    for key in ("order", "only", "ignore", "quantizations"):
+        value = routing.get(key)
+        if value is None:
+            continue
+        if isinstance(value, str):
+            value = [value]
+        if not isinstance(value, (list, tuple)) or not all(
+            isinstance(item, str) and item.strip() for item in value
+        ):
+            raise LlmUnavailable(f"llm.provider_routing.{key} must be a list of non-empty strings")
+        preferences[key] = [item.strip() for item in value]
+
+    allow_fallbacks = routing.get("allow_fallbacks")
+    if allow_fallbacks is not None:
+        parsed = _as_bool(allow_fallbacks)
+        if parsed is None:
+            raise LlmUnavailable("llm.provider_routing.allow_fallbacks must be boolean")
+        preferences["allow_fallbacks"] = parsed
+    return preferences
 
 
 class AnthropicLlmClient:
@@ -470,12 +511,14 @@ def _response_telemetry(
         total_tokens = prompt_tokens + completion_tokens
     cost = _as_float(_get(usage, "cost", _get(response, "cost", None)))
     resolved_model = _get(response, "model", None)
+    resolved_provider = _resolved_provider(response)
     choices = _get(response, "choices", [])
     finish_reason = _get(choices[0], "finish_reason", None) if choices else _get(response, "stop_reason", None)
     return LlmCallTelemetry(
         provider=provider,
         requested_model=str(requested_model),
         resolved_model=str(resolved_model) if resolved_model else None,
+        resolved_provider=resolved_provider,
         prompt_tokens=prompt_tokens,
         completion_tokens=completion_tokens,
         total_tokens=total_tokens,
@@ -552,6 +595,18 @@ def _as_float(value: Any) -> float | None:
         return None
 
 
+def _as_bool(value: Any) -> bool | None:
+    if isinstance(value, bool):
+        return value
+    if isinstance(value, str):
+        normalized = value.strip().lower()
+        if normalized in {"true", "yes", "1", "on", "enabled"}:
+            return True
+        if normalized in {"false", "no", "0", "off", "disabled"}:
+            return False
+    return None
+
+
 def _openai_message_content(response: Any, *, provider_name: str = "OpenAI") -> str:
     choices = _get(response, "choices", [])
     if not choices:
@@ -624,6 +679,28 @@ def _get(value: Any, key: str, default: Any = None) -> Any:
     if isinstance(value, dict):
         return value.get(key, default)
     return getattr(value, key, default)
+
+
+def _resolved_provider(response: Any) -> str | None:
+    """Read the selected OpenRouter provider from router metadata."""
+    metadata = _get(response, "openrouter_metadata", None)
+    endpoints = _get(metadata, "endpoints", None)
+    available = _get(endpoints, "available", [])
+    if isinstance(available, list):
+        for endpoint in available:
+            if _get(endpoint, "selected", False):
+                provider = _get(endpoint, "provider", None)
+                if provider:
+                    return str(provider)
+    attempts = _get(metadata, "attempts", [])
+    if isinstance(attempts, list):
+        for attempt in reversed(attempts):
+            if _get(attempt, "status", None) in {200, "200"}:
+                provider = _get(attempt, "provider", None)
+                if provider:
+                    return str(provider)
+    direct = _get(response, "provider", None)
+    return str(direct) if direct else None
 
 
 def _parameter_mode(config: dict[str, Any]) -> str:

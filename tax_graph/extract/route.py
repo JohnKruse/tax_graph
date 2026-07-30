@@ -172,6 +172,8 @@ def _provenance(obj: DraftObject) -> dict[str, Any]:
         record["requested_model"] = obj.requested_model
     if obj.resolved_model is not None:
         record["resolved_model"] = obj.resolved_model
+    if obj.resolved_provider is not None:
+        record["resolved_provider"] = obj.resolved_provider
     return record
 
 

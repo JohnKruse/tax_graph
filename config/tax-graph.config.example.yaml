@@ -27,6 +27,13 @@ llm:
   site_url: null                 # optional OpenRouter HTTP-Referer header
   app_name: Tax Graph            # optional OpenRouter X-Title header
   require_parameters: auto       # auto retries once without the provider hint if the endpoint rejects it; use true/false to force
+  router_metadata: true           # request selected-provider and fallback metadata from OpenRouter
+  provider_routing:               # raw OpenRouter provider fields; empty values preserve gateway defaults
+    order: null                    # provider slugs to prioritize, for example [decart]
+    only: null                     # provider slugs allowed for this request
+    ignore: null                   # provider slugs excluded from this request
+    allow_fallbacks: null          # set false for a deterministic single-provider route
+    quantizations: null            # for example [fp4]
   reasoning_effort: null         # optional OpenRouter reasoning control for capable models, e.g. minimal
   reasoning_exclude: null        # optional: true keeps reasoning tokens out of responses when supported
   temperature: 0

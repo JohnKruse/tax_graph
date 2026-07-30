@@ -50,6 +50,7 @@ def parse_generator_response(
     provenance = _provenance_map(response.get("provenance", []))
     telemetry = response_telemetry(response)
     resolved_model = telemetry.resolved_model if telemetry and telemetry.resolved_model else model
+    resolved_provider = telemetry.resolved_provider if telemetry else None
     objects: list[DraftObject] = []
 
     for kind in DRAFT_KINDS:
@@ -74,6 +75,7 @@ def parse_generator_response(
                     confidence=float(metadata.get("confidence", 0)),
                     requested_model=str(model),
                     resolved_model=telemetry.resolved_model if telemetry else None,
+                    resolved_provider=resolved_provider,
                 )
             )
 

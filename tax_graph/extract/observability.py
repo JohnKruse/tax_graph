@@ -97,6 +97,8 @@ class RunLogger:
             config={
                 "provider": get_config_value(self.config, "llm.provider"),
                 "model": get_config_value(self.config, "llm.model"),
+                "provider_routing": _safe_value(get_config_value(self.config, "llm.provider_routing", {})),
+                "router_metadata": bool(get_config_value(self.config, "llm.router_metadata", True)),
                 "mode": get_config_value(self.config, "extraction.mode", "one_pass"),
                 "expression_mode": get_config_value(self.config, "extraction.expression_mode", "generator"),
                 "concurrency": get_config_value(self.config, "extraction.concurrency", 1),
@@ -165,6 +167,7 @@ class RunLogger:
             "purpose": purpose,
             "requested_model": requested_model,
             "resolved_model": _value(telemetry, "resolved_model"),
+            "resolved_provider": _value(telemetry, "resolved_provider"),
             "prompt_tokens": _value(telemetry, "prompt_tokens"),
             "completion_tokens": _value(telemetry, "completion_tokens"),
             "total_tokens": _value(telemetry, "total_tokens"),

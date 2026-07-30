@@ -58,6 +58,7 @@ def _response() -> StructuredCompletionResult:
             provider="OpenRouter",
             requested_model="~google/gemini-flash-latest",
             resolved_model="z-ai/glm-5.2",
+            resolved_provider="Decart",
             prompt_tokens=13,
             completion_tokens=5,
             total_tokens=18,
@@ -78,6 +79,7 @@ def test_generator_provenance_uses_resolved_model_and_records_call(tmp_path: Pat
     assert batch.items("nodes")[0].requested_model == "~google/gemini-flash-latest"
     assert batch.items("nodes")[0].resolved_model == "z-ai/glm-5.2"
     assert batch.llm_calls[0].total_tokens == 18
+    assert batch.llm_calls[0].resolved_provider == "Decart"
 
 
 def test_draft_metrics_and_provenance_record_resolved_call(tmp_path: Path):
@@ -91,9 +93,10 @@ def test_draft_metrics_and_provenance_record_resolved_call(tmp_path: Path):
                 "Wages",
                 "z-ai/glm-5.2",
                 1.0,
-                requested_model="~google/gemini-flash-latest",
-                resolved_model="z-ai/glm-5.2",
-            )
+                    requested_model="~google/gemini-flash-latest",
+                    resolved_model="z-ai/glm-5.2",
+                    resolved_provider="Decart",
+                )
         ],
         llm_calls=[_response().metadata],
     )
@@ -106,8 +109,10 @@ def test_draft_metrics_and_provenance_record_resolved_call(tmp_path: Path):
     assert metrics["worker_tokens"] == 18
     assert metrics["worker_cost"] == 0.01
     assert metrics["llm_calls"][0]["resolved_model"] == "z-ai/glm-5.2"
+    assert metrics["llm_calls"][0]["resolved_provider"] == "Decart"
     assert provenance[0]["requested_model"] == "~google/gemini-flash-latest"
     assert provenance[0]["resolved_model"] == "z-ai/glm-5.2"
+    assert provenance[0]["resolved_provider"] == "Decart"
 
 
 def _provider_response(*, prompt_tokens: int, finish_reason: str = "stop") -> dict:
@@ -125,6 +130,13 @@ def _provider_response(*, prompt_tokens: int, finish_reason: str = "stop") -> di
                 "message": {"content": json.dumps({"ok": True})},
             }
         ],
+        "openrouter_metadata": {
+            "endpoints": {
+                "available": [
+                    {"provider": "Decart", "model": "z-ai/glm-5.2", "selected": True}
+                ]
+            }
+        },
     }
 
 
@@ -175,6 +187,7 @@ def test_implausible_prompt_tokens_fail_fast_and_retain_failure_bodies(tmp_path:
     assert call["document_id"] == "form_1040_2025"
     assert call["outcome"] == "implausible_prompt"
     assert call["prompt_tokens"] == 1
+    assert call["resolved_provider"] == "Decart"
     assert call["request_body"]
     assert call["response_body"]
     assert records[-1]["event"] == "run_end"

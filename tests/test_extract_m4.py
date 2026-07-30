@@ -426,8 +426,49 @@ def test_llm_factory_dispatches_to_openrouter_adapter(monkeypatch):
     assert client.__class__.__name__ == "OpenAICompatibleLlmClient"
     assert calls[0]["base_url"] == "https://openrouter.ai/api/v1"
     assert calls[0]["default_headers"]["X-Title"] == "Tax Graph Tests"
+    assert calls[0]["default_headers"]["X-OpenRouter-Metadata"] == "enabled"
     assert client.extra_body["provider"]["require_parameters"] is True
     assert client.parameter_mode == "auto"
+
+
+@pytest.mark.m20
+def test_openrouter_provider_routing_uses_raw_api_field_names(monkeypatch):
+    calls = []
+
+    class FakeOpenAI:
+        def __init__(self, **kwargs):
+            calls.append(kwargs)
+
+    monkeypatch.setitem(sys.modules, "openai", SimpleNamespace(OpenAI=FakeOpenAI))
+
+    client = build_llm_client(
+        {
+            "llm": {
+                "provider": "openrouter",
+                "api_key": "fake-key",
+                "require_parameters": True,
+                "router_metadata": True,
+                "provider_routing": {
+                    "order": ["decart"],
+                    "only": ["decart"],
+                    "ignore": ["baidu"],
+                    "allow_fallbacks": False,
+                    "quantizations": ["fp4"],
+                },
+            }
+        }
+    )
+
+    assert client.extra_body["provider"] == {
+        "order": ["decart"],
+        "only": ["decart"],
+        "ignore": ["baidu"],
+        "allow_fallbacks": False,
+        "quantizations": ["fp4"],
+        "require_parameters": True,
+    }
+    assert "allowFallbacks" not in client.extra_body["provider"]
+    assert calls[0]["default_headers"]["X-OpenRouter-Metadata"] == "enabled"
 
 
 @pytest.mark.m4

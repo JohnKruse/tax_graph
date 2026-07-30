@@ -47,6 +47,7 @@ def build_metrics(batch: ExtractionBatch, routed: RoutedDrafts) -> dict[str, Any
     """Build the per-run verification metrics payload."""
     objects_by_kind: dict[str, int] = {}
     models_used: set[str] = set()
+    providers_used: set[str] = set()
     confidences: list[float] = []
     flags_by_layer: dict[str, int] = {}
     for obj in batch.objects:
@@ -66,6 +67,8 @@ def build_metrics(batch: ExtractionBatch, routed: RoutedDrafts) -> dict[str, Any
     for call in batch.llm_calls:
         if call.resolved_model:
             models_used.add(call.resolved_model)
+        if call.resolved_provider:
+            providers_used.add(call.resolved_provider)
 
     return {
         "document_id": batch.document_id,
@@ -79,6 +82,7 @@ def build_metrics(batch: ExtractionBatch, routed: RoutedDrafts) -> dict[str, Any
         "tiers": tier_distribution(batch.objects),
         "flags_by_layer": dict(sorted(flags_by_layer.items())),
         "models_used": sorted(models_used),
+        "providers_used": sorted(providers_used),
         "llm_calls": llm_calls,
         "confidence_telemetry": _confidence_telemetry(confidences),
         "human_minutes": None,
