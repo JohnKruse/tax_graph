@@ -1215,13 +1215,14 @@ the instruction slot; Authority explicitly reports missing authored coverage; do
 citation coverage is visible beside policy counts; and the dossier heading duplication/order
 warts are fixed. No promoted artifacts, graph semantics, verdicts, or citation records changed.
 
-**BALL: WORKER - M20-S9b (fix the empty-prompt bug, add fail-fast guards, THEN finish the
-baseline S9 could not run). Task block under From Architect. READ THE S9b BLOCK BEFORE THE S9
-ONE - the S9 diagnosis was wrong and S9b supersedes it.** The S9 instrumentation half is
-committed at `cdcbd65` and Architect-verified (49 tests green), including the pinned
-`z-ai/glm-5.2` config and working token/cost telemetry. What remains is the baseline, which
-stopped at 62.6s. **Do NOT re-attempt the baseline before fixing the empty-prompt bug** - it
-will fail the same way.
+**BALL: WORKER - M20-S9b (BUILD THE LOGGING, add fail-fast guards, fix truncation, then run ONE
+document and read the log; plus five small cleanups). Task block under From Architect. READ THE
+S9b BLOCK BEFORE THE S9 ONE - the S9 diagnosis was wrong and S9b supersedes it.** John's
+ruling: until we can log what GLM received and returned, further diagnosis is academic. Logging
+is now the DELIVERABLE, not a deferred nicety. The S9 instrumentation half is committed at
+`cdcbd65` and Architect-verified (49 tests green), including the pinned `z-ai/glm-5.2` config
+and working token/cost telemetry. **The round ENDS at a one-document diagnostic run - the
+15-form baseline is the NEXT round.** Do not re-attempt the baseline here.
 
 **Superseded (kept as history):** BALL: WORKER - M20-S9 (capture usage + resolved model id,
 switch to the PINNED model `z-ai/glm-5.2`, then re-baseline coverage and accuracy).
@@ -3158,9 +3159,20 @@ TY2026 docs drop.
 
 ## From Architect
 
-- **M20-S9b TASK - FIX THE EMPTY-PROMPT BUG, ADD FAIL-FAST GUARDS, THEN FINISH THE BASELINE
-  (Architect, Claude Opus 5, 2026-07-30). John's go. SUPERSEDES the diagnosis in the S9 block
+- **M20-S9b TASK - BUILD THE LOGGING FIRST, THEN LOOK AT WHAT GLM ACTUALLY RECEIVED
+  (Architect, Claude Opus 5, 2026-07-30, REWRITTEN on John's call). SUPERSEDES the S9 block
   below - read this first.** Ledger: the exact RAN/NOT RUN evidence rule, and D9.
+  **JOHN'S RULING, and he is right: until we can log what GLM received and returned, further
+  diagnosis is academic.** My first draft of this round told the Worker NOT to build the
+  logging subsystem unless the diagnosis was trivial. That was backwards - **the logging IS the
+  diagnostic instrument**, and guessing at causes without it is what produced the wrong S9
+  diagnosis in the first place. Build it, then look, then fix what the logs actually show.
+  **This round ENDS at a one-document diagnostic run. The 15-form baseline is the NEXT round.**
+  Do not expand scope to chase the baseline; John asked to implement and then test.
+  **Do NOT pre-commit to a cause.** Candidates for `prompt_tokens == 1` remain unconfirmed:
+  the prompt arriving empty from template assembly on the batch path; OpenRouter rejecting and
+  billing a stub; or `provider: {require_parameters: true}` (`llm.require_parameters: auto`)
+  producing a degenerate route. The logs decide, not us.
   **THE S9 DIAGNOSIS WAS WRONG, AND SO WAS MINE.** S9 stopped with
   `LlmUnavailable: OpenRouter response did not contain JSON` and we both read it as a
   GLM structured-output problem. **It is not.** John's OpenRouter log settles it: all fifteen
@@ -3171,16 +3183,25 @@ TY2026 docs drop.
   do not draw any conclusion about the model, and do not swap it out.**
   The 02:27 probe sent 31 tokens and finished `stop`, so the client CAN send content; the
   difference is the pipeline path, not the model.
-  1. **STEP 1 - FIND WHY `prompt_tokens == 1` ON THE BATCH PATH. Diagnose before fixing.**
-     The probe path works and the batch path does not. Candidate causes, none confirmed: the
-     prompt arriving empty from template assembly on that path; OpenRouter rejecting the request
-     and billing a stub; or the `provider: {require_parameters: true}` routing
-     (`llm.require_parameters: auto` in the live config) producing a degenerate route when no
-     endpoint supports the sent parameters. **Capture the actual outbound request body** - we
-     have been diagnosing from a billing page and that must stop. Report what you find before
-     changing behavior.
-  2. **STEP 2 - ADD THE FAIL-FAST GUARDS (guiding invariant 8, `AGENTS.md` /
-     `docs/engineering-plan.md`).** Both belong in `tax_graph/extract/llm_client.py`:
+  1. **STEP 1 - BUILD THE LOGGING. This is the deliverable of the round** (guiding invariant 8
+     in `docs/engineering-plan.md`, added 2026-07-30). Current state: **zero** modules import or
+     use `logging`; the `logging: {level: INFO}` stub at `config/tax-graph.config.yaml:81` is
+     read by nothing; no `logs/` directory exists.
+     - **Per call:** run id, document id, purpose (generator / critic / example / nversion),
+       requested model AND resolved model, prompt tokens, completion tokens, cost,
+       `finish_reason`, latency, outcome.
+     - **The request body and the response body.** On failure ALWAYS; otherwise at debug level.
+       Cap the length sanely. **This is the highest-value item in the round** - its absence is
+       exactly what made today academic. IRS form and instruction text is public; there is no
+       sensitivity problem in retaining it.
+     - **Run-level:** run id tying calls together, resolved config for the run (model, mode,
+       concurrency), start/end, totals.
+     - Honor the EXISTING `logging.level` config; do not add a second mechanism.
+     - Write under a gitignored path (e.g. `output/logs/`) so a run is inspectable afterwards
+       with no vendor dashboard.
+     - **Only real constraint: never serialize resolved API keys or client headers.** Keys come
+       from keyring/env. Everything else that makes sense, log.
+  2. **STEP 2 - ADD THE FAIL-FAST GUARDS** (`tax_graph/extract/llm_client.py`):
      - **Assert `prompt_tokens` is plausible.** A ~1-token prompt must fail loudly and
        immediately with a named error. This would have caught today's failure in one second
        instead of 62.
@@ -3191,23 +3212,37 @@ TY2026 docs drop.
      the effective cap is ~4,000. A full form's nodes + edges + rules + citations does not fit.
      `_balanced_json_object` returns the unbalanced remainder when braces never close, so those
      calls failed outright rather than silently truncating - **but this is a plausible
-     contributor to S8's 8.75% coverage** and must be fixed before the baseline is meaningful.
-     Raise the cap, or chunk per document, and report which and why.
-  4. **STEP 4 - FINISH THE BASELINE.** Only after 1-3. Re-run the 15 manifest forms draft-only
-     on the pinned `z-ai/glm-5.2`, then `verify expression-agreement`. Report COVERAGE and
-     ACCURACY separately - do not collapse them - alongside the resolved model id, total tokens,
-     and total cost. **The telemetry to report all of that is already committed and working**
-     (`cdcbd65`); "spend is not exposed by the client" is no longer a valid answer.
-  5. **Logging is NOT this round, but note it exists as a requirement.** Guiding invariant 8 and
-     a project-level exit gate were added on 2026-07-30: zero modules currently use `logging`,
-     the `logging: {level: INFO}` config stub is read by nothing, and there is no `logs/` dir.
-     It need not land here, but the bar is recorded: a failed model call must be diagnosable
-     from repo artifacts alone, with no vendor dashboard. Steps 1-2 move toward it; do not
-     build the full logging subsystem in this round unless step 1 is trivial.
-  6. **What this round does NOT do.** No model swap. No prompt tuning for quality. No coverage
-     work beyond fixing truncation. No operation-enum change. No draft promotion. No
-     hand-authoring. No rollover implementation (recorded in `docs/review-workbench.md`, for the
-     2026 boundary). No review UI; S6-2 stays parked. Review/verdict contract still FROZEN.
+     contributor to S8's 8.75% coverage.** Raise the cap, or chunk per document, and report
+     which and why.
+  4. **STEP 4 - RUN ONE DOCUMENT AND READ THE LOG. This is the test, and the round ends here.**
+     `form_1040_2025` only, draft-only, pinned `z-ai/glm-5.2`. Then **report what GLM actually
+     received and returned**: the outbound prompt size in tokens, whether the body was well
+     formed, the response body, and `finish_reason`. If `prompt_tokens` is still ~1, the log now
+     says WHY - report the cause with evidence rather than fixing it blind. **Do not proceed to
+     the 15-form baseline in this round even if the one document succeeds** - that is the next
+     round, and John asked to implement and then test.
+  5. **STEP 5 - CLEANUPS. John asked to clear a few things this cycle. Common theme: SILENT
+     DEFAULTS AND MISLEADING SIGNALS - the same disease that cost us today.**
+     - **`extraction.expression_mode` defaults to `none`**, which silently produced a
+       zero-expression 15-document run in S8 with no error. Make it loud or change the default;
+       report which and why.
+     - **`llm.strict_schema` defaults to `false`**, which makes the JSON schema advisory rather
+       than binding on the OpenAI/OpenRouter path. The schema IS sent as
+       `response_format: {type: json_schema, ...}`; strict is what gives it teeth.
+     - **The example config still uses floating aliases** (`~google/gemini-flash-latest`,
+       `~openai/gpt-mini-latest`). Floating aliases are what destroyed attribution - one config
+       value was served by Flash 3 preview, 3.5, AND 3.6. The example should teach pinning.
+     - **`confidence` is constant 1.0** across every object (min/max/mean all 1.0) and is
+       recorded as if it means something. Nothing routes on it today, which is correct; mark it
+       explicitly untrustworthy or stop emitting it.
+     - **`output/m20_s7_expression_agreement.yaml` contains `measurement: m20_s8`.** The
+       filename lies. Rename to a measurement-keyed name and update readers.
+     Any cleanup that turns out to be bigger than it looks: leave it, and report why.
+  6. **What this round does NOT do.** No 15-form baseline (next round). No model swap. No prompt
+     tuning for quality. No coverage work beyond fixing truncation. No operation-enum change. No
+     draft promotion. No hand-authoring. No rollover implementation (recorded in
+     `docs/review-workbench.md`, for the 2026 boundary). No review UI; S6-2 stays parked.
+     Review/verdict contract still FROZEN.
   **PROTECTED TEST SET, unchanged hard gate:** `graph/2025/{nodes,edges,rules}/` byte-identical
   at round end; `git diff --stat` on those three directories EMPTY.
   Tier 3. Declared files plus honest `RAN:`/`NOT RUN:`. ASCII, `git diff --check`, module-form
