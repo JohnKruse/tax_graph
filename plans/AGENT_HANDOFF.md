@@ -1313,11 +1313,15 @@ the instruction slot; Authority explicitly reports missing authored coverage; do
 citation coverage is visible beside policy counts; and the dossier heading duplication/order
 warts are fixed. No promoted artifacts, graph semantics, verdicts, or citation records changed.
 
-**BALL: WORKER - M20-S10 (pin the OpenRouter provider to escape Baidu, then GET THE BASELINE
-NUMBER). Task block under From Architect. S9b is ACCEPTED at `544c4ae` - Architect re-verified:
-61 tests green, protected set byte-identical, `validate 2025` green, no credentials in the
-retained log. John wants the testing, not more analysis: run it through to the number in ONE
-session.**
+**BALL: WORKER - M20-S11 (try `x-ai/grok-4.5`; if it fails, FALL BACK TO PINNED FLASH IN THE
+SAME SESSION and get the number either way). Task block under From Architect. S10 is ACCEPTED
+at `4c40375` - Architect re-verified: 58 tests green, protected set byte-identical, gates green,
+provider routing genuinely works. But S10 produced NO NUMBER: Decart returned
+`502 Upstream error`, after Baidu had returned `finish_reason=error`. Three rounds have now
+ended with no measurement. THIS ROUND MUST NOT.**
+
+**Superseded (kept as history):** BALL: WORKER - M20-S10 (pin the OpenRouter provider to escape
+Baidu, then GET THE BASELINE NUMBER). S9b is ACCEPTED at `544c4ae`.
 
 **Superseded (kept as history):** BALL: WORKER - M20-S9b (BUILD THE LOGGING, add fail-fast
 guards, fix truncation, then run ONE document and read the log; plus five small cleanups).
@@ -3263,7 +3267,55 @@ TY2026 docs drop.
 
 ## From Architect
 
-- **M20-S10 TASK - PIN THE PROVIDER, THEN GET THE BASELINE NUMBER (Architect, Claude Opus 5,
+- **M20-S11 TASK - GET THE NUMBER. TRY GROK, FALL BACK TO FLASH, DO NOT COME BACK EMPTY
+  (Architect, Claude Opus 5, 2026-07-30). John's go: `x-ai/grok-4.5`, he reports it is a good
+  buy.** Ledger: the exact RAN/NOT RUN evidence rule, and D9.
+  **WHY THIS ROUND IS SHAPED DIFFERENTLY.** S9b, S10, and S9 all ended with no measurement
+  because each correctly stopped and reported on a provider failure. That discipline was right
+  for diagnosis and is now getting in the way. **The deliverable of this round is a NUMBER, and
+  there is a built-in fallback so a failing model cannot consume the whole session.**
+  **THE PRIOR MEASUREMENT WAS INVALID, WHICH IS WHY FLASH IS A REAL OPTION AND NOT A RETREAT.**
+  S8's coverage 8.75% / operation 7/7 / expression 0/7 was measured WHILE THE TRUNCATION BUG WAS
+  ACTIVE - three of five Flash calls were cut off at ~4,000 tokens mid-payload. Since then
+  `max_tokens` is 24000, expression mode defaults on, `strict_schema` defaults on, and every
+  call is logged and attributed. **Flash has never been measured under correct conditions.**
+  1. **STEP 1 - TRY `x-ai/grok-4.5`.** Pin the CONCRETE version; **verify the exact id against
+     OpenRouter's current model list - do not take it from the Architect or from John's
+     shorthand.** Run the one-document check on `form_1040_2025`, draft-only. Report prompt
+     tokens, completion tokens, `finish_reason`, latency, cost, and resolved provider from the
+     log.
+  2. **DO NOT HARD-PIN THE PROVIDER.** That is what produced S10's dead ends - a no-route risk
+     and a 502. We now RECORD `resolved_provider` in the log, provenance, and metrics, so
+     attribution comes from observability, not from constraint. Leave fallbacks enabled and
+     report which provider actually served each call.
+  3. **STEP 2 - THE FALLBACK, AND IT IS AUTOMATIC.** If Grok fails the one-document check for
+     any provider-side reason, **do NOT stop and report. Switch to a pinned CONCRETE Flash
+     version** (not the `~google/gemini-flash-latest` alias - floating aliases are what
+     destroyed attribution) and continue. Record clearly that the fallback fired and why.
+  4. **STEP 3 - RUN THE 15-FORM BASELINE ON WHICHEVER MODEL WORKED.** Draft-only, then
+     `verify expression-agreement`. **Report COVERAGE and ACCURACY separately - do not collapse
+     them** - alongside resolved model, resolved provider(s), total tokens, and total cost.
+     **Report honestly even if the number is bad.** State plainly which model produced it.
+  5. **What this round does NOT do.** No prompt tuning for quality. No operation-enum change. No
+     draft promotion. No hand-authoring. No live graph edit. No rollover implementation. No
+     review UI; S6-2 stays parked. Review/verdict contract still FROZEN. Do not loosen
+     `strict_schema` or `require_parameters` to force a route - switch models instead, per
+     step 2.
+  **PROTECTED TEST SET, unchanged hard gate:** `graph/2025/{nodes,edges,rules}/` byte-identical
+  at round end; `git diff --stat` on those three directories EMPTY.
+  Tier 3. Declared files plus honest `RAN:`/`NOT RUN:`. ASCII, `git diff --check`, module-form
+  `validate 2025`, real preflight with `legacy_mined` explicit (expect **394**),
+  `check_citation_integrity` STRICT (expect **36**). Short pytest temp root; no `--basetemp`.
+  ONE local commit; no push. **Cite the ACTUAL commit hash in your notes** - S10's note cited
+  `1d9766d` while the commit that landed was `4c40375`.
+  **Stop conditions - deliberately few, because the goal is a measurement:** any diff in
+  `graph/2025/{nodes,edges,rules}/`; any draft promoted; collapsing coverage and accuracy;
+  tuning the prompt for quality; loosening `strict_schema` or `require_parameters`;
+  `legacy_mined` above 394; strict mismatches above 36. **A provider failure is NOT a stop
+  condition in this round - it is what the fallback is for.** Cost is not a constraint (~$0.65
+  per 15-form run; $1.95 total to date).
+
+- **M20-S10 TASK (COMPLETE, accepted at `4c40375`; produced no number - Decart 502) - PIN THE PROVIDER, THEN GET THE BASELINE NUMBER (Architect, Claude Opus 5,
   2026-07-30). John's go, and his words: "I want to get onto the testing." RUN IT THROUGH TO
   THE NUMBER IN ONE SESSION - do not stop at the one-document check if it passes.** Ledger: the
   exact RAN/NOT RUN evidence rule, and D9.
