@@ -14,6 +14,88 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## Current state (2026-07-30)
 
+**Worker session checkpoint - M20-S11 implementation (2026-07-30):** Global canary: Ledger
+Llama. Phase canary: Ground Truth. Model: GPT-5 Codex; effort/quota/context indicators are not
+exposed by this environment. John gave go via the current task request. Single declared step:
+verify `x-ai/grok-4.5`, run the pinned Form 1040 draft-only diagnostic, and if the provider/model
+fails, switch in the same session to the verified concrete `google/gemini-2.5-flash` fallback,
+then run the 15-form draft-only baseline and separate expression coverage/accuracy report.
+Applicable defect-ledger entries: D4, D6, D8, D9, D11, and the exact RAN/NOT RUN evidence rule.
+No prompt tuning, operation-enum change, draft promotion, hand-authoring, live graph edit,
+rollover implementation, review-contract change, or UI change is in scope.
+
+**M20-S11 focused-test declaration (2026-07-30):** Declared files are
+`tests/test_extract_m4.py`, `tests/test_llm_attribution_m20.py`, `tests/test_draft_route_m20.py`,
+`tests/test_extract_outline_m4.py`, `tests/test_batch_extraction_m10.py`,
+`tests/test_schedule_d_extraction_m9.py`, `tests/test_trust_tiers_m8.py`, and `tests/test_cli.py`.
+They cover the provider routing, telemetry/provenance, draft/metrics, outline, batch, Schedule D,
+trust-tier, and CLI consumers touched by the diagnostic configuration. Each file will have exact
+final `RAN:` or `NOT RUN:` evidence below.
+
+**M20-S11 pre-live checkpoint (2026-07-30):** The read-only OpenRouter model-list query verified
+`x-ai/grok-4.5` (context 500000) and selected `google/gemini-2.5-flash` (context 1048576) as the
+concrete fallback. The ignored local config now uses Grok, leaves provider routing unpinned with
+`allow_fallbacks=true`, and retains `require_parameters=true`, `strict_schema=true`,
+`max_tokens=24000`, and generator expression mode. Protected graph directories are clean.
+The next command is the one-document draft-only diagnostic; provider failure is not a stop
+condition for this round because the verified Flash fallback is available.
+
+**M20-S11 Grok result (2026-07-30):** RAN: `& .venv\Scripts\python.exe -m tax_graph.cli
+extract --doc form_1040_2025 --year 2025 --root .` -> exit 1 after the request reached xAI.
+OpenRouter retained a provider-side HTTP 400: xAI rejected the strict schema because several
+`$id` values were not URI references and local `$defs` references were unresolved. The log
+records requested `x-ai/grok-4.5`, resolved `x-ai/grok-4.5-20260708`, and provider `xAI`.
+No draft or promoted artifact was written. This is the permitted provider/model failure for
+S11, so no schema or parameter relaxation was attempted; the ignored config is now pinned to
+the verified concrete `google/gemini-2.5-flash`, with routing still unpinned and fallbacks on.
+The next command is the same one-document draft-only diagnostic on Flash.
+
+**M20-S11 fallback selection update (2026-07-30):** John selected the verified concrete
+`google/gemini-3.6-flash` model instead of `google/gemini-2.5-flash`. The in-flight 2.5 Flash
+diagnostic was terminated before completion and is NOT RUN as evidence. The ignored config now
+pins 3.6 Flash; strict schema, required parameters, unpinned provider routing, and fallbacks
+remain unchanged. The next command is the one-document draft-only diagnostic on 3.6 Flash.
+
+**M20-S11 3.6 Flash result (2026-07-30):** RAN: `& .venv\Scripts\python.exe -m tax_graph.cli
+extract --doc form_1040_2025 --year 2025 --root .` -> exit 1 after 145.3s. Gemini 3.6 reached
+the provider but the structured response was truncated at the unchanged hard cap:
+`finish_reason=length`, `completion_tokens=23937`, `max_tokens=24000`. No draft or promoted
+artifact was written, and no schema/parameter relaxation was attempted. John-selected 3.6 was
+therefore not usable for this diagnostic. The next same-session safety fallback is the already
+verified concrete `google/gemini-2.5-flash`; strict schema, required parameters, unpinned routing,
+and generator expression mode remain unchanged.
+
+**M20-S11 Flash-cap diagnosis (2026-07-30):** RAN: the same one-document command on concrete
+`google/gemini-2.5-flash` -> exit 1 after 131.7s with `finish_reason=length` and
+`completion_tokens=23911`; it reproduced the 3.6 result (`completion_tokens=23937`). Neither
+attempt wrote a draft or promoted artifact. The repeated boundary identifies the 24000 response
+cap, not a provider route failure, as the immediate blocker. Per the one-stop config and without
+loosening strict schema or required parameters, `max_tokens` is now raised to 48000 and the
+ignored config is restored to John's selected concrete `google/gemini-3.6-flash`. The next
+command is a fresh one-document diagnostic on 3.6 with the higher response budget.
+
+**M20-S11 bundling diagnosis (2026-07-30):** The assembled generator prompt includes the full
+rendered document, field grid, links, related sources, schema summary, and asks for all graph
+kinds in one response. The outline-first pipeline already has a narrow `tax_graph_micro_formula`
+call per formula outline node, carrying only that node and its candidate spans, but then the
+`expression_mode=generator` branch redundantly calls the whole-document generator. The 24k
+truncations came from that broad route, not from a paragraph-sized instruction lookup. Per
+John's direction, the ignored config now sets `expression_mode=none`, restores `max_tokens=24000`,
+and bounds the per-cell `micro_max_tokens` at 4000. The next diagnostic will exercise only the
+cell-context micro path and deterministic assembly; no full-document generator call is allowed.
+
+**M20-S11 cell-scoped diagnostic result (2026-07-30):** RAN: `& .venv\Scripts\python.exe -m
+tax_graph.cli extract --doc form_1040_2025 --year 2025 --root .` -> exit 0 in 8.4s. The run
+used `expression_mode=none`, produced only the outline-first deterministic draft, and logged
+`calls=0`, `successful_calls=0`, `failed_calls=0`; the draft summary was `auto_accepted=0`,
+`human_review=107`, `deterministic_issues=121`. No whole-document generator call occurred and
+the protected graph was untouched. This is the first clean diagnostic of the bounded path.
+The originally requested 15-form expression baseline is NOT RUN under this configuration because
+expression generation is intentionally disabled; a zero-expression report would measure the
+configuration switch, not model coverage.
+
+**M20-S11 focused-test evidence (2026-07-30):** RAN: `$testRoot='C:\Users\devbox\.codex\visualizations\2026\07\30\019fb3ea-8b2f-7dd2-a118-ff0938733d14\m20-s11-cell-tests'; New-Item -ItemType Directory -Force -Path $testRoot | Out-Null; $env:PYTEST_DEBUG_TEMPROOT=$testRoot; & .venv\Scripts\python.exe -m pytest tests/test_extract_m4.py tests/test_llm_attribution_m20.py tests/test_draft_route_m20.py tests/test_extract_outline_m4.py tests/test_batch_extraction_m10.py tests/test_schedule_d_extraction_m9.py tests/test_trust_tiers_m8.py tests/test_cli.py -q` -> 58 passed, 1 warning in 103.04s. All declared files are covered by that exact command.
+
 **Worker session checkpoint - M20-S10 implementation (2026-07-30):** Global canary: Ledger
 Llama. Phase canary: Ground Truth. John gave go via the current task request. Single declared
 step: verify current OpenRouter raw routing fields, expose provider routing and router metadata
