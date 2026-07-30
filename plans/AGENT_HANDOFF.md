@@ -1479,8 +1479,17 @@ the instruction slot; Authority explicitly reports missing authored coverage; do
 citation coverage is visible beside policy counts; and the dossier heading duplication/order
 warts are fixed. No promoted artifacts, graph semantics, verdicts, or citation records changed.
 
-**BALL: WORKER - M20-S12 (derive expressions through the PER-CELL MICRO PATH, then measure).
-Task block under From Architect. S11 is ACCEPTED at `fb8d87f` - its diagnosis is the most
+**BALL: WORKER - M20-S13 (ASK THE QUESTION A HUMAN WOULD ANSWER: label + instruction in, line
+numbers out; resolve identity in CODE). Task block under From Architect. S12 is ACCEPTED at
+`a687c95` - the per-cell mechanism works (74/74 cells, 0 failures, no truncation) and it produced
+the first real per-cell numbers: coverage 11/80 (13.8%), operation accuracy 9/11 (81.8%), full
+expression accuracy 0/11. That 0 is OUR BUG, not the model's: all 11 generated expressions are
+self-referential because assembly namespaces every unresolved operand under the TARGET's outline
+id. Six of eleven had the CORRECT OPERAND COUNT, so the model read the instructions correctly and
+we discarded its answer.**
+
+**Superseded (kept as history):** BALL: WORKER - M20-S12 (derive expressions through the PER-CELL
+MICRO PATH, then measure). S11 is ACCEPTED at `fb8d87f` - its diagnosis is the most
 valuable finding of the day: the whole-document generator was the wrong-shaped call, and the
 correctly-scoped per-cell path (`tax_graph_micro_formula`) already exists in the outline-first
 pipeline. SIX ROUNDS have now produced no valid number. This round has ONE deliverable: the
@@ -3440,7 +3449,78 @@ TY2026 docs drop.
 
 ## From Architect
 
-- **M20-S12 TASK - DERIVE EXPRESSIONS THROUGH THE PER-CELL MICRO PATH, THEN MEASURE
+- **M20-S13 TASK - ASK THE QUESTION A HUMAN WOULD ANSWER (Architect, Claude Opus 5,
+  2026-07-30). John's design ruling. THE MODEL DOES READING COMPREHENSION; CODE DOES IDENTITY.**
+  Ledger: the exact RAN/NOT RUN evidence rule, and D9.
+  **JOHN'S TWO OBSERVATIONS, AND THEY ARE THE SAME MISTAKE.** (a) We send WAY too much: 59
+  `addressable_operand_candidates` for a line whose instruction literally reads "Add lines 1a
+  through 1h". A human is shown a label and the instructions and needs nothing else. (b)
+  "Operand" is the wrong word to elicit good judgment - `operand`, `inputs[].name`,
+  `operation_plan`, `addressable_operand_candidates` is COMPILER vocabulary; the IRS says
+  "add lines 1a through 1h". **Asking for operands forces the model to do IDENTITY RESOLUTION,
+  which it is bad at and code is exact at.** That is the source of both the self-reference bug
+  and the 159-of-336 unresolved endpoints.
+  **THE EVIDENCE THAT THE MODEL IS NOT THE PROBLEM.** For line 1z the model returned EIGHT
+  inputs for "Add lines 1a through 1h" - the correct count. Six of the eleven paired cells had
+  exactly the right arity. It read the instruction. Then `assembly.py:87-91` resolved every
+  name against `node_ids_by_name`, which only ever holds names local to the cell being
+  processed, missed on all of them, and fabricated ids under the TARGET's outline id. **The
+  collapse to self-reference is deterministic in our code and no model output could avoid it.**
+  1. **STEP 1 - REPLACE THE MICRO PROMPT WITH THE HUMAN QUESTION.** Send the cell's label, the
+     instruction text for that line (form face AND instruction page), and nothing else. **DELETE
+     `addressable_operand_candidates` from the prompt.** Also delete the Form 8949 column-name
+     instructions from the generic path - three of the six current instruction lines are
+     8949-specific and are noise on a 1040 sum line. Keep 8949's special handling on an
+     8949-specific path if it is still needed; report if it is.
+  2. **STEP 2 - ASK FOR LINE NUMBERS, NOT IDS - the form's own vocabulary.** Target output shape:
+     `{"operation": <closed enum>, "source_lines": ["1a","1b",...], "quote": "<the instruction
+     sentence relied on>"}`. Cross-form references stay natural: `{"form": "schedule_1", "line":
+     "26"}`. **Constrain what you can in the schema** - `operation` is already a closed enum;
+     keep it. Do NOT reintroduce a 59-item enum of node ids: the point is to stop asking for
+     identity at all.
+     **`quote` is required, not decorative.** It grounds the answer in cited instruction text and
+     it is what the review workbench needs so a human can say "the instruction says X and this
+     does Y" - John's original ask from 2026-07-30.
+  3. **STEP 3 - RESOLVE IDENTITY DETERMINISTICALLY IN CODE.** Map `1a` ->
+     `form_1040_2025_root_line_1a` from the outline's own line index, which already exists.
+     **Fix `assembly.py` so an unresolved operand is recorded as a FINDING and never fabricates
+     a node under the target's namespace.** That fabrication is also the likely source of
+     `extra_in_draft=66`; report whether it drops.
+  4. **STEP 4 - FIX THE LOGGING HOLES S12 EXPOSED.** The Architect could not show John the 1z
+     exchange, which is a failure of the observability built this morning (guiding invariant 8).
+     - **Record the TARGET CELL ID on every call record.** Today a micro call logs
+       `purpose: tax_graph_micro_formula` and no cell identity, so among 17 calls for the 1040
+       the 1z call is unidentifiable. For a per-cell architecture the cell id is the single most
+       important field.
+     - **Retain request and response bodies for micro calls at normal level**, not DEBUG-only.
+       These prompts are ~1,200 tokens and will now be smaller; the whole-document rationale for
+       suppressing them is gone.
+  5. **STEP 5 - RE-MEASURE AND REPORT.** `form_1040_2025` first, then all 15 draft-only, then
+     `verify expression-agreement`. **Report COVERAGE and ACCURACY separately - do not collapse
+     them.** Also report prompt-token size before and after (expect a large drop from removing
+     the 59 candidates) and whether `extra_in_draft` fell. **Report honestly even if bad.**
+     **Paste the full 1z request and response into this file** - John asked to see it and could
+     not be shown.
+  6. **Model/provider trouble is handled by falling back, never by stopping.** Do not hard-pin a
+     provider. `google/gemini-3.6-flash` worked in S12 (74/74). If the configured model fails,
+     switch to a pinned concrete alternative and continue. **Coming back without a number is the
+     failure mode of this round.**
+  7. **What this round does NOT do.** No operation-enum change. No draft promotion. No
+     hand-authoring. No live graph edit. No rollover implementation. No review UI; S6-2 stays
+     parked. Review/verdict contract still FROZEN. Do not loosen `strict_schema` or
+     `require_parameters` to force a route.
+  **PROTECTED TEST SET, unchanged hard gate:** `graph/2025/{nodes,edges,rules}/` byte-identical
+  at round end; `git diff --stat` on those three directories EMPTY.
+  Tier 3. Declared files plus honest `RAN:`/`NOT RUN:`. ASCII, `git diff --check`, module-form
+  `validate 2025`, real preflight with `legacy_mined` explicit (expect **394**),
+  `check_citation_integrity` STRICT (expect **36**). Short pytest temp root; no `--basetemp`.
+  ONE local commit; no push. Cite the ACTUAL commit hash in your notes.
+  **Stop conditions:** any diff in `graph/2025/{nodes,edges,rules}/`; any draft promoted;
+  collapsing coverage and accuracy; a per-cell call needing more than 4000 response tokens;
+  reintroducing node ids as the model's output vocabulary; `legacy_mined` above 394; strict
+  mismatches above 36. **A model or provider failure is NOT a stop condition.**
+
+- **M20-S12 TASK (COMPLETE, accepted at `a687c95`) - DERIVE EXPRESSIONS THROUGH THE PER-CELL MICRO PATH, THEN MEASURE
   (Architect, Claude Opus 5, 2026-07-30). John's go.** Ledger: the exact RAN/NOT RUN evidence
   rule, and D9.
   **READ THIS FIRST - IT IS WHY SIX ROUNDS FAILED.** S7-S11 each chased the previous symptom:
