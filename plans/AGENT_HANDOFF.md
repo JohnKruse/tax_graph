@@ -3584,6 +3584,22 @@ TY2026 docs drop.
   coverage/accuracy against it as THE metric. **Keep the file and keep computing the diff** as a
   "these two disagree, look here first" signal - it is the only independent check we have, it
   costs nothing, and it is exactly the review-prioritization idea. It is a FLAG, not a grade.
+  **CONFIG STATE - READ BEFORE CHANGING ANYTHING (verified by the Architect, 2026-07-30).** The
+  gitignored live config is already correct for this round. Do NOT "fix" it back to an earlier
+  spec's settings:
+  - `llm.model: google/gemini-3.6-flash` - concrete pin, known good (74/74 cells in S12).
+  - `extraction.expression_mode: none` - **THIS IS CORRECT AND MUST STAY `none`.** It disables
+    the WHOLE-DOCUMENT generator, which was the wrong-shaped call that burned S7-S11. The
+    per-cell micro path is NOT gated by this setting and runs regardless: S12 produced 74 micro
+    calls with `expression_mode: none`. **An earlier spec (S9) told a Worker to set this to
+    `generator`. That instruction is OBSOLETE - setting it back reintroduces the defect.**
+  - `micro_max_tokens: 4000` - bounded, and a canary. If a per-cell call needs more, the scoping
+    is wrong again: STOP AND REPORT rather than raising it.
+  - `provider_routing` all null with `allow_fallbacks: true` - deliberate. Do NOT hard-pin a
+    provider; that produced S10's 502 and no-route dead ends. Attribution comes from the
+    recorded `resolved_provider`, not from constraining the route.
+  - `strict_schema: true`, `require_parameters: true` - keep both; loosening either to force a
+    route is a stop condition.
   1. **STEP 1 - NEW METRIC: COMPLETENESS AGAINST THE FORM ITSELF.** No ground truth required.
      Per form, report: **formula-bearing cells that have (a) an expression and (b) a verbatim
      cited span, over the total formula-bearing cells on that form.** Also report cells with an
