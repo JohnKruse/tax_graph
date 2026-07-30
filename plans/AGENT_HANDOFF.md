@@ -1587,8 +1587,15 @@ the instruction slot; Authority explicitly reports missing authored coverage; do
 citation coverage is visible beside policy counts; and the dossier heading duplication/order
 warts are fixed. No promoted artifacts, graph semantics, verdicts, or citation records changed.
 
-**BALL: WORKER - M20-S13 (ASK THE QUESTION A HUMAN WOULD ANSWER: label + instruction in, line
-numbers out; resolve identity in CODE). Task block under From Architect. S12 is ACCEPTED at
+**BALL: WORKER - M20-S14 (RETIRE THE HANDCRAFTED SET AS A SCORE; COMPLETE 3 FORMS FOR HUMAN
+REVIEW). Task block under From Architect. S13 is ACCEPTED at `a3214fc` - Architect re-verified:
+36 passed / 1 skipped, protected set byte-identical. S13 moved full expression agreement OFF ZERO
+for the first time (0/11 -> 2/7) and cut the 1z prompt from 1,202 to 354 tokens. The 1z answer
+was PERFECT. John's call: the handcrafted set is too flawed to score against and has outlived its
+usefulness as a yardstick - the new target is COMPLETING FORMS FOR REVIEW.**
+
+**Superseded (kept as history):** BALL: WORKER - M20-S13 (ASK THE QUESTION A HUMAN WOULD ANSWER:
+label + instruction in, line numbers out; resolve identity in CODE). S12 is ACCEPTED at
 `a687c95` - the per-cell mechanism works (74/74 cells, 0 failures, no truncation) and it produced
 the first real per-cell numbers: coverage 11/80 (13.8%), operation accuracy 9/11 (81.8%), full
 expression accuracy 0/11. That 0 is OUR BUG, not the model's: all 11 generated expressions are
@@ -3557,7 +3564,71 @@ TY2026 docs drop.
 
 ## From Architect
 
-- **M20-S13 TASK - ASK THE QUESTION A HUMAN WOULD ANSWER (Architect, Claude Opus 5,
+- **M20-S14 TASK - RETIRE THE HANDCRAFTED SET AS A SCORE; COMPLETE 3 FORMS FOR REVIEW
+  (Architect, Claude Opus 5, 2026-07-30). John's call.** Ledger: the exact RAN/NOT RUN evidence
+  rule, and D9.
+  **WHY THE YARDSTICK IS BEING RETIRED - the S13 evidence.** Of seven paired cells, most
+  "failures" were not the model's:
+  - **Line 9: the MODEL IS RIGHT AND THE HANDCRAFTED SET IS WRONG.** The form says "Add lines
+    1z, 2b, 3b, 4b, 5b, 6b, 7a, and 8". The model returned all of them; the live graph OMITS 4b,
+    5b, and 6b. Scored as a miss; it was the model catching a defect in the test set.
+  - **Line 15: a modeling CONVENTION, not an error.** The model returned `SUBTRACT(11b, 14)`,
+    which is what the form says. The handcrafted set encodes `MAX(line_15_pre_floor,
+    zero_floor)` using synthetic intermediate nodes the model cannot know exist.
+  - **Schedule A line 14: same lines, different node ids** - a namespace/granularity mismatch in
+    OUR resolution (`section_1_...` vs `root_line_11b`, and 11 vs 11a/11b).
+  - **Line 11a: operand refs IDENTICAL**, still scored as differing. **Check whether the ROLES
+    came back reversed** - `10 - 9` instead of `9 - 10` is a real correctness bug that the
+    ref-set comparison hides. Fix this regardless of the yardstick decision.
+  **DEMOTE, DO NOT DELETE (Architect ruling).** Stop scoring against it and stop reporting
+  coverage/accuracy against it as THE metric. **Keep the file and keep computing the diff** as a
+  "these two disagree, look here first" signal - it is the only independent check we have, it
+  costs nothing, and it is exactly the review-prioritization idea. It is a FLAG, not a grade.
+  1. **STEP 1 - NEW METRIC: COMPLETENESS AGAINST THE FORM ITSELF.** No ground truth required.
+     Per form, report: **formula-bearing cells that have (a) an expression and (b) a verbatim
+     cited span, over the total formula-bearing cells on that form.** Also report cells with an
+     expression but NO citation, and cells with neither, as separate buckets - the denominator
+     is the form, not a partial hand-built slice.
+  2. **STEP 2 - COMPLETE THREE FORMS. Target: `form_1040_2025`, `schedule_1_2025`,
+     `schedule_a_2025`** (57, 52, and 27 line nodes respectively - real but bounded; John may
+     substitute, in which case use his choice). "Complete" means every formula-bearing line on
+     those forms has an expression with a verbatim citation, or an explicit, reasoned
+     `review_gap` saying why not. **A reasoned gap is an acceptable outcome; a silent miss is
+     not.**
+  3. **STEP 3 - FIX THE INSTRUCTION-SPAN OWNERSHIP BUG. This is likely the biggest blocker.**
+     The instruction text sent for line 1z was actually the **line 27b** instructions ("Check the
+     box on line 27b if you are (1) a minister...") plus EIC earned-income prose, joined to 1z
+     merely because they MENTION line 1z. **Spans are being matched by MENTION, not by
+     OWNERSHIP.** 1z survived because its form face carried the answer; lines whose form face is
+     terse are being fed instructions about a different line entirely. Fix the join so a line
+     gets ITS OWN instruction entry, and report how many addresses had wrong-owner spans.
+  4. **STEP 4 - FIX IDENTITY RESOLUTION FOR LINE REFS.** Schedule A showed the same printed line
+     resolving into a different namespace than the live node. Resolve printed line numbers to the
+     canonical address for that form consistently, and handle the 11 vs 11a/11b granularity case
+     (a bare parent reference where only lettered children exist). Report unresolved line refs as
+     findings rather than dropping or fabricating them.
+  5. **STEP 5 - REPORT, per form:** completeness numerator/denominator, cells with expression but
+     no citation, reasoned review gaps, unresolved line refs, wrong-owner instruction spans
+     fixed, plus resolved model, provider, tokens, and cost. Keep the handcrafted DIFF in the
+     report as a flag section, clearly labelled as NOT a score.
+  6. **What this round does NOT do.** No review UI - pointing the workbench at generated cells is
+     the NEXT round, and it is what these three forms are being completed FOR. No draft
+     promotion. No hand-authoring. No live graph edit. No operation-enum change. No rollover
+     implementation. Review/verdict contract still FROZEN.
+  **PROTECTED TEST SET, still a hard gate even though it is demoted:**
+  `graph/2025/{nodes,edges,rules}/` byte-identical at round end. It stops being a SCORE; it does
+  not become editable.
+  Tier 3. Declared files plus honest `RAN:`/`NOT RUN:`. ASCII, `git diff --check`, module-form
+  `validate 2025`, real preflight with `legacy_mined` explicit (expect **394**),
+  `check_citation_integrity` STRICT (expect **36**). Short pytest temp root; no `--basetemp`.
+  ONE local commit; no push. Cite the ACTUAL commit hash.
+  **Stop conditions:** any diff in `graph/2025/{nodes,edges,rules}/`; any draft promoted; any
+  hand-authored expression or citation; fabricating a node for an unresolved line ref;
+  `legacy_mined` above 394; strict mismatches above 36. **A model or provider failure is NOT a
+  stop condition** - fall back to a pinned concrete alternative;
+  `google/gemini-3.6-flash` is known good.
+
+- **M20-S13 TASK (COMPLETE, accepted at `a3214fc`) - ASK THE QUESTION A HUMAN WOULD ANSWER (Architect, Claude Opus 5,
   2026-07-30). John's design ruling. THE MODEL DOES READING COMPREHENSION; CODE DOES IDENTITY.**
   Ledger: the exact RAN/NOT RUN evidence rule, and D9.
   **JOHN'S TWO OBSERVATIONS, AND THEY ARE THE SAME MISTAKE.** (a) We send WAY too much: 59
