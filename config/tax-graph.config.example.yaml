@@ -41,6 +41,7 @@ llm:
 
 extraction:
   mode: one_pass                  # one_pass or outline_first; outline_first is the M4 Step 7 canary path
+  expression_mode: generator      # outline_first expression pass: none or generator
   # M8: routing is deterministic from check outcomes; confidence is telemetry only.
   calibration_sample_rate: 0.10  # share of clean objects a human audits cold (escapes -> drill catalog)
   calibration_min: 5             # minimum calibration sample size per form

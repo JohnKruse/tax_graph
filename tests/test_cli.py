@@ -9,10 +9,35 @@ from types import SimpleNamespace
 import pytest
 
 from tax_graph.acquire.citation_check import CitationIntegrityReport
-from tax_graph.cli import acquire_command, promote_instruction_command
+from tax_graph.cli import acquire_command, promote_instruction_command, verify_expression_agreement_command
 
 
 ROOT = Path(__file__).resolve().parents[1]
+
+
+@pytest.mark.m20
+def test_expression_agreement_command_writes_report(tmp_path, capsys):
+    root = tmp_path / "project"
+    (root / "graph" / "2025").mkdir(parents=True)
+    for kind in ("documents", "nodes", "edges", "rules", "citations", "decisions", "tables"):
+        (root / "graph" / "2025" / kind).mkdir()
+    (root / "graph" / "2025" / "nodes" / "nodes.yaml").write_text(
+        "- node_id: form_1040_2025_target\n  document_id: form_1040_2025\n  node_type: computed\n",
+        encoding="ascii",
+    )
+    (root / "graph" / "2025" / "rules" / "rules.yaml").write_text(
+        "- rule_id: rule_sum\n  operation: SUM\n  description: Add values.\n",
+        encoding="ascii",
+    )
+    (root / "graph" / "2025" / "edges" / "edges.yaml").write_text(
+        "- edge_id: edge_a\n  source: form_1040_2025_a\n  target: form_1040_2025_target\n  relationship: CALCULATES\n  rule_id: rule_sum\n  role: addend\n",
+        encoding="ascii",
+    )
+
+    assert verify_expression_agreement_command(root=root) == 0
+    output = capsys.readouterr().out
+    assert "expression agreement report:" in output
+    assert (root / "output" / "m20_s7_expression_agreement.yaml").exists()
 
 
 def _copy_acquire_root(tmp_path):

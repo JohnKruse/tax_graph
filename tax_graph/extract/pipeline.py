@@ -53,6 +53,13 @@ def extract_document(
         critique_drafts(document, batch, client=llm_client, config=settings, root=root_path)
     elif mode == "outline_first":
         batch = generate_outline_first_drafts(document, client=llm_client, config=settings, root=root_path)
+        expression_mode = str(get_config_value(settings, "extraction.expression_mode", "none"))
+        if expression_mode == "generator":
+            expression_batch = generate_drafts(document, client=llm_client, config=settings, root=root_path)
+            critique_drafts(document, expression_batch, client=llm_client, config=settings, root=root_path)
+            batch = _merge_expression_batch(batch, expression_batch)
+        elif expression_mode not in {"none", ""}:
+            raise ValueError(f"unsupported extraction.expression_mode: {expression_mode}")
     else:
         raise ValueError(f"unsupported extraction.mode: {mode}")
     if gate is not None:
@@ -68,6 +75,47 @@ def extract_document(
     )
     routed = route_drafts(batch, checks, config=settings, tier_inputs=tier_inputs)
     return write_routed_drafts(batch, routed, root=root_path, config=settings, document=document)
+
+
+def _merge_expression_batch(base: Any, expression_batch: Any) -> Any:
+    """Add generator-backed expressions to an outline-first cell projection.
+
+    The outline pass remains the source of the broad form-cell inventory.  The
+    generator pass contributes only expression objects and the citations they
+    reference, so a second model response cannot replace or hand-edit the
+    deterministic cell spine.  If a generator returns no expression objects,
+    the outline result is preserved and the missing layer remains measurable.
+    """
+    expression_objects = [
+        obj for obj in expression_batch.objects if obj.kind in {"edges", "rules"}
+    ]
+    if not expression_objects:
+        return base
+
+    expression_citation_ids = {
+        str(citation_id)
+        for obj in expression_objects
+        for citation_id in obj.data.get("citation_refs", []) or []
+    }
+    generated_citations = [
+        obj
+        for obj in expression_batch.items("citations")
+        if obj.object_id in expression_citation_ids
+    ]
+    replaced = {(obj.kind, obj.object_id) for obj in expression_objects}
+    replaced.update((obj.kind, obj.object_id) for obj in generated_citations)
+    merged = [
+        obj
+        for obj in base.objects
+        if (obj.kind, obj.object_id) not in replaced
+    ]
+    merged.extend(generated_citations)
+    merged.extend(expression_objects)
+    return type(base)(
+        document_id=base.document_id,
+        year=base.year,
+        objects=merged,
+    )
 
 
 def extract_year(

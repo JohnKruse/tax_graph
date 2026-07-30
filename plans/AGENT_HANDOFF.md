@@ -12,7 +12,70 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 - History: pruned at each phase close (latest: 2026-07-23). Full narration lives in
   `plans/archive/` (phase plans with close notes) and git history.
 
-## Current state (2026-07-29)
+## Current state (2026-07-30)
+
+**Worker session checkpoint - M20-S7 implementation (2026-07-30):** Global canary: Ledger
+Llama. Phase canary: Ground Truth. Model: GPT-5 Codex; effort: default; usage/quota/context
+indicators are not exposed. John gave go via the current task request. Single declared step:
+diagnose the missing expression layer, make the generator/critic emit schema-valid edges and
+rules if needed, and produce the committed expression-agreement report against the protected
+handcrafted graph. Applicable defect-ledger entries: D4, D6, D8, D9, D11, and the exact
+RAN/NOT RUN evidence rule. No live graph edit, draft promotion, generated citation or label
+hand edit, operation-enum change, review-contract change, or UI change is in scope.
+
+**M20-S7 pre-expensive regeneration checkpoint (2026-07-30):** The expression-enabled
+`form_1040_2025` run completed in 115.6s and wrote `edges=4` and `rules=3` to its ignored
+draft directory; the live `graph/2025/{nodes,edges,rules}/` diff is empty. The first report
+is honest and low: `expression_agreement=0`, `missing_in_draft=80`, `extra_in_draft=3`.
+The generated ids do not match the protected canonical ids and the generated edges omitted
+operand roles, so no normalization or hand repair will be applied. The client exposes no
+token or price usage, so exact spend is unavailable. The full 16-form regeneration will use
+four concurrent document workers, write only `_drafts`, and be followed by the committed
+comparison report and declared gates.
+
+**M20-S7 full regeneration result (2026-07-30):** RAN: the approved four-worker command
+`$script = @' ... extract_document ... ' @; & .venv\Scripts\python.exe -c $script` ->
+15/15 manifest form documents completed successfully in 527.8s; the manifest has 15 form
+entries, not 16. Every form draft now has generated expression files. RAN: module-form
+`verify expression-agreement --year 2025` -> `expression_agreement=0`,
+`operation_agreement_operands_differ=0`, `operation_disagreement=0`, `missing_in_draft=80`,
+`extra_in_draft=35`. The report is at `output/m20_s7_expression_agreement.yaml`; the live
+`graph/2025/{nodes,edges,rules}/` diff remains empty. The zero agreement is retained as the
+pipeline measurement: generated targets use a different id convention and do not yet join
+the protected expression set. Generated non-COPY edges without roles are now explicit
+deterministic review findings, not silently accepted operands.
+
+**M20-S7 focused-test evidence so far (2026-07-30):** The first expression test attempt is
+`NOT RUN as evidence`: `C:\tmp` creation was denied before pytest setup. Final reruns are
+recorded as follows: `tests/test_expression_agreement_m20.py` -> 3 passed; `tests/test_extract_m4.py`
+-> 22 passed; `tests/test_extract_outline_m4.py` -> 9 passed after the explicit-mode fix;
+`tests/test_draft_route_m20.py` -> 2 passed; `tests/test_cli.py` -> 6 passed. All reruns used
+fresh writable `PYTEST_DEBUG_TEMPROOT` paths and no `--basetemp`.
+
+**M20-S7 final machine gates (2026-07-30):** RAN: `tools/check_ascii.py` -> ASCII check OK;
+`git diff --check` -> exit 0; protected graph diff -> empty; module-form `tax_graph.cli
+validate 2025` -> graph integrity OK, documents=18, nodes=441, tables=2, edges=409,
+rules=17, citations=401; module-form `workbench.cli --root . --year 2025 preflight` ->
+exit 0, entries=18, units=2224, derived cells=2120, review_gap=591, unreviewed=1529,
+legacy_mined=394; strict citation report -> checked=401, strict_mismatches=36. No draft was
+promoted and no live graph artifact was edited.
+
+**M20-S7 local close (2026-07-30):** One local commit created for this step; no push was
+performed. The next decision is whether the honest zero-agreement result warrants an address
+identity bridge or a generator-prompt/structure round; this Worker did not alter the protected
+handcrafted test set to improve the number.
+
+**M20-S7 Step 1 diagnosis checkpoint (2026-07-30):** The configured OpenRouter model
+`~google/gemini-flash-latest` returned a raw structured response for `form_1040_2025` with
+`nodes=8`, `edges=4`, `rules=4`, `citations=5`, and `decisions=1`; the complete raw response is
+captured at `C:\tmp\m20_s7_form_1040_raw.json`. `parse_generator_response` preserves all
+`DRAFT_KINDS`, and `write_routed_drafts` writes every non-empty kind, so the one-pass path does
+not drop edges or rules. The missing live draft expression layer is caused by the configured
+`extraction.mode: outline_first`: `generate_outline_first_drafts` only creates formula edges
+and rules for outline nodes classified as transaction tables or totals, and the 1040 outline
+has neither, leaving only nodes/citations. Step 2 must therefore repair the production
+outline-first plumbing or add an explicit expression-generation path; it must not alter the
+protected live graph or hand-author expressions.
 
 **Worker session checkpoint - M20-S6-1 implementation (2026-07-29):** Global canary: Ledger
 Llama. Phase canary: Ground Truth. Model: GPT-5 Codex; effort: default; usage/quota/context

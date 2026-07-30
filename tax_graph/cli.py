@@ -581,6 +581,22 @@ def verify_report_command(
     return 0
 
 
+def verify_expression_agreement_command(
+    year: str = "2025",
+    root: str | Path | None = None,
+) -> int:
+    """Compare generated draft expressions with the protected live graph."""
+    from tax_graph.verify.expressions import build_expression_agreement_report, write_expression_agreement_report
+
+    root_path = Path(root).resolve() if root is not None else project_root()
+    report = build_expression_agreement_report(year=year, root=root_path)
+    path = write_expression_agreement_report(report, root=root_path)
+    print(f"expression agreement report: {path}")
+    for category, count in report["totals"].items():
+        print(f"  {category}: {count}")
+    return 0
+
+
 def verify_record_command(
     year: str = "2025",
     root: str | Path | None = None,
@@ -1331,6 +1347,16 @@ def _build_typer_app():
     ) -> None:
         """Roll up per-form verification metrics (tiers, flags, payoff lines)."""
         raise_code = verify_report_command(year=year, root=root)
+        if raise_code:
+            raise typer.Exit(raise_code)
+
+    @verify_cli.command("expression-agreement")
+    def verify_expression_agreement_cli(
+        year: str = typer.Option("2025", "--year", "-y", help="Tax year to compare."),
+        root: Path | None = typer.Option(None, "--root", help="Project root override."),
+    ) -> None:
+        """Compare generated expressions with the protected live graph."""
+        raise_code = verify_expression_agreement_command(year=year, root=root)
         if raise_code:
             raise typer.Exit(raise_code)
 

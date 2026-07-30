@@ -38,6 +38,7 @@ def run_deterministic_checks(
     issues: list[CheckIssue] = []
     issues.extend(_schema_issues(batch, root=root))
     issues.extend(_rule_citation_issues(batch))
+    issues.extend(_expression_operand_role_issues(batch))
     issues.extend(_line_completeness_issues(document, batch))
     issues.extend(_field_grid_issues(document, batch))
     issues.extend(_property_issues(batch, root=root))
@@ -70,6 +71,28 @@ def _rule_citation_issues(batch: ExtractionBatch) -> list[CheckIssue]:
     for rule in batch.items("rules"):
         if not rule.data.get("citation_refs"):
             issues.append(CheckIssue("rules", rule.object_id, "rule has no citation_refs"))
+    return issues
+
+
+def _expression_operand_role_issues(batch: ExtractionBatch) -> list[CheckIssue]:
+    """Require roles needed to reconstruct each generated expression."""
+    operations = {
+        rule.object_id: str(rule.data.get("operation", ""))
+        for rule in batch.items("rules")
+    }
+    issues: list[CheckIssue] = []
+    for edge in batch.items("edges"):
+        if edge.data.get("relationship") != "CALCULATES":
+            continue
+        operation = operations.get(str(edge.data.get("rule_id", "")), "")
+        if operation and operation != "COPY" and not str(edge.data.get("role", "")).strip():
+            issues.append(
+                CheckIssue(
+                    "edges",
+                    edge.object_id,
+                    f"expression edge role: {operation} operand role is required",
+                )
+            )
     return issues
 
 

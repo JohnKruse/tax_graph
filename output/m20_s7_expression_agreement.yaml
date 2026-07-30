@@ -1,0 +1,1705 @@
+schema_version: 1
+tax_year: 2025
+protected_live_graph: true
+generated_draft_root: graph/2025/_drafts
+totals:
+  expression_agreement: 0
+  operation_agreement_operands_differ: 0
+  operation_disagreement: 0
+  missing_in_draft: 80
+  extra_in_draft: 35
+by_document:
+  form_1040_2025:
+    expression_agreement: 0
+    operation_agreement_operands_differ: 0
+    operation_disagreement: 0
+    missing_in_draft: 20
+    extra_in_draft: 4
+  form_1099b_2025:
+    expression_agreement: 0
+    operation_agreement_operands_differ: 0
+    operation_disagreement: 0
+    missing_in_draft: 0
+    extra_in_draft: 2
+  form_13614_c_2025:
+    expression_agreement: 0
+    operation_agreement_operands_differ: 0
+    operation_disagreement: 0
+    missing_in_draft: 0
+    extra_in_draft: 2
+  form_6251_2025:
+    expression_agreement: 0
+    operation_agreement_operands_differ: 0
+    operation_disagreement: 0
+    missing_in_draft: 0
+    extra_in_draft: 4
+  form_8949_2025:
+    expression_agreement: 0
+    operation_agreement_operands_differ: 0
+    operation_disagreement: 0
+    missing_in_draft: 12
+    extra_in_draft: 1
+  instructions_schedule_d_2025:
+    expression_agreement: 0
+    operation_agreement_operands_differ: 0
+    operation_disagreement: 0
+    missing_in_draft: 27
+    extra_in_draft: 0
+  schedule_1_2025:
+    expression_agreement: 0
+    operation_agreement_operands_differ: 0
+    operation_disagreement: 0
+    missing_in_draft: 4
+    extra_in_draft: 2
+  schedule_1a_2025:
+    expression_agreement: 0
+    operation_agreement_operands_differ: 0
+    operation_disagreement: 0
+    missing_in_draft: 3
+    extra_in_draft: 3
+  schedule_2_2025:
+    expression_agreement: 0
+    operation_agreement_operands_differ: 0
+    operation_disagreement: 0
+    missing_in_draft: 0
+    extra_in_draft: 3
+  schedule_3_2025:
+    expression_agreement: 0
+    operation_agreement_operands_differ: 0
+    operation_disagreement: 0
+    missing_in_draft: 0
+    extra_in_draft: 4
+  schedule_a_2025:
+    expression_agreement: 0
+    operation_agreement_operands_differ: 0
+    operation_disagreement: 0
+    missing_in_draft: 5
+    extra_in_draft: 4
+  schedule_b_2025:
+    expression_agreement: 0
+    operation_agreement_operands_differ: 0
+    operation_disagreement: 0
+    missing_in_draft: 0
+    extra_in_draft: 3
+  schedule_d_2025:
+    expression_agreement: 0
+    operation_agreement_operands_differ: 0
+    operation_disagreement: 0
+    missing_in_draft: 9
+    extra_in_draft: 3
+rows:
+- document_id: form_13614_c_2025
+  target: f13614c_2025_marital_status
+  category: extra_in_draft
+  live: null
+  generated:
+    document_id: form_13614_c_2025
+    operation: REQUIRE_INPUT
+    operands:
+    - ref: f13614c_2025_marital_status
+    rule_ids:
+    - rule_require_marital
+- document_id: form_13614_c_2025
+  target: f13614c_2025_total_dependents
+  category: extra_in_draft
+  live: null
+  generated:
+    document_id: form_13614_c_2025
+    operation: SUM
+    operands:
+    - ref: f13614c_2025_dep_name_template
+    rule_ids:
+    - rule_sum_dependents
+- document_id: form_6251_2025
+  target: f6251_2025_line_11
+  category: extra_in_draft
+  live: null
+  generated:
+    document_id: form_6251_2025
+    operation: SUBTRACT
+    operands:
+    - ref: f6251_2025_line_9
+    - ref: f6251_2025_line_10
+    rule_ids:
+    - f6251_rule_line11_sub
+- document_id: form_6251_2025
+  target: f6251_2025_line_1b
+  category: extra_in_draft
+  live: null
+  generated:
+    document_id: form_6251_2025
+    operation: SUBTRACT
+    operands:
+    - ref: f6251_2025_line_1a
+    rule_ids:
+    - f6251_rule_1b
+- document_id: form_6251_2025
+  target: f6251_2025_line_4
+  category: extra_in_draft
+  live: null
+  generated:
+    document_id: form_6251_2025
+    operation: SUM
+    operands:
+    - ref: f6251_2025_line_1b
+    rule_ids:
+    - f6251_rule_line4
+- document_id: form_6251_2025
+  target: f6251_2025_line_6
+  category: extra_in_draft
+  live: null
+  generated:
+    document_id: form_6251_2025
+    operation: SUBTRACT
+    operands:
+    - ref: f6251_2025_line_4
+    - ref: f6251_2025_line_5
+    rule_ids:
+    - f6251_rule_line6_sub
+- document_id: form_8949_2025
+  target: f8949_2025_p1_line_2h
+  category: extra_in_draft
+  live: null
+  generated:
+    document_id: form_8949_2025
+    operation: SUM
+    operands:
+    - ref: f8949_2025_p1_line_2d
+    rule_ids:
+    - f8949_2025_gain_loss_formula
+- document_id: form_1040_2025
+  target: form_1040_2025_line_11a
+  category: extra_in_draft
+  live: null
+  generated:
+    document_id: form_1040_2025
+    operation: SUBTRACT
+    operands:
+    - ref: form_1040_2025_line_9
+    rule_ids:
+    - f1040_2025_agi_rule
+- document_id: form_1040_2025
+  target: form_1040_2025_line_34
+  category: extra_in_draft
+  live: null
+  generated:
+    document_id: form_1040_2025
+    operation: SUBTRACT
+    operands:
+    - ref: form_1040_2025_line_33
+    rule_ids:
+    - f1040_2025_overpayment_rule
+- document_id: form_1040_2025
+  target: form_1040_2025_line_37
+  category: extra_in_draft
+  live: null
+  generated:
+    document_id: form_1040_2025
+    operation: SUBTRACT
+    operands:
+    - ref: form_1040_2025_line_24
+    rule_ids:
+    - f1040_2025_amount_owe_rule
+- document_id: form_1040_2025
+  target: form_1040_2025_line_9
+  category: extra_in_draft
+  live: null
+  generated:
+    document_id: form_1040_2025
+    operation: SUM
+    operands:
+    - ref: form_1040_2025_line_1z
+    rule_ids:
+    - f1040_2025_total_income_rule
+- document_id: form_1040_2025
+  target: form_1040_2025_non_sdtw_tax
+  category: missing_in_draft
+  live:
+    document_id: form_1040_2025
+    operation: IF_ELSE
+    operands:
+    - ref: form_1040_2025_zero_floor
+      role: threshold
+    - ref: form_1040_2025_qdcgt_line_25
+      role: when_true
+    - ref: form_1040_2025_qdcgt_line_4
+      role: condition
+    - ref: form_1040_2025_regular_tax
+      role: when_false
+    rule_ids:
+    - if_greater_than_currency
+  generated: null
+- document_id: form_1040_2025
+  target: form_1040_2025_qdcgt_line_16_pre_floor
+  category: missing_in_draft
+  live:
+    document_id: form_1040_2025
+    operation: SUBTRACT
+    operands:
+    - ref: form_1040_2025_qdcgt_line_14
+      role: minuend
+    - ref: form_1040_2025_qdcgt_line_15
+      role: subtrahend
+    rule_ids:
+    - subtract_currency
+  generated: null
+- document_id: form_1040_2025
+  target: form_1040_2025_qdcgt_line_22_tax_bracket
+  category: missing_in_draft
+  live:
+    document_id: form_1040_2025
+    operation: LOOKUP_BRACKET
+    operands:
+    - ref: form_1040_2025_qdcgt_line_5
+      role: amount
+    - ref: form_1040_2025_regular_tax_brackets
+      role: brackets
+    rule_ids:
+    - lookup_bracket_tax
+  generated: null
+- document_id: form_1040_2025
+  target: form_1040_2025_qdcgt_line_22_tax_table
+  category: missing_in_draft
+  live:
+    document_id: form_1040_2025
+    operation: LOOKUP_TABLE
+    operands:
+    - ref: taxpayer_2025_filing_status
+      role: status
+    - ref: form_1040_2025_qdcgt_line_5
+      role: amount
+    rule_ids:
+    - lookup_tax_table_amount
+  generated: null
+- document_id: form_1040_2025
+  target: form_1040_2025_qdcgt_line_24_tax_bracket
+  category: missing_in_draft
+  live:
+    document_id: form_1040_2025
+    operation: LOOKUP_BRACKET
+    operands:
+    - ref: form_1040_2025_qdcgt_line_1
+      role: amount
+    - ref: form_1040_2025_regular_tax_brackets
+      role: brackets
+    rule_ids:
+    - lookup_bracket_tax
+  generated: null
+- document_id: form_1040_2025
+  target: form_1040_2025_qdcgt_line_24_tax_table
+  category: missing_in_draft
+  live:
+    document_id: form_1040_2025
+    operation: LOOKUP_TABLE
+    operands:
+    - ref: taxpayer_2025_filing_status
+      role: status
+    - ref: form_1040_2025_qdcgt_line_1
+      role: amount
+    rule_ids:
+    - lookup_tax_table_amount
+  generated: null
+- document_id: form_1040_2025
+  target: form_1040_2025_qdcgt_line_3_candidate
+  category: missing_in_draft
+  live:
+    document_id: form_1040_2025
+    operation: MIN
+    operands:
+    - ref: schedule_d_2025_line_15_net_lt
+      role: candidate
+    - ref: schedule_d_2025_line_16_total
+      role: candidate
+    rule_ids:
+    - min_currency
+  generated: null
+- document_id: form_1040_2025
+  target: form_1040_2025_qdcgt_line_5_pre_floor
+  category: missing_in_draft
+  live:
+    document_id: form_1040_2025
+    operation: SUBTRACT
+    operands:
+    - ref: form_1040_2025_qdcgt_line_1
+      role: minuend
+    - ref: form_1040_2025_qdcgt_line_4
+      role: subtrahend
+    rule_ids:
+    - subtract_currency
+  generated: null
+- document_id: form_1040_2025
+  target: form_1040_2025_regular_tax
+  category: missing_in_draft
+  live:
+    document_id: form_1040_2025
+    operation: IF_ELSE
+    operands:
+    - ref: form_1040_2025_root_line_15
+      role: condition
+    - ref: form_1040_2025_regular_tax_bracket_amount
+      role: when_false
+    - ref: form_1040_2025_regular_tax_table_amount
+      role: when_true
+    - ref: form_1040_2025_tax_table_threshold
+      role: threshold
+    rule_ids:
+    - if_less_than_currency
+  generated: null
+- document_id: form_1040_2025
+  target: form_1040_2025_regular_tax_bracket_amount
+  category: missing_in_draft
+  live:
+    document_id: form_1040_2025
+    operation: LOOKUP_BRACKET
+    operands:
+    - ref: form_1040_2025_root_line_15
+      role: amount
+    - ref: form_1040_2025_regular_tax_brackets
+      role: brackets
+    rule_ids:
+    - lookup_bracket_tax
+  generated: null
+- document_id: form_1040_2025
+  target: form_1040_2025_regular_tax_brackets
+  category: missing_in_draft
+  live:
+    document_id: form_1040_2025
+    operation: LOOKUP_TABLE
+    operands:
+    - ref: form_1040_2025_brackets_hoh
+      role: head_of_household
+    - ref: form_1040_2025_brackets_mfj
+      role: married_filing_jointly
+    - ref: form_1040_2025_brackets_mfs
+      role: married_filing_separately
+    - ref: form_1040_2025_brackets_qss
+      role: qualifying_surviving_spouse
+    - ref: form_1040_2025_brackets_single
+      role: single
+    - ref: taxpayer_2025_filing_status
+      role: key
+    rule_ids:
+    - lookup_selected_value
+  generated: null
+- document_id: form_1040_2025
+  target: form_1040_2025_regular_tax_table_amount
+  category: missing_in_draft
+  live:
+    document_id: form_1040_2025
+    operation: LOOKUP_TABLE
+    operands:
+    - ref: form_1040_2025_root_line_15
+      role: amount
+    - ref: taxpayer_2025_filing_status
+      role: status
+    rule_ids:
+    - lookup_tax_table_amount
+  generated: null
+- document_id: form_1040_2025
+  target: form_1040_2025_root_line_11a
+  category: missing_in_draft
+  live:
+    document_id: form_1040_2025
+    operation: SUBTRACT
+    operands:
+    - ref: form_1040_2025_root_line_10
+      role: subtrahend
+    - ref: form_1040_2025_root_line_9
+      role: minuend
+    rule_ids:
+    - subtract_currency
+  generated: null
+- document_id: form_1040_2025
+  target: form_1040_2025_root_line_11b
+  category: missing_in_draft
+  live:
+    document_id: form_1040_2025
+    operation: COPY
+    operands:
+    - ref: form_1040_2025_root_line_11a
+    rule_ids:
+    - copy_currency_value
+  generated: null
+- document_id: form_1040_2025
+  target: form_1040_2025_root_line_14
+  category: missing_in_draft
+  live:
+    document_id: form_1040_2025
+    operation: SUM
+    operands:
+    - ref: form_1040_2025_root_line_12e
+      role: addend
+    - ref: form_1040_2025_root_line_13a
+      role: addend
+    - ref: form_1040_2025_root_line_13b
+      role: addend
+    rule_ids:
+    - sum_currency
+  generated: null
+- document_id: form_1040_2025
+  target: form_1040_2025_root_line_15
+  category: missing_in_draft
+  live:
+    document_id: form_1040_2025
+    operation: MAX
+    operands:
+    - ref: form_1040_2025_root_line_15_pre_floor
+      role: candidate
+    - ref: form_1040_2025_zero_floor
+      role: candidate
+    rule_ids:
+    - max_currency
+  generated: null
+- document_id: form_1040_2025
+  target: form_1040_2025_root_line_15_pre_floor
+  category: missing_in_draft
+  live:
+    document_id: form_1040_2025
+    operation: SUBTRACT
+    operands:
+    - ref: form_1040_2025_root_line_11b
+      role: minuend
+    - ref: form_1040_2025_root_line_14
+      role: subtrahend
+    rule_ids:
+    - subtract_currency
+  generated: null
+- document_id: form_1040_2025
+  target: form_1040_2025_root_line_9
+  category: missing_in_draft
+  live:
+    document_id: form_1040_2025
+    operation: SUM
+    operands:
+    - ref: form_1040_2025_root_line_z
+      role: addend
+    - ref: form_1040_2025_root_line_2b
+      role: addend
+    - ref: form_1040_2025_root_line_3b
+      role: addend
+    - ref: form_1040_2025_line_7_capital_gain_loss
+      role: addend
+    - ref: form_1040_2025_root_line_8
+      role: addend
+    rule_ids:
+    - sum_currency
+  generated: null
+- document_id: form_1040_2025
+  target: form_1040_2025_root_line_z
+  category: missing_in_draft
+  live:
+    document_id: form_1040_2025
+    operation: SUM
+    operands:
+    - ref: form_1040_2025_root_line_1a
+      role: addend
+    - ref: form_1040_2025_root_line_1b
+      role: addend
+    - ref: form_1040_2025_root_line_1c
+      role: addend
+    - ref: form_1040_2025_root_line_1d
+      role: addend
+    - ref: form_1040_2025_root_line_1e
+      role: addend
+    - ref: form_1040_2025_root_line_1f
+      role: addend
+    - ref: form_1040_2025_root_line_1g
+      role: addend
+    - ref: form_1040_2025_root_line_1h
+      role: addend
+    rule_ids:
+    - sum_currency
+  generated: null
+- document_id: form_1040_2025
+  target: form_1040_2025_standard_deduction_amount
+  category: missing_in_draft
+  live:
+    document_id: form_1040_2025
+    operation: LOOKUP_TABLE
+    operands:
+    - ref: taxpayer_2025_filing_status
+      role: key
+    - ref: form_1040_2025_standard_deduction_hoh
+      role: head_of_household
+    - ref: form_1040_2025_standard_deduction_mfj
+      role: married_filing_jointly
+    - ref: form_1040_2025_standard_deduction_mfs
+      role: married_filing_separately
+    - ref: form_1040_2025_standard_deduction_qss
+      role: qualifying_surviving_spouse
+    - ref: form_1040_2025_standard_deduction_single
+      role: single
+    rule_ids:
+    - lookup_selected_value
+  generated: null
+- document_id: form_1099b_2025
+  target: form_6781_aggregate_profit
+  category: extra_in_draft
+  live: null
+  generated:
+    document_id: form_1099b_2025
+    operation: COPY
+    operands:
+    - ref: f1099b_2025_val_11
+    rule_ids:
+    - f1099b_rule_copy_agg_profit
+- document_id: form_8949_2025
+  target: form_8949_2025_part_i_line_1_column_d_minus_e
+  category: missing_in_draft
+  live:
+    document_id: form_8949_2025
+    operation: SUBTRACT
+    operands:
+    - ref: form_8949_2025_part_i_line_1_column_d
+      role: minuend
+    - ref: form_8949_2025_part_i_line_1_column_e
+      role: subtrahend
+    rule_ids:
+    - subtract_currency
+  generated: null
+- document_id: form_8949_2025
+  target: form_8949_2025_part_i_line_1_column_h
+  category: missing_in_draft
+  live:
+    document_id: form_8949_2025
+    operation: SUM
+    operands:
+    - ref: form_8949_2025_part_i_line_1_column_d_minus_e
+      role: addend
+    - ref: form_8949_2025_part_i_line_1_column_g
+      role: addend
+    rule_ids:
+    - sum_currency
+  generated: null
+- document_id: form_8949_2025
+  target: form_8949_2025_part_i_line_2_line_2_column_d_total
+  category: missing_in_draft
+  live:
+    document_id: form_8949_2025
+    operation: MISSING
+    operands: []
+    rule_ids: []
+  generated: null
+- document_id: form_8949_2025
+  target: form_8949_2025_part_i_line_2_line_2_column_e_total
+  category: missing_in_draft
+  live:
+    document_id: form_8949_2025
+    operation: MISSING
+    operands: []
+    rule_ids: []
+  generated: null
+- document_id: form_8949_2025
+  target: form_8949_2025_part_i_line_2_line_2_column_g_total
+  category: missing_in_draft
+  live:
+    document_id: form_8949_2025
+    operation: MISSING
+    operands: []
+    rule_ids: []
+  generated: null
+- document_id: form_8949_2025
+  target: form_8949_2025_part_i_line_2_line_2_column_h_total
+  category: missing_in_draft
+  live:
+    document_id: form_8949_2025
+    operation: MISSING
+    operands: []
+    rule_ids: []
+  generated: null
+- document_id: form_8949_2025
+  target: form_8949_2025_part_ii_line_1_column_d_minus_e
+  category: missing_in_draft
+  live:
+    document_id: form_8949_2025
+    operation: SUBTRACT
+    operands:
+    - ref: form_8949_2025_part_ii_line_1_column_d
+      role: minuend
+    - ref: form_8949_2025_part_ii_line_1_column_e
+      role: subtrahend
+    rule_ids:
+    - subtract_currency
+  generated: null
+- document_id: form_8949_2025
+  target: form_8949_2025_part_ii_line_1_column_h
+  category: missing_in_draft
+  live:
+    document_id: form_8949_2025
+    operation: SUM
+    operands:
+    - ref: form_8949_2025_part_ii_line_1_column_d_minus_e
+      role: addend
+    - ref: form_8949_2025_part_ii_line_1_column_g
+      role: addend
+    rule_ids:
+    - sum_currency
+  generated: null
+- document_id: form_8949_2025
+  target: form_8949_2025_part_ii_line_2_line_2_column_d_total
+  category: missing_in_draft
+  live:
+    document_id: form_8949_2025
+    operation: MISSING
+    operands: []
+    rule_ids: []
+  generated: null
+- document_id: form_8949_2025
+  target: form_8949_2025_part_ii_line_2_line_2_column_e_total
+  category: missing_in_draft
+  live:
+    document_id: form_8949_2025
+    operation: MISSING
+    operands: []
+    rule_ids: []
+  generated: null
+- document_id: form_8949_2025
+  target: form_8949_2025_part_ii_line_2_line_2_column_g_total
+  category: missing_in_draft
+  live:
+    document_id: form_8949_2025
+    operation: MISSING
+    operands: []
+    rule_ids: []
+  generated: null
+- document_id: form_8949_2025
+  target: form_8949_2025_part_ii_line_2_line_2_column_h_total
+  category: missing_in_draft
+  live:
+    document_id: form_8949_2025
+    operation: MISSING
+    operands: []
+    rule_ids: []
+  generated: null
+- document_id: form_1099b_2025
+  target: form_8949_proceeds
+  category: extra_in_draft
+  live: null
+  generated:
+    document_id: form_1099b_2025
+    operation: COPY
+    operands:
+    - ref: f1099b_2025_val_1d
+    rule_ids:
+    - f1099b_rule_copy_proceeds
+- document_id: schedule_1_2025
+  target: schedule_1_2025_line_10
+  category: extra_in_draft
+  live: null
+  generated:
+    document_id: schedule_1_2025
+    operation: SUM
+    operands:
+    - ref: schedule_1_2025_line_1
+    - ref: schedule_1_2025_line_9
+    rule_ids:
+    - rule_combine_additional_income
+- document_id: schedule_1_2025
+  target: schedule_1_2025_line_26
+  category: extra_in_draft
+  live: null
+  generated:
+    document_id: schedule_1_2025
+    operation: SUM
+    operands:
+    - ref: schedule_1_2025_line_11
+    - ref: schedule_1_2025_line_25
+    rule_ids:
+    - rule_sum_adjustments
+- document_id: schedule_1_2025
+  target: schedule_1_2025_part_i_line_10
+  category: missing_in_draft
+  live:
+    document_id: schedule_1_2025
+    operation: SUM
+    operands:
+    - ref: schedule_1_2025_root_line_1
+      role: addend
+    - ref: schedule_1_2025_part_i_line_2a
+      role: addend
+    - ref: schedule_1_2025_part_i_line_3
+      role: addend
+    - ref: schedule_1_2025_part_i_line_4
+      role: addend
+    - ref: schedule_1_2025_part_i_line_5
+      role: addend
+    - ref: schedule_1_2025_part_i_line_6
+      role: addend
+    - ref: schedule_1_2025_part_i_line_7
+      role: addend
+    - ref: schedule_1_2025_part_i_line_9
+      role: addend
+    rule_ids:
+    - sum_currency
+  generated: null
+- document_id: schedule_1_2025
+  target: schedule_1_2025_part_i_line_9
+  category: missing_in_draft
+  live:
+    document_id: schedule_1_2025
+    operation: SUM
+    operands:
+    - ref: schedule_1_2025_part_i_line_8v
+      role: addend
+    - ref: schedule_1_2025_part_i_line_8z
+      role: addend
+    rule_ids:
+    - sum_currency
+  generated: null
+- document_id: schedule_1_2025
+  target: schedule_1_2025_part_ii_line_25
+  category: missing_in_draft
+  live:
+    document_id: schedule_1_2025
+    operation: SUM
+    operands:
+    - ref: schedule_1_2025_part_ii_line_24e
+      role: addend
+    - ref: schedule_1_2025_part_ii_line_24z
+      role: addend
+    rule_ids:
+    - sum_currency
+  generated: null
+- document_id: schedule_1_2025
+  target: schedule_1_2025_part_ii_line_26
+  category: missing_in_draft
+  live:
+    document_id: schedule_1_2025
+    operation: SUM
+    operands:
+    - ref: schedule_1_2025_part_ii_line_11
+      role: addend
+    - ref: schedule_1_2025_part_ii_line_12
+      role: addend
+    - ref: schedule_1_2025_part_ii_line_13
+      role: addend
+    - ref: schedule_1_2025_part_ii_line_14
+      role: addend
+    - ref: schedule_1_2025_part_ii_line_15
+      role: addend
+    - ref: schedule_1_2025_part_ii_line_16
+      role: addend
+    - ref: schedule_1_2025_part_ii_line_17
+      role: addend
+    - ref: schedule_1_2025_part_ii_line_18
+      role: addend
+    - ref: schedule_1_2025_part_ii_line_19a
+      role: addend
+    - ref: schedule_1_2025_part_ii_line_20
+      role: addend
+    - ref: schedule_1_2025_part_ii_line_21
+      role: addend
+    - ref: schedule_1_2025_part_ii_line_22
+      role: addend
+    - ref: schedule_1_2025_part_ii_line_23
+      role: addend
+    - ref: schedule_1_2025_part_ii_line_25
+      role: addend
+    rule_ids:
+    - sum_currency
+  generated: null
+- document_id: schedule_1a_2025
+  target: schedule_1a_2025_line_2e
+  category: extra_in_draft
+  live: null
+  generated:
+    document_id: schedule_1a_2025
+    operation: SUM
+    operands:
+    - ref: schedule_1a_2025_line_2a
+    rule_ids:
+    - add_2a_to_2d
+- document_id: schedule_1a_2025
+  target: schedule_1a_2025_line_3
+  category: extra_in_draft
+  live: null
+  generated:
+    document_id: schedule_1a_2025
+    operation: SUM
+    operands:
+    - ref: schedule_1a_2025_line_1
+    rule_ids:
+    - add_1_2e
+- document_id: schedule_1a_2025
+  target: schedule_1a_2025_line_38
+  category: extra_in_draft
+  live: null
+  generated:
+    document_id: schedule_1a_2025
+    operation: SUM
+    operands:
+    - ref: schedule_1a_2025_line_13
+    rule_ids:
+    - sum_additional_deductions
+- document_id: schedule_1a_2025
+  target: schedule_1a_2025_part_i_line_3
+  category: missing_in_draft
+  live:
+    document_id: schedule_1a_2025
+    operation: SUM
+    operands:
+    - ref: schedule_1a_2025_part_i_line_1
+      role: addend
+    - ref: schedule_1a_2025_part_i_line_e
+      role: addend
+    rule_ids:
+    - sum_currency
+  generated: null
+- document_id: schedule_1a_2025
+  target: schedule_1a_2025_part_i_line_e
+  category: missing_in_draft
+  live:
+    document_id: schedule_1a_2025
+    operation: SUM
+    operands:
+    - ref: schedule_1a_2025_part_i_line_2a
+      role: addend
+    - ref: schedule_1a_2025_part_i_line_b
+      role: addend
+    - ref: schedule_1a_2025_part_i_line_c
+      role: addend
+    - ref: schedule_1a_2025_part_i_line_d
+      role: addend
+    rule_ids:
+    - sum_currency
+  generated: null
+- document_id: schedule_1a_2025
+  target: schedule_1a_2025_part_vi_line_38
+  category: missing_in_draft
+  live:
+    document_id: schedule_1a_2025
+    operation: MISSING
+    operands: []
+    rule_ids: []
+  generated: null
+- document_id: schedule_2_2025
+  target: schedule_2_2025_line_1z
+  category: extra_in_draft
+  live: null
+  generated:
+    document_id: schedule_2_2025
+    operation: SUM
+    operands:
+    - ref: schedule_2_2025_line_1a
+    rule_ids:
+    - rule_sum_1a_to_1y
+- document_id: schedule_2_2025
+  target: schedule_2_2025_line_21
+  category: extra_in_draft
+  live: null
+  generated:
+    document_id: schedule_2_2025
+    operation: SUM
+    operands:
+    - ref: schedule_2_2025_line_4
+    rule_ids:
+    - rule_total_other_taxes
+- document_id: schedule_2_2025
+  target: schedule_2_2025_line_3
+  category: extra_in_draft
+  live: null
+  generated:
+    document_id: schedule_2_2025
+    operation: SUM
+    operands:
+    - ref: schedule_2_2025_line_1z
+    - ref: schedule_2_2025_line_2
+    rule_ids:
+    - rule_sum_1z_2
+- document_id: schedule_3_2025
+  target: schedule_3_2025_line_14
+  category: extra_in_draft
+  live: null
+  generated:
+    document_id: schedule_3_2025
+    operation: SUM
+    operands:
+    - ref: schedule_3_2025_line_13a
+    rule_ids:
+    - rule_sum_other_refundable
+- document_id: schedule_3_2025
+  target: schedule_3_2025_line_15
+  category: extra_in_draft
+  live: null
+  generated:
+    document_id: schedule_3_2025
+    operation: SUM
+    operands:
+    - ref: schedule_3_2025_line_14
+    rule_ids:
+    - rule_sum_total_refundable
+- document_id: schedule_3_2025
+  target: schedule_3_2025_line_7
+  category: extra_in_draft
+  live: null
+  generated:
+    document_id: schedule_3_2025
+    operation: SUM
+    operands:
+    - ref: schedule_3_2025_line_6z
+    rule_ids:
+    - rule_sum_other_nonrefundable
+- document_id: schedule_3_2025
+  target: schedule_3_2025_line_8
+  category: extra_in_draft
+  live: null
+  generated:
+    document_id: schedule_3_2025
+    operation: SUM
+    operands:
+    - ref: schedule_3_2025_line_1
+    rule_ids:
+    - rule_sum_total_nonrefundable
+- document_id: schedule_a_2025
+  target: schedule_a_2025_line_3
+  category: extra_in_draft
+  live: null
+  generated:
+    document_id: schedule_a_2025
+    operation: MULTIPLY
+    operands:
+    - ref: schedule_a_2025_line_2
+    rule_ids:
+    - rule_medical_threshold
+- document_id: schedule_a_2025
+  target: schedule_a_2025_line_4
+  category: extra_in_draft
+  live: null
+  generated:
+    document_id: schedule_a_2025
+    operation: MAX
+    operands:
+    - ref: schedule_a_2025_line_1
+    - ref: schedule_a_2025_line_3
+    rule_ids:
+    - rule_subtract_zero_floor
+- document_id: schedule_a_2025
+  target: schedule_a_2025_line_5d
+  category: extra_in_draft
+  live: null
+  generated:
+    document_id: schedule_a_2025
+    operation: SUM
+    operands:
+    - ref: schedule_a_2025_line_5a
+    rule_ids:
+    - rule_sum_salt
+- document_id: schedule_a_2025
+  target: schedule_a_2025_line_5e
+  category: extra_in_draft
+  live: null
+  generated:
+    document_id: schedule_a_2025
+    operation: MIN
+    operands:
+    - ref: schedule_a_2025_line_5d
+    rule_ids:
+    - rule_salt_limit
+- document_id: schedule_a_2025
+  target: schedule_a_2025_root_line_10
+  category: missing_in_draft
+  live:
+    document_id: schedule_a_2025
+    operation: SUM
+    operands:
+    - ref: schedule_a_2025_root_line_8
+      role: addend
+    - ref: schedule_a_2025_root_line_9
+      role: addend
+    rule_ids:
+    - sum_currency
+  generated: null
+- document_id: schedule_a_2025
+  target: schedule_a_2025_root_line_14
+  category: missing_in_draft
+  live:
+    document_id: schedule_a_2025
+    operation: SUM
+    operands:
+    - ref: schedule_a_2025_root_line_11b
+      role: addend
+    - ref: schedule_a_2025_root_line_12
+      role: addend
+    - ref: schedule_a_2025_root_line_13
+      role: addend
+    rule_ids:
+    - sum_currency
+  generated: null
+- document_id: schedule_a_2025
+  target: schedule_a_2025_root_line_17
+  category: missing_in_draft
+  live:
+    document_id: schedule_a_2025
+    operation: SUM
+    operands:
+    - ref: schedule_a_2025_root_line_10
+      role: addend
+    - ref: schedule_a_2025_root_line_14
+      role: addend
+    - ref: schedule_a_2025_root_line_15
+      role: addend
+    - ref: schedule_a_2025_root_line_16_amount
+      role: addend
+    - ref: schedule_a_2025_root_line_4
+      role: addend
+    - ref: schedule_a_2025_root_line_7
+      role: addend
+    rule_ids:
+    - sum_currency
+  generated: null
+- document_id: schedule_a_2025
+  target: schedule_a_2025_root_line_7
+  category: missing_in_draft
+  live:
+    document_id: schedule_a_2025
+    operation: SUM
+    operands:
+    - ref: schedule_a_2025_root_line_e
+      role: addend
+    - ref: schedule_a_2025_root_line_6
+      role: addend
+    rule_ids:
+    - sum_currency
+  generated: null
+- document_id: schedule_a_2025
+  target: schedule_a_2025_root_line_d
+  category: missing_in_draft
+  live:
+    document_id: schedule_a_2025
+    operation: SUM
+    operands:
+    - ref: schedule_a_2025_root_line_a
+      role: addend
+    - ref: schedule_a_2025_root_line_b
+      role: addend
+    - ref: schedule_a_2025_root_line_c
+      role: addend
+    rule_ids:
+    - sum_currency
+  generated: null
+- document_id: schedule_b_2025
+  target: schedule_b_2025_line_2
+  category: extra_in_draft
+  live: null
+  generated:
+    document_id: schedule_b_2025
+    operation: SUM
+    operands:
+    - ref: schedule_b_2025_line_1
+    rule_ids:
+    - rule_sum_interest
+- document_id: schedule_b_2025
+  target: schedule_b_2025_line_4
+  category: extra_in_draft
+  live: null
+  generated:
+    document_id: schedule_b_2025
+    operation: SUBTRACT
+    operands:
+    - ref: schedule_b_2025_line_2
+    - ref: schedule_b_2025_line_3
+    rule_ids:
+    - rule_calc_taxable_interest
+- document_id: schedule_b_2025
+  target: schedule_b_2025_line_6
+  category: extra_in_draft
+  live: null
+  generated:
+    document_id: schedule_b_2025
+    operation: SUM
+    operands:
+    - ref: schedule_b_2025_line_5
+    rule_ids:
+    - rule_sum_dividends
+- document_id: instructions_schedule_d_2025
+  target: schedule_d_2025_carryover_worksheet_line_11_pre_floor
+  category: missing_in_draft
+  live:
+    document_id: instructions_schedule_d_2025
+    operation: SUBTRACT
+    operands:
+    - ref: schedule_d_2025_carryover_worksheet_line_4
+      role: minuend
+    - ref: schedule_d_2025_carryover_worksheet_line_5
+      role: subtrahend
+    rule_ids:
+    - subtract_currency
+  generated: null
+- document_id: instructions_schedule_d_2025
+  target: schedule_d_2025_carryover_worksheet_line_13_pre_floor
+  category: missing_in_draft
+  live:
+    document_id: instructions_schedule_d_2025
+    operation: SUBTRACT
+    operands:
+    - ref: schedule_d_2025_carryover_worksheet_line_12
+      role: subtrahend
+    - ref: schedule_d_2025_carryover_worksheet_line_9
+      role: minuend
+    rule_ids:
+    - subtract_currency
+  generated: null
+- document_id: instructions_schedule_d_2025
+  target: schedule_d_2025_carryover_worksheet_line_2_negated
+  category: missing_in_draft
+  live:
+    document_id: instructions_schedule_d_2025
+    operation: NEGATE
+    operands:
+    - ref: schedule_d_2025_line_21_capital_loss_limited
+    rule_ids:
+    - negate_currency
+  generated: null
+- document_id: instructions_schedule_d_2025
+  target: schedule_d_2025_carryover_worksheet_line_3_pre_floor
+  category: missing_in_draft
+  live:
+    document_id: instructions_schedule_d_2025
+    operation: SUM
+    operands:
+    - ref: schedule_d_2025_carryover_worksheet_line_1
+      role: addend
+    - ref: schedule_d_2025_carryover_worksheet_line_2
+      role: addend
+    rule_ids:
+    - sum_currency
+  generated: null
+- document_id: instructions_schedule_d_2025
+  target: schedule_d_2025_carryover_worksheet_line_5_negated
+  category: missing_in_draft
+  live:
+    document_id: instructions_schedule_d_2025
+    operation: NEGATE
+    operands:
+    - ref: schedule_d_2025_line_7_net_st
+    rule_ids:
+    - negate_currency
+  generated: null
+- document_id: instructions_schedule_d_2025
+  target: schedule_d_2025_carryover_worksheet_line_8_pre_floor
+  category: missing_in_draft
+  live:
+    document_id: instructions_schedule_d_2025
+    operation: SUBTRACT
+    operands:
+    - ref: schedule_d_2025_carryover_worksheet_line_5
+      role: minuend
+    - ref: schedule_d_2025_carryover_worksheet_line_7
+      role: subtrahend
+    rule_ids:
+    - subtract_currency
+  generated: null
+- document_id: instructions_schedule_d_2025
+  target: schedule_d_2025_carryover_worksheet_line_9_negated
+  category: missing_in_draft
+  live:
+    document_id: instructions_schedule_d_2025
+    operation: NEGATE
+    operands:
+    - ref: schedule_d_2025_line_15_net_lt
+    rule_ids:
+    - negate_currency
+  generated: null
+- document_id: schedule_d_2025
+  target: schedule_d_2025_line_15
+  category: extra_in_draft
+  live: null
+  generated:
+    document_id: schedule_d_2025
+    operation: SUM
+    operands:
+    - ref: schedule_d_2025_line_10_h
+      role: addend
+    - ref: schedule_d_2025_line_11
+      role: addend
+    - ref: schedule_d_2025_line_12
+      role: addend
+    - ref: schedule_d_2025_line_13
+      role: addend
+    - ref: schedule_d_2025_line_14
+      role: addend
+    - ref: schedule_d_2025_line_8a_h
+      role: addend
+    - ref: schedule_d_2025_line_8b_h
+      role: addend
+    - ref: schedule_d_2025_line_9_h
+      role: addend
+    rule_ids:
+    - rule_sum_lt
+- document_id: schedule_d_2025
+  target: schedule_d_2025_line_15_net_lt
+  category: missing_in_draft
+  live:
+    document_id: schedule_d_2025
+    operation: SUM
+    operands:
+    - ref: schedule_d_2025_line_14_lt_carryover
+      role: addend
+    - ref: schedule_d_2025_part_ii_line_8b_column_h
+      role: addend
+    rule_ids:
+    - sum_currency
+  generated: null
+- document_id: schedule_d_2025
+  target: schedule_d_2025_line_16
+  category: extra_in_draft
+  live: null
+  generated:
+    document_id: schedule_d_2025
+    operation: SUM
+    operands:
+    - ref: schedule_d_2025_line_15
+      role: addend
+    - ref: schedule_d_2025_line_7
+      role: addend
+    rule_ids:
+    - rule_sum_summary
+- document_id: schedule_d_2025
+  target: schedule_d_2025_line_16_total
+  category: missing_in_draft
+  live:
+    document_id: schedule_d_2025
+    operation: SUM
+    operands:
+    - ref: schedule_d_2025_line_15_net_lt
+      role: addend
+    - ref: schedule_d_2025_line_7_net_st
+      role: addend
+    rule_ids:
+    - sum_currency
+  generated: null
+- document_id: schedule_d_2025
+  target: schedule_d_2025_line_17_gate
+  category: missing_in_draft
+  live:
+    document_id: schedule_d_2025
+    operation: MIN
+    operands:
+    - ref: schedule_d_2025_line_15_net_lt
+      role: candidate
+    - ref: schedule_d_2025_line_16_total
+      role: candidate
+    rule_ids:
+    - min_currency
+  generated: null
+- document_id: schedule_d_2025
+  target: schedule_d_2025_line_20_gate
+  category: missing_in_draft
+  live:
+    document_id: schedule_d_2025
+    operation: MAX
+    operands:
+    - ref: schedule_d_2025_line_18
+      role: candidate
+    - ref: schedule_d_2025_line_19
+      role: candidate
+    rule_ids:
+    - max_currency
+  generated: null
+- document_id: schedule_d_2025
+  target: schedule_d_2025_line_21_capital_loss_limited
+  category: missing_in_draft
+  live:
+    document_id: schedule_d_2025
+    operation: MAX
+    operands:
+    - ref: schedule_d_2025_line_16_total
+      role: candidate
+    - ref: schedule_d_2025_line_21_loss_limit_negative
+      role: candidate
+    rule_ids:
+    - max_currency
+  generated: null
+- document_id: schedule_d_2025
+  target: schedule_d_2025_line_21_loss_limit
+  category: missing_in_draft
+  live:
+    document_id: schedule_d_2025
+    operation: LOOKUP_TABLE
+    operands:
+    - ref: taxpayer_2025_filing_status
+      role: key
+    - ref: schedule_d_2025_capital_loss_limit_default
+      role: head_of_household
+    - ref: schedule_d_2025_capital_loss_limit_default
+      role: married_filing_jointly
+    - ref: schedule_d_2025_capital_loss_limit_default
+      role: qualifying_surviving_spouse
+    - ref: schedule_d_2025_capital_loss_limit_default
+      role: single
+    - ref: schedule_d_2025_capital_loss_limit_mfs
+      role: married_filing_separately
+    rule_ids:
+    - lookup_capital_loss_limit
+  generated: null
+- document_id: schedule_d_2025
+  target: schedule_d_2025_line_21_loss_limit_negative
+  category: missing_in_draft
+  live:
+    document_id: schedule_d_2025
+    operation: NEGATE
+    operands:
+    - ref: schedule_d_2025_line_21_loss_limit
+    rule_ids:
+    - negate_currency
+  generated: null
+- document_id: schedule_d_2025
+  target: schedule_d_2025_line_7
+  category: extra_in_draft
+  live: null
+  generated:
+    document_id: schedule_d_2025
+    operation: SUM
+    operands:
+    - ref: schedule_d_2025_line_1a_h
+      role: addend
+    - ref: schedule_d_2025_line_1b_h
+      role: addend
+    - ref: schedule_d_2025_line_2_h
+      role: addend
+    - ref: schedule_d_2025_line_3_h
+      role: addend
+    - ref: schedule_d_2025_line_4
+      role: addend
+    - ref: schedule_d_2025_line_5
+      role: addend
+    - ref: schedule_d_2025_line_6
+      role: addend
+    rule_ids:
+    - rule_sum_st
+- document_id: schedule_d_2025
+  target: schedule_d_2025_line_7_net_st
+  category: missing_in_draft
+  live:
+    document_id: schedule_d_2025
+    operation: SUM
+    operands:
+    - ref: schedule_d_2025_part_i_line_1b_column_h
+      role: addend
+    - ref: schedule_d_2025_line_6_st_carryover
+      role: addend
+    rule_ids:
+    - sum_currency
+  generated: null
+- document_id: schedule_d_2025
+  target: schedule_d_2025_sdtw_applies
+  category: missing_in_draft
+  live:
+    document_id: schedule_d_2025
+    operation: MIN
+    operands:
+    - ref: schedule_d_2025_line_17_gate
+      role: candidate
+    - ref: schedule_d_2025_line_20_gate
+      role: candidate
+    rule_ids:
+    - min_currency
+  generated: null
+- document_id: instructions_schedule_d_2025
+  target: schedule_d_2025_tax_worksheet_line_14_pre_floor
+  category: missing_in_draft
+  live:
+    document_id: instructions_schedule_d_2025
+    operation: SUBTRACT
+    operands:
+    - ref: schedule_d_2025_tax_worksheet_line_13
+      role: subtrahend
+    - ref: schedule_d_2025_tax_worksheet_line_1
+      role: minuend
+    rule_ids:
+    - subtract_currency
+  generated: null
+- document_id: instructions_schedule_d_2025
+  target: schedule_d_2025_tax_worksheet_line_15
+  category: missing_in_draft
+  live:
+    document_id: instructions_schedule_d_2025
+    operation: LOOKUP_TABLE
+    operands:
+    - ref: form_1040_2025_qdcgt_breakpoint_0_hoh
+      role: head_of_household
+    - ref: form_1040_2025_qdcgt_breakpoint_0_mfj
+      role: married_filing_jointly
+    - ref: form_1040_2025_qdcgt_breakpoint_0_mfs
+      role: married_filing_separately
+    - ref: form_1040_2025_qdcgt_breakpoint_0_qss
+      role: qualifying_surviving_spouse
+    - ref: form_1040_2025_qdcgt_breakpoint_0_single
+      role: single
+    - ref: taxpayer_2025_filing_status
+      role: key
+    rule_ids:
+    - lookup_selected_value
+  generated: null
+- document_id: instructions_schedule_d_2025
+  target: schedule_d_2025_tax_worksheet_line_18_nonblank
+  category: missing_in_draft
+  live:
+    document_id: instructions_schedule_d_2025
+    operation: MAX
+    operands:
+    - ref: schedule_d_2025_line_18
+      role: candidate
+    - ref: form_1040_2025_zero_floor
+      role: candidate
+    rule_ids:
+    - max_currency
+  generated: null
+- document_id: instructions_schedule_d_2025
+  target: schedule_d_2025_tax_worksheet_line_18_pre_floor
+  category: missing_in_draft
+  live:
+    document_id: instructions_schedule_d_2025
+    operation: SUBTRACT
+    operands:
+    - ref: schedule_d_2025_tax_worksheet_line_10
+      role: subtrahend
+    - ref: schedule_d_2025_tax_worksheet_line_1
+      role: minuend
+    rule_ids:
+    - subtract_currency
+  generated: null
+- document_id: instructions_schedule_d_2025
+  target: schedule_d_2025_tax_worksheet_line_19_threshold
+  category: missing_in_draft
+  live:
+    document_id: instructions_schedule_d_2025
+    operation: LOOKUP_TABLE
+    operands:
+    - ref: schedule_d_2025_tax_worksheet_breakpoint_32_hoh
+      role: head_of_household
+    - ref: schedule_d_2025_tax_worksheet_breakpoint_32_mfj
+      role: married_filing_jointly
+    - ref: schedule_d_2025_tax_worksheet_breakpoint_32_mfs
+      role: married_filing_separately
+    - ref: schedule_d_2025_tax_worksheet_breakpoint_32_qss
+      role: qualifying_surviving_spouse
+    - ref: schedule_d_2025_tax_worksheet_breakpoint_32_single
+      role: single
+    - ref: taxpayer_2025_filing_status
+      role: key
+    rule_ids:
+    - lookup_selected_value
+  generated: null
+- document_id: instructions_schedule_d_2025
+  target: schedule_d_2025_tax_worksheet_line_23_raw
+  category: missing_in_draft
+  live:
+    document_id: instructions_schedule_d_2025
+    operation: MIN
+    operands:
+    - ref: schedule_d_2025_tax_worksheet_line_13
+      role: candidate
+    - ref: schedule_d_2025_tax_worksheet_line_1
+      role: candidate
+    rule_ids:
+    - min_currency
+  generated: null
+- document_id: instructions_schedule_d_2025
+  target: schedule_d_2025_tax_worksheet_line_25_pre_floor
+  category: missing_in_draft
+  live:
+    document_id: instructions_schedule_d_2025
+    operation: SUBTRACT
+    operands:
+    - ref: schedule_d_2025_tax_worksheet_line_23
+      role: minuend
+    - ref: schedule_d_2025_tax_worksheet_line_24
+      role: subtrahend
+    rule_ids:
+    - subtract_currency
+  generated: null
+- document_id: instructions_schedule_d_2025
+  target: schedule_d_2025_tax_worksheet_line_26
+  category: missing_in_draft
+  live:
+    document_id: instructions_schedule_d_2025
+    operation: LOOKUP_TABLE
+    operands:
+    - ref: form_1040_2025_qdcgt_breakpoint_15_hoh
+      role: head_of_household
+    - ref: form_1040_2025_qdcgt_breakpoint_15_mfj
+      role: married_filing_jointly
+    - ref: form_1040_2025_qdcgt_breakpoint_15_mfs
+      role: married_filing_separately
+    - ref: form_1040_2025_qdcgt_breakpoint_15_qss
+      role: qualifying_surviving_spouse
+    - ref: form_1040_2025_qdcgt_breakpoint_15_single
+      role: single
+    - ref: taxpayer_2025_filing_status
+      role: key
+    rule_ids:
+    - lookup_selected_value
+  generated: null
+- document_id: instructions_schedule_d_2025
+  target: schedule_d_2025_tax_worksheet_line_29_pre_floor
+  category: missing_in_draft
+  live:
+    document_id: instructions_schedule_d_2025
+    operation: SUBTRACT
+    operands:
+    - ref: schedule_d_2025_tax_worksheet_line_27
+      role: minuend
+    - ref: schedule_d_2025_tax_worksheet_line_28
+      role: subtrahend
+    rule_ids:
+    - subtract_currency
+  generated: null
+- document_id: instructions_schedule_d_2025
+  target: schedule_d_2025_tax_worksheet_line_33_raw
+  category: missing_in_draft
+  live:
+    document_id: instructions_schedule_d_2025
+    operation: SUBTRACT
+    operands:
+    - ref: schedule_d_2025_tax_worksheet_line_23
+      role: minuend
+    - ref: schedule_d_2025_tax_worksheet_line_32
+      role: subtrahend
+    rule_ids:
+    - subtract_currency
+  generated: null
+- document_id: instructions_schedule_d_2025
+  target: schedule_d_2025_tax_worksheet_line_38_pre_floor
+  category: missing_in_draft
+  live:
+    document_id: instructions_schedule_d_2025
+    operation: SUBTRACT
+    operands:
+    - ref: schedule_d_2025_tax_worksheet_line_1
+      role: subtrahend
+    - ref: schedule_d_2025_tax_worksheet_line_36
+      role: minuend
+    rule_ids:
+    - subtract_currency
+  generated: null
+- document_id: instructions_schedule_d_2025
+  target: schedule_d_2025_tax_worksheet_line_39_pre_floor
+  category: missing_in_draft
+  live:
+    document_id: instructions_schedule_d_2025
+    operation: SUBTRACT
+    operands:
+    - ref: schedule_d_2025_tax_worksheet_line_35
+      role: minuend
+    - ref: schedule_d_2025_tax_worksheet_line_38
+      role: subtrahend
+    rule_ids:
+    - subtract_currency
+  generated: null
+- document_id: instructions_schedule_d_2025
+  target: schedule_d_2025_tax_worksheet_line_39_raw
+  category: missing_in_draft
+  live:
+    document_id: instructions_schedule_d_2025
+    operation: MAX
+    operands:
+    - ref: schedule_d_2025_tax_worksheet_line_39_pre_floor
+      role: candidate
+    - ref: form_1040_2025_zero_floor
+      role: candidate
+    rule_ids:
+    - max_currency
+  generated: null
+- document_id: instructions_schedule_d_2025
+  target: schedule_d_2025_tax_worksheet_line_43_raw
+  category: missing_in_draft
+  live:
+    document_id: instructions_schedule_d_2025
+    operation: MULTIPLY
+    operands:
+    - ref: schedule_d_2025_tax_worksheet_rate_28pct
+      role: multiplier
+    - ref: schedule_d_2025_tax_worksheet_line_42
+      role: multiplicand
+    rule_ids:
+    - multiply_currency
+  generated: null
+- document_id: instructions_schedule_d_2025
+  target: schedule_d_2025_tax_worksheet_line_43_when_lines_33_43_run
+  category: missing_in_draft
+  live:
+    document_id: instructions_schedule_d_2025
+    operation: IF_ELSE
+    operands:
+    - ref: schedule_d_2025_tax_worksheet_line_1
+      role: condition
+    - ref: schedule_d_2025_tax_worksheet_line_32
+      role: threshold
+    - ref: schedule_d_2025_tax_worksheet_line_43_raw
+      role: when_true
+    - ref: form_1040_2025_zero_floor
+      role: when_false
+    rule_ids:
+    - if_greater_than_currency
+  generated: null
+- document_id: instructions_schedule_d_2025
+  target: schedule_d_2025_tax_worksheet_line_44_bracket_amount
+  category: missing_in_draft
+  live:
+    document_id: instructions_schedule_d_2025
+    operation: LOOKUP_BRACKET
+    operands:
+    - ref: form_1040_2025_regular_tax_brackets
+      role: brackets
+    - ref: schedule_d_2025_tax_worksheet_line_21
+      role: amount
+    rule_ids:
+    - lookup_bracket_tax
+  generated: null
+- document_id: instructions_schedule_d_2025
+  target: schedule_d_2025_tax_worksheet_line_44_table_amount
+  category: missing_in_draft
+  live:
+    document_id: instructions_schedule_d_2025
+    operation: LOOKUP_TABLE
+    operands:
+    - ref: taxpayer_2025_filing_status
+      role: status
+    - ref: schedule_d_2025_tax_worksheet_line_21
+      role: amount
+    rule_ids:
+    - lookup_tax_table_amount
+  generated: null
+- document_id: instructions_schedule_d_2025
+  target: schedule_d_2025_tax_worksheet_line_5_pre_floor
+  category: missing_in_draft
+  live:
+    document_id: instructions_schedule_d_2025
+    operation: SUBTRACT
+    operands:
+    - ref: schedule_d_2025_tax_worksheet_line_3
+      role: minuend
+    - ref: schedule_d_2025_tax_worksheet_line_4
+      role: subtrahend
+    rule_ids:
+    - subtract_currency
+  generated: null
+- document_id: instructions_schedule_d_2025
+  target: schedule_d_2025_tax_worksheet_line_6_pre_floor
+  category: missing_in_draft
+  live:
+    document_id: instructions_schedule_d_2025
+    operation: SUBTRACT
+    operands:
+    - ref: schedule_d_2025_tax_worksheet_line_2
+      role: minuend
+    - ref: schedule_d_2025_tax_worksheet_line_5
+      role: subtrahend
+    rule_ids:
+    - subtract_currency
+  generated: null
+- document_id: instructions_schedule_d_2025
+  target: schedule_d_2025_tax_worksheet_line_9_pre_floor
+  category: missing_in_draft
+  live:
+    document_id: instructions_schedule_d_2025
+    operation: SUBTRACT
+    operands:
+    - ref: schedule_d_2025_tax_worksheet_line_7
+      role: minuend
+    - ref: schedule_d_2025_tax_worksheet_line_8
+      role: subtrahend
+    rule_ids:
+    - subtract_currency
+  generated: null

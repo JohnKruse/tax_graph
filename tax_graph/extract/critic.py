@@ -58,7 +58,15 @@ def parse_critic_response(response: dict[str, Any]) -> CriticReport:
 def apply_critic_report(batch: ExtractionBatch, report: CriticReport) -> None:
     """Attach critic disagreement flags to draft objects."""
     for obj in batch.objects:
-        obj.critic_agrees = report.agrees(obj.kind, obj.object_id)
+        # An expression is not reviewable unless the independent critic
+        # explicitly considered both its verb and operand wiring.  Preserve
+        # the historical permissive default for source nodes and citations,
+        # but fail closed for the expression layer.
+        if obj.kind in {"edges", "rules"} and not report.has_finding(obj.kind, obj.object_id):
+            obj.critic_agrees = False
+            obj.flag("critic did not review expression object")
+        else:
+            obj.critic_agrees = report.agrees(obj.kind, obj.object_id)
         if not obj.critic_agrees:
             reason = report.reason(obj.kind, obj.object_id) or "critic disagreement"
             obj.flag(f"critic disagreement: {reason}")

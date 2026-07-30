@@ -11,11 +11,13 @@ import yaml
 
 from tax_graph.cli import extract_command
 from tax_graph.extract.checks import run_deterministic_checks
+from tax_graph.extract.critic import apply_critic_report
 from tax_graph.extract.generator import ExtractionError, parse_generator_response
 from tax_graph.extract.inputs import load_document_input
 from tax_graph.extract.llm_client import LlmUnavailable, OpenAILlmClient, build_llm_client, supported_providers
-from tax_graph.extract.models import SourceDocumentInput
+from tax_graph.extract.models import CriticReport, ExtractionBatch, SourceDocumentInput
 from tax_graph.extract.prompts import _related_source_snippet, assemble_generator_prompt, closed_operations
+from tax_graph.extract.pipeline import _merge_expression_batch
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -135,6 +137,102 @@ def test_generator_lifts_inline_provenance(tmp_path):
     assert "provenance" not in node.data
     assert node.source_span == "- 1: Proceeds"
     assert node.confidence == 0.97
+
+
+@pytest.mark.m20
+def test_expression_objects_merge_into_outline_projection_without_replacing_cells(tmp_path):
+    document = _source_document(tmp_path)
+    base = ExtractionBatch(
+        document_id=document.document_id,
+        year=document.year,
+        objects=[parse_generator_response(_good_response(confidence=0.98), document=document, model="outline", root=ROOT).items("nodes")[0]],
+    )
+    response = _good_response(confidence=0.98)
+    response["citations"][0]["citation_id"] = "cite_expression"
+    response["rules"] = [
+        {
+            "rule_id": "rule_expression_sum",
+            "operation": "SUM",
+            "description": "Add the cited amount.",
+            "citation_refs": ["cite_expression"],
+        }
+    ]
+    response["edges"] = [
+        {
+            "edge_id": "edge_expression_sum",
+            "source": "form_8949_2025_line_1_proceeds",
+            "target": "form_8949_2025_line_1_proceeds",
+            "relationship": "CALCULATES",
+            "rule_id": "rule_expression_sum",
+            "role": "addend",
+        }
+    ]
+    generated = parse_generator_response(response, document=document, model="generator", root=ROOT)
+
+    merged = _merge_expression_batch(base, generated)
+
+    assert [obj.kind for obj in merged.objects].count("nodes") == 1
+    assert [obj.kind for obj in merged.objects].count("edges") == 1
+    assert [obj.kind for obj in merged.objects].count("rules") == 1
+    assert [obj.kind for obj in merged.objects].count("citations") == 1
+
+
+@pytest.mark.m20
+def test_expression_objects_without_critic_findings_fail_closed(tmp_path):
+    document = _source_document(tmp_path)
+    response = _good_response(confidence=0.98)
+    response["rules"] = [
+        {
+            "rule_id": "rule_expression_sum",
+            "operation": "SUM",
+            "description": "Add the cited amount.",
+            "citation_refs": ["cite_8949_line_1"],
+        }
+    ]
+    response["edges"] = [
+        {
+            "edge_id": "edge_expression_sum",
+            "source": "form_8949_2025_line_1_proceeds",
+            "target": "form_8949_2025_line_1_proceeds",
+            "relationship": "CALCULATES",
+            "rule_id": "rule_expression_sum",
+            "role": "addend",
+        }
+    ]
+    batch = parse_generator_response(response, document=document, model="generator", root=ROOT)
+
+    apply_critic_report(batch, CriticReport(findings=[]))
+
+    assert all(not obj.critic_agrees for obj in batch.items("edges") + batch.items("rules"))
+    assert all("critic did not review expression object" in obj.flags for obj in batch.items("edges") + batch.items("rules"))
+
+
+@pytest.mark.m20
+def test_expression_edge_without_operand_role_is_flagged(tmp_path):
+    document = _source_document(tmp_path)
+    response = _good_response(confidence=0.98)
+    response["rules"] = [
+        {
+            "rule_id": "rule_expression_subtract",
+            "operation": "SUBTRACT",
+            "description": "Subtract the operands.",
+            "citation_refs": ["cite_8949_line_1"],
+        }
+    ]
+    response["edges"] = [
+        {
+            "edge_id": "edge_expression_subtract",
+            "source": "form_8949_2025_line_1_proceeds",
+            "target": "form_8949_2025_line_1_proceeds",
+            "relationship": "CALCULATES",
+            "rule_id": "rule_expression_subtract",
+        }
+    ]
+    batch = parse_generator_response(response, document=document, model="generator", root=ROOT)
+
+    report = run_deterministic_checks(document, batch, root=ROOT)
+
+    assert any("expression edge role" in issue.reason for issue in report.issues)
 
 
 @pytest.mark.m4

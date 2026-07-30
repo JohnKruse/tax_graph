@@ -136,6 +136,13 @@ class CriticReport:
                 return finding.agrees
         return True
 
+    def has_finding(self, kind: str, object_id: str) -> bool:
+        """Return whether the critic explicitly reviewed an object."""
+        return any(
+            finding.kind == kind and finding.object_id == object_id
+            for finding in self.findings
+        )
+
     def reason(self, kind: str, object_id: str) -> str:
         """Return critic reason for an object, if any."""
         for finding in self.findings:

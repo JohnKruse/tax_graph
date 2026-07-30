@@ -11,6 +11,8 @@ For every object listed under Draft objects to review, return exactly one findin
 Check formulas and cross-form flow declarations against bundled instructions when present.
 Cross-form flows should be outbound FEEDS declarations, cited to the instruction document,
 without authoring the target form's nodes.
+For every edge and rule, explicitly check the operation, the target, the operand references,
+and the operand role. An expression is not agreed merely because its rule operation is valid.
 
 Document:
 - document_id: {document_id}
