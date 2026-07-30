@@ -2954,6 +2954,100 @@ TY2026 docs drop.
 
 ## From Architect
 
+- **M20-S7 TASK - GENERATE THE EXPRESSION LAYER AND MEASURE IT AGAINST THE HANDCRAFTED SET
+  (Architect, Claude Opus 5, 2026-07-30). John's direction. This round exists to produce ONE
+  NUMBER we have never had: how much of the expression layer the pipeline gets right on its
+  own.** Ledger: the exact RAN/NOT RUN evidence rule, and D9 (grep for consumers of the SHAPE,
+  not just the files). Re-read D4, D6, D8, and D11 before starting.
+  **PRIME DIRECTIVE FRAMING (`AGENTS.md` section 1):** the graph is never hand-authored. The
+  target loop is: forms change -> re-run the pipeline -> ~98% valid -> human directs the last
+  ~2% through comments -> the pipeline reworks. **Every step below serves measuring and then
+  raising that 98%.** No step in this round is allowed to raise the number by hand-authoring.
+  **THE FINDING THAT MOTIVATES THIS ROUND (Architect-measured, 2026-07-30):** the pipeline
+  currently emits **nodes and citations only**. `_drafts/form_1040_2025/metrics.yaml` reports
+  `objects_by_kind: {citations: 50, documents: 1, nodes: 56}`, and **no `edges.yaml` or
+  `rules.yaml` exists in any of the 16 draft directories.** The live graph's 409 edges and 15
+  rule templates carry **zero provenance** and did not come from the pipeline - they are the
+  hand-authored A9 scaffolding. **The pipeline has never produced an expression.** The model in
+  use is `~google/gemini-flash-latest`; John's ruling is that this is a bounded task (pick one
+  operation from a closed enum, name its operands, given a few sentences of instruction text)
+  and Flash should be given a fair try before any model change is considered. Do NOT swap models
+  in this round.
+  **JOHN'S RULING - THE HANDCRAFTED SET IS NOW THE TEST SET, AND IS PROTECTED.** A lot of tokens
+  went into it. It is not to be thrown away, promoted over, or edited. It becomes labeled
+  comparison data. **The live graph under `graph/2025/{nodes,edges,rules}/` MUST be
+  byte-identical at the end of this round** - `git diff --stat` on those three directories must
+  be EMPTY, and that is a hard gate, not a guideline.
+  1. **STEP 1 - DIAGNOSE THE MISSING EXPRESSION LAYER. Cheap, and it forks the size of step 2.**
+     The generator prompt ALREADY asks for them (`prompts/extract_generator.md`: "Emit only
+     schema-valid nodes, edges, rules, citations, and decisions", "Rule operation must be one
+     of: {operations}", "Every rule must have at least one citation_ref"). So either Flash is
+     not returning edges/rules, or it is and something downstream drops them before write.
+     **Determine which.** Capture the RAW model response for ONE document (`form_1040_2025`)
+     before any parsing, routing, or filtering, and report: raw edge count, raw rule count, and
+     what the write path does with them. **CHECKPOINT: record both numbers in this file before
+     starting step 2.** If it is a downstream drop, this is a plumbing fix - fix the plumbing and
+     do NOT redesign the extraction architecture. If Flash genuinely returns none, step 2 is
+     prompt and schema-surfacing work.
+  2. **STEP 2 - MAKE THE GENERATOR EMIT THE EXPRESSION LAYER.** Bounded by the EXISTING v0
+     operation enum in `schemas/rule.schema.json` - 19 operations: `COPY, SUM, SUBTRACT,
+     MULTIPLY, DIVIDE, MIN, MAX, NEGATE, ABS, ROUND, LOOKUP_TABLE, LOOKUP_BRACKET, IF, IF_ELSE,
+     AND, OR, NOT, COMPARE, REQUIRE_INPUT`. **Do not extend, rename, or add to this enum in this
+     round** - if a form genuinely needs an operation outside it, emit a review gap and report
+     it; that is a finding, not a licence to widen the set.
+     - Edges MUST carry the operand role (`addend`, `minuend`, `subtrahend`, etc.), because the
+       expression is COMPOSED from node + incoming edges + shared rule. Without roles the
+       operand set cannot be reconstructed and step 3 cannot score.
+     - **The critic must review edges and rules too**, not just nodes. Today drafts carry
+       `critic_agrees` on nodes; extend that to the expression layer. An unreviewed expression is
+       not a candidate for anything.
+     - Prefer instruction-document citations for formulas (the prompt already says this).
+     - `confidence` is currently useless telemetry - `min/max/mean = 1.0` across every object.
+       Do NOT build any routing or scoring on self-reported confidence. Use critic agreement.
+     - **Write to `graph/2025/_drafts/` ONLY. Promote nothing.**
+  3. **STEP 3 - DIFF THE GENERATED EXPRESSIONS AGAINST THE HANDCRAFTED SET AND REPORT THE
+     NUMBER.** The join is free: draft node ids already match live node ids exactly
+     (`form_1040_2025_root_line_1a` is in both). For every live computed node, compare the live
+     expression (its rule's operation + the operand set from its incoming edges) against the
+     draft's. Report, per document and in total:
+     - **`expression_agreement`** - operation AND operand set both match. **This is the headline
+       number and the deliverable of the round.**
+     - `operation_agreement_operands_differ` - right verb, wrong operands.
+     - `operation_disagreement` - wrong verb.
+     - `missing_in_draft` / `extra_in_draft` - present in one side only.
+     Compare operand sets **order-insensitively for commutative operations** (`SUM`, `MULTIPLY`,
+     `MIN`, `MAX`) and order-sensitively otherwise - `workbench/address_verdicts.py`
+     `normalize_expression` already encodes exactly this distinction and its
+     `_COMMUTATIVE_EXPRESSION_KINDS` set is the reference; reuse the semantics rather than
+     inventing a second rule that can drift from it.
+     Write the report to a committed artifact under `output/` and state the headline number in
+     this file. **Report it honestly even if it is bad** - a low number is the correct input to
+     the next decision, and a number massaged upward is worse than no number.
+  4. **What this round explicitly does NOT do.** No review UI (S6-2 stays parked). No promotion
+     of any draft. No hand-authoring or hand-editing of edges, rules, nodes, citations, or
+     labels. No model swap. No change to the operation enum. No change to the review/verdict
+     contract - it was verified green on 2026-07-30 and is **FROZEN** until John has actually
+     used the page; churn there is what has kept the verdict store empty.
+  Tier 3. Declared files plus honest `RAN:`/`NOT RUN:` on every one. ASCII, `git diff --check`,
+  module-form `validate 2025` (must stay green - the live graph is untouched), real preflight
+  with `legacy_mined` reported explicitly (expect **394**, unchanged), and
+  `check_citation_integrity` STRICT (expect **36**, unchanged). Short pytest temp root; no
+  `--basetemp`. ONE local commit; no push.
+  **Stop conditions:** any diff at all in `graph/2025/{nodes,edges,rules}/` (the test set is
+  protected); any draft promoted into the live graph; `legacy_mined` rising above 394; strict
+  citation mismatches above 36; the operation enum being widened; needing to hand-author an
+  expression to make the number look better; an API key, quota, or cost failure - **report the
+  spend before running all 16 documents if step 1 suggests the run will be expensive.**
+
+- **M20-S6-2 - PARKED (2026-07-30, John's call).** The review-panel/visual-key round is NOT next.
+  Rationale in prime-directive terms: as currently wired the workbench would have John reviewing
+  the HAND-AUTHORED graph, which tells us nothing about pipeline validity and spends his scarce
+  review attention on scaffolding. Unpark once M20-S7 reports its agreement number, and respec
+  it then - review must be pointed at generated cells carrying provenance, with the
+  generated-vs-handcrafted disagreements surfaced FIRST, because those are John's 2%. Also note
+  the S6-2 text as written is stale: it assumes ARITHMETIC 15 / COPY 39, which was the LOCATED
+  count; the projection now measures ARITHMETIC 139 / COPY 49 over 2,120 cells.
+
 - **M20-S6-1 TASK - MAKE THE EXPRESSION THE THING BEING APPROVED (Architect, Claude Opus 5,
   2026-07-29). John's design ruling; the review model's final shape. SPLIT from S6 on John's
   call - this is the BACKEND half, provable by tests; the UI half is S6-2 and this round must

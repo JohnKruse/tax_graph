@@ -1,5 +1,34 @@
 # AGENTS.md
 
+## 1. PRIME DIRECTIVE - THIS IS A PIPELINE, NOT A HANDCRAFTED GRAPH
+
+**This graph is never hand-authored. It is the output of a repeatable AI pipeline over IRS
+documents and instructions, corrected by human review.** Every decision, plan, round, and
+trade-off in this repository MUST be justified in these terms. If a proposed change cannot be
+stated as "this makes the pipeline more valid, more reliable, or more correctable by a human,"
+it is the wrong change.
+
+**The target operating loop, which is the acceptance test for the whole system:**
+1. The forms change (new tax year, revised instructions).
+2. Re-run the AI pipeline end to end. It produces a graph that is **~98% valid** on its own.
+3. A human reviews, and **directs the remaining ~2% through comments** - not by editing
+   artifacts, and not by hand-authoring nodes.
+4. **The pipeline reworks** from those comments and regenerates. Human judgement that is still
+   valid survives regeneration; judgement invalidated by changed content is flagged for recheck.
+5. The resulting graph is a valid, reliable foundation for AI production of good tax returns.
+
+**Consequences that bind every round:**
+- Hand-authoring a node, citation, or label is scaffolding at best, and is always a debt to be
+  repaid by generation. It is never the deliverable.
+- A human's review effort is expensive and must be **durable across regeneration**. Approvals are
+  keyed to canonical addresses with content fingerprints for exactly this reason.
+- **Human review input is pipeline input.** A rejection comment is not a note to a developer - it
+  is data the pipeline consumes to rework the cell. Review tooling is therefore production
+  infrastructure, not a convenience UI.
+- **Churn in the review contract has a real cost: it destroys the human's incentive to review at
+  all.** Nobody invests judgement in a moving target. Stability of the review contract is a
+  feature, and is prerequisite to asking John for review effort.
+
 Standing instructions for any agent working in this repository. **Read this first**, then the
 master plan at `docs/engineering-plan.md`. This file is canonical for roles, the Worker directive,
 and the hard rules.
