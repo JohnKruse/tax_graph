@@ -54,6 +54,43 @@ actually wanted, flag it - it changes M2.
    citation existed out of 297 promoted citations - the acquired text was never mined.
    Closing that is tracked as M17 S5-INSTR and sequenced with the M16 pipeline.
 
+8. **OBSERVABILITY IS NOT OPTIONAL - the pipeline must record what it did (John, 2026-07-30;
+   CRITICAL, must land before the project is considered finished).** John asked for logging a
+   long time ago; it was never built. As of 2026-07-30 the honest state is: **zero** Python
+   modules in the repo import or use `logging` - no `getLogger`, no `basicConfig`, no logger
+   calls in `tax_graph/`, `workbench/`, or `tools/` - and there is no `logs/` directory. All
+   that exists is a two-line config stub, `logging: {level: INFO}` at
+   `config/tax-graph.config.yaml:81`, which **no code reads**. The `logging` mention in the
+   Configuration section below has never been implemented.
+   **Why this is critical and not housekeeping.** On 2026-07-30 an entire 15-document run
+   failed and the failure had to be diagnosed from John's OpenRouter *billing page*, because
+   the pipeline retained nothing about its own requests. The billing metadata revealed two
+   real defects that the system itself could not report: fifteen calls that sent **1 prompt
+   token** each (the prompt never reached the model), and Flash calls returning
+   `finish_reason: length`, i.e. extraction output truncated at ~4,000 completion tokens.
+   Neither was visible from any artifact in the repo. A pipeline that cannot say what it sent,
+   what came back, or why a call failed cannot be trusted to be valid and reliable, and cannot
+   be debugged a year from now when the forms change and a run misbehaves.
+   **What to log - the stuff that makes sense, per John:**
+   - **Per call:** document id, purpose (generator / critic / example / nversion), requested
+     model AND resolved model, prompt tokens, completion tokens, cost, `finish_reason`,
+     latency, and outcome.
+   - **On failure: the request and the response body**, truncated to a sane cap. This is the
+     single highest-value item and its absence is what cost a session. Form and instruction
+     text is public IRS material; there is no sensitivity problem in retaining it.
+   - **Run-level:** a run id tying calls together, config resolved for the run (model, mode,
+     concurrency), start/end, totals.
+   - Honor the existing `logging.level` config rather than adding a second mechanism.
+   - Write under a gitignored path (e.g. `output/logs/`) so runs are inspectable after the
+     fact without a vendor dashboard login.
+   - The only real constraint: never serialize resolved API keys or client headers. Keys come
+     from keyring/env per the Configuration section; the logger must not round-trip them.
+   **Related fail-fast guards that belong with it** (same file, `tax_graph/extract/llm_client.py`):
+   assert `prompt_tokens` is plausible and fail loudly on a ~1-token prompt; treat
+   `finish_reason: length` as a NAMED hard error rather than letting truncation surface as a
+   confusing JSON parse failure. Both are small, and both would have turned the 2026-07-30
+   investigation into a single file read.
+
 ## Repeatable tables (decided 2026-07-01)
 
 Form 8949 forces a policy for repeatable transaction tables before M1/M2 harden the runtime
@@ -550,6 +587,13 @@ live in `prompts/*.md`, referenced from the config so they're tuned in one place
 Each phase carries a humorous 2-word **canary** the Worker must state before starting (proves
 it read the subplan) and an **exit-criteria** command that must pass 100%. Global project
 canary: **Ledger Llama**.
+
+**PROJECT-LEVEL EXIT GATE - OBSERVABILITY (John, 2026-07-30).** Per guiding invariant 8, the
+project is NOT finished while the pipeline cannot report what it sent, what came back, and why
+a call failed. It need not be built immediately, but it must land before completion, and no
+"we're done" claim is valid without it. The concrete bar: a failed model call is diagnosable
+from artifacts in the repo alone, with no vendor dashboard involved. That bar was measurably
+NOT met on 2026-07-30.
 
 | Phase (exec order) | Canary | Exit criteria |
 |---|---|---|
