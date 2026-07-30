@@ -84,6 +84,7 @@ def build_metrics(batch: ExtractionBatch, routed: RoutedDrafts) -> dict[str, Any
         "models_used": sorted(models_used),
         "providers_used": sorted(providers_used),
         "llm_calls": llm_calls,
+        "micro_extraction": batch.micro_stats or None,
         "confidence_telemetry": _confidence_telemetry(confidences),
         "human_minutes": None,
         "worker_tokens": sum(token_values) if token_values else None,

@@ -45,6 +45,12 @@ def generate_outline_first_drafts(
     llm_calls = []
 
     objects: list[DraftObject] = []
+    micro_stats: dict[str, Any] = {
+        "cells_attempted": 0,
+        "cells_succeeded": 0,
+        "cells_failed": 0,
+        "failure_reasons_by_kind": {},
+    }
     for outline_node in _formula_outline_nodes(outline.children):
         node_spans = _spans_for_outline_node(
             document,
@@ -55,21 +61,48 @@ def generate_outline_first_drafts(
         plan = _deterministic_schedule_d_formula_plan(document, outline_node, node_spans)
         formula_model = str(model)
         if plan is None:
-            plan = extract_formula_plan(
-                outline_node=outline_node,
-                spans=node_spans,
-                client=client,
-                config=config,
-                root=root,
-            )
-            telemetry = response_telemetry(plan)
-            if telemetry is not None:
-                llm_calls.append(telemetry)
-                formula_model = telemetry.resolved_model or formula_model
+            micro_stats["cells_attempted"] += 1
+            try:
+                operand_candidates = _operand_candidates(outline.children, outline_node)
+                plan = extract_formula_plan(
+                    outline_node=outline_node,
+                    spans=node_spans,
+                    client=client,
+                    config=config,
+                    root=root,
+                    operand_candidates=operand_candidates,
+                )
+                micro_stats["cells_succeeded"] += 1
+                telemetry = response_telemetry(plan)
+                if telemetry is not None:
+                    llm_calls.append(telemetry)
+                    formula_model = telemetry.resolved_model or formula_model
+            except Exception as exc:
+                micro_stats["cells_failed"] += 1
+                _record_micro_failure(micro_stats, outline_node, exc)
+                continue
         else:
             formula_model = "deterministic-schedule-d-formula"
-        batch = assemble_formula_plan(document, outline_node, plan, node_spans, model=formula_model, root=root)
-        objects.extend(batch.objects)
+        try:
+            batch = assemble_formula_plan(document, outline_node, plan, node_spans, model=formula_model, root=root)
+        except Exception as exc:
+            if plan is not None and formula_model != "deterministic-schedule-d-formula":
+                micro_stats["cells_succeeded"] -= 1
+                micro_stats["cells_failed"] += 1
+                _record_micro_failure(micro_stats, outline_node, exc)
+                continue
+            raise
+        # The outline pass owns the deterministic cell/node spine for ordinary
+        # lines. Micro extraction contributes only the expression and its source
+        # evidence there; allowing it to emit nodes would let a model response
+        # replace a stable line node. Existing table/totals assembly is retained
+        # because those nodes are the deterministic table-template projection.
+        objects.extend(
+            obj
+            for obj in batch.objects
+            if obj.kind in {"citations", "edges", "rules"}
+            or (obj.kind == "nodes" and outline_node.kind in {"transaction_table", "totals"})
+        )
     objects.extend(assemble_table_subunits(document, outline, objects, model="deterministic-table-detector"))
     objects.extend(_schedule_d_band_tables(document, outline.children, model="deterministic-schedule-d-band-detector"))
     objects.extend(_schedule_d_not_modeled_document(document, outline.children, model="deterministic-schedule-d-scope"))
@@ -84,6 +117,7 @@ def generate_outline_first_drafts(
         year=document.year,
         objects=_dedupe_objects(objects),
         llm_calls=llm_calls,
+        micro_stats=micro_stats,
     )
 
 
@@ -99,7 +133,73 @@ def _formula_outline_nodes(nodes: list[OutlineNode]) -> list[OutlineNode]:
 def _is_formula_node(node: OutlineNode) -> bool:
     if node.kind == "transaction_table" and "h" in node.columns:
         return True
-    return node.kind == "totals" and bool(node.columns)
+    if node.kind == "totals" and bool(node.columns):
+        return True
+    if node.kind != "line" or not node.line_anchor:
+        return False
+    label = node.label.lower()
+    return any(
+        cue in label
+        for cue in (
+            "add line",
+            "add the amount",
+            "subtract line",
+            "amount from line",
+            "amount of line",
+            "more than line",
+            "less than line",
+        )
+    )
+
+
+def _operand_candidates(nodes: list[OutlineNode], target: OutlineNode) -> list[dict[str, str]]:
+    """Return stable line refs explicitly named by one formula cell."""
+    all_candidates: dict[str, dict[str, str]] = {}
+    seen: set[str] = set()
+    for node in _flatten_nodes(nodes):
+        if not node.line_anchor or node.kind in {"section", "heading", "outbound_flow_cue"}:
+            continue
+        ref = f"line_{node.line_anchor.lower()}"
+        if ref in seen:
+            continue
+        seen.add(ref)
+        all_candidates[ref] = {"ref": ref, "label": node.label}
+
+    import re
+
+    label = target.label.lower()
+    cue = re.search(
+        r"\b(?:add|subtract|amount\s+from|amount\s+of|more\s+than|less\s+than)\b.*",
+        label,
+    )
+    if cue is None:
+        return list(all_candidates.values())
+    explicit = re.findall(r"\b([0-9]+[a-z]?)\b", cue.group(0))
+    refs = {f"line_{value}" for value in explicit if f"line_{value}" in all_candidates}
+    for start_number, start_letter, end_number, end_letter in re.findall(
+        r"\b([0-9]+)([a-z])\s+through\s+([0-9]+)([a-z])\b", cue.group(0)
+    ):
+        if start_number != end_number:
+            continue
+        for code in range(ord(start_letter), ord(end_letter) + 1):
+            ref = f"line_{start_number}{chr(code)}"
+            if ref in all_candidates:
+                refs.add(ref)
+    return [all_candidates[ref] for ref in all_candidates if ref in refs]
+
+
+def _record_micro_failure(stats: dict[str, Any], node: OutlineNode, error: Exception) -> None:
+    """Record one isolated cell failure without allowing it to kill the document."""
+    kind = type(error).__name__
+    reason = str(error).encode("ascii", errors="replace").decode("ascii")[:500]
+    grouped = stats.setdefault("failure_reasons_by_kind", {})
+    grouped.setdefault(kind, []).append(
+        {
+            "outline_id": node.outline_id,
+            "line_anchor": node.line_anchor,
+            "reason": reason,
+        }
+    )
 
 
 def _deterministic_schedule_d_formula_plan(

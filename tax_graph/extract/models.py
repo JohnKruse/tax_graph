@@ -86,6 +86,7 @@ class ExtractionBatch:
     year: str
     objects: list[DraftObject]
     llm_calls: list["LlmCallTelemetry"] = field(default_factory=list)
+    micro_stats: dict[str, Any] = field(default_factory=dict)
 
     def items(self, kind: str) -> list[DraftObject]:
         """Return draft objects for a graph kind."""
@@ -197,6 +198,7 @@ class RoutedDrafts:
     issues: list[CheckIssue]
     output_dir: Path | None = None
     calibration: list[DraftObject] = field(default_factory=list)
+    micro_stats: dict[str, Any] = field(default_factory=dict)
 
     @property
     def ok(self) -> bool:

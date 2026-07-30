@@ -14,6 +14,90 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## Current state (2026-07-30)
 
+**Worker session checkpoint - M20-S12 implementation (2026-07-30):** Global canary: Ledger
+Llama. Phase canary: Ground Truth. Model: GPT-5 Codex; effort/quota/context indicators are not
+exposed by this environment. John gave go via the current task request. Single declared step:
+route expression derivation through the per-cell micro path, isolate failed cells, keep the
+response cap at 4000, then measure Form 1040 and the 15-form draft-only run. Applicable
+defect-ledger entries: D4, D6, D9, D11, and the exact RAN/NOT RUN evidence rule. No prompt
+tuning beyond per-cell scoping, operation-enum change, draft promotion, hand-authoring, live
+graph edit, rollover implementation, review-contract change, or UI change is in scope.
+
+**M20-S12 pre-write checkpoint (2026-07-30):** The existing micro path is real but only visits
+`transaction_table` and `totals` outline nodes. Geometry-derived Form 1040 has 60 outline rows
+and zero such nodes, which explains S11's clean `calls=0`. The implementation will add a
+deterministic formula-cue selector for line cells, include form/instruction spans plus stable
+same-form operand candidates in each prompt, read `extraction.micro_max_tokens`, and persist
+attempt/success/failure counts and failure reasons beside the draft metrics. The protected live
+graph remains untouched.
+
+**M20-S12 focused fast verification checkpoint (2026-07-30):** The first two pytest setup
+attempts were NOT RUN as evidence: the repository `.test_tmp` root and then `C:\tmp` both
+failed with ACL errors before collection. Final RAN: `$testRoot =
+'C:\Users\devbox\.codex\visualizations\2026\07\30\019fb406-787b-7021-ab13-29c97ba76e82\m20_s12_tests';
+New-Item -ItemType Directory -Force -Path $testRoot | Out-Null; $env:PYTEST_DEBUG_TEMPROOT =
+$testRoot; & .venv\Scripts\python.exe -m pytest tests/test_extract_outline_m4.py
+tests/test_schedule_d_extraction_m9.py -q` -> 12 passed, 1 warning in 7.10s. The next
+checkpoint is before the live Form 1040 diagnostic; no protected graph directories changed.
+
+**M20-S12 pre-live checkpoint (2026-07-30):** The focused implementation consumers are green.
+The ignored local config remains `openrouter` with concrete `google/gemini-3.6-flash`, strict
+schema and required parameters, unpinned routing with fallbacks enabled, and
+`extraction.micro_max_tokens: 4000`. The next command is the single Form 1040 draft-only
+diagnostic. Its expected spend is materially above the prior zero-call run but should remain
+small because the prompt is one cell at a time; the 15-form run will only start after its call,
+success, token, cost, resolved-model, and failure metrics are inspected. No protected graph
+directories or committed artifacts have been changed.
+
+**M20-S12 Form 1040 live measurement (2026-07-30):** The first sandbox-only live attempt is
+NOT RUN as final evidence: 17 per-cell requests all hit `OpenRouter request failed: Connection
+error` and produced no expressions. RAN outside the sandbox with the pinned concrete
+`google/gemini-3.6-flash`: after tightening the operand packet, `cells_attempted=17`,
+`cells_succeeded=17`, `cells_failed=0`; no `finish_reason=length` occurred. Resolved providers
+were Google and Google AI Studio. `verify expression-agreement` measured Form 1040 coverage
+6/20 (30.0%), operation accuracy 5/6, full expression accuracy 0/6. The report-wide snapshot
+is 10/80 coverage (12.5%), operation accuracy 9/10, full expression accuracy 0/10. The live
+graph directories remain byte-identical. The 15-form command is next; local config now permits
+15 documents and disables example mining for this draft-only expression measurement.
+
+**M20-S12 focused-test declaration (2026-07-30):** Declared files are
+`tests/test_extract_outline_m4.py`, `tests/test_schedule_d_extraction_m9.py`,
+`tests/test_batch_extraction_m10.py`, `tests/test_draft_route_m20.py`,
+`tests/test_llm_attribution_m20.py`, and `tests/test_cli.py`. They cover formula-cell selection,
+bounded micro prompts, failure isolation, draft metrics/provenance, batch consumers, and the
+expression-agreement CLI. Final evidence for every file will be recorded below.
+
+**M20-S12 final focused-test evidence (2026-07-30):** RAN: `$testRoot =
+'C:\Users\devbox\.codex\visualizations\2026\07\30\019fb406-787b-7021-ab13-29c97ba76e82\m20_s12_tests_final_r3';
+New-Item -ItemType Directory -Force -Path $testRoot | Out-Null; $env:PYTEST_DEBUG_TEMPROOT =
+$testRoot; & .venv\Scripts\python.exe -m pytest tests/test_extract_outline_m4.py
+tests/test_schedule_d_extraction_m9.py tests/test_batch_extraction_m10.py
+tests/test_draft_route_m20.py tests/test_llm_attribution_m20.py tests/test_cli.py -q` -> 27
+passed, 1 warning in 93.27s. Every declared focused file is covered by that exact command.
+The prior consumer run found and corrected the model-node boundary regression; this final rerun
+is the evidence after the correction.
+
+**M20-S12 final measurement (2026-07-30):** RAN the exact module-form per-document command
+`& .venv\Scripts\python.exe -m tax_graph.cli extract --doc <document_id> --year 2025 --root .`
+for all 15 manifest form documents in parallel, with `example_mining_limit=0` and
+`expression_mode=none`. All 15 exited 0. The final drafts record 74 cells attempted, 74
+succeeded, 0 failed; no per-cell truncation occurred. The resolved model was
+`google/gemini-3.6-flash`; providers were Google and Google AI Studio. RAN:
+`& .venv\Scripts\python.exe -m tax_graph.cli verify expression-agreement --year 2025 --root .`
+-> coverage 11/80 (13.8%), operation accuracy 9/11 (81.8%), full expression accuracy 0/11.
+Form 1040 alone is 6/20 coverage (30.0%), operation accuracy 5/6, full expression accuracy
+0/6. The sequential 15-form attempt exceeded the 600-second cap and is NOT RUN as final
+evidence; the final per-document parallel run completed the same manifest set.
+
+**M20-S12 final machine gates (2026-07-30):** RAN: `& .venv\Scripts\python.exe
+tools/check_ascii.py` -> ASCII check OK; `git diff --check` -> exit 0; module-form
+`tax_graph.cli validate 2025` -> graph integrity OK, documents=18, nodes=441, tables=2,
+edges=409, rules=17, citations=401; module-form `workbench.cli --root . --year 2025 preflight`
+-> exit 0, entries=18, units=2224, derived cells=2120, review_gap=591, unreviewed=1529,
+legacy_mined=394; strict citation command -> checked=401, strict_mismatches=36. Protected
+`graph/2025/{nodes,edges,rules}/` diff is empty. A single local commit was created for this
+step; no push has been performed.
+
 **Worker session checkpoint - M20-S11 implementation (2026-07-30):** Global canary: Ledger
 Llama. Phase canary: Ground Truth. Model: GPT-5 Codex; effort/quota/context indicators are not
 exposed by this environment. John gave go via the current task request. Single declared step:

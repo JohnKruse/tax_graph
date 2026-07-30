@@ -54,7 +54,13 @@ def route_drafts(
     calibration = _calibration_sample(
         batch.document_id, accepted, rate=sample_rate, minimum=sample_min
     )
-    return RoutedDrafts(accepted=accepted, review=review, issues=report.issues, calibration=calibration)
+    return RoutedDrafts(
+        accepted=accepted,
+        review=review,
+        issues=report.issues,
+        calibration=calibration,
+        micro_stats=batch.micro_stats,
+    )
 
 
 def _calibration_sample(
@@ -105,6 +111,8 @@ def write_routed_drafts(
             path.unlink()
 
     _write_yaml(draft_dir / "provenance.yaml", [_provenance(obj) for obj in batch.objects])
+    if batch.micro_stats:
+        _write_yaml(draft_dir / "micro_extraction.yaml", batch.micro_stats)
     (draft_dir / "review.md").write_text(render_review(batch, routed), encoding="utf-8", newline="\n")
     write_metrics(draft_dir, build_metrics(batch, routed))
     if document is not None:
@@ -115,6 +123,7 @@ def write_routed_drafts(
         issues=routed.issues,
         output_dir=draft_dir,
         calibration=routed.calibration,
+        micro_stats=batch.micro_stats,
     )
 
 

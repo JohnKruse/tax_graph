@@ -61,15 +61,16 @@ def extract_formula_plan(
     client: LlmClient,
     config: dict[str, Any] | None = None,
     root: str | Path | None = None,
+    operand_candidates: list[dict[str, str]] | None = None,
 ) -> dict[str, Any]:
     """Ask a narrow formula question and validate the returned operation plan."""
     settings = config or {}
     model = _micro_model(settings)
     response = client.structured_completion(
-        prompt=_formula_prompt(outline_node, spans),
+        prompt=_formula_prompt(outline_node, spans, operand_candidates=operand_candidates),
         schema=formula_micro_schema(root=root),
         model=model,
-        max_tokens=int(get_config_value(settings, "llm.micro_max_tokens", 12000)),
+        max_tokens=_micro_max_tokens(settings),
         temperature=_optional_float(get_config_value(settings, "llm.temperature", 0)),
         purpose="tax_graph_micro_formula",
     )
@@ -100,7 +101,12 @@ def validate_formula_plan(
                 raise MicroExtractionError(f"unknown citation span id: {span_id}")
 
 
-def _formula_prompt(outline_node: OutlineNode, spans: list[CandidateSpan]) -> str:
+def _formula_prompt(
+    outline_node: OutlineNode,
+    spans: list[CandidateSpan],
+    *,
+    operand_candidates: list[dict[str, str]] | None = None,
+) -> str:
     rendered_spans = "\n".join(
         f"- {span.span_id}: {span.document_id} {span.locator}: {span.text}"
         for span in spans
@@ -121,6 +127,12 @@ def _formula_prompt(outline_node: OutlineNode, spans: list[CandidateSpan]) -> st
             "",
             "candidate_spans:",
             rendered_spans,
+            "",
+            "addressable_operand_candidates:",
+            *[
+                f"- {item.get('ref', '')}: {item.get('label', '')}"
+                for item in (operand_candidates or [])
+            ],
         ]
     )
 
@@ -137,3 +149,16 @@ def _micro_model(settings: dict[str, Any]) -> str:
         return str(model)
     fallback = get_config_value(settings, "llm.model", "configured-llm")
     return str(fallback or "configured-llm")
+
+
+def _micro_max_tokens(settings: dict[str, Any]) -> int:
+    """Return the bounded per-cell response cap.
+
+    The extraction setting is authoritative. The old llm setting remains a
+    compatibility fallback for tests and copied configs, but the default is the
+    M20 canary cap rather than the whole-document response budget.
+    """
+    value = get_config_value(settings, "extraction.micro_max_tokens")
+    if value is None:
+        value = get_config_value(settings, "llm.micro_max_tokens", 4000)
+    return int(value)

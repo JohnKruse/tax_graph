@@ -5,69 +5,52 @@ protected_live_graph: true
 generated_draft_root: graph/2025/_drafts
 totals:
   expression_agreement: 0
-  operation_agreement_operands_differ: 7
-  operation_disagreement: 0
-  missing_in_draft: 73
-  extra_in_draft: 20
+  operation_agreement_operands_differ: 9
+  operation_disagreement: 2
+  missing_in_draft: 69
+  extra_in_draft: 66
 coverage:
   live_expressions: 80
-  paired_expressions: 7
-  unpaired_live_expressions: 73
-  rate: 0.0875
+  paired_expressions: 11
+  unpaired_live_expressions: 69
+  rate: 0.1375
 accuracy:
-  paired_expressions: 7
-  operation_agreement: 7
+  paired_expressions: 11
+  operation_agreement: 9
   expression_agreement: 0
-  operation_rate: 1.0
+  operation_rate: 0.8181818181818182
   expression_rate: 0.0
 identity_bridge:
   available: true
-  endpoints_seen: 49
-  mapped: 27
+  endpoints_seen: 336
+  mapped: 177
   already_canonical: 0
-  unresolved: 22
+  unresolved: 159
   ambiguous: 0
 by_document:
   form_1040_2025:
     expression_agreement: 0
-    operation_agreement_operands_differ: 3
-    operation_disagreement: 0
-    missing_in_draft: 17
-    extra_in_draft: 2
+    operation_agreement_operands_differ: 5
+    operation_disagreement: 1
+    missing_in_draft: 14
+    extra_in_draft: 12
     coverage:
       live_expressions: 20
-      paired_expressions: 3
-      unpaired_live_expressions: 17
-      rate: 0.15
+      paired_expressions: 6
+      unpaired_live_expressions: 14
+      rate: 0.3
     accuracy:
-      paired_expressions: 3
-      operation_agreement: 3
+      paired_expressions: 6
+      operation_agreement: 5
       expression_agreement: 0
-      operation_rate: 1.0
-      expression_rate: 0.0
-  form_1099b_2025:
-    expression_agreement: 0
-    operation_agreement_operands_differ: 0
-    operation_disagreement: 0
-    missing_in_draft: 0
-    extra_in_draft: 4
-    coverage:
-      live_expressions: 0
-      paired_expressions: 0
-      unpaired_live_expressions: 0
-      rate: 0.0
-    accuracy:
-      paired_expressions: 0
-      operation_agreement: 0
-      expression_agreement: 0
-      operation_rate: 0.0
+      operation_rate: 0.8333333333333334
       expression_rate: 0.0
   form_6251_2025:
     expression_agreement: 0
     operation_agreement_operands_differ: 0
     operation_disagreement: 0
     missing_in_draft: 0
-    extra_in_draft: 4
+    extra_in_draft: 16
     coverage:
       live_expressions: 0
       paired_expressions: 0
@@ -115,34 +98,34 @@ by_document:
       expression_rate: 0.0
   schedule_1_2025:
     expression_agreement: 0
-    operation_agreement_operands_differ: 2
+    operation_agreement_operands_differ: 3
     operation_disagreement: 0
-    missing_in_draft: 2
+    missing_in_draft: 1
     extra_in_draft: 0
     coverage:
       live_expressions: 4
-      paired_expressions: 2
-      unpaired_live_expressions: 2
-      rate: 0.5
+      paired_expressions: 3
+      unpaired_live_expressions: 1
+      rate: 0.75
     accuracy:
-      paired_expressions: 2
-      operation_agreement: 2
+      paired_expressions: 3
+      operation_agreement: 3
       expression_agreement: 0
       operation_rate: 1.0
       expression_rate: 0.0
   schedule_1a_2025:
     expression_agreement: 0
     operation_agreement_operands_differ: 0
-    operation_disagreement: 0
-    missing_in_draft: 3
-    extra_in_draft: 1
+    operation_disagreement: 1
+    missing_in_draft: 2
+    extra_in_draft: 23
     coverage:
       live_expressions: 3
-      paired_expressions: 0
-      unpaired_live_expressions: 3
-      rate: 0.0
+      paired_expressions: 1
+      unpaired_live_expressions: 2
+      rate: 0.3333333333333333
     accuracy:
-      paired_expressions: 0
+      paired_expressions: 1
       operation_agreement: 0
       expression_agreement: 0
       operation_rate: 0.0
@@ -152,7 +135,7 @@ by_document:
     operation_agreement_operands_differ: 0
     operation_disagreement: 0
     missing_in_draft: 0
-    extra_in_draft: 1
+    extra_in_draft: 5
     coverage:
       live_expressions: 0
       paired_expressions: 0
@@ -169,7 +152,7 @@ by_document:
     operation_agreement_operands_differ: 0
     operation_disagreement: 0
     missing_in_draft: 0
-    extra_in_draft: 2
+    extra_in_draft: 4
     coverage:
       live_expressions: 0
       paired_expressions: 0
@@ -183,27 +166,27 @@ by_document:
       expression_rate: 0.0
   schedule_a_2025:
     expression_agreement: 0
-    operation_agreement_operands_differ: 0
+    operation_agreement_operands_differ: 1
     operation_disagreement: 0
-    missing_in_draft: 5
-    extra_in_draft: 2
+    missing_in_draft: 4
+    extra_in_draft: 5
     coverage:
       live_expressions: 5
-      paired_expressions: 0
-      unpaired_live_expressions: 5
-      rate: 0.0
+      paired_expressions: 1
+      unpaired_live_expressions: 4
+      rate: 0.2
     accuracy:
-      paired_expressions: 0
-      operation_agreement: 0
+      paired_expressions: 1
+      operation_agreement: 1
       expression_agreement: 0
-      operation_rate: 0.0
+      operation_rate: 1.0
       expression_rate: 0.0
   schedule_b_2025:
     expression_agreement: 0
     operation_agreement_operands_differ: 0
     operation_disagreement: 0
     missing_in_draft: 0
-    extra_in_draft: 3
+    extra_in_draft: 1
     coverage:
       live_expressions: 0
       paired_expressions: 0
@@ -217,20 +200,20 @@ by_document:
       expression_rate: 0.0
   schedule_d_2025:
     expression_agreement: 0
-    operation_agreement_operands_differ: 2
+    operation_agreement_operands_differ: 0
     operation_disagreement: 0
-    missing_in_draft: 7
-    extra_in_draft: 1
+    missing_in_draft: 9
+    extra_in_draft: 0
     coverage:
       live_expressions: 9
-      paired_expressions: 2
-      unpaired_live_expressions: 7
-      rate: 0.2222222222222222
+      paired_expressions: 0
+      unpaired_live_expressions: 9
+      rate: 0.0
     accuracy:
-      paired_expressions: 2
-      operation_agreement: 2
+      paired_expressions: 0
+      operation_agreement: 0
       expression_agreement: 0
-      operation_rate: 1.0
+      operation_rate: 0.0
       expression_rate: 0.0
 rows:
 - document_id: form_1040_2025
@@ -418,17 +401,6 @@ rows:
     - lookup_tax_table_amount
   generated: null
 - document_id: form_1040_2025
-  target: form_1040_2025_root_line_10
-  category: extra_in_draft
-  live: null
-  generated:
-    document_id: form_1040_2025
-    operation: COPY
-    operands:
-    - ref: schedule_1_2025_part_ii_line_26
-    rule_ids:
-    - rule_copy_to_1040
-- document_id: form_1040_2025
   target: form_1040_2025_root_line_11a
   category: operation_agreement_operands_differ
   live:
@@ -445,13 +417,15 @@ rows:
     document_id: form_1040_2025
     operation: SUBTRACT
     operands:
-    - ref: form_1040_2025_root_line_9
+    - ref: form_1040_2025_root_line_11a
+      role: subtrahend
+    - ref: form_1040_2025_root_line_11a
       role: minuend
     rule_ids:
-    - f1040_2025_rule_line_11a
+    - rule_form_1040_2025_root_line_11a_line_11a_subtract
 - document_id: form_1040_2025
   target: form_1040_2025_root_line_11b
-  category: missing_in_draft
+  category: operation_agreement_operands_differ
   live:
     document_id: form_1040_2025
     operation: COPY
@@ -459,10 +433,17 @@ rows:
     - ref: form_1040_2025_root_line_11a
     rule_ids:
     - copy_currency_value
-  generated: null
+  generated:
+    document_id: form_1040_2025
+    operation: COPY
+    operands:
+    - ref: form_1040_2025_root_line_11b
+      role: addend
+    rule_ids:
+    - rule_form_1040_2025_root_line_11b_line_11b_copy
 - document_id: form_1040_2025
   target: form_1040_2025_root_line_14
-  category: missing_in_draft
+  category: operation_agreement_operands_differ
   live:
     document_id: form_1040_2025
     operation: SUM
@@ -475,10 +456,21 @@ rows:
       role: addend
     rule_ids:
     - sum_currency
-  generated: null
+  generated:
+    document_id: form_1040_2025
+    operation: SUM
+    operands:
+    - ref: form_1040_2025_root_line_14
+      role: addend
+    - ref: form_1040_2025_root_line_14
+      role: addend
+    - ref: form_1040_2025_root_line_14
+      role: addend
+    rule_ids:
+    - rule_form_1040_2025_root_line_14_line_14_sum
 - document_id: form_1040_2025
   target: form_1040_2025_root_line_15
-  category: operation_agreement_operands_differ
+  category: operation_disagreement
   live:
     document_id: form_1040_2025
     operation: MAX
@@ -491,12 +483,19 @@ rows:
     - max_currency
   generated:
     document_id: form_1040_2025
-    operation: MAX
+    operation: MULTIPLE
     operands:
-    - ref: form_1040_2025_root_line_11a
-      role: candidate
+    - ref: form_1040_2025_root_line_15
+      role: addend
+    - ref: form_1040_2025_root_line_15
+      role: minuend
+    - ref: form_1040_2025_root_line_15
+      role: subtrahend
+    - ref: form_1040_2025_root_line_15
+      role: addend
     rule_ids:
-    - f1040_2025_rule_line_15
+    - rule_form_1040_2025_root_line_15_line_15_max
+    - rule_form_1040_2025_root_line_15_line_15_subtraction_subtract
 - document_id: form_1040_2025
   target: form_1040_2025_root_line_15_pre_floor
   category: missing_in_draft
@@ -512,16 +511,185 @@ rows:
     - subtract_currency
   generated: null
 - document_id: form_1040_2025
-  target: form_1040_2025_root_line_8
+  target: form_1040_2025_root_line_18_line_18
   category: extra_in_draft
   live: null
   generated:
     document_id: form_1040_2025
-    operation: COPY
+    operation: SUM
     operands:
-    - ref: schedule_1_2025_part_i_line_10
+    - ref: form_1040_2025_root_line_18_line_16
+      role: addend
+    - ref: form_1040_2025_root_line_18_line_17
+      role: addend
     rule_ids:
-    - rule_copy_to_1040
+    - rule_form_1040_2025_root_line_18_line_18_sum
+- document_id: form_1040_2025
+  target: form_1040_2025_root_line_21_line_21
+  category: extra_in_draft
+  live: null
+  generated:
+    document_id: form_1040_2025
+    operation: SUM
+    operands:
+    - ref: form_1040_2025_root_line_21_line_19
+      role: addend
+    - ref: form_1040_2025_root_line_21_line_20
+      role: addend
+    rule_ids:
+    - rule_form_1040_2025_root_line_21_line_21_sum
+- document_id: form_1040_2025
+  target: form_1040_2025_root_line_22_line_18_minus_line_21
+  category: extra_in_draft
+  live: null
+  generated:
+    document_id: form_1040_2025
+    operation: SUBTRACT
+    operands:
+    - ref: form_1040_2025_root_line_22_line_18
+      role: minuend
+    - ref: form_1040_2025_root_line_22_line_21
+      role: subtrahend
+    rule_ids:
+    - rule_form_1040_2025_root_line_22_line_18_minus_line_21_subtract
+- document_id: form_1040_2025
+  target: form_1040_2025_root_line_22_line_22
+  category: extra_in_draft
+  live: null
+  generated:
+    document_id: form_1040_2025
+    operation: MAX
+    operands:
+    - ref: form_1040_2025_root_line_22_0
+      role: addend
+    - ref: form_1040_2025_root_line_22_line_18_minus_line_21
+      role: addend
+    rule_ids:
+    - rule_form_1040_2025_root_line_22_line_22_max
+- document_id: form_1040_2025
+  target: form_1040_2025_root_line_24_line_24
+  category: extra_in_draft
+  live: null
+  generated:
+    document_id: form_1040_2025
+    operation: SUM
+    operands:
+    - ref: form_1040_2025_root_line_24_line_22
+      role: addend
+    - ref: form_1040_2025_root_line_24_line_23
+      role: addend
+    rule_ids:
+    - rule_form_1040_2025_root_line_24_line_24_sum
+- document_id: form_1040_2025
+  target: form_1040_2025_root_line_25d_line_25d
+  category: extra_in_draft
+  live: null
+  generated:
+    document_id: form_1040_2025
+    operation: SUM
+    operands:
+    - ref: form_1040_2025_root_line_25d_line_25a
+      role: addend
+    - ref: form_1040_2025_root_line_25d_line_25b
+      role: addend
+    - ref: form_1040_2025_root_line_25d_line_25c
+      role: addend
+    rule_ids:
+    - rule_form_1040_2025_root_line_25d_line_25d_sum
+- document_id: form_1040_2025
+  target: form_1040_2025_root_line_32_line_32
+  category: extra_in_draft
+  live: null
+  generated:
+    document_id: form_1040_2025
+    operation: SUM
+    operands:
+    - ref: form_1040_2025_root_line_32_line_27a
+      role: addend
+    - ref: form_1040_2025_root_line_32_line_28
+      role: addend
+    - ref: form_1040_2025_root_line_32_line_29
+      role: addend
+    - ref: form_1040_2025_root_line_32_line_30
+      role: addend
+    - ref: form_1040_2025_root_line_32_line_31
+      role: addend
+    rule_ids:
+    - rule_form_1040_2025_root_line_32_line_32_sum
+- document_id: form_1040_2025
+  target: form_1040_2025_root_line_33_line_33
+  category: extra_in_draft
+  live: null
+  generated:
+    document_id: form_1040_2025
+    operation: SUM
+    operands:
+    - ref: form_1040_2025_root_line_33_line_25d
+      role: addend
+    - ref: form_1040_2025_root_line_33_line_26
+      role: addend
+    - ref: form_1040_2025_root_line_33_line_32
+      role: addend
+    rule_ids:
+    - rule_form_1040_2025_root_line_33_line_33_sum
+- document_id: form_1040_2025
+  target: form_1040_2025_root_line_34_is_line_33_greater
+  category: extra_in_draft
+  live: null
+  generated:
+    document_id: form_1040_2025
+    operation: COMPARE
+    operands:
+    - ref: form_1040_2025_root_line_34_line_24
+      role: addend
+    - ref: form_1040_2025_root_line_34_line_33
+      role: addend
+    rule_ids:
+    - rule_form_1040_2025_root_line_34_is_line_33_greater_compare
+- document_id: form_1040_2025
+  target: form_1040_2025_root_line_34_line_33_minus_line_24
+  category: extra_in_draft
+  live: null
+  generated:
+    document_id: form_1040_2025
+    operation: SUBTRACT
+    operands:
+    - ref: form_1040_2025_root_line_34_line_24
+      role: subtrahend
+    - ref: form_1040_2025_root_line_34_line_33
+      role: minuend
+    rule_ids:
+    - rule_form_1040_2025_root_line_34_line_33_minus_line_24_subtract
+- document_id: form_1040_2025
+  target: form_1040_2025_root_line_34_line_34
+  category: extra_in_draft
+  live: null
+  generated:
+    document_id: form_1040_2025
+    operation: IF_ELSE
+    operands:
+    - ref: form_1040_2025_root_line_34_0
+      role: addend
+    - ref: form_1040_2025_root_line_34_is_line_33_greater
+      role: addend
+    - ref: form_1040_2025_root_line_34_line_33_minus_line_24
+      role: addend
+    rule_ids:
+    - rule_form_1040_2025_root_line_34_line_34_if_else
+- document_id: form_1040_2025
+  target: form_1040_2025_root_line_37_line_37
+  category: extra_in_draft
+  live: null
+  generated:
+    document_id: form_1040_2025
+    operation: SUBTRACT
+    operands:
+    - ref: form_1040_2025_root_line_37_line_24
+      role: minuend
+    - ref: form_1040_2025_root_line_37_line_33
+      role: subtrahend
+    rule_ids:
+    - rule_form_1040_2025_root_line_37_line_37_subtract
 - document_id: form_1040_2025
   target: form_1040_2025_root_line_9
   category: operation_agreement_operands_differ
@@ -545,13 +713,27 @@ rows:
     document_id: form_1040_2025
     operation: SUM
     operands:
-    - ref: form_1040_2025_root_line_z
+    - ref: form_1040_2025_root_line_9
+      role: addend
+    - ref: form_1040_2025_root_line_9
+      role: addend
+    - ref: form_1040_2025_root_line_9
+      role: addend
+    - ref: form_1040_2025_root_line_9
+      role: addend
+    - ref: form_1040_2025_root_line_9
+      role: addend
+    - ref: form_1040_2025_root_line_9
+      role: addend
+    - ref: form_1040_2025_root_line_9
+      role: addend
+    - ref: form_1040_2025_root_line_9
       role: addend
     rule_ids:
-    - f1040_2025_rule_line_9
+    - rule_form_1040_2025_root_line_9_line_9_sum
 - document_id: form_1040_2025
   target: form_1040_2025_root_line_z
-  category: missing_in_draft
+  category: operation_agreement_operands_differ
   live:
     document_id: form_1040_2025
     operation: SUM
@@ -574,7 +756,28 @@ rows:
       role: addend
     rule_ids:
     - sum_currency
-  generated: null
+  generated:
+    document_id: form_1040_2025
+    operation: SUM
+    operands:
+    - ref: form_1040_2025_root_line_z
+      role: addend
+    - ref: form_1040_2025_root_line_z
+      role: addend
+    - ref: form_1040_2025_root_line_z
+      role: addend
+    - ref: form_1040_2025_root_line_z
+      role: addend
+    - ref: form_1040_2025_root_line_z
+      role: addend
+    - ref: form_1040_2025_root_line_z
+      role: addend
+    - ref: form_1040_2025_root_line_z
+      role: addend
+    - ref: form_1040_2025_root_line_z
+      role: addend
+    rule_ids:
+    - rule_form_1040_2025_root_line_1z_line_1z_sum
 - document_id: form_1040_2025
   target: form_1040_2025_standard_deduction_amount
   category: missing_in_draft
@@ -597,19 +800,27 @@ rows:
     rule_ids:
     - lookup_selected_value
   generated: null
-- document_id: form_1099b_2025
-  target: form_1040_2025_withheld
+- document_id: form_6251_2025
+  target: form_6251_2025_part_ii_line_6
   category: extra_in_draft
   live: null
   generated:
-    document_id: form_1099b_2025
-    operation: COPY
+    document_id: form_6251_2025
+    operation: MULTIPLE
     operands:
-    - ref: f1099b_2025_line_4
+    - ref: form_6251_2025_part_ii_line_6
+      role: addend
+    - ref: form_6251_2025_part_ii_line_6
+      role: minuend
+    - ref: form_6251_2025_part_ii_line_6
+      role: subtrahend
+    - ref: form_6251_2025_part_ii_line_6
+      role: addend
     rule_ids:
-    - f1099b_transfer_rule
+    - rule_form_6251_2025_section_1_part_ii_alternative_minimum_tax_amt_line_6_line_6_max
+    - rule_form_6251_2025_section_1_part_ii_alternative_minimum_tax_amt_line_6_subtract_line_4_line_5_subtract
 - document_id: form_6251_2025
-  target: form_6251_2025_line_11
+  target: form_6251_2025_part_ii_line_9
   category: extra_in_draft
   live: null
   generated:
@@ -618,68 +829,222 @@ rows:
     operands:
     - ref: form_6251_2025_part_ii_line_9
       role: minuend
+    - ref: form_6251_2025_part_ii_line_9
+      role: subtrahend
     rule_ids:
-    - f6251_2025_rule_11
+    - rule_form_6251_2025_section_1_part_ii_alternative_minimum_tax_amt_line_9_line_9_subtract
 - document_id: form_6251_2025
-  target: form_6251_2025_line_4
+  target: form_6251_2025_part_iii_line_12
+  category: extra_in_draft
+  live: null
+  generated:
+    document_id: form_6251_2025
+    operation: IF_ELSE
+    operands:
+    - ref: form_6251_2025_part_iii_line_12
+      role: condition
+    - ref: form_6251_2025_part_iii_line_12
+      role: if_true
+    - ref: form_6251_2025_part_iii_line_12
+      role: if_false
+    rule_ids:
+    - rule_form_6251_2025_section_2_part_iii_tax_computation_using_maximum_capital_gains_rates_line_12_line_12_if_else
+- document_id: form_6251_2025
+  target: form_6251_2025_part_iii_line_17
+  category: extra_in_draft
+  live: null
+  generated:
+    document_id: form_6251_2025
+    operation: SUBTRACT
+    operands:
+    - ref: form_6251_2025_part_iii_line_17
+      role: minuend
+    - ref: form_6251_2025_part_iii_line_17
+      role: subtrahend
+    rule_ids:
+    - rule_form_6251_2025_section_2_part_iii_tax_computation_using_maximum_capital_gains_rates_line_17_line_17_subtract
+- document_id: form_6251_2025
+  target: form_6251_2025_part_iii_line_21
+  category: extra_in_draft
+  live: null
+  generated:
+    document_id: form_6251_2025
+    operation: MULTIPLE
+    operands:
+    - ref: form_6251_2025_part_iii_line_21
+      role: addend
+    - ref: form_6251_2025_part_iii_line_21
+      role: minuend
+    - ref: form_6251_2025_part_iii_line_21
+      role: subtrahend
+    - ref: form_6251_2025_part_iii_line_21
+      role: addend
+    rule_ids:
+    - rule_form_6251_2025_section_2_part_iii_tax_computation_using_maximum_capital_gains_rates_line_21_line_21_max
+    - rule_form_6251_2025_section_2_part_iii_tax_computation_using_maximum_capital_gains_rates_line_21_line_21_subtract_subtract
+- document_id: form_6251_2025
+  target: form_6251_2025_part_iii_line_24
+  category: extra_in_draft
+  live: null
+  generated:
+    document_id: form_6251_2025
+    operation: SUBTRACT
+    operands:
+    - ref: form_6251_2025_part_iii_line_24
+      role: minuend
+    - ref: form_6251_2025_part_iii_line_24
+      role: subtrahend
+    rule_ids:
+    - rule_form_6251_2025_section_2_part_iii_tax_computation_using_maximum_capital_gains_rates_line_24_line_24_subtract
+- document_id: form_6251_2025
+  target: form_6251_2025_part_iii_line_26
+  category: extra_in_draft
+  live: null
+  generated:
+    document_id: form_6251_2025
+    operation: COPY
+    operands:
+    - ref: form_6251_2025_part_iii_line_26
+      role: addend
+    rule_ids:
+    - rule_form_6251_2025_section_2_part_iii_tax_computation_using_maximum_capital_gains_rates_line_26_line_26_copy
+- document_id: form_6251_2025
+  target: form_6251_2025_part_iii_line_28
   category: extra_in_draft
   live: null
   generated:
     document_id: form_6251_2025
     operation: SUM
     operands:
-    - ref: form_6251_2025_part_i_line_1b
+    - ref: form_6251_2025_part_iii_line_28
+      role: addend
+    - ref: form_6251_2025_part_iii_line_28
       role: addend
     rule_ids:
-    - f6251_2025_rule_4
+    - rule_form_6251_2025_section_2_part_iii_tax_computation_using_maximum_capital_gains_rates_line_28_line_28_sum
 - document_id: form_6251_2025
-  target: form_6251_2025_part_i_line_1b
+  target: form_6251_2025_part_iii_line_29
   category: extra_in_draft
   live: null
   generated:
     document_id: form_6251_2025
-    operation: SUBTRACT
+    operation: MULTIPLE
     operands:
-    - ref: form_6251_2025_part_i_line_1a
+    - ref: form_6251_2025_part_iii_line_29
+      role: addend
+    - ref: form_6251_2025_part_iii_line_29
+      role: addend
+    - ref: form_6251_2025_part_iii_line_29
       role: minuend
-    rule_ids:
-    - f6251_2025_rule_1b
-- document_id: form_6251_2025
-  target: form_6251_2025_part_ii_line_6
-  category: extra_in_draft
-  live: null
-  generated:
-    document_id: form_6251_2025
-    operation: SUBTRACT
-    operands:
-    - ref: form_6251_2025_line_4
-      role: minuend
-    - ref: form_6251_2025_line_5
+    - ref: form_6251_2025_part_iii_line_29
       role: subtrahend
     rule_ids:
-    - f6251_2025_rule_6
-- document_id: form_1099b_2025
-  target: form_6781_2025_aggregate_profit
+    - rule_form_6251_2025_section_2_part_iii_tax_computation_using_maximum_capital_gains_rates_line_29_line_25_minus_line_28_subtract
+    - rule_form_6251_2025_section_2_part_iii_tax_computation_using_maximum_capital_gains_rates_line_29_line_29_max
+- document_id: form_6251_2025
+  target: form_6251_2025_part_iii_line_32
   category: extra_in_draft
   live: null
   generated:
-    document_id: form_1099b_2025
-    operation: COPY
+    document_id: form_6251_2025
+    operation: SUM
     operands:
-    - ref: f1099b_2025_line_11
+    - ref: form_6251_2025_part_iii_line_32
+      role: addend
+    - ref: form_6251_2025_part_iii_line_32
+      role: addend
     rule_ids:
-    - f1099b_transfer_rule
-- document_id: form_1099b_2025
-  target: form_8949_2025_cost_basis
+    - rule_form_6251_2025_section_2_part_iii_tax_computation_using_maximum_capital_gains_rates_line_32_line_32_sum
+- document_id: form_6251_2025
+  target: form_6251_2025_part_iii_line_33
   category: extra_in_draft
   live: null
   generated:
-    document_id: form_1099b_2025
-    operation: COPY
+    document_id: form_6251_2025
+    operation: SUBTRACT
     operands:
-    - ref: f1099b_2025_line_1e
+    - ref: form_6251_2025_part_iii_line_33
+      role: minuend
+    - ref: form_6251_2025_part_iii_line_33
+      role: subtrahend
     rule_ids:
-    - f1099b_transfer_rule
+    - rule_form_6251_2025_section_2_part_iii_tax_computation_using_maximum_capital_gains_rates_line_33_line_33_subtract
+- document_id: form_6251_2025
+  target: form_6251_2025_part_iii_line_35
+  category: extra_in_draft
+  live: null
+  generated:
+    document_id: form_6251_2025
+    operation: SUM
+    operands:
+    - ref: form_6251_2025_part_iii_line_35
+      role: addend
+    - ref: form_6251_2025_part_iii_line_35
+      role: addend
+    - ref: form_6251_2025_part_iii_line_35
+      role: addend
+    rule_ids:
+    - rule_form_6251_2025_section_2_part_iii_tax_computation_using_maximum_capital_gains_rates_line_35_line_35_sum
+- document_id: form_6251_2025
+  target: form_6251_2025_part_iii_line_36
+  category: extra_in_draft
+  live: null
+  generated:
+    document_id: form_6251_2025
+    operation: SUBTRACT
+    operands:
+    - ref: form_6251_2025_part_iii_line_36
+      role: minuend
+    - ref: form_6251_2025_part_iii_line_36
+      role: subtrahend
+    rule_ids:
+    - rule_form_6251_2025_section_2_part_iii_tax_computation_using_maximum_capital_gains_rates_line_36_line_36_subtract
+- document_id: form_6251_2025
+  target: form_6251_2025_part_iii_line_38
+  category: extra_in_draft
+  live: null
+  generated:
+    document_id: form_6251_2025
+    operation: SUM
+    operands:
+    - ref: form_6251_2025_part_iii_line_38
+      role: addend
+    - ref: form_6251_2025_part_iii_line_38
+      role: addend
+    - ref: form_6251_2025_part_iii_line_38
+      role: addend
+    - ref: form_6251_2025_part_iii_line_38
+      role: addend
+    rule_ids:
+    - rule_form_6251_2025_section_2_part_iii_tax_computation_using_maximum_capital_gains_rates_line_38_line_38_sum
+- document_id: form_6251_2025
+  target: form_6251_2025_section_1_part_ii_alternative_minimum_tax_amt_line_11_line_11
+  category: extra_in_draft
+  live: null
+  generated:
+    document_id: form_6251_2025
+    operation: MAX
+    operands:
+    - ref: form_6251_2025_section_1_part_ii_alternative_minimum_tax_amt_line_11_0
+      role: addend
+    - ref: form_6251_2025_section_1_part_ii_alternative_minimum_tax_amt_line_11_line_9_minus_line_10
+      role: addend
+    rule_ids:
+    - rule_form_6251_2025_section_1_part_ii_alternative_minimum_tax_amt_line_11_line_11_max
+- document_id: form_6251_2025
+  target: form_6251_2025_section_1_part_ii_alternative_minimum_tax_amt_line_11_line_9_minus_line_10
+  category: extra_in_draft
+  live: null
+  generated:
+    document_id: form_6251_2025
+    operation: SUBTRACT
+    operands:
+    - ref: form_6251_2025_section_1_part_ii_alternative_minimum_tax_amt_line_11_line_10
+      role: subtrahend
+    - ref: form_6251_2025_section_1_part_ii_alternative_minimum_tax_amt_line_11_line_9
+      role: minuend
+    rule_ids:
+    - rule_form_6251_2025_section_1_part_ii_alternative_minimum_tax_amt_line_11_line_9_minus_line_10_subtract
 - document_id: form_8949_2025
   target: form_8949_2025_part_i_line_1_column_d_minus_e
   category: missing_in_draft
@@ -808,20 +1173,9 @@ rows:
     operands: []
     rule_ids: []
   generated: null
-- document_id: form_1099b_2025
-  target: form_8949_2025_proceeds
-  category: extra_in_draft
-  live: null
-  generated:
-    document_id: form_1099b_2025
-    operation: COPY
-    operands:
-    - ref: f1099b_2025_line_1d
-    rule_ids:
-    - f1099b_transfer_rule
 - document_id: schedule_1_2025
   target: schedule_1_2025_part_i_line_10
-  category: operation_agreement_operands_differ
+  category: missing_in_draft
   live:
     document_id: schedule_1_2025
     operation: SUM
@@ -844,17 +1198,10 @@ rows:
       role: addend
     rule_ids:
     - sum_currency
-  generated:
-    document_id: schedule_1_2025
-    operation: SUM
-    operands:
-    - ref: schedule_1_2025_part_i_line_9
-      role: addend
-    rule_ids:
-    - rule_sum_additional_income
+  generated: null
 - document_id: schedule_1_2025
   target: schedule_1_2025_part_i_line_9
-  category: missing_in_draft
+  category: operation_agreement_operands_differ
   live:
     document_id: schedule_1_2025
     operation: SUM
@@ -865,10 +1212,53 @@ rows:
       role: addend
     rule_ids:
     - sum_currency
-  generated: null
+  generated:
+    document_id: schedule_1_2025
+    operation: SUM
+    operands:
+    - ref: schedule_1_2025_part_i_line_9
+      role: addend
+    - ref: schedule_1_2025_part_i_line_9
+      role: addend
+    - ref: schedule_1_2025_part_i_line_9
+      role: addend
+    - ref: schedule_1_2025_part_i_line_9
+      role: addend
+    - ref: schedule_1_2025_part_i_line_9
+      role: addend
+    - ref: schedule_1_2025_part_i_line_9
+      role: addend
+    - ref: schedule_1_2025_part_i_line_9
+      role: addend
+    - ref: schedule_1_2025_part_i_line_9
+      role: addend
+    - ref: schedule_1_2025_part_i_line_9
+      role: addend
+    - ref: schedule_1_2025_part_i_line_9
+      role: addend
+    - ref: schedule_1_2025_part_i_line_9
+      role: addend
+    - ref: schedule_1_2025_part_i_line_9
+      role: addend
+    - ref: schedule_1_2025_part_i_line_9
+      role: addend
+    - ref: schedule_1_2025_part_i_line_9
+      role: addend
+    - ref: schedule_1_2025_part_i_line_9
+      role: addend
+    - ref: schedule_1_2025_part_i_line_9
+      role: addend
+    - ref: schedule_1_2025_part_i_line_9
+      role: addend
+    - ref: schedule_1_2025_part_i_line_9
+      role: addend
+    - ref: schedule_1_2025_part_i_line_9
+      role: addend
+    rule_ids:
+    - rule_schedule_1_2025_section_1_part_i_additional_income_line_9_line_9_sum
 - document_id: schedule_1_2025
   target: schedule_1_2025_part_ii_line_25
-  category: missing_in_draft
+  category: operation_agreement_operands_differ
   live:
     document_id: schedule_1_2025
     operation: SUM
@@ -879,7 +1269,30 @@ rows:
       role: addend
     rule_ids:
     - sum_currency
-  generated: null
+  generated:
+    document_id: schedule_1_2025
+    operation: SUM
+    operands:
+    - ref: schedule_1_2025_part_ii_line_25
+      role: addend
+    - ref: schedule_1_2025_part_ii_line_25
+      role: addend
+    - ref: schedule_1_2025_part_ii_line_25
+      role: addend
+    - ref: schedule_1_2025_part_ii_line_25
+      role: addend
+    - ref: schedule_1_2025_part_ii_line_25
+      role: addend
+    - ref: schedule_1_2025_part_ii_line_25
+      role: addend
+    - ref: schedule_1_2025_part_ii_line_25
+      role: addend
+    - ref: schedule_1_2025_part_ii_line_25
+      role: addend
+    - ref: schedule_1_2025_part_ii_line_25
+      role: addend
+    rule_ids:
+    - rule_schedule_1_2025_section_2_part_ii_adjustments_to_income_line_25_line_25_sum
 - document_id: schedule_1_2025
   target: schedule_1_2025_part_ii_line_26
   category: operation_agreement_operands_differ
@@ -921,22 +1334,36 @@ rows:
     document_id: schedule_1_2025
     operation: SUM
     operands:
-    - ref: schedule_1_2025_part_ii_line_25
+    - ref: schedule_1_2025_part_ii_line_26
+      role: addend
+    - ref: schedule_1_2025_part_ii_line_26
+      role: addend
+    - ref: schedule_1_2025_part_ii_line_26
+      role: addend
+    - ref: schedule_1_2025_part_ii_line_26
+      role: addend
+    - ref: schedule_1_2025_part_ii_line_26
+      role: addend
+    - ref: schedule_1_2025_part_ii_line_26
+      role: addend
+    - ref: schedule_1_2025_part_ii_line_26
+      role: addend
+    - ref: schedule_1_2025_part_ii_line_26
+      role: addend
+    - ref: schedule_1_2025_part_ii_line_26
+      role: addend
+    - ref: schedule_1_2025_part_ii_line_26
+      role: addend
+    - ref: schedule_1_2025_part_ii_line_26
+      role: addend
+    - ref: schedule_1_2025_part_ii_line_26
+      role: addend
+    - ref: schedule_1_2025_part_ii_line_26
+      role: addend
+    - ref: schedule_1_2025_part_ii_line_26
       role: addend
     rule_ids:
-    - rule_sum_adjustments
-- document_id: schedule_1a_2025
-  target: schedule_1a_2025_line_3
-  category: extra_in_draft
-  live: null
-  generated:
-    document_id: schedule_1a_2025
-    operation: SUM
-    operands:
-    - ref: schedule_1a_2025_line_1
-      role: addend
-    rule_ids:
-    - rule_add_1_2e
+    - rule_schedule_1_2025_section_2_part_ii_adjustments_to_income_line_26_line_26_sum
 - document_id: schedule_1a_2025
   target: schedule_1a_2025_part_i_line_3
   category: missing_in_draft
@@ -970,40 +1397,463 @@ rows:
     - sum_currency
   generated: null
 - document_id: schedule_1a_2025
+  target: schedule_1a_2025_part_ii_line_10
+  category: extra_in_draft
+  live: null
+  generated:
+    document_id: schedule_1a_2025
+    operation: SUBTRACT
+    operands:
+    - ref: schedule_1a_2025_part_ii_line_10
+      role: minuend
+    - ref: schedule_1a_2025_part_ii_line_10
+      role: subtrahend
+    rule_ids:
+    - rule_schedule_1a_2025_section_1_part_ii_no_tax_on_tips_line_10_line_10_subtract
+- document_id: schedule_1a_2025
+  target: schedule_1a_2025_part_ii_line_8
+  category: extra_in_draft
+  live: null
+  generated:
+    document_id: schedule_1a_2025
+    operation: COPY
+    operands:
+    - ref: schedule_1a_2025_part_ii_line_8
+      role: addend
+    rule_ids:
+    - rule_schedule_1a_2025_section_1_part_ii_no_tax_on_tips_line_8_line_8_copy
+- document_id: schedule_1a_2025
+  target: schedule_1a_2025_part_iii_line_16
+  category: extra_in_draft
+  live: null
+  generated:
+    document_id: schedule_1a_2025
+    operation: COPY
+    operands:
+    - ref: schedule_1a_2025_part_iii_line_16
+      role: addend
+    rule_ids:
+    - rule_schedule_1a_2025_section_1_part_iii_no_tax_on_overtime_line_16_line_16_copy
+- document_id: schedule_1a_2025
+  target: schedule_1a_2025_part_iii_line_18
+  category: extra_in_draft
+  live: null
+  generated:
+    document_id: schedule_1a_2025
+    operation: SUBTRACT
+    operands:
+    - ref: schedule_1a_2025_part_iii_line_18
+      role: minuend
+    - ref: schedule_1a_2025_part_iii_line_18
+      role: subtrahend
+    rule_ids:
+    - rule_schedule_1a_2025_section_1_part_iii_no_tax_on_overtime_line_18_line_18_subtract
+- document_id: schedule_1a_2025
+  target: schedule_1a_2025_part_iv_line_25
+  category: extra_in_draft
+  live: null
+  generated:
+    document_id: schedule_1a_2025
+    operation: COPY
+    operands:
+    - ref: schedule_1a_2025_part_iv_line_25
+      role: addend
+    rule_ids:
+    - rule_schedule_1a_2025_section_2_schedule_f_line_25_line_25_copy
+- document_id: schedule_1a_2025
+  target: schedule_1a_2025_part_iv_line_27
+  category: extra_in_draft
+  live: null
+  generated:
+    document_id: schedule_1a_2025
+    operation: SUBTRACT
+    operands:
+    - ref: schedule_1a_2025_part_iv_line_27
+      role: minuend
+    - ref: schedule_1a_2025_part_iv_line_27
+      role: subtrahend
+    rule_ids:
+    - rule_schedule_1a_2025_section_2_schedule_f_line_27_line_27_subtract
+- document_id: schedule_1a_2025
+  target: schedule_1a_2025_part_v_line_31
+  category: extra_in_draft
+  live: null
+  generated:
+    document_id: schedule_1a_2025
+    operation: COPY
+    operands:
+    - ref: schedule_1a_2025_part_v_line_31
+      role: addend
+    rule_ids:
+    - rule_schedule_1a_2025_section_2_part_v_enhanced_deduction_for_seniors_line_31_line_31_copy
+- document_id: schedule_1a_2025
+  target: schedule_1a_2025_part_v_line_33
+  category: extra_in_draft
+  live: null
+  generated:
+    document_id: schedule_1a_2025
+    operation: SUBTRACT
+    operands:
+    - ref: schedule_1a_2025_part_v_line_33
+      role: minuend
+    - ref: schedule_1a_2025_part_v_line_33
+      role: subtrahend
+    rule_ids:
+    - rule_schedule_1a_2025_section_2_part_v_enhanced_deduction_for_seniors_line_33_line_33_subtract
+- document_id: schedule_1a_2025
   target: schedule_1a_2025_part_vi_line_38
-  category: missing_in_draft
+  category: operation_disagreement
   live:
     document_id: schedule_1a_2025
     operation: MISSING
     operands: []
     rule_ids: []
-  generated: null
+  generated:
+    document_id: schedule_1a_2025
+    operation: SUM
+    operands:
+    - ref: schedule_1a_2025_part_vi_line_38
+      role: addend
+    - ref: schedule_1a_2025_part_vi_line_38
+      role: addend
+    - ref: schedule_1a_2025_part_vi_line_38
+      role: addend
+    - ref: schedule_1a_2025_part_vi_line_38
+      role: addend
+    rule_ids:
+    - rule_schedule_1a_2025_section_2_part_vi_total_additional_deductions_line_38_line_38_sum
+- document_id: schedule_1a_2025
+  target: schedule_1a_2025_section_1_part_i_modified_adjusted_gross_income_magi_amount_line_2e_line_2e
+  category: extra_in_draft
+  live: null
+  generated:
+    document_id: schedule_1a_2025
+    operation: SUM
+    operands:
+    - ref: schedule_1a_2025_section_1_part_i_modified_adjusted_gross_income_magi_amount_line_2e_line_2a
+      role: addend
+    - ref: schedule_1a_2025_section_1_part_i_modified_adjusted_gross_income_magi_amount_line_2e_line_2b
+      role: addend
+    - ref: schedule_1a_2025_section_1_part_i_modified_adjusted_gross_income_magi_amount_line_2e_line_2c
+      role: addend
+    - ref: schedule_1a_2025_section_1_part_i_modified_adjusted_gross_income_magi_amount_line_2e_line_2d
+      role: addend
+    rule_ids:
+    - rule_schedule_1a_2025_section_1_part_i_modified_adjusted_gross_income_magi_amount_line_2e_line_2e_sum
+- document_id: schedule_1a_2025
+  target: schedule_1a_2025_section_1_part_i_modified_adjusted_gross_income_magi_amount_line_3_line_3
+  category: extra_in_draft
+  live: null
+  generated:
+    document_id: schedule_1a_2025
+    operation: SUM
+    operands:
+    - ref: schedule_1a_2025_section_1_part_i_modified_adjusted_gross_income_magi_amount_line_3_line_1
+      role: addend
+    - ref: schedule_1a_2025_section_1_part_i_modified_adjusted_gross_income_magi_amount_line_3_line_2e
+      role: addend
+    rule_ids:
+    - rule_schedule_1a_2025_section_1_part_i_modified_adjusted_gross_income_magi_amount_line_3_line_3_sum
+- document_id: schedule_1a_2025
+  target: schedule_1a_2025_section_1_part_ii_no_tax_on_tips_line_13_line_13
+  category: extra_in_draft
+  live: null
+  generated:
+    document_id: schedule_1a_2025
+    operation: MAX
+    operands:
+    - ref: schedule_1a_2025_section_1_part_ii_no_tax_on_tips_line_13_0
+      role: addend
+    - ref: schedule_1a_2025_section_1_part_ii_no_tax_on_tips_line_13_subtract_line_12_from_line_7
+      role: addend
+    rule_ids:
+    - rule_schedule_1a_2025_section_1_part_ii_no_tax_on_tips_line_13_line_13_max
+- document_id: schedule_1a_2025
+  target: schedule_1a_2025_section_1_part_ii_no_tax_on_tips_line_13_subtract_line_12_from_line_7
+  category: extra_in_draft
+  live: null
+  generated:
+    document_id: schedule_1a_2025
+    operation: SUBTRACT
+    operands:
+    - ref: schedule_1a_2025_section_1_part_ii_no_tax_on_tips_line_13_line_12
+      role: subtrahend
+    - ref: schedule_1a_2025_section_1_part_ii_no_tax_on_tips_line_13_line_7
+      role: minuend
+    rule_ids:
+    - rule_schedule_1a_2025_section_1_part_ii_no_tax_on_tips_line_13_subtract_line_12_from_line_7_subtract
+- document_id: schedule_1a_2025
+  target: schedule_1a_2025_section_1_part_ii_no_tax_on_tips_line_6_line_6
+  category: extra_in_draft
+  live: null
+  generated:
+    document_id: schedule_1a_2025
+    operation: SUM
+    operands:
+    - ref: schedule_1a_2025_section_1_part_ii_no_tax_on_tips_line_6_line_4c
+      role: addend
+    - ref: schedule_1a_2025_section_1_part_ii_no_tax_on_tips_line_6_line_5
+      role: addend
+    rule_ids:
+    - rule_schedule_1a_2025_section_1_part_ii_no_tax_on_tips_line_6_line_6_sum
+- document_id: schedule_1a_2025
+  target: schedule_1a_2025_section_1_part_iii_no_tax_on_overtime_line_14c_line_14c
+  category: extra_in_draft
+  live: null
+  generated:
+    document_id: schedule_1a_2025
+    operation: SUM
+    operands:
+    - ref: schedule_1a_2025_section_1_part_iii_no_tax_on_overtime_line_14c_line_14a
+      role: addend
+    - ref: schedule_1a_2025_section_1_part_iii_no_tax_on_overtime_line_14c_line_14b
+      role: addend
+    rule_ids:
+    - rule_schedule_1a_2025_section_1_part_iii_no_tax_on_overtime_line_14c_line_14c_sum
+- document_id: schedule_1a_2025
+  target: schedule_1a_2025_section_1_part_iii_no_tax_on_overtime_line_21_line_15_minus_line_20
+  category: extra_in_draft
+  live: null
+  generated:
+    document_id: schedule_1a_2025
+    operation: SUBTRACT
+    operands:
+    - ref: schedule_1a_2025_section_1_part_iii_no_tax_on_overtime_line_21_line_15
+      role: minuend
+    - ref: schedule_1a_2025_section_1_part_iii_no_tax_on_overtime_line_21_line_20
+      role: subtrahend
+    rule_ids:
+    - rule_schedule_1a_2025_section_1_part_iii_no_tax_on_overtime_line_21_line_15_minus_line_20_subtract
+- document_id: schedule_1a_2025
+  target: schedule_1a_2025_section_1_part_iii_no_tax_on_overtime_line_21_line_21
+  category: extra_in_draft
+  live: null
+  generated:
+    document_id: schedule_1a_2025
+    operation: MAX
+    operands:
+    - ref: schedule_1a_2025_section_1_part_iii_no_tax_on_overtime_line_21_0
+      role: addend
+    - ref: schedule_1a_2025_section_1_part_iii_no_tax_on_overtime_line_21_line_15_minus_line_20
+      role: addend
+    rule_ids:
+    - rule_schedule_1a_2025_section_1_part_iii_no_tax_on_overtime_line_21_line_21_max
+- document_id: schedule_1a_2025
+  target: schedule_1a_2025_section_2_part_v_enhanced_deduction_for_seniors_line_35_line_35
+  category: extra_in_draft
+  live: null
+  generated:
+    document_id: schedule_1a_2025
+    operation: MAX
+    operands:
+    - ref: schedule_1a_2025_section_2_part_v_enhanced_deduction_for_seniors_line_35_0
+      role: addend
+    - ref: schedule_1a_2025_section_2_part_v_enhanced_deduction_for_seniors_line_35_line_35_subtraction
+      role: addend
+    rule_ids:
+    - rule_schedule_1a_2025_section_2_part_v_enhanced_deduction_for_seniors_line_35_line_35_max
+- document_id: schedule_1a_2025
+  target: schedule_1a_2025_section_2_part_v_enhanced_deduction_for_seniors_line_35_line_35_subtraction
+  category: extra_in_draft
+  live: null
+  generated:
+    document_id: schedule_1a_2025
+    operation: SUBTRACT
+    operands:
+    - ref: schedule_1a_2025_section_2_part_v_enhanced_deduction_for_seniors_line_35_6_000
+      role: minuend
+    - ref: schedule_1a_2025_section_2_part_v_enhanced_deduction_for_seniors_line_35_line_34
+      role: subtrahend
+    rule_ids:
+    - rule_schedule_1a_2025_section_2_part_v_enhanced_deduction_for_seniors_line_35_line_35_subtraction_subtract
+- document_id: schedule_1a_2025
+  target: schedule_1a_2025_section_2_part_v_enhanced_deduction_for_seniors_line_36b_line_36b
+  category: extra_in_draft
+  live: null
+  generated:
+    document_id: schedule_1a_2025
+    operation: COPY
+    operands:
+    - ref: schedule_1a_2025_section_2_part_v_enhanced_deduction_for_seniors_line_36b_line_35
+      role: addend
+    rule_ids:
+    - rule_schedule_1a_2025_section_2_part_v_enhanced_deduction_for_seniors_line_36b_line_36b_copy
+- document_id: schedule_1a_2025
+  target: schedule_1a_2025_section_2_part_v_enhanced_deduction_for_seniors_line_37_line_37
+  category: extra_in_draft
+  live: null
+  generated:
+    document_id: schedule_1a_2025
+    operation: SUM
+    operands:
+    - ref: schedule_1a_2025_section_2_part_v_enhanced_deduction_for_seniors_line_37_line_36a
+      role: addend
+    - ref: schedule_1a_2025_section_2_part_v_enhanced_deduction_for_seniors_line_37_line_36b
+      role: addend
+    rule_ids:
+    - rule_schedule_1a_2025_section_2_part_v_enhanced_deduction_for_seniors_line_37_line_37_sum
+- document_id: schedule_1a_2025
+  target: schedule_1a_2025_section_2_schedule_f_line_23_line_23
+  category: extra_in_draft
+  live: null
+  generated:
+    document_id: schedule_1a_2025
+    operation: SUM
+    operands:
+    - ref: schedule_1a_2025_section_2_schedule_f_line_23_line_22a_column_iii
+      role: addend
+    - ref: schedule_1a_2025_section_2_schedule_f_line_23_line_22b_column_iii
+      role: addend
+    rule_ids:
+    - rule_schedule_1a_2025_section_2_schedule_f_line_23_line_23_sum
+- document_id: schedule_1a_2025
+  target: schedule_1a_2025_section_2_schedule_f_line_30_line_30
+  category: extra_in_draft
+  live: null
+  generated:
+    document_id: schedule_1a_2025
+    operation: MAX
+    operands:
+    - ref: schedule_1a_2025_section_2_schedule_f_line_30_0
+      role: addend
+    - ref: schedule_1a_2025_section_2_schedule_f_line_30_line_30_sub
+      role: addend
+    rule_ids:
+    - rule_schedule_1a_2025_section_2_schedule_f_line_30_line_30_max
+- document_id: schedule_1a_2025
+  target: schedule_1a_2025_section_2_schedule_f_line_30_line_30_sub
+  category: extra_in_draft
+  live: null
+  generated:
+    document_id: schedule_1a_2025
+    operation: SUBTRACT
+    operands:
+    - ref: schedule_1a_2025_section_2_schedule_f_line_30_line_24
+      role: minuend
+    - ref: schedule_1a_2025_section_2_schedule_f_line_30_line_29
+      role: subtrahend
+    rule_ids:
+    - rule_schedule_1a_2025_section_2_schedule_f_line_30_line_30_sub_subtract
 - document_id: schedule_2_2025
-  target: schedule_2_2025_line_3
+  target: schedule_2_2025_part_ii_line_7
   category: extra_in_draft
   live: null
   generated:
     document_id: schedule_2_2025
     operation: SUM
     operands:
-    - ref: schedule_2_2025_line_1z
+    - ref: schedule_2_2025_part_ii_line_7
       role: addend
-    - ref: schedule_2_2025_root_line_2
+    - ref: schedule_2_2025_part_ii_line_7
       role: addend
     rule_ids:
-    - rule_s2_l3_sum
-- document_id: schedule_3_2025
-  target: schedule_3_2025_line_15
+    - rule_schedule_2_2025_section_1_part_ii_other_taxes_line_7_line_7_sum
+- document_id: schedule_2_2025
+  target: schedule_2_2025_section_1_schedule_a_form_8936_1c_line_1z_line_1z
   category: extra_in_draft
   live: null
   generated:
-    document_id: schedule_3_2025
+    document_id: schedule_2_2025
     operation: SUM
     operands:
-    - ref: schedule_3_2025_part_ii_line_9
+    - ref: schedule_2_2025_section_1_schedule_a_form_8936_1c_line_1z_line_1a
+      role: addend
+    - ref: schedule_2_2025_section_1_schedule_a_form_8936_1c_line_1z_line_1b
+      role: addend
+    - ref: schedule_2_2025_section_1_schedule_a_form_8936_1c_line_1z_line_1d
+      role: addend
+    - ref: schedule_2_2025_section_1_schedule_a_form_8936_1c_line_1z_line_1e
+      role: addend
+    - ref: schedule_2_2025_section_1_schedule_a_form_8936_1c_line_1z_line_1f
+      role: addend
+    - ref: schedule_2_2025_section_1_schedule_a_form_8936_1c_line_1z_line_1y
       role: addend
     rule_ids:
-    - schedule_3_2025_rule_line_15_sum
+    - rule_schedule_2_2025_section_1_schedule_a_form_8936_1c_line_1z_line_1z_sum
+- document_id: schedule_2_2025
+  target: schedule_2_2025_section_1_schedule_a_form_8936_1c_line_3_line_3
+  category: extra_in_draft
+  live: null
+  generated:
+    document_id: schedule_2_2025
+    operation: SUM
+    operands:
+    - ref: schedule_2_2025_section_1_schedule_a_form_8936_1c_line_3_line_1z
+      role: addend
+    - ref: schedule_2_2025_section_1_schedule_a_form_8936_1c_line_3_line_2
+      role: addend
+    rule_ids:
+    - rule_schedule_2_2025_section_1_schedule_a_form_8936_1c_line_3_line_3_sum
+- document_id: schedule_2_2025
+  target: schedule_2_2025_section_2_part_ii_other_taxes_continued_line_18_line_18
+  category: extra_in_draft
+  live: null
+  generated:
+    document_id: schedule_2_2025
+    operation: SUM
+    operands:
+    - ref: schedule_2_2025_section_2_part_ii_other_taxes_continued_line_18_line_17b
+      role: addend
+    - ref: schedule_2_2025_section_2_part_ii_other_taxes_continued_line_18_line_17c
+      role: addend
+    - ref: schedule_2_2025_section_2_part_ii_other_taxes_continued_line_18_line_17d
+      role: addend
+    - ref: schedule_2_2025_section_2_part_ii_other_taxes_continued_line_18_line_17e
+      role: addend
+    - ref: schedule_2_2025_section_2_part_ii_other_taxes_continued_line_18_line_17f
+      role: addend
+    - ref: schedule_2_2025_section_2_part_ii_other_taxes_continued_line_18_line_17g
+      role: addend
+    - ref: schedule_2_2025_section_2_part_ii_other_taxes_continued_line_18_line_17k
+      role: addend
+    - ref: schedule_2_2025_section_2_part_ii_other_taxes_continued_line_18_line_17l
+      role: addend
+    - ref: schedule_2_2025_section_2_part_ii_other_taxes_continued_line_18_line_17m
+      role: addend
+    - ref: schedule_2_2025_section_2_part_ii_other_taxes_continued_line_18_line_17o
+      role: addend
+    - ref: schedule_2_2025_section_2_part_ii_other_taxes_continued_line_18_line_17q
+      role: addend
+    - ref: schedule_2_2025_section_2_part_ii_other_taxes_continued_line_18_line_17z
+      role: addend
+    rule_ids:
+    - rule_schedule_2_2025_section_2_part_ii_other_taxes_continued_line_18_line_18_sum
+- document_id: schedule_2_2025
+  target: schedule_2_2025_section_2_part_ii_other_taxes_continued_line_21_line_21
+  category: extra_in_draft
+  live: null
+  generated:
+    document_id: schedule_2_2025
+    operation: SUM
+    operands:
+    - ref: schedule_2_2025_section_2_part_ii_other_taxes_continued_line_21_line_10
+      role: addend
+    - ref: schedule_2_2025_section_2_part_ii_other_taxes_continued_line_21_line_11
+      role: addend
+    - ref: schedule_2_2025_section_2_part_ii_other_taxes_continued_line_21_line_12
+      role: addend
+    - ref: schedule_2_2025_section_2_part_ii_other_taxes_continued_line_21_line_13
+      role: addend
+    - ref: schedule_2_2025_section_2_part_ii_other_taxes_continued_line_21_line_14
+      role: addend
+    - ref: schedule_2_2025_section_2_part_ii_other_taxes_continued_line_21_line_15
+      role: addend
+    - ref: schedule_2_2025_section_2_part_ii_other_taxes_continued_line_21_line_16
+      role: addend
+    - ref: schedule_2_2025_section_2_part_ii_other_taxes_continued_line_21_line_18
+      role: addend
+    - ref: schedule_2_2025_section_2_part_ii_other_taxes_continued_line_21_line_19
+      role: addend
+    - ref: schedule_2_2025_section_2_part_ii_other_taxes_continued_line_21_line_4
+      role: addend
+    - ref: schedule_2_2025_section_2_part_ii_other_taxes_continued_line_21_line_7
+      role: addend
+    - ref: schedule_2_2025_section_2_part_ii_other_taxes_continued_line_21_line_8
+      role: addend
+    - ref: schedule_2_2025_section_2_part_ii_other_taxes_continued_line_21_line_9
+      role: addend
+    rule_ids:
+    - rule_schedule_2_2025_section_2_part_ii_other_taxes_continued_line_21_line_21_sum
 - document_id: schedule_3_2025
   target: schedule_3_2025_part_i_line_8
   category: extra_in_draft
@@ -1012,10 +1862,96 @@ rows:
     document_id: schedule_3_2025
     operation: SUM
     operands:
-    - ref: schedule_3_2025_part_i_line_1
+    - ref: schedule_3_2025_part_i_line_8
+      role: addend
+    - ref: schedule_3_2025_part_i_line_8
+      role: addend
+    - ref: schedule_3_2025_part_i_line_8
+      role: addend
+    - ref: schedule_3_2025_part_i_line_8
+      role: addend
+    - ref: schedule_3_2025_part_i_line_8
+      role: addend
+    - ref: schedule_3_2025_part_i_line_8
+      role: addend
+    - ref: schedule_3_2025_part_i_line_8
       role: addend
     rule_ids:
-    - schedule_3_2025_rule_line_8_sum
+    - rule_schedule_3_2025_section_1_part_i_nonrefundable_credits_line_8_line_8_sum
+- document_id: schedule_3_2025
+  target: schedule_3_2025_section_1_part_i_nonrefundable_credits_line_7_line_7
+  category: extra_in_draft
+  live: null
+  generated:
+    document_id: schedule_3_2025
+    operation: SUM
+    operands:
+    - ref: schedule_3_2025_section_1_part_i_nonrefundable_credits_line_7_line_6a
+      role: addend
+    - ref: schedule_3_2025_section_1_part_i_nonrefundable_credits_line_7_line_6b
+      role: addend
+    - ref: schedule_3_2025_section_1_part_i_nonrefundable_credits_line_7_line_6c
+      role: addend
+    - ref: schedule_3_2025_section_1_part_i_nonrefundable_credits_line_7_line_6d
+      role: addend
+    - ref: schedule_3_2025_section_1_part_i_nonrefundable_credits_line_7_line_6e
+      role: addend
+    - ref: schedule_3_2025_section_1_part_i_nonrefundable_credits_line_7_line_6f
+      role: addend
+    - ref: schedule_3_2025_section_1_part_i_nonrefundable_credits_line_7_line_6g
+      role: addend
+    - ref: schedule_3_2025_section_1_part_i_nonrefundable_credits_line_7_line_6h
+      role: addend
+    - ref: schedule_3_2025_section_1_part_i_nonrefundable_credits_line_7_line_6i
+      role: addend
+    - ref: schedule_3_2025_section_1_part_i_nonrefundable_credits_line_7_line_6j
+      role: addend
+    - ref: schedule_3_2025_section_1_part_i_nonrefundable_credits_line_7_line_6k
+      role: addend
+    - ref: schedule_3_2025_section_1_part_i_nonrefundable_credits_line_7_line_6l
+      role: addend
+    - ref: schedule_3_2025_section_1_part_i_nonrefundable_credits_line_7_line_6m
+      role: addend
+    - ref: schedule_3_2025_section_1_part_i_nonrefundable_credits_line_7_line_6z
+      role: addend
+    rule_ids:
+    - rule_schedule_3_2025_section_1_part_i_nonrefundable_credits_line_7_line_7_sum
+- document_id: schedule_3_2025
+  target: schedule_3_2025_section_1_part_ii_other_payments_and_refundable_credits_line_14_line_14
+  category: extra_in_draft
+  live: null
+  generated:
+    document_id: schedule_3_2025
+    operation: SUM
+    operands:
+    - ref: schedule_3_2025_section_1_part_ii_other_payments_and_refundable_credits_line_14_line_13a
+      role: addend
+    - ref: schedule_3_2025_section_1_part_ii_other_payments_and_refundable_credits_line_14_line_13b
+      role: addend
+    - ref: schedule_3_2025_section_1_part_ii_other_payments_and_refundable_credits_line_14_line_13d
+      role: addend
+    rule_ids:
+    - rule_schedule_3_2025_section_1_part_ii_other_payments_and_refundable_credits_line_14_line_14_sum
+- document_id: schedule_3_2025
+  target: schedule_3_2025_section_1_part_ii_other_payments_and_refundable_credits_line_15_line_15
+  category: extra_in_draft
+  live: null
+  generated:
+    document_id: schedule_3_2025
+    operation: SUM
+    operands:
+    - ref: schedule_3_2025_section_1_part_ii_other_payments_and_refundable_credits_line_15_line_10
+      role: addend
+    - ref: schedule_3_2025_section_1_part_ii_other_payments_and_refundable_credits_line_15_line_11
+      role: addend
+    - ref: schedule_3_2025_section_1_part_ii_other_payments_and_refundable_credits_line_15_line_12
+      role: addend
+    - ref: schedule_3_2025_section_1_part_ii_other_payments_and_refundable_credits_line_15_line_14
+      role: addend
+    - ref: schedule_3_2025_section_1_part_ii_other_payments_and_refundable_credits_line_15_line_9
+      role: addend
+    rule_ids:
+    - rule_schedule_3_2025_section_1_part_ii_other_payments_and_refundable_credits_line_15_line_15_sum
 - document_id: schedule_a_2025
   target: schedule_a_2025_root_line_10
   category: missing_in_draft
@@ -1032,7 +1968,7 @@ rows:
   generated: null
 - document_id: schedule_a_2025
   target: schedule_a_2025_root_line_14
-  category: missing_in_draft
+  category: operation_agreement_operands_differ
   live:
     document_id: schedule_a_2025
     operation: SUM
@@ -1045,7 +1981,18 @@ rows:
       role: addend
     rule_ids:
     - sum_currency
-  generated: null
+  generated:
+    document_id: schedule_a_2025
+    operation: SUM
+    operands:
+    - ref: schedule_a_2025_root_line_14
+      role: addend
+    - ref: schedule_a_2025_root_line_14
+      role: addend
+    - ref: schedule_a_2025_root_line_14
+      role: addend
+    rule_ids:
+    - rule_schedule_a_2025_section_1_schedule_a_itemized_deductions_line_14_line_14_sum
 - document_id: schedule_a_2025
   target: schedule_a_2025_root_line_17
   category: missing_in_draft
@@ -1069,31 +2016,24 @@ rows:
     - sum_currency
   generated: null
 - document_id: schedule_a_2025
-  target: schedule_a_2025_root_line_3
-  category: extra_in_draft
-  live: null
-  generated:
-    document_id: schedule_a_2025
-    operation: MULTIPLY
-    operands:
-    - ref: schedule_a_2025_line_2
-      role: multiplicand
-    rule_ids:
-    - multiply_by_075
-- document_id: schedule_a_2025
   target: schedule_a_2025_root_line_4
   category: extra_in_draft
   live: null
   generated:
     document_id: schedule_a_2025
-    operation: SUBTRACT
+    operation: MULTIPLE
     operands:
-    - ref: schedule_a_2025_line_1
+    - ref: schedule_a_2025_root_line_4
+      role: addend
+    - ref: schedule_a_2025_root_line_4
       role: minuend
-    - ref: schedule_a_2025_root_line_3
+    - ref: schedule_a_2025_root_line_4
       role: subtrahend
+    - ref: schedule_a_2025_root_line_4
+      role: addend
     rule_ids:
-    - sub_max_zero_line_4
+    - rule_schedule_a_2025_section_1_schedule_a_itemized_deductions_line_4_line_4_max
+    - rule_schedule_a_2025_section_1_schedule_a_itemized_deductions_line_4_line_4_subtraction_subtract
 - document_id: schedule_a_2025
   target: schedule_a_2025_root_line_7
   category: missing_in_draft
@@ -1124,44 +2064,80 @@ rows:
     rule_ids:
     - sum_currency
   generated: null
+- document_id: schedule_a_2025
+  target: schedule_a_2025_root_line_e
+  category: extra_in_draft
+  live: null
+  generated:
+    document_id: schedule_a_2025
+    operation: SUM
+    operands:
+    - ref: schedule_a_2025_root_line_e
+      role: addend
+    - ref: schedule_a_2025_root_line_e
+      role: addend
+    - ref: schedule_a_2025_root_line_e
+      role: addend
+    rule_ids:
+    - rule_schedule_a_2025_section_1_schedule_a_itemized_deductions_line_5d_line_5d_sum
+- document_id: schedule_a_2025
+  target: schedule_a_2025_section_1_schedule_a_itemized_deductions_line_10_line_10
+  category: extra_in_draft
+  live: null
+  generated:
+    document_id: schedule_a_2025
+    operation: SUM
+    operands:
+    - ref: schedule_a_2025_section_1_schedule_a_itemized_deductions_line_10_line_8e
+      role: addend
+    - ref: schedule_a_2025_section_1_schedule_a_itemized_deductions_line_10_line_9
+      role: addend
+    rule_ids:
+    - rule_schedule_a_2025_section_1_schedule_a_itemized_deductions_line_10_line_10_sum
+- document_id: schedule_a_2025
+  target: schedule_a_2025_section_1_schedule_a_itemized_deductions_line_7_line_7
+  category: extra_in_draft
+  live: null
+  generated:
+    document_id: schedule_a_2025
+    operation: SUM
+    operands:
+    - ref: schedule_a_2025_section_1_schedule_a_itemized_deductions_line_7_line_5e
+      role: addend
+    - ref: schedule_a_2025_section_1_schedule_a_itemized_deductions_line_7_line_6
+      role: addend
+    rule_ids:
+    - rule_schedule_a_2025_section_1_schedule_a_itemized_deductions_line_7_line_7_sum
+- document_id: schedule_a_2025
+  target: schedule_a_2025_section_1_schedule_a_itemized_deductions_line_8e_line_8e
+  category: extra_in_draft
+  live: null
+  generated:
+    document_id: schedule_a_2025
+    operation: SUM
+    operands:
+    - ref: schedule_a_2025_section_1_schedule_a_itemized_deductions_line_8e_line_8a
+      role: addend
+    - ref: schedule_a_2025_section_1_schedule_a_itemized_deductions_line_8e_line_8b
+      role: addend
+    - ref: schedule_a_2025_section_1_schedule_a_itemized_deductions_line_8e_line_8c
+      role: addend
+    rule_ids:
+    - rule_schedule_a_2025_section_1_schedule_a_itemized_deductions_line_8e_line_8e_sum
 - document_id: schedule_b_2025
-  target: schedule_b_2025_line_4
+  target: schedule_b_2025_section_1_part_i_1_amount_line_4_line_4
   category: extra_in_draft
   live: null
   generated:
     document_id: schedule_b_2025
     operation: SUBTRACT
     operands:
-    - ref: schedule_b_2025_root_line_2
+    - ref: schedule_b_2025_section_1_part_i_1_amount_line_4_line_2
       role: minuend
-    - ref: schedule_b_2025_root_line_3
+    - ref: schedule_b_2025_section_1_part_i_1_amount_line_4_line_3
       role: subtrahend
     rule_ids:
-    - rule_subtract_exclusion
-- document_id: schedule_b_2025
-  target: schedule_b_2025_line_6
-  category: extra_in_draft
-  live: null
-  generated:
-    document_id: schedule_b_2025
-    operation: SUM
-    operands:
-    - ref: schedule_b_2025_root_line_5
-      role: addend
-    rule_ids:
-    - rule_sum_table_amounts
-- document_id: schedule_b_2025
-  target: schedule_b_2025_root_line_2
-  category: extra_in_draft
-  live: null
-  generated:
-    document_id: schedule_b_2025
-    operation: SUM
-    operands:
-    - ref: schedule_b_2025_root_line_1
-      role: addend
-    rule_ids:
-    - rule_sum_table_amounts
+    - rule_schedule_b_2025_section_1_part_i_1_amount_line_4_line_4_subtract
 - document_id: instructions_schedule_d_2025
   target: schedule_d_2025_carryover_worksheet_line_11_pre_floor
   category: missing_in_draft
@@ -1253,7 +2229,7 @@ rows:
   generated: null
 - document_id: schedule_d_2025
   target: schedule_d_2025_line_15_net_lt
-  category: operation_agreement_operands_differ
+  category: missing_in_draft
   live:
     document_id: schedule_d_2025
     operation: SUM
@@ -1264,17 +2240,10 @@ rows:
       role: addend
     rule_ids:
     - sum_currency
-  generated:
-    document_id: schedule_d_2025
-    operation: SUM
-    operands:
-    - ref: schedule_d_2025_line_11
-      role: addend
-    rule_ids:
-    - rule_sum_long_term
+  generated: null
 - document_id: schedule_d_2025
   target: schedule_d_2025_line_16_total
-  category: operation_agreement_operands_differ
+  category: missing_in_draft
   live:
     document_id: schedule_d_2025
     operation: SUM
@@ -1285,14 +2254,7 @@ rows:
       role: addend
     rule_ids:
     - sum_currency
-  generated:
-    document_id: schedule_d_2025
-    operation: SUM
-    operands:
-    - ref: schedule_d_2025_line_7
-      role: addend
-    rule_ids:
-    - rule_sum_7_15
+  generated: null
 - document_id: schedule_d_2025
   target: schedule_d_2025_line_17_gate
   category: missing_in_draft
@@ -1368,18 +2330,6 @@ rows:
     rule_ids:
     - negate_currency
   generated: null
-- document_id: schedule_d_2025
-  target: schedule_d_2025_line_7
-  category: extra_in_draft
-  live: null
-  generated:
-    document_id: schedule_d_2025
-    operation: SUM
-    operands:
-    - ref: schedule_d_2025_line_7_net_st
-      role: addend
-    rule_ids:
-    - rule_sum_short_term
 - document_id: schedule_d_2025
   target: schedule_d_2025_line_7_net_st
   category: missing_in_draft

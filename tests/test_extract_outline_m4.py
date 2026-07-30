@@ -9,7 +9,7 @@ import jsonschema
 import pytest
 
 from tax_graph.extract.assembly import assemble_formula_plan, realize_outbound_flows
-from tax_graph.extract.outline_pipeline import _formula_outline_nodes
+from tax_graph.extract.outline_pipeline import _formula_outline_nodes, generate_outline_first_drafts
 from tax_graph.extract.pipeline import extract_document
 from tax_graph.extract.micro import MicroExtractionError, extract_formula_plan, validate_formula_plan
 from tax_graph.extract.models import RelatedSourceInput, SourceDocumentInput
@@ -101,6 +101,79 @@ class PromptAwareMicroClient:
                 },
             ]
         }
+
+
+@pytest.mark.m20
+def test_formula_line_micro_path_is_bounded_and_isolates_failed_cells(tmp_path):
+    text = "\n".join(
+        [
+            "# Page 1",
+            "Header: Part I",
+            "- 1z: Add lines 1a through 1h",
+            "- 2: Add lines 1z and 2b",
+            "- 3: Ordinary input",
+            "",
+        ]
+    )
+    text_path = tmp_path / "form_1040_2025.txt"
+    text_path.write_text(text, encoding="utf-8")
+    line_anchors = [
+        {
+            "anchor": match.group(1).lower(),
+            "page": 1,
+            "text_offset": match.start(1),
+            "text_length": len(match.group(1)),
+        }
+        for match in re.finditer(r"^[-]\s+([0-9]+[a-z]?|[a-z]):", text, re.IGNORECASE | re.MULTILINE)
+    ]
+    document = SourceDocumentInput(
+        document_id="form_1040_2025",
+        kind="tax_form",
+        year="2025",
+        url="https://example.test/form.pdf",
+        text=text,
+        text_path=text_path,
+        fields={"fields": [], "line_anchors": line_anchors},
+    )
+
+    class FailingCellClient:
+        def __init__(self):
+            self.calls = []
+
+        def structured_completion(self, *, prompt, schema, model, max_tokens, temperature, purpose):
+            self.calls.append({"prompt": prompt, "max_tokens": max_tokens, "purpose": purpose})
+            if len(self.calls) == 1:
+                raise RuntimeError("cell failed")
+            span_id = re.search(r"- (span_[a-z0-9_]+):", prompt).group(1)
+            return {
+                "operation_plan": [
+                    {
+                        "output": "line_2",
+                        "operation": "SUM",
+                        "inputs": [
+                            {"name": "line_1z", "role": "addend"},
+                            {"name": "line_2b", "role": "addend"},
+                        ],
+                        "citation_span_ids": [span_id],
+                    }
+                ]
+            }
+
+    client = FailingCellClient()
+    batch = generate_outline_first_drafts(
+        document,
+        client=client,
+        config={"extraction": {"micro_max_tokens": 4000}, "llm": {"model": "mock"}},
+        root=ROOT,
+    )
+
+    assert batch.micro_stats["cells_attempted"] == 2
+    assert batch.micro_stats["cells_succeeded"] == 1, batch.micro_stats
+    assert batch.micro_stats["cells_failed"] == 1
+    assert "RuntimeError" in batch.micro_stats["failure_reasons_by_kind"]
+    assert all(call["max_tokens"] == 4000 for call in client.calls)
+    assert "addressable_operand_candidates:" in client.calls[1]["prompt"]
+    assert "line_1z:" in client.calls[1]["prompt"]
 
 
 @pytest.mark.m4
