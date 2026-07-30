@@ -148,7 +148,7 @@ def write_expression_agreement_report(
 ) -> Path:
     """Write the deterministic agreement report as ASCII YAML."""
     root_path = Path(root).resolve() if root is not None else project_root()
-    path = Path(output_path) if output_path is not None else root_path / "output" / "m20_s7_expression_agreement.yaml"
+    path = Path(output_path) if output_path is not None else root_path / "output" / "m20_s8_expression_agreement.yaml"
     if not path.is_absolute():
         path = root_path / path
     path.parent.mkdir(parents=True, exist_ok=True)

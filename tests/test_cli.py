@@ -39,8 +39,8 @@ def test_expression_agreement_command_writes_report(tmp_path, capsys):
     assert "expression agreement report:" in output
     assert "coverage:" in output
     assert "accuracy:" in output
-    assert (root / "output" / "m20_s7_expression_agreement.yaml").exists()
-    report_text = (root / "output" / "m20_s7_expression_agreement.yaml").read_text(encoding="ascii")
+    assert (root / "output" / "m20_s8_expression_agreement.yaml").exists()
+    report_text = (root / "output" / "m20_s8_expression_agreement.yaml").read_text(encoding="ascii")
     assert "measurement: m20_s8" in report_text
     assert "coverage:" in report_text
     assert "accuracy:" in report_text

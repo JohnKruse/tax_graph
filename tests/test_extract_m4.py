@@ -483,7 +483,7 @@ def test_openai_adapter_parses_structured_json():
 
     assert result["nodes"] == []
     assert completions.kwargs["response_format"]["type"] == "json_schema"
-    assert completions.kwargs["response_format"]["json_schema"]["strict"] is False
+    assert completions.kwargs["response_format"]["json_schema"]["strict"] is True
 
 
 @pytest.mark.m20

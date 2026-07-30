@@ -117,9 +117,10 @@ def test_extract_year_writes_batch_sidecars_and_schedule_b_table_fixture(tmp_pat
         secondary_client=secondary,
         config={
             "project": {"paths": {"graph_dir": "graph", "raw_store": ".cache/raw"}},
-            "extraction": {
-                "mode": "outline_first",
-                "max_docs_per_run": 1,
+                "extraction": {
+                    "mode": "outline_first",
+                    "expression_mode": "none",
+                    "max_docs_per_run": 1,
                 "example_mining_limit": 10,
                 "require_critic_agreement": False,
             },
@@ -180,9 +181,10 @@ def test_extract_year_full_batch_writes_partial_document_records(tmp_path):
         secondary_client=secondary,
         config={
             "project": {"paths": {"graph_dir": "graph", "raw_store": ".cache/raw"}},
-            "extraction": {
-                "mode": "outline_first",
-                "max_docs_per_run": 20,
+                "extraction": {
+                    "mode": "outline_first",
+                    "expression_mode": "none",
+                    "max_docs_per_run": 20,
                 "example_mining_limit": 10,
                 "require_critic_agreement": False,
             },

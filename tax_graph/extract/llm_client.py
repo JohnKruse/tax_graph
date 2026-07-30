@@ -3,14 +3,28 @@
 from __future__ import annotations
 
 import json
+from dataclasses import replace
+import time
 from typing import Any, Protocol
 
 from tax_graph.config import get_config_value, resolve_secret
 from tax_graph.extract.models import LlmCallTelemetry
+from tax_graph.extract.observability import log_llm_call
 
 
 class LlmUnavailable(RuntimeError):
     """Raised when extraction needs an LLM but none is configured."""
+
+
+class ImplausiblePromptTokens(LlmUnavailable):
+    """Raised when a provider reports that the extraction prompt was nearly empty."""
+
+
+class LlmResponseTruncated(LlmUnavailable):
+    """Raised when a provider stops a structured response at its output limit."""
+
+
+MIN_PLAUSIBLE_PROMPT_TOKENS = 8
 
 
 class StructuredCompletionResult(dict[str, Any]):
@@ -95,7 +109,7 @@ def _build_openai_client(api_key: str, config: dict[str, Any]) -> LlmClient:
     return OpenAICompatibleLlmClient(
         OpenAI(api_key=api_key),
         provider_name="OpenAI",
-        strict_schema=bool(get_config_value(config, "llm.strict_schema", False)),
+        strict_schema=bool(get_config_value(config, "llm.strict_schema", True)),
         parameter_mode=_parameter_mode(config),
     )
 
@@ -115,7 +129,7 @@ def _build_openrouter_client(api_key: str, config: dict[str, Any]) -> LlmClient:
         OpenAI(**kwargs),
         provider_name="OpenRouter",
         extra_body=_openrouter_extra_body(config),
-        strict_schema=bool(get_config_value(config, "llm.strict_schema", False)),
+        strict_schema=bool(get_config_value(config, "llm.strict_schema", True)),
         parameter_mode=_parameter_mode(config),
     )
 
@@ -166,13 +180,13 @@ class AnthropicLlmClient:
     ) -> dict[str, Any]:
         """Return the input payload of the required strict tool call."""
         tool_name = f"emit_{purpose}"
-        response = self.client.messages.create(
-            model=model,
-            max_tokens=max_tokens,
-            temperature=temperature,
-            messages=[{"role": "user", "content": prompt}],
-            tool_choice={"type": "tool", "name": tool_name},
-            tools=[
+        request_body = {
+            "model": model,
+            "max_tokens": max_tokens,
+            "temperature": temperature,
+            "messages": [{"role": "user", "content": prompt}],
+            "tool_choice": {"type": "tool", "name": tool_name},
+            "tools": [
                 {
                     "name": tool_name,
                     "description": "Emit the requested Tax Graph extraction payload.",
@@ -180,22 +194,78 @@ class AnthropicLlmClient:
                     "input_schema": schema,
                 }
             ],
+        }
+        started = time.perf_counter()
+        try:
+            response = self.client.messages.create(**request_body)
+        except Exception as exc:
+            error = LlmUnavailable(f"Anthropic request failed: {exc}")
+            log_llm_call(
+                document_id="unknown",
+                purpose=purpose,
+                requested_model=model,
+                telemetry=None,
+                request_body=request_body,
+                response_body=_exception_response(exc),
+                outcome="error",
+                latency_ms=_elapsed_ms(started),
+                error=str(error),
+            )
+            raise error from exc
+
+        telemetry = _response_telemetry(
+            response,
+            requested_model=model,
+            provider="Anthropic",
+            latency_ms=_elapsed_ms(started),
         )
-        for block in getattr(response, "content", []):
-            block_type = getattr(block, "type", None)
-            block_name = getattr(block, "name", None)
-            block_input = getattr(block, "input", None)
-            if block_type == "tool_use" and block_name == tool_name and isinstance(block_input, dict):
-                return StructuredCompletionResult(
-                    block_input,
-                    _response_telemetry(response, requested_model=model, provider="Anthropic"),
-                )
-            if isinstance(block, dict) and block.get("type") == "tool_use" and block.get("name") == tool_name:
-                return StructuredCompletionResult(
-                    dict(block.get("input", {})),
-                    _response_telemetry(response, requested_model=model, provider="Anthropic"),
-                )
-        raise LlmUnavailable("Anthropic response did not contain the required tool output")
+        try:
+            _validate_response_telemetry(telemetry, provider="Anthropic")
+            for block in getattr(response, "content", []):
+                block_type = getattr(block, "type", None)
+                block_name = getattr(block, "name", None)
+                block_input = getattr(block, "input", None)
+                if block_type == "tool_use" and block_name == tool_name and isinstance(block_input, dict):
+                    telemetry = replace(telemetry, outcome="success")
+                    log_llm_call(
+                        document_id="unknown",
+                        purpose=purpose,
+                        requested_model=model,
+                        telemetry=telemetry,
+                        request_body=request_body,
+                        response_body=response,
+                        outcome="success",
+                        latency_ms=telemetry.latency_ms,
+                    )
+                    return StructuredCompletionResult(block_input, telemetry)
+                if isinstance(block, dict) and block.get("type") == "tool_use" and block.get("name") == tool_name:
+                    telemetry = replace(telemetry, outcome="success")
+                    log_llm_call(
+                        document_id="unknown",
+                        purpose=purpose,
+                        requested_model=model,
+                        telemetry=telemetry,
+                        request_body=request_body,
+                        response_body=response,
+                        outcome="success",
+                        latency_ms=telemetry.latency_ms,
+                    )
+                    return StructuredCompletionResult(dict(block.get("input", {})), telemetry)
+            raise LlmUnavailable("Anthropic response did not contain the required tool output")
+        except LlmUnavailable as exc:
+            outcome = _failure_outcome(exc)
+            log_llm_call(
+                document_id="unknown",
+                purpose=purpose,
+                requested_model=model,
+                telemetry=replace(telemetry, outcome=outcome),
+                request_body=request_body,
+                response_body=response,
+                outcome=outcome,
+                latency_ms=telemetry.latency_ms,
+                error=str(exc),
+            )
+            raise
 
 
 class OpenAICompatibleLlmClient:
@@ -207,7 +277,7 @@ class OpenAICompatibleLlmClient:
         *,
         provider_name: str,
         extra_body: dict[str, Any] | None = None,
-        strict_schema: bool = False,
+        strict_schema: bool = True,
         parameter_mode: str = "omit",
     ):
         self.client = client
@@ -245,6 +315,9 @@ class OpenAICompatibleLlmClient:
         extra_body = dict(self.extra_body)
         if extra_body:
             kwargs["extra_body"] = extra_body
+        request_attempts: list[dict[str, Any]] = [kwargs]
+        started = time.perf_counter()
+        response: Any = None
         try:
             response = self.client.chat.completions.create(**kwargs)
         except Exception as exc:
@@ -256,19 +329,104 @@ class OpenAICompatibleLlmClient:
                     retry_kwargs["extra_body"] = retry_extra_body
                 else:
                     retry_kwargs.pop("extra_body", None)
-                response = self.client.chat.completions.create(**retry_kwargs)
+                request_attempts.append(retry_kwargs)
+                try:
+                    response = self.client.chat.completions.create(**retry_kwargs)
+                except Exception as retry_exc:
+                    latency_ms = _elapsed_ms(started)
+                    log_llm_call(
+                        document_id="unknown",
+                        purpose=purpose,
+                        requested_model=model,
+                        telemetry=None,
+                        request_body={"attempts": request_attempts},
+                        response_body=_exception_response(retry_exc),
+                        outcome="error",
+                        latency_ms=latency_ms,
+                        error=str(_rewrite_openai_compatible_error(retry_exc, provider_name=self.provider_name)),
+                    )
+                    raise _rewrite_openai_compatible_error(retry_exc, provider_name=self.provider_name) from retry_exc
             else:
-                raise _rewrite_openai_compatible_error(exc, provider_name=self.provider_name) from exc
-        content = _openai_message_content(response, provider_name=self.provider_name)
+                error = _rewrite_openai_compatible_error(exc, provider_name=self.provider_name)
+                log_llm_call(
+                    document_id="unknown",
+                    purpose=purpose,
+                    requested_model=model,
+                    telemetry=None,
+                    request_body={"attempts": request_attempts},
+                    response_body=_exception_response(exc),
+                    outcome="error",
+                    latency_ms=_elapsed_ms(started),
+                    error=str(error),
+                )
+                raise error from exc
+
+        telemetry = _response_telemetry(
+            response,
+            requested_model=model,
+            provider=self.provider_name,
+            latency_ms=_elapsed_ms(started),
+        )
         try:
+            _validate_response_telemetry(telemetry, provider=self.provider_name)
+            content = _openai_message_content(response, provider_name=self.provider_name)
             parsed = json.loads(_extract_json_payload(content))
         except json.JSONDecodeError as exc:
-            raise LlmUnavailable(f"{self.provider_name} response did not contain JSON") from exc
+            error = LlmUnavailable(f"{self.provider_name} response did not contain JSON")
+            log_llm_call(
+                document_id="unknown",
+                purpose=purpose,
+                requested_model=model,
+                telemetry=replace(telemetry, outcome="error"),
+                request_body={"attempts": request_attempts},
+                response_body=response,
+                outcome="error",
+                latency_ms=telemetry.latency_ms,
+                error=str(error),
+            )
+            raise error from exc
+        except LlmUnavailable as exc:
+            outcome = _failure_outcome(exc)
+            log_llm_call(
+                document_id="unknown",
+                purpose=purpose,
+                requested_model=model,
+                telemetry=replace(telemetry, outcome=outcome),
+                request_body={"attempts": request_attempts},
+                response_body=response,
+                outcome=outcome,
+                latency_ms=telemetry.latency_ms,
+                error=str(exc),
+            )
+            raise
         if not isinstance(parsed, dict):
-            raise LlmUnavailable(f"{self.provider_name} response JSON was not an object")
+            error = LlmUnavailable(f"{self.provider_name} response JSON was not an object")
+            log_llm_call(
+                document_id="unknown",
+                purpose=purpose,
+                requested_model=model,
+                telemetry=replace(telemetry, outcome="error"),
+                request_body={"attempts": request_attempts},
+                response_body=response,
+                outcome="error",
+                latency_ms=telemetry.latency_ms,
+                error=str(error),
+            )
+            raise error
+        telemetry = replace(telemetry, outcome="success")
+        log_llm_call(
+            document_id="unknown",
+            purpose=purpose,
+            requested_model=model,
+            telemetry=telemetry,
+            request_body={"attempts": request_attempts},
+            response_body=response,
+            outcome="success",
+            latency_ms=telemetry.latency_ms,
+        )
         return StructuredCompletionResult(
             parsed,
-            _response_telemetry(response, requested_model=model, provider=self.provider_name),
+            telemetry,
         )
 
     def _should_retry_without_provider_hints(self, exc: Exception, extra_body: dict[str, Any]) -> bool:
@@ -301,6 +459,7 @@ def _response_telemetry(
     *,
     requested_model: str,
     provider: str,
+    latency_ms: float | None = None,
 ) -> LlmCallTelemetry:
     """Extract provider response metadata without changing the model payload."""
     usage = _get(response, "usage", None)
@@ -311,6 +470,8 @@ def _response_telemetry(
         total_tokens = prompt_tokens + completion_tokens
     cost = _as_float(_get(usage, "cost", _get(response, "cost", None)))
     resolved_model = _get(response, "model", None)
+    choices = _get(response, "choices", [])
+    finish_reason = _get(choices[0], "finish_reason", None) if choices else _get(response, "stop_reason", None)
     return LlmCallTelemetry(
         provider=provider,
         requested_model=str(requested_model),
@@ -319,7 +480,58 @@ def _response_telemetry(
         completion_tokens=completion_tokens,
         total_tokens=total_tokens,
         cost=cost,
+        finish_reason=str(finish_reason) if finish_reason is not None else None,
+        latency_ms=latency_ms,
+        outcome="received",
     )
+
+
+def _validate_response_telemetry(telemetry: LlmCallTelemetry, *, provider: str) -> None:
+    """Reject provider responses that prove the request was empty or truncated."""
+    if (
+        telemetry.prompt_tokens is not None
+        and telemetry.prompt_tokens < MIN_PLAUSIBLE_PROMPT_TOKENS
+    ):
+        raise ImplausiblePromptTokens(
+            f"{provider} reported implausible prompt token count "
+            f"{telemetry.prompt_tokens}; expected at least {MIN_PLAUSIBLE_PROMPT_TOKENS}"
+        )
+    if telemetry.finish_reason == "length":
+        raise LlmResponseTruncated(
+            f"{provider} structured response truncated at max_tokens "
+            f"(finish_reason=length; completion_tokens={telemetry.completion_tokens})"
+        )
+
+
+def _failure_outcome(error: LlmUnavailable) -> str:
+    if isinstance(error, ImplausiblePromptTokens):
+        return "implausible_prompt"
+    if isinstance(error, LlmResponseTruncated):
+        return "truncated"
+    return "error"
+
+
+def _elapsed_ms(started: float) -> float:
+    return round((time.perf_counter() - started) * 1000, 3)
+
+
+def _exception_response(error: Exception) -> dict[str, Any]:
+    """Return provider error-body fields without serializing request headers."""
+    response = _get(error, "response", None)
+    response_text: str | None = None
+    if response is not None:
+        try:
+            candidate = _get(response, "text", None)
+            response_text = str(candidate) if candidate is not None else None
+        except Exception:
+            response_text = None
+    return {
+        "type": type(error).__name__,
+        "message": str(error),
+        "status_code": _get(error, "status_code", None),
+        "body": _get(error, "body", None),
+        "response_text": response_text,
+    }
 
 
 def _as_int(value: Any) -> int | None:

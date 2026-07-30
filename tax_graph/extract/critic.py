@@ -27,7 +27,7 @@ def critique_drafts(
             prompt=assemble_critic_prompt(document, batch=batch, config=settings, root=root),
             schema=critic_response_schema(),
             model=model,
-            max_tokens=int(get_config_value(settings, "llm.critic_max_tokens", 4000)),
+            max_tokens=int(get_config_value(settings, "llm.critic_max_tokens", 8000)),
             temperature=_optional_float(get_config_value(settings, "llm.temperature", 0)),
             purpose="tax_graph_critic",
         )

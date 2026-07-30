@@ -97,7 +97,7 @@ class ExtractionBatch:
 
 @dataclass(frozen=True)
 class LlmCallTelemetry:
-    """Resolved model and usage returned for one live model call."""
+    """Resolved model, usage, and outcome returned for one live model call."""
 
     provider: str
     requested_model: str
@@ -106,6 +106,9 @@ class LlmCallTelemetry:
     completion_tokens: int | None = None
     total_tokens: int | None = None
     cost: float | None = None
+    finish_reason: str | None = None
+    latency_ms: float | None = None
+    outcome: str | None = None
 
     def as_dict(self) -> dict[str, Any]:
         """Return the ASCII-safe serialized call record."""
@@ -117,6 +120,9 @@ class LlmCallTelemetry:
             "completion_tokens": self.completion_tokens,
             "total_tokens": self.total_tokens,
             "cost": self.cost,
+            "finish_reason": self.finish_reason,
+            "latency_ms": self.latency_ms,
+            "outcome": self.outcome,
         }
 
 

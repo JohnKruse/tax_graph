@@ -69,7 +69,7 @@ def extract_formula_plan(
         prompt=_formula_prompt(outline_node, spans),
         schema=formula_micro_schema(root=root),
         model=model,
-        max_tokens=int(get_config_value(settings, "llm.micro_max_tokens", 8000)),
+        max_tokens=int(get_config_value(settings, "llm.micro_max_tokens", 12000)),
         temperature=_optional_float(get_config_value(settings, "llm.temperature", 0)),
         purpose="tax_graph_micro_formula",
     )

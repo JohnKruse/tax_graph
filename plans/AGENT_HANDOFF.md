@@ -14,6 +14,63 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## Current state (2026-07-30)
 
+**Worker session checkpoint - M20-S9b implementation (2026-07-30):** Global canary: Ledger
+Llama. Phase canary: Ground Truth. Model: GPT-5 Codex; effort: default; usage/quota/context
+indicators are not exposed. John gave go via the current task request. Single declared step:
+build inspectable provider call/run logging, add prompt-token and truncation fail-fast guards,
+raise the response cap as justified, clear the specified silent defaults/misleading telemetry,
+run one pinned `form_1040_2025` draft-only diagnostic, record exact test evidence, and make one
+local commit without pushing. Applicable defect-ledger entries: D4, D6, D8, D9, D11, and the
+exact RAN/NOT RUN evidence rule. No 15-form baseline, model swap, prompt quality tuning, draft
+promotion, hand-authoring, live graph edit, review-contract change, rollover implementation, or
+UI change is in scope.
+
+**M20-S9b focused-test declaration (2026-07-30):** Declared files are
+`tests/test_llm_attribution_m20.py`, `tests/test_extract_m4.py`,
+`tests/test_draft_route_m20.py`, `tests/test_extract_outline_m4.py`,
+`tests/test_batch_extraction_m10.py`, `tests/test_schedule_d_extraction_m9.py`,
+`tests/test_trust_tiers_m8.py`, `tests/test_expression_agreement_m20.py`, and
+`tests/test_cli.py`. They cover the new run/call log and hard errors, provider adapter and
+pipeline defaults, draft/metrics consumers, and the renamed S8 report path. All are runnable
+within the 600-second cap and will have exact final evidence below.
+
+**M20-S9b pre-live checkpoint (2026-07-30):** Standard-library JSONL logging now records a
+run envelope plus provider calls under `output/logs/`; failures retain capped request and
+response bodies at every configured level, successful bodies are DEBUG-only, and API keys and
+client headers are never serialized. Prompt-token counts below 8 and `finish_reason: length`
+raise named errors. The generator/critic/micro caps are 24000/8000/12000, strict schema and
+generator expression mode default on, confidence is marked untrusted telemetry, and the S8
+report writer/path is measurement-keyed. The ignored local config is pinned to `z-ai/glm-5.2`
+and DEBUG for the one diagnostic. RAN: `$testRoot='C:\Users\devbox\.codex\visualizations\2026\07\30\019fb390-b23e-7ca0-8ef7-d0082dbf5b12\m20-s9b-consumers-r2'; New-Item -ItemType Directory -Force -Path $testRoot | Out-Null; $env:PYTEST_DEBUG_TEMPROOT=$testRoot; & .venv\Scripts\python.exe -m pytest tests/test_llm_attribution_m20.py tests/test_extract_m4.py tests/test_draft_route_m20.py tests/test_extract_outline_m4.py tests/test_batch_extraction_m10.py tests/test_schedule_d_extraction_m9.py tests/test_trust_tiers_m8.py tests/test_expression_agreement_m20.py tests/test_cli.py -q` -> 61 passed, 1 warning in 104.59s. RAN: `tools/check_ascii.py` -> ASCII check OK; `git diff --check` -> exit 0; protected live graph diff -> empty. The one-document diagnostic is next; no 15-form baseline will run.
+
+**M20-S9b one-document diagnostic result (2026-07-30):** RAN: `&
+.venv\Scripts\python.exe -m tax_graph.cli extract --doc form_1040_2025 --year 2025
+--root .` -> exit 1 after 58.4s with `LlmUnavailable: OpenRouter response message content
+was not text; finish_reason=error`. The retained log is
+`output/logs/ebbeec2a143747fdab6eacd93d9e4a1e.jsonl`. It proves the request was not empty:
+one well-formed attempt carried a 23065-character/5863-token prompt, strict `json_schema`,
+seven required top-level response fields, `max_tokens=24000`, and
+`provider.require_parameters=true`. OpenRouter resolved exactly `z-ai/glm-5.2` and routed to
+Baidu. The response used 3 completion tokens, had `finish_reason=error`, null content, and no
+native finish reason; latency was 54997.722ms and recorded cost was 0.0. The log contains no API
+key, authorization, or client-header fields. This disproves the S9 empty-prompt diagnosis but
+does not identify a deeper provider cause: the retained response supplied none. Per the S9b
+boundary, no retry, parameter change, model swap, prompt tuning, or 15-form baseline followed.
+
+**M20-S9b final focused-test evidence (2026-07-30):** The first `C:\tmp` attempt is NOT RUN as
+test evidence because ACL denial prevented pytest temp setup. Final evidence used a fresh writable
+short session root and no `--basetemp`: RAN: `$testRoot='C:\Users\devbox\.codex\visualizations\2026\07\30\019fb390-b23e-7ca0-8ef7-d0082dbf5b12\m20-s9b-final'; New-Item -ItemType Directory -Force -Path $testRoot | Out-Null; $env:PYTEST_DEBUG_TEMPROOT=$testRoot; & .venv\Scripts\python.exe -m pytest tests/test_llm_attribution_m20.py tests/test_extract_m4.py tests/test_draft_route_m20.py tests/test_extract_outline_m4.py tests/test_batch_extraction_m10.py tests/test_schedule_d_extraction_m9.py tests/test_trust_tiers_m8.py tests/test_expression_agreement_m20.py tests/test_cli.py -q` -> 61 passed, 1 warning in 105.73s.
+
+**M20-S9b final machine gates (2026-07-30):** RAN: `tools/check_ascii.py` -> ASCII check OK;
+`git diff --check` -> exit 0; module-form `tax_graph.cli validate 2025` -> graph integrity OK,
+documents=18, nodes=441, tables=2, edges=409, rules=17, citations=401; module-form
+`workbench.cli --root . --year 2025 preflight` -> exit 0, entries=18, units=2224,
+derived cells=2120, review_gap=591, unreviewed=1529, `legacy_mined=394`; strict citation
+report -> checked=401, strict_mismatches=36; protected graph diff -> empty. The tracked S8
+measurement was moved from the lying `m20_s7_expression_agreement.yaml` filename to
+`output/m20_s8_expression_agreement.yaml`; no draft was promoted and no live graph artifact was
+edited. One local commit was created for the whole S9b step; no push was performed.
+
 **Worker session checkpoint - M20-S9 implementation (2026-07-30):** Global canary: Ledger
 Llama. Phase canary: Ground Truth. Model: GPT-5 Codex; effort: default; usage/quota/context
 indicators are not exposed. John gave go via the current task request. Single declared step:

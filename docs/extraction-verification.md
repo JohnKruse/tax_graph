@@ -190,6 +190,13 @@ report` rolls these up across forms. The payoff condition in Section 1 becomes a
 dashboard line, reviewed at each phase gate: **human minutes per promoted object,
 trending down; escape rate, at or near zero.**
 
+Live extraction also writes one JSONL run log under `output/logs/`. It records the
+run-level configuration and totals plus each provider request/response envelope,
+including finish reason, latency, and outcome. Successful bodies appear at DEBUG
+level; failed calls retain capped request and response bodies. The log never stores
+API keys or client headers. Self-reported object confidence remains in `metrics.yaml`
+only as `untrusted_telemetry`; routing and promotion do not consume it.
+
 ## 8. What this does NOT change
 
 Drafts still never auto-merge and never commit. The LLM still never computes a return.

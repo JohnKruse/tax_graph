@@ -399,7 +399,7 @@ def test_outline_first_mode_routes_and_writes_assembled_drafts(tmp_path):
         client=client,
         config={
             "project": {"paths": {"graph_dir": "graph", "raw_store": ".cache/raw"}},
-            "extraction": {"mode": "outline_first"},
+                "extraction": {"mode": "outline_first", "expression_mode": "none"},
             "llm": {"model": "large-model", "micro_model": None, "temperature": 0},
         },
     )

@@ -1,13 +1,21 @@
 from __future__ import annotations
 
+import json
 from pathlib import Path
+from types import SimpleNamespace
 
 import pytest
 import yaml
 
 from tax_graph.extract.generator import parse_generator_response
-from tax_graph.extract.llm_client import StructuredCompletionResult
+from tax_graph.extract.llm_client import (
+    ImplausiblePromptTokens,
+    LlmResponseTruncated,
+    OpenAILlmClient,
+    StructuredCompletionResult,
+)
 from tax_graph.extract.models import DraftObject, ExtractionBatch, LlmCallTelemetry, RoutedDrafts, SourceDocumentInput
+from tax_graph.extract.observability import extraction_run
 from tax_graph.extract.route import write_routed_drafts
 
 
@@ -100,3 +108,99 @@ def test_draft_metrics_and_provenance_record_resolved_call(tmp_path: Path):
     assert metrics["llm_calls"][0]["resolved_model"] == "z-ai/glm-5.2"
     assert provenance[0]["requested_model"] == "~google/gemini-flash-latest"
     assert provenance[0]["resolved_model"] == "z-ai/glm-5.2"
+
+
+def _provider_response(*, prompt_tokens: int, finish_reason: str = "stop") -> dict:
+    return {
+        "model": "z-ai/glm-5.2",
+        "usage": {
+            "prompt_tokens": prompt_tokens,
+            "completion_tokens": 4,
+            "total_tokens": prompt_tokens + 4,
+            "cost": 0.0001,
+        },
+        "choices": [
+            {
+                "finish_reason": finish_reason,
+                "message": {"content": json.dumps({"ok": True})},
+            }
+        ],
+    }
+
+
+def _live_client(response: dict) -> OpenAILlmClient:
+    completions = SimpleNamespace(create=lambda **kwargs: response)
+    return OpenAILlmClient(
+        SimpleNamespace(chat=SimpleNamespace(completions=completions)),
+        provider_name="OpenRouter",
+    )
+
+
+def _run_config(level: str = "INFO") -> dict:
+    return {
+        "project": {"paths": {"output_dir": "output"}},
+        "llm": {"provider": "openrouter", "model": "z-ai/glm-5.2"},
+        "extraction": {"mode": "one_pass", "expression_mode": "generator", "concurrency": 1},
+        "logging": {"level": level},
+    }
+
+
+def _log_records(root: Path) -> list[dict]:
+    paths = sorted((root / "output" / "logs").glob("*.jsonl"))
+    assert len(paths) == 1
+    return [json.loads(line) for line in paths[0].read_text(encoding="ascii").splitlines()]
+
+
+def test_implausible_prompt_tokens_fail_fast_and_retain_failure_bodies(tmp_path: Path):
+    client = _live_client(_provider_response(prompt_tokens=1))
+
+    with pytest.raises(ImplausiblePromptTokens, match="implausible prompt token count"):
+        with extraction_run(
+            root=tmp_path,
+            document_id="form_1040_2025",
+            year="2025",
+            config=_run_config("WARNING"),
+        ):
+            client.structured_completion(
+                prompt="extract the form",
+                schema={"type": "object"},
+                model="z-ai/glm-5.2",
+                max_tokens=24000,
+                temperature=0,
+                purpose="tax_graph_draft",
+            )
+
+    records = _log_records(tmp_path)
+    call = next(record for record in records if record["event"] == "llm_call")
+    assert call["document_id"] == "form_1040_2025"
+    assert call["outcome"] == "implausible_prompt"
+    assert call["prompt_tokens"] == 1
+    assert call["request_body"]
+    assert call["response_body"]
+    assert records[-1]["event"] == "run_end"
+    assert records[-1]["outcome"] == "failed"
+
+
+def test_finish_reason_length_is_named_and_logged_at_info(tmp_path: Path):
+    client = _live_client(_provider_response(prompt_tokens=12, finish_reason="length"))
+
+    with pytest.raises(LlmResponseTruncated, match="finish_reason=length"):
+        with extraction_run(
+            root=tmp_path,
+            document_id="form_1040_2025",
+            year="2025",
+            config=_run_config(),
+        ):
+            client.structured_completion(
+                prompt="extract the form",
+                schema={"type": "object"},
+                model="z-ai/glm-5.2",
+                max_tokens=24000,
+                temperature=0,
+                purpose="tax_graph_draft",
+            )
+
+    call = next(record for record in _log_records(tmp_path) if record["event"] == "llm_call")
+    assert call["finish_reason"] == "length"
+    assert call["outcome"] == "truncated"
+    assert call["response_body"]

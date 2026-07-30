@@ -188,10 +188,13 @@ def render_report(reports: list[dict[str, Any]], *, year: str) -> str:
     return "\n".join(lines) + "\n"
 
 
-def _confidence_telemetry(confidences: list[float]) -> dict[str, float] | None:
+def _confidence_telemetry(confidences: list[float]) -> dict[str, Any] | None:
+    """Report self-reported confidence as explicitly untrusted telemetry."""
     if not confidences:
         return None
     return {
+        "status": "untrusted_telemetry",
+        "note": "not used for routing, promotion, or correctness decisions",
         "min": round(min(confidences), 3),
         "max": round(max(confidences), 3),
         "mean": round(sum(confidences) / len(confidences), 3),
