@@ -1272,9 +1272,15 @@ the instruction slot; Authority explicitly reports missing authored coverage; do
 citation coverage is visible beside policy counts; and the dossier heading duplication/order
 warts are fixed. No promoted artifacts, graph semantics, verdicts, or citation records changed.
 
-**BALL: WORKER - M20-S9b (BUILD THE LOGGING, add fail-fast guards, fix truncation, then run ONE
-document and read the log; plus five small cleanups). Task block under From Architect. READ THE
-S9b BLOCK BEFORE THE S9 ONE - the S9 diagnosis was wrong and S9b supersedes it.** John's
+**BALL: WORKER - M20-S10 (pin the OpenRouter provider to escape Baidu, then GET THE BASELINE
+NUMBER). Task block under From Architect. S9b is ACCEPTED at `544c4ae` - Architect re-verified:
+61 tests green, protected set byte-identical, `validate 2025` green, no credentials in the
+retained log. John wants the testing, not more analysis: run it through to the number in ONE
+session.**
+
+**Superseded (kept as history):** BALL: WORKER - M20-S9b (BUILD THE LOGGING, add fail-fast
+guards, fix truncation, then run ONE document and read the log; plus five small cleanups).
+READ THE S9b BLOCK BEFORE THE S9 ONE - the S9 diagnosis was wrong and S9b supersedes it. John's
 ruling: until we can log what GLM received and returned, further diagnosis is academic. Logging
 is now the DELIVERABLE, not a deferred nicety. The S9 instrumentation half is committed at
 `cdcbd65` and Architect-verified (49 tests green), including the pinned `z-ai/glm-5.2` config
@@ -3216,7 +3222,57 @@ TY2026 docs drop.
 
 ## From Architect
 
-- **M20-S9b TASK - BUILD THE LOGGING FIRST, THEN LOOK AT WHAT GLM ACTUALLY RECEIVED
+- **M20-S10 TASK - PIN THE PROVIDER, THEN GET THE BASELINE NUMBER (Architect, Claude Opus 5,
+  2026-07-30). John's go, and his words: "I want to get onto the testing." RUN IT THROUGH TO
+  THE NUMBER IN ONE SESSION - do not stop at the one-document check if it passes.** Ledger: the
+  exact RAN/NOT RUN evidence rule, and D9.
+  **WHAT S9b PROVED (accepted at `544c4ae`).** The logging works and settled the diagnosis:
+  our request is FINE. One well-formed attempt carried a 5,863-token prompt with strict
+  `json_schema`, `max_tokens=24000`, and `require_parameters=true`. OpenRouter resolved
+  `z-ai/glm-5.2` exactly and routed to **Baidu**, which returned `finish_reason=error`, null
+  content, 3 completion tokens, cost 0.0, after **55 seconds**. **The provider is failing, not
+  our code.** Both earlier diagnoses - "GLM cannot produce JSON" and "the prompt never reached
+  the model" - are DISPROVEN. The billing page's 1-token entries were OpenRouter's accounting
+  for errored calls, not a measure of what we sent.
+  1. **STEP 1 - EXPOSE OPENROUTER PROVIDER ROUTING IN CONFIG.** Today
+     `_openrouter_extra_body` (`tax_graph/extract/llm_client.py:148-162`) sends exactly one
+     field, `provider: {require_parameters: true}`. Add config-driven support for provider
+     selection, exclusion, fallback control, and quantization filtering. **Verify the exact
+     field names against OpenRouter's CURRENT documentation - do not take them from the
+     Architect.** Two diagnoses were wrong today from confident indirect knowledge; this is the
+     same shape of claim.
+  2. **STEP 2 - PIN TO `decart` WITH `fp4` QUANTIZATION - John's choice, he reports a sale.**
+     Disable fallbacks so the route is deterministic and every number is attributable to a
+     specific provider AND quantization. **Expected failure mode to anticipate, not to work
+     around:** a hard provider pin combined with `require_parameters: true` can yield NO
+     eligible route if that endpoint lacks strict `json_schema` support. If that happens,
+     report it plainly - do NOT start loosening constraints to make it go away.
+  3. **STEP 3 - ONE-DOCUMENT CHECK, then KEEP GOING.** `form_1040_2025`, draft-only. Confirm
+     from the log that the call succeeded, and report prompt tokens, completion tokens,
+     `finish_reason`, latency, cost, and resolved provider. **If it succeeds, proceed
+     immediately to step 4 in the same session.** Only stop if it fails.
+  4. **STEP 4 - THE 15-FORM BASELINE AND THE NUMBER.** Re-run the 15 manifest forms draft-only,
+     then `verify expression-agreement`. **Report COVERAGE and ACCURACY separately - do not
+     collapse them** - alongside resolved model, resolved provider, quantization, total tokens,
+     and total cost. This is the deliverable: the first attributable measurement of what the
+     pipeline derives on its own. **Report it honestly even if it is bad.**
+  5. **What this round does NOT do.** No prompt tuning for quality (that comes after we can see
+     a real number). No model swap away from `z-ai/glm-5.2`. No operation-enum change. No draft
+     promotion. No hand-authoring. No live graph edit. No rollover implementation. No review UI;
+     S6-2 stays parked. Review/verdict contract still FROZEN.
+  **PROTECTED TEST SET, unchanged hard gate:** `graph/2025/{nodes,edges,rules}/` byte-identical
+  at round end; `git diff --stat` on those three directories EMPTY.
+  Tier 3. Declared files plus honest `RAN:`/`NOT RUN:`. ASCII, `git diff --check`, module-form
+  `validate 2025`, real preflight with `legacy_mined` explicit (expect **394**),
+  `check_citation_integrity` STRICT (expect **36**). Short pytest temp root; no `--basetemp`.
+  ONE local commit; no push.
+  **Stop conditions:** any diff in `graph/2025/{nodes,edges,rules}/`; any draft promoted;
+  collapsing coverage and accuracy; tuning the prompt for quality; swapping the model; loosening
+  `strict_schema` or `require_parameters` to force a route; `legacy_mined` above 394; strict
+  mismatches above 36. **Cost is NOT a constraint** - $1.95 total for three prior runs, ~$0.65
+  per 15-form run. Do not optimize for it, and do not stop to ask about spend at this scale.
+
+- **M20-S9b TASK (COMPLETE, accepted at `544c4ae`) - BUILD THE LOGGING FIRST, THEN LOOK AT WHAT GLM ACTUALLY RECEIVED
   (Architect, Claude Opus 5, 2026-07-30, REWRITTEN on John's call). SUPERSEDES the S9 block
   below - read this first.** Ledger: the exact RAN/NOT RUN evidence rule, and D9.
   **JOHN'S RULING, and he is right: until we can log what GLM received and returned, further
