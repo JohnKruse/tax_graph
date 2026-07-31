@@ -1765,8 +1765,14 @@ the instruction slot; Authority explicitly reports missing authored coverage; do
 citation coverage is visible beside policy counts; and the dossier heading duplication/order
 warts are fixed. No promoted artifacts, graph semantics, verdicts, or citation records changed.
 
-**BALL: WORKER - M20-S16 (MAKE THE REVIEW SURFACE FIT A HUMAN: readable operations, every line
-reviewable, controls where the eye is, colour by risk). Task block under From Architect. S15 is
+**BALL: WORKER - M20-S17 (EVERY CONTROL BACK IN THE SURFACE; TIGHTEN THE REVIEW UX). Task block
+under From Architect. S16 is ACCEPTED at `302c85e` - Architect re-verified: 41 focused tests
+green, protected set byte-identical, real ledger untouched, synthetic reviewer used correctly.
+The rendered form (`line 22 = line 18 - line 21`) and the moved controls both landed and John has
+now used them. THIS ROUND IS HIS SECOND SESSION'S FEEDBACK plus the S16 carry-forward.**
+
+**Superseded (kept as history):** BALL: WORKER - M20-S16 (MAKE THE REVIEW SURFACE FIT A HUMAN:
+readable operations, every line reviewable, controls where the eye is, colour by risk). S15 is
 ACCEPTED at `3a8d613` - the review surface is live and John has used it. This round is his
 feedback from that session, in one batch, because trial and error is the way through.**
 
@@ -3755,7 +3761,84 @@ TY2026 docs drop.
 
 ## From Architect
 
-- **M20-S16 TASK - MAKE THE REVIEW SURFACE FIT A HUMAN (Architect, Claude Opus 5, 2026-07-31).
+- **M20-S17 TASK - EVERY CONTROL BACK IN THE SURFACE; TIGHTEN THE REVIEW UX (Architect,
+  Claude Opus 5, 2026-07-31). John's second review session.** Ledger: the exact RAN/NOT RUN
+  evidence rule, D4, D6, D9, D11.
+  0. **CARRY-FORWARD FROM S16 - THE SOURCE EXTRACTION WAS SCAFFOLDED, NOT DONE.** 40 of the
+     1040's 57 cells are `review_gap` with `text: "line 1a = unresolved source"` and
+     `reason: "non-computed source extraction has not been generated"`. The lines were added to
+     the list; the second micro question was never run. **Run it.** Line 1a already carries the
+     citation "Total amount from Form(s) W-2, box 1" and must render `= W-2 box 1`. This is a
+     prerequisite for the colour key meaning anything.
+  1. **THE BACKGROUND CONTROLS ARE MISSING AND JOHN CALLS THEM IMPORTANT.** His words: "We've
+     once again lost all of the background cells... things like are you in a combat zone?
+     dependents, did they live with you for half the year? it is all just dead in the 1040.
+     These are important details, even if they are just entries by the filer. the AI needs this
+     to create a valid return."
+     **Measured: the live projection carries 238 units for `form_1040_2025`; the generated
+     surface has 57.** ~180 controls - checkboxes, dependent rows, filing status, elections -
+     are absent because the generated surface only takes outline nodes of kind `line`.
+     - Bring the non-line controls into the generated review surface.
+     - They are a THIRD category, not formulas and not source-fetches: **filer-entered controls
+       with semantic meaning**. The review question is "is this control correctly identified and
+       correctly typed/described?" - e.g. a dependent's "lived with you" box is a boolean that
+       drives credit eligibility.
+     - Render them in the same standard: `= entered by filer`, with the control's own label and
+       citation. Fail closed with a named gap rather than inventing semantics.
+     - **Report the new denominator per form** (expect ~238 for the 1040, not 57).
+  2. **COMPRESS THE CELL LIST TO ONE LINE PER CELL.** John: "I want the listing of cells to be
+     more compressed. It can be a single line each." Line anchor, short label, bucket colour +
+     name, review state. Nothing else. The list is navigation.
+  3. **THE LIST GETS ONE THIRD OF THE VERTICAL SPACE; THE REVIEW PANE GETS TWO THIRDS.** John's
+     explicit ratio. The review pane is where the work happens and it must not require scrolling
+     to reach the controls.
+  4. **TWO BUTTONS, ONE ROW: `Accept` and `Reject`. RETIRE `Pipeline defect` / `Source
+     pathology`.** John, overruling his own M15 design after using it: "if i'm some Joe reviewing
+     a doc, do i know what the underlying problem is? I can only tell you that the cell
+     instruction/description/entry does not match the source docs and i should tell the pipeline
+     why to make corrections, no?" **He is right: the reviewer reports the SYMPTOM; the pipeline
+     diagnoses the CAUSE.** Asking a reviewer to classify a defect as pipeline-vs-source is
+     asking them to do triage they have no basis for.
+     - On `Reject`, the comment box is auto-focused with a clear prompt.
+     - John said "strongly encouraged", not required. **Implement it as: submitting an empty
+       rejection triggers a confirm step** ("Reject without telling the pipeline why?") rather
+       than a hard block. That honours his wording while preserving the rework value - a
+       rejection with no comment gives the pipeline nothing to act on. If he still finds it
+       heavy after testing, relax it further.
+  5. **DROP THE TYPED `Reviewer ID` FROM THE UI.** John: "it isn't as though people will have a
+     group of reviewers sitting down and doing this as a team. this just takes up space. I'd
+     record the timestamp and maybe something about the computer."
+     - Auto-capture instead: timestamp (already recorded) plus machine identity (host / OS user
+       / session id). No typing.
+     - Keep an OPTIONAL free-text tag for when John wants to mark a batch.
+     - `reviewer_id` is currently REQUIRED and validated in `workbench/address_verdicts.py`.
+       Change it to auto-populated rather than removing attribution outright - the ledger is a
+       record of human judgement and must still say where a verdict came from.
+     - **Note the old guard is dead either way:** rejecting `agent`/`codex`/`worker`/`system` was
+       always bypassable by any human-looking string (S15 wrote one as `john`). Machine capture
+       plus a submission-channel field is a better guard than a blocklist.
+  6. **THE MISSING FLOOR.** `line 22` renders `line 18 - line 21` but its instruction says "If
+     zero or less, enter -0-". It should be `max(line 18 - line 21, 0)`. Confirm the phrasing
+     table covers this class and report how many cells changed.
+  **VERIFY IN THE BROWSER and expect John to test it immediately after.** Screenshot the new
+  layout at the 1/3-2/3 split with the single-line list.
+  **DO NOT write a verdict under a real person's name or into the live ledger.** S16 did this
+  correctly with a synthetic reviewer and an isolated store - keep that discipline.
+  **What this round does NOT do.** No draft promotion. No hand-authoring. No live graph edit. No
+  operation-enum change. No rollover implementation. Verdict-contract changes are additive only
+  and **nothing may enter `content_fingerprint`**.
+  **PROTECTED TEST SET, unchanged hard gate:** `graph/2025/{nodes,edges,rules}/` byte-identical.
+  Tier 3. Declared files plus honest `RAN:`/`NOT RUN:`. ASCII, `git diff --check`, module-form
+  `validate 2025`, real preflight with `legacy_mined` explicit (expect **394**),
+  `check_citation_integrity` STRICT (expect **36**). Short pytest temp root; no `--basetemp`.
+  ONE local commit; no push. Cite the ACTUAL commit hash.
+  **Config note: `extraction.expression_mode` stays `none`.**
+  **Stop conditions:** any diff in `graph/2025/{nodes,edges,rules}/`; any draft promoted; a
+  verdict written under a real person's name or into the live ledger; anything entering
+  `content_fingerprint`; hand-authoring; asking the model for internal node ids; `legacy_mined`
+  above 394; strict mismatches above 36. **A model or provider failure is NOT a stop condition.**
+
+- **M20-S16 TASK (COMPLETE, accepted at `302c85e`) - MAKE THE REVIEW SURFACE FIT A HUMAN (Architect, Claude Opus 5, 2026-07-31).
   John's feedback from his first real session with the workbench, in one batch. His framing:
   "The only way to get this done is by trial and error." Expect to hand this back to him to
   test.** Ledger: the exact RAN/NOT RUN evidence rule, D4, D6, D9, D11.
