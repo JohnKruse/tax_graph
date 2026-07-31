@@ -1687,8 +1687,13 @@ the instruction slot; Authority explicitly reports missing authored coverage; do
 citation coverage is visible beside policy counts; and the dossier heading duplication/order
 warts are fixed. No promoted artifacts, graph semantics, verdicts, or citation records changed.
 
-**BALL: WORKER - M20-S15 (FIX THE TWO BLOCKERS, THEN PUT THE GENERATED CELLS IN FRONT OF JOHN).
-Task block under From Architect. S14 is ACCEPTED at `eb99447` - Architect re-verified: 40 passed
+**BALL: WORKER - M20-S16 (MAKE THE REVIEW SURFACE FIT A HUMAN: readable operations, every line
+reviewable, controls where the eye is, colour by risk). Task block under From Architect. S15 is
+ACCEPTED at `3a8d613` - the review surface is live and John has used it. This round is his
+feedback from that session, in one batch, because trial and error is the way through.**
+
+**Superseded (kept as history):** BALL: WORKER - M20-S15 (FIX THE TWO BLOCKERS, THEN PUT THE
+GENERATED CELLS IN FRONT OF JOHN). S14 is ACCEPTED at `eb99447` - Architect re-verified: 40 passed
 / 1 skipped, protected set byte-identical. **Form 1040 is 17/17 COMPLETE and Schedule A is 7/7
 COMPLETE** - every computed line carries an expression AND a verbatim citation, zero
 expression-without-citation cells, $0.109 for all three forms. THIS IS THE ROUND JOHN HAS BEEN
@@ -3672,7 +3677,138 @@ TY2026 docs drop.
 
 ## From Architect
 
-- **M20-S15 TASK - FIX THE TWO BLOCKERS, THEN PUT THE GENERATED CELLS IN FRONT OF JOHN
+- **M20-S16 TASK - MAKE THE REVIEW SURFACE FIT A HUMAN (Architect, Claude Opus 5, 2026-07-31).
+  John's feedback from his first real session with the workbench, in one batch. His framing:
+  "The only way to get this done is by trial and error." Expect to hand this back to him to
+  test.** Ledger: the exact RAN/NOT RUN evidence rule, D4, D6, D9, D11.
+  **JOHN'S CORE COMPLAINT, and it is the organizing idea:** "Remember this is a human reviewing,
+  not a computer." He was shown `Operation: sum`, a mangled description, and
+  `Operands: form_1040_2025_root_line_19 addend`. He wants `19 + 20`. Everything below follows
+  from that.
+  **DO THE CORRECTNESS FIXES FIRST (items 1-2) - they are small and they are wrong today.**
+  1. **FIX THE ROLE BUG - THE GRAPH CANNOT CURRENTLY EXPRESS `18 - 21` VS `21 - 18`.**
+     `tax_graph/extract/assembly.py:190` hardcodes `inputs.append({"name": source_id, "role":
+     "addend"})` for EVERY operand regardless of operation. At line 127
+     `input_item.get("role")` then finds `"addend"` (truthy) so `_default_role()` - which
+     handles SUBTRACT correctly - is never reached. Verified in the live draft: both operands of
+     `line_22` (rule `..._line_22_subtract`) are stored `role: addend`.
+     - Remove the hardcode; derive role from operation and position.
+     - **State the ordering convention in the prompt**: for `SUBTRACT` and `DIVIDE`,
+       `source_lines` must be in computation order, the value being reduced FIRST. Nothing says
+       this today, so correctness depends on the model happening to match our assumption.
+     - **Validate arity per operation** - `SUBTRACT`/`DIVIDE` take exactly two; anything else is
+       a FINDING, not data. Validate the role set against the operation too.
+  2. **STOP SHOWING RAW OUTLINE LABELS TO A HUMAN.** `assembly.py:99` builds
+     `f"Compute {output_name} for {outline_node.label}."` and the label carries OCR bleed from
+     neighbouring form text. John saw: *"Compute line_22 for 12a, 12b, 12c, 22 Subtract line 21
+     from line 18. If zero or less, enter -0- 22."* - he asked what 12a/12b/12c were and why 22
+     appears twice. Clean the label (strip the answer-box line number and adjacent-cell bleed)
+     or stop surfacing this string entirely in favour of item 3.
+  3. **THE RENDERING STANDARD - ONE FORM, READABLE BY A HUMAN AND BY THE AI.** John: "A LLM
+     should understand human math." Render DETERMINISTICALLY IN CODE from the structured
+     expression. **The model never emits this string** - it emits structure, code renders it, so
+     it cannot be gotten wrong and costs zero prompt tokens.
+     ```
+     line 21  = line 19 + line 20
+     line 22  = max(line 18 - line 21, 0)
+     line 11a = line 9 - line 10
+     line 1a  = W-2 box 1
+     line 1e  = Form 2441, line 26
+     line 1h  = entered by filer
+     line 5   = min(Form 8863 line 25, Form 8863 line 27)
+     ```
+     Standard math where it is math; plain English where it is provenance. **No `addend`, no
+     `Operands:` list, no node ids in the reviewer's face.** ASCII only (`-`, not a minus sign) -
+     `tools/check_ascii.py` is a gate. **Use the SAME rendered string in the prompt and in the
+     UI**, so John compares exactly what the model was asked about.
+  4. **EXTEND REVIEW TO THE NON-COMPUTED LINES. This is the biggest item and John calls it
+     critical:** "I need to see that their graph reference/operand is to fetch from another form
+     or specific cell or to be provided by the filer... This is critical to making this tax
+     graph actually work in practice." The 1040 has 57 lines; only 17 compute. The other 40 are
+     imports, cross-form carries, and filer entries - and **none of them are generated or
+     reviewable today**, so a mis-wired fetch is invisible.
+     Add a second micro question for non-formula lines, same shape and discipline as the formula
+     one - label plus instructions in, structure out, identity resolved in code:
+     ```
+     {"source_kind": "form_line" | "information_return" | "filer_entry",
+      "form": "...", "line": "...", "box": "...", "quote": "..."}
+     ```
+     Render as `= Form 2441, line 26` / `= W-2 box 1` / `= entered by filer`. Resolve to
+     canonical addresses in CODE, never ask the model for ids, and fail closed with a named gap
+     rather than guessing.
+  5. **MOVE THE CONTROLS TO WHERE THE EYE IS.** John: "I hate that the comment section and
+     approval is up above... look at the bottom pane of supporting info. you have to scroll to
+     see it."
+     - **The cell list becomes NAVIGATION ONLY** - line number, label, bucket colour and name,
+       review state. **Remove the approve checkbox and the note box from the list entirely.**
+     - **The review area holds the decision**: the rendered operation (item 3), the form-face
+       text, the instruction-page text, and the accept/reject controls and comment - together,
+       **visible without scrolling**.
+  6. **REJECTION MUST CARRY A REASON. John asked: "is non approval a comment?"** Yes.
+     - Approve is ONE action, no explanation required.
+     - **Reject REQUIRES a reason code plus a comment** - reuse John's own labels, `Pipeline
+       defect` vs `Source pathology`, which are rework routing, not a generic reject. A rejection
+       with no reason gives the pipeline nothing to rework from.
+     - **Enforce this in the API, not only the UI.**
+     - John floated a slider; the Architect recommends explicit approve/reject actions instead,
+       because reject must open the reason and a slider implies a spectrum. If John prefers the
+       slider after seeing it, change it.
+  7. **COLOUR BY RISK BUCKET.** John: "Put all of the math ones in Red... That way one can speed
+     the reviews of the critical ones and find the most likely failure points." Map onto the
+     EXISTING tested classification `expression_kind_bucket` (S6-1) - do not invent a second
+     taxonomy, and do not recompute bucket membership in JavaScript.
+     | bucket | colour |
+     |---|---|
+     | ARITHMETIC | **red** |
+     | COPY | amber |
+     | IMPORTED (W-2/1099 box) | blue |
+     | CROSS-FORM FETCH | indigo |
+     | USER_ENTRY | grey |
+     | gap / not reviewable | hatched outline |
+     - **RED IS CURRENTLY TAKEN:** `--danger: #a03225` renders "Coverage gap - nobody has mapped
+       this yet" and `.official-region.policy-unsupported`. **Move the gap indicator to amber-brown
+       and give red to ARITHMETIC**, per John. Note the existing CSS comment at
+       `styles.css:112` warning that red must not be confused with a policy state - update it.
+     - **Pair every colour with a text label.** Colour alone is not readable for everyone.
+     - Note for expectations: on today's formula-only surface 14 of the 1040's 17 cells are
+       ARITHMETIC (sum 9, subtract 5, copy 2, require_input 1), so nearly everything is red. The
+       key only earns its keep once item 4 lands and the surface holds all 57 lines.
+  8. **FIX THE STALE POLICY DISPLAY.** Document cards show `computed: 5 | copied: 1 | coverage
+     gap - nobody has mapped this yet: 11` for the 1040, but every generated cell has
+     `policy = None` and those counts come from the old live-projection classifier. All 17 cells
+     are real and cited. Either compute the mix from the generated set or omit it in
+     `generated_draft` mode.
+  9. **RE-MEASURE - S15 DID NOT.** Re-run `verify form-completeness`. The report still claims
+     Schedule 1 is 0/4 while the workbench shows 4 cells with 4 citations, and still reports 146
+     wrong-owner instruction spans from before the S15 fix. Report the current numbers,
+     including the wrong-owner count and the new non-computed-line coverage from item 4.
+  **VERIFY IN THE BROWSER, and expect John to test it himself afterwards.** Load the page, walk
+  a 1040 cell, approve one, reject one with a reason and comment, confirm both land in
+  `review_verdicts/2025/address_verdicts.jsonl`, and include a screenshot.
+  **DO NOT WRITE A VERDICT AS `john` OR ANY REAL PERSON.** S15 recorded a durable approval under
+  John's name for a cell he had never seen, which `docs/review-workbench.md` forbids
+  ("No workbench action asserts a human-review claim on the user's behalf"). That was the
+  Architect's spec error, not the Worker's. **Use an obviously synthetic reviewer id for
+  demonstration, and do not commit demonstration verdicts to the real ledger.**
+  **What this round does NOT do.** No draft promotion. No hand-authoring. No live graph edit. No
+  operation-enum change. No rollover implementation. The review/verdict contract may change ONLY
+  additively for the reject-reason field, and **nothing may enter `content_fingerprint`** -
+  comments and reason codes are metadata about the review, not the content approved.
+  **PROTECTED TEST SET, unchanged hard gate:** `graph/2025/{nodes,edges,rules}/` byte-identical.
+  Tier 3. Declared files plus honest `RAN:`/`NOT RUN:`. ASCII, `git diff --check`, module-form
+  `validate 2025`, real preflight with `legacy_mined` explicit (expect **394**),
+  `check_citation_integrity` STRICT (expect **36**). Short pytest temp root; no `--basetemp`.
+  ONE local commit; no push. Cite the ACTUAL commit hash.
+  **Config note: `extraction.expression_mode` stays `none`.** The S9 instruction to set it to
+  `generator` is OBSOLETE.
+  **Stop conditions:** any diff in `graph/2025/{nodes,edges,rules}/`; any draft promoted; a
+  demonstration verdict written under a real person's name or committed to the real ledger; a
+  comment or reason code entering `content_fingerprint`; hand-authoring an expression or
+  citation; asking the model for internal node ids; `legacy_mined` above 394; strict mismatches
+  above 36. **A model or provider failure is NOT a stop condition** - `google/gemini-3.6-flash`
+  is known good.
+
+- **M20-S15 TASK (COMPLETE, accepted at `3a8d613`) - FIX THE TWO BLOCKERS, THEN PUT THE GENERATED CELLS IN FRONT OF JOHN
   (Architect, Claude Opus 5, 2026-07-30). John's go. THE REVIEW SURFACE IS THE POINT OF THIS
   ROUND - the two fixes exist to make the reviewed set complete.** Ledger: the exact
   RAN/NOT RUN evidence rule, D4, D6, D9, D11.
