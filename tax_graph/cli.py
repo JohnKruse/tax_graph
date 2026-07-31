@@ -650,6 +650,15 @@ def verify_form_completeness_command(
         "{policy_and_form_face_citation}/{policy_controls} "
         "({policy_and_form_face_citation_rate:.1%})".format(**totals)
     )
+    print(
+        "  policy origin: derived={policy_derived}, defaulted={policy_defaulted}, "
+        "authored={policy_authored}".format(**totals)
+    )
+    print(
+        "  policy mix after: {policy_mix_after}; failover classes: {failover_class_counts}".format(
+            **totals
+        )
+    )
     print("  handcrafted expression set: review flag only")
     return 0
 

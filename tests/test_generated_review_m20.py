@@ -1,4 +1,4 @@
-"""M20-S15 tests for draft-only generated review projection."""
+"""M20-S20 tests for draft-only generated review projection."""
 
 from __future__ import annotations
 
@@ -24,8 +24,8 @@ pytestmark = pytest.mark.skipif(
 def test_generated_review_projects_formula_and_source_cells_with_provenance() -> None:
     expected = {
         "form_1040_2025": 199,
-        "schedule_1_2025": 4,
-        "schedule_a_2025": 7,
+        "schedule_1_2025": 73,
+        "schedule_a_2025": 33,
     }
     for document_id, count in expected.items():
         result = build_generated_document_cells(ROOT, 2025, document_id)
@@ -78,6 +78,9 @@ def test_generated_review_renders_structured_math_for_humans() -> None:
     assert line_22["expression"]["text"] == "line 22 = line 18 - line 21"
     assert "node_id" not in line_22["expression"]["text"]
     assert "addend" not in line_22["expression"]["text"]
+    line_32 = next(item for item in result.cells if item["official_ref"] == "32")
+    assert line_32["population_policy"] == "computed"
+    assert line_32["expression"]["kind"] == "sum"
     schema = json.loads((ROOT / "schemas" / "review_expression.schema.json").read_text(encoding="utf-8"))
     for cell in result.cells:
         jsonschema.validate(cell["expression"], schema)

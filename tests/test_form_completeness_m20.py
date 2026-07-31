@@ -65,6 +65,7 @@ def test_form_completeness_distinguishes_complete_expression_and_gap(tmp_path: P
                         "address_id": "2025/document=form_1040/section=identity/control=a",
                         "label": "Control A",
                         "population_policy": "user_entered",
+                        "policy_origin": "authored",
                         "has_policy": True,
                         "has_form_face_citation": True,
                     },
@@ -73,6 +74,7 @@ def test_form_completeness_distinguishes_complete_expression_and_gap(tmp_path: P
                         "address_id": "2025/document=form_1040/section=identity/control=b",
                         "label": "Control B",
                         "population_policy": "unsupported",
+                        "policy_origin": "review_gap",
                         "has_policy": False,
                         "review_gap": "policy extraction failed",
                     },
@@ -80,6 +82,12 @@ def test_form_completeness_distinguishes_complete_expression_and_gap(tmp_path: P
                 "background_policy_before": {"unsupported": 1, "user_entered": 1},
                 "background_policy_after": {"unsupported": 1, "user_entered": 1},
                 "background_policy_progress": 0,
+                "background_policy_origin_counts": {"authored": 1, "review_gap": 1},
+                "background_policy_after_by_origin": {
+                    "authored": {"user_entered": 1},
+                    "review_gap": {"unsupported": 1},
+                },
+                "background_failover_class_counts": {},
             },
             sort_keys=False,
         ),
@@ -115,7 +123,7 @@ def test_form_completeness_distinguishes_complete_expression_and_gap(tmp_path: P
     )
     item = report["by_document"]["form_1040_2025"]
 
-    assert report["measurement"] == "m20_s19_form_completeness"
+    assert report["measurement"] == "m20_s20_form_completeness"
     assert report["totals"] == {
         "formula_cells": 4,
         "policy_controls": 2,
@@ -123,6 +131,19 @@ def test_form_completeness_distinguishes_complete_expression_and_gap(tmp_path: P
         "policy_and_form_face_citation": 1,
         "policy_coverage_rate": pytest.approx(1 / 2),
         "policy_and_form_face_citation_rate": pytest.approx(1 / 2),
+        "policy_derived": 0,
+        "policy_defaulted": 0,
+        "policy_authored": 1,
+        "policy_derived_and_form_face_citation": 0,
+        "policy_defaulted_and_form_face_citation": 0,
+        "policy_origin_counts": {"authored": 1, "review_gap": 1},
+        "policy_mix_before": {"unsupported": 1, "user_entered": 1},
+        "policy_mix_after": {"unsupported": 1, "user_entered": 1},
+        "policy_mix_after_by_origin": {
+            "authored": {"user_entered": 1},
+            "review_gap": {"unsupported": 1},
+        },
+        "failover_class_counts": {},
         "expression_and_verbatim_citation": 2,
         "expression_and_form_face_citation": 2,
         "expression_and_both_citations": 1,
@@ -132,6 +153,9 @@ def test_form_completeness_distinguishes_complete_expression_and_gap(tmp_path: P
     assert item["policy_controls"] == 2
     assert item["policy_controls_with_policy"] == 1
     assert item["policy_and_form_face_citation"] == 1
+    assert item["policy_derived"] == 0
+    assert item["policy_defaulted"] == 0
+    assert item["policy_authored"] == 1
     assert item["background_policy_progress"] == 0
     assert item["background_policy_review_gaps"][0]["field_name"] == "control_b"
     assert item["expression_and_instruction_page_citation"] == 1
@@ -146,5 +170,5 @@ def test_form_completeness_distinguishes_complete_expression_and_gap(tmp_path: P
     assert item["handcrafted_diff"]["flag_only"] is True
 
     path = write_form_completeness_report(report, root=tmp_path)
-    assert path.name == "m20_s19_form_completeness.yaml"
+    assert path.name == "m20_s20_form_completeness.yaml"
     assert "handcrafted expression set" not in path.read_text(encoding="ascii").lower()

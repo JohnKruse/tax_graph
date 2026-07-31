@@ -10,7 +10,7 @@ import pytest
 import yaml
 
 from tax_graph.extract.assembly import FormulaAssemblyFinding, assemble_formula_plan, realize_outbound_flows
-from tax_graph.extract.background import extract_background_controls
+from tax_graph.extract.background import _failover_class, extract_background_controls
 from tax_graph.extract.outline_pipeline import _formula_outline_nodes, generate_outline_first_drafts
 from tax_graph.extract.outline_pipeline import _resolve_declared_source, _spans_for_outline_node
 from tax_graph.extract.pipeline import extract_document
@@ -183,7 +183,80 @@ def test_background_policy_calls_only_for_unsupported_and_resolves_identity_in_c
     assert stats["background_policy_after"]["user_entered"] == 2
     assert stats["background_policy_progress"] == 1
     assert stats["background_controls"][1]["citation_span_ids"] == ["span_form"]
+    assert stats["background_controls"][1]["policy_origin"] == "defaulted"
+    assert stats["background_controls"][1]["policy_defaulted"] is True
+    assert stats["background_controls"][1]["failover_class"] == "filer_identity_admin"
     assert calls == []
+
+
+@pytest.mark.m20
+def test_background_policy_never_falls_back_for_computation_language(tmp_path):
+    field_map = tmp_path / "graph" / "2025" / "field_maps"
+    field_map.mkdir(parents=True)
+    (field_map / "form_1040_2025.yaml").write_text(
+        yaml.safe_dump(
+            {
+                "field_dispositions": [
+                    {
+                        "field_name": "total",
+                        "label": "Line 32 total other payments and refundable credits",
+                        "population_policy": "unsupported",
+                        "value_format": "dollars",
+                    }
+                ]
+            },
+            sort_keys=False,
+        ),
+        encoding="ascii",
+    )
+    document = SourceDocumentInput(
+        document_id="form_1040_2025",
+        kind="tax_form",
+        year="2025",
+        url="https://example.test/form.pdf",
+        text="Line 32 total other payments and refundable credits\n",
+        text_path=tmp_path / "form.txt",
+        fields={"fields": [{"field_name": "total", "page": 2}]},
+    )
+    spans = [
+        CandidateSpan(
+            span_id="span_form",
+            document_id=document.document_id,
+            relationship="source",
+            locator="page 2, line 32",
+            text="Line 32 total other payments and refundable credits",
+        )
+    ]
+    client = FakeMicroClient(
+        {
+            "population_policy": "user_entered",
+            "quote": "Line 32 total other payments and refundable credits",
+            "reason": "The filer supplies the amount.",
+        }
+    )
+
+    stats, _ = extract_background_controls(
+        document,
+        spans,
+        client=client,
+        config={"llm": {"model": "mock"}},
+        root=tmp_path,
+    )
+
+    record = stats["background_controls"][0]
+    assert stats["background_controls_attempted"] == 1
+    assert stats["background_controls_succeeded"] == 0
+    assert record["population_policy"] == "unsupported"
+    assert record["policy_origin"] == "review_gap"
+    assert record["failover_class"] == "computed_candidate"
+    assert "cannot fall back" in record["review_gap"]
+
+
+@pytest.mark.m20
+def test_background_failover_class_does_not_treat_phone_number_as_election():
+    assert _failover_class(
+        {"label": "Designee's name Phone no.", "value_format": "text"}
+    ) == "filer_identity_admin"
 
 
 @pytest.mark.m20

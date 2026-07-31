@@ -10,6 +10,7 @@ augment both records but never gate completeness.
 
 from __future__ import annotations
 
+from collections import Counter
 from pathlib import Path
 from typing import Any, Iterable
 
@@ -64,6 +65,10 @@ def build_form_completeness_report(
             item for item in policy_complete
             if _has_form_face_citation(item)
         ]
+        policy_origins = Counter(_policy_origin(item) for item in policy_controls)
+        policy_derived = [item for item in policy_controls if _policy_origin(item) == "derived"]
+        policy_defaulted = [item for item in policy_controls if _policy_origin(item) == "defaulted"]
+        policy_authored = [item for item in policy_controls if _policy_origin(item) == "authored"]
         review_cells = _review_line_records(
             stats,
             _load_mapping(draft_dir / "outline.yaml"),
@@ -118,6 +123,20 @@ def build_form_completeness_report(
             "policy_and_form_face_citation": len(policy_with_form_face),
             "policy_coverage_rate": len(policy_complete) / len(policy_controls) if policy_controls else 0.0,
             "policy_and_form_face_citation_rate": len(policy_with_form_face) / len(policy_controls) if policy_controls else 0.0,
+            "policy_derived": len(policy_derived),
+            "policy_defaulted": len(policy_defaulted),
+            "policy_authored": len(policy_authored),
+            "policy_derived_and_form_face_citation": sum(
+                _has_form_face_citation(item) for item in policy_derived
+            ),
+            "policy_defaulted_and_form_face_citation": sum(
+                _has_form_face_citation(item) for item in policy_defaulted
+            ),
+            "policy_origin_counts": dict(sorted(policy_origins.items())),
+            "policy_mix_before": dict(stats.get("background_policy_before", {})),
+            "policy_mix_after": dict(stats.get("background_policy_after", {})),
+            "policy_mix_after_by_origin": dict(stats.get("background_policy_after_by_origin", {})),
+            "failover_class_counts": dict(stats.get("background_failover_class_counts", {})),
             "background_policy_before": dict(stats.get("background_policy_before", {})),
             "background_policy_after": dict(stats.get("background_policy_after", {})),
             "background_policy_progress": int(stats.get("background_policy_progress", 0)),
@@ -182,7 +201,7 @@ def build_form_completeness_report(
     total_policy_with_form_face = sum(item["policy_and_form_face_citation"] for item in rendered.values())
     return {
         "schema_version": 1,
-        "measurement": "m20_s19_form_completeness",
+        "measurement": "m20_s20_form_completeness",
         "tax_year": int(year),
         "primary_metric": "expression_and_form_face_citation_over_formula_cells",
         "secondary_metric": "policy_and_form_face_citation_over_non_computed_controls",
@@ -197,6 +216,24 @@ def build_form_completeness_report(
             "policy_and_form_face_citation": total_policy_with_form_face,
             "policy_coverage_rate": total_policy_complete / total_policy_controls if total_policy_controls else 0.0,
             "policy_and_form_face_citation_rate": total_policy_with_form_face / total_policy_controls if total_policy_controls else 0.0,
+            "policy_derived": sum(item["policy_derived"] for item in rendered.values()),
+            "policy_defaulted": sum(item["policy_defaulted"] for item in rendered.values()),
+            "policy_authored": sum(item["policy_authored"] for item in rendered.values()),
+            "policy_derived_and_form_face_citation": sum(
+                item["policy_derived_and_form_face_citation"] for item in rendered.values()
+            ),
+            "policy_defaulted_and_form_face_citation": sum(
+                item["policy_defaulted_and_form_face_citation"] for item in rendered.values()
+            ),
+            "policy_origin_counts": _sum_counts(
+                item["policy_origin_counts"] for item in rendered.values()
+            ),
+            "policy_mix_before": _sum_counts(item["policy_mix_before"] for item in rendered.values()),
+            "policy_mix_after": _sum_counts(item["policy_mix_after"] for item in rendered.values()),
+            "policy_mix_after_by_origin": _sum_nested_counts(
+                item["policy_mix_after_by_origin"] for item in rendered.values()
+            ),
+            "failover_class_counts": _sum_counts(item["failover_class_counts"] for item in rendered.values()),
             "expression_and_verbatim_citation": total_complete,
             "expression_and_form_face_citation": total_complete,
             "expression_and_both_citations": sum(
@@ -216,7 +253,7 @@ def write_form_completeness_report(
 ) -> Path:
     """Write the completeness report as deterministic ASCII YAML."""
     root_path = Path(root).resolve() if root is not None else project_root()
-    path = Path(output_path) if output_path is not None else root_path / "output" / "m20_s19_form_completeness.yaml"
+    path = Path(output_path) if output_path is not None else root_path / "output" / "m20_s20_form_completeness.yaml"
     if not path.is_absolute():
         path = root_path / path
     path.parent.mkdir(parents=True, exist_ok=True)
@@ -283,6 +320,38 @@ def _has_form_face_citation(item: dict[str, Any]) -> bool:
 
 def _has_instruction_citation(item: dict[str, Any]) -> bool:
     return bool(item.get("has_instruction_citation") or item.get("instruction_span_ids"))
+
+
+def _policy_origin(item: dict[str, Any]) -> str:
+    """Return the explicit origin, with a conservative legacy-draft fallback."""
+    origin = str(item.get("policy_origin") or "")
+    if origin in {"authored", "derived", "defaulted", "review_gap"}:
+        return origin
+    if not item.get("has_policy") or str(item.get("population_policy") or "") == "unsupported":
+        return "review_gap"
+    if str(item.get("status") or "") == "authored":
+        return "authored"
+    return "derived"
+
+
+def _sum_counts(values: Iterable[dict[str, Any]]) -> dict[str, int]:
+    result: Counter[str] = Counter()
+    for value in values:
+        result.update({str(key): int(count) for key, count in (value or {}).items()})
+    return dict(sorted(result.items()))
+
+
+def _sum_nested_counts(values: Iterable[dict[str, dict[str, Any]]]) -> dict[str, dict[str, int]]:
+    result: dict[str, Counter[str]] = {}
+    for value in values:
+        for origin, policies in (value or {}).items():
+            result.setdefault(str(origin), Counter()).update({
+                str(key): int(count) for key, count in (policies or {}).items()
+            })
+    return {
+        origin: dict(sorted(policies.items()))
+        for origin, policies in sorted(result.items())
+    }
 
 
 def _wrong_owner_instruction_report(

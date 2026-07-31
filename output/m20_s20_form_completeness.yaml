@@ -1,0 +1,1827 @@
+schema_version: 1
+measurement: m20_s20_form_completeness
+tax_year: 2025
+primary_metric: expression_and_form_face_citation_over_formula_cells
+secondary_metric: policy_and_form_face_citation_over_non_computed_controls
+handcrafted_expression_set:
+  status: review_flag_only
+  note: Disagreements are retained to direct human review; they are not scored as
+    accuracy.
+totals:
+  formula_cells: 28
+  policy_controls: 286
+  policy_controls_with_policy: 101
+  policy_and_form_face_citation: 0
+  policy_coverage_rate: 0.3531468531468531
+  policy_and_form_face_citation_rate: 0.0
+  policy_derived: 0
+  policy_defaulted: 0
+  policy_authored: 101
+  policy_derived_and_form_face_citation: 0
+  policy_defaulted_and_form_face_citation: 0
+  policy_origin_counts:
+    authored: 101
+    review_gap: 185
+  policy_mix_before:
+    computed: 12
+    copied: 7
+    decision_required: 24
+    unsupported: 185
+    user_entered: 77
+  policy_mix_after:
+    computed: 12
+    copied: 7
+    decision_required: 24
+    unsupported: 185
+    user_entered: 77
+  policy_mix_after_by_origin:
+    authored:
+      computed: 12
+      copied: 7
+      decision_required: 24
+      user_entered: 77
+    review_gap:
+      unsupported: 185
+  failover_class_counts:
+    computed_candidate: 1
+    filer_election: 60
+    filer_identity_admin: 23
+    filer_supplied_value: 101
+  expression_and_verbatim_citation: 0
+  expression_and_form_face_citation: 0
+  expression_and_both_citations: 0
+  completeness_rate: 0.0
+by_document:
+  form_1040_2025:
+    formula_cells: 17
+    policy_controls: 185
+    policy_controls_with_policy: 66
+    policy_and_form_face_citation: 0
+    policy_coverage_rate: 0.3567567567567568
+    policy_and_form_face_citation_rate: 0.0
+    policy_derived: 0
+    policy_defaulted: 0
+    policy_authored: 66
+    policy_derived_and_form_face_citation: 0
+    policy_defaulted_and_form_face_citation: 0
+    policy_origin_counts:
+      authored: 66
+      review_gap: 119
+    policy_mix_before:
+      computed: 7
+      copied: 7
+      decision_required: 24
+      unsupported: 119
+      user_entered: 42
+    policy_mix_after:
+      computed: 7
+      copied: 7
+      decision_required: 24
+      unsupported: 119
+      user_entered: 42
+    policy_mix_after_by_origin:
+      authored:
+        computed: 7
+        copied: 7
+        decision_required: 24
+        user_entered: 42
+      review_gap:
+        unsupported: 119
+    failover_class_counts:
+      computed_candidate: 1
+      filer_election: 52
+      filer_identity_admin: 20
+      filer_supplied_value: 46
+    background_policy_before:
+      computed: 7
+      copied: 7
+      decision_required: 24
+      unsupported: 119
+      user_entered: 42
+    background_policy_after:
+      computed: 7
+      copied: 7
+      decision_required: 24
+      unsupported: 119
+      user_entered: 42
+    background_policy_progress: 0
+    background_policy_review_gaps:
+    - field_name: topmostSubform[0].Page1[0].f1_01[0]
+      address_id: 2025/document=form_1040/section=return_header/control=other_tax_year_beginning
+      label: "year Jan. 1\u2013Dec. 31, 2025, or other tax year beginning - f1_01"
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    - field_name: topmostSubform[0].Page1[0].f1_02[0]
+      address_id: 2025/document=form_1040/section=return_header/control=other_tax_year_ending
+      label: 31, 2025, or other tax year beginning , 2025, ending - f1_02
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    - field_name: topmostSubform[0].Page1[0].f1_03[0]
+      address_id: 2025/document=form_1040/section=return_header/control=other_tax_year_ending_suffix
+      label: or other tax year beginning , 2025, ending , 20 - f1_03
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    - field_name: topmostSubform[0].Page1[0].c1_1[0]
+      address_id: 2025/document=form_1040/section=return_header/option=section_301_9100_2
+      label: Presidential election campaign - You
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    - field_name: topmostSubform[0].Page1[0].c1_2[0]
+      address_id: 2025/document=form_1040/section=return_header/option=combat_zone
+      label: Filed pursuant to section 301.9100-2 - c1_2
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    - field_name: topmostSubform[0].Page1[0].f1_04[0]
+      address_id: 2025/document=form_1040/section=return_header/control=combat_zone_name
+      label: Filed pursuant to section 301.9100-2 Combat zone - f1_04
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    - field_name: topmostSubform[0].Page1[0].c1_3[0]
+      address_id: 2025/document=form_1040/section=return_header/option=taxpayer_deceased
+      label: Filed pursuant to section 301.9100-2 Combat zone - c1_3
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    - field_name: topmostSubform[0].Page1[0].f1_05[0]
+      address_id: 2025/document=form_1040/section=return_header/control=taxpayer_deceased_month
+      label: Filed pursuant to section 301.9100-2 Combat zone Deceased - f1_05
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    - field_name: topmostSubform[0].Page1[0].f1_06[0]
+      address_id: 2025/document=form_1040/section=return_header/control=taxpayer_deceased_day
+      label: Filed pursuant to section 301.9100-2 Combat zone Deceased MM / - f1_06
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    - field_name: topmostSubform[0].Page1[0].f1_07[0]
+      address_id: 2025/document=form_1040/section=return_header/control=taxpayer_deceased_year
+      label: to section 301.9100-2 Combat zone Deceased MM / DD / - f1_07
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    - field_name: topmostSubform[0].Page1[0].f1_08[0]
+      address_id: 2025/document=form_1040/section=return_header/control=spouse_deceased_month
+      label: 301.9100-2 Combat zone Deceased MM / DD / YYYY Spouse - f1_08
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    - field_name: topmostSubform[0].Page1[0].f1_09[0]
+      address_id: 2025/document=form_1040/section=return_header/control=spouse_deceased_day
+      label: zone Deceased MM / DD / YYYY Spouse MM / - f1_09
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    - field_name: topmostSubform[0].Page1[0].f1_10[0]
+      address_id: 2025/document=form_1040/section=return_header/control=spouse_deceased_year
+      label: MM / DD / YYYY Spouse MM / DD / - f1_10
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    - field_name: topmostSubform[0].Page1[0].c1_4[0]
+      address_id: 2025/document=form_1040/section=return_header/option=other_filing_designation
+      label: Presidential election campaign - Spouse
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    - field_name: topmostSubform[0].Page1[0].f1_11[0]
+      address_id: 2025/document=form_1040/section=return_header/control=other_filing_designation_text
+      label: Other - f1_11
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    - field_name: topmostSubform[0].Page1[0].f1_12[0]
+      address_id: 2025/document=form_1040/section=return_header/control=other_filing_designation_text
+      label: Other - f1_12
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    - field_name: topmostSubform[0].Page1[0].f1_13[0]
+      address_id: 2025/document=form_1040/section=return_header/control=other_filing_designation_text
+      label: Other - f1_13
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    - field_name: topmostSubform[0].Page1[0].Address_ReadOrder[0].f1_25[0]
+      address_id: 2025/document=form_1040/section=identity/control=foreign_country
+      label: Foreign province, state, or county
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    - field_name: topmostSubform[0].Page1[0].Address_ReadOrder[0].f1_26[0]
+      address_id: 2025/document=form_1040/section=identity/control=foreign_province
+      label: Foreign postal code
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    - field_name: topmostSubform[0].Page1[0].Address_ReadOrder[0].f1_27[0]
+      address_id: 2025/document=form_1040/section=identity/control=foreign_postal_code
+      label: Foreign country name
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    - field_name: topmostSubform[0].Page1[0].c1_5[0]
+      address_id: 2025/document=form_1040/section=identity/option=main_home_joint_return
+      label: Line a - more a than joint half return, of 2025. was in - c1_5
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    - field_name: topmostSubform[0].Page1[0].c1_6[0]
+      address_id: 2025/document=form_1040/section=identity/option=presidential_election_you
+      label: Digital assets - No
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    - field_name: topmostSubform[0].Page1[0].c1_7[0]
+      address_id: 2025/document=form_1040/section=identity/option=presidential_election_spouse
+      label: You - c1_7
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    - field_name: topmostSubform[0].Page1[0].Checkbox_ReadOrder[0].f1_28[0]
+      address_id: 2025/document=form_1040/section=filing_status/control=mfs_spouse_full_name
+      label: 'and full name here: - f1_28'
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    - field_name: topmostSubform[0].Page1[0].f1_29[0]
+      address_id: 2025/document=form_1040/section=filing_status/control=hoh_qss_child_name
+      label: 'Line a - and full name here: - f1_29'
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    - field_name: topmostSubform[0].Page1[0].c1_9[0]
+      address_id: 2025/document=form_1040/section=filing_status/option=nonresident_alien_spouse_election
+      label: Line a - c1_9
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    - field_name: topmostSubform[0].Page1[0].f1_30[0]
+      address_id: 2025/document=form_1040/section=filing_status/control=nonresident_alien_spouse_name
+      label: 'Line a - name (see instructions and attach statement if required): -
+        f1_30'
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    - field_name: topmostSubform[0].Page1[0].c1_10[0]
+      address_id: 2025/document=form_1040/section=digital_assets/option=yes
+      label: Line 1 - financial interest in a digital asset)? (See instructions.)
+        . . - c1_10
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    - field_name: topmostSubform[0].Page1[0].c1_10[1]
+      address_id: 2025/document=form_1040/section=digital_assets/option=no
+      label: Line 1 - interest in a digital asset)? (See instructions.) . . Yes -
+        c1_10
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    - field_name: topmostSubform[0].Page1[0].Dependents_ReadOrder[0].c1_11[0]
+      address_id: 2025/document=form_1040/table=dependents/option=more_than_four
+      label: and here check . . - c1_11
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    - field_name: topmostSubform[0].Page1[0].c1_32[0]
+      address_id: 2025/document=form_1040/section=filing_status/option=mfs_hoh_lived_apart
+      label: More than four dependents
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    - field_name: topmostSubform[0].Page1[0].f1_56[0]
+      address_id: 2025/document=form_1040/line=1i/control=amount
+      label: Line 1i - (see instructions) . . . . . . . 1i - f1_56
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    - field_name: topmostSubform[0].Page1[0].f1_58[0]
+      address_id: 2025/document=form_1040/line=2a/control=amount
+      label: Line 2b - Attach Sch. B 2a Tax-exempt interest . . . 2a - f1_58
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    - field_name: topmostSubform[0].Page1[0].c1_33[0]
+      address_id: 2025/document=form_1040/line=3c/option=line_3a
+      label: "Line 3b - c Check if your child\u2019s dividends are included in 1 -\
+        \ c1_33"
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    - field_name: topmostSubform[0].Page1[0].c1_34[0]
+      address_id: 2025/document=form_1040/line=3c/option=line_3b
+      label: "Line 3b - your child\u2019s dividends are included in 1 Line 3a 2 -\
+        \ c1_34"
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    - field_name: topmostSubform[0].Page1[0].f1_62[0]
+      address_id: 2025/document=form_1040/line=4a/control=amount
+      label: Line 4b - 4a IRA distributions . . . . 4a - f1_62
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    - field_name: topmostSubform[0].Page1[0].f1_63[0]
+      address_id: 2025/document=form_1040/line=4b/control=amount
+      label: Line 4b - b Taxable amount . . . . . . 4b - f1_63
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    - field_name: topmostSubform[0].Page1[0].c1_35[0]
+      address_id: 2025/document=form_1040/line=4c/option=rollover
+      label: Line c - Check if (see instructions) . . . . . 1 - c1_35
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    - field_name: topmostSubform[0].Page1[0].c1_36[0]
+      address_id: 2025/document=form_1040/line=4c/option=qcd
+      label: Line c - (see instructions) . . . . . 1 Rollover 2 - c1_36
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    - field_name: topmostSubform[0].Page1[0].c1_37[0]
+      address_id: 2025/document=form_1040/line=4c/option=other_word_or_code
+      label: Line c - . . . . . 1 Rollover 2 QCD 3 - c1_37
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    - field_name: topmostSubform[0].Page1[0].f1_64[0]
+      address_id: 2025/document=form_1040/line=4c/control=text
+      label: Line c - . . . . . 1 Rollover 2 QCD 3 - f1_64
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    - field_name: topmostSubform[0].Page1[0].f1_65[0]
+      address_id: 2025/document=form_1040/line=5a/control=amount
+      label: Line 5b - 5a Pensions and annuities . . 5a - f1_65
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    - field_name: topmostSubform[0].Page1[0].f1_66[0]
+      address_id: 2025/document=form_1040/line=5b/control=amount
+      label: Line 5b - b Taxable amount . . . . . . 5b - f1_66
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    - field_name: topmostSubform[0].Page1[0].c1_38[0]
+      address_id: 2025/document=form_1040/line=5c/option=rollover
+      label: Line c - Check if (see instructions) . . . . . 1 - c1_38
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    - field_name: topmostSubform[0].Page1[0].c1_39[0]
+      address_id: 2025/document=form_1040/line=5c/option=pso
+      label: Line c - (see instructions) . . . . . 1 Rollover 2 - c1_39
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    - field_name: topmostSubform[0].Page1[0].c1_40[0]
+      address_id: 2025/document=form_1040/line=5c/option=other_word_or_code
+      label: Line c - . . . . . 1 Rollover 2 PSO 3 - c1_40
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    - field_name: topmostSubform[0].Page1[0].f1_67[0]
+      address_id: 2025/document=form_1040/line=5c/control=text
+      label: Line c - . . . . . 1 Rollover 2 PSO 3 - f1_67
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    - field_name: topmostSubform[0].Page1[0].f1_68[0]
+      address_id: 2025/document=form_1040/line=6a/control=amount
+      label: Line 6b - 6a Social security benefits . . 6a - f1_68
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    - field_name: topmostSubform[0].Page1[0].f1_69[0]
+      address_id: 2025/document=form_1040/line=6b/control=amount
+      label: Line 6b - b Taxable amount . . . . . . 6b - f1_69
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    - field_name: topmostSubform[0].Page1[0].c1_41[0]
+      address_id: 2025/document=form_1040/line=6c/option=lump_sum_election
+      label: Line c - method, check here (see instructions) . . . . . - c1_41
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    - field_name: topmostSubform[0].Page1[0].c1_42[0]
+      address_id: 2025/document=form_1040/line=6d/option=mfs_lived_apart
+      label: Line d - from your spouse the entire year (see inst.), check here - c1_42
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    - field_name: topmostSubform[0].Page1[0].c1_43[0]
+      address_id: 2025/document=form_1040/line=7b/option=schedule_d_not_required
+      label: 'Line b - b Check if: - c1_43'
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    - field_name: topmostSubform[0].Page1[0].c1_44[0]
+      address_id: 2025/document=form_1040/line=7b/option=child_capital_gain
+      label: 'Line b - b Check if: Schedule D not required - c1_44'
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    - field_name: topmostSubform[0].Page1[0].f1_71[0]
+      address_id: 2025/document=form_1040/line=7b/control=amount
+      label: "Line b - Schedule D not required Includes child\u2019s capital gain\
+        \ or (loss) - f1_71"
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    - field_name: topmostSubform[0].Page2[0].c2_1[0]
+      address_id: 2025/document=form_1040/line=12a/option=you_as_dependent
+      label: Line 12a - Credits 12a Someone can claim - c2_1
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    - field_name: topmostSubform[0].Page2[0].c2_2[0]
+      address_id: 2025/document=form_1040/line=12a/option=spouse_as_dependent
+      label: Line 12a - Credits 12a Someone can claim You as a dependent - c2_2
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    - field_name: topmostSubform[0].Page2[0].c2_3[0]
+      address_id: 2025/document=form_1040/line=12b/option=spouse_itemizes
+      label: Line b - b - c2_3
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    - field_name: topmostSubform[0].Page2[0].c2_4[0]
+      address_id: 2025/document=form_1040/line=12c/option=dual_status_alien
+      label: Line b - b Spouse itemizes on a separate return c - c2_4
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    - field_name: topmostSubform[0].Page2[0].c2_5[0]
+      address_id: 2025/document=form_1040/line=12d/option=you_born_before_1961
+      label: 'Line d - d You: - c2_5'
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    - field_name: topmostSubform[0].Page2[0].c2_6[0]
+      address_id: 2025/document=form_1040/line=12d/option=you_blind
+      label: 'Line d - d You: Were born before January 2, 1961 - c2_6'
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    - field_name: topmostSubform[0].Page2[0].c2_7[0]
+      address_id: 2025/document=form_1040/line=12d/option=spouse_born_before_1961
+      label: 'Line 12e - Standard Spouse: - c2_7'
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    - field_name: topmostSubform[0].Page2[0].c2_8[0]
+      address_id: 2025/document=form_1040/line=12d/option=spouse_blind
+      label: 'Line 12e - Standard Spouse: Was born before January 2, 1961 - c2_8'
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    - field_name: topmostSubform[0].Page2[0].f2_03[0]
+      address_id: 2025/document=form_1040/line=13a/control=amount
+      label: Line 13a - . . . . . . . . . 13a - f2_03
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    - field_name: topmostSubform[0].Page2[0].c2_9[0]
+      address_id: 2025/document=form_1040/line=16/option=form_8814
+      label: 'Line 16 - 16 Tax (see instructions). Check if any from Form(s): 1 -
+        c2_9'
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    - field_name: topmostSubform[0].Page2[0].c2_10[0]
+      address_id: 2025/document=form_1040/line=16/option=form_4972
+      label: 'Line 16 - (see instructions). Check if any from Form(s): 1 8814 2 -
+        c2_10'
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    - field_name: topmostSubform[0].Page2[0].c2_11[0]
+      address_id: 2025/document=form_1040/line=16/option=other_form
+      label: 'Line 16 - Check if any from Form(s): 1 8814 2 4972 3 - c2_11'
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    - field_name: topmostSubform[0].Page2[0].f2_07[0]
+      address_id: 2025/document=form_1040/line=16/control=text
+      label: 'Line 16 - Check if any from Form(s): 1 8814 2 4972 3 - f2_07'
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    - field_name: topmostSubform[0].Page2[0].f2_09[0]
+      address_id: 2025/document=form_1040/line=17/control=amount
+      label: Line 17 - . . . . . . . . . 17 - f2_09
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    - field_name: topmostSubform[0].Page2[0].f2_10[0]
+      address_id: 2025/document=form_1040/line=18/control=amount
+      label: Line 18 - . . . . . . . . . 18 - f2_10
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    - field_name: topmostSubform[0].Page2[0].f2_11[0]
+      address_id: 2025/document=form_1040/line=19/control=amount
+      label: Line 19 - . . . . . . . . . 19 - f2_11
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    - field_name: topmostSubform[0].Page2[0].f2_12[0]
+      address_id: 2025/document=form_1040/line=20/control=amount
+      label: Line 20 - . . . . . . . . . 20 - f2_12
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    - field_name: topmostSubform[0].Page2[0].f2_13[0]
+      address_id: 2025/document=form_1040/line=21/control=amount
+      label: Line a - . . . . . . . . . 21 - f2_13
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    - field_name: topmostSubform[0].Page2[0].f2_14[0]
+      address_id: 2025/document=form_1040/line=22/control=amount
+      label: Line 22 - . . . . . . . . . 22 - f2_14
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    - field_name: topmostSubform[0].Page2[0].f2_15[0]
+      address_id: 2025/document=form_1040/line=23/control=amount
+      label: Line 23 - . . . . . . . . . 23 - f2_15
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    - field_name: topmostSubform[0].Page2[0].f2_16[0]
+      address_id: 2025/document=form_1040/line=24/control=amount
+      label: Line 24 - . . . . . . . . . 24 - f2_16
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    - field_name: topmostSubform[0].Page2[0].f2_17[0]
+      address_id: 2025/document=form_1040/line=25a/control=amount
+      label: Line 25a - . . . . . . . . . 25a - f2_17
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    - field_name: topmostSubform[0].Page2[0].f2_18[0]
+      address_id: 2025/document=form_1040/line=25b/control=amount
+      label: Line 25b - . . . . . . . . . 25b - f2_18
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    - field_name: topmostSubform[0].Page2[0].f2_19[0]
+      address_id: 2025/document=form_1040/line=25c/control=amount
+      label: Line 25c - . . . . . . . . . 25c - f2_19
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    - field_name: topmostSubform[0].Page2[0].f2_20[0]
+      address_id: 2025/document=form_1040/line=25d/control=amount
+      label: Line 25d - . . . . . . . . . 25d - f2_20
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    - field_name: topmostSubform[0].Page2[0].f2_21[0]
+      address_id: 2025/document=form_1040/line=26/control=amount
+      label: Line 26 - . . . . . . . . . 26 - f2_21
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    - field_name: topmostSubform[0].Page2[0].SSN_ReadOrder[0].f2_22[0]
+      address_id: 2025/document=form_1040/line=26/control=identifier
+      label: 'Line a - If you have a enter their SSN (see instructions): - f2_22'
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    - field_name: topmostSubform[0].Page2[0].f2_23[0]
+      address_id: 2025/document=form_1040/line=27a/control=amount
+      label: Line 27a - . . . . . . . . . 27a - f2_23
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    - field_name: topmostSubform[0].Page2[0].c2_12[0]
+      address_id: 2025/document=form_1040/line=27b/option=clergy_schedule_se
+      label: Line b - . . . . . . . . . . - c2_12
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    - field_name: topmostSubform[0].Page2[0].c2_13[0]
+      address_id: 2025/document=form_1040/line=27c/option=do_not_claim_eic
+      label: Line c - . . . . . . . . . . - c2_13
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    - field_name: topmostSubform[0].Page2[0].Line28_ReadOrder[0].c2_14[0]
+      address_id: 2025/document=form_1040/line=28/option=do_not_claim_actc
+      label: Line 28 - . . . . . . . . . . - c2_14
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    - field_name: topmostSubform[0].Page2[0].f2_24[0]
+      address_id: 2025/document=form_1040/line=28/control=amount
+      label: Line 28 - . . . . . . . . . 28 - f2_24
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    - field_name: topmostSubform[0].Page2[0].f2_25[0]
+      address_id: 2025/document=form_1040/line=29/control=amount
+      label: Line 29 - line 8 . . . . . . . 29 - f2_25
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    - field_name: topmostSubform[0].Page2[0].f2_26[0]
+      address_id: 2025/document=form_1040/line=30/control=amount
+      label: Line 30 - 8839, line 13 . . . . . . 30 - f2_26
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    - field_name: topmostSubform[0].Page2[0].f2_27[0]
+      address_id: 2025/document=form_1040/line=31/control=amount
+      label: Line 31 - . . . . . . . . . 31 - f2_27
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    - field_name: topmostSubform[0].Page2[0].f2_28[0]
+      address_id: 2025/document=form_1040/line=32/control=amount
+      label: Line 32 - are your total other payments and refundable credits . 32 -
+        f2_28
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    - field_name: topmostSubform[0].Page2[0].f2_29[0]
+      address_id: 2025/document=form_1040/line=33/control=amount
+      label: Line 33 - . . . . . . . . . 33 - f2_29
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    - field_name: topmostSubform[0].Page2[0].f2_30[0]
+      address_id: 2025/document=form_1040/line=34/control=amount
+      label: Line 34 - 33. This is the amount you overpaid . . 34 - f2_30
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    - field_name: topmostSubform[0].Page2[0].c2_15[0]
+      address_id: 2025/document=form_1040/line=35a/option=form_8888_attached
+      label: Line 35a - Form 8888 is attached, check here . . . . - c2_15
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    - field_name: topmostSubform[0].Page2[0].f2_31[0]
+      address_id: 2025/document=form_1040/line=35a/control=amount
+      label: Line 35a - 8888 is attached, check here . . . . 35a - f2_31
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    - field_name: topmostSubform[0].Page2[0].RoutingNo[0].f2_32[0]
+      address_id: 2025/document=form_1040/line=35b/control=identifier
+      label: Line b - Direct deposit? b Routing number - f2_32
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    - field_name: topmostSubform[0].Page2[0].c2_16[0]
+      address_id: 2025/document=form_1040/line=35c/option=checking
+      label: 'Line b - Direct deposit? b Routing number c Type: - c2_16'
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    - field_name: topmostSubform[0].Page2[0].c2_16[1]
+      address_id: 2025/document=form_1040/line=35c/option=savings
+      label: 'Line b - Direct deposit? b Routing number c Type: Checking - c2_16'
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    - field_name: topmostSubform[0].Page2[0].AccountNo[0].f2_33[0]
+      address_id: 2025/document=form_1040/line=35d/control=identifier
+      label: Line d - See instructions. d Account number - f2_33
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    - field_name: topmostSubform[0].Page2[0].f2_34[0]
+      address_id: 2025/document=form_1040/line=36/control=amount
+      label: Line 36 - applied to your 2026 estimated tax . . . 36 - f2_34
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    - field_name: topmostSubform[0].Page2[0].f2_35[0]
+      address_id: 2025/document=form_1040/line=37/control=amount
+      label: Line 37 - instructions . . . . . . . . 37 - f2_35
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    - field_name: topmostSubform[0].Page2[0].f2_36[0]
+      address_id: 2025/document=form_1040/line=38/control=amount
+      label: Line 38 - . . . . . . . . . 38 - f2_36
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    - field_name: topmostSubform[0].Page2[0].c2_17[0]
+      address_id: 2025/document=form_1040/section=third_party_designee/option=yes
+      label: person to discuss this return with the IRS? See instructions. - c2_17
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    - field_name: topmostSubform[0].Page2[0].c2_17[1]
+      address_id: 2025/document=form_1040/section=third_party_designee/option=no
+      label: this return with the IRS? See instructions. Yes. Complete below. - c2_17
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    - field_name: topmostSubform[0].Page2[0].f2_37[0]
+      address_id: 2025/document=form_1040/section=third_party_designee/control=name
+      label: "Designee\u2019s name - f2_37"
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    - field_name: topmostSubform[0].Page2[0].f2_38[0]
+      address_id: 2025/document=form_1040/section=third_party_designee/control=phone
+      label: "Designee\u2019s name Phone no. - f2_38"
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    - field_name: topmostSubform[0].Page2[0].f2_39[0]
+      address_id: 2025/document=form_1040/section=third_party_designee/control=pin
+      label: "Designee\u2019s name Phone no. Personal number (PIN) identification\
+        \ - f2_39"
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    - field_name: topmostSubform[0].Page2[0].f2_40[0]
+      address_id: 2025/document=form_1040/section=sign_here/control=your_occupation
+      label: Paid preparer name
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    - field_name: topmostSubform[0].Page2[0].f2_41[0]
+      address_id: 2025/document=form_1040/section=sign_here/control=your_ip_pin
+      label: (see inst.) - f2_41
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    - field_name: topmostSubform[0].Page2[0].f2_42[0]
+      address_id: 2025/document=form_1040/section=sign_here/control=spouse_occupation
+      label: Line a - Keep your records. a copy for - f2_42
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    - field_name: topmostSubform[0].Page2[0].f2_43[0]
+      address_id: 2025/document=form_1040/section=sign_here/control=spouse_ip_pin
+      label: Line a - Keep your records. a copy for (see inst.) - f2_43
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    - field_name: topmostSubform[0].Page2[0].f2_44[0]
+      address_id: 2025/document=form_1040/section=sign_here/control=phone
+      label: Phone no. - f2_44
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    - field_name: topmostSubform[0].Page2[0].f2_45[0]
+      address_id: 2025/document=form_1040/section=sign_here/control=email
+      label: Phone no. Email address - f2_45
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    - field_name: topmostSubform[0].Page2[0].f2_46[0]
+      address_id: 2025/document=form_1040/section=paid_preparer/control=name
+      label: Preparer - f2_46
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    - field_name: topmostSubform[0].Page2[0].f2_47[0]
+      address_id: 2025/document=form_1040/section=paid_preparer/control=ptin
+      label: Preparer - f2_47
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    - field_name: topmostSubform[0].Page2[0].c2_18[0]
+      address_id: 2025/document=form_1040/section=paid_preparer/option=self_employed
+      label: Preparer - c2_18
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    - field_name: topmostSubform[0].Page2[0].f2_48[0]
+      address_id: 2025/document=form_1040/section=paid_preparer/control=firm_name
+      label: "Use Only Firm\u2019s name - f2_48"
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    - field_name: topmostSubform[0].Page2[0].f2_49[0]
+      address_id: 2025/document=form_1040/section=paid_preparer/control=phone
+      label: "Use Only Firm\u2019s name Phone no. - f2_49"
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    - field_name: topmostSubform[0].Page2[0].f2_50[0]
+      address_id: 2025/document=form_1040/section=paid_preparer/control=firm_address
+      label: "Firm\u2019s address - f2_50"
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    - field_name: topmostSubform[0].Page2[0].f2_51[0]
+      address_id: 2025/document=form_1040/section=paid_preparer/control=firm_ein
+      label: "Firm\u2019s address Firm\u2019s EIN - f2_51"
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    expression_and_verbatim_citation: 0
+    expression_and_form_face_citation: 0
+    expression_and_instruction_page_citation: 0
+    expression_and_both_citations: 0
+    expression_without_citation: 0
+    neither_expression_nor_citation: 17
+    completeness_rate: 0.0
+    instruction_review_cells: 57
+    instruction_page_citation_before: 48
+    instruction_page_citation: 48
+    instruction_page_citation_rate: 0.8421052631578947
+    instruction_page_citation_missing_cells:
+    - target_cell_id: form_1040_2025_root_line_11a
+      line_anchor: 11a
+      review_gap: 'micro extraction failed: LlmUnavailable: OpenRouter request failed:
+        Connection error.'
+    - target_cell_id: form_1040_2025_root_line_11b
+      line_anchor: 11b
+      review_gap: 'micro extraction failed: LlmUnavailable: OpenRouter request failed:
+        Connection error.'
+    - target_cell_id: form_1040_2025_root_line_25d
+      line_anchor: 25d
+      review_gap: 'micro extraction failed: LlmUnavailable: OpenRouter request failed:
+        Connection error.'
+    - target_cell_id: form_1040_2025_root_line_32
+      line_anchor: '32'
+      review_gap: 'micro extraction failed: LlmUnavailable: OpenRouter request failed:
+        Connection error.'
+    - target_cell_id: form_1040_2025_root_line_33
+      line_anchor: '33'
+      review_gap: 'micro extraction failed: LlmUnavailable: OpenRouter request failed:
+        Connection error.'
+    - target_cell_id: form_1040_2025_root_line_25a
+      line_anchor: 25a
+      review_gap: 'source extraction failed: LlmUnavailable: OpenRouter request failed:
+        Connection error.'
+    - target_cell_id: form_1040_2025_root_line_25b
+      line_anchor: 25b
+      review_gap: 'source extraction failed: LlmUnavailable: OpenRouter request failed:
+        Connection error.'
+    - target_cell_id: form_1040_2025_root_line_25c
+      line_anchor: 25c
+      review_gap: 'source extraction failed: LlmUnavailable: OpenRouter request failed:
+        Connection error.'
+    - target_cell_id: form_1040_2025_root_line_31
+      line_anchor: '31'
+      review_gap: 'source extraction failed: LlmUnavailable: OpenRouter request failed:
+        Connection error.'
+    expression_without_citation_cells: []
+    review_gaps:
+    - target_cell_id: form_1040_2025_root_line_1z
+      line_anchor: 1z
+      label: z Add lines 1a through 1h 1z
+      status: review_gap
+      has_expression: false
+      has_verbatim_citation: false
+      review_gap: 'micro extraction failed: LlmUnavailable: OpenRouter request failed:
+        Connection error.'
+      wrong_owner_instruction_spans: 2
+      instruction_span_ids:
+      - span_instructions_form_1040_2025_4247
+      - span_instructions_form_1040_2025_4248
+      - span_instructions_form_1040_2025_4249
+      - span_instructions_form_1040_2025_4250
+      - span_instructions_form_1040_2025_4251
+      - span_instructions_form_1040_2025_4252
+      - span_instructions_form_1040_2025_4253
+      - span_instructions_form_1040_2025_4254
+      - span_instructions_form_1040_2025_4255
+      - span_instructions_form_1040_2025_4256
+      - span_instructions_form_1040_2025_4257
+      - span_instructions_form_1040_2025_4258
+      - span_instructions_form_1040_2025_4259
+      - span_instructions_form_1040_2025_4260
+      - span_instructions_form_1040_2025_4261
+      - span_instructions_form_1040_2025_4262
+      - span_instructions_form_1040_2025_4263
+      - span_instructions_form_1040_2025_4264
+      - span_instructions_form_1040_2025_4265
+      - span_instructions_form_1040_2025_4266
+      - span_instructions_form_1040_2025_4267
+      - span_instructions_form_1040_2025_4268
+      - span_instructions_form_1040_2025_4269
+      - span_instructions_form_1040_2025_4270
+      - span_instructions_form_1040_2025_4271
+      - span_instructions_form_1040_2025_4272
+      has_form_face_citation: false
+      has_instruction_citation: true
+    - target_cell_id: form_1040_2025_root_line_9
+      line_anchor: '9'
+      label: 9 Add lines 1z, 2b, 3b, 4b, 5b, 6b, 7a, and 8. This is your total income
+        9
+      status: review_gap
+      has_expression: false
+      has_verbatim_citation: false
+      review_gap: 'micro extraction failed: LlmUnavailable: OpenRouter request failed:
+        Connection error.'
+      wrong_owner_instruction_spans: 8
+      instruction_span_ids:
+      - span_instructions_form_1040_2025_0854
+      - span_instructions_form_1040_2025_1039
+      - span_instructions_form_1040_2025_3913
+      - span_instructions_form_1040_2025_3944
+      - span_instructions_form_1040_2025_4309
+      - span_instructions_form_1040_2025_4310
+      - span_instructions_form_1040_2025_4311
+      - span_instructions_form_1040_2025_4312
+      - span_instructions_form_1040_2025_4313
+      - span_instructions_form_1040_2025_4314
+      - span_instructions_form_1040_2025_4315
+      - span_instructions_form_1040_2025_4472
+      - span_instructions_form_1040_2025_4473
+      - span_instructions_form_1040_2025_4474
+      has_form_face_citation: false
+      has_instruction_citation: true
+    - target_cell_id: form_1040_2025_root_line_11a
+      line_anchor: 11a
+      label: 11a Subtract line 10 from line 9. This is your adjusted gross income
+        11a
+      status: review_gap
+      has_expression: false
+      has_verbatim_citation: false
+      review_gap: 'micro extraction failed: LlmUnavailable: OpenRouter request failed:
+        Connection error.'
+      wrong_owner_instruction_spans: 1
+      instruction_span_ids: []
+      has_form_face_citation: false
+      has_instruction_citation: false
+    - target_cell_id: form_1040_2025_root_line_11b
+      line_anchor: 11b
+      label: Tax and 11b Amount from line 11a (adjusted gross income) 11b
+      status: review_gap
+      has_expression: false
+      has_verbatim_citation: false
+      review_gap: 'micro extraction failed: LlmUnavailable: OpenRouter request failed:
+        Connection error.'
+      wrong_owner_instruction_spans: 1
+      instruction_span_ids: []
+      has_form_face_citation: false
+      has_instruction_citation: false
+    - target_cell_id: form_1040_2025_root_line_14
+      line_anchor: '14'
+      label: $15,750 14 Add lines 12e, 13a, and 13b 14
+      status: review_gap
+      has_expression: false
+      has_verbatim_citation: false
+      review_gap: 'micro extraction failed: LlmUnavailable: OpenRouter request failed:
+        Connection error.'
+      wrong_owner_instruction_spans: 6
+      instruction_span_ids:
+      - span_instructions_form_1040_2025_0859
+      - span_instructions_form_1040_2025_1044
+      - span_instructions_form_1040_2025_3808
+      - span_instructions_form_1040_2025_3809
+      - span_instructions_form_1040_2025_3810
+      - span_instructions_form_1040_2025_3811
+      - span_instructions_form_1040_2025_4340
+      - span_instructions_form_1040_2025_4341
+      - span_instructions_form_1040_2025_4342
+      has_form_face_citation: false
+      has_instruction_citation: true
+    - target_cell_id: form_1040_2025_root_line_15
+      line_anchor: '15'
+      label: jointly or 15 Subtract line 14 from line 11b. If zero or less, enter
+        -0-. This is your taxable income 15
+      status: review_gap
+      has_expression: false
+      has_verbatim_citation: false
+      review_gap: 'micro extraction failed: LlmUnavailable: OpenRouter request failed:
+        Connection error.'
+      wrong_owner_instruction_spans: 3
+      instruction_span_ids:
+      - span_instructions_form_1040_2025_0860
+      - span_instructions_form_1040_2025_1045
+      - span_instructions_form_1040_2025_3812
+      - span_instructions_form_1040_2025_3813
+      - span_instructions_form_1040_2025_3814
+      - span_instructions_form_1040_2025_4343
+      - span_instructions_form_1040_2025_4344
+      - span_instructions_form_1040_2025_4345
+      has_form_face_citation: false
+      has_instruction_citation: true
+    - target_cell_id: form_1040_2025_root_line_18
+      line_anchor: '18'
+      label: $31,500 18 Add lines 16 and 17 18
+      status: review_gap
+      has_expression: false
+      has_verbatim_citation: false
+      review_gap: 'micro extraction failed: LlmUnavailable: OpenRouter request failed:
+        Connection error.'
+      wrong_owner_instruction_spans: 2
+      instruction_span_ids:
+      - span_instructions_form_1040_2025_0863
+      - span_instructions_form_1040_2025_1048
+      - span_instructions_form_1040_2025_3853
+      - span_instructions_form_1040_2025_3854
+      - span_instructions_form_1040_2025_3855
+      has_form_face_citation: false
+      has_instruction_citation: true
+    - target_cell_id: form_1040_2025_root_line_21
+      line_anchor: '21'
+      label: a box on line 21 Add lines 19 and 20 21
+      status: review_gap
+      has_expression: false
+      has_verbatim_citation: false
+      review_gap: 'micro extraction failed: LlmUnavailable: OpenRouter request failed:
+        Connection error.'
+      wrong_owner_instruction_spans: 3
+      instruction_span_ids:
+      - span_instructions_form_1040_2025_1051
+      - span_instructions_form_1040_2025_3918
+      - span_instructions_form_1040_2025_3919
+      - span_instructions_form_1040_2025_3920
+      - span_instructions_form_1040_2025_3921
+      - span_instructions_form_1040_2025_3922
+      - span_instructions_form_1040_2025_3923
+      - span_instructions_form_1040_2025_3924
+      - span_instructions_form_1040_2025_3925
+      - span_instructions_form_1040_2025_3926
+      - span_instructions_form_1040_2025_3927
+      - span_instructions_form_1040_2025_3928
+      - span_instructions_form_1040_2025_3929
+      - span_instructions_form_1040_2025_3930
+      - span_instructions_form_1040_2025_3931
+      has_form_face_citation: false
+      has_instruction_citation: true
+    - target_cell_id: form_1040_2025_root_line_22
+      line_anchor: '22'
+      label: 12a, 12b, 12c, 22 Subtract line 21 from line 18. If zero or less, enter
+        -0- 22
+      status: review_gap
+      has_expression: false
+      has_verbatim_citation: false
+      review_gap: 'micro extraction failed: LlmUnavailable: OpenRouter request failed:
+        Connection error.'
+      wrong_owner_instruction_spans: 1
+      instruction_span_ids:
+      - span_instructions_form_1040_2025_1052
+      - span_instructions_form_1040_2025_3953
+      - span_instructions_form_1040_2025_3954
+      has_form_face_citation: false
+      has_instruction_citation: true
+    - target_cell_id: form_1040_2025_root_line_24
+      line_anchor: '24'
+      label: 24 Add lines 22 and 23. This is your total tax 24
+      status: review_gap
+      has_expression: false
+      has_verbatim_citation: false
+      review_gap: 'micro extraction failed: LlmUnavailable: OpenRouter request failed:
+        Connection error.'
+      wrong_owner_instruction_spans: 9
+      instruction_span_ids:
+      - span_instructions_form_1040_2025_1054
+      has_form_face_citation: false
+      has_instruction_citation: true
+    - target_cell_id: form_1040_2025_root_line_25d
+      line_anchor: 25d
+      label: d Add lines 25a through 25c 25d
+      status: review_gap
+      has_expression: false
+      has_verbatim_citation: false
+      review_gap: 'micro extraction failed: LlmUnavailable: OpenRouter request failed:
+        Connection error.'
+      wrong_owner_instruction_spans: 2
+      instruction_span_ids: []
+      has_form_face_citation: false
+      has_instruction_citation: false
+    - target_cell_id: form_1040_2025_root_line_32
+      line_anchor: '32'
+      label: 32 Add lines 27a, 28, 29, 30, and 31. These are your total other payments
+        and refundable credits 32
+      status: review_gap
+      has_expression: false
+      has_verbatim_citation: false
+      review_gap: 'micro extraction failed: LlmUnavailable: OpenRouter request failed:
+        Connection error.'
+      wrong_owner_instruction_spans: 0
+      instruction_span_ids: []
+      has_form_face_citation: false
+      has_instruction_citation: false
+    - target_cell_id: form_1040_2025_root_line_33
+      line_anchor: '33'
+      label: 33 Add lines 25d, 26, and 32. These are your total payments 33
+      status: review_gap
+      has_expression: false
+      has_verbatim_citation: false
+      review_gap: 'micro extraction failed: LlmUnavailable: OpenRouter request failed:
+        Connection error.'
+      wrong_owner_instruction_spans: 0
+      instruction_span_ids: []
+      has_form_face_citation: false
+      has_instruction_citation: false
+    - target_cell_id: form_1040_2025_root_line_34
+      line_anchor: '34'
+      label: Refund 34 If line 33 is more than line 24, subtract line 24 from line
+        33. This is the amount you overpaid 34
+      status: review_gap
+      has_expression: false
+      has_verbatim_citation: false
+      review_gap: 'micro extraction failed: LlmUnavailable: OpenRouter request failed:
+        Connection error.'
+      wrong_owner_instruction_spans: 3
+      instruction_span_ids:
+      - span_instructions_form_1040_2025_2238
+      - span_instructions_form_1040_2025_2239
+      - span_instructions_form_1040_2025_2240
+      - span_instructions_form_1040_2025_2241
+      - span_instructions_form_1040_2025_2242
+      - span_instructions_form_1040_2025_2243
+      - span_instructions_form_1040_2025_2244
+      - span_instructions_form_1040_2025_2245
+      - span_instructions_form_1040_2025_2246
+      has_form_face_citation: false
+      has_instruction_citation: true
+    - target_cell_id: form_1040_2025_root_line_35a
+      line_anchor: 35a
+      label: 35a Amount of line 34 you want refunded to you. If Form 8888 is attached,
+        check here 35a
+      status: review_gap
+      has_expression: false
+      has_verbatim_citation: false
+      review_gap: 'micro extraction failed: LlmUnavailable: OpenRouter request failed:
+        Connection error.'
+      wrong_owner_instruction_spans: 1
+      instruction_span_ids:
+      - span_instructions_form_1040_2025_2249
+      - span_instructions_form_1040_2025_2250
+      - span_instructions_form_1040_2025_2251
+      - span_instructions_form_1040_2025_2252
+      - span_instructions_form_1040_2025_2253
+      - span_instructions_form_1040_2025_2254
+      - span_instructions_form_1040_2025_2255
+      has_form_face_citation: false
+      has_instruction_citation: true
+    - target_cell_id: form_1040_2025_root_line_36
+      line_anchor: '36'
+      label: 36 Amount of line 34 you want applied to your 2026 estimated tax 36
+      status: review_gap
+      has_expression: false
+      has_verbatim_citation: false
+      review_gap: 'micro extraction failed: LlmUnavailable: OpenRouter request failed:
+        Connection error.'
+      wrong_owner_instruction_spans: 1
+      instruction_span_ids:
+      - span_instructions_form_1040_2025_2303
+      - span_instructions_form_1040_2025_2304
+      - span_instructions_form_1040_2025_2305
+      - span_instructions_form_1040_2025_2306
+      has_form_face_citation: false
+      has_instruction_citation: true
+    - target_cell_id: form_1040_2025_root_line_37
+      line_anchor: '37'
+      label: Amount 37 Subtract line 33 from line 24. This is the amount you owe.
+      status: review_gap
+      has_expression: false
+      has_verbatim_citation: false
+      review_gap: 'micro extraction failed: LlmUnavailable: OpenRouter request failed:
+        Connection error.'
+      wrong_owner_instruction_spans: 2
+      instruction_span_ids:
+      - span_instructions_form_1040_2025_2314
+      - span_instructions_form_1040_2025_2315
+      - span_instructions_form_1040_2025_2316
+      - span_instructions_form_1040_2025_2317
+      - span_instructions_form_1040_2025_2318
+      - span_instructions_form_1040_2025_2319
+      - span_instructions_form_1040_2025_2320
+      - span_instructions_form_1040_2025_2321
+      - span_instructions_form_1040_2025_2322
+      - span_instructions_form_1040_2025_2323
+      - span_instructions_form_1040_2025_2324
+      - span_instructions_form_1040_2025_2325
+      - span_instructions_form_1040_2025_2326
+      - span_instructions_form_1040_2025_2327
+      - span_instructions_form_1040_2025_2328
+      - span_instructions_form_1040_2025_2329
+      - span_instructions_form_1040_2025_2330
+      - span_instructions_form_1040_2025_2331
+      - span_instructions_form_1040_2025_2332
+      - span_instructions_form_1040_2025_2333
+      - span_instructions_form_1040_2025_2334
+      - span_instructions_form_1040_2025_2335
+      - span_instructions_form_1040_2025_2336
+      - span_instructions_form_1040_2025_2337
+      - span_instructions_form_1040_2025_2338
+      - span_instructions_form_1040_2025_2339
+      - span_instructions_form_1040_2025_2340
+      - span_instructions_form_1040_2025_2341
+      - span_instructions_form_1040_2025_2342
+      - span_instructions_form_1040_2025_2343
+      - span_instructions_form_1040_2025_2344
+      - span_instructions_form_1040_2025_2345
+      - span_instructions_form_1040_2025_2346
+      - span_instructions_form_1040_2025_2347
+      - span_instructions_form_1040_2025_2348
+      - span_instructions_form_1040_2025_2349
+      - span_instructions_form_1040_2025_2350
+      - span_instructions_form_1040_2025_2351
+      has_form_face_citation: false
+      has_instruction_citation: true
+    wrong_owner_instruction_spans: 45
+    wrong_owner_instruction_addresses:
+    - form_1040_2025_root_line_11a
+    - form_1040_2025_root_line_11b
+    - form_1040_2025_root_line_14
+    - form_1040_2025_root_line_15
+    - form_1040_2025_root_line_18
+    - form_1040_2025_root_line_1z
+    - form_1040_2025_root_line_21
+    - form_1040_2025_root_line_22
+    - form_1040_2025_root_line_24
+    - form_1040_2025_root_line_25d
+    - form_1040_2025_root_line_34
+    - form_1040_2025_root_line_35a
+    - form_1040_2025_root_line_36
+    - form_1040_2025_root_line_37
+    - form_1040_2025_root_line_9
+    unresolved_line_refs: []
+    resolved_models: []
+    resolved_providers: []
+    prompt_tokens: 0
+    completion_tokens: 0
+    total_tokens: 0
+    cost: 0
+    handcrafted_diff:
+      flag_only: true
+      note: The handcrafted set is a review-prioritization flag, not a grade.
+      counts:
+        missing_in_draft: 20
+  schedule_1_2025:
+    formula_cells: 4
+    policy_controls: 69
+    policy_controls_with_policy: 24
+    policy_and_form_face_citation: 0
+    policy_coverage_rate: 0.34782608695652173
+    policy_and_form_face_citation_rate: 0.0
+    policy_derived: 0
+    policy_defaulted: 0
+    policy_authored: 24
+    policy_derived_and_form_face_citation: 0
+    policy_defaulted_and_form_face_citation: 0
+    policy_origin_counts:
+      authored: 24
+      review_gap: 45
+    policy_mix_before:
+      computed: 4
+      unsupported: 45
+      user_entered: 24
+    policy_mix_after:
+      computed: 4
+      unsupported: 45
+      user_entered: 24
+    policy_mix_after_by_origin:
+      authored:
+        computed: 4
+        user_entered: 24
+      review_gap:
+        unsupported: 45
+    failover_class_counts:
+      filer_election: 5
+      filer_identity_admin: 2
+      filer_supplied_value: 38
+    background_policy_before:
+      computed: 4
+      unsupported: 45
+      user_entered: 24
+    background_policy_after:
+      computed: 4
+      unsupported: 45
+      user_entered: 24
+    background_policy_progress: 0
+    background_policy_review_gaps:
+    - field_name: topmostSubform[0].Page1[0].f1_01[0]
+      address_id: 2025/document=schedule_1/section=identity/control=name
+      label: f1_01
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    - field_name: topmostSubform[0].Page1[0].f1_02[0]
+      address_id: 2025/document=schedule_1/section=identity/control=social_security_number
+      label: f1_02
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    - field_name: topmostSubform[0].Page1[0].f1_03[0]
+      address_id: 2025/document=schedule_1/line=1a/control=amount
+      label: Line a - . . . . . . . . . . - f1_03
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    - field_name: topmostSubform[0].Page1[0].f1_06[0]
+      address_id: 2025/document=schedule_1/line=2b/control=date
+      label: 'Line b - b Date of original divorce or separation agreement (see instructions):
+        - f1_06'
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    - field_name: topmostSubform[0].Page1[0].c1_1[0]
+      address_id: 2025/document=schedule_1/line=4/option=form_4797
+      label: 'Line 4 - 4 Other gains or (losses). Check if any from Form(s): - c1_1'
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    - field_name: topmostSubform[0].Page1[0].c1_2[0]
+      address_id: 2025/document=schedule_1/line=4/option=form_4684
+      label: 'Line 4 - Other gains or (losses). Check if any from Form(s): 4797 -
+        c1_2'
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    - field_name: topmostSubform[0].Page1[0].Line7_ReadOrder[0].c1_3[0]
+      address_id: 2025/document=schedule_1/line=7/option=repaid_overpayment
+      label: Line 7 - If you repaid a 2025 overpayment (see instructions), check here
+        - c1_3
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    - field_name: topmostSubform[0].Page1[0].Line7_ReadOrder[0].f1_11[0]
+      address_id: 2025/document=schedule_1/line=7/control=repaid_amount
+      label: 'Line 7 - enter amount repaid: - f1_11'
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    - field_name: topmostSubform[0].Page1[0].Line8a_ReadOrder[0].f1_13[0]
+      address_id: 2025/document=schedule_1/line=8a/control=amount
+      label: Line 8a - . . . . . . . . 8a ( - f1_13
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    - field_name: topmostSubform[0].Page1[0].f1_14[0]
+      address_id: 2025/document=schedule_1/line=8b/control=amount
+      label: Line 8b - . . . . . . . . . 8b - f1_14
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    - field_name: topmostSubform[0].Page1[0].f1_15[0]
+      address_id: 2025/document=schedule_1/line=8c/control=amount
+      label: Line 8c - . . . . . . . . . 8c - f1_15
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    - field_name: topmostSubform[0].Page1[0].f1_16[0]
+      address_id: 2025/document=schedule_1/line=8d/control=amount
+      label: Line 8d - . . . . . . . . 8d ( - f1_16
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    - field_name: topmostSubform[0].Page1[0].f1_17[0]
+      address_id: 2025/document=schedule_1/line=8e/control=amount
+      label: Line 8e - . . . . . . . . . 8e - f1_17
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    - field_name: topmostSubform[0].Page1[0].f1_18[0]
+      address_id: 2025/document=schedule_1/line=8f/control=amount
+      label: Line 8f - . . . . . . . . . 8f - f1_18
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    - field_name: topmostSubform[0].Page1[0].f1_19[0]
+      address_id: 2025/document=schedule_1/line=8g/control=amount
+      label: Line 8g - . . . . . . . . . 8g - f1_19
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    - field_name: topmostSubform[0].Page1[0].f1_20[0]
+      address_id: 2025/document=schedule_1/line=8h/control=amount
+      label: Line 8h - . . . . . . . . . 8h - f1_20
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    - field_name: topmostSubform[0].Page1[0].f1_21[0]
+      address_id: 2025/document=schedule_1/line=8i/control=amount
+      label: Line 8i - . . . . . . . . . 8i - f1_21
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    - field_name: topmostSubform[0].Page1[0].f1_22[0]
+      address_id: 2025/document=schedule_1/line=8j/control=amount
+      label: Line 8j - . . . . . . . . . 8j - f1_22
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    - field_name: topmostSubform[0].Page1[0].f1_23[0]
+      address_id: 2025/document=schedule_1/line=8k/control=amount
+      label: Line 8k - . . . . . . . . . 8k - f1_23
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    - field_name: topmostSubform[0].Page1[0].f1_24[0]
+      address_id: 2025/document=schedule_1/line=8l/control=amount
+      label: Line 8l - renting such property . . . . . . 8l - f1_24
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    - field_name: topmostSubform[0].Page1[0].f1_25[0]
+      address_id: 2025/document=schedule_1/line=8m/control=amount
+      label: Line 8m - Paralympic medals and USOC prize money (see instructions) .
+        8m - f1_25
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    - field_name: topmostSubform[0].Page1[0].f1_26[0]
+      address_id: 2025/document=schedule_1/line=8n/control=amount
+      label: Line 8n - . . . . . . . . . 8n - f1_26
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    - field_name: topmostSubform[0].Page1[0].f1_27[0]
+      address_id: 2025/document=schedule_1/line=8o/control=amount
+      label: Line 8o - . . . . . . . . . 8o - f1_27
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    - field_name: topmostSubform[0].Page1[0].f1_28[0]
+      address_id: 2025/document=schedule_1/line=8p/control=amount
+      label: Line 8p - . . . . . . . . . 8p - f1_28
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    - field_name: topmostSubform[0].Page1[0].f1_29[0]
+      address_id: 2025/document=schedule_1/line=8q/control=amount
+      label: Line 8q - ABLE account (see instructions) . . . . . 8q - f1_29
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    - field_name: topmostSubform[0].Page1[0].f1_30[0]
+      address_id: 2025/document=schedule_1/line=8r/control=amount
+      label: Line 8r - on Form W-2 . . . . . . 8r - f1_30
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    - field_name: topmostSubform[0].Page1[0].f1_31[0]
+      address_id: 2025/document=schedule_1/line=8s/control=amount
+      label: Line 8s - . . . . . . . . 8s ( - f1_31
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    - field_name: topmostSubform[0].Page1[0].f1_32[0]
+      address_id: 2025/document=schedule_1/line=8t/control=amount
+      label: Line 8t - . . . . . . . . . 8t - f1_32
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    - field_name: topmostSubform[0].Page1[0].f1_33[0]
+      address_id: 2025/document=schedule_1/line=8u/control=amount
+      label: Line 8u - . . . . . . . . . 8u - f1_33
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    - field_name: topmostSubform[0].Page1[0].Line8z_ReadOrder[0].f1_35[0]
+      address_id: 2025/document=schedule_1/line=8z/control=description
+      label: Line z - f1_35
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    - field_name: topmostSubform[0].Page2[0].c2_1[0]
+      address_id: 2025/document=schedule_1/line=14/option=storage_fees_only
+      label: Line 15 - (see instructions), check here - c2_1
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    - field_name: topmostSubform[0].Page2[0].Line19b_CombField[0].f2_10[0]
+      address_id: 2025/document=schedule_1/line=19b/control=identifier
+      label: Line b - . . . . . . . . . . - f2_10
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    - field_name: topmostSubform[0].Page2[0].f2_11[0]
+      address_id: 2025/document=schedule_1/line=19c/control=date
+      label: 'Line c - c Date of original divorce or separation agreement (see instructions):
+        - f2_11'
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    - field_name: topmostSubform[0].Page2[0].c2_2[0]
+      address_id: 2025/document=schedule_1/line=21/option=mfs_lived_apart
+      label: Line 21 - (see instructions), check here - c2_2
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    - field_name: topmostSubform[0].Page2[0].Line24a_ReadOrder[0].f2_16[0]
+      address_id: 2025/document=schedule_1/line=24a/control=amount
+      label: Line 24a - . . . . . . . . . 24a - f2_16
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    - field_name: topmostSubform[0].Page2[0].f2_17[0]
+      address_id: 2025/document=schedule_1/line=24b/control=amount
+      label: Line 24b - . . . . . . . . . 24b - f2_17
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    - field_name: topmostSubform[0].Page2[0].f2_18[0]
+      address_id: 2025/document=schedule_1/line=24c/control=amount
+      label: Line 24c - . . . . . . . . . 24c - f2_18
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    - field_name: topmostSubform[0].Page2[0].f2_19[0]
+      address_id: 2025/document=schedule_1/line=24d/control=amount
+      label: Line 24d - . . . . . . . . . 24d - f2_19
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    - field_name: topmostSubform[0].Page2[0].f2_21[0]
+      address_id: 2025/document=schedule_1/line=24f/control=amount
+      label: Line 24f - . . . . . . . . . 24f - f2_21
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    - field_name: topmostSubform[0].Page2[0].f2_22[0]
+      address_id: 2025/document=schedule_1/line=24g/control=amount
+      label: Line 24g - 403(b) plans . . . . . . . 24g - f2_22
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    - field_name: topmostSubform[0].Page2[0].f2_23[0]
+      address_id: 2025/document=schedule_1/line=24h/control=amount
+      label: Line 24h - . . . . . . . . . 24h - f2_23
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    - field_name: topmostSubform[0].Page2[0].f2_24[0]
+      address_id: 2025/document=schedule_1/line=24i/control=amount
+      label: Line 24i - provided that helped the IRS detect tax law violations 24i
+        - f2_24
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    - field_name: topmostSubform[0].Page2[0].f2_25[0]
+      address_id: 2025/document=schedule_1/line=24j/control=amount
+      label: Line 24j - . . . . . . . . . 24j - f2_25
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    - field_name: topmostSubform[0].Page2[0].f2_26[0]
+      address_id: 2025/document=schedule_1/line=24k/control=amount
+      label: Line 24k - of section 67(e) expenses from Schedule K-1 (Form 1041) 24k
+        - f2_26
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    - field_name: topmostSubform[0].Page2[0].Line24z_ReadOrder[0].f2_27[0]
+      address_id: 2025/document=schedule_1/line=24z/control=description
+      label: Line z - f2_27
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    expression_and_verbatim_citation: 0
+    expression_and_form_face_citation: 0
+    expression_and_instruction_page_citation: 0
+    expression_and_both_citations: 0
+    expression_without_citation: 0
+    neither_expression_nor_citation: 4
+    completeness_rate: 0.0
+    instruction_review_cells: 4
+    instruction_page_citation_before: 4
+    instruction_page_citation: 4
+    instruction_page_citation_rate: 1.0
+    instruction_page_citation_missing_cells: []
+    expression_without_citation_cells: []
+    review_gaps:
+    - target_cell_id: schedule_1_2025_section_1_part_i_additional_income_line_9
+      line_anchor: '9'
+      label: 9 Total other income. Add lines 8a through 8z 9
+      status: review_gap
+      has_expression: false
+      has_verbatim_citation: false
+      review_gap: 'micro extraction failed: LlmUnavailable: OpenRouter request failed:
+        Connection error.'
+      wrong_owner_instruction_spans: 8
+      instruction_span_ids:
+      - span_instructions_form_1040_2025_0854
+      - span_instructions_form_1040_2025_1039
+      - span_instructions_form_1040_2025_3913
+      - span_instructions_form_1040_2025_3944
+      - span_instructions_form_1040_2025_4309
+      - span_instructions_form_1040_2025_4310
+      - span_instructions_form_1040_2025_4311
+      - span_instructions_form_1040_2025_4312
+      - span_instructions_form_1040_2025_4313
+      - span_instructions_form_1040_2025_4314
+      - span_instructions_form_1040_2025_4315
+      - span_instructions_form_1040_2025_4472
+      - span_instructions_form_1040_2025_4473
+      - span_instructions_form_1040_2025_4474
+      has_form_face_citation: false
+      has_instruction_citation: true
+    - target_cell_id: schedule_1_2025_section_1_part_i_additional_income_line_10
+      line_anchor: '10'
+      label: 10 Combine lines 1 through 7 and 9. This is your additional income. Enter
+        here and on Form 1040,
+      status: review_gap
+      has_expression: false
+      has_verbatim_citation: false
+      review_gap: 'micro extraction failed: LlmUnavailable: OpenRouter request failed:
+        Connection error.'
+      wrong_owner_instruction_spans: 5
+      instruction_span_ids:
+      - span_instructions_form_1040_2025_0855
+      - span_instructions_form_1040_2025_0880
+      - span_instructions_form_1040_2025_0881
+      - span_instructions_form_1040_2025_1040
+      - span_instructions_form_1040_2025_3914
+      - span_instructions_form_1040_2025_4316
+      - span_instructions_form_1040_2025_4317
+      - span_instructions_form_1040_2025_4318
+      - span_instructions_form_1040_2025_4486
+      - span_instructions_form_1040_2025_4487
+      - span_instructions_form_1040_2025_4488
+      has_form_face_citation: false
+      has_instruction_citation: true
+    - target_cell_id: schedule_1_2025_section_2_part_ii_adjustments_to_income_line_25
+      line_anchor: '25'
+      label: 25 Total other adjustments. Add lines 24a through 24z 25
+      status: review_gap
+      has_expression: false
+      has_verbatim_citation: false
+      review_gap: 'micro extraction failed: LlmUnavailable: OpenRouter request failed:
+        Connection error.'
+      wrong_owner_instruction_spans: 5
+      instruction_span_ids:
+      - span_instructions_form_1040_2025_1055
+      - span_instructions_form_1040_2025_1068
+      - span_instructions_form_1040_2025_1069
+      has_form_face_citation: false
+      has_instruction_citation: true
+    - target_cell_id: schedule_1_2025_section_2_part_ii_adjustments_to_income_line_26
+      line_anchor: '26'
+      label: 26 Add lines 11 through 23 and 25. These are your adjustments to income.
+        Enter here and on Form
+      status: review_gap
+      has_expression: false
+      has_verbatim_citation: false
+      review_gap: 'micro extraction failed: LlmUnavailable: OpenRouter request failed:
+        Connection error.'
+      wrong_owner_instruction_spans: 2
+      instruction_span_ids:
+      - span_instructions_form_1040_2025_1081
+      - span_instructions_form_1040_2025_1082
+      - span_instructions_form_1040_2025_1083
+      - span_instructions_form_1040_2025_1084
+      - span_instructions_form_1040_2025_1085
+      - span_instructions_form_1040_2025_1086
+      - span_instructions_form_1040_2025_1087
+      - span_instructions_form_1040_2025_1088
+      has_form_face_citation: false
+      has_instruction_citation: true
+    wrong_owner_instruction_spans: 20
+    wrong_owner_instruction_addresses:
+    - schedule_1_2025_section_1_part_i_additional_income_line_10
+    - schedule_1_2025_section_1_part_i_additional_income_line_9
+    - schedule_1_2025_section_2_part_ii_adjustments_to_income_line_25
+    - schedule_1_2025_section_2_part_ii_adjustments_to_income_line_26
+    unresolved_line_refs: []
+    resolved_models: []
+    resolved_providers: []
+    prompt_tokens: 0
+    completion_tokens: 0
+    total_tokens: 0
+    cost: 0
+    handcrafted_diff:
+      flag_only: true
+      note: The handcrafted set is a review-prioritization flag, not a grade.
+      counts:
+        missing_in_draft: 4
+  schedule_a_2025:
+    formula_cells: 7
+    policy_controls: 32
+    policy_controls_with_policy: 11
+    policy_and_form_face_citation: 0
+    policy_coverage_rate: 0.34375
+    policy_and_form_face_citation_rate: 0.0
+    policy_derived: 0
+    policy_defaulted: 0
+    policy_authored: 11
+    policy_derived_and_form_face_citation: 0
+    policy_defaulted_and_form_face_citation: 0
+    policy_origin_counts:
+      authored: 11
+      review_gap: 21
+    policy_mix_before:
+      computed: 1
+      unsupported: 21
+      user_entered: 11
+    policy_mix_after:
+      computed: 1
+      unsupported: 21
+      user_entered: 11
+    policy_mix_after_by_origin:
+      authored:
+        computed: 1
+        user_entered: 11
+      review_gap:
+        unsupported: 21
+    failover_class_counts:
+      filer_election: 3
+      filer_identity_admin: 1
+      filer_supplied_value: 17
+    background_policy_before:
+      computed: 1
+      unsupported: 21
+      user_entered: 11
+    background_policy_after:
+      computed: 1
+      unsupported: 21
+      user_entered: 11
+    background_policy_progress: 0
+    background_policy_review_gaps:
+    - field_name: form1[0].Page1[0].f1_1[0]
+      address_id: ''
+      label: f1_1
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    - field_name: form1[0].Page1[0].f1_2[0]
+      address_id: ''
+      label: f1_2
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    - field_name: form1[0].Page1[0].f1_3[0]
+      address_id: 2025/document=schedule_a/line=1/control=amount
+      label: Line 1 - dental expenses (see instructions) . . . . . 1 - f1_3
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    - field_name: form1[0].Page1[0].c1_1[0]
+      address_id: 2025/document=schedule_a/line=5a/control=checkbox
+      label: Line 5a - box . . . . . . . . . - c1_1
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    - field_name: form1[0].Page1[0].f1_7[0]
+      address_id: 2025/document=schedule_a/line=5a/control=amount
+      label: Line 5a - . . . . . . . . . 5a - f1_7
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    - field_name: form1[0].Page1[0].f1_8[0]
+      address_id: 2025/document=schedule_a/line=5b/control=amount
+      label: Line 5b - real estate taxes (see instructions) . . . . 5b - f1_8
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    - field_name: form1[0].Page1[0].f1_9[0]
+      address_id: 2025/document=schedule_a/line=5c/control=amount
+      label: Line 5c - taxes . . . . . . . . 5c - f1_9
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    - field_name: form1[0].Page1[0].f1_11[0]
+      address_id: 2025/document=schedule_a/line=5e/control=amount
+      label: Line 5e - or excluded income from Puerto Rico, see instructions . 5e
+        - f1_11
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    - field_name: form1[0].Page1[0].f1_12[0]
+      address_id: 2025/document=schedule_a/line=6/control=amount
+      label: Line 6 - f1_12
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    - field_name: form1[0].Page1[0].f1_14[0]
+      address_id: 2025/document=schedule_a/line=5e/control=amount
+      label: Line 5e - . . . . . . . . . 7 - f1_14
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    - field_name: form1[0].Page1[0].Line8_ReadOrder[0].c1_2[0]
+      address_id: ''
+      label: Line a - . . . . . . . . . . - c1_2
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    - field_name: form1[0].Page1[0].f1_15[0]
+      address_id: 2025/document=schedule_a/line=8a/control=amount
+      label: Line 8a - . . . . . . . . . 8a - f1_15
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    - field_name: form1[0].Page1[0].Line8b_ReadOrder[0].f1_16[0]
+      address_id: 2025/document=schedule_a/line=8b/control=amount
+      label: Line 8b - f1_16
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    - field_name: form1[0].Page1[0].f1_17[0]
+      address_id: 2025/document=schedule_a/line=8b/control=amount
+      label: Line 8b - . . . . . . . . . 8b - f1_17
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    - field_name: form1[0].Page1[0].f1_19[0]
+      address_id: 2025/document=schedule_a/line=8d/control=amount
+      label: Line 8d - . . . . . . . . . 8d - f1_19
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    - field_name: form1[0].Page1[0].f1_20[0]
+      address_id: 2025/document=schedule_a/line=8e/control=amount
+      label: Line 8e - . . . . . . . . . 8e - f1_20
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    - field_name: form1[0].Page1[0].f1_22[0]
+      address_id: 2025/document=schedule_a/line=8e/control=amount
+      label: Line 8e - . . . . . . . . . 10 - f1_22
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    - field_name: form1[0].Page1[0].f1_23[0]
+      address_id: 2025/document=schedule_a/line=11/control=amount
+      label: Line 11 - . . . . . . . . . 11 - f1_23
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    - field_name: form1[0].Page1[0].f1_24[0]
+      address_id: ''
+      label: Line a - instructions. You must attach Form 8283 if over $500 12 - f1_24
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    - field_name: form1[0].Page1[0].f1_30[0]
+      address_id: 2025/document=schedule_a/line=12e/control=amount
+      label: Line 12e - . . . . . . . . . 17 - f1_30
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    - field_name: form1[0].Page1[0].Line18_ReadOrder[0].c1_3[0]
+      address_id: ''
+      label: . . . . . . . . . . - c1_3
+      review_gap: 'background policy extraction failed: LlmUnavailable: OpenRouter
+        request failed: Connection error.'
+    expression_and_verbatim_citation: 0
+    expression_and_form_face_citation: 0
+    expression_and_instruction_page_citation: 0
+    expression_and_both_citations: 0
+    expression_without_citation: 0
+    neither_expression_nor_citation: 7
+    completeness_rate: 0.0
+    instruction_review_cells: 7
+    instruction_page_citation_before: 0
+    instruction_page_citation: 0
+    instruction_page_citation_rate: 0.0
+    instruction_page_citation_missing_cells:
+    - target_cell_id: schedule_a_2025_section_1_schedule_a_itemized_deductions_line_3
+      line_anchor: '3'
+      review_gap: 'micro extraction failed: LlmUnavailable: OpenRouter request failed:
+        Connection error.'
+    - target_cell_id: schedule_a_2025_section_1_schedule_a_itemized_deductions_line_4
+      line_anchor: '4'
+      review_gap: 'micro extraction failed: LlmUnavailable: OpenRouter request failed:
+        Connection error.'
+    - target_cell_id: schedule_a_2025_section_1_schedule_a_itemized_deductions_line_5d
+      line_anchor: 5d
+      review_gap: 'micro extraction failed: LlmUnavailable: OpenRouter request failed:
+        Connection error.'
+    - target_cell_id: schedule_a_2025_section_1_schedule_a_itemized_deductions_line_7
+      line_anchor: '7'
+      review_gap: 'micro extraction failed: LlmUnavailable: OpenRouter request failed:
+        Connection error.'
+    - target_cell_id: schedule_a_2025_section_1_schedule_a_itemized_deductions_line_8e
+      line_anchor: 8e
+      review_gap: 'micro extraction failed: LlmUnavailable: OpenRouter request failed:
+        Connection error.'
+    - target_cell_id: schedule_a_2025_section_1_schedule_a_itemized_deductions_line_10
+      line_anchor: '10'
+      review_gap: 'micro extraction failed: LlmUnavailable: OpenRouter request failed:
+        Connection error.'
+    - target_cell_id: schedule_a_2025_section_1_schedule_a_itemized_deductions_line_14
+      line_anchor: '14'
+      review_gap: 'micro extraction failed: LlmUnavailable: OpenRouter request failed:
+        Connection error.'
+    expression_without_citation_cells: []
+    review_gaps:
+    - target_cell_id: schedule_a_2025_section_1_schedule_a_itemized_deductions_line_3
+      line_anchor: '3'
+      label: 3 Multiply line 2 by 7.5% (0.075) 3
+      status: review_gap
+      has_expression: false
+      has_verbatim_citation: false
+      review_gap: 'micro extraction failed: LlmUnavailable: OpenRouter request failed:
+        Connection error.'
+      wrong_owner_instruction_spans: 1
+      instruction_span_ids: []
+      has_form_face_citation: false
+      has_instruction_citation: false
+    - target_cell_id: schedule_a_2025_section_1_schedule_a_itemized_deductions_line_4
+      line_anchor: '4'
+      label: 4 Subtract line 3 from line 1. If line 3 is more than line 1, enter -0-
+        4
+      status: review_gap
+      has_expression: false
+      has_verbatim_citation: false
+      review_gap: 'micro extraction failed: LlmUnavailable: OpenRouter request failed:
+        Connection error.'
+      wrong_owner_instruction_spans: 0
+      instruction_span_ids: []
+      has_form_face_citation: false
+      has_instruction_citation: false
+    - target_cell_id: schedule_a_2025_section_1_schedule_a_itemized_deductions_line_5d
+      line_anchor: 5d
+      label: d Add lines 5a through 5c 5d
+      status: review_gap
+      has_expression: false
+      has_verbatim_citation: false
+      review_gap: 'micro extraction failed: LlmUnavailable: OpenRouter request failed:
+        Connection error.'
+      wrong_owner_instruction_spans: 1
+      instruction_span_ids: []
+      has_form_face_citation: false
+      has_instruction_citation: false
+    - target_cell_id: schedule_a_2025_section_1_schedule_a_itemized_deductions_line_7
+      line_anchor: '7'
+      label: 7 Add lines 5e and 6 7
+      status: review_gap
+      has_expression: false
+      has_verbatim_citation: false
+      review_gap: 'micro extraction failed: LlmUnavailable: OpenRouter request failed:
+        Connection error.'
+      wrong_owner_instruction_spans: 0
+      instruction_span_ids: []
+      has_form_face_citation: false
+      has_instruction_citation: false
+    - target_cell_id: schedule_a_2025_section_1_schedule_a_itemized_deductions_line_8e
+      line_anchor: 8e
+      label: e Add lines 8a through 8c 8e
+      status: review_gap
+      has_expression: false
+      has_verbatim_citation: false
+      review_gap: 'micro extraction failed: LlmUnavailable: OpenRouter request failed:
+        Connection error.'
+      wrong_owner_instruction_spans: 0
+      instruction_span_ids: []
+      has_form_face_citation: false
+      has_instruction_citation: false
+    - target_cell_id: schedule_a_2025_section_1_schedule_a_itemized_deductions_line_10
+      line_anchor: '10'
+      label: 10 Add lines 8e and 9 10
+      status: review_gap
+      has_expression: false
+      has_verbatim_citation: false
+      review_gap: 'micro extraction failed: LlmUnavailable: OpenRouter request failed:
+        Connection error.'
+      wrong_owner_instruction_spans: 0
+      instruction_span_ids: []
+      has_form_face_citation: false
+      has_instruction_citation: false
+    - target_cell_id: schedule_a_2025_section_1_schedule_a_itemized_deductions_line_14
+      line_anchor: '14'
+      label: 14 Add lines 11 through 13 14
+      status: review_gap
+      has_expression: false
+      has_verbatim_citation: false
+      review_gap: 'micro extraction failed: LlmUnavailable: OpenRouter request failed:
+        Connection error.'
+      wrong_owner_instruction_spans: 0
+      instruction_span_ids: []
+      has_form_face_citation: false
+      has_instruction_citation: false
+    wrong_owner_instruction_spans: 2
+    wrong_owner_instruction_addresses:
+    - schedule_a_2025_section_1_schedule_a_itemized_deductions_line_3
+    - schedule_a_2025_section_1_schedule_a_itemized_deductions_line_5d
+    unresolved_line_refs: []
+    resolved_models: []
+    resolved_providers: []
+    prompt_tokens: 0
+    completion_tokens: 0
+    total_tokens: 0
+    cost: 0
+    handcrafted_diff:
+      flag_only: true
+      note: The handcrafted set is a review-prioritization flag, not a grade.
+      counts:
+        missing_in_draft: 5

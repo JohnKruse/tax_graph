@@ -133,8 +133,16 @@ function fillExplanationMarkup(cell) {
     ? `Copied from ${inputs.map((ref) => `<code>${escapeHtml(ref)}</code>`).join(", ")}.`
     : "Copied from another form cell.";
   if (policy === "imported") return "Imported from the filer's source documents.";
-  if (policy === "user_entered") return "Entered by the filer.";
-  if (policy === "decision_required") return "Requires a filer decision.";
+  if (policy === "user_entered") {
+    if (cell.failover_class === "filer_supplied_value") return "Filer-supplied value; ask at intake.";
+    if (cell.failover_class === "filer_identity_admin") return "Filer identity or administrative value; ask at intake.";
+    return "Entered by the filer.";
+  }
+  if (policy === "decision_required") {
+    return cell.failover_class === "filer_election"
+      ? "Filer decision; ask at intake."
+      : "Requires a filer decision.";
+  }
   if (policy === "intentionally_blank") return "Left blank by design.";
   if (policy === "unsupported") return "Nobody has mapped this yet.";
   return "No fill treatment is recorded.";
@@ -192,6 +200,8 @@ function generatedVerdictMarkup(cell) {
     `<h3>Pipeline review</h3>` +
     `<p class="generated-provenance"><strong>Generated draft:</strong> ${escapeHtml(cell.generated_model || "unknown model")} / ${escapeHtml(cell.generated_provider || "unknown provider")}</p>` +
     `<p class="generated-status"><strong>Status:</strong> ${escapeHtml(cell.generated_status || "review_gap")}</p>` +
+    `<p class="generated-status"><strong>Policy origin:</strong> ${escapeHtml(cell.policy_origin || "review_gap")}` +
+      (cell.failover_class ? ` (${escapeHtml(cell.failover_class)})` : "") + `</p>` +
     `<label>Optional batch tag<input class="verdict-tag" type="text" placeholder="For example: first pass" autocomplete="off"></label>` +
     `<label>What does not match the source? <textarea class="verdict-comment" rows="3" placeholder="Tell the pipeline what needs correction."></textarea></label>` +
     `<p class="verdict-hint">Accept records that this generated cell matches its source. Reject records the symptom; the pipeline diagnoses the cause.</p>` +
@@ -270,6 +280,9 @@ function renderDetail(detail, cell, cells, review, onReviewChange) {
     group("Population policy", [
       ["How the value is obtained", authored(facets.obtained), "field_maps"],
       ["Coverage status", authored(facets.coverage), "field_maps"],
+      ["Policy origin", authored(cell.policy_origin), "micro_extraction.yaml"],
+      ["Failover class", authored(cell.failover_class), "micro_extraction.yaml"],
+      ["Policy basis", authored(cell.policy_basis), "micro_extraction.yaml"],
       ["Expected format", authored(cell.value_format), "field_maps"],
       ["Reason", authored(cell.policy_reason), "field_maps"],
       ["Downstream effect", authored(cell.downstream_effect), "field_maps"],

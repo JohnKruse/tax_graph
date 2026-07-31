@@ -18,19 +18,29 @@ from typing import Any
 import yaml
 
 from tax_graph.config import get_config_value
-from tax_graph.extract.llm_client import LlmClient
+from tax_graph.extract.llm_client import LlmClient, response_telemetry
 from tax_graph.extract.models import LlmCallTelemetry, SourceDocumentInput
 from tax_graph.extract.observability import llm_call_target
 from tax_graph.extract.outline import CandidateSpan
 from tax_graph.extract.micro import MicroExtractionError
 
 
-BACKGROUND_POLICY_DOCUMENTS = frozenset({"form_1040_2025"})
+BACKGROUND_POLICY_DOCUMENTS = frozenset({
+    "form_1040_2025",
+    "schedule_1_2025",
+    "schedule_a_2025",
+})
 BACKGROUND_POLICIES = frozenset({
     "user_entered",
     "decision_required",
     "intentionally_blank",
     "unsupported",
+})
+BACKGROUND_FAILOVER_CLASSES = frozenset({
+    "filer_election",
+    "filer_identity_admin",
+    "filer_supplied_value",
+    "computed_candidate",
 })
 _STOP_WORDS = frozenset({
     "a", "an", "and", "as", "at", "by", "check", "for", "from", "here",
@@ -138,7 +148,13 @@ def extract_background_controls(
     config: dict[str, Any] | None = None,
     root: str | Path | None = None,
 ) -> tuple[dict[str, Any], list[LlmCallTelemetry]]:
-    """Classify unsupported physical controls without changing promoted artifacts."""
+    """Classify unsupported physical controls without changing promoted artifacts.
+
+    A supported response for an unsupported field is a filer failover, not a
+    graph-derived value.  The distinction is recorded in ``policy_origin`` so
+    the completeness report cannot turn a fallback into apparent extraction
+    progress.  Controls whose labels state a computation remain review gaps.
+    """
     if not document.fields or not document.fields.get("fields"):
         return {}, []
     fields = load_background_fields(root, document.year, document.document_id)
@@ -175,6 +191,11 @@ def extract_background_controls(
             "address_id": str(field.get("address_id") or ""),
             "population_policy": authored_policy,
             "status": "authored" if authored_policy != "unsupported" else "review_gap",
+            "policy_origin": "authored" if authored_policy != "unsupported" else "review_gap",
+            "policy_basis": "field_map" if authored_policy != "unsupported" else "unresolved",
+            "policy_defaulted": False,
+            "policy_derived": False,
+            "failover_class": None,
             "has_policy": authored_policy != "unsupported",
             "has_form_face_citation": False,
             "has_instruction_citation": False,
@@ -188,37 +209,54 @@ def extract_background_controls(
         response, citation_span_ids, error, telemetry = unsupported_results[unsupported_index]
         unsupported_index += 1
         if error is None and response is not None:
-            record.update(
-                {
-                    "population_policy": str(response["population_policy"]),
-                    "reason": str(response["reason"]),
-                    "quote": str(response["quote"]),
-                    "citation_span_ids": citation_span_ids,
-                    "has_policy": response["population_policy"] != "unsupported",
-                    "has_form_face_citation": any(
-                        span.relationship == "source"
-                        for span in spans
-                        if span.span_id in citation_span_ids
-                    ),
-                    "instruction_span_ids": [
-                        span.span_id
-                        for span in spans
-                        if span.relationship != "source" and span.span_id in citation_span_ids
-                    ],
-                }
-            )
-            if record["population_policy"] == "unsupported":
-                record["status"] = "review_gap"
-                record["review_gap"] = "model could not establish a supported control policy"
+            policy = str(response["population_policy"])
+            failover_class = _failover_class(field)
+            if policy in {"user_entered", "decision_required"} and failover_class == "computed_candidate":
+                error = MicroExtractionError(
+                    "computed-looking control cannot fall back to a filer policy"
+                )
             else:
-                record["status"] = "complete"
-                succeeded += 1
-            if isinstance(telemetry, LlmCallTelemetry):
-                record["model"] = telemetry.resolved_model or telemetry.requested_model
-                record["provider"] = telemetry.resolved_provider or telemetry.provider
-                calls.append(telemetry)
-        else:
+                policy_origin = "defaulted" if policy in {"user_entered", "decision_required"} else "derived"
+                policy_basis = "filer_fallback" if policy_origin == "defaulted" else "source_evidence"
+                record.update(
+                    {
+                        "population_policy": policy,
+                        "reason": str(response["reason"]),
+                        "quote": str(response["quote"]),
+                        "citation_span_ids": citation_span_ids,
+                        "policy_origin": policy_origin if policy != "unsupported" else "review_gap",
+                        "policy_basis": policy_basis if policy != "unsupported" else "unresolved",
+                        "policy_defaulted": policy_origin == "defaulted" and policy != "unsupported",
+                        "policy_derived": policy_origin == "derived" and policy != "unsupported",
+                        "failover_class": failover_class,
+                        "has_policy": policy != "unsupported",
+                        "has_form_face_citation": any(
+                            span.relationship == "source"
+                            for span in spans
+                            if span.span_id in citation_span_ids
+                        ),
+                        "instruction_span_ids": [
+                            span.span_id
+                            for span in spans
+                            if span.relationship != "source" and span.span_id in citation_span_ids
+                        ],
+                    }
+                )
+                if policy == "unsupported":
+                    record["status"] = "review_gap"
+                    record["review_gap"] = "model could not establish a supported control policy"
+                else:
+                    record["status"] = "complete"
+                    succeeded += 1
+                if isinstance(telemetry, LlmCallTelemetry):
+                    record["model"] = telemetry.resolved_model or telemetry.requested_model
+                    record["provider"] = telemetry.resolved_provider or telemetry.provider
+                    calls.append(telemetry)
+                records.append(record)
+                continue
+        if error is not None or response is None:
             failed += 1
+            record["failover_class"] = _failover_class(field)
             record["review_gap"] = (
                 f"background policy extraction failed: {type(error).__name__}: {error}"
                 if error is not None
@@ -229,6 +267,16 @@ def extract_background_controls(
         records.append(record)
 
     after = Counter(str(record.get("population_policy") or "unsupported") for record in records)
+    origins = Counter(str(record.get("policy_origin") or "review_gap") for record in records)
+    origin_policy = Counter(
+        (str(record.get("policy_origin") or "review_gap"), str(record.get("population_policy") or "unsupported"))
+        for record in records
+    )
+    failover_classes = Counter(
+        str(record.get("failover_class"))
+        for record in records
+        if record.get("failover_class")
+    )
     stats = {
         "background_controls": records,
         "background_controls_total": len(records),
@@ -238,6 +286,9 @@ def extract_background_controls(
         "background_policy_before": dict(sorted(before.items())),
         "background_policy_after": dict(sorted(after.items())),
         "background_policy_progress": before.get("unsupported", 0) - after.get("unsupported", 0),
+        "background_policy_origin_counts": dict(sorted(origins.items())),
+        "background_policy_after_by_origin": _nested_origin_counts(origin_policy),
+        "background_failover_class_counts": dict(sorted(failover_classes.items())),
     }
     return stats, calls
 
@@ -281,8 +332,8 @@ def _run_background_call(
             client=client,
             config=config,
         )
-        telemetry = getattr(response, "metadata", None)
-        return response, citation_span_ids, None, telemetry if isinstance(telemetry, LlmCallTelemetry) else None
+        telemetry = response_telemetry(response)
+        return response, citation_span_ids, None, telemetry
     except Exception as exc:
         return None, [], exc, None
 
@@ -330,6 +381,9 @@ def _background_prompt(field: dict[str, Any], evidence: list[CandidateSpan]) -> 
         "when the answer is a meaningful yes/no or choice that affects the return.",
         "Use intentionally_blank only when the source explicitly establishes that the",
         "control stays blank. Use unsupported when the evidence is insufficient.",
+        "Formula and source/import paths have priority. This background pass is only a",
+        "filer failover after those paths produced no value. Never classify a control",
+        "whose label states a computation as filer-entered or as a filer decision.",
         "Select quote verbatim from the evidence packet. Do not return field names,",
         "address ids, node ids, or any other internal identifiers.",
         "",
@@ -369,6 +423,48 @@ def _span_page(span: CandidateSpan) -> int | None:
 
 def _meaningful_tokens(value: str) -> list[str]:
     return [token for token in re.findall(r"[a-z0-9]+", value.lower()) if token not in _STOP_WORDS and len(token) > 1]
+
+
+def _failover_class(field: dict[str, Any]) -> str:
+    """Classify the deterministic filer failover without inventing tax semantics."""
+    label = str(field.get("label") or "").lower()
+    value_format = str(field.get("value_format") or "").lower()
+    if _looks_computed(label):
+        return "computed_candidate"
+    if value_format in {"checkbox", "radio", "choice"} or _has_label_term(
+        label, ("check", "election", "yes", "option", "decision")
+    ):
+        return "filer_election"
+    if value_format in {"date", "ssn", "ein"} or _has_label_term(
+        label,
+        (
+            "name", "address", "city", "state", "province", "country", "postal", "zip",
+            "ssn", "ein", "date", "year", "beginning", "ending", "phone", "email",
+            "routing", "account", "pin", "identification", "preparer", "designee",
+            "mm", "dd", "yyyy",
+        ),
+    ):
+        return "filer_identity_admin"
+    return "filer_supplied_value"
+
+
+def _looks_computed(label: str) -> bool:
+    """Detect computation language that must never be delegated to the filer."""
+    return bool(re.search(
+        r"\b(?:add|subtract|combine|multiply|divide|total|sum|smaller|larger|greater|lesser)\b",
+        label,
+    ))
+
+
+def _has_label_term(label: str, terms: tuple[str, ...]) -> bool:
+    return any(re.search(rf"\b{re.escape(term)}\b", label) for term in terms)
+
+
+def _nested_origin_counts(values: Counter[tuple[str, str]]) -> dict[str, dict[str, int]]:
+    result: dict[str, dict[str, int]] = {}
+    for (origin, policy), count in sorted(values.items()):
+        result.setdefault(origin, {})[policy] = count
+    return result
 
 
 def _quote_matches(quote: str, source: str) -> bool:

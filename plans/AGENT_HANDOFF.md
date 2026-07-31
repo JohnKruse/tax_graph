@@ -14,6 +14,66 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## Current state (2026-07-31)
 
+**Worker session checkpoint - M20-S20 implementation (2026-07-31):** Global canary: Ledger
+Llama. Phase canary: Ground Truth. Model: GPT-5 Codex; effort/quota/context indicators are not
+exposed by this environment. John gave go via the current task request. Single declared step:
+make filer-provided handling an explicit failover after formula/source paths, split the existing
+unsupported controls into decision, identity/admin, and filer-supplied-value outcomes, retain
+computation labels as named gaps, run all three target forms, and report derived versus defaulted
+policy coverage. Applicable defect-ledger entries: D9, D6, and the exact RAN/NOT RUN evidence
+rule. No promotion, hand-authoring, live graph edit, verdict write, or operation enum change is
+in scope. Protected graph and field-map artifacts are untouched at session start.
+
+**M20-S20 implementation checkpoint (2026-07-31):** Added the draft-only filer failover
+contract to `tax_graph/extract/background.py`. Unsupported controls now retain explicit
+`policy_origin`, `policy_basis`, `policy_defaulted`, `policy_derived`, and `failover_class`
+metadata. The three failover classes are `filer_election`, `filer_identity_admin`, and
+`filer_supplied_value`; computation language is `computed_candidate` and remains a named
+`review_gap`. Failover calls run after formula and non-formula source extraction in the
+outline pipeline, and `workbench/generated_review.py` refuses to let a background record
+replace a resolved formula or source cell. Full physical control projection now covers Form
+1040, Schedule 1, and Schedule A. The workbench explains failover as an intake question and
+shows origin, basis, and class. No graph, field-map, promotion, verdict, or operation enum
+was edited.
+
+**M20-S20 provider and extraction checkpoint (2026-07-31):** RAN:
+`.venv\Scripts\python.exe -m tax_graph.cli extract --doc form_1040_2025 --year 2025 --root .`
+-> exit 0, 119 background calls attempted, 0 succeeded, 119 failed; RAN:
+`.venv\Scripts\python.exe -m tax_graph.cli extract --doc schedule_1_2025 --year 2025 --root .`
+-> exit 0, 45 attempted, 0 succeeded, 45 failed; RAN:
+`.venv\Scripts\python.exe -m tax_graph.cli extract --doc schedule_a_2025 --year 2025 --root .`
+-> exit 0, 21 attempted, 0 succeeded, 21 failed. Each failure is persisted as an explicit
+review gap in the ignored draft and no promoted artifact changed. The requested network retry
+was rejected by the safety reviewer because it would transmit workspace-derived form data to
+an external LLM; no workaround or fabricated response was used. This is a provider-blocked
+draft result, not acceptance evidence for successful model classification.
+
+**M20-S20 report checkpoint (2026-07-31):** RAN:
+`.venv\Scripts\python.exe -m tax_graph.cli verify form-completeness --year 2025 --root .`
+-> `output/m20_s20_form_completeness.yaml`, completeness `0/28`, instruction coverage
+`52/68`, non-computed policy coverage `101/286`, policy plus form-face citation `0/286`.
+Current report origin totals are `derived=0`, `defaulted=0`, `authored=101`, reflecting the
+provider failure honestly. The current all-form policy mix is
+`computed=12, copied=7, decision_required=24, unsupported=185, user_entered=77`, with
+failover classes `computed_candidate=1, filer_election=60, filer_identity_admin=23,
+filer_supplied_value=101`. The report is the required force-added, fail-closed artifact.
+
+**M20-S20 focused-test evidence (2026-07-31):** The declared files are
+`tests/test_generated_review_m20.py`, `tests/test_form_completeness_m20.py`,
+`tests/test_extract_outline_m4.py`, `tests/test_extract_m16.py`, `tests/test_cli.py`,
+`tests/test_workbench_cells_api_m17.py`, `tests/test_workbench_m15.py`, and
+`tests/e2e/test_workbench_v2_m17.py`.
+
+RAN: `$testRoot='C:\Users\devbox\.codex\visualizations\2026\07\31\019fb9bd-1239-7c50-9667-182f491f1105\m20_s20_unit3'; New-Item -ItemType Directory -Force -Path $testRoot | Out-Null; $env:PYTEST_DEBUG_TEMPROOT=$testRoot; .venv\Scripts\python.exe -m pytest tests\test_extract_outline_m4.py tests\test_generated_review_m20.py tests\test_form_completeness_m20.py -q` -> 27 passed, 1 warning in 30.45s, before the provider-failure drafts overwrote the ignored successful drafts.
+
+RAN: `$testRoot='C:\Users\devbox\.codex\visualizations\2026\07\31\019fb9bd-1239-7c50-9667-182f491f1105\m20_s20_unit4'; New-Item -ItemType Directory -Force -Path $testRoot | Out-Null; $env:PYTEST_DEBUG_TEMPROOT=$testRoot; .venv\Scripts\python.exe -m pytest tests\test_extract_outline_m4.py tests\test_generated_review_m20.py tests\test_form_completeness_m20.py -q` -> 24 passed, 3 failed, 2 warnings in 30.14s. The three failures were generated-review assertions for line 1z, line 1a, and line 22, all caused by the current connection-error draft gaps.
+
+RAN: `$testRoot='C:\Users\devbox\.codex\visualizations\2026\07\31\019fb9bd-1239-7c50-9667-182f491f1105\m20_s20_unit7'; New-Item -ItemType Directory -Force -Path $testRoot | Out-Null; $env:PYTEST_DEBUG_TEMPROOT=$testRoot; .venv\Scripts\python.exe -m pytest tests\test_extract_outline_m4.py tests\test_form_completeness_m20.py -q` -> 22 passed, 1 warning in 0.86s. RAN: `$testRoot='C:\Users\devbox\.codex\visualizations\2026\07\31\019fb9bd-1239-7c50-9667-182f491f1105\m20_s20_generated_fixture2'; New-Item -ItemType Directory -Force -Path $testRoot | Out-Null; $env:PYTEST_DEBUG_TEMPROOT=$testRoot; .venv\Scripts\python.exe -m pytest tests\test_generated_review_m20.py -q -k 'background_policy'` -> 1 passed, 5 deselected, 1 warning in 2.09s.
+
+RAN: `$testRoot='C:\Users\devbox\.codex\visualizations\2026\07\31\019fb9bd-1239-7c50-9667-182f491f1105\m20_s20_consumers1'; New-Item -ItemType Directory -Force -Path $testRoot | Out-Null; $env:PYTEST_DEBUG_TEMPROOT=$testRoot; .venv\Scripts\python.exe -m pytest tests\test_extract_m16.py tests\test_cli.py tests\test_workbench_cells_api_m17.py tests\test_workbench_m15.py tests\e2e\test_workbench_v2_m17.py -q` -> 20 passed, 2 failed, 2 warnings in 242.83s. The API histogram failure and the browser line 33 citation failure both depend on the provider-failure draft, not on a promoted artifact change. RAN: `$testRoot='C:\Users\devbox\.codex\visualizations\2026\07\31\019fb9bd-1239-7c50-9667-182f491f1105\m20_s20_consumers2'; New-Item -ItemType Directory -Force -Path $testRoot | Out-Null; $env:PYTEST_DEBUG_TEMPROOT=$testRoot; .venv\Scripts\python.exe -m pytest tests\test_extract_m16.py tests\test_cli.py tests\test_workbench_m15.py -q` -> 14 passed, 1 warning in 18.72s. This includes the required D5 workbench boundary test.
+
+**M20-S20 verification gates (2026-07-31):** RAN: `.venv\Scripts\python.exe tools\check_ascii.py` -> `ASCII check OK`; RAN: `git diff --check` -> exit 0; RAN: `.venv\Scripts\python.exe -m tax_graph.cli validate 2025` -> graph integrity OK, 18 documents, 441 nodes, 401 citations; RAN: `.venv\Scripts\python.exe -m workbench.cli --root . --year 2025 preflight` -> passed, 18 entries, 2224 units, 2120 cells, `legacy_mined=394`; RAN: strict `check_graph_citations(year=2025, raw_store='.cache/raw', root='.')` -> `checked=401, strict_mismatches=36` (baseline). Protected graph and field-map diff checks are empty. Pending: stage the report and source/test changes, make the single local commit, then record its actual hash here. No push.
+
 **Worker session checkpoint - M20-S19 implementation (2026-07-31):** Global canary: Ledger
 Llama. Phase canary: Ground Truth. Model: GPT-5 Codex; effort/quota/context indicators are not
 exposed by this environment. John gave go via the current task request. Single declared step:

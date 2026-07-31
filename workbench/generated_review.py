@@ -23,7 +23,7 @@ GENERATED_REVIEW_DOCUMENTS = frozenset({
     "schedule_1_2025",
     "schedule_a_2025",
 })
-FULL_FORM_REVIEW_DOCUMENTS = frozenset({"form_1040_2025"})
+FULL_FORM_REVIEW_DOCUMENTS = GENERATED_REVIEW_DOCUMENTS
 
 
 def build_generated_document_cells(
@@ -143,7 +143,17 @@ def build_generated_document_cells(
             "USER_ENTRY": "user_entered",
             "IMPORTED": "imported",
         }.get(risk_bucket)
-        population_policy = _projected_policy(base_cell, background.get(str(base_cell.get("field_name") or "")), inferred_policy)
+        background_record = background.get(str(base_cell.get("field_name") or ""))
+        formula_resolved = kind != "review_gap"
+        # A background failover never replaces a formula or source result.
+        # This is the projection-side guard for controls such as Form 1040 line
+        # 32 whose field-map policy is stale but whose draft expression exists.
+        policy_background = None if formula_resolved else background_record
+        population_policy = (
+            inferred_policy
+            if formula_resolved and inferred_policy
+            else _projected_policy(base_cell, policy_background, inferred_policy)
+        )
         review_gap = str(formula.get("review_gap") or "")
         cell = dict(base_cell)
         cell.update(
@@ -173,13 +183,23 @@ def build_generated_document_cells(
                 "review_gap": review_gap or None,
                 "risk_bucket": risk_bucket,
                 "population_policy": population_policy or "review_gap",
+                "policy_origin": (
+                    "derived"
+                    if formula_resolved
+                    else _policy_origin(base_cell, background_record, population_policy)
+                ),
+                "policy_basis": (
+                    "formula_or_source"
+                    if formula_resolved
+                    else _policy_basis(base_cell, background_record)
+                ),
+                "policy_defaulted": False if formula_resolved else _policy_bool(background_record, "policy_defaulted"),
+                "policy_derived": True if formula_resolved else _policy_bool(background_record, "policy_derived"),
+                "failover_class": None if formula_resolved else _background_value(background_record, "failover_class"),
             }
         )
-        _apply_background_overlay(
-            cell,
-            background.get(str(base_cell.get("field_name") or "")),
-            spans,
-        )
+        if not formula_resolved:
+            _apply_background_overlay(cell, background_record, spans)
         generated_by_cell_id[str(base_cell["cell_id"])] = cell
 
     if document_id in FULL_FORM_REVIEW_DOCUMENTS:
@@ -560,6 +580,11 @@ def _apply_background_overlay(
     cell["instruction_citations"] = _merge_citations(cell.get("instruction_citations"), citations[1])
     cell["citations"] = cell["form_citations"]
     if str(background.get("population_policy") or "") == "unsupported":
+        cell["policy_origin"] = "review_gap"
+        cell["policy_basis"] = "unresolved"
+        cell["policy_defaulted"] = False
+        cell["policy_derived"] = False
+        cell["failover_class"] = _background_value(background, "failover_class")
         return
     if str(cell.get("population_policy") or "") != str(background.get("population_policy")):
         cell["population_policy"] = str(background["population_policy"])
@@ -567,6 +592,7 @@ def _apply_background_overlay(
             str(cell.get("official_ref") or "control"),
             str(background["population_policy"]),
             str(background.get("review_gap") or ""),
+            str(background.get("failover_class") or ""),
         )
         cell["operation"] = ""
         cell["inputs"] = []
@@ -575,6 +601,11 @@ def _apply_background_overlay(
     cell["missing_capability"] = None
     cell["generated_status"] = str(background.get("status") or "complete")
     cell["review_gap"] = str(background.get("review_gap") or "") or None
+    cell["policy_origin"] = str(background.get("policy_origin") or "derived")
+    cell["policy_basis"] = str(background.get("policy_basis") or "source_evidence")
+    cell["policy_defaulted"] = _policy_bool(background, "policy_defaulted")
+    cell["policy_derived"] = _policy_bool(background, "policy_derived")
+    cell["failover_class"] = _background_value(background, "failover_class")
 
 
 def _project_background_cell(
@@ -597,6 +628,7 @@ def _project_background_cell(
         str(base_cell.get("official_ref") or "control"),
         policy,
         review_gap,
+        str((background or {}).get("failover_class") or ""),
     )
     background_citations = _background_citations(background or {}, spans)
     status = str((background or {}).get("status") or ("authored" if authored_policy and authored_policy != "unsupported" else "review_gap"))
@@ -621,6 +653,11 @@ def _project_background_cell(
             "review_gap": review_gap or None,
             "risk_bucket": _background_risk_bucket(expression),
             "population_policy": policy,
+            "policy_origin": _policy_origin(base_cell, background, policy),
+            "policy_basis": _policy_basis(base_cell, background),
+            "policy_defaulted": _policy_bool(background, "policy_defaulted"),
+            "policy_derived": _policy_bool(background, "policy_derived"),
+            "failover_class": _background_value(background, "failover_class"),
         }
     )
     if background and policy != "unsupported":
@@ -631,18 +668,25 @@ def _project_background_cell(
     return cell
 
 
-def _background_expression(ref: str, policy: str, review_gap: str) -> dict[str, Any]:
+def _background_expression(
+    ref: str,
+    policy: str,
+    review_gap: str,
+    failover_class: str = "",
+) -> dict[str, Any]:
     if policy == "user_entered":
+        text = _failover_text("entered by filer", failover_class)
         return {
             "kind": "input",
-            "text": f"{ref} = entered by filer",
-            "source": {"kind": "input", "text": "entered by filer"},
+            "text": f"{ref} = {text}",
+            "source": {"kind": "input", "text": text},
         }
     if policy == "decision_required":
+        text = _failover_text("decision required", failover_class)
         return {
             "kind": "input",
-            "text": f"{ref} = decision required",
-            "source": {"kind": "input", "text": "decision required"},
+            "text": f"{ref} = {text}",
+            "source": {"kind": "input", "text": text},
         }
     if policy == "intentionally_blank":
         return {
@@ -680,6 +724,41 @@ def _background_citations(
         else:
             instructions.append(citation)
     return form, instructions
+
+
+def _background_value(background: dict[str, Any] | None, key: str) -> Any:
+    return None if not background else background.get(key)
+
+
+def _policy_bool(background: dict[str, Any] | None, key: str) -> bool:
+    return bool(_background_value(background, key))
+
+
+def _policy_origin(
+    base_cell: dict[str, Any],
+    background: dict[str, Any] | None,
+    policy: str,
+) -> str:
+    if background and background.get("policy_origin"):
+        return str(background["policy_origin"])
+    authored = str(base_cell.get("population_policy") or "")
+    if authored and authored != "unsupported":
+        return "authored"
+    return "review_gap" if policy in {"", "unsupported", "review_gap"} else "derived"
+
+
+def _policy_basis(base_cell: dict[str, Any], background: dict[str, Any] | None) -> str:
+    if background and background.get("policy_basis"):
+        return str(background["policy_basis"])
+    return "field_map" if str(base_cell.get("population_policy") or "") not in {"", "unsupported"} else "unresolved"
+
+
+def _failover_text(default: str, failover_class: str) -> str:
+    return {
+        "filer_election": "filer decision (ask at intake)",
+        "filer_identity_admin": "filer identity/admin (ask at intake)",
+        "filer_supplied_value": "filer-supplied value (ask at intake)",
+    }.get(failover_class, default)
 
 
 def _merge_citations(
