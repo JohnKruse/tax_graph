@@ -59,6 +59,27 @@ def test_form_completeness_distinguishes_complete_expression_and_gap(tmp_path: P
                 "wrong_owner_instruction_span_count": 1,
                 "wrong_owner_instruction_addresses": ["form_1040_2025_root_line_1z"],
                 "unresolved_line_refs": [{"code": "ambiguous_parent_source_line", "source_line": "11"}],
+                "background_controls": [
+                    {
+                        "field_name": "control_a",
+                        "address_id": "2025/document=form_1040/section=identity/control=a",
+                        "label": "Control A",
+                        "population_policy": "user_entered",
+                        "has_policy": True,
+                        "has_form_face_citation": True,
+                    },
+                    {
+                        "field_name": "control_b",
+                        "address_id": "2025/document=form_1040/section=identity/control=b",
+                        "label": "Control B",
+                        "population_policy": "unsupported",
+                        "has_policy": False,
+                        "review_gap": "policy extraction failed",
+                    },
+                ],
+                "background_policy_before": {"unsupported": 1, "user_entered": 1},
+                "background_policy_after": {"unsupported": 1, "user_entered": 1},
+                "background_policy_progress": 0,
             },
             sort_keys=False,
         ),
@@ -94,15 +115,25 @@ def test_form_completeness_distinguishes_complete_expression_and_gap(tmp_path: P
     )
     item = report["by_document"]["form_1040_2025"]
 
-    assert report["measurement"] == "m20_s18_form_completeness"
+    assert report["measurement"] == "m20_s19_form_completeness"
     assert report["totals"] == {
         "formula_cells": 4,
+        "policy_controls": 2,
+        "policy_controls_with_policy": 1,
+        "policy_and_form_face_citation": 1,
+        "policy_coverage_rate": pytest.approx(1 / 2),
+        "policy_and_form_face_citation_rate": pytest.approx(1 / 2),
         "expression_and_verbatim_citation": 2,
         "expression_and_form_face_citation": 2,
         "expression_and_both_citations": 1,
         "completeness_rate": pytest.approx(1 / 2),
     }
     assert item["expression_and_form_face_citation"] == 2
+    assert item["policy_controls"] == 2
+    assert item["policy_controls_with_policy"] == 1
+    assert item["policy_and_form_face_citation"] == 1
+    assert item["background_policy_progress"] == 0
+    assert item["background_policy_review_gaps"][0]["field_name"] == "control_b"
     assert item["expression_and_instruction_page_citation"] == 1
     assert item["expression_and_both_citations"] == 1
     assert item["instruction_review_cells"] == 4
@@ -115,5 +146,5 @@ def test_form_completeness_distinguishes_complete_expression_and_gap(tmp_path: P
     assert item["handcrafted_diff"]["flag_only"] is True
 
     path = write_form_completeness_report(report, root=tmp_path)
-    assert path.name == "m20_s18_form_completeness.yaml"
+    assert path.name == "m20_s19_form_completeness.yaml"
     assert "handcrafted expression set" not in path.read_text(encoding="ascii").lower()

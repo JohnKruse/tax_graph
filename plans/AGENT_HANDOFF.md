@@ -14,6 +14,46 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## Current state (2026-07-31)
 
+**Worker session checkpoint - M20-S19 implementation (2026-07-31):** Global canary: Ledger
+Llama. Phase canary: Ground Truth. Model: GPT-5 Codex; effort/quota/context indicators are not
+exposed by this environment. John gave go via the current task request. Single declared step:
+bring the background controls back into generated review, classify the existing authored
+policies without model calls, generate only unsupported controls with fail-closed gaps, extend
+completeness for non-computed policy-plus-form-face citation coverage, and report the policy mix
+before/after. Applicable defect-ledger entries: D9, D6, and the exact RAN/NOT RUN evidence rule;
+D4 applies if session-backed workbench tests are touched. No draft promotion, hand-authoring,
+live graph edit, verdict write, or operation enum change is in scope. Protected graph and live
+verdict artifacts are untouched at session start.
+
+**M20-S19 focused-test declaration (2026-07-31):** Declared files are
+`tests/test_generated_review_m20.py`, `tests/test_form_completeness_m20.py`,
+`tests/test_extract_outline_m4.py`, `tests/test_extract_m16.py`, `tests/test_cli.py`,
+`tests/test_workbench_cells_api_m17.py`, `tests/test_workbench_m15.py`, and
+`tests/e2e/test_workbench_v2_m17.py`.
+The set covers policy projection and unsupported-control generation, the extended completeness
+metric, outline-pipeline consumers, source extraction schema, CLI reporting, and the API/browser
+consumers of the expanded generated review surface.
+
+**M20-S19 deterministic implementation checkpoint (2026-07-31):** The draft-only background
+policy stage and complete Form 1040 projection are in place. Authored policies are carried
+without model calls; unsupported controls receive one bounded policy call with code-resolved
+identity and a required verbatim form-face quote, while failures remain named gaps. RAN:
+`$testRoot = 'C:\\Users\\devbox\\.codex\\visualizations\\2026\\07\\31\\019fb8d5-ccf2-7073-8824-42fdb7d3f6fd\\m20_s19_unit_round4'; New-Item -ItemType Directory -Force -Path $testRoot | Out-Null; $env:PYTEST_DEBUG_TEMPROOT = $testRoot; & .venv\\Scripts\\python.exe -m pytest tests\\test_extract_outline_m4.py tests\\test_generated_review_m20.py tests\\test_form_completeness_m20.py -q` -> 26 passed, 1 warning in 28.77s. This was the deterministic pre-extraction checkpoint; no live graph or verdict artifact had changed.
+
+**M20-S19 extraction-cap checkpoint (2026-07-31):** The first approved-network extraction
+attempt was NOT RUN as acceptance evidence: the sequential 119-call background pass exceeded
+the 600-second worker cap and was terminated with exit 124 before draft writeout. The persisted
+observability log records the cause (`tax_graph_background_policy`, several-second calls), not
+a silent success. The implementation now uses bounded concurrency (default 8, configurable)
+with copied run context so every provider call remains attributed and results are serialized in
+field-map order. RAN: `$testRoot = 'C:\\Users\\devbox\\.codex\\visualizations\\2026\\07\\31\\019fb8d5-ccf2-7073-8824-42fdb7d3f6fd\\m20_s19_unit_round5'; New-Item -ItemType Directory -Force -Path $testRoot | Out-Null; $env:PYTEST_DEBUG_TEMPROOT = $testRoot; & .venv\\Scripts\\python.exe -m pytest tests\\test_extract_outline_m4.py tests\\test_generated_review_m20.py tests\\test_form_completeness_m20.py -q` -> 26 passed, 1 warning in 28.63s. No live graph or verdict artifact has changed.
+
+**M20-S19 draft extraction checkpoint (2026-07-31):** RAN: `.venv\\Scripts\\python.exe -m tax_graph.cli extract --doc form_1040_2025 --year 2025 --root .` -> exit 0; `auto_accepted=0`, `human_review=173`, `deterministic_issues=122`, runtime 366.5s. The draft contains 199 physical controls: 80 carried authored policies, 17 newly resolved unsupported controls, and 102 named review gaps. Policy mix changed from `computed=7, copied=7, decision_required=24, unsupported=119, user_entered=42` to `computed=7, copied=7, decision_required=34, unsupported=102, user_entered=49`. No promoted graph, live verdict, or human-review claim changed.
+
+**M20-S19 verification checkpoint (2026-07-31):** The first downstream consumer run found and corrected the pre-S19 API histogram assertion; the rerun is the acceptance evidence. RAN: `$testRoot = 'C:\\Users\\devbox\\.codex\\visualizations\\2026\\07\\31\\019fb8d5-ccf2-7073-8824-42fdb7d3f6fd\\m20_s19_unit_round7'; New-Item -ItemType Directory -Force -Path $testRoot | Out-Null; $env:PYTEST_DEBUG_TEMPROOT = $testRoot; & .venv\\Scripts\\python.exe -m pytest tests\\test_extract_m16.py tests\\test_cli.py tests\\test_workbench_cells_api_m17.py tests\\test_workbench_m15.py -q` -> 18 passed, 1 warning in 104.41s. RAN: `$testRoot = 'C:\\Users\\devbox\\.codex\\visualizations\\2026\\07\\31\\019fb8d5-ccf2-7073-8824-42fdb7d3f6fd\\m20_s19_e2e_round1'; New-Item -ItemType Directory -Force -Path $testRoot | Out-Null; $env:PYTEST_DEBUG_TEMPROOT = $testRoot; & .venv\\Scripts\\python.exe -m pytest tests\\e2e\\test_workbench_v2_m17.py -q` -> 4 passed, 1 warning in 127.65s. RAN: `$testRoot = 'C:\\Users\\devbox\\.codex\\visualizations\\2026\\07\\31\\019fb8d5-ccf2-7073-8824-42fdb7d3f6fd\\m20_s19_unit_round8'; New-Item -ItemType Directory -Force -Path $testRoot | Out-Null; $env:PYTEST_DEBUG_TEMPROOT = $testRoot; & .venv\\Scripts\\python.exe -m pytest tests\\test_extract_outline_m4.py tests\\test_generated_review_m20.py tests\\test_form_completeness_m20.py -q` -> 26 passed, 1 warning in 29.37s. Every declared focused file is covered; `tests/test_workbench_m15.py` was added because D5 requires it for any `workbench/` change.
+
+**M20-S19 gate checkpoint (2026-07-31):** RAN: `.venv\\Scripts\\python.exe -m tax_graph.cli verify form-completeness --year 2025 --root .` -> report `output/m20_s19_form_completeness.yaml`, primary `28/28 (100.0%)`, instruction `55/68 (80.9%)`, secondary non-computed policy `83/185 (44.9%)`, policy plus form-face citation `17/185 (9.2%)`. RAN: `.venv\\Scripts\\python.exe tools\\check_ascii.py` -> `ASCII check OK`. RAN: `git diff --check` -> exit 0. RAN: `.venv\\Scripts\\python.exe -m tax_graph.cli validate 2025` -> graph integrity OK, 18 documents, 441 nodes, 401 citations. RAN: `.venv\\Scripts\\python.exe -m workbench.cli --root . --year 2025 preflight` -> passed, 18 entries, 2224 units, 2120 cells, `legacy_mined=394`. RAN: strict citation check with `check_graph_citations(year=2025, raw_store='.cache/raw', root='.')` -> `checked=401, strict_mismatches=36` (existing baseline). Protected graph and `review_verdicts/2025` diffs are empty.
+
 **Worker session checkpoint - M20-S18 implementation (2026-07-31):** Global canary: Ledger
 Llama. Phase canary: Ground Truth. Model: GPT-5 Codex; effort/quota/context indicators are not
 exposed by this environment. John gave go via the current task request. Single declared step:

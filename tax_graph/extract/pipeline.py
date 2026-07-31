@@ -149,6 +149,7 @@ def _merge_expression_batch(base: Any, expression_batch: Any) -> Any:
         year=base.year,
         objects=merged,
         llm_calls=[*base.llm_calls, *expression_batch.llm_calls],
+        micro_stats=base.micro_stats,
     )
 
 

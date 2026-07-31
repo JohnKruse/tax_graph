@@ -9,6 +9,7 @@ from typing import Any
 from tax_graph.config import get_config_value
 from tax_graph.documents import document_class_for
 from tax_graph.extract.assembly import FormulaAssemblyFinding, _resolve_source_line, assemble_formula_plan
+from tax_graph.extract.background import extract_background_controls
 from tax_graph.extract.outline_checks import run_outline_artifact_checks
 from tax_graph.extract.llm_client import LlmClient, response_telemetry
 from tax_graph.extract.micro import extract_formula_plan, extract_non_formula_source
@@ -211,6 +212,15 @@ def generate_outline_first_drafts(
             stats=micro_stats,
             llm_calls=llm_calls,
         )
+    background_stats, background_calls = extract_background_controls(
+        document,
+        spans,
+        client=client,
+        config=config,
+        root=root,
+    )
+    micro_stats.update(background_stats)
+    llm_calls.extend(background_calls)
     objects.extend(assemble_table_subunits(document, outline, objects, model="deterministic-table-detector"))
     objects.extend(_schedule_d_band_tables(document, outline.children, model="deterministic-schedule-d-band-detector"))
     objects.extend(_schedule_d_not_modeled_document(document, outline.children, model="deterministic-schedule-d-scope"))

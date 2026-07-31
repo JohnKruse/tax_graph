@@ -7,8 +7,10 @@ import shutil
 
 import jsonschema
 import pytest
+import yaml
 
 from tax_graph.extract.assembly import FormulaAssemblyFinding, assemble_formula_plan, realize_outbound_flows
+from tax_graph.extract.background import extract_background_controls
 from tax_graph.extract.outline_pipeline import _formula_outline_nodes, generate_outline_first_drafts
 from tax_graph.extract.outline_pipeline import _resolve_declared_source, _spans_for_outline_node
 from tax_graph.extract.pipeline import extract_document
@@ -102,6 +104,86 @@ class PromptAwareMicroClient:
                 },
             ]
         }
+
+
+@pytest.mark.m20
+def test_background_policy_calls_only_for_unsupported_and_resolves_identity_in_code(tmp_path):
+    field_map = tmp_path / "graph" / "2025" / "field_maps"
+    field_map.mkdir(parents=True)
+    (field_map / "form_1040_2025.yaml").write_text(
+        yaml.safe_dump(
+            {
+                "field_dispositions": [
+                    {
+                        "field_name": "known",
+                        "label": "Known filer name",
+                        "population_policy": "user_entered",
+                        "value_format": "text",
+                    },
+                    {
+                        "field_name": "unknown",
+                        "label": "Combat zone name",
+                        "population_policy": "unsupported",
+                        "value_format": "text",
+                        "address_id": "2025/document=form_1040/section=header/control=combat_zone_name",
+                    },
+                ]
+            },
+            sort_keys=False,
+        ),
+        encoding="ascii",
+    )
+    document = SourceDocumentInput(
+        document_id="form_1040_2025",
+        kind="tax_form",
+        year="2025",
+        url="https://example.test/form.pdf",
+        text="Combat zone name\n",
+        text_path=tmp_path / "form.txt",
+        fields={"fields": [{"field_name": "unknown", "page": 1}]},
+    )
+    spans = [
+        CandidateSpan(
+            span_id="span_form",
+            document_id=document.document_id,
+            relationship="source",
+            locator="page 1, line 1",
+            text="Combat zone name",
+        ),
+        CandidateSpan(
+            span_id="span_instruction",
+            document_id="instructions_form_1040_2025",
+            relationship="instructions",
+            locator="page 1, line 2",
+            text="If you served in a combat zone, enter the name.",
+        ),
+    ]
+
+    client = FakeMicroClient(
+        {
+            "population_policy": "user_entered",
+            "quote": "Combat zone name",
+            "reason": "The filer supplies the name when applicable.",
+        }
+    )
+    stats, calls = extract_background_controls(
+        document,
+        spans,
+        client=client,
+        config={"llm": {"model": "mock"}},
+        root=tmp_path,
+    )
+
+    assert len(client.calls) == 1
+    assert "known" not in client.calls[0]["prompt"]
+    assert "address_id" not in client.calls[0]["prompt"]
+    assert stats["background_controls_attempted"] == 1
+    assert stats["background_controls_succeeded"] == 1
+    assert stats["background_policy_before"]["unsupported"] == 1
+    assert stats["background_policy_after"]["user_entered"] == 2
+    assert stats["background_policy_progress"] == 1
+    assert stats["background_controls"][1]["citation_span_ids"] == ["span_form"]
+    assert calls == []
 
 
 @pytest.mark.m20

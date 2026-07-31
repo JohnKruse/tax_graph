@@ -644,6 +644,12 @@ def verify_form_completeness_command(
             }
         )
     )
+    print(
+        "  non-computed policy coverage: {policy_controls_with_policy}/{policy_controls} "
+        "({policy_coverage_rate:.1%}); policy + form-face citation: "
+        "{policy_and_form_face_citation}/{policy_controls} "
+        "({policy_and_form_face_citation_rate:.1%})".format(**totals)
+    )
     print("  handcrafted expression set: review flag only")
     return 0
 

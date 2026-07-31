@@ -1,0 +1,744 @@
+schema_version: 1
+measurement: m20_s19_form_completeness
+tax_year: 2025
+primary_metric: expression_and_form_face_citation_over_formula_cells
+secondary_metric: policy_and_form_face_citation_over_non_computed_controls
+handcrafted_expression_set:
+  status: review_flag_only
+  note: Disagreements are retained to direct human review; they are not scored as
+    accuracy.
+totals:
+  formula_cells: 28
+  policy_controls: 185
+  policy_controls_with_policy: 83
+  policy_and_form_face_citation: 17
+  policy_coverage_rate: 0.4486486486486487
+  policy_and_form_face_citation_rate: 0.0918918918918919
+  expression_and_verbatim_citation: 28
+  expression_and_form_face_citation: 28
+  expression_and_both_citations: 19
+  completeness_rate: 1.0
+by_document:
+  form_1040_2025:
+    formula_cells: 17
+    policy_controls: 185
+    policy_controls_with_policy: 83
+    policy_and_form_face_citation: 17
+    policy_coverage_rate: 0.4486486486486487
+    policy_and_form_face_citation_rate: 0.0918918918918919
+    background_policy_before:
+      computed: 7
+      copied: 7
+      decision_required: 24
+      unsupported: 119
+      user_entered: 42
+    background_policy_after:
+      computed: 7
+      copied: 7
+      decision_required: 34
+      unsupported: 102
+      user_entered: 49
+    background_policy_progress: 17
+    background_policy_review_gaps:
+    - field_name: topmostSubform[0].Page1[0].f1_01[0]
+      address_id: 2025/document=form_1040/section=return_header/control=other_tax_year_beginning
+      label: "year Jan. 1\u2013Dec. 31, 2025, or other tax year beginning - f1_01"
+      review_gap: 'background policy extraction failed: MicroExtractionError: background
+        policy quote has no form-face citation'
+    - field_name: topmostSubform[0].Page1[0].f1_02[0]
+      address_id: 2025/document=form_1040/section=return_header/control=other_tax_year_ending
+      label: 31, 2025, or other tax year beginning , 2025, ending - f1_02
+      review_gap: 'background policy extraction failed: MicroExtractionError: background
+        policy quote has no form-face citation'
+    - field_name: topmostSubform[0].Page1[0].f1_03[0]
+      address_id: 2025/document=form_1040/section=return_header/control=other_tax_year_ending_suffix
+      label: or other tax year beginning , 2025, ending , 20 - f1_03
+      review_gap: 'background policy extraction failed: MicroExtractionError: background
+        policy quote has no form-face citation'
+    - field_name: topmostSubform[0].Page1[0].c1_1[0]
+      address_id: 2025/document=form_1040/section=return_header/option=section_301_9100_2
+      label: Presidential election campaign - You
+      review_gap: 'background policy extraction failed: MicroExtractionError: background
+        policy quote has no form-face citation'
+    - field_name: topmostSubform[0].Page1[0].f1_04[0]
+      address_id: 2025/document=form_1040/section=return_header/control=combat_zone_name
+      label: Filed pursuant to section 301.9100-2 Combat zone - f1_04
+      review_gap: model could not establish a supported control policy
+    - field_name: topmostSubform[0].Page1[0].c1_3[0]
+      address_id: 2025/document=form_1040/section=return_header/option=taxpayer_deceased
+      label: Filed pursuant to section 301.9100-2 Combat zone - c1_3
+      review_gap: model could not establish a supported control policy
+    - field_name: topmostSubform[0].Page1[0].f1_05[0]
+      address_id: 2025/document=form_1040/section=return_header/control=taxpayer_deceased_month
+      label: Filed pursuant to section 301.9100-2 Combat zone Deceased - f1_05
+      review_gap: 'background policy extraction failed: MicroExtractionError: background
+        policy quote has no form-face citation'
+    - field_name: topmostSubform[0].Page1[0].f1_06[0]
+      address_id: 2025/document=form_1040/section=return_header/control=taxpayer_deceased_day
+      label: Filed pursuant to section 301.9100-2 Combat zone Deceased MM / - f1_06
+      review_gap: 'background policy extraction failed: MicroExtractionError: background
+        policy quote has no form-face citation'
+    - field_name: topmostSubform[0].Page1[0].f1_07[0]
+      address_id: 2025/document=form_1040/section=return_header/control=taxpayer_deceased_year
+      label: to section 301.9100-2 Combat zone Deceased MM / DD / - f1_07
+      review_gap: 'background policy extraction failed: MicroExtractionError: background
+        policy quote has no form-face citation'
+    - field_name: topmostSubform[0].Page1[0].f1_08[0]
+      address_id: 2025/document=form_1040/section=return_header/control=spouse_deceased_month
+      label: 301.9100-2 Combat zone Deceased MM / DD / YYYY Spouse - f1_08
+      review_gap: 'background policy extraction failed: MicroExtractionError: background
+        policy quote has no form-face citation'
+    - field_name: topmostSubform[0].Page1[0].f1_09[0]
+      address_id: 2025/document=form_1040/section=return_header/control=spouse_deceased_day
+      label: zone Deceased MM / DD / YYYY Spouse MM / - f1_09
+      review_gap: 'background policy extraction failed: MicroExtractionError: background
+        policy quote has no form-face citation'
+    - field_name: topmostSubform[0].Page1[0].f1_10[0]
+      address_id: 2025/document=form_1040/section=return_header/control=spouse_deceased_year
+      label: MM / DD / YYYY Spouse MM / DD / - f1_10
+      review_gap: 'background policy extraction failed: MicroExtractionError: background
+        policy quote has no form-face citation'
+    - field_name: topmostSubform[0].Page1[0].c1_4[0]
+      address_id: 2025/document=form_1040/section=return_header/option=other_filing_designation
+      label: Presidential election campaign - Spouse
+      review_gap: 'background policy extraction failed: MicroExtractionError: background
+        policy quote has no form-face citation'
+    - field_name: topmostSubform[0].Page1[0].f1_11[0]
+      address_id: 2025/document=form_1040/section=return_header/control=other_filing_designation_text
+      label: Other - f1_11
+      review_gap: 'background policy extraction failed: MicroExtractionError: background
+        policy quote has no form-face citation'
+    - field_name: topmostSubform[0].Page1[0].f1_12[0]
+      address_id: 2025/document=form_1040/section=return_header/control=other_filing_designation_text
+      label: Other - f1_12
+      review_gap: 'background policy extraction failed: MicroExtractionError: background
+        policy quote has no form-face citation'
+    - field_name: topmostSubform[0].Page1[0].f1_13[0]
+      address_id: 2025/document=form_1040/section=return_header/control=other_filing_designation_text
+      label: Other - f1_13
+      review_gap: 'background policy extraction failed: MicroExtractionError: background
+        policy quote has no form-face citation'
+    - field_name: topmostSubform[0].Page1[0].c1_5[0]
+      address_id: 2025/document=form_1040/section=identity/option=main_home_joint_return
+      label: Line a - more a than joint half return, of 2025. was in - c1_5
+      review_gap: 'background policy extraction failed: MicroExtractionError: background
+        policy quote has no form-face citation'
+    - field_name: topmostSubform[0].Page1[0].c1_6[0]
+      address_id: 2025/document=form_1040/section=identity/option=presidential_election_you
+      label: Digital assets - No
+      review_gap: 'background policy extraction failed: MicroExtractionError: background
+        policy quote has no form-face citation'
+    - field_name: topmostSubform[0].Page1[0].c1_7[0]
+      address_id: 2025/document=form_1040/section=identity/option=presidential_election_spouse
+      label: You - c1_7
+      review_gap: 'background policy extraction failed: MicroExtractionError: background
+        policy quote has no form-face citation'
+    - field_name: topmostSubform[0].Page1[0].Checkbox_ReadOrder[0].f1_28[0]
+      address_id: 2025/document=form_1040/section=filing_status/control=mfs_spouse_full_name
+      label: 'and full name here: - f1_28'
+      review_gap: 'background policy extraction failed: MicroExtractionError: background
+        policy quote has no form-face citation'
+    - field_name: topmostSubform[0].Page1[0].f1_29[0]
+      address_id: 2025/document=form_1040/section=filing_status/control=hoh_qss_child_name
+      label: 'Line a - and full name here: - f1_29'
+      review_gap: 'background policy extraction failed: MicroExtractionError: background
+        policy quote has no form-face citation'
+    - field_name: topmostSubform[0].Page1[0].c1_9[0]
+      address_id: 2025/document=form_1040/section=filing_status/option=nonresident_alien_spouse_election
+      label: Line a - c1_9
+      review_gap: 'background policy extraction failed: MicroExtractionError: background
+        policy quote has no form-face citation'
+    - field_name: topmostSubform[0].Page1[0].f1_30[0]
+      address_id: 2025/document=form_1040/section=filing_status/control=nonresident_alien_spouse_name
+      label: 'Line a - name (see instructions and attach statement if required): -
+        f1_30'
+      review_gap: 'background policy extraction failed: MicroExtractionError: background
+        policy quote has no form-face citation'
+    - field_name: topmostSubform[0].Page1[0].c1_10[0]
+      address_id: 2025/document=form_1040/section=digital_assets/option=yes
+      label: Line 1 - financial interest in a digital asset)? (See instructions.)
+        . . - c1_10
+      review_gap: 'background policy extraction failed: MicroExtractionError: background
+        policy quote has no form-face citation'
+    - field_name: topmostSubform[0].Page1[0].c1_10[1]
+      address_id: 2025/document=form_1040/section=digital_assets/option=no
+      label: Line 1 - interest in a digital asset)? (See instructions.) . . Yes -
+        c1_10
+      review_gap: 'background policy extraction failed: MicroExtractionError: background
+        policy quote has no form-face citation'
+    - field_name: topmostSubform[0].Page1[0].Dependents_ReadOrder[0].c1_11[0]
+      address_id: 2025/document=form_1040/table=dependents/option=more_than_four
+      label: and here check . . - c1_11
+      review_gap: 'background policy extraction failed: MicroExtractionError: background
+        policy quote has no form-face citation'
+    - field_name: topmostSubform[0].Page1[0].c1_32[0]
+      address_id: 2025/document=form_1040/section=filing_status/option=mfs_hoh_lived_apart
+      label: More than four dependents
+      review_gap: 'background policy extraction failed: MicroExtractionError: background
+        policy quote has no form-face citation'
+    - field_name: topmostSubform[0].Page1[0].f1_56[0]
+      address_id: 2025/document=form_1040/line=1i/control=amount
+      label: Line 1i - (see instructions) . . . . . . . 1i - f1_56
+      review_gap: 'background policy extraction failed: MicroExtractionError: background
+        policy quote has no form-face citation'
+    - field_name: topmostSubform[0].Page1[0].f1_58[0]
+      address_id: 2025/document=form_1040/line=2a/control=amount
+      label: Line 2b - Attach Sch. B 2a Tax-exempt interest . . . 2a - f1_58
+      review_gap: 'background policy extraction failed: MicroExtractionError: background
+        policy quote has no form-face citation'
+    - field_name: topmostSubform[0].Page1[0].c1_33[0]
+      address_id: 2025/document=form_1040/line=3c/option=line_3a
+      label: "Line 3b - c Check if your child\u2019s dividends are included in 1 -\
+        \ c1_33"
+      review_gap: 'background policy extraction failed: MicroExtractionError: background
+        policy quote has no form-face citation'
+    - field_name: topmostSubform[0].Page1[0].c1_34[0]
+      address_id: 2025/document=form_1040/line=3c/option=line_3b
+      label: "Line 3b - your child\u2019s dividends are included in 1 Line 3a 2 -\
+        \ c1_34"
+      review_gap: 'background policy extraction failed: MicroExtractionError: background
+        policy quote has no form-face citation'
+    - field_name: topmostSubform[0].Page1[0].f1_62[0]
+      address_id: 2025/document=form_1040/line=4a/control=amount
+      label: Line 4b - 4a IRA distributions . . . . 4a - f1_62
+      review_gap: 'background policy extraction failed: MicroExtractionError: background
+        policy quote has no form-face citation'
+    - field_name: topmostSubform[0].Page1[0].f1_63[0]
+      address_id: 2025/document=form_1040/line=4b/control=amount
+      label: Line 4b - b Taxable amount . . . . . . 4b - f1_63
+      review_gap: 'background policy extraction failed: MicroExtractionError: background
+        policy quote has no form-face citation'
+    - field_name: topmostSubform[0].Page1[0].c1_35[0]
+      address_id: 2025/document=form_1040/line=4c/option=rollover
+      label: Line c - Check if (see instructions) . . . . . 1 - c1_35
+      review_gap: 'background policy extraction failed: MicroExtractionError: background
+        policy quote has no form-face citation'
+    - field_name: topmostSubform[0].Page1[0].c1_36[0]
+      address_id: 2025/document=form_1040/line=4c/option=qcd
+      label: Line c - (see instructions) . . . . . 1 Rollover 2 - c1_36
+      review_gap: 'background policy extraction failed: MicroExtractionError: background
+        policy quote has no form-face citation'
+    - field_name: topmostSubform[0].Page1[0].c1_37[0]
+      address_id: 2025/document=form_1040/line=4c/option=other_word_or_code
+      label: Line c - . . . . . 1 Rollover 2 QCD 3 - c1_37
+      review_gap: 'background policy extraction failed: MicroExtractionError: background
+        policy quote has no form-face citation'
+    - field_name: topmostSubform[0].Page1[0].f1_64[0]
+      address_id: 2025/document=form_1040/line=4c/control=text
+      label: Line c - . . . . . 1 Rollover 2 QCD 3 - f1_64
+      review_gap: 'background policy extraction failed: MicroExtractionError: background
+        policy quote has no form-face citation'
+    - field_name: topmostSubform[0].Page1[0].f1_65[0]
+      address_id: 2025/document=form_1040/line=5a/control=amount
+      label: Line 5b - 5a Pensions and annuities . . 5a - f1_65
+      review_gap: 'background policy extraction failed: MicroExtractionError: background
+        policy quote has no form-face citation'
+    - field_name: topmostSubform[0].Page1[0].f1_66[0]
+      address_id: 2025/document=form_1040/line=5b/control=amount
+      label: Line 5b - b Taxable amount . . . . . . 5b - f1_66
+      review_gap: 'background policy extraction failed: MicroExtractionError: background
+        policy quote has no form-face citation'
+    - field_name: topmostSubform[0].Page1[0].c1_38[0]
+      address_id: 2025/document=form_1040/line=5c/option=rollover
+      label: Line c - Check if (see instructions) . . . . . 1 - c1_38
+      review_gap: 'background policy extraction failed: MicroExtractionError: background
+        policy quote has no form-face citation'
+    - field_name: topmostSubform[0].Page1[0].c1_39[0]
+      address_id: 2025/document=form_1040/line=5c/option=pso
+      label: Line c - (see instructions) . . . . . 1 Rollover 2 - c1_39
+      review_gap: 'background policy extraction failed: MicroExtractionError: background
+        policy quote has no form-face citation'
+    - field_name: topmostSubform[0].Page1[0].c1_40[0]
+      address_id: 2025/document=form_1040/line=5c/option=other_word_or_code
+      label: Line c - . . . . . 1 Rollover 2 PSO 3 - c1_40
+      review_gap: 'background policy extraction failed: MicroExtractionError: background
+        policy quote has no form-face citation'
+    - field_name: topmostSubform[0].Page1[0].f1_67[0]
+      address_id: 2025/document=form_1040/line=5c/control=text
+      label: Line c - . . . . . 1 Rollover 2 PSO 3 - f1_67
+      review_gap: 'background policy extraction failed: MicroExtractionError: background
+        policy quote has no form-face citation'
+    - field_name: topmostSubform[0].Page1[0].f1_68[0]
+      address_id: 2025/document=form_1040/line=6a/control=amount
+      label: Line 6b - 6a Social security benefits . . 6a - f1_68
+      review_gap: 'background policy extraction failed: MicroExtractionError: background
+        policy quote has no form-face citation'
+    - field_name: topmostSubform[0].Page1[0].f1_69[0]
+      address_id: 2025/document=form_1040/line=6b/control=amount
+      label: Line 6b - b Taxable amount . . . . . . 6b - f1_69
+      review_gap: 'background policy extraction failed: MicroExtractionError: background
+        policy quote has no form-face citation'
+    - field_name: topmostSubform[0].Page1[0].c1_42[0]
+      address_id: 2025/document=form_1040/line=6d/option=mfs_lived_apart
+      label: Line d - from your spouse the entire year (see inst.), check here - c1_42
+      review_gap: 'background policy extraction failed: MicroExtractionError: background
+        policy quote has no form-face citation'
+    - field_name: topmostSubform[0].Page1[0].c1_43[0]
+      address_id: 2025/document=form_1040/line=7b/option=schedule_d_not_required
+      label: 'Line b - b Check if: - c1_43'
+      review_gap: 'background policy extraction failed: MicroExtractionError: background
+        policy quote has no form-face citation'
+    - field_name: topmostSubform[0].Page1[0].c1_44[0]
+      address_id: 2025/document=form_1040/line=7b/option=child_capital_gain
+      label: 'Line b - b Check if: Schedule D not required - c1_44'
+      review_gap: 'background policy extraction failed: MicroExtractionError: background
+        policy quote has no form-face citation'
+    - field_name: topmostSubform[0].Page2[0].c2_1[0]
+      address_id: 2025/document=form_1040/line=12a/option=you_as_dependent
+      label: Line 12a - Credits 12a Someone can claim - c2_1
+      review_gap: 'background policy extraction failed: MicroExtractionError: background
+        policy quote has no form-face citation'
+    - field_name: topmostSubform[0].Page2[0].c2_3[0]
+      address_id: 2025/document=form_1040/line=12b/option=spouse_itemizes
+      label: Line b - b - c2_3
+      review_gap: 'background policy extraction failed: MicroExtractionError: background
+        policy quote has no form-face citation'
+    - field_name: topmostSubform[0].Page2[0].c2_5[0]
+      address_id: 2025/document=form_1040/line=12d/option=you_born_before_1961
+      label: 'Line d - d You: - c2_5'
+      review_gap: 'background policy extraction failed: MicroExtractionError: background
+        policy quote has no form-face citation'
+    - field_name: topmostSubform[0].Page2[0].c2_6[0]
+      address_id: 2025/document=form_1040/line=12d/option=you_blind
+      label: 'Line d - d You: Were born before January 2, 1961 - c2_6'
+      review_gap: 'background policy extraction failed: MicroExtractionError: background
+        policy quote has no form-face citation'
+    - field_name: topmostSubform[0].Page2[0].c2_7[0]
+      address_id: 2025/document=form_1040/line=12d/option=spouse_born_before_1961
+      label: 'Line 12e - Standard Spouse: - c2_7'
+      review_gap: 'background policy extraction failed: MicroExtractionError: background
+        policy quote has no form-face citation'
+    - field_name: topmostSubform[0].Page2[0].c2_8[0]
+      address_id: 2025/document=form_1040/line=12d/option=spouse_blind
+      label: 'Line 12e - Standard Spouse: Was born before January 2, 1961 - c2_8'
+      review_gap: 'background policy extraction failed: MicroExtractionError: background
+        policy quote has no form-face citation'
+    - field_name: topmostSubform[0].Page2[0].f2_03[0]
+      address_id: 2025/document=form_1040/line=13a/control=amount
+      label: Line 13a - . . . . . . . . . 13a - f2_03
+      review_gap: 'background policy extraction failed: MicroExtractionError: background
+        policy quote has no form-face citation'
+    - field_name: topmostSubform[0].Page2[0].f2_09[0]
+      address_id: 2025/document=form_1040/line=17/control=amount
+      label: Line 17 - . . . . . . . . . 17 - f2_09
+      review_gap: 'background policy extraction failed: MicroExtractionError: background
+        policy quote has no form-face citation'
+    - field_name: topmostSubform[0].Page2[0].f2_10[0]
+      address_id: 2025/document=form_1040/line=18/control=amount
+      label: Line 18 - . . . . . . . . . 18 - f2_10
+      review_gap: 'background policy extraction failed: MicroExtractionError: background
+        policy quote has no form-face citation'
+    - field_name: topmostSubform[0].Page2[0].f2_11[0]
+      address_id: 2025/document=form_1040/line=19/control=amount
+      label: Line 19 - . . . . . . . . . 19 - f2_11
+      review_gap: 'background policy extraction failed: MicroExtractionError: background
+        policy quote has no form-face citation'
+    - field_name: topmostSubform[0].Page2[0].f2_12[0]
+      address_id: 2025/document=form_1040/line=20/control=amount
+      label: Line 20 - . . . . . . . . . 20 - f2_12
+      review_gap: 'background policy extraction failed: MicroExtractionError: background
+        policy quote has no form-face citation'
+    - field_name: topmostSubform[0].Page2[0].f2_13[0]
+      address_id: 2025/document=form_1040/line=21/control=amount
+      label: Line a - . . . . . . . . . 21 - f2_13
+      review_gap: 'background policy extraction failed: MicroExtractionError: background
+        policy quote has no form-face citation'
+    - field_name: topmostSubform[0].Page2[0].f2_14[0]
+      address_id: 2025/document=form_1040/line=22/control=amount
+      label: Line 22 - . . . . . . . . . 22 - f2_14
+      review_gap: 'background policy extraction failed: MicroExtractionError: background
+        policy quote has no form-face citation'
+    - field_name: topmostSubform[0].Page2[0].f2_15[0]
+      address_id: 2025/document=form_1040/line=23/control=amount
+      label: Line 23 - . . . . . . . . . 23 - f2_15
+      review_gap: 'background policy extraction failed: MicroExtractionError: background
+        policy quote has no form-face citation'
+    - field_name: topmostSubform[0].Page2[0].f2_16[0]
+      address_id: 2025/document=form_1040/line=24/control=amount
+      label: Line 24 - . . . . . . . . . 24 - f2_16
+      review_gap: 'background policy extraction failed: MicroExtractionError: background
+        policy quote has no form-face citation'
+    - field_name: topmostSubform[0].Page2[0].f2_17[0]
+      address_id: 2025/document=form_1040/line=25a/control=amount
+      label: Line 25a - . . . . . . . . . 25a - f2_17
+      review_gap: 'background policy extraction failed: MicroExtractionError: background
+        policy quote has no form-face citation'
+    - field_name: topmostSubform[0].Page2[0].f2_18[0]
+      address_id: 2025/document=form_1040/line=25b/control=amount
+      label: Line 25b - . . . . . . . . . 25b - f2_18
+      review_gap: 'background policy extraction failed: MicroExtractionError: background
+        policy quote has no form-face citation'
+    - field_name: topmostSubform[0].Page2[0].f2_19[0]
+      address_id: 2025/document=form_1040/line=25c/control=amount
+      label: Line 25c - . . . . . . . . . 25c - f2_19
+      review_gap: 'background policy extraction failed: MicroExtractionError: background
+        policy quote has no form-face citation'
+    - field_name: topmostSubform[0].Page2[0].f2_20[0]
+      address_id: 2025/document=form_1040/line=25d/control=amount
+      label: Line 25d - . . . . . . . . . 25d - f2_20
+      review_gap: 'background policy extraction failed: MicroExtractionError: background
+        policy quote has no form-face citation'
+    - field_name: topmostSubform[0].Page2[0].f2_21[0]
+      address_id: 2025/document=form_1040/line=26/control=amount
+      label: Line 26 - . . . . . . . . . 26 - f2_21
+      review_gap: 'background policy extraction failed: MicroExtractionError: background
+        policy quote has no form-face citation'
+    - field_name: topmostSubform[0].Page2[0].SSN_ReadOrder[0].f2_22[0]
+      address_id: 2025/document=form_1040/line=26/control=identifier
+      label: 'Line a - If you have a enter their SSN (see instructions): - f2_22'
+      review_gap: 'background policy extraction failed: MicroExtractionError: background
+        policy quote has no form-face citation'
+    - field_name: topmostSubform[0].Page2[0].f2_23[0]
+      address_id: 2025/document=form_1040/line=27a/control=amount
+      label: Line 27a - . . . . . . . . . 27a - f2_23
+      review_gap: 'background policy extraction failed: MicroExtractionError: background
+        policy quote has no form-face citation'
+    - field_name: topmostSubform[0].Page2[0].c2_12[0]
+      address_id: 2025/document=form_1040/line=27b/option=clergy_schedule_se
+      label: Line b - . . . . . . . . . . - c2_12
+      review_gap: 'background policy extraction failed: MicroExtractionError: background
+        policy quote has no form-face citation'
+    - field_name: topmostSubform[0].Page2[0].c2_13[0]
+      address_id: 2025/document=form_1040/line=27c/option=do_not_claim_eic
+      label: Line c - . . . . . . . . . . - c2_13
+      review_gap: 'background policy extraction failed: MicroExtractionError: background
+        policy quote has no form-face citation'
+    - field_name: topmostSubform[0].Page2[0].Line28_ReadOrder[0].c2_14[0]
+      address_id: 2025/document=form_1040/line=28/option=do_not_claim_actc
+      label: Line 28 - . . . . . . . . . . - c2_14
+      review_gap: 'background policy extraction failed: MicroExtractionError: background
+        policy quote has no form-face citation'
+    - field_name: topmostSubform[0].Page2[0].f2_24[0]
+      address_id: 2025/document=form_1040/line=28/control=amount
+      label: Line 28 - . . . . . . . . . 28 - f2_24
+      review_gap: 'background policy extraction failed: MicroExtractionError: background
+        policy quote has no form-face citation'
+    - field_name: topmostSubform[0].Page2[0].f2_25[0]
+      address_id: 2025/document=form_1040/line=29/control=amount
+      label: Line 29 - line 8 . . . . . . . 29 - f2_25
+      review_gap: 'background policy extraction failed: MicroExtractionError: background
+        policy quote has no form-face citation'
+    - field_name: topmostSubform[0].Page2[0].f2_26[0]
+      address_id: 2025/document=form_1040/line=30/control=amount
+      label: Line 30 - 8839, line 13 . . . . . . 30 - f2_26
+      review_gap: 'background policy extraction failed: MicroExtractionError: background
+        policy quote has no form-face citation'
+    - field_name: topmostSubform[0].Page2[0].f2_27[0]
+      address_id: 2025/document=form_1040/line=31/control=amount
+      label: Line 31 - . . . . . . . . . 31 - f2_27
+      review_gap: 'background policy extraction failed: MicroExtractionError: background
+        policy quote has no form-face citation'
+    - field_name: topmostSubform[0].Page2[0].f2_29[0]
+      address_id: 2025/document=form_1040/line=33/control=amount
+      label: Line 33 - . . . . . . . . . 33 - f2_29
+      review_gap: 'background policy extraction failed: MicroExtractionError: background
+        policy quote has no form-face citation'
+    - field_name: topmostSubform[0].Page2[0].RoutingNo[0].f2_32[0]
+      address_id: 2025/document=form_1040/line=35b/control=identifier
+      label: Line b - Direct deposit? b Routing number - f2_32
+      review_gap: 'background policy extraction failed: MicroExtractionError: background
+        policy quote has no form-face citation'
+    - field_name: topmostSubform[0].Page2[0].c2_16[1]
+      address_id: 2025/document=form_1040/line=35c/option=savings
+      label: 'Line b - Direct deposit? b Routing number c Type: Checking - c2_16'
+      review_gap: 'background policy extraction failed: MicroExtractionError: background
+        policy quote has no form-face citation'
+    - field_name: topmostSubform[0].Page2[0].AccountNo[0].f2_33[0]
+      address_id: 2025/document=form_1040/line=35d/control=identifier
+      label: Line d - See instructions. d Account number - f2_33
+      review_gap: 'background policy extraction failed: MicroExtractionError: background
+        policy quote has no form-face citation'
+    - field_name: topmostSubform[0].Page2[0].f2_34[0]
+      address_id: 2025/document=form_1040/line=36/control=amount
+      label: Line 36 - applied to your 2026 estimated tax . . . 36 - f2_34
+      review_gap: 'background policy extraction failed: MicroExtractionError: background
+        policy quote has no form-face citation'
+    - field_name: topmostSubform[0].Page2[0].f2_35[0]
+      address_id: 2025/document=form_1040/line=37/control=amount
+      label: Line 37 - instructions . . . . . . . . 37 - f2_35
+      review_gap: 'background policy extraction failed: MicroExtractionError: background
+        policy quote has no form-face citation'
+    - field_name: topmostSubform[0].Page2[0].f2_36[0]
+      address_id: 2025/document=form_1040/line=38/control=amount
+      label: Line 38 - . . . . . . . . . 38 - f2_36
+      review_gap: 'background policy extraction failed: MicroExtractionError: background
+        policy quote has no form-face citation'
+    - field_name: topmostSubform[0].Page2[0].c2_17[0]
+      address_id: 2025/document=form_1040/section=third_party_designee/option=yes
+      label: person to discuss this return with the IRS? See instructions. - c2_17
+      review_gap: 'background policy extraction failed: MicroExtractionError: background
+        policy quote has no form-face citation'
+    - field_name: topmostSubform[0].Page2[0].c2_17[1]
+      address_id: 2025/document=form_1040/section=third_party_designee/option=no
+      label: this return with the IRS? See instructions. Yes. Complete below. - c2_17
+      review_gap: 'background policy extraction failed: MicroExtractionError: background
+        policy quote has no form-face citation'
+    - field_name: topmostSubform[0].Page2[0].f2_37[0]
+      address_id: 2025/document=form_1040/section=third_party_designee/control=name
+      label: "Designee\u2019s name - f2_37"
+      review_gap: 'background policy extraction failed: MicroExtractionError: background
+        policy quote has no form-face citation'
+    - field_name: topmostSubform[0].Page2[0].f2_38[0]
+      address_id: 2025/document=form_1040/section=third_party_designee/control=phone
+      label: "Designee\u2019s name Phone no. - f2_38"
+      review_gap: 'background policy extraction failed: MicroExtractionError: background
+        policy quote has no form-face citation'
+    - field_name: topmostSubform[0].Page2[0].f2_39[0]
+      address_id: 2025/document=form_1040/section=third_party_designee/control=pin
+      label: "Designee\u2019s name Phone no. Personal number (PIN) identification\
+        \ - f2_39"
+      review_gap: 'background policy extraction failed: MicroExtractionError: background
+        policy quote has no form-face citation'
+    - field_name: topmostSubform[0].Page2[0].f2_40[0]
+      address_id: 2025/document=form_1040/section=sign_here/control=your_occupation
+      label: Paid preparer name
+      review_gap: 'background policy extraction failed: MicroExtractionError: background
+        policy quote has no form-face citation'
+    - field_name: topmostSubform[0].Page2[0].f2_41[0]
+      address_id: 2025/document=form_1040/section=sign_here/control=your_ip_pin
+      label: (see inst.) - f2_41
+      review_gap: 'background policy extraction failed: MicroExtractionError: background
+        policy quote has no form-face citation'
+    - field_name: topmostSubform[0].Page2[0].f2_42[0]
+      address_id: 2025/document=form_1040/section=sign_here/control=spouse_occupation
+      label: Line a - Keep your records. a copy for - f2_42
+      review_gap: 'background policy extraction failed: MicroExtractionError: background
+        policy quote has no form-face citation'
+    - field_name: topmostSubform[0].Page2[0].f2_43[0]
+      address_id: 2025/document=form_1040/section=sign_here/control=spouse_ip_pin
+      label: Line a - Keep your records. a copy for (see inst.) - f2_43
+      review_gap: 'background policy extraction failed: MicroExtractionError: background
+        policy quote has no form-face citation'
+    - field_name: topmostSubform[0].Page2[0].f2_44[0]
+      address_id: 2025/document=form_1040/section=sign_here/control=phone
+      label: Phone no. - f2_44
+      review_gap: 'background policy extraction failed: MicroExtractionError: background
+        policy quote has no form-face citation'
+    - field_name: topmostSubform[0].Page2[0].f2_45[0]
+      address_id: 2025/document=form_1040/section=sign_here/control=email
+      label: Phone no. Email address - f2_45
+      review_gap: 'background policy extraction failed: MicroExtractionError: background
+        policy quote has no form-face citation'
+    - field_name: topmostSubform[0].Page2[0].f2_46[0]
+      address_id: 2025/document=form_1040/section=paid_preparer/control=name
+      label: Preparer - f2_46
+      review_gap: 'background policy extraction failed: MicroExtractionError: background
+        policy quote has no form-face citation'
+    - field_name: topmostSubform[0].Page2[0].f2_47[0]
+      address_id: 2025/document=form_1040/section=paid_preparer/control=ptin
+      label: Preparer - f2_47
+      review_gap: 'background policy extraction failed: MicroExtractionError: background
+        policy quote has no form-face citation'
+    - field_name: topmostSubform[0].Page2[0].c2_18[0]
+      address_id: 2025/document=form_1040/section=paid_preparer/option=self_employed
+      label: Preparer - c2_18
+      review_gap: 'background policy extraction failed: MicroExtractionError: background
+        policy quote has no form-face citation'
+    - field_name: topmostSubform[0].Page2[0].f2_48[0]
+      address_id: 2025/document=form_1040/section=paid_preparer/control=firm_name
+      label: "Use Only Firm\u2019s name - f2_48"
+      review_gap: 'background policy extraction failed: MicroExtractionError: background
+        policy quote has no form-face citation'
+    - field_name: topmostSubform[0].Page2[0].f2_49[0]
+      address_id: 2025/document=form_1040/section=paid_preparer/control=phone
+      label: "Use Only Firm\u2019s name Phone no. - f2_49"
+      review_gap: 'background policy extraction failed: MicroExtractionError: background
+        policy quote has no form-face citation'
+    - field_name: topmostSubform[0].Page2[0].f2_50[0]
+      address_id: 2025/document=form_1040/section=paid_preparer/control=firm_address
+      label: "Firm\u2019s address - f2_50"
+      review_gap: 'background policy extraction failed: MicroExtractionError: background
+        policy quote has no form-face citation'
+    - field_name: topmostSubform[0].Page2[0].f2_51[0]
+      address_id: 2025/document=form_1040/section=paid_preparer/control=firm_ein
+      label: "Firm\u2019s address Firm\u2019s EIN - f2_51"
+      review_gap: 'background policy extraction failed: MicroExtractionError: background
+        policy quote has no form-face citation'
+    expression_and_verbatim_citation: 17
+    expression_and_form_face_citation: 17
+    expression_and_instruction_page_citation: 12
+    expression_and_both_citations: 12
+    expression_without_citation: 0
+    neither_expression_nor_citation: 0
+    completeness_rate: 1.0
+    instruction_review_cells: 57
+    instruction_page_citation_before: 48
+    instruction_page_citation: 48
+    instruction_page_citation_rate: 0.8421052631578947
+    instruction_page_citation_missing_cells:
+    - target_cell_id: form_1040_2025_root_line_11a
+      line_anchor: 11a
+      review_gap: ''
+    - target_cell_id: form_1040_2025_root_line_11b
+      line_anchor: 11b
+      review_gap: ''
+    - target_cell_id: form_1040_2025_root_line_25d
+      line_anchor: 25d
+      review_gap: ''
+    - target_cell_id: form_1040_2025_root_line_32
+      line_anchor: '32'
+      review_gap: ''
+    - target_cell_id: form_1040_2025_root_line_33
+      line_anchor: '33'
+      review_gap: ''
+    - target_cell_id: form_1040_2025_root_line_25a
+      line_anchor: 25a
+      review_gap: ''
+    - target_cell_id: form_1040_2025_root_line_25b
+      line_anchor: 25b
+      review_gap: ''
+    - target_cell_id: form_1040_2025_root_line_25c
+      line_anchor: 25c
+      review_gap: source reference did not resolve to a canonical line
+    - target_cell_id: form_1040_2025_root_line_31
+      line_anchor: '31'
+      review_gap: ''
+    expression_without_citation_cells: []
+    review_gaps: []
+    wrong_owner_instruction_spans: 45
+    wrong_owner_instruction_addresses:
+    - form_1040_2025_root_line_11a
+    - form_1040_2025_root_line_11b
+    - form_1040_2025_root_line_14
+    - form_1040_2025_root_line_15
+    - form_1040_2025_root_line_18
+    - form_1040_2025_root_line_1z
+    - form_1040_2025_root_line_21
+    - form_1040_2025_root_line_22
+    - form_1040_2025_root_line_24
+    - form_1040_2025_root_line_25d
+    - form_1040_2025_root_line_34
+    - form_1040_2025_root_line_35a
+    - form_1040_2025_root_line_36
+    - form_1040_2025_root_line_37
+    - form_1040_2025_root_line_9
+    unresolved_line_refs: []
+    resolved_models:
+    - google/gemini-3.6-flash
+    resolved_providers:
+    - Google AI Studio
+    prompt_tokens: 71054
+    completion_tokens: 60154
+    total_tokens: 131208
+    cost: 0.557736
+    handcrafted_diff:
+      flag_only: true
+      note: The handcrafted set is a review-prioritization flag, not a grade.
+      counts:
+        expression_agreement: 3
+        extra_in_draft: 11
+        missing_in_draft: 14
+        operation_agreement_operands_differ: 2
+        operation_disagreement: 1
+  schedule_1_2025:
+    formula_cells: 4
+    policy_controls: 0
+    policy_controls_with_policy: 0
+    policy_and_form_face_citation: 0
+    policy_coverage_rate: 0.0
+    policy_and_form_face_citation_rate: 0.0
+    background_policy_before: {}
+    background_policy_after: {}
+    background_policy_progress: 0
+    background_policy_review_gaps: []
+    expression_and_verbatim_citation: 4
+    expression_and_form_face_citation: 4
+    expression_and_instruction_page_citation: 4
+    expression_and_both_citations: 4
+    expression_without_citation: 0
+    neither_expression_nor_citation: 0
+    completeness_rate: 1.0
+    instruction_review_cells: 4
+    instruction_page_citation_before: 4
+    instruction_page_citation: 4
+    instruction_page_citation_rate: 1.0
+    instruction_page_citation_missing_cells: []
+    expression_without_citation_cells: []
+    review_gaps: []
+    wrong_owner_instruction_spans: 20
+    wrong_owner_instruction_addresses:
+    - schedule_1_2025_section_1_part_i_additional_income_line_10
+    - schedule_1_2025_section_1_part_i_additional_income_line_9
+    - schedule_1_2025_section_2_part_ii_adjustments_to_income_line_25
+    - schedule_1_2025_section_2_part_ii_adjustments_to_income_line_26
+    unresolved_line_refs: []
+    resolved_models:
+    - google/gemini-3.6-flash
+    resolved_providers:
+    - Google AI Studio
+    prompt_tokens: 3194
+    completion_tokens: 3330
+    total_tokens: 6524
+    cost: 0.029766
+    handcrafted_diff:
+      flag_only: true
+      note: The handcrafted set is a review-prioritization flag, not a grade.
+      counts:
+        expression_agreement: 2
+        operation_agreement_operands_differ: 2
+  schedule_a_2025:
+    formula_cells: 7
+    policy_controls: 0
+    policy_controls_with_policy: 0
+    policy_and_form_face_citation: 0
+    policy_coverage_rate: 0.0
+    policy_and_form_face_citation_rate: 0.0
+    background_policy_before: {}
+    background_policy_after: {}
+    background_policy_progress: 0
+    background_policy_review_gaps: []
+    expression_and_verbatim_citation: 7
+    expression_and_form_face_citation: 7
+    expression_and_instruction_page_citation: 3
+    expression_and_both_citations: 3
+    expression_without_citation: 0
+    neither_expression_nor_citation: 0
+    completeness_rate: 1.0
+    instruction_review_cells: 7
+    instruction_page_citation_before: 3
+    instruction_page_citation: 3
+    instruction_page_citation_rate: 0.42857142857142855
+    instruction_page_citation_missing_cells:
+    - target_cell_id: schedule_a_2025_section_1_schedule_a_itemized_deductions_line_3
+      line_anchor: '3'
+      review_gap: ''
+    - target_cell_id: schedule_a_2025_section_1_schedule_a_itemized_deductions_line_4
+      line_anchor: '4'
+      review_gap: ''
+    - target_cell_id: schedule_a_2025_section_1_schedule_a_itemized_deductions_line_5d
+      line_anchor: 5d
+      review_gap: ''
+    - target_cell_id: schedule_a_2025_section_1_schedule_a_itemized_deductions_line_7
+      line_anchor: '7'
+      review_gap: ''
+    - target_cell_id: schedule_a_2025_section_1_schedule_a_itemized_deductions_line_8e
+      line_anchor: 8e
+      review_gap: ''
+    - target_cell_id: schedule_a_2025_section_1_schedule_a_itemized_deductions_line_10
+      line_anchor: '10'
+      review_gap: ''
+    - target_cell_id: schedule_a_2025_section_1_schedule_a_itemized_deductions_line_14
+      line_anchor: '14'
+      review_gap: ''
+    expression_without_citation_cells: []
+    review_gaps: []
+    wrong_owner_instruction_spans: 2
+    wrong_owner_instruction_addresses:
+    - schedule_a_2025_section_1_schedule_a_itemized_deductions_line_3
+    - schedule_a_2025_section_1_schedule_a_itemized_deductions_line_5d
+    unresolved_line_refs: []
+    resolved_models:
+    - google/gemini-3.6-flash
+    resolved_providers:
+    - Google AI Studio
+    prompt_tokens: 4975
+    completion_tokens: 2415
+    total_tokens: 7390
+    cost: 0.025575
+    handcrafted_diff:
+      flag_only: true
+      note: The handcrafted set is a review-prioritization flag, not a grade.
+      counts:
+        extra_in_draft: 6
+        missing_in_draft: 4
+        operation_agreement_operands_differ: 1

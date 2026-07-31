@@ -1,10 +1,11 @@
 """Measure draft completeness against each form's deterministic outline.
 
 This report is intentionally independent of the retired handcrafted expression
-set. A cell is complete only when the outline pass attempted it, produced an
-expression rule, and attached a verbatim form-face citation. Instruction-page
-citations augment the review record but never gate completeness. Missing work
-is a named review gap rather than an absent row in a score.
+set. A formula cell is complete only when the outline pass attempted it, produced
+an expression rule, and attached a verbatim form-face citation. Non-computed
+physical controls are measured separately: they need a reasoned policy and a
+verbatim form-face citation, not a formula expression. Instruction-page citations
+augment both records but never gate completeness.
 """
 
 from __future__ import annotations
@@ -47,6 +48,22 @@ def build_form_completeness_report(
         draft_dir = draft_root / document_id
         stats = _load_mapping(draft_dir / "micro_extraction.yaml")
         cells = [item for item in stats.get("formula_cells", []) if isinstance(item, dict)]
+        background_controls = [
+            item for item in stats.get("background_controls", [])
+            if isinstance(item, dict)
+        ]
+        policy_controls = [
+            item for item in background_controls
+            if str(item.get("population_policy") or "") not in {"computed", "copied"}
+        ]
+        policy_complete = [
+            item for item in policy_controls
+            if item.get("has_policy") and str(item.get("population_policy") or "") != "unsupported"
+        ]
+        policy_with_form_face = [
+            item for item in policy_complete
+            if _has_form_face_citation(item)
+        ]
         review_cells = _review_line_records(
             stats,
             _load_mapping(draft_dir / "outline.yaml"),
@@ -96,6 +113,17 @@ def build_form_completeness_report(
         llm_calls = [item for item in metrics.get("llm_calls", []) if isinstance(item, dict)]
         rendered[document_id] = {
             "formula_cells": len(cells),
+            "policy_controls": len(policy_controls),
+            "policy_controls_with_policy": len(policy_complete),
+            "policy_and_form_face_citation": len(policy_with_form_face),
+            "policy_coverage_rate": len(policy_complete) / len(policy_controls) if policy_controls else 0.0,
+            "policy_and_form_face_citation_rate": len(policy_with_form_face) / len(policy_controls) if policy_controls else 0.0,
+            "background_policy_before": dict(stats.get("background_policy_before", {})),
+            "background_policy_after": dict(stats.get("background_policy_after", {})),
+            "background_policy_progress": int(stats.get("background_policy_progress", 0)),
+            "background_policy_review_gaps": _background_refs(
+                [item for item in policy_controls if not item.get("has_policy")]
+            ),
             "expression_and_verbatim_citation": len(complete),
             "expression_and_form_face_citation": sum(
                 bool(item.get("has_expression")) and _has_form_face_citation(item)
@@ -149,17 +177,26 @@ def build_form_completeness_report(
         }
     total_cells = sum(item["formula_cells"] for item in rendered.values())
     total_complete = sum(item["expression_and_verbatim_citation"] for item in rendered.values())
+    total_policy_controls = sum(item["policy_controls"] for item in rendered.values())
+    total_policy_complete = sum(item["policy_controls_with_policy"] for item in rendered.values())
+    total_policy_with_form_face = sum(item["policy_and_form_face_citation"] for item in rendered.values())
     return {
         "schema_version": 1,
-        "measurement": "m20_s18_form_completeness",
+        "measurement": "m20_s19_form_completeness",
         "tax_year": int(year),
         "primary_metric": "expression_and_form_face_citation_over_formula_cells",
+        "secondary_metric": "policy_and_form_face_citation_over_non_computed_controls",
         "handcrafted_expression_set": {
             "status": "review_flag_only",
             "note": "Disagreements are retained to direct human review; they are not scored as accuracy.",
         },
         "totals": {
             "formula_cells": total_cells,
+            "policy_controls": total_policy_controls,
+            "policy_controls_with_policy": total_policy_complete,
+            "policy_and_form_face_citation": total_policy_with_form_face,
+            "policy_coverage_rate": total_policy_complete / total_policy_controls if total_policy_controls else 0.0,
+            "policy_and_form_face_citation_rate": total_policy_with_form_face / total_policy_controls if total_policy_controls else 0.0,
             "expression_and_verbatim_citation": total_complete,
             "expression_and_form_face_citation": total_complete,
             "expression_and_both_citations": sum(
@@ -179,7 +216,7 @@ def write_form_completeness_report(
 ) -> Path:
     """Write the completeness report as deterministic ASCII YAML."""
     root_path = Path(root).resolve() if root is not None else project_root()
-    path = Path(output_path) if output_path is not None else root_path / "output" / "m20_s18_form_completeness.yaml"
+    path = Path(output_path) if output_path is not None else root_path / "output" / "m20_s19_form_completeness.yaml"
     if not path.is_absolute():
         path = root_path / path
     path.parent.mkdir(parents=True, exist_ok=True)
@@ -288,6 +325,19 @@ def _cell_refs(cells: list[dict[str, Any]]) -> list[dict[str, Any]]:
             "target_cell_id": str(item.get("target_cell_id", "")),
             "line_anchor": str(item.get("line_anchor", "")),
             "review_gap": str(item.get("review_gap", "")),
+        }
+        for item in cells
+    ]
+
+
+def _background_refs(cells: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """Return unresolved physical controls without hiding their reason."""
+    return [
+        {
+            "field_name": str(item.get("field_name") or ""),
+            "address_id": str(item.get("address_id") or ""),
+            "label": str(item.get("label") or ""),
+            "review_gap": str(item.get("review_gap") or "policy is unresolved"),
         }
         for item in cells
     ]

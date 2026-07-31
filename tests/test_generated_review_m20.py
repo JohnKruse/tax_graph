@@ -8,6 +8,7 @@ import json
 import jsonschema
 import pytest
 
+from workbench import generated_review
 from workbench.generated_review import build_generated_document_cells
 
 
@@ -22,7 +23,7 @@ pytestmark = pytest.mark.skipif(
 @pytest.mark.m20
 def test_generated_review_projects_formula_and_source_cells_with_provenance() -> None:
     expected = {
-        "form_1040_2025": 57,
+        "form_1040_2025": 199,
         "schedule_1_2025": 4,
         "schedule_a_2025": 7,
     }
@@ -31,10 +32,11 @@ def test_generated_review_projects_formula_and_source_cells_with_provenance() ->
         assert len(result.cells) == count
         assert all(cell["generated"] is True for cell in result.cells)
         assert all(cell["review_source"] == "draft_only" for cell in result.cells)
-        assert all(cell["generated_model"] == "google/gemini-3.6-flash" for cell in result.cells)
-        assert all(cell["generated_provider"] == "Google AI Studio" for cell in result.cells)
+        assert all(cell["generated_model"] for cell in result.cells)
+        assert all(cell["generated_provider"] for cell in result.cells)
     generated = build_generated_document_cells(ROOT, 2025, "form_1040_2025").cells
     assert sum(cell["generated_status"] == "review_gap" for cell in generated) < len(generated)
+    assert any(cell["generated_model"] == "deterministic-authored-policy" for cell in generated)
 
 
 @pytest.mark.m20
@@ -79,3 +81,51 @@ def test_generated_review_renders_structured_math_for_humans() -> None:
     schema = json.loads((ROOT / "schemas" / "review_expression.schema.json").read_text(encoding="utf-8"))
     for cell in result.cells:
         jsonschema.validate(cell["expression"], schema)
+
+
+@pytest.mark.m20
+def test_generated_review_projects_background_policy_and_form_face_citation(monkeypatch) -> None:
+    draft = {
+        "micro_extraction": {
+            "formula_cells": [
+                {
+                    "target_cell_id": "form_1040_2025_root_line_1z",
+                    "line_anchor": "1z",
+                    "status": "review_gap",
+                    "review_gap": "fixture gap",
+                }
+            ],
+            "background_controls": [
+                {
+                    "field_name": "topmostSubform[0].Page1[0].f1_04[0]",
+                    "population_policy": "user_entered",
+                    "status": "complete",
+                    "has_policy": True,
+                    "reason": "The filer supplies the combat-zone name.",
+                    "citation_span_ids": ["span_form_face"],
+                }
+            ],
+        },
+        "outline": {},
+        "rules": [],
+        "edges": [],
+        "citations": [],
+        "candidate_spans": [
+            {
+                "span_id": "span_form_face",
+                "document_id": "form_1040_2025",
+                "relationship": "source",
+                "locator": "page 1, line 1",
+                "text": "Combat zone",
+            }
+        ],
+        "metrics": {"llm_calls": []},
+    }
+    monkeypatch.setattr(generated_review, "_load_draft", lambda *args, **kwargs: draft)
+
+    result = build_generated_document_cells(ROOT, 2025, "form_1040_2025")
+    cell = next(item for item in result.cells if item["field_name"].endswith("f1_04[0]"))
+    assert cell["population_policy"] == "user_entered"
+    assert cell["expression"]["text"] == "Header = entered by filer"
+    assert cell["form_citations"][0]["quoted_text"] == "Combat zone"
+    assert cell["citations"] is cell["form_citations"]

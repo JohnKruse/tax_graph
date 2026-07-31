@@ -1,9 +1,9 @@
-"""Project draft-only generated formula cells into the review workbench.
+"""Project draft-only generated cells into the review workbench.
 
 This module is a read-only workbench projection.  It never promotes draft
 objects and it never edits the graph.  The form geometry remains the physical
-spine; generated draft records only replace the content shown for the small
-formula-cell review slice.
+spine; generated draft records add formula and background-policy evidence to
+the complete physical cell inventory.
 """
 
 from __future__ import annotations
@@ -23,6 +23,7 @@ GENERATED_REVIEW_DOCUMENTS = frozenset({
     "schedule_1_2025",
     "schedule_a_2025",
 })
+FULL_FORM_REVIEW_DOCUMENTS = frozenset({"form_1040_2025"})
 
 
 def build_generated_document_cells(
@@ -46,12 +47,13 @@ def build_generated_document_cells(
     if document_id not in GENERATED_REVIEW_DOCUMENTS:
         return base
     draft = _load_draft(Path(root), year, document_id)
-    formula_cells = draft.get("micro_extraction", {}).get("formula_cells", [])
+    micro = draft.get("micro_extraction", {})
+    formula_cells = micro.get("formula_cells", [])
     if not isinstance(formula_cells, list):
         raise ValueError(f"generated draft has no formula_cells list: {document_id}")
     if not formula_cells:
         raise ValueError(f"generated draft has no formula cells: {document_id}")
-    non_formula_cells = draft.get("micro_extraction", {}).get("non_formula_cells", [])
+    non_formula_cells = micro.get("non_formula_cells", [])
     records = [item for item in formula_cells + (non_formula_cells if isinstance(non_formula_cells, list) else []) if isinstance(item, dict)]
     records = _ensure_line_review_records(records, draft.get("outline"), document_id)
 
@@ -59,10 +61,11 @@ def build_generated_document_cells(
     edges = _records(draft.get("edges"))
     citations = _citation_index(draft.get("citations"))
     spans = _span_index(draft.get("candidate_spans"))
+    background = _background_index(micro)
     instruction_ids_by_line = _instruction_span_index(spans)
     provenance = _provenance(draft.get("metrics"))
     cells_by_anchor = _cells_by_anchor(base.cells)
-    generated: list[dict[str, Any]] = []
+    generated_by_cell_id: dict[str, dict[str, Any]] = {}
     for formula in records:
         anchor = _normalize_anchor(formula.get("line_anchor"))
         matches = cells_by_anchor.get(anchor, [])
@@ -134,12 +137,13 @@ def build_generated_document_cells(
             risk_bucket = expression_kind_bucket(kind)
         except ValueError:
             risk_bucket = "NOT_REVIEWABLE"
-        population_policy = {
+        inferred_policy = {
             "ARITHMETIC": "computed",
             "COPY": "copied",
             "USER_ENTRY": "user_entered",
             "IMPORTED": "imported",
         }.get(risk_bucket)
+        population_policy = _projected_policy(base_cell, background.get(str(base_cell.get("field_name") or "")), inferred_policy)
         review_gap = str(formula.get("review_gap") or "")
         cell = dict(base_cell)
         cell.update(
@@ -171,9 +175,31 @@ def build_generated_document_cells(
                 "population_policy": population_policy or "review_gap",
             }
         )
-        generated.append(cell)
-    if len(generated) != len(records):
+        _apply_background_overlay(
+            cell,
+            background.get(str(base_cell.get("field_name") or "")),
+            spans,
+        )
+        generated_by_cell_id[str(base_cell["cell_id"])] = cell
+
+    if document_id in FULL_FORM_REVIEW_DOCUMENTS:
+        for base_cell in base.cells:
+            cell_id = str(base_cell["cell_id"])
+            if cell_id in generated_by_cell_id:
+                continue
+            generated_by_cell_id[cell_id] = _project_background_cell(
+                base_cell,
+                background.get(str(base_cell.get("field_name") or "")),
+                spans,
+                provenance=provenance,
+            )
+        expected_count = len(base.cells)
+    else:
+        expected_count = len(records)
+
+    if len(generated_by_cell_id) != expected_count:
         raise ValueError(f"generated draft cells were not projected: {document_id}")
+    generated = list(generated_by_cell_id.values())
     generated.sort(key=lambda item: (int(item.get("order", 0)), str(item.get("cell_id"))))
     return DocumentCells(
         document_id=base.document_id,
@@ -494,3 +520,181 @@ def _span_citation(span: dict[str, Any]) -> dict[str, Any]:
         "source_document_id": span.get("document_id"),
         "resolved": True,
     }
+
+
+def _background_index(micro: Any) -> dict[str, dict[str, Any]]:
+    """Index draft-only background records by their code-resolved field name."""
+    if not isinstance(micro, dict):
+        return {}
+    return {
+        str(item.get("field_name")): dict(item)
+        for item in micro.get("background_controls", []) or []
+        if isinstance(item, dict) and item.get("field_name")
+    }
+
+
+def _projected_policy(
+    base_cell: dict[str, Any],
+    background: dict[str, Any] | None,
+    inferred: str | None,
+) -> str:
+    """Keep authored policy authoritative; replace unsupported only with a draft result."""
+    authored = str(base_cell.get("population_policy") or "")
+    if authored and authored != "unsupported":
+        return authored
+    if background and str(background.get("population_policy") or "") != "unsupported":
+        return str(background["population_policy"])
+    return authored or inferred or "review_gap"
+
+
+def _apply_background_overlay(
+    cell: dict[str, Any],
+    background: dict[str, Any] | None,
+    spans: dict[str, dict[str, Any]],
+) -> None:
+    """Apply a generated policy only when the draft record is for this field."""
+    if not background:
+        return
+    citations = _background_citations(background, spans)
+    cell["form_citations"] = _merge_citations(cell.get("form_citations") or cell.get("citations"), citations[0])
+    cell["instruction_citations"] = _merge_citations(cell.get("instruction_citations"), citations[1])
+    cell["citations"] = cell["form_citations"]
+    if str(background.get("population_policy") or "") == "unsupported":
+        return
+    if str(cell.get("population_policy") or "") != str(background.get("population_policy")):
+        cell["population_policy"] = str(background["population_policy"])
+        cell["expression"] = _background_expression(
+            str(cell.get("official_ref") or "control"),
+            str(background["population_policy"]),
+            str(background.get("review_gap") or ""),
+        )
+        cell["operation"] = ""
+        cell["inputs"] = []
+    cell["policy_reason"] = str(background.get("reason") or "") or None
+    cell["downstream_effect"] = None
+    cell["missing_capability"] = None
+    cell["generated_status"] = str(background.get("status") or "complete")
+    cell["review_gap"] = str(background.get("review_gap") or "") or None
+
+
+def _project_background_cell(
+    base_cell: dict[str, Any],
+    background: dict[str, Any] | None,
+    spans: dict[str, dict[str, Any]],
+    *,
+    provenance: dict[str, str],
+) -> dict[str, Any]:
+    """Project one physical cell that has no formula/source outline record."""
+    cell = dict(base_cell)
+    authored_policy = str(base_cell.get("population_policy") or "")
+    policy = _projected_policy(base_cell, background, None)
+    if background and str(background.get("population_policy") or "") != "unsupported":
+        policy = str(background["population_policy"])
+    review_gap = str((background or {}).get("review_gap") or "")
+    if not review_gap and policy == "unsupported":
+        review_gap = "background control policy has not been generated"
+    expression = _background_expression(
+        str(base_cell.get("official_ref") or "control"),
+        policy,
+        review_gap,
+    )
+    background_citations = _background_citations(background or {}, spans)
+    status = str((background or {}).get("status") or ("authored" if authored_policy and authored_policy != "unsupported" else "review_gap"))
+    cell.update(
+        {
+            "generated": True,
+            "review_source": "draft_only",
+            "generated_target_cell_id": None,
+            "generated_status": status,
+            "generated_model": str((background or {}).get("model") or ("deterministic-authored-policy" if status == "authored" else provenance["model"])),
+            "generated_provider": str((background or {}).get("provider") or ("Tax Graph" if status == "authored" else provenance["provider"])),
+            "generated_provenance": (
+                {"stage": "authored_policy_projection"}
+                if status == "authored"
+                else dict(provenance)
+            ),
+            "expression": expression,
+            "operation": "",
+            "inputs": [],
+            "form_citations": _merge_citations(base_cell.get("citations"), background_citations[0]),
+            "instruction_citations": _merge_citations(base_cell.get("instruction_citations"), background_citations[1]),
+            "review_gap": review_gap or None,
+            "risk_bucket": _background_risk_bucket(expression),
+            "population_policy": policy,
+        }
+    )
+    if background and policy != "unsupported":
+        cell["policy_reason"] = str(background.get("reason") or "") or None
+        cell["downstream_effect"] = None
+        cell["missing_capability"] = None
+    cell["citations"] = cell["form_citations"]
+    return cell
+
+
+def _background_expression(ref: str, policy: str, review_gap: str) -> dict[str, Any]:
+    if policy == "user_entered":
+        return {
+            "kind": "input",
+            "text": f"{ref} = entered by filer",
+            "source": {"kind": "input", "text": "entered by filer"},
+        }
+    if policy == "decision_required":
+        return {
+            "kind": "input",
+            "text": f"{ref} = decision required",
+            "source": {"kind": "input", "text": "decision required"},
+        }
+    if policy == "intentionally_blank":
+        return {
+            "kind": "input",
+            "text": f"{ref} = intentionally blank",
+            "source": {"kind": "input", "text": "intentionally blank"},
+        }
+    return {
+        "kind": "review_gap",
+        "text": f"{ref} = unresolved background policy",
+        "reason": review_gap or "background control policy is unresolved",
+    }
+
+
+def _background_risk_bucket(expression: dict[str, Any]) -> str:
+    try:
+        return expression_kind_bucket(str(expression.get("kind") or "review_gap"))
+    except ValueError:
+        return "NOT_REVIEWABLE"
+
+
+def _background_citations(
+    background: dict[str, Any],
+    spans: dict[str, dict[str, Any]],
+) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
+    form: list[dict[str, Any]] = []
+    instructions: list[dict[str, Any]] = []
+    for span_id in background.get("citation_span_ids", []) or []:
+        span = spans.get(str(span_id))
+        if not span:
+            continue
+        citation = _span_citation(span)
+        if str(span.get("relationship") or "") == "source":
+            form.append(citation)
+        else:
+            instructions.append(citation)
+    return form, instructions
+
+
+def _merge_citations(
+    existing: Any,
+    additions: list[dict[str, Any]],
+) -> list[dict[str, Any]]:
+    result: list[dict[str, Any]] = []
+    seen: set[str] = set()
+    for item in [*(existing or []), *additions]:
+        if not isinstance(item, dict):
+            continue
+        citation_id = str(item.get("citation_id") or "")
+        if citation_id and citation_id in seen:
+            continue
+        if citation_id:
+            seen.add(citation_id)
+        result.append(dict(item))
+    return result

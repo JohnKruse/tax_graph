@@ -26,6 +26,13 @@ deferred-review queue. Human decisions live in the append-only address-keyed ver
 ledger, where the reviewed content fingerprint binds the label, expression tree, form
 citations, and instruction citations, making changed content require review again.
 
+For Form 1040, the generated review projection also covers the complete physical
+field-map inventory. Existing authored policies are carried into the draft deterministically;
+only unsupported controls are sent through the background-policy micro-extraction, and
+the code resolves every field and citation identity. Model results remain draft-only and
+unsupported results become named review gaps, so the review denominator stays stable
+through regeneration without hand-authoring generated cells.
+
 ## Complete field dispositions
 
 Field-map schema version 2 classifies every terminal AcroForm widget with exactly one
