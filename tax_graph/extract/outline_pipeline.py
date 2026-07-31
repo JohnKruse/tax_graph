@@ -11,7 +11,7 @@ from tax_graph.documents import document_class_for
 from tax_graph.extract.assembly import FormulaAssemblyFinding, _resolve_source_line, assemble_formula_plan
 from tax_graph.extract.background import extract_background_controls
 from tax_graph.extract.outline_checks import run_outline_artifact_checks
-from tax_graph.extract.llm_client import LlmClient, response_telemetry
+from tax_graph.extract.llm_client import LlmClient, is_transient_transport_error, response_telemetry
 from tax_graph.extract.micro import extract_formula_plan, extract_non_formula_source
 from tax_graph.extract.models import DraftObject, ExtractionBatch, SourceDocumentInput
 from tax_graph.extract.instruction_ownership import (
@@ -74,6 +74,7 @@ def generate_outline_first_drafts(
         "unresolved_line_refs": [],
         "resolved_line_refs": [],
         "review_gaps": [],
+        "transport_failures": 0,
     }
     line_index = _outline_line_index(document.document_id, outline.children)
     line_kinds, line_children = _outline_line_metadata(document.document_id, outline.children)
@@ -470,6 +471,8 @@ def _record_micro_failure(stats: dict[str, Any], node: OutlineNode, error: Excep
     """Record one isolated cell failure without allowing it to kill the document."""
     kind = type(error).__name__
     reason = str(error).encode("ascii", errors="replace").decode("ascii")[:500]
+    if is_transient_transport_error(error):
+        stats["transport_failures"] = int(stats.get("transport_failures", 0)) + 1
     grouped = stats.setdefault("failure_reasons_by_kind", {})
     grouped.setdefault(kind, []).append(
         {

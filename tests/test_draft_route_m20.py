@@ -5,7 +5,8 @@ from pathlib import Path
 import pytest
 
 from tax_graph.extract.models import DraftObject, ExtractionBatch, RoutedDrafts
-from tax_graph.extract.route import write_routed_drafts
+from tax_graph.extract import route
+from tax_graph.extract.route import _swap_staged_draft_contents, write_routed_drafts
 
 
 @pytest.mark.m20
@@ -70,3 +71,87 @@ def test_route_writer_emits_expression_kinds(tmp_path: Path):
     assert written.output_dir == tmp_path / "graph" / "2025" / "_drafts" / "form_1040_2025"
     assert (written.output_dir / "edges.yaml").exists()
     assert (written.output_dir / "rules.yaml").exists()
+
+
+@pytest.mark.m20
+def test_failed_staged_write_preserves_previous_draft_byte_for_byte(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
+    draft_dir = tmp_path / "graph" / "2025" / "_drafts" / "form_1040_2025"
+    draft_dir.mkdir(parents=True)
+    previous = {
+        "nodes.yaml": "- node_id: previous\n",
+        "edges.yaml": "- edge_id: previous\n",
+        "rules.yaml": "- rule_id: previous\n",
+    }
+    for name, contents in previous.items():
+        (draft_dir / name).write_text(contents, encoding="ascii")
+
+    original_write_yaml = route._write_yaml
+    calls = 0
+
+    def fail_after_first_write(path: Path, data: object) -> None:
+        nonlocal calls
+        calls += 1
+        original_write_yaml(path, data)
+        if calls == 1:
+            raise RuntimeError("simulated mid-run draft failure")
+
+    monkeypatch.setattr(route, "_write_yaml", fail_after_first_write)
+    batch = ExtractionBatch(
+        document_id="form_1040_2025",
+        year="2025",
+        objects=[
+            DraftObject(
+                "nodes",
+                {"node_id": "new"},
+                "",
+                "test",
+                1.0,
+            )
+        ],
+    )
+
+    with pytest.raises(RuntimeError, match="simulated mid-run"):
+        write_routed_drafts(batch, RoutedDrafts(accepted=[], review=[], issues=[]), root=tmp_path)
+
+    assert {name: (draft_dir / name).read_text(encoding="ascii") for name in previous} == previous
+    assert not list(draft_dir.parent.glob(".form_1040_2025.draft-*"))
+
+
+@pytest.mark.m20
+def test_transport_failed_batch_does_not_replace_previous_draft(tmp_path: Path):
+    draft_dir = tmp_path / "graph" / "2025" / "_drafts" / "form_1040_2025"
+    draft_dir.mkdir(parents=True)
+    sentinel = draft_dir / "rules.yaml"
+    sentinel.write_text("- rule_id: previous\n", encoding="ascii")
+
+    batch = ExtractionBatch(
+        document_id="form_1040_2025",
+        year="2025",
+        objects=[],
+        micro_stats={"transport_failures": 1},
+    )
+
+    written = write_routed_drafts(batch, RoutedDrafts(accepted=[], review=[], issues=[]), root=tmp_path)
+
+    assert written.output_dir == draft_dir
+    assert sentinel.read_text(encoding="ascii") == "- rule_id: previous\n"
+
+
+@pytest.mark.m20
+def test_file_set_swap_fallback_replaces_complete_tree(tmp_path: Path):
+    parent = tmp_path / "drafts"
+    draft_dir = parent / "form_1040_2025"
+    staging_dir = parent / ".form_1040_2025.draft"
+    draft_dir.mkdir(parents=True)
+    staging_dir.mkdir(parents=True)
+    (draft_dir / "rules.yaml").write_text("- rule_id: previous\n", encoding="ascii")
+    (draft_dir / "stale.yaml").write_text("stale\n", encoding="ascii")
+    (staging_dir / "rules.yaml").write_text("- rule_id: new\n", encoding="ascii")
+    (staging_dir / "nodes.yaml").write_text("- node_id: new\n", encoding="ascii")
+
+    _swap_staged_draft_contents(staging_dir, draft_dir)
+
+    assert (draft_dir / "rules.yaml").read_text(encoding="ascii") == "- rule_id: new\n"
+    assert (draft_dir / "nodes.yaml").read_text(encoding="ascii") == "- node_id: new\n"
+    assert not (draft_dir / "stale.yaml").exists()
+    assert not staging_dir.exists()

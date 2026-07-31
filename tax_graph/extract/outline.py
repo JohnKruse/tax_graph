@@ -385,22 +385,26 @@ def write_outline_artifacts(
     *,
     root: str | Path | None = None,
     config: dict[str, Any] | None = None,
+    draft_dir: str | Path | None = None,
 ) -> Path:
     """Write outline and candidate-span artifacts under ``graph/<year>/_drafts``."""
-    root_path = Path(root).resolve() if root is not None else project_root()
-    settings = config or {}
-    graph_dir = root_path / get_config_value(settings, "project.paths.graph_dir", "graph")
-    draft_dir = graph_dir / document.year / "_drafts" / document.document_id
-    draft_dir.mkdir(parents=True, exist_ok=True)
+    if draft_dir is None:
+        root_path = Path(root).resolve() if root is not None else project_root()
+        settings = config or {}
+        graph_dir = root_path / get_config_value(settings, "project.paths.graph_dir", "graph")
+        output_dir = graph_dir / document.year / "_drafts" / document.document_id
+    else:
+        output_dir = Path(draft_dir)
+    output_dir.mkdir(parents=True, exist_ok=True)
 
     outline = build_outline_tree(document)
     spans = build_candidate_spans(document)
-    _write_yaml(draft_dir / "outline.yaml", outline_to_dict(outline))
-    _write_yaml(draft_dir / "candidate_spans.yaml", [span_to_dict(span) for span in spans])
+    _write_yaml(output_dir / "outline.yaml", outline_to_dict(outline))
+    _write_yaml(output_dir / "candidate_spans.yaml", [span_to_dict(span) for span in spans])
     outbound_flows = build_outbound_flows(document, outline=outline, spans=spans)
     if outbound_flows:
-        _write_yaml(draft_dir / "outbound_flows.yaml", [flow_to_dict(flow) for flow in outbound_flows])
-    return draft_dir
+        _write_yaml(output_dir / "outbound_flows.yaml", [flow_to_dict(flow) for flow in outbound_flows])
+    return output_dir
 
 
 def outline_to_dict(tree: OutlineTree) -> dict[str, Any]:

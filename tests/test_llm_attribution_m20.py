@@ -9,6 +9,7 @@ import yaml
 
 from tax_graph.extract.generator import parse_generator_response
 from tax_graph.extract.llm_client import (
+    AnthropicLlmClient,
     ImplausiblePromptTokens,
     LlmResponseTruncated,
     OpenAILlmClient,
@@ -273,3 +274,92 @@ def test_micro_call_logs_target_and_bodies_at_info(tmp_path: Path):
     assert call["target_cell_id"] == "form_1040_2025_root_line_1z"
     assert call["request_body"]
     assert call["response_body"]
+
+
+def test_openai_transport_failures_retry_and_report_recovery(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
+    responses = [_provider_response(prompt_tokens=12)]
+    calls: list[dict] = []
+
+    def create(**kwargs):
+        calls.append(kwargs)
+        if len(calls) < 3:
+            raise RuntimeError("connection reset by peer")
+        return responses[0]
+
+    client = OpenAILlmClient(
+        SimpleNamespace(chat=SimpleNamespace(completions=SimpleNamespace(create=create))),
+        provider_name="OpenRouter",
+        transport_retries=2,
+        transport_backoff_sec=0,
+    )
+    monkeypatch.setattr("tax_graph.extract.llm_client.time.sleep", lambda _: None)
+
+    with extraction_run(
+        root=tmp_path,
+        document_id="form_1040_2025",
+        year="2025",
+        config=_run_config(),
+    ):
+        result = client.structured_completion(
+            prompt="human question",
+            schema={"type": "object"},
+            model="z-ai/glm-5.2",
+            max_tokens=4000,
+            temperature=0,
+            purpose="tax_graph_micro_formula",
+        )
+
+    assert len(calls) == 3
+    assert result.metadata.transport_retry_attempts == 2
+    assert result.metadata.transport_retry_recovered is True
+    records = _log_records(tmp_path)
+    call = next(record for record in records if record["event"] == "llm_call")
+    assert call["transport_retry_attempts"] == 2
+    assert call["transport_retry_recovered"] is True
+    assert records[-1]["totals"]["transport_retry_attempts"] == 2
+    assert records[-1]["totals"]["transport_retry_recoveries"] == 1
+
+
+def test_anthropic_transport_failure_retries_without_retrying_semantic_response(tmp_path: Path):
+    calls = 0
+
+    def create(**kwargs):
+        nonlocal calls
+        calls += 1
+        if calls == 1:
+            raise RuntimeError("temporary DNS failure in name resolution")
+        return SimpleNamespace(
+            content=[
+                SimpleNamespace(
+                    type="tool_use",
+                    name="emit_tax_graph_draft",
+                    input={"ok": True},
+                )
+            ],
+            stop_reason="end_turn",
+        )
+
+    client = AnthropicLlmClient(
+        SimpleNamespace(messages=SimpleNamespace(create=create)),
+        transport_retries=1,
+        transport_backoff_sec=0,
+    )
+    with extraction_run(
+        root=tmp_path,
+        document_id="form_1040_2025",
+        year="2025",
+        config=_run_config(),
+    ):
+        result = client.structured_completion(
+            prompt="human question",
+            schema={"type": "object"},
+            model="claude-test",
+            max_tokens=4000,
+            temperature=0,
+            purpose="tax_graph_draft",
+        )
+
+    assert calls == 2
+    assert result["ok"] is True
+    assert result.metadata.transport_retry_attempts == 1
+    assert result.metadata.transport_retry_recovered is True

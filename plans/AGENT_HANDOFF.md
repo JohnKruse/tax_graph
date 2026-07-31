@@ -14,6 +14,123 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## Current state (2026-07-31)
 
+**Worker session checkpoint - M20-S21 implementation (2026-07-31):** Global canary: Ledger
+Llama. Phase canary: Ground Truth. Model: GPT-5 Codex; effort/quota/context indicators are not
+exposed by this environment. John gave go via the current task request. Single declared step:
+make draft-only extraction retry transient transport failures with bounded backoff and commit
+new drafts atomically so a failed run preserves the previous draft, then rerun Form 1040,
+Schedule 1, and Schedule A and verify every declared consumer. Applicable defect-ledger entries:
+D9, D6, and the exact RAN/NOT RUN evidence rule. No promotion, hand-authoring, live graph
+edit, verdict write, or operation enum change is in scope. Protected graph and field-map
+artifacts are untouched at session start.
+
+**M20-S21 focused-test declaration (2026-07-31):** Declared files are
+`tests/test_draft_route_m20.py`, `tests/test_llm_attribution_m20.py`,
+`tests/test_extract_outline_m4.py`, `tests/test_extract_m16.py`, `tests/test_cli.py`,
+`tests/test_generated_review_m20.py`, `tests/test_form_completeness_m20.py`,
+`tests/test_workbench_cells_api_m17.py`, and `tests/e2e/test_workbench_v2_m17.py`.
+The set covers atomic draft rollback, adapter retry telemetry, outline/pipeline consumers,
+CLI reporting, generated-review projection, completeness, the API consumer of restored drafts,
+and the browser projection. `tests/test_workbench_m15.py` will also be run because the restored
+draft surface is consumed by workbench code and D5 is a standing boundary check.
+
+**M20-S21 deterministic implementation checkpoint (2026-07-31):** RAN:
+`$testRoot='C:\Users\devbox\.codex\visualizations\2026\07\31\019fb9ea-080e-7013-9aa6-04af2d56e08f\m20_s21_unit1'; New-Item -ItemType Directory -Force -Path $testRoot | Out-Null; $env:PYTEST_DEBUG_TEMPROOT=$testRoot; & .venv\Scripts\python.exe -m pytest tests\test_draft_route_m20.py tests\test_llm_attribution_m20.py -q`
+-> 11 passed, 1 warning in 0.45s. Pending the expensive phase: consumer regression tests,
+then the three draft-only extraction reruns. No live graph or verdict artifact has changed.
+
+**M20-S21 consumer checkpoint (2026-07-31):** RAN:
+`$testRoot='C:\Users\devbox\.codex\visualizations\2026\07\31\019fb9ea-080e-7013-9aa6-04af2d56e08f\m20_s21_unit2'; New-Item -ItemType Directory -Force -Path $testRoot | Out-Null; $env:PYTEST_DEBUG_TEMPROOT=$testRoot; & .venv\Scripts\python.exe -m pytest tests\test_extract_outline_m4.py tests\test_extract_m16.py tests\test_cli.py -q`
+-> 31 passed, 1 warning in 19.80s. Pending the expensive phase: draft-only extraction for
+Form 1040, Schedule 1, and Schedule A. No live graph or verdict artifact has changed.
+
+**M20-S21 first live attempt (2026-07-31):** RAN:
+`& .venv\Scripts\python.exe -m tax_graph.cli extract --doc form_1040_2025 --year 2025 --root .`
+-> exit 0 in 558.4s, but the sandbox could not reach OpenRouter: 57 calls failed after
+114 transport retries, 0 recovered. The run produced explicit in-memory review gaps, but the
+first implementation still swapped that completed-with-call-failures batch into the draft
+directory; this is a S21 defect because the previous draft must remain intact on a failed run.
+The retry logs correctly distinguish transport errors and report `transport_retry_attempts` and
+`transport_retry_recovered`. Fixing the commit predicate before any further live rerun; no
+promoted graph, field map, verdict, or operation enum changed.
+
+**M20-S21 safety-fix checkpoint (2026-07-31):** Added an explicit transport-failure write
+predicate: retries and failure gaps remain visible in the in-memory result and provider log,
+but a batch with exhausted transport failures cannot replace an existing draft. The atomic
+staging rollback test now covers both mid-write exceptions and transport-failed batches. RAN:
+`$testRoot='C:\Users\devbox\.codex\visualizations\2026\07\31\019fb9ea-080e-7013-9aa6-04af2d56e08f\m20_s21_unit3'; New-Item -ItemType Directory -Force -Path $testRoot | Out-Null; $env:PYTEST_DEBUG_TEMPROOT=$testRoot; & .venv\Scripts\python.exe -m pytest tests\test_draft_route_m20.py tests\test_llm_attribution_m20.py tests\test_extract_outline_m4.py tests\test_extract_m16.py tests\test_cli.py -q`
+-> 43 passed, 1 warning in 19.16s. Pending the approved-network reruns; no live graph or verdict
+artifact has changed.
+
+**M20-S21 approved-network swap checkpoint (2026-07-31):** RAN the approved-network Form 1040
+command; it reached the provider and built a complete staged result, but exited 1 after 347.7s
+when Windows temporarily denied renaming the existing draft directory. A read-only ACL/process
+check found the directory owned by `CodexSandboxOffline` with the expected owner-rights ACL;
+an exact sibling rename probe and restore both succeeded afterward. The staged result was removed
+by the failure cleanup, so the extraction must be rerun; no protected artifact changed.
+
+**M20-S21 Windows swap-fix checkpoint (2026-07-31):** The directory-level swap now falls back
+to a rollback-safe file-set replacement when Windows denies renaming the existing draft
+directory. The focused route/retry tests were rerun: RAN:
+`$testRoot='C:\Users\devbox\.codex\visualizations\2026\07\31\019fb9ea-080e-7013-9aa6-04af2d56e08f\m20_s21_unit4'; New-Item -ItemType Directory -Force -Path $testRoot | Out-Null; $env:PYTEST_DEBUG_TEMPROOT=$testRoot; & .venv\Scripts\python.exe -m pytest tests\test_draft_route_m20.py tests\test_llm_attribution_m20.py -q`
+-> 13 passed, 1 warning in 0.42s. Pending the third Form 1040 draft-only run; no live graph,
+field map, verdict, or operation enum changed.
+
+**M20-S21 second approved-network attempt (2026-07-31):** RAN the same Form 1040 command;
+it exited 1 after 356.7s. The provider work completed far enough to reach the final swap, but
+Windows denied both the directory listing in the fallback and the directory rename. The old
+draft remained in place and the staged result was cleaned up. This is the remaining portability
+defect; adding bounded retries around Windows draft listing/rename before the file-set fallback.
+
+**M20-S21 Windows retry checkpoint (2026-07-31):** Added bounded retries around Windows draft
+directory rename and listing operations. RAN:
+`$testRoot='C:\Users\devbox\.codex\visualizations\2026\07\31\019fb9ea-080e-7013-9aa6-04af2d56e08f\m20_s21_unit5'; New-Item -ItemType Directory -Force -Path $testRoot | Out-Null; $env:PYTEST_DEBUG_TEMPROOT=$testRoot; & .venv\Scripts\python.exe -m pytest tests\test_draft_route_m20.py tests\test_llm_attribution_m20.py -q`
+-> 13 passed, 1 warning in 0.43s. Pending the fourth Form 1040 draft-only run; no protected
+artifact changed.
+
+**M20-S21 recoverable draft isolation (2026-07-31):** The exact known-degraded
+`graph/2025/_drafts/form_1040_2025` directory was moved, recoverably, to
+`.m20_s21_backup_form_1040_2025` in the workspace so the canonical draft path is empty for the
+next approved-network recovery run. The backup is not a promoted artifact and will not be
+committed. No graph, field-map, verdict, or operation enum changed.
+
+**M20-S21 Form 1040 recovery evidence (2026-07-31):** RAN the approved-network command
+`& .venv\Scripts\python.exe -m tax_graph.cli extract --doc form_1040_2025 --year 2025 --root .`
+-> exit 0 in 322.1s. The staged draft committed at the canonical path. Metrics show formula
+`17/17` succeeded, source `39/40` succeeded, background `15` succeeded and `99` named gaps,
+with `background_transport_failures=0`; policy origins are `authored=80`, `defaulted=15`,
+`review_gap=104`, `derived=0`. The run logged 57 successful calls, 133887 tokens, cost
+0.376842, and `transport_retry_attempts=0`; the draft contains 17 rules and 49 edges.
+Metrics inspection required approved local access because the draft directory ACL was
+intermittently denied to the sandbox account. No protected artifact changed.
+
+**M20-S21 Schedule 1 and Schedule A recovery evidence (2026-07-31):** RAN the approved-network
+commands. Schedule 1: `& .venv\Scripts\python.exe -m tax_graph.cli extract --doc schedule_1_2025 --year 2025 --root .`
+-> exit 0 in 61.4s; formula `3/4`, background `3` succeeded and `38` gaps, origins
+`authored=28`, `defaulted=3`, `review_gap=42`, `derived=0`, transport failures `0`,
+11 recorded successful calls, 23598 tokens. Schedule A:
+`& .venv\Scripts\python.exe -m tax_graph.cli extract --doc schedule_a_2025 --year 2025 --root .`
+-> exit 0 in 44.4s; formula `6/7`, background `1` succeeded and `14` gaps, origins
+`authored=12`, `defaulted=1`, `review_gap=20`, `derived=0`, transport failures `0`,
+13 recorded successful calls, 18359 tokens. All three target drafts are present; no promoted
+graph, field map, verdict, or operation enum changed.
+
+**M20-S21 consumer correction (2026-07-31):** The first final non-browser consumer run was
+NOT accepted: RAN the declared set through `tests/test_workbench_cells_api_m17.py` and found
+one stale S20 histogram assertion (`computed=7`, `unsupported=102`, `user_entered=49`). The
+recovered S21 projection is `computed=15`, `copied=7`, `decision_required=34`, `unsupported=88`,
+`user_entered=55`; the assertion was updated with an M20-S21 explanation. RAN:
+`$testRoot='C:\Users\devbox\.codex\visualizations\2026\07\31\019fb9ea-080e-7013-9aa6-04af2d56e08f\m20_s21_api_rerun'; New-Item -ItemType Directory -Force -Path $testRoot | Out-Null; $env:PYTEST_DEBUG_TEMPROOT=$testRoot; & .venv\Scripts\python.exe -m pytest tests\test_workbench_cells_api_m17.py -q`
+-> 4 passed in 89.52s. The initial 58-pass/1-failure run is not acceptance evidence; rerunning
+the full declared non-browser set is required.
+
+**M20-S21 final consumer evidence (2026-07-31):** After the test update, RAN the full
+declared non-browser set:
+`$testRoot='C:\Users\devbox\.codex\visualizations\2026\07\31\019fb9ea-080e-7013-9aa6-04af2d56e08f\m20_s21_final_unit_r2'; New-Item -ItemType Directory -Force -Path $testRoot | Out-Null; $env:PYTEST_DEBUG_TEMPROOT=$testRoot; & .venv\Scripts\python.exe -m pytest tests\test_draft_route_m20.py tests\test_llm_attribution_m20.py tests\test_extract_outline_m4.py tests\test_extract_m16.py tests\test_cli.py tests\test_generated_review_m20.py tests\test_form_completeness_m20.py tests\test_workbench_cells_api_m17.py tests\test_workbench_m15.py -q`
+-> 59 passed in 136.77s. RAN the declared browser consumer:
+`$testRoot='C:\Users\devbox\.codex\visualizations\2026\07\31\019fb9ea-080e-7013-9aa6-04af2d56e08f\m20_s21_final_e2e'; New-Item -ItemType Directory -Force -Path $testRoot | Out-Null; $env:PYTEST_DEBUG_TEMPROOT=$testRoot; & .venv\Scripts\python.exe -m pytest tests\e2e\test_workbench_v2_m17.py -q`
+-> 4 passed in 130.26s. Every declared focused file is now verified green.
+
 **Worker session checkpoint - M20-S20 implementation (2026-07-31):** Global canary: Ledger
 Llama. Phase canary: Ground Truth. Model: GPT-5 Codex; effort/quota/context indicators are not
 exposed by this environment. John gave go via the current task request. Single declared step:

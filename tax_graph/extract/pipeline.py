@@ -17,7 +17,6 @@ from tax_graph.extract.inputs import FORM_KINDS, load_document_input
 from tax_graph.extract.llm_client import LlmClient, build_llm_client
 from tax_graph.extract.observability import extraction_run
 from tax_graph.extract.outline_pipeline import generate_outline_first_drafts
-from tax_graph.extract.outline import write_outline_artifacts
 from tax_graph.extract.route import route_drafts, write_routed_drafts
 from tax_graph.extract.models import RoutedDrafts
 from tax_graph.verify.properties import check_draft_batch_properties
@@ -47,7 +46,6 @@ def _extract_document_impl(
         raw_store=raw_store,
         manifest=manifest,
     )
-    write_outline_artifacts(document, root=root_path, config=settings)
     mode = str(get_config_value(settings, "extraction.mode", "one_pass"))
     if mode == "one_pass":
         batch = generate_drafts(document, client=llm_client, config=settings, root=root_path)

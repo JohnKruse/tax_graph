@@ -27,6 +27,8 @@ llm:
   site_url: null                 # optional OpenRouter HTTP-Referer header
   app_name: Tax Graph            # optional OpenRouter X-Title header
   require_parameters: auto       # auto retries once without the provider hint if the endpoint rejects it; use true/false to force
+  transport_retries: 2           # retries after transient connection, DNS, timeout, or 5xx failures
+  transport_backoff_sec: 1.0     # exponential backoff base between transport retries
   router_metadata: true           # request selected-provider and fallback metadata from OpenRouter
   provider_routing:               # raw OpenRouter provider fields; empty values preserve gateway defaults
     order: null                    # provider slugs to prioritize, for example [decart]

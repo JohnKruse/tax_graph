@@ -74,6 +74,8 @@ class RunLogger:
     total_cost: float = field(default=0.0, init=False)
     known_token_calls: int = field(default=0, init=False)
     known_cost_calls: int = field(default=0, init=False)
+    transport_retry_attempts: int = field(default=0, init=False)
+    transport_retry_recoveries: int = field(default=0, init=False)
     _lock: threading.Lock = field(default_factory=threading.Lock, init=False, repr=False)
 
     def __post_init__(self) -> None:
@@ -124,6 +126,8 @@ class RunLogger:
                 "failed_calls": self.failed_calls,
                 "total_tokens": self.total_tokens if self.known_token_calls else None,
                 "total_cost": round(self.total_cost, 10) if self.known_cost_calls else None,
+                "transport_retry_attempts": self.transport_retry_attempts,
+                "transport_retry_recoveries": self.transport_retry_recoveries,
             },
         }
         if error:
@@ -150,6 +154,8 @@ class RunLogger:
         outcome: str,
         latency_ms: float | None,
         error: str | None = None,
+        transport_retry_attempts: int = 0,
+        transport_retry_recovered: bool = False,
     ) -> None:
         """Write one provider-call record and update run totals."""
         with self._lock:
@@ -166,6 +172,9 @@ class RunLogger:
             if cost is not None:
                 self.total_cost += float(cost)
                 self.known_cost_calls += 1
+            self.transport_retry_attempts += int(transport_retry_attempts)
+            if transport_retry_recovered:
+                self.transport_retry_recoveries += 1
 
         call: dict[str, Any] = {
             "document_id": document_id,
@@ -181,6 +190,8 @@ class RunLogger:
             "finish_reason": _value(telemetry, "finish_reason"),
             "latency_ms": latency_ms,
             "outcome": outcome,
+            "transport_retry_attempts": int(transport_retry_attempts),
+            "transport_retry_recovered": bool(transport_retry_recovered),
         }
         if error:
             call["error"] = error

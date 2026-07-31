@@ -18,7 +18,7 @@ from typing import Any
 import yaml
 
 from tax_graph.config import get_config_value
-from tax_graph.extract.llm_client import LlmClient, response_telemetry
+from tax_graph.extract.llm_client import LlmClient, is_transient_transport_error, response_telemetry
 from tax_graph.extract.models import LlmCallTelemetry, SourceDocumentInput
 from tax_graph.extract.observability import llm_call_target
 from tax_graph.extract.outline import CandidateSpan
@@ -169,6 +169,7 @@ def extract_background_controls(
         for field in fields
     )
     succeeded = failed = 0
+    transport_failures = 0
     unsupported_results = _run_background_calls(
         [
             _with_field_page(document, field)
@@ -256,6 +257,8 @@ def extract_background_controls(
                 continue
         if error is not None or response is None:
             failed += 1
+            if error is not None and is_transient_transport_error(error):
+                transport_failures += 1
             record["failover_class"] = _failover_class(field)
             record["review_gap"] = (
                 f"background policy extraction failed: {type(error).__name__}: {error}"
@@ -283,6 +286,7 @@ def extract_background_controls(
         "background_controls_attempted": attempted,
         "background_controls_succeeded": succeeded,
         "background_controls_failed": failed,
+        "background_transport_failures": transport_failures,
         "background_policy_before": dict(sorted(before.items())),
         "background_policy_after": dict(sorted(after.items())),
         "background_policy_progress": before.get("unsupported", 0) - after.get("unsupported", 0),

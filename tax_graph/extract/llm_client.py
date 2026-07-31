@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 from dataclasses import replace
+import re
 import time
 from typing import Any, Protocol
 
@@ -67,7 +68,7 @@ def build_llm_client(config: dict[str, Any]) -> LlmClient:
         raise LlmUnavailable(f"{provider} extraction requires an API key")
 
     if provider == "anthropic":
-        return _build_anthropic_client(api_key)
+        return _build_anthropic_client(api_key, config)
     if provider == "openai":
         return _build_openai_client(api_key, config)
     if provider == "openrouter":
@@ -93,12 +94,16 @@ def _normalized_provider(config: dict[str, Any]) -> str:
     return aliases.get(normalized, normalized)
 
 
-def _build_anthropic_client(api_key: str) -> LlmClient:
+def _build_anthropic_client(api_key: str, config: dict[str, Any]) -> LlmClient:
     try:
         import anthropic
     except ImportError as exc:  # pragma: no cover - optional until extract runs live.
         raise LlmUnavailable("anthropic package is not installed") from exc
-    return AnthropicLlmClient(anthropic.Anthropic(api_key=api_key))
+    return AnthropicLlmClient(
+        anthropic.Anthropic(api_key=api_key),
+        transport_retries=_transport_retry_count(config),
+        transport_backoff_sec=_transport_backoff(config),
+    )
 
 
 def _build_openai_client(api_key: str, config: dict[str, Any]) -> LlmClient:
@@ -111,6 +116,8 @@ def _build_openai_client(api_key: str, config: dict[str, Any]) -> LlmClient:
         provider_name="OpenAI",
         strict_schema=bool(get_config_value(config, "llm.strict_schema", True)),
         parameter_mode=_parameter_mode(config),
+        transport_retries=_transport_retry_count(config),
+        transport_backoff_sec=_transport_backoff(config),
     )
 
 
@@ -131,6 +138,8 @@ def _build_openrouter_client(api_key: str, config: dict[str, Any]) -> LlmClient:
         extra_body=_openrouter_extra_body(config),
         strict_schema=bool(get_config_value(config, "llm.strict_schema", True)),
         parameter_mode=_parameter_mode(config),
+        transport_retries=_transport_retry_count(config),
+        transport_backoff_sec=_transport_backoff(config),
     )
 
 
@@ -206,8 +215,16 @@ def _openrouter_provider_preferences(config: dict[str, Any]) -> dict[str, Any]:
 class AnthropicLlmClient:
     """Anthropic Messages API client using strict tool outputs."""
 
-    def __init__(self, client: Any):
+    def __init__(
+        self,
+        client: Any,
+        *,
+        transport_retries: int = 2,
+        transport_backoff_sec: float = 1.0,
+    ):
         self.client = client
+        self.transport_retries = _validate_retry_count(transport_retries)
+        self.transport_backoff_sec = _validate_backoff(transport_backoff_sec)
 
     def structured_completion(
         self,
@@ -237,9 +254,14 @@ class AnthropicLlmClient:
             ],
         }
         started = time.perf_counter()
-        try:
-            response = self.client.messages.create(**request_body)
-        except Exception as exc:
+        response, retry_attempts, retry_recovered, transport_error = _call_with_transport_retries(
+            lambda: self.client.messages.create(**request_body),
+            attempts=[request_body],
+            max_retries=self.transport_retries,
+            backoff_sec=self.transport_backoff_sec,
+        )
+        if transport_error is not None:
+            exc = transport_error
             error = LlmUnavailable(f"Anthropic request failed: {exc}")
             log_llm_call(
                 document_id="unknown",
@@ -251,6 +273,8 @@ class AnthropicLlmClient:
                 outcome="error",
                 latency_ms=_elapsed_ms(started),
                 error=str(error),
+                transport_retry_attempts=retry_attempts,
+                transport_retry_recovered=retry_recovered,
             )
             raise error from exc
 
@@ -259,6 +283,11 @@ class AnthropicLlmClient:
             requested_model=model,
             provider="Anthropic",
             latency_ms=_elapsed_ms(started),
+        )
+        telemetry = replace(
+            telemetry,
+            transport_retry_attempts=retry_attempts,
+            transport_retry_recovered=retry_recovered,
         )
         try:
             _validate_response_telemetry(telemetry, provider="Anthropic")
@@ -277,6 +306,8 @@ class AnthropicLlmClient:
                         response_body=response,
                         outcome="success",
                         latency_ms=telemetry.latency_ms,
+                        transport_retry_attempts=retry_attempts,
+                        transport_retry_recovered=retry_recovered,
                     )
                     return StructuredCompletionResult(block_input, telemetry)
                 if isinstance(block, dict) and block.get("type") == "tool_use" and block.get("name") == tool_name:
@@ -290,6 +321,8 @@ class AnthropicLlmClient:
                         response_body=response,
                         outcome="success",
                         latency_ms=telemetry.latency_ms,
+                        transport_retry_attempts=retry_attempts,
+                        transport_retry_recovered=retry_recovered,
                     )
                     return StructuredCompletionResult(dict(block.get("input", {})), telemetry)
             raise LlmUnavailable("Anthropic response did not contain the required tool output")
@@ -305,6 +338,8 @@ class AnthropicLlmClient:
                 outcome=outcome,
                 latency_ms=telemetry.latency_ms,
                 error=str(exc),
+                transport_retry_attempts=retry_attempts,
+                transport_retry_recovered=retry_recovered,
             )
             raise
 
@@ -320,12 +355,16 @@ class OpenAICompatibleLlmClient:
         extra_body: dict[str, Any] | None = None,
         strict_schema: bool = True,
         parameter_mode: str = "omit",
+        transport_retries: int = 2,
+        transport_backoff_sec: float = 1.0,
     ):
         self.client = client
         self.provider_name = provider_name
         self.extra_body = extra_body or {}
         self.strict_schema = strict_schema
         self.parameter_mode = parameter_mode
+        self.transport_retries = _validate_retry_count(transport_retries)
+        self.transport_backoff_sec = _validate_backoff(transport_backoff_sec)
 
     def structured_completion(
         self,
@@ -359,9 +398,14 @@ class OpenAICompatibleLlmClient:
         request_attempts: list[dict[str, Any]] = [kwargs]
         started = time.perf_counter()
         response: Any = None
-        try:
-            response = self.client.chat.completions.create(**kwargs)
-        except Exception as exc:
+        response, retry_attempts, retry_recovered, transport_error = _call_with_transport_retries(
+            lambda: self.client.chat.completions.create(**kwargs),
+            attempts=request_attempts,
+            max_retries=self.transport_retries,
+            backoff_sec=self.transport_backoff_sec,
+        )
+        if transport_error is not None:
+            exc = transport_error
             if self._should_retry_without_provider_hints(exc, extra_body):
                 retry_kwargs = dict(kwargs)
                 retry_extra_body = dict(extra_body)
@@ -371,9 +415,16 @@ class OpenAICompatibleLlmClient:
                 else:
                     retry_kwargs.pop("extra_body", None)
                 request_attempts.append(retry_kwargs)
-                try:
-                    response = self.client.chat.completions.create(**retry_kwargs)
-                except Exception as retry_exc:
+                response, retry_count, recovered, retry_error = _call_with_transport_retries(
+                    lambda: self.client.chat.completions.create(**retry_kwargs),
+                    attempts=request_attempts,
+                    max_retries=self.transport_retries,
+                    backoff_sec=self.transport_backoff_sec,
+                )
+                retry_attempts += retry_count
+                retry_recovered = retry_recovered or recovered
+                if retry_error is not None:
+                    retry_exc = retry_error
                     latency_ms = _elapsed_ms(started)
                     log_llm_call(
                         document_id="unknown",
@@ -385,6 +436,8 @@ class OpenAICompatibleLlmClient:
                         outcome="error",
                         latency_ms=latency_ms,
                         error=str(_rewrite_openai_compatible_error(retry_exc, provider_name=self.provider_name)),
+                        transport_retry_attempts=retry_attempts,
+                        transport_retry_recovered=retry_recovered,
                     )
                     raise _rewrite_openai_compatible_error(retry_exc, provider_name=self.provider_name) from retry_exc
             else:
@@ -399,6 +452,8 @@ class OpenAICompatibleLlmClient:
                     outcome="error",
                     latency_ms=_elapsed_ms(started),
                     error=str(error),
+                    transport_retry_attempts=retry_attempts,
+                    transport_retry_recovered=retry_recovered,
                 )
                 raise error from exc
 
@@ -424,6 +479,8 @@ class OpenAICompatibleLlmClient:
                 outcome="error",
                 latency_ms=telemetry.latency_ms,
                 error=str(error),
+                transport_retry_attempts=retry_attempts,
+                transport_retry_recovered=retry_recovered,
             )
             raise error from exc
         except LlmUnavailable as exc:
@@ -438,6 +495,8 @@ class OpenAICompatibleLlmClient:
                 outcome=outcome,
                 latency_ms=telemetry.latency_ms,
                 error=str(exc),
+                transport_retry_attempts=retry_attempts,
+                transport_retry_recovered=retry_recovered,
             )
             raise
         if not isinstance(parsed, dict):
@@ -452,6 +511,8 @@ class OpenAICompatibleLlmClient:
                 outcome="error",
                 latency_ms=telemetry.latency_ms,
                 error=str(error),
+                transport_retry_attempts=retry_attempts,
+                transport_retry_recovered=retry_recovered,
             )
             raise error
         telemetry = replace(telemetry, outcome="success")
@@ -464,6 +525,13 @@ class OpenAICompatibleLlmClient:
             response_body=response,
             outcome="success",
             latency_ms=telemetry.latency_ms,
+            transport_retry_attempts=retry_attempts,
+            transport_retry_recovered=retry_recovered,
+        )
+        telemetry = replace(
+            telemetry,
+            transport_retry_attempts=retry_attempts,
+            transport_retry_recovered=retry_recovered,
         )
         return StructuredCompletionResult(
             parsed,
@@ -493,6 +561,106 @@ def response_telemetry(value: Any) -> LlmCallTelemetry | None:
     """Return adapter telemetry when a structured response carries it."""
     metadata = getattr(value, "metadata", None)
     return metadata if isinstance(metadata, LlmCallTelemetry) else None
+
+
+def _call_with_transport_retries(
+    call: Any,
+    *,
+    attempts: list[dict[str, Any]],
+    max_retries: int,
+    backoff_sec: float,
+) -> tuple[Any, int, bool, Exception | None]:
+    """Call a provider, retrying only transient transport failures.
+
+    The caller owns semantic response validation.  This boundary retries only
+    connection, DNS, timeout, and 5xx failures, so malformed JSON and schema
+    failures remain reviewable extraction failures rather than being hidden by
+    another model call.
+    """
+    retry_attempts = 0
+    while True:
+        try:
+            return call(), retry_attempts, retry_attempts > 0, None
+        except Exception as exc:
+            if retry_attempts >= max_retries or not _is_transient_transport_error(exc):
+                return None, retry_attempts, False, exc
+            retry_attempts += 1
+            attempts.append(
+                {
+                    "transport_retry": retry_attempts,
+                    "error_type": type(exc).__name__,
+                    "error": str(exc),
+                }
+            )
+            delay = backoff_sec * (2 ** (retry_attempts - 1))
+            if delay > 0:
+                time.sleep(delay)
+
+
+def _is_transient_transport_error(error: Exception) -> bool:
+    """Return whether an exception represents a retryable transport failure."""
+    status = _get(error, "status_code", None)
+    if status is None:
+        response = _get(error, "response", None)
+        status = _get(response, "status_code", None)
+    try:
+        if 500 <= int(status) <= 599:
+            return True
+    except (TypeError, ValueError):
+        pass
+
+    text = f"{type(error).__name__} {error}".lower()
+    if re.search(r"\b5\d{2}\b", text):
+        return True
+    markers = (
+        "connection",
+        "connecterror",
+        "connection reset",
+        "connection aborted",
+        "connection refused",
+        "broken pipe",
+        "dns",
+        "getaddrinfo",
+        "name or service not known",
+        "temporary failure in name resolution",
+        "network is unreachable",
+        "timed out",
+        "timeout",
+        "remote disconnected",
+    )
+    return any(marker in text for marker in markers)
+
+
+def is_transient_transport_error(error: Exception) -> bool:
+    """Return whether a provider failure is safe to classify as transport-only."""
+    return _is_transient_transport_error(error)
+
+def _transport_retry_count(config: dict[str, Any]) -> int:
+    return _validate_retry_count(get_config_value(config, "llm.transport_retries", 2))
+
+
+def _transport_backoff(config: dict[str, Any]) -> float:
+    return _validate_backoff(get_config_value(config, "llm.transport_backoff_sec", 1.0))
+
+
+def _validate_retry_count(value: Any) -> int:
+    try:
+        parsed = int(value)
+    except (TypeError, ValueError) as exc:
+        raise LlmUnavailable("llm.transport_retries must be a non-negative integer") from exc
+    if parsed < 0:
+        raise LlmUnavailable("llm.transport_retries must be a non-negative integer")
+    return parsed
+
+
+def _validate_backoff(value: Any) -> float:
+    try:
+        parsed = float(value)
+    except (TypeError, ValueError) as exc:
+        raise LlmUnavailable("llm.transport_backoff_sec must be a non-negative number") from exc
+    if parsed < 0:
+        raise LlmUnavailable("llm.transport_backoff_sec must be a non-negative number")
+    return parsed
 
 
 def _response_telemetry(

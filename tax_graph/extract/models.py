@@ -112,6 +112,8 @@ class LlmCallTelemetry:
     finish_reason: str | None = None
     latency_ms: float | None = None
     outcome: str | None = None
+    transport_retry_attempts: int = 0
+    transport_retry_recovered: bool = False
 
     def as_dict(self) -> dict[str, Any]:
         """Return the ASCII-safe serialized call record."""
@@ -127,6 +129,8 @@ class LlmCallTelemetry:
             "finish_reason": self.finish_reason,
             "latency_ms": self.latency_ms,
             "outcome": self.outcome,
+            "transport_retry_attempts": self.transport_retry_attempts,
+            "transport_retry_recovered": self.transport_retry_recovered,
         }
 
 
