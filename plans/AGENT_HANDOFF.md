@@ -1988,8 +1988,15 @@ the instruction slot; Authority explicitly reports missing authored coverage; do
 citation coverage is visible beside policy counts; and the dossier heading duplication/order
 warts are fixed. No promoted artifacts, graph semantics, verdicts, or citation records changed.
 
-**BALL: WORKER - M20-S19 (BRING BACK THE BACKGROUND CONTROLS AND CLOSE THE 60% GAP). Task block
-under From Architect. S18 is ACCEPTED at `ca310d8` - Architect re-verified: 28 focused tests
+**BALL: WORKER - M20-S20 (FILER-PROVIDED AS A FAILOVER, NOT A DEFAULT; finish the batching and
+the other two forms). Task block under From Architect. S19 is ACCEPTED at `2b1361c` - Architect
+re-verified: 30 focused tests green, protected set byte-identical, field maps untouched, no
+hand-authoring. S19 restored the 1040 surface from 57 to 199 controls, but the gap barely moved:
+unsupported 119 -> 102, only 17 resolved, and the 119-call pass exceeded its time cap. Only the
+1040 ran; Schedule 1 and Schedule A still show 0 background controls.**
+
+**Superseded (kept as history):** BALL: WORKER - M20-S19 (BRING BACK THE BACKGROUND CONTROLS AND
+CLOSE THE 60% GAP). S18 is ACCEPTED at `ca310d8` - Architect re-verified: 28 focused tests
 green, protected set byte-identical, ledger untouched. S18 delivered all three items:
 completeness is **28/28 (100%)** on the corrected metric, the source extraction finally RAN
 (`line 1a = form_w2_2025_box_1`, `line 1e = form_2441_2025_root_line_26`, 39/40 source calls
@@ -4004,6 +4011,78 @@ TY2026 docs drop.
   environment failure, and no commit was made.
 
 ## From Architect
+
+- **M20-S20 TASK - FILER-PROVIDED AS A FAILOVER, NOT A DEFAULT (Architect, Claude Opus 5,
+  2026-07-31). John's ruling.** Ledger: the RAN/NOT RUN rule, D9, D6, and the invariant "every
+  control needs exactly one policy".
+  **JOHN'S RULING, verbatim:** "filer provided should be a failover rather than a default." And
+  earlier: "If I read 'Net proceeds' or 'Interest', my feeling is that this is just something to
+  be provided by the filer. If the AI can't find it in the docs provided by the filer, it should
+  ask."
+  **ARCHITECT MEASUREMENT that supports it - all 119 unsupported 1040 controls classified:**
+  | class | count | examples |
+  |---|---|---|
+  | elections / admin / checkboxes | 76 | "Presidential election campaign", "Combat zone", "Filed pursuant to section 301.9100-2" |
+  | checkbox / election | 17 | digital assets Yes/No, "Check if your child's dividends are included" |
+  | dates / tax-year fields | 13 | "year Jan. 1-Dec. 31, 2025, or other tax year beginning" |
+  | identity / admin | 12 | foreign country, foreign province, names |
+  | **LOOKS COMPUTED** | **1** | "Line 32 - total other payments and refundable credits" |
+  **There is no hidden arithmetic in the gap.** The single computed-looking control is line 32,
+  which is ALREADY in the formula set as "Add lines 27a, 28, 29, 30, and 31" - almost certainly
+  the description control rather than the amount control. Confirm and report.
+  **Why they have no policy today:** `unsupported` means "no authored graph, filer-fact, or
+  decision mapping" - a deliberate ratchet that refuses to guess. Correct when hand-authoring was
+  the risk, but it makes "we have not decided" and "the filer provides it" indistinguishable, so
+  60% of the form sits in limbo.
+  1. **FAILOVER, NOT DEFAULT - ORDER MATTERS AND IT IS THE POINT OF THE ROUND.** A control may
+     only fall through to filer-provided AFTER the formula path and the source/import path have
+     both had their chance and produced nothing. **Never assign it up front.**
+  2. **NEVER FAIL OVER A CONTROL WHOSE LABEL STATES A COMPUTATION.** "Add lines...", "total
+     of...", "combine...", "multiply...". Those stay NAMED GAPS. **Silently asking a taxpayer to
+     add two numbers the graph should compute is exactly the failure the graph exists to
+     prevent**, and it would be invisible in every metric we have.
+  3. **SPLIT THE FAILOVER THREE WAYS using concepts that already exist** - not one
+     undifferentiated bucket:
+     - checkboxes and elections (combat zone, digital assets, presidential campaign) ->
+       **filer election / decision**, not a value.
+     - names, addresses, dates, foreign country -> **filer identity/admin**.
+     - amounts with no derivation ("Net proceeds", "Interest") -> **filer-supplied value, asked
+       at intake**. Wire this to machinery that already exists - `list_intake_gaps`,
+       `get_intake_relevance`, `intake-inventory.yaml`. John's "if the AI can't find it in the
+       docs provided by the filer, it should ask" IS the intake layer; do not invent a new one.
+  4. **MARK A FAILOVER POLICY AS `defaulted`, DISTINGUISHABLE FROM A DERIVED ONE.** Separate
+     columns. **Otherwise the unsupported count collapses to near zero and we have learned
+     nothing** - exactly how the completeness metric read 100% while instructions were
+     unattached. A failover is an admission we could not derive it, not a derivation.
+  5. **FINISH THE BATCHING. S19's 119-call sequential pass exceeded its time cap** and resolved
+     only 17. Same shape as S12, where a sequential 15-form run timed out and the per-document
+     parallel run succeeded. Batch or parallelise the background calls; report calls attempted,
+     succeeded, failed, and wall time.
+  6. **RUN THE OTHER TWO FORMS. S19 ran only `--doc form_1040_2025`.** Schedule 1 has **73
+     dispositions (45 unsupported)**, Schedule A has **33 (21 unsupported)**, and both report
+     `policy_controls: 0`. Project and generate for all three.
+  7. **ATTACH CITATIONS TO PROJECTED POLICIES.** S19 reported policy `83/185 (44.9%)` but policy
+     **plus form-face citation** only `17/185 (9.2%)`. Most projected policies are inherited from
+     the hand-authored field map with no citation, so by the prime directive they are not
+     pipeline output yet. Report both columns per form.
+  8. **REPORT the policy mix BEFORE and AFTER, per form**, with `derived` and `defaulted` split
+     out. **Report honestly if the derived number barely moves** - a big drop in `unsupported`
+     achieved entirely by failover is not progress, it is relabelling.
+  **PROTECTED TEST SET, unchanged hard gate:** `graph/2025/{nodes,edges,rules}/` byte-identical.
+  **Do not edit `graph/2025/field_maps/` either** - S19 correctly left them alone.
+  No promotion, no hand-authoring, no live graph edit, nothing into `content_fingerprint`.
+  **FORCE-ADD THE REPORT** (`output/` is gitignored). **CITE THE ACTUAL COMMIT HASH** - S10, S14,
+  and S18 all cited hashes that do not exist.
+  Tier 3. Declared files plus honest `RAN:`/`NOT RUN:`. ASCII, `git diff --check`, module-form
+  `validate 2025`, real preflight with `legacy_mined` explicit (expect **394**),
+  `check_citation_integrity` STRICT (expect **36**). Short pytest temp root; no `--basetemp`.
+  ONE local commit; no push.
+  **Config note: `extraction.expression_mode` stays `none`.**
+  **Stop conditions:** any diff in `graph/2025/{nodes,edges,rules}/` or `graph/2025/field_maps/`;
+  any draft promoted; failing over a control whose label states a computation; assigning
+  filer-provided BEFORE the formula and source paths have run; reporting failover and derived
+  policies in one undifferentiated number; hand-authoring; `legacy_mined` above 394; strict
+  mismatches above 36. **A model or provider failure is NOT a stop condition.**
 
 - **M20-S17 TASK - ATTACH THE INSTRUCTIONS, THEN TIGHTEN THE UX (Architect, Claude Opus 5,
   2026-07-31). DELIBERATELY SCOPED SMALL. John: "i dont want to overload a revision round."
