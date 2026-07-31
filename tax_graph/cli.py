@@ -625,6 +625,25 @@ def verify_form_completeness_command(
         "  completeness: {expression_and_verbatim_citation}/{formula_cells} "
         "({completeness_rate:.1%})".format(**totals)
     )
+    print(
+        "  instruction coverage: {instruction_page_citation}/{instruction_review_cells} "
+        "({instruction_page_citation_rate:.1%})".format(
+            **{
+                "instruction_page_citation": sum(
+                    item["instruction_page_citation"] for item in report["by_document"].values()
+                ),
+                "instruction_review_cells": sum(
+                    item["instruction_review_cells"] for item in report["by_document"].values()
+                ),
+                "instruction_page_citation_rate": (
+                    sum(item["instruction_page_citation"] for item in report["by_document"].values())
+                    / sum(item["instruction_review_cells"] for item in report["by_document"].values())
+                    if sum(item["instruction_review_cells"] for item in report["by_document"].values())
+                    else 0.0
+                ),
+            }
+        )
+    )
     print("  handcrafted expression set: review flag only")
     return 0
 

@@ -59,6 +59,7 @@ def build_generated_document_cells(
     edges = _records(draft.get("edges"))
     citations = _citation_index(draft.get("citations"))
     spans = _span_index(draft.get("candidate_spans"))
+    instruction_ids_by_line = _instruction_span_index(spans)
     provenance = _provenance(draft.get("metrics"))
     cells_by_anchor = _cells_by_anchor(base.cells)
     generated: list[dict[str, Any]] = []
@@ -92,6 +93,13 @@ def build_generated_document_cells(
         expression = _expression(target, formula, rule, target_edges, base.cells, base_cell)
         rule_citation_ids = [str(value) for value in rule.get("citation_refs", []) or []]
         rule_citations = [citations[value] for value in rule_citation_ids if value in citations]
+        record_instruction_ids = [str(value) for value in formula.get("instruction_span_ids", []) or []]
+        exact_instruction_ids = instruction_ids_by_line.get(anchor, [])
+        instruction_span_ids = (
+            exact_instruction_ids
+            if instruction_ids_by_line
+            else record_instruction_ids
+        )
         instruction_citations = [
             {
                 "citation_id": span_id,
@@ -102,17 +110,18 @@ def build_generated_document_cells(
                 "source_document_id": span.get("document_id"),
                 "resolved": True,
             }
-            for span_id in formula.get("instruction_span_ids", []) or []
+            for span_id in instruction_span_ids
             if (span := spans.get(str(span_id))) is not None
         ]
         form_citations = [
             item for item in rule_citations
             if not str(item.get("source_document_id") or item.get("document_id") or "").startswith("instructions_")
         ]
-        instruction_citations.extend(
-            item for item in rule_citations
-            if str(item.get("source_document_id") or item.get("document_id") or "").startswith("instructions_")
-        )
+        if not instruction_ids_by_line:
+            instruction_citations.extend(
+                item for item in rule_citations
+                if str(item.get("source_document_id") or item.get("document_id") or "").startswith("instructions_")
+            )
         if not rule_citations:
             form_citations = list(base_cell.get("citations") or [])
             form_citations.extend(
@@ -159,7 +168,7 @@ def build_generated_document_cells(
                 "citations": form_citations,
                 "review_gap": review_gap or None,
                 "risk_bucket": risk_bucket,
-                "population_policy": population_policy,
+                "population_policy": population_policy or "review_gap",
             }
         )
         generated.append(cell)
@@ -214,6 +223,47 @@ def _span_index(value: Any) -> dict[str, dict[str, Any]]:
         for item in _records(value)
         if item.get("span_id")
     }
+
+
+def _instruction_span_index(spans: dict[str, dict[str, Any]]) -> dict[str, list[str]]:
+    """Rebuild line ownership from draft spans without importing the pipeline."""
+    result: dict[str, list[str]] = {}
+    current_document = ""
+    current_lines: set[str] = set()
+    current_level: int | None = None
+    for span_id, span in spans.items():
+        if str(span.get("relationship") or "") == "source":
+            continue
+        document_id = str(span.get("document_id") or "")
+        if document_id != current_document:
+            current_document = document_id
+            current_lines = set()
+            current_level = None
+        text = str(span.get("text") or "").strip()
+        line_heading = re.match(r"^(#{1,6})\s*(?:\*\*)?lines?\s+(.+?)\s*$", text, re.IGNORECASE)
+        if line_heading:
+            prefix = re.split(r"\s+-\s+|\s*:\s+", line_heading.group(2), maxsplit=1)[0]
+            current_lines = {
+                token.lower()
+                for token in re.findall(r"\b[0-9]+[a-z]?\b", prefix, re.IGNORECASE)
+            }
+            current_level = len(line_heading.group(1))
+            for line in current_lines:
+                result.setdefault(line, []).append(span_id)
+            continue
+        heading = re.match(r"^\s*(#{1,6})\s+", text)
+        if heading:
+            if current_level is not None and len(heading.group(1)) <= current_level:
+                current_lines = set()
+                current_level = None
+            for line in current_lines:
+                result.setdefault(line, []).append(span_id)
+            continue
+        table_line = re.match(r"^\s*\|\s*(?:\*\*)?([0-9]+[a-z]?)\.", text, re.IGNORECASE)
+        owned_lines = {table_line.group(1).lower()} if table_line else current_lines
+        for line in owned_lines:
+            result.setdefault(line, []).append(span_id)
+    return result
 
 
 def _provenance(metrics: Any) -> dict[str, str]:

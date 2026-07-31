@@ -251,13 +251,45 @@ def test_instruction_join_requires_line_ownership_not_mentions(tmp_path):
         "page 3, line 3",
         "|  1z. Add lines 1a through 1h  |",
     )
+    owned_body = CandidateSpan(
+        "span_instructions_form_1040_2025_0004",
+        "instructions_form_1040_2025",
+        "instructions",
+        "page 3, line 4",
+        "The amount on line 1z is the total of these wages.",
+    )
     node = OutlineNode("root_line_1z", "line", "Add lines 1a through 1h", line_anchor="1z")
 
-    selected = _spans_for_outline_node(document, node, [source, wrong_heading, wrong_body, owned])
+    selected = _spans_for_outline_node(document, node, [source, wrong_heading, wrong_body, owned, owned_body])
 
     assert source in selected
     assert owned in selected
     assert wrong_body not in selected
+    assert owned_body not in selected
+
+
+@pytest.mark.m20
+def test_instruction_section_body_survives_deeper_heading(tmp_path):
+    document = SourceDocumentInput(
+        document_id="form_1040_2025",
+        kind="tax_form",
+        year="2025",
+        url="https://example.test/form-1040.pdf",
+        text="1i Combat pay election\n",
+        text_path=tmp_path / "form.txt",
+    )
+    spans = [
+        CandidateSpan("instruction_heading", "instructions_form_1040_2025", "instructions", "page 1, line 1", "## Line 1i"),
+        CandidateSpan("instruction_title", "instructions_form_1040_2025", "instructions", "page 1, line 2", "### Nontaxable Combat Pay Election"),
+        CandidateSpan("instruction_body", "instructions_form_1040_2025", "instructions", "page 1, line 3", "If you elect to include the amount on line 1i, enter it here."),
+        CandidateSpan("next_heading", "instructions_form_1040_2025", "instructions", "page 1, line 4", "## Line 27a"),
+        CandidateSpan("next_body", "instructions_form_1040_2025", "instructions", "page 1, line 5", "Enter the amount for line 27a."),
+    ]
+    node = OutlineNode("root_line_1i", "line", "Combat pay election", line_anchor="1i")
+
+    selected = _spans_for_outline_node(document, node, spans)
+
+    assert [span.span_id for span in selected] == ["instruction_heading", "instruction_title", "instruction_body"]
 
 
 @pytest.mark.m20

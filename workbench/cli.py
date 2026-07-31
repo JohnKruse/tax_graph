@@ -26,7 +26,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--verdict-id", default=None, help="append-only verdict id")
     parser.add_argument("--reviewer-id", default=None, help="human reviewer id")
     parser.add_argument("--human-minutes", type=float, default=None, help="minutes spent on review")
-    parser.add_argument("--verdict", choices=["confirmed", "pipeline_defect", "source_pathology"], default=None)
+    parser.add_argument("--verdict", choices=["confirmed", "rejected", "pipeline_defect", "source_pathology"], default=None)
     parser.add_argument("--reason", default=None, help="reason for a non-confirmed verdict")
     parser.add_argument("--reviewed-at", default=None, help="ISO-8601 review timestamp")
     args = parser.parse_args(argv)

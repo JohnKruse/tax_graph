@@ -27,6 +27,8 @@ def test_form_completeness_distinguishes_complete_expression_and_gap(tmp_path: P
                         "status": "complete",
                         "has_expression": True,
                         "has_verbatim_citation": True,
+                        "has_form_face_citation": True,
+                        "has_instruction_citation": True,
                     },
                     {
                         "target_cell_id": "form_1040_2025_root_line_11a",
@@ -89,6 +91,12 @@ def test_form_completeness_distinguishes_complete_expression_and_gap(tmp_path: P
         "expression_and_verbatim_citation": 1,
         "completeness_rate": pytest.approx(1 / 3),
     }
+    assert item["expression_and_form_face_citation"] == 1
+    assert item["expression_and_instruction_page_citation"] == 1
+    assert item["expression_and_both_citations"] == 1
+    assert item["instruction_review_cells"] == 3
+    assert item["instruction_page_citation_before"] == 0
+    assert item["instruction_page_citation"] == 1
     assert item["expression_without_citation"] == 1
     assert item["neither_expression_nor_citation"] == 1
     assert item["wrong_owner_instruction_spans"] == 1

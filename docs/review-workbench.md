@@ -113,10 +113,14 @@ finding rather than being treated as resolved.
 The workbench emits only new records under `review_verdicts/<year>/`; it never edits
 the derived cell inventory, graph, or drafts. Each address-keyed verdict is
 schema-validated and carries the reviewed label, expression, separated form and
-instruction citation slots, canonical fingerprint, judgement, reviewer id, and UTC
-timestamp. A changed fingerprint produces a derived `needs_recheck` state.
-Review-gap expressions are counted explicitly as `NOT_REVIEWABLE` rather than as
-unreviewed work. No workbench action asserts a human-review claim on the user's behalf.
+instruction citation slots, canonical fingerprint, judgement, an automatically captured
+machine/session reviewer id, and UTC timestamp. An optional batch tag groups a review
+pass without entering the content fingerprint. The UI offers Accept and Reject; Reject
+may be recorded without a comment after an explicit confirmation, while comments remain
+strongly encouraged as the pipeline's rework input. A changed fingerprint produces a
+derived `needs_recheck` state. Review-gap expressions are counted explicitly as
+`NOT_REVIEWABLE` rather than as unreviewed work. No workbench action asserts a
+human-review claim on the user's behalf.
 
 ## Year-to-year rollover review (John's decisions, 2026-07-30)
 

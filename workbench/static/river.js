@@ -58,7 +58,7 @@ function policyFacets(cell) {
   const obtained = policy === "unsupported"
     ? "Nobody has mapped this yet"
     : ACQUISITION_LABEL[policy] || null;
-  const coverage = COVERAGE_LABEL[policy] || (policy ? "Mapped" : null);
+  const coverage = COVERAGE_LABEL[policy] || (policy === "review_gap" ? "Review gap" : (policy ? "Mapped" : null));
   return {obtained, coverage};
 }
 
@@ -192,13 +192,12 @@ function generatedVerdictMarkup(cell) {
     `<h3>Pipeline review</h3>` +
     `<p class="generated-provenance"><strong>Generated draft:</strong> ${escapeHtml(cell.generated_model || "unknown model")} / ${escapeHtml(cell.generated_provider || "unknown provider")}</p>` +
     `<p class="generated-status"><strong>Status:</strong> ${escapeHtml(cell.generated_status || "review_gap")}</p>` +
-    `<label>Reviewer id<input class="verdict-reviewer" type="text" placeholder="Your reviewer id" autocomplete="off"></label>` +
-    `<label>Comment<textarea class="verdict-comment" rows="3" placeholder="Required for a defect or source pathology"></textarea></label>` +
+    `<label>Optional batch tag<input class="verdict-tag" type="text" placeholder="For example: first pass" autocomplete="off"></label>` +
+    `<label>What does not match the source? <textarea class="verdict-comment" rows="3" placeholder="Tell the pipeline what needs correction."></textarea></label>` +
+    `<p class="verdict-hint">Accept records that this generated cell matches its source. Reject records the symptom; the pipeline diagnoses the cause.</p>` +
     `<div class="verdict-controls" role="group" aria-label="Generated cell verdict">` +
-      `<button type="button" class="verdict-button verdict-confirm" data-verdict="confirmed" data-reason="">Confirm</button>` +
-      `<button type="button" class="verdict-button verdict-defect" data-verdict="pipeline_defect" data-reason="pipeline_defect">Pipeline defect</button>` +
-      `<button type="button" class="verdict-button verdict-pathology" data-verdict="source_pathology" data-reason="source_pathology">Source pathology</button>` +
-      `<button type="button" class="verdict-button verdict-next" data-verdict="confirmed" data-reason="">Save and next</button>` +
+      `<button type="button" class="verdict-button verdict-accept" data-verdict="confirmed">Accept</button>` +
+      `<button type="button" class="verdict-button verdict-reject" data-verdict="rejected">Reject</button>` +
     `</div>` +
     `</section>`;
 }
@@ -295,17 +294,31 @@ function renderDetail(detail, cell, cells, review, onReviewChange) {
   sessionNote?.addEventListener("change", saveSessionReview);
   body.querySelectorAll("[data-verdict]").forEach((button) => {
     button.addEventListener("click", () => {
-      const reviewer = body.querySelector(".verdict-reviewer")?.value.trim() || "";
       const comment = body.querySelector(".verdict-comment")?.value.trim() || "";
+      const tag = body.querySelector(".verdict-tag")?.value.trim() || "";
+      const verdict = button.dataset.verdict || "";
+      if (verdict === "rejected" && !comment) {
+        if (button.dataset.armed !== "true") {
+          button.dataset.armed = "true";
+          const commentBox = body.querySelector(".verdict-comment");
+          if (commentBox) {
+            commentBox.placeholder = "Strongly encouraged: tell the pipeline why this does not match.";
+            commentBox.focus();
+          }
+          return;
+        }
+        if (!window.confirm("Reject without telling the pipeline why?")) {
+          body.querySelector(".verdict-comment")?.focus();
+          return;
+        }
+      }
       detail.dispatchEvent(new CustomEvent("workbench:submit-verdict", {
         bubbles: true,
         detail: {
           cell,
-          verdict: button.dataset.verdict,
+          verdict,
           comment,
-          reason: button.dataset.reason || "",
-          reviewerId: reviewer,
-          advance: button.classList.contains("verdict-next"),
+          reviewerTag: tag,
         },
       }));
     });
@@ -325,25 +338,27 @@ function cardFor(cell, review, occurrence, onSelect, onReviewChange) {
   select.type = "button";
   select.className = "unit-card-select";
   select.dataset.unitId = cell.cell_id;
-  const kicker = cell.section ? `<small class="unit-card-kicker">${escapeHtml(cell.section)}</small>` : "";
-  const occurrenceMarkup = occurrence
-    ? `<small class="unit-card-occurrence">${escapeHtml(occurrence)}</small>`
-    : "";
+  const anchor = String(cell.official_ref || "").trim() || "-";
+  const label = compactLabel(cell, anchor);
+  const state = review.status === "approved" ? "Accepted" : "Open";
+  const riskLabel = RISK_LABEL[cell.risk_bucket] || "Review gap";
   select.innerHTML =
-    `<span class="unit-card-status" aria-hidden="true"></span>` +
-    `<span><strong class="unit-card-heading">${escapeHtml(officialHeading(cell))}</strong>` +
-    kicker + occurrenceMarkup + `</span>` +
-    `<code>${escapeHtml(cell.ref || "unaddressed")}</code>`;
+    `<span class="unit-card-anchor">${escapeHtml(anchor)}</span>` +
+    `<strong class="unit-card-heading">${escapeHtml(label)}</strong>` +
+    `<span class="unit-card-risk"><span class="risk-swatch risk-swatch-${escapeHtml(riskClass)}" aria-hidden="true"></span>${escapeHtml(riskLabel)}</span>` +
+    `<span class="unit-card-state">${escapeHtml(state)}</span>`;
   select.addEventListener("click", onSelect);
-
-  const body = document.createElement("div");
-  body.className = "unit-card-body";
-  const risk = document.createElement("div");
-  risk.className = "unit-risk-label";
-  risk.textContent = RISK_LABEL[cell.risk_bucket] || "Review gap";
-  body.append(risk);
-  card.append(select, body);
+  card.append(select);
   return card;
+}
+
+function compactLabel(cell, anchor) {
+  let label = String(cell.display_name || "").trim();
+  if (!label) return "Unlabeled cell";
+  const escapedAnchor = anchor.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  label = label.replace(new RegExp(`^${escapedAnchor}\\s*[-:]?\\s*`, "i"), "");
+  label = label.replace(new RegExp(`\\s+${escapedAnchor}$`, "i"), "");
+  return label || "Unlabeled cell";
 }
 
 export function renderReviewRiver(drawer, documentModel, session, onReviewChange) {

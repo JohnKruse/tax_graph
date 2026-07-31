@@ -1,25 +1,60 @@
 schema_version: 1
 measurement: m20_s14_form_completeness
 tax_year: 2025
-primary_metric: expression_and_verbatim_citation_over_formula_cells
+primary_metric: expression_and_both_citations_over_formula_cells
 handcrafted_expression_set:
   status: review_flag_only
   note: Disagreements are retained to direct human review; they are not scored as
     accuracy.
 totals:
   formula_cells: 28
-  expression_and_verbatim_citation: 24
-  completeness_rate: 0.8571428571428571
+  expression_and_verbatim_citation: 17
+  completeness_rate: 0.6071428571428571
 by_document:
   form_1040_2025:
     formula_cells: 17
-    expression_and_verbatim_citation: 17
+    expression_and_verbatim_citation: 12
+    expression_and_form_face_citation: 17
+    expression_and_instruction_page_citation: 12
+    expression_and_both_citations: 12
     expression_without_citation: 0
     neither_expression_nor_citation: 0
-    completeness_rate: 1.0
+    completeness_rate: 0.7058823529411765
+    instruction_review_cells: 57
+    instruction_page_citation_before: 11
+    instruction_page_citation: 48
+    instruction_page_citation_rate: 0.8421052631578947
+    instruction_page_citation_missing_cells:
+    - target_cell_id: form_1040_2025_root_line_11a
+      line_anchor: 11a
+      review_gap: ''
+    - target_cell_id: form_1040_2025_root_line_11b
+      line_anchor: 11b
+      review_gap: ''
+    - target_cell_id: form_1040_2025_root_line_25d
+      line_anchor: 25d
+      review_gap: ''
+    - target_cell_id: form_1040_2025_root_line_32
+      line_anchor: '32'
+      review_gap: ''
+    - target_cell_id: form_1040_2025_root_line_33
+      line_anchor: '33'
+      review_gap: ''
+    - target_cell_id: form_1040_2025_root_line_25a
+      line_anchor: 25a
+      review_gap: ''
+    - target_cell_id: form_1040_2025_root_line_25b
+      line_anchor: 25b
+      review_gap: ''
+    - target_cell_id: form_1040_2025_root_line_25c
+      line_anchor: 25c
+      review_gap: ''
+    - target_cell_id: form_1040_2025_root_line_31
+      line_anchor: '31'
+      review_gap: ''
     expression_without_citation_cells: []
     review_gaps: []
-    wrong_owner_instruction_spans: 89
+    wrong_owner_instruction_spans: 45
     wrong_owner_instruction_addresses:
     - form_1040_2025_root_line_11a
     - form_1040_2025_root_line_11b
@@ -41,10 +76,10 @@ by_document:
     - google/gemini-3.6-flash
     resolved_providers:
     - Google AI Studio
-    prompt_tokens: 2849
-    completion_tokens: 8793
-    total_tokens: 11642
-    cost: 0.070221
+    prompt_tokens: 13262
+    completion_tokens: 7602
+    total_tokens: 20864
+    cost: 0.076908
     handcrafted_diff:
       flag_only: true
       note: The handcrafted set is a review-prioritization flag, not a grade.
@@ -56,20 +91,20 @@ by_document:
         operation_disagreement: 1
   schedule_1_2025:
     formula_cells: 4
-    expression_and_verbatim_citation: 0
+    expression_and_verbatim_citation: 2
+    expression_and_form_face_citation: 2
+    expression_and_instruction_page_citation: 2
+    expression_and_both_citations: 2
     expression_without_citation: 0
-    neither_expression_nor_citation: 4
-    completeness_rate: 0.0
+    neither_expression_nor_citation: 2
+    completeness_rate: 0.5
+    instruction_review_cells: 4
+    instruction_page_citation_before: 4
+    instruction_page_citation: 4
+    instruction_page_citation_rate: 1.0
+    instruction_page_citation_missing_cells: []
     expression_without_citation_cells: []
     review_gaps:
-    - target_cell_id: schedule_1_2025_section_1_part_i_additional_income_line_9
-      line_anchor: '9'
-      label: 9 Total other income. Add lines 8a through 8z 9
-      status: review_gap
-      has_expression: false
-      has_verbatim_citation: false
-      review_gap: source line is not present in the deterministic outline index
-      wrong_owner_instruction_spans: 12
     - target_cell_id: schedule_1_2025_section_1_part_i_additional_income_line_10
       line_anchor: '10'
       label: 10 Combine lines 1 through 7 and 9. This is your additional income. Enter
@@ -78,15 +113,11 @@ by_document:
       has_expression: false
       has_verbatim_citation: false
       review_gap: source line is not present in the deterministic outline index
-      wrong_owner_instruction_spans: 14
-    - target_cell_id: schedule_1_2025_section_2_part_ii_adjustments_to_income_line_25
-      line_anchor: '25'
-      label: 25 Total other adjustments. Add lines 24a through 24z 25
-      status: review_gap
-      has_expression: false
-      has_verbatim_citation: false
-      review_gap: source line is not present in the deterministic outline index
-      wrong_owner_instruction_spans: 7
+      wrong_owner_instruction_spans: 13
+      instruction_span_ids:
+      - span_instructions_form_1040_2025_0855
+      - span_instructions_form_1040_2025_0880
+      - span_instructions_form_1040_2025_0881
     - target_cell_id: schedule_1_2025_section_2_part_ii_adjustments_to_income_line_26
       line_anchor: '26'
       label: 26 Add lines 11 through 23 and 25. These are your adjustments to income.
@@ -96,7 +127,9 @@ by_document:
       has_verbatim_citation: false
       review_gap: source line is not present in the deterministic outline index
       wrong_owner_instruction_spans: 5
-    wrong_owner_instruction_spans: 38
+      instruction_span_ids:
+      - span_instructions_form_1040_2025_1081
+    wrong_owner_instruction_spans: 20
     wrong_owner_instruction_addresses:
     - schedule_1_2025_section_1_part_i_additional_income_line_10
     - schedule_1_2025_section_1_part_i_additional_income_line_9
@@ -104,18 +137,8 @@ by_document:
     - schedule_1_2025_section_2_part_ii_adjustments_to_income_line_26
     unresolved_line_refs:
     - code: unresolved_source_line
-      target_cell_id: schedule_1_2025_section_1_part_i_additional_income_line_9
-      source_line: 8n
-      candidates: []
-      reason: source line is not present in the deterministic outline index
-    - code: unresolved_source_line
       target_cell_id: schedule_1_2025_section_1_part_i_additional_income_line_10
       source_line: '2'
-      candidates: []
-      reason: source line is not present in the deterministic outline index
-    - code: unresolved_source_line
-      target_cell_id: schedule_1_2025_section_2_part_ii_adjustments_to_income_line_25
-      source_line: 24f
       candidates: []
       reason: source line is not present in the deterministic outline index
     - code: unresolved_source_line
@@ -127,38 +150,66 @@ by_document:
     - google/gemini-3.6-flash
     resolved_providers:
     - Google AI Studio
-    prompt_tokens: 864
-    completion_tokens: 2125
-    total_tokens: 2989
-    cost: 0.0172335
+    prompt_tokens: 2968
+    completion_tokens: 2107
+    total_tokens: 5075
+    cost: 0.020254499999999998
     handcrafted_diff:
       flag_only: true
       note: The handcrafted set is a review-prioritization flag, not a grade.
       counts:
-        missing_in_draft: 4
+        missing_in_draft: 2
+        operation_agreement_operands_differ: 2
   schedule_a_2025:
     formula_cells: 7
-    expression_and_verbatim_citation: 7
+    expression_and_verbatim_citation: 3
+    expression_and_form_face_citation: 7
+    expression_and_instruction_page_citation: 3
+    expression_and_both_citations: 3
     expression_without_citation: 0
     neither_expression_nor_citation: 0
-    completeness_rate: 1.0
+    completeness_rate: 0.42857142857142855
+    instruction_review_cells: 7
+    instruction_page_citation_before: 3
+    instruction_page_citation: 3
+    instruction_page_citation_rate: 0.42857142857142855
+    instruction_page_citation_missing_cells:
+    - target_cell_id: schedule_a_2025_section_1_schedule_a_itemized_deductions_line_3
+      line_anchor: '3'
+      review_gap: ''
+    - target_cell_id: schedule_a_2025_section_1_schedule_a_itemized_deductions_line_4
+      line_anchor: '4'
+      review_gap: ''
+    - target_cell_id: schedule_a_2025_section_1_schedule_a_itemized_deductions_line_5d
+      line_anchor: 5d
+      review_gap: ''
+    - target_cell_id: schedule_a_2025_section_1_schedule_a_itemized_deductions_line_7
+      line_anchor: '7'
+      review_gap: ''
+    - target_cell_id: schedule_a_2025_section_1_schedule_a_itemized_deductions_line_8e
+      line_anchor: 8e
+      review_gap: ''
+    - target_cell_id: schedule_a_2025_section_1_schedule_a_itemized_deductions_line_10
+      line_anchor: '10'
+      review_gap: ''
+    - target_cell_id: schedule_a_2025_section_1_schedule_a_itemized_deductions_line_14
+      line_anchor: '14'
+      review_gap: ''
     expression_without_citation_cells: []
     review_gaps: []
-    wrong_owner_instruction_spans: 19
+    wrong_owner_instruction_spans: 2
     wrong_owner_instruction_addresses:
     - schedule_a_2025_section_1_schedule_a_itemized_deductions_line_3
-    - schedule_a_2025_section_1_schedule_a_itemized_deductions_line_4
     - schedule_a_2025_section_1_schedule_a_itemized_deductions_line_5d
-    - schedule_a_2025_section_1_schedule_a_itemized_deductions_line_7
     unresolved_line_refs: []
     resolved_models:
     - google/gemini-3.6-flash
     resolved_providers:
     - Google AI Studio
-    prompt_tokens: 962
-    completion_tokens: 2707
-    total_tokens: 3669
-    cost: 0.0217455
+    prompt_tokens: 4975
+    completion_tokens: 2415
+    total_tokens: 7390
+    cost: 0.025575
     handcrafted_diff:
       flag_only: true
       note: The handcrafted set is a review-prioritization flag, not a grade.

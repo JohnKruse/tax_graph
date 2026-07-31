@@ -45,6 +45,15 @@ def test_generated_review_keeps_form_and_instruction_slots_separate() -> None:
     assert isinstance(cell["form_citations"], list)
     assert isinstance(cell["instruction_citations"], list)
     assert cell["citations"] is cell["form_citations"]
+    line_1i = next(item for item in result.cells if item["official_ref"] == "1i")
+    assert any("nontaxable combat pay" in item["quoted_text"].lower() for item in line_1i["instruction_citations"])
+
+
+@pytest.mark.m20
+def test_generated_review_uses_generated_risk_policy_for_gap_cells() -> None:
+    result = build_generated_document_cells(ROOT, 2025, "form_1040_2025")
+    assert all(cell["population_policy"] for cell in result.cells)
+    assert sum(cell["population_policy"] == "review_gap" for cell in result.cells) == 40
 
 
 @pytest.mark.m20

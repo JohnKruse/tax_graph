@@ -4,7 +4,11 @@ from __future__ import annotations
 
 from collections import defaultdict
 from pathlib import Path
+import getpass
+import platform
 import secrets
+import socket
+import uuid
 from typing import Any
 
 from flask import Flask, jsonify, request, send_file
@@ -74,6 +78,7 @@ def create_app(
         WORKBENCH_PAGE_CACHE=page_cache,
         WORKBENCH_SESSION_ROOT=session_root,
         WORKBENCH_VERDICT_ROOT=verdict_root,
+        WORKBENCH_REVIEWER_ID=_machine_reviewer_id(),
     )
     entries = {
         str(entry["queue_id"]): entry
@@ -411,6 +416,7 @@ def create_app(
         allowed = {
             "queue_id", "verdict_id", "reviewer_id", "human_minutes", "verdict",
             "reviewed_at", "reason", "object_ref", "source_override", "comment",
+            "reviewer_tag",
         }
         unexpected = sorted(set(payload) - allowed)
         if unexpected:
@@ -418,14 +424,14 @@ def create_app(
         queue_id = str(payload.get("queue_id", ""))
         if queue_id not in entries:
             return jsonify({"error": "unknown queue_id", "queue_id": queue_id}), 404
-        required = ("verdict_id", "reviewer_id", "human_minutes", "verdict")
+        required = ("verdict_id", "human_minutes", "verdict")
         missing = [key for key in required if payload.get(key) is None]
         if missing:
             return jsonify({"error": "missing verdict fields", "fields": missing}), 400
         verdict = str(payload.get("verdict") or "")
         reason = str(payload.get("reason") or "").strip()
         comment = str(payload.get("comment") or "").strip()
-        if verdict != "confirmed":
+        if verdict not in {"confirmed", "rejected"}:
             if reason not in REJECTION_REASON_CODES:
                 return jsonify({"error": "a rejection requires reason pipeline_defect or source_pathology"}), 400
             if not comment:
@@ -438,7 +444,7 @@ def create_app(
                 queue_id=queue_id,
                 manifest_hash=str(review_manifest["manifest_hash"]),
                 verdict_id=str(payload["verdict_id"]),
-                reviewer_id=str(payload["reviewer_id"]),
+                reviewer_id=str(app.config["WORKBENCH_REVIEWER_ID"]),
                 human_minutes=float(payload["human_minutes"]),
                 verdict=verdict,
                 reviewed_at=payload.get("reviewed_at"),
@@ -446,6 +452,7 @@ def create_app(
                 object_ref=object_ref,
                 source_override=payload.get("source_override"),
                 comment=payload.get("comment"),
+                reviewer_tag=payload.get("reviewer_tag"),
                 output_path=verdict_root / f"{payload['verdict_id']}.yaml",
             )
             _append_address_review_if_applicable(
@@ -454,6 +461,7 @@ def create_app(
                 queue_id=queue_id,
                 object_ref=object_ref,
                 verdict_payload=payload,
+                reviewer_id=str(app.config["WORKBENCH_REVIEWER_ID"]),
                 cells=_document_cells(queue_id) if queue_id in GENERATED_REVIEW_DOCUMENTS else [],
                 store_path=verdict_root / "address_verdicts.jsonl",
             )
@@ -472,6 +480,18 @@ def _require_write_token(app: Flask) -> Any | None:
     if not supplied or not secrets.compare_digest(supplied, expected):
         return jsonify({"error": "missing or invalid write token"}), 403
     return None
+
+
+def _machine_reviewer_id() -> str:
+    """Identify the local review session without asking a human to type a name."""
+    host = socket.gethostname() or "unknown-host"
+    user = getpass.getuser() or "unknown-user"
+    session = uuid.uuid4().hex
+    safe_host = "".join(char if char.isalnum() or char in "._-" else "_" for char in host)
+    safe_user = "".join(char if char.isalnum() or char in "._-" else "_" for char in user)
+    operating_system = platform.system() or "unknown-os"
+    safe_os = "".join(char if char.isalnum() or char in "._-" else "_" for char in operating_system)
+    return f"workbench/{safe_os}/{safe_host}/{safe_user}/{session}"
 
 
 def _scoped_verdict_ref(entry: dict[str, Any], supplied: Any) -> dict[str, str] | None:
@@ -514,6 +534,7 @@ def _append_address_review_if_applicable(
     queue_id: str,
     object_ref: dict[str, str] | None,
     verdict_payload: dict[str, Any],
+    reviewer_id: str,
     cells: list[dict[str, Any]],
     store_path: str | Path,
 ) -> None:
@@ -535,7 +556,7 @@ def _append_address_review_if_applicable(
         form_citations=[item.get("quoted_text") for item in cell.get("form_citations", []) or []],
         instruction_citations=[item.get("quoted_text") for item in cell.get("instruction_citations", []) or []],
         judgement=judgement,
-        reviewer_id=str(verdict_payload.get("reviewer_id") or ""),
+        reviewer_id=reviewer_id,
         reviewed_at=verdict_payload.get("reviewed_at"),
         verdict_id=str(verdict_payload.get("verdict_id") or ""),
         store_path=store_path,
@@ -546,6 +567,7 @@ def _append_address_review_if_applicable(
             "review_source": cell.get("review_source"),
         },
         comment=str(comment) if comment is not None else None,
+        reviewer_tag=str(verdict_payload.get("reviewer_tag") or "") or None,
     )
 
 

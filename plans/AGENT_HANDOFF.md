@@ -14,6 +14,101 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## Current state (2026-07-30)
 
+**Worker session checkpoint - M20-S17 implementation (2026-07-31):** Global canary: Ledger
+Llama. Phase canary: Ground Truth. Model: GPT-5 Codex; effort/quota/context indicators are not
+exposed by this environment. John gave go via the current task request. Single declared step:
+attach instruction sections to their exact printed lines, split form-face and instruction-page
+completeness telemetry, then tighten the generated review UX to a compact 1/3 list and 2/3
+review pane with Accept/Reject, automatic machine attribution, and corrected generated policy
+counts. Applicable defect-ledger entries: D4, D6, D9, D11, and the exact RAN/NOT RUN evidence
+rule. No draft promotion, hand-authoring, live graph edit, rollover implementation, or operation
+enum change is in scope. Protected graph and live verdict artifacts are untouched at session start.
+
+**M20-S17 focused-test declaration (2026-07-31):** Declared files are
+`tests/test_extract_outline_m4.py`, `tests/test_generated_review_m20.py`,
+`tests/test_review_verdicts_m20.py`, `tests/test_workbench_cells_api_m17.py`,
+`tests/test_workbench_write_api_m15.py`, `tests/test_workbench_m15.py`,
+`tests/test_form_completeness_m20.py`, `tests/test_llm_attribution_m20.py`,
+`tests/test_draft_route_m20.py`, `tests/test_batch_extraction_m10.py`,
+`tests/test_schedule_d_extraction_m9.py`, `tests/test_nversion_m8.py`,
+`tests/test_tables_detector_m6b.py`, `tests/test_cli.py`,
+`tests/test_review_workbench_verdicts_m15.py`, `tests/test_review_schemas_m15.py`, and
+`tests/e2e/test_workbench_v2_m17.py`. The additional verdict-history and schema consumers
+are in scope because S17 changes the public verdict enum, reviewer attribution, and tag
+fields. No new browser e2e file was authored.
+
+**M20-S17 implementation evidence (2026-07-31):** The extraction pipeline now carries a
+deterministic set of exact printed-line owners for each instruction span. A `## Line X`
+heading owns its body through deeper headings until the next same-or-higher heading; table
+rows such as `| 1z.` own only that row. Mention-only references remain excluded, and an
+unowned mention is missing coverage rather than a false wrong-owner finding. The workbench
+rebuilds the same ownership map locally so its projection cannot trust stale draft ids.
+Completeness now reports form-face and instruction-page citation slots separately. Form 1040
+measures 17 formula cells, 12 with both citation types, and 48/57 instruction-review lines
+covered (11/57 before exact ownership); wrong-owner mentions measure 45. Schedule 1
+measures 2/4 formula cells with both citation types and 4/4 instruction coverage; Schedule A
+measures 3/7 and 3/7 respectively. The aggregate report is 17/28 formula cells with both
+citations and 55/68 instruction-review lines covered. Generated policy counts are Form 1040:
+`computed=14`, `copied=2`, `review_gap=40`, `user_entered=1`.
+
+**M20-S17 UX evidence (2026-07-31):** The river is one compact line per cell with printed
+anchor, short label, risk swatch/name, and Open/Accepted state. The selected review pane is
+the 2/3 region; the list is the 1/3 region. Arithmetic is red, review gaps are amber-brown
+and hatched, and the selected detail shows separate form-face and instruction-page sources.
+The generated verdict surface has only Accept and Reject. Reject first focuses the comment
+prompt; an empty second attempt asks `Reject without telling the pipeline why?`. A comment is
+strongly encouraged but not mandatory. The typed reviewer field and old pipeline-defect /
+source-pathology buttons are retired from the UI. The API records a machine/session reviewer
+id containing OS, host, user, and a unique session token, plus an optional batch tag and
+automatic UTC timestamp; comments and tags stay outside the address content fingerprint.
+
+**M20-S17 browser checkpoint (2026-07-31):** RAN: `$testRoot =
+'C:\\Users\\devbox\\.codex\\visualizations\\2026\\07\\31\\019fb7f0-f003-7831-aae8-62bace7039b8\\m20_s17_e2e';
+New-Item -ItemType Directory -Force -Path $testRoot | Out-Null; $env:PYTEST_DEBUG_TEMPROOT =
+$testRoot; & .venv\\Scripts\\python.exe -m pytest tests/e2e/test_workbench_v2_m17.py -q` ->
+4 passed, 1 warning in 125.46s. A read-only in-app browser check selected Form 1040 line 22,
+confirmed the compact 1/3 list and 2/3 detail pane, verified both source sections and the
+Accept/Reject controls, focused the Reject comment prompt, and opened then dismissed the
+empty-rejection confirmation. A screenshot was captured. No verdict was submitted to the
+live ledger; the existing live server was used only for selection and the dismissed dialog.
+
+**M20-S17 focused-test evidence (2026-07-31):** RAN: `$testRoot =
+'C:\\Users\\devbox\\.codex\\visualizations\\2026\\07\\31\\019fb7f0-f003-7831-aae8-62bace7039b8\\m20_s17_final_tests';
+New-Item -ItemType Directory -Force -Path $testRoot | Out-Null; $env:PYTEST_DEBUG_TEMPROOT =
+$testRoot; & .venv\\Scripts\\python.exe -m pytest tests/test_extract_outline_m4.py
+tests/test_generated_review_m20.py tests/test_review_verdicts_m20.py
+tests/test_workbench_cells_api_m17.py tests/test_workbench_write_api_m15.py
+tests/test_workbench_m15.py tests/test_form_completeness_m20.py tests/test_llm_attribution_m20.py
+tests/test_draft_route_m20.py tests/test_batch_extraction_m10.py
+tests/test_schedule_d_extraction_m9.py tests/test_nversion_m8.py tests/test_tables_detector_m6b.py
+tests/test_cli.py tests/test_review_workbench_verdicts_m15.py -q` -> 81 passed, 1 skipped,
+1 warning in 307.95s. RAN: `$testRoot =
+'C:\\Users\\devbox\\.codex\\visualizations\\2026\\07\\31\\019fb7f0-f003-7831-aae8-62bace7039b8\\m20_s17_schema_tests';
+New-Item -ItemType Directory -Force -Path $testRoot | Out-Null; $env:PYTEST_DEBUG_TEMPROOT =
+$testRoot; & .venv\\Scripts\\python.exe -m pytest tests/test_review_schemas_m15.py -q` ->
+7 passed, 1 warning in 0.46s. Every declared non-browser file is covered by one of these
+exact commands. The first exploratory core sweep found five implementation failures and is
+not acceptance evidence; the ownership parser, metric fixture, and projection were corrected
+before the successful reruns above.
+
+**M20-S17 machine evidence (2026-07-31):** RAN: `& .venv\\Scripts\\python.exe
+tools/check_ascii.py` -> ASCII check OK; `git diff --check` -> exit 0; bundled Node syntax
+checks for `workbench/static/river.js` and `workbench/static/app.js` -> exit 0. RAN:
+`& .venv\\Scripts\\python.exe -m tax_graph.cli validate 2025` -> graph integrity OK,
+documents=18, nodes=441, tables=2, edges=409, rules=17, citations=401, decisions=2,
+routing_edges=90, triggers=12, expectations=4. RAN: `& .venv\\Scripts\\python.exe -m
+workbench.cli --root . --year 2025 preflight` -> exit 0, entries=18, units=2224, derived
+cells=2120, review_gap=591, unreviewed=1529, legacy_mined=394. RAN: `&
+.venv\\Scripts\\python.exe -c "from tax_graph.acquire.citation_check import
+check_graph_citations; report=check_graph_citations(year='2025', raw_store='.cache/raw',
+root='.'); print(f'checked={report.checked}, strict_mismatches={len(report.mismatches)}')"`
+-> checked=401, strict_mismatches=36. RAN: `& .venv\\Scripts\\python.exe -m tax_graph.cli
+verify form-completeness --year 2025 --root .` -> report written to
+`output/m20_s14_form_completeness.yaml`, aggregate completeness 17/28 (60.7%), aggregate
+instruction coverage 55/68 (80.9%). Protected `graph/2025/{nodes,edges,rules}/` diff is
+empty and live `review_verdicts/2025` diff is empty. No draft was promoted and no live graph
+artifact changed. One local commit will contain this implementation and evidence; no push.
+
 **Worker session checkpoint - M20-S16 implementation (2026-07-31):** Global canary: Ledger
 Llama. Phase canary: Ground Truth. Model: GPT-5 Codex; effort/quota/context indicators are not
 exposed by this environment. John gave go via the current task request. Single declared step:

@@ -13,6 +13,10 @@ from tax_graph.extract.outline_checks import run_outline_artifact_checks
 from tax_graph.extract.llm_client import LlmClient, response_telemetry
 from tax_graph.extract.micro import extract_formula_plan, extract_non_formula_source
 from tax_graph.extract.models import DraftObject, ExtractionBatch, SourceDocumentInput
+from tax_graph.extract.instruction_ownership import (
+    instruction_line_owners,
+    instruction_span_ids_for_line,
+)
 from tax_graph.extract.outline import (
     CandidateSpan,
     OutlineNode,
@@ -80,6 +84,11 @@ def generate_outline_first_drafts(
         )
         target_cell_id = _outline_node_id(document.document_id, outline_node)
         wrong_owner_spans = _wrong_owner_instruction_spans(outline_node, spans, instruction_owners)
+        instruction_span_ids = instruction_span_ids_for_line(
+            spans,
+            str(outline_node.line_anchor or ""),
+            owners=instruction_owners,
+        )
         if wrong_owner_spans:
             micro_stats["wrong_owner_instruction_span_count"] += len(wrong_owner_spans)
             micro_stats["wrong_owner_instruction_addresses"].append(target_cell_id)
@@ -92,9 +101,9 @@ def generate_outline_first_drafts(
             "has_verbatim_citation": False,
             "review_gap": "no expression produced",
             "wrong_owner_instruction_spans": len(wrong_owner_spans),
-            "instruction_span_ids": [
-                span.span_id for span in node_spans if span.relationship != "source"
-            ],
+            "instruction_span_ids": instruction_span_ids,
+            "has_form_face_citation": False,
+            "has_instruction_citation": bool(instruction_span_ids),
         }
         micro_stats["formula_cells"].append(cell_record)
         plan = _deterministic_schedule_d_formula_plan(document, outline_node, node_spans)
@@ -155,6 +164,7 @@ def generate_outline_first_drafts(
         citations = {ref for rule in rules for ref in rule.data.get("citation_refs", [])}
         cell_record["has_expression"] = bool(rules)
         cell_record["has_verbatim_citation"] = bool(citations)
+        cell_record["has_form_face_citation"] = bool(citations)
         cell_record["citation_refs"] = sorted(citations)
         if rules and citations:
             cell_record["status"] = "complete"
@@ -221,7 +231,7 @@ def _extract_non_formula_cells(
     config: dict[str, Any] | None,
     root: str | Path | None,
     line_index: dict[tuple[str, str], str],
-    instruction_owners: dict[str, str],
+    instruction_owners: dict[str, frozenset[str]],
     model: str,
     stats: dict[str, Any],
     llm_calls: list[Any],
@@ -255,8 +265,17 @@ def _extract_non_formula_cells(
             "box": "",
             "quote": "",
             "instruction_span_ids": [
-                span.span_id for span in node_spans if span.relationship != "source"
+                span_id
+                for span_id in instruction_span_ids_for_line(
+                    spans,
+                    anchor,
+                    owners=instruction_owners,
+                )
             ],
+            "has_form_face_citation": False,
+            "has_instruction_citation": bool(
+                instruction_span_ids_for_line(spans, anchor, owners=instruction_owners)
+            ),
             "review_gap": "source declaration has not been generated",
         }
         stats.setdefault("non_formula_cells", []).append(record)
@@ -475,12 +494,12 @@ def _spans_for_outline_node(
     *,
     document_id: str = "",
     table_mode: bool = False,
-    instruction_owners: dict[str, str] | None = None,
+    instruction_owners: dict[str, frozenset[str]] | None = None,
 ) -> list[CandidateSpan]:
     """Select a small evidence packet for one micro-extraction prompt."""
+    instruction_owners = instruction_owners or _instruction_owner_map(spans)
     selected: list[CandidateSpan] = []
     if node.line_anchor:
-        line_phrase = f"line {node.line_anchor}"
         instruction_hits: list[CandidateSpan] = []
         source_span = _span_for_line(document, node, spans)
         for span in spans:
@@ -489,7 +508,6 @@ def _spans_for_outline_node(
                 continue
             if span.relationship == "source":
                 continue
-            lowered = span.text.lower()
             if _instruction_span_belongs_to_line(span, node.line_anchor, instruction_owners):
                 instruction_hits.append(span)
         if source_span is not None:
@@ -529,7 +547,7 @@ def _direct_line_evidence(text: str, anchor: str) -> bool:
 def _instruction_span_belongs_to_line(
     span: CandidateSpan,
     anchor: str,
-    instruction_owners: dict[str, str] | None = None,
+    instruction_owners: dict[str, frozenset[str]] | None = None,
 ) -> bool:
     """Accept an instruction span only when its own entry is this line.
 
@@ -538,29 +556,14 @@ def _instruction_span_belongs_to_line(
     1z because it mentioned 1z. Explicit headings and table-row prefixes are
     the deterministic ownership signals; a bare mention remains excluded.
     """
-    owner = (instruction_owners or {}).get(span.span_id) or _explicit_instruction_owner(span.text)
-    if owner != anchor.lower():
+    owner = (instruction_owners or {}).get(span.span_id, ())
+    if anchor.lower() not in {str(value).lower() for value in owner}:
         return False
-    return _direct_line_evidence(span.text, anchor) or owner == anchor.lower()
+    return True
 
 
-def _explicit_instruction_owner(text: str) -> str | None:
-    """Return the printed line owned by an instruction entry, if explicit."""
-    patterns = (
-        r"^\s*#{1,6}\s*(?:\*\*)?lines?\s+([0-9]+[a-z]?|[a-z])\b",
-        r"^\s*\*\*lines?\s+([0-9]+[a-z]?|[a-z])\b",
-        r"^\s*\|\s*(?:\*\*)?\s*([0-9]+[a-z]?)\.",
-        r"^\s*(?:\*\*)?([0-9]+[a-z]?)\.\s+(?:enter|add|subtract|multiply|combine|is|are)\b",
-    )
-    for pattern in patterns:
-        match = re.match(pattern, text, flags=re.IGNORECASE)
-        if match:
-            return match.group(1).lower()
-    return None
-
-
-def _instruction_owner_map(spans: list[CandidateSpan]) -> dict[str, str]:
-    """Assign each instruction body to its nearest explicit line heading.
+def _instruction_owner_map(spans: list[CandidateSpan]) -> dict[str, frozenset[str]]:
+    """Assign each instruction span to its nearest explicit line heading.
 
     Instruction documents commonly put a line heading on one span and the
     actual prose on following spans.  A mention-only join treated every such
@@ -568,37 +571,19 @@ def _instruction_owner_map(spans: list[CandidateSpan]) -> dict[str, str]:
     owner forward preserves the source's local structure while resetting at a
     non-line Markdown heading or at a new related document.
     """
-    owners: dict[str, str] = {}
-    current_document = ""
-    current_owner: str | None = None
-    for span in spans:
-        if span.relationship == "source":
-            continue
-        if span.document_id != current_document:
-            current_document = span.document_id
-            current_owner = None
-        explicit = _explicit_instruction_owner(span.text)
-        if explicit:
-            current_owner = explicit
-            owners[span.span_id] = explicit
-            continue
-        if re.match(r"^\s*#{1,6}\s*", span.text):
-            current_owner = None
-            continue
-        if current_owner:
-            owners[span.span_id] = current_owner
-    return owners
+    return instruction_line_owners(spans)
 
 
 def _wrong_owner_instruction_spans(
     node: OutlineNode,
     spans: list[CandidateSpan],
-    instruction_owners: dict[str, str] | None = None,
+    instruction_owners: dict[str, frozenset[str]] | None = None,
 ) -> list[CandidateSpan]:
     """Find instruction mentions that were previously eligible but are not owned."""
     anchor = str(node.line_anchor or "").lower()
     if not anchor:
         return []
+    instruction_owners = instruction_owners or _instruction_owner_map(spans)
     phrase = f"line {anchor}"
     wrong: list[CandidateSpan] = []
     for span in spans:
@@ -606,8 +591,9 @@ def _wrong_owner_instruction_spans(
             continue
         if not _direct_line_evidence(span.text, anchor):
             continue
-        owner = (instruction_owners or {}).get(span.span_id) or _explicit_instruction_owner(span.text)
-        if owner != anchor:
+        owner = (instruction_owners or {}).get(span.span_id, ())
+        owned = {str(value).lower() for value in owner}
+        if owned and anchor not in owned:
             wrong.append(span)
     return wrong
 

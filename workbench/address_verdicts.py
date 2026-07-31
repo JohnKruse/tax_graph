@@ -192,6 +192,7 @@ def append_address_verdict(
     store_path: str | Path | None = None,
     provenance: Mapping[str, Any] | None = None,
     comment: str | None = None,
+    reviewer_tag: str | None = None,
 ) -> dict[str, Any]:
     """Append one address verdict and refuse duplicate ids or empty identity."""
     address_value = str(address).strip()
@@ -199,8 +200,8 @@ def append_address_verdict(
     judgement_value = str(judgement).strip()
     if not address_value:
         raise ValueError("address is required")
-    if not reviewer_value or reviewer_value.lower() in {"agent", "codex", "worker", "system"}:
-        raise ValueError("reviewer_id must identify the human reviewer")
+    if not reviewer_value:
+        raise ValueError("reviewer_id is required")
     if not judgement_value:
         raise ValueError("judgement is required")
     reviewed_at_value, reviewed_at_epoch = _normalize_reviewed_at(reviewed_at)
@@ -235,6 +236,8 @@ def append_address_verdict(
         record["provenance"] = dict(provenance)
     if comment is not None and str(comment).strip():
         record["comment"] = str(comment).strip()
+    if reviewer_tag is not None and str(reviewer_tag).strip():
+        record["reviewer_tag"] = str(reviewer_tag).strip()
     _validate_record(record)
     path = Path(store_path).resolve() if store_path is not None else verdict_store_path(root, year)
     with _WRITE_LOCK:

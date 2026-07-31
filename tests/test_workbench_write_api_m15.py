@@ -168,5 +168,26 @@ def test_rejection_requires_reason_code_and_comment(api) -> None:
     assert "reason" in response.get_json()["error"]
 
 
+@pytest.mark.m20
+def test_rejected_verdict_auto_captures_machine_session_and_tag(api) -> None:
+    app, client = api
+    queue_id = app.config["WORKBENCH_MANIFEST"]["entries"][0]["queue_id"]
+    payload = {
+        "queue_id": queue_id,
+        "verdict_id": "m20_auto_reviewer_rejected",
+        "human_minutes": 0,
+        "verdict": "rejected",
+        "reviewer_id": "john",
+        "reviewer_tag": "first pass",
+    }
+    response = client.post("/api/verdicts", json=payload, headers=_headers())
+    assert response.status_code == 201, response.get_json()
+    record = response.get_json()["verdict"]
+    assert record["verdict"] == "rejected"
+    assert record["reviewer_id"].startswith("workbench/")
+    assert record["reviewer_id"] != "john"
+    assert record["reviewer_tag"] == "first pass"
+
+
 def _headers() -> dict[str, str]:
     return {"X-Workbench-Token": TOKEN}

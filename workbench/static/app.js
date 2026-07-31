@@ -17,6 +17,7 @@ const POLICY_COUNT_LABEL = {
   imported: "imported",
   copied: "copied",
   computed: "computed",
+  review_gap: "review gap",
   decision_required: "decision required",
   intentionally_blank: "intentionally blank",
   unsupported: "coverage gap - nobody has mapped this yet",
@@ -221,16 +222,15 @@ function renderReview(page = null, restoreCellId = null) {
     const detail = event.detail || {};
     const cell = detail.cell;
     const verdict = String(detail.verdict || "");
-    const reviewerId = String(detail.reviewerId || "").trim();
     const comment = String(detail.comment || "").trim();
-    const reason = String(detail.reason || "").trim();
+    const reviewerTag = String(detail.reviewerTag || "").trim();
     const message = document.querySelector("#session-message");
-    if (!cell || !reviewerId) {
-      message.textContent = "Enter a human reviewer id before recording the verdict.";
+    if (!cell) {
+      message.textContent = "Select a generated cell before recording the verdict.";
       return;
     }
-    if (verdict !== "confirmed" && (!reason || !comment)) {
-      message.textContent = "A pipeline defect or source pathology needs a reason and comment.";
+    if (verdict !== "confirmed" && verdict !== "rejected") {
+      message.textContent = "This review surface accepts or rejects the selected generated cell.";
       return;
     }
     const safeId = `review_${activeDocument.document_id}_${cell.cell_id}_${Date.now()}`.toLowerCase().replace(/[^a-z0-9_]+/g, "_");
@@ -239,24 +239,15 @@ function renderReview(page = null, restoreCellId = null) {
       await submitVerdict({
         queue_id: activeDocument.document_id,
         verdict_id: safeId,
-        reviewer_id: reviewerId,
         human_minutes: 0,
         verdict,
         reviewed_at: now(),
-        reason: verdict === "confirmed" ? undefined : reason,
         comment: comment || undefined,
+        reviewer_tag: reviewerTag || undefined,
         object_ref: {object_id: cell.address_id},
-        source_override: verdict === "source_pathology"
-          ? {provenance: comment, marked_override: true}
-          : undefined,
       });
       if (verdict === "confirmed") updateCellReview(cell, {approved: true, note: comment});
       message.textContent = `Verdict recorded for ${cell.official_ref || cell.cell_id}.`;
-      if (detail.advance) {
-        const index = activeCells().findIndex((item) => item.cell_id === cell.cell_id);
-        const next = activeCells()[index + 1];
-        if (next) renderReview(next.page, next.cell_id);
-      }
     } catch (error) {
       message.textContent = `Verdict was not recorded: ${error.message}`;
     }

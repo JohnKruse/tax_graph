@@ -44,6 +44,13 @@ def test_documents_api_lists_forms(client) -> None:
     assert payload["tax_year"] == 2025
     assert any(item["document_id"] == "form_1040_2025" for item in payload["documents"])
     assert all(item["cell_count"] > 0 for item in payload["documents"])
+    form_1040 = next(item for item in payload["documents"] if item["document_id"] == "form_1040_2025")
+    assert form_1040["policy_counts"] == {
+        "computed": 14,
+        "copied": 2,
+        "review_gap": 40,
+        "user_entered": 1,
+    }
 
 
 @pytest.mark.m17

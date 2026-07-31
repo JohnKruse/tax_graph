@@ -97,10 +97,10 @@ def test_selected_cell_uses_human_headers_dossier_order_and_occurrence(page, wor
     cards.first.wait_for()
 
     # The printed line leads the card header, with the authored label after it.
-    headings = cards.locator(".unit-card-heading").all_inner_texts()
-    line_index = next(index for index, heading in enumerate(headings) if heading.startswith("33 - "))
+    anchors = cards.locator(".unit-card-anchor").all_inner_texts()
+    line_index = anchors.index("33")
     line_card = cards.nth(line_index)
-    expect(line_card.locator(".unit-card-heading")).to_have_text(re.compile(r"^33 - "))
+    expect(line_card.locator(".unit-card-anchor")).to_have_text("33")
     line_card.locator(".unit-card-select").click()
 
     detail = page.locator("#river-detail")
@@ -115,10 +115,19 @@ def test_selected_cell_uses_human_headers_dossier_order_and_occurrence(page, wor
     # The 1040 line 1a record keeps its form-face citation in the authority slot;
     # instruction coverage remains an explicit review gap until the source micro
     # question resolves it.
-    line_1a = cards.filter(has_text="1a - Total amount from Form(s) W-2").first
+    line_1a = cards.nth(anchors.index("1a"))
     line_1a.locator(".unit-card-select").click()
     expect(detail.locator(".authority")).to_contain_text("Total amount from Form(s) W-2")
     expect(detail.locator(".generated-verdict")).to_be_visible()
+
+    # Line 1i is sourced from the instruction page's own Line 1i section,
+    # including the deeper semantic heading below it.
+    line_1i = cards.nth(anchors.index("1i"))
+    line_1i.locator(".unit-card-select").click()
+    expect(detail.locator(".cell-instruction")).to_contain_text("Nontaxable Combat Pay Election")
+    expect(detail.locator(".verdict-accept")).to_be_visible()
+    expect(detail.locator(".verdict-reject")).to_be_visible()
+    assert detail.locator(".verdict-reviewer").count() == 0
 
     # Repeated-concept occurrence contracts are exercised by the M19 concept tests;
     # this 57-cell Form 1040 review projection intentionally contains line cells only.

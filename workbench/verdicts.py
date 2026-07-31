@@ -40,6 +40,7 @@ def emit_verdict(
     object_ref: dict[str, str] | None = None,
     source_override: dict[str, Any] | None = None,
     comment: str | None = None,
+    reviewer_tag: str | None = None,
     output_path: str | Path | None = None,
 ) -> ReviewVerdict:
     """Write one new verdict file; never overwrite an existing verdict."""
@@ -61,6 +62,8 @@ def emit_verdict(
         payload["source_override"] = dict(source_override)
     if comment is not None and str(comment).strip():
         payload["comment"] = str(comment).strip()
+    if reviewer_tag is not None and str(reviewer_tag).strip():
+        payload["reviewer_tag"] = str(reviewer_tag).strip()
     payload["content_hash"] = verdict_content_hash(payload)
     validate_verdict(payload, schema_path=Path(root).resolve() / "schemas" / "review_verdict.schema.json")
 
@@ -104,9 +107,7 @@ def validate_verdict(payload: dict[str, Any], *, schema_path: str | Path) -> Non
         raise ValueError(f"cannot load review verdict schema: {exc}") from exc
     except jsonschema.ValidationError as exc:
         raise ValueError(f"invalid review verdict: {exc.message}") from exc
-    if str(payload.get("reviewer_id", "")).strip().lower() in {"agent", "codex", "worker", "system"}:
-        raise ValueError("reviewer_id must identify the human reviewer")
-    if payload.get("verdict") != "confirmed" and not str(payload.get("reason", "")).strip():
+    if payload.get("verdict") not in {"confirmed", "rejected"} and not str(payload.get("reason", "")).strip():
         raise ValueError("a non-confirmed verdict requires a reason")
     if payload.get("verdict") == "source_pathology":
         override = payload.get("source_override")
