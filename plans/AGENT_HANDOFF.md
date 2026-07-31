@@ -1948,9 +1948,19 @@ the instruction slot; Authority explicitly reports missing authored coverage; do
 citation coverage is visible beside policy counts; and the dossier heading duplication/order
 warts are fixed. No promoted artifacts, graph semantics, verdicts, or citation records changed.
 
-**BALL: WORKER - M20-S18 (INSTRUCTIONS ARE OPTIONAL: fix the metric; fix parent/lettered-child
-line resolution; RUN the source extraction S16 only scaffolded). Task block under From
-Architect. S17 is ACCEPTED at `dd6e876` - Architect re-verified: 29 focused tests green,
+**BALL: WORKER - M20-S19 (BRING BACK THE BACKGROUND CONTROLS AND CLOSE THE 60% GAP). Task block
+under From Architect. S18 is ACCEPTED at `ca310d8` - Architect re-verified: 28 focused tests
+green, protected set byte-identical, ledger untouched. S18 delivered all three items:
+completeness is **28/28 (100%)** on the corrected metric, the source extraction finally RAN
+(`line 1a = form_w2_2025_box_1`, `line 1e = form_2441_2025_root_line_26`, 39/40 source calls
+succeeded), and Schedule 1's parent/lettered-child resolution works (`2 -> 2a`, `19 -> 19a`).
+The S18 report is tracked at `output/m20_s18_form_completeness.yaml` (`c9f8166`).
+**S19 is John's OLDEST complaint: the 1040 field map is 119/199 `unsupported` - 60%
+unaddressed.**
+
+**Superseded (kept as history):** BALL: WORKER - M20-S18 (INSTRUCTIONS ARE OPTIONAL: fix the
+metric; fix parent/lettered-child line resolution; RUN the source extraction S16 only
+scaffolded). S17 is ACCEPTED at `dd6e876` - Architect re-verified: 29 focused tests green,
 protected set byte-identical, ledger untouched. Instruction coverage on the 1040 went 11/57 ->
 48/57 (84%) and wrong-owner spans 89 -> 45. The background-controls item is now **M20-S19**, kept
 separate so it gets a whole round.**
@@ -4081,24 +4091,60 @@ TY2026 docs drop.
   **PROTECTED TEST SET, unchanged hard gate.** No promotion, no hand-authoring, no live graph
   edit, nothing into `content_fingerprint`. Same Tier 3 gates as S17. ONE local commit; no push.
 
-- **M20-S19 TASK - BRING BACK THE BACKGROUND CONTROLS (Architect, Claude Opus 5, 2026-07-31).
-  Its own round on purpose: it roughly quadruples the review denominator, and the last time a
-  big item shared a round it got scaffolded instead of built.** Ledger: the RAN/NOT RUN rule, D9.
-  1. **John calls them important:** "things like are you in
-     a combat zone? dependents, did they live with you for half the year? it is all just dead in
-     the 1040. These are important details, even if they are just entries by the filer. the AI
-     needs this to create a valid return."
-     **Measured: the live projection carries 238 units for `form_1040_2025`; the generated
-     surface has 57.** ~180 controls - checkboxes, dependent rows, filing status, elections - are
-     absent because the generated surface takes only outline nodes of kind `line`.
-     - They are a THIRD category: **filer-entered controls with semantic meaning**. The review
-       question is "is this control correctly identified and correctly typed?" - a dependent's
-       "lived with you" box is a boolean that drives credit eligibility.
-     - Render as `= entered by filer` with the control's own label and citation. Fail closed
-       rather than inventing semantics.
-     - **Report the new denominator per form** (expect ~238 for the 1040, not 57).
-  **PROTECTED TEST SET, unchanged hard gate.** No promotion, no hand-authoring, no live graph
-  edit. Same Tier 3 gates and stop conditions as S17.
+- **M20-S19 TASK - BRING BACK THE BACKGROUND CONTROLS, AND CLOSE THE 60% GAP (Architect,
+  Claude Opus 5, 2026-07-31). Its own round on purpose: it roughly quadruples the review
+  denominator, and the last time a big item shared a round it got scaffolded instead of built.**
+  Ledger: the RAN/NOT RUN rule, D9, and guiding invariant "every control needs exactly one
+  policy".
+  **John's ask:** "things like are you in a combat zone? dependents, did they live with you for
+  half the year? it is all just dead in the 1040. These are important details, even if they are
+  just entries by the filer. the AI needs this to create a valid return."
+  **ARCHITECT MEASUREMENT, 2026-07-31 - this is John's OLDEST open complaint.**
+  `graph/2025/field_maps/form_1040_2025.yaml` carries **199 `field_dispositions`**:
+  | population_policy | count |
+  |---|---|
+  | **unsupported** | **119 (60%)** |
+  | user_entered | 42 |
+  | decision_required | 24 |
+  | computed | 7 |
+  | copied | 7 |
+  The generated review surface currently shows **57**. The 119 unsupported controls each say
+  "has no authored graph, filer-fact, or decision mapping" - **that is the 60%-unaddressed-1040
+  complaint, still live.**
+  1. **PHASE 1 - PROJECT WHAT IS ALREADY CLASSIFIED. Deterministic, NO model calls, do this
+     first.** ~80 controls already carry a policy: 42 `user_entered`, 24 `decision_required`,
+     and the 14 `computed`/`copied` the formula path covers. Carry each control's existing
+     `label`, `population_policy`, `value_format`, `address_id`, and citation into the generated
+     review surface. Render `= entered by filer`, `= decision required`, etc. **Do not call a
+     model for a control whose policy is already authored.**
+  2. **PHASE 2 - GENERATE FOR THE 119 UNSUPPORTED.** These are the real gap and the reason the
+     round exists. Same discipline as every other micro call: the control's label plus its
+     instruction text in, structure out, **identity resolved in CODE**, fail closed with a named
+     gap rather than inventing semantics. A dependent's "lived with you" box is a boolean that
+     drives credit eligibility - the review question is "is this control correctly identified
+     and correctly typed?"
+  3. **REPORT the policy mix BEFORE and AFTER**, per form, and the new denominator (expect ~199
+     for the 1040, not 57). **A control moving from `unsupported` to a reasoned policy is the
+     unit of progress for this round.** Report honestly if the number barely moves.
+  4. **The completeness metric stays as S18 left it** - expression plus form-face citation is
+     the gate; instruction citation is informational and never mandatory (John, 2026-07-31).
+     Non-computed controls need a POLICY and a citation, not an expression; extend the metric
+     rather than forcing them through the formula denominator.
+  **PROTECTED TEST SET, unchanged hard gate:** `graph/2025/{nodes,edges,rules}/` byte-identical.
+  No promotion, no hand-authoring, no live graph edit, nothing into `content_fingerprint`.
+  **FORCE-ADD THE REPORT** - `output/` is gitignored, and S18's report was left untracked until
+  the Architect force-added it. `git add -f output/<report>.yaml`.
+  **CITE THE ACTUAL COMMIT HASH in your notes** - S10, S14, and S18 all cited hashes that do not
+  exist in the repository.
+  Tier 3. Declared files plus honest `RAN:`/`NOT RUN:`. ASCII, `git diff --check`, module-form
+  `validate 2025`, real preflight with `legacy_mined` explicit (expect **394**),
+  `check_citation_integrity` STRICT (expect **36**). Short pytest temp root; no `--basetemp`.
+  ONE local commit; no push.
+  **Config note: `extraction.expression_mode` stays `none`.**
+  **Stop conditions:** any diff in `graph/2025/{nodes,edges,rules}/`; any draft promoted;
+  hand-authoring a policy; calling a model for a control that already has an authored policy;
+  fabricating semantics for a control instead of failing closed; `legacy_mined` above 394;
+  strict mismatches above 36. **A model or provider failure is NOT a stop condition.**
 
 - **M20-S16 TASK (COMPLETE, accepted at `302c85e`) - MAKE THE REVIEW SURFACE FIT A HUMAN (Architect, Claude Opus 5, 2026-07-31).
   John's feedback from his first real session with the workbench, in one batch. His framing:
