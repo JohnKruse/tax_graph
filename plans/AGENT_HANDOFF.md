@@ -1765,11 +1765,15 @@ the instruction slot; Authority explicitly reports missing authored coverage; do
 citation coverage is visible beside policy counts; and the dossier heading duplication/order
 warts are fixed. No promoted artifacts, graph semantics, verdicts, or citation records changed.
 
-**BALL: WORKER - M20-S17 (EVERY CONTROL BACK IN THE SURFACE; TIGHTEN THE REVIEW UX). Task block
-under From Architect. S16 is ACCEPTED at `302c85e` - Architect re-verified: 41 focused tests
-green, protected set byte-identical, real ledger untouched, synthetic reviewer used correctly.
-The rendered form (`line 22 = line 18 - line 21`) and the moved controls both landed and John has
-now used them. THIS ROUND IS HIS SECOND SESSION'S FEEDBACK plus the S16 carry-forward.**
+**BALL: WORKER - M20-S17 (ATTACH THE INSTRUCTIONS, THEN TIGHTEN THE UX). Task block under From
+Architect. S16 is ACCEPTED at `302c85e` - Architect re-verified: 41 focused tests green,
+protected set byte-identical, real ledger untouched, synthetic reviewer used correctly.
+**S17 IS DELIBERATELY SMALL** - John asked not to overload a revision round, so the two heavy
+generation items (source extraction for non-computed lines, and the ~180 missing background
+controls) are split out into **M20-S18**, which runs after. S17 is one deterministic parser plus
+John's UX changes. The instruction join is item 0 and needs NO model call: the instructions are
+fully ingested (675,580 chars, 5,021 mined spans, 63 `## Line X` sections) and we simply never
+used the document's own structure.**
 
 **Superseded (kept as history):** BALL: WORKER - M20-S16 (MAKE THE REVIEW SURFACE FIT A HUMAN:
 readable operations, every line reviewable, controls where the eye is, colour by risk). S15 is
@@ -3761,31 +3765,37 @@ TY2026 docs drop.
 
 ## From Architect
 
-- **M20-S17 TASK - EVERY CONTROL BACK IN THE SURFACE; TIGHTEN THE REVIEW UX (Architect,
-  Claude Opus 5, 2026-07-31). John's second review session.** Ledger: the exact RAN/NOT RUN
-  evidence rule, D4, D6, D9, D11.
-  0. **CARRY-FORWARD FROM S16 - THE SOURCE EXTRACTION WAS SCAFFOLDED, NOT DONE.** 40 of the
-     1040's 57 cells are `review_gap` with `text: "line 1a = unresolved source"` and
-     `reason: "non-computed source extraction has not been generated"`. The lines were added to
-     the list; the second micro question was never run. **Run it.** Line 1a already carries the
-     citation "Total amount from Form(s) W-2, box 1" and must render `= W-2 box 1`. This is a
-     prerequisite for the colour key meaning anything.
-  1. **THE BACKGROUND CONTROLS ARE MISSING AND JOHN CALLS THEM IMPORTANT.** His words: "We've
-     once again lost all of the background cells... things like are you in a combat zone?
-     dependents, did they live with you for half the year? it is all just dead in the 1040.
-     These are important details, even if they are just entries by the filer. the AI needs this
-     to create a valid return."
-     **Measured: the live projection carries 238 units for `form_1040_2025`; the generated
-     surface has 57.** ~180 controls - checkboxes, dependent rows, filing status, elections -
-     are absent because the generated surface only takes outline nodes of kind `line`.
-     - Bring the non-line controls into the generated review surface.
-     - They are a THIRD category, not formulas and not source-fetches: **filer-entered controls
-       with semantic meaning**. The review question is "is this control correctly identified and
-       correctly typed/described?" - e.g. a dependent's "lived with you" box is a boolean that
-       drives credit eligibility.
-     - Render them in the same standard: `= entered by filer`, with the control's own label and
-       citation. Fail closed with a named gap rather than inventing semantics.
-     - **Report the new denominator per form** (expect ~238 for the 1040, not 57).
+- **M20-S17 TASK - ATTACH THE INSTRUCTIONS, THEN TIGHTEN THE UX (Architect, Claude Opus 5,
+  2026-07-31). DELIBERATELY SCOPED SMALL. John: "i dont want to overload a revision round."
+  The two heavy generation items moved to S18.** Ledger: the exact RAN/NOT RUN evidence rule,
+  D4, D6, D9, D11.
+  0. **ATTACH THE INSTRUCTIONS TO THEIR OWN LINES. HIGHEST VALUE ITEM; DO IT FIRST; NO MODEL
+     CALL REQUIRED.** John found 1040 line 1i showing no instructions and asked how this can
+     still be missing after umpteen rounds. **The instructions are fully ingested and always
+     have been** - Architect-measured 2026-07-31:
+     - `.cache/raw/2025/instructions_form_1040_2025.{pdf,txt,html,ocr.json}` all present.
+     - **675,580 characters** of instruction text; **5,021 mined instruction spans** for the
+       1040 sitting in `_drafts/form_1040_2025/candidate_spans.yaml`.
+     - The document is **explicitly organized by line**: **63 `## Line X` sections** covering
+       1b, 1c, 1d, 1e, 1f, 1g, 1h, **1i**, 2a, 2b, 3a, 3b, 4c, 5c, 7a, 7b, 10, 12e, 13a, 13b,
+       16, 19, 26, 28, 29, 30, 36, 37, and more.
+     - Line 1i's text exists verbatim: `## Line 1i` / `### Nontaxable Combat Pay Election` /
+       "If you elect to include your nontaxable combat pay in your earned income when figuring
+       the EIC, enter the amount on line 1i. See the instructions for line 27a."
+     **THE FAILURE IS THE JOIN, NOT THE INGESTION.** Only **11 of 57** 1040 cells carry
+     instruction citations. We matched spans by MENTION instead of using the document's own
+     structure - which is why line 1z received line 27b's text in S13 and why S14 counted 146
+     wrong-owner spans. **S15's "fix" stripped the wrong spans without attaching the right
+     ones**, so we went from wrong instructions to none.
+     **Do this deterministically: parse the `## Line X` headings, take that section's body, and
+     attach it to that line's canonical address.** No model call, no fuzzy matching, no
+     mention-based guessing. Report instruction coverage per form before and after (1040 is
+     11/57 today).
+  1. **FIX THE COMPLETENESS METRIC - IT HID THIS FOR THREE ROUNDS. Architect's error.** The
+     metric is "expression + verbatim citation", which a FORM-FACE citation alone satisfies. So
+     S14 reported the 1040 **17/17 complete** while instruction coverage was 11/57, and the
+     Architect accepted the round on that number. **Count form-face and instruction citations
+     as SEPARATE columns** so an unattached instruction corpus can never again read as complete.
   2. **COMPRESS THE CELL LIST TO ONE LINE PER CELL.** John: "I want the listing of cells to be
      more compressed. It can be a single line each." Line anchor, short label, bucket colour +
      name, review state. Nothing else. The list is navigation.
@@ -3837,6 +3847,37 @@ TY2026 docs drop.
   verdict written under a real person's name or into the live ledger; anything entering
   `content_fingerprint`; hand-authoring; asking the model for internal node ids; `legacy_mined`
   above 394; strict mismatches above 36. **A model or provider failure is NOT a stop condition.**
+
+- **M20-S18 TASK - THE TWO HEAVY GENERATION ITEMS (Architect, Claude Opus 5, 2026-07-31).
+  SPLIT OUT OF S17 so neither round is overloaded. Runs AFTER S17.** Ledger: the exact
+  RAN/NOT RUN evidence rule, D9.
+  **Why these two are together and separate from S17:** both are real generation work over
+  hundreds of cells, both need model calls, and both change the review DENOMINATOR. S17 is a
+  deterministic join plus CSS. Mixing them is how S16 ended up scaffolding item 4 instead of
+  doing it.
+  1. **RUN THE SOURCE EXTRACTION FOR NON-COMPUTED LINES - S16 SCAFFOLDED IT, NEVER RAN IT.**
+     40 of the 1040's 57 cells are `review_gap` carrying
+     `text: "line 1a = unresolved source"` and
+     `reason: "non-computed source extraction has not been generated"`. The schema and the
+     surface exist; the second micro question was never executed. Line 1a already holds the
+     citation "Total amount from Form(s) W-2, box 1" and must render `= W-2 box 1`; line 1e must
+     render `= Form 2441, line 26`. Resolve identity in CODE, fail closed with a named gap.
+     **The colour key is meaningless until this lands** - today 40 of 57 render as gap.
+  2. **BRING BACK THE BACKGROUND CONTROLS. John calls them important:** "things like are you in
+     a combat zone? dependents, did they live with you for half the year? it is all just dead in
+     the 1040. These are important details, even if they are just entries by the filer. the AI
+     needs this to create a valid return."
+     **Measured: the live projection carries 238 units for `form_1040_2025`; the generated
+     surface has 57.** ~180 controls - checkboxes, dependent rows, filing status, elections - are
+     absent because the generated surface takes only outline nodes of kind `line`.
+     - They are a THIRD category: **filer-entered controls with semantic meaning**. The review
+       question is "is this control correctly identified and correctly typed?" - a dependent's
+       "lived with you" box is a boolean that drives credit eligibility.
+     - Render as `= entered by filer` with the control's own label and citation. Fail closed
+       rather than inventing semantics.
+     - **Report the new denominator per form** (expect ~238 for the 1040, not 57).
+  **PROTECTED TEST SET, unchanged hard gate.** No promotion, no hand-authoring, no live graph
+  edit. Same Tier 3 gates and stop conditions as S17.
 
 - **M20-S16 TASK (COMPLETE, accepted at `302c85e`) - MAKE THE REVIEW SURFACE FIT A HUMAN (Architect, Claude Opus 5, 2026-07-31).
   John's feedback from his first real session with the workbench, in one batch. His framing:
