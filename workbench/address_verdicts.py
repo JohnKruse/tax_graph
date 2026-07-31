@@ -32,6 +32,7 @@ _EXPRESSION_KIND_BUCKETS = {
     "lookup_table": "ARITHMETIC",
     "lookup_bracket": "ARITHMETIC",
     "copy": "COPY",
+    "cross_form_fetch": "CROSS_FORM_FETCH",
     "input": "USER_ENTRY",
     "imported": "IMPORTED",
     "repeatable_table": "PER_ROW",

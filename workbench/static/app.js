@@ -223,13 +223,14 @@ function renderReview(page = null, restoreCellId = null) {
     const verdict = String(detail.verdict || "");
     const reviewerId = String(detail.reviewerId || "").trim();
     const comment = String(detail.comment || "").trim();
+    const reason = String(detail.reason || "").trim();
     const message = document.querySelector("#session-message");
     if (!cell || !reviewerId) {
       message.textContent = "Enter a human reviewer id before recording the verdict.";
       return;
     }
-    if (verdict !== "confirmed" && !comment) {
-      message.textContent = "A pipeline defect or source pathology needs a comment.";
+    if (verdict !== "confirmed" && (!reason || !comment)) {
+      message.textContent = "A pipeline defect or source pathology needs a reason and comment.";
       return;
     }
     const safeId = `review_${activeDocument.document_id}_${cell.cell_id}_${Date.now()}`.toLowerCase().replace(/[^a-z0-9_]+/g, "_");
@@ -242,7 +243,7 @@ function renderReview(page = null, restoreCellId = null) {
         human_minutes: 0,
         verdict,
         reviewed_at: now(),
-        reason: verdict === "confirmed" ? undefined : comment,
+        reason: verdict === "confirmed" ? undefined : reason,
         comment: comment || undefined,
         object_ref: {object_id: cell.address_id},
         source_override: verdict === "source_pathology"

@@ -55,6 +55,8 @@ def assemble_formula_plan(
         operation = str(step.get("operation", ""))
         if operation not in allowed_operations:
             raise ValueError(f"unsupported operation: {operation}")
+        inputs = step.get("inputs", [])
+        _validate_operation_inputs(operation, inputs)
 
         span_ids = [str(span_id) for span_id in step.get("citation_span_ids", [])]
         citation_refs = []
@@ -90,13 +92,25 @@ def assemble_formula_plan(
             emitted_nodes.add(target_id)
 
         rule_id = f"rule_{_slug(target_id)}_{operation.lower()}"
+        rendered = render_expression(
+            operation,
+            _line_label(outline_node.line_anchor),
+            [
+                {
+                    "name": str(item.get("name", "")),
+                    "role": str(item.get("role") or _default_role(operation, index)),
+                }
+                for index, item in enumerate(inputs, 1)
+                if isinstance(item, dict)
+            ],
+        )
         objects.append(
             DraftObject(
                 "rules",
                 {
                     "rule_id": rule_id,
                     "operation": operation,
-                    "description": f"Compute {output_name} for {outline_node.label}.",
+                    "description": rendered,
                     "citation_refs": citation_refs,
                 },
                 _source_span_text(span_ids, spans_by_id),
@@ -105,7 +119,7 @@ def assemble_formula_plan(
             )
         )
 
-        for input_index, input_item in enumerate(step.get("inputs", []), 1):
+        for input_index, input_item in enumerate(inputs, 1):
             input_name = str(input_item.get("name", f"input_{input_index}"))
             source_id = input_name if human_answer else node_ids_by_name.get(input_name)
             if source_id is None:
@@ -187,7 +201,7 @@ def _steps_for_plan(
                     ),
                 }
             )
-        inputs.append({"name": source_id, "role": "addend"})
+        inputs.append({"name": source_id})
 
     quote = str(plan.get("quote", ""))
     citation_span_ids = [
@@ -367,11 +381,134 @@ def _source_span_text(span_ids: list[str], spans_by_id: dict[str, CandidateSpan]
 
 
 def _default_role(operation: str, input_index: int) -> str:
+    if operation == "COPY":
+        return "source"
     if operation == "SUBTRACT":
         return "minuend" if input_index == 1 else "subtrahend"
     if operation == "DIVIDE":
         return "numerator" if input_index == 1 else "denominator"
+    if operation in {"MULTIPLY"}:
+        return "multiplicand" if input_index == 1 else "multiplier"
+    if operation in {"NEGATE", "ABS", "ROUND"}:
+        return "amount"
+    if operation in {"MIN", "MAX", "AND", "OR"}:
+        return "candidate"
+    if operation == "REQUIRE_INPUT":
+        return "input"
     return "addend"
+
+
+def _validate_operation_inputs(operation: str, inputs: Any) -> None:
+    """Fail closed when an expression cannot preserve operand meaning."""
+    if not isinstance(inputs, list):
+        raise FormulaAssemblyFinding(
+            {"code": "invalid_operand_shape", "operation": operation, "reason": "operation inputs must be a list"}
+        )
+    exact_arity = {
+        "COPY": 1,
+        "NEGATE": 1,
+        "ABS": 1,
+        "ROUND": 1,
+        "REQUIRE_INPUT": 1,
+        "NOT": 1,
+        "SUBTRACT": 2,
+        "DIVIDE": 2,
+        "MULTIPLY": 2,
+        "COMPARE": 2,
+        "IF": 2,
+        "IF_ELSE": 4,
+    }
+    expected_roles = {
+        "COPY": {"source"},
+        "NEGATE": {"amount"},
+        "ABS": {"amount"},
+        "ROUND": {"amount"},
+        "REQUIRE_INPUT": {"input"},
+        "NOT": {"operand"},
+        "SUBTRACT": {"minuend", "subtrahend"},
+        "DIVIDE": {"numerator", "denominator"},
+        "MULTIPLY": {"multiplicand", "multiplier"},
+        "COMPARE": {"left", "right"},
+        "IF": {"condition", "when_true"},
+        "IF_ELSE": {"condition", "threshold", "when_true", "when_false"},
+        "MIN": {"candidate"},
+        "MAX": {"candidate"},
+        "AND": {"candidate"},
+        "OR": {"candidate"},
+    }
+    expected = exact_arity.get(operation)
+    if expected is not None and len(inputs) != expected:
+        raise FormulaAssemblyFinding(
+            {
+                "code": "invalid_operand_arity",
+                "operation": operation,
+                "observed": len(inputs),
+                "expected": expected,
+                "reason": f"{operation} requires exactly {expected} operand(s)",
+            }
+        )
+    roles = expected_roles.get(operation)
+    if roles is None:
+        return
+    observed = {
+        str(item.get("role") or _default_role(operation, index))
+        for index, item in enumerate(inputs, 1)
+        if isinstance(item, dict)
+    }
+    if operation in {"MIN", "MAX", "AND", "OR"}:
+        valid = observed == roles
+    else:
+        valid = observed == roles
+    if not valid:
+        raise FormulaAssemblyFinding(
+            {
+                "code": "invalid_operand_roles",
+                "operation": operation,
+                "observed": sorted(observed),
+                "expected": sorted(roles),
+                "reason": f"{operation} operand roles do not preserve computation order",
+            }
+        )
+
+
+def _line_label(anchor: Any) -> str:
+    value = str(anchor or "").strip()
+    return f"line {value}" if value else "this line"
+
+
+def _operand_label(name: str) -> str:
+    """Turn an internal source name into a reviewer-safe short label."""
+    value = str(name or "").strip()
+    match = re.search(r"(?:^|_)line_([0-9]+[a-z]?)(?:_|$)", value.lower())
+    if match:
+        return f"line {match.group(1)}"
+    if value.startswith("column_"):
+        return value.replace("_minus_", " minus ").replace("column_", "column ")
+    return value.replace("_", " ") or "unresolved source"
+
+
+def render_expression(operation: str, target: str, inputs: list[dict[str, Any]]) -> str:
+    """Render one structured expression in the form shown to humans and models."""
+    labels = [_operand_label(str(item.get("name", ""))) for item in inputs]
+    roles = {str(item.get("role", "")): label for item, label in zip(inputs, labels, strict=False)}
+    op = str(operation).upper()
+    if op == "COPY" and labels:
+        return f"{target} = {labels[0]}"
+    if op == "SUM" and labels:
+        return f"{target} = " + " + ".join(labels)
+    if op == "SUBTRACT" and {"minuend", "subtrahend"} <= set(roles):
+        return f"{target} = {roles['minuend']} - {roles['subtrahend']}"
+    if op == "DIVIDE" and {"numerator", "denominator"} <= set(roles):
+        return f"{target} = {roles['numerator']} / {roles['denominator']}"
+    if op == "MULTIPLY" and {"multiplicand", "multiplier"} <= set(roles):
+        return f"{target} = {roles['multiplicand']} * {roles['multiplier']}"
+    if op in {"MIN", "MAX"} and labels:
+        return f"{target} = {op.lower()}(" + ", ".join(labels) + ")"
+    if op == "NEGATE" and labels:
+        return f"{target} = -{labels[0]}"
+    if op == "REQUIRE_INPUT":
+        return f"{target} = entered by filer"
+    return f"{target} = {op.lower()}(" + ", ".join(labels) + ")"
 
 
 def _normalized_output_name(step: dict[str, Any], fallback: str) -> str:

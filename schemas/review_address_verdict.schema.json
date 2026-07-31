@@ -51,7 +51,7 @@
           "enum": [
             "input", "imported", "copy", "sum", "subtract", "negate",
             "multiply", "lookup_table", "lookup_bracket", "max", "min",
-            "if_else", "repeatable_table", "parameter", "frontier",
+            "if_else", "cross_form_fetch", "repeatable_table", "parameter", "frontier",
             "review_gap", "literal", "reference"
           ]
         },

@@ -136,13 +136,36 @@ def test_write_apis_never_mutate_graph_tier_or_provenance(api) -> None:
         "reviewer_id": "john",
         "human_minutes": 0.5,
         "verdict": "pipeline_defect",
-        "reason": "The scoped artifact needs correction.",
+        "reason": "pipeline_defect",
+        "comment": "The scoped artifact needs correction.",
         "reviewed_at": "2026-07-14T12:01:00Z",
     }
     assert client.post("/api/verdicts", json=verdict, headers=_headers()).status_code == 201
 
     after = {path: hashlib.sha256(path.read_bytes()).hexdigest() for path in files}
     assert after == before
+
+
+@pytest.mark.m20
+def test_rejection_requires_reason_code_and_comment(api) -> None:
+    app, client = api
+    queue_id = app.config["WORKBENCH_MANIFEST"]["entries"][1]["queue_id"]
+    missing_comment = {
+        "queue_id": queue_id,
+        "verdict_id": "m20_missing_rejection_comment",
+        "reviewer_id": "john",
+        "human_minutes": 1,
+        "verdict": "pipeline_defect",
+        "reason": "pipeline_defect",
+    }
+    response = client.post("/api/verdicts", json=missing_comment, headers=_headers())
+    assert response.status_code == 400
+    assert "comment" in response.get_json()["error"]
+
+    invalid_reason = {**missing_comment, "verdict_id": "m20_invalid_rejection_reason", "reason": "no_reason", "comment": "Needs pipeline rework."}
+    response = client.post("/api/verdicts", json=invalid_reason, headers=_headers())
+    assert response.status_code == 400
+    assert "reason" in response.get_json()["error"]
 
 
 def _headers() -> dict[str, str]:

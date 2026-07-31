@@ -31,10 +31,13 @@ def test_three_pane_shell_exposes_cell_river_and_local_review_state(page, workbe
     assert heading.count() == 1
     assert page.locator("#river-detail .selected-ref").inner_text()
 
-    checkbox = card.locator('input[type="checkbox"]')
+    assert card.locator('input[type="checkbox"]').count() == 0
+    assert card.locator("textarea").count() == 0
+
+    checkbox = page.locator("#river-detail .session-approve")
     assert checkbox.count() == 1
     checkbox.check()
-    note = card.locator("textarea")
+    note = page.locator("#river-detail .session-note")
     assert note.count() == 1
     note.fill("Checked against the official cell.")
     note.press("Tab")
@@ -104,22 +107,21 @@ def test_selected_cell_uses_human_headers_dossier_order_and_occurrence(page, wor
     expect(detail.locator("h2")).to_have_text(re.compile(r"^33 - "))
     expect(detail.locator(".cell-instruction")).to_contain_text("Not yet ingested")
     expect(detail.locator(".authority")).to_be_visible()
-    expect(detail.locator(".authority")).to_contain_text("No authority has been authored")
-    expect(detail.locator(".human-dossier").nth(1)).to_contain_text("How this is filled")
+    expect(detail.locator(".authority")).to_contain_text("33 Add lines 25d, 26, and 32")
+    expect(detail.locator(".generated-verdict")).to_be_visible()
+    expect(detail.locator(".generated-expression")).to_contain_text("line 33 = line 25d + line 26 + line 32")
     assert detail.locator("details.technical-record").get_attribute("open") is None
 
-    # Existing instruction-sourced text belongs in the instruction slot, not in
-    # Authority. The 1040 line 1a record is the promoted canary citation.
+    # The 1040 line 1a record keeps its form-face citation in the authority slot;
+    # instruction coverage remains an explicit review gap until the source micro
+    # question resolves it.
     line_1a = cards.filter(has_text="1a - Total amount from Form(s) W-2").first
     line_1a.locator(".unit-card-select").click()
-    expect(detail.locator(".cell-instruction")).to_contain_text("Enter the total amount")
     expect(detail.locator(".authority")).to_contain_text("Total amount from Form(s) W-2")
+    expect(detail.locator(".generated-verdict")).to_be_visible()
 
-    # M19 occurrence axes make the repeated dependent row human-addressable.
-    dependent_card = cards.filter(has_text="Dependent 3 of 4").first
-    dependent_card.wait_for()
-    dependent_card.locator(".unit-card-select").click()
-    expect(detail.locator(".dossier-occurrence")).to_have_text("Dependent 3 of 4")
+    # Repeated-concept occurrence contracts are exercised by the M19 concept tests;
+    # this 57-cell Form 1040 review projection intentionally contains line cells only.
 
 
 def test_landscape_page_uses_captured_geometry_for_region_placement(page, workbench_url: str) -> None:

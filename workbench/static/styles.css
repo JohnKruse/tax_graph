@@ -9,7 +9,8 @@
   --accent-soft: #d9eeea;
   --gold: #d9a441;
   --rail: #20343b;
-  --danger: #a03225;
+  --danger: #b21f2d;
+  --coverage-gap: #9a6419;
 }
 
 * { box-sizing: border-box; }
@@ -97,7 +98,12 @@ h1, h2, h3, p { margin-top: 0; }
 .official-region { position: absolute; padding: 0; border: 2px solid var(--accent); background: rgba(18, 97, 94, .07); border-radius: 2px; z-index: 2; }
 .official-region.policy-decision_required { --accent: #875a05; }
 .official-region.policy-intentionally_blank { --accent: #55646c; }
-.official-region.policy-unsupported { --accent: var(--danger); }
+.official-region.policy-unsupported { --accent: var(--coverage-gap); }
+.official-region.risk-ARITHMETIC { --accent: var(--danger); }
+.official-region.risk-COPY { --accent: #a56b0a; }
+.official-region.risk-IMPORTED { --accent: #2e6fa3; }
+.official-region.risk-CROSS_FORM_FETCH { --accent: #5146a5; }
+.official-region.risk-USER_ENTRY { --accent: #66727a; }
 .official-region.paired, .semantic-flow-card.paired { outline: 3px solid #edb83f; outline-offset: 2px; z-index: 200; }
 .official-region.pinned {
   z-index: 201;
@@ -108,8 +114,8 @@ h1, h2, h3, p { margin-top: 0; }
      outline, and a thin border instead of the old 4px (which swallowed a 8px checkbox).
      Contrast comes from a repeating stripe of orange against near-black - a SHAPE cue, so
      it reads under any colour vision and in grayscale, without occluding a neighbouring
-     printed label. Orange rather than fire-engine red on purpose: policy-unsupported is
-     var(--danger), a red, and selection must never be mistaken for a policy state. */
+     printed label. Orange rather than fire-engine red on purpose: coverage gaps use a
+     separate amber token, and selection must never be mistaken for a policy state. */
   border: 2px solid #17212b;
   outline: 0;
   outline-offset: 0;
@@ -162,7 +168,7 @@ h1, h2, h3, p { margin-top: 0; }
 .river-page-divider { position: sticky; top: -10px; margin: 6px 0 4px; padding: 3px 6px; color: var(--gold); background: #12252b; border-radius: 3px; font-size: 10px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; }
 .unit-policy-facets { display: grid; gap: 3px; margin: 0 0 7px; color: var(--muted); font-size: 10px; line-height: 1.3; }
 .unit-policy-facets strong { color: var(--ink); }
-.unit-policy-facets.policy-unsupported span:last-child { color: var(--danger); font-weight: 700; }
+.unit-policy-facets.policy-unsupported span:last-child { color: var(--coverage-gap); font-weight: 700; }
 .unit-policy-facets.policy-decision_required span:first-child { color: #875a05; }
 .unit-policy-facets.policy-intentionally_blank span:last-child { color: #55646c; font-weight: 700; }
 .document-policy-counts { color: #d2e1de !important; line-height: 1.35; }
@@ -174,6 +180,20 @@ h1, h2, h3, p { margin-top: 0; }
 .cell-computation { margin-top: 8px; padding: 8px 10px; border-left: 3px solid var(--accent); background: var(--accent-soft); border-radius: 4px; }
 .cell-computation ul { margin: 4px 0; padding-left: 18px; }
 .generated-expression { border-color: #84aaa4; }
+.session-review { border-color: #84aaa4; }
+.session-review label { display: grid; gap: 4px; margin-top: 7px; color: var(--muted); font-size: 10px; font-weight: 700; }
+.session-review textarea { width: 100%; box-sizing: border-box; padding: 6px; border: 1px solid var(--line); border-radius: 4px; color: var(--ink); background: #fff; font: inherit; font-weight: 400; }
+.review-unit-card.risk-ARITHMETIC { border-left: 4px solid var(--danger); }
+.review-unit-card.risk-COPY { border-left: 4px solid #a56b0a; }
+.review-unit-card.risk-IMPORTED { border-left: 4px solid #2e6fa3; }
+.review-unit-card.risk-CROSS_FORM_FETCH { border-left: 4px solid #5146a5; }
+.review-unit-card.risk-USER_ENTRY { border-left: 4px solid #66727a; }
+.unit-risk-label { padding: 0 10px 8px 29px; font-size: 10px; font-weight: 800; }
+.risk-ARITHMETIC .unit-risk-label { color: var(--danger); }
+.risk-COPY .unit-risk-label { color: #8a5805; }
+.risk-IMPORTED .unit-risk-label { color: #2e6fa3; }
+.risk-CROSS_FORM_FETCH .unit-risk-label { color: #5146a5; }
+.risk-USER_ENTRY .unit-risk-label { color: #66727a; }
 .generated-provenance, .generated-status { margin: 4px 0; color: var(--muted); font-size: 10px; }
 .generated-verdict label { display: grid; gap: 4px; margin-top: 7px; color: var(--muted); font-size: 10px; font-weight: 700; }
 .generated-verdict input, .generated-verdict textarea { width: 100%; box-sizing: border-box; padding: 6px; border: 1px solid var(--line); border-radius: 4px; color: var(--ink); background: #fff; font: inherit; font-weight: 400; }
@@ -182,6 +202,7 @@ h1, h2, h3, p { margin-top: 0; }
 .verdict-button:hover, .verdict-button:focus-visible { color: #fff; background: var(--accent); }
 .verdict-defect { border-color: #875a05; color: #875a05; }
 .verdict-pathology { border-color: var(--danger); color: var(--danger); }
+.verdict-hint { margin: 4px 0; color: var(--muted); font-size: 10px; }
 .empty-evidence { margin: 4px 0; color: var(--muted); font-size: 11px; }
 .drawer-heading { display: flex; align-items: start; justify-content: space-between; gap: 8px; }
 .drawer-heading h2 { margin: 3px 0 5px; font-family: Georgia, serif; font-size: 17px; }

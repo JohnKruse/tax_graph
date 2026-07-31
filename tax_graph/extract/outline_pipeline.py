@@ -11,7 +11,7 @@ from tax_graph.documents import document_class_for
 from tax_graph.extract.assembly import FormulaAssemblyFinding, assemble_formula_plan
 from tax_graph.extract.outline_checks import run_outline_artifact_checks
 from tax_graph.extract.llm_client import LlmClient, response_telemetry
-from tax_graph.extract.micro import extract_formula_plan
+from tax_graph.extract.micro import extract_formula_plan, extract_non_formula_source
 from tax_graph.extract.models import DraftObject, ExtractionBatch, SourceDocumentInput
 from tax_graph.extract.outline import (
     CandidateSpan,
@@ -28,6 +28,11 @@ from tax_graph.extract.tables import assemble_table_subunits
 
 class SpanResolutionError(ValueError):
     """Raised when a printed line cannot be anchored to source evidence."""
+
+
+NON_FORMULA_REVIEW_DOCUMENTS = frozenset({
+    "form_1040_2025",
+})
 
 
 def generate_outline_first_drafts(
@@ -53,6 +58,10 @@ def generate_outline_first_drafts(
         "failure_reasons_by_kind": {},
         "findings": [],
         "formula_cells": [],
+        "non_formula_cells": [],
+        "source_cells_attempted": 0,
+        "source_cells_succeeded": 0,
+        "source_cells_failed": 0,
         "wrong_owner_instruction_span_count": 0,
         "wrong_owner_instruction_addresses": [],
         "unresolved_line_refs": [],
@@ -171,6 +180,20 @@ def generate_outline_first_drafts(
                 )
             )
         )
+    if document.document_id in NON_FORMULA_REVIEW_DOCUMENTS:
+        _extract_non_formula_cells(
+            document,
+            outline.children,
+            spans,
+            client=client,
+            config=config,
+            root=root,
+            line_index=line_index,
+            instruction_owners=instruction_owners,
+            model=model,
+            stats=micro_stats,
+            llm_calls=llm_calls,
+        )
     objects.extend(assemble_table_subunits(document, outline, objects, model="deterministic-table-detector"))
     objects.extend(_schedule_d_band_tables(document, outline.children, model="deterministic-schedule-d-band-detector"))
     objects.extend(_schedule_d_not_modeled_document(document, outline.children, model="deterministic-schedule-d-scope"))
@@ -187,6 +210,135 @@ def generate_outline_first_drafts(
         llm_calls=llm_calls,
         micro_stats=micro_stats,
     )
+
+
+def _extract_non_formula_cells(
+    document: SourceDocumentInput,
+    nodes: list[OutlineNode],
+    spans: list[CandidateSpan],
+    *,
+    client: LlmClient,
+    config: dict[str, Any] | None,
+    root: str | Path | None,
+    line_index: dict[tuple[str, str], str],
+    instruction_owners: dict[str, str],
+    model: str,
+    stats: dict[str, Any],
+    llm_calls: list[Any],
+) -> None:
+    """Generate a source declaration for every non-formula line in the review slice."""
+    formula_anchors = {
+        str(node.line_anchor).lower()
+        for node in _formula_outline_nodes(nodes, document_id=document.document_id)
+        if node.line_anchor
+    }
+    for node in _non_formula_outline_nodes(nodes):
+        anchor = str(node.line_anchor or "").lower()
+        if not anchor or anchor in formula_anchors:
+            continue
+        target_cell_id = _outline_node_id(document.document_id, node)
+        node_spans = _spans_for_outline_node(
+            document,
+            node,
+            spans,
+            document_id=document.document_id,
+            instruction_owners=instruction_owners,
+        )
+        record: dict[str, Any] = {
+            "target_cell_id": target_cell_id,
+            "line_anchor": anchor,
+            "label": node.label,
+            "status": "review_gap",
+            "source_kind": None,
+            "form": "",
+            "line": "",
+            "box": "",
+            "quote": "",
+            "instruction_span_ids": [
+                span.span_id for span in node_spans if span.relationship != "source"
+            ],
+            "review_gap": "source declaration has not been generated",
+        }
+        stats.setdefault("non_formula_cells", []).append(record)
+        stats["source_cells_attempted"] += 1
+        try:
+            plan = extract_non_formula_source(
+                outline_node=node,
+                spans=node_spans,
+                client=client,
+                config=config,
+                target_cell_id=target_cell_id,
+            )
+            record.update(
+                {
+                    "source_kind": str(plan.get("source_kind") or ""),
+                    "form": str(plan.get("form") or ""),
+                    "line": str(plan.get("line") or ""),
+                    "box": str(plan.get("box") or ""),
+                    "quote": str(plan.get("quote") or ""),
+                }
+            )
+            quote = record["quote"]
+            record["citation_span_ids"] = [
+                span.span_id for span in node_spans if _quote_matches(quote, span.text)
+            ][:1]
+            resolved = _resolve_declared_source(
+                document,
+                record,
+                line_index=line_index,
+            )
+            record["resolved_source_id"] = resolved
+            if record["source_kind"] == "filer_entry":
+                record["status"] = "complete"
+                record.pop("review_gap", None)
+            elif resolved:
+                record["status"] = "complete"
+                record.pop("review_gap", None)
+            else:
+                record["review_gap"] = "source reference did not resolve to a canonical line"
+                stats.setdefault("findings", []).append(
+                    {
+                        "code": "unresolved_non_formula_source",
+                        "target_cell_id": target_cell_id,
+                        "source_kind": record["source_kind"],
+                        "form": record["form"],
+                        "line": record["line"],
+                        "reason": record["review_gap"],
+                    }
+                )
+            stats["source_cells_succeeded"] += 1
+            telemetry = response_telemetry(plan)
+            if telemetry is not None:
+                llm_calls.append(telemetry)
+                record["model"] = telemetry.resolved_model or model
+        except Exception as exc:
+            stats["source_cells_failed"] += 1
+            record["review_gap"] = f"source extraction failed: {type(exc).__name__}: {exc}"
+            _record_micro_failure(stats, node, exc)
+
+
+def _non_formula_outline_nodes(nodes: list[OutlineNode]) -> list[OutlineNode]:
+    return [
+        node
+        for node in _flatten_nodes(nodes)
+        if node.kind == "line" and node.line_anchor and _addressable_anchor(str(node.line_anchor))
+    ]
+
+
+def _resolve_declared_source(
+    document: SourceDocumentInput,
+    record: dict[str, Any],
+    *,
+    line_index: dict[tuple[str, str], str],
+) -> str | None:
+    """Resolve a model's printed source declaration through deterministic indexes."""
+    if record.get("source_kind") not in {"form_line", "information_return"}:
+        return None
+    form = str(record.get("form") or "").strip()
+    line = str(record.get("line") or "").strip()
+    if not form or not line:
+        return None
+    return _resolve_source_line(document, {"form": form, "line": line}, line_index=line_index)
 
 
 def _formula_outline_nodes(nodes: list[OutlineNode], *, document_id: str = "") -> list[OutlineNode]:

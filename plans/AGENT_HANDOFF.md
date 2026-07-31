@@ -14,6 +14,84 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## Current state (2026-07-30)
 
+**Worker session checkpoint - M20-S16 implementation (2026-07-31):** Global canary: Ledger
+Llama. Phase canary: Ground Truth. Model: GPT-5 Codex; effort/quota/context indicators are not
+exposed by this environment. John gave go via the current task request. Single declared step:
+implement M20-S16 in order - fix operand roles and ordering, replace raw outline descriptions
+with deterministic human-readable rendering, add non-computed-line draft review, move controls
+into the review area, enforce rejection reasons, recolor risk buckets, correct policy counts,
+and remeasure completeness. Applicable defect-ledger entries: D4, D6, D9, D11, and the exact
+RAN/NOT RUN evidence rule. No draft promotion, hand-authoring, live graph edit, rollover
+implementation, or operation-enum change is in scope.
+
+**M20-S16 focused-test declaration (2026-07-31):** Declared files are
+`tests/test_extract_outline_m4.py`, `tests/test_generated_review_m20.py`,
+`tests/test_review_verdicts_m20.py`, `tests/test_workbench_cells_api_m17.py`,
+`tests/test_workbench_write_api_m15.py`, `tests/test_workbench_m15.py`,
+`tests/test_form_completeness_m20.py`, `tests/test_llm_attribution_m20.py`,
+`tests/test_draft_route_m20.py`, `tests/test_batch_extraction_m10.py`,
+`tests/test_schedule_d_extraction_m9.py`, `tests/test_nversion_m8.py`,
+`tests/test_tables_detector_m6b.py`, `tests/test_cli.py`, and
+`tests/e2e/test_workbench_v2_m17.py`. The set covers the producer prompt/assembly, generated
+projection, rejection API, workbench boundary/API, completeness telemetry, all known
+outline/micro consumers, and the existing browser consumer for the moved review controls. No
+new browser e2e file is being authored in this round.
+
+**M20-S16 producer/projection checkpoint (2026-07-31):** RAN: `& .venv\\Scripts\\python.exe -m
+pytest tests/test_extract_outline_m4.py tests/test_batch_extraction_m10.py
+tests/test_schedule_d_extraction_m9.py -q` -> 18 passed, 1 warning in 78.42s. RAN: `&
+.venv\\Scripts\\python.exe -m pytest tests/test_generated_review_m20.py
+tests/test_review_verdicts_m20.py -q` -> 17 passed, 1 warning in 59.25s. The first attempt
+using `C:\\tmp` is NOT RUN as evidence because pytest could not create its temp root; the
+successful reruns used the writable visualization root and no `--basetemp`. The current live
+projection renders line 22 as `line 22 = line 18 - line 21`; no promoted graph artifact changed.
+Next is the app-dependent API/write consumer command.
+
+**M20-S16 API/schema checkpoint (2026-07-31):** RAN: `& .venv\\Scripts\\python.exe -m pytest
+tests/test_workbench_cells_api_m17.py tests/test_workbench_write_api_m15.py
+tests/test_workbench_m15.py -q` -> 13 passed, 1 warning in 141.43s. RAN a read-only
+generated-expression schema validation over all 57 Form 1040 projected cells -> 57 validated.
+RAN a synthetic-reviewer verdict probe against the generated line-22 expression -> append-only
+JSONL record validated in an isolated visualization directory; no real ledger or graph artifact
+was touched. The rejection API now requires reason code plus non-empty comment for both rejection
+routes. Next is the final declared focused set.
+
+**M20-S16 browser checkpoint (2026-07-31):** RAN the local in-app browser against an isolated
+workbench state and verdict directory under
+`C:\Users\\devbox\\.codex\\visualizations\\2026\\07\\31\\019fb788-e07c-7d52-bdf6-1e3c44ef7df2\\m20_s16_browser`.
+Form 1040 rendered 57 review cards; selected line 22 displayed `line 22 = line 18 - line 21`,
+four verdict controls, and no card inputs/textareas. A rejection without a comment was blocked;
+the same synthetic reviewer then recorded `pipeline_defect` with a reason comment to the isolated
+JSONL store. Form 8949 verified that ordinary-cell approve/note controls live in the selected-cell
+review area and that the card itself has zero controls; isolated session progress reached `1 / 202`.
+No live verdict or graph artifact changed. RAN: `$testRoot =
+'C:\\Users\\devbox\\.codex\\visualizations\\2026\\07\\31\\019fb788-e07c-7d52-bdf6-1e3c44ef7df2\\m20_s16_e2e_r3';
+New-Item -ItemType Directory -Force -Path $testRoot | Out-Null; $env:PYTEST_DEBUG_TEMPROOT =
+$testRoot; & .venv\\Scripts\\python.exe -m pytest tests/e2e/test_workbench_v2_m17.py -q` ->
+4 passed, 1 warning in 126.17s. The existing browser consumer was updated for the moved controls;
+no new browser e2e file was authored.
+
+**M20-S16 final focused-test evidence (2026-07-31):** RAN: `$testRoot =
+'C:\\Users\\devbox\\.codex\\visualizations\\2026\\07\\31\\019fb788-e07c-7d52-bdf6-1e3c44ef7df2\\m20_s16_final_tests_r2';
+New-Item -ItemType Directory -Force -Path $testRoot | Out-Null; $env:PYTEST_DEBUG_TEMPROOT =
+$testRoot; & .venv\\Scripts\\python.exe -m pytest tests/test_extract_outline_m4.py
+tests/test_generated_review_m20.py tests/test_review_verdicts_m20.py
+tests/test_workbench_cells_api_m17.py tests/test_workbench_write_api_m15.py
+tests/test_workbench_m15.py tests/test_form_completeness_m20.py tests/test_llm_attribution_m20.py
+tests/test_draft_route_m20.py tests/test_batch_extraction_m10.py
+tests/test_schedule_d_extraction_m9.py tests/test_nversion_m8.py tests/test_tables_detector_m6b.py
+tests/test_cli.py -q` -> 71 passed, 1 skipped, 1 warning in 306.51s. Every declared focused
+file is covered by this exact command plus the browser command above; no `--basetemp` was used.
+
+**M20-S16 final machine evidence (2026-07-31):** RAN: `& .venv\\Scripts\\python.exe
+tools/check_ascii.py` -> ASCII check OK; `git diff --check` -> exit 0; strict citation command ->
+`checked=401 strict_mismatches=36`; module-form `tax_graph.cli validate 2025` -> graph integrity
+OK, documents=18, nodes=441, tables=2, edges=409, rules=17, citations=401, decisions=2,
+routing_edges=90, triggers=12, expectations=4; module-form `workbench.cli --root . --year 2025
+preflight` -> exit 0, entries=18, units=2224, derived cells=2120, review_gap=591,
+unreviewed=1529, legacy_mined=394. Protected `graph/2025/{nodes,edges,rules}/` diff is empty,
+and live `review_verdicts/2025` has no diff. No draft promotion or live graph artifact changed.
+
 **Worker session checkpoint - M20-S14 implementation (2026-07-30):** Global canary: Ledger
 Llama. Phase canary: Ground Truth. Model: GPT-5 Codex; effort/quota/context indicators are not
 exposed by this environment. John gave go via the current task request. Single declared step:

@@ -41,7 +41,8 @@ export function renderOfficialPane(container, documentModel, requestedPage = nul
   for (const cell of pageCells) {
     const region = document.createElement("button");
     region.type = "button";
-    region.className = `official-region policy-${cell.population_policy || "unknown"}`;
+    const riskClass = String(cell.risk_bucket || "NOT_REVIEWABLE").replace(/[^A-Za-z0-9_-]/g, "_");
+    region.className = `official-region policy-${cell.population_policy || "unknown"} risk-${riskClass}`;
     region.dataset.unitId = cell.cell_id;
     region.dataset.label = cell.display_name;
     region.setAttribute("aria-label", cell.display_name);

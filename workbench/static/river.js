@@ -11,6 +11,16 @@ const COVERAGE_LABEL = {
   unsupported: "Coverage gap - nobody has mapped this yet",
 };
 
+const RISK_LABEL = {
+  ARITHMETIC: "Arithmetic - critical",
+  COPY: "Copy",
+  USER_ENTRY: "Filer entry",
+  IMPORTED: "Information return",
+  CROSS_FORM_FETCH: "Cross-form fetch",
+  PER_ROW: "Per-row table",
+  NOT_REVIEWABLE: "Review gap",
+};
+
 function escapeHtml(value) {
   const element = document.createElement("span");
   element.textContent = String(value ?? "");
@@ -166,16 +176,14 @@ function generatedExpressionMarkup(cell) {
     ? cell.expression
     : {};
   const operands = Array.isArray(expression.operands) ? expression.operands : [];
-  const operandMarkup = operands.length
-    ? `<ul class="operand-list">${operands.map((item) =>
-      `<li><code>${escapeHtml(item.node_id || "unresolved")}</code>` +
-      (item.role ? ` <span>${escapeHtml(item.role)}</span>` : "") +
-      `</li>`
-    ).join("")}</ul>`
-    : '<p class="not-authored">No generated operands.</p>';
-  return `<p><strong>Operation:</strong> ${authored(cell.operation)}</p>` +
-    `<p>${authored(expression.description || cell.review_gap || "")}</p>` +
-    `<p><strong>Operands:</strong></p>${operandMarkup}`;
+  const sourceMarkup = operands.length
+    ? `<p><strong>Sources:</strong> ${operands.map((item) =>
+      escapeHtml(item.label || item.text || item.ref?.display_label || "unresolved source")
+    ).join(", ")}</p>`
+    : "";
+  return `<p class="rendered-expression"><strong>Expression:</strong> ${authored(expression.text || expression.description || cell.review_gap || "")}</p>` +
+    `<p><strong>Risk:</strong> ${escapeHtml(RISK_LABEL[cell.risk_bucket] || cell.risk_bucket || "Review gap")}</p>` +
+    sourceMarkup;
 }
 
 function generatedVerdictMarkup(cell) {
@@ -185,17 +193,27 @@ function generatedVerdictMarkup(cell) {
     `<p class="generated-provenance"><strong>Generated draft:</strong> ${escapeHtml(cell.generated_model || "unknown model")} / ${escapeHtml(cell.generated_provider || "unknown provider")}</p>` +
     `<p class="generated-status"><strong>Status:</strong> ${escapeHtml(cell.generated_status || "review_gap")}</p>` +
     `<label>Reviewer id<input class="verdict-reviewer" type="text" placeholder="Your reviewer id" autocomplete="off"></label>` +
-    `<label>Comment<textarea class="verdict-comment" rows="3" placeholder="Optional for confirmation; required for a defect or source pathology"></textarea></label>` +
+    `<label>Comment<textarea class="verdict-comment" rows="3" placeholder="Required for a defect or source pathology"></textarea></label>` +
     `<div class="verdict-controls" role="group" aria-label="Generated cell verdict">` +
-      `<button type="button" class="verdict-button verdict-confirm" data-verdict="confirmed">Confirm</button>` +
-      `<button type="button" class="verdict-button verdict-defect" data-verdict="pipeline_defect">Pipeline defect</button>` +
-      `<button type="button" class="verdict-button verdict-pathology" data-verdict="source_pathology">Source pathology</button>` +
-      `<button type="button" class="verdict-button verdict-next" data-verdict="confirmed">Save and next</button>` +
+      `<button type="button" class="verdict-button verdict-confirm" data-verdict="confirmed" data-reason="">Confirm</button>` +
+      `<button type="button" class="verdict-button verdict-defect" data-verdict="pipeline_defect" data-reason="pipeline_defect">Pipeline defect</button>` +
+      `<button type="button" class="verdict-button verdict-pathology" data-verdict="source_pathology" data-reason="source_pathology">Source pathology</button>` +
+      `<button type="button" class="verdict-button verdict-next" data-verdict="confirmed" data-reason="">Save and next</button>` +
     `</div>` +
     `</section>`;
 }
 
-function renderDetail(detail, cell, cells) {
+function sessionReviewMarkup(cell, review) {
+  const approved = review?.status === "approved";
+  const note = review?.note || "";
+  return `<section class="dossier-group session-review" data-session-cell="${escapeHtml(cell.cell_id)}">` +
+    `<h3>Review state</h3>` +
+    `<label class="approval-toggle"><input class="session-approve" type="checkbox"${approved ? " checked" : ""}> Approve this cell for this session</label>` +
+    `<label class="session-note-label">Reviewer note<textarea class="session-note" rows="3" placeholder="Optional note">${escapeHtml(note)}</textarea></label>` +
+    `</section>`;
+}
+
+function renderDetail(detail, cell, cells, review, onReviewChange) {
   detail.replaceChildren();
   const heading = document.createElement("div");
   heading.className = "drawer-heading";
@@ -215,11 +233,12 @@ function renderDetail(detail, cell, cells) {
   body.className = "cell-dossier";
   const facets = policyFacets(cell);
   body.innerHTML = cell.generated
-    ? `<section class="dossier-group generated-expression"><h3>Generated expression</h3>${generatedExpressionMarkup(cell)}</section>` +
+    ? generatedVerdictMarkup(cell) +
+      `<section class="dossier-group generated-expression"><h3>Generated expression</h3>${generatedExpressionMarkup(cell)}</section>` +
       `<section class="dossier-group authority"><h3>Form face source</h3>${citationMarkup(cell.form_citations || cell.citations)}</section>` +
-      `<section class="dossier-group human-dossier"><h3>Instruction page source</h3><div class="cell-instruction">${instructionMarkup(cell)}</div></section>` +
-      generatedVerdictMarkup(cell)
-    : `<section class="dossier-group human-dossier">` +
+    `<section class="dossier-group human-dossier"><h3>Instruction page source</h3><div class="cell-instruction">${instructionMarkup(cell)}</div></section>`
+    : sessionReviewMarkup(cell, review) +
+      `<section class="dossier-group human-dossier">` +
         `<h3>What the form instructions say</h3>` +
         `<div class="cell-instruction">${instructionMarkup(cell)}</div>` +
       `</section>` +
@@ -264,6 +283,16 @@ function renderDetail(detail, cell, cells) {
     ]);
 
   detail.append(heading, body, technical);
+  const sessionApproval = body.querySelector(".session-approve");
+  const sessionNote = body.querySelector(".session-note");
+  const saveSessionReview = () => {
+    onReviewChange?.(cell, {
+      approved: Boolean(sessionApproval?.checked),
+      note: sessionNote?.value.trim() || "",
+    });
+  };
+  sessionApproval?.addEventListener("change", saveSessionReview);
+  sessionNote?.addEventListener("change", saveSessionReview);
   body.querySelectorAll("[data-verdict]").forEach((button) => {
     button.addEventListener("click", () => {
       const reviewer = body.querySelector(".verdict-reviewer")?.value.trim() || "";
@@ -274,6 +303,7 @@ function renderDetail(detail, cell, cells) {
           cell,
           verdict: button.dataset.verdict,
           comment,
+          reason: button.dataset.reason || "",
           reviewerId: reviewer,
           advance: button.classList.contains("verdict-next"),
         },
@@ -285,7 +315,8 @@ function renderDetail(detail, cell, cells) {
 
 function cardFor(cell, review, occurrence, onSelect, onReviewChange) {
   const card = document.createElement("article");
-  card.className = "review-unit-card";
+  const riskClass = String(cell.risk_bucket || "NOT_REVIEWABLE").replace(/[^A-Za-z0-9_-]/g, "_");
+  card.className = `review-unit-card risk-${riskClass}`;
   card.dataset.unitId = cell.cell_id;
   card.dataset.page = String(cell.page);
   card.classList.toggle("approved", review.status === "approved");
@@ -307,34 +338,10 @@ function cardFor(cell, review, occurrence, onSelect, onReviewChange) {
 
   const body = document.createElement("div");
   body.className = "unit-card-body";
-  const badge = document.createElement("div");
-  badge.className = `unit-policy-facets policy-${cell.population_policy || "unknown"}`;
-  const facets = policyFacets(cell);
-  badge.innerHTML =
-    `<span><strong>How filled:</strong> ${authored(facets.obtained)}</span>` +
-    `<span><strong>Coverage:</strong> ${authored(facets.coverage)}</span>`;
-
-  const controls = document.createElement("div");
-  controls.className = "unit-review-controls";
-  const label = document.createElement("label");
-  label.className = "approval-toggle";
-  const checkbox = document.createElement("input");
-  checkbox.type = "checkbox";
-  checkbox.checked = review.status === "approved";
-  checkbox.setAttribute("aria-label", `Approve ${cell.display_name}`);
-  checkbox.addEventListener("change", () => {
-    card.classList.toggle("approved", checkbox.checked);
-    onReviewChange(cell, {approved: checkbox.checked, note: note.value});
-  });
-  label.append(checkbox, document.createTextNode(" Approve cell"));
-  const note = document.createElement("textarea");
-  note.rows = 2;
-  note.placeholder = "Leave a review note...";
-  note.value = review.note || "";
-  note.setAttribute("aria-label", `Review note for ${cell.display_name}`);
-  note.addEventListener("change", () => onReviewChange(cell, {approved: checkbox.checked, note: note.value}));
-  controls.append(label, note);
-  body.append(badge, controls);
+  const risk = document.createElement("div");
+  risk.className = "unit-risk-label";
+  risk.textContent = RISK_LABEL[cell.risk_bucket] || "Review gap";
+  body.append(risk);
   card.append(select, body);
   return card;
 }
@@ -354,7 +361,7 @@ export function renderReviewRiver(drawer, documentModel, session, onReviewChange
   const selectCell = (cell) => {
     drawer.querySelectorAll(".review-unit-card.selected").forEach((item) => item.classList.remove("selected"));
     river.querySelector(`[data-unit-id="${CSS.escape(cell.cell_id)}"]`)?.classList.add("selected");
-    renderDetail(detail, cell, cells);
+    renderDetail(detail, cell, cells, reviewFor(cell, session), onReviewChange);
     drawer.closest(".review-layout")?.dispatchEvent(new CustomEvent("workbench:river-selection", {
       bubbles: true,
       detail: {unitId: cell.cell_id},
