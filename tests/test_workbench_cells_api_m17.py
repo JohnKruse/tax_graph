@@ -48,8 +48,8 @@ def test_documents_api_lists_forms(client) -> None:
     assert form_1040["policy_counts"] == {
         "computed": 14,
         "copied": 2,
-        "review_gap": 40,
-        "user_entered": 1,
+        "review_gap": 32,
+        "user_entered": 9,
     }
 
 

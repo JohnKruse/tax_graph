@@ -46,6 +46,15 @@ def test_form_completeness_distinguishes_complete_expression_and_gap(tmp_path: P
                         "has_verbatim_citation": False,
                         "review_gap": "micro extraction failed: timeout",
                     },
+                    {
+                        "target_cell_id": "form_1040_2025_root_line_16",
+                        "line_anchor": "16",
+                        "status": "complete",
+                        "has_expression": True,
+                        "has_verbatim_citation": True,
+                        "has_form_face_citation": True,
+                        "has_instruction_citation": False,
+                    },
                 ],
                 "wrong_owner_instruction_span_count": 1,
                 "wrong_owner_instruction_addresses": ["form_1040_2025_root_line_1z"],
@@ -85,16 +94,18 @@ def test_form_completeness_distinguishes_complete_expression_and_gap(tmp_path: P
     )
     item = report["by_document"]["form_1040_2025"]
 
-    assert report["measurement"] == "m20_s14_form_completeness"
+    assert report["measurement"] == "m20_s18_form_completeness"
     assert report["totals"] == {
-        "formula_cells": 3,
-        "expression_and_verbatim_citation": 1,
-        "completeness_rate": pytest.approx(1 / 3),
+        "formula_cells": 4,
+        "expression_and_verbatim_citation": 2,
+        "expression_and_form_face_citation": 2,
+        "expression_and_both_citations": 1,
+        "completeness_rate": pytest.approx(1 / 2),
     }
-    assert item["expression_and_form_face_citation"] == 1
+    assert item["expression_and_form_face_citation"] == 2
     assert item["expression_and_instruction_page_citation"] == 1
     assert item["expression_and_both_citations"] == 1
-    assert item["instruction_review_cells"] == 3
+    assert item["instruction_review_cells"] == 4
     assert item["instruction_page_citation_before"] == 0
     assert item["instruction_page_citation"] == 1
     assert item["expression_without_citation"] == 1
@@ -104,5 +115,5 @@ def test_form_completeness_distinguishes_complete_expression_and_gap(tmp_path: P
     assert item["handcrafted_diff"]["flag_only"] is True
 
     path = write_form_completeness_report(report, root=tmp_path)
-    assert path.name == "m20_s14_form_completeness.yaml"
+    assert path.name == "m20_s18_form_completeness.yaml"
     assert "handcrafted expression set" not in path.read_text(encoding="ascii").lower()

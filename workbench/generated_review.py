@@ -352,7 +352,9 @@ def _source_expression(formula: dict[str, Any], target: str, target_cell: dict[s
             "text": f"line {target_ref} = entered by filer",
             "source": {"kind": "input", "text": "entered by filer"},
         }
-    if source_kind in {"form_line", "information_return"} and form and (line or box):
+    if source_kind in {"form_line", "information_return"} and form and (
+        _meaningful_reference(line) or _meaningful_reference(box)
+    ):
         source_label = _source_label(source_kind, form, line, box)
         kind = "cross_form_fetch" if _compact(form) not in _compact(str(target_cell.get("document_id") or "")) else "copy"
         if formula.get("status") != "complete":
@@ -467,10 +469,15 @@ def _operand_label(node_id: str, cells: list[dict[str, Any]]) -> str:
 
 
 def _source_label(source_kind: str, form: str, line: str, box: str) -> str:
-    form_label = form.replace("_", " ").strip().title()
+    form_label = "W-2" if _compact(form) in {"w2", "formw2"} else form.replace("_", " ").strip().title()
     if source_kind == "information_return" and box:
         return f"{form_label} box {box}"
     return f"{form_label}, line {line}" if line else form_label
+
+
+def _meaningful_reference(value: str) -> bool:
+    """Reject model sentinel strings before rendering a source reference."""
+    return str(value or "").strip().lower() not in {"", "none", "null", "n/a", "unknown"}
 
 
 def _compact(value: str) -> str:

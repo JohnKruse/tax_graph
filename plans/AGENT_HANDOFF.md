@@ -12,7 +12,95 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 - History: pruned at each phase close (latest: 2026-07-23). Full narration lives in
   `plans/archive/` (phase plans with close notes) and git history.
 
-## Current state (2026-07-30)
+## Current state (2026-07-31)
+
+**Worker session checkpoint - M20-S18 implementation (2026-07-31):** Global canary: Ledger
+Llama. Phase canary: Ground Truth. Model: GPT-5 Codex; effort/quota/context indicators are not
+exposed by this environment. John gave go via the current task request. Single declared step:
+make instruction citations optional for completeness, repair parent/lettered-child line
+resolution fail-closed, and run non-computed source extraction. Applicable defect-ledger entries:
+D9 and the exact RAN/NOT RUN evidence rule. No draft promotion, hand-authoring, live graph edit,
+or operation enum change is in scope. Protected graph and live verdict artifacts are untouched
+at session start.
+
+**M20-S18 focused-test declaration (2026-07-31):** Declared files are
+`tests/test_extract_outline_m4.py`, `tests/test_form_completeness_m20.py`,
+`tests/test_generated_review_m20.py`, `tests/test_extract_m16.py`, `tests/test_cli.py`,
+`tests/test_workbench_cells_api_m17.py`, and `tests/e2e/test_workbench_v2_m17.py`.
+The set covers line resolution and source extraction, the optional-instruction completeness
+metric, generated review projection, outline-pipeline consumers, the CLI report contract, and
+the API/browser consumers whose rendered source identity changed under D9.
+
+**M20-S18 pre-extraction checkpoint (2026-07-31):** Mechanical implementation is in place.
+RAN: `PYTEST_DEBUG_TEMPROOT=<session writable root>; .venv\\Scripts\\python.exe -m pytest
+tests/test_extract_outline_m4.py tests/test_form_completeness_m20.py -q` -> 19 passed, 1 warning
+in 0.78s. Pending the expensive phase: draft-only extraction for `form_1040_2025`, then
+generated-review projection and the remaining declared files. No live graph or verdict artifact
+has been changed.
+
+**M20-S18 deterministic implementation checkpoint (2026-07-31):** The completeness report now
+uses `expression + form-face citation` as its primary metric and reports instruction coverage
+separately. Formula assembly resolves a missing parent to a deterministic lettered child when
+safe, expands explicit heading parents only for expandable operations, and records
+`resolved_line_refs`; ambiguous or fixed-arity cases still fail closed. Non-formula source
+records now resolve explicit information-return boxes and external form lines to stable source
+ids, while unresolved declarations retain a named gap. No live artifacts have been changed.
+
+**M20-S18 deterministic test evidence (2026-07-31):** RAN: `$testRoot =
+'C:\\Users\\devbox\\.codex\\visualizations\\2026\\07\\31\\019fb85a-5d3d-7fa0-9fad-4fd08fbc198d\\m20-s18-unit-tests-r5'; New-Item -ItemType Directory -Force -Path $testRoot | Out-Null; $env:PYTEST_DEBUG_TEMPROOT = $testRoot; & .venv\\Scripts\\python.exe -m pytest tests\\test_form_completeness_m20.py tests\\test_extract_outline_m4.py -q` -> 19 passed, 1 warning in 0.83s. The prior temp-root attempt was NOT RUN as evidence because the repository `.test_tmp` and `C:\\tmp` were ACL-blocked; no `--basetemp` was used.
+
+**M20-S18 first live extraction attempt (2026-07-31):** RAN: `& .venv\\Scripts\\python.exe -m tax_graph.cli extract --doc form_1040_2025 --year 2025 --root .` -> exit 0 in 94.8s, but all 17 formula calls and 40 source calls recorded `LlmUnavailable: OpenRouter request failed: Connection error.` The resulting draft is explicit fail-closed gaps (`source_cells_succeeded=0`, `source_cells_failed=40`), not source-extraction evidence. This sandbox attempt is not acceptance evidence; retrying with approved network execution.
+
+**M20-S18 approved-network extraction evidence (2026-07-31):** RAN twice, each with the exact
+module-form command `& .venv\\Scripts\\python.exe -m tax_graph.cli extract --doc
+form_1040_2025 --year 2025` -> first run exit 0 in 254.2s and second run exit 0 in 267.2s;
+both reported `auto_accepted=0`, `human_review=173`, `deterministic_issues=122`. The latest
+sidecar measures 40 non-formula source calls, 39 successful, 24 canonical source identities,
+1 extraction failure, 32 complete source cells, and 8 explicit review gaps. W-2 box 1 and
+Form 2441 line 26 resolve as `form_w2_2025_box_1` and `form_2441_2025_root_line_26`.
+Unresolved or quote-invalid model responses remain named gaps. No draft was promoted.
+
+**M20-S18 final evidence (2026-07-31):** RAN: `$testRoot =
+'C:\\Users\\devbox\\.codex\\visualizations\\2026\\07\\31\\019fb85e-d10c-7221-be78-0ade35a446d0\\m20_s18_final_tests';
+New-Item -ItemType Directory -Force -Path $testRoot | Out-Null; $env:PYTEST_DEBUG_TEMPROOT =
+$testRoot; & .venv\\Scripts\\python.exe -m pytest tests/test_extract_outline_m4.py
+tests/test_form_completeness_m20.py tests/test_generated_review_m20.py tests/test_extract_m16.py
+tests/test_cli.py tests/test_workbench_m15.py -q` -> 38 passed, 1 warning in 46.35s.
+RAN: `$testRoot = 'C:\\Users\\devbox\\.codex\\visualizations\\2026\\07\\31\\019fb85e-d10c-7221-be78-0ade35a446d0\\m20_s18_workbench_consumers';
+New-Item -ItemType Directory -Force -Path $testRoot | Out-Null; $env:PYTEST_DEBUG_TEMPROOT =
+$testRoot; & .venv\\Scripts\\python.exe -m pytest tests/test_workbench_cells_api_m17.py -q` ->
+4 passed, 1 warning in 91.64s. RAN: `$testRoot =
+'C:\\Users\\devbox\\.codex\\visualizations\\2026\\07\\31\\019fb85e-d10c-7221-be78-0ade35a446d0\\m20_s18_e2e';
+New-Item -ItemType Directory -Force -Path $testRoot | Out-Null; $env:PYTEST_DEBUG_TEMPROOT =
+$testRoot; & .venv\\Scripts\\python.exe -m pytest tests/e2e/test_workbench_v2_m17.py -q` ->
+4 passed, 1 warning in 137.52s. RAN: `& .venv\\Scripts\\python.exe tools/check_ascii.py` ->
+ASCII check OK; `git diff --check` -> exit 0. RAN: `& .venv\\Scripts\\python.exe -m
+tax_graph.cli validate 2025` -> graph integrity OK, documents=18, nodes=441, tables=2,
+edges=409, rules=17, citations=401, decisions=2, routing_edges=90, triggers=12,
+expectations=4. RAN: `& .venv\\Scripts\\python.exe -m workbench.cli --root . --year 2025
+preflight` -> exit 0, entries=18, units=2224, derived cells=2120, review_gap=591,
+unreviewed=1529, legacy_mined=394. RAN strict citation reporting -> `checked=401,
+strict_mismatches=36`. RAN: `& .venv\\Scripts\\python.exe -m tax_graph.cli verify
+form-completeness --year 2025 --root .` -> `output/m20_s18_form_completeness.yaml`,
+completeness 28/28 (100.0%), instruction coverage 55/68 (80.9%). Protected
+`graph/2025/{nodes,edges,rules}/` and live `review_verdicts/2025` diffs are empty. No
+verdict was written and no live graph artifact changed.
+
+**M20-S18 post-implementation verification (2026-07-31):** RAN the required Schedule 1
+draft-only command `& .venv\\Scripts\\python.exe -m tax_graph.cli extract --doc
+schedule_1_2025 --year 2025 --root .` -> exit 0 in 31.3s; all four formula calls succeeded,
+with `line 2 -> 2a` and `line 19 -> 19a` recorded in `resolved_line_refs` and no unresolved
+line findings. RAN: `$testRoot =
+'C:\\Users\\devbox\\.codex\\visualizations\\2026\\07\\31\\019fb85a-5d3d-7fa0-9fad-4fd08fbc198d\\m20-s18-final-unit-r2'; New-Item -ItemType Directory -Force -Path $testRoot | Out-Null; $env:PYTEST_DEBUG_TEMPROOT = $testRoot; & .venv\\Scripts\\python.exe -m pytest tests\\test_form_completeness_m20.py tests\\test_extract_outline_m4.py -q` -> 19 passed, 1 warning in 0.86s.
+RAN: `$testRoot = 'C:\\Users\\devbox\\.codex\\visualizations\\2026\\07\\31\\019fb85a-5d3d-7fa0-9fad-4fd08fbc198d\\m20-s18-final-extra'; New-Item -ItemType Directory -Force -Path $testRoot | Out-Null; $env:PYTEST_DEBUG_TEMPROOT = $testRoot; & .venv\\Scripts\\python.exe -m pytest tests\\test_extract_m16.py tests\\test_cli.py -q` -> 10 passed, 1 warning in 18.86s.
+RAN: `$testRoot = 'C:\\Users\\devbox\\.codex\\visualizations\\2026\\07\\31\\019fb85a-5d3d-7fa0-9fad-4fd08fbc198d\\m20-s18-final-consumers-r2'; New-Item -ItemType Directory -Force -Path $testRoot | Out-Null; $env:PYTEST_DEBUG_TEMPROOT = $testRoot; & .venv\\Scripts\\python.exe -m pytest tests\\test_generated_review_m20.py tests\\test_workbench_cells_api_m17.py -q` -> 9 passed, 1 warning in 118.15s.
+RAN: `$testRoot = 'C:\\Users\\devbox\\.codex\\visualizations\\2026\\07\\31\\019fb85a-5d3d-7fa0-9fad-4fd08fbc198d\\m20-s18-final-e2e'; New-Item -ItemType Directory -Force -Path $testRoot | Out-Null; $env:PYTEST_DEBUG_TEMPROOT = $testRoot; & .venv\\Scripts\\python.exe -m pytest tests\\e2e\\test_workbench_v2_m17.py -q` -> 4 passed, 1 warning in 137.83s. All declared focused files are now verified; no `--basetemp` was used.
+
+The approved 1040 rerun measured 17/17 formula calls, 39/40 successful source calls, 24
+canonical source identities, and one named quote-mismatch gap; line 1a is
+`form_w2_2025_box_1` and line 1e is `form_2441_2025_root_line_26`. The promoted graph,
+verdict store, and protected graph directories remain byte-identical. The implementation is
+already in the single local commit `6d957e1`; no push or promotion was performed.
 
 **Worker session checkpoint - M20-S17 implementation (2026-07-31):** Global canary: Ledger
 Llama. Phase canary: Ground Truth. Model: GPT-5 Codex; effort/quota/context indicators are not
@@ -3950,7 +4038,7 @@ TY2026 docs drop.
   `content_fingerprint`; hand-authoring; asking the model for internal node ids; `legacy_mined`
   above 394; strict mismatches above 36. **A model or provider failure is NOT a stop condition.**
 
-- **M20-S18 TASK - INSTRUCTIONS ARE OPTIONAL; FIX LINE RESOLUTION; RUN THE SOURCE EXTRACTION
+- **[DONE `e1e8c80`] M20-S18 TASK - INSTRUCTIONS ARE OPTIONAL; FIX LINE RESOLUTION; RUN THE SOURCE EXTRACTION
   (Architect, Claude Opus 5, 2026-07-31). Items 1-2 are small and FULLY DIAGNOSED below - do
   them first, they are mechanical. Item 3 is the heavy one. The background controls moved to
   S19 so this round is not overloaded.** Ledger: the exact RAN/NOT RUN evidence rule, D9.

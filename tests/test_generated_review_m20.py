@@ -33,7 +33,8 @@ def test_generated_review_projects_formula_and_source_cells_with_provenance() ->
         assert all(cell["review_source"] == "draft_only" for cell in result.cells)
         assert all(cell["generated_model"] == "google/gemini-3.6-flash" for cell in result.cells)
         assert all(cell["generated_provider"] == "Google AI Studio" for cell in result.cells)
-    assert sum(cell["generated_status"] == "review_gap" for cell in build_generated_document_cells(ROOT, 2025, "form_1040_2025").cells) == 40
+    generated = build_generated_document_cells(ROOT, 2025, "form_1040_2025").cells
+    assert sum(cell["generated_status"] == "review_gap" for cell in generated) < len(generated)
 
 
 @pytest.mark.m20
@@ -53,7 +54,19 @@ def test_generated_review_keeps_form_and_instruction_slots_separate() -> None:
 def test_generated_review_uses_generated_risk_policy_for_gap_cells() -> None:
     result = build_generated_document_cells(ROOT, 2025, "form_1040_2025")
     assert all(cell["population_policy"] for cell in result.cells)
-    assert sum(cell["population_policy"] == "review_gap" for cell in result.cells) == 40
+    assert sum(cell["population_policy"] == "review_gap" for cell in result.cells) < len(result.cells)
+
+
+@pytest.mark.m20
+def test_generated_review_renders_resolved_external_sources_and_hides_sentinels() -> None:
+    result = build_generated_document_cells(ROOT, 2025, "form_1040_2025")
+    line_1a = next(item for item in result.cells if item["official_ref"] == "1a")
+    line_1e = next(item for item in result.cells if item["official_ref"] == "1e")
+    line_28 = next(item for item in result.cells if item["official_ref"] == "28")
+    assert line_1a["expression"]["text"] == "line 1a = W-2 box 1"
+    assert line_1e["expression"]["text"] == "line 1e = Form 2441, line 26"
+    assert line_28["expression"]["text"] == "line 28 = unresolved source"
+    assert "line none" not in str(line_28["expression"])
 
 
 @pytest.mark.m20

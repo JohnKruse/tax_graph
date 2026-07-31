@@ -2,8 +2,9 @@
 
 This report is intentionally independent of the retired handcrafted expression
 set. A cell is complete only when the outline pass attempted it, produced an
-expression rule, and attached a verbatim citation. Missing work is a named
-review gap rather than an absent row in a score.
+expression rule, and attached a verbatim form-face citation. Instruction-page
+citations augment the review record but never gate completeness. Missing work
+is a named review gap rather than an absent row in a score.
 """
 
 from __future__ import annotations
@@ -86,10 +87,6 @@ def build_form_completeness_report(
             item for item in cells
             if item.get("has_expression")
             and _has_form_face_citation(item)
-            and (
-                instruction_cells.get(str(item.get("target_cell_id")), [])
-                or _has_instruction_citation(item)
-            )
         ]
         with_expression_no_citation = [
             item for item in cells if item.get("status") == "expression_without_citation"
@@ -114,7 +111,15 @@ def build_form_completeness_report(
                 )
                 for item in cells
             ),
-            "expression_and_both_citations": len(complete),
+            "expression_and_both_citations": sum(
+                bool(item.get("has_expression"))
+                and _has_form_face_citation(item)
+                and bool(
+                    instruction_cells.get(str(item.get("target_cell_id")), [])
+                    or _has_instruction_citation(item)
+                )
+                for item in cells
+            ),
             "expression_without_citation": len(with_expression_no_citation),
             "neither_expression_nor_citation": len(gaps),
             "completeness_rate": len(complete) / len(cells) if cells else 0.0,
@@ -146,9 +151,9 @@ def build_form_completeness_report(
     total_complete = sum(item["expression_and_verbatim_citation"] for item in rendered.values())
     return {
         "schema_version": 1,
-        "measurement": "m20_s14_form_completeness",
+        "measurement": "m20_s18_form_completeness",
         "tax_year": int(year),
-        "primary_metric": "expression_and_both_citations_over_formula_cells",
+        "primary_metric": "expression_and_form_face_citation_over_formula_cells",
         "handcrafted_expression_set": {
             "status": "review_flag_only",
             "note": "Disagreements are retained to direct human review; they are not scored as accuracy.",
@@ -156,6 +161,10 @@ def build_form_completeness_report(
         "totals": {
             "formula_cells": total_cells,
             "expression_and_verbatim_citation": total_complete,
+            "expression_and_form_face_citation": total_complete,
+            "expression_and_both_citations": sum(
+                item["expression_and_both_citations"] for item in rendered.values()
+            ),
             "completeness_rate": total_complete / total_cells if total_cells else 0.0,
         },
         "by_document": rendered,
@@ -170,7 +179,7 @@ def write_form_completeness_report(
 ) -> Path:
     """Write the completeness report as deterministic ASCII YAML."""
     root_path = Path(root).resolve() if root is not None else project_root()
-    path = Path(output_path) if output_path is not None else root_path / "output" / "m20_s14_form_completeness.yaml"
+    path = Path(output_path) if output_path is not None else root_path / "output" / "m20_s18_form_completeness.yaml"
     if not path.is_absolute():
         path = root_path / path
     path.parent.mkdir(parents=True, exist_ok=True)

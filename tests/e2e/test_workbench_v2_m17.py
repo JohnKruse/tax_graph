@@ -112,12 +112,12 @@ def test_selected_cell_uses_human_headers_dossier_order_and_occurrence(page, wor
     expect(detail.locator(".generated-expression")).to_contain_text("line 33 = line 25d + line 26 + line 32")
     assert detail.locator("details.technical-record").get_attribute("open") is None
 
-    # The 1040 line 1a record keeps its form-face citation in the authority slot;
-    # instruction coverage remains an explicit review gap until the source micro
-    # question resolves it.
+    # The 1040 line 1a record now exposes its resolved W-2 source identity while
+    # retaining the instruction citation in the authority slot.
     line_1a = cards.nth(anchors.index("1a"))
     line_1a.locator(".unit-card-select").click()
     expect(detail.locator(".authority")).to_contain_text("Total amount from Form(s) W-2")
+    expect(detail.locator(".generated-expression")).to_contain_text("line 1a = W-2 box 1")
     expect(detail.locator(".generated-verdict")).to_be_visible()
 
     # Line 1i is sourced from the instruction page's own Line 1i section,

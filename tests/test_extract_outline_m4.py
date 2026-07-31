@@ -10,7 +10,7 @@ import pytest
 
 from tax_graph.extract.assembly import FormulaAssemblyFinding, assemble_formula_plan, realize_outbound_flows
 from tax_graph.extract.outline_pipeline import _formula_outline_nodes, generate_outline_first_drafts
-from tax_graph.extract.outline_pipeline import _spans_for_outline_node
+from tax_graph.extract.outline_pipeline import _resolve_declared_source, _spans_for_outline_node
 from tax_graph.extract.pipeline import extract_document
 from tax_graph.extract.micro import MicroExtractionError, extract_formula_plan, validate_formula_plan
 from tax_graph.extract.models import RelatedSourceInput, SourceDocumentInput
@@ -337,6 +337,185 @@ def test_line_reference_resolves_schedule_alias_and_reports_bare_parent(tmp_path
         "schedule_a_2025_section_1_line_11a",
         "schedule_a_2025_section_1_line_11b",
     ]
+
+
+@pytest.mark.m20
+def test_line_reference_resolves_a_missing_parent_to_its_only_lettered_child(tmp_path):
+    document = SourceDocumentInput(
+        document_id="schedule_1_2025",
+        kind="schedule",
+        year="2025",
+        url="https://example.test/schedule-1.pdf",
+        text="2a Alimony received\n10 Combine lines 1 through 7 and 9\n",
+        text_path=tmp_path / "schedule-1.txt",
+    )
+    span = CandidateSpan(
+        "span_schedule_1_2025_0001",
+        document.document_id,
+        "source",
+        "page 1, line 2",
+        "10 Combine lines 1 through 7 and 9",
+    )
+    node = OutlineNode("line_10", "line", "Combine lines 1 through 7 and 9", line_anchor="10")
+    events: list[dict] = []
+
+    batch = assemble_formula_plan(
+        document,
+        node,
+        {
+            "operation": "SUM",
+            "source_lines": ["2"],
+            "quote": "Combine lines 1 through 7 and 9",
+        },
+        [span],
+        line_index={(document.document_id, "2a"): "schedule_1_2025_line_2a"},
+        resolution_events=events,
+    )
+
+    assert batch.items("edges")[0].data["source"] == "schedule_1_2025_line_2a"
+    assert events == [
+        {
+            "source_line": "2",
+            "resolved_to": ["schedule_1_2025_line_2a"],
+            "reason": "resolved through deterministic lettered child lines",
+        }
+    ]
+
+
+@pytest.mark.m20
+def test_line_reference_expands_a_heading_only_when_operation_supports_children(tmp_path):
+    document = SourceDocumentInput(
+        document_id="schedule_1_2025",
+        kind="schedule",
+        year="2025",
+        url="https://example.test/schedule-1.pdf",
+        text="8 Other income\n8a First\n8b Second\n9 Total\n",
+        text_path=tmp_path / "schedule-1.txt",
+    )
+    span = CandidateSpan(
+        "span_schedule_1_2025_0002",
+        document.document_id,
+        "source",
+        "page 1, line 4",
+        "9 Total",
+    )
+    node = OutlineNode("line_9", "line", "Total", line_anchor="9")
+    line_index = {
+        (document.document_id, "8"): "schedule_1_2025_line_8",
+        (document.document_id, "8a"): "schedule_1_2025_line_8a",
+        (document.document_id, "8b"): "schedule_1_2025_line_8b",
+    }
+
+    batch = assemble_formula_plan(
+        document,
+        node,
+        {"operation": "SUM", "source_lines": ["8"], "quote": "9 Total"},
+        [span],
+        line_index=line_index,
+        line_kinds={(document.document_id, "8"): "heading"},
+        line_children={(document.document_id, "8"): [
+            "schedule_1_2025_line_8a",
+            "schedule_1_2025_line_8b",
+        ]},
+    )
+
+    assert [edge.data["source"] for edge in batch.items("edges")] == [
+        "schedule_1_2025_line_8a",
+        "schedule_1_2025_line_8b",
+    ]
+
+
+@pytest.mark.m20
+def test_source_declaration_identity_is_explicit_and_fail_closed(tmp_path):
+    document = SourceDocumentInput(
+        document_id="form_1040_2025",
+        kind="tax_form",
+        year="2025",
+        url="https://example.test/form-1040.pdf",
+        text="",
+        text_path=tmp_path / "form.txt",
+    )
+    line_index = {(document.document_id, "1a"): "form_1040_2025_root_line_1a"}
+
+    assert _resolve_declared_source(
+        document,
+        {"source_kind": "information_return", "form": "W-2", "box": "1", "line": ""},
+        line_index=line_index,
+    ) == "form_w2_2025_box_1"
+    assert _resolve_declared_source(
+        document,
+        {"source_kind": "form_line", "form": "Form 2441", "line": "26", "box": ""},
+        line_index=line_index,
+    ) == "form_2441_2025_root_line_26"
+    assert _resolve_declared_source(
+        document,
+        {"source_kind": "form_line", "form": "Form 1040", "line": "99", "box": ""},
+        line_index=line_index,
+    ) is None
+
+
+@pytest.mark.m20
+def test_non_formula_micro_path_records_resolved_source_identity(tmp_path):
+    text = "\n".join(
+        [
+            "- 1a: Total amount from Form(s) W-2, box 1 (see instructions)",
+            "- 1e: Taxable dependent care benefits from Form 2441, line 26",
+            "",
+        ]
+    )
+    text_path = tmp_path / "form_1040_2025.txt"
+    text_path.write_text(text, encoding="utf-8")
+    line_anchors = [
+        {
+            "anchor": match.group(1).lower(),
+            "page": 1,
+            "text_offset": match.start(1),
+            "text_length": len(match.group(1)),
+        }
+        for match in re.finditer(r"^[-]\s+([0-9]+[a-z]?):", text, re.IGNORECASE | re.MULTILINE)
+    ]
+    document = SourceDocumentInput(
+        document_id="form_1040_2025",
+        kind="tax_form",
+        year="2025",
+        url="https://example.test/form-1040.pdf",
+        text=text,
+        text_path=text_path,
+        fields={"fields": [], "line_anchors": line_anchors},
+    )
+
+    class SourceClient:
+        def structured_completion(self, *, prompt, schema, model, max_tokens, temperature, purpose):
+            target_label = prompt.split("target line label:", 1)[1].splitlines()[0]
+            if "W-2" in target_label:
+                return {
+                    "source_kind": "information_return",
+                    "form": "W-2",
+                    "line": "",
+                    "box": "1",
+                    "quote": "Total amount from Form(s) W-2, box 1 (see instructions)",
+                }
+            return {
+                "source_kind": "form_line",
+                "form": "Form 2441",
+                "line": "26",
+                "box": "",
+                "quote": "Taxable dependent care benefits from Form 2441, line 26",
+            }
+
+    batch = generate_outline_first_drafts(
+        document,
+        client=SourceClient(),
+        config={"extraction": {"micro_max_tokens": 4000}, "llm": {"model": "mock"}},
+        root=ROOT,
+    )
+
+    records = {item["line_anchor"]: item for item in batch.micro_stats["non_formula_cells"]}
+    assert records["1a"]["status"] == "complete", records["1a"].get("review_gap")
+    assert records["1a"]["resolved_source_id"] == "form_w2_2025_box_1"
+    assert records["1e"]["status"] == "complete"
+    assert records["1e"]["resolved_source_id"] == "form_2441_2025_root_line_26"
+    assert batch.micro_stats["source_cells_resolved"] == 2
 
 
 @pytest.mark.m4

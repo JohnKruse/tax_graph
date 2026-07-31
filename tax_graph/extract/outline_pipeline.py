@@ -8,7 +8,7 @@ from typing import Any
 
 from tax_graph.config import get_config_value
 from tax_graph.documents import document_class_for
-from tax_graph.extract.assembly import FormulaAssemblyFinding, assemble_formula_plan
+from tax_graph.extract.assembly import FormulaAssemblyFinding, _resolve_source_line, assemble_formula_plan
 from tax_graph.extract.outline_checks import run_outline_artifact_checks
 from tax_graph.extract.llm_client import LlmClient, response_telemetry
 from tax_graph.extract.micro import extract_formula_plan, extract_non_formula_source
@@ -65,13 +65,17 @@ def generate_outline_first_drafts(
         "non_formula_cells": [],
         "source_cells_attempted": 0,
         "source_cells_succeeded": 0,
+        "source_cells_resolved": 0,
         "source_cells_failed": 0,
+        "resolved_source_addresses": [],
         "wrong_owner_instruction_span_count": 0,
         "wrong_owner_instruction_addresses": [],
         "unresolved_line_refs": [],
+        "resolved_line_refs": [],
         "review_gaps": [],
     }
     line_index = _outline_line_index(document.document_id, outline.children)
+    line_kinds, line_children = _outline_line_metadata(document.document_id, outline.children)
     instruction_owners = _instruction_owner_map(spans)
     for outline_node in _formula_outline_nodes(outline.children, document_id=document.document_id):
         node_spans = _spans_for_outline_node(
@@ -141,6 +145,9 @@ def generate_outline_first_drafts(
                 model=formula_model,
                 root=root,
                 line_index=line_index,
+                line_kinds=line_kinds,
+                line_children=line_children,
+                resolution_events=micro_stats["resolved_line_refs"],
             )
         except FormulaAssemblyFinding as exc:
             if plan is not None and formula_model != "deterministic-schedule-d-formula":
@@ -308,11 +315,14 @@ def _extract_non_formula_cells(
             )
             record["resolved_source_id"] = resolved
             if record["source_kind"] == "filer_entry":
+                record["resolved_source_id"] = "filer_entry"
                 record["status"] = "complete"
                 record.pop("review_gap", None)
             elif resolved:
                 record["status"] = "complete"
                 record.pop("review_gap", None)
+                stats["source_cells_resolved"] += 1
+                stats["resolved_source_addresses"].append(target_cell_id)
             else:
                 record["review_gap"] = "source reference did not resolve to a canonical line"
                 stats.setdefault("findings", []).append(
@@ -354,10 +364,60 @@ def _resolve_declared_source(
     if record.get("source_kind") not in {"form_line", "information_return"}:
         return None
     form = str(record.get("form") or "").strip()
-    line = str(record.get("line") or "").strip()
-    if not form or not line:
+    if not form:
         return None
-    return _resolve_source_line(document, {"form": form, "line": line}, line_index=line_index)
+    if record.get("source_kind") == "information_return":
+        box = str(record.get("box") or "").strip().lower()
+        if not box or not re.fullmatch(r"[0-9]+[a-z]?", box, re.IGNORECASE):
+            return None
+        return _canonical_external_source_id(form, document.year, box=box)
+    line = str(record.get("line") or "").strip()
+    if not line:
+        return None
+    resolved = _resolve_source_line(document, {"form": form, "line": line}, line_index=line_index)
+    if resolved:
+        return resolved
+    if _is_external_form_reference(document, form):
+        if re.fullmatch(r"[0-9]+[a-z]?", line, re.IGNORECASE):
+            return _canonical_external_source_id(form, document.year, line=line)
+    return None
+
+
+def _quote_matches(quote: str, source: str) -> bool:
+    """Compare source evidence after folding line-break whitespace only."""
+    normalize = lambda value: " ".join(str(value).split())
+    return normalize(quote) in normalize(source) or normalize(source) in normalize(quote)
+
+
+def _is_external_form_reference(document: SourceDocumentInput, form: str) -> bool:
+    """Return whether a source declaration names a different form."""
+    normalized = re.sub(r"[^a-z0-9]+", "", form.lower())
+    current = document.document_id.lower()
+    current_stem = current.removesuffix(f"_{document.year}")
+    current_tokens = {re.sub(r"[^a-z0-9]+", "", value) for value in (current, current_stem)}
+    if normalized in current_tokens:
+        return False
+    return not ("form1040" in normalized and "form1040" in re.sub(r"[^a-z0-9]+", "", current))
+
+
+def _canonical_external_source_id(
+    form: str,
+    year: str | int,
+    *,
+    line: str | None = None,
+    box: str | None = None,
+) -> str:
+    """Create a stable source identity from an explicit printed reference."""
+    compact = re.sub(r"[^a-z0-9]+", "", form.lower())
+    if compact in {"w2", "formw2"}:
+        document_token = "form_w2"
+    else:
+        document_token = _slug(form)
+        if not document_token.startswith(("form_", "schedule_")):
+            document_token = f"form_{document_token}"
+    if box:
+        return _slug(f"{document_token}_{year}_box_{box}")
+    return _slug(f"{document_token}_{year}_root_line_{line}")
 
 
 def _formula_outline_nodes(nodes: list[OutlineNode], *, document_id: str = "") -> list[OutlineNode]:
@@ -438,6 +498,29 @@ def _outline_line_index(document_id: str, nodes: list[OutlineNode]) -> dict[tupl
     for key in ambiguous:
         index.pop(key, None)
     return index
+
+
+def _outline_line_metadata(
+    document_id: str,
+    nodes: list[OutlineNode],
+) -> tuple[dict[tuple[str, str], str], dict[tuple[str, str], list[str]]]:
+    """Return node kinds and deterministic lettered-child ids for line resolution."""
+    document_key = document_id.lower()
+    kinds: dict[tuple[str, str], str] = {}
+    children: dict[tuple[str, str], list[str]] = {}
+    for node in _flatten_nodes(nodes):
+        anchor = str(node.line_anchor or "").lower()
+        if not anchor:
+            continue
+        key = (document_key, anchor)
+        if key in kinds and kinds[key] != node.kind:
+            kinds.pop(key, None)
+        else:
+            kinds[key] = node.kind
+        if anchor[-1].isalpha() and anchor[:-1]:
+            parent_key = (document_key, anchor[:-1])
+            children.setdefault(parent_key, []).append(_outline_node_id(document_id, node))
+    return kinds, {key: sorted(set(values)) for key, values in children.items()}
 
 
 def _outline_node_id(document_id: str, node: OutlineNode) -> str:

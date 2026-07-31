@@ -622,7 +622,7 @@ def verify_form_completeness_command(
     totals = report["totals"]
     print(f"form completeness report: {path}")
     print(
-        "  completeness: {expression_and_verbatim_citation}/{formula_cells} "
+        "  completeness: {expression_and_form_face_citation}/{formula_cells} "
         "({completeness_rate:.1%})".format(**totals)
     )
     print(

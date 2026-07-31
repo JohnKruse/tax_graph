@@ -34,6 +34,9 @@ def assemble_formula_plan(
     model: str = "micro-extraction",
     root: str | Path | None = None,
     line_index: dict[Any, str] | None = None,
+    line_kinds: dict[Any, str] | None = None,
+    line_children: dict[Any, list[str]] | None = None,
+    resolution_events: list[dict[str, Any]] | None = None,
 ) -> ExtractionBatch:
     """Convert an intermediate operation plan into canonical draft objects."""
     allowed_operations = set(closed_operations(root=root))
@@ -45,6 +48,9 @@ def assemble_formula_plan(
         plan,
         spans,
         line_index=line_index,
+        line_kinds=line_kinds,
+        line_children=line_children,
+        resolution_events=resolution_events,
     )
     objects: list[DraftObject] = []
     node_ids_by_name: dict[str, str] = {}
@@ -176,6 +182,9 @@ def _steps_for_plan(
     spans: list[CandidateSpan],
     *,
     line_index: dict[Any, str] | None,
+    line_kinds: dict[Any, str] | None,
+    line_children: dict[Any, list[str]] | None,
+    resolution_events: list[dict[str, Any]] | None,
 ) -> list[dict[str, Any]]:
     """Translate line-number output into one deterministic operation step."""
     if "operation_plan" in plan:
@@ -183,10 +192,30 @@ def _steps_for_plan(
 
     source_lines = plan.get("source_lines", [])
     inputs: list[dict[str, str]] = []
+    operation = str(plan.get("operation", ""))
     for source_line in source_lines:
         source_id = _resolve_source_line(document, source_line, line_index=line_index)
+        source_key = _line_reference_key(document, source_line)
+        candidates = _line_ref_candidates(
+            document,
+            source_line,
+            line_index=line_index,
+            line_children=line_children,
+        )
+        is_heading = bool(source_key and line_kinds and line_kinds.get(source_key) == "heading")
+        expand = bool(candidates) and (source_id is None or is_heading)
+        if expand and (len(candidates) == 1 or (is_heading and operation in _EXPANDABLE_OPERATIONS)):
+            inputs.extend({"name": candidate} for candidate in candidates)
+            if resolution_events is not None:
+                resolution_events.append(
+                    {
+                        "source_line": source_line,
+                        "resolved_to": list(candidates),
+                        "reason": "resolved through deterministic lettered child lines",
+                    }
+                )
+            continue
         if source_id is None:
-            candidates = _line_ref_candidates(document, source_line, line_index=line_index)
             code = "ambiguous_parent_source_line" if candidates else "unresolved_source_line"
             raise FormulaAssemblyFinding(
                 {
@@ -227,6 +256,56 @@ def _resolve_source_line(
     line_index: dict[Any, str] | None,
 ) -> str | None:
     """Resolve a printed line through the supplied outline index only."""
+    key = _line_reference_key(document, source_line)
+    if key is None:
+        return None
+    index = line_index or {}
+    for candidate in (key, key[1]):
+        if candidate in index:
+            return index[candidate]
+    if key[0] == document.document_id.lower() and line_index is None:
+        return _slug(f"{document.document_id}_root_line_{key[1]}")
+    return None
+
+
+def _line_ref_candidates(
+    document: SourceDocumentInput,
+    source_line: Any,
+    *,
+    line_index: dict[Any, str] | None,
+    line_children: dict[Any, list[str]] | None = None,
+) -> list[str]:
+    """Return lettered children when a bare parent reference cannot be chosen."""
+    if not isinstance(source_line, (str, dict)):
+        return []
+    key = _line_reference_key(document, source_line)
+    if key is None:
+        return []
+    form, anchor = key
+    if line_children and key in line_children:
+        return sorted(set(line_children[key]))
+    index = line_index or {}
+    candidates = [
+        value
+        for key, value in index.items()
+        if isinstance(key, tuple)
+        and len(key) == 2
+        and key[0] == form
+        and str(key[1]).startswith(anchor)
+        and len(str(key[1])) == len(anchor) + 1
+        and str(key[1])[-1].isalpha()
+    ]
+    return sorted(set(candidates))
+
+
+_EXPANDABLE_OPERATIONS = frozenset({"SUM", "MIN", "MAX", "AND", "OR"})
+
+
+def _line_reference_key(
+    document: SourceDocumentInput,
+    source_line: Any,
+) -> tuple[str, str] | None:
+    """Normalize a model's printed line reference to a form/anchor key."""
     if isinstance(source_line, str):
         form = document.document_id
         anchor = source_line.strip().lower().removeprefix("line ").strip()
@@ -248,44 +327,7 @@ def _resolve_source_line(
         form = current_form
     elif not form.endswith(f"_{document.year}"):
         form = f"{form}_{document.year}"
-
-    index = line_index or {}
-    for key in ((form, anchor), anchor):
-        if key in index:
-            return index[key]
-    if form == current_form and line_index is None:
-        return _slug(f"{document.document_id}_root_line_{anchor}")
-    return None
-
-
-def _line_ref_candidates(
-    document: SourceDocumentInput,
-    source_line: Any,
-    *,
-    line_index: dict[Any, str] | None,
-) -> list[str]:
-    """Return lettered children when a bare parent reference cannot be chosen."""
-    if not isinstance(source_line, (str, dict)):
-        return []
-    raw_form = source_line if isinstance(source_line, str) else source_line.get("form", "")
-    raw_anchor = source_line if isinstance(source_line, str) else source_line.get("line", "")
-    anchor = str(raw_anchor).strip().lower().removeprefix("line ").strip()
-    form = str(raw_form or document.document_id).strip().lower()
-    current_form = document.document_id.lower()
-    if _compact(form) in {_compact(current_form), _compact(current_form.removesuffix(f"_{document.year}"))}:
-        form = current_form
-    index = line_index or {}
-    candidates = [
-        value
-        for key, value in index.items()
-        if isinstance(key, tuple)
-        and len(key) == 2
-        and key[0] == form
-        and str(key[1]).startswith(anchor)
-        and len(str(key[1])) == len(anchor) + 1
-        and str(key[1])[-1].isalpha()
-    ]
-    return sorted(set(candidates))
+    return form, anchor
 
 
 def _canonical_target_id(document: SourceDocumentInput, outline_node: OutlineNode) -> str:
