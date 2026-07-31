@@ -1860,8 +1860,15 @@ the instruction slot; Authority explicitly reports missing authored coverage; do
 citation coverage is visible beside policy counts; and the dossier heading duplication/order
 warts are fixed. No promoted artifacts, graph semantics, verdicts, or citation records changed.
 
-**BALL: WORKER - M20-S17 (ATTACH THE INSTRUCTIONS, THEN TIGHTEN THE UX). Task block under From
-Architect. S16 is ACCEPTED at `302c85e` - Architect re-verified: 41 focused tests green,
+**BALL: WORKER - M20-S18 (INSTRUCTIONS ARE OPTIONAL: fix the metric; fix parent/lettered-child
+line resolution; RUN the source extraction S16 only scaffolded). Task block under From
+Architect. S17 is ACCEPTED at `dd6e876` - Architect re-verified: 29 focused tests green,
+protected set byte-identical, ledger untouched. Instruction coverage on the 1040 went 11/57 ->
+48/57 (84%) and wrong-owner spans 89 -> 45. The background-controls item is now **M20-S19**, kept
+separate so it gets a whole round.**
+
+**Superseded (kept as history):** BALL: WORKER - M20-S17 (ATTACH THE INSTRUCTIONS, THEN TIGHTEN
+THE UX). S16 is ACCEPTED at `302c85e` - Architect re-verified: 41 focused tests green,
 protected set byte-identical, real ledger untouched, synthetic reviewer used correctly.
 **S17 IS DELIBERATELY SMALL** - John asked not to overload a revision round, so the two heavy
 generation items (source extraction for non-computed lines, and the ~180 missing background
@@ -3943,14 +3950,39 @@ TY2026 docs drop.
   `content_fingerprint`; hand-authoring; asking the model for internal node ids; `legacy_mined`
   above 394; strict mismatches above 36. **A model or provider failure is NOT a stop condition.**
 
-- **M20-S18 TASK - THE TWO HEAVY GENERATION ITEMS (Architect, Claude Opus 5, 2026-07-31).
-  SPLIT OUT OF S17 so neither round is overloaded. Runs AFTER S17.** Ledger: the exact
-  RAN/NOT RUN evidence rule, D9.
-  **Why these two are together and separate from S17:** both are real generation work over
-  hundreds of cells, both need model calls, and both change the review DENOMINATOR. S17 is a
-  deterministic join plus CSS. Mixing them is how S16 ended up scaffolding item 4 instead of
-  doing it.
-  1. **RUN THE SOURCE EXTRACTION FOR NON-COMPUTED LINES - S16 SCAFFOLDED IT, NEVER RAN IT.**
+- **M20-S18 TASK - INSTRUCTIONS ARE OPTIONAL; FIX LINE RESOLUTION; RUN THE SOURCE EXTRACTION
+  (Architect, Claude Opus 5, 2026-07-31). Items 1-2 are small and FULLY DIAGNOSED below - do
+  them first, they are mechanical. Item 3 is the heavy one. The background controls moved to
+  S19 so this round is not overloaded.** Ledger: the exact RAN/NOT RUN evidence rule, D9.
+  1. **INSTRUCTIONS AUGMENT, THEY NEVER GATE - John's ruling, 2026-07-31.** His words: "even
+     the form will often not have instructions per se, but just a label that says 'qualified
+     income' or some such terse thing. That's ok. If there are augmenting instructions, include
+     them, but they are by no means mandatory."
+     **The Architect got this metric wrong twice.** S14's version was too lenient - "expression +
+     verbatim citation" was satisfied by a FORM-FACE citation alone, so the 1040 read 17/17
+     complete while instruction coverage was 11/57. S17's fix over-corrected to
+     `expression_and_both_citations`, which permanently caps forms whose instructions do not
+     discuss computed lines. **Correct definition:**
+     - **PRIMARY metric: expression + form-face citation.** Mandatory.
+     - **Instruction citation: reported as its own column, informational, NEVER a gate.**
+     - Keep the split columns S17 added - they are right and they are what exposed the problem.
+     **PROOF this is not a bug, Architect-measured on Schedule A:** instruction sections exist
+     for lines `1, 5, 5a, 5b, 5c, 5e, 6, 8, 8c, 8d, 9, 11, 12, 13`; the computed lines are
+     `3, 4, 5d, 7, 8e, 10, 14`; **the intersection is EMPTY.** The IRS explains the INPUT lines
+     (what you may deduct) and leaves the arithmetic to the form face. Schedule A's 3/7 is the
+     document telling us those lines have nothing more to say. Chasing that number would
+     eventually tempt someone to fabricate a citation.
+  2. **FIX PARENT / LETTERED-CHILD LINE RESOLUTION. Fully diagnosed; one fix closes several
+     failures.** Schedule 1 regressed to 2 cells with neither expression nor citation:
+     - `line 10` combines "lines 1 through 7 and 9" -> the outline has **`2a` but no `2`**.
+     - `line 26` adds "lines 11 through 23 and 25" -> the outline has **`19a` but no `19`**.
+     A single missing anchor kills the whole expression. This is the same class as S14's `8n`
+     and `24f` gaps and the Schedule A line 14 namespace mismatch (`11` resolving to
+     `section_1_...` instead of `root_line_11b`).
+     **Rule:** when a referenced printed line has no exact anchor, resolve to its lettered
+     children if the parent is a pure heading, or to the parent if the children are sub-parts.
+     Report which cells this closes. **Keep failing closed** - never fabricate a line.
+  3. **RUN THE SOURCE EXTRACTION FOR NON-COMPUTED LINES - S16 SCAFFOLDED IT, NEVER RAN IT.**
      40 of the 1040's 57 cells are `review_gap` carrying
      `text: "line 1a = unresolved source"` and
      `reason: "non-computed source extraction has not been generated"`. The schema and the
@@ -3958,7 +3990,13 @@ TY2026 docs drop.
      citation "Total amount from Form(s) W-2, box 1" and must render `= W-2 box 1`; line 1e must
      render `= Form 2441, line 26`. Resolve identity in CODE, fail closed with a named gap.
      **The colour key is meaningless until this lands** - today 40 of 57 render as gap.
-  2. **BRING BACK THE BACKGROUND CONTROLS. John calls them important:** "things like are you in
+  **PROTECTED TEST SET, unchanged hard gate.** No promotion, no hand-authoring, no live graph
+  edit, nothing into `content_fingerprint`. Same Tier 3 gates as S17. ONE local commit; no push.
+
+- **M20-S19 TASK - BRING BACK THE BACKGROUND CONTROLS (Architect, Claude Opus 5, 2026-07-31).
+  Its own round on purpose: it roughly quadruples the review denominator, and the last time a
+  big item shared a round it got scaffolded instead of built.** Ledger: the RAN/NOT RUN rule, D9.
+  1. **John calls them important:** "things like are you in
      a combat zone? dependents, did they live with you for half the year? it is all just dead in
      the 1040. These are important details, even if they are just entries by the filer. the AI
      needs this to create a valid return."
