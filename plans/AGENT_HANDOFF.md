@@ -72,7 +72,7 @@ RAN: `$testRoot='C:\Users\devbox\.codex\visualizations\2026\07\31\019fb9bd-1239-
 
 RAN: `$testRoot='C:\Users\devbox\.codex\visualizations\2026\07\31\019fb9bd-1239-7c50-9667-182f491f1105\m20_s20_consumers1'; New-Item -ItemType Directory -Force -Path $testRoot | Out-Null; $env:PYTEST_DEBUG_TEMPROOT=$testRoot; .venv\Scripts\python.exe -m pytest tests\test_extract_m16.py tests\test_cli.py tests\test_workbench_cells_api_m17.py tests\test_workbench_m15.py tests\e2e\test_workbench_v2_m17.py -q` -> 20 passed, 2 failed, 2 warnings in 242.83s. The API histogram failure and the browser line 33 citation failure both depend on the provider-failure draft, not on a promoted artifact change. RAN: `$testRoot='C:\Users\devbox\.codex\visualizations\2026\07\31\019fb9bd-1239-7c50-9667-182f491f1105\m20_s20_consumers2'; New-Item -ItemType Directory -Force -Path $testRoot | Out-Null; $env:PYTEST_DEBUG_TEMPROOT=$testRoot; .venv\Scripts\python.exe -m pytest tests\test_extract_m16.py tests\test_cli.py tests\test_workbench_m15.py -q` -> 14 passed, 1 warning in 18.72s. This includes the required D5 workbench boundary test.
 
-**M20-S20 verification gates (2026-07-31):** RAN: `.venv\Scripts\python.exe tools\check_ascii.py` -> `ASCII check OK`; RAN: `git diff --check` -> exit 0; RAN: `.venv\Scripts\python.exe -m tax_graph.cli validate 2025` -> graph integrity OK, 18 documents, 441 nodes, 401 citations; RAN: `.venv\Scripts\python.exe -m workbench.cli --root . --year 2025 preflight` -> passed, 18 entries, 2224 units, 2120 cells, `legacy_mined=394`; RAN: strict `check_graph_citations(year=2025, raw_store='.cache/raw', root='.')` -> `checked=401, strict_mismatches=36` (baseline). Protected graph and field-map diff checks are empty. Pending: stage the report and source/test changes, make the single local commit, then record its actual hash here. No push.
+**M20-S20 verification gates (2026-07-31):** RAN: `.venv\Scripts\python.exe tools\check_ascii.py` -> `ASCII check OK`; RAN: `git diff --check` -> exit 0; RAN: `.venv\Scripts\python.exe -m tax_graph.cli validate 2025` -> graph integrity OK, 18 documents, 441 nodes, 401 citations; RAN: `.venv\Scripts\python.exe -m workbench.cli --root . --year 2025 preflight` -> passed, 18 entries, 2224 units, 2120 cells, `legacy_mined=394`; RAN: strict `check_graph_citations(year=2025, raw_store='.cache/raw', root='.')` -> `checked=401, strict_mismatches=36` (baseline). Protected graph and field-map diff checks are empty. Single local commit: `443fda6af322b0ba583c89bc08b3fa679b02471e` (`M20-S20: add explicit filer failover policy`). No push.
 
 **Worker session checkpoint - M20-S19 implementation (2026-07-31):** Global canary: Ledger
 Llama. Phase canary: Ground Truth. Model: GPT-5 Codex; effort/quota/context indicators are not
@@ -2048,8 +2048,12 @@ the instruction slot; Authority explicitly reports missing authored coverage; do
 citation coverage is visible beside policy counts; and the dossier heading duplication/order
 warts are fixed. No promoted artifacts, graph semantics, verdicts, or citation records changed.
 
-**BALL: WORKER - M20-S20 (FILER-PROVIDED AS A FAILOVER, NOT A DEFAULT; finish the batching and
-the other two forms). Task block under From Architect. S19 is ACCEPTED at `2b1361c` - Architect
+**BALL: WORKER - M20-S21 (MAKE DRAFT WRITES ATOMIC, RETRY TRANSIENT NETWORK ERRORS, THEN RERUN).
+Task block under From Architect. S20 is NOT ACCEPTED - it is committed locally at `443fda6` and
+UNPUSHED, because a transient network failure during its run destroyed working state.**
+
+**Superseded (kept as history):** BALL: WORKER - M20-S20 (FILER-PROVIDED AS A FAILOVER, NOT A
+DEFAULT; finish the batching and the other two forms). S19 is ACCEPTED at `2b1361c` - Architect
 re-verified: 30 focused tests green, protected set byte-identical, field maps untouched, no
 hand-authoring. S19 restored the 1040 surface from 57 to 199 controls, but the gap barely moved:
 unsupported 119 -> 102, only 17 resolved, and the 119-call pass exceeded its time cap. Only the
@@ -4072,7 +4076,67 @@ TY2026 docs drop.
 
 ## From Architect
 
-- **M20-S20 TASK - FILER-PROVIDED AS A FAILOVER, NOT A DEFAULT (Architect, Claude Opus 5,
+- **M20-S21 TASK - ATOMIC DRAFT WRITES, RETRY TRANSIENT NETWORK ERRORS, THEN RERUN (Architect,
+  Claude Opus 5, 2026-07-31). Small, mechanical, and it protects every round after this one.**
+  Ledger: the RAN/NOT RUN rule, D9, D6.
+  **WHAT HAPPENED IN S20 - Architect-diagnosed 2026-07-31, and it is NOT what the S20 notes
+  say.** S20 reported "provider-blocked" and 185 calls attempted / 0 succeeded. The actual
+  recorded reason in `_drafts/form_1040_2025/review_gaps.yaml` is
+  **`OpenRouter request failed: Connection error.`** - a TRANSIENT NETWORK FAILURE, not a
+  provider outage and not a model refusal. The Architect probed the same model and config
+  immediately afterwards and it answered on the first attempt
+  (`google/gemini-3.6-flash` -> `{"ok": "yes"}`). The 119 `finish_reason: stop` records in
+  `output/logs/` are S19's successful calls; S20's never got a response to log.
+  **The damage was not the failure - it was what the failure destroyed:**
+  - `_drafts/form_1040_2025/edges.yaml` and `rules.yaml` are **MISSING**. The run deleted them
+    before knowing whether the new pass would produce anything.
+  - Completeness went **28/28 (100%) -> 0/28 (0%)**; `expression_and_verbatim_citation` 28 -> 0.
+  - `policy_mix_before` and `policy_mix_after` are **byte-identical**; `policy_derived: 0`,
+    `policy_defaulted: 0`.
+  - **4 focused tests now fail** (Architect-run): `test_documents_api_lists_forms`,
+    `test_generated_review_keeps_form_and_instruction_slots_separate`,
+    `test_generated_review_renders_resolved_external_sources_and_hides_sentinels`,
+    `test_generated_review_renders_structured_math_for_humans`.
+  **A momentary network hiccup cost three rounds of output. Fix that first; it will recur.**
+  1. **RETRY TRANSIENT NETWORK ERRORS WITH BACKOFF.** A connection error is not a finding about
+     a tax form. **Only a real model response - or a persistent failure after retries - may
+     become a review gap.** Distinguish transport failures (connection reset, DNS, timeout,
+     5xx) from semantic failures (unparseable JSON, schema violation, truncation). Retry the
+     first class; the second class stays a gap as it is today. Report retries attempted and
+     recovered.
+  2. **MAKE DRAFT WRITES ATOMIC.** Write the new draft to a temporary location and swap on
+     SUCCESS. **A failed run must leave the previous drafts byte-identical.** Today a failed
+     pass deletes `edges.yaml`/`rules.yaml` up front, so a bad network is indistinguishable from
+     a form that genuinely has no expressions. Add a test that a mid-run failure leaves the
+     prior draft intact.
+  3. **RERUN AND CONFIRM RECOVERY.** After 1 and 2, rerun `form_1040_2025`, `schedule_1_2025`,
+     and `schedule_a_2025` draft-only. **Expected: the 1040 returns to 17/17 formula
+     completeness**, and the S20 failover pass gets its first real attempt. Report the policy
+     mix before/after with `derived` and `defaulted` split out, per S20 item 4 - a drop in
+     `unsupported` achieved entirely by failover is relabelling, not progress.
+  4. **THE FOUR FAILING TESTS MUST PASS.** They fail because they read the destroyed draft. If
+     any still fails after the rerun, that is a real defect - report it, do not adjust the test
+     to match a degraded draft.
+  5. **S20's code work is retained** - the failover classification, `policy_origin`,
+     `policy_basis`, `policy_defaulted`/`policy_derived` metadata, the three failover classes,
+     and the workbench intake-question explanation all landed and are not in question. S20 is
+     unaccepted only because its RUN destroyed state; do not revert its implementation.
+  **PROTECTED TEST SET, unchanged hard gate:** `graph/2025/{nodes,edges,rules}/` and
+  `graph/2025/field_maps/` byte-identical. No promotion, no hand-authoring, no live graph edit.
+  **FORCE-ADD THE REPORT** (`output/` is gitignored). **CITE THE ACTUAL COMMIT HASH.**
+  Tier 3. Declared files plus honest `RAN:`/`NOT RUN:`. ASCII, `git diff --check`, module-form
+  `validate 2025`, real preflight with `legacy_mined` explicit (expect **394**),
+  `check_citation_integrity` STRICT (expect **36**). Short pytest temp root; no `--basetemp`.
+  ONE local commit; no push.
+  **Config note: `extraction.expression_mode` stays `none`.**
+  **Stop conditions:** any diff in `graph/2025/{nodes,edges,rules}/` or `graph/2025/field_maps/`;
+  any draft promoted; a transient transport error still being written as a review gap; a failed
+  run leaving the previous drafts damaged; adjusting a test to match a degraded draft;
+  `legacy_mined` above 394; strict mismatches above 36. **Committing with known failing tests is
+  NOT acceptable this round** - S20 did so on the reasoning that the failures depended on the
+  degraded draft.
+
+- **M20-S20 TASK (IMPLEMENTATION RETAINED; RUN FAILED - see S21) - FILER-PROVIDED AS A FAILOVER, NOT A DEFAULT (Architect, Claude Opus 5,
   2026-07-31). John's ruling.** Ledger: the RAN/NOT RUN rule, D9, D6, and the invariant "every
   control needs exactly one policy".
   **JOHN'S RULING, verbatim:** "filer provided should be a failover rather than a default." And
