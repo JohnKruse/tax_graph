@@ -2246,9 +2246,17 @@ the instruction slot; Authority explicitly reports missing authored coverage; do
 citation coverage is visible beside policy counts; and the dossier heading duplication/order
 warts are fixed. No promoted artifacts, graph semantics, verdicts, or citation records changed.
 
-**BALL: WORKER - M20-S22 (FIX THE EVIDENCE RANKING THAT CONTRADICTS THE QUOTE REQUIREMENT; BUILD
-A PROMPT BENCH). Task block under From Architect. S20 and S21 are both ACCEPTED and pushed at
-`e1dd808` - Architect re-verified: 24 focused tests green including the four S20 broke, protected
+**BALL: WORKER - M20-S23 (EXPRESSION TREES, AND A VALIDATE-AND-REPAIR LOOP BEFORE HUMAN REVIEW).
+Task block under From Architect. S22 is ACCEPTED at `af5b128` - Architect re-verified: protected
+set and field maps byte-identical, completeness recovered to 28/28, background success 15/119 ->
+48/119 with zero transport failures, and the prompt bench works. **The Architect proved with the
+new bench (`509264b`) that the extraction schema - not the model - is discarding floors and
+caps.**
+
+**Superseded (kept as history):** BALL: WORKER - M20-S22 (FIX THE EVIDENCE RANKING THAT
+CONTRADICTS THE QUOTE REQUIREMENT; BUILD A PROMPT BENCH). S20 and S21 are both ACCEPTED and
+pushed at `e1dd808` - Architect re-verified: 24 focused tests green including the four S20 broke,
+protected
 set and field maps byte-identical, drafts restored, completeness recovered 0/28 -> 26/28.
 **The blocker for policy derivation is five lines, not a prompt.** `background.py:361` scores
 INSTRUCTION spans above FORM-FACE spans, the corpus is 5,021 instruction spans against 222
@@ -4283,6 +4291,77 @@ TY2026 docs drop.
   environment failure, and no commit was made.
 
 ## From Architect
+
+- **M20-S23 TASK - EXPRESSION TREES, AND A VALIDATE-AND-REPAIR LOOP BEFORE HUMAN REVIEW
+  (Architect, Claude Opus 5, 2026-08-01).** Ledger: the RAN/NOT RUN rule, D9, D6.
+  **PART A - THE SCHEMA IS DISCARDING THE FLOORS. Architect-proved with the S22 bench, commit
+  `509264b`.** The micro extraction schema is `{operation: <one enum>, source_lines: [flat],
+  quote}`. **There is no slot for a wrapper, so `max(a - b, 0)` is unrepresentable.** The graph
+  itself stores NESTED expressions, so the extraction schema is strictly less expressive than the
+  graph it feeds.
+  Same model, same evidence, same prompt content - only the schema changed:
+  | line | flat schema (today) | expression tree |
+  |---|---|---|
+  | 1z | `SUM` sources 1a..1h | `line 1a + line 1b + ... + line 1h` |
+  | 11a | `SUBTRACT` sources 9, 10 | `line 9 - line 10` |
+  | **15** | `SUBTRACT` sources 11b, 14 | **`max(line 11b - line 14, 0)`** |
+  | **22** | `SUBTRACT` sources 18, 21 | **`max(line 18 - line 21, 0)`** |
+  Both those instructions say "If zero or less, enter -0-". **The model always understood it and
+  had nowhere to put it.** This also retires an Architect misreading: S13 recorded line 15 as the
+  model missing a floor convention it could not know about. It was the schema.
+  1. **Change the micro extraction schema to an expression tree.** Operands are `{"line": "18"}`,
+     `{"const": 0}`, or a nested expression. **Bound the depth** (2-3 is enough for real IRS
+     lines) rather than using `$ref` recursion, which structured-output support handles
+     unevenly. Reference implementation: `experiments/prompt_experiment.py`
+     (`expression_schema`, `_expr`, `_operand`, and `render`).
+  2. **Render the tree as ordinary math for the human** - `max(line 18 - line 21, 0)` - per the
+     S16 rendering standard. `render()` in the bench is a working reference. **The model never
+     emits the rendered string; code renders it.**
+  3. **Keep identity resolution in CODE.** The tree carries PRINTED LINE NUMBERS only; never ask
+     the model for node ids. Unchanged from S13, and it is why the tree is safe.
+  **PART B - VALIDATE AND REPAIR BEFORE A HUMAN EVER SEES IT. John: "Do you think the pipeline
+  should have a process of batching the expression creation with some error checks before it
+  gets to the human review? I feel like this is really brittle." He is right.** Today one model
+  call per cell goes straight to a review gap on any failure, and every defect we have found
+  reached "review-ready" state or degraded silently.
+  4. **Add deterministic validators. Every one below is motivated by a defect we actually hit -
+   no speculative checks:**
+     - **self-reference** - an expression referencing its own line (S12: 11 of 11 were
+       self-referential).
+     - **referenced line exists** on this form, including parent/lettered-child resolution
+       (S18: `2` -> `2a`, `19` -> `19a`).
+     - **arity per operation** - `SUBTRACT`/`DIVIDE` take exactly two args.
+     - **operand order against the label text** - "Subtract line 21 from line 18" must produce
+       args `[18, 21]`. The label states the rule; parse it and cross-check (S14: line 11a had
+       identical ref sets with reversed roles, which the ref comparison hid).
+     - **floor/cap presence** - if the cited text contains "If zero or less, enter -0-" the tree
+       must contain `MAX(..., 0)`; "but not more than $X" must contain `MIN`. **This is the check
+       that catches today's defect.**
+     - **operands are mentioned in the cited text** - catches invented operands. NOTE: this must
+       be a WARNING, not a hard failure - on line 9 the model correctly included 4b, 5b and 6b
+       that the handcrafted set omitted, and it was right.
+     - **quote is verbatim** - already enforced; keep it.
+  5. **ON FAILURE, REPAIR ONCE - do not go straight to a gap.** Feed the specific complaint back
+     ("your expression references line 22, which is the line being computed") and retry once.
+     Only a second failure becomes a named review gap. Report attempted / repaired / gapped.
+  6. **"BATCHING" MEANS ORCHESTRATION, NOT ONE BIG PROMPT.** Parallelise per-cell calls and
+     report them as a group. **Do NOT combine multiple cells into one prompt** - that is the
+     whole-document call that burned S7 through S11 and pinned responses at the token cap.
+  7. **Re-measure and report:** formula completeness, how many expressions gained a floor or cap
+     that the flat schema had dropped, and validator failures by kind. **Report honestly if the
+     tree change breaks cells that previously passed.**
+  **PROTECTED TEST SET, unchanged hard gate:** `graph/2025/{nodes,edges,rules}/` and
+  `graph/2025/field_maps/` byte-identical. No promotion, no hand-authoring, no live graph edit.
+  **FORCE-ADD THE REPORT** (`output/` is gitignored). **CITE THE ACTUAL COMMIT HASH.**
+  Tier 3. Declared files plus honest `RAN:`/`NOT RUN:`. ASCII, `git diff --check`, module-form
+  `validate 2025`, real preflight with `legacy_mined` explicit (expect **394**),
+  `check_citation_integrity` STRICT (expect **36**). Short pytest temp root; no `--basetemp`.
+  ONE local commit; no push. **Do not commit with known failing tests.**
+  **Config note: `extraction.expression_mode` stays `none`.**
+  **Stop conditions:** any diff in `graph/2025/{nodes,edges,rules}/` or `graph/2025/field_maps/`;
+  any draft promoted; combining multiple cells into one prompt; asking the model for node ids;
+  making the "operands mentioned in cited text" check a hard failure; more than one repair
+  attempt per cell; hand-authoring; `legacy_mined` above 394; strict mismatches above 36.
 
 - **M20-S22 TASK - FIX THE EVIDENCE PACKET, THEN BUILD THE BENCH THAT WOULD HAVE FOUND IT
   (Architect, Claude Opus 5, 2026-08-01). John's framing: "if you give an AI the right context
