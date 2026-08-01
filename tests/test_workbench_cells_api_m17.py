@@ -45,14 +45,14 @@ def test_documents_api_lists_forms(client) -> None:
     assert any(item["document_id"] == "form_1040_2025" for item in payload["documents"])
     assert all(item["cell_count"] > 0 for item in payload["documents"])
     form_1040 = next(item for item in payload["documents"] if item["document_id"] == "form_1040_2025")
-    # M20-S21 projects the regenerated draft's resolved formula and failover
-    # controls; this is intentionally not the pre-S21 histogram.
+    # M20-S22 projects the regenerated draft's resolved formula and failover
+    # controls; this is intentionally not the pre-S22 histogram.
     assert form_1040["policy_counts"] == {
         "computed": 15,
-        "copied": 7,
-        "decision_required": 34,
-        "unsupported": 88,
-        "user_entered": 55,
+        "copied": 8,
+        "decision_required": 52,
+        "unsupported": 61,
+        "user_entered": 63,
     }
 
 

@@ -6,6 +6,7 @@ from pathlib import Path
 import re
 from typing import Any
 
+from tax_graph.extract.micro import _constant_multiplier_from_label
 from tax_graph.extract.models import DraftObject, ExtractionBatch, SourceDocumentInput
 from tax_graph.extract.outline import (
     CandidateSpan,
@@ -127,7 +128,11 @@ def assemble_formula_plan(
 
         for input_index, input_item in enumerate(inputs, 1):
             input_name = str(input_item.get("name", f"input_{input_index}"))
-            source_id = input_name if human_answer else node_ids_by_name.get(input_name)
+            literal_value = input_item.get("literal_value")
+            if literal_value is not None:
+                source_id = _literal_id(document, outline_node, input_name)
+            else:
+                source_id = input_name if human_answer else node_ids_by_name.get(input_name)
             if source_id is None:
                 source_id = _node_id(document.document_id, outline_node.outline_id, input_name)
                 node_ids_by_name[input_name] = source_id
@@ -144,6 +149,20 @@ def assemble_formula_plan(
                         )
                     )
                     emitted_nodes.add(source_id)
+            elif literal_value is not None and source_id not in emitted_nodes:
+                objects.append(
+                    _node_object(
+                        document,
+                        outline_node,
+                        source_id,
+                        input_name,
+                        citation_refs,
+                        model,
+                        computed=False,
+                        constant_value=literal_value,
+                    )
+                )
+                emitted_nodes.add(source_id)
             role = str(input_item.get("role") or _default_role(operation, input_index))
             if human_answer and source_id == target_id:
                 raise FormulaAssemblyFinding(
@@ -191,7 +210,7 @@ def _steps_for_plan(
         return list(plan.get("operation_plan", []))
 
     source_lines = plan.get("source_lines", [])
-    inputs: list[dict[str, str]] = []
+    inputs: list[dict[str, Any]] = []
     operation = str(plan.get("operation", ""))
     for source_line in source_lines:
         source_id = _resolve_source_line(document, source_line, line_index=line_index)
@@ -216,6 +235,22 @@ def _steps_for_plan(
                 )
             continue
         if source_id is None:
+            if _is_unprinted_optional_child(
+                document,
+                outline_node,
+                source_line,
+                source_lines=source_lines,
+                line_index=line_index,
+            ):
+                if resolution_events is not None:
+                    resolution_events.append(
+                        {
+                            "source_line": source_line,
+                            "resolved_to": [],
+                            "reason": "ignored unprinted optional child in an explicit form range",
+                        }
+                    )
+                continue
             code = "ambiguous_parent_source_line" if candidates else "unresolved_source_line"
             raise FormulaAssemblyFinding(
                 {
@@ -231,6 +266,11 @@ def _steps_for_plan(
                 }
             )
         inputs.append({"name": source_id})
+
+    if operation == "MULTIPLY" and len(source_lines) == 1:
+        multiplier = _constant_multiplier_from_label(outline_node.label)
+        if multiplier is not None:
+            inputs.append({"name": str(multiplier), "literal_value": multiplier})
 
     quote = str(plan.get("quote", ""))
     citation_span_ids = [
@@ -296,6 +336,55 @@ def _line_ref_candidates(
         and str(key[1])[-1].isalpha()
     ]
     return sorted(set(candidates))
+
+
+def _is_unprinted_optional_child(
+    document: SourceDocumentInput,
+    outline_node: OutlineNode,
+    source_line: Any,
+    *,
+    source_lines: list[Any],
+    line_index: dict[Any, str] | None,
+) -> bool:
+    """Accept a skipped letter only inside an explicit printed line range.
+
+    IRS forms commonly say "24a through 24z" while printing only the child
+    lines that apply to that form revision.  A missing child in that explicit
+    range is a blank optional slot, not a reason to lose the total formula.
+    Outside that narrow range the normal fail-closed resolution remains in
+    force.
+    """
+    key = _line_reference_key(document, source_line)
+    if key is None or line_index is None:
+        return False
+    anchor = key[1]
+    if len(anchor) < 2 or not anchor[-1].isalpha():
+        return False
+    prefix = anchor[:-1]
+    siblings = [
+        str(candidate_key[1])
+        for candidate_key in line_index
+        if isinstance(candidate_key, tuple)
+        and len(candidate_key) == 2
+        and candidate_key[0] == key[0]
+        and str(candidate_key[1]).startswith(prefix)
+        and len(str(candidate_key[1])) == len(prefix) + 1
+        and str(candidate_key[1])[-1].isalpha()
+    ]
+    if len(siblings) < 2:
+        return False
+    referenced = {
+        str(item[1]).strip().lower()
+        for item in (
+            _line_reference_key(document, value)
+            for value in source_lines
+        )
+        if item is not None and item[0] == key[0]
+    }
+    if not set(siblings).issubset(referenced):
+        return False
+    label = " ".join(str(outline_node.label).lower().split())
+    return f"{prefix}a through {prefix}z" in label
 
 
 _EXPANDABLE_OPERATIONS = frozenset({"SUM", "MIN", "MAX", "AND", "OR"})
@@ -405,6 +494,7 @@ def _node_object(
     model: str,
     *,
     computed: bool,
+    constant_value: Any | None = None,
 ) -> DraftObject:
     data: dict[str, Any] = {
         "node_id": node_id,
@@ -413,6 +503,12 @@ def _node_object(
         "node_type": "computed" if computed else node_type_for_outline(outline_node),
         "value_type": "currency" if computed else infer_value_type(outline_node, document=document),
     }
+    if constant_value is not None:
+        data.update({
+            "node_type": "parameter",
+            "value_type": "percentage",
+            "constant_value": constant_value,
+        })
     if citation_refs:
         data["citation_refs"] = citation_refs
     return DraftObject("nodes", data, "", model, 1.0)
@@ -576,6 +672,11 @@ def _has_input(inputs: Any, name: str, role: str) -> bool:
 
 def _node_id(document_id: str, outline_id: str, name: str) -> str:
     return _slug(f"{document_id}_{outline_id}_{name}")
+
+
+def _literal_id(document: SourceDocumentInput, outline_node: OutlineNode, value: str) -> str:
+    """Return a stable node id for a deterministic literal operand."""
+    return _node_id(document.document_id, outline_node.outline_id, f"literal_{value}")
 
 
 def _label(name: str) -> str:

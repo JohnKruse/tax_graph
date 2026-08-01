@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from pathlib import Path
+import re
 from typing import Any
 
 from tax_graph.config import get_config_value
@@ -124,7 +125,7 @@ def extract_formula_plan(
             temperature=_optional_float(get_config_value(settings, "llm.temperature", 0)),
             purpose="tax_graph_micro_formula",
         )
-    validate_formula_plan(response, spans=spans, root=root)
+    validate_formula_plan(response, spans=spans, root=root, outline_node=outline_node)
     return response
 
 
@@ -133,6 +134,7 @@ def validate_formula_plan(
     *,
     spans: list[CandidateSpan],
     root: str | Path | None = None,
+    outline_node: OutlineNode | None = None,
 ) -> None:
     """Validate a human-language answer or a legacy test-plan response."""
     allowed_operations = set(closed_operations(root=root))
@@ -153,7 +155,13 @@ def validate_formula_plan(
                     raise MicroExtractionError("cross-form source line requires form and line")
             else:
                 raise MicroExtractionError("source_lines item must be a line string or form/line object")
-        _validate_source_line_arity(str(operation), len(source_lines))
+        if not (
+            str(operation) == "MULTIPLY"
+            and len(source_lines) == 1
+            and outline_node is not None
+            and _constant_multiplier_from_label(outline_node.label) is not None
+        ):
+            _validate_source_line_arity(str(operation), len(source_lines))
         quote = plan.get("quote")
         if not isinstance(quote, str) or not quote.strip():
             raise MicroExtractionError("quote must be a non-empty string")
@@ -301,6 +309,17 @@ def _quote_matches(quote: str, source: str) -> bool:
     """Compare evidence after folding line-break whitespace only."""
     normalize = lambda value: " ".join(str(value).split())
     return normalize(quote) in normalize(source) or normalize(source) in normalize(quote)
+
+
+def _constant_multiplier_from_label(label: str) -> float | None:
+    """Extract a printed percentage multiplier from a form-line label."""
+    parenthesized = re.search(r"\(\s*(0?\.\d+)\s*\)", str(label))
+    if parenthesized:
+        return float(parenthesized.group(1))
+    percentage = re.search(r"(?<![\w.])(\d+(?:\.\d+)?)\s*%", str(label))
+    if percentage:
+        return float(percentage.group(1)) / 100.0
+    return None
 
 
 def _validate_source_line_arity(operation: str, count: int) -> None:

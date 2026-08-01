@@ -14,6 +14,87 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## Current state (2026-07-31)
 
+**Worker session checkpoint - M20-S22 implementation (2026-08-01):** Global canary: Ledger
+Llama. Phase canary: Ground Truth. Model: GPT-5 Codex; effort/quota/context indicators are not
+exposed by this environment. John gave go via the current task request. Single declared step:
+repair background evidence selection so the packet satisfies the form-face citation contract,
+add a read-only prompt bench that exercises the real background prompt/validation path without
+writing drafts or promoted artifacts, identify the two formula cells lost by S21, then run the
+declared consumer and gate set. Applicable defect-ledger entries: D9, D6, and the exact
+RAN/NOT RUN evidence rule. No prompt wording change, promotion, hand-authoring, live graph edit,
+verdict write, or operation enum change is in scope. Protected graph and field-map artifacts
+are untouched at session start. Declared focused files: `tests/test_background_m20.py`,
+`tests/test_draft_route_m20.py`, `tests/test_extract_outline_m4.py`, `tests/test_extract_m16.py`,
+`tests/test_cli.py`, `tests/test_generated_review_m20.py`, `tests/test_form_completeness_m20.py`,
+`tests/test_workbench_cells_api_m17.py`, and `tests/test_workbench_m15.py`; the browser file
+will be declared after the bench has a stable CLI surface and run if the generated projection
+changes.
+
+**M20-S22 implementation checkpoint (2026-08-01):** Evidence selection now reserves four
+form-face slots and four instruction slots, with page-local source top-up; instruction spans no
+longer outrank form-face spans. The read-only `verify prompt-bench` command accepts repeated
+`--id` values for field-map controls or formula cell ids and prints the exact prompt, response,
+matched spans, and validation result without entering extraction or writing state. Formula
+assembly now recovers a printed percentage constant such as 7.5% as a parameter node when the
+model returns the one source line, and explicit ranges such as "24a through 24z" ignore only
+unprinted optional child letters while preserving the normal fail-closed path elsewhere. No
+prompt wording was tuned.
+
+**M20-S22 focused tests (2026-08-01):** RAN:
+`$testRoot='C:\Users\devbox\.codex\visualizations\2026\07\31\019fb9ea-080e-7013-9aa6-04af2d56e08f\m20_s22_unit8'; New-Item -ItemType Directory -Force -Path $testRoot | Out-Null; $env:PYTEST_DEBUG_TEMPROOT=$testRoot; & .venv\Scripts\python.exe -m pytest tests\test_background_m20.py -q`
+-> 7 passed, 1 warning in 0.41s. RAN:
+`$testRoot='C:\Users\devbox\.codex\visualizations\2026\07\31\019fb9ea-080e-7013-9aa6-04af2d56e08f\m20_s22_unit9'; New-Item -ItemType Directory -Force -Path $testRoot | Out-Null; $env:PYTEST_DEBUG_TEMPROOT=$testRoot; & .venv\Scripts\python.exe -m pytest tests\test_background_m20.py tests\test_extract_outline_m4.py tests\test_extract_m16.py tests\test_cli.py -q`
+-> 38 passed, 1 warning in 18.65s. RAN:
+`$testRoot='C:\Users\devbox\.codex\visualizations\2026\07\31\019fb9ea-080e-7013-9aa6-04af2d56e08f\m20_s22_unit11'; New-Item -ItemType Directory -Force -Path $testRoot | Out-Null; $env:PYTEST_DEBUG_TEMPROOT=$testRoot; & .venv\Scripts\python.exe -m pytest tests\test_background_m20.py tests\test_draft_route_m20.py tests\test_extract_outline_m4.py tests\test_extract_m16.py tests\test_cli.py tests\test_generated_review_m20.py tests\test_form_completeness_m20.py tests\test_workbench_cells_api_m17.py tests\test_workbench_m15.py -q`
+-> 58 passed, 1 warning in 139.86s. The first run of this exact set had one stale S21
+histogram assertion; it was updated to the S22 regenerated projection and the rerun is green.
+RAN:
+`$testRoot='C:\Users\devbox\.codex\visualizations\2026\07\31\019fb9ea-080e-7013-9aa6-04af2d56e08f\m20_s22_e2e'; New-Item -ItemType Directory -Force -Path $testRoot | Out-Null; $env:PYTEST_DEBUG_TEMPROOT=$testRoot; & .venv\Scripts\python.exe -m pytest tests\e2e\test_workbench_v2_m17.py -q`
+-> 4 passed in 132.83s. Every declared file was executed; no `NOT RUN` files.
+
+**M20-S22 draft-only reruns (2026-08-01):** RAN:
+`.venv\Scripts\python.exe -m tax_graph.cli extract --doc form_1040_2025 --year 2025 --root .`
+-> exit 0 in 333.2s, auto_accepted=0, human_review=173, deterministic_issues=122;
+17/17 formula cells, background attempted=119/succeeded=48/failed=42, transport_failures=0.
+RAN:
+`.venv\Scripts\python.exe -m tax_graph.cli extract --doc schedule_1_2025 --year 2025 --root .`
+-> exit 0 in 57.3s, auto_accepted=0, human_review=189, deterministic_issues=32;
+4/4 formula cells, background attempted=45/succeeded=25/failed=5, transport_failures=0.
+RAN:
+`.venv\Scripts\python.exe -m tax_graph.cli extract --doc schedule_a_2025 --year 2025 --root .`
+-> exit 0 in 40.0s, auto_accepted=0, human_review=75, deterministic_issues=13;
+7/7 formula cells, background attempted=21/succeeded=6/failed=3, transport_failures=0.
+The two S21 losses were Schedule 1 line 25 (`24l` was treated as an unresolved source even
+though the form prints only 24a-24k and 24z) and Schedule A line 3 (the model returned source
+line 2 for the printed 7.5% multiplier and the validator required two source lines). Both now
+recover through deterministic pipeline logic, not artifact edits. Totals: background attempted
+185, succeeded 79, failed 50, transport failures 0; policy_derived=0, policy_defaulted=79.
+
+**M20-S22 prompt bench evidence (2026-08-01):** RAN:
+`.venv\Scripts\python.exe -m tax_graph.cli verify prompt-bench --doc schedule_a_2025 --id 3 --year 2025 --root .`
+-> exit 0; the exact response was `MULTIPLY`, `source_lines=["2"]`, quote
+`Multiply line 2 by 7.5% (0.075)`, accepted with the matched form-face span
+`span_schedule_a_2025_0018`. RAN:
+`.venv\Scripts\python.exe -m tax_graph.cli verify prompt-bench --doc form_1040_2025 --id 'topmostSubform[0].Page1[0].f1_04[0]' --year 2025 --root .`
+-> exit 0; the packet printed source spans before instruction spans and the response was
+accepted with matched form-face span `span_form_1040_2025_0006`. The bench wrote no drafts or
+promoted artifacts.
+
+**M20-S22 report and gates (2026-08-01):** RAN:
+`.venv\Scripts\python.exe -m tax_graph.cli verify form-completeness --year 2025 --root .`
+-> `output/m20_s20_form_completeness.yaml`, completeness=28/28 (100.0%), instruction=52/68
+(76.5%), policy controls with policy=180/286, policy plus form-face citation=79/286, origins
+derived=0/defaulted=79/authored=101, review_gap=106. RAN:
+`.venv\Scripts\python.exe tools\check_ascii.py` -> `ASCII check OK`. RAN: `git diff --check`
+-> exit 0. RAN: `.venv\Scripts\python.exe -m tax_graph.cli validate 2025` -> graph integrity
+OK, documents=18, nodes=441, edges=409, rules=17, citations=401. RAN:
+`.venv\Scripts\python.exe -m workbench.cli --root . --year 2025 preflight` -> passed,
+entries=18, units=2224, derived cells=2120, approved=0, needs_recheck=0, review_gap=591,
+unreviewed=1529, legacy_mined=394. RAN strict citation check via
+`check_graph_citations(year='2025', raw_store='.cache/raw', root='.')` -> checked=401,
+strict_mismatches=36, the existing baseline. Protected graph, field-map, and review-verdict
+diffs are empty.
+
 **Worker session checkpoint - M20-S21 implementation (2026-07-31):** Global canary: Ledger
 Llama. Phase canary: Ground Truth. Model: GPT-5 Codex; effort/quota/context indicators are not
 exposed by this environment. John gave go via the current task request. Single declared step:

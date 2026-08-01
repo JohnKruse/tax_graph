@@ -343,7 +343,13 @@ def _run_background_call(
 
 
 def background_evidence(field: dict[str, Any], spans: list[CandidateSpan]) -> list[CandidateSpan]:
-    """Select a small deterministic form-plus-instruction evidence packet."""
+    """Select a deterministic packet with reserved form-face evidence slots.
+
+    The validator requires a form-face citation for a supported background
+    policy.  Keep that contract visible in the packet itself: instruction
+    spans may add context, but they cannot displace the best matching form
+    spans merely because the instruction corpus is larger.
+    """
     tokens = set(_meaningful_tokens(" ".join([
         str(field.get("label") or ""),
         str(field.get("address_id") or "").replace("/", " ").replace("=", " "),
@@ -358,18 +364,41 @@ def background_evidence(field: dict[str, Any], spans: list[CandidateSpan]) -> li
         score = overlap * 10
         if page is not None and _span_page(span) == page:
             score += 5
-        if span.relationship != "source":
-            score += 1
         ranked.append((score, span.span_id, span))
     ranked.sort(key=lambda item: (-item[0], item[1]))
-    selected = [item[2] for item in ranked[:8]]
-    source_selected = [span for span in selected if span.relationship == "source"]
-    if source_selected:
-        return selected
+    source_ranked = [item[2] for item in ranked if item[2].relationship == "source"]
+    instruction_ranked = [item[2] for item in ranked if item[2].relationship != "source"]
+
+    # A page-local source span is useful context even when the extracted form
+    # line does not share a token with a noisy field label.  It is still
+    # deterministic and remains bounded by the reserved source slots.
     if page is not None:
-        nearby = [span for span in spans if span.relationship == "source" and _span_page(span) == page]
-        return selected + nearby[: max(0, 4 - len(selected))]
-    return selected
+        nearby = [
+            span for span in spans
+            if span.relationship == "source" and _span_page(span) == page
+        ]
+        source_ranked = _unique_spans([*source_ranked, *nearby])
+
+    selected = [*source_ranked[:4], *instruction_ranked[:4]]
+    if len(selected) < 8:
+        selected_ids = {span.span_id for span in selected}
+        selected.extend(
+            span for _, _, span in ranked
+            if span.span_id not in selected_ids
+        )
+    return selected[:8]
+
+
+def _unique_spans(spans: list[CandidateSpan]) -> list[CandidateSpan]:
+    """Preserve order while removing duplicate candidate spans."""
+    seen: set[str] = set()
+    unique: list[CandidateSpan] = []
+    for span in spans:
+        if span.span_id in seen:
+            continue
+        seen.add(span.span_id)
+        unique.append(span)
+    return unique
 
 
 def _background_prompt(field: dict[str, Any], evidence: list[CandidateSpan]) -> str:

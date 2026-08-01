@@ -10,19 +10,19 @@ handcrafted_expression_set:
 totals:
   formula_cells: 28
   policy_controls: 286
-  policy_controls_with_policy: 120
-  policy_and_form_face_citation: 19
-  policy_coverage_rate: 0.4195804195804196
-  policy_and_form_face_citation_rate: 0.06643356643356643
+  policy_controls_with_policy: 180
+  policy_and_form_face_citation: 79
+  policy_coverage_rate: 0.6293706293706294
+  policy_and_form_face_citation_rate: 0.2762237762237762
   policy_derived: 0
-  policy_defaulted: 19
+  policy_defaulted: 79
   policy_authored: 101
   policy_derived_and_form_face_citation: 0
-  policy_defaulted_and_form_face_citation: 19
+  policy_defaulted_and_form_face_citation: 79
   policy_origin_counts:
     authored: 101
-    defaulted: 19
-    review_gap: 166
+    defaulted: 79
+    review_gap: 106
   policy_mix_before:
     computed: 12
     copied: 7
@@ -32,9 +32,9 @@ totals:
   policy_mix_after:
     computed: 12
     copied: 7
-    decision_required: 36
-    unsupported: 166
-    user_entered: 84
+    decision_required: 58
+    unsupported: 106
+    user_entered: 122
   policy_mix_after_by_origin:
     authored:
       computed: 12
@@ -42,36 +42,36 @@ totals:
       decision_required: 24
       user_entered: 77
     defaulted:
-      decision_required: 12
-      user_entered: 7
+      decision_required: 34
+      user_entered: 45
     review_gap:
-      unsupported: 166
+      unsupported: 106
   failover_class_counts:
     computed_candidate: 1
     filer_election: 54
     filer_identity_admin: 32
     filer_supplied_value: 98
-  expression_and_verbatim_citation: 26
-  expression_and_form_face_citation: 26
-  expression_and_both_citations: 15
-  completeness_rate: 0.9285714285714286
+  expression_and_verbatim_citation: 28
+  expression_and_form_face_citation: 28
+  expression_and_both_citations: 16
+  completeness_rate: 1.0
 by_document:
   form_1040_2025:
     formula_cells: 17
     policy_controls: 185
-    policy_controls_with_policy: 81
-    policy_and_form_face_citation: 15
-    policy_coverage_rate: 0.43783783783783786
-    policy_and_form_face_citation_rate: 0.08108108108108109
+    policy_controls_with_policy: 114
+    policy_and_form_face_citation: 48
+    policy_coverage_rate: 0.6162162162162163
+    policy_and_form_face_citation_rate: 0.2594594594594595
     policy_derived: 0
-    policy_defaulted: 15
+    policy_defaulted: 48
     policy_authored: 66
     policy_derived_and_form_face_citation: 0
-    policy_defaulted_and_form_face_citation: 15
+    policy_defaulted_and_form_face_citation: 48
     policy_origin_counts:
       authored: 66
-      defaulted: 15
-      review_gap: 104
+      defaulted: 48
+      review_gap: 71
     policy_mix_before:
       computed: 7
       copied: 7
@@ -81,9 +81,9 @@ by_document:
     policy_mix_after:
       computed: 7
       copied: 7
-      decision_required: 35
-      unsupported: 104
-      user_entered: 46
+      decision_required: 54
+      unsupported: 71
+      user_entered: 60
     policy_mix_after_by_origin:
       authored:
         computed: 7
@@ -91,10 +91,10 @@ by_document:
         decision_required: 24
         user_entered: 42
       defaulted:
-        decision_required: 11
-        user_entered: 4
+        decision_required: 30
+        user_entered: 18
       review_gap:
-        unsupported: 104
+        unsupported: 71
     failover_class_counts:
       computed_candidate: 1
       filer_election: 46
@@ -109,10 +109,10 @@ by_document:
     background_policy_after:
       computed: 7
       copied: 7
-      decision_required: 35
-      unsupported: 104
-      user_entered: 46
-    background_policy_progress: 15
+      decision_required: 54
+      unsupported: 71
+      user_entered: 60
+    background_policy_progress: 48
     background_policy_review_gaps:
     - field_name: topmostSubform[0].Page1[0].f1_01[0]
       address_id: 2025/document=form_1040/section=return_header/control=other_tax_year_beginning
@@ -134,14 +134,6 @@ by_document:
       label: Presidential election campaign - You
       review_gap: 'background policy extraction failed: MicroExtractionError: background
         policy quote has no form-face citation'
-    - field_name: topmostSubform[0].Page1[0].c1_2[0]
-      address_id: 2025/document=form_1040/section=return_header/option=combat_zone
-      label: Filed pursuant to section 301.9100-2 - c1_2
-      review_gap: model could not establish a supported control policy
-    - field_name: topmostSubform[0].Page1[0].c1_3[0]
-      address_id: 2025/document=form_1040/section=return_header/option=taxpayer_deceased
-      label: Filed pursuant to section 301.9100-2 Combat zone - c1_3
-      review_gap: model could not establish a supported control policy
     - field_name: topmostSubform[0].Page1[0].f1_05[0]
       address_id: 2025/document=form_1040/section=return_header/control=taxpayer_deceased_month
       label: Filed pursuant to section 301.9100-2 Combat zone Deceased - f1_05
@@ -180,26 +172,18 @@ by_document:
     - field_name: topmostSubform[0].Page1[0].f1_11[0]
       address_id: 2025/document=form_1040/section=return_header/control=other_filing_designation_text
       label: Other - f1_11
-      review_gap: 'background policy extraction failed: MicroExtractionError: background
-        policy quote has no form-face citation'
+      review_gap: model could not establish a supported control policy
     - field_name: topmostSubform[0].Page1[0].f1_12[0]
       address_id: 2025/document=form_1040/section=return_header/control=other_filing_designation_text
       label: Other - f1_12
-      review_gap: 'background policy extraction failed: MicroExtractionError: background
-        policy quote has no form-face citation'
+      review_gap: model could not establish a supported control policy
     - field_name: topmostSubform[0].Page1[0].f1_13[0]
       address_id: 2025/document=form_1040/section=return_header/control=other_filing_designation_text
       label: Other - f1_13
-      review_gap: 'background policy extraction failed: MicroExtractionError: background
-        policy quote has no form-face citation'
+      review_gap: model could not establish a supported control policy
     - field_name: topmostSubform[0].Page1[0].Address_ReadOrder[0].f1_26[0]
       address_id: 2025/document=form_1040/section=identity/control=foreign_province
       label: Foreign postal code
-      review_gap: 'background policy extraction failed: MicroExtractionError: background
-        policy quote has no form-face citation'
-    - field_name: topmostSubform[0].Page1[0].c1_5[0]
-      address_id: 2025/document=form_1040/section=identity/option=main_home_joint_return
-      label: Line a - more a than joint half return, of 2025. was in - c1_5
       review_gap: 'background policy extraction failed: MicroExtractionError: background
         policy quote has no form-face citation'
     - field_name: topmostSubform[0].Page1[0].c1_6[0]
@@ -207,36 +191,9 @@ by_document:
       label: Digital assets - No
       review_gap: 'background policy extraction failed: MicroExtractionError: background
         policy quote has no form-face citation'
-    - field_name: topmostSubform[0].Page1[0].c1_7[0]
-      address_id: 2025/document=form_1040/section=identity/option=presidential_election_spouse
-      label: You - c1_7
-      review_gap: 'background policy extraction failed: MicroExtractionError: background
-        policy quote has no form-face citation'
     - field_name: topmostSubform[0].Page1[0].Checkbox_ReadOrder[0].f1_28[0]
       address_id: 2025/document=form_1040/section=filing_status/control=mfs_spouse_full_name
       label: 'and full name here: - f1_28'
-      review_gap: 'background policy extraction failed: MicroExtractionError: background
-        policy quote has no form-face citation'
-    - field_name: topmostSubform[0].Page1[0].f1_29[0]
-      address_id: 2025/document=form_1040/section=filing_status/control=hoh_qss_child_name
-      label: 'Line a - and full name here: - f1_29'
-      review_gap: 'background policy extraction failed: MicroExtractionError: background
-        policy quote has no form-face citation'
-    - field_name: topmostSubform[0].Page1[0].c1_9[0]
-      address_id: 2025/document=form_1040/section=filing_status/option=nonresident_alien_spouse_election
-      label: Line a - c1_9
-      review_gap: 'background policy extraction failed: MicroExtractionError: background
-        policy quote has no form-face citation'
-    - field_name: topmostSubform[0].Page1[0].f1_30[0]
-      address_id: 2025/document=form_1040/section=filing_status/control=nonresident_alien_spouse_name
-      label: 'Line a - name (see instructions and attach statement if required): -
-        f1_30'
-      review_gap: 'background policy extraction failed: MicroExtractionError: background
-        policy quote has no form-face citation'
-    - field_name: topmostSubform[0].Page1[0].c1_10[0]
-      address_id: 2025/document=form_1040/section=digital_assets/option=yes
-      label: Line 1 - financial interest in a digital asset)? (See instructions.)
-        . . - c1_10
       review_gap: 'background policy extraction failed: MicroExtractionError: background
         policy quote has no form-face citation'
     - field_name: topmostSubform[0].Page1[0].c1_10[1]
@@ -260,53 +217,20 @@ by_document:
       label: Line 1i - (see instructions) . . . . . . . 1i - f1_56
       review_gap: 'background policy extraction failed: MicroExtractionError: background
         policy quote has no form-face citation'
-    - field_name: topmostSubform[0].Page1[0].f1_58[0]
-      address_id: 2025/document=form_1040/line=2a/control=amount
-      label: Line 2b - Attach Sch. B 2a Tax-exempt interest . . . 2a - f1_58
-      review_gap: 'background policy extraction failed: MicroExtractionError: background
-        policy quote has no form-face citation'
     - field_name: topmostSubform[0].Page1[0].c1_33[0]
       address_id: 2025/document=form_1040/line=3c/option=line_3a
       label: "Line 3b - c Check if your child\u2019s dividends are included in 1 -\
         \ c1_33"
       review_gap: 'background policy extraction failed: MicroExtractionError: background
         policy quote has no form-face citation'
-    - field_name: topmostSubform[0].Page1[0].c1_34[0]
-      address_id: 2025/document=form_1040/line=3c/option=line_3b
-      label: "Line 3b - your child\u2019s dividends are included in 1 Line 3a 2 -\
-        \ c1_34"
-      review_gap: 'background policy extraction failed: MicroExtractionError: background
-        policy quote has no form-face citation'
-    - field_name: topmostSubform[0].Page1[0].f1_62[0]
-      address_id: 2025/document=form_1040/line=4a/control=amount
-      label: Line 4b - 4a IRA distributions . . . . 4a - f1_62
-      review_gap: 'background policy extraction failed: MicroExtractionError: background
-        policy quote has no form-face citation'
-    - field_name: topmostSubform[0].Page1[0].f1_63[0]
-      address_id: 2025/document=form_1040/line=4b/control=amount
-      label: Line 4b - b Taxable amount . . . . . . 4b - f1_63
-      review_gap: 'background policy extraction failed: MicroExtractionError: background
-        policy quote has no form-face citation'
     - field_name: topmostSubform[0].Page1[0].c1_35[0]
       address_id: 2025/document=form_1040/line=4c/option=rollover
       label: Line c - Check if (see instructions) . . . . . 1 - c1_35
-      review_gap: 'background policy extraction failed: MicroExtractionError: background
-        policy quote has no form-face citation'
-    - field_name: topmostSubform[0].Page1[0].c1_36[0]
-      address_id: 2025/document=form_1040/line=4c/option=qcd
-      label: Line c - (see instructions) . . . . . 1 Rollover 2 - c1_36
-      review_gap: 'background policy extraction failed: MicroExtractionError: background
-        policy quote has no form-face citation'
+      review_gap: model could not establish a supported control policy
     - field_name: topmostSubform[0].Page1[0].c1_37[0]
       address_id: 2025/document=form_1040/line=4c/option=other_word_or_code
       label: Line c - . . . . . 1 Rollover 2 QCD 3 - c1_37
-      review_gap: 'background policy extraction failed: MicroExtractionError: background
-        policy quote has no form-face citation'
-    - field_name: topmostSubform[0].Page1[0].f1_64[0]
-      address_id: 2025/document=form_1040/line=4c/control=text
-      label: Line c - . . . . . 1 Rollover 2 QCD 3 - f1_64
-      review_gap: 'background policy extraction failed: MicroExtractionError: background
-        policy quote has no form-face citation'
+      review_gap: model could not establish a supported control policy
     - field_name: topmostSubform[0].Page1[0].f1_65[0]
       address_id: 2025/document=form_1040/line=5a/control=amount
       label: Line 5b - 5a Pensions and annuities . . 5a - f1_65
@@ -320,23 +244,11 @@ by_document:
     - field_name: topmostSubform[0].Page1[0].c1_38[0]
       address_id: 2025/document=form_1040/line=5c/option=rollover
       label: Line c - Check if (see instructions) . . . . . 1 - c1_38
-      review_gap: 'background policy extraction failed: MicroExtractionError: background
-        policy quote has no form-face citation'
-    - field_name: topmostSubform[0].Page1[0].c1_39[0]
-      address_id: 2025/document=form_1040/line=5c/option=pso
-      label: Line c - (see instructions) . . . . . 1 Rollover 2 - c1_39
-      review_gap: 'background policy extraction failed: MicroExtractionError: background
-        policy quote has no form-face citation'
+      review_gap: model could not establish a supported control policy
     - field_name: topmostSubform[0].Page1[0].c1_40[0]
       address_id: 2025/document=form_1040/line=5c/option=other_word_or_code
       label: Line c - . . . . . 1 Rollover 2 PSO 3 - c1_40
-      review_gap: 'background policy extraction failed: MicroExtractionError: background
-        policy quote has no form-face citation'
-    - field_name: topmostSubform[0].Page1[0].f1_67[0]
-      address_id: 2025/document=form_1040/line=5c/control=text
-      label: Line c - . . . . . 1 Rollover 2 PSO 3 - f1_67
-      review_gap: 'background policy extraction failed: MicroExtractionError: background
-        policy quote has no form-face citation'
+      review_gap: model could not establish a supported control policy
     - field_name: topmostSubform[0].Page1[0].f1_68[0]
       address_id: 2025/document=form_1040/line=6a/control=amount
       label: Line 6b - 6a Social security benefits . . 6a - f1_68
@@ -347,37 +259,16 @@ by_document:
       label: Line 6b - b Taxable amount . . . . . . 6b - f1_69
       review_gap: 'background policy extraction failed: MicroExtractionError: background
         policy quote has no form-face citation'
-    - field_name: topmostSubform[0].Page1[0].c1_41[0]
-      address_id: 2025/document=form_1040/line=6c/option=lump_sum_election
-      label: Line c - method, check here (see instructions) . . . . . - c1_41
-      review_gap: 'background policy extraction failed: MicroExtractionError: background
-        policy quote has no form-face citation'
-    - field_name: topmostSubform[0].Page1[0].c1_43[0]
-      address_id: 2025/document=form_1040/line=7b/option=schedule_d_not_required
-      label: 'Line b - b Check if: - c1_43'
-      review_gap: 'background policy extraction failed: MicroExtractionError: background
-        policy quote has no form-face citation'
-    - field_name: topmostSubform[0].Page1[0].c1_44[0]
-      address_id: 2025/document=form_1040/line=7b/option=child_capital_gain
-      label: 'Line b - b Check if: Schedule D not required - c1_44'
-      review_gap: 'background policy extraction failed: MicroExtractionError: background
-        policy quote has no form-face citation'
     - field_name: topmostSubform[0].Page1[0].f1_71[0]
       address_id: 2025/document=form_1040/line=7b/control=amount
       label: "Line b - Schedule D not required Includes child\u2019s capital gain\
         \ or (loss) - f1_71"
       review_gap: 'background policy extraction failed: MicroExtractionError: background
         policy quote has no form-face citation'
-    - field_name: topmostSubform[0].Page2[0].c2_1[0]
-      address_id: 2025/document=form_1040/line=12a/option=you_as_dependent
-      label: Line 12a - Credits 12a Someone can claim - c2_1
-      review_gap: 'background policy extraction failed: MicroExtractionError: background
-        policy quote has no form-face citation'
     - field_name: topmostSubform[0].Page2[0].c2_3[0]
       address_id: 2025/document=form_1040/line=12b/option=spouse_itemizes
       label: Line b - b - c2_3
-      review_gap: 'background policy extraction failed: MicroExtractionError: background
-        policy quote has no form-face citation'
+      review_gap: model could not establish a supported control policy
     - field_name: topmostSubform[0].Page2[0].c2_5[0]
       address_id: 2025/document=form_1040/line=12d/option=you_born_before_1961
       label: 'Line d - d You: - c2_5'
@@ -393,21 +284,14 @@ by_document:
       label: 'Line 12e - Standard Spouse: - c2_7'
       review_gap: 'background policy extraction failed: MicroExtractionError: background
         policy quote has no form-face citation'
-    - field_name: topmostSubform[0].Page2[0].c2_8[0]
-      address_id: 2025/document=form_1040/line=12d/option=spouse_blind
-      label: 'Line 12e - Standard Spouse: Was born before January 2, 1961 - c2_8'
-      review_gap: 'background policy extraction failed: MicroExtractionError: background
-        policy quote has no form-face citation'
     - field_name: topmostSubform[0].Page2[0].f2_03[0]
       address_id: 2025/document=form_1040/line=13a/control=amount
       label: Line 13a - . . . . . . . . . 13a - f2_03
-      review_gap: 'background policy extraction failed: MicroExtractionError: background
-        policy quote has no form-face citation'
+      review_gap: model could not establish a supported control policy
     - field_name: topmostSubform[0].Page2[0].f2_09[0]
       address_id: 2025/document=form_1040/line=17/control=amount
       label: Line 17 - . . . . . . . . . 17 - f2_09
-      review_gap: 'background policy extraction failed: MicroExtractionError: background
-        policy quote has no form-face citation'
+      review_gap: model could not establish a supported control policy
     - field_name: topmostSubform[0].Page2[0].f2_10[0]
       address_id: 2025/document=form_1040/line=18/control=amount
       label: Line 18 - . . . . . . . . . 18 - f2_10
@@ -416,8 +300,7 @@ by_document:
     - field_name: topmostSubform[0].Page2[0].f2_11[0]
       address_id: 2025/document=form_1040/line=19/control=amount
       label: Line 19 - . . . . . . . . . 19 - f2_11
-      review_gap: 'background policy extraction failed: MicroExtractionError: background
-        policy quote has no form-face citation'
+      review_gap: model could not establish a supported control policy
     - field_name: topmostSubform[0].Page2[0].f2_12[0]
       address_id: 2025/document=form_1040/line=20/control=amount
       label: Line 20 - . . . . . . . . . 20 - f2_12
@@ -426,18 +309,15 @@ by_document:
     - field_name: topmostSubform[0].Page2[0].f2_13[0]
       address_id: 2025/document=form_1040/line=21/control=amount
       label: Line a - . . . . . . . . . 21 - f2_13
-      review_gap: 'background policy extraction failed: MicroExtractionError: background
-        policy quote has no form-face citation'
+      review_gap: model could not establish a supported control policy
     - field_name: topmostSubform[0].Page2[0].f2_14[0]
       address_id: 2025/document=form_1040/line=22/control=amount
       label: Line 22 - . . . . . . . . . 22 - f2_14
-      review_gap: 'background policy extraction failed: MicroExtractionError: background
-        policy quote has no form-face citation'
+      review_gap: model could not establish a supported control policy
     - field_name: topmostSubform[0].Page2[0].f2_15[0]
       address_id: 2025/document=form_1040/line=23/control=amount
       label: Line 23 - . . . . . . . . . 23 - f2_15
-      review_gap: 'background policy extraction failed: MicroExtractionError: background
-        policy quote has no form-face citation'
+      review_gap: model could not establish a supported control policy
     - field_name: topmostSubform[0].Page2[0].f2_16[0]
       address_id: 2025/document=form_1040/line=24/control=amount
       label: Line 24 - . . . . . . . . . 24 - f2_16
@@ -446,8 +326,7 @@ by_document:
     - field_name: topmostSubform[0].Page2[0].f2_17[0]
       address_id: 2025/document=form_1040/line=25a/control=amount
       label: Line 25a - . . . . . . . . . 25a - f2_17
-      review_gap: 'background policy extraction failed: MicroExtractionError: background
-        policy quote has no form-face citation'
+      review_gap: model could not establish a supported control policy
     - field_name: topmostSubform[0].Page2[0].f2_18[0]
       address_id: 2025/document=form_1040/line=25b/control=amount
       label: Line 25b - . . . . . . . . . 25b - f2_18
@@ -456,23 +335,11 @@ by_document:
     - field_name: topmostSubform[0].Page2[0].f2_19[0]
       address_id: 2025/document=form_1040/line=25c/control=amount
       label: Line 25c - . . . . . . . . . 25c - f2_19
-      review_gap: 'background policy extraction failed: MicroExtractionError: background
-        policy quote has no form-face citation'
+      review_gap: model could not establish a supported control policy
     - field_name: topmostSubform[0].Page2[0].f2_20[0]
       address_id: 2025/document=form_1040/line=25d/control=amount
       label: Line 25d - . . . . . . . . . 25d - f2_20
-      review_gap: 'background policy extraction failed: MicroExtractionError: background
-        policy quote has no form-face citation'
-    - field_name: topmostSubform[0].Page2[0].f2_21[0]
-      address_id: 2025/document=form_1040/line=26/control=amount
-      label: Line 26 - . . . . . . . . . 26 - f2_21
-      review_gap: 'background policy extraction failed: MicroExtractionError: background
-        policy quote has no form-face citation'
-    - field_name: topmostSubform[0].Page2[0].SSN_ReadOrder[0].f2_22[0]
-      address_id: 2025/document=form_1040/line=26/control=identifier
-      label: 'Line a - If you have a enter their SSN (see instructions): - f2_22'
-      review_gap: 'background policy extraction failed: MicroExtractionError: background
-        policy quote has no form-face citation'
+      review_gap: model could not establish a supported control policy
     - field_name: topmostSubform[0].Page2[0].f2_23[0]
       address_id: 2025/document=form_1040/line=27a/control=amount
       label: Line 27a - . . . . . . . . . 27a - f2_23
@@ -483,16 +350,6 @@ by_document:
       label: Line b - . . . . . . . . . . - c2_12
       review_gap: 'background policy extraction failed: MicroExtractionError: background
         policy quote has no form-face citation'
-    - field_name: topmostSubform[0].Page2[0].c2_13[0]
-      address_id: 2025/document=form_1040/line=27c/option=do_not_claim_eic
-      label: Line c - . . . . . . . . . . - c2_13
-      review_gap: 'background policy extraction failed: MicroExtractionError: background
-        policy quote has no form-face citation'
-    - field_name: topmostSubform[0].Page2[0].Line28_ReadOrder[0].c2_14[0]
-      address_id: 2025/document=form_1040/line=28/option=do_not_claim_actc
-      label: Line 28 - . . . . . . . . . . - c2_14
-      review_gap: 'background policy extraction failed: MicroExtractionError: background
-        policy quote has no form-face citation'
     - field_name: topmostSubform[0].Page2[0].f2_24[0]
       address_id: 2025/document=form_1040/line=28/control=amount
       label: Line 28 - . . . . . . . . . 28 - f2_24
@@ -501,8 +358,7 @@ by_document:
     - field_name: topmostSubform[0].Page2[0].f2_25[0]
       address_id: 2025/document=form_1040/line=29/control=amount
       label: Line 29 - line 8 . . . . . . . 29 - f2_25
-      review_gap: 'background policy extraction failed: MicroExtractionError: background
-        policy quote has no form-face citation'
+      review_gap: model could not establish a supported control policy
     - field_name: topmostSubform[0].Page2[0].f2_26[0]
       address_id: 2025/document=form_1040/line=30/control=amount
       label: Line 30 - 8839, line 13 . . . . . . 30 - f2_26
@@ -511,8 +367,7 @@ by_document:
     - field_name: topmostSubform[0].Page2[0].f2_27[0]
       address_id: 2025/document=form_1040/line=31/control=amount
       label: Line 31 - . . . . . . . . . 31 - f2_27
-      review_gap: 'background policy extraction failed: MicroExtractionError: background
-        policy quote has no form-face citation'
+      review_gap: model could not establish a supported control policy
     - field_name: topmostSubform[0].Page2[0].f2_28[0]
       address_id: 2025/document=form_1040/line=32/control=amount
       label: Line 32 - are your total other payments and refundable credits . 32 -
@@ -521,8 +376,7 @@ by_document:
     - field_name: topmostSubform[0].Page2[0].f2_29[0]
       address_id: 2025/document=form_1040/line=33/control=amount
       label: Line 33 - . . . . . . . . . 33 - f2_29
-      review_gap: 'background policy extraction failed: MicroExtractionError: background
-        policy quote has no form-face citation'
+      review_gap: model could not establish a supported control policy
     - field_name: topmostSubform[0].Page2[0].f2_30[0]
       address_id: 2025/document=form_1040/line=34/control=amount
       label: Line 34 - 33. This is the amount you overpaid . . 34 - f2_30
@@ -530,11 +384,6 @@ by_document:
     - field_name: topmostSubform[0].Page2[0].RoutingNo[0].f2_32[0]
       address_id: 2025/document=form_1040/line=35b/control=identifier
       label: Line b - Direct deposit? b Routing number - f2_32
-      review_gap: 'background policy extraction failed: MicroExtractionError: background
-        policy quote has no form-face citation'
-    - field_name: topmostSubform[0].Page2[0].c2_16[1]
-      address_id: 2025/document=form_1040/line=35c/option=savings
-      label: 'Line b - Direct deposit? b Routing number c Type: Checking - c2_16'
       review_gap: 'background policy extraction failed: MicroExtractionError: background
         policy quote has no form-face citation'
     - field_name: topmostSubform[0].Page2[0].AccountNo[0].f2_33[0]
@@ -549,8 +398,7 @@ by_document:
     - field_name: topmostSubform[0].Page2[0].f2_35[0]
       address_id: 2025/document=form_1040/line=37/control=amount
       label: Line 37 - instructions . . . . . . . . 37 - f2_35
-      review_gap: 'background policy extraction failed: MicroExtractionError: background
-        policy quote has no form-face citation'
+      review_gap: model could not establish a supported control policy
     - field_name: topmostSubform[0].Page2[0].f2_36[0]
       address_id: 2025/document=form_1040/line=38/control=amount
       label: Line 38 - . . . . . . . . . 38 - f2_36
@@ -572,21 +420,14 @@ by_document:
         \ - f2_39"
       review_gap: 'background policy extraction failed: MicroExtractionError: background
         policy quote has no form-face citation'
-    - field_name: topmostSubform[0].Page2[0].f2_40[0]
-      address_id: 2025/document=form_1040/section=sign_here/control=your_occupation
-      label: Paid preparer name
-      review_gap: 'background policy extraction failed: MicroExtractionError: background
-        policy quote has no form-face citation'
     - field_name: topmostSubform[0].Page2[0].f2_41[0]
       address_id: 2025/document=form_1040/section=sign_here/control=your_ip_pin
       label: (see inst.) - f2_41
-      review_gap: 'background policy extraction failed: MicroExtractionError: background
-        policy quote has no form-face citation'
+      review_gap: model could not establish a supported control policy
     - field_name: topmostSubform[0].Page2[0].f2_42[0]
       address_id: 2025/document=form_1040/section=sign_here/control=spouse_occupation
       label: Line a - Keep your records. a copy for - f2_42
-      review_gap: 'background policy extraction failed: MicroExtractionError: background
-        policy quote has no form-face citation'
+      review_gap: model could not establish a supported control policy
     - field_name: topmostSubform[0].Page2[0].f2_43[0]
       address_id: 2025/document=form_1040/section=sign_here/control=spouse_ip_pin
       label: Line a - Keep your records. a copy for (see inst.) - f2_43
@@ -595,48 +436,15 @@ by_document:
     - field_name: topmostSubform[0].Page2[0].f2_44[0]
       address_id: 2025/document=form_1040/section=sign_here/control=phone
       label: Phone no. - f2_44
-      review_gap: 'background policy extraction failed: MicroExtractionError: background
-        policy quote has no form-face citation'
-    - field_name: topmostSubform[0].Page2[0].f2_45[0]
-      address_id: 2025/document=form_1040/section=sign_here/control=email
-      label: Phone no. Email address - f2_45
-      review_gap: 'background policy extraction failed: MicroExtractionError: background
-        policy quote has no form-face citation'
-    - field_name: topmostSubform[0].Page2[0].f2_46[0]
-      address_id: 2025/document=form_1040/section=paid_preparer/control=name
-      label: Preparer - f2_46
-      review_gap: 'background policy extraction failed: MicroExtractionError: background
-        policy quote has no form-face citation'
-    - field_name: topmostSubform[0].Page2[0].f2_47[0]
-      address_id: 2025/document=form_1040/section=paid_preparer/control=ptin
-      label: Preparer - f2_47
-      review_gap: 'background policy extraction failed: MicroExtractionError: background
-        policy quote has no form-face citation'
-    - field_name: topmostSubform[0].Page2[0].c2_18[0]
-      address_id: 2025/document=form_1040/section=paid_preparer/option=self_employed
-      label: Preparer - c2_18
-      review_gap: 'background policy extraction failed: MicroExtractionError: background
-        policy quote has no form-face citation'
+      review_gap: model could not establish a supported control policy
     - field_name: topmostSubform[0].Page2[0].f2_48[0]
       address_id: 2025/document=form_1040/section=paid_preparer/control=firm_name
       label: "Use Only Firm\u2019s name - f2_48"
-      review_gap: 'background policy extraction failed: MicroExtractionError: background
-        policy quote has no form-face citation'
-    - field_name: topmostSubform[0].Page2[0].f2_49[0]
-      address_id: 2025/document=form_1040/section=paid_preparer/control=phone
-      label: "Use Only Firm\u2019s name Phone no. - f2_49"
-      review_gap: 'background policy extraction failed: MicroExtractionError: background
-        policy quote has no form-face citation'
+      review_gap: model could not establish a supported control policy
     - field_name: topmostSubform[0].Page2[0].f2_50[0]
       address_id: 2025/document=form_1040/section=paid_preparer/control=firm_address
       label: "Firm\u2019s address - f2_50"
-      review_gap: 'background policy extraction failed: MicroExtractionError: background
-        policy quote has no form-face citation'
-    - field_name: topmostSubform[0].Page2[0].f2_51[0]
-      address_id: 2025/document=form_1040/section=paid_preparer/control=firm_ein
-      label: "Firm\u2019s address Firm\u2019s EIN - f2_51"
-      review_gap: 'background policy extraction failed: MicroExtractionError: background
-        policy quote has no form-face citation'
+      review_gap: model could not establish a supported control policy
     expression_and_verbatim_citation: 17
     expression_and_form_face_citation: 17
     expression_and_instruction_page_citation: 12
@@ -700,10 +508,10 @@ by_document:
     - google/gemini-3.6-flash
     resolved_providers:
     - Google AI Studio
-    prompt_tokens: 73966
-    completion_tokens: 59921
-    total_tokens: 133887
-    cost: 0.5603565
+    prompt_tokens: 125360
+    completion_tokens: 118024
+    total_tokens: 243384
+    cost: 1.07322
     handcrafted_diff:
       flag_only: true
       note: The handcrafted set is a review-prioritization flag, not a grade.
@@ -716,37 +524,37 @@ by_document:
   schedule_1_2025:
     formula_cells: 4
     policy_controls: 69
-    policy_controls_with_policy: 27
-    policy_and_form_face_citation: 3
-    policy_coverage_rate: 0.391304347826087
-    policy_and_form_face_citation_rate: 0.043478260869565216
+    policy_controls_with_policy: 49
+    policy_and_form_face_citation: 25
+    policy_coverage_rate: 0.7101449275362319
+    policy_and_form_face_citation_rate: 0.36231884057971014
     policy_derived: 0
-    policy_defaulted: 3
+    policy_defaulted: 25
     policy_authored: 24
     policy_derived_and_form_face_citation: 0
-    policy_defaulted_and_form_face_citation: 3
+    policy_defaulted_and_form_face_citation: 25
     policy_origin_counts:
       authored: 24
-      defaulted: 3
-      review_gap: 42
+      defaulted: 25
+      review_gap: 20
     policy_mix_before:
       computed: 4
       unsupported: 45
       user_entered: 24
     policy_mix_after:
       computed: 4
-      decision_required: 1
-      unsupported: 42
-      user_entered: 26
+      decision_required: 3
+      unsupported: 20
+      user_entered: 46
     policy_mix_after_by_origin:
       authored:
         computed: 4
         user_entered: 24
       defaulted:
-        decision_required: 1
-        user_entered: 2
+        decision_required: 3
+        user_entered: 22
       review_gap:
-        unsupported: 42
+        unsupported: 20
     failover_class_counts:
       filer_election: 5
       filer_identity_admin: 3
@@ -757,141 +565,37 @@ by_document:
       user_entered: 24
     background_policy_after:
       computed: 4
-      decision_required: 1
-      unsupported: 42
-      user_entered: 26
-    background_policy_progress: 3
+      decision_required: 3
+      unsupported: 20
+      user_entered: 46
+    background_policy_progress: 25
     background_policy_review_gaps:
     - field_name: topmostSubform[0].Page1[0].f1_01[0]
       address_id: 2025/document=schedule_1/section=identity/control=name
       label: f1_01
       review_gap: model could not establish a supported control policy
-    - field_name: topmostSubform[0].Page1[0].f1_02[0]
-      address_id: 2025/document=schedule_1/section=identity/control=social_security_number
-      label: f1_02
-      review_gap: 'background policy extraction failed: MicroExtractionError: background
-        policy quote has no form-face citation'
     - field_name: topmostSubform[0].Page1[0].f1_03[0]
       address_id: 2025/document=schedule_1/line=1a/control=amount
       label: Line a - . . . . . . . . . . - f1_03
-      review_gap: 'background policy extraction failed: MicroExtractionError: background
-        policy quote has no form-face citation'
+      review_gap: model could not establish a supported control policy
     - field_name: topmostSubform[0].Page1[0].f1_06[0]
       address_id: 2025/document=schedule_1/line=2b/control=date
       label: 'Line b - b Date of original divorce or separation agreement (see instructions):
         - f1_06'
       review_gap: 'background policy extraction failed: MicroExtractionError: background
         policy quote has no form-face citation'
-    - field_name: topmostSubform[0].Page1[0].c1_1[0]
-      address_id: 2025/document=schedule_1/line=4/option=form_4797
-      label: 'Line 4 - 4 Other gains or (losses). Check if any from Form(s): - c1_1'
-      review_gap: model could not establish a supported control policy
-    - field_name: topmostSubform[0].Page1[0].c1_2[0]
-      address_id: 2025/document=schedule_1/line=4/option=form_4684
-      label: 'Line 4 - Other gains or (losses). Check if any from Form(s): 4797 -
-        c1_2'
-      review_gap: model could not establish a supported control policy
-    - field_name: topmostSubform[0].Page1[0].Line7_ReadOrder[0].f1_11[0]
-      address_id: 2025/document=schedule_1/line=7/control=repaid_amount
-      label: 'Line 7 - enter amount repaid: - f1_11'
-      review_gap: 'background policy extraction failed: MicroExtractionError: background
-        policy quote has no form-face citation'
-    - field_name: topmostSubform[0].Page1[0].Line8a_ReadOrder[0].f1_13[0]
-      address_id: 2025/document=schedule_1/line=8a/control=amount
-      label: Line 8a - . . . . . . . . 8a ( - f1_13
-      review_gap: 'background policy extraction failed: MicroExtractionError: background
-        policy quote does not match supplied evidence'
-    - field_name: topmostSubform[0].Page1[0].f1_14[0]
-      address_id: 2025/document=schedule_1/line=8b/control=amount
-      label: Line 8b - . . . . . . . . . 8b - f1_14
-      review_gap: 'background policy extraction failed: MicroExtractionError: background
-        policy quote has no form-face citation'
-    - field_name: topmostSubform[0].Page1[0].f1_15[0]
-      address_id: 2025/document=schedule_1/line=8c/control=amount
-      label: Line 8c - . . . . . . . . . 8c - f1_15
-      review_gap: 'background policy extraction failed: MicroExtractionError: background
-        policy quote has no form-face citation'
-    - field_name: topmostSubform[0].Page1[0].f1_16[0]
-      address_id: 2025/document=schedule_1/line=8d/control=amount
-      label: Line 8d - . . . . . . . . 8d ( - f1_16
-      review_gap: 'background policy extraction failed: MicroExtractionError: background
-        policy quote has no form-face citation'
-    - field_name: topmostSubform[0].Page1[0].f1_17[0]
-      address_id: 2025/document=schedule_1/line=8e/control=amount
-      label: Line 8e - . . . . . . . . . 8e - f1_17
-      review_gap: 'background policy extraction failed: MicroExtractionError: background
-        policy quote has no form-face citation'
-    - field_name: topmostSubform[0].Page1[0].f1_18[0]
-      address_id: 2025/document=schedule_1/line=8f/control=amount
-      label: Line 8f - . . . . . . . . . 8f - f1_18
-      review_gap: 'background policy extraction failed: MicroExtractionError: background
-        policy quote has no form-face citation'
-    - field_name: topmostSubform[0].Page1[0].f1_19[0]
-      address_id: 2025/document=schedule_1/line=8g/control=amount
-      label: Line 8g - . . . . . . . . . 8g - f1_19
-      review_gap: 'background policy extraction failed: MicroExtractionError: background
-        policy quote has no form-face citation'
-    - field_name: topmostSubform[0].Page1[0].f1_20[0]
-      address_id: 2025/document=schedule_1/line=8h/control=amount
-      label: Line 8h - . . . . . . . . . 8h - f1_20
-      review_gap: 'background policy extraction failed: MicroExtractionError: background
-        policy quote has no form-face citation'
-    - field_name: topmostSubform[0].Page1[0].f1_21[0]
-      address_id: 2025/document=schedule_1/line=8i/control=amount
-      label: Line 8i - . . . . . . . . . 8i - f1_21
-      review_gap: 'background policy extraction failed: MicroExtractionError: background
-        policy quote has no form-face citation'
-    - field_name: topmostSubform[0].Page1[0].f1_22[0]
-      address_id: 2025/document=schedule_1/line=8j/control=amount
-      label: Line 8j - . . . . . . . . . 8j - f1_22
-      review_gap: 'background policy extraction failed: MicroExtractionError: background
-        policy quote has no form-face citation'
-    - field_name: topmostSubform[0].Page1[0].f1_23[0]
-      address_id: 2025/document=schedule_1/line=8k/control=amount
-      label: Line 8k - . . . . . . . . . 8k - f1_23
-      review_gap: 'background policy extraction failed: MicroExtractionError: background
-        policy quote does not match supplied evidence'
-    - field_name: topmostSubform[0].Page1[0].f1_25[0]
-      address_id: 2025/document=schedule_1/line=8m/control=amount
-      label: Line 8m - Paralympic medals and USOC prize money (see instructions) .
-        8m - f1_25
-      review_gap: 'background policy extraction failed: MicroExtractionError: background
-        policy quote has no form-face citation'
-    - field_name: topmostSubform[0].Page1[0].f1_26[0]
-      address_id: 2025/document=schedule_1/line=8n/control=amount
-      label: Line 8n - . . . . . . . . . 8n - f1_26
-      review_gap: 'background policy extraction failed: MicroExtractionError: background
-        policy quote has no form-face citation'
-    - field_name: topmostSubform[0].Page1[0].f1_27[0]
-      address_id: 2025/document=schedule_1/line=8o/control=amount
-      label: Line 8o - . . . . . . . . . 8o - f1_27
-      review_gap: 'background policy extraction failed: MicroExtractionError: background
-        policy quote has no form-face citation'
-    - field_name: topmostSubform[0].Page1[0].f1_28[0]
-      address_id: 2025/document=schedule_1/line=8p/control=amount
-      label: Line 8p - . . . . . . . . . 8p - f1_28
-      review_gap: 'background policy extraction failed: MicroExtractionError: background
-        policy quote has no form-face citation'
     - field_name: topmostSubform[0].Page1[0].f1_30[0]
       address_id: 2025/document=schedule_1/line=8r/control=amount
       label: Line 8r - on Form W-2 . . . . . . 8r - f1_30
-      review_gap: 'background policy extraction failed: MicroExtractionError: background
-        policy quote has no form-face citation'
+      review_gap: model could not establish a supported control policy
     - field_name: topmostSubform[0].Page1[0].f1_31[0]
       address_id: 2025/document=schedule_1/line=8s/control=amount
       label: Line 8s - . . . . . . . . 8s ( - f1_31
-      review_gap: 'background policy extraction failed: MicroExtractionError: background
-        policy quote has no form-face citation'
-    - field_name: topmostSubform[0].Page1[0].f1_32[0]
-      address_id: 2025/document=schedule_1/line=8t/control=amount
-      label: Line 8t - . . . . . . . . . 8t - f1_32
-      review_gap: 'background policy extraction failed: MicroExtractionError: background
-        policy quote has no form-face citation'
+      review_gap: model could not establish a supported control policy
     - field_name: topmostSubform[0].Page1[0].f1_33[0]
       address_id: 2025/document=schedule_1/line=8u/control=amount
       label: Line 8u - . . . . . . . . . 8u - f1_33
-      review_gap: 'background policy extraction failed: MicroExtractionError: background
-        policy quote has no form-face citation'
+      review_gap: model could not establish a supported control policy
     - field_name: topmostSubform[0].Page1[0].Line8z_ReadOrder[0].f1_35[0]
       address_id: 2025/document=schedule_1/line=8z/control=description
       label: Line z - f1_35
@@ -899,8 +603,7 @@ by_document:
     - field_name: topmostSubform[0].Page2[0].c2_1[0]
       address_id: 2025/document=schedule_1/line=14/option=storage_fees_only
       label: Line 15 - (see instructions), check here - c2_1
-      review_gap: 'background policy extraction failed: MicroExtractionError: background
-        policy quote has no form-face citation'
+      review_gap: model could not establish a supported control policy
     - field_name: topmostSubform[0].Page2[0].Line19b_CombField[0].f2_10[0]
       address_id: 2025/document=schedule_1/line=19b/control=identifier
       label: Line b - . . . . . . . . . . - f2_10
@@ -915,43 +618,27 @@ by_document:
     - field_name: topmostSubform[0].Page2[0].c2_2[0]
       address_id: 2025/document=schedule_1/line=21/option=mfs_lived_apart
       label: Line 21 - (see instructions), check here - c2_2
-      review_gap: 'background policy extraction failed: MicroExtractionError: background
-        policy quote has no form-face citation'
+      review_gap: model could not establish a supported control policy
     - field_name: topmostSubform[0].Page2[0].Line24a_ReadOrder[0].f2_16[0]
       address_id: 2025/document=schedule_1/line=24a/control=amount
       label: Line 24a - . . . . . . . . . 24a - f2_16
-      review_gap: 'background policy extraction failed: MicroExtractionError: background
-        policy quote has no form-face citation'
+      review_gap: model could not establish a supported control policy
     - field_name: topmostSubform[0].Page2[0].f2_17[0]
       address_id: 2025/document=schedule_1/line=24b/control=amount
       label: Line 24b - . . . . . . . . . 24b - f2_17
-      review_gap: 'background policy extraction failed: MicroExtractionError: background
-        policy quote has no form-face citation'
+      review_gap: model could not establish a supported control policy
     - field_name: topmostSubform[0].Page2[0].f2_18[0]
       address_id: 2025/document=schedule_1/line=24c/control=amount
       label: Line 24c - . . . . . . . . . 24c - f2_18
-      review_gap: 'background policy extraction failed: MicroExtractionError: background
-        policy quote has no form-face citation'
+      review_gap: model could not establish a supported control policy
     - field_name: topmostSubform[0].Page2[0].f2_19[0]
       address_id: 2025/document=schedule_1/line=24d/control=amount
       label: Line 24d - . . . . . . . . . 24d - f2_19
-      review_gap: 'background policy extraction failed: MicroExtractionError: background
-        policy quote has no form-face citation'
+      review_gap: model could not establish a supported control policy
     - field_name: topmostSubform[0].Page2[0].f2_21[0]
       address_id: 2025/document=schedule_1/line=24f/control=amount
       label: Line 24f - . . . . . . . . . 24f - f2_21
-      review_gap: 'background policy extraction failed: MicroExtractionError: background
-        policy quote has no form-face citation'
-    - field_name: topmostSubform[0].Page2[0].f2_22[0]
-      address_id: 2025/document=schedule_1/line=24g/control=amount
-      label: Line 24g - 403(b) plans . . . . . . . 24g - f2_22
-      review_gap: 'background policy extraction failed: MicroExtractionError: background
-        policy quote has no form-face citation'
-    - field_name: topmostSubform[0].Page2[0].f2_23[0]
-      address_id: 2025/document=schedule_1/line=24h/control=amount
-      label: Line 24h - . . . . . . . . . 24h - f2_23
-      review_gap: 'background policy extraction failed: MicroExtractionError: background
-        policy quote has no form-face citation'
+      review_gap: model could not establish a supported control policy
     - field_name: topmostSubform[0].Page2[0].f2_24[0]
       address_id: 2025/document=schedule_1/line=24i/control=amount
       label: Line 24i - provided that helped the IRS detect tax law violations 24i
@@ -961,8 +648,7 @@ by_document:
     - field_name: topmostSubform[0].Page2[0].f2_25[0]
       address_id: 2025/document=schedule_1/line=24j/control=amount
       label: Line 24j - . . . . . . . . . 24j - f2_25
-      review_gap: 'background policy extraction failed: MicroExtractionError: background
-        policy quote has no form-face citation'
+      review_gap: model could not establish a supported control policy
     - field_name: topmostSubform[0].Page2[0].f2_26[0]
       address_id: 2025/document=schedule_1/line=24k/control=amount
       label: Line 24k - of section 67(e) expenses from Schedule K-1 (Form 1041) 24k
@@ -972,95 +658,76 @@ by_document:
     - field_name: topmostSubform[0].Page2[0].Line24z_ReadOrder[0].f2_27[0]
       address_id: 2025/document=schedule_1/line=24z/control=description
       label: Line z - f2_27
-      review_gap: 'background policy extraction failed: MicroExtractionError: background
-        policy quote does not match supplied evidence'
-    expression_and_verbatim_citation: 3
-    expression_and_form_face_citation: 3
-    expression_and_instruction_page_citation: 3
-    expression_and_both_citations: 3
+      review_gap: model could not establish a supported control policy
+    expression_and_verbatim_citation: 4
+    expression_and_form_face_citation: 4
+    expression_and_instruction_page_citation: 4
+    expression_and_both_citations: 4
     expression_without_citation: 0
-    neither_expression_nor_citation: 1
-    completeness_rate: 0.75
+    neither_expression_nor_citation: 0
+    completeness_rate: 1.0
     instruction_review_cells: 4
     instruction_page_citation_before: 4
     instruction_page_citation: 4
     instruction_page_citation_rate: 1.0
     instruction_page_citation_missing_cells: []
     expression_without_citation_cells: []
-    review_gaps:
-    - target_cell_id: schedule_1_2025_section_2_part_ii_adjustments_to_income_line_25
-      line_anchor: '25'
-      label: 25 Total other adjustments. Add lines 24a through 24z 25
-      status: review_gap
-      has_expression: false
-      has_verbatim_citation: false
-      review_gap: source line is not present in the deterministic outline index
-      wrong_owner_instruction_spans: 5
-      instruction_span_ids:
-      - span_instructions_form_1040_2025_1055
-      - span_instructions_form_1040_2025_1068
-      - span_instructions_form_1040_2025_1069
-      has_form_face_citation: false
-      has_instruction_citation: true
+    review_gaps: []
     wrong_owner_instruction_spans: 20
     wrong_owner_instruction_addresses:
     - schedule_1_2025_section_1_part_i_additional_income_line_10
     - schedule_1_2025_section_1_part_i_additional_income_line_9
     - schedule_1_2025_section_2_part_ii_adjustments_to_income_line_25
     - schedule_1_2025_section_2_part_ii_adjustments_to_income_line_26
-    unresolved_line_refs:
-    - code: unresolved_source_line
-      target_cell_id: schedule_1_2025_section_2_part_ii_adjustments_to_income_line_25
-      source_line: 24l
-      candidates: []
-      reason: source line is not present in the deterministic outline index
+    unresolved_line_refs: []
     resolved_models:
     - google/gemini-3.6-flash
     resolved_providers:
     - Google AI Studio
-    prompt_tokens: 12734
-    completion_tokens: 10864
-    total_tokens: 23598
-    cost: 0.100581
+    prompt_tokens: 49190
+    completion_tokens: 43094
+    total_tokens: 92284
+    cost: 0.39699
     handcrafted_diff:
       flag_only: true
       note: The handcrafted set is a review-prioritization flag, not a grade.
       counts:
         expression_agreement: 2
-        missing_in_draft: 1
-        operation_agreement_operands_differ: 1
+        operation_agreement_operands_differ: 2
   schedule_a_2025:
     formula_cells: 7
     policy_controls: 32
-    policy_controls_with_policy: 12
-    policy_and_form_face_citation: 1
-    policy_coverage_rate: 0.375
-    policy_and_form_face_citation_rate: 0.03125
+    policy_controls_with_policy: 17
+    policy_and_form_face_citation: 6
+    policy_coverage_rate: 0.53125
+    policy_and_form_face_citation_rate: 0.1875
     policy_derived: 0
-    policy_defaulted: 1
+    policy_defaulted: 6
     policy_authored: 11
     policy_derived_and_form_face_citation: 0
-    policy_defaulted_and_form_face_citation: 1
+    policy_defaulted_and_form_face_citation: 6
     policy_origin_counts:
       authored: 11
-      defaulted: 1
-      review_gap: 20
+      defaulted: 6
+      review_gap: 15
     policy_mix_before:
       computed: 1
       unsupported: 21
       user_entered: 11
     policy_mix_after:
       computed: 1
-      unsupported: 20
-      user_entered: 12
+      decision_required: 1
+      unsupported: 15
+      user_entered: 16
     policy_mix_after_by_origin:
       authored:
         computed: 1
         user_entered: 11
       defaulted:
-        user_entered: 1
+        decision_required: 1
+        user_entered: 5
       review_gap:
-        unsupported: 20
+        unsupported: 15
     failover_class_counts:
       filer_election: 3
       filer_supplied_value: 18
@@ -1070,9 +737,10 @@ by_document:
       user_entered: 11
     background_policy_after:
       computed: 1
-      unsupported: 20
-      user_entered: 12
-    background_policy_progress: 1
+      decision_required: 1
+      unsupported: 15
+      user_entered: 16
+    background_policy_progress: 6
     background_policy_review_gaps:
     - field_name: form1[0].Page1[0].f1_1[0]
       address_id: ''
@@ -1082,29 +750,9 @@ by_document:
       address_id: ''
       label: f1_2
       review_gap: model could not establish a supported control policy
-    - field_name: form1[0].Page1[0].f1_3[0]
-      address_id: 2025/document=schedule_a/line=1/control=amount
-      label: Line 1 - dental expenses (see instructions) . . . . . 1 - f1_3
-      review_gap: 'background policy extraction failed: MicroExtractionError: background
-        policy quote has no form-face citation'
-    - field_name: form1[0].Page1[0].c1_1[0]
-      address_id: 2025/document=schedule_a/line=5a/control=checkbox
-      label: Line 5a - box . . . . . . . . . - c1_1
-      review_gap: 'background policy extraction failed: MicroExtractionError: background
-        policy quote does not match supplied evidence'
     - field_name: form1[0].Page1[0].f1_7[0]
       address_id: 2025/document=schedule_a/line=5a/control=amount
       label: Line 5a - . . . . . . . . . 5a - f1_7
-      review_gap: 'background policy extraction failed: MicroExtractionError: background
-        policy quote has no form-face citation'
-    - field_name: form1[0].Page1[0].f1_8[0]
-      address_id: 2025/document=schedule_a/line=5b/control=amount
-      label: Line 5b - real estate taxes (see instructions) . . . . 5b - f1_8
-      review_gap: 'background policy extraction failed: MicroExtractionError: background
-        policy quote has no form-face citation'
-    - field_name: form1[0].Page1[0].f1_9[0]
-      address_id: 2025/document=schedule_a/line=5c/control=amount
-      label: Line 5c - taxes . . . . . . . . 5c - f1_9
       review_gap: 'background policy extraction failed: MicroExtractionError: background
         policy quote has no form-face citation'
     - field_name: form1[0].Page1[0].f1_11[0]
@@ -1116,8 +764,7 @@ by_document:
     - field_name: form1[0].Page1[0].f1_12[0]
       address_id: 2025/document=schedule_a/line=6/control=amount
       label: Line 6 - f1_12
-      review_gap: 'background policy extraction failed: MicroExtractionError: background
-        policy quote has no form-face citation'
+      review_gap: model could not establish a supported control policy
     - field_name: form1[0].Page1[0].f1_14[0]
       address_id: 2025/document=schedule_a/line=5e/control=amount
       label: Line 5e - . . . . . . . . . 7 - f1_14
@@ -1130,33 +777,23 @@ by_document:
     - field_name: form1[0].Page1[0].f1_15[0]
       address_id: 2025/document=schedule_a/line=8a/control=amount
       label: Line 8a - . . . . . . . . . 8a - f1_15
-      review_gap: 'background policy extraction failed: MicroExtractionError: background
-        policy quote has no form-face citation'
-    - field_name: form1[0].Page1[0].Line8b_ReadOrder[0].f1_16[0]
-      address_id: 2025/document=schedule_a/line=8b/control=amount
-      label: Line 8b - f1_16
-      review_gap: 'background policy extraction failed: MicroExtractionError: background
-        policy quote has no form-face citation'
+      review_gap: model could not establish a supported control policy
     - field_name: form1[0].Page1[0].f1_17[0]
       address_id: 2025/document=schedule_a/line=8b/control=amount
       label: Line 8b - . . . . . . . . . 8b - f1_17
-      review_gap: 'background policy extraction failed: MicroExtractionError: background
-        policy quote has no form-face citation'
+      review_gap: model could not establish a supported control policy
     - field_name: form1[0].Page1[0].f1_19[0]
       address_id: 2025/document=schedule_a/line=8d/control=amount
       label: Line 8d - . . . . . . . . . 8d - f1_19
-      review_gap: 'background policy extraction failed: MicroExtractionError: background
-        policy quote has no form-face citation'
+      review_gap: model could not establish a supported control policy
     - field_name: form1[0].Page1[0].f1_20[0]
       address_id: 2025/document=schedule_a/line=8e/control=amount
       label: Line 8e - . . . . . . . . . 8e - f1_20
-      review_gap: 'background policy extraction failed: MicroExtractionError: background
-        policy quote has no form-face citation'
+      review_gap: model could not establish a supported control policy
     - field_name: form1[0].Page1[0].f1_22[0]
       address_id: 2025/document=schedule_a/line=8e/control=amount
       label: Line 8e - . . . . . . . . . 10 - f1_22
-      review_gap: 'background policy extraction failed: MicroExtractionError: background
-        policy quote has no form-face citation'
+      review_gap: model could not establish a supported control policy
     - field_name: form1[0].Page1[0].f1_23[0]
       address_id: 2025/document=schedule_a/line=11/control=amount
       label: Line 11 - . . . . . . . . . 11 - f1_23
@@ -1169,13 +806,13 @@ by_document:
       address_id: ''
       label: . . . . . . . . . . - c1_3
       review_gap: model could not establish a supported control policy
-    expression_and_verbatim_citation: 6
-    expression_and_form_face_citation: 6
+    expression_and_verbatim_citation: 7
+    expression_and_form_face_citation: 7
     expression_and_instruction_page_citation: 0
     expression_and_both_citations: 0
     expression_without_citation: 0
-    neither_expression_nor_citation: 1
-    completeness_rate: 0.8571428571428571
+    neither_expression_nor_citation: 0
+    completeness_rate: 1.0
     instruction_review_cells: 7
     instruction_page_citation_before: 0
     instruction_page_citation: 0
@@ -1183,8 +820,7 @@ by_document:
     instruction_page_citation_missing_cells:
     - target_cell_id: schedule_a_2025_section_1_schedule_a_itemized_deductions_line_3
       line_anchor: '3'
-      review_gap: 'micro extraction failed: MicroExtractionError: MULTIPLY requires
-        exactly 2 source line(s)'
+      review_gap: ''
     - target_cell_id: schedule_a_2025_section_1_schedule_a_itemized_deductions_line_4
       line_anchor: '4'
       review_gap: ''
@@ -1204,19 +840,7 @@ by_document:
       line_anchor: '14'
       review_gap: ''
     expression_without_citation_cells: []
-    review_gaps:
-    - target_cell_id: schedule_a_2025_section_1_schedule_a_itemized_deductions_line_3
-      line_anchor: '3'
-      label: 3 Multiply line 2 by 7.5% (0.075) 3
-      status: review_gap
-      has_expression: false
-      has_verbatim_citation: false
-      review_gap: 'micro extraction failed: MicroExtractionError: MULTIPLY requires
-        exactly 2 source line(s)'
-      wrong_owner_instruction_spans: 1
-      instruction_span_ids: []
-      has_form_face_citation: false
-      has_instruction_citation: false
+    review_gaps: []
     wrong_owner_instruction_spans: 2
     wrong_owner_instruction_addresses:
     - schedule_a_2025_section_1_schedule_a_itemized_deductions_line_3
@@ -1226,14 +850,14 @@ by_document:
     - google/gemini-3.6-flash
     resolved_providers:
     - Google AI Studio
-    prompt_tokens: 9083
-    completion_tokens: 9276
-    total_tokens: 18359
-    cost: 0.0831945
+    prompt_tokens: 21044
+    completion_tokens: 15815
+    total_tokens: 36859
+    cost: 0.1501785
     handcrafted_diff:
       flag_only: true
       note: The handcrafted set is a review-prioritization flag, not a grade.
       counts:
-        extra_in_draft: 5
+        extra_in_draft: 6
         missing_in_draft: 4
         operation_agreement_operands_differ: 1

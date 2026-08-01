@@ -996,6 +996,44 @@ def extract_command(
     return 0
 
 
+def prompt_bench_command(
+    *,
+    doc: str,
+    target_ids: list[str],
+    year: str = "2025",
+    root: str | Path | None = None,
+    client: object | None = None,
+) -> int:
+    """Print exact micro prompts, responses, and validation decisions."""
+    from tax_graph.extract.inputs import load_document_input
+    from tax_graph.extract.llm_client import build_llm_client
+    from tax_graph.extract.prompt_bench import run_prompt_bench
+
+    root_path = Path(root).resolve() if root is not None else project_root()
+    config = load_config(root=root_path)
+    document = load_document_input(doc, year=year, root=root_path, config=config)
+    llm_client = client or build_llm_client(config)
+    results = run_prompt_bench(
+        document,
+        target_ids,
+        client=llm_client,
+        config=config,
+        root=root_path,
+    )
+    for result in results:
+        print(f"=== prompt bench: {result['target_id']} ===")
+        print(f"target_type: {result['target_type']}")
+        print("prompt:")
+        print(result["prompt"])
+        print("response:")
+        print(json.dumps(result["response"], indent=2, sort_keys=True, ensure_ascii=True))
+        print(f"decision: {'accepted' if result['accepted'] else 'rejected'}")
+        print(f"why: {result['validation_error'] or 'all deterministic validations passed'}")
+        print("matched_spans:")
+        print(json.dumps(result["matched_spans"], indent=2, sort_keys=True, ensure_ascii=True))
+    return 0 if all(result["accepted"] for result in results) else 1
+
+
 def extend_doctor_command(
     *,
     root: str | Path | None = None,
@@ -1436,6 +1474,23 @@ def _build_typer_app():
         if raise_code:
             raise typer.Exit(raise_code)
 
+    @verify_cli.command("prompt-bench")
+    def verify_prompt_bench_cli(
+        doc: str = typer.Option(..., "--doc", help="Manifest document id to inspect."),
+        target_ids: list[str] = typer.Option(..., "--id", help="Field-map control or formula cell id; repeat for a small list."),
+        year: str = typer.Option("2025", "--year", "-y", help="Tax year to inspect."),
+        root: Path | None = typer.Option(None, "--root", help="Project root override."),
+    ) -> None:
+        """Print exact prompts, responses, and deterministic validation results."""
+        raise_code = prompt_bench_command(
+            doc=doc,
+            target_ids=target_ids,
+            year=year,
+            root=root,
+        )
+        if raise_code:
+            raise typer.Exit(raise_code)
+
     @verify_cli.command("record")
     def verify_record_cli(
         year: str = typer.Option("2025", "--year", "-y", help="Tax year to render."),
@@ -1799,6 +1854,12 @@ def _fallback_app() -> int:
     verify_nversion_parser.add_argument("--year", "-y", default="2025")
     verify_nversion_parser.add_argument("--root", default=None)
 
+    verify_prompt_bench_parser = verify_subparsers.add_parser("prompt-bench")
+    verify_prompt_bench_parser.add_argument("--doc", required=True)
+    verify_prompt_bench_parser.add_argument("--id", dest="target_ids", action="append", required=True)
+    verify_prompt_bench_parser.add_argument("--year", "-y", default="2025")
+    verify_prompt_bench_parser.add_argument("--root", default=None)
+
     verify_record_parser = verify_subparsers.add_parser("record")
     verify_record_parser.add_argument("--year", "-y", default="2025")
     verify_record_parser.add_argument("--rollup-path", default=None)
@@ -1949,6 +2010,13 @@ def _fallback_app() -> int:
         )
     if args.command == "verify" and args.verify_command == "nversion":
         return verify_nversion_command(doc=args.doc, year=args.year, root=args.root)
+    if args.command == "verify" and args.verify_command == "prompt-bench":
+        return prompt_bench_command(
+            doc=args.doc,
+            target_ids=args.target_ids,
+            year=args.year,
+            root=args.root,
+        )
     if args.command == "verify" and args.verify_command == "record":
         return verify_record_command(
             year=args.year,
