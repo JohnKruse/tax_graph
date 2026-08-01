@@ -2165,9 +2165,19 @@ the instruction slot; Authority explicitly reports missing authored coverage; do
 citation coverage is visible beside policy counts; and the dossier heading duplication/order
 warts are fixed. No promoted artifacts, graph semantics, verdicts, or citation records changed.
 
-**BALL: WORKER - M20-S21 (MAKE DRAFT WRITES ATOMIC, RETRY TRANSIENT NETWORK ERRORS, THEN RERUN).
-Task block under From Architect. S20 is NOT ACCEPTED - it is committed locally at `443fda6` and
-UNPUSHED, because a transient network failure during its run destroyed working state.**
+**BALL: WORKER - M20-S22 (FIX THE EVIDENCE RANKING THAT CONTRADICTS THE QUOTE REQUIREMENT; BUILD
+A PROMPT BENCH). Task block under From Architect. S20 and S21 are both ACCEPTED and pushed at
+`e1dd808` - Architect re-verified: 24 focused tests green including the four S20 broke, protected
+set and field maps byte-identical, drafts restored, completeness recovered 0/28 -> 26/28.
+**The blocker for policy derivation is five lines, not a prompt.** `background.py:361` scores
+INSTRUCTION spans above FORM-FACE spans, the corpus is 5,021 instruction spans against 222
+form-face, and `background.py:118` then rejects any answer whose quote is not form-face. 99 of
+119 calls failed that way with ZERO transport failures - the model answered every time.**
+
+**Superseded (kept as history):** BALL: WORKER - M20-S21 (MAKE DRAFT WRITES ATOMIC, RETRY
+TRANSIENT NETWORK ERRORS, THEN RERUN). S20 is NOT ACCEPTED - it is committed locally at
+`443fda6` and UNPUSHED, because a transient network failure during its run destroyed working
+state.
 
 **Superseded (kept as history):** BALL: WORKER - M20-S20 (FILER-PROVIDED AS A FAILOVER, NOT A
 DEFAULT; finish the batching and the other two forms). S19 is ACCEPTED at `2b1361c` - Architect
@@ -4192,6 +4202,66 @@ TY2026 docs drop.
   environment failure, and no commit was made.
 
 ## From Architect
+
+- **M20-S22 TASK - FIX THE EVIDENCE PACKET, THEN BUILD THE BENCH THAT WOULD HAVE FOUND IT
+  (Architect, Claude Opus 5, 2026-08-01). John's framing: "if you give an AI the right context
+  and prompt, you can get the right response. Pretty clearly, we are spending a lot of horsepower
+  on non central issues." He is right, and this round is the proof.** Ledger: the RAN/NOT RUN
+  rule, D9, D6.
+  **THE DIAGNOSIS - Architect-measured 2026-08-01. THE PROMPT IS NOT THE PROBLEM.**
+  S21's rerun: `background_controls_attempted: 119`, `succeeded: 15`, `failed: 99`,
+  **`background_transport_failures: 0`**. The model answered every single call. All 99 failures
+  are one error: `background policy quote has no form-face citation`.
+  **Cause, and it is self-contradicting:**
+  - `tax_graph/extract/background.py:361` - `if span.relationship != "source": score += 1`.
+    **Instruction spans are scored ABOVE form-face spans.**
+  - The corpus is **5,021 instruction spans against 222 form-face spans** for the 1040, so the
+    top-8 evidence packet is overwhelmingly instruction text.
+  - `tax_graph/extract/background.py:118` then **rejects any answer whose quote does not match a
+    `relationship == "source"` (form-face) span.**
+  **We rank instructions highest, hand the model almost only instructions, then fail it for not
+  quoting the form face.** The model is doing exactly what the packet invites.
+  **NOTE the partial mitigation at `background.py:366-372` is insufficient:** it tops up
+  form-face spans only when `source_selected` is EMPTY. One weak form-face span in the top 8
+  suppresses the top-up while still leaving the packet instruction-dominated.
+  1. **FIX THE EVIDENCE PACKET SO IT MATCHES THE REQUIREMENT.** Either guarantee form-face spans
+     in the packet (reserve slots, and stop scoring instruction spans above them), or relax the
+     requirement to accept an instruction quote when the control genuinely has no form-face text.
+     **Do not do both blindly - decide, state which, and say why.** Report
+     attempted/succeeded/failed after the change; the number to move is `policy_derived`, which
+     is currently **0**.
+  2. **`policy_derived` IS THE METRIC. `policy_defaulted` IS NOT PROGRESS.** S21 moved 19
+     controls and every one was a failover, not a derivation. A drop in `unsupported` achieved by
+     failover is relabelling. Keep the columns split and report both.
+  3. **BUILD A READ-ONLY PROMPT BENCH. This is the round's durable deliverable.** Today,
+     diagnosing the above took the Architect a dozen queries of archaeology, and testing any fix
+     requires a multi-minute destructive pipeline run. Build a command that:
+     - takes a document and a small list of control or cell ids,
+     - runs the real prompt path for each,
+     - prints the **exact prompt sent**, the **exact response**, and **why the answer was
+       accepted or rejected** (which span matched, which validation failed),
+     - **writes NO drafts and touches no promoted artifact.**
+     Seconds, not minutes. Had this existed, today's diagnosis would have been one command.
+     Keep it small - it is a diagnostic tool, not a framework.
+  4. **DO NOT "TUNE THE PROMPTS" IN THIS ROUND.** There is no evidence of prompt-quality failure
+     anywhere in this project. Line 1z came back perfect on the first attempt in S13 and formula
+     completeness reached 28/28 in S18. **Every failure so far has been ours** - join logic,
+     hardcoded operand roles, evidence selection, destructive writes. If the bench later shows a
+     genuine prompt weakness, that is its own round with evidence attached.
+  5. **RECOVER THE TWO LOST FORMULA CELLS.** S21's rerun came back 26/28, not 28/28. Identify
+     which two and why, and report; do not paper over it.
+  **PROTECTED TEST SET, unchanged hard gate:** `graph/2025/{nodes,edges,rules}/` and
+  `graph/2025/field_maps/` byte-identical. No promotion, no hand-authoring, no live graph edit.
+  **FORCE-ADD THE REPORT** (`output/` is gitignored). **CITE THE ACTUAL COMMIT HASH.**
+  Tier 3. Declared files plus honest `RAN:`/`NOT RUN:`. ASCII, `git diff --check`, module-form
+  `validate 2025`, real preflight with `legacy_mined` explicit (expect **394**),
+  `check_citation_integrity` STRICT (expect **36**). Short pytest temp root; no `--basetemp`.
+  ONE local commit; no push. **Do not commit with known failing tests.**
+  **Config note: `extraction.expression_mode` stays `none`.**
+  **Stop conditions:** any diff in `graph/2025/{nodes,edges,rules}/` or `graph/2025/field_maps/`;
+  any draft promoted; the bench writing drafts or touching promoted artifacts; reporting
+  `defaulted` and `derived` as one number; tuning prompts without bench evidence; hand-authoring;
+  `legacy_mined` above 394; strict mismatches above 36.
 
 - **M20-S21 TASK - ATOMIC DRAFT WRITES, RETRY TRANSIENT NETWORK ERRORS, THEN RERUN (Architect,
   Claude Opus 5, 2026-07-31). Small, mechanical, and it protects every round after this one.**
