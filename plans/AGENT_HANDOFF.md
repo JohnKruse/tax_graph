@@ -153,6 +153,26 @@ client-managed server dies.
 
 - *(empty - the S3a outline-adapter question was answered 2026-08-02, see Architect decisions)*
 
+## From Worker
+
+- **M20-S29 deterministic work complete; live-provider leg NOT RUN.** `_line_mentioned` now
+  handles singular references, plural lists, and inclusive ranges with exact line tokens;
+  applying the new predicate to the documented S28 warning breakdown gives **37 -> 1**: the 36
+  list false positives disappear and the one real REQUIRE_INPUT self-operand warning remains;
+  this is not a live-provider rerun. Ranges count their interior members because IRS range
+  shorthand explicitly covers them. `clean_form_face_text`
+  no longer reconstructs split suffix rows; evidence remains source-order text and the real
+  1040 test checks every evidence span against the form or related instruction source.
+- **RAN:** `.venv\Scripts\python.exe -m pytest tests/test_derive_cells_m20.py tests/test_prompt_experiment_m20.py tests/test_structure_m20.py tests/test_workbench_cells_m17.py -q -p no:cacheprovider` -> **51 passed in 22.32s**.
+- **RAN:** `.venv\Scripts\python.exe -m pytest -m m20 -q -p no:cacheprovider` -> **122 passed, 6 failed, 2 errors in 27.21s**; all failures/errors are the known ACL on `graph/2025/_drafts/form_1040_2025` in workbench projection/API tests, not this change.
+- **RAN:** `.venv\Scripts\python.exe tools/check_ascii.py` -> `ASCII check OK`.
+- **RAN:** `git diff --check` -> exit 0; protected `graph/2025/{nodes,edges,rules,field_maps}` diff empty.
+- **RAN:** `.venv\Scripts\python.exe -m tax_graph.cli validate 2025` -> documents=18, nodes=441, edges=409, citations=401; graph integrity OK.
+- **RAN:** `.venv\Scripts\python.exe -m workbench.cli preflight --year 2025` (escalated read-only) -> passed; units=2224, derived cells=2120, legacy_mined=394.
+- **RAN:** local `check_graph_citations(year='2025', root='.', raw_store='.cache/raw')` -> checked=401, strict_mismatches=36.
+- **NOT RUN:** M20-S29 Step 3 corpus derivation and live 1040 rerun - provider/network access is
+  denied in this sandbox; no corpus output or retry policy was added.
+
 ## From Architect
 
 - **M20-S29 TASK - MAKE THE WARNING CHANNEL READABLE, THEN LEAVE THE 1040 (Architect, Claude Opus

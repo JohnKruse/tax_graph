@@ -517,13 +517,15 @@ def validate_cell_input(row: CellRecord) -> tuple[CellValidationIssue, ...]:
 
 
 def clean_form_face_text(text: str, line: str) -> str:
-    """Remove neighboring geometry text while preserving this row's evidence.
+    """Remove neighboring geometry text without changing source token order.
 
     The deterministic geometry pass can combine adjacent columns or rows into
     one text row.  The printed line token is the only stable boundary owned by
     this cell, so retain text from that token onward and remove a repeated
-    trailing token.  A split leading suffix such as ``z ... 1z`` is repaired
-    from the authoritative line anchor rather than retained as contamination.
+    trailing token.  A split leading suffix such as ``z ... 1z`` is trimmed
+    from the source prefix, but the remaining text is never reordered or
+    reconstructed.  The returned value therefore remains a literal substring
+    of the acquired text after whitespace normalization.
     """
     value = " ".join(str(text or "").split())
     anchor = str(line or "").strip()
@@ -537,9 +539,7 @@ def clean_form_face_text(text: str, line: str) -> str:
     first = matches[0]
     suffix = anchor[-1:] if anchor[-1:].isalpha() else ""
     if first.start() > 0 and suffix and value[:1].lower() == suffix.lower():
-        body = value[len(suffix):].strip()
-        body = re.sub(rf"\s+{re.escape(anchor)}$", "", body, flags=re.IGNORECASE).strip()
-        return f"{anchor} {body}".strip()
+        return value[len(suffix):].strip()
 
     cleaned = value[first.start():].strip()
     return re.sub(rf"\s+{re.escape(anchor)}$", "", cleaned, flags=re.IGNORECASE).strip()
@@ -738,8 +738,35 @@ def _line_sort_key(value: str) -> tuple[int, str]:
 
 
 def _line_mentioned(text: str, line: str) -> bool:
-    """Match a printed line token without treating 1 as 1a."""
-    return bool(re.search(rf"\bline\s+{re.escape(line)}\b", str(text), re.IGNORECASE))
+    """Match a printed line reference without treating ``1`` as ``1a``.
+
+    Singular references (``line 10``) and plural lists (``lines 1z, 2b,
+    and 8``) are matched by exact printed-line tokens.  A range explicitly
+    mentions every member of that range, so ``lines 1a through 1h`` counts as
+    mentioning ``1c``; treating the IRS shorthand as unrelated would create a
+    warning for a line the quote plainly covers.
+    """
+    target = str(line or "").strip().lower()
+    if not target:
+        return False
+    value = " ".join(str(text or "").split()).lower()
+    token = re.escape(target)
+    if re.search(rf"(?<!\w)line\s+{token}(?!\w)", value, re.IGNORECASE):
+        return True
+
+    for clause_match in re.finditer(r"\blines\s+([^.;:!?]+)", value, re.IGNORECASE):
+        clause = clause_match.group(1)
+        references = re.findall(r"(?<!\w)([0-9]+[a-z]?)(?!\w)", clause, re.IGNORECASE)
+        if target in references:
+            return True
+        for start, end in re.findall(
+            r"(?<!\w)([0-9]+[a-z]?)\s+through\s+([0-9]+[a-z]?)(?!\w)",
+            clause,
+            re.IGNORECASE,
+        ):
+            if _line_sort_key(start) <= _line_sort_key(target) <= _line_sort_key(end):
+                return True
+    return False
 
 
 def _evidence_span_text(row: CellRecord) -> str:

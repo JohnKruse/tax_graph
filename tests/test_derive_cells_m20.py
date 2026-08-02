@@ -15,6 +15,7 @@ from tax_graph.extract.cells import (
     expression_to_graph,
     load_cell_prompt,
     render,
+    _line_mentioned,
 )
 
 
@@ -457,12 +458,31 @@ def test_missing_both_evidence_sources_is_row_local_error() -> None:
         ("15", "jointly or 15 Subtract line 14 from line 11b. 15", "15 Subtract line 14 from line 11b."),
         ("21", "a box on line 21 Add lines 19 and 20 21", "21 Add lines 19 and 20"),
         ("22", "12a, 12b, 12c, 22 Subtract line 21 from line 18. 22", "22 Subtract line 21 from line 18."),
-        ("1z", "z Add lines 1a through 1h 1z", "1z Add lines 1a through 1h"),
-        ("25d", "d Add lines 25a through 25c 25d", "25d Add lines 25a through 25c"),
+        ("1z", "z Add lines 1a through 1h 1z", "Add lines 1a through 1h 1z"),
+        ("25d", "d Add lines 25a through 25c 25d", "Add lines 25a through 25c 25d"),
     ],
 )
 def test_clean_form_face_text_starts_at_its_own_line(line: str, raw: str, expected: str) -> None:
     assert clean_form_face_text(raw, line) == expected
+
+
+@pytest.mark.parametrize(
+    ("quote", "line", "expected"),
+    [
+        ("Subtract line 10 from line 9", "10", True),
+        ("Subtract line 10 from line 9", "9", True),
+        ("Add lines 1z, 2b, and 8", "1z", True),
+        ("Add lines 1z, 2b, and 8", "2b", True),
+        ("Add lines 1z, 2b, and 8", "8", True),
+        ("Add lines 1z, 2b, and 8", "1", False),
+        ("Add lines 25a through 25c", "25b", True),
+        ("Add lines 25a through 25c", "25d", False),
+    ],
+)
+def test_line_mentioned_supports_singular_lists_ranges_and_exact_tokens(
+    quote: str, line: str, expected: bool
+) -> None:
+    assert _line_mentioned(quote, line) is expected
 
 
 def test_second_property_failure_becomes_a_named_gap() -> None:
@@ -499,7 +519,15 @@ def test_real_1040_frame_carries_join_ownership_and_printed_line_inventory() -> 
     assert {"1a", "16", "23", "26"}.issubset(frame.rows[0].metadata["printed_lines"])
     assert all(row.metadata["evidence_spans"] for row in frame.rows)
     assert frame.rows[0].metadata["evidence_spans"][0]["text"] == frame.rows[0].form_face_text
-    assert all(row.label.startswith(row.line + " ") for row in frame.rows)
-    assert all(row.form_face_text.startswith(row.line + " ") for row in frame.rows)
+    source_texts = {document.text}
+    source_texts.update(source.text for source in document.related_sources)
+    assert all(
+        any(span["text"] in source_text for source_text in source_texts)
+        for row in frame.rows
+        for span in row.metadata["evidence_spans"]
+    )
+    rows_by_line = {row.line: row for row in frame.rows}
+    assert rows_by_line["1z"].form_face_text == "Add lines 1a through 1h 1z"
+    assert rows_by_line["25d"].form_face_text == "Add lines 25a through 25c 25d"
     assert frame.rows[5].label == "15 Subtract line 14 from line 11b. If zero or less, enter -0-. This is your taxable income"
     assert frame.rows[8].label == "22 Subtract line 21 from line 18. If zero or less, enter -0-"
