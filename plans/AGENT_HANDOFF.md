@@ -17,7 +17,7 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## BALL
 
-**BALL: WORKER - M20-S34 (SHOW THE MODEL THE PRINTED LINES).** Task block under
+**BALL: WORKER - M20-S34 (STOP LYING TO THE MODEL ABOUT THE FORM).** Task block under
 **From Architect**. **S33 is ACCEPTED at `771d169`.**
 
 ## Current round
@@ -87,6 +87,54 @@ than crashed or skipped, which is exactly the S31 D10 behaviour working. **This 
 question, not a bug: is Form 2441 in the base profile or not?** If yes it must be acquired like any
 other form; if no, the field map should not be contributing a document id to the count. Do not
 guess - see Open for Architect.
+
+**JOHN WAS RIGHT ABOUT THE TRAILING LINE TOKENS (raised 2026-08-02). I underplayed this and did
+not re-check it corpus-wide.** He repeatedly flagged labels shaped like `Add lines 24a through 24g
+24z` and believed they had been fixed. History: **S26** removed them by RECONSTRUCTING - moving the
+line token from the end to the front. **S29** stopped the reconstruction, on Architect instruction,
+because storing a reconstructed string as evidence broke the provenance rule that evidence text
+must be a literal substring of the acquired text. That brought the trailing tokens back. It was
+disclosed at the time and recorded as a deliberate trade-off - **but it was described as
+"cosmetic", verified on only the 1040's two rows, and never re-measured across the corpus.**
+
+**Measured now: 8 labels across the corpus still carry the trailing token**, and the framing of
+"provenance versus cosmetics" was a FALSE DILEMMA. Truncating from BOTH ends gives both: no
+reordering, and no trailing token.
+
+| document | rows affected |
+| --- | --- |
+| `form_1040_2025` | `1z`, `25d` |
+| `schedule_a_2025` | `5d`, `8e` |
+| `schedule_2_2025` | `1z` |
+| `schedule_1a_2025` | `2e`, `14c`, `36b` |
+
+**AND IT IS NOT ONLY COSMETIC - the cleaner DESTROYS real form text on at least one row.**
+`clean_form_face_text` truncates from the FIRST occurrence of the anchor token. When the printed
+line number sits in a right-hand column, the only occurrence is at the END, so everything before it
+is discarded:
+
+- `schedule_1a_2025` line `36b`: raw `your spouse was born before January 2, 1961, enter the amount
+  from line 35 36b` cleans to **`36b`** - 4% of the text kept, the entire label gone.
+- `form_6251_2025` line `32`: raw `Internal Revenue Service Go to www.irs.gov/Form6251 ... 32`
+  cleans to **`32`**. Different defect - the SPAN MATCHER selected page-header text for line 32, so
+  the real label was never in the span. Cleaning is not the culprit here; span selection is.
+
+Content loss is the founding defect of M20 (`PHASE_M20.md` section 1). A cleaner that silently
+drops a whole label is the same class of bug as the 52%-retention renderer, on a smaller surface.
+
+**ARCHITECT PROPOSAL, PARTIALLY TESTED - and the first version was WRONG.** Tried: keep whichever
+truncation retains more text. **Rejected - it regressed 4 rows**, restoring neighbour
+contamination on `form_1040_2025` lines 22, 34 and 37 (`12a, 12b, 12c, 22 Subtract...`,
+`Refund 34 If line 33...`) because on those rows the extra text IS the contamination. Text length
+is the wrong discriminator.
+**Corrected rule - discriminate on WHERE the anchor sits, not on length:** if some occurrence of
+the anchor has descriptive text AFTER it, the label starts there - truncate from the first such
+occurrence and drop a repeated trailing token (today's behaviour, correct for lines 22, 34, 37).
+If the anchor occurs ONLY as the final token, it is a right-column artifact - keep the preceding
+text, dropping a split leading suffix and the trailing anchor (correct for `1z`, `25d`, `5d`, `8e`,
+`2e`, `14c`, and crucially `36b`). Both branches only ever TRUNCATE, so the S29 substring guarantee
+holds in every case. This is reasoned and spot-checked, **not fully re-run - the Worker must
+implement it against tests rather than take it on trust.**
 
 ## Standing constraints (every M20 round)
 
@@ -200,7 +248,30 @@ client-managed server dies.
   `Add lines 8a through 8z` it expands the range the only sensible way, and the IRS has skipped
   8w, 8x and 8y - so we reject it, then spend a repair telling it what we knew all along.
 
-  **Step 1 - put the printed-line inventory in the prompt.** `build_cell_frame_from_document`
+  **Step 1 - fix `clean_form_face_text` so it stops destroying labels (deterministic, no model
+  calls). Do this first; it is content loss, which outranks everything else in M20.**
+  Discriminate on WHERE the anchor sits, not on how much text a branch keeps - the Architect tested
+  a length-based tiebreak and it regressed lines 22, 34 and 37 by restoring neighbour
+  contamination. Rule: if any occurrence of the anchor has descriptive text after it, the label
+  starts there - truncate from the first such occurrence and drop a repeated trailing token. If the
+  anchor occurs ONLY as the final token, it is a right-hand-column artifact - keep the preceding
+  text, dropping a split leading suffix and the trailing anchor. **Both branches must only
+  TRUNCATE**, so the S29 rule that evidence text stays a literal substring of the acquired text
+  holds unconditionally. Add a test asserting the substring property for every formula row in the
+  corpus, and table-driven cases for all of these, which are the real strings:
+  - `z Add lines 1a through 1h 1z` (1040 `1z`) -> `Add lines 1a through 1h`
+  - `d Add lines 25a through 25c 25d` (1040 `25d`) -> `Add lines 25a through 25c`
+  - `e Add lines 8a through 8c 8e` (Sch A `8e`) -> `Add lines 8a through 8c`
+  - `c Add lines 14a and 14b 14c` (Sch 1A `14c`) -> `Add lines 14a and 14b`
+  - `your spouse was born before January 2, 1961, enter the amount from line 35 36b` (Sch 1A `36b`)
+    -> the sentence WITHOUT the trailing `36b`, **not** `36b`
+  - `12a, 12b, 12c, 22 Subtract line 21 from line 18. If zero or less, enter -0- 22` (1040 `22`)
+    -> `22 Subtract line 21 from line 18. If zero or less, enter -0-` (unchanged - do not regress)
+  - `Refund 34 If line 33 is more than...` (1040 `34`) -> starts at `34` (unchanged)
+  **Report the corpus count of labels still ending in their own line token. It is 8 today and the
+  target is 0.**
+
+  **Step 2 - put the printed-line inventory in the prompt.** `build_cell_frame_from_document`
   already carries `printed_lines` in row metadata and the validator already uses it. Add it to the
   values passed by `_render_cell_prompt` and reference it from `prompts/derive_cells.md` with the
   new `<<name>>` syntax. State plainly in the prompt that operands naming a line on THIS form must
@@ -209,13 +280,13 @@ client-managed server dies.
   **Order the list the way the form does** (use the existing `_line_sort_key`), and do not
   truncate it - Schedule 1 has 61 anchors and the 1040 has 59, which are small.
 
-  **Step 2 - do NOT silently filter operands in code.** The tempting shortcut is to intersect the
+  **Step 3 - do NOT silently filter operands in code.** The tempting shortcut is to intersect the
   model's operands with the inventory and drop the rest. **Do not.** That would mask a genuine
   wrong-line answer as a clean derivation. `operand_not_printed` stays exactly as strict as it is
   now; the point of step 1 is that it should stop firing because the model was told the truth, not
   because we stopped checking.
 
-  **Step 3 - measure, and report the repair rate as the headline.** Rerun the full corpus. Report
+  **Step 4 - measure, and report the repair rate as the headline.** Rerun the full corpus. Report
   per document: resolved `(derived + repaired) / attempted`, **the repair count and rate**,
   errored, and the top three `validator_failures_by_kind`. **Sort by repair rate descending, worst
   first** - not by derived, which mis-ranked schedule_1 last round as 0% when it was 4/4.
@@ -225,8 +296,13 @@ client-managed server dies.
   Also report `form_6251_2025`, the only errored row in the corpus, with its failure kind. It is
   not this round's target, but it should stop being invisible.
 
-  **On the provider leg:** if approved external network is unavailable, do steps 1-2, declare step
-  3 NOT RUN up front, and hand back - the Architect will run it.
+  **Also report, do not fix:** `form_6251_2025` line 32 cleans to `32` because the SPAN MATCHER
+  selected page-header text (`Internal Revenue Service Go to www.irs.gov/Form6251 ...`) for that
+  row. That is a span-selection defect, not a cleaning defect, and it is the likely cause of the
+  corpus's only errored row. Name it in the report so it can be sized as its own round.
+
+  **On the provider leg:** if approved external network is unavailable, do steps 1-3, declare step
+  4 NOT RUN up front, and hand back - the Architect will run it.
 
   **Do not:** filter or normalise operands to make the check pass; relax any validator; add a
   retry policy; add a per-document special case; touch `form_2441_2025` (blocked on John, see Open
