@@ -2322,8 +2322,28 @@ the instruction slot; Authority explicitly reports missing authored coverage; do
 citation coverage is visible beside policy counts; and the dossier heading duplication/order
 warts are fixed. No promoted artifacts, graph semantics, verdicts, or citation records changed.
 
-**BALL: WORKER - M20-S24 (`derive_cells` AS A PURE FUNCTION, WITH EXPRESSION TREES). Task block
-under From Architect. S23 is ACCEPTED at `0d68ec2` and pushed - Architect re-verified: 46 tests
+**BALL: WORKER - M20-S25 (PROPERTY VALIDATORS AND REPAIR-ONCE). Task block under From Architect.
+S24 is ACCEPTED at `e6e94e3` - Architect re-verified: 21 tests green, protected set and field
+maps byte-identical, and two things checked directly rather than taken on trust. (1) The module
+makes ZERO disk writes - `open`, `write_text`, `mkdir`, `yaml.safe_dump`, `json.dump` all count
+0, so S20's failure mode (a network blip deleting `edges.yaml`) is now structurally impossible.
+(2) The tree-to-graph conversion reproduces the live convention exactly: feeding
+`max(line 18 - line 21, 0)` emits `form_1040_2025_root_line_22_pre_floor` plus
+`subtract_currency` minuend/subtrahend edges and `max_currency` candidate edges, every `rule_id`
+pointing at an existing reusable rule. It settled the naming question in favour of `_pre_floor`,
+matching the handcrafted set. It also now rejects model-invented quote span ids.**
+
+**THREE CARRY-FORWARDS INTO S25, all small - none was picked up by S24:**
+1. **Persist the `instruction_sections` frame and its coverage report.** It is still COMPUTED
+   only; there is no committed artifact to open. S23 reported "no output artifact was performed".
+   Force-add it (`output/` is gitignored).
+2. **Finish retiring the legacy owner parser**, or state plainly why it must stay as a
+   compatibility fallback for old synthetic spans and draft sidecars.
+3. **`derive_cells` has not yet been run against live data.** S24 was fixture-only and correct to
+   be. S25 should exercise it on the real 1040 and report row-level status counts.
+
+**Superseded (kept as history):** BALL: WORKER - M20-S24 (`derive_cells` AS A PURE FUNCTION,
+WITH EXPRESSION TREES). S23 is ACCEPTED at `0d68ec2` and pushed - Architect re-verified: 46 tests
 green, protected set and field maps byte-identical, and the two known collisions independently
 confirmed closed. `wrong_owner_spans` went **295 -> 0** across all five forms (the 1040 alone was
 97); 32 cross-schedule collisions resolved by form context; `unattributed_section_count: 0`;
@@ -4481,8 +4501,33 @@ TY2026 docs drop.
   a named review gap. Report attempted / repaired / gapped, and validator failures by kind.
   **Then re-measure** and report how many expressions gained a floor or cap the flat schema had
   been dropping.
+  **ALSO IN THIS ROUND - the three carry-forwards from the BALL:**
+  - **Persist the `instruction_sections` frame and its coverage report.** Still computed only;
+    no committed artifact exists to open. Force-add it (`output/` is gitignored).
+  - **Finish retiring the legacy owner parser**, or state plainly why it must stay.
+  - **Run `derive_cells` against the REAL 1040** - S24 was fixture-only and correct to be. Report
+    row-level status counts: derived, repaired, gapped, errored.
+  **Validators belong INSIDE `derive_cells`, at both edges** (engineering-plan: "Put the
+  validation inside the function"). Input checks: every row has a label; instruction text is
+  attributed to THIS form and line. Output checks: the property list above. A clean function with
+  no validation would still emit line 21's Student Loan arithmetic.
+  **PROTECTED TEST SET, unchanged hard gate:** `graph/2025/{nodes,edges,rules}/` and
+  `graph/2025/field_maps/` byte-identical. No promotion, no hand-authoring, no live graph edit,
+  nothing into `content_fingerprint`. **`derive_cells` must remain pure - zero disk writes.**
+  Tier 3. Declared files plus honest `RAN:`/`NOT RUN:`. ASCII, `git diff --check`, module-form
+  `validate 2025`, real preflight with `legacy_mined` explicit (expect **394**),
+  `check_citation_integrity` STRICT (expect **36**). Short pytest temp root; no `--basetemp`.
+  ONE local commit; no push. **Do not commit with known failing tests.** **CITE THE ACTUAL COMMIT
+  HASH.**
+  **Stop conditions:** any diff in the protected directories; any draft promoted; `derive_cells`
+  acquiring a disk write; making the operands-in-cited-text check a hard failure; more than one
+  repair attempt per row; hand-authoring; `legacy_mined` above 394; strict mismatches above 36.
+  **A model or provider failure is NOT a stop condition** - `google/gemini-3.6-flash` is known
+  good, and transport errors are retried per S21.
   **Review-surface work resumes after this round, not before.**
-  **PART A - THE SCHEMA IS DISCARDING THE FLOORS. Architect-proved with the S22 bench, commit
+
+- **SUPERSEDED (kept as history; delivered by S24 at `e6e94e3`) - PART A - THE SCHEMA IS
+  DISCARDING THE FLOORS. Architect-proved with the S22 bench, commit
   `509264b`.** The micro extraction schema is `{operation: <one enum>, source_lines: [flat],
   quote}`. **There is no slot for a wrapper, so `max(a - b, 0)` is unrepresentable.** The graph
   itself stores NESTED expressions, so the extraction schema is strictly less expressive than the
