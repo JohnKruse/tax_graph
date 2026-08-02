@@ -8,6 +8,7 @@ import pytest
 
 from tax_graph.extract.outline import OutlineNode
 from tax_graph.extract.outline_pipeline import _formula_outline_nodes
+from tax_graph.extract.prompts import render_prompt
 from experiments.derive_cells_s25 import run_documents
 
 
@@ -97,9 +98,51 @@ def test_harness_marks_zero_attempt_document_empty_with_outline_inventory(monkey
     ]
 
 
-def test_cell_prompt_distinguishes_same_form_and_cross_form_operands() -> None:
-    prompt = Path(__file__).resolve().parents[1] / "prompts" / "derive_cells.md"
-    text = " ".join(prompt.read_text(encoding="ascii").split())
+def test_all_prompt_templates_render_with_representative_values() -> None:
+    prompt_dir = Path(__file__).resolve().parents[1] / "prompts"
+    values = {
+        "document_id": "document_2025",
+        "document_kind": "tax_form",
+        "tax_year": "2025",
+        "source_url": "https://example.test/source",
+        "operations": "COPY, SUM",
+        "schemas": "schema summary",
+        "source_text": "source text",
+        "fields": "field summary",
+        "links": "{}",
+        "related_sources": "none",
+        "draft_objects": "none",
+        "form": "form_1040_2025",
+        "line": "7",
+        "label": "Taxable income",
+        "instruction_locator": "span_line_7",
+        "form_face_text": "Form face text",
+        "instruction_text": "Instruction text",
+    }
 
-    assert 'For a sibling line on this same form, use only {"line": "7"}' in text
-    assert 'Use {"form": "form_XXXX_2025", "line": "7"} only for a line on another form.' in text
+    rendered_prompts = {}
+    for prompt_path in sorted(prompt_dir.glob("*.md")):
+        rendered = render_prompt(prompt_path.read_text(encoding="ascii"), values)
+        rendered_prompts[prompt_path.name] = rendered
+        assert "<<" not in rendered
+        assert "{form}" not in rendered
+
+    cell_text = " ".join(rendered_prompts["derive_cells.md"].split())
+    assert 'For a sibling line on this same form, use only {"line": "7"}' in cell_text
+    assert 'Use {"form": "form_XXXX_2025", "line": "7"} only for a line on another form.' in cell_text
+
+
+def test_prompt_renderer_rejects_missing_values() -> None:
+    with pytest.raises(ValueError, match="unsupported placeholder: missing"):
+        render_prompt("before <<missing>> after", {})
+
+
+def test_prompt_renderer_rejects_leftover_tokens() -> None:
+    with pytest.raises(ValueError, match="unsupported placeholder: <<bad token>>"):
+        render_prompt("before <<bad token>> after", {})
+
+
+def test_prompt_renderer_does_not_rescan_values() -> None:
+    value = 'literal <<other>> and {"line": "7"}'
+
+    assert render_prompt("value: <<name>>", {"name": value}) == f"value: {value}"

@@ -16,7 +16,7 @@ from typing import Any, Iterable, Mapping, Protocol, Sequence
 
 from tax_graph.config import get_config_value
 from tax_graph.extract.llm_client import LlmClient, response_telemetry
-from tax_graph.extract.prompts import load_prompt_template
+from tax_graph.extract.prompts import load_prompt_template, render_prompt
 
 
 CELL_INPUT_FIELDS = (
@@ -1130,9 +1130,9 @@ def _render_cell_prompt(template: str, row: CellRecord) -> str:
         "instruction_locator": row.instruction_locator,
     }
     try:
-        return template.format(**values)
-    except KeyError as exc:
-        raise ValueError(f"cell prompt has unsupported placeholder: {exc.args[0]}") from exc
+        return render_prompt(template, values)
+    except ValueError as exc:
+        raise ValueError(f"cell {exc}") from exc
 
 
 def _known_quote_spans(row: CellRecord, quote: str) -> list[tuple[str, str]]:

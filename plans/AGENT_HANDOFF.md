@@ -81,6 +81,21 @@ the S13/S24/S28 principle that identity resolution belongs in code.
 is clean and per-step, which made this review easier, so no complaint - but say so up front next
 time rather than silently deviating.
 
+**M20-S32 WORKER PROGRESS (2026-08-02).** Steps 1-3 implemented. Shared `render_prompt` now uses
+`<<name>>`, fails closed on missing or malformed tokens, and substitutes values literally without
+rescanning them. All three prompt files and all three render sites use it; JSON examples are plain
+JSON. The prompt test renders every `prompts/*.md` file and covers missing, leftover, and literal
+value cases. Protected graph directories are unchanged. Step 4 is NOT RUN: the Worker sandbox has
+no outbound provider access; Architect owns the live three-form slice.
+
+RAN: `.venv\Scripts\python.exe -m pytest tests\test_m20_s31.py tests\test_derive_cells_m20.py tests\test_extract_m4.py -q` -> `68 passed, 1 warning in 6.24s` (warning is the inherited `.pytest_cache` ACL).
+RAN: `.venv\Scripts\python.exe tools\check_ascii.py` -> `ASCII check OK`.
+RAN: `git diff --check` -> pass.
+RAN: `.venv\Scripts\python.exe -m tax_graph.cli validate 2025` -> `documents=18 nodes=441 tables=2 edges=409 rules=17 citations=401 decisions=2 routing_edges=90 triggers=12 expectations=4; graph integrity OK`.
+RAN: `.venv\Scripts\python.exe -m workbench.cli preflight --year 2025` -> `review preflight passed; units=2224; derived cells=2120; legacy_mined=394` (with approved elevated read access because the known draft ACL blocks sandbox reads).
+RAN: `.venv\Scripts\python.exe -c "from tax_graph.acquire.citation_check import check_graph_citations; r=check_graph_citations(year='2025', raw_store='.cache/raw'); print(f'checked={r.checked} strict_mismatches={len(r.mismatches)}'); raise SystemExit(0 if r.ok else 1)"` -> `checked=401 strict_mismatches=36` (inherited baseline, exit 1).
+RAN: `.venv\Scripts\python.exe -m pytest tests\test_review_preflight_m15.py -q` -> `1 failed, 1 error` from the same known draft ACL; no code assertion ran to completion.
+
 **Gates re-verified by the Architect:** 99 passed on a short temp root; ASCII OK; `validate 2025`
 graph integrity OK; protected set byte-identical across `8414211..bf9f7cf`.
 

@@ -6,7 +6,7 @@ object agrees with the source. Use ASCII text only.
 
 Return one raw JSON object only. Do not wrap it in Markdown or prose.
 For every object listed under Draft objects to review, return exactly one finding:
-{{"kind": "...", "object_id": "...", "agrees": true|false, "reason": "..."}}.
+{"kind": "...", "object_id": "...", "agrees": true|false, "reason": "..."}.
 
 Check formulas and cross-form flow declarations against bundled instructions when present.
 Cross-form flows should be outbound FEEDS declarations, cited to the instruction document,
@@ -15,28 +15,28 @@ For every edge and rule, explicitly check the operation, the target, the operand
 and the operand role. An expression is not agreed merely because its rule operation is valid.
 
 Document:
-- document_id: {document_id}
-- kind: {document_kind}
-- tax_year: {tax_year}
-- source_url: {source_url}
+- document_id: <<document_id>>
+- kind: <<document_kind>>
+- tax_year: <<tax_year>>
+- source_url: <<source_url>>
 
 Allowed operations:
-{operations}
+<<operations>>
 
 Schemas:
-{schemas}
+<<schemas>>
 
 Rendered source text:
-{source_text}
+<<source_text>>
 
 Field grid JSON:
-{fields}
+<<fields>>
 
 Extracted source links:
-{links}
+<<links>>
 
 Bundled related source context:
-{related_sources}
+<<related_sources>>
 
 Draft objects to review:
-{draft_objects}
+<<draft_objects>>

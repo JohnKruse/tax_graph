@@ -13,9 +13,9 @@ Guardrails:
 - Node node_type must be one of the schema enum values: form_line, box, worksheet_field,
   fact, computed, concept. Use form_line for IRS lines and computed for totals/calculated
   values; never use "line" or "total" as node_type.
-- Edge condition, when present, must be an object shaped like {{"node_id": "...", "equals": "..."}}
-  or {{"decision_id": "...", "equals": "..."}}. Do not use a plain string condition.
-- Rule operation must be one of: {operations}
+- Edge condition, when present, must be an object shaped like {"node_id": "...", "equals": "..."}
+  or {"decision_id": "...", "equals": "..."}. Do not use a plain string condition.
+- Rule operation must be one of: <<operations>>
 - Every rule must have at least one citation_ref.
 - Put provenance only in the top-level provenance array. Do not include provenance inside
   nodes, edges, rules, citations, or decisions.
@@ -31,22 +31,22 @@ Guardrails:
 - Use ASCII text only.
 
 Document:
-- document_id: {document_id}
-- kind: {document_kind}
-- tax_year: {tax_year}
-- source_url: {source_url}
+- document_id: <<document_id>>
+- kind: <<document_kind>>
+- tax_year: <<tax_year>>
+- source_url: <<source_url>>
 
 Schemas:
-{schemas}
+<<schemas>>
 
 Rendered source text:
-{source_text}
+<<source_text>>
 
 Field grid JSON:
-{fields}
+<<fields>>
 
 Extracted source links:
-{links}
+<<links>>
 
 Bundled related source context:
-{related_sources}
+<<related_sources>>

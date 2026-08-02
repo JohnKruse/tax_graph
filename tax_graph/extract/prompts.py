@@ -5,6 +5,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 import re
+from collections.abc import Mapping
 from typing import Any
 
 from tax_graph.config import get_config_value, project_root
@@ -19,6 +20,45 @@ def load_prompt_template(path: str | Path, *, root: str | Path | None = None) ->
     if not prompt_path.is_absolute():
         prompt_path = root_path / prompt_path
     return prompt_path.read_text(encoding="utf-8")
+
+
+_PROMPT_TOKEN_RE = re.compile(r"<<.*?>>", re.DOTALL)
+_PROMPT_PLACEHOLDER_RE = re.compile(r"<<([A-Za-z_][A-Za-z0-9_]*)>>")
+
+
+def render_prompt(template: str, values: Mapping[str, str]) -> str:
+    """Render a prompt with literal ``<<name>>`` substitutions.
+
+    Prompt values are substituted exactly once.  This keeps braces available for
+    ordinary JSON examples and prevents a token embedded in a value from being
+    interpreted as a second template pass.
+    """
+    tokens = list(_PROMPT_TOKEN_RE.finditer(template))
+    for token_match in tokens:
+        token = token_match.group(0)
+        placeholder = _PROMPT_PLACEHOLDER_RE.fullmatch(token)
+        if placeholder is None:
+            raise ValueError(f"prompt has unsupported placeholder: {token}")
+        name = placeholder.group(1)
+        if name not in values:
+            raise ValueError(f"prompt has unsupported placeholder: {name}")
+
+    replacements: dict[str, str] = {}
+
+    def replace_placeholder(match: re.Match[str]) -> str:
+        index = len(replacements)
+        sentinel = f"\x00tax_graph_prompt_value_{index}\x00"
+        replacements[sentinel] = str(values[match.group(1)])
+        return sentinel
+
+    rendered = _PROMPT_PLACEHOLDER_RE.sub(replace_placeholder, template)
+    leftover = _PROMPT_TOKEN_RE.search(rendered)
+    if leftover is not None:
+        raise ValueError(f"prompt has unsupported placeholder: {leftover.group(0)}")
+    if not replacements:
+        return rendered
+    sentinel_re = re.compile("|".join(re.escape(sentinel) for sentinel in replacements))
+    return sentinel_re.sub(lambda match: replacements[match.group(0)], rendered)
 
 
 def closed_operations(*, root: str | Path | None = None) -> list[str]:
@@ -210,17 +250,20 @@ def assemble_generator_prompt(
         "prompts/extract_generator.md",
     )
     template = load_prompt_template(template_path, root=root)
-    return template.format(
-        document_id=document.document_id,
-        document_kind=document.kind,
-        tax_year=document.year,
-        source_url=document.url,
-        operations=", ".join(closed_operations(root=root)),
-        schemas=schema_prompt_summary(root=root),
-        source_text=document.text,
-        fields=field_prompt_summary(document.fields),
-        links=json.dumps(document.links, indent=2, sort_keys=True),
-        related_sources=related_source_prompt(document),
+    return render_prompt(
+        template,
+        {
+            "document_id": document.document_id,
+            "document_kind": document.kind,
+            "tax_year": str(document.year),
+            "source_url": document.url,
+            "operations": ", ".join(closed_operations(root=root)),
+            "schemas": schema_prompt_summary(root=root),
+            "source_text": document.text,
+            "fields": field_prompt_summary(document.fields),
+            "links": json.dumps(document.links, indent=2, sort_keys=True),
+            "related_sources": related_source_prompt(document),
+        },
     )
 
 
@@ -239,18 +282,21 @@ def assemble_critic_prompt(
         "prompts/extract_critic.md",
     )
     template = load_prompt_template(template_path, root=root)
-    return template.format(
-        document_id=document.document_id,
-        document_kind=document.kind,
-        tax_year=document.year,
-        source_url=document.url,
-        operations=", ".join(closed_operations(root=root)),
-        schemas=schema_prompt_summary(root=root),
-        source_text=document.text,
-        fields=field_prompt_summary(document.fields),
-        links=json.dumps(document.links, indent=2, sort_keys=True),
-        related_sources=related_source_prompt(document),
-        draft_objects=draft_object_prompt_summary(batch),
+    return render_prompt(
+        template,
+        {
+            "document_id": document.document_id,
+            "document_kind": document.kind,
+            "tax_year": str(document.year),
+            "source_url": document.url,
+            "operations": ", ".join(closed_operations(root=root)),
+            "schemas": schema_prompt_summary(root=root),
+            "source_text": document.text,
+            "fields": field_prompt_summary(document.fields),
+            "links": json.dumps(document.links, indent=2, sort_keys=True),
+            "related_sources": related_source_prompt(document),
+            "draft_objects": draft_object_prompt_summary(batch),
+        },
     )
 
 

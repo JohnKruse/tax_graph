@@ -77,7 +77,7 @@ def test_derive_cells_returns_row_level_results_and_writes_nothing(tmp_path: Pat
     ])
     before = sorted(path.relative_to(tmp_path).as_posix() for path in tmp_path.rglob("*"))
 
-    result = derive_cells(_frame(), "line {line}: {form_face_text}", "secret", client=client)
+    result = derive_cells(_frame(), "line <<line>>: <<form_face_text>>", "secret", client=client)
 
     after = sorted(path.relative_to(tmp_path).as_posix() for path in tmp_path.rglob("*"))
     assert before == after
@@ -91,7 +91,7 @@ def test_derive_cells_returns_row_level_results_and_writes_nothing(tmp_path: Pat
 
 def test_cell_frame_round_trip_and_missing_client_fail_closed() -> None:
     frame = CellFrame.from_rows(_frame())
-    result = derive_cells(frame, "{form} {line}", None)
+    result = derive_cells(frame, "<<form>> <<line>>", None)
 
     assert isinstance(result, CellFrame)
     assert result.coverage == {"total": 2, "error": 2}
@@ -113,7 +113,7 @@ def test_quote_span_id_is_resolved_from_verbatim_match() -> None:
         }
     ])
 
-    result = derive_cells(_frame()[:1], "{line}", "secret", client=client)
+    result = derive_cells(_frame()[:1], "<<line>>", "secret", client=client)
 
     assert result[0]["status"] == "derived"
     assert result[0]["quote_span_id"] == "span_line_15"
@@ -163,7 +163,7 @@ def test_quote_span_schema_does_not_expose_source_identity() -> None:
         },
     ])
 
-    result = derive_cells(CellFrame.from_rows(rows), "{line}", "secret", client=client)
+    result = derive_cells(CellFrame.from_rows(rows), "<<line>>", "secret", client=client)
 
     assert result.coverage == {"total": 2, "derived": 2}
     assert client.calls[0]["schema"]["required"] == ["expression", "quote"]
@@ -194,7 +194,7 @@ def test_require_input_may_reference_its_own_line() -> None:
         }
     ])
 
-    result = derive_cells(CellFrame.from_rows([row]), "{line}", "secret", client=client)
+    result = derive_cells(CellFrame.from_rows([row]), "<<line>>", "secret", client=client)
 
     assert result.coverage == {"total": 1, "derived": 1}
     assert result.validation["validator_warnings_by_kind"] == {}
@@ -216,7 +216,7 @@ def test_require_input_non_self_operand_still_warns_when_quote_omits_it() -> Non
         }
     ])
 
-    result = derive_cells(CellFrame.from_rows([row]), "{line}", "secret", client=client)
+    result = derive_cells(CellFrame.from_rows([row]), "<<line>>", "secret", client=client)
 
     assert result.coverage == {"total": 1, "derived": 1}
     assert result.validation["validator_warnings_by_kind"] == {"operand_not_in_quote": 1}
@@ -253,12 +253,12 @@ def test_tree_to_graph_preserves_floor_shape_and_subtraction_roles() -> None:
 
 def test_prompt_is_loaded_from_config(tmp_path: Path) -> None:
     prompt_path = tmp_path / "cells.md"
-    prompt_path.write_text("{form} / {line}", encoding="ascii")
+    prompt_path.write_text("<<form>> / <<line>>", encoding="ascii")
 
     assert load_cell_prompt(
         {"extraction": {"prompts": {"cells": "cells.md"}}},
         root=tmp_path,
-    ) == "{form} / {line}"
+    ) == "<<form>> / <<line>>"
 
 
 def test_property_failure_is_repaired_once_and_reported() -> None:
@@ -279,7 +279,7 @@ def test_property_failure_is_repaired_once_and_reported() -> None:
     client = FakeClient([bad, good])
     frame = CellFrame.from_rows(_frame()[:1])
 
-    result = derive_cells(frame, "{form} {line}", "secret", client=client)
+    result = derive_cells(frame, "<<form>> <<line>>", "secret", client=client)
 
     assert result.rows[0].status == "repaired"
     assert result.rows[0].rendered == "max(line 11b - line 14, 0)"
@@ -310,7 +310,7 @@ def test_properties_allow_explicit_cross_form_and_warn_on_quote_omission() -> No
         }
     ])
 
-    result = derive_cells(CellFrame.from_rows([row]), "{line}", "secret", client=client)
+    result = derive_cells(CellFrame.from_rows([row]), "<<line>>", "secret", client=client)
 
     assert result.rows[0].status == "derived"
     assert result.validation_report["gapped"] == 0
@@ -329,7 +329,7 @@ def test_operand_absent_from_quote_is_warning_not_failure() -> None:
         }
     ])
 
-    result = derive_cells(CellFrame.from_rows([row]), "{line}", "secret", client=client)
+    result = derive_cells(CellFrame.from_rows([row]), "<<line>>", "secret", client=client)
 
     assert result.rows[0].status == "derived"
     assert result.validation_report["gapped"] == 0
@@ -364,7 +364,7 @@ def test_input_line_operands_are_valid_when_inventory_contains_all_printed_lines
         }
     ])
 
-    result = derive_cells(CellFrame.from_rows([row]), "{line}", "secret", client=client)
+    result = derive_cells(CellFrame.from_rows([row]), "<<line>>", "secret", client=client)
 
     assert result.rows[0].status == "derived"
     assert result.validation_report["validator_failures_by_kind"] == {}
@@ -388,7 +388,7 @@ def test_form_face_evidence_is_sufficient_without_instruction_text() -> None:
         }
     ])
 
-    result = derive_cells(CellFrame.from_rows([row]), "{line}", "secret", client=client)
+    result = derive_cells(CellFrame.from_rows([row]), "<<line>>", "secret", client=client)
 
     assert result.rows[0].status == "derived"
     assert result.validation_report["errored"] == 0
@@ -421,7 +421,7 @@ def test_wrong_instruction_owner_drops_section_but_keeps_form_face() -> None:
         }
     ])
 
-    result = derive_cells(CellFrame.from_rows([row]), "{line}", "secret", client=client)
+    result = derive_cells(CellFrame.from_rows([row]), "<<line>>", "secret", client=client)
 
     assert result.rows[0].status == "derived"
     assert result.rows[0].instruction_text == ""
@@ -467,7 +467,7 @@ def test_wrong_instruction_line_drops_section_but_keeps_form_face() -> None:
 def test_missing_both_evidence_sources_is_row_local_error() -> None:
     row = {**_frame()[0], "form_face_text": "", "instruction_text": "", "instruction_locator": ""}
 
-    result = derive_cells(CellFrame.from_rows([row]), "{line}", "secret", client=FakeClient([]))
+    result = derive_cells(CellFrame.from_rows([row]), "<<line>>", "secret", client=FakeClient([]))
 
     assert result.rows[0].status == "error"
     assert "missing_evidence" in result.rows[0].error
@@ -515,7 +515,7 @@ def test_second_property_failure_becomes_a_named_gap() -> None:
     }
     client = FakeClient([invalid, invalid])
 
-    result = derive_cells(CellFrame.from_rows(_frame()[:1]), "{line}", "secret", client=client)
+    result = derive_cells(CellFrame.from_rows(_frame()[:1]), "<<line>>", "secret", client=client)
 
     assert result.rows[0].status == "error"
     assert "validation gap after one repair" in result.rows[0].error

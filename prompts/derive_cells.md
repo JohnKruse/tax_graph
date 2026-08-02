@@ -11,13 +11,13 @@ computed, use REQUIRE_INPUT with one line operand naming itself.
 
 The quote must be copied verbatim from the supplied form-face or instruction text.
 
-form: {form}
-line: {line}
-label: {label}
-instruction locator: {instruction_locator}
+form: <<form>>
+line: <<line>>
+label: <<label>>
+instruction locator: <<instruction_locator>>
 
 form face text:
-{form_face_text}
+<<form_face_text>>
 
 instruction text:
-{instruction_text}
+<<instruction_text>>
