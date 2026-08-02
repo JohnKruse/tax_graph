@@ -2487,8 +2487,71 @@ the instruction slot; Authority explicitly reports missing authored coverage; do
 citation coverage is visible beside policy counts; and the dossier heading duplication/order
 warts are fixed. No promoted artifacts, graph semantics, verdicts, or citation records changed.
 
-**BALL: WORKER - M20-S27 (CLOSE THE GAPS: LINE INVENTORY, SPAN IDS, HONEST ERRORS). Task block
-under From Architect. S26 is ACCEPTED at `b3e102b` - and the pipeline PRODUCES REAL EXPRESSIONS
+**BALL: WORKER - M20-S28 (THE LAST FIVE ROWS ARE ALL DETERMINISTIC BUGS). Task block under
+From Architect. S27 is ACCEPTED at `8027161`.** Architect re-verified independently on the live
+provider: **derived 5 -> 12 of 17** on the real 1040 with `openai/gpt-5.6-luna`, and
+`operand_not_printed` collapsed **31 -> 1**. `printed_lines` now carries all 59 printed anchors
+(was 17 formula-only); protected set byte-identical; `derive_cells` still has ZERO disk writes;
+`legacy_mined=394`; strict mismatches=36. The Worker also recorded run-to-run nondeterminism
+honestly instead of hiding it behind retries, which is exactly right.
+**ALL FIVE remaining failures have deterministic causes. None is model quality - do not tune the
+model, fix the code.** Architect diagnosed each directly against live data:
+1. **Lines 1z and 25d - `quote_not_verbatim` is UNWINNABLE.** S26's `clean_form_face_text`
+   cleans `form_face_text` (what the prompt shows the model) but leaves
+   `metadata["evidence_spans"][].text` RAW, and the verbatim check runs against the RAW text.
+   Where cleaning only TRUNCATES, the cleaned string stays a substring of the raw one and quoting
+   works - that is why line 22 passes (`12a, 12b, 12c, 22 Subtract...` -> `22 Subtract...`). But
+   the "split leading suffix" branch RECONSTRUCTS by moving the line token from the end to the
+   front: `z Add lines 1a through 1h 1z` -> `1z Add lines 1a through 1h`. The cleaned text is
+   then NOT a substring of the raw span, so **every possible quote fails**. Fix by cleaning the
+   evidence span text with the same function, or by never reconstructing - truncate only.
+2. **Lines 35a and 36 - `self_reference` contradicts the prompt.** `prompts/derive_cells.md:7`
+   instructs: "If this line is not computed, use REQUIRE_INPUT with one line operand naming
+   itself." `validate_cell_output` (`cells.py:613`) then hard-fails ANY operand equal to the
+   row's own line, with no REQUIRE_INPUT exemption. Both lines are genuine filer inputs ("Amount
+   of line 34 you want refunded to you", "...applied to your 2026 estimated tax"), so the model
+   obeys the prompt and is rejected 100% of the time. **Exempt REQUIRE_INPUT from the
+   self-reference check.** Keep the check for every computed operation - it caught the real S12
+   defect.
+3. **Line 37 - `quote_span_id` enum and validation disagree.** The schema enum offers ALL of the
+   row's evidence spans (`_known_quote_span_ids`, unfiltered), but `_apply_payload` accepts only
+   spans whose text CONTAINS the quote (`_known_quote_spans` filters by `_contains_verbatim`).
+   Line 37 has both a form-face span and a 5001-char instruction section, so the model can name a
+   valid enum id while quoting the other span and be hard-rejected. **Preferred fix: stop asking
+   the model for the span id at all.** The project principle since S13/S24 is that identity
+   resolution stays in CODE and the model is never asked for ids; code can determine which span
+   contains the verbatim quote. Derive `quote_span_id` from the match and drop it from the
+   schema. If it is kept as a model field, the enum must be the quote-filtered set.
+**Then re-run the real 1040 and report derived / repaired / gapped / errored.** With all three
+fixed, expect close to 17/17; anything still failing is then a genuine model or evidence problem
+and worth reporting as such.
+**Also still open from S27:** run-to-run nondeterminism at `temperature: 0` persists (Architect
+saw derived=12 with a different error mix than the Worker's two runs). Keep recording it. Do not
+paper over it with retries.
+**PROTECTED TEST SET, unchanged hard gate:** `graph/2025/{nodes,edges,rules}/` and
+`graph/2025/field_maps/` byte-identical. No promotion, no hand-authoring, no live graph edit.
+**`derive_cells` must remain pure - zero disk writes.**
+**PYTEST TEMP ROOT MUST BE SHORT** (e.g. `C:\tgt`). The Architect burned a session reporting 22
+suite failures of which 8+ were `WinError 206` path-length artifacts of a deep temp root. With a
+short root the same files go 11 failed -> 3.
+**KNOWN-RED BASELINE, not caused by S27 and not to be fixed in this round** - inherit it, do not
+get blamed for it: `test_review_scope_migration_m15.py::test_live_queue_migration_...`
+(FileNotFoundError, `review_queue/2025/deferred_review.yaml` - tracked dir with no files);
+`test_schedule_2_m16.py::test_schedule_2_part_i_raw_acroform_identity` (`assert '1a' == 'z'`;
+reads `.cache/raw/.../schedule_2_2025.fields.json`, gitignored and regenerated 2026-07-28 while
+the source PDF is unchanged, so a code-only bisect proves nothing);
+`test_address_campaign_m15r.py::test_form_8949_cross_form_claims_resolve_exactly`
+(`realized 0, expected 6`). All three depend on untracked local state, which is why CI is green.
+Tier 3. Declared files plus honest `RAN:`/`NOT RUN:`. ASCII, `git diff --check`, module-form
+`validate 2025`, preflight with `legacy_mined` explicit (394), strict citations (36).
+ONE local commit; no push.
+**Stop conditions:** any diff in the protected directories; `derive_cells` acquiring a disk
+write; removing the self-reference check instead of exempting REQUIRE_INPUT; weakening the
+verbatim-quote requirement instead of fixing the cleaned/raw mismatch; adding any gate keyed on
+instruction-section coverage.
+
+**Superseded (kept as history):** BALL: WORKER - M20-S27 (CLOSE THE GAPS: LINE INVENTORY, SPAN
+IDS, HONEST ERRORS). S26 is ACCEPTED at `b3e102b` - and the pipeline PRODUCES REAL EXPRESSIONS
 for the first time in M20.** Architect ran it live (the Worker could not - see below).
 **Real 2025 Form 1040, 17 rows, `google/gemini-3.6-flash`: derived=5, repaired=2, gapped=10,
 errored=0.** The floors the flat schema had been silently dropping are now captured:
