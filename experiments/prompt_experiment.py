@@ -33,6 +33,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
 from tax_graph.config import load_config  # noqa: E402
+from tax_graph.extract.cells import expression_schema, render  # noqa: E402
 from tax_graph.extract.llm_client import LlmUnavailable, build_llm_client  # noqa: E402
 from tax_graph.extract.instruction_sections import (  # noqa: E402
     InstructionSectionsFrame,
@@ -77,112 +78,6 @@ PHRASING_HINTS = """\
 "whichever is larger"           -> MAX
 "from Form N, line L"           -> a fetch from another form, not a computation
 """
-
-
-def response_schema(operations: list[str]) -> dict:
-    """FLAT shape: one operation plus a list of source lines. Cannot nest."""
-    return {
-        "type": "object",
-        "additionalProperties": False,
-        "required": ["operation", "source_lines", "quote"],
-        "properties": {
-            "operation": {"type": "string", "enum": operations},
-            "source_lines": {
-                "type": "array",
-                "items": {"type": "string", "minLength": 1},
-            },
-            "quote": {"type": "string"},
-        },
-    }
-
-
-def _operand(operations: list[str], depth: int) -> dict:
-    """One operand: a printed line, a line on another form, a constant, or a sub-expression."""
-    choices = [
-        {
-            "type": "object",
-            "additionalProperties": False,
-            "required": ["line"],
-            "properties": {"line": {"type": "string", "minLength": 1}},
-        },
-        {
-            # cross-form fetch: "from Form 2441, line 26"
-            "type": "object",
-            "additionalProperties": False,
-            "required": ["form", "line"],
-            "properties": {
-                "form": {"type": "string", "minLength": 1},
-                "line": {"type": "string", "minLength": 1},
-            },
-        },
-        {
-            "type": "object",
-            "additionalProperties": False,
-            "required": ["const"],
-            "properties": {"const": {"type": "number"}},
-        },
-    ]
-    if depth > 0:
-        choices.append(_expr(operations, depth - 1))
-    return {"anyOf": choices}
-
-
-def _expr(operations: list[str], depth: int) -> dict:
-    return {
-        "type": "object",
-        "additionalProperties": False,
-        "required": ["op", "args"],
-        "properties": {
-            "op": {"type": "string", "enum": operations},
-            "args": {
-                "type": "array",
-                "minItems": 1,
-                "items": _operand(operations, depth),
-            },
-        },
-    }
-
-
-def expression_schema(operations: list[str], depth: int = 2) -> dict:
-    """NESTED shape: an expression tree, so max(a - b, 0) is expressible."""
-    return {
-        "type": "object",
-        "additionalProperties": False,
-        "required": ["expression", "quote"],
-        "properties": {
-            "expression": _expr(operations, depth),
-            "quote": {"type": "string"},
-        },
-    }
-
-
-INFIX = {"SUM": " + ", "SUBTRACT": " - ", "MULTIPLY": " * ", "DIVIDE": " / "}
-
-
-def render(node: dict, in_infix: bool = False) -> str:
-    """Render an expression tree as ordinary math.
-
-    Infix for arithmetic, functional for everything else. Parentheses appear
-    ONLY where an infix sub-expression sits inside another infix operation - a
-    comma already separates function arguments, so max(a - b, 0) needs none.
-    """
-    if not isinstance(node, dict):
-        return str(node)
-    if "form" in node and "line" in node:
-        return f"{node['form']} line {node['line']}"
-    if "line" in node:
-        return f"line {node['line']}"
-    if "const" in node:
-        c = node["const"]
-        return str(int(c)) if float(c).is_integer() else str(c)
-
-    op = str(node.get("op", "?")).upper()
-    is_infix = op in INFIX and len(node.get("args") or []) > 1
-    args = [render(a, in_infix=is_infix) for a in (node.get("args") or [])]
-    if is_infix:
-        body = INFIX[op].join(args)
-        return f"({body})" if in_infix else body
-    return f"{op.lower()}({', '.join(args)})"
 
 
 EXPR_PROMPT_TEMPLATE = """\

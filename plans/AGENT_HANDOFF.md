@@ -14,6 +14,41 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## Current state (2026-07-31)
 
+**Worker session checkpoint - M20-S24 implementation (2026-08-02):** Global canary: Ledger
+Llama. Phase canary: Ground Truth. Model: GPT-5 Codex; effort/quota/context indicators are not
+exposed by this environment. John gave go via the current task request. Single declared step:
+extract `derive_cells(frame, prompt, api_key) -> frame` as a pure, no-write sub-pipeline with
+row-level status/error, config-supplied prompting, bounded expression trees, and deterministic
+tree-to-graph conversion, then run the fixture-only consumer and gate set. Applicable
+defect-ledger entries: D9, D12, D13, D14, D6, and the exact RAN/NOT RUN evidence rule. No model
+calls, promotion, hand-authoring, live graph edit, verdict write, or operation enum change is in
+scope. Protected graph and field-map artifacts are untouched at session start. Declared focused
+files: `tests/test_derive_cells_m20.py`, `tests/test_prompt_experiment_m20.py`,
+`tests/test_extract_m16.py`, `tests/test_cli.py`, and `tests/test_workbench_m15.py`.
+
+**M20-S24 implementation checkpoint (2026-08-02):** Added the pure typed boundary in
+`tax_graph/extract/cells.py`, including `CellRecord`/`CellFrame`, config-loaded prompt helper,
+row-isolated provider calls, bounded expression-tree schema/validation/rendering, and a
+deterministic tree-to-graph projection using `_pre_floor` plus operation-derived roles. Added
+`prompts/derive_cells.md`, the example-config key, and made `experiments/prompt_experiment.py`
+and `experiments/to_graph.py` consume the shared tree/projection code. Added fixture-only S24
+tests; no live provider, draft, promoted artifact, or review state was touched. Pending the
+declared focused test and gate commands.
+
+**M20-S24 verification evidence (2026-08-02):**
+
+- RAN: `$testRoot='C:\Users\devbox\.codex\visualizations\2026\08\02\019fc1dd-54f9-7e50-885f-2fdc87fc2bd2\m20_s24_focused_r2'; New-Item -ItemType Directory -Force -Path $testRoot | Out-Null; $env:PYTEST_DEBUG_TEMPROOT=$testRoot; & .venv\Scripts\python.exe -m pytest tests\test_derive_cells_m20.py tests\test_prompt_experiment_m20.py tests\test_extract_m16.py tests\test_cli.py tests\test_workbench_m15.py -q` -> `21 passed, 1 warning in 18.66s`. Every declared focused file ran; the warning is the known pytest cache ACL warning.
+- RAN: `& .venv\Scripts\python.exe tools\check_ascii.py` -> `ASCII check OK`.
+- RAN: `git diff --check` -> exit 0 (Git reported only the existing CRLF normalization warning for `experiments/prompt_experiment.py`).
+- RAN: `& .venv\Scripts\python.exe -m py_compile tax_graph\extract\cells.py experiments\prompt_experiment.py experiments\to_graph.py tests\test_derive_cells_m20.py tests\test_prompt_experiment_m20.py` -> exit 0.
+- RAN: `& .venv\Scripts\python.exe -m tax_graph.cli validate 2025` -> `graph integrity OK`, documents=18, nodes=441, edges=409, rules=17, citations=401.
+- RAN: `& .venv\Scripts\python.exe -m workbench.cli --root . --year 2025 preflight` -> initial sandbox attempt failed on the existing `graph/2025/_drafts/form_1040_2025` ACL with `WinError 5`; the same read-only command rerun with escalation -> `review preflight passed - 2025`, units=2224, derived cells=2120, review_gap=591, legacy_mined=394.
+
+The second implementation pass rejects model-invented quote span ids and maps arithmetic trees
+to the existing reusable rules with operation-derived operand roles. No model call, promotion,
+hand-authoring, live graph edit, verdict write, or operation enum change occurred. No declared
+focused file is unverified. Local commit was created; do not push.
+
 **Worker session checkpoint - M20-S23 implementation (2026-08-02):** Global canary: Ledger
 Llama. Phase canary: Ground Truth. Model: GPT-5 Codex; effort/quota/context indicators are not
 exposed by this environment. John gave go via the current task request. Single declared step:

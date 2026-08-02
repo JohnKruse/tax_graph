@@ -29,6 +29,7 @@ from prompt_experiment import (  # noqa: E402
     render,
     rows_with_instruction_sections,
 )
+from tax_graph.extract.cells import expression_to_graph  # noqa: E402
 from tax_graph.config import load_config  # noqa: E402
 from tax_graph.extract.llm_client import build_llm_client  # noqa: E402
 
@@ -60,73 +61,29 @@ def role_for(op: str, index: int) -> str:
 
 
 class Converter:
+    """Compatibility facade over the pipeline's shared graph projection."""
+
     def __init__(self, doc: str, line: str, citation: str):
         self.doc = doc
+        self.line = line
         self.base = f"{doc}_root_line_{line}"
         self.citation = citation
         self.nodes: list[dict] = []
         self.edges: list[dict] = []
+        self.rules: list[dict] = []
         self.findings: list[str] = []
-        self._n = 0
-
-    def node_id_for(self, operand: dict) -> str:
-        if "form" in operand and "line" in operand:
-            slug = str(operand["form"]).lower().replace(" ", "_").replace(".", "")
-            return f"{slug}_line_{operand['line']}"
-        if "line" in operand:
-            return f"{self.doc}_root_line_{operand['line']}"
-        if "const" in operand:
-            c = operand["const"]
-            name = "zero_floor" if float(c) == 0 else f"const_{str(c).replace('.', '_')}"
-            nid = f"{self.doc}_{name}"
-            if not any(n["node_id"] == nid for n in self.nodes):
-                self.nodes.append({
-                    "node_id": nid,
-                    "document_id": self.doc,
-                    "label": f"{self.doc} constant {c}",
-                    "node_type": "parameter",
-                    "value_type": "currency",
-                    "required": "optional",
-                })
-            return nid
-        self.findings.append(f"unrecognised operand: {operand}")
-        return f"{self.base}_UNRESOLVED"
 
     def walk(self, node: dict, target: str) -> str:
-        """Emit objects so that `target` holds the value of `node`."""
-        op = str(node.get("op", "")).upper()
-        rule = RULE_FOR_OP.get(op)
-        if rule is None:
-            self.findings.append(f"no reusable rule for operation {op}")
-            rule = f"UNMAPPED_{op.lower()}"
-
-        for i, arg in enumerate(node.get("args") or []):
-            if isinstance(arg, dict) and "op" in arg:
-                # nested: make an intermediate computed node and recurse into it
-                self._n += 1
-                mid = f"{self.base}_step{self._n}"
-                self.nodes.append({
-                    "node_id": mid,
-                    "document_id": self.doc,
-                    "label": f"{self.base} intermediate: {render(arg)}",
-                    "node_type": "computed",
-                    "value_type": "currency",
-                    "required": "optional",
-                    "citation_refs": [self.citation],
-                })
-                self.walk(arg, mid)
-                source = mid
-            else:
-                source = self.node_id_for(arg)
-            self.edges.append({
-                "edge_id": f"e_{source}_to_{target}_{role_for(op, i)}",
-                "source": source,
-                "target": target,
-                "relationship": "CALCULATES",
-                "rule_id": rule,
-                "role": role_for(op, i),
-                "citation_refs": [self.citation],
-            })
+        projection = expression_to_graph(
+            form=self.doc,
+            line=self.line,
+            expression=node,
+            quote_span_id=self.citation,
+        )
+        self.nodes = projection.nodes
+        self.edges = projection.edges
+        self.rules = projection.rules
+        self.findings = projection.findings
         return target
 
 

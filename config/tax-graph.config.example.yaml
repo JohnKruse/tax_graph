@@ -60,6 +60,7 @@ extraction:
     generator: prompts/extract_generator.md
     critic: prompts/extract_critic.md
     citation_finder: prompts/citation_finder.md
+    cells: prompts/derive_cells.md
 
 ocr:                             # IRS-document rendering (build-time; public docs, no privacy issue)
   provider: mistral
