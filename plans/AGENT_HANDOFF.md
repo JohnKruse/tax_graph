@@ -2246,8 +2246,20 @@ the instruction slot; Authority explicitly reports missing authored coverage; do
 citation coverage is visible beside policy counts; and the dossier heading duplication/order
 warts are fixed. No promoted artifacts, graph semantics, verdicts, or citation records changed.
 
-**BALL: WORKER - M20-S23 (EXPRESSION TREES, AND A VALIDATE-AND-REPAIR LOOP BEFORE HUMAN REVIEW).
-Task block under From Architect. S22 is ACCEPTED at `af5b128` - Architect re-verified: protected
+**BALL: WORKER - M20-S23 (BUILD THE `instruction_sections` ARTIFACT AND FIX ITS JOIN). Task block
+under From Architect.**
+
+**READ `docs/engineering-plan.md` SECTION "Extraction as typed frames between pure functions"
+BEFORE STARTING. It supersedes the round-by-round patching of S7-S23 and states the M20 exit
+criteria.** The remaining rounds are now: **S23** the missing `instruction_sections` frame and
+its join (deterministic, no model calls); **S24** `derive_cells` as a pure function with
+expression trees and the tree-to-graph converter; **S25** the property validators with
+repair-once. Review-surface work resumes after S25 - the data underneath must be trustworthy
+first.
+
+**Superseded (kept as history):** BALL: WORKER - M20-S23 (EXPRESSION TREES, AND A
+VALIDATE-AND-REPAIR LOOP BEFORE HUMAN REVIEW). S22 is ACCEPTED at `af5b128` - Architect
+re-verified: protected
 set and field maps byte-identical, completeness recovered to 28/28, background success 15/119 ->
 48/119 with zero transport failures, and the prompt bench works. **The Architect proved with the
 new bench (`509264b`) that the extraction schema - not the model - is discarding floors and
@@ -4292,8 +4304,94 @@ TY2026 docs drop.
 
 ## From Architect
 
-- **M20-S23 TASK - EXPRESSION TREES, AND A VALIDATE-AND-REPAIR LOOP BEFORE HUMAN REVIEW
-  (Architect, Claude Opus 5, 2026-08-01).** Ledger: the RAN/NOT RUN rule, D9, D6.
+- **M20-S23 TASK (RESPECCED 2026-08-02) - BUILD THE `instruction_sections` ARTIFACT AND FIX ITS
+  JOIN. Deterministic. NO MODEL CALLS. (Architect, Claude Opus 5.)** Ledger: the RAN/NOT RUN
+  rule, D9, D6.
+  **READ FIRST: `docs/engineering-plan.md`, section "Extraction as typed frames between pure
+  functions".** It records the diagnosis, the architecture, and the M20 exit criteria. This round
+  is exit criterion 1 and the first half of criterion 2.
+  **WHY THIS FIRST.** `instruction_sections` is the only frame in the architecture that does not
+  exist at all, and its join is the worst one we have. Line 21 did not fail loudly - it returned
+  **confident, plausible arithmetic built from another form's worksheet**. Until the evidence is
+  right, measuring expression quality measures the wrong thing.
+  1. **BUILD THE ARTIFACT: per form, per line, verbatim text, with locators.** One deterministic
+     pass over each acquired instruction booklet. It is a build artifact that can be opened and
+     read, not a query-time join.
+  2. **CARRY FORM CONTEXT - this is the bug.** The 1040 booklet ALSO covers Schedules 1, 2 and 3.
+     Architect-measured: **`## Line 9` appears twice, `## Line 10` three times**, and Lines 4, 5,
+     11, 12, 16 and 19 twice each. Attribution must use the form section a heading sits under,
+     never the line number alone. **Never resolve a collision by picking the longest body** -
+     that is exactly how the Architect's experiment extractor gave Form 1040 line 9 a Schedule's
+     Household Employment Taxes text.
+  3. **END A SECTION AT THE NEXT HEADING OF EQUAL OR HIGHER LEVEL**, not at the next `## Line`
+     heading. Ending at the next `## Line` swallows intervening `##`/`###` sections that belong
+     to neither line.
+  4. **RETIRE THE COMPETING IMPLEMENTATIONS.** There are currently three independent
+     line-to-instruction joins - the span miner, the S17 `## Line X` join, and
+     `experiments/prompt_experiment.py`'s extractor - with three different bugs and one shared
+     blind spot. **Everything downstream reads the new artifact.** Update the experiment script
+     too so the bench and the pipeline agree.
+  5. **PUBLISH COVERAGE.** Per form: lines with a section, lines without, sections that could not
+     be attributed to a form, and collisions resolved by form context. **Report wrong-owner spans
+     before and after** (the 1040 stood at 45 after S17, from 89).
+     **Expect coverage to FALL on some forms and say so** - Schedule A's booklet genuinely does
+     not discuss its computed lines, and per John (2026-07-31) augmenting instructions are never
+     mandatory. A lower, honest number is the goal.
+  6. **Add a test that Form 1040 line 9 does NOT contain "Household Employment Taxes"** and that
+     line 21 does not contain Student Loan Interest Deduction Worksheet text. Those are the two
+     known collisions; pin them.
+  **PROTECTED TEST SET, unchanged hard gate:** `graph/2025/{nodes,edges,rules}/` and
+  `graph/2025/field_maps/` byte-identical. No promotion, no hand-authoring, no live graph edit.
+  **FORCE-ADD ANY REPORT** (`output/` is gitignored). **CITE THE ACTUAL COMMIT HASH.**
+  Tier 3. Declared files plus honest `RAN:`/`NOT RUN:`. ASCII, `git diff --check`, module-form
+  `validate 2025`, real preflight with `legacy_mined` explicit (expect **394**),
+  `check_citation_integrity` STRICT (expect **36**). Short pytest temp root; no `--basetemp`.
+  ONE local commit; no push. **Do not commit with known failing tests.**
+  **Stop conditions:** any diff in the protected directories; any draft promoted; resolving a
+  duplicate line-number collision by body length or any heuristic other than form context;
+  leaving more than one line-to-instruction join in the tree; paraphrasing instruction text
+  (it is verbatim-from-source and rides citation integrity); `legacy_mined` above 394; strict
+  mismatches above 36.
+
+- **M20-S24 TASK - `derive_cells` AS A PURE FUNCTION, WITH EXPRESSION TREES (Architect, Claude
+  Opus 5, 2026-08-02). Runs after S23.** Exit criteria 3 and 5.
+  1. **Extract the sub-pipeline to `derive_cells(frame, prompt, api_key) -> frame`** per the
+     engineering-plan contract. **It writes nothing** - callers write. That makes S20's failure
+     mode (a network blip deleting `edges.yaml`) impossible rather than guarded.
+  2. **Row-level `status` and `error`.** One bad row never fails the frame.
+  3. **Prompt from CONFIG, not code.**
+  4. **Expression TREES, not one enum plus a flat list.** Architect-proved with the bench
+     (`509264b`): changing only the schema turns line 15 into `max(line 11b - line 14, 0)` and
+     line 22 into `max(line 18 - line 21, 0)`. The flat schema has no slot for a wrapper, so it
+     has been silently discarding every floor and cap. Reference implementation:
+     `experiments/prompt_experiment.py` (`expression_schema`, `render`). Bound the depth; do not
+     use `$ref` recursion.
+  5. **Deterministic tree-to-graph conversion**, matching the live convention for 1040 line 15
+     (intermediate computed node, `subtract_currency` edges with minuend/subtrahend, then
+     `max_currency` edges). Reference: `experiments/to_graph.py`. **Roles come from the operation
+     and position, never from the model.** Settle the intermediate node naming - the live set
+     uses `_pre_floor`, the experiment uses `_step1`.
+  6. **Tests that need no network**, using a fixture frame.
+
+- **M20-S25 TASK - PROPERTY VALIDATORS AND REPAIR-ONCE (Architect, Claude Opus 5, 2026-08-02).
+  Runs after S24.** Exit criterion 4.
+  Each validator below is a bug we actually shipped - no speculative checks. Full list and
+  rationale in `docs/engineering-plan.md`.
+  - expression must not reference its own line (S12: 11 of 11 did)
+  - every operand resolves to a printed line on THIS form, or is an explicit cross-form ref
+    (line 21 built arithmetic from another form's worksheet)
+  - `SUBTRACT`/`DIVIDE` take exactly two operands
+  - label says "Subtract A from B" -> tree must be `B - A` (S14: reversed roles hidden by a
+    ref-set comparison)
+  - cited text says "If zero or less, enter -0-" -> tree must contain `MAX(..., 0)`
+  - quote verbatim from a real mined span
+  - operands SHOULD appear in the cited text - **WARNING, never a hard failure**: on line 9 the
+    model correctly included 4b, 5b, 6b that the hand-authored set omitted
+  **On failure, repair ONCE** with the specific complaint fed back; only a second failure becomes
+  a named review gap. Report attempted / repaired / gapped, and validator failures by kind.
+  **Then re-measure** and report how many expressions gained a floor or cap the flat schema had
+  been dropping.
+  **Review-surface work resumes after this round, not before.**
   **PART A - THE SCHEMA IS DISCARDING THE FLOORS. Architect-proved with the S22 bench, commit
   `509264b`.** The micro extraction schema is `{operation: <one enum>, source_lines: [flat],
   quote}`. **There is no slot for a wrapper, so `max(a - b, 0)` is unrepresentable.** The graph
