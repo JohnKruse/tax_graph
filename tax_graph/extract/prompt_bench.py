@@ -73,7 +73,7 @@ def run_prompt_bench(
     outline = build_outline_tree(document)
     instruction_owners = _instruction_owner_map(spans)
     formula_targets = {}
-    for node in _formula_outline_nodes(outline.children, document_id=document.document_id):
+    for node in _formula_outline_nodes(outline.children):
         formula_targets[_outline_node_id(document.document_id, node)] = node
         if node.line_anchor:
             formula_targets.setdefault(str(node.line_anchor), node)

@@ -209,7 +209,7 @@ def build_cell_frame_from_document(document: Any) -> CellFrame:
     outline = build_outline_tree(document)
     instruction_frame = build_instruction_sections_frame(document, outline=outline)
     spans = build_candidate_spans(document)
-    formula_nodes = _formula_outline_nodes(outline.children, document_id=document.document_id)
+    formula_nodes = _formula_outline_nodes(outline.children)
     printed_lines = sorted(
         {
             str(node.line_anchor).lower()

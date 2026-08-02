@@ -82,7 +82,7 @@ def generate_outline_first_drafts(
     line_index = _outline_line_index(document.document_id, outline.children)
     line_kinds, line_children = _outline_line_metadata(document.document_id, outline.children)
     instruction_owners = _instruction_owner_map(spans)
-    for outline_node in _formula_outline_nodes(outline.children, document_id=document.document_id):
+    for outline_node in _formula_outline_nodes(outline.children):
         node_spans = _spans_for_outline_node(
             document,
             outline_node,
@@ -266,7 +266,7 @@ def _extract_non_formula_cells(
     """Generate a source declaration for every non-formula line in the review slice."""
     formula_anchors = {
         str(node.line_anchor).lower()
-        for node in _formula_outline_nodes(nodes, document_id=document.document_id)
+        for node in _formula_outline_nodes(nodes)
         if node.line_anchor
     }
     for node in _non_formula_outline_nodes(nodes):
@@ -446,12 +446,12 @@ def _canonical_external_source_id(
     return _slug(f"{document_token}_{year}_root_line_{line}")
 
 
-def _formula_outline_nodes(nodes: list[OutlineNode], *, document_id: str = "") -> list[OutlineNode]:
+def _formula_outline_nodes(nodes: list[OutlineNode]) -> list[OutlineNode]:
     selected: list[OutlineNode] = []
     for node in nodes:
-        if _is_formula_node(node) and not (document_id.startswith("schedule_d_") and node.kind == "line"):
+        if _is_formula_node(node):
             selected.append(node)
-        selected.extend(_formula_outline_nodes(node.children, document_id=document_id))
+        selected.extend(_formula_outline_nodes(node.children))
     return selected
 
 
