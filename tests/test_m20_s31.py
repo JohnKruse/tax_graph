@@ -8,6 +8,7 @@ import pytest
 
 from tax_graph.extract.outline import OutlineNode
 from tax_graph.extract.outline_pipeline import _formula_outline_nodes
+from experiments.derive_cells_s25 import run_documents
 
 
 pytestmark = pytest.mark.m20
@@ -54,3 +55,43 @@ def test_schedule_d_formula_selection_keeps_all_three_formula_lines() -> None:
 def test_s31_test_file_is_ascii_only() -> None:
     path = Path(__file__)
     path.read_text(encoding="ascii")
+
+
+def test_harness_marks_zero_attempt_document_empty_with_outline_inventory(monkeypatch, tmp_path: Path) -> None:
+    monkeypatch.setattr(
+        "experiments.derive_cells_s25.persist_instruction_frame",
+        lambda **_: (tmp_path / "frame.yaml", tmp_path / "coverage.yaml"),
+    )
+    monkeypatch.setattr(
+        "experiments.derive_cells_s25.run_real_document",
+        lambda **_: {
+            "rows_attempted": 0,
+            "row_status_counts": {"derived": 0, "repaired": 0, "gapped": 0, "errored": 0},
+            "outline_node_count": 31,
+            "line_anchor_count": 24,
+            "validation": {"validator_failures_by_kind": {}},
+        },
+    )
+
+    reports = run_documents(
+        root=tmp_path / "repo",
+        year="2025",
+        document_ids=["schedule_d_2025"],
+        output_dir=tmp_path / "output",
+    )
+
+    assert reports == [
+        {
+            "document_id": "schedule_d_2025",
+            "status": "empty",
+            "reason": "document outline produced no derivation rows",
+            "rows_attempted": 0,
+            "derived": 0,
+            "repaired": 0,
+            "gapped": 0,
+            "errored": 0,
+            "outline_node_count": 31,
+            "line_anchor_count": 24,
+            "validator_failures_by_kind": {},
+        }
+    ]

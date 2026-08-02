@@ -31,7 +31,11 @@ from tax_graph.extract.cells import (
 from tax_graph.extract.inputs import load_document_input
 from tax_graph.extract.instruction_sections import write_instruction_sections_artifact
 from tax_graph.extract.llm_client import build_llm_client
-from tax_graph.extract.outline import build_instruction_sections_frame, build_outline_tree
+from tax_graph.extract.outline import (
+    _flatten_outline_nodes,
+    build_instruction_sections_frame,
+    build_outline_tree,
+)
 
 
 def persist_instruction_frame(
@@ -100,6 +104,8 @@ def run_real_document(
     destination = _output_destination(root_path, output_dir)
     config = load_config(root=root_path)
     document = load_document_input(document_id, year=year, root=root_path, config=config)
+    outline = build_outline_tree(document)
+    outline_nodes = _flatten_outline_nodes(outline.children)
     frame = build_cell_frame_from_document(document)
     client = build_llm_client(config)
     prompt = load_cell_prompt(config, root=root_path)
@@ -138,6 +144,8 @@ def run_real_document(
         "year": str(year),
         "rows": len(result.rows),
         "rows_attempted": result.validation.get("attempted", 0),
+        "outline_node_count": len(outline_nodes),
+        "line_anchor_count": sum(1 for node in outline_nodes if node.line_anchor),
         "row_status_counts": status_counts,
         "raw_row_status_counts": dict(sorted(raw_status_counts.items())),
         "rows_detail": row_details,
@@ -238,17 +246,21 @@ def run_documents(
                 }
             )
             continue
-        reports.append(
-            {
-                "document_id": document_id,
-                "status": "complete",
-                "rows_attempted": report["rows_attempted"],
-                **report["row_status_counts"],
-                "validator_failures_by_kind": _top_three_counts(
-                    report["validation"].get("validator_failures_by_kind", {})
-                ),
-            }
-        )
+        rows_attempted = report["rows_attempted"]
+        summary = {
+            "document_id": document_id,
+            "status": "empty" if rows_attempted == 0 else "complete",
+            "rows_attempted": rows_attempted,
+            **report["row_status_counts"],
+            "outline_node_count": report["outline_node_count"],
+            "line_anchor_count": report["line_anchor_count"],
+            "validator_failures_by_kind": _top_three_counts(
+                report["validation"].get("validator_failures_by_kind", {})
+            ),
+        }
+        if rows_attempted == 0:
+            summary["reason"] = "document outline produced no derivation rows"
+        reports.append(summary)
     return reports
 
 
