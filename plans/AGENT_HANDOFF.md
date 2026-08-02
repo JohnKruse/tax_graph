@@ -17,87 +17,49 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## BALL
 
-**BALL: WORKER - M20-S32 (REPLACE THE PROMPT TEMPLATE SYNTAX; DO NOT ESCAPE THE BRACES).**
-Task block under **From Architect**.
-**S31 steps 1-2 are ACCEPTED; step 3 is REJECTED - it zeroes the whole pipeline.**
+**BALL: WORKER - M20-S33 (RUN THE WHOLE CORPUS).** Task block under **From Architect**.
+**S32 is ACCEPTED at `70e8b6d`. The pipeline is green again and Schedule D derives for the first
+time.**
 
 ## Current round
 
-**M20-S31 PARTIALLY ACCEPTED (Architect, Claude Opus 5, 2026-08-02).** Steps 1 and 2 are good and
-independently verified. **Step 3 is a regression that takes every form to zero and must be fixed
-before anything else.** The Worker declared step 4 NOT RUN, as instructed; the Architect ran it,
-which is how this was caught.
+**M20-S32 ACCEPTED (Architect, Claude Opus 5, 2026-08-02) at `70e8b6d`.** The Worker delivered
+steps 1-3 and declared step 4 NOT RUN up front. The Architect ran the slice:
 
-**ACCEPTED - step 1, the carve-out is gone (`fb2833e`).** The `schedule_d_` clause is deleted, the
-now-unused `document_id` parameter was removed from `_formula_outline_nodes` rather than left as a
-dead argument, and all four call sites were updated (`cells.py`, `outline_pipeline.py` x2,
-`prompt_bench.py`). No compensating special case was added anywhere.
+| form | status | attempted | derived | repaired | gapped | errored |
+| --- | --- | --- | --- | --- | --- | --- |
+| `form_1040_2025` | complete | 17 | **17** | 0 | 0 | 0 |
+| `schedule_a_2025` | complete | 7 | **7** | 0 | 0 | 0 |
+| `schedule_d_2025` | complete | 3 | **3** | 0 | 0 | 0 |
 
-**ACCEPTED - step 2, an empty document is now loud (`a466a9e`).** Zero attempted rows reports
-`status: empty` with a reason, plus `outline_node_count` and `line_anchor_count` so a reader can
-tell an unreadable form from one with nothing to derive. This is the D10 fix and it is well done.
+Zero validator failures and zero warnings on all three. **Schedule D derives for the first time in
+M20** - it was 0 attempted two rounds ago because of the carve-out, and 0 derived last round
+because the prompt would not render.
 
-**REJECTED - step 3 breaks the prompt (`e18767f`).** The Architect's live slice:
+**The delimiter change is done properly.** `render_prompt` validates every `<<...>>` token up
+front, rejects a malformed token and a name with no supplied value, then substitutes through
+per-value sentinels so a value that itself contains `<<name>>` can never be re-scanned as a second
+template pass. All three prompt files and all three render sites go through it, and the JSON
+examples in `derive_cells.md` are back to plain unescaped braces. Braces are now ordinary
+characters in prompt text, which is the whole point.
 
-| form | status | reason |
-| --- | --- | --- |
-| `form_1040_2025` | reported | `ValueError: cell prompt has unsupported placeholder: "line"` |
-| `schedule_a_2025` | reported | same |
-| `schedule_d_2025` | reported | same |
+**Line 16 encodes its operands correctly now.** The report persists only aggregates, so the
+expression is not in it - but `operand_not_printed` is untouched and still strict (S32 changed only
+the import and `_render_cell_prompt` in `cells.py`), and that is exactly the check line 16 failed
+in the S30 probe with `schedule_d_2025 line 7` in the LINE field. It derived with zero failures, so
+the encoding is right.
+**Caveat, and it is the honest one: this is ONE run of a model measured as nondeterministic at
+`temperature: 0`.** The prompt fix depends on model compliance, which is evidence rather than a
+guarantee. If S33 shows line 16 flipping between runs, move the resolution into code with a
+normaliser, per the S13/S24/S28 principle. Do not pre-emptively add one on a single green run.
 
-**17/17 and 7/7 both became 0.** `_render_cell_prompt` renders the prompt with
-`template.format(**values)` (`cells.py:1133`), so the literal JSON added to
-`prompts/derive_cells.md` - `{"line": "7"}` and `{"form": "form_XXXX_2025", "line": "7"}` - parses
-as placeholders named `"line"` and `"form"`, quotes included, which are not in `values`. Every
-document fails before a single model call.
+**Gates re-verified by the Architect:** 102 passed on a short temp root; ASCII OK; `validate 2025`
+graph integrity OK; protected set byte-identical across `8bc9f0d..70e8b6d`.
 
-**THE REAL DEFECT IS THE TEST, and this is the durable lesson.** `tests/test_m20_s31.py:104-105`
-asserts the new sentences are PRESENT in the file:
-
-```
-assert 'For a sibling line on this same form, use only {"line": "7"}' in text
-```
-
-It never renders the prompt. A substring check passes on precisely the text that breaks rendering.
-**Rendering needs no network**, so this was fully catchable in the Worker's sandbox - the round
-reported 38 passed with the shipped prompt unloadable. Any change to a prompt file must be covered
-by a test that RENDERS it.
-
-**FIX DECIDED - NOT the escape.** The Architect verified in memory that escaping the braces
-(`{{"` and `"}}`) does restore rendering. **We are not doing that.** John's call, 2026-08-02:
-escaping is the `sed` fix - it works today and becomes the thing nobody can maintain, because an
-LLM pipeline will keep needing JSON examples and JSON is made of braces. S32 replaces the
-placeholder syntax with `<<name>>` so braces stop being syntax at all. Scope measured and small:
-3 prompt files, 3 render sites, every placeholder a bare name.
-
-**STILL OPEN - is the prompt even the right fix?** The Worker chose diagnosis (a), prompt contract,
-and added no normaliser. That is defensible, but it makes correct operand encoding depend on model
-compliance, and this model is measurably nondeterministic at `temperature: 0`. Once the prompt
-renders again, the line 16 result is the evidence. If it still intermittently emits
-`schedule_d_2025 line 7` in the LINE field, escalate to diagnosis (b) and normalise in code, per
-the S13/S24/S28 principle that identity resolution belongs in code.
-
-**Process note, not a blocker:** the round asked for ONE local commit and produced four. The split
-is clean and per-step, which made this review easier, so no complaint - but say so up front next
-time rather than silently deviating.
-
-**M20-S32 WORKER PROGRESS (2026-08-02).** Steps 1-3 implemented. Shared `render_prompt` now uses
-`<<name>>`, fails closed on missing or malformed tokens, and substitutes values literally without
-rescanning them. All three prompt files and all three render sites use it; JSON examples are plain
-JSON. The prompt test renders every `prompts/*.md` file and covers missing, leftover, and literal
-value cases. Protected graph directories are unchanged. Step 4 is NOT RUN: the Worker sandbox has
-no outbound provider access; Architect owns the live three-form slice.
-
-RAN: `.venv\Scripts\python.exe -m pytest tests\test_m20_s31.py tests\test_derive_cells_m20.py tests\test_extract_m4.py -q` -> `68 passed, 1 warning in 6.24s` (warning is the inherited `.pytest_cache` ACL).
-RAN: `.venv\Scripts\python.exe tools\check_ascii.py` -> `ASCII check OK`.
-RAN: `git diff --check` -> pass.
-RAN: `.venv\Scripts\python.exe -m tax_graph.cli validate 2025` -> `documents=18 nodes=441 tables=2 edges=409 rules=17 citations=401 decisions=2 routing_edges=90 triggers=12 expectations=4; graph integrity OK`.
-RAN: `.venv\Scripts\python.exe -m workbench.cli preflight --year 2025` -> `review preflight passed; units=2224; derived cells=2120; legacy_mined=394` (with approved elevated read access because the known draft ACL blocks sandbox reads).
-RAN: `.venv\Scripts\python.exe -c "from tax_graph.acquire.citation_check import check_graph_citations; r=check_graph_citations(year='2025', raw_store='.cache/raw'); print(f'checked={r.checked} strict_mismatches={len(r.mismatches)}'); raise SystemExit(0 if r.ok else 1)"` -> `checked=401 strict_mismatches=36` (inherited baseline, exit 1).
-RAN: `.venv\Scripts\python.exe -m pytest tests\test_review_preflight_m15.py -q` -> `1 failed, 1 error` from the same known draft ACL; no code assertion ran to completion.
-
-**Gates re-verified by the Architect:** 99 passed on a short temp root; ASCII OK; `validate 2025`
-graph integrity OK; protected set byte-identical across `8414211..bf9f7cf`.
+**Residual, recorded not actioned:** `<<` has no escape mechanism, so a prompt that ever needs a
+literal `<<` in prose will fail closed with an unsupported-placeholder error. That is the same
+shape of limitation the braces had, on a delimiter far less likely to occur in tax prose or JSON.
+Accepted for now. If it ever bites, add an escape rather than changing delimiter again.
 
 ## Standing constraints (every M20 round)
 
@@ -189,70 +151,53 @@ client-managed server dies.
 
 ## From Architect
 
-- **M20-S32 TASK - REPLACE THE PROMPT TEMPLATE SYNTAX SO BRACES STOP MATTERING (Architect, Claude
-  Opus 5, 2026-08-02). RESPECCED - do NOT escape the braces.** Ledger: the RAN/NOT RUN rule, D9,
-  D6, D10.
+- **M20-S33 TASK - RUN THE WHOLE CORPUS AND REPORT EVERY FORM (Architect, Claude Opus 5,
+  2026-08-02).** Ledger: the RAN/NOT RUN rule, D9, D6, D10.
 
-  **Why this and not the two-character fix.** Escaping the JSON example to `{{"line": "7"}}`
-  works, and it leaves the same trap armed for the next person who shows the model an example.
-  We are building an LLM pipeline; prompts will keep needing JSON examples, and JSON is made of
-  braces. John's call, 2026-08-02: this is the `sed` situation - the patch that works today is the
-  thing that becomes unmaintainable. Remove the collision instead of escaping around it.
+  **Why now.** Three forms are green: 17/17, 7/7, 3/3, zero failures, zero warnings. The harness is
+  document-agnostic, an empty result is loud, and the prompt renders. Every reason we had for
+  staying on a slice is gone. There are 18 documents in the graph and we have numbers for three.
+  **The remaining fifteen are the unflattering metric.**
 
-  **The scope is small and fully measured. Three prompt files, three render sites, no format
-  specs, no nested attribute access, no indexing - every placeholder is a bare name:**
-  - `prompts/derive_cells.md` - `form`, `line`, `label`, `form_face_text`, `instruction_text`,
-    `instruction_locator`
-  - `prompts/extract_generator.md` and `prompts/extract_critic.md` - `document_id`,
-    `document_kind`, `tax_year`, `source_text`, `source_url`, `fields`, `links`, `operations`,
-    `schemas`, `related_sources`, and `draft_objects` on the critic only
-  - render sites: `tax_graph/extract/cells.py:1133`, `tax_graph/extract/prompts.py:213`,
-    `tax_graph/extract/prompts.py:242`. (`prompts.py:105` formats a literal log string, NOT a
-    prompt template - leave it alone.)
+  **Step 1 - run every document in the 2025 graph.** Not a curated list - enumerate what the graph
+  actually contains and run all of it, so a form cannot be quietly left out of the report. Expect
+  forms that derive nothing: `form_w2_2025` and the 1099s are input documents with no computed
+  lines, and `status: empty` is the CORRECT answer for them. That is why S31 step 2 exists.
 
-  **Step 1 - adopt `<<name>>` as the placeholder delimiter.** Not `{name}`, which collides with
-  JSON. **Not Python's `string.Template` `$name` either** - the prompts contain no literal `$`
-  today, but these are TAX prompts and dollar amounts are a matter of time; that trades one
-  hazard for a likelier one. `<<` and `>>` appear in neither JSON nor tax prose.
-  Add one shared renderer - `render_prompt(template: str, values: Mapping[str, str]) -> str` in
-  `tax_graph/extract/prompts.py` - and route all three sites through it. It must **fail closed in
-  both directions**: a placeholder with no supplied value raises, and any `<<...>>` token still
-  present after substitution raises. Keep the existing error type and an equivalent message so
-  callers and tests do not silently change behaviour. Substitution is literal text replacement -
-  a value that happens to contain `<<` or braces must never be re-scanned.
+  **Step 2 - report the table, one row per document**, with: document id, status, attempted,
+  derived, repaired, gapped, errored, `outline_node_count`, `line_anchor_count`, and the top three
+  `validator_failures_by_kind`. **Lead with `derived` per form, and put the totals last, not
+  first.** A corpus total is the number most likely to flatter us; the per-form column is the one
+  that tells us where the pipeline stops working.
+  **Sort the table by derived-over-attempted ascending, worst first.** The reader should hit the
+  problems before the successes.
 
-  **Step 2 - convert the three prompt files** from `{name}` to `<<name>>`, and **restore the JSON
-  example in `derive_cells.md` to plain, unescaped `{"line": "7"}` and
-  `{"form": "form_XXXX_2025", "line": "7"}`.** After this change braces are ordinary characters
-  and the example reads exactly as the model should emit it. Keep the guidance wording from
-  `e18767f`; only the mechanism changes.
+  **Step 3 - separate the three kinds of zero, because they mean different things.**
+  a. **Correctly empty** - an input document with no computed lines. Expected, not a defect.
+  b. **Empty but should not be** - the form has computed lines and the frame found none. This is
+     the Schedule D signature and it is a real finding.
+  c. **Attempted but nothing derived** - the frame found rows and every one failed. A model or
+     evidence problem, and the failure kinds say which.
+  For every (b) and (c), report the form, the counts, and the top failure kinds. **Do not fix them
+  this round.** Diagnosis sizes the next rounds; attempting fixes across an unknown number of forms
+  in one round is how a round turns into a swamp.
 
-  **Step 3 - test that prompts RENDER, not that they contain words.** The S31 defect was a
-  substring assertion (`tests/test_m20_s31.py:104-105`) that passed while the shipped prompt was
-  unloadable. Replace it. Add a test that **iterates every file in `prompts/`**, renders it
-  through `render_prompt` with a representative value for each of its placeholders, and asserts
-  success - so a new prompt file is covered the day it lands. Add two negative tests: a missing
-  value raises, and a leftover `<<token>>` raises. **This needs no network and must pass in the
-  Worker sandbox.** Then, if you want to assert the guidance survived, assert it on the RENDERED
-  output.
+  **Step 4 - run the 1040 twice** with the identical command and report both results. We have four
+  data points suggesting nondeterminism has settled into the top band, and the corpus run is the
+  right moment to confirm it cheaply. **Report both numbers even if identical.** If line 16 on
+  Schedule D flips between runs, say so - that is the trigger for a code-side operand normaliser.
 
-  **Step 4 - rerun the three-form slice** and report the per-form table: form, status, attempted,
-  derived, repaired, gapped, errored, top three `validator_failures_by_kind`. **Lead with
-  `derived` per form.** Expected: `form_1040_2025` 17, `schedule_a_2025` 7, `schedule_d_2025` 3
-  attempted. **Report what line 16 actually does** - that is the point of the guidance. If it
-  derives, say so. If it still emits `schedule_d_2025 line 7` in the LINE field, say that plainly;
-  that is the signal to move to a code-side normaliser in S33, and it is a useful result rather
-  than a failure of this round.
-  If approved external network is unavailable, do steps 1-3, declare step 4 NOT RUN up front, and
-  hand back - the Architect will run it. Do not burn the round on `Connection error`.
+  **On cost:** the three-form slice was roughly two to three minutes of provider time. The full
+  corpus is a modest multiple of that, and the information is worth it. If any single document
+  turns out to be pathologically large, report it and stop rather than looping.
+  If approved external network is unavailable, declare the whole round NOT RUN up front and hand
+  back - the Architect will run it. Do not burn the round on `Connection error`.
 
-  **Do not:** escape braces as the fix; leave any prompt on `{name}` syntax; relax
-  `operand_not_printed` or any other check to make line 16 pass; add a retry policy; add a
-  normaliser this round (that waits on step 4's evidence); reintroduce any per-document special
-  case; promote anything.
+  **Do not:** fix any form's derivation this round; relax any validator to improve a number; add a
+  retry policy; add an operand normaliser (that waits on step 4's evidence); add any per-document
+  special case; promote anything.
   **Stop conditions:** any diff in the protected directories; `derive_cells` acquiring a disk
-  write; any harness output landing inside the repository; a prompt file that renders only
-  because a test was weakened.
+  write; any harness output landing inside the repository.
   Tier 3. Declared files plus honest `RAN:`/`NOT RUN:`. ASCII, `git diff --check`, module-form
   `validate 2025`, preflight with `legacy_mined` explicit (394), strict citations (36).
   **ONE local commit** - or say up front why it is more; no push.
@@ -275,6 +220,14 @@ client-managed server dies.
 
 ## Recent rounds (condensed; full narration in git history - `git show <hash>`)
 
+- **M20-S32 (`70e8b6d`, Architect-verified):** prompt placeholders moved from `{name}` to
+  `<<name>>` with a shared fail-closed `render_prompt`, so JSON examples need no escaping; the
+  substring prompt assertion was replaced by a render test over every file in `prompts/`.
+  Architect slice: 1040 17/17, Schedule A 7/7, **Schedule D 3/3**.
+- **M20-S31 (`fb2833e`, `a466a9e`; step 3 `e18767f` rejected):** Schedule D carve-out deleted and
+  `document_id` dropped from `_formula_outline_nodes`; a zero-row document now reports
+  `status: empty` with outline and anchor counts. Step 3's prompt edit broke rendering for every
+  form and was superseded by S32.
 - **M20-S30 (`00b5f38`, Architect-verified):** harness takes repeatable `--document`, refuses
   in-repo output, and reports per-document failures; REQUIRE_INPUT self-operands exempt from
   `operand_not_in_quote`. Architect slice: 1040 17/17, Schedule A 7/7, Schedule D 0 - the zero
@@ -301,6 +254,9 @@ client-managed server dies.
 
 ## Latest verification
 
+- **M20-S32 (2026-08-02, Architect):** live three-form slice all green - `form_1040_2025` 17/17,
+  `schedule_a_2025` 7/7, `schedule_d_2025` 3/3, zero validator failures and zero warnings on all
+  three; 102 passed on a short temp root; protected set byte-identical.
 - **M20-S30 (2026-08-02, Architect):** live three-form slice - `form_1040_2025` 17/17,
   `schedule_a_2025` 7/7 (matches the S14 labeled set), `schedule_d_2025` 0 attempted;
   `operand_not_in_quote` 0 on both non-empty forms; protected set byte-identical; working tree
