@@ -54,6 +54,36 @@ actually wanted, flag it - it changes M2.
    citation existed out of 297 promoted citations - the acquired text was never mined.
    Closing that is tracked as M17 S5-INSTR and sequenced with the M16 pipeline.
 
+   **AMENDED 2026-08-02 (John) - THE FORM IS RELIABLE, THE INSTRUCTIONS ARE NOT.** John: "the
+   IRS instruction pages suck per my experience. The forms, per se, are at least created with
+   some discipline." Work from that asymmetry. It corrects two things above.
+   - **"very nearly every cell" is FALSE and must not be relied on.** Verified against real
+     2025 data: the 1040 instruction booklet yields sections for 56 printed lines, ALL of them
+     INPUT lines. Every computed line - `1z, 9, 11a, 11b, 14, 15, 18, 21, 22, 24, 25d, 32, 33` -
+     has no instruction section and never will. The IRS elaborates on inputs in the booklet and
+     states subtotal arithmetic on the form face. Expect roughly HALF of printed lines to have
+     nothing useful in the instructions. Holes are the steady state, not a backlog.
+   - **"a cell with no authored mapping is a COVERAGE GAP to be closed from the instructions"
+     is wrong as written.** For a computed line the FACE TEXT is usually the complete rule -
+     `Subtract line 21 from line 18. If zero or less, enter -0-` carries operand order and the
+     floor. Such a cell is COVERED, not gapped. Before calling anything a gap, check whether
+     clean face text already answers it.
+   **The three layers, each with its own standard of accuracy:**
+   1. **FORM FACE: EXACT.** Labels and line numbers pulled per cell, accurately, every time.
+      Deterministic geometry. This is the one hard line, and the only layer that gets a gate.
+   2. **INSTRUCTION PAGES: BEST-EFFORT.** Carve them up; take what parses; leave holes. NEVER
+      gate the pipeline on instruction coverage, and never fail a cell for lacking instruction
+      text. Ambiguous attribution DROPS the section rather than failing the row - dropping is
+      stricter than attaching and preserves the S23 wrong-owner guarantee.
+   3. **RECONCILIATION: THE AI'S JOB**, in the operation-extraction subpipeline
+      (`derive_cells`). Making sense of a mishmash of exact labels and partial instructions is
+      exactly what the model is for. Do not push that job into deterministic validators.
+   **Precedence rule:** where face text and instruction text conflict about arithmetic, the FACE
+   WINS. It is the disciplined artifact.
+   What survives from the original invariant, unchanged: instruction text is
+   verbatim-from-acquired-source, rides `check_citation_integrity`, and is joined to the
+   canonical address when it exists.
+
 8. **OBSERVABILITY IS NOT OPTIONAL - the pipeline must record what it did (John, 2026-07-30;
    CRITICAL, must land before the project is considered finished).** John asked for logging a
    long time ago; it was never built. As of 2026-07-30 the honest state is: **zero** Python
