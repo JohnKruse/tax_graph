@@ -14,6 +14,41 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## Current state (2026-07-31)
 
+**Worker session checkpoint - M20-S25 implementation (2026-08-02):** Global canary: Ledger
+Llama. Phase canary: Ground Truth. Model: GPT-5 Codex; effort/quota/context indicators are not
+exposed by this environment. John gave go via the current task request. Single declared step:
+add property validators inside `derive_cells` with one repair attempt, persist the typed
+`instruction_sections` frame and coverage report, retain the legacy owner parser only as an
+explicit compatibility fallback, run the real 1040 frame/provider bench, and run the declared
+consumer and gate set. Applicable defect-ledger entries: D9, D12, D13, D14, D6, and the exact
+RAN/NOT RUN evidence rule. No promotion, hand-authoring, live graph edit, verdict write, or
+operation enum change is in scope. Protected graph and field-map artifacts were byte-identical
+at session start. Declared focused files: `tests/test_derive_cells_m20.py`,
+`tests/test_instruction_sections_m20.py`, `tests/test_prompt_experiment_m20.py`,
+`tests/test_extract_outline_m4.py`, `tests/test_extract_m16.py`, `tests/test_cli.py`, and
+`tests/test_workbench_m15.py`.
+
+**M20-S25 deterministic checkpoint (2026-08-02):** Added input-owner and output-expression
+property validation, warning-only operand quote checks, one deterministic repair prompt, row
+level repaired/gapped telemetry, and a real-1040 frame builder carrying mined evidence spans.
+Provider transport failures remain row errors and do not consume the repair attempt. The legacy
+owner parser is documented as compatibility-only for old synthetic spans and draft sidecars;
+real instruction frame spans carry explicit ownership. RAN: `$testRoot='C:\Users\devbox\.codex\visualizations\2026\08\02\019fc200-5a5e-76f2-b1f5-528bde59d87e\m20_s25_unit6'; New-Item -ItemType Directory -Force -Path $testRoot | Out-Null; $env:PYTEST_DEBUG_TEMPROOT=$testRoot; & .venv\Scripts\python.exe -m pytest tests\test_derive_cells_m20.py -q` -> `11 passed, 1 warning in 0.87s`. Pending the consumer set, artifact persistence, real provider bench, and fast gates. The handoff is checkpointed before those expensive operations.
+
+**M20-S25 consumer and real-data checkpoint (2026-08-02):** RAN:
+`$testRoot='C:\Users\devbox\.codex\visualizations\2026\08\02\019fc200-5a5e-76f2-b1f5-528bde59d87e\m20_s25_consumers'; New-Item -ItemType Directory -Force -Path $testRoot | Out-Null; $env:PYTEST_DEBUG_TEMPROOT=$testRoot; & .venv\Scripts\python.exe -m pytest tests\test_derive_cells_m20.py tests\test_instruction_sections_m20.py tests\test_prompt_experiment_m20.py tests\test_extract_outline_m4.py tests\test_extract_m16.py tests\test_cli.py tests\test_workbench_m15.py -q` -> `52 passed, 1 warning in 19.99s`. RAN: `& .venv\Scripts\python.exe experiments\derive_cells_s25.py --root . --year 2025 --no-provider` -> persisted the instruction frame and coverage report. RAN: `& .venv\Scripts\python.exe experiments\derive_cells_s25.py --root . --year 2025` -> exit 0 in 32.9s, 17 real 1040 rows: derived=0, repaired=0, gapped=0, errored=17; 13 missing attributed instruction sections and 4 explicit OpenRouter connection errors. No draft, promoted artifact, graph, field-map, verdict, or operation enum changed. Pending fast gates, final artifact inspection, commit, and protected-set verification.
+
+**M20-S25 final verification evidence (2026-08-02):**
+
+- RAN: `$testRoot='C:\Users\devbox\.codex\visualizations\2026\08\02\019fc200-5a5e-76f2-b1f5-528bde59d87e\m20_s25_final'; New-Item -ItemType Directory -Force -Path $testRoot | Out-Null; $env:PYTEST_DEBUG_TEMPROOT=$testRoot; & .venv\Scripts\python.exe -m pytest tests\test_derive_cells_m20.py tests\test_instruction_sections_m20.py tests\test_prompt_experiment_m20.py tests\test_extract_outline_m4.py tests\test_extract_m16.py tests\test_cli.py tests\test_workbench_m15.py -q` -> `53 passed, 1 warning in 19.20s`. Every declared focused file ran; no `NOT RUN` files.
+- RAN: `& .venv\Scripts\python.exe tools\check_ascii.py; git diff --check; & .venv\Scripts\python.exe -m py_compile tax_graph\extract\cells.py tax_graph\extract\instruction_ownership.py experiments\derive_cells_s25.py tests\test_derive_cells_m20.py` -> `ASCII check OK`; diff check exit 0; compile exit 0.
+- RAN: `& .venv\Scripts\python.exe -m tax_graph.cli validate 2025` -> graph integrity OK, documents=18, nodes=441, edges=409, rules=17, citations=401.
+- RAN: `& .venv\Scripts\python.exe -m workbench.cli --root . --year 2025 preflight` -> sandbox attempt failed on the pre-existing draft ACL with `WinError 5`; same read-only command rerun with escalation -> passed, units=2224, derived cells=2120, legacy_mined=394.
+- RAN: `& .venv\Scripts\python.exe -c "from tax_graph.acquire.citation_check import check_graph_citations; result=check_graph_citations(year='2025',raw_store='.cache/raw',root='.'); print(f'checked={result.checked} strict_mismatches={len(result.mismatches)}')"` -> checked=401 strict_mismatches=36.
+- RAN: `& .venv\Scripts\python.exe -c "from tax_graph.extract.instruction_sections import load_instruction_sections_artifact; f=load_instruction_sections_artifact('output/m20_s25_form_1040_2025_instruction_sections.yaml'); print('sections=%d collision_count=%d wrong_owner_after=%d source_path=%s' % (len(f.sections), f.coverage['collision_count'], f.coverage['wrong_owner_spans_after'], f.source_path))"` -> sections=317, collision_count=32, wrong_owner_after=0, repository-relative source path.
+- Protected diff check: `git diff --name-only -- graph/2025/nodes graph/2025/edges graph/2025/rules graph/2025/field_maps` -> empty. Generated frame, coverage, and real-1040 report are the only forced output artifacts; no draft was promoted.
+- Local commit: `8e03732` before this handoff-only amend; final amended hash is reported by the Worker.
+
 **Worker session checkpoint - M20-S24 implementation (2026-08-02):** Global canary: Ledger
 Llama. Phase canary: Ground Truth. Model: GPT-5 Codex; effort/quota/context indicators are not
 exposed by this environment. John gave go via the current task request. Single declared step:

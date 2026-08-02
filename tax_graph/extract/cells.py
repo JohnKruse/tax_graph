@@ -135,6 +135,7 @@ class CellFrame:
     """A typed list of cell records with a small coverage report."""
 
     rows: list[CellRecord]
+    validation: dict[str, Any] = field(default_factory=dict)
 
     @classmethod
     def from_rows(cls, rows: Iterable[CellRecord | Mapping[str, Any]]) -> "CellFrame":
@@ -156,6 +157,24 @@ class CellFrame:
         """Return rows for JSON/markdown consumers."""
         return [row.as_dict() for row in self.rows]
 
+    @property
+    def validation_report(self) -> dict[str, Any]:
+        """Return validator and repair telemetry for this derivation run."""
+        return dict(self.validation)
+
+
+@dataclass(frozen=True)
+class CellValidationIssue:
+    """One deterministic property failure or warning for a cell."""
+
+    kind: str
+    message: str
+    hard: bool = True
+
+    def as_dict(self) -> dict[str, Any]:
+        """Return a JSON-ready validation issue."""
+        return {"kind": self.kind, "message": self.message, "hard": self.hard}
+
 
 def load_cell_prompt(
     config: Mapping[str, Any] | None = None,
@@ -170,6 +189,55 @@ def load_cell_prompt(
         "prompts/derive_cells.md",
     )
     return load_prompt_template(path, root=root)
+
+
+def build_cell_frame_from_document(document: Any) -> CellFrame:
+    """Build the real form-to-instruction input frame without calling a model.
+
+    The frame producer owns the joins.  It combines the geometry-derived form
+    outline with the explicit instruction_sections frame and carries both
+    inventories into row metadata so ``derive_cells`` can validate them.
+    """
+    from tax_graph.extract.outline import build_candidate_spans, build_instruction_sections_frame, build_outline_tree
+    from tax_graph.extract.outline_pipeline import _formula_outline_nodes, _span_for_line
+
+    outline = build_outline_tree(document)
+    instruction_frame = build_instruction_sections_frame(document, outline=outline)
+    spans = build_candidate_spans(document)
+    formula_nodes = _formula_outline_nodes(outline.children, document_id=document.document_id)
+    printed_lines = sorted({str(node.line_anchor).lower() for node in formula_nodes if node.line_anchor}, key=_line_sort_key)
+    rows: list[CellRecord] = []
+    for node in formula_nodes:
+        line = str(node.line_anchor or "").lower()
+        if not line:
+            continue
+        form_span = _span_for_line(document, node, spans)
+        sections = instruction_frame.for_line(document.document_id, line)
+        instruction_text = "\n\n".join(section.text for section in sections)
+        evidence_spans: list[dict[str, str]] = []
+        if form_span is not None:
+            evidence_spans.append({"span_id": form_span.span_id, "text": form_span.text})
+        evidence_spans.extend(
+            {"span_id": section.section_id, "text": section.text}
+            for section in sections
+        )
+        rows.append(
+            CellRecord(
+                form=document.document_id,
+                line=line,
+                label=node.label,
+                form_face_text=form_span.text if form_span is not None else "",
+                instruction_text=instruction_text,
+                instruction_locator=sections[0].section_id if sections else "",
+                metadata={
+                    "instruction_owner_document_id": document.document_id,
+                    "instruction_lines": [line],
+                    "printed_lines": printed_lines,
+                    "evidence_spans": evidence_spans,
+                },
+            )
+        )
+    return CellFrame(rows)
 
 
 def derive_cells(
@@ -198,6 +266,14 @@ def derive_cells(
     input_is_frame = isinstance(frame, CellFrame)
     source = frame if input_is_frame else CellFrame.from_rows(frame)
     result_rows: list[CellRecord] = []
+    report: dict[str, Any] = {
+        "attempted": 0,
+        "repaired": 0,
+        "gapped": 0,
+        "errored": 0,
+        "validator_failures_by_kind": {},
+        "validator_warnings_by_kind": {},
+    }
     active_client = client
     client_error: str | None = None
     if active_client is None and client_factory is not None:
@@ -217,12 +293,28 @@ def derive_cells(
     schema = expression_schema(list(operations or DEFAULT_OPERATIONS), depth=max_depth)
     for original in source.rows:
         row = CellRecord.from_mapping(original.as_dict())
-        if client_error:
-            _mark_error(row, client_error, provider=provider, model=model)
+        input_failures = validate_cell_input(row)
+        if input_failures:
+            _record_issues(report, input_failures)
+            _mark_error(
+                row,
+                _format_issues(input_failures),
+                provider=provider,
+                model=model,
+            )
+            report["errored"] += 1
+            row.metadata["validation_failures"] = [item.as_dict() for item in input_failures]
             result_rows.append(row)
             continue
+        if client_error:
+            _mark_error(row, client_error, provider=provider, model=model)
+            report["errored"] += 1
+            result_rows.append(row)
+            continue
+        report["attempted"] += 1
+        rendered_prompt = _render_cell_prompt(prompt, row)
+        first_failure: tuple[CellValidationIssue, ...] = ()
         try:
-            rendered_prompt = _render_cell_prompt(prompt, row)
             response = active_client.structured_completion(
                 prompt=rendered_prompt,
                 schema=schema,
@@ -230,6 +322,58 @@ def derive_cells(
                 max_tokens=max_tokens,
                 temperature=temperature,
                 purpose="tax_graph_cell_derivation",
+            )
+        except Exception as exc:  # noqa: BLE001 - provider failures stay row-local
+            _mark_error(row, f"{type(exc).__name__}: {exc}", provider=provider, model=model)
+            report["errored"] += 1
+            result_rows.append(row)
+            continue
+
+        try:
+            payload = getattr(response, "payload", response)
+            if not isinstance(payload, Mapping):
+                raise ValueError("provider returned a non-object payload")
+            _apply_payload(
+                row,
+                payload,
+                max_depth=max_depth,
+                provider=provider,
+                model=model,
+            )
+            first_failure = tuple(validate_cell_output(row, row.expression, row.quote, max_depth=max_depth)[0])
+            telemetry = response_telemetry(response)
+            if telemetry is not None:
+                row.provider = telemetry.resolved_provider or telemetry.provider
+                row.model = telemetry.resolved_model or telemetry.requested_model
+                row.prompt_tokens = telemetry.prompt_tokens
+                row.completion_tokens = telemetry.completion_tokens
+                row.cost = telemetry.cost
+        except Exception as exc:  # noqa: BLE001 - one row must not fail the frame
+            issue = _exception_issue(exc)
+            if issue.kind == "quote_span":
+                _mark_error(row, f"{type(exc).__name__}: {exc}", provider=provider, model=model)
+                report["errored"] += 1
+                row.metadata["validation_failures"] = [issue.as_dict()]
+                result_rows.append(row)
+                continue
+            first_failure = (issue,)
+
+        if not first_failure:
+            _record_warnings(report, row, max_depth=max_depth)
+            result_rows.append(row)
+            continue
+
+        _record_issues(report, first_failure)
+        row.metadata["validation_failures"] = [item.as_dict() for item in first_failure]
+        repair_prompt = _repair_prompt(rendered_prompt, row, first_failure)
+        try:
+            response = active_client.structured_completion(
+                prompt=repair_prompt,
+                schema=schema,
+                model=model,
+                max_tokens=max_tokens,
+                temperature=temperature,
+                purpose="tax_graph_cell_derivation_repair",
             )
             payload = getattr(response, "payload", response)
             if not isinstance(payload, Mapping):
@@ -241,19 +385,31 @@ def derive_cells(
                 provider=provider,
                 model=model,
             )
-            telemetry = response_telemetry(response)
-            if telemetry is not None:
-                row.provider = telemetry.resolved_provider or telemetry.provider
-                row.model = telemetry.resolved_model or telemetry.requested_model
-                row.prompt_tokens = telemetry.prompt_tokens
-                row.completion_tokens = telemetry.completion_tokens
-                row.cost = telemetry.cost
-            result_rows.append(row)
-        except Exception as exc:  # noqa: BLE001 - one row must not fail the frame
-            _mark_error(row, f"{type(exc).__name__}: {exc}", provider=provider, model=model)
-            result_rows.append(row)
+            second_failures, _warnings = validate_cell_output(
+                row,
+                row.expression,
+                row.quote,
+                max_depth=max_depth,
+            )
+            if second_failures:
+                _record_issues(report, second_failures)
+                _mark_gap(row, second_failures, provider=provider, model=model)
+                report["gapped"] += 1
+                row.metadata["validation_failures"] = [item.as_dict() for item in second_failures]
+            else:
+                row.status = "repaired"
+                row.metadata["repaired_after"] = [item.kind for item in first_failure]
+                report["repaired"] += 1
+                _record_warnings(report, row, max_depth=max_depth)
+        except Exception as exc:  # noqa: BLE001 - second failure is a named gap
+            issue = _exception_issue(exc)
+            _record_issues(report, (issue,))
+            _mark_gap(row, (issue,), provider=provider, model=model)
+            report["gapped"] += 1
+            row.metadata["validation_failures"] = [issue.as_dict()]
+        result_rows.append(row)
 
-    output = CellFrame(result_rows)
+    output = CellFrame(result_rows, validation=report)
     return output if input_is_frame else output.as_dicts()
 
 
@@ -284,6 +440,279 @@ def _apply_payload(
     row.error = None
     row.provider = provider
     row.model = model
+
+
+def validate_cell_input(row: CellRecord) -> tuple[CellValidationIssue, ...]:
+    """Validate the source-side contracts before asking the provider.
+
+    Real frames carry explicit owner metadata.  Older fixture frames only carry
+    the locator and source text, so the metadata checks are conditional to keep
+    that compatibility surface while still rejecting an explicit wrong owner.
+    """
+    issues: list[CellValidationIssue] = []
+    if not row.label.strip():
+        issues.append(CellValidationIssue("missing_label", "cell label is required"))
+    if not row.instruction_text.strip():
+        issues.append(CellValidationIssue("missing_instruction_text", "instruction text is required"))
+    metadata = row.metadata
+    owner = metadata.get("instruction_owner_document_id") or metadata.get("instruction_document_id")
+    if owner and str(owner) != row.form:
+        issues.append(
+            CellValidationIssue(
+                "instruction_wrong_owner",
+                f"instruction evidence belongs to {owner}, not {row.form}",
+            )
+        )
+    owner_lines = metadata.get("instruction_lines") or metadata.get("instruction_line")
+    if owner_lines:
+        if isinstance(owner_lines, str):
+            owner_lines = (owner_lines,)
+        normalized = {str(value).strip().lower() for value in owner_lines}
+        if row.line.strip().lower() not in normalized:
+            issues.append(
+                CellValidationIssue(
+                    "instruction_wrong_line",
+                    f"instruction evidence is for line(s) {sorted(normalized)}, not line {row.line}",
+                )
+            )
+    if not row.instruction_locator.strip() and not metadata.get("evidence_spans"):
+        issues.append(CellValidationIssue("missing_instruction_locator", "instruction evidence has no locator"))
+    return tuple(issues)
+
+
+def validate_cell_output(
+    row: CellRecord,
+    expression: Mapping[str, Any] | None,
+    quote: str,
+    *,
+    max_depth: int = 2,
+) -> tuple[tuple[CellValidationIssue, ...], tuple[CellValidationIssue, ...]]:
+    """Validate output properties and return hard failures plus warnings.
+
+    These checks are deliberately source- and expression-based.  They do not
+    consult promoted graph artifacts, and the operand-in-quote check is only a
+    warning because a concise quote can legitimately omit an operand that the
+    instruction still establishes elsewhere in the packet.
+    """
+    hard: list[CellValidationIssue] = []
+    warnings: list[CellValidationIssue] = []
+    if expression is None:
+        return (CellValidationIssue("missing_expression", "provider returned no expression"),), ()
+    try:
+        validate_expression_tree(expression, max_depth=max_depth)
+    except ValueError as exc:
+        return (_exception_issue(exc),), ()
+
+    operands = list(_expression_operands(expression))
+    current_form = row.form.strip().lower()
+    current_line = row.line.strip().lower()
+    available_lines = _available_lines(row)
+    for operand in operands:
+        operand_form = str(operand.get("form") or "").strip().lower()
+        operand_line = str(operand.get("line") or "").strip().lower()
+        if not operand_line:
+            continue
+        if not operand_form and operand_line == current_line:
+            hard.append(CellValidationIssue("self_reference", f"expression references its own line {row.line}"))
+        if operand_form and operand_form == current_form and operand_line == current_line:
+            hard.append(CellValidationIssue("self_reference", f"expression references its own line {row.line}"))
+        if not operand_form and available_lines and operand_line not in available_lines:
+            hard.append(
+                CellValidationIssue(
+                    "operand_not_printed",
+                    f"line {operand_line} is not a printed line on {row.form}",
+                )
+            )
+        if not operand_form and not _line_mentioned(quote, operand_line):
+            warnings.append(
+                CellValidationIssue(
+                    "operand_not_in_quote",
+                    f"line {operand_line} is not mentioned in the selected quote",
+                    hard=False,
+                )
+            )
+        if operand_form and not _line_mentioned(quote, operand_line):
+            warnings.append(
+                CellValidationIssue(
+                    "operand_not_in_quote",
+                    f"{operand_form} line {operand_line} is not mentioned in the selected quote",
+                    hard=False,
+                )
+            )
+
+    evidence = " ".join((row.form_face_text, row.instruction_text, _evidence_span_text(row))).lower()
+    subtract_match = re.search(
+        r"subtract\s+(?:line\s+)?([0-9]+[a-z]?)\s+from\s+(?:line\s+)?([0-9]+[a-z]?)",
+        evidence,
+        re.IGNORECASE,
+    )
+    if subtract_match:
+        expected_left = subtract_match.group(2).lower()
+        expected_right = subtract_match.group(1).lower()
+        subtract_nodes = [node for node in _expression_nodes(expression) if str(node.get("op", "")).upper() == "SUBTRACT"]
+        if not any(
+            _operand_line(args[0]) == expected_left and _operand_line(args[1]) == expected_right
+            for args in (_node_args(node) for node in subtract_nodes)
+            if len(args) == 2
+        ):
+            hard.append(
+                CellValidationIssue(
+                    "subtract_direction",
+                    f"instruction says subtract line {expected_right} from line {expected_left}",
+                )
+            )
+
+    normalized_evidence = re.sub(r"\s+", " ", evidence)
+    if re.search(r"if zero or less,? enter\s+-?0-", normalized_evidence, re.IGNORECASE):
+        has_zero_floor = any(
+            str(node.get("op", "")).upper() == "MAX"
+            and any(_is_zero_constant(arg) for arg in _node_args(node))
+            for node in _expression_nodes(expression)
+        )
+        if not has_zero_floor:
+            hard.append(
+                CellValidationIssue(
+                    "missing_floor",
+                    "evidence requires MAX(expression, 0) for the zero-or-less rule",
+                )
+            )
+    return tuple(_unique_issues(hard)), tuple(_unique_issues(warnings))
+
+
+def _expression_nodes(node: Mapping[str, Any]) -> Iterable[Mapping[str, Any]]:
+    """Yield every expression node, including the root."""
+    if "op" not in node:
+        return
+    yield node
+    for arg in _node_args(node):
+        if isinstance(arg, Mapping):
+            yield from _expression_nodes(arg)
+
+
+def _expression_operands(node: Mapping[str, Any]) -> Iterable[Mapping[str, Any]]:
+    """Yield local and explicit cross-form line operands."""
+    if "line" in node and ("op" not in node):
+        yield node
+        return
+    if "op" not in node:
+        return
+    for arg in _node_args(node):
+        if isinstance(arg, Mapping):
+            yield from _expression_operands(arg)
+
+
+def _node_args(node: Mapping[str, Any]) -> list[Mapping[str, Any]]:
+    """Return expression arguments that are mappings."""
+    return [arg for arg in node.get("args", []) if isinstance(arg, Mapping)]
+
+
+def _operand_line(node: Mapping[str, Any]) -> str:
+    """Return an operand's normalized printed line."""
+    return str(node.get("line") or "").strip().lower()
+
+
+def _is_zero_constant(node: Mapping[str, Any]) -> bool:
+    """Return whether an operand is the numeric zero constant."""
+    return "const" in node and isinstance(node.get("const"), (int, float)) and float(node["const"]) == 0
+
+
+def _available_lines(row: CellRecord) -> set[str]:
+    """Read optional printed-line inventory supplied by the upstream frame."""
+    for key in ("printed_lines", "available_lines", "form_lines"):
+        values = row.metadata.get(key)
+        if values:
+            if isinstance(values, str):
+                values = values.split(",")
+            return {str(value).strip().lower() for value in values}
+    return set()
+
+
+def _line_sort_key(value: str) -> tuple[int, str]:
+    """Sort printed line tokens numerically, then by suffix."""
+    match = re.fullmatch(r"([0-9]+)([a-z]*)", str(value).lower())
+    return (int(match.group(1)), match.group(2)) if match else (10**9, str(value))
+
+
+def _line_mentioned(text: str, line: str) -> bool:
+    """Match a printed line token without treating 1 as 1a."""
+    return bool(re.search(rf"\bline\s+{re.escape(line)}\b", str(text), re.IGNORECASE))
+
+
+def _evidence_span_text(row: CellRecord) -> str:
+    """Return text from serialized mined evidence spans, if supplied."""
+    values = row.metadata.get("evidence_spans") or ()
+    if isinstance(values, Mapping):
+        values = (values,)
+    return " ".join(str(item.get("text") or "") for item in values if isinstance(item, Mapping))
+
+
+def _unique_issues(issues: Iterable[CellValidationIssue]) -> list[CellValidationIssue]:
+    """Deduplicate equivalent validator messages in stable order."""
+    seen: set[tuple[str, str]] = set()
+    result: list[CellValidationIssue] = []
+    for issue in issues:
+        key = (issue.kind, issue.message)
+        if key not in seen:
+            result.append(issue)
+            seen.add(key)
+    return result
+
+
+def _exception_issue(exc: Exception) -> CellValidationIssue:
+    """Convert a payload exception into a stable validator kind."""
+    message = str(exc)
+    if "verbatim" in message:
+        kind = "quote_not_verbatim"
+    elif "known input evidence span" in message:
+        kind = "quote_span"
+    elif "expression" in message or "operation" in message:
+        kind = "expression_shape"
+    else:
+        kind = "payload"
+    return CellValidationIssue(kind, f"{type(exc).__name__}: {message}")
+
+
+def _format_issues(issues: Iterable[CellValidationIssue]) -> str:
+    """Format deterministic complaints for row errors and repair prompts."""
+    return "; ".join(f"{issue.kind}: {issue.message}" for issue in issues)
+
+
+def _repair_prompt(
+    prompt: str,
+    row: CellRecord,
+    issues: Iterable[CellValidationIssue],
+) -> str:
+    """Feed the exact deterministic complaint back to the provider once."""
+    return (
+        f"{prompt}\n\nREPAIR REQUEST for {row.form} line {row.line}: "
+        f"{_format_issues(issues)}. Return one corrected expression and a verbatim quote."
+    )
+
+
+def _record_issues(report: dict[str, Any], issues: Iterable[CellValidationIssue]) -> None:
+    """Increment validator failure counts by kind."""
+    counts = report["validator_failures_by_kind"]
+    for issue in issues:
+        counts[issue.kind] = counts.get(issue.kind, 0) + 1
+
+
+def _record_warnings(report: dict[str, Any], row: CellRecord, *, max_depth: int) -> None:
+    """Record non-blocking operand evidence warnings for a successful row."""
+    if row.expression is None:
+        return
+    _hard, warnings = validate_cell_output(row, row.expression, row.quote, max_depth=max_depth)
+    if not warnings:
+        return
+    row.metadata["validation_warnings"] = [item.as_dict() for item in warnings]
+    counts = report["validator_warnings_by_kind"]
+    for issue in warnings:
+        counts[issue.kind] = counts.get(issue.kind, 0) + 1
+
+
+def _mark_gap(row: CellRecord, issues: Iterable[CellValidationIssue], *, provider: str, model: str) -> None:
+    """Mark a row that failed its one allowed repair as a review gap."""
+    _mark_error(row, f"validation gap after one repair: {_format_issues(issues)}", provider=provider, model=model)
+    row.status = "error"
 
 
 def validate_expression_tree(node: Any, *, max_depth: int = 2) -> None:
@@ -561,6 +990,18 @@ def _render_cell_prompt(template: str, row: CellRecord) -> str:
 
 def _known_quote_spans(row: CellRecord, quote: str) -> list[tuple[str, str]]:
     """Return input-owned span ids whose source contains the returned quote."""
+    evidence_spans = row.metadata.get("evidence_spans")
+    if evidence_spans:
+        if isinstance(evidence_spans, Mapping):
+            evidence_spans = (evidence_spans,)
+        return [
+            (str(item.get("span_id") or ""), str(item.get("text") or ""))
+            for item in evidence_spans
+            if isinstance(item, Mapping)
+            and item.get("span_id")
+            and item.get("text")
+            and _contains_verbatim(str(item["text"]), quote)
+        ]
     fallback_span_id = row.instruction_locator
     candidates = [
         (str(row.metadata.get("form_face_span_id") or fallback_span_id or ""), row.form_face_text),

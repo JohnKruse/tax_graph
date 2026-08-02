@@ -3,7 +3,10 @@
 Instruction pages carry their own structure.  A line heading owns its body
 through deeper headings until the next heading at the same or a higher level.
 This module keeps that source structure intact so a mention of another line
-cannot steal an instruction citation.
+cannot steal an instruction citation.  The heading parser below is retained
+only as a compatibility fallback for old synthetic spans and old draft
+sidecars that lack explicit owner metadata; real pipeline spans come from the
+typed instruction_sections frame and never pass through this inference path.
 """
 
 from __future__ import annotations

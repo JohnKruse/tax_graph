@@ -1,0 +1,143 @@
+document_id: form_1040_2025
+year: '2025'
+rows: 17
+row_status_counts:
+  derived: 0
+  repaired: 0
+  gapped: 0
+  errored: 17
+raw_row_status_counts:
+  error: 17
+rows_detail:
+- line: 1z
+  status: error
+  error: 'missing_instruction_text: instruction text is required'
+  validation_failures:
+  - kind: missing_instruction_text
+    message: instruction text is required
+    hard: true
+  validation_warnings: []
+- line: '9'
+  status: error
+  error: 'missing_instruction_text: instruction text is required'
+  validation_failures:
+  - kind: missing_instruction_text
+    message: instruction text is required
+    hard: true
+  validation_warnings: []
+- line: 11a
+  status: error
+  error: 'missing_instruction_text: instruction text is required'
+  validation_failures:
+  - kind: missing_instruction_text
+    message: instruction text is required
+    hard: true
+  validation_warnings: []
+- line: 11b
+  status: error
+  error: 'missing_instruction_text: instruction text is required'
+  validation_failures:
+  - kind: missing_instruction_text
+    message: instruction text is required
+    hard: true
+  validation_warnings: []
+- line: '14'
+  status: error
+  error: 'missing_instruction_text: instruction text is required'
+  validation_failures:
+  - kind: missing_instruction_text
+    message: instruction text is required
+    hard: true
+  validation_warnings: []
+- line: '15'
+  status: error
+  error: 'missing_instruction_text: instruction text is required'
+  validation_failures:
+  - kind: missing_instruction_text
+    message: instruction text is required
+    hard: true
+  validation_warnings: []
+- line: '18'
+  status: error
+  error: 'missing_instruction_text: instruction text is required'
+  validation_failures:
+  - kind: missing_instruction_text
+    message: instruction text is required
+    hard: true
+  validation_warnings: []
+- line: '21'
+  status: error
+  error: 'missing_instruction_text: instruction text is required'
+  validation_failures:
+  - kind: missing_instruction_text
+    message: instruction text is required
+    hard: true
+  validation_warnings: []
+- line: '22'
+  status: error
+  error: 'missing_instruction_text: instruction text is required'
+  validation_failures:
+  - kind: missing_instruction_text
+    message: instruction text is required
+    hard: true
+  validation_warnings: []
+- line: '24'
+  status: error
+  error: 'missing_instruction_text: instruction text is required'
+  validation_failures:
+  - kind: missing_instruction_text
+    message: instruction text is required
+    hard: true
+  validation_warnings: []
+- line: 25d
+  status: error
+  error: 'missing_instruction_text: instruction text is required'
+  validation_failures:
+  - kind: missing_instruction_text
+    message: instruction text is required
+    hard: true
+  validation_warnings: []
+- line: '32'
+  status: error
+  error: 'missing_instruction_text: instruction text is required'
+  validation_failures:
+  - kind: missing_instruction_text
+    message: instruction text is required
+    hard: true
+  validation_warnings: []
+- line: '33'
+  status: error
+  error: 'missing_instruction_text: instruction text is required'
+  validation_failures:
+  - kind: missing_instruction_text
+    message: instruction text is required
+    hard: true
+  validation_warnings: []
+- line: '34'
+  status: error
+  error: 'LlmUnavailable: OpenRouter request failed: Connection error.'
+  validation_failures: []
+  validation_warnings: []
+- line: 35a
+  status: error
+  error: 'LlmUnavailable: OpenRouter request failed: Connection error.'
+  validation_failures: []
+  validation_warnings: []
+- line: '36'
+  status: error
+  error: 'LlmUnavailable: OpenRouter request failed: Connection error.'
+  validation_failures: []
+  validation_warnings: []
+- line: '37'
+  status: error
+  error: 'LlmUnavailable: OpenRouter request failed: Connection error.'
+  validation_failures: []
+  validation_warnings: []
+validation:
+  attempted: 4
+  repaired: 0
+  gapped: 0
+  errored: 17
+  validator_failures_by_kind:
+    missing_instruction_text: 13
+  validator_warnings_by_kind: {}
