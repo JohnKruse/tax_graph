@@ -851,11 +851,16 @@ def expression_schema(operations: Sequence[str] | None = None, depth: int = 2) -
     return {
         "type": "object",
         "additionalProperties": False,
-        "required": ["expression", "quote"],
+        # OpenAI strict mode requires EVERY key in properties to appear in
+        # required, so quote_span_id is required-but-nullable rather than
+        # omitted.  Gemini tolerated the omission; openai/gpt-5.6-luna rejects
+        # the whole request with invalid_json_schema.  _apply_payload already
+        # falls back to the first known span when this is null.
+        "required": ["expression", "quote", "quote_span_id"],
         "properties": {
             "expression": _expression_node_schema(allowed, depth),
             "quote": {"type": "string", "minLength": 1},
-            "quote_span_id": {"type": "string", "minLength": 1},
+            "quote_span_id": {"type": ["string", "null"]},
         },
     }
 
