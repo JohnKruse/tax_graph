@@ -48,6 +48,12 @@ def build_form_completeness_report(
     for document_id in documents:
         draft_dir = draft_root / document_id
         stats = _load_mapping(draft_dir / "micro_extraction.yaml")
+        instruction_artifact = _load_mapping(draft_dir / "instruction_sections.yaml")
+        instruction_coverage = dict(
+            instruction_artifact.get("coverage")
+            or stats.get("instruction_sections_coverage")
+            or {}
+        )
         cells = [item for item in stats.get("formula_cells", []) if isinstance(item, dict)]
         background_controls = [
             item for item in stats.get("background_controls", [])
@@ -85,6 +91,7 @@ def build_form_completeness_report(
                 spans,
                 str(item.get("line_anchor") or ""),
                 owners=owners,
+                owner_document_id=document_id,
             )
             for item in review_cells
         }
@@ -93,6 +100,7 @@ def build_form_completeness_report(
                 cells,
                 spans,
                 owners,
+                document_id=document_id,
             )
         else:
             wrong_owner_count = int(stats.get("wrong_owner_instruction_span_count", 0))
@@ -181,6 +189,7 @@ def build_form_completeness_report(
             "review_gaps": gaps,
             "wrong_owner_instruction_spans": wrong_owner_count,
             "wrong_owner_instruction_addresses": wrong_owner_addresses,
+            "instruction_sections_coverage": instruction_coverage,
             "unresolved_line_refs": list(stats.get("unresolved_line_refs", [])),
             "resolved_models": sorted({str(item.get("resolved_model")) for item in llm_calls if item.get("resolved_model")}),
             "resolved_providers": sorted({str(item.get("resolved_provider")) for item in llm_calls if item.get("resolved_provider")}),
@@ -358,6 +367,8 @@ def _wrong_owner_instruction_report(
     cells: list[dict[str, Any]],
     spans: list[dict[str, Any]],
     owners: dict[str, frozenset[str]],
+    *,
+    document_id: str | None = None,
 ) -> tuple[int, list[str]]:
     """Re-measure mention-only candidates against the current owner map."""
     if not spans:
@@ -371,6 +382,9 @@ def _wrong_owner_instruction_report(
         phrase = f"line {anchor}"
         for span in spans:
             if str(span.get("relationship") or "") == "source":
+                continue
+            span_owner_document = str(span.get("owner_document_id") or "")
+            if document_id and span_owner_document and span_owner_document != document_id:
                 continue
             text = str(span.get("text") or "")
             lowered = text.lower()

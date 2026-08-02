@@ -92,9 +92,10 @@ def extract_background_policy(
     *,
     client: LlmClient,
     config: dict[str, Any] | None = None,
+    owner_document_id: str | None = None,
 ) -> tuple[dict[str, Any], list[str]]:
     """Ask for one policy and return it with code-resolved citation span ids."""
-    evidence = background_evidence(field, spans)
+    evidence = background_evidence(field, spans, owner_document_id=owner_document_id)
     if not evidence:
         raise MicroExtractionError("no deterministic form or instruction evidence for control")
     settings = config or {}
@@ -179,6 +180,7 @@ def extract_background_controls(
         spans,
         client=client,
         config=config,
+        owner_document_id=document.document_id,
     )
     unsupported_index = 0
     for field in fields:
@@ -303,6 +305,7 @@ def _run_background_calls(
     *,
     client: LlmClient,
     config: dict[str, Any] | None,
+    owner_document_id: str | None,
 ) -> list[tuple[dict[str, Any] | None, list[str], Exception | None, LlmCallTelemetry | None]]:
     """Run unsupported-control calls concurrently, preserving result order."""
     if not fields:
@@ -315,7 +318,14 @@ def _run_background_calls(
 
     def submit(field: dict[str, Any]):
         context = contextvars.copy_context()
-        return context.run(_run_background_call, field, spans, client, settings)
+        return context.run(
+            _run_background_call,
+            field,
+            spans,
+            client,
+            settings,
+            owner_document_id,
+        )
 
     with ThreadPoolExecutor(max_workers=workers, thread_name_prefix="tax-graph-background") as executor:
         futures = [executor.submit(submit, field) for field in fields]
@@ -327,6 +337,7 @@ def _run_background_call(
     spans: list[CandidateSpan],
     client: LlmClient,
     config: dict[str, Any],
+    owner_document_id: str | None,
 ) -> tuple[dict[str, Any] | None, list[str], Exception | None, LlmCallTelemetry | None]:
     """Execute one background call inside the copied observability context."""
     try:
@@ -335,6 +346,7 @@ def _run_background_call(
             spans,
             client=client,
             config=config,
+            owner_document_id=owner_document_id,
         )
         telemetry = response_telemetry(response)
         return response, citation_span_ids, None, telemetry
@@ -342,7 +354,12 @@ def _run_background_call(
         return None, [], exc, None
 
 
-def background_evidence(field: dict[str, Any], spans: list[CandidateSpan]) -> list[CandidateSpan]:
+def background_evidence(
+    field: dict[str, Any],
+    spans: list[CandidateSpan],
+    *,
+    owner_document_id: str | None = None,
+) -> list[CandidateSpan]:
     """Select a deterministic packet with reserved form-face evidence slots.
 
     The validator requires a form-face citation for a supported background
@@ -357,6 +374,13 @@ def background_evidence(field: dict[str, Any], spans: list[CandidateSpan]) -> li
     page = _field_page(field, spans)
     ranked: list[tuple[int, str, CandidateSpan]] = []
     for span in spans:
+        if (
+            owner_document_id
+            and span.relationship != "source"
+            and span.owner_document_id
+            and span.owner_document_id != owner_document_id
+        ):
+            continue
         span_tokens = set(_meaningful_tokens(span.text))
         overlap = len(tokens & span_tokens)
         if overlap == 0:

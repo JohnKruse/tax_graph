@@ -16,6 +16,12 @@ import yaml
 
 from tax_graph.config import get_config_value, project_root
 from tax_graph.extract.models import RelatedSourceInput, SourceDocumentInput
+from tax_graph.extract.instruction_sections import (
+    InstructionSectionsFrame,
+    build_instruction_sections,
+    empty_instruction_sections_frame,
+    write_instruction_sections_artifact,
+)
 
 
 PART_RE = re.compile(r"\bpart\s+([ivxlcdm]+)\b", re.IGNORECASE)
@@ -35,6 +41,9 @@ class CandidateSpan:
     relationship: str
     locator: str
     text: str
+    owner_document_id: str | None = None
+    owner_lines: tuple[str, ...] = ()
+    section_id: str | None = None
 
 
 @dataclass
@@ -336,7 +345,13 @@ def _merge_structure_anchor_index(document: SourceDocumentInput, records: list[d
 
 
 def build_candidate_spans(document: SourceDocumentInput) -> list[CandidateSpan]:
-    """Segment form and bundled sources into verbatim candidate spans."""
+    """Segment form and bundled sources into verbatim candidate spans.
+
+    Instruction spans are projections of the deterministic
+    ``instruction_sections`` frame.  The raw-line fallback is retained only
+    for legacy synthetic inputs that contain no line heading at all; it cannot
+    create an instruction owner and therefore fails closed for the join.
+    """
     spans: list[CandidateSpan] = []
     spans.extend(_spans_for_text(document.document_id, "source", document.text))
     for source in document.related_sources:
@@ -401,10 +416,47 @@ def write_outline_artifacts(
     spans = build_candidate_spans(document)
     _write_yaml(output_dir / "outline.yaml", outline_to_dict(outline))
     _write_yaml(output_dir / "candidate_spans.yaml", [span_to_dict(span) for span in spans])
+    instruction_frame = build_instruction_sections_frame(document, outline=outline)
+    write_instruction_sections_artifact(instruction_frame, output_dir / "instruction_sections.yaml")
     outbound_flows = build_outbound_flows(document, outline=outline, spans=spans)
     if outbound_flows:
         _write_yaml(output_dir / "outbound_flows.yaml", [flow_to_dict(flow) for flow in outbound_flows])
     return output_dir
+
+
+def build_instruction_sections_frame(
+    document: SourceDocumentInput,
+    *,
+    outline: OutlineTree | None = None,
+) -> InstructionSectionsFrame:
+    """Build the persisted instruction frame for one form extraction."""
+    tree = outline if outline is not None else build_outline_tree(document)
+    expected_lines = {
+        document.document_id: sorted(
+            {
+                str(node.line_anchor).lower()
+                for node in _flatten_outline_nodes(tree.children)
+                if node.line_anchor
+            }
+        )
+    }
+    source = next(
+        (item for item in document.related_sources if item.relationship == "instructions"),
+        None,
+    )
+    if source is None:
+        return empty_instruction_sections_frame(
+            source_document_id="",
+            year=document.year,
+            source_path=None,
+        )
+    return build_instruction_sections(
+        source.text,
+        source_document_id=source.document_id,
+        year=document.year,
+        source_path=source.text_path,
+        expected_lines=expected_lines,
+    )
 
 
 def outline_to_dict(tree: OutlineTree) -> dict[str, Any]:
@@ -418,13 +470,20 @@ def outline_to_dict(tree: OutlineTree) -> dict[str, Any]:
 
 def span_to_dict(span: CandidateSpan) -> dict[str, Any]:
     """Convert a candidate span to YAML-friendly data."""
-    return {
+    data = {
         "span_id": span.span_id,
         "document_id": span.document_id,
         "relationship": span.relationship,
         "locator": span.locator,
         "text": span.text,
     }
+    if span.owner_document_id:
+        data["owner_document_id"] = span.owner_document_id
+    if span.owner_lines:
+        data["owner_lines"] = list(span.owner_lines)
+    if span.section_id:
+        data["section_id"] = span.section_id
+    return data
 
 
 def flow_to_dict(flow: OutboundFlow) -> dict[str, Any]:
@@ -461,8 +520,49 @@ def _node_to_dict(node: OutlineNode) -> dict[str, Any]:
     return data
 
 
+def _flatten_outline_nodes(nodes: list[OutlineNode]) -> list[OutlineNode]:
+    """Return outline nodes in deterministic depth-first order."""
+    flattened: list[OutlineNode] = []
+    for node in nodes:
+        flattened.append(node)
+        flattened.extend(_flatten_outline_nodes(node.children))
+    return flattened
+
+
 def _spans_for_related_source(source: RelatedSourceInput) -> list[CandidateSpan]:
+    frame = build_instruction_sections(
+        source.text,
+        source_document_id=source.document_id,
+        source_path=source.text_path,
+    )
+    if frame.sections:
+        return _spans_for_instruction_frame(frame)
     return _spans_for_text(source.document_id, source.relationship, source.text)
+
+
+def _spans_for_instruction_frame(frame: InstructionSectionsFrame) -> list[CandidateSpan]:
+    """Project each unique frame section into one evidence span."""
+    spans: list[CandidateSpan] = []
+    seen: set[str] = set()
+    for section in frame.sections:
+        if section.section_id in seen:
+            continue
+        seen.add(section.section_id)
+        locator = section.locator
+        page = f"page {locator.page}, " if locator.page is not None else ""
+        spans.append(
+            CandidateSpan(
+                span_id=f"span_{_slug(frame.source_document_id)}_section_{len(spans) + 1:04d}",
+                document_id=frame.source_document_id,
+                relationship="instructions",
+                locator=f"{page}lines {locator.start_line}-{locator.end_line}",
+                text=section.text,
+                owner_document_id=section.document_id,
+                owner_lines=section.line_tokens,
+                section_id=section.section_id,
+            )
+        )
+    return spans
 
 
 def _spans_for_text(document_id: str, relationship: str, text: str) -> list[CandidateSpan]:

@@ -34,9 +34,14 @@ sys.path.insert(0, str(ROOT))
 
 from tax_graph.config import load_config  # noqa: E402
 from tax_graph.extract.llm_client import LlmUnavailable, build_llm_client  # noqa: E402
+from tax_graph.extract.instruction_sections import (  # noqa: E402
+    InstructionSectionsFrame,
+    build_instruction_sections_file,
+)
 
 DATA = ROOT / "experiments" / "data"
 OUT = ROOT / "experiments" / "out"
+_INSTRUCTION_FRAME_CACHE: dict[str, InstructionSectionsFrame] = {}
 
 
 # ---------------------------------------------------------------------------
@@ -224,6 +229,59 @@ def build_prompt(form: str, row: dict, hints: bool, mode: str = "flat") -> str:
     return prompt
 
 
+def rows_with_instruction_sections(
+    form: str,
+    entry: dict,
+    rows: list[dict],
+    *,
+    year: str = "2025",
+) -> list[dict]:
+    """Replace snapshot instruction joins with the pipeline's frame output."""
+    frame = _instruction_frame_for_form(form, entry, year=year)
+    if frame is None:
+        return rows
+    refreshed: list[dict] = []
+    for row in rows:
+        sections = frame.for_line(form, str(row.get("line") or ""))
+        updated = dict(row)
+        if sections:
+            updated["instructions"] = "\n\n".join(section.text for section in sections)
+        else:
+            updated["instructions"] = ""
+        refreshed.append(updated)
+    return refreshed
+
+
+def _instruction_frame_for_form(
+    form: str,
+    entry: dict,
+    *,
+    year: str,
+) -> InstructionSectionsFrame | None:
+    configured = entry.get("instructions_file")
+    if configured:
+        source_path = ROOT / str(configured)
+    elif form in {
+        f"schedule_1_{year}",
+        f"schedule_1a_{year}",
+        f"schedule_2_{year}",
+        f"schedule_3_{year}",
+    }:
+        source_path = ROOT / ".cache" / "raw" / year / f"instructions_form_1040_{year}.txt"
+    else:
+        return None
+    if not source_path.exists():
+        return None
+    cache_key = f"{source_path.resolve()}::{year}"
+    if cache_key not in _INSTRUCTION_FRAME_CACHE:
+        _INSTRUCTION_FRAME_CACHE[cache_key] = build_instruction_sections_file(
+            source_path,
+            source_document_id=source_path.stem,
+            year=year,
+        )
+    return _INSTRUCTION_FRAME_CACHE[cache_key]
+
+
 def cell(text: str, limit: int = 400) -> str:
     """Make a string safe and readable inside a markdown table cell.
 
@@ -240,7 +298,12 @@ def cell(text: str, limit: int = 400) -> str:
 
 def run_form(form: str, data: dict, args, client) -> list[dict]:
     entry = data["forms"][form]
-    rows = entry["lines"]
+    rows = rows_with_instruction_sections(
+        form,
+        entry,
+        entry["lines"],
+        year=str(args.year),
+    )
     if args.lines:
         wanted = {x.strip().lower() for x in args.lines.split(",") if x.strip()}
         rows = [r for r in rows if r["line"] in wanted]
@@ -379,7 +442,13 @@ def main() -> int:
         results = run_form(form, data, args, client)
         if args.dry_run:
             continue
-        sample = build_prompt(form, data["forms"][form]["lines"][0], hints=not args.no_hints, mode=args.mode)
+        sample_rows = rows_with_instruction_sections(
+            form,
+            data["forms"][form],
+            data["forms"][form]["lines"],
+            year=str(args.year),
+        )
+        sample = build_prompt(form, sample_rows[0], hints=not args.no_hints, mode=args.mode)
         out_path = OUT / f"{form}.md"
         write_markdown(form, data, results, out_path, sample)
         ok = sum(1 for r in results if r["answer"])

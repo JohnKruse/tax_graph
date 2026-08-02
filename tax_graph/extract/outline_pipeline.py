@@ -23,6 +23,7 @@ from tax_graph.extract.outline import (
     OutlineNode,
     build_candidate_spans,
     build_outbound_flows,
+    build_instruction_sections_frame,
     build_outline_tree,
     infer_value_type,
     node_type_for_outline,
@@ -49,6 +50,7 @@ def generate_outline_first_drafts(
 ) -> ExtractionBatch:
     """Generate draft objects by walking deterministic outline nodes."""
     outline = build_outline_tree(document)
+    instruction_frame = build_instruction_sections_frame(document, outline=outline)
     spans = build_candidate_spans(document)
     flows = build_outbound_flows(document, outline=outline, spans=spans)
     run_outline_artifact_checks(document, outline, spans, flows).raise_for_issues()
@@ -75,6 +77,7 @@ def generate_outline_first_drafts(
         "resolved_line_refs": [],
         "review_gaps": [],
         "transport_failures": 0,
+        "instruction_sections_coverage": instruction_frame.coverage,
     }
     line_index = _outline_line_index(document.document_id, outline.children)
     line_kinds, line_children = _outline_line_metadata(document.document_id, outline.children)
@@ -89,11 +92,17 @@ def generate_outline_first_drafts(
             instruction_owners=instruction_owners,
         )
         target_cell_id = _outline_node_id(document.document_id, outline_node)
-        wrong_owner_spans = _wrong_owner_instruction_spans(outline_node, spans, instruction_owners)
+        wrong_owner_spans = _wrong_owner_instruction_spans(
+            outline_node,
+            spans,
+            instruction_owners,
+            document_id=document.document_id,
+        )
         instruction_span_ids = instruction_span_ids_for_line(
             spans,
             str(outline_node.line_anchor or ""),
             owners=instruction_owners,
+            owner_document_id=document.document_id,
         )
         if wrong_owner_spans:
             micro_stats["wrong_owner_instruction_span_count"] += len(wrong_owner_spans)
@@ -288,11 +297,17 @@ def _extract_non_formula_cells(
                     spans,
                     anchor,
                     owners=instruction_owners,
+                    owner_document_id=document.document_id,
                 )
             ],
             "has_form_face_citation": False,
             "has_instruction_citation": bool(
-                instruction_span_ids_for_line(spans, anchor, owners=instruction_owners)
+                instruction_span_ids_for_line(
+                    spans,
+                    anchor,
+                    owners=instruction_owners,
+                    owner_document_id=document.document_id,
+                )
             ),
             "review_gap": "source declaration has not been generated",
         }
@@ -604,7 +619,12 @@ def _spans_for_outline_node(
                 continue
             if span.relationship == "source":
                 continue
-            if _instruction_span_belongs_to_line(span, node.line_anchor, instruction_owners):
+            if _instruction_span_belongs_to_line(
+                span,
+                node.line_anchor,
+                instruction_owners,
+                owner_document_id=document_id,
+            ):
                 instruction_hits.append(span)
         if source_span is not None:
             source_spans = [span for span in spans if span.relationship == "source"]
@@ -644,6 +664,8 @@ def _instruction_span_belongs_to_line(
     span: CandidateSpan,
     anchor: str,
     instruction_owners: dict[str, frozenset[str]] | None = None,
+    *,
+    owner_document_id: str | None = None,
 ) -> bool:
     """Accept an instruction span only when its own entry is this line.
 
@@ -652,6 +674,8 @@ def _instruction_span_belongs_to_line(
     1z because it mentioned 1z. Explicit headings and table-row prefixes are
     the deterministic ownership signals; a bare mention remains excluded.
     """
+    if owner_document_id and span.owner_document_id and span.owner_document_id != owner_document_id:
+        return False
     owner = (instruction_owners or {}).get(span.span_id, ())
     if anchor.lower() not in {str(value).lower() for value in owner}:
         return False
@@ -674,6 +698,8 @@ def _wrong_owner_instruction_spans(
     node: OutlineNode,
     spans: list[CandidateSpan],
     instruction_owners: dict[str, frozenset[str]] | None = None,
+    *,
+    document_id: str | None = None,
 ) -> list[CandidateSpan]:
     """Find instruction mentions that were previously eligible but are not owned."""
     anchor = str(node.line_anchor or "").lower()
@@ -684,6 +710,8 @@ def _wrong_owner_instruction_spans(
     wrong: list[CandidateSpan] = []
     for span in spans:
         if span.relationship == "source" or phrase not in span.text.lower():
+            continue
+        if document_id and span.owner_document_id and span.owner_document_id != document_id:
             continue
         if not _direct_line_evidence(span.text, anchor):
             continue

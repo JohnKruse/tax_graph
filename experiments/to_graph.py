@@ -27,6 +27,7 @@ from prompt_experiment import (  # noqa: E402
     build_prompt,
     expression_schema,
     render,
+    rows_with_instruction_sections,
 )
 from tax_graph.config import load_config  # noqa: E402
 from tax_graph.extract.llm_client import build_llm_client  # noqa: E402
@@ -140,7 +141,13 @@ def main() -> int:
     data = json.loads((ROOT / "experiments" / "data" / f"lines_{args.year}.json").read_text(encoding="utf-8"))
     entry = data["forms"][args.form]
     wanted = [x.strip().lower() for x in args.lines.split(",") if x.strip()]
-    rows = [r for r in entry["lines"] if r["line"] in wanted]
+    rows = rows_with_instruction_sections(
+        args.form,
+        entry,
+        entry["lines"],
+        year=str(args.year),
+    )
+    rows = [r for r in rows if r["line"] in wanted]
 
     settings = load_config(root=str(ROOT))
     client = build_llm_client(settings)

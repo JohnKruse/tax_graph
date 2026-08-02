@@ -90,6 +90,7 @@ def run_prompt_bench(
                     spans,
                     client=client,
                     config=settings,
+                    owner_document_id=document.document_id,
                 )
             )
             continue
@@ -133,8 +134,9 @@ def _bench_background_target(
     *,
     client: LlmClient,
     config: dict[str, Any],
+    owner_document_id: str | None = None,
 ) -> dict[str, Any]:
-    evidence = background_evidence(field, spans)
+    evidence = background_evidence(field, spans, owner_document_id=owner_document_id)
     prompt = _background_prompt(field, evidence)
     response, error = _call_and_validate(
         target_id,

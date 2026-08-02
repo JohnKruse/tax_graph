@@ -14,6 +14,47 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## Current state (2026-07-31)
 
+**Worker session checkpoint - M20-S23 implementation (2026-08-02):** Global canary: Ledger
+Llama. Phase canary: Ground Truth. Model: GPT-5 Codex; effort/quota/context indicators are not
+exposed by this environment. John gave go via the current task request. Single declared step:
+build the deterministic `instruction_sections` frame from acquired instruction text, carry form
+context through the join, persist the artifact and coverage report, retire the competing
+instruction joins in the pipeline and experiment bench, then run the declared consumer and gate
+set. Applicable defect-ledger entries: D9, D6, and the exact RAN/NOT RUN evidence rule. No model
+calls, promotion, hand-authoring, live graph edit, verdict write, or operation enum change is in
+scope. Protected graph and field-map artifacts are untouched at session start. Declared focused
+files: `tests/test_instruction_sections_m20.py`, `tests/test_instruction_sections_m18.py`,
+`tests/test_extract_outline_m4.py`, `tests/test_background_m20.py`, `tests/test_cli.py`,
+`tests/test_form_completeness_m20.py`, and `tests/test_workbench_m15.py`.
+
+**Worker result - M20-S23 implementation (2026-08-02):** Added
+`tax_graph/extract/instruction_sections.py` as the deterministic typed frame. It preserves
+acquired text verbatim with source line/offset/page locators, tracks explicit form or schedule
+context, expands printed alpha ranges, ignores page markers as boundaries, and reports per-form
+coverage, collisions, wrong-owner before/after, and explicit empty contexts. The real 1040 probe
+produced 317 sections across Form 1040, Schedules 1, 1-A, 2, and 3; Schedule 1-A is recorded as
+an explicit zero-section context rather than disappearing. Candidate spans, outline extraction,
+completeness, background evidence, prompt bench, and both experiment paths now consume the frame
+owner metadata. The legacy owner parser remains only as a compatibility fallback for old synthetic
+spans and old draft sidecars; real pipeline spans use explicit frame ownership.
+
+The known collision checks hold: Form 1040 line 9 excludes Household Employment Taxes, Form 1040
+line 21 excludes Student Loan Interest Deduction text, Schedule 2 line 9 retains Household
+Employment Taxes, and wrong-owner-after is 0. No model calls, promotion, live graph edit, verdict
+write, or output artifact was performed. Protected `graph/2025/{nodes,edges,rules}/` and
+`graph/2025/field_maps/` are byte-identical to HEAD.
+
+**Verification evidence - M20-S23:**
+
+- RAN: `$testRoot='C:\Users\devbox\.codex\visualizations\2026\08\02\019fc1a2-bc6c-7652-b3a5-31ff4364ef88\m20_s23_final_tests'; New-Item -ItemType Directory -Force -Path $testRoot | Out-Null; $env:PYTEST_DEBUG_TEMPROOT=$testRoot; & .venv\Scripts\python.exe -m pytest tests\test_instruction_sections_m20.py tests\test_instruction_sections_m18.py tests\test_extract_outline_m4.py tests\test_background_m20.py tests\test_cli.py tests\test_form_completeness_m20.py tests\test_workbench_m15.py -q` -> `46 passed, 1 warning in 20.10s`. This single command ran every declared focused file: `tests/test_instruction_sections_m20.py`, `tests/test_instruction_sections_m18.py`, `tests/test_extract_outline_m4.py`, `tests/test_background_m20.py`, `tests/test_cli.py`, `tests/test_form_completeness_m20.py`, and `tests/test_workbench_m15.py`.
+- RAN: `& .venv\Scripts\python.exe tools\check_ascii.py; git diff --check; & .venv\Scripts\python.exe -m py_compile tax_graph\extract\instruction_sections.py tax_graph\extract\instruction_ownership.py tax_graph\extract\outline.py tax_graph\extract\outline_pipeline.py tax_graph\extract\background.py tax_graph\extract\prompt_bench.py tax_graph\verify\form_completeness.py experiments\prompt_experiment.py experiments\to_graph.py tests\test_instruction_sections_m20.py; & .venv\Scripts\python.exe -m tax_graph.cli validate 2025` -> `ASCII check OK`; compile passed; `graph integrity OK - all references resolve`.
+- RAN: `& .venv\Scripts\python.exe -m workbench.cli --root . --year 2025 preflight` with read-only filesystem escalation after the sandbox hit the existing draft-directory ACL -> `review preflight passed - 2025`; derived manifest entries `18`, units `2224`, derived cells `2120`, approved `0`, needs_recheck `0`, review_gap `591`, unreviewed `1529`, legacy_mined `394`.
+- RAN: `& .venv\Scripts\python.exe -c "from tax_graph.acquire.citation_check import check_graph_citations; result = check_graph_citations(year='2025', raw_store='.cache/raw', root='.'); print(f'checked={result.checked} strict_mismatches={len(result.mismatches)}')"` -> `checked=401 strict_mismatches=36`.
+- RAN: real corpus frame probe -> `sections=317`, source documents `form_1040_2025`, `schedule_1_2025`, `schedule_1a_2025`, `schedule_2_2025`, `schedule_3_2025`; empty context `schedule_1a_2025`; collisions `32`; wrong-owner-after `0`.
+
+No declared focused file is unverified. One local commit was created; its final hash is reported
+in the Worker response. Do not push.
+
 **Worker session checkpoint - M20-S22 implementation (2026-08-01):** Global canary: Ledger
 Llama. Phase canary: Ground Truth. Model: GPT-5 Codex; effort/quota/context indicators are not
 exposed by this environment. John gave go via the current task request. Single declared step:
