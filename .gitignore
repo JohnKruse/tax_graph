@@ -54,6 +54,7 @@ workbench_output/
 .venv_old_shim/
 .pytest_tmp/
 .test_tmp/
+.test_tmp*/
 
 # generated experiment output
 /experiments/out/
