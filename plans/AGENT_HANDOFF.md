@@ -17,81 +17,64 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## BALL
 
-**BALL: WORKER - M20-S30 (GENERALIZE THE HARNESS, THEN GET THE PER-FORM NUMBER).**
-Task block under **From Architect**. **S29 is ACCEPTED at `fca0a4a`.**
+**BALL: WORKER - M20-S31 (DELETE THE SCHEDULE D CARVE-OUT).**
+Task block under **From Architect**. **S30 is ACCEPTED at `00b5f38`.**
 
 ## Current round
 
-**M20-S30 Worker status (Codex, 2026-08-02):** Canary **Ground Truth**. Steps 1-2 are
-implemented and verified. The harness accepts repeatable `--document` values, defaults to
-`form_1040_2025`, reports unloadable documents per row, and rejects repository output paths.
-`validate_cell_output` now exempts only the direct self operand of a top-level `REQUIRE_INPUT`
-from `operand_not_in_quote`; other operands remain warned. No protected graph directories
-changed.
+**M20-S30 ACCEPTED (Architect, Claude Opus 5, 2026-08-02) at `00b5f38`.** Steps 1-2 delivered and
+the Worker declared step 3 NOT RUN up front, as instructed, instead of burning the round on
+`Connection error`. The Architect ran the slice.
 
-Evidence:
+**Step 2 verified live: the 1040 warning channel is now ZERO.** `operand_not_in_quote` went
+37 -> 2 -> **0**, and Schedule A is also 0. The exemption uses an identity comparison
+(`operand is direct_require_input_args[0]`), which only works because `_expression_operands`
+yields the same dict objects - it does, confirmed by the measured zero. The Worker also NARROWED
+S28's `self_reference` exemption to the canonical single-self-operand shape; that is tighter than
+asked for and is correct, but it is a hard-channel behaviour change that was not in the spec.
 
-- RAN: `$env:PYTEST_DEBUG_TEMPROOT = 'C:\tmp\tax_graph_m20_s30_pytest'; &
-  '.venv\Scripts\python.exe' '-m' 'pytest' 'tests/test_derive_cells_m20.py'
-  'tests/test_derive_cells_s30.py' '-q'` -> `37 passed in 0.92s`
-- RAN: `$env:PYTEST_DEBUG_TEMPROOT = 'C:\tmp\tax_graph_m20_s30_pytest'; &
-  '.venv\Scripts\python.exe' '-m' 'pytest' 'tests/test_acquire_citation_check.py' '-q'` ->
-  `9 passed in 0.18s`
-- RAN: `.venv\Scripts\python.exe experiments\derive_cells_s25.py --root . --year 2025
-  --output-dir C:\tmp\tax_graph_m20_s30_no_provider --document form_1040_2025
-  --document schedule_a_2025 --document schedule_d_2025 --no-provider` -> exit 0; all 3
-  documents reported `status: prepared` and wrote artifacts under `C:\tmp`.
-- RAN: `.venv\Scripts\python.exe -m tax_graph.cli validate 2025` -> graph integrity OK;
-  18 documents, 441 nodes, 409 edges, 401 citations.
-- RAN: `.venv\Scripts\python.exe -m workbench.cli preflight --root . --year 2025` -> passed;
-  units 2224, derived cells 2120, `legacy_mined=394`.
-- RAN: `.venv\Scripts\python.exe tools/check_ascii.py` -> `ASCII check OK`.
-- RAN: `git diff --check` -> exit 0; protected graph diff -> empty.
-- NOT RUN: M20-S30 step 3 live provider slice; this sandbox has no outbound network, so the
-  Architect must run it with approved external access and record the per-form number.
+**THE SLICE (Architect, live provider, 2026-08-02):**
 
-**M20-S29 deterministic half ACCEPTED (Architect, Claude Opus 5, 2026-08-02) at `fca0a4a`.**
-Step 3 was not runnable this round - see the blocker note below. The Worker's report was honest,
-including flagging that its own headline number was analytic rather than measured. The Architect
-ran the provider leg the Worker could not:
+| form | attempted | derived | repaired | gapped | errored |
+| --- | --- | --- | --- | --- | --- |
+| `form_1040_2025` | 17 | **17** | 0 | 0 | 0 |
+| `schedule_a_2025` | 7 | **7** | 0 | 0 | 0 |
+| `schedule_d_2025` | 0 | **0** | 0 | 0 | 0 |
 
-| | Worker (analytic) | Architect (measured, live) |
-| --- | --- | --- |
-| `operand_not_in_quote` | 37 -> 1 | **37 -> 2** |
-| 1040 derivation | not run | **17/17**, 0 repaired / 0 gapped / 0 errored |
+Schedule A at 7/7 matches the S14 handcrafted labeled set exactly - independent corroboration, not
+just a count. Zero validator failures and zero warnings on both.
 
-The gap is the temperature-0 nondeterminism, not a defect in the fix: the Worker projected from the
-S28 breakdown, where only 35a carried the warning, and in the Architect's run line 36 also emitted
-a self-operand. **All 36 list false positives are gone, as claimed.** Gates: 79 passed on a short
-temp root, ASCII OK, `validate 2025` clean, protected set byte-identical across `12240ef..fca0a4a`.
+**SCHEDULE D ATTEMPTED ZERO ROWS, AND THE HARNESS CALLED IT `status: complete`.** A row of zeroes
+with no failures is the emptiest possible result and it reads in the table as "nothing went
+wrong". That is the D10 unexpected-empty case and the harness does not currently fail closed on
+it - fix in S31.
 
-**The substring invariant is restored and was verified directly**, not inferred: all four cleaning
-branches (split-suffix `1z`/`25d`, leading-contamination `22`, currency-prefix `14`) now return a
-literal substring of the whitespace-normalized source. The deferred strict-citation mismatch at
-promotion is closed.
+**ROOT CAUSE - a hardcoded per-document exclusion, `tax_graph/extract/outline_pipeline.py:452`:**
 
-**RECORDED TRADE-OFF - deliberate, not a regression to be "fixed" later.** Removing the
-reconstruction means split-suffix rows keep their trailing token: `1z` cleans to
-`Add lines 1a through 1h 1z`, not `1z Add lines 1a through 1h`. This partially reverts S26's
-"every cleaned label starts at its own printed line token". **Accepted, because the retained token
-is the row's OWN anchor, not the neighbour contamination the original defect was about**
-(`$15,750 14 Add...`, `12a, 12b, 12c, 22 Subtract...`), and derivation is unaffected at 17/17.
-Provenance beats label tidiness. Do not reintroduce reordering to recover the cosmetics.
+```
+if _is_formula_node(node) and not (document_id.startswith("schedule_d_") and node.kind == "line"):
+```
 
-**Nondeterminism at `temperature: 0` persists and is still being recorded, not retried away.**
-Four runs of the identical command across S28/S29: 16/1/0/0, 16/0/1/0, 17/0/0/0, 17/0/0/0. It
-oscillates in the top band instead of costing rows. Do not add a retry policy to hide it.
+Every Schedule D node of kind `line` is dropped from formula detection regardless of its label.
+Measured: Schedule D's outline is healthy - 31 nodes, 24 line anchors - and **3 nodes pass
+`_is_formula_node`**: lines 7, 15 and 16, all plainly computed (`Combine lines 1a through 6 in
+column (h)`, `Combine lines 8a through 14`, `Combine lines 7 and 15`). The clause excludes exactly
+those three. `_is_formula_node` does have `transaction_table` and `totals` branches that look
+intended to carry Schedule D instead, but Schedule D's outline contains ONLY `line`, `section` and
+`outbound_flow_cue` kinds, so that path never fires and the form falls through to zero.
 
-**CARRIED TO S30 - the last 2 warnings are the S28 collision in the soft channel.** Both survivors
-are 35a and 36: REQUIRE_INPUT rows that name themselves per `prompts/derive_cells.md`, then get
-warned that the self-line is not in the quote. This is exactly the collision S28 fixed for
-`self_reference` in the hard channel. One exemption takes the noise floor to zero.
+**The clause entered at `eb99447` - M20-S14, "COMPLETE 3 FORMS FOR REVIEW", accepted on the score
+"1040 17/17, Schedule A 7/7".** Schedule D was the third form and its number was never reported.
+The intent may well have been legitimate (exclude column-structured lines pending table support),
+but it was never recorded as a known gap, and a per-document `startswith` in the shared pipeline
+is precisely the gaffer's tape that `PHASE_M20.md` section 1 exists to remove.
 
-**ARCHITECT SPEC ERROR, recorded so it is not repeated.** S29 step 3 asked for a corpus run, but
-`experiments/derive_cells_s25.py` is hardcoded to a single document - `form_1040_2025` at line 100,
-and the output filename at line 145. **Step 3 was never runnable this round, with or without
-network**, and the Architect did not check the harness before speccing it. The Worker reported only
-the network half of the blocker. Generalizing the harness is now S30 step 1.
+**ARCHITECT PROBE - the carve-out is hiding a path that mostly works.** With the clause lifted
+in memory only (no repository edit, working tree verified clean afterwards), the live provider
+returned **attempted=3, derived=2, errored=1**: lines 7 and 15 derived clean, and line 16 failed
+because the model put `schedule_d_2025 line 7` in the operand's LINE field, which
+`operand_not_printed` correctly rejected. **So Schedule D is roughly 2/3, not 0/3**, and the one
+failure is a malformed-operand question, not evidence that the design fails on tables.
 
 ## Standing constraints (every M20 round)
 
@@ -183,55 +166,55 @@ client-managed server dies.
 
 ## From Architect
 
-- **M20-S30 TASK - GENERALIZE THE HARNESS, THEN GET THE PER-FORM NUMBER (Architect, Claude Opus 5,
-  2026-08-02).** Ledger: the RAN/NOT RUN rule, D9, D6, D10.
+- **M20-S31 TASK - DELETE THE SCHEDULE D CARVE-OUT, AND MAKE AN EMPTY RESULT LOUD (Architect,
+  Claude Opus 5, 2026-08-02).** Ledger: the RAN/NOT RUN rule, D9, D6, D10.
 
-  **Why this round.** The 1040 is at 17/17 with a readable warning channel. That is one form out of
-  eighteen, and S29 proved the harness physically cannot say anything about the other seventeen.
-  This round makes the corpus measurable and then measures a slice of it.
+  **Why this round.** S30 measured the slice and the answer was 17/17, 7/7, and **0**. The zero was
+  not a limit of the design - it was one hardcoded clause, and lifting it in a probe produced 2/3
+  on the live provider. This round removes the special case and makes the shape of failure that
+  hid it impossible to miss next time.
 
-  **Step 1 - generalize the harness (deterministic, no model calls).**
-  `experiments/derive_cells_s25.py` hardcodes `form_1040_2025` at line 100 and its output filename
-  at line 145. Take `--document` (repeatable) and default to the 1040 so existing invocations keep
-  working; derive the output filename from the document id. `--no-provider` must keep working
-  per-document. **`derive_cells` stays pure - the harness owns every write, and no output may land
-  inside the repository.** A document that cannot be loaded is a REPORTED ROW with a reason, never
-  a crash and never a silent skip (ledger D10: fail closed on an unexpected empty).
+  **Step 1 - delete the per-document exclusion.** `tax_graph/extract/outline_pipeline.py:452`
+  currently reads `if _is_formula_node(node) and not (document_id.startswith("schedule_d_") and
+  node.kind == "line")`. **Delete the `schedule_d_` clause.** If `document_id` then has no
+  remaining use in `_formula_outline_nodes`, remove the parameter and update its callers rather
+  than leaving a dead argument. Add a focused test asserting that `schedule_d_2025` yields exactly
+  its three formula nodes (lines 7, 15, 16).
+  **No other form may be special-cased to compensate.** If some form needs different treatment,
+  that is a property of its NODES (kind, columns, label), never of its document id. A
+  `startswith` on a document id in shared pipeline code is the defect, not the fix.
 
-  **Step 2 - exempt REQUIRE_INPUT self-operands from `operand_not_in_quote`.** Both surviving
-  warnings in the Architect's live run (35a, 36) are rows obeying
-  `prompts/derive_cells.md` - "if this line is not computed, use REQUIRE_INPUT with one line
-  operand naming itself" - and then being warned that the self-line is absent from the quote. This
-  is the S28 `self_reference` collision in the soft channel. Exempt the SELF-operand of a top-level
-  REQUIRE_INPUT only. Every other operand on every other operation keeps the warning. Add a focused
-  test. **Expected: the 1040 warning count goes to 0.**
+  **Step 2 - make an unexpected empty fail closed (ledger D10).** `run_documents` in
+  `experiments/derive_cells_s25.py` reports `status: complete` for a document that attempted ZERO
+  rows. That is how a form disappears from a report while the table looks clean. A document whose
+  frame yields no rows must be reported as a distinct, visibly bad status - `empty` or equivalent -
+  carrying the outline node count and line-anchor count so the reader can see whether the form was
+  unreadable or merely had nothing to derive. Add a focused test.
 
-  **Step 3 - run the three-form slice and report the unflattering number.** NOT the full corpus
-  yet - the point of a slice is to learn the shape before spending on eighteen documents:
-  - `form_1040_2025` - the known baseline, expected 17/17, a regression check on steps 1-2.
-  - `schedule_a_2025` - has a handcrafted labeled set (S14 scored it 7/7), so derived output can be
-    compared against known-good rather than merely counted.
-  - `schedule_d_2025` - structurally the hardest, columns and tables rather than a line list. This
-    is where S23-S28 are most likely NOT to generalize, which is exactly why it is in the slice.
+  **Step 3 - diagnose the line 16 malformed operand. Do not paper over it.** In the Architect
+  probe, `schedule_d_2025` line 16 (`Combine lines 7 and 15 and enter the result`) failed with
+  `operand_not_printed` because the model returned the operand LINE field as
+  `schedule_d_2025 line 7` - the form id concatenated into the line. Lines 7 and 15 derived clean.
+  Report which it is:
+  a. a prompt problem (the operand field's contract is ambiguous when a row references sibling
+     lines on the same form), or
+  b. a code problem (the operand normaliser should split a leading form id out of the line field,
+     since identity resolution belongs in CODE - the S13/S24/S28 principle).
+  **If (b), fix it in the normaliser and keep `operand_not_printed` strict.** Do not relax the
+  printed-line check to let a malformed operand through, and do not add a retry.
 
-  Report a per-form table: form, rows attempted, `derived`, `repaired`, `gapped`, `errored`, and
-  the top three `validator_failures_by_kind`. **Lead with `derived` per form.** A high 1040 number
-  next to unreported coverage elsewhere is the exact reporting failure this project has already
-  made once. If a form cannot be attempted, that is a row with a reason, not an omission.
-  **A low number on Schedule D is a SUCCESSFUL round**, not a failure - it is the finding that
-  sizes the rest of the phase. Do not tune anything to make it look better; report it and stop.
-
-  **On the provider leg:** the Worker sandbox has no outbound network (Standing constraints). If
-  approved external access is not available this session, do steps 1-2, **declare step 3 NOT RUN up
-  front**, and hand back - the Architect will run the slice. Do not burn the round on
-  `Connection error`.
+  **Step 4 - rerun the three-form slice** and report the per-form table: form, attempted, derived,
+  repaired, gapped, errored, top three `validator_failures_by_kind`. Expect 17/17 and 7/7
+  unchanged, and Schedule D at 3 attempted. **Lead with `derived` per form.**
+  If approved external network is unavailable, do steps 1-3, declare step 4 NOT RUN up front, and
+  hand back - the Architect will run it. Do not burn the round on `Connection error`.
 
   **Do not:** add a retry policy for the temperature-0 nondeterminism; add any gate keyed on
-  instruction-section coverage; weaken the self-reference, printed-line, or verbatim-quote checks;
-  reintroduce reordering into `clean_form_face_text` to recover label cosmetics (see the recorded
-  trade-off); promote anything.
+  instruction-section coverage; weaken the self-reference, printed-line, verbatim-quote or
+  operand checks; reintroduce reordering into `clean_form_face_text`; promote anything.
   **Stop conditions:** any diff in the protected directories; `derive_cells` acquiring a disk
-  write; any harness output landing inside the repository.
+  write; any harness output landing inside the repository; adding a new per-document special case
+  anywhere in the pipeline.
   Tier 3. Declared files plus honest `RAN:`/`NOT RUN:`. ASCII, `git diff --check`, module-form
   `validate 2025`, preflight with `legacy_mined` explicit (394), strict citations (36).
   ONE local commit; no push.
@@ -254,6 +237,10 @@ client-managed server dies.
 
 ## Recent rounds (condensed; full narration in git history - `git show <hash>`)
 
+- **M20-S30 (`00b5f38`, Architect-verified):** harness takes repeatable `--document`, refuses
+  in-repo output, and reports per-document failures; REQUIRE_INPUT self-operands exempt from
+  `operand_not_in_quote`. Architect slice: 1040 17/17, Schedule A 7/7, Schedule D 0 - the zero
+  traced to a hardcoded carve-out, 2/3 with it lifted.
 - **M20-S29 (`fca0a4a`, Architect-verified):** `_line_mentioned` handles singular, plural-list and
   range references; `clean_form_face_text` truncates instead of reconstructing, restoring the
   substring invariant. Live 1040 17/17 with warnings 37 -> 2. Step 3 blocked - single-document
@@ -276,6 +263,10 @@ client-managed server dies.
 
 ## Latest verification
 
+- **M20-S30 (2026-08-02, Architect):** live three-form slice - `form_1040_2025` 17/17,
+  `schedule_a_2025` 7/7 (matches the S14 labeled set), `schedule_d_2025` 0 attempted;
+  `operand_not_in_quote` 0 on both non-empty forms; protected set byte-identical; working tree
+  clean after the in-memory carve-out probe.
 - **M20-S29 (2026-08-02, Architect):** focused suite 79 passed on a short temp root; ASCII;
   `validate 2025` (18 documents, 441 nodes, 409 edges, 401 citations); protected set
   byte-identical across `12240ef..fca0a4a`; live 1040 17/17 with `operand_not_in_quote` 37 -> 2;
