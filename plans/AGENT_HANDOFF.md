@@ -12,7 +12,24 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 - History: pruned at each phase close (latest: 2026-07-23). Full narration lives in
   `plans/archive/` (phase plans with close notes) and git history.
 
-## Current state (2026-07-31)
+## Current state (2026-08-02)
+
+**Architect acceptance of M20-S25 (Claude Opus 5, 2026-08-02).** Accepted at `ff62119`. Gates
+re-verified rather than taken on trust: `cells.py` has zero `open`/`write_text`/`mkdir`/
+`safe_dump`/`json.dump` calls, so the pure-function guarantee still holds after a 449-line
+change; protected directories are byte-identical; the Worker's `RAN:` evidence is honest,
+including the `WinError 5` escalation deviation, which is a pre-existing draft ACL and not a
+regression.
+
+Architect then diagnosed the derived=0 result directly against real 2025 data:
+`build_instruction_sections_frame` yields 70 Form 1040 sections over 56 printed lines, and every
+one is an INPUT line. `for_line('form_1040_2025', L)` returns empty for all of
+`1z, 9, 11a, 11b, 14, 15, 18, 21, 22, 24, 25d, 32, 33`. **The instruction booklet does not
+document computed lines; the form face does.** The hard `missing_instruction_text` check at
+`tax_graph/extract/cells.py:455` is therefore the whole blocker, and the fix is to require at
+least one cited evidence source rather than that specific one. S23's ownership rules stay exactly
+as they are - they were right, and this is not a reason to loosen them. Full task: M20-S26 under
+**From Architect**.
 
 **Worker session checkpoint - M20-S25 implementation (2026-08-02):** Global canary: Ledger
 Llama. Phase canary: Ground Truth. Model: GPT-5 Codex; effort/quota/context indicators are not
@@ -2357,7 +2374,31 @@ the instruction slot; Authority explicitly reports missing authored coverage; do
 citation coverage is visible beside policy counts; and the dossier heading duplication/order
 warts are fixed. No promoted artifacts, graph semantics, verdicts, or citation records changed.
 
-**BALL: WORKER - M20-S25 (PROPERTY VALIDATORS AND REPAIR-ONCE). Task block under From Architect.
+**BALL: WORKER - M20-S26 (THE FORM FACE IS EVIDENCE). Task block under From Architect.
+S25 is ACCEPTED at `ff62119` - the validators, repair-once, telemetry, frame persistence and
+purity are all correctly built, and every declared gate held: 53 tests green, protected set
+byte-identical, `legacy_mined=394`, strict mismatches=36, and `cells.py` contains ZERO
+disk-write calls (Architect re-verified by direct grep, not taken on trust).
+**But the round did not produce its own evidence: the real 1040 returned derived=0,
+repaired=0, gapped=0, errored=17. No validator ever executed on real data.** Architect
+diagnosed the cause directly rather than handing back a symptom:
+- **13 rows died on a hard `missing_instruction_text` input check** at `cells.py:455`. This is
+  NOT an acquisition gap and NOT a join bug - the join works. The 1040 instruction booklet
+  legitimately has no section for ANY computed line. It covers 56 printed lines, all of them
+  INPUT lines; the IRS states subtotal arithmetic on the form face instead. Requiring
+  instruction text therefore rejects exactly the lines we most want to derive. The evidence was
+  present the whole time in `form_face_text`: line 22's face reads `Subtract line 21 from line
+  18. If zero or less, enter -0-` - operand order and floor trigger both.
+- **4 rows reached the provider and died on `LlmUnavailable: Connection error`** - transport
+  only, explicitly not a stop condition, but the run needs to survive it.
+- **Architect also found label contamination the round did not flag:** line 22's evidence text
+  begins `12a, 12b, 12c, 22 Subtract...` and line 14's begins `$15,750 14 Add lines...`. Since
+  those stray tokens ARE in the cited text, the operands-in-cited-text warning would stay
+  silent while the model pulled in operands that belong to another row. Folded into S26 item 4.
+S26 is a narrow correction, not a redesign: require EVIDENCE rather than instruction text,
+keep every S23 ownership check intact, and finally get a non-zero `derived` count.**
+
+**Superseded (kept as history):** BALL: WORKER - M20-S25 (PROPERTY VALIDATORS AND REPAIR-ONCE).
 S24 is ACCEPTED at `e6e94e3` - Architect re-verified: 21 tests green, protected set and field
 maps byte-identical, and two things checked directly rather than taken on trust. (1) The module
 makes ZERO disk writes - `open`, `write_text`, `mkdir`, `yaml.safe_dump`, `json.dump` all count
@@ -4518,8 +4559,65 @@ TY2026 docs drop.
      uses `_pre_floor`, the experiment uses `_step1`.
   6. **Tests that need no network**, using a fixture frame.
 
-- **M20-S25 TASK - PROPERTY VALIDATORS AND REPAIR-ONCE (Architect, Claude Opus 5, 2026-08-02).
-  Runs after S24.** Exit criterion 4.
+- **M20-S26 TASK - THE FORM FACE IS EVIDENCE (Architect, Claude Opus 5, 2026-08-02). Runs after
+  S25.** Exit criterion 4, unchanged: property validators proven on real data. S25 built them
+  correctly and they never ran, because one input check rejected every computed line.
+  **Architect diagnosis, verified directly against real 2025 data - do not re-derive it:**
+  The instruction booklet has 70 sections for Form 1040, covering 56 printed lines - and NOT ONE
+  of them is a computed line. Owned lines are `1a..1i, 2a, 2b, 3a, 3b, 4a..4c, 5a..5c, 6, 6a..6d,
+  7a, 7b, 10, 12a..12e, 13a, 13b, 16, 19, 25a..25c, 26, 27a..27c, 28..31, 34, 35a..35d, 36..38`.
+  The IRS elaborates on INPUT lines in the booklet and states the arithmetic for SUBTOTAL lines on
+  the form face itself. `1z, 9, 11a, 11b, 14, 15, 18, 21, 22, 24, 25d, 32, 33` have no instruction
+  section and never will. This is correct IRS structure, not an acquisition gap, and it is the
+  direct consequence of S23's ownership fix, which was right and must not be regressed.
+  The evidence we need is already in hand. Line 22's face reads `Subtract line 21 from line 18.
+  If zero or less, enter -0-`; line 15's reads `Subtract line 14 from line 11b. If zero or less,
+  enter -0-`. Operand order AND the floor trigger are both there.
+  1. **Require evidence, not instruction text.** `tax_graph/extract/cells.py:455` raises hard
+     `missing_instruction_text` whenever `instruction_text` is empty. Replace it with a check that
+     at least ONE cited evidence source is non-empty - `form_face_text` OR `instruction_text`.
+     Absent instruction is a normal recorded state for a computed line, not a failure.
+  2. **Keep every S23 ownership check exactly as-is.** When instruction text IS present it must
+     still be attributed to this form and line. The fix is narrow: stop requiring presence. Do not
+     touch `instruction_wrong_owner` or `instruction_wrong_line`.
+  3. **Validate floor/cap against the COMBINED cited evidence.** If the check only reads
+     `instruction_text` it will miss `If zero or less, enter -0-` on lines 15 and 22 - the exact
+     defect this round exists to catch. Same for operand-order-vs-label and the
+     operands-in-cited-text WARNING.
+  4. **Fix label contamination - a correctness risk, not cosmetics.** Geometry is bleeding
+     neighbouring text into `label`/`form_face_text`. Real values today: line 14 is
+     `"$15,750 14 Add lines 12e, 13a, and 13b"`; line 15 is `"jointly or 15 Subtract line 14..."`;
+     line 22 is `"12a, 12b, 12c, 22 Subtract line 21 from line 18..."`. Line 22's own evidence
+     names 12a/12b/12c, which are not its operands - a model can plausibly pull them in, and the
+     operands-in-cited-text warning would stay silent because they ARE in the text. Strip the
+     leading run that precedes this row's own printed line token. Report before/after.
+  5. **Then run the real 1040 and report derived / repaired / gapped / errored, plus how many
+     expressions gained a floor or cap the flat schema was dropping.** That number is the point of
+     the round. Expect 17 attempted; expect a floor on 15 and 22 at minimum.
+  6. **Transport errors must not end the run.** All 4 rows that reached the provider died on
+     `LlmUnavailable: Connection error`. S21 retry exists; make the runner resumable so a network
+     blip costs a retry, not the round. This is the "no heroics each year" requirement.
+  **PROTECTED TEST SET, unchanged hard gate:** `graph/2025/{nodes,edges,rules}/` and
+  `graph/2025/field_maps/` byte-identical. No promotion, no hand-authoring, no live graph edit,
+  nothing into `content_fingerprint`. **`derive_cells` must remain pure - zero disk writes**
+  (Architect re-verified this holds at `ff62119`; keep it holding).
+  Tier 3. Declared files plus honest `RAN:`/`NOT RUN:`. ASCII, `git diff --check`, module-form
+  `validate 2025`, real preflight with `legacy_mined` explicit (expect **394**),
+  `check_citation_integrity` STRICT (expect **36**). Short pytest temp root; no `--basetemp`.
+  ONE local commit; no push. **Do not commit with known failing tests.** **CITE THE ACTUAL COMMIT
+  HASH.**
+  **Stop conditions:** any diff in the protected directories; any draft promoted; `derive_cells`
+  acquiring a disk write; making the operands-in-cited-text check a hard failure; more than one
+  repair attempt per row; hand-authoring; `legacy_mined` above 394; strict mismatches above 36;
+  **weakening any S23 ownership check to get rows flowing**; **`derived` still 0 at the end of the
+  round without a stated, evidenced reason.**
+  **A model or provider failure is NOT a stop condition** - `google/gemini-3.6-flash` is known
+  good, and transport errors are retried per S21.
+  **Review-surface work resumes after this round, not before.**
+
+- **SUPERSEDED (kept as history; delivered by S25 at `ff62119`, ACCEPTED with the input-validator
+  defect carried into S26) - M20-S25 TASK - PROPERTY VALIDATORS AND REPAIR-ONCE (Architect,
+  Claude Opus 5, 2026-08-02). Runs after S24.** Exit criterion 4.
   Each validator below is a bug we actually shipped - no speculative checks. Full list and
   rationale in `docs/engineering-plan.md`.
   - expression must not reference its own line (S12: 11 of 11 did)
