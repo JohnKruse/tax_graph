@@ -4691,6 +4691,23 @@ TY2026 docs drop.
      `error` on the next with identical inputs and `temperature: 0`. For a pipeline that must run
      unattended each January, a row flipping status between runs is a reliability problem. Report
      what varies; do not paper over it with retries.
+  4b. **PROVIDER PORTABILITY (John, 2026-08-02): "I want users to be able to switch model
+     providers easily."** We are already on the generic OpenAI-compatible query -
+     `OpenAICompatibleLlmClient` serves both `openai` and `openrouter` via
+     `chat.completions.create` + `response_format: json_schema`, with Anthropic as the one
+     bespoke adapter. **The gap: `_build_openai_client` (`llm_client.py:109`) never passes
+     `base_url`.** Only the OpenRouter branch reads `llm.base_url`. So a user pointing at ANY
+     other OpenAI-compatible endpoint - Azure, Together, Groq, Fireworks, vLLM, Ollama, LM
+     Studio - cannot do it with `provider: openai`, and using `provider: openrouter` instead
+     injects OpenRouter-only headers (`HTTP-Referer`, `X-Title`, `X-OpenRouter-Metadata`) and
+     `extra_body.provider` routing that other gateways may reject.
+     Honour `llm.base_url` in the `openai` branch so it becomes the generic adapter for any
+     OpenAI-compatible endpoint, keep OpenRouter-specific headers and routing confined to the
+     OpenRouter branch, and document the shape in `config/tax-graph.config.example.yaml`.
+     Note for portability: **OpenAI strict mode is the strictest common denominator** - it
+     requires every key in `properties` to appear in `required`. Conforming to it (as `a25c86f`
+     now does) is what keeps schemas portable across providers; Gemini's leniency is what hid
+     the defect. Any new schema field must satisfy it.
   5. **Re-run and report the real numbers on `openai/gpt-5.6-luna`** - derived / repaired /
      gapped / errored for all 17 rows, plus expressions that gained a floor or cap.
      **The provider leg cannot run in the Worker sandbox** (no outbound network). Either arrange
