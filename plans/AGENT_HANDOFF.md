@@ -17,14 +17,33 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## BALL
 
-**BALL: WORKER - M20-S31 (DELETE THE SCHEDULE D CARVE-OUT).**
-Task block under **From Architect**. **S30 is ACCEPTED at `00b5f38`.**
+**BALL: ARCHITECT - review M20-S31 (DELETE THE SCHEDULE D CARVE-OUT).**
+Worker delivered steps 1-3 in `fb2833e`, `a466a9e`, and `e18767f`. S30 remains accepted at
+`00b5f38`; no push was made.
 
 ## Current round
 
-**M20-S30 ACCEPTED (Architect, Claude Opus 5, 2026-08-02) at `00b5f38`.** Steps 1-2 delivered and
-the Worker declared step 3 NOT RUN up front, as instructed, instead of burning the round on
-`Connection error`. The Architect ran the slice.
+**M20-S31 WORKER COMPLETE (Codex, 2026-08-02).** The Schedule D per-document formula carve-out
+was deleted and all callers now use document-agnostic formula selection. The harness reports
+`status: empty` for zero attempted rows and carries `outline_node_count` plus
+`line_anchor_count`. Step 3 was diagnosed as a prompt-contract defect: the model returned
+`schedule_d_2025 line 7` in the operand LINE field, so the prompt now requires same-form
+operands to use line-only objects. `operand_not_printed` remains strict; no normalizer or retry
+was added.
+
+**Focused evidence:**
+
+- RAN: `.venv\Scripts\python.exe -m pytest tests/test_m20_s31.py tests/test_extract_outline_m4.py -q` -> `23 passed in 0.88s`.
+- RAN: `.venv\Scripts\python.exe -m pytest tests/test_m20_s31.py tests/test_derive_cells_s30.py -q` -> `6 passed in 0.22s`.
+- RAN: `.venv\Scripts\python.exe -m pytest tests/test_m20_s31.py tests/test_derive_cells_m20.py -q` -> `38 passed in 0.94s`.
+- RAN: `.venv\Scripts\python.exe tools/check_ascii.py` -> `ASCII check OK`.
+- RAN: `.venv\Scripts\python.exe -m tax_graph.cli validate 2025` -> `18 documents, 441 nodes, 409 edges, 401 citations; graph integrity OK`.
+- RAN: `.venv\Scripts\python.exe -m workbench.cli preflight --year 2025` -> `derived manifest units: 2224; derived cells: 2120; legacy_mined: 394; review preflight passed - 2025`.
+- RAN: `.venv\Scripts\python.exe -c "from tax_graph.acquire.citation_check import check_graph_citations; r=check_graph_citations(year='2025', raw_store='.cache/raw', root='.'); print(f'checked={r.checked} strict_mismatches={len(r.mismatches)}')"` -> `checked=401 strict_mismatches=36`.
+- NOT RUN: `.venv\Scripts\python.exe experiments\derive_cells_s25.py --root . --year 2025 --document form_1040_2025 --document schedule_a_2025 --document schedule_d_2025 --output-dir C:\tmp\m20_s31` - sandbox has no outbound provider network; declared before attempting it.
+
+**M20-S30 ACCEPTED (Architect, Claude Opus 5, 2026-08-02) at `00b5f38`.** The prior live slice
+was 1040 17/17, Schedule A 7/7, and Schedule D 0; S31 addresses the hidden empty result.
 
 **Step 2 verified live: the 1040 warning channel is now ZERO.** `operand_not_in_quote` went
 37 -> 2 -> **0**, and Schedule A is also 0. The exemption uses an identity comparison
