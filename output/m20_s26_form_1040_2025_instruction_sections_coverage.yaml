@@ -1,0 +1,439 @@
+schema_version: 1
+year: '2025'
+source_document_id: instructions_form_1040_2025
+section_count: 317
+coverage:
+  source_documents:
+  - form_1040_2025
+  - schedule_1_2025
+  - schedule_1a_2025
+  - schedule_2_2025
+  - schedule_3_2025
+  forms:
+    form_1040_2025:
+      section_count: 59
+      line_count: 56
+      lines_with_section:
+      - 1a
+      - 1b
+      - 1c
+      - 1d
+      - 1e
+      - 1f
+      - 1g
+      - 1h
+      - 1i
+      - 2a
+      - 2b
+      - 3a
+      - 3b
+      - 4a
+      - 4b
+      - 4c
+      - 5a
+      - 5b
+      - 5c
+      - '6'
+      - 6a
+      - 6b
+      - 6c
+      - 6d
+      - 7a
+      - 7b
+      - '10'
+      - 12a
+      - 12b
+      - 12c
+      - 12d
+      - 12e
+      - 13a
+      - 13b
+      - '16'
+      - '19'
+      - '25'
+      - 25a
+      - 25b
+      - 25c
+      - '26'
+      - 27a
+      - 27b
+      - 27c
+      - '28'
+      - '29'
+      - '30'
+      - '31'
+      - '34'
+      - 35a
+      - 35b
+      - 35c
+      - 35d
+      - '36'
+      - '37'
+      - '38'
+      expected_line_count: 59
+      lines_without_section:
+      - 1z
+      - '8'
+      - '9'
+      - 11a
+      - 11b
+      - '14'
+      - '15'
+      - '17'
+      - '18'
+      - '20'
+      - '21'
+      - '22'
+      - '23'
+      - '24'
+      - 25d
+      - '32'
+      - '33'
+      wrong_owner_spans_before: 97
+      wrong_owner_spans_after: 0
+      has_sections: true
+    schedule_1_2025:
+      section_count: 62
+      line_count: 73
+      lines_with_section:
+      - '1'
+      - 2a
+      - 2b
+      - '3'
+      - '4'
+      - '7'
+      - 8a
+      - 8b
+      - 8c
+      - 8d
+      - 8e
+      - 8f
+      - 8g
+      - 8h
+      - 8i
+      - 8j
+      - 8k
+      - 8l
+      - 8m
+      - 8n
+      - 8o
+      - 8p
+      - 8q
+      - 8r
+      - 8s
+      - 8t
+      - 8u
+      - 8v
+      - 8w
+      - 8x
+      - 8y
+      - 8z
+      - '11'
+      - '12'
+      - '13'
+      - '14'
+      - '15'
+      - '16'
+      - '17'
+      - '18'
+      - 19a
+      - 19b
+      - 19c
+      - '20'
+      - '21'
+      - '22'
+      - '23'
+      - 24a
+      - 24b
+      - 24c
+      - 24d
+      - 24e
+      - 24f
+      - 24g
+      - 24h
+      - 24i
+      - 24j
+      - 24k
+      - 24l
+      - 24m
+      - 24n
+      - 24o
+      - 24p
+      - 24q
+      - 24r
+      - 24s
+      - 24t
+      - 24u
+      - 24v
+      - 24w
+      - 24x
+      - 24y
+      - 24z
+      expected_line_count: 0
+      lines_without_section: []
+      wrong_owner_spans_before: 141
+      wrong_owner_spans_after: 0
+      has_sections: true
+    schedule_1a_2025:
+      section_count: 0
+      line_count: 0
+      lines_with_section: []
+      expected_line_count: 0
+      lines_without_section: []
+      wrong_owner_spans_before: 0
+      wrong_owner_spans_after: 0
+      has_sections: false
+    schedule_2_2025:
+      section_count: 17
+      line_count: 66
+      lines_with_section:
+      - 1a
+      - 1b
+      - 1c
+      - 1d
+      - 1e
+      - 1f
+      - 1g
+      - 1h
+      - 1i
+      - 1j
+      - 1k
+      - 1l
+      - 1m
+      - 1n
+      - 1o
+      - 1p
+      - 1q
+      - 1r
+      - 1s
+      - 1t
+      - 1u
+      - 1v
+      - 1w
+      - 1x
+      - 1y
+      - 1z
+      - '2'
+      - '4'
+      - '5'
+      - '6'
+      - '8'
+      - '9'
+      - '10'
+      - '11'
+      - '12'
+      - '13'
+      - '14'
+      - '15'
+      - '16'
+      - 17a
+      - 17b
+      - 17c
+      - 17d
+      - 17e
+      - 17f
+      - 17g
+      - 17h
+      - 17i
+      - 17j
+      - 17k
+      - 17l
+      - 17m
+      - 17n
+      - 17o
+      - 17p
+      - 17q
+      - 17r
+      - 17s
+      - 17t
+      - 17u
+      - 17v
+      - 17w
+      - 17x
+      - 17y
+      - 17z
+      - '19'
+      expected_line_count: 0
+      lines_without_section: []
+      wrong_owner_spans_before: 33
+      wrong_owner_spans_after: 0
+      has_sections: true
+    schedule_3_2025:
+      section_count: 16
+      line_count: 61
+      lines_with_section:
+      - '1'
+      - '2'
+      - '3'
+      - '4'
+      - '5'
+      - 6a
+      - 6b
+      - 6c
+      - 6d
+      - 6e
+      - 6f
+      - 6g
+      - 6h
+      - 6i
+      - 6j
+      - 6k
+      - 6l
+      - 6m
+      - 6n
+      - 6o
+      - 6p
+      - 6q
+      - 6r
+      - 6s
+      - 6t
+      - 6u
+      - 6v
+      - 6w
+      - 6x
+      - 6y
+      - 6z
+      - '9'
+      - '10'
+      - '11'
+      - '12'
+      - 13a
+      - 13b
+      - 13c
+      - 13d
+      - 13e
+      - 13f
+      - 13g
+      - 13h
+      - 13i
+      - 13j
+      - 13k
+      - 13l
+      - 13m
+      - 13n
+      - 13o
+      - 13p
+      - 13q
+      - 13r
+      - 13s
+      - 13t
+      - 13u
+      - 13v
+      - 13w
+      - 13x
+      - 13y
+      - 13z
+      expected_line_count: 0
+      lines_without_section: []
+      wrong_owner_spans_before: 24
+      wrong_owner_spans_after: 0
+      has_sections: true
+  unattributed_section_count: 0
+  documents_without_sections:
+  - schedule_1a_2025
+  collision_count: 32
+  collisions_resolved_by_form_context: 37
+  cross_schedule_collisions:
+    '1':
+    - schedule_1_2025
+    - schedule_3_2025
+    1a:
+    - form_1040_2025
+    - schedule_2_2025
+    1b:
+    - form_1040_2025
+    - schedule_2_2025
+    1c:
+    - form_1040_2025
+    - schedule_2_2025
+    1d:
+    - form_1040_2025
+    - schedule_2_2025
+    1e:
+    - form_1040_2025
+    - schedule_2_2025
+    1f:
+    - form_1040_2025
+    - schedule_2_2025
+    1g:
+    - form_1040_2025
+    - schedule_2_2025
+    1h:
+    - form_1040_2025
+    - schedule_2_2025
+    1i:
+    - form_1040_2025
+    - schedule_2_2025
+    '2':
+    - schedule_2_2025
+    - schedule_3_2025
+    2a:
+    - form_1040_2025
+    - schedule_1_2025
+    2b:
+    - form_1040_2025
+    - schedule_1_2025
+    '3':
+    - schedule_1_2025
+    - schedule_3_2025
+    '4':
+    - schedule_1_2025
+    - schedule_2_2025
+    - schedule_3_2025
+    '5':
+    - schedule_2_2025
+    - schedule_3_2025
+    '6':
+    - form_1040_2025
+    - schedule_2_2025
+    6a:
+    - form_1040_2025
+    - schedule_3_2025
+    6b:
+    - form_1040_2025
+    - schedule_3_2025
+    6c:
+    - form_1040_2025
+    - schedule_3_2025
+    6d:
+    - form_1040_2025
+    - schedule_3_2025
+    '9':
+    - schedule_2_2025
+    - schedule_3_2025
+    '10':
+    - form_1040_2025
+    - schedule_2_2025
+    - schedule_3_2025
+    '11':
+    - schedule_1_2025
+    - schedule_2_2025
+    - schedule_3_2025
+    '12':
+    - schedule_1_2025
+    - schedule_2_2025
+    - schedule_3_2025
+    '13':
+    - schedule_1_2025
+    - schedule_2_2025
+    13a:
+    - form_1040_2025
+    - schedule_3_2025
+    13b:
+    - form_1040_2025
+    - schedule_3_2025
+    '14':
+    - schedule_1_2025
+    - schedule_2_2025
+    '15':
+    - schedule_1_2025
+    - schedule_2_2025
+    '16':
+    - form_1040_2025
+    - schedule_1_2025
+    - schedule_2_2025
+    '19':
+    - form_1040_2025
+    - schedule_2_2025
+  wrong_owner_spans_before: 295
+  wrong_owner_spans_after: 0

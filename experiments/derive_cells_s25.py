@@ -1,4 +1,4 @@
-"""Run the M20-S25 cell frame and property-validator bench.
+"""Run the M20-S26 cell frame and property-validator bench.
 
 The pure derivation function remains in ``tax_graph.extract.cells``.  This
 caller is the reproducible boundary that loads acquired inputs, persists the
@@ -49,9 +49,9 @@ def persist_instruction_frame(
     destination.mkdir(parents=True, exist_ok=True)
     frame_path = write_instruction_sections_artifact(
         frame,
-        destination / f"m20_s25_{document_id}_instruction_sections.yaml",
+        destination / f"m20_s26_{document_id}_instruction_sections.yaml",
     )
-    coverage_path = destination / f"m20_s25_{document_id}_instruction_sections_coverage.yaml"
+    coverage_path = destination / f"m20_s26_{document_id}_instruction_sections_coverage.yaml"
     coverage_path.write_text(
         yaml.safe_dump(
             {
@@ -119,10 +119,15 @@ def run_real_1040(
     row_details = [
         {
             "line": row.line,
+            "label_before": row.metadata.get("label_before", row.label),
+            "label_after": row.label,
+            "form_face_before": row.metadata.get("form_face_before", row.form_face_text),
+            "form_face_after": row.form_face_text,
             "status": row.status,
             "error": row.error,
             "validation_failures": row.metadata.get("validation_failures", []),
             "validation_warnings": row.metadata.get("validation_warnings", []),
+            "dropped_instruction_sections": row.metadata.get("dropped_instruction_sections", []),
         }
         for row in result.rows
     ]
@@ -137,7 +142,7 @@ def run_real_1040(
     }
     destination = Path(output_dir) if output_dir is not None else root_path / "output"
     destination.mkdir(parents=True, exist_ok=True)
-    report_path = destination / "m20_s25_form_1040_2025_derive_cells_report.yaml"
+    report_path = destination / "m20_s26_form_1040_2025_derive_cells_report.yaml"
     report_path.write_text(
         yaml.safe_dump(report, sort_keys=False, allow_unicode=False),
         encoding="utf-8",

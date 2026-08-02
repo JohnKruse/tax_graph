@@ -1,4 +1,4 @@
-"""M20-S24 tests for the pure typed cell derivation boundary."""
+"""M20-S26 tests for the pure typed cell derivation boundary."""
 
 from __future__ import annotations
 
@@ -9,6 +9,7 @@ import pytest
 from tax_graph.extract.cells import (
     CellFrame,
     build_cell_frame_from_document,
+    clean_form_face_text,
     derive_cells,
     expression_schema,
     expression_to_graph,
@@ -232,22 +233,123 @@ def test_operand_absent_from_quote_is_warning_not_failure() -> None:
     assert result.validation_report["validator_warnings_by_kind"] == {"operand_not_in_quote": 1}
 
 
-def test_input_owner_failure_is_row_local_and_does_not_call_provider() -> None:
+def test_form_face_evidence_is_sufficient_without_instruction_text() -> None:
+    row = {
+        **_frame()[1],
+        "instruction_text": "",
+        "instruction_locator": "",
+        "metadata": {
+            "evidence_spans": [{"span_id": "face_22", "text": "Enter the amount from line 21."}],
+            "form_face_span_id": "face_22",
+            "printed_lines": ["21", "22"],
+        },
+    }
+    client = FakeClient([
+        {
+            "expression": {"op": "COPY", "args": [{"line": "21"}]},
+            "quote": "Enter the amount from line 21.",
+        }
+    ])
+
+    result = derive_cells(CellFrame.from_rows([row]), "{line}", "secret", client=client)
+
+    assert result.rows[0].status == "derived"
+    assert result.validation_report["errored"] == 0
+
+
+def test_wrong_instruction_owner_drops_section_but_keeps_form_face() -> None:
     row = {
         **_frame()[0],
         "metadata": {
             "instruction_owner_document_id": "schedule_2_2025",
             "instruction_lines": ["15"],
+            "instruction_span_ids": ["instruction_15"],
+            "form_face_span_id": "face_15",
+            "evidence_spans": [
+                {"span_id": "face_15", "text": _frame()[0]["form_face_text"]},
+                {"span_id": "instruction_15", "text": _frame()[0]["instruction_text"]},
+            ],
         },
     }
-    client = FakeClient([])
+    client = FakeClient([
+        {
+            "expression": {
+                "op": "MAX",
+                "args": [
+                    {"op": "SUBTRACT", "args": [{"line": "11b"}, {"line": "14"}]},
+                    {"const": 0},
+                ],
+            },
+            "quote": _frame()[0]["form_face_text"],
+        }
+    ])
 
     result = derive_cells(CellFrame.from_rows([row]), "{line}", "secret", client=client)
 
+    assert result.rows[0].status == "derived"
+    assert result.rows[0].instruction_text == ""
+    assert result.rows[0].metadata["dropped_instruction_sections"][0]["kind"] == "instruction_wrong_owner"
+    assert result.validation_report["instruction_sections_dropped"] == 1
+    assert result.validation_report["instruction_drops_by_kind"] == {"instruction_wrong_owner": 1}
+    assert len(client.calls) == 1
+
+
+def test_wrong_instruction_line_drops_section_but_keeps_form_face() -> None:
+    row = {
+        **_frame()[0],
+        "metadata": {
+            "instruction_owner_document_id": "form_1040_2025",
+            "instruction_lines": ["14"],
+            "instruction_span_ids": ["instruction_15"],
+            "form_face_span_id": "face_15",
+            "evidence_spans": [
+                {"span_id": "face_15", "text": _frame()[0]["form_face_text"]},
+                {"span_id": "instruction_15", "text": _frame()[0]["instruction_text"]},
+            ],
+        },
+    }
+    client = FakeClient([
+        {
+            "expression": {
+                "op": "MAX",
+                "args": [
+                    {"op": "SUBTRACT", "args": [{"line": "11b"}, {"line": "14"}]},
+                    {"const": 0},
+                ],
+            },
+            "quote": _frame()[0]["form_face_text"],
+        }
+    ])
+
+    result = derive_cells(CellFrame.from_rows([row]), "{line}", "secret", client=client)
+
+    assert result.rows[0].status == "derived"
+    assert result.validation_report["instruction_drops_by_kind"] == {"instruction_wrong_line": 1}
+
+
+def test_missing_both_evidence_sources_is_row_local_error() -> None:
+    row = {**_frame()[0], "form_face_text": "", "instruction_text": "", "instruction_locator": ""}
+
+    result = derive_cells(CellFrame.from_rows([row]), "{line}", "secret", client=FakeClient([]))
+
     assert result.rows[0].status == "error"
-    assert "instruction_wrong_owner" in result.rows[0].error
-    assert client.calls == []
+    assert "missing_evidence" in result.rows[0].error
     assert result.validation_report["errored"] == 1
+
+
+@pytest.mark.parametrize(
+    ("line", "raw", "expected"),
+    [
+        ("14", "$15,750 14 Add lines 12e, 13a, and 13b 14", "14 Add lines 12e, 13a, and 13b"),
+        ("15", "jointly or 15 Subtract line 14 from line 11b. 15", "15 Subtract line 14 from line 11b."),
+        ("21", "a box on line 21 Add lines 19 and 20 21", "21 Add lines 19 and 20"),
+        ("22", "12a, 12b, 12c, 22 Subtract line 21 from line 18. 22", "22 Subtract line 21 from line 18."),
+        ("1z", "z Add lines 1a through 1h 1z", "1z Add lines 1a through 1h"),
+        ("25d", "d Add lines 25a through 25c 25d", "25d Add lines 25a through 25c"),
+    ],
+)
+def test_clean_form_face_text_starts_at_its_own_line(line: str, raw: str, expected: str) -> None:
+    assert clean_form_face_text(raw, line) == expected
 
 
 def test_second_property_failure_becomes_a_named_gap() -> None:
@@ -282,3 +384,7 @@ def test_real_1040_frame_carries_join_ownership_and_printed_line_inventory() -> 
     assert all(row.metadata["instruction_owner_document_id"] == "form_1040_2025" for row in frame.rows)
     assert all(row.line in row.metadata["printed_lines"] for row in frame.rows)
     assert all(row.metadata["evidence_spans"] for row in frame.rows)
+    assert all(row.label.startswith(row.line + " ") for row in frame.rows)
+    assert all(row.form_face_text.startswith(row.line + " ") for row in frame.rows)
+    assert frame.rows[5].label == "15 Subtract line 14 from line 11b. If zero or less, enter -0-. This is your taxable income"
+    assert frame.rows[8].label == "22 Subtract line 21 from line 18. If zero or less, enter -0-"

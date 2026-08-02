@@ -225,13 +225,17 @@ def build_cell_frame_from_document(document: Any) -> CellFrame:
             CellRecord(
                 form=document.document_id,
                 line=line,
-                label=node.label,
-                form_face_text=form_span.text if form_span is not None else "",
+                label=clean_form_face_text(node.label, line),
+                form_face_text=clean_form_face_text(form_span.text, line) if form_span is not None else "",
                 instruction_text=instruction_text,
                 instruction_locator=sections[0].section_id if sections else "",
                 metadata={
                     "instruction_owner_document_id": document.document_id,
                     "instruction_lines": [line],
+                    "instruction_span_ids": [section.section_id for section in sections],
+                    "form_face_span_id": form_span.span_id if form_span is not None else "",
+                    "form_face_before": form_span.text if form_span is not None else "",
+                    "label_before": node.label,
                     "printed_lines": printed_lines,
                     "evidence_spans": evidence_spans,
                 },
@@ -271,6 +275,8 @@ def derive_cells(
         "repaired": 0,
         "gapped": 0,
         "errored": 0,
+        "instruction_sections_dropped": 0,
+        "instruction_drops_by_kind": {},
         "validator_failures_by_kind": {},
         "validator_warnings_by_kind": {},
     }
@@ -294,6 +300,14 @@ def derive_cells(
     for original in source.rows:
         row = CellRecord.from_mapping(original.as_dict())
         input_failures = validate_cell_input(row)
+        instruction_drops = tuple(
+            issue
+            for issue in input_failures
+            if issue.kind in {"instruction_wrong_owner", "instruction_wrong_line"}
+        )
+        if instruction_drops:
+            _drop_instruction_evidence(row, instruction_drops, report)
+            input_failures = tuple(issue for issue in input_failures if issue not in instruction_drops)
         if input_failures:
             _record_issues(report, input_failures)
             _mark_error(
@@ -452,8 +466,8 @@ def validate_cell_input(row: CellRecord) -> tuple[CellValidationIssue, ...]:
     issues: list[CellValidationIssue] = []
     if not row.label.strip():
         issues.append(CellValidationIssue("missing_label", "cell label is required"))
-    if not row.instruction_text.strip():
-        issues.append(CellValidationIssue("missing_instruction_text", "instruction text is required"))
+    if not row.form_face_text.strip() and not row.instruction_text.strip():
+        issues.append(CellValidationIssue("missing_evidence", "at least one cited evidence source is required"))
     metadata = row.metadata
     owner = metadata.get("instruction_owner_document_id") or metadata.get("instruction_document_id")
     if owner and str(owner) != row.form:
@@ -475,9 +489,76 @@ def validate_cell_input(row: CellRecord) -> tuple[CellValidationIssue, ...]:
                     f"instruction evidence is for line(s) {sorted(normalized)}, not line {row.line}",
                 )
             )
-    if not row.instruction_locator.strip() and not metadata.get("evidence_spans"):
+    if row.instruction_text.strip() and not row.instruction_locator.strip() and not metadata.get("evidence_spans"):
         issues.append(CellValidationIssue("missing_instruction_locator", "instruction evidence has no locator"))
     return tuple(issues)
+
+
+def clean_form_face_text(text: str, line: str) -> str:
+    """Remove neighboring geometry text while preserving this row's evidence.
+
+    The deterministic geometry pass can combine adjacent columns or rows into
+    one text row.  The printed line token is the only stable boundary owned by
+    this cell, so retain text from that token onward and remove a repeated
+    trailing token.  A split leading suffix such as ``z ... 1z`` is repaired
+    from the authoritative line anchor rather than retained as contamination.
+    """
+    value = " ".join(str(text or "").split())
+    anchor = str(line or "").strip()
+    if not value or not anchor:
+        return value
+    token = re.compile(rf"(?<!\w){re.escape(anchor)}(?!\w)", re.IGNORECASE)
+    matches = list(token.finditer(value))
+    if not matches:
+        return value
+
+    first = matches[0]
+    suffix = anchor[-1:] if anchor[-1:].isalpha() else ""
+    if first.start() > 0 and suffix and value[:1].lower() == suffix.lower():
+        body = value[len(suffix):].strip()
+        body = re.sub(rf"\s+{re.escape(anchor)}$", "", body, flags=re.IGNORECASE).strip()
+        return f"{anchor} {body}".strip()
+
+    cleaned = value[first.start():].strip()
+    return re.sub(rf"\s+{re.escape(anchor)}$", "", cleaned, flags=re.IGNORECASE).strip()
+
+
+def _drop_instruction_evidence(
+    row: CellRecord,
+    issues: Sequence[CellValidationIssue],
+    report: dict[str, Any],
+) -> None:
+    """Drop doubtful instruction sections while retaining form-face evidence."""
+    prior_locator = row.instruction_locator
+    if not row.metadata.get("form_face_span_id") and prior_locator:
+        row.metadata["form_face_span_id"] = prior_locator
+    dropped = row.metadata.setdefault("dropped_instruction_sections", [])
+    if not isinstance(dropped, list):
+        dropped = []
+        row.metadata["dropped_instruction_sections"] = dropped
+    dropped.extend(issue.as_dict() for issue in issues)
+    row.metadata["instruction_text_before_drop"] = row.instruction_text
+    row.instruction_text = ""
+    row.instruction_locator = ""
+
+    span_ids = row.metadata.get("instruction_span_ids") or ()
+    if isinstance(span_ids, str):
+        span_ids = (span_ids,)
+    span_ids = {str(value) for value in span_ids if str(value)}
+    if prior_locator:
+        span_ids.add(str(prior_locator))
+    evidence_spans = row.metadata.get("evidence_spans") or ()
+    if isinstance(evidence_spans, Mapping):
+        evidence_spans = (evidence_spans,)
+    row.metadata["evidence_spans"] = [
+        dict(item)
+        for item in evidence_spans
+        if isinstance(item, Mapping) and str(item.get("span_id") or "") not in span_ids
+    ]
+    report["instruction_sections_dropped"] += len(issues)
+    counts = report["instruction_drops_by_kind"]
+    for issue in issues:
+        counts[issue.kind] = counts.get(issue.kind, 0) + 1
 
 
 def validate_cell_output(

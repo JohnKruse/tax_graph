@@ -1,0 +1,215 @@
+document_id: form_1040_2025
+year: '2025'
+rows: 17
+row_status_counts:
+  derived: 0
+  repaired: 0
+  gapped: 0
+  errored: 17
+raw_row_status_counts:
+  error: 17
+rows_detail:
+- line: 1z
+  label_before: z Add lines 1a through 1h 1z
+  label_after: 1z Add lines 1a through 1h
+  form_face_before: z Add lines 1a through 1h 1z
+  form_face_after: 1z Add lines 1a through 1h
+  status: error
+  error: 'LlmUnavailable: OpenRouter request failed: Connection error.'
+  validation_failures: []
+  validation_warnings: []
+  dropped_instruction_sections: []
+- line: '9'
+  label_before: 9 Add lines 1z, 2b, 3b, 4b, 5b, 6b, 7a, and 8. This is your total
+    income 9
+  label_after: 9 Add lines 1z, 2b, 3b, 4b, 5b, 6b, 7a, and 8. This is your total income
+  form_face_before: 9 Add lines 1z, 2b, 3b, 4b, 5b, 6b, 7a, and 8. This is your total
+    income 9
+  form_face_after: 9 Add lines 1z, 2b, 3b, 4b, 5b, 6b, 7a, and 8. This is your total
+    income
+  status: error
+  error: 'LlmUnavailable: OpenRouter request failed: Connection error.'
+  validation_failures: []
+  validation_warnings: []
+  dropped_instruction_sections: []
+- line: 11a
+  label_before: 11a Subtract line 10 from line 9. This is your adjusted gross income
+    11a
+  label_after: 11a Subtract line 10 from line 9. This is your adjusted gross income
+  form_face_before: 11a Subtract line 10 from line 9. This is your adjusted gross
+    income 11a
+  form_face_after: 11a Subtract line 10 from line 9. This is your adjusted gross income
+  status: error
+  error: 'LlmUnavailable: OpenRouter request failed: Connection error.'
+  validation_failures: []
+  validation_warnings: []
+  dropped_instruction_sections: []
+- line: 11b
+  label_before: Tax and 11b Amount from line 11a (adjusted gross income) 11b
+  label_after: 11b Amount from line 11a (adjusted gross income)
+  form_face_before: Tax and 11b Amount from line 11a (adjusted gross income) 11b
+  form_face_after: 11b Amount from line 11a (adjusted gross income)
+  status: error
+  error: 'LlmUnavailable: OpenRouter request failed: Connection error.'
+  validation_failures: []
+  validation_warnings: []
+  dropped_instruction_sections: []
+- line: '14'
+  label_before: $15,750 14 Add lines 12e, 13a, and 13b 14
+  label_after: 14 Add lines 12e, 13a, and 13b
+  form_face_before: $15,750 14 Add lines 12e, 13a, and 13b 14
+  form_face_after: 14 Add lines 12e, 13a, and 13b
+  status: error
+  error: 'LlmUnavailable: OpenRouter request failed: Connection error.'
+  validation_failures: []
+  validation_warnings: []
+  dropped_instruction_sections: []
+- line: '15'
+  label_before: jointly or 15 Subtract line 14 from line 11b. If zero or less, enter
+    -0-. This is your taxable income 15
+  label_after: 15 Subtract line 14 from line 11b. If zero or less, enter -0-. This
+    is your taxable income
+  form_face_before: jointly or 15 Subtract line 14 from line 11b. If zero or less,
+    enter -0-. This is your taxable income 15
+  form_face_after: 15 Subtract line 14 from line 11b. If zero or less, enter -0-.
+    This is your taxable income
+  status: error
+  error: 'LlmUnavailable: OpenRouter request failed: Connection error.'
+  validation_failures: []
+  validation_warnings: []
+  dropped_instruction_sections: []
+- line: '18'
+  label_before: $31,500 18 Add lines 16 and 17 18
+  label_after: 18 Add lines 16 and 17
+  form_face_before: $31,500 18 Add lines 16 and 17 18
+  form_face_after: 18 Add lines 16 and 17
+  status: error
+  error: 'LlmUnavailable: OpenRouter request failed: Connection error.'
+  validation_failures: []
+  validation_warnings: []
+  dropped_instruction_sections: []
+- line: '21'
+  label_before: a box on line 21 Add lines 19 and 20 21
+  label_after: 21 Add lines 19 and 20
+  form_face_before: a box on line 21 Add lines 19 and 20 21
+  form_face_after: 21 Add lines 19 and 20
+  status: error
+  error: 'LlmUnavailable: OpenRouter request failed: Connection error.'
+  validation_failures: []
+  validation_warnings: []
+  dropped_instruction_sections: []
+- line: '22'
+  label_before: 12a, 12b, 12c, 22 Subtract line 21 from line 18. If zero or less,
+    enter -0- 22
+  label_after: 22 Subtract line 21 from line 18. If zero or less, enter -0-
+  form_face_before: 12a, 12b, 12c, 22 Subtract line 21 from line 18. If zero or less,
+    enter -0- 22
+  form_face_after: 22 Subtract line 21 from line 18. If zero or less, enter -0-
+  status: error
+  error: 'LlmUnavailable: OpenRouter request failed: Connection error.'
+  validation_failures: []
+  validation_warnings: []
+  dropped_instruction_sections: []
+- line: '24'
+  label_before: 24 Add lines 22 and 23. This is your total tax 24
+  label_after: 24 Add lines 22 and 23. This is your total tax
+  form_face_before: 24 Add lines 22 and 23. This is your total tax 24
+  form_face_after: 24 Add lines 22 and 23. This is your total tax
+  status: error
+  error: 'LlmUnavailable: OpenRouter request failed: Connection error.'
+  validation_failures: []
+  validation_warnings: []
+  dropped_instruction_sections: []
+- line: 25d
+  label_before: d Add lines 25a through 25c 25d
+  label_after: 25d Add lines 25a through 25c
+  form_face_before: d Add lines 25a through 25c 25d
+  form_face_after: 25d Add lines 25a through 25c
+  status: error
+  error: 'LlmUnavailable: OpenRouter request failed: Connection error.'
+  validation_failures: []
+  validation_warnings: []
+  dropped_instruction_sections: []
+- line: '32'
+  label_before: 32 Add lines 27a, 28, 29, 30, and 31. These are your total other payments
+    and refundable credits 32
+  label_after: 32 Add lines 27a, 28, 29, 30, and 31. These are your total other payments
+    and refundable credits
+  form_face_before: 32 Add lines 27a, 28, 29, 30, and 31. These are your total other
+    payments and refundable credits 32
+  form_face_after: 32 Add lines 27a, 28, 29, 30, and 31. These are your total other
+    payments and refundable credits
+  status: error
+  error: 'LlmUnavailable: OpenRouter request failed: Connection error.'
+  validation_failures: []
+  validation_warnings: []
+  dropped_instruction_sections: []
+- line: '33'
+  label_before: 33 Add lines 25d, 26, and 32. These are your total payments 33
+  label_after: 33 Add lines 25d, 26, and 32. These are your total payments
+  form_face_before: 33 Add lines 25d, 26, and 32. These are your total payments 33
+  form_face_after: 33 Add lines 25d, 26, and 32. These are your total payments
+  status: error
+  error: 'LlmUnavailable: OpenRouter request failed: Connection error.'
+  validation_failures: []
+  validation_warnings: []
+  dropped_instruction_sections: []
+- line: '34'
+  label_before: Refund 34 If line 33 is more than line 24, subtract line 24 from line
+    33. This is the amount you overpaid 34
+  label_after: 34 If line 33 is more than line 24, subtract line 24 from line 33.
+    This is the amount you overpaid
+  form_face_before: Refund 34 If line 33 is more than line 24, subtract line 24 from
+    line 33. This is the amount you overpaid 34
+  form_face_after: 34 If line 33 is more than line 24, subtract line 24 from line
+    33. This is the amount you overpaid
+  status: error
+  error: 'LlmUnavailable: OpenRouter request failed: Connection error.'
+  validation_failures: []
+  validation_warnings: []
+  dropped_instruction_sections: []
+- line: 35a
+  label_before: 35a Amount of line 34 you want refunded to you. If Form 8888 is attached,
+    check here 35a
+  label_after: 35a Amount of line 34 you want refunded to you. If Form 8888 is attached,
+    check here
+  form_face_before: 35a Amount of line 34 you want refunded to you. If Form 8888 is
+    attached, check here 35a
+  form_face_after: 35a Amount of line 34 you want refunded to you. If Form 8888 is
+    attached, check here
+  status: error
+  error: 'LlmUnavailable: OpenRouter request failed: Connection error.'
+  validation_failures: []
+  validation_warnings: []
+  dropped_instruction_sections: []
+- line: '36'
+  label_before: 36 Amount of line 34 you want applied to your 2026 estimated tax 36
+  label_after: 36 Amount of line 34 you want applied to your 2026 estimated tax
+  form_face_before: 36 Amount of line 34 you want applied to your 2026 estimated tax
+    36
+  form_face_after: 36 Amount of line 34 you want applied to your 2026 estimated tax
+  status: error
+  error: 'LlmUnavailable: OpenRouter request failed: Connection error.'
+  validation_failures: []
+  validation_warnings: []
+  dropped_instruction_sections: []
+- line: '37'
+  label_before: Amount 37 Subtract line 33 from line 24. This is the amount you owe.
+  label_after: 37 Subtract line 33 from line 24. This is the amount you owe.
+  form_face_before: Amount 37 Subtract line 33 from line 24. This is the amount you
+    owe.
+  form_face_after: 37 Subtract line 33 from line 24. This is the amount you owe.
+  status: error
+  error: 'LlmUnavailable: OpenRouter request failed: Connection error.'
+  validation_failures: []
+  validation_warnings: []
+  dropped_instruction_sections: []
+validation:
+  attempted: 17
+  repaired: 0
+  gapped: 0
+  errored: 17
+  instruction_sections_dropped: 0
+  instruction_drops_by_kind: {}
+  validator_failures_by_kind: {}
+  validator_warnings_by_kind: {}

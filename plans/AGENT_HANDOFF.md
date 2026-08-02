@@ -14,6 +14,19 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## Current state (2026-08-02)
 
+**Worker session checkpoint - M20-S26 implementation (2026-08-02):** Global canary: Ledger
+Llama. Phase canary: Ground Truth. Model: GPT-5 Codex; effort and usage/quota/context
+indicators are not exposed. John gave go via the current task request. Single declared step:
+change `derive_cells` to require at least one cited evidence source, drop doubtful instruction
+sections without failing a good form-face row, clean geometry-contaminated form-face labels,
+and run the real 1040 bench plus the declared consumer and gate set. Applicable defect-ledger
+entries: D9, D12, D13, D14, D6, and the exact RAN/NOT RUN evidence rule. No promotion,
+hand-authoring, live graph edit, verdict write, or operation enum change is in scope. Protected
+graph and field-map artifacts must remain byte-identical. Declared focused files:
+`tests/test_derive_cells_m20.py`, `tests/test_instruction_sections_m20.py`,
+`tests/test_prompt_experiment_m20.py`, `tests/test_extract_outline_m4.py`,
+`tests/test_extract_m16.py`, `tests/test_cli.py`, and `tests/test_workbench_m15.py`.
+
 **Architect acceptance of M20-S25 (Claude Opus 5, 2026-08-02).** Accepted at `ff62119`. Gates
 re-verified rather than taken on trust: `cells.py` has zero `open`/`write_text`/`mkdir`/
 `safe_dump`/`json.dump` calls, so the pure-function guarantee still holds after a 449-line
@@ -30,6 +43,61 @@ document computed lines; the form face does.** The hard `missing_instruction_tex
 least one cited evidence source rather than that specific one. S23's ownership rules stay exactly
 as they are - they were right, and this is not a reason to loosen them. Full task: M20-S26 under
 **From Architect**.
+
+**M20-S26 implementation checkpoint (2026-08-02):** Added the narrow evidence fallback in
+`derive_cells`: form-face evidence is sufficient when instruction coverage is absent;
+wrong-owner/wrong-line instruction sections are dropped and counted while face evidence stays
+usable; geometry labels/form-face text are cleaned from the authoritative printed line token,
+including split suffixes such as `z ... 1z`; the bench now records before/after label and face
+text. RAN: `& .venv/Scripts/python.exe -m pytest tests/test_derive_cells_m20.py -q` -> `21
+passed, 1 warning in 0.93s`. RAN: `& .venv/Scripts/python.exe -m pytest
+tests/test_derive_cells_m20.py tests/test_instruction_sections_m20.py
+tests/test_prompt_experiment_m20.py tests/test_extract_outline_m4.py tests/test_extract_m16.py
+tests/test_cli.py tests/test_workbench_m15.py -q` -> `62 passed, 1 warning in 20.07s`. RAN:
+`& .venv/Scripts/python.exe experiments/derive_cells_s25.py --root . --year 2025 --no-provider`
+-> persisted `output/m20_s26_form_1040_2025_instruction_sections.yaml` and its coverage
+report. The initial focused run using `C:\tmp` was not a code failure: pytest could not create
+the sandbox temp root there, so the focused file was rerun successfully under the approved
+visualization temp root above.
+
+**M20-S26 real-data and gate checkpoint (2026-08-02):** RAN: `& .venv/Scripts/python.exe
+experiments/derive_cells_s25.py --root . --year 2025` -> exit 0 in 132.1s; 17 rows attempted,
+`derived=0`, `repaired=0`, `gapped=0`, `errored=17`. Every row recorded
+`LlmUnavailable: OpenRouter request failed: Connection error.` after the configured transport
+retries; this is an evidenced provider failure, not a validator result. The full before/after
+label table is:
+
+| line | before | after |
+| --- | --- | --- |
+| 1z | z Add lines 1a through 1h 1z | 1z Add lines 1a through 1h |
+| 9 | 9 Add lines 1z, 2b, 3b, 4b, 5b, 6b, 7a, and 8. This is your total income 9 | 9 Add lines 1z, 2b, 3b, 4b, 5b, 6b, 7a, and 8. This is your total income |
+| 11a | 11a Subtract line 10 from line 9. This is your adjusted gross income 11a | 11a Subtract line 10 from line 9. This is your adjusted gross income |
+| 11b | Tax and 11b Amount from line 11a (adjusted gross income) 11b | 11b Amount from line 11a (adjusted gross income) |
+| 14 | $15,750 14 Add lines 12e, 13a, and 13b 14 | 14 Add lines 12e, 13a, and 13b |
+| 15 | jointly or 15 Subtract line 14 from line 11b. If zero or less, enter -0-. This is your taxable income 15 | 15 Subtract line 14 from line 11b. If zero or less, enter -0-. This is your taxable income |
+| 18 | $31,500 18 Add lines 16 and 17 18 | 18 Add lines 16 and 17 |
+| 21 | a box on line 21 Add lines 19 and 20 21 | 21 Add lines 19 and 20 |
+| 22 | 12a, 12b, 12c, 22 Subtract line 21 from line 18. If zero or less, enter -0- 22 | 22 Subtract line 21 from line 18. If zero or less, enter -0- |
+| 24 | 24 Add lines 22 and 23. This is your total tax 24 | 24 Add lines 22 and 23. This is your total tax |
+| 25d | d Add lines 25a through 25c 25d | 25d Add lines 25a through 25c |
+| 32 | 32 Add lines 27a, 28, 29, 30, and 31. These are your total other payments and refundable credits 32 | 32 Add lines 27a, 28, 29, 30, and 31. These are your total other payments and refundable credits |
+| 33 | 33 Add lines 25d, 26, and 32. These are your total payments 33 | 33 Add lines 25d, 26, and 32. These are your total payments |
+| 34 | Refund 34 If line 33 is more than line 24, subtract line 24 from line 33. This is the amount you overpaid 34 | 34 If line 33 is more than line 24, subtract line 24 from line 33. This is the amount you overpaid |
+| 35a | 35a Amount of line 34 you want refunded to you. If Form 8888 is attached, check here 35a | 35a Amount of line 34 you want refunded to you. If Form 8888 is attached, check here |
+| 36 | 36 Amount of line 34 you want applied to your 2026 estimated tax 36 | 36 Amount of line 34 you want applied to your 2026 estimated tax |
+| 37 | Amount 37 Subtract line 33 from line 24. This is the amount you owe. | 37 Subtract line 33 from line 24. This is the amount you owe. |
+
+RAN: `& .venv/Scripts/python.exe tools/check_ascii.py; git diff --check; &
+.venv/Scripts/python.exe -m py_compile tax_graph/extract/cells.py experiments/derive_cells_s25.py
+tests/test_derive_cells_m20.py` -> ASCII check OK, diff check exit 0, compile exit 0. RAN:
+`& .venv/Scripts/python.exe -m tax_graph.cli validate 2025` -> graph integrity OK,
+documents=18, nodes=441, edges=409, rules=17, citations=401. RAN: strict citation check ->
+`checked=401 strict_mismatches=36`. RAN: read-only preflight first in the sandbox -> known
+pre-existing `WinError 5` on `graph/2025/_drafts/form_1040_2025`; reran with read-only
+filesystem escalation -> passed, units=2224, derived cells=2120, legacy_mined=394. Protected
+graph and field-map diff is empty. The focused and exact consumer reruns are complete. The three
+S26 generated reports were force-added and the implementation was committed locally; the final
+amended hash is reported by the Worker below. No push.
 
 **Worker session checkpoint - M20-S25 implementation (2026-08-02):** Global canary: Ledger
 Llama. Phase canary: Ground Truth. Model: GPT-5 Codex; effort/quota/context indicators are not
