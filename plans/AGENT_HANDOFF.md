@@ -2287,8 +2287,22 @@ the instruction slot; Authority explicitly reports missing authored coverage; do
 citation coverage is visible beside policy counts; and the dossier heading duplication/order
 warts are fixed. No promoted artifacts, graph semantics, verdicts, or citation records changed.
 
-**BALL: WORKER - M20-S23 (BUILD THE `instruction_sections` ARTIFACT AND FIX ITS JOIN). Task block
-under From Architect.**
+**BALL: WORKER - M20-S24 (`derive_cells` AS A PURE FUNCTION, WITH EXPRESSION TREES). Task block
+under From Architect. S23 is ACCEPTED at `0d68ec2` and pushed - Architect re-verified: 46 tests
+green, protected set and field maps byte-identical, and the two known collisions independently
+confirmed closed. `wrong_owner_spans` went **295 -> 0** across all five forms (the 1040 alone was
+97); 32 cross-schedule collisions resolved by form context; `unattributed_section_count: 0`;
+Schedule 1-A recorded as an explicit zero-section context rather than vanishing. Form 1040 lines
+9 and 21 now have NO instruction section - correct, since the text they used to get belonged to
+Schedule 2/3 and Schedule 1.**
+
+**Two carry-forwards into S24, both small:** (a) the frame is COMPUTED, not persisted - Codex
+reported "no output artifact was performed", so there is no committed coverage report to open;
+publish one. (b) One legacy owner parser survives as a compatibility fallback for old synthetic
+spans and old draft sidecars - finish retiring it or state why it must stay.
+
+**Superseded (kept as history):** BALL: WORKER - M20-S23 (BUILD THE `instruction_sections`
+ARTIFACT AND FIX ITS JOIN).
 
 **READ `docs/engineering-plan.md` SECTION "Extraction as typed frames between pure functions"
 BEFORE STARTING. It supersedes the round-by-round patching of S7-S23 and states the M20 exit
