@@ -183,20 +183,43 @@ def test_require_input_may_reference_its_own_line() -> None:
         "form": "form_1040_2025",
         "line": "35a",
         "label": "Amount of line 34 you want refunded to you.",
-        "form_face_text": "Amount of line 34 you want refunded to you.",
+        "form_face_text": "Amount of refund requested.",
         "instruction_text": "",
         "instruction_locator": "face_35a",
     }
     client = FakeClient([
         {
             "expression": {"op": "REQUIRE_INPUT", "args": [{"line": "35a"}]},
-            "quote": "Amount of line 34 you want refunded to you.",
+            "quote": "Amount of refund requested.",
         }
     ])
 
     result = derive_cells(CellFrame.from_rows([row]), "{line}", "secret", client=client)
 
     assert result.coverage == {"total": 1, "derived": 1}
+    assert result.validation["validator_warnings_by_kind"] == {}
+
+
+def test_require_input_non_self_operand_still_warns_when_quote_omits_it() -> None:
+    row = {
+        "form": "form_1040_2025",
+        "line": "35a",
+        "label": "Amount of line 34 you want refunded to you.",
+        "form_face_text": "Amount of refund requested.",
+        "instruction_text": "",
+        "instruction_locator": "face_35a",
+    }
+    client = FakeClient([
+        {
+            "expression": {"op": "REQUIRE_INPUT", "args": [{"line": "34"}]},
+            "quote": "Amount of refund requested.",
+        }
+    ])
+
+    result = derive_cells(CellFrame.from_rows([row]), "{line}", "secret", client=client)
+
+    assert result.coverage == {"total": 1, "derived": 1}
+    assert result.validation["validator_warnings_by_kind"] == {"operand_not_in_quote": 1}
 
 
 def test_tree_to_graph_preserves_floor_shape_and_subtraction_roles() -> None:

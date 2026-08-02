@@ -13,6 +13,7 @@ from collections import Counter
 from dataclasses import replace
 from pathlib import Path
 import sys
+import tempfile
 from typing import Any
 
 import yaml
@@ -42,11 +43,10 @@ def persist_instruction_frame(
 ) -> tuple[Path, Path]:
     """Persist the deterministic instruction frame and its coverage report."""
     root_path = Path(root).resolve()
+    destination = _output_destination(root_path, output_dir)
     document = load_document_input(document_id, year=year, root=root_path)
     frame = build_instruction_sections_frame(document, outline=build_outline_tree(document))
     frame = _portable_frame(frame, root_path)
-    destination = Path(output_dir) if output_dir is not None else root_path / "output"
-    destination.mkdir(parents=True, exist_ok=True)
     frame_path = write_instruction_sections_artifact(
         frame,
         destination / f"m20_s26_{document_id}_instruction_sections.yaml",
@@ -88,16 +88,18 @@ def _portable_frame(frame: Any, root: Path) -> Any:
     return replace(frame, source_path=relative(frame.source_path), sections=sections)
 
 
-def run_real_1040(
+def run_real_document(
     *,
     root: str | Path,
     year: str,
+    document_id: str,
     output_dir: str | Path | None = None,
 ) -> dict[str, Any]:
-    """Derive the real 1040 rows and persist only an aggregate report."""
+    """Derive one real document and persist only its aggregate report."""
     root_path = Path(root).resolve()
+    destination = _output_destination(root_path, output_dir)
     config = load_config(root=root_path)
-    document = load_document_input("form_1040_2025", year=year, root=root_path, config=config)
+    document = load_document_input(document_id, year=year, root=root_path, config=config)
     frame = build_cell_frame_from_document(document)
     client = build_llm_client(config)
     prompt = load_cell_prompt(config, root=root_path)
@@ -135,14 +137,13 @@ def run_real_1040(
         "document_id": document.document_id,
         "year": str(year),
         "rows": len(result.rows),
+        "rows_attempted": result.validation.get("attempted", 0),
         "row_status_counts": status_counts,
         "raw_row_status_counts": dict(sorted(raw_status_counts.items())),
         "rows_detail": row_details,
         "validation": result.validation_report,
     }
-    destination = Path(output_dir) if output_dir is not None else root_path / "output"
-    destination.mkdir(parents=True, exist_ok=True)
-    report_path = destination / "m20_s26_form_1040_2025_derive_cells_report.yaml"
+    report_path = destination / f"m20_s26_{document_id}_derive_cells_report.yaml"
     report_path.write_text(
         yaml.safe_dump(report, sort_keys=False, allow_unicode=False),
         encoding="utf-8",
@@ -151,25 +152,124 @@ def run_real_1040(
     return report
 
 
+def _output_destination(root: Path, output_dir: str | Path | None) -> Path:
+    """Return a writable output directory outside the source repository."""
+    if output_dir is None:
+        return Path(tempfile.mkdtemp(prefix="tax_graph_m20_s30_"))
+    destination = Path(output_dir).resolve()
+    try:
+        destination.relative_to(root)
+    except ValueError:
+        destination.mkdir(parents=True, exist_ok=True)
+        return destination
+    raise ValueError(f"output directory must be outside repository root: {destination}")
+
+
+def _top_three_counts(values: dict[str, int]) -> dict[str, int]:
+    """Return the three most frequent validator findings in stable order."""
+    return dict(sorted(values.items(), key=lambda item: (-item[1], item[0]))[:3])
+
+
+def run_documents(
+    *,
+    root: str | Path,
+    year: str,
+    document_ids: list[str],
+    output_dir: str | Path | None = None,
+    no_provider: bool = False,
+) -> list[dict[str, Any]]:
+    """Run the harness once per document and report load/provider failures."""
+    root_path = Path(root).resolve()
+    destination = _output_destination(root_path, output_dir)
+    reports: list[dict[str, Any]] = []
+    for document_id in document_ids:
+        try:
+            frame_path, coverage_path = persist_instruction_frame(
+                root=root_path,
+                year=year,
+                document_id=document_id,
+                output_dir=destination,
+            )
+        except Exception as exc:  # noqa: BLE001 - one document must not hide another
+            reports.append(
+                {
+                    "document_id": document_id,
+                    "status": "reported",
+                    "reason": f"{type(exc).__name__}: {exc}",
+                    "rows_attempted": 0,
+                    "derived": 0,
+                    "repaired": 0,
+                    "gapped": 0,
+                    "errored": 0,
+                }
+            )
+            continue
+
+        if no_provider:
+            reports.append(
+                {
+                    "document_id": document_id,
+                    "status": "prepared",
+                    "instruction_frame": str(frame_path),
+                    "instruction_coverage": str(coverage_path),
+                    "reason": "provider disabled",
+                }
+            )
+            continue
+
+        try:
+            report = run_real_document(
+                root=root_path,
+                year=year,
+                document_id=document_id,
+                output_dir=destination,
+            )
+        except Exception as exc:  # noqa: BLE001 - report provider failures per document
+            reports.append(
+                {
+                    "document_id": document_id,
+                    "status": "reported",
+                    "reason": f"{type(exc).__name__}: {exc}",
+                    "rows_attempted": 0,
+                    "derived": 0,
+                    "repaired": 0,
+                    "gapped": 0,
+                    "errored": 0,
+                }
+            )
+            continue
+        reports.append(
+            {
+                "document_id": document_id,
+                "status": "complete",
+                "rows_attempted": report["rows_attempted"],
+                **report["row_status_counts"],
+                "validator_failures_by_kind": _top_three_counts(
+                    report["validation"].get("validator_failures_by_kind", {})
+                ),
+            }
+        )
+    return reports
+
+
 def main() -> int:
     """Run persistence and, unless disabled, the real provider bench."""
     parser = argparse.ArgumentParser()
     parser.add_argument("--root", default=".")
     parser.add_argument("--year", default="2025")
     parser.add_argument("--output-dir", default=None)
+    parser.add_argument("--document", action="append", dest="documents")
     parser.add_argument("--no-provider", action="store_true")
     args = parser.parse_args()
-    frame_path, coverage_path = persist_instruction_frame(
+    document_ids = args.documents or ["form_1040_2025"]
+    reports = run_documents(
         root=args.root,
         year=args.year,
+        document_ids=document_ids,
         output_dir=args.output_dir,
+        no_provider=args.no_provider,
     )
-    print(f"instruction_frame={frame_path}")
-    print(f"instruction_coverage={coverage_path}")
-    if args.no_provider:
-        return 0
-    report = run_real_1040(root=args.root, year=args.year, output_dir=args.output_dir)
-    print(yaml.safe_dump(report, sort_keys=False, allow_unicode=False).rstrip())
+    print(yaml.safe_dump({"documents": reports}, sort_keys=False, allow_unicode=False).rstrip())
     return 0
 
 

@@ -611,14 +611,26 @@ def validate_cell_output(
     current_form = row.form.strip().lower()
     current_line = row.line.strip().lower()
     available_lines = _available_lines(row)
+    direct_require_input_args = _node_args(expression) if is_require_input else []
+    require_input_self = (
+        is_require_input
+        and len(direct_require_input_args) == 1
+        and "line" in direct_require_input_args[0]
+        and _operand_line(direct_require_input_args[0]) == current_line
+        and (
+            not direct_require_input_args[0].get("form")
+            or str(direct_require_input_args[0].get("form")).strip().lower() == current_form
+        )
+    )
     for operand in operands:
         operand_form = str(operand.get("form") or "").strip().lower()
         operand_line = str(operand.get("line") or "").strip().lower()
         if not operand_line:
             continue
-        if not is_require_input and not operand_form and operand_line == current_line:
+        is_require_input_self_operand = require_input_self and operand is direct_require_input_args[0]
+        if not is_require_input_self_operand and not operand_form and operand_line == current_line:
             hard.append(CellValidationIssue("self_reference", f"expression references its own line {row.line}"))
-        if not is_require_input and operand_form and operand_form == current_form and operand_line == current_line:
+        if not is_require_input_self_operand and operand_form and operand_form == current_form and operand_line == current_line:
             hard.append(CellValidationIssue("self_reference", f"expression references its own line {row.line}"))
         if not operand_form and available_lines and operand_line not in available_lines:
             hard.append(
@@ -627,7 +639,7 @@ def validate_cell_output(
                     f"line {operand_line} is not a printed line on {row.form}",
                 )
             )
-        if not operand_form and not _line_mentioned(quote, operand_line):
+        if not is_require_input_self_operand and not operand_form and not _line_mentioned(quote, operand_line):
             warnings.append(
                 CellValidationIssue(
                     "operand_not_in_quote",
@@ -635,7 +647,7 @@ def validate_cell_output(
                     hard=False,
                 )
             )
-        if operand_form and not _line_mentioned(quote, operand_line):
+        if not is_require_input_self_operand and operand_form and not _line_mentioned(quote, operand_line):
             warnings.append(
                 CellValidationIssue(
                     "operand_not_in_quote",

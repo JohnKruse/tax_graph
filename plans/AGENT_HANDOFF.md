@@ -22,6 +22,34 @@ Task block under **From Architect**. **S29 is ACCEPTED at `fca0a4a`.**
 
 ## Current round
 
+**M20-S30 Worker status (Codex, 2026-08-02):** Canary **Ground Truth**. Steps 1-2 are
+implemented and verified. The harness accepts repeatable `--document` values, defaults to
+`form_1040_2025`, reports unloadable documents per row, and rejects repository output paths.
+`validate_cell_output` now exempts only the direct self operand of a top-level `REQUIRE_INPUT`
+from `operand_not_in_quote`; other operands remain warned. No protected graph directories
+changed.
+
+Evidence:
+
+- RAN: `$env:PYTEST_DEBUG_TEMPROOT = 'C:\tmp\tax_graph_m20_s30_pytest'; &
+  '.venv\Scripts\python.exe' '-m' 'pytest' 'tests/test_derive_cells_m20.py'
+  'tests/test_derive_cells_s30.py' '-q'` -> `37 passed in 0.92s`
+- RAN: `$env:PYTEST_DEBUG_TEMPROOT = 'C:\tmp\tax_graph_m20_s30_pytest'; &
+  '.venv\Scripts\python.exe' '-m' 'pytest' 'tests/test_acquire_citation_check.py' '-q'` ->
+  `9 passed in 0.18s`
+- RAN: `.venv\Scripts\python.exe experiments\derive_cells_s25.py --root . --year 2025
+  --output-dir C:\tmp\tax_graph_m20_s30_no_provider --document form_1040_2025
+  --document schedule_a_2025 --document schedule_d_2025 --no-provider` -> exit 0; all 3
+  documents reported `status: prepared` and wrote artifacts under `C:\tmp`.
+- RAN: `.venv\Scripts\python.exe -m tax_graph.cli validate 2025` -> graph integrity OK;
+  18 documents, 441 nodes, 409 edges, 401 citations.
+- RAN: `.venv\Scripts\python.exe -m workbench.cli preflight --root . --year 2025` -> passed;
+  units 2224, derived cells 2120, `legacy_mined=394`.
+- RAN: `.venv\Scripts\python.exe tools/check_ascii.py` -> `ASCII check OK`.
+- RAN: `git diff --check` -> exit 0; protected graph diff -> empty.
+- NOT RUN: M20-S30 step 3 live provider slice; this sandbox has no outbound network, so the
+  Architect must run it with approved external access and record the per-form number.
+
 **M20-S29 deterministic half ACCEPTED (Architect, Claude Opus 5, 2026-08-02) at `fca0a4a`.**
 Step 3 was not runnable this round - see the blocker note below. The Worker's report was honest,
 including flagging that its own headline number was analytic rather than measured. The Architect
