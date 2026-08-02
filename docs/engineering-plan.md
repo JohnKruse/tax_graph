@@ -204,6 +204,154 @@ Seams every phase before M6b must respect:
 
 The POC proved the thesis (computed 1040 L7 = $2,000 with a trace). M0 turns it into a package.
 
+## Extraction as typed frames between pure functions (John, 2026-08-02)
+
+**This section supersedes the round-by-round patching of M20-S7 through S23. It is the
+architecture the extraction sub-pipeline is being moved to, and the M20 exit criteria are
+stated against it.**
+
+### Why - the diagnosis, from evidence
+
+Across two days of rounds, **every failure was ours, not the model's.** There has not been one
+prompt-quality failure. The model produced line 1z perfectly on its first attempt, correctly
+included operands (4b, 5b, 6b) that the hand-authored comparison set omitted, and emitted floors
+and caps the moment the schema could express them.
+
+What broke, every single time, was the same shape: **one stage produced something, the next
+stage silently misread it, and nobody noticed until a human looked at the output.**
+
+| defect | silent misread between stages |
+|---|---|
+| every expression self-referential (S12) | operand names resolved in the TARGET's namespace |
+| subtraction direction unrecoverable (S14) | `role` hardcoded to `addend` in assembly |
+| line 1z fed line 27b's instructions (S13) | instruction spans joined by MENTION |
+| line 21 built from a Student Loan worksheet (S22 bench) | `## Line 21` is ambiguous across the schedules the 1040 booklet also covers |
+| every floor and cap discarded (S23 bench) | extraction schema flatter than the graph it feeds |
+| `policy_derived` pinned at 0 (S21) | policy classified by enum VALUE, not by evidence |
+| 99 of 119 policy calls rejected (S22) | evidence packet ranked instructions above form-face, then required a form-face quote |
+
+**Every fix was under twenty lines.** The expensive part was finding them - and John found
+several by reading a table. The metrics made it worse: they count THINGS THAT EXIST, not things
+that are RIGHT, so completeness read 100% while instructions were unattached, and `unsupported`
+fell by relabelling.
+
+**Root cause: the pipeline is a chain of implicit contracts that nobody checks.**
+
+### The shape (John's design, 2026-08-02)
+
+Isolate the sub-pipeline as a **pure function**:
+
+```
+derive_cells(frame, prompt, api_key) -> frame
+```
+
+- **It writes nothing.** Callers write. This makes the destructive-regeneration class
+  (a network blip deleting `edges.yaml` and costing three rounds of output, S20) IMPOSSIBLE
+  rather than guarded against.
+- **One typed boundary** instead of many implicit ones. Upstream builds the input frame;
+  downstream consumes the output frame.
+- **Testable without a network** - feed a fixture frame, assert on the output frame.
+- The prompt comes from CONFIG, not code, so it can be iterated without touching the pipeline.
+- `experiments/prompt_experiment.py` is the working prototype of exactly this.
+
+**Contract:**
+
+```
+in:   form, line, label, form_face_text, instruction_text, instruction_locator
+      + prompt (from config) + api key
+out:  ...the above, plus
+      expression (tree), rendered, quote, quote_span_id,
+      status, error, model, provider, tokens, cost
+```
+
+Three consumers, none of which the function knows about: `to_markdown()` for human review,
+`to_json()` for storage, and the tree-to-graph converter (`experiments/to_graph.py`) for
+dispersal into nodes/edges/rules.
+
+**Container note:** the CONTRACT is a list of typed records. A DataFrame is fine at the edges
+for review and export ergonomics; the engine should not take a pandas dependency for a 200-row
+table.
+
+**Row-level status, not run-level.** Every row carries its own `status` and `error`. One bad row
+never fails the frame. This is the brittleness fix.
+
+### The frames - and the same treatment upstream (John, 2026-08-02)
+
+These artifacts mostly EXIST already, as YAML blobs with implicit contracts and multiple
+independent parsers. **The change is to make them typed frames with a validator and a coverage
+number - not to rebuild the pipeline.** Do not churn `acquire` (fetch + hash) or OCR; those work.
+
+| frame | contents | state |
+|---|---|---|
+| `pages` | form, page, text, geometry | exists (render/OCR) |
+| `controls` | form, field_name, label, page, rect, value_format, policy | exists (`field_maps`, 199 for the 1040) |
+| `lines` | form, line anchor, label, form-face text, locator | exists as `outline.yaml`, re-derived variously |
+| **`instruction_sections`** | **form, line, verbatim text, locator** | **DOES NOT EXIST - the biggest gap** |
+| `cells` | `lines` joined to `instruction_sections` | the input frame for `derive_cells` |
+| `derivations` | output of `derive_cells` | |
+| `graph_objects` | nodes, edges, rules | exists (`assembly.py`) |
+
+### THE JOINS ARE WHERE THE BUGS ARE
+
+Sharpening John's question: isolating the stages matters, but **every defect in the table above
+lives in a JOIN, not in a stage.** Each join must therefore be an explicit, validated function
+with its own coverage report - never an inline lookup:
+
+1. **line -> instruction section.** Currently three independent implementations (span miner,
+   the `## Line X` heading join, the experiment extractor), three different bugs, and a shared
+   blind spot: the 1040 booklet ALSO covers Schedules 1, 2 and 3, so `## Line 9` appears twice
+   and `## Line 10` three times. This is what fed line 21 another form's worksheet.
+   **Must carry form context, and must end a section at the next heading of equal or higher
+   level, not at the next `## Line` heading.**
+2. **printed line -> canonical address.** Parent vs lettered child (`2` vs `2a`, `19` vs `19a`)
+   killed whole expressions in S18.
+3. **control -> address binding.** The 199-vs-238 discrepancy.
+4. **operand -> node id.** Where the self-reference bug lived.
+
+### Measure checkable properties, not counts
+
+Every metric so far counts existence and can be satisfied by the wrong evidence or gamed by
+relabelling. Replace with properties that need NO ground truth and NO human - each one below is a
+bug we actually shipped:
+
+- an expression must not reference its own line
+- every operand must resolve to a printed line on THIS form, or be an explicit cross-form ref
+- `SUBTRACT`/`DIVIDE` take exactly two operands
+- if the label says "Subtract A from B", the tree must be `B - A`
+- if the cited text says "If zero or less, enter -0-", the tree must contain `MAX(..., 0)`
+- the quote must be verbatim from a real mined span
+- operands SHOULD appear in the cited text - a WARNING, never a hard failure (on line 9 the
+  model was right and the hand-authored set was wrong)
+
+**On failure, repair once** with the specific complaint fed back; only a second failure becomes a
+named review gap.
+
+### Human review is the LAST gate, not the first line of defence
+
+John has been finding `copy(line Form 2441, line 26)` and mismatched parentheses. His attention
+is the scarcest resource in this project and it must be spent on genuine judgement - does this
+expression match what the instruction says - not on defects a validator catches for free.
+
+### M20 EXIT CRITERIA (supersedes the earlier round-by-round targets)
+
+1. `instruction_sections` exists as a real artifact, per form per line, verbatim with locators,
+   with a published coverage number and no cross-schedule collisions.
+2. Every join above is an explicit validated function with a coverage report.
+3. `derive_cells` is a pure function with the contract above, writing nothing, with row-level
+   status, and covered by tests that need no network.
+4. The property validators run in the pipeline, with repair-once, and their failures are
+   reported by kind.
+5. Expressions are trees, and the tree-to-graph conversion is deterministic and tested.
+6. Observability (guiding invariant 8) holds: a failed call is diagnosable from repo artifacts
+   alone.
+
+### What to STOP doing
+
+- Stop extending the review UI until the data underneath is trustworthy.
+- Stop reporting completeness as counts of existence.
+- Stop treating a failed model call as a finding about a tax form.
+- **Stop speccing rounds without first running the bench and reading the actual payload.**
+
 ## Target architecture
 
 ```

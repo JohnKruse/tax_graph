@@ -92,13 +92,23 @@ def response_schema(operations: list[str]) -> dict:
 
 
 def _operand(operations: list[str], depth: int) -> dict:
-    """One operand: a printed line, a constant, or (while depth allows) a sub-expression."""
+    """One operand: a printed line, a line on another form, a constant, or a sub-expression."""
     choices = [
         {
             "type": "object",
             "additionalProperties": False,
             "required": ["line"],
             "properties": {"line": {"type": "string", "minLength": 1}},
+        },
+        {
+            # cross-form fetch: "from Form 2441, line 26"
+            "type": "object",
+            "additionalProperties": False,
+            "required": ["form", "line"],
+            "properties": {
+                "form": {"type": "string", "minLength": 1},
+                "line": {"type": "string", "minLength": 1},
+            },
         },
         {
             "type": "object",
@@ -141,29 +151,43 @@ def expression_schema(operations: list[str], depth: int = 2) -> dict:
     }
 
 
-def render(node: dict) -> str:
-    """Render an expression tree as ordinary math for a human."""
+INFIX = {"SUM": " + ", "SUBTRACT": " - ", "MULTIPLY": " * ", "DIVIDE": " / "}
+
+
+def render(node: dict, in_infix: bool = False) -> str:
+    """Render an expression tree as ordinary math.
+
+    Infix for arithmetic, functional for everything else. Parentheses appear
+    ONLY where an infix sub-expression sits inside another infix operation - a
+    comma already separates function arguments, so max(a - b, 0) needs none.
+    """
     if not isinstance(node, dict):
         return str(node)
+    if "form" in node and "line" in node:
+        return f"{node['form']} line {node['line']}"
     if "line" in node:
         return f"line {node['line']}"
     if "const" in node:
         c = node["const"]
         return str(int(c)) if float(c).is_integer() else str(c)
+
     op = str(node.get("op", "?")).upper()
-    args = [render(a) for a in (node.get("args") or [])]
-    infix = {"SUM": " + ", "SUBTRACT": " - ", "MULTIPLY": " * ", "DIVIDE": " / "}
-    if op in infix and len(args) > 1:
-        return "(" + infix[op].join(args) + ")" if len(args) > 2 else infix[op].join(args)
+    is_infix = op in INFIX and len(node.get("args") or []) > 1
+    args = [render(a, in_infix=is_infix) for a in (node.get("args") or [])]
+    if is_infix:
+        body = INFIX[op].join(args)
+        return f"({body})" if in_infix else body
     return f"{op.lower()}({', '.join(args)})"
 
 
 EXPR_PROMPT_TEMPLATE = """\
 Write the arithmetic for one line of a US tax form.
 
-Return an expression tree. Operands are either a printed line on this form
-({{"line": "18"}}) or a numeric constant ({{"const": 0}}), and an operand may
-itself be a nested expression.
+Return an expression tree. An operand is one of:
+  {{"line": "18"}}                        a printed line on THIS form
+  {{"form": "Form 2441", "line": "26"}}   a line on ANOTHER form
+  {{"const": 0}}                          a numeric constant
+and an operand may itself be a nested expression.
 
 Write the WHOLE rule, including any floor or cap the instruction states.
 "Subtract line 21 from line 18. If zero or less, enter -0-" is
