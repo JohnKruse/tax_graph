@@ -17,83 +17,68 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## BALL
 
-**BALL: ARCHITECT - review M20-S31 (DELETE THE SCHEDULE D CARVE-OUT).**
-Worker delivered steps 1-3 in `fb2833e`, `a466a9e`, and `e18767f`. S30 remains accepted at
-`00b5f38`; no push was made.
+**BALL: WORKER - M20-S32 (UNBREAK THE PROMPT).** Task block under **From Architect**.
+**S31 steps 1-2 are ACCEPTED; step 3 is REJECTED - it zeroes the whole pipeline.**
 
 ## Current round
 
-**M20-S31 WORKER COMPLETE (Codex, 2026-08-02).** The Schedule D per-document formula carve-out
-was deleted and all callers now use document-agnostic formula selection. The harness reports
-`status: empty` for zero attempted rows and carries `outline_node_count` plus
-`line_anchor_count`. Step 3 was diagnosed as a prompt-contract defect: the model returned
-`schedule_d_2025 line 7` in the operand LINE field, so the prompt now requires same-form
-operands to use line-only objects. `operand_not_printed` remains strict; no normalizer or retry
-was added.
+**M20-S31 PARTIALLY ACCEPTED (Architect, Claude Opus 5, 2026-08-02).** Steps 1 and 2 are good and
+independently verified. **Step 3 is a regression that takes every form to zero and must be fixed
+before anything else.** The Worker declared step 4 NOT RUN, as instructed; the Architect ran it,
+which is how this was caught.
 
-**Focused evidence:**
+**ACCEPTED - step 1, the carve-out is gone (`fb2833e`).** The `schedule_d_` clause is deleted, the
+now-unused `document_id` parameter was removed from `_formula_outline_nodes` rather than left as a
+dead argument, and all four call sites were updated (`cells.py`, `outline_pipeline.py` x2,
+`prompt_bench.py`). No compensating special case was added anywhere.
 
-- RAN: `.venv\Scripts\python.exe -m pytest tests/test_m20_s31.py tests/test_extract_outline_m4.py -q` -> `23 passed in 0.88s`.
-- RAN: `.venv\Scripts\python.exe -m pytest tests/test_m20_s31.py tests/test_derive_cells_s30.py -q` -> `6 passed in 0.22s`.
-- RAN: `.venv\Scripts\python.exe -m pytest tests/test_m20_s31.py tests/test_derive_cells_m20.py -q` -> `38 passed in 0.94s`.
-- RAN: `.venv\Scripts\python.exe tools/check_ascii.py` -> `ASCII check OK`.
-- RAN: `.venv\Scripts\python.exe -m tax_graph.cli validate 2025` -> `18 documents, 441 nodes, 409 edges, 401 citations; graph integrity OK`.
-- RAN: `.venv\Scripts\python.exe -m workbench.cli preflight --year 2025` -> `derived manifest units: 2224; derived cells: 2120; legacy_mined: 394; review preflight passed - 2025`.
-- RAN: `.venv\Scripts\python.exe -c "from tax_graph.acquire.citation_check import check_graph_citations; r=check_graph_citations(year='2025', raw_store='.cache/raw', root='.'); print(f'checked={r.checked} strict_mismatches={len(r.mismatches)}')"` -> `checked=401 strict_mismatches=36`.
-- NOT RUN: `.venv\Scripts\python.exe experiments\derive_cells_s25.py --root . --year 2025 --document form_1040_2025 --document schedule_a_2025 --document schedule_d_2025 --output-dir C:\tmp\m20_s31` - sandbox has no outbound provider network; declared before attempting it.
+**ACCEPTED - step 2, an empty document is now loud (`a466a9e`).** Zero attempted rows reports
+`status: empty` with a reason, plus `outline_node_count` and `line_anchor_count` so a reader can
+tell an unreadable form from one with nothing to derive. This is the D10 fix and it is well done.
 
-**M20-S30 ACCEPTED (Architect, Claude Opus 5, 2026-08-02) at `00b5f38`.** The prior live slice
-was 1040 17/17, Schedule A 7/7, and Schedule D 0; S31 addresses the hidden empty result.
+**REJECTED - step 3 breaks the prompt (`e18767f`).** The Architect's live slice:
 
-**Step 2 verified live: the 1040 warning channel is now ZERO.** `operand_not_in_quote` went
-37 -> 2 -> **0**, and Schedule A is also 0. The exemption uses an identity comparison
-(`operand is direct_require_input_args[0]`), which only works because `_expression_operands`
-yields the same dict objects - it does, confirmed by the measured zero. The Worker also NARROWED
-S28's `self_reference` exemption to the canonical single-self-operand shape; that is tighter than
-asked for and is correct, but it is a hard-channel behaviour change that was not in the spec.
+| form | status | reason |
+| --- | --- | --- |
+| `form_1040_2025` | reported | `ValueError: cell prompt has unsupported placeholder: "line"` |
+| `schedule_a_2025` | reported | same |
+| `schedule_d_2025` | reported | same |
 
-**THE SLICE (Architect, live provider, 2026-08-02):**
+**17/17 and 7/7 both became 0.** `_render_cell_prompt` renders the prompt with
+`template.format(**values)` (`cells.py:1133`), so the literal JSON added to
+`prompts/derive_cells.md` - `{"line": "7"}` and `{"form": "form_XXXX_2025", "line": "7"}` - parses
+as placeholders named `"line"` and `"form"`, quotes included, which are not in `values`. Every
+document fails before a single model call.
 
-| form | attempted | derived | repaired | gapped | errored |
-| --- | --- | --- | --- | --- | --- |
-| `form_1040_2025` | 17 | **17** | 0 | 0 | 0 |
-| `schedule_a_2025` | 7 | **7** | 0 | 0 | 0 |
-| `schedule_d_2025` | 0 | **0** | 0 | 0 | 0 |
-
-Schedule A at 7/7 matches the S14 handcrafted labeled set exactly - independent corroboration, not
-just a count. Zero validator failures and zero warnings on both.
-
-**SCHEDULE D ATTEMPTED ZERO ROWS, AND THE HARNESS CALLED IT `status: complete`.** A row of zeroes
-with no failures is the emptiest possible result and it reads in the table as "nothing went
-wrong". That is the D10 unexpected-empty case and the harness does not currently fail closed on
-it - fix in S31.
-
-**ROOT CAUSE - a hardcoded per-document exclusion, `tax_graph/extract/outline_pipeline.py:452`:**
+**THE REAL DEFECT IS THE TEST, and this is the durable lesson.** `tests/test_m20_s31.py:104-105`
+asserts the new sentences are PRESENT in the file:
 
 ```
-if _is_formula_node(node) and not (document_id.startswith("schedule_d_") and node.kind == "line"):
+assert 'For a sibling line on this same form, use only {"line": "7"}' in text
 ```
 
-Every Schedule D node of kind `line` is dropped from formula detection regardless of its label.
-Measured: Schedule D's outline is healthy - 31 nodes, 24 line anchors - and **3 nodes pass
-`_is_formula_node`**: lines 7, 15 and 16, all plainly computed (`Combine lines 1a through 6 in
-column (h)`, `Combine lines 8a through 14`, `Combine lines 7 and 15`). The clause excludes exactly
-those three. `_is_formula_node` does have `transaction_table` and `totals` branches that look
-intended to carry Schedule D instead, but Schedule D's outline contains ONLY `line`, `section` and
-`outbound_flow_cue` kinds, so that path never fires and the form falls through to zero.
+It never renders the prompt. A substring check passes on precisely the text that breaks rendering.
+**Rendering needs no network**, so this was fully catchable in the Worker's sandbox - the round
+reported 38 passed with the shipped prompt unloadable. Any change to a prompt file must be covered
+by a test that RENDERS it.
 
-**The clause entered at `eb99447` - M20-S14, "COMPLETE 3 FORMS FOR REVIEW", accepted on the score
-"1040 17/17, Schedule A 7/7".** Schedule D was the third form and its number was never reported.
-The intent may well have been legitimate (exclude column-structured lines pending table support),
-but it was never recorded as a known gap, and a per-document `startswith` in the shared pipeline
-is precisely the gaffer's tape that `PHASE_M20.md` section 1 exists to remove.
+**FIX VERIFIED BY THE ARCHITECT (in memory, no repository edit).** Escaping the JSON braces
+(`{{"` and `"}}`) makes the prompt render and still shows the model the intended literal JSON:
+`For a sibling line on this same form, use only {"line": "7"}`.
 
-**ARCHITECT PROBE - the carve-out is hiding a path that mostly works.** With the clause lifted
-in memory only (no repository edit, working tree verified clean afterwards), the live provider
-returned **attempted=3, derived=2, errored=1**: lines 7 and 15 derived clean, and line 16 failed
-because the model put `schedule_d_2025 line 7` in the operand's LINE field, which
-`operand_not_printed` correctly rejected. **So Schedule D is roughly 2/3, not 0/3**, and the one
-failure is a malformed-operand question, not evidence that the design fails on tables.
+**STILL OPEN - is the prompt even the right fix?** The Worker chose diagnosis (a), prompt contract,
+and added no normaliser. That is defensible, but it makes correct operand encoding depend on model
+compliance, and this model is measurably nondeterministic at `temperature: 0`. Once the prompt
+renders again, the line 16 result is the evidence. If it still intermittently emits
+`schedule_d_2025 line 7` in the LINE field, escalate to diagnosis (b) and normalise in code, per
+the S13/S24/S28 principle that identity resolution belongs in code.
+
+**Process note, not a blocker:** the round asked for ONE local commit and produced four. The split
+is clean and per-step, which made this review easier, so no complaint - but say so up front next
+time rather than silently deviating.
+
+**Gates re-verified by the Architect:** 99 passed on a short temp root; ASCII OK; `validate 2025`
+graph integrity OK; protected set byte-identical across `8414211..bf9f7cf`.
 
 ## Standing constraints (every M20 round)
 
@@ -185,58 +170,41 @@ client-managed server dies.
 
 ## From Architect
 
-- **M20-S31 TASK - DELETE THE SCHEDULE D CARVE-OUT, AND MAKE AN EMPTY RESULT LOUD (Architect,
-  Claude Opus 5, 2026-08-02).** Ledger: the RAN/NOT RUN rule, D9, D6, D10.
+- **M20-S32 TASK - UNBREAK THE PROMPT, THEN FINISH THE SLICE (Architect, Claude Opus 5,
+  2026-08-02).** Ledger: the RAN/NOT RUN rule, D9, D6, D10. **Small round. Do not widen it.**
 
-  **Why this round.** S30 measured the slice and the answer was 17/17, 7/7, and **0**. The zero was
-  not a limit of the design - it was one hardcoded clause, and lifting it in a probe produced 2/3
-  on the live provider. This round removes the special case and makes the shape of failure that
-  hid it impossible to miss next time.
+  **Step 1 - make the prompt render again.** `prompts/derive_cells.md` is passed through
+  `template.format(**values)`, so every literal brace in prose must be doubled. Escape the JSON
+  examples added in `e18767f` as `{{"line": "7"}}` and
+  `{{"form": "form_XXXX_2025", "line": "7"}}`. Architect verified in memory that this renders and
+  that the model still sees the intended single-brace JSON. Keep the guidance wording as written -
+  only the escaping is wrong.
 
-  **Step 1 - delete the per-document exclusion.** `tax_graph/extract/outline_pipeline.py:452`
-  currently reads `if _is_formula_node(node) and not (document_id.startswith("schedule_d_") and
-  node.kind == "line")`. **Delete the `schedule_d_` clause.** If `document_id` then has no
-  remaining use in `_formula_outline_nodes`, remove the parameter and update its callers rather
-  than leaving a dead argument. Add a focused test asserting that `schedule_d_2025` yields exactly
-  its three formula nodes (lines 7, 15, 16).
-  **No other form may be special-cased to compensate.** If some form needs different treatment,
-  that is a property of its NODES (kind, columns, label), never of its document id. A
-  `startswith` on a document id in shared pipeline code is the defect, not the fix.
+  **Step 2 - add the test that would have caught it, and make it general.** A substring assertion
+  on a prompt file is not coverage. Add a test that RENDERS the shipped prompt through
+  `_render_cell_prompt` with a representative row and asserts it succeeds - not that it contains a
+  string. Make it cover **every prompt file the pipeline ships**, not just this one, so the next
+  prompt edit cannot reintroduce this class of failure. This needs no network and must pass in the
+  Worker sandbox. Then assert on the RENDERED output if you want to check the guidance survived.
 
-  **Step 2 - make an unexpected empty fail closed (ledger D10).** `run_documents` in
-  `experiments/derive_cells_s25.py` reports `status: complete` for a document that attempted ZERO
-  rows. That is how a form disappears from a report while the table looks clean. A document whose
-  frame yields no rows must be reported as a distinct, visibly bad status - `empty` or equivalent -
-  carrying the outline node count and line-anchor count so the reader can see whether the form was
-  unreadable or merely had nothing to derive. Add a focused test.
-
-  **Step 3 - diagnose the line 16 malformed operand. Do not paper over it.** In the Architect
-  probe, `schedule_d_2025` line 16 (`Combine lines 7 and 15 and enter the result`) failed with
-  `operand_not_printed` because the model returned the operand LINE field as
-  `schedule_d_2025 line 7` - the form id concatenated into the line. Lines 7 and 15 derived clean.
-  Report which it is:
-  a. a prompt problem (the operand field's contract is ambiguous when a row references sibling
-     lines on the same form), or
-  b. a code problem (the operand normaliser should split a leading form id out of the line field,
-     since identity resolution belongs in CODE - the S13/S24/S28 principle).
-  **If (b), fix it in the normaliser and keep `operand_not_printed` strict.** Do not relax the
-  printed-line check to let a malformed operand through, and do not add a retry.
-
-  **Step 4 - rerun the three-form slice** and report the per-form table: form, attempted, derived,
-  repaired, gapped, errored, top three `validator_failures_by_kind`. Expect 17/17 and 7/7
-  unchanged, and Schedule D at 3 attempted. **Lead with `derived` per form.**
-  If approved external network is unavailable, do steps 1-3, declare step 4 NOT RUN up front, and
+  **Step 3 - rerun the three-form slice** and report the per-form table: form, status, attempted,
+  derived, repaired, gapped, errored, top three `validator_failures_by_kind`. **Lead with
+  `derived` per form.** Expected: `form_1040_2025` 17, `schedule_a_2025` 7, `schedule_d_2025` 3
+  attempted. **Report what line 16 actually does** - it is the whole point of the prompt change.
+  If it derives, say so. If it still emits `schedule_d_2025 line 7` in the LINE field, say that
+  plainly; that is the signal to move to a code-side normaliser in S33 and it is a useful result,
+  not a failure of this round.
+  If approved external network is unavailable, do steps 1-2, declare step 3 NOT RUN up front, and
   hand back - the Architect will run it. Do not burn the round on `Connection error`.
 
-  **Do not:** add a retry policy for the temperature-0 nondeterminism; add any gate keyed on
-  instruction-section coverage; weaken the self-reference, printed-line, verbatim-quote or
-  operand checks; reintroduce reordering into `clean_form_face_text`; promote anything.
+  **Do not:** relax `operand_not_printed` or any other check to make line 16 pass; add a retry
+  policy; add a normaliser this round (that decision waits on step 3's evidence); reintroduce any
+  per-document special case; promote anything.
   **Stop conditions:** any diff in the protected directories; `derive_cells` acquiring a disk
-  write; any harness output landing inside the repository; adding a new per-document special case
-  anywhere in the pipeline.
+  write; any harness output landing inside the repository.
   Tier 3. Declared files plus honest `RAN:`/`NOT RUN:`. ASCII, `git diff --check`, module-form
   `validate 2025`, preflight with `legacy_mined` explicit (394), strict citations (36).
-  ONE local commit; no push.
+  **ONE local commit** - or say up front why it is more; no push.
 
 ## Architect decisions
 
