@@ -23,6 +23,9 @@ llm:
   example_model: null            # optional dedicated model for IRS example mining; falls back to micro_model, then model
   nversion_model: null           # optional second-family model for verification, e.g. google/gemini-2.5-pro
   nversion_vendor_family: null   # required by process when nversion_model is used live, e.g. google
+  # Optional OpenAI-compatible endpoint override. For provider: openrouter this
+  # defaults to the gateway; for provider: openai omit it for OpenAI or set it
+  # for Azure, Together, Groq, Fireworks, vLLM, Ollama, or LM Studio.
   base_url: https://openrouter.ai/api/v1
   site_url: null                 # optional OpenRouter HTTP-Referer header
   app_name: Tax Graph            # optional OpenRouter X-Title header

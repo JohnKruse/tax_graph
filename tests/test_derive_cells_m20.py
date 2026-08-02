@@ -119,6 +119,64 @@ def test_expression_schema_is_bounded_and_contains_no_recursive_ref() -> None:
     assert schema["properties"]["expression"]["properties"]["op"]["enum"] == ["MAX", "SUBTRACT"]
 
 
+def test_quote_span_schema_is_scoped_to_each_row() -> None:
+    rows = [
+        {
+            **_frame()[0],
+            "metadata": {
+                "evidence_spans": [
+                    {"span_id": "face_15", "text": _frame()[0]["form_face_text"]},
+                    {"span_id": "instruction_15", "text": _frame()[0]["instruction_text"]},
+                ]
+            },
+        },
+        {
+            **_frame()[1],
+            "metadata": {
+                "evidence_spans": [
+                    {"span_id": "face_22", "text": _frame()[1]["form_face_text"]},
+                ]
+            },
+        },
+    ]
+    client = FakeClient([
+        {
+            "expression": {
+                "op": "MAX",
+                "args": [
+                    {"op": "SUBTRACT", "args": [{"line": "11b"}, {"line": "14"}]},
+                    {"const": 0},
+                ],
+            },
+            "quote": _frame()[0]["form_face_text"],
+        },
+        {
+            "expression": {"op": "COPY", "args": [{"line": "21"}]},
+            "quote": _frame()[1]["form_face_text"],
+        },
+    ])
+
+    result = derive_cells(CellFrame.from_rows(rows), "{line}", "secret", client=client)
+
+    assert result.coverage == {"total": 2, "derived": 2}
+    assert client.calls[0]["schema"]["properties"]["quote_span_id"]["enum"] == [
+        "face_15",
+        "instruction_15",
+        None,
+    ]
+    assert client.calls[1]["schema"]["properties"]["quote_span_id"]["enum"] == ["face_22", None]
+
+
+def test_quote_span_schema_keeps_strict_required_contract() -> None:
+    schema = expression_schema(quote_span_ids=["face_15"])
+
+    assert schema["required"] == ["expression", "quote", "quote_span_id"]
+    assert schema["properties"]["quote_span_id"] == {
+        "type": ["string", "null"],
+        "enum": ["face_15", None],
+    }
+
+
 def test_tree_to_graph_preserves_floor_shape_and_subtraction_roles() -> None:
     projection = expression_to_graph(
         form="form_1040_2025",
@@ -231,6 +289,40 @@ def test_operand_absent_from_quote_is_warning_not_failure() -> None:
     assert result.rows[0].status == "derived"
     assert result.validation_report["gapped"] == 0
     assert result.validation_report["validator_warnings_by_kind"] == {"operand_not_in_quote": 1}
+
+
+def test_input_line_operands_are_valid_when_inventory_contains_all_printed_lines() -> None:
+    row = {
+        "form": "form_1040_2025",
+        "line": "33",
+        "label": "Total payments",
+        "form_face_text": "Add lines 25d, 26, and 32. These are your total payments.",
+        "instruction_text": "",
+        "instruction_locator": "",
+        "metadata": {
+            "printed_lines": ["25d", "26", "32", "33"],
+            "evidence_spans": [
+                {
+                    "span_id": "face_33",
+                    "text": "Add lines 25d, 26, and 32. These are your total payments.",
+                }
+            ],
+        },
+    }
+    client = FakeClient([
+        {
+            "expression": {
+                "op": "SUM",
+                "args": [{"line": "25d"}, {"line": "26"}, {"line": "32"}],
+            },
+            "quote": row["form_face_text"],
+        }
+    ])
+
+    result = derive_cells(CellFrame.from_rows([row]), "{line}", "secret", client=client)
+
+    assert result.rows[0].status == "derived"
+    assert result.validation_report["validator_failures_by_kind"] == {}
 
 
 def test_form_face_evidence_is_sufficient_without_instruction_text() -> None:
@@ -383,6 +475,7 @@ def test_real_1040_frame_carries_join_ownership_and_printed_line_inventory() -> 
     assert len(frame.rows) == 17
     assert all(row.metadata["instruction_owner_document_id"] == "form_1040_2025" for row in frame.rows)
     assert all(row.line in row.metadata["printed_lines"] for row in frame.rows)
+    assert {"1a", "16", "23", "26"}.issubset(frame.rows[0].metadata["printed_lines"])
     assert all(row.metadata["evidence_spans"] for row in frame.rows)
     assert all(row.label.startswith(row.line + " ") for row in frame.rows)
     assert all(row.form_face_text.startswith(row.line + " ") for row in frame.rows)

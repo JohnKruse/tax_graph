@@ -111,8 +111,12 @@ def _build_openai_client(api_key: str, config: dict[str, Any]) -> LlmClient:
         from openai import OpenAI
     except ImportError as exc:  # pragma: no cover - optional until extract runs live.
         raise LlmUnavailable("openai package is not installed") from exc
+    kwargs: dict[str, Any] = {"api_key": api_key}
+    base_url = get_config_value(config, "llm.base_url")
+    if base_url:
+        kwargs["base_url"] = str(base_url)
     return OpenAICompatibleLlmClient(
-        OpenAI(api_key=api_key),
+        OpenAI(**kwargs),
         provider_name="OpenAI",
         strict_schema=bool(get_config_value(config, "llm.strict_schema", True)),
         parameter_mode=_parameter_mode(config),
@@ -884,7 +888,15 @@ def _parameter_mode(config: dict[str, Any]) -> str:
 def _rewrite_openai_compatible_error(exc: Exception, *, provider_name: str) -> LlmUnavailable:
     message = str(exc)
     lowered = message.lower()
-    if (
+    if any(
+        marker in lowered
+        for marker in (
+            "not supported",
+            "unsupported",
+            "does not support",
+            "unsupported parameter",
+        )
+    ) and (
         "response_format" in lowered
         or "json_schema" in lowered
         or "structured output" in lowered
@@ -892,6 +904,14 @@ def _rewrite_openai_compatible_error(exc: Exception, *, provider_name: str) -> L
     ):
         return LlmUnavailable(
             f"{provider_name} endpoint does not support JSON-schema structured outputs; "
-            "choose a structured-output-capable endpoint or adjust llm.require_parameters"
+            f"raw provider error: {message}; choose a structured-output-capable endpoint "
+            "or adjust llm.require_parameters"
         )
+    if (
+        "response_format" in lowered
+        or "json_schema" in lowered
+        or "structured output" in lowered
+        or "structured-output" in lowered
+    ):
+        return LlmUnavailable(f"{provider_name} structured-output request failed: {message}")
     return LlmUnavailable(f"{provider_name} request failed: {message}")

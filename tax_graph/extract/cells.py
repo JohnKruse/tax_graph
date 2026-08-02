@@ -198,14 +198,26 @@ def build_cell_frame_from_document(document: Any) -> CellFrame:
     outline with the explicit instruction_sections frame and carries both
     inventories into row metadata so ``derive_cells`` can validate them.
     """
-    from tax_graph.extract.outline import build_candidate_spans, build_instruction_sections_frame, build_outline_tree
+    from tax_graph.extract.outline import (
+        _flatten_outline_nodes,
+        build_candidate_spans,
+        build_instruction_sections_frame,
+        build_outline_tree,
+    )
     from tax_graph.extract.outline_pipeline import _formula_outline_nodes, _span_for_line
 
     outline = build_outline_tree(document)
     instruction_frame = build_instruction_sections_frame(document, outline=outline)
     spans = build_candidate_spans(document)
     formula_nodes = _formula_outline_nodes(outline.children, document_id=document.document_id)
-    printed_lines = sorted({str(node.line_anchor).lower() for node in formula_nodes if node.line_anchor}, key=_line_sort_key)
+    printed_lines = sorted(
+        {
+            str(node.line_anchor).lower()
+            for node in _flatten_outline_nodes(outline.children)
+            if node.line_anchor
+        },
+        key=_line_sort_key,
+    )
     rows: list[CellRecord] = []
     for node in formula_nodes:
         line = str(node.line_anchor or "").lower()
@@ -296,7 +308,7 @@ def derive_cells(
             "instead of selecting a provider implicitly"
         )
 
-    schema = expression_schema(list(operations or DEFAULT_OPERATIONS), depth=max_depth)
+    allowed_operations = list(operations or DEFAULT_OPERATIONS)
     for original in source.rows:
         row = CellRecord.from_mapping(original.as_dict())
         input_failures = validate_cell_input(row)
@@ -326,6 +338,11 @@ def derive_cells(
             result_rows.append(row)
             continue
         report["attempted"] += 1
+        schema = expression_schema(
+            allowed_operations,
+            depth=max_depth,
+            quote_span_ids=_known_quote_span_ids(row),
+        )
         rendered_prompt = _render_cell_prompt(prompt, row)
         first_failure: tuple[CellValidationIssue, ...] = ()
         try:
@@ -845,9 +862,18 @@ DEFAULT_OPERATIONS = (
 )
 
 
-def expression_schema(operations: Sequence[str] | None = None, depth: int = 2) -> dict[str, Any]:
+def expression_schema(
+    operations: Sequence[str] | None = None,
+    depth: int = 2,
+    *,
+    quote_span_ids: Sequence[str] | None = None,
+) -> dict[str, Any]:
     """Build a bounded nested expression schema without recursive ``$ref``."""
     allowed = list(operations or DEFAULT_OPERATIONS)
+    quote_span_schema: dict[str, Any] = {"type": ["string", "null"]}
+    known_ids = [str(value) for value in (quote_span_ids or ()) if str(value)]
+    if known_ids:
+        quote_span_schema["enum"] = [*dict.fromkeys(known_ids), None]
     return {
         "type": "object",
         "additionalProperties": False,
@@ -860,7 +886,7 @@ def expression_schema(operations: Sequence[str] | None = None, depth: int = 2) -
         "properties": {
             "expression": _expression_node_schema(allowed, depth),
             "quote": {"type": "string", "minLength": 1},
-            "quote_span_id": {"type": ["string", "null"]},
+            "quote_span_id": quote_span_schema,
         },
     }
 
@@ -1101,6 +1127,29 @@ def _known_quote_spans(row: CellRecord, quote: str) -> list[tuple[str, str]]:
         for span_id, source in candidates
         if span_id and source and _contains_verbatim(source, quote)
     ]
+
+
+def _known_quote_span_ids(row: CellRecord) -> list[str]:
+    """Return every source-owned span id available to this row."""
+    evidence_spans = row.metadata.get("evidence_spans") or ()
+    if isinstance(evidence_spans, Mapping):
+        evidence_spans = (evidence_spans,)
+    ids = [
+        str(item.get("span_id") or "")
+        for item in evidence_spans
+        if isinstance(item, Mapping) and item.get("span_id")
+    ]
+    if not ids:
+        ids.extend(
+            str(value)
+            for value in (
+                row.metadata.get("form_face_span_id"),
+                row.metadata.get("instruction_span_id"),
+                row.instruction_locator,
+            )
+            if value
+        )
+    return list(dict.fromkeys(ids))
 
 
 def _contains_verbatim(source: str, quote: str) -> bool:

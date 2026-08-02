@@ -403,6 +403,31 @@ def test_llm_factory_dispatches_to_openai_adapter(monkeypatch):
     assert supported_providers() == ("anthropic", "openai", "openrouter")
 
 
+@pytest.mark.m20
+def test_openai_adapter_honors_generic_base_url_without_openrouter_options(monkeypatch):
+    calls = []
+
+    class FakeOpenAI:
+        def __init__(self, **kwargs):
+            calls.append(kwargs)
+
+    monkeypatch.setitem(sys.modules, "openai", SimpleNamespace(OpenAI=FakeOpenAI))
+
+    build_llm_client(
+        {
+            "llm": {
+                "provider": "openai",
+                "api_key": "fake-key",
+                "base_url": "https://llm.example.test/v1",
+                "site_url": "https://should-not-be-sent.example.test",
+                "app_name": "Should not be sent",
+            }
+        }
+    )
+
+    assert calls == [{"api_key": "fake-key", "base_url": "https://llm.example.test/v1"}]
+
+
 @pytest.mark.m4
 def test_llm_factory_dispatches_to_openrouter_adapter(monkeypatch):
     calls = []
@@ -669,7 +694,7 @@ def test_openai_compatible_adapter_reports_clear_structured_output_error():
     fake_client = SimpleNamespace(chat=SimpleNamespace(completions=FakeCompletions()))
     client = OpenAILlmClient(fake_client, provider_name="OpenRouter", parameter_mode="auto")
 
-    with pytest.raises(LlmUnavailable, match="structured-output-capable endpoint|JSON-schema structured outputs"):
+    with pytest.raises(LlmUnavailable, match="structured-output-capable endpoint|JSON-schema structured outputs") as error:
         client.structured_completion(
             prompt="extract",
             schema={"type": "object"},
@@ -678,6 +703,28 @@ def test_openai_compatible_adapter_reports_clear_structured_output_error():
             temperature=0,
             purpose="tax_graph_draft",
         )
+    assert "response_format json_schema is not supported by this endpoint" in str(error.value)
+
+
+@pytest.mark.m20
+def test_openai_compatible_error_preserves_invalid_schema_details():
+    class FakeCompletions:
+        def create(self, **kwargs):
+            raise RuntimeError("invalid_json_schema: 'required' must include 'quote_span_id'")
+
+    fake_client = SimpleNamespace(chat=SimpleNamespace(completions=FakeCompletions()))
+    client = OpenAILlmClient(fake_client, provider_name="OpenAI")
+
+    with pytest.raises(LlmUnavailable, match="invalid_json_schema") as error:
+        client.structured_completion(
+            prompt="extract",
+            schema={"type": "object"},
+            model="provider-model",
+            max_tokens=100,
+            temperature=0,
+            purpose="tax_graph_cell_derivation",
+        )
+    assert "quote_span_id" in str(error.value)
 
 
 def _make_project(tmp_path: Path) -> Path:

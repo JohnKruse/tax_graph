@@ -14,18 +14,63 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## Current state (2026-08-02)
 
-**Worker session checkpoint - M20-S26 implementation (2026-08-02):** Global canary: Ledger
+**Worker session checkpoint - M20-S27 implementation (2026-08-02):** Global canary: Ledger
 Llama. Phase canary: Ground Truth. Model: GPT-5 Codex; effort and usage/quota/context
 indicators are not exposed. John gave go via the current task request. Single declared step:
-change `derive_cells` to require at least one cited evidence source, drop doubtful instruction
-sections without failing a good form-face row, clean geometry-contaminated form-face labels,
-and run the real 1040 bench plus the declared consumer and gate set. Applicable defect-ledger
-entries: D9, D12, D13, D14, D6, and the exact RAN/NOT RUN evidence rule. No promotion,
-hand-authoring, live graph edit, verdict write, or operation enum change is in scope. Protected
-graph and field-map artifacts must remain byte-identical. Declared focused files:
-`tests/test_derive_cells_m20.py`, `tests/test_instruction_sections_m20.py`,
+close the real-1040 derivation gaps by using all printed line anchors, constraining quote span
+ids per row, preserving raw structured-output errors, and honoring generic OpenAI-compatible
+`base_url` configuration. Applicable defect-ledger entries: D9, D12, D13, D14, D6, and the
+exact RAN/NOT RUN evidence rule. No promotion, hand-authoring, live graph edit, verdict write,
+or operation enum change is in scope. Protected graph and field-map artifacts remain
+byte-identical. Declared focused files:
+`tests/test_derive_cells_m20.py`, `tests/test_extract_m4.py`,
 `tests/test_prompt_experiment_m20.py`, `tests/test_extract_outline_m4.py`,
-`tests/test_extract_m16.py`, `tests/test_cli.py`, and `tests/test_workbench_m15.py`.
+`tests/test_extract_m16.py`, `tests/test_cli.py`, `tests/test_workbench_m15.py`, and
+`tests/test_llm_attribution_m20.py`.
+
+**M20-S27 implementation and fixture evidence (2026-08-02):** `build_cell_frame_from_document`
+now carries all 59 printed Form 1040 line anchors, not only the 17 formula rows. The expression
+schema is built per row and enumerates that row's known evidence span ids while retaining the
+hard unknown-span rejection. OpenAI-compatible errors preserve the raw upstream message;
+generic `provider: openai` now honors optional `llm.base_url` without OpenRouter headers or
+routing. RAN: `$testRoot='C:\Users\devbox\.codex\visualizations\2026\08\02\019fc2f6-10b7-7eb3-b52e-740c30f7efa2\m20_s27_consumers';
+New-Item -ItemType Directory -Force -Path $testRoot | Out-Null; $env:PYTEST_DEBUG_TEMPROOT=$testRoot;
+& .venv\Scripts\python.exe -m pytest tests\test_derive_cells_m20.py tests\test_extract_m4.py
+tests\test_prompt_experiment_m20.py tests\test_extract_outline_m4.py tests\test_extract_m16.py
+tests\test_cli.py tests\test_workbench_m15.py tests\test_llm_attribution_m20.py -q` -> `95
+passed, 1 warning in 26.02s`. The warning is the known pytest cache ACL warning. Every declared
+focused file ran; no declared file is unverified.
+
+**M20-S27 live provider evidence (2026-08-02):** The Worker sandbox cannot reach the configured
+provider, so both runs used approved unsandboxed network access and wrote reports only under
+`C:\Users\devbox\.codex\visualizations\2026\08\02\019fc2f6-10b7-7eb3-b52e-740c30f7efa2\`.
+RAN: `& .venv\Scripts\python.exe experiments\derive_cells_s25.py --root . --year 2025
+--output-dir ...\m20_s27_live_r1` -> 57s, `derived=11`, `repaired=0`, `gapped=0`, `errored=6`.
+RAN: the identical command with `...\m20_s27_live_r2` -> 63s, `derived=12`, `repaired=1`,
+`gapped=0`, `errored=4`. Status changes were line 15 `derived -> repaired`, line 25d
+`error -> derived`, and line 34 `error -> derived`; persistent errors were lines 1z, 35a,
+36, and 37. This is recorded nondeterminism, not hidden with retries. The first run's named
+failures were `quote_not_verbatim=4`, `self_reference=4`; the second had
+`quote_not_verbatim=2`, `operand_not_printed=2`, `subtract_direction=1`, `self_reference=4`.
+Line-33 input operands no longer fail `operand_not_printed`. RAN: `& .venv\Scripts\python.exe
+experiments\derive_cells_s25.py --root . --year 2025 --output-dir
+C:\Users\devbox\.codex\visualizations\2026\08\02\019fc2f6-10b7-7eb3-b52e-740c30f7efa2\m20_s27_live_r1`
+-> exit 0; RAN the identical command with the exact output directory
+`C:\Users\devbox\.codex\visualizations\2026\08\02\019fc2f6-10b7-7eb3-b52e-740c30f7efa2\m20_s27_live_r2`
+-> exit 0. The no-provider artifact boundary also ran: `& .venv\Scripts\python.exe
+experiments\derive_cells_s25.py --root . --year 2025 --no-provider --output-dir
+C:\Users\devbox\.codex\visualizations\2026\08\02\019fc2f6-10b7-7eb3-b52e-740c30f7efa2\m20_s27_no_provider`
+-> exit 0; no repository output was written.
+
+**M20-S27 gate evidence (2026-08-02):** RAN: `& .venv\Scripts\python.exe tools\check_ascii.py`
+-> `ASCII check OK`; `git diff --check` -> exit 0; module-form `py_compile` -> exit 0.
+RAN: `& .venv\Scripts\python.exe -m tax_graph.cli validate 2025` -> graph integrity OK,
+documents=18, nodes=441, edges=409, rules=17, citations=401. RAN: the initial sandbox
+preflight -> known pre-existing `WinError 5` on `graph/2025/_drafts/form_1040_2025`; the same
+read-only command with escalation -> passed, units=2224, derived cells=2120, legacy_mined=394.
+RAN: strict citation check -> `checked=401 strict_mismatches=36`. Protected graph and field-map
+diff is empty. No draft was promoted and no generated report was force-added. Pending: local
+commit and Architect acceptance; no push.
 
 **Architect acceptance of M20-S25 (Claude Opus 5, 2026-08-02).** Accepted at `ff62119`. Gates
 re-verified rather than taken on trust: `cells.py` has zero `open`/`write_text`/`mkdir`/
