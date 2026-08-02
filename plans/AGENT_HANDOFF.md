@@ -17,73 +17,76 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## BALL
 
-**BALL: ARCHITECT - M20-S33 COMPLETE, AWAITING ACCEPTANCE.** Worker report is below; no source,
-promoted artifact, or verdict changed. Canary: Ground Truth.
+**BALL: WORKER - M20-S34 (SHOW THE MODEL THE PRINTED LINES).** Task block under
+**From Architect**. **S33 is ACCEPTED at `771d169`.**
 
 ## Current round
 
-**M20-S33 WORKER COMPLETE (Codex, 2026-08-02).** The graph loader contains 18 document ids. The
-first run used the 17 ids in `graph/2025/documents`; the missing `form_2441_2025` was then run
-separately after the discrepancy was found. All live-provider commands ran outside the sandbox
-with the configured `openrouter` provider and `openai/gpt-5.6-luna` model. Reports were written
-only under `C:\tmp\m20_s33_corpus_20260802` and `C:\tmp\m20_s33_1040_20260802`.
+**M20-S33 ACCEPTED (Architect, Claude Opus 5, 2026-08-02) at `771d169`.** The Worker ran the whole
+corpus live, reported every document including the one that would not load, and ran the 1040 twice
+as asked. No source, promoted artifact, or verdict changed. Gates green; protected set untouched.
 
-Sorted by derived / attempted, worst first. Empty input documents are listed last.
+**THE CORPUS RESOLVES 93 OF 94 ROWS.** attempted=94, derived=79, repaired=14, gapped=0, errored=1.
+Zero gapped is the number that matters most: no row failed after its repair.
 
-| document | status | derived / attempted | repaired | gapped | errored | outline | anchors | top validator failures |
-| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | --- |
-| `schedule_1_2025` | complete | 0 / 4 (0%) | 4 | 0 | 0 | 66 | 61 | `operand_not_printed=19` |
-| `schedule_3_2025` | complete | 2 / 4 (50%) | 2 | 0 | 0 | 38 | 35 | `operand_not_printed=33` |
-| `schedule_2_2025` | complete | 3 / 5 (60%) | 2 | 0 | 0 | 52 | 45 | `operand_not_printed=28` |
-| `form_6251_2025` | complete | 23 / 29 (79.3%) | 5 | 0 | 1 | 68 | 63 | `missing_floor=3`, `payload=2`, `quote_not_verbatim=1` |
-| `schedule_1a_2025` | complete | 23 / 24 (95.8%) | 1 | 0 | 0 | 60 | 48 | `operand_not_printed=2` |
-| `schedule_b_2025` | complete | 1 / 1 (100%) | 0 | 0 | 0 | 12 | 8 | none |
-| `schedule_a_2025` | complete | 7 / 7 (100%) | 0 | 0 | 0 | 29 | 28 | none |
-| `schedule_d_2025` | complete | 3 / 3 (100%) | 0 | 0 | 0 | 31 | 24 | none |
-| `form_1040_2025` | complete | 17 / 17 (100%) | 0 | 0 | 0 | 60 | 59 | none |
-| `form_2441_2025` | reported | 0 / 0 (-) | 0 | 0 | 0 | - | - | `load_failure=unknown_manifest_document` |
-| `form_1099b_2025` | empty | 0 / 0 (-) | 0 | 0 | 0 | 18 | 17 | none |
-| `form_1099_div_2025` | empty | 0 / 0 (-) | 0 | 0 | 0 | 28 | 25 | none |
-| `form_1099_int_2025` | empty | 0 / 0 (-) | 0 | 0 | 0 | 12 | 11 | none |
-| `form_13614_c_2025` | empty | 0 / 0 (-) | 0 | 0 | 0 | 209 | 0 | none |
-| `form_8949_2025` | empty | 0 / 0 (-) | 0 | 0 | 0 | 7 | 4 | none |
-| `form_w2_2025` | empty | 0 / 0 (-) | 0 | 0 | 0 | 15 | 14 | none |
-| `instructions_form_1040_2025` | empty | 0 / 0 (-) | 0 | 0 | 0 | 0 | 0 | none |
-| `instructions_schedule_d_2025` | empty | 0 / 0 (-) | 0 | 0 | 0 | 0 | 0 | none |
+**ARCHITECT CORRECTION TO ITS OWN SPEC - the requested sort is misleading.** S33 asked for the
+table sorted by `derived / attempted` worst first. That puts `schedule_1_2025` at the top as "0 / 4
+(0%)" when all four of its rows SUCCEEDED after one repair each. `repaired` is a success status -
+it has been since S25 - so schedule_1 is 4/4, exactly like the 1040. The honest ranking is
+`(derived + repaired) / attempted`, with the repair RATE reported alongside as the quality signal.
+Read that way the corpus is:
 
-**Zero classification:** The eight empty documents are correctly empty input or instruction
-documents: the four 1099/W-2 inputs, Form 13614-C, Form 8949, and the two instruction documents.
-No document was empty-but-should-not-be; every derivation-capable document except `form_2441_2025`
-produced frame rows. `schedule_1_2025` is the attempted-but-zero-fully-derived case: all four rows
-were repaired, so it is not an all-error run, but no row ended with status `derived`.
+| document | resolved / attempted | needed repair | note |
+| --- | ---: | ---: | --- |
+| `form_6251_2025` | 28 / 29 | 5 | the only errored row in the corpus |
+| `schedule_1_2025` | 4 / 4 | 4 (100%) | every row needed a repair |
+| `schedule_3_2025` | 4 / 4 | 2 | |
+| `schedule_2_2025` | 5 / 5 | 2 | |
+| `schedule_1a_2025` | 24 / 24 | 1 | |
+| `form_1040_2025`, `schedule_a_2025`, `schedule_d_2025`, `schedule_b_2025` | 28 / 28 | 0 | clean |
 
-Totals over rows that loaded: attempted=94, derived=79, repaired=14, gapped=0, errored=1. The
-separate `form_2441_2025` load failure is reported above and is not included in row totals.
+**Zero classification is correct and complete.** The eight empty documents are the four 1099/W-2
+inputs, 13614-C, 8949, and the two instruction documents - all correctly empty. **No document was
+empty-but-should-not-be.** That is the Schedule D check passing corpus-wide, and it is the single
+most reassuring line in the report.
 
-**Required repeatability check:** identical `form_1040_2025` commands ran twice. Both returned
-`complete`, attempted=17, derived=17, repaired=0, gapped=0, errored=0, outline=60, anchors=59,
-validator_failures_by_kind={}. Schedule D line 16 did not flip.
+**ROOT CAUSE OF THE REPAIRS - `operand_not_printed`, and it is our defect, not the model's.**
+82 occurrences concentrated on schedules 1, 2, 3 and 1a. Architect diagnosed it deterministically
+against real data. **The printed-line inventory is complete** - every line Schedule 1 references is
+in it, so this is NOT the S27 inventory gap returning. The cause is that **IRS lettered ranges have
+holes, and the model is asked to guess which**:
 
-**Gates:**
+- `9 Total other income. Add lines 8a through 8z` - **8w, 8x and 8y are not printed.**
+- `25 Total other adjustments. Add lines 24a through 24z` - **24l through 24y are not printed**, 14
+  of them.
+- `26 Add lines 11 through 23 and 25` - **line 19 is not printed.**
 
-- `RAN: .venv\Scripts\python.exe tools\check_ascii.py -> ASCII check OK`.
-- `RAN: git diff --check -> exit 0`.
-- `RAN: git diff --stat -- graph/2025/nodes graph/2025/edges graph/2025/rules graph/2025/field_maps -> empty`.
-- `RAN: .venv\Scripts\python.exe -m tax_graph.cli validate 2025 -> exit 0; documents=18, nodes=441, edges=409, citations=401; graph integrity OK`.
-- `RAN: .venv\Scripts\python.exe -m workbench.cli preflight --year 2025 -> exit 0; units=2224, derived cells=2120, legacy_mined=394` (approved external read because sandbox ACL blocked the known draft directory).
-- `RAN: .venv\Scripts\python.exe -c "from tax_graph.acquire.citation_check import check_graph_citations; report=check_graph_citations(year='2025', raw_store='.cache/raw', root='.'); print(f'checked={report.checked} strict_mismatches={len(report.mismatches)}')" -> checked=401 strict_mismatches=36`.
-- `RAN: $env:PYTEST_DEBUG_TEMPROOT = 'C:\tmp'; .venv\Scripts\python.exe -m pytest tests/test_derive_cells_s30.py tests/test_m20_s31.py tests/test_derive_cells_m20.py -q -> 44 passed in 0.95s` (approved external read/write of pytest temp directories; no `--basetemp`).
+That is 18 impossible operands on Schedule 1 alone against a reported `operand_not_printed=19`.
 
-The same pytest command without the temp-root override was attempted first: `39 passed, 5 setup
-errors` from `WinError 5` scanning `.test_tmp\pytest-of-devbox`; it is not test evidence and was
-re-run successfully with the documented override.
+**AND HERE IS THE ACTUAL DEFECT: `validate_cell_output` checks operands against a printed-line
+inventory that `_render_cell_prompt` never shows the model.** The prompt supplies `form`, `line`,
+`label`, `form_face_text`, `instruction_text` and `instruction_locator` - no inventory. So the
+model is required to produce members of a closed set it cannot see, it expands "8a through 8z" the
+only way anyone would, and the validator rejects the letters the IRS happened to skip. Repair then
+succeeds because the failure message finally tells it what the set is. **We are paying a model
+round-trip per row to communicate a list we already have.** Fix in S34.
 
-**Live commands:** the full 17-document command completed with exit 0 in 445.4s; the separate
-`form_2441_2025` command completed with exit 0 and `ValueError: unknown manifest document_id`.
-The two identical 1040 commands each completed with exit 0 in 47.8s and 44.4s. No code or graph
-artifact changed. No source fix is authorized by S33; the next round should size the six forms with
-zero or partial derivation and decide whether the `form_2441_2025` projection belongs in this
-harness input set.
+**Repeatability confirmed.** Two identical 1040 runs both returned attempted=17, derived=17,
+repaired=0, gapped=0, errored=0, no validator failures. **Schedule D line 16 did not flip**, so the
+S32 prompt fix holds across runs and no operand normaliser is needed on this evidence.
+
+**BLOCKED - `form_2441_2025` is a phantom document, and this needs John.** It fails with
+`ValueError: unknown manifest document_id`. Diagnosed: `graph/2025/documents/` declares exactly 17
+documents, but `validate 2025` reports 18 because `graph/2025/field_maps/form_2441_2025.yaml`
+carries a `document_id` for a form that was never acquired. Its field map has `mappings: []` and
+its nodes are marked `optional_extension: true` with "no base-profile printable placement", and it
+is referenced from the 1040 and Schedule 3 addresses and citations. **So the graph knows about
+Form 2441 as an optional extension but has no source document for it, and the extraction manifest
+correctly refuses to invent one.** The Worker's handling was right - reported with a reason rather
+than crashed or skipped, which is exactly the S31 D10 behaviour working. **This is a scoping
+question, not a bug: is Form 2441 in the base profile or not?** If yes it must be acquired like any
+other form; if no, the field map should not be contributing a document id to the count. Do not
+guess - see Open for Architect.
 
 ## Standing constraints (every M20 round)
 
@@ -171,55 +174,63 @@ client-managed server dies.
 
 ## Open for Architect
 
-- *(empty - the S3a outline-adapter question was answered 2026-08-02, see Architect decisions)*
+- **FOR JOHN - is Form 2441 in the base profile? (raised 2026-08-02, blocks nothing else.)** The
+  graph counts 18 documents but only 17 exist: `graph/2025/field_maps/form_2441_2025.yaml` carries
+  a `document_id` for a form that was never acquired, its `mappings` are empty, its nodes are
+  marked `optional_extension: true` with no base-profile printable placement, and the 1040 and
+  Schedule 3 reference it in addresses and citations. Two coherent answers, and it is a product
+  call rather than a technical one:
+  **(a) Yes, 2441 is in scope** - acquire the PDF like any other form, give it a document record,
+  and it joins the corpus and the derivation runs.
+  **(b) No, it is an optional extension** - then the field map should stop contributing a document
+  id to the count, so `validate 2025` reports the 17 documents that actually exist and no future
+  corpus run trips over a phantom.
+  Nothing is broken either way: the harness reports it as a load failure with a reason rather than
+  skipping it silently, which is the S31 D10 behaviour doing its job.
 
 ## From Architect
 
-- **M20-S33 TASK - RUN THE WHOLE CORPUS AND REPORT EVERY FORM (Architect, Claude Opus 5,
-  2026-08-02).** Ledger: the RAN/NOT RUN rule, D9, D6, D10.
+- **M20-S34 TASK - SHOW THE MODEL THE PRINTED LINES (Architect, Claude Opus 5, 2026-08-02).**
+  Ledger: the RAN/NOT RUN rule, D9, D6. **Deterministic work plus one measurement round.**
 
-  **Why now.** Three forms are green: 17/17, 7/7, 3/3, zero failures, zero warnings. The harness is
-  document-agnostic, an empty result is loud, and the prompt renders. Every reason we had for
-  staying on a slice is gone. There are 18 documents in the graph and we have numbers for three.
-  **The remaining fifteen are the unflattering metric.**
+  **Why.** The corpus resolves 93 of 94 rows, but 14 of them cost an extra model round-trip to
+  `operand_not_printed`, and that failure is ours. `validate_cell_output` checks every operand
+  against the printed-line inventory; `_render_cell_prompt` never puts that inventory in the
+  prompt. The model is asked to name members of a closed set it cannot see. When a label says
+  `Add lines 8a through 8z` it expands the range the only sensible way, and the IRS has skipped
+  8w, 8x and 8y - so we reject it, then spend a repair telling it what we knew all along.
 
-  **Step 1 - run every document in the 2025 graph.** Not a curated list - enumerate what the graph
-  actually contains and run all of it, so a form cannot be quietly left out of the report. Expect
-  forms that derive nothing: `form_w2_2025` and the 1099s are input documents with no computed
-  lines, and `status: empty` is the CORRECT answer for them. That is why S31 step 2 exists.
+  **Step 1 - put the printed-line inventory in the prompt.** `build_cell_frame_from_document`
+  already carries `printed_lines` in row metadata and the validator already uses it. Add it to the
+  values passed by `_render_cell_prompt` and reference it from `prompts/derive_cells.md` with the
+  new `<<name>>` syntax. State plainly in the prompt that operands naming a line on THIS form must
+  come from that list, and that a printed range may skip entries - `8a through 8z` means the
+  members that are actually printed, not every letter.
+  **Order the list the way the form does** (use the existing `_line_sort_key`), and do not
+  truncate it - Schedule 1 has 61 anchors and the 1040 has 59, which are small.
 
-  **Step 2 - report the table, one row per document**, with: document id, status, attempted,
-  derived, repaired, gapped, errored, `outline_node_count`, `line_anchor_count`, and the top three
-  `validator_failures_by_kind`. **Lead with `derived` per form, and put the totals last, not
-  first.** A corpus total is the number most likely to flatter us; the per-form column is the one
-  that tells us where the pipeline stops working.
-  **Sort the table by derived-over-attempted ascending, worst first.** The reader should hit the
-  problems before the successes.
+  **Step 2 - do NOT silently filter operands in code.** The tempting shortcut is to intersect the
+  model's operands with the inventory and drop the rest. **Do not.** That would mask a genuine
+  wrong-line answer as a clean derivation. `operand_not_printed` stays exactly as strict as it is
+  now; the point of step 1 is that it should stop firing because the model was told the truth, not
+  because we stopped checking.
 
-  **Step 3 - separate the three kinds of zero, because they mean different things.**
-  a. **Correctly empty** - an input document with no computed lines. Expected, not a defect.
-  b. **Empty but should not be** - the form has computed lines and the frame found none. This is
-     the Schedule D signature and it is a real finding.
-  c. **Attempted but nothing derived** - the frame found rows and every one failed. A model or
-     evidence problem, and the failure kinds say which.
-  For every (b) and (c), report the form, the counts, and the top failure kinds. **Do not fix them
-  this round.** Diagnosis sizes the next rounds; attempting fixes across an unknown number of forms
-  in one round is how a round turns into a swamp.
+  **Step 3 - measure, and report the repair rate as the headline.** Rerun the full corpus. Report
+  per document: resolved `(derived + repaired) / attempted`, **the repair count and rate**,
+  errored, and the top three `validator_failures_by_kind`. **Sort by repair rate descending, worst
+  first** - not by derived, which mis-ranked schedule_1 last round as 0% when it was 4/4.
+  **The number to beat: 14 repairs across the corpus, 82 `operand_not_printed` occurrences, 4/4
+  repairs on `schedule_1_2025`.** If those do not fall materially, step 1 did not work and the
+  diagnosis was wrong - say so plainly rather than tuning the prompt until it looks better.
+  Also report `form_6251_2025`, the only errored row in the corpus, with its failure kind. It is
+  not this round's target, but it should stop being invisible.
 
-  **Step 4 - run the 1040 twice** with the identical command and report both results. We have four
-  data points suggesting nondeterminism has settled into the top band, and the corpus run is the
-  right moment to confirm it cheaply. **Report both numbers even if identical.** If line 16 on
-  Schedule D flips between runs, say so - that is the trigger for a code-side operand normaliser.
+  **On the provider leg:** if approved external network is unavailable, do steps 1-2, declare step
+  3 NOT RUN up front, and hand back - the Architect will run it.
 
-  **On cost:** the three-form slice was roughly two to three minutes of provider time. The full
-  corpus is a modest multiple of that, and the information is worth it. If any single document
-  turns out to be pathologically large, report it and stop rather than looping.
-  If approved external network is unavailable, declare the whole round NOT RUN up front and hand
-  back - the Architect will run it. Do not burn the round on `Connection error`.
-
-  **Do not:** fix any form's derivation this round; relax any validator to improve a number; add a
-  retry policy; add an operand normaliser (that waits on step 4's evidence); add any per-document
-  special case; promote anything.
+  **Do not:** filter or normalise operands to make the check pass; relax any validator; add a
+  retry policy; add a per-document special case; touch `form_2441_2025` (blocked on John, see Open
+  for Architect); promote anything.
   **Stop conditions:** any diff in the protected directories; `derive_cells` acquiring a disk
   write; any harness output landing inside the repository.
   Tier 3. Declared files plus honest `RAN:`/`NOT RUN:`. ASCII, `git diff --check`, module-form
@@ -244,6 +255,10 @@ client-managed server dies.
 
 ## Recent rounds (condensed; full narration in git history - `git show <hash>`)
 
+- **M20-S33 (`771d169`, Architect-verified):** first full-corpus live run. 93 of 94 rows resolve
+  (derived=79, repaired=14, gapped=0, errored=1); all eight empty documents correctly empty; 1040
+  identical across two runs. Diagnosed the repairs to `operand_not_printed` on IRS ranges with
+  holes, against an inventory the prompt never shows the model.
 - **M20-S32 (`70e8b6d`, Architect-verified):** prompt placeholders moved from `{name}` to
   `<<name>>` with a shared fail-closed `render_prompt`, so JSON examples need no escaping; the
   substring prompt assertion was replaced by a render test over every file in `prompts/`.
@@ -278,6 +293,10 @@ client-managed server dies.
 
 ## Latest verification
 
+- **M20-S33 (2026-08-02, Worker live, Architect-verified):** full corpus, 18 ids, 17 loadable.
+  attempted=94, derived=79, repaired=14, gapped=0, errored=1. Two identical 1040 runs both 17/17
+  with no validator failures. ASCII, `git diff --check`, `validate 2025` (441 nodes, 409 edges,
+  401 citations), preflight `legacy_mined=394`, strict citations 36, protected set empty diff.
 - **M20-S32 (2026-08-02, Architect):** live three-form slice all green - `form_1040_2025` 17/17,
   `schedule_a_2025` 7/7, `schedule_d_2025` 3/3, zero validator failures and zero warnings on all
   three; 102 passed on a short temp root; protected set byte-identical.
