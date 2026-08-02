@@ -17,7 +17,8 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## BALL
 
-**BALL: WORKER - M20-S32 (UNBREAK THE PROMPT).** Task block under **From Architect**.
+**BALL: WORKER - M20-S32 (REPLACE THE PROMPT TEMPLATE SYNTAX; DO NOT ESCAPE THE BRACES).**
+Task block under **From Architect**.
 **S31 steps 1-2 are ACCEPTED; step 3 is REJECTED - it zeroes the whole pipeline.**
 
 ## Current round
@@ -62,9 +63,12 @@ It never renders the prompt. A substring check passes on precisely the text that
 reported 38 passed with the shipped prompt unloadable. Any change to a prompt file must be covered
 by a test that RENDERS it.
 
-**FIX VERIFIED BY THE ARCHITECT (in memory, no repository edit).** Escaping the JSON braces
-(`{{"` and `"}}`) makes the prompt render and still shows the model the intended literal JSON:
-`For a sibling line on this same form, use only {"line": "7"}`.
+**FIX DECIDED - NOT the escape.** The Architect verified in memory that escaping the braces
+(`{{"` and `"}}`) does restore rendering. **We are not doing that.** John's call, 2026-08-02:
+escaping is the `sed` fix - it works today and becomes the thing nobody can maintain, because an
+LLM pipeline will keep needing JSON examples and JSON is made of braces. S32 replaces the
+placeholder syntax with `<<name>>` so braces stop being syntax at all. Scope measured and small:
+3 prompt files, 3 render sites, every placeholder a bare name.
 
 **STILL OPEN - is the prompt even the right fix?** The Worker chose diagnosis (a), prompt contract,
 and added no normaliser. That is defensible, but it makes correct operand encoding depend on model
@@ -170,38 +174,70 @@ client-managed server dies.
 
 ## From Architect
 
-- **M20-S32 TASK - UNBREAK THE PROMPT, THEN FINISH THE SLICE (Architect, Claude Opus 5,
-  2026-08-02).** Ledger: the RAN/NOT RUN rule, D9, D6, D10. **Small round. Do not widen it.**
+- **M20-S32 TASK - REPLACE THE PROMPT TEMPLATE SYNTAX SO BRACES STOP MATTERING (Architect, Claude
+  Opus 5, 2026-08-02). RESPECCED - do NOT escape the braces.** Ledger: the RAN/NOT RUN rule, D9,
+  D6, D10.
 
-  **Step 1 - make the prompt render again.** `prompts/derive_cells.md` is passed through
-  `template.format(**values)`, so every literal brace in prose must be doubled. Escape the JSON
-  examples added in `e18767f` as `{{"line": "7"}}` and
-  `{{"form": "form_XXXX_2025", "line": "7"}}`. Architect verified in memory that this renders and
-  that the model still sees the intended single-brace JSON. Keep the guidance wording as written -
-  only the escaping is wrong.
+  **Why this and not the two-character fix.** Escaping the JSON example to `{{"line": "7"}}`
+  works, and it leaves the same trap armed for the next person who shows the model an example.
+  We are building an LLM pipeline; prompts will keep needing JSON examples, and JSON is made of
+  braces. John's call, 2026-08-02: this is the `sed` situation - the patch that works today is the
+  thing that becomes unmaintainable. Remove the collision instead of escaping around it.
 
-  **Step 2 - add the test that would have caught it, and make it general.** A substring assertion
-  on a prompt file is not coverage. Add a test that RENDERS the shipped prompt through
-  `_render_cell_prompt` with a representative row and asserts it succeeds - not that it contains a
-  string. Make it cover **every prompt file the pipeline ships**, not just this one, so the next
-  prompt edit cannot reintroduce this class of failure. This needs no network and must pass in the
-  Worker sandbox. Then assert on the RENDERED output if you want to check the guidance survived.
+  **The scope is small and fully measured. Three prompt files, three render sites, no format
+  specs, no nested attribute access, no indexing - every placeholder is a bare name:**
+  - `prompts/derive_cells.md` - `form`, `line`, `label`, `form_face_text`, `instruction_text`,
+    `instruction_locator`
+  - `prompts/extract_generator.md` and `prompts/extract_critic.md` - `document_id`,
+    `document_kind`, `tax_year`, `source_text`, `source_url`, `fields`, `links`, `operations`,
+    `schemas`, `related_sources`, and `draft_objects` on the critic only
+  - render sites: `tax_graph/extract/cells.py:1133`, `tax_graph/extract/prompts.py:213`,
+    `tax_graph/extract/prompts.py:242`. (`prompts.py:105` formats a literal log string, NOT a
+    prompt template - leave it alone.)
 
-  **Step 3 - rerun the three-form slice** and report the per-form table: form, status, attempted,
+  **Step 1 - adopt `<<name>>` as the placeholder delimiter.** Not `{name}`, which collides with
+  JSON. **Not Python's `string.Template` `$name` either** - the prompts contain no literal `$`
+  today, but these are TAX prompts and dollar amounts are a matter of time; that trades one
+  hazard for a likelier one. `<<` and `>>` appear in neither JSON nor tax prose.
+  Add one shared renderer - `render_prompt(template: str, values: Mapping[str, str]) -> str` in
+  `tax_graph/extract/prompts.py` - and route all three sites through it. It must **fail closed in
+  both directions**: a placeholder with no supplied value raises, and any `<<...>>` token still
+  present after substitution raises. Keep the existing error type and an equivalent message so
+  callers and tests do not silently change behaviour. Substitution is literal text replacement -
+  a value that happens to contain `<<` or braces must never be re-scanned.
+
+  **Step 2 - convert the three prompt files** from `{name}` to `<<name>>`, and **restore the JSON
+  example in `derive_cells.md` to plain, unescaped `{"line": "7"}` and
+  `{"form": "form_XXXX_2025", "line": "7"}`.** After this change braces are ordinary characters
+  and the example reads exactly as the model should emit it. Keep the guidance wording from
+  `e18767f`; only the mechanism changes.
+
+  **Step 3 - test that prompts RENDER, not that they contain words.** The S31 defect was a
+  substring assertion (`tests/test_m20_s31.py:104-105`) that passed while the shipped prompt was
+  unloadable. Replace it. Add a test that **iterates every file in `prompts/`**, renders it
+  through `render_prompt` with a representative value for each of its placeholders, and asserts
+  success - so a new prompt file is covered the day it lands. Add two negative tests: a missing
+  value raises, and a leftover `<<token>>` raises. **This needs no network and must pass in the
+  Worker sandbox.** Then, if you want to assert the guidance survived, assert it on the RENDERED
+  output.
+
+  **Step 4 - rerun the three-form slice** and report the per-form table: form, status, attempted,
   derived, repaired, gapped, errored, top three `validator_failures_by_kind`. **Lead with
   `derived` per form.** Expected: `form_1040_2025` 17, `schedule_a_2025` 7, `schedule_d_2025` 3
-  attempted. **Report what line 16 actually does** - it is the whole point of the prompt change.
-  If it derives, say so. If it still emits `schedule_d_2025 line 7` in the LINE field, say that
-  plainly; that is the signal to move to a code-side normaliser in S33 and it is a useful result,
-  not a failure of this round.
-  If approved external network is unavailable, do steps 1-2, declare step 3 NOT RUN up front, and
+  attempted. **Report what line 16 actually does** - that is the point of the guidance. If it
+  derives, say so. If it still emits `schedule_d_2025 line 7` in the LINE field, say that plainly;
+  that is the signal to move to a code-side normaliser in S33, and it is a useful result rather
+  than a failure of this round.
+  If approved external network is unavailable, do steps 1-3, declare step 4 NOT RUN up front, and
   hand back - the Architect will run it. Do not burn the round on `Connection error`.
 
-  **Do not:** relax `operand_not_printed` or any other check to make line 16 pass; add a retry
-  policy; add a normaliser this round (that decision waits on step 3's evidence); reintroduce any
-  per-document special case; promote anything.
+  **Do not:** escape braces as the fix; leave any prompt on `{name}` syntax; relax
+  `operand_not_printed` or any other check to make line 16 pass; add a retry policy; add a
+  normaliser this round (that waits on step 4's evidence); reintroduce any per-document special
+  case; promote anything.
   **Stop conditions:** any diff in the protected directories; `derive_cells` acquiring a disk
-  write; any harness output landing inside the repository.
+  write; any harness output landing inside the repository; a prompt file that renders only
+  because a test was weakened.
   Tier 3. Declared files plus honest `RAN:`/`NOT RUN:`. ASCII, `git diff --check`, module-form
   `validate 2025`, preflight with `legacy_mined` explicit (394), strict citations (36).
   **ONE local commit** - or say up front why it is more; no push.
