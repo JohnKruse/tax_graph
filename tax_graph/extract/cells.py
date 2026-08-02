@@ -228,7 +228,12 @@ def build_cell_frame_from_document(document: Any) -> CellFrame:
         instruction_text = "\n\n".join(section.text for section in sections)
         evidence_spans: list[dict[str, str]] = []
         if form_span is not None:
-            evidence_spans.append({"span_id": form_span.span_id, "text": form_span.text})
+            evidence_spans.append(
+                {
+                    "span_id": form_span.span_id,
+                    "text": clean_form_face_text(form_span.text, line),
+                }
+            )
         evidence_spans.extend(
             {"span_id": section.section_id, "text": section.text}
             for section in sections
@@ -341,7 +346,6 @@ def derive_cells(
         schema = expression_schema(
             allowed_operations,
             depth=max_depth,
-            quote_span_ids=_known_quote_span_ids(row),
         )
         rendered_prompt = _render_cell_prompt(prompt, row)
         first_failure: tuple[CellValidationIssue, ...] = ()
@@ -460,9 +464,10 @@ def _apply_payload(
     known_spans = _known_quote_spans(row, quote)
     if not known_spans:
         raise ValueError("quote is not verbatim from the cell evidence")
-    quote_span_id = str(payload.get("quote_span_id") or known_spans[0][0])
-    if quote_span_id not in {span_id for span_id, _source in known_spans}:
-        raise ValueError("quote_span_id is not a known input evidence span")
+    # Source identity is resolved from the verbatim match in code.  The model
+    # must not select an id: asking it to do so makes a valid quote and a valid
+    # source id independently satisfiable, even when they disagree.
+    quote_span_id = known_spans[0][0]
     row.expression = dict(expression)
     row.rendered = render(expression)
     row.quote = quote
@@ -602,6 +607,7 @@ def validate_cell_output(
         return (_exception_issue(exc),), ()
 
     operands = list(_expression_operands(expression))
+    is_require_input = str(expression.get("op") or "").upper() == "REQUIRE_INPUT"
     current_form = row.form.strip().lower()
     current_line = row.line.strip().lower()
     available_lines = _available_lines(row)
@@ -610,9 +616,9 @@ def validate_cell_output(
         operand_line = str(operand.get("line") or "").strip().lower()
         if not operand_line:
             continue
-        if not operand_form and operand_line == current_line:
+        if not is_require_input and not operand_form and operand_line == current_line:
             hard.append(CellValidationIssue("self_reference", f"expression references its own line {row.line}"))
-        if operand_form and operand_form == current_form and operand_line == current_line:
+        if not is_require_input and operand_form and operand_form == current_form and operand_line == current_line:
             hard.append(CellValidationIssue("self_reference", f"expression references its own line {row.line}"))
         if not operand_form and available_lines and operand_line not in available_lines:
             hard.append(
@@ -865,28 +871,18 @@ DEFAULT_OPERATIONS = (
 def expression_schema(
     operations: Sequence[str] | None = None,
     depth: int = 2,
-    *,
-    quote_span_ids: Sequence[str] | None = None,
 ) -> dict[str, Any]:
     """Build a bounded nested expression schema without recursive ``$ref``."""
     allowed = list(operations or DEFAULT_OPERATIONS)
-    quote_span_schema: dict[str, Any] = {"type": ["string", "null"]}
-    known_ids = [str(value) for value in (quote_span_ids or ()) if str(value)]
-    if known_ids:
-        quote_span_schema["enum"] = [*dict.fromkeys(known_ids), None]
     return {
         "type": "object",
         "additionalProperties": False,
-        # OpenAI strict mode requires EVERY key in properties to appear in
-        # required, so quote_span_id is required-but-nullable rather than
-        # omitted.  Gemini tolerated the omission; openai/gpt-5.6-luna rejects
-        # the whole request with invalid_json_schema.  _apply_payload already
-        # falls back to the first known span when this is null.
-        "required": ["expression", "quote", "quote_span_id"],
+        # Source identity is deliberately absent.  The code-side verbatim
+        # match assigns the span after the model returns its quote.
+        "required": ["expression", "quote"],
         "properties": {
             "expression": _expression_node_schema(allowed, depth),
             "quote": {"type": "string", "minLength": 1},
-            "quote_span_id": quote_span_schema,
         },
     }
 
@@ -1127,29 +1123,6 @@ def _known_quote_spans(row: CellRecord, quote: str) -> list[tuple[str, str]]:
         for span_id, source in candidates
         if span_id and source and _contains_verbatim(source, quote)
     ]
-
-
-def _known_quote_span_ids(row: CellRecord) -> list[str]:
-    """Return every source-owned span id available to this row."""
-    evidence_spans = row.metadata.get("evidence_spans") or ()
-    if isinstance(evidence_spans, Mapping):
-        evidence_spans = (evidence_spans,)
-    ids = [
-        str(item.get("span_id") or "")
-        for item in evidence_spans
-        if isinstance(item, Mapping) and item.get("span_id")
-    ]
-    if not ids:
-        ids.extend(
-            str(value)
-            for value in (
-                row.metadata.get("form_face_span_id"),
-                row.metadata.get("instruction_span_id"),
-                row.instruction_locator,
-            )
-            if value
-        )
-    return list(dict.fromkeys(ids))
 
 
 def _contains_verbatim(source: str, quote: str) -> bool:

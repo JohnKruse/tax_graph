@@ -97,10 +97,16 @@ def test_cell_frame_round_trip_and_missing_client_fail_closed() -> None:
     assert all("no configured cell provider client" in (row.error or "") for row in result.rows)
 
 
-def test_model_cannot_invent_quote_span_id() -> None:
+def test_quote_span_id_is_resolved_from_verbatim_match() -> None:
     client = FakeClient([
         {
-            "expression": {"op": "REQUIRE_INPUT", "args": [{"line": "15"}]},
+            "expression": {
+                "op": "MAX",
+                "args": [
+                    {"op": "SUBTRACT", "args": [{"line": "11b"}, {"line": "14"}]},
+                    {"const": 0},
+                ],
+            },
             "quote": "Subtract line 14 from line 11b. If zero or less, enter -0-.",
             "quote_span_id": "model_invented_span",
         }
@@ -108,8 +114,8 @@ def test_model_cannot_invent_quote_span_id() -> None:
 
     result = derive_cells(_frame()[:1], "{line}", "secret", client=client)
 
-    assert result[0]["status"] == "error"
-    assert "known input evidence span" in result[0]["error"]
+    assert result[0]["status"] == "derived"
+    assert result[0]["quote_span_id"] == "span_line_15"
 
 
 def test_expression_schema_is_bounded_and_contains_no_recursive_ref() -> None:
@@ -119,7 +125,7 @@ def test_expression_schema_is_bounded_and_contains_no_recursive_ref() -> None:
     assert schema["properties"]["expression"]["properties"]["op"]["enum"] == ["MAX", "SUBTRACT"]
 
 
-def test_quote_span_schema_is_scoped_to_each_row() -> None:
+def test_quote_span_schema_does_not_expose_source_identity() -> None:
     rows = [
         {
             **_frame()[0],
@@ -159,22 +165,37 @@ def test_quote_span_schema_is_scoped_to_each_row() -> None:
     result = derive_cells(CellFrame.from_rows(rows), "{line}", "secret", client=client)
 
     assert result.coverage == {"total": 2, "derived": 2}
-    assert client.calls[0]["schema"]["properties"]["quote_span_id"]["enum"] == [
-        "face_15",
-        "instruction_15",
-        None,
-    ]
-    assert client.calls[1]["schema"]["properties"]["quote_span_id"]["enum"] == ["face_22", None]
+    assert client.calls[0]["schema"]["required"] == ["expression", "quote"]
+    assert "quote_span_id" not in client.calls[0]["schema"]["properties"]
+    assert client.calls[1]["schema"] == client.calls[0]["schema"]
 
 
 def test_quote_span_schema_keeps_strict_required_contract() -> None:
-    schema = expression_schema(quote_span_ids=["face_15"])
+    schema = expression_schema()
 
-    assert schema["required"] == ["expression", "quote", "quote_span_id"]
-    assert schema["properties"]["quote_span_id"] == {
-        "type": ["string", "null"],
-        "enum": ["face_15", None],
+    assert schema["required"] == ["expression", "quote"]
+    assert set(schema["properties"]) == {"expression", "quote"}
+
+
+def test_require_input_may_reference_its_own_line() -> None:
+    row = {
+        "form": "form_1040_2025",
+        "line": "35a",
+        "label": "Amount of line 34 you want refunded to you.",
+        "form_face_text": "Amount of line 34 you want refunded to you.",
+        "instruction_text": "",
+        "instruction_locator": "face_35a",
     }
+    client = FakeClient([
+        {
+            "expression": {"op": "REQUIRE_INPUT", "args": [{"line": "35a"}]},
+            "quote": "Amount of line 34 you want refunded to you.",
+        }
+    ])
+
+    result = derive_cells(CellFrame.from_rows([row]), "{line}", "secret", client=client)
+
+    assert result.coverage == {"total": 1, "derived": 1}
 
 
 def test_tree_to_graph_preserves_floor_shape_and_subtraction_roles() -> None:
@@ -477,6 +498,7 @@ def test_real_1040_frame_carries_join_ownership_and_printed_line_inventory() -> 
     assert all(row.line in row.metadata["printed_lines"] for row in frame.rows)
     assert {"1a", "16", "23", "26"}.issubset(frame.rows[0].metadata["printed_lines"])
     assert all(row.metadata["evidence_spans"] for row in frame.rows)
+    assert frame.rows[0].metadata["evidence_spans"][0]["text"] == frame.rows[0].form_face_text
     assert all(row.label.startswith(row.line + " ") for row in frame.rows)
     assert all(row.form_face_text.startswith(row.line + " ") for row in frame.rows)
     assert frame.rows[5].label == "15 Subtract line 14 from line 11b. If zero or less, enter -0-. This is your taxable income"

@@ -14,19 +14,50 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## Current state (2026-08-02)
 
-**Worker session checkpoint - M20-S27 implementation (2026-08-02):** Global canary: Ledger
+**M20-S28 local commit created:** no push. Pending Architect acceptance.
+
+**Worker session checkpoint - M20-S28 implementation (2026-08-02):** Global canary: Ledger
 Llama. Phase canary: Ground Truth. Model: GPT-5 Codex; effort and usage/quota/context
 indicators are not exposed. John gave go via the current task request. Single declared step:
-close the real-1040 derivation gaps by using all printed line anchors, constraining quote span
-ids per row, preserving raw structured-output errors, and honoring generic OpenAI-compatible
-`base_url` configuration. Applicable defect-ledger entries: D9, D12, D13, D14, D6, and the
-exact RAN/NOT RUN evidence rule. No promotion, hand-authoring, live graph edit, verdict write,
-or operation enum change is in scope. Protected graph and field-map artifacts remain
-byte-identical. Declared focused files:
+fix the three deterministic last-five-row defects: clean evidence span text with the same
+form-face normalization, exempt REQUIRE_INPUT self-reference from the computed-only check,
+and resolve quote span identity in code rather than asking the model for a conflicting id.
+Then run the real Form 1040 diagnostic and the declared consumer and gate set. Applicable
+defect-ledger entries: D9, D12, D13, D14, D6, and the exact RAN/NOT RUN evidence rule. No
+promotion, hand-authoring, live graph edit, verdict write, or operation enum change is in
+scope. Protected graph and field-map artifacts remain byte-identical. Declared focused files:
 `tests/test_derive_cells_m20.py`, `tests/test_extract_m4.py`,
 `tests/test_prompt_experiment_m20.py`, `tests/test_extract_outline_m4.py`,
 `tests/test_extract_m16.py`, `tests/test_cli.py`, `tests/test_workbench_m15.py`, and
 `tests/test_llm_attribution_m20.py`.
+
+**M20-S28 implementation checkpoint (2026-08-02):** The three deterministic defects are fixed:
+`build_cell_frame_from_document` stores cleaned form-face text in the matching evidence span;
+`validate_cell_output` exempts only a top-level `REQUIRE_INPUT` from the computed
+self-reference check; and `_apply_payload` resolves `quote_span_id` from the first evidence
+span containing the verbatim quote, while `expression_schema` no longer asks the model for a
+source id. The output record still carries the resolved id for downstream provenance. Pending
+the declared focused suite, real 1040 provider diagnostic, and final gates. Protected graph and
+field-map artifacts remain byte-identical; no promotion, hand-authoring, live graph edit,
+verdict write, or operation enum change occurred.
+
+**M20-S28 live provider checkpoint (2026-08-02):** The sandboxed diagnostic was attempted
+and completed with the known provider connectivity failure: `derived=0`, `repaired=0`,
+`gapped=0`, `errored=17`, each `LlmUnavailable: OpenRouter request failed: Connection
+error.` The identical command was then run with approved external network access and completed
+in 58.3s: `derived=16`, `repaired=1`, `gapped=0`, `errored=0`. The only repair was line 18,
+whose first response had two `operand_not_printed` failures and whose bounded repair succeeded.
+No provider output was written to the repository. Pending the identical nondeterminism rerun
+and final gates.
+
+**M20-S28 nondeterminism evidence (2026-08-02):** The identical approved-network command
+reran in 57.1s and returned `derived=16`, `repaired=0`, `gapped=1`, `errored=0`; line 37
+failed after its one repair because the model returned operand labels (`line 24 total tax`,
+`line 33 total payments`) that failed the printed-line inventory and a reversed subtraction
+direction. Run 2 instead repaired line 18 and had no gap. This remains an honest provider
+quality/nondeterminism finding; no retry policy was added and no output entered the repository.
+
+**M20-S28 final verification evidence (2026-08-02):** RAN: `$testRoot='C:\Users\devbox\projects\tax_graph\.test_tmp_s28'; New-Item -ItemType Directory -Force -Path $testRoot | Out-Null; $env:PYTEST_DEBUG_TEMPROOT=$testRoot; & .venv\Scripts\python.exe -m pytest tests\test_derive_cells_m20.py tests\test_extract_m4.py tests\test_prompt_experiment_m20.py tests\test_extract_outline_m4.py tests\test_extract_m16.py tests\test_cli.py tests\test_workbench_m15.py tests\test_llm_attribution_m20.py -q` -> `96 passed, 1 warning in 25.40s`. Every declared focused file ran; no declared file is unverified. The warning is the known pytest cache ACL warning. RAN: `& .venv\Scripts\python.exe tools\check_ascii.py` -> `ASCII check OK`; `git diff --check` -> exit 0; module-form `py_compile` for `tax_graph\extract\cells.py` and `tests\test_derive_cells_m20.py` -> exit 0. RAN: `& .venv\Scripts\python.exe -m tax_graph.cli validate 2025` -> graph integrity OK, documents=18, nodes=441, edges=409, rules=17, citations=401. RAN: sandbox `& .venv\Scripts\python.exe -m workbench.cli --root . --year 2025 preflight` -> known pre-existing `WinError 5` on `graph\2025\_drafts\form_1040_2025`; RAN the same read-only command with escalation -> passed, units=2224, derived cells=2120, `legacy_mined=394`. RAN: strict citation check -> `checked=401 strict_mismatches=36`. Protected graph and field-map diff is empty. Temporary `.test_tmp_s28` was removed. Pending only the local commit and Architect acceptance; no push.
 
 **M20-S27 implementation and fixture evidence (2026-08-02):** `build_cell_frame_from_document`
 now carries all 59 printed Form 1040 line anchors, not only the 17 formula rows. The expression
