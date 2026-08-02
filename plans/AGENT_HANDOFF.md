@@ -4573,10 +4573,30 @@ TY2026 docs drop.
   The evidence we need is already in hand. Line 22's face reads `Subtract line 21 from line 18.
   If zero or less, enter -0-`; line 15's reads `Subtract line 14 from line 11b. If zero or less,
   enter -0-`. Operand order AND the floor trigger are both there.
+  **JOHN'S ARCHITECTURAL BOUNDARY (2026-08-02) - this governs the whole round and outranks any
+  detail below it. Three layers, three different standards of accuracy:**
+  - **FORM FACE: EXACT.** Labels and line numbers pulled out accurately, per cell, every time.
+    This is deterministic geometry work and it is the one place we hold a hard line.
+  - **INSTRUCTION PAGES: LOOSE.** Carve the page into sections best-effort. "You may or may not
+    get a line instruction; expect about half of them to have nothing useful." **Holes are the
+    expected steady state, not a defect.** Never gate the pipeline on instruction coverage.
+  - **RECONCILIATION: THE AI'S JOB.** Making sense of the mishmash of labels and partial
+    instructions belongs to the operation-extraction subpipeline (`derive_cells`), not to the
+    extractor and not to a deterministic validator.
+  Consequence: **items 1 and 4 below are the round.** Everything else is secondary.
   1. **Require evidence, not instruction text.** `tax_graph/extract/cells.py:455` raises hard
      `missing_instruction_text` whenever `instruction_text` is empty. Replace it with a check that
      at least ONE cited evidence source is non-empty - `form_face_text` OR `instruction_text`.
      Absent instruction is a normal recorded state for a computed line, not a failure.
+  1b. **Demote the instruction-ownership checks from hard failure to drop-the-section.**
+     `instruction_wrong_owner` and `instruction_wrong_line` currently kill the row. Under the
+     boundary above that is wrong: a loosely-carved page WILL produce doubtful attributions, and
+     the correct response is to not attach that text - leaving a hole - never to fail a cell whose
+     face text is perfectly good. **Keep the detection exactly as S23 built it** (it is what stops
+     Schedule 2's text reaching 1040 line 9, and `wrong_owner_after` must stay 0); change only the
+     consequence, and record dropped sections in row metadata so the drop is visible and countable.
+     This is not a regression of S23 - S23's job was to stop wrong attribution, and dropping is a
+     stricter answer than attaching.
   2. **Keep every S23 ownership check exactly as-is.** When instruction text IS present it must
      still be attributed to this form and line. The fix is narrow: stop requiring presence. Do not
      touch `instruction_wrong_owner` or `instruction_wrong_line`.
@@ -4584,13 +4604,20 @@ TY2026 docs drop.
      `instruction_text` it will miss `If zero or less, enter -0-` on lines 15 and 22 - the exact
      defect this round exists to catch. Same for operand-order-vs-label and the
      operands-in-cited-text WARNING.
-  4. **Fix label contamination - a correctness risk, not cosmetics.** Geometry is bleeding
-     neighbouring text into `label`/`form_face_text`. Real values today: line 14 is
+  4. **PRIMARY DELIVERABLE - fix label contamination.** This is the one thing that violates
+     John's exact-form-face standard, so it is promoted above everything else in this round.
+     Geometry is bleeding neighbouring text into `label`/`form_face_text`. Real values today:
+     line 14 is
      `"$15,750 14 Add lines 12e, 13a, and 13b"`; line 15 is `"jointly or 15 Subtract line 14..."`;
      line 22 is `"12a, 12b, 12c, 22 Subtract line 21 from line 18..."`. Line 22's own evidence
      names 12a/12b/12c, which are not its operands - a model can plausibly pull them in, and the
      operands-in-cited-text warning would stay silent because they ARE in the text. Strip the
      leading run that precedes this row's own printed line token. Report before/after.
+     **Every one of the 17 computed rows must end with a label that starts at its own printed
+     line token and contains no neighbouring row's text.** Print the full 17-row before/after
+     table in the handoff - this is the round's headline evidence, alongside `derived`.
+     Do NOT gate on instruction coverage, and do NOT add a check that every printed line has an
+     instruction section. A hole is a legitimate outcome; the AI reconciles it downstream.
   5. **Then run the real 1040 and report derived / repaired / gapped / errored, plus how many
      expressions gained a floor or cap the flat schema was dropping.** That number is the point of
      the round. Expect 17 attempted; expect a floor on 15 and 22 at minimum.
@@ -4609,8 +4636,11 @@ TY2026 docs drop.
   **Stop conditions:** any diff in the protected directories; any draft promoted; `derive_cells`
   acquiring a disk write; making the operands-in-cited-text check a hard failure; more than one
   repair attempt per row; hand-authoring; `legacy_mined` above 394; strict mismatches above 36;
-  **weakening any S23 ownership check to get rows flowing**; **`derived` still 0 at the end of the
-  round without a stated, evidenced reason.**
+  **weakening S23 wrong-owner DETECTION to get rows flowing** (`wrong_owner_after` must stay 0 -
+  demoting the consequence per item 1b is required, weakening the detection is a stop);
+  **`derived` still 0 at the end of the round without a stated, evidenced reason**; **adding any
+  gate, check or hard failure keyed on instruction-section coverage** - that is explicitly against
+  John's boundary and it is the mistake the Architect nearly shipped this round.
   **A model or provider failure is NOT a stop condition** - `google/gemini-3.6-flash` is known
   good, and transport errors are retried per S21.
   **Review-surface work resumes after this round, not before.**
