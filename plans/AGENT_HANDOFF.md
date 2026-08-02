@@ -17,49 +17,73 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## BALL
 
-**BALL: WORKER - M20-S33 (RUN THE WHOLE CORPUS).** Task block under **From Architect**.
-**S32 is ACCEPTED at `70e8b6d`. The pipeline is green again and Schedule D derives for the first
-time.**
+**BALL: ARCHITECT - M20-S33 COMPLETE, AWAITING ACCEPTANCE.** Worker report is below; no source,
+promoted artifact, or verdict changed. Canary: Ground Truth.
 
 ## Current round
 
-**M20-S32 ACCEPTED (Architect, Claude Opus 5, 2026-08-02) at `70e8b6d`.** The Worker delivered
-steps 1-3 and declared step 4 NOT RUN up front. The Architect ran the slice:
+**M20-S33 WORKER COMPLETE (Codex, 2026-08-02).** The graph loader contains 18 document ids. The
+first run used the 17 ids in `graph/2025/documents`; the missing `form_2441_2025` was then run
+separately after the discrepancy was found. All live-provider commands ran outside the sandbox
+with the configured `openrouter` provider and `openai/gpt-5.6-luna` model. Reports were written
+only under `C:\tmp\m20_s33_corpus_20260802` and `C:\tmp\m20_s33_1040_20260802`.
 
-| form | status | attempted | derived | repaired | gapped | errored |
-| --- | --- | --- | --- | --- | --- | --- |
-| `form_1040_2025` | complete | 17 | **17** | 0 | 0 | 0 |
-| `schedule_a_2025` | complete | 7 | **7** | 0 | 0 | 0 |
-| `schedule_d_2025` | complete | 3 | **3** | 0 | 0 | 0 |
+Sorted by derived / attempted, worst first. Empty input documents are listed last.
 
-Zero validator failures and zero warnings on all three. **Schedule D derives for the first time in
-M20** - it was 0 attempted two rounds ago because of the carve-out, and 0 derived last round
-because the prompt would not render.
+| document | status | derived / attempted | repaired | gapped | errored | outline | anchors | top validator failures |
+| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | --- |
+| `schedule_1_2025` | complete | 0 / 4 (0%) | 4 | 0 | 0 | 66 | 61 | `operand_not_printed=19` |
+| `schedule_3_2025` | complete | 2 / 4 (50%) | 2 | 0 | 0 | 38 | 35 | `operand_not_printed=33` |
+| `schedule_2_2025` | complete | 3 / 5 (60%) | 2 | 0 | 0 | 52 | 45 | `operand_not_printed=28` |
+| `form_6251_2025` | complete | 23 / 29 (79.3%) | 5 | 0 | 1 | 68 | 63 | `missing_floor=3`, `payload=2`, `quote_not_verbatim=1` |
+| `schedule_1a_2025` | complete | 23 / 24 (95.8%) | 1 | 0 | 0 | 60 | 48 | `operand_not_printed=2` |
+| `schedule_b_2025` | complete | 1 / 1 (100%) | 0 | 0 | 0 | 12 | 8 | none |
+| `schedule_a_2025` | complete | 7 / 7 (100%) | 0 | 0 | 0 | 29 | 28 | none |
+| `schedule_d_2025` | complete | 3 / 3 (100%) | 0 | 0 | 0 | 31 | 24 | none |
+| `form_1040_2025` | complete | 17 / 17 (100%) | 0 | 0 | 0 | 60 | 59 | none |
+| `form_2441_2025` | reported | 0 / 0 (-) | 0 | 0 | 0 | - | - | `load_failure=unknown_manifest_document` |
+| `form_1099b_2025` | empty | 0 / 0 (-) | 0 | 0 | 0 | 18 | 17 | none |
+| `form_1099_div_2025` | empty | 0 / 0 (-) | 0 | 0 | 0 | 28 | 25 | none |
+| `form_1099_int_2025` | empty | 0 / 0 (-) | 0 | 0 | 0 | 12 | 11 | none |
+| `form_13614_c_2025` | empty | 0 / 0 (-) | 0 | 0 | 0 | 209 | 0 | none |
+| `form_8949_2025` | empty | 0 / 0 (-) | 0 | 0 | 0 | 7 | 4 | none |
+| `form_w2_2025` | empty | 0 / 0 (-) | 0 | 0 | 0 | 15 | 14 | none |
+| `instructions_form_1040_2025` | empty | 0 / 0 (-) | 0 | 0 | 0 | 0 | 0 | none |
+| `instructions_schedule_d_2025` | empty | 0 / 0 (-) | 0 | 0 | 0 | 0 | 0 | none |
 
-**The delimiter change is done properly.** `render_prompt` validates every `<<...>>` token up
-front, rejects a malformed token and a name with no supplied value, then substitutes through
-per-value sentinels so a value that itself contains `<<name>>` can never be re-scanned as a second
-template pass. All three prompt files and all three render sites go through it, and the JSON
-examples in `derive_cells.md` are back to plain unescaped braces. Braces are now ordinary
-characters in prompt text, which is the whole point.
+**Zero classification:** The eight empty documents are correctly empty input or instruction
+documents: the four 1099/W-2 inputs, Form 13614-C, Form 8949, and the two instruction documents.
+No document was empty-but-should-not-be; every derivation-capable document except `form_2441_2025`
+produced frame rows. `schedule_1_2025` is the attempted-but-zero-fully-derived case: all four rows
+were repaired, so it is not an all-error run, but no row ended with status `derived`.
 
-**Line 16 encodes its operands correctly now.** The report persists only aggregates, so the
-expression is not in it - but `operand_not_printed` is untouched and still strict (S32 changed only
-the import and `_render_cell_prompt` in `cells.py`), and that is exactly the check line 16 failed
-in the S30 probe with `schedule_d_2025 line 7` in the LINE field. It derived with zero failures, so
-the encoding is right.
-**Caveat, and it is the honest one: this is ONE run of a model measured as nondeterministic at
-`temperature: 0`.** The prompt fix depends on model compliance, which is evidence rather than a
-guarantee. If S33 shows line 16 flipping between runs, move the resolution into code with a
-normaliser, per the S13/S24/S28 principle. Do not pre-emptively add one on a single green run.
+Totals over rows that loaded: attempted=94, derived=79, repaired=14, gapped=0, errored=1. The
+separate `form_2441_2025` load failure is reported above and is not included in row totals.
 
-**Gates re-verified by the Architect:** 102 passed on a short temp root; ASCII OK; `validate 2025`
-graph integrity OK; protected set byte-identical across `8bc9f0d..70e8b6d`.
+**Required repeatability check:** identical `form_1040_2025` commands ran twice. Both returned
+`complete`, attempted=17, derived=17, repaired=0, gapped=0, errored=0, outline=60, anchors=59,
+validator_failures_by_kind={}. Schedule D line 16 did not flip.
 
-**Residual, recorded not actioned:** `<<` has no escape mechanism, so a prompt that ever needs a
-literal `<<` in prose will fail closed with an unsupported-placeholder error. That is the same
-shape of limitation the braces had, on a delimiter far less likely to occur in tax prose or JSON.
-Accepted for now. If it ever bites, add an escape rather than changing delimiter again.
+**Gates:**
+
+- `RAN: .venv\Scripts\python.exe tools\check_ascii.py -> ASCII check OK`.
+- `RAN: git diff --check -> exit 0`.
+- `RAN: git diff --stat -- graph/2025/nodes graph/2025/edges graph/2025/rules graph/2025/field_maps -> empty`.
+- `RAN: .venv\Scripts\python.exe -m tax_graph.cli validate 2025 -> exit 0; documents=18, nodes=441, edges=409, citations=401; graph integrity OK`.
+- `RAN: .venv\Scripts\python.exe -m workbench.cli preflight --year 2025 -> exit 0; units=2224, derived cells=2120, legacy_mined=394` (approved external read because sandbox ACL blocked the known draft directory).
+- `RAN: .venv\Scripts\python.exe -c "from tax_graph.acquire.citation_check import check_graph_citations; report=check_graph_citations(year='2025', raw_store='.cache/raw', root='.'); print(f'checked={report.checked} strict_mismatches={len(report.mismatches)}')" -> checked=401 strict_mismatches=36`.
+- `RAN: $env:PYTEST_DEBUG_TEMPROOT = 'C:\tmp'; .venv\Scripts\python.exe -m pytest tests/test_derive_cells_s30.py tests/test_m20_s31.py tests/test_derive_cells_m20.py -q -> 44 passed in 0.95s` (approved external read/write of pytest temp directories; no `--basetemp`).
+
+The same pytest command without the temp-root override was attempted first: `39 passed, 5 setup
+errors` from `WinError 5` scanning `.test_tmp\pytest-of-devbox`; it is not test evidence and was
+re-run successfully with the documented override.
+
+**Live commands:** the full 17-document command completed with exit 0 in 445.4s; the separate
+`form_2441_2025` command completed with exit 0 and `ValueError: unknown manifest document_id`.
+The two identical 1040 commands each completed with exit 0 in 47.8s and 44.4s. No code or graph
+artifact changed. No source fix is authorized by S33; the next round should size the six forms with
+zero or partial derivation and decide whether the `form_2441_2025` projection belongs in this
+harness input set.
 
 ## Standing constraints (every M20 round)
 
