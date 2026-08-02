@@ -95,3 +95,11 @@ def test_harness_marks_zero_attempt_document_empty_with_outline_inventory(monkey
             "validator_failures_by_kind": {},
         }
     ]
+
+
+def test_cell_prompt_distinguishes_same_form_and_cross_form_operands() -> None:
+    prompt = Path(__file__).resolve().parents[1] / "prompts" / "derive_cells.md"
+    text = " ".join(prompt.read_text(encoding="ascii").split())
+
+    assert 'For a sibling line on this same form, use only {"line": "7"}' in text
+    assert 'Use {"form": "form_XXXX_2025", "line": "7"} only for a line on another form.' in text
