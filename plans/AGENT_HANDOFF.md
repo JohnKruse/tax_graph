@@ -2442,7 +2442,40 @@ the instruction slot; Authority explicitly reports missing authored coverage; do
 citation coverage is visible beside policy counts; and the dossier heading duplication/order
 warts are fixed. No promoted artifacts, graph semantics, verdicts, or citation records changed.
 
-**BALL: WORKER - M20-S26 (THE FORM FACE IS EVIDENCE). Task block under From Architect.
+**BALL: WORKER - M20-S27 (CLOSE THE GAPS: LINE INVENTORY, SPAN IDS, HONEST ERRORS). Task block
+under From Architect. S26 is ACCEPTED at `b3e102b` - and the pipeline PRODUCES REAL EXPRESSIONS
+for the first time in M20.** Architect ran it live (the Worker could not - see below).
+**Real 2025 Form 1040, 17 rows, `google/gemini-3.6-flash`: derived=5, repaired=2, gapped=10,
+errored=0.** The floors the flat schema had been silently dropping are now captured:
+`line 15 -> max(line 11b - line 14, 0)` and `line 22 -> max(line 18 - line 21, 0)`. That is the
+S22 prediction confirmed on real data, and exit criterion 4 is met in substance.
+S26 delivered all three items: `missing_instruction_text` became `missing_evidence` (face OR
+instruction), so `attempted` went 4 -> 17; ownership issues now DROP the section and record it in
+row metadata instead of killing the row; and label contamination is fixed 17/17 - Architect
+verified every row's cleaned label starts at its own printed line token, including the hard ones
+(`12a, 12b, 12c, 22 Subtract...` -> `22 Subtract...`, `$15,750 14 Add...` -> `14 Add...`,
+`z Add lines 1a through 1h 1z` -> `1z Add lines 1a through 1h`). No coverage gate was added.
+**WHY THE WORKER SAW 17/17 `Connection error` AND ZERO DERIVED:** the Worker's sandbox has no
+outbound network. From the normal environment OpenRouter answers 200 and the same run derives
+expressions. **This is an environment limitation, not a code defect, and it has now cost two
+rounds (S25 4/4, S26 17/17).** The Worker CANNOT close a round on live-provider evidence.
+Either run the provider leg outside the sandbox or declare the round fixture-only up front.
+**FIXED BY ARCHITECT THIS SESSION (do not redo):**
+- `llm.micro_model` did not exist in `tax-graph.config.yaml`, so
+  `experiments/derive_cells_s25.py:109` fell back to the literal placeholder `configured-llm`,
+  which OpenRouter rejects with a 400. Added.
+- **Model switched to `openai/gpt-5.6-luna` per John** (2026-08-02). He had asked before and it
+  was never actioned; there is no record of the request anywhere in this handoff, which is
+  exactly why it was lost. It is now IN THE CONFIG. Cost note: `google/gemini-3.6-flash` is
+  $1.50/$7.50 per Mtok; `openai/gpt-5.6-luna` is $0.10/$0.60 - roughly 15x cheaper in, 12x out.
+- **The cell JSON schema was invalid under OpenAI strict mode** (`a25c86f`): `quote_span_id` was
+  in `properties` but not in `required`, and OpenAI requires every property key to be in
+  `required`. Gemini tolerated it; luna rejected 17/17 with `invalid_json_schema`. Now
+  required-but-nullable. Lines 15 and 22 derive their floors on luna.
+
+**S26 carry-forwards into S27, in priority order - full task block under From Architect.**
+
+**Superseded (kept as history):** BALL: WORKER - M20-S26 (THE FORM FACE IS EVIDENCE).
 S25 is ACCEPTED at `ff62119` - the validators, repair-once, telemetry, frame persistence and
 purity are all correctly built, and every declared gate held: 53 tests green, protected set
 byte-identical, `legacy_mined=394`, strict mismatches=36, and `cells.py` contains ZERO
@@ -4627,7 +4660,55 @@ TY2026 docs drop.
      uses `_pre_floor`, the experiment uses `_step1`.
   6. **Tests that need no network**, using a fixture frame.
 
-- **M20-S26 TASK - THE FORM FACE IS EVIDENCE (Architect, Claude Opus 5, 2026-08-02). Runs after
+- **M20-S27 TASK - CLOSE THE GAPS (Architect, Claude Opus 5, 2026-08-02). Runs after S26.**
+  S26 got the pipeline producing real expressions (derived=5, repaired=2, gapped=10, errored=0).
+  This round is about the 10 gaps. Every item below is diagnosed, with the evidence in hand -
+  none of it is speculative.
+  1. **THE BIGGEST LEVER - `printed_lines` only contains COMPUTED lines.** It is built from
+     `_formula_outline_nodes`, so the inventory is the same 17 formula rows
+     (`1z, 9, 11a, 11b, 14, 15, 18, 21, 22, 24, 25d, 32, 33, 34, 35a, 36, 37`) and contains NO
+     input lines at all - `26`, `1a`, `2b`, `16`, `17`, `19`, `20`, `23` are all absent. The
+     `operand_not_printed` validator checks operands against this list, so **every reference to
+     an ordinary input line is wrongly rejected**. It fired **31 times**, by far the largest
+     failure bucket, and it is why line 33 (`line 25d + line 26 + line 32`) gapped on a correct
+     answer. Build the inventory from ALL printed lines on the form, not just formula rows, and
+     re-report the counts.
+  2. **Constrain `quote_span_id` to the known evidence spans with a schema `enum`.** Now that the
+     field is required, luna invents ids and 2 rows fail `quote_span_id is not a known input
+     evidence span` (lines 34 and 37 - the rows that HAVE instruction text). The span ids are
+     known up front in `row.metadata["evidence_spans"]`. The schema is currently built ONCE
+     outside the row loop; build it per row so the enum can carry that row's ids. **Keep the
+     hard rejection of unknown ids** - S24 added it deliberately and it protects citation
+     integrity; the enum makes it unreachable rather than removing it.
+  3. **Stop the error rewriter from lying.** `_rewrite_openai_compatible_error`
+     (`tax_graph/extract/llm_client.py:884`) turned `invalid_json_schema: 'required' ... Missing
+     'quote_span_id'` - our own bug - into "endpoint does not support JSON-schema structured
+     outputs; choose a structured-output-capable endpoint", which points the reader at the
+     provider. It cost real diagnosis time this session. **Preserve the upstream message**
+     (chain it, or include the provider's raw error). This is guiding invariant 8: a failed call
+     must be diagnosable from repo artifacts.
+  4. **Investigate run-to-run non-determinism.** Line 33 came back `repaired` on one run and
+     `error` on the next with identical inputs and `temperature: 0`. For a pipeline that must run
+     unattended each January, a row flipping status between runs is a reliability problem. Report
+     what varies; do not paper over it with retries.
+  5. **Re-run and report the real numbers on `openai/gpt-5.6-luna`** - derived / repaired /
+     gapped / errored for all 17 rows, plus expressions that gained a floor or cap.
+     **The provider leg cannot run in the Worker sandbox** (no outbound network). Either arrange
+     an unsandboxed run or declare the round fixture-only and say so explicitly up front - do NOT
+     spend a third round reporting `Connection error` as a result.
+  **PROTECTED TEST SET, unchanged hard gate:** `graph/2025/{nodes,edges,rules}/` and
+  `graph/2025/field_maps/` byte-identical. No promotion, no hand-authoring, no live graph edit.
+  **`derive_cells` must remain pure - zero disk writes.**
+  Tier 3. Declared files plus honest `RAN:`/`NOT RUN:`. ASCII, `git diff --check`, module-form
+  `validate 2025`, real preflight with `legacy_mined` explicit (expect **394**),
+  `check_citation_integrity` STRICT (expect **36**). Short pytest temp root; no `--basetemp`.
+  ONE local commit; no push.
+  **Stop conditions:** any diff in the protected directories; `derive_cells` acquiring a disk
+  write; removing the unknown-span-id rejection instead of constraining it; adding any gate keyed
+  on instruction-section coverage; `legacy_mined` above 394; strict mismatches above 36.
+
+- **SUPERSEDED (kept as history; delivered by S26 at `b3e102b`, ACCEPTED) - M20-S26 TASK - THE
+  FORM FACE IS EVIDENCE (Architect, Claude Opus 5, 2026-08-02). Runs after
   S25.** Exit criterion 4, unchanged: property validators proven on real data. S25 built them
   correctly and they never ran, because one input check rejected every computed line.
   **Architect diagnosis, verified directly against real 2025 data - do not re-derive it:**
