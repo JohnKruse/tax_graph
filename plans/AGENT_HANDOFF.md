@@ -41,10 +41,24 @@ Resolution is flat at 93/96 but **first-attempt correctness rose from 89 to 92 a
 from 4 to 1**. `schedule_1a_2025` is 25/25 clean. **`form_6251_2025` lines 18 and 39 now derive with
 NO repair** - defining the `IF_ELSE` slots did exactly what the diagnosis predicted.
 
-**The cross-form hole is closed and it did not break legitimate references.**
-`operand_document_not_found` fired exactly once, on `schedule_a_2025`, and the bounded repair fixed
-it. Every other cross-form reference in the corpus resolved. That is the answer to the count I
-asked for and could not get before the change.
+**ARCHITECT CORRECTION (2026-08-03, prompted by John's question about unseen forms). I reported
+this as "closed and it did not break legitimate references". THAT WAS WRONG.**
+`operand_document_not_found` fired once, on `schedule_a_2025` line 15, whose printed label reads
+*"Attach Form 4684 and enter the amount from line 18 of that form."* **The model produced the
+CORRECT operand and the new validator rejected it** - `cross-form operand names unknown document
+form_4684_2025` - and the repair then produced something that cannot be the right rule. The only
+legitimate external reference the model attempted is the one we broke.
+
+**MEASURED: 9 of 96 formula rows (~10%) reference a form or worksheet outside the corpus** - Form
+2555 x5, Form 1040-NR x2, Form 8888 x1, Form 4684 x1, the Qualified Dividends and Capital Gain Tax
+Worksheet x3, the Schedule D Tax Worksheet x3. **This grows as forms are added**, because every new
+form references more forms. A hard fail is the wrong default for a tenth of the corpus.
+
+**WE ALREADY HAVE THE CAPABILITY, IN THE WRONG PATH.** `_canonical_external_source_id`
+(`outline_pipeline.py`) mints a deterministic address for exactly this case -
+`form_4684_2025_root_line_18` - and `_is_external_form_reference` detects it. Both live in the older
+outline/generator path. The cell-derivation path does not use them, so **the codebase now holds two
+contradictory conventions: one mints an address for an unseen form, the other rejects it.**
 
 **BUT THE NODE OPERAND IS UNUSED, AND THE REASON IS A DEFECT WE HAVE ALREADY FIXED ONCE.** Read the
 actual expression rather than the status - the lesson from the last round:
@@ -259,7 +273,24 @@ client-managed server dies.
   must still pass. An absent inventory must render cleanly and must not change behaviour for rows
   that already derive.
 
-  **Step 2 - the parameter nodes for 6251 do not exist yet; decide and report, do not invent.**
+  **Step 2 - a reference to a form we do not have must MINT an address, not hard-fail. (John,
+  2026-08-03.)** S38 made `operand_document_not_found` fatal, and it immediately rejected the
+  correct answer on `schedule_a_2025` line 15, whose own text says *"Attach Form 4684 and enter the
+  amount from line 18 of that form."* 9 of 96 rows reference a form or worksheet outside the corpus.
+  **The discriminator is deterministic - no model judgement.** A cross-form operand is LEGITIMATE
+  when that form is named in the row's own evidence text; it is FABRICATED otherwise. Keep the hard
+  failure for fabrication - that is what caught `form_1040_nr_2025 line filing_status`, where the
+  model invented a line to smuggle in a filer fact. For a legitimate reference, mint the canonical
+  address using the EXISTING `_canonical_external_source_id` convention rather than a second one,
+  and record the node as unresolved: an id, a label taken verbatim from the row's text, the
+  citation, and no value.
+  **An unresolved external node is a REPORTED required input, never a silent drop.** The engine must
+  be able to tell the filer what it needs and why, in the form's own words.
+  Report how many of the 9 rows resolve this way, and confirm `schedule_a_2025` line 15 recovers its
+  Form 4684 reference. **Do not author any node in `graph/2025/` to achieve this** - minting an
+  address is not the same as writing a graph node, and the protected set stays byte-identical.
+
+  **Step 3 - the parameter nodes for 6251 do not exist yet; decide and report, do not invent.**
   The standard deduction precedent is one `parameter` node per filing status with a
   `constant_value` and a citation (`form_1040_2025_standard_deduction_single|mfj|mfs|hoh` in
   `graph/2025/nodes/tax-liability.yaml`). Form 6251 line 18 needs the same shape for the AMT
@@ -269,7 +300,7 @@ client-managed server dies.
   John decides whether hand-authoring them is acceptable or whether they must come from the
   pipeline - that is the standing "pipeline is the end-state" question and it is his call.
 
-  **Step 3 - rerun the corpus and the line 18 check, and READ THE EXPRESSION.** Report attempted /
+  **Step 4 - rerun the corpus and the line 18 check, and READ THE EXPRESSION.** Report attempted /
   derived / repaired / errored per document. **The numbers to beat: derived 92, repaired 1,
   errored 3, resolved 93/96.** Then print the actual expression for 6251 line 18 with no comment
   and with the reviewer comment "this is wrong for married filing separately; the threshold and the
