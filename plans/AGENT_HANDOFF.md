@@ -61,6 +61,44 @@ expressiveness, label truncation, and now the operand gap). Each was drawn from 
 front of me instead of from the layer below it. The check that settled it took one command:
 print the operand shapes the schema actually permits.
 
+**JOHN ASKED FOR THE PAYLOAD, AND IT SETTLED THREE THINGS AT ONCE (2026-08-03).** He asked what
+instructions the query actually carried, whether the prompt permits this operation, and whether a
+realistic human comment could reach the right answer. Dumping the rendered prompt (2,384 chars) and
+running three realistic comments answered all three, and this is the "check the payload first"
+lesson paying off - it took one no-model command to settle what five rounds of inference did not.
+
+**The operative instruction is one sentence:** *"An operand is a printed line on this form, a line
+on another form, a numeric constant, or a nested expression."* That is the complete definition of
+what the model may reference. **The prompt also never states what any operation MEANS** - the only
+argument-order hint anywhere is "For SUBTRACT and DIVIDE, put the value being reduced first", and
+`IF_ELSE` is known to the model only as an enum member in the JSON schema.
+
+**Three realistic comments, three wrong answers, none correct:**
+
+| reviewer comment | result |
+| --- | --- |
+| "This is wrong for married filing separately." | `require_input(line 18)` - **gave up and declared the line a filer input, silently deleting the computation.** Validated clean. |
+| "The threshold and the amount subtracted are both different if MFS. Do not hardcode one filing status." | invented `form_1040_nr_2025 line filing_status`, padded with `not(...)` and `2391 - 0`. **Validated clean.** |
+| Most explicit: both pairs of numbers spelled out | hard failure, `IF_ELSE requires exactly 4 arguments` |
+
+**The more the reviewer explains, the worse it gets.** A cornered model given more detail produces
+more elaborate wrong answers. **No human comment can fix this row**, which is the empirical proof
+that the operand gap is the blocker rather than a prompting problem - and it means S38 step 3 is
+necessary, not optional.
+
+**NEW BLOCKER 0 - CROSS-FORM OPERANDS ARE NOT VALIDATED AT ALL.** The middle comment produced
+`form_1040_nr_2025 line filing_status`. **`form_1040_nr_2025` is not a document in the graph** (zero
+matches in `graph/2025/documents/`), and neither is that line. It passed every check.
+`cells.py:653` reads `if not operand_form and available_lines and operand_line not in
+available_lines` - **the printed-line check applies ONLY to same-form operands.** The sole
+cross-form check is `operand_not_in_quote`, a soft WARNING. So the model may reference any line on
+any form, including a form that does not exist, and nothing hard-fails.
+This is not a cornered-model curiosity: cross-form references are routine and legitimate
+(`schedule_1` line 10 into the 1040, `6251` line 10 into `schedule_2` line 1z), so **every
+cross-form operand in the corpus is currently unverified.** Fix in S38 alongside the operand work,
+with the same fail-closed discipline: an operand naming another form must resolve to a real
+document and a real printed line on it.
+
 **BLOCKER 1 - `rederive_cell` fails against the real config, every time.** It passes
 `temperature=_optional_temperature(settings)`, which reads the configured `llm.temperature: 0`.
 With `llm.require_parameters: true`, OpenRouter filters to endpoints advertising every requested
@@ -276,7 +314,16 @@ client-managed server dies.
   assumed - or delete the key. **Do not leave a setting that implies a determinism guarantee we do
   not have.** Whichever you choose, say so in the config with a dated comment.
 
-  **Step 3 - let an operand reference a filer fact. THIS IS THE ROUND'S REAL WORK.**
+  **Step 3 - validate cross-form operands. Currently NOTHING does.** `cells.py:653` applies the
+  printed-line check only when the operand has no `form`, so a cross-form operand is never checked
+  against any inventory - the model invented `form_1040_nr_2025 line filing_status`, referencing a
+  document that does not exist, and it validated clean. **An operand naming another form must
+  resolve to a real document in the graph AND a real printed line on that document, or hard-fail**
+  with a named kind, exactly like `operand_not_printed`. Report how many existing corpus rows carry
+  a cross-form operand and how many of those resolve, **before** changing anything - if legitimate
+  references break, that is a finding about the inventory, not a reason to weaken the check.
+
+  **Step 4 - let an operand reference a filer fact. THIS IS THE ROUND'S REAL WORK.**
   The grammar permits four operand shapes - `{line}`, `{form, line}`, `{const}`, `{op, args}` - and
   none of them can name a characteristic of the filer. The graph already models one:
   `taxpayer_2025_filing_status` in `graph/2025/nodes/capital-gains.yaml`. **Add an operand shape
@@ -292,7 +339,7 @@ client-managed server dies.
   rule vocabulary, the engine). If nothing can execute it yet, say so plainly and record it as a
   known gap rather than implying the expression is usable.
 
-  **Step 4 - define the semantics of every conditional operation, starting with `IF_ELSE`.**
+  **Step 5 - define the semantics of every conditional operation, starting with `IF_ELSE`.**
   `cells.py` enforces `IF_ELSE: 4` arguments and `ROLE_FOR_OP` does not mention it, so all four
   slots are the generic "operand" and their meaning is undefined. Two Architect runs of the same
   row produced two incompatible readings that both validated:
@@ -308,7 +355,7 @@ client-managed server dies.
   **A prompt change needs a RENDER test** (S32) and the existing test over every file in
   `prompts/` must still pass.
 
-  **Step 5 - rerun the corpus and report.** Expect the 96-row result to be unchanged or better;
+  **Step 6 - rerun the corpus and report.** Expect the 96-row result to be unchanged or better;
   the target is `form_6251_2025` lines 18 and 39 no longer needing a repair, because the model will
   finally be told what the four slots mean. Report attempted / derived / repaired / errored per
   document and say plainly whether 18 and 39 moved.
