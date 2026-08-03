@@ -17,112 +17,59 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## BALL
 
-**BALL: WORKER - M20-S36 (ASSEMBLE THE WHOLE ROW BEFORE DERIVING).** Task block under
-**From Architect**. **S35 is ACCEPTED at `9d53d54`.**
+**BALL: JOHN - two scoping questions block the last 5 rows; no deterministic defect remains.**
+**S36 is ACCEPTED at `f5dfd55`.** See **Open for Architect**.
 
 ## Current round
 
-**M20-S35 ACCEPTED (Architect, Claude Opus 5, 2026-08-03) at `9d53d54`.** The Worker diagnosed and
-reported the count BEFORE writing the fix, as instructed - 1 of 29 rows on `form_6251_2025`, 0 of
-14 on every other loadable document - which is what made this a targeted fix rather than an
-architecture round. Step 3 was correctly declared NOT RUN; the Architect ran the provider leg.
+**M20-S36 ACCEPTED (Architect, Claude Opus 5, 2026-08-03) at `f5dfd55`.** Steps 1-3 delivered,
+step 4 correctly declared NOT RUN; the Architect ran the provider leg.
 
-**THE CORPUS IS AT ITS BEST MEASURED STATE.**
+**Truncation 16 -> 0, verified independently with the same check that found it.** The outline
+regression guard held EXACTLY on all nine documents - node and anchor counts identical to the
+pinned values - so assembly attached continuation text without creating, merging or losing a row.
+
+**COVERAGE WENT UP: the formula set is 94 -> 96 rows, and both new rows resolve.** `schedule_a_2025`
+line 15 and `schedule_1a_2025` line 36a were never detected as computed rows because **their
+formula cue lived in the continuation text we were discarding.** We were blind to two real computed
+cells and did not know it. That is the most valuable thing this round produced.
 
 | round | attempted | derived | repaired | gapped | errored | resolved |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: |
-| S33 | 94 | 79 | 14 | 0 | 1 | 93 |
-| S34 | 94 | 86 | 4 | 0 | 4 | 90 |
-| **S35** | 94 | **89** | **3** | **0** | **2** | **92** |
+| S35 | 94 | 89 | 3 | 0 | 2 | 92 |
+| **S36** | **96** | **89** | **4** | **0** | **3** | **93** |
 
-Resolution recovered 90 -> 92, and **first-attempt correctness is at an all-time high: derived 79
--> 89.** S33's 93 resolved leaned on 14 repair round-trips; S35's 92 needs 3. Eight of the nine
-derivable documents are now perfectly clean on the first attempt, including `schedule_1a_2025`,
-which was 22/2 last round and is 24/24 now.
+**ARCHITECT CORRECTION - I over-retracted, and this is the third bad call on 6251.** After finding
+truncation I wrote that the expression-grammar diagnosis was wrong. **It was not.** Lines 18 and 39
+now have their full text, and they STILL fail `payload`. The assembled row is
+`If line 17 is $239,100 or less ($119,550 or less if married filing separately), multiply line 17
+by 26% (0.26). Otherwise, multiply line 17 by 28% (0.28) and subtract $4,782 ($2,391 if married
+filing separately) from the result` - which needs **two filing-status-dependent constants**, a
+threshold and a subtrahend. Truncation was a real and separate defect worth fixing on its own
+merits; it was never the whole cause of these two rows.
+**The pattern to learn: 6251 has multiple INDEPENDENT defects stacked on the same rows, and I have
+three times offered a single-cause explanation.** Each new evidence source made the previous
+diagnosis look wrong when it was merely incomplete.
 
-**The span fix hit exactly what it aimed at.** `form_6251_2025` recovered from 25/29 and 26/29
-across two S34 runs to **27/29 and 26/29** across two S35 runs, and `quote_not_verbatim` - 3
-occurrences last round, including the page-header row - is **gone**. `_span_for_line` now filters
-duplicate printed anchors by the outline page and rejects a candidate that lacks the row label's
-descriptive tokens, failing closed rather than returning a wrong span. No document-id special case
-was added.
+**THE REMAINING 5 ROWS, now cleanly attributable to exactly two causes, neither a pipeline defect:**
+- **Unmodelled worksheet - 6251 lines 13, 20, 27.** They reference the Qualified Dividends and
+  Capital Gain Tax Worksheet and the Schedule D Tax Worksheet, neither of which is a document in
+  the graph. Failure KIND churns run to run (`self_reference`, `missing_floor`,
+  `quote_not_verbatim`) because the model is cornered, which is what made this look like noise for
+  five rounds.
+- **Filing-status-dependent constants - 6251 lines 18, 39.** Both repair successfully, so they
+  resolve; they just cost a round-trip.
 
-**Verified the Worker's honesty claim rather than taking it.** It reported
-`tests/test_schedule_d_extraction_m9.py` as 1 failed / 2 passed and attributed it to a pre-existing
-Schedule D expectation. Architect bisected the single changed file: the test fails IDENTICALLY with
-the S35 resolver reverted. The attribution is correct. **It is now a fourth known-red baseline
-entry** - see Standing constraints.
+**Minor, recorded not actioned:** `schedule_1_2025` line 10 newly needs one repair
+(`quote_not_verbatim`) - a longer assembled label changed what is quotable. It resolves.
+`schedule_a_2025` line 15's assembled label welds in marginal section-header text (`and Theft`,
+`Losses` from the vertical heading "Casualty and Theft Losses"). It derived correctly anyway, but
+it is over-assembly - the mirror of the defect just fixed - and belongs in the same bucket as the
+6251 line 32 span issue if either ever bites.
 
-**CORRECTION, SECOND PASS (2026-08-03). The real defect is LABEL TRUNCATION, and both of my
-earlier diagnoses of 6251 were wrong.** I called the remaining failures "model quality", then "an
-unmodelled worksheet plus an expression-grammar limit". Neither holds. **We capture ONE PHYSICAL
-LINE of the page and stop**, so rows whose text wraps are handed to the model as fragments.
-
-**Measured: 16 of 94 formula rows corpus-wide have a label cut off mid-row.**
-
-| document | truncated rows |
-| --- | ---: |
-| `form_6251_2025` | 9 |
-| `schedule_d_2025` | 2 |
-| `schedule_1_2025` | 2 |
-| `schedule_1a_2025` | 2 |
-| `schedule_2_2025` | 1 |
-
-**All five remaining 6251 failures sit on truncated rows.** The decisive case is line 18. We
-capture `If line 17 is $239,100 or less (...), multiply line 17 by 26% (0.26).` and drop the
-continuation `Otherwise, multiply line 17 by 28% (0.28) and subtract $4,782 ($2,391 if married
-filing separately) from the result`. The recorded failure was
-`ValueError: IF_ELSE requires exactly 4 arguments` - **the model could not supply the else-branch
-because we never showed it the else-branch.** That is not a grammar gap. Line 20 ends on the word
-`from`; its continuation `line 14 of the Schedule D Tax Worksheet, whichever applies` is present in
-our own text layer and simply never attached. The worksheet-not-modelled finding stands but is
-SECONDARY - the model could not see the full reference either.
-
-**JOHN'S POINT, and it is the strongest argument for the second witness so far (2026-08-03).** He
-produced the Mistral OCR of 6251 and every one of these rows is complete in it, assembled into one
-logical row. Joining wrapped lines is precisely what OCR does well and what our geometry pass does
-not do at all. **And the disagreement is machine-checkable WITHOUT trusting OCR:** if our captured
-label is a strict prefix of OCR's row text and OCR's row is longer, that is a truncation finding.
-We do not need OCR to be right - we need it to disagree in a detectable direction. That is a
-deterministic check sitting on top of a nondeterministic witness, and it would have flagged all 16
-rows automatically. He also noted, fairly, that we had already agreed to use OCR this way and I
-went on hand-diagnosing instead.
-
-**NEXT ROUND IS NOW OBVIOUS AND DETERMINISTIC: assemble the whole logical row before deriving.**
-The continuation text is already in `document.text` - this is an assembly defect, not an
-acquisition one. Fix that first; the worksheet-addressing question (below) is only worth answering
-once the model can see the full reference.
-
-### Worker M20-S36 status (2026-08-03)
-
-Implemented deterministic logical-row assembly for both the legacy text path and the geometry path.
-Continuation text is now attached to the row label and to the matching source evidence span, with
-explicit boundaries for new anchors, blank lines, page and form headers, section transitions, and
-cosmetic dot leaders. Geometry-backed spans use the assembled row at the same source offset, so a
-duplicate printed anchor cannot select a different row. Added focused coverage for legacy assembly,
-all nine loadable outline shapes, wrapped Form 6251 rows, and label/evidence agreement.
-
-The prior 16-of-94 truncation cases now have complete assembled evidence: normalized label/span
-mismatches are 0 across the current 96 formula rows. The denominator increased to 96 because full
-labels expose formula cues on `schedule_a_2025` line 15 and `schedule_1a_2025` line 36a. Rows with
-materially longer assembled labels, and therefore derivation behavior to inspect, are:
-`form_1040_2025` 37; `schedule_a_2025` 15; `schedule_d_2025` 7, 15; `schedule_1_2025` 10, 26;
-`schedule_1a_2025` 30, 36a, 38; `schedule_2_2025` 21; `form_6251_2025` 4, 6, 12, 13, 18, 20,
-27, 39, 40; `schedule_b_2025` 4.
-
-Exact verification:
-
-- `RAN: $env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp_codex'; .venv\Scripts\python.exe -m pytest tests/test_derive_cells_m20.py tests/test_structure_m20.py tests/test_outline_span_resolution_m20.py tests/test_extract_outline_m4.py tests/test_extract_m16.py tests/test_batch_bundle_m10.py tests/test_schedule_d_bundle_m9.py tests/test_m20_s31.py tests/test_form_completeness_m20.py -q -> 113 passed, 1 warning in 18.39s.`
-- `RAN: .venv\Scripts\python.exe tools\check_ascii.py -> ASCII check OK.`
-- `RAN: git diff --check -> exit 0, no output.`
-- `RAN: .venv\Scripts\python.exe -m pytest tests/test_acquire_citation_check.py -q -> 9 passed in 0.14s.`
-- `RAN: .venv\Scripts\python.exe -m pytest tests/test_citation_cleanup_m18.py -q -> 8 passed, 1 warning in 1.04s.`
-- `RAN: .venv\Scripts\python.exe -m pytest tests/test_graph_validator.py -q -> 14 passed in 121.98s (0:02:01).`
-- `RAN: .venv\Scripts\python.exe -m pytest tests/test_generated_review_m20.py -q -> 6 passed in 30.61s.`
-- `RAN: .venv\Scripts\python.exe -m tax_graph.cli validate 2025 -> tax year 2025: documents=18 nodes=441 tables=2 edges=409 rules=17 citations=401 decisions=2 routing_edges=90 triggers=12 expectations=4; jsonschema: ON; graph integrity OK - all references resolve.`
-- `RAN: .venv\Scripts\python.exe -m workbench.cli preflight --year 2025 -> review preflight passed - 2025; derived manifest entries=18; units=2224; derived cells=2120; blast radius=0; approved=0, needs_recheck=0, review_gap=591, unreviewed=1529.`
-- `RAN: strict citation integrity inline check -> checked=401 strict_mismatches=36; known pre-existing baseline, unchanged by this slice.`
-- `NOT RUN: M20-S36 step 4 live-provider corpus rerun - the Worker sandbox has no outbound network; no provider result is claimed.`
+**DENOMINATOR DECISION (Worker asked): use 96, and report both.** Freezing at 94 for comparability
+would mean deliberately not deriving two real computed rows, which is the opposite of the goal.
+Comparability is preserved by reporting the denominator alongside the number, as above.
 
 ## Standing constraints (every M20 round)
 
@@ -236,7 +183,21 @@ client-managed server dies.
   `schedule_1a_2025` line 36a, so the current formula set is 96 rows rather than the prior 94.
   Should the next provider leg use the fuller 96-row derivation set, or should formula selection
   remain frozen to the prior 94-row denominator for comparability? No provider result is claimed.
-- **FOR JOHN - what is next, now that derivation is done? (raised 2026-08-03.)** The corpus
+- **FOR JOHN - the two scoping calls that block the last 5 rows (raised 2026-08-03).** Both are the
+  same shape as the Form 2441 question below, and answering all three together would clear every
+  open scoping item in one pass.
+  **(1) Are the tax worksheets in the base profile?** 6251 lines 13, 20 and 27 reference the
+  Qualified Dividends and Capital Gain Tax Worksheet and the Schedule D Tax Worksheet. Both live in
+  the IRS *instructions* rather than as standalone forms, and neither is a document in our graph,
+  so those rows reference addresses that do not exist. Either model them as documents, or declare
+  them out of scope and make the reference fail closed with a named reason instead of a confusing
+  self-reference. The 1040 and Schedule D reference the same worksheets, so this recurs.
+  **(2) Should the expression grammar carry a filing-status-dependent constant?** 6251 lines 18 and
+  39 need a threshold ($239,100 / $119,550) and a subtrahend ($4,782 / $2,391) that both vary by
+  filing status. They resolve today via repair, so this is a cost question rather than a
+  correctness one - but the same shape appears wherever the IRS prints a bracketed
+  married-filing-separately figure, which is common.
+- **FOR JOHN - what is next, once the scoping calls are made? (raised 2026-08-03.)** The corpus
   resolves 92 of 94 rows with 3 repairs, and the only remaining failures are model-quality issues
   on `form_6251_2025`. Chasing those means tuning a nondeterministic model for 2 rows, which is a
   poor trade. Three candidates, and it is a product call:
@@ -270,76 +231,8 @@ client-managed server dies.
 
 ## From Architect
 
-- **M20-S36 TASK - ASSEMBLE THE WHOLE LOGICAL ROW BEFORE DERIVING (Architect, Claude Opus 5,
-  2026-08-03).** Ledger: the RAN/NOT RUN rule, D9, D6. **Deterministic. No model calls in steps
-  1-3.**
-
-  **The defect, located precisely.** `build_outline_tree` (`tax_graph/extract/outline.py:191`)
-  walks `document.text.splitlines()`. A line matching `LINE_RE` becomes an `OutlineNode` with
-  `label=body`, where body is the remainder of **that one physical line**
-  (`outline.py:242`). Any line that does not match is **skipped outright**
-  (`outline.py:226-227`). So when a printed row wraps, every continuation line is DISCARDED - not
-  truncated at the edges, dropped from the outline entirely. The text is present in
-  `document.text`; we simply never attach it. **This is an assembly defect, not an acquisition
-  one - no OCR and no model is needed to fix it.**
-
-  **Measured impact: 16 of 94 formula rows corpus-wide** - `form_6251_2025` 9,
-  `schedule_d_2025` 2, `schedule_1_2025` 2, `schedule_1a_2025` 2, `schedule_2_2025` 1. **All five
-  remaining 6251 failures sit on truncated rows.** The decisive case is line 18: we keep
-  `If line 17 is $239,100 or less (...), multiply line 17 by 26% (0.26).` and drop
-  `Otherwise, multiply line 17 by 28% (0.28) and subtract $4,782 ($2,391 if married filing
-  separately) from the result`. The recorded failure was `IF_ELSE requires exactly 4 arguments` -
-  the model could not supply an else-branch it was never shown.
-
-  **Step 1 - assemble continuation lines into the row body.** After a `LINE_RE` match, consume
-  following lines that are NOT a new line anchor, NOT a `Header:` line, NOT a page marker, and not
-  blank, appending them to the body. Stop at the first line that is any of those.
-  **Two traps, both of which have already cost this project a round:**
-  a. **Keep the evidence span consistent with the label.** `_span_for_line` returns a span whose
-     text is a single line. If the prompt shows an assembled label while `validate_cell_output`
-     checks the quote against a one-line span, **every quote on an assembled row fails
-     `quote_not_verbatim`** - the exact prompt-shows-X / validator-checks-Y defect from S28. The
-     evidence span for an assembled row must carry the assembled text.
-  b. **State the substring rule in normalized terms.** Joining source lines with a single space
-     reproduces the source modulo the newline, so the S29 guarantee still holds as "a literal
-     substring of the acquired text **after whitespace normalization**" - which is what
-     `clean_form_face_text` already does with `" ".join(text.split())`. Do NOT reorder or
-     reconstruct; joining adjacent lines in source order is not reordering.
-
-  **Step 2 - assert the outline shape did not change.** Assembling continuations must not create,
-  merge, or lose nodes. Per-document `outline_node_count` and `line_anchor_count` must be
-  IDENTICAL to today: `form_1040_2025` 60/59, `schedule_a_2025` 29/28, `schedule_d_2025` 31/24,
-  `schedule_1_2025` 66/61, `schedule_2_2025` 52/45, `schedule_3_2025` 38/35,
-  `schedule_1a_2025` 60/48, `form_6251_2025` 68/63, `schedule_b_2025` 12/8. Add a test asserting
-  these. **A changed count means the assembler swallowed a row - stop and report rather than
-  adjusting the expected numbers.**
-
-  **Step 3 - report the truncation count, which is the round's headline. It is 16 today and the
-  target is 0.** The check: find the captured label in `document.text`, and look at the next
-  non-blank line; if it does not begin a new printed anchor, the row was truncated. Report the
-  per-document table in the same shape as above. Also report, without fixing, any row where
-  assembly makes the label materially longer - those are the rows whose derivation should change.
-
-  **Step 4 - rerun the full derivable corpus once and `form_6251_2025` twice.** Report per
-  document: attempted, derived, repaired, errored, and the top three `validator_failures_by_kind`.
-  **The numbers to beat: corpus resolved 92/94 with derived=89 and repaired=3; 6251 resolved 27/29
-  and 26/29 across two runs.** Report both 6251 runs even if identical.
-  **Expect `payload` on lines 18 and 39 to disappear** - those are the pure else-branch cases. The
-  worksheet rows (13, 20, 27) may still fail; that is the separate addressing question and it is
-  NOT this round's target. Say plainly which of the five resolved and which did not.
-  If approved external network is unavailable, do steps 1-3, declare step 4 NOT RUN up front, and
-  hand back - the Architect will run it.
-
-  **Do not:** relax `quote_not_verbatim`, `self_reference`, `operand_not_printed` or any other
-  check to accommodate assembled text; add a retry policy; model the Qualified Dividends worksheet
-  (separate scoping question, blocked on John); add any per-document special case; reintroduce
-  reordering into `clean_form_face_text`; promote anything.
-  **Stop conditions:** any diff in the protected directories; `derive_cells` acquiring a disk
-  write; any harness output landing inside the repository; a `startswith` on a document id
-  anywhere; a change in the per-document outline counts in step 2.
-  Tier 3. Declared files plus honest `RAN:`/`NOT RUN:`. ASCII, `git diff --check`, module-form
-  `validate 2025`, preflight with `legacy_mined` explicit (394), strict citations (36).
-  **ONE local commit** - and run `git status` first; do not commit paths you did not touch.
+- *(No active Worker task. Truncation, span selection, operand inventory and label cleaning are all
+  fixed; the last 5 rows are blocked on two scoping calls in **Open for Architect**.)*
 
 ## Architect decisions
 
