@@ -26,3 +26,8 @@ form face text:
 
 instruction text:
 <<instruction_text>>
+
+Optional human reviewer instruction. Treat this as a targeted correction to your
+interpretation of the evidence, while still obeying every output validator and
+the verbatim quote requirement. If blank, use only the supplied evidence.
+<<human_comment>>

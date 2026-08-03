@@ -122,12 +122,25 @@ the derived cell inventory, graph, or drafts. Each address-keyed verdict is
 schema-validated and carries the reviewed label, expression, separated form and
 instruction citation slots, canonical fingerprint, judgement, an automatically captured
 machine/session reviewer id, and UTC timestamp. An optional batch tag groups a review
-pass without entering the content fingerprint. The UI offers Accept and Reject; Reject
-may be recorded without a comment after an explicit confirmation, while comments remain
-strongly encouraged as the pipeline's rework input. A changed fingerprint produces a
-derived `needs_recheck` state. Review-gap expressions are counted explicitly as
-`NOT_REVIEWABLE` rather than as unreviewed work. No workbench action asserts a
+pass without entering the content fingerprint. Review comments carry an explicit
+`origin`: `curated` comments are bounded pipeline input, while `contributed` comments
+are retained for lead editing and never reach the model. Legacy comments without an
+origin fail closed and are not used as model input. The latest curated comment for an
+address wins; the complete ledger remains available for audit. A changed fingerprint
+produces a derived `needs_recheck` state. Review-gap expressions are counted explicitly
+as `NOT_REVIEWABLE` rather than as unreviewed work. No workbench action asserts a
 human-review claim on the user's behalf.
+
+## Human-loop re-derive
+
+The pipeline exposes a single-cell, non-persisting re-derive callback with the shape
+`document_id`, `line`, and an optional `draft_comment`. The workbench server exposes it
+at `POST /api/rederive` when the application host injects that callback. The request
+requires the local write token, returns the derived row plus its validation report, and
+writes no draft, graph, verdict, or session state. A draft comment is a try-again input;
+it is not stored until a separate explicit ledger action records the verified comment.
+The server keeps this callback injected so the artifact-only workbench does not import
+pipeline code.
 
 ## Year-to-year rollover review (John's decisions, 2026-07-30)
 
@@ -352,3 +365,5 @@ through `GET/PUT /api/sessions/<queue_id>`. PUT and verdict emission require the
 per-launch token in `X-Workbench-Token`. `POST /api/verdicts` validates the human
 decision and emits the existing append-only, content-hashed verdict format; it
 never applies a verdict or edits graph, derived cells, tier, or provenance artifacts.
+When a verdict includes a comment, its optional `origin` is copied to the address
+ledger; omitted origin defaults to `contributed` for fail-closed behavior.

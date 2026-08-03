@@ -107,6 +107,55 @@ def test_prompt_includes_sorted_untruncated_printed_line_inventory() -> None:
     assert client.calls[0]["prompt"] == "printed: 1, 8a, 8b, 8z, 21, 25d"
 
 
+def test_curated_human_comment_is_rendered_for_one_address_only() -> None:
+    address = "2025/document=form_1040/line=15/control=amount"
+    row = {**_frame()[0], "canonical_address": address}
+    client = FakeClient([
+        {
+            "expression": {
+                "op": "MAX",
+                "args": [
+                    {"op": "SUBTRACT", "args": [{"line": "11b"}, {"line": "14"}]},
+                    {"const": 0},
+                ],
+            },
+            "quote": row["form_face_text"],
+        }
+    ])
+
+    result = derive_cells(
+        CellFrame.from_rows([row]),
+        "comment: <<human_comment>>",
+        "secret",
+        client=client,
+        human_comments={address: "Use the printed line 14 rule."},
+    )
+
+    assert result.rows[0].status == "derived"
+    assert client.calls[0]["prompt"] == "comment: Use the printed line 14 rule."
+    assert result.rows[0].human_comment == "Use the printed line 14 rule."
+
+
+def test_empty_human_comment_keeps_the_prompt_value_empty() -> None:
+    client = FakeClient([
+        {
+            "expression": {"op": "COPY", "args": [{"line": "21"}]},
+            "quote": _frame()[1]["form_face_text"],
+        }
+    ])
+
+    result = derive_cells(
+        CellFrame.from_rows(_frame()[1:]),
+        "before\n<<human_comment>>\nafter",
+        "secret",
+        client=client,
+        human_comments={},
+    )
+
+    assert result.rows[0].status == "derived"
+    assert client.calls[0]["prompt"] == "before\n\nafter"
+
+
 def test_cell_frame_round_trip_and_missing_client_fail_closed() -> None:
     frame = CellFrame.from_rows(_frame())
     result = derive_cells(frame, "<<form>> <<line>>", None)

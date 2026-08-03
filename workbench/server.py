@@ -9,7 +9,7 @@ import platform
 import secrets
 import socket
 import uuid
-from typing import Any
+from typing import Any, Callable, Mapping
 
 from flask import Flask, jsonify, request, send_file
 
@@ -46,6 +46,7 @@ def create_app(
     cache_dir: str | Path | None = None,
     state_dir: str | Path | None = None,
     verdict_dir: str | Path | None = None,
+    rederive_cell: Callable[[str, str, str | None], Mapping[str, Any]] | None = None,
 ) -> Flask:
     """Create a preflighted, local review API application."""
     root_path = Path(root).resolve()
@@ -79,6 +80,7 @@ def create_app(
         WORKBENCH_SESSION_ROOT=session_root,
         WORKBENCH_VERDICT_ROOT=verdict_root,
         WORKBENCH_REVIEWER_ID=_machine_reviewer_id(),
+        WORKBENCH_REDERIVE_CELL=rederive_cell,
     )
     entries = {
         str(entry["queue_id"]): entry
@@ -405,6 +407,40 @@ def create_app(
         response["progress"] = session_progress(session_payload, units)
         return jsonify(response)
 
+    @app.post("/api/rederive")
+    def post_rederive() -> Any:
+        """Try one cell again with an optional comment and persist nothing."""
+        denied = _require_write_token(app)
+        if denied is not None:
+            return denied
+        handler = app.config.get("WORKBENCH_REDERIVE_CELL")
+        if handler is None:
+            return jsonify({"error": "cell re-derive is not configured"}), 501
+        payload = request.get_json(silent=True)
+        if not isinstance(payload, dict):
+            return jsonify({"error": "re-derive body must be a JSON object"}), 400
+        unexpected = sorted(set(payload) - {"document_id", "line", "draft_comment"})
+        if unexpected:
+            return jsonify({"error": "unexpected re-derive fields", "fields": unexpected}), 400
+        document_id = str(payload.get("document_id") or "").strip()
+        line = str(payload.get("line") or "").strip()
+        draft_comment = payload.get("draft_comment")
+        if not document_id or not line:
+            return jsonify({"error": "document_id and line are required"}), 400
+        if draft_comment is not None and not isinstance(draft_comment, str):
+            return jsonify({"error": "draft_comment must be a string or null"}), 400
+        if isinstance(draft_comment, str) and len(draft_comment) > 10000:
+            return jsonify({"error": "draft_comment is too long"}), 400
+        try:
+            result = handler(document_id, line, draft_comment)
+        except ValueError as exc:
+            return jsonify({"error": str(exc)}), 400
+        except Exception as exc:  # noqa: BLE001 - local provider failures become one request error.
+            return jsonify({"error": f"re-derive failed: {type(exc).__name__}: {exc}"}), 502
+        if not isinstance(result, Mapping):
+            return jsonify({"error": "re-derive handler returned a non-object result"}), 502
+        return jsonify(dict(result))
+
     @app.post("/api/verdicts")
     def post_verdict() -> Any:
         denied = _require_write_token(app)
@@ -416,7 +452,7 @@ def create_app(
         allowed = {
             "queue_id", "verdict_id", "reviewer_id", "human_minutes", "verdict",
             "reviewed_at", "reason", "object_ref", "source_override", "comment",
-            "reviewer_tag",
+            "origin", "reviewer_tag",
         }
         unexpected = sorted(set(payload) - allowed)
         if unexpected:
@@ -567,6 +603,7 @@ def _append_address_review_if_applicable(
             "review_source": cell.get("review_source"),
         },
         comment=str(comment) if comment is not None else None,
+        origin=str(verdict_payload.get("origin") or "") or None,
         reviewer_tag=str(verdict_payload.get("reviewer_tag") or "") or None,
     )
 

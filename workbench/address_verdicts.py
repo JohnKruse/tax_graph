@@ -42,6 +42,7 @@ _EXPRESSION_KIND_BUCKETS = {
     "literal": "NOT_REVIEWABLE",
     "reference": "NOT_REVIEWABLE",
 }
+_COMMENT_ORIGINS = frozenset({"curated", "contributed"})
 _COMMUTATIVE_EXPRESSION_KINDS = frozenset({"sum", "multiply", "min", "max"})
 _PUNCTUATION = str.maketrans({
     "\u2010": "-",
@@ -192,6 +193,8 @@ def append_address_verdict(
     store_path: str | Path | None = None,
     provenance: Mapping[str, Any] | None = None,
     comment: str | None = None,
+    origin: str | None = None,
+    comment_origin: str | None = None,
     reviewer_tag: str | None = None,
 ) -> dict[str, Any]:
     """Append one address verdict and refuse duplicate ids or empty identity."""
@@ -234,8 +237,18 @@ def append_address_verdict(
     }
     if provenance:
         record["provenance"] = dict(provenance)
-    if comment is not None and str(comment).strip():
-        record["comment"] = str(comment).strip()
+    comment_value = str(comment).strip() if comment is not None else ""
+    selected_origin = origin if origin is not None else comment_origin
+    if origin is not None and comment_origin is not None and str(origin) != str(comment_origin):
+        raise ValueError("origin and comment_origin must agree")
+    if comment_value:
+        origin_value = str(selected_origin or "contributed").strip()
+        if origin_value not in _COMMENT_ORIGINS:
+            raise ValueError("comment origin must be curated or contributed")
+        record["comment"] = comment_value
+        record["origin"] = origin_value
+    elif selected_origin is not None:
+        raise ValueError("comment origin requires a non-empty comment")
     if reviewer_tag is not None and str(reviewer_tag).strip():
         record["reviewer_tag"] = str(reviewer_tag).strip()
     _validate_record(record)
@@ -273,6 +286,40 @@ def load_address_verdicts(path: str | Path) -> list[dict[str, Any]]:
         seen_ids.add(verdict_id)
         records.append(record)
     return records
+
+
+def latest_curated_comments(
+    history: Iterable[Mapping[str, Any]],
+) -> dict[str, str]:
+    """Return the newest curated comment for each canonical address.
+
+    The ledger remains complete and append-only.  This projection is the small
+    bounded input sent to a derivation prompt: contributed comments and legacy
+    comments without an explicit origin are intentionally excluded.
+    """
+    latest: dict[str, tuple[int, int, str]] = {}
+    for index, item in enumerate(history):
+        record = dict(item)
+        _validate_record(record)
+        if record.get("origin") != "curated":
+            continue
+        comment = str(record.get("comment") or "").strip()
+        if not comment:
+            continue
+        address = str(record["address"])
+        candidate = (int(record["reviewed_at_epoch"]), index, comment)
+        previous = latest.get(address)
+        if previous is None or candidate[:2] >= previous[:2]:
+            latest[address] = candidate
+    return {address: value[2] for address, value in latest.items()}
+
+
+def latest_curated_comment(
+    address: str,
+    history: Iterable[Mapping[str, Any]],
+) -> str | None:
+    """Return the newest curated comment for one address, if one exists."""
+    return latest_curated_comments(history).get(str(address))
 
 
 def derive_cell_coverage(
@@ -511,6 +558,15 @@ def _validate_record(record: Mapping[str, Any], *, source: str = "address verdic
         raise ValueError(f"{source} reviewed_at_epoch must be an integer")
     if int(record["reviewed_at_epoch"]) != reviewed_at_epoch:
         raise ValueError(f"{source} reviewed_at and reviewed_at_epoch disagree")
+    comment = record.get("comment")
+    origin = record.get("origin")
+    if comment is not None:
+        if not isinstance(comment, str) or not comment.strip():
+            raise ValueError(f"{source} comment must be a non-empty string")
+        if origin is not None and origin not in _COMMENT_ORIGINS:
+            raise ValueError(f"{source} origin must be curated or contributed")
+    elif origin is not None:
+        raise ValueError(f"{source} origin requires comment")
 
 
 def _latest_by_address(history: Iterable[Mapping[str, Any]]) -> dict[str, dict[str, Any]]:

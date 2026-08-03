@@ -30,6 +30,7 @@
     "reviewed_at_epoch": {"type": "integer"},
     "provenance": {"type": "object", "additionalProperties": true},
     "comment": {"type": "string"},
+    "origin": {"type": "string", "enum": ["curated", "contributed"]},
     "reviewer_tag": {"type": "string", "minLength": 1}
   },
   "$defs": {

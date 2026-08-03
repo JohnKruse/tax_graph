@@ -46,6 +46,8 @@ class CellRecord:
     form_face_text: str = ""
     instruction_text: str = ""
     instruction_locator: str = ""
+    canonical_address: str = ""
+    human_comment: str = ""
     expression: dict[str, Any] | None = None
     rendered: str = ""
     quote: str = ""
@@ -72,6 +74,8 @@ class CellRecord:
             "form_face_text",
             "instruction_text",
             "instruction_locator",
+            "canonical_address",
+            "human_comment",
             "expression",
             "rendered",
             "quote",
@@ -87,6 +91,8 @@ class CellRecord:
         }
         return cls(
             **{key: value.get(key, getattr(cls, key, "")) for key in CELL_INPUT_FIELDS},
+            canonical_address=str(value.get("canonical_address") or ""),
+            human_comment=str(value.get("human_comment") or ""),
             expression=value.get("expression"),
             rendered=str(value.get("rendered") or ""),
             quote=str(value.get("quote") or ""),
@@ -114,6 +120,8 @@ class CellRecord:
             "form_face_text": self.form_face_text,
             "instruction_text": self.instruction_text,
             "instruction_locator": self.instruction_locator,
+            "canonical_address": self.canonical_address,
+            "human_comment": self.human_comment,
             "expression": self.expression,
             "rendered": self.rendered,
             "quote": self.quote,
@@ -271,6 +279,7 @@ def derive_cells(
     model: str = "configured-llm",
     provider: str = "configured-provider",
     operations: Sequence[str] | None = None,
+    human_comments: Mapping[str, str] | None = None,
     max_depth: int = 2,
     max_tokens: int = 4000,
     temperature: float | None = None,
@@ -347,6 +356,11 @@ def derive_cells(
             allowed_operations,
             depth=max_depth,
         )
+        if human_comments is not None:
+            address = row.canonical_address or str(row.metadata.get("canonical_address") or "")
+            row.human_comment = str(
+                human_comments.get(address, row.human_comment) or ""
+            )
         rendered_prompt = _render_cell_prompt(prompt, row)
         first_failure: tuple[CellValidationIssue, ...] = ()
         try:
@@ -1134,6 +1148,7 @@ def _render_cell_prompt(template: str, row: CellRecord) -> str:
         "instruction_text": row.instruction_text,
         "instruction_locator": row.instruction_locator,
         "printed_lines": ", ".join(printed_lines),
+        "human_comment": row.human_comment,
     }
     try:
         return render_prompt(template, values)

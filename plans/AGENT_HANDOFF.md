@@ -21,6 +21,24 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 under **From Architect**. **S36 is ACCEPTED at `f5dfd55`.** The three scoping calls in
 **Open for Architect** remain with John but block nothing in this round.
 
+## Worker checkpoint - M20-S37
+
+Steps 1-3 implemented. The existing address ledger now records explicit `origin` values
+(`curated` or `contributed`) and exposes the latest-curated projection; only curated text
+can enter a derivation prompt. `derive_cells` accepts bounded address-keyed comments, the
+pure `rederive_cell(document_id, line, draft_comment)` path returns a row plus validation
+without writing, and `POST /api/rederive` exposes an injected callback while preserving the
+artifact-only workbench boundary. Prompt rendering, schema, docs, and consumers are covered.
+
+RAN: `$testRoot='C:\Users\devbox\.codex\visualizations\2026\08\03\019fc7d0-57ba-72b3-bcbe-74d955cb7c43\m20run_final'; New-Item -ItemType Directory -Path $testRoot -Force | Out-Null; $env:PYTEST_DEBUG_TEMPROOT=$testRoot; .venv\Scripts\python.exe -m pytest -p no:cacheprovider tests/test_review_verdicts_m20.py tests/test_derive_cells_m20.py tests/test_rederive_m20.py tests/test_workbench_rederive_m20.py tests/test_m20_s31.py tests/test_workbench_m15.py tests/test_workbench_server_m15.py tests/test_workbench_write_api_m15.py -q` -> 86 passed in 170.44s.
+RAN: `.venv\Scripts\python.exe tools/check_ascii.py` -> ASCII check OK.
+RAN: `.venv\Scripts\python.exe -m tax_graph.cli validate 2025` -> graph integrity OK; documents=18 nodes=441 tables=2 edges=409 rules=17 citations=401 decisions=2 routing_edges=90 triggers=12 expectations=4.
+RAN: `.venv\Scripts\python.exe -m workbench.cli --root . --year 2025 preflight` -> passed; entries=18 units=2224 derived_cells=2120 legacy_mined=394.
+RAN: `.venv\Scripts\python.exe -c "from tax_graph.acquire.citation_check import check_graph_citations; report=check_graph_citations(year=2025, raw_store='.cache/raw', root='.', source_map={'form_8949_2025': 'instructions_form_8949_2025'}); print(f'checked={report.checked} strict_mismatches={len(report.mismatches)}')"` -> checked=401 strict_mismatches=36.
+RAN: `git diff --check` -> no output.
+RAN: `git diff --stat -- graph/2025/nodes graph/2025/edges graph/2025/rules graph/2025/field_maps` -> empty diff.
+NOT RUN: S37 Steps 4-5 live provider corpus and no-comment 96-row comparison. The Worker sandbox has no outbound network; no provider result is claimed. Architect should run the approved provider leg and record the before/after expression for the steered row.
+
 ## Current round
 
 **M20-S36 ACCEPTED (Architect, Claude Opus 5, 2026-08-03) at `f5dfd55`.** Steps 1-3 delivered,

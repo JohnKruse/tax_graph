@@ -12,6 +12,8 @@ from workbench.address_verdicts import (
     append_address_verdict,
     derive_cell_coverage,
     expression_kind_bucket,
+    latest_curated_comment,
+    latest_curated_comments,
     load_address_verdicts,
     make_review_content,
     report_blast_radius,
@@ -76,6 +78,75 @@ def test_comment_is_review_metadata_not_content_identity(tmp_path: Path) -> None
     assert first["content_fingerprint"] == second["content_fingerprint"]
     assert "comment" not in first
     assert second["comment"] == "Needs a second look."
+    assert second["origin"] == "contributed"
+
+
+def test_latest_curated_comment_wins_and_contributed_text_is_excluded(tmp_path: Path) -> None:
+    address = "2025/document=form_a/section=income/control=amount"
+    path = tmp_path / "address_verdicts.jsonl"
+    append_address_verdict(
+        root=tmp_path,
+        year=2025,
+        address=address,
+        label="Amount",
+        cited_text=["Enter amount."],
+        reviewer_id="contributor",
+        reviewed_at="2026-07-29T09:00:00+00:00",
+        verdict_id="contributed_1",
+        comment="This is broke.",
+        origin="contributed",
+        store_path=path,
+    )
+    append_address_verdict(
+        root=tmp_path,
+        year=2025,
+        address=address,
+        label="Amount",
+        cited_text=["Enter amount."],
+        reviewer_id="john",
+        reviewed_at="2026-07-29T10:00:00+00:00",
+        verdict_id="curated_1",
+        comment="Use the amount from line 17 before applying the threshold.",
+        origin="curated",
+        store_path=path,
+    )
+    append_address_verdict(
+        root=tmp_path,
+        year=2025,
+        address=address,
+        label="Amount",
+        cited_text=["Enter amount."],
+        reviewer_id="john",
+        reviewed_at="2026-07-29T11:00:00+00:00",
+        verdict_id="curated_2",
+        comment="Use the printed filing-status threshold and subtrahend.",
+        origin="curated",
+        store_path=path,
+    )
+
+    history = load_address_verdicts(path)
+    assert latest_curated_comment(address, history) == (
+        "Use the printed filing-status threshold and subtrahend."
+    )
+    assert latest_curated_comments(history) == {
+        address: "Use the printed filing-status threshold and subtrahend."
+    }
+
+
+def test_comment_origin_requires_comment_and_known_value(tmp_path: Path) -> None:
+    common = {
+        "root": tmp_path,
+        "year": 2025,
+        "address": "2025/document=form_a/section=income/control=amount",
+        "label": "Amount",
+        "cited_text": ["Enter amount."],
+        "reviewer_id": "john",
+        "store_path": tmp_path / "address_verdicts.jsonl",
+    }
+    with pytest.raises(ValueError, match="comment origin requires"):
+        append_address_verdict(**common, origin="curated")
+    with pytest.raises(ValueError, match="comment origin must be"):
+        append_address_verdict(**common, comment="Needs work.", origin="guess")
 
 
 def test_fingerprint_binds_expression_and_normalizes_equivalent_operands() -> None:
