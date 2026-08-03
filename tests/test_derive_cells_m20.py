@@ -89,6 +89,24 @@ def test_derive_cells_returns_row_level_results_and_writes_nothing(tmp_path: Pat
     assert "line 15" in client.calls[0]["prompt"]
 
 
+def test_prompt_includes_sorted_untruncated_printed_line_inventory() -> None:
+    row = {
+        **_frame()[1],
+        "metadata": {"printed_lines": ["25d", "8z", "8a", "1", "8b", "21"]},
+    }
+    client = FakeClient([
+        {
+            "expression": {"op": "COPY", "args": [{"line": "8a"}]},
+            "quote": row["form_face_text"],
+        }
+    ])
+
+    result = derive_cells(CellFrame.from_rows([row]), "printed: <<printed_lines>>", "secret", client=client)
+
+    assert result.rows[0].status == "derived"
+    assert client.calls[0]["prompt"] == "printed: 1, 8a, 8b, 8z, 21, 25d"
+
+
 def test_cell_frame_round_trip_and_missing_client_fail_closed() -> None:
     frame = CellFrame.from_rows(_frame())
     result = derive_cells(frame, "<<form>> <<line>>", None)
@@ -481,8 +499,20 @@ def test_missing_both_evidence_sources_is_row_local_error() -> None:
         ("15", "jointly or 15 Subtract line 14 from line 11b. 15", "15 Subtract line 14 from line 11b."),
         ("21", "a box on line 21 Add lines 19 and 20 21", "21 Add lines 19 and 20"),
         ("22", "12a, 12b, 12c, 22 Subtract line 21 from line 18. 22", "22 Subtract line 21 from line 18."),
-        ("1z", "z Add lines 1a through 1h 1z", "Add lines 1a through 1h 1z"),
-        ("25d", "d Add lines 25a through 25c 25d", "Add lines 25a through 25c 25d"),
+        ("1z", "z Add lines 1a through 1h 1z", "Add lines 1a through 1h"),
+        ("25d", "d Add lines 25a through 25c 25d", "Add lines 25a through 25c"),
+        ("8e", "e Add lines 8a through 8c 8e", "Add lines 8a through 8c"),
+        ("14c", "c Add lines 14a and 14b 14c", "Add lines 14a and 14b"),
+        (
+            "36b",
+            "your spouse was born before January 2, 1961, enter the amount from line 35 36b",
+            "your spouse was born before January 2, 1961, enter the amount from line 35",
+        ),
+        (
+            "34",
+            "Refund 34 If line 33 is more than...",
+            "34 If line 33 is more than...",
+        ),
     ],
 )
 def test_clean_form_face_text_starts_at_its_own_line(line: str, raw: str, expected: str) -> None:
@@ -549,8 +579,13 @@ def test_real_1040_frame_carries_join_ownership_and_printed_line_inventory() -> 
         for row in frame.rows
         for span in row.metadata["evidence_spans"]
     )
+    normalized_sources = {" ".join(source.split()) for source in source_texts}
+    assert all(
+        any(" ".join(row.form_face_text.split()) in source_text for source_text in normalized_sources)
+        for row in frame.rows
+    )
     rows_by_line = {row.line: row for row in frame.rows}
-    assert rows_by_line["1z"].form_face_text == "Add lines 1a through 1h 1z"
-    assert rows_by_line["25d"].form_face_text == "Add lines 25a through 25c 25d"
+    assert rows_by_line["1z"].form_face_text == "Add lines 1a through 1h"
+    assert rows_by_line["25d"].form_face_text == "Add lines 25a through 25c"
     assert frame.rows[5].label == "15 Subtract line 14 from line 11b. If zero or less, enter -0-. This is your taxable income"
     assert frame.rows[8].label == "22 Subtract line 21 from line 18. If zero or less, enter -0-"

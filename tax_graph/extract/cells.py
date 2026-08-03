@@ -520,12 +520,12 @@ def clean_form_face_text(text: str, line: str) -> str:
     """Remove neighboring geometry text without changing source token order.
 
     The deterministic geometry pass can combine adjacent columns or rows into
-    one text row.  The printed line token is the only stable boundary owned by
-    this cell, so retain text from that token onward and remove a repeated
-    trailing token.  A split leading suffix such as ``z ... 1z`` is trimmed
-    from the source prefix, but the remaining text is never reordered or
-    reconstructed.  The returned value therefore remains a literal substring
-    of the acquired text after whitespace normalization.
+    one text row.  When the cell's anchor is followed by descriptive text, the
+    label starts at the first such occurrence and a repeated trailing anchor is
+    truncated.  When the anchor is only a final right-hand-column token, keep
+    the preceding text, dropping a split leading suffix and that final token.
+    Neither branch reorders or reconstructs text, so the returned value remains
+    a literal substring of the acquired text after whitespace normalization.
     """
     value = " ".join(str(text or "").split())
     anchor = str(line or "").strip()
@@ -536,13 +536,17 @@ def clean_form_face_text(text: str, line: str) -> str:
     if not matches:
         return value
 
-    first = matches[0]
     suffix = anchor[-1:] if anchor[-1:].isalpha() else ""
-    if first.start() > 0 and suffix and value[:1].lower() == suffix.lower():
-        return value[len(suffix):].strip()
+    descriptive = [match for match in matches if value[match.end():].strip()]
+    if descriptive:
+        cleaned = value[descriptive[0].start():].strip()
+        return re.sub(rf"\s+{re.escape(anchor)}$", "", cleaned, flags=re.IGNORECASE).strip()
 
-    cleaned = value[first.start():].strip()
-    return re.sub(rf"\s+{re.escape(anchor)}$", "", cleaned, flags=re.IGNORECASE).strip()
+    final = matches[-1]
+    preceding = value[:final.start()].strip()
+    if suffix and re.match(rf"{re.escape(suffix)}(?=\s|$)", preceding, re.IGNORECASE):
+        preceding = preceding[len(suffix):].strip()
+    return preceding
 
 
 def _drop_instruction_evidence(
@@ -1121,6 +1125,7 @@ def _role_for(operation: str, index: int) -> str:
 
 
 def _render_cell_prompt(template: str, row: CellRecord) -> str:
+    printed_lines = sorted(_available_lines(row), key=_line_sort_key)
     values = {
         "form": row.form,
         "line": row.line,
@@ -1128,6 +1133,7 @@ def _render_cell_prompt(template: str, row: CellRecord) -> str:
         "form_face_text": row.form_face_text,
         "instruction_text": row.instruction_text,
         "instruction_locator": row.instruction_locator,
+        "printed_lines": ", ".join(printed_lines),
     }
     try:
         return render_prompt(template, values)

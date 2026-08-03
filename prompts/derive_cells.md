@@ -9,12 +9,17 @@ Include the whole rule, including any floor or cap stated by the instructions.
 For SUBTRACT and DIVIDE, put the value being reduced first. If this line is not
 computed, use REQUIRE_INPUT with one line operand naming itself.
 
+For operands naming a line on THIS form, use only a line from the printed-line
+inventory below. A printed range may skip entries: "8a through 8z" means the
+members that are actually printed on this form, not every letter in between.
+
 The quote must be copied verbatim from the supplied form-face or instruction text.
 
 form: <<form>>
 line: <<line>>
 label: <<label>>
 instruction locator: <<instruction_locator>>
+printed lines on this form: <<printed_lines>>
 
 form face text:
 <<form_face_text>>

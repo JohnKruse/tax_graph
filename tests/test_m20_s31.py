@@ -116,6 +116,7 @@ def test_all_prompt_templates_render_with_representative_values() -> None:
         "line": "7",
         "label": "Taxable income",
         "instruction_locator": "span_line_7",
+        "printed_lines": "1, 7, 8a",
         "form_face_text": "Form face text",
         "instruction_text": "Instruction text",
     }

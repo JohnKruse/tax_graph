@@ -17,10 +17,45 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## BALL
 
-**BALL: WORKER - M20-S34 (STOP LYING TO THE MODEL ABOUT THE FORM).** Task block under
-**From Architect**. **S33 is ACCEPTED at `771d169`.**
+**BALL: ARCHITECT - M20-S34 COMPLETE, AWAITING ACCEPTANCE.** Worker delivered the deterministic
+fixes and local gates below. Canary: Ground Truth.
 
 ## Current round
+
+**M20-S34 WORKER COMPLETE (Codex, 2026-08-03).** The round is implemented as a pipeline fix:
+
+- `clean_form_face_text` now chooses the branch from anchor position. Descriptive-text occurrences
+  start the cell text and drop only a repeated trailing anchor; a final right-column anchor keeps
+  its preceding source text and removes only the split suffix plus final token.
+- `_render_cell_prompt` supplies the complete printed-line inventory, sorted by `_line_sort_key`.
+  The prompt tells the model that same-form operands must come from that inventory and that printed
+  ranges may contain holes. The strict `operand_not_printed` validator is unchanged.
+- Tests cover all seven specified cleaner cases, the sorted inventory, prompt-template consumers,
+  and normalized source-substring provenance for the real 1040 frame.
+
+**Deterministic corpus scan (all 17 loadable form documents):** rows=94, trailing-own-line labels=0,
+normalized form-face substring failures=0. The `form_6251_2025` line 32 page-header span-selection
+defect remains reported and untouched, as required; it is not a cleaner fix.
+
+**Provider leg:** `NOT RUN: live derive_cells corpus command -> worker sandbox has no outbound
+network; the Architect must run the configured provider leg outside the sandbox.` No provider output
+or generated artifact was written.
+
+**Gates and exact evidence:**
+
+- `RAN: $env:PYTEST_DEBUG_TEMPROOT=(Join-Path (Get-Location) '.pytest_worker_m20_s34'); New-Item -ItemType Directory -Force -Path $env:PYTEST_DEBUG_TEMPROOT | Out-Null; .venv\Scripts\python.exe -m pytest tests/test_derive_cells_m20.py tests/test_derive_cells_s30.py tests/test_m20_s31.py -q -> 49 passed, 1 warning in 0.97s`.
+- `RAN: .venv\Scripts\python.exe tools/check_ascii.py -> ASCII check OK`.
+- `RAN: git diff --check -> exit 0`.
+- `RAN: .venv\Scripts\python.exe -m tax_graph.cli validate 2025 -> exit 0; documents=18, nodes=441, tables=2, edges=409, rules=17, citations=401; graph integrity OK`.
+- `RAN: .venv\Scripts\python.exe -m workbench.cli preflight --year 2025 -> exit 1; PermissionError: [WinError 5] on graph\2025\_drafts\form_1040_2025`.
+- `RAN: .venv\Scripts\python.exe -m workbench.cli preflight --year 2025 (read-only escalated retry) -> exit 0; units=2224, derived cells=2120, legacy_mined=394`.
+- `RAN: .venv\Scripts\python.exe -c "from tax_graph.acquire.citation_check import check_graph_citations; report=check_graph_citations(year='2025', raw_store='.cache/raw', root='.'); print(f'checked={report.checked} strict_mismatches={len(report.mismatches)}')" -> checked=401 strict_mismatches=36`.
+- `RAN: git diff --stat -- graph/2025/nodes graph/2025/edges graph/2025/rules graph/2025/field_maps -> empty`.
+
+No protected artifact, promotion, review verdict, or generated graph state changed. Open items remain
+the Architect's provider run and John's Form 2441 scope decision.
+
+## Previous accepted round (M20-S33)
 
 **M20-S33 ACCEPTED (Architect, Claude Opus 5, 2026-08-02) at `771d169`.** The Worker ran the whole
 corpus live, reported every document including the one that would not load, and ran the 1040 twice
@@ -217,8 +252,26 @@ client-managed server dies.
   two instruction sources, the verdict controls, AND the comment box go TOGETHER; today the
   controls sit in the left rail while content is in the right river. Keep the 15/40/45
   proportions. Show the two instruction sources SEPARATELY (form face, instruction page - never
-  concatenated). Wire the four buttons that already exist and **keep John's labels** - "Pipeline
-  defect" vs "Source pathology" is his distinction.
+  concatenated).
+- **VERDICT VOCABULARY - SUPERSEDED 2026-08-02. The four-button scheme is RETIRED.** John withdrew
+  his own earlier ruling that "Pipeline defect" vs "Source pathology" is the reviewer's
+  distinction, and he is right: **that is a DIAGNOSIS, and a reviewer has no way to make it.**
+  Verbatim: *"as a human, i have zero insight into the why. I just know that this
+  instruction/cell label is wrong."* Asking a reviewer to classify cause yields guesses carrying
+  false authority.
+  **The scheme is three OBSERVATIONS, not causes: accepted / commented-questioned / rejected.**
+  That is already an ordinal confidence scale - the middle tier is "something looks off and I am
+  not certain" - so do NOT add a separate numeric confidence field on top of it.
+  **Reviewers are instructed NOT to comment when a cell is fine.** John: *"the last thing I would
+  want is some guy saying 'good entry', 'this looks ok'."* Accept must be a single cheap action
+  with no text box; the comment box appears only for the other two tiers, and **text is REQUIRED
+  for those two** - a bare "rejected" is as useless as a cause the reviewer had to invent.
+  Silence-as-approval is safe only if the queue records what was PRESENTED as well as what was
+  acted on, so "reviewed and fine" stays distinguishable from "never shown".
+  Diagnosis moves downstream to where the evidence lives: the checker proposes the cause from the
+  witness disagreement, the maintainer confirms. **Reviewer detects; pipeline diagnoses.**
+  Current code accepts only `confirmed`/`rejected` (`workbench/static/app.js`), so the middle tier
+  is missing. The ledger is already address-keyed and append-only, so adding it is small.
 
 ## Open for Architect
 
