@@ -17,103 +17,101 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## BALL
 
-**BALL: WORKER - M20-S39 (SHOW THE MODEL THE NODE INVENTORY).** Task block under
-**From Architect**. **S38 is ACCEPTED at `514443e`.**
-
-## Worker progress (M20-S39, 2026-08-03)
-
-- Implemented the bounded prompt inventory. The default graph has 441 nodes (417 in the
-  base profile); 37 are `parameter` or `fact` nodes and are rendered as sorted id/label
-  entries. An absent inventory renders `none available`.
-- Unknown external form operands now pass only when the row evidence names that form and
-  its numeric line. The result records an unresolved required node using the existing
-  canonical source id convention, verbatim evidence label, quote-span citation, and no
-  value. Fabricated unknown-form references remain hard failures.
-- No 6251 parameter nodes exist in the protected graph. The needed future nodes are
-  threshold single=239100, threshold mfs=119550, subtrahend single=4782, and subtrahend
-  mfs=2391; each would cite both line 18 (`cite_span_form_6251_2025_0052`) and line 39
-  (`cite_span_form_6251_2025_0078`). They were not authored.
-- RAN: `.venv\\Scripts\\python.exe -m pytest tests/test_derive_cells_m20.py tests/test_m20_s31.py tests/test_rederive_m20.py tests/test_workbench_rederive_m20.py -q` -> 60 passed.
-- RAN: `.venv\\Scripts\\python.exe -m pytest tests/test_acquire_citation_check.py -q` -> 9 passed.
-- RAN: `.venv\\Scripts\\python.exe -m tax_graph.cli validate 2025` -> exit 0; graph integrity OK.
-- RAN: direct cached citation check -> checked 401, strict_mismatches 36, ok=False (known
-  baseline; no source files were fetched).
-- RAN: `.venv\\Scripts\\python.exe -m workbench.cli --root . --year 2025 preflight` ->
-  blocked by WinError 5 reading existing ignored `graph/2025/_drafts/*` directories.
-- RAN: `.venv\\Scripts\\python.exe -m pytest tests/test_graph_validator.py tests/test_review_preflight_m15.py tests/test_acquire_citation_check.py -q` -> 12 passed, 12 failed, 1 error; failures are the same inaccessible draft-directory baseline during graph copies/preflight.
-- NOT RUN: live-provider corpus and line-18 replay; sandbox outbound access fails with
-  WinError 10013, so no provider counts are claimed. `git diff --check` passes and the
-  protected graph directories remain byte-identical.
+**BALL: WORKER - M20-S40 (STOP PUNISHING THE BETTER ANSWER, AND CLOSE THE ENUM/ENGINE GAP).** Task
+block under **From Architect**. **S39 is REWORK at `ef39dfe`** - steps 2 and 3 accepted and kept,
+step 1 regressed the corpus and the cause is isolated below.
 
 ## Current round
 
-**M20-S38 ACCEPTED (Architect, Claude Opus 5, 2026-08-03) at `514443e`.** Local steps delivered;
-provider legs correctly declared NOT RUN and run by the Architect. The Worker also declared two
-things honestly that a weaker report would have hidden: the engine has no generic graph rule
-mapping for nested `IF`/`COMPARE`/`AND`/`OR`/`NOT`, and it could not produce the pre-change
-cross-form operand count because the persisted drafts hold legacy micro summaries rather than
-provider expression rows. **That second gap is MY spec error - I asked for a number from data the
-Worker had no access to.** The corpus run supplied it directly.
+**M20-S39 REWORK (Architect, Claude Opus 5, 2026-08-03) at `ef39dfe`.** Steps 2 and 3 are accepted
+and stay. Step 1 delivered the capability, tripped its own stop condition, and I traced the cause to
+a specific node. The Worker's report is honest and every local claim reproduces: 60 passed on a
+short temp root, `validate 2025` exit 0 (18 documents, 441 nodes, 409 edges, 401 citations), ASCII
+OK, `git diff --check` clean, protected set byte-identical across `514443e..ef39dfe`, inventory 37
+nodes as reported, nothing authored in `graph/2025/`. The provider legs were correctly declared NOT
+RUN; I ran them.
 
-**BEST FIRST-ATTEMPT RESULT YET.**
+**STEP 2 WORKS, AND I VERIFIED THE DISCRIMINATOR RATHER THAN THE STATUS.** On the real Schedule A
+line 15 row, `_legitimate_external_reference` returns true for `form_4684_2025` line 18 and false
+for both fabrication shapes - the `form_1040_nr_2025` line `filing_status` smuggle and an invented
+`form_9999_2025` line 18. Live, that row now returns `copy(form_4684_2025:18)`, status `derived`,
+minting `form_4684_2025_root_line_18` with the form's own sentence as the label and a real citation
+ref. **The one legitimate external reference S38 broke is recovered and fabrication still hard-fails.**
 
-| round | attempted | derived | repaired | errored | resolved |
+**THE CORPUS REGRESSED, TWICE, AND IT IS NOT NOISE.**
+
+| run | attempted | derived | repaired | errored | resolved |
 | --- | ---: | ---: | ---: | ---: | ---: |
-| S36 | 96 | 89 | 4 | 3 | 93 |
-| **S38** | 96 | **92** | **1** | 3 | 93 |
+| S38 | 96 | 92 | 1 | 3 | 93 |
+| S39 run 1 | 96 | **87** | 6 | 3 | 93 |
+| S39 run 2 | 96 | **87** | 5 | 4 | 92 |
 
-Resolution is flat at 93/96 but **first-attempt correctness rose from 89 to 92 and repairs fell
-from 4 to 1**. `schedule_1a_2025` is 25/25 clean. **`form_6251_2025` lines 18 and 39 now derive with
-NO repair** - defining the `IF_ELSE` slots did exactly what the diagnosis predicted.
+Resolution holds because repair absorbs it, but first-attempt correctness dropped 5 and the round's
+own stop condition was derived >= 92. The failures are `missing_floor` - 8 in run 1, 7 in run 2 - on
+1040 lines 15 and 22, 6251 line 11, and Schedule 1A lines 21 and 30. All zero-floor lines.
 
-**ARCHITECT CORRECTION (2026-08-03, prompted by John's question about unseen forms). I reported
-this as "closed and it did not break legitimate references". THAT WAS WRONG.**
-`operand_document_not_found` fired once, on `schedule_a_2025` line 15, whose printed label reads
-*"Attach Form 4684 and enter the amount from line 18 of that form."* **The model produced the
-CORRECT operand and the new validator rejected it** - `cross-form operand names unknown document
-form_4684_2025` - and the repair then produced something that cannot be the right rule. The only
-legitimate external reference the model attempted is the one we broke.
+**CAUSE, ISOLATED BY A/B AND NOT BY INFERENCE. The inventory contains
+`form_1040_2025_zero_floor`, and the model correctly reaches for it.** With the full inventory the
+first attempt returns `max(subtract(line 11b, line 14), node[form_1040_2025_zero_floor])`; the
+`missing_floor` validator only recognises a literal zero constant, hard-fails it, and the repair
+falls back to `0`. Remove that ONE node from the inventory and the same rows derive first-attempt
+clean:
 
-**MEASURED: 9 of 96 formula rows (~10%) reference a form or worksheet outside the corpus** - Form
-2555 x5, Form 1040-NR x2, Form 8888 x1, Form 4684 x1, the Qualified Dividends and Capital Gain Tax
-Worksheet x3, the Schedule D Tax Worksheet x3. **This grows as forms are added**, because every new
-form references more forms. A hard fail is the wrong default for a tenth of the corpus.
+Counts are first-attempt-clean trials, same row and same prompt, varying only the inventory:
 
-**WE ALREADY HAVE THE CAPABILITY, IN THE WRONG PATH.** `_canonical_external_source_id`
-(`outline_pipeline.py`) mints a deterministic address for exactly this case -
-`form_4684_2025_root_line_18` - and `_is_external_form_reference` detects it. Both live in the older
-outline/generator path. The cell-derivation path does not use them, so **the codebase now holds two
-contradictory conventions: one mints an address for an unseen form, the other rejects it.**
+| row | full inventory | inventory minus `zero_floor` | no inventory at all |
+| --- | ---: | ---: | ---: |
+| 1040 line 15 | 0 / 11 | 3 / 3 | 4 / 4 |
+| 1040 line 22 | 0 / 7 | 3 / 3 | - |
+| 6251 line 11 | 0 / 2 | 2 / 2 | - |
+| schedule_1a line 21 | 0 / 2 | 2 / 2 | - |
+| schedule_1a line 30 | 1 / 2 | 2 / 2 | - |
+| **total** | **1 / 24** | **12 / 12** | **4 / 4** |
 
-**BUT THE NODE OPERAND IS UNUSED, AND THE REASON IS A DEFECT WE HAVE ALREADY FIXED ONCE.** Read the
-actual expression rather than the status - the lesson from the last round:
+**This is the phase's recurring defect, for the fourth time: we show the model a capability and then
+reject it for using it.** S33's `operand_not_printed` against an unshown inventory, S38's
+`operand_document_not_found` against the correct Form 4684 answer, and now `missing_floor` against a
+graph node that carries the floor WITH a citation - which is the better answer, not the worse one.
+The validator wants the constant; the graph offers the node; we punish the node.
+
+**I TESTED THE OBVIOUS ALTERNATIVE EXPLANATION AND IT IS WRONG.** Placement is not the cause. Moving
+the whole `<<graph_nodes>>` block from mid-prompt to after the instruction text changed nothing -
+0 of 8 clean either way on 1040 lines 15 and 22. Do not spend S40 rearranging the prompt.
+
+**STEP 1'S PAYOFF IS REAL AND CURRENTLY UNEXECUTABLE. READ THE EXPRESSION.** 6251 line 18 now
+reaches the filing-status node without any comment, in both replays:
 
 ```
-6251 line 18, no comment, status=derived:
-  if_else(line 17, 239100, line 17 * 0.26, (line 17 * 0.28) - 4782)
+if_else(line 17, lookup_table(node[taxpayer_2025_filing_status], 239100, 119550),
+        multiply(line 17, 0.26),
+        subtract(multiply(line 17, 0.28), lookup_table(node[taxpayer_2025_filing_status], 4782, 2391)))
 ```
 
-Clean, validating, matching the new positional semantics - **and still single-filer only. It does
-not cover married filing separately and it uses no `node` operand.** Worse, given a realistic human
-comment ("this is wrong for married filing separately; the threshold and the amount subtracted are
-both different"), the model returned **`require_input(line 18)`** - it deleted the computation
-rather than reach for the new capability, and that validated clean.
+**It DOES cover married filing separately** - the diagnosis that produced S39 was right, and the
+S34 precedent held. **It also cannot run.** `LOOKUP_TABLE` is in `DEFAULT_OPERATIONS` but in neither
+`ROLE_FOR_OP` nor `RULE_FOR_OP`, so `expression_to_graph` reports `no reusable rule for operation
+LOOKUP_TABLE` twice, emits zero rules, and tags every argument with the role `operand` - while the
+engine's `_lookup_table` selects by a `key` role plus status-named roles and therefore returns
+MISSING. Same gap the Worker declared honestly for nested `IF`/`COMPARE` in S38: **the operation
+enum offered to the model is wider than the engine's mapping.** A `derived` status over an
+unexecutable tree is worth less than an honest failure.
 
-**Cause: the prompt offers `{"node": "exact_graph_node_id"}` and says "the id must already exist in
-the graph", but NEVER LISTS THE NODE IDS.** The rendered values are form, line, label, form-face
-text, instruction text, locator, printed lines and human comment - there is no node inventory. So
-the model is asked to name a member of a closed set it cannot see, and a wrong guess hard-fails.
-Its only rational moves are to ignore the operand or to give up, which is exactly what it did.
-**This is the S33 defect repeating in a new place.** Then, `validate_cell_output` checked operands
-against a printed-line inventory the prompt never showed, costing 82 `operand_not_printed` failures
-and 14 repairs; S34 fixed it by putting the inventory in the prompt and the failures collapsed to
-2. Same shape, same fix.
+**THE TARGET SHAPE IS ALREADY IN THE GRAPH, HAND-AUTHORED.** `lookup_capital_loss_limit`
+(`graph/2025/edges/capital-gains.yaml`) does exactly this: one edge from `taxpayer_2025_filing_status`
+with `role: key`, plus one edge per filing status whose `role` IS the status value, each sourced
+from a `parameter` node carrying a `constant_value` and a citation. **The positional expression
+schema cannot express a role-keyed selection at all**, which is why the model's positional
+`LOOKUP_TABLE` is unmappable by construction rather than by oversight.
 
-**Informs a John scoping call:** Worker inventory evidence shows the BASE graph is 17 documents /
-417 nodes with `form_2441_2025` ABSENT, while the default loaded graph is 18 / 441 because it
-includes an accepted extension overlay. **So the "phantom 2441" is an extension, not a bookkeeping
-bug** - which makes option (b) in the open question below the accurate description of today's
-behaviour.
+**MEASUREMENT HOLE, MINE TO OWN.** The harness serialises a fixed key set into `rows_detail` and
+drops `unresolved_external_nodes`, so the corpus run cannot count the Step 2 mints - I read zero and
+it was an artifact. This is the same hole that made my S38 question about cross-form operand counts
+unanswerable. It also means nothing outside `cells.py` reads that key yet: the minted required input
+is substrate, not surface.
+
+**SMALLER, KEPT FOR S40.** The prompt says "relevant graph nodes" and renders all 37 for every row
+on every form, so `form_1040_2025_zero_floor` was offered to 6251 and Schedule 1A rows - that is how
+the regression crossed forms. At 37 the bound is fine; the word "relevant" is not yet true.
 
 ## Standing constraints (every M20 round)
 
@@ -236,11 +234,18 @@ client-managed server dies.
   so those rows reference addresses that do not exist. Either model them as documents, or declare
   them out of scope and make the reference fail closed with a named reason instead of a confusing
   self-reference. The 1040 and Schedule D reference the same worksheets, so this recurs.
-  **(2) Should the expression grammar carry a filing-status-dependent constant?** 6251 lines 18 and
-  39 need a threshold ($239,100 / $119,550) and a subtrahend ($4,782 / $2,391) that both vary by
-  filing status. They resolve today via repair, so this is a cost question rather than a
-  correctness one - but the same shape appears wherever the IRS prints a bracketed
-  married-filing-separately figure, which is common.
+  **(2) Should the expression grammar carry a filing-status-dependent constant? PARTLY ANSWERED BY
+  MEASUREMENT, 2026-08-03 - it is now a correctness question, not a cost one.** 6251 lines 18 and 39
+  need a threshold ($239,100 / $119,550) and a subtrahend ($4,782 / $2,391) that both vary by filing
+  status. Once S39 showed the model `taxpayer_2025_filing_status`, it reached for it unprompted and
+  produced a rule that DOES cover married filing separately - but via a positional
+  `LOOKUP_TABLE(node, 239100, 119550)` that maps to no rule and no roles, so the engine returns
+  MISSING. The graph already contains the shape it needs (`lookup_capital_loss_limit`: one `key`
+  edge plus one role-per-status edge), and the positional expression schema cannot express it. **So
+  the question is no longer whether to carry the constant, but whether the grammar grows a
+  role-keyed selection - and whether the four 6251 parameter nodes are hand-authored or pipeline-
+  minted.** S40 step 3 asks for the mapping report that makes this decidable; the hand-author
+  versus pipeline call remains John's under the prime directive.
 - **FOR JOHN - what is next, once the scoping calls are made? (raised 2026-08-03.)** The corpus
   resolves 92 of 94 rows with 3 repairs, and the only remaining failures are model-quality issues
   on `form_6251_2025`. Chasing those means tuning a nondeterministic model for 2 rows, which is a
@@ -275,72 +280,66 @@ client-managed server dies.
 
 ## From Architect
 
-- **M20-S39 TASK - SHOW THE MODEL THE NODE INVENTORY (Architect, Claude Opus 5, 2026-08-03).**
-  Ledger: the RAN/NOT RUN rule, D9, D6. **Small and precedented. This is S34 applied to a second
-  closed set.**
+- **M20-S40 TASK - STOP PUNISHING THE BETTER ANSWER, AND CLOSE THE ENUM/ENGINE GAP (Architect,
+  Claude Opus 5, 2026-08-03).** Ledger: the RAN/NOT RUN rule, D9, D6. **The diagnosis is already
+  done and measured - see Current round. Do not re-diagnose, and do not rearrange the prompt.**
 
-  **Why.** S38 added a `{"node": "..."}` operand and validates it against the real node ids. The
-  prompt says the id "must already exist in the graph" and then does not say which ids exist.
-  Measured consequence: `form_6251_2025` line 18 derives cleanly and is still single-filer only,
-  and a realistic reviewer comment about married filing separately makes the model emit
-  `require_input(line 18)` - deleting the rule rather than using a capability it cannot see.
-  **The precedent is exact.** Before S34, `operand_not_printed` fired 82 times because the prompt
-  never showed the printed-line inventory; showing it dropped that to 2 and cut repairs 14 -> 4.
+  **Step 1 - `missing_floor` must accept a graph node that IS the floor.** Measured: with
+  `form_1040_2025_zero_floor` in the inventory the model returns
+  `max(subtract(line 11b, line 14), node[form_1040_2025_zero_floor])`, the validator hard-fails it
+  because it only recognises a literal zero constant, and repair downgrades the answer to `0`. The
+  node is the better answer - it carries a citation and survives a rate change - so the validator
+  is what is wrong. Accept a `{"node": ...}` operand as satisfying the floor when the referenced
+  node is a `parameter` whose `constant_value` is zero; the inventory already tells you which those
+  are, so this stays deterministic and needs no model judgement. **Do not remove `zero_floor` from
+  the inventory to make the number go up** - that hides the defect and loses the citation.
+  Unit-test both branches, constant and node.
 
-  **Step 1 - put a RELEVANT node inventory in the prompt.** Add a `<<graph_nodes>>` value rendered
-  by `_render_cell_prompt` and referenced from `prompts/derive_cells.md`.
-  **Do not dump all 441 nodes.** Select the ones a formula row could legitimately reference -
-  `node_type: parameter` and filer-fact nodes such as `taxpayer_2025_filing_status` - and give each
-  entry its id and its label so the model can tell `form_1040_2025_standard_deduction_mfs` from
-  `..._single`. Report the count you settled on and why. If the selection rule is unclear, report
-  the candidate counts and ask rather than guessing.
-  **A prompt change needs a RENDER test** (S32) and the existing test over every file in `prompts/`
-  must still pass. An absent inventory must render cleanly and must not change behaviour for rows
-  that already derive.
+  **Step 2 - make the inventory actually relevant, and say so honestly.** The prompt renders all 37
+  nodes for every row on every form, which is how a 1040 node reached 6251 and Schedule 1A rows.
+  Scope the rendered set to the row's own document plus genuinely global filer facts
+  (`taxpayer_2025_filing_status` and anything else with no `document_id`). Report the resulting
+  per-form counts. **If scoping would hide a node a row legitimately needs - the 1040 standard
+  deduction is referenced from more than one form - report that and keep it global rather than
+  guessing.** A prompt change needs a RENDER test (S32) and the `prompts/` render test must pass.
 
-  **Step 2 - a reference to a form we do not have must MINT an address, not hard-fail. (John,
-  2026-08-03.)** S38 made `operand_document_not_found` fatal, and it immediately rejected the
-  correct answer on `schedule_a_2025` line 15, whose own text says *"Attach Form 4684 and enter the
-  amount from line 18 of that form."* 9 of 96 rows reference a form or worksheet outside the corpus.
-  **The discriminator is deterministic - no model judgement.** A cross-form operand is LEGITIMATE
-  when that form is named in the row's own evidence text; it is FABRICATED otherwise. Keep the hard
-  failure for fabrication - that is what caught `form_1040_nr_2025 line filing_status`, where the
-  model invented a line to smuggle in a filer fact. For a legitimate reference, mint the canonical
-  address using the EXISTING `_canonical_external_source_id` convention rather than a second one,
-  and record the node as unresolved: an id, a label taken verbatim from the row's text, the
-  citation, and no value.
-  **An unresolved external node is a REPORTED required input, never a silent drop.** The engine must
-  be able to tell the filer what it needs and why, in the form's own words.
-  Report how many of the 9 rows resolve this way, and confirm `schedule_a_2025` line 15 recovers its
-  Form 4684 reference. **Do not author any node in `graph/2025/` to achieve this** - minting an
-  address is not the same as writing a graph node, and the protected set stays byte-identical.
+  **Step 3 - close the operation enum against the engine, and report before you widen anything.**
+  `LOOKUP_TABLE` and the whole conditional family (`IF`, `IF_ELSE`, `COMPARE`, `AND`, `OR`, `NOT`)
+  are offered to the model and are absent from `RULE_FOR_OP`, so `expression_to_graph` emits `no
+  reusable rule` and produces zero rules; `LOOKUP_TABLE` is additionally absent from `ROLE_FOR_OP`,
+  so its arguments all get the role `operand` and the engine's `_lookup_table` - which selects by a
+  `key` role plus status-named roles - returns MISSING. **First report, do not implement:** for each
+  of the seven operations, name the rule it would map to (several already exist in
+  `graph/2025/rules/core.yaml`, e.g. `lookup_selected_value`) and the roles its arguments would
+  carry, and say plainly which ones the CURRENT positional expression schema cannot express. My
+  reading is that role-keyed selection is one of them, because
+  `lookup_capital_loss_limit` needs one `key` edge plus one edge per filing status and the schema
+  has no way to name a role. **Adding rule mappings touches `graph/2025/rules/` and is NOT
+  authorized in this round.** Report the mapping, implement nothing in the protected set.
+  **Until this is closed, an expression using an unmapped operation must not be reported as a clean
+  success.** Add the projection findings to the row's validation output as a WARNING (not a hard
+  failure - do not create a fourth instance of the defect above), so `derived` stops overstating.
 
-  **Step 3 - the parameter nodes for 6251 do not exist yet; decide and report, do not invent.**
-  The standard deduction precedent is one `parameter` node per filing status with a
-  `constant_value` and a citation (`form_1040_2025_standard_deduction_single|mfj|mfs|hoh` in
-  `graph/2025/nodes/tax-liability.yaml`). Form 6251 line 18 needs the same shape for the AMT
-  threshold ($239,100 / $119,550) and the subtrahend ($4,782 / $2,391), and line 39 reuses them.
-  **Authoring graph nodes is a protected-set change and is NOT authorized in this round.** Report
-  exactly which nodes would be needed, with the values and the citation each would carry, and stop.
-  John decides whether hand-authoring them is acceptable or whether they must come from the
-  pipeline - that is the standing "pipeline is the end-state" question and it is his call.
+  **Step 4 - carry the Step 2 mints into the harness report.** `rows_detail` serialises a fixed key
+  set and silently drops `unresolved_external_nodes`, so the corpus run cannot count them and I read
+  a false zero. Add the field. Then report how many of the ~9 external-reference rows mint a node,
+  with the form and line for each.
 
-  **Step 4 - rerun the corpus and the line 18 check, and READ THE EXPRESSION.** Report attempted /
-  derived / repaired / errored per document. **The numbers to beat: derived 92, repaired 1,
-  errored 3, resolved 93/96.** Then print the actual expression for 6251 line 18 with no comment
-  and with the reviewer comment "this is wrong for married filing separately; the threshold and the
-  amount subtracted are both different", and **state plainly whether it covers married filing
-  separately.** A `derived` status is NOT the answer to that question - the Architect reported a
-  single-filer rule as a success twice by reading the status instead of the expression.
-  If the parameter nodes do not exist, the honest expected outcome is that it still cannot cover
-  MFS. **Report that rather than steering the model to fake it.**
+  **Step 5 - rerun the corpus and READ THE EXPRESSIONS.** Report attempted / derived / repaired /
+  errored per document. **The numbers to beat are S38's: derived 92, repaired 1, errored 3, resolved
+  93/96.** S39 measured derived 87 twice, so a single run showing 92 is not enough - **run it twice
+  and report both**, because two runs is what turned this regression from noise into a fact. Then
+  print the actual expression for 6251 line 18 and state plainly whether it covers married filing
+  separately AND whether every operation in it maps to a rule. Those are two different questions and
+  S39 passed the first while failing the second.
 
-  **Do not:** author or edit graph nodes; dump the full node list into the prompt; weaken any
-  validator; re-add Azure to `llm.provider_routing.only`; let a `contributed` comment reach the
-  model; build UI; promote anything.
-  **Stop conditions:** any diff in the protected directories; `derive_cells` acquiring a disk
-  write; any harness output landing inside the repository; the corpus regressing below derived=92.
-  Tier 3. Declared files plus honest `RAN:`/`NOT RUN:`. ASCII, `git diff --check`, module-form
+  **Do not:** author or edit anything in `graph/2025/`; remove nodes from the inventory to raise a
+  number; rearrange prompt sections (measured: placement is not the cause); weaken any validator
+  beyond the specific `missing_floor` widening in Step 1; re-add Azure to `llm.provider_routing.only`;
+  let a `contributed` comment reach the model; build UI; promote anything.
+  **Stop conditions:** any diff in the protected directories; `derive_cells` acquiring a disk write;
+  any harness output landing inside the repository; the corpus regressing below derived=92 on both
+  runs. Tier 3. Declared files plus honest `RAN:`/`NOT RUN:`. ASCII, `git diff --check`, module-form
   `validate 2025`, preflight with `legacy_mined` explicit (394), strict citations (36).
   **ONE local commit** - and run `git status` first; do not commit paths you did not touch.
 
@@ -398,6 +397,15 @@ client-managed server dies.
 
 ## Recent rounds (condensed; full narration in git history - `git show <hash>`)
 
+- **M20-S39 (`ef39dfe`, Architect-verified, REWORK):** the node inventory reached the prompt, the
+  unseen-form hard fail became a minted unresolved required input, and the four 6251 parameter nodes
+  were reported rather than invented. Corpus fell to derived=87 on two runs; A/B isolated it to
+  `form_1040_2025_zero_floor` being rejected by a `missing_floor` check that only accepts a literal
+  zero. Placement was tested and ruled out. Reworked as S40.
+- **M20-S38 (`514443e`, Architect-verified):** `{"node": ...}` operand plus positional conditional
+  semantics; best first-attempt corpus to that point (derived=92, repaired=1, resolved 93/96), and
+  6251 lines 18 and 39 derived with no repair. Its new `operand_document_not_found` hard fail
+  rejected the correct Form 4684 answer on Schedule A line 15 - fixed in S39 step 2.
 - **M20-S33 (`771d169`, Architect-verified):** first full-corpus live run. 93 of 94 rows resolve
   (derived=79, repaired=14, gapped=0, errored=1); all eight empty documents correctly empty; 1040
   identical across two runs. Diagnosed the repairs to `operand_not_printed` on IRS ranges with
@@ -436,6 +444,14 @@ client-managed server dies.
 
 ## Latest verification
 
+- **M20-S39 (2026-08-03, Architect live):** two full corpus runs, attempted=96 both, derived=87 both,
+  repaired 6 / 5, errored 3 / 4, resolved 93 / 92. Focused suites 60 passed on a short temp root;
+  ASCII OK; `git diff --check`; `validate 2025` (18 documents, 441 nodes, 409 edges, 401 citations);
+  protected set byte-identical across `514443e..ef39dfe`. Inventory verified at 37 parameter/fact
+  nodes. Schedule A line 15 recovers `copy(form_4684_2025:18)` and mints
+  `form_4684_2025_root_line_18`; both fabrication shapes still rejected. Floor A/B on five rows
+  across three forms: 1 of 24 clean with `zero_floor` in the inventory, 12 of 12 clean without.
+  Placement A/B on two rows: 0 of 8 clean either way.
 - **M20-S33 (2026-08-02, Worker live, Architect-verified):** full corpus, 18 ids, 17 loadable.
   attempted=94, derived=79, repaired=14, gapped=0, errored=1. Two identical 1040 runs both 17/17
   with no validator failures. ASCII, `git diff --check`, `validate 2025` (441 nodes, 409 edges,
