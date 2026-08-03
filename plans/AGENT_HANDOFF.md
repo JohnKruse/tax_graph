@@ -17,78 +17,66 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## BALL
 
-**BALL: WORKER - M20-S37 (CLOSE THE HUMAN LOOP: COMMENT -> RE-DERIVE -> RESULT).** Task block
-under **From Architect**. **S36 is ACCEPTED at `f5dfd55`.** The three scoping calls in
-**Open for Architect** remain with John but block nothing in this round.
-
-## Worker checkpoint - M20-S37
-
-Steps 1-3 implemented. The existing address ledger now records explicit `origin` values
-(`curated` or `contributed`) and exposes the latest-curated projection; only curated text
-can enter a derivation prompt. `derive_cells` accepts bounded address-keyed comments, the
-pure `rederive_cell(document_id, line, draft_comment)` path returns a row plus validation
-without writing, and `POST /api/rederive` exposes an injected callback while preserving the
-artifact-only workbench boundary. Prompt rendering, schema, docs, and consumers are covered.
-
-RAN: `$testRoot='C:\Users\devbox\.codex\visualizations\2026\08\03\019fc7d0-57ba-72b3-bcbe-74d955cb7c43\m20run_final'; New-Item -ItemType Directory -Path $testRoot -Force | Out-Null; $env:PYTEST_DEBUG_TEMPROOT=$testRoot; .venv\Scripts\python.exe -m pytest -p no:cacheprovider tests/test_review_verdicts_m20.py tests/test_derive_cells_m20.py tests/test_rederive_m20.py tests/test_workbench_rederive_m20.py tests/test_m20_s31.py tests/test_workbench_m15.py tests/test_workbench_server_m15.py tests/test_workbench_write_api_m15.py -q` -> 86 passed in 170.44s.
-RAN: `.venv\Scripts\python.exe tools/check_ascii.py` -> ASCII check OK.
-RAN: `.venv\Scripts\python.exe -m tax_graph.cli validate 2025` -> graph integrity OK; documents=18 nodes=441 tables=2 edges=409 rules=17 citations=401 decisions=2 routing_edges=90 triggers=12 expectations=4.
-RAN: `.venv\Scripts\python.exe -m workbench.cli --root . --year 2025 preflight` -> passed; entries=18 units=2224 derived_cells=2120 legacy_mined=394.
-RAN: `.venv\Scripts\python.exe -c "from tax_graph.acquire.citation_check import check_graph_citations; report=check_graph_citations(year=2025, raw_store='.cache/raw', root='.', source_map={'form_8949_2025': 'instructions_form_8949_2025'}); print(f'checked={report.checked} strict_mismatches={len(report.mismatches)}')"` -> checked=401 strict_mismatches=36.
-RAN: `git diff --check` -> no output.
-RAN: `git diff --stat -- graph/2025/nodes graph/2025/edges graph/2025/rules graph/2025/field_maps` -> empty diff.
-NOT RUN: S37 Steps 4-5 live provider corpus and no-comment 96-row comparison. The Worker sandbox has no outbound network; no provider result is claimed. Architect should run the approved provider leg and record the before/after expression for the steered row.
+**BALL: WORKER - M20-S38 (FIX THE RE-DERIVE CALL, THEN DEFINE IF_ELSE).** Task block under
+**From Architect**. **S37 comment plumbing ACCEPTED at `085a234`; the `rederive_cell` entry point
+is BROKEN against the real config and must be fixed first.**
 
 ## Current round
 
-**M20-S36 ACCEPTED (Architect, Claude Opus 5, 2026-08-03) at `f5dfd55`.** Steps 1-3 delivered,
-step 4 correctly declared NOT RUN; the Architect ran the provider leg.
+**M20-S37 PARTIALLY ACCEPTED (Architect, Claude Opus 5, 2026-08-03) at `085a234`.** Steps 1-3
+delivered and step 4-5 correctly declared NOT RUN. The Architect ran the provider leg and found
+three things, one of which retracts a claim I have repeated all session.
 
-**Truncation 16 -> 0, verified independently with the same check that found it.** The outline
-regression guard held EXACTLY on all nine documents - node and anchor counts identical to the
-pinned values - so assembly attached continuation text without creating, merging or losing a row.
+**THE LOOP WORKS. A human comment demonstrably changes the derivation.** Form 6251 line 18,
+same row, same model, one call apart:
 
-**COVERAGE WENT UP: the formula set is 94 -> 96 rows, and both new rows resolve.** `schedule_a_2025`
-line 15 and `schedule_1a_2025` line 36a were never detected as computed rows because **their
-formula cue lived in the continuation text we were discarding.** We were blind to two real computed
-cells and did not know it. That is the most valuable thing this round produced.
+| run | expression |
+| --- | --- |
+| no comment | `if_else(compare(line 17, 239100), line 17 * 0.26, (line 17 * 0.28) - 4782, (line 17 * 0.28) - 4782)` |
+| curated comment | `if_else(line 17, 239100, line 17 * 0.26, (line 17 * 0.28) - 4782)` |
 
-| round | attempted | derived | repaired | gapped | errored | resolved |
-| --- | ---: | ---: | ---: | ---: | ---: | ---: |
-| S35 | 94 | 89 | 3 | 0 | 2 | 92 |
-| **S36** | **96** | **89** | **4** | **0** | **3** | **93** |
+The comment asked for "one IF_ELSE covering both branches" using the single-filer figures, and the
+output changed in that direction. **This is the first time in the project's history that a human
+instruction has reached a derivation and altered it.** The comment plumbing - ledger, curated vs
+contributed, `row.human_comment`, evidence packet, prompt - is sound and is ACCEPTED.
 
-**ARCHITECT CORRECTION - I over-retracted, and this is the third bad call on 6251.** After finding
-truncation I wrote that the expression-grammar diagnosis was wrong. **It was not.** Lines 18 and 39
-now have their full text, and they STILL fail `payload`. The assembled row is
-`If line 17 is $239,100 or less ($119,550 or less if married filing separately), multiply line 17
-by 26% (0.26). Otherwise, multiply line 17 by 28% (0.28) and subtract $4,782 ($2,391 if married
-filing separately) from the result` - which needs **two filing-status-dependent constants**, a
-threshold and a subtrahend. Truncation was a real and separate defect worth fixing on its own
-merits; it was never the whole cause of these two rows.
-**The pattern to learn: 6251 has multiple INDEPENDENT defects stacked on the same rows, and I have
-three times offered a single-cause explanation.** Each new evidence source made the previous
-diagnosis look wrong when it was merely incomplete.
+**BLOCKER 1 - `rederive_cell` fails against the real config, every time.** It passes
+`temperature=_optional_temperature(settings)`, which reads the configured `llm.temperature: 0`.
+With `llm.require_parameters: true`, OpenRouter filters to endpoints advertising every requested
+parameter, and no `gpt-5.6-luna` endpoint advertises temperature - so **all endpoints are
+eliminated and the call 404s** with "No endpoints found that can handle the requested parameters".
+Architect isolated it: `temperature=None` derives, `temperature=0.0` 404s, with all else identical.
+**The batch path never passes temperature at all**, which is why the corpus runs work. The fix is
+to match the batch path. The steering result above was obtained by calling `derive_cells` the way
+the batch path does, bypassing the defect.
 
-**THE REMAINING 5 ROWS, now cleanly attributable to exactly two causes, neither a pipeline defect:**
-- **Unmodelled worksheet - 6251 lines 13, 20, 27.** They reference the Qualified Dividends and
-  Capital Gain Tax Worksheet and the Schedule D Tax Worksheet, neither of which is a document in
-  the graph. Failure KIND churns run to run (`self_reference`, `missing_floor`,
-  `quote_not_verbatim`) because the model is cornered, which is what made this look like noise for
-  five rounds.
-- **Filing-status-dependent constants - 6251 lines 18, 39.** Both repair successfully, so they
-  resolve; they just cost a round-trip.
+**BLOCKER 2, AND A RETRACTION I OWE - `llm.temperature: 0` HAS NEVER BEEN IN EFFECT.** The batch
+derivation path does not pass it, so it has never been sent. **Every "nondeterministic at
+`temperature: 0`" statement in this file and in my reports is wrong** - the runs were
+nondeterministic at the provider's DEFAULT temperature. I repeated that claim across S28 through
+S36 without ever checking that the setting reached the request. The observed variance is real; the
+explanation attached to it was not. Decide explicitly whether to send temperature (which requires
+relaxing `require_parameters` or dropping the setting) or to delete the key so the config stops
+implying something untrue.
 
-**Minor, recorded not actioned:** `schedule_1_2025` line 10 newly needs one repair
-(`quote_not_verbatim`) - a longer assembled label changed what is quotable. It resolves.
-`schedule_a_2025` line 15's assembled label welds in marginal section-header text (`and Theft`,
-`Losses` from the vertical heading "Casualty and Theft Losses"). It derived correctly anyway, but
-it is over-assembly - the mirror of the defect just fixed - and belongs in the same bucket as the
-6251 line 32 span issue if either ever bites.
+**BLOCKER 3 - `IF_ELSE` has an enforced arity and NO DEFINED SEMANTICS. This is the actual cause
+of 6251 lines 18 and 39, and it is my fourth diagnosis of those rows.** `cells.py` enforces
+`IF_ELSE: 4` arguments. `ROLE_FOR_OP` names argument roles for SUM, SUBTRACT, DIVIDE, MULTIPLY,
+MAX, MIN, COPY and NEGATE - **`IF_ELSE` is absent, so `_role_for` returns the generic "operand" for
+every slot.** Nothing anywhere says what the four arguments mean. The two runs above are two
+mutually incompatible readings that BOTH pass validation: one puts a `COMPARE` in slot 1 and pads
+slot 4 with a duplicate of the else-branch; the other puts the comparison operands in slots 1 and 2.
+**Downstream execution would compute different numbers from these, and no check can tell them
+apart.** Same gap applies to `IF`, `COMPARE`, `AND`, `OR`, `NOT`, `LOOKUP_TABLE` and
+`LOOKUP_BRACKET`. This is not an expressiveness gap - the grammar can express the row fine. It is
+an undefined grammar, and any expression using a conditional operator is currently unreliable
+regardless of model quality.
 
-**DENOMINATOR DECISION (Worker asked): use 96, and report both.** Freezing at 94 for comparability
-would mean deliberately not deriving two real computed rows, which is the opposite of the goal.
-Comparability is preserved by reporting the denominator alongside the number, as above.
+**CONFIG CHANGE (John, 2026-08-03): provider routing is now OpenAI ONLY.** Azure is roughly 10x the
+price for the same model. `llm.provider_routing.only` was `[openai, azure]` and is now `[openai]`.
+Verified live afterwards - both derivations above ran on the new routing. **Do not re-add Azure as
+a fallback without asking**: a silent failover would cost 10x per call with no signal. If OpenAI's
+endpoint is unavailable the call now fails loudly, which is the intended trade.
 
 ## Standing constraints (every M20 round)
 
@@ -250,73 +238,55 @@ client-managed server dies.
 
 ## From Architect
 
-- **M20-S37 TASK - CLOSE THE HUMAN LOOP: COMMENT -> RE-DERIVE -> RESULT (Architect, Claude Opus 5,
-  2026-08-03).** Ledger: the RAN/NOT RUN rule, D9, D6. **Backend only. No UI work this round.**
+- **M20-S38 TASK - FIX THE RE-DERIVE CALL, THEN DEFINE `IF_ELSE` (Architect, Claude Opus 5,
+  2026-08-03).** Ledger: the RAN/NOT RUN rule, D9, D6. **Step 1 is a one-line fix. Step 2 is the
+  real work. No UI this round.**
 
-  **Why this, and why now.** The pipeline half of the prime directive works: 93 of 96 computed rows
-  resolve and no deterministic defect remains. **The human half has never executed once.** There
-  are zero verdicts in the repo, no comment has ever reached a derivation, and the workbench has
-  been built three times without ever being used for its purpose. Everything else queued -
-  the checker, the 13614-C structure work, the standalone reviewer - produces findings that need
-  somewhere to land, and there is nowhere to land them.
-  **John's design, confirmed 2026-08-03:** the form is the unit of approval, not the cell. A
-  reviewer works the suspect cells, edits a comment, hits **try again**, sees a fresh result in
-  seconds, and iterates until the cell is right. Reject is the escape hatch for a cell that will
-  not converge, not the main action.
-  **Architect measured the feasibility before speccing it: 6.0s for one row INCLUDING process
-  start, config load, document load and frame build. The model call alone is ~2.7s** (17 rows in
-  47.8s). In a warm server the setup does not repeat, so try-again is genuinely interactive.
+  **Step 1 - make `rederive_cell` match the batch path.** It passes
+  `temperature=_optional_temperature(settings)`; the batch path passes no temperature at all. With
+  `llm.require_parameters: true` this eliminates every endpoint and 404s on every call. **Stop
+  passing temperature.** Architect isolated it directly: identical calls, `temperature=None`
+  derives and `temperature=0.0` 404s. Add a test that the re-derive path sends the same parameter
+  set as the batch path, so the two cannot drift again.
 
-  **Step 1 - store a curated comment against a canonical address.** Reuse the EXISTING ledger,
-  `review_verdicts/<year>/address_verdicts.jsonl` - append-only, address-keyed, already documented
-  as human history kept separate from regenerated artifacts. **Do not invent a second store.**
-  A comment record carries: canonical address, comment text, author, timestamp, and an origin of
-  `curated` or `contributed`. **Only `curated` comments feed the model.** `contributed` is raw
-  input from another reviewer ("this is broke") which the lead edits into an instruction; it is
-  retained and displayed but never sent.
-  **Latest curated comment for an address wins.** Full history is retained for audit and for the
-  UI, but the evidence packet carries only the most recent, so the prompt stays bounded as comments
-  accumulate over years.
+  **Step 2 - decide what `llm.temperature: 0` means and make the config honest.** It is in
+  `tax-graph.config.yaml` and has never reached a request. Either send it - which needs
+  `require_parameters` relaxed or a routing change, and should then be VERIFIED live rather than
+  assumed - or delete the key. **Do not leave a setting that implies a determinism guarantee we do
+  not have.** Whichever you choose, say so in the config with a dated comment.
 
-  **Step 2 - feed the curated comment into the evidence packet.** Add it to the values in
-  `_render_cell_prompt` and reference it from `prompts/derive_cells.md` using the `<<name>>`
-  syntax. When there is no comment the placeholder must render as empty and the prompt must read
-  naturally - **an absent comment must not change behaviour for the 96 rows that already work.**
-  Prove that: the corpus result with no comments present must be unchanged.
-  **S32 lesson applies - any prompt change needs a RENDER test**, and the existing test that
-  renders every file in `prompts/` must still pass. A substring assertion is not coverage.
-  The prompt must frame the comment as a human instruction that takes precedence over the model's
-  own reading of the evidence, while every existing validator still applies. **A comment must not
-  be able to talk the model past `quote_not_verbatim`, `operand_not_printed` or `self_reference`.**
+  **Step 3 - define the semantics of every conditional operation, starting with `IF_ELSE`.**
+  `cells.py` enforces `IF_ELSE: 4` arguments and `ROLE_FOR_OP` does not mention it, so all four
+  slots are the generic "operand" and their meaning is undefined. Two Architect runs of the same
+  row produced two incompatible readings that both validated:
+  `if_else(compare(a,b), then, else, else)` and `if_else(a, b, then, else)`.
+  **Add `IF_ELSE` to `ROLE_FOR_OP` with named roles, state them in `prompts/derive_cells.md`, and
+  add a validator that rejects an expression whose argument shapes do not match the declared
+  roles.** Do the same for `IF`, `COMPARE`, `AND`, `OR` and `NOT`. `LOOKUP_TABLE` and
+  `LOOKUP_BRACKET` may need more than roles - if so, report what they need and do NOT guess.
+  **Choose the reading that the downstream engine already assumes if one exists** - check
+  `to_graph.py` and the rule vocabulary before inventing one. If nothing downstream consumes
+  `IF_ELSE` yet, say so plainly, pick the condition-first reading, and record it as a decision
+  rather than a discovery.
+  **A prompt change needs a RENDER test** (S32) and the existing test over every file in
+  `prompts/` must still pass.
 
-  **Step 3 - a live single-cell re-derive entry point.** A function taking a document id, a line,
-  and an OPTIONAL draft comment (not yet stored), returning the derived result plus its validation
-  outcome. **`derive_cells` stays pure - zero disk writes - and this path must not write either.**
-  The draft-comment parameter is what makes try-again a trial-and-error loop: the reviewer tunes
-  wording and re-runs before anything is persisted. Persisting is a separate, explicit action.
-  Expose it over HTTP in `workbench/server.py` alongside the existing `/api/verdicts`. **No UI
-  work this round** - the endpoint plus tests is the deliverable, and the surface lands in S38.
+  **Step 4 - rerun the corpus and report.** Expect the 96-row result to be unchanged or better;
+  the target is `form_6251_2025` lines 18 and 39 no longer needing a repair, because the model will
+  finally be told what the four slots mean. Report attempted / derived / repaired / errored per
+  document and say plainly whether 18 and 39 moved.
+  Then rerun the Architect's steering check: derive 6251 line 18 with no comment and with a curated
+  comment, and report both expressions. **With roles defined, the two runs should now agree on
+  shape** - if they still disagree, the roles are not being enforced.
+  If approved external network is unavailable, do steps 1-3, declare step 4 NOT RUN up front, and
+  hand back.
 
-  **Step 4 - prove the loop end to end, which is the whole point of the round.** A test that:
-  derives a cell and records the result; stores a curated comment against that address; re-derives;
-  and asserts **the output changed in the direction the comment asked for**. Use a real row where
-  the correct answer is known - `form_6251_2025` line 18 or 39 is the obvious candidate, since both
-  currently need a repair and the correct expression is written on the form face.
-  **This has never happened in the project's history. If it does not work, say so plainly - that
-  is a more valuable result than a green test that proves something weaker.**
-
-  **Step 5 - report.** Rerun the full derivable corpus with no comments stored and confirm it is
-  unchanged from S36 (96 attempted, 89 derived, 4 repaired, 3 errored, 93 resolved - allowing for
-  the known run-to-run variance on `form_6251_2025`). Then report the one cell you steered, with
-  the comment text, the before expression and the after expression.
-  If approved external network is unavailable, do steps 1-3, declare steps 4-5 NOT RUN up front,
-  and hand back - the Architect will run them.
-
-  **Do not:** weaken any validator so a comment can override it; let a `contributed` comment reach
-  the model; write from `derive_cells` or the re-derive path; add a retry policy; build UI;
-  accumulate all historical comments into the prompt; promote anything.
+  **Do not:** re-add Azure to `llm.provider_routing.only` (John, 2026-08-03 - roughly 10x the price;
+  a silent failover would cost 10x with no signal); weaken a validator so a comment can override
+  it; let a `contributed` comment reach the model; write from `derive_cells` or the re-derive path;
+  build UI; promote anything.
   **Stop conditions:** any diff in the protected directories; `derive_cells` acquiring a disk
-  write; any harness output landing inside the repository; the no-comment corpus result changing.
+  write; any harness output landing inside the repository; the no-comment corpus result regressing.
   Tier 3. Declared files plus honest `RAN:`/`NOT RUN:`. ASCII, `git diff --check`, module-form
   `validate 2025`, preflight with `legacy_mined` explicit (394), strict citations (36).
   **ONE local commit** - and run `git status` first; do not commit paths you did not touch.
