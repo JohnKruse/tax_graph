@@ -20,6 +20,31 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 **BALL: WORKER - M20-S39 (SHOW THE MODEL THE NODE INVENTORY).** Task block under
 **From Architect**. **S38 is ACCEPTED at `514443e`.**
 
+## Worker progress (M20-S39, 2026-08-03)
+
+- Implemented the bounded prompt inventory. The default graph has 441 nodes (417 in the
+  base profile); 37 are `parameter` or `fact` nodes and are rendered as sorted id/label
+  entries. An absent inventory renders `none available`.
+- Unknown external form operands now pass only when the row evidence names that form and
+  its numeric line. The result records an unresolved required node using the existing
+  canonical source id convention, verbatim evidence label, quote-span citation, and no
+  value. Fabricated unknown-form references remain hard failures.
+- No 6251 parameter nodes exist in the protected graph. The needed future nodes are
+  threshold single=239100, threshold mfs=119550, subtrahend single=4782, and subtrahend
+  mfs=2391; each would cite both line 18 (`cite_span_form_6251_2025_0052`) and line 39
+  (`cite_span_form_6251_2025_0078`). They were not authored.
+- RAN: `.venv\\Scripts\\python.exe -m pytest tests/test_derive_cells_m20.py tests/test_m20_s31.py tests/test_rederive_m20.py tests/test_workbench_rederive_m20.py -q` -> 60 passed.
+- RAN: `.venv\\Scripts\\python.exe -m pytest tests/test_acquire_citation_check.py -q` -> 9 passed.
+- RAN: `.venv\\Scripts\\python.exe -m tax_graph.cli validate 2025` -> exit 0; graph integrity OK.
+- RAN: direct cached citation check -> checked 401, strict_mismatches 36, ok=False (known
+  baseline; no source files were fetched).
+- RAN: `.venv\\Scripts\\python.exe -m workbench.cli --root . --year 2025 preflight` ->
+  blocked by WinError 5 reading existing ignored `graph/2025/_drafts/*` directories.
+- RAN: `.venv\\Scripts\\python.exe -m pytest tests/test_graph_validator.py tests/test_review_preflight_m15.py tests/test_acquire_citation_check.py -q` -> 12 passed, 12 failed, 1 error; failures are the same inaccessible draft-directory baseline during graph copies/preflight.
+- NOT RUN: live-provider corpus and line-18 replay; sandbox outbound access fails with
+  WinError 10013, so no provider counts are claimed. `git diff --check` passes and the
+  protected graph directories remain byte-identical.
+
 ## Current round
 
 **M20-S38 ACCEPTED (Architect, Claude Opus 5, 2026-08-03) at `514443e`.** Local steps delivered;

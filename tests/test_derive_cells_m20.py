@@ -8,6 +8,7 @@ import pytest
 
 from tax_graph.extract.cells import (
     CellFrame,
+    build_reference_inventory,
     build_cell_frame_from_document,
     clean_form_face_text,
     derive_cells,
@@ -107,6 +108,65 @@ def test_prompt_includes_sorted_untruncated_printed_line_inventory() -> None:
 
     assert result.rows[0].status == "derived"
     assert client.calls[0]["prompt"] == "printed: 1, 8a, 8b, 8z, 21, 25d"
+
+
+def test_prompt_includes_relevant_graph_node_inventory_and_handles_absence() -> None:
+    row = {**_frame()[1], "metadata": {"printed_lines": ["21", "22"]}}
+    client = FakeClient([
+        {"expression": {"op": "COPY", "args": [{"line": "21"}]}, "quote": row["form_face_text"]},
+        {"expression": {"op": "COPY", "args": [{"line": "21"}]}, "quote": row["form_face_text"]},
+    ])
+
+    result = derive_cells(
+        CellFrame.from_rows([row, row]),
+        "nodes:\n<<graph_nodes>>",
+        "secret",
+        client=client,
+        reference_inventory={
+            "node_ids": [],
+            "graph_nodes": [
+                {"node_id": "form_1040_2025_standard_deduction_single", "label": "Standard deduction, Single"},
+            ],
+        },
+    )
+
+    assert result.coverage == {"total": 2, "derived": 2}
+    assert client.calls[0]["prompt"] == (
+        "nodes:\n- form_1040_2025_standard_deduction_single: Standard deduction, Single"
+    )
+
+    absent_client = FakeClient([
+        {"expression": {"op": "COPY", "args": [{"line": "21"}]}, "quote": row["form_face_text"]},
+    ])
+    absent = derive_cells(
+        CellFrame.from_rows([row]),
+        "nodes:\n<<graph_nodes>>",
+        "secret",
+        client=absent_client,
+    )
+    assert absent.rows[0].status == "derived"
+    assert absent_client.calls[0]["prompt"] == "nodes:\nnone available"
+
+
+def test_reference_inventory_lists_only_parameter_and_fact_nodes() -> None:
+    class FakeGraph:
+        def items(self, kind):
+            return {
+                "documents": [{"document_id": "form_1040_2025"}],
+                "nodes": [
+                    {"node_id": "fact_b", "node_type": "fact", "label": "Fact B", "document_id": "form_1040_2025"},
+                    {"node_id": "computed_a", "node_type": "computed", "label": "Computed A", "document_id": "form_1040_2025"},
+                    {"node_id": "parameter_a", "node_type": "parameter", "label": "Parameter A", "document_id": "form_1040_2025"},
+                ],
+            }.get(kind, [])
+
+    inventory = build_reference_inventory(FakeGraph())
+
+    assert inventory["node_ids"] == ["computed_a", "fact_b", "parameter_a"]
+    assert inventory["graph_nodes"] == [
+        {"node_id": "fact_b", "label": "Fact B"},
+        {"node_id": "parameter_a", "label": "Parameter A"},
+    ]
 
 
 def test_curated_human_comment_is_rendered_for_one_address_only() -> None:
@@ -394,6 +454,59 @@ def test_properties_allow_explicit_cross_form_and_warn_on_quote_omission() -> No
     assert result.rows[0].status == "derived"
     assert result.validation_report["gapped"] == 0
     assert result.validation_report["validator_warnings_by_kind"] == {}
+
+
+def test_named_unseen_form_reference_mints_unresolved_external_node() -> None:
+    row = {
+        "form": "schedule_a_2025",
+        "line": "15",
+        "label": "Loss from casualty or theft",
+        "form_face_text": "Attach Form 4684 and enter the amount from line 18 of that form.",
+        "instruction_text": "Attach Form 4684 and enter the amount from line 18 of that form.",
+        "instruction_locator": "face_15",
+        "metadata": {
+            "printed_lines": ["15"],
+            "evidence_spans": [
+                {
+                    "span_id": "face_15",
+                    "text": "Attach Form 4684 and enter the amount from line 18 of that form.",
+                },
+            ],
+        },
+    }
+    client = FakeClient([
+        {
+            "expression": {"op": "COPY", "args": [{"form": "form_4684_2025", "line": "18"}]},
+            "quote": row["form_face_text"],
+        },
+    ])
+
+    result = derive_cells(
+        CellFrame.from_rows([row]),
+        "<<graph_nodes>>",
+        "secret",
+        client=client,
+        reference_inventory={
+            "document_ids": ["schedule_a_2025"],
+            "printed_lines": {"schedule_a_2025": ["15"]},
+            "node_ids": [],
+            "graph_nodes": [],
+        },
+    )
+
+    assert result.rows[0].status == "derived"
+    assert result.validation_report["gapped"] == 0
+    assert result.rows[0].metadata["unresolved_external_nodes"] == [{
+        "node_id": "form_4684_2025_root_line_18",
+        "document_id": "form_4684_2025",
+        "line": "18",
+        "label": "Attach Form 4684 and enter the amount from line 18 of that form.",
+        "node_type": "fact",
+        "value_type": "currency",
+        "required": "required",
+        "status": "unresolved",
+        "citation_refs": ["face_15"],
+    }]
 
 
 def test_cross_form_operands_fail_closed_against_document_and_line_inventory() -> None:

@@ -4,6 +4,8 @@ Return one expression tree and one verbatim quote. An operand is a printed line 
 this form, a line on another form, a numeric constant, an existing graph node, or
 a nested expression. For a filer fact or other graph input, use
 {"node": "exact_graph_node_id"}; the id must already exist in the graph.
+Use only an id from the relevant graph-node inventory below. The inventory is
+intentionally limited to parameter and filer-fact nodes that a formula may use.
 For a sibling line on this same form, use only {"line": "7"}; never put the form
 id or the words "form" and "line" inside that line value. Use
 {"form": "form_XXXX_2025", "line": "7"} only for a line on another form.
@@ -31,6 +33,9 @@ line: <<line>>
 label: <<label>>
 instruction locator: <<instruction_locator>>
 printed lines on this form: <<printed_lines>>
+
+relevant graph nodes (id: label):
+<<graph_nodes>>
 
 form face text:
 <<form_face_text>>

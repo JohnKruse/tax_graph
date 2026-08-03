@@ -362,7 +362,11 @@ def derive_cells(
             row.human_comment = str(
                 human_comments.get(address, row.human_comment) or ""
             )
-        rendered_prompt = _render_cell_prompt(prompt, row)
+        rendered_prompt = _render_cell_prompt(
+            prompt,
+            row,
+            reference_inventory=reference_inventory,
+        )
         first_failure: tuple[CellValidationIssue, ...] = ()
         try:
             response = active_client.structured_completion(
@@ -390,6 +394,7 @@ def derive_cells(
                 provider=provider,
                 model=model,
             )
+            _record_external_inputs(row, row.expression, reference_inventory)
             first_failure = tuple(
                 validate_cell_output(
                     row,
@@ -443,6 +448,7 @@ def derive_cells(
                 provider=provider,
                 model=model,
             )
+            _record_external_inputs(row, row.expression, reference_inventory)
             second_failures, _warnings = validate_cell_output(
                 row,
                 row.expression,
@@ -704,12 +710,13 @@ def validate_cell_output(
                     )
                 )
             elif operand_form not in reference_documents:
-                hard.append(
-                    CellValidationIssue(
-                        "operand_document_not_found",
-                        f"cross-form operand names unknown document {operand_form}",
+                if not _legitimate_external_reference(row, operand_form, operand_line):
+                    hard.append(
+                        CellValidationIssue(
+                            "operand_document_not_found",
+                            f"cross-form operand names unknown document {operand_form}",
+                        )
                     )
-                )
             else:
                 cross_form_lines = _reference_lines(inventory, operand_form)
                 if cross_form_lines is None:
@@ -833,8 +840,9 @@ def build_reference_inventory(graph: Any) -> dict[str, Any]:
 
     Derivation remains pure: callers load the graph and pass this projection in
     as input.  The inventory distinguishes documents, their printed lines,
-    and exact graph node ids so a model cannot invent either a form reference
-    or a filer-fact reference.
+    exact graph node ids, and the compact parameter/filer-fact id-label list
+    rendered into the model prompt so a model cannot invent either a form
+    reference or a filer-fact reference.
     """
     document_ids = {
         str(item.get("document_id") or "").strip().lower()
@@ -842,12 +850,18 @@ def build_reference_inventory(graph: Any) -> dict[str, Any]:
         if item.get("document_id")
     }
     node_ids: set[str] = set()
+    graph_nodes: list[dict[str, str]] = []
     printed_lines: dict[str, set[str]] = {}
     for item in graph.items("nodes"):
         node_id = str(item.get("node_id") or "").strip()
         document_id = str(item.get("document_id") or "").strip().lower()
         if node_id:
             node_ids.add(node_id)
+            if item.get("node_type") in {"parameter", "fact"}:
+                graph_nodes.append({
+                    "node_id": node_id,
+                    "label": str(item.get("label") or "").strip(),
+                })
         if not document_id:
             continue
         match = re.search(r"(?:^|_)line_([0-9]+[a-z]?|[a-z])(?:_|$)", node_id.lower())
@@ -860,6 +874,7 @@ def build_reference_inventory(graph: Any) -> dict[str, Any]:
             for document_id, lines in sorted(printed_lines.items())
         },
         "node_ids": sorted(node_ids),
+        "graph_nodes": sorted(graph_nodes, key=lambda item: item["node_id"]),
     }
 
 
@@ -1364,7 +1379,13 @@ def _role_for(operation: str, index: int) -> str:
     return roles[index] if index < len(roles) else roles[-1]
 
 
-def _render_cell_prompt(template: str, row: CellRecord) -> str:
+def _render_cell_prompt(
+    template: str,
+    row: CellRecord,
+    *,
+    reference_inventory: Mapping[str, Any] | None = None,
+) -> str:
+    """Render one cell prompt with the bounded graph-input inventory."""
     printed_lines = sorted(_available_lines(row), key=_line_sort_key)
     values = {
         "form": row.form,
@@ -1374,12 +1395,130 @@ def _render_cell_prompt(template: str, row: CellRecord) -> str:
         "instruction_text": row.instruction_text,
         "instruction_locator": row.instruction_locator,
         "printed_lines": ", ".join(printed_lines),
+        "graph_nodes": _graph_nodes_prompt(reference_inventory),
         "human_comment": row.human_comment,
     }
     try:
         return render_prompt(template, values)
     except ValueError as exc:
         raise ValueError(f"cell {exc}") from exc
+
+
+def _graph_nodes_prompt(inventory: Mapping[str, Any] | None) -> str:
+    """Render only parameter and filer-fact nodes for model operand selection."""
+    if inventory is None:
+        return "none available"
+    values = inventory.get("graph_nodes")
+    if isinstance(values, Mapping):
+        values = [
+            {"node_id": node_id, "label": label}
+            for node_id, label in values.items()
+        ]
+    if not isinstance(values, Sequence) or isinstance(values, (str, bytes)):
+        return "none available"
+    lines = []
+    for item in values:
+        if not isinstance(item, Mapping):
+            continue
+        node_id = str(item.get("node_id") or "").strip()
+        label = " ".join(str(item.get("label") or "").split())
+        if node_id:
+            lines.append(f"- {node_id}: {label}" if label else f"- {node_id}")
+    return "\n".join(lines) if lines else "none available"
+
+
+def _record_external_inputs(
+    row: CellRecord,
+    expression: Mapping[str, Any] | None,
+    reference_inventory: Mapping[str, Any] | None,
+) -> None:
+    """Record legitimate unseen-form operands as unresolved required inputs."""
+    row.metadata.pop("unresolved_external_nodes", None)
+    reference_documents = _reference_document_ids(reference_inventory)
+    if expression is None or reference_documents is None:
+        return
+    records: list[dict[str, Any]] = []
+    seen: set[str] = set()
+    for operand in _expression_operands(expression):
+        operand_form = str(operand.get("form") or "").strip().lower()
+        operand_line = str(operand.get("line") or "").strip().lower()
+        if (
+            not operand_form
+            or not operand_line
+            or operand_form in reference_documents
+            or not _legitimate_external_reference(row, operand_form, operand_line)
+            or not re.fullmatch(r"[0-9]+[a-z]?", operand_line, re.IGNORECASE)
+        ):
+            continue
+        node_id = _canonical_external_operand_id(operand_form, operand_line)
+        if node_id in seen:
+            continue
+        seen.add(node_id)
+        record: dict[str, Any] = {
+            "node_id": node_id,
+            "document_id": operand_form,
+            "line": operand_line,
+            "label": _external_reference_text(row, operand_form, operand_line),
+            "node_type": "fact",
+            "value_type": "currency",
+            "required": "required",
+            "status": "unresolved",
+            "citation_refs": [row.quote_span_id] if row.quote_span_id else [],
+        }
+        records.append(record)
+    if records:
+        row.metadata["unresolved_external_nodes"] = records
+
+
+def _legitimate_external_reference(row: CellRecord, form: str, line: str) -> bool:
+    """Return true only when the row evidence names this external form and line."""
+    evidence = " ".join((row.form_face_text, row.instruction_text, _evidence_span_text(row)))
+    return _external_form_is_named(evidence, form) and _line_mentioned(evidence, line)
+
+
+def _external_form_is_named(evidence: str, form: str) -> bool:
+    """Match form ids against evidence after folding punctuation and year suffixes."""
+    stem = re.sub(r"_[0-9]{4}$", "", str(form).strip().lower())
+    aliases = {stem.replace("_", " ")}
+    if stem.startswith("form_"):
+        aliases.add(f"form {stem.removeprefix('form_').replace('_', ' ')}")
+    elif stem.startswith("schedule_"):
+        aliases.add(f"schedule {stem.removeprefix('schedule_').replace('_', ' ')}")
+    compact_evidence = re.sub(r"[^a-z0-9]+", "", evidence.lower())
+    return any(
+        re.sub(r"[^a-z0-9]+", "", alias) in compact_evidence
+        for alias in aliases
+    )
+
+
+def _external_reference_text(row: CellRecord, form: str, line: str) -> str:
+    """Choose the verbatim source text that names an external required input."""
+    sources = [row.form_face_text, row.instruction_text]
+    values = row.metadata.get("evidence_spans") or ()
+    if isinstance(values, Mapping):
+        values = (values,)
+    sources.extend(
+        str(item.get("text") or "")
+        for item in values
+        if isinstance(item, Mapping)
+    )
+    for source in sources:
+        if source and _external_form_is_named(source, form) and _line_mentioned(source, line):
+            return source
+    for source in sources:
+        if source and _external_form_is_named(source, form):
+            return source
+    return next((source for source in sources if source), "")
+
+
+def _canonical_external_operand_id(form: str, line: str) -> str:
+    """Reuse the outline pipeline's canonical id for an unseen form line."""
+    from tax_graph.extract.outline_pipeline import _canonical_external_source_id
+
+    match = re.search(r"_([0-9]{4})$", str(form))
+    year = match.group(1) if match else "unknown"
+    stem = str(form)[: match.start()] if match else str(form)
+    return _canonical_external_source_id(stem, year, line=line)
 
 
 def _known_quote_spans(row: CellRecord, quote: str) -> list[tuple[str, str]]:
