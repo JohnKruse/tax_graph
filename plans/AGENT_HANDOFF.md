@@ -17,67 +17,84 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## BALL
 
-**BALL: WORKER - M20-S40 (STOP PUNISHING THE BETTER ANSWER, AND CLOSE THE ENUM/ENGINE GAP).**
-Implementation is complete locally; handoff records the live variance and the remaining operation
-mapping decision for Architect review. No protected graph files were touched.
+**BALL: WORKER - M20-S41 (TYPE THE OPERANDS, AND MAKE THE WARNING WORTH READING).** Task block under
+**From Architect**. **S40 is ACCEPTED at `e032cfd`** - the S39 regression is closed and reproduced
+across four runs; its new warning exposed a type hole that S41 takes.
 
 ## Current round
 
-**M20-S40 Worker result (2026-08-03).** `missing_floor` now accepts a referenced graph node only
-when inventory metadata identifies it as a parameter with `constant_value: 0`; literal zero remains
-valid and nonzero parameters remain a hard failure. Prompt inventory is scoped to the row document,
-the taxpayer filing-status fact, and nodes with no owner document. The harness now reports scoped
-counts, expressions, unresolved external nodes, and their form/line locations. Every unmapped
-projection operation is a warning, so a row with an unmapped operation is not a clean success and is
-not incorrectly hard-failed.
-
-**LIVE CORPUS - two full runs, output only under `C:\tmp`.**
+**M20-S40 ACCEPTED (Architect, Claude Opus 5, 2026-08-03) at `e032cfd`.** The Worker ran its own
+provider legs and reported derived 92 / 91; I ran two more and got **92 and 91**, so the numbers
+reproduce across four independent runs. **The S39 regression is closed** - `form_1040_2025` is 17/17
+and `schedule_1a_2025` is 25/25 and 24/25, where S39 sat at 87 derived on both runs.
 
 | run | attempted | derived | repaired | errored | resolved |
 | --- | ---: | ---: | ---: | ---: | ---: |
-| S40 run 1 | 96 | **92** | 3 | 2 | 95 |
-| S40 run 2 | 96 | **91** | 2 | 3 | 93 |
+| S38 (baseline) | 96 | 92 | 1 | 3 | 93 |
+| S39 | 96 | 87 | 6 | 3 | 93 |
+| S39 | 96 | 87 | 5 | 4 | 92 |
+| S40 Worker | 96 | 92 | 3 | 2 | 95 |
+| S40 Worker | 96 | 91 | 2 | 3 | 93 |
+| S40 Architect | 96 | **92** | 1 | 3 | 93 |
+| S40 Architect | 96 | **91** | 2 | 3 | 93 |
 
-The first-attempt target is met in run 1 and misses by one in run 2; this is nondeterministic model
-variance, not a validator or harness crash. The run-2 6251 line 18 expression covers married filing
-separately through a `LOOKUP_TABLE` keyed by `taxpayer_2025_filing_status`, but its operations are
-not executable through the current projection mapping. Run 1 instead emitted an invalid
-status-as-numeric outer `IF_ELSE`; it was flagged as an unmapped operation but not caught by the
-current type-free expression validator. This is an open quality finding, not a green claim.
+**91 on one run of a pair is variance and is NOT a stop.** 87 twice was not; 92/91 four times is.
+Do not spend another round chasing the missing one.
 
-Schedule A line 15 minted one unresolved required node in both runs:
-`form_4684_2025_root_line_18`, with its form/line and citation preserved in the report.
+**Verified rather than accepted on report.** `form_1040_2025_zero_floor` really is
+`node_type: parameter` with `constant_value: 0`, so the widened `missing_floor` accepts the cited
+node and still rejects a nonzero parameter. Scoping renders 26 nodes for 1040, 3 for Schedule D, and
+1 (`taxpayer_2025_filing_status`) for every other form, which is what stopped a 1040 node from
+reaching 6251 and Schedule 1A rows. Protected set byte-identical across `4935053..e032cfd`; focused
+suites 67 passed on a short temp root; ASCII OK; `git diff --check`; `validate 2025` exit 0
+(18 documents, 441 nodes, 409 edges, 401 citations); preflight `legacy_mined=394` unchanged.
+`_projection_warnings` is safe to call where it sits - `_apply_payload` runs
+`validate_expression_tree` first, so `expression_to_graph` cannot raise on a tree that reaches it.
 
-**OPERATION MAPPING REPORT - no graph mapping was added.** Current engine/rule targets are:
+**MEASURED CORRECTION TO MY OWN S38 NUMBER. The corpus mints exactly ONE external node, not nine.**
+Step 4 closed the reporting hole and both my runs show a single mint: `schedule_a_2025` line 15 ->
+`form_4684_2025_root_line_18`. My "9 of 96 rows reference an outside form" counted rows whose *text*
+names another form; only one row actually emits a cross-form operand. The rest resolve as
+REQUIRE_INPUT or as same-form arithmetic. **The Form 4684 repair is confirmed and the scale of the
+problem was smaller than I reported.**
 
-| operation | current target shape | positional-schema limitation |
-| --- | --- | --- |
-| LOOKUP_TABLE | `lookup_selected_value` or `lookup_tax_table_amount`; roles `key` plus keyed status/default, or `amount` + `status` | cannot name edge roles or select a lookup family |
-| IF | no current reusable rule; roles `condition`, `when_true` | engine has no IF implementation or false branch |
-| IF_ELSE | `if_less_than_currency` / `if_greater_than_currency`; roles `condition`, `threshold`, `when_true`, `when_false` | cannot express comparison direction |
-| COMPARE | no current reusable rule; roles `left`, `right` | cannot express comparison operator |
-| AND | no current reusable rule; roles `candidate` | engine has no boolean rule |
-| OR | no current reusable rule; roles `candidate` | engine has no boolean rule |
-| NOT | no current reusable rule; role `operand` | engine has no boolean rule |
+**THE NEW WARNING IS RIGHT AND IT IS 70% NOISE.** `unmapped_operation` fires 12 and 14 times across
+my two runs, but 8 and 9 of those are `REQUIRE_INPUT` - the answer the prompt explicitly instructs
+the model to give for a line that is not computed. It has no rule mapping because it is not a
+computation. **Warning on it trains a reviewer to ignore the warning**, which is the exact failure
+the review-loop design calls out: attention is the scarce resource. Excluding it leaves the true
+signal at three rows, stable across both runs: `form_1040_2025` line 34 (`IF_ELSE`), and
+`form_6251_2025` lines 18 and 39 (`IF_ELSE`, `LOOKUP_TABLE`).
 
-The current positional expression schema can carry the values and fixed positions, but not the
-role-keyed lookup edges or the missing comparison/boolean semantics. `RULE_FOR_OP` and `ROLE_FOR_OP`
-remain unchanged by this round.
+**AND THE WARNING EXPOSED SOMETHING BIGGER THAN EXECUTABILITY. THE EXPRESSION GRAMMAR IS TYPE-FREE.**
+The Worker flagged this honestly and I reproduced it. 6251 line 39, run A, status `derived`, zero
+failures:
 
-**RAN:** `.venv\Scripts\python.exe -m pytest tests/test_derive_cells_m20.py tests/test_m20_s31.py -q`
--> `59 passed in 1.74s` (elevated rerun after known `.test_tmp` ACL errors).
-**RAN:** `.venv\Scripts\python.exe -m pytest tests/test_derive_cells_m20.py tests/test_m20_s31.py tests/test_derive_cells_s30.py -q`
--> `62 passed in 1.92s`.
-**RAN:** `.venv\Scripts\python.exe tools\check_ascii.py` -> `ASCII check OK`.
-**RAN:** `git diff --check` -> exit 0.
-**RAN:** `.venv\Scripts\python.exe -m tax_graph.cli validate 2025` -> exit 0,
-`documents=18 nodes=441 tables=2 edges=409 rules=17 citations=401`.
-**RAN:** `.venv\Scripts\python.exe -m workbench.cli preflight --year 2025` -> exit 0,
-`units=2224 derived_cells=2120 legacy_mined=394`.
-**RAN:** strict citation snippet over `.cache/raw/2025` -> `checked=401 strict_mismatches=36 ok=False`
-(the standing baseline; NOT changed by this round).
-**RAN:** two full live corpus commands, exact outputs isolated under
-`C:\tmp\tax_graph_m20_s40_run1_20260803` and `C:\tmp\tax_graph_m20_s40_run2_20260803`.
+```
+if_else(node[taxpayer_2025_filing_status], 0, if_else(line 12, 119550, ...), if_else(line 12, 239100, ...))
+```
+
+`IF_ELSE` is documented as comparing a condition AMOUNT against a threshold AMOUNT. This puts a
+filing-status enum in the condition slot and `0` in the threshold slot. It is meaningless, and
+nothing catches it. In run B the same line came out correctly shaped, so it is nondeterministic
+nonsense that validates clean roughly half the time. Run B's line 18 shows the same class from the
+other side: `multiply(line 17, lookup_table(status, 0.26, 0.26))` - a filing-status lookup whose two
+branches are identical, i.e. the model pattern-matching the bracketed-MFS shape onto a rate that
+does not vary by status.
+
+**This outranks the rule mapping.** An unmapped operation fails loudly at projection time. A
+type-confused operand is a wrong answer wearing a `derived` badge, and 6251 line 39 is a real tax
+computation. S41 takes it.
+
+**SMALLER, CARRIED.** (1) Aggregate `validator_failures_by_kind` counts both attempts while
+`rows_detail` keeps only the first, so 6251 reports `missing_floor: 3` that no row shows - those are
+repair-round failures on lines 13/20/27. For a findings surface, which attempt failed matters.
+(2) Step 2 asked the Worker to report whether scoping hides a node a row legitimately needs, and it
+did not. I checked: no non-1040 row names the standard deduction or the brackets, so nothing is
+lost today - **but 6251 lines 13, 20 and 27 reference the Qualified Dividends and Capital Gain Tax
+Worksheet, and scoping now hides the `form_1040_2025_qdcgt_*` nodes from them.** Those three rows
+are exactly the three `self_reference` errors, and they are blocked on John's open scoping call (1)
+below, not on scoping.
 
 ## Standing constraints (every M20 round)
 
@@ -246,67 +263,53 @@ client-managed server dies.
 
 ## From Architect
 
-- **M20-S40 TASK - STOP PUNISHING THE BETTER ANSWER, AND CLOSE THE ENUM/ENGINE GAP (Architect,
-  Claude Opus 5, 2026-08-03).** Ledger: the RAN/NOT RUN rule, D9, D6. **The diagnosis is already
-  done and measured - see Current round. Do not re-diagnose, and do not rearrange the prompt.**
+- **M20-S41 TASK - TYPE THE OPERANDS, AND MAKE THE WARNING WORTH READING (Architect, Claude Opus 5,
+  2026-08-03).** Ledger: the RAN/NOT RUN rule, D9, D6. **Small, and both parts are already measured
+  in Current round - do not re-diagnose.**
 
-  **Step 1 - `missing_floor` must accept a graph node that IS the floor.** Measured: with
-  `form_1040_2025_zero_floor` in the inventory the model returns
-  `max(subtract(line 11b, line 14), node[form_1040_2025_zero_floor])`, the validator hard-fails it
-  because it only recognises a literal zero constant, and repair downgrades the answer to `0`. The
-  node is the better answer - it carries a citation and survives a rate change - so the validator
-  is what is wrong. Accept a `{"node": ...}` operand as satisfying the floor when the referenced
-  node is a `parameter` whose `constant_value` is zero; the inventory already tells you which those
-  are, so this stays deterministic and needs no model judgement. **Do not remove `zero_floor` from
-  the inventory to make the number go up** - that hides the defect and loses the citation.
-  Unit-test both branches, constant and node.
+  **Step 1 - `REQUIRE_INPUT` must not raise `unmapped_operation`.** It is the answer the prompt
+  instructs the model to give for a line that is not computed, so it has no rule by design. It is 8
+  and 9 of the 12 and 14 warnings in my two runs. Exclude it at the source in
+  `_projection_warnings` (not by filtering downstream), and add a test that asserts a REQUIRE_INPUT
+  row warns zero times while an `IF_ELSE` row still warns once. Expected result: the warning drops
+  to the three real rows - 1040 line 34, 6251 lines 18 and 39.
 
-  **Step 2 - make the inventory actually relevant, and say so honestly.** The prompt renders all 37
-  nodes for every row on every form, which is how a 1040 node reached 6251 and Schedule 1A rows.
-  Scope the rendered set to the row's own document plus genuinely global filer facts
-  (`taxpayer_2025_filing_status` and anything else with no `document_id`). Report the resulting
-  per-form counts. **If scoping would hide a node a row legitimately needs - the 1040 standard
-  deduction is referenced from more than one form - report that and keep it global rather than
-  guessing.** A prompt change needs a RENDER test (S32) and the `prompts/` render test must pass.
+  **Step 2 - the expression grammar is type-free, and that is now the top correctness hole.**
+  Measured, status `derived`, zero failures:
+  `if_else(node[taxpayer_2025_filing_status], 0, if_else(line 12, 119550, ...), if_else(line 12, 239100, ...))`.
+  `IF_ELSE` compares a condition AMOUNT to a threshold AMOUNT; a filing-status enum cannot sit in
+  either slot. **Add a deterministic operand-type check, in code, using inventory metadata you
+  already have.** A `{"node": ...}` operand resolves to a `node_type` and, for parameters, a
+  `constant_value`; a node that is a non-numeric `fact` must be rejected in any slot that the
+  positional semantics define as an amount - `IF_ELSE` condition and threshold, `COMPARE` left and
+  right, and the arithmetic operations. **This is a HARD failure, not a warning** - unlike the
+  `zero_floor` and Form 4684 cases, the model is not offering a better answer here, it is offering a
+  meaningless one. Name the kind `operand_type_mismatch` and give the message the slot name and the
+  node's type, so a repair prompt can act on it.
+  **Report what you cannot decide deterministically rather than guessing.** If the inventory does
+  not record enough about a node to classify it (no `value_type`, no `constant_value`), say which
+  nodes those are and leave them passing rather than inventing a rule.
 
-  **Step 3 - close the operation enum against the engine, and report before you widen anything.**
-  `LOOKUP_TABLE` and the whole conditional family (`IF`, `IF_ELSE`, `COMPARE`, `AND`, `OR`, `NOT`)
-  are offered to the model and are absent from `RULE_FOR_OP`, so `expression_to_graph` emits `no
-  reusable rule` and produces zero rules; `LOOKUP_TABLE` is additionally absent from `ROLE_FOR_OP`,
-  so its arguments all get the role `operand` and the engine's `_lookup_table` - which selects by a
-  `key` role plus status-named roles - returns MISSING. **First report, do not implement:** for each
-  of the seven operations, name the rule it would map to (several already exist in
-  `graph/2025/rules/core.yaml`, e.g. `lookup_selected_value`) and the roles its arguments would
-  carry, and say plainly which ones the CURRENT positional expression schema cannot express. My
-  reading is that role-keyed selection is one of them, because
-  `lookup_capital_loss_limit` needs one `key` edge plus one edge per filing status and the schema
-  has no way to name a role. **Adding rule mappings touches `graph/2025/rules/` and is NOT
-  authorized in this round.** Report the mapping, implement nothing in the protected set.
-  **Until this is closed, an expression using an unmapped operation must not be reported as a clean
-  success.** Add the projection findings to the row's validation output as a WARNING (not a hard
-  failure - do not create a fourth instance of the defect above), so `derived` stops overstating.
+  **Step 3 - the same run also produced `multiply(line 17, lookup_table(status, 0.26, 0.26))`,**
+  a status lookup whose branches are identical. Step 2 does not catch it: the slot is an amount and
+  the lookup returns one. **Report only** - is a degenerate lookup worth a warning, or is it noise
+  that will dilute Step 1's cleanup? Recommend one and say why. Implement nothing for this.
 
-  **Step 4 - carry the Step 2 mints into the harness report.** `rows_detail` serialises a fixed key
-  set and silently drops `unresolved_external_nodes`, so the corpus run cannot count them and I read
-  a false zero. Add the field. Then report how many of the ~9 external-reference rows mint a node,
-  with the form and line for each.
+  **Step 4 - rerun the corpus TWICE and report both, per S40's precedent.** Numbers to hold:
+  **derived 92/91, repaired 1-2, errored 3, resolved 93.** Report `validator_warnings_by_kind` for
+  both runs so the Step 1 drop is visible, and print the 6251 line 39 expression from each run -
+  that is the row where the type error appeared once and not the other time, so one clean run proves
+  nothing. **State plainly whether either run still produces a status enum in a numeric slot.**
 
-  **Step 5 - rerun the corpus and READ THE EXPRESSIONS.** Report attempted / derived / repaired /
-  errored per document. **The numbers to beat are S38's: derived 92, repaired 1, errored 3, resolved
-  93/96.** S39 measured derived 87 twice, so a single run showing 92 is not enough - **run it twice
-  and report both**, because two runs is what turned this regression from noise into a fact. Then
-  print the actual expression for 6251 line 18 and state plainly whether it covers married filing
-  separately AND whether every operation in it maps to a rule. Those are two different questions and
-  S39 passed the first while failing the second.
-
-  **Do not:** author or edit anything in `graph/2025/`; remove nodes from the inventory to raise a
-  number; rearrange prompt sections (measured: placement is not the cause); weaken any validator
-  beyond the specific `missing_floor` widening in Step 1; re-add Azure to `llm.provider_routing.only`;
-  let a `contributed` comment reach the model; build UI; promote anything.
+  **Do not:** author or edit anything in `graph/2025/`; add rule or role mappings (still not
+  authorized - the S40 mapping report stands and John has not ruled); turn `unmapped_operation` into
+  a hard failure; weaken `missing_floor` or the external-reference discriminator; re-add Azure to
+  `llm.provider_routing.only`; let a `contributed` comment reach the model; build UI; promote
+  anything.
   **Stop conditions:** any diff in the protected directories; `derive_cells` acquiring a disk write;
-  any harness output landing inside the repository; the corpus regressing below derived=92 on both
-  runs. Tier 3. Declared files plus honest `RAN:`/`NOT RUN:`. ASCII, `git diff --check`, module-form
-  `validate 2025`, preflight with `legacy_mined` explicit (394), strict citations (36).
+  any harness output landing inside the repository; derived below 91 on both runs. Tier 3. Declared
+  files plus honest `RAN:`/`NOT RUN:`. ASCII, `git diff --check`, module-form `validate 2025`,
+  preflight with `legacy_mined` explicit (394), strict citations (36).
   **ONE local commit** - and run `git status` first; do not commit paths you did not touch.
 
 ## Architect decisions
@@ -363,6 +366,11 @@ client-managed server dies.
 
 ## Recent rounds (condensed; full narration in git history - `git show <hash>`)
 
+- **M20-S40 (`e032cfd`, Architect-verified):** `missing_floor` accepts a zero-valued `parameter`
+  node, the prompt inventory is scoped per document (26 for 1040, 3 for Schedule D, 1 elsewhere),
+  unmapped projection operations became warnings, and the harness reports expressions and external
+  mints. Closed the S39 regression: derived 92/91 across four runs. Delivered the operation-mapping
+  report with no protected-set change. Its warning surfaced the type-free grammar hole -> S41.
 - **M20-S39 (`ef39dfe`, Architect-verified, REWORK):** the node inventory reached the prompt, the
   unseen-form hard fail became a minted unresolved required input, and the four 6251 parameter nodes
   were reported rather than invented. Corpus fell to derived=87 on two runs; A/B isolated it to
@@ -410,6 +418,14 @@ client-managed server dies.
 
 ## Latest verification
 
+- **M20-S40 (2026-08-03, Architect live):** two full corpus runs (output under `C:\tmp`, outside the
+  repo), attempted=96 both, derived 92 and 91, repaired 1 and 2, errored 3 both, resolved 93 both;
+  `form_1040_2025` 17/17 in both. Focused suites 67 passed on a short temp root; ASCII OK;
+  `git diff --check`; `validate 2025` (18 documents, 441 nodes, 409 edges, 401 citations); preflight
+  `units=2224 derived_cells=2120 legacy_mined=394`; protected set byte-identical across
+  `4935053..e032cfd`. `unmapped_operation` 12 and 14, of which 8 and 9 are REQUIRE_INPUT; the true
+  signal is three rows in both runs. Exactly one external mint in both runs
+  (`schedule_a_2025` line 15 -> `form_4684_2025_root_line_18`).
 - **M20-S39 (2026-08-03, Architect live):** two full corpus runs, attempted=96 both, derived=87 both,
   repaired 6 / 5, errored 3 / 4, resolved 93 / 92. Focused suites 60 passed on a short temp root;
   ASCII OK; `git diff --check`; `validate 2025` (18 documents, 441 nodes, 409 edges, 401 citations);
