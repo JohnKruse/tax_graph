@@ -28,6 +28,7 @@ from tax_graph.extract.cells import (
     build_cell_frame_from_document,
     derive_cells,
     load_cell_prompt,
+    _scoped_graph_nodes,
 )
 from tax_graph.extract.inputs import load_document_input
 from tax_graph.extract.instruction_sections import write_instruction_sections_artifact
@@ -111,6 +112,7 @@ def run_real_document(
     frame = build_cell_frame_from_document(document)
     client = build_llm_client(config)
     prompt = load_cell_prompt(config, root=root_path)
+    reference_inventory = build_reference_inventory(load_graph(year, root_path))
     result = derive_cells(
         frame,
         prompt,
@@ -118,7 +120,7 @@ def run_real_document(
         client=client,
         model=str(get_config_value(config, "llm.micro_model", "configured-llm")),
         provider=str(get_config_value(config, "llm.provider", "configured-provider")),
-        reference_inventory=build_reference_inventory(load_graph(year, root_path)),
+        reference_inventory=reference_inventory,
     )
     raw_status_counts = Counter(row.status for row in result.rows)
     status_counts = {
@@ -136,11 +138,23 @@ def run_real_document(
             "form_face_after": row.form_face_text,
             "status": row.status,
             "error": row.error,
+            "expression": row.expression,
+            "rendered": row.rendered,
             "validation_failures": row.metadata.get("validation_failures", []),
             "validation_warnings": row.metadata.get("validation_warnings", []),
             "dropped_instruction_sections": row.metadata.get("dropped_instruction_sections", []),
+            "unresolved_external_nodes": row.metadata.get("unresolved_external_nodes", []),
         }
         for row in result.rows
+    ]
+    unresolved_external_nodes = [
+        {
+            "form": document.document_id,
+            "line": row["line"],
+            **node,
+        }
+        for row in row_details
+        for node in row["unresolved_external_nodes"]
     ]
     report = {
         "document_id": document.document_id,
@@ -153,6 +167,14 @@ def run_real_document(
         "raw_row_status_counts": dict(sorted(raw_status_counts.items())),
         "rows_detail": row_details,
         "validation": result.validation_report,
+        "reference_inventory": {
+            "total_graph_nodes": len(reference_inventory.get("graph_nodes", [])),
+            "scoped_graph_nodes": len(
+                _scoped_graph_nodes(reference_inventory, document.document_id)
+            ),
+        },
+        "unresolved_external_node_count": len(unresolved_external_nodes),
+        "unresolved_external_nodes": unresolved_external_nodes,
     }
     report_path = destination / f"m20_s26_{document_id}_derive_cells_report.yaml"
     report_path.write_text(
@@ -257,6 +279,9 @@ def run_documents(
             **report["row_status_counts"],
             "outline_node_count": report["outline_node_count"],
             "line_anchor_count": report["line_anchor_count"],
+            "reference_inventory": report.get("reference_inventory", {}),
+            "unresolved_external_node_count": report.get("unresolved_external_node_count", 0),
+            "unresolved_external_nodes": report.get("unresolved_external_nodes", []),
             "validator_failures_by_kind": _top_three_counts(
                 report["validation"].get("validator_failures_by_kind", {})
             ),

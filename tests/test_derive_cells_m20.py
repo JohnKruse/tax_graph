@@ -167,6 +167,94 @@ def test_reference_inventory_lists_only_parameter_and_fact_nodes() -> None:
         {"node_id": "fact_b", "label": "Fact B"},
         {"node_id": "parameter_a", "label": "Parameter A"},
     ]
+    assert inventory["graph_node_details"]["parameter_a"] == {
+        "node_type": "parameter",
+        "document_id": "form_1040_2025",
+        "label": "Parameter A",
+    }
+
+
+def test_prompt_scopes_graph_nodes_to_document_and_global_filer_facts() -> None:
+    row = {**_frame()[1], "metadata": {"printed_lines": ["21", "22"]}}
+    client = FakeClient([
+        {"expression": {"op": "COPY", "args": [{"line": "21"}]}, "quote": row["form_face_text"]},
+    ])
+    inventory = {
+        "node_ids": [],
+        "graph_nodes": [
+            {"node_id": "form_1040_2025_zero_floor", "label": "Zero floor"},
+            {"node_id": "schedule_d_2025_capital_loss_limit_default", "label": "Capital loss limit"},
+            {"node_id": "taxpayer_2025_filing_status", "label": "Filing status"},
+            {"node_id": "global_fact", "label": "Global fact"},
+        ],
+        "graph_node_details": {
+            "form_1040_2025_zero_floor": {
+                "node_type": "parameter", "document_id": "form_1040_2025",
+            },
+            "schedule_d_2025_capital_loss_limit_default": {
+                "node_type": "parameter", "document_id": "schedule_d_2025",
+            },
+            "taxpayer_2025_filing_status": {
+                "node_type": "fact", "document_id": "form_1040_2025",
+            },
+            "global_fact": {"node_type": "fact", "document_id": ""},
+        },
+    }
+
+    result = derive_cells(
+        CellFrame.from_rows([row]),
+        "nodes:\n<<graph_nodes>>",
+        "secret",
+        client=client,
+        reference_inventory=inventory,
+    )
+
+    assert result.rows[0].status == "derived"
+    assert client.calls[0]["prompt"] == (
+        "nodes:\n"
+        "- form_1040_2025_zero_floor: Zero floor\n"
+        "- global_fact: Global fact\n"
+        "- taxpayer_2025_filing_status: Filing status"
+    )
+
+
+def test_missing_floor_accepts_cited_zero_parameter_and_rejects_nonzero_parameter() -> None:
+    row = CellFrame.from_rows([_frame()[0]]).rows[0]
+    expression = {
+        "op": "MAX",
+        "args": [
+            {"op": "SUBTRACT", "args": [{"line": "11b"}, {"line": "14"}]},
+            {"node": "form_1040_2025_zero_floor"},
+        ],
+    }
+    inventory = {
+        "node_ids": ["form_1040_2025_zero_floor"],
+        "graph_node_details": {
+            "form_1040_2025_zero_floor": {
+                "node_type": "parameter",
+                "constant_value": 0,
+            },
+        },
+    }
+
+    hard, _warnings = validate_cell_output(
+        row, expression, row.form_face_text, reference_inventory=inventory,
+    )
+    assert hard == ()
+
+    nonzero_inventory = {
+        **inventory,
+        "graph_node_details": {
+            "form_1040_2025_zero_floor": {
+                "node_type": "parameter",
+                "constant_value": 1,
+            },
+        },
+    }
+    hard, _warnings = validate_cell_output(
+        row, expression, row.form_face_text, reference_inventory=nonzero_inventory,
+    )
+    assert [issue.kind for issue in hard] == ["missing_floor"]
 
 
 def test_curated_human_comment_is_rendered_for_one_address_only() -> None:
@@ -326,7 +414,7 @@ def test_require_input_may_reference_its_own_line() -> None:
     result = derive_cells(CellFrame.from_rows([row]), "<<line>>", "secret", client=client)
 
     assert result.coverage == {"total": 1, "derived": 1}
-    assert result.validation["validator_warnings_by_kind"] == {}
+    assert result.validation["validator_warnings_by_kind"] == {"unmapped_operation": 1}
 
 
 def test_require_input_non_self_operand_still_warns_when_quote_omits_it() -> None:
@@ -348,7 +436,10 @@ def test_require_input_non_self_operand_still_warns_when_quote_omits_it() -> Non
     result = derive_cells(CellFrame.from_rows([row]), "<<line>>", "secret", client=client)
 
     assert result.coverage == {"total": 1, "derived": 1}
-    assert result.validation["validator_warnings_by_kind"] == {"operand_not_in_quote": 1}
+    assert result.validation["validator_warnings_by_kind"] == {
+        "operand_not_in_quote": 1,
+        "unmapped_operation": 1,
+    }
 
 
 def test_tree_to_graph_preserves_floor_shape_and_subtraction_roles() -> None:
@@ -610,6 +701,36 @@ def test_conditional_argument_roles_and_shapes_are_explicit() -> None:
     })
     with pytest.raises(ValueError, match="AND arguments"):
         validate_expression_tree({"op": "AND", "args": [{"line": "1"}, {"line": "2"}]})
+
+
+def test_unmapped_projection_operation_is_a_warning_not_a_clean_success() -> None:
+    row = _frame()[1]
+    client = FakeClient([
+        {
+            "expression": {
+                "op": "IF_ELSE",
+                "args": [
+                    {"line": "21"},
+                    {"const": 100000},
+                    {"const": 1},
+                    {"const": 2},
+                ],
+            },
+            "quote": row["form_face_text"],
+        },
+    ])
+
+    result = derive_cells(CellFrame.from_rows([row]), "<<line>>", "secret", client=client)
+
+    assert result.rows[0].status == "derived"
+    assert result.rows[0].metadata["validation_warnings"] == [{
+        "kind": "unmapped_operation",
+        "message": "graph projection: no reusable rule for operation IF_ELSE",
+        "hard": False,
+    }]
+    assert result.validation_report["validator_warnings_by_kind"] == {
+        "unmapped_operation": 1,
+    }
 
 
 def test_operand_absent_from_quote_is_warning_not_failure() -> None:

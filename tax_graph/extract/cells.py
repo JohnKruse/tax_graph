@@ -422,7 +422,12 @@ def derive_cells(
             first_failure = (issue,)
 
         if not first_failure:
-            _record_warnings(report, row, max_depth=max_depth)
+            _record_warnings(
+                report,
+                row,
+                max_depth=max_depth,
+                reference_inventory=reference_inventory,
+            )
             result_rows.append(row)
             continue
 
@@ -776,7 +781,10 @@ def validate_cell_output(
     if re.search(r"if zero or less,? enter\s+-?0-", normalized_evidence, re.IGNORECASE):
         has_zero_floor = any(
             str(node.get("op", "")).upper() == "MAX"
-            and any(_is_zero_constant(arg) for arg in _node_args(node))
+            and any(
+                _is_zero_floor_operand(arg, inventory)
+                for arg in _node_args(node)
+            )
             for node in _expression_nodes(expression)
         )
         if not has_zero_floor:
@@ -786,6 +794,7 @@ def validate_cell_output(
                     "evidence requires MAX(expression, 0) for the zero-or-less rule",
                 )
             )
+    warnings.extend(_projection_warnings(row, expression))
     return tuple(_unique_issues(hard)), tuple(_unique_issues(warnings))
 
 
@@ -824,6 +833,29 @@ def _is_zero_constant(node: Mapping[str, Any]) -> bool:
     return "const" in node and isinstance(node.get("const"), (int, float)) and float(node["const"]) == 0
 
 
+def _is_zero_floor_operand(
+    node: Mapping[str, Any],
+    inventory: Mapping[str, Any] | None,
+) -> bool:
+    """Return whether a floor operand is a literal or cited zero parameter."""
+    if _is_zero_constant(node):
+        return True
+    node_id = str(node.get("node") or "").strip()
+    if not node_id:
+        return False
+    details = _reference_node_details(inventory).get(node_id)
+    return bool(
+        details
+        and details.get("node_type") == "parameter"
+        and _is_zero_value(details.get("constant_value"))
+    )
+
+
+def _is_zero_value(value: Any) -> bool:
+    """Return whether a graph constant is the numeric zero, excluding booleans."""
+    return isinstance(value, (int, float)) and not isinstance(value, bool) and float(value) == 0
+
+
 def _available_lines(row: CellRecord) -> set[str]:
     """Read optional printed-line inventory supplied by the upstream frame."""
     for key in ("printed_lines", "available_lines", "form_lines"):
@@ -851,6 +883,7 @@ def build_reference_inventory(graph: Any) -> dict[str, Any]:
     }
     node_ids: set[str] = set()
     graph_nodes: list[dict[str, str]] = []
+    graph_node_details: dict[str, dict[str, Any]] = {}
     printed_lines: dict[str, set[str]] = {}
     for item in graph.items("nodes"):
         node_id = str(item.get("node_id") or "").strip()
@@ -862,6 +895,16 @@ def build_reference_inventory(graph: Any) -> dict[str, Any]:
                     "node_id": node_id,
                     "label": str(item.get("label") or "").strip(),
                 })
+                graph_node_details[node_id] = {
+                    "node_type": str(item.get("node_type") or ""),
+                    "document_id": document_id,
+                    "label": str(item.get("label") or "").strip(),
+                    **(
+                        {"constant_value": item["constant_value"]}
+                        if "constant_value" in item
+                        else {}
+                    ),
+                }
         if not document_id:
             continue
         match = re.search(r"(?:^|_)line_([0-9]+[a-z]?|[a-z])(?:_|$)", node_id.lower())
@@ -875,6 +918,7 @@ def build_reference_inventory(graph: Any) -> dict[str, Any]:
         },
         "node_ids": sorted(node_ids),
         "graph_nodes": sorted(graph_nodes, key=lambda item: item["node_id"]),
+        "graph_node_details": graph_node_details,
     }
 
 
@@ -900,6 +944,61 @@ def _reference_node_ids(inventory: Mapping[str, Any] | None) -> set[str] | None:
     if values is None:
         return set()
     return {str(value).strip() for value in values if str(value).strip()}
+
+
+def _reference_node_details(inventory: Mapping[str, Any] | None) -> dict[str, Mapping[str, Any]]:
+    """Return metadata for inventory nodes, with a legacy-list fallback."""
+    if inventory is None:
+        return {}
+    values = inventory.get("graph_node_details")
+    if isinstance(values, Mapping):
+        return {
+            str(node_id): item
+            for node_id, item in values.items()
+            if isinstance(item, Mapping)
+        }
+    graph_nodes = inventory.get("graph_nodes")
+    if not isinstance(graph_nodes, Sequence) or isinstance(graph_nodes, (str, bytes)):
+        return {}
+    return {
+        str(item.get("node_id")): item
+        for item in graph_nodes
+        if isinstance(item, Mapping) and item.get("node_id")
+    }
+
+
+def _scoped_graph_nodes(
+    inventory: Mapping[str, Any] | None,
+    document_id: str,
+) -> list[dict[str, str]]:
+    """Return prompt-visible parameter/fact nodes for one document."""
+    if inventory is None:
+        return []
+    values = inventory.get("graph_nodes")
+    if not isinstance(values, Sequence) or isinstance(values, (str, bytes)):
+        return []
+    details = _reference_node_details(inventory)
+    current = str(document_id or "").strip().lower()
+    result: list[dict[str, str]] = []
+    for item in values:
+        if not isinstance(item, Mapping):
+            continue
+        node_id = str(item.get("node_id") or "").strip()
+        if not node_id:
+            continue
+        detail = details.get(node_id, item)
+        owner = str(detail.get("document_id") or "").strip().lower()
+        is_global_filer_fact = (
+            detail.get("node_type") == "fact"
+            and node_id.startswith("taxpayer_")
+        )
+        if owner and owner != current and not is_global_filer_fact:
+            continue
+        result.append({
+            "node_id": node_id,
+            "label": " ".join(str(item.get("label") or detail.get("label") or "").split()),
+        })
+    return sorted(result, key=lambda item: item["node_id"])
 
 
 def _reference_lines(inventory: Mapping[str, Any] | None, document_id: str) -> set[str] | None:
@@ -1043,6 +1142,31 @@ def _record_warnings(
     counts = report["validator_warnings_by_kind"]
     for issue in warnings:
         counts[issue.kind] = counts.get(issue.kind, 0) + 1
+
+
+def _projection_warnings(
+    row: CellRecord,
+    expression: Mapping[str, Any],
+) -> list[CellValidationIssue]:
+    """Return warnings for every operation with no current projection rule."""
+    projection = expression_to_graph(
+        form=row.form,
+        line=row.line,
+        expression=expression,
+        quote_span_id=row.quote_span_id,
+    )
+    findings = []
+    for finding in projection.findings:
+        match = re.fullmatch(r"no reusable rule for operation ([A-Z_]+)", finding)
+        if match:
+            findings.append(
+                CellValidationIssue(
+                    "unmapped_operation",
+                    f"graph projection: {finding}",
+                    hard=False,
+                )
+            )
+    return findings
 
 
 def _mark_gap(row: CellRecord, issues: Iterable[CellValidationIssue], *, provider: str, model: str) -> None:
@@ -1395,7 +1519,7 @@ def _render_cell_prompt(
         "instruction_text": row.instruction_text,
         "instruction_locator": row.instruction_locator,
         "printed_lines": ", ".join(printed_lines),
-        "graph_nodes": _graph_nodes_prompt(reference_inventory),
+        "graph_nodes": _graph_nodes_prompt(reference_inventory, row.form),
         "human_comment": row.human_comment,
     }
     try:
@@ -1404,26 +1528,25 @@ def _render_cell_prompt(
         raise ValueError(f"cell {exc}") from exc
 
 
-def _graph_nodes_prompt(inventory: Mapping[str, Any] | None) -> str:
+def _graph_nodes_prompt(
+    inventory: Mapping[str, Any] | None,
+    document_id: str = "",
+) -> str:
     """Render only parameter and filer-fact nodes for model operand selection."""
     if inventory is None:
         return "none available"
-    values = inventory.get("graph_nodes")
-    if isinstance(values, Mapping):
-        values = [
+    if isinstance(inventory.get("graph_nodes"), Mapping):
+        legacy = inventory["graph_nodes"]
+        inventory = dict(inventory)
+        inventory["graph_nodes"] = [
             {"node_id": node_id, "label": label}
-            for node_id, label in values.items()
+            for node_id, label in legacy.items()
         ]
-    if not isinstance(values, Sequence) or isinstance(values, (str, bytes)):
-        return "none available"
     lines = []
-    for item in values:
-        if not isinstance(item, Mapping):
-            continue
-        node_id = str(item.get("node_id") or "").strip()
-        label = " ".join(str(item.get("label") or "").split())
-        if node_id:
-            lines.append(f"- {node_id}: {label}" if label else f"- {node_id}")
+    for item in _scoped_graph_nodes(inventory, document_id):
+        node_id = item["node_id"]
+        label = item["label"]
+        lines.append(f"- {node_id}: {label}" if label else f"- {node_id}")
     return "\n".join(lines) if lines else "none available"
 
 

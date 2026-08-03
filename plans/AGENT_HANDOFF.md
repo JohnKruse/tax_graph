@@ -17,101 +17,67 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## BALL
 
-**BALL: WORKER - M20-S40 (STOP PUNISHING THE BETTER ANSWER, AND CLOSE THE ENUM/ENGINE GAP).** Task
-block under **From Architect**. **S39 is REWORK at `ef39dfe`** - steps 2 and 3 accepted and kept,
-step 1 regressed the corpus and the cause is isolated below.
+**BALL: WORKER - M20-S40 (STOP PUNISHING THE BETTER ANSWER, AND CLOSE THE ENUM/ENGINE GAP).**
+Implementation is complete locally; handoff records the live variance and the remaining operation
+mapping decision for Architect review. No protected graph files were touched.
 
 ## Current round
 
-**M20-S39 REWORK (Architect, Claude Opus 5, 2026-08-03) at `ef39dfe`.** Steps 2 and 3 are accepted
-and stay. Step 1 delivered the capability, tripped its own stop condition, and I traced the cause to
-a specific node. The Worker's report is honest and every local claim reproduces: 60 passed on a
-short temp root, `validate 2025` exit 0 (18 documents, 441 nodes, 409 edges, 401 citations), ASCII
-OK, `git diff --check` clean, protected set byte-identical across `514443e..ef39dfe`, inventory 37
-nodes as reported, nothing authored in `graph/2025/`. The provider legs were correctly declared NOT
-RUN; I ran them.
+**M20-S40 Worker result (2026-08-03).** `missing_floor` now accepts a referenced graph node only
+when inventory metadata identifies it as a parameter with `constant_value: 0`; literal zero remains
+valid and nonzero parameters remain a hard failure. Prompt inventory is scoped to the row document,
+the taxpayer filing-status fact, and nodes with no owner document. The harness now reports scoped
+counts, expressions, unresolved external nodes, and their form/line locations. Every unmapped
+projection operation is a warning, so a row with an unmapped operation is not a clean success and is
+not incorrectly hard-failed.
 
-**STEP 2 WORKS, AND I VERIFIED THE DISCRIMINATOR RATHER THAN THE STATUS.** On the real Schedule A
-line 15 row, `_legitimate_external_reference` returns true for `form_4684_2025` line 18 and false
-for both fabrication shapes - the `form_1040_nr_2025` line `filing_status` smuggle and an invented
-`form_9999_2025` line 18. Live, that row now returns `copy(form_4684_2025:18)`, status `derived`,
-minting `form_4684_2025_root_line_18` with the form's own sentence as the label and a real citation
-ref. **The one legitimate external reference S38 broke is recovered and fabrication still hard-fails.**
-
-**THE CORPUS REGRESSED, TWICE, AND IT IS NOT NOISE.**
+**LIVE CORPUS - two full runs, output only under `C:\tmp`.**
 
 | run | attempted | derived | repaired | errored | resolved |
 | --- | ---: | ---: | ---: | ---: | ---: |
-| S38 | 96 | 92 | 1 | 3 | 93 |
-| S39 run 1 | 96 | **87** | 6 | 3 | 93 |
-| S39 run 2 | 96 | **87** | 5 | 4 | 92 |
+| S40 run 1 | 96 | **92** | 3 | 2 | 95 |
+| S40 run 2 | 96 | **91** | 2 | 3 | 93 |
 
-Resolution holds because repair absorbs it, but first-attempt correctness dropped 5 and the round's
-own stop condition was derived >= 92. The failures are `missing_floor` - 8 in run 1, 7 in run 2 - on
-1040 lines 15 and 22, 6251 line 11, and Schedule 1A lines 21 and 30. All zero-floor lines.
+The first-attempt target is met in run 1 and misses by one in run 2; this is nondeterministic model
+variance, not a validator or harness crash. The run-2 6251 line 18 expression covers married filing
+separately through a `LOOKUP_TABLE` keyed by `taxpayer_2025_filing_status`, but its operations are
+not executable through the current projection mapping. Run 1 instead emitted an invalid
+status-as-numeric outer `IF_ELSE`; it was flagged as an unmapped operation but not caught by the
+current type-free expression validator. This is an open quality finding, not a green claim.
 
-**CAUSE, ISOLATED BY A/B AND NOT BY INFERENCE. The inventory contains
-`form_1040_2025_zero_floor`, and the model correctly reaches for it.** With the full inventory the
-first attempt returns `max(subtract(line 11b, line 14), node[form_1040_2025_zero_floor])`; the
-`missing_floor` validator only recognises a literal zero constant, hard-fails it, and the repair
-falls back to `0`. Remove that ONE node from the inventory and the same rows derive first-attempt
-clean:
+Schedule A line 15 minted one unresolved required node in both runs:
+`form_4684_2025_root_line_18`, with its form/line and citation preserved in the report.
 
-Counts are first-attempt-clean trials, same row and same prompt, varying only the inventory:
+**OPERATION MAPPING REPORT - no graph mapping was added.** Current engine/rule targets are:
 
-| row | full inventory | inventory minus `zero_floor` | no inventory at all |
-| --- | ---: | ---: | ---: |
-| 1040 line 15 | 0 / 11 | 3 / 3 | 4 / 4 |
-| 1040 line 22 | 0 / 7 | 3 / 3 | - |
-| 6251 line 11 | 0 / 2 | 2 / 2 | - |
-| schedule_1a line 21 | 0 / 2 | 2 / 2 | - |
-| schedule_1a line 30 | 1 / 2 | 2 / 2 | - |
-| **total** | **1 / 24** | **12 / 12** | **4 / 4** |
+| operation | current target shape | positional-schema limitation |
+| --- | --- | --- |
+| LOOKUP_TABLE | `lookup_selected_value` or `lookup_tax_table_amount`; roles `key` plus keyed status/default, or `amount` + `status` | cannot name edge roles or select a lookup family |
+| IF | no current reusable rule; roles `condition`, `when_true` | engine has no IF implementation or false branch |
+| IF_ELSE | `if_less_than_currency` / `if_greater_than_currency`; roles `condition`, `threshold`, `when_true`, `when_false` | cannot express comparison direction |
+| COMPARE | no current reusable rule; roles `left`, `right` | cannot express comparison operator |
+| AND | no current reusable rule; roles `candidate` | engine has no boolean rule |
+| OR | no current reusable rule; roles `candidate` | engine has no boolean rule |
+| NOT | no current reusable rule; role `operand` | engine has no boolean rule |
 
-**This is the phase's recurring defect, for the fourth time: we show the model a capability and then
-reject it for using it.** S33's `operand_not_printed` against an unshown inventory, S38's
-`operand_document_not_found` against the correct Form 4684 answer, and now `missing_floor` against a
-graph node that carries the floor WITH a citation - which is the better answer, not the worse one.
-The validator wants the constant; the graph offers the node; we punish the node.
+The current positional expression schema can carry the values and fixed positions, but not the
+role-keyed lookup edges or the missing comparison/boolean semantics. `RULE_FOR_OP` and `ROLE_FOR_OP`
+remain unchanged by this round.
 
-**I TESTED THE OBVIOUS ALTERNATIVE EXPLANATION AND IT IS WRONG.** Placement is not the cause. Moving
-the whole `<<graph_nodes>>` block from mid-prompt to after the instruction text changed nothing -
-0 of 8 clean either way on 1040 lines 15 and 22. Do not spend S40 rearranging the prompt.
-
-**STEP 1'S PAYOFF IS REAL AND CURRENTLY UNEXECUTABLE. READ THE EXPRESSION.** 6251 line 18 now
-reaches the filing-status node without any comment, in both replays:
-
-```
-if_else(line 17, lookup_table(node[taxpayer_2025_filing_status], 239100, 119550),
-        multiply(line 17, 0.26),
-        subtract(multiply(line 17, 0.28), lookup_table(node[taxpayer_2025_filing_status], 4782, 2391)))
-```
-
-**It DOES cover married filing separately** - the diagnosis that produced S39 was right, and the
-S34 precedent held. **It also cannot run.** `LOOKUP_TABLE` is in `DEFAULT_OPERATIONS` but in neither
-`ROLE_FOR_OP` nor `RULE_FOR_OP`, so `expression_to_graph` reports `no reusable rule for operation
-LOOKUP_TABLE` twice, emits zero rules, and tags every argument with the role `operand` - while the
-engine's `_lookup_table` selects by a `key` role plus status-named roles and therefore returns
-MISSING. Same gap the Worker declared honestly for nested `IF`/`COMPARE` in S38: **the operation
-enum offered to the model is wider than the engine's mapping.** A `derived` status over an
-unexecutable tree is worth less than an honest failure.
-
-**THE TARGET SHAPE IS ALREADY IN THE GRAPH, HAND-AUTHORED.** `lookup_capital_loss_limit`
-(`graph/2025/edges/capital-gains.yaml`) does exactly this: one edge from `taxpayer_2025_filing_status`
-with `role: key`, plus one edge per filing status whose `role` IS the status value, each sourced
-from a `parameter` node carrying a `constant_value` and a citation. **The positional expression
-schema cannot express a role-keyed selection at all**, which is why the model's positional
-`LOOKUP_TABLE` is unmappable by construction rather than by oversight.
-
-**MEASUREMENT HOLE, MINE TO OWN.** The harness serialises a fixed key set into `rows_detail` and
-drops `unresolved_external_nodes`, so the corpus run cannot count the Step 2 mints - I read zero and
-it was an artifact. This is the same hole that made my S38 question about cross-form operand counts
-unanswerable. It also means nothing outside `cells.py` reads that key yet: the minted required input
-is substrate, not surface.
-
-**SMALLER, KEPT FOR S40.** The prompt says "relevant graph nodes" and renders all 37 for every row
-on every form, so `form_1040_2025_zero_floor` was offered to 6251 and Schedule 1A rows - that is how
-the regression crossed forms. At 37 the bound is fine; the word "relevant" is not yet true.
+**RAN:** `.venv\Scripts\python.exe -m pytest tests/test_derive_cells_m20.py tests/test_m20_s31.py -q`
+-> `59 passed in 1.74s` (elevated rerun after known `.test_tmp` ACL errors).
+**RAN:** `.venv\Scripts\python.exe -m pytest tests/test_derive_cells_m20.py tests/test_m20_s31.py tests/test_derive_cells_s30.py -q`
+-> `62 passed in 1.92s`.
+**RAN:** `.venv\Scripts\python.exe tools\check_ascii.py` -> `ASCII check OK`.
+**RAN:** `git diff --check` -> exit 0.
+**RAN:** `.venv\Scripts\python.exe -m tax_graph.cli validate 2025` -> exit 0,
+`documents=18 nodes=441 tables=2 edges=409 rules=17 citations=401`.
+**RAN:** `.venv\Scripts\python.exe -m workbench.cli preflight --year 2025` -> exit 0,
+`units=2224 derived_cells=2120 legacy_mined=394`.
+**RAN:** strict citation snippet over `.cache/raw/2025` -> `checked=401 strict_mismatches=36 ok=False`
+(the standing baseline; NOT changed by this round).
+**RAN:** two full live corpus commands, exact outputs isolated under
+`C:\tmp\tax_graph_m20_s40_run1_20260803` and `C:\tmp\tax_graph_m20_s40_run2_20260803`.
 
 ## Standing constraints (every M20 round)
 

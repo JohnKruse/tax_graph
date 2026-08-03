@@ -93,9 +93,54 @@ def test_harness_marks_zero_attempt_document_empty_with_outline_inventory(monkey
             "errored": 0,
             "outline_node_count": 31,
             "line_anchor_count": 24,
+            "reference_inventory": {},
+            "unresolved_external_node_count": 0,
+            "unresolved_external_nodes": [],
             "validator_failures_by_kind": {},
         }
     ]
+
+
+def test_harness_summary_carries_unresolved_external_nodes(monkeypatch, tmp_path: Path) -> None:
+    monkeypatch.setattr(
+        "experiments.derive_cells_s25.persist_instruction_frame",
+        lambda **_: (tmp_path / "frame.yaml", tmp_path / "coverage.yaml"),
+    )
+    monkeypatch.setattr(
+        "experiments.derive_cells_s25.run_real_document",
+        lambda **_: {
+            "rows_attempted": 1,
+            "row_status_counts": {"derived": 1, "repaired": 0, "gapped": 0, "errored": 0},
+            "outline_node_count": 2,
+            "line_anchor_count": 1,
+            "validation": {"validator_failures_by_kind": {}},
+            "reference_inventory": {"total_graph_nodes": 37, "scoped_graph_nodes": 2},
+            "unresolved_external_node_count": 1,
+            "unresolved_external_nodes": [{
+                "form": "schedule_a_2025",
+                "line": "15",
+                "node_id": "form_4684_2025_root_line_18",
+            }],
+        },
+    )
+
+    reports = run_documents(
+        root=tmp_path / "repo",
+        year="2025",
+        document_ids=["schedule_a_2025"],
+        output_dir=tmp_path / "output",
+    )
+
+    assert reports[0]["reference_inventory"] == {
+        "total_graph_nodes": 37,
+        "scoped_graph_nodes": 2,
+    }
+    assert reports[0]["unresolved_external_node_count"] == 1
+    assert reports[0]["unresolved_external_nodes"] == [{
+        "form": "schedule_a_2025",
+        "line": "15",
+        "node_id": "form_4684_2025_root_line_18",
+    }]
 
 
 def test_all_prompt_templates_render_with_representative_values() -> None:
