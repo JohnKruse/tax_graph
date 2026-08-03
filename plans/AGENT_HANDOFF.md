@@ -17,8 +17,9 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## BALL
 
-**BALL: JOHN - two scoping questions block the last 5 rows; no deterministic defect remains.**
-**S36 is ACCEPTED at `f5dfd55`.** See **Open for Architect**.
+**BALL: WORKER - M20-S37 (CLOSE THE HUMAN LOOP: COMMENT -> RE-DERIVE -> RESULT).** Task block
+under **From Architect**. **S36 is ACCEPTED at `f5dfd55`.** The three scoping calls in
+**Open for Architect** remain with John but block nothing in this round.
 
 ## Current round
 
@@ -231,10 +232,114 @@ client-managed server dies.
 
 ## From Architect
 
-- *(No active Worker task. Truncation, span selection, operand inventory and label cleaning are all
-  fixed; the last 5 rows are blocked on two scoping calls in **Open for Architect**.)*
+- **M20-S37 TASK - CLOSE THE HUMAN LOOP: COMMENT -> RE-DERIVE -> RESULT (Architect, Claude Opus 5,
+  2026-08-03).** Ledger: the RAN/NOT RUN rule, D9, D6. **Backend only. No UI work this round.**
+
+  **Why this, and why now.** The pipeline half of the prime directive works: 93 of 96 computed rows
+  resolve and no deterministic defect remains. **The human half has never executed once.** There
+  are zero verdicts in the repo, no comment has ever reached a derivation, and the workbench has
+  been built three times without ever being used for its purpose. Everything else queued -
+  the checker, the 13614-C structure work, the standalone reviewer - produces findings that need
+  somewhere to land, and there is nowhere to land them.
+  **John's design, confirmed 2026-08-03:** the form is the unit of approval, not the cell. A
+  reviewer works the suspect cells, edits a comment, hits **try again**, sees a fresh result in
+  seconds, and iterates until the cell is right. Reject is the escape hatch for a cell that will
+  not converge, not the main action.
+  **Architect measured the feasibility before speccing it: 6.0s for one row INCLUDING process
+  start, config load, document load and frame build. The model call alone is ~2.7s** (17 rows in
+  47.8s). In a warm server the setup does not repeat, so try-again is genuinely interactive.
+
+  **Step 1 - store a curated comment against a canonical address.** Reuse the EXISTING ledger,
+  `review_verdicts/<year>/address_verdicts.jsonl` - append-only, address-keyed, already documented
+  as human history kept separate from regenerated artifacts. **Do not invent a second store.**
+  A comment record carries: canonical address, comment text, author, timestamp, and an origin of
+  `curated` or `contributed`. **Only `curated` comments feed the model.** `contributed` is raw
+  input from another reviewer ("this is broke") which the lead edits into an instruction; it is
+  retained and displayed but never sent.
+  **Latest curated comment for an address wins.** Full history is retained for audit and for the
+  UI, but the evidence packet carries only the most recent, so the prompt stays bounded as comments
+  accumulate over years.
+
+  **Step 2 - feed the curated comment into the evidence packet.** Add it to the values in
+  `_render_cell_prompt` and reference it from `prompts/derive_cells.md` using the `<<name>>`
+  syntax. When there is no comment the placeholder must render as empty and the prompt must read
+  naturally - **an absent comment must not change behaviour for the 96 rows that already work.**
+  Prove that: the corpus result with no comments present must be unchanged.
+  **S32 lesson applies - any prompt change needs a RENDER test**, and the existing test that
+  renders every file in `prompts/` must still pass. A substring assertion is not coverage.
+  The prompt must frame the comment as a human instruction that takes precedence over the model's
+  own reading of the evidence, while every existing validator still applies. **A comment must not
+  be able to talk the model past `quote_not_verbatim`, `operand_not_printed` or `self_reference`.**
+
+  **Step 3 - a live single-cell re-derive entry point.** A function taking a document id, a line,
+  and an OPTIONAL draft comment (not yet stored), returning the derived result plus its validation
+  outcome. **`derive_cells` stays pure - zero disk writes - and this path must not write either.**
+  The draft-comment parameter is what makes try-again a trial-and-error loop: the reviewer tunes
+  wording and re-runs before anything is persisted. Persisting is a separate, explicit action.
+  Expose it over HTTP in `workbench/server.py` alongside the existing `/api/verdicts`. **No UI
+  work this round** - the endpoint plus tests is the deliverable, and the surface lands in S38.
+
+  **Step 4 - prove the loop end to end, which is the whole point of the round.** A test that:
+  derives a cell and records the result; stores a curated comment against that address; re-derives;
+  and asserts **the output changed in the direction the comment asked for**. Use a real row where
+  the correct answer is known - `form_6251_2025` line 18 or 39 is the obvious candidate, since both
+  currently need a repair and the correct expression is written on the form face.
+  **This has never happened in the project's history. If it does not work, say so plainly - that
+  is a more valuable result than a green test that proves something weaker.**
+
+  **Step 5 - report.** Rerun the full derivable corpus with no comments stored and confirm it is
+  unchanged from S36 (96 attempted, 89 derived, 4 repaired, 3 errored, 93 resolved - allowing for
+  the known run-to-run variance on `form_6251_2025`). Then report the one cell you steered, with
+  the comment text, the before expression and the after expression.
+  If approved external network is unavailable, do steps 1-3, declare steps 4-5 NOT RUN up front,
+  and hand back - the Architect will run them.
+
+  **Do not:** weaken any validator so a comment can override it; let a `contributed` comment reach
+  the model; write from `derive_cells` or the re-derive path; add a retry policy; build UI;
+  accumulate all historical comments into the prompt; promote anything.
+  **Stop conditions:** any diff in the protected directories; `derive_cells` acquiring a disk
+  write; any harness output landing inside the repository; the no-comment corpus result changing.
+  Tier 3. Declared files plus honest `RAN:`/`NOT RUN:`. ASCII, `git diff --check`, module-form
+  `validate 2025`, preflight with `legacy_mined` explicit (394), strict citations (36).
+  **ONE local commit** - and run `git status` first; do not commit paths you did not touch.
 
 ## Architect decisions
+
+- **THE REVIEW LOOP, as designed with John 2026-08-03. This is the shape S37-S39 build toward.**
+  - **The FORM is the unit of approval, not the cell.** John: *"I view the form as a unit."* No
+    per-cell sign-off across ~1,921 controls; findings route attention to the handful that need it.
+  - **Try again, not reject, is the main action.** The reviewer edits a comment, re-derives that one
+    cell live, and iterates. Reject is the escape hatch for a cell that will not converge.
+    Feasibility measured before committing to it: **6.0s for one row cold, ~2.7s for the model call
+    alone**; a warm server does not repeat the setup.
+  - **This is only safe because `derive_cells` is pure.** The zero-disk-write gate defended every
+    round since S24 is what lets a request handler call it with a modified evidence packet.
+  - **The stored comment is one that has been VERIFIED to work.** Because the reviewer tunes wording
+    until the cell comes out right, the ledger accumulates known-good instructions rather than
+    hopeful ones. This is strictly better than a comment written blind and batched.
+  - **Two classes of comment.** `contributed` is raw input from another reviewer - John's example:
+    *"this is broke"* - retained and shown but NEVER sent to the model. `curated` is the lead's
+    edited instruction; only curated comments feed derivation. Turning the first into the second is
+    the irreplaceable human act.
+  - **Latest curated comment per address wins**, with full history retained for audit and display.
+    Keeps the prompt bounded as comments accumulate over years.
+  - **A comment must never override a validator.** It steers interpretation; it cannot talk the
+    model past `quote_not_verbatim`, `operand_not_printed` or `self_reference`.
+  - **Show nondeterminism rather than hide it.** Try-again with an unchanged comment can return a
+    different answer - measured repeatedly at `temperature: 0`. The UI must distinguish "you changed
+    the comment" from "same comment, fresh attempt", or reviewers tune toward superstition.
+  - **Convergence needs a measure and an escape hatch.** Track rounds-to-approval per cell and flag
+    anything reopened more than twice; at that point it needs a human decision, not another pass.
+  - **The reviewer's scarce resource is attention.** John: apathy is a bigger risk than
+    over-control. Findings-first ranking is therefore not polish - it is what makes a contributor's
+    fifteen minutes productive. Measure findings raised vs findings upheld, and minutes per upheld
+    finding; that is the ratchet the phase plan asks for and we have never been able to compute.
+  - **Audited 2026-08-03: NONE of this is surfaced today.** The workbench API is six calls - list
+    documents, load cells, load/save session, save progress, submit verdict. There is no findings
+    endpoint, no per-cell problem badge, and no ranking. Derivation quality IS generated every run
+    (per-row failures, warnings, repair events) and is written to a temp report and discarded. S38
+    carries it into the surface.
+
 
 - **S3a -> S3b: YES, the structure step owns a deterministic outline adapter. S3a regeneration
   stays blocked until it lands. (Answered 2026-08-02; open since 2026-07-28.)** The bare positional
