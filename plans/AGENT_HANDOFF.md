@@ -53,12 +53,45 @@ Schedule D expectation. Architect bisected the single changed file: the test fai
 the S35 resolver reverted. The attribution is correct. **It is now a fourth known-red baseline
 entry** - see Standing constraints.
 
-**REMAINING, and it is small and stable: `form_6251_2025` alone, same three failure kinds in both
-runs** - `missing_floor=3`, `payload=2`, `self_reference=2`. These are model-quality failures on
-the hardest form in the corpus, not pipeline defects: `missing_floor` means an expression omitted a
-stated floor, `payload` a malformed response, `self_reference` a row naming itself outside the
-REQUIRE_INPUT shape. **No further deterministic defect is visible in the derivation path.** That is
-the signal that this line of work has reached its natural stopping point.
+**CORRECTION, SECOND PASS (2026-08-03). The real defect is LABEL TRUNCATION, and both of my
+earlier diagnoses of 6251 were wrong.** I called the remaining failures "model quality", then "an
+unmodelled worksheet plus an expression-grammar limit". Neither holds. **We capture ONE PHYSICAL
+LINE of the page and stop**, so rows whose text wraps are handed to the model as fragments.
+
+**Measured: 16 of 94 formula rows corpus-wide have a label cut off mid-row.**
+
+| document | truncated rows |
+| --- | ---: |
+| `form_6251_2025` | 9 |
+| `schedule_d_2025` | 2 |
+| `schedule_1_2025` | 2 |
+| `schedule_1a_2025` | 2 |
+| `schedule_2_2025` | 1 |
+
+**All five remaining 6251 failures sit on truncated rows.** The decisive case is line 18. We
+capture `If line 17 is $239,100 or less (...), multiply line 17 by 26% (0.26).` and drop the
+continuation `Otherwise, multiply line 17 by 28% (0.28) and subtract $4,782 ($2,391 if married
+filing separately) from the result`. The recorded failure was
+`ValueError: IF_ELSE requires exactly 4 arguments` - **the model could not supply the else-branch
+because we never showed it the else-branch.** That is not a grammar gap. Line 20 ends on the word
+`from`; its continuation `line 14 of the Schedule D Tax Worksheet, whichever applies` is present in
+our own text layer and simply never attached. The worksheet-not-modelled finding stands but is
+SECONDARY - the model could not see the full reference either.
+
+**JOHN'S POINT, and it is the strongest argument for the second witness so far (2026-08-03).** He
+produced the Mistral OCR of 6251 and every one of these rows is complete in it, assembled into one
+logical row. Joining wrapped lines is precisely what OCR does well and what our geometry pass does
+not do at all. **And the disagreement is machine-checkable WITHOUT trusting OCR:** if our captured
+label is a strict prefix of OCR's row text and OCR's row is longer, that is a truncation finding.
+We do not need OCR to be right - we need it to disagree in a detectable direction. That is a
+deterministic check sitting on top of a nondeterministic witness, and it would have flagged all 16
+rows automatically. He also noted, fairly, that we had already agreed to use OCR this way and I
+went on hand-diagnosing instead.
+
+**NEXT ROUND IS NOW OBVIOUS AND DETERMINISTIC: assemble the whole logical row before deriving.**
+The continuation text is already in `document.text` - this is an assembly defect, not an
+acquisition one. Fix that first; the worksheet-addressing question (below) is only worth answering
+once the model can see the full reference.
 
 ## Standing constraints (every M20 round)
 
