@@ -203,6 +203,16 @@ client-managed server dies.
   - if it is one row this is a targeted fix, and if it is eight it is an architecture problem and
   the round changes shape.
 
+  **Pre-fix diagnosis (2026-08-03):** the 29-row 6251 inventory was printed with the exact command
+  below. One row, line 32 (1/29), selected the page-1 header span `Internal Revenue Service Go to
+  www.irs.gov/Form6251 for instructions and the latest information. 32`; it was selected because
+  the resolver collected all exact `32` anchor offsets and returned the first source span whose text
+  line matched any of them. The row's outline page is 2 and its label is `32 Add lines 23 and 30 32`.
+  The same outline-label mismatch occurred in 0/14 other loadable documents, including 0/8 other
+  documents with formula rows. The full per-row selection table is the command output recorded in
+  the Worker session:
+  `.venv\\Scripts\\python.exe -` with the 6251 inventory script.
+
   **Step 2 - fix the selection, not the symptom.** A span that is page header, footer, or a
   different section is not a candidate for a row's label. Use what is already available - the
   printed-line inventory, the row's own anchor, and the outline node - to reject a span that cannot
@@ -223,6 +233,26 @@ client-managed server dies.
 
   **On the provider leg:** if approved external network is unavailable, do steps 1-2, declare step
   3 NOT RUN up front, and hand back - the Architect will run it.
+
+  **Worker status (2026-08-03):** Step 1 is `[DONE]`: the targeted count is 1/29 on 6251 and
+  0/14 on the other loadable documents. Step 2 is `[DONE]`: `_span_for_line` now filters duplicate
+  printed anchors by the outline page from the field inventory, resolves the resulting text line,
+  and rejects candidates without row-label context. No document-id special case was added. The
+  regression set includes the duplicate-header case, fail-closed rejection, and the real 6251
+  line-32 frame.
+
+  Step 3 is `NOT RUN`: live provider access is unavailable in the Worker sandbox, so the two live
+  6251 runs and full derivable corpus run were not attempted. The Architect must run that provider
+  leg outside the sandbox.
+
+  Focused evidence:
+  `RAN: $env:PYTEST_DEBUG_TEMPROOT='C:\\Users\\devbox\\projects\\tax_graph\\.test_tmp_codex'; .venv\\Scripts\\python.exe -m pytest tests/test_outline_span_resolution_m20.py tests/test_structure_m20.py tests/test_extract_outline_m4.py tests/test_m20_s31.py tests/test_derive_cells_m20.py tests/test_extract_m16.py -q -> 87 passed, 1 warning in 6.73s`.
+  `RAN: $env:PYTEST_DEBUG_TEMPROOT='C:\\Users\\devbox\\projects\\tax_graph\\.test_tmp_codex'; .venv\\Scripts\\python.exe -m pytest tests/test_schedule_d_extraction_m9.py -q -> 1 failed, 2 passed; pre-change resolver replay also produced old_resolver_prompts=3, so this is an unrelated existing expectation for Schedule D lines 7/15/16.`
+  `RAN: .venv\\Scripts\\python.exe tools\\check_ascii.py -> ASCII check OK`.
+  `RAN: .venv\\Scripts\\python.exe -m tax_graph.cli validate 2025 -> graph integrity OK (441 nodes, 409 edges, 401 citations)`.
+  `RAN: .venv\\Scripts\\python.exe -m workbench.cli preflight --year 2025 -> passed (2224 units, 2120 derived cells, legacy_mined=394; elevated read-only ACL access)`.
+  `RAN: strict citation integrity check -> checked=401 strict_mismatches=36 (known baseline)`.
+  Protected directories have an empty diff.
 
   **Do not:** relax `quote_not_verbatim`, `self_reference`, or `operand_not_printed`; add a retry
   policy; add any per-document special case; reintroduce reordering into `clean_form_face_text`;

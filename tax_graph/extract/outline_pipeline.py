@@ -1288,16 +1288,24 @@ def _span_for_line(
         # document-level completeness check rather than as a fatal error mid-batch.
         return None
 
+    if node.page is not None:
+        matching_entries = [
+            entry
+            for entry in matching_entries
+            if _entry_page(entry) == node.page
+        ]
     source_line_numbers = {
         _line_number_at_offset(document.text, entry.get("text_offset"))
         for entry in matching_entries
         if _valid_text_offset(document.text, entry.get("text_offset"))
     }
+    if not source_line_numbers:
+        return None
     for span in spans:
         if span.relationship != "source" or span.document_id != document.document_id:
             continue
         line_number = _locator_line_number(span.locator)
-        if line_number in source_line_numbers:
+        if line_number in source_line_numbers and _span_matches_line_label(node, span):
             return span
 
     return None
@@ -1315,11 +1323,69 @@ def _line_number_at_offset(text: str, offset: int) -> int:
     return line_number
 
 
+def _entry_page(entry: dict[str, Any]) -> int | None:
+    value = entry.get("page")
+    try:
+        return int(value)
+    except (TypeError, ValueError):
+        return None
+
+
 def _locator_line_number(locator: str) -> int | None:
     import re
 
     match = re.search(r"\bline\s+(\d+)\b", locator.lower())
     return int(match.group(1)) if match else None
+
+
+def _span_matches_line_label(node: OutlineNode, span: CandidateSpan) -> bool:
+    """Return whether a same-anchor span has enough label context to be plausible.
+
+    A printed anchor can occur in page headers, footers, or cross-reference prose. The
+    outline label is the deterministic row identity, so a candidate must share at least
+    two descriptive tokens with it (or its only descriptive token). This keeps the
+    resolver fail-closed when an anchor-only match is not the row's label.
+    """
+    import re
+
+    anchor = str(node.line_anchor or "").lower()
+    label_tokens = re.findall(r"[a-z]+|[0-9]+[a-z]?", node.label.lower())
+    ignored = {
+        "a",
+        "an",
+        "and",
+        "are",
+        "at",
+        "be",
+        "by",
+        "for",
+        "from",
+        "here",
+        "if",
+        "in",
+        "is",
+        "line",
+        "lines",
+        "of",
+        "on",
+        "or",
+        "the",
+        "this",
+        "through",
+        "to",
+        "with",
+    }
+    meaningful = [
+        token
+        for token in label_tokens
+        if token != anchor and token not in ignored
+    ]
+    span_tokens = set(re.findall(r"[a-z]+|[0-9]+[a-z]?", span.text.lower()))
+    if not meaningful:
+        return bool(anchor and anchor in span_tokens)
+    overlap = sum(token in span_tokens for token in meaningful)
+    required = 1 if len(meaningful) == 1 else 2
+    return overlap >= required
 
 
 def _micro_model(settings: dict[str, Any]) -> str:

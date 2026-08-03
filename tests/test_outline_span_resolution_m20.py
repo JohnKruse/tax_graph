@@ -4,6 +4,7 @@ from pathlib import Path
 
 import pytest
 
+from tax_graph.extract.cells import build_cell_frame_from_document
 from tax_graph.extract.inputs import load_document_input
 from tax_graph.extract.models import SourceDocumentInput
 from tax_graph.extract.outline import OutlineNode, build_candidate_spans
@@ -49,6 +50,66 @@ def test_line_span_resolution_uses_corrected_schedule_a_line_anchor_index():
 
     assert span is not None
     assert span.text == "Other 16 Other-from list in instructions. List type and amount:"
+
+
+@pytest.mark.m20
+def test_duplicate_anchor_uses_outline_page_and_row_label():
+    text = (
+        "Internal Revenue Service Go to www.irs.gov/Form6251 for instructions. 32\n"
+        "32 Add lines 23 and 30 32\n"
+    )
+    document = _document(
+        text,
+        line_anchors=[
+            {"anchor": "32", "page": 1, "text_offset": text.index("32")},
+            {
+                "anchor": "32",
+                "page": 2,
+                "text_offset": text.rindex("32"),
+            },
+        ],
+    )
+
+    span = _span_for_line(
+        document,
+        OutlineNode(
+            "part_iii_line_32",
+            "line",
+            "32 Add lines 23 and 30 32",
+            page=2,
+            line_anchor="32",
+        ),
+        build_candidate_spans(document),
+    )
+
+    assert span is not None
+    assert span.text == "32 Add lines 23 and 30 32"
+
+
+@pytest.mark.m20
+def test_anchor_only_header_match_fails_closed_without_row_label_context():
+    text = "# Page 2\n32 Header text only 32\n"
+    document = _document(
+        text,
+        line_anchors=[
+            {"anchor": "32", "page": 2, "text_offset": text.index("32")},
+        ],
+    )
+
+    assert (
+        _span_for_line(
+            document,
+            OutlineNode(
+                "part_iii_line_32",
+                "line",
+                "32 Add lines 23 and 30 32",
+                page=2,
+                line_anchor="32",
+            ),
+            build_candidate_spans(document),
+        )
+        is None
+    )
 
 
 @pytest.mark.m20
@@ -167,3 +228,18 @@ def test_real_schedule_a_line_16_resolves_from_local_index():
 
     assert span is not None
     assert "Other-from list in instructions. List type and amount:" in span.text
+
+
+@pytest.mark.m20
+def test_real_form_6251_line_32_uses_form_row_not_page_header():
+    raw_text = ROOT / ".cache" / "raw" / "2025" / "form_6251_2025.txt"
+    fields_path = ROOT / ".cache" / "raw" / "2025" / "form_6251_2025.fields.json"
+    if not raw_text.exists() or not fields_path.exists():
+        pytest.skip("local acquired Form 6251 artifacts are not present")
+
+    document = load_document_input("form_6251_2025", year="2025", root=ROOT)
+    frame = build_cell_frame_from_document(document)
+    row = next(row for row in frame.rows if row.line == "32")
+
+    assert row.form_face_text == "32 Add lines 23 and 30"
+    assert "Internal Revenue Service" not in row.form_face_text
