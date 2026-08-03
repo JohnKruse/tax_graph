@@ -17,9 +17,15 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## BALL
 
-**BALL: WORKER - M20-S41 (TYPE THE OPERANDS, AND MAKE THE WARNING WORTH READING).** Task block under
-**From Architect**. **S40 is ACCEPTED at `e032cfd`** - the S39 regression is closed and reproduced
-across four runs; its new warning exposed a type hole that S41 takes.
+**BALL: WORKER - M20-S41 (RECONCILE THE DOCUMENT LISTS AND DRIVE THE HARNESS FROM THE MANIFEST).**
+Task block under **From Architect**. **S40 is ACCEPTED at `e032cfd`.**
+
+**RESEQUENCED 2026-08-03 BY JOHN.** S41 is now the manifest reconcile, S42 is the worksheet
+harvester with QDCGT as the canary, and the operand type check moves to S43 with its spec intact.
+The reason is in Current round: **the Architect had been using the graph as the corpus list, which
+is circular**, so the denominator under every S38-S40 number is wrong in both directions. A wrong
+denominator undermines the measurements that would judge the type check, and the harvester needs a
+document list it can trust.
 
 ## Current round
 
@@ -84,7 +90,45 @@ does not vary by status.
 
 **This outranks the rule mapping.** An unmapped operation fails loudly at projection time. A
 type-confused operand is a wrong answer wearing a `derived` badge, and 6251 line 39 is a real tax
-computation. S41 takes it.
+computation. **S43 takes it** - it was specced as S41 and John resequenced it behind the two items
+below, because a wrong document denominator undermines the measurement that would judge it.
+
+## THE DENOMINATOR IS WRONG (Architect, 2026-08-03, prompted by John asking how I pick documents)
+
+**I have been passing `graph.items("documents")` to the harness. That is circular** - the graph is
+partly the pipeline's output, so a document that was never modelled can never enter a run. The three
+lists disagree in every direction: **graph 18, manifest 21, acquired text 23.** `form_2441_2025` is
+in the graph and not the manifest (the phantom that errored on every run); four instruction
+documents are declared and acquired but invisible to the corpus; `form_2441_2025` and its
+instructions are on disk and undeclared. **`instructions_form_6251_2025` is 80,318 characters we
+already hold, naming the QDCGT worksheet 20 times - and 6251 lines 13, 20 and 27 are the only
+unresolved rows, failing because they reference that worksheet.** The evidence was on disk and my
+document list excluded it. Every "full corpus" figure since S33 is over a graph-derived list; the
+row counts are real, the phrase overstates them. **S41 fixes this first.**
+
+## WORKSHEETS ARE THE REAL GAP, AND HAND AUTHORING ALREADY LOST DATA (Architect, 2026-08-03)
+
+Verified against the IRS text John supplied: the QDCGT worksheet is **fully and correctly modelled**
+- 44 nodes, 25 of 25 lines, and all 13 constants match exactly (0% breakpoints 48,350 / 96,700 /
+64,750; 15% breakpoints 533,400 / 300,000 / 600,050 / 566,700; rates 15% and 20%; tax-table cutoff
+100,000). Line 25 flows to `form_1040_2025_non_sdtw_tax` and on to 1040 line 16, as the worksheet
+itself instructs. **What is missing is document identity, not computation** - no worksheet is a
+document, so the pipeline cannot address, cite, review, or derive against content the engine already
+computes.
+
+**And the hand-authored version lost real semantics.** There are **zero nodes anywhere in the graph**
+for Form 2555 or the Foreign Earned Income Tax Worksheet, although the worksheet's own text
+redirects line 1's source and line 25's destination when Form 2555 is filed. The transcriber took
+the numbered grid and dropped the footnotes, which are conditional routing. Independent evidence
+that the loss is real: **Form 2555 was the most common outside-the-corpus reference in the
+derivation runs, five rows** - the model kept reaching for what the transcription lost.
+
+**All 13 QDCGT citations fail `check_graph_citations` today**, and they are 13 of the standing 36
+"known red" mismatches. The cause is not rollover drift: the authored quote reorders the IRS
+sentence (splitting "single or married filing separately" into two clauses and repeating the
+figure), so it was never verbatim. The locator is `"page 35, lines 3443-3447"` - position-based
+identity, which will not survive a year change either. **Citation-quote-by-construction is already
+the documented rule; these predate it.**
 
 **SMALLER, CARRIED.** (1) Aggregate `validator_failures_by_kind` counts both attempts while
 `rows_detail` keeps only the first, so 6251 reports `missing_floor: 3` that no row shows - those are
@@ -211,6 +255,11 @@ client-managed server dies.
 - **FOR JOHN - the two scoping calls that block the last 5 rows (raised 2026-08-03).** Both are the
   same shape as the Form 2441 question below, and answering all three together would clear every
   open scoping item in one pass.
+  **(1) ANSWERED IN PRINCIPLE 2026-08-03 - John: yes, and via a harvester, not by hand.** The
+  worksheets are in scope; the mechanism is S42. Two sub-calls remain his: the manifest schema change
+  that lets a document declare a region of another acquired document (S42 step 4 reports it,
+  implements nothing), and **his standing requirement that adding or removing a document, an
+  instruction set, or a worksheet must never require an agent.** Original framing below.
   **(1) Are the tax worksheets in the base profile?** 6251 lines 13, 20 and 27 reference the
   Qualified Dividends and Capital Gain Tax Worksheet and the Schedule D Tax Worksheet. Both live in
   the IRS *instructions* rather than as standalone forms, and neither is a document in our graph,
@@ -263,8 +312,127 @@ client-managed server dies.
 
 ## From Architect
 
-- **M20-S41 TASK - TYPE THE OPERANDS, AND MAKE THE WARNING WORTH READING (Architect, Claude Opus 5,
-  2026-08-03).** Ledger: the RAN/NOT RUN rule, D9, D6. **Small, and both parts are already measured
+- **M20-S41 TASK - RECONCILE THE DOCUMENT LISTS AND DRIVE THE HARNESS FROM THE MANIFEST (Architect,
+  Claude Opus 5, 2026-08-03; John approved the sequencing).** Ledger: the RAN/NOT RUN rule, D10.
+  **Deterministic, no provider leg. This is the prerequisite for S42 - a harvester needs a document
+  list it can trust.**
+
+  **Why. The Architect has been using the GRAPH as the corpus list, and that is circular.** Every
+  "full corpus" run since S33, mine included, passed `graph.items("documents")` to the harness. The
+  graph is partly the pipeline's OUTPUT, so a document that was never modelled can never enter the
+  run. Measured today, the three lists disagree in every direction:
+
+  | list | source | count |
+  | --- | --- | ---: |
+  | graph documents | `graph.items("documents")` | 18 |
+  | acquisition manifest | `load_manifest()` | 21 |
+  | acquired text | `.cache/raw/2025/*.txt` | 23 |
+
+  - **In the graph, not in the manifest:** `form_2441_2025` - the phantom, which returned a load
+    error on every corpus run.
+  - **In the manifest, not in the graph:** `instructions_form_6251_2025`,
+    `instructions_form_8949_2025`, `instructions_schedule_a_2025`, `instructions_schedule_b_2025`.
+  - **Acquired but not declared:** `form_2441_2025`, `instructions_form_2441_2025`.
+
+  `instructions_form_6251_2025` is 80,318 characters we already hold, naming the Qualified Dividends
+  and Capital Gain Tax Worksheet 20 times - and 6251 lines 13, 20 and 27 are the only unresolved
+  rows in the corpus, failing because they reference that worksheet. **The evidence was on disk and
+  the document list excluded it.**
+
+  **Step 1 - a reconcile check.** Add a deterministic function (suggested home:
+  `tax_graph/acquire/reconcile.py`, beside `manifest.py` and `citation_check.py`) that reports each
+  of the three set differences by name, never as a count alone. **The raw store is gitignored, so CI
+  cannot depend on it:** the manifest-vs-graph legs must run without `.cache/`, and the raw leg must
+  degrade to `skipped` with a stated reason rather than failing. Report exactly the six ids above as
+  the current baseline.
+
+  **Step 2 - surface it.** Wire it into `workbench.cli preflight` and/or `tax_graph.cli validate`
+  (pick one, say which and why). A phantom or an orphan must appear as a NAMED finding. **Do not
+  make it a hard failure in this round** - the six discrepancies are real and pre-existing, and
+  failing the gate on them would block every other round. Report them; John rules on 2441.
+
+  **Step 3 - drive the harness from the manifest.** `experiments/derive_cells_s25.py` defaults to
+  `form_1040_2025` and takes repeatable `--document`. Add a manifest-driven default so a corpus run
+  covers what we DECLARED, not what we already modelled. Keep `--document` working. A document in
+  the manifest that cannot be loaded must be reported per-document with a reason, which is the
+  existing D10 behaviour and it already works.
+
+  **Step 4 - rerun the corpus ONCE with the new list and report the new denominator.** Expect more
+  documents attempted and probably more empty ones; the four instruction documents may well derive
+  zero rows, exactly as `instructions_form_1040_2025` does today. **That is a finding, not a
+  failure** - it tells us instruction documents produce no derivation rows, which is precisely why
+  S42 exists. Report attempted/derived/repaired/errored against the OLD 96-row denominator as well,
+  so the S38-S40 numbers stay comparable.
+
+  **Do not:** author or edit anything in `graph/2025/`; add or remove manifest entries (John rules
+  on 2441 and on the undeclared acquisitions); make the reconcile a hard gate; touch the derivation
+  validators. **Stop conditions:** any diff in the protected directories; `derive_cells` acquiring a
+  disk write; any harness output landing inside the repository. Tier 3. ASCII, `git diff --check`,
+  module-form `validate 2025`, preflight with `legacy_mined` explicit (394), strict citations (36).
+  **ONE local commit.**
+
+- **M20-S42 TASK (QUEUED, DO NOT START UNTIL S41 IS ACCEPTED) - HARVEST A WORKSHEET, WITH QDCGT AS
+  THE CANARY (Architect, Claude Opus 5, 2026-08-03; John's design call).**
+
+  **Why, and why an end anchor was REJECTED.** The Architect proposed declaring a worksheet as a
+  region between a start and an end anchor. **John rejected it and he is right: an end anchor is
+  position-based identity wearing a different hat**, the exact defect this phase has now ruled
+  against three times (S28 `quote_span_id`, the review-queue churn, the S3a/S3b resolver ruling).
+  Worse, it would formalise the error already in the graph. Measured: the hand-authored QDCGT model
+  has all 25 lines and all 13 constants correct, and **zero nodes anywhere in the graph for Form
+  2555 or the Foreign Earned Income Tax Worksheet** - even though the worksheet's own text redirects
+  line 1's source and line 25's destination when Form 2555 is filed. Whoever transcribed it took the
+  numbered grid and dropped the footnotes, which are conditional routing, not annotation. And Form
+  2555 was the most common outside-the-corpus reference in the derivation runs, five rows: **the
+  model kept reaching for what the transcription lost.**
+
+  **Step 1 - a pure harvest stage.** Same shape as `derive_cells`, which is the pattern that works:
+  a pure function with **zero disk writes**, taking acquired instruction text plus a target, and
+  returning a worksheet document, its `worksheet_field` nodes, edges, and citations. Every emitted
+  object carries a **verbatim quote checked in code** - that check is what exposed the 13 paraphrased
+  QDCGT citations, and it is what stops a harvester from inventing the way a human did. Output goes
+  to drafts and through the workbench. **Nothing is promoted in this round.**
+
+  **Step 2 - extent is DISCOVERED, not declared.** No end anchor. A worksheet is self-describing, so
+  validate completeness deterministically: numbered lines 1..N contiguous with no holes; the
+  terminal line states its own destination (QDCGT line 25: *"Also include this amount on the entry
+  space on Form 1040 or 1040-SR, line 16"*); every footnote marker in the harvested region resolves
+  to a footnote. Fail closed and report when any of those does not hold. The start anchor survives
+  only as the NAME - the addressing handle - never as a slice boundary.
+
+  **Step 3 - the canary, with a falsifiable prediction.** Run it on
+  `instructions_form_1040_2025` targeting the Qualified Dividends and Capital Gain Tax Worksheet and
+  diff against the existing hand-authored graph:
+
+  | expected | why it is a real test |
+  | --- | --- |
+  | 25 lines, contiguous | matches the existing 44-node model |
+  | 13 constants | already verified correct against IRS text; a mismatch means the harvester is wrong |
+  | 13 citations, VERBATIM | the current ones are paraphrase and fail `check_graph_citations` today |
+  | Form 2555 conditionals on lines 1 and 25 | **NEW** - the human missed them |
+
+  **Report the diff honestly in both directions.** If the harvester misses the footnotes too, say so
+  - that is a prompt finding worth having, not a failure to hide. **Do not tune the prompt against
+  the hand-authored graph until the first honest attempt is reported**, or the canary measures
+  nothing.
+
+  **Step 4 - report what the manifest would need, implement no schema change.** A worksheet has no
+  standalone PDF URL, and `schemas/manifest.schema.json` requires `url` matching
+  `^https://www\.irs\.gov/pub/irs-(pdf|prior)/[fip][a-z0-9-]+\.pdf$`. The `kind` enum ALREADY
+  contains `worksheet` in both `manifest.schema.json` and `document.schema.json`, and `node.schema.json`
+  already has `worksheet_field`. **The vocabulary exists end to end; only the source field cannot
+  express a region of another document.** Report the minimal change (a `source_document_id` plus a
+  start anchor, with `url` required only when `source_document_id` is absent) and stop. **John rules
+  on the schema change** - it is the self-serve surface, and his stated requirement is that adding or
+  removing a document, an instruction set, or a worksheet must not require an agent.
+
+  **Do not:** author or edit anything in `graph/2025/`; promote a draft; change any schema; let the
+  harvester write outside drafts; tune against the known answer before reporting the first attempt.
+  **Stop conditions:** any diff in the protected directories; any harvest function acquiring a disk
+  write outside the draft path; a citation emitted that is not verbatim in the acquired text.
+
+- **M20-S43 TASK (QUEUED BEHIND S41/S42; SPEC IS COMPLETE AND STILL STANDS) - TYPE THE OPERANDS,
+  AND MAKE THE WARNING WORTH READING (Architect, Claude Opus 5, 2026-08-03).** Ledger: the RAN/NOT RUN rule, D9, D6. **Small, and both parts are already measured
   in Current round - do not re-diagnose.**
 
   **Step 1 - `REQUIRE_INPUT` must not raise `unmapped_operation`.** It is the answer the prompt
