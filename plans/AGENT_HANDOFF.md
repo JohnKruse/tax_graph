@@ -17,8 +17,8 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## BALL
 
-**BALL: ARCHITECT / JOHN - M20 derivation is in good shape. Next round is a scoping call, not a
-defect.** **S35 is ACCEPTED at `9d53d54`.** See **Open for Architect**.
+**BALL: WORKER - M20-S36 (ASSEMBLE THE WHOLE ROW BEFORE DERIVING).** Task block under
+**From Architect**. **S35 is ACCEPTED at `9d53d54`.**
 
 ## Current round
 
@@ -234,8 +234,76 @@ client-managed server dies.
 
 ## From Architect
 
-- *(No active Worker task. M20 derivation has no visible deterministic defect left; the next move
-  is a scoping decision for John - see **Open for Architect**.)*
+- **M20-S36 TASK - ASSEMBLE THE WHOLE LOGICAL ROW BEFORE DERIVING (Architect, Claude Opus 5,
+  2026-08-03).** Ledger: the RAN/NOT RUN rule, D9, D6. **Deterministic. No model calls in steps
+  1-3.**
+
+  **The defect, located precisely.** `build_outline_tree` (`tax_graph/extract/outline.py:191`)
+  walks `document.text.splitlines()`. A line matching `LINE_RE` becomes an `OutlineNode` with
+  `label=body`, where body is the remainder of **that one physical line**
+  (`outline.py:242`). Any line that does not match is **skipped outright**
+  (`outline.py:226-227`). So when a printed row wraps, every continuation line is DISCARDED - not
+  truncated at the edges, dropped from the outline entirely. The text is present in
+  `document.text`; we simply never attach it. **This is an assembly defect, not an acquisition
+  one - no OCR and no model is needed to fix it.**
+
+  **Measured impact: 16 of 94 formula rows corpus-wide** - `form_6251_2025` 9,
+  `schedule_d_2025` 2, `schedule_1_2025` 2, `schedule_1a_2025` 2, `schedule_2_2025` 1. **All five
+  remaining 6251 failures sit on truncated rows.** The decisive case is line 18: we keep
+  `If line 17 is $239,100 or less (...), multiply line 17 by 26% (0.26).` and drop
+  `Otherwise, multiply line 17 by 28% (0.28) and subtract $4,782 ($2,391 if married filing
+  separately) from the result`. The recorded failure was `IF_ELSE requires exactly 4 arguments` -
+  the model could not supply an else-branch it was never shown.
+
+  **Step 1 - assemble continuation lines into the row body.** After a `LINE_RE` match, consume
+  following lines that are NOT a new line anchor, NOT a `Header:` line, NOT a page marker, and not
+  blank, appending them to the body. Stop at the first line that is any of those.
+  **Two traps, both of which have already cost this project a round:**
+  a. **Keep the evidence span consistent with the label.** `_span_for_line` returns a span whose
+     text is a single line. If the prompt shows an assembled label while `validate_cell_output`
+     checks the quote against a one-line span, **every quote on an assembled row fails
+     `quote_not_verbatim`** - the exact prompt-shows-X / validator-checks-Y defect from S28. The
+     evidence span for an assembled row must carry the assembled text.
+  b. **State the substring rule in normalized terms.** Joining source lines with a single space
+     reproduces the source modulo the newline, so the S29 guarantee still holds as "a literal
+     substring of the acquired text **after whitespace normalization**" - which is what
+     `clean_form_face_text` already does with `" ".join(text.split())`. Do NOT reorder or
+     reconstruct; joining adjacent lines in source order is not reordering.
+
+  **Step 2 - assert the outline shape did not change.** Assembling continuations must not create,
+  merge, or lose nodes. Per-document `outline_node_count` and `line_anchor_count` must be
+  IDENTICAL to today: `form_1040_2025` 60/59, `schedule_a_2025` 29/28, `schedule_d_2025` 31/24,
+  `schedule_1_2025` 66/61, `schedule_2_2025` 52/45, `schedule_3_2025` 38/35,
+  `schedule_1a_2025` 60/48, `form_6251_2025` 68/63, `schedule_b_2025` 12/8. Add a test asserting
+  these. **A changed count means the assembler swallowed a row - stop and report rather than
+  adjusting the expected numbers.**
+
+  **Step 3 - report the truncation count, which is the round's headline. It is 16 today and the
+  target is 0.** The check: find the captured label in `document.text`, and look at the next
+  non-blank line; if it does not begin a new printed anchor, the row was truncated. Report the
+  per-document table in the same shape as above. Also report, without fixing, any row where
+  assembly makes the label materially longer - those are the rows whose derivation should change.
+
+  **Step 4 - rerun the full derivable corpus once and `form_6251_2025` twice.** Report per
+  document: attempted, derived, repaired, errored, and the top three `validator_failures_by_kind`.
+  **The numbers to beat: corpus resolved 92/94 with derived=89 and repaired=3; 6251 resolved 27/29
+  and 26/29 across two runs.** Report both 6251 runs even if identical.
+  **Expect `payload` on lines 18 and 39 to disappear** - those are the pure else-branch cases. The
+  worksheet rows (13, 20, 27) may still fail; that is the separate addressing question and it is
+  NOT this round's target. Say plainly which of the five resolved and which did not.
+  If approved external network is unavailable, do steps 1-3, declare step 4 NOT RUN up front, and
+  hand back - the Architect will run it.
+
+  **Do not:** relax `quote_not_verbatim`, `self_reference`, `operand_not_printed` or any other
+  check to accommodate assembled text; add a retry policy; model the Qualified Dividends worksheet
+  (separate scoping question, blocked on John); add any per-document special case; reintroduce
+  reordering into `clean_form_face_text`; promote anything.
+  **Stop conditions:** any diff in the protected directories; `derive_cells` acquiring a disk
+  write; any harness output landing inside the repository; a `startswith` on a document id
+  anywhere; a change in the per-document outline counts in step 2.
+  Tier 3. Declared files plus honest `RAN:`/`NOT RUN:`. ASCII, `git diff --check`, module-form
+  `validate 2025`, preflight with `legacy_mined` explicit (394), strict citations (36).
+  **ONE local commit** - and run `git status` first; do not commit paths you did not touch.
 
 ## Architect decisions
 
