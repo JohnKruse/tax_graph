@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from dataclasses import replace
 from pathlib import Path
 import re
 from typing import Any
@@ -27,6 +28,7 @@ from tax_graph.extract.outline import (
     build_outline_tree,
     infer_value_type,
     node_type_for_outline,
+    _assembled_source_text,
     _line_anchor_variants,
 )
 from tax_graph.extract.tables import assemble_table_subunits
@@ -1306,6 +1308,13 @@ def _span_for_line(
             continue
         line_number = _locator_line_number(span.locator)
         if line_number in source_line_numbers and _span_matches_line_label(node, span):
+            assembled_text = _assembled_source_text(
+                document,
+                start_line=line_number or 0,
+                anchor=normalized_anchor,
+            )
+            if assembled_text and assembled_text != span.text:
+                return replace(span, text=assembled_text)
             return span
 
     return None

@@ -16,6 +16,7 @@ import yaml
 
 from tax_graph.config import get_config_value, project_root
 from tax_graph.extract.models import RelatedSourceInput, SourceDocumentInput
+from tax_graph.extract.structure import StructureRow
 from tax_graph.extract.instruction_sections import (
     InstructionSectionsFrame,
     build_instruction_sections,
@@ -188,8 +189,7 @@ def build_outline_tree(document: SourceDocumentInput) -> OutlineTree:
     recent_headers: list[str] = []
     page: int | None = None
 
-    for raw_line in document.text.splitlines():
-        line = raw_line.strip()
+    for _line_number, line in _assembled_legacy_lines(document.text):
         if not line:
             continue
 
@@ -260,7 +260,7 @@ def _build_geometry_outline(document: SourceDocumentInput, structure) -> Outline
     seen_ids: set[str] = set()
     geometry_only = not any(row.line_anchor for row in structure.rows)
 
-    for row in structure.rows:
+    for row in _assemble_structure_rows(structure.rows, source_text=document.text):
         lowered = row.text.lower().strip()
         if lowered.startswith("part ") or lowered.startswith("schedule "):
             section = OutlineNode(
@@ -321,6 +321,145 @@ def _build_geometry_outline(document: SourceDocumentInput, structure) -> Outline
         raise ValueError(f"{document.document_id}: geometry structure produced no outline nodes")
     _attach_outbound_flow_cues(tree, document)
     return tree
+
+
+def _assembled_legacy_lines(text: str) -> list[tuple[int, str]]:
+    """Return text lines with legacy anchored rows assembled in source order.
+
+    Older synthetic fixtures use ``- <anchor>:`` markup. A continuation belongs
+    to the preceding row until a new anchor, header, page marker, or blank line
+    appears. Joining with one space preserves the source order while making the
+    outline label and its evidence span agree on the same logical row.
+    """
+    raw_lines = text.splitlines()
+    assembled: list[tuple[int, str]] = []
+    index = 0
+    while index < len(raw_lines):
+        line = raw_lines[index].strip()
+        if not line:
+            index += 1
+            continue
+        if LINE_RE.match(line):
+            parts = [line]
+            next_index = index + 1
+            while next_index < len(raw_lines):
+                continuation = raw_lines[next_index].strip()
+                if (
+                    not continuation
+                    or PAGE_RE.match(continuation)
+                    or continuation.startswith("Header:")
+                    or LINE_RE.match(continuation)
+                ):
+                    break
+                parts.append(continuation)
+                next_index += 1
+            assembled.append((index + 1, " ".join(parts)))
+            index = next_index
+            continue
+        assembled.append((index + 1, line))
+        index += 1
+    return assembled
+
+
+def _assemble_structure_rows(
+    rows: tuple[StructureRow, ...],
+    *,
+    source_text: str | None = None,
+) -> list[StructureRow]:
+    """Assemble geometry rows into logical rows without changing row identity.
+
+    A trailing printed anchor on a wrapped continuation is not a new row. A
+    different anchor starts a new candidate row, while page and heading rows
+    remain separate structure context. The first row retains the anchor and
+    source offset; only its label geometry is widened by the continuation.
+    """
+    assembled: list[StructureRow] = []
+    current: StructureRow | None = None
+    for row in rows:
+        if current is None:
+            if row.line_anchor:
+                current = row
+            else:
+                assembled.append(row)
+            continue
+
+        if _structure_row_is_boundary(row, current) or _structure_row_gap_is_boundary(
+            current,
+            row,
+            source_text=source_text,
+        ) or (
+            row.line_anchor and row.line_anchor != current.line_anchor
+        ):
+            assembled.append(current)
+            current = row if row.line_anchor else None
+            if current is None:
+                assembled.append(row)
+            continue
+
+        current = _join_structure_rows(current, row)
+
+    if current is not None:
+        assembled.append(current)
+    return assembled
+
+
+def _structure_row_gap_is_boundary(
+    current: StructureRow,
+    next_row: StructureRow,
+    *,
+    source_text: str | None,
+) -> bool:
+    """Return whether a skipped source row separates two geometry rows."""
+    if not source_text or next_row.text_offset <= current.text_offset:
+        return False
+    source_lines = source_text[current.text_offset : next_row.text_offset].splitlines()
+    for line in source_lines[1:]:
+        stripped = line.strip()
+        if not stripped or _is_cosmetic_source_line(stripped):
+            return True
+        if PAGE_RE.match(stripped) or stripped.startswith("Header:"):
+            return True
+    return False
+
+
+def _structure_row_is_boundary(row: StructureRow, current: StructureRow) -> bool:
+    """Return whether a geometry row ends the logical row currently open."""
+    if row.page != current.page:
+        return True
+    text = row.text.strip()
+    if not text or PAGE_RE.match(text) or text.startswith("Header:"):
+        return True
+    lowered = text.lower()
+    if lowered.startswith("form ") and "page" in lowered:
+        return True
+    return lowered.startswith(
+        (
+            "part ",
+            "schedule ",
+            "section ",
+            "complete part ",
+            "for paperwork reduction",
+            "for disclosure",
+            "credits",
+        )
+    )
+
+
+def _join_structure_rows(first: StructureRow, continuation: StructureRow) -> StructureRow:
+    """Return one geometry row with source-ordered continuation text."""
+    widget_names = tuple(dict.fromkeys((*first.widget_names, *continuation.widget_names)))
+    return StructureRow(
+        page=first.page,
+        text=" ".join(part.text.strip() for part in (first, continuation) if part.text.strip()),
+        x0=min(first.x0, continuation.x0),
+        y0=min(first.y0, continuation.y0),
+        x1=max(first.x1, continuation.x1),
+        y1=max(first.y1, continuation.y1),
+        text_offset=first.text_offset,
+        line_anchor=first.line_anchor,
+        printed_anchor=first.printed_anchor,
+        widget_names=widget_names,
+    )
 
 
 def _merge_structure_anchor_index(document: SourceDocumentInput, records: list[dict[str, Any]] | tuple[dict[str, Any], ...]) -> None:
@@ -569,8 +708,11 @@ def _spans_for_text(document_id: str, relationship: str, text: str) -> list[Cand
     spans: list[CandidateSpan] = []
     page = 1
     index = 1
-    for line_number, raw_line in enumerate(text.splitlines(), 1):
-        line = raw_line.strip()
+    source_lines = _assembled_legacy_lines(text) if relationship == "source" else [
+        (line_number, raw_line.strip())
+        for line_number, raw_line in enumerate(text.splitlines(), 1)
+    ]
+    for line_number, line in source_lines:
         if not line:
             continue
         page_match = PAGE_RE.match(line)
@@ -590,6 +732,124 @@ def _spans_for_text(document_id: str, relationship: str, text: str) -> list[Cand
     return spans
 
 
+def _assembled_source_text(
+    document: SourceDocumentInput,
+    *,
+    start_line: int,
+    anchor: str,
+) -> str:
+    """Return one source row assembled from its physical text lines.
+
+    The corrected form text is intentionally physical-line based. The separate
+    anchor index tells us which following lines carry the same printed row; a
+    different anchor, blank, page, or heading ends the row. This keeps assembly
+    deterministic and prevents a continuation's trailing reference from
+    becoming a new identity.
+    """
+    lines = document.text.splitlines()
+    if start_line < 1 or start_line > len(lines):
+        return ""
+    geometry_text = _geometry_assembled_source_text(document, start_line=start_line, anchor=anchor)
+    if geometry_text:
+        return geometry_text
+    anchor_lines = _source_anchor_lines(document)
+    parts = [lines[start_line - 1].strip()]
+    normalized_anchor = anchor.lower()
+    for line_number in range(start_line + 1, len(lines) + 1):
+        line = lines[line_number - 1].strip()
+        if not line or _source_line_is_boundary(line):
+            break
+        if _is_cosmetic_source_line(line):
+            break
+        next_anchors = anchor_lines.get(line_number, set())
+        if next_anchors and normalized_anchor not in next_anchors:
+            break
+        parts.append(line)
+    return " ".join(part for part in parts if part)
+
+
+def _geometry_assembled_source_text(
+    document: SourceDocumentInput,
+    *,
+    start_line: int,
+    anchor: str,
+) -> str | None:
+    """Return the assembled geometry row that owns a source line, if present."""
+    if document.fields_path is None:
+        return None
+    from tax_graph.extract.structure import build_structure_model
+
+    structure = build_structure_model(document)
+    if structure is None:
+        return None
+    for row in _assemble_structure_rows(structure.rows, source_text=document.text):
+        if row.line_anchor != anchor:
+            continue
+        if _text_line_number(document.text, row.text_offset) == start_line:
+            return row.text
+    return None
+
+
+def _source_anchor_lines(document: SourceDocumentInput) -> dict[int, set[str]]:
+    """Index printed anchors by physical source-text line number."""
+    lines = document.text.splitlines()
+    by_line: dict[int, set[str]] = {}
+    records = (document.fields or {}).get("line_anchors", [])
+    if isinstance(records, list):
+        for record in records:
+            if not isinstance(record, dict):
+                continue
+            offset = record.get("text_offset")
+            if not isinstance(offset, int) or not 0 <= offset < len(document.text):
+                continue
+            line_number = _text_line_number(document.text, offset)
+            anchor = str(record.get("anchor", "")).strip().lower()
+            if anchor:
+                by_line.setdefault(line_number, set()).add(anchor)
+    if by_line:
+        return by_line
+    for line_number, line in enumerate(lines, 1):
+        match = LINE_RE.match(line.strip())
+        if match:
+            by_line.setdefault(line_number, set()).add(match.group(1).lower())
+    return by_line
+
+
+def _text_line_number(text: str, offset: int) -> int:
+    """Return the one-based physical line containing a text offset."""
+    prefix = text[:offset]
+    line_number = len(prefix.splitlines())
+    if not prefix or prefix[-1] in "\n\r\v\f\x1c\x1d\x1e\x85\u2028\u2029":
+        line_number += 1
+    return line_number
+
+
+def _source_line_is_boundary(line: str) -> bool:
+    """Return whether a physical source line cannot continue a form row."""
+    if PAGE_RE.match(line) or line.startswith("Header:"):
+        return True
+    lowered = line.lower()
+    if lowered.startswith("form ") and "page" in lowered:
+        return True
+    return lowered.startswith(
+        (
+            "part ",
+            "schedule ",
+            "section ",
+            "complete part ",
+            "for paperwork reduction",
+            "for disclosure",
+            "credits",
+        )
+    )
+
+
+def _is_cosmetic_source_line(line: str) -> bool:
+    """Return whether a source line is a dot leader, not row content."""
+    compact = "".join(line.split())
+    return bool(compact) and all(char in "._" for char in compact)
+
+
 def _classify_line(
     anchor: str,
     body: str,
@@ -600,7 +860,11 @@ def _classify_line(
 ) -> str:
     lowered = body.lower()
     context = " ".join([*headers, body]).lower()
-    if "schedule d" in lowered or anchor in {"3", "10"} and "schedule d" in context:
+    qualified_dividend_worksheet = "qualified dividends and capital gain tax worksheet" in lowered
+    if (
+        ("schedule d" in lowered and not qualified_dividend_worksheet)
+        or anchor in {"3", "10"} and "schedule d" in context and not qualified_dividend_worksheet
+    ):
         return "outbound_flow_cue"
     if document_id.startswith("schedule_d_"):
         if anchor in FORM_8949_SCHEDULE_D_TARGETS and len(columns) >= 3:

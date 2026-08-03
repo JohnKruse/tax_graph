@@ -8,7 +8,7 @@ from tax_graph.acquire.render_form import extract_field_grid, extract_line_markd
 from tax_graph.extract.inputs import load_document_input
 from tax_graph.extract.models import SourceDocumentInput
 from tax_graph.extract.outline import build_candidate_spans, build_outline_tree
-from tax_graph.extract.outline_pipeline import _span_for_line
+from tax_graph.extract.outline_pipeline import _formula_outline_nodes, _span_for_line
 from tax_graph.extract.structure import (
     StructureModel,
     StructureRow,
@@ -152,6 +152,96 @@ def test_geometry_only_document_reports_anchorless_structure_and_caption_coverag
 
     outline = build_outline_tree(document)
     assert len(_flatten(outline.children)) >= 100
+
+
+@pytest.mark.m20
+def test_legacy_outline_assembles_continuation_text_into_its_source_span():
+    text = (
+        "- 18: If line 17 is small, multiply line 17 by 26%.\n"
+        "Otherwise, multiply line 17 by 28% and subtract the threshold.\n"
+        "- 19: Enter the result.\n"
+    )
+    document = SourceDocumentInput(
+        document_id="schedule_a_2025",
+        kind="schedule",
+        year="2025",
+        url="https://www.irs.gov/example",
+        text=text,
+        text_path=ROOT / "tests" / "fixtures" / "synthetic.txt",
+        fields={
+            "fields": [],
+            "line_anchors": [
+                {"anchor": "18", "page": 1, "text_offset": text.index("18")},
+                {"anchor": "19", "page": 1, "text_offset": text.index("19")},
+            ],
+        },
+    )
+
+    outline = build_outline_tree(document)
+    line_18 = next(node for node in _flatten(outline.children) if node.line_anchor == "18")
+    assert "Otherwise, multiply line 17 by 28%" in line_18.label
+
+    span = _span_for_line(document, line_18, build_candidate_spans(document))
+    assert span is not None
+    assert span.text == "- 18: If line 17 is small, multiply line 17 by 26%. Otherwise, multiply line 17 by 28% and subtract the threshold."
+
+
+@pytest.mark.m20
+@pytest.mark.parametrize(
+    ("document_id", "expected_outline_node_count", "expected_line_anchor_count"),
+    [
+        ("form_1040_2025", 60, 59),
+        ("schedule_a_2025", 29, 28),
+        ("schedule_d_2025", 31, 24),
+        ("schedule_1_2025", 66, 61),
+        ("schedule_2_2025", 52, 45),
+        ("schedule_3_2025", 38, 35),
+        ("schedule_1a_2025", 60, 48),
+        ("form_6251_2025", 68, 63),
+        ("schedule_b_2025", 12, 8),
+    ],
+)
+def test_row_assembly_preserves_outline_shape(
+    document_id: str,
+    expected_outline_node_count: int,
+    expected_line_anchor_count: int,
+):
+    document = _document_or_skip(document_id)
+    nodes = _flatten(build_outline_tree(document).children)
+    assert len(nodes) == expected_outline_node_count
+    assert sum(bool(node.line_anchor) for node in nodes) == expected_line_anchor_count
+
+
+@pytest.mark.m20
+@pytest.mark.parametrize(
+    ("line_anchor", "continuation"),
+    [
+        ("18", "Otherwise, multiply line 17 by 28%"),
+        ("20", "line 14 of the Schedule D Tax Worksheet"),
+        ("27", "line 21 of the Schedule D Tax Worksheet"),
+        ("39", "Otherwise, multiply line 12 by 28%"),
+    ],
+)
+def test_form_6251_wrapped_rows_share_assembled_label_and_evidence(
+    line_anchor: str,
+    continuation: str,
+):
+    document = _document_or_skip("form_6251_2025")
+    nodes = _flatten(build_outline_tree(document).children)
+    node = next(item for item in nodes if item.line_anchor == line_anchor)
+    span = _span_for_line(document, node, build_candidate_spans(document))
+    assert continuation in node.label
+    assert span is not None
+    assert continuation in span.text
+    assert span.text == node.label
+
+
+@pytest.mark.m20
+def test_assembled_worksheet_references_remain_formula_rows():
+    document = _document_or_skip("form_6251_2025")
+    formula_nodes = _formula_outline_nodes(build_outline_tree(document).children)
+    assert len(formula_nodes) == 29
+    assert {node.line_anchor for node in formula_nodes} >= {"13", "20", "27"}
 
 
 @pytest.mark.m20

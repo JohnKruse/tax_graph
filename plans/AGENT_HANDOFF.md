@@ -93,6 +93,37 @@ The continuation text is already in `document.text` - this is an assembly defect
 acquisition one. Fix that first; the worksheet-addressing question (below) is only worth answering
 once the model can see the full reference.
 
+### Worker M20-S36 status (2026-08-03)
+
+Implemented deterministic logical-row assembly for both the legacy text path and the geometry path.
+Continuation text is now attached to the row label and to the matching source evidence span, with
+explicit boundaries for new anchors, blank lines, page and form headers, section transitions, and
+cosmetic dot leaders. Geometry-backed spans use the assembled row at the same source offset, so a
+duplicate printed anchor cannot select a different row. Added focused coverage for legacy assembly,
+all nine loadable outline shapes, wrapped Form 6251 rows, and label/evidence agreement.
+
+The prior 16-of-94 truncation cases now have complete assembled evidence: normalized label/span
+mismatches are 0 across the current 96 formula rows. The denominator increased to 96 because full
+labels expose formula cues on `schedule_a_2025` line 15 and `schedule_1a_2025` line 36a. Rows with
+materially longer assembled labels, and therefore derivation behavior to inspect, are:
+`form_1040_2025` 37; `schedule_a_2025` 15; `schedule_d_2025` 7, 15; `schedule_1_2025` 10, 26;
+`schedule_1a_2025` 30, 36a, 38; `schedule_2_2025` 21; `form_6251_2025` 4, 6, 12, 13, 18, 20,
+27, 39, 40; `schedule_b_2025` 4.
+
+Exact verification:
+
+- `RAN: $env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp_codex'; .venv\Scripts\python.exe -m pytest tests/test_derive_cells_m20.py tests/test_structure_m20.py tests/test_outline_span_resolution_m20.py tests/test_extract_outline_m4.py tests/test_extract_m16.py tests/test_batch_bundle_m10.py tests/test_schedule_d_bundle_m9.py tests/test_m20_s31.py tests/test_form_completeness_m20.py -q -> 113 passed, 1 warning in 18.39s.`
+- `RAN: .venv\Scripts\python.exe tools\check_ascii.py -> ASCII check OK.`
+- `RAN: git diff --check -> exit 0, no output.`
+- `RAN: .venv\Scripts\python.exe -m pytest tests/test_acquire_citation_check.py -q -> 9 passed in 0.14s.`
+- `RAN: .venv\Scripts\python.exe -m pytest tests/test_citation_cleanup_m18.py -q -> 8 passed, 1 warning in 1.04s.`
+- `RAN: .venv\Scripts\python.exe -m pytest tests/test_graph_validator.py -q -> 14 passed in 121.98s (0:02:01).`
+- `RAN: .venv\Scripts\python.exe -m pytest tests/test_generated_review_m20.py -q -> 6 passed in 30.61s.`
+- `RAN: .venv\Scripts\python.exe -m tax_graph.cli validate 2025 -> tax year 2025: documents=18 nodes=441 tables=2 edges=409 rules=17 citations=401 decisions=2 routing_edges=90 triggers=12 expectations=4; jsonschema: ON; graph integrity OK - all references resolve.`
+- `RAN: .venv\Scripts\python.exe -m workbench.cli preflight --year 2025 -> review preflight passed - 2025; derived manifest entries=18; units=2224; derived cells=2120; blast radius=0; approved=0, needs_recheck=0, review_gap=591, unreviewed=1529.`
+- `RAN: strict citation integrity inline check -> checked=401 strict_mismatches=36; known pre-existing baseline, unchanged by this slice.`
+- `NOT RUN: M20-S36 step 4 live-provider corpus rerun - the Worker sandbox has no outbound network; no provider result is claimed.`
+
 ## Standing constraints (every M20 round)
 
 - **PROTECTED SET, hard gate:** `graph/2025/{nodes,edges,rules}/` and `graph/2025/field_maps/`
@@ -200,6 +231,11 @@ client-managed server dies.
 
 ## Open for Architect
 
+- **M20-S36 denominator decision (raised 2026-08-03).** Logical-row assembly removes the measured
+  label/span truncation cases, but it also exposes formula cues on `schedule_a_2025` line 15 and
+  `schedule_1a_2025` line 36a, so the current formula set is 96 rows rather than the prior 94.
+  Should the next provider leg use the fuller 96-row derivation set, or should formula selection
+  remain frozen to the prior 94-row denominator for comparability? No provider result is claimed.
 - **FOR JOHN - what is next, now that derivation is done? (raised 2026-08-03.)** The corpus
   resolves 92 of 94 rows with 3 repairs, and the only remaining failures are model-quality issues
   on `form_6251_2025`. Chasing those means tuning a nondeterministic model for 2 rows, which is a

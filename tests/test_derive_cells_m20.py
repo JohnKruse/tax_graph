@@ -574,8 +574,11 @@ def test_real_1040_frame_carries_join_ownership_and_printed_line_inventory() -> 
     assert frame.rows[0].metadata["evidence_spans"][0]["text"] == frame.rows[0].form_face_text
     source_texts = {document.text}
     source_texts.update(source.text for source in document.related_sources)
+    # Assembled physical rows join source lines with one space; compare spans
+    # after whitespace normalization, which preserves the acquired text order.
+    normalized = lambda value: " ".join(value.split())
     assert all(
-        any(span["text"] in source_text for source_text in source_texts)
+        any(normalized(span["text"]) in normalized(source_text) for source_text in source_texts)
         for row in frame.rows
         for span in row.metadata["evidence_spans"]
     )
