@@ -17,55 +17,48 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## BALL
 
-**BALL: WORKER - M20-S35 (FIX THE SPAN MATCHER ON FORM 6251).** Task block under
-**From Architect**. **S34 is ACCEPTED at `66a6d60`.**
+**BALL: ARCHITECT / JOHN - M20 derivation is in good shape. Next round is a scoping call, not a
+defect.** **S35 is ACCEPTED at `9d53d54`.** See **Open for Architect**.
 
 ## Current round
 
-**M20-S34 ACCEPTED (Architect, Claude Opus 5, 2026-08-03) at `66a6d60`.** Steps 1-3 delivered;
-the Architect ran step 4. The cleaner fix follows the specced rule exactly - discriminate on
-whether the anchor has descriptive text after it, and truncate in both branches, never reorder.
-Gates: 107 passed on a short temp root, ASCII OK, `validate 2025` clean, protected set
-byte-identical.
+**M20-S35 ACCEPTED (Architect, Claude Opus 5, 2026-08-03) at `9d53d54`.** The Worker diagnosed and
+reported the count BEFORE writing the fix, as instructed - 1 of 29 rows on `form_6251_2025`, 0 of
+14 on every other loadable document - which is what made this a targeted fix rather than an
+architecture round. Step 3 was correctly declared NOT RUN; the Architect ran the provider leg.
 
-**THE TARGETED DEFECT IS GONE. `operand_not_printed` 82 -> 2, repairs 14 -> 4.**
+**THE CORPUS IS AT ITS BEST MEASURED STATE.**
 
-| document | attempted | derived | repaired | errored | was (S33) |
-| --- | ---: | ---: | ---: | ---: | --- |
-| `form_1040_2025` | 17 | 17 | 0 | 0 | 17 derived |
-| `schedule_1_2025` | 4 | **4** | **0** | 0 | **0 derived, 4 repaired** |
-| `schedule_2_2025` | 5 | **5** | **0** | 0 | 3 derived, 2 repaired |
-| `schedule_3_2025` | 4 | **4** | **0** | 0 | 2 derived, 2 repaired |
-| `schedule_1a_2025` | 24 | 22 | 2 | 0 | 23 derived, 1 repaired |
-| `schedule_a_2025`, `schedule_d_2025`, `schedule_b_2025` | 11 | 11 | 0 | 0 | unchanged, clean |
-| `form_6251_2025` | 29 | 23 | 2 | **4** | 23 derived, 5 repaired, 1 errored |
+| round | attempted | derived | repaired | gapped | errored | resolved |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| S33 | 94 | 79 | 14 | 0 | 1 | 93 |
+| S34 | 94 | 86 | 4 | 0 | 4 | 90 |
+| **S35** | 94 | **89** | **3** | **0** | **2** | **92** |
 
-Schedule 1 is the headline: every row needed a repair last round, none does now. Schedules 2 and
-3 are also clean. **Showing the model the printed-line inventory it was being validated against
-did exactly what the diagnosis predicted.**
+Resolution recovered 90 -> 92, and **first-attempt correctness is at an all-time high: derived 79
+-> 89.** S33's 93 resolved leaned on 14 repair round-trips; S35's 92 needs 3. Eight of the nine
+derivable documents are now perfectly clean on the first attempt, including `schedule_1a_2025`,
+which was 22/2 last round and is 24/24 now.
 
-**LABEL DESTRUCTION IS FIXED, measured the same way it was found.** Trailing-token labels across
-the corpus **8 -> 0**. Rows keeping under 60% of their source text **3 -> 1**, and the survivor is
-correct behaviour (`form_1040_2025` line 21 drops the `a box on line` neighbour contamination).
-`schedule_1a_2025` line `36b` recovers its full label - `your spouse was born before January 2,
-1961, enter the amount from line 35` - where it previously cleaned to the bare token `36b`.
+**The span fix hit exactly what it aimed at.** `form_6251_2025` recovered from 25/29 and 26/29
+across two S34 runs to **27/29 and 26/29** across two S35 runs, and `quote_not_verbatim` - 3
+occurrences last round, including the page-header row - is **gone**. `_span_for_line` now filters
+duplicate printed anchors by the outline page and rejects a candidate that lacks the row label's
+descriptive tokens, failing closed rather than returning a wrong span. No document-id special case
+was added.
 
-**THE UNFLATTERING NUMBER: corpus resolution went 93/94 -> 90/94, and all of the loss is on
-`form_6251_2025`.** Resolved means derived plus repaired. Two Architect runs of 6251 agree it
-declined - 25/29 and 26/29 against S33's 28/29 - so this is not a single bad draw, though 6251 has
-been the least stable form in the corpus throughout. Failing rows in run 1: lines 13 and 32
-`quote_not_verbatim`, lines 20 and 27 `self_reference`.
-**At least one of those is directly attributable to S34.** Line 32's span is page-header text
-(`Internal Revenue Service Go to www.irs.gov/Form6251 ...`); under the old cleaner it truncated to
-the bare token `32`, and under the new rule it keeps the header as the label. Neither is right -
-the SPAN is wrong, not the cleaning - but the model now has plausible-looking junk to quote instead
-of an obviously empty label. **This is the span-selection defect recorded in S33, now surfaced
-rather than hidden, and it is S35.**
+**Verified the Worker's honesty claim rather than taking it.** It reported
+`tests/test_schedule_d_extraction_m9.py` as 1 failed / 2 passed and attributed it to a pre-existing
+Schedule D expectation. Architect bisected the single changed file: the test fails IDENTICALLY with
+the S35 resolver reverted. The attribution is correct. **It is now a fourth known-red baseline
+entry** - see Standing constraints.
 
-**Process note:** the Worker's commit swept up an uncommitted Architect edit to this file (the
-verdict-vocabulary supersession). Architect's fault for leaving it in the tree at handoff; the
-content was correct and intended. Workers: `git status` before committing, and do not commit paths
-you did not touch.
+**REMAINING, and it is small and stable: `form_6251_2025` alone, same three failure kinds in both
+runs** - `missing_floor=3`, `payload=2`, `self_reference=2`. These are model-quality failures on
+the hardest form in the corpus, not pipeline defects: `missing_floor` means an expression omitted a
+stated floor, `payload` a malformed response, `self_reference` a row naming itself outside the
+REQUIRE_INPUT shape. **No further deterministic defect is visible in the derivation path.** That is
+the signal that this line of work has reached its natural stopping point.
 
 ## Standing constraints (every M20 round)
 
@@ -85,6 +78,9 @@ you did not touch.
     the source PDF is unchanged, so a code-only bisect proves nothing)
   - `test_address_campaign_m15r.py::test_form_8949_cross_form_claims_resolve_exactly`
     (`realized 0, expected 6`)
+  - `test_schedule_d_extraction_m9.py::test_schedule_d_fixture_drafts_include_schema_valid_band_tables`
+    (added 2026-08-03; Architect bisected it against the S35 resolver change and it fails
+    identically with that change reverted, so it predates S35)
 - **The Worker sandbox has NO outbound network.** Live-provider legs fail 17/17 with
   `LlmUnavailable: ... Connection error`. This has cost three rounds. Either run the provider leg
   outside the sandbox with approved access, or declare the round fixture-only UP FRONT.
@@ -171,6 +167,24 @@ client-managed server dies.
 
 ## Open for Architect
 
+- **FOR JOHN - what is next, now that derivation is done? (raised 2026-08-03.)** The corpus
+  resolves 92 of 94 rows with 3 repairs, and the only remaining failures are model-quality issues
+  on `form_6251_2025`. Chasing those means tuning a nondeterministic model for 2 rows, which is a
+  poor trade. Three candidates, and it is a product call:
+  **(a) The standalone reviewer.** Package the workbench so colleagues can review a form without a
+  dev setup. Needs the three-tier verdict vocabulary (accepted / commented-questioned / rejected)
+  and one proven round trip: a comment that survives a pipeline regeneration and shows up as input
+  on the next run. That round trip has never actually happened, and it is the prime directive's
+  core loop.
+  **(b) Structure and association, S3b.** The geometric label path and the AcroForm-tree skeleton,
+  which is what would make the 13614-C class of form reviewable at all. Today it derives nothing
+  because it has no computed lines, but 297 of its cells are unaddressable by line number.
+  **(c) The checker.** Adjudicate disagreements between the AcroForm tree, the geometry and OCR,
+  and route them to a findings queue. John's view: set it up, then decide the payload from real
+  disagreement instances rather than designing it in advance.
+  Architect's recommendation is **(a)**, because it closes the human loop that everything else
+  feeds, and because the reviewer surface is what turns (b) and (c) into something a person can
+  act on.
 - **FOR JOHN - is Form 2441 in the base profile? (raised 2026-08-02, blocks nothing else.)** The
   graph counts 18 documents but only 17 exist: `graph/2025/field_maps/form_2441_2025.yaml` carries
   a `document_id` for a form that was never acquired, its `mappings` are empty, its nodes are
@@ -187,82 +201,8 @@ client-managed server dies.
 
 ## From Architect
 
-- **M20-S35 TASK - FIX THE SPAN MATCHER ON FORM 6251 (Architect, Claude Opus 5, 2026-08-03).**
-  Ledger: the RAN/NOT RUN rule, D9, D6. **Diagnose first, then fix. Small round.**
-
-  **Why.** `form_6251_2025` is the only form that got worse in S34 and the only one carrying
-  errors. Its line 32 evidence span is the PAGE HEADER - `Internal Revenue Service Go to
-  www.irs.gov/Form6251 for instructions and the latest information. 32` - so no amount of label
-  cleaning can help; `_span_for_line` picked the wrong region of the page. S34 changed the symptom
-  (bare token `32` became header text) without touching the cause.
-
-  **Step 1 - diagnose, and report before fixing.** For every 6251 row, print the selected span and
-  say how `_span_for_line` chose it. Report specifically: how many 6251 rows have a span whose text
-  does not contain the row's own printed line token in a plausible label position, and whether the
-  same condition occurs on any other form. **Write the count in this file before writing the fix**
-  - if it is one row this is a targeted fix, and if it is eight it is an architecture problem and
-  the round changes shape.
-
-  **Pre-fix diagnosis (2026-08-03):** the 29-row 6251 inventory was printed with the exact command
-  below. One row, line 32 (1/29), selected the page-1 header span `Internal Revenue Service Go to
-  www.irs.gov/Form6251 for instructions and the latest information. 32`; it was selected because
-  the resolver collected all exact `32` anchor offsets and returned the first source span whose text
-  line matched any of them. The row's outline page is 2 and its label is `32 Add lines 23 and 30 32`.
-  The same outline-label mismatch occurred in 0/14 other loadable documents, including 0/8 other
-  documents with formula rows. The full per-row selection table is the command output recorded in
-  the Worker session:
-  `.venv\\Scripts\\python.exe -` with the 6251 inventory script.
-
-  **Step 2 - fix the selection, not the symptom.** A span that is page header, footer, or a
-  different section is not a candidate for a row's label. Use what is already available - the
-  printed-line inventory, the row's own anchor, and the outline node - to reject a span that cannot
-  belong to this row. **Fail closed: a row with no plausible span must report that, not fall back
-  to a wrong one.** An honestly empty label is better than page-header text, because the empty one
-  is visible and the junk one is not.
-  **Do not** special-case `form_6251_` or any document id - that is the S31 carve-out defect and it
-  is a stop condition.
-
-  **Step 3 - rerun 6251 twice and the full derivable corpus once.** Report per document: attempted,
-  derived, repaired, errored, and the top three `validator_failures_by_kind`. **The numbers to
-  beat: 6251 resolved 25/29 and 26/29 across two runs; corpus resolved 90/94.** S33's 6251 was
-  28/29, so that is the bar to recover. Report both 6251 runs even if identical - it is the least
-  stable form in the corpus and one run proves nothing about it.
-  **Do not chase the other three 6251 failures this round** (lines 13, 20, 27 -
-  `quote_not_verbatim` and `self_reference`) unless the span fix happens to resolve them. Report
-  whether it did.
-
-  **On the provider leg:** if approved external network is unavailable, do steps 1-2, declare step
-  3 NOT RUN up front, and hand back - the Architect will run it.
-
-  **Worker status (2026-08-03):** Step 1 is `[DONE]`: the targeted count is 1/29 on 6251 and
-  0/14 on the other loadable documents. Step 2 is `[DONE]`: `_span_for_line` now filters duplicate
-  printed anchors by the outline page from the field inventory, resolves the resulting text line,
-  and rejects candidates without row-label context. No document-id special case was added. The
-  regression set includes the duplicate-header case, fail-closed rejection, and the real 6251
-  line-32 frame.
-
-  Step 3 is `NOT RUN`: live provider access is unavailable in the Worker sandbox, so the two live
-  6251 runs and full derivable corpus run were not attempted. The Architect must run that provider
-  leg outside the sandbox.
-
-  Focused evidence:
-  `RAN: $env:PYTEST_DEBUG_TEMPROOT='C:\\Users\\devbox\\projects\\tax_graph\\.test_tmp_codex'; .venv\\Scripts\\python.exe -m pytest tests/test_outline_span_resolution_m20.py tests/test_structure_m20.py tests/test_extract_outline_m4.py tests/test_m20_s31.py tests/test_derive_cells_m20.py tests/test_extract_m16.py -q -> 87 passed, 1 warning in 6.73s`.
-  `RAN: $env:PYTEST_DEBUG_TEMPROOT='C:\\Users\\devbox\\projects\\tax_graph\\.test_tmp_codex'; .venv\\Scripts\\python.exe -m pytest tests/test_schedule_d_extraction_m9.py -q -> 1 failed, 2 passed; pre-change resolver replay also produced old_resolver_prompts=3, so this is an unrelated existing expectation for Schedule D lines 7/15/16.`
-  `RAN: .venv\\Scripts\\python.exe tools\\check_ascii.py -> ASCII check OK`.
-  `RAN: .venv\\Scripts\\python.exe -m tax_graph.cli validate 2025 -> graph integrity OK (441 nodes, 409 edges, 401 citations)`.
-  `RAN: .venv\\Scripts\\python.exe -m workbench.cli preflight --year 2025 -> passed (2224 units, 2120 derived cells, legacy_mined=394; elevated read-only ACL access)`.
-  `RAN: strict citation integrity check -> checked=401 strict_mismatches=36 (known baseline)`.
-  Protected directories have an empty diff.
-
-  **Do not:** relax `quote_not_verbatim`, `self_reference`, or `operand_not_printed`; add a retry
-  policy; add any per-document special case; reintroduce reordering into `clean_form_face_text`;
-  promote anything.
-  **Stop conditions:** any diff in the protected directories; `derive_cells` acquiring a disk
-  write; any harness output landing inside the repository; a `startswith` on a document id
-  anywhere in the pipeline.
-  Tier 3. Declared files plus honest `RAN:`/`NOT RUN:`. ASCII, `git diff --check`, module-form
-  `validate 2025`, preflight with `legacy_mined` explicit (394), strict citations (36).
-  **ONE local commit** - and run `git status` first; do not commit paths you did not touch.
+- *(No active Worker task. M20 derivation has no visible deterministic defect left; the next move
+  is a scoping decision for John - see **Open for Architect**.)*
 
 ## Architect decisions
 
