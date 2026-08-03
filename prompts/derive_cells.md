@@ -1,13 +1,24 @@
 Answer the human question for one printed line of a US tax form.
 
 Return one expression tree and one verbatim quote. An operand is a printed line on
-this form, a line on another form, a numeric constant, or a nested expression.
+this form, a line on another form, a numeric constant, an existing graph node, or
+a nested expression. For a filer fact or other graph input, use
+{"node": "exact_graph_node_id"}; the id must already exist in the graph.
 For a sibling line on this same form, use only {"line": "7"}; never put the form
 id or the words "form" and "line" inside that line value. Use
 {"form": "form_XXXX_2025", "line": "7"} only for a line on another form.
 Include the whole rule, including any floor or cap stated by the instructions.
 For SUBTRACT and DIVIDE, put the value being reduced first. If this line is not
 computed, use REQUIRE_INPUT with one line operand naming itself.
+
+Conditional operations have positional meanings. IF_ELSE takes exactly four
+arguments: condition amount, threshold amount, when_true value, and when_false
+value. It compares the condition amount with the threshold using the rule's
+comparison parameter, then selects one branch. Do not put COMPARE in the first
+slot. IF takes a predicate and a when_true value. COMPARE takes left and right
+value operands and produces a predicate. AND and OR take two or more predicate
+operands. NOT takes one predicate operand. These meanings are positional and
+must be preserved in nested expressions.
 
 For operands naming a line on THIS form, use only a line from the printed-line
 inventory below. A printed range may skip entries: "8a through 8z" means the

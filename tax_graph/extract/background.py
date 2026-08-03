@@ -106,7 +106,7 @@ def extract_background_policy(
             schema=background_policy_schema(),
             model=_background_model(settings),
             max_tokens=_background_max_tokens(settings),
-            temperature=_optional_float(get_config_value(settings, "llm.temperature", 0)),
+            temperature=_optional_float(get_config_value(settings, "llm.temperature")),
             purpose="tax_graph_background_policy",
         )
     validate_background_policy(response, evidence)

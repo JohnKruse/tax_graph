@@ -45,12 +45,9 @@ llm:
     quantizations: null            # for example [fp4]
   reasoning_effort: null         # optional OpenRouter reasoning control for capable models, e.g. minimal
   reasoning_exclude: null        # optional: true keeps reasoning tokens out of responses when supported
-  # WARNING (2026-08-03): temperature is NOT sent by the batch derivation path, so
-  # this value has never taken effect. Sending it while require_parameters is true
-  # eliminates every gpt-5.6-luna endpoint and 404s the request. Do not treat it as
-  # a determinism guarantee. See M20-S38 step 2 - either send it deliberately and
-  # verify live, or delete the key.
-  temperature: 0
+  # NOTE (2026-08-03): temperature is intentionally omitted. Derivation uses the provider
+  # default because routed endpoints do not all advertise temperature; this is not a
+  # determinism guarantee.
   strict_schema: true            # require the provider to honor the JSON Schema response contract
   max_tokens: 24000              # leave room for a complete form draft; length is a named failure
   critic_max_tokens: 8000

@@ -24,6 +24,7 @@ if str(ROOT) not in sys.path:
 
 from tax_graph.config import get_config_value, load_config
 from tax_graph.extract.cells import (
+    build_reference_inventory,
     build_cell_frame_from_document,
     derive_cells,
     load_cell_prompt,
@@ -31,6 +32,7 @@ from tax_graph.extract.cells import (
 from tax_graph.extract.inputs import load_document_input
 from tax_graph.extract.instruction_sections import write_instruction_sections_artifact
 from tax_graph.extract.llm_client import build_llm_client
+from tax_graph.io.loader import load_graph
 from tax_graph.extract.outline import (
     _flatten_outline_nodes,
     build_instruction_sections_frame,
@@ -116,6 +118,7 @@ def run_real_document(
         client=client,
         model=str(get_config_value(config, "llm.micro_model", "configured-llm")),
         provider=str(get_config_value(config, "llm.provider", "configured-provider")),
+        reference_inventory=build_reference_inventory(load_graph(year, root_path)),
     )
     raw_status_counts = Counter(row.status for row in result.rows)
     status_counts = {

@@ -283,6 +283,7 @@ def derive_cells(
     max_depth: int = 2,
     max_tokens: int = 4000,
     temperature: float | None = None,
+    reference_inventory: Mapping[str, Any] | None = None,
 ) -> CellFrame | list[dict[str, Any]]:
     """Derive every cell independently and return a new frame.
 
@@ -389,7 +390,15 @@ def derive_cells(
                 provider=provider,
                 model=model,
             )
-            first_failure = tuple(validate_cell_output(row, row.expression, row.quote, max_depth=max_depth)[0])
+            first_failure = tuple(
+                validate_cell_output(
+                    row,
+                    row.expression,
+                    row.quote,
+                    max_depth=max_depth,
+                    reference_inventory=reference_inventory,
+                )[0]
+            )
             telemetry = response_telemetry(response)
             if telemetry is not None:
                 row.provider = telemetry.resolved_provider or telemetry.provider
@@ -439,6 +448,7 @@ def derive_cells(
                 row.expression,
                 row.quote,
                 max_depth=max_depth,
+                reference_inventory=reference_inventory,
             )
             if second_failures:
                 _record_issues(report, second_failures)
@@ -449,7 +459,12 @@ def derive_cells(
                 row.status = "repaired"
                 row.metadata["repaired_after"] = [item.kind for item in first_failure]
                 report["repaired"] += 1
-                _record_warnings(report, row, max_depth=max_depth)
+            _record_warnings(
+                report,
+                row,
+                max_depth=max_depth,
+                reference_inventory=reference_inventory,
+            )
         except Exception as exc:  # noqa: BLE001 - second failure is a named gap
             issue = _exception_issue(exc)
             _record_issues(report, (issue,))
@@ -607,6 +622,7 @@ def validate_cell_output(
     quote: str,
     *,
     max_depth: int = 2,
+    reference_inventory: Mapping[str, Any] | None = None,
 ) -> tuple[tuple[CellValidationIssue, ...], tuple[CellValidationIssue, ...]]:
     """Validate output properties and return hard failures plus warnings.
 
@@ -629,6 +645,11 @@ def validate_cell_output(
     current_form = row.form.strip().lower()
     current_line = row.line.strip().lower()
     available_lines = _available_lines(row)
+    inventory = reference_inventory
+    if inventory is None and isinstance(row.metadata.get("reference_inventory"), Mapping):
+        inventory = row.metadata["reference_inventory"]
+    reference_documents = _reference_document_ids(inventory)
+    reference_node_ids = _reference_node_ids(inventory)
     direct_require_input_args = _node_args(expression) if is_require_input else []
     require_input_self = (
         is_require_input
@@ -641,8 +662,25 @@ def validate_cell_output(
         )
     )
     for operand in operands:
+        operand_node = str(operand.get("node") or "").strip()
         operand_form = str(operand.get("form") or "").strip().lower()
         operand_line = str(operand.get("line") or "").strip().lower()
+        if operand_node:
+            if reference_node_ids is None:
+                hard.append(
+                    CellValidationIssue(
+                        "operand_inventory_unavailable",
+                        f"cannot validate graph node operand {operand_node} without a graph node inventory",
+                    )
+                )
+            elif operand_node not in reference_node_ids:
+                hard.append(
+                    CellValidationIssue(
+                        "operand_node_not_found",
+                        f"graph node operand {operand_node} is not present in the graph",
+                    )
+                )
+            continue
         if not operand_line:
             continue
         is_require_input_self_operand = require_input_self and operand is direct_require_input_args[0]
@@ -657,6 +695,37 @@ def validate_cell_output(
                     f"line {operand_line} is not a printed line on {row.form}",
                 )
             )
+        if operand_form:
+            if reference_documents is None:
+                hard.append(
+                    CellValidationIssue(
+                        "operand_inventory_unavailable",
+                        f"cannot validate {operand_form} line {operand_line} without a document inventory",
+                    )
+                )
+            elif operand_form not in reference_documents:
+                hard.append(
+                    CellValidationIssue(
+                        "operand_document_not_found",
+                        f"cross-form operand names unknown document {operand_form}",
+                    )
+                )
+            else:
+                cross_form_lines = _reference_lines(inventory, operand_form)
+                if cross_form_lines is None:
+                    hard.append(
+                        CellValidationIssue(
+                            "operand_inventory_unavailable",
+                            f"cannot validate printed lines for {operand_form}",
+                        )
+                    )
+                elif operand_line not in cross_form_lines:
+                    hard.append(
+                        CellValidationIssue(
+                            "operand_not_printed",
+                            f"line {operand_line} is not a printed line on {operand_form}",
+                        )
+                    )
         if not is_require_input_self_operand and not operand_form and not _line_mentioned(quote, operand_line):
             warnings.append(
                 CellValidationIssue(
@@ -724,11 +793,9 @@ def _expression_nodes(node: Mapping[str, Any]) -> Iterable[Mapping[str, Any]]:
 
 
 def _expression_operands(node: Mapping[str, Any]) -> Iterable[Mapping[str, Any]]:
-    """Yield local and explicit cross-form line operands."""
-    if "line" in node and ("op" not in node):
-        yield node
-        return
+    """Yield every leaf operand, including graph-node references."""
     if "op" not in node:
+        yield node
         return
     for arg in _node_args(node):
         if isinstance(arg, Mapping):
@@ -759,6 +826,87 @@ def _available_lines(row: CellRecord) -> set[str]:
                 values = values.split(",")
             return {str(value).strip().lower() for value in values}
     return set()
+
+
+def build_reference_inventory(graph: Any) -> dict[str, Any]:
+    """Build the immutable graph inventory used to validate external operands.
+
+    Derivation remains pure: callers load the graph and pass this projection in
+    as input.  The inventory distinguishes documents, their printed lines,
+    and exact graph node ids so a model cannot invent either a form reference
+    or a filer-fact reference.
+    """
+    document_ids = {
+        str(item.get("document_id") or "").strip().lower()
+        for item in graph.items("documents")
+        if item.get("document_id")
+    }
+    node_ids: set[str] = set()
+    printed_lines: dict[str, set[str]] = {}
+    for item in graph.items("nodes"):
+        node_id = str(item.get("node_id") or "").strip()
+        document_id = str(item.get("document_id") or "").strip().lower()
+        if node_id:
+            node_ids.add(node_id)
+        if not document_id:
+            continue
+        match = re.search(r"(?:^|_)line_([0-9]+[a-z]?|[a-z])(?:_|$)", node_id.lower())
+        if match:
+            printed_lines.setdefault(document_id, set()).add(match.group(1))
+    return {
+        "document_ids": sorted(document_ids),
+        "printed_lines": {
+            document_id: sorted(lines, key=_line_sort_key)
+            for document_id, lines in sorted(printed_lines.items())
+        },
+        "node_ids": sorted(node_ids),
+    }
+
+
+def _reference_document_ids(inventory: Mapping[str, Any] | None) -> set[str] | None:
+    """Return normalized document ids, or None when no inventory was supplied."""
+    if inventory is None:
+        return None
+    values = inventory.get("document_ids")
+    if values is None:
+        values = inventory.get("documents")
+        if isinstance(values, Mapping):
+            values = values.keys()
+    if values is None:
+        return set()
+    return {str(value).strip().lower() for value in values if str(value).strip()}
+
+
+def _reference_node_ids(inventory: Mapping[str, Any] | None) -> set[str] | None:
+    """Return exact graph node ids, or None when no inventory was supplied."""
+    if inventory is None:
+        return None
+    values = inventory.get("node_ids")
+    if values is None:
+        return set()
+    return {str(value).strip() for value in values if str(value).strip()}
+
+
+def _reference_lines(inventory: Mapping[str, Any] | None, document_id: str) -> set[str] | None:
+    """Return a document's normalized printed-line inventory."""
+    if inventory is None:
+        return None
+    values = inventory.get("printed_lines")
+    if values is None:
+        values = inventory.get("lines")
+    if not isinstance(values, Mapping):
+        documents = inventory.get("documents")
+        values = documents if isinstance(documents, Mapping) else None
+    if not isinstance(values, Mapping) or document_id not in values:
+        return None
+    result = values[document_id]
+    if isinstance(result, Mapping):
+        result = result.get("lines") or result.get("printed_lines")
+    if result is None:
+        return None
+    if isinstance(result, str):
+        result = result.split(",")
+    return {str(value).strip().lower() for value in result if str(value).strip()}
 
 
 def _line_sort_key(value: str) -> tuple[int, str]:
@@ -857,11 +1005,23 @@ def _record_issues(report: dict[str, Any], issues: Iterable[CellValidationIssue]
         counts[issue.kind] = counts.get(issue.kind, 0) + 1
 
 
-def _record_warnings(report: dict[str, Any], row: CellRecord, *, max_depth: int) -> None:
+def _record_warnings(
+    report: dict[str, Any],
+    row: CellRecord,
+    *,
+    max_depth: int,
+    reference_inventory: Mapping[str, Any] | None = None,
+) -> None:
     """Record non-blocking operand evidence warnings for a successful row."""
     if row.expression is None:
         return
-    _hard, warnings = validate_cell_output(row, row.expression, row.quote, max_depth=max_depth)
+    _hard, warnings = validate_cell_output(
+        row,
+        row.expression,
+        row.quote,
+        max_depth=max_depth,
+        reference_inventory=reference_inventory,
+    )
     if not warnings:
         return
     row.metadata["validation_warnings"] = [item.as_dict() for item in warnings]
@@ -896,6 +1056,10 @@ def _validate_tree_node(node: Mapping[str, Any], *, depth: int, max_depth: int) 
         if set(node) != {"const"} or not isinstance(node["const"], (int, float)) or isinstance(node["const"], bool):
             raise ValueError("const operand must contain one numeric value")
         return
+    if "node" in node:
+        if set(node) != {"node"} or not str(node["node"]).strip():
+            raise ValueError("node operand must contain one non-empty graph node id")
+        return
     if set(node) != {"op", "args"}:
         raise ValueError("expression nodes require only op and args")
     op = str(node.get("op") or "").upper()
@@ -912,10 +1076,56 @@ def _validate_tree_node(node: Mapping[str, Any], *, depth: int, max_depth: int) 
                 "COMPARE": 2, "IF": 2, "IF_ELSE": 4}
     if op in expected and len(args) != expected[op]:
         raise ValueError(f"{op} requires exactly {expected[op]} arguments")
+    if op in {"AND", "OR"} and len(args) < 2:
+        raise ValueError(f"{op} requires at least 2 arguments")
+    _validate_argument_shapes(op, args)
     for arg in args:
         if not isinstance(arg, Mapping):
             raise ValueError("expression arguments must be objects")
         _validate_tree_node(arg, depth=depth + 1, max_depth=max_depth)
+
+
+PREDICATE_OPERATIONS = frozenset({"COMPARE", "AND", "OR", "NOT"})
+
+
+def _validate_argument_shapes(operation: str, args: list[Any]) -> None:
+    """Enforce the positional meanings of conditional expression arguments."""
+    if operation in {"IF_ELSE", "COMPARE"}:
+        for index, arg in enumerate(args):
+            if _is_predicate_expression(arg):
+                role = EXPRESSION_ARGUMENT_ROLES[operation][index]
+                raise ValueError(
+                    f"{operation} argument {index + 1} ({role}) must be a value expression, "
+                    f"not a predicate"
+                )
+    elif operation == "IF":
+        if not _is_predicate_expression(args[0]):
+            raise ValueError("IF argument 1 (condition) must be a predicate expression")
+        if _is_predicate_expression(args[1]):
+            raise ValueError("IF argument 2 (when_true) must be a value expression")
+    elif operation in {"AND", "OR"}:
+        if any(not _is_predicate_expression(arg) for arg in args):
+            raise ValueError(f"{operation} arguments (candidate) must be predicate expressions")
+    elif operation == "NOT" and not _is_predicate_expression(args[0]):
+        raise ValueError("NOT argument 1 (operand) must be a predicate expression")
+
+
+def _is_predicate_expression(value: Any) -> bool:
+    """Return whether an expression node produces a boolean predicate."""
+    return (
+        isinstance(value, Mapping)
+        and str(value.get("op") or "").upper() in PREDICATE_OPERATIONS
+    )
+
+
+EXPRESSION_ARGUMENT_ROLES = {
+    "IF": ("condition", "when_true"),
+    "IF_ELSE": ("condition", "threshold", "when_true", "when_false"),
+    "COMPARE": ("left", "right"),
+    "AND": ("candidate",),
+    "OR": ("candidate",),
+    "NOT": ("operand",),
+}
 
 
 DEFAULT_OPERATIONS = (
@@ -967,6 +1177,12 @@ def _expression_node_schema(operations: list[str], depth: int) -> dict[str, Any]
             "required": ["const"],
             "properties": {"const": {"type": "number"}},
         },
+        {
+            "type": "object",
+            "additionalProperties": False,
+            "required": ["node"],
+            "properties": {"node": {"type": "string", "minLength": 1}},
+        },
     ]
     if depth > 0:
         operands.append(_expression_node_schema(operations, depth - 1))
@@ -992,6 +1208,8 @@ def render(node: Mapping[str, Any], in_infix: bool = False) -> str:
     if "const" in node:
         value = node["const"]
         return str(int(value)) if float(value).is_integer() else str(value)
+    if "node" in node:
+        return f"node {node['node']}"
     op = str(node.get("op", "?")).upper()
     args = [render(arg, in_infix=op in INFIX and len(node.get("args") or []) > 1) for arg in node.get("args") or []]
     if op in INFIX and len(args) > 1:
@@ -1019,6 +1237,12 @@ ROLE_FOR_OP = {
     "MIN": ("candidate",),
     "COPY": ("source",),
     "NEGATE": ("value",),
+    "IF": EXPRESSION_ARGUMENT_ROLES["IF"],
+    "IF_ELSE": EXPRESSION_ARGUMENT_ROLES["IF_ELSE"],
+    "COMPARE": EXPRESSION_ARGUMENT_ROLES["COMPARE"],
+    "AND": EXPRESSION_ARGUMENT_ROLES["AND"],
+    "OR": EXPRESSION_ARGUMENT_ROLES["OR"],
+    "NOT": EXPRESSION_ARGUMENT_ROLES["NOT"],
 }
 
 RULE_FOR_OP = {
@@ -1105,6 +1329,8 @@ class _GraphConverter:
             node_id = f"{self.form}_{suffix}"
             self._add_node(node_id, f"{self.form} constant {value}", node_type="parameter", constant_value=value)
             return node_id
+        if "node" in operand:
+            return str(operand["node"])
         self.findings.append(f"unrecognised operand: {operand}")
         return f"{self.base}_unresolved"
 

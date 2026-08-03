@@ -28,7 +28,7 @@ def critique_drafts(
             schema=critic_response_schema(),
             model=model,
             max_tokens=int(get_config_value(settings, "llm.critic_max_tokens", 8000)),
-            temperature=_optional_float(get_config_value(settings, "llm.temperature", 0)),
+            temperature=_optional_float(get_config_value(settings, "llm.temperature")),
             purpose="tax_graph_critic",
         )
     except LlmUnavailable as exc:

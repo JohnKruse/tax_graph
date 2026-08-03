@@ -46,7 +46,10 @@ def _frame() -> CellFrame:
 def _config(tmp_path: Path) -> dict:
     prompt = tmp_path / "cells.md"
     prompt.write_text("human: <<human_comment>>\nline: <<line>>", encoding="ascii")
-    return {"extraction": {"prompts": {"cells": str(prompt)}}}
+    return {
+        "llm": {"temperature": 0},
+        "extraction": {"prompts": {"cells": str(prompt)}},
+    }
 
 
 def test_rederive_cell_returns_result_and_does_not_write(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
@@ -76,6 +79,7 @@ def test_rederive_cell_returns_result_and_does_not_write(tmp_path: Path, monkeyp
     assert result["result"]["status"] == "derived"
     assert result["validation"]["attempted"] == 1
     assert "Use the threshold printed on the form." in client.calls[0]["prompt"]
+    assert client.calls[0]["temperature"] is None
 
 
 def test_rederive_cell_uses_latest_curated_comment_when_no_draft(

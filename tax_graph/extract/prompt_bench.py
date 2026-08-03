@@ -270,12 +270,12 @@ def _bench_result(
     }
 
 
-def _temperature(config: dict[str, Any]) -> float:
-    value = get_config_value(config, "llm.temperature", 0)
+def _temperature(config: dict[str, Any]) -> float | None:
+    value = get_config_value(config, "llm.temperature")
     try:
-        return float(value)
+        return None if value is None else float(value)
     except (TypeError, ValueError):
-        return 0.0
+        return None
 
 
 def _quote_matches(quote: str, source: str) -> bool:

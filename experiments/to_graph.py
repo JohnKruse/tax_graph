@@ -47,11 +47,18 @@ RULE_FOR_OP = {
 ROLE_FOR_OP = {
     "SUM": ["addend"],
     "SUBTRACT": ["minuend", "subtrahend"],
+    "DIVIDE": ["numerator", "denominator"],
     "MULTIPLY": ["factor"],
     "MAX": ["candidate"],
     "MIN": ["candidate"],
     "COPY": ["source"],
     "NEGATE": ["value"],
+    "IF": ["condition", "when_true"],
+    "IF_ELSE": ["condition", "threshold", "when_true", "when_false"],
+    "COMPARE": ["left", "right"],
+    "AND": ["candidate"],
+    "OR": ["candidate"],
+    "NOT": ["operand"],
 }
 
 

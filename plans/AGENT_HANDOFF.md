@@ -17,9 +17,43 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## BALL
 
-**BALL: WORKER - M20-S38 (FIX THE RE-DERIVE CALL; THEN LET AN OPERAND NAME A FILER FACT).** Task block under
-**From Architect**. **S37 comment plumbing ACCEPTED at `085a234`; the `rederive_cell` entry point
-is BROKEN against the real config and must be fixed first.**
+**BALL: ARCHITECT - review M20-S38 local implementation and the declared provider gap.** Task block under
+**From Architect**. **S37 comment plumbing ACCEPTED at `085a234`; M20-S38 is implemented locally
+and has not been pushed.**
+
+## Worker status - M20-S38
+
+**Codex, 2026-08-03 - local implementation complete; awaiting Architect review.** Canary:
+**Ground Truth**. The re-derive path now matches the batch call (no implicit temperature), the
+example config explicitly omits temperature because routed endpoints do not all advertise it,
+cross-form operands fail closed against a loaded graph inventory, graph-node operands validate
+against exact node ids, and conditional operations have positional shape rules and prompt roles.
+`experiments/to_graph.py` and the shared graph converter carry the node operand through as an
+exact source id. The engine still has no generic graph rule mapping for nested IF/COMPARE/AND/OR/
+NOT expressions; IF_ELSE execution exists, but selecting a reusable rule from a nested comparison
+is a known downstream gap and was not invented here.
+
+Inventory evidence: base graph `17` documents and `417` nodes, with `form_2441_2025` absent;
+the default loaded graph includes the accepted extension (`18` documents, `441` nodes), and
+`taxpayer_2025_filing_status` is present. The pre-change count of cross-form operands in the
+96-row provider corpus is **NOT RUN**: the Worker-accessible persisted drafts contain legacy
+micro summaries, not the provider expression rows, so no corpus count is claimed.
+
+Provider evidence: the 96-row derivation and Form 6251 line 18 steering check are **NOT RUN**;
+the Worker sandbox has no outbound provider access. No expression is claimed to cover married
+filing separately.
+
+Tests and gates:
+
+- `RAN: .venv\Scripts\python.exe -m pytest tests/test_rederive_m20.py tests/test_derive_cells_m20.py tests/test_m20_s31.py tests/test_prompt_experiment_m20.py -q -> 55 passed in 1.81s`.
+- `RAN: .venv\Scripts\python.exe -m pytest tests/test_workbench_rederive_m20.py tests/test_config.py tests/test_extract_m4.py tests/test_extract_outline_m4.py tests/test_batch_extraction_m10.py tests/test_background_m20.py tests/test_llm_attribution_m20.py -q -> 75 passed in 80.09s (0:01:20)`.
+- `RAN: .venv\Scripts\python.exe -m pytest tests/test_graph_validator.py tests/test_review_preflight_m15.py tests/test_workbench_m15.py tests/test_workbench_cells_m17.py tests/test_prompt_experiment_m20.py tests/test_derive_cells_s30.py -q -> 34 passed in 250.68s (0:04:10)`.
+- `RAN: .venv\Scripts\python.exe -m tax_graph.cli validate 2025 -> graph integrity OK - all references resolve; documents=18, nodes=441, edges=409, citations=401`.
+- `RAN: .venv\Scripts\python.exe -m workbench.cli preflight --year 2025 -> review preflight passed - 2025; derived units=2224; legacy_mined=394; review_gap=591; unreviewed=1529`.
+- `RAN: .venv\Scripts\python.exe -c "from tax_graph.acquire.citation_check import check_graph_citations; r=check_graph_citations(year=2025, raw_store='.cache/raw', root='.'); print(f'checked={r.checked} strict_mismatches={len(r.mismatches)} ok={r.ok}')" -> checked=401 strict_mismatches=36 ok=False`.
+- `RAN: .venv\Scripts\python.exe tools/check_ascii.py -> ASCII check OK`; `RAN: git diff --check -> exit 0`; protected-set diff -> empty.
+
+No push. The next action is Architect review of the local commit and the declared provider gap.
 
 ## Current round
 

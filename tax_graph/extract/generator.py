@@ -30,7 +30,7 @@ def generate_drafts(
         schema=draft_response_schema(root=root),
         model=model,
         max_tokens=int(get_config_value(settings, "llm.max_tokens", 24000)),
-        temperature=_optional_float(get_config_value(settings, "llm.temperature", 0)),
+        temperature=_optional_float(get_config_value(settings, "llm.temperature")),
         purpose="tax_graph_draft",
     )
     batch = parse_generator_response(response, document=document, model=str(model), root=root)

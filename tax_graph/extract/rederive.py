@@ -17,12 +17,14 @@ import yaml
 from tax_graph.config import get_config_value, load_config, project_root
 from tax_graph.extract.cells import (
     CellFrame,
+    build_reference_inventory,
     build_cell_frame_from_document,
     derive_cells,
     load_cell_prompt,
 )
 from tax_graph.extract.inputs import load_document_input
 from tax_graph.extract.llm_client import build_llm_client
+from tax_graph.io.loader import load_graph
 
 
 def rederive_cell(
@@ -88,6 +90,7 @@ def rederive_cell(
     if active_client is None:
         active_client = build_llm_client(settings)
     prompt = load_cell_prompt(settings, root=root_path)
+    reference_inventory = _load_reference_inventory(root_path, year)
     result = derive_cells(
         CellFrame.from_rows([row]),
         prompt,
@@ -102,7 +105,7 @@ def rederive_cell(
         ),
         provider=str(get_config_value(settings, "llm.provider", "configured-provider")),
         max_tokens=int(get_config_value(settings, "extraction.micro_max_tokens", 4000)),
-        temperature=_optional_temperature(settings),
+        reference_inventory=reference_inventory,
     )
     if not isinstance(result, CellFrame):
         raise TypeError("single-cell derivation returned an unexpected result")
@@ -185,7 +188,9 @@ def _canonical_formula_address(
     return f"{year}/document={base_document}/line={line}/control=amount"
 
 
-def _optional_temperature(settings: Mapping[str, Any]) -> float | None:
-    """Return configured temperature while preserving the provider default."""
-    value = get_config_value(settings, "llm.temperature")
-    return None if value is None else float(value)
+def _load_reference_inventory(root: Path, year: str | int) -> dict[str, Any] | None:
+    """Load the graph inventory used by the live single-cell validator."""
+    try:
+        return build_reference_inventory(load_graph(year, root))
+    except FileNotFoundError:
+        return None

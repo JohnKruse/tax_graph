@@ -15,6 +15,8 @@ from tax_graph.extract.cells import (
     expression_to_graph,
     load_cell_prompt,
     render,
+    validate_cell_output,
+    validate_expression_tree,
     _line_mentioned,
 )
 
@@ -377,11 +379,124 @@ def test_properties_allow_explicit_cross_form_and_warn_on_quote_omission() -> No
         }
     ])
 
-    result = derive_cells(CellFrame.from_rows([row]), "<<line>>", "secret", client=client)
+    result = derive_cells(
+        CellFrame.from_rows([row]),
+        "<<line>>",
+        "secret",
+        client=client,
+        reference_inventory={
+            "document_ids": ["form_1040_2025", "form_2441_2025"],
+            "printed_lines": {"form_2441_2025": ["26"]},
+            "node_ids": [],
+        },
+    )
 
     assert result.rows[0].status == "derived"
     assert result.validation_report["gapped"] == 0
     assert result.validation_report["validator_warnings_by_kind"] == {}
+
+
+def test_cross_form_operands_fail_closed_against_document_and_line_inventory() -> None:
+    row = {
+        **_frame()[0],
+        "line": "22",
+        "form_face_text": "Enter the amount from another form line 26.",
+        "instruction_text": "Enter the amount from another form line 26.",
+        "metadata": {"printed_lines": ["22"]},
+    }
+    inventory = {
+        "document_ids": ["form_1040_2025", "form_2441_2025"],
+        "printed_lines": {"form_2441_2025": ["26"]},
+        "node_ids": [],
+    }
+    unknown_document = {"form": "form_1040_nr_2025", "line": "filing_status"}
+    hard, _warnings = validate_cell_output(
+        CellFrame.from_rows([row]).rows[0],
+        {"op": "COPY", "args": [unknown_document]},
+        row["form_face_text"],
+        reference_inventory=inventory,
+    )
+    assert [(issue.kind, issue.message) for issue in hard] == [
+        ("operand_document_not_found", "cross-form operand names unknown document form_1040_nr_2025")
+    ]
+
+    missing_line = {"form": "form_2441_2025", "line": "27"}
+    hard, _warnings = validate_cell_output(
+        CellFrame.from_rows([row]).rows[0],
+        {"op": "COPY", "args": [missing_line]},
+        row["form_face_text"],
+        reference_inventory=inventory,
+    )
+    assert [(issue.kind, issue.message) for issue in hard] == [
+        ("operand_not_printed", "line 27 is not a printed line on form_2441_2025")
+    ]
+
+
+def test_graph_node_operand_is_schema_validated_resolved_and_projected() -> None:
+    expression = {"op": "COPY", "args": [{"node": "taxpayer_2025_filing_status"}]}
+    validate_expression_tree(expression)
+    schema = expression_schema()
+    node_alternatives = schema["properties"]["expression"]["properties"]["args"]["items"]["anyOf"]
+    assert {"node"} in [set(item["required"]) for item in node_alternatives]
+
+    row = CellFrame.from_rows([{
+        **_frame()[1],
+        "metadata": {
+            "printed_lines": ["21", "22"],
+            "evidence_spans": [{"span_id": "face_22", "text": _frame()[1]["form_face_text"]}],
+        },
+    }]).rows[0]
+    hard, _warnings = validate_cell_output(
+        row,
+        expression,
+        row.form_face_text,
+        reference_inventory={"node_ids": ["taxpayer_2025_filing_status"]},
+    )
+    assert hard == ()
+    projection = expression_to_graph(
+        form=row.form,
+        line=row.line,
+        expression=expression,
+    )
+    assert projection.edges[0]["source"] == "taxpayer_2025_filing_status"
+
+
+def test_unknown_graph_node_operand_fails_closed() -> None:
+    row = CellFrame.from_rows([_frame()[1]]).rows[0]
+    hard, _warnings = validate_cell_output(
+        row,
+        {"op": "COPY", "args": [{"node": "invented_filer_fact"}]},
+        row.form_face_text,
+        reference_inventory={"node_ids": ["taxpayer_2025_filing_status"]},
+    )
+    assert [issue.kind for issue in hard] == ["operand_node_not_found"]
+
+
+def test_conditional_argument_roles_and_shapes_are_explicit() -> None:
+    valid = {
+        "op": "IF_ELSE",
+        "args": [{"line": "17"}, {"const": 239100}, {"const": 1}, {"const": 2}],
+    }
+    validate_expression_tree(valid)
+    with pytest.raises(ValueError, match=r"IF_ELSE argument 1 \(condition\)"):
+        validate_expression_tree({
+            "op": "IF_ELSE",
+            "args": [
+                {"op": "COMPARE", "args": [{"line": "17"}, {"const": 239100}]},
+                {"const": 1},
+                {"const": 2},
+                {"const": 3},
+            ],
+        })
+    validate_expression_tree({
+        "op": "AND",
+        "args": [
+            {"op": "COMPARE", "args": [{"line": "1"}, {"const": 0}]},
+            {"op": "NOT", "args": [{"op": "COMPARE", "args": [{"line": "2"}, {"const": 0}]}]},
+        ],
+    })
+    with pytest.raises(ValueError, match="AND arguments"):
+        validate_expression_tree({"op": "AND", "args": [{"line": "1"}, {"line": "2"}]})
 
 
 def test_operand_absent_from_quote_is_warning_not_failure() -> None:

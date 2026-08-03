@@ -122,7 +122,7 @@ def extract_formula_plan(
             schema=_table_formula_schema(root=root) if table_mode else formula_micro_schema(root=root),
             model=model,
             max_tokens=_micro_max_tokens(settings),
-            temperature=_optional_float(get_config_value(settings, "llm.temperature", 0)),
+            temperature=_optional_float(get_config_value(settings, "llm.temperature")),
             purpose="tax_graph_micro_formula",
         )
     validate_formula_plan(response, spans=spans, root=root, outline_node=outline_node)
@@ -205,7 +205,7 @@ def extract_non_formula_source(
             schema=non_formula_micro_schema(),
             model=model,
             max_tokens=_micro_max_tokens(settings),
-            temperature=_optional_float(get_config_value(settings, "llm.temperature", 0)),
+            temperature=_optional_float(get_config_value(settings, "llm.temperature")),
             purpose="tax_graph_micro_source",
         )
     validate_non_formula_source(response, spans=spans)
