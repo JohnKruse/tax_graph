@@ -17,159 +17,64 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## BALL
 
-**BALL: ARCHITECT - review M20-S38 local implementation and the declared provider gap.** Task block under
-**From Architect**. **S37 comment plumbing ACCEPTED at `085a234`; M20-S38 is implemented locally
-and has not been pushed.**
-
-## Worker status - M20-S38
-
-**Codex, 2026-08-03 - local implementation complete; awaiting Architect review.** Canary:
-**Ground Truth**. The re-derive path now matches the batch call (no implicit temperature), the
-example config explicitly omits temperature because routed endpoints do not all advertise it,
-cross-form operands fail closed against a loaded graph inventory, graph-node operands validate
-against exact node ids, and conditional operations have positional shape rules and prompt roles.
-`experiments/to_graph.py` and the shared graph converter carry the node operand through as an
-exact source id. The engine still has no generic graph rule mapping for nested IF/COMPARE/AND/OR/
-NOT expressions; IF_ELSE execution exists, but selecting a reusable rule from a nested comparison
-is a known downstream gap and was not invented here.
-
-Inventory evidence: base graph `17` documents and `417` nodes, with `form_2441_2025` absent;
-the default loaded graph includes the accepted extension (`18` documents, `441` nodes), and
-`taxpayer_2025_filing_status` is present. The pre-change count of cross-form operands in the
-96-row provider corpus is **NOT RUN**: the Worker-accessible persisted drafts contain legacy
-micro summaries, not the provider expression rows, so no corpus count is claimed.
-
-Provider evidence: the 96-row derivation and Form 6251 line 18 steering check are **NOT RUN**;
-the Worker sandbox has no outbound provider access. No expression is claimed to cover married
-filing separately.
-
-Tests and gates:
-
-- `RAN: .venv\Scripts\python.exe -m pytest tests/test_rederive_m20.py tests/test_derive_cells_m20.py tests/test_m20_s31.py tests/test_prompt_experiment_m20.py -q -> 55 passed in 1.81s`.
-- `RAN: .venv\Scripts\python.exe -m pytest tests/test_workbench_rederive_m20.py tests/test_config.py tests/test_extract_m4.py tests/test_extract_outline_m4.py tests/test_batch_extraction_m10.py tests/test_background_m20.py tests/test_llm_attribution_m20.py -q -> 75 passed in 80.09s (0:01:20)`.
-- `RAN: .venv\Scripts\python.exe -m pytest tests/test_graph_validator.py tests/test_review_preflight_m15.py tests/test_workbench_m15.py tests/test_workbench_cells_m17.py tests/test_prompt_experiment_m20.py tests/test_derive_cells_s30.py -q -> 34 passed in 250.68s (0:04:10)`.
-- `RAN: .venv\Scripts\python.exe -m tax_graph.cli validate 2025 -> graph integrity OK - all references resolve; documents=18, nodes=441, edges=409, citations=401`.
-- `RAN: .venv\Scripts\python.exe -m workbench.cli preflight --year 2025 -> review preflight passed - 2025; derived units=2224; legacy_mined=394; review_gap=591; unreviewed=1529`.
-- `RAN: .venv\Scripts\python.exe -c "from tax_graph.acquire.citation_check import check_graph_citations; r=check_graph_citations(year=2025, raw_store='.cache/raw', root='.'); print(f'checked={r.checked} strict_mismatches={len(r.mismatches)} ok={r.ok}')" -> checked=401 strict_mismatches=36 ok=False`.
-- `RAN: .venv\Scripts\python.exe tools/check_ascii.py -> ASCII check OK`; `RAN: git diff --check -> exit 0`; protected-set diff -> empty.
-
-No push. The next action is Architect review of the local commit and the declared provider gap.
+**BALL: WORKER - M20-S39 (SHOW THE MODEL THE NODE INVENTORY).** Task block under
+**From Architect**. **S38 is ACCEPTED at `514443e`.**
 
 ## Current round
 
-**M20-S37 PARTIALLY ACCEPTED (Architect, Claude Opus 5, 2026-08-03) at `085a234`.** Steps 1-3
-delivered and step 4-5 correctly declared NOT RUN. The Architect ran the provider leg and found
-three things, one of which retracts a claim I have repeated all session.
+**M20-S38 ACCEPTED (Architect, Claude Opus 5, 2026-08-03) at `514443e`.** Local steps delivered;
+provider legs correctly declared NOT RUN and run by the Architect. The Worker also declared two
+things honestly that a weaker report would have hidden: the engine has no generic graph rule
+mapping for nested `IF`/`COMPARE`/`AND`/`OR`/`NOT`, and it could not produce the pre-change
+cross-form operand count because the persisted drafts hold legacy micro summaries rather than
+provider expression rows. **That second gap is MY spec error - I asked for a number from data the
+Worker had no access to.** The corpus run supplied it directly.
 
-**THE LOOP WORKS - the plumbing is proven. BUT THE DEMONSTRATION WAS BAD, AND THE FAULT IS MINE.**
-Form 6251 line 18, same row and model, one call apart:
+**BEST FIRST-ATTEMPT RESULT YET.**
 
-| run | expression |
-| --- | --- |
-| no comment | `if_else(compare(line 17, 239100), line 17 * 0.26, (line 17 * 0.28) - 4782, (line 17 * 0.28) - 4782)` |
-| curated comment | `if_else(line 17, 239100, line 17 * 0.26, (line 17 * 0.28) - 4782)` |
+| round | attempted | derived | repaired | errored | resolved |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| S36 | 96 | 89 | 4 | 3 | 93 |
+| **S38** | 96 | **92** | **1** | 3 | 93 |
 
-The comment changed the output, so **the mechanism is real and is ACCEPTED**: ledger, curated vs
-contributed, `row.human_comment`, evidence packet, prompt. That is the first time a human
-instruction has reached a derivation in this project.
-**But the comment I wrote told the model to "use the figures for a single filer: threshold 239100
-and subtrahend 4782", and the row has TWO filing-status-dependent values** - the threshold is
-$239,100 or $119,550, and the subtrahend is $4,782 or $2,391. **I steered the model into hardcoding
-one filing status and dropping the married-filing-separately branch. The expression I reported as a
-success is WRONG for anyone filing separately.** On a tax product that is a real defect, and the
-demonstration should be read as proof the mechanism works, not as a correct answer.
+Resolution is flat at 93/96 but **first-attempt correctness rose from 89 to 92 and repairs fell
+from 4 to 1**. `schedule_1a_2025` is 25/25 clean. **`form_6251_2025` lines 18 and 39 now derive with
+NO repair** - defining the `IF_ELSE` slots did exactly what the diagnosis predicted.
 
-**ROOT CAUSE, FINALLY, AND IT IS OURS: NO OPERAND CAN NAME A FILER FACT.** The expression grammar
-allows exactly four operand shapes - `{line}` on this form, `{form, line}` on another form,
-`{const}`, and a nested `{op, args}`. **There is no way to reference a graph node or any
-characteristic of the filer.** The graph DOES model filing status: `taxpayer_2025_filing_status`
-exists in `graph/2025/nodes/capital-gains.yaml`. The derivation grammar simply cannot reach it.
-**So 6251 lines 18 and 39 are not hard - they are INEXPRESSIBLE.** The model's only options were to
-hardcode one status, which is wrong for every other filer, or to fail. It has been behaving as well
-as the grammar permits, and five rounds of churn on these two rows were our defect throughout.
-**This generalizes far past 6251.** Filing-status-dependent constants are everywhere in the code -
-standard deduction, brackets, thresholds, phase-outs - so any form with a bracketed
-married-filing-separately figure hits the same wall.
-**This is my FIFTH diagnosis of these two rows** (model quality, unmodelled worksheet, grammar
-expressiveness, label truncation, and now the operand gap). Each was drawn from the evidence in
-front of me instead of from the layer below it. The check that settled it took one command:
-print the operand shapes the schema actually permits.
+**The cross-form hole is closed and it did not break legitimate references.**
+`operand_document_not_found` fired exactly once, on `schedule_a_2025`, and the bounded repair fixed
+it. Every other cross-form reference in the corpus resolved. That is the answer to the count I
+asked for and could not get before the change.
 
-**JOHN ASKED FOR THE PAYLOAD, AND IT SETTLED THREE THINGS AT ONCE (2026-08-03).** He asked what
-instructions the query actually carried, whether the prompt permits this operation, and whether a
-realistic human comment could reach the right answer. Dumping the rendered prompt (2,384 chars) and
-running three realistic comments answered all three, and this is the "check the payload first"
-lesson paying off - it took one no-model command to settle what five rounds of inference did not.
+**BUT THE NODE OPERAND IS UNUSED, AND THE REASON IS A DEFECT WE HAVE ALREADY FIXED ONCE.** Read the
+actual expression rather than the status - the lesson from the last round:
 
-**The operative instruction is one sentence:** *"An operand is a printed line on this form, a line
-on another form, a numeric constant, or a nested expression."* That is the complete definition of
-what the model may reference. **The prompt also never states what any operation MEANS** - the only
-argument-order hint anywhere is "For SUBTRACT and DIVIDE, put the value being reduced first", and
-`IF_ELSE` is known to the model only as an enum member in the JSON schema.
+```
+6251 line 18, no comment, status=derived:
+  if_else(line 17, 239100, line 17 * 0.26, (line 17 * 0.28) - 4782)
+```
 
-**Three realistic comments, three wrong answers, none correct:**
+Clean, validating, matching the new positional semantics - **and still single-filer only. It does
+not cover married filing separately and it uses no `node` operand.** Worse, given a realistic human
+comment ("this is wrong for married filing separately; the threshold and the amount subtracted are
+both different"), the model returned **`require_input(line 18)`** - it deleted the computation
+rather than reach for the new capability, and that validated clean.
 
-| reviewer comment | result |
-| --- | --- |
-| "This is wrong for married filing separately." | `require_input(line 18)` - **gave up and declared the line a filer input, silently deleting the computation.** Validated clean. |
-| "The threshold and the amount subtracted are both different if MFS. Do not hardcode one filing status." | invented `form_1040_nr_2025 line filing_status`, padded with `not(...)` and `2391 - 0`. **Validated clean.** |
-| Most explicit: both pairs of numbers spelled out | hard failure, `IF_ELSE requires exactly 4 arguments` |
+**Cause: the prompt offers `{"node": "exact_graph_node_id"}` and says "the id must already exist in
+the graph", but NEVER LISTS THE NODE IDS.** The rendered values are form, line, label, form-face
+text, instruction text, locator, printed lines and human comment - there is no node inventory. So
+the model is asked to name a member of a closed set it cannot see, and a wrong guess hard-fails.
+Its only rational moves are to ignore the operand or to give up, which is exactly what it did.
+**This is the S33 defect repeating in a new place.** Then, `validate_cell_output` checked operands
+against a printed-line inventory the prompt never showed, costing 82 `operand_not_printed` failures
+and 14 repairs; S34 fixed it by putting the inventory in the prompt and the failures collapsed to
+2. Same shape, same fix.
 
-**The more the reviewer explains, the worse it gets.** A cornered model given more detail produces
-more elaborate wrong answers. **No human comment can fix this row**, which is the empirical proof
-that the operand gap is the blocker rather than a prompting problem - and it means S38 step 3 is
-necessary, not optional.
-
-**NEW BLOCKER 0 - CROSS-FORM OPERANDS ARE NOT VALIDATED AT ALL.** The middle comment produced
-`form_1040_nr_2025 line filing_status`. **`form_1040_nr_2025` is not a document in the graph** (zero
-matches in `graph/2025/documents/`), and neither is that line. It passed every check.
-`cells.py:653` reads `if not operand_form and available_lines and operand_line not in
-available_lines` - **the printed-line check applies ONLY to same-form operands.** The sole
-cross-form check is `operand_not_in_quote`, a soft WARNING. So the model may reference any line on
-any form, including a form that does not exist, and nothing hard-fails.
-This is not a cornered-model curiosity: cross-form references are routine and legitimate
-(`schedule_1` line 10 into the 1040, `6251` line 10 into `schedule_2` line 1z), so **every
-cross-form operand in the corpus is currently unverified.** Fix in S38 alongside the operand work,
-with the same fail-closed discipline: an operand naming another form must resolve to a real
-document and a real printed line on it.
-
-**BLOCKER 1 - `rederive_cell` fails against the real config, every time.** It passes
-`temperature=_optional_temperature(settings)`, which reads the configured `llm.temperature: 0`.
-With `llm.require_parameters: true`, OpenRouter filters to endpoints advertising every requested
-parameter, and no `gpt-5.6-luna` endpoint advertises temperature - so **all endpoints are
-eliminated and the call 404s** with "No endpoints found that can handle the requested parameters".
-Architect isolated it: `temperature=None` derives, `temperature=0.0` 404s, with all else identical.
-**The batch path never passes temperature at all**, which is why the corpus runs work. The fix is
-to match the batch path. The steering result above was obtained by calling `derive_cells` the way
-the batch path does, bypassing the defect.
-
-**BLOCKER 2, AND A RETRACTION I OWE - `llm.temperature: 0` HAS NEVER BEEN IN EFFECT.** The batch
-derivation path does not pass it, so it has never been sent. **Every "nondeterministic at
-`temperature: 0`" statement in this file and in my reports is wrong** - the runs were
-nondeterministic at the provider's DEFAULT temperature. I repeated that claim across S28 through
-S36 without ever checking that the setting reached the request. The observed variance is real; the
-explanation attached to it was not. Decide explicitly whether to send temperature (which requires
-relaxing `require_parameters` or dropping the setting) or to delete the key so the config stops
-implying something untrue.
-
-**BLOCKER 3 - `IF_ELSE` has an enforced arity and NO DEFINED SEMANTICS. This is the actual cause
-of 6251 lines 18 and 39, and it is my fourth diagnosis of those rows.** `cells.py` enforces
-`IF_ELSE: 4` arguments. `ROLE_FOR_OP` names argument roles for SUM, SUBTRACT, DIVIDE, MULTIPLY,
-MAX, MIN, COPY and NEGATE - **`IF_ELSE` is absent, so `_role_for` returns the generic "operand" for
-every slot.** Nothing anywhere says what the four arguments mean. The two runs above are two
-mutually incompatible readings that BOTH pass validation: one puts a `COMPARE` in slot 1 and pads
-slot 4 with a duplicate of the else-branch; the other puts the comparison operands in slots 1 and 2.
-**Downstream execution would compute different numbers from these, and no check can tell them
-apart.** Same gap applies to `IF`, `COMPARE`, `AND`, `OR`, `NOT`, `LOOKUP_TABLE` and
-`LOOKUP_BRACKET`. This is not an expressiveness gap - the grammar can express the row fine. It is
-an undefined grammar, and any expression using a conditional operator is currently unreliable
-regardless of model quality.
-
-**CONFIG CHANGE (John, 2026-08-03): provider routing is now OpenAI ONLY.** Azure is roughly 10x the
-price for the same model. `llm.provider_routing.only` was `[openai, azure]` and is now `[openai]`.
-Verified live afterwards - both derivations above ran on the new routing. **Do not re-add Azure as
-a fallback without asking**: a silent failover would cost 10x per call with no signal. If OpenAI's
-endpoint is unavailable the call now fails loudly, which is the intended trade.
+**Informs a John scoping call:** Worker inventory evidence shows the BASE graph is 17 documents /
+417 nodes with `form_2441_2025` ABSENT, while the default loaded graph is 18 / 441 because it
+includes an accepted extension overlay. **So the "phantom 2441" is an extension, not a bookkeeping
+bug** - which makes option (b) in the open question below the accurate description of today's
+behaviour.
 
 ## Standing constraints (every M20 round)
 
@@ -331,80 +236,54 @@ client-managed server dies.
 
 ## From Architect
 
-- **M20-S38 TASK - FIX THE RE-DERIVE CALL, THEN DEFINE `IF_ELSE` (Architect, Claude Opus 5,
-  2026-08-03).** Ledger: the RAN/NOT RUN rule, D9, D6. **Step 1 is a one-line fix. Step 2 is the
-  real work. No UI this round.**
+- **M20-S39 TASK - SHOW THE MODEL THE NODE INVENTORY (Architect, Claude Opus 5, 2026-08-03).**
+  Ledger: the RAN/NOT RUN rule, D9, D6. **Small and precedented. This is S34 applied to a second
+  closed set.**
 
-  **Step 1 - make `rederive_cell` match the batch path.** It passes
-  `temperature=_optional_temperature(settings)`; the batch path passes no temperature at all. With
-  `llm.require_parameters: true` this eliminates every endpoint and 404s on every call. **Stop
-  passing temperature.** Architect isolated it directly: identical calls, `temperature=None`
-  derives and `temperature=0.0` 404s. Add a test that the re-derive path sends the same parameter
-  set as the batch path, so the two cannot drift again.
+  **Why.** S38 added a `{"node": "..."}` operand and validates it against the real node ids. The
+  prompt says the id "must already exist in the graph" and then does not say which ids exist.
+  Measured consequence: `form_6251_2025` line 18 derives cleanly and is still single-filer only,
+  and a realistic reviewer comment about married filing separately makes the model emit
+  `require_input(line 18)` - deleting the rule rather than using a capability it cannot see.
+  **The precedent is exact.** Before S34, `operand_not_printed` fired 82 times because the prompt
+  never showed the printed-line inventory; showing it dropped that to 2 and cut repairs 14 -> 4.
 
-  **Step 2 - decide what `llm.temperature: 0` means and make the config honest.** It is in
-  `tax-graph.config.yaml` and has never reached a request. Either send it - which needs
-  `require_parameters` relaxed or a routing change, and should then be VERIFIED live rather than
-  assumed - or delete the key. **Do not leave a setting that implies a determinism guarantee we do
-  not have.** Whichever you choose, say so in the config with a dated comment.
+  **Step 1 - put a RELEVANT node inventory in the prompt.** Add a `<<graph_nodes>>` value rendered
+  by `_render_cell_prompt` and referenced from `prompts/derive_cells.md`.
+  **Do not dump all 441 nodes.** Select the ones a formula row could legitimately reference -
+  `node_type: parameter` and filer-fact nodes such as `taxpayer_2025_filing_status` - and give each
+  entry its id and its label so the model can tell `form_1040_2025_standard_deduction_mfs` from
+  `..._single`. Report the count you settled on and why. If the selection rule is unclear, report
+  the candidate counts and ask rather than guessing.
+  **A prompt change needs a RENDER test** (S32) and the existing test over every file in `prompts/`
+  must still pass. An absent inventory must render cleanly and must not change behaviour for rows
+  that already derive.
 
-  **Step 3 - validate cross-form operands. Currently NOTHING does.** `cells.py:653` applies the
-  printed-line check only when the operand has no `form`, so a cross-form operand is never checked
-  against any inventory - the model invented `form_1040_nr_2025 line filing_status`, referencing a
-  document that does not exist, and it validated clean. **An operand naming another form must
-  resolve to a real document in the graph AND a real printed line on that document, or hard-fail**
-  with a named kind, exactly like `operand_not_printed`. Report how many existing corpus rows carry
-  a cross-form operand and how many of those resolve, **before** changing anything - if legitimate
-  references break, that is a finding about the inventory, not a reason to weaken the check.
+  **Step 2 - the parameter nodes for 6251 do not exist yet; decide and report, do not invent.**
+  The standard deduction precedent is one `parameter` node per filing status with a
+  `constant_value` and a citation (`form_1040_2025_standard_deduction_single|mfj|mfs|hoh` in
+  `graph/2025/nodes/tax-liability.yaml`). Form 6251 line 18 needs the same shape for the AMT
+  threshold ($239,100 / $119,550) and the subtrahend ($4,782 / $2,391), and line 39 reuses them.
+  **Authoring graph nodes is a protected-set change and is NOT authorized in this round.** Report
+  exactly which nodes would be needed, with the values and the citation each would carry, and stop.
+  John decides whether hand-authoring them is acceptable or whether they must come from the
+  pipeline - that is the standing "pipeline is the end-state" question and it is his call.
 
-  **Step 4 - let an operand reference a filer fact. THIS IS THE ROUND'S REAL WORK.**
-  The grammar permits four operand shapes - `{line}`, `{form, line}`, `{const}`, `{op, args}` - and
-  none of them can name a characteristic of the filer. The graph already models one:
-  `taxpayer_2025_filing_status` in `graph/2025/nodes/capital-gains.yaml`. **Add an operand shape
-  that references an existing graph node, e.g. `{"node": "taxpayer_2025_filing_status"}`, and
-  validate it against the real node set so a fabricated id fails closed** - the same discipline as
-  `operand_not_printed`. Do NOT invent a parallel vocabulary of filer attributes; bind to what the
-  graph already declares.
-  With that, 6251 line 18 becomes expressible: the threshold and the subtrahend each select on
-  filing status. **Report the expression the model produces for line 18 with the new operand
-  available, and state whether it covers married filing separately** - the Architect's earlier
-  steering demo did NOT, and reporting a single-status rule as correct would repeat that mistake.
-  **Check whether anything downstream can consume the new operand** (`experiments/to_graph.py`, the
-  rule vocabulary, the engine). If nothing can execute it yet, say so plainly and record it as a
-  known gap rather than implying the expression is usable.
+  **Step 3 - rerun the corpus and the line 18 check, and READ THE EXPRESSION.** Report attempted /
+  derived / repaired / errored per document. **The numbers to beat: derived 92, repaired 1,
+  errored 3, resolved 93/96.** Then print the actual expression for 6251 line 18 with no comment
+  and with the reviewer comment "this is wrong for married filing separately; the threshold and the
+  amount subtracted are both different", and **state plainly whether it covers married filing
+  separately.** A `derived` status is NOT the answer to that question - the Architect reported a
+  single-filer rule as a success twice by reading the status instead of the expression.
+  If the parameter nodes do not exist, the honest expected outcome is that it still cannot cover
+  MFS. **Report that rather than steering the model to fake it.**
 
-  **Step 5 - define the semantics of every conditional operation, starting with `IF_ELSE`.**
-  `cells.py` enforces `IF_ELSE: 4` arguments and `ROLE_FOR_OP` does not mention it, so all four
-  slots are the generic "operand" and their meaning is undefined. Two Architect runs of the same
-  row produced two incompatible readings that both validated:
-  `if_else(compare(a,b), then, else, else)` and `if_else(a, b, then, else)`.
-  **Add `IF_ELSE` to `ROLE_FOR_OP` with named roles, state them in `prompts/derive_cells.md`, and
-  add a validator that rejects an expression whose argument shapes do not match the declared
-  roles.** Do the same for `IF`, `COMPARE`, `AND`, `OR` and `NOT`. `LOOKUP_TABLE` and
-  `LOOKUP_BRACKET` may need more than roles - if so, report what they need and do NOT guess.
-  **Choose the reading that the downstream engine already assumes if one exists** - check
-  `to_graph.py` and the rule vocabulary before inventing one. If nothing downstream consumes
-  `IF_ELSE` yet, say so plainly, pick the condition-first reading, and record it as a decision
-  rather than a discovery.
-  **A prompt change needs a RENDER test** (S32) and the existing test over every file in
-  `prompts/` must still pass.
-
-  **Step 6 - rerun the corpus and report.** Expect the 96-row result to be unchanged or better;
-  the target is `form_6251_2025` lines 18 and 39 no longer needing a repair, because the model will
-  finally be told what the four slots mean. Report attempted / derived / repaired / errored per
-  document and say plainly whether 18 and 39 moved.
-  Then rerun the Architect's steering check: derive 6251 line 18 with no comment and with a curated
-  comment, and report both expressions. **With roles defined, the two runs should now agree on
-  shape** - if they still disagree, the roles are not being enforced.
-  If approved external network is unavailable, do steps 1-3, declare step 4 NOT RUN up front, and
-  hand back.
-
-  **Do not:** re-add Azure to `llm.provider_routing.only` (John, 2026-08-03 - roughly 10x the price;
-  a silent failover would cost 10x with no signal); weaken a validator so a comment can override
-  it; let a `contributed` comment reach the model; write from `derive_cells` or the re-derive path;
-  build UI; promote anything.
+  **Do not:** author or edit graph nodes; dump the full node list into the prompt; weaken any
+  validator; re-add Azure to `llm.provider_routing.only`; let a `contributed` comment reach the
+  model; build UI; promote anything.
   **Stop conditions:** any diff in the protected directories; `derive_cells` acquiring a disk
-  write; any harness output landing inside the repository; the no-comment corpus result regressing.
+  write; any harness output landing inside the repository; the corpus regressing below derived=92.
   Tier 3. Declared files plus honest `RAN:`/`NOT RUN:`. ASCII, `git diff --check`, module-form
   `validate 2025`, preflight with `legacy_mined` explicit (394), strict citations (36).
   **ONE local commit** - and run `git status` first; do not commit paths you did not touch.
