@@ -17,159 +17,55 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## BALL
 
-**BALL: ARCHITECT - M20-S34 COMPLETE, AWAITING ACCEPTANCE.** Worker delivered the deterministic
-fixes and local gates below. Canary: Ground Truth.
+**BALL: WORKER - M20-S35 (FIX THE SPAN MATCHER ON FORM 6251).** Task block under
+**From Architect**. **S34 is ACCEPTED at `66a6d60`.**
 
 ## Current round
 
-**M20-S34 WORKER COMPLETE (Codex, 2026-08-03).** The round is implemented as a pipeline fix:
+**M20-S34 ACCEPTED (Architect, Claude Opus 5, 2026-08-03) at `66a6d60`.** Steps 1-3 delivered;
+the Architect ran step 4. The cleaner fix follows the specced rule exactly - discriminate on
+whether the anchor has descriptive text after it, and truncate in both branches, never reorder.
+Gates: 107 passed on a short temp root, ASCII OK, `validate 2025` clean, protected set
+byte-identical.
 
-- `clean_form_face_text` now chooses the branch from anchor position. Descriptive-text occurrences
-  start the cell text and drop only a repeated trailing anchor; a final right-column anchor keeps
-  its preceding source text and removes only the split suffix plus final token.
-- `_render_cell_prompt` supplies the complete printed-line inventory, sorted by `_line_sort_key`.
-  The prompt tells the model that same-form operands must come from that inventory and that printed
-  ranges may contain holes. The strict `operand_not_printed` validator is unchanged.
-- Tests cover all seven specified cleaner cases, the sorted inventory, prompt-template consumers,
-  and normalized source-substring provenance for the real 1040 frame.
+**THE TARGETED DEFECT IS GONE. `operand_not_printed` 82 -> 2, repairs 14 -> 4.**
 
-**Deterministic corpus scan (all 17 loadable form documents):** rows=94, trailing-own-line labels=0,
-normalized form-face substring failures=0. The `form_6251_2025` line 32 page-header span-selection
-defect remains reported and untouched, as required; it is not a cleaner fix.
+| document | attempted | derived | repaired | errored | was (S33) |
+| --- | ---: | ---: | ---: | ---: | --- |
+| `form_1040_2025` | 17 | 17 | 0 | 0 | 17 derived |
+| `schedule_1_2025` | 4 | **4** | **0** | 0 | **0 derived, 4 repaired** |
+| `schedule_2_2025` | 5 | **5** | **0** | 0 | 3 derived, 2 repaired |
+| `schedule_3_2025` | 4 | **4** | **0** | 0 | 2 derived, 2 repaired |
+| `schedule_1a_2025` | 24 | 22 | 2 | 0 | 23 derived, 1 repaired |
+| `schedule_a_2025`, `schedule_d_2025`, `schedule_b_2025` | 11 | 11 | 0 | 0 | unchanged, clean |
+| `form_6251_2025` | 29 | 23 | 2 | **4** | 23 derived, 5 repaired, 1 errored |
 
-**Provider leg:** `NOT RUN: live derive_cells corpus command -> worker sandbox has no outbound
-network; the Architect must run the configured provider leg outside the sandbox.` No provider output
-or generated artifact was written.
+Schedule 1 is the headline: every row needed a repair last round, none does now. Schedules 2 and
+3 are also clean. **Showing the model the printed-line inventory it was being validated against
+did exactly what the diagnosis predicted.**
 
-**Gates and exact evidence:**
+**LABEL DESTRUCTION IS FIXED, measured the same way it was found.** Trailing-token labels across
+the corpus **8 -> 0**. Rows keeping under 60% of their source text **3 -> 1**, and the survivor is
+correct behaviour (`form_1040_2025` line 21 drops the `a box on line` neighbour contamination).
+`schedule_1a_2025` line `36b` recovers its full label - `your spouse was born before January 2,
+1961, enter the amount from line 35` - where it previously cleaned to the bare token `36b`.
 
-- `RAN: $env:PYTEST_DEBUG_TEMPROOT=(Join-Path (Get-Location) '.pytest_worker_m20_s34'); New-Item -ItemType Directory -Force -Path $env:PYTEST_DEBUG_TEMPROOT | Out-Null; .venv\Scripts\python.exe -m pytest tests/test_derive_cells_m20.py tests/test_derive_cells_s30.py tests/test_m20_s31.py -q -> 49 passed, 1 warning in 0.97s`.
-- `RAN: .venv\Scripts\python.exe tools/check_ascii.py -> ASCII check OK`.
-- `RAN: git diff --check -> exit 0`.
-- `RAN: .venv\Scripts\python.exe -m tax_graph.cli validate 2025 -> exit 0; documents=18, nodes=441, tables=2, edges=409, rules=17, citations=401; graph integrity OK`.
-- `RAN: .venv\Scripts\python.exe -m workbench.cli preflight --year 2025 -> exit 1; PermissionError: [WinError 5] on graph\2025\_drafts\form_1040_2025`.
-- `RAN: .venv\Scripts\python.exe -m workbench.cli preflight --year 2025 (read-only escalated retry) -> exit 0; units=2224, derived cells=2120, legacy_mined=394`.
-- `RAN: .venv\Scripts\python.exe -c "from tax_graph.acquire.citation_check import check_graph_citations; report=check_graph_citations(year='2025', raw_store='.cache/raw', root='.'); print(f'checked={report.checked} strict_mismatches={len(report.mismatches)}')" -> checked=401 strict_mismatches=36`.
-- `RAN: git diff --stat -- graph/2025/nodes graph/2025/edges graph/2025/rules graph/2025/field_maps -> empty`.
+**THE UNFLATTERING NUMBER: corpus resolution went 93/94 -> 90/94, and all of the loss is on
+`form_6251_2025`.** Resolved means derived plus repaired. Two Architect runs of 6251 agree it
+declined - 25/29 and 26/29 against S33's 28/29 - so this is not a single bad draw, though 6251 has
+been the least stable form in the corpus throughout. Failing rows in run 1: lines 13 and 32
+`quote_not_verbatim`, lines 20 and 27 `self_reference`.
+**At least one of those is directly attributable to S34.** Line 32's span is page-header text
+(`Internal Revenue Service Go to www.irs.gov/Form6251 ...`); under the old cleaner it truncated to
+the bare token `32`, and under the new rule it keeps the header as the label. Neither is right -
+the SPAN is wrong, not the cleaning - but the model now has plausible-looking junk to quote instead
+of an obviously empty label. **This is the span-selection defect recorded in S33, now surfaced
+rather than hidden, and it is S35.**
 
-No protected artifact, promotion, review verdict, or generated graph state changed. Open items remain
-the Architect's provider run and John's Form 2441 scope decision.
-
-## Previous accepted round (M20-S33)
-
-**M20-S33 ACCEPTED (Architect, Claude Opus 5, 2026-08-02) at `771d169`.** The Worker ran the whole
-corpus live, reported every document including the one that would not load, and ran the 1040 twice
-as asked. No source, promoted artifact, or verdict changed. Gates green; protected set untouched.
-
-**THE CORPUS RESOLVES 93 OF 94 ROWS.** attempted=94, derived=79, repaired=14, gapped=0, errored=1.
-Zero gapped is the number that matters most: no row failed after its repair.
-
-**ARCHITECT CORRECTION TO ITS OWN SPEC - the requested sort is misleading.** S33 asked for the
-table sorted by `derived / attempted` worst first. That puts `schedule_1_2025` at the top as "0 / 4
-(0%)" when all four of its rows SUCCEEDED after one repair each. `repaired` is a success status -
-it has been since S25 - so schedule_1 is 4/4, exactly like the 1040. The honest ranking is
-`(derived + repaired) / attempted`, with the repair RATE reported alongside as the quality signal.
-Read that way the corpus is:
-
-| document | resolved / attempted | needed repair | note |
-| --- | ---: | ---: | --- |
-| `form_6251_2025` | 28 / 29 | 5 | the only errored row in the corpus |
-| `schedule_1_2025` | 4 / 4 | 4 (100%) | every row needed a repair |
-| `schedule_3_2025` | 4 / 4 | 2 | |
-| `schedule_2_2025` | 5 / 5 | 2 | |
-| `schedule_1a_2025` | 24 / 24 | 1 | |
-| `form_1040_2025`, `schedule_a_2025`, `schedule_d_2025`, `schedule_b_2025` | 28 / 28 | 0 | clean |
-
-**Zero classification is correct and complete.** The eight empty documents are the four 1099/W-2
-inputs, 13614-C, 8949, and the two instruction documents - all correctly empty. **No document was
-empty-but-should-not-be.** That is the Schedule D check passing corpus-wide, and it is the single
-most reassuring line in the report.
-
-**ROOT CAUSE OF THE REPAIRS - `operand_not_printed`, and it is our defect, not the model's.**
-82 occurrences concentrated on schedules 1, 2, 3 and 1a. Architect diagnosed it deterministically
-against real data. **The printed-line inventory is complete** - every line Schedule 1 references is
-in it, so this is NOT the S27 inventory gap returning. The cause is that **IRS lettered ranges have
-holes, and the model is asked to guess which**:
-
-- `9 Total other income. Add lines 8a through 8z` - **8w, 8x and 8y are not printed.**
-- `25 Total other adjustments. Add lines 24a through 24z` - **24l through 24y are not printed**, 14
-  of them.
-- `26 Add lines 11 through 23 and 25` - **line 19 is not printed.**
-
-That is 18 impossible operands on Schedule 1 alone against a reported `operand_not_printed=19`.
-
-**AND HERE IS THE ACTUAL DEFECT: `validate_cell_output` checks operands against a printed-line
-inventory that `_render_cell_prompt` never shows the model.** The prompt supplies `form`, `line`,
-`label`, `form_face_text`, `instruction_text` and `instruction_locator` - no inventory. So the
-model is required to produce members of a closed set it cannot see, it expands "8a through 8z" the
-only way anyone would, and the validator rejects the letters the IRS happened to skip. Repair then
-succeeds because the failure message finally tells it what the set is. **We are paying a model
-round-trip per row to communicate a list we already have.** Fix in S34.
-
-**Repeatability confirmed.** Two identical 1040 runs both returned attempted=17, derived=17,
-repaired=0, gapped=0, errored=0, no validator failures. **Schedule D line 16 did not flip**, so the
-S32 prompt fix holds across runs and no operand normaliser is needed on this evidence.
-
-**BLOCKED - `form_2441_2025` is a phantom document, and this needs John.** It fails with
-`ValueError: unknown manifest document_id`. Diagnosed: `graph/2025/documents/` declares exactly 17
-documents, but `validate 2025` reports 18 because `graph/2025/field_maps/form_2441_2025.yaml`
-carries a `document_id` for a form that was never acquired. Its field map has `mappings: []` and
-its nodes are marked `optional_extension: true` with "no base-profile printable placement", and it
-is referenced from the 1040 and Schedule 3 addresses and citations. **So the graph knows about
-Form 2441 as an optional extension but has no source document for it, and the extraction manifest
-correctly refuses to invent one.** The Worker's handling was right - reported with a reason rather
-than crashed or skipped, which is exactly the S31 D10 behaviour working. **This is a scoping
-question, not a bug: is Form 2441 in the base profile or not?** If yes it must be acquired like any
-other form; if no, the field map should not be contributing a document id to the count. Do not
-guess - see Open for Architect.
-
-**JOHN WAS RIGHT ABOUT THE TRAILING LINE TOKENS (raised 2026-08-02). I underplayed this and did
-not re-check it corpus-wide.** He repeatedly flagged labels shaped like `Add lines 24a through 24g
-24z` and believed they had been fixed. History: **S26** removed them by RECONSTRUCTING - moving the
-line token from the end to the front. **S29** stopped the reconstruction, on Architect instruction,
-because storing a reconstructed string as evidence broke the provenance rule that evidence text
-must be a literal substring of the acquired text. That brought the trailing tokens back. It was
-disclosed at the time and recorded as a deliberate trade-off - **but it was described as
-"cosmetic", verified on only the 1040's two rows, and never re-measured across the corpus.**
-
-**Measured now: 8 labels across the corpus still carry the trailing token**, and the framing of
-"provenance versus cosmetics" was a FALSE DILEMMA. Truncating from BOTH ends gives both: no
-reordering, and no trailing token.
-
-| document | rows affected |
-| --- | --- |
-| `form_1040_2025` | `1z`, `25d` |
-| `schedule_a_2025` | `5d`, `8e` |
-| `schedule_2_2025` | `1z` |
-| `schedule_1a_2025` | `2e`, `14c`, `36b` |
-
-**AND IT IS NOT ONLY COSMETIC - the cleaner DESTROYS real form text on at least one row.**
-`clean_form_face_text` truncates from the FIRST occurrence of the anchor token. When the printed
-line number sits in a right-hand column, the only occurrence is at the END, so everything before it
-is discarded:
-
-- `schedule_1a_2025` line `36b`: raw `your spouse was born before January 2, 1961, enter the amount
-  from line 35 36b` cleans to **`36b`** - 4% of the text kept, the entire label gone.
-- `form_6251_2025` line `32`: raw `Internal Revenue Service Go to www.irs.gov/Form6251 ... 32`
-  cleans to **`32`**. Different defect - the SPAN MATCHER selected page-header text for line 32, so
-  the real label was never in the span. Cleaning is not the culprit here; span selection is.
-
-Content loss is the founding defect of M20 (`PHASE_M20.md` section 1). A cleaner that silently
-drops a whole label is the same class of bug as the 52%-retention renderer, on a smaller surface.
-
-**ARCHITECT PROPOSAL, PARTIALLY TESTED - and the first version was WRONG.** Tried: keep whichever
-truncation retains more text. **Rejected - it regressed 4 rows**, restoring neighbour
-contamination on `form_1040_2025` lines 22, 34 and 37 (`12a, 12b, 12c, 22 Subtract...`,
-`Refund 34 If line 33...`) because on those rows the extra text IS the contamination. Text length
-is the wrong discriminator.
-**Corrected rule - discriminate on WHERE the anchor sits, not on length:** if some occurrence of
-the anchor has descriptive text AFTER it, the label starts there - truncate from the first such
-occurrence and drop a repeated trailing token (today's behaviour, correct for lines 22, 34, 37).
-If the anchor occurs ONLY as the final token, it is a right-column artifact - keep the preceding
-text, dropping a split leading suffix and the trailing anchor (correct for `1z`, `25d`, `5d`, `8e`,
-`2e`, `14c`, and crucially `36b`). Both branches only ever TRUNCATE, so the S29 substring guarantee
-holds in every case. This is reasoned and spot-checked, **not fully re-run - the Worker must
-implement it against tests rather than take it on trust.**
+**Process note:** the Worker's commit swept up an uncommitted Architect edit to this file (the
+verdict-vocabulary supersession). Architect's fault for leaving it in the tree at handoff; the
+content was correct and intended. Workers: `git status` before committing, and do not commit paths
+you did not touch.
 
 ## Standing constraints (every M20 round)
 
@@ -291,80 +187,52 @@ client-managed server dies.
 
 ## From Architect
 
-- **M20-S34 TASK - SHOW THE MODEL THE PRINTED LINES (Architect, Claude Opus 5, 2026-08-02).**
-  Ledger: the RAN/NOT RUN rule, D9, D6. **Deterministic work plus one measurement round.**
+- **M20-S35 TASK - FIX THE SPAN MATCHER ON FORM 6251 (Architect, Claude Opus 5, 2026-08-03).**
+  Ledger: the RAN/NOT RUN rule, D9, D6. **Diagnose first, then fix. Small round.**
 
-  **Why.** The corpus resolves 93 of 94 rows, but 14 of them cost an extra model round-trip to
-  `operand_not_printed`, and that failure is ours. `validate_cell_output` checks every operand
-  against the printed-line inventory; `_render_cell_prompt` never puts that inventory in the
-  prompt. The model is asked to name members of a closed set it cannot see. When a label says
-  `Add lines 8a through 8z` it expands the range the only sensible way, and the IRS has skipped
-  8w, 8x and 8y - so we reject it, then spend a repair telling it what we knew all along.
+  **Why.** `form_6251_2025` is the only form that got worse in S34 and the only one carrying
+  errors. Its line 32 evidence span is the PAGE HEADER - `Internal Revenue Service Go to
+  www.irs.gov/Form6251 for instructions and the latest information. 32` - so no amount of label
+  cleaning can help; `_span_for_line` picked the wrong region of the page. S34 changed the symptom
+  (bare token `32` became header text) without touching the cause.
 
-  **Step 1 - fix `clean_form_face_text` so it stops destroying labels (deterministic, no model
-  calls). Do this first; it is content loss, which outranks everything else in M20.**
-  Discriminate on WHERE the anchor sits, not on how much text a branch keeps - the Architect tested
-  a length-based tiebreak and it regressed lines 22, 34 and 37 by restoring neighbour
-  contamination. Rule: if any occurrence of the anchor has descriptive text after it, the label
-  starts there - truncate from the first such occurrence and drop a repeated trailing token. If the
-  anchor occurs ONLY as the final token, it is a right-hand-column artifact - keep the preceding
-  text, dropping a split leading suffix and the trailing anchor. **Both branches must only
-  TRUNCATE**, so the S29 rule that evidence text stays a literal substring of the acquired text
-  holds unconditionally. Add a test asserting the substring property for every formula row in the
-  corpus, and table-driven cases for all of these, which are the real strings:
-  - `z Add lines 1a through 1h 1z` (1040 `1z`) -> `Add lines 1a through 1h`
-  - `d Add lines 25a through 25c 25d` (1040 `25d`) -> `Add lines 25a through 25c`
-  - `e Add lines 8a through 8c 8e` (Sch A `8e`) -> `Add lines 8a through 8c`
-  - `c Add lines 14a and 14b 14c` (Sch 1A `14c`) -> `Add lines 14a and 14b`
-  - `your spouse was born before January 2, 1961, enter the amount from line 35 36b` (Sch 1A `36b`)
-    -> the sentence WITHOUT the trailing `36b`, **not** `36b`
-  - `12a, 12b, 12c, 22 Subtract line 21 from line 18. If zero or less, enter -0- 22` (1040 `22`)
-    -> `22 Subtract line 21 from line 18. If zero or less, enter -0-` (unchanged - do not regress)
-  - `Refund 34 If line 33 is more than...` (1040 `34`) -> starts at `34` (unchanged)
-  **Report the corpus count of labels still ending in their own line token. It is 8 today and the
-  target is 0.**
+  **Step 1 - diagnose, and report before fixing.** For every 6251 row, print the selected span and
+  say how `_span_for_line` chose it. Report specifically: how many 6251 rows have a span whose text
+  does not contain the row's own printed line token in a plausible label position, and whether the
+  same condition occurs on any other form. **Write the count in this file before writing the fix**
+  - if it is one row this is a targeted fix, and if it is eight it is an architecture problem and
+  the round changes shape.
 
-  **Step 2 - put the printed-line inventory in the prompt.** `build_cell_frame_from_document`
-  already carries `printed_lines` in row metadata and the validator already uses it. Add it to the
-  values passed by `_render_cell_prompt` and reference it from `prompts/derive_cells.md` with the
-  new `<<name>>` syntax. State plainly in the prompt that operands naming a line on THIS form must
-  come from that list, and that a printed range may skip entries - `8a through 8z` means the
-  members that are actually printed, not every letter.
-  **Order the list the way the form does** (use the existing `_line_sort_key`), and do not
-  truncate it - Schedule 1 has 61 anchors and the 1040 has 59, which are small.
+  **Step 2 - fix the selection, not the symptom.** A span that is page header, footer, or a
+  different section is not a candidate for a row's label. Use what is already available - the
+  printed-line inventory, the row's own anchor, and the outline node - to reject a span that cannot
+  belong to this row. **Fail closed: a row with no plausible span must report that, not fall back
+  to a wrong one.** An honestly empty label is better than page-header text, because the empty one
+  is visible and the junk one is not.
+  **Do not** special-case `form_6251_` or any document id - that is the S31 carve-out defect and it
+  is a stop condition.
 
-  **Step 3 - do NOT silently filter operands in code.** The tempting shortcut is to intersect the
-  model's operands with the inventory and drop the rest. **Do not.** That would mask a genuine
-  wrong-line answer as a clean derivation. `operand_not_printed` stays exactly as strict as it is
-  now; the point of step 1 is that it should stop firing because the model was told the truth, not
-  because we stopped checking.
+  **Step 3 - rerun 6251 twice and the full derivable corpus once.** Report per document: attempted,
+  derived, repaired, errored, and the top three `validator_failures_by_kind`. **The numbers to
+  beat: 6251 resolved 25/29 and 26/29 across two runs; corpus resolved 90/94.** S33's 6251 was
+  28/29, so that is the bar to recover. Report both 6251 runs even if identical - it is the least
+  stable form in the corpus and one run proves nothing about it.
+  **Do not chase the other three 6251 failures this round** (lines 13, 20, 27 -
+  `quote_not_verbatim` and `self_reference`) unless the span fix happens to resolve them. Report
+  whether it did.
 
-  **Step 4 - measure, and report the repair rate as the headline.** Rerun the full corpus. Report
-  per document: resolved `(derived + repaired) / attempted`, **the repair count and rate**,
-  errored, and the top three `validator_failures_by_kind`. **Sort by repair rate descending, worst
-  first** - not by derived, which mis-ranked schedule_1 last round as 0% when it was 4/4.
-  **The number to beat: 14 repairs across the corpus, 82 `operand_not_printed` occurrences, 4/4
-  repairs on `schedule_1_2025`.** If those do not fall materially, step 1 did not work and the
-  diagnosis was wrong - say so plainly rather than tuning the prompt until it looks better.
-  Also report `form_6251_2025`, the only errored row in the corpus, with its failure kind. It is
-  not this round's target, but it should stop being invisible.
+  **On the provider leg:** if approved external network is unavailable, do steps 1-2, declare step
+  3 NOT RUN up front, and hand back - the Architect will run it.
 
-  **Also report, do not fix:** `form_6251_2025` line 32 cleans to `32` because the SPAN MATCHER
-  selected page-header text (`Internal Revenue Service Go to www.irs.gov/Form6251 ...`) for that
-  row. That is a span-selection defect, not a cleaning defect, and it is the likely cause of the
-  corpus's only errored row. Name it in the report so it can be sized as its own round.
-
-  **On the provider leg:** if approved external network is unavailable, do steps 1-3, declare step
-  4 NOT RUN up front, and hand back - the Architect will run it.
-
-  **Do not:** filter or normalise operands to make the check pass; relax any validator; add a
-  retry policy; add a per-document special case; touch `form_2441_2025` (blocked on John, see Open
-  for Architect); promote anything.
+  **Do not:** relax `quote_not_verbatim`, `self_reference`, or `operand_not_printed`; add a retry
+  policy; add any per-document special case; reintroduce reordering into `clean_form_face_text`;
+  promote anything.
   **Stop conditions:** any diff in the protected directories; `derive_cells` acquiring a disk
-  write; any harness output landing inside the repository.
+  write; any harness output landing inside the repository; a `startswith` on a document id
+  anywhere in the pipeline.
   Tier 3. Declared files plus honest `RAN:`/`NOT RUN:`. ASCII, `git diff --check`, module-form
   `validate 2025`, preflight with `legacy_mined` explicit (394), strict citations (36).
-  **ONE local commit** - or say up front why it is more; no push.
+  **ONE local commit** - and run `git status` first; do not commit paths you did not touch.
 
 ## Architect decisions
 
