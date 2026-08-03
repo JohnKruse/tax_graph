@@ -17,7 +17,7 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## BALL
 
-**BALL: WORKER - M20-S38 (FIX THE RE-DERIVE CALL, THEN DEFINE IF_ELSE).** Task block under
+**BALL: WORKER - M20-S38 (FIX THE RE-DERIVE CALL; THEN LET AN OPERAND NAME A FILER FACT).** Task block under
 **From Architect**. **S37 comment plumbing ACCEPTED at `085a234`; the `rederive_cell` entry point
 is BROKEN against the real config and must be fixed first.**
 
@@ -27,18 +27,39 @@ is BROKEN against the real config and must be fixed first.**
 delivered and step 4-5 correctly declared NOT RUN. The Architect ran the provider leg and found
 three things, one of which retracts a claim I have repeated all session.
 
-**THE LOOP WORKS. A human comment demonstrably changes the derivation.** Form 6251 line 18,
-same row, same model, one call apart:
+**THE LOOP WORKS - the plumbing is proven. BUT THE DEMONSTRATION WAS BAD, AND THE FAULT IS MINE.**
+Form 6251 line 18, same row and model, one call apart:
 
 | run | expression |
 | --- | --- |
 | no comment | `if_else(compare(line 17, 239100), line 17 * 0.26, (line 17 * 0.28) - 4782, (line 17 * 0.28) - 4782)` |
 | curated comment | `if_else(line 17, 239100, line 17 * 0.26, (line 17 * 0.28) - 4782)` |
 
-The comment asked for "one IF_ELSE covering both branches" using the single-filer figures, and the
-output changed in that direction. **This is the first time in the project's history that a human
-instruction has reached a derivation and altered it.** The comment plumbing - ledger, curated vs
-contributed, `row.human_comment`, evidence packet, prompt - is sound and is ACCEPTED.
+The comment changed the output, so **the mechanism is real and is ACCEPTED**: ledger, curated vs
+contributed, `row.human_comment`, evidence packet, prompt. That is the first time a human
+instruction has reached a derivation in this project.
+**But the comment I wrote told the model to "use the figures for a single filer: threshold 239100
+and subtrahend 4782", and the row has TWO filing-status-dependent values** - the threshold is
+$239,100 or $119,550, and the subtrahend is $4,782 or $2,391. **I steered the model into hardcoding
+one filing status and dropping the married-filing-separately branch. The expression I reported as a
+success is WRONG for anyone filing separately.** On a tax product that is a real defect, and the
+demonstration should be read as proof the mechanism works, not as a correct answer.
+
+**ROOT CAUSE, FINALLY, AND IT IS OURS: NO OPERAND CAN NAME A FILER FACT.** The expression grammar
+allows exactly four operand shapes - `{line}` on this form, `{form, line}` on another form,
+`{const}`, and a nested `{op, args}`. **There is no way to reference a graph node or any
+characteristic of the filer.** The graph DOES model filing status: `taxpayer_2025_filing_status`
+exists in `graph/2025/nodes/capital-gains.yaml`. The derivation grammar simply cannot reach it.
+**So 6251 lines 18 and 39 are not hard - they are INEXPRESSIBLE.** The model's only options were to
+hardcode one status, which is wrong for every other filer, or to fail. It has been behaving as well
+as the grammar permits, and five rounds of churn on these two rows were our defect throughout.
+**This generalizes far past 6251.** Filing-status-dependent constants are everywhere in the code -
+standard deduction, brackets, thresholds, phase-outs - so any form with a bracketed
+married-filing-separately figure hits the same wall.
+**This is my FIFTH diagnosis of these two rows** (model quality, unmodelled worksheet, grammar
+expressiveness, label truncation, and now the operand gap). Each was drawn from the evidence in
+front of me instead of from the layer below it. The check that settled it took one command:
+print the operand shapes the schema actually permits.
 
 **BLOCKER 1 - `rederive_cell` fails against the real config, every time.** It passes
 `temperature=_optional_temperature(settings)`, which reads the configured `llm.temperature: 0`.
@@ -255,7 +276,23 @@ client-managed server dies.
   assumed - or delete the key. **Do not leave a setting that implies a determinism guarantee we do
   not have.** Whichever you choose, say so in the config with a dated comment.
 
-  **Step 3 - define the semantics of every conditional operation, starting with `IF_ELSE`.**
+  **Step 3 - let an operand reference a filer fact. THIS IS THE ROUND'S REAL WORK.**
+  The grammar permits four operand shapes - `{line}`, `{form, line}`, `{const}`, `{op, args}` - and
+  none of them can name a characteristic of the filer. The graph already models one:
+  `taxpayer_2025_filing_status` in `graph/2025/nodes/capital-gains.yaml`. **Add an operand shape
+  that references an existing graph node, e.g. `{"node": "taxpayer_2025_filing_status"}`, and
+  validate it against the real node set so a fabricated id fails closed** - the same discipline as
+  `operand_not_printed`. Do NOT invent a parallel vocabulary of filer attributes; bind to what the
+  graph already declares.
+  With that, 6251 line 18 becomes expressible: the threshold and the subtrahend each select on
+  filing status. **Report the expression the model produces for line 18 with the new operand
+  available, and state whether it covers married filing separately** - the Architect's earlier
+  steering demo did NOT, and reporting a single-status rule as correct would repeat that mistake.
+  **Check whether anything downstream can consume the new operand** (`experiments/to_graph.py`, the
+  rule vocabulary, the engine). If nothing can execute it yet, say so plainly and record it as a
+  known gap rather than implying the expression is usable.
+
+  **Step 4 - define the semantics of every conditional operation, starting with `IF_ELSE`.**
   `cells.py` enforces `IF_ELSE: 4` arguments and `ROLE_FOR_OP` does not mention it, so all four
   slots are the generic "operand" and their meaning is undefined. Two Architect runs of the same
   row produced two incompatible readings that both validated:
@@ -271,7 +308,7 @@ client-managed server dies.
   **A prompt change needs a RENDER test** (S32) and the existing test over every file in
   `prompts/` must still pass.
 
-  **Step 4 - rerun the corpus and report.** Expect the 96-row result to be unchanged or better;
+  **Step 5 - rerun the corpus and report.** Expect the 96-row result to be unchanged or better;
   the target is `form_6251_2025` lines 18 and 39 no longer needing a repair, because the model will
   finally be told what the four slots mean. Report attempted / derived / repaired / errored per
   document and say plainly whether 18 and 39 moved.
