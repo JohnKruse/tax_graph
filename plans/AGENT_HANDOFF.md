@@ -17,110 +17,69 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## BALL
 
-**BALL: WORKER - M20-S46 (MAKE CONDITIONALS AND LOOKUPS EXECUTABLE).** Task block under
-**From Architect**. **S45 is ACCEPTED at `467685c`** - the verdict bridge exists, dry-run by
-default, and the one real ledger record correctly reports STALE rather than applying.
+**BALL: WORKER - M20-S47 (FIX THE PROVIDER SCHEMA S46 BROKE, AND GUARD IT).** Task block under
+**From Architect**. **S46 is REWORK at `85a83ca`** - the design is verified correct and the emitted
+JSON schema is invalid, so the live corpus derives 0 of 96.
 
-**Why S46 now.** John pushed on it directly: *"shouldn't we have a calc complete operations set with
-conditionals... We need to model things that humans do... full stop."* He is right, and the
-Architect's earlier framing was misleading. **The graph is NOT deficient** - it already holds two
-`IF_ELSE` rules and four `LOOKUP_TABLE` rules, and both run today. The gap is two dictionaries in
-`tax_graph/extract/cells.py` that never map the AI's conditionals onto the rules that exist, so
-three rows per run derive cleanly and compute nothing. S46 closes it, measuring the required
-vocabulary from evidence first rather than adding operations speculatively.
+**DO NOT PUSH `85a83ca` UNTIL S47 LANDS.** CI cannot catch this - it has no provider - so main would
+carry a state where live derivation fails on every row.
 
-**Known gaps, deliberately NOT S46:** the harvester emits no computed nodes or `CALCULATES` edges,
-so it does not harvest arithmetic; and the review vocabulary is two-state, queued as S47.
-**Rollover policy and run alerting** are pinned at `docs/engineering-plan.md` -> Year rollover
-(TY2026), seam 6. **Notation ruling** is under Current round: borrow the decision-table shape for
-lookups, adopt no formalism.
+**Keep the whole S46 slice.** Named lookup roles, the fail-closed bare list, evidence-driven
+comparison direction, and projection onto existing rule ids were all verified working by the
+Architect. Only `expression_schema()` is wrong: `role` sits in `properties` and not in `required`,
+which OpenAI strict mode rejects outright.
+
+**Known gaps, deliberately NOT S47:** the harvester emits no computed nodes or `CALCULATES` edges;
+the review vocabulary is two-state, queued as S48. **Rollover policy and run alerting** are pinned
+at `docs/engineering-plan.md` -> Year rollover (TY2026), seam 6. **Notation ruling** is below:
+borrow the decision-table shape for lookups, adopt no formalism.
 
 ## Current round
 
-**M20-S46 WORKER STATUS (2026-08-04): implementation ready; live corpus UNVERIFIED.** The local
-slice closes the projection gap without changing the graph, operation enum, or disk-writing
-boundary. The remaining acceptance gate is two live provider corpus passes, which could not run
-in this sandbox.
+**M20-S46 REWORK (Architect, Claude Opus 5, 2026-08-04) at `85a83ca`. The design is right and the
+live corpus is 100% DEAD. Do not push this state.**
 
-**Step 1 measurement, RAN from the S44 96-row reports plus the harvested QDCGT worksheet:** the
-rows emitted 9 operation kinds: `SUM` 42, `SUBTRACT` 27, `COPY` 7, `MAX` 15, `IF_ELSE` 4,
-`REQUIRE_INPUT` 8, `MULTIPLY` 12, `MIN` 5, and `LOOKUP_TABLE` 4. The row evidence contained
-18 floor/cap cues, 28 conditional cues, 2 band/bracket cues, and 41 aggregation cues. QDCGT
-harvest measured 25 lines, 13 constants, 13 citations, 42 edges, and conditional routes on
-lines 1 and 25. No new operation enum is demanded.
+**THE LOCAL SLICE IS GOOD AND SHOULD BE KEPT.** I verified each piece directly rather than through
+the corpus:
+- `LOOKUP_TABLE` maps to the existing `lookup_selected_value`, and lookup leaves carry named roles.
+  Projected edge roles on 6251 line 18: `key`, `default`, `married_filing_separately` - the borrowed
+  decision-table shape working as intended.
+- **A bare ordered lookup fails closed**: `LOOKUP_TABLE arguments must be named leaf operands with a
+  role`. That was the point of the round.
+- **Direction resolves deterministically from evidence.** 1040 line 34 with its own text ("If line
+  33 is **more than** line 24") projects `if_greater_than_currency` with roles `condition`,
+  `threshold`, `when_true`, `when_false` and **zero findings**. With no evidence supplied it reports
+  `comparison direction unresolved` rather than guessing - correct.
+- The projection **references** existing rule ids instead of authoring new ones, so
+  `graph/2025/rules/` is untouched. The `when_false` zero even resolved to
+  `form_1040_2025_zero_floor`, the cited node rather than a bare constant.
+- Step 1 measurement was delivered: 9 operation kinds across the 96 rows, **no new operation enum
+  demanded** - a useful negative result.
+- Gates: 86 passed on a short temp root, ASCII OK, `git diff --check` clean, protected set
+  byte-identical across `6d141ab..85a83ca`, `validate 2025` exit 0.
 
-**Implementation:** `RULE_FOR_OP` maps `LOOKUP_TABLE` to the existing `lookup_selected_value`.
-Lookup leaf operands now carry a lowercase `role`, with exactly one `key` and unique named
-branches such as `default` and `married_filing_separately`; bare ordered lookup lists fail
-closed. `IF_ELSE` maps to the existing `if_less_than_currency` or `if_greater_than_currency`
-from deterministic wording in the row evidence. Ambiguous direction is a named warning, never
-a guessed rule. The prompt and expression renderer expose the borrowed decision-table shape.
-
-**Canary rows, fixture-only:** 1040 line 34, 6251 lines 18 and 39 all derive through
-`derive_cells`, project with real rule ids and roles, and produce no `unmapped_operation` or
-unresolved-direction warning. This proves the local boundary; it is not a live model result.
-
-**Tests and gates:**
-
-```
-RAN: $env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\.codex\visualizations\2026\08\04\019fcd36-c747-79a1-8005-8d270643f7ad\pytest_s46_focus'; .venv\Scripts\python.exe -m pytest tests\test_derive_cells_m20.py tests\test_m20_s31.py -q -> 65 passed, 1 warning.
-RAN: $env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\.codex\visualizations\2026\08\04\019fcd36-c747-79a1-8005-8d270643f7ad\pytest_s46_focus'; .venv\Scripts\python.exe -m pytest tests\test_tax_liability_m11.py -q -> 3 passed, 1 warning.
-RAN: $env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\.codex\visualizations\2026\08\04\019fcd36-c747-79a1-8005-8d270643f7ad\pytest_s46_focus'; .venv\Scripts\python.exe -m pytest tests\test_extract_m4.py tests\test_prompt_experiment_m20.py tests\test_worksheet_harvest_m20.py -q -> 38 passed, 1 warning.
-RAN: $env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\.codex\visualizations\2026\08\04\019fcd36-c747-79a1-8005-8d270643f7ad\pytest_s46_focus'; .venv\Scripts\python.exe -m pytest tests\test_review_semantics_remaining_m15.py -q -> 8 passed.
-RAN: .venv\Scripts\python.exe tools\check_ascii.py -> ASCII check OK.
-RAN: git diff --check -> clean.
-RAN: .venv\Scripts\python.exe -m tax_graph.cli validate 2025 -> exit 0; 18 documents, 441 nodes, 409 edges, 401 citations; graph integrity OK; six reconcile differences named.
-RAN: .venv\Scripts\python.exe -m workbench.cli --root . --year 2025 preflight -> exit 0; review preflight passed; units=2224, derived_cells=2120, legacy_mined=394.
-RAN: git diff --stat -- graph/2025/nodes graph/2025/edges graph/2025/rules graph/2025/field_maps -> empty.
-```
-
-**Live corpus evidence:**
+**THE DEFECT: THE EMITTED PROVIDER SCHEMA IS INVALID, SO NOTHING DERIVES AT ALL.** Two full corpus
+runs, both `attempted=96, derived=0, errored=96`. Every row returns the same 400:
 
 ```
-RAN: .venv\Scripts\python.exe experiments\derive_cells_s25.py --root . --year 2025 --output-dir <external s46_run1> -> exit 124; command timed out after 600213 ms. This is NOT a passing corpus run.
-RAN: .venv\Scripts\python.exe experiments\derive_cells_s25.py --root . --year 2025 --document form_6251_2025 --output-dir <same external s46_run1> -> exit 0; rows_attempted=29, derived=0, errored=29; every row reported `LlmUnavailable: OpenRouter request failed: Connection error`.
-NOT RUN: second live corpus pass -> provider unavailable. An escalated provider attempt was rejected because explicit user authorization is required before transmitting local pipeline evidence to the external provider.
+Invalid schema for response_format 'tax_graph_cell_derivation':
+In context=('properties','expression','properties','args','items','anyOf',0),
+'required' is required to be supplied and to be an array including every key in properties.
+Missing 'role'.
 ```
 
-**Open for Architect / John:** authorize the external live-provider corpus run, or direct a
-fixture-only S46 acceptance. Until then, S46 is not complete and no corpus number is claimed.
+S46 added `role` to the leaf-operand `properties` and did not add it to `required`. OpenAI's
+structured-output mode demands a strict schema: **every key in `properties` must appear in
+`required`**, with optionality expressed as a nullable type, not by omission. I walked the emitted
+schema - **12 objects are affected**, every leaf variant at all three nesting depths.
 
-### Prior accepted round
+**This is exactly why the live gate exists.** The Worker declared the corpus UNVERIFIED and was
+right to: its own sandbox attempt died earlier at the network layer with `Connection error`, so it
+never reached the 400 and could not have seen this.
 
-**M20-S45 ACCEPTED (Architect, Claude Opus 5, 2026-08-04) at `467685c`. The bridge exists, and the
-safety property it was built for fired on the first real record.**
-
-`tax_graph.review.apply_address_verdicts` plus `review apply-address-verdicts`, **dry-run by
-default** - `--apply` is required to write. It reuses the existing `_apply_graph_review` rather than
-adding a second applier, which was the explicit instruction: a second parallel path is how this gap
-was created in the first place.
-
-**THE ONE REAL VERDICT IS STALE, AND THAT IS THE ROUND WORKING.** I ran the live dry-run myself:
-
-```
-address verdicts: 1 | would apply: 0 | stale: 1 | unresolved: 0 | ambiguous: 0
-  2025/document=form_1040/line=1z/control=amount: stale
-    reviewed fingerprint: 151f0df2...  current fingerprint: e270b15d...
-```
-
-The single human verdict in the ledger was recorded against content that has since changed, so it
-correctly does not apply. **This is exactly the property the M15 path lacked** - it would have
-blessed changed content because it keyed on a churning id and never compared content at all.
-`git status -- graph/2025/` is empty after the run.
-
-**Address resolution verified.** `2025/document=form_1040/line=1z/control=amount` resolves to
-`form_1040_2025_root_line_z`, whose label reads "Line 1z: Add lines 1a through 1h". The node id
-dropping the `1` is a pre-existing mined-label oddity, not an S45 defect, and the resolution is
-correct.
-
-**Gates:** 29 passed on a short temp root, ASCII OK, `git diff --check` clean, protected set
-byte-identical across `86f6c01..467685c`.
-
-**VOCABULARY GAP REPORTED, NOT INVENTED (correct - this was Step 3).** The ledger schema accepts
-arbitrary judgement strings; the review surface emits only `confirmed` and `rejected`; there is no
-`problem` state anywhere. The bridge applies `confirmed` only and reports the rest as unsupported
-without writing. **John's model is accepted / rejected / problem**, so the vocabulary needs one
-small round before non-confirming flags can land. Queued below, deliberately not folded into S46.
+**WHAT WOULD HAVE CAUGHT IT WITHOUT A PROVIDER CALL.** A deterministic test asserting that every
+object in `expression_schema()` has `properties` as a subset of `required`. That is a pure local
+check, no network, no cost. Its absence is the real process gap, not the missing `role` entry.
 
 ## Architect decision - notation
 
@@ -314,71 +273,53 @@ client-managed server dies.
 
 ## From Architect
 
-- **M20-S46 TASK - MAKE CONDITIONALS AND LOOKUPS EXECUTABLE (Architect, Claude Opus 5, 2026-08-04).**
-  Ledger: the RAN/NOT RUN rule. **This is the round that closes the gap John pushed on: the graph
-  models these operations and the pipeline cannot reach them.**
+- **M20-S47 TASK - FIX THE PROVIDER SCHEMA S46 BROKE, AND GUARD IT (Architect, Claude Opus 5,
+  2026-08-04).** Ledger: the RAN/NOT RUN rule. **Small and surgical. KEEP the whole S46 slice -
+  the projection, the named lookup roles, the fail-closed bare list, and the evidence-driven
+  direction are all verified correct. Only the emitted JSON schema is wrong.**
 
-  **Why, stated precisely so nobody repeats the Architect's earlier overstatement.** The GRAPH is not
-  deficient. `graph/2025/rules/core.yaml` already holds 15 rules including **two `IF_ELSE` rules**
-  (`if_less_than_currency`, `if_greater_than_currency`) and **four `LOOKUP_TABLE` rules**
-  (`lookup_capital_loss_limit`, `lookup_selected_value`, `lookup_selected_value_required`,
-  `lookup_tax_table_amount`). Both run today: 1040 line 16 flows through
-  `if_greater_than_currency`, and the Schedule D capital loss limit is a live filing-status lookup.
-  **The gap is `RULE_FOR_OP` and `ROLE_FOR_OP` in `tax_graph/extract/cells.py`**, which list ten
-  arithmetic operations and omit the conditionals and lookups, so an AI-written conditional emits
-  `no reusable rule for operation IF_ELSE` and produces no rule at all. Measured cost: three rows
-  per corpus run - 1040 line 34, 6251 lines 18 and 39 - derive cleanly and compute nothing.
+  **The defect.** `expression_schema()` puts `role` in the leaf operand `properties` and not in
+  `required`. OpenAI structured output rejects the whole request with
+  `'required' is required to be supplied and to be an array including every key in properties.
+  Missing 'role'`. Result: **two full corpus runs, 96 attempted, 0 derived, 96 errored.** 12 schema
+  objects are affected - every leaf variant at all three nesting depths.
 
-  **Step 1 - measure the required vocabulary before adding anything.** Do not add operations
-  speculatively. Across the 96 corpus rows plus the harvested QDCGT worksheet, report what the
-  forms' own text actually demands and what the model actually emits: floors, conditions,
-  band/bracket tables, ranges, aggregation over repeated rows. **Report the counts and name any
-  operation the evidence demands that the enum lacks.** If the evidence shows the current enum is
-  already sufficient, say so - that is a valid and useful outcome.
+  **Step 1 - make the emitted schema strict.** Every key in `properties` must appear in `required`,
+  at every nesting depth. Express "this operand has no role" as a **nullable type**
+  (`"type": ["string","null"]`) rather than by omitting the key, which is what strict mode requires.
+  **Check the whole schema, not just `role`** - report whether any other object has the same
+  shape.
 
-  **Step 2 - map the conditionals.** Add `IF_ELSE` (and the rest of the conditional family, if step
-  1 shows the evidence demands them) to `RULE_FOR_OP` and `ROLE_FOR_OP`. **The open design question
-  is comparison direction:** there are two `IF_ELSE` rules and the AI's four positional arguments do
-  not say which comparison is meant. Two candidate answers - the model names the direction, or it is
-  resolved in code from the row's own evidence text ("is more than", "is less than", "or less").
-  **Recommend one with reasoning and implement it; do not implement both.** Given this phase's
-  history, resolving deterministically from evidence is the safer default and should be preferred
-  unless step 1 shows the wording is unreliable.
+  **Step 2 - the guard test, which is the real deliverable.** Add a deterministic test that walks
+  every object in `expression_schema()` and asserts `set(properties) <= set(required)`. **No network,
+  no provider, no cost** - this would have caught the defect locally. It is a standing guard against
+  every future schema change, and its absence is the process gap this round exists to close.
 
-  **Step 3 - the lookup shape, borrowed not invented (John's ruling, see Architect decision).** Take
-  the DMN decision-table STRUCTURE: named inputs and outputs rather than a bare ordered list. Our
-  lookups are unmappable because `(status, 239100, 119550)` cannot say which value belongs to which
-  status, while the engine selects by matching a role name to the status value. **Extend the
-  expression format minimally so a lookup can name its branches**, then map `LOOKUP_TABLE` to
-  `lookup_selected_value` with a `key` role plus one role per named branch, matching the shape
-  `lookup_capital_loss_limit` already uses in `graph/2025/edges/capital-gains.yaml`. **Do not adopt
-  DMN, FEEL, or Catala wholesale** - structure only. A prompt change needs a RENDER test (S32) and
-  the `prompts/` render test must still pass.
+  **Step 3 - confirm the round's own semantics still hold after the schema change.** A nullable
+  `role` must not weaken the S46 rules: a `LOOKUP_TABLE` with bare or null-role arguments must still
+  fail closed with `LOOKUP_TABLE arguments must be named leaf operands with a role`, and a lookup
+  with exactly one `key` plus uniquely named branches must still project onto
+  `lookup_selected_value`. Unit-test both.
 
-  **Step 4 - prove executability, not just validation.** For 1040 line 34 and 6251 lines 18 and 39,
-  show `expression_to_graph` now emits real rules with real roles and **zero** `no reusable rule`
-  findings, and that the projected nodes and edges match the shape the engine consumes. **A clean
-  validator result is not the deliverable here; a rule the engine can run is.** Report the
-  `unmapped_operation` warning count before and after - it was 9 and 7 in the S44 runs.
+  **Step 4 - Architect runs the corpus.** Declare it NOT RUN and say so plainly; do not attempt a
+  provider call, and do not transmit corpus evidence to an external provider. **Numbers to restore:
+  derived 92, resolved 93.** The Architect will also re-verify that 1040 line 34 and 6251 lines 18
+  and 39 project with real rule ids and zero `no reusable rule` findings, which they did in the S46
+  local check.
 
-  **Step 5 - rerun the corpus twice and report both.** Numbers to hold: **derived 92, resolved 93**.
-  Print the 6251 line 18 and 39 expressions from each run and state whether each is now executable.
+  **Do not:** revert the S46 design; author or edit anything in `graph/2025/`; widen the operation
+  enum; weaken the fail-closed lookup rule; attempt a live provider call. **Stop conditions:** any
+  diff in the protected directories; the guard test passing while the schema still has a property
+  outside `required`. Tier 3. ASCII, `git diff --check`, module-form `validate 2025`.
+  **ONE local commit.**
 
-  **Do not:** author or edit anything in `graph/2025/` - the rules you need already exist, and if
-  step 1 proves a genuinely new rule is required, REPORT it and stop rather than authoring it;
-  adopt a general-purpose expression language; widen the operation enum without step 1 evidence;
-  weaken any validator; promote anything. **Stop conditions:** any diff in the protected
-  directories; `derive_cells` acquiring a disk write; the corpus dropping below derived 91 on both
-  runs. Tier 3. ASCII, `git diff --check`, module-form `validate 2025`, preflight `legacy_mined`
-  394. **ONE local commit.**
-
-- **M20-S47 (QUEUED, SMALL) - EXPAND THE REVIEW VOCABULARY TO ACCEPTED / REJECTED / PROBLEM.** S45
-  found that the ledger schema accepts arbitrary judgement strings, the review surface emits only
+- **M20-S48 (QUEUED, SMALL) - EXPAND THE REVIEW VOCABULARY TO ACCEPTED / REJECTED / PROBLEM.** S45
+  found the ledger schema accepts arbitrary judgement strings, the review surface emits only
   `confirmed` and `rejected`, and no `problem` state exists anywhere. **John's model is three-state**
-  and the bridge currently applies `confirmed` only. Define the three states end to end - review
-  surface, ledger schema, and what each writes onto a node - then extend the bridge. Report what a
-  `rejected` or `problem` node should mean to the ENGINE (refuse to compute? compute with a warning?
-  report unresolved?) and let John rule before wiring engine behaviour.
+  and the bridge applies `confirmed` only. Define the three states end to end - review surface,
+  ledger schema, and what each writes onto a node - then extend the bridge. Report what a `rejected`
+  or `problem` node should mean to the ENGINE (refuse to compute? compute with a warning? report
+  unresolved?) and let John rule before wiring engine behaviour.
 
 ## Architect decisions
 
