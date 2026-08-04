@@ -17,11 +17,18 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## BALL
 
-**BALL: WORKER - M20-S49 (RUN THE WHOLE PIPELINE AT FORM 2441).** Task block under
+**BALL: WORKER - M20-S49 (FINISH THE TRY-AGAIN LOOP IN THE UI).** Task block under
 **From Architect**. **S48 is ACCEPTED at `c55fde5` + `71b064a`** - review is three-state end to end
 and the false direction warning is gone.
 
-**Why S49 now.** Every piece 2441 needs landed in the last eight rounds: the manifest drives the
+**RESEQUENCED 2026-08-04 BY JOHN: retry loop first, 2441 after.** He asked where the retry button
+was, and it does not exist. Measured: `rederive_cell` and `POST /api/rederive` shipped in S37 and
+are properly guarded, but `create_app` is called without the handler so the endpoint answers
+**501**, and there are **zero** references to rederive anywhere under `workbench/static/`.
+**Architect miss** - S48 added the verdict buttons without checking the loop they feed existed.
+Running 2441 first would have generated a pile of review work with no way to do the review.
+
+**Why 2441 next (S50).** Every piece it needs landed in the last eight rounds: the manifest drives the
 corpus (S41), conditionals and lookups execute (S46/S47) which 2441's AGI percentage table requires,
 and review is three-state with a working bridge (S45/S48). **This is the first end-to-end exercise
 of the whole assembly on a form the pipeline has never properly processed** - John's own framing:
@@ -285,7 +292,65 @@ client-managed server dies.
 
 ## From Architect
 
-- **M20-S49 TASK - RUN THE WHOLE PIPELINE AT FORM 2441, AS A RELIABILITY EXERCISE (Architect,
+- **M20-S49 TASK - FINISH THE TRY-AGAIN LOOP IN THE UI (Architect, Claude Opus 5, 2026-08-04;
+  John: *"i thought we were going to add a button to retry processing a rejected cell/line so that
+  the human can leave comments that bring the entry into alignment with actual IRS intent"*).**
+  Ledger: the RAN/NOT RUN rule. **This was designed, the backend shipped in S37, and the front half
+  was never built. Architect miss: S48 added the verdict buttons without checking that the loop they
+  feed existed.**
+
+  **Measured state before this round.** `rederive_cell` and `build_rederive_handler` exist and are
+  pure. `POST /api/rederive` exists and is properly guarded - write token, field whitelist
+  (`document_id`, `line`, `draft_comment`), 10,000-char cap, `ValueError` -> 400, provider failure
+  -> 502. **But `create_app` at serve time is called without `rederive_cell`, so the endpoint
+  answers `501 cell re-derive is not configured`, and there are ZERO references to rederive in any
+  file under `workbench/static/`.** There is no button.
+
+  **Why it matters more than it looks.** The pinned design says try-again is the MAIN action and
+  reject is the escape hatch, and that the stored comment is one the reviewer has VERIFIED works.
+  Without the button every comment is written blind and Reject is the only move a reviewer has -
+  which is the opposite of the intended loop.
+
+  **Step 1 - wire the handler without breaking the layering.** `build_rederive_handler`'s docstring
+  is explicit: the callback exists so the artifact-only workbench stays free of pipeline imports,
+  and **its closure is owned by the application host.** Wire it where both halves are already
+  available; **do not import pipeline code into `workbench/`.** Report where you wired it and why.
+  The endpoint must keep answering 501 - not crash - when a host chooses not to configure it.
+
+  **Step 2 - the button and the comment box.** On a cell: a comment field and a Try again action
+  that POSTs to `/api/rederive` with the write token. **Persist nothing on retry** - that is the
+  whole point of the pure function, and it is what makes the loop safe to run repeatedly. Saving a
+  comment as curated stays a separate, explicit action.
+
+  **Step 3 - show the result honestly, including the parts that are uncomfortable.**
+  - Show the new expression **and its validator failures**. A comment must never talk the model past
+    a validator, so when the retry still fails, say so plainly rather than presenting the new answer
+    as an improvement.
+  - **Distinguish "you changed the comment" from "same comment, fresh attempt".** Re-running with an
+    unchanged comment can return a different answer - measured repeatedly at `temperature: 0`. If
+    the UI hides that, reviewers will tune toward superstition. This is a pinned design requirement,
+    not polish.
+  - Show a pending state. Measured feasibility: **~6.0s for one row cold, ~2.7s for the model call
+    alone** on a warm server.
+
+  **Step 4 - contributed vs curated must hold at the UI boundary.** Only a curated comment may reach
+  the model. A `contributed` comment is retained and displayed and **never sent**. Confirm the UI
+  cannot send one, and test it.
+
+  **Step 5 - prove the loop end to end with a fixture client, no provider.** Drive it with a stub
+  handler: comment in, expression out, validator failures surfaced, nothing persisted. **Report
+  explicitly that no graph, draft, ledger, or session state changed during a retry.** A live
+  provider round trip is the Architect's leg, not the Worker's.
+
+  **Do not:** persist anything on retry; let a `contributed` comment reach the model; import
+  pipeline modules into `workbench/`; weaken the write-token guard; author or edit anything under
+  `graph/2025/`; build convergence tracking (rounds-to-approval and the reopened-twice flag are a
+  later slice - keep this round to the loop itself). **Stop conditions:** any diff in the protected
+  directories; a retry writing to disk; the endpoint crashing rather than returning 501 when
+  unconfigured. Tier 3. ASCII, `git diff --check`, module-form `validate 2025`. **ONE local commit.**
+
+- **M20-S50 TASK (QUEUED BEHIND S49; SPEC COMPLETE AND STILL STANDS) - RUN THE WHOLE PIPELINE AT
+  FORM 2441, AS A RELIABILITY EXERCISE (Architect,
   Claude Opus 5, 2026-08-04; John's call: *"adding it might be a good exercise in seeing if our
   pipeline is reliable and valid"*).** Ledger: the RAN/NOT RUN rule, D10. **Drafts only. NO
   PROMOTION in this round - John decides that with the artifact in front of him.**
