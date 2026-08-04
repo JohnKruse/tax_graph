@@ -17,18 +17,20 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## BALL
 
-**BALL: WORKER - M20-S51 (MAKE THE DERIVATION DENOMINATOR HONEST).** Task block under
-**From Architect**. **S50 is ACCEPTED** - the 2441 exercise ran end to end and produced exactly the
-kind of result it was commissioned to find.
+**BALL: WORKER - M20-S52 (THE INCOMPLETE-CELL PAYLOAD).** Task block under **From Architect**.
+**S51 is ACCEPTED at `1541a67`** - the denominator is explicit, and the live leg the Architect ran
+against it found the phase's most important defect.
 
-**THE HEADLINE: 12/12 DERIVED IS A SELF-SELECTED DENOMINATOR.** Form 2441 has 35 line anchors, the
-pipeline attempted 12, and the report calls that `status: complete` with `gapped: 0`. The 23 it
-never attempted are invisible in every summary we have published. See **Current round**.
+**THE HEADLINE: A LOOKUP TABLE CAN BE SILENTLY TRUNCATED.** Form 2441 line 8 finally entered the
+denominator, the model produced the named-role lookup shape correctly, and it transcribed **6 of the
+16 printed bands**. Nothing checks a lookup for completeness, so a filer whose AGI lands in one of
+the four missing ranges falls in a hole. See **Current round**; specced as **S54**.
 
-**QUEUED BEHIND S51: S52 (the incomplete-cell payload) then S53 (the approval gate, behind a
-switch, default off).** Both come from John's 2026-08-04 approval-is-the-gate ruling, pinned first
-under **Binding rulings**. S52 goes first because it defines what a refusal says, and S53's gate
-emits exactly that payload.
+**QUEUE: S52 (the incomplete-cell payload), then S54 (lookup completeness and the S51 selector
+defects), then S53 (the approval gate, behind a switch, default off).** S52 and S53 come from
+John's approval-is-the-gate ruling, pinned first under **Binding rulings**; S52 goes first because
+it defines what a refusal says and S53's gate emits exactly that payload. **S54 is slotted between
+them because it is a live correctness hole and the gate is not what closes it.**
 
 **NOTHING IS AWAITING JOHN.** The engine-semantics question is answered and closed; the 2441
 promotion question was withdrawn as malformed. **Rollover policy and run alerting** are pinned at
@@ -36,67 +38,73 @@ promotion question was withdrawn as malformed. **Rollover policy and run alertin
 
 ## Current round
 
-**M20-S50 ACCEPTED (Architect, Claude Opus 5, 2026-08-04). The Worker's sandbox had no network, so
-the whole provider leg is mine; the manifest step had already landed at `f637df0`. The exercise
-worked: running the pipeline at a form it had never processed found a defect that eight rounds of
-green numbers on the existing corpus could not.**
+**M20-S51 ACCEPTED (Architect, Claude Opus 5, 2026-08-04) at `1541a67`. The denominator is now
+visible, and the provider leg I ran against it produced the most valuable finding of the phase.**
 
-**THE DERIVATION DENOMINATOR IS SELF-SELECTED, AND NOTHING REPORTS IT.** Form 2441 has 40 outline
-nodes and **35 line anchors**. The pipeline attempted **12**. It derived 12 of 12 on the first run
-with an empty `validator_failures_by_kind`, and the summary called that `status: complete` with
-`gapped: 0`. **The 23 lines it never looked at are absent from every number we report.** The cause
-is `_is_formula_node` in `tax_graph/extract/outline_pipeline.py:460`: a hardcoded list of twelve
-English cues (`add line`, `subtract line`, `smaller of line`, ...). A row enters the denominator
-only if its printed label happens to speak that dialect.
+**The implementation is honest.** `build_derivation_denominator` keeps the pre-S51 decision beside
+the current one, so every report shows the flattering historical number next to the real one, and
+each skipped anchor carries a named reason. The widening is four lexical cues, not a model call:
+`smallest of line`, `largest of line`, `amount shown below`, `enter $`.
 
-**What that dropped on 2441, measured:**
+**The corpus-wide denominator, measured provider-free across 15 non-empty documents:**
 
-| line | printed label | why it was never attempted |
+| | line anchors | admitted before | admitted now |
+| --- | --- | --- | --- |
+| whole corpus | 478 | 108 | 121 |
+| `form_2441_2025` | 35 | 12 | 19 |
+| `schedule_1a_2025` | 48 | 25 | 29 |
+
+**The 96-row figure this phase has been quoting was 108 of 478 anchors.** It is now 121, and the
+320 still carrying `selector_no_formula_cue` are at least reported.
+
+**THE LOOKUP SHAPE SURVIVED THE 16-BAND TABLE. THE TRANSCRIPTION DID NOT.** Line 8 finally entered
+the denominator, and the model reached for the S46/S47 named-role form unprompted -
+`lookup_table(key=line 7, over_0_15000=0.35, over_15000_17000=0.34, ...)`. **It emitted 6 of the 16
+bands.** The four it skipped in the middle are simply absent, and **no validator checks a lookup
+table for band completeness or contiguity.** A silently truncated table is worse than a failed one:
+a filer with $20,000 of AGI falls in a hole rather than getting an error. **This is the single most
+important defect the phase has found**, and it was invisible for as long as line 8 sat outside the
+denominator. It also emitted a `payload` failure - *"operand role is only valid on LOOKUP_TABLE
+arguments"* - so the grammar and the validator disagree about where a role may appear.
+
+**The seven newly admitted 2441 rows, judged against the form face:**
+
+| line | emitted | verdict |
 | --- | --- | --- |
-| 6 | Enter the smallest of line 3, 4, or 5 | cue list has `smaller of line`, not `smallest` |
-| 20 | Enter the smallest of line 17, 18, or 19 | same |
-| 24 | Enter the smallest of line 20, 21, or 22 | same |
-| 8 | the AGI decimal table | no arithmetic verb at all |
-| 19, 21, 22, 27 | filing-status constants and a Yes/No branch | no cue |
-| 3, 30 | column (d) totals | `kind: totals` with no columns |
+| 6 | `max(min(line 3, line 4, line 5), 0)` | correct |
+| 20 | `max(0, min(line 17, line 18, line 19))` | correct |
+| 24 | `min(line 20, line 21, line 22)` | correct |
+| 8 | `lookup_table(key=line 7, ...)` with 6 of 16 bands | shape right, content truncated |
+| 19 | `require_input(line 19)` | wrong - the row states the rule |
+| 21 | `require_input(line 21)` | wrong - the row prints $5,000 / $2,500 |
+| 27 | `require_input(line 27)` | wrong - the row prints $3,000 / $6,000 |
 
-**Three of them are one missing word.** `smallest` is not in a list that contains `smaller`.
+**The three misses are one defect, and it is John's ruling from 2026-07-31.** Lines 19, 21 and 27
+print the value or the rule on the form face, and the model punted all three to the filer.
+**Filer-provided is a failover, not a default.** Rows 21 and 27 are also the filing-status constant
+case that the S39/S40 open item has been circling; they are now live instances rather than a
+hypothetical.
 
-**STEP 3 DID NOT HAPPEN, AND THAT IS THE RESULT.** The round was specified around line 8 meeting the
-S46/S47 named-role lookup for the first time. **Line 8 is not in the denominator, so the lookup was
-never exercised.** The table itself is also bigger than the spec said: the form face carries **16
-contiguous bands**, not fifteen - `$0-15,000` at .35 down to `43,000-No limit` at .20, lower bound
-0 and upper bound open. The Worker reported this correctly and refused to invent an operation.
+**Run totals:** attempted 19, derived 16, repaired 2, errored 1, skipped 16 accounted for.
+`self_reference` 1, `payload` 1, `operand_node_not_found` 2. Line 25 - wrong in both S50 runs -
+now fails closed rather than passing silently, which is an improvement even though the row is lost.
 
-**TWO RUNS, AND THE ONE WRONG ROW IS WRONG IN BOTH.** Run 1: 12 derived, 0 repaired, zero validator
-failures. Run 2: 11 derived, 1 repaired, `operand_node_not_found` x1. The divergence is line 25,
-whose else-branch should be `min(line 20, line 21) - line 24`; run 1 emitted `0 - line 24` and run 2
-emitted `form_2441_2025 line 20 - form_2441_2025 line 21`, dropping line 24 entirely. **Run 1's
-version passed every validator.** So the honest read of the best run is **11 of 12 correct out of 35
-lines**, not 12 of 12. Line 29 also differs harmlessly between runs (`max(x, 0)` vs `max(0, x)`).
+**THREE DEFECTS IN THE ROUND ITSELF, none warranting rework, all specced into S54:**
+1. **A `totals` node never has its label read.** `_formula_selector_decision` returns False on kind
+   before reaching the cue loop, so 2441 lines 3 and 30 are dropped despite their labels containing
+   `add the amount`, a cue present since the beginning.
+2. **The skip reason for those two is a lie.** They report `selector_no_formula_cue` when the label
+   HAS a cue and the code never looked. A wrong reason is worse than none - it sends the next
+   reader hunting for a cue to add.
+3. **`status: incomplete` is unreachable.** Every anchor is classified admitted or skipped by
+   construction, so `unaccounted` is always 0 and all 15 documents report `complete`. The test
+   monkeypatches an incomplete report and checks the harness propagates it, which exercises the
+   plumbing but not the builder. The guard cannot fire.
+Also minor: the harness counts line 25 as `errored` while the validation block in the same file
+counts it as `gapped`.
 
-**The other eleven check out against the form face**, including line 15 `(12 + 13) - 14` on a
-parenthesized subtrahend and the two `max(..., 0)` floors. Line 5 is a soft miss: it emitted
-`require_input(line 5)` for a row whose own text says *"all others, enter the amount from line 4"* -
-filer-provided used as a default where the form states a rule, which is John's 2026-07-31 ruling.
-
-**THE WORKSHEETS ARE UNREACHABLE FOR 2441.** Lines 9b and 10 feed from Worksheet A and the Credit
-Limit Worksheet. The S42/S43 harvester is HTML-table based, and only six documents have acquired
-HTML (1040, 6251, 8949, Schedules A, B, D). 2441's instructions exist as PDF/text only, so
-`NOT RUN` is correct and **the harvester's reach is an acquisition property, not a code property.**
-
-**Against what was already there** (`graph_ext/2025/form_2441_2025/`, 24 nodes / 2 edges / 22
-citations / 2 rules, all `gate: user`): the M10 draft modeled **no arithmetic at all** on Part I and
-II and only the two column-(d) totals elsewhere. Nine of the pipeline's twelve rows are lines the
-draft left with no edge. The draft also carries real defects the pipeline does not reproduce - the
-mangled id `form_2441_2025_part_iii_line_28_part_iii_line_28`, and a rule whose description quotes
-**line 30's** text under a **line 28** node. The two disagree on identity as well: the draft names
-cells `..._part_iii_line_15`, the pipeline addresses them `..._root_line_15`. **Same cell, two ids -
-that is a promotion blocker, not a detail.**
-
-**Gates:** ASCII OK, `validate 2025` exit 0 (graph integrity OK, reconcile clean in both
-directions), protected set diff empty, `git status` clean. **Nothing was written under `graph/`; the
-harness writes outside the repo by construction.**
+**Gates:** 102 passed on a short temp root, ASCII OK, `validate 2025` exit 0 with reconcile clean in
+both directions, protected set diff empty, `git status` clean.
 
 ## Architect decision - notation
 
@@ -316,79 +324,55 @@ client-managed server dies.
   (`graph/2025/field_maps/form_2441_2025.yaml`, 24 excluded nodes), and 2441 is the only document
   parked in a `graph_ext/` overlay. **That special case is the defect.**
 
-## Worker status - M20-S51
-
-**Implementation complete locally (2026-08-04; no promotion and no provider leg).** The
-deterministic selector now preserves the legacy decision and reports the widened decision per
-outline anchor. Widening is limited to `smallest of line`, `largest of line`, `amount shown below`,
-and dollar constants (`enter $`); direct source-entry labels remain in the non-formula path.
-`build_derivation_denominator` emits admitted/skipped counts, named skip reasons, legacy/current
-cue counts, and every anchor record. The derivation harness carries this report into provider
-reports and writes one provider-free report per manifest document. A run is `complete` only when
-all outline anchors are accounted for; an empty outline is `empty`.
-
-**Measured provider-free corpus:** `experiments\derive_cells_s25.py --root . --year 2025
---no-provider --output-dir C:\tmp\m20-s51-denominator` -> exit 0; 23 denominator reports. Form
-2441: 35 anchors, legacy admitted 12, current admitted 19, skipped 16, status `complete`;
-new cues: `amount_shown_below` 2, `dollar_constant` 2, `smallest_of_line` 3. The provider leg is
-**NOT RUN: Worker sandbox has no outbound network; Architect owns the live-provider execution.**
-
-**Tests and gates:**
-
-- `RAN: .venv\Scripts\python.exe -m pytest tests\test_m20_s51.py tests\test_m20_s31.py tests\test_m20_s41.py tests\test_derive_cells_s30.py -q` -> 20 passed in 11.56s.
-- `RAN: .venv\Scripts\python.exe -m pytest tests\test_extract_outline_m4.py tests\test_extract_m16.py tests\test_structure_m20.py tests\test_derive_cells_m20.py tests\test_m20_s31.py tests\test_prompt_experiment_m20.py tests\test_tables_detector_m6b.py -q` -> 119 passed, 1 skipped in 13.38s.
-- `RAN: .venv\Scripts\python.exe -m pytest tests\test_schedule_d_extraction_m9.py -q` -> 1 failed, 2 passed in 6.75s. This is the inherited known-red `test_schedule_d_fixture_drafts_include_schema_valid_band_tables`; its three unexpected prompts are the documented pre-existing baseline, not a selector-consumer regression.
-- `RAN: .venv\Scripts\python.exe tools\check_ascii.py` -> ASCII check OK.
-- `RAN: .venv\Scripts\python.exe -m tax_graph.cli validate 2025` -> exit 0; graph integrity OK, reconcile names the existing five instruction-only manifest documents.
-- `RAN: git diff --check` -> no output.
-- `RAN: git diff --stat -- graph/2025/nodes graph/2025/edges graph/2025/rules graph/2025/field_maps` -> no output; protected set unchanged.
-
-Changed files are the selector, derivation harness, verification documentation, and
-`tests/test_m20_s51.py`. No graph artifact, draft, prompt, or human-review claim was written.
-
 ## From Architect
 
-- **M20-S51 TASK - MAKE THE DERIVATION DENOMINATOR HONEST (Architect, Claude Opus 5, 2026-08-04).**
-  Ledger: the RAN/NOT RUN rule, D10. **No promotion. No prompt tuning. This round is allowed to make
-  the numbers look WORSE, and probably should.**
+- **M20-S54 TASK - A LOOKUP TABLE MUST BE COMPLETE, AND A SKIP REASON MUST BE TRUE (Architect,
+  Claude Opus 5, 2026-08-04, from the S51 provider leg).** Ledger: the RAN/NOT RUN rule, D10.
+  **No prompt tuning. Fail closed; do not fill a missing band with a guess.**
 
-  **Why.** S50 ran the pipeline at Form 2441 and got `12 attempted, 12 derived, status: complete,
-  gapped: 0` on a form with **35 line anchors**. The 23 unattempted lines are reported nowhere. The
-  selector is `_is_formula_node` in `tax_graph/extract/outline_pipeline.py:460`, a twelve-entry list
-  of English cues; `smallest of line` is missing while `smaller of line` is present, which alone
-  drops 2441 lines 6, 20 and 24. **Every derived/attempted ratio this phase has published - 92/96,
-  17/17, 7/7 - is a ratio against this list, not against the form.** That is the metric John has
-  been reading, and it flatters us.
+  **Why.** Live on Form 2441 line 8 the model emitted the named-role lookup correctly in SHAPE and
+  transcribed **6 of the 16 printed bands**, dropping four contiguous ranges out of the middle.
+  Nothing caught it, because no validator inspects a lookup table for completeness. A truncated
+  table returns nothing for a filer whose AGI lands in a hole, which is worse than an error - it is
+  a wrong return that looks like a working one.
 
-  **Step 1 - report the denominator before changing it.** For every document in the manifest, emit
-  per line anchor: the anchor, the outline `kind`, whether the selector admits it, and the cue that
-  matched. **Deterministic, no provider.** Report the totals: line anchors, admitted, dropped. This
-  is the measurement that tells us how big the problem is outside 2441 - do not skip it to get to
-  the fix.
+  **Step 1 - a completeness validator for `LOOKUP_TABLE`.** Given the printed table in the evidence,
+  check that every band appears, that the bands are contiguous with no gap and no overlap, and that
+  the bounds match the source. **Hard-fail on a gap.** Report what it catches on 2441 line 8 and on
+  every other lookup in the corpus. **Do NOT reconstruct the missing bands** - the validator's job
+  is to refuse, and a repaired-by-inference table would be exactly the fabrication this project
+  refuses everywhere else.
 
-  **Step 2 - the report grows a third category.** Today a row is `derived`, `repaired`, `gapped` or
-  `errored`, and a line that was never a row is nothing at all. Add **`skipped`** with a named
-  reason per line anchor, carried into the per-document summary alongside the existing counts, and
-  make `status: complete` mean **every anchor accounted for**, not every attempted row succeeded.
-  **A document with unexplained anchors must not report `complete`.**
+  **Step 2 - resolve the role/payload disagreement.** The same row emitted
+  `payload: operand role is only valid on LOOKUP_TABLE arguments`. Report where the grammar and the
+  validator disagree about which arguments may carry a role, and fix the disagreement in whichever
+  one is wrong. **Report which, with the reason.**
 
-  **Step 3 - widen the selector, deterministically.** Do not replace the cue list with a model call.
-  Add the missing superlative forms and the obvious siblings, and report what each addition admits -
-  **per document, before and after**. Anything that is genuinely not a computed cell (a heading, a
-  name field, an identifying number) should land in `skipped` with a reason, not silently outside
-  the count. Two known junk anchors on 2441 are the page header `21` and a duplicate `12`; those are
-  structure defects (S3b), so classify them honestly and leave them.
+  **Step 3 - a `totals` node must have its label read.** `_formula_selector_decision` returns False
+  on kind before reaching the cue loop, so 2441 lines 3 and 30 are dropped despite their labels
+  containing `add the amount`. Fix the ordering, and report every document whose denominator moves.
 
-  **Step 4 - report, do not fix, what the wider denominator lets in.** The newly admitted 2441 rows
-  include line 8's 16-band AGI table, three `smallest of` rows, and the filing-status constants on
-  19/21/27. **Report what the model does with them in the Architect's provider leg; do not add an
-  operation, a parameter node, or a prompt example to make them pass.**
+  **Step 4 - a skip reason must be true.** Those two lines currently report
+  `selector_no_formula_cue` when the label HAS a cue and the code never looked. **A reason that
+  misdescribes the cause is worse than no reason.** Audit the reason enum against what the code
+  actually did and report any other case where they diverge.
 
-  **Do not:** promote anything; edit anything under `graph/2025/` outside `_drafts/`; tune the
-  prompt; invent an operation; hide a newly visible failure by narrowing the denominator again.
-  **Stop conditions:** any diff in the protected directories; `derive_cells` acquiring a disk write.
-  Tier 3. Declared files plus honest `RAN:`/`NOT RUN:` - **the provider leg is the Architect's**.
-  ASCII, `git diff --check`, module-form `validate 2025`. **ONE local commit.**
+  **Step 5 - make `status: incomplete` reachable or delete it.** Today every anchor is admitted or
+  skipped by construction, `unaccounted` is always 0, and the state cannot occur. Either give the
+  builder a path that produces it - an anchor it genuinely cannot classify - or remove the state and
+  say plainly in the report that classification is total. **A guard that cannot fire is worse than
+  no guard**, because it reads as protection.
+
+  **Do not:** fill in a missing lookup band; tune the prompt; promote anything; edit `graph/2025/`
+  outside `_drafts/`; widen the cue list further in this round. **Stop conditions:** any diff in the
+  protected directories; a lookup table passing validation with a gap in it. Tier 3. Honest
+  `RAN:`/`NOT RUN:` - **the provider leg is the Architect's**. ASCII, `git diff --check`, module-form
+  `validate 2025`. **ONE local commit.**
+
+  **NOT IN THIS ROUND, recorded so it is not lost:** 2441 lines 19, 21 and 27 emitted
+  `require_input` for values the form face prints ($5,000/$2,500 and $3,000/$6,000). That is John's
+  filer-provided-is-a-failover ruling and the long-open role-keyed-constant question, and it wants
+  its own round rather than being smuggled into a validator change.
 
 - **M20-S52 TASK - THE INCOMPLETE-CELL PAYLOAD (Architect, Claude Opus 5, 2026-08-04, from John's
   approval-is-the-gate ruling).** Ledger: the RAN/NOT RUN rule, D10. **Additive only. No computation
@@ -533,6 +517,14 @@ Changed files are the selector, derivation harness, verification documentation, 
 
 ## Recent rounds (condensed; full narration in git history - `git show <hash>`)
 
+- **M20-S51 (`1541a67`, Architect-verified; provider leg Architect-run):** the derivation
+  denominator is explicit. `build_derivation_denominator` reports every line anchor as admitted
+  or skipped with a named reason, keeping the pre-S51 decision beside the current one. Corpus:
+  478 anchors, 108 admitted before, 121 now; 2441 goes 12 -> 19 of 35. Architect's live leg put
+  line 8's AGI table in front of the model for the first time: the named-role lookup shape held
+  and **6 of 16 bands were transcribed**, with no validator checking completeness. Three round
+  defects (a `totals` label never read, a skip reason that misdescribes the cause, an unreachable
+  `incomplete` state) -> **S54**.
 - **M20-S50 (`f637df0` manifest + `059231e` report, Architect-verified; provider leg Architect-run):**
   the 2441 reliability exercise. Manifest declaration with Architect-hashed sha pins; reconcile clean
   both directions. Two live runs: 12 attempted of 35 line anchors, derived 12 / 11+1 repaired, and
