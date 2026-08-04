@@ -43,6 +43,33 @@ NON_FORMULA_REVIEW_DOCUMENTS = frozenset({
 })
 
 
+# Keep the selector deterministic and inspectable.  The first group is the
+# legacy denominator used by earlier M20 runs.  The second group contains
+# only lexical siblings that are visible in printed form labels; it is not a
+# model call and it does not infer arithmetic from arbitrary prose.
+_LEGACY_FORMULA_CUES = (
+    ("add_line", "add line"),
+    ("add_the_amount", "add the amount"),
+    ("subtract_line", "subtract line"),
+    ("amount_from_line", "amount from line"),
+    ("amount_of_line", "amount of line"),
+    ("more_than_line", "more than line"),
+    ("less_than_line", "less than line"),
+    ("combine_line", "combine line"),
+    ("multiply_line", "multiply line"),
+    ("smaller_of_line", "smaller of line"),
+    ("larger_of_line", "larger of line"),
+    ("one_half_of_line", "one-half of line"),
+)
+
+_WIDENED_FORMULA_CUES = (
+    ("smallest_of_line", "smallest of line"),
+    ("largest_of_line", "largest of line"),
+    ("amount_shown_below", "amount shown below"),
+    ("dollar_constant", "enter $"),
+)
+
+
 def generate_outline_first_drafts(
     document: SourceDocumentInput,
     *,
@@ -458,30 +485,136 @@ def _formula_outline_nodes(nodes: list[OutlineNode]) -> list[OutlineNode]:
 
 
 def _is_formula_node(node: OutlineNode) -> bool:
+    """Return whether the widened deterministic selector admits a node."""
+    return _formula_selector_decision(node, widened=True)["admitted"]
+
+
+def _formula_selector_decision(
+    node: OutlineNode,
+    *,
+    widened: bool,
+) -> dict[str, Any]:
+    """Explain one formula-selector decision without consulting a provider.
+
+    ``widened=False`` preserves the pre-S51 selector so the denominator report
+    can show both the flattering historical number and the honest current
+    number.  The returned cue is a stable name, not a copy of arbitrary source
+    prose, so reports can be compared across runs.
+    """
     if node.kind == "transaction_table" and "h" in node.columns:
-        return True
+        return {"admitted": True, "cue": "transaction_table_column_h"}
     if node.kind == "totals" and bool(node.columns):
-        return True
+        return {"admitted": True, "cue": "outline_kind_totals"}
     if node.kind != "line" or not node.line_anchor:
-        return False
+        return {"admitted": False, "cue": None}
+
     label = node.label.lower()
-    return any(
-        cue in label
-        for cue in (
-            "add line",
-            "add the amount",
-            "subtract line",
-            "amount from line",
-            "amount of line",
-            "more than line",
-            "less than line",
-            "combine line",
-            "multiply line",
-            "smaller of line",
-            "larger of line",
-            "one-half of line",
+    cues = _LEGACY_FORMULA_CUES
+    if widened:
+        cues = (*cues, *_WIDENED_FORMULA_CUES)
+    for cue_name, phrase in cues:
+        if phrase in label:
+            return {"admitted": True, "cue": cue_name}
+    return {"admitted": False, "cue": None}
+
+
+def build_derivation_denominator(
+    document: Any,
+    *,
+    outline: Any | None = None,
+) -> dict[str, Any]:
+    """Build the deterministic per-anchor derivation denominator report.
+
+    Every printed line anchor is classified as admitted or explicitly
+    skipped.  This report is measurement data for the derivation harness; it
+    does not write drafts, graph objects, or human verdicts.
+    """
+    tree = outline if outline is not None else build_outline_tree(document)
+    anchors = [
+        node
+        for node in _flatten_nodes(tree.children)
+        if node.line_anchor
+    ]
+    outline_anchor_counts: dict[str, int] = {}
+    for node in anchors:
+        anchor = str(node.line_anchor).lower()
+        outline_anchor_counts[anchor] = outline_anchor_counts.get(anchor, 0) + 1
+
+    entries: list[dict[str, Any]] = []
+    newly_admitted_by_cue: dict[str, int] = {}
+    skipped_by_reason: dict[str, int] = {}
+    for node in anchors:
+        anchor = str(node.line_anchor).lower()
+        before = _formula_selector_decision(node, widened=False)
+        after = _formula_selector_decision(node, widened=True)
+        skip_reason = None
+        if not after["admitted"]:
+            skip_reason = _skip_reason_for_anchor(
+                node,
+                outline_anchor_count=outline_anchor_counts.get(anchor, 0),
+            )
+            skipped_by_reason[skip_reason] = skipped_by_reason.get(skip_reason, 0) + 1
+        elif not before["admitted"]:
+            cue = str(after["cue"])
+            newly_admitted_by_cue[cue] = newly_admitted_by_cue.get(cue, 0) + 1
+        entries.append(
+            {
+                "anchor": anchor,
+                "label": node.label,
+                "outline_kind": node.kind,
+                "before": {
+                    "selector_admits": bool(before["admitted"]),
+                    "selector_cue": before["cue"],
+                },
+                "after": {
+                    "selector_admits": bool(after["admitted"]),
+                    "selector_cue": after["cue"],
+                },
+                "selector_admits": bool(after["admitted"]),
+                "selector_cue": after["cue"],
+                "status": "admitted" if after["admitted"] else "skipped",
+                "skip_reason": skip_reason,
+            }
         )
-    )
+
+    admitted = sum(item["status"] == "admitted" for item in entries)
+    skipped = sum(item["status"] == "skipped" for item in entries)
+    accounted = admitted + skipped
+    if not entries:
+        status = "empty"
+        reason = "document outline has no line anchors"
+    elif accounted == len(entries):
+        status = "complete"
+        reason = None
+    else:
+        status = "incomplete"
+        reason = "one or more line anchors were not classified"
+    return {
+        "status": status,
+        "reason": reason,
+        "outline_node_count": len(_flatten_nodes(tree.children)),
+        "line_anchor_count": len(entries),
+        "legacy_admitted": sum(bool(item["before"]["selector_admits"]) for item in entries),
+        "admitted": admitted,
+        "skipped": skipped,
+        "accounted": accounted,
+        "unaccounted": len(entries) - accounted,
+        "newly_admitted_by_cue": dict(sorted(newly_admitted_by_cue.items())),
+        "skipped_by_reason": dict(sorted(skipped_by_reason.items())),
+        "anchors": entries,
+    }
+
+
+def _skip_reason_for_anchor(node: OutlineNode, *, outline_anchor_count: int) -> str:
+    """Name why a printed anchor stays outside the derivation denominator."""
+    label = node.label.lower().strip()
+    if label.startswith("internal revenue service") or "sequence no." in label:
+        return "structure_header_anchor"
+    if outline_anchor_count > 1:
+        return "structure_duplicate_anchor"
+    if node.kind in {"heading", "section"}:
+        return "structure_non_cell_anchor"
+    return "selector_no_formula_cue"
 
 
 def _record_micro_failure(stats: dict[str, Any], node: OutlineNode, error: Exception) -> None:

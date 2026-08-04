@@ -182,10 +182,15 @@ the free layers + human-review the genuine deltas the IRS actually made.
 
 Per extraction run, write `metrics.yaml` beside `review.md`: objects by kind, tier
 distribution, flags by layer, resolved model/provider calls/tokens/cost by call, examples
-mined/confirmed, and (filled at promotion) human minutes spent + escapes found. The
-draft provenance records the requested model and resolved model/provider for objects
-produced by a live call; if the provider omits any resolved identity or usage value,
-the field remains null rather than claiming attribution. OpenRouter routing preferences
+mined/confirmed, and (filled at promotion) human minutes spent + escapes found. Derivation
+runs also report the denominator explicitly: every printed line anchor is either admitted by
+the deterministic selector or recorded as `skipped` with a named reason. `complete` means all
+anchors are accounted for, not that every admitted model call succeeded. The report preserves
+the legacy selector count and names which deterministic cue widened the denominator, so a
+better-looking ratio cannot hide an omission. The draft provenance records the requested model
+and resolved model/provider for objects produced by a live call; if the provider omits any
+resolved identity or usage value, the field remains null rather than claiming attribution.
+OpenRouter routing preferences
 are configured under `llm.provider_routing` and are recorded in the run envelope; raw
 API field names are preserved so a pinned provider, disabled fallbacks, and a
 quantization filter are inspectable. A `tax-graph verify

@@ -316,6 +316,36 @@ client-managed server dies.
   (`graph/2025/field_maps/form_2441_2025.yaml`, 24 excluded nodes), and 2441 is the only document
   parked in a `graph_ext/` overlay. **That special case is the defect.**
 
+## Worker status - M20-S51
+
+**Implementation complete locally (2026-08-04; no promotion and no provider leg).** The
+deterministic selector now preserves the legacy decision and reports the widened decision per
+outline anchor. Widening is limited to `smallest of line`, `largest of line`, `amount shown below`,
+and dollar constants (`enter $`); direct source-entry labels remain in the non-formula path.
+`build_derivation_denominator` emits admitted/skipped counts, named skip reasons, legacy/current
+cue counts, and every anchor record. The derivation harness carries this report into provider
+reports and writes one provider-free report per manifest document. A run is `complete` only when
+all outline anchors are accounted for; an empty outline is `empty`.
+
+**Measured provider-free corpus:** `experiments\derive_cells_s25.py --root . --year 2025
+--no-provider --output-dir C:\tmp\m20-s51-denominator` -> exit 0; 23 denominator reports. Form
+2441: 35 anchors, legacy admitted 12, current admitted 19, skipped 16, status `complete`;
+new cues: `amount_shown_below` 2, `dollar_constant` 2, `smallest_of_line` 3. The provider leg is
+**NOT RUN: Worker sandbox has no outbound network; Architect owns the live-provider execution.**
+
+**Tests and gates:**
+
+- `RAN: .venv\Scripts\python.exe -m pytest tests\test_m20_s51.py tests\test_m20_s31.py tests\test_m20_s41.py tests\test_derive_cells_s30.py -q` -> 20 passed in 11.56s.
+- `RAN: .venv\Scripts\python.exe -m pytest tests\test_extract_outline_m4.py tests\test_extract_m16.py tests\test_structure_m20.py tests\test_derive_cells_m20.py tests\test_m20_s31.py tests\test_prompt_experiment_m20.py tests\test_tables_detector_m6b.py -q` -> 119 passed, 1 skipped in 13.38s.
+- `RAN: .venv\Scripts\python.exe -m pytest tests\test_schedule_d_extraction_m9.py -q` -> 1 failed, 2 passed in 6.75s. This is the inherited known-red `test_schedule_d_fixture_drafts_include_schema_valid_band_tables`; its three unexpected prompts are the documented pre-existing baseline, not a selector-consumer regression.
+- `RAN: .venv\Scripts\python.exe tools\check_ascii.py` -> ASCII check OK.
+- `RAN: .venv\Scripts\python.exe -m tax_graph.cli validate 2025` -> exit 0; graph integrity OK, reconcile names the existing five instruction-only manifest documents.
+- `RAN: git diff --check` -> no output.
+- `RAN: git diff --stat -- graph/2025/nodes graph/2025/edges graph/2025/rules graph/2025/field_maps` -> no output; protected set unchanged.
+
+Changed files are the selector, derivation harness, verification documentation, and
+`tests/test_m20_s51.py`. No graph artifact, draft, prompt, or human-review claim was written.
+
 ## From Architect
 
 - **M20-S51 TASK - MAKE THE DERIVATION DENOMINATOR HONEST (Architect, Claude Opus 5, 2026-08-04).**

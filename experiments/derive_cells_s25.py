@@ -40,6 +40,7 @@ from tax_graph.extract.outline import (
     build_instruction_sections_frame,
     build_outline_tree,
 )
+from tax_graph.extract.outline_pipeline import build_derivation_denominator
 
 
 def persist_instruction_frame(
@@ -110,6 +111,7 @@ def run_real_document(
     document = load_document_input(document_id, year=year, root=root_path, config=config)
     outline = build_outline_tree(document)
     outline_nodes = _flatten_outline_nodes(outline.children)
+    denominator = build_derivation_denominator(document, outline=outline)
     frame = build_cell_frame_from_document(document)
     client = build_llm_client(config)
     prompt = load_cell_prompt(config, root=root_path)
@@ -129,6 +131,7 @@ def run_real_document(
         "repaired": raw_status_counts.get("repaired", 0),
         "gapped": raw_status_counts.get("gapped", 0),
         "errored": raw_status_counts.get("error", 0) + raw_status_counts.get("errored", 0),
+        "skipped": int(denominator["skipped"]),
     }
     row_details = [
         {
@@ -167,6 +170,7 @@ def run_real_document(
         "row_status_counts": status_counts,
         "raw_row_status_counts": dict(sorted(raw_status_counts.items())),
         "rows_detail": row_details,
+        "denominator": denominator,
         "validation": result.validation_report,
         "reference_inventory": {
             "total_graph_nodes": len(reference_inventory.get("graph_nodes", [])),
@@ -242,12 +246,26 @@ def run_documents(
             continue
 
         if no_provider:
+            denominator = _measure_denominator(
+                root=root_path,
+                year=year,
+                document_id=document_id,
+            )
+            destination.mkdir(parents=True, exist_ok=True)
+            denominator_path = destination / f"m20_s51_{document_id}_denominator.yaml"
+            denominator_path.write_text(
+                yaml.safe_dump(denominator, sort_keys=False, allow_unicode=False),
+                encoding="utf-8",
+                newline="\n",
+            )
             reports.append(
                 {
                     "document_id": document_id,
                     "status": "prepared",
                     "instruction_frame": str(frame_path),
                     "instruction_coverage": str(coverage_path),
+                    "denominator_report": str(denominator_path),
+                    "denominator": denominator,
                     "reason": "provider disabled",
                 }
             )
@@ -275,9 +293,16 @@ def run_documents(
             )
             continue
         rows_attempted = report["rows_attempted"]
+        denominator = report.get("denominator") or {}
+        if denominator:
+            status = str(denominator.get("status") or "incomplete")
+        else:
+            # Preserve the old shape for test doubles and older reports. Real
+            # runs always carry the explicit denominator above.
+            status = "empty" if rows_attempted == 0 else "complete"
         summary = {
             "document_id": document_id,
-            "status": "empty" if rows_attempted == 0 else "complete",
+            "status": status,
             "rows_attempted": rows_attempted,
             **report["row_status_counts"],
             "outline_node_count": report["outline_node_count"],
@@ -289,10 +314,31 @@ def run_documents(
                 report["validation"].get("validator_failures_by_kind", {})
             ),
         }
-        if rows_attempted == 0:
-            summary["reason"] = "document outline produced no derivation rows"
+        if denominator:
+            summary["denominator"] = denominator
+        if denominator and denominator.get("reason"):
+            summary["reason"] = denominator["reason"]
+        elif rows_attempted == 0:
+            summary["reason"] = (
+                denominator.get("reason")
+                if denominator
+                else "document outline produced no derivation rows"
+            )
         reports.append(summary)
     return reports
+
+
+def _measure_denominator(
+    *,
+    root: str | Path,
+    year: str,
+    document_id: str,
+) -> dict[str, Any]:
+    """Measure one manifest document without constructing a provider client."""
+    root_path = Path(root).resolve()
+    document = load_document_input(document_id, year=year, root=root_path)
+    outline = build_outline_tree(document)
+    return build_derivation_denominator(document, outline=outline)
 
 
 def manifest_document_ids(*, root: str | Path, year: str) -> list[str]:
