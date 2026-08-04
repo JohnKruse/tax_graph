@@ -17,38 +17,74 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## BALL
 
-**BALL: ARCHITECT - verify M20-S47, then push the new local commit.** S47 repairs the provider
-schema defect in S46 while retaining the verified projection and lookup semantics.
+**BALL: WORKER - M20-S48 (THREE-STATE REVIEW VOCABULARY, PLUS ONE MEASURED NOISE FIX).** Task block
+under **From Architect**. **S47 is ACCEPTED at `1b9f116`** - the corpus is alive again and 1040 line
+34 plus 6251 lines 18 and 39 now project real engine rules with zero findings.
 
-The S46 commit `85a83ca` must not be pushed by itself. The S47 commit below is the required repair;
-the provider corpus leg remains Architect-side because this Worker has no outbound network.
+**The conditional/lookup line is closed.** S46 built it, S47 made it valid for the provider, and both
+are pushed. **S48 returns to the review loop** and closes the gap John raised directly: the graph is
+two-state where his model is accepted / rejected / problem.
 
-**Keep the whole S46 slice.** Named lookup roles, the fail-closed bare list, evidence-driven
-comparison direction, and projection onto existing rule ids were all verified working by the
-Architect. Only `expression_schema()` was wrong: `role` sat in `properties` and not in `required`,
-which OpenAI strict mode rejects outright. S47 adds the missing strict requirements and a standing guard.
-
-**Known gaps, deliberately NOT S47:** the harvester emits no computed nodes or `CALCULATES` edges;
-the review vocabulary is two-state, queued as S48. **Rollover policy and run alerting** are pinned
-at `docs/engineering-plan.md` -> Year rollover (TY2026), seam 6. **Notation ruling** is below:
-borrow the decision-table shape for lookups, adopt no formalism.
+**Known gaps, deliberately NOT S48:** the harvester emits no computed nodes or `CALCULATES` edges,
+so it does not harvest arithmetic; and engine behaviour for non-confirming nodes is REPORTED in S48,
+not wired - that is John's call. **Rollover policy and run alerting** are pinned at
+`docs/engineering-plan.md` -> Year rollover (TY2026), seam 6.
 
 ## Current round
 
-**M20-S47 WORKER COMPLETE (2026-08-04).** The whole S46 slice is retained. `expression_schema()`
-now requires `role` on every leaf alternative at every depth and encodes no role as
-`{"type": ["string", "null"]}`. Ordinary operands accept `role: null`; `LOOKUP_TABLE` rejects
-missing or null roles with `LOOKUP_TABLE arguments must be named leaf operands with a role`.
+**M20-S47 ACCEPTED (Architect, Claude Opus 5, 2026-08-04) at `1b9f116`. The corpus is alive again
+and the three target rows are now EXECUTABLE, which is what S46 and S47 existed to achieve.**
 
-**RAN:** `$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\.codex\visualizations\2026\08\04\019fcd89-309b-7190-b5e5-c41ec44f1a95'; .venv\Scripts\python.exe -m pytest tests\test_derive_cells_m20.py tests\test_prompt_experiment_m20.py tests\test_m20_s31.py -q` -> **68 passed** (1 pre-existing `.pytest_cache` ACL warning).
+**The schema fix is verified by walking it, not by trusting the report.** Zero objects have a
+property outside `required`, at any depth, and `role` is nullable
+(`"type": ["string","null"]`) rather than omitted - which is what strict mode requires.
 
-**NOT RUN:** provider corpus leg. The Worker sandbox has no outbound network; S47 explicitly leaves
-that leg to the Architect. No external provider call was attempted.
+**The guard test is the durable part.**
+`test_expression_schema_requires_every_declared_property_at_every_depth` asserts
+`set(properties) <= set(required)` at every depth, with no network and no cost. That is the check
+whose absence let a 100%-dead corpus reach an Architect review.
 
-**RAN:** `.venv\Scripts\python.exe tools\check_ascii.py` -> `ASCII check OK`; `git diff --check` ->
-clean; `.venv\Scripts\python.exe -m tax_graph.cli validate 2025` -> exit 0, graph integrity OK;
-protected-set `git diff --stat -- graph/2025/nodes graph/2025/edges graph/2025/rules graph/2025/field_maps`
--> empty.
+**S46's semantics survived the change**, tested directly: a bare ordered lookup and a null-role
+lookup both still fail closed with `LOOKUP_TABLE arguments must be named leaf operands with a
+role`, and a properly named lookup still projects onto `lookup_selected_value`.
+
+**EXECUTABLE, LIVE, IN BOTH RUNS - the actual goal:**
+
+| row | projected rules | findings |
+| --- | --- | --- |
+| 1040 line 34 | `if_greater_than_currency`, `subtract_currency` | NONE |
+| 6251 line 18 | `if_less_than_currency`, `lookup_selected_value`, `multiply_currency`, `subtract_currency` | NONE |
+| 6251 line 39 | `if_less_than_currency`, `lookup_selected_value`, `multiply_currency`, `subtract_currency` | NONE |
+
+The 6251 lookups carry named roles - `key`, `default`, `married_filing_separately` - so the borrowed
+decision-table shape is running end to end on live model output. **These rows cover married filing
+separately AND now produce rules the engine can execute.** Three rounds ago they were single-filer
+only; two rounds ago they had a status enum in a numeric slot; one round ago they derived and
+computed nothing.
+
+| run | attempted | derived | repaired | errored | resolved | `unmapped_operation` |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| S44 | 96 | 92 / 92 | 1 / 1 | 3 | 93 | 9 / 7 |
+| S46 | 96 | **0 / 0** | 0 | 96 | 0 | - |
+| **S47** | 96 | 89 / 91 | 4 / 2 | 3 | **93 / 93** | **3 / 3** |
+
+**Derived 89 on run A is variance, not a cost of the new lookup constraint** - I checked the repairs
+rather than assuming. All four are ordinary kinds we have seen for months (`missing_floor`,
+`quote_not_verbatim` x2, `operand_not_printed`); **none is role-related**. Resolved held at 93 in
+both runs and `unmapped_operation` fell from 9/7 to 3/3.
+
+**Gates:** 82 passed on a short temp root, ASCII OK, `git diff --check` clean, protected set
+byte-identical across `cc73710..1b9f116`.
+
+**SMALL DEFECT FOUND, DIAGNOSED, NOT A BLOCKER.** `unresolved_comparison_direction` fires once per
+run on 1040 line 34 - a row whose direction resolves perfectly. Cause: `_projection_warnings` feeds
+`expression_to_graph` a joined blob of form face + instruction text + quote. The face text says "If
+line 33 is **more than** line 24" and is unambiguous on its own, but the instruction text also
+contains "**or more**", and the extra cue makes the resolver report the direction as conflicting.
+Measured: face text alone -> `findings=NONE` and the correct `if_greater_than_currency`; joined blob
+-> unresolved. **The real projection is correct; only the warning is wrong.** This is the S44 noise
+class again - a warning that trains reviewers to ignore warnings - so it is fixed in S48 rather than
+left standing.
 
 ## Architect decision - notation
 
@@ -242,53 +278,48 @@ client-managed server dies.
 
 ## From Architect
 
-- **M20-S47 TASK - FIX THE PROVIDER SCHEMA S46 BROKE, AND GUARD IT (Architect, Claude Opus 5,
-  2026-08-04).** Ledger: the RAN/NOT RUN rule. **Small and surgical. KEEP the whole S46 slice -
-  the projection, the named lookup roles, the fail-closed bare list, and the evidence-driven
-  direction are all verified correct. Only the emitted JSON schema is wrong.**
+- **M20-S48 TASK - THREE-STATE REVIEW VOCABULARY, PLUS ONE MEASURED NOISE FIX (Architect,
+  Claude Opus 5, 2026-08-04).** Ledger: the RAN/NOT RUN rule. **Deterministic, no provider leg.**
 
-  **The defect.** `expression_schema()` puts `role` in the leaf operand `properties` and not in
-  `required`. OpenAI structured output rejects the whole request with
-  `'required' is required to be supplied and to be an array including every key in properties.
-  Missing 'role'`. Result: **two full corpus runs, 96 attempted, 0 derived, 96 errored.** 12 schema
-  objects are affected - every leaf variant at all three nesting depths.
+  **Why. John's model is three-state and the system is two-state.** He described it as
+  *"an accepted/rejected/problem flag... once the flag was in accepted mode, we were Thunderbirds
+  Go."* S45 measured the gap: the ledger schema accepts arbitrary judgement strings, the review
+  surface emits only `confirmed` and `rejected`, no `problem` state exists anywhere, and the bridge
+  therefore applies `confirmed` only and reports the rest as unsupported.
 
-  **Step 1 - make the emitted schema strict.** Every key in `properties` must appear in `required`,
-  at every nesting depth. Express "this operand has no role" as a **nullable type**
-  (`"type": ["string","null"]`) rather than by omitting the key, which is what strict mode requires.
-  **Check the whole schema, not just `role`** - report whether any other object has the same
-  shape.
+  **Step 1 - define the three states end to end.** Review surface, ledger schema, and what each
+  writes onto a node. `problem` is the one John cares about most: it is the reviewer saying *this is
+  wrong and I cannot fix it here*, which is different from rejecting a single derivation. **Report
+  the vocabulary you land on before wiring it**, and keep the names the reviewer sees in plain
+  English rather than internal tokens.
 
-  **Step 2 - the guard test, which is the real deliverable.** Add a deterministic test that walks
-  every object in `expression_schema()` and asserts `set(properties) <= set(required)`. **No network,
-  no provider, no cost** - this would have caught the defect locally. It is a standing guard against
-  every future schema change, and its absence is the process gap this round exists to close.
+  **Step 2 - extend the bridge, reusing the existing applier.** `apply_address_verdicts` currently
+  applies `confirmed`. Extend it to all three, keeping every S45 property intact: dry-run by
+  default, exact address plus one node binding, and **a content-fingerprint mismatch still blocks
+  the write**. Unit-test each state, including the stale path for a non-confirming state.
 
-  **Step 3 - confirm the round's own semantics still hold after the schema change.** A nullable
-  `role` must not weaken the S46 rules: a `LOOKUP_TABLE` with bare or null-role arguments must still
-  fail closed with `LOOKUP_TABLE arguments must be named leaf operands with a role`, and a lookup
-  with exactly one `key` plus uniquely named branches must still project onto
-  `lookup_selected_value`. Unit-test both.
+  **Step 3 - REPORT, do not wire: what should a rejected or problem node mean to the ENGINE?**
+  Candidates: refuse to compute and report unresolved; compute but flag the result; or exclude the
+  node and report a gap. **This is John's call and it has real consequences for a filer's return.**
+  Present the options with what each does to `execute_tax_tree` output and stop. Do not change
+  engine behaviour in this round.
 
-  **Step 4 - Architect runs the corpus.** Declare it NOT RUN and say so plainly; do not attempt a
-  provider call, and do not transmit corpus evidence to an external provider. **Numbers to restore:
-  derived 92, resolved 93.** The Architect will also re-verify that 1040 line 34 and 6251 lines 18
-  and 39 project with real rule ids and zero `no reusable rule` findings, which they did in the S46
-  local check.
+  **Step 4 - one unrelated but tiny noise fix, fully diagnosed already.**
+  `_projection_warnings` passes `expression_to_graph` a joined blob of form face + instruction text
+  + quote. On 1040 line 34 the face text alone is unambiguous ("If line 33 is **more than** line
+  24") and resolves to `if_greater_than_currency` with zero findings, but the instruction text also
+  contains "**or more**", and the extra cue makes the resolver report the direction as unresolved.
+  Result: one false `unresolved_comparison_direction` warning per corpus run on a row that is
+  actually correct. **Narrow the evidence used for direction detection to the same text the real
+  projection uses**, or resolve a conflict by preferring the row's own face text. Add a test using
+  1040 line 34's real face and instruction text. **Do not** make the warning a hard failure and do
+  not change how the real projection resolves direction - it is correct.
 
-  **Do not:** revert the S46 design; author or edit anything in `graph/2025/`; widen the operation
-  enum; weaken the fail-closed lookup rule; attempt a live provider call. **Stop conditions:** any
-  diff in the protected directories; the guard test passing while the schema still has a property
-  outside `required`. Tier 3. ASCII, `git diff --check`, module-form `validate 2025`.
-  **ONE local commit.**
-
-- **M20-S48 (QUEUED, SMALL) - EXPAND THE REVIEW VOCABULARY TO ACCEPTED / REJECTED / PROBLEM.** S45
-  found the ledger schema accepts arbitrary judgement strings, the review surface emits only
-  `confirmed` and `rejected`, and no `problem` state exists anywhere. **John's model is three-state**
-  and the bridge applies `confirmed` only. Define the three states end to end - review surface,
-  ledger schema, and what each writes onto a node - then extend the bridge. Report what a `rejected`
-  or `problem` node should mean to the ENGINE (refuse to compute? compute with a warning? report
-  unresolved?) and let John rule before wiring engine behaviour.
+  **Do not:** author or edit anything in `graph/2025/`; write a second verdict applier; change
+  engine behaviour for non-confirming states; weaken the fingerprint check; attempt a live provider
+  call. **Stop conditions:** any diff in the protected directories; a confirmation applied whose
+  fingerprint does not match; the direction fix changing which rule 1040 line 34 projects. Tier 3.
+  ASCII, `git diff --check`, module-form `validate 2025`. **ONE local commit.**
 
 ## Architect decisions
 
@@ -344,6 +375,14 @@ client-managed server dies.
 
 ## Recent rounds (condensed; full narration in git history - `git show <hash>`)
 
+- **M20-S46 + S47 (`85a83ca` REWORK, fixed at `1b9f116`, Architect-verified):** conditionals and
+  lookups are now executable. `IF_ELSE` maps to `if_greater_than_currency`/`if_less_than_currency`
+  with direction resolved deterministically from the row's own wording; `LOOKUP_TABLE` maps to
+  `lookup_selected_value` with named roles borrowed from the DMN decision-table shape; a bare
+  ordered lookup fails closed. S46 shipped an invalid provider schema (`role` in `properties` but
+  not `required`) that killed the live corpus 96/96 - S47 made the schema strict and added the
+  local guard test that would have caught it. Live: derived 89/91, resolved 93/93,
+  `unmapped_operation` 9/7 -> 3/3, and the three target rows project real rules with zero findings.
 - **M20-S45 (`467685c`, Architect-verified):** `apply_address_verdicts` plus
   `review apply-address-verdicts`, dry-run by default, reusing the existing `_apply_graph_review`
   rather than adding a second applier. Architect ran the live dry-run: the one real ledger record
@@ -440,6 +479,13 @@ client-managed server dies.
   fingerprints printed. RAN: temporary graph copy using the real ledger record -> `would_apply`, exact
   address/node resolution, node `form_1040_2025_root_line_z`, all three field changes printed, and
   applied/stale/unresolved/ambiguous lists empty because the run was dry.
+- **M20-S47 (2026-08-04, Architect live):** two corpus runs, attempted=96 both, derived 89 and 91,
+  repaired 4 and 2, errored 3, resolved 93 both; `unmapped_operation` 3 and 3. Emitted schema walked
+  directly: zero objects with a property outside `required`, `role` nullable. 1040 line 34 ->
+  `if_greater_than_currency`+`subtract_currency`; 6251 lines 18 and 39 -> `if_less_than_currency`,
+  `lookup_selected_value`, `multiply_currency`, `subtract_currency`; all three zero findings. Bare
+  and null-role lookups still fail closed. 82 passed on a short temp root; ASCII OK;
+  `git diff --check`; protected set byte-identical across `cc73710..1b9f116`.
 - **M20-S44 (2026-08-04, Architect live):** two corpus runs, attempted=96 both, derived 92 and 92,
   repaired 1 and 1, errored 3, resolved 93 both; `unmapped_operation` 9 and 7 (was 12 and 14);
   `operand_type_mismatch` fired once on live data. Type check verified directly: status node in the
