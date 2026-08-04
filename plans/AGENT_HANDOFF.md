@@ -25,9 +25,9 @@ kind of result it was commissioned to find.
 pipeline attempted 12, and the report calls that `status: complete` with `gapped: 0`. The 23 it
 never attempted are invisible in every summary we have published. See **Current round**.
 
-**AWAITING JOHN, does not block S51:** whether 2441's drafts get promoted (Architect's answer is
-NOT YET, with the reason under **Open for Architect**), and what a `questioned` or `rejected` node
-should mean to `execute_tax_tree`. **Rollover policy and run alerting** are pinned at
+**AWAITING JOHN, does not block S51:** what a `questioned` or `rejected` node should mean to
+`execute_tax_tree` - see **Open for Architect**. The 2441 promotion question was WITHDRAWN, see the
+first binding ruling. **Rollover policy and run alerting** are pinned at
 `docs/engineering-plan.md` -> Year rollover (TY2026), seam 6.
 
 ## Current round
@@ -170,6 +170,16 @@ client-managed server dies.
 
 ## Binding rulings (John's, still in force - DO NOT DELETE ON PRUNE)
 
+- **THE ODD DOCUMENTS ARE TREATED EXACTLY AS A FORM IS TREATED (John, restated 2026-08-04; he
+  first said this "a long time ago" and the Architect asked again anyway).** Verbatim: *"these odd
+  things should be treated the same way as a form is treated. They are analogous."* Worksheets,
+  optional extensions, and oddball documents are documents: acquired through the manifest, derived
+  by the same pipeline, reviewed through the same surface, promoted by the same path as the 1040.
+  **There is no second class, no per-form gate, and no separate promotion decision to escalate.**
+  If a question about one of them cannot also be asked about the 1040, it is the wrong question.
+  This is the ruling that makes S42's worksheet harvester and 2441's manifest entry the SAME piece
+  of work, and it condemns the two surviving special cases: `optional_extension` in
+  `graph/2025/field_maps/form_2441_2025.yaml` and the `graph_ext/` overlay that holds 2441 alone.
 - **THE HANDCRAFTED SET IS THE TEST SET, AND IS PROTECTED.** A lot of tokens went into it. It is
   not to be thrown away, promoted over, or edited. It is labeled comparison data. This is the
   origin of the protected-set gate above.
@@ -285,16 +295,13 @@ client-managed server dies.
   Architect's recommendation is **(a)**, because it closes the human loop that everything else
   feeds, and because the reviewer surface is what turns (b) and (c) into something a person can
   act on.
-- **FOR JOHN - do 2441's drafts get promoted? (raised 2026-08-04 by S50. ANSWERED IN PART: you
-  already ruled 2441 is in scope, and it is now declared in the manifest and running.)**
-  **Architect's answer is NOT YET, and the reason is not quality.** The pipeline covers nine lines
-  the M10 draft left with no edge and it fixes two real defects in that draft, so on content it
-  wins. But it addresses cells as `form_2441_2025_root_line_15` while the existing extension calls
-  the same cell `form_2441_2025_part_iii_line_15`, and promoting now creates two ids for one cell -
-  exactly the identity defect that produced 100% churn in the review queue. **Promotion should wait
-  until S51 makes the denominator honest**, so what gets promoted is a form we have actually
-  covered rather than the 12 of 35 lines the cue list happened to admit. Say the word if you want
-  it promoted anyway and I will spec the id reconciliation first.
+- **WITHDRAWN 2026-08-04: "do 2441's drafts get promoted?" was a malformed question and John said
+  so.** See the new binding ruling below. There is no per-form promotion gate: no form's derived
+  output is promoted, 2441's drafts sit where the 1040's sit, and asking about this one form
+  invented a decision that does not exist. The real finding stands and is pipeline work, not a
+  John call: `optional_extension` appears in exactly ONE file in the entire graph
+  (`graph/2025/field_maps/form_2441_2025.yaml`, 24 excluded nodes), and 2441 is the only document
+  parked in a `graph_ext/` overlay. **That special case is the defect.**
 
 ## From Architect
 
