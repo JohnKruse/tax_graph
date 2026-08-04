@@ -12,11 +12,11 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 @pytest.mark.m3
-def test_manifest_loads_seeded_capital_gains_docs():
+def test_manifest_loads_seeded_source_docs():
     manifest = load_manifest(root=ROOT)
 
     assert manifest.tax_year == 2025
-    assert len(manifest.documents) == 21
+    assert len(manifest.documents) == 23
     assert set(manifest.by_document_id()) == {
         "form_8949_2025",
         "instructions_form_8949_2025",
@@ -39,6 +39,8 @@ def test_manifest_loads_seeded_capital_gains_docs():
         "form_1099_int_2025",
         "form_1099_div_2025",
         "form_13614_c_2025",
+        "form_2441_2025",
+        "instructions_form_2441_2025",
     }
 
 
@@ -71,9 +73,16 @@ def test_manifest_loads_form_instruction_relationships():
     assert entries["schedule_a_2025"].instructions_document_id == "instructions_schedule_a_2025"
     assert entries["schedule_b_2025"].instructions_document_id == "instructions_schedule_b_2025"
     assert entries["form_6251_2025"].instructions_document_id == "instructions_form_6251_2025"
+    assert entries["form_2441_2025"].instructions_document_id == "instructions_form_2441_2025"
     assert entries["form_8949_2025"].expected_sha256 is not None
     assert entries["schedule_d_2025"].expected_sha256 is not None
     assert entries["form_1040_2025"].expected_sha256 is not None
+    assert entries["form_2441_2025"].expected_sha256 == (
+        "6c3c2d19163fa4c4de829abf9a89b43f08b4f4f3cb169740fc7da43e914269ce"
+    )
+    assert entries["instructions_form_2441_2025"].expected_sha256 == (
+        "86f0669e78b1dc00bfb99e956673d4fccee9e40d6c44d53623dd08e62567fd39"
+    )
 
 
 @pytest.mark.m18
@@ -92,6 +101,7 @@ def test_manifest_loads_structured_instruction_urls():
         "instructions_schedule_a_2025": "https://www.irs.gov/instructions/i1040sca",
         "instructions_schedule_b_2025": "https://www.irs.gov/instructions/i1040sb",
         "instructions_schedule_d_2025": "https://www.irs.gov/instructions/i1040sd",
+        "instructions_form_2441_2025": "https://www.irs.gov/instructions/i2441",
     }
 
 

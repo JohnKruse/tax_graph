@@ -1,4 +1,4 @@
-# Acquisition manifest for the 2025 capital-gains slice.
+# Acquisition manifest for the 2025 IRS source corpus.
 tax_year: 2025
 documents:
   - document_id: form_8949_2025
@@ -111,3 +111,15 @@ documents:
     kind: source_document
     url: https://www.irs.gov/pub/irs-pdf/f13614c.pdf
     expected_sha256: 160507ac6daa8cc5e3126ad51ba5c2050c786337048f434f8336b48d92992c9d
+
+  - document_id: form_2441_2025
+    kind: tax_form
+    url: https://www.irs.gov/pub/irs-prior/f2441--2025.pdf
+    instructions_document_id: instructions_form_2441_2025
+    expected_sha256: 6c3c2d19163fa4c4de829abf9a89b43f08b4f4f3cb169740fc7da43e914269ce
+
+  - document_id: instructions_form_2441_2025
+    kind: instructions
+    url: https://www.irs.gov/pub/irs-prior/i2441--2025.pdf
+    instruction_url: https://www.irs.gov/instructions/i2441
+    expected_sha256: 86f0669e78b1dc00bfb99e956673d4fccee9e40d6c44d53623dd08e62567fd39

@@ -1,4 +1,4 @@
-"""M20-S41 tests for manifest reconciliation and corpus selection."""
+"""M20-S41 regression tests for manifest reconciliation and corpus selection."""
 
 from __future__ import annotations
 
@@ -50,7 +50,7 @@ def test_reconcile_names_graph_and_manifest_differences_without_raw_state(
     report = reconcile_document_lists(root=ROOT, year="2025", raw_store=tmp_path / "raw")
 
     assert report.raw_status == "skipped"
-    assert report.difference("graph_not_in_manifest").document_ids == ("form_2441_2025",)
+    assert report.difference("graph_not_in_manifest").document_ids == ()
     assert report.difference("manifest_not_in_graph").document_ids == (
         "instructions_form_6251_2025",
         "instructions_form_8949_2025",
@@ -100,16 +100,16 @@ def test_validate_surfaces_reconcile_ids_without_failing_on_preexisting_differen
     assert validate_command(year="2025", root=ROOT) == 0
     output = capsys.readouterr().out
     assert "document reconcile" in output
-    assert "graph_not_in_manifest: form_2441_2025" in output
+    assert "graph_not_in_manifest: -" in output
     assert "instructions_form_6251_2025" in output
 
 
 def test_manifest_document_ids_are_declared_and_ordered() -> None:
     ids = manifest_document_ids(root=ROOT, year="2025")
 
-    assert len(ids) == 21
+    assert len(ids) == 23
     assert ids[0] == "form_8949_2025"
-    assert ids[-1] == "form_13614_c_2025"
+    assert ids[-2:] == ["form_2441_2025", "instructions_form_2441_2025"]
     assert ids == [entry.document_id for entry in load_manifest(root=ROOT).documents]
 
 
