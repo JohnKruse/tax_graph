@@ -311,9 +311,10 @@ client-managed server dies.
 
 ## From Architect
 
-- **M20-S54 TASK - A LOOKUP TABLE MUST BE COMPLETE, AND A SKIP REASON MUST BE TRUE (Architect,
-  Claude Opus 5, 2026-08-04, from the S51 provider leg).** Ledger: the RAN/NOT RUN rule, D10.
-  **No prompt tuning. Fail closed; do not fill a missing band with a guess.**
+- **M20-S54 TASK - A LOOKUP TABLE MUST BE COMPLETE, A SKIP REASON MUST BE TRUE, AND THE ACTOR IS
+  THE AGENT (Architect, Claude Opus 5, 2026-08-04, from the S51 provider leg plus John's naming
+  call).** Ledger: the RAN/NOT RUN rule, D10. **No prompt tuning. Fail closed; do not fill a missing
+  band with a guess.**
 
   **Why.** Live on Form 2441 line 8 the model emitted the named-role lookup correctly in SHAPE and
   transcribed **6 of the 16 printed bands**, dropping four contiguous ranges out of the middle.
@@ -353,6 +354,20 @@ client-managed server dies.
   protected directories; a lookup table passing validation with a gap in it. Tier 3. Honest
   `RAN:`/`NOT RUN:` - **the provider leg is the Architect's**. ASCII, `git diff --check`, module-form
   `validate 2025`. **ONE local commit.**
+
+  **Step 6 - rename the incomplete-cell actor, decided by John 2026-08-04.** S52 shipped
+  `NOT_COMPUTED_CALLER_MUST_RESOLVE`. **"Caller" was the Architect's word, not the project's** - it
+  entered through the S52 spec, and everywhere else this repo says "caller" it means a CODE caller
+  (`docs/engineering-plan.md` "Callers write"; the M5 archive's "existing callers"). The party John
+  meant is the one `docs/tax_graph_requirements.md:13` already names: **the AI agent** given a
+  verified roadmap, addressed in second person by the MCP server instructions.
+  **Rename to `NOT_COMPUTED_AGENT_MUST_RESOLVE`**, statement *"Not computed; the AI agent must
+  resolve this cell."* John considered `tax agent` and `filing agent` and the Architect checked both
+  against the acquired IRS text: **"enrolled agents" appears in the 1040 instructions as a class of
+  credentialed HUMAN preparers next to CPAs**, and a filing agent is in practice the ERO or
+  transmitter. Both qualifiers name the wrong party; the plain word does not. **Rename every
+  occurrence** - enum, statement, tests, `docs/self-serve-extension.md` - and do it before S53 reuses
+  the builder. Report any persisted `bundle.json` carrying the old string.
 
   **NOT IN THIS ROUND, recorded so it is not lost:** 2441 lines 19, 21 and 27 emitted
   `require_input` for values the form face prints ($5,000/$2,500 and $3,000/$6,000). That is John's
