@@ -17,68 +17,82 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## BALL
 
-**BALL: WORKER - M20-S50 (RUN THE WHOLE PIPELINE AT FORM 2441).** Task block under
-**From Architect**. **S49 is ACCEPTED at `1bd2bf1`** - the try-again loop is closed and the
-Architect drove it live end to end.
+**BALL: WORKER - M20-S51 (MAKE THE DERIVATION DENOMINATOR HONEST).** Task block under
+**From Architect**. **S50 is ACCEPTED** - the 2441 exercise ran end to end and produced exactly the
+kind of result it was commissioned to find.
 
-**THE REVIEW LOOP IS NOW WHOLE**, which is why 2441 goes next: three-state verdicts (S48), the
-bridge onto node flags (S45), and try-again with a comment (S49). 2441 will produce cells that need
-exactly this loop, and now it exists. Its manifest declaration already landed at `f637df0` with the
-sha pins Architect-verified against the stored PDFs, so **S50 starts at step 2**.
+**THE HEADLINE: 12/12 DERIVED IS A SELF-SELECTED DENOMINATOR.** Form 2441 has 35 line anchors, the
+pipeline attempted 12, and the report calls that `status: complete` with `gapped: 0`. The 23 it
+never attempted are invisible in every summary we have published. See **Current round**.
 
-**Drafts only. NO PROMOTION** - John rules on that with the artifact in front of him.
-
-**AWAITING JOHN, does not block S50:** what a `questioned` or `rejected` node should mean to
-`execute_tax_tree` - see **Open for Architect**. **Rollover policy and run alerting** are pinned at
+**AWAITING JOHN, does not block S51:** whether 2441's drafts get promoted (Architect's answer is
+NOT YET, with the reason under **Open for Architect**), and what a `questioned` or `rejected` node
+should mean to `execute_tax_tree`. **Rollover policy and run alerting** are pinned at
 `docs/engineering-plan.md` -> Year rollover (TY2026), seam 6.
 
 ## Current round
 
-**M20-S49 ACCEPTED (Architect, Claude Opus 5, 2026-08-04) at `1bd2bf1`. The try-again loop is
-closed, and I drove it live end to end.**
+**M20-S50 ACCEPTED (Architect, Claude Opus 5, 2026-08-04). The Worker's sandbox had no network, so
+the whole provider leg is mine; the manifest step had already landed at `f637df0`. The exercise
+worked: running the pipeline at a form it had never processed found a defect that eight rounds of
+green numbers on the existing corpus could not.**
 
-**LIVE ROUND TRIP through exactly the handler `serve()` injects** - `build_rederive_handler`, not a
-stub. 6251 line 18, no comment then with a married-filing-separately correction: **8.9s and 7.7s,
-both `derived`**, both returning the named-role lookup, and `git status` clean afterwards. **The
-loop works with a real model and persists nothing.** Note for planning: the pinned feasibility
-figure was 6.0s cold / ~2.7s for the model call; measured today it is **~8s**, so the UI pending
-state is doing real work.
+**THE DERIVATION DENOMINATOR IS SELF-SELECTED, AND NOTHING REPORTS IT.** Form 2441 has 40 outline
+nodes and **35 line anchors**. The pipeline attempted **12**. It derived 12 of 12 on the first run
+with an empty `validator_failures_by_kind`, and the summary called that `status: complete` with
+`gapped: 0`. **The 23 lines it never looked at are absent from every number we report.** The cause
+is `_is_formula_node` in `tax_graph/extract/outline_pipeline.py:460`: a hardcoded list of twelve
+English cues (`add line`, `subtract line`, `smaller of line`, ...). A row enters the denominator
+only if its printed label happens to speak that dialect.
 
-**The layering constraint held.** No `workbench/*.py` imports pipeline code. A new host module
-`tax_graph/workbench_host.py` owns the closure and injects it into `serve`, which is exactly what
-`build_rederive_handler`'s docstring asks for.
+**What that dropped on 2441, measured:**
 
-**Verified by driving the API myself, not by reading the report:**
+| line | printed label | why it was never attempted |
+| --- | --- | --- |
+| 6 | Enter the smallest of line 3, 4, or 5 | cue list has `smaller of line`, not `smallest` |
+| 20 | Enter the smallest of line 17, 18, or 19 | same |
+| 24 | Enter the smallest of line 20, 21, or 22 | same |
+| 8 | the AGI decimal table | no arithmetic verb at all |
+| 19, 21, 22, 27 | filing-status constants and a Yes/No branch | no cue |
+| 3, 30 | column (d) totals | `kind: totals` with no columns |
 
-| check | result |
-| --- | --- |
-| unconfigured app | `501 cell re-derive is not configured` - answers, does not crash |
-| configured app | `200`, handler called with the draft comment |
-| ledger + working tree after retries | unchanged |
-| missing write token | `403` |
+**Three of them are one missing word.** `smallest` is not in a list that contains `smaller`.
 
-**The nondeterminism requirement is implemented, not skipped.** The UI labels each attempt
-**"first try" / "same correction (fresh try)" / "changed correction"**. That was a pinned design
-requirement precisely because re-running an unchanged comment can return a different answer at
-`temperature: 0`, and hiding it trains reviewers toward superstition.
+**STEP 3 DID NOT HAPPEN, AND THAT IS THE RESULT.** The round was specified around line 8 meeting the
+S46/S47 named-role lookup for the first time. **Line 8 is not in the denominator, so the lookup was
+never exercised.** The table itself is also bigger than the spec said: the form face carries **16
+contiguous bands**, not fifteen - `$0-15,000` at .35 down to `43,000-No limit` at .20, lower bound
+0 and upper bound open. The Worker reported this correctly and refused to invent an operation.
 
-**Validator failures are surfaced on the retry**, pulling row-level failures, warnings, and the
-run-level `validator_failures_by_kind`. A comment steers interpretation; it must never talk the
-model past a validator, and the reviewer can now see when it has not.
+**TWO RUNS, AND THE ONE WRONG ROW IS WRONG IN BOTH.** Run 1: 12 derived, 0 repaired, zero validator
+failures. Run 2: 11 derived, 1 repaired, `operand_node_not_found` x1. The divergence is line 25,
+whose else-branch should be `min(line 20, line 21) - line 24`; run 1 emitted `0 - line 24` and run 2
+emitted `form_2441_2025 line 20 - form_2441_2025 line 21`, dropping line 24 entirely. **Run 1's
+version passed every validator.** So the honest read of the best run is **11 of 12 correct out of 35
+lines**, not 12 of 12. Line 29 also differs harmlessly between runs (`max(x, 0)` vs `max(0, x)`).
 
-**Browser e2e passes for me: 5 passed**, including the new
-`test_generated_cell_try_again_shows_fresh_result_without_session_progress`. The Worker honestly
-declared it NOT RUN - its sandbox hits the standing `graph/2025/_drafts/form_1040_2025` ACL during
-fixture setup. **The same failure it reported as 13 errors is that known baseline, not a
-regression**; the suite is green from an account that can read the directory.
+**The other eleven check out against the form face**, including line 15 `(12 + 13) - 14` on a
+parenthesized subtrahend and the two `max(..., 0)` floors. Line 5 is a soft miss: it emitted
+`require_input(line 5)` for a row whose own text says *"all others, enter the amount from line 4"* -
+filer-provided used as a default where the form states a rule, which is John's 2026-07-31 ruling.
 
-**Gates:** 11 passed on the focused suites plus 5 e2e, ASCII OK, `git diff --check` clean, protected
-set byte-identical, `validate 2025` exit 0.
+**THE WORKSHEETS ARE UNREACHABLE FOR 2441.** Lines 9b and 10 feed from Worksheet A and the Credit
+Limit Worksheet. The S42/S43 harvester is HTML-table based, and only six documents have acquired
+HTML (1040, 6251, 8949, Schedules A, B, D). 2441's instructions exist as PDF/text only, so
+`NOT RUN` is correct and **the harvester's reach is an acquisition property, not a code property.**
 
-**THE REVIEW LOOP IS NOW WHOLE.** Three-state verdicts (S48), the bridge onto node flags (S45), and
-try-again with a comment (S49). A reviewer can see a wrong cell, write a correction, watch it work,
-and only then store it - which is the difference the design was built around: **the ledger
-accumulates comments that have been verified to work rather than hopeful ones written blind.**
+**Against what was already there** (`graph_ext/2025/form_2441_2025/`, 24 nodes / 2 edges / 22
+citations / 2 rules, all `gate: user`): the M10 draft modeled **no arithmetic at all** on Part I and
+II and only the two column-(d) totals elsewhere. Nine of the pipeline's twelve rows are lines the
+draft left with no edge. The draft also carries real defects the pipeline does not reproduce - the
+mangled id `form_2441_2025_part_iii_line_28_part_iii_line_28`, and a rule whose description quotes
+**line 30's** text under a **line 28** node. The two disagree on identity as well: the draft names
+cells `..._part_iii_line_15`, the pipeline addresses them `..._root_line_15`. **Same cell, two ids -
+that is a promotion blocker, not a detail.**
+
+**Gates:** ASCII OK, `validate 2025` exit 0 (graph integrity OK, reconcile clean in both
+directions), protected set diff empty, `git status` clean. **Nothing was written under `graph/`; the
+harness writes outside the repo by construction.**
 
 ## Architect decision - notation
 
@@ -271,114 +285,60 @@ client-managed server dies.
   Architect's recommendation is **(a)**, because it closes the human loop that everything else
   feeds, and because the reviewer surface is what turns (b) and (c) into something a person can
   act on.
-- **FOR JOHN - is Form 2441 in the base profile? (raised 2026-08-02, blocks nothing else.)** The
-  graph counts 18 documents but only 17 exist: `graph/2025/field_maps/form_2441_2025.yaml` carries
-  a `document_id` for a form that was never acquired, its `mappings` are empty, its nodes are
-  marked `optional_extension: true` with no base-profile printable placement, and the 1040 and
-  Schedule 3 reference it in addresses and citations. Two coherent answers, and it is a product
-  call rather than a technical one:
-  **(a) Yes, 2441 is in scope** - acquire the PDF like any other form, give it a document record,
-  and it joins the corpus and the derivation runs.
-  **(b) No, it is an optional extension** - then the field map should stop contributing a document
-  id to the count, so `validate 2025` reports the 17 documents that actually exist and no future
-  corpus run trips over a phantom.
-  Nothing is broken either way: the harness reports it as a load failure with a reason rather than
-  skipping it silently, which is the S31 D10 behaviour doing its job.
+- **FOR JOHN - do 2441's drafts get promoted? (raised 2026-08-04 by S50. ANSWERED IN PART: you
+  already ruled 2441 is in scope, and it is now declared in the manifest and running.)**
+  **Architect's answer is NOT YET, and the reason is not quality.** The pipeline covers nine lines
+  the M10 draft left with no edge and it fixes two real defects in that draft, so on content it
+  wins. But it addresses cells as `form_2441_2025_root_line_15` while the existing extension calls
+  the same cell `form_2441_2025_part_iii_line_15`, and promoting now creates two ids for one cell -
+  exactly the identity defect that produced 100% churn in the review queue. **Promotion should wait
+  until S51 makes the denominator honest**, so what gets promoted is a form we have actually
+  covered rather than the 12 of 35 lines the cue list happened to admit. Say the word if you want
+  it promoted anyway and I will spec the id reconciliation first.
 
 ## From Architect
 
-## Worker status - M20-S50
+- **M20-S51 TASK - MAKE THE DERIVATION DENOMINATOR HONEST (Architect, Claude Opus 5, 2026-08-04).**
+  Ledger: the RAN/NOT RUN rule, D10. **No promotion. No prompt tuning. This round is allowed to make
+  the numbers look WORSE, and probably should.**
 
-**M20-S50 Worker run (2026-08-04; fixture-only in this sandbox; no promotion):**
+  **Why.** S50 ran the pipeline at Form 2441 and got `12 attempted, 12 derived, status: complete,
+  gapped: 0` on a form with **35 line anchors**. The 23 unattempted lines are reported nowhere. The
+  selector is `_is_formula_node` in `tax_graph/extract/outline_pipeline.py:460`, a twelve-entry list
+  of English cues; `smallest of line` is missing while `smaller of line` is present, which alone
+  drops 2441 lines 6, 20 and 24. **Every derived/attempted ratio this phase has published - 92/96,
+  17/17, 7/7 - is a ratio against this list, not against the form.** That is the metric John has
+  been reading, and it flatters us.
 
-- The manifest declaration is already accepted at `f637df0`; the stored PDF hashes match the
-  declared SHA-256 pins for both `form_2441_2025` and `instructions_form_2441_2025`.
-- Provider-enabled derivation was attempted exactly as requested:
-  `.venv\Scripts\python.exe experiments\derive_cells_s25.py --root . --year 2025 --document form_2441_2025 --output-dir C:\Users\devbox\.codex\visualizations\2026\08\04\019fcdfb-fc3b-7391-9832-59eaf31459ec\m20-s50-derive`
-  -> exit 0 in 92.2s; 12 rows attempted, 0 derived, 0 repaired, 0 gapped, 12 errored, all
-  `LlmUnavailable: OpenRouter request failed: Connection error.` The deterministic frame still
-  produced 40 outline nodes and 35 line anchors. No model expression or validator failure was
-  emitted because every call failed before a response.
-- The provider-disabled preparation run produced the same 2441 frame and 12 derivation rows:
-  `5, 9a, 9c, 11, 15, 17, 23, 25, 26, 28, 29, 31`. Existing extension output is 24 nodes,
-  2 edges, 22 citations, and 2 rules, all T0/review; it remains outside the protected base graph.
-  A provider result is required to compute the semantic diff rather than infer it from the old
-  extension artifact.
-- The form face has an AGI table with 16 contiguous bands, not 15: six through $25,000, six
-  through $37,000, then $37,000-$39,000, $39,000-$41,000, $41,000-$43,000, and $43,000-No limit.
-  The lower bound is $0, the upper bound is open-ended, and the decimal values descend .35 to
-  .20. No lookup operation was invented; the S50 wording needs an Architect correction or an
-  explicit note that the source has 16 bands.
-- The instructions text contains both `Credit Limit Worksheet` and `Worksheet A`, but
-  `.cache/raw/2025/instructions_form_2441_2025.html` does not exist and the current worksheet
-  harvester is HTML-table based. `NOT RUN: 2441 worksheet harvest - no acquired HTML source and
-  no 2441 text-table target; no partial worksheet draft was guessed.`
-- `RAN: .venv\Scripts\python.exe -m pytest tests\test_acquire_manifest.py tests\test_m20_s41.py tests\test_derive_cells_s30.py tests\test_derive_cells_m20.py -q` -> 76 passed in 2.08s (one known `.pytest_cache` ACL warning).
-- `RAN: $env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\.codex\visualizations\2026\08\04\019fcdfb-fc3b-7391-9832-59eaf31459ec\pytest-s50'; .venv\Scripts\python.exe -m pytest tests\test_worksheet_harvest_m20.py tests\test_instruction_sections_m20.py tests\test_instruction_sections_m18.py -q` -> 17 passed in 8.06s (one known `.pytest_cache` ACL warning).
-- `RAN: .venv\Scripts\python.exe tools\check_ascii.py` -> ASCII check OK.
-- `RAN: .venv\Scripts\python.exe -m tax_graph.cli validate 2025` -> exit 0, graph integrity OK;
-  reconcile reports no raw-not-in-manifest difference and five instruction-only manifest entries.
-- `RAN: .venv\Scripts\python.exe -m workbench.cli preflight --year 2025` -> `PermissionError: [WinError 5]` while reading the known protected `_drafts` ACL; successful preflight is unverified, and this is the inherited baseline, not a 2441 result.
-- `RAN: .venv\Scripts\python.exe tools\check_ascii.py; git diff --check; git diff --stat -- graph/2025/nodes graph/2025/edges graph/2025/rules graph/2025/field_maps; git status --short` -> ASCII OK, no diff-check output, protected-set diff empty, and clean status before this handoff update.
+  **Step 1 - report the denominator before changing it.** For every document in the manifest, emit
+  per line anchor: the anchor, the outline `kind`, whether the selector admits it, and the cue that
+  matched. **Deterministic, no provider.** Report the totals: line anchors, admitted, dropped. This
+  is the measurement that tells us how big the problem is outside 2441 - do not skip it to get to
+  the fix.
 
-**Remaining:** Architect live-provider execution and the draft diff/promotion decision. No files
-under the protected graph set were changed, and no human-review claim was written.
+  **Step 2 - the report grows a third category.** Today a row is `derived`, `repaired`, `gapped` or
+  `errored`, and a line that was never a row is nothing at all. Add **`skipped`** with a named
+  reason per line anchor, carried into the per-document summary alongside the existing counts, and
+  make `status: complete` mean **every anchor accounted for**, not every attempted row succeeded.
+  **A document with unexplained anchors must not report `complete`.**
 
-- **M20-S50 TASK - RUN THE WHOLE PIPELINE AT
-  FORM 2441, AS A RELIABILITY EXERCISE (Architect,
-  Claude Opus 5, 2026-08-04; John's call: *"adding it might be a good exercise in seeing if our
-  pipeline is reliable and valid"*).** Ledger: the RAN/NOT RUN rule, D10. **Drafts only. NO
-  PROMOTION in this round - John decides that with the artifact in front of him.**
+  **Step 3 - widen the selector, deterministically.** Do not replace the cue list with a model call.
+  Add the missing superlative forms and the obvious siblings, and report what each addition admits -
+  **per document, before and after**. Anything that is genuinely not a computed cell (a heading, a
+  name field, an identifying number) should land in `skipped` with a reason, not silently outside
+  the count. Two known junk anchors on 2441 are the page header `21` and a duplicate `12`; those are
+  structure defects (S3b), so classify them honestly and leave them.
 
-  **Why now.** Every piece 2441 needs has landed in the last eight rounds: the manifest drives the
-  corpus (S41), conditionals and lookups are executable (S46/S47) which 2441's AGI percentage table
-  requires, and review is three-state with a working bridge (S45/S48) so the output can be judged
-  rather than trusted. **This is the first end-to-end exercise of the whole assembly on a form the
-  pipeline has never properly processed.**
+  **Step 4 - report, do not fix, what the wider denominator lets in.** The newly admitted 2441 rows
+  include line 8's 16-band AGI table, three `smallest of` rows, and the filing-status constants on
+  19/21/27. **Report what the model does with them in the Architect's provider leg; do not add an
+  operation, a parameter node, or a prompt example to make them pass.**
 
-  **What 2441 is today, measured.** 24 nodes but only **2 edges**, `gate: user`, `status: partial`,
-  seven lines flagged "unmodeled in the M10 Step 4 batch draft", and visibly mangled ids such as
-  `form_2441_2025_part_iii_line_28_part_iii_line_28`. It is in the graph and **not in the
-  manifest**, while `form_2441_2025.pdf`, its `.txt`, and its instructions are already in the raw
-  store - the `raw_not_in_manifest` pair the S41 reconcile names every run. **Nothing needs
-  fetching.**
-
-  **Step 1 - declare it, do not hand-author it.** Add `form_2441_2025` and
-  `instructions_form_2441_2025` to `config/manifest.yaml` with their real URLs and sha pins, and
-  verify the pins against the files already in `.cache/raw/2025/`. **Report whether the sha of the
-  stored PDF matches what the manifest declares** - a mismatch is a finding, not something to paper
-  over. The S41 reconcile must then show `raw_not_in_manifest` empty.
-
-  **Step 2 - run the pipeline and report honestly.** Cell derivation over 2441 with the corpus
-  harness, and the worksheet harvester if the instructions carry one. **Report attempted / derived /
-  repaired / errored, and the validator failures by kind.** A low derived count is a finding about
-  the pipeline, which is the entire point of the exercise - **do not tune the prompt to make 2441
-  look good.**
-
-  **Step 3 - the AGI percentage table is the real test.** Form 2441 line 8 selects a decimal from a
-  fifteen-band table (.35 at $0-15,000 down to .20 above $43,000) keyed on line 7. **This is exactly
-  the shape S46/S47 built the named-role lookup for**, and it is the first time it meets a table the
-  pipeline has never seen. Report what the model emits for line 8, whether it projects onto a real
-  rule with named roles, and whether the bands are complete and correctly bounded. **If the fifteen
-  bands defeat the current lookup shape, that is the most valuable result this round can produce -
-  report it plainly and do not invent a new operation.**
-
-  **Step 4 - report the diff against what is already there.** The 24 existing nodes and 2 edges
-  versus what the pipeline produces: which lines the pipeline covers that the M10 draft left
-  unmodeled, which existing node ids the pipeline would supersede, and where the two disagree.
-  **Report both directions honestly**, as the QDCGT canary did.
-
-  **Step 5 - stop at drafts.** Write to `graph/2025/_drafts/` only. **The protected set stays
-  byte-identical.** Report exactly what promotion WOULD change, and whether the output belongs in
-  the project graph or the extension overlay given the existing nodes are `gate: user`. **John rules
-  on promotion; it would be the first in this phase.**
-
-  **Do not:** promote anything; edit anything under `graph/2025/` outside `_drafts/`; hand-author a
-  node or a citation to improve the numbers; tune the prompt against 2441; invent an operation.
-  **Stop conditions:** any diff in the protected directories; a citation emitted that is not
-  verbatim in the acquired source; `derive_cells` acquiring a disk write. Tier 3. Declared files plus
-  honest `RAN:`/`NOT RUN:` - **the provider leg is the Architect's**. ASCII, `git diff --check`,
-  module-form `validate 2025`, preflight `legacy_mined` explicit. **ONE local commit.**
+  **Do not:** promote anything; edit anything under `graph/2025/` outside `_drafts/`; tune the
+  prompt; invent an operation; hide a newly visible failure by narrowing the denominator again.
+  **Stop conditions:** any diff in the protected directories; `derive_cells` acquiring a disk write.
+  Tier 3. Declared files plus honest `RAN:`/`NOT RUN:` - **the provider leg is the Architect's**.
+  ASCII, `git diff --check`, module-form `validate 2025`. **ONE local commit.**
 
 ## Architect decisions
 
@@ -434,6 +394,14 @@ under the protected graph set were changed, and no human-review claim was writte
 
 ## Recent rounds (condensed; full narration in git history - `git show <hash>`)
 
+- **M20-S50 (`f637df0` manifest + `059231e` report, Architect-verified; provider leg Architect-run):**
+  the 2441 reliability exercise. Manifest declaration with Architect-hashed sha pins; reconcile clean
+  both directions. Two live runs: 12 attempted of 35 line anchors, derived 12 / 11+1 repaired, and
+  the one divergent row (line 25) is semantically wrong in BOTH runs while passing every validator in
+  run 1. Line 8's AGI table never entered the denominator, so the S46/S47 lookup was not exercised;
+  the table has 16 bands, not the 15 the spec assumed. Worksheet harvest impossible - 2441
+  instructions are PDF-only and the harvester is HTML-table based. Nothing promoted; protected set
+  untouched. **Finding -> S51.**
 - **M20-S49 (`1bd2bf1`, Architect-verified):** the try-again loop is closed. `tax_graph/workbench_host.py`
   injects `build_rederive_handler` into `serve` without importing pipeline code into `workbench/`;
   the unconfigured server still answers 501. UI adds the Try again panel, pending state, returned
@@ -535,65 +503,16 @@ under the protected graph set were changed, and no human-review claim was writte
 
 ## Latest verification
 
-- **M20-S49 Worker implementation (2026-08-04, fixture-only; awaiting Architect verification):**
-  wired the application host to inject `build_rederive_handler` without importing pipeline code
-  into `workbench/`; the unconfigured artifact server still returns 501. Added the generated-cell
-  Try again panel, local attempt labels and pending state, returned expression/validator display,
-  and address-keyed review-history projection. Contributed comments are displayed as retained
-  history and never sent to the model; an empty retry uses curated history through the pipeline
-  callback, while a typed correction is sent only for that attempt. No retry writes graph, drafts,
-  ledger, or session state. Form 2441 remains queued for S50; its manifest commit is already in
-  history at `f637df0` and was not changed here.
-  RAN: `$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\testtmp-s49'; .venv\Scripts\python.exe -m pytest tests\test_workbench_s49.py tests\test_workbench_rederive_m20.py tests\test_rederive_m20.py -q` -> 7 passed in 0.45s.
-  RAN: `$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\pytest-run-s49'; .venv\Scripts\python.exe -m pytest tests\test_workbench_s49.py tests\test_workbench_rederive_m20.py tests\test_rederive_m20.py tests\test_workbench_m15.py -q` -> 11 passed in 0.67s.
-  RAN: `$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\testtmp-s49'; .venv\Scripts\python.exe -m pytest tests\test_workbench_m15.py -q` -> 4 passed in 1.20s.
-  RAN: `$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\testtmp-s49'; .venv\Scripts\python.exe -m pytest tests\e2e\test_workbench_v2_m17.py::test_generated_cell_try_again_shows_fresh_result_without_session_progress -q` -> 1 passed in 1.59s.
-  RAN: `.venv\Scripts\python.exe tools\check_ascii.py` -> ASCII check OK.
-  RAN: `.venv\Scripts\python.exe -m tax_graph.cli validate 2025` -> exit 0, graph integrity OK; reconcile differences named.
-  RAN: `$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\testtmp-s49'; .venv\Scripts\python.exe -m pytest tests\test_workbench_m15.py tests\test_workbench_server_m15.py tests\test_workbench_write_api_m15.py tests\test_rederive_m20.py tests\test_workbench_rederive_m20.py tests\test_workbench_s49.py -q` -> 11 passed, 13 errors; all errors stop at protected `graph/2025/_drafts/form_1040_2025` read access during live-app fixture setup.
-  NOT RUN: provider leg - live provider access is outside the fixture-only round and unavailable in the sandbox.
-  NOT RUN: `$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\testtmp-s49'; .venv\Scripts\python.exe -m pytest tests\e2e\test_workbench_v2_m17.py -q` - fixture setup fails with the same protected-draft `PermissionError` before browser assertions.
-
-- **M20-S48 Worker implementation (2026-08-04, Worker-verified; awaiting Architect verification):**
-  landed the three-state observation contract. The reviewer-facing labels are Accept, Question,
-  and Reject; the canonical stored tokens are `confirmed`, `questioned`, and `rejected`.
-  Question and Reject reveal a comment box and require an observation; Accept needs no comment.
-  Legacy cause tokens remain accepted only as named ingestion aliases and are canonicalized to the
-  three states. The address bridge applies all three states with exact address/node binding and
-  fingerprint protection; Question and Reject write `human_confirmed: false` with explicit
-  `human-questioned` or `human-rejected` tiers. No engine code or protected graph artifact changed.
-  `_projection_warnings` now prefers form-face evidence over instruction/quote cues; the real
-  projection path is unchanged. The standalone workbench CLI also exposes the new verdicts and
-  `--comment`.
-  Engine semantics report (not implemented, per S48): (a) refuse to compute and report unresolved,
-  safest but blocks output; (b) compute and flag the result, producing a number that downstream
-  code could consume; or (c) exclude the node and report a gap, conservative but lossy. John must
-  choose; current `execute_tax_tree` behaviour is unchanged.
-  RAN: `$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\.codex\visualizations\2026\08\04\019fcdb1-04e6-7c20-b0e5-2287ddd04329\pytest_s48_final'; .venv\Scripts\python.exe -m pytest tests\test_review_address_bridge_m20.py tests\test_review_verdicts_m20.py -k "not real_derived_projection" tests\test_derive_cells_m20.py tests\test_review_workbench_verdicts_m15.py tests\test_workbench_m15.py tests\test_workbench_write_api_m15.py -q` -> 105 passed, 1 deselected in 69.28s.
-  RAN: `$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\.codex\visualizations\2026\08\04\019fcdb1-04e6-7c20-b0e5-2287ddd04329\pytest_s48_final'; .venv\Scripts\python.exe -m pytest tests\e2e\test_workbench_v2_m17.py -q` -> 4 passed in 133.65s.
-  RAN: `.venv\Scripts\python.exe tools\check_ascii.py` -> ASCII check OK; compileall -> no errors;
-  schema JSON load -> OK; `git diff --check` -> clean apart from the existing CRLF conversion
-  warning on `workbench/server.py`; protected-set diff stat -> empty; module-form `validate 2025`
-  -> exit 0, graph integrity OK, reconcile differences named.
-  RAN: `$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\.codex\visualizations\2026\08\04\019fcdb1-04e6-7c20-b0e5-2287ddd04329\pytest_s48_elev'; .venv\Scripts\python.exe -m pytest tests\e2e\test_workbench_v2_m17.py tests\e2e\test_paired_view_m15.py -q` -> 4 passed, 2 failed. Both failures are the pre-existing paired-view lookup for `[data-document-id="form_1040_2025"][data-check-group="identity_inputs"]`; the app renders document buttons but not those group elements. The changed S48 browser suite is green above. NOT RUN: provider leg - prohibited by the S48 task and unavailable in the sandbox.
-
-- **M20-S45 Worker implementation (2026-08-04, Worker-verified; awaiting Architect verification):** added
-  `tax_graph.review.apply_address_verdicts` and `review apply-address-verdicts`, dry-run by default.
-  Exact canonical address plus one node binding plus one unchanged content fingerprint is required;
-  the existing `_apply_graph_review` writes the three node fields on an explicit temporary apply.
-  Stale, missing, ambiguous, and unsupported records are reported with no write. The real ledger
-  entry is stale: reviewed `151f0df27ea00babb02732005d1aed7d2753bb1a0cb0117ab9464c1d75d30ca4`;
-  current `e270b15dd0e41720e0a5b7143e9ce8ace5526b008f3cbef8fc91a25c28ac26d1`. No live graph write.
-  RAN: `$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\.codex\visualizations\2026\08\04\019fcd22-0dbe-7481-9da9-77388ec5d84c\pytest_m20_s45_focus';
-  .venv\Scripts\python.exe -m pytest tests\test_review_address_bridge_m20.py tests\test_review_workbench_verdicts_m15.py
-  tests\test_workbench_m15.py tests\test_review_verdicts_m20.py -q` -> 33 passed.
-  RAN: `.venv\Scripts\python.exe tools\check_ascii.py` -> ASCII check OK; `git diff --check` -> clean;
-  module-form `validate 2025` -> exit 0, graph integrity OK, reconcile differences named.
-  RAN: protected-set `git diff --stat -- graph/2025/nodes graph/2025/edges graph/2025/rules graph/2025/field_maps`
-  -> empty. RAN: module-form live dry-run -> 1 stale, 0 unresolved, 0 ambiguous, 0 writes, with both
-  fingerprints printed. RAN: temporary graph copy using the real ledger record -> `would_apply`, exact
-  address/node resolution, node `form_1040_2025_root_line_z`, all three field changes printed, and
-  applied/stale/unresolved/ambiguous lists empty because the run was dry.
+- **M20-S50 (2026-08-04, Architect live):** two provider runs over `form_2441_2025`, attempted=12
+  both, derived 12 and 11, repaired 0 and 1, gapped 0, errored 0; `validator_failures_by_kind` empty
+  in run 1 and `operand_node_not_found` x1 in run 2. Denominator measured directly against
+  `_formula_outline_nodes`: 40 outline nodes, 35 line anchors, 12 admitted, 23 dropped with the cue
+  responsible named per line. All twelve expressions checked by hand against the acquired form face -
+  eleven correct, line 25 wrong in both runs (the `min(20,21) - 24` else-branch), line 5 a
+  filer-provided default where the row states a rule. `.cache/raw/2025/` has no 2441 instructions
+  HTML, so the worksheet harvest is NOT RUN by construction. ASCII OK; `validate 2025` exit 0 with
+  reconcile clean both directions; protected-set diff empty; `git status` clean; all harness output
+  written outside the repository.
 - **M20-S49 (2026-08-04, Architect live):** live re-derive through the exact handler `serve()`
   injects - 6251 line 18, no comment then with an MFS correction: 8.9s and 7.7s, both `derived`,
   named-role lookup returned, `git status` clean after. API driven directly: unconfigured -> 501,
