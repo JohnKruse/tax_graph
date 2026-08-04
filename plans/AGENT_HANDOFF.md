@@ -17,119 +17,79 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## BALL
 
-**BALL: WORKER - M20-S52 [DONE] (THE INCOMPLETE-CELL PAYLOAD).** Committed at `d2637e3`.
-**S51 is ACCEPTED at `1541a67`** - the
-denominator is explicit, and the live leg the Architect ran against it found the phase's most
-important defect.
+**BALL: WORKER - M20-S54 (A LOOKUP TABLE MUST BE COMPLETE).** Task block under **From Architect**.
+**S52 is ACCEPTED at `2dac757`** - the refusal payload exists, carries real IRS evidence, and is
+separate from `missing_required_inputs`.
 
-**S52 RESULT.** `Result.incomplete_cells` is separate from `missing_required_inputs`. Frontier
-walls now carry the target node, canonical address, held printed label, held instruction text when
-available, citation refs split by source, named reason `reference_not_in_corpus`, and the explicit
-operation `NOT_COMPUTED_CALLER_MUST_RESOLVE`. The same payload builder accepts `not_approved` for
-S53. MCP `execute_tax_tree` returns the collection, and the filled-form `bundle.json` persists it.
-The 89-entry frontier registry currently supplies printed labels for **12** entries and cannot
-supply them for **77**; the missing frontier ids are reported by the coverage helper and no text is
-invented. Existing values and unresolved traces remain unchanged except for the additive payload.
+**THE HEADLINE STILL STANDS: A LOOKUP TABLE CAN BE SILENTLY TRUNCATED.** Form 2441 line 8 produced
+the named-role lookup shape correctly and transcribed **6 of the 16 printed bands**. Nothing checks
+a lookup for completeness, so a filer whose AGI lands in one of the four missing ranges falls in a
+hole rather than getting an error. **This is the phase's most important open defect.**
 
-**S52 EVIDENCE.**
-- `RAN: $env:PYTEST_DEBUG_TEMPROOT = 'C:\\Users\\devbox\\.codex\\visualizations\\2026\\08\\04\\019fce7b-33cf-7973-9b0e-a540da582f69\\pytest_m20s52'; .venv\\Scripts\\python.exe -m pytest tests/test_m20_s52.py -q -> 5 passed`
-- `RAN: $env:PYTEST_DEBUG_TEMPROOT = 'C:\\Users\\devbox\\.codex\\visualizations\\2026\\08\\04\\019fce7b-33cf-7973-9b0e-a540da582f69\\pytest_m20s52'; .venv\\Scripts\\python.exe -m pytest tests/test_return_outputs_m12.py tests/test_pdf_fill_m12.py tests/test_capital_gains_slice.py tests/test_tables_engine_m6b.py -q -> 18 passed`
-- `RAN: $env:PYTEST_DEBUG_TEMPROOT = 'C:\\Users\\devbox\\.codex\\visualizations\\2026\\08\\04\\019fce7b-33cf-7973-9b0e-a540da582f69\\pytest_m20s52'; .venv\\Scripts\\python.exe -m pytest tests/test_frontier_engine_m7.py tests/test_mcp_m2.py -q -> 13 passed, 1 failed; the m7 copy fixture is blocked by ACLs on graph/2025/_drafts/form_1040_2025, schedule_1_2025, and schedule_a_2025; the MCP tests passed`
-- `RAN: .venv\\Scripts\\python.exe tools/check_ascii.py -> ASCII check OK`
-- `RAN: .venv\\Scripts\\python.exe -m tax_graph.cli validate 2025 -> exit 0; graph integrity OK; reconcile clean in both directions`
-- `RAN: git diff --check -> clean`
-- `RAN: git diff --stat -- graph/2025/nodes graph/2025/edges graph/2025/rules graph/2025/field_maps -> empty`
+**S52's honest gap, carried forward as acquisition work:** 77 of 89 frontier entries cannot supply a
+printed label, and instruction text is thinner still. The payload mechanism is right; the evidence
+behind it is sparse, and no placeholder was invented.
 
-**EXPORT BEHAVIOR RECORDED.** The return-record export still renders unresolved trace entries as
-deferred output context; it does not print an unresolved value as a computed number. The filled
-form writer leaves `MISSING` cells blank and already records blank frontier notes; S52 now places
-the full incomplete payload inside the bundle manifest and `bundle.json`, rather than only beside
-the export provenance.
-
-**THE HEADLINE: A LOOKUP TABLE CAN BE SILENTLY TRUNCATED.** Form 2441 line 8 finally entered the
-denominator, the model produced the named-role lookup shape correctly, and it transcribed **6 of the
-16 printed bands**. Nothing checks a lookup for completeness, so a filer whose AGI lands in one of
-the four missing ranges falls in a hole. See **Current round**; specced as **S54**.
-
-**QUEUE: S52 (the incomplete-cell payload), then S54 (lookup completeness and the S51 selector
-defects), then S53 (the approval gate, behind a switch, default off).** S52 and S53 come from
-John's approval-is-the-gate ruling, pinned first under **Binding rulings**; S52 goes first because
-it defines what a refusal says and S53's gate emits exactly that payload. **S54 is slotted between
-them because it is a live correctness hole and the gate is not what closes it.**
+**QUEUE: S54 (lookup completeness and the S51 selector defects), then S53 (the approval gate, behind
+a switch, default off).** S53 reuses S52's payload builder, which already accepts `not_approved`.
 
 **NOTHING IS AWAITING JOHN.** The engine-semantics question is answered and closed; the 2441
 promotion question was withdrawn as malformed. **Rollover policy and run alerting** are pinned at
 `docs/engineering-plan.md` -> Year rollover (TY2026), seam 6.
 
-## Prior round - M20-S51
+## Current round
 
-**M20-S51 ACCEPTED (Architect, Claude Opus 5, 2026-08-04) at `1541a67`. The denominator is now
-visible, and the provider leg I ran against it produced the most valuable finding of the phase.**
+**M20-S52 ACCEPTED (Architect, Claude Opus 5, 2026-08-04) at `2dac757`. The refusal payload exists
+and carries real evidence. Its content is thin, and that is an acquisition finding, not a code
+defect.**
 
-**The implementation is honest.** `build_derivation_denominator` keeps the pre-S51 decision beside
-the current one, so every report shows the flattering historical number next to the real one, and
-each skipped anchor carries a named reason. The widening is four lexical cues, not a model call:
-`smallest of line`, `largest of line`, `amount shown below`, `enter $`.
+**RECORD CORRECTION: the Worker reported the hash as `d2637e3`, which is orphaned.** That commit was
+amended away and is not an ancestor of HEAD; the two differ only by two lines of this file. **The
+accepted hash is `2dac757`.** A hash written into the doc before the amend cannot survive it - the
+handoff convention is that the accepted hash IS the record, so this matters more than its size.
 
-**The corpus-wide denominator, measured provider-free across 15 non-empty documents:**
+**Verified by driving the engine against the real 2025 graph, not by reading the report:**
 
-| | line anchors | admitted before | admitted now |
-| --- | --- | --- | --- |
-| whole corpus | 478 | 108 | 121 |
-| `form_2441_2025` | 35 | 12 | 19 |
-| `schedule_1a_2025` | 48 | 25 | 29 |
+| check | result |
+| --- | --- |
+| `frontier_text_coverage` | 89 frontiers, **12** with a printed label, **77** without - matches the Worker's claim exactly |
+| real `execute` on a single-filer fact set | 441 values, 0 missing required inputs, **3 incomplete cells** |
+| payload content | 3 of 3 carry a printed IRS label; **2 of 3 carry instruction text** |
+| reason enum | closed - an unsupported reason raises rather than defaulting |
+| `not_approved` | already accepted, so S53 reuses this builder rather than adding a second one |
 
-**The 96-row figure this phase has been quoting was 108 of 478 anchors.** It is now 121, and the
-320 still carrying `selector_no_formula_cue` are at least reported.
+**The payload is the shape John asked for.** A live one on Schedule 1 line 21 carries the canonical
+address `2025/document=schedule_1/line=21/control=amount`, the printed label
+*"Line 21: Student loan interest deduction 21"*, the citation refs split into form-face and
+instruction lists, the frontier id and target URL, and in the operation slot
+`NOT_COMPUTED_CALLER_MUST_RESOLVE` with the statement *"Not computed; the caller must resolve this
+cell."* That is the IRS text plus the explicit handoff, which is exactly the ruling.
 
-**THE LOOKUP SHAPE SURVIVED THE 16-BAND TABLE. THE TRANSCRIPTION DID NOT.** Line 8 finally entered
-the denominator, and the model reached for the S46/S47 named-role form unprompted -
-`lookup_table(key=line 7, over_0_15000=0.35, over_15000_17000=0.34, ...)`. **It emitted 6 of the 16
-bands.** The four it skipped in the middle are simply absent, and **no validator checks a lookup
-table for band completeness or contiguity.** A silently truncated table is worse than a failed one:
-a filer with $20,000 of AGI falls in a hole rather than getting an error. **This is the single most
-important defect the phase has found**, and it was invisible for as long as line 8 sat outside the
-denominator. It also emitted a `payload` failure - *"operand role is only valid on LOOKUP_TABLE
-arguments"* - so the grammar and the validator disagree about where a role may appear.
+**IT IS SEPARATE FROM `missing_required_inputs`, WHICH WAS THE POINT.** "The filer owes us a number"
+and "we never modeled this" are different claims and now live in different collections.
+`incomplete_cells` reaches `execute_tax_tree` and is persisted into the filled-form `bundle.json`
+rather than sitting beside the export provenance where the writer never reads it.
 
-**The seven newly admitted 2441 rows, judged against the form face:**
+**Additive, verified two ways.** By inspection: the frontier branch already set `MISSING` and
+returned it, and the change only builds a payload and attaches it to the trace - the value
+assignment is byte-identical. By test: **37 passed** across engine, export, MCP, table and frontier
+suites. `test_frontier_engine_m7.py` is green from an account that can read the draft directory,
+confirming the Worker's 1 failure is the standing `_drafts` ACL baseline rather than a regression.
 
-| line | emitted | verdict |
-| --- | --- | --- |
-| 6 | `max(min(line 3, line 4, line 5), 0)` | correct |
-| 20 | `max(0, min(line 17, line 18, line 19))` | correct |
-| 24 | `min(line 20, line 21, line 22)` | correct |
-| 8 | `lookup_table(key=line 7, ...)` with 6 of 16 bands | shape right, content truncated |
-| 19 | `require_input(line 19)` | wrong - the row states the rule |
-| 21 | `require_input(line 21)` | wrong - the row prints $5,000 / $2,500 |
-| 27 | `require_input(line 27)` | wrong - the row prints $3,000 / $6,000 |
+**THE HONEST GAP: 77 OF 89 FRONTIER ENTRIES CANNOT SUPPLY A PRINTED LABEL**, and the richest live
+payload still has `instruction_text: null`. The mechanism is right and the evidence behind it is
+sparse, because we hold form-face text for a fraction of the declared frontier and instruction text
+for less. **No placeholder text was invented, which is the correct call** - the payload says nothing
+rather than saying something made up. Closing that gap is acquisition work, and it is the same
+harvester reach problem 2441 exposed: only six documents have acquired instruction HTML.
 
-**The three misses are one defect, and it is John's ruling from 2026-07-31.** Lines 19, 21 and 27
-print the value or the rule on the form face, and the model punted all three to the filer.
-**Filer-provided is a failover, not a default.** Rows 21 and 27 are also the filing-status constant
-case that the S39/S40 open item has been circling; they are now live instances rather than a
-hypothetical.
+**Boundary worth recording:** the payload fires only where a frontier entry exists. An edge pointing
+at a node that is neither in the graph nor declared as frontier still raises rather than producing a
+payload - `Engine._eval` indexes `self.g.nodes` directly. It is unreachable today because
+`validate 2025` reports all references resolve, so this is a note, not a defect.
 
-**Run totals:** attempted 19, derived 16, repaired 2, errored 1, skipped 16 accounted for.
-`self_reference` 1, `payload` 1, `operand_node_not_found` 2. Line 25 - wrong in both S50 runs -
-now fails closed rather than passing silently, which is an improvement even though the row is lost.
-
-**THREE DEFECTS IN THE ROUND ITSELF, none warranting rework, all specced into S54:**
-1. **A `totals` node never has its label read.** `_formula_selector_decision` returns False on kind
-   before reaching the cue loop, so 2441 lines 3 and 30 are dropped despite their labels containing
-   `add the amount`, a cue present since the beginning.
-2. **The skip reason for those two is a lie.** They report `selector_no_formula_cue` when the label
-   HAS a cue and the code never looked. A wrong reason is worse than none - it sends the next
-   reader hunting for a cue to add.
-3. **`status: incomplete` is unreachable.** Every anchor is classified admitted or skipped by
-   construction, so `unaccounted` is always 0 and all 15 documents report `complete`. The test
-   monkeypatches an incomplete report and checks the harness propagates it, which exercises the
-   plumbing but not the builder. The guard cannot fire.
-Also minor: the harness counts line 25 as `errored` while the validation block in the same file
-counts it as `gapped`.
-
-**Gates:** 102 passed on a short temp root, ASCII OK, `validate 2025` exit 0 with reconcile clean in
-both directions, protected set diff empty, `git status` clean.
+**Gates:** 37 passed on a short temp root, ASCII OK, `git diff --check` clean, `validate 2025`
+exit 0 with graph integrity OK, protected set diff empty, `git status` clean.
 
 ## Architect decision - notation
 
@@ -399,52 +359,6 @@ client-managed server dies.
   filer-provided-is-a-failover ruling and the long-open role-keyed-constant question, and it wants
   its own round rather than being smuggled into a validator change.
 
-- **M20-S52 TASK - THE INCOMPLETE-CELL PAYLOAD (Architect, Claude Opus 5, 2026-08-04, from John's
-  approval-is-the-gate ruling).** Ledger: the RAN/NOT RUN rule, D10. **Additive only. No computation
-  changes in this round.** This is specced BEFORE the gate because it defines what a refusal looks
-  like, and the gate in S53 emits exactly this payload. A gate that refuses without saying anything
-  useful is worse than no gate.
-
-  **Why.** John: the residual honest case is a cell whose reference is not in the corpus. His
-  requirement, verbatim in the ruling: the cell carries the IRS labels and instructions so the
-  consuming AI knows what the line is, while the operation field says the work is not completed and
-  it is on the caller to figure it out. Today an out-of-corpus branch is a `frontier.yaml` entry with
-  a target node, a citation ref and a purpose - real structure, but no printed text and no explicit
-  handoff. **Two live instances from S50:** `form_2441_2025` lines 9b and 10 feed from Worksheet A
-  and the Credit Limit Worksheet, neither of which is a document in the graph.
-
-  **Step 1 - name the shape.** One payload, emitted for any node the engine will not compute,
-  carrying at minimum: the node id and canonical address, the printed IRS label from the form face,
-  the instruction text we hold for that line, the citation refs that support both, the reason it is
-  incomplete, and an explicit statement in the operation slot that this is NOT computed and the
-  caller must resolve it. **The reason must be a named enum, not prose** - a caller has to branch on
-  it. Start with `reference_not_in_corpus` and `not_approved`; do not invent more without an
-  instance to point at.
-
-  **Step 2 - carry it through `execute_tax_tree`.** Today `Result` has `values`, `trace` and
-  `missing_required_inputs` (`tax_graph/engine/engine.py`). Add the incomplete payloads as their own
-  collection - **do NOT overload `missing_required_inputs`**, which means "the filer owes us a
-  number" and is a different thing from "we never modeled this". Surface it in the MCP response
-  next to the existing keys.
-
-  **Step 3 - the exports must not print an incomplete cell as a number.** `export_filled_form_bundle`
-  hands `result` to the PDF writer and returns provenance as a SIBLING dict the writer never reads.
-  **Report exactly what each export does today with a node that has no computed value**, and make
-  the incomplete payload reach the bundle rather than sitting beside it. Report; do not redesign the
-  export surface in this round.
-
-  **Step 4 - populate it from the frontier registry.** The 89 declared entries in
-  `graph/2025/frontier.yaml` are the existing out-of-corpus vocabulary. Join them to the payload so a
-  declared frontier produces a real incomplete cell with its citation, and **report how many of the
-  89 can supply printed label text today and how many cannot.** A low number is a finding about
-  acquisition, not something to paper over with a placeholder string.
-
-  **Do not:** change what any node computes; promote anything; edit `graph/2025/` outside `_drafts/`;
-  invent a reason enum without a live instance; write placeholder IRS text for a line we do not hold.
-  **Stop conditions:** any diff in the protected directories; a computed value changing in any
-  existing test. Tier 3. Honest `RAN:`/`NOT RUN:`. ASCII, `git diff --check`, module-form
-  `validate 2025`. **ONE local commit.**
-
 - **M20-S53 TASK - THE APPROVAL GATE, BEHIND A SWITCH, DEFAULT OFF (Architect, Claude Opus 5,
   2026-08-04, from John's approval-is-the-gate ruling).** Ledger: the RAN/NOT RUN rule, D10.
   **Depends on S52's payload. Do not start this before S52 lands.**
@@ -542,6 +456,14 @@ client-managed server dies.
 
 ## Recent rounds (condensed; full narration in git history - `git show <hash>`)
 
+- **M20-S52 (`2dac757`, Architect-verified):** the incomplete-cell payload.
+  `Result.incomplete_cells` is separate from `missing_required_inputs`, carries the canonical
+  address, printed IRS label, instruction text, citations split form-face/instruction, and the
+  operation `NOT_COMPUTED_CALLER_MUST_RESOLVE`; the reason enum is closed and already accepts
+  `not_approved` for S53. Reaches `execute_tax_tree` and the filled-form `bundle.json`. Architect
+  drove the real graph: 89 frontiers with **12** printed labels and 77 without, 3 live incomplete
+  cells all carrying a label and 2 of 3 carrying instruction text. Worker reported the hash as
+  `d2637e3`, orphaned by an amend; the record is `2dac757`.
 - **M20-S51 (`1541a67`, Architect-verified; provider leg Architect-run):** the derivation
   denominator is explicit. `build_derivation_denominator` reports every line anchor as admitted
   or skipped with a named reason, keeping the pre-S51 decision beside the current one. Corpus:
