@@ -921,6 +921,32 @@ def test_nonnumeric_graph_fact_fails_in_numeric_conditional_slot() -> None:
     assert [issue.kind for issue in warnings] == ["unresolved_comparison_direction"]
 
 
+def test_projection_warning_prefers_unambiguous_form_face_over_instruction_cue() -> None:
+    row = {
+        "form": "form_1040_2025",
+        "line": "34",
+        "label": "Refundable amount",
+        "form_face_text": "If line 33 is more than line 24, subtract line 24 from line 33.",
+        "instruction_text": "If line 33 is $0 or more, see the instructions.",
+        "instruction_locator": "span_line_34",
+    }
+    expression = {
+        "op": "IF_ELSE",
+        "args": [
+            {"line": "33"},
+            {"line": "24"},
+            {"op": "SUBTRACT", "args": [{"line": "33"}, {"line": "24"}]},
+            {"const": 0},
+        ],
+    }
+    _hard, warnings = validate_cell_output(
+        CellFrame.from_rows([row]).rows[0],
+        expression,
+        row["form_face_text"],
+    )
+    assert [issue.kind for issue in warnings] == []
+
+
 def test_unclassified_graph_node_type_is_reported_and_allowed() -> None:
     row = CellFrame.from_rows([_frame()[1]]).rows[0]
     hard, warnings = validate_cell_output(

@@ -1290,19 +1290,30 @@ def _projection_warnings(
     row: CellRecord,
     expression: Mapping[str, Any],
 ) -> list[CellValidationIssue]:
-    """Return warnings for every operation with no current projection rule."""
+    """Return warnings using the row's primary evidence source.
+
+    The form face is the evidence used to interpret a generated row.  Joining
+    it with instruction prose can introduce a second comparison cue (for
+    example, ``more than`` on the face and ``or more`` in the instructions)
+    and turn an otherwise resolved direction into a false warning.  Fall back
+    only when the primary source is absent.
+    """
     if str(expression.get("op") or "").upper() == "REQUIRE_INPUT":
         return []
+    evidence_text = next(
+        (
+            str(text).strip()
+            for text in (row.form_face_text, row.instruction_text, row.quote)
+            if str(text or "").strip()
+        ),
+        "",
+    )
     projection = expression_to_graph(
         form=row.form,
         line=row.line,
         expression=expression,
         quote_span_id=row.quote_span_id,
-        evidence_text="\n".join(
-            text
-            for text in (row.form_face_text, row.instruction_text, row.quote)
-            if text
-        ),
+        evidence_text=evidence_text,
     )
     findings = []
     for finding in projection.findings:

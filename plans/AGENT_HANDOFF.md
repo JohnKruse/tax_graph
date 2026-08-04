@@ -208,8 +208,9 @@ client-managed server dies.
   acted on, so "reviewed and fine" stays distinguishable from "never shown".
   Diagnosis moves downstream to where the evidence lives: the checker proposes the cause from the
   witness disagreement, the maintainer confirms. **Reviewer detects; pipeline diagnoses.**
-  Current code accepts only `confirmed`/`rejected` (`workbench/static/app.js`), so the middle tier
-  is missing. The ledger is already address-keyed and append-only, so adding it is small.
+  Before S48, the code accepted only `confirmed`/`rejected` (`workbench/static/app.js`), so the
+  middle tier was missing. The ledger is already address-keyed and append-only, so adding it is
+  small.
 
 ## Open for Architect
 
@@ -461,6 +462,29 @@ client-managed server dies.
 - **M20-S23 (`0831694`):** the `instruction_sections` artifact and its join.
 
 ## Latest verification
+
+- **M20-S48 Worker implementation (2026-08-04, Worker-verified; awaiting Architect verification):**
+  landed the three-state observation contract. The reviewer-facing labels are Accept, Question,
+  and Reject; the canonical stored tokens are `confirmed`, `questioned`, and `rejected`.
+  Question and Reject reveal a comment box and require an observation; Accept needs no comment.
+  Legacy cause tokens remain accepted only as named ingestion aliases and are canonicalized to the
+  three states. The address bridge applies all three states with exact address/node binding and
+  fingerprint protection; Question and Reject write `human_confirmed: false` with explicit
+  `human-questioned` or `human-rejected` tiers. No engine code or protected graph artifact changed.
+  `_projection_warnings` now prefers form-face evidence over instruction/quote cues; the real
+  projection path is unchanged. The standalone workbench CLI also exposes the new verdicts and
+  `--comment`.
+  Engine semantics report (not implemented, per S48): (a) refuse to compute and report unresolved,
+  safest but blocks output; (b) compute and flag the result, producing a number that downstream
+  code could consume; or (c) exclude the node and report a gap, conservative but lossy. John must
+  choose; current `execute_tax_tree` behaviour is unchanged.
+  RAN: `$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\.codex\visualizations\2026\08\04\019fcdb1-04e6-7c20-b0e5-2287ddd04329\pytest_s48_final'; .venv\Scripts\python.exe -m pytest tests\test_review_address_bridge_m20.py tests\test_review_verdicts_m20.py -k "not real_derived_projection" tests\test_derive_cells_m20.py tests\test_review_workbench_verdicts_m15.py tests\test_workbench_m15.py tests\test_workbench_write_api_m15.py -q` -> 105 passed, 1 deselected in 69.28s.
+  RAN: `$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\.codex\visualizations\2026\08\04\019fcdb1-04e6-7c20-b0e5-2287ddd04329\pytest_s48_final'; .venv\Scripts\python.exe -m pytest tests\e2e\test_workbench_v2_m17.py -q` -> 4 passed in 133.65s.
+  RAN: `.venv\Scripts\python.exe tools\check_ascii.py` -> ASCII check OK; compileall -> no errors;
+  schema JSON load -> OK; `git diff --check` -> clean apart from the existing CRLF conversion
+  warning on `workbench/server.py`; protected-set diff stat -> empty; module-form `validate 2025`
+  -> exit 0, graph integrity OK, reconcile differences named.
+  RAN: `$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\.codex\visualizations\2026\08\04\019fcdb1-04e6-7c20-b0e5-2287ddd04329\pytest_s48_elev'; .venv\Scripts\python.exe -m pytest tests\e2e\test_workbench_v2_m17.py tests\e2e\test_paired_view_m15.py -q` -> 4 passed, 2 failed. Both failures are the pre-existing paired-view lookup for `[data-document-id="form_1040_2025"][data-check-group="identity_inputs"]`; the app renders document buttons but not those group elements. The changed S48 browser suite is green above. NOT RUN: provider leg - prohibited by the S48 task and unavailable in the sandbox.
 
 - **M20-S45 Worker implementation (2026-08-04, Worker-verified; awaiting Architect verification):** added
   `tax_graph.review.apply_address_verdicts` and `review apply-address-verdicts`, dry-run by default.
