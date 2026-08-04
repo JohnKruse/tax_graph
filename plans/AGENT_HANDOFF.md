@@ -287,6 +287,43 @@ client-managed server dies.
 
 ## From Architect
 
+## Worker status - M20-S50
+
+**M20-S50 Worker run (2026-08-04; fixture-only in this sandbox; no promotion):**
+
+- The manifest declaration is already accepted at `f637df0`; the stored PDF hashes match the
+  declared SHA-256 pins for both `form_2441_2025` and `instructions_form_2441_2025`.
+- Provider-enabled derivation was attempted exactly as requested:
+  `.venv\Scripts\python.exe experiments\derive_cells_s25.py --root . --year 2025 --document form_2441_2025 --output-dir C:\Users\devbox\.codex\visualizations\2026\08\04\019fcdfb-fc3b-7391-9832-59eaf31459ec\m20-s50-derive`
+  -> exit 0 in 92.2s; 12 rows attempted, 0 derived, 0 repaired, 0 gapped, 12 errored, all
+  `LlmUnavailable: OpenRouter request failed: Connection error.` The deterministic frame still
+  produced 40 outline nodes and 35 line anchors. No model expression or validator failure was
+  emitted because every call failed before a response.
+- The provider-disabled preparation run produced the same 2441 frame and 12 derivation rows:
+  `5, 9a, 9c, 11, 15, 17, 23, 25, 26, 28, 29, 31`. Existing extension output is 24 nodes,
+  2 edges, 22 citations, and 2 rules, all T0/review; it remains outside the protected base graph.
+  A provider result is required to compute the semantic diff rather than infer it from the old
+  extension artifact.
+- The form face has an AGI table with 16 contiguous bands, not 15: six through $25,000, six
+  through $37,000, then $37,000-$39,000, $39,000-$41,000, $41,000-$43,000, and $43,000-No limit.
+  The lower bound is $0, the upper bound is open-ended, and the decimal values descend .35 to
+  .20. No lookup operation was invented; the S50 wording needs an Architect correction or an
+  explicit note that the source has 16 bands.
+- The instructions text contains both `Credit Limit Worksheet` and `Worksheet A`, but
+  `.cache/raw/2025/instructions_form_2441_2025.html` does not exist and the current worksheet
+  harvester is HTML-table based. `NOT RUN: 2441 worksheet harvest - no acquired HTML source and
+  no 2441 text-table target; no partial worksheet draft was guessed.`
+- `RAN: .venv\Scripts\python.exe -m pytest tests\test_acquire_manifest.py tests\test_m20_s41.py tests\test_derive_cells_s30.py tests\test_derive_cells_m20.py -q` -> 76 passed in 2.08s (one known `.pytest_cache` ACL warning).
+- `RAN: $env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\.codex\visualizations\2026\08\04\019fcdfb-fc3b-7391-9832-59eaf31459ec\pytest-s50'; .venv\Scripts\python.exe -m pytest tests\test_worksheet_harvest_m20.py tests\test_instruction_sections_m20.py tests\test_instruction_sections_m18.py -q` -> 17 passed in 8.06s (one known `.pytest_cache` ACL warning).
+- `RAN: .venv\Scripts\python.exe tools\check_ascii.py` -> ASCII check OK.
+- `RAN: .venv\Scripts\python.exe -m tax_graph.cli validate 2025` -> exit 0, graph integrity OK;
+  reconcile reports no raw-not-in-manifest difference and five instruction-only manifest entries.
+- `RAN: .venv\Scripts\python.exe -m workbench.cli preflight --year 2025` -> `PermissionError: [WinError 5]` while reading the known protected `_drafts` ACL; successful preflight is unverified, and this is the inherited baseline, not a 2441 result.
+- `RAN: .venv\Scripts\python.exe tools\check_ascii.py; git diff --check; git diff --stat -- graph/2025/nodes graph/2025/edges graph/2025/rules graph/2025/field_maps; git status --short` -> ASCII OK, no diff-check output, protected-set diff empty, and clean status before this handoff update.
+
+**Remaining:** Architect live-provider execution and the draft diff/promotion decision. No files
+under the protected graph set were changed, and no human-review claim was written.
+
 - **M20-S50 TASK - RUN THE WHOLE PIPELINE AT
   FORM 2441, AS A RELIABILITY EXERCISE (Architect,
   Claude Opus 5, 2026-08-04; John's call: *"adding it might be a good exercise in seeing if our
