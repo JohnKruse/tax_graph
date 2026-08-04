@@ -78,7 +78,7 @@ dev = [
 
 [project.scripts]
 tax-graph = "tax_graph.cli:app"
-review-workbench = "workbench.cli:main"
+review-workbench = "tax_graph.workbench_host:main"
 
 [dependency-groups]
 dev = [

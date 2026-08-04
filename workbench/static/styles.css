@@ -212,6 +212,23 @@ h1, h2, h3, p { margin-top: 0; }
 .generated-verdict label { display: grid; gap: 4px; margin-top: 7px; color: var(--muted); font-size: 10px; font-weight: 700; }
 .generated-verdict input, .generated-verdict textarea { width: 100%; box-sizing: border-box; padding: 6px; border: 1px solid var(--line); border-radius: 4px; color: var(--ink); background: #fff; font: inherit; font-weight: 400; }
 .generated-verdict { position: sticky; top: 0; z-index: 3; box-shadow: 0 2px 6px rgba(23, 33, 43, .08); }
+.review-comment-history { margin: 8px 0; padding: 7px; border: 1px solid #d8e1dc; border-radius: 4px; background: #f7faf8; }
+.review-comment-history > strong { color: var(--muted); font-size: 10px; }
+.review-comment { margin-top: 6px; padding: 5px 7px; border-left: 3px solid #9aa8a1; background: #fff; }
+.review-comment.curated { border-left-color: var(--accent); }
+.review-comment.contributed { border-left-color: #875a05; }
+.review-comment p { margin: 0 0 3px; color: var(--muted); font-size: 10px; }
+.review-comment blockquote { margin: 0; color: var(--ink); font-size: 10px; }
+.rederive-panel { margin: 9px 0; padding: 8px; border: 1px solid #84aaa4; border-radius: 4px; background: #f4faf8; }
+.rederive-panel h4 { margin: 0 0 4px; color: var(--accent); font-size: 11px; }
+.rederive-hint { margin: 4px 0; color: var(--muted); font-size: 10px; line-height: 1.35; }
+.rederive-button { margin-top: 7px; padding: 6px 9px; border: 1px solid var(--accent); border-radius: 4px; color: #fff; background: var(--accent); font-size: 10px; font-weight: 700; cursor: pointer; }
+.rederive-button:disabled { opacity: .55; cursor: wait; }
+.rederive-status { min-height: 14px; margin: 6px 0 0; color: var(--muted); font-size: 10px; }
+.rederive-result { margin-top: 6px; color: var(--ink); font-size: 10px; }
+.rederive-result p { margin: 4px 0; }
+.rederive-result pre { max-height: 180px; margin: 5px 0; padding: 6px; overflow: auto; background: #fff; border: 1px solid #d8e1dc; white-space: pre-wrap; }
+.rederive-result ul { margin: 4px 0; padding-left: 16px; }
 .verdict-controls { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 5px; margin-top: 8px; }
 .verdict-button { padding: 6px; border: 1px solid var(--accent); border-radius: 4px; color: var(--accent); background: #fff; font-size: 10px; font-weight: 700; cursor: pointer; }
 .verdict-button:hover, .verdict-button:focus-visible { color: #fff; background: var(--accent); }

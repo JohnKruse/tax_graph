@@ -553,6 +553,25 @@ client-managed server dies.
 
 ## Latest verification
 
+- **M20-S49 Worker implementation (2026-08-04, fixture-only; awaiting Architect verification):**
+  wired the application host to inject `build_rederive_handler` without importing pipeline code
+  into `workbench/`; the unconfigured artifact server still returns 501. Added the generated-cell
+  Try again panel, local attempt labels and pending state, returned expression/validator display,
+  and address-keyed review-history projection. Contributed comments are displayed as retained
+  history and never sent to the model; an empty retry uses curated history through the pipeline
+  callback, while a typed correction is sent only for that attempt. No retry writes graph, drafts,
+  ledger, or session state. Form 2441 remains queued for S50; its manifest commit is already in
+  history at `f637df0` and was not changed here.
+  RAN: `$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\testtmp-s49'; .venv\Scripts\python.exe -m pytest tests\test_workbench_s49.py tests\test_workbench_rederive_m20.py tests\test_rederive_m20.py -q` -> 7 passed in 0.45s.
+  RAN: `$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\pytest-run-s49'; .venv\Scripts\python.exe -m pytest tests\test_workbench_s49.py tests\test_workbench_rederive_m20.py tests\test_rederive_m20.py tests\test_workbench_m15.py -q` -> 11 passed in 0.67s.
+  RAN: `$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\testtmp-s49'; .venv\Scripts\python.exe -m pytest tests\test_workbench_m15.py -q` -> 4 passed in 1.20s.
+  RAN: `$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\testtmp-s49'; .venv\Scripts\python.exe -m pytest tests\e2e\test_workbench_v2_m17.py::test_generated_cell_try_again_shows_fresh_result_without_session_progress -q` -> 1 passed in 1.59s.
+  RAN: `.venv\Scripts\python.exe tools\check_ascii.py` -> ASCII check OK.
+  RAN: `.venv\Scripts\python.exe -m tax_graph.cli validate 2025` -> exit 0, graph integrity OK; reconcile differences named.
+  RAN: `$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\testtmp-s49'; .venv\Scripts\python.exe -m pytest tests\test_workbench_m15.py tests\test_workbench_server_m15.py tests\test_workbench_write_api_m15.py tests\test_rederive_m20.py tests\test_workbench_rederive_m20.py tests\test_workbench_s49.py -q` -> 11 passed, 13 errors; all errors stop at protected `graph/2025/_drafts/form_1040_2025` read access during live-app fixture setup.
+  NOT RUN: provider leg - live provider access is outside the fixture-only round and unavailable in the sandbox.
+  NOT RUN: `$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\testtmp-s49'; .venv\Scripts\python.exe -m pytest tests\e2e\test_workbench_v2_m17.py -q` - fixture setup fails with the same protected-draft `PermissionError` before browser assertions.
+
 - **M20-S48 Worker implementation (2026-08-04, Worker-verified; awaiting Architect verification):**
   landed the three-state observation contract. The reviewer-facing labels are Accept, Question,
   and Reject; the canonical stored tokens are `confirmed`, `questioned`, and `rejected`.

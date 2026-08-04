@@ -267,10 +267,12 @@ trustworthy, and keeps promotion mechanics where they already live.
 
 ## Rough shape (v1, all soft)
 
-- Local-only, offline, zero API keys. Consistent with the single-binary ethos:
+- Local-only and static-review capable with zero API keys. Consistent with the single-binary ethos:
   either a static HTML bundle generated per form-year (like `review.html` but from
   compiled artifacts) or a tiny local server (`review-workbench serve --year 2025`).
-  Lean static-first; a server only if adjudication write-back demands it.
+  The normal `serve` entry point is the application host: it injects the pipeline's
+  non-persisting single-cell re-derive callback. The artifact-only `workbench.server`
+  seam remains usable without that callback and returns 501 for retry requests.
 - Input contract = published artifact formats only (SQLite schema, draft dir layout,
   geometry, field disposition, and verdict schemas). Any information the workbench needs that artifacts do
   not carry becomes an ADDITIVE field request on the pipeline side - the workbench
@@ -279,6 +281,11 @@ trustworthy, and keeps promotion mechanics where they already live.
   are display geometry only; runtime instances are <node>#<row_key>; static ids stay
   flat. The workbench displays all three vocabularies and never conflates them.
 - ASCII source files, provider-agnostic, no external CDNs.
+
+The Try again panel is a fresh attempt, not a verdict and not a session save. It sends
+only the correction typed for that attempt, then displays the returned expression and
+validator failures. Curated ledger comments are used when no new correction is supplied;
+contributed comments remain visible history and are never sent to the model.
 
 ## Candidate v1 workflows (pick two, defer the rest)
 

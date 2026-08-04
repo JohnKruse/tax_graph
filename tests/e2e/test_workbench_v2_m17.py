@@ -140,6 +140,38 @@ def test_selected_cell_uses_human_headers_dossier_order_and_occurrence(page, wor
     # this 57-cell Form 1040 review projection intentionally contains line cells only.
 
 
+def test_generated_cell_try_again_shows_fresh_result_without_session_progress(
+    page,
+    retry_workbench_url: str,
+) -> None:
+    page.goto(retry_workbench_url)
+    session_writes = []
+    page.on("request", lambda request: session_writes.append(request.url) if request.method == "PUT" else None)
+    page.locator('[data-document-id="form_1040_2025"].document-entry').click()
+    cards = page.locator("#river .review-unit-card")
+    cards.first.wait_for()
+    anchors = cards.locator(".unit-card-anchor").all_inner_texts()
+    cards.nth(anchors.index("33")).locator(".unit-card-select").click()
+
+    panel = page.locator("#river-detail .rederive-panel")
+    expect(panel).to_be_visible()
+    expect(panel.locator(".rederive-comment")).to_have_value("")
+    panel.locator(".rederive-button").click()
+    expect(panel.locator(".rederive-status")).to_contain_text("first try")
+    expect(panel.locator(".rederive-result")).to_contain_text("trial expression for line 33")
+    expect(panel.locator(".rederive-result")).to_contain_text("quote_not_verbatim")
+    assert session_writes == []
+
+    panel.locator(".rederive-comment").fill("Use the current form face.")
+    panel.locator(".rederive-button").click()
+    expect(panel.locator(".rederive-status")).to_contain_text("changed correction")
+    expect(panel.locator(".rederive-result")).to_contain_text("Use the current form face.")
+
+    panel.locator(".rederive-button").click()
+    expect(panel.locator(".rederive-status")).to_contain_text("same correction")
+    assert session_writes == []
+
+
 def test_landscape_page_uses_captured_geometry_for_region_placement(page, workbench_url: str) -> None:
     page.goto(workbench_url)
     page.locator('[data-document-id="form_13614_c_2025"].document-entry').click()

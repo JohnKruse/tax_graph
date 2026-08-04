@@ -29,7 +29,7 @@ from workbench.sessions import (
     validate_unit_review_scope,
 )
 from workbench.verdicts import LEGACY_REVIEW_VERDICTS, REVIEW_VERDICTS, emit_verdict
-from workbench.address_verdicts import append_address_verdict
+from workbench.address_verdicts import append_address_verdict, load_address_verdicts
 
 
 REJECTION_REASON_CODES = frozenset({"pipeline_defect", "source_pathology"})
@@ -291,13 +291,33 @@ def create_app(
 
     def _document_cells(document_id: str) -> list[dict[str, Any]]:
         builder = build_generated_document_cells if document_id in GENERATED_REVIEW_DOCUMENTS else build_document_cells
-        return builder(
+        cells = builder(
             root_path,
             year,
             document_id,
             geometry_entries=_document_context()["geometry_entries"],
             page_geometry=_document_context()["page_geometry"],
         ).cells
+        if document_id not in GENERATED_REVIEW_DOCUMENTS:
+            return cells
+        ledger_path = verdict_root / "address_verdicts.jsonl"
+        history = load_address_verdicts(ledger_path) if ledger_path.is_file() else []
+        comments_by_address: dict[str, list[dict[str, Any]]] = defaultdict(list)
+        for record in history:
+            comment = str(record.get("comment") or "").strip()
+            address = str(record.get("address") or "").strip()
+            if not comment or not address:
+                continue
+            comments_by_address[address].append({
+                "comment": comment,
+                "origin": str(record.get("origin") or "legacy"),
+                "reviewed_at": record.get("reviewed_at"),
+            })
+        for cell in cells:
+            comments = comments_by_address.get(str(cell.get("address_id") or ""))
+            if comments:
+                cell["review_comments"] = comments
+        return cells
 
     def _pseudo_units(cells: list[dict[str, Any]]) -> list[dict[str, Any]]:
         # The session helpers only read ``unit_id`` and the first page, so the
@@ -659,7 +679,13 @@ def _evidence_matches(
     return draft_matches
 
 
-def serve(root: str | Path, year: str | int, *, port: int = 0) -> None:
+def serve(
+    root: str | Path,
+    year: str | int,
+    *,
+    port: int = 0,
+    rederive_cell: Callable[[str, str, str | None], Mapping[str, Any]] | None = None,
+) -> None:
     """Run the workbench on loopback with an ephemeral port by default."""
     from workbench.manifest import write_manifest
 
@@ -669,6 +695,6 @@ def serve(root: str | Path, year: str | int, *, port: int = 0) -> None:
         year,
         output_path=root_path / ".workbench_state" / str(year) / "review_manifest.json",
     )
-    app = create_app(root_path, year, manifest=result.payload)
+    app = create_app(root_path, year, manifest=result.payload, rederive_cell=rederive_cell)
     print(f"write token: {app.config['WORKBENCH_WRITE_TOKEN']}", flush=True)
     app.run(host="127.0.0.1", port=port, debug=False, use_reloader=False)

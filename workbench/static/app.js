@@ -1,4 +1,4 @@
-import {loadDocuments, loadDocumentCells, loadDocumentSession, saveDocumentSession, submitVerdict} from "./api.js";
+import {loadDocuments, loadDocumentCells, loadDocumentSession, rederiveCell, saveDocumentSession, submitVerdict} from "./api.js";
 import {renderOfficialPane} from "./panes.js";
 import {installPairing} from "./pairing.js";
 import {activateRiverUnit, renderReviewRiver, selectRiverUnit} from "./river.js";
@@ -11,6 +11,7 @@ let activePage = null;
 let dirty = false;
 let syncingSelection = false;
 const navigationState = new Map();
+const rederiveAttempts = new Map();
 
 const POLICY_COUNT_LABEL = {
   user_entered: "filer-entered",
@@ -173,6 +174,63 @@ async function persistProgress() {
   updateDashboard();
 }
 
+function rederiveLine(cell) {
+  const candidates = [cell.line, cell.official_ref, cell.display_name];
+  for (const candidate of candidates) {
+    const match = String(candidate || "").trim().match(/^(?:line\s+)?([0-9]+[a-z]?)(?:\b|\s+-)/i);
+    if (match) return match[1].toLowerCase();
+  }
+  return String(cell.official_ref || "").trim().replace(/^line\s+/i, "").toLowerCase();
+}
+
+function rederiveFailureLabels(payload) {
+  const result = payload?.result && typeof payload.result === "object" ? payload.result : {};
+  const validation = payload?.validation && typeof payload.validation === "object"
+    ? payload.validation
+    : {};
+  const labels = [];
+  for (const issue of [...(result.validation_failures || []), ...(result.validation_warnings || [])]) {
+    if (typeof issue === "string") labels.push(issue);
+    else if (issue && typeof issue === "object") labels.push(issue.message || issue.kind || "unclassified validator issue");
+  }
+  for (const [kind, count] of Object.entries(validation.validator_failures_by_kind || {})) {
+    labels.push(`${kind} (${count})`);
+  }
+  return [...new Set(labels)];
+}
+
+function renderRederiveResult(panel, payload, attemptLabel) {
+  const resultNode = panel?.querySelector(".rederive-result");
+  if (!resultNode) return;
+  const result = payload?.result && typeof payload.result === "object" ? payload.result : {};
+  resultNode.replaceChildren();
+  const attempt = document.createElement("p");
+  attempt.textContent = `Attempt: ${attemptLabel}.`;
+  resultNode.append(attempt);
+  const expression = document.createElement("pre");
+  expression.className = "rederive-expression";
+  expression.textContent = result.rendered || (result.expression ? JSON.stringify(result.expression, null, 2) : "No expression returned.");
+  resultNode.append(expression);
+  const failures = rederiveFailureLabels(payload);
+  const heading = document.createElement("p");
+  heading.textContent = failures.length ? "Validator failures:" : "Validator failures: none reported.";
+  resultNode.append(heading);
+  if (failures.length) {
+    const list = document.createElement("ul");
+    for (const failure of failures) {
+      const item = document.createElement("li");
+      item.textContent = failure;
+      list.append(item);
+    }
+    resultNode.append(list);
+  }
+  if (result.error) {
+    const error = document.createElement("p");
+    error.textContent = `Derivation status: ${result.error}`;
+    resultNode.append(error);
+  }
+}
+
 function renderReview(page = null, restoreCellId = null) {
   activePage = page;
   const root = document.querySelector(".review-layout");
@@ -188,6 +246,7 @@ function renderReview(page = null, restoreCellId = null) {
   if (root._selectionHandler) root.removeEventListener("workbench:selection", root._selectionHandler);
   if (root._riverSelectionHandler) root.removeEventListener("workbench:river-selection", root._riverSelectionHandler);
   if (root._verdictHandler) root.removeEventListener("workbench:submit-verdict", root._verdictHandler);
+  if (root._rederiveHandler) root.removeEventListener("workbench:rederive", root._rederiveHandler);
   root._selectionHandler = (event) => {
     const cellId = event.detail.unitId;
     updateSessionContext(cellId);
@@ -253,9 +312,50 @@ function renderReview(page = null, restoreCellId = null) {
       message.textContent = `Verdict was not recorded: ${error.message}`;
     }
   };
+  root._rederiveHandler = async (event) => {
+    const detail = event.detail || {};
+    const cell = detail.cell;
+    if (!cell || !activeDocument) return;
+    const comment = String(detail.draftComment || "").trim();
+    const key = `${activeDocument.document_id}:${cell.cell_id}`;
+    const previous = rederiveAttempts.get(key);
+    const attemptLabel = previous === undefined
+      ? "first try"
+      : previous === comment
+        ? "same correction (fresh try)"
+        : "changed correction";
+    const panel = document.querySelector(`#river-detail .rederive-panel[data-rederive-cell="${CSS.escape(cell.cell_id)}"]`);
+    const button = panel?.querySelector(".rederive-button");
+    const status = panel?.querySelector(".rederive-status");
+    const message = document.querySelector("#session-message");
+    if (!panel || !button || !status) return;
+    button.disabled = true;
+    button.setAttribute("aria-busy", "true");
+    status.textContent = "Re-deriving (pending)...";
+    message.textContent = "Trying the selected cell again; review state is unchanged.";
+    const payload = {
+      document_id: activeDocument.document_id,
+      line: rederiveLine(cell),
+    };
+    if (comment) payload.draft_comment = comment;
+    try {
+      const result = await rederiveCell(payload);
+      rederiveAttempts.set(key, comment);
+      renderRederiveResult(panel, result, attemptLabel);
+      status.textContent = `Retry complete: ${attemptLabel}.`;
+      message.textContent = `Retry complete for ${cell.official_ref || cell.cell_id}; no review state was saved.`;
+    } catch (error) {
+      status.textContent = `Retry failed: ${error.message}`;
+      message.textContent = `Retry failed for ${cell.official_ref || cell.cell_id}: ${error.message}`;
+    } finally {
+      button.disabled = false;
+      button.removeAttribute("aria-busy");
+    }
+  };
   root.addEventListener("workbench:selection", root._selectionHandler);
   root.addEventListener("workbench:river-selection", root._riverSelectionHandler);
   root.addEventListener("workbench:submit-verdict", root._verdictHandler);
+  root.addEventListener("workbench:rederive", root._rederiveHandler);
   installSynchronizedView(document.querySelector("#official-pane .page-viewport"));
   installPageControls(activeDocument.pages, (nextPage) => renderReview(nextPage), page);
   updateDashboard();

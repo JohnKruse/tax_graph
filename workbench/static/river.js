@@ -194,6 +194,25 @@ function generatedExpressionMarkup(cell) {
     sourceMarkup;
 }
 
+function reviewCommentsMarkup(cell) {
+  const comments = Array.isArray(cell.review_comments) ? cell.review_comments : [];
+  if (!comments.length) return "";
+  return `<div class="review-comment-history"><strong>Review history</strong>` +
+    comments.map((item) => {
+      const origin = String(item.origin || "legacy");
+      const label = origin === "curated"
+        ? "Curated guidance (sent when no new draft is supplied)"
+        : origin === "contributed"
+          ? "Contributed observation (retained; not sent to model)"
+          : "Legacy observation (not sent to model)";
+      return `<article class="review-comment ${escapeHtml(origin)}">` +
+        `<p><strong>${escapeHtml(label)}</strong></p>` +
+        `<blockquote>${escapeHtml(item.comment)}</blockquote>` +
+        `</article>`;
+    }).join("") +
+    `</div>`;
+}
+
 function generatedVerdictMarkup(cell) {
   if (!cell.generated) return "";
   return `<section class="dossier-group generated-verdict" data-generated-cell="${escapeHtml(cell.cell_id)}">` +
@@ -202,6 +221,15 @@ function generatedVerdictMarkup(cell) {
     `<p class="generated-status"><strong>Status:</strong> ${escapeHtml(cell.generated_status || "review_gap")}</p>` +
     `<p class="generated-status"><strong>Policy origin:</strong> ${escapeHtml(cell.policy_origin || "review_gap")}` +
       (cell.failover_class ? ` (${escapeHtml(cell.failover_class)})` : "") + `</p>` +
+    reviewCommentsMarkup(cell) +
+    `<section class="rederive-panel" data-rederive-cell="${escapeHtml(cell.cell_id)}">` +
+      `<h4>Try again</h4>` +
+      `<p class="rederive-hint">This is a fresh, non-persisting derivation attempt. The correction below is sent only for this attempt.</p>` +
+      `<label>Correction for this attempt<textarea class="rederive-comment" rows="3" placeholder="Optional correction for the model."></textarea></label>` +
+      `<button type="button" class="rederive-button">Try again</button>` +
+      `<p class="rederive-status" role="status" aria-live="polite"></p>` +
+      `<div class="rederive-result" aria-live="polite"></div>` +
+    `</section>` +
     `<label>Optional batch tag<input class="verdict-tag" type="text" placeholder="For example: first pass" autocomplete="off"></label>` +
     `<div class="verdict-comment-box" hidden>` +
       `<label>What did you observe? <textarea class="verdict-comment" rows="3" placeholder="Describe the evidence or concern for the pipeline."></textarea></label>` +
@@ -335,6 +363,13 @@ function renderDetail(detail, cell, cells, review, onReviewChange) {
         },
       }));
     });
+  });
+  body.querySelector(".rederive-button")?.addEventListener("click", () => {
+    const draftComment = body.querySelector(".rederive-comment")?.value || "";
+    detail.dispatchEvent(new CustomEvent("workbench:rederive", {
+      bubbles: true,
+      detail: {cell, draftComment},
+    }));
   });
   headingTitle.focus({preventScroll: true});
 }
