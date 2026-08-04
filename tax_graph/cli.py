@@ -37,6 +37,15 @@ def validate_command(year: str = "2025", root: str | Path | None = None) -> int:
     load_config(root=root_path)
     result = validate_graph(year, root=root_path)
     print(result.format_report())
+    from tax_graph.acquire.reconcile import reconcile_document_lists
+
+    try:
+        reconcile = reconcile_document_lists(year, root=root_path)
+    except (OSError, ValueError) as exc:
+        print("=== document reconcile ===")
+        print(f"  status: ERROR ({type(exc).__name__}: {exc})")
+    else:
+        print(reconcile.format_report(), end="")
     return 0 if result.ok else 1
 
 

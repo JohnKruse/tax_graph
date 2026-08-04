@@ -23,6 +23,7 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 from tax_graph.config import get_config_value, load_config
+from tax_graph.acquire.manifest import load_manifest
 from tax_graph.extract.cells import (
     build_reference_inventory,
     build_cell_frame_from_document,
@@ -207,12 +208,14 @@ def run_documents(
     *,
     root: str | Path,
     year: str,
-    document_ids: list[str],
+    document_ids: list[str] | None = None,
     output_dir: str | Path | None = None,
     no_provider: bool = False,
 ) -> list[dict[str, Any]]:
     """Run the harness once per document and report load/provider failures."""
     root_path = Path(root).resolve()
+    if document_ids is None:
+        document_ids = manifest_document_ids(root=root_path, year=year)
     destination = _output_destination(root_path, output_dir)
     reports: list[dict[str, Any]] = []
     for document_id in document_ids:
@@ -292,6 +295,16 @@ def run_documents(
     return reports
 
 
+def manifest_document_ids(*, root: str | Path, year: str) -> list[str]:
+    """Return declared document ids in manifest order for a corpus run."""
+    manifest = load_manifest(root=Path(root).resolve())
+    if str(manifest.tax_year) != str(year):
+        raise ValueError(
+            f"manifest tax_year {manifest.tax_year} does not match requested year {year}"
+        )
+    return [entry.document_id for entry in manifest.documents]
+
+
 def main() -> int:
     """Run persistence and, unless disabled, the real provider bench."""
     parser = argparse.ArgumentParser()
@@ -301,11 +314,10 @@ def main() -> int:
     parser.add_argument("--document", action="append", dest="documents")
     parser.add_argument("--no-provider", action="store_true")
     args = parser.parse_args()
-    document_ids = args.documents or ["form_1040_2025"]
     reports = run_documents(
         root=args.root,
         year=args.year,
-        document_ids=document_ids,
+        document_ids=args.documents,
         output_dir=args.output_dir,
         no_provider=args.no_provider,
     )

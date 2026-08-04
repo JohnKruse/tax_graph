@@ -480,6 +480,24 @@ client-managed server dies.
   preflight with `legacy_mined` explicit (394), strict citations (36).
   **ONE local commit** - and run `git status` first; do not commit paths you did not touch.
 
+## Worker status
+
+- **M20-S41 implementation complete locally; awaiting Architect acceptance.** Added the
+  read-only `tax_graph.acquire.reconcile_document_lists` report with named graph/manifest/raw
+  differences and an explicit skipped raw leg. Wired the report into module-form `validate`
+  because document inventory is an acquisition/source concern, not a review projection. The
+  derivation harness now defaults to the manifest's declared document order while retaining
+  repeated `--document` selection. No manifest, graph, field map, or draft artifact was edited.
+- **RAN:** `$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\_pytest_temp'; .\.venv\Scripts\python.exe -m pytest tests/test_m20_s41.py -q` -> 5 passed.
+- **RAN:** `$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\_pytest_temp'; .\.venv\Scripts\python.exe -m pytest tests/test_acquire_manifest.py tests/test_m20_s31.py tests/test_cli.py tests/test_runtime_light_m1.py tests/test_derive_cells_m20.py -q` -> 74 passed.
+- **RAN:** `.\.venv\Scripts\python.exe -m tax_graph.cli validate 2025` -> exit 0; graph integrity OK; named baseline differences are `form_2441_2025`, four undeclared instruction ids, and `form_2441_2025` plus `instructions_form_2441_2025` in raw-only.
+- **RAN:** `.\.venv\Scripts\python.exe -m workbench.cli --root . --year 2025 preflight` with read-only escalation -> exit 0; `derived manifest entries=18`, `derived cells=2120`, `legacy_mined=394`.
+- **RAN:** `.\.venv\Scripts\python.exe tools\check_ascii.py` -> `ASCII check OK`.
+- **RAN:** `git diff --check` -> exit 0; protected `graph/2025/{nodes,edges,rules,field_maps}` diff -> empty.
+- **RAN:** `.\.venv\Scripts\python.exe experiments\derive_cells_s25.py --root . --year 2025 --output-dir <external> --no-provider` -> all 21 manifest documents prepared in manifest order.
+- **NOT RUN:** live provider corpus leg; the Worker sandbox has no outbound network, so no attempted/derived/repaired/errored denominator is claimed for S41.
+- **Open questions:** none for S41; John still rules on the queued S42 manifest schema change and Form 2441 scope.
+
 ## Architect decisions
 
 - **THE REVIEW LOOP, as designed with John 2026-08-03. This is the shape S37-S39 build toward.**
