@@ -17,8 +17,8 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## BALL
 
-**BALL: WORKER - M20-S42 (HARVEST A WORKSHEET, WITH QDCGT AS THE CANARY).** Task block under
-**From Architect**. **S41 is ACCEPTED at `40530b1`.**
+**BALL: ARCHITECT - M20-S42 WORKER SLICE COMPLETE; VERIFY THE QDCGT CANARY.** S43 remains queued.
+Task block under **From Architect**. **S41 is ACCEPTED at `40530b1`.**
 
 **Sequence, set by John 2026-08-03:** S41 manifest reconcile (done), **S42 worksheet harvester**,
 then S43 operand type check with its spec intact. S41 proved the document list was circular and
@@ -80,6 +80,44 @@ close.
 instruction document, which is not supposed to have derivation rows at all. Once the harvester
 lands, an instruction document should report the worksheets it yielded rather than a null result
 borrowed from the form path.
+
+**M20-S42 WORKER SLICE COMPLETE (2026-08-04; local commit created, pending Architect acceptance).** Added
+`tax_graph/ingest/worksheet_harvest.py`, its focused tests, and the module-form
+`harvest-worksheet` CLI. The harvester is pure over acquired HTML; the separate writer refuses
+paths outside `_drafts`, strips source witnesses from schema artifacts, and records the harvest
+report and conditional routes in `harvest.yaml`. No file under `graph/2025/` and no schema changed.
+The declared start anchor is required exactly; a matching title cannot substitute for a missing
+anchor. The output deliberately has no computed nodes or CALCULATES edges; formula reconstruction
+is not part of this slice.
+
+**QDCGT CANARY RESULT:** harvest `ok=True`; 25 contiguous lines; 13 constants; 13 citations; 42
+`REFERENCES` edges; Form 2555 conditionals on lines 1 and 25. The existing graph has 44 QDCGT nodes
+(25 worksheet_field, 7 computed, 12 parameter), 88 QDCGT edges, and 13 QDCGT citations. Including
+the shared tax-table threshold, the existing parameter count is 13. The new draft has 25
+worksheet_field nodes, 13 parameter nodes, zero computed nodes, and 42 `REFERENCES` edges. The
+existing 13 QDCGT citations are all non-verbatim against the acquired HTML; the new 13 citations
+have zero strict source mismatches. This is the honest diff in both directions, not a promotion.
+
+**MANIFEST REPORT (NO SCHEMA CHANGE):** the minimal future manifest shape is a worksheet entry
+with `source_document_id` and `start_anchor`; `url` remains required only when
+`source_document_id` is absent. The existing `worksheet` document and `worksheet_field` node
+vocabulary already validates end to end.
+
+**TEST EVIDENCE:**
+
+`RAN: $tempRoot = Join-Path (Resolve-Path .).Path '.m20_focused_final_pytest_root'; New-Item -ItemType Directory -Force -Path $tempRoot | Out-Null; $env:PYTEST_DEBUG_TEMPROOT=$tempRoot; .venv\Scripts\python.exe -m pytest tests/test_worksheet_harvest_m20.py tests/test_cli.py tests/test_instruction_sections_m20.py tests/test_instruction_promotion_m18.py -q -> 22 passed, 1 skipped, 1 warning in 24.20s.`
+
+`RAN: $tempRoot = 'C:\tmp\tax_graph_validator_m20_final'; New-Item -ItemType Directory -Force -Path $tempRoot | Out-Null; $env:PYTEST_DEBUG_TEMPROOT=$tempRoot; .venv\Scripts\python.exe -m pytest tests/test_graph_validator.py -q -> 14 passed in 131.76s (0:02:11).` This required elevation because the validator copies existing draft directories with restricted ACLs.
+
+`RAN: .venv\Scripts\python.exe tools/check_ascii.py -> ASCII check OK.`
+
+`RAN: git diff --check; git diff --name-only -- graph/2025/nodes graph/2025/edges graph/2025/rules graph/2025/field_maps -> exit 0; protected-path listing empty.`
+
+`RAN: .venv\Scripts\python.exe -m tax_graph.cli validate 2025 -> exit 0; graph integrity OK - all references resolve; reconcile report prints all six named differences.`
+
+`RAN: .venv\Scripts\python.exe -m tax_graph.cli harvest-worksheet --year 2025 --html-path .cache\raw\2025\instructions_form_1040_2025.html --source-document-id instructions_form_1040_2025 --draft-dir <repo>\.m20_cli_canary\_drafts\qdcgt --root <repo> -> lines=25, constants=13, citations=13, promoted: no.`
+
+`NOT RUN: full corpus partitions and Tier 3 shakedowns - Architect-side by standing rule; S43 is queued.`
 
 ## Standing constraints (every M20 round)
 
@@ -253,7 +291,7 @@ client-managed server dies.
 
 ## From Architect
 
-- **M20-S42 TASK (ACTIVE - S41 IS ACCEPTED, START THIS) - HARVEST A WORKSHEET, WITH QDCGT AS
+- **M20-S42 TASK (DELIVERED BY WORKER; AWAITING ARCHITECT ACCEPTANCE) - HARVEST A WORKSHEET, WITH QDCGT AS
   THE CANARY (Architect, Claude Opus 5, 2026-08-03; John's design call).**
 
   **Why, and why an end anchor was REJECTED.** The Architect proposed declaring a worksheet as a

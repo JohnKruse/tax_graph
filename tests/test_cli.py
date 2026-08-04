@@ -9,7 +9,12 @@ from types import SimpleNamespace
 import pytest
 
 from tax_graph.acquire.citation_check import CitationIntegrityReport
-from tax_graph.cli import acquire_command, promote_instruction_command, verify_expression_agreement_command
+from tax_graph.cli import (
+    acquire_command,
+    harvest_worksheet_command,
+    promote_instruction_command,
+    verify_expression_agreement_command,
+)
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -109,6 +114,35 @@ def test_promote_instruction_command_has_reproducible_defaults(tmp_path, monkeyp
     assert called["source_document_id"] == "instructions_form_1040_2025"
     assert called["html_path"] == tmp_path / ".cache" / "raw" / "2025" / "instructions_form_1040_2025.html"
     assert "findings persisted: 1" in capsys.readouterr().out
+
+
+@pytest.mark.m20
+def test_harvest_worksheet_command_writes_only_a_draft(tmp_path, capsys):
+    html_path = tmp_path / "instructions.html"
+    html_path.write_text(
+        """
+        <h3><a name="toy-anchor"></a>Toy Worksheet</h3>
+        <table><tr><td>1.</td><td>Enter an amount.</td></tr>
+        <tr><td>2.</td><td>Also include this amount on the entry space on Form 1040, line 16.</td></tr></table>
+        """,
+        encoding="ascii",
+    )
+    root = tmp_path / "project"
+
+    exit_code = harvest_worksheet_command(
+        root=root,
+        html_path=html_path,
+        source_document_id="instructions_toy_2025",
+        document_id="toy_worksheet_2025",
+        title="Toy Worksheet",
+        start_anchor="toy-anchor",
+    )
+
+    assert exit_code == 0
+    draft_dir = root / "graph" / "2025" / "_drafts" / "toy_worksheet_2025"
+    assert (draft_dir / "documents.yaml").exists()
+    assert (draft_dir / "nodes.yaml").exists()
+    assert "promoted: no" in capsys.readouterr().out
 
 
 @pytest.mark.m3

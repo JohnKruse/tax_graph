@@ -269,6 +269,67 @@ def promote_instruction_command(
     return 0
 
 
+def harvest_worksheet_command(
+    year: str = "2025",
+    root: str | Path | None = None,
+    source_document_id: str | None = None,
+    html_path: str | Path | None = None,
+    document_id: str | None = None,
+    title: str | None = None,
+    start_anchor: str | None = None,
+    draft_dir: str | Path | None = None,
+) -> int:
+    """Harvest one anchored worksheet into a draft without promoting it."""
+    from tax_graph.ingest.worksheet_harvest import (
+        QDCGT_WORKSHEET_TARGET,
+        WorksheetTarget,
+        harvest_worksheet_file,
+        write_worksheet_draft,
+    )
+
+    root_path = Path(root).resolve() if root is not None else project_root()
+    default_target = QDCGT_WORKSHEET_TARGET
+    source_id = source_document_id or default_target.source_document_id or f"instructions_form_1040_{year}"
+    source_path = (
+        Path(html_path)
+        if html_path is not None
+        else root_path / ".cache" / "raw" / str(year) / f"{source_id}.html"
+    )
+    if any(value is not None for value in (document_id, title, start_anchor)):
+        target = WorksheetTarget(
+            document_id=document_id or default_target.document_id,
+            title=title or default_target.title,
+            start_anchor=start_anchor or default_target.start_anchor,
+            source_document_id=source_id,
+        )
+    else:
+        target = default_target
+    result = harvest_worksheet_file(
+        source_path,
+        target,
+        source_document_id=source_id,
+        year=year,
+    )
+    if not result.ok:
+        print(f"worksheet harvest blocked: {target.document_id}")
+        for finding in result.findings:
+            print(f"  {finding.kind}: {finding.message}")
+        return 1
+    output = (
+        Path(draft_dir)
+        if draft_dir is not None
+        else root_path / "graph" / str(year) / "_drafts" / target.document_id
+    )
+    write_worksheet_draft(result, output)
+    print(f"harvested worksheet draft: {target.document_id}")
+    print(f"  draft_dir: {output.resolve()}")
+    print(f"  lines: {len(result.line_nodes)}")
+    print(f"  constants: {len(result.parameter_nodes)}")
+    print(f"  citations: {len(result.citations)}")
+    print("  promoted: no")
+    return 0
+
+
 def measure_extraction_command(
     year: str = "2025",
     root: str | Path | None = None,
@@ -1316,6 +1377,31 @@ def _build_typer_app():
         if raise_code:
             raise typer.Exit(raise_code)
 
+    @cli.command("harvest-worksheet")
+    def harvest_worksheet_cli(
+        year: str = typer.Option("2025", "--year", "-y", help="Tax year to harvest."),
+        source_document_id: str | None = typer.Option(None, "--source-document-id", help="Acquired instruction source id."),
+        html_path: Path | None = typer.Option(None, "--html-path", help="Stored acquired HTML path."),
+        document_id: str | None = typer.Option(None, "--document-id", help="Worksheet draft document id."),
+        title: str | None = typer.Option(None, "--title", help="Worksheet title."),
+        start_anchor: str | None = typer.Option(None, "--start-anchor", help="Stable acquired-source start anchor."),
+        draft_dir: Path | None = typer.Option(None, "--draft-dir", help="Explicit _drafts output directory."),
+        root: Path | None = typer.Option(None, "--root", help="Project root override."),
+    ) -> None:
+        """Harvest an anchored worksheet into _drafts without promotion."""
+        raise_code = harvest_worksheet_command(
+            year=year,
+            root=root,
+            source_document_id=source_document_id,
+            html_path=html_path,
+            document_id=document_id,
+            title=title,
+            start_anchor=start_anchor,
+            draft_dir=draft_dir,
+        )
+        if raise_code:
+            raise typer.Exit(raise_code)
+
     @cli.command("measure-extraction")
     def measure_extraction_cli(
         year: str = typer.Option("2025", "--year", "-y", help="Tax year to measure."),
@@ -1933,6 +2019,16 @@ def _fallback_app() -> int:
     )
     promote_instructions_parser.add_argument("--root", default=None)
 
+    harvest_worksheet_parser = subparsers.add_parser("harvest-worksheet")
+    harvest_worksheet_parser.add_argument("--year", "-y", default="2025")
+    harvest_worksheet_parser.add_argument("--source-document-id", default=None)
+    harvest_worksheet_parser.add_argument("--html-path", default=None)
+    harvest_worksheet_parser.add_argument("--document-id", default=None)
+    harvest_worksheet_parser.add_argument("--title", default=None)
+    harvest_worksheet_parser.add_argument("--start-anchor", default=None)
+    harvest_worksheet_parser.add_argument("--draft-dir", default=None)
+    harvest_worksheet_parser.add_argument("--root", default=None)
+
     measure_extraction_parser = subparsers.add_parser("measure-extraction")
     measure_extraction_parser.add_argument("--year", "-y", default="2025")
     measure_extraction_parser.add_argument("--input-dir", default=None)
@@ -2081,6 +2177,17 @@ def _fallback_app() -> int:
             source_document_id=args.source_document_id,
             html_path=args.html_path,
             citation_filename=args.citation_filename,
+        )
+    if args.command == "harvest-worksheet":
+        return harvest_worksheet_command(
+            year=args.year,
+            root=args.root,
+            source_document_id=args.source_document_id,
+            html_path=args.html_path,
+            document_id=args.document_id,
+            title=args.title,
+            start_anchor=args.start_anchor,
+            draft_dir=args.draft_dir,
         )
     if args.command == "measure-extraction":
         return measure_extraction_command(
