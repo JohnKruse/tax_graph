@@ -182,6 +182,12 @@ client-managed server dies.
 
 ## Open for Architect
 
+- **M20-S45 vocabulary gap (Worker, 2026-08-04).** The address ledger schema accepts arbitrary
+  judgement strings, but the current review surface emits only `confirmed` and `rejected`, and the
+  live record is `confirmed`; there is no existing `problem` mapping. The bridge therefore applies
+  only `confirmed` and reports `rejected`/`problem` as unsupported without writing flags. Decide
+  whether the next slice expands the review vocabulary before adding node-level non-confirming
+  flags.
 - **M20-S36 denominator decision (raised 2026-08-03).** Logical-row assembly removes the measured
   label/span truncation cases, but it also exposes formula cues on `schedule_a_2025` line 15 and
   `schedule_1a_2025` line 36a, so the current formula set is 96 rows rather than the prior 94.
@@ -428,6 +434,23 @@ client-managed server dies.
 
 ## Latest verification
 
+- **M20-S45 Worker implementation (2026-08-04, Worker-verified; awaiting Architect verification):** added
+  `tax_graph.review.apply_address_verdicts` and `review apply-address-verdicts`, dry-run by default.
+  Exact canonical address plus one node binding plus one unchanged content fingerprint is required;
+  the existing `_apply_graph_review` writes the three node fields on an explicit temporary apply.
+  Stale, missing, ambiguous, and unsupported records are reported with no write. The real ledger
+  entry is stale: reviewed `151f0df27ea00babb02732005d1aed7d2753bb1a0cb0117ab9464c1d75d30ca4`;
+  current `e270b15dd0e41720e0a5b7143e9ce8ace5526b008f3cbef8fc91a25c28ac26d1`. No live graph write.
+  RAN: `$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\.codex\visualizations\2026\08\04\019fcd22-0dbe-7481-9da9-77388ec5d84c\pytest_m20_s45_focus';
+  .venv\Scripts\python.exe -m pytest tests\test_review_address_bridge_m20.py tests\test_review_workbench_verdicts_m15.py
+  tests\test_workbench_m15.py tests\test_review_verdicts_m20.py -q` -> 33 passed.
+  RAN: `.venv\Scripts\python.exe tools\check_ascii.py` -> ASCII check OK; `git diff --check` -> clean;
+  module-form `validate 2025` -> exit 0, graph integrity OK, reconcile differences named.
+  RAN: protected-set `git diff --stat -- graph/2025/nodes graph/2025/edges graph/2025/rules graph/2025/field_maps`
+  -> empty. RAN: module-form live dry-run -> 1 stale, 0 unresolved, 0 ambiguous, 0 writes, with both
+  fingerprints printed. RAN: temporary graph copy using the real ledger record -> `would_apply`, exact
+  address/node resolution, node `form_1040_2025_root_line_z`, all three field changes printed, and
+  applied/stale/unresolved/ambiguous lists empty because the run was dry.
 - **M20-S44 (2026-08-04, Architect live):** two corpus runs, attempted=96 both, derived 92 and 92,
   repaired 1 and 1, errored 3, resolved 93 both; `unmapped_operation` 9 and 7 (was 12 and 14);
   `operand_type_mismatch` fired once on live data. Type check verified directly: status node in the

@@ -11,6 +11,9 @@ from typing import Any
 import jsonschema
 import yaml
 
+from tax_graph.addressing import load_address_artifacts
+from tax_graph.io.loader import load_graph
+
 
 _ID_FIELDS = {
     "documents": "document_id",
@@ -34,6 +37,250 @@ class ApplyResult:
     source_pathologies: tuple[str, ...]
     queue_path: Path
     provenance_path: Path
+
+
+@dataclass(frozen=True)
+class AddressApplyResult:
+    """Report one address-ledger projection without hiding skipped records."""
+
+    applied: tuple[str, ...]
+    would_apply: tuple[str, ...]
+    stale: tuple[str, ...]
+    unresolved: tuple[str, ...]
+    ambiguous: tuple[str, ...]
+    unsupported_judgements: tuple[str, ...]
+    reports: tuple[dict[str, Any], ...]
+    dry_run: bool
+
+
+def apply_address_verdicts(
+    year: str | int = "2025",
+    *,
+    root: str | Path,
+    ledger_path: str | Path | None = None,
+    dry_run: bool = True,
+    current_units: list[dict[str, Any]] | None = None,
+) -> AddressApplyResult:
+    """Project address-keyed verdicts onto bound graph nodes fail-closed.
+
+    The address ledger records the content that a reviewer saw.  A verdict can
+    reach a graph node only when the canonical address resolves to exactly one
+    node, the current review projection has exactly one matching unit, and its
+    content fingerprint is unchanged.  ``dry_run`` defaults to true so a caller
+    must explicitly opt into graph writes.  Writes reuse ``_apply_graph_review``
+    rather than maintaining a second flag applier.
+    """
+    from workbench.address_verdicts import load_address_verdicts, unit_address, unit_fingerprint
+    from workbench.derived_reviews import build_derived_cell_units
+
+    root_path = Path(root).resolve()
+    tax_year = int(year)
+    path = (
+        Path(ledger_path).resolve()
+        if ledger_path is not None
+        else root_path / "review_verdicts" / str(tax_year) / "address_verdicts.jsonl"
+    )
+    records = load_address_verdicts(path)
+    if not records:
+        return AddressApplyResult((), (), (), (), (), (), (), dry_run)
+    graph = load_graph(tax_year, root=root_path, include_extensions=False)
+    artifacts = load_address_artifacts(tax_year, root_path)
+    units = (
+        list(current_units)
+        if current_units is not None
+        else build_derived_cell_units(root_path, tax_year)
+    )
+    units_by_address: dict[str, list[dict[str, Any]]] = {}
+    for unit in units:
+        address = unit_address(unit)
+        if address:
+            units_by_address.setdefault(address, []).append(unit)
+    nodes_by_id = {
+        str(node.get("node_id")): node
+        for node in graph.items("nodes")
+        if node.get("node_id")
+    }
+    node_paths = _node_artifact_paths(root_path, tax_year)
+    applied: list[str] = []
+    would_apply: list[str] = []
+    stale: list[str] = []
+    unresolved: list[str] = []
+    ambiguous: list[str] = []
+    unsupported: list[str] = []
+    reports: list[dict[str, Any]] = []
+
+    for record in records:
+        verdict_id = str(record["verdict_id"])
+        address_id = str(record["address"])
+        report: dict[str, Any] = {
+            "verdict_id": verdict_id,
+            "address": address_id,
+            "judgement": str(record.get("judgement") or ""),
+            "status": "unresolved",
+            "address_resolution": "missing",
+            "address_matches": [],
+            "node_binding_resolution": "missing",
+            "node_ids": [],
+            "node_artifact_path": None,
+            "reviewed_fingerprint": str(record.get("content_fingerprint") or ""),
+            "current_fingerprint": None,
+            "field_changes": [],
+        }
+        reports.append(report)
+        if int(record.get("tax_year", 0)) != tax_year:
+            report["status"] = "tax_year_mismatch"
+            unresolved.append(verdict_id)
+            continue
+
+        resolution = artifacts.resolve(address_id=address_id)
+        report["address_resolution"] = resolution.state
+        report["address_matches"] = [item.address_id for item in resolution.matches]
+        if resolution.state != "exact":
+            report["status"] = "address_" + resolution.state
+            (ambiguous if resolution.state == "ambiguous" else unresolved).append(verdict_id)
+            continue
+
+        node_ids = sorted({
+            str(binding.get("node_id"))
+            for binding in artifacts.node_bindings
+            if str(binding.get("address_id")) == address_id and binding.get("node_id")
+        })
+        report["node_ids"] = node_ids
+        report["node_binding_resolution"] = (
+            "missing" if not node_ids else "exact" if len(node_ids) == 1 else "ambiguous"
+        )
+        if len(node_ids) != 1:
+            report["status"] = "node_binding_" + report["node_binding_resolution"]
+            (ambiguous if len(node_ids) > 1 else unresolved).append(verdict_id)
+            continue
+
+        node_id = node_ids[0]
+        node = nodes_by_id.get(node_id)
+        artifact_path = node_paths.get(node_id)
+        report["node_artifact_path"] = artifact_path
+        if node is None or artifact_path is None:
+            report["status"] = "node_missing"
+            unresolved.append(verdict_id)
+            continue
+
+        matching_units = units_by_address.get(address_id, [])
+        if len(matching_units) != 1:
+            report["status"] = "current_content_" + ("missing" if not matching_units else "ambiguous")
+            (ambiguous if len(matching_units) > 1 else unresolved).append(verdict_id)
+            continue
+        current_fingerprint = unit_fingerprint(matching_units[0])
+        report["current_fingerprint"] = current_fingerprint
+        if current_fingerprint != str(record["content_fingerprint"]):
+            report["status"] = "stale"
+            stale.append(verdict_id)
+            continue
+
+        judgement = str(record.get("judgement") or "")
+        if judgement != "confirmed":
+            report["status"] = "unsupported_judgement"
+            report["supported_judgements"] = ["confirmed"]
+            report["message"] = (
+                "The address ledger and current review surface do not define a node flag mapping "
+                f"for judgement {judgement!r}; no graph write was made."
+            )
+            unsupported.append(verdict_id)
+            continue
+
+        report["field_changes"] = _address_field_changes(node, record)
+        if dry_run:
+            report["status"] = "would_apply"
+            would_apply.append(verdict_id)
+        else:
+            _apply_address_graph_review(
+                root_path,
+                artifact_path,
+                node_id,
+                _address_review_payload(record),
+            )
+            report["status"] = "applied"
+            applied.append(verdict_id)
+
+    return AddressApplyResult(
+        tuple(applied),
+        tuple(would_apply),
+        tuple(stale),
+        tuple(unresolved),
+        tuple(ambiguous),
+        tuple(unsupported),
+        tuple(reports),
+        dry_run,
+    )
+
+
+def _node_artifact_paths(root: Path, year: int) -> dict[str, str]:
+    """Return unique node-id to graph-file paths for the shared applier."""
+    paths: dict[str, set[str]] = {}
+    for path in sorted((root / "graph" / str(year) / "nodes").glob("*.yaml")):
+        payload = _load_yaml(path)
+        objects = payload if isinstance(payload, list) else [payload]
+        relative = path.relative_to(root).as_posix()
+        for obj in objects:
+            if isinstance(obj, dict) and obj.get("node_id"):
+                paths.setdefault(str(obj["node_id"]), set()).add(relative)
+    return {
+        node_id: next(iter(candidates))
+        for node_id, candidates in paths.items()
+        if len(candidates) == 1
+    }
+
+
+def _address_review_payload(record: dict[str, Any]) -> dict[str, Any]:
+    """Adapt an address-ledger record to the existing graph review payload."""
+    review: dict[str, Any] = {
+        "reviewer_id": str(record["reviewer_id"]),
+        "reviewed_at": str(record["reviewed_at"]),
+        "human_minutes": 0.0,
+        "verdict": str(record["judgement"]),
+    }
+    comment = str(record.get("comment") or "").strip()
+    if comment:
+        review["reason"] = comment
+    return review
+
+
+def _address_field_changes(node: dict[str, Any], record: dict[str, Any]) -> list[dict[str, Any]]:
+    """Describe the three node fields the existing applier would write."""
+    review = _address_review_payload(record)
+    desired = {
+        "human_confirmed": True,
+        "verification_tier": "human-confirmed",
+        "human_review": review,
+    }
+    return [
+        {
+            "field": field,
+            "before": node.get(field),
+            "after": value,
+            "changed": node.get(field) != value,
+        }
+        for field, value in desired.items()
+    ]
+
+
+def _apply_address_graph_review(
+    root: Path,
+    artifact_path: str,
+    node_id: str,
+    review: dict[str, Any],
+) -> None:
+    """Invoke the existing bounded graph-review applier for one node."""
+    entry = {
+        "artifact_paths": [artifact_path],
+        "expected_nodes": [node_id],
+    }
+    verdict = {
+        "object_ref": {
+            "artifact_path": artifact_path,
+            "object_kind": "nodes",
+            "object_id": node_id,
+        },
+    }
+    _apply_graph_review(root, entry, verdict, review)
 
 
 def apply_verdicts(

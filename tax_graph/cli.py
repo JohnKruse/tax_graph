@@ -393,6 +393,46 @@ def apply_verdicts_command(
     return 0
 
 
+def apply_address_verdicts_command(
+    year: str = "2025",
+    root: str | Path | None = None,
+    ledger_path: str | Path | None = None,
+    apply: bool = False,
+) -> int:
+    """Project address-keyed verdicts onto graph nodes, dry-run unless requested."""
+    from tax_graph.review import apply_address_verdicts
+
+    root_path = Path(root).resolve() if root is not None else project_root()
+    result = apply_address_verdicts(
+        year,
+        root=root_path,
+        ledger_path=ledger_path,
+        dry_run=not apply,
+    )
+    print(f"address verdicts: {len(result.reports)}")
+    action = "would apply" if result.dry_run else "applied"
+    action_count = len(result.would_apply if result.dry_run else result.applied)
+    print(f"  {action}: {action_count}")
+    print(f"  stale: {len(result.stale)}")
+    print(f"  unresolved: {len(result.unresolved)}")
+    print(f"  ambiguous: {len(result.ambiguous)}")
+    print(f"  unsupported judgements: {len(result.unsupported_judgements)}")
+    for report in result.reports:
+        print(f"  {report['address']}: {report['status']}")
+        if report["status"] == "stale":
+            print(f"    reviewed fingerprint: {report['reviewed_fingerprint']}")
+            print(f"    current fingerprint:  {report['current_fingerprint']}")
+        if report["status"] in {"would_apply", "applied"}:
+            for change in report["field_changes"]:
+                print(
+                    f"    {change['field']}: {change['before']!r} -> {change['after']!r} "
+                    f"(changed={str(change['changed']).lower()})"
+                )
+        if report["status"] in {"node_binding_ambiguous", "address_ambiguous"}:
+            print(f"    candidates: {report.get('node_ids') or report.get('address_matches')}")
+    return 0
+
+
 def migrate_review_scope_command(
     year: str = "2025",
     root: str | Path | None = None,
@@ -1438,6 +1478,23 @@ def _build_typer_app():
         if raise_code:
             raise typer.Exit(raise_code)
 
+    @review_cli.command("apply-address-verdicts")
+    def review_apply_address_verdicts_cli(
+        year: str = typer.Option("2025", "--year", "-y", help="Tax year to project."),
+        ledger_path: Path | None = typer.Option(None, "--ledger", help="Address verdict JSONL override."),
+        apply: bool = typer.Option(False, "--apply", help="Write confirmed flags to graph YAML."),
+        root: Path | None = typer.Option(None, "--root", help="Project root override."),
+    ) -> None:
+        """Project address-keyed verdicts onto graph nodes."""
+        raise_code = apply_address_verdicts_command(
+            year=year,
+            root=root,
+            ledger_path=ledger_path,
+            apply=apply,
+        )
+        if raise_code:
+            raise typer.Exit(raise_code)
+
     @review_cli.command("migrate-scope")
     def review_migrate_scope_cli(
         year: str = typer.Option("2025", "--year", "-y", help="Tax year to migrate."),
@@ -1895,6 +1952,11 @@ def _fallback_app() -> int:
     review_apply_parser.add_argument("--year", "-y", default="2025")
     review_apply_parser.add_argument("--verdict-dir", default=None)
     review_apply_parser.add_argument("--root", default=None)
+    review_address_parser = review_subparsers.add_parser("apply-address-verdicts")
+    review_address_parser.add_argument("--year", "-y", default="2025")
+    review_address_parser.add_argument("--ledger", dest="ledger_path", default=None)
+    review_address_parser.add_argument("--apply", action="store_true")
+    review_address_parser.add_argument("--root", default=None)
     review_scope_parser = review_subparsers.add_parser("migrate-scope")
     review_scope_parser.add_argument("--year", "-y", default="2025")
     review_scope_parser.add_argument("--root", default=None)
@@ -2085,6 +2147,13 @@ def _fallback_app() -> int:
         return build_command(year=args.year, root=args.root)
     if args.command == "review" and args.review_command == "apply-verdicts":
         return apply_verdicts_command(year=args.year, root=args.root, verdict_dir=args.verdict_dir)
+    if args.command == "review" and args.review_command == "apply-address-verdicts":
+        return apply_address_verdicts_command(
+            year=args.year,
+            root=args.root,
+            ledger_path=args.ledger_path,
+            apply=args.apply,
+        )
     if args.command == "review" and args.review_command == "migrate-scope":
         return migrate_review_scope_command(year=args.year, root=args.root, refresh=args.refresh)
     if args.command == "review" and args.review_command == "migrate-field-dispositions":
