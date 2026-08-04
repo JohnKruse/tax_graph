@@ -154,9 +154,9 @@ def test_reference_inventory_lists_only_parameter_and_fact_nodes() -> None:
             return {
                 "documents": [{"document_id": "form_1040_2025"}],
                 "nodes": [
-                    {"node_id": "fact_b", "node_type": "fact", "label": "Fact B", "document_id": "form_1040_2025"},
+                    {"node_id": "fact_b", "node_type": "fact", "value_type": "enum", "label": "Fact B", "document_id": "form_1040_2025"},
                     {"node_id": "computed_a", "node_type": "computed", "label": "Computed A", "document_id": "form_1040_2025"},
-                    {"node_id": "parameter_a", "node_type": "parameter", "label": "Parameter A", "document_id": "form_1040_2025"},
+                    {"node_id": "parameter_a", "node_type": "parameter", "value_type": "currency", "label": "Parameter A", "document_id": "form_1040_2025"},
                 ],
             }.get(kind, [])
 
@@ -171,7 +171,9 @@ def test_reference_inventory_lists_only_parameter_and_fact_nodes() -> None:
         "node_type": "parameter",
         "document_id": "form_1040_2025",
         "label": "Parameter A",
+        "value_type": "currency",
     }
+    assert inventory["graph_node_details"]["fact_b"]["value_type"] == "enum"
 
 
 def test_prompt_scopes_graph_nodes_to_document_and_global_filer_facts() -> None:
@@ -414,7 +416,7 @@ def test_require_input_may_reference_its_own_line() -> None:
     result = derive_cells(CellFrame.from_rows([row]), "<<line>>", "secret", client=client)
 
     assert result.coverage == {"total": 1, "derived": 1}
-    assert result.validation["validator_warnings_by_kind"] == {"unmapped_operation": 1}
+    assert result.validation["validator_warnings_by_kind"] == {}
 
 
 def test_require_input_non_self_operand_still_warns_when_quote_omits_it() -> None:
@@ -436,10 +438,7 @@ def test_require_input_non_self_operand_still_warns_when_quote_omits_it() -> Non
     result = derive_cells(CellFrame.from_rows([row]), "<<line>>", "secret", client=client)
 
     assert result.coverage == {"total": 1, "derived": 1}
-    assert result.validation["validator_warnings_by_kind"] == {
-        "operand_not_in_quote": 1,
-        "unmapped_operation": 1,
-    }
+    assert result.validation["validator_warnings_by_kind"] == {"operand_not_in_quote": 1}
 
 
 def test_tree_to_graph_preserves_floor_shape_and_subtraction_roles() -> None:
@@ -674,6 +673,118 @@ def test_unknown_graph_node_operand_fails_closed() -> None:
         reference_inventory={"node_ids": ["taxpayer_2025_filing_status"]},
     )
     assert [issue.kind for issue in hard] == ["operand_node_not_found"]
+
+
+def test_nonnumeric_graph_fact_fails_in_numeric_conditional_slot() -> None:
+    row = CellFrame.from_rows([_frame()[1]]).rows[0]
+    expression = {
+        "op": "IF_ELSE",
+        "args": [
+            {"node": "taxpayer_2025_filing_status"},
+            {"const": 0},
+            {"const": 1},
+            {"const": 2},
+        ],
+    }
+    hard, warnings = validate_cell_output(
+        row,
+        expression,
+        row.form_face_text,
+        reference_inventory={
+            "node_ids": ["taxpayer_2025_filing_status"],
+            "graph_node_details": {
+                "taxpayer_2025_filing_status": {
+                    "node_type": "fact",
+                    "value_type": "enum",
+                },
+            },
+        },
+    )
+
+    assert [(issue.kind, issue.message) for issue in hard] == [(
+        "operand_type_mismatch",
+        "IF_ELSE argument 1 (condition) requires a numeric operand, "
+        "but node taxpayer_2025_filing_status has node_type fact, value_type enum",
+    )]
+    assert [issue.kind for issue in warnings] == ["unmapped_operation"]
+
+
+def test_unclassified_graph_node_type_is_reported_and_allowed() -> None:
+    row = CellFrame.from_rows([_frame()[1]]).rows[0]
+    hard, warnings = validate_cell_output(
+        row,
+        {"op": "COMPARE", "args": [{"node": "computed_value"}, {"const": 0}]},
+        row.form_face_text,
+        reference_inventory={
+            "node_ids": ["computed_value"],
+            "graph_node_details": {
+                "computed_value": {"node_type": "computed"},
+            },
+        },
+    )
+
+    assert hard == ()
+    assert [issue.kind for issue in warnings] == ["unmapped_operation"]
+    assert row.metadata["operand_type_undetermined_nodes"] == ["computed_value"]
+
+    hard, warnings = validate_cell_output(
+        row,
+        {"op": "COMPARE", "args": [{"node": "undocumented_node"}, {"const": 0}]},
+        row.form_face_text,
+        reference_inventory={"node_ids": ["undocumented_node"]},
+    )
+    assert hard == ()
+    assert [issue.kind for issue in warnings] == ["unmapped_operation"]
+    assert row.metadata["operand_type_undetermined_nodes"] == ["undocumented_node"]
+
+
+def test_operand_type_mismatch_is_repaired_once_as_a_hard_failure() -> None:
+    row = {
+        **_frame()[1],
+        "metadata": {
+            "reference_inventory": {
+                "node_ids": ["taxpayer_2025_filing_status"],
+                "graph_node_details": {
+                    "taxpayer_2025_filing_status": {
+                        "node_type": "fact",
+                        "value_type": "enum",
+                    },
+                },
+            },
+        },
+    }
+    bad = {
+        "expression": {
+            "op": "IF_ELSE",
+            "args": [
+                {"node": "taxpayer_2025_filing_status"},
+                {"const": 0},
+                {"const": 1},
+                {"const": 2},
+            ],
+        },
+        "quote": row["form_face_text"],
+    }
+    good = {
+        "expression": {
+            "op": "IF_ELSE",
+            "args": [{"line": "21"}, {"const": 0}, {"const": 1}, {"const": 2}],
+        },
+        "quote": row["form_face_text"],
+    }
+
+    result = derive_cells(
+        CellFrame.from_rows([row]),
+        "<<line>>",
+        "secret",
+        client=FakeClient([bad, good]),
+    )
+
+    assert result.rows[0].status == "repaired"
+    assert result.rows[0].metadata["repaired_after"] == ["operand_type_mismatch"]
+    assert result.validation_report["validator_failures_by_kind"] == {
+        "operand_type_mismatch": 1,
+    }
 
 
 def test_conditional_argument_roles_and_shapes_are_explicit() -> None:

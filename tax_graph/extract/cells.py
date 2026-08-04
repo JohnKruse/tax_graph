@@ -755,6 +755,16 @@ def validate_cell_output(
                 )
             )
 
+    type_issues, undetermined_nodes = _numeric_operand_type_issues(
+        expression,
+        inventory,
+    )
+    hard.extend(type_issues)
+    if undetermined_nodes:
+        row.metadata["operand_type_undetermined_nodes"] = sorted(undetermined_nodes)
+    else:
+        row.metadata.pop("operand_type_undetermined_nodes", None)
+
     evidence = " ".join((row.form_face_text, row.instruction_text, _evidence_span_text(row))).lower()
     subtract_match = re.search(
         r"subtract\s+(?:line\s+)?([0-9]+[a-z]?)\s+from\s+(?:line\s+)?([0-9]+[a-z]?)",
@@ -904,6 +914,11 @@ def build_reference_inventory(graph: Any) -> dict[str, Any]:
                         if "constant_value" in item
                         else {}
                     ),
+                    **(
+                        {"value_type": item["value_type"]}
+                        if "value_type" in item
+                        else {}
+                    ),
                 }
         if not document_id:
             continue
@@ -965,6 +980,133 @@ def _reference_node_details(inventory: Mapping[str, Any] | None) -> dict[str, Ma
         for item in graph_nodes
         if isinstance(item, Mapping) and item.get("node_id")
     }
+
+
+_NUMERIC_VALUE_TYPES = frozenset({
+    "amount",
+    "currency",
+    "decimal",
+    "float",
+    "integer",
+    "number",
+    "numeric",
+    "percent",
+    "rate",
+})
+_NON_NUMERIC_VALUE_TYPES = frozenset({
+    "boolean",
+    "bool",
+    "date",
+    "enum",
+    "string",
+    "text",
+})
+_NUMERIC_ARGUMENT_ROLES = {
+    "COPY": ("source",),
+    "SUM": ("addend",),
+    "SUBTRACT": ("minuend", "subtrahend"),
+    "MULTIPLY": ("factor",),
+    "DIVIDE": ("numerator", "denominator"),
+    "MIN": ("candidate",),
+    "MAX": ("candidate",),
+    "NEGATE": ("value",),
+    "ABS": ("value",),
+    "ROUND": ("value",),
+    "IF": (None, "when_true"),
+    "IF_ELSE": ("condition", "threshold", "when_true", "when_false"),
+    "COMPARE": ("left", "right"),
+}
+
+
+def _numeric_operand_type_issues(
+    expression: Mapping[str, Any],
+    inventory: Mapping[str, Any] | None,
+) -> tuple[list[CellValidationIssue], set[str]]:
+    """Reject known nonnumeric graph nodes in amount-valued expression slots.
+
+    The expression grammar does not carry types, so this check only uses facts
+    present in the caller-supplied graph inventory.  A missing or incomplete
+    detail is reported to the row as undetermined and is intentionally not
+    treated as a failure.
+    """
+    if inventory is None:
+        return [], set()
+    details_by_id = _reference_node_details(inventory)
+    known_node_ids = _reference_node_ids(inventory)
+    if not details_by_id and not known_node_ids:
+        return [], set()
+
+    issues: list[CellValidationIssue] = []
+    undetermined: set[str] = set()
+    for expression_node in _expression_nodes(expression):
+        operation = str(expression_node.get("op") or "").upper()
+        slots = _numeric_argument_slots(operation, len(expression_node.get("args") or []))
+        args = expression_node.get("args") or []
+        for index, role in slots:
+            operand = args[index]
+            if not isinstance(operand, Mapping) or "node" not in operand:
+                continue
+            node_id = str(operand.get("node") or "").strip()
+            if not node_id:
+                continue
+            details = details_by_id.get(node_id)
+            if details is None:
+                if known_node_ids is not None and node_id in known_node_ids:
+                    undetermined.add(node_id)
+                continue
+            classification = _classify_numeric_node(details)
+            if classification is None:
+                undetermined.add(node_id)
+                continue
+            if classification:
+                continue
+            node_type = str(details.get("node_type") or "unknown")
+            value_type = str(details.get("value_type") or "").strip()
+            observed = f"node_type {node_type}"
+            if value_type:
+                observed += f", value_type {value_type}"
+            issues.append(
+                CellValidationIssue(
+                    "operand_type_mismatch",
+                    f"{operation} argument {index + 1} ({role}) requires a numeric operand, "
+                    f"but node {node_id} has {observed}",
+                )
+            )
+    return _unique_issues(issues), undetermined
+
+
+def _numeric_argument_slots(operation: str, argument_count: int) -> list[tuple[int, str]]:
+    """Return positional amount slots for one expression operation."""
+    roles = _NUMERIC_ARGUMENT_ROLES.get(operation)
+    if not roles:
+        return []
+    if len(roles) == 1:
+        return [(index, roles[0]) for index in range(argument_count)]
+    return [
+        (index, role)
+        for index, role in enumerate(roles[:argument_count])
+        if role is not None
+    ]
+
+
+def _classify_numeric_node(details: Mapping[str, Any]) -> bool | None:
+    """Return numeric, nonnumeric, or unknown for one graph-node detail."""
+    value_type = str(details.get("value_type") or "").strip().lower()
+    if value_type in _NUMERIC_VALUE_TYPES:
+        return True
+    if value_type in _NON_NUMERIC_VALUE_TYPES:
+        return False
+    if value_type:
+        return None
+
+    if "constant_value" not in details:
+        return None
+    value = details.get("constant_value")
+    if _is_zero_value(value) or (
+        isinstance(value, (int, float)) and not isinstance(value, bool)
+    ):
+        return True
+    return False
 
 
 def _scoped_graph_nodes(
@@ -1149,6 +1291,8 @@ def _projection_warnings(
     expression: Mapping[str, Any],
 ) -> list[CellValidationIssue]:
     """Return warnings for every operation with no current projection rule."""
+    if str(expression.get("op") or "").upper() == "REQUIRE_INPUT":
+        return []
     projection = expression_to_graph(
         form=row.form,
         line=row.line,

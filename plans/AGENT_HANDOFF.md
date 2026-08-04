@@ -420,6 +420,29 @@ client-managed server dies.
 - **M20-S24 (`e6e94e3`):** `derive_cells` as a pure function with expression trees.
 - **M20-S23 (`0831694`):** the `instruction_sections` artifact and its join.
 
+## Worker status
+
+- **M20-S44 (2026-08-04, Worker, implementation ready for Architect review):** `_projection_warnings`
+  now suppresses the intentional root `REQUIRE_INPUT` unmapped-operation finding. The reference
+  inventory preserves `value_type`; known nonnumeric graph nodes fail hard as
+  `operand_type_mismatch` in numeric slots, while incomplete metadata is recorded on the row as
+  `operand_type_undetermined_nodes` and allowed through. No protected graph or field-map files
+  changed.
+  **Step 3 recommendation:** do not warn on a degenerate `LOOKUP_TABLE` with identical branches;
+  identical status branches can be intentional, and a warning would dilute the three real
+  unmapped-operation findings. The status node is a valid lookup key, not a numeric operand.
+  **RAN:** `$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp_s44';
+  .venv\Scripts\python.exe -m pytest tests/test_derive_cells_m20.py tests/test_derive_cells_s30.py
+  tests/test_m20_s41.py -q` -> 62 passed, 1 warning in 1.97s.
+  **RAN:** `.venv\Scripts\python.exe -m tax_graph.cli validate 2025` -> exit 0; 18 documents,
+  441 nodes, 409 edges, 401 citations; all six reconcile differences named.
+  **RAN:** `.venv\Scripts\python.exe -m workbench.cli preflight --year 2025` (escalated read-only
+  retry after sandbox ACL failure) -> exit 0; units=2224, derived_cells=2120,
+  `legacy_mined=394`.
+  **RAN:** strict citation check -> `checked=401 strict_mismatches=36`; ASCII and `git diff --check`
+  also pass. **NOT RUN:** the two live corpus commands were rejected because they would export the
+  2025 corpus to an external provider without explicit user approval; no provider result is claimed.
+
 ## Latest verification
 
 - **M20-S43 (2026-08-04, Architect):** independent year-turn simulation - all 1,480
