@@ -1,13 +1,15 @@
-"""M20-S42 tests for the source-anchored worksheet harvester."""
+"""M20-S43 tests for title-anchored worksheet harvesting."""
 
 from __future__ import annotations
 
 from pathlib import Path
+import re
 
 import pytest
 import yaml
 from jsonschema import validate
 
+from tax_graph.acquire.citation_check import check_citation_integrity
 from tax_graph.ingest.worksheet_harvest import (
     QDCGT_WORKSHEET_TARGET,
     WorksheetTarget,
@@ -35,6 +37,9 @@ def test_qdcgt_canary_discovers_lines_constants_citations_and_form_2555_routes()
     assert all(node.source_quote for node in result.nodes)
     assert all(citation.source_quote for citation in result.citations)
     assert any("Form 2555" in condition.source_quote for condition in result.conditions)
+    assert result.observed_start_anchor == QDCGT_WORKSHEET_TARGET.start_anchor
+    assert all("publink" not in citation["locator"] for citation in result.citations)
+    assert all(QDCGT_WORKSHEET_TARGET.title in citation["locator"] for citation in result.citations)
 
     values = [node["constant_value"] for node in result.parameter_nodes]
     assert sum(value == 48350 for value in values) == 2
@@ -47,6 +52,72 @@ def test_qdcgt_canary_discovers_lines_constants_citations_and_form_2555_routes()
     assert 0.15 in values
     assert 0.2 in values
     assert 100000 in values
+
+
+def test_qdcgt_canary_survives_rewritten_publink_ids_and_keeps_citations_verbatim() -> None:
+    source = QDCGT_HTML.read_text(encoding="ascii")
+    rewritten = re.sub(
+        r"en_US_2025_publink[0-9]+",
+        lambda match: f"future_anchor_{match.group(0)[-4:]}",
+        source,
+    )
+    assert QDCGT_WORKSHEET_TARGET.start_anchor not in rewritten
+
+    result = harvest_worksheet(
+        rewritten,
+        QDCGT_WORKSHEET_TARGET,
+        source_document_id="instructions_form_1040_2025",
+    )
+
+    assert result.ok
+    assert result.start_anchor.startswith("future_anchor_")
+    assert len(result.line_nodes) == 25
+    assert len(result.parameter_nodes) == 13
+    assert len(result.citations) == 13
+    assert {condition.line for condition in result.conditions} == {"1", "25"}
+    report = check_citation_integrity(
+        [citation.as_dict() for citation in result.citations],
+        text_dir=ROOT / ".cache" / "raw" / "2025",
+    )
+    assert report.checked == 13
+    assert report.ok
+    assert all("publink" not in citation["locator"] for citation in result.citations)
+
+
+def test_harvester_fails_closed_when_worksheet_title_is_absent() -> None:
+    source = QDCGT_HTML.read_text(encoding="ascii").replace(
+        "Qualified Dividends and Capital Gain Tax Worksheet-Line 16",
+        "Different Worksheet-Line 16",
+    )
+
+    result = harvest_worksheet(source, QDCGT_WORKSHEET_TARGET)
+
+    assert not result.ok
+    finding = next(finding for finding in result.findings if finding.kind == "missing_start_title")
+    assert "matched 0 headings" in finding.message
+    assert "candidate_count=0" in finding.evidence
+
+
+def test_harvester_fails_closed_when_worksheet_title_is_ambiguous() -> None:
+    source = """
+    <h3><a name="first-anchor"></a>Test Worksheet</h3>
+    <h3><a name="second-anchor"></a>Test Worksheet</h3>
+    <table><tr><td>1.</td><td>Enter an amount.</td></tr>
+    <tr><td>2.</td><td>Also include this amount on the entry space on Form 1040, line 16.</td></tr></table>
+    """
+    target = WorksheetTarget(
+        document_id="ambiguous_worksheet",
+        title="Test Worksheet",
+        start_anchor="stale-anchor",
+    )
+
+    result = harvest_worksheet(source, target)
+
+    assert not result.ok
+    finding = next(finding for finding in result.findings if finding.kind == "ambiguous_start_title")
+    assert "matched 2 headings" in finding.message
+    assert "candidate[0]=Test Worksheet;anchor=first-anchor" in finding.evidence
+    assert "candidate[1]=Test Worksheet;anchor=second-anchor" in finding.evidence
 
 
 def test_qdcgt_draft_writer_stays_under_drafts_and_strips_witness_fields(tmp_path: Path) -> None:
@@ -88,6 +159,7 @@ def test_harvester_fails_closed_on_a_line_gap() -> None:
         <tr><td>3.</td><td>Also include this amount on the entry space on Form 1040, line 16.</td></tr>
         """,
         anchor="gap",
+        title="Gap Worksheet",
     )
     target = WorksheetTarget(document_id="gap_worksheet", title="Gap Worksheet", start_anchor="gap")
 
@@ -98,7 +170,7 @@ def test_harvester_fails_closed_on_a_line_gap() -> None:
     assert any(finding.kind == "line_sequence_gap" for finding in result.findings)
 
 
-def test_harvester_requires_the_declared_start_anchor() -> None:
+def test_harvester_uses_title_when_declared_start_anchor_is_stale() -> None:
     source = _worksheet_html(
         """
         <tr><td>1.</td><td>Enter an amount.</td></tr>
@@ -114,9 +186,29 @@ def test_harvester_requires_the_declared_start_anchor() -> None:
 
     result = harvest_worksheet(source, target)
 
-    assert not result.ok
-    assert not result.nodes
-    assert any(finding.kind == "missing_start_anchor" for finding in result.findings)
+    assert result.ok
+    assert result.start_anchor == "different-anchor"
+    assert all("publink" not in citation["locator"] for citation in result.citations)
+
+
+def test_harvester_normalizes_title_case_whitespace_and_punctuation() -> None:
+    source = _worksheet_html(
+        """
+        <tr><td>1.</td><td>Enter an amount.</td></tr>
+        <tr><td>2.</td><td>Also include this amount on the entry space on Form 1040, line 16.</td></tr>
+        """,
+        anchor="normalized-title",
+        title="  TEST-WORKSHEET.  ",
+    )
+    target = WorksheetTarget(
+        document_id="normalized_worksheet",
+        title="Test Worksheet",
+        start_anchor="stale-anchor",
+    )
+
+    result = harvest_worksheet(source, target)
+
+    assert result.ok
 
 
 def test_harvester_fails_closed_when_a_footnote_marker_is_unresolved() -> None:
@@ -126,6 +218,7 @@ def test_harvester_fails_closed_when_a_footnote_marker_is_unresolved() -> None:
         <tr><td>2.</td><td>Also include this amount on the entry space on Form 1040, line 16.</td></tr>
         """,
         anchor="footnote",
+        title="Footnote Worksheet",
     )
     target = WorksheetTarget(document_id="footnote_worksheet", title="Footnote Worksheet", start_anchor="footnote")
 
@@ -142,6 +235,7 @@ def test_harvester_requires_terminal_destination_even_when_rows_are_contiguous()
         <tr><td>2.</td><td>Enter another amount.</td></tr>
         """,
         anchor="terminal",
+        title="Terminal Worksheet",
     )
     target = WorksheetTarget(document_id="terminal_worksheet", title="Terminal Worksheet", start_anchor="terminal")
 
@@ -151,10 +245,10 @@ def test_harvester_requires_terminal_destination_even_when_rows_are_contiguous()
     assert any(finding.kind == "missing_terminal_line" for finding in result.findings)
 
 
-def _worksheet_html(rows: str, *, anchor: str) -> str:
+def _worksheet_html(rows: str, *, anchor: str, title: str = "Test Worksheet") -> str:
     return f"""
     <html><body>
-      <h3><a name="{anchor}"></a>Test Worksheet</h3>
+      <h3><a name="{anchor}"></a>{title}</h3>
       <table><tbody>{rows}</tbody></table>
     </body></html>
     """

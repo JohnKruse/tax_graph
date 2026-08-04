@@ -279,7 +279,7 @@ def harvest_worksheet_command(
     start_anchor: str | None = None,
     draft_dir: str | Path | None = None,
 ) -> int:
-    """Harvest one anchored worksheet into a draft without promoting it."""
+    """Harvest one title-identified worksheet into a draft without promoting it."""
     from tax_graph.ingest.worksheet_harvest import (
         QDCGT_WORKSHEET_TARGET,
         WorksheetTarget,
@@ -1384,7 +1384,11 @@ def _build_typer_app():
         html_path: Path | None = typer.Option(None, "--html-path", help="Stored acquired HTML path."),
         document_id: str | None = typer.Option(None, "--document-id", help="Worksheet draft document id."),
         title: str | None = typer.Option(None, "--title", help="Worksheet title."),
-        start_anchor: str | None = typer.Option(None, "--start-anchor", help="Stable acquired-source start anchor."),
+        start_anchor: str | None = typer.Option(
+            None,
+            "--start-anchor",
+            help="Observed source anchor retained for diagnostics; title selects the worksheet.",
+        ),
         draft_dir: Path | None = typer.Option(None, "--draft-dir", help="Explicit _drafts output directory."),
         root: Path | None = typer.Option(None, "--root", help="Project root override."),
     ) -> None:

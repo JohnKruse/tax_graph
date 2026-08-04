@@ -1,10 +1,11 @@
 """Harvest worksheet-shaped graph drafts from acquired instruction HTML.
 
 The worksheet harvester is intentionally separate from promotion.  It reads
-only the acquired source supplied by the caller, discovers a worksheet from a
-stable start anchor, and returns schema-shaped draft objects with a source
-witness for every object.  It never writes graph state and it never treats an
-end anchor as worksheet identity.
+only the acquired source supplied by the caller, discovers a worksheet from
+its printed title, and returns schema-shaped draft objects with a source
+witness for every object.  The source anchor is retained as an observation,
+not used as worksheet identity.  It never writes graph state and it never
+treats an end anchor as worksheet identity.
 """
 
 from __future__ import annotations
@@ -13,6 +14,7 @@ from dataclasses import dataclass, field
 from html.parser import HTMLParser
 from pathlib import Path
 import re
+import unicodedata
 from typing import Any, Iterable, Mapping
 
 import yaml
@@ -26,7 +28,12 @@ QDCGT_TARGET = "qualified_dividends_capital_gain_tax_worksheet"
 
 @dataclass(frozen=True)
 class WorksheetTarget:
-    """Describe a worksheet by its stable source anchor and output identity."""
+    """Describe a worksheet whose title is the stable source identity.
+
+    ``start_anchor`` is retained as a source observation and compatibility
+    input for existing targets.  The harvester never requires that generated
+    HTML id to remain unchanged across tax years.
+    """
 
     document_id: str
     title: str
@@ -149,6 +156,11 @@ class WorksheetHarvest:
         """Return emitted constants discovered in worksheet prose."""
         return tuple(node for node in self.nodes if node.get("node_type") == "parameter")
 
+    @property
+    def observed_start_anchor(self) -> str:
+        """Return the generated source anchor observed on the chosen heading."""
+        return self.start_anchor
+
     def as_dict(self) -> dict[str, Any]:
         """Return a draft report without changing the graph schema."""
         return {
@@ -157,7 +169,10 @@ class WorksheetHarvest:
             "document_id": self.target.document_id,
             "year": self.year,
             "source_document_id": self.source_document_id,
+            "worksheet_title": self.target.title,
             "start_anchor": self.start_anchor,
+            "observed_start_anchor": self.observed_start_anchor,
+            "start_resolution": "title",
             "worksheet_source_span": list(self.worksheet_source_span)
             if self.worksheet_source_span is not None
             else None,
@@ -279,14 +294,18 @@ def harvest_worksheet(
     year_text = str(year)
     source_id = source_document_id or resolved_target.source_document_id or ""
     headings = parse_headings(source_text)
-    start_heading = _find_start_heading(headings, resolved_target)
-    if start_heading is None:
-        finding = WorksheetFinding(
-            "missing_start_anchor",
-            f"worksheet start anchor not found: {resolved_target.start_anchor}",
-            (f"source_document_id={source_id}", f"start_anchor={resolved_target.start_anchor}"),
+    start_candidates = _find_start_headings(headings, resolved_target)
+    if len(start_candidates) != 1:
+        finding = _start_heading_finding(resolved_target, source_id, start_candidates)
+        return _blocked_harvest(
+            resolved_target,
+            year_text,
+            source_id,
+            (finding,),
+            observed_start_anchor=resolved_target.start_anchor,
         )
-        return _blocked_harvest(resolved_target, year_text, source_id, (finding,))
+    start_heading = start_candidates[0]
+    observed_start_anchor = start_heading.anchor_id
 
     parser = _RowParser(source_text)
     parser.feed(source_text)
@@ -306,6 +325,7 @@ def harvest_worksheet(
             worksheet_source_span=(start_heading.source_start, terminal_row.end)
             if terminal_row is not None
             else None,
+            observed_start_anchor=observed_start_anchor,
         )
 
     assert terminal_row is not None
@@ -343,12 +363,13 @@ def harvest_worksheet(
             source_id,
             tuple(all_findings),
             worksheet_source_span=(start_heading.source_start, terminal_row.end),
+            observed_start_anchor=observed_start_anchor,
         )
     return WorksheetHarvest(
         target=resolved_target,
         year=year_text,
         source_document_id=source_id,
-        start_anchor=resolved_target.start_anchor,
+        start_anchor=observed_start_anchor,
         document=document,
         nodes=tuple(nodes),
         edges=tuple(edges),
@@ -424,10 +445,59 @@ def _coerce_target(target: WorksheetTarget | Mapping[str, Any]) -> WorksheetTarg
     )
 
 
+def _find_start_headings(
+    headings: Iterable[InstructionHeading], target: WorksheetTarget
+) -> tuple[InstructionHeading, ...]:
+    """Return headings whose normalized printed title identifies the worksheet."""
+    wanted = _normalize_title(target.title)
+    return tuple(heading for heading in headings if _title_matches(heading.text, wanted))
+
+
 def _find_start_heading(
     headings: Iterable[InstructionHeading], target: WorksheetTarget
 ) -> InstructionHeading | None:
-    return next((heading for heading in headings if heading.anchor_id == target.start_anchor), None)
+    """Return a title match only when the source has exactly one candidate."""
+    candidates = _find_start_headings(headings, target)
+    return candidates[0] if len(candidates) == 1 else None
+
+
+def _normalize_title(value: str) -> str:
+    """Normalize title punctuation, case, and whitespace for exact matching."""
+    normalized = unicodedata.normalize("NFKC", value).casefold()
+    normalized = re.sub(r"[\W_]+", " ", normalized, flags=re.UNICODE)
+    return " ".join(normalized.split())
+
+
+def _title_matches(value: str, wanted: str) -> bool:
+    """Match a title exactly, allowing IRS's navigational ``-Line N`` suffix."""
+    candidate = _normalize_title(value)
+    if candidate == wanted:
+        return True
+    without_line_suffix = re.sub(r"\s+line\s+[0-9]+[a-z]?\s*$", "", candidate)
+    return without_line_suffix == wanted
+
+
+def _start_heading_finding(
+    target: WorksheetTarget,
+    source_document_id: str,
+    candidates: tuple[InstructionHeading, ...],
+) -> WorksheetFinding:
+    """Describe a zero or ambiguous title match with all source candidates."""
+    count = len(candidates)
+    kind = "missing_start_title" if count == 0 else "ambiguous_start_title"
+    evidence = [
+        f"source_document_id={source_document_id}",
+        f"candidate_count={count}",
+    ]
+    evidence.extend(
+        f"candidate[{index}]={heading.text};anchor={heading.anchor_id or 'missing'}"
+        for index, heading in enumerate(candidates)
+    )
+    return WorksheetFinding(
+        kind,
+        f"worksheet title matched {count} headings; expected exactly one: {target.title}",
+        tuple(evidence),
+    )
 
 
 def _discover_extent(
@@ -580,7 +650,10 @@ def _build_citations(
                 "citation_id": citation_id,
                 "document_id": source_document_id,
                 "source_document_id": source_document_id,
-                "locator": f"html#{target.start_anchor}:lines={slug}",
+                "locator": (
+                    f"source_document={source_document_id};"
+                    f"worksheet={target.title};lines={slug}"
+                ),
                 "quoted_text": quote,
             },
             source_quote=quote,
@@ -911,12 +984,13 @@ def _blocked_harvest(
     source_document_id: str,
     findings: tuple[WorksheetFinding, ...],
     worksheet_source_span: tuple[int, int] | None = None,
+    observed_start_anchor: str | None = None,
 ) -> WorksheetHarvest:
     return WorksheetHarvest(
         target=target,
         year=year,
         source_document_id=source_document_id,
-        start_anchor=target.start_anchor,
+        start_anchor=(target.start_anchor if observed_start_anchor is None else observed_start_anchor),
         document=None,
         nodes=tuple(),
         edges=tuple(),

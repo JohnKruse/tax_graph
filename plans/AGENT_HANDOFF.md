@@ -193,6 +193,27 @@ client-managed server dies.
   Current code accepts only `confirmed`/`rejected` (`workbench/static/app.js`), so the middle tier
   is missing. The ledger is already address-keyed and append-only, so adding it is small.
 
+## Worker status (M20-S43)
+
+Canary: Ground Truth. S43 is implemented and committed locally. Worksheet
+identity now resolves from a normalized printed title, with zero and ambiguous matches routed to
+named findings. The observed HTML anchor is retained in the report, while citation locators use
+the source document id, worksheet title, and line range. The real acquired 2025 canary survives
+rewritten publink ids with 25 lines, 13 constants, 13 citations, zero strict mismatches, and two
+Form 2555 conditions. No protected graph or field-map files changed.
+
+Evidence:
+
+- RAN: `$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp_s43'; .venv\Scripts\python.exe -m pytest tests/test_worksheet_harvest_m20.py -q` -> `10 passed, 1 warning`.
+- RAN: `$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp_s43'; .venv\Scripts\python.exe -m pytest tests/test_cli.py -q` -> `7 passed, 1 warning`.
+- RAN: `$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp_s43'; .venv\Scripts\python.exe -m pytest tests/test_acquire_citation_check.py -q` -> `9 passed, 1 warning`.
+- RAN: `.venv\Scripts\python.exe -m tax_graph.cli validate 2025` -> exit 0; 18 documents, 441 nodes, 409 edges, 401 citations; all six reconcile differences printed.
+- RAN: `.venv\Scripts\python.exe -m workbench.cli preflight --year 2025` -> `review preflight passed - 2025`; `legacy_mined=394`.
+- RAN: `.venv\Scripts\python.exe tools/check_ascii.py` -> `ASCII check OK`; `git diff --check` -> clean; protected set diff -> empty.
+- RAN: strict citation check -> `checked=401 strict_mismatches=36`.
+
+Next slice remains M20-S44, after this commit.
+
 ## Open for Architect
 
 - **M20-S36 denominator decision (raised 2026-08-03).** Logical-row assembly removes the measured
