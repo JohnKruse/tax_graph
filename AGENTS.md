@@ -281,6 +281,12 @@ entries; do not delete them.
 
 ## Map
 - Master plan + phase gates/canaries: `docs/engineering-plan.md`
+- **Year rollover seams, and run alerting in plain English (John's requirement, pinned
+  2026-08-04):** `docs/engineering-plan.md` -> "Year rollover (TY2026)", seams 1-6. **Seam 6 binds
+  any change to CI output or run reporting.** Its rule: every check gets one sentence about what
+  BREAKING it would mean, never what the check is; the known-red baseline is named every run; and
+  the summary states that CI does not run the derivation pipeline, so green means internally
+  consistent, not tax-correct.
 - Per-phase subplans: `plans/PHASE_<id>.md`
 - Testing rules: `docs/testing-strategy.md`
 - Original spec: `docs/tax_graph_requirements.md`

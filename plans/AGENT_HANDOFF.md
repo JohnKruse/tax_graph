@@ -17,107 +17,76 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## BALL
 
-**BALL: ARCHITECT - M20-S42 WORKER SLICE COMPLETE; VERIFY THE QDCGT CANARY.** S43 remains queued.
-Task block under **From Architect**. **S41 is ACCEPTED at `40530b1`.**
+**BALL: WORKER - M20-S43 (ANCHOR THE WORKSHEET BY ITS TITLE, NOT BY A YEAR-BOUND PUBLINK).** Task
+block under **From Architect**. **S42 is ACCEPTED at `b6e9be7`** - the canary met its falsifiable
+prediction in full, including the two Form 2555 conditions the hand-authored graph drops.
 
-**Sequence, set by John 2026-08-03:** S41 manifest reconcile (done), **S42 worksheet harvester**,
-then S43 operand type check with its spec intact. S41 proved the document list was circular and
-fixed it; it also proved that fixing the list is **not sufficient** - all six instruction documents
-still derive zero rows, because worksheets live in instruction prose and the cell pipeline reads
-form outlines. S42 is the stage that reaches them.
+**Sequence:** S41 manifest reconcile (done, `40530b1`), S42 worksheet harvester (done, `b6e9be7`),
+**S43 title-based anchoring** - small, and it completes S42 rather than extending it - then S44 the
+operand type check with its spec intact. S43 exists because the harvester currently keys on
+`en_US_2025_publink1000158415`, an IRS-generated id with the year baked in, so it would need a
+hand-edited anchor per worksheet per year. **Rollover policy and run alerting are pinned outside
+this file** at `docs/engineering-plan.md` -> Year rollover (TY2026), seam 6, with a pointer from
+`AGENTS.md`.
 
 ## Current round
 
-**M20-S41 ACCEPTED (Architect, Claude Opus 5, 2026-08-04) at `40530b1`.** Delivered exactly to spec,
-including the two constraints that were easy to get wrong: the raw leg degrades to a named
-`skipped` rather than failing where `.cache/` is absent, and the report is **non-fatal** -
-`validate 2025` still exits 0 while printing every difference. The Worker chose `validate` over
-`preflight` and justified it: document inventory is an acquisition concern, not a review projection.
-That is the right call. Steps 1-3 verified locally, 78 passed on a short temp root, ASCII OK,
-protected set byte-identical across `8dc3511..40530b1`.
+**M20-S42 ACCEPTED (Architect, Claude Opus 5, 2026-08-04) at `b6e9be7`. THE CANARY MET ITS
+FALSIFIABLE PREDICTION IN FULL, INCLUDING THE PART THE HUMAN MISSED.** I ran the harvester myself
+against the real acquired source rather than reading the report:
 
-**All six discrepancies are named, not counted** - which was the acceptance bar:
+| predicted in the S42 spec | measured by the Architect |
+| --- | --- |
+| 25 contiguous lines | **25** |
+| 13 constants | **13** |
+| 13 citations, verbatim | **13, zero mismatches** under `check_citation_integrity` |
+| Form 2555 conditionals on lines 1 and 25 | **both**, correctly attributed with the verbatim sentence |
 
-```
-graph documents: 18 | manifest documents: 21 | raw text: available
-graph_not_in_manifest: form_2441_2025
-manifest_not_in_graph: instructions_form_6251_2025, instructions_form_8949_2025,
-                       instructions_schedule_a_2025, instructions_schedule_b_2025
-raw_not_in_manifest:   form_2441_2025, instructions_form_2441_2025
-manifest_not_in_raw:   -
-```
+The two conditions land exactly where predicted - line 1's source and line 25's destination - each
+carrying the IRS sentence that creates it. **The pipeline recovered conditional routing that the
+hand-authored graph drops entirely**, and the hand-authored version has zero nodes for Form 2555
+anywhere. This is the prime directive demonstrated on a real artifact rather than asserted.
 
-**STEP 4 WAS CORRECTLY DECLARED NOT RUN (no outbound network) AND THE ARCHITECT RAN IT.** The corpus
-is now driven by the manifest: **21 documents, 9 complete, 12 empty, ZERO errored or reported.** The
-`form_2441_2025` phantom that returned a load error on every prior run is simply absent, because it
-is not declared.
+**ARCHITECT CORRECTION.** My first verbatim check reported 0 of 13 and was wrong: I compared only
+against the PDF-derived `.txt`, while `check_citation_integrity` falls back through `.txt`, `.html`
+and `.pdf`. The Worker's claim was right and my measurement was sloppy. Re-run with the project's
+own checker: **13 checked, 0 mismatches.** For contrast the 13 hand-authored QDCGT citations still
+fail, because they are paraphrase.
 
-| denominator | documents | attempted | derived | repaired | errored | resolved |
-| --- | ---: | ---: | ---: | ---: | ---: | ---: |
-| S40, graph-derived | 18 (17 loadable) | 96 | 92 / 91 | 1 / 2 | 3 | 93 |
-| S41, manifest-driven | 21 | 96 | 90 | 3 | 3 | 93 |
+**Gates verified independently:** 77 passed on a short temp root, ASCII OK, `git diff --check`
+clean, protected set byte-identical across `25d2895..b6e9be7`, no schema changed. The harvester is
+pure over acquired HTML and its writer refuses paths outside `_drafts`.
 
-**The row count is unchanged at 96 and derived=90 is variance, not a regression.** S41 changed no
-derivation code - only which documents are enumerated - and the same nine documents produce the same
-96 rows. Three samples now sit at 92, 91, 90. Do not chase it.
+**SCOPE LIMIT, DECLARED HONESTLY BY THE WORKER AND WORTH KEEPING VISIBLE.** The harvest emits **no
+computed nodes and no `CALCULATES` edges** - 42 `REFERENCES` edges instead, against the existing
+graph's 7 computed nodes and 88 edges. **It harvests structure, constants, citations and
+conditional routing; it does not harvest the arithmetic.** So it complements the hand-authored
+model rather than replacing it, and nothing here is promotable yet.
 
-**THE PREDICTED FINDING LANDED, AND IT IS THE ARGUMENT FOR S42. All six instruction documents derive
-ZERO rows** - the two that were always visible plus all four newly visible ones:
+**ARCHITECT FINDING - THE START ANCHOR REINTRODUCES THE YEARLY-UPKEEP PROBLEM THIS WORK EXISTS TO
+SOLVE.** The pinned anchor is `en_US_2025_publink1000158415`: an IRS-generated HTML id with the tax
+year baked into it. `_find_start_heading` matches on `heading.anchor_id == target.start_anchor` and
+nothing else; the durable human-readable `title` is carried on the target and never used. The same
+publink also becomes the stored locator (`html#en_US_2025_publink1000158415:lines=...`). **Next year
+that anchor does not exist, the harvest fails closed with `missing_start_anchor`, and a human
+hand-edits one anchor per worksheet per year - which is precisely the maintenance burden that
+started this thread.** Failing closed is right; keying on a volatile generated id is not. S43 fixes
+it. This is the same ruling this phase has now made four times: identity resolves in code from a
+stable anchor, never from a generated or positional one.
 
-```
-instructions_form_1040_2025, instructions_schedule_d_2025, instructions_form_6251_2025,
-instructions_form_8949_2025, instructions_schedule_a_2025, instructions_schedule_b_2025
-   -> status: empty, "document outline produced no derivation rows"
-```
+**MANIFEST REPORT DELIVERED, NO SCHEMA CHANGED (correct).** The minimal future shape is a worksheet
+entry carrying `source_document_id` and a start anchor, with `url` required only when
+`source_document_id` is absent. The `worksheet` document kind and `worksheet_field` node type
+already validate end to end. **John rules on the schema change** - it is the self-serve surface, and
+his standing requirement is that adding or removing a document, an instruction set, or a worksheet
+must never require an agent.
 
-`instructions_form_6251_2025` is 80,318 characters naming the QDCGT worksheet 20 times, and it
-contributes nothing. **Fixing the document list was necessary and is not sufficient.** The cell
-pipeline reads a form outline - printed lines with anchors - and worksheets live in instruction
-prose. No amount of enumerating documents reaches them; that is precisely the gap S42 exists to
-close.
-
-**CARRIED INTO S42.** `status: empty` with "no derivation rows" is honest but uninformative for an
-instruction document, which is not supposed to have derivation rows at all. Once the harvester
-lands, an instruction document should report the worksheets it yielded rather than a null result
-borrowed from the form path.
-
-**M20-S42 WORKER SLICE COMPLETE (2026-08-04; local commit created, pending Architect acceptance).** Added
-`tax_graph/ingest/worksheet_harvest.py`, its focused tests, and the module-form
-`harvest-worksheet` CLI. The harvester is pure over acquired HTML; the separate writer refuses
-paths outside `_drafts`, strips source witnesses from schema artifacts, and records the harvest
-report and conditional routes in `harvest.yaml`. No file under `graph/2025/` and no schema changed.
-The declared start anchor is required exactly; a matching title cannot substitute for a missing
-anchor. The output deliberately has no computed nodes or CALCULATES edges; formula reconstruction
-is not part of this slice.
-
-**QDCGT CANARY RESULT:** harvest `ok=True`; 25 contiguous lines; 13 constants; 13 citations; 42
-`REFERENCES` edges; Form 2555 conditionals on lines 1 and 25. The existing graph has 44 QDCGT nodes
-(25 worksheet_field, 7 computed, 12 parameter), 88 QDCGT edges, and 13 QDCGT citations. Including
-the shared tax-table threshold, the existing parameter count is 13. The new draft has 25
-worksheet_field nodes, 13 parameter nodes, zero computed nodes, and 42 `REFERENCES` edges. The
-existing 13 QDCGT citations are all non-verbatim against the acquired HTML; the new 13 citations
-have zero strict source mismatches. This is the honest diff in both directions, not a promotion.
-
-**MANIFEST REPORT (NO SCHEMA CHANGE):** the minimal future manifest shape is a worksheet entry
-with `source_document_id` and `start_anchor`; `url` remains required only when
-`source_document_id` is absent. The existing `worksheet` document and `worksheet_field` node
-vocabulary already validates end to end.
-
-**TEST EVIDENCE:**
-
-`RAN: $tempRoot = Join-Path (Resolve-Path .).Path '.m20_focused_final_pytest_root'; New-Item -ItemType Directory -Force -Path $tempRoot | Out-Null; $env:PYTEST_DEBUG_TEMPROOT=$tempRoot; .venv\Scripts\python.exe -m pytest tests/test_worksheet_harvest_m20.py tests/test_cli.py tests/test_instruction_sections_m20.py tests/test_instruction_promotion_m18.py -q -> 22 passed, 1 skipped, 1 warning in 24.20s.`
-
-`RAN: $tempRoot = 'C:\tmp\tax_graph_validator_m20_final'; New-Item -ItemType Directory -Force -Path $tempRoot | Out-Null; $env:PYTEST_DEBUG_TEMPROOT=$tempRoot; .venv\Scripts\python.exe -m pytest tests/test_graph_validator.py -q -> 14 passed in 131.76s (0:02:11).` This required elevation because the validator copies existing draft directories with restricted ACLs.
-
-`RAN: .venv\Scripts\python.exe tools/check_ascii.py -> ASCII check OK.`
-
-`RAN: git diff --check; git diff --name-only -- graph/2025/nodes graph/2025/edges graph/2025/rules graph/2025/field_maps -> exit 0; protected-path listing empty.`
-
-`RAN: .venv\Scripts\python.exe -m tax_graph.cli validate 2025 -> exit 0; graph integrity OK - all references resolve; reconcile report prints all six named differences.`
-
-`RAN: .venv\Scripts\python.exe -m tax_graph.cli harvest-worksheet --year 2025 --html-path .cache\raw\2025\instructions_form_1040_2025.html --source-document-id instructions_form_1040_2025 --draft-dir <repo>\.m20_cli_canary\_drafts\qdcgt --root <repo> -> lines=25, constants=13, citations=13, promoted: no.`
-
-`NOT RUN: full corpus partitions and Tier 3 shakedowns - Architect-side by standing rule; S43 is queued.`
+**PINNED THIS ROUND, OUTSIDE THE HANDOFF SO IT SURVIVES PRUNING:** run alerting in plain English is
+now **`docs/engineering-plan.md` -> Year rollover (TY2026), seam 6**, with a pointer from
+`AGENTS.md`. It carries John's rollover policy - **a removed document stops the pipeline, an
+unresolved reference is reported** - the constraint that GitHub's stoplight emails cannot be made
+smart without SMTP machinery, and the disclosure that **CI never runs the derivation pipeline, so
+green means internally consistent, not tax-correct.**
 
 ## Standing constraints (every M20 round)
 
@@ -291,67 +260,58 @@ client-managed server dies.
 
 ## From Architect
 
-- **M20-S42 TASK (DELIVERED BY WORKER; AWAITING ARCHITECT ACCEPTANCE) - HARVEST A WORKSHEET, WITH QDCGT AS
-  THE CANARY (Architect, Claude Opus 5, 2026-08-03; John's design call).**
+- **M20-S43 TASK - ANCHOR THE WORKSHEET BY ITS TITLE, NOT BY A YEAR-BOUND PUBLINK (Architect,
+  Claude Opus 5, 2026-08-04).** Ledger: the RAN/NOT RUN rule. **Small, and it completes S42 rather
+  than extending it. The diagnosis is in Current round - do not re-derive it.**
 
-  **Why, and why an end anchor was REJECTED.** The Architect proposed declaring a worksheet as a
-  region between a start and an end anchor. **John rejected it and he is right: an end anchor is
-  position-based identity wearing a different hat**, the exact defect this phase has now ruled
-  against three times (S28 `quote_span_id`, the review-queue churn, the S3a/S3b resolver ruling).
-  Worse, it would formalise the error already in the graph. Measured: the hand-authored QDCGT model
-  has all 25 lines and all 13 constants correct, and **zero nodes anywhere in the graph for Form
-  2555 or the Foreign Earned Income Tax Worksheet** - even though the worksheet's own text redirects
-  line 1's source and line 25's destination when Form 2555 is filed. Whoever transcribed it took the
-  numbered grid and dropped the footnotes, which are conditional routing, not annotation. And Form
-  2555 was the most common outside-the-corpus reference in the derivation runs, five rows: **the
-  model kept reaching for what the transcription lost.**
+  **Why.** `QDCGT_WORKSHEET_TARGET.start_anchor` is `en_US_2025_publink1000158415` and
+  `_find_start_heading` matches that id exactly. The id is IRS-generated and carries the tax year,
+  so the TY2026 booklet will not contain it: the harvest fails closed with `missing_start_anchor`
+  and a human hand-edits an anchor per worksheet per year. **That is the maintenance burden this
+  whole line of work exists to remove**, and John's standing requirement is that adding or
+  maintaining a worksheet must not require an agent.
 
-  **Step 1 - a pure harvest stage.** Same shape as `derive_cells`, which is the pattern that works:
-  a pure function with **zero disk writes**, taking acquired instruction text plus a target, and
-  returning a worksheet document, its `worksheet_field` nodes, edges, and citations. Every emitted
-  object carries a **verbatim quote checked in code** - that check is what exposed the 13 paraphrased
-  QDCGT citations, and it is what stops a harvester from inventing the way a human did. Output goes
-  to drafts and through the workbench. **Nothing is promoted in this round.**
+  **Step 1 - resolve the start heading by title.** Match on the worksheet's own printed name
+  (`"Qualified Dividends and Capital Gain Tax Worksheet"`), normalised for whitespace, case and
+  punctuation. **Fail closed when the title matches zero headings or more than one**, with the
+  count and the candidate headings in the finding - same rule as the S2d/S2e span resolver and the
+  S3a/S3b outline adapter. A title that matches exactly one heading is identity; anything else is
+  ambiguity and must not be guessed.
 
-  **Step 2 - extent is DISCOVERED, not declared.** No end anchor. A worksheet is self-describing, so
-  validate completeness deterministically: numbered lines 1..N contiguous with no holes; the
-  terminal line states its own destination (QDCGT line 25: *"Also include this amount on the entry
-  space on Form 1040 or 1040-SR, line 16"*); every footnote marker in the harvested region resolves
-  to a footnote. Fail closed and report when any of those does not hold. The start anchor survives
-  only as the NAME - the addressing handle - never as a slice boundary.
+  **Step 2 - demote the publink to an observation.** Keep recording it, because it is genuinely
+  useful for locating the section within one year's HTML, but it must not be the key and it must
+  not be the stored locator. **A locator that embeds `publink1000158415` is dead the moment the
+  year turns.** Build the locator from durable parts - source document id, worksheet title, and the
+  line range - and carry the observed publink as a separate reported field. Report what you chose.
 
-  **Step 3 - the canary, with a falsifiable prediction.** Run it on
-  `instructions_form_1040_2025` targeting the Qualified Dividends and Capital Gain Tax Worksheet and
-  diff against the existing hand-authored graph:
+  **Step 3 - prove it survives an anchor change without a TY2026 booklet.** We cannot fetch next
+  year's document, so simulate: take the acquired 2025 HTML, rewrite the publink ids (leaving the
+  headings and body text untouched), and assert the harvest still returns 25 lines, 13 constants,
+  13 verbatim citations and both Form 2555 conditions. **That single test is the whole point of the
+  round** - it is the difference between a harvester that works this year and one that works every
+  year. Assert the negative too: a source whose worksheet title is absent must fail closed with a
+  named finding rather than harvesting the wrong section.
 
-  | expected | why it is a real test |
-  | --- | --- |
-  | 25 lines, contiguous | matches the existing 44-node model |
-  | 13 constants | already verified correct against IRS text; a mismatch means the harvester is wrong |
-  | 13 citations, VERBATIM | the current ones are paraphrase and fail `check_graph_citations` today |
-  | Form 2555 conditionals on lines 1 and 25 | **NEW** - the human missed them |
+  **Step 4 - re-run the canary and report the diff against S42.** Same four numbers (25 lines, 13
+  constants, 13 citations with zero mismatches under `check_citation_integrity`, 2 Form 2555
+  conditions). **Any change from S42's result is a regression in this round**, since nothing about
+  the worksheet content changed - only how its start is located.
 
-  **Report the diff honestly in both directions.** If the harvester misses the footnotes too, say so
-  - that is a prompt finding worth having, not a failure to hide. **Do not tune the prompt against
-  the hand-authored graph until the first honest attempt is reported**, or the canary measures
-  nothing.
+  **Do not:** author or edit anything in `graph/2025/`; change any schema (the manifest shape is
+  reported and John rules on it); promote a draft; add computed nodes or `CALCULATES` edges -
+  formula reconstruction is explicitly NOT this round and not S42's either; let the harvester write
+  outside `_drafts`; fall back to a fuzzy title match when the exact-title match is ambiguous.
+  **Stop conditions:** any diff in the protected directories; a citation emitted that is not
+  verbatim in the acquired source; the canary returning anything other than 25/13/13/2. Tier 3.
+  Declared files plus honest `RAN:`/`NOT RUN:`. ASCII, `git diff --check`, module-form
+  `validate 2025` (the reconcile report must still print all six named differences), preflight with
+  `legacy_mined` explicit (394). **ONE local commit** - run `git status` first.
 
-  **Step 4 - report what the manifest would need, implement no schema change.** A worksheet has no
-  standalone PDF URL, and `schemas/manifest.schema.json` requires `url` matching
-  `^https://www\.irs\.gov/pub/irs-(pdf|prior)/[fip][a-z0-9-]+\.pdf$`. The `kind` enum ALREADY
-  contains `worksheet` in both `manifest.schema.json` and `document.schema.json`, and `node.schema.json`
-  already has `worksheet_field`. **The vocabulary exists end to end; only the source field cannot
-  express a region of another document.** Report the minimal change (a `source_document_id` plus a
-  start anchor, with `url` required only when `source_document_id` is absent) and stop. **John rules
-  on the schema change** - it is the self-serve surface, and his stated requirement is that adding or
-  removing a document, an instruction set, or a worksheet must not require an agent.
+  **Queued behind this, unchanged:** the operand type check, specced in full below as S44. It is
+  still the sharpest correctness hole in the derivation path (a filing-status enum sitting in a
+  numeric `IF_ELSE` slot, `derived`, zero failures).
 
-  **Do not:** author or edit anything in `graph/2025/`; promote a draft; change any schema; let the
-  harvester write outside drafts; tune against the known answer before reporting the first attempt.
-  **Stop conditions:** any diff in the protected directories; any harvest function acquiring a disk
-  write outside the draft path; a citation emitted that is not verbatim in the acquired text.
-
-- **M20-S43 TASK (QUEUED BEHIND S41/S42; SPEC IS COMPLETE AND STILL STANDS) - TYPE THE OPERANDS,
+- **M20-S44 TASK (QUEUED BEHIND S43; SPEC IS COMPLETE AND STILL STANDS) - TYPE THE OPERANDS,
   AND MAKE THE WARNING WORTH READING (Architect, Claude Opus 5, 2026-08-03).** Ledger: the RAN/NOT RUN rule, D9, D6. **Small, and both parts are already measured
   in Current round - do not re-diagnose.**
 
@@ -454,6 +414,12 @@ client-managed server dies.
 
 ## Recent rounds (condensed; full narration in git history - `git show <hash>`)
 
+- **M20-S42 (`b6e9be7`, Architect-verified):** `tax_graph/ingest/worksheet_harvest.py` plus the
+  `harvest-worksheet` CLI - pure over acquired instruction HTML, writes only under `_drafts`, no
+  schema change. QDCGT canary met the prediction exactly: 25 contiguous lines, 13 constants, 13
+  citations with zero mismatches under the project's own checker, and **both Form 2555 conditional
+  routes that the hand-authored graph drops.** Declared scope limit: no computed nodes and no
+  `CALCULATES` edges, so it does not harvest the arithmetic. Architect finding -> S43.
 - **M20-S41 (`40530b1`, Architect-verified):** `tax_graph.acquire.reconcile_document_lists` names
   every graph/manifest/raw difference, degrades the raw leg to `skipped`, and reports non-fatally
   through `validate`; the derivation harness now defaults to the manifest's declared order. Architect
@@ -511,6 +477,11 @@ client-managed server dies.
 
 ## Latest verification
 
+- **M20-S42 (2026-08-04, Architect):** harvester run directly against
+  `.cache/raw/2025/instructions_form_1040_2025.html` - `ok=True`, zero findings, 25 line nodes, 13
+  parameter nodes, 13 citations, 42 edges, 2 conditions (Form 2555, lines 1 and 25). Citations
+  re-checked with `check_citation_integrity`: **checked=13, mismatches=0**. 77 passed on a short
+  temp root; ASCII OK; `git diff --check`; protected set byte-identical across `25d2895..b6e9be7`.
 - **M20-S41 (2026-08-04, Architect live):** manifest-driven corpus, 21 documents, 9 complete /
   12 empty / 0 errored; attempted=96, derived=90, repaired=3, errored=3, resolved=93 (third sample
   in the 90-92 band; no derivation code changed). 78 passed on a short temp root; ASCII OK;

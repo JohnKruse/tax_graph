@@ -721,6 +721,64 @@ that are NOT yet coded and must not be discovered in a panic at rollover time:
    The A9 per-form dicts and their adjacency goldens are the validation corpus for
    this re-binder. Re-transcribing a form by hand at rollover is prohibited by
    invariant 6.
+6. **Run alerting in plain English (pinned 2026-08-04; John's requirement).** John's words:
+   *"Right now, I literally have no true understanding of the stoplights. I just see the emails
+   and ignore them... I will no doubt have very little memory of this program after i haven't
+   touched it for 10 months."* An alert nobody reads is worse than no alert, and this project has
+   already made that mistake once at a smaller scale (`unmapped_operation` fired 12-14 times per
+   run, 70% of it `REQUIRE_INPUT` noise, in a design whose own premise is that reviewer attention
+   is the scarce resource).
+   **Constraint, stated so nobody rediscovers it:** the stoplight emails are stock GitHub Actions
+   notifications - workflow name, red or green, a link. Their body is not customisable without an
+   SMTP-sending step and secrets. **Treat the email as a doorbell and make the run page answer the
+   question**, via `$GITHUB_STEP_SUMMARY`, which renders markdown at the top of a run with no new
+   infrastructure.
+   **The honest disclosure this summary must lead with: CI is greener than the project.** It runs
+   ASCII, `validate`, one example return, a SQLite build, and pytest. It does NOT run the
+   derivation pipeline, because CI has no provider access - so the derived/repaired/errored numbers
+   that ten rounds of M20 have been about never execute there. **A green check means the code and
+   graph are internally consistent. It does not mean the tax rules were read correctly off the IRS
+   forms.** The summary states this every time, green or red, and cites the last measured
+   derivation numbers with their date so the reader knows what is and is not covered.
+   **Design rule: every check gets one sentence about what BREAKING it would mean, never what the
+   check is.** "pytest exited 1" is machine language; "the sample capital-gains return stopped
+   computing, so a change altered a tax calculation" is the sentence a returning maintainer can
+   act on. Rank by consequence: the example return failing outranks a lint failure, and the
+   summary must say so rather than listing steps in file order.
+   **Name the known-red baseline explicitly, every run.** Four tests have failed since July for
+   reasons unrelated to tax logic (they read local files CI does not have). Unless that list is
+   printed as expected, every red looks new and the reader learns to ignore all of them.
+   **The summary answers exactly one question: does this need me?** That question is the LAST
+   thing to automate away, not the first. As models improve and the human role becomes
+   perfunctory, this is what tells the maintainer when perfunctory is the correct call and when it
+   is not - it is what makes ignoring an email safe rather than merely habitual.
+   **This is also where the rollover delta surfaces, with no separate mechanism.** The S41
+   reconcile (`tax_graph/acquire/reconcile.py`) already names added and removed documents. At
+   rollover the policy John accepted is a **partial failure, not a silent pass**:
+   - **A document modelled last year that is gone from the new manifest STOPS the pipeline.** A
+     human decides whether it was withdrawn, renamed, or merged. This is fatal by design.
+   - **References to forms we do not hold are REPORTED, not fatal**, each with the verbatim
+     sentence that references it. Measured precedent: Form 2555 was the derivation model's most
+     common unresolved outside reference, five rows.
+   **What the IRS actually publishes, so the delta is derived rather than fetched.** There is no
+   machine-readable IRS changelog. What exists is per-document **"What's New"** prose at the front
+   of each instruction booklet, the annual inflation **Revenue Procedure** carrying the parameter
+   changes across many forms, and draft forms posted ahead of final release. **Verify this against
+   irs.gov before building on it - it is recalled, not confirmed.** Consequence: the structural
+   delta must come from diffing our own two years of extractions (lines, labels, constants,
+   citations), which is deterministic and machine-checkable, with parameter changes independently
+   cross-checked against the Rev. Proc. figures and the parameter-diff oracle. **A model's place in
+   this is routing the prose, not summarising the change** - reading "What's New" and pointing at
+   which addresses a paragraph touches, with the verbatim quote attached, so the output is a
+   citation rather than a claim. A model asked to summarise the diff between two 80,000-character
+   booklets produces exactly the artifact nobody can verify.
+   **Why this ordering, and not more AI:** the hand-authored QDCGT worksheet silently dropped two
+   conditional routes (the Form 2555 footnotes on lines 1 and 25) and the S42 harvester caught
+   them. The lesson is not "use more AI" - it is that **the diff must be against evidence, never
+   against last year's interpretation.**
+   **Depends on cross-year identity (seam 1) and on worksheet anchors resolving by title rather
+   than by a year-bound IRS `publink` id.** A rollover diff keyed on `en_US_2025_publink1000158415`
+   compares nothing.
 The first rollover is the shakedown of this whole design and gets its own phase plan;
 sequencing: after M15 (the workbench is the surface where the delta review happens) or
 when TY2026 documents drop, whichever is later. Human effort target: review the delta
