@@ -149,6 +149,31 @@ def test_comment_origin_requires_comment_and_known_value(tmp_path: Path) -> None
         append_address_verdict(**common, comment="Needs work.", origin="guess")
 
 
+def test_three_state_judgement_requires_comment_for_non_confirming_observations(tmp_path: Path) -> None:
+    common = {
+        "root": tmp_path,
+        "year": 2025,
+        "address": "2025/document=form_a/section=income/control=amount",
+        "label": "Amount",
+        "cited_text": ["Enter amount."],
+        "reviewer_id": "john",
+        "store_path": tmp_path / "address_verdicts.jsonl",
+    }
+    for judgement in ("questioned", "rejected"):
+        with pytest.raises(ValueError, match="requires a non-empty comment"):
+            append_address_verdict(**common, judgement=judgement, verdict_id=f"missing_{judgement}")
+    with pytest.raises(ValueError, match="judgement must be one of"):
+        append_address_verdict(**common, judgement="invented", verdict_id="invented")
+
+    record = append_address_verdict(
+        **common,
+        judgement="questioned",
+        comment="The source and generated label do not agree.",
+        verdict_id="questioned_1",
+    )
+    assert record["judgement"] == "questioned"
+
+
 def test_fingerprint_binds_expression_and_normalizes_equivalent_operands() -> None:
     first_expression = {
         "kind": "sum",
@@ -292,7 +317,7 @@ def test_latest_verdict_orders_by_utc_epoch_and_file_order(tmp_path: Path) -> No
     append_address_verdict(
         root=tmp_path, year=2025, address=address, label="Amount", cited_text=["Enter amount."],
         reviewer_id="john", judgement="rejected", reviewed_at="2026-07-29T11:00:00+00:00",
-        verdict_id="verdict_late", store_path=path,
+        verdict_id="verdict_late", comment="The generated cell is not correct.", store_path=path,
     )
     records = load_address_verdicts(path)
     assert records[0]["reviewed_at"] == "2026-07-29T10:00:00+00:00"

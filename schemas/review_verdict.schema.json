@@ -22,9 +22,9 @@
     "reviewer_id": {"type": "string", "minLength": 1},
     "reviewed_at": {"type": "string", "format": "date-time"},
     "human_minutes": {"type": "number", "minimum": 0},
-    "verdict": {"enum": ["confirmed", "rejected", "pipeline_defect", "source_pathology"]},
+    "verdict": {"enum": ["confirmed", "questioned", "rejected", "pipeline_defect", "source_pathology"]},
     "reason": {"type": "string"},
-    "comment": {"type": "string"},
+    "comment": {"type": "string", "minLength": 1},
     "reviewer_tag": {"type": "string", "minLength": 1},
     "source_override": {
       "type": "object",
@@ -38,7 +38,8 @@
     "content_hash": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
   },
   "allOf": [
-    {"if": {"properties": {"verdict": {"const": "pipeline_defect"}}}, "then": {"required": ["reason"]}},
-    {"if": {"properties": {"verdict": {"const": "source_pathology"}}}, "then": {"required": ["reason", "source_override"]}}
+    {"if": {"properties": {"verdict": {"enum": ["questioned", "rejected"]}}}, "then": {"required": ["comment"]}},
+    {"if": {"properties": {"verdict": {"const": "pipeline_defect"}}}, "then": {"required": ["reason", "comment"]}},
+    {"if": {"properties": {"verdict": {"const": "source_pathology"}}}, "then": {"required": ["reason", "comment", "source_override"]}}
   ]
 }

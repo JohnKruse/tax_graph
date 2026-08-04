@@ -43,6 +43,13 @@ _EXPRESSION_KIND_BUCKETS = {
     "reference": "NOT_REVIEWABLE",
 }
 _COMMENT_ORIGINS = frozenset({"curated", "contributed"})
+ADDRESS_JUDGEMENTS = frozenset({"confirmed", "questioned", "rejected"})
+_LEGACY_JUDGEMENT_ALIASES = {
+    "approved": "confirmed",
+    "problem": "questioned",
+    "pipeline_defect": "rejected",
+    "source_pathology": "rejected",
+}
 _COMMUTATIVE_EXPRESSION_KINDS = frozenset({"sum", "multiply", "min", "max"})
 _PUNCTUATION = str.maketrans({
     "\u2010": "-",
@@ -186,7 +193,7 @@ def append_address_verdict(
     expression: Mapping[str, Any] | None = None,
     form_citations: Any = None,
     instruction_citations: Any = None,
-    judgement: str = "approved",
+    judgement: str = "confirmed",
     reviewer_id: str,
     reviewed_at: str | None = None,
     verdict_id: str | None = None,
@@ -200,7 +207,7 @@ def append_address_verdict(
     """Append one address verdict and refuse duplicate ids or empty identity."""
     address_value = str(address).strip()
     reviewer_value = str(reviewer_id).strip()
-    judgement_value = str(judgement).strip()
+    judgement_value = _canonical_judgement(judgement)
     if not address_value:
         raise ValueError("address is required")
     if not reviewer_value:
@@ -238,6 +245,8 @@ def append_address_verdict(
     if provenance:
         record["provenance"] = dict(provenance)
     comment_value = str(comment).strip() if comment is not None else ""
+    if judgement_value in {"questioned", "rejected"} and not comment_value:
+        raise ValueError(f"{judgement_value} verdict requires a non-empty comment")
     selected_origin = origin if origin is not None else comment_origin
     if origin is not None and comment_origin is not None and str(origin) != str(comment_origin):
         raise ValueError("origin and comment_origin must agree")
@@ -351,7 +360,7 @@ def derive_cell_coverage(
         verdict = latest.get(address)
         if verdict is None:
             result = _state(unit, "unreviewed", current_fingerprint)
-        elif str(verdict.get("judgement")) != "approved":
+        elif _canonical_judgement(verdict.get("judgement")) != "confirmed":
             result = _state(unit, "unreviewed", current_fingerprint, verdict=verdict)
         elif str(verdict.get("content_fingerprint")) == current_fingerprint:
             result = _state(unit, "approved", current_fingerprint, verdict=verdict)
@@ -421,7 +430,7 @@ def rollover_candidates(
     }
     candidates: list[dict[str, Any]] = []
     for old_address, verdict in sorted(prior_by_address.items()):
-        if str(verdict.get("judgement")) != "approved":
+        if _canonical_judgement(verdict.get("judgement")) != "confirmed":
             continue
         stable = address_without_year(old_address)
         unit = current_by_stable.get(stable)
@@ -518,6 +527,10 @@ def _validate_record(record: Mapping[str, Any], *, source: str = "address verdic
     missing = [key for key in required if record.get(key) in (None, "")]
     if missing:
         raise ValueError(f"{source} missing fields: {', '.join(missing)}")
+    try:
+        judgement = _canonical_judgement(record["judgement"])
+    except ValueError as exc:
+        raise ValueError(f"{source} has invalid judgement: {record.get('judgement')!r}") from exc
     if not _HEX64.fullmatch(str(record["content_fingerprint"])):
         raise ValueError(f"{source} has invalid content_fingerprint")
     reviewed_content = record.get("reviewed_content")
@@ -567,6 +580,17 @@ def _validate_record(record: Mapping[str, Any], *, source: str = "address verdic
             raise ValueError(f"{source} origin must be curated or contributed")
     elif origin is not None:
         raise ValueError(f"{source} origin requires comment")
+    if judgement in {"questioned", "rejected"} and (not isinstance(comment, str) or not comment.strip()):
+        raise ValueError(f"{source} {judgement} verdict requires a non-empty comment")
+
+
+def _canonical_judgement(value: Any) -> str:
+    """Return the three-state judgement token, accepting named legacy aliases."""
+    token = str(value or "").strip()
+    canonical = _LEGACY_JUDGEMENT_ALIASES.get(token, token)
+    if canonical not in ADDRESS_JUDGEMENTS:
+        raise ValueError(f"judgement must be one of {', '.join(sorted(ADDRESS_JUDGEMENTS))}")
+    return canonical
 
 
 def _latest_by_address(history: Iterable[Mapping[str, Any]]) -> dict[str, dict[str, Any]]:
@@ -625,7 +649,7 @@ def _state(
         result.update({
             "verdict_id": str(verdict.get("verdict_id", "")),
             "reviewer_id": str(verdict.get("reviewer_id", "")),
-            "judgement": str(verdict.get("judgement", "")),
+            "judgement": _canonical_judgement(verdict.get("judgement", "")),
             "reviewed_at": str(verdict.get("reviewed_at", "")),
             "reviewed_fingerprint": str(verdict.get("content_fingerprint", "")),
         })

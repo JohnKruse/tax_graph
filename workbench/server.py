@@ -28,7 +28,7 @@ from workbench.sessions import (
     session_progress,
     validate_unit_review_scope,
 )
-from workbench.verdicts import emit_verdict
+from workbench.verdicts import LEGACY_REVIEW_VERDICTS, REVIEW_VERDICTS, emit_verdict
 from workbench.address_verdicts import append_address_verdict
 
 
@@ -467,11 +467,16 @@ def create_app(
         verdict = str(payload.get("verdict") or "")
         reason = str(payload.get("reason") or "").strip()
         comment = str(payload.get("comment") or "").strip()
-        if verdict not in {"confirmed", "rejected"}:
+        if verdict in {"questioned", "rejected"}:
+            if not comment:
+                return jsonify({"error": "a questioned or rejected verdict requires a non-empty comment"}), 400
+        elif verdict in LEGACY_REVIEW_VERDICTS:
             if reason not in REJECTION_REASON_CODES:
                 return jsonify({"error": "a rejection requires reason pipeline_defect or source_pathology"}), 400
             if not comment:
                 return jsonify({"error": "a rejection requires a non-empty comment"}), 400
+        elif verdict not in REVIEW_VERDICTS:
+            return jsonify({"error": "verdict must be confirmed, questioned, or rejected"}), 400
         try:
             object_ref = _scoped_verdict_ref(entries[queue_id], payload.get("object_ref"))
             result = emit_verdict(

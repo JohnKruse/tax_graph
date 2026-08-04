@@ -388,6 +388,8 @@ def apply_verdicts_command(
     result = apply_verdicts(year, root=root_path, verdict_dir=verdict_dir)
     print(f"applied review verdicts: {len(result.applied)}")
     print(f"  confirmed: {len(result.confirmed)}")
+    print(f"  questioned: {len(result.questioned)}")
+    print(f"  rejected: {len(result.rejected)}")
     print(f"  pipeline defects: {len(result.pipeline_defects)}")
     print(f"  source pathologies: {len(result.source_pathologies)}")
     return 0

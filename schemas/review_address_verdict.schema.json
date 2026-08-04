@@ -24,7 +24,7 @@
         "instruction_citations": {"type": "array", "items": {"type": "string"}}
       }
     },
-    "judgement": {"type": "string", "minLength": 1},
+    "judgement": {"type": "string", "enum": ["confirmed", "questioned", "rejected", "approved", "problem", "pipeline_defect", "source_pathology"]},
     "reviewer_id": {"type": "string", "minLength": 1},
     "reviewed_at": {"type": "string", "format": "date-time"},
     "reviewed_at_epoch": {"type": "integer"},

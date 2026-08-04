@@ -26,8 +26,9 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--verdict-id", default=None, help="append-only verdict id")
     parser.add_argument("--reviewer-id", default=None, help="human reviewer id")
     parser.add_argument("--human-minutes", type=float, default=None, help="minutes spent on review")
-    parser.add_argument("--verdict", choices=["confirmed", "rejected", "pipeline_defect", "source_pathology"], default=None)
+    parser.add_argument("--verdict", choices=["confirmed", "questioned", "rejected", "pipeline_defect", "source_pathology"], default=None)
     parser.add_argument("--reason", default=None, help="reason for a non-confirmed verdict")
+    parser.add_argument("--comment", default=None, help="reviewer observation for a questioned or rejected verdict")
     parser.add_argument("--reviewed-at", default=None, help="ISO-8601 review timestamp")
     args = parser.parse_args(argv)
     if args.command == "build":
@@ -72,7 +73,7 @@ def main(argv: list[str] | None = None) -> int:
             manifest_hash=manifest["manifest_hash"],
             verdict_id=args.verdict_id, reviewer_id=args.reviewer_id,
             human_minutes=args.human_minutes, verdict=args.verdict,
-            reviewed_at=args.reviewed_at, reason=args.reason,
+            reviewed_at=args.reviewed_at, reason=args.reason, comment=args.comment,
         )
         print(result.path)
         return 0

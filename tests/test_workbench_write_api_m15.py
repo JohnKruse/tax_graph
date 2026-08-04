@@ -179,6 +179,7 @@ def test_rejected_verdict_auto_captures_machine_session_and_tag(api) -> None:
         "verdict": "rejected",
         "reviewer_id": "john",
         "reviewer_tag": "first pass",
+        "comment": "The generated cell does not match the source.",
     }
     response = client.post("/api/verdicts", json=payload, headers=_headers())
     assert response.status_code == 201, response.get_json()
@@ -187,6 +188,23 @@ def test_rejected_verdict_auto_captures_machine_session_and_tag(api) -> None:
     assert record["reviewer_id"].startswith("workbench/")
     assert record["reviewer_id"] != "john"
     assert record["reviewer_tag"] == "first pass"
+
+
+@pytest.mark.m20
+def test_questioned_verdict_accepts_comment_without_a_cause_code(api) -> None:
+    app, client = api
+    queue_id = app.config["WORKBENCH_MANIFEST"]["entries"][0]["queue_id"]
+    payload = {
+        "queue_id": queue_id,
+        "verdict_id": "m20_api_questioned",
+        "human_minutes": 1,
+        "verdict": "questioned",
+        "reviewer_id": "john",
+        "comment": "The source and generated cell need another look.",
+    }
+    response = client.post("/api/verdicts", json=payload, headers=_headers())
+    assert response.status_code == 201, response.get_json()
+    assert response.get_json()["verdict"]["verdict"] == "questioned"
 
 
 def _headers() -> dict[str, str]:

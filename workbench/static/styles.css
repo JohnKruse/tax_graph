@@ -212,11 +212,13 @@ h1, h2, h3, p { margin-top: 0; }
 .generated-verdict label { display: grid; gap: 4px; margin-top: 7px; color: var(--muted); font-size: 10px; font-weight: 700; }
 .generated-verdict input, .generated-verdict textarea { width: 100%; box-sizing: border-box; padding: 6px; border: 1px solid var(--line); border-radius: 4px; color: var(--ink); background: #fff; font: inherit; font-weight: 400; }
 .generated-verdict { position: sticky; top: 0; z-index: 3; box-shadow: 0 2px 6px rgba(23, 33, 43, .08); }
-.verdict-controls { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 5px; margin-top: 8px; }
+.verdict-controls { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 5px; margin-top: 8px; }
 .verdict-button { padding: 6px; border: 1px solid var(--accent); border-radius: 4px; color: var(--accent); background: #fff; font-size: 10px; font-weight: 700; cursor: pointer; }
 .verdict-button:hover, .verdict-button:focus-visible { color: #fff; background: var(--accent); }
 .verdict-accept { border-color: var(--accent); color: var(--accent); }
+.verdict-question { border-color: #875a05; color: #875a05; }
 .verdict-reject { border-color: var(--danger); color: var(--danger); }
+.verdict-comment-box[hidden] { display: none; }
 .verdict-hint { margin: 4px 0; color: var(--muted); font-size: 10px; }
 .empty-evidence { margin: 4px 0; color: var(--muted); font-size: 11px; }
 .drawer-heading { display: flex; align-items: start; justify-content: space-between; gap: 8px; }

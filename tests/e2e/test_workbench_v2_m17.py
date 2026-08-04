@@ -126,7 +126,14 @@ def test_selected_cell_uses_human_headers_dossier_order_and_occurrence(page, wor
     line_1i.locator(".unit-card-select").click()
     expect(detail.locator(".cell-instruction")).to_contain_text("Nontaxable Combat Pay Election")
     expect(detail.locator(".verdict-accept")).to_be_visible()
+    expect(detail.locator(".verdict-question")).to_be_visible()
     expect(detail.locator(".verdict-reject")).to_be_visible()
+    expect(detail.locator(".verdict-comment-box")).to_be_hidden()
+    detail.locator(".verdict-question").click()
+    expect(detail.locator(".verdict-comment-box")).to_be_visible()
+    detail.locator(".verdict-comment").fill("The generated cell needs another look.")
+    detail.locator(".verdict-question").click()
+    expect(page.locator("#session-message")).to_contain_text("questioned")
     assert detail.locator(".verdict-reviewer").count() == 0
 
     # Repeated-concept occurrence contracts are exercised by the M19 concept tests;

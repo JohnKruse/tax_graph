@@ -203,10 +203,13 @@ function generatedVerdictMarkup(cell) {
     `<p class="generated-status"><strong>Policy origin:</strong> ${escapeHtml(cell.policy_origin || "review_gap")}` +
       (cell.failover_class ? ` (${escapeHtml(cell.failover_class)})` : "") + `</p>` +
     `<label>Optional batch tag<input class="verdict-tag" type="text" placeholder="For example: first pass" autocomplete="off"></label>` +
-    `<label>What does not match the source? <textarea class="verdict-comment" rows="3" placeholder="Tell the pipeline what needs correction."></textarea></label>` +
-    `<p class="verdict-hint">Accept records that this generated cell matches its source. Reject records the symptom; the pipeline diagnoses the cause.</p>` +
+    `<div class="verdict-comment-box" hidden>` +
+      `<label>What did you observe? <textarea class="verdict-comment" rows="3" placeholder="Describe the evidence or concern for the pipeline."></textarea></label>` +
+    `</div>` +
+    `<p class="verdict-hint">Accept a matching cell. Question or reject a mismatch and explain what needs attention.</p>` +
     `<div class="verdict-controls" role="group" aria-label="Generated cell verdict">` +
       `<button type="button" class="verdict-button verdict-accept" data-verdict="confirmed">Accept</button>` +
+      `<button type="button" class="verdict-button verdict-question" data-verdict="questioned">Question</button>` +
       `<button type="button" class="verdict-button verdict-reject" data-verdict="rejected">Reject</button>` +
     `</div>` +
     `</section>`;
@@ -310,17 +313,14 @@ function renderDetail(detail, cell, cells, review, onReviewChange) {
       const comment = body.querySelector(".verdict-comment")?.value.trim() || "";
       const tag = body.querySelector(".verdict-tag")?.value.trim() || "";
       const verdict = button.dataset.verdict || "";
-      if (verdict === "rejected" && !comment) {
-        if (button.dataset.armed !== "true") {
-          button.dataset.armed = "true";
-          const commentBox = body.querySelector(".verdict-comment");
-          if (commentBox) {
-            commentBox.placeholder = "Strongly encouraged: tell the pipeline why this does not match.";
-            commentBox.focus();
-          }
+      if (verdict === "questioned" || verdict === "rejected") {
+        const commentBox = body.querySelector(".verdict-comment-box");
+        if (commentBox?.hidden) {
+          commentBox.hidden = false;
+          body.querySelector(".verdict-comment")?.focus();
           return;
         }
-        if (!window.confirm("Reject without telling the pipeline why?")) {
+        if (!comment) {
           body.querySelector(".verdict-comment")?.focus();
           return;
         }

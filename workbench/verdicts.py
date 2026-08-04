@@ -13,6 +13,10 @@ import jsonschema
 import yaml
 
 
+REVIEW_VERDICTS = frozenset({"confirmed", "questioned", "rejected"})
+LEGACY_REVIEW_VERDICTS = frozenset({"pipeline_defect", "source_pathology"})
+
+
 @dataclass(frozen=True)
 class ReviewVerdict:
     """One human decision emitted for later pipeline application."""
@@ -100,6 +104,10 @@ def load_verdict(path: str | Path, *, schema_path: str | Path | None = None) -> 
 
 def validate_verdict(payload: dict[str, Any], *, schema_path: str | Path) -> None:
     """Validate the public verdict schema and human-review constraints."""
+    verdict = str(payload.get("verdict") or "")
+    comment = str(payload.get("comment") or "").strip()
+    if verdict in {"questioned", "rejected"} and not comment:
+        raise ValueError("a questioned or rejected verdict requires a non-empty comment")
     try:
         schema = json.loads(Path(schema_path).read_text(encoding="utf-8"))
         jsonschema.validate(payload, schema, format_checker=jsonschema.FormatChecker())
@@ -107,9 +115,9 @@ def validate_verdict(payload: dict[str, Any], *, schema_path: str | Path) -> Non
         raise ValueError(f"cannot load review verdict schema: {exc}") from exc
     except jsonschema.ValidationError as exc:
         raise ValueError(f"invalid review verdict: {exc.message}") from exc
-    if payload.get("verdict") not in {"confirmed", "rejected"} and not str(payload.get("reason", "")).strip():
-        raise ValueError("a non-confirmed verdict requires a reason")
-    if payload.get("verdict") == "source_pathology":
+    if verdict in LEGACY_REVIEW_VERDICTS and not str(payload.get("reason", "")).strip():
+        raise ValueError("a legacy non-confirming verdict requires a reason")
+    if verdict == "source_pathology":
         override = payload.get("source_override")
         if not isinstance(override, dict) or not str(override.get("provenance", "")).strip():
             raise ValueError("source_pathology requires marked source provenance")

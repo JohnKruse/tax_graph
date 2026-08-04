@@ -159,6 +159,7 @@ def _append(root: Path, *, judgement: str = "confirmed", label: str = "Amount") 
         reviewer_id="john",
         reviewed_at="2026-08-04T12:00:00Z",
         verdict_id="verdict_" + judgement,
+        comment=None if judgement == "confirmed" else f"The cell is {judgement} and needs review.",
         store_path=path,
     )
     return path
@@ -227,8 +228,8 @@ def test_multiple_node_bindings_are_ambiguous_and_never_confirmed(tmp_path: Path
     assert "human_confirmed" not in (root / "graph" / "2025" / "nodes" / "review.yaml").read_text(encoding="utf-8")
 
 
-@pytest.mark.parametrize("judgement", ["rejected", "problem"])
-def test_non_confirming_judgements_are_reported_without_inventing_node_flags(
+@pytest.mark.parametrize("judgement", ["questioned", "rejected"])
+def test_non_confirming_judgements_project_review_metadata_without_confirmation(
     tmp_path: Path,
     judgement: str,
 ) -> None:
@@ -238,7 +239,27 @@ def test_non_confirming_judgements_are_reported_without_inventing_node_flags(
     result = apply_address_verdicts(
         2025, root=root, ledger_path=path, dry_run=False, current_units=[_unit()],
     )
-    assert result.unsupported_judgements == ("verdict_" + judgement,)
-    assert result.reports[0]["status"] == "unsupported_judgement"
-    assert result.reports[0]["supported_judgements"] == ["confirmed"]
+    assert result.applied == ("verdict_" + judgement,)
+    assert result.unsupported_judgements == ()
+    assert result.reports[0]["status"] == "applied"
+    node = yaml.safe_load((root / "graph" / "2025" / "nodes" / "review.yaml").read_text(encoding="utf-8"))[0]
+    assert node["human_confirmed"] is False
+    assert node["verification_tier"] == "human-" + judgement
+    assert node["human_review"]["verdict"] == judgement
+
+
+@pytest.mark.parametrize("judgement", ["questioned", "rejected"])
+def test_non_confirming_stale_verdict_still_blocks_the_write(tmp_path: Path, judgement: str) -> None:
+    root = _fixture_root(tmp_path)
+    path = _append(root, judgement=judgement)
+    result = apply_address_verdicts(
+        2025,
+        root=root,
+        ledger_path=path,
+        dry_run=False,
+        current_units=[_unit(label="Changed amount")],
+    )
+    assert result.stale == ("verdict_" + judgement,)
+    assert result.applied == ()
+    assert result.reports[0]["status"] == "stale"
     assert "human_confirmed" not in (root / "graph" / "2025" / "nodes" / "review.yaml").read_text(encoding="utf-8")

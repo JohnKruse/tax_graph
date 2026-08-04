@@ -154,6 +154,35 @@ def test_verdict_emission_is_schemaed_hashed_and_append_only(tmp_path: Path) -> 
         )
 
 
+@pytest.mark.m20
+def test_questioned_verdict_is_schemaed_and_requires_a_comment(tmp_path: Path) -> None:
+    root = _review_root(tmp_path)
+    result = emit_verdict(
+        root=root,
+        year=2025,
+        queue_id="q_node",
+        manifest_hash=_write_manifest(root),
+        verdict_id="verdict_q_node_questioned",
+        reviewer_id="john",
+        human_minutes=1,
+        verdict="questioned",
+        comment="The generated label does not match the source.",
+        reviewed_at="2026-07-12T10:00:00Z",
+    )
+    assert load_verdict(result.path).payload["verdict"] == "questioned"
+    with pytest.raises(ValueError, match="requires a non-empty comment"):
+        emit_verdict(
+            root=root,
+            year=2025,
+            queue_id="q_node",
+            manifest_hash=_write_manifest(root),
+            verdict_id="verdict_q_node_questioned_empty",
+            reviewer_id="john",
+            human_minutes=1,
+            verdict="questioned",
+        )
+
+
 @pytest.mark.m15
 def test_concurrent_duplicate_verdict_creation_is_exclusive(tmp_path: Path) -> None:
     root = _review_root(tmp_path)
@@ -210,6 +239,39 @@ def test_apply_confirmed_verdict_updates_queue_graph_and_provenance(tmp_path: Pa
     assert node["human_review"]["reviewer_id"] == "john"
     assert emitted.payload["content_hash"] in (root / "review_provenance" / "2025" / "applied.yaml").read_text(encoding="utf-8")
     assert apply_verdicts(2025, root=root).applied == ()
+
+
+@pytest.mark.parametrize(
+    ("verdict", "tier", "result_field"),
+    [("questioned", "human-questioned", "questioned"), ("rejected", "human-rejected", "rejected")],
+)
+@pytest.mark.m20
+def test_apply_non_confirming_verdict_preserves_observation_without_confirmation(
+    tmp_path: Path, verdict: str, tier: str, result_field: str,
+) -> None:
+    root = _review_root(tmp_path)
+    emit_verdict(
+        root=root,
+        year=2025,
+        queue_id="q_node",
+        manifest_hash=_write_manifest(root),
+        verdict_id="verdict_q_node_" + verdict,
+        reviewer_id="john",
+        human_minutes=2.5,
+        verdict=verdict,
+        comment="The evidence needs another review pass.",
+        reviewed_at="2026-07-12T10:00:00Z",
+    )
+    result = apply_verdicts(2025, root=root)
+    assert getattr(result, result_field) == ("q_node",)
+    queue = yaml.safe_load((root / "review_queue" / "2025" / "deferred_review.yaml").read_text(encoding="utf-8"))
+    assert queue["entries"][0]["status"] == verdict
+    assert queue["entries"][0]["human_confirmed"] is False
+    node = yaml.safe_load((root / "graph" / "2025" / "nodes" / "review.yaml").read_text(encoding="utf-8"))[0]
+    assert node["human_confirmed"] is False
+    assert node["verification_tier"] == tier
+    assert node["human_review"]["verdict"] == verdict
+    assert node["human_review"]["reason"] == "The evidence needs another review pass."
 
 
 @pytest.mark.m15

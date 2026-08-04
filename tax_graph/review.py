@@ -25,6 +25,30 @@ _ID_FIELDS = {
     "decisions": "decision_id",
 }
 _REVIEWABLE_KINDS = {"documents", "nodes", "decisions"}
+_ADDRESS_JUDGEMENTS = frozenset({"confirmed", "questioned", "rejected"})
+_ADDRESS_JUDGEMENT_ALIASES = {
+    "approved": "confirmed",
+    "problem": "questioned",
+    "pipeline_defect": "rejected",
+    "source_pathology": "rejected",
+}
+
+
+def _canonical_address_judgement(value: Any) -> str:
+    """Normalize the address-ledger vocabulary without guessing unknown tokens."""
+    token = str(value or "").strip()
+    return _ADDRESS_JUDGEMENT_ALIASES.get(token, token)
+
+
+def _node_review_fields(judgement: str) -> dict[str, Any]:
+    """Return the node flags for one explicit reviewer observation."""
+    if judgement == "confirmed":
+        return {"human_confirmed": True, "verification_tier": "human-confirmed"}
+    if judgement == "questioned":
+        return {"human_confirmed": False, "verification_tier": "human-questioned"}
+    if judgement == "rejected":
+        return {"human_confirmed": False, "verification_tier": "human-rejected"}
+    raise ValueError(f"unsupported address judgement: {judgement or '<missing>'}")
 
 
 @dataclass(frozen=True)
@@ -37,6 +61,8 @@ class ApplyResult:
     source_pathologies: tuple[str, ...]
     queue_path: Path
     provenance_path: Path
+    questioned: tuple[str, ...] = ()
+    rejected: tuple[str, ...] = ()
 
 
 @dataclass(frozen=True)
@@ -175,10 +201,10 @@ def apply_address_verdicts(
             stale.append(verdict_id)
             continue
 
-        judgement = str(record.get("judgement") or "")
-        if judgement != "confirmed":
+        judgement = _canonical_address_judgement(record.get("judgement"))
+        if judgement not in _ADDRESS_JUDGEMENTS:
             report["status"] = "unsupported_judgement"
-            report["supported_judgements"] = ["confirmed"]
+            report["supported_judgements"] = sorted(_ADDRESS_JUDGEMENTS)
             report["message"] = (
                 "The address ledger and current review surface do not define a node flag mapping "
                 f"for judgement {judgement!r}; no graph write was made."
@@ -231,11 +257,15 @@ def _node_artifact_paths(root: Path, year: int) -> dict[str, str]:
 
 def _address_review_payload(record: dict[str, Any]) -> dict[str, Any]:
     """Adapt an address-ledger record to the existing graph review payload."""
+    judgement = _canonical_address_judgement(record.get("judgement"))
+    node_fields = _node_review_fields(judgement)
     review: dict[str, Any] = {
         "reviewer_id": str(record["reviewer_id"]),
         "reviewed_at": str(record["reviewed_at"]),
         "human_minutes": 0.0,
-        "verdict": str(record["judgement"]),
+        "verdict": judgement,
+        "human_confirmed": node_fields["human_confirmed"],
+        "verification_tier": node_fields["verification_tier"],
     }
     comment = str(record.get("comment") or "").strip()
     if comment:
@@ -247,9 +277,13 @@ def _address_field_changes(node: dict[str, Any], record: dict[str, Any]) -> list
     """Describe the three node fields the existing applier would write."""
     review = _address_review_payload(record)
     desired = {
-        "human_confirmed": True,
-        "verification_tier": "human-confirmed",
-        "human_review": review,
+        "human_confirmed": review["human_confirmed"],
+        "verification_tier": review["verification_tier"],
+        "human_review": {
+            key: value
+            for key, value in review.items()
+            if key not in {"human_confirmed", "verification_tier"}
+        },
     }
     return [
         {
@@ -329,6 +363,8 @@ def apply_verdicts(
     confirmed: list[str] = []
     defects: list[str] = []
     pathologies: list[str] = []
+    questioned: list[str] = []
+    rejected: list[str] = []
     for path in paths:
         verdict = _load_verdict(path, root_path)
         verdict_id = str(verdict["verdict_id"])
@@ -350,13 +386,14 @@ def apply_verdicts(
             "human_minutes": float(verdict["human_minutes"]),
             "verdict": kind,
         }
-        if verdict.get("reason"):
-            review["reason"] = str(verdict["reason"])
+        review_note = str(verdict.get("reason") or verdict.get("comment") or "").strip()
+        if review_note:
+            review["reason"] = review_note
         entry.update(
             {
                 "verdict_id": verdict_id,
                 "verdict": kind,
-                "verdict_reason": str(verdict.get("reason") or ""),
+                "verdict_reason": review_note,
                 "reviewer_id": review["reviewer_id"],
                 "reviewed_at": review["reviewed_at"],
                 "human_minutes": review["human_minutes"],
@@ -367,6 +404,16 @@ def apply_verdicts(
             _apply_graph_review(root_path, entry, verdict, review)
             entry.update({"status": "confirmed", "review_status": "confirmed", "human_confirmed": True, "verification_tier": "human-confirmed"})
             confirmed.append(queue_id)
+        elif kind == "questioned":
+            review.update(_node_review_fields(kind))
+            _apply_graph_review(root_path, entry, verdict, review)
+            entry.update({"status": "questioned", "review_status": "questioned", "human_confirmed": False, "verification_tier": "human-questioned"})
+            questioned.append(queue_id)
+        elif kind == "rejected":
+            review.update(_node_review_fields(kind))
+            _apply_graph_review(root_path, entry, verdict, review)
+            entry.update({"status": "rejected", "review_status": "rejected", "human_confirmed": False, "verification_tier": "human-rejected"})
+            rejected.append(queue_id)
         elif kind == "pipeline_defect":
             entry.update({"status": "pending_reextract", "review_status": "pending_reextract", "human_confirmed": False})
             defects.append(queue_id)
@@ -384,7 +431,11 @@ def apply_verdicts(
         _write_yaml(queue_path, queue)
         provenance["entries"] = sorted(provenance.get("entries", []), key=lambda item: str(item.get("verdict_id", "")))
         _write_yaml(provenance_path, provenance)
-    return ApplyResult(tuple(applied), tuple(confirmed), tuple(defects), tuple(pathologies), queue_path, provenance_path)
+    return ApplyResult(
+        tuple(applied), tuple(confirmed), tuple(defects), tuple(pathologies),
+        queue_path, provenance_path,
+        questioned=tuple(questioned), rejected=tuple(rejected),
+    )
 
 
 def _load_verdict(path: Path, root: Path) -> dict[str, Any]:
@@ -488,9 +539,18 @@ def _apply_graph_review(root: Path, entry: dict[str, Any], verdict: dict[str, An
                 f"verdict without object_ref.object_id or the queue entry's expected_nodes"
             )
         for obj in matches:
-            obj["human_confirmed"] = True
-            obj["verification_tier"] = "human-confirmed"
-            obj["human_review"] = dict(review)
+            human_confirmed = bool(review.get("human_confirmed", True))
+            verification_tier = str(
+                review.get("verification_tier")
+                or ("human-confirmed" if human_confirmed else "human-reviewed")
+            )
+            obj["human_confirmed"] = human_confirmed
+            obj["verification_tier"] = verification_tier
+            obj["human_review"] = {
+                key: value
+                for key, value in review.items()
+                if key not in {"human_confirmed", "verification_tier"}
+            }
         if matches:
             _write_yaml(path, objects if was_list else objects[0])
             changed_paths.add(path)

@@ -229,8 +229,8 @@ function renderReview(page = null, restoreCellId = null) {
       message.textContent = "Select a generated cell before recording the verdict.";
       return;
     }
-    if (verdict !== "confirmed" && verdict !== "rejected") {
-      message.textContent = "This review surface accepts or rejects the selected generated cell.";
+    if (verdict !== "confirmed" && verdict !== "questioned" && verdict !== "rejected") {
+      message.textContent = "This review surface accepts, questions, or rejects the selected generated cell.";
       return;
     }
     const safeId = `review_${activeDocument.document_id}_${cell.cell_id}_${Date.now()}`.toLowerCase().replace(/[^a-z0-9_]+/g, "_");
@@ -246,8 +246,9 @@ function renderReview(page = null, restoreCellId = null) {
         reviewer_tag: reviewerTag || undefined,
         object_ref: {object_id: cell.address_id},
       });
-      if (verdict === "confirmed") updateCellReview(cell, {approved: true, note: comment});
-      message.textContent = `Verdict recorded for ${cell.official_ref || cell.cell_id}.`;
+      if (verdict === "confirmed") updateCellReview(cell, {approved: true, note: ""});
+      const label = verdict === "confirmed" ? "accepted" : verdict === "questioned" ? "questioned" : "rejected";
+      message.textContent = `Cell ${label} for ${cell.official_ref || cell.cell_id}.`;
     } catch (error) {
       message.textContent = `Verdict was not recorded: ${error.message}`;
     }
