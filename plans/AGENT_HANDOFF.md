@@ -25,9 +25,13 @@ kind of result it was commissioned to find.
 pipeline attempted 12, and the report calls that `status: complete` with `gapped: 0`. The 23 it
 never attempted are invisible in every summary we have published. See **Current round**.
 
-**AWAITING JOHN, does not block S51:** what a `questioned` or `rejected` node should mean to
-`execute_tax_tree` - see **Open for Architect**. The 2441 promotion question was WITHDRAWN, see the
-first binding ruling. **Rollover policy and run alerting** are pinned at
+**QUEUED BEHIND S51: S52 (the incomplete-cell payload) then S53 (the approval gate, behind a
+switch, default off).** Both come from John's 2026-08-04 approval-is-the-gate ruling, pinned first
+under **Binding rulings**. S52 goes first because it defines what a refusal says, and S53's gate
+emits exactly that payload.
+
+**NOTHING IS AWAITING JOHN.** The engine-semantics question is answered and closed; the 2441
+promotion question was withdrawn as malformed. **Rollover policy and run alerting** are pinned at
 `docs/engineering-plan.md` -> Year rollover (TY2026), seam 6.
 
 ## Current round
@@ -170,6 +174,25 @@ client-managed server dies.
 
 ## Binding rulings (John's, still in force - DO NOT DELETE ON PRUNE)
 
+- **APPROVAL IS THE GATE ON COMPUTATION (John, 2026-08-04). This SUPERSEDES the three-option
+  question S48 raised, and the Architect's own lean; both were the wrong frame.** Verbatim: *"in my
+  mind, this thing should only compute if every cell is approved."* An approved cell is valid for
+  the computing AI to use. Everything else does not compute.
+  **The middle states are a work queue, not engine semantics.** John on the "the AI cannot produce
+  the right operation" case: *"i can't believe that. These are relatively simple operatons for
+  normal people to execute."* He intends to iterate the cells in the core forms until they are all
+  valid - *"Otherwise, WTF am i doing here?"* So `questioned` and `rejected` are transient states a
+  human burns down, and we do NOT design engine behaviour around keeping them computable. S50
+  supports him: eleven of twelve 2441 cells were correct on the first attempt.
+  **The residual real case is an out-of-corpus reference**, and it gets a payload rather than a
+  silent hole: the cell carries the IRS labels and instruction text so the consuming AI can see what
+  the line is, while the operation field says explicitly that it is not completed and that resolving
+  it is the caller's problem. `graph/2025/frontier.yaml` already declares 89 such branches with a
+  target node and a citation; what it lacks is the printed text and the explicit handoff.
+  **Third-party ingestion is explicitly out of our control.** John: *"If some other yoyo decides to
+  ingest a new form and does a shitty job, I can't control that... not my call."* Noted by the
+  Architect, and the gate protects us anyway - their unapproved cells refuse to compute here
+  regardless of what they thought of their own work.
 - **THE ODD DOCUMENTS ARE TREATED EXACTLY AS A FORM IS TREATED (John, restated 2026-08-04; he
   first said this "a long time ago" and the Architect asked again anyway).** Verbatim: *"these odd
   things should be treated the same way as a form is treated. They are analogous."* Worksheets,
@@ -231,20 +254,10 @@ client-managed server dies.
   small.
 
 ## Open for Architect
-- **FOR JOHN - what should a QUESTIONED or REJECTED node mean to the ENGINE? (raised 2026-08-04 by
-  S48, reported not wired.)** The three-state vocabulary now writes `human_confirmed: false` with
-  tier `human-questioned` or `human-rejected` onto the node, and `execute_tax_tree` currently
-  ignores all of it. Three options, and this changes what a filer's return says:
-  **(a) Refuse to compute and report unresolved.** Safest and most honest; blocks output on any
-  questioned line, which could be a lot of lines early on.
-  **(b) Compute and flag the result.** Produces a number downstream code can consume, with the doubt
-  attached - but a flagged number is still a number, and something will eventually use it without
-  reading the flag.
-  **(c) Exclude the node and report a gap.** Conservative, and lossy in a way that may be hard to
-  explain to a filer.
-  Architect's lean is **(a) for `rejected` and (b) for `questioned`**, because the two states mean
-  different things: rejected is "this is wrong", questioned is "I am not sure". Nothing is wired
-  either way.
+- **ANSWERED 2026-08-04 and CLOSED: what a QUESTIONED or REJECTED node means to the engine.** John
+  rejected the three-option framing entirely - approval is the gate, the middle states are a work
+  queue, and the out-of-corpus reference is the only case that needs a designed payload. Pinned as
+  the first binding ruling; specced as S52 and S53.
 
 - **M20-S36 denominator decision (raised 2026-08-03).** Logical-row assembly removes the measured
   label/span truncation cases, but it also exposes formula cues on `schedule_a_2025` line 15 and
@@ -345,6 +358,95 @@ client-managed server dies.
   prompt; invent an operation; hide a newly visible failure by narrowing the denominator again.
   **Stop conditions:** any diff in the protected directories; `derive_cells` acquiring a disk write.
   Tier 3. Declared files plus honest `RAN:`/`NOT RUN:` - **the provider leg is the Architect's**.
+  ASCII, `git diff --check`, module-form `validate 2025`. **ONE local commit.**
+
+- **M20-S52 TASK - THE INCOMPLETE-CELL PAYLOAD (Architect, Claude Opus 5, 2026-08-04, from John's
+  approval-is-the-gate ruling).** Ledger: the RAN/NOT RUN rule, D10. **Additive only. No computation
+  changes in this round.** This is specced BEFORE the gate because it defines what a refusal looks
+  like, and the gate in S53 emits exactly this payload. A gate that refuses without saying anything
+  useful is worse than no gate.
+
+  **Why.** John: the residual honest case is a cell whose reference is not in the corpus. His
+  requirement, verbatim in the ruling: the cell carries the IRS labels and instructions so the
+  consuming AI knows what the line is, while the operation field says the work is not completed and
+  it is on the caller to figure it out. Today an out-of-corpus branch is a `frontier.yaml` entry with
+  a target node, a citation ref and a purpose - real structure, but no printed text and no explicit
+  handoff. **Two live instances from S50:** `form_2441_2025` lines 9b and 10 feed from Worksheet A
+  and the Credit Limit Worksheet, neither of which is a document in the graph.
+
+  **Step 1 - name the shape.** One payload, emitted for any node the engine will not compute,
+  carrying at minimum: the node id and canonical address, the printed IRS label from the form face,
+  the instruction text we hold for that line, the citation refs that support both, the reason it is
+  incomplete, and an explicit statement in the operation slot that this is NOT computed and the
+  caller must resolve it. **The reason must be a named enum, not prose** - a caller has to branch on
+  it. Start with `reference_not_in_corpus` and `not_approved`; do not invent more without an
+  instance to point at.
+
+  **Step 2 - carry it through `execute_tax_tree`.** Today `Result` has `values`, `trace` and
+  `missing_required_inputs` (`tax_graph/engine/engine.py`). Add the incomplete payloads as their own
+  collection - **do NOT overload `missing_required_inputs`**, which means "the filer owes us a
+  number" and is a different thing from "we never modeled this". Surface it in the MCP response
+  next to the existing keys.
+
+  **Step 3 - the exports must not print an incomplete cell as a number.** `export_filled_form_bundle`
+  hands `result` to the PDF writer and returns provenance as a SIBLING dict the writer never reads.
+  **Report exactly what each export does today with a node that has no computed value**, and make
+  the incomplete payload reach the bundle rather than sitting beside it. Report; do not redesign the
+  export surface in this round.
+
+  **Step 4 - populate it from the frontier registry.** The 89 declared entries in
+  `graph/2025/frontier.yaml` are the existing out-of-corpus vocabulary. Join them to the payload so a
+  declared frontier produces a real incomplete cell with its citation, and **report how many of the
+  89 can supply printed label text today and how many cannot.** A low number is a finding about
+  acquisition, not something to paper over with a placeholder string.
+
+  **Do not:** change what any node computes; promote anything; edit `graph/2025/` outside `_drafts/`;
+  invent a reason enum without a live instance; write placeholder IRS text for a line we do not hold.
+  **Stop conditions:** any diff in the protected directories; a computed value changing in any
+  existing test. Tier 3. Honest `RAN:`/`NOT RUN:`. ASCII, `git diff --check`, module-form
+  `validate 2025`. **ONE local commit.**
+
+- **M20-S53 TASK - THE APPROVAL GATE, BEHIND A SWITCH, DEFAULT OFF (Architect, Claude Opus 5,
+  2026-08-04, from John's approval-is-the-gate ruling).** Ledger: the RAN/NOT RUN rule, D10.
+  **Depends on S52's payload. Do not start this before S52 lands.**
+
+  **Why.** John: *"this thing should only compute if every cell is approved."* Today the engine
+  ignores every verdict - `Engine.execute` walks and evaluates every node unconditionally, and the
+  only place review state is read is `provenance_for_node` (`tax_graph/engine/engine.py:97`), which
+  decorates the response. A cell John rejected still computes and still reaches the filled PDF.
+
+  **THE TRAP, AND THE REASON THIS IS SPECCED CAREFULLY.** `human_confirmed: false` is ALSO the mint
+  default for every node nobody has reviewed - `tax_graph/extension.py` sets it false in four places.
+  **Gate on `human_confirmed` and the entire graph goes dark on day one**, because there are zero
+  human approvals in the graph today. **Key on `verification_tier` being explicitly
+  `human-confirmed`**, and treat a missing tier as its own state, reported separately from a tier
+  that says a human looked and objected.
+
+  **Step 1 - the switch.** One config key, default OFF, following the `policyengine_enabled: false`
+  pattern in `config/tax-graph.config.yaml`. **Default off is not timidity** - John intends to flip
+  it once he has iterated the core forms, and flipping it before that turns off every test, demo and
+  export in the repo. Report what the suite does with it ON: **a large number of newly non-computing
+  nodes is the CORRECT result**, not a regression to fix by weakening the gate.
+
+  **Step 2 - gate on approval, emit S52's payload.** An unapproved node does not compute; it emits
+  an incomplete cell with reason `not_approved` and its IRS text, so a caller sees what the line is
+  and why it stopped. **Anything downstream of it is also incomplete** - report how that propagates,
+  because one unapproved cell high in the 1040 can dark a whole return, and John should see that
+  number before he flips the switch.
+
+  **Step 3 - report the three populations separately, on the real graph.** Approved, explicitly
+  objected to (`human-questioned` / `human-rejected`), and never reviewed. **Report the counts.**
+  The expected answer today is zero approved and everything unreviewed; if it is not, that is a
+  finding about how those fields got set and it matters more than the round.
+
+  **Step 4 - the switch must be observable.** Whatever the engine returns must say which mode it ran
+  in. A caller that cannot tell whether it received a full return or a gated one will eventually
+  treat one as the other.
+
+  **Do not:** enable the switch by default; weaken the gate to make a suite pass; gate on
+  `human_confirmed`; write an approval into the graph to make a test green; promote anything.
+  **Stop conditions:** any diff in the protected directories; any test that passes only because a
+  verdict was authored by the Worker rather than by a human. Tier 3. Honest `RAN:`/`NOT RUN:`.
   ASCII, `git diff --check`, module-form `validate 2025`. **ONE local commit.**
 
 ## Architect decisions
