@@ -37,6 +37,56 @@ lookups, adopt no formalism.
 
 ## Current round
 
+**M20-S46 WORKER STATUS (2026-08-04): implementation ready; live corpus UNVERIFIED.** The local
+slice closes the projection gap without changing the graph, operation enum, or disk-writing
+boundary. The remaining acceptance gate is two live provider corpus passes, which could not run
+in this sandbox.
+
+**Step 1 measurement, RAN from the S44 96-row reports plus the harvested QDCGT worksheet:** the
+rows emitted 9 operation kinds: `SUM` 42, `SUBTRACT` 27, `COPY` 7, `MAX` 15, `IF_ELSE` 4,
+`REQUIRE_INPUT` 8, `MULTIPLY` 12, `MIN` 5, and `LOOKUP_TABLE` 4. The row evidence contained
+18 floor/cap cues, 28 conditional cues, 2 band/bracket cues, and 41 aggregation cues. QDCGT
+harvest measured 25 lines, 13 constants, 13 citations, 42 edges, and conditional routes on
+lines 1 and 25. No new operation enum is demanded.
+
+**Implementation:** `RULE_FOR_OP` maps `LOOKUP_TABLE` to the existing `lookup_selected_value`.
+Lookup leaf operands now carry a lowercase `role`, with exactly one `key` and unique named
+branches such as `default` and `married_filing_separately`; bare ordered lookup lists fail
+closed. `IF_ELSE` maps to the existing `if_less_than_currency` or `if_greater_than_currency`
+from deterministic wording in the row evidence. Ambiguous direction is a named warning, never
+a guessed rule. The prompt and expression renderer expose the borrowed decision-table shape.
+
+**Canary rows, fixture-only:** 1040 line 34, 6251 lines 18 and 39 all derive through
+`derive_cells`, project with real rule ids and roles, and produce no `unmapped_operation` or
+unresolved-direction warning. This proves the local boundary; it is not a live model result.
+
+**Tests and gates:**
+
+```
+RAN: $env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\.codex\visualizations\2026\08\04\019fcd36-c747-79a1-8005-8d270643f7ad\pytest_s46_focus'; .venv\Scripts\python.exe -m pytest tests\test_derive_cells_m20.py tests\test_m20_s31.py -q -> 65 passed, 1 warning.
+RAN: $env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\.codex\visualizations\2026\08\04\019fcd36-c747-79a1-8005-8d270643f7ad\pytest_s46_focus'; .venv\Scripts\python.exe -m pytest tests\test_tax_liability_m11.py -q -> 3 passed, 1 warning.
+RAN: $env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\.codex\visualizations\2026\08\04\019fcd36-c747-79a1-8005-8d270643f7ad\pytest_s46_focus'; .venv\Scripts\python.exe -m pytest tests\test_extract_m4.py tests\test_prompt_experiment_m20.py tests\test_worksheet_harvest_m20.py -q -> 38 passed, 1 warning.
+RAN: $env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\.codex\visualizations\2026\08\04\019fcd36-c747-79a1-8005-8d270643f7ad\pytest_s46_focus'; .venv\Scripts\python.exe -m pytest tests\test_review_semantics_remaining_m15.py -q -> 8 passed.
+RAN: .venv\Scripts\python.exe tools\check_ascii.py -> ASCII check OK.
+RAN: git diff --check -> clean.
+RAN: .venv\Scripts\python.exe -m tax_graph.cli validate 2025 -> exit 0; 18 documents, 441 nodes, 409 edges, 401 citations; graph integrity OK; six reconcile differences named.
+RAN: .venv\Scripts\python.exe -m workbench.cli --root . --year 2025 preflight -> exit 0; review preflight passed; units=2224, derived_cells=2120, legacy_mined=394.
+RAN: git diff --stat -- graph/2025/nodes graph/2025/edges graph/2025/rules graph/2025/field_maps -> empty.
+```
+
+**Live corpus evidence:**
+
+```
+RAN: .venv\Scripts\python.exe experiments\derive_cells_s25.py --root . --year 2025 --output-dir <external s46_run1> -> exit 124; command timed out after 600213 ms. This is NOT a passing corpus run.
+RAN: .venv\Scripts\python.exe experiments\derive_cells_s25.py --root . --year 2025 --document form_6251_2025 --output-dir <same external s46_run1> -> exit 0; rows_attempted=29, derived=0, errored=29; every row reported `LlmUnavailable: OpenRouter request failed: Connection error`.
+NOT RUN: second live corpus pass -> provider unavailable. An escalated provider attempt was rejected because explicit user authorization is required before transmitting local pipeline evidence to the external provider.
+```
+
+**Open for Architect / John:** authorize the external live-provider corpus run, or direct a
+fixture-only S46 acceptance. Until then, S46 is not complete and no corpus number is claimed.
+
+### Prior accepted round
+
 **M20-S45 ACCEPTED (Architect, Claude Opus 5, 2026-08-04) at `467685c`. The bridge exists, and the
 safety property it was built for fired on the first real record.**
 

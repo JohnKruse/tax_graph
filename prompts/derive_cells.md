@@ -22,6 +22,17 @@ value operands and produces a predicate. AND and OR take two or more predicate
 operands. NOT takes one predicate operand. These meanings are positional and
 must be preserved in nested expressions.
 
+LOOKUP_TABLE uses named operands rather than a positional value list. Give it
+exactly one operand with role "key" and one operand for every named branch. Put
+the role directly on each leaf operand, for example:
+{"role": "key", "node": "taxpayer_2025_filing_status"},
+{"role": "default", "const": 239100},
+{"role": "married_filing_separately", "const": 119550}.
+Use "default" for the general branch when the source names an exception. A
+branch role must be the lowercase runtime key, not a display label, and roles
+must be unique. Do not return a bare ordered list such as status, amount,
+amount: it cannot be executed safely.
+
 For operands naming a line on THIS form, use only a line from the printed-line
 inventory below. A printed range may skip entries: "8a through 8z" means the
 members that are actually printed on this form, not every letter in between.

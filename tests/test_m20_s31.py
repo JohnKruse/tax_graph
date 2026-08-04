@@ -182,6 +182,8 @@ def test_all_prompt_templates_render_with_representative_values() -> None:
     assert "relevant graph nodes (id: label)" in cell_text
     assert "taxpayer_2025_filing_status: Taxpayer filing status" in cell_text
     assert "IF_ELSE takes exactly four arguments" in cell_text
+    assert 'LOOKUP_TABLE uses named operands rather than a positional value list' in cell_text
+    assert '"role": "default"' in cell_text
 
 
 def test_prompt_renderer_rejects_missing_values() -> None:

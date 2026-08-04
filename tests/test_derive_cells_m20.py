@@ -470,6 +470,184 @@ def test_tree_to_graph_preserves_floor_shape_and_subtraction_roles() -> None:
     assert render({"op": "MAX", "args": [{"line": "15"}, {"const": 0}]}) == "max(line 15, 0)"
 
 
+def test_lookup_tree_uses_named_roles_and_projects_to_engine_shape() -> None:
+    expression = {
+        "op": "LOOKUP_TABLE",
+        "args": [
+            {"role": "key", "node": "taxpayer_2025_filing_status"},
+            {"role": "default", "const": 239100},
+            {"role": "married_filing_separately", "const": 119550},
+        ],
+    }
+
+    validate_expression_tree(expression)
+    projection = expression_to_graph(
+        form="form_6251_2025",
+        line="18",
+        expression=expression,
+        evidence_text="If line 17 is $239,100 or less ($119,550 or less if married filing separately).",
+    )
+
+    assert projection.findings == []
+    assert [(edge["rule_id"], edge["role"]) for edge in projection.edges] == [
+        ("lookup_selected_value", "key"),
+        ("lookup_selected_value", "default"),
+        ("lookup_selected_value", "married_filing_separately"),
+    ]
+    assert render(expression) == (
+        "lookup_table(key=node taxpayer_2025_filing_status, "
+        "default=239100, married_filing_separately=119550)"
+    )
+
+    with pytest.raises(ValueError, match="named leaf operands"):
+        validate_expression_tree({
+            "op": "LOOKUP_TABLE",
+            "args": [
+                {"node": "taxpayer_2025_filing_status"},
+                {"const": 239100},
+            ],
+        })
+
+
+def test_if_else_direction_is_resolved_from_evidence_to_existing_rules() -> None:
+    expression = {
+        "op": "IF_ELSE",
+        "args": [
+            {"line": "17"},
+            {"const": 239100},
+            {"const": 1},
+            {"const": 2},
+        ],
+    }
+
+    less = expression_to_graph(
+        form="form_6251_2025",
+        line="18",
+        expression=expression,
+        evidence_text="If line 17 is $239,100 or less, multiply line 17 by 26%.",
+    )
+    greater = expression_to_graph(
+        form="form_1040_2025",
+        line="34",
+        expression={
+            "op": "IF_ELSE",
+            "args": [
+                {"line": "33"},
+                {"line": "24"},
+                {"op": "SUBTRACT", "args": [{"line": "33"}, {"line": "24"}]},
+                {"const": 0},
+            ],
+        },
+        evidence_text="If line 33 is more than line 24, subtract line 24 from line 33.",
+    )
+
+    assert {edge["rule_id"] for edge in less.edges} == {"if_less_than_currency"}
+    assert {edge["role"] for edge in less.edges} == {
+        "condition", "threshold", "when_true", "when_false"
+    }
+    assert {edge["rule_id"] for edge in greater.edges} == {
+        "if_greater_than_currency", "subtract_currency"
+    }
+    assert not any("no reusable rule" in finding for finding in greater.findings)
+
+
+def test_s46_canary_rows_derive_and_project_without_unmapped_operations() -> None:
+    rows = [
+        {
+            "form": "form_1040_2025",
+            "line": "34",
+            "label": "Amount you overpaid",
+            "form_face_text": "If line 33 is more than line 24, subtract line 24 from line 33.",
+            "instruction_text": "",
+            "instruction_locator": "face_34",
+            "metadata": {"printed_lines": ["24", "33", "34"]},
+        },
+        {
+            "form": "form_6251_2025",
+            "line": "18",
+            "label": "Alternative minimum tax",
+            "form_face_text": "If line 17 is $239,100 or less ($119,550 or less if married filing separately), multiply line 17 by 26%.",
+            "instruction_text": "",
+            "instruction_locator": "face_18",
+            "metadata": {"printed_lines": ["17", "18"]},
+        },
+        {
+            "form": "form_6251_2025",
+            "line": "39",
+            "label": "Alternative minimum tax",
+            "form_face_text": "If line 12 is $239,100 or less ($119,550 or less if married filing separately), multiply line 12 by 26%.",
+            "instruction_text": "",
+            "instruction_locator": "face_39",
+            "metadata": {"printed_lines": ["12", "39"]},
+        },
+    ]
+    lookup = lambda first, second: {
+        "op": "LOOKUP_TABLE",
+        "args": [
+            {"role": "key", "node": "taxpayer_2025_filing_status"},
+            {"role": "default", "const": first},
+            {"role": "married_filing_separately", "const": second},
+        ],
+    }
+    responses = [
+        {
+            "expression": {
+                "op": "IF_ELSE",
+                "args": [
+                    {"line": "33"},
+                    {"line": "24"},
+                    {"op": "SUBTRACT", "args": [{"line": "33"}, {"line": "24"}]},
+                    {"const": 0},
+                ],
+            },
+            "quote": rows[0]["form_face_text"],
+        },
+        {
+            "expression": {
+                "op": "IF_ELSE",
+                "args": [
+                    {"line": "17"},
+                    lookup(239100, 119550),
+                    {"op": "MULTIPLY", "args": [{"line": "17"}, {"const": 0.26}]},
+                    {"const": 0},
+                ],
+            },
+            "quote": rows[1]["form_face_text"],
+        },
+        {
+            "expression": {
+                "op": "IF_ELSE",
+                "args": [
+                    {"line": "12"},
+                    lookup(239100, 119550),
+                    {"op": "MULTIPLY", "args": [{"line": "12"}, {"const": 0.26}]},
+                    {"const": 0},
+                ],
+            },
+            "quote": rows[2]["form_face_text"],
+        },
+    ]
+    result = derive_cells(
+        CellFrame.from_rows(rows),
+        "<<form>> <<line>> <<form_face_text>>",
+        "secret",
+        client=FakeClient(responses),
+        reference_inventory={"node_ids": ["taxpayer_2025_filing_status"]},
+    )
+
+    assert result.coverage == {"total": 3, "derived": 3}
+    assert result.validation_report["validator_warnings_by_kind"] == {}
+    for row in result.rows:
+        projection = expression_to_graph(
+            form=row.form,
+            line=row.line,
+            expression=row.expression,
+            evidence_text=row.form_face_text,
+        )
+        assert projection.findings == []
+        assert all(not edge["rule_id"].startswith("unmapped_") for edge in projection.edges)
+
+
 def test_prompt_is_loaded_from_config(tmp_path: Path) -> None:
     prompt_path = tmp_path / "cells.md"
     prompt_path.write_text("<<form>> / <<line>>", encoding="ascii")
@@ -706,7 +884,7 @@ def test_nonnumeric_graph_fact_fails_in_numeric_conditional_slot() -> None:
         "IF_ELSE argument 1 (condition) requires a numeric operand, "
         "but node taxpayer_2025_filing_status has node_type fact, value_type enum",
     )]
-    assert [issue.kind for issue in warnings] == ["unmapped_operation"]
+    assert [issue.kind for issue in warnings] == ["unresolved_comparison_direction"]
 
 
 def test_unclassified_graph_node_type_is_reported_and_allowed() -> None:
@@ -814,7 +992,7 @@ def test_conditional_argument_roles_and_shapes_are_explicit() -> None:
         validate_expression_tree({"op": "AND", "args": [{"line": "1"}, {"line": "2"}]})
 
 
-def test_unmapped_projection_operation_is_a_warning_not_a_clean_success() -> None:
+def test_unresolved_conditional_direction_is_a_warning_not_a_clean_success() -> None:
     row = _frame()[1]
     client = FakeClient([
         {
@@ -835,12 +1013,12 @@ def test_unmapped_projection_operation_is_a_warning_not_a_clean_success() -> Non
 
     assert result.rows[0].status == "derived"
     assert result.rows[0].metadata["validation_warnings"] == [{
-        "kind": "unmapped_operation",
-        "message": "graph projection: no reusable rule for operation IF_ELSE",
+        "kind": "unresolved_comparison_direction",
+        "message": "graph projection: comparison direction for IF_ELSE is not stated in the evidence",
         "hard": False,
     }]
     assert result.validation_report["validator_warnings_by_kind"] == {
-        "unmapped_operation": 1,
+        "unresolved_comparison_direction": 1,
     }
 
 

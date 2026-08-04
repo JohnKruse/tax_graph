@@ -1298,6 +1298,11 @@ def _projection_warnings(
         line=row.line,
         expression=expression,
         quote_span_id=row.quote_span_id,
+        evidence_text="\n".join(
+            text
+            for text in (row.form_face_text, row.instruction_text, row.quote)
+            if text
+        ),
     )
     findings = []
     for finding in projection.findings:
@@ -1307,6 +1312,14 @@ def _projection_warnings(
                 CellValidationIssue(
                     "unmapped_operation",
                     f"graph projection: {finding}",
+                    hard=False,
+                )
+            )
+        elif finding == "comparison direction unresolved for operation IF_ELSE":
+            findings.append(
+                CellValidationIssue(
+                    "unresolved_comparison_direction",
+                    "graph projection: comparison direction for IF_ELSE is not stated in the evidence",
                     hard=False,
                 )
             )
@@ -1326,22 +1339,32 @@ def validate_expression_tree(node: Any, *, max_depth: int = 2) -> None:
     _validate_tree_node(node, depth=0, max_depth=max_depth)
 
 
-def _validate_tree_node(node: Mapping[str, Any], *, depth: int, max_depth: int) -> None:
+def _validate_tree_node(
+    node: Mapping[str, Any],
+    *,
+    depth: int,
+    max_depth: int,
+    allow_role: bool = False,
+) -> None:
     if "form" in node and "line" in node:
-        if set(node) != {"form", "line"} or not str(node["form"]).strip() or not str(node["line"]).strip():
+        if set(node) not in ({"form", "line"}, {"form", "line", "role"}) or not str(node["form"]).strip() or not str(node["line"]).strip():
             raise ValueError("cross-form operand requires form and line")
+        _validate_operand_role(node, allow_role=allow_role)
         return
     if "line" in node:
-        if set(node) != {"line"} or not str(node["line"]).strip():
+        if set(node) not in ({"line"}, {"line", "role"}) or not str(node["line"]).strip():
             raise ValueError("line operand must contain only a non-empty line")
+        _validate_operand_role(node, allow_role=allow_role)
         return
     if "const" in node:
-        if set(node) != {"const"} or not isinstance(node["const"], (int, float)) or isinstance(node["const"], bool):
+        if set(node) not in ({"const"}, {"const", "role"}) or not isinstance(node["const"], (int, float)) or isinstance(node["const"], bool):
             raise ValueError("const operand must contain one numeric value")
+        _validate_operand_role(node, allow_role=allow_role)
         return
     if "node" in node:
-        if set(node) != {"node"} or not str(node["node"]).strip():
+        if set(node) not in ({"node"}, {"node", "role"}) or not str(node["node"]).strip():
             raise ValueError("node operand must contain one non-empty graph node id")
+        _validate_operand_role(node, allow_role=allow_role)
         return
     if set(node) != {"op", "args"}:
         raise ValueError("expression nodes require only op and args")
@@ -1365,7 +1388,12 @@ def _validate_tree_node(node: Mapping[str, Any], *, depth: int, max_depth: int) 
     for arg in args:
         if not isinstance(arg, Mapping):
             raise ValueError("expression arguments must be objects")
-        _validate_tree_node(arg, depth=depth + 1, max_depth=max_depth)
+        _validate_tree_node(
+            arg,
+            depth=depth + 1,
+            max_depth=max_depth,
+            allow_role=op == "LOOKUP_TABLE" and _is_leaf_operand(arg),
+        )
 
 
 PREDICATE_OPERATIONS = frozenset({"COMPARE", "AND", "OR", "NOT"})
@@ -1391,6 +1419,34 @@ def _validate_argument_shapes(operation: str, args: list[Any]) -> None:
             raise ValueError(f"{operation} arguments (candidate) must be predicate expressions")
     elif operation == "NOT" and not _is_predicate_expression(args[0]):
         raise ValueError("NOT argument 1 (operand) must be a predicate expression")
+    elif operation == "LOOKUP_TABLE":
+        if any(not _is_leaf_operand(arg) or "role" not in arg for arg in args):
+            raise ValueError(
+                "LOOKUP_TABLE arguments must be named leaf operands with a role"
+            )
+        roles = [str(arg["role"]) for arg in args]
+        if roles.count("key") != 1:
+            raise ValueError("LOOKUP_TABLE requires exactly one key role")
+        if len(set(roles)) != len(roles):
+            raise ValueError("LOOKUP_TABLE roles must be unique")
+
+
+def _is_leaf_operand(value: Any) -> bool:
+    """Return whether a value is one of the four graph operand shapes."""
+    return isinstance(value, Mapping) and "op" not in value and any(
+        key in value for key in ("form", "line", "const", "node")
+    )
+
+
+def _validate_operand_role(node: Mapping[str, Any], *, allow_role: bool) -> None:
+    """Validate an optional lookup role without allowing it to be ignored."""
+    if "role" not in node:
+        return
+    if not allow_role:
+        raise ValueError("operand role is only valid on LOOKUP_TABLE arguments")
+    role = node["role"]
+    if not isinstance(role, str) or not re.fullmatch(r"[a-z][a-z0-9_]*", role):
+        raise ValueError("operand role must be a lowercase identifier")
 
 
 def _is_predicate_expression(value: Any) -> bool:
@@ -1438,12 +1494,17 @@ def expression_schema(
 
 
 def _expression_node_schema(operations: list[str], depth: int) -> dict[str, Any]:
+    role = {
+        "type": "string",
+        "pattern": "^[a-z][a-z0-9_]*$",
+        "description": "Named lookup role; use key, default, or the exact branch key.",
+    }
     operands: list[dict[str, Any]] = [
         {
             "type": "object",
             "additionalProperties": False,
             "required": ["line"],
-            "properties": {"line": {"type": "string", "minLength": 1}},
+            "properties": {"line": {"type": "string", "minLength": 1}, "role": role},
         },
         {
             "type": "object",
@@ -1452,19 +1513,20 @@ def _expression_node_schema(operations: list[str], depth: int) -> dict[str, Any]
             "properties": {
                 "form": {"type": "string", "minLength": 1},
                 "line": {"type": "string", "minLength": 1},
+                "role": role,
             },
         },
         {
             "type": "object",
             "additionalProperties": False,
             "required": ["const"],
-            "properties": {"const": {"type": "number"}},
+            "properties": {"const": {"type": "number"}, "role": role},
         },
         {
             "type": "object",
             "additionalProperties": False,
             "required": ["node"],
-            "properties": {"node": {"type": "string", "minLength": 1}},
+            "properties": {"node": {"type": "string", "minLength": 1}, "role": role},
         },
     ]
     if depth > 0:
@@ -1494,6 +1556,14 @@ def render(node: Mapping[str, Any], in_infix: bool = False) -> str:
     if "node" in node:
         return f"node {node['node']}"
     op = str(node.get("op", "?")).upper()
+    if op == "LOOKUP_TABLE":
+        args = [
+            f"{arg.get('role')}={render(arg)}"
+            if isinstance(arg, Mapping) and arg.get("role")
+            else render(arg)
+            for arg in node.get("args") or []
+        ]
+        return f"lookup_table({', '.join(args)})"
     args = [render(arg, in_infix=op in INFIX and len(node.get("args") or []) > 1) for arg in node.get("args") or []]
     if op in INFIX and len(args) > 1:
         body = INFIX[op].join(args)
@@ -1526,6 +1596,7 @@ ROLE_FOR_OP = {
     "AND": EXPRESSION_ARGUMENT_ROLES["AND"],
     "OR": EXPRESSION_ARGUMENT_ROLES["OR"],
     "NOT": EXPRESSION_ARGUMENT_ROLES["NOT"],
+    "LOOKUP_TABLE": ("key", "value"),
 }
 
 RULE_FOR_OP = {
@@ -1539,7 +1610,39 @@ RULE_FOR_OP = {
     "ABS": "abs_currency",
     "ROUND": "round_currency",
     "COPY": "copy_currency_value",
+    "LOOKUP_TABLE": "lookup_selected_value",
 }
+
+
+def _rule_for_op(operation: str, evidence_text: str) -> str | None:
+    """Resolve one expression operation to an existing reusable graph rule."""
+    if operation != "IF_ELSE":
+        return RULE_FOR_OP.get(operation)
+    comparison = _comparison_from_evidence(evidence_text)
+    return {
+        "less": "if_less_than_currency",
+        "greater": "if_greater_than_currency",
+    }.get(comparison)
+
+
+def _comparison_from_evidence(evidence_text: str) -> str | None:
+    """Read a conditional direction from the row's own source evidence."""
+    text = " ".join(str(evidence_text or "").split()).lower()
+    less = re.search(
+        r"\b(?:less\s+than|or\s+less|at\s+most|no\s+more\s+than|below|under)\b",
+        text,
+    )
+    greater = re.search(
+        r"\b(?:more\s+than|or\s+more|greater\s+than|at\s+least|exceeds|above)\b",
+        text,
+    )
+    if less and greater:
+        return None
+    if less:
+        return "less"
+    if greater:
+        return "greater"
+    return None
 
 
 def expression_to_graph(
@@ -1548,20 +1651,27 @@ def expression_to_graph(
     line: str,
     expression: Mapping[str, Any],
     quote_span_id: str = "",
+    evidence_text: str = "",
 ) -> GraphProjection:
-    """Flatten a tree into stable intermediate nodes and role-bearing edges."""
+    """Flatten a tree into stable intermediate nodes and role-bearing edges.
+
+    Conditional rule direction is resolved from the supplied evidence text.
+    A missing direction remains a named finding rather than silently choosing a
+    branch that may execute the wrong tax rule.
+    """
     validate_expression_tree(expression)
-    converter = _GraphConverter(form, line, quote_span_id)
+    converter = _GraphConverter(form, line, quote_span_id, evidence_text)
     converter.walk(expression, converter.target)
     return GraphProjection(converter.nodes, converter.edges, converter.rules, converter.findings)
 
 
 class _GraphConverter:
-    def __init__(self, form: str, line: str, citation: str):
+    def __init__(self, form: str, line: str, citation: str, evidence_text: str):
         self.form = _slug(form)
         self.base = f"{self.form}_root_line_{_slug(line)}"
         self.target = self.base
         self.citation = citation
+        self.evidence_text = evidence_text
         self.nodes: list[dict[str, Any]] = []
         self.edges: list[dict[str, Any]] = []
         self.rules: list[dict[str, Any]] = []
@@ -1570,9 +1680,12 @@ class _GraphConverter:
 
     def walk(self, node: Mapping[str, Any], target: str) -> None:
         op = str(node.get("op", "")).upper()
-        rule = RULE_FOR_OP.get(op)
+        rule = _rule_for_op(op, self.evidence_text)
         if rule is None:
-            self.findings.append(f"no reusable rule for operation {op}")
+            if op == "IF_ELSE":
+                self.findings.append("comparison direction unresolved for operation IF_ELSE")
+            else:
+                self.findings.append(f"no reusable rule for operation {op}")
             rule = f"unmapped_{op.lower()}"
         args = node.get("args") or []
         for index, arg in enumerate(args):
@@ -1587,7 +1700,7 @@ class _GraphConverter:
                 source = intermediate
             else:
                 source = self._operand_id(arg)
-            role = _role_for(op, index)
+            role = _role_for(op, index, arg)
             self.edges.append({
                 "edge_id": f"e_{_slug(source)}_to_{_slug(target)}_{role}",
                 "source": source,
@@ -1642,7 +1755,9 @@ class _GraphConverter:
         self.nodes.append(node)
 
 
-def _role_for(operation: str, index: int) -> str:
+def _role_for(operation: str, index: int, operand: Any | None = None) -> str:
+    if operation == "LOOKUP_TABLE" and isinstance(operand, Mapping) and operand.get("role"):
+        return str(operand["role"])
     roles = ROLE_FOR_OP.get(operation, ("operand",))
     return roles[index] if index < len(roles) else roles[-1]
 
