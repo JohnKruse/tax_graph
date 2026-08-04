@@ -17,73 +17,68 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## BALL
 
-**BALL: WORKER - M20-S49 (FINISH THE TRY-AGAIN LOOP IN THE UI).** Task block under
-**From Architect**. **S48 is ACCEPTED at `c55fde5` + `71b064a`** - review is three-state end to end
-and the false direction warning is gone.
+**BALL: WORKER - M20-S50 (RUN THE WHOLE PIPELINE AT FORM 2441).** Task block under
+**From Architect**. **S49 is ACCEPTED at `1bd2bf1`** - the try-again loop is closed and the
+Architect drove it live end to end.
 
-**RESEQUENCED 2026-08-04 BY JOHN: retry loop first, 2441 after.** He asked where the retry button
-was, and it does not exist. Measured: `rederive_cell` and `POST /api/rederive` shipped in S37 and
-are properly guarded, but `create_app` is called without the handler so the endpoint answers
-**501**, and there are **zero** references to rederive anywhere under `workbench/static/`.
-**Architect miss** - S48 added the verdict buttons without checking the loop they feed existed.
-Running 2441 first would have generated a pile of review work with no way to do the review.
-
-**Why 2441 next (S50).** Every piece it needs landed in the last eight rounds: the manifest drives the
-corpus (S41), conditionals and lookups execute (S46/S47) which 2441's AGI percentage table requires,
-and review is three-state with a working bridge (S45/S48). **This is the first end-to-end exercise
-of the whole assembly on a form the pipeline has never properly processed** - John's own framing:
-*"a good exercise in seeing if our pipeline is reliable and valid."*
+**THE REVIEW LOOP IS NOW WHOLE**, which is why 2441 goes next: three-state verdicts (S48), the
+bridge onto node flags (S45), and try-again with a comment (S49). 2441 will produce cells that need
+exactly this loop, and now it exists. Its manifest declaration already landed at `f637df0` with the
+sha pins Architect-verified against the stored PDFs, so **S50 starts at step 2**.
 
 **Drafts only. NO PROMOTION** - John rules on that with the artifact in front of him.
 
-**AWAITING JOHN, does not block S49:** what a `questioned` or `rejected` node should mean to
+**AWAITING JOHN, does not block S50:** what a `questioned` or `rejected` node should mean to
 `execute_tax_tree` - see **Open for Architect**. **Rollover policy and run alerting** are pinned at
 `docs/engineering-plan.md` -> Year rollover (TY2026), seam 6.
 
 ## Current round
 
-**M20-S48 ACCEPTED (Architect, Claude Opus 5, 2026-08-04) at `c55fde5` and `71b064a`. The review
-loop is three-state end to end, and the false direction warning is gone.**
+**M20-S49 ACCEPTED (Architect, Claude Opus 5, 2026-08-04) at `1bd2bf1`. The try-again loop is
+closed, and I drove it live end to end.**
 
-**The three states map correctly, verified by calling the mapping directly:**
+**LIVE ROUND TRIP through exactly the handler `serve()` injects** - `build_rederive_handler`, not a
+stub. 6251 line 18, no comment then with a married-filing-separately correction: **8.9s and 7.7s,
+both `derived`**, both returning the named-role lookup, and `git status` clean afterwards. **The
+loop works with a real model and persists nothing.** Note for planning: the pinned feasibility
+figure was 6.0s cold / ~2.7s for the model call; measured today it is **~8s**, so the UI pending
+state is doing real work.
 
-| stored token | reviewer label | node fields written |
-| --- | --- | --- |
-| `confirmed` | Accept | `human_confirmed: true`, tier `human-confirmed` |
-| `questioned` | Question | `human_confirmed: false`, tier `human-questioned` |
-| `rejected` | Reject | `human_confirmed: false`, tier `human-rejected` |
+**The layering constraint held.** No `workbench/*.py` imports pipeline code. A new host module
+`tax_graph/workbench_host.py` owns the closure and injects it into `serve`, which is exactly what
+`build_rederive_handler`'s docstring asks for.
 
-Legacy tokens canonicalize rather than being guessed at - `problem` -> `questioned`, `approved` ->
-`confirmed` - and an unknown token raises `unsupported address judgement` instead of defaulting.
-Question and Reject require an observation; Accept does not. **That asymmetry is right**: a bare
-rejection with no reason is the one verdict that helps nobody.
+**Verified by driving the API myself, not by reading the report:**
 
-**Every S45 safety property survived.** Dry-run by default, exact address plus single node binding,
-and the fingerprint check still blocks non-confirming states - there is a parametrized test for
-precisely that. I also found the ledger is **tamper-evident at load**: editing a record's
-`content_fingerprint` to make a stale verdict look fresh fails with
-`content_fingerprint does not match reviewed_content`. I hit that trying to forge test records, and
-it is a genuinely good property nobody claimed credit for.
+| check | result |
+| --- | --- |
+| unconfigured app | `501 cell re-derive is not configured` - answers, does not crash |
+| configured app | `200`, handler called with the draft comment |
+| ledger + working tree after retries | unchanged |
+| missing write token | `403` |
 
-**The false warning is fixed and I checked it on the real row.** `_projection_warnings` now prefers
-form-face evidence over instruction and quote cues. 1040 line 34 with its live evidence and live
-expression: **zero hard failures, zero warnings**, where it previously emitted
-`unresolved_comparison_direction` once per corpus run. The real projection path is unchanged and
-still resolves `if_greater_than_currency`.
+**The nondeterminism requirement is implemented, not skipped.** The UI labels each attempt
+**"first try" / "same correction (fresh try)" / "changed correction"**. That was a pinned design
+requirement precisely because re-running an unchanged comment can return a different answer at
+`temperature: 0`, and hiding it trains reviewers toward superstition.
 
-**Engine semantics REPORTED, not wired - correct, and now John's call.** The Worker laid out three
-options for what a `questioned` or `rejected` node should mean to `execute_tax_tree`: (a) refuse to
-compute and report unresolved - safest, blocks output; (b) compute and flag the result - a number
-downstream code could consume; (c) exclude the node and report a gap - conservative but lossy.
-**Nothing was wired. See Open for Architect.**
+**Validator failures are surfaced on the retry**, pulling row-level failures, warnings, and the
+run-level `validator_failures_by_kind`. A comment steers interpretation; it must never talk the
+model past a validator, and the reviewer can now see when it has not.
 
-**Gates:** 95 passed on a short temp root, ASCII OK, `git diff --check` clean, protected set
-byte-identical across `9c514b1..71b064a`.
+**Browser e2e passes for me: 5 passed**, including the new
+`test_generated_cell_try_again_shows_fresh_result_without_session_progress`. The Worker honestly
+declared it NOT RUN - its sandbox hits the standing `graph/2025/_drafts/form_1040_2025` ACL during
+fixture setup. **The same failure it reported as 13 errors is that known baseline, not a
+regression**; the suite is green from an account that can read the directory.
 
-**TWO THINGS TO NOTE, NEITHER BLOCKING.** The round produced two commits rather than the specified
-one. And the Worker reports two pre-existing failures in `tests/e2e/test_paired_view_m15.py` for a
-missing `data-check-group` element - **I did not verify that they predate S48**, so it is recorded
-as the Worker's claim, not as an Architect-confirmed baseline entry.
+**Gates:** 11 passed on the focused suites plus 5 e2e, ASCII OK, `git diff --check` clean, protected
+set byte-identical, `validate 2025` exit 0.
+
+**THE REVIEW LOOP IS NOW WHOLE.** Three-state verdicts (S48), the bridge onto node flags (S45), and
+try-again with a comment (S49). A reviewer can see a wrong cell, write a correction, watch it work,
+and only then store it - which is the difference the design was built around: **the ledger
+accumulates comments that have been verified to work rather than hopeful ones written blind.**
 
 ## Architect decision - notation
 
@@ -292,64 +287,7 @@ client-managed server dies.
 
 ## From Architect
 
-- **M20-S49 TASK - FINISH THE TRY-AGAIN LOOP IN THE UI (Architect, Claude Opus 5, 2026-08-04;
-  John: *"i thought we were going to add a button to retry processing a rejected cell/line so that
-  the human can leave comments that bring the entry into alignment with actual IRS intent"*).**
-  Ledger: the RAN/NOT RUN rule. **This was designed, the backend shipped in S37, and the front half
-  was never built. Architect miss: S48 added the verdict buttons without checking that the loop they
-  feed existed.**
-
-  **Measured state before this round.** `rederive_cell` and `build_rederive_handler` exist and are
-  pure. `POST /api/rederive` exists and is properly guarded - write token, field whitelist
-  (`document_id`, `line`, `draft_comment`), 10,000-char cap, `ValueError` -> 400, provider failure
-  -> 502. **But `create_app` at serve time is called without `rederive_cell`, so the endpoint
-  answers `501 cell re-derive is not configured`, and there are ZERO references to rederive in any
-  file under `workbench/static/`.** There is no button.
-
-  **Why it matters more than it looks.** The pinned design says try-again is the MAIN action and
-  reject is the escape hatch, and that the stored comment is one the reviewer has VERIFIED works.
-  Without the button every comment is written blind and Reject is the only move a reviewer has -
-  which is the opposite of the intended loop.
-
-  **Step 1 - wire the handler without breaking the layering.** `build_rederive_handler`'s docstring
-  is explicit: the callback exists so the artifact-only workbench stays free of pipeline imports,
-  and **its closure is owned by the application host.** Wire it where both halves are already
-  available; **do not import pipeline code into `workbench/`.** Report where you wired it and why.
-  The endpoint must keep answering 501 - not crash - when a host chooses not to configure it.
-
-  **Step 2 - the button and the comment box.** On a cell: a comment field and a Try again action
-  that POSTs to `/api/rederive` with the write token. **Persist nothing on retry** - that is the
-  whole point of the pure function, and it is what makes the loop safe to run repeatedly. Saving a
-  comment as curated stays a separate, explicit action.
-
-  **Step 3 - show the result honestly, including the parts that are uncomfortable.**
-  - Show the new expression **and its validator failures**. A comment must never talk the model past
-    a validator, so when the retry still fails, say so plainly rather than presenting the new answer
-    as an improvement.
-  - **Distinguish "you changed the comment" from "same comment, fresh attempt".** Re-running with an
-    unchanged comment can return a different answer - measured repeatedly at `temperature: 0`. If
-    the UI hides that, reviewers will tune toward superstition. This is a pinned design requirement,
-    not polish.
-  - Show a pending state. Measured feasibility: **~6.0s for one row cold, ~2.7s for the model call
-    alone** on a warm server.
-
-  **Step 4 - contributed vs curated must hold at the UI boundary.** Only a curated comment may reach
-  the model. A `contributed` comment is retained and displayed and **never sent**. Confirm the UI
-  cannot send one, and test it.
-
-  **Step 5 - prove the loop end to end with a fixture client, no provider.** Drive it with a stub
-  handler: comment in, expression out, validator failures surfaced, nothing persisted. **Report
-  explicitly that no graph, draft, ledger, or session state changed during a retry.** A live
-  provider round trip is the Architect's leg, not the Worker's.
-
-  **Do not:** persist anything on retry; let a `contributed` comment reach the model; import
-  pipeline modules into `workbench/`; weaken the write-token guard; author or edit anything under
-  `graph/2025/`; build convergence tracking (rounds-to-approval and the reopened-twice flag are a
-  later slice - keep this round to the loop itself). **Stop conditions:** any diff in the protected
-  directories; a retry writing to disk; the endpoint crashing rather than returning 501 when
-  unconfigured. Tier 3. ASCII, `git diff --check`, module-form `validate 2025`. **ONE local commit.**
-
-- **M20-S50 TASK (QUEUED BEHIND S49; SPEC COMPLETE AND STILL STANDS) - RUN THE WHOLE PIPELINE AT
+- **M20-S50 TASK - RUN THE WHOLE PIPELINE AT
   FORM 2441, AS A RELIABILITY EXERCISE (Architect,
   Claude Opus 5, 2026-08-04; John's call: *"adding it might be a good exercise in seeing if our
   pipeline is reliable and valid"*).** Ledger: the RAN/NOT RUN rule, D10. **Drafts only. NO
@@ -459,6 +397,13 @@ client-managed server dies.
 
 ## Recent rounds (condensed; full narration in git history - `git show <hash>`)
 
+- **M20-S49 (`1bd2bf1`, Architect-verified):** the try-again loop is closed. `tax_graph/workbench_host.py`
+  injects `build_rederive_handler` into `serve` without importing pipeline code into `workbench/`;
+  the unconfigured server still answers 501. UI adds the Try again panel, pending state, returned
+  expression with validator failures, and attempt labels distinguishing "same correction (fresh
+  try)" from "changed correction". Nothing persists on retry. Architect drove it LIVE through the
+  injected handler: 6251 line 18 in 8.9s and 7.7s, both derived, working tree clean; browser e2e
+  5 passed from an account that can read the draft directory.
 - **M20-S48 (`c55fde5` + `71b064a`, Architect-verified):** review is three-state end to end -
   Accept/Question/Reject stored as `confirmed`/`questioned`/`rejected`, legacy tokens canonicalized
   (`problem` -> `questioned`), unknown tokens rejected rather than defaulted. Question and Reject
@@ -612,6 +557,12 @@ client-managed server dies.
   fingerprints printed. RAN: temporary graph copy using the real ledger record -> `would_apply`, exact
   address/node resolution, node `form_1040_2025_root_line_z`, all three field changes printed, and
   applied/stale/unresolved/ambiguous lists empty because the run was dry.
+- **M20-S49 (2026-08-04, Architect live):** live re-derive through the exact handler `serve()`
+  injects - 6251 line 18, no comment then with an MFS correction: 8.9s and 7.7s, both `derived`,
+  named-role lookup returned, `git status` clean after. API driven directly: unconfigured -> 501,
+  configured -> 200 with the draft comment passed, no token -> 403, ledger unchanged. Browser e2e
+  `tests/e2e/test_workbench_v2_m17.py` -> 5 passed in 141s. Focused suites 11 passed; ASCII OK;
+  `git diff --check`; protected set byte-identical.
 - **M20-S47 (2026-08-04, Architect live):** two corpus runs, attempted=96 both, derived 89 and 91,
   repaired 4 and 2, errored 3, resolved 93 both; `unmapped_operation` 3 and 3. Emitted schema walked
   directly: zero objects with a property outside `required`, `role` nullable. 1040 line 34 ->
