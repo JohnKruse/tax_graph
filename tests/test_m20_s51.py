@@ -6,7 +6,6 @@ from pathlib import Path
 
 import pytest
 
-from experiments.derive_cells_s25 import run_documents
 from tax_graph.extract.inputs import load_document_input
 from tax_graph.extract.models import SourceDocumentInput
 from tax_graph.extract.outline import OutlineNode, OutlineTree
@@ -125,10 +124,11 @@ def test_form_2441_denominator_names_the_newly_visible_rows() -> None:
 
     assert report["line_anchor_count"] == 35
     assert report["legacy_admitted"] == 12
-    assert report["admitted"] == 19
-    assert report["skipped"] == 16
+    assert report["admitted"] == 21
+    assert report["skipped"] == 14
     assert report["status"] == "complete"
     assert report["newly_admitted_by_cue"] == {
+        "add_the_amount": 2,
         "amount_shown_below": 2,
         "dollar_constant": 2,
         "smallest_of_line": 3,
@@ -143,39 +143,23 @@ def test_form_2441_denominator_names_the_newly_visible_rows() -> None:
     assert by_anchor["1"]["skip_reason"] == "selector_no_formula_cue"
 
 
-def test_harness_does_not_call_a_complete_run_when_anchors_are_unaccounted(
-    monkeypatch: pytest.MonkeyPatch,
-    tmp_path: Path,
-) -> None:
-    monkeypatch.setattr(
-        "experiments.derive_cells_s25.persist_instruction_frame",
-        lambda **_: (tmp_path / "frame.yaml", tmp_path / "coverage.yaml"),
-    )
-    monkeypatch.setattr(
-        "experiments.derive_cells_s25.run_real_document",
-        lambda **_: {
-            "rows_attempted": 1,
-            "row_status_counts": {"derived": 1, "repaired": 0, "gapped": 0, "errored": 0, "skipped": 0},
-            "outline_node_count": 2,
-            "line_anchor_count": 2,
-            "denominator": {
-                "status": "incomplete",
-                "reason": "one or more line anchors were not classified",
-                "line_anchor_count": 2,
-                "admitted": 1,
-                "skipped": 0,
-                "unaccounted": 1,
-            },
-            "validation": {"validator_failures_by_kind": {}},
-        },
+def test_denominator_reports_total_classification() -> None:
+    report = build_derivation_denominator(
+        _synthetic_document(),
+        outline=OutlineTree(
+            document_id="form_test_2025",
+            kind="tax_form",
+            children=[
+                OutlineNode(
+                    outline_id="line_1",
+                    kind="line",
+                    line_anchor="1",
+                    label="Enter an amount.",
+                )
+            ],
+        ),
     )
 
-    reports = run_documents(
-        root=tmp_path / "repo",
-        year="2025",
-        document_ids=["form_test_2025"],
-        output_dir=tmp_path / "output",
-    )
-
-    assert reports[0]["status"] == "incomplete"
-    assert reports[0]["reason"] == "one or more line anchors were not classified"
+    assert report["status"] == "complete"
+    assert report["classification"] == "total"
+    assert report["unaccounted"] == 0

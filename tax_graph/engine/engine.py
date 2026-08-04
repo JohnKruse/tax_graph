@@ -23,7 +23,7 @@ from tax_graph.addressing import load_address_artifacts, load_compiled_address_a
 ROOT = Path(__file__).resolve().parents[2]
 TABLE_FACTS_KEY = "#tables"
 INCOMPLETE_REASONS = frozenset({"reference_not_in_corpus", "not_approved"})
-INCOMPLETE_OPERATION = "NOT_COMPUTED_CALLER_MUST_RESOLVE"
+INCOMPLETE_OPERATION = "NOT_COMPUTED_AGENT_MUST_RESOLVE"
 
 
 class Graph:
@@ -696,7 +696,7 @@ def build_incomplete_cell_payload(
         "instruction_citation_refs": instruction_citation_refs,
         "reason": reason,
         "operation": INCOMPLETE_OPERATION,
-        "operation_statement": "Not computed; the caller must resolve this cell.",
+        "operation_statement": "Not computed; the AI agent must resolve this cell.",
         "frontier_id": frontier_data.get("frontier_id"),
         "frontier_status": frontier_data.get("status"),
         "target_url": frontier_data.get("target_url"),

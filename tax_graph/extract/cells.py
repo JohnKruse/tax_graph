@@ -10,6 +10,7 @@ run.
 from __future__ import annotations
 
 from dataclasses import dataclass, field
+from decimal import Decimal, InvalidOperation
 from pathlib import Path
 import re
 from typing import Any, Iterable, Mapping, Protocol, Sequence
@@ -765,6 +766,18 @@ def validate_cell_output(
     else:
         row.metadata.pop("operand_type_undetermined_nodes", None)
 
+    lookup_evidence = _lookup_evidence_text(row)
+    if lookup_evidence:
+        for expression_node in _expression_nodes(expression):
+            if str(expression_node.get("op") or "").upper() != "LOOKUP_TABLE":
+                continue
+            hard.extend(
+                validate_lookup_table_completeness(
+                    expression_node,
+                    lookup_evidence,
+                )
+            )
+
     evidence = " ".join((row.form_face_text, row.instruction_text, _evidence_span_text(row))).lower()
     subtract_match = re.search(
         r"subtract\s+(?:line\s+)?([0-9]+[a-z]?)\s+from\s+(?:line\s+)?([0-9]+[a-z]?)",
@@ -831,6 +844,198 @@ def _expression_operands(node: Mapping[str, Any]) -> Iterable[Mapping[str, Any]]
 def _node_args(node: Mapping[str, Any]) -> list[Mapping[str, Any]]:
     """Return expression arguments that are mappings."""
     return [arg for arg in node.get("args", []) if isinstance(arg, Mapping)]
+
+
+_LOOKUP_BAND_RE = re.compile(
+    r"(?<![\w.])\$?\s*(?P<lower>\d[\d,]*(?:\.\d+)?)\s*"
+    r"(?:-|\u2013|\u2014)\s*"
+    r"(?P<upper>\$?\s*\d[\d,]*(?:\.\d+)?|no\s+limit|unlimited)"
+    r"(?![\w.])",
+    re.IGNORECASE,
+)
+
+
+def validate_lookup_table_completeness(
+    expression: Mapping[str, Any],
+    evidence_text: str,
+) -> tuple[CellValidationIssue, ...]:
+    """Fail closed when a banded lookup cannot be matched to its source table.
+
+    A lookup with at least two printed numeric bands is treated as a decision
+    table.  Every source band must have a corresponding numeric range in a
+    branch role.  This validator never fills a missing range or infers one;
+    it only reports source gaps, overlaps, omissions, and unverifiable bounds.
+    Non-banded lookups, such as filing-status selections, are outside this
+    check and remain governed by the named-role grammar.
+    """
+    source_bands = _source_lookup_bands(evidence_text)
+    if len(source_bands) < 2:
+        return ()
+
+    issues: list[CellValidationIssue] = []
+    source_issues = _band_continuity_issues(source_bands, source="source")
+    issues.extend(source_issues)
+
+    expression_bands: list[tuple[Decimal, Decimal | None]] = []
+    unverifiable_roles: list[str] = []
+    for operand in expression.get("args") or ():
+        if not isinstance(operand, Mapping) or operand.get("role") == "key":
+            continue
+        role = str(operand.get("role") or "").strip().lower()
+        band = _band_from_role(role)
+        if band is None:
+            unverifiable_roles.append(role or "<missing>")
+        else:
+            expression_bands.append(band)
+
+    if unverifiable_roles:
+        issues.append(
+            CellValidationIssue(
+                "lookup_table_bounds_unverifiable",
+                "LOOKUP_TABLE source has numeric bands but these branch roles do not "
+                f"state bounds: {', '.join(unverifiable_roles)}",
+            )
+        )
+        return tuple(_unique_issues(issues))
+
+    if len(expression_bands) != len(source_bands):
+        issues.append(
+            CellValidationIssue(
+                "lookup_table_incomplete",
+                "LOOKUP_TABLE has "
+                f"{len(expression_bands)} branch bands but the source has "
+                f"{len(source_bands)}; no missing band may be inferred",
+            )
+        )
+
+    issues.extend(_band_continuity_issues(expression_bands, source="expression"))
+    source_set = set(source_bands)
+    expression_set = set(expression_bands)
+    missing = sorted(source_set - expression_set, key=_band_sort_key)
+    unexpected = sorted(expression_set - source_set, key=_band_sort_key)
+    if missing:
+        issues.append(
+            CellValidationIssue(
+                "lookup_table_missing_bands",
+                "LOOKUP_TABLE is missing source bands: "
+                + ", ".join(_format_band(band) for band in missing),
+            )
+        )
+    if unexpected:
+        issues.append(
+            CellValidationIssue(
+                "lookup_table_bounds_mismatch",
+                "LOOKUP_TABLE contains bounds not present in the source: "
+                + ", ".join(_format_band(band) for band in unexpected),
+            )
+        )
+    return tuple(_unique_issues(issues))
+
+
+def _lookup_evidence_text(row: CellRecord) -> str:
+    """Choose the preferred row-scoped evidence source that contains a table."""
+    candidates = (
+        row.form_face_text,
+        row.instruction_text,
+        _evidence_span_text(row),
+        row.quote,
+    )
+    for candidate in candidates:
+        if len(_source_lookup_bands(candidate)) >= 2:
+            return candidate
+    return ""
+
+
+def _source_lookup_bands(text: str) -> list[tuple[Decimal, Decimal | None]]:
+    """Extract and deduplicate numeric bands from one source passage."""
+    bands = []
+    for match in _LOOKUP_BAND_RE.finditer(str(text or "")):
+        lower = _decimal_token(match.group("lower"))
+        upper_text = re.sub(r"\s+", " ", match.group("upper")).strip().lower()
+        upper = None if upper_text in {"no limit", "unlimited"} else _decimal_token(upper_text)
+        if lower is not None and (upper is None or upper > lower):
+            bands.append((lower, upper))
+    return sorted(set(bands), key=_band_sort_key)
+
+
+def _band_from_role(role: str) -> tuple[Decimal, Decimal | None] | None:
+    """Read a range role such as ``band_15000_to_17000``."""
+    normalized = re.sub(r"^(?:band|range|from)_", "", role)
+    numbers = [Decimal(value) for value in re.findall(r"\d+(?:\.\d+)?", normalized)]
+    if "no_limit" in normalized or "unlimited" in normalized:
+        if len(numbers) != 1:
+            return None
+        return numbers[0], None
+    if normalized.startswith("under_") and len(numbers) == 1:
+        return Decimal("0"), numbers[0]
+    if normalized.startswith("over_") and len(numbers) == 1:
+        return numbers[0], None
+    if len(numbers) != 2:
+        return None
+    lower, upper = numbers
+    return (lower, upper) if upper > lower else None
+
+
+def _decimal_token(value: str) -> Decimal | None:
+    """Parse a source amount without accepting malformed numeric text."""
+    try:
+        return Decimal(re.sub(r"[$,\s]", "", str(value)))
+    except (InvalidOperation, ValueError):
+        return None
+
+
+def _band_continuity_issues(
+    bands: Sequence[tuple[Decimal, Decimal | None]],
+    *,
+    source: str,
+) -> list[CellValidationIssue]:
+    """Report a gap or overlap between sorted finite bands."""
+    issues: list[CellValidationIssue] = []
+    ordered = sorted(bands, key=_band_sort_key)
+    prior: tuple[Decimal, Decimal | None] | None = None
+    for current in ordered:
+        if prior is not None:
+            if prior[1] is None:
+                issues.append(
+                    CellValidationIssue(
+                        "lookup_table_band_overlap",
+                        f"LOOKUP_TABLE {source} bands overlap at {_format_band(current)}",
+                    )
+                )
+            elif current[0] < prior[1]:
+                issues.append(
+                    CellValidationIssue(
+                        "lookup_table_band_overlap",
+                        f"LOOKUP_TABLE {source} bands overlap at {_format_band(current)}",
+                    )
+                )
+            elif current[0] > prior[1]:
+                issues.append(
+                    CellValidationIssue(
+                        "lookup_table_band_gap",
+                        f"LOOKUP_TABLE {source} bands have a gap between "
+                        f"{_format_band(prior)} and {_format_band(current)}",
+                    )
+                )
+        prior = current
+    return issues
+
+
+def _band_sort_key(band: tuple[Decimal, Decimal | None]) -> tuple[Decimal, Decimal]:
+    """Sort bands by lower bound, then put an open upper bound last."""
+    return band[0], band[1] if band[1] is not None else Decimal("Infinity")
+
+
+def _format_band(band: tuple[Decimal, Decimal | None]) -> str:
+    """Render a numeric band for a deterministic validator message."""
+    lower = _format_decimal(band[0])
+    upper = "no limit" if band[1] is None else _format_decimal(band[1])
+    return f"{lower}-{upper}"
+
+
+def _format_decimal(value: Decimal) -> str:
+    """Render integral amounts without scientific notation."""
+    return str(int(value)) if value == value.to_integral() else format(value, "f")
 
 
 def _operand_line(node: Mapping[str, Any]) -> str:
@@ -1455,10 +1660,8 @@ def _is_leaf_operand(value: Any) -> bool:
 
 
 def _validate_operand_role(node: Mapping[str, Any], *, allow_role: bool) -> None:
-    """Validate an optional lookup role without allowing it to be ignored."""
+    """Validate a role only when the parent operation owns named branches."""
     if "role" not in node:
-        return
-    if node["role"] is None:
         return
     if not allow_role:
         raise ValueError("operand role is only valid on LOOKUP_TABLE arguments")
@@ -1513,7 +1716,7 @@ def expression_schema(
 
 def _expression_node_schema(operations: list[str], depth: int) -> dict[str, Any]:
     role = {
-        "type": ["string", "null"],
+        "type": "string",
         "pattern": "^[a-z][a-z0-9_]*$",
         "description": "Named lookup role; use key, default, or the exact branch key.",
     }
@@ -1521,13 +1724,13 @@ def _expression_node_schema(operations: list[str], depth: int) -> dict[str, Any]
         {
             "type": "object",
             "additionalProperties": False,
-            "required": ["line", "role"],
+            "required": ["line"],
             "properties": {"line": {"type": "string", "minLength": 1}, "role": role},
         },
         {
             "type": "object",
             "additionalProperties": False,
-            "required": ["form", "line", "role"],
+            "required": ["form", "line"],
             "properties": {
                 "form": {"type": "string", "minLength": 1},
                 "line": {"type": "string", "minLength": 1},
@@ -1537,19 +1740,19 @@ def _expression_node_schema(operations: list[str], depth: int) -> dict[str, Any]
         {
             "type": "object",
             "additionalProperties": False,
-            "required": ["const", "role"],
+            "required": ["const"],
             "properties": {"const": {"type": "number"}, "role": role},
         },
         {
             "type": "object",
             "additionalProperties": False,
-            "required": ["node", "role"],
+            "required": ["node"],
             "properties": {"node": {"type": "string", "minLength": 1}, "role": role},
         },
     ]
     if depth > 0:
         operands.append(_expression_node_schema(operations, depth - 1))
-    return {
+    schema = {
         "type": "object",
         "additionalProperties": False,
         "required": ["op", "args"],
@@ -1558,6 +1761,33 @@ def _expression_node_schema(operations: list[str], depth: int) -> dict[str, Any]
             "args": {"type": "array", "minItems": 1, "items": {"anyOf": operands}},
         },
     }
+    # The generic leaf alternatives are shared by every operation so the
+    # bounded schema stays small.  These conditionals make the operation
+    # ownership explicit: only LOOKUP_TABLE may require a named role, and an
+    # ordinary operation may not smuggle one through the provider grammar.
+    schema["allOf"] = [
+        {
+            "if": {"properties": {"op": {"const": "LOOKUP_TABLE"}}},
+            "then": {
+                "properties": {
+                    "args": {
+                        "items": {
+                            "required": ["role"],
+                            "properties": {"role": role},
+                        }
+                    }
+                }
+            },
+            "else": {
+                "properties": {
+                    "args": {
+                        "items": {"not": {"required": ["role"]}}
+                    }
+                }
+            },
+        }
+    ]
+    return schema
 
 INFIX = {"SUM": " + ", "SUBTRACT": " - ", "MULTIPLY": " * ", "DIVIDE": " / "}
 

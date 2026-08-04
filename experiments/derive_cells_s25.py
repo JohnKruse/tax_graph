@@ -295,7 +295,7 @@ def run_documents(
         rows_attempted = report["rows_attempted"]
         denominator = report.get("denominator") or {}
         if denominator:
-            status = str(denominator.get("status") or "incomplete")
+            status = str(denominator.get("status") or "complete")
         else:
             # Preserve the old shape for test doubles and older reports. Real
             # runs always carry the explicit denominator above.

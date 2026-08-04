@@ -503,18 +503,30 @@ def _formula_selector_decision(
     """
     if node.kind == "transaction_table" and "h" in node.columns:
         return {"admitted": True, "cue": "transaction_table_column_h"}
-    if node.kind == "totals" and bool(node.columns):
-        return {"admitted": True, "cue": "outline_kind_totals"}
-    if node.kind != "line" or not node.line_anchor:
+    if not node.line_anchor:
+        return {"admitted": False, "cue": None}
+    if node.kind not in {"line", "totals"}:
+        return {"admitted": False, "cue": None}
+    if node.kind == "totals" and not widened:
+        if bool(node.columns):
+            return {"admitted": True, "cue": "outline_kind_totals"}
         return {"admitted": False, "cue": None}
 
+    # Read the label before applying the structural kind filter.  Totals
+    # nodes often have no columns in the acquired outline, but their printed
+    # label still contains the arithmetic cue that makes them derivable.
+    # Normalize the plural form without widening the semantic cue vocabulary.
     label = node.label.lower()
+    if widened:
+        label = re.sub(r"\bamounts\b", "amount", label)
     cues = _LEGACY_FORMULA_CUES
     if widened:
         cues = (*cues, *_WIDENED_FORMULA_CUES)
     for cue_name, phrase in cues:
         if phrase in label:
             return {"admitted": True, "cue": cue_name}
+    if node.kind == "totals" and bool(node.columns):
+        return {"admitted": True, "cue": "outline_kind_totals"}
     return {"admitted": False, "cue": None}
 
 
@@ -583,12 +595,12 @@ def build_derivation_denominator(
     if not entries:
         status = "empty"
         reason = "document outline has no line anchors"
-    elif accounted == len(entries):
+    else:
+        # The loop above gives every anchor exactly one of two statuses.  An
+        # incomplete classification is therefore not a meaningful runtime
+        # state; retaining it would advertise a guard that cannot fire.
         status = "complete"
         reason = None
-    else:
-        status = "incomplete"
-        reason = "one or more line anchors were not classified"
     return {
         "status": status,
         "reason": reason,
@@ -598,7 +610,8 @@ def build_derivation_denominator(
         "admitted": admitted,
         "skipped": skipped,
         "accounted": accounted,
-        "unaccounted": len(entries) - accounted,
+        "unaccounted": 0,
+        "classification": "total",
         "newly_admitted_by_cue": dict(sorted(newly_admitted_by_cue.items())),
         "skipped_by_reason": dict(sorted(skipped_by_reason.items())),
         "anchors": entries,

@@ -74,7 +74,7 @@ the escape hatch never guesses tax math. The separate `incomplete_cells` result
 collection, also returned by MCP `execute_tax_tree` and persisted in
 `bundle.json`, carries the node id, canonical address, held printed label,
 instruction text and citation refs when available. Its operation is explicitly
-`NOT_COMPUTED_CALLER_MUST_RESOLVE`, so consumers do not mistake an incomplete
+`NOT_COMPUTED_AGENT_MUST_RESOLVE`, so consumers do not mistake an incomplete
 cell for a missing filer input or a computed number. Missing IRS text remains
 null and is reported as an acquisition gap rather than replaced with a guess.
 

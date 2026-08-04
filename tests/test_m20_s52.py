@@ -40,8 +40,8 @@ def test_frontier_execution_emits_evidence_bearing_incomplete_cells() -> None:
     assert student_loan["canonical_address"] == "2025/document=schedule_1/line=21/control=amount"
     assert student_loan["printed_label"] == "Line 21: Student loan interest deduction 21"
     assert student_loan["reason"] == "reference_not_in_corpus"
-    assert student_loan["operation"] == "NOT_COMPUTED_CALLER_MUST_RESOLVE"
-    assert "caller must resolve" in student_loan["operation_statement"]
+    assert student_loan["operation"] == "NOT_COMPUTED_AGENT_MUST_RESOLVE"
+    assert "AI agent must resolve" in student_loan["operation_statement"]
 
     rate_gain = by_frontier["deferred_schedule_d_2025_28_rate_gain_worksheet"]
     assert rate_gain["instruction_text"].startswith("If you checked 'Yes'")
@@ -61,7 +61,7 @@ def test_incomplete_payload_supports_the_future_approval_gate() -> None:
     assert payload["reason"] == "not_approved"
     assert payload["printed_label"].startswith("Schedule D, line 18")
     assert payload["canonical_address"] == "2025/document=schedule_d/line=18/control=amount"
-    assert payload["operation"] == "NOT_COMPUTED_CALLER_MUST_RESOLVE"
+    assert payload["operation"] == "NOT_COMPUTED_AGENT_MUST_RESOLVE"
 
     with pytest.raises(ValueError, match="unsupported incomplete-cell reason"):
         build_incomplete_cell_payload(graph, "schedule_d_2025_line_18", reason="guessed")
@@ -90,7 +90,7 @@ def test_filing_bundle_persists_incomplete_cells_inside_bundle_manifest(
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    payload = {"node_id": "test_node", "reason": "not_approved", "operation": "NOT_COMPUTED_CALLER_MUST_RESOLVE"}
+    payload = {"node_id": "test_node", "reason": "not_approved", "operation": "NOT_COMPUTED_AGENT_MUST_RESOLVE"}
     result = Result(incomplete_cells=[payload])
     project_root = tmp_path / "project"
     return_root = tmp_path / "return"

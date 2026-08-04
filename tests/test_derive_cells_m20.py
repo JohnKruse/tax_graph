@@ -350,8 +350,9 @@ def test_expression_schema_requires_every_declared_property_at_every_depth() -> 
 
     def visit(value: object, path: str = "schema") -> None:
         if isinstance(value, dict):
-            if "properties" in value:
-                assert set(value["properties"]) <= set(value["required"]), path
+            if "properties" in value and "required" in value:
+                optional = {"role"}
+                assert set(value["properties"]) - optional <= set(value["required"]), path
             for key, child in value.items():
                 visit(child, f"{path}.{key}")
         elif isinstance(value, list):
@@ -361,14 +362,16 @@ def test_expression_schema_requires_every_declared_property_at_every_depth() -> 
     visit(schema)
 
 
-def test_expression_schema_uses_nullable_role_for_ordinary_operands() -> None:
+def test_expression_schema_reserves_roles_for_lookup_operands() -> None:
     schema = expression_schema()
     operands = schema["properties"]["expression"]["properties"]["args"]["items"]["anyOf"]
 
     leaves = [item for item in operands if "role" in item.get("properties", {})]
-    assert all("role" in item["required"] for item in leaves)
-    assert all(item["properties"]["role"]["type"] == ["string", "null"] for item in leaves)
-    validate_expression_tree({"op": "COPY", "args": [{"line": "11b", "role": None}]})
+    assert all("role" not in item["required"] for item in leaves)
+    assert all(item["properties"]["role"]["type"] == "string" for item in leaves)
+    validate_expression_tree({"op": "COPY", "args": [{"line": "11b"}]})
+    with pytest.raises(ValueError, match="only valid on LOOKUP_TABLE"):
+        validate_expression_tree({"op": "COPY", "args": [{"line": "11b", "role": "source"}]})
 
 
 def test_quote_span_schema_does_not_expose_source_identity() -> None:
@@ -852,7 +855,7 @@ def test_graph_node_operand_is_schema_validated_resolved_and_projected() -> None
     validate_expression_tree(expression)
     schema = expression_schema()
     node_alternatives = schema["properties"]["expression"]["properties"]["args"]["items"]["anyOf"]
-    assert {"node", "role"} in [set(item["required"]) for item in node_alternatives]
+    assert {"node"} in [set(item["required"]) for item in node_alternatives]
 
     row = CellFrame.from_rows([{
         **_frame()[1],

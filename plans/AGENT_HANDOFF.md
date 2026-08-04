@@ -62,7 +62,7 @@ handoff convention is that the accepted hash IS the record, so this matters more
 address `2025/document=schedule_1/line=21/control=amount`, the printed label
 *"Line 21: Student loan interest deduction 21"*, the citation refs split into form-face and
 instruction lists, the frontier id and target URL, and in the operation slot
-`NOT_COMPUTED_CALLER_MUST_RESOLVE` with the statement *"Not computed; the caller must resolve this
+`NOT_COMPUTED_AGENT_MUST_RESOLVE` with the statement *"Not computed; the AI agent must resolve this
 cell."* That is the IRS text plus the explicit handoff, which is exactly the ruling.
 
 **IT IS SEPARATE FROM `missing_required_inputs`, WHICH WAS THE POINT.** "The filer owes us a number"
@@ -90,6 +90,34 @@ payload - `Engine._eval` indexes `self.g.nodes` directly. It is unreachable toda
 
 **Gates:** 37 passed on a short temp root, ASCII OK, `git diff --check` clean, `validate 2025`
 exit 0 with graph integrity OK, protected set diff empty, `git status` clean.
+
+## From Worker
+
+- **M20-S54 implementation complete locally; one commit pending.** Protected graph and field-map
+  directories remain unchanged. The lookup validator fails closed on source gaps, overlaps, missing
+  bands, and unverifiable or mismatched branch bounds; it never reconstructs a band. The expression
+  grammar now requires `role` only for `LOOKUP_TABLE` leaves, matching the validator.
+- **2441 line 8:** the real geometry evidence packet contains six printed bands across the table
+  columns; a six-branch expression is rejected for source gaps and missing/mismatched bounds. The
+  focused synthetic 16-band case passes, and the six-of-sixteen truncation reports the missing
+  `25000-27000` band without inference. Other named filing-status lookups remain outside the
+  numeric-band check.
+- **Denominator:** totals labels are read before the cue decision. On the 23-document manifest,
+  moves are `schedule_1a_2025` 25 -> 29, `schedule_a_2025` 8 -> 9, `schedule_b_2025` 1 -> 3,
+  `form_1099_int_2025` 0 -> 1, `form_1099_div_2025` 0 -> 1, and `form_2441_2025` 12 -> 21;
+  all non-empty reports are `classification: total`, with `unaccounted: 0`.
+- **Actor rename:** all repository references now use `NOT_COMPUTED_AGENT_MUST_RESOLVE`; no old
+  actor reference or persisted `bundle.json` carrying it was found.
+- **Focused tests:**
+  - `tests/test_m20_s54.py` - RAN: `New-Item -ItemType Directory -Force .pytest_tmp_codex | Out-Null; $env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.pytest_tmp_codex'; .venv\Scripts\python.exe -m pytest tests/test_m20_s54.py tests/test_m20_s51.py tests/test_derive_cells_m20.py tests/test_m20_s52.py -q` -> `75 passed, 1 warning in 17.84s`.
+  - `tests/test_m20_s51.py` - RAN: `New-Item -ItemType Directory -Force .pytest_tmp_codex | Out-Null; $env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.pytest_tmp_codex'; .venv\Scripts\python.exe -m pytest tests/test_m20_s54.py tests/test_m20_s51.py tests/test_derive_cells_m20.py tests/test_m20_s52.py -q` -> `75 passed, 1 warning in 17.84s`.
+  - `tests/test_derive_cells_m20.py` - RAN: `New-Item -ItemType Directory -Force .pytest_tmp_codex | Out-Null; $env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.pytest_tmp_codex'; .venv\Scripts\python.exe -m pytest tests/test_m20_s54.py tests/test_m20_s51.py tests/test_derive_cells_m20.py tests/test_m20_s52.py -q` -> `75 passed, 1 warning in 17.84s`.
+  - `tests/test_m20_s52.py` - RAN: `New-Item -ItemType Directory -Force .pytest_tmp_codex | Out-Null; $env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.pytest_tmp_codex'; .venv\Scripts\python.exe -m pytest tests/test_m20_s54.py tests/test_m20_s51.py tests/test_derive_cells_m20.py tests/test_m20_s52.py -q` -> `75 passed, 1 warning in 17.84s`.
+- **Gates:** RAN `git diff --check` -> exit 0; RAN `tools/check_ascii.py` -> `ASCII check OK`;
+  RAN module-form `validate 2025` -> exit 0, graph integrity OK. The one pytest warning is the
+  pre-existing `.pytest_cache` ACL baseline, not a test failure.
+- **NOT RUN:** provider leg - Architect-owned; no provider call was made in this Worker session.
+- **Next:** local commit, then S53 remains the next round and its approval switch stays default off.
 
 ## Architect decision - notation
 
@@ -343,11 +371,10 @@ client-managed server dies.
   misdescribes the cause is worse than no reason.** Audit the reason enum against what the code
   actually did and report any other case where they diverge.
 
-  **Step 5 - make `status: incomplete` reachable or delete it.** Today every anchor is admitted or
-  skipped by construction, `unaccounted` is always 0, and the state cannot occur. Either give the
-  builder a path that produces it - an anchor it genuinely cannot classify - or remove the state and
-  say plainly in the report that classification is total. **A guard that cannot fire is worse than
-  no guard**, because it reads as protection.
+  **Step 5 - remove the unreachable incomplete state.** Every anchor is admitted or skipped by
+  construction, `unaccounted` is always 0, and the state cannot occur. The builder now reports
+  `classification: total` alongside `status: complete` or `status: empty`; a guard that cannot fire
+  is worse than no guard because it reads as protection.
 
   **Do not:** fill in a missing lookup band; tune the prompt; promote anything; edit `graph/2025/`
   outside `_drafts/`; widen the cue list further in this round. **Stop conditions:** any diff in the
@@ -355,13 +382,14 @@ client-managed server dies.
   `RAN:`/`NOT RUN:` - **the provider leg is the Architect's**. ASCII, `git diff --check`, module-form
   `validate 2025`. **ONE local commit.**
 
-  **Step 6 - rename the incomplete-cell actor, decided by John 2026-08-04.** S52 shipped
-  `NOT_COMPUTED_CALLER_MUST_RESOLVE`. **"Caller" was the Architect's word, not the project's** - it
-  entered through the S52 spec, and everywhere else this repo says "caller" it means a CODE caller
-  (`docs/engineering-plan.md` "Callers write"; the M5 archive's "existing callers"). The party John
-  meant is the one `docs/tax_graph_requirements.md:13` already names: **the AI agent** given a
-  verified roadmap, addressed in second person by the MCP server instructions.
-  **Rename to `NOT_COMPUTED_AGENT_MUST_RESOLVE`**, statement *"Not computed; the AI agent must
+  **Step 6 - name the incomplete-cell actor, decided by John 2026-08-04.** S52 introduced the
+  incomplete-cell operation under caller-named vocabulary. **"Caller" was the Architect's word,
+  not the project's** - it entered through the S52 spec, and everywhere else this repo says
+  "caller" it means a CODE caller (`docs/engineering-plan.md` "Callers write"; the M5 archive's
+  "existing callers"). The party John meant is the one `docs/tax_graph_requirements.md:13` already
+  names: **the AI agent** given a verified roadmap, addressed in second person by the MCP server
+  instructions.
+  **Use `NOT_COMPUTED_AGENT_MUST_RESOLVE`**, statement *"Not computed; the AI agent must
   resolve this cell."* John considered `tax agent` and `filing agent` and the Architect checked both
   against the acquired IRS text: **"enrolled agents" appears in the 1040 instructions as a class of
   credentialed HUMAN preparers next to CPAs**, and a filing agent is in practice the ERO or
@@ -474,7 +502,7 @@ client-managed server dies.
 - **M20-S52 (`2dac757`, Architect-verified):** the incomplete-cell payload.
   `Result.incomplete_cells` is separate from `missing_required_inputs`, carries the canonical
   address, printed IRS label, instruction text, citations split form-face/instruction, and the
-  operation `NOT_COMPUTED_CALLER_MUST_RESOLVE`; the reason enum is closed and already accepts
+  operation `NOT_COMPUTED_AGENT_MUST_RESOLVE`; the reason enum is closed and already accepts
   `not_approved` for S53. Reaches `execute_tax_tree` and the filled-form `bundle.json`. Architect
   drove the real graph: 89 frontiers with **12** printed labels and 77 without, 3 live incomplete
   cells all carrying a label and 2 of 3 carrying instruction text. Worker reported the hash as
