@@ -17,66 +17,63 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## BALL
 
-**BALL: WORKER - M20-S44 (TYPE THE OPERANDS, AND MAKE THE WARNING WORTH READING).** Task block under
-**From Architect**. **S43 is ACCEPTED at `ba7a1f8`** - the worksheet harvest survives a simulated
-year turn with all 1,480 publink ids rewritten.
+**BALL: WORKER - M20-S45 (BRIDGE THE ADDRESS VERDICT LEDGER TO THE NODE FLAGS).** Task block under
+**From Architect**. **S44 is ACCEPTED at `e0a3f35`** - the status-enum-in-a-numeric-slot defect is
+gone from both corpus runs, derived back to 92/92.
 
-**The worksheet line is complete for now:** S41 manifest reconcile (`40530b1`), S42 harvester
-(`b6e9be7`), S43 title anchoring (`ba7a1f8`). **S44 returns to the derivation path**, where the
-sharpest correctness hole still sits: a filing-status enum in a numeric `IF_ELSE` slot, status
-`derived`, zero failures. **Rollover policy and run alerting are pinned outside this file** at
-`docs/engineering-plan.md` -> Year rollover (TY2026), seam 6, with a pointer from `AGENTS.md`.
+**Why S45 now.** John expected the graph to already carry an accepted/rejected/problem flag per
+node. It nearly does: the schema defines `human_confirmed`, `verification_tier` and `human_review`,
+and `tax_graph/review.py::apply_verdicts` already writes them. **They appear on 0 of 441 nodes**
+because the address-keyed ledger the workbench actually writes was built alongside the older
+verdict path and the last hop was never connected. S45 connects it, and it is what makes bringing a
+new form in safe: write it unflagged, and nothing downstream trusts it until a human confirms.
 
-**Known gap, deliberately NOT S44:** the harvester emits no computed nodes and no `CALCULATES`
-edges, so it does not harvest the arithmetic. That is the next worksheet question when the
-worksheet line resumes.
+**Known gaps, deliberately NOT S45:** the harvester emits no computed nodes or `CALCULATES` edges,
+so it does not harvest arithmetic; and the conditional family plus `LOOKUP_TABLE` still map to no
+rule, so those expressions validate without executing. **Rollover policy and run alerting** are
+pinned at `docs/engineering-plan.md` -> Year rollover (TY2026), seam 6.
 
 ## Current round
 
-**M20-S43 ACCEPTED (Architect, Claude Opus 5, 2026-08-04) at `ba7a1f8`. The worksheet now survives a
-year turn, and I proved it with my own simulation rather than the Worker's fixture.**
+**M20-S44 ACCEPTED (Architect, Claude Opus 5, 2026-08-04) at `e0a3f35`. The target defect is gone
+from both corpus runs, and the new validator caught a real case in the wild.**
 
-**THE SHORTCUT I WARNED ABOUT WAS NOT TAKEN.** The risk in this round was satisfying the test by
-adding a title match *after* the publink match, which passes while leaving the generated id as the
-real key. `_find_start_headings` matches on the normalized title and nothing else; the publink is
-never consulted for matching. I tested it directly: **renaming only the heading text while leaving
-the declared `en_US_2025_publink1000158415` intact in the source blocks the harvest** with
-`missing_start_title: worksheet title matched 0 headings; expected exactly one`. The title is the
-key, not a backstop.
+The Worker declared the live corpus NOT RUN on a new and correct ground - it would export the corpus
+to an external provider without explicit user approval. The Architect ran both legs.
 
-**INDEPENDENT YEAR-TURN SIMULATION.** I rewrote **all 1,480** `en_US_2025_publink*` ids in the real
-acquired HTML to a 2026 scheme, leaving headings and body text untouched, and re-harvested:
+| run | attempted | derived | repaired | errored | resolved | `unmapped_operation` |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| S40 | 96 | 92 / 91 | 1 / 2 | 3 | 93 | 12 / 14 |
+| S41 | 96 | 90 | 3 | 3 | 93 | - |
+| **S44** | 96 | **92 / 92** | 1 / 1 | 3 | 93 | **9 / 7** |
 
-| source | lines | constants | citations (mismatches) | conditions | observed anchor |
-| --- | ---: | ---: | ---: | ---: | --- |
-| real 2025 HTML | 25 | 13 | 13 (0) | 2 | `en_US_2025_publink1000158415` |
-| all publinks rewritten | 25 | 13 | 13 (0) | 2 | `en_US_2026_publink1000158422` |
+**The type check works, verified directly against the exact defect rather than through the corpus.**
+A filing-status node in the `IF_ELSE` condition slot now hard-fails with
+`operand_type_mismatch: IF_ELSE argument 1 (condition) requires a numeric operand`. The same node
+as a `LOOKUP_TABLE` key is still allowed, which is correct - it is a valid lookup key, not a numeric
+operand. `REQUIRE_INPUT` no longer emits an unmapped-operation warning.
 
-Identical output, and it picks up the new anchor as an observation. **This is the difference between
-a harvester that works this year and one that works every year**, and it is the reason the round
-existed.
+**6251 line 39 came out correctly shaped in BOTH runs.** In S40 it produced
+`if_else(node[taxpayer_2025_filing_status], 0, ...)` - a status enum compared against zero, status
+`derived`, zero failures. It is now `if_else(line 12, lookup_table(node[...], 239100, 119550), ...)`
+in both runs. **The status enum is out of the numeric slot.**
 
-**The locator is durable too.** It was `html#en_US_2025_publink1000158415:lines=...`; it is now
-`source_document=<id>;worksheet=<title>;lines=<slug>`. No generated id survives into stored state.
+**`operand_type_mismatch` fired once in run B on live data**, alongside two
+`operand_node_not_found` - the model reaching for node ids that do not exist. Run B's line 18 then
+repaired to a single-filer-only rule. That is the validator doing its job: a narrower correct answer
+beats a wrong one wearing a `derived` badge.
 
-**Fail-closed behaviour is real, not decorative.** Zero title matches and two title matches both
-block with named findings, and the ambiguous case lists every candidate with its anchor rather than
-picking one. Matching is exact after NFKC/case/punctuation normalisation, with one deliberate
-allowance for the IRS's navigational `-Line N` suffix. **There is no fuzzy fallback**, which is the
-S2d/S2e and S3a/S3b ruling applied a fifth time.
+**Step 3 recommendation ACCEPTED as reported.** Do not warn on a degenerate `LOOKUP_TABLE` with
+identical branches. The Worker's reasoning is right - identical status branches can be intentional,
+and the warning would dilute the three real unmapped-operation findings.
 
-**Gates verified independently:** 73 passed on a short temp root, ASCII OK, `git diff --check`
-clean, `validate 2025` exit 0 with the reconcile still naming all six differences, protected set
-byte-identical across `c04db97..ba7a1f8`, no schema changed.
+**Gates verified independently:** 72 passed on a short temp root, ASCII OK, `git diff --check`
+clean, protected set byte-identical across `0310ba1..e0a3f35`.
 
-**UNCHANGED AND STILL TRUE:** the harvest emits no computed nodes and no `CALCULATES` edges. It
-harvests structure, constants, citations and conditional routing - **not the arithmetic** - so it
-complements the hand-authored model rather than replacing it, and nothing is promotable yet. That
-gap is the next real question about worksheets, and it is NOT S44.
-
-**STILL WITH JOHN, unchanged by this round:** the manifest schema change that would let a document
-declare itself as a region of another acquired document (`source_document_id` plus a title), which
-is the self-serve surface his standing requirement is about; and the Form 2441 scope call.
+**STILL OPEN, UNCHANGED BY THIS ROUND.** The conditional family and `LOOKUP_TABLE` still map to no
+rule and no roles, so those expressions validate and do not execute. S44 was never scoped to fix
+that - it stopped the type confusion, which was the wrong-answer case. The mapping report from S40
+stands and John has not ruled on it.
 
 ## Standing constraints (every M20 round)
 
@@ -250,54 +247,58 @@ client-managed server dies.
 
 ## From Architect
 
-- **M20-S44 TASK (QUEUED BEHIND S43; SPEC IS COMPLETE AND STILL STANDS) - TYPE THE OPERANDS,
-  AND MAKE THE WARNING WORTH READING (Architect, Claude Opus 5, 2026-08-03).** Ledger: the RAN/NOT RUN rule, D9, D6. **Small, and both parts are already measured
-  in Current round - do not re-diagnose.**
+- **M20-S45 TASK - BRIDGE THE ADDRESS VERDICT LEDGER TO THE NODE FLAGS (Architect, Claude Opus 5,
+  2026-08-04; raised by John, who expected this to already work).** Ledger: the RAN/NOT RUN rule.
+  **Deterministic, no provider leg. Small - both ends already exist.**
 
-  **Step 1 - `REQUIRE_INPUT` must not raise `unmapped_operation`.** It is the answer the prompt
-  instructs the model to give for a line that is not computed, so it has no rule by design. It is 8
-  and 9 of the 12 and 14 warnings in my two runs. Exclude it at the source in
-  `_projection_warnings` (not by filtering downstream), and add a test that asserts a REQUIRE_INPUT
-  row warns zero times while an `IF_ELSE` row still warns once. Expected result: the warning drops
-  to the three real rows - 1040 line 34, 6251 lines 18 and 39.
+  **Why. John's mental model was right and the implementation is two-thirds built.** He said: *"i
+  thought the graph was written with an accepted/rejected/problem flag attached. once the flag was
+  in accepted mode, we were Thunderbirds Go."* Measured:
+  - `schemas/node.schema.json` already defines `human_confirmed`, `verification_tier` and
+    `human_review`. **They appear on 0 of 441 live nodes.**
+  - `tax_graph/review.py::apply_verdicts` already writes exactly those three fields onto graph
+    objects, with a fail-closed guard refusing to let one verdict confirm a whole multi-object file.
+    It is exposed as `tax-graph review apply-verdicts`. This works.
+  - `workbench/address_verdicts.py` writes an append-only JSONL ledger keyed by canonical address
+    with content fingerprints. This works, and it is what the workbench actually writes today.
+  - **Nothing joins them.** The only `tax_graph`-side consumer of the ledger is `rederive.py`, which
+    reads curated *comments* for the try-again loop. `apply-verdicts` still expects the older
+    verdict-file format, so the ledger's entries never reach a node.
 
-  **Step 2 - the expression grammar is type-free, and that is now the top correctness hole.**
-  Measured, status `derived`, zero failures:
-  `if_else(node[taxpayer_2025_filing_status], 0, if_else(line 12, 119550, ...), if_else(line 12, 239100, ...))`.
-  `IF_ELSE` compares a condition AMOUNT to a threshold AMOUNT; a filing-status enum cannot sit in
-  either slot. **Add a deterministic operand-type check, in code, using inventory metadata you
-  already have.** A `{"node": ...}` operand resolves to a `node_type` and, for parameters, a
-  `constant_value`; a node that is a non-numeric `fact` must be rejected in any slot that the
-  positional semantics define as an amount - `IF_ELSE` condition and threshold, `COMPARE` left and
-  right, and the arithmetic operations. **This is a HARD failure, not a warning** - unlike the
-  `zero_floor` and Form 4684 cases, the model is not offering a better answer here, it is offering a
-  meaningless one. Name the kind `operand_type_mismatch` and give the message the slot name and the
-  node's type, so a repair prompt can act on it.
-  **Report what you cannot decide deterministically rather than guessing.** If the inventory does
-  not record enough about a node to classify it (no `value_type`, no `constant_value`), say which
-  nodes those are and leave them passing rather than inventing a rule.
+  **History, so nobody re-litigates it (verified 2026-08-04).** The M15 path landed whole on
+  2026-07-12 (`4a2bb93`). It keyed review points on generated queue ids, which churned ~100%
+  between runs while canonical-address-keyed references churned 0% - the identity defect this phase
+  has now hit five times. M20-S5-1 (`48af95b`, 2026-07-29) built the address-keyed ledger
+  **alongside** the queue rather than replacing it, and the last hop was never connected. The
+  ledger currently holds ONE entry, from 2026-07-30.
 
-  **Step 3 - the same run also produced `multiply(line 17, lookup_table(status, 0.26, 0.26))`,**
-  a status lookup whose branches are identical. Step 2 does not catch it: the slot is an amount and
-  the lookup returns one. **Report only** - is a degenerate lookup worth a warning, or is it noise
-  that will dilute Step 1's cleanup? Recommend one and say why. Implement nothing for this.
+  **Step 1 - convert an address verdict into a node-level confirmation, in code.** Resolve a
+  canonical address to the graph object(s) it names and apply the same three fields
+  `apply_verdicts` already applies. **Reuse `tax_graph/review.py`; do not write a second applier** -
+  a second parallel path is precisely how this gap was created. Report which resolution the address
+  uses and where it is ambiguous.
 
-  **Step 4 - rerun the corpus TWICE and report both, per S40's precedent.** Numbers to hold:
-  **derived 92/91, repaired 1-2, errored 3, resolved 93.** Report `validator_warnings_by_kind` for
-  both runs so the Step 1 drop is visible, and print the 6251 line 39 expression from each run -
-  that is the row where the type error appeared once and not the other time, so one clean run proves
-  nothing. **State plainly whether either run still produces a status enum in a numeric slot.**
+  **Step 2 - the content fingerprint is the whole point, so honour it.** A verdict records the
+  content the reviewer actually looked at. **If the node's current content no longer matches the
+  fingerprint, the confirmation MUST NOT apply** - report it as stale with both fingerprints named.
+  This is what makes a verdict survive regeneration instead of silently blessing changed content,
+  and it is the property the M15 path lacked. Unit-test both branches.
 
-  **Do not:** author or edit anything in `graph/2025/`; add rule or role mappings (still not
-  authorized - the S40 mapping report stands and John has not ruled); turn `unmapped_operation` into
-  a hard failure; weaken `missing_floor` or the external-reference discriminator; re-add Azure to
-  `llm.provider_routing.only`; let a `contributed` comment reach the model; build UI; promote
-  anything.
-  **Stop conditions:** any diff in the protected directories; `derive_cells` acquiring a disk write;
-  any harness output landing inside the repository; derived below 91 on both runs. Tier 3. Declared
-  files plus honest `RAN:`/`NOT RUN:`. ASCII, `git diff --check`, module-form `validate 2025`,
-  preflight with `legacy_mined` explicit (394), strict citations (36).
-  **ONE local commit** - and run `git status` first; do not commit paths you did not touch.
+  **Step 3 - three states, not two.** John's model is accepted / rejected / problem. Report what the
+  ledger's `judgement` vocabulary can actually express today (the one live entry reads
+  `"judgement": "confirmed"`) and what a rejected or problem verdict would write onto a node.
+  **Do not invent a vocabulary** - report the gap and stop if the ledger cannot express all three.
+
+  **Step 4 - do NOT apply anything to the live graph in this round.** The protected set stays
+  byte-identical. Prove the bridge against a temporary copy of the graph and report what WOULD
+  change for the single real ledger entry (`2025/document=form_1040/line=1z/control=amount`), field
+  by field. **Promotion is John's call and it is the first one in this phase.**
+
+  **Do not:** author or edit anything in `graph/2025/`; write a second verdict applier; invent
+  judgement states; change `derive_cells`; touch the harvester. **Stop conditions:** any diff in the
+  protected directories; a confirmation applied whose fingerprint does not match. Tier 3. ASCII,
+  `git diff --check`, module-form `validate 2025` (all six reconcile differences still named).
+  **ONE local commit** - run `git status` first.
 
 ## Architect decisions
 
@@ -353,6 +354,11 @@ client-managed server dies.
 
 ## Recent rounds (condensed; full narration in git history - `git show <hash>`)
 
+- **M20-S44 (`e0a3f35`, Architect-verified):** `operand_type_mismatch` hard-fails a nonnumeric graph
+  node in a numeric slot while still allowing a status node as a `LOOKUP_TABLE` key; incomplete node
+  metadata is recorded as `operand_type_undetermined_nodes` and allowed through; `REQUIRE_INPUT` no
+  longer emits an unmapped-operation warning. Architect ran both corpus legs: derived 92/92,
+  resolved 93, `unmapped_operation` down 12-14 -> 9/7, and 6251 line 39 correctly shaped in both.
 - **M20-S43 (`ba7a1f8`, Architect-verified):** worksheet start resolves by normalized printed title,
   exact after NFKC/case/punctuation folding with one allowance for the IRS `-Line N` suffix; zero or
   multiple matches fail closed with every candidate named; the publink is demoted to an observation
@@ -420,31 +426,14 @@ client-managed server dies.
 - **M20-S24 (`e6e94e3`):** `derive_cells` as a pure function with expression trees.
 - **M20-S23 (`0831694`):** the `instruction_sections` artifact and its join.
 
-## Worker status
-
-- **M20-S44 (2026-08-04, Worker, implementation ready for Architect review):** `_projection_warnings`
-  now suppresses the intentional root `REQUIRE_INPUT` unmapped-operation finding. The reference
-  inventory preserves `value_type`; known nonnumeric graph nodes fail hard as
-  `operand_type_mismatch` in numeric slots, while incomplete metadata is recorded on the row as
-  `operand_type_undetermined_nodes` and allowed through. No protected graph or field-map files
-  changed.
-  **Step 3 recommendation:** do not warn on a degenerate `LOOKUP_TABLE` with identical branches;
-  identical status branches can be intentional, and a warning would dilute the three real
-  unmapped-operation findings. The status node is a valid lookup key, not a numeric operand.
-  **RAN:** `$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp_s44';
-  .venv\Scripts\python.exe -m pytest tests/test_derive_cells_m20.py tests/test_derive_cells_s30.py
-  tests/test_m20_s41.py -q` -> 62 passed, 1 warning in 1.97s.
-  **RAN:** `.venv\Scripts\python.exe -m tax_graph.cli validate 2025` -> exit 0; 18 documents,
-  441 nodes, 409 edges, 401 citations; all six reconcile differences named.
-  **RAN:** `.venv\Scripts\python.exe -m workbench.cli preflight --year 2025` (escalated read-only
-  retry after sandbox ACL failure) -> exit 0; units=2224, derived_cells=2120,
-  `legacy_mined=394`.
-  **RAN:** strict citation check -> `checked=401 strict_mismatches=36`; ASCII and `git diff --check`
-  also pass. **NOT RUN:** the two live corpus commands were rejected because they would export the
-  2025 corpus to an external provider without explicit user approval; no provider result is claimed.
-
 ## Latest verification
 
+- **M20-S44 (2026-08-04, Architect live):** two corpus runs, attempted=96 both, derived 92 and 92,
+  repaired 1 and 1, errored 3, resolved 93 both; `unmapped_operation` 9 and 7 (was 12 and 14);
+  `operand_type_mismatch` fired once on live data. Type check verified directly: status node in the
+  `IF_ELSE` condition slot hard-fails, the same node as a `LOOKUP_TABLE` key passes,
+  `REQUIRE_INPUT` warns zero times. 72 passed on a short temp root; ASCII OK; `git diff --check`;
+  protected set byte-identical across `0310ba1..e0a3f35`.
 - **M20-S43 (2026-08-04, Architect):** independent year-turn simulation - all 1,480
   `en_US_2025_publink*` ids in the acquired HTML rewritten to a 2026 scheme, headings untouched;
   harvest output identical (25 lines, 13 constants, 13 citations with 0 mismatches, 2 conditions)
