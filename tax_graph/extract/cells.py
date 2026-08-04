@@ -1420,11 +1420,16 @@ def _validate_argument_shapes(operation: str, args: list[Any]) -> None:
     elif operation == "NOT" and not _is_predicate_expression(args[0]):
         raise ValueError("NOT argument 1 (operand) must be a predicate expression")
     elif operation == "LOOKUP_TABLE":
-        if any(not _is_leaf_operand(arg) or "role" not in arg for arg in args):
+        if any(
+            not _is_leaf_operand(arg)
+            or not isinstance(arg.get("role"), str)
+            or not arg["role"]
+            for arg in args
+        ):
             raise ValueError(
                 "LOOKUP_TABLE arguments must be named leaf operands with a role"
             )
-        roles = [str(arg["role"]) for arg in args]
+        roles = [arg["role"] for arg in args]
         if roles.count("key") != 1:
             raise ValueError("LOOKUP_TABLE requires exactly one key role")
         if len(set(roles)) != len(roles):
@@ -1441,6 +1446,8 @@ def _is_leaf_operand(value: Any) -> bool:
 def _validate_operand_role(node: Mapping[str, Any], *, allow_role: bool) -> None:
     """Validate an optional lookup role without allowing it to be ignored."""
     if "role" not in node:
+        return
+    if node["role"] is None:
         return
     if not allow_role:
         raise ValueError("operand role is only valid on LOOKUP_TABLE arguments")
@@ -1495,7 +1502,7 @@ def expression_schema(
 
 def _expression_node_schema(operations: list[str], depth: int) -> dict[str, Any]:
     role = {
-        "type": "string",
+        "type": ["string", "null"],
         "pattern": "^[a-z][a-z0-9_]*$",
         "description": "Named lookup role; use key, default, or the exact branch key.",
     }
@@ -1503,13 +1510,13 @@ def _expression_node_schema(operations: list[str], depth: int) -> dict[str, Any]
         {
             "type": "object",
             "additionalProperties": False,
-            "required": ["line"],
+            "required": ["line", "role"],
             "properties": {"line": {"type": "string", "minLength": 1}, "role": role},
         },
         {
             "type": "object",
             "additionalProperties": False,
-            "required": ["form", "line"],
+            "required": ["form", "line", "role"],
             "properties": {
                 "form": {"type": "string", "minLength": 1},
                 "line": {"type": "string", "minLength": 1},
@@ -1519,13 +1526,13 @@ def _expression_node_schema(operations: list[str], depth: int) -> dict[str, Any]
         {
             "type": "object",
             "additionalProperties": False,
-            "required": ["const"],
+            "required": ["const", "role"],
             "properties": {"const": {"type": "number"}, "role": role},
         },
         {
             "type": "object",
             "additionalProperties": False,
-            "required": ["node"],
+            "required": ["node", "role"],
             "properties": {"node": {"type": "string", "minLength": 1}, "role": role},
         },
     ]

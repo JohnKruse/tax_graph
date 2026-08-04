@@ -17,17 +17,16 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## BALL
 
-**BALL: WORKER - M20-S47 (FIX THE PROVIDER SCHEMA S46 BROKE, AND GUARD IT).** Task block under
-**From Architect**. **S46 is REWORK at `85a83ca`** - the design is verified correct and the emitted
-JSON schema is invalid, so the live corpus derives 0 of 96.
+**BALL: ARCHITECT - verify M20-S47, then push the new local commit.** S47 repairs the provider
+schema defect in S46 while retaining the verified projection and lookup semantics.
 
-**DO NOT PUSH `85a83ca` UNTIL S47 LANDS.** CI cannot catch this - it has no provider - so main would
-carry a state where live derivation fails on every row.
+The S46 commit `85a83ca` must not be pushed by itself. The S47 commit below is the required repair;
+the provider corpus leg remains Architect-side because this Worker has no outbound network.
 
 **Keep the whole S46 slice.** Named lookup roles, the fail-closed bare list, evidence-driven
 comparison direction, and projection onto existing rule ids were all verified working by the
-Architect. Only `expression_schema()` is wrong: `role` sits in `properties` and not in `required`,
-which OpenAI strict mode rejects outright.
+Architect. Only `expression_schema()` was wrong: `role` sat in `properties` and not in `required`,
+which OpenAI strict mode rejects outright. S47 adds the missing strict requirements and a standing guard.
 
 **Known gaps, deliberately NOT S47:** the harvester emits no computed nodes or `CALCULATES` edges;
 the review vocabulary is two-state, queued as S48. **Rollover policy and run alerting** are pinned
@@ -36,50 +35,20 @@ borrow the decision-table shape for lookups, adopt no formalism.
 
 ## Current round
 
-**M20-S46 REWORK (Architect, Claude Opus 5, 2026-08-04) at `85a83ca`. The design is right and the
-live corpus is 100% DEAD. Do not push this state.**
+**M20-S47 WORKER COMPLETE (2026-08-04).** The whole S46 slice is retained. `expression_schema()`
+now requires `role` on every leaf alternative at every depth and encodes no role as
+`{"type": ["string", "null"]}`. Ordinary operands accept `role: null`; `LOOKUP_TABLE` rejects
+missing or null roles with `LOOKUP_TABLE arguments must be named leaf operands with a role`.
 
-**THE LOCAL SLICE IS GOOD AND SHOULD BE KEPT.** I verified each piece directly rather than through
-the corpus:
-- `LOOKUP_TABLE` maps to the existing `lookup_selected_value`, and lookup leaves carry named roles.
-  Projected edge roles on 6251 line 18: `key`, `default`, `married_filing_separately` - the borrowed
-  decision-table shape working as intended.
-- **A bare ordered lookup fails closed**: `LOOKUP_TABLE arguments must be named leaf operands with a
-  role`. That was the point of the round.
-- **Direction resolves deterministically from evidence.** 1040 line 34 with its own text ("If line
-  33 is **more than** line 24") projects `if_greater_than_currency` with roles `condition`,
-  `threshold`, `when_true`, `when_false` and **zero findings**. With no evidence supplied it reports
-  `comparison direction unresolved` rather than guessing - correct.
-- The projection **references** existing rule ids instead of authoring new ones, so
-  `graph/2025/rules/` is untouched. The `when_false` zero even resolved to
-  `form_1040_2025_zero_floor`, the cited node rather than a bare constant.
-- Step 1 measurement was delivered: 9 operation kinds across the 96 rows, **no new operation enum
-  demanded** - a useful negative result.
-- Gates: 86 passed on a short temp root, ASCII OK, `git diff --check` clean, protected set
-  byte-identical across `6d141ab..85a83ca`, `validate 2025` exit 0.
+**RAN:** `$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\.codex\visualizations\2026\08\04\019fcd89-309b-7190-b5e5-c41ec44f1a95'; .venv\Scripts\python.exe -m pytest tests\test_derive_cells_m20.py tests\test_prompt_experiment_m20.py tests\test_m20_s31.py -q` -> **68 passed** (1 pre-existing `.pytest_cache` ACL warning).
 
-**THE DEFECT: THE EMITTED PROVIDER SCHEMA IS INVALID, SO NOTHING DERIVES AT ALL.** Two full corpus
-runs, both `attempted=96, derived=0, errored=96`. Every row returns the same 400:
+**NOT RUN:** provider corpus leg. The Worker sandbox has no outbound network; S47 explicitly leaves
+that leg to the Architect. No external provider call was attempted.
 
-```
-Invalid schema for response_format 'tax_graph_cell_derivation':
-In context=('properties','expression','properties','args','items','anyOf',0),
-'required' is required to be supplied and to be an array including every key in properties.
-Missing 'role'.
-```
-
-S46 added `role` to the leaf-operand `properties` and did not add it to `required`. OpenAI's
-structured-output mode demands a strict schema: **every key in `properties` must appear in
-`required`**, with optionality expressed as a nullable type, not by omission. I walked the emitted
-schema - **12 objects are affected**, every leaf variant at all three nesting depths.
-
-**This is exactly why the live gate exists.** The Worker declared the corpus UNVERIFIED and was
-right to: its own sandbox attempt died earlier at the network layer with `Connection error`, so it
-never reached the 400 and could not have seen this.
-
-**WHAT WOULD HAVE CAUGHT IT WITHOUT A PROVIDER CALL.** A deterministic test asserting that every
-object in `expression_schema()` has `properties` as a subset of `required`. That is a pure local
-check, no network, no cost. Its absence is the real process gap, not the missing `role` entry.
+**RAN:** `.venv\Scripts\python.exe tools\check_ascii.py` -> `ASCII check OK`; `git diff --check` ->
+clean; `.venv\Scripts\python.exe -m tax_graph.cli validate 2025` -> exit 0, graph integrity OK;
+protected-set `git diff --stat -- graph/2025/nodes graph/2025/edges graph/2025/rules graph/2025/field_maps`
+-> empty.
 
 ## Architect decision - notation
 

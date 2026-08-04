@@ -345,6 +345,32 @@ def test_expression_schema_is_bounded_and_contains_no_recursive_ref() -> None:
     assert schema["properties"]["expression"]["properties"]["op"]["enum"] == ["MAX", "SUBTRACT"]
 
 
+def test_expression_schema_requires_every_declared_property_at_every_depth() -> None:
+    schema = expression_schema(depth=3)
+
+    def visit(value: object, path: str = "schema") -> None:
+        if isinstance(value, dict):
+            if "properties" in value:
+                assert set(value["properties"]) <= set(value["required"]), path
+            for key, child in value.items():
+                visit(child, f"{path}.{key}")
+        elif isinstance(value, list):
+            for index, child in enumerate(value):
+                visit(child, f"{path}[{index}]")
+
+    visit(schema)
+
+
+def test_expression_schema_uses_nullable_role_for_ordinary_operands() -> None:
+    schema = expression_schema()
+    operands = schema["properties"]["expression"]["properties"]["args"]["items"]["anyOf"]
+
+    leaves = [item for item in operands if "role" in item.get("properties", {})]
+    assert all("role" in item["required"] for item in leaves)
+    assert all(item["properties"]["role"]["type"] == ["string", "null"] for item in leaves)
+    validate_expression_tree({"op": "COPY", "args": [{"line": "11b", "role": None}]})
+
+
 def test_quote_span_schema_does_not_expose_source_identity() -> None:
     rows = [
         {
@@ -505,6 +531,14 @@ def test_lookup_tree_uses_named_roles_and_projects_to_engine_shape() -> None:
             "args": [
                 {"node": "taxpayer_2025_filing_status"},
                 {"const": 239100},
+            ],
+        })
+    with pytest.raises(ValueError, match="named leaf operands"):
+        validate_expression_tree({
+            "op": "LOOKUP_TABLE",
+            "args": [
+                {"role": None, "node": "taxpayer_2025_filing_status"},
+                {"role": "default", "const": 239100},
             ],
         })
 
@@ -818,7 +852,7 @@ def test_graph_node_operand_is_schema_validated_resolved_and_projected() -> None
     validate_expression_tree(expression)
     schema = expression_schema()
     node_alternatives = schema["properties"]["expression"]["properties"]["args"]["items"]["anyOf"]
-    assert {"node"} in [set(item["required"]) for item in node_alternatives]
+    assert {"node", "role"} in [set(item["required"]) for item in node_alternatives]
 
     row = CellFrame.from_rows([{
         **_frame()[1],
