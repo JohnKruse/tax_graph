@@ -17,9 +17,34 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## BALL
 
-**BALL: WORKER - M20-S52 (THE INCOMPLETE-CELL PAYLOAD).** Task block under **From Architect**.
-**S51 is ACCEPTED at `1541a67`** - the denominator is explicit, and the live leg the Architect ran
-against it found the phase's most important defect.
+**BALL: WORKER - M20-S52 [DONE] (THE INCOMPLETE-CELL PAYLOAD).** Committed at `d2637e3`.
+**S51 is ACCEPTED at `1541a67`** - the
+denominator is explicit, and the live leg the Architect ran against it found the phase's most
+important defect.
+
+**S52 RESULT.** `Result.incomplete_cells` is separate from `missing_required_inputs`. Frontier
+walls now carry the target node, canonical address, held printed label, held instruction text when
+available, citation refs split by source, named reason `reference_not_in_corpus`, and the explicit
+operation `NOT_COMPUTED_CALLER_MUST_RESOLVE`. The same payload builder accepts `not_approved` for
+S53. MCP `execute_tax_tree` returns the collection, and the filled-form `bundle.json` persists it.
+The 89-entry frontier registry currently supplies printed labels for **12** entries and cannot
+supply them for **77**; the missing frontier ids are reported by the coverage helper and no text is
+invented. Existing values and unresolved traces remain unchanged except for the additive payload.
+
+**S52 EVIDENCE.**
+- `RAN: $env:PYTEST_DEBUG_TEMPROOT = 'C:\\Users\\devbox\\.codex\\visualizations\\2026\\08\\04\\019fce7b-33cf-7973-9b0e-a540da582f69\\pytest_m20s52'; .venv\\Scripts\\python.exe -m pytest tests/test_m20_s52.py -q -> 5 passed`
+- `RAN: $env:PYTEST_DEBUG_TEMPROOT = 'C:\\Users\\devbox\\.codex\\visualizations\\2026\\08\\04\\019fce7b-33cf-7973-9b0e-a540da582f69\\pytest_m20s52'; .venv\\Scripts\\python.exe -m pytest tests/test_return_outputs_m12.py tests/test_pdf_fill_m12.py tests/test_capital_gains_slice.py tests/test_tables_engine_m6b.py -q -> 18 passed`
+- `RAN: $env:PYTEST_DEBUG_TEMPROOT = 'C:\\Users\\devbox\\.codex\\visualizations\\2026\\08\\04\\019fce7b-33cf-7973-9b0e-a540da582f69\\pytest_m20s52'; .venv\\Scripts\\python.exe -m pytest tests/test_frontier_engine_m7.py tests/test_mcp_m2.py -q -> 13 passed, 1 failed; the m7 copy fixture is blocked by ACLs on graph/2025/_drafts/form_1040_2025, schedule_1_2025, and schedule_a_2025; the MCP tests passed`
+- `RAN: .venv\\Scripts\\python.exe tools/check_ascii.py -> ASCII check OK`
+- `RAN: .venv\\Scripts\\python.exe -m tax_graph.cli validate 2025 -> exit 0; graph integrity OK; reconcile clean in both directions`
+- `RAN: git diff --check -> clean`
+- `RAN: git diff --stat -- graph/2025/nodes graph/2025/edges graph/2025/rules graph/2025/field_maps -> empty`
+
+**EXPORT BEHAVIOR RECORDED.** The return-record export still renders unresolved trace entries as
+deferred output context; it does not print an unresolved value as a computed number. The filled
+form writer leaves `MISSING` cells blank and already records blank frontier notes; S52 now places
+the full incomplete payload inside the bundle manifest and `bundle.json`, rather than only beside
+the export provenance.
 
 **THE HEADLINE: A LOOKUP TABLE CAN BE SILENTLY TRUNCATED.** Form 2441 line 8 finally entered the
 denominator, the model produced the named-role lookup shape correctly, and it transcribed **6 of the
@@ -36,7 +61,7 @@ them because it is a live correctness hole and the gate is not what closes it.**
 promotion question was withdrawn as malformed. **Rollover policy and run alerting** are pinned at
 `docs/engineering-plan.md` -> Year rollover (TY2026), seam 6.
 
-## Current round
+## Prior round - M20-S51
 
 **M20-S51 ACCEPTED (Architect, Claude Opus 5, 2026-08-04) at `1541a67`. The denominator is now
 visible, and the provider leg I ran against it produced the most valuable finding of the phase.**

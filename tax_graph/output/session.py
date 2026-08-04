@@ -146,6 +146,7 @@ def export_filing_bundle(
         "forms": [str(item.output_path) for item in filled],
         "sidecar": {key: str(value) for key, value in sidecar.items()},
         "blank_with_note": _dedupe_notes(blank_notes),
+        "incomplete_cells": list(result.incomplete_cells),
     }
     (destination / "bundle.json").write_text(
         json.dumps(manifest, indent=2, sort_keys=True) + "\n", encoding="utf-8", newline="\n"

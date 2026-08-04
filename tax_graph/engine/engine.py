@@ -11,7 +11,7 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from pathlib import Path
 import sqlite3
-from typing import Any
+from typing import Any, Mapping
 
 from tax_graph.engine.operations import MISSING, apply_operation, is_missing, round_value
 from tax_graph.frontier.build import load_frontier_registry
@@ -22,6 +22,8 @@ from tax_graph.addressing import load_address_artifacts, load_compiled_address_a
 
 ROOT = Path(__file__).resolve().parents[2]
 TABLE_FACTS_KEY = "#tables"
+INCOMPLETE_REASONS = frozenset({"reference_not_in_corpus", "not_approved"})
+INCOMPLETE_OPERATION = "NOT_COMPUTED_CALLER_MUST_RESOLVE"
 
 
 class Graph:
@@ -164,11 +166,12 @@ def _with_runtime_gate(value: dict[str, Any]) -> dict[str, Any]:
 
 @dataclass
 class Result:
-    """Computed values, trace, and missing required inputs."""
+    """Computed values, trace, missing inputs, and explicit incomplete cells."""
 
     values: dict[str, Any] = field(default_factory=dict)
     trace: dict[str, dict[str, Any]] = field(default_factory=dict)
     missing_required_inputs: list[str] = field(default_factory=list)
+    incomplete_cells: list[dict[str, Any]] = field(default_factory=list)
 
 
 class Engine:
@@ -190,6 +193,10 @@ class Engine:
             node_id
             for node_id, trace in result.trace.items()
             if trace.get("kind") == "missing_required"
+        )
+        result.incomplete_cells = sorted(
+            result.incomplete_cells,
+            key=lambda item: (str(item.get("node_id")), str(item.get("reason")), str(item.get("frontier_id"))),
         )
         return result
 
@@ -287,8 +294,15 @@ class Engine:
             if edge["source"] not in self.g.nodes:
                 frontier = _frontier_for_missing_source(edge, self.g)
                 if frontier is not None:
+                    incomplete = build_incomplete_cell_payload(
+                        self.g,
+                        node_id,
+                        reason="reference_not_in_corpus",
+                        frontier=frontier,
+                    )
+                    result.incomplete_cells.append(incomplete)
                     result.values[node_id] = MISSING
-                    result.trace[node_id] = _unresolved_trace(edge, frontier)
+                    result.trace[node_id] = _unresolved_trace(edge, frontier, incomplete=incomplete)
                     return MISSING
             source_value = self._eval(edge["source"], facts, result)
             source_node = self.g.nodes[edge["source"]]
@@ -620,7 +634,130 @@ def _frontier_for_missing_source(edge: dict[str, Any], graph: Graph) -> dict[str
     return None
 
 
-def _unresolved_trace(edge: dict[str, Any], frontier: dict[str, Any]) -> dict[str, Any]:
+def build_incomplete_cell_payload(
+    graph: Graph,
+    node_id: str,
+    *,
+    reason: str,
+    frontier: Mapping[str, Any] | None = None,
+) -> dict[str, Any]:
+    """Build the caller-facing payload for a cell that is deliberately not computed.
+
+    This is shared by the frontier path and the approval gate. The payload is
+    evidence-bearing: it uses graph labels and citation text already held by the
+    project, and never invents a placeholder for missing IRS text.
+    """
+    if reason not in INCOMPLETE_REASONS:
+        raise ValueError(f"unsupported incomplete-cell reason: {reason}")
+
+    base_node_id = node_id.partition("#")[0]
+    node = graph.nodes.get(base_node_id, {})
+    frontier_data = dict(frontier or {})
+    target = frontier_data.get("target") or {}
+    form_node_id, form_node = _form_face_node_for_frontier(graph, frontier_data)
+    if form_node is None and node.get("node_type") == "form_line":
+        form_node_id, form_node = base_node_id, node
+
+    citation_ids = set(str(value) for value in node.get("citation_refs", []) or [])
+    citation_ids.update(str(value) for value in (form_node or {}).get("citation_refs", []) or [])
+    citation_ref = frontier_data.get("citation_ref")
+    if citation_ref:
+        citation_ids.add(str(citation_ref))
+
+    form_citation_refs: list[str] = []
+    instruction_citation_refs: list[str] = []
+    instruction_texts: list[str] = []
+    for citation_id in sorted(citation_ids):
+        citation = graph.citations.get(citation_id)
+        if citation is None:
+            continue
+        if _is_instruction_citation(citation):
+            instruction_citation_refs.append(citation_id)
+            quoted_text = str(citation.get("quoted_text") or "").strip()
+            if quoted_text:
+                instruction_texts.append(quoted_text)
+        else:
+            form_citation_refs.append(citation_id)
+
+    address_node_id = form_node_id or base_node_id
+    address = graph.address_by_node.get(address_node_id)
+    target_document_id = target.get("document_id") or node.get("document_id")
+    target_line = target.get("line")
+    return {
+        "node_id": node_id,
+        "canonical_address": address.address_id if address else None,
+        "canonical_address_node_id": address_node_id if address else None,
+        "document_id": target_document_id,
+        "line": str(target_line) if target_line is not None else None,
+        "printed_label": (form_node or {}).get("label"),
+        "instruction_text": "\n\n".join(instruction_texts) if instruction_texts else None,
+        "citation_refs": sorted(citation_ids),
+        "form_citation_refs": form_citation_refs,
+        "instruction_citation_refs": instruction_citation_refs,
+        "reason": reason,
+        "operation": INCOMPLETE_OPERATION,
+        "operation_statement": "Not computed; the caller must resolve this cell.",
+        "frontier_id": frontier_data.get("frontier_id"),
+        "frontier_status": frontier_data.get("status"),
+        "target_url": frontier_data.get("target_url"),
+    }
+
+
+def frontier_text_coverage(graph: Graph) -> dict[str, Any]:
+    """Report which frontier entries have a held printed label."""
+    missing = []
+    with_label = 0
+    for frontier in graph.frontiers:
+        _node_id, node = _form_face_node_for_frontier(graph, frontier)
+        if node is not None and str(node.get("label") or "").strip():
+            with_label += 1
+        else:
+            missing.append(str(frontier.get("frontier_id") or ""))
+    return {
+        "total": len(graph.frontiers),
+        "with_printed_label": with_label,
+        "without_printed_label": len(missing),
+        "missing_frontier_ids": missing,
+    }
+
+
+def _form_face_node_for_frontier(
+    graph: Graph,
+    frontier: Mapping[str, Any],
+) -> tuple[str | None, dict[str, Any] | None]:
+    target = frontier.get("target") or {}
+    target_node_id = str(target.get("node_id") or "")
+    target_node = graph.nodes.get(target_node_id)
+    if target_node and target_node.get("node_type") == "form_line":
+        return target_node_id, target_node
+
+    document_id = str(target.get("document_id") or "")
+    line = str(target.get("line") or "")
+    if not document_id or not line or "-" in line:
+        return None, None
+    candidates = []
+    for candidate_id, candidate in graph.nodes.items():
+        if candidate.get("document_id") != document_id or candidate.get("node_type") != "form_line":
+            continue
+        address = graph.address_by_node.get(candidate_id)
+        if address and str(address.official_ref or "") == line:
+            candidates.append((candidate_id, candidate))
+    return sorted(candidates, key=lambda item: item[0])[0] if candidates else (None, None)
+
+
+def _is_instruction_citation(citation: Mapping[str, Any]) -> bool:
+    document_id = str(citation.get("document_id") or "").lower()
+    locator = str(citation.get("locator") or "").lower()
+    url = str(citation.get("url") or "").lower()
+    return "instruction" in document_id or "instruction" in locator or "/instructions/" in url
+
+
+def _unresolved_trace(
+    edge: dict[str, Any],
+    frontier: dict[str, Any],
+    *,
+    incomplete: dict[str, Any] | None = None,
+) -> dict[str, Any]:
     target = frontier.get("target") or {}
     target_document_id = target.get("document_id") or target.get("external_id")
     address = target_document_id or "unknown frontier"
@@ -646,6 +783,7 @@ def _unresolved_trace(edge: dict[str, Any], frontier: dict[str, Any]) -> dict[st
         "target_tier": "T1",
         "proposed_provenance": {"gate": "user", "verification_tier": "T1"},
         "note": f"depends on {address}, not yet modeled, see {frontier.get('target_url')}",
+        "incomplete_cell": incomplete,
     }
 
 

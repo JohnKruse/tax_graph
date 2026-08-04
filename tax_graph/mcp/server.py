@@ -249,6 +249,7 @@ def _register_tools(server: FastMCP, context: McpGraphContext) -> None:
             "source": context.graph.source,
             "values": _json_safe(result.values),
             "missing_required_inputs": result.missing_required_inputs,
+            "incomplete_cells": _json_safe(result.incomplete_cells),
             "trace": _json_safe(result.trace),
             "provenance": _execution_provenance(result, context),
         }
