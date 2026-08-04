@@ -17,74 +17,66 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## BALL
 
-**BALL: WORKER - M20-S48 (THREE-STATE REVIEW VOCABULARY, PLUS ONE MEASURED NOISE FIX).** Task block
-under **From Architect**. **S47 is ACCEPTED at `1b9f116`** - the corpus is alive again and 1040 line
-34 plus 6251 lines 18 and 39 now project real engine rules with zero findings.
+**BALL: WORKER - M20-S49 (RUN THE WHOLE PIPELINE AT FORM 2441).** Task block under
+**From Architect**. **S48 is ACCEPTED at `c55fde5` + `71b064a`** - review is three-state end to end
+and the false direction warning is gone.
 
-**The conditional/lookup line is closed.** S46 built it, S47 made it valid for the provider, and both
-are pushed. **S48 returns to the review loop** and closes the gap John raised directly: the graph is
-two-state where his model is accepted / rejected / problem.
+**Why S49 now.** Every piece 2441 needs landed in the last eight rounds: the manifest drives the
+corpus (S41), conditionals and lookups execute (S46/S47) which 2441's AGI percentage table requires,
+and review is three-state with a working bridge (S45/S48). **This is the first end-to-end exercise
+of the whole assembly on a form the pipeline has never properly processed** - John's own framing:
+*"a good exercise in seeing if our pipeline is reliable and valid."*
 
-**Known gaps, deliberately NOT S48:** the harvester emits no computed nodes or `CALCULATES` edges,
-so it does not harvest arithmetic; and engine behaviour for non-confirming nodes is REPORTED in S48,
-not wired - that is John's call. **Rollover policy and run alerting** are pinned at
+**Drafts only. NO PROMOTION** - John rules on that with the artifact in front of him.
+
+**AWAITING JOHN, does not block S49:** what a `questioned` or `rejected` node should mean to
+`execute_tax_tree` - see **Open for Architect**. **Rollover policy and run alerting** are pinned at
 `docs/engineering-plan.md` -> Year rollover (TY2026), seam 6.
 
 ## Current round
 
-**M20-S47 ACCEPTED (Architect, Claude Opus 5, 2026-08-04) at `1b9f116`. The corpus is alive again
-and the three target rows are now EXECUTABLE, which is what S46 and S47 existed to achieve.**
+**M20-S48 ACCEPTED (Architect, Claude Opus 5, 2026-08-04) at `c55fde5` and `71b064a`. The review
+loop is three-state end to end, and the false direction warning is gone.**
 
-**The schema fix is verified by walking it, not by trusting the report.** Zero objects have a
-property outside `required`, at any depth, and `role` is nullable
-(`"type": ["string","null"]`) rather than omitted - which is what strict mode requires.
+**The three states map correctly, verified by calling the mapping directly:**
 
-**The guard test is the durable part.**
-`test_expression_schema_requires_every_declared_property_at_every_depth` asserts
-`set(properties) <= set(required)` at every depth, with no network and no cost. That is the check
-whose absence let a 100%-dead corpus reach an Architect review.
-
-**S46's semantics survived the change**, tested directly: a bare ordered lookup and a null-role
-lookup both still fail closed with `LOOKUP_TABLE arguments must be named leaf operands with a
-role`, and a properly named lookup still projects onto `lookup_selected_value`.
-
-**EXECUTABLE, LIVE, IN BOTH RUNS - the actual goal:**
-
-| row | projected rules | findings |
+| stored token | reviewer label | node fields written |
 | --- | --- | --- |
-| 1040 line 34 | `if_greater_than_currency`, `subtract_currency` | NONE |
-| 6251 line 18 | `if_less_than_currency`, `lookup_selected_value`, `multiply_currency`, `subtract_currency` | NONE |
-| 6251 line 39 | `if_less_than_currency`, `lookup_selected_value`, `multiply_currency`, `subtract_currency` | NONE |
+| `confirmed` | Accept | `human_confirmed: true`, tier `human-confirmed` |
+| `questioned` | Question | `human_confirmed: false`, tier `human-questioned` |
+| `rejected` | Reject | `human_confirmed: false`, tier `human-rejected` |
 
-The 6251 lookups carry named roles - `key`, `default`, `married_filing_separately` - so the borrowed
-decision-table shape is running end to end on live model output. **These rows cover married filing
-separately AND now produce rules the engine can execute.** Three rounds ago they were single-filer
-only; two rounds ago they had a status enum in a numeric slot; one round ago they derived and
-computed nothing.
+Legacy tokens canonicalize rather than being guessed at - `problem` -> `questioned`, `approved` ->
+`confirmed` - and an unknown token raises `unsupported address judgement` instead of defaulting.
+Question and Reject require an observation; Accept does not. **That asymmetry is right**: a bare
+rejection with no reason is the one verdict that helps nobody.
 
-| run | attempted | derived | repaired | errored | resolved | `unmapped_operation` |
-| --- | ---: | ---: | ---: | ---: | ---: | ---: |
-| S44 | 96 | 92 / 92 | 1 / 1 | 3 | 93 | 9 / 7 |
-| S46 | 96 | **0 / 0** | 0 | 96 | 0 | - |
-| **S47** | 96 | 89 / 91 | 4 / 2 | 3 | **93 / 93** | **3 / 3** |
+**Every S45 safety property survived.** Dry-run by default, exact address plus single node binding,
+and the fingerprint check still blocks non-confirming states - there is a parametrized test for
+precisely that. I also found the ledger is **tamper-evident at load**: editing a record's
+`content_fingerprint` to make a stale verdict look fresh fails with
+`content_fingerprint does not match reviewed_content`. I hit that trying to forge test records, and
+it is a genuinely good property nobody claimed credit for.
 
-**Derived 89 on run A is variance, not a cost of the new lookup constraint** - I checked the repairs
-rather than assuming. All four are ordinary kinds we have seen for months (`missing_floor`,
-`quote_not_verbatim` x2, `operand_not_printed`); **none is role-related**. Resolved held at 93 in
-both runs and `unmapped_operation` fell from 9/7 to 3/3.
+**The false warning is fixed and I checked it on the real row.** `_projection_warnings` now prefers
+form-face evidence over instruction and quote cues. 1040 line 34 with its live evidence and live
+expression: **zero hard failures, zero warnings**, where it previously emitted
+`unresolved_comparison_direction` once per corpus run. The real projection path is unchanged and
+still resolves `if_greater_than_currency`.
 
-**Gates:** 82 passed on a short temp root, ASCII OK, `git diff --check` clean, protected set
-byte-identical across `cc73710..1b9f116`.
+**Engine semantics REPORTED, not wired - correct, and now John's call.** The Worker laid out three
+options for what a `questioned` or `rejected` node should mean to `execute_tax_tree`: (a) refuse to
+compute and report unresolved - safest, blocks output; (b) compute and flag the result - a number
+downstream code could consume; (c) exclude the node and report a gap - conservative but lossy.
+**Nothing was wired. See Open for Architect.**
 
-**SMALL DEFECT FOUND, DIAGNOSED, NOT A BLOCKER.** `unresolved_comparison_direction` fires once per
-run on 1040 line 34 - a row whose direction resolves perfectly. Cause: `_projection_warnings` feeds
-`expression_to_graph` a joined blob of form face + instruction text + quote. The face text says "If
-line 33 is **more than** line 24" and is unambiguous on its own, but the instruction text also
-contains "**or more**", and the extra cue makes the resolver report the direction as conflicting.
-Measured: face text alone -> `findings=NONE` and the correct `if_greater_than_currency`; joined blob
--> unresolved. **The real projection is correct; only the warning is wrong.** This is the S44 noise
-class again - a warning that trains reviewers to ignore warnings - so it is fixed in S48 rather than
-left standing.
+**Gates:** 95 passed on a short temp root, ASCII OK, `git diff --check` clean, protected set
+byte-identical across `9c514b1..71b064a`.
+
+**TWO THINGS TO NOTE, NEITHER BLOCKING.** The round produced two commits rather than the specified
+one. And the Worker reports two pre-existing failures in `tests/e2e/test_paired_view_m15.py` for a
+missing `data-check-group` element - **I did not verify that they predate S48**, so it is recorded
+as the Worker's claim, not as an Architect-confirmed baseline entry.
 
 ## Architect decision - notation
 
@@ -213,6 +205,20 @@ client-managed server dies.
   small.
 
 ## Open for Architect
+- **FOR JOHN - what should a QUESTIONED or REJECTED node mean to the ENGINE? (raised 2026-08-04 by
+  S48, reported not wired.)** The three-state vocabulary now writes `human_confirmed: false` with
+  tier `human-questioned` or `human-rejected` onto the node, and `execute_tax_tree` currently
+  ignores all of it. Three options, and this changes what a filer's return says:
+  **(a) Refuse to compute and report unresolved.** Safest and most honest; blocks output on any
+  questioned line, which could be a lot of lines early on.
+  **(b) Compute and flag the result.** Produces a number downstream code can consume, with the doubt
+  attached - but a flagged number is still a number, and something will eventually use it without
+  reading the flag.
+  **(c) Exclude the node and report a gap.** Conservative, and lossy in a way that may be hard to
+  explain to a filer.
+  Architect's lean is **(a) for `rejected` and (b) for `questioned`**, because the two states mean
+  different things: rejected is "this is wrong", questioned is "I am not sure". Nothing is wired
+  either way.
 
 - **M20-S36 denominator decision (raised 2026-08-03).** Logical-row assembly removes the measured
   label/span truncation cases, but it also exposes formula cues on `schedule_a_2025` line 15 and
@@ -279,48 +285,60 @@ client-managed server dies.
 
 ## From Architect
 
-- **M20-S48 TASK - THREE-STATE REVIEW VOCABULARY, PLUS ONE MEASURED NOISE FIX (Architect,
-  Claude Opus 5, 2026-08-04).** Ledger: the RAN/NOT RUN rule. **Deterministic, no provider leg.**
+- **M20-S49 TASK - RUN THE WHOLE PIPELINE AT FORM 2441, AS A RELIABILITY EXERCISE (Architect,
+  Claude Opus 5, 2026-08-04; John's call: *"adding it might be a good exercise in seeing if our
+  pipeline is reliable and valid"*).** Ledger: the RAN/NOT RUN rule, D10. **Drafts only. NO
+  PROMOTION in this round - John decides that with the artifact in front of him.**
 
-  **Why. John's model is three-state and the system is two-state.** He described it as
-  *"an accepted/rejected/problem flag... once the flag was in accepted mode, we were Thunderbirds
-  Go."* S45 measured the gap: the ledger schema accepts arbitrary judgement strings, the review
-  surface emits only `confirmed` and `rejected`, no `problem` state exists anywhere, and the bridge
-  therefore applies `confirmed` only and reports the rest as unsupported.
+  **Why now.** Every piece 2441 needs has landed in the last eight rounds: the manifest drives the
+  corpus (S41), conditionals and lookups are executable (S46/S47) which 2441's AGI percentage table
+  requires, and review is three-state with a working bridge (S45/S48) so the output can be judged
+  rather than trusted. **This is the first end-to-end exercise of the whole assembly on a form the
+  pipeline has never properly processed.**
 
-  **Step 1 - define the three states end to end.** Review surface, ledger schema, and what each
-  writes onto a node. `problem` is the one John cares about most: it is the reviewer saying *this is
-  wrong and I cannot fix it here*, which is different from rejecting a single derivation. **Report
-  the vocabulary you land on before wiring it**, and keep the names the reviewer sees in plain
-  English rather than internal tokens.
+  **What 2441 is today, measured.** 24 nodes but only **2 edges**, `gate: user`, `status: partial`,
+  seven lines flagged "unmodeled in the M10 Step 4 batch draft", and visibly mangled ids such as
+  `form_2441_2025_part_iii_line_28_part_iii_line_28`. It is in the graph and **not in the
+  manifest**, while `form_2441_2025.pdf`, its `.txt`, and its instructions are already in the raw
+  store - the `raw_not_in_manifest` pair the S41 reconcile names every run. **Nothing needs
+  fetching.**
 
-  **Step 2 - extend the bridge, reusing the existing applier.** `apply_address_verdicts` currently
-  applies `confirmed`. Extend it to all three, keeping every S45 property intact: dry-run by
-  default, exact address plus one node binding, and **a content-fingerprint mismatch still blocks
-  the write**. Unit-test each state, including the stale path for a non-confirming state.
+  **Step 1 - declare it, do not hand-author it.** Add `form_2441_2025` and
+  `instructions_form_2441_2025` to `config/manifest.yaml` with their real URLs and sha pins, and
+  verify the pins against the files already in `.cache/raw/2025/`. **Report whether the sha of the
+  stored PDF matches what the manifest declares** - a mismatch is a finding, not something to paper
+  over. The S41 reconcile must then show `raw_not_in_manifest` empty.
 
-  **Step 3 - REPORT, do not wire: what should a rejected or problem node mean to the ENGINE?**
-  Candidates: refuse to compute and report unresolved; compute but flag the result; or exclude the
-  node and report a gap. **This is John's call and it has real consequences for a filer's return.**
-  Present the options with what each does to `execute_tax_tree` output and stop. Do not change
-  engine behaviour in this round.
+  **Step 2 - run the pipeline and report honestly.** Cell derivation over 2441 with the corpus
+  harness, and the worksheet harvester if the instructions carry one. **Report attempted / derived /
+  repaired / errored, and the validator failures by kind.** A low derived count is a finding about
+  the pipeline, which is the entire point of the exercise - **do not tune the prompt to make 2441
+  look good.**
 
-  **Step 4 - one unrelated but tiny noise fix, fully diagnosed already.**
-  `_projection_warnings` passes `expression_to_graph` a joined blob of form face + instruction text
-  + quote. On 1040 line 34 the face text alone is unambiguous ("If line 33 is **more than** line
-  24") and resolves to `if_greater_than_currency` with zero findings, but the instruction text also
-  contains "**or more**", and the extra cue makes the resolver report the direction as unresolved.
-  Result: one false `unresolved_comparison_direction` warning per corpus run on a row that is
-  actually correct. **Narrow the evidence used for direction detection to the same text the real
-  projection uses**, or resolve a conflict by preferring the row's own face text. Add a test using
-  1040 line 34's real face and instruction text. **Do not** make the warning a hard failure and do
-  not change how the real projection resolves direction - it is correct.
+  **Step 3 - the AGI percentage table is the real test.** Form 2441 line 8 selects a decimal from a
+  fifteen-band table (.35 at $0-15,000 down to .20 above $43,000) keyed on line 7. **This is exactly
+  the shape S46/S47 built the named-role lookup for**, and it is the first time it meets a table the
+  pipeline has never seen. Report what the model emits for line 8, whether it projects onto a real
+  rule with named roles, and whether the bands are complete and correctly bounded. **If the fifteen
+  bands defeat the current lookup shape, that is the most valuable result this round can produce -
+  report it plainly and do not invent a new operation.**
 
-  **Do not:** author or edit anything in `graph/2025/`; write a second verdict applier; change
-  engine behaviour for non-confirming states; weaken the fingerprint check; attempt a live provider
-  call. **Stop conditions:** any diff in the protected directories; a confirmation applied whose
-  fingerprint does not match; the direction fix changing which rule 1040 line 34 projects. Tier 3.
-  ASCII, `git diff --check`, module-form `validate 2025`. **ONE local commit.**
+  **Step 4 - report the diff against what is already there.** The 24 existing nodes and 2 edges
+  versus what the pipeline produces: which lines the pipeline covers that the M10 draft left
+  unmodeled, which existing node ids the pipeline would supersede, and where the two disagree.
+  **Report both directions honestly**, as the QDCGT canary did.
+
+  **Step 5 - stop at drafts.** Write to `graph/2025/_drafts/` only. **The protected set stays
+  byte-identical.** Report exactly what promotion WOULD change, and whether the output belongs in
+  the project graph or the extension overlay given the existing nodes are `gate: user`. **John rules
+  on promotion; it would be the first in this phase.**
+
+  **Do not:** promote anything; edit anything under `graph/2025/` outside `_drafts/`; hand-author a
+  node or a citation to improve the numbers; tune the prompt against 2441; invent an operation.
+  **Stop conditions:** any diff in the protected directories; a citation emitted that is not
+  verbatim in the acquired source; `derive_cells` acquiring a disk write. Tier 3. Declared files plus
+  honest `RAN:`/`NOT RUN:` - **the provider leg is the Architect's**. ASCII, `git diff --check`,
+  module-form `validate 2025`, preflight `legacy_mined` explicit. **ONE local commit.**
 
 ## Architect decisions
 
@@ -376,6 +394,13 @@ client-managed server dies.
 
 ## Recent rounds (condensed; full narration in git history - `git show <hash>`)
 
+- **M20-S48 (`c55fde5` + `71b064a`, Architect-verified):** review is three-state end to end -
+  Accept/Question/Reject stored as `confirmed`/`questioned`/`rejected`, legacy tokens canonicalized
+  (`problem` -> `questioned`), unknown tokens rejected rather than defaulted. Question and Reject
+  write `human_confirmed: false` with `human-questioned`/`human-rejected` tiers and require an
+  observation. Every S45 property held, including fingerprint blocking for non-confirming states;
+  the ledger is also tamper-evident at load. The false `unresolved_comparison_direction` warning on
+  1040 line 34 is gone. Engine semantics reported, not wired -> John.
 - **M20-S46 + S47 (`85a83ca` REWORK, fixed at `1b9f116`, Architect-verified):** conditionals and
   lookups are now executable. `IF_ELSE` maps to `if_greater_than_currency`/`if_less_than_currency`
   with direction resolved deterministically from the row's own wording; `LOOKUP_TABLE` maps to
