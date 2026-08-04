@@ -17,128 +17,69 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## BALL
 
-**BALL: WORKER - M20-S41 (RECONCILE THE DOCUMENT LISTS AND DRIVE THE HARNESS FROM THE MANIFEST).**
-Task block under **From Architect**. **S40 is ACCEPTED at `e032cfd`.**
+**BALL: WORKER - M20-S42 (HARVEST A WORKSHEET, WITH QDCGT AS THE CANARY).** Task block under
+**From Architect**. **S41 is ACCEPTED at `40530b1`.**
 
-**RESEQUENCED 2026-08-03 BY JOHN.** S41 is now the manifest reconcile, S42 is the worksheet
-harvester with QDCGT as the canary, and the operand type check moves to S43 with its spec intact.
-The reason is in Current round: **the Architect had been using the graph as the corpus list, which
-is circular**, so the denominator under every S38-S40 number is wrong in both directions. A wrong
-denominator undermines the measurements that would judge the type check, and the harvester needs a
-document list it can trust.
+**Sequence, set by John 2026-08-03:** S41 manifest reconcile (done), **S42 worksheet harvester**,
+then S43 operand type check with its spec intact. S41 proved the document list was circular and
+fixed it; it also proved that fixing the list is **not sufficient** - all six instruction documents
+still derive zero rows, because worksheets live in instruction prose and the cell pipeline reads
+form outlines. S42 is the stage that reaches them.
 
 ## Current round
 
-**M20-S40 ACCEPTED (Architect, Claude Opus 5, 2026-08-03) at `e032cfd`.** The Worker ran its own
-provider legs and reported derived 92 / 91; I ran two more and got **92 and 91**, so the numbers
-reproduce across four independent runs. **The S39 regression is closed** - `form_1040_2025` is 17/17
-and `schedule_1a_2025` is 25/25 and 24/25, where S39 sat at 87 derived on both runs.
+**M20-S41 ACCEPTED (Architect, Claude Opus 5, 2026-08-04) at `40530b1`.** Delivered exactly to spec,
+including the two constraints that were easy to get wrong: the raw leg degrades to a named
+`skipped` rather than failing where `.cache/` is absent, and the report is **non-fatal** -
+`validate 2025` still exits 0 while printing every difference. The Worker chose `validate` over
+`preflight` and justified it: document inventory is an acquisition concern, not a review projection.
+That is the right call. Steps 1-3 verified locally, 78 passed on a short temp root, ASCII OK,
+protected set byte-identical across `8dc3511..40530b1`.
 
-| run | attempted | derived | repaired | errored | resolved |
-| --- | ---: | ---: | ---: | ---: | ---: |
-| S38 (baseline) | 96 | 92 | 1 | 3 | 93 |
-| S39 | 96 | 87 | 6 | 3 | 93 |
-| S39 | 96 | 87 | 5 | 4 | 92 |
-| S40 Worker | 96 | 92 | 3 | 2 | 95 |
-| S40 Worker | 96 | 91 | 2 | 3 | 93 |
-| S40 Architect | 96 | **92** | 1 | 3 | 93 |
-| S40 Architect | 96 | **91** | 2 | 3 | 93 |
-
-**91 on one run of a pair is variance and is NOT a stop.** 87 twice was not; 92/91 four times is.
-Do not spend another round chasing the missing one.
-
-**Verified rather than accepted on report.** `form_1040_2025_zero_floor` really is
-`node_type: parameter` with `constant_value: 0`, so the widened `missing_floor` accepts the cited
-node and still rejects a nonzero parameter. Scoping renders 26 nodes for 1040, 3 for Schedule D, and
-1 (`taxpayer_2025_filing_status`) for every other form, which is what stopped a 1040 node from
-reaching 6251 and Schedule 1A rows. Protected set byte-identical across `4935053..e032cfd`; focused
-suites 67 passed on a short temp root; ASCII OK; `git diff --check`; `validate 2025` exit 0
-(18 documents, 441 nodes, 409 edges, 401 citations); preflight `legacy_mined=394` unchanged.
-`_projection_warnings` is safe to call where it sits - `_apply_payload` runs
-`validate_expression_tree` first, so `expression_to_graph` cannot raise on a tree that reaches it.
-
-**MEASURED CORRECTION TO MY OWN S38 NUMBER. The corpus mints exactly ONE external node, not nine.**
-Step 4 closed the reporting hole and both my runs show a single mint: `schedule_a_2025` line 15 ->
-`form_4684_2025_root_line_18`. My "9 of 96 rows reference an outside form" counted rows whose *text*
-names another form; only one row actually emits a cross-form operand. The rest resolve as
-REQUIRE_INPUT or as same-form arithmetic. **The Form 4684 repair is confirmed and the scale of the
-problem was smaller than I reported.**
-
-**THE NEW WARNING IS RIGHT AND IT IS 70% NOISE.** `unmapped_operation` fires 12 and 14 times across
-my two runs, but 8 and 9 of those are `REQUIRE_INPUT` - the answer the prompt explicitly instructs
-the model to give for a line that is not computed. It has no rule mapping because it is not a
-computation. **Warning on it trains a reviewer to ignore the warning**, which is the exact failure
-the review-loop design calls out: attention is the scarce resource. Excluding it leaves the true
-signal at three rows, stable across both runs: `form_1040_2025` line 34 (`IF_ELSE`), and
-`form_6251_2025` lines 18 and 39 (`IF_ELSE`, `LOOKUP_TABLE`).
-
-**AND THE WARNING EXPOSED SOMETHING BIGGER THAN EXECUTABILITY. THE EXPRESSION GRAMMAR IS TYPE-FREE.**
-The Worker flagged this honestly and I reproduced it. 6251 line 39, run A, status `derived`, zero
-failures:
+**All six discrepancies are named, not counted** - which was the acceptance bar:
 
 ```
-if_else(node[taxpayer_2025_filing_status], 0, if_else(line 12, 119550, ...), if_else(line 12, 239100, ...))
+graph documents: 18 | manifest documents: 21 | raw text: available
+graph_not_in_manifest: form_2441_2025
+manifest_not_in_graph: instructions_form_6251_2025, instructions_form_8949_2025,
+                       instructions_schedule_a_2025, instructions_schedule_b_2025
+raw_not_in_manifest:   form_2441_2025, instructions_form_2441_2025
+manifest_not_in_raw:   -
 ```
 
-`IF_ELSE` is documented as comparing a condition AMOUNT against a threshold AMOUNT. This puts a
-filing-status enum in the condition slot and `0` in the threshold slot. It is meaningless, and
-nothing catches it. In run B the same line came out correctly shaped, so it is nondeterministic
-nonsense that validates clean roughly half the time. Run B's line 18 shows the same class from the
-other side: `multiply(line 17, lookup_table(status, 0.26, 0.26))` - a filing-status lookup whose two
-branches are identical, i.e. the model pattern-matching the bracketed-MFS shape onto a rate that
-does not vary by status.
+**STEP 4 WAS CORRECTLY DECLARED NOT RUN (no outbound network) AND THE ARCHITECT RAN IT.** The corpus
+is now driven by the manifest: **21 documents, 9 complete, 12 empty, ZERO errored or reported.** The
+`form_2441_2025` phantom that returned a load error on every prior run is simply absent, because it
+is not declared.
 
-**This outranks the rule mapping.** An unmapped operation fails loudly at projection time. A
-type-confused operand is a wrong answer wearing a `derived` badge, and 6251 line 39 is a real tax
-computation. **S43 takes it** - it was specced as S41 and John resequenced it behind the two items
-below, because a wrong document denominator undermines the measurement that would judge it.
+| denominator | documents | attempted | derived | repaired | errored | resolved |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| S40, graph-derived | 18 (17 loadable) | 96 | 92 / 91 | 1 / 2 | 3 | 93 |
+| S41, manifest-driven | 21 | 96 | 90 | 3 | 3 | 93 |
 
-## THE DENOMINATOR IS WRONG (Architect, 2026-08-03, prompted by John asking how I pick documents)
+**The row count is unchanged at 96 and derived=90 is variance, not a regression.** S41 changed no
+derivation code - only which documents are enumerated - and the same nine documents produce the same
+96 rows. Three samples now sit at 92, 91, 90. Do not chase it.
 
-**I have been passing `graph.items("documents")` to the harness. That is circular** - the graph is
-partly the pipeline's output, so a document that was never modelled can never enter a run. The three
-lists disagree in every direction: **graph 18, manifest 21, acquired text 23.** `form_2441_2025` is
-in the graph and not the manifest (the phantom that errored on every run); four instruction
-documents are declared and acquired but invisible to the corpus; `form_2441_2025` and its
-instructions are on disk and undeclared. **`instructions_form_6251_2025` is 80,318 characters we
-already hold, naming the QDCGT worksheet 20 times - and 6251 lines 13, 20 and 27 are the only
-unresolved rows, failing because they reference that worksheet.** The evidence was on disk and my
-document list excluded it. Every "full corpus" figure since S33 is over a graph-derived list; the
-row counts are real, the phrase overstates them. **S41 fixes this first.**
+**THE PREDICTED FINDING LANDED, AND IT IS THE ARGUMENT FOR S42. All six instruction documents derive
+ZERO rows** - the two that were always visible plus all four newly visible ones:
 
-## WORKSHEETS ARE THE REAL GAP, AND HAND AUTHORING ALREADY LOST DATA (Architect, 2026-08-03)
+```
+instructions_form_1040_2025, instructions_schedule_d_2025, instructions_form_6251_2025,
+instructions_form_8949_2025, instructions_schedule_a_2025, instructions_schedule_b_2025
+   -> status: empty, "document outline produced no derivation rows"
+```
 
-Verified against the IRS text John supplied: the QDCGT worksheet is **fully and correctly modelled**
-- 44 nodes, 25 of 25 lines, and all 13 constants match exactly (0% breakpoints 48,350 / 96,700 /
-64,750; 15% breakpoints 533,400 / 300,000 / 600,050 / 566,700; rates 15% and 20%; tax-table cutoff
-100,000). Line 25 flows to `form_1040_2025_non_sdtw_tax` and on to 1040 line 16, as the worksheet
-itself instructs. **What is missing is document identity, not computation** - no worksheet is a
-document, so the pipeline cannot address, cite, review, or derive against content the engine already
-computes.
+`instructions_form_6251_2025` is 80,318 characters naming the QDCGT worksheet 20 times, and it
+contributes nothing. **Fixing the document list was necessary and is not sufficient.** The cell
+pipeline reads a form outline - printed lines with anchors - and worksheets live in instruction
+prose. No amount of enumerating documents reaches them; that is precisely the gap S42 exists to
+close.
 
-**And the hand-authored version lost real semantics.** There are **zero nodes anywhere in the graph**
-for Form 2555 or the Foreign Earned Income Tax Worksheet, although the worksheet's own text
-redirects line 1's source and line 25's destination when Form 2555 is filed. The transcriber took
-the numbered grid and dropped the footnotes, which are conditional routing. Independent evidence
-that the loss is real: **Form 2555 was the most common outside-the-corpus reference in the
-derivation runs, five rows** - the model kept reaching for what the transcription lost.
-
-**All 13 QDCGT citations fail `check_graph_citations` today**, and they are 13 of the standing 36
-"known red" mismatches. The cause is not rollover drift: the authored quote reorders the IRS
-sentence (splitting "single or married filing separately" into two clauses and repeating the
-figure), so it was never verbatim. The locator is `"page 35, lines 3443-3447"` - position-based
-identity, which will not survive a year change either. **Citation-quote-by-construction is already
-the documented rule; these predate it.**
-
-**SMALLER, CARRIED.** (1) Aggregate `validator_failures_by_kind` counts both attempts while
-`rows_detail` keeps only the first, so 6251 reports `missing_floor: 3` that no row shows - those are
-repair-round failures on lines 13/20/27. For a findings surface, which attempt failed matters.
-(2) Step 2 asked the Worker to report whether scoping hides a node a row legitimately needs, and it
-did not. I checked: no non-1040 row names the standard deduction or the brackets, so nothing is
-lost today - **but 6251 lines 13, 20 and 27 reference the Qualified Dividends and Capital Gain Tax
-Worksheet, and scoping now hides the `form_1040_2025_qdcgt_*` nodes from them.** Those three rows
-are exactly the three `self_reference` errors, and they are blocked on John's open scoping call (1)
-below, not on scoping.
+**CARRIED INTO S42.** `status: empty` with "no derivation rows" is honest but uninformative for an
+instruction document, which is not supposed to have derivation rows at all. Once the harvester
+lands, an instruction document should report the worksheets it yielded rather than a null result
+borrowed from the form path.
 
 ## Standing constraints (every M20 round)
 
@@ -312,66 +253,7 @@ client-managed server dies.
 
 ## From Architect
 
-- **M20-S41 TASK - RECONCILE THE DOCUMENT LISTS AND DRIVE THE HARNESS FROM THE MANIFEST (Architect,
-  Claude Opus 5, 2026-08-03; John approved the sequencing).** Ledger: the RAN/NOT RUN rule, D10.
-  **Deterministic, no provider leg. This is the prerequisite for S42 - a harvester needs a document
-  list it can trust.**
-
-  **Why. The Architect has been using the GRAPH as the corpus list, and that is circular.** Every
-  "full corpus" run since S33, mine included, passed `graph.items("documents")` to the harness. The
-  graph is partly the pipeline's OUTPUT, so a document that was never modelled can never enter the
-  run. Measured today, the three lists disagree in every direction:
-
-  | list | source | count |
-  | --- | --- | ---: |
-  | graph documents | `graph.items("documents")` | 18 |
-  | acquisition manifest | `load_manifest()` | 21 |
-  | acquired text | `.cache/raw/2025/*.txt` | 23 |
-
-  - **In the graph, not in the manifest:** `form_2441_2025` - the phantom, which returned a load
-    error on every corpus run.
-  - **In the manifest, not in the graph:** `instructions_form_6251_2025`,
-    `instructions_form_8949_2025`, `instructions_schedule_a_2025`, `instructions_schedule_b_2025`.
-  - **Acquired but not declared:** `form_2441_2025`, `instructions_form_2441_2025`.
-
-  `instructions_form_6251_2025` is 80,318 characters we already hold, naming the Qualified Dividends
-  and Capital Gain Tax Worksheet 20 times - and 6251 lines 13, 20 and 27 are the only unresolved
-  rows in the corpus, failing because they reference that worksheet. **The evidence was on disk and
-  the document list excluded it.**
-
-  **Step 1 - a reconcile check.** Add a deterministic function (suggested home:
-  `tax_graph/acquire/reconcile.py`, beside `manifest.py` and `citation_check.py`) that reports each
-  of the three set differences by name, never as a count alone. **The raw store is gitignored, so CI
-  cannot depend on it:** the manifest-vs-graph legs must run without `.cache/`, and the raw leg must
-  degrade to `skipped` with a stated reason rather than failing. Report exactly the six ids above as
-  the current baseline.
-
-  **Step 2 - surface it.** Wire it into `workbench.cli preflight` and/or `tax_graph.cli validate`
-  (pick one, say which and why). A phantom or an orphan must appear as a NAMED finding. **Do not
-  make it a hard failure in this round** - the six discrepancies are real and pre-existing, and
-  failing the gate on them would block every other round. Report them; John rules on 2441.
-
-  **Step 3 - drive the harness from the manifest.** `experiments/derive_cells_s25.py` defaults to
-  `form_1040_2025` and takes repeatable `--document`. Add a manifest-driven default so a corpus run
-  covers what we DECLARED, not what we already modelled. Keep `--document` working. A document in
-  the manifest that cannot be loaded must be reported per-document with a reason, which is the
-  existing D10 behaviour and it already works.
-
-  **Step 4 - rerun the corpus ONCE with the new list and report the new denominator.** Expect more
-  documents attempted and probably more empty ones; the four instruction documents may well derive
-  zero rows, exactly as `instructions_form_1040_2025` does today. **That is a finding, not a
-  failure** - it tells us instruction documents produce no derivation rows, which is precisely why
-  S42 exists. Report attempted/derived/repaired/errored against the OLD 96-row denominator as well,
-  so the S38-S40 numbers stay comparable.
-
-  **Do not:** author or edit anything in `graph/2025/`; add or remove manifest entries (John rules
-  on 2441 and on the undeclared acquisitions); make the reconcile a hard gate; touch the derivation
-  validators. **Stop conditions:** any diff in the protected directories; `derive_cells` acquiring a
-  disk write; any harness output landing inside the repository. Tier 3. ASCII, `git diff --check`,
-  module-form `validate 2025`, preflight with `legacy_mined` explicit (394), strict citations (36).
-  **ONE local commit.**
-
-- **M20-S42 TASK (QUEUED, DO NOT START UNTIL S41 IS ACCEPTED) - HARVEST A WORKSHEET, WITH QDCGT AS
+- **M20-S42 TASK (ACTIVE - S41 IS ACCEPTED, START THIS) - HARVEST A WORKSHEET, WITH QDCGT AS
   THE CANARY (Architect, Claude Opus 5, 2026-08-03; John's design call).**
 
   **Why, and why an end anchor was REJECTED.** The Architect proposed declaring a worksheet as a
@@ -480,24 +362,6 @@ client-managed server dies.
   preflight with `legacy_mined` explicit (394), strict citations (36).
   **ONE local commit** - and run `git status` first; do not commit paths you did not touch.
 
-## Worker status
-
-- **M20-S41 implementation complete locally; awaiting Architect acceptance.** Added the
-  read-only `tax_graph.acquire.reconcile_document_lists` report with named graph/manifest/raw
-  differences and an explicit skipped raw leg. Wired the report into module-form `validate`
-  because document inventory is an acquisition/source concern, not a review projection. The
-  derivation harness now defaults to the manifest's declared document order while retaining
-  repeated `--document` selection. No manifest, graph, field map, or draft artifact was edited.
-- **RAN:** `$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\_pytest_temp'; .\.venv\Scripts\python.exe -m pytest tests/test_m20_s41.py -q` -> 5 passed.
-- **RAN:** `$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\_pytest_temp'; .\.venv\Scripts\python.exe -m pytest tests/test_acquire_manifest.py tests/test_m20_s31.py tests/test_cli.py tests/test_runtime_light_m1.py tests/test_derive_cells_m20.py -q` -> 74 passed.
-- **RAN:** `.\.venv\Scripts\python.exe -m tax_graph.cli validate 2025` -> exit 0; graph integrity OK; named baseline differences are `form_2441_2025`, four undeclared instruction ids, and `form_2441_2025` plus `instructions_form_2441_2025` in raw-only.
-- **RAN:** `.\.venv\Scripts\python.exe -m workbench.cli --root . --year 2025 preflight` with read-only escalation -> exit 0; `derived manifest entries=18`, `derived cells=2120`, `legacy_mined=394`.
-- **RAN:** `.\.venv\Scripts\python.exe tools\check_ascii.py` -> `ASCII check OK`.
-- **RAN:** `git diff --check` -> exit 0; protected `graph/2025/{nodes,edges,rules,field_maps}` diff -> empty.
-- **RAN:** `.\.venv\Scripts\python.exe experiments\derive_cells_s25.py --root . --year 2025 --output-dir <external> --no-provider` -> all 21 manifest documents prepared in manifest order.
-- **NOT RUN:** live provider corpus leg; the Worker sandbox has no outbound network, so no attempted/derived/repaired/errored denominator is claimed for S41.
-- **Open questions:** none for S41; John still rules on the queued S42 manifest schema change and Form 2441 scope.
-
 ## Architect decisions
 
 - **THE REVIEW LOOP, as designed with John 2026-08-03. This is the shape S37-S39 build toward.**
@@ -552,6 +416,11 @@ client-managed server dies.
 
 ## Recent rounds (condensed; full narration in git history - `git show <hash>`)
 
+- **M20-S41 (`40530b1`, Architect-verified):** `tax_graph.acquire.reconcile_document_lists` names
+  every graph/manifest/raw difference, degrades the raw leg to `skipped`, and reports non-fatally
+  through `validate`; the derivation harness now defaults to the manifest's declared order. Architect
+  ran the provider leg: 21 documents, 9 complete, 12 empty, zero errored, 96 rows unchanged, the
+  2441 phantom gone. All six instruction documents derive zero rows -> the case for S42.
 - **M20-S40 (`e032cfd`, Architect-verified):** `missing_floor` accepts a zero-valued `parameter`
   node, the prompt inventory is scoped per document (26 for 1040, 3 for Schedule D, 1 elsewhere),
   unmapped projection operations became warnings, and the harness reports expressions and external
@@ -604,6 +473,11 @@ client-managed server dies.
 
 ## Latest verification
 
+- **M20-S41 (2026-08-04, Architect live):** manifest-driven corpus, 21 documents, 9 complete /
+  12 empty / 0 errored; attempted=96, derived=90, repaired=3, errored=3, resolved=93 (third sample
+  in the 90-92 band; no derivation code changed). 78 passed on a short temp root; ASCII OK;
+  `validate 2025` exit 0 with the reconcile report printing all six named differences; protected set
+  byte-identical across `8dc3511..40530b1`.
 - **M20-S40 (2026-08-03, Architect live):** two full corpus runs (output under `C:\tmp`, outside the
   repo), attempted=96 both, derived 92 and 91, repaired 1 and 2, errored 3 both, resolved 93 both;
   `form_1040_2025` 17/17 in both. Focused suites 67 passed on a short temp root; ASCII OK;
