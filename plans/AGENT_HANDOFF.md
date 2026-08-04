@@ -17,63 +17,80 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## BALL
 
-**BALL: WORKER - M20-S45 (BRIDGE THE ADDRESS VERDICT LEDGER TO THE NODE FLAGS).** Task block under
-**From Architect**. **S44 is ACCEPTED at `e0a3f35`** - the status-enum-in-a-numeric-slot defect is
-gone from both corpus runs, derived back to 92/92.
+**BALL: WORKER - M20-S46 (MAKE CONDITIONALS AND LOOKUPS EXECUTABLE).** Task block under
+**From Architect**. **S45 is ACCEPTED at `467685c`** - the verdict bridge exists, dry-run by
+default, and the one real ledger record correctly reports STALE rather than applying.
 
-**Why S45 now.** John expected the graph to already carry an accepted/rejected/problem flag per
-node. It nearly does: the schema defines `human_confirmed`, `verification_tier` and `human_review`,
-and `tax_graph/review.py::apply_verdicts` already writes them. **They appear on 0 of 441 nodes**
-because the address-keyed ledger the workbench actually writes was built alongside the older
-verdict path and the last hop was never connected. S45 connects it, and it is what makes bringing a
-new form in safe: write it unflagged, and nothing downstream trusts it until a human confirms.
+**Why S46 now.** John pushed on it directly: *"shouldn't we have a calc complete operations set with
+conditionals... We need to model things that humans do... full stop."* He is right, and the
+Architect's earlier framing was misleading. **The graph is NOT deficient** - it already holds two
+`IF_ELSE` rules and four `LOOKUP_TABLE` rules, and both run today. The gap is two dictionaries in
+`tax_graph/extract/cells.py` that never map the AI's conditionals onto the rules that exist, so
+three rows per run derive cleanly and compute nothing. S46 closes it, measuring the required
+vocabulary from evidence first rather than adding operations speculatively.
 
-**Known gaps, deliberately NOT S45:** the harvester emits no computed nodes or `CALCULATES` edges,
-so it does not harvest arithmetic; and the conditional family plus `LOOKUP_TABLE` still map to no
-rule, so those expressions validate without executing. **Rollover policy and run alerting** are
-pinned at `docs/engineering-plan.md` -> Year rollover (TY2026), seam 6.
+**Known gaps, deliberately NOT S46:** the harvester emits no computed nodes or `CALCULATES` edges,
+so it does not harvest arithmetic; and the review vocabulary is two-state, queued as S47.
+**Rollover policy and run alerting** are pinned at `docs/engineering-plan.md` -> Year rollover
+(TY2026), seam 6. **Notation ruling** is under Current round: borrow the decision-table shape for
+lookups, adopt no formalism.
 
 ## Current round
 
-**M20-S44 ACCEPTED (Architect, Claude Opus 5, 2026-08-04) at `e0a3f35`. The target defect is gone
-from both corpus runs, and the new validator caught a real case in the wild.**
+**M20-S45 ACCEPTED (Architect, Claude Opus 5, 2026-08-04) at `467685c`. The bridge exists, and the
+safety property it was built for fired on the first real record.**
 
-The Worker declared the live corpus NOT RUN on a new and correct ground - it would export the corpus
-to an external provider without explicit user approval. The Architect ran both legs.
+`tax_graph.review.apply_address_verdicts` plus `review apply-address-verdicts`, **dry-run by
+default** - `--apply` is required to write. It reuses the existing `_apply_graph_review` rather than
+adding a second applier, which was the explicit instruction: a second parallel path is how this gap
+was created in the first place.
 
-| run | attempted | derived | repaired | errored | resolved | `unmapped_operation` |
-| --- | ---: | ---: | ---: | ---: | ---: | ---: |
-| S40 | 96 | 92 / 91 | 1 / 2 | 3 | 93 | 12 / 14 |
-| S41 | 96 | 90 | 3 | 3 | 93 | - |
-| **S44** | 96 | **92 / 92** | 1 / 1 | 3 | 93 | **9 / 7** |
+**THE ONE REAL VERDICT IS STALE, AND THAT IS THE ROUND WORKING.** I ran the live dry-run myself:
 
-**The type check works, verified directly against the exact defect rather than through the corpus.**
-A filing-status node in the `IF_ELSE` condition slot now hard-fails with
-`operand_type_mismatch: IF_ELSE argument 1 (condition) requires a numeric operand`. The same node
-as a `LOOKUP_TABLE` key is still allowed, which is correct - it is a valid lookup key, not a numeric
-operand. `REQUIRE_INPUT` no longer emits an unmapped-operation warning.
+```
+address verdicts: 1 | would apply: 0 | stale: 1 | unresolved: 0 | ambiguous: 0
+  2025/document=form_1040/line=1z/control=amount: stale
+    reviewed fingerprint: 151f0df2...  current fingerprint: e270b15d...
+```
 
-**6251 line 39 came out correctly shaped in BOTH runs.** In S40 it produced
-`if_else(node[taxpayer_2025_filing_status], 0, ...)` - a status enum compared against zero, status
-`derived`, zero failures. It is now `if_else(line 12, lookup_table(node[...], 239100, 119550), ...)`
-in both runs. **The status enum is out of the numeric slot.**
+The single human verdict in the ledger was recorded against content that has since changed, so it
+correctly does not apply. **This is exactly the property the M15 path lacked** - it would have
+blessed changed content because it keyed on a churning id and never compared content at all.
+`git status -- graph/2025/` is empty after the run.
 
-**`operand_type_mismatch` fired once in run B on live data**, alongside two
-`operand_node_not_found` - the model reaching for node ids that do not exist. Run B's line 18 then
-repaired to a single-filer-only rule. That is the validator doing its job: a narrower correct answer
-beats a wrong one wearing a `derived` badge.
+**Address resolution verified.** `2025/document=form_1040/line=1z/control=amount` resolves to
+`form_1040_2025_root_line_z`, whose label reads "Line 1z: Add lines 1a through 1h". The node id
+dropping the `1` is a pre-existing mined-label oddity, not an S45 defect, and the resolution is
+correct.
 
-**Step 3 recommendation ACCEPTED as reported.** Do not warn on a degenerate `LOOKUP_TABLE` with
-identical branches. The Worker's reasoning is right - identical status branches can be intentional,
-and the warning would dilute the three real unmapped-operation findings.
+**Gates:** 29 passed on a short temp root, ASCII OK, `git diff --check` clean, protected set
+byte-identical across `86f6c01..467685c`.
 
-**Gates verified independently:** 72 passed on a short temp root, ASCII OK, `git diff --check`
-clean, protected set byte-identical across `0310ba1..e0a3f35`.
+**VOCABULARY GAP REPORTED, NOT INVENTED (correct - this was Step 3).** The ledger schema accepts
+arbitrary judgement strings; the review surface emits only `confirmed` and `rejected`; there is no
+`problem` state anywhere. The bridge applies `confirmed` only and reports the rest as unsupported
+without writing. **John's model is accepted / rejected / problem**, so the vocabulary needs one
+small round before non-confirming flags can land. Queued below, deliberately not folded into S46.
 
-**STILL OPEN, UNCHANGED BY THIS ROUND.** The conditional family and `LOOKUP_TABLE` still map to no
-rule and no roles, so those expressions validate and do not execute. S44 was never scoped to fix
-that - it stopped the type confusion, which was the wrong-answer case. The mapping report from S40
-stands and John has not ruled on it.
+## Architect decision - notation
+
+John, 2026-08-04: *"do what makes sense. We are not boiling the ocean here. I just don't want to
+reinvent and perfect the wheel either."*
+
+**BORROW THE DECISION-TABLE SHAPE FOR LOOKUPS. DO NOT ADOPT A FORMALISM.** Prior art exists and two
+pieces are on point: **DMN** decision tables (named input/output columns plus a hit policy, designed
+for exactly "if income is in this band, the rate is that"), and **Catala** (a language for encoding
+tax law with the legal text attached, philosophically closest to our citation discipline). We also
+already touch **PolicyEngine-US** as a parameter witness (`tax_graph/oracles/pe_liability.py`,
+`verify parameter-diff`), currently `policyengine_enabled: false`.
+
+**Ruling:** take the decision-table STRUCTURE for the lookup problem and nothing else. Our lookups
+break because arguments are a bare ordered list - `(status, 239100, 119550)` - with no way to say
+which value belongs to which status; a decision table names them structurally, which is a solved
+problem we should not re-solve. **Do not adopt DMN, FEEL, or Catala wholesale.** The property that
+makes this project checkable is a narrow emission vocabulary a deterministic validator can verify;
+a general-purpose expression language widens exactly what we need kept narrow. Revisit only if a
+real form defeats the borrowed shape.
 
 ## Standing constraints (every M20 round)
 
@@ -182,12 +199,6 @@ client-managed server dies.
 
 ## Open for Architect
 
-- **M20-S45 vocabulary gap (Worker, 2026-08-04).** The address ledger schema accepts arbitrary
-  judgement strings, but the current review surface emits only `confirmed` and `rejected`, and the
-  live record is `confirmed`; there is no existing `problem` mapping. The bridge therefore applies
-  only `confirmed` and reports `rejected`/`problem` as unsupported without writing flags. Decide
-  whether the next slice expands the review vocabulary before adding node-level non-confirming
-  flags.
 - **M20-S36 denominator decision (raised 2026-08-03).** Logical-row assembly removes the measured
   label/span truncation cases, but it also exposes formula cues on `schedule_a_2025` line 15 and
   `schedule_1a_2025` line 36a, so the current formula set is 96 rows rather than the prior 94.
@@ -253,58 +264,71 @@ client-managed server dies.
 
 ## From Architect
 
-- **M20-S45 TASK - BRIDGE THE ADDRESS VERDICT LEDGER TO THE NODE FLAGS (Architect, Claude Opus 5,
-  2026-08-04; raised by John, who expected this to already work).** Ledger: the RAN/NOT RUN rule.
-  **Deterministic, no provider leg. Small - both ends already exist.**
+- **M20-S46 TASK - MAKE CONDITIONALS AND LOOKUPS EXECUTABLE (Architect, Claude Opus 5, 2026-08-04).**
+  Ledger: the RAN/NOT RUN rule. **This is the round that closes the gap John pushed on: the graph
+  models these operations and the pipeline cannot reach them.**
 
-  **Why. John's mental model was right and the implementation is two-thirds built.** He said: *"i
-  thought the graph was written with an accepted/rejected/problem flag attached. once the flag was
-  in accepted mode, we were Thunderbirds Go."* Measured:
-  - `schemas/node.schema.json` already defines `human_confirmed`, `verification_tier` and
-    `human_review`. **They appear on 0 of 441 live nodes.**
-  - `tax_graph/review.py::apply_verdicts` already writes exactly those three fields onto graph
-    objects, with a fail-closed guard refusing to let one verdict confirm a whole multi-object file.
-    It is exposed as `tax-graph review apply-verdicts`. This works.
-  - `workbench/address_verdicts.py` writes an append-only JSONL ledger keyed by canonical address
-    with content fingerprints. This works, and it is what the workbench actually writes today.
-  - **Nothing joins them.** The only `tax_graph`-side consumer of the ledger is `rederive.py`, which
-    reads curated *comments* for the try-again loop. `apply-verdicts` still expects the older
-    verdict-file format, so the ledger's entries never reach a node.
+  **Why, stated precisely so nobody repeats the Architect's earlier overstatement.** The GRAPH is not
+  deficient. `graph/2025/rules/core.yaml` already holds 15 rules including **two `IF_ELSE` rules**
+  (`if_less_than_currency`, `if_greater_than_currency`) and **four `LOOKUP_TABLE` rules**
+  (`lookup_capital_loss_limit`, `lookup_selected_value`, `lookup_selected_value_required`,
+  `lookup_tax_table_amount`). Both run today: 1040 line 16 flows through
+  `if_greater_than_currency`, and the Schedule D capital loss limit is a live filing-status lookup.
+  **The gap is `RULE_FOR_OP` and `ROLE_FOR_OP` in `tax_graph/extract/cells.py`**, which list ten
+  arithmetic operations and omit the conditionals and lookups, so an AI-written conditional emits
+  `no reusable rule for operation IF_ELSE` and produces no rule at all. Measured cost: three rows
+  per corpus run - 1040 line 34, 6251 lines 18 and 39 - derive cleanly and compute nothing.
 
-  **History, so nobody re-litigates it (verified 2026-08-04).** The M15 path landed whole on
-  2026-07-12 (`4a2bb93`). It keyed review points on generated queue ids, which churned ~100%
-  between runs while canonical-address-keyed references churned 0% - the identity defect this phase
-  has now hit five times. M20-S5-1 (`48af95b`, 2026-07-29) built the address-keyed ledger
-  **alongside** the queue rather than replacing it, and the last hop was never connected. The
-  ledger currently holds ONE entry, from 2026-07-30.
+  **Step 1 - measure the required vocabulary before adding anything.** Do not add operations
+  speculatively. Across the 96 corpus rows plus the harvested QDCGT worksheet, report what the
+  forms' own text actually demands and what the model actually emits: floors, conditions,
+  band/bracket tables, ranges, aggregation over repeated rows. **Report the counts and name any
+  operation the evidence demands that the enum lacks.** If the evidence shows the current enum is
+  already sufficient, say so - that is a valid and useful outcome.
 
-  **Step 1 - convert an address verdict into a node-level confirmation, in code.** Resolve a
-  canonical address to the graph object(s) it names and apply the same three fields
-  `apply_verdicts` already applies. **Reuse `tax_graph/review.py`; do not write a second applier** -
-  a second parallel path is precisely how this gap was created. Report which resolution the address
-  uses and where it is ambiguous.
+  **Step 2 - map the conditionals.** Add `IF_ELSE` (and the rest of the conditional family, if step
+  1 shows the evidence demands them) to `RULE_FOR_OP` and `ROLE_FOR_OP`. **The open design question
+  is comparison direction:** there are two `IF_ELSE` rules and the AI's four positional arguments do
+  not say which comparison is meant. Two candidate answers - the model names the direction, or it is
+  resolved in code from the row's own evidence text ("is more than", "is less than", "or less").
+  **Recommend one with reasoning and implement it; do not implement both.** Given this phase's
+  history, resolving deterministically from evidence is the safer default and should be preferred
+  unless step 1 shows the wording is unreliable.
 
-  **Step 2 - the content fingerprint is the whole point, so honour it.** A verdict records the
-  content the reviewer actually looked at. **If the node's current content no longer matches the
-  fingerprint, the confirmation MUST NOT apply** - report it as stale with both fingerprints named.
-  This is what makes a verdict survive regeneration instead of silently blessing changed content,
-  and it is the property the M15 path lacked. Unit-test both branches.
+  **Step 3 - the lookup shape, borrowed not invented (John's ruling, see Architect decision).** Take
+  the DMN decision-table STRUCTURE: named inputs and outputs rather than a bare ordered list. Our
+  lookups are unmappable because `(status, 239100, 119550)` cannot say which value belongs to which
+  status, while the engine selects by matching a role name to the status value. **Extend the
+  expression format minimally so a lookup can name its branches**, then map `LOOKUP_TABLE` to
+  `lookup_selected_value` with a `key` role plus one role per named branch, matching the shape
+  `lookup_capital_loss_limit` already uses in `graph/2025/edges/capital-gains.yaml`. **Do not adopt
+  DMN, FEEL, or Catala wholesale** - structure only. A prompt change needs a RENDER test (S32) and
+  the `prompts/` render test must still pass.
 
-  **Step 3 - three states, not two.** John's model is accepted / rejected / problem. Report what the
-  ledger's `judgement` vocabulary can actually express today (the one live entry reads
-  `"judgement": "confirmed"`) and what a rejected or problem verdict would write onto a node.
-  **Do not invent a vocabulary** - report the gap and stop if the ledger cannot express all three.
+  **Step 4 - prove executability, not just validation.** For 1040 line 34 and 6251 lines 18 and 39,
+  show `expression_to_graph` now emits real rules with real roles and **zero** `no reusable rule`
+  findings, and that the projected nodes and edges match the shape the engine consumes. **A clean
+  validator result is not the deliverable here; a rule the engine can run is.** Report the
+  `unmapped_operation` warning count before and after - it was 9 and 7 in the S44 runs.
 
-  **Step 4 - do NOT apply anything to the live graph in this round.** The protected set stays
-  byte-identical. Prove the bridge against a temporary copy of the graph and report what WOULD
-  change for the single real ledger entry (`2025/document=form_1040/line=1z/control=amount`), field
-  by field. **Promotion is John's call and it is the first one in this phase.**
+  **Step 5 - rerun the corpus twice and report both.** Numbers to hold: **derived 92, resolved 93**.
+  Print the 6251 line 18 and 39 expressions from each run and state whether each is now executable.
 
-  **Do not:** author or edit anything in `graph/2025/`; write a second verdict applier; invent
-  judgement states; change `derive_cells`; touch the harvester. **Stop conditions:** any diff in the
-  protected directories; a confirmation applied whose fingerprint does not match. Tier 3. ASCII,
-  `git diff --check`, module-form `validate 2025` (all six reconcile differences still named).
-  **ONE local commit** - run `git status` first.
+  **Do not:** author or edit anything in `graph/2025/` - the rules you need already exist, and if
+  step 1 proves a genuinely new rule is required, REPORT it and stop rather than authoring it;
+  adopt a general-purpose expression language; widen the operation enum without step 1 evidence;
+  weaken any validator; promote anything. **Stop conditions:** any diff in the protected
+  directories; `derive_cells` acquiring a disk write; the corpus dropping below derived 91 on both
+  runs. Tier 3. ASCII, `git diff --check`, module-form `validate 2025`, preflight `legacy_mined`
+  394. **ONE local commit.**
+
+- **M20-S47 (QUEUED, SMALL) - EXPAND THE REVIEW VOCABULARY TO ACCEPTED / REJECTED / PROBLEM.** S45
+  found that the ledger schema accepts arbitrary judgement strings, the review surface emits only
+  `confirmed` and `rejected`, and no `problem` state exists anywhere. **John's model is three-state**
+  and the bridge currently applies `confirmed` only. Define the three states end to end - review
+  surface, ledger schema, and what each writes onto a node - then extend the bridge. Report what a
+  `rejected` or `problem` node should mean to the ENGINE (refuse to compute? compute with a warning?
+  report unresolved?) and let John rule before wiring engine behaviour.
 
 ## Architect decisions
 
@@ -360,6 +384,11 @@ client-managed server dies.
 
 ## Recent rounds (condensed; full narration in git history - `git show <hash>`)
 
+- **M20-S45 (`467685c`, Architect-verified):** `apply_address_verdicts` plus
+  `review apply-address-verdicts`, dry-run by default, reusing the existing `_apply_graph_review`
+  rather than adding a second applier. Architect ran the live dry-run: the one real ledger record
+  reports STALE with both fingerprints printed and writes nothing, which is the property the M15
+  path lacked. Vocabulary gap reported not invented -> S47.
 - **M20-S44 (`e0a3f35`, Architect-verified):** `operand_type_mismatch` hard-fails a nonnumeric graph
   node in a numeric slot while still allowing a status node as a `LOOKUP_TABLE` key; incomplete node
   metadata is recorded as `operand_type_undetermined_nodes` and allowed through; `REQUIRE_INPUT` no
