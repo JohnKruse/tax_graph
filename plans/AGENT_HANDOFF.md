@@ -17,8 +17,9 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## BALL
 
-**BALL: WORKER - M20-S60 (THE PACKET MUST CARRY THE WHOLE PRINTED ROW).** Task block under
-**From Architect**. **S58 (captions) has LANDED at `f21ad6b`** - 96 rows, 12 captioned, 84 correctly
+**BALL: ARCHITECT - M20-S60 provider leg (THE PACKET MUST CARRY THE WHOLE PRINTED ROW).** Local
+implementation is locally committed; the live provider derivation and acceptance leg remain with
+the Architect. **S58 (captions) has LANDED at `f21ad6b`** - 96 rows, 12 captioned, 84 correctly
 left whole, **0 ambiguous** - and is awaiting the Architect provider leg.
 
 **THREE INDEPENDENT DESIGN READS AGREE, AND THE QUEUE BELOW IS THE RECONCILIATION.** The Architect's
@@ -114,6 +115,39 @@ that is what S57 addresses.
 
 **Gates:** 76 passed on a short temp root, ASCII OK, `git diff --check` clean, `validate 2025`
 exit 0 with graph integrity OK, protected set diff empty, `git status` clean.
+
+**M20-S60 WORKER UPDATE (2026-08-05; local implementation complete, awaiting Architect provider
+leg):**
+
+The original artifact inspection found three genuine interrupted rows in the four-document set:
+Form 2441 lines 8 and 19, and Schedule D line 21. The other repeated anchors were normal wraps,
+column/page furniture, or split form labels and are not flagged. The interruption pattern is a
+repeated printed anchor followed by an AcroForm field marker and/or dot leaders; the existing
+source-line packet stopped at that marker even though PDF geometry showed substantive continuation.
+
+The packet now carries widget names from the geometry model, joins repeated-anchor continuations
+and unanchored visual continuations, and stops at split siblings, split form footers, and section
+furniture. A substantive continuation that is still missing produces `row_packet_incomplete`.
+That finding is carried into the cell frame as evidence metadata, becomes `incomplete_evidence`
+during input validation, and suppresses the provider call. No text is reconstructed; the test
+checks that packet content is a punctuation-insensitive multiset subset of the acquired source.
+
+Before/after packet evidence from the four-document rerun:
+
+```text
+Before line 8: 8 Enter on line 8 the decimal amount shown below that applies to the amount on line 7. If line 7 is: If line 7 is: If line 7 is: But not Decimal But not Decimal But not Decimal Over over amount is Over over amount is Over over amount is $0-15,000 .35 $25,000-27,000 .29 $37,000-39,000 .23 15,000-17,000 .34 27,000-29,000 .28 39,000-41,000 .22 8 X
+After line 8: 8 Enter on line 8 the decimal amount shown below that applies to the amount on line 7. If line 7 is: If line 7 is: If line 7 is: But not Decimal But not Decimal But not Decimal Over over amount is Over over amount is Over over amount is $0-15,000 .35 $25,000-27,000 .29 $37,000-39,000 .23 15,000-17,000 .34 27,000-29,000 .28 39,000-41,000 .22 8 X 17,000-19,000 .33 29,000-31,000 .27 41,000-43,000 .21 19,000-21,000 .32 31,000-33,000 .26 43,000-No limit .20 21,000-23,000 .31 33,000-35,000 .25 23,000-25,000 .30 35,000-37,000 .24
+Before line 19: 19 Enter the amount shown below that applies to you. } - If married filing jointly, enter your spouse's earned income (if you or your spouse was a student or was disabled, see the 19
+After line 19: 19 Enter the amount shown below that applies to you. } - If married filing jointly, enter your spouse's earned income (if you or your spouse was a student or was disabled, see the 19 instructions for line 5). - If married filing separately, see instructions. - All others, enter the amount from line 18.
+Changed formula rows: form_1040_2025 0, schedule_a_2025 0, schedule_d_2025 0, form_2441_2025 2 (lines 8 and 19); total 2.
+```
+
+RAN: `$env:PYTEST_DEBUG_TEMPROOT=(Resolve-Path .test_tmp_codex).Path; & .venv\\Scripts\\python.exe -m pytest tests\\test_structure_m20.py tests\\test_derive_cells_m20.py tests\\test_outline_span_resolution_m20.py tests\\test_form_completeness_m20.py tests\\test_m20_s31.py tests\\test_m20_s41.py tests\\test_m20_s54.py -q` -> 115 passed, 1 warning in 29.01s.
+RAN: `& .venv\\Scripts\\python.exe tools\\check_ascii.py` -> ASCII check OK.
+RAN: `git diff --check` -> clean.
+RAN: `& .venv\\Scripts\\python.exe -m tax_graph.cli validate 2025` -> exit 0; graph integrity OK.
+RAN: `git diff --stat -- graph/2025/nodes graph/2025/edges graph/2025/rules graph/2025/field_maps` -> empty.
+NOT RUN: live provider leg - the Worker sandbox has no outbound network; the Architect owns the live-row derivation and acceptance leg.
 
 ## Architect decision - notation
 

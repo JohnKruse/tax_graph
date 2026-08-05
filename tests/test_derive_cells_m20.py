@@ -1241,6 +1241,30 @@ def test_missing_both_evidence_sources_is_row_local_error() -> None:
     assert result.validation_report["errored"] == 1
 
 
+def test_incomplete_evidence_finding_blocks_provider_call() -> None:
+    client = FakeClient([])
+    row = {
+        **_frame()[0],
+        "metadata": {
+            "evidence_findings": [
+                {
+                    "code": "row_packet_incomplete",
+                    "detail": "line 8 has text after a repeated printed anchor that is absent",
+                }
+            ]
+        },
+    }
+
+    result = derive_cells(CellFrame.from_rows([row]), "<<line>>", "secret", client=client)
+
+    assert result.rows[0].status == "error"
+    assert "incomplete_evidence" in result.rows[0].error
+    assert result.validation_report["validator_failures_by_kind"] == {
+        "incomplete_evidence": 1
+    }
+    assert client.calls == []
+
+
 @pytest.mark.parametrize(
     ("line", "raw", "expected"),
     [

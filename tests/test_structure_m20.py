@@ -7,7 +7,12 @@ import pytest
 from tax_graph.acquire.render_form import extract_field_grid, extract_line_markdown
 from tax_graph.extract.inputs import load_document_input
 from tax_graph.extract.models import SourceDocumentInput
-from tax_graph.extract.outline import build_candidate_spans, build_outline_tree
+from tax_graph.extract.outline import (
+    _content_tokens,
+    _row_packet_findings,
+    build_candidate_spans,
+    build_outline_tree,
+)
 from tax_graph.extract.outline_pipeline import _formula_outline_nodes, _span_for_line
 from tax_graph.extract.structure import (
     StructureModel,
@@ -70,6 +75,58 @@ def test_form_1040_structure_uses_left_defining_token_for_1z():
     span = _span_for_line(document, line_1z[0], build_candidate_spans(document))
     assert span is not None
     assert "Add lines 1a through 1h 1z" in span.text
+
+
+@pytest.mark.m20
+def test_form_2441_packets_keep_text_after_field_markers_and_dot_leaders():
+    document = _document_or_skip("form_2441_2025")
+    outline = build_outline_tree(document)
+    spans = build_candidate_spans(document)
+    source_tokens = _content_tokens(document.text)
+    expected = {
+        "8": ("17,000-19,000 .33", "35,000-37,000 .24"),
+        "19": (
+            "instructions for line 5).",
+            "All others, enter the amount from line 18.",
+        ),
+    }
+    for node in _formula_outline_nodes(outline.children):
+        if node.line_anchor not in expected:
+            continue
+        span = _span_for_line(document, node, spans)
+        assert span is not None
+        assert span.findings == ()
+        assert all(fragment in span.text for fragment in expected[node.line_anchor])
+        # The packet may omit cosmetic dot leaders and join visual lines, but
+        # every substantive token must still come from the acquired source.
+        assert not (_content_tokens(span.text) - source_tokens)
+
+
+@pytest.mark.m20
+def test_repeated_anchor_continuation_is_a_fail_closed_finding_when_not_joined():
+    source = "8 First row\n8 X\n17,000-19,000 .33\n9 Next row\n"
+    raw_rows = (
+        StructureRow(1, "8 First row", 10.0, 10.0, 100.0, 20.0, 0, "8", "8"),
+        StructureRow(1, "8 X", 10.0, 30.0, 100.0, 40.0, source.index("8 X"), "8", "8"),
+        StructureRow(
+            1,
+            "17,000-19,000 .33",
+            10.0,
+            42.0,
+            150.0,
+            52.0,
+            source.index("17,000"),
+        ),
+        StructureRow(1, "9 Next row", 10.0, 54.0, 100.0, 64.0, source.index("9 Next"), "9", "9"),
+    )
+    packet = StructureRow(1, "8 First row 8 X", 10.0, 10.0, 100.0, 40.0, 0, "8", "8")
+
+    findings = _row_packet_findings(packet, raw_rows, source_text=source)
+
+    assert len(findings) == 1
+    assert findings[0].code == "row_packet_incomplete"
+    assert "17" in findings[0].detail
+    assert ".33" in findings[0].detail
 
 
 @pytest.mark.m20

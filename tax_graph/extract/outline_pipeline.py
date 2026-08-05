@@ -29,6 +29,7 @@ from tax_graph.extract.outline import (
     infer_value_type,
     node_type_for_outline,
     _assembled_source_text,
+    _geometry_assembled_source_row,
     _line_anchor_variants,
 )
 from tax_graph.extract.tables import assemble_table_subunits
@@ -150,6 +151,22 @@ def generate_outline_first_drafts(
             "has_instruction_citation": bool(instruction_span_ids),
         }
         micro_stats["formula_cells"].append(cell_record)
+        packet_findings = [
+            finding
+            for span in node_spans
+            for finding in span.findings
+        ]
+        if packet_findings:
+            micro_stats["cells_failed"] += 1
+            finding = {
+                "code": "incomplete_evidence",
+                "target_cell_id": target_cell_id,
+                "reason": "evidence packet is incomplete; provider call suppressed",
+                "evidence": packet_findings,
+            }
+            _record_micro_finding(micro_stats, finding)
+            _record_review_gap(micro_stats, cell_record, finding["reason"])
+            continue
         plan = _deterministic_schedule_d_formula_plan(document, outline_node, node_spans)
         formula_model = str(model)
         if plan is None:
@@ -1454,6 +1471,18 @@ def _span_for_line(
             continue
         line_number = _locator_line_number(span.locator)
         if line_number in source_line_numbers and _span_matches_line_label(node, span):
+            geometry_result = _geometry_assembled_source_row(
+                document,
+                start_line=line_number or 0,
+                anchor=normalized_anchor,
+            )
+            if geometry_result is not None:
+                geometry_row, findings = geometry_result
+                return replace(
+                    span,
+                    text=geometry_row.text,
+                    findings=tuple(finding.as_dict() for finding in findings),
+                )
             assembled_text = _assembled_source_text(
                 document,
                 start_line=line_number or 0,

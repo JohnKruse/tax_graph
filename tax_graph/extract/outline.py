@@ -7,6 +7,7 @@ regenerated, not promoted directly into the authored graph.
 
 from __future__ import annotations
 
+from collections import Counter
 from dataclasses import dataclass, field
 from pathlib import Path
 import re
@@ -14,9 +15,10 @@ from typing import Any
 
 import yaml
 
+from tax_graph.acquire.text_normalize import normalize_punctuation
 from tax_graph.config import get_config_value, project_root
 from tax_graph.extract.models import RelatedSourceInput, SourceDocumentInput
-from tax_graph.extract.structure import StructureRow
+from tax_graph.extract.structure import StructureFinding, StructureRow
 from tax_graph.extract.instruction_sections import (
     InstructionSectionsFrame,
     build_instruction_sections,
@@ -45,6 +47,7 @@ class CandidateSpan:
     owner_document_id: str | None = None
     owner_lines: tuple[str, ...] = ()
     section_id: str | None = None
+    findings: tuple[dict[str, Any], ...] = ()
 
 
 @dataclass
@@ -375,27 +378,50 @@ def _assemble_structure_rows(
     """
     assembled: list[StructureRow] = []
     current: StructureRow | None = None
-    for row in rows:
+    repeated_anchor = False
+    for index, row in enumerate(rows):
         if current is None:
             if row.line_anchor:
                 current = row
+                repeated_anchor = False
             else:
                 assembled.append(row)
             continue
 
-        if _structure_row_is_boundary(row, current) or _structure_row_gap_is_boundary(
-            current,
-            row,
-            source_text=source_text,
-        ) or (
-            row.line_anchor and row.line_anchor != current.line_anchor
+        next_row = rows[index + 1] if index + 1 < len(rows) else None
+        source_gap_boundary = False
+        sibling_boundary = _is_split_sibling_boundary(row, next_row, current)
+        if sibling_boundary:
+            source_gap_boundary = True
+        elif not (
+            current.line_anchor
+            and (
+                row.line_anchor == current.line_anchor
+                or (row.line_anchor is None and repeated_anchor)
+            )
+        ):
+            source_gap_boundary = _structure_row_gap_is_boundary(
+                current,
+                row,
+                source_text=source_text,
+            )
+        if (
+            _structure_row_is_boundary(row, current)
+            or _is_split_form_footer(row, next_row)
+            or source_gap_boundary
+            or (
+                row.line_anchor and row.line_anchor != current.line_anchor
+            )
         ):
             assembled.append(current)
             current = row if row.line_anchor else None
+            repeated_anchor = False
             if current is None:
                 assembled.append(row)
             continue
 
+        if row.line_anchor and row.line_anchor == current.line_anchor:
+            repeated_anchor = True
         current = _join_structure_rows(current, row)
 
     if current is not None:
@@ -432,6 +458,8 @@ def _structure_row_is_boundary(row: StructureRow, current: StructureRow) -> bool
     lowered = text.lower()
     if lowered.startswith("form ") and "page" in lowered:
         return True
+    if re.match(r"^[0-9]+\s+form\s+\([0-9]{4}\)", lowered):
+        return True
     return lowered.startswith(
         (
             "part ",
@@ -440,9 +468,35 @@ def _structure_row_is_boundary(row: StructureRow, current: StructureRow) -> bool
             "complete part ",
             "for paperwork reduction",
             "for disclosure",
+            "to claim the child and dependent care credit",
             "credits",
         )
     )
+
+
+def _is_split_form_footer(row: StructureRow, next_row: StructureRow | None) -> bool:
+    """Recognize a footer split into a catalog number and ``Form (year)``."""
+    if row.line_anchor or next_row is None or next_row.line_anchor:
+        return False
+    return bool(
+        row.text.strip().isdigit()
+        and re.match(r"^form\s+\([0-9]{4}\)", next_row.text.strip().lower())
+    )
+
+
+def _is_split_sibling_boundary(
+    row: StructureRow,
+    next_row: StructureRow | None,
+    current: StructureRow,
+) -> bool:
+    """Keep a split sibling label from joining its preceding repeated anchor."""
+    if row.line_anchor or next_row is None or not next_row.line_anchor or not current.line_anchor:
+        return False
+    match = re.match(r"^(?P<suffix>[a-z])(?:\s|$)", row.text.strip(), re.IGNORECASE)
+    if not match:
+        return False
+    base = "".join(character for character in current.line_anchor if character.isdigit())
+    return next_row.line_anchor.lower() == f"{base}{match.group('suffix').lower()}"
 
 
 def _join_structure_rows(first: StructureRow, continuation: StructureRow) -> StructureRow:
@@ -777,17 +831,119 @@ def _geometry_assembled_source_text(
     """Return the assembled geometry row that owns a source line, if present."""
     if document.fields_path is None:
         return None
+
+    result = _geometry_assembled_source_row(
+        document,
+        start_line=start_line,
+        anchor=anchor,
+    )
+    return result[0].text if result is not None else None
+
+
+def _geometry_assembled_source_row(
+    document: SourceDocumentInput,
+    *,
+    start_line: int,
+    anchor: str,
+) -> tuple[StructureRow, tuple[StructureFinding, ...]] | None:
+    """Return one geometry row and fail-closed packet findings, if any."""
+    if document.fields_path is None:
+        return None
     from tax_graph.extract.structure import build_structure_model
 
     structure = build_structure_model(document)
     if structure is None:
         return None
-    for row in _assemble_structure_rows(structure.rows, source_text=document.text):
+    assembled = _assemble_structure_rows(structure.rows, source_text=document.text)
+    for row in assembled:
         if row.line_anchor != anchor:
             continue
         if _text_line_number(document.text, row.text_offset) == start_line:
-            return row.text
+            return row, _row_packet_findings(
+                row,
+                structure.rows,
+                source_text=document.text,
+            )
     return None
+
+
+def _row_packet_findings(
+    row: StructureRow,
+    raw_rows: tuple[StructureRow, ...] | list[StructureRow],
+    *,
+    source_text: str,
+) -> tuple[StructureFinding, ...]:
+    """Find substantive geometry continuations lost after a repeated anchor.
+
+    A repeated printed anchor is a known AcroForm interruption pattern. The
+    geometry pass can see words after the marker while source-line assembly may
+    stop at a dot-leader or field-marker line. A packet is complete only when
+    those continuation words are present in the assembled row. The check is
+    deliberately scoped to a repeated anchor so adjacent form columns and page
+    furniture are not mistaken for one logical printed row.
+    """
+    candidates = [
+        item
+        for item in raw_rows
+        if item.page == row.page and item.text_offset >= row.text_offset
+    ]
+    window: list[StructureRow] = []
+    for item in candidates:
+        if item.line_anchor and item.line_anchor != row.line_anchor:
+            break
+        window.append(item)
+    same_anchor = [item for item in window if item.line_anchor == row.line_anchor]
+    if len(same_anchor) < 2:
+        return ()
+    last_same_index = max(
+        index for index, item in enumerate(window)
+        if item.line_anchor == row.line_anchor
+    )
+    continuation = [
+        item
+        for item in window[last_same_index + 1 :]
+        if item.text and not _structure_row_is_boundary(item, row)
+    ]
+    if not continuation:
+        return ()
+    missing = _content_tokens(" ".join(item.text for item in continuation)) - _content_tokens(row.text)
+    if not missing:
+        return ()
+    source_end = len(source_text)
+    next_anchor = next(
+        (
+            item
+            for item in candidates
+            if item.text_offset > row.text_offset
+            and item.line_anchor
+            and item.line_anchor != row.line_anchor
+        ),
+        None,
+    )
+    if next_anchor is not None:
+        source_end = next_anchor.text_offset
+    interruption = ["repeated printed anchor"]
+    source_window = source_text[same_anchor[-1].text_offset : source_end]
+    if re.search(r"(?:^|\n)\s*(?:\.\s*){2,}(?:\n|$)", source_window):
+        interruption.append("dot leaders")
+    missing_text = ", ".join(sorted(missing)[:12])
+    return (
+        StructureFinding(
+            code="row_packet_incomplete",
+            page=row.page,
+            detail=(
+                f"line {row.line_anchor} has substantive geometry text after "
+                f"{', '.join(interruption)} that is absent from the packet: {missing_text}"
+            ),
+            row_text=row.text,
+        ),
+    )
+
+
+def _content_tokens(value: str) -> Counter[str]:
+    """Return punctuation-insensitive content tokens for completeness checks."""
+    normalized = normalize_punctuation(str(value or "")).lower()
+    return Counter(re.findall(r"[a-z0-9]+(?:[-'][a-z0-9]+)*|\.[0-9]+", normalized))
 
 
 def _source_anchor_lines(document: SourceDocumentInput) -> dict[int, set[str]]:

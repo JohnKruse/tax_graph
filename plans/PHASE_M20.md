@@ -192,6 +192,14 @@ Requirements when this lands (S4, with the overlay surface prepared in S3):
   policies, and authority, fail-closed on an unexpected empty (ledger D10), ratcheted in
   CI, with the review-cost numbers from 3.5.
 
+### M20-S60 packet completeness
+
+The printed-row packet is assembled from deterministic PDF geometry, including continuation text
+after repeated AcroForm anchors and field markers. A repeated-anchor row carries a named
+`row_packet_incomplete` finding when substantive continuation text is not present in the packet;
+cell validation records `incomplete_evidence` and suppresses the provider call. Geometry remains a
+source-only witness: it may join printed visual rows but may not invent text.
+
 ## 5. Sequencing and risk
 
 M18 widening stays DEFERRED behind this phase (John, 2026-07-28). Widening on top of a

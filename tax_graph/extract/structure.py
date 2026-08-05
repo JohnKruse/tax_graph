@@ -7,7 +7,7 @@ It never rewrites the text layer or writes an acquired artifact.
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from pathlib import Path
 import re
 from typing import Any
@@ -92,6 +92,16 @@ class StructureFinding:
     detail: str
     field_name: str = ""
     row_text: str = ""
+
+    def as_dict(self) -> dict[str, Any]:
+        """Return a JSON-compatible finding for downstream packet consumers."""
+        return {
+            "code": self.code,
+            "page": self.page,
+            "detail": self.detail,
+            "field_name": self.field_name,
+            "row_text": self.row_text,
+        }
 
 
 @dataclass(frozen=True)
@@ -248,6 +258,7 @@ def build_structure_model(document: SourceDocumentInput) -> StructureModel | Non
     line_anchors: list[dict[str, Any]] = []
     text_cursor = 0
     text_pages = document.text.split("\f")
+    fields = list((document.fields or {}).get("fields", []) or [])
     with fitz.open(pdf_path) as pdf:
         for page_number, page in enumerate(pdf, 1):
             page_words = page.get_text("words")
@@ -260,13 +271,18 @@ def build_structure_model(document: SourceDocumentInput) -> StructureModel | Non
                 page_width=float(page.rect.width),
                 allow_line_anchors=bool((document.fields or {}).get("line_anchors")),
             )
+            page_fields = [
+                field
+                for field in fields
+                if int(field.get("page", 0) or 0) == page_number
+            ]
+            page_rows = [_with_widget_names(row, page_fields) for row in page_rows]
             rows.extend(page_rows)
             text_cursor += len(page_text) + (1 if page_text else 0)
             for row in page_rows:
                 if row.line_anchor:
                     line_anchors.append(_anchor_record(row))
 
-    fields = list((document.fields or {}).get("fields", []) or [])
     captioned_fields = 0
     for field in fields:
         match = _nearest_row(field, rows)
@@ -564,6 +580,27 @@ def _make_structure_row(
         line_anchor=anchor,
         printed_anchor=_right_edge_printed_anchor(words, anchor),
     )
+
+
+def _with_widget_names(row: StructureRow, fields: list[dict[str, Any]]) -> StructureRow:
+    """Attach AcroForm widgets whose rectangles overlap one visual word row."""
+    names = tuple(
+        str(field.get("field_name", ""))
+        for field in fields
+        if field.get("field_name")
+        and _vertical_overlap(
+            row.y0,
+            row.y1,
+            float(field.get("y0", 0.0) or 0.0),
+            float(field.get("y1", 0.0) or 0.0),
+        )
+    )
+    return replace(row, widget_names=names)
+
+
+def _vertical_overlap(first_y0: float, first_y1: float, second_y0: float, second_y1: float) -> bool:
+    """Return whether two page rectangles share a non-zero vertical span."""
+    return min(first_y1, second_y1) > max(first_y0, second_y0)
 
 
 def _right_edge_printed_anchor(

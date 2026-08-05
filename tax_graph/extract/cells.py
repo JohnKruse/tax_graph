@@ -271,6 +271,7 @@ def build_cell_frame_from_document(document: Any) -> CellFrame:
                     "instruction_span_ids": [section.section_id for section in sections],
                     "form_face_span_id": form_span.span_id if form_span is not None else "",
                     "form_face_before": form_span.text if form_span is not None else "",
+                    "evidence_findings": list(form_span.findings) if form_span is not None else [],
                     "label_before": node.label,
                     "caption": caption_split.caption,
                     "caption_status": caption_split.status,
@@ -541,11 +542,24 @@ def validate_cell_input(row: CellRecord) -> tuple[CellValidationIssue, ...]:
     that compatibility surface while still rejecting an explicit wrong owner.
     """
     issues: list[CellValidationIssue] = []
+    metadata = row.metadata
     if not row.label.strip() and row.metadata.get("caption_status") not in {"none", "ambiguous"}:
         issues.append(CellValidationIssue("missing_label", "cell label is required"))
     if not row.form_face_text.strip() and not row.instruction_text.strip():
         issues.append(CellValidationIssue("missing_evidence", "at least one cited evidence source is required"))
-    metadata = row.metadata
+    evidence_findings = metadata.get("evidence_findings") or []
+    if evidence_findings:
+        details = "; ".join(
+            str(item.get("detail") or item.get("code") or "evidence finding")
+            for item in evidence_findings
+            if isinstance(item, Mapping)
+        )
+        issues.append(
+            CellValidationIssue(
+                "incomplete_evidence",
+                f"form-face evidence packet is not complete: {details}",
+            )
+        )
     owner = metadata.get("instruction_owner_document_id") or metadata.get("instruction_document_id")
     if owner and str(owner) != row.form:
         issues.append(
