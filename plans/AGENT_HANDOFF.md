@@ -17,100 +17,65 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## BALL
 
-**BALL: WORKER - M20-S61 (TIGHTEN "SUBSTANTIVE CONTINUATION").** Task block under
-**From Architect**. **S60 is a NARROW REWORK at `1074608`** - it achieved its deliverable and
-shrank the corpus, so it cannot be accepted as-is.
+**BALL: WORKER - M20-S59 (NOMINATE A REGION OF A DOCUMENT TO BE A FULL DOCUMENT).** Task block
+under **From Architect**; already specced and John-approved. **S61 is ACCEPTED at `08e994c`, and
+the evidence-layer arc that began with S58 is complete.**
 
-**THE WIN, AND IT IS A REAL ONE.** 2441 line 8 now carries **16 of 16 printed bands** and the model
-emitted **all sixteen correctly** on live data - `15000/.35` through `43000/.21` plus the open top
-band. **That row has never been substantively right before.** It stands at `repaired` only because
-`LOOKUP_BRACKET` does not project to a rule, which is the operation-registry round. Line 19 carries
-its default branch again, and every packet is still a verbatim subset of the acquired source.
+**THE CORPUS IS AT ITS BEST MEASURED STATE.** Live across three documents: **67 attempted, 63
+derived, 1 repaired, 3 errored.** `form_2441_2025` posted **21 attempted, 20 derived, 0 errored** -
+its best result in the phase by a wide margin, from a form that was 0/21 four rounds ago.
 
-**THE REGRESSION.** `row_packet_incomplete` counts page furniture as missing content - catalog
-numbers, revision dates, form identifiers, and the next section's header - and the finding
-suppresses the provider call. **Four rows that derived correctly in every prior run are no longer
-attempted**: 2441 lines 11, 26 and 31, and 6251 line 40. Attempted across three documents went
-**67 -> 63**.
+**S59 IS THE RIGHT NEXT ROUND, AND THE RUN SAYS SO.** All three remaining `form_6251_2025` failures
+are lines 13, 20 and 27, each emitting `max(require_input(line X), 0)` and failing closed on
+self-reference. **Those are exactly the rows that reference the Qualified Dividends and Capital Gain
+Tax Worksheet and the Schedule D Tax Worksheet**, neither of which is a document. S59 turns them
+into ordinary cross-document references.
 
-**QUEUE, in order.** S61 (this rework), then S59 (nominations, already specced and John-approved),
-then column and grid recovery, the versioned operation registry, deterministic phrase obligations,
-and S53 (the approval gate). Each is specced when reached.
+**QUEUE after S59:** column and grid recovery; the versioned operation registry (which is what
+finally lets 2441 line 8 reach `derived` - it carries all 16 bands correctly today and stalls only
+because `LOOKUP_BRACKET` does not project to a rule); deterministic phrase obligations; then S53,
+the approval gate. Each specced when reached.
+
+**THE STANDING SEMANTIC DEFECT, now five runs old.** `form_2441_2025` line 25 derived cleanly this
+run as `if_else(line 22, 0, max(0, min(line 20, line 21)), max(0, line 20 - line 24))`. The else
+branch should subtract line 24 from `min(line 20, line 21)`. **It is wrong, it passes every
+validator, and it has been wrong in five consecutive live runs with four different shapes.** This is
+the case that deterministic phrase obligations exist to catch, and it is the standing argument for
+why "derived" must never be reported as "correct".
 
 **FOR JOHN, unresolved and not blocking:** "every cell receives meaningful human approval before
 use" and "a human does not read every new cell" cannot both hold during bootstrap. The pipeline can
-remove **re-**review - approve once against stable semantics, fingerprint the source clauses and the
-compiled meaning, carry the verdict while both are unchanged - but not first review. That is a
-decision about what 98/2 means in year one.
+remove **re-**review, not first review.
 
 ## Current round
 
-**M20-S61 WORKER IMPLEMENTATION COMPLETE, PENDING ARCHITECT PROVIDER LEG (2026-08-05).** The
-detector now stops at the first explicit following-section boundary and ignores only identifiable
-page furniture: bare numbers, page labels, split `Form (year)` footers, form-page identifiers,
-catalog identifiers, and creation-date footer rows. Numeric bands and prose continuations remain
-substantive. The verbatim-subset check is unchanged.
+**M20-S61 ACCEPTED (Architect, Claude Opus 5, 2026-08-05) at `08e994c`. The S58 -> S60 -> S61
+evidence arc is complete and the corpus is at its best measured state.**
 
-The full local manifest report used 23 manifest entries, of which 16 had form PDF/text/field
-artifacts and 7 were instruction-only. Findings changed **10 -> 4**, with no new findings:
+**Live, three documents: 67 attempted, 63 derived, 1 repaired, 3 errored.** `form_2441_2025` at
+**21/20/1/0** - attempted fully restored, zero errors, and the three rows S60 had suppressed came
+back correct: line 11 `min(line 9c, line 10)`, line 26 `max(line 23 - line 25, 0)`, line 31
+`min(line 29, line 30)`.
 
-- Removed: `form_2441_2025` lines 11, 26, 31; `form_6251_2025` line 40; and the pre-existing
-  boundary cases `schedule_1a_2025` line 30 and `schedule_d_2025` line 7.
-- Remaining pre-existing findings: `schedule_1a_2025` lines 14a and 36a, and
-  `form_6251_2025` lines 1a and 5.
-- Target attempted counts: 2441 **18 -> 21**, 1040 **17 -> 17**, 6251 **28 -> 29**;
-  total **63 -> 67**.
-- Real continuations remain protected: 2441 lines 8 and 19 retain their complete table/rule
-  text, and Schedule D line 21 retains the loss-limit continuation. Synthetic incomplete packets
-  still raise `row_packet_incomplete`.
+**The rework did exactly what was asked and nothing more.** Findings went 10 -> 4 with **no new
+findings**, and the detector now ignores only identifiable page furniture - bare numbers, page
+labels, split `Form (year)` footers, form-page and catalog identifiers, creation-date rows - while
+numeric bands and prose continuations stay substantive.
 
-RAN: `.venv\\Scripts\\python.exe -m pytest tests/test_structure_m20.py tests/test_derive_cells_m20.py -q`
--> **92 passed in 17.50s**.
-RAN: `.venv\\Scripts\\python.exe -m pytest tests/test_outline_span_resolution_m20.py tests/test_extract_outline_m4.py tests/test_extract_m16.py -q`
--> **34 passed in 3.04s**.
-RAN: `.venv\\Scripts\\python.exe tools/check_ascii.py` -> **ASCII check OK**.
-RAN: `git diff --check` -> **exit 0**.
-RAN: `.venv\\Scripts\\python.exe -m tax_graph.cli validate 2025` -> **exit 0; graph integrity OK**.
-NOT RUN: live provider leg -> Architect-owned and unavailable in the Worker's no-network sandbox.
-Protected graph/field-map set: **no diff**. One local commit will contain the implementation,
-tests, and this handoff evidence.
+**The true positives are protected, and the test proves it rather than asserting it.** A synthetic
+packet that stops at `8 X` while geometry shows `17,000-19,000 .33` continuing still raises
+`row_packet_incomplete` with the band content named in the detail. Architect re-verified the real
+artifacts directly: **2441 line 8 carries 16 of 16 printed bands**, line 19 still carries its
+default branch, **every packet remains a verbatim subset of the acquired source**, and no row on
+2441 carries a false incomplete finding.
 
-**M20-S58 ACCEPTED (Architect, Claude Opus 5, 2026-08-05) at `f21ad6b`. M20-S60 is a NARROW REWORK
-at `1074608`.** Both are evidence-layer rounds and they land together.
+**Inherited findings, now visible.** Four remain and none was introduced by this arc:
+`schedule_1a_2025` lines 14a and 36a, `form_6251_2025` lines 1a and 5. S61 also cleared two that
+predate S60 entirely (`schedule_1a_2025` line 30, `schedule_d_2025` line 7). **These four have never
+been diagnosed, only inherited** - worth a look before the next evidence round.
 
-**S58, captions, verified live.** 96 formula rows across four documents: **12 captioned, 84
-correctly left whole, 0 ambiguous**, failing closed with `caption_ambiguous` rather than guessing.
-The packet now reads as John asked: `label: Excluded benefits.` with the instruction body separate,
-and no caption at all for a row like `Combine lines 12 through 14` that has none. It also removed a
-contaminated 1040 label that had bled text in from a neighbouring source row. Live: 1040 unchanged
-at 17/17, 2441 at 18 derived within the observed 18-20 band, with the three failures being the
-known set and none caption-related.
-
-**S60, packet completeness: the deliverable landed and the corpus shrank.**
-
-The win is real and it is the first of its kind. **2441 line 8 now carries 16 of 16 printed bands**
-- Architect-verified deterministically against the source - and the model emitted **all sixteen
-correctly** on live data, `15000/.35` through `43000/.21` plus the open top band. **That row has
-never been substantively right in any prior round.** It sits at `repaired` only because
-`LOOKUP_BRACKET` does not project to a rule. Line 19 carries its default branch again, truncation is
-now detectable instead of silent, and **every packet remains a verbatim subset of the acquired
-source**.
-
-The regression is bounded and diagnosed. `row_packet_incomplete` counts page furniture as missing
-content, and the finding suppresses the provider call, so **four rows that derived correctly in
-every prior run are no longer attempted** - 2441 lines 11, 26, 31 and 6251 line 40. Attempted across
-three documents went **67 -> 63**. The detector's own detail strings name the culprits: a catalog
-number and revision date, the next section's header, and the form's own footer identifiers. S61 is
-the narrow fix.
-
-**A prediction of mine that failed, recorded because it matters.** I expected the truncation fix to
-change 2441 line 19. With the complete packet it **still** emits `require_input(line 19)`. Two of
-its three branches are genuinely unresolvable, so the open question is whether it should emit a
-status-keyed lookup with a resolvable default or a typed unresolved dependency. That belongs to the
-`REQUIRE_INPUT`-overloading work.
-
-**Gates:** ASCII OK, `git diff --check` clean, protected set diff empty, 115 passed on the Worker's
-focused suites.
+**Gates:** 103 passed on a short temp root, ASCII OK, `git diff --check` clean, protected set diff
+empty, `git status` clean.
 
 ## Architect decision - notation
 
@@ -331,59 +296,6 @@ client-managed server dies.
   parked in a `graph_ext/` overlay. **That special case is the defect.**
 
 ## From Architect
-
-- **M20-S61 TASK - TIGHTEN "SUBSTANTIVE CONTINUATION" (Architect, Claude Opus 5, 2026-08-05).**
-  Ledger: the RAN/NOT RUN rule, D10, and the standing rules in `AGENTS.md`. **Narrow rework of S60.
-  Keep everything else S60 did - it worked.**
-
-  **OPEN ITEMS AND SEAMS THIS ROUND TOUCHES:** advances the evidence foundation only. **Leaves
-  untouched:** nominations (S59), column/grid recovery, the operation registry, phrase obligations,
-  the approval gate (S53).
-
-  **What S60 got right and must be preserved.** Architect-verified deterministically and live:
-  2441 line 8 now carries **16 of 16 printed bands** and the model emitted all sixteen correctly
-  with the right thresholds - the first substantively correct result that row has ever produced.
-  Line 19 carries its default branch again. **Every packet is still a verbatim subset of the
-  acquired source.** Truncation is now detectable instead of silent, which was the deliverable.
-
-  **The defect.** `row_packet_incomplete` treats page furniture and neighbouring-section text as
-  missing content, and because the finding suppresses the provider call, **four rows that derived
-  correctly in every prior run are no longer attempted.** Attempted across three documents went
-  67 -> 63. The detector's own detail strings name the culprits:
-  - `form_2441_2025` line 11: *"18, 2025, 25, created"* - catalog number and revision date.
-  - `form_2441_2025` line 26: *"27, 31, below, complete, lines, through"* - the NEXT section's
-    header.
-  - `form_2441_2025` line 31: *"2025, 2441"* - the form's own footer identifiers.
-  - `form_6251_2025` line 40: same class.
-
-  **Step 1 - define "substantive" so it excludes furniture.** Bare numerals, four-digit years, form
-  and catalog identifiers, revision dates, page numbers, and text that belongs to a following
-  section are NOT substantive continuation. **Report the rule you implement and every row it changes
-  across the full manifest**, in both directions: rows that stop being flagged, and any row that
-  starts.
-
-  **Step 2 - prove the true positives survive.** 2441 lines 8 and 19 and Schedule D line 21 were the
-  three genuine interruptions S60 found. **They must still be detected**, and line 8 and line 19 must
-  still carry their complete text. A fix that silences the detector everywhere is worse than the
-  regression.
-
-  **Step 3 - report the attempted count per document before and after.** The target is 67 attempted
-  across 2441/1040/6251 with the genuine interruptions still repaired rather than suppressed.
-
-  **Do not:** weaken the verbatim-subset guarantee; reconstruct text; disable the finding rather than
-  narrowing it; touch the caption split, the operation vocabulary, or the addressing layer.
-  **Stop conditions:** any diff in the protected directories; a packet containing text that is not
-  verbatim in the source; a genuine interruption no longer detected. Tier 3. Honest `RAN:`/`NOT RUN:`
-  - **the provider leg is the Architect's, and this round is not accepted until the attempted count
-  is restored with the true positives intact.** ASCII, `git diff --check`, module-form
-  `validate 2025`. **ONE local commit.**
-
-  **Recorded, not for this round:** with the complete packet, 2441 line 19 STILL emits
-  `require_input(line 19)`. The Architect predicted the truncation fix would change that row; it did
-  not. Two of its three branches are genuinely unresolvable - spouse's earned income has no node,
-  and one branch says only "see instructions" - so the honest question is whether it should emit a
-  status-keyed lookup with a resolvable default, or a typed unresolved dependency. **That belongs to
-  the REQUIRE_INPUT-overloading work, not here.**
 
 - **M20-S59 TASK - NOMINATE A REGION OF A DOCUMENT TO BE A FULL DOCUMENT (Architect, Claude Opus 5,
   2026-08-05; John's call: *"Yes, I think we have to have some mech for at least nominating these
