@@ -17,31 +17,54 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## BALL
 
-**BALL: WORKER - M20-S58 (THE CELL CAPTION, SEPARATED FROM THE INSTRUCTION).** Task block under
-**From Architect**. **John chose option (b), structure and association**, and asked for the
-label/instruction foundation first: *"mashing all of this stuff together is a problem because there
-is no context carried forward about what it all is and where it comes from."*
+**BALL: WORKER - M20-S60 (THE PACKET MUST CARRY THE WHOLE PRINTED ROW).** Task block under
+**From Architect**. **S58 (captions) has LANDED at `f21ad6b`** - 96 rows, 12 captioned, 84 correctly
+left whole, **0 ambiguous** - and is awaiting the Architect provider leg.
 
-**THE EVIDENCE LAYER IS THE DEFECT, NOT THE PARSER.** Architect A/B on 2441 line 8, same model and
-prompt, only the evidence changed: the shipped flattened packet yields **6 bands with gaps**; a
-packet rebuilt from PDF coordinates yields **all 16 bands, correct thresholds and decimals**, even
-though the bands were handed over in scrambled printed order. It then failed only because it emitted
-`LOOKUP_BRACKET`, which is not in the vocabulary. **Comprehension was never the problem.**
+**THREE INDEPENDENT DESIGN READS AGREE, AND THE QUEUE BELOW IS THE RECONCILIATION.** The Architect's
+own analysis, a naive external model, and the Worker's recommendation at
+`C:\tmp\tax_graph_operation_extraction_recommendation.md` independently reached the same three
+conclusions: **the printed line is a presentation anchor and not the semantic unit; the evidence
+layer is the first-order defect and must be fixed before any semantic decomposer; and a sentence is
+not a clause** - a trailing *"If zero or less, enter -0-"* is a constraint whose scope is the
+preceding rule and must never be sent as a context-free fragment. The Architect's live experiment
+produced exactly that failure independently.
 
-**MEASURED FOUNDATION DEFECTS.** `label` is byte-identical to `form_face_text` on **100% of rows**
-(21/21 on 2441, 17/17 on the 1040, 29/29 on 6251) - there is no caption anywhere in the system.
-`instruction_text` is empty on **50 of 67 rows**, and the 1040's instruction HTML IS acquired, so
-for that document it is a join failure rather than a missing source.
+**THE EVIDENCE IS SILENTLY TRUNCATED, AND THAT IS THE NEXT ROUND.** 2441 line 8 carries 6 of 16
+printed bands; **2441 line 19 is cut mid-clause and its default branch - "All others, enter the
+amount from line 18" - never reaches the model.** We scored that row as a model defect for rounds.
 
-**QUEUE:** S58 captions, then column/grid recovery inside a geometric row, then the
-instruction-booklet join. S53 (the approval gate) sits behind those. **S57 as previously specced is
-WITHDRAWN** - it treated the line 8 packet as a one-form repair; it is the column-recovery round.
+**QUEUE, in order. Each is specced when it is reached, not now**, because both external reads
+predict the problem shrinks once the evidence is whole - and speccing ahead is how S57 went stale:
+1. **S60 - packet completeness.** Specced below. Truncation must be impossible to miss.
+2. **S59 - nomination of a document region as a document.** Already specced; John ruled it in.
+3. **Column and grid recovery** inside a geometric row. The Architect has proved the target: a
+   packet rebuilt from PDF coordinates yielded all 16 bands correctly from the same model.
+4. **One versioned operation registry** as the single source of truth for the provider schema,
+   prompt documentation, validator dispatch, compiler mapping and runtime registration. The Worker's
+   read names `LOOKUP_BRACKET` as the concrete warning: an operation can be offered in one layer and
+   be unprojectable in another. **This closes the failure class that killed S54 and S55.**
+5. **Deterministic phrase obligations** - recognizers for "subtract A from B", "smaller of", zero
+   floors, explicit caps, status-dependent constants, complete bands - checked against the compiled
+   program. This is the affordable slice of source-to-program validation and it would catch the
+   dropped `line 24` on 2441 line 25 **without knowing the correct arithmetic**. A naive
+   "every mentioned line must be an operand" rule would NOT work: some line references are routing
+   effects, not operands.
+6. **S53 - the approval gate**, behind a switch, default off.
 
-**ANSWERED 2026-08-05 - John: yes.** Verbatim: *"we have to have some mech for at least
-nominating these odd things to be full-fledged docs."* Specced as **S59**: an out-of-corpus
-reference already produces an S52 incomplete cell naming its target, so the nomination queue
-exists and nothing consumes it. S59 adds the acceptance step, self-serve per his standing
-ruling that adding a document must never require an agent.
+**NOT BEING BUILT, and the reasons are recorded so this is not relitigated:** open-ended recursive
+model calls; sentence-level decomposition; model voting or temperature-zero stability as correctness
+evidence; a clause IR and compiler **until the evidence work lands**; `REQUIRE_INPUT` as a generic
+failure representation; any hand-authored worksheet or one-form exception.
+
+**FOR JOHN - a policy tension neither the Architect nor John has resolved.** The Worker's read names
+it plainly: **"every cell receives meaningful human approval before use" and "a human does not read
+every new cell" cannot both be true during bootstrap.** If approval means semantic approval, someone
+reads every newly introduced rule, because no oracle exists for it. What the pipeline CAN remove is
+**re-review**: approve once against stable semantics, fingerprint the source clauses and the
+compiled meaning, carry the verdict forward while both are unchanged, and route only changed or new
+clauses back. **That is a real decision about what "98% pipeline, 2% human" means in year one, and
+it is John's.** Nothing is blocked on it.
 
 ## Current round
 
@@ -91,40 +114,6 @@ that is what S57 addresses.
 
 **Gates:** 76 passed on a short temp root, ASCII OK, `git diff --check` clean, `validate 2025`
 exit 0 with graph integrity OK, protected set diff empty, `git status` clean.
-
-**M20-S58 WORKER STATUS - implementation complete, awaiting provider leg and Architect acceptance.**
-The deterministic cell projection now separates a clear leading caption from the form-face
-instruction. The four required real documents contain 96 formula rows: 12 captioned, 84 with no
-caption, and 0 ambiguous. The 12 captions are the noun-phrase rows such as `Excluded benefits.`;
-imperative and conditional rows such as `Enter the smallest...` and `Subtract line...` remain
-whole instructions. An unclassified boundary returns `caption: null` with
-`caption_ambiguous`, never a guessed split. The outline and addressing layers remain unchanged.
-
-The instruction join gap is measured, not repaired here. Of the 67 formula rows across Form 2441,
-Form 1040, and Form 6251, 50 have no instruction section for the exact owner document and printed
-line: 2441 lines `3,6,8,9a,11,17,20,23,25,28,29,30` (13), 1040 lines
-`1z,9,11a,11b,14,15,18,21,22,24,25d,32,33` (13), and 6251 lines
-`4,6,9,11,12,16,17,21,22,23,24,26,28,29,30,31,32,33,34,35,36,37,38,40` (24).
-The related instruction artifacts are acquired and do contain sections; these rows simply have no
-exact owner-document/line section, so this remains the separate instruction-booklet join round.
-
-**S58 packet evidence (verbatim normalized row fields).** Form 2441 line 25 changed from
-`label: 25 Excluded benefits. If you checked "No" on line 22, enter the smaller of line 20 or line 21. Otherwise, subtract line 24 from the smaller of line 20 or line 21. If zero or less, enter -0-`
-and the same full form-face text to `label: Excluded benefits.` plus
-`form face text: If you checked "No" on line 22, enter the smaller of line 20 or line 21. Otherwise, subtract line 24 from the smaller of line 20 or line 21. If zero or less, enter -0-`.
-Form 1040 line 15 changed from the neighboring-source row
-`label: jointly or 15 Subtract line 14 from line 11b. If zero or less, enter -0-. This is your taxable income 15`
-and the same full form-face text to an empty label plus
-`form face text: Subtract line 14 from line 11b. If zero or less, enter -0-. This is your taxable income`.
-
-**RAN:** `$pytestRoot = Join-Path (Get-Location) '.pytest_s58_temp'; New-Item -ItemType Directory -Force -Path $pytestRoot | Out-Null; $env:PYTEST_DEBUG_TEMPROOT = $pytestRoot; .venv\Scripts\python.exe -m pytest tests\test_cell_caption_m20.py tests\test_structure_m20.py tests\test_derive_cells_m20.py tests\test_outline_span_resolution_m20.py -q` -> `95 passed, 1 warning in 22.61s`.
-**RAN:** `$pytestRoot = Join-Path (Get-Location) '.pytest_s58_temp'; $env:PYTEST_DEBUG_TEMPROOT = $pytestRoot; .venv\Scripts\python.exe -m pytest tests\test_extract_outline_m4.py tests\test_batch_bundle_m10.py tests\test_m20_s31.py -q` -> `37 passed, 1 warning in 4.56s`.
-**RAN:** `.venv\Scripts\python.exe tools\check_ascii.py` -> `ASCII check OK`.
-**RAN:** `git diff --check` -> exit 0, no output.
-**RAN:** `.venv\Scripts\python.exe -m tax_graph.cli validate 2025` -> exit 0, `graph integrity OK`.
-**NOT RUN:** live provider derivation; the Worker sandbox has no outbound network, and S58 changes
-the prompt packet contract. Architect must run one live row before acceptance. No provider schema
-was changed. Protected graph directories have no diff.
 
 ## Architect decision - notation
 
@@ -346,73 +335,53 @@ client-managed server dies.
 
 ## From Architect
 
-- **M20-S58 TASK - THE CELL CAPTION, SEPARATED FROM THE INSTRUCTION (Architect, Claude Opus 5,
-  2026-08-05; John chose option (b), structure and association, and asked for the label/instruction
-  foundation first).** Ledger: the RAN/NOT RUN rule, D10, and the standing rules added to
-  `AGENTS.md` on 2026-08-05 - **read them first.** One change, no passengers.
+- **M20-S60 TASK - THE PACKET MUST CARRY THE WHOLE PRINTED ROW (Architect, Claude Opus 5,
+  2026-08-05).** Ledger: the RAN/NOT RUN rule, D10, and the standing rules in `AGENTS.md` -
+  **read them first.** One change, no passengers.
 
-  **OPEN ITEMS AND SEAMS THIS ROUND TOUCHES** (required by the 2026-08-05 Architect rule):
-  - **ANSWERS** the 2026-08-03 "what is next" item: John chose **(b) structure and association**.
-    (a) standalone reviewer and (c) the checker are deferred; (c) cannot start before (b).
-  - **ADVANCES rollover seam 5** (`docs/engineering-plan.md`), which needs year-independent
-    templates keyed on "printed line number + caption + role". **There are no captions today**, so
-    seam 5 cannot be built at all until this lands.
-  - **EXPOSES a defect in rollover seam 1.** Seam 1 names the yearless `logical_key` as the
-    cross-year join key, but the real key is `document=form_1040/line=10` - it contains the line
-    number, so it changes under exactly the renumbering it exists to survive. **Report only; do not
-    change addressing in this round.**
-  - **HONORS the pinned S3a -> S3b ruling:** the structure step owns a deterministic outline
-    adapter, resolves each anchor to exactly one semantic row, and **fails closed at row
-    granularity** when ambiguous.
-  - **LEAVES UNTOUCHED:** the worksheet manifest schema change (still open, John's call); the S36
-    denominator question (now moot - S51 replaced the denominator with 121 of 478 anchors, and it
-    should be closed at the next prune).
+  **OPEN ITEMS AND SEAMS THIS ROUND TOUCHES:**
+  - **ADVANCES** John's option (b), structure and association, and the evidence foundation that all
+    three independent design reads (Architect, a naive external model, and the Worker's own
+    recommendation at `C:\tmp\tax_graph_operation_extraction_recommendation.md`) put FIRST.
+  - **SUPERSEDES** the old S57 framing, which treated the 2441 line 8 packet as a one-form repair.
+  - **LEAVES UNTOUCHED:** captions (S58, landed); nominations (S59); column and grid recovery; the
+    operation registry; phrase obligations; the approval gate (S53).
 
-  **Why.** `label` is byte-identical to `form_face_text` on **100% of rows** - 21/21 on 2441, 17/17
-  on the 1040, 29/29 on 6251. The prompt has a `label:` slot and a `form face text:` slot and puts
-  the same paragraph in both. There is no caption anywhere in the system. John: *"mashing all of
-  this stuff together is a problem because there is no context carried forward about what it all is
-  and where it comes from."*
+  **Why, measured on two rows of one form.** The evidence packet is silently truncated mid-row where
+  an AcroForm field marker interrupts the printed text run.
+  - **2441 line 8** ends at `... 39,000-41,000 .22 8 X` and carries **6 of 16 printed bands**.
+  - **2441 line 19** ends mid-clause at `... or was disabled, see the`. **The default branch, "All
+    others, enter the amount from line 18", never reaches the model at all.**
+  The model then emitted `require_input(line 19)`, which we have been scoring as a model defect.
+  It is not. **A truncated question got a reasonable answer, and `REQUIRE_INPUT` disguised an
+  extraction failure as a legitimate filer input.**
 
-  **What already exists, so do not rebuild it.** `tax_graph/extract/structure.py` recovers visual
-  rows from PDF word and widget rectangles, associates fields to rows, and validates anchor
-  identity; `build_outline_tree` already prefers it for acquired forms. **This round adds one thing
-  to that layer.**
+  **Step 1 - open the artifacts and report the pattern first.** Read the raw text and the PDF word
+  geometry for these rows and find every other instance in the corpus. **Report how many rows across
+  all documents are truncated and what interrupts them** - field markers, dot leaders, page
+  furniture, column breaks. Report before repairing.
 
-  **Step 1 - open the artifacts and report the pattern BEFORE implementing.** Read the real rows on
-  at least four documents (2441, 1040, 6251, Schedule 1A) and report **what actually distinguishes a
-  caption from the instruction that follows it.** Candidates: a leading noun phrase terminated by a
-  period (`25 Excluded benefits. If you checked...`), typographic weight, an x-band, or nothing at
-  all. **Many rows have NO caption** - `6 Enter the smallest of line 3, 4, or 5` is instruction from
-  the first word - and a rule that invents one for those rows is worse than no rule. Report the
-  distribution: how many rows have a real caption, how many plainly do not, how many are ambiguous.
+  **Step 2 - carry the whole row.** The packet for a printed row must contain the row's complete
+  printed text. Deterministic, from geometry; **no model call and no reconstruction of text that is
+  not printed.** The existing `tax_graph/extract/structure.py` already recovers visual rows from
+  word and widget rectangles - extend it rather than writing a second path.
 
-  **Step 2 - implement the split deterministically, and fail closed.** No model call. A row yields
-  `caption` and `cell_instruction`, or `caption: null` with the whole text as instruction when there
-  is no caption. **An ambiguous row gets `caption: null` and a named finding, never a guess.**
+  **Step 3 - truncation must be detectable, not silent.** When the packet cannot be shown to be
+  complete, the row carries an explicit finding and **fails closed**. A row whose evidence may be
+  cut must never reach the model as though it were whole. This is the round's real deliverable:
+  today the failure is invisible, which is why it survived four rounds of investigation.
 
-  **Step 3 - stop the duplication in the packet.** `label` must stop carrying the full paragraph.
-  The prompt gets the caption in `label:` and the instruction body in the form-face slot. **Report
-  the before/after packet for 2441 line 25 and 1040 line 15 verbatim** so the Architect can see what
-  the model now receives.
+  **Step 4 - report the before/after packet verbatim** for 2441 lines 8 and 19, and re-run the
+  4-document set to report how many rows changed. **Do not fix the resulting expressions** - line 8
+  will still need a table-shaped representation and that is a later round. **Report what the model
+  now emits and leave it.**
 
-  **Step 4 - report the augmenting-instruction gap, do not fix it here.** `instruction_text` is
-  empty on **50 of 67 rows** across those three forms, and the 1040's own instruction HTML **is**
-  acquired - so for that document it is a join failure, not a missing source. S26 made instruction
-  text optional and the pipeline has run form-face-only ever since. **Report which documents and
-  rows fail to join and why. It gets its own round.**
-
-  **Do not:** call a model for the split; invent a caption for a row that has none; touch the
-  addressing layer or `logical_key`; change the provider schema; rebuild the geometry row layer;
-  reconstruct table columns (that is the next round). **Stop conditions:** any diff in the protected
-  directories; a caption emitted that is not a verbatim prefix of the printed row. Tier 3. Honest
-  `RAN:`/`NOT RUN:` - **the provider leg is the Architect's, and this round is not accepted until
-  one live row derives.** ASCII, `git diff --check`, module-form `validate 2025`.
+  **Do not:** call a model for extraction; reconstruct text that is not printed; touch the caption
+  split, the operation vocabulary, or the addressing layer; tune the prompt. **Stop conditions:**
+  any diff in the protected directories; text in a packet that is not verbatim in the source.
+  Tier 3. Honest `RAN:`/`NOT RUN:` - **the provider leg is the Architect's, and this round is not
+  accepted until one live row derives.** ASCII, `git diff --check`, module-form `validate 2025`.
   **ONE local commit.**
-
-  **Next two rounds in this arc, named so the scope of THIS one stays closed:** column and grid
-  recovery within a geometric row (the 2441 line 8 band table - the Architect has already proved a
-  reconstructed packet yields all 16 bands correctly), then the instruction-booklet join.
 
 - **M20-S59 TASK - NOMINATE A REGION OF A DOCUMENT TO BE A FULL DOCUMENT (Architect, Claude Opus 5,
   2026-08-05; John's call: *"Yes, I think we have to have some mech for at least nominating these
