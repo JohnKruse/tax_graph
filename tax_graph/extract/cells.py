@@ -1752,7 +1752,7 @@ def _expression_node_schema(operations: list[str], depth: int) -> dict[str, Any]
     ]
     if depth > 0:
         operands.append(_expression_node_schema(operations, depth - 1))
-    schema = {
+    return {
         "type": "object",
         "additionalProperties": False,
         "required": ["op", "args"],
@@ -1761,33 +1761,6 @@ def _expression_node_schema(operations: list[str], depth: int) -> dict[str, Any]
             "args": {"type": "array", "minItems": 1, "items": {"anyOf": operands}},
         },
     }
-    # The generic leaf alternatives are shared by every operation so the
-    # bounded schema stays small.  These conditionals make the operation
-    # ownership explicit: only LOOKUP_TABLE may require a named role, and an
-    # ordinary operation may not smuggle one through the provider grammar.
-    schema["allOf"] = [
-        {
-            "if": {"properties": {"op": {"const": "LOOKUP_TABLE"}}},
-            "then": {
-                "properties": {
-                    "args": {
-                        "items": {
-                            "required": ["role"],
-                            "properties": {"role": role},
-                        }
-                    }
-                }
-            },
-            "else": {
-                "properties": {
-                    "args": {
-                        "items": {"not": {"required": ["role"]}}
-                    }
-                }
-            },
-        }
-    ]
-    return schema
 
 INFIX = {"SUM": " + ", "SUBTRACT": " - ", "MULTIPLY": " * ", "DIVIDE": " / "}
 

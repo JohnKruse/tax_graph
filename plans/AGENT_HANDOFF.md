@@ -34,6 +34,19 @@ mistake - they check `$ref` absence, property/required agreement, and role seman
 checks the schema against the KEYWORDS the provider actually permits. **The guard must test the
 class, not the instance.**
 
+**WORKER UPDATE (2026-08-05):** S55 local implementation is complete and committed pending
+Architect acceptance. Removed the provider-incompatible conditional from
+`tax_graph/extract/cells.py`; role ownership remains enforced by `validate_expression_tree`.
+Added a recursive emitted-schema keyword and root-placement guard in `tests/test_m20_s54.py`.
+S54 lookup completeness, totals classification, and actor rename were left unchanged.
+
+- `RAN: .venv\Scripts\python.exe -m pytest tests/test_derive_cells_m20.py tests/test_m20_s54.py tests/test_prompt_experiment_m20.py tests/test_rederive_m20.py -q -> 70 passed in 1.81s`
+- `RAN: .venv\Scripts\python.exe tools/check_ascii.py -> ASCII check OK`
+- `RAN: git diff --check -> exit 0`
+- `RAN: .venv\Scripts\python.exe -m tax_graph.cli validate 2025 -> exit 0; graph integrity OK; reconcile named 5 instruction documents present in manifest but absent from graph`
+- `NOT RUN: live provider leg -> Architect-owned and unavailable in the Worker sandbox; fixture evidence cannot prove the wire schema is accepted`
+- Evidence packet: `build_cell_frame_from_document` for `form_2441_2025` line 8 returns six numeric bands and ends at the `8 X` AcroForm marker. The next round must extend the upstream geometry/source-span assembly; S55 does not widen into that fix.
+
 ## Current round
 
 **M20-S54 REWORK (Architect, Claude Opus 5, 2026-08-04) at `47784e6`.**

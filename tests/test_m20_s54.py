@@ -7,6 +7,7 @@ import pytest
 from tax_graph.extract.cells import (
     CellRecord,
     expression_schema,
+    validate_expression_tree,
     validate_cell_output,
     validate_lookup_table_completeness,
 )
@@ -102,19 +103,64 @@ def test_lookup_table_fails_closed_when_branch_roles_do_not_state_bounds() -> No
     assert [issue.kind for issue in issues] == ["lookup_table_bounds_unverifiable"]
 
 
-def test_schema_rejects_roles_on_ordinary_operands_and_requires_them_for_lookup() -> None:
+def test_schema_leaves_role_ownership_to_the_deterministic_validator() -> None:
     schema = expression_schema()
     ordinary = {"expression": {"op": "COPY", "args": [{"line": "1"}]}, "quote": "line 1"}
+    ordinary_with_role = {"expression": {"op": "COPY", "args": [{"line": "1", "role": "source"}]}, "quote": "line 1"}
     lookup = {"expression": _lookup(["band_0_10", "band_10_no_limit"]), "quote": "0-10 10-No limit"}
 
-    from jsonschema import Draft202012Validator, ValidationError
+    from jsonschema import Draft202012Validator
 
     Draft202012Validator(schema).validate(ordinary)
+    Draft202012Validator(schema).validate(ordinary_with_role)
     Draft202012Validator(schema).validate(lookup)
-    with pytest.raises(ValidationError):
-        Draft202012Validator(schema).validate(
-            {"expression": {"op": "COPY", "args": [{"line": "1", "role": "source"}]}, "quote": "line 1"}
-        )
+    with pytest.raises(ValueError, match="only valid on LOOKUP_TABLE"):
+        validate_expression_tree(ordinary_with_role["expression"])
+
+
+def test_expression_schema_uses_only_the_supported_provider_keyword_class() -> None:
+    """Keep unsupported JSON Schema composition out of every emitted depth."""
+    supported = {
+        "type",
+        "properties",
+        "required",
+        "additionalProperties",
+        "items",
+        "anyOf",
+        "enum",
+        "description",
+        "pattern",
+        "format",
+        "minLength",
+        "maxLength",
+        "multipleOf",
+        "maximum",
+        "exclusiveMaximum",
+        "minimum",
+        "exclusiveMinimum",
+        "minItems",
+        "maxItems",
+    }
+
+    def visit_schema(value: object, path: str, *, root: bool = False) -> None:
+        assert isinstance(value, dict), path
+        unexpected = set(value) - supported
+        assert not unexpected, f"unsupported schema keywords at {path}: {sorted(unexpected)}"
+        if root:
+            assert "anyOf" not in value, "Structured Outputs root must remain an object"
+        properties = value.get("properties")
+        if isinstance(properties, dict):
+            for name, child in properties.items():
+                visit_schema(child, f"{path}.properties.{name}")
+        items = value.get("items")
+        if isinstance(items, dict):
+            visit_schema(items, f"{path}.items")
+        alternatives = value.get("anyOf")
+        if isinstance(alternatives, list):
+            for index, child in enumerate(alternatives):
+                visit_schema(child, f"{path}.anyOf[{index}]")
+
+    visit_schema(expression_schema(depth=3), "schema", root=True)
 
 
 def test_lookup_completeness_is_a_hard_cell_output_failure() -> None:
