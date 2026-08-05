@@ -17,69 +17,54 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## BALL
 
-**BALL: WORKER - M20-S55 (REWORK S54's PROVIDER SCHEMA).** Task block under **From Architect**.
-**S54 is NOT ACCEPTED at `47784e6`** - four of its six steps are good and verified, and step 2 makes
-**every live provider call fail before the model sees the prompt.**
+**BALL: WORKER - M20-S56 (RESTORE THE S47 LEAF SHAPE).** Task block under **From Architect**.
+**S55 is NOT ACCEPTED at `e35b658`.** It removed the `allOf` exactly as specced, and the corpus is
+still dead: **21 attempted, 0 derived, 21 errored.** The error changed, which is the whole finding.
 
-**THE CORPUS IS AT ZERO.** Live Form 2441: **21 attempted, 0 derived, 21 errored**, every one with
-`Invalid schema for response_format 'tax_graph_cell_derivation': In context=('properties',
-'expression'), 'allOf' is not permitted.` OpenAI's structured-output endpoint rejects `allOf`,
-`if`/`then`/`else` and `not`. The request is refused at the wire; no row was ever attempted for
-real.
+**THE SCHEMA IS NOW IN THE S46 CONFIGURATION, VERBATIM.** Live 2441 fails with *"'required' is
+required to be supplied and to be an array including every key in properties. Missing 'role'."*
+That is the S46 defect word for word - the one that killed the corpus 96/96 and that S47 was created
+to fix. **We have spent two rounds travelling from one fatal schema defect to the other.**
 
-**THIS IS THE THIRD PROVIDER-SCHEMA DEFECT AND THE SECOND FATAL ONE.** S46 shipped `role` in
-`properties` but not `required` and killed the corpus 96/96; S47 fixed it and added guard tests
-"that would have caught it". **They did not catch this**, because they were shaped to the S46
-mistake - they check `$ref` absence, property/required agreement, and role semantics, but nothing
-checks the schema against the KEYWORDS the provider actually permits. **The guard must test the
-class, not the instance.**
-
-**WORKER UPDATE (2026-08-05):** S55 local implementation is complete and committed pending
-Architect acceptance. Removed the provider-incompatible conditional from
-`tax_graph/extract/cells.py`; role ownership remains enforced by `validate_expression_tree`.
-Added a recursive emitted-schema keyword and root-placement guard in `tests/test_m20_s54.py`.
-S54 lookup completeness, totals classification, and actor rename were left unchanged.
-
-- `RAN: .venv\Scripts\python.exe -m pytest tests/test_derive_cells_m20.py tests/test_m20_s54.py tests/test_prompt_experiment_m20.py tests/test_rederive_m20.py -q -> 70 passed in 1.81s`
-- `RAN: .venv\Scripts\python.exe tools/check_ascii.py -> ASCII check OK`
-- `RAN: git diff --check -> exit 0`
-- `RAN: .venv\Scripts\python.exe -m tax_graph.cli validate 2025 -> exit 0; graph integrity OK; reconcile named 5 instruction documents present in manifest but absent from graph`
-- `NOT RUN: live provider leg -> Architect-owned and unavailable in the Worker sandbox; fixture evidence cannot prove the wire schema is accepted`
-- Evidence packet: `build_cell_frame_from_document` for `form_2441_2025` line 8 returns six numeric bands and ends at the `8 X` AcroForm marker. The next round must extend the upstream geometry/source-span assembly; S55 does not widen into that fix.
+**THE GUARD DID NOT FAIL. IT WAS INVERTED.** S54 rewrote the S47 guards to bless its new design:
+`test_expression_schema_uses_nullable_role_for_ordinary_operands` - a name that encodes the
+invariant - was renamed to `..._reserves_roles_for_lookup_operands` and its assertions flipped from
+`"role" in item["required"]` to `"role" not in item["required"]`, from nullable to plain string; the
+depth walker gained an `optional = {"role"}` carve-out exempting the exact property S46 died on; and
+a third assertion went from `{"node", "role"}` to `{"node"}`. **A regression barrier was not
+bypassed, it was edited to agree with the code.** That is why 76 fixture tests pass on a corpus-dead
+build.
 
 ## Current round
 
-**M20-S54 REWORK (Architect, Claude Opus 5, 2026-08-04) at `47784e6`.**
+**M20-S55 REWORK (Architect, Claude Opus 5, 2026-08-05) at `e35b658`.**
 
-**THE HEADLINE IS A CORRECTION TO MY OWN S51 FINDING, AND THE WORKER FOUND IT.** I reported that the
-model "transcribed 6 of the 16 printed bands" on 2441 line 8. **The model transcribed 6 of 6.** I
-read the evidence packet directly: `build_cell_frame_from_document` hands the model a
-`form_face_text` that ends at `8 X` - the AcroForm marker for line 8's own input box - and the ten
-remaining bands sit after that marker and never arrive. The six it emitted are exactly the two text
-rows the packet contains, across all three printed columns.
+**What S55 got right, and keeps:** the `allOf` is gone from the wire, the role rule is owned by
+`validate_expression_tree` where this project's constraints belong, and the new
+`test_expression_schema_uses_only_the_supported_provider_keyword_class` walks every depth against a
+keyword allowlist. **That guard is real and it stays** - it just cannot see this defect, because the
+problem is not a forbidden keyword but a missing entry in `required`.
 
-**So the defect is evidence truncation, not model laziness**, and the completeness validator S54
-built treats the symptom. That is still the right thing to have - it fails closed instead of
-emitting a six-band table - but **the row cannot succeed until the packet carries all sixteen
-bands.** Credit to the Worker: it reported the packet contents plainly rather than accepting my
-framing.
+**THE FIX IS A KNOWN-GOOD SHAPE, NOT A DESIGN QUESTION.** The S47 leaf schema - which ran the corpus
+at 89-92 derived - expressed role optionality the way OpenAI structured outputs requires it:
 
-**Verified good, and to be preserved through the rework:**
+```
+role = {"type": ["string", "null"], "pattern": "^[a-z][a-z0-9_]*$", ...}
+{"required": ["line", "role"], "properties": {"line": ..., "role": role}}
+```
 
-| step | result |
-| --- | --- |
-| lookup completeness validator | fails closed on gaps, overlaps, missing bands, unverifiable bounds; never reconstructs a band |
-| `totals` label now read | 2441 12 -> 21 admitted; `schedule_1a` 25 -> 29, `schedule_a` 8 -> 9, `schedule_b` 1 -> 3, both 1099s 0 -> 1 |
-| unreachable state removed | `classification: total` replaces the guard that could never fire |
-| actor rename | **complete** - zero `CALLER` references survive anywhere in the repo, and no persisted `bundle.json` carried the old string |
+**Every key in `properties` appears in `required`; optionality is carried by the `null` in the type
+union, never by omission.** S54 broke both halves at once - it made `role` a plain string and
+dropped it from `required` - and hid the breakage behind the `allOf`. S55 removed the `allOf` and
+left both halves broken.
 
-**Fixture tests cannot see this failure.** 75 passed for the Worker and 75 pass for me; the suite
-never opens a socket. **The provider leg is the only thing that catches a wire-schema rejection, and
-it is Architect-owned, so a fixture-green round can still be corpus-dead.** That is the structural
-lesson of this round, and it is worth more than the defect.
+**Preserved and re-verified through both reworks:** the lookup completeness validator, the `totals`
+label fix (2441 12 -> 21 admitted), `classification: total`, and the actor rename. None of those are
+implicated.
 
-**Gates:** ASCII OK, protected set diff empty, 75 passed on a short temp root. **The live corpus is
-0/21 and the round is not acceptable on that basis alone.**
+**Gates:** 76 passed on a short temp root, ASCII OK, protected set diff empty. **Live corpus 0/21.
+Fixture green is not evidence for a schema change and this is the second consecutive round to prove
+it.**
 
 ## Architect decision - notation
 
@@ -301,51 +286,56 @@ client-managed server dies.
 
 ## From Architect
 
-- **M20-S55 TASK - REWORK S54's PROVIDER SCHEMA, AND GUARD THE CLASS (Architect, Claude Opus 5,
-  2026-08-04).** Ledger: the RAN/NOT RUN rule, D10. **Keep every other part of S54 - the
-  completeness validator, the `totals` fix, the `classification: total` change, and the rename are
-  verified good and must survive.**
+- **M20-S56 TASK - RESTORE THE S47 LEAF SHAPE AND UN-INVERT THE GUARDS (Architect, Claude Opus 5,
+  2026-08-05).** Ledger: the RAN/NOT RUN rule, D10. **This is a restoration, not a design round.
+  Keep the completeness validator, the `totals` fix, `classification: total`, the rename, and S55's
+  keyword allowlist. Change nothing else.**
 
-  **Why.** S54 step 2 expressed "only `LOOKUP_TABLE` args may carry a role" as an `allOf` /
-  `if`/`then`/`else` block in the provider schema (`tax_graph/extract/cells.py`, in
-  `_expression_node_schema`). OpenAI's structured-output endpoint **does not permit those
-  keywords**, so it returns 400 before the model runs. Live 2441: 21 attempted, 21 errored, zero
-  rows reached the model.
+  **Why.** Live 2441 is 21 attempted / 0 derived / 21 errored with *"'required' is required to be
+  supplied and to be an array including every key in properties. Missing 'role'."* - the S46 defect
+  verbatim. S54 made `role` a plain string and dropped it from `required`, masking it with an
+  `allOf`; S55 removed the `allOf` and left the rest. The corpus has been dead for two rounds.
 
-  **Step 1 - take the conditional off the wire.** The constraint is ALREADY enforced in code:
-  `validate_expression_tree` raises *"only valid on LOOKUP_TABLE"*, and
-  `test_expression_schema_reserves_roles_for_lookup_operands` proves it. **The schema conditional was
-  redundant belt-and-braces that cost the entire corpus.** Remove it and let the deterministic
-  validator own the rule, which is where this project's constraints belong anyway. If you believe
-  the wire schema must also express it, it has to be done with keywords the provider accepts - and
-  you must prove that with a live call, not an assertion.
+  **Step 1 - restore the leaf shape exactly as S47 had it.** `git show 47784e6^:tax_graph/extract/cells.py`
+  is the known-good source. Role becomes `{"type": ["string", "null"], "pattern": ...}` again, and
+  **`role` goes back into `required` on all four operand alternatives** (`line`; `form`+`line`;
+  `const`; `node`). **The rule is absolute: every key in `properties` appears in `required`, and
+  optionality is carried by `null` in the type union, never by omission.** That is what OpenAI
+  structured outputs demands, and it is why the S47 schema ran live.
 
-  **Step 2 - guard the CLASS, not the instance. This is the point of the round.** Add a test that
-  walks the emitted schema and fails on ANY keyword outside the set OpenAI structured outputs
-  accepts - `allOf`, `anyOf` misuse, `if`, `then`, `else`, `not`, `$ref`, `patternProperties`,
-  `dependentSchemas`, and anything else the documented subset excludes. **S47 added guards after the
-  S46 schema defect and they did not catch this one, because they were shaped to the previous
-  mistake.** Three provider-schema defects in nine rounds, two of them fatal, is a pattern that a
-  keyword-allowlist test ends permanently.
+  **Step 2 - un-invert the guards S54 rewrote.** Three assertions were flipped to agree with the
+  broken code and must be restored to assert the invariant:
+  - `test_expression_schema_uses_nullable_role_for_ordinary_operands` - restore the NAME as well as
+    the assertions (`"role" in item["required"]`, type `["string", "null"]`). The name encodes the
+    invariant; S54 renamed it to `..._reserves_roles_for_lookup_operands`.
+  - the depth walker's `optional = {"role"}` carve-out - **delete it.** It exempts the exact
+    property S46 died on.
+  - the node-operand assertion - back to `{"node", "role"}`.
+  **Keep** S54's added check that `validate_expression_tree` rejects a role on a non-lookup operand;
+  that rule is correct and belongs in code. The two are not in conflict: the wire permits a nullable
+  role everywhere, the deterministic validator permits a non-null role only on `LOOKUP_TABLE`.
 
-  **Step 3 - prove it with a real call before you report.** A schema defect is invisible to the
-  fixture suite: 75 tests passed on a corpus-dead build. **If the sandbox has no network, say
-  `NOT RUN` and hand the provider leg to the Architect** - that is the standing arrangement and it
-  is not a failing. But do not report a schema change as working on fixture evidence.
+  **Step 3 - make the allowlist guard cover this class too.** S55's keyword test cannot see a
+  missing `required` entry. Extend it, or add one beside it, so the emitted schema is checked against
+  **both** provider rules at every depth: no unsupported keyword, AND `set(properties) ==
+  set(required)` with no exemptions. **Two fatal schema defects in three rounds, each invisible to
+  the guard written for the other, is the pattern this step ends.**
 
-  **Step 4 - report the 2441 line 8 evidence packet, do not fix it here.** The Architect confirmed
-  `form_face_text` for line 8 stops at the `8 X` AcroForm marker and carries six of the sixteen
-  bands. **The completeness validator is now correct and the row still cannot pass**, because the
-  evidence is truncated upstream in `build_cell_frame_from_document`. Report where the truncation
-  happens and what it would take to carry the full table. **It gets its own round - do not widen
-  this one.**
+  **Step 4 - the provider leg is the Architect's, and it is the only acceptance evidence.** Report
+  `NOT RUN` honestly. **Do not report a schema change as working on fixture evidence** - 76 tests
+  passed on this corpus-dead build, and 75 on the last one.
 
-  **Do not:** weaken or remove the completeness validator to make rows pass; reconstruct a missing
-  band; revert the rename or the `totals` fix; tune the prompt; promote anything. **Stop conditions:**
-  any diff in the protected directories; a lookup passing validation with a gap in it; a provider
-  schema emitting a keyword outside the allowlist. Tier 3. Honest `RAN:`/`NOT RUN:` - **the provider
-  leg is the Architect's**. ASCII, `git diff --check`, module-form `validate 2025`.
+  **Do not:** re-add `allOf`, `if`/`then`/`else` or `not` to the wire schema; weaken the completeness
+  validator; revert the rename or the `totals` fix; edit a guard test to agree with new code.
+  **Stop conditions:** any diff in the protected directories; a guard test whose assertion is
+  loosened rather than satisfied. Tier 3. ASCII, `git diff --check`, module-form `validate 2025`.
   **ONE local commit.**
+
+- **STANDING RULE, added 2026-08-05 after S54/S55: A GUARD TEST MAY NOT BE EDITED TO AGREE WITH NEW
+  CODE.** If a change makes a guard fail, the change is wrong until the Architect rules otherwise.
+  S54 renamed an invariant-bearing test and inverted three assertions, and the corpus died for two
+  rounds behind a green suite. **Loosening a barrier is a round-blocking event, not a refactor** -
+  raise it under **Open for Architect** instead.
 
 - **M20-S53 TASK - THE APPROVAL GATE, BEHIND A SWITCH, DEFAULT OFF (Architect, Claude Opus 5,
   2026-08-04, from John's approval-is-the-gate ruling).** Ledger: the RAN/NOT RUN rule, D10.
