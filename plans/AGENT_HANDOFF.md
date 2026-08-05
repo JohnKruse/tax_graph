@@ -17,32 +17,32 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## BALL
 
-**BALL: WORKER - M20-S63 (PROMOTE THE HARVESTED WORKSHEET AND RE-POINT THE GATE).** Task block
-under **From Architect**. **S62 is ACCEPTED at `c017ec4`.**
+**BALL: WORKER - M20-S63 (REGENERATE A CANDIDATE GRAPH FROM A FULL RUN).** Task block under
+**From Architect**. **S62 is ACCEPTED at `c017ec4`.**
 
-**`review-table` exists and John can run it himself:**
-`python -m tax_graph.cli review-table --document form_2441_2025 --hardest 8 --output <path>`.
-Three columns, no model anywhere in it, no correctness verdict, refuses to write inside the repo,
-and each row shows the selection signals that put it there. Its own header states the discipline:
-*"The table shows evidence and machine state. The reviewer makes the judgment."*
+**THE FRAMING CORRECTION, and it is John's.** *"I thought the graph was regenerated with a full
+run... isn't that kinda the point, that you get the docs, run it and then iterate on the review
+until it is all approved, and then push/publish the graph for the year."* He is right, it is written
+down in two places, and the Architect had specced surgical per-artifact promotion instead.
+**The graph is a BUILD ARTIFACT.** `AGENTS.md` states the loop - re-run end to end, human directs
+the remainder through comments, pipeline reworks and regenerates - and `plans/PHASE_M20.md`
+sequences it as S3b structure -> **S3a regeneration** -> S4 -> S5.
 
-**KNOWN GAP, and it is why S63 goes next.** The command reads the **promoted graph** - the literal
-reading of "saved in the graph". `form_1040_2025` renders fully; **`form_2441_2025` renders every
-row as "no expression tree was recorded"**, because nothing of the pipeline's is promoted. **The
-tool is blank on exactly the forms we are iterating on**, and the review is most useful BEFORE
-promotion, when deciding whether to promote. S63 closes that by promoting; if John would rather
-review candidates without promoting them, the alternative is a `--from-report` mode and it is a
-small round.
+**S3a REGENERATION IS UNBLOCKED AND HAS BEEN FOR SEVERAL ROUNDS.** The plan blocked it on a measured
+condition: `outline children = 0` for `schedule_a_2025` and `form_1040_2025`, because the outline
+could not be built from real text once the legacy renderer's synthetic markup was removed. Measured
+today: **29 and 60 flattened nodes, 28 and 59 anchors.** The S58-S61 structure work cleared it.
+**That is the third time this session that pinned, decided work turned out to be already unblocked
+or already built** - after the worksheet harvester and rollover seam 5.
 
-**S62 also surfaced a defect it was not looking for:** several rows report
-`ambiguous - multiple graph rows matched printed line 35a`. **More than one graph row matches one
-printed line.** That is the identity problem appearing in a tool built for something else, and it
-is worth its own diagnosis before it is designed around.
+**What the first candidate will show, predicted honestly so the number is not a surprise:** about
+**121 of 478 printed anchors** are attempted today, so the candidate graph will be far thinner than
+the 441-node handcrafted one. **That measurement is the point of the round.**
 
-**QUEUE:** S63 (promotion + archive + gate re-point), then column and grid recovery, the versioned
-operation registry, deterministic phrase obligations, and **S53, the approval gate** - which the
-pipeline-only pivot makes more important, since a pipeline-owned live graph is what a filer's return
-gets computed from.
+**QUEUE:** S63 (candidate regeneration), then review the candidate and iterate, then publish once a
+candidate is worth publishing - which is when the archive and gate re-point happen. Column and grid
+recovery, the operation registry, phrase obligations, and **S53 the approval gate** follow; the
+approval gate is what makes "iterate until approved" mean anything.
 
 ## Current round
 
@@ -317,53 +317,61 @@ client-managed server dies.
 
 ## From Architect
 
-- **M20-S63 TASK - ARCHIVE THE HANDCRAFTED SET, RE-POINT THE GATE, PROMOTE ONE WORKSHEET
-  (Architect, Claude Opus 5, 2026-08-05, from John's pipeline-only ruling).** Ledger: the RAN/NOT
-  RUN rule, D10, and the standing rules in `AGENTS.md`. **This is the first promotion in M20 and the
-  only round that may touch the protected set. Read the whole block before starting.**
+- **M20-S63 TASK - REGENERATE A CANDIDATE GRAPH FROM A FULL RUN (Architect, Claude Opus 5,
+  2026-08-05).** Ledger: the RAN/NOT RUN rule, D10, and the standing rules in `AGENTS.md`.
+  **This replaces the surgical-promotion spec that was here. That spec was off-plan and John said
+  so:** *"I thought the graph was regenerated with a full run... isn't that kinda the point, that you
+  get the docs, run it and then iterate on the review until it is all approved, and then
+  push/publish the graph for the year."*
 
   **OPEN ITEMS AND SEAMS THIS ROUND TOUCHES:**
-  - **IMPLEMENTS** John's 2026-08-05 pipeline-only ruling, pinned under **Binding rulings**.
-  - **UNBLOCKS** the S59 nomination chain, which is complete and inert, and the S62 review table,
-    which is blank on every unpromoted document.
-  - **LEAVES UNTOUCHED:** column and grid recovery; the operation registry; phrase obligations;
-    S53. **Promote the worksheet and NOTHING else** - no derived expressions, no 2441 drafts.
+  - **UNBLOCKS AND IMPLEMENTS S3a REGENERATION**, which `plans/PHASE_M20.md` sequences as
+    S3b structure -> **S3a regeneration** -> S4 -> S5, and which has been blocked on a measured
+    condition that **is now cleared**: the plan recorded `outline children = 0` for
+    `schedule_a_2025` and `form_1040_2025`; today they are **29 and 60 flattened nodes, 28 and 59
+    anchors**. The S58-S61 structure work cleared it and nobody noticed.
+  - **IMPLEMENTS** the operating loop in `AGENTS.md`: forms change -> re-run end to end -> human
+    directs the remaining share through comments -> pipeline reworks and regenerates.
+  - **SERVES** John's pipeline-only ruling and fixes the S62 gap, since `review-table` renders
+    nothing for a document with no stored expressions.
+  - **LEAVES UNTOUCHED:** the live graph and the protected set - **this round writes a CANDIDATE,
+    not the published graph**; column and grid recovery; the operation registry; phrase obligations;
+    S53.
 
-  **Step 1 - archive by COPY, never by move.** The engine loads from `graph/2025/`; moving content
-  out breaks it. Copy the current handcrafted `graph/2025/{nodes,edges,rules,field_maps}` to a
-  frozen archive location, record the copy's manifest of file hashes, and **prove the copy is
-  byte-identical to what was there before the round started.** The archive is comparison data
-  forever, per John's own reason for protecting it.
+  **The framing that was wrong, so it is not repeated.** The graph is a BUILD ARTIFACT, not a store
+  that gets edited one artifact at a time. There is no per-artifact promotion decision. There is a
+  run, a review, and a publish.
 
-  **Step 2 - re-point the gate.** The protected-set gate now guards the ARCHIVE, byte-identical, and
-  the live graph becomes pipeline-owned. **Update the standing constraint text in the handoff and
-  the rule in `AGENTS.md` in the same commit as the mechanism** - a gate whose documentation lags
-  its implementation is how the S54 guard inversion happened. Report the exact wording you changed.
+  **Step 1 - generate a candidate graph from one full corpus run.** Every manifest document, one
+  run, written to a candidate location outside the published graph. Include the harvested worksheet
+  drafts so cross-document references have something to resolve against. **Deterministic parts stay
+  deterministic; the provider leg is the Architect's** - build the writer so the Architect can hand
+  it a completed run.
 
-  **Step 3 - promote exactly one artifact: the harvested QDCGT worksheet.** It is 38 nodes, 42
-  edges, 13 verbatim citations, harvested deterministically from acquired HTML by printed title with
-  zero citation mismatches under the project's own checker. **Report the full before/after diff**:
-  document count, node/edge/rule/citation counts, and every id added. `validate 2025` must pass and
-  the engine must still execute afterwards - **run `execute_tax_tree` on a real fact set and report
-  that the values are unchanged for every pre-existing node.** A promotion that silently changes an
-  existing computed value is a stop condition.
+  **Step 2 - report coverage honestly, against the document and not the selector.** Per document and
+  in total: printed anchors, attempted, derived, repaired, gapped, errored, skipped-with-reason.
+  **The expected headline is that the candidate is far thinner than the handcrafted graph** - about
+  121 of 478 anchors are attempted today. **That is the measurement this round exists to produce, not
+  a failure.** Do not tune anything to improve it.
 
-  **Step 4 - prove the payoff, or report that there is none.** Re-run derivation on
-  `form_6251_2025` and report whether lines 13, 20 and 27 now resolve to cross-document references
-  instead of failing closed on self-reference. **The Architect owns the provider leg.** If they still
-  fail, say so plainly and report why - that is a finding, not a failure of the round.
+  **Step 3 - diff the candidate against the handcrafted graph.** Which addresses exist in both, only
+  in the candidate, only in the handcrafted set; where both hold an expression, whether they agree.
+  **Report disagreements as a list, not a count** - they are the review queue for the next round.
 
-  **Step 5 - make it reversible and say how.** Report the exact command or steps that undo the
-  promotion. **First-of-its-kind changes need a stated way back**, and nobody should have to
-  reconstruct it under pressure.
+  **Step 4 - make `review-table` read the candidate.** The S62 command currently renders a blank
+  middle column for every unpromoted document. Point it at the candidate so the three-column review
+  works on what the pipeline actually produced. **This is the deliverable John will use.**
 
-  **Do not:** promote any derived expression, any 2441 draft, or any second worksheet; hand-edit a
-  promoted node; delete the handcrafted content; lift the gate before the archive exists and is
-  verified. **Stop conditions:** the archive not byte-identical to the pre-round state; any
-  pre-existing computed value changing; `validate 2025` failing; a citation in the promoted
-  worksheet that is not verbatim in the acquired source. Tier 3. Honest `RAN:`/`NOT RUN:` - **the
-  provider leg is the Architect's.** ASCII, `git diff --check`, module-form `validate 2025`.
-  **ONE local commit.**
+  **Step 5 - state the publish path without taking it.** Report exactly what publishing a candidate
+  would do, what it would overwrite, and how to undo it. **Do not publish**, and do not touch the
+  protected set - the archive and gate re-point belong to the publish round, once a candidate has
+  been reviewed and is worth publishing.
+
+  **Do not:** write into `graph/2025/{nodes,edges,rules,field_maps}`; hand-author anything; tune the
+  prompt or the selector to improve coverage; publish. **Stop conditions:** any diff in the protected
+  directories; a candidate node without a citation; coverage reported against the selector's
+  denominator instead of the document's. Tier 3. Honest `RAN:`/`NOT RUN:` - **the provider leg is the
+  Architect's.** ASCII, `git diff --check`, module-form `validate 2025`. **ONE local commit.**
 
 - **M20-S53 TASK - THE APPROVAL GATE, BEHIND A SWITCH, DEFAULT OFF (Architect, Claude Opus 5,
   2026-08-04, from John's approval-is-the-gate ruling).** Ledger: the RAN/NOT RUN rule, D10.
