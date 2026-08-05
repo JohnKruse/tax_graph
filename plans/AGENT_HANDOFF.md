@@ -17,137 +17,70 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## BALL
 
-**BALL: ARCHITECT - M20-S60 provider leg (THE PACKET MUST CARRY THE WHOLE PRINTED ROW).** Local
-implementation is locally committed; the live provider derivation and acceptance leg remain with
-the Architect. **S58 (captions) has LANDED at `f21ad6b`** - 96 rows, 12 captioned, 84 correctly
-left whole, **0 ambiguous** - and is awaiting the Architect provider leg.
+**BALL: WORKER - M20-S61 (TIGHTEN "SUBSTANTIVE CONTINUATION").** Task block under
+**From Architect**. **S60 is a NARROW REWORK at `1074608`** - it achieved its deliverable and
+shrank the corpus, so it cannot be accepted as-is.
 
-**THREE INDEPENDENT DESIGN READS AGREE, AND THE QUEUE BELOW IS THE RECONCILIATION.** The Architect's
-own analysis, a naive external model, and the Worker's recommendation at
-`C:\tmp\tax_graph_operation_extraction_recommendation.md` independently reached the same three
-conclusions: **the printed line is a presentation anchor and not the semantic unit; the evidence
-layer is the first-order defect and must be fixed before any semantic decomposer; and a sentence is
-not a clause** - a trailing *"If zero or less, enter -0-"* is a constraint whose scope is the
-preceding rule and must never be sent as a context-free fragment. The Architect's live experiment
-produced exactly that failure independently.
+**THE WIN, AND IT IS A REAL ONE.** 2441 line 8 now carries **16 of 16 printed bands** and the model
+emitted **all sixteen correctly** on live data - `15000/.35` through `43000/.21` plus the open top
+band. **That row has never been substantively right before.** It stands at `repaired` only because
+`LOOKUP_BRACKET` does not project to a rule, which is the operation-registry round. Line 19 carries
+its default branch again, and every packet is still a verbatim subset of the acquired source.
 
-**THE EVIDENCE IS SILENTLY TRUNCATED, AND THAT IS THE NEXT ROUND.** 2441 line 8 carries 6 of 16
-printed bands; **2441 line 19 is cut mid-clause and its default branch - "All others, enter the
-amount from line 18" - never reaches the model.** We scored that row as a model defect for rounds.
+**THE REGRESSION.** `row_packet_incomplete` counts page furniture as missing content - catalog
+numbers, revision dates, form identifiers, and the next section's header - and the finding
+suppresses the provider call. **Four rows that derived correctly in every prior run are no longer
+attempted**: 2441 lines 11, 26 and 31, and 6251 line 40. Attempted across three documents went
+**67 -> 63**.
 
-**QUEUE, in order. Each is specced when it is reached, not now**, because both external reads
-predict the problem shrinks once the evidence is whole - and speccing ahead is how S57 went stale:
-1. **S60 - packet completeness.** Specced below. Truncation must be impossible to miss.
-2. **S59 - nomination of a document region as a document.** Already specced; John ruled it in.
-3. **Column and grid recovery** inside a geometric row. The Architect has proved the target: a
-   packet rebuilt from PDF coordinates yielded all 16 bands correctly from the same model.
-4. **One versioned operation registry** as the single source of truth for the provider schema,
-   prompt documentation, validator dispatch, compiler mapping and runtime registration. The Worker's
-   read names `LOOKUP_BRACKET` as the concrete warning: an operation can be offered in one layer and
-   be unprojectable in another. **This closes the failure class that killed S54 and S55.**
-5. **Deterministic phrase obligations** - recognizers for "subtract A from B", "smaller of", zero
-   floors, explicit caps, status-dependent constants, complete bands - checked against the compiled
-   program. This is the affordable slice of source-to-program validation and it would catch the
-   dropped `line 24` on 2441 line 25 **without knowing the correct arithmetic**. A naive
-   "every mentioned line must be an operand" rule would NOT work: some line references are routing
-   effects, not operands.
-6. **S53 - the approval gate**, behind a switch, default off.
+**QUEUE, in order.** S61 (this rework), then S59 (nominations, already specced and John-approved),
+then column and grid recovery, the versioned operation registry, deterministic phrase obligations,
+and S53 (the approval gate). Each is specced when reached.
 
-**NOT BEING BUILT, and the reasons are recorded so this is not relitigated:** open-ended recursive
-model calls; sentence-level decomposition; model voting or temperature-zero stability as correctness
-evidence; a clause IR and compiler **until the evidence work lands**; `REQUIRE_INPUT` as a generic
-failure representation; any hand-authored worksheet or one-form exception.
-
-**FOR JOHN - a policy tension neither the Architect nor John has resolved.** The Worker's read names
-it plainly: **"every cell receives meaningful human approval before use" and "a human does not read
-every new cell" cannot both be true during bootstrap.** If approval means semantic approval, someone
-reads every newly introduced rule, because no oracle exists for it. What the pipeline CAN remove is
-**re-review**: approve once against stable semantics, fingerprint the source clauses and the
-compiled meaning, carry the verdict forward while both are unchanged, and route only changed or new
-clauses back. **That is a real decision about what "98% pipeline, 2% human" means in year one, and
-it is John's.** Nothing is blocked on it.
+**FOR JOHN, unresolved and not blocking:** "every cell receives meaningful human approval before
+use" and "a human does not read every new cell" cannot both hold during bootstrap. The pipeline can
+remove **re-**review - approve once against stable semantics, fingerprint the source clauses and the
+compiled meaning, carry the verdict while both are unchanged - but not first review. That is a
+decision about what 98/2 means in year one.
 
 ## Current round
 
-**M20-S56 ACCEPTED (Architect, Claude Opus 5, 2026-08-05) at `c359d65`. Two rounds of dead corpus
-are over, and the fix was a restoration rather than a design.**
+**M20-S58 ACCEPTED (Architect, Claude Opus 5, 2026-08-05) at `f21ad6b`. M20-S60 is a NARROW REWORK
+at `1074608`.** Both are evidence-layer rounds and they land together.
 
-**Live Form 2441: attempted 21, derived 19, repaired 1, errored 1.** Best result this form has
-produced. For contrast, the same document was **0 derived / 21 errored** through S54 and S55.
+**S58, captions, verified live.** 96 formula rows across four documents: **12 captioned, 84
+correctly left whole, 0 ambiguous**, failing closed with `caption_ambiguous` rather than guessing.
+The packet now reads as John asked: `label: Excluded benefits.` with the instruction body separate,
+and no caption at all for a row like `Combine lines 12 through 14` that has none. It also removed a
+contaminated 1040 label that had bled text in from a neighbouring source row. Live: 1040 unchanged
+at 17/17, 2441 at 18 derived within the observed 18-20 band, with the three failures being the
+known set and none caption-related.
 
-**Every step landed exactly as specced.** The four operand alternatives are back to
-`required: [..., "role"]` with `role` typed `["string", "null"]`, which is the S47 shape that ran
-the corpus at 89-92. The three inverted guards are restored **including the test name** that
-encodes the invariant, the `optional = {"role"}` carve-out is deleted, and the depth walker is now
-STRICTER than before - `set(properties) == set(required)`, where it used to be `<=`. S55's keyword
-allowlist gained the same equality check, so **one guard now covers both fatal defects** rather
-than each covering the other's blind spot.
+**S60, packet completeness: the deliverable landed and the corpus shrank.**
 
-**One addition beyond the spec, and it is required rather than scope creep:**
-`_validate_operand_role` returns early when `role is None`. With role required-and-nullable every
-ordinary operand now carries an explicit null, and without that early return the deterministic
-validator would reject every row it sees. The wire permits a nullable role everywhere; the code
-permits a non-null role only on `LOOKUP_TABLE`. That split is the correct division of labour.
+The win is real and it is the first of its kind. **2441 line 8 now carries 16 of 16 printed bands**
+- Architect-verified deterministically against the source - and the model emitted **all sixteen
+correctly** on live data, `15000/.35` through `43000/.21` plus the open top band. **That row has
+never been substantively right in any prior round.** It sits at `repaired` only because
+`LOOKUP_BRACKET` does not project to a rule. Line 19 carries its default branch again, truncation is
+now detectable instead of silent, and **every packet remains a verbatim subset of the acquired
+source**.
 
-**The 19 derived rows, checked by hand against the form face:**
+The regression is bounded and diagnosed. `row_packet_incomplete` counts page furniture as missing
+content, and the finding suppresses the provider call, so **four rows that derived correctly in
+every prior run are no longer attempted** - 2441 lines 11, 26, 31 and 6251 line 40. Attempted across
+three documents went **67 -> 63**. The detector's own detail strings name the culprits: a catalog
+number and revision date, the next section's header, and the form's own footer identifiers. S61 is
+the narrow fix.
 
-| verdict | rows |
-| --- | --- |
-| correct | 6, 9a, 9c, 11, 15, 17, 20, 23, 24, 26, 28, 29, 31 (13) |
-| filer-provided where the form states the rule | 3, 19, 21, 27 (4) |
-| wrong expression that passed every validator | 25, 30 (2) |
+**A prediction of mine that failed, recorded because it matters.** I expected the truncation fix to
+change 2441 line 19. With the complete packet it **still** emits `require_input(line 19)`. Two of
+its three branches are genuinely unresolvable, so the open question is whether it should emit a
+status-keyed lookup with a resolvable default or a typed unresolved dependency. That belongs to the
+`REQUIRE_INPUT`-overloading work.
 
-**The four filer-provided misses are John's 2026-07-31 ruling with live instances.** Line 3 is
-*"Add the amounts in column (d) of line 2"* - a capped sum - emitted as `require_input(line 3)`.
-Lines 21 and 27 print $5,000/$2,500 and $3,000/$6,000 on the form face. **Filer-provided is a
-failover, not a default**, and the model is reaching for it whenever a row is not plain arithmetic.
-
-**Line 25 is wrong for the third run in a row and still passes every validator.** Its else branch
-should be `min(line 20, line 21) - line 24`; it emitted `line 20 - line 21`, dropping line 24. Line
-30 is *"add the amounts in column (d) and enter the total here"* and emitted `copy(line 2)`.
-
-**LINE 8 STILL FAILS, AND NOT FOR THE REASON I PREDICTED.** This run the model invented
-`LOOKUP_BRACKET` - a positional operation that is in no vocabulary, carrying roles the grammar does
-not allow there - so it failed on `payload` and `unmapped_operation` **before the completeness
-validator could run.** That validator, the whole point of S54, **has still never fired on real
-data.** The row cannot succeed regardless: its evidence packet holds 6 of the 16 printed bands, and
-that is what S57 addresses.
-
-**Gates:** 76 passed on a short temp root, ASCII OK, `git diff --check` clean, `validate 2025`
-exit 0 with graph integrity OK, protected set diff empty, `git status` clean.
-
-**M20-S60 WORKER UPDATE (2026-08-05; local implementation complete, awaiting Architect provider
-leg):**
-
-The original artifact inspection found three genuine interrupted rows in the four-document set:
-Form 2441 lines 8 and 19, and Schedule D line 21. The other repeated anchors were normal wraps,
-column/page furniture, or split form labels and are not flagged. The interruption pattern is a
-repeated printed anchor followed by an AcroForm field marker and/or dot leaders; the existing
-source-line packet stopped at that marker even though PDF geometry showed substantive continuation.
-
-The packet now carries widget names from the geometry model, joins repeated-anchor continuations
-and unanchored visual continuations, and stops at split siblings, split form footers, and section
-furniture. A substantive continuation that is still missing produces `row_packet_incomplete`.
-That finding is carried into the cell frame as evidence metadata, becomes `incomplete_evidence`
-during input validation, and suppresses the provider call. No text is reconstructed; the test
-checks that packet content is a punctuation-insensitive multiset subset of the acquired source.
-
-Before/after packet evidence from the four-document rerun:
-
-```text
-Before line 8: 8 Enter on line 8 the decimal amount shown below that applies to the amount on line 7. If line 7 is: If line 7 is: If line 7 is: But not Decimal But not Decimal But not Decimal Over over amount is Over over amount is Over over amount is $0-15,000 .35 $25,000-27,000 .29 $37,000-39,000 .23 15,000-17,000 .34 27,000-29,000 .28 39,000-41,000 .22 8 X
-After line 8: 8 Enter on line 8 the decimal amount shown below that applies to the amount on line 7. If line 7 is: If line 7 is: If line 7 is: But not Decimal But not Decimal But not Decimal Over over amount is Over over amount is Over over amount is $0-15,000 .35 $25,000-27,000 .29 $37,000-39,000 .23 15,000-17,000 .34 27,000-29,000 .28 39,000-41,000 .22 8 X 17,000-19,000 .33 29,000-31,000 .27 41,000-43,000 .21 19,000-21,000 .32 31,000-33,000 .26 43,000-No limit .20 21,000-23,000 .31 33,000-35,000 .25 23,000-25,000 .30 35,000-37,000 .24
-Before line 19: 19 Enter the amount shown below that applies to you. } - If married filing jointly, enter your spouse's earned income (if you or your spouse was a student or was disabled, see the 19
-After line 19: 19 Enter the amount shown below that applies to you. } - If married filing jointly, enter your spouse's earned income (if you or your spouse was a student or was disabled, see the 19 instructions for line 5). - If married filing separately, see instructions. - All others, enter the amount from line 18.
-Changed formula rows: form_1040_2025 0, schedule_a_2025 0, schedule_d_2025 0, form_2441_2025 2 (lines 8 and 19); total 2.
-```
-
-RAN: `$env:PYTEST_DEBUG_TEMPROOT=(Resolve-Path .test_tmp_codex).Path; & .venv\\Scripts\\python.exe -m pytest tests\\test_structure_m20.py tests\\test_derive_cells_m20.py tests\\test_outline_span_resolution_m20.py tests\\test_form_completeness_m20.py tests\\test_m20_s31.py tests\\test_m20_s41.py tests\\test_m20_s54.py -q` -> 115 passed, 1 warning in 29.01s.
-RAN: `& .venv\\Scripts\\python.exe tools\\check_ascii.py` -> ASCII check OK.
-RAN: `git diff --check` -> clean.
-RAN: `& .venv\\Scripts\\python.exe -m tax_graph.cli validate 2025` -> exit 0; graph integrity OK.
-RAN: `git diff --stat -- graph/2025/nodes graph/2025/edges graph/2025/rules graph/2025/field_maps` -> empty.
-NOT RUN: live provider leg - the Worker sandbox has no outbound network; the Architect owns the live-row derivation and acceptance leg.
+**Gates:** ASCII OK, `git diff --check` clean, protected set diff empty, 115 passed on the Worker's
+focused suites.
 
 ## Architect decision - notation
 
@@ -369,53 +302,58 @@ client-managed server dies.
 
 ## From Architect
 
-- **M20-S60 TASK - THE PACKET MUST CARRY THE WHOLE PRINTED ROW (Architect, Claude Opus 5,
-  2026-08-05).** Ledger: the RAN/NOT RUN rule, D10, and the standing rules in `AGENTS.md` -
-  **read them first.** One change, no passengers.
+- **M20-S61 TASK - TIGHTEN "SUBSTANTIVE CONTINUATION" (Architect, Claude Opus 5, 2026-08-05).**
+  Ledger: the RAN/NOT RUN rule, D10, and the standing rules in `AGENTS.md`. **Narrow rework of S60.
+  Keep everything else S60 did - it worked.**
 
-  **OPEN ITEMS AND SEAMS THIS ROUND TOUCHES:**
-  - **ADVANCES** John's option (b), structure and association, and the evidence foundation that all
-    three independent design reads (Architect, a naive external model, and the Worker's own
-    recommendation at `C:\tmp\tax_graph_operation_extraction_recommendation.md`) put FIRST.
-  - **SUPERSEDES** the old S57 framing, which treated the 2441 line 8 packet as a one-form repair.
-  - **LEAVES UNTOUCHED:** captions (S58, landed); nominations (S59); column and grid recovery; the
-    operation registry; phrase obligations; the approval gate (S53).
+  **OPEN ITEMS AND SEAMS THIS ROUND TOUCHES:** advances the evidence foundation only. **Leaves
+  untouched:** nominations (S59), column/grid recovery, the operation registry, phrase obligations,
+  the approval gate (S53).
 
-  **Why, measured on two rows of one form.** The evidence packet is silently truncated mid-row where
-  an AcroForm field marker interrupts the printed text run.
-  - **2441 line 8** ends at `... 39,000-41,000 .22 8 X` and carries **6 of 16 printed bands**.
-  - **2441 line 19** ends mid-clause at `... or was disabled, see the`. **The default branch, "All
-    others, enter the amount from line 18", never reaches the model at all.**
-  The model then emitted `require_input(line 19)`, which we have been scoring as a model defect.
-  It is not. **A truncated question got a reasonable answer, and `REQUIRE_INPUT` disguised an
-  extraction failure as a legitimate filer input.**
+  **What S60 got right and must be preserved.** Architect-verified deterministically and live:
+  2441 line 8 now carries **16 of 16 printed bands** and the model emitted all sixteen correctly
+  with the right thresholds - the first substantively correct result that row has ever produced.
+  Line 19 carries its default branch again. **Every packet is still a verbatim subset of the
+  acquired source.** Truncation is now detectable instead of silent, which was the deliverable.
 
-  **Step 1 - open the artifacts and report the pattern first.** Read the raw text and the PDF word
-  geometry for these rows and find every other instance in the corpus. **Report how many rows across
-  all documents are truncated and what interrupts them** - field markers, dot leaders, page
-  furniture, column breaks. Report before repairing.
+  **The defect.** `row_packet_incomplete` treats page furniture and neighbouring-section text as
+  missing content, and because the finding suppresses the provider call, **four rows that derived
+  correctly in every prior run are no longer attempted.** Attempted across three documents went
+  67 -> 63. The detector's own detail strings name the culprits:
+  - `form_2441_2025` line 11: *"18, 2025, 25, created"* - catalog number and revision date.
+  - `form_2441_2025` line 26: *"27, 31, below, complete, lines, through"* - the NEXT section's
+    header.
+  - `form_2441_2025` line 31: *"2025, 2441"* - the form's own footer identifiers.
+  - `form_6251_2025` line 40: same class.
 
-  **Step 2 - carry the whole row.** The packet for a printed row must contain the row's complete
-  printed text. Deterministic, from geometry; **no model call and no reconstruction of text that is
-  not printed.** The existing `tax_graph/extract/structure.py` already recovers visual rows from
-  word and widget rectangles - extend it rather than writing a second path.
+  **Step 1 - define "substantive" so it excludes furniture.** Bare numerals, four-digit years, form
+  and catalog identifiers, revision dates, page numbers, and text that belongs to a following
+  section are NOT substantive continuation. **Report the rule you implement and every row it changes
+  across the full manifest**, in both directions: rows that stop being flagged, and any row that
+  starts.
 
-  **Step 3 - truncation must be detectable, not silent.** When the packet cannot be shown to be
-  complete, the row carries an explicit finding and **fails closed**. A row whose evidence may be
-  cut must never reach the model as though it were whole. This is the round's real deliverable:
-  today the failure is invisible, which is why it survived four rounds of investigation.
+  **Step 2 - prove the true positives survive.** 2441 lines 8 and 19 and Schedule D line 21 were the
+  three genuine interruptions S60 found. **They must still be detected**, and line 8 and line 19 must
+  still carry their complete text. A fix that silences the detector everywhere is worse than the
+  regression.
 
-  **Step 4 - report the before/after packet verbatim** for 2441 lines 8 and 19, and re-run the
-  4-document set to report how many rows changed. **Do not fix the resulting expressions** - line 8
-  will still need a table-shaped representation and that is a later round. **Report what the model
-  now emits and leave it.**
+  **Step 3 - report the attempted count per document before and after.** The target is 67 attempted
+  across 2441/1040/6251 with the genuine interruptions still repaired rather than suppressed.
 
-  **Do not:** call a model for extraction; reconstruct text that is not printed; touch the caption
-  split, the operation vocabulary, or the addressing layer; tune the prompt. **Stop conditions:**
-  any diff in the protected directories; text in a packet that is not verbatim in the source.
-  Tier 3. Honest `RAN:`/`NOT RUN:` - **the provider leg is the Architect's, and this round is not
-  accepted until one live row derives.** ASCII, `git diff --check`, module-form `validate 2025`.
-  **ONE local commit.**
+  **Do not:** weaken the verbatim-subset guarantee; reconstruct text; disable the finding rather than
+  narrowing it; touch the caption split, the operation vocabulary, or the addressing layer.
+  **Stop conditions:** any diff in the protected directories; a packet containing text that is not
+  verbatim in the source; a genuine interruption no longer detected. Tier 3. Honest `RAN:`/`NOT RUN:`
+  - **the provider leg is the Architect's, and this round is not accepted until the attempted count
+  is restored with the true positives intact.** ASCII, `git diff --check`, module-form
+  `validate 2025`. **ONE local commit.**
+
+  **Recorded, not for this round:** with the complete packet, 2441 line 19 STILL emits
+  `require_input(line 19)`. The Architect predicted the truncation fix would change that row; it did
+  not. Two of its three branches are genuinely unresolvable - spouse's earned income has no node,
+  and one branch says only "see instructions" - so the honest question is whether it should emit a
+  status-keyed lookup with a resolvable default, or a typed unresolved dependency. **That belongs to
+  the REQUIRE_INPUT-overloading work, not here.**
 
 - **M20-S59 TASK - NOMINATE A REGION OF A DOCUMENT TO BE A FULL DOCUMENT (Architect, Claude Opus 5,
   2026-08-05; John's call: *"Yes, I think we have to have some mech for at least nominating these
