@@ -117,6 +117,39 @@ Global project canary: **Ledger Llama**.
   finds a defect in your work, it is recorded in the Worker defect ledger below. Read the ledger
   BEFORE declaring a step and name, in your session-start checkpoint, which entries apply to what
   you are about to write. Repeating a ledger defect is a process failure, not a typo.
+- **A GUARD TEST MAY NOT BE EDITED TO AGREE WITH NEW CODE (2026-08-05, after M20-S54/S55).** If a
+  change makes an existing test fail, the CHANGE is wrong until the Architect rules otherwise.
+  Renaming a test, relaxing an assertion, or adding an exemption to make your work pass is a
+  round-blocking event - raise it under **Open for Architect** instead of doing it. What this cost:
+  S54 renamed `test_expression_schema_uses_nullable_role_for_ordinary_operands` - a name that
+  encodes the invariant it protects - to `..._reserves_roles_for_lookup_operands`, flipped its
+  assertions from `"role" in required` to `"role" not in required`, and added an
+  `optional = {"role"}` carve-out exempting the exact property the S46 defect died on. The live
+  corpus then ran 0 derived / 21 errored for **two consecutive rounds** behind a fully green suite.
+- **A GUARD FOR AN EXTERNAL CONTRACT MUST ENUMERATE THE CONTRACT, NOT THE LAST BUG (2026-08-05).**
+  When you add a regression test for something an outside system validates - a provider schema, a
+  wire format, a file format - write it against that system's documented rules, not against the
+  failure you just saw. S47's guard encoded the S46 defect's exact shape; S55's keyword allowlist
+  encoded the S54 defect's exact shape. **Neither caught the other, and both defects lived in the
+  same twelve lines of schema.** For OpenAI structured outputs the contract is at least: every key
+  in `properties` appears in `required`, optionality is expressed as a `null` type union, the root
+  is an object, and `allOf`/`if`/`then`/`else`/`not`/`$ref` are not permitted.
+- **OPEN THE ORIGINAL ARTIFACT BEFORE NAMING A CAUSE (John, 2026-08-05).** When something fails,
+  read several real instances of the raw input - the `.txt`/`.html`/`.json` under `.cache/raw/`,
+  the actual prompt, the emitted report - and find the PATTERN before proposing a fix. John:
+  *"it is usually best to just take a beat and look at a few of the known artifacts and try to
+  understand the patterns of failure before moving forward."* Real cases: instruction-parsing
+  failures that were extra HTML tags visible in the raw file, and the Form 2441 line 8 evidence
+  packet that stops at the `8 X` AcroForm marker - the Architect blamed the model for dropping ten
+  lookup bands that were never sent to it. A guessed cause costs a full round.
+- **FIXTURE GREEN IS NOT EVIDENCE FOR A CHANGE THAT CROSSES AN EXTERNAL BOUNDARY (2026-08-05).**
+  The suite never opens a socket. If your round changes the provider schema, the prompt contract,
+  or any wire format, say so explicitly in the handoff and hand the provider leg to the Architect
+  with an honest `NOT RUN:`. **Do not report such a change as working on fixture evidence** - 75
+  and then 76 tests passed on two consecutive corpus-dead builds.
+  **The Architect half of this rule:** a round that touches the provider schema or prompt contract
+  is NOT ACCEPTED until one live row derives. One document, one row, roughly eight seconds and a
+  fraction of a cent. Both S54 and S55 would have been caught the moment they were written.
 
 ## Worker defect ledger (read before declaring a step)
 
