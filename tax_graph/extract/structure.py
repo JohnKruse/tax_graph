@@ -32,6 +32,55 @@ _HEADER_PHRASES = (
     "section ",
     "for paperwork reduction act notice",
 )
+_CAPTION_INSTRUCTION_STARTERS = {
+    "add",
+    "apply",
+    "attach",
+    "calculate",
+    "carry",
+    "check",
+    "combine",
+    "complete",
+    "divide",
+    "do",
+    "don't",
+    "enter",
+    "file",
+    "if",
+    "include",
+    "list",
+    "multiply",
+    "otherwise",
+    "report",
+    "see",
+    "start",
+    "stop",
+    "subtract",
+    "take",
+    "use",
+}
+_CAPTION_NON_NOUN_STARTERS = {
+    "all",
+    "any",
+    "are",
+    "be",
+    "can",
+    "for",
+    "however",
+    "is",
+    "it",
+    "may",
+    "must",
+    "should",
+    "that",
+    "these",
+    "this",
+    "those",
+    "unless",
+    "when",
+    "where",
+    "was",
+}
 
 
 @dataclass(frozen=True)
@@ -43,6 +92,78 @@ class StructureFinding:
     detail: str
     field_name: str = ""
     row_text: str = ""
+
+
+@dataclass(frozen=True)
+class CaptionSplit:
+    """Deterministic caption and form-face instruction projection."""
+
+    caption: str | None
+    cell_instruction: str
+    status: str
+    finding: str | None = None
+
+
+def split_caption_and_instruction(text: str, line_anchor: str = "") -> CaptionSplit:
+    """Split a clear leading caption from the instruction that follows it.
+
+    The split is deliberately narrow. A caption must be the first sentence and
+    must not begin with a known instruction or conditional starter. Rows with
+    no sentence boundary remain wholly instructional. A boundary with an
+    unclassified starter fails closed with a named finding rather than guessing.
+    All returned strings preserve source token order and normalized whitespace.
+    """
+    value = " ".join(str(text or "").split())
+    body = _strip_line_anchor_prefix(value, line_anchor)
+    if not body:
+        return CaptionSplit(None, "", "none")
+
+    boundary = _first_sentence_boundary(body)
+    if boundary is None:
+        return CaptionSplit(None, body, "none")
+
+    end, remainder = boundary
+    first_sentence = body[:end].strip()
+    first_word_match = re.match(r"([A-Za-z]+(?:'[A-Za-z]+)?)", first_sentence)
+    first_word = first_word_match.group(1).lower() if first_word_match else ""
+    if first_word in _CAPTION_INSTRUCTION_STARTERS or first_word in _CAPTION_NON_NOUN_STARTERS:
+        return CaptionSplit(None, body, "none")
+    if not first_word_match:
+        return CaptionSplit(
+            None,
+            body,
+            "ambiguous",
+            "caption_ambiguous",
+        )
+    if not remainder:
+        return CaptionSplit(first_sentence, "", "captioned")
+    return CaptionSplit(first_sentence, remainder, "captioned")
+
+
+def _first_sentence_boundary(value: str) -> tuple[int, str] | None:
+    """Return the first period followed by whitespace or end of text."""
+    for index, character in enumerate(value):
+        if character != ".":
+            continue
+        if index + 1 == len(value) or value[index + 1].isspace():
+            return index + 1, value[index + 1 :].strip()
+    return None
+
+
+def _strip_line_anchor_prefix(value: str, line_anchor: str) -> str:
+    """Remove a printed line token from the start of a cleaned row."""
+    anchor = str(line_anchor or "").strip().lower()
+    if not value or not anchor:
+        return value
+    match = re.match(r"^(?P<number>[0-9]+)(?P<suffix>[a-z]?)$", anchor)
+    if match:
+        number = match.group("number")
+        suffix = match.group("suffix")
+        prefix = rf"{re.escape(number)}\s*{re.escape(suffix)}" if suffix else re.escape(number)
+        stripped = re.sub(rf"^{prefix}(?=\s|$)\s*", "", value, count=1, flags=re.IGNORECASE)
+        if stripped != value:
+            return stripped.strip()
+    return value
 
 
 @dataclass(frozen=True)

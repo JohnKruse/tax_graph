@@ -18,6 +18,7 @@ from typing import Any, Iterable, Mapping, Protocol, Sequence
 from tax_graph.config import get_config_value
 from tax_graph.extract.llm_client import LlmClient, response_telemetry
 from tax_graph.extract.prompts import load_prompt_template, render_prompt
+from tax_graph.extract.structure import split_caption_and_instruction
 
 
 CELL_INPUT_FIELDS = (
@@ -236,13 +237,22 @@ def build_cell_frame_from_document(document: Any) -> CellFrame:
         sections = instruction_frame.for_line(document.document_id, line)
         instruction_text = "\n\n".join(section.text for section in sections)
         evidence_spans: list[dict[str, str]] = []
+        full_form_face = ""
+        caption_split = split_caption_and_instruction(node.label, line)
         if form_span is not None:
+            full_form_face = clean_form_face_text(form_span.text, line)
+            caption_split = split_caption_and_instruction(full_form_face, line)
+            form_face_text = caption_split.cell_instruction or full_form_face
             evidence_spans.append(
                 {
                     "span_id": form_span.span_id,
-                    "text": clean_form_face_text(form_span.text, line),
+                    "text": form_face_text,
                 }
             )
+        else:
+            full_form_face = clean_form_face_text(node.label, line)
+            caption_split = split_caption_and_instruction(full_form_face, line)
+            form_face_text = caption_split.cell_instruction or full_form_face
         evidence_spans.extend(
             {"span_id": section.section_id, "text": section.text}
             for section in sections
@@ -251,8 +261,8 @@ def build_cell_frame_from_document(document: Any) -> CellFrame:
             CellRecord(
                 form=document.document_id,
                 line=line,
-                label=clean_form_face_text(node.label, line),
-                form_face_text=clean_form_face_text(form_span.text, line) if form_span is not None else "",
+                label=caption_split.caption or "",
+                form_face_text=form_face_text,
                 instruction_text=instruction_text,
                 instruction_locator=sections[0].section_id if sections else "",
                 metadata={
@@ -262,6 +272,10 @@ def build_cell_frame_from_document(document: Any) -> CellFrame:
                     "form_face_span_id": form_span.span_id if form_span is not None else "",
                     "form_face_before": form_span.text if form_span is not None else "",
                     "label_before": node.label,
+                    "caption": caption_split.caption,
+                    "caption_status": caption_split.status,
+                    "caption_finding": caption_split.finding or "",
+                    "cell_instruction_before_split": full_form_face,
                     "printed_lines": printed_lines,
                     "evidence_spans": evidence_spans,
                 },
@@ -527,7 +541,7 @@ def validate_cell_input(row: CellRecord) -> tuple[CellValidationIssue, ...]:
     that compatibility surface while still rejecting an explicit wrong owner.
     """
     issues: list[CellValidationIssue] = []
-    if not row.label.strip():
+    if not row.label.strip() and row.metadata.get("caption_status") not in {"none", "ambiguous"}:
         issues.append(CellValidationIssue("missing_label", "cell label is required"))
     if not row.form_face_text.strip() and not row.instruction_text.strip():
         issues.append(CellValidationIssue("missing_evidence", "at least one cited evidence source is required"))

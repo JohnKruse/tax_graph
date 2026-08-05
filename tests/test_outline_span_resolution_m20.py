@@ -241,5 +241,6 @@ def test_real_form_6251_line_32_uses_form_row_not_page_header():
     frame = build_cell_frame_from_document(document)
     row = next(row for row in frame.rows if row.line == "32")
 
-    assert row.form_face_text == "32 Add lines 23 and 30"
+    # S58 removes the printed anchor from the prompt's instruction slot.
+    assert row.form_face_text == "Add lines 23 and 30"
     assert "Internal Revenue Service" not in row.form_face_text

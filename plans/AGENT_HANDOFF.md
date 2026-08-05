@@ -92,6 +92,40 @@ that is what S57 addresses.
 **Gates:** 76 passed on a short temp root, ASCII OK, `git diff --check` clean, `validate 2025`
 exit 0 with graph integrity OK, protected set diff empty, `git status` clean.
 
+**M20-S58 WORKER STATUS - implementation complete, awaiting provider leg and Architect acceptance.**
+The deterministic cell projection now separates a clear leading caption from the form-face
+instruction. The four required real documents contain 96 formula rows: 12 captioned, 84 with no
+caption, and 0 ambiguous. The 12 captions are the noun-phrase rows such as `Excluded benefits.`;
+imperative and conditional rows such as `Enter the smallest...` and `Subtract line...` remain
+whole instructions. An unclassified boundary returns `caption: null` with
+`caption_ambiguous`, never a guessed split. The outline and addressing layers remain unchanged.
+
+The instruction join gap is measured, not repaired here. Of the 67 formula rows across Form 2441,
+Form 1040, and Form 6251, 50 have no instruction section for the exact owner document and printed
+line: 2441 lines `3,6,8,9a,11,17,20,23,25,28,29,30` (13), 1040 lines
+`1z,9,11a,11b,14,15,18,21,22,24,25d,32,33` (13), and 6251 lines
+`4,6,9,11,12,16,17,21,22,23,24,26,28,29,30,31,32,33,34,35,36,37,38,40` (24).
+The related instruction artifacts are acquired and do contain sections; these rows simply have no
+exact owner-document/line section, so this remains the separate instruction-booklet join round.
+
+**S58 packet evidence (verbatim normalized row fields).** Form 2441 line 25 changed from
+`label: 25 Excluded benefits. If you checked "No" on line 22, enter the smaller of line 20 or line 21. Otherwise, subtract line 24 from the smaller of line 20 or line 21. If zero or less, enter -0-`
+and the same full form-face text to `label: Excluded benefits.` plus
+`form face text: If you checked "No" on line 22, enter the smaller of line 20 or line 21. Otherwise, subtract line 24 from the smaller of line 20 or line 21. If zero or less, enter -0-`.
+Form 1040 line 15 changed from the neighboring-source row
+`label: jointly or 15 Subtract line 14 from line 11b. If zero or less, enter -0-. This is your taxable income 15`
+and the same full form-face text to an empty label plus
+`form face text: Subtract line 14 from line 11b. If zero or less, enter -0-. This is your taxable income`.
+
+**RAN:** `$pytestRoot = Join-Path (Get-Location) '.pytest_s58_temp'; New-Item -ItemType Directory -Force -Path $pytestRoot | Out-Null; $env:PYTEST_DEBUG_TEMPROOT = $pytestRoot; .venv\Scripts\python.exe -m pytest tests\test_cell_caption_m20.py tests\test_structure_m20.py tests\test_derive_cells_m20.py tests\test_outline_span_resolution_m20.py -q` -> `95 passed, 1 warning in 22.61s`.
+**RAN:** `$pytestRoot = Join-Path (Get-Location) '.pytest_s58_temp'; $env:PYTEST_DEBUG_TEMPROOT = $pytestRoot; .venv\Scripts\python.exe -m pytest tests\test_extract_outline_m4.py tests\test_batch_bundle_m10.py tests\test_m20_s31.py -q` -> `37 passed, 1 warning in 4.56s`.
+**RAN:** `.venv\Scripts\python.exe tools\check_ascii.py` -> `ASCII check OK`.
+**RAN:** `git diff --check` -> exit 0, no output.
+**RAN:** `.venv\Scripts\python.exe -m tax_graph.cli validate 2025` -> exit 0, `graph integrity OK`.
+**NOT RUN:** live provider derivation; the Worker sandbox has no outbound network, and S58 changes
+the prompt packet contract. Architect must run one live row before acceptance. No provider schema
+was changed. Protected graph directories have no diff.
+
 ## Architect decision - notation
 
 John, 2026-08-04: *"do what makes sense. We are not boiling the ocean here. I just don't want to
