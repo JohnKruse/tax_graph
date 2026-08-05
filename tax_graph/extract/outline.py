@@ -901,8 +901,10 @@ def _row_packet_findings(
     )
     continuation = [
         item
-        for item in window[last_same_index + 1 :]
-        if item.text and not _structure_row_is_boundary(item, row)
+        for item in _substantive_continuation_rows(
+            window[last_same_index + 1 :],
+            current=row,
+        )
     ]
     if not continuation:
         return ()
@@ -944,6 +946,55 @@ def _content_tokens(value: str) -> Counter[str]:
     """Return punctuation-insensitive content tokens for completeness checks."""
     normalized = normalize_punctuation(str(value or "")).lower()
     return Counter(re.findall(r"[a-z0-9]+(?:[-'][a-z0-9]+)*|\.[0-9]+", normalized))
+
+
+def _substantive_continuation_rows(
+    rows: list[StructureRow],
+    *,
+    current: StructureRow,
+) -> list[StructureRow]:
+    """Keep only continuation rows that can carry printed row content.
+
+    Repeated-anchor packets can run into a following section or the form
+    footer. Those rows are visible to geometry but are not continuation text
+    for the current printed line. Stop at an explicit section boundary, and
+    ignore only page furniture whose complete row shape is identifiable:
+    bare numbers, page labels, catalog identifiers, and the ``Form (year)``
+    footer with its creation date. Numeric bands such as ``17,000-19,000``
+    remain substantive because they are not bare identifiers.
+    """
+    substantive: list[StructureRow] = []
+    for item in rows:
+        if not item.text:
+            continue
+        if _structure_row_is_boundary(item, current):
+            break
+        if _is_form_furniture_row(item.text):
+            continue
+        substantive.append(item)
+    return substantive
+
+
+def _is_form_furniture_row(text: str) -> bool:
+    """Return whether a geometry row is identifiable page furniture."""
+    normalized = " ".join(normalize_punctuation(str(text or "")).split()).lower()
+    if not normalized:
+        return True
+    if re.fullmatch(r"\d{1,4}", normalized):
+        return True
+    if re.fullmatch(r"page(?:\s+\d{1,4})?", normalized):
+        return True
+    if re.fullmatch(r"(?:form\s+)?\d+\s+form\s*\(\d{4}\)(?:\s+\d+)?", normalized):
+        return True
+    if re.fullmatch(r"form\s+\d+(?:\s+\(\d{4}\))?(?:\s+\d+)?", normalized):
+        return True
+    if re.fullmatch(r"(?:\d+\s+)?form\s*\(\d{4}\)", normalized):
+        return True
+    if re.fullmatch(r"(?:\d+\s+)?form\s*\(\d{4}\)\s+created\s+\d{1,2}/\d{1,2}/\d{2,4}", normalized):
+        return True
+    if re.fullmatch(r"cat\.?\s+no\.?\s+[a-z0-9]+(?:\s+[a-z0-9]+)*", normalized):
+        return True
+    return False
 
 
 def _source_anchor_lines(document: SourceDocumentInput) -> dict[int, set[str]]:

@@ -103,6 +103,42 @@ def test_form_2441_packets_keep_text_after_field_markers_and_dot_leaders():
 
 
 @pytest.mark.m20
+@pytest.mark.parametrize(
+    ("document_id", "line_anchor"),
+    [
+        ("form_2441_2025", "11"),
+        ("form_2441_2025", "26"),
+        ("form_2441_2025", "31"),
+        ("form_6251_2025", "40"),
+    ],
+)
+def test_form_furniture_does_not_make_real_packets_incomplete(
+    document_id: str,
+    line_anchor: str,
+):
+    document = _document_or_skip(document_id)
+    nodes = _flatten(build_outline_tree(document).children)
+    node = next(item for item in nodes if item.line_anchor == line_anchor)
+    span = _span_for_line(document, node, build_candidate_spans(document))
+
+    assert span is not None
+    assert span.findings == ()
+
+
+@pytest.mark.m20
+def test_schedule_d_line_21_packet_keeps_loss_limit_continuation():
+    document = _document_or_skip("schedule_d_2025")
+    nodes = _flatten(build_outline_tree(document).children)
+    node = next(item for item in nodes if item.line_anchor == "21")
+    span = _span_for_line(document, node, build_candidate_spans(document))
+
+    assert span is not None
+    assert span.findings == ()
+    assert "The loss on line 16" in span.text
+    assert "($3,000)" in span.text
+
+
+@pytest.mark.m20
 def test_repeated_anchor_continuation_is_a_fail_closed_finding_when_not_joined():
     source = "8 First row\n8 X\n17,000-19,000 .33\n9 Next row\n"
     raw_rows = (
@@ -127,6 +163,80 @@ def test_repeated_anchor_continuation_is_a_fail_closed_finding_when_not_joined()
     assert findings[0].code == "row_packet_incomplete"
     assert "17" in findings[0].detail
     assert ".33" in findings[0].detail
+
+
+@pytest.mark.m20
+def test_repeated_anchor_detector_ignores_footer_and_following_section_furniture():
+    source = (
+        "26 Taxable benefits\n"
+        "26 X\n"
+        "To claim the child and dependent care credit,\n"
+        "complete lines 27 through 31 below.\n"
+        "6251\n"
+        "Form (2025) Created 9/17/25\n"
+        "27 Next row\n"
+    )
+    raw_rows = (
+        StructureRow(1, "26 Taxable benefits", 10.0, 10.0, 100.0, 20.0, 0, "26", "26"),
+        StructureRow(1, "26 X", 10.0, 30.0, 100.0, 40.0, source.index("26 X"), "26", "26"),
+        StructureRow(
+            1,
+            "To claim the child and dependent care credit,",
+            10.0,
+            42.0,
+            300.0,
+            52.0,
+            source.index("To claim"),
+        ),
+        StructureRow(
+            1,
+            "complete lines 27 through 31 below.",
+            10.0,
+            54.0,
+            250.0,
+            64.0,
+            source.index("complete"),
+        ),
+        StructureRow(1, "6251", 10.0, 66.0, 50.0, 76.0, source.index("6251")),
+        StructureRow(
+            1,
+            "Form (2025) Created 9/17/25",
+            10.0,
+            78.0,
+            200.0,
+            88.0,
+            source.index("Form (2025)"),
+        ),
+        StructureRow(1, "27 Next row", 10.0, 90.0, 100.0, 100.0, source.index("27 Next"), "27", "27"),
+    )
+    packet = StructureRow(1, "26 Taxable benefits 26 X", 10.0, 10.0, 100.0, 40.0, 0, "26", "26")
+
+    assert _row_packet_findings(packet, raw_rows, source_text=source) == ()
+
+
+@pytest.mark.m20
+def test_repeated_anchor_detector_keeps_real_schedule_d_continuation_substantive():
+    source = (
+        "21 If line 16 is a loss, enter here and on Form 1040.\n"
+        "21 X\n"
+        "- The loss on line 16; or 21 ( )\n"
+        "- ($3,000), or if married filing separately, ($1,500)\n"
+        "22 Next row\n"
+    )
+    raw_rows = (
+        StructureRow(1, "21 If line 16 is a loss, enter here and on Form 1040.", 10.0, 10.0, 100.0, 20.0, 0, "21", "21"),
+        StructureRow(1, "21 X", 10.0, 30.0, 100.0, 40.0, source.index("21 X"), "21", "21"),
+        StructureRow(1, "- The loss on line 16; or 21 ( )", 10.0, 42.0, 250.0, 52.0, source.index("- The loss")),
+        StructureRow(1, "- ($3,000), or if married filing separately, ($1,500)", 10.0, 54.0, 300.0, 64.0, source.index("- ($3,000)")),
+        StructureRow(1, "22 Next row", 10.0, 66.0, 100.0, 76.0, source.index("22 Next"), "22", "22"),
+    )
+    packet = StructureRow(1, "21 If line 16 is a loss 21 X", 10.0, 10.0, 100.0, 40.0, 0, "21", "21")
+
+    findings = _row_packet_findings(packet, raw_rows, source_text=source)
+
+    assert len(findings) == 1
+    assert "500" in findings[0].detail
+    assert "separately" in findings[0].detail
 
 
 @pytest.mark.m20

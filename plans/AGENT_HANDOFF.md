@@ -45,6 +45,36 @@ decision about what 98/2 means in year one.
 
 ## Current round
 
+**M20-S61 WORKER IMPLEMENTATION COMPLETE, PENDING ARCHITECT PROVIDER LEG (2026-08-05).** The
+detector now stops at the first explicit following-section boundary and ignores only identifiable
+page furniture: bare numbers, page labels, split `Form (year)` footers, form-page identifiers,
+catalog identifiers, and creation-date footer rows. Numeric bands and prose continuations remain
+substantive. The verbatim-subset check is unchanged.
+
+The full local manifest report used 23 manifest entries, of which 16 had form PDF/text/field
+artifacts and 7 were instruction-only. Findings changed **10 -> 4**, with no new findings:
+
+- Removed: `form_2441_2025` lines 11, 26, 31; `form_6251_2025` line 40; and the pre-existing
+  boundary cases `schedule_1a_2025` line 30 and `schedule_d_2025` line 7.
+- Remaining pre-existing findings: `schedule_1a_2025` lines 14a and 36a, and
+  `form_6251_2025` lines 1a and 5.
+- Target attempted counts: 2441 **18 -> 21**, 1040 **17 -> 17**, 6251 **28 -> 29**;
+  total **63 -> 67**.
+- Real continuations remain protected: 2441 lines 8 and 19 retain their complete table/rule
+  text, and Schedule D line 21 retains the loss-limit continuation. Synthetic incomplete packets
+  still raise `row_packet_incomplete`.
+
+RAN: `.venv\\Scripts\\python.exe -m pytest tests/test_structure_m20.py tests/test_derive_cells_m20.py -q`
+-> **92 passed in 17.50s**.
+RAN: `.venv\\Scripts\\python.exe -m pytest tests/test_outline_span_resolution_m20.py tests/test_extract_outline_m4.py tests/test_extract_m16.py -q`
+-> **34 passed in 3.04s**.
+RAN: `.venv\\Scripts\\python.exe tools/check_ascii.py` -> **ASCII check OK**.
+RAN: `git diff --check` -> **exit 0**.
+RAN: `.venv\\Scripts\\python.exe -m tax_graph.cli validate 2025` -> **exit 0; graph integrity OK**.
+NOT RUN: live provider leg -> Architect-owned and unavailable in the Worker's no-network sandbox.
+Protected graph/field-map set: **no diff**. One local commit will contain the implementation,
+tests, and this handoff evidence.
+
 **M20-S58 ACCEPTED (Architect, Claude Opus 5, 2026-08-05) at `f21ad6b`. M20-S60 is a NARROW REWORK
 at `1074608`.** Both are evidence-layer rounds and they land together.
 
