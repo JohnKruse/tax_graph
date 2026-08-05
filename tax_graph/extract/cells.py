@@ -1663,6 +1663,8 @@ def _validate_operand_role(node: Mapping[str, Any], *, allow_role: bool) -> None
     """Validate a role only when the parent operation owns named branches."""
     if "role" not in node:
         return
+    if node["role"] is None:
+        return
     if not allow_role:
         raise ValueError("operand role is only valid on LOOKUP_TABLE arguments")
     role = node["role"]
@@ -1716,7 +1718,7 @@ def expression_schema(
 
 def _expression_node_schema(operations: list[str], depth: int) -> dict[str, Any]:
     role = {
-        "type": "string",
+        "type": ["string", "null"],
         "pattern": "^[a-z][a-z0-9_]*$",
         "description": "Named lookup role; use key, default, or the exact branch key.",
     }
@@ -1724,13 +1726,13 @@ def _expression_node_schema(operations: list[str], depth: int) -> dict[str, Any]
         {
             "type": "object",
             "additionalProperties": False,
-            "required": ["line"],
+            "required": ["line", "role"],
             "properties": {"line": {"type": "string", "minLength": 1}, "role": role},
         },
         {
             "type": "object",
             "additionalProperties": False,
-            "required": ["form", "line"],
+            "required": ["form", "line", "role"],
             "properties": {
                 "form": {"type": "string", "minLength": 1},
                 "line": {"type": "string", "minLength": 1},
@@ -1740,13 +1742,13 @@ def _expression_node_schema(operations: list[str], depth: int) -> dict[str, Any]
         {
             "type": "object",
             "additionalProperties": False,
-            "required": ["const"],
+            "required": ["const", "role"],
             "properties": {"const": {"type": "number"}, "role": role},
         },
         {
             "type": "object",
             "additionalProperties": False,
-            "required": ["node"],
+            "required": ["node", "role"],
             "properties": {"node": {"type": "string", "minLength": 1}, "role": role},
         },
     ]

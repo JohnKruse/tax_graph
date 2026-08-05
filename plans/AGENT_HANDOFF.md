@@ -37,6 +37,24 @@ build.
 
 ## Current round
 
+**M20-S56 WORKER STATUS (2026-08-05).** Restored the S47 expression leaf contract in
+`tax_graph/extract/cells.py`: all four operand alternatives require `role`, its wire type is
+`["string", "null"]`, and the deterministic validator treats `role: null` as absent while still
+rejecting a non-null role on non-lookup operations. Restored the invariant-bearing test name and
+assertions, removed the `role` completeness exemption, restored the node-role assertion, and
+extended the provider keyword walker to require `set(properties) == set(required)` at every depth.
+No protected graph directory changed.
+
+Evidence:
+
+- `RAN: $env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp\m20-s56-665e09b5a483415f8e2c531e7c4be11f'; & .venv\Scripts\python.exe -m pytest tests/test_derive_cells_m20.py tests/test_m20_s54.py -q` -> `67 passed, 1 warning` (the warning is the pre-existing `.pytest_cache` ACL warning).
+- `RAN: & .venv\Scripts\python.exe tools\check_ascii.py` -> `ASCII check OK`.
+- `RAN: git diff --check` -> exit 0.
+- `RAN: & .venv\Scripts\python.exe -m tax_graph.cli validate 2025` -> exit 0; graph integrity OK (`documents=18 nodes=441 tables=2 edges=409 rules=17 citations=401 decisions=2 routing_edges=90 triggers=12 expectations=4`).
+- `RAN: git diff --exit-code -- graph/2025/nodes graph/2025/edges graph/2025/rules graph/2025/field_maps` -> exit 0; empty protected-set diff.
+- `RAN: $env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp\m20-s56-665e09b5a483415f8e2c531e7c4be11f'; & .venv\Scripts\python.exe -m pytest -m m20 -q` -> `225 passed, 6 failed, 3 errors, 570 deselected`; all nine failures are ACL errors reading untracked `graph/2025/_drafts/form_1040_2025` state, matching the existing preflight note.
+- `NOT RUN: live provider leg` - Worker sandbox has no outbound network; the Architect owns the provider acceptance leg.
+
 **M20-S55 REWORK (Architect, Claude Opus 5, 2026-08-05) at `e35b658`.**
 
 **What S55 got right, and keeps:** the `allOf` is gone from the wire, the role rule is owned by

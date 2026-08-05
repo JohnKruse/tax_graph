@@ -105,7 +105,7 @@ def test_lookup_table_fails_closed_when_branch_roles_do_not_state_bounds() -> No
 
 def test_schema_leaves_role_ownership_to_the_deterministic_validator() -> None:
     schema = expression_schema()
-    ordinary = {"expression": {"op": "COPY", "args": [{"line": "1"}]}, "quote": "line 1"}
+    ordinary = {"expression": {"op": "COPY", "args": [{"line": "1", "role": None}]}, "quote": "line 1"}
     ordinary_with_role = {"expression": {"op": "COPY", "args": [{"line": "1", "role": "source"}]}, "quote": "line 1"}
     lookup = {"expression": _lookup(["band_0_10", "band_10_no_limit"]), "quote": "0-10 10-No limit"}
 
@@ -150,6 +150,9 @@ def test_expression_schema_uses_only_the_supported_provider_keyword_class() -> N
             assert "anyOf" not in value, "Structured Outputs root must remain an object"
         properties = value.get("properties")
         if isinstance(properties, dict):
+            required = value.get("required")
+            assert isinstance(required, list), f"missing required list at {path}"
+            assert set(properties) == set(required), f"properties/required mismatch at {path}"
             for name, child in properties.items():
                 visit_schema(child, f"{path}.properties.{name}")
         items = value.get("items")
