@@ -17,96 +17,63 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## BALL
 
-**BALL: WORKER - M20-S63 (THE FULL-RUN SUMMARY, AND IT IS A DIFF).** Task block under
-**From Architect**. **S62 is ACCEPTED at `c017ec4`.**
+**BALL: WORKER - M20-S64 (REGENERATE A CANDIDATE GRAPH FROM A FULL RUN).** Task block under
+**From Architect**. **S63 is ACCEPTED at `aec1ef3`** - the full run is now cheap to READ, which was
+the precondition for running it.
 
-**JOHN'S FRAMING CORRECTION, and it stands as the model.** *"You get the docs, run it and then
-iterate on the review until it is all approved, and then push/publish the graph for the year."*
-**The graph is a BUILD ARTIFACT**, not a store edited one artifact at a time. `AGENTS.md` states
-that loop and `plans/PHASE_M20.md` sequences it as S3b structure -> **S3a regeneration** -> S4 ->
-S5. The Architect had specced surgical per-artifact promotion instead; that spec is withdrawn.
+**`summarize-runs` works and the Architect proved it on the real regression.** Fed the actual
+2026-08-05 run history (`s56 -> s58 -> s60 -> s61`), it called `form_2441_2025` **outside_band**
+on derived 15 -> 20 against an observed 15..19, called `form_1040_2025` **in_band_noise** at 17..17,
+listed every expression change with both renderings, and separated findings that appeared from
+findings that cleared - the three `incomplete_evidence` entries clearing is exactly the S61 fix
+showing up as a diff. Header states the discipline: *"This is an evidence diff, not a tax-correctness
+verdict."*
 
-**S3a REGENERATION IS UNBLOCKED AND HAS BEEN FOR SEVERAL ROUNDS.** The plan blocked it on
-`outline children = 0` for `schedule_a_2025` and `form_1040_2025`. Measured 2026-08-05: **29 and 60
-flattened nodes, 28 and 59 anchors.** The S58-S61 structure work cleared it. **Third time this
-session that pinned work turned out to be already unblocked or already built**, after the worksheet
-harvester and rollover seam 5.
+**THREE REFINEMENTS RECORDED, none blocking, fold into a later round:**
+1. **A band from one sample is not a band.** `form_6251_2025` was flagged `outside_band` on derived
+   25 -> 26 with a single preceding run, so its band was 25..25 and any movement trips it. **Report
+   insufficient samples instead of asserting a degenerate band** - a false positive costs exactly
+   the attention this tool exists to protect. Self-corrects once three runs accumulate.
+2. **The nonzero exit is deliberate and undocumented.** A document needing attention returns a code
+   the CLI raises, which is right for automation but currently reads as a crash. Document it.
+3. **Commutative reorderings are reported as changes.** `max(min(...), 0)` -> `max(0, min(...))` is
+   the same expression and should be normalized before diffing, along with duplicate findings that
+   differ only by message prefix.
 
-**S63 COMES BEFORE THE REGENERATION ON PURPOSE.** John: *"every once in a while we really need to
-run the whole thing... How do you suggest we do this to not become bogged down?"* Running is cheap,
-12-15 minutes and pennies. **Reading is what costs.** Build the summary first - against run reports
-that already exist, with no provider - so the first full run lands with a readable artifact instead
-of a pile. John's call on the split: *"yes, if we aren't packing too many things into S63.
-Otherwise crack it in two."* It was five steps already, so it is two rounds.
+**QUEUE:** S64 (candidate regeneration, reporting through this summary), then review and iterate on
+the candidate, then publish - which is when the archive and gate re-point happen. Column and grid
+recovery, the operation registry, phrase obligations, and **S53 the approval gate**, which is what
+makes "iterate until approved" mean anything.
 
-**QUEUE:** S63 (summary as a diff, band-aware), S64 (candidate regeneration, reporting through it),
-then review and iterate on the candidate, then publish - which is when the archive and gate re-point
-happen. Column and grid recovery, the operation registry, phrase obligations, and **S53 the approval
-gate**, which is what makes "iterate until approved" mean anything.
-
-**INDEPENDENT AND PULLABLE FORWARD - the known-red cleanup.** Four tests are inherited-red
-(see **Standing constraints**), so a red suite is the normal state and **nobody can tell a new
-failure from the baseline.** That is the self-selected-denominator defect one layer up. Until green
-means green, running the full test set more often buys nothing. Small round, no dependencies.
+**INDEPENDENT AND PULLABLE FORWARD - the known-red cleanup.** Four tests are inherited-red, so a red
+suite is the normal state and **a new failure cannot be told from the baseline.** Until green means
+green, running the full test set more often buys nothing.
 
 ## Current round
 
-**M20-S62 ACCEPTED (Architect, Claude Opus 5, 2026-08-05) at `c017ec4`. The review method John named
-is now a command anyone can run.**
+**M20-S63 ACCEPTED (Architect, Claude Opus 5, 2026-08-05) at `aec1ef3`. Reading a full run is now
+cheap, which is what made running one affordable.**
 
-**Verified by using it, not by reading the code.** Ran it against both a document with promoted
-content and one without.
+**Verified against the real thing, not fixtures.** The Architect fed it today's actual run history
+across the S60 regression and the S61 recovery:
 
-| property required by the spec | result |
-| --- | --- |
-| no model anywhere | confirmed - the only `llm`/`provider` matches are docstrings saying no provider client is constructed |
-| pseudocode rendered by code | confirmed - 1040 line 15 renders `SUBTRACT / operand 1: line 11b / operand 2: line 14` from the stored tree |
-| no correctness verdict | confirmed - it renders validator findings only, and says so in its own header |
-| refuses in-repo output | confirmed - `review table output must be outside repository root` |
-| defensible selection | confirmed - `--hardest N` with per-row signals printed (`score=34; conditionals=3; caps=1; ...`) |
+| document | current | delta | observed band | verdict |
+| --- | ---: | ---: | ---: | --- |
+| `form_1040_2025` | 17 / 17 | 0 | 17..17 | `in_band_noise` |
+| `form_2441_2025` | 20 / 21 | +5 derived | 15..19 | `outside_band` |
+| `form_6251_2025` | 26 / 29 | +1 derived | 25..25 (one sample) | `outside_band` |
 
-**The gap.** It reads the promoted graph, so `form_2441_2025` renders every row as *"no expression
-tree was recorded"*. Correct by its reading and blank on the forms under active work. Recorded in
-BALL; S63 closes it by promoting, and a `--from-report` mode is the alternative if John wants to
-review candidates without promoting them.
+It caught the real recovery, dismissed the flat document as noise, and showed the band with its
+source runs named so a reader can see what is being treated as noise. Expression changes are listed
+with both renderings; findings are split into appeared and cleared, and the three
+`incomplete_evidence` entries clearing IS the S61 fix rendered as a diff.
 
-**M20-S63 WORKER STATUS (2026-08-05).** Implemented the provider-free derivation run summary in
-`tax_graph/extract/run_summary.py` and wired `tax-graph summarize-runs`. The artifact is a
-Markdown diff with absolute counts underneath, immediate expression render changes, findings
-appeared/cleared, and a rolling three-run per-document band. It explicitly preserves empty reports
-and missing expected documents. The full-run contract names corpus derivation, candidate graph,
-three-column review table, and full test suite without pretending S64 has run. No provider call,
-graph write, promotion, or protected-set change occurred.
+**Three refinements recorded in BALL, none blocking:** a one-sample band is not a band and should
+report insufficient samples; the deliberate nonzero exit needs documenting; commutative
+reorderings and prefix-duplicated findings should be normalized before diffing.
 
-Evidence:
-
-- RAN: `.venv\Scripts\python.exe -m pytest tests/test_run_summary_m20.py -q` -> `5 passed`.
-- RAN: `.venv\Scripts\python.exe -m pytest tests/test_review_table_m20.py -q` -> `7 passed`.
-- RAN: `.venv\Scripts\python.exe -m pytest tests/test_cli.py -q` -> `1 failed, 6 passed`; the
-  inherited failure is `test_harvest_worksheet_command_writes_only_a_draft`, which creates a
-  bare temp project and then reads missing `config/manifest.yaml`. The new summary CLI wrapper
-  is covered by the S63 file and passes.
-- RAN: `.venv\Scripts\python.exe -m pytest tests/test_cli.py -k 'not harvest_worksheet_command' -q`
-  -> `6 passed, 1 deselected`.
-- RAN: `.venv\Scripts\python.exe -m tax_graph.cli summarize-runs --run-dir C:\tmp\s40a
-  --run-dir C:\tmp\s40b --run-dir C:\tmp\s41 --run-dir C:\tmp\s44a --run-dir C:\tmp\s44b
-  --run-dir C:\tmp\s46a --run-dir C:\tmp\s46b --run-dir C:\tmp\s47a --run-dir C:\tmp\s47b
-  --output C:\Users\devbox\.codex\visualizations\2026\08\05\019fd356-9ebd-7a90-b3f6-8ee38f57159e\m20_s63_derivation_summary.md
-  --expected-document form_2441_2025` -> current `s47b`, previous `s47a`, `22` documents,
-  `3` attention documents; artifact written outside the repository.
-- RAN: `.venv\Scripts\python.exe tools\check_ascii.py` -> `ASCII check OK`.
-- RAN: `git diff --check` -> exit 0, no output.
-- RAN: `.venv\Scripts\python.exe -m tax_graph.cli validate 2025` -> graph integrity OK;
-  reconcile report named the existing 6 manifest-only instruction/worksheet entries.
-- NOT RUN: provider leg -> S63 is deterministic and explicitly provider-free.
-
-Open for Architect: the unrelated `tests/test_cli.py` harvest fixture red must be adjudicated
-before a phase exit can honestly claim 100% focused coverage. The protected directories remain
-byte-identical.
-
-**An unlooked-for finding.** Rows report `ambiguous - multiple graph rows matched printed line 35a`
-on the 1040. **The graph holds more than one row for a single printed line.** Nothing here designs
-around it; it wants a diagnosis of its own.
+**Gates:** deterministic round, no provider constructed anywhere in it; ASCII OK;
+`git diff --check` clean; protected set diff empty.
 
 ## Architect decision - notation
 
@@ -355,48 +322,6 @@ client-managed server dies.
   parked in a `graph_ext/` overlay. **That special case is the defect.**
 
 ## From Architect
-
-- **M20-S63 TASK - THE FULL-RUN SUMMARY, AND IT IS A DIFF (Architect, Claude Opus 5, 2026-08-05,
-  from John's question about not becoming bogged down).** Ledger: the RAN/NOT RUN rule, D10, and the
-  standing rules in `AGENTS.md`. **Deterministic. No provider call anywhere in this round.**
-  One change, no passengers.
-
-  **OPEN ITEMS AND SEAMS THIS ROUND TOUCHES:** serves the operating loop in `AGENTS.md` by making a
-  full run cheap to READ. **Leaves untouched:** candidate regeneration (S64, next), the live graph
-  and protected set, column and grid recovery, the operation registry, phrase obligations, S53.
-
-  **Why this comes BEFORE the first full regeneration.** John: *"every once in a while, we really
-  need to run the whole thing and run full test set. How do you suggest we do this to not become
-  bogged down?"* Running is cheap - roughly 12-15 minutes and pennies. **Reading is what costs.**
-  Building the summary after the first full run means the first full run produces exactly the
-  unreadable pile this exists to prevent. **The Architect has been assembling this by hand in
-  scratchpad scripts all day, which is the evidence that it belongs in the tool.**
-
-  **Step 1 - one artifact, and it is a DIFF against the previous run.** You almost never want "what
-  is the state"; you want "what changed". Report per document: derived-over-attempted deltas, rows
-  whose expression CHANGED with both renderings shown, findings that appeared, findings that
-  cleared. **Absolute numbers stay available underneath**, but the top of the artifact is the delta.
-
-  **Step 2 - be band-aware, or the diff lies.** The same row produces different trees across runs at
-  temperature 0, and `form_2441_2025` has legitimately swung 18-20 derived on identical code. **Keep
-  the last three runs as a rolling baseline and flag only movement outside the observed band.**
-  Movement inside the band is noise and must not consume attention. **Report the band per document
-  so a reader can see what is being treated as noise.**
-
-  **Step 3 - build and test it against runs we already have.** Several complete run reports exist
-  from 2026-08-05 covering 2441, 1040, 6251 and a five-document set. **Use them as fixtures.** This
-  round needs no provider and must not construct a client.
-
-  **Step 4 - name what a full run should include, without running it.** Corpus derivation, the
-  candidate graph once S64 exists, the review table, and the test suite. **Report the recommended
-  cadence** the Architect proposed and John accepted: on any round touching a shared layer -
-  evidence, schema, vocabulary, the operation registry - before any publish, and otherwise every
-  fourth or fifth localized round.
-
-  **Do not:** call a provider; write inside the repo; change derivation, the packet, or the
-  vocabulary; report a delta without its band. **Stop conditions:** any diff in the protected
-  directories; a summary that presents in-band drift as a regression. Tier 3. Honest
-  `RAN:`/`NOT RUN:`. ASCII, `git diff --check`, module-form `validate 2025`. **ONE local commit.**
 
 - **M20-S64 TASK - REGENERATE A CANDIDATE GRAPH FROM A FULL RUN (Architect, Claude Opus 5,
   2026-08-05).** Ledger: the RAN/NOT RUN rule, D10, and the standing rules in `AGENTS.md`.
