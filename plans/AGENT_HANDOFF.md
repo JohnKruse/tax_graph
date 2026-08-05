@@ -21,145 +21,86 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## BALL
 
-**BALL: WORKER - M20-S65 (`doctor`: MAKE THE PLAN FAIL WHEN IT LIES).** Task block under
-**From Architect**. **S63 is ACCEPTED at `aec1ef3`.**
+**BALL: WORKER - M20-S66 (ONE VERSIONED OPERATION REGISTRY).** Task block under
+**From Architect**. **S65 is ACCEPTED at `80b71c5`, and it found something far bigger than it was
+built to find.**
 
-**Why this jumped the queue.** John, 2026-08-05: *"On several occasions I've asked you about things
-that were kind of forgotten, undone, or memory holed. How do we guard against this?"* **Six
-instances in one day.** The cause is not that the docs are too long - it is that they are INERT.
-A stale blocker turns nothing red; a discarded artifact fails no test; an operation offered to the
-model but projectable by nothing sits there for forty rounds. `doctor` converts the load-bearing
-claims into checks. **It is the only queued work that stops a class of failure rather than patching
-one instance.**
+**ONLY 3 OF 19 OPERATIONS AGREE ACROSS ALL FOUR LAYERS.** `doctor` reports prompt / validator /
+projection / engine per operation. `SUBTRACT`, `LOOKUP_TABLE` and `IF_ELSE` hold. **Sixteen
+disagree**, in three distinct families:
+- **Offered but undocumented (6):** `COPY`, `SUM`, `MULTIPLY`, `MIN`, `MAX`, `NEGATE` are in the
+  emission enum and absent from the prompt. **The model has been choosing from an undocumented
+  menu**, which is exactly how it reached for `LOOKUP_BRACKET`.
+- **Offered and NOT EXECUTABLE (3):** `DIVIDE`, `ABS`, `ROUND` project to a rule and then hit
+  `NotImplementedError("operation ... not implemented in v0")` in
+  `tax_graph/engine/operations.py`. **An expression using them would pass every validator and fail
+  at runtime.**
+- **Documented but unprojectable (7):** `IF`, `AND`, `OR`, `NOT`, `COMPARE`, `REQUIRE_INPUT`, and
+  `LOOKUP_BRACKET`. **`REQUIRE_INPUT` is the most-emitted operation on our hard rows** - 2441 lines
+  3, 19, 21 and 27 - and it projects to nothing, which is the `unmapped_operation` warning we have
+  been reading past for rounds.
 
-**QUEUE - one line each, deliberately. A spec written rounds ahead goes stale; that is what happened
-to S57.**
-1. **S65 `doctor`** - specced below.
-2. **The operation registry** - one versioned source of truth for schema, prompt docs, validator
-   dispatch, projection and runtime. Converts 2441 line 8 from `repaired` to `derived` and ends the
-   defect class that killed S54 and S55.
-3. **S64 candidate regeneration** - the first full run under John's model. Expect roughly 121 of 478
-   anchors against 441 handcrafted nodes; that measurement is the deliverable.
-4. **Column and grid recovery** - 2441 lines 3 and 30 and their class.
-5. **Deterministic phrase obligations** - the only queued work targeting semantic correctness;
-   catches 2441 line 25, wrong for six consecutive runs while passing every validator.
-6. **S53 the approval gate** - what makes "iterate until approved" mean anything.
-7. **Known-red cleanup** - independent, pullable forward; four inherited-red tests mean a new
-   failure cannot be told from the baseline.
+**This reframes the registry round.** It was queued as "fix `LOOKUP_BRACKET`". It is actually
+**the operation contract is 84% incomplete**, and we have been debugging individual rows on top of
+it.
+
+**QUEUE - one line each.**
+1. **S66 the operation registry** - one versioned source of truth generating schema, prompt
+   documentation, validator dispatch, projection mapping and runtime registration, with `doctor`
+   as its acceptance test.
+2. **S64 candidate regeneration** - first full run; expect ~121 of 478 anchors.
+3. **Column and grid recovery** - 2441 lines 3 and 30 and their class.
+4. **Deterministic phrase obligations** - the only queued work targeting semantic correctness.
+5. **S53 the approval gate.**
+6. **Known-red cleanup** - independent, pullable forward.
 
 **FOR JOHN, unresolved and not blocking:** "every cell approved before use" and "a human does not
-read every new cell" cannot both hold during bootstrap. The pipeline can remove RE-review, not
-first review. That decision shapes S53.
+read every new cell" cannot both hold during bootstrap. The pipeline can remove RE-review, not first
+review.
 
 ## Current round
 
-**M20-S63 ACCEPTED (Architect, Claude Opus 5, 2026-08-05) at `aec1ef3`. Reading a full run is now
-cheap, which is what made running one affordable.**
+**M20-S65 ACCEPTED (Architect, Claude Opus 5, 2026-08-05) at `80b71c5`. `doctor` works, and its
+first real run produced a finding bigger than the round.**
 
-**Verified against the real thing, not fixtures.** The Architect fed it today's actual run history
-across the S60 regression and the S61 recovery:
+**Verified by running it against the repository, not by reading it.**
 
-| document | current | delta | observed band | verdict |
-| --- | ---: | ---: | ---: | --- |
-| `form_1040_2025` | 17 / 17 | 0 | 17..17 | `in_band_noise` |
-| `form_2441_2025` | 20 / 21 | +5 derived | 15..19 | `outside_band` |
-| `form_6251_2025` | 26 / 29 | +1 derived | 25..25 (one sample) | `outside_band` |
+| check | result |
+| --- | --- |
+| executable blocker | `m20_s3a_outline_ready`: **CLEARED**, with the measurement - 1040 60/59, Schedule A 29/28, 2441 40/35. **This is the case nobody notices, and it is now the first thing the command prints.** |
+| declared artifacts | 23 sources HOLD; the QDCGT harvest HOLDS at its declared path |
+| operation vocabulary | **16 of 19 DISAGREE** - see BALL |
+| open item age | three items STALE at 73 commits, correctly flagged |
+| exit contract | documented in help text; exit 1 on NEEDS ATTENTION |
 
-It caught the real recovery, dismissed the flat document as noise, and showed the band with its
-source runs named so a reader can see what is being treated as noise. Expression changes are listed
-with both renderings; findings are split into appeared and cleared, and the three
-`incomplete_evidence` entries clearing IS the S61 fix rendered as a diff.
+**The stale items were the Architect's housekeeping, and doctor caught them rather than John.** All
+three are now closed: the S36 denominator question (moot - S51 replaced the denominator with 121 of
+478), the two scoping calls (worksheets closed by S59; the filing-status constant answered by
+measurement, since `schedule_1a_2025` line 17 and `form_6251_2025` line 18 both emit correct
+role-keyed lookups), and "what is next" (John chose option (b), structure and association).
 
-**Three refinements recorded in BALL, none blocking:** a one-sample band is not a band and should
-report insufficient samples; the deliberate nonzero exit needs documenting; commutative
-reorderings and prefix-duplicated findings should be normalized before diffing.
+**Architect's own verification of the engine claim, because the finding is severe:**
+`tax_graph/engine/operations.py` dispatches `COPY`, `SUM`, `MULTIPLY`, `NEGATE`, `MIN`, `MAX`,
+`LOOKUP_BRACKET`, `LOOKUP_TABLE`, `IF_ELSE` and raises
+`NotImplementedError("operation ... not implemented in v0")` for everything else. **`DIVIDE`, `ABS`
+and `ROUND` are offered to the model and cannot execute.**
 
-**Gates:** deterministic round, no provider constructed anywhere in it; ASCII OK;
-`git diff --check` clean; protected set diff empty.
-
-**M20-S65 WORKER IMPLEMENTED LOCALLY (2026-08-05).** Added the provider-free `doctor` command,
-which checks the executable outline blocker, manifest-declared source and region harvest artifacts,
-cross-layer operation vocabulary, and handoff-item age. The real checkout reports the outline claim
-as `CLEARED`, finds the QDCGT `harvest.yaml`, and exits 1 for the existing operation disagreements
-and three active handoff items at 72 handoff-touch commits. It does not repair any finding or write
-under `graph/`.
-
-**Verification:**
-- RAN: `$env:PYTEST_DEBUG_TEMPROOT = 'C:\Users\devbox\.codex\visualizations\2026\08\05\019fd398-d99b-74b0-ac65-57a2580e9904\pytest_tmp'; & .venv\Scripts\python.exe -m pytest tests/test_doctor_m20.py -q` -> `5 passed`.
-- RAN: same temp-root command with `tests/test_runtime_light_m1.py -q` -> `1 passed`.
-- RAN: same temp-root command with `tests/test_cli.py -q -k 'expression_agreement_command_writes_report or cli_validate_succeeds or cli_run_reports_line_7_value'` -> `3 passed, 4 deselected`.
-- RAN: `.venv\Scripts\python.exe tools\check_ascii.py` -> `ASCII check OK`.
-- RAN: `.venv\Scripts\python.exe -m tax_graph.cli validate 2025` -> `graph integrity OK`.
-- RAN: `.venv\Scripts\python.exe -m pytest -m m20 -q` -> `259 passed, 8 failed, 3 errors`; failures/errors are the existing ACL-poisoned draft/workbench reads, the manifest-less worksheet test, and the S51 denominator expectation. No guard was edited.
-- NOT RUN: provider derivation; this round is explicitly deterministic and provider-free.
-
-**Environment deviation:** the repository-pinned `.test_tmp` is unreadable by this account
-(`WinError 5`); focused pytest commands used the writable Codex visualization temp root through
-`PYTEST_DEBUG_TEMPROOT`, without `--basetemp`. The full `tests/test_cli.py` also remains red at
-`test_harvest_worksheet_command_writes_only_a_draft`; the three affected CLI smoke tests pass.
+**Gates:** deterministic round, no provider constructed; ASCII OK; `git diff --check` clean;
+protected set diff empty.
 
 ## Open for Architect
-- **ANSWERED 2026-08-04 and CLOSED: what a QUESTIONED or REJECTED node means to the engine.** John
-  rejected the three-option framing entirely - approval is the gate, the middle states are a work
-  queue, and the out-of-corpus reference is the only case that needs a designed payload. Pinned as
-  the first binding ruling; specced as S52 and S53.
 
-- **M20-S36 denominator decision (raised 2026-08-03).** Logical-row assembly removes the measured
-  label/span truncation cases, but it also exposes formula cues on `schedule_a_2025` line 15 and
-  `schedule_1a_2025` line 36a, so the current formula set is 96 rows rather than the prior 94.
-  Should the next provider leg use the fuller 96-row derivation set, or should formula selection
-  remain frozen to the prior 94-row denominator for comparability? No provider result is claimed.
-- **FOR JOHN - the two scoping calls that block the last 5 rows (raised 2026-08-03).** Both are the
-  same shape as the Form 2441 question below, and answering all three together would clear every
-  open scoping item in one pass.
-  **(1) CLOSED 2026-08-05.** John ruled the nomination mechanism in; it is specced as S59.
-  worksheets are in scope; the mechanism is S42. Two sub-calls remain his: the manifest schema change
-  that lets a document declare a region of another acquired document (S42 step 4 reports it,
-  implements nothing), and **his standing requirement that adding or removing a document, an
-  instruction set, or a worksheet must never require an agent.** Original framing below.
-  **(1) Are the tax worksheets in the base profile?** 6251 lines 13, 20 and 27 reference the
-  Qualified Dividends and Capital Gain Tax Worksheet and the Schedule D Tax Worksheet. Both live in
-  the IRS *instructions* rather than as standalone forms, and neither is a document in our graph,
-  so those rows reference addresses that do not exist. Either model them as documents, or declare
-  them out of scope and make the reference fail closed with a named reason instead of a confusing
-  self-reference. The 1040 and Schedule D reference the same worksheets, so this recurs.
-  **(2) Should the expression grammar carry a filing-status-dependent constant? PARTLY ANSWERED BY
-  MEASUREMENT, 2026-08-03 - it is now a correctness question, not a cost one.** 6251 lines 18 and 39
-  need a threshold ($239,100 / $119,550) and a subtrahend ($4,782 / $2,391) that both vary by filing
-  status. Once S39 showed the model `taxpayer_2025_filing_status`, it reached for it unprompted and
-  produced a rule that DOES cover married filing separately - but via a positional
-  `LOOKUP_TABLE(node, 239100, 119550)` that maps to no rule and no roles, so the engine returns
-  MISSING. The graph already contains the shape it needs (`lookup_capital_loss_limit`: one `key`
-  edge plus one role-per-status edge), and the positional expression schema cannot express it. **So
-  the question is no longer whether to carry the constant, but whether the grammar grows a
-  role-keyed selection - and whether the four 6251 parameter nodes are hand-authored or pipeline-
-  minted.** S40 step 3 asks for the mapping report that makes this decidable; the hand-author
-  versus pipeline call remains John's under the prime directive.
-- **FOR JOHN - what is next, once the scoping calls are made? (raised 2026-08-03.)** The corpus
-  resolves 92 of 94 rows with 3 repairs, and the only remaining failures are model-quality issues
-  on `form_6251_2025`. Chasing those means tuning a nondeterministic model for 2 rows, which is a
-  poor trade. Three candidates, and it is a product call:
-  **(a) The standalone reviewer.** Package the workbench so colleagues can review a form without a
-  dev setup. Needs the three-tier verdict vocabulary (accepted / commented-questioned / rejected)
-  and one proven round trip: a comment that survives a pipeline regeneration and shows up as input
-  on the next run. That round trip has never actually happened, and it is the prime directive's
-  core loop.
-  **(b) Structure and association, S3b.** The geometric label path and the AcroForm-tree skeleton,
-  which is what would make the 13614-C class of form reviewable at all. Today it derives nothing
-  because it has no computed lines, but 297 of its cells are unaddressable by line number.
-  **(c) The checker.** Adjudicate disagreements between the AcroForm tree, the geometry and OCR,
-  and route them to a findings queue. John's view: set it up, then decide the payload from real
-  disagreement instances rather than designing it in advance.
-  Architect's recommendation is **(a)**, because it closes the human loop that everything else
-  feeds, and because the reviewer surface is what turns (b) and (c) into something a person can
-  act on.
-- **WITHDRAWN 2026-08-04: "do 2441's drafts get promoted?" was a malformed question and John said
-  so.** See the new binding ruling below. There is no per-form promotion gate: no form's derived
-  output is promoted, 2441's drafts sit where the 1040's sit, and asking about this one form
-  invented a decision that does not exist. The real finding stands and is pipeline work, not a
-  John call: `optional_extension` appears in exactly ONE file in the entire graph
-  (`graph/2025/field_maps/form_2441_2025.yaml`, 24 excluded nodes), and 2441 is the only document
-  parked in a `graph_ext/` overlay. **That special case is the defect.**
+**Nothing is open for the Architect.** The three items `doctor` flagged STALE at 73 commits on
+2026-08-05 are closed: the **S36 denominator decision** (moot - S51 replaced the denominator
+with 121 of 478 anchors and a named reason per skip); the **two scoping calls** (worksheets
+closed by the S59 nomination chain; the filing-status constant answered by measurement -
+`schedule_1a_2025` line 17 and `form_6251_2025` line 18 both emit correct role-keyed lookups);
+and **"what is next"** (John chose option (b), structure and association, on 2026-08-05).
+
+**Open for JOHN, not blocking:** during bootstrap, "every cell receives meaningful human
+approval before use" and "a human does not read every new cell" cannot both hold. The pipeline
+can eliminate RE-review - approve once against stable semantics, fingerprint the clauses, carry
+the verdict while nothing changes - but not first review. That decision shapes S53.
 
 ## From Architect
 
