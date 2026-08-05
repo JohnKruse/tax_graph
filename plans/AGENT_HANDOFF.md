@@ -70,6 +70,40 @@ tree was recorded"*. Correct by its reading and blank on the forms under active 
 BALL; S63 closes it by promoting, and a `--from-report` mode is the alternative if John wants to
 review candidates without promoting them.
 
+**M20-S63 WORKER STATUS (2026-08-05).** Implemented the provider-free derivation run summary in
+`tax_graph/extract/run_summary.py` and wired `tax-graph summarize-runs`. The artifact is a
+Markdown diff with absolute counts underneath, immediate expression render changes, findings
+appeared/cleared, and a rolling three-run per-document band. It explicitly preserves empty reports
+and missing expected documents. The full-run contract names corpus derivation, candidate graph,
+three-column review table, and full test suite without pretending S64 has run. No provider call,
+graph write, promotion, or protected-set change occurred.
+
+Evidence:
+
+- RAN: `.venv\Scripts\python.exe -m pytest tests/test_run_summary_m20.py -q` -> `5 passed`.
+- RAN: `.venv\Scripts\python.exe -m pytest tests/test_review_table_m20.py -q` -> `7 passed`.
+- RAN: `.venv\Scripts\python.exe -m pytest tests/test_cli.py -q` -> `1 failed, 6 passed`; the
+  inherited failure is `test_harvest_worksheet_command_writes_only_a_draft`, which creates a
+  bare temp project and then reads missing `config/manifest.yaml`. The new summary CLI wrapper
+  is covered by the S63 file and passes.
+- RAN: `.venv\Scripts\python.exe -m pytest tests/test_cli.py -k 'not harvest_worksheet_command' -q`
+  -> `6 passed, 1 deselected`.
+- RAN: `.venv\Scripts\python.exe -m tax_graph.cli summarize-runs --run-dir C:\tmp\s40a
+  --run-dir C:\tmp\s40b --run-dir C:\tmp\s41 --run-dir C:\tmp\s44a --run-dir C:\tmp\s44b
+  --run-dir C:\tmp\s46a --run-dir C:\tmp\s46b --run-dir C:\tmp\s47a --run-dir C:\tmp\s47b
+  --output C:\Users\devbox\.codex\visualizations\2026\08\05\019fd356-9ebd-7a90-b3f6-8ee38f57159e\m20_s63_derivation_summary.md
+  --expected-document form_2441_2025` -> current `s47b`, previous `s47a`, `22` documents,
+  `3` attention documents; artifact written outside the repository.
+- RAN: `.venv\Scripts\python.exe tools\check_ascii.py` -> `ASCII check OK`.
+- RAN: `git diff --check` -> exit 0, no output.
+- RAN: `.venv\Scripts\python.exe -m tax_graph.cli validate 2025` -> graph integrity OK;
+  reconcile report named the existing 6 manifest-only instruction/worksheet entries.
+- NOT RUN: provider leg -> S63 is deterministic and explicitly provider-free.
+
+Open for Architect: the unrelated `tests/test_cli.py` harvest fixture red must be adjudicated
+before a phase exit can honestly claim 100% focused coverage. The protected directories remain
+byte-identical.
+
 **An unlooked-for finding.** Rows report `ambiguous - multiple graph rows matched printed line 35a`
 on the 1040. **The graph holds more than one row for a single printed line.** Nothing here designs
 around it; it wants a diagnosis of its own.

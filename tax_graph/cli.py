@@ -536,6 +536,27 @@ def review_table_command(
     )
 
 
+def summarize_runs_command(
+    *,
+    run_paths: list[str | Path],
+    output: str | Path,
+    expected_documents: list[str] | None = None,
+    baseline_window: int = 3,
+    root: str | Path | None = None,
+) -> int:
+    """Build the provider-free, band-aware diff of derivation run reports."""
+    from tax_graph.extract.run_summary import summarize_runs_command as _summarize_runs_command
+
+    root_path = Path(root).resolve() if root is not None else project_root()
+    return _summarize_runs_command(
+        run_paths,
+        output=output,
+        expected_documents=expected_documents or [],
+        baseline_window=baseline_window,
+        root=root_path,
+    )
+
+
 def _relative_snapshot_path(path: str | Path, root: Path) -> str:
     """Keep committed measurement snapshots portable across developer machines."""
     resolved = Path(path).resolve()
@@ -1717,6 +1738,25 @@ def _build_typer_app():
         if raise_code:
             raise typer.Exit(raise_code)
 
+    @cli.command("summarize-runs")
+    def summarize_runs_cli(
+        run_dir: list[Path] = typer.Option(..., "--run-dir", help="Ordered run directory; repeat oldest to newest."),
+        output: Path = typer.Option(..., "--output", help="Markdown output outside the repository."),
+        expected_document: list[str] = typer.Option([], "--expected-document", help="Expected document id; repeat as needed."),
+        baseline_window: int = typer.Option(3, "--baseline-window", min=1, help="Number of preceding runs used for the noise band."),
+        root: Path | None = typer.Option(None, "--root", help="Project root override."),
+    ) -> None:
+        """Summarize ordered derivation runs without constructing a provider client."""
+        raise_code = summarize_runs_command(
+            run_paths=run_dir,
+            output=output,
+            expected_documents=expected_document,
+            baseline_window=baseline_window,
+            root=root,
+        )
+        if raise_code:
+            raise typer.Exit(raise_code)
+
     review_cli = typer.Typer(help="Human review verdict helpers.")
 
     @review_cli.command("apply-verdicts")
@@ -2386,6 +2426,13 @@ def _fallback_app() -> int:
     review_table_parser.add_argument("--hardest", type=int, default=None)
     review_table_parser.add_argument("--root", default=None)
 
+    summarize_runs_parser = subparsers.add_parser("summarize-runs")
+    summarize_runs_parser.add_argument("--run-dir", action="append", required=True)
+    summarize_runs_parser.add_argument("--output", required=True)
+    summarize_runs_parser.add_argument("--expected-document", action="append", default=[])
+    summarize_runs_parser.add_argument("--baseline-window", type=int, default=3)
+    summarize_runs_parser.add_argument("--root", default=None)
+
     intake_parser = subparsers.add_parser("intake")
     intake_parser.add_argument("--drop-dir", required=True)
     intake_parser.add_argument("--year", "-y", default="2025")
@@ -2584,6 +2631,14 @@ def _fallback_app() -> int:
             output=args.output,
             all_rows=args.all_rows,
             hardest=args.hardest,
+        )
+    if args.command == "summarize-runs":
+        return summarize_runs_command(
+            run_paths=args.run_dir,
+            output=args.output,
+            expected_documents=args.expected_document,
+            baseline_window=args.baseline_window,
+            root=args.root,
         )
     if args.command == "intake":
         return intake_command(
