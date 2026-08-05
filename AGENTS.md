@@ -364,6 +364,19 @@ file is never pruned, the handoff is live state, git is history.
   ingest a new form and does a shitty job, I can't control that... not my call."* Noted by the
   Architect, and the gate protects us anyway - their unapproved cells refuse to compute here
   regardless of what they thought of their own work.
+- **THE VOCABULARY TEST: AN OPERATION EXISTS ONLY IF A FORM ASKS A FILER TO DO IT (John,
+  2026-08-05).** Ruling on `ABS`: *"divide and round yes. ABS nah... ABS will never be something
+  asked of a filer."* Not "remove it until a form demands it" - **it will never be demanded.** No
+  IRS instruction says take an absolute value; forms say *"if zero or less, enter -0-"*, which is
+  `MAX(x, 0)`. **`ABS` was in the emission enum because it looks like arithmetic, not because
+  anything needed it.**
+  **Apply the test to every operation:** it belongs in the vocabulary the model emits into only if
+  it corresponds to something a form actually instructs a filer to do. This is the same shape as
+  the odd-documents rule below - if it cannot be grounded in what a form asks, it is the wrong
+  construct. **`doctor` reports the vocabulary; this ruling is what the report is judged against.**
+  Origin: `doctor` measured only 3 of 19 operations agreeing across prompt, validator, projection
+  and engine, because the engine was built demand-driven from real rules while the emission enum
+  was written speculatively, and nothing ever compared them.
 - **THE ODD DOCUMENTS ARE TREATED EXACTLY AS A FORM IS TREATED (John, restated 2026-08-04; he
   first said this "a long time ago" and the Architect asked again anyway).** Verbatim: *"these odd
   things should be treated the same way as a form is treated. They are analogous."* Worksheets,

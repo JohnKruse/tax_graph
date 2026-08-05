@@ -44,6 +44,14 @@ disagree**, in three distinct families:
 **the operation contract is 84% incomplete**, and we have been debugging individual rows on top of
 it.
 
+**JOHN'S RULING on the three offered-but-unexecutable operations, 2026-08-05:** *"divide and
+round yes. ABS nah."* Clarified: *"ABS will never be something asked of a filer."* Implement
+`DIVIDE` and `ROUND`; **remove `ABS` permanently** - not until a form demands it, but because no
+IRS instruction tells a filer to take an absolute value. Forms say *"if zero or less, enter
+-0-"*, which is `MAX(x, 0)`.
+**The durable test this establishes:** an operation belongs in the emission vocabulary only if
+it corresponds to something a form actually instructs a filer to do.
+
 **QUEUE - one line each.**
 1. **S66 the operation registry** - one versioned source of truth generating schema, prompt
    documentation, validator dispatch, projection mapping and runtime registration, with `doctor`
@@ -104,64 +112,70 @@ the verdict while nothing changes - but not first review. That decision shapes S
 
 ## From Architect
 
-**One spec at a time. Queued rounds are one-liners in
-BALL until they are next.**
+**One spec at a time. Queued rounds are one-liners in BALL until they are next.**
 
-- **M20-S65 TASK - `doctor`: MAKE THE PLAN FAIL WHEN IT LIES (Architect, Claude Opus 5, 2026-08-05,
-  from John's question about forgotten and memory-holed work).** Ledger: the RAN/NOT RUN rule, D10,
-  and the standing rules in `AGENTS.md`. **Deterministic. No provider call.** One change, no
-  passengers.
+- **M20-S66 TASK - ONE VERSIONED OPERATION REGISTRY (Architect, Claude Opus 5, 2026-08-05).**
+  Ledger: the RAN/NOT RUN rule, D10, and the standing rules in `AGENTS.md`. **`doctor` going green
+  on the vocabulary section is the acceptance test.** One change, no passengers.
 
-  **OPEN ITEMS AND SEAMS THIS ROUND TOUCHES:** none - it is new machinery that guards all of them.
-  **Leaves untouched:** the operation registry, S64 regeneration, phrase obligations, S53.
+  **OPEN ITEMS AND SEAMS THIS ROUND TOUCHES:** none open. **Leaves untouched:** S64 regeneration,
+  column and grid recovery, phrase obligations, S53, the known-red cleanup.
 
-  **Why, with the evidence.** John: *"On several occasions I've asked you about things that were
-  kind of forgotten, undone, or memory holed. How do we guard against this?"* **Six instances in one
-  day, and the common cause is not volume - it is that our knowledge is prose, and prose cannot
-  fail.**
-  1. The worksheet harvester was built and proven in S42; its output went to a temp directory and
-     was never landed. Nothing tracked that a declared artifact should exist.
-  2. Rollover seam 5 specifies a caption-and-geometry re-binder; the Architect invented a thinner
-     scheme from scratch because the seam lives in a 935-line document nobody opens when speccing.
-  3. `PHASE_M20.md` blocked regeneration on "outline children = 0", **measured 29 and 60 on
-     2026-08-05**. A blocker stated as a measurement went stale silently for weeks.
-  4. The S36 denominator question dissolved without being closed.
-  5. S26 weakened the instruction-text gate; **50 of 67 rows have had no instruction text ever
-     since**, and the 1040's booklet IS acquired, so it is a join failure nobody re-raised.
-  6. `LOOKUP_BRACKET` has been in the emission enum since S24, undocumented in the prompt and
-     projectable by nothing.
-  **A stale blocker turns nothing red. A discarded artifact fails no test. That is the defect.**
+  **Why, measured by `doctor` on 2026-08-05.** **Only 3 of 19 operations agree across prompt,
+  validator, projection and engine** - `SUBTRACT`, `LOOKUP_TABLE`, `IF_ELSE`. **The two halves of
+  the vocabulary were built by opposite logics and nothing ever compared them:** the engine
+  implements exactly the ten operations that appear in real graph rules, demand-driven; the emission
+  enum was written speculatively with nineteen. One grew from evidence, the other from imagination.
 
-  **Step 1 - executable blockers.** A plan claim that gates work must be a CHECK, not a sentence.
-  Provide a small declarative registry of checkable claims - claim id, the assertion, and the
-  command or predicate that evaluates it - and report each as HOLDS, CLEARED, or UNKNOWN. **Seed it
-  with the real one:** the outline-children claim from `PHASE_M20.md`, which must now report
-  CLEARED. **A blocker that has cleared is the highest-value output of this command**, because that
-  is the case nobody notices.
+  **JOHN'S RULING, 2026-08-05, on the three that are offered but cannot execute:** *"divide and
+  round yes. ABS nah."* Clarified: *"ABS will never be something asked of a filer."*
+  - **Implement `DIVIDE` and `ROUND` in the engine.**
+  - **Remove `ABS` permanently.** Not "until a form demands it" - **it will never be demanded.** No
+    IRS instruction tells a filer to take an absolute value. Forms say *"if zero or less, enter
+    -0-"*, which is `MAX(x, 0)`. `ABS` is a programmer's primitive that was written into the enum
+    because it looks like arithmetic.
+  - **THE TEST THIS ESTABLISHES, and apply it to the whole vocabulary:** an operation belongs in the
+    emission vocabulary only if it corresponds to something a form actually instructs a filer to do.
+    **Report any other operation that fails this test** - it is the same shape as John's rule that a
+    question which cannot be asked about the 1040 is the wrong question.
 
-  **Step 2 - declared artifacts exist.** Anything the manifest or a plan declares should exist on
-  disk must exist: acquired sources for every manifest document, and a harvest output for every
-  accepted region nomination. **The QDCGT case is the test** - accepted, harvested, and it must be
-  found where it is declared.
+  **Step 1 - one versioned registry, one source of truth.** Every operation declared once, with its
+  arity, operand roles, **category** (see step 2), prompt documentation, validator dispatch,
+  projection mapping and engine implementation derived from or checked against that declaration.
+  **A new operation must be impossible to add to one layer alone.**
 
-  **Step 3 - cross-layer vocabulary agreement.** Every operation offered to the model must be
-  documented in the prompt, dispatchable by the validator, projectable to a rule, and implemented by
-  the engine. **Report each operation as a row with a column per layer.** `LOOKUP_BRACKET` must show
-  up as a real disagreement, not be special-cased. **This is a REPORT in this round, not a fix** -
-  the registry round owns the fix.
+  **Step 2 - classify before projecting, because `doctor`'s flat four-layer table is too coarse.**
+  The seven "documented but unprojectable" operations are not one problem:
+  - **Value-producing** (`SUM`, `SUBTRACT`, `MULTIPLY`, `DIVIDE`, `MIN`, `MAX`, `NEGATE`, `ROUND`,
+    `COPY`, `LOOKUP_TABLE`, `LOOKUP_BRACKET`) - these need a rule to project onto.
+  - **Predicates** (`IF`, `AND`, `OR`, `NOT`, `COMPARE`) - these live INSIDE a condition and may
+    legitimately have no standalone rule. **Report whether "no projection" is correct for them
+    rather than forcing one.**
+  - **Dispositions** (`REQUIRE_INPUT`) - "the filer supplies this" is not a computation.
+    **Projecting it to a rule is probably wrong; it should mark a required input.** It is the
+    most-emitted operation on our hard rows and the source of the `unmapped_operation` warnings.
+  **Add the category to `doctor`'s report so a legitimate absence stops reading as a defect.**
 
-  **Step 4 - open items age.** Report every item under **Open for Architect** with how long it has
-  been open, measured in commits touching the handoff. **Flag anything older than 20.** John should
-  never again be the mechanism by which a stale item is discovered.
+  **Step 3 - document the six that were offered in silence.** `COPY`, `SUM`, `MULTIPLY`, `MIN`,
+  `MAX`, `NEGATE` are in the enum with no prompt text. **The model has been choosing from an
+  undocumented menu**, which is how it reached for `LOOKUP_BRACKET`. Generate the prompt's operation
+  documentation from the registry so this cannot recur.
 
-  **Step 5 - one command, honest exit code.** `doctor` prints a short report and exits nonzero when
-  anything is UNKNOWN or disagreeing. **Document the exit-code contract in its help text** - S63
-  shipped a deliberate nonzero exit that reads as a crash because nothing said so.
+  **Step 4 - state `ROUND`'s semantics explicitly; do not assume them.** Rounding mode and
+  precision are part of the executable contract, not an implementation detail. IRS forms round to
+  whole dollars. **Report the rule you implement and cite the source for it.** Same discipline for
+  `DIVIDE`: state the behaviour on a zero divisor rather than letting Python decide.
 
-  **Do not:** call a provider; write inside `graph/`; fix any defect the command finds; add a check
-  that cannot fail (a guard that cannot fire is worse than no guard - see S51). **Stop conditions:**
-  any diff in the protected directories; a check whose failure mode is untested. Tier 3. Honest
-  `RAN:`/`NOT RUN:`. ASCII, `git diff --check`, module-form `validate 2025`. **ONE local commit.**
+  **Step 5 - `doctor` must go green on the vocabulary section**, and its greenness must come from
+  the layers actually agreeing, **not from loosening the check**. Weakening `doctor` to pass is the
+  guard-inversion failure that cost S54 and S55 two rounds.
+
+  **Do not:** implement `ABS`; add an operation no form has demanded; weaken `doctor`; change
+  derivation, the packet, or the addressing layer; touch the protected set. **Stop conditions:** any
+  diff in the protected directories; an operation reachable in one layer and absent from another
+  after this round; `doctor` passing because a check was relaxed. Tier 3. Honest `RAN:`/`NOT RUN:` -
+  **the provider leg is the Architect's, and this round is not accepted until one live row derives.**
+  ASCII, `git diff --check`, module-form `validate 2025`. **ONE local commit.**
 
 ## History
 
