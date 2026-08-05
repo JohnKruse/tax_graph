@@ -17,64 +17,57 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## BALL
 
-**BALL: WORKER - M20-S62 (MAKE THE THREE-COLUMN REVIEW A COMMAND).** Task block under
-**From Architect**. **S59 is ACCEPTED at `680f571`.**
+**BALL: WORKER - M20-S63 (PROMOTE THE HARVESTED WORKSHEET AND RE-POINT THE GATE).** Task block
+under **From Architect**. **S62 is ACCEPTED at `c017ec4`.**
 
-**THE PIVOT: PIPELINE ONLY (John, 2026-08-05).** *"Let's move away from handcrafted... with the
-errors we've seen, we've outgrown it."* The handcrafted set is retired as the standard and archived
-rather than deleted; the live graph becomes pipeline-owned; the protected-set gate re-points at the
-archive. **Promotion of pipeline output is authorized** - the harvested QDCGT worksheet is the first
-candidate and gets its own round with a full before/after diff. Pinned under **Binding rulings**.
+**`review-table` exists and John can run it himself:**
+`python -m tax_graph.cli review-table --document form_2441_2025 --hardest 8 --output <path>`.
+Three columns, no model anywhere in it, no correctness verdict, refuses to write inside the repo,
+and each row shows the selection signals that put it there. Its own header states the discipline:
+*"The table shows evidence and machine state. The reviewer makes the judgment."*
 
-**S59 delivered a complete chain that is currently inert, and that is the spec's boundary, not a
-defect.** `nomination list` shows an evidence-backed queue - every entry names a real citing row and
-its frontier id. Accepting QDCGT wrote a manifest region keyed on the **printed title** with the
-parent's sha256 and no child hash, **Architect-verified by hashing the acquired file**. The harvest
-produced 38 nodes, 42 edges, 13 verbatim citations. **Accepting an unknown title fails closed** -
-`no citing row or frontier evidence was found`, exit 1, no manifest write.
+**KNOWN GAP, and it is why S63 goes next.** The command reads the **promoted graph** - the literal
+reading of "saved in the graph". `form_1040_2025` renders fully; **`form_2441_2025` renders every
+row as "no expression tree was recorded"**, because nothing of the pipeline's is promoted. **The
+tool is blank on exactly the forms we are iterating on**, and the review is most useful BEFORE
+promotion, when deciding whether to promote. S63 closes that by promoting; if John would rather
+review candidates without promoting them, the alternative is a `--from-report` mode and it is a
+small round.
 
-**But the harvest is in `_drafts` and derivation reads the promoted graph**, so the reference
-inventory holds 37 nodes and none from the worksheet. Live: 6251 **29/25/1/3** with lines 13, 20 and
-27 still failing on self-reference, and 2441 unchanged at **21/20/1/0**. **The pipeline-only ruling
-is what unblocks this.**
+**S62 also surfaced a defect it was not looking for:** several rows report
+`ambiguous - multiple graph rows matched printed line 35a`. **More than one graph row matches one
+printed line.** That is the identity problem appearing in a tool built for something else, and it
+is worth its own diagnosis before it is designed around.
 
-**QUEUE:** S62 (this), then promotion of the worksheet with the archive re-point, then column and
-grid recovery, the versioned operation registry, deterministic phrase obligations, and **S53, the
-approval gate - which the pivot makes MORE important, since a pipeline-owned live graph is what a
-filer's return gets computed from.**
-
-**WHERE THE DESIGN CHANGES HAVE AND HAVE NOT PAID OFF, measured 2026-08-05.** Throughput and
-integrity improved decisively: 2441 went from 12 attempted on a self-selected denominator to **21 of
-35 anchors with 0 errors**, line 8 from 6 of 16 wrong bands to **16 of 16 correct**, and the corpus
-denominator from 108-reported-as-complete to 121 with a named reason per skipped anchor.
-**Correctness barely moved: 13 of 21 rows correct by hand before the arc, 14 of 21 now**, and 2441
-line 25 is wrong for the sixth consecutive run. **Nothing shipped so far targets semantic
-reasoning** - that is what phrase obligations are for.
+**QUEUE:** S63 (promotion + archive + gate re-point), then column and grid recovery, the versioned
+operation registry, deterministic phrase obligations, and **S53, the approval gate** - which the
+pipeline-only pivot makes more important, since a pipeline-owned live graph is what a filer's return
+gets computed from.
 
 ## Current round
 
-**M20-S59 ACCEPTED (Architect, Claude Opus 5, 2026-08-05) at `680f571`. The nomination chain is
-complete and, by design, inert until promotion.**
+**M20-S62 ACCEPTED (Architect, Claude Opus 5, 2026-08-05) at `c017ec4`. The review method John named
+is now a command anyone can run.**
 
-**Verified by driving the CLI, not by reading the report.** `nomination list` returns an
-evidence-backed queue - each entry names a real citing row and its frontier id, so nothing can be
-nominated on a hunch. Three remain outstanding: the Schedule D 28% Rate Gain and Unrecaptured
-Section 1250 worksheets, and the Student Loan Interest Deduction worksheet.
+**Verified by using it, not by reading the code.** Ran it against both a document with promoted
+content and one without.
 
-| check | result |
+| property required by the spec | result |
 | --- | --- |
-| region shape | title identity + `source_document_id` + `parent_sha256`, **no child hash** |
-| parent pin | **verified by hashing** `instructions_form_1040_2025.html` - match |
-| harvest | 38 nodes, 42 edges, 13 verbatim citations |
-| accept an unknown title | `no citing row or frontier evidence was found`, exit 1, **no manifest write** |
-| live regression | 2441 unchanged at 21/20/1/0 |
+| no model anywhere | confirmed - the only `llm`/`provider` matches are docstrings saying no provider client is constructed |
+| pseudocode rendered by code | confirmed - 1040 line 15 renders `SUBTRACT / operand 1: line 11b / operand 2: line 14` from the stored tree |
+| no correctness verdict | confirmed - it renders validator findings only, and says so in its own header |
+| refuses in-repo output | confirmed - `review table output must be outside repository root` |
+| defensible selection | confirmed - `--hardest N` with per-row signals printed (`score=34; conditionals=3; caps=1; ...`) |
 
-**Why nothing improved yet, and why that is correct.** The harvest lands in `_drafts`; derivation
-reads the promoted graph. The reference inventory holds 37 nodes and **none** from the worksheet, so
-6251 lines 13, 20 and 27 still fail closed on self-reference (`29/25/1/3`). The round was specced
-drafts-only and it obeyed. **John's pipeline-only ruling is what unblocks it**, and the Worker was
-explicit that it was not claiming those rows now derive - it handed the provider leg over instead of
-overclaiming, which is exactly right.
+**The gap.** It reads the promoted graph, so `form_2441_2025` renders every row as *"no expression
+tree was recorded"*. Correct by its reading and blank on the forms under active work. Recorded in
+BALL; S63 closes it by promoting, and a `--from-report` mode is the alternative if John wants to
+review candidates without promoting them.
+
+**An unlooked-for finding.** Rows report `ambiguous - multiple graph rows matched printed line 35a`
+on the 1040. **The graph holds more than one row for a single printed line.** Nothing here designs
+around it; it wants a diagnosis of its own.
 
 ## Architect decision - notation
 
@@ -324,70 +317,53 @@ client-managed server dies.
 
 ## From Architect
 
-- **M20-S62 TASK - MAKE THE THREE-COLUMN REVIEW A COMMAND (Architect, Claude Opus 5, 2026-08-05,
-  from John's ruling that this is the review method).** Ledger: the RAN/NOT RUN rule, D10, and the
-  standing rules in `AGENTS.md`. One change, no passengers.
+- **M20-S63 TASK - ARCHIVE THE HANDCRAFTED SET, RE-POINT THE GATE, PROMOTE ONE WORKSHEET
+  (Architect, Claude Opus 5, 2026-08-05, from John's pipeline-only ruling).** Ledger: the RAN/NOT
+  RUN rule, D10, and the standing rules in `AGENTS.md`. **This is the first promotion in M20 and the
+  only round that may touch the protected set. Read the whole block before starting.**
 
   **OPEN ITEMS AND SEAMS THIS ROUND TOUCHES:**
-  - **IMPLEMENTS** John's 2026-08-05 review-method ruling. The Architect built the artifact as a
-    throwaway script in a scratchpad; John wants it repeatable, so it becomes a command.
-  - **SERVES** the pipeline-only ruling: with the handcrafted set retired as the standard, this
-    review IS how correctness gets judged.
-  - **LEAVES UNTOUCHED:** promotion and the archive re-point (their own round); column and grid
-    recovery; the operation registry; phrase obligations; the approval gate (S53).
+  - **IMPLEMENTS** John's 2026-08-05 pipeline-only ruling, pinned under **Binding rulings**.
+  - **UNBLOCKS** the S59 nomination chain, which is complete and inert, and the S62 review table,
+    which is blank on every unpromoted document.
+  - **LEAVES UNTOUCHED:** column and grid recovery; the operation registry; phrase obligations;
+    S53. **Promote the worksheet and NOTHING else** - no derived expressions, no 2441 drafts.
 
-  **Why.** John: *"we'll do more of these reviews where we look at input vs saved in the graph vs
-  the pseudocode version. I think this is the way to ferret out problems."* It worked - the first
-  one produced the truncation finding, the caption duplication, and the `LOOKUP_BRACKET` mismatch in
-  a single sitting. **It must not stay a scratchpad script only the Architect can run.**
+  **Step 1 - archive by COPY, never by move.** The engine loads from `graph/2025/`; moving content
+  out breaks it. Copy the current handcrafted `graph/2025/{nodes,edges,rules,field_maps}` to a
+  frozen archive location, record the copy's manifest of file hashes, and **prove the copy is
+  byte-identical to what was there before the round started.** The archive is comparison data
+  forever, per John's own reason for protecting it.
 
-  **Step 1 - one command, any document.** `review-table --year 2025 --document <id>` (name it as
-  fits the CLI) writes a self-contained HTML file outside the repo. Three columns, in this order:
-  the **cleaned printed instruction the model actually receives** (not the raw pre-clean text - the
-  first draft of this artifact showed the wrong field and John caught it immediately); **what
-  reached the graph**, the exact expression plus status and validator verdicts; and the
-  **pseudocode**, a deterministic pretty-print of that same tree.
+  **Step 2 - re-point the gate.** The protected-set gate now guards the ARCHIVE, byte-identical, and
+  the live graph becomes pipeline-owned. **Update the standing constraint text in the handoff and
+  the rule in `AGENTS.md` in the same commit as the mechanism** - a gate whose documentation lags
+  its implementation is how the S54 guard inversion happened. Report the exact wording you changed.
 
-  **Step 2 - the pseudocode renderer is code, never a model.** It reads the expression tree and
-  renders indented, readable text: `IF ... ELSE`, named lookup branches one per line, operations as
-  words. **A model in this column would defeat the artifact**, which exists to show what the graph
-  believes rather than a second opinion about it. Render an unresolvable operand plainly rather than
-  guessing at it.
+  **Step 3 - promote exactly one artifact: the harvested QDCGT worksheet.** It is 38 nodes, 42
+  edges, 13 verbatim citations, harvested deterministically from acquired HTML by printed title with
+  zero citation mismatches under the project's own checker. **Report the full before/after diff**:
+  document count, node/edge/rule/citation counts, and every id added. `validate 2025` must pass and
+  the engine must still execute afterwards - **run `execute_tax_tree` on a real fact set and report
+  that the values are unchanged for every pre-existing node.** A promotion that silently changes an
+  existing computed value is a stop condition.
 
-  **Step 3 - no correctness verdict in the table.** Show status, failures and warnings. **Do not
-  mark rows right or wrong** - the reading is the review, and a machine verdict would anchor it.
+  **Step 4 - prove the payoff, or report that there is none.** Re-run derivation on
+  `form_6251_2025` and report whether lines 13, 20 and 27 now resolve to cross-document references
+  instead of failing closed on self-reference. **The Architect owns the provider leg.** If they still
+  fail, say so plainly and report why - that is a finding, not a failure of the round.
 
-  **Step 4 - selection must be defensible.** Support `--all-rows` and a `--hardest N` mode using the
-  deterministic compound-instruction score over the printed text (conditionals, caps, dollar
-  constants, table columns, cross-document references, sentence count), so a reviewer cannot be
-  handed a flattering sample. **Show each row's selection signals in the table** so the reader knows
-  why it is there.
+  **Step 5 - make it reversible and say how.** Report the exact command or steps that undo the
+  promotion. **First-of-its-kind changes need a stated way back**, and nobody should have to
+  reconstruct it under pressure.
 
-  **Do not:** call a model anywhere in this command; write inside the repo; mark correctness; change
-  derivation, the packet, or the vocabulary. **Stop conditions:** any diff in the protected
-  directories; a pseudocode rendering that is not derivable from the stored tree. Tier 3. Honest
-  `RAN:`/`NOT RUN:`. ASCII, `git diff --check`, module-form `validate 2025`. **ONE local commit.**
-
-  **WORKER STATUS (2026-08-05):** implemented `tax_graph/review_table.py` and the
-  `review-table` Typer/fallback command. The artifact reads the cleaned deterministic source
-  frame and graph projection, renders exactly three columns, keeps instruction sources separate,
-  emits deterministic pseudocode with explicit unresolved operands, shows status/findings/
-  warnings without a correctness verdict, and supports `--all-rows` plus deterministic
-  `--hardest N` selection signals. Output is refused inside the repository and no model/client
-  is constructed. Added `tests/test_review_table_m20.py` and documented the command in
-  `docs/review-workbench.md`.
-
-  **Verification:**
-  - `RAN: $pyRoot='C:\\Users\\devbox\\.codex\\visualizations\\2026\\08\\05\\019fd2f9-dd85-7932-97e7-00a4eea575c0\\pytest_m20_s62'; $env:PYTEST_DEBUG_TEMPROOT=$pyRoot; .venv\\Scripts\\python.exe -m pytest tests/test_review_table_m20.py -q` -> **7 passed**.
-  - `RAN: .venv\\Scripts\\python.exe -m tax_graph.cli review-table --document form_1040_2025 --year 2025 --hardest 3 --output C:\\Users\\devbox\\.codex\\visualizations\\2026\\08\\05\\019fd2f9-dd85-7932-97e7-00a4eea575c0\\review_table_form_1040.html` -> exit 0; `rows: 3; selection: hardest 3`; HTML header count 3; output outside repo.
-  - `RAN: .venv\\Scripts\\python.exe -m tax_graph.cli review-table --help` -> exit 0; command and all selection options registered.
-  - `RAN: .venv\\Scripts\\python.exe -m pytest tests/test_cli.py tests/test_review_table_m20.py -q` -> **13 passed, 1 failed**; the failure is the pre-existing `test_harvest_worksheet_command_writes_only_a_draft` missing `config/manifest.yaml` under its temporary project root.
-  - `RAN: .venv\\Scripts\\python.exe -m pytest tests/test_generated_review_m20.py -q` -> **1 passed, 5 failed**; all five failures are the known `WinError 5` ACL on `graph/2025/_drafts/form_1040_2025`, not this change.
-  - `RAN: .venv\\Scripts\\python.exe -m tax_graph.cli validate 2025` -> exit 0; `graph integrity OK`; reconcile differences are the known manifest-vs-graph instruction/worksheet set.
-  - `RAN: .venv\\Scripts\\python.exe tools/check_ascii.py` -> `ASCII check OK`.
-  - `RAN: git diff --check` -> exit 0; protected-set diff empty.
-
-  **Open for Architect:** accept or request changes; no plan-changing deviation was made.
+  **Do not:** promote any derived expression, any 2441 draft, or any second worksheet; hand-edit a
+  promoted node; delete the handcrafted content; lift the gate before the archive exists and is
+  verified. **Stop conditions:** the archive not byte-identical to the pre-round state; any
+  pre-existing computed value changing; `validate 2025` failing; a citation in the promoted
+  worksheet that is not verbatim in the acquired source. Tier 3. Honest `RAN:`/`NOT RUN:` - **the
+  provider leg is the Architect's.** ASCII, `git diff --check`, module-form `validate 2025`.
+  **ONE local commit.**
 
 - **M20-S53 TASK - THE APPROVAL GATE, BEHIND A SWITCH, DEFAULT OFF (Architect, Claude Opus 5,
   2026-08-04, from John's approval-is-the-gate ruling).** Ledger: the RAN/NOT RUN rule, D10.
