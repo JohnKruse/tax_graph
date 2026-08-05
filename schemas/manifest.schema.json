@@ -22,7 +22,22 @@
     "document": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["document_id", "kind", "url"],
+      "required": ["document_id", "kind"],
+      "oneOf": [
+        {
+          "required": ["url"],
+          "not": { "required": ["region"] }
+        },
+        {
+          "required": ["region"],
+          "not": {
+            "anyOf": [
+              { "required": ["url"] },
+              { "required": ["expected_sha256"] }
+            ]
+          }
+        }
+      ],
       "properties": {
         "document_id": {
           "type": "string",
@@ -36,6 +51,20 @@
           "type": "string",
           "format": "uri",
           "pattern": "^https://www\\.irs\\.gov/pub/irs-(pdf|prior)/[fip][a-z0-9-]+\\.pdf$"
+        },
+        "region": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["source_document_id", "title", "parent_sha256"],
+          "properties": {
+            "source_document_id": {
+              "type": "string",
+              "pattern": "^[a-z0-9_]+$"
+            },
+            "title": { "type": "string", "minLength": 1 },
+            "parent_sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+          },
+          "description": "A title-identified region of another acquired document."
         },
         "instructions_document_id": {
           "type": "string",

@@ -123,3 +123,10 @@ documents:
     url: https://www.irs.gov/pub/irs-prior/i2441--2025.pdf
     instruction_url: https://www.irs.gov/instructions/i2441
     expected_sha256: 86f0669e78b1dc00bfb99e956673d4fccee9e40d6c44d53623dd08e62567fd39
+
+  - document_id: qualified_dividends_capital_gain_tax_worksheet
+    kind: worksheet
+    region:
+      source_document_id: instructions_form_1040_2025
+      title: Qualified Dividends and Capital Gain Tax Worksheet
+      parent_sha256: 0a1a74db99d1f481b49c6d59a928dbfc16f10c640e1dd502c72f3ac816e21ec7

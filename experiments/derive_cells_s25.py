@@ -342,13 +342,17 @@ def _measure_denominator(
 
 
 def manifest_document_ids(*, root: str | Path, year: str) -> list[str]:
-    """Return declared document ids in manifest order for a corpus run."""
+    """Return fetch-backed document ids in manifest order for a form-row corpus run.
+
+    Region documents have their own title-based harvest path and do not contribute
+    printed form rows to this denominator.
+    """
     manifest = load_manifest(root=Path(root).resolve())
     if str(manifest.tax_year) != str(year):
         raise ValueError(
             f"manifest tax_year {manifest.tax_year} does not match requested year {year}"
         )
-    return [entry.document_id for entry in manifest.documents]
+    return [entry.document_id for entry in manifest.documents if not entry.is_region]
 
 
 def main() -> int:

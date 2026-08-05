@@ -119,6 +119,9 @@ def reconcile_document_lists(
         if document.get("document_id")
     ))
     manifest_documents = tuple(entry.document_id for entry in manifest.documents)
+    acquired_manifest_documents = tuple(
+        entry.document_id for entry in manifest.documents if not entry.is_region
+    )
     raw_root = _raw_year_directory(root_path, year_text, raw_store)
     if raw_root.is_dir():
         raw_documents: tuple[str, ...] | None = tuple(sorted(path.stem for path in raw_root.glob("*.txt")))
@@ -131,6 +134,7 @@ def reconcile_document_lists(
 
     graph_set = set(graph_documents)
     manifest_set = set(manifest_documents)
+    acquired_manifest_set = set(acquired_manifest_documents)
     differences = [
         ReconcileDifference(
             name="graph_not_in_manifest",
@@ -162,11 +166,11 @@ def reconcile_document_lists(
         differences.extend([
             ReconcileDifference(
                 name="raw_not_in_manifest",
-                document_ids=tuple(sorted(raw_set - manifest_set)),
+                document_ids=tuple(sorted(raw_set - acquired_manifest_set)),
             ),
             ReconcileDifference(
                 name="manifest_not_in_raw",
-                document_ids=tuple(sorted(manifest_set - raw_set)),
+                document_ids=tuple(sorted(acquired_manifest_set - raw_set)),
             ),
         ])
     return DocumentReconcileReport(

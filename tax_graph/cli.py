@@ -5,6 +5,7 @@ from __future__ import annotations
 import argparse
 from contextlib import redirect_stdout
 import datetime as _dt
+import hashlib
 from io import StringIO
 import json
 from pathlib import Path
@@ -289,19 +290,59 @@ def harvest_worksheet_command(
 
     root_path = Path(root).resolve() if root is not None else project_root()
     default_target = QDCGT_WORKSHEET_TARGET
+    manifest_entry = None
+    if document_id is not None:
+        from tax_graph.acquire.manifest import load_manifest
+
+        manifest_entry = load_manifest(root=root_path).by_document_id().get(document_id)
+        if manifest_entry is not None and manifest_entry.is_region:
+            if source_document_id and source_document_id != manifest_entry.region_of:
+                print(
+                    f"worksheet harvest blocked: {document_id} parent is "
+                    f"{manifest_entry.region_of}, not {source_document_id}"
+                )
+                return 1
+            source_document_id = manifest_entry.region_of
+            title = manifest_entry.region_title
     source_id = source_document_id or default_target.source_document_id or f"instructions_form_1040_{year}"
     source_path = (
         Path(html_path)
         if html_path is not None
         else root_path / ".cache" / "raw" / str(year) / f"{source_id}.html"
     )
+    if manifest_entry is not None and manifest_entry.is_region:
+        if not source_path.exists():
+            print(f"worksheet harvest blocked: missing parent HTML {source_path}")
+            return 1
+        actual_parent_hash = hashlib.sha256(source_path.read_bytes()).hexdigest()
+        if actual_parent_hash != manifest_entry.region_parent_sha256:
+            print(
+                f"worksheet harvest blocked: parent hash changed for {document_id} "
+                f"(expected {manifest_entry.region_parent_sha256}, got {actual_parent_hash})"
+            )
+            return 1
     if any(value is not None for value in (document_id, title, start_anchor)):
-        target = WorksheetTarget(
-            document_id=document_id or default_target.document_id,
-            title=title or default_target.title,
-            start_anchor=start_anchor or default_target.start_anchor,
-            source_document_id=source_id,
-        )
+        if manifest_entry is not None and manifest_entry.is_region:
+            target = WorksheetTarget(
+                document_id=document_id or default_target.document_id,
+                title=title or default_target.title,
+                start_anchor=start_anchor or default_target.start_anchor,
+                source_document_id=source_id,
+                expected_line_count=default_target.expected_line_count
+                if title == default_target.title
+                else None,
+                expected_constant_count=default_target.expected_constant_count
+                if title == default_target.title
+                else None,
+                citation_groups=default_target.citation_groups if title == default_target.title else None,
+            )
+        else:
+            target = WorksheetTarget(
+                document_id=document_id or default_target.document_id,
+                title=title or default_target.title,
+                start_anchor=start_anchor or default_target.start_anchor,
+                source_document_id=source_id,
+            )
     else:
         target = default_target
     result = harvest_worksheet_file(
@@ -327,6 +368,112 @@ def harvest_worksheet_command(
     print(f"  constants: {len(result.parameter_nodes)}")
     print(f"  citations: {len(result.citations)}")
     print("  promoted: no")
+    return 0
+
+
+def nomination_list_command(
+    *,
+    year: str = "2025",
+    root: str | Path | None = None,
+    run_dir: str | Path | None = None,
+    evidence_paths: list[str | Path] | None = None,
+    json_output: bool = False,
+) -> int:
+    """List evidence-backed source-document regions that are not yet held."""
+    from tax_graph.ingest.nominations import list_nominations
+    from tax_graph.ingest.worksheet_harvest import normalize_printed_title
+
+    root_path = Path(root).resolve() if root is not None else project_root()
+    nominations = list_nominations(
+        year=year,
+        root=root_path,
+        run_dir=run_dir,
+        evidence_paths=evidence_paths or (),
+    )
+    from tax_graph.acquire.manifest import load_manifest
+    accepted_titles = {
+        normalize_printed_title(entry.region_title)
+        for entry in load_manifest(root=root_path).documents
+        if entry.is_region and entry.region_title
+    }
+    nominations = tuple(
+        item for item in nominations if item.normalized_title not in accepted_titles
+    )
+    if json_output:
+        print(json.dumps([item.as_dict() for item in nominations], indent=2, sort_keys=True))
+        return 0
+    print("=== outstanding document nominations ===")
+    if not nominations:
+        print("  none")
+        return 0
+    for item in nominations:
+        print(f"  {item.title}")
+        print(f"    references: {item.count}")
+        for row in item.citing_rows:
+            print(f"    citing row: {row}")
+        for evidence in item.evidence:
+            print(f"    evidence: {evidence}")
+        if item.frontier_ids:
+            print(f"    frontier: {', '.join(item.frontier_ids)}")
+    return 0
+
+
+def nomination_accept_command(
+    *,
+    title: str,
+    source_document_id: str,
+    year: str = "2025",
+    root: str | Path | None = None,
+    document_id: str | None = None,
+    kind: str = "worksheet",
+    run_dir: str | Path | None = None,
+    evidence_paths: list[str | Path] | None = None,
+    html_path: str | Path | None = None,
+) -> int:
+    """Accept one evidence-backed region into the manifest."""
+    from tax_graph.ingest.nominations import accept_nomination
+
+    root_path = Path(root).resolve() if root is not None else project_root()
+    try:
+        result = accept_nomination(
+            title=title,
+            source_document_id=source_document_id,
+            year=year,
+            root=root_path,
+            document_id=document_id,
+            kind=kind,
+            run_dir=run_dir,
+            evidence_paths=evidence_paths or (),
+            html_path=html_path,
+        )
+    except Exception as exc:
+        print(f"ERROR: {exc}")
+        return 1
+    print("=== document nomination accepted ===")
+    print(f"  document: {result['document_id']}")
+    print(f"  parent: {source_document_id}")
+    print(f"  parent_sha256: {result['parent_sha256']}")
+    print(f"  citing rows: {result['evidence'].count}")
+    print("  region identity: normalized printed title")
+    print("  status: manifest accepted; graph draft remains unpromoted")
+    return 0
+
+
+def nomination_drop_command(
+    document_id: str,
+    *,
+    root: str | Path | None = None,
+) -> int:
+    """Drop one previously accepted region from the manifest."""
+    from tax_graph.ingest.nominations import drop_nomination
+
+    root_path = Path(root).resolve() if root is not None else project_root()
+    try:
+        drop_nomination(document_id, root=root_path)
+    except Exception as exc:
+        print(f"ERROR: {exc}")
+        return 1
+    print(f"dropped region nomination: {document_id}")
     return 0
 
 
@@ -1448,6 +1595,66 @@ def _build_typer_app():
         if raise_code:
             raise typer.Exit(raise_code)
 
+    nomination_cli = typer.Typer(help="Evidence-backed source-document nominations.")
+
+    @nomination_cli.command("list")
+    def nomination_list_cli(
+        year: str = typer.Option("2025", "--year", "-y", help="Tax year to inspect."),
+        run_dir: Path | None = typer.Option(None, "--run-dir", help="Corpus run directory containing derive reports."),
+        evidence: list[Path] = typer.Option([], "--evidence", help="Additional derive or incomplete-cell report."),
+        json_output: bool = typer.Option(False, "--json", help="Print machine-readable JSON."),
+        root: Path | None = typer.Option(None, "--root", help="Project root override."),
+    ) -> None:
+        """List outstanding nominations with citing-row evidence."""
+        raise_code = nomination_list_command(
+            year=year,
+            root=root,
+            run_dir=run_dir,
+            evidence_paths=evidence,
+            json_output=json_output,
+        )
+        if raise_code:
+            raise typer.Exit(raise_code)
+
+    @nomination_cli.command("accept")
+    def nomination_accept_cli(
+        title: str = typer.Option(..., "--title", help="Printed title to accept."),
+        source_document_id: str = typer.Option(..., "--source-document-id", help="Manifest parent document id."),
+        year: str = typer.Option("2025", "--year", "-y", help="Tax year to accept."),
+        document_id: str | None = typer.Option(None, "--document-id", help="Stable region document id."),
+        kind: str = typer.Option("worksheet", "--kind", help="Manifest document kind."),
+        run_dir: Path | None = typer.Option(None, "--run-dir", help="Corpus run directory containing evidence."),
+        evidence: list[Path] = typer.Option([], "--evidence", help="Additional evidence report."),
+        html_path: Path | None = typer.Option(None, "--html-path", help="Acquired parent HTML override."),
+        root: Path | None = typer.Option(None, "--root", help="Project root override."),
+    ) -> None:
+        """Accept a title-identified region into the acquisition manifest."""
+        raise_code = nomination_accept_command(
+            title=title,
+            source_document_id=source_document_id,
+            year=year,
+            root=root,
+            document_id=document_id,
+            kind=kind,
+            run_dir=run_dir,
+            evidence_paths=evidence,
+            html_path=html_path,
+        )
+        if raise_code:
+            raise typer.Exit(raise_code)
+
+    @nomination_cli.command("drop")
+    def nomination_drop_cli(
+        document_id: str = typer.Argument(..., help="Region document id to remove."),
+        root: Path | None = typer.Option(None, "--root", help="Project root override."),
+    ) -> None:
+        """Remove one accepted region from the acquisition manifest."""
+        raise_code = nomination_drop_command(document_id, root=root)
+        if raise_code:
+            raise typer.Exit(raise_code)
+
+    cli.add_typer(nomination_cli, name="nomination")
+
     @cli.command("measure-extraction")
     def measure_extraction_cli(
         year: str = typer.Option("2025", "--year", "-y", help="Tax year to measure."),
@@ -2097,6 +2304,30 @@ def _fallback_app() -> int:
     harvest_worksheet_parser.add_argument("--draft-dir", default=None)
     harvest_worksheet_parser.add_argument("--root", default=None)
 
+    nomination_parser = subparsers.add_parser("nomination")
+    nomination_subparsers = nomination_parser.add_subparsers(dest="nomination_command", required=True)
+    nomination_list_parser = nomination_subparsers.add_parser("list")
+    nomination_list_parser.add_argument("--year", "-y", default="2025")
+    nomination_list_parser.add_argument("--run-dir", default=None)
+    nomination_list_parser.add_argument("--evidence", action="append", default=[])
+    nomination_list_parser.add_argument("--json", action="store_true")
+    nomination_list_parser.add_argument("--root", default=None)
+
+    nomination_accept_parser = nomination_subparsers.add_parser("accept")
+    nomination_accept_parser.add_argument("--title", required=True)
+    nomination_accept_parser.add_argument("--source-document-id", required=True)
+    nomination_accept_parser.add_argument("--year", "-y", default="2025")
+    nomination_accept_parser.add_argument("--document-id", default=None)
+    nomination_accept_parser.add_argument("--kind", default="worksheet")
+    nomination_accept_parser.add_argument("--run-dir", default=None)
+    nomination_accept_parser.add_argument("--evidence", action="append", default=[])
+    nomination_accept_parser.add_argument("--html-path", default=None)
+    nomination_accept_parser.add_argument("--root", default=None)
+
+    nomination_drop_parser = nomination_subparsers.add_parser("drop")
+    nomination_drop_parser.add_argument("document_id")
+    nomination_drop_parser.add_argument("--root", default=None)
+
     measure_extraction_parser = subparsers.add_parser("measure-extraction")
     measure_extraction_parser.add_argument("--year", "-y", default="2025")
     measure_extraction_parser.add_argument("--input-dir", default=None)
@@ -2264,6 +2495,28 @@ def _fallback_app() -> int:
             start_anchor=args.start_anchor,
             draft_dir=args.draft_dir,
         )
+    if args.command == "nomination" and args.nomination_command == "list":
+        return nomination_list_command(
+            year=args.year,
+            root=args.root,
+            run_dir=args.run_dir,
+            evidence_paths=args.evidence,
+            json_output=args.json,
+        )
+    if args.command == "nomination" and args.nomination_command == "accept":
+        return nomination_accept_command(
+            title=args.title,
+            source_document_id=args.source_document_id,
+            year=args.year,
+            root=args.root,
+            document_id=args.document_id,
+            kind=args.kind,
+            run_dir=args.run_dir,
+            evidence_paths=args.evidence,
+            html_path=args.html_path,
+        )
+    if args.command == "nomination" and args.nomination_command == "drop":
+        return nomination_drop_command(args.document_id, root=args.root)
     if args.command == "measure-extraction":
         return measure_extraction_command(
             year=args.year,

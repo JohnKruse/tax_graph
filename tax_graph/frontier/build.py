@@ -37,7 +37,14 @@ def build_frontier_registry(
     graph = load_graph(year, root_path)
     soi = load_soi_counts(root_path)
     manifest = load_manifest(root=root_path)
-    manifest_urls = {entry.document_id: entry.url for entry in manifest.documents}
+    manifest_entries = manifest.by_document_id()
+    manifest_urls = {
+        entry.document_id: entry.url
+        if entry.url
+        else manifest_entries[entry.region_of].url
+        for entry in manifest.documents
+        if entry.url or (entry.region_of and manifest_entries[entry.region_of].url)
+    }
     label_map = load_form_id_map(root_path)
 
     entries = []

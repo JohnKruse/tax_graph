@@ -463,6 +463,11 @@ def _find_start_heading(
 
 def _normalize_title(value: str) -> str:
     """Normalize title punctuation, case, and whitespace for exact matching."""
+    return normalize_printed_title(value)
+
+
+def normalize_printed_title(value: str) -> str:
+    """Return the stable comparison key for a printed document title."""
     normalized = unicodedata.normalize("NFKC", value).casefold()
     normalized = re.sub(r"[\W_]+", " ", normalized, flags=re.UNICODE)
     return " ".join(normalized.split())

@@ -78,8 +78,11 @@ def test_reconcile_reports_named_raw_orphans_and_missing_manifest_text(
     assert report.raw_status == "available"
     assert report.raw_documents == ("form_1040_2025", "orphan_2025")
     assert report.difference("raw_not_in_manifest").document_ids == ("orphan_2025",)
+    # Region documents are backed by the parent HTML and therefore do not need
+    # a child .txt artifact in the form-row reconciliation inventory.
     assert report.difference("manifest_not_in_raw").document_ids == tuple(sorted(
-        entry for entry in report.manifest_documents if entry != "form_1040_2025"
+        entry for entry in report.manifest_documents
+        if entry not in {"form_1040_2025", "qualified_dividends_capital_gain_tax_worksheet"}
     ))
 
 
@@ -110,7 +113,11 @@ def test_manifest_document_ids_are_declared_and_ordered() -> None:
     assert len(ids) == 23
     assert ids[0] == "form_8949_2025"
     assert ids[-2:] == ["form_2441_2025", "instructions_form_2441_2025"]
-    assert ids == [entry.document_id for entry in load_manifest(root=ROOT).documents]
+    assert ids == [
+        entry.document_id
+        for entry in load_manifest(root=ROOT).documents
+        if not entry.is_region
+    ]
 
 
 def test_run_documents_defaults_to_manifest(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:

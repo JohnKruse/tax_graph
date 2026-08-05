@@ -22,10 +22,18 @@ class ManifestEntry:
 
     document_id: str
     kind: str
-    url: str
+    url: str | None = None
     instructions_document_id: str | None = None
     instruction_url: str | None = None
     expected_sha256: str | None = None
+    region_of: str | None = None
+    region_title: str | None = None
+    region_parent_sha256: str | None = None
+
+    @property
+    def is_region(self) -> bool:
+        """Return whether this entry names a region of another acquired document."""
+        return self.region_of is not None
 
 
 @dataclass(frozen=True)
@@ -63,10 +71,13 @@ def load_manifest(path: str | Path | None = None, root: str | Path | None = None
             ManifestEntry(
                 document_id=entry["document_id"],
                 kind=entry["kind"],
-                url=entry["url"],
+                url=entry.get("url"),
                 instructions_document_id=entry.get("instructions_document_id"),
                 instruction_url=entry.get("instruction_url"),
                 expected_sha256=entry.get("expected_sha256"),
+                region_of=(entry.get("region") or {}).get("source_document_id"),
+                region_title=(entry.get("region") or {}).get("title"),
+                region_parent_sha256=(entry.get("region") or {}).get("parent_sha256"),
             )
             for entry in data["documents"]
         ),
@@ -97,10 +108,44 @@ def _validate_unique_document_ids(data: dict[str, Any]) -> None:
 
 
 def _validate_irs_pdf_urls(data: dict[str, Any]) -> None:
-    bad_urls = [entry["url"] for entry in data["documents"] if not IRS_PDF_URL_RE.match(entry["url"])]
+    bad_urls = [
+        entry.get("url")
+        for entry in data["documents"]
+        if entry.get("url") is not None and not IRS_PDF_URL_RE.match(entry["url"])
+    ]
     if bad_urls:
         joined = ", ".join(sorted(bad_urls))
         raise ValueError(f"manifest URLs must use stable IRS PDF paths: {joined}")
+    _validate_region_entries(data)
+
+
+def _validate_region_entries(data: dict[str, Any]) -> None:
+    """Validate region parents and keep region identity source-backed."""
+    entries = {entry["document_id"]: entry for entry in data["documents"]}
+    for entry in data["documents"]:
+        region = entry.get("region")
+        if not region:
+            continue
+        if entry.get("expected_sha256"):
+            raise ValueError(
+                f"manifest region {entry['document_id']} cannot carry its own expected_sha256"
+            )
+        parent_id = region["source_document_id"]
+        if parent_id == entry["document_id"]:
+            raise ValueError(f"manifest region {entry['document_id']} cannot name itself as parent")
+        parent = entries.get(parent_id)
+        if parent is None:
+            raise ValueError(
+                f"manifest region {entry['document_id']} references missing parent {parent_id}"
+            )
+        if parent.get("region"):
+            raise ValueError(
+                f"manifest region {entry['document_id']} parent {parent_id} cannot itself be a region"
+            )
+        if not parent.get("url"):
+            raise ValueError(
+                f"manifest region {entry['document_id']} parent {parent_id} has no acquired URL"
+            )
 
 
 def _validate_instruction_relationships(data: dict[str, Any]) -> None:

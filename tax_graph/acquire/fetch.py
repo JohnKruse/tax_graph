@@ -54,6 +54,10 @@ def fetch_document(
     today: dt.date | None = None,
 ) -> FetchedDocument:
     """Fetch one manifest entry, store raw/text artifacts, and write metadata."""
+    if entry.is_region:
+        raise ValueError(f"manifest region {entry.document_id} is fetched through its parent")
+    if not entry.url:
+        raise ValueError(f"manifest entry {entry.document_id} has no acquisition URL")
     settings = config or {}
     raw_root = Path(raw_store) / str(year)
     raw_root.mkdir(parents=True, exist_ok=True)
@@ -99,6 +103,7 @@ def fetch_manifest_documents(
             today=today,
         )
         for entry in entries
+        if not entry.is_region
     ]
 
 

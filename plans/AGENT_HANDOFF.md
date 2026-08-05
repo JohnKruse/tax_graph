@@ -49,33 +49,29 @@ remove **re-**review, not first review.
 
 ## Current round
 
-**M20-S61 ACCEPTED (Architect, Claude Opus 5, 2026-08-05) at `08e994c`. The S58 -> S60 -> S61
-evidence arc is complete and the corpus is at its best measured state.**
+**M20-S59 WORKER IMPLEMENTATION COMPLETE, pending Architect provider leg.** Added an evidence-backed
+nomination queue and a manifest region shape. A region uses normalized printed title identity,
+records its acquired parent document and the parent HTML sha256, has no URL or child hash, and is
+excluded from PDF acquisition and raw-text reconciliation. The CLI supports `nomination list`,
+`accept`, and `drop`; acceptance is fail-closed on missing or ambiguous title harvests and leaves
+the graph in `_drafts` only.
 
-**Live, three documents: 67 attempted, 63 derived, 1 repaired, 3 errored.** `form_2441_2025` at
-**21/20/1/0** - attempted fully restored, zero errors, and the three rows S60 had suppressed came
-back correct: line 11 `min(line 9c, line 10)`, line 26 `max(line 23 - line 25, 0)`, line 31
-`min(line 29, line 30)`.
+**QDCGT was accepted locally and harvested as a draft.** The real `form_6251_2025` reports provide
+three citing rows (lines 13, 20, 27). The accepted region is
+`qualified_dividends_capital_gain_tax_worksheet`; harvest counts are 25 lines, 13 constants, 42
+edges, and 13 citations. This does not claim that 6251 lines 13/20/27 now derive: the existing
+live reports still show the self-reference errors, and the provider-backed derivation leg is
+`NOT RUN` in this sandbox. Architect must run one live row and report whether the cross-document
+references resolve before accepting the round.
 
-**The rework did exactly what was asked and nothing more.** Findings went 10 -> 4 with **no new
-findings**, and the detector now ignores only identifiable page furniture - bare numbers, page
-labels, split `Form (year)` footers, form-page and catalog identifiers, creation-date rows - while
-numeric bands and prose continuations stay substantive.
+**RAN:**
+- `.venv\Scripts\python.exe -m pytest tests\test_acquire_manifest.py tests\test_nomination_s59.py tests\test_worksheet_harvest_m20.py tests\test_acquire_fetch.py tests\test_m20_s41.py -q` -> **30 passed, 1 skipped, 1 warning in 21.66s** (network test skipped).
+- `.venv\Scripts\python.exe -m tax_graph.cli validate 2025` -> **exit 0**, graph integrity and manifest reconciliation OK.
+- `.venv\Scripts\python.exe tools\check_ascii.py` -> **ASCII check OK**; `git diff --check` -> **clean**; protected graph set diff -> **empty**.
+- `.venv\Scripts\python.exe -m pytest tests\test_acquire_fetch.py tests\test_m20_s41.py tests\test_frontier_query_m7.py tests\test_graph_validator.py -q` -> **10 passed, 1 skipped, 14 failed** because pytest could not copy gitignored `graph/2025/_drafts` files under the poisoned temp ACL (`WinError 5`); this is environment failure, not code evidence for the blocked files.
 
-**The true positives are protected, and the test proves it rather than asserting it.** A synthetic
-packet that stops at `8 X` while geometry shows `17,000-19,000 .33` continuing still raises
-`row_packet_incomplete` with the band content named in the detail. Architect re-verified the real
-artifacts directly: **2441 line 8 carries 16 of 16 printed bands**, line 19 still carries its
-default branch, **every packet remains a verbatim subset of the acquired source**, and no row on
-2441 carries a false incomplete finding.
-
-**Inherited findings, now visible.** Four remain and none was introduced by this arc:
-`schedule_1a_2025` lines 14a and 36a, `form_6251_2025` lines 1a and 5. S61 also cleared two that
-predate S60 entirely (`schedule_1a_2025` line 30, `schedule_d_2025` line 7). **These four have never
-been diagnosed, only inherited** - worth a look before the next evidence round.
-
-**Gates:** 103 passed on a short temp root, ASCII OK, `git diff --check` clean, protected set diff
-empty, `git status` clean.
+**NOT RUN:** provider-backed derivation/corpus run; no provider/network is available in the
+sandbox. No graph artifact was promoted and no human-review claim was written.
 
 ## Architect decision - notation
 

@@ -16,7 +16,7 @@ def test_manifest_loads_seeded_source_docs():
     manifest = load_manifest(root=ROOT)
 
     assert manifest.tax_year == 2025
-    assert len(manifest.documents) == 23
+    assert len(manifest.documents) == 24
     assert set(manifest.by_document_id()) == {
         "form_8949_2025",
         "instructions_form_8949_2025",
@@ -41,6 +41,7 @@ def test_manifest_loads_seeded_source_docs():
         "form_13614_c_2025",
         "form_2441_2025",
         "instructions_form_2441_2025",
+        "qualified_dividends_capital_gain_tax_worksheet",
     }
 
 
@@ -55,7 +56,10 @@ def test_manifest_entries_validate_against_schema():
 def test_manifest_urls_match_stable_irs_pdf_pattern():
     manifest = load_manifest(root=ROOT)
 
-    assert all(IRS_PDF_URL_RE.match(entry.url) for entry in manifest.documents)
+    assert all(
+        entry.url is None or IRS_PDF_URL_RE.match(entry.url)
+        for entry in manifest.documents
+    )
 
 
 @pytest.mark.m3
@@ -82,6 +86,14 @@ def test_manifest_loads_form_instruction_relationships():
     )
     assert entries["instructions_form_2441_2025"].expected_sha256 == (
         "86f0669e78b1dc00bfb99e956673d4fccee9e40d6c44d53623dd08e62567fd39"
+    )
+    region = entries["qualified_dividends_capital_gain_tax_worksheet"]
+    assert region.is_region
+    assert region.url is None
+    assert region.region_of == "instructions_form_1040_2025"
+    assert region.region_title == "Qualified Dividends and Capital Gain Tax Worksheet"
+    assert region.region_parent_sha256 == (
+        "0a1a74db99d1f481b49c6d59a928dbfc16f10c640e1dd502c72f3ac816e21ec7"
     )
 
 
