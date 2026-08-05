@@ -37,10 +37,11 @@ for that document it is a join failure rather than a missing source.
 instruction-booklet join. S53 (the approval gate) sits behind those. **S57 as previously specced is
 WITHDRAWN** - it treated the line 8 packet as a one-form repair; it is the column-recovery round.
 
-**AWAITING JOHN:** the manifest schema change that lets a document declare itself a region of
-another acquired document. **It is the only thing between us and the Qualified Dividends worksheet
-being a real document**, which would turn 6251 lines 13, 20 and 27 - three of the six hairiest cells
-in the corpus - from impossible into ordinary cross-document copies.
+**ANSWERED 2026-08-05 - John: yes.** Verbatim: *"we have to have some mech for at least
+nominating these odd things to be full-fledged docs."* Specced as **S59**: an out-of-corpus
+reference already produces an S52 incomplete cell naming its target, so the nomination queue
+exists and nothing consumes it. S59 adds the acceptance step, self-serve per his standing
+ruling that adding a document must never require an agent.
 
 ## Current round
 
@@ -260,7 +261,7 @@ client-managed server dies.
 - **FOR JOHN - the two scoping calls that block the last 5 rows (raised 2026-08-03).** Both are the
   same shape as the Form 2441 question below, and answering all three together would clear every
   open scoping item in one pass.
-  **(1) ANSWERED IN PRINCIPLE 2026-08-03 - John: yes, and via a harvester, not by hand.** The
+  **(1) CLOSED 2026-08-05.** John ruled the nomination mechanism in; it is specced as S59.
   worksheets are in scope; the mechanism is S42. Two sub-calls remain his: the manifest schema change
   that lets a document declare a region of another acquired document (S42 step 4 reports it,
   implements nothing), and **his standing requirement that adding or removing a document, an
@@ -378,6 +379,62 @@ client-managed server dies.
   **Next two rounds in this arc, named so the scope of THIS one stays closed:** column and grid
   recovery within a geometric row (the 2441 line 8 band table - the Architect has already proved a
   reconstructed packet yields all 16 bands correctly), then the instruction-booklet join.
+
+- **M20-S59 TASK - NOMINATE A REGION OF A DOCUMENT TO BE A FULL DOCUMENT (Architect, Claude Opus 5,
+  2026-08-05; John's call: *"Yes, I think we have to have some mech for at least nominating these
+  odd things to be full-fledged docs."*).** Ledger: the RAN/NOT RUN rule, D10, and the standing
+  rules in `AGENTS.md`. **Runs after S58. One change, no passengers.**
+
+  **OPEN ITEMS AND SEAMS THIS ROUND TOUCHES:**
+  - **ANSWERS AND CLOSES** the long-open worksheet sub-call: *"the manifest schema change that lets
+    a document declare a region of another acquired document"*, open since 2026-08-03, reported by
+    S42 step 4 which implemented nothing.
+  - **IMPLEMENTS** the binding ruling that odd documents are treated exactly as forms.
+  - **MUST HONOR** John's self-serve ruling (2026-08-03): **adding or removing a document, an
+    instruction set, or a worksheet must never require an agent.** The nomination and acceptance
+    flow is a CLI a person runs, not a code edit. Today the only manifest-facing commands are
+    `acquire` and `harvest-worksheet`.
+  - **UNBLOCKS** 6251 lines 13, 20 and 27 - three of the six most compound cells in the corpus,
+    all of which reference the Qualified Dividends and Capital Gain Tax Worksheet or the Schedule D
+    Tax Worksheet.
+  - **LEAVES UNTOUCHED:** the caption work (S58), column recovery, the instruction join, S53.
+
+  **Why "nominate" and not "declare".** Nobody should have to know in advance which worksheets
+  matter. **The pipeline already discovers them:** an out-of-corpus reference produces an S52
+  incomplete cell with reason `reference_not_in_corpus`, naming the target, and `frontier.yaml`
+  holds 89 declared branches. **That IS the nomination queue** - it exists, it is evidence-backed,
+  and nothing consumes it. This round adds the step that turns a nomination into a declared
+  document.
+
+  **Step 1 - report the nomination set from real data.** Derive the candidate list from the
+  incomplete cells and frontier entries actually produced by a corpus run: which named worksheets
+  and documents are referenced but not held, how often, and from which citing rows. **Report it
+  before building the acceptance path.** A nomination nobody hit is not worth a manifest entry.
+
+  **Step 2 - the manifest schema change.** A document entry may declare itself a REGION of another
+  acquired document instead of carrying its own URL. **Identity is the normalized printed title** -
+  exact after NFKC, case and punctuation folding - which S43 established and proved by rewriting all
+  1,480 `publink` ids in the real source and getting identical output, and by confirming that a
+  renamed title blocks even with the declared publink present. **The title is the key, never the
+  anchor id.** Pinning: a region document pins its PARENT's sha256 plus its title; it has no hash of
+  its own. **Fail closed** when the title matches zero or several sections, naming every candidate.
+
+  **Step 3 - the flow is self-serve.** One command lists outstanding nominations with their evidence;
+  one accepts a nomination into the manifest. **A person must be able to add or drop a worksheet
+  without an agent and without editing YAML by hand.** Report the exact command lines.
+
+  **Step 4 - run it end to end on the QDCGT worksheet and report honestly.** Accept the nomination,
+  harvest it with the existing `harvest-worksheet` path, and report what the corpus does afterwards:
+  specifically whether 6251 lines 13, 20 and 27 now resolve to cross-document references instead of
+  failing closed. **Drafts only - no promotion.** If they still fail, that is the finding and it is
+  worth more than a green number.
+
+  **Do not:** hand-author a worksheet; invent a title that is not printed in the source; give a
+  region document its own sha pin; promote anything; edit `graph/2025/` outside `_drafts/`; change
+  the caption or column work. **Stop conditions:** any diff in the protected directories; a region
+  resolved by anchor id rather than printed title; a nomination accepted without evidence of a real
+  citing row. Tier 3. Honest `RAN:`/`NOT RUN:` - **the provider leg is the Architect's.** ASCII,
+  `git diff --check`, module-form `validate 2025`. **ONE local commit.**
 
 - **M20-S53 TASK - THE APPROVAL GATE, BEHIND A SWITCH, DEFAULT OFF (Architect, Claude Opus 5,
   2026-08-04, from John's approval-is-the-gate ruling).** Ledger: the RAN/NOT RUN rule, D10.
