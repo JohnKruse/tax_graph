@@ -16,6 +16,8 @@ import re
 import tempfile
 from typing import Any, Mapping, Sequence
 
+from tax_graph.operation_registry import operation_roles
+
 from tax_graph.config import project_root
 from tax_graph.extract.cells import build_cell_frame_from_document
 from tax_graph.extract.inputs import load_document_input
@@ -544,25 +546,7 @@ def _operation_words(operation: str) -> str:
 
 def _tree_roles(operation: str, count: int) -> tuple[str, ...]:
     """Return stable argument names for the bounded expression vocabulary."""
-    roles = {
-        "COPY": ("source",),
-        "SUM": ("addend",),
-        "SUBTRACT": ("minuend", "subtrahend"),
-        "MULTIPLY": ("factor",),
-        "DIVIDE": ("numerator", "denominator"),
-        "MIN": ("candidate",),
-        "MAX": ("candidate",),
-        "NEGATE": ("value",),
-        "ABS": ("value",),
-        "ROUND": ("value",),
-        "COMPARE": ("left", "right"),
-        "AND": ("condition",),
-        "OR": ("condition",),
-        "NOT": ("condition",),
-    }.get(operation, ())
-    if len(roles) == 1:
-        return roles * count
-    return roles
+    return operation_roles(operation, count)
 
 
 def _constant_text(value: Any) -> str:

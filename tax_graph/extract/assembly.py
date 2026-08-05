@@ -16,6 +16,7 @@ from tax_graph.extract.outline import (
     node_type_for_outline,
 )
 from tax_graph.extract.prompts import closed_operations
+from tax_graph.operation_registry import OPERATION_SPECS, operation_roles, operation_spec
 
 
 class FormulaAssemblyFinding(ValueError):
@@ -387,7 +388,7 @@ def _is_unprinted_optional_child(
     return f"{prefix}a through {prefix}z" in label
 
 
-_EXPANDABLE_OPERATIONS = frozenset({"SUM", "MIN", "MAX", "AND", "OR"})
+_EXPANDABLE_OPERATIONS = frozenset(spec.name for spec in OPERATION_SPECS if spec.expandable)
 
 
 def _line_reference_key(
@@ -519,21 +520,10 @@ def _source_span_text(span_ids: list[str], spans_by_id: dict[str, CandidateSpan]
 
 
 def _default_role(operation: str, input_index: int) -> str:
-    if operation == "COPY":
-        return "source"
-    if operation == "SUBTRACT":
-        return "minuend" if input_index == 1 else "subtrahend"
-    if operation == "DIVIDE":
-        return "numerator" if input_index == 1 else "denominator"
-    if operation in {"MULTIPLY"}:
-        return "multiplicand" if input_index == 1 else "multiplier"
-    if operation in {"NEGATE", "ABS", "ROUND"}:
-        return "amount"
-    if operation in {"MIN", "MAX", "AND", "OR"}:
-        return "candidate"
-    if operation == "REQUIRE_INPUT":
-        return "input"
-    return "addend"
+    roles = operation_roles(operation, input_index)
+    if roles and input_index <= len(roles):
+        return roles[input_index - 1]
+    return roles[-1] if roles else "addend"
 
 
 def _validate_operation_inputs(operation: str, inputs: Any) -> None:
@@ -542,50 +532,26 @@ def _validate_operation_inputs(operation: str, inputs: Any) -> None:
         raise FormulaAssemblyFinding(
             {"code": "invalid_operand_shape", "operation": operation, "reason": "operation inputs must be a list"}
         )
-    exact_arity = {
-        "COPY": 1,
-        "NEGATE": 1,
-        "ABS": 1,
-        "ROUND": 1,
-        "REQUIRE_INPUT": 1,
-        "NOT": 1,
-        "SUBTRACT": 2,
-        "DIVIDE": 2,
-        "MULTIPLY": 2,
-        "COMPARE": 2,
-        "IF": 2,
-        "IF_ELSE": 4,
-    }
-    expected_roles = {
-        "COPY": {"source"},
-        "NEGATE": {"amount"},
-        "ABS": {"amount"},
-        "ROUND": {"amount"},
-        "REQUIRE_INPUT": {"input"},
-        "NOT": {"operand"},
-        "SUBTRACT": {"minuend", "subtrahend"},
-        "DIVIDE": {"numerator", "denominator"},
-        "MULTIPLY": {"multiplicand", "multiplier"},
-        "COMPARE": {"left", "right"},
-        "IF": {"condition", "when_true"},
-        "IF_ELSE": {"condition", "threshold", "when_true", "when_false"},
-        "MIN": {"candidate"},
-        "MAX": {"candidate"},
-        "AND": {"candidate"},
-        "OR": {"candidate"},
-    }
-    expected = exact_arity.get(operation)
-    if expected is not None and len(inputs) != expected:
+    spec = operation_spec(operation)
+    if spec is None:
+        raise FormulaAssemblyFinding(
+            {"code": "unsupported_operation", "operation": operation, "reason": f"unsupported operation {operation}"}
+        )
+    if not spec.accepts_count(len(inputs)):
+        expected = spec.min_args
+        wording = "exactly" if spec.max_args == spec.min_args else "at least"
         raise FormulaAssemblyFinding(
             {
                 "code": "invalid_operand_arity",
                 "operation": operation,
                 "observed": len(inputs),
                 "expected": expected,
-                "reason": f"{operation} requires exactly {expected} operand(s)",
+                "reason": f"{operation} requires {wording} {expected} operand(s)",
             }
         )
-    roles = expected_roles.get(operation)
+    if spec.named_leaf_roles:
+        return
+    roles = set(spec.roles)
     if roles is None:
         return
     observed = {

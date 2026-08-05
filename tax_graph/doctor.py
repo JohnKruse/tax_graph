@@ -9,7 +9,6 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 import datetime as _dt
-import inspect
 from pathlib import Path
 import re
 import subprocess
@@ -20,6 +19,7 @@ from tax_graph.config import get_config_value, load_config, project_root
 from tax_graph.extract.inputs import load_document_input
 from tax_graph.extract.outline import build_outline_tree
 from tax_graph.io.loader import load_yaml
+from tax_graph.operation_registry import OPERATION_SPECS, operation_names, prompt_operation_documentation, projection_rule_for
 
 
 BAD_STATUSES = frozenset({"UNKNOWN", "DISAGREES", "STALE"})
@@ -84,14 +84,19 @@ class OperationRow:
     projection: bool | None
     engine: bool | None
     detail: str = ""
+    schema: bool | None = True
+    category: str = "value"
+    projection_expected: bool | None = True
 
     @property
     def status(self) -> str:
         """Return the row status without repairing any disagreement."""
-        values = (self.prompt, self.validator, self.projection, self.engine)
+        values = (self.prompt, self.validator, self.projection, self.engine, self.schema, self.projection_expected)
         if any(value is None for value in values):
             return "UNKNOWN"
-        return "HOLDS" if all(values) else "DISAGREES"
+        if self.projection != self.projection_expected:
+            return "DISAGREES"
+        return "HOLDS" if all(value is True for value in (self.prompt, self.validator, self.engine, self.schema)) else "DISAGREES"
 
     def as_dict(self) -> dict[str, Any]:
         """Return a stable cross-layer record."""
@@ -101,6 +106,9 @@ class OperationRow:
             "validator": self.validator,
             "projection": self.projection,
             "engine": self.engine,
+            "schema": self.schema,
+            "category": self.category,
+            "projection_expected": self.projection_expected,
             "status": self.status,
             "detail": self.detail,
         }
@@ -224,15 +232,17 @@ def render_doctor_report(report: DoctorReport) -> str:
             lines.append(f"    {detail}")
 
     lines.extend(("", "=== operation vocabulary ==="))
-    lines.append("  operation | prompt | validator | projection | engine | status")
+    lines.append("  operation | category | prompt | validator | projection | expected | engine | schema | status")
     for item in report.operations:
         values = " | ".join(_yes_no(value) for value in (
             item.prompt,
             item.validator,
             item.projection,
+            item.projection_expected,
             item.engine,
+            item.schema,
         ))
-        lines.append(f"  {item.operation} | {values} | {item.status}")
+        lines.append(f"  {item.operation} | {item.category} | {values} | {item.status}")
         if item.detail:
             lines.append(f"    {item.detail}")
 
@@ -448,20 +458,10 @@ def _check_operations(root: Path) -> tuple[OperationRow, ...]:
     try:
         config = load_config(root=root)
         schema = load_yaml(root / "schemas" / "rule.schema.json")
-        operations = [str(item) for item in schema["properties"]["operation"]["enum"]]
+        registry_operations = list(operation_names())
+        schema_operations = [str(item) for item in schema["properties"]["operation"]["enum"]]
         prompt_texts = _load_operation_prompt_texts(root, config)
-        from tax_graph.extract.cells import DEFAULT_OPERATIONS, RULE_FOR_OP
-
-        validator_operations = set(DEFAULT_OPERATIONS)
-        projectable_operations = set(RULE_FOR_OP) | {"IF_ELSE"}
-        engine_source = inspect.getsource(
-            __import__("tax_graph.engine.operations", fromlist=["apply_operation"]).apply_operation
-        )
-        engine_operations = {
-            operation
-            for operation in operations
-            if re.search(rf"operation\s*==\s*['\"]{re.escape(operation)}['\"]", engine_source)
-        }
+        from tax_graph.engine.operations import registered_operations
     except Exception as exc:
         return tuple(
             OperationRow(
@@ -478,21 +478,27 @@ def _check_operations(root: Path) -> tuple[OperationRow, ...]:
         )
 
     rows: list[OperationRow] = []
-    for operation in operations:
-        prompt = None if prompt_texts is None else any(operation in text for text in prompt_texts)
+    schema_matches_registry = schema_operations == registry_operations
+    prompt_uses_registry = prompt_texts is not None and all(
+        "<<operation_documentation>>" in text for text in prompt_texts
+    )
+    validator_operations = set(registry_operations)
+    engine_operations = set(registered_operations())
+    for spec in OPERATION_SPECS:
+        operation = spec.name
+        prompt = prompt_uses_registry and operation in prompt_operation_documentation()
         validator = operation in validator_operations
-        projection = operation in projectable_operations
+        projection = projection_rule_for(operation, "less than") is not None
         engine = operation in engine_operations
-        missing = [
-            layer
-            for layer, present in (
-                ("prompt", prompt),
-                ("validator", validator),
-                ("projection", projection),
-                ("engine", engine),
-            )
-            if present is False
+        projection_expected = spec.category == "value"
+        layers = [
+            ("prompt", prompt),
+            ("validator", validator),
+            ("engine", engine),
         ]
+        if projection_expected:
+            layers.insert(2, ("projection", projection))
+        missing = [layer for layer, present in layers if present is False]
         rows.append(
             OperationRow(
                 operation=operation,
@@ -500,7 +506,18 @@ def _check_operations(root: Path) -> tuple[OperationRow, ...]:
                 validator=validator,
                 projection=projection,
                 engine=engine,
-                detail="missing: " + ", ".join(missing) if missing else "",
+                schema=schema_matches_registry,
+                category=spec.category,
+                projection_expected=projection_expected,
+                detail=(
+                    "missing: " + ", ".join(missing)
+                    if missing
+                    else f"projection expected {projection_expected}"
+                    if projection != projection_expected
+                    else "schema enum differs from registry"
+                    if not schema_matches_registry
+                    else ""
+                ),
             )
         )
     return tuple(rows)

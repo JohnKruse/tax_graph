@@ -19,6 +19,16 @@ from tax_graph.config import get_config_value
 from tax_graph.extract.llm_client import LlmClient, response_telemetry
 from tax_graph.extract.prompts import load_prompt_template, render_prompt
 from tax_graph.extract.structure import split_caption_and_instruction
+from tax_graph.operation_registry import (
+    OPERATION_SPECS,
+    operation_names,
+    operation_numeric_roles,
+    operation_roles,
+    operation_spec,
+    predicate_operations,
+    prompt_operation_documentation,
+    projection_rule_for,
+)
 
 
 CELL_INPUT_FIELDS = (
@@ -1235,19 +1245,9 @@ _NON_NUMERIC_VALUE_TYPES = frozenset({
     "text",
 })
 _NUMERIC_ARGUMENT_ROLES = {
-    "COPY": ("source",),
-    "SUM": ("addend",),
-    "SUBTRACT": ("minuend", "subtrahend"),
-    "MULTIPLY": ("factor",),
-    "DIVIDE": ("numerator", "denominator"),
-    "MIN": ("candidate",),
-    "MAX": ("candidate",),
-    "NEGATE": ("value",),
-    "ABS": ("value",),
-    "ROUND": ("value",),
-    "IF": (None, "when_true"),
-    "IF_ELSE": ("condition", "threshold", "when_true", "when_false"),
-    "COMPARE": ("left", "right"),
+    spec.name: spec.numeric_roles
+    for spec in OPERATION_SPECS
+    if spec.numeric_roles
 }
 
 
@@ -1310,14 +1310,12 @@ def _numeric_operand_type_issues(
 
 def _numeric_argument_slots(operation: str, argument_count: int) -> list[tuple[int, str]]:
     """Return positional amount slots for one expression operation."""
-    roles = _NUMERIC_ARGUMENT_ROLES.get(operation)
+    roles = operation_numeric_roles(operation, argument_count)
     if not roles:
         return []
-    if len(roles) == 1:
-        return [(index, roles[0]) for index in range(argument_count)]
     return [
         (index, role)
-        for index, role in enumerate(roles[:argument_count])
+        for index, role in enumerate(roles)
         if role is not None
     ]
 
@@ -1552,6 +1550,10 @@ def _projection_warnings(
     for finding in projection.findings:
         match = re.fullmatch(r"no reusable rule for operation ([A-Z_]+)", finding)
         if match:
+            operation = match.group(1)
+            spec = operation_spec(operation)
+            if spec is not None and spec.category != "value":
+                continue
             findings.append(
                 CellValidationIssue(
                     "unmapped_operation",
@@ -1613,7 +1615,8 @@ def _validate_tree_node(
     if set(node) != {"op", "args"}:
         raise ValueError("expression nodes require only op and args")
     op = str(node.get("op") or "").upper()
-    if op not in DEFAULT_OPERATIONS:
+    spec = operation_spec(op)
+    if spec is None:
         raise ValueError(f"unsupported expression operation: {op}")
     args = node.get("args")
     if not isinstance(args, list) or not args:
@@ -1621,13 +1624,10 @@ def _validate_tree_node(
     if depth >= max_depth:
         if any(isinstance(arg, Mapping) and "op" in arg for arg in args):
             raise ValueError("expression tree exceeds configured depth")
-    expected = {"COPY": 1, "NEGATE": 1, "ABS": 1, "ROUND": 1, "REQUIRE_INPUT": 1,
-                "NOT": 1, "SUBTRACT": 2, "DIVIDE": 2, "MULTIPLY": 2,
-                "COMPARE": 2, "IF": 2, "IF_ELSE": 4}
-    if op in expected and len(args) != expected[op]:
-        raise ValueError(f"{op} requires exactly {expected[op]} arguments")
-    if op in {"AND", "OR"} and len(args) < 2:
-        raise ValueError(f"{op} requires at least 2 arguments")
+    if not spec.accepts_count(len(args)):
+        if spec.max_args == spec.min_args:
+            raise ValueError(f"{op} requires exactly {spec.min_args} arguments")
+        raise ValueError(f"{op} requires at least {spec.min_args} arguments")
     _validate_argument_shapes(op, args)
     for arg in args:
         if not isinstance(arg, Mapping):
@@ -1640,7 +1640,7 @@ def _validate_tree_node(
         )
 
 
-PREDICATE_OPERATIONS = frozenset({"COMPARE", "AND", "OR", "NOT"})
+PREDICATE_OPERATIONS = predicate_operations()
 
 
 def _validate_argument_shapes(operation: str, args: list[Any]) -> None:
@@ -1709,20 +1709,13 @@ def _is_predicate_expression(value: Any) -> bool:
 
 
 EXPRESSION_ARGUMENT_ROLES = {
-    "IF": ("condition", "when_true"),
-    "IF_ELSE": ("condition", "threshold", "when_true", "when_false"),
-    "COMPARE": ("left", "right"),
-    "AND": ("candidate",),
-    "OR": ("candidate",),
-    "NOT": ("operand",),
+    spec.name: spec.roles
+    for spec in OPERATION_SPECS
+    if spec.name in {"IF", "IF_ELSE", "COMPARE", "AND", "OR", "NOT"}
 }
 
 
-DEFAULT_OPERATIONS = (
-    "COPY", "SUM", "SUBTRACT", "MULTIPLY", "DIVIDE", "MIN", "MAX", "NEGATE",
-    "ABS", "ROUND", "LOOKUP_TABLE", "LOOKUP_BRACKET", "IF", "IF_ELSE", "AND",
-    "OR", "NOT", "COMPARE", "REQUIRE_INPUT",
-)
+DEFAULT_OPERATIONS = operation_names()
 
 
 def expression_schema(
@@ -1833,47 +1826,21 @@ class GraphProjection:
 
 
 ROLE_FOR_OP = {
-    "SUM": ("addend",),
-    "SUBTRACT": ("minuend", "subtrahend"),
-    "DIVIDE": ("numerator", "denominator"),
-    "MULTIPLY": ("factor",),
-    "MAX": ("candidate",),
-    "MIN": ("candidate",),
-    "COPY": ("source",),
-    "NEGATE": ("value",),
-    "IF": EXPRESSION_ARGUMENT_ROLES["IF"],
-    "IF_ELSE": EXPRESSION_ARGUMENT_ROLES["IF_ELSE"],
-    "COMPARE": EXPRESSION_ARGUMENT_ROLES["COMPARE"],
-    "AND": EXPRESSION_ARGUMENT_ROLES["AND"],
-    "OR": EXPRESSION_ARGUMENT_ROLES["OR"],
-    "NOT": EXPRESSION_ARGUMENT_ROLES["NOT"],
-    "LOOKUP_TABLE": ("key", "value"),
+    spec.name: spec.roles
+    for spec in OPERATION_SPECS
+    if spec.roles
 }
 
 RULE_FOR_OP = {
-    "SUM": "sum_currency",
-    "SUBTRACT": "subtract_currency",
-    "MULTIPLY": "multiply_currency",
-    "DIVIDE": "divide_currency",
-    "MIN": "min_currency",
-    "MAX": "max_currency",
-    "NEGATE": "negate_currency",
-    "ABS": "abs_currency",
-    "ROUND": "round_currency",
-    "COPY": "copy_currency_value",
-    "LOOKUP_TABLE": "lookup_selected_value",
+    spec.name: spec.projection_rule
+    for spec in OPERATION_SPECS
+    if spec.projection_rule is not None
 }
 
 
 def _rule_for_op(operation: str, evidence_text: str) -> str | None:
     """Resolve one expression operation to an existing reusable graph rule."""
-    if operation != "IF_ELSE":
-        return RULE_FOR_OP.get(operation)
-    comparison = _comparison_from_evidence(evidence_text)
-    return {
-        "less": "if_less_than_currency",
-        "greater": "if_greater_than_currency",
-    }.get(comparison)
+    return projection_rule_for(operation, evidence_text)
 
 
 def _comparison_from_evidence(evidence_text: str) -> str | None:
@@ -2009,7 +1976,7 @@ class _GraphConverter:
 def _role_for(operation: str, index: int, operand: Any | None = None) -> str:
     if operation == "LOOKUP_TABLE" and isinstance(operand, Mapping) and operand.get("role"):
         return str(operand["role"])
-    roles = ROLE_FOR_OP.get(operation, ("operand",))
+    roles = operation_roles(operation, index + 1) or ("operand",)
     return roles[index] if index < len(roles) else roles[-1]
 
 
@@ -2031,6 +1998,7 @@ def _render_cell_prompt(
         "printed_lines": ", ".join(printed_lines),
         "graph_nodes": _graph_nodes_prompt(reference_inventory, row.form),
         "human_comment": row.human_comment,
+        "operation_documentation": prompt_operation_documentation(),
     }
     try:
         return render_prompt(template, values)

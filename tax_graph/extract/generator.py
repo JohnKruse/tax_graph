@@ -9,6 +9,7 @@ from tax_graph.config import get_config_value
 from tax_graph.extract.llm_client import LlmClient, response_telemetry
 from tax_graph.extract.models import DRAFT_KINDS, ID_FIELDS, DraftObject, ExtractionBatch, SourceDocumentInput
 from tax_graph.extract.prompts import assemble_generator_prompt, closed_operations, draft_response_schema
+from tax_graph.operation_registry import operation_roles
 
 
 class ExtractionError(ValueError):
@@ -139,34 +140,10 @@ def complete_expression_roles(batch: ExtractionBatch) -> None:
 
 def _inferred_operand_role(operation: str, index: int) -> str | None:
     """Return the safe positional role for one closed operation."""
-    roles: dict[str, tuple[str, ...]] = {
-        "SUM": ("addend",),
-        "SUBTRACT": ("minuend", "subtrahend"),
-        "MULTIPLY": ("multiplicand", "multiplier"),
-        "DIVIDE": ("numerator", "denominator"),
-        "MIN": ("candidate",),
-        "MAX": ("candidate",),
-        "NEGATE": ("amount",),
-        "ABS": ("amount",),
-        "ROUND": ("amount",),
-        "LOOKUP_BRACKET": ("amount", "brackets"),
-        "IF": ("condition", "when_true"),
-        "IF_ELSE": ("condition", "threshold", "when_true", "when_false"),
-        "AND": ("candidate",),
-        "OR": ("candidate",),
-        "NOT": ("operand",),
-        "COMPARE": ("left", "right"),
-        "REQUIRE_INPUT": ("input",),
-    }.get(operation, ())
+    roles = operation_roles(operation, index + 1)
     if not roles:
         return None
-    if index < len(roles):
-        return roles[index]
-    if operation in {"SUBTRACT", "MULTIPLY", "DIVIDE", "AND", "OR"}:
-        return roles[-1]
-    if operation in {"SUM", "MIN", "MAX"}:
-        return roles[0]
-    return None
+    return roles[index] if index < len(roles) else roles[-1]
 
 
 def _optional_float(value: Any) -> float | None:

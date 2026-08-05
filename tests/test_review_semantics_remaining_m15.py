@@ -150,8 +150,8 @@ def test_table_frontier_gap_parameter_input_and_imported_classes() -> None:
 
 @pytest.mark.m15
 def test_unknown_operation_fails_instead_of_exposing_raw_json() -> None:
-    with pytest.raises(SemanticFormatError, match="no formatter for operation DIVIDE"):
-        _format("DIVIDE", [("amount", "numerator"), ("other", "denominator")])
+    with pytest.raises(SemanticFormatError, match="no formatter for operation WAT"):
+        _format("WAT", [("amount", "operand")])
 
 
 @pytest.mark.m15

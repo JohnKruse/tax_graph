@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "rule.schema.json",
   "title": "Tax Graph Rule",
-  "description": "A reusable, declarative transformation referenced by edges. Expressed with a small primitive instruction set rather than bespoke code. NOTE: the operation enum below is v0 and is being validated/expanded by an IRS-instruction survey (see docs).",
+  "description": "A reusable, declarative transformation referenced by edges. The operation enum is generated from the versioned operation registry (registry version 1).",
   "type": "object",
   "additionalProperties": false,
   "required": ["rule_id", "operation", "description"],
@@ -13,7 +13,7 @@
       "description": "v0 primitive set. Bounding is done with MIN/MAX whose operands may be node refs OR literal constants, so CAP/FLOOR/LIMIT were dropped as redundant (an upper bound is MIN(x, const); a lower bound is MAX(x, const); a clamp is MIN(MAX(x, lo), hi)). Rounding is ROUND with parameters {mode: nearest|up|down, increment} - which also covers round-up/down-to-increment, so CEILING and FLOOR-as-rounding were dropped too.",
       "enum": [
         "COPY", "SUM", "SUBTRACT", "MULTIPLY", "DIVIDE",
-        "MIN", "MAX", "NEGATE", "ABS", "ROUND",
+        "MIN", "MAX", "NEGATE", "ROUND",
         "LOOKUP_TABLE", "LOOKUP_BRACKET",
         "IF", "IF_ELSE", "AND", "OR", "NOT",
         "COMPARE", "REQUIRE_INPUT"

@@ -21,9 +21,9 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## BALL
 
-**BALL: WORKER - M20-S66 (ONE VERSIONED OPERATION REGISTRY).** Task block under
-**From Architect**. **S65 is ACCEPTED at `80b71c5`, and it found something far bigger than it was
-built to find.**
+**BALL: ARCHITECT - M20-S66 provider acceptance pending.** Worker implementation is complete
+locally; task block remains under **From Architect**. **S65 is ACCEPTED at `80b71c5`, and it found
+something far bigger than it was built to find.**
 
 **ONLY 3 OF 19 OPERATIONS AGREE ACROSS ALL FOUR LAYERS.** `doctor` reports prompt / validator /
 projection / engine per operation. `SUBTRACT`, `LOOKUP_TABLE` and `IF_ELSE` hold. **Sixteen
@@ -68,33 +68,36 @@ review.
 
 ## Current round
 
-**M20-S65 ACCEPTED (Architect, Claude Opus 5, 2026-08-05) at `80b71c5`. `doctor` works, and its
-first real run produced a finding bigger than the round.**
+**M20-S66 WORKER IMPLEMENTATION COMPLETE LOCALLY (2026-08-05).** Canary: **Ground Truth**.
+The operation vocabulary is now one versioned registry (`OPERATION_REGISTRY_VERSION = "1"`) with
+arity, roles, category, prompt notes, projection mapping, and runtime handler. ABS is removed;
+DIVIDE and ROUND are executable. Predicates and REQUIRE_INPUT remain in the vocabulary but doctor
+records that no standalone projection is expected for them. The checked-in schemas, extraction
+validation, prompts, workbench formatter, review projection, engine dispatch, and doctor all read
+or check the same contract. ROUND defaults to nearest whole dollar under the acquired 2025 Form
+1040 instructions (`en_US_2025_publink24811vd0e457`); zero DIVIDE returns the unresolved-value
+sentinel.
 
-**Verified by running it against the repository, not by reading it.**
+**RAN:**
 
-| check | result |
-| --- | --- |
-| executable blocker | `m20_s3a_outline_ready`: **CLEARED**, with the measurement - 1040 60/59, Schedule A 29/28, 2441 40/35. **This is the case nobody notices, and it is now the first thing the command prints.** |
-| declared artifacts | 23 sources HOLD; the QDCGT harvest HOLDS at its declared path |
-| operation vocabulary | **16 of 19 DISAGREE** - see BALL |
-| open item age | three items STALE at 73 commits, correctly flagged |
-| exit contract | documented in help text; exit 1 on NEEDS ATTENTION |
+- `$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp_codex'; .\.venv\Scripts\python.exe -m pytest tests/test_operation_registry_m20.py tests/test_doctor_m20.py -q` -> **29 passed, 1 warning**.
+- `$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp_codex'; .\.venv\Scripts\python.exe -m pytest tests/test_operation_registry_m20.py tests/test_doctor_m20.py tests/test_derive_cells_m20.py tests/test_extract_m4.py tests/test_extract_outline_m4.py tests/test_tax_liability_m11.py tests/test_background_m20.py -q` -> **148 passed, 1 warning**.
+- `$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp_codex'; .\.venv\Scripts\python.exe -m pytest tests/test_workbench_m15.py -q` -> **4 passed, 1 warning** (mandatory D5 boundary test).
+- `$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp_codex'; .\.venv\Scripts\python.exe -m pytest tests/test_review_table_m20.py tests/test_expression_agreement_m20.py -q` -> **11 passed, 1 warning**.
+- `$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp_codex'; .\.venv\Scripts\python.exe -m pytest tests/test_review_table_m20.py tests/test_expression_agreement_m20.py tests/test_generated_review_m20.py tests/test_review_manifest_m15.py tests/test_review_semantics_remaining_m15.py -k "not live_derived_manifest_uses_review_expressions_without_raw_fallback" -q` -> **23 passed, 8 failed, 1 deselected, 2 warnings**. Every failure is a `WinError 5` while reading the protected live `graph/2025/_drafts` directories; no assertion failure was reached.
+- `$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp_codex'; .\.venv\Scripts\python.exe -m pytest tests/test_capital_gains_slice.py tests/test_tax_table_m11.py tests/test_tax_liability_m11.py tests/test_tables_engine_m6b.py tests/test_frontier_engine_m7.py tests/test_form_1040_spine_m11.py tests/test_dependents_m15.py -q` -> **28 passed, 2 failed** on the same protected draft-directory ACL while preparing live fixtures.
+- `.\.venv\Scripts\python.exe -m tax_graph.cli doctor --root C:\Users\devbox\projects\tax_graph` -> **exit 0**; all 18 operation rows HOLD, including expected NO projection for predicates and REQUIRE_INPUT.
+- `.\.venv\Scripts\python.exe -m tax_graph.cli validate 2025` -> **exit 0**; graph integrity OK.
+- `.\.venv\Scripts\python.exe -m compileall -q tax_graph workbench tests/test_operation_registry_m20.py tests/test_doctor_m20.py` -> **exit 0**.
+- `.\.venv\Scripts\python.exe tools/check_ascii.py` -> **ASCII check OK**.
+- `git diff --check` -> **clean**.
 
-**The stale items were the Architect's housekeeping, and doctor caught them rather than John.** All
-three are now closed: the S36 denominator question (moot - S51 replaced the denominator with 121 of
-478), the two scoping calls (worksheets closed by S59; the filing-status constant answered by
-measurement, since `schedule_1a_2025` line 17 and `form_6251_2025` line 18 both emit correct
-role-keyed lookups), and "what is next" (John chose option (b), structure and association).
+**NOT RUN:** live provider derivation / one-live-row acceptance (Architect leg per task spec).
+The protected graph and draft directories were not changed. No provider or prompt-contract wire
+test was claimed from fixture evidence.
 
-**Architect's own verification of the engine claim, because the finding is severe:**
-`tax_graph/engine/operations.py` dispatches `COPY`, `SUM`, `MULTIPLY`, `NEGATE`, `MIN`, `MAX`,
-`LOOKUP_BRACKET`, `LOOKUP_TABLE`, `IF_ELSE` and raises
-`NotImplementedError("operation ... not implemented in v0")` for everything else. **`DIVIDE`, `ABS`
-and `ROUND` are offered to the model and cannot execute.**
-
-**Gates:** deterministic round, no provider constructed; ASCII OK; `git diff --check` clean;
-protected set diff empty.
+**NEXT BALL: ARCHITECT - run the provider leg and one live row, then accept or return a concrete
+registry-layer defect. Do not push this Worker commit until that acceptance is complete.**
 
 ## Open for Architect
 

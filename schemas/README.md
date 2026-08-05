@@ -38,4 +38,8 @@ M15R adds additive canonical-address registries, widget/node bindings, and typed
 
 ## Note on the rule vocabulary
 
-`rule.schema.json`'s `operation` enum is the **v0** starting set from req. doc Section 6.6. It is being validated and (sparingly) expanded by a survey of real IRS instruction language - see the rule-survey notes. Bias is toward *composing* existing primitives over adding new ones.
+`tax_graph/operation_registry.py` is the versioned source for the operation enum and its
+arity, operand roles, prompt description, projection rule, and runtime handler. The JSON
+schema and prompt schemas consume that contract; tests fail if the checked-in schema enum
+drifts from the registry. Bias is toward composing existing primitives over adding bespoke
+rules.

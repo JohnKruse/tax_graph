@@ -112,15 +112,17 @@
         "kind": {
           "enum": [
             "input", "imported", "copy", "sum", "subtract", "negate",
-            "multiply", "lookup_table", "lookup_bracket", "max", "min",
-            "if_else", "cross_form_fetch", "repeatable_table", "parameter", "frontier",
+            "multiply", "divide", "round", "lookup_table", "lookup_bracket", "max", "min",
+            "if", "if_else", "and", "or", "not", "compare", "require_input",
+            "cross_form_fetch", "repeatable_table", "parameter", "frontier",
             "review_gap", "literal", "reference"
           ]
         },
         "operation": {
           "enum": [
-            "COPY", "SUM", "SUBTRACT", "NEGATE", "MULTIPLY",
-            "LOOKUP_TABLE", "LOOKUP_BRACKET", "MAX", "MIN", "IF_ELSE", "REQUIRE_INPUT"
+            "COPY", "SUM", "SUBTRACT", "MULTIPLY", "DIVIDE", "MIN", "MAX", "NEGATE",
+            "ROUND", "LOOKUP_TABLE", "LOOKUP_BRACKET", "IF", "IF_ELSE", "AND",
+            "OR", "NOT", "COMPARE", "REQUIRE_INPUT"
           ]
         },
         "label": {"type": "string"},

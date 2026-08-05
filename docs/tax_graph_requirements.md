@@ -348,6 +348,16 @@ COMPARE
 REQUIRE_INPUT
 ```
 
+The initial candidate list is historical. S66 removes ABS from the emitted operation
+vocabulary because no form instruction asks a filer to take an absolute value; use a
+composed MAX operation when a floor at zero is required.
+
+S66 defines ROUND as nearest-whole-dollar rounding by default: amounts under 50 cents
+drop the cents, and amounts from 50 through 99 cents increase to the next dollar. This
+is sourced from the acquired 2025 Instructions for Form 1040, "Rounding Off to Whole
+Dollars" (`en_US_2025_publink24811vd0e457`). DIVIDE returns an unresolved required value
+when its denominator is zero; it never delegates that case to Python division.
+
 The project should resist creating thousands of bespoke procedural rules when a small declarative instruction set is sufficient.
 
 ---

@@ -1,4 +1,4 @@
-"""M20-S65 tests for the provider-free pipeline doctor."""
+"""M20-S66 tests for the provider-free pipeline doctor."""
 
 from __future__ import annotations
 
@@ -56,15 +56,34 @@ def _write_manifest_project(tmp_path: Path) -> Path:
     return root
 
 
-def test_operation_report_keeps_lookup_bracket_as_a_real_disagreement() -> None:
+def test_operation_report_uses_registry_for_every_layer() -> None:
     rows = doctor._check_operations(ROOT)
 
     lookup = next(row for row in rows if row.operation == "LOOKUP_BRACKET")
-    assert lookup.prompt is False
+    assert lookup.prompt is True
     assert lookup.validator is True
-    assert lookup.projection is False
+    assert lookup.projection is True
     assert lookup.engine is True
-    assert lookup.status == "DISAGREES"
+    assert lookup.category == "value"
+    assert lookup.projection_expected is True
+    assert lookup.status == "HOLDS"
+    assert all(row.status == "HOLDS" for row in rows)
+
+
+def test_doctor_accepts_predicate_and_disposition_rows_without_projection() -> None:
+    rows = doctor._check_operations(ROOT)
+
+    predicate = next(row for row in rows if row.operation == "COMPARE")
+    assert predicate.category == "predicate"
+    assert predicate.projection is False
+    assert predicate.projection_expected is False
+    assert predicate.status == "HOLDS"
+
+    disposition = next(row for row in rows if row.operation == "REQUIRE_INPUT")
+    assert disposition.category == "disposition"
+    assert disposition.projection is False
+    assert disposition.projection_expected is False
+    assert disposition.status == "HOLDS"
 
 
 def test_declared_region_harvest_is_checked_and_missing_output_is_unknown(tmp_path: Path) -> None:
@@ -130,3 +149,14 @@ def test_report_exit_contract_mentions_nonzero_attention() -> None:
     assert not report.ok
     assert "result: NEEDS ATTENTION" in rendered
     assert "exit code: 1" in rendered
+
+
+def test_operation_report_fails_when_a_runtime_handler_disappears(monkeypatch: pytest.MonkeyPatch) -> None:
+    import tax_graph.engine.operations as operations
+
+    monkeypatch.setattr(operations, "registered_operations", lambda: frozenset())
+
+    rows = doctor._check_operations(ROOT)
+
+    assert all(row.engine is False for row in rows)
+    assert all(row.status == "DISAGREES" for row in rows)

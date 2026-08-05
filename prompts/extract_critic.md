@@ -21,7 +21,7 @@ Document:
 - source_url: <<source_url>>
 
 Allowed operations:
-<<operations>>
+<<operation_documentation>>
 
 Schemas:
 <<schemas>>

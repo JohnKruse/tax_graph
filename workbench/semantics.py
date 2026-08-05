@@ -3,23 +3,23 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+import json
+from pathlib import Path
 import re
 from typing import Any, Mapping, Sequence
 
 
 GraphIndex = Mapping[tuple[str, str], dict[str, Any]]
-SUPPORTED_OPERATIONS = frozenset({
-    "COPY",
-    "SUM",
-    "SUBTRACT",
-    "NEGATE",
-    "LOOKUP_TABLE",
-    "LOOKUP_BRACKET",
-    "MAX",
-    "MIN",
-    "MULTIPLY",
-    "IF_ELSE",
-})
+
+
+def _schema_operations() -> frozenset[str]:
+    """Read the public generated schema without importing pipeline code."""
+    schema_path = Path(__file__).resolve().parents[1] / "schemas" / "rule.schema.json"
+    schema = json.loads(schema_path.read_text(encoding="ascii"))
+    return frozenset(str(value) for value in schema["properties"]["operation"]["enum"])
+
+
+SUPPORTED_OPERATIONS = _schema_operations()
 
 
 class SemanticFormatError(ValueError):
@@ -162,6 +162,26 @@ def format_computation(
             factor=factor["expression"],
             parameter_ref=str(factor["object_id"]),
         )
+    if operation == "DIVIDE":
+        by_role = _operands_by_role(operation, operands, {"numerator", "denominator"})
+        return _formatted(
+            operation,
+            f"Divide {by_role['numerator']['label']} by {by_role['denominator']['label']}",
+            "calculation",
+            citations,
+            left=by_role["numerator"]["expression"],
+            right=by_role["denominator"]["expression"],
+        )
+    if operation in {"ROUND", "REQUIRE_INPUT"}:
+        source = _single_operand(operation, operands)
+        verb = {"ROUND": "Round", "REQUIRE_INPUT": "Require input from"}[operation]
+        return _formatted(
+            operation,
+            f"{verb} {source['label']}",
+            "calculation" if operation != "REQUIRE_INPUT" else "input",
+            citations,
+            source=source["expression"],
+        )
     if operation == "LOOKUP_BRACKET":
         by_role = _operands_by_role(operation, operands, {"amount", "brackets"})
         amount = by_role["amount"]
@@ -177,6 +197,31 @@ def format_computation(
         )
     if operation == "LOOKUP_TABLE":
         return _format_lookup_table(operation, rule, operands, citations)
+    if operation == "IF":
+        by_role = _operands_by_role(operation, operands, {"condition", "when_true"})
+        text = f"If {by_role['condition']['label']}, use {by_role['when_true']['label']}"
+        return _formatted(
+            operation,
+            text,
+            "branch",
+            citations,
+            operands=[item["expression"] for item in by_role.values()],
+        )
+    if operation in {"AND", "OR", "NOT", "COMPARE"}:
+        labels = [str(operand["label"]) for operand in operands]
+        if operation == "NOT":
+            text = f"Not {labels[0]}"
+        elif operation == "COMPARE":
+            text = f"Compare {labels[0]} and {labels[1]}"
+        else:
+            text = f" {operation.lower()} ".join(labels)
+        return _formatted(
+            operation,
+            text,
+            "branch" if operation != "COMPARE" else "comparison",
+            citations,
+            operands=[operand["expression"] for operand in operands],
+        )
     return _format_if_else(operation, rule, operands, citations)
 
 

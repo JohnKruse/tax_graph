@@ -22,6 +22,9 @@ value operands and produces a predicate. AND and OR take two or more predicate
 operands. NOT takes one predicate operand. These meanings are positional and
 must be preserved in nested expressions.
 
+Operation registry:
+<<operation_documentation>>
+
 LOOKUP_TABLE uses named operands rather than a positional value list. Give it
 exactly one operand with role "key" and one operand for every named branch. Put
 the role directly on each leaf operand, for example:

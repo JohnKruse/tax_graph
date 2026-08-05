@@ -15,7 +15,8 @@ Guardrails:
   values; never use "line" or "total" as node_type.
 - Edge condition, when present, must be an object shaped like {"node_id": "...", "equals": "..."}
   or {"decision_id": "...", "equals": "..."}. Do not use a plain string condition.
-- Rule operation must be one of: <<operations>>
+- Rule operation must follow this versioned contract:
+<<operation_documentation>>
 - Every rule must have at least one citation_ref.
 - Put provenance only in the top-level provenance array. Do not include provenance inside
   nodes, edges, rules, citations, or decisions.

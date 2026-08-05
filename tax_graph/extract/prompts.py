@@ -11,6 +11,7 @@ from typing import Any
 from tax_graph.config import get_config_value, project_root
 from tax_graph.extract.models import DRAFT_KINDS, ExtractionBatch, RelatedSourceInput, SourceDocumentInput
 from tax_graph.io.loader import load_yaml
+from tax_graph.operation_registry import operation_names, prompt_operation_documentation
 
 
 def load_prompt_template(path: str | Path, *, root: str | Path | None = None) -> str:
@@ -62,10 +63,8 @@ def render_prompt(template: str, values: Mapping[str, str]) -> str:
 
 
 def closed_operations(*, root: str | Path | None = None) -> list[str]:
-    """Return the closed rule operation vocabulary from the rule schema."""
-    root_path = Path(root).resolve() if root is not None else project_root()
-    schema = load_yaml(root_path / "schemas" / "rule.schema.json")
-    return list(schema["properties"]["operation"]["enum"])
+    """Return the versioned operation vocabulary from the registry."""
+    return list(operation_names())
 
 
 def graph_object_schemas(*, root: str | Path | None = None) -> dict[str, dict[str, Any]]:
@@ -258,6 +257,7 @@ def assemble_generator_prompt(
             "tax_year": str(document.year),
             "source_url": document.url,
             "operations": ", ".join(closed_operations(root=root)),
+            "operation_documentation": prompt_operation_documentation(),
             "schemas": schema_prompt_summary(root=root),
             "source_text": document.text,
             "fields": field_prompt_summary(document.fields),
@@ -290,6 +290,7 @@ def assemble_critic_prompt(
             "tax_year": str(document.year),
             "source_url": document.url,
             "operations": ", ".join(closed_operations(root=root)),
+            "operation_documentation": prompt_operation_documentation(),
             "schemas": schema_prompt_summary(root=root),
             "source_text": document.text,
             "fields": field_prompt_summary(document.fields),

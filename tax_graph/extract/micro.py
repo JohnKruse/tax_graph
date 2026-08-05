@@ -11,6 +11,7 @@ from tax_graph.extract.llm_client import LlmClient
 from tax_graph.extract.outline import CandidateSpan, OutlineNode
 from tax_graph.extract.observability import llm_call_target
 from tax_graph.extract.prompts import closed_operations
+from tax_graph.operation_registry import operation_roles, operation_spec
 
 
 class MicroExtractionError(ValueError):
@@ -323,51 +324,26 @@ def _constant_multiplier_from_label(label: str) -> float | None:
 
 
 def _validate_source_line_arity(operation: str, count: int) -> None:
-    exact = {
-        "COPY": 1,
-        "NEGATE": 1,
-        "ABS": 1,
-        "ROUND": 1,
-        "REQUIRE_INPUT": 1,
-        "NOT": 1,
-        "SUBTRACT": 2,
-        "DIVIDE": 2,
-        "MULTIPLY": 2,
-        "COMPARE": 2,
-        "IF": 2,
-        "IF_ELSE": 4,
-    }
-    expected = exact.get(operation)
-    if expected is not None and count != expected:
-        raise MicroExtractionError(f"{operation} requires exactly {expected} source line(s)")
+    spec = operation_spec(operation)
+    if spec is None:
+        raise MicroExtractionError(f"unsupported operation: {operation}")
+    if not spec.accepts_count(count):
+        wording = "exactly" if spec.max_args == spec.min_args else "at least"
+        raise MicroExtractionError(f"{operation} requires {wording} {spec.min_args} source line(s)")
 
 
 def _validate_operation_inputs(operation: str, inputs: Any) -> None:
     if not isinstance(inputs, list):
         raise MicroExtractionError("operation inputs must be a list")
-    exact = {
-        "COPY": 1,
-        "NEGATE": 1,
-        "ABS": 1,
-        "ROUND": 1,
-        "REQUIRE_INPUT": 1,
-        "NOT": 1,
-        "SUBTRACT": 2,
-        "DIVIDE": 2,
-        "MULTIPLY": 2,
-        "COMPARE": 2,
-        "IF": 2,
-        "IF_ELSE": 4,
-    }
-    expected = exact.get(operation)
-    if expected is not None and len(inputs) != expected:
-        raise MicroExtractionError(f"{operation} requires exactly {expected} operand(s)")
-    roles = {
-        "SUBTRACT": ("minuend", "subtrahend"),
-        "DIVIDE": ("numerator", "denominator"),
-    }.get(operation)
-    if roles is None:
+    spec = operation_spec(operation)
+    if spec is None:
+        raise MicroExtractionError(f"unsupported operation: {operation}")
+    if not spec.accepts_count(len(inputs)):
+        wording = "exactly" if spec.max_args == spec.min_args else "at least"
+        raise MicroExtractionError(f"{operation} requires {wording} {spec.min_args} operand(s)")
+    if spec.named_leaf_roles or len(spec.roles) <= 1:
         return
+    roles = operation_roles(operation, len(inputs))
     observed = []
     for index, item in enumerate(inputs, 1):
         if not isinstance(item, dict):

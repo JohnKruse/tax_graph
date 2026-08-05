@@ -964,7 +964,7 @@ def test_unclassified_graph_node_type_is_reported_and_allowed() -> None:
     )
 
     assert hard == ()
-    assert [issue.kind for issue in warnings] == ["unmapped_operation"]
+    assert warnings == ()
     assert row.metadata["operand_type_undetermined_nodes"] == ["computed_value"]
 
     hard, warnings = validate_cell_output(
@@ -974,7 +974,7 @@ def test_unclassified_graph_node_type_is_reported_and_allowed() -> None:
         reference_inventory={"node_ids": ["undocumented_node"]},
     )
     assert hard == ()
-    assert [issue.kind for issue in warnings] == ["unmapped_operation"]
+    assert warnings == ()
     assert row.metadata["operand_type_undetermined_nodes"] == ["undocumented_node"]
 
 
