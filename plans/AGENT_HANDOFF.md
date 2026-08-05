@@ -17,32 +17,37 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## BALL
 
-**BALL: WORKER - M20-S63 (REGENERATE A CANDIDATE GRAPH FROM A FULL RUN).** Task block under
+**BALL: WORKER - M20-S63 (THE FULL-RUN SUMMARY, AND IT IS A DIFF).** Task block under
 **From Architect**. **S62 is ACCEPTED at `c017ec4`.**
 
-**THE FRAMING CORRECTION, and it is John's.** *"I thought the graph was regenerated with a full
-run... isn't that kinda the point, that you get the docs, run it and then iterate on the review
-until it is all approved, and then push/publish the graph for the year."* He is right, it is written
-down in two places, and the Architect had specced surgical per-artifact promotion instead.
-**The graph is a BUILD ARTIFACT.** `AGENTS.md` states the loop - re-run end to end, human directs
-the remainder through comments, pipeline reworks and regenerates - and `plans/PHASE_M20.md`
-sequences it as S3b structure -> **S3a regeneration** -> S4 -> S5.
+**JOHN'S FRAMING CORRECTION, and it stands as the model.** *"You get the docs, run it and then
+iterate on the review until it is all approved, and then push/publish the graph for the year."*
+**The graph is a BUILD ARTIFACT**, not a store edited one artifact at a time. `AGENTS.md` states
+that loop and `plans/PHASE_M20.md` sequences it as S3b structure -> **S3a regeneration** -> S4 ->
+S5. The Architect had specced surgical per-artifact promotion instead; that spec is withdrawn.
 
-**S3a REGENERATION IS UNBLOCKED AND HAS BEEN FOR SEVERAL ROUNDS.** The plan blocked it on a measured
-condition: `outline children = 0` for `schedule_a_2025` and `form_1040_2025`, because the outline
-could not be built from real text once the legacy renderer's synthetic markup was removed. Measured
-today: **29 and 60 flattened nodes, 28 and 59 anchors.** The S58-S61 structure work cleared it.
-**That is the third time this session that pinned, decided work turned out to be already unblocked
-or already built** - after the worksheet harvester and rollover seam 5.
+**S3a REGENERATION IS UNBLOCKED AND HAS BEEN FOR SEVERAL ROUNDS.** The plan blocked it on
+`outline children = 0` for `schedule_a_2025` and `form_1040_2025`. Measured 2026-08-05: **29 and 60
+flattened nodes, 28 and 59 anchors.** The S58-S61 structure work cleared it. **Third time this
+session that pinned work turned out to be already unblocked or already built**, after the worksheet
+harvester and rollover seam 5.
 
-**What the first candidate will show, predicted honestly so the number is not a surprise:** about
-**121 of 478 printed anchors** are attempted today, so the candidate graph will be far thinner than
-the 441-node handcrafted one. **That measurement is the point of the round.**
+**S63 COMES BEFORE THE REGENERATION ON PURPOSE.** John: *"every once in a while we really need to
+run the whole thing... How do you suggest we do this to not become bogged down?"* Running is cheap,
+12-15 minutes and pennies. **Reading is what costs.** Build the summary first - against run reports
+that already exist, with no provider - so the first full run lands with a readable artifact instead
+of a pile. John's call on the split: *"yes, if we aren't packing too many things into S63.
+Otherwise crack it in two."* It was five steps already, so it is two rounds.
 
-**QUEUE:** S63 (candidate regeneration), then review the candidate and iterate, then publish once a
-candidate is worth publishing - which is when the archive and gate re-point happen. Column and grid
-recovery, the operation registry, phrase obligations, and **S53 the approval gate** follow; the
-approval gate is what makes "iterate until approved" mean anything.
+**QUEUE:** S63 (summary as a diff, band-aware), S64 (candidate regeneration, reporting through it),
+then review and iterate on the candidate, then publish - which is when the archive and gate re-point
+happen. Column and grid recovery, the operation registry, phrase obligations, and **S53 the approval
+gate**, which is what makes "iterate until approved" mean anything.
+
+**INDEPENDENT AND PULLABLE FORWARD - the known-red cleanup.** Four tests are inherited-red
+(see **Standing constraints**), so a red suite is the normal state and **nobody can tell a new
+failure from the baseline.** That is the self-selected-denominator defect one layer up. Until green
+means green, running the full test set more often buys nothing. Small round, no dependencies.
 
 ## Current round
 
@@ -317,61 +322,91 @@ client-managed server dies.
 
 ## From Architect
 
-- **M20-S63 TASK - REGENERATE A CANDIDATE GRAPH FROM A FULL RUN (Architect, Claude Opus 5,
+- **M20-S63 TASK - THE FULL-RUN SUMMARY, AND IT IS A DIFF (Architect, Claude Opus 5, 2026-08-05,
+  from John's question about not becoming bogged down).** Ledger: the RAN/NOT RUN rule, D10, and the
+  standing rules in `AGENTS.md`. **Deterministic. No provider call anywhere in this round.**
+  One change, no passengers.
+
+  **OPEN ITEMS AND SEAMS THIS ROUND TOUCHES:** serves the operating loop in `AGENTS.md` by making a
+  full run cheap to READ. **Leaves untouched:** candidate regeneration (S64, next), the live graph
+  and protected set, column and grid recovery, the operation registry, phrase obligations, S53.
+
+  **Why this comes BEFORE the first full regeneration.** John: *"every once in a while, we really
+  need to run the whole thing and run full test set. How do you suggest we do this to not become
+  bogged down?"* Running is cheap - roughly 12-15 minutes and pennies. **Reading is what costs.**
+  Building the summary after the first full run means the first full run produces exactly the
+  unreadable pile this exists to prevent. **The Architect has been assembling this by hand in
+  scratchpad scripts all day, which is the evidence that it belongs in the tool.**
+
+  **Step 1 - one artifact, and it is a DIFF against the previous run.** You almost never want "what
+  is the state"; you want "what changed". Report per document: derived-over-attempted deltas, rows
+  whose expression CHANGED with both renderings shown, findings that appeared, findings that
+  cleared. **Absolute numbers stay available underneath**, but the top of the artifact is the delta.
+
+  **Step 2 - be band-aware, or the diff lies.** The same row produces different trees across runs at
+  temperature 0, and `form_2441_2025` has legitimately swung 18-20 derived on identical code. **Keep
+  the last three runs as a rolling baseline and flag only movement outside the observed band.**
+  Movement inside the band is noise and must not consume attention. **Report the band per document
+  so a reader can see what is being treated as noise.**
+
+  **Step 3 - build and test it against runs we already have.** Several complete run reports exist
+  from 2026-08-05 covering 2441, 1040, 6251 and a five-document set. **Use them as fixtures.** This
+  round needs no provider and must not construct a client.
+
+  **Step 4 - name what a full run should include, without running it.** Corpus derivation, the
+  candidate graph once S64 exists, the review table, and the test suite. **Report the recommended
+  cadence** the Architect proposed and John accepted: on any round touching a shared layer -
+  evidence, schema, vocabulary, the operation registry - before any publish, and otherwise every
+  fourth or fifth localized round.
+
+  **Do not:** call a provider; write inside the repo; change derivation, the packet, or the
+  vocabulary; report a delta without its band. **Stop conditions:** any diff in the protected
+  directories; a summary that presents in-band drift as a regression. Tier 3. Honest
+  `RAN:`/`NOT RUN:`. ASCII, `git diff --check`, module-form `validate 2025`. **ONE local commit.**
+
+- **M20-S64 TASK - REGENERATE A CANDIDATE GRAPH FROM A FULL RUN (Architect, Claude Opus 5,
   2026-08-05).** Ledger: the RAN/NOT RUN rule, D10, and the standing rules in `AGENTS.md`.
-  **This replaces the surgical-promotion spec that was here. That spec was off-plan and John said
-  so:** *"I thought the graph was regenerated with a full run... isn't that kinda the point, that you
-  get the docs, run it and then iterate on the review until it is all approved, and then
-  push/publish the graph for the year."*
+  **Runs after S63 and reports through S63's summary.** One change, no passengers.
 
   **OPEN ITEMS AND SEAMS THIS ROUND TOUCHES:**
-  - **UNBLOCKS AND IMPLEMENTS S3a REGENERATION**, which `plans/PHASE_M20.md` sequences as
-    S3b structure -> **S3a regeneration** -> S4 -> S5, and which has been blocked on a measured
-    condition that **is now cleared**: the plan recorded `outline children = 0` for
-    `schedule_a_2025` and `form_1040_2025`; today they are **29 and 60 flattened nodes, 28 and 59
-    anchors**. The S58-S61 structure work cleared it and nobody noticed.
-  - **IMPLEMENTS** the operating loop in `AGENTS.md`: forms change -> re-run end to end -> human
-    directs the remaining share through comments -> pipeline reworks and regenerates.
-  - **SERVES** John's pipeline-only ruling and fixes the S62 gap, since `review-table` renders
-    nothing for a document with no stored expressions.
-  - **LEAVES UNTOUCHED:** the live graph and the protected set - **this round writes a CANDIDATE,
-    not the published graph**; column and grid recovery; the operation registry; phrase obligations;
-    S53.
+  - **IMPLEMENTS S3a REGENERATION**, sequenced in `plans/PHASE_M20.md` as S3b structure -> **S3a
+    regeneration** -> S4 -> S5, and blocked there on a measured condition that **is now cleared**:
+    the plan recorded `outline children = 0` for `schedule_a_2025` and `form_1040_2025`; measured
+    2026-08-05 they are **29 and 60 flattened nodes, 28 and 59 anchors**.
+  - **IMPLEMENTS** John's framing: *"you get the docs, run it and then iterate on the review until
+    it is all approved, and then push/publish the graph for the year."* **The graph is a build
+    artifact, not a store edited one artifact at a time.**
+  - **FIXES** the S62 gap, where `review-table` renders a blank middle column for any document with
+    no stored expressions.
+  - **LEAVES UNTOUCHED:** the live graph and the protected set - **this writes a CANDIDATE, never
+    the published graph**; the archive and gate re-point belong to the publish round.
 
-  **The framing that was wrong, so it is not repeated.** The graph is a BUILD ARTIFACT, not a store
-  that gets edited one artifact at a time. There is no per-artifact promotion decision. There is a
-  run, a review, and a publish.
+  **Step 1 - generate a candidate graph from one full corpus run**, every manifest document, written
+  outside the published graph. Include the harvested worksheet drafts so cross-document references
+  have something to resolve against. **The provider leg is the Architect's** - build the writer so a
+  completed run can be handed to it.
 
-  **Step 1 - generate a candidate graph from one full corpus run.** Every manifest document, one
-  run, written to a candidate location outside the published graph. Include the harvested worksheet
-  drafts so cross-document references have something to resolve against. **Deterministic parts stay
-  deterministic; the provider leg is the Architect's** - build the writer so the Architect can hand
-  it a completed run.
+  **Step 2 - coverage against the DOCUMENT, never the selector.** Per document and in total: printed
+  anchors, attempted, derived, repaired, gapped, errored, skipped-with-reason. **The expected
+  headline is that the candidate is far thinner than the handcrafted graph** - roughly 121 of 478
+  anchors are attempted today, against 441 handcrafted nodes. **That measurement is the point of the
+  round. Do not tune anything to improve it.**
 
-  **Step 2 - report coverage honestly, against the document and not the selector.** Per document and
-  in total: printed anchors, attempted, derived, repaired, gapped, errored, skipped-with-reason.
-  **The expected headline is that the candidate is far thinner than the handcrafted graph** - about
-  121 of 478 anchors are attempted today. **That is the measurement this round exists to produce, not
-  a failure.** Do not tune anything to improve it.
+  **Step 3 - diff the candidate against the handcrafted graph.** Addresses in both, only in the
+  candidate, only in the handcrafted set; where both hold an expression, whether they agree.
+  **List the disagreements, do not count them** - that list is the review queue.
 
-  **Step 3 - diff the candidate against the handcrafted graph.** Which addresses exist in both, only
-  in the candidate, only in the handcrafted set; where both hold an expression, whether they agree.
-  **Report disagreements as a list, not a count** - they are the review queue for the next round.
+  **Step 4 - point `review-table` at the candidate**, so the three-column review finally works on
+  what the pipeline produced. **This is the deliverable John uses.**
 
-  **Step 4 - make `review-table` read the candidate.** The S62 command currently renders a blank
-  middle column for every unpromoted document. Point it at the candidate so the three-column review
-  works on what the pipeline actually produced. **This is the deliverable John will use.**
-
-  **Step 5 - state the publish path without taking it.** Report exactly what publishing a candidate
-  would do, what it would overwrite, and how to undo it. **Do not publish**, and do not touch the
-  protected set - the archive and gate re-point belong to the publish round, once a candidate has
-  been reviewed and is worth publishing.
+  **Step 5 - state the publish path without taking it:** what publishing would overwrite, and how to
+  undo it. **Do not publish.**
 
   **Do not:** write into `graph/2025/{nodes,edges,rules,field_maps}`; hand-author anything; tune the
-  prompt or the selector to improve coverage; publish. **Stop conditions:** any diff in the protected
-  directories; a candidate node without a citation; coverage reported against the selector's
-  denominator instead of the document's. Tier 3. Honest `RAN:`/`NOT RUN:` - **the provider leg is the
-  Architect's.** ASCII, `git diff --check`, module-form `validate 2025`. **ONE local commit.**
+  prompt or selector; publish. **Stop conditions:** any diff in the protected directories; a
+  candidate node without a citation; coverage reported against the selector's denominator.
+  Tier 3. Honest `RAN:`/`NOT RUN:` - **the provider leg is the Architect's.** ASCII,
+  `git diff --check`, module-form `validate 2025`. **ONE local commit.**
 
 - **M20-S53 TASK - THE APPROVAL GATE, BEHIND A SWITCH, DEFAULT OFF (Architect, Claude Opus 5,
   2026-08-04, from John's approval-is-the-gate ruling).** Ledger: the RAN/NOT RUN rule, D10.
