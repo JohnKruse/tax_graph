@@ -150,6 +150,17 @@ Global project canary: **Ledger Llama**.
   **The Architect half of this rule:** a round that touches the provider schema or prompt contract
   is NOT ACCEPTED until one live row derives. One document, one row, roughly eight seconds and a
   fraction of a cent. Both S54 and S55 would have been caught the moment they were written.
+- **ARCHITECT: A ROUND SPEC MUST RECONCILE AGAINST THE OPEN LISTS (John, 2026-08-05).** Before
+  writing a spec, re-read **Open for Architect** in the handoff and the **rollover seams** in
+  `docs/engineering-plan.md`, and state in the spec which items it advances, answers, supersedes, or
+  deliberately leaves untouched. **Closing an item requires a line saying why.** John: *"we have run
+  into 'that's pinned to the to-do, but nothing's been done'. Do you not look at the list each
+  time?"* He was right. Over S52-S57 the Architect specced six rounds while treating that section as
+  an outbox - editing items in it without reading the ones beside them - and John twice had to point
+  out work that was already decided and pinned: the worksheet harvester whose output was never
+  landed, and rollover seam 5, which already specifies the caption-and-geometry re-binder that a
+  freshly-invented two-key addressing proposal was reinventing. A spec with no reconciliation line
+  is incomplete.
 
 ## Worker defect ledger (read before declaring a step)
 

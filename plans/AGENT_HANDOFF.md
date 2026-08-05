@@ -17,18 +17,30 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## BALL
 
-**BALL: WORKER - M20-S57 (THE EVIDENCE PACKET FOR A PRINTED TABLE).** Task block under
-**From Architect**. **S56 is ACCEPTED at `c359d65`. THE CORPUS IS ALIVE: 19 derived of 21
-attempted**, verified by a live provider run, which is the acceptance bar this repo now uses for
-any round touching the provider schema.
+**BALL: WORKER - M20-S58 (THE CELL CAPTION, SEPARATED FROM THE INSTRUCTION).** Task block under
+**From Architect**. **John chose option (b), structure and association**, and asked for the
+label/instruction foundation first: *"mashing all of this stuff together is a problem because there
+is no context carried forward about what it all is and where it comes from."*
 
-**But `derived` is a PROCESSING metric, not a correctness one.** I checked all 19 against the
-acquired form face by hand: **13 are correct and 6 are not**, and the 6 fall into two named classes
-that both predate S56. Neither is a schema problem and neither is new.
+**THE EVIDENCE LAYER IS THE DEFECT, NOT THE PARSER.** Architect A/B on 2441 line 8, same model and
+prompt, only the evidence changed: the shipped flattened packet yields **6 bands with gaps**; a
+packet rebuilt from PDF coordinates yields **all 16 bands, correct thresholds and decimals**, even
+though the bands were handed over in scrambled printed order. It then failed only because it emitted
+`LOOKUP_BRACKET`, which is not in the vocabulary. **Comprehension was never the problem.**
 
-**QUEUE: S57 (the line 8 evidence packet), then S53 (the approval gate, behind a switch, default
-off).** The filer-provided-as-default class wants its own round after those; it is John's
-2026-07-31 ruling and it now has four live instances.
+**MEASURED FOUNDATION DEFECTS.** `label` is byte-identical to `form_face_text` on **100% of rows**
+(21/21 on 2441, 17/17 on the 1040, 29/29 on 6251) - there is no caption anywhere in the system.
+`instruction_text` is empty on **50 of 67 rows**, and the 1040's instruction HTML IS acquired, so
+for that document it is a join failure rather than a missing source.
+
+**QUEUE:** S58 captions, then column/grid recovery inside a geometric row, then the
+instruction-booklet join. S53 (the approval gate) sits behind those. **S57 as previously specced is
+WITHDRAWN** - it treated the line 8 packet as a one-form repair; it is the column-recovery round.
+
+**AWAITING JOHN:** the manifest schema change that lets a document declare itself a region of
+another acquired document. **It is the only thing between us and the Qualified Dividends worksheet
+being a real document**, which would turn 6251 lines 13, 20 and 27 - three of the six hairiest cells
+in the corpus - from impossible into ordinary cross-document copies.
 
 ## Current round
 
@@ -299,44 +311,73 @@ client-managed server dies.
 
 ## From Architect
 
-- **M20-S57 TASK - THE EVIDENCE PACKET MUST CARRY THE WHOLE PRINTED TABLE (Architect, Claude Opus
-  5, 2026-08-05).** Ledger: the RAN/NOT RUN rule, D10, and the four standing rules added to
-  `AGENTS.md` on 2026-08-05 - **read them before writing anything.** One change, no passengers.
+- **M20-S58 TASK - THE CELL CAPTION, SEPARATED FROM THE INSTRUCTION (Architect, Claude Opus 5,
+  2026-08-05; John chose option (b), structure and association, and asked for the label/instruction
+  foundation first).** Ledger: the RAN/NOT RUN rule, D10, and the standing rules added to
+  `AGENTS.md` on 2026-08-05 - **read them first.** One change, no passengers.
 
-  **Why, measured.** Form 2441 line 8's `form_face_text` - the exact string the model receives -
-  ends at `8 X`, the AcroForm marker for line 8's own input box, and contains **6 of the 16 printed
-  bands**. The Architect confirmed this by printing the packet directly. Every downstream symptom we
-  have chased for three rounds is this: the model transcribing six bands faithfully, a completeness
-  validator that has never once fired on real data because the row dies earlier, and this run's
-  invented `LOOKUP_BRACKET`. **The model has never been shown the table.**
+  **OPEN ITEMS AND SEAMS THIS ROUND TOUCHES** (required by the 2026-08-05 Architect rule):
+  - **ANSWERS** the 2026-08-03 "what is next" item: John chose **(b) structure and association**.
+    (a) standalone reviewer and (c) the checker are deferred; (c) cannot start before (b).
+  - **ADVANCES rollover seam 5** (`docs/engineering-plan.md`), which needs year-independent
+    templates keyed on "printed line number + caption + role". **There are no captions today**, so
+    seam 5 cannot be built at all until this lands.
+  - **EXPOSES a defect in rollover seam 1.** Seam 1 names the yearless `logical_key` as the
+    cross-year join key, but the real key is `document=form_1040/line=10` - it contains the line
+    number, so it changes under exactly the renumbering it exists to survive. **Report only; do not
+    change addressing in this round.**
+  - **HONORS the pinned S3a -> S3b ruling:** the structure step owns a deterministic outline
+    adapter, resolves each anchor to exactly one semantic row, and **fails closed at row
+    granularity** when ambiguous.
+  - **LEAVES UNTOUCHED:** the worksheet manifest schema change (still open, John's call); the S36
+    denominator question (now moot - S51 replaced the denominator with 121 of 478 anchors, and it
+    should be closed at the next prune).
 
-  **Step 1 - open the artifact first, and read several.** `.cache/raw/2025/form_2441_2025.txt`
-  around line 53 shows the layout: three side-by-side band columns whose rows interleave, with the
-  field marker `8 X` landing in the middle of the run. **Find the other printed tables in the
-  corpus and read those too** before you write anything - Schedule D and the 6251 have table-shaped
-  rows. Report the PATTERN across them, not a fix for one form.
+  **Why.** `label` is byte-identical to `form_face_text` on **100% of rows** - 21/21 on 2441, 17/17
+  on the 1040, 29/29 on 6251. The prompt has a `label:` slot and a `form face text:` slot and puts
+  the same paragraph in both. There is no caption anywhere in the system. John: *"mashing all of
+  this stuff together is a problem because there is no context carried forward about what it all is
+  and where it comes from."*
 
-  **Step 2 - report where the truncation happens.** Trace it through
-  `build_cell_frame_from_document` and the outline/anchor path in
-  `tax_graph/extract/outline_pipeline.py` and name the exact step that drops the tail. **Report
-  before you repair** - if the cause is the field marker splitting the row, say so; if it is a span
-  boundary, say so.
+  **What already exists, so do not rebuild it.** `tax_graph/extract/structure.py` recovers visual
+  rows from PDF word and widget rectangles, associates fields to rows, and validates anchor
+  identity; `build_outline_tree` already prefers it for acquired forms. **This round adds one thing
+  to that layer.**
 
-  **Step 3 - carry the whole table, deterministically.** The packet for a row whose label announces
-  a printed table must contain every band. **No model call, no inference, no reconstruction of a
-  band that is not printed** - this is extraction, and if the text cannot be recovered
-  deterministically then say so and stop rather than guessing.
+  **Step 1 - open the artifacts and report the pattern BEFORE implementing.** Read the real rows on
+  at least four documents (2441, 1040, 6251, Schedule 1A) and report **what actually distinguishes a
+  caption from the instruction that follows it.** Candidates: a leading noun phrase terminated by a
+  period (`25 Excluded benefits. If you checked...`), typographic weight, an x-band, or nothing at
+  all. **Many rows have NO caption** - `6 Enter the smallest of line 3, 4, or 5` is instruction from
+  the first word - and a rule that invents one for those rows is worse than no rule. Report the
+  distribution: how many rows have a real caption, how many plainly do not, how many are ambiguous.
 
-  **Step 4 - do not touch the grammar.** `LOOKUP_BRACKET` is the model improvising because it cannot
-  see a full table. **Do not add it to any vocabulary**, do not widen the role rules, do not adjust
-  the completeness validator. If a full packet still produces a bad expression, that is the next
-  round's finding and it will finally be a real one.
+  **Step 2 - implement the split deterministically, and fail closed.** No model call. A row yields
+  `caption` and `cell_instruction`, or `caption: null` with the whole text as instruction when there
+  is no caption. **An ambiguous row gets `caption: null` and a named finding, never a guess.**
 
-  **Do not:** edit the provider schema; edit a guard test to agree with new code; invent band values;
-  add an operation; promote anything. **Stop conditions:** any diff in the protected directories; a
-  band appearing in output that is not printed in the source. Tier 3. Honest `RAN:`/`NOT RUN:` -
-  **the provider leg is the Architect's, and this round is not accepted until one live row derives.**
-  ASCII, `git diff --check`, module-form `validate 2025`. **ONE local commit.**
+  **Step 3 - stop the duplication in the packet.** `label` must stop carrying the full paragraph.
+  The prompt gets the caption in `label:` and the instruction body in the form-face slot. **Report
+  the before/after packet for 2441 line 25 and 1040 line 15 verbatim** so the Architect can see what
+  the model now receives.
+
+  **Step 4 - report the augmenting-instruction gap, do not fix it here.** `instruction_text` is
+  empty on **50 of 67 rows** across those three forms, and the 1040's own instruction HTML **is**
+  acquired - so for that document it is a join failure, not a missing source. S26 made instruction
+  text optional and the pipeline has run form-face-only ever since. **Report which documents and
+  rows fail to join and why. It gets its own round.**
+
+  **Do not:** call a model for the split; invent a caption for a row that has none; touch the
+  addressing layer or `logical_key`; change the provider schema; rebuild the geometry row layer;
+  reconstruct table columns (that is the next round). **Stop conditions:** any diff in the protected
+  directories; a caption emitted that is not a verbatim prefix of the printed row. Tier 3. Honest
+  `RAN:`/`NOT RUN:` - **the provider leg is the Architect's, and this round is not accepted until
+  one live row derives.** ASCII, `git diff --check`, module-form `validate 2025`.
+  **ONE local commit.**
+
+  **Next two rounds in this arc, named so the scope of THIS one stays closed:** column and grid
+  recovery within a geometric row (the 2441 line 8 band table - the Architect has already proved a
+  reconstructed packet yields all 16 bands correctly), then the instruction-booklet join.
 
 - **M20-S53 TASK - THE APPROVAL GATE, BEHIND A SWITCH, DEFAULT OFF (Architect, Claude Opus 5,
   2026-08-04, from John's approval-is-the-gate ruling).** Ledger: the RAN/NOT RUN rule, D10.
