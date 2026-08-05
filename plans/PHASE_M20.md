@@ -159,16 +159,17 @@ Requirements when this lands (S4, with the overlay surface prepared in S3):
   form text path to emit a COMPLETE verbatim text layer plus a SEPARATE line-anchor index
   that points into it - anchor detection must never consume content. Map non-ASCII, never
   delete. No OCR, no vendor, no cost. Target ~100% retention with a per-document ratchet.
-- **SEQUENCING CORRECTED 2026-07-28 - S3b MUST PRECEDE S3a.** The plan below originally
-  put re-derivation (S3a) before association (S3b), on the reasoning that re-deriving was
-  "mechanical, follows directly from S2". **That was wrong, and the pipeline proved it
-  twice.** Regeneration runs the extraction pipeline; the pipeline needs an outline;
-  `build_outline_tree` parses the outline with
+- **SEQUENCING CORRECTED 2026-07-28 - S3b MUST PRECEDE S3a. THE BLOCKER IS NOW CLEARED
+  (measured 2026-08-05) - see the status note at the end of this bullet.** The plan below
+  originally put re-derivation (S3a) before association (S3b), on the reasoning that
+  re-deriving was "mechanical, follows directly from S2". **That was wrong, and the pipeline
+  proved it twice.** Regeneration runs the extraction pipeline; the pipeline needs an outline;
+  `build_outline_tree` parsed the outline with
   `LINE_RE = ^-\s+([0-9]+[a-z]?|[a-z]):\s*(.*)$` plus a `Header:` prefix - both of which are
-  the LEGACY RENDERER'S SYNTHETIC MARKUP that S2 removed. Measured on the corrected text:
+  the LEGACY RENDERER'S SYNTHETIC MARKUP that S2 removed. Measured then on the corrected text:
   **outline children = 0** for `schedule_a_2025` (92 lines) and `form_1040_2025` (222
-  lines), with zero `Header:` lines present. So nothing can be regenerated until the outline
-  can be built from real text.
+  lines), with zero `Header:` lines present. So nothing could be regenerated until the outline
+  could be built from real text.
   **THE ARCHITECTURAL FINDING, and it explains the whole phase:** this pipeline never had an
   independent STRUCTURE layer. The anchor wrapper WAS the structure layer, and
   `render_form.py` was doing double duty - lossy text extraction AND structure annotation in
@@ -178,6 +179,16 @@ Requirements when this lands (S4, with the overlay surface prepared in S3):
   for the first time. Building it IS S3b.
   Order is therefore: S2/S2b/S2d (done) -> **S3b structure and association** -> **S3a
   regeneration** -> S4 -> S5.
+  **STATUS 2026-08-05 - THE BLOCKER IS CLEARED AND WAS CLEARED FOR SEVERAL ROUNDS BEFORE
+  ANYONE RECHECKED IT.** `build_outline_tree` now builds from real text via the geometry-first
+  structure model. Measured: `schedule_a_2025` **29 flattened nodes / 28 anchors**,
+  `form_1040_2025` **60 / 59**, `form_2441_2025` **40 / 35**. The rounds that cleared it are
+  S58 (caption split) through S61 (substantive-continuation tightening). **S3a regeneration is
+  UNBLOCKED**; it is specced as round M20-S64.
+  **The lesson, recorded because it happened three times on 2026-08-05:** a blocker stated as a
+  measurement goes stale silently. The worksheet harvester, rollover seam 5, and this all turned
+  out to be already built or already unblocked. **Re-measure a stated blocker before treating it
+  as current.**
 
 - **S3 - STRUCTURE AND ASSOCIATION (the hard half).** Caption-to-cell association from
   deterministic geometry first, with explicit ambiguity signals; label joining; column
@@ -192,13 +203,31 @@ Requirements when this lands (S4, with the overlay surface prepared in S3):
   policies, and authority, fail-closed on an unexpected empty (ledger D10), ratcheted in
   CI, with the review-cost numbers from 3.5.
 
-### M20-S60 packet completeness
+### 4.1 Which rounds satisfied which step (added 2026-08-05)
 
-The printed-row packet is assembled from deterministic PDF geometry, including continuation text
-after repeated AcroForm anchors and field markers. A repeated-anchor row carries a named
-`row_packet_incomplete` finding when substantive continuation text is not present in the packet;
-cell validation records `incomplete_evidence` and suppresses the provider call. Geometry remains a
-source-only witness: it may join printed visual rows but may not invent text.
+**This phase runs two numbering systems and nothing mapped them, which is how a cleared blocker
+went unnoticed for weeks.** The steps above (S1-S5) are the PHASE structure. The rounds handed to
+the Worker are numbered independently (M20-S1 upward, currently past S60). Round narration lives in
+`AGENT_HANDOFF.md` and in git history - **not here.** This table is the join.
+
+| phase step | status | rounds that did the work |
+| --- | --- | --- |
+| S1 measurement harness | complete | `cdb209c`, verified `f1771e0` |
+| S2 deterministic text rebuild | complete | S2/S2b/S2d |
+| S3b structure and association | **complete 2026-08-05** | S58 captions, S60 packet completeness, S61 substantive-continuation tightening |
+| S3a regeneration | **unblocked, specced** | M20-S64 |
+| S4 OCR as second witness | **open - may be moot, see below** | none |
+| S5 coverage contract | partially delivered | S51 denominator, S63 run summary |
+
+**S4 is now a decision, not a planned step.** The step itself hedged that "S3 may leave little
+residual". S3b's geometry work recovers printed tables and captions deterministically - the Form
+2441 line 8 band table went from 6 of 16 bands to 16 of 16 with **no OCR involved**. **Before
+building S4, measure what OCR would still add.** If the answer is little, the Mistral vendor
+exception in Section 6 does not need extending and the question closes.
+
+**Round-level detail does not belong in this file.** A `### M20-S60 packet completeness` section
+was appended here and has been removed; that behaviour is described where it belongs, in the
+handoff and in the S60/S61 commits.
 
 ## 5. Sequencing and risk
 

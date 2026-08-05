@@ -375,6 +375,29 @@ expression match what the instruction says - not on defects a validator catches 
 6. Observability (guiding invariant 8) holds: a failed call is diagnosable from repo artifacts
    alone.
 
+**STATUS AGAINST THESE CRITERIA, measured 2026-08-05. Five of six are met, and the phase has
+grown well past them - which is a question for John, not a drafting problem.**
+
+| criterion | status |
+| --- | --- |
+| 1. `instruction_sections` artifact | artifact EXISTS with locators; **the JOIN is broken** - 50 of 67 formula rows across 2441/1040/6251 have no instruction section, and the 1040's booklet IS acquired, so it is a join failure not a source gap |
+| 2. joins explicit and validated with coverage | partial |
+| 3. `derive_cells` pure, row-level status, no-network tests | **met** |
+| 4. property validators with repair-once, failures by kind | **met** |
+| 5. expressions are trees, conversion deterministic and tested | **met**, except `LOOKUP_BRACKET` which is emitted and executable but projects to no rule |
+| 6. observability | **met** |
+
+**What the phase actually became, versus what it was chartered as.** M20 was chartered on a text
+retention defect with OCR as the candidate fix. It delivered something else: an evidence-integrity
+layer (captions, packet completeness, geometry-recovered tables), an honest denominator, a
+provider-schema contract with guards, review tooling, and a nomination path for documents that live
+inside other documents. **OCR was never needed** - the Form 2441 band table went from 6 of 16 to 16
+of 16 deterministically.
+**The open question for John: does M20 exit on criteria that are nearly met, with regeneration,
+the operation registry, phrase obligations and the approval gate becoming M21 - or do those fold
+into M20 and the exit criteria get rewritten to match?** The phase has been running since
+2026-07-28.
+
 ### What to STOP doing
 
 - Stop extending the review UI until the data underneath is trustworthy.
@@ -701,6 +724,13 @@ that are NOT yet coded and must not be discovered in a panic at rollover time:
    diff-drafts has only been exercised within a year. M15R's yearless canonical
    `logical_key` is the join key; unchanged, renumbered, added, removed, split, and merged
    addresses surface explicitly, never as silent fuzzy matches.
+   **DEFECT FOUND 2026-08-05, and it breaks this seam's own premise.** The real `logical_key`
+   is `document=form_1040/line=10` - yearless, but it **contains the printed line number**. Under
+   the exact event this seam exists to survive, the IRS deleting a line and shifting the rest, that
+   key changes for every moved line and the join it is supposed to anchor fails. **The join must be
+   on caption plus role, with the line number as corroborating evidence rather than the key** -
+   which is what seam 5 already describes. Related: there are no captions in the system before
+   round M20-S58, which is why seam 5 could not have been built earlier either.
 2. **Tier-inheritance policy** - documented (extraction-verification Section 6) but not
    implemented: unchanged objects inherit tier + re-run L0/L1/L3 + frozen L4 examples;
    changed objects re-enter the ladder at the bottom.
