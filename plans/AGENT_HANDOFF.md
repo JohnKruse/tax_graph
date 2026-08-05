@@ -17,107 +17,56 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## BALL
 
-**BALL: WORKER - M20-S54 (A LOOKUP TABLE MUST BE COMPLETE).** Task block under **From Architect**.
-**S52 is ACCEPTED at `2dac757`** - the refusal payload exists, carries real IRS evidence, and is
-separate from `missing_required_inputs`.
+**BALL: WORKER - M20-S55 (REWORK S54's PROVIDER SCHEMA).** Task block under **From Architect**.
+**S54 is NOT ACCEPTED at `47784e6`** - four of its six steps are good and verified, and step 2 makes
+**every live provider call fail before the model sees the prompt.**
 
-**THE HEADLINE STILL STANDS: A LOOKUP TABLE CAN BE SILENTLY TRUNCATED.** Form 2441 line 8 produced
-the named-role lookup shape correctly and transcribed **6 of the 16 printed bands**. Nothing checks
-a lookup for completeness, so a filer whose AGI lands in one of the four missing ranges falls in a
-hole rather than getting an error. **This is the phase's most important open defect.**
+**THE CORPUS IS AT ZERO.** Live Form 2441: **21 attempted, 0 derived, 21 errored**, every one with
+`Invalid schema for response_format 'tax_graph_cell_derivation': In context=('properties',
+'expression'), 'allOf' is not permitted.` OpenAI's structured-output endpoint rejects `allOf`,
+`if`/`then`/`else` and `not`. The request is refused at the wire; no row was ever attempted for
+real.
 
-**S52's honest gap, carried forward as acquisition work:** 77 of 89 frontier entries cannot supply a
-printed label, and instruction text is thinner still. The payload mechanism is right; the evidence
-behind it is sparse, and no placeholder was invented.
-
-**QUEUE: S54 (lookup completeness and the S51 selector defects), then S53 (the approval gate, behind
-a switch, default off).** S53 reuses S52's payload builder, which already accepts `not_approved`.
-
-**NOTHING IS AWAITING JOHN.** The engine-semantics question is answered and closed; the 2441
-promotion question was withdrawn as malformed. **Rollover policy and run alerting** are pinned at
-`docs/engineering-plan.md` -> Year rollover (TY2026), seam 6.
+**THIS IS THE THIRD PROVIDER-SCHEMA DEFECT AND THE SECOND FATAL ONE.** S46 shipped `role` in
+`properties` but not `required` and killed the corpus 96/96; S47 fixed it and added guard tests
+"that would have caught it". **They did not catch this**, because they were shaped to the S46
+mistake - they check `$ref` absence, property/required agreement, and role semantics, but nothing
+checks the schema against the KEYWORDS the provider actually permits. **The guard must test the
+class, not the instance.**
 
 ## Current round
 
-**M20-S52 ACCEPTED (Architect, Claude Opus 5, 2026-08-04) at `2dac757`. The refusal payload exists
-and carries real evidence. Its content is thin, and that is an acquisition finding, not a code
-defect.**
+**M20-S54 REWORK (Architect, Claude Opus 5, 2026-08-04) at `47784e6`.**
 
-**RECORD CORRECTION: the Worker reported the hash as `d2637e3`, which is orphaned.** That commit was
-amended away and is not an ancestor of HEAD; the two differ only by two lines of this file. **The
-accepted hash is `2dac757`.** A hash written into the doc before the amend cannot survive it - the
-handoff convention is that the accepted hash IS the record, so this matters more than its size.
+**THE HEADLINE IS A CORRECTION TO MY OWN S51 FINDING, AND THE WORKER FOUND IT.** I reported that the
+model "transcribed 6 of the 16 printed bands" on 2441 line 8. **The model transcribed 6 of 6.** I
+read the evidence packet directly: `build_cell_frame_from_document` hands the model a
+`form_face_text` that ends at `8 X` - the AcroForm marker for line 8's own input box - and the ten
+remaining bands sit after that marker and never arrive. The six it emitted are exactly the two text
+rows the packet contains, across all three printed columns.
 
-**Verified by driving the engine against the real 2025 graph, not by reading the report:**
+**So the defect is evidence truncation, not model laziness**, and the completeness validator S54
+built treats the symptom. That is still the right thing to have - it fails closed instead of
+emitting a six-band table - but **the row cannot succeed until the packet carries all sixteen
+bands.** Credit to the Worker: it reported the packet contents plainly rather than accepting my
+framing.
 
-| check | result |
+**Verified good, and to be preserved through the rework:**
+
+| step | result |
 | --- | --- |
-| `frontier_text_coverage` | 89 frontiers, **12** with a printed label, **77** without - matches the Worker's claim exactly |
-| real `execute` on a single-filer fact set | 441 values, 0 missing required inputs, **3 incomplete cells** |
-| payload content | 3 of 3 carry a printed IRS label; **2 of 3 carry instruction text** |
-| reason enum | closed - an unsupported reason raises rather than defaulting |
-| `not_approved` | already accepted, so S53 reuses this builder rather than adding a second one |
+| lookup completeness validator | fails closed on gaps, overlaps, missing bands, unverifiable bounds; never reconstructs a band |
+| `totals` label now read | 2441 12 -> 21 admitted; `schedule_1a` 25 -> 29, `schedule_a` 8 -> 9, `schedule_b` 1 -> 3, both 1099s 0 -> 1 |
+| unreachable state removed | `classification: total` replaces the guard that could never fire |
+| actor rename | **complete** - zero `CALLER` references survive anywhere in the repo, and no persisted `bundle.json` carried the old string |
 
-**The payload is the shape John asked for.** A live one on Schedule 1 line 21 carries the canonical
-address `2025/document=schedule_1/line=21/control=amount`, the printed label
-*"Line 21: Student loan interest deduction 21"*, the citation refs split into form-face and
-instruction lists, the frontier id and target URL, and in the operation slot
-`NOT_COMPUTED_AGENT_MUST_RESOLVE` with the statement *"Not computed; the AI agent must resolve this
-cell."* That is the IRS text plus the explicit handoff, which is exactly the ruling.
+**Fixture tests cannot see this failure.** 75 passed for the Worker and 75 pass for me; the suite
+never opens a socket. **The provider leg is the only thing that catches a wire-schema rejection, and
+it is Architect-owned, so a fixture-green round can still be corpus-dead.** That is the structural
+lesson of this round, and it is worth more than the defect.
 
-**IT IS SEPARATE FROM `missing_required_inputs`, WHICH WAS THE POINT.** "The filer owes us a number"
-and "we never modeled this" are different claims and now live in different collections.
-`incomplete_cells` reaches `execute_tax_tree` and is persisted into the filled-form `bundle.json`
-rather than sitting beside the export provenance where the writer never reads it.
-
-**Additive, verified two ways.** By inspection: the frontier branch already set `MISSING` and
-returned it, and the change only builds a payload and attaches it to the trace - the value
-assignment is byte-identical. By test: **37 passed** across engine, export, MCP, table and frontier
-suites. `test_frontier_engine_m7.py` is green from an account that can read the draft directory,
-confirming the Worker's 1 failure is the standing `_drafts` ACL baseline rather than a regression.
-
-**THE HONEST GAP: 77 OF 89 FRONTIER ENTRIES CANNOT SUPPLY A PRINTED LABEL**, and the richest live
-payload still has `instruction_text: null`. The mechanism is right and the evidence behind it is
-sparse, because we hold form-face text for a fraction of the declared frontier and instruction text
-for less. **No placeholder text was invented, which is the correct call** - the payload says nothing
-rather than saying something made up. Closing that gap is acquisition work, and it is the same
-harvester reach problem 2441 exposed: only six documents have acquired instruction HTML.
-
-**Boundary worth recording:** the payload fires only where a frontier entry exists. An edge pointing
-at a node that is neither in the graph nor declared as frontier still raises rather than producing a
-payload - `Engine._eval` indexes `self.g.nodes` directly. It is unreachable today because
-`validate 2025` reports all references resolve, so this is a note, not a defect.
-
-**Gates:** 37 passed on a short temp root, ASCII OK, `git diff --check` clean, `validate 2025`
-exit 0 with graph integrity OK, protected set diff empty, `git status` clean.
-
-## From Worker
-
-- **M20-S54 implementation complete locally; one commit pending.** Protected graph and field-map
-  directories remain unchanged. The lookup validator fails closed on source gaps, overlaps, missing
-  bands, and unverifiable or mismatched branch bounds; it never reconstructs a band. The expression
-  grammar now requires `role` only for `LOOKUP_TABLE` leaves, matching the validator.
-- **2441 line 8:** the real geometry evidence packet contains six printed bands across the table
-  columns; a six-branch expression is rejected for source gaps and missing/mismatched bounds. The
-  focused synthetic 16-band case passes, and the six-of-sixteen truncation reports the missing
-  `25000-27000` band without inference. Other named filing-status lookups remain outside the
-  numeric-band check.
-- **Denominator:** totals labels are read before the cue decision. On the 23-document manifest,
-  moves are `schedule_1a_2025` 25 -> 29, `schedule_a_2025` 8 -> 9, `schedule_b_2025` 1 -> 3,
-  `form_1099_int_2025` 0 -> 1, `form_1099_div_2025` 0 -> 1, and `form_2441_2025` 12 -> 21;
-  all non-empty reports are `classification: total`, with `unaccounted: 0`.
-- **Actor rename:** all repository references now use `NOT_COMPUTED_AGENT_MUST_RESOLVE`; no old
-  actor reference or persisted `bundle.json` carrying it was found.
-- **Focused tests:**
-  - `tests/test_m20_s54.py` - RAN: `New-Item -ItemType Directory -Force .pytest_tmp_codex | Out-Null; $env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.pytest_tmp_codex'; .venv\Scripts\python.exe -m pytest tests/test_m20_s54.py tests/test_m20_s51.py tests/test_derive_cells_m20.py tests/test_m20_s52.py -q` -> `75 passed, 1 warning in 17.84s`.
-  - `tests/test_m20_s51.py` - RAN: `New-Item -ItemType Directory -Force .pytest_tmp_codex | Out-Null; $env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.pytest_tmp_codex'; .venv\Scripts\python.exe -m pytest tests/test_m20_s54.py tests/test_m20_s51.py tests/test_derive_cells_m20.py tests/test_m20_s52.py -q` -> `75 passed, 1 warning in 17.84s`.
-  - `tests/test_derive_cells_m20.py` - RAN: `New-Item -ItemType Directory -Force .pytest_tmp_codex | Out-Null; $env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.pytest_tmp_codex'; .venv\Scripts\python.exe -m pytest tests/test_m20_s54.py tests/test_m20_s51.py tests/test_derive_cells_m20.py tests/test_m20_s52.py -q` -> `75 passed, 1 warning in 17.84s`.
-  - `tests/test_m20_s52.py` - RAN: `New-Item -ItemType Directory -Force .pytest_tmp_codex | Out-Null; $env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.pytest_tmp_codex'; .venv\Scripts\python.exe -m pytest tests/test_m20_s54.py tests/test_m20_s51.py tests/test_derive_cells_m20.py tests/test_m20_s52.py -q` -> `75 passed, 1 warning in 17.84s`.
-- **Gates:** RAN `git diff --check` -> exit 0; RAN `tools/check_ascii.py` -> `ASCII check OK`;
-  RAN module-form `validate 2025` -> exit 0, graph integrity OK. The one pytest warning is the
-  pre-existing `.pytest_cache` ACL baseline, not a test failure.
-- **NOT RUN:** provider leg - Architect-owned; no provider call was made in this Worker session.
-- **Next:** local commit, then S53 remains the next round and its approval switch stays default off.
+**Gates:** ASCII OK, protected set diff empty, 75 passed on a short temp root. **The live corpus is
+0/21 and the round is not acceptable on that basis alone.**
 
 ## Architect decision - notation
 
@@ -339,68 +288,51 @@ client-managed server dies.
 
 ## From Architect
 
-- **M20-S54 TASK - A LOOKUP TABLE MUST BE COMPLETE, A SKIP REASON MUST BE TRUE, AND THE ACTOR IS
-  THE AGENT (Architect, Claude Opus 5, 2026-08-04, from the S51 provider leg plus John's naming
-  call).** Ledger: the RAN/NOT RUN rule, D10. **No prompt tuning. Fail closed; do not fill a missing
-  band with a guess.**
+- **M20-S55 TASK - REWORK S54's PROVIDER SCHEMA, AND GUARD THE CLASS (Architect, Claude Opus 5,
+  2026-08-04).** Ledger: the RAN/NOT RUN rule, D10. **Keep every other part of S54 - the
+  completeness validator, the `totals` fix, the `classification: total` change, and the rename are
+  verified good and must survive.**
 
-  **Why.** Live on Form 2441 line 8 the model emitted the named-role lookup correctly in SHAPE and
-  transcribed **6 of the 16 printed bands**, dropping four contiguous ranges out of the middle.
-  Nothing caught it, because no validator inspects a lookup table for completeness. A truncated
-  table returns nothing for a filer whose AGI lands in a hole, which is worse than an error - it is
-  a wrong return that looks like a working one.
+  **Why.** S54 step 2 expressed "only `LOOKUP_TABLE` args may carry a role" as an `allOf` /
+  `if`/`then`/`else` block in the provider schema (`tax_graph/extract/cells.py`, in
+  `_expression_node_schema`). OpenAI's structured-output endpoint **does not permit those
+  keywords**, so it returns 400 before the model runs. Live 2441: 21 attempted, 21 errored, zero
+  rows reached the model.
 
-  **Step 1 - a completeness validator for `LOOKUP_TABLE`.** Given the printed table in the evidence,
-  check that every band appears, that the bands are contiguous with no gap and no overlap, and that
-  the bounds match the source. **Hard-fail on a gap.** Report what it catches on 2441 line 8 and on
-  every other lookup in the corpus. **Do NOT reconstruct the missing bands** - the validator's job
-  is to refuse, and a repaired-by-inference table would be exactly the fabrication this project
-  refuses everywhere else.
+  **Step 1 - take the conditional off the wire.** The constraint is ALREADY enforced in code:
+  `validate_expression_tree` raises *"only valid on LOOKUP_TABLE"*, and
+  `test_expression_schema_reserves_roles_for_lookup_operands` proves it. **The schema conditional was
+  redundant belt-and-braces that cost the entire corpus.** Remove it and let the deterministic
+  validator own the rule, which is where this project's constraints belong anyway. If you believe
+  the wire schema must also express it, it has to be done with keywords the provider accepts - and
+  you must prove that with a live call, not an assertion.
 
-  **Step 2 - resolve the role/payload disagreement.** The same row emitted
-  `payload: operand role is only valid on LOOKUP_TABLE arguments`. Report where the grammar and the
-  validator disagree about which arguments may carry a role, and fix the disagreement in whichever
-  one is wrong. **Report which, with the reason.**
+  **Step 2 - guard the CLASS, not the instance. This is the point of the round.** Add a test that
+  walks the emitted schema and fails on ANY keyword outside the set OpenAI structured outputs
+  accepts - `allOf`, `anyOf` misuse, `if`, `then`, `else`, `not`, `$ref`, `patternProperties`,
+  `dependentSchemas`, and anything else the documented subset excludes. **S47 added guards after the
+  S46 schema defect and they did not catch this one, because they were shaped to the previous
+  mistake.** Three provider-schema defects in nine rounds, two of them fatal, is a pattern that a
+  keyword-allowlist test ends permanently.
 
-  **Step 3 - a `totals` node must have its label read.** `_formula_selector_decision` returns False
-  on kind before reaching the cue loop, so 2441 lines 3 and 30 are dropped despite their labels
-  containing `add the amount`. Fix the ordering, and report every document whose denominator moves.
+  **Step 3 - prove it with a real call before you report.** A schema defect is invisible to the
+  fixture suite: 75 tests passed on a corpus-dead build. **If the sandbox has no network, say
+  `NOT RUN` and hand the provider leg to the Architect** - that is the standing arrangement and it
+  is not a failing. But do not report a schema change as working on fixture evidence.
 
-  **Step 4 - a skip reason must be true.** Those two lines currently report
-  `selector_no_formula_cue` when the label HAS a cue and the code never looked. **A reason that
-  misdescribes the cause is worse than no reason.** Audit the reason enum against what the code
-  actually did and report any other case where they diverge.
+  **Step 4 - report the 2441 line 8 evidence packet, do not fix it here.** The Architect confirmed
+  `form_face_text` for line 8 stops at the `8 X` AcroForm marker and carries six of the sixteen
+  bands. **The completeness validator is now correct and the row still cannot pass**, because the
+  evidence is truncated upstream in `build_cell_frame_from_document`. Report where the truncation
+  happens and what it would take to carry the full table. **It gets its own round - do not widen
+  this one.**
 
-  **Step 5 - remove the unreachable incomplete state.** Every anchor is admitted or skipped by
-  construction, `unaccounted` is always 0, and the state cannot occur. The builder now reports
-  `classification: total` alongside `status: complete` or `status: empty`; a guard that cannot fire
-  is worse than no guard because it reads as protection.
-
-  **Do not:** fill in a missing lookup band; tune the prompt; promote anything; edit `graph/2025/`
-  outside `_drafts/`; widen the cue list further in this round. **Stop conditions:** any diff in the
-  protected directories; a lookup table passing validation with a gap in it. Tier 3. Honest
-  `RAN:`/`NOT RUN:` - **the provider leg is the Architect's**. ASCII, `git diff --check`, module-form
-  `validate 2025`. **ONE local commit.**
-
-  **Step 6 - name the incomplete-cell actor, decided by John 2026-08-04.** S52 introduced the
-  incomplete-cell operation under caller-named vocabulary. **"Caller" was the Architect's word,
-  not the project's** - it entered through the S52 spec, and everywhere else this repo says
-  "caller" it means a CODE caller (`docs/engineering-plan.md` "Callers write"; the M5 archive's
-  "existing callers"). The party John meant is the one `docs/tax_graph_requirements.md:13` already
-  names: **the AI agent** given a verified roadmap, addressed in second person by the MCP server
-  instructions.
-  **Use `NOT_COMPUTED_AGENT_MUST_RESOLVE`**, statement *"Not computed; the AI agent must
-  resolve this cell."* John considered `tax agent` and `filing agent` and the Architect checked both
-  against the acquired IRS text: **"enrolled agents" appears in the 1040 instructions as a class of
-  credentialed HUMAN preparers next to CPAs**, and a filing agent is in practice the ERO or
-  transmitter. Both qualifiers name the wrong party; the plain word does not. **Rename every
-  occurrence** - enum, statement, tests, `docs/self-serve-extension.md` - and do it before S53 reuses
-  the builder. Report any persisted `bundle.json` carrying the old string.
-
-  **NOT IN THIS ROUND, recorded so it is not lost:** 2441 lines 19, 21 and 27 emitted
-  `require_input` for values the form face prints ($5,000/$2,500 and $3,000/$6,000). That is John's
-  filer-provided-is-a-failover ruling and the long-open role-keyed-constant question, and it wants
-  its own round rather than being smuggled into a validator change.
+  **Do not:** weaken or remove the completeness validator to make rows pass; reconstruct a missing
+  band; revert the rename or the `totals` fix; tune the prompt; promote anything. **Stop conditions:**
+  any diff in the protected directories; a lookup passing validation with a gap in it; a provider
+  schema emitting a keyword outside the allowlist. Tier 3. Honest `RAN:`/`NOT RUN:` - **the provider
+  leg is the Architect's**. ASCII, `git diff --check`, module-form `validate 2025`.
+  **ONE local commit.**
 
 - **M20-S53 TASK - THE APPROVAL GATE, BEHIND A SWITCH, DEFAULT OFF (Architect, Claude Opus 5,
   2026-08-04, from John's approval-is-the-gate ruling).** Ledger: the RAN/NOT RUN rule, D10.
