@@ -368,6 +368,27 @@ client-managed server dies.
   directories; a pseudocode rendering that is not derivable from the stored tree. Tier 3. Honest
   `RAN:`/`NOT RUN:`. ASCII, `git diff --check`, module-form `validate 2025`. **ONE local commit.**
 
+  **WORKER STATUS (2026-08-05):** implemented `tax_graph/review_table.py` and the
+  `review-table` Typer/fallback command. The artifact reads the cleaned deterministic source
+  frame and graph projection, renders exactly three columns, keeps instruction sources separate,
+  emits deterministic pseudocode with explicit unresolved operands, shows status/findings/
+  warnings without a correctness verdict, and supports `--all-rows` plus deterministic
+  `--hardest N` selection signals. Output is refused inside the repository and no model/client
+  is constructed. Added `tests/test_review_table_m20.py` and documented the command in
+  `docs/review-workbench.md`.
+
+  **Verification:**
+  - `RAN: $pyRoot='C:\\Users\\devbox\\.codex\\visualizations\\2026\\08\\05\\019fd2f9-dd85-7932-97e7-00a4eea575c0\\pytest_m20_s62'; $env:PYTEST_DEBUG_TEMPROOT=$pyRoot; .venv\\Scripts\\python.exe -m pytest tests/test_review_table_m20.py -q` -> **7 passed**.
+  - `RAN: .venv\\Scripts\\python.exe -m tax_graph.cli review-table --document form_1040_2025 --year 2025 --hardest 3 --output C:\\Users\\devbox\\.codex\\visualizations\\2026\\08\\05\\019fd2f9-dd85-7932-97e7-00a4eea575c0\\review_table_form_1040.html` -> exit 0; `rows: 3; selection: hardest 3`; HTML header count 3; output outside repo.
+  - `RAN: .venv\\Scripts\\python.exe -m tax_graph.cli review-table --help` -> exit 0; command and all selection options registered.
+  - `RAN: .venv\\Scripts\\python.exe -m pytest tests/test_cli.py tests/test_review_table_m20.py -q` -> **13 passed, 1 failed**; the failure is the pre-existing `test_harvest_worksheet_command_writes_only_a_draft` missing `config/manifest.yaml` under its temporary project root.
+  - `RAN: .venv\\Scripts\\python.exe -m pytest tests/test_generated_review_m20.py -q` -> **1 passed, 5 failed**; all five failures are the known `WinError 5` ACL on `graph/2025/_drafts/form_1040_2025`, not this change.
+  - `RAN: .venv\\Scripts\\python.exe -m tax_graph.cli validate 2025` -> exit 0; `graph integrity OK`; reconcile differences are the known manifest-vs-graph instruction/worksheet set.
+  - `RAN: .venv\\Scripts\\python.exe tools/check_ascii.py` -> `ASCII check OK`.
+  - `RAN: git diff --check` -> exit 0; protected-set diff empty.
+
+  **Open for Architect:** accept or request changes; no plan-changing deviation was made.
+
 - **M20-S53 TASK - THE APPROVAL GATE, BEHIND A SWITCH, DEFAULT OFF (Architect, Claude Opus 5,
   2026-08-04, from John's approval-is-the-gate ruling).** Ledger: the RAN/NOT RUN rule, D10.
   **Depends on S52's payload. Do not start this before S52 lands.**

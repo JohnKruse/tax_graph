@@ -514,6 +514,28 @@ def measure_extraction_command(
     return 0
 
 
+def review_table_command(
+    *,
+    year: str = "2025",
+    document: str,
+    root: str | Path | None = None,
+    output: str | Path | None = None,
+    all_rows: bool = False,
+    hardest: int | None = None,
+) -> int:
+    """Write the deterministic input-versus-graph review table."""
+    from tax_graph.review_table import review_table_command as _review_table_command
+
+    return _review_table_command(
+        year=year,
+        document_id=document,
+        root=root,
+        output=output,
+        all_rows=all_rows,
+        hardest=hardest,
+    )
+
+
 def _relative_snapshot_path(path: str | Path, root: Path) -> str:
     """Keep committed measurement snapshots portable across developer machines."""
     resolved = Path(path).resolve()
@@ -1674,6 +1696,27 @@ def _build_typer_app():
         if raise_code:
             raise typer.Exit(raise_code)
 
+    @cli.command("review-table")
+    def review_table_cli(
+        document: str = typer.Option(..., "--document", "--doc", help="Manifest document id to review."),
+        year: str = typer.Option("2025", "--year", "-y", help="Tax year to review."),
+        output: Path | None = typer.Option(None, "--output", help="HTML output file outside the repository."),
+        all_rows: bool = typer.Option(False, "--all-rows", help="Include every source row."),
+        hardest: int | None = typer.Option(None, "--hardest", help="Include the N highest-scoring rows."),
+        root: Path | None = typer.Option(None, "--root", help="Project root override."),
+    ) -> None:
+        """Render cleaned input, graph expression, and deterministic pseudocode."""
+        raise_code = review_table_command(
+            year=year,
+            document=document,
+            root=root,
+            output=output,
+            all_rows=all_rows,
+            hardest=hardest,
+        )
+        if raise_code:
+            raise typer.Exit(raise_code)
+
     review_cli = typer.Typer(help="Human review verdict helpers.")
 
     @review_cli.command("apply-verdicts")
@@ -2335,6 +2378,14 @@ def _fallback_app() -> int:
     measure_extraction_parser.add_argument("--output-dir", default=None)
     measure_extraction_parser.add_argument("--root", default=None)
 
+    review_table_parser = subparsers.add_parser("review-table")
+    review_table_parser.add_argument("--document", "--doc", dest="document", required=True)
+    review_table_parser.add_argument("--year", "-y", default="2025")
+    review_table_parser.add_argument("--output", default=None)
+    review_table_parser.add_argument("--all-rows", action="store_true")
+    review_table_parser.add_argument("--hardest", type=int, default=None)
+    review_table_parser.add_argument("--root", default=None)
+
     intake_parser = subparsers.add_parser("intake")
     intake_parser.add_argument("--drop-dir", required=True)
     intake_parser.add_argument("--year", "-y", default="2025")
@@ -2524,6 +2575,15 @@ def _fallback_app() -> int:
             input_dir=args.input_dir,
             corpus_dir=args.corpus_dir,
             output_dir=args.output_dir,
+        )
+    if args.command == "review-table":
+        return review_table_command(
+            year=args.year,
+            document=args.document,
+            root=args.root,
+            output=args.output,
+            all_rows=args.all_rows,
+            hardest=args.hardest,
         )
     if args.command == "intake":
         return intake_command(

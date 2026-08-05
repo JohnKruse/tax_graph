@@ -33,6 +33,21 @@ the code resolves every field and citation identity. Model results remain draft-
 unsupported results become named review gaps, so the review denominator stays stable
 through regeneration without hand-authoring generated cells.
 
+## Three-column review command
+
+The repeatable input-versus-graph review is generated with:
+
+`python -m tax_graph.cli review-table --year 2025 --document form_1040_2025 --hardest 10 --output C:\\review\\form_1040.html`
+
+The output path must be outside the repository. The first column is the cleaned printed
+instruction used by derivation, with the related instruction source kept separate. The
+second column shows the exact stored graph expression, status, and any recorded validator
+findings or warnings. The third column is a deterministic pseudocode rendering of that
+same expression tree; it never comes from a model. Use `--all-rows` for an exhaustive
+table. Selection scores count conditionals, caps, dollar constants, table columns,
+cross-document references, and sentence count, and every selected row displays those
+signals. The artifact makes no correctness judgment and writes no graph or review state.
+
 ## Complete field dispositions
 
 Field-map schema version 2 classifies every terminal AcroForm widget with exactly one
