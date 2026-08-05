@@ -334,3 +334,246 @@ entries; do not delete them.
 - Per-phase subplans: `plans/PHASE_<id>.md`
 - Testing rules: `docs/testing-strategy.md`
 - Original spec: `docs/tax_graph_requirements.md`
+
+---
+
+# Durable rulings and standing constraints
+
+Moved here from `plans/AGENT_HANDOFF.md` on 2026-08-05. **They were living in a file whose own
+header says it gets pruned**, protected only by a prose warning. Lifetime decides location: this
+file is never pruned, the handoff is live state, git is history.
+
+## Binding rulings (John's, still in force - DO NOT DELETE ON PRUNE)
+
+- **APPROVAL IS THE GATE ON COMPUTATION (John, 2026-08-04). This SUPERSEDES the three-option
+  question S48 raised, and the Architect's own lean; both were the wrong frame.** Verbatim: *"in my
+  mind, this thing should only compute if every cell is approved."* An approved cell is valid for
+  the computing AI to use. Everything else does not compute.
+  **The middle states are a work queue, not engine semantics.** John on the "the AI cannot produce
+  the right operation" case: *"i can't believe that. These are relatively simple operatons for
+  normal people to execute."* He intends to iterate the cells in the core forms until they are all
+  valid - *"Otherwise, WTF am i doing here?"* So `questioned` and `rejected` are transient states a
+  human burns down, and we do NOT design engine behaviour around keeping them computable. S50
+  supports him: eleven of twelve 2441 cells were correct on the first attempt.
+  **The residual real case is an out-of-corpus reference**, and it gets a payload rather than a
+  silent hole: the cell carries the IRS labels and instruction text so the consuming AI can see what
+  the line is, while the operation field says explicitly that it is not completed and that resolving
+  it is the caller's problem. `graph/2025/frontier.yaml` already declares 89 such branches with a
+  target node and a citation; what it lacks is the printed text and the explicit handoff.
+  **Third-party ingestion is explicitly out of our control.** John: *"If some other yoyo decides to
+  ingest a new form and does a shitty job, I can't control that... not my call."* Noted by the
+  Architect, and the gate protects us anyway - their unapproved cells refuse to compute here
+  regardless of what they thought of their own work.
+- **THE ODD DOCUMENTS ARE TREATED EXACTLY AS A FORM IS TREATED (John, restated 2026-08-04; he
+  first said this "a long time ago" and the Architect asked again anyway).** Verbatim: *"these odd
+  things should be treated the same way as a form is treated. They are analogous."* Worksheets,
+  optional extensions, and oddball documents are documents: acquired through the manifest, derived
+  by the same pipeline, reviewed through the same surface, promoted by the same path as the 1040.
+  **There is no second class, no per-form gate, and no separate promotion decision to escalate.**
+  If a question about one of them cannot also be asked about the 1040, it is the wrong question.
+  This is the ruling that makes S42's worksheet harvester and 2441's manifest entry the SAME piece
+  of work, and it condemns the two surviving special cases: `optional_extension` in
+  `graph/2025/field_maps/form_2441_2025.yaml` and the `graph_ext/` overlay that holds 2441 alone.
+- **PIPELINE ONLY. THE HANDCRAFTED SET IS RETIRED AS THE STANDARD (John, 2026-08-05). This
+  SUPERSEDES "the handcrafted set is the test set, and is protected".** Verbatim: *"Yes, let's move
+  away from handcrafted. I just wanted to keep it as a basis of comparison. I feel that with the
+  errors we've seen, we've outgrown it. Let's move to pipeline only."* The handcrafted graph content
+  is no longer the reference standard and no longer the thing the protected-set gate exists to
+  defend. **It is ARCHIVED, not deleted** - John's own reason for protecting it stands ("a lot of
+  tokens went into it"), and it remains useful as a diff target even though it is no longer
+  authoritative. The prior ruling is preserved here in superseded form because it is the origin of
+  the protected-set gate, and anyone reading that gate needs to know why it existed.
+  **What this changes, and the Architect is treating these as authorized unless John says
+  otherwise:** pipeline output may be promoted into the live graph; the harvested QDCGT worksheet is
+  the first candidate and gets its own round with a full diff report before and after; and the
+  protected-set gate is re-pointed at the archive rather than the live graph, so the live graph
+  becomes pipeline-owned while the comparison data stays byte-identical.
+  **What this makes MORE important, not less:** the approval gate (S53). Once the live graph is
+  pipeline-owned, unreviewed pipeline output is what a filer's return would be computed from.
+  The gate is what keeps that honest.
+- **THE REVIEW METHOD IS INPUT vs GRAPH vs PSEUDOCODE (John, 2026-08-05).** Verbatim: *"we'll do
+  more of these reviews where we look at input vs saved in the graph vs the pseudocode version. I
+  think this is the way to ferret out problems."* The three-column artifact built on 2026-08-05 is
+  the pattern: the cleaned printed instruction the model actually receives, the exact expression
+  that reached the graph with its validator verdicts, and a deterministic pretty-print of that same
+  tree. **The pseudocode column is rendered by code, never by a model** - a second inference layer
+  would defeat the point, which is to show what the graph believes rather than a second opinion
+  about it. **No correctness verdict is marked in the table**; the reading is the review.
+- **THE SPINE IS THE FLOW OF THE FORM (2026-07-26, the addressing ruling).** Verbatim: *"The spine
+  is the flow of the form. We shouldn't be pedantic about the line numbers."* John named the
+  disambiguation case himself - *"there might be 6 different SSNs for example. Which one?"* - and
+  rejected positional numbering for repeatable rows. This REVISES the pinned invariant "IRS line
+  numbers are the spine" in `AGENTS.md`. **Identity comes only via canonical addresses.**
+- **THE BAR IS PRACTICAL RETRIEVAL (2026-07-26).** Offered two labeling schemes, John rejected the
+  framing: *"I don't know that i care so much about the addressing scheme being perfect in some
+  theoretical manner. We need to be able to refer to these things in a practical way... if you are
+  asked about dependents... numbers, SSNs, whatever, we need to be able to pull it out of the
+  graph data/metadata."*
+- **FILER-PROVIDED IS A FAILOVER, NOT A DEFAULT (2026-07-31).** Verbatim: *"filer provided should
+  be a failover rather than a default."* And: *"If I read 'Net proceeds' or 'Interest', my feeling
+  is that this is just something to be provided by the filer. If the AI can't find it in the docs
+  provided by the filer, it should ask."*
+- **THE REVIEW QUEUE IS THE WRONG SHAPE (2026-07-29); this supersedes the reconciler.** There are
+  ZERO human verdicts anywhere - the queue's `pending`/`deferred`/`accepted_local` are all
+  machine-set, so the 198 re-points and 263 orphan records preserved no human judgement. The churn
+  was an IDENTITY defect: 100% of 461 citation refs (keyed on generated sequence ids) churned
+  while 1,921 field-control refs (keyed on canonical addresses) churned 0%. The graph already has
+  stable cell identity; coverage should be a traversal, not a migrated file. **Verdicts must bind
+  to CONTENT, not only to address.**
+- **REVIEW PANEL LAYOUT (parked S6-2, still binding when UI work resumes).** The expression, the
+  two instruction sources, the verdict controls, AND the comment box go TOGETHER; today the
+  controls sit in the left rail while content is in the right river. Keep the 15/40/45
+  proportions. Show the two instruction sources SEPARATELY (form face, instruction page - never
+  concatenated).
+- **VERDICT VOCABULARY - SUPERSEDED 2026-08-02. The four-button scheme is RETIRED.** John withdrew
+  his own earlier ruling that "Pipeline defect" vs "Source pathology" is the reviewer's
+  distinction, and he is right: **that is a DIAGNOSIS, and a reviewer has no way to make it.**
+  Verbatim: *"as a human, i have zero insight into the why. I just know that this
+  instruction/cell label is wrong."* Asking a reviewer to classify cause yields guesses carrying
+  false authority.
+  **The scheme is three OBSERVATIONS, not causes: accepted / commented-questioned / rejected.**
+  That is already an ordinal confidence scale - the middle tier is "something looks off and I am
+  not certain" - so do NOT add a separate numeric confidence field on top of it.
+  **Reviewers are instructed NOT to comment when a cell is fine.** John: *"the last thing I would
+  want is some guy saying 'good entry', 'this looks ok'."* Accept must be a single cheap action
+  with no text box; the comment box appears only for the other two tiers, and **text is REQUIRED
+  for those two** - a bare "rejected" is as useless as a cause the reviewer had to invent.
+  Silence-as-approval is safe only if the queue records what was PRESENTED as well as what was
+  acted on, so "reviewed and fine" stays distinguishable from "never shown".
+  Diagnosis moves downstream to where the evidence lives: the checker proposes the cause from the
+  witness disagreement, the maintainer confirms. **Reviewer detects; pipeline diagnoses.**
+  Before S48, the code accepted only `confirmed`/`rejected` (`workbench/static/app.js`), so the
+  middle tier was missing. The ledger is already address-keyed and append-only, so adding it is
+  small.
+
+## Architect decision - notation
+
+John, 2026-08-04: *"do what makes sense. We are not boiling the ocean here. I just don't want to
+reinvent and perfect the wheel either."*
+
+**BORROW THE DECISION-TABLE SHAPE FOR LOOKUPS. DO NOT ADOPT A FORMALISM.** Prior art exists and two
+pieces are on point: **DMN** decision tables (named input/output columns plus a hit policy, designed
+for exactly "if income is in this band, the rate is that"), and **Catala** (a language for encoding
+tax law with the legal text attached, philosophically closest to our citation discipline). We also
+already touch **PolicyEngine-US** as a parameter witness (`tax_graph/oracles/pe_liability.py`,
+`verify parameter-diff`), currently `policyengine_enabled: false`.
+
+**Ruling:** take the decision-table STRUCTURE for the lookup problem and nothing else. Our lookups
+break because arguments are a bare ordered list - `(status, 239100, 119550)` - with no way to say
+which value belongs to which status; a decision table names them structurally, which is a solved
+problem we should not re-solve. **Do not adopt DMN, FEEL, or Catala wholesale.** The property that
+makes this project checkable is a narrow emission vocabulary a deterministic validator can verify;
+a general-purpose expression language widens exactly what we need kept narrow. Revisit only if a
+real form defeats the borrowed shape.
+
+## Architect decisions
+
+- **THE REVIEW LOOP, as designed with John 2026-08-03. This is the shape S37-S39 build toward.**
+  - **The FORM is the unit of approval, not the cell.** John: *"I view the form as a unit."* No
+    per-cell sign-off across ~1,921 controls; findings route attention to the handful that need it.
+  - **Try again, not reject, is the main action.** The reviewer edits a comment, re-derives that one
+    cell live, and iterates. Reject is the escape hatch for a cell that will not converge.
+    Feasibility measured before committing to it: **6.0s for one row cold, ~2.7s for the model call
+    alone**; a warm server does not repeat the setup.
+  - **This is only safe because `derive_cells` is pure.** The zero-disk-write gate defended every
+    round since S24 is what lets a request handler call it with a modified evidence packet.
+  - **The stored comment is one that has been VERIFIED to work.** Because the reviewer tunes wording
+    until the cell comes out right, the ledger accumulates known-good instructions rather than
+    hopeful ones. This is strictly better than a comment written blind and batched.
+  - **Two classes of comment.** `contributed` is raw input from another reviewer - John's example:
+    *"this is broke"* - retained and shown but NEVER sent to the model. `curated` is the lead's
+    edited instruction; only curated comments feed derivation. Turning the first into the second is
+    the irreplaceable human act.
+  - **Latest curated comment per address wins**, with full history retained for audit and display.
+    Keeps the prompt bounded as comments accumulate over years.
+  - **A comment must never override a validator.** It steers interpretation; it cannot talk the
+    model past `quote_not_verbatim`, `operand_not_printed` or `self_reference`.
+  - **Show nondeterminism rather than hide it.** Try-again with an unchanged comment can return a
+    different answer - measured repeatedly at `temperature: 0`. The UI must distinguish "you changed
+    the comment" from "same comment, fresh attempt", or reviewers tune toward superstition.
+  - **Convergence needs a measure and an escape hatch.** Track rounds-to-approval per cell and flag
+    anything reopened more than twice; at that point it needs a human decision, not another pass.
+  - **The reviewer's scarce resource is attention.** John: apathy is a bigger risk than
+    over-control. Findings-first ranking is therefore not polish - it is what makes a contributor's
+    fifteen minutes productive. Measure findings raised vs findings upheld, and minutes per upheld
+    finding; that is the ratchet the phase plan asks for and we have never been able to compute.
+  - **Audited 2026-08-03: NONE of this is surfaced today.** The workbench API is six calls - list
+    documents, load cells, load/save session, save progress, submit verdict. There is no findings
+    endpoint, no per-cell problem badge, and no ranking. Derivation quality IS generated every run
+    (per-row failures, warnings, repair events) and is written to a temp report and discarded. S38
+    carries it into the surface.
+
+
+- **S3a -> S3b: YES, the structure step owns a deterministic outline adapter. S3a regeneration
+  stays blocked until it lands. (Answered 2026-08-02; open since 2026-07-28.)** The bare positional
+  index is not enough, and the reason is the one this phase already discovered twice: **identity
+  must be resolved in CODE from a stable anchor, never from position.** An exact string offset that
+  can land on repeated anchor text in another semantic row is position-based identity - the same
+  class of defect as keying the review queue on generated sequence ids (100% churn) and as asking
+  the model to name a `quote_span_id` (fixed in S28). The adapter belongs to S3b because
+  `PHASE_M20.md` section 3 is explicit that this pipeline never had an independent structure layer
+  and that building one IS S3b; an outline is structure, not regeneration. Requirements: build it
+  from the corrected text plus `line_anchors` plus page/geometry, resolve each anchor to exactly
+  one semantic row, and **fail closed at row granularity** when an anchor is ambiguous - matching
+  the S2d/S2e span-resolver ruling. Do not promote a draft or hand-edit a citation or label to get
+  past an ambiguity.
+
+## Standing constraints (every M20 round)
+
+- **PROTECTED SET, hard gate - STILL IN FORCE, and it does not lift until its replacement exists.**
+  `graph/2025/{nodes,edges,rules}/` and `graph/2025/field_maps/` must be byte-identical.
+  `git diff --stat` on those directories must be EMPTY. No promotion, no hand-authoring, no live
+  graph edit, no verdict write, no operation enum change.
+  **John's 2026-08-05 pipeline-only ruling changes what this gate will protect, but NOT yet.** The
+  promotion round archives the handcrafted set, re-points this gate at the archive, and only then
+  opens the live graph to pipeline output. **Until that round lands and is accepted, this gate is
+  unchanged** - a safety gate is never lifted before its replacement is in place, and every round
+  before then still reports an empty protected-set diff.
+- **`derive_cells` must remain pure - zero disk writes.**
+- **PYTEST TEMP ROOT MUST BE SHORT** (e.g. `C:\tgt`). An Architect session was burned reporting 22
+  suite failures of which 8+ were `WinError 206` path-length artifacts of a deep temp root. With a
+  short root the same files went 11 failed -> 3.
+- **KNOWN-RED BASELINE - inherit it, do not get blamed for it, do not fix it in an unrelated
+  round.** All three depend on untracked local state, which is why CI is green:
+  - `test_review_scope_migration_m15.py::test_live_queue_migration_...` (FileNotFoundError,
+    `review_queue/2025/deferred_review.yaml` - tracked dir with no files)
+  - `test_schedule_2_m16.py::test_schedule_2_part_i_raw_acroform_identity` (`assert '1a' == 'z'`;
+    reads gitignored `.cache/raw/.../schedule_2_2025.fields.json`, regenerated 2026-07-28 while
+    the source PDF is unchanged, so a code-only bisect proves nothing)
+  - `test_address_campaign_m15r.py::test_form_8949_cross_form_claims_resolve_exactly`
+    (`realized 0, expected 6`)
+  - `test_schedule_d_extraction_m9.py::test_schedule_d_fixture_drafts_include_schema_valid_band_tables`
+    (added 2026-08-03; Architect bisected it against the S35 resolver change and it fails
+    identically with that change reverted, so it predates S35)
+- **The Worker sandbox has NO outbound network.** Live-provider legs fail 17/17 with
+  `LlmUnavailable: ... Connection error`. This has cost three rounds. Either run the provider leg
+  outside the sandbox with approved access, or declare the round fixture-only UP FRONT.
+- **Model is `openai/gpt-5.6-luna`** in `tax-graph.config.yaml` (`llm.micro_model`). Do not switch
+  to `google/gemini-3.6-flash` - measured ~15x the cost at our call volume.
+- **Evidence discipline:** honest `RAN:` / `NOT RUN:` lines with exact commands and exact output.
+  Never a guess, never a paraphrase of a number.
+
+### Worker environment (2026-07-23)
+The recurring `Access is denied` on `.venv\Scripts\python.exe` was the venv launcher shim spawning
+the OUT-OF-WORKSPACE base interpreter, which the Codex sandbox denies per session (it is NOT a
+machine state and no restart fixes it). Fixed by mirroring the base interpreter to `.python313/`
+inside the repo (gitignored) and rebuilding `.venv` on it, so `pyvenv.cfg home` is in-workspace.
+Workers call `.venv\Scripts\python.exe` directly - no `uv` needed.
+**Do NOT pass `--basetemp`** (2026-07-25). The root `conftest.py` pins the temp root for every
+account and pytest separates accounts via `pytest-of-<username>/`. The old `.pytest_tmp` is
+poisoned and unreclaimable; see the hard rule in `AGENTS.md`.
+**Launcher cap is 600s** (John, 2026-07-26; was ~124s, then 240s). The Worker runs its OWN e2e and
+app-dependent files. Only full partitions and Tier 3 shakedowns stay Architect-side. Anything that
+still does not fit gets an honest `NOT RUN:`.
+**ALWAYS use the module form, never the console scripts** (2026-07-23, M16-S4):
+`.venv\Scripts\python.exe -m tax_graph.cli validate 2025` and
+`.venv\Scripts\python.exe -m workbench.cli preflight --year 2025`. The generated `tax-graph.exe` /
+`review-workbench.exe` launchers resolve the package through the editable install's `.pth`, which
+hardcodes an absolute repo path that does not resolve inside the Codex sandbox
+(`ModuleNotFoundError: No module named 'tax_graph.cli'`). Architects: write the module form into
+Worker prompts.
+
+**Recurring op note:** orphaned `serve` processes have first-class tooling -
+`tax-graph serve --sweep-orphans`. The parent watchdog works on Windows as of M14 (OpenProcess
+probe). Serve writes stderr breadcrumbs that Claude Desktop logs verbatim - first stop when a
+client-managed server dies.
