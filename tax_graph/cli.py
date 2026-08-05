@@ -557,6 +557,29 @@ def summarize_runs_command(
     )
 
 
+def doctor_command(
+    *,
+    year: str = "2025",
+    root: str | Path | None = None,
+    max_open_item_commits: int = 20,
+) -> int:
+    """Check pipeline claims, declared artifacts, vocabulary, and handoff age.
+
+    This command never constructs an LLM client and never repairs the artifact
+    it reports.  Exit 0 means all checks are accounted for; exit 1 means a
+    check is unknown, layers disagree, or an open item is stale.
+    """
+    from tax_graph.doctor import render_doctor_report, run_doctor
+
+    report = run_doctor(
+        year=year,
+        root=root,
+        max_open_item_commits=max_open_item_commits,
+    )
+    print(render_doctor_report(report), end="")
+    return 0 if report.ok else 1
+
+
 def _relative_snapshot_path(path: str | Path, root: Path) -> str:
     """Keep committed measurement snapshots portable across developer machines."""
     resolved = Path(path).resolve()
@@ -1757,6 +1780,26 @@ def _build_typer_app():
         if raise_code:
             raise typer.Exit(raise_code)
 
+    @cli.command("doctor")
+    def doctor_cli(
+        year: str = typer.Option("2025", "--year", "-y", help="Tax year to inspect."),
+        max_open_item_commits: int = typer.Option(
+            20,
+            "--max-open-item-commits",
+            min=0,
+            help="Flag an open handoff item after this many commits touching the handoff.",
+        ),
+        root: Path | None = typer.Option(None, "--root", help="Project root override."),
+    ) -> None:
+        """Check plan claims and pipeline agreements; exit 1 when evidence is missing or inconsistent."""
+        raise_code = doctor_command(
+            year=year,
+            root=root,
+            max_open_item_commits=max_open_item_commits,
+        )
+        if raise_code:
+            raise typer.Exit(raise_code)
+
     review_cli = typer.Typer(help="Human review verdict helpers.")
 
     @review_cli.command("apply-verdicts")
@@ -2433,6 +2476,14 @@ def _fallback_app() -> int:
     summarize_runs_parser.add_argument("--baseline-window", type=int, default=3)
     summarize_runs_parser.add_argument("--root", default=None)
 
+    doctor_parser = subparsers.add_parser(
+        "doctor",
+        help="Check plan claims and pipeline agreements; exit 1 when evidence is missing or inconsistent.",
+    )
+    doctor_parser.add_argument("--year", "-y", default="2025")
+    doctor_parser.add_argument("--max-open-item-commits", type=int, default=20)
+    doctor_parser.add_argument("--root", default=None)
+
     intake_parser = subparsers.add_parser("intake")
     intake_parser.add_argument("--drop-dir", required=True)
     intake_parser.add_argument("--year", "-y", default="2025")
@@ -2639,6 +2690,12 @@ def _fallback_app() -> int:
             expected_documents=args.expected_document,
             baseline_window=args.baseline_window,
             root=args.root,
+        )
+    if args.command == "doctor":
+        return doctor_command(
+            year=args.year,
+            root=args.root,
+            max_open_item_commits=args.max_open_item_commits,
         )
     if args.command == "intake":
         return intake_command(

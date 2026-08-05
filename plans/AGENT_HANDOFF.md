@@ -77,6 +77,27 @@ reorderings and prefix-duplicated findings should be normalized before diffing.
 **Gates:** deterministic round, no provider constructed anywhere in it; ASCII OK;
 `git diff --check` clean; protected set diff empty.
 
+**M20-S65 WORKER IMPLEMENTED LOCALLY (2026-08-05).** Added the provider-free `doctor` command,
+which checks the executable outline blocker, manifest-declared source and region harvest artifacts,
+cross-layer operation vocabulary, and handoff-item age. The real checkout reports the outline claim
+as `CLEARED`, finds the QDCGT `harvest.yaml`, and exits 1 for the existing operation disagreements
+and three active handoff items at 72 handoff-touch commits. It does not repair any finding or write
+under `graph/`.
+
+**Verification:**
+- RAN: `$env:PYTEST_DEBUG_TEMPROOT = 'C:\Users\devbox\.codex\visualizations\2026\08\05\019fd398-d99b-74b0-ac65-57a2580e9904\pytest_tmp'; & .venv\Scripts\python.exe -m pytest tests/test_doctor_m20.py -q` -> `5 passed`.
+- RAN: same temp-root command with `tests/test_runtime_light_m1.py -q` -> `1 passed`.
+- RAN: same temp-root command with `tests/test_cli.py -q -k 'expression_agreement_command_writes_report or cli_validate_succeeds or cli_run_reports_line_7_value'` -> `3 passed, 4 deselected`.
+- RAN: `.venv\Scripts\python.exe tools\check_ascii.py` -> `ASCII check OK`.
+- RAN: `.venv\Scripts\python.exe -m tax_graph.cli validate 2025` -> `graph integrity OK`.
+- RAN: `.venv\Scripts\python.exe -m pytest -m m20 -q` -> `259 passed, 8 failed, 3 errors`; failures/errors are the existing ACL-poisoned draft/workbench reads, the manifest-less worksheet test, and the S51 denominator expectation. No guard was edited.
+- NOT RUN: provider derivation; this round is explicitly deterministic and provider-free.
+
+**Environment deviation:** the repository-pinned `.test_tmp` is unreadable by this account
+(`WinError 5`); focused pytest commands used the writable Codex visualization temp root through
+`PYTEST_DEBUG_TEMPROOT`, without `--basetemp`. The full `tests/test_cli.py` also remains red at
+`test_harvest_worksheet_command_writes_only_a_draft`; the three affected CLI smoke tests pass.
+
 ## Open for Architect
 - **ANSWERED 2026-08-04 and CLOSED: what a QUESTIONED or REJECTED node means to the engine.** John
   rejected the three-option framing entirely - approval is the gate, the middle states are a work
