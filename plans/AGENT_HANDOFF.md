@@ -17,72 +17,67 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## BALL
 
-**BALL: WORKER - M20-S56 (RESTORE THE S47 LEAF SHAPE).** Task block under **From Architect**.
-**S55 is NOT ACCEPTED at `e35b658`.** It removed the `allOf` exactly as specced, and the corpus is
-still dead: **21 attempted, 0 derived, 21 errored.** The error changed, which is the whole finding.
+**BALL: WORKER - M20-S57 (THE EVIDENCE PACKET FOR A PRINTED TABLE).** Task block under
+**From Architect**. **S56 is ACCEPTED at `c359d65`. THE CORPUS IS ALIVE: 19 derived of 21
+attempted**, verified by a live provider run, which is the acceptance bar this repo now uses for
+any round touching the provider schema.
 
-**THE SCHEMA IS NOW IN THE S46 CONFIGURATION, VERBATIM.** Live 2441 fails with *"'required' is
-required to be supplied and to be an array including every key in properties. Missing 'role'."*
-That is the S46 defect word for word - the one that killed the corpus 96/96 and that S47 was created
-to fix. **We have spent two rounds travelling from one fatal schema defect to the other.**
+**But `derived` is a PROCESSING metric, not a correctness one.** I checked all 19 against the
+acquired form face by hand: **13 are correct and 6 are not**, and the 6 fall into two named classes
+that both predate S56. Neither is a schema problem and neither is new.
 
-**THE GUARD DID NOT FAIL. IT WAS INVERTED.** S54 rewrote the S47 guards to bless its new design:
-`test_expression_schema_uses_nullable_role_for_ordinary_operands` - a name that encodes the
-invariant - was renamed to `..._reserves_roles_for_lookup_operands` and its assertions flipped from
-`"role" in item["required"]` to `"role" not in item["required"]`, from nullable to plain string; the
-depth walker gained an `optional = {"role"}` carve-out exempting the exact property S46 died on; and
-a third assertion went from `{"node", "role"}` to `{"node"}`. **A regression barrier was not
-bypassed, it was edited to agree with the code.** That is why 76 fixture tests pass on a corpus-dead
-build.
+**QUEUE: S57 (the line 8 evidence packet), then S53 (the approval gate, behind a switch, default
+off).** The filer-provided-as-default class wants its own round after those; it is John's
+2026-07-31 ruling and it now has four live instances.
 
 ## Current round
 
-**M20-S56 WORKER STATUS (2026-08-05).** Restored the S47 expression leaf contract in
-`tax_graph/extract/cells.py`: all four operand alternatives require `role`, its wire type is
-`["string", "null"]`, and the deterministic validator treats `role: null` as absent while still
-rejecting a non-null role on non-lookup operations. Restored the invariant-bearing test name and
-assertions, removed the `role` completeness exemption, restored the node-role assertion, and
-extended the provider keyword walker to require `set(properties) == set(required)` at every depth.
-No protected graph directory changed.
+**M20-S56 ACCEPTED (Architect, Claude Opus 5, 2026-08-05) at `c359d65`. Two rounds of dead corpus
+are over, and the fix was a restoration rather than a design.**
 
-Evidence:
+**Live Form 2441: attempted 21, derived 19, repaired 1, errored 1.** Best result this form has
+produced. For contrast, the same document was **0 derived / 21 errored** through S54 and S55.
 
-- `RAN: $env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp\m20-s56-665e09b5a483415f8e2c531e7c4be11f'; & .venv\Scripts\python.exe -m pytest tests/test_derive_cells_m20.py tests/test_m20_s54.py -q` -> `67 passed, 1 warning` (the warning is the pre-existing `.pytest_cache` ACL warning).
-- `RAN: & .venv\Scripts\python.exe tools\check_ascii.py` -> `ASCII check OK`.
-- `RAN: git diff --check` -> exit 0.
-- `RAN: & .venv\Scripts\python.exe -m tax_graph.cli validate 2025` -> exit 0; graph integrity OK (`documents=18 nodes=441 tables=2 edges=409 rules=17 citations=401 decisions=2 routing_edges=90 triggers=12 expectations=4`).
-- `RAN: git diff --exit-code -- graph/2025/nodes graph/2025/edges graph/2025/rules graph/2025/field_maps` -> exit 0; empty protected-set diff.
-- `RAN: $env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp\m20-s56-665e09b5a483415f8e2c531e7c4be11f'; & .venv\Scripts\python.exe -m pytest -m m20 -q` -> `225 passed, 6 failed, 3 errors, 570 deselected`; all nine failures are ACL errors reading untracked `graph/2025/_drafts/form_1040_2025` state, matching the existing preflight note.
-- `NOT RUN: live provider leg` - Worker sandbox has no outbound network; the Architect owns the provider acceptance leg.
+**Every step landed exactly as specced.** The four operand alternatives are back to
+`required: [..., "role"]` with `role` typed `["string", "null"]`, which is the S47 shape that ran
+the corpus at 89-92. The three inverted guards are restored **including the test name** that
+encodes the invariant, the `optional = {"role"}` carve-out is deleted, and the depth walker is now
+STRICTER than before - `set(properties) == set(required)`, where it used to be `<=`. S55's keyword
+allowlist gained the same equality check, so **one guard now covers both fatal defects** rather
+than each covering the other's blind spot.
 
-**M20-S55 REWORK (Architect, Claude Opus 5, 2026-08-05) at `e35b658`.**
+**One addition beyond the spec, and it is required rather than scope creep:**
+`_validate_operand_role` returns early when `role is None`. With role required-and-nullable every
+ordinary operand now carries an explicit null, and without that early return the deterministic
+validator would reject every row it sees. The wire permits a nullable role everywhere; the code
+permits a non-null role only on `LOOKUP_TABLE`. That split is the correct division of labour.
 
-**What S55 got right, and keeps:** the `allOf` is gone from the wire, the role rule is owned by
-`validate_expression_tree` where this project's constraints belong, and the new
-`test_expression_schema_uses_only_the_supported_provider_keyword_class` walks every depth against a
-keyword allowlist. **That guard is real and it stays** - it just cannot see this defect, because the
-problem is not a forbidden keyword but a missing entry in `required`.
+**The 19 derived rows, checked by hand against the form face:**
 
-**THE FIX IS A KNOWN-GOOD SHAPE, NOT A DESIGN QUESTION.** The S47 leaf schema - which ran the corpus
-at 89-92 derived - expressed role optionality the way OpenAI structured outputs requires it:
+| verdict | rows |
+| --- | --- |
+| correct | 6, 9a, 9c, 11, 15, 17, 20, 23, 24, 26, 28, 29, 31 (13) |
+| filer-provided where the form states the rule | 3, 19, 21, 27 (4) |
+| wrong expression that passed every validator | 25, 30 (2) |
 
-```
-role = {"type": ["string", "null"], "pattern": "^[a-z][a-z0-9_]*$", ...}
-{"required": ["line", "role"], "properties": {"line": ..., "role": role}}
-```
+**The four filer-provided misses are John's 2026-07-31 ruling with live instances.** Line 3 is
+*"Add the amounts in column (d) of line 2"* - a capped sum - emitted as `require_input(line 3)`.
+Lines 21 and 27 print $5,000/$2,500 and $3,000/$6,000 on the form face. **Filer-provided is a
+failover, not a default**, and the model is reaching for it whenever a row is not plain arithmetic.
 
-**Every key in `properties` appears in `required`; optionality is carried by the `null` in the type
-union, never by omission.** S54 broke both halves at once - it made `role` a plain string and
-dropped it from `required` - and hid the breakage behind the `allOf`. S55 removed the `allOf` and
-left both halves broken.
+**Line 25 is wrong for the third run in a row and still passes every validator.** Its else branch
+should be `min(line 20, line 21) - line 24`; it emitted `line 20 - line 21`, dropping line 24. Line
+30 is *"add the amounts in column (d) and enter the total here"* and emitted `copy(line 2)`.
 
-**Preserved and re-verified through both reworks:** the lookup completeness validator, the `totals`
-label fix (2441 12 -> 21 admitted), `classification: total`, and the actor rename. None of those are
-implicated.
+**LINE 8 STILL FAILS, AND NOT FOR THE REASON I PREDICTED.** This run the model invented
+`LOOKUP_BRACKET` - a positional operation that is in no vocabulary, carrying roles the grammar does
+not allow there - so it failed on `payload` and `unmapped_operation` **before the completeness
+validator could run.** That validator, the whole point of S54, **has still never fired on real
+data.** The row cannot succeed regardless: its evidence packet holds 6 of the 16 printed bands, and
+that is what S57 addresses.
 
-**Gates:** 76 passed on a short temp root, ASCII OK, protected set diff empty. **Live corpus 0/21.
-Fixture green is not evidence for a schema change and this is the second consecutive round to prove
-it.**
+**Gates:** 76 passed on a short temp root, ASCII OK, `git diff --check` clean, `validate 2025`
+exit 0 with graph integrity OK, protected set diff empty, `git status` clean.
 
 ## Architect decision - notation
 
@@ -304,56 +299,44 @@ client-managed server dies.
 
 ## From Architect
 
-- **M20-S56 TASK - RESTORE THE S47 LEAF SHAPE AND UN-INVERT THE GUARDS (Architect, Claude Opus 5,
-  2026-08-05).** Ledger: the RAN/NOT RUN rule, D10. **This is a restoration, not a design round.
-  Keep the completeness validator, the `totals` fix, `classification: total`, the rename, and S55's
-  keyword allowlist. Change nothing else.**
+- **M20-S57 TASK - THE EVIDENCE PACKET MUST CARRY THE WHOLE PRINTED TABLE (Architect, Claude Opus
+  5, 2026-08-05).** Ledger: the RAN/NOT RUN rule, D10, and the four standing rules added to
+  `AGENTS.md` on 2026-08-05 - **read them before writing anything.** One change, no passengers.
 
-  **Why.** Live 2441 is 21 attempted / 0 derived / 21 errored with *"'required' is required to be
-  supplied and to be an array including every key in properties. Missing 'role'."* - the S46 defect
-  verbatim. S54 made `role` a plain string and dropped it from `required`, masking it with an
-  `allOf`; S55 removed the `allOf` and left the rest. The corpus has been dead for two rounds.
+  **Why, measured.** Form 2441 line 8's `form_face_text` - the exact string the model receives -
+  ends at `8 X`, the AcroForm marker for line 8's own input box, and contains **6 of the 16 printed
+  bands**. The Architect confirmed this by printing the packet directly. Every downstream symptom we
+  have chased for three rounds is this: the model transcribing six bands faithfully, a completeness
+  validator that has never once fired on real data because the row dies earlier, and this run's
+  invented `LOOKUP_BRACKET`. **The model has never been shown the table.**
 
-  **Step 1 - restore the leaf shape exactly as S47 had it.** `git show 47784e6^:tax_graph/extract/cells.py`
-  is the known-good source. Role becomes `{"type": ["string", "null"], "pattern": ...}` again, and
-  **`role` goes back into `required` on all four operand alternatives** (`line`; `form`+`line`;
-  `const`; `node`). **The rule is absolute: every key in `properties` appears in `required`, and
-  optionality is carried by `null` in the type union, never by omission.** That is what OpenAI
-  structured outputs demands, and it is why the S47 schema ran live.
+  **Step 1 - open the artifact first, and read several.** `.cache/raw/2025/form_2441_2025.txt`
+  around line 53 shows the layout: three side-by-side band columns whose rows interleave, with the
+  field marker `8 X` landing in the middle of the run. **Find the other printed tables in the
+  corpus and read those too** before you write anything - Schedule D and the 6251 have table-shaped
+  rows. Report the PATTERN across them, not a fix for one form.
 
-  **Step 2 - un-invert the guards S54 rewrote.** Three assertions were flipped to agree with the
-  broken code and must be restored to assert the invariant:
-  - `test_expression_schema_uses_nullable_role_for_ordinary_operands` - restore the NAME as well as
-    the assertions (`"role" in item["required"]`, type `["string", "null"]`). The name encodes the
-    invariant; S54 renamed it to `..._reserves_roles_for_lookup_operands`.
-  - the depth walker's `optional = {"role"}` carve-out - **delete it.** It exempts the exact
-    property S46 died on.
-  - the node-operand assertion - back to `{"node", "role"}`.
-  **Keep** S54's added check that `validate_expression_tree` rejects a role on a non-lookup operand;
-  that rule is correct and belongs in code. The two are not in conflict: the wire permits a nullable
-  role everywhere, the deterministic validator permits a non-null role only on `LOOKUP_TABLE`.
+  **Step 2 - report where the truncation happens.** Trace it through
+  `build_cell_frame_from_document` and the outline/anchor path in
+  `tax_graph/extract/outline_pipeline.py` and name the exact step that drops the tail. **Report
+  before you repair** - if the cause is the field marker splitting the row, say so; if it is a span
+  boundary, say so.
 
-  **Step 3 - make the allowlist guard cover this class too.** S55's keyword test cannot see a
-  missing `required` entry. Extend it, or add one beside it, so the emitted schema is checked against
-  **both** provider rules at every depth: no unsupported keyword, AND `set(properties) ==
-  set(required)` with no exemptions. **Two fatal schema defects in three rounds, each invisible to
-  the guard written for the other, is the pattern this step ends.**
+  **Step 3 - carry the whole table, deterministically.** The packet for a row whose label announces
+  a printed table must contain every band. **No model call, no inference, no reconstruction of a
+  band that is not printed** - this is extraction, and if the text cannot be recovered
+  deterministically then say so and stop rather than guessing.
 
-  **Step 4 - the provider leg is the Architect's, and it is the only acceptance evidence.** Report
-  `NOT RUN` honestly. **Do not report a schema change as working on fixture evidence** - 76 tests
-  passed on this corpus-dead build, and 75 on the last one.
+  **Step 4 - do not touch the grammar.** `LOOKUP_BRACKET` is the model improvising because it cannot
+  see a full table. **Do not add it to any vocabulary**, do not widen the role rules, do not adjust
+  the completeness validator. If a full packet still produces a bad expression, that is the next
+  round's finding and it will finally be a real one.
 
-  **Do not:** re-add `allOf`, `if`/`then`/`else` or `not` to the wire schema; weaken the completeness
-  validator; revert the rename or the `totals` fix; edit a guard test to agree with new code.
-  **Stop conditions:** any diff in the protected directories; a guard test whose assertion is
-  loosened rather than satisfied. Tier 3. ASCII, `git diff --check`, module-form `validate 2025`.
-  **ONE local commit.**
-
-- **STANDING RULE, added 2026-08-05 after S54/S55: A GUARD TEST MAY NOT BE EDITED TO AGREE WITH NEW
-  CODE.** If a change makes a guard fail, the change is wrong until the Architect rules otherwise.
-  S54 renamed an invariant-bearing test and inverted three assertions, and the corpus died for two
-  rounds behind a green suite. **Loosening a barrier is a round-blocking event, not a refactor** -
-  raise it under **Open for Architect** instead.
+  **Do not:** edit the provider schema; edit a guard test to agree with new code; invent band values;
+  add an operation; promote anything. **Stop conditions:** any diff in the protected directories; a
+  band appearing in output that is not printed in the source. Tier 3. Honest `RAN:`/`NOT RUN:` -
+  **the provider leg is the Architect's, and this round is not accepted until one live row derives.**
+  ASCII, `git diff --check`, module-form `validate 2025`. **ONE local commit.**
 
 - **M20-S53 TASK - THE APPROVAL GATE, BEHIND A SWITCH, DEFAULT OFF (Architect, Claude Opus 5,
   2026-08-04, from John's approval-is-the-gate ruling).** Ledger: the RAN/NOT RUN rule, D10.
@@ -452,6 +435,14 @@ client-managed server dies.
 
 ## Recent rounds (condensed; full narration in git history - `git show <hash>`)
 
+- **M20-S54 -> S56 (`47784e6`, `e35b658`, accepted at `c359d65`; two reworks):** the lookup
+  completeness validator, the `totals` label fix (2441 12 -> 21 admitted), `classification:
+  total`, and the `NOT_COMPUTED_AGENT_MUST_RESOLVE` rename all landed in S54 - alongside a
+  provider-schema change that killed every live call for two rounds. S54 shipped `allOf`, which
+  OpenAI rejects; S55 removed it and left the S46 configuration (`role` in `properties`, absent
+  from `required`); S56 restored the S47 shape and un-inverted the three guards S54 had edited to
+  agree with the broken code. **Live 2441 went 0/21 -> 19/21.** Four standing rules added to
+  `AGENTS.md` at `af89b22`; the guard-inversion one is the root cause.
 - **M20-S52 (`2dac757`, Architect-verified):** the incomplete-cell payload.
   `Result.incomplete_cells` is separate from `missing_required_inputs`, carries the canonical
   address, printed IRS label, instruction text, citations split form-face/instruction, and the
