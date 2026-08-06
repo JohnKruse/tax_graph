@@ -26,20 +26,20 @@ Active spec is under Current round. **PILOT WORK RESUMES** (John, 2026-08-06): t
 clean text, so the remaining garbage is consumer-side. Pilot rules bind: off to the side, read-only,
 own tests out of `tests/`, no full-suite run, no provider run, lift into the project later.
 
-**S71 IS IMPLEMENTED AT `e79f2cd` AND VERIFIED ON THE REAL CORPUS, BUT NOT YET ACCEPTED.** The
-Architect independently rebuilt the candidate: **153 of 153 rows carry clean form-face text** (was
-67) and **0 of 194 node labels** carry the raw-OCR signature (was 46 of 232), with coverage
-unchanged. Acceptance waits only on the full suite, which the Worker could not complete inside its
-600-second cap. **Do not edit `tax_graph/` while that suite is running** - `pilot/` is not collected
-by `testpaths`, which is why this round is safe to run alongside it.
+**S71 IS ACCEPTED at `e79f2cd`. S70 IS ACCEPTED at `977e977`.**
+**Full suite: 20 failed, 846 passed, 8 skipped, 1 xfailed in 1:01:19.** Those 20 are EXACTLY the
+known pre-existing set minus `test_m20_s31`, which S71's sibling commit fixed - **zero new
+failures**, and passes rose 841 -> 846 on S71's own tests. The 20 were triaged against
+`origin/main` earlier with local artifacts junctioned in; 11 are `tests/e2e/*_m15` failing on an
+empty review queue, the rest are artifact-state driven. `test_review_scope_migration_m15` remains
+UNCOMPARABLE (skips at baseline) and is untriaged, not cleared.
 
-**S71 PROVED THE ACCESSOR IS NECESSARY, ON REAL OUTPUT.** With the graph clean, **72 of 157 panels
-still render `z Add lines 1a through 1h 1z`**. `pilot/review_panel.py:126` reads
-`candidate_row.get("label") or source_row.get("label_after") or source_row.get("label_before")`.
-S71 correctly made `label` empty because that row has no caption - and **`""` is falsy, so the chain
-read "correctly absent" as "missing, try the next source"** and reached back into the raw run report
-for the text the graph had just discarded. **This is the whole round in one line: fixing the source
-does not help while consumers can re-derive the wrong answer.**
+**S71 verified on the real corpus:** 153 of 153 rows carry clean form-face text (was 67), 0 of 194
+node labels carry the raw-OCR signature (was 46 of 232), coverage unchanged.
+**S70 verified:** 0 of 157 panels render a raw label, down from 72; absence renders as absence.
+**S70 carries one open defect into S72**: the panel reports 17 instruction sections present while
+84 rows carry instruction text.
+
 **S64 is ACCEPTED at `7189375`; S67 is ACCEPTED at `bb3daca`.**
 
 **A candidate graph now exists.** Rebuilt from a fresh canary run: **194 nodes, 233 edges, 72 rules,
