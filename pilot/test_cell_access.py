@@ -2,13 +2,19 @@
 
 from __future__ import annotations
 
+import os
 from pathlib import Path
 
 from cell_access import form_face, join_rows, label
 from review_panel import build_panel
 
 
-CANDIDATE = Path(r"C:\tmp\m20_s68_candidate")
+CANDIDATE = Path(
+    os.environ.get(
+        "M20_S73_CANDIDATE",
+        r"C:\Users\devbox\AppData\Local\Temp\claude\C--Users-devbox-projects-tax-graph\6e1d97d0-c72d-4855-a055-e0c64f6224f8\scratchpad\cand_s71",
+    )
+)
 
 
 def test_empty_caption_is_typed_absence_and_does_not_fall_back() -> None:

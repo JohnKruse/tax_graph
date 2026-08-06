@@ -73,6 +73,25 @@ def _take(index: dict[str, list[dict[str, Any]]], key: str) -> dict[str, Any] | 
     return values.pop(0) if values else None
 
 
+def _take_candidate(
+    index: dict[str, list[dict[str, Any]]],
+    key: str,
+    *,
+    skipped_anchor: bool,
+) -> dict[str, Any] | None:
+    """Match candidate evidence without consuming an admitted duplicate for a header."""
+
+    values = index.get(key) or []
+    if not values:
+        return None
+    candidate = values[0]
+    status = cell_access.candidate_status(cell_access.join_rows(candidate=candidate)).value
+    is_skipped_candidate = status is not None and status.strip().lower() == "skipped"
+    if skipped_anchor and not is_skipped_candidate:
+        return None
+    return values.pop(0)
+
+
 def _find_report(candidate_root: Path, document_id: str) -> Path:
     """Find the one source report belonging to a candidate document."""
 
@@ -97,6 +116,21 @@ def _candidate_rows(candidate_root: Path, year: Any, document_id: str) -> dict[s
 
     path = _draft_dir(candidate_root, year, document_id) / "rows.yaml"
     return _indexed_rows(_as_list(_load_yaml(path, default=[])))
+
+
+def _instruction_coverage(rows_by_line: Mapping[str, list[Mapping[str, Any]]]) -> dict[str, Any]:
+    """Count instruction text on every candidate row through the cell accessor."""
+
+    rows = [row for values in rows_by_line.values() for row in values]
+    present = sum(
+        cell_access.instruction_section(cell_access.join_rows(candidate=row)).present
+        for row in rows
+    )
+    return {
+        "row_count": len(rows),
+        "present": present,
+        "absent": len(rows) - present,
+    }
 
 
 def _source_rows(report: Mapping[str, Any]) -> dict[str, list[dict[str, Any]]]:
@@ -406,6 +440,7 @@ def build_panel(candidate_root: str | Path) -> dict[str, Any]:
     year = _text(manifest.get("year") or "2025")
     panels: list[dict[str, Any]] = []
     graph_jargon_nodes: list[dict[str, str]] = []
+    instruction_by_document: dict[str, dict[str, Any]] = {}
     for document_id in documents:
         report = _load_yaml(_find_report(root, document_id), default={})
         if not isinstance(report, Mapping):
@@ -416,6 +451,7 @@ def build_panel(candidate_root: str | Path) -> dict[str, Any]:
             raise ValueError(f"source report for {document_id} has no denominator anchors")
         source_rows = _source_rows(report)
         candidate_rows = _candidate_rows(root, year, document_id)
+        instruction_by_document[document_id] = _instruction_coverage(candidate_rows)
         graph = _load_graph(root, year, document_id)
         graph_jargon_nodes.extend(_graph_jargon_nodes(document_id, graph))
         for index, anchor in enumerate(anchors, start=1):
@@ -424,7 +460,10 @@ def build_panel(candidate_root: str | Path) -> dict[str, Any]:
             line = _line(anchor.get("anchor") or anchor.get("line"))
             skip_reason = _text(anchor.get("skip_reason")).strip()
             source = None if skip_reason else _take(source_rows, line)
-            candidate = None if skip_reason else _take(candidate_rows, line)
+            # A skipped operation still has valid candidate text evidence.  Keep the
+            # candidate row attached so the source column answers the same question for
+            # every printed anchor; the missing operation remains a visible hole.
+            candidate = _take_candidate(candidate_rows, line, skipped_anchor=bool(skip_reason))
             row = _merge_anchor(document_id, index, anchor, source, candidate)
             projection = _graph_projection(row, graph)
             tree = projection.get("tree") if projection else None
@@ -450,6 +489,14 @@ def build_panel(candidate_root: str | Path) -> dict[str, Any]:
     text_absence = {
         key: len(panels) - value for key, value in text_presence.items()
     }
+    instruction_row_count = sum(item["row_count"] for item in instruction_by_document.values())
+    instruction_present = sum(item["present"] for item in instruction_by_document.values())
+    instruction_coverage = {
+        "row_count": instruction_row_count,
+        "present": instruction_present,
+        "absent": instruction_row_count - instruction_present,
+        "documents": instruction_by_document,
+    }
     return {
         "schema_version": 1,
         "kind": "review_panel",
@@ -463,6 +510,7 @@ def build_panel(candidate_root: str | Path) -> dict[str, Any]:
         "max_flow_arrows": max(flow_arrow_distribution, default=0),
         "text_presence": text_presence,
         "text_absence": text_absence,
+        "instruction_coverage": instruction_coverage,
         "graph_jargon_nodes": graph_jargon_nodes,
         "panels": panels,
     }
@@ -614,6 +662,20 @@ def render_html(panel: Mapping[str, Any]) -> str:
     modes = panel.get("flow_modes") or {}
     presence = panel.get("text_presence") if isinstance(panel.get("text_presence"), Mapping) else {}
     absence = panel.get("text_absence") if isinstance(panel.get("text_absence"), Mapping) else {}
+    instruction_coverage = panel.get("instruction_coverage")
+    if not isinstance(instruction_coverage, Mapping):
+        instruction_coverage = {}
+    coverage_documents = instruction_coverage.get("documents")
+    coverage_parts = []
+    if isinstance(coverage_documents, Mapping):
+        for document_id in panel.get("documents") or []:
+            item = coverage_documents.get(document_id)
+            if not isinstance(item, Mapping):
+                continue
+            coverage_parts.append(
+                f"{_text(document_id)} {_text(item.get('present', 0))}/{_text(item.get('row_count', 0))}"
+            )
+    coverage_detail = "; ".join(coverage_parts)
     summary = (
         f"{_text(panel.get('denominator'))} printed anchors; "
         f"{len(panel.get('documents') or [])} documents; "
@@ -623,7 +685,10 @@ def render_html(panel: Mapping[str, Any]) -> str:
         f"{_text(panel.get('holes', 0))} panels with a hole; "
         f"captions {presence.get('caption', 0)} present / {absence.get('caption', 0)} absent; "
         f"instruction rows {presence.get('instruction', 0)} present / {absence.get('instruction', 0)} absent; "
-        f"operations {presence.get('operation', 0)} present / {absence.get('operation', 0)} absent."
+        f"operations {presence.get('operation', 0)} present / {absence.get('operation', 0)} absent; "
+        f"candidate instruction coverage {instruction_coverage.get('present', 0)}/"
+        f"{instruction_coverage.get('row_count', 0)} present"
+        f" ({coverage_detail})."
     )
     jargon_nodes = panel.get("graph_jargon_nodes") or []
     jargon_html = ""
@@ -719,6 +784,8 @@ def main(argv: list[str] | None = None) -> int:
         f"{panel['text_absence']['caption']} absent; "
         f"instruction rows {panel['text_presence']['instruction']} present / "
         f"{panel['text_absence']['instruction']} absent; "
+        f"candidate instruction coverage {panel['instruction_coverage']['present']}/"
+        f"{panel['instruction_coverage']['row_count']} present; "
         f"operations {panel['text_presence']['operation']} present / "
         f"{panel['text_absence']['operation']} absent"
     )

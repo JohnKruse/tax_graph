@@ -65,6 +65,25 @@ def _line_key(value: Any) -> str:
     return _normalise_space(value).lower()
 
 
+def _take_candidate(
+    rows_by_line: dict[str, list[dict[str, Any]]],
+    line: str,
+    *,
+    skipped_anchor: bool,
+) -> dict[str, Any] | None:
+    """Match candidate evidence without consuming an admitted duplicate for a header."""
+
+    values = rows_by_line.get(line) or []
+    if not values:
+        return None
+    candidate = values[0]
+    status = cell_access.candidate_status(cell_access.join_rows(candidate=candidate)).value
+    is_skipped_candidate = status is not None and status.strip().lower() == "skipped"
+    if skipped_anchor and not is_skipped_candidate:
+        return None
+    return values.pop(0)
+
+
 def _first_int(*values: Any, default: int = 0) -> int:
     for value in values:
         if value is None or value == "":
@@ -190,6 +209,11 @@ def _report_rows(candidate_root: Path, report: Mapping[str, Any]) -> list[dict[s
             if not line:
                 continue
             skip_reason = _normalise_space(value.get("skip_reason"))
+            candidate = _take_candidate(
+                candidate_rows_by_line,
+                line,
+                skipped_anchor=bool(skip_reason),
+            )
             if skip_reason:
                 source = {
                     "line": line,
@@ -198,10 +222,8 @@ def _report_rows(candidate_root: Path, report: Mapping[str, Any]) -> list[dict[s
                     "status": "skipped",
                     "error": skip_reason,
                 }
-                candidate = None
             else:
                 source = raw_rows_by_line[line].pop(0) if raw_rows_by_line[line] else None
-                candidate = candidate_rows_by_line[line].pop(0) if candidate_rows_by_line[line] else None
                 if source is None and candidate is None:
                     source = {
                         "line": line,

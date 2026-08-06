@@ -7,13 +7,19 @@ the held-back rows, or the graph edge roles found in the corpus.
 
 from __future__ import annotations
 
+import os
 from pathlib import Path
 import re
 
 from review_panel import _flow_tree_html, build_panel, main, render_html
 
 
-CANDIDATE = Path(r"C:\tmp\m20_s68_candidate")
+CANDIDATE = Path(
+    os.environ.get(
+        "M20_S73_CANDIDATE",
+        r"C:\Users\devbox\AppData\Local\Temp\claude\C--Users-devbox-projects-tax-graph\6e1d97d0-c72d-4855-a055-e0c64f6224f8\scratchpad\cand_s71",
+    )
+)
 
 
 def _real_panel() -> dict:
@@ -39,8 +45,18 @@ def test_real_candidate_preserves_all_anchors_and_reports_flow_split() -> None:
     assert panel["documents"] == ["form_1040_2025", "form_2441_2025", "form_6251_2025"]
     assert sum(panel["flow_modes"].values()) == 157
     assert panel["holes"] == 92
-    assert panel["text_presence"] == {"caption": 8, "instruction": 17, "operation": 65}
-    assert panel["text_absence"] == {"caption": 149, "instruction": 140, "operation": 92}
+    assert panel["text_presence"] == {"caption": 8, "instruction": 84, "operation": 65}
+    assert panel["text_absence"] == {"caption": 149, "instruction": 73, "operation": 92}
+    assert panel["instruction_coverage"] == {
+        "row_count": 153,
+        "present": 84,
+        "absent": 69,
+        "documents": {
+            "form_1040_2025": {"row_count": 59, "present": 42, "absent": 17},
+            "form_2441_2025": {"row_count": 33, "present": 18, "absent": 15},
+            "form_6251_2025": {"row_count": 61, "present": 24, "absent": 37},
+        },
+    }
     assert {
         item["node_id"]
         for item in panel["graph_jargon_nodes"]
@@ -119,6 +135,16 @@ def test_held_back_rows_are_visible_holes_with_findings() -> None:
         assert any(expected in str(item) for item in row["findings"])
 
 
+def test_skipped_anchor_keeps_candidate_instruction_evidence() -> None:
+    panel = _real_panel()
+    row = _by_anchor(panel, "form_1040_2025", "1a")
+
+    assert row["status"] == "skipped"
+    assert row["instruction"] is not None
+    assert row["hole"] is True
+    assert row["graph"] is None
+
+
 def test_rendered_html_has_one_panel_per_anchor_and_nonempty_hole_columns() -> None:
     html = render_html(_real_panel())
 
@@ -130,7 +156,11 @@ def test_rendered_html_has_one_panel_per_anchor_and_nonempty_hole_columns() -> N
     assert "LOOKUP_TABLE arguments must be named leaf operands with a role" in html
     assert "form_2441_2025_zero_floor" in html
     assert "captions 8 present / 149 absent" in html
-    assert "instruction rows 17 present / 140 absent" in html
+    assert "instruction rows 84 present / 73 absent" in html
+    assert "candidate instruction coverage 84/153 present" in html
+    assert "form_1040_2025 42/59" in html
+    assert "form_2441_2025 18/33" in html
+    assert "form_6251_2025 24/61" in html
     assert "instruction sections 17 present" not in html
     flow_columns = re.findall(
         r'<section class="column flow-column">(.*?)</section>',

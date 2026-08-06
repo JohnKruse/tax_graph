@@ -150,6 +150,35 @@ line 34 48 -> 6, `zero_floor` now rendering as `constant 0`, and diagram/chain c
 9/36 -> 4/11 because unexpanded cells are correctly depth 1. Rule 9 behaves as written for the
 first time.
 
+**WORKER COMPLETION (2026-08-06; M20-S73 implementation, awaiting Architect acceptance).** The
+instruction-count discrepancy was a join defect, not two valid coverage questions. Candidate
+`rows.yaml` records contain `instruction_text` on **84 of 153 rows**: 42/59 for `form_1040_2025`,
+18/33 for `form_2441_2025`, and 24/61 for `form_6251_2025`. The source reports contain it on
+**17 of 67 attempted rows**: 4/17, 8/21, and 5/29. The old panel reported the latter because it
+discarded candidate rows whenever the denominator anchor had `skip_reason`; it also consumed the
+admitted Form 2441 line 21 candidate on the preceding skipped header duplicate. The pilot now
+keeps candidate text for skipped rows whose candidate status is `skipped`, leaves admitted
+candidate rows for admitted duplicate anchors, and keeps skipped operations as visible holes.
+The panel reports **84/153 candidate instruction coverage** with the per-document split and
+**84 present / 73 absent** across all 157 printed-anchor panels. The construction pilot uses the
+same candidate-row alignment policy. Changes are limited to `pilot/` plus this handoff record.
+
+**S73 REAL-CORPUS EVIDENCE.** RAN:
+`.venv\Scripts\python.exe pilot\review_panel.py C:\Users\devbox\AppData\Local\Temp\claude\C--Users-devbox-projects-tax-graph\6e1d97d0-c72d-4855-a055-e0c64f6224f8\scratchpad\cand_s71 --output .test_tmp_s73\m20_s73_review_panel.html`
+-> **157 anchors; 4 diagrams / 11 chains / 142 none; 92 holes; captions 8 present / 149 absent;
+instruction rows 84 present / 73 absent; candidate instruction coverage 84/153 present;
+operations 65 present / 92 absent**. RAN:
+`.venv\Scripts\python.exe pilot\constructions\measure.py C:\Users\devbox\AppData\Local\Temp\claude\C--Users-devbox-projects-tax-graph\6e1d97d0-c72d-4855-a055-e0c64f6224f8\scratchpad\cand_s71 --output .test_tmp_s73\m20_s73_constructions.yaml`
+-> **construction inventory written**. S72 flow counts remain **max 17 arrows** and
+`form_1040_2025` line 34 remains **6 arrows**.
+
+**S73 TEST EVIDENCE.** RAN:
+`$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp_s73'; .venv\Scripts\python.exe -m pytest pilot\test_cell_access.py pilot\test_review_panel.py pilot\constructions\test_measure.py -q`
+-> **15 passed, 1 warning**. RAN:
+`.venv\Scripts\python.exe tools\check_ascii.py` -> **ASCII check OK**. The warning is the known
+permission failure writing the pre-existing `.pytest_cache`; the short override avoided the
+poisoned pytest temp root. No provider run and no full suite were performed, per pilot rules.
+
 
 **How to rebuild a candidate** - the two commands, in order, because the second is worthless
 without a run from current code:

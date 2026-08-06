@@ -6,8 +6,10 @@ layers separate: label, form face, and instruction page.
 
 All pilot consumers read cell evidence through `pilot/cell_access.py`.  Its `CellText` result uses
 `None` for absent text, so an absent caption cannot fall through to a different source record.
-The panel summary reports caption, instruction-section, and promoted-operation presence and
-absence counts.
+The panel summary reports caption, instruction-row, and promoted-operation presence and absence
+counts. Candidate instruction coverage is also reported across all candidate rows, with a
+per-document split. A skipped derivation still keeps its candidate text evidence visible; its
+operation remains a hole.
 
 The operation column reads the promoted candidate graph. It shows the graph operation, the saved
 rendered expression, rule ids, and every operand node id with the edge role stored on that edge.
@@ -19,15 +21,16 @@ Nested printed-line references stop at ``line X`` so the panel does not re-narra
 repeated operation subtree is rendered once and then referenced. Missing promoted operations are
 red holes with their stored findings. Flow output contains no graph node ids.
 
-The summary's instruction count is the number of panel rows whose instruction value is present
-through ``cell_access.instruction_section``. It is not a second count of unique instruction
-sections, because the reviewer needs one answer for whether each row has joined text.
+The summary's instruction count is the number of printed-anchor panels whose instruction value is
+present through ``cell_access.instruction_section``. Candidate coverage uses the same accessor on
+all candidate rows, including rows skipped before operation derivation. It is not a count of
+unique instruction locators: the reviewer needs one answer for whether each row has joined text.
 The pilot also reports graph node ids containing the banned ``floor`` term without changing those
 graph artifacts; that vocabulary cleanup belongs to a later pipeline round.
 
-Run it against the M20-S68 candidate workspace:
+Run it against the M20-S71 candidate workspace:
 
-    .venv\Scripts\python.exe pilot\review_panel.py C:\tmp\m20_s68_candidate --output C:\tmp\m20_s69_review_panel.html
+    .venv\Scripts\python.exe pilot\review_panel.py C:\path\to\cand_s71 --output C:\tmp\m20_s73_review_panel.html
 
 Run the pilot tests:
 

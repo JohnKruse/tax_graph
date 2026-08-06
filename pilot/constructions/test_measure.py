@@ -146,3 +146,28 @@ def test_measure_preserves_duplicate_printed_anchor_instances(tmp_path: Path) ->
     }
     smaller = next(item for item in inventory["constructions"] if item["id"] == "smaller_or_smallest_of")
     assert smaller["example_anchor_ids"] == ["toy_2025#anchor=2:line=2"]
+
+
+def test_measure_keeps_candidate_text_for_skipped_anchor(tmp_path: Path) -> None:
+    root = _candidate(tmp_path)
+    draft = root / "graph" / "2025" / "_drafts" / "toy_2025"
+    draft.mkdir(parents=True)
+    (draft / "rows.yaml").write_text(
+        yaml.safe_dump(
+            [
+                {
+                    "line": "3",
+                    "instruction_text": "If zero or less, enter -0-.",
+                    "status": "skipped",
+                }
+            ],
+            sort_keys=False,
+        ),
+        encoding="ascii",
+    )
+
+    inventory = measure(root)
+
+    floor = next(item for item in inventory["constructions"] if item["id"] == "zero_or_less_floor")
+    assert floor["count"] == 2
+    assert floor["outcomes"]["skipped"] == 1
