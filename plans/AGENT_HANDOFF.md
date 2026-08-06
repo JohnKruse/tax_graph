@@ -21,7 +21,7 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## BALL
 
-**BALL: ARCHITECT - no round in flight. John, 2026-08-06: accept S64 and wait to spec.**
+**BALL: WORKER - M20-S68 (MEASURE THE CONSTRUCTIONS). Active spec is under Current round.**
 **S64 is ACCEPTED at `7189375`; S67 is ACCEPTED at `bb3daca`.**
 
 **A candidate graph now exists.** Rebuilt from a fresh canary run: **194 nodes, 233 edges, 72 rules,
@@ -47,17 +47,26 @@ rather than the source's explicit ranges, and the validator refused it -
 first-match semantics "under 17,000" contains "under 15,000", so the refusal is right. **The row has
 still never derived, but it now fails for the correct reason.**
 
-**QUEUE - one line each. NOT SPECCED; John is holding the next round.**
+**TWO EXPRESSION NORMALIZERS ALREADY EXIST AND DISAGREE.** `workbench/address_verdicts.py:92`
+`normalize_expression` speaks `kind`/`operation`/`operands` and **sorts commutative operands**;
+`tax_graph/extract/candidate.py:573` `_normalize_candidate_expression` speaks `op`/`args` and does
+not sort. Neither knows about the other. This is the S66 registry-versus-validator drift wearing new
+clothes, and it is the reason the candidate diff cannot tell a real disagreement from a reordering.
+**Whoever takes the diff round converges these rather than adding a third.**
+
+**QUEUE - one line each. NOT SPECCED.**
 1. **Depth-normalized candidate diff** - all **5 of 5** overlapping rows report a false
    `expression_disagreement`, because the candidate expression refers to neighbours by node id while
    `_live_expression` inlines the handcrafted subtree; same rule, two depths. Compare at one depth.
-2. **Construction grammar (Architect measuring first)** - John, 2026-08-05: a checkbox is boolean and
-   the PDF says so (2441 carries 57 Text and **15 CheckBox** widgets); punctuation carries the
-   structure, and `BASE (VARIANT if CONDITION)` is a systematic parenthetical construction that maps
-   onto the lookup shape that already works.
-3. **Construction drift detection** - John: reviews must call out new punctuation and usage as a
-   ranked finding with system-filed evidence, against a VERSIONED construction inventory.
-4. **Column and grid recovery**; **phrase obligations**; **S53 approval gate**; **known-red cleanup**.
+2. **Round-trip renderer** - render a tree back to English from the operation registry and diff it
+   against the printed source; disagreement becomes a review finding. Generation is deterministic
+   even where parsing is not, so this is the reliability check the pipeline currently has no form of.
+3. **Sibling subexpression recovery (CSE)** - 2441 line 25's `UNRESOLVED` block is `MIN(line 20, line
+   21)`, sitting in the sibling branch. Hashing subtrees recovers deterministically what a human gets
+   by reading across. Same machinery as item 1; do them together or not at all.
+4. **Construction drift detection** - reviews call out new punctuation and usage as a ranked finding
+   with system-filed evidence, against the versioned inventory S68 produces.
+5. **Column and grid recovery**; **phrase obligations**; **S53 approval gate**; **known-red cleanup**.
 
 **STANDING FAILURES, honest.** 2441 line 25 wrong for the **eighth** consecutive run - now
 `LOOKUP_TABLE arguments must be named leaf operands with a role`, after one repair. 6251 lines 13 and
@@ -67,7 +76,44 @@ resolve now, and whether they resolve to the RIGHT line is unreviewed.
 
 ## Current round
 
-**None. S64 accepted; John is holding the next spec.** `git show 7189375` recovers the round.
+**M20-S68 IN FLIGHT (Worker, 2026-08-06). MEASURE THE CONSTRUCTIONS.** Reference: `7189375`.
+
+**END STATE.** A committed, versioned construction inventory, plus the command that regenerates it
+from a completed run, so a later round can detect drift by diffing regenerated against committed.
+**This round changes no wire.** No grammar change, no new operation, no selector tuning, no
+rendering change, no provider call. It reads existing artifacts and reports.
+
+**WHY IT IS MEASUREMENT AND NOT DESIGN.** John, 2026-08-06, is deciding whether accurate-but-simple
+modelling is achievable deterministically or is a pick-two. That argument has to run on counts of
+what the corpus actually says, not on the constructions the Architect happens to remember.
+
+0. **Precondition, and it is one line.** `tests/test_m20_s31.py::test_all_prompt_templates_render_
+   with_representative_values` is red because S66 added `<<operation_documentation>>` to
+   `prompts/derive_cells.md` without adding the token to the test's representative values. It passes
+   at `26eead7`. Fix the fixture, not the prompt, so the suite floor is honest before S68 lands.
+1. **Denominator is printed anchors, not derived rows.** The constructions we cannot express hide in
+   the skipped and errored rows; a report over derived rows only would measure our successes and call
+   it a survey. State the denominator in the output.
+2. **Derive the vocabulary FROM the corpus. Do not check against an authored list.** `docs/review-
+   notation.md` closes on exactly this: a term that never appears in the corpus is a signal we have
+   drifted into our own dialect. Extract the punctuation and phrasing patterns that are there.
+3. **Per construction, report: count, real example anchor ids, and the outcome cross-tab** - derived,
+   repaired, errored, skipped. The cross-tab is the payload. A construction that appears 40 times and
+   never derives is the finding; a raw frequency table is not.
+4. **Count the comparator gap explicitly.** `IF_ELSE` stores condition, threshold, when_true and
+   when_false and **no comparator**, so "$239,100 or less" and "under $239,100" produce identical
+   graphs - confirmed on `form_6251_2025` line 18. Report how many anchors carry an inclusive or
+   exclusive comparison in their text. That count is the size of an expressivity gap, not a defect
+   rate.
+5. **Cover the constructions John named**, without treating the list as closed: the parenthetical
+   `BASE (VARIANT if CONDITION)`; checkbox lines (2441 carries 57 Text and 15 CheckBox widgets);
+   `smaller of` / `smallest of`; `If ... Otherwise ...`; `If zero or less, enter -0-`.
+
+Focused tests: new ones for the inventory writer, plus the existing
+`tests/test_candidate_regeneration_m20.py`.
+
+**Evidence required.** Run over all three canary documents and state the denominator. A construction
+count with no anchor ids behind it is not evidence. `PYTEST_DEBUG_TEMPROOT` short - see below.
 
 **How to rebuild a candidate** - the two commands, in order, because the second is worthless
 without a run from current code:
