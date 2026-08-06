@@ -21,7 +21,7 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## BALL
 
-**BALL: WORKER - M20-S68 (MEASURE THE CONSTRUCTIONS, STANDALONE PILOT UNDER `pilot/`).**
+**BALL: WORKER - M20-S69 (GENERATE THE THREE-COLUMN REVIEW PANEL, PILOT UNDER `pilot/`).**
 Active spec is under Current round. **Pilot rules bind every round in this line of work**, not just
 this one: off to the side, read-only, own tests, no full-suite gate, lift into the project later.
 **S64 is ACCEPTED at `7189375`; S67 is ACCEPTED at `bb3daca`.**
@@ -78,97 +78,71 @@ resolve now, and whether they resolve to the RIGHT line is unreviewed.
 
 ## Current round
 
-**M20-S68 IN FLIGHT (Worker, 2026-08-06). MEASURE THE CONSTRUCTIONS - STANDALONE PILOT.**
-Reference: `7189375`.
+**M20-S69 IN FLIGHT (Worker, 2026-08-06). GENERATE THE THREE-COLUMN REVIEW PANEL - PILOT.**
+Reference: S68 pilot at `f0174ab`.
 
-**THIS IS A PILOT AND IT LIVES OFF TO THE SIDE.** John, 2026-08-06: *"i want this to be kind of a
-stand alone pilot... if we are actually monkeying with the code base, this wil turn into a pita."*
+**PILOT RULES BIND (see BALL).** Everything lands under `pilot/`; nothing outside it changes; tests
+live in the pilot and stay out of `tests/`; no full-suite run; plain script entry point.
 
-- **Everything this round writes lives under `pilot/constructions/`.** Nothing outside that
-  directory changes. No new CLI command, no edit to `tax_graph/`, `workbench/`, `prompts/`,
-  `schemas/`, or `graph/`.
-- **Read-only against existing artifacts.** Importing from `tax_graph` to load them is fine;
-  modifying it is not. The pilot consumes a candidate workspace and the run reports that produced it.
-- **Its tests live in the pilot too, and stay out of `tests/`.** `testpaths = ["tests"]` in
-  `pyproject.toml`, so a pilot test directory is not collected by the full suite and **this round is
-  not gated by the 56-minute floor.** That is deliberate: John wants quick turns.
-- **Entry point is a plain script**, `pilot/constructions/measure.py`, taking a candidate root and
-  writing its report beside itself or to a given path.
-- **Lifting into the project is a LATER round**, taken only once the pilot is reliable, and it is
-  the round that pays the full-suite cost. Do not pre-emptively make the pilot production-shaped.
+**WHY THIS ROUND EXISTS.** John, 2026-08-06, wants to review cells as three columns: IRS text, the
+saved/inferred operation, and the flowchart. The Architect hand-built a three-cell mock to agree the
+layout. **That mock is exactly the artifact the prime directive forbids** - handcrafted, three cells
+chosen by the Architect, HTML written by hand. It cannot be trusted as a projection and does not
+scale to 157 anchors. This round replaces it with generated output.
 
-**END STATE.** A versioned construction inventory produced by a standalone pilot script, plus the
-counts that let the Architect and John argue from data. Drift detection against the inventory is a
-later round and is out of scope here.
+**END STATE.** A pilot script that reads a candidate workspace and writes one self-contained HTML
+file containing a three-column panel per printed anchor. Every character in every column comes from
+the graph or the run report. **Nothing is authored, nothing is paraphrased.**
 
-**WHY IT IS MEASUREMENT AND NOT DESIGN.** John, 2026-08-06, is deciding whether accurate-but-simple
-modelling is achievable deterministically or is a pick-two. That argument has to run on counts of
-what the corpus actually says, not on the constructions the Architect happens to remember.
+1. **Column 1 - IRS text, verbatim and never concatenated.** Label, form face, and instruction page
+   as separate headed blocks. Where no instruction section is joined, say so explicitly; an empty
+   block is a finding, not a gap to hide. Showing these separately is what exposed the 1040-NR
+   defect on 6251 line 18, and that only works while they stay apart.
+2. **Column 2 - the operation exactly as the graph holds it.** The rendered expression, the operand
+   node ids with the edge role each one carries, and the rule id. No prettifying that loses a name.
+   Role coverage is uneven and the panel must show that honestly: SUBTRACT carries `minuend` and
+   `subtrahend`, MIN and MAX carry `candidate` for every operand.
+3. **Column 3 - flow, and RULE 9 DECIDES WHETHER THERE IS ONE.** A diagram only where the cell
+   branches. A linear step chain where depth is greater than 1 with no branch. An explicit "depth 1,
+   no diagram" otherwise - `docs/review-notation.md` rule 9: a flowchart for `line 15 - line 22` is
+   worse than the text. Report the three-way split across all anchors.
+4. **A cell with no operation still gets a panel.** `form_2441_2025` line 25 is `review_gap` after
+   eight failed runs and 90 anchors are skipped. Render the hole, name the finding, and never let an
+   absent operation render as an empty column that reads like nothing was wrong.
+5. **Rename the jargon in the pilot.** The S68 construction id `zero_or_less_floor` uses `floor`,
+   banned by rule 8 - the rule John gave with the sixty-year-old-MBA line, and the one
+   `review-notation.md` says must stop at the human boundary. **Also REPORT, do not fix, the same
+   word inside the graph itself**: nodes `form_2441_2025_zero_floor` and
+   `form_2441_2025_root_line_26_pre_floor`. Those are outside the pilot boundary and are a later
+   round.
 
-1. **Denominator is printed anchors, not derived rows.** The constructions we cannot express hide in
-   the skipped and errored rows; a report over derived rows only would measure our successes and call
-   it a survey. State the denominator in the output.
-2. **Derive the vocabulary FROM the corpus. Do not check against an authored list.** `docs/review-
-   notation.md` closes on exactly this: a term that never appears in the corpus is a signal we have
-   drifted into our own dialect. Extract the punctuation and phrasing patterns that are there.
-3. **Per construction, report: count, real example anchor ids, and the outcome cross-tab** - derived,
-   repaired, errored, skipped. The cross-tab is the payload. A construction that appears 40 times and
-   never derives is the finding; a raw frequency table is not.
-4. **Count the comparator gap explicitly.** `IF_ELSE` stores condition, threshold, when_true and
-   when_false and **no comparator**, so "$239,100 or less" and "under $239,100" produce identical
-   graphs - confirmed on `form_6251_2025` line 18. Report how many anchors carry an inclusive or
-   exclusive comparison in their text. That count is the size of an expressivity gap, not a defect
-   rate.
-5. **Cover the constructions John named**, without treating the list as closed: the parenthetical
-   `BASE (VARIANT if CONDITION)`; checkbox lines (2441 carries 57 Text and 15 CheckBox widgets);
-   `smaller of` / `smallest of`; `If ... Otherwise ...`; `If zero or less, enter -0-`.
+**Evidence required.** Run over all 157 anchors from `C:\tmp\m20_s68_candidate`. State the
+diagram / chain / none split, and the count of panels rendering a hole. **Do not re-run the
+provider.**
 
-Tests: inside `pilot/constructions/`, fast, run directly. **Do not add anything to `tests/`** and do
-not run the full suite for this round.
+**DO NOT BUILD AGAINST A SYNTHETIC FIXTURE.** Standing S64 lesson: tests green on a toy row that no
+real report resembles proved nothing, and the writer emitted an empty graph on real data.
 
-**THE INPUT ARTIFACTS ALREADY EXIST. DO NOT RE-RUN THE PROVIDER.** The Architect produced them on
-2026-08-06 from current code and placed them where the Worker can read them:
+**INPUT ARTIFACTS ALREADY EXIST.** `C:\tmp\m20_s68_live` (run) and `C:\tmp\m20_s68_candidate`
+(candidate workspace: `candidate.yaml`, `coverage.yaml`, `diff.yaml`, and
+`graph/2025/_drafts/<document>/` with rows, nodes, edges, rules, citations).
 
-- `C:\tmp\m20_s68_live` - the three-document derivation run (1040, 2441, 6251), reports carry
-  `quote` and `quote_span_id`.
-- `C:\tmp\m20_s68_candidate` - the candidate workspace built from that run: `candidate.yaml`,
-  `coverage.yaml`, `diff.yaml`, and `graph/2025/_drafts/<document>/` with rows, nodes, edges,
-  rules and citations.
+**S68 IS ACCEPTED at `f0174ab`**, fixture fix at `f2ac122`. Denominator 157 printed anchors.
+Cross-tab, count then derived/repaired/errored/skipped: checkbox **15; 6/1/1/7**, zero-or-less
+**14; 9/2/2/1**, parenthetical **13; 8/2/0/3**, smaller/smallest **13; 11/0/1/1**, If/Otherwise
+**7; 2/1/1/3**. Comparator gap **36 anchors**, 25 of which produced a graph that cannot record
+which comparison the text asked for.
 
-The rebuild commands below are for when these are gone, not for now. **A provider run costs real
-money and this one is already paid for.** That the Worker could not find them was an Architect
-omission - the handoff gave the recipe and never said where the output landed.
+**WHAT THE S68 NUMBERS MEAN, and it is the answer to John's pick-two question so far.**
+`smaller of` derives 11 of 13; `If ... Otherwise` derives 2 of 7. **Failure concentrates on
+branching, not on complexity.** Straight mappings to a named operation succeed; branches do not,
+and branches are exactly where `IF_ELSE` stores no comparator and where the depth ceiling bit 2441
+line 25. Three symptoms, one location.
 
-**Evidence required.** Run the pilot over all three canary documents and state the denominator. A
-construction count with no anchor ids behind it is not evidence.
-
-**DO NOT BUILD THE PILOT AGAINST A SYNTHETIC FIXTURE.** This is the S64 trap, one round old: S64's
-18 tests passed against a toy row carrying `quote` and `quote_span_id` that no real report contained,
-and the writer produced an empty graph on real data. Real artifacts are sitting in `C:\tmp` - the
-pilot's counts must come from those, and any fixture is a supplement to real data, never a
-substitute for it.
-
-**Worker update 2026-08-06.** Implemented the standalone pilot under `pilot/constructions/` and ran
-it against `C:\tmp\m20_s68_candidate`. The inventory is at `C:\tmp\m20_s68_constructions.yaml`.
-The denominator is **157 printed anchors**: 59 on 1040, 35 on 2441, and 63 on 6251. It contains
-67 selected/attempted rows with outcomes **61 derived, 4 repaired, 2 errored, 90 skipped**.
-Construction measurements (count; derived/repaired/errored/skipped): parenthetical **13;
-8/2/0/3**, checkbox **15; 6/1/1/7**, smaller/smallest **13; 11/0/1/1**, If/Otherwise **7;
-2/1/1/3**, zero-or-less **14; 9/2/2/1**. The comparator gap is **36 anchors** (24 inclusive,
-21 exclusive; overlap is allowed), with 21/4/2/9 outcomes. Duplicate printed anchors on 2441
-and 6251 are preserved with instance-qualified evidence ids rather than being collapsed by line.
-
-Tests: `RAN: .venv\Scripts\python.exe -m pytest pilot\constructions\test_measure.py -q ->
-4 passed in 0.09s`. ASCII and `git diff --check` also pass. The real inventory run is provider-free;
-the provider was not rerun because the handoff artifacts already existed. Pilot commit: `f0174ab`.
-The separate fixture correction is committed at `f2ac122`; `RAN: .venv\Scripts\python.exe -m
-pytest tests\test_m20_s31.py -q -> 8 passed in 0.23s`.
-
-**SEPARATE ONE-LINE FIX, its own commit, not part of the pilot.**
-`tests/test_m20_s31.py::test_all_prompt_templates_render_with_representative_values` is red because
-S66 added `<<operation_documentation>>` to `prompts/derive_cells.md` without adding the token to the
-test's representative values. It passes at `26eead7`. Fix the fixture, not the prompt. Kept out of
-the pilot commit so the pilot touches `pilot/` only.
+**John's parenthetical hypothesis comes back QUALIFIED.** The pattern matched 13 anchors, but 4 of
+the 15 distinct phrases behind them are prose asides, not computational variants - "(if you or your
+spouse was a student or was disabled, see the instructions)" and "(in other words, ...)".
+**Punctuation locates the construction but does not separate computation from commentary.**
 
 **How to rebuild a candidate** - the two commands, in order, because the second is worthless
 without a run from current code:
