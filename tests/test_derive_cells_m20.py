@@ -1339,12 +1339,18 @@ def test_real_1040_frame_carries_join_ownership_and_printed_line_inventory() -> 
 
     frame = build_cell_frame_from_document(document)
 
-    assert len(frame.rows) == 17
+    # S71 keeps all printed anchors in the source frame and marks the 17
+    # selector-admitted rows for derivation.
+    assert len(frame.rows) == 59
+    assert sum(row.metadata["selector_admitted"] for row in frame.rows) == 17
     assert all(row.metadata["instruction_owner_document_id"] == "form_1040_2025" for row in frame.rows)
     assert all(row.line in row.metadata["printed_lines"] for row in frame.rows)
     assert {"1a", "16", "23", "26"}.issubset(frame.rows[0].metadata["printed_lines"])
     assert all(row.metadata["evidence_spans"] for row in frame.rows)
-    assert frame.rows[0].metadata["evidence_spans"][0]["text"] == frame.rows[0].form_face_text
+    assert all(
+        row.metadata["evidence_spans"][0]["text"] == row.form_face_text
+        for row in frame.rows
+    )
     source_texts = {document.text}
     source_texts.update(source.text for source in document.related_sources)
     # Assembled physical rows join source lines with one space; compare spans
@@ -1360,11 +1366,15 @@ def test_real_1040_frame_carries_join_ownership_and_printed_line_inventory() -> 
         any(" ".join(row.form_face_text.split()) in source_text for source_text in normalized_sources)
         for row in frame.rows
     )
-    rows_by_line = {row.line: row for row in frame.rows}
+    rows_by_line = {
+        row.line: row
+        for row in frame.rows
+        if row.metadata["selector_admitted"]
+    }
     assert rows_by_line["1z"].form_face_text == "Add lines 1a through 1h"
     assert rows_by_line["25d"].form_face_text == "Add lines 25a through 25c"
     # S58 separates a missing caption from the full form-face instruction.
-    assert frame.rows[5].label == ""
-    assert frame.rows[5].form_face_text == "Subtract line 14 from line 11b. If zero or less, enter -0-. This is your taxable income"
-    assert frame.rows[8].label == ""
-    assert frame.rows[8].form_face_text == "Subtract line 21 from line 18. If zero or less, enter -0-"
+    assert rows_by_line["15"].label == ""
+    assert rows_by_line["15"].form_face_text == "Subtract line 14 from line 11b. If zero or less, enter -0-. This is your taxable income"
+    assert rows_by_line["22"].label == ""
+    assert rows_by_line["22"].form_face_text == "Subtract line 21 from line 18. If zero or less, enter -0-"

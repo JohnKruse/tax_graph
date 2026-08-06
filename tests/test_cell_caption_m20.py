@@ -57,11 +57,13 @@ def test_real_corpus_caption_distribution_is_measured_and_conservative() -> None
         "schedule_1a_2025",
     )]
     rows = [row for frame in frames for row in frame.rows]
-    assert len(rows) == 96
-    assert sum(row.metadata["caption_status"] == "captioned" for row in rows) == 12
-    assert sum(row.metadata["caption_status"] == "none" for row in rows) == 84
-    assert sum(row.metadata["caption_status"] == "ambiguous" for row in rows) == 0
-    assert all(not row.metadata["caption_finding"] for row in rows)
+    # S71 cleans every printed anchor; selector-admitted rows are a separate
+    # derivation concern and no longer define this frame's denominator.
+    assert len(rows) == 205
+    assert sum(row.metadata["caption_status"] == "captioned" for row in rows) == 29
+    assert sum(row.metadata["caption_status"] == "none" for row in rows) == 172
+    assert sum(row.metadata["caption_status"] == "ambiguous" for row in rows) == 4
+    assert sum(bool(row.metadata["caption_finding"]) for row in rows) == 4
     assert all(
         row.label == row.metadata["caption"]
         for row in rows

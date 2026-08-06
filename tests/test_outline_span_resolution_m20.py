@@ -239,7 +239,11 @@ def test_real_form_6251_line_32_uses_form_row_not_page_header():
 
     document = load_document_input("form_6251_2025", year="2025", root=ROOT)
     frame = build_cell_frame_from_document(document)
-    row = next(row for row in frame.rows if row.line == "32")
+    row = next(
+        row
+        for row in frame.rows
+        if row.line == "32" and row.metadata["selector_admitted"]
+    )
 
     # S58 removes the printed anchor from the prompt's instruction slot.
     assert row.form_face_text == "Add lines 23 and 30"

@@ -224,25 +224,48 @@ def build_cell_frame_from_document(document: Any) -> CellFrame:
         build_instruction_sections_frame,
         build_outline_tree,
     )
-    from tax_graph.extract.outline_pipeline import _formula_outline_nodes, _span_for_line
+    from tax_graph.extract.outline_pipeline import (
+        _flatten_nodes,
+        _formula_selector_decision,
+        _skip_reason_for_anchor,
+        _span_for_line,
+    )
 
     outline = build_outline_tree(document)
     instruction_frame = build_instruction_sections_frame(document, outline=outline)
     spans = build_candidate_spans(document)
-    formula_nodes = _formula_outline_nodes(outline.children)
+    printed_nodes = [
+        node
+        for node in _flatten_nodes(outline.children)
+        if node.line_anchor
+    ]
+    anchor_counts: dict[str, int] = {}
+    for node in printed_nodes:
+        anchor = str(node.line_anchor).lower()
+        anchor_counts[anchor] = anchor_counts.get(anchor, 0) + 1
     printed_lines = sorted(
         {
             str(node.line_anchor).lower()
-            for node in _flatten_outline_nodes(outline.children)
+            for node in printed_nodes
             if node.line_anchor
         },
         key=_line_sort_key,
     )
     rows: list[CellRecord] = []
-    for node in formula_nodes:
+    for node in printed_nodes:
         line = str(node.line_anchor or "").lower()
         if not line:
             continue
+        selector = _formula_selector_decision(node, widened=True)
+        selector_admitted = bool(selector["admitted"])
+        selector_skip_reason = (
+            _skip_reason_for_anchor(
+                node,
+                outline_anchor_count=anchor_counts.get(line, 0),
+            )
+            if not selector_admitted
+            else ""
+        )
         form_span = _span_for_line(document, node, spans)
         sections = instruction_frame.for_line(document.document_id, line)
         instruction_text = "\n\n".join(section.text for section in sections)
@@ -253,6 +276,14 @@ def build_cell_frame_from_document(document: Any) -> CellFrame:
             full_form_face = clean_form_face_text(form_span.text, line)
             caption_split = split_caption_and_instruction(full_form_face, line)
             form_face_text = caption_split.cell_instruction or full_form_face
+            evidence_findings = list(form_span.findings)
+            table_finding = _table_anchor_boundary_finding(
+                form_span.text,
+                cleaned_text=full_form_face,
+                line=line,
+            )
+            if table_finding is not None:
+                evidence_findings.append(table_finding)
             evidence_spans.append(
                 {
                     "span_id": form_span.span_id,
@@ -263,6 +294,7 @@ def build_cell_frame_from_document(document: Any) -> CellFrame:
             full_form_face = clean_form_face_text(node.label, line)
             caption_split = split_caption_and_instruction(full_form_face, line)
             form_face_text = caption_split.cell_instruction or full_form_face
+            evidence_findings = []
         evidence_spans.extend(
             {"span_id": section.section_id, "text": section.text}
             for section in sections
@@ -281,7 +313,7 @@ def build_cell_frame_from_document(document: Any) -> CellFrame:
                     "instruction_span_ids": [section.section_id for section in sections],
                     "form_face_span_id": form_span.span_id if form_span is not None else "",
                     "form_face_before": form_span.text if form_span is not None else "",
-                    "evidence_findings": list(form_span.findings) if form_span is not None else [],
+                    "evidence_findings": evidence_findings,
                     "label_before": node.label,
                     "caption": caption_split.caption,
                     "caption_status": caption_split.status,
@@ -289,10 +321,50 @@ def build_cell_frame_from_document(document: Any) -> CellFrame:
                     "cell_instruction_before_split": full_form_face,
                     "printed_lines": printed_lines,
                     "evidence_spans": evidence_spans,
+                    "outline_id": node.outline_id,
+                    "outline_kind": node.kind,
+                    "selector_admitted": selector_admitted,
+                    "selector_cue": selector.get("cue"),
+                    "selector_skip_reason": selector_skip_reason,
                 },
             )
         )
     return CellFrame(rows)
+
+
+def _table_anchor_boundary_finding(
+    raw_text: str,
+    *,
+    cleaned_text: str,
+    line: str,
+) -> dict[str, Any] | None:
+    """Name a repeated-anchor table whose text boundary is unresolved.
+
+    A printed anchor can recur inside a decimal or threshold table.  In that
+    case the deterministic cleaner cannot prove which occurrence closes the
+    cell, so the evidence must remain visible as a finding instead of being
+    passed to derivation as if it were a clean cell packet.
+    """
+    value = " ".join(str(raw_text or "").split())
+    anchor = str(line or "").strip()
+    if not value or not anchor or value != " ".join(str(cleaned_text or "").split()):
+        return None
+    token = re.escape(anchor)
+    if not re.search(rf"(?<!\w){token}\s+[A-Z](?!\w)", value):
+        return None
+    table_cue = re.search(
+        r"\b(?:decimal|threshold|amount)\b.*\b(?:shown below|table|over amount)\b",
+        value,
+        flags=re.IGNORECASE,
+    )
+    if table_cue is None:
+        return None
+    return {
+        "code": "table_anchor_boundary",
+        "detail": f"printed anchor {anchor} recurs inside a table; cell boundary is unresolved",
+        "field_name": "",
+        "row_text": value,
+    }
 
 
 def derive_cells(
@@ -352,6 +424,11 @@ def derive_cells(
     allowed_operations = list(operations or DEFAULT_OPERATIONS)
     for original in source.rows:
         row = CellRecord.from_mapping(original.as_dict())
+        if row.metadata.get("selector_admitted") is False:
+            row.status = "skipped"
+            row.error = None
+            result_rows.append(row)
+            continue
         input_failures = validate_cell_input(row)
         instruction_drops = tuple(
             issue

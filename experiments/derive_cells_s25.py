@@ -126,6 +126,11 @@ def run_real_document(
         reference_inventory=reference_inventory,
     )
     raw_status_counts = Counter(row.status for row in result.rows)
+    selected_rows = [
+        row
+        for row in result.rows
+        if row.metadata.get("selector_admitted") is not False
+    ]
     status_counts = {
         "derived": raw_status_counts.get("derived", 0),
         "repaired": raw_status_counts.get("repaired", 0),
@@ -147,6 +152,10 @@ def run_real_document(
             "validation_failures": row.metadata.get("validation_failures", []),
             "validation_warnings": row.metadata.get("validation_warnings", []),
             "dropped_instruction_sections": row.metadata.get("dropped_instruction_sections", []),
+            "source_findings": row.metadata.get("evidence_findings", []),
+            "selector_admitted": row.metadata.get("selector_admitted"),
+            "selector_cue": row.metadata.get("selector_cue"),
+            "selector_skip_reason": row.metadata.get("selector_skip_reason", ""),
             "unresolved_external_nodes": row.metadata.get("unresolved_external_nodes", []),
             # The candidate writer consumes the exact evidence selected by
             # the provider-side derivation.  Keep it beside the expression so
@@ -177,7 +186,7 @@ def run_real_document(
     report = {
         "document_id": document.document_id,
         "year": str(year),
-        "rows": len(result.rows),
+        "rows": len(selected_rows),
         "rows_attempted": result.validation.get("attempted", 0),
         "outline_node_count": len(outline_nodes),
         "line_anchor_count": sum(1 for node in outline_nodes if node.line_anchor),

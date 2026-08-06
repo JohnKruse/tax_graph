@@ -21,7 +21,7 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## BALL
 
-**BALL: WORKER - M20-S71 (CLEAN TEXT FOR EVERY PRINTED ANCHOR). REAL-PROJECT ROUND.**
+**BALL: WORKER - M20-S71 (CLEAN TEXT FOR EVERY PRINTED ANCHOR). IMPLEMENTED; AWAITING ARCHITECT ACCEPTANCE.**
 Active spec is under Current round. **PILOT WORK IS PAUSED** by John, 2026-08-06: the graph must
 carry clean text in its cell nodes before anything renders it. Pilot rules still bind when the
 pilot resumes: off to the side, read-only, own tests, no full-suite gate, lift in later.
@@ -140,6 +140,29 @@ plainly which numbers come from re-running the candidate writer over the existin
 `C:\tmp\m20_s68_live`. Report: how many of 157 anchors now carry cleaned text (target 157), how many
 node labels carry the raw-OCR signature (target 0), and how many table-bearing findings were raised.
 **Full suite required** - short `PYTEST_DEBUG_TEMPROOT`, see below. **Do not re-run the provider.**
+
+**WORKER STATUS (2026-08-06).** Implemented in the real pipeline. `build_cell_frame_from_document`
+now cleans every printed anchor and records the selector decision separately; `derive_cells` skips
+non-admitted anchors without a provider call. Candidate regeneration reads the deterministic frame
+for skipped anchors, uses form-face text for generated node labels, and no longer falls back from
+`label_after` to `label_before`. The experiment report carries all anchor rows while retaining the
+67-row derivation denominator. Form 2441 line 8 is reported as one `table_anchor_boundary` finding.
+
+**REAL-CORPUS EVIDENCE.** Re-running the candidate writer only over the existing run at
+`C:\tmp\m20_s68_live` produced 157 printed anchors in coverage, 153 unique canonical rows after
+duplicate-anchor collapse, 153/153 unique rows with clean form-face text, **0** raw line-token node
+labels, and **1** table-bearing finding (`form_2441_2025` line 8). Candidate coverage remains 61
+derived + 4 repaired, 2 errored, 90 skipped, 65 resolved. No provider was run.
+
+**TEST EVIDENCE.** RAN:
+`.venv\Scripts\python.exe -m pytest tests\test_cell_caption_m20.py tests\test_derive_cells_m20.py tests\test_candidate_regeneration_m20.py tests\test_outline_span_resolution_m20.py tests\test_m20_s71.py -q`
+-> **81 passed, 1 warning** (the warning is the pre-existing `.pytest_cache` permission warning).
+RAN: `.venv\Scripts\python.exe -m pytest tests\test_m20_s31.py -q` -> **8 passed, 1 warning**.
+RAN: `.venv\Scripts\python.exe tools\check_ascii.py` -> **ASCII check OK**.
+NOT RUN TO COMPLETION: `.venv\Scripts\python.exe -m pytest -q` -> timed out at the 600-second
+worker cap after partial output at 24%; no final result exists. NOT RUN TO COMPLETION: the complete
+non-e2e `tests\test_*.py` partition -> timed out at the same cap after partial output at 25%; no final
+result exists. Focused S71 files are green; the aggregate suites are unverified.
 
 **How to rebuild a candidate** - the two commands, in order, because the second is worthless
 without a run from current code:

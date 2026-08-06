@@ -276,7 +276,7 @@ def _write_document_candidate(
             {
                 "node_id": target,
                 "document_id": document["document_id"],
-                "label": f"Line {line}: {row.get('label') or line}",
+                "label": _node_label(row, line),
                 "node_type": "computed",
                 "value_type": "currency",
                 "required": "optional",
@@ -370,7 +370,19 @@ def _document_candidate(
     if not isinstance(raw_rows, list):
         raise ValueError(f"{report_path}: rows_detail must be a list")
     field_addresses = _field_map_addresses(root, year, document_id)
-    rows = [_candidate_row(document_id, item, field_addresses) for item in raw_rows if isinstance(item, Mapping)]
+    source_rows = _source_cell_rows(root, year, document_id)
+    rows = []
+    for item in raw_rows:
+        if not isinstance(item, Mapping):
+            continue
+        line = str(item.get("line") or "").strip().lower()
+        rows.append(
+            _candidate_row(
+                document_id,
+                _enrich_report_row(item, source_rows.get(line)),
+                field_addresses,
+            )
+        )
     denominator = report.get("denominator") if isinstance(report.get("denominator"), Mapping) else {}
     status_counts = report.get("row_status_counts") if isinstance(report.get("row_status_counts"), Mapping) else {}
     validation = report.get("validation") if isinstance(report.get("validation"), Mapping) else {}
@@ -382,12 +394,26 @@ def _document_candidate(
         line = str(item.get("anchor") or "").strip().lower()
         if not line or any(str(row["line"]) == line for row in rows):
             continue
+        source_row = source_rows.get(line)
+        source_fields = _source_row_fields(source_row)
+        source_available = bool(source_fields)
         rows.append(
             {
                 "line": line,
-                "label": str(item.get("label") or ""),
-                "form_face_text": "",
-                "instruction_text": "",
+                "label": str(
+                    source_fields.get("label")
+                    if source_available
+                    else item.get("label") or ""
+                ),
+                "form_face_text": str(source_fields.get("form_face_text") or ""),
+                "instruction_text": str(source_fields.get("instruction_text") or ""),
+                "instruction_locator": str(source_fields.get("instruction_locator") or ""),
+                "label_before": str(
+                    source_fields.get("label_before")
+                    if source_available
+                    else item.get("label") or ""
+                ),
+                "source_findings": list(source_fields.get("source_findings") or []),
                 "status": "skipped",
                 "candidate_status": "skipped",
                 "original_status": "skipped",
@@ -407,6 +433,7 @@ def _document_candidate(
                 "review_gap": str(item.get("skip_reason")),
             }
         )
+        rows[-1]["findings"].extend(_source_findings(source_fields.get("source_findings")))
     rows.sort(key=lambda item: _line_sort_key(str(item["line"])))
     findings = [finding for row in rows for finding in row.get("findings", [])]
     coverage = {
@@ -440,10 +467,18 @@ def _candidate_row(document_id: str, row: Mapping[str, Any], field_addresses: Ma
     quote = str(row.get("quote") or "")
     quote_span_id = str(row.get("quote_span_id") or "")
     citation_refs = [quote_span_id] if quote_span_id else [str(value) for value in row.get("citation_refs", []) or [] if str(value)]
-    candidate_status = original_status if original_status in {"derived", "repaired"} else "review_gap"
+    if original_status == "skipped":
+        candidate_status = "skipped"
+    else:
+        candidate_status = original_status if original_status in {"derived", "repaired"} else "review_gap"
     findings = [dict(item) for item in row.get("validation_failures", []) or [] if isinstance(item, Mapping)]
+    findings.extend(_source_findings(row.get("source_findings")))
     warnings = [dict(item) for item in row.get("validation_warnings", []) or [] if isinstance(item, Mapping)]
     review_gap = str(row.get("error") or "")
+    if original_status == "skipped":
+        review_gap = str(row.get("selector_skip_reason") or row.get("review_gap") or "")
+        if review_gap:
+            findings.append({"kind": "skipped_anchor", "message": review_gap})
     if candidate_status in {"derived", "repaired"} and (expression is None or not quote or not citation_refs):
         candidate_status = "review_gap"
         review_gap = "derived row lacks a verbatim citation and cannot enter the candidate graph"
@@ -459,7 +494,7 @@ def _candidate_row(document_id: str, row: Mapping[str, Any], field_addresses: Ma
         )
     return {
         "line": line,
-        "label": str(row.get("label_after") or row.get("label_before") or ""),
+        "label": str(row.get("label_after") or ""),
         "form_face_text": str(row.get("form_face_after") or row.get("form_face_before") or ""),
         "instruction_text": str(row.get("instruction_text") or ""),
         "status": original_status,
@@ -476,6 +511,84 @@ def _candidate_row(document_id: str, row: Mapping[str, Any], field_addresses: Ma
         "warnings": warnings,
         "review_gap": review_gap,
     }
+
+
+def _source_cell_rows(root: Path, year: str, document_id: str) -> dict[str, Mapping[str, Any]]:
+    """Read deterministic cell text for candidate rows without calling a provider."""
+    try:
+        from tax_graph.extract.cells import build_cell_frame_from_document
+        from tax_graph.extract.inputs import load_document_input
+
+        document = load_document_input(document_id, year=year, root=root)
+        frame = build_cell_frame_from_document(document)
+    except (FileNotFoundError, OSError, ValueError, ImportError):
+        return {}
+
+    grouped: dict[str, list[Mapping[str, Any]]] = defaultdict(list)
+    for row in frame.rows:
+        grouped[str(row.line).strip().lower()].append(row.as_dict())
+    result: dict[str, Mapping[str, Any]] = {}
+    for line, candidates in grouped.items():
+        result[line] = min(candidates, key=_source_row_priority)
+    return result
+
+
+def _source_row_priority(row: Mapping[str, Any]) -> tuple[int, int, str]:
+    """Prefer the canonical admitted row when geometry repeats an anchor."""
+    metadata = row.get("metadata") if isinstance(row.get("metadata"), Mapping) else row
+    admitted = 0 if metadata.get("selector_admitted") is True else 1
+    header = 1 if metadata.get("selector_skip_reason") == "structure_header_anchor" else 0
+    return admitted, header, str(metadata.get("outline_id") or "")
+
+
+def _source_row_fields(row: Mapping[str, Any] | None) -> dict[str, Any]:
+    if not isinstance(row, Mapping):
+        return {}
+    metadata = row.get("metadata") if isinstance(row.get("metadata"), Mapping) else row
+    return {
+        "label": row.get("label") or "",
+        "form_face_text": row.get("form_face_text") or "",
+        "instruction_text": row.get("instruction_text") or "",
+        "instruction_locator": row.get("instruction_locator") or "",
+        "label_before": metadata.get("label_before") or "",
+        "source_findings": metadata.get("evidence_findings") or [],
+    }
+
+
+def _enrich_report_row(row: Mapping[str, Any], source_row: Mapping[str, Any] | None) -> dict[str, Any]:
+    """Overlay deterministic text while retaining provider result fields."""
+    enriched = dict(row)
+    fields = _source_row_fields(source_row)
+    if not fields:
+        return enriched
+    enriched["label_after"] = fields["label"]
+    enriched["form_face_after"] = fields["form_face_text"]
+    enriched["instruction_text"] = fields["instruction_text"]
+    enriched["instruction_locator"] = fields["instruction_locator"]
+    enriched.setdefault("label_before", fields["label_before"])
+    enriched["source_findings"] = fields["source_findings"]
+    return enriched
+
+
+def _source_findings(value: Any) -> list[dict[str, Any]]:
+    if not isinstance(value, Sequence) or isinstance(value, (str, bytes)):
+        return []
+    return [
+        {
+            "kind": str(item.get("code") or "source_evidence_finding"),
+            "message": str(item.get("detail") or item.get("code") or "source evidence finding"),
+        }
+        for item in value
+        if isinstance(item, Mapping)
+    ]
+
+
+def _node_label(row: Mapping[str, Any], line: str) -> str:
+    """Build a graph label from the cleaned form-face text only."""
+    text = " ".join(str(row.get("form_face_text") or "").split())
+    if not text:
+        text = " ".join(str(row.get("label") or "").split())
+    return f"Line {line}: {text}" if text else f"Line {line}"
 
 
 def _handcrafted_diff(root: Path, year: str, documents: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
