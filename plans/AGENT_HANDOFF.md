@@ -21,7 +21,7 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## BALL
 
-**BALL: WORKER - M20-S70 (ONE READ ACCESSOR FOR CELL TEXT). PILOT ROUND, `pilot/` ONLY.**
+**BALL: WORKER - M20-S72 (STOP AT THE REFERENCED LINE). PILOT ROUND, `pilot/` ONLY.**
 Active spec is under Current round. **PILOT WORK RESUMES** (John, 2026-08-06): the graph now carries
 clean text, so the remaining garbage is consumer-side. Pilot rules bind: off to the side, read-only,
 own tests out of `tests/`, no full-suite run, no provider run, lift into the project later.
@@ -73,25 +73,29 @@ clothes, and it is the reason the candidate diff cannot tell a real disagreement
 **Whoever takes the diff round converges these rather than adding a third.**
 
 **QUEUE - one line each. NOT SPECCED.**
-1. **Column 3 becomes the agreed notation** - the S69 flow is an edge dump: zero `<svg>`, zero
+1. **Instruction page furniture** - **113 of 478 anchors (23.6%)** carry `# Page 62`, bare page
+   numbers, and footers like `Instructions for Form 8949 (2025)` inside instruction text. Now the
+   DOMINANT text defect. Real-project round in instruction-section ingestion, not the pilot.
+2. **`form_13614_c_2025` yields 0 printed anchors** - a manifest document producing nothing.
+3. **Column 3 becomes the agreed notation** - the S69 flow is an edge dump: zero `<svg>`, zero
    diamonds, zero Yes/No arrows across all 157 panels; it renders `zero_floor` and node ids into the
    human column and re-narrates upstream lines. Must implement `docs/review-notation.md` rules 1-8,
    with phrasing read from the operation registry. Was specced at `41fffff`; recover with `git show`.
-2. **LIFT the accessor into the project** - make `tax_graph/extract/candidate.py` use it so the
+4. **LIFT the accessor into the project** - make `tax_graph/extract/candidate.py` use it so the
    GENERATED graph stops baking raw OCR into node labels (46 of 232 today), and move the invariant
    test into `tests/`. This is the round that pays the full-suite cost.
-3. **Depth-normalized candidate diff** - all **5 of 5** overlapping rows report a false
+5. **Depth-normalized candidate diff** - all **5 of 5** overlapping rows report a false
    `expression_disagreement`, because the candidate expression refers to neighbours by node id while
    `_live_expression` inlines the handcrafted subtree; same rule, two depths. Compare at one depth.
-4. **Round-trip renderer** - render a tree back to English from the operation registry and diff it
+6. **Round-trip renderer** - render a tree back to English from the operation registry and diff it
    against the printed source; disagreement becomes a review finding. Generation is deterministic
    even where parsing is not, so this is the reliability check the pipeline currently has no form of.
-5. **Sibling subexpression recovery (CSE)** - 2441 line 25's `UNRESOLVED` block is `MIN(line 20, line
+7. **Sibling subexpression recovery (CSE)** - 2441 line 25's `UNRESOLVED` block is `MIN(line 20, line
    21)`, sitting in the sibling branch. Hashing subtrees recovers deterministically what a human gets
    by reading across. Same machinery as item 3; do them together or not at all.
-6. **Construction drift detection** - reviews call out new punctuation and usage as a ranked finding
+8. **Construction drift detection** - reviews call out new punctuation and usage as a ranked finding
    with system-filed evidence, against the versioned inventory S68 produces.
-7. **Column and grid recovery**; **phrase obligations**; **S53 approval gate**; **known-red cleanup**.
+9. **Column and grid recovery**; **phrase obligations**; **S53 approval gate**; **known-red cleanup**.
 
 **STANDING FAILURES, honest.** 2441 line 25 wrong for the **eighth** consecutive run - now
 `LOOKUP_TABLE arguments must be named leaf operands with a role`, after one repair. 6251 lines 13 and
@@ -101,78 +105,65 @@ resolve now, and whether they resolve to the RIGHT line is unreviewed.
 
 ## Current round
 
-**M20-S70 IN FLIGHT (Worker, 2026-08-06). ONE READ ACCESSOR FOR CELL TEXT - PILOT.**
-Reference: S69 generator at `af351d2`.
+**M20-S72 IN FLIGHT (Worker, 2026-08-06). STOP AT THE REFERENCED LINE - PILOT.**
+Reference: S70 accessor at `977e977`.
 
-**PILOT RULES BIND (see BALL).** Everything under `pilot/`; nothing outside changes; tests in the
-pilot, out of `tests/`; no full-suite run; no provider run. **Do not edit `tax_graph/` in this
-round** - the generator fix is the lift round and is queued.
+**PILOT RULES BIND.** Everything under `pilot/`; nothing outside changes; tests in the pilot, out of
+`tests/`; no full-suite run; no provider run. **Read the accessor, do not bypass it.**
 
-**WHY THIS ROUND EXISTS.** John, 2026-08-06: *"pulling text from the graph and putting into
-something should be simple and reliable. Maybe we need some kind of fixed interface for the graph
-related actions."* He is right, and the label defect is the symptom rather than the disease.
+**WHAT JOHN SAW.** `form_1040_2025` line 34 is, in the graph,
+`if_else(line 33, line 24, line 33 - line 24, 0)` - four operands, one sentence of IRS text: *"If
+line 33 is more than line 24, subtract line 24 from line 33."* Column 2 renders that correctly and
+legibly. **Column 3 renders it as 48 arrows**, because it expands `line 33` and `line 24` into their
+entire upstream subtrees - and since line 33 is both the `condition` and part of `when_true`, **it
+draws that whole subtree twice.** 6251 line 40 is **251 arrows**. Line 38 is **233**.
 
-**THREE CONSUMERS ANSWER "WHAT IS THIS CELL'S LABEL" THREE DIFFERENT WAYS.**
+**MEASURED across the 45 diagram/chain panels**: 251, 233, 111, 109, 107, 55, 53, 48, 47, 35 arrows
+for the ten largest. **This is rule 3 failing at volume**, and rule 3 is the entire fix.
 
-- `tax_graph/extract/candidate.py:462` - `label_after or label_before or ""`
-- `pilot/review_panel.py:128` - a four-step chain ending at `anchor.get("label_after")`
-- `pilot/constructions/measure.py:147` - `value.get("label") or value.get("label_after") or ""`
+1. **STOP AT THE REFERENCED LINE.** `docs/review-notation.md` rule 3: *"Reference lines, never
+   re-narrate them. The reviewer has the form open."* A referenced line renders as `line 33` and
+   **nothing below it is drawn**. Line 34 becomes four boxes. Apply to diagrams AND chains.
+2. **SHARE REPEATED SUBTREES.** Where the same subexpression appears more than once in one cell,
+   draw it once and reference it. This is the same machinery John identified on 2441 line 25, whose
+   `UNRESOLVED` block is `MIN(line 20, line 21)` sitting in a sibling branch - a human reads across
+   and knows instantly. Hash subtrees; do not re-derive.
+3. **REPORT THE SIZE AFTER THE FIX.** Largest panel by arrow count, and the distribution. **If any
+   panel still exceeds roughly a dozen arrows, say so plainly rather than declaring success** - that
+   number is the deliverable, not a side note.
+4. **NO NODE IDS AND NO BANNED TERMS IN COLUMN 3**, unchanged from the queued notation work.
+   `form_1040_2025_zero_floor` currently renders as the `when_false` branch of line 34: the IRS's
+   plain "otherwise enter zero" is modelled as a floor node. **Report that modelling oddity; do not
+   fix the graph** - it is outside the pilot boundary.
 
-Every new consumer invents a fourth. **This is the third instance of one architectural cause.** The
-other two: `workbench/address_verdicts.py:92` and `tax_graph/extract/candidate.py:573` are two
-independent expression normalizers that disagree about operand ordering; and S66 existed because the
-operation registry and the validator disagreed about roles. S66 centralized and S67 aligned, and
-that drift stopped. Same move here.
+**NOT THIS ROUND.** The full rules 1-8 notation (diamonds, Yes/No arrows, mathy boxes, `amount`) is
+still queued separately. **This round is about SIZE and REPETITION only.** A correct notation on a
+251-arrow diagram is worthless; shrink it first.
 
-**MEASURED, so the round starts from fact.**
+**Evidence required.** Regenerate over the S71 candidate at
+`C:\Users\devbox\AppData\Local\Temp\claude\C--Users-devbox-projects-tax-graph\6e1d97d0-c72d-4855-a055-e0c64f6224f8\scratchpad\cand_s71`
+(or any candidate the Architect names). Report the arrow-count distribution before and after.
 
-- `label_before` == `form_face_before` on **67 of 67** rows. Label and form face were never two
-  sources; they are the same string shown twice.
-- `form_face_after` is clean on **67 of 67**. The cleaner works: `$15,750 14 Add lines 12e, 13a, and
-  13b 14` becomes `Add lines 12e, 13a, and 13b`.
-- `label_after` is populated on only **8 of 67**, and when populated it is the real caption -
-  `Excluded benefits.`, `Tentative minimum tax.`, `AMT.`
-- The published hand-authored graph carries **0 of 417** raw-OCR node labels. The generated
-  candidate graph carries **46 of 232**. **The clean graph is the one humans wrote and the dirty one
-  is the thing meant to replace it.**
+**ONE S70 DEFECT TO FIX WHILE HERE.** The panel footer reports **17 instruction sections present**
+but **84 rows carry instruction text**. Two numbers for one question is exactly what the accessor
+exists to prevent. Find which is right and make the accessor the single answer.
 
-**LIVE PROOF FROM S71, and it is the sharpest evidence this round has.** With the graph now
-clean, **72 of 157 panels still render `z Add lines 1a through 1h 1z`**. `review_panel.py:126` reads
-`candidate_row.get("label") or source_row.get("label_after") or source_row.get("label_before")`.
-S71 correctly set `label` to empty because that row genuinely has no caption, and **`""` is falsy**,
-so the chain treated "correctly absent" as "missing, try the next source" and pulled back the raw
-OCR the graph had just discarded. **Rule 3 below is not a style preference; it is the fix.**
+**WHOLE-CORPUS TEXT PROOF, run by the Architect 2026-08-06 (no provider, `build_cell_frame_from_
+document` over all 16 form documents).** John asked why extraction had never been run corpus-wide;
+there was no good reason - derivation costs provider calls, cleaning does not.
 
-**END STATE.** One read-only accessor in the pilot - `pilot/cell_access.py` - that is the only way
-pilot code reads cell text, with `review_panel.py` and `measure.py` rewired onto it and their
-fallback chains deleted.
+**478 printed anchors. 359 clean (75.1%).**
 
-1. **One function per question**: label, form face, instruction section, expression, rendered
-   wording, operands with their edge roles, findings, status. A consumer asks one question and gets
-   one answer.
-2. **NO CONSUMER PERFORMS A FALLBACK.** The accessor decides once, in one place. A `x or y` chain
-   over cell text anywhere outside the accessor is a defect in this round.
-3. **ABSENCE IS A TYPED VALUE, NOT AN EMPTY STRING.** `""` is exactly what makes `a or b` possible;
-   if absence cannot be coerced into a fallback chain, the bug class cannot recur. A missing caption
-   must be reportable as missing, never substitutable.
-4. **Label means the caption only.** `label_after` and nothing else. Absent on 59 of 67 rows is the
-   truth and must render as absent.
-5. **Invariant test at the accessor, over all 157 real anchors**: no label returned may begin and
-   end with the same line token. One test, inherited by every consumer, instead of one per surface.
-   This is what stops a fourth recurrence.
-6. **Report absence as data**: how many anchors have a real caption, how many have no joined
-   instruction section, how many have no operation. Absence becomes visible rather than filled in.
+- **113 (23.6%) carry instruction page furniture** - `# Page 62`, bare page numbers, and footers
+  like `Instructions for Form 8949 (2025)` or `Visit IRS.gov`. **This is now the dominant text
+  defect and it was never in S71's scope.**
+- **7 (1.5%) still carry the anchor in the text** - `Income 1 a Total amount from Form(s) W-2`,
+  `1h instructions.`, `schedule_1a_2025` line 4c.
+- **7 (1.5%) are one-word fragments** - `Gambling`, `instructions`, `1974`.
+- **`form_13614_c_2025` yields 0 anchors.** A document in the manifest producing nothing.
 
-**Evidence required.** Regenerate the panel over all 157 anchors from `C:\tmp\m20_s68_candidate`.
-State the caption/instruction/operation absence counts, and show that no fallback chain over cell
-text remains in pilot code outside the accessor.
-
-**DO NOT BUILD AGAINST A SYNTHETIC FIXTURE.** Standing S64 lesson.
-
-**S69 IS ACCEPTED at `af351d2`.** The generator reproduces exactly: 157 anchors, 9 diagrams /
-36 chains / 112 none, 92 holes. Columns 1 and 2 are structurally right; column 3 is a graph dump and
-is the NEXT round, deliberately after this one - there is no point rendering better diagrams on top
-of text fetched three different ways.
+**S71 IS VINDICATED AT SCALE:** the defect John was angry about is down to **7 of 478**. The
+remaining bulk is a different, unaddressed defect in instruction-section text.
 
 **How to rebuild a candidate** - the two commands, in order, because the second is worthless
 without a run from current code:
