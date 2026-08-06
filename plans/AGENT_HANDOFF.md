@@ -126,8 +126,27 @@ what the corpus actually says, not on the constructions the Architect happens to
 Tests: inside `pilot/constructions/`, fast, run directly. **Do not add anything to `tests/`** and do
 not run the full suite for this round.
 
+**THE INPUT ARTIFACTS ALREADY EXIST. DO NOT RE-RUN THE PROVIDER.** The Architect produced them on
+2026-08-06 from current code and placed them where the Worker can read them:
+
+- `C:\tmp\m20_s68_live` - the three-document derivation run (1040, 2441, 6251), reports carry
+  `quote` and `quote_span_id`.
+- `C:\tmp\m20_s68_candidate` - the candidate workspace built from that run: `candidate.yaml`,
+  `coverage.yaml`, `diff.yaml`, and `graph/2025/_drafts/<document>/` with rows, nodes, edges,
+  rules and citations.
+
+The rebuild commands below are for when these are gone, not for now. **A provider run costs real
+money and this one is already paid for.** That the Worker could not find them was an Architect
+omission - the handoff gave the recipe and never said where the output landed.
+
 **Evidence required.** Run the pilot over all three canary documents and state the denominator. A
 construction count with no anchor ids behind it is not evidence.
+
+**DO NOT BUILD THE PILOT AGAINST A SYNTHETIC FIXTURE.** This is the S64 trap, one round old: S64's
+18 tests passed against a toy row carrying `quote` and `quote_span_id` that no real report contained,
+and the writer produced an empty graph on real data. Real artifacts are sitting in `C:\tmp` - the
+pilot's counts must come from those, and any fixture is a supplement to real data, never a
+substitute for it.
 
 **SEPARATE ONE-LINE FIX, its own commit, not part of the pilot.**
 `tests/test_m20_s31.py::test_all_prompt_templates_render_with_representative_values` is red because
