@@ -21,7 +21,7 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## BALL
 
-**BALL: WORKER - M20-S69 (GENERATE THE THREE-COLUMN REVIEW PANEL, PILOT UNDER `pilot/`).**
+**BALL: WORKER - M20-S70 (MAKE COLUMN 3 THE AGREED NOTATION, PILOT UNDER `pilot/`).**
 Active spec is under Current round. **Pilot rules bind every round in this line of work**, not just
 this one: off to the side, read-only, own tests, no full-suite gate, lift into the project later.
 **S64 is ACCEPTED at `7189375`; S67 is ACCEPTED at `bb3daca`.**
@@ -78,71 +78,57 @@ resolve now, and whether they resolve to the RIGHT line is unreviewed.
 
 ## Current round
 
-**M20-S69 IN FLIGHT (Worker, 2026-08-06). GENERATE THE THREE-COLUMN REVIEW PANEL - PILOT.**
-Reference: S68 pilot at `f0174ab`.
+**M20-S70 IN FLIGHT (Worker, 2026-08-06). MAKE COLUMN 3 THE AGREED NOTATION.**
+Reference: S69 generator at `af351d2`.
 
-**PILOT RULES BIND (see BALL).** Everything lands under `pilot/`; nothing outside it changes; tests
-live in the pilot and stay out of `tests/`; no full-suite run; plain script entry point.
+**PILOT RULES BIND (see BALL).** Everything under `pilot/`; nothing outside changes; tests in the
+pilot, out of `tests/`; no full-suite run; no provider run.
 
-**WHY THIS ROUND EXISTS.** John, 2026-08-06, wants to review cells as three columns: IRS text, the
-saved/inferred operation, and the flowchart. The Architect hand-built a three-cell mock to agree the
-layout. **That mock is exactly the artifact the prime directive forbids** - handcrafted, three cells
-chosen by the Architect, HTML written by hand. It cannot be trusted as a projection and does not
-scale to 157 anchors. This round replaces it with generated output.
+**S69 IS ACCEPTED at `af351d2`.** The generator is sound and reproduces exactly: 157 anchors,
+9 diagrams / 36 chains / 112 none, 92 holes. Columns 1 and 2 are right - text verbatim and
+separated, the 1040-NR variant visible on 6251 line 18, operands carrying real edge roles and node
+labels, and held-back rows rendering as named holes rather than blank space. Keep all of that.
 
-**END STATE.** A pilot script that reads a candidate workspace and writes one self-contained HTML
-file containing a three-column panel per printed anchor. Every character in every column comes from
-the graph or the run report. **Nothing is authored, nothing is paraphrased.**
+**COLUMN 3 IS NOT THE NOTATION, AND THE SPEC IS WHY.** The S69 spec cited
+`docs/review-notation.md` rule 9 for the *gating* decision and never said the rendering itself must
+obey rules 1-8. Codex gated correctly and then rendered the graph. **Measured on the real artifact:
+zero `<svg>` elements in all 157 panels, zero diamonds, zero Yes/No arrows.** What renders instead
+is an edge-traversal dump - `IF_ELSE / condition -> SUBTRACT / minuend -> form_6251_2025_root_line_12`
+- exposing node ids to a human reviewer.
 
-1. **Column 1 - IRS text, verbatim and never concatenated.** Label, form face, and instruction page
-   as separate headed blocks. Where no instruction section is joined, say so explicitly; an empty
-   block is a finding, not a gap to hide. Showing these separately is what exposed the 1040-NR
-   defect on 6251 line 18, and that only works while they stay apart.
-2. **Column 2 - the operation exactly as the graph holds it.** The rendered expression, the operand
-   node ids with the edge role each one carries, and the rule id. No prettifying that loses a name.
-   Role coverage is uneven and the panel must show that honestly: SUBTRACT carries `minuend` and
-   `subtrahend`, MIN and MAX carry `candidate` for every operand.
-3. **Column 3 - flow, and RULE 9 DECIDES WHETHER THERE IS ONE.** A diagram only where the cell
-   branches. A linear step chain where depth is greater than 1 with no branch. An explicit "depth 1,
-   no diagram" otherwise - `docs/review-notation.md` rule 9: a flowchart for `line 15 - line 22` is
-   worse than the text. Report the three-way split across all anchors.
-4. **A cell with no operation still gets a panel.** `form_2441_2025` line 25 is `review_gap` after
-   eight failed runs and 90 anchors are skipped. Render the hole, name the finding, and never let an
-   absent operation render as an empty column that reads like nothing was wrong.
-5. **Rename the jargon in the pilot.** The S68 construction id `zero_or_less_floor` uses `floor`,
-   banned by rule 8 - the rule John gave with the sixty-year-old-MBA line, and the one
-   `review-notation.md` says must stop at the human boundary. **Also REPORT, do not fix, the same
-   word inside the graph itself**: nodes `form_2441_2025_zero_floor` and
-   `form_2441_2025_root_line_26_pre_floor`. Those are outside the pilot boundary and are a later
-   round.
+**THE RULES COLUMN 3 MUST IMPLEMENT.** From `docs/review-notation.md`, every one of them agreed
+with John and every one of them currently violated:
 
-**Evidence required.** Run over all 157 anchors from `C:\tmp\m20_s68_candidate`. State the
-diagram / chain / none split, and the count of panels rendering a hole. **Do not re-run the
-provider.**
+1. **A diamond asks; the arrows answer.** `line 17 <= threshold?` with Yes and No on the arrows.
+2. **A checkbox diamond is the template** `Line X checked?: <subject>`, not a paraphrase.
+3. **Reference lines; never re-narrate them.** The current chain recurses into line 17's own
+   definition and redraws `SUBTRACT`, `MIN`, line 12 and line 15. **Stop at the referenced line.**
+   The reviewer has the form open.
+4. **The arrow is the reference.** No step letters.
+5. **One operation per box.** Nothing compound.
+6. **Mathy, not prose, and not operation names.** `line 17 * 0.26`, never a bare `MULTIPLY` node.
+7. **`amount` is the value arriving on the arrow.** `max(amount, 0)`, never `MAX(0)`.
+8. **No specialist vocabulary.** MIN and MAX are admissible; **`floor` is not.** The chain for 2441
+   line 20 currently renders `form_2441_2025_zero_floor` straight into the human column, which is
+   the exact leak rule 8 exists to stop.
 
-**DO NOT BUILD AGAINST A SYNTHETIC FIXTURE.** Standing S64 lesson: tests green on a toy row that no
-real report resembles proved nothing, and the writer emitted an empty graph on real data.
+**NODE IDS ARE NOT REVIEWER-FACING.** They belong in column 2, where S69 already places them
+correctly. Column 3 shows lines, amounts and operations in the agreed wording.
 
-**INPUT ARTIFACTS ALREADY EXIST.** `C:\tmp\m20_s68_live` (run) and `C:\tmp\m20_s68_candidate`
-(candidate workspace: `candidate.yaml`, `coverage.yaml`, `diff.yaml`, and
-`graph/2025/_drafts/<document>/` with rows, nodes, edges, rules, citations).
+**PHRASING COMES FROM THE OPERATION REGISTRY** (rule 10), one declared wording per operation, so
+diagram, chain and pseudocode cannot drift. The registry is `tax_graph/operation_registry.py` and is
+OUTSIDE the pilot boundary - **read it, do not edit it.** If a needed wording is absent, render what
+the registry has and report the gap; adding wordings is a later round against the real project.
 
-**S68 IS ACCEPTED at `f0174ab`**, fixture fix at `f2ac122`. Denominator 157 printed anchors.
-Cross-tab, count then derived/repaired/errored/skipped: checkbox **15; 6/1/1/7**, zero-or-less
-**14; 9/2/2/1**, parenthetical **13; 8/2/0/3**, smaller/smallest **13; 11/0/1/1**, If/Otherwise
-**7; 2/1/1/3**. Comparator gap **36 anchors**, 25 of which produced a graph that cannot record
-which comparison the text asked for.
+**Evidence required.** Regenerate over all 157 anchors from `C:\tmp\m20_s68_candidate`. Report the
+diagram/chain/none split again, and state the count of panels whose column 3 contains a node id or a
+banned term - **the target for both is zero.**
 
-**WHAT THE S68 NUMBERS MEAN, and it is the answer to John's pick-two question so far.**
-`smaller of` derives 11 of 13; `If ... Otherwise` derives 2 of 7. **Failure concentrates on
-branching, not on complexity.** Straight mappings to a named operation succeed; branches do not,
-and branches are exactly where `IF_ELSE` stores no comparator and where the depth ceiling bit 2441
-line 25. Three symptoms, one location.
+**DO NOT BUILD AGAINST A SYNTHETIC FIXTURE.** Standing S64 lesson.
 
-**John's parenthetical hypothesis comes back QUALIFIED.** The pattern matched 13 anchors, but 4 of
-the 15 distinct phrases behind them are prose asides, not computational variants - "(if you or your
-spouse was a student or was disabled, see the instructions)" and "(in other words, ...)".
-**Punctuation locates the construction but does not separate computation from commentary.**
+**FOR JOHN, worth knowing before the review: 92 of 157 panels are holes.** 90 anchors were never
+selected (`selector_no_formula_cue` for 83 of them) and 2 are held back. Reviewing every anchor
+means paging past 59% empty panels; a filter to real cells is likely wanted and is not yet specced.
 
 **How to rebuild a candidate** - the two commands, in order, because the second is worthless
 without a run from current code:
