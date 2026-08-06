@@ -163,6 +163,7 @@ def test_all_prompt_templates_render_with_representative_values() -> None:
         "instruction_locator": "span_line_7",
         "printed_lines": "1, 7, 8a",
         "graph_nodes": "- taxpayer_2025_filing_status: Taxpayer filing status",
+        "operation_documentation": "operation documentation",
         "form_face_text": "Form face text",
         "instruction_text": "Instruction text",
         "human_comment": "",
