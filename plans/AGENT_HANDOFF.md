@@ -148,6 +148,20 @@ and the writer produced an empty graph on real data. Real artifacts are sitting 
 pilot's counts must come from those, and any fixture is a supplement to real data, never a
 substitute for it.
 
+**Worker update 2026-08-06.** Implemented the standalone pilot under `pilot/constructions/` and ran
+it against `C:\tmp\m20_s68_candidate`. The inventory is at `C:\tmp\m20_s68_constructions.yaml`.
+The denominator is **157 printed anchors**: 59 on 1040, 35 on 2441, and 63 on 6251. It contains
+67 selected/attempted rows with outcomes **61 derived, 4 repaired, 2 errored, 90 skipped**.
+Construction measurements (count; derived/repaired/errored/skipped): parenthetical **13;
+8/2/0/3**, checkbox **15; 6/1/1/7**, smaller/smallest **13; 11/0/1/1**, If/Otherwise **7;
+2/1/1/3**, zero-or-less **14; 9/2/2/1**. The comparator gap is **36 anchors** (24 inclusive,
+21 exclusive; overlap is allowed), with 21/4/2/9 outcomes. Duplicate printed anchors on 2441
+and 6251 are preserved with instance-qualified evidence ids rather than being collapsed by line.
+
+Tests: `RAN: .venv\Scripts\python.exe -m pytest pilot\constructions\test_measure.py -q ->
+4 passed in 0.09s`. ASCII and `git diff --check` also pass. The real inventory run is provider-free;
+the provider was not rerun because the handoff artifacts already existed.
+
 **SEPARATE ONE-LINE FIX, its own commit, not part of the pilot.**
 `tests/test_m20_s31.py::test_all_prompt_templates_render_with_representative_values` is red because
 S66 added `<<operation_documentation>>` to `prompts/derive_cells.md` without adding the token to the
