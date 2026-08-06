@@ -21,83 +21,68 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## BALL
 
-**BALL: ARCHITECT - M20-S66 provider acceptance pending.** Worker implementation is complete
-locally; task block remains under **From Architect**. **S65 is ACCEPTED at `80b71c5`, and it found
-something far bigger than it was built to find.**
+**BALL: WORKER - M20-S67 (THE REGISTRY AND THE VALIDATOR MUST AGREE ABOUT ROLES).** Task block
+under **From Architect**. **S66 is a NARROW REWORK at `bf135ce`.**
 
-**ONLY 3 OF 19 OPERATIONS AGREE ACROSS ALL FOUR LAYERS.** `doctor` reports prompt / validator /
-projection / engine per operation. `SUBTRACT`, `LOOKUP_TABLE` and `IF_ELSE` hold. **Sixteen
-disagree**, in three distinct families:
-- **Offered but undocumented (6):** `COPY`, `SUM`, `MULTIPLY`, `MIN`, `MAX`, `NEGATE` are in the
-  emission enum and absent from the prompt. **The model has been choosing from an undocumented
-  menu**, which is exactly how it reached for `LOOKUP_BRACKET`.
-- **Offered and NOT EXECUTABLE (3):** `DIVIDE`, `ABS`, `ROUND` project to a rule and then hit
-  `NotImplementedError("operation ... not implemented in v0")` in
-  `tax_graph/engine/operations.py`. **An expression using them would pass every validator and fail
-  at runtime.**
-- **Documented but unprojectable (7):** `IF`, `AND`, `OR`, `NOT`, `COMPARE`, `REQUIRE_INPUT`, and
-  `LOOKUP_BRACKET`. **`REQUIRE_INPUT` is the most-emitted operation on our hard rows** - 2441 lines
-  3, 19, 21 and 27 - and it projects to nothing, which is the `unmapped_operation` warning we have
-  been reading past for rounds.
+**THE CORPUS IS AT ZERO.** Live: 2441 **0/21**, 1040 **0/17**, 6251 **0/29** - 56 rows repaired, 11
+errored, against 20/21, 17/17 and 26/29 before. **59 failures are one kind:**
+`payload: operand role is only valid on LOOKUP_TABLE arguments`.
 
-**This reframes the registry round.** It was queued as "fix `LOOKUP_BRACKET`". It is actually
-**the operation contract is 84% incomplete**, and we have been debugging individual rows on top of
-it.
+**The cause is the registry disagreeing with the validator about roles.** S66 generates the prompt
+from the registry, so the prompt now advertises declared operand roles for every operation - `SUM`
+-> `addend`, `SUBTRACT` -> `minuend`/`subtrahend`. The model emits them. `_validate_operand_role`
+still permits a non-null role only on `LOOKUP_TABLE`. **That is the exact defect class the registry
+was built to end, reintroduced one level up.**
 
-**JOHN'S RULING on the three offered-but-unexecutable operations, 2026-08-05:** *"divide and
-round yes. ABS nah."* Clarified: *"ABS will never be something asked of a filer."* Implement
-`DIVIDE` and `ROUND`; **remove `ABS` permanently** - not until a form demands it, but because no
-IRS instruction tells a filer to take an absolute value. Forms say *"if zero or less, enter
--0-"*, which is `MAX(x, 0)`.
-**The durable test this establishes:** an operation belongs in the emission vocabulary only if
-it corresponds to something a form actually instructs a filer to do.
+**`doctor` was GREEN while the corpus was at zero, and 104 tests passed.** It checks whether an
+operation is PRESENT in each layer, not whether the layers AGREE ABOUT ROLES. **S67 adds that
+check** - a guard that would not catch the defect it exists to prevent is not finished.
+
+**WHAT S66 GOT RIGHT AND MUST SURVIVE THE REWORK:** the registry itself; `projection_expected`
+derived from category rather than declared per operation, so a real gap cannot be waved through;
+`ABS` removed per John's ruling; `ROUND` cited to the 2025 Form 1040 instructions; `DIVIDE`
+zero-divisor behaviour specified and tested.
 
 **QUEUE - one line each.**
-1. **S66 the operation registry** - one versioned source of truth generating schema, prompt
-   documentation, validator dispatch, projection mapping and runtime registration, with `doctor`
-   as its acceptance test.
+1. **S67** - restore the role invariant; make `doctor` check role agreement.
 2. **S64 candidate regeneration** - first full run; expect ~121 of 478 anchors.
 3. **Column and grid recovery** - 2441 lines 3 and 30 and their class.
 4. **Deterministic phrase obligations** - the only queued work targeting semantic correctness.
 5. **S53 the approval gate.**
 6. **Known-red cleanup** - independent, pullable forward.
 
-**FOR JOHN, unresolved and not blocking:** "every cell approved before use" and "a human does not
-read every new cell" cannot both hold during bootstrap. The pipeline can remove RE-review, not first
-review.
+**FOR JOHN - a design question S66 exposed by accident, worth deciding on purpose.** If the model
+named operand roles (`minuend`/`subtrahend` instead of first/second position), `subtract_direction`
+- a recurring live failure - becomes structurally impossible. **Named roles are exactly how
+`LOOKUP_TABLE` stopped being a positional guess in S46/S47**, and the registry already declares
+those roles. It is a deliberate widening of what the model supplies, with a real correctness payoff.
+Not this round.
 
 ## Current round
 
-**M20-S66 WORKER IMPLEMENTATION COMPLETE LOCALLY (2026-08-05).** Canary: **Ground Truth**.
-The operation vocabulary is now one versioned registry (`OPERATION_REGISTRY_VERSION = "1"`) with
-arity, roles, category, prompt notes, projection mapping, and runtime handler. ABS is removed;
-DIVIDE and ROUND are executable. Predicates and REQUIRE_INPUT remain in the vocabulary but doctor
-records that no standalone projection is expected for them. The checked-in schemas, extraction
-validation, prompts, workbench formatter, review projection, engine dispatch, and doctor all read
-or check the same contract. ROUND defaults to nearest whole dollar under the acquired 2025 Form
-1040 instructions (`en_US_2025_publink24811vd0e457`); zero DIVIDE returns the unresolved-value
-sentinel.
+**M20-S66 REWORK (Architect, Claude Opus 5, 2026-08-05) at `bf135ce`. The registry is right and the
+corpus is at zero.**
 
-**RAN:**
+**What it achieved, verified.** `doctor` reports OK, and it earned it three ways rather than one:
+real gaps closed (`DIVIDE` and `ROUND` implemented; the six silently-offered operations now carry
+generated prompt documentation), `ABS` removed permanently per John's ruling, and legitimate
+absences DECLARED - predicates and `REQUIRE_INPUT` are expected to have no projection.
+**`projection_expected` is computed from the operation's category, not declared per operation**, so
+hiding a real gap would require miscategorizing a value operation as a predicate, which breaks its
+execution. That is the difference between a guard and a rubber stamp.
 
-- `$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp_codex'; .\.venv\Scripts\python.exe -m pytest tests/test_operation_registry_m20.py tests/test_doctor_m20.py -q` -> **29 passed, 1 warning**.
-- `$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp_codex'; .\.venv\Scripts\python.exe -m pytest tests/test_operation_registry_m20.py tests/test_doctor_m20.py tests/test_derive_cells_m20.py tests/test_extract_m4.py tests/test_extract_outline_m4.py tests/test_tax_liability_m11.py tests/test_background_m20.py -q` -> **148 passed, 1 warning**.
-- `$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp_codex'; .\.venv\Scripts\python.exe -m pytest tests/test_workbench_m15.py -q` -> **4 passed, 1 warning** (mandatory D5 boundary test).
-- `$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp_codex'; .\.venv\Scripts\python.exe -m pytest tests/test_review_table_m20.py tests/test_expression_agreement_m20.py -q` -> **11 passed, 1 warning**.
-- `$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp_codex'; .\.venv\Scripts\python.exe -m pytest tests/test_review_table_m20.py tests/test_expression_agreement_m20.py tests/test_generated_review_m20.py tests/test_review_manifest_m15.py tests/test_review_semantics_remaining_m15.py -k "not live_derived_manifest_uses_review_expressions_without_raw_fallback" -q` -> **23 passed, 8 failed, 1 deselected, 2 warnings**. Every failure is a `WinError 5` while reading the protected live `graph/2025/_drafts` directories; no assertion failure was reached.
-- `$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp_codex'; .\.venv\Scripts\python.exe -m pytest tests/test_capital_gains_slice.py tests/test_tax_table_m11.py tests/test_tax_liability_m11.py tests/test_tables_engine_m6b.py tests/test_frontier_engine_m7.py tests/test_form_1040_spine_m11.py tests/test_dependents_m15.py -q` -> **28 passed, 2 failed** on the same protected draft-directory ACL while preparing live fixtures.
-- `.\.venv\Scripts\python.exe -m tax_graph.cli doctor --root C:\Users\devbox\projects\tax_graph` -> **exit 0**; all 18 operation rows HOLD, including expected NO projection for predicates and REQUIRE_INPUT.
-- `.\.venv\Scripts\python.exe -m tax_graph.cli validate 2025` -> **exit 0**; graph integrity OK.
-- `.\.venv\Scripts\python.exe -m compileall -q tax_graph workbench tests/test_operation_registry_m20.py tests/test_doctor_m20.py` -> **exit 0**.
-- `.\.venv\Scripts\python.exe tools/check_ascii.py` -> **ASCII check OK**.
-- `git diff --check` -> **clean**.
+Both semantics questions were answered with citations rather than assumptions: `ROUND` cites
+*"2025 Instructions for Form 1040, Rounding Off to Whole Dollars"*; `DIVIDE` returns MISSING on a
+zero divisor, with a test.
 
-**NOT RUN:** live provider derivation / one-live-row acceptance (Architect leg per task spec).
-The protected graph and draft directories were not changed. No provider or prompt-contract wire
-test was claimed from fixture evidence.
+**What it broke.** Live: **0 derived on all three documents**, 56 repaired, 11 errored. **59
+failures are `operand role is only valid on LOOKUP_TABLE arguments`.** The generated prompt
+advertises the registry's operand roles for every operation; the model supplies them; the validator
+rejects them. Registry and validator disagree about roles.
 
-**NEXT BALL: ARCHITECT - run the provider leg and one live row, then accept or return a concrete
-registry-layer defect. Do not push this Worker commit until that acceptance is complete.**
+**The structural finding, and it is the important one.** **`doctor` was green and 104 tests passed
+while the corpus derived nothing.** Presence-per-layer is not agreement. S67 adds role agreement to
+`doctor`, because a guard that would not catch the defect it was built to prevent is not finished.
 
 ## Open for Architect
 
@@ -117,68 +102,62 @@ the verdict while nothing changes - but not first review. That decision shapes S
 
 **One spec at a time. Queued rounds are one-liners in BALL until they are next.**
 
-- **M20-S66 TASK - ONE VERSIONED OPERATION REGISTRY (Architect, Claude Opus 5, 2026-08-05).**
-  Ledger: the RAN/NOT RUN rule, D10, and the standing rules in `AGENTS.md`. **`doctor` going green
-  on the vocabulary section is the acceptance test.** One change, no passengers.
+- **M20-S67 TASK - THE REGISTRY AND THE VALIDATOR MUST AGREE ABOUT ROLES (Architect, Claude Opus 5,
+  2026-08-05).** Ledger: the RAN/NOT RUN rule, D10, and the standing rules in `AGENTS.md`.
+  **Narrow rework of S66. Keep everything else it did - the registry, `DIVIDE`, `ROUND`, the removal
+  of `ABS`, the categories, and a green `doctor` are all correct.**
 
-  **OPEN ITEMS AND SEAMS THIS ROUND TOUCHES:** none open. **Leaves untouched:** S64 regeneration,
-  column and grid recovery, phrase obligations, S53, the known-red cleanup.
+  **What S66 got right, verified, and must survive.** One registry; `doctor` green on the vocabulary
+  with `projection_expected` **derived from category rather than declared per operation**, so a real
+  gap cannot be waved through; `ABS` removed per John's ruling; `ROUND` semantics cited to the 2025
+  Form 1040 instructions; `DIVIDE` zero-divisor behaviour specified and tested; 104 focused tests
+  green.
 
-  **Why, measured by `doctor` on 2026-08-05.** **Only 3 of 19 operations agree across prompt,
-  validator, projection and engine** - `SUBTRACT`, `LOOKUP_TABLE`, `IF_ELSE`. **The two halves of
-  the vocabulary were built by opposite logics and nothing ever compared them:** the engine
-  implements exactly the ten operations that appear in real graph rules, demand-driven; the emission
-  enum was written speculatively with nineteen. One grew from evidence, the other from imagination.
+  **The defect, measured live.** **0 derived across all three documents** - 2441 0/21, 1040 0/17,
+  6251 0/29, with 56 rows repaired and 11 errored. Previously 20/21, 17/17, 26/29. **59 of the
+  failures are one kind:** `payload: operand role is only valid on LOOKUP_TABLE arguments`.
+  The generated prompt now advertises the registry's declared operand roles for EVERY operation
+  (`SUM` -> `addend`, `SUBTRACT` -> `minuend`/`subtrahend`, `MULTIPLY` -> `multiplicand`/
+  `multiplier`), the model emits them, and `_validate_operand_role` still permits a non-null role
+  only on `LOOKUP_TABLE`. **The registry and the validator disagree about roles - the exact defect
+  class the registry was built to end, reintroduced one level up.**
 
-  **JOHN'S RULING, 2026-08-05, on the three that are offered but cannot execute:** *"divide and
-  round yes. ABS nah."* Clarified: *"ABS will never be something asked of a filer."*
-  - **Implement `DIVIDE` and `ROUND` in the engine.**
-  - **Remove `ABS` permanently.** Not "until a form demands it" - **it will never be demanded.** No
-    IRS instruction tells a filer to take an absolute value. Forms say *"if zero or less, enter
-    -0-"*, which is `MAX(x, 0)`. `ABS` is a programmer's primitive that was written into the enum
-    because it looks like arithmetic.
-  - **THE TEST THIS ESTABLISHES, and apply it to the whole vocabulary:** an operation belongs in the
-    emission vocabulary only if it corresponds to something a form actually instructs a filer to do.
-    **Report any other operation that fails this test** - it is the same shape as John's rule that a
-    question which cannot be asked about the 1040 is the wrong question.
+  **Why `doctor` missed it, and fix that too.** `doctor` checks whether each operation is PRESENT in
+  each layer. It does not check that the layers AGREE ABOUT OPERAND ROLES. **Add that check** - the
+  roles the prompt advertises, the roles the validator accepts, and the roles projection assigns
+  must be the same set per operation. A guard that would not have caught the defect it was built to
+  prevent is not finished.
 
-  **Step 1 - one versioned registry, one source of truth.** Every operation declared once, with its
-  arity, operand roles, **category** (see step 2), prompt documentation, validator dispatch,
-  projection mapping and engine implementation derived from or checked against that declaration.
-  **A new operation must be impossible to add to one layer alone.**
+  **Step 1 - restore the invariant the minimal way.** The wire permits a nullable role everywhere;
+  the deterministic validator permits a non-null role only on `LOOKUP_TABLE`; **projection derives
+  roles from position for every other operation.** That was S56's settled split and it worked.
+  **Stop the generated prompt advertising operand roles for non-`LOOKUP_TABLE` operations.** The
+  registry keeps its role declarations - projection needs them - but they are internal, not part of
+  what the model is asked to supply.
 
-  **Step 2 - classify before projecting, because `doctor`'s flat four-layer table is too coarse.**
-  The seven "documented but unprojectable" operations are not one problem:
-  - **Value-producing** (`SUM`, `SUBTRACT`, `MULTIPLY`, `DIVIDE`, `MIN`, `MAX`, `NEGATE`, `ROUND`,
-    `COPY`, `LOOKUP_TABLE`, `LOOKUP_BRACKET`) - these need a rule to project onto.
-  - **Predicates** (`IF`, `AND`, `OR`, `NOT`, `COMPARE`) - these live INSIDE a condition and may
-    legitimately have no standalone rule. **Report whether "no projection" is correct for them
-    rather than forcing one.**
-  - **Dispositions** (`REQUIRE_INPUT`) - "the filer supplies this" is not a computation.
-    **Projecting it to a rule is probably wrong; it should mark a required input.** It is the
-    most-emitted operation on our hard rows and the source of the `unmapped_operation` warnings.
-  **Add the category to `doctor`'s report so a legitimate absence stops reading as a defect.**
+  **Step 2 - prove it with the corpus, not with fixtures.** 104 tests passed and `doctor` was green
+  while the corpus was at zero. **The round is not accepted until the live numbers return to
+  roughly 2441 20/21, 1040 17/17, 6251 26/29.**
 
-  **Step 3 - document the six that were offered in silence.** `COPY`, `SUM`, `MULTIPLY`, `MIN`,
-  `MAX`, `NEGATE` are in the enum with no prompt text. **The model has been choosing from an
-  undocumented menu**, which is how it reached for `LOOKUP_BRACKET`. Generate the prompt's operation
-  documentation from the registry so this cannot recur.
+  **Step 3 - report the eleven errored rows separately.** 56 rows were repaired, meaning they failed
+  once and recovered. **Repair rate is a signal we have been ignoring**: a corpus at 0 derived and
+  56 repaired passed every gate we had. Report whether repair rate should itself be a `doctor`
+  check.
 
-  **Step 4 - state `ROUND`'s semantics explicitly; do not assume them.** Rounding mode and
-  precision are part of the executable contract, not an implementation detail. IRS forms round to
-  whole dollars. **Report the rule you implement and cite the source for it.** Same discipline for
-  `DIVIDE`: state the behaviour on a zero divisor rather than letting Python decide.
+  **Do not:** change the validator to accept model-supplied roles in this round (see below); remove
+  the registry; weaken `doctor`; touch the protected set. **Stop conditions:** any diff in the
+  protected directories; live derived not restored; `doctor` green while the corpus is broken.
+  Tier 3. Honest `RAN:`/`NOT RUN:` - **the provider leg is the Architect's, and this round is not
+  accepted until the corpus recovers.** ASCII, `git diff --check`, module-form `validate 2025`.
+  **ONE local commit.**
 
-  **Step 5 - `doctor` must go green on the vocabulary section**, and its greenness must come from
-  the layers actually agreeing, **not from loosening the check**. Weakening `doctor` to pass is the
-  guard-inversion failure that cost S54 and S55 two rounds.
-
-  **Do not:** implement `ABS`; add an operation no form has demanded; weaken `doctor`; change
-  derivation, the packet, or the addressing layer; touch the protected set. **Stop conditions:** any
-  diff in the protected directories; an operation reachable in one layer and absent from another
-  after this round; `doctor` passing because a check was relaxed. Tier 3. Honest `RAN:`/`NOT RUN:` -
-  **the provider leg is the Architect's, and this round is not accepted until one live row derives.**
-  ASCII, `git diff --check`, module-form `validate 2025`. **ONE local commit.**
+  **A REAL DESIGN QUESTION THIS EXPOSED, for a later round and worth John's view.** If the model
+  DID name operand roles - `minuend` and `subtrahend` rather than first and second position -
+  then `subtract_direction`, a recurring live failure kind, becomes structurally impossible. Named
+  roles are how `LOOKUP_TABLE` stopped being a positional guess in S46/S47. **The same argument
+  applies to every value operation, and the registry now declares those roles already.** That is a
+  deliberate widening of what the model supplies, with a real correctness payoff, and it should be
+  decided on purpose rather than arrived at by a prompt generator.
 
 ## History
 
