@@ -12,6 +12,7 @@ from dataclasses import dataclass
 
 
 OPERATION_REGISTRY_VERSION = "1"
+NAMED_OPERAND_ROLE = "<named>"
 
 
 @dataclass(frozen=True)
@@ -96,6 +97,30 @@ def operation_roles(operation: str, count: int) -> tuple[str, ...]:
     return spec.roles_for(count) if spec is not None else ()
 
 
+def operation_model_roles(operation: str) -> tuple[str, ...]:
+    """Return the non-null operand roles the extraction model may supply.
+
+    Ordinary operations are positional: their role names are assigned by the
+    deterministic projection and are therefore not part of the model wire
+    contract.  Named operations accept a role-shaped value whose concrete
+    names come from the source document.
+    """
+    spec = operation_spec(operation)
+    if spec is None or not spec.named_leaf_roles:
+        return ()
+    return (NAMED_OPERAND_ROLE,)
+
+
+def operation_projection_roles(operation: str, count: int) -> tuple[str, ...]:
+    """Return the roles the deterministic projection assigns for an operation."""
+    spec = operation_spec(operation)
+    if spec is None:
+        return ()
+    if spec.named_leaf_roles:
+        return (NAMED_OPERAND_ROLE,)
+    return spec.roles_for(count)
+
+
 def operation_numeric_roles(operation: str, count: int) -> tuple[str | None, ...]:
     """Return numeric operand roles for one operation and argument count."""
     spec = operation_spec(operation)
@@ -125,12 +150,13 @@ def projection_rule_for(operation: str, evidence_text: str = "") -> str | None:
 
 
 def prompt_operation_documentation() -> str:
-    """Render the registry as compact prompt documentation."""
+    """Render the registry without leaking internal positional role names."""
     lines = [f"operation registry version: {OPERATION_REGISTRY_VERSION}"]
     for spec in OPERATION_SPECS:
         arity = str(spec.min_args) if spec.max_args == spec.min_args else f"{spec.min_args}+"
-        roles = ", ".join(spec.roles) if spec.roles else "named leaf roles"
-        line = f"- {spec.name}: {spec.description} category={spec.category}; args={arity}; roles={roles}"
+        line = f"- {spec.name}: {spec.description} category={spec.category}; args={arity}"
+        if spec.named_leaf_roles:
+            line += "; roles=named leaf roles"
         if spec.runtime_notes:
             line += f"; notes={spec.runtime_notes}"
         lines.append(line)
@@ -146,9 +172,12 @@ __all__ = [
     "OPERATION_REGISTRY",
     "OPERATION_REGISTRY_VERSION",
     "OPERATION_SPECS",
+    "NAMED_OPERAND_ROLE",
     "OperationSpec",
     "operation_names",
     "operation_numeric_roles",
+    "operation_model_roles",
+    "operation_projection_roles",
     "operation_roles",
     "operation_spec",
     "predicate_operations",

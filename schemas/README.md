@@ -39,7 +39,9 @@ M15R adds additive canonical-address registries, widget/node bindings, and typed
 ## Note on the rule vocabulary
 
 `tax_graph/operation_registry.py` is the versioned source for the operation enum and its
-arity, operand roles, prompt description, projection rule, and runtime handler. The JSON
-schema and prompt schemas consume that contract; tests fail if the checked-in schema enum
-drifts from the registry. Bias is toward composing existing primitives over adding bespoke
-rules.
+arity, operand roles, prompt description, projection rule, and runtime handler. Positional
+roles are internal projection names; only named lookup roles are supplied by the extraction
+model on the wire. Ordinary operands carry a nullable role field for schema uniformity, but
+the deterministic validator rejects a non-null role on them. The JSON schema and prompt
+schemas consume that contract; tests fail if the checked-in schema enum drifts from the
+registry. Bias is toward composing existing primitives over adding bespoke rules.

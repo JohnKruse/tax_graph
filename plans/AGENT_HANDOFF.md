@@ -60,29 +60,26 @@ Not this round.
 
 ## Current round
 
-**M20-S66 REWORK (Architect, Claude Opus 5, 2026-08-05) at `bf135ce`. The registry is right and the
-corpus is at zero.**
+**M20-S67 implementation complete locally; provider verification remains.** The prompt registry now
+advertises named roles only for `LOOKUP_TABLE`; ordinary roles remain internal positional projection
+roles. The validator consumes the same `named_leaf_roles` policy. `doctor` now probes the real
+validator and graph projection, compares their role contracts with the rendered prompt contract, and
+reports a disagreement instead of checking operation presence only. `schemas/README.md` documents
+the wire/projection split.
 
-**What it achieved, verified.** `doctor` reports OK, and it earned it three ways rather than one:
-real gaps closed (`DIVIDE` and `ROUND` implemented; the six silently-offered operations now carry
-generated prompt documentation), `ABS` removed permanently per John's ruling, and legitimate
-absences DECLARED - predicates and `REQUIRE_INPUT` are expected to have no projection.
-**`projection_expected` is computed from the operation's category, not declared per operation**, so
-hiding a real gap would require miscategorizing a value operation as a predicate, which breaks its
-execution. That is the difference between a guard and a rubber stamp.
+**Verification.**
 
-Both semantics questions were answered with citations rather than assumptions: `ROUND` cites
-*"2025 Instructions for Form 1040, Rounding Off to Whole Dollars"*; `DIVIDE` returns MISSING on a
-zero divisor, with a test.
+- RAN: `.venv\Scripts\python.exe -m pytest -p no:cacheprovider tests/test_operation_registry_m20.py tests/test_doctor_m20.py tests/test_derive_cells_m20.py tests/test_m20_s54.py tests/test_extract_m4.py tests/test_prompt_experiment_m20.py tests/test_expression_agreement_m20.py -q` -> **133 passed in 7.72s**.
+- RAN: `.venv\Scripts\python.exe -m tax_graph.cli doctor --year 2025` -> **OK**; all operation rows, including roles, are `HOLDS`.
+- RAN: `.venv\Scripts\python.exe -m tax_graph.cli validate 2025` -> **graph integrity OK**.
+- RAN: `.venv\Scripts\python.exe tools/check_ascii.py` -> **ASCII check OK**.
+- RAN: `git diff --check` -> **exit 0**.
+- RAN: `$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\.codex\visualizations\2026\08\06\019fd5e8-152b-7dc0-a3f5-7ac25c36afb5\tax_graph_pytest'; .venv\Scripts\python.exe -m pytest -p no:cacheprovider tests/test_extract_m4.py tests/test_nversion_m8.py tests/test_operation_registry_m20.py tests/test_doctor_m20.py tests/test_derive_cells_m20.py -q` -> **122 passed, 1 failed**. The failure is `test_verify_nversion_command_reports_disagreement`, which cannot read three existing `graph/2025/_drafts` directories during `shutil.copytree` (`WinError 5`); no role assertion ran. The file is environment-unverified.
+- NOT RUN: live derivation/provider corpus. The provider leg is assigned to the Architect; the prior measured baseline remains 2441 **0/21**, 1040 **0/17**, 6251 **0/29** until that leg is rerun.
 
-**What it broke.** Live: **0 derived on all three documents**, 56 repaired, 11 errored. **59
-failures are `operand role is only valid on LOOKUP_TABLE arguments`.** The generated prompt
-advertises the registry's operand roles for every operation; the model supplies them; the validator
-rejects them. Registry and validator disagree about roles.
-
-**The structural finding, and it is the important one.** **`doctor` was green and 104 tests passed
-while the corpus derived nothing.** Presence-per-layer is not agreement. S67 adds role agreement to
-`doctor`, because a guard that would not catch the defect it was built to prevent is not finished.
+**Acceptance state.** Local gates are green, but M20-S67 is not accepted until the live corpus returns
+to the handoff target and the eleven errored rows are reported separately. No protected directory was
+changed.
 
 ## Open for Architect
 

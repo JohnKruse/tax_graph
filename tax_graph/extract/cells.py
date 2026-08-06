@@ -1636,7 +1636,7 @@ def _validate_tree_node(
             arg,
             depth=depth + 1,
             max_depth=max_depth,
-            allow_role=op == "LOOKUP_TABLE" and _is_leaf_operand(arg),
+            allow_role=spec.named_leaf_roles and _is_leaf_operand(arg),
         )
 
 
@@ -1645,6 +1645,7 @@ PREDICATE_OPERATIONS = predicate_operations()
 
 def _validate_argument_shapes(operation: str, args: list[Any]) -> None:
     """Enforce the positional meanings of conditional expression arguments."""
+    spec = operation_spec(operation)
     if operation in {"IF_ELSE", "COMPARE"}:
         for index, arg in enumerate(args):
             if _is_predicate_expression(arg):
@@ -1663,7 +1664,7 @@ def _validate_argument_shapes(operation: str, args: list[Any]) -> None:
             raise ValueError(f"{operation} arguments (candidate) must be predicate expressions")
     elif operation == "NOT" and not _is_predicate_expression(args[0]):
         raise ValueError("NOT argument 1 (operand) must be a predicate expression")
-    elif operation == "LOOKUP_TABLE":
+    elif spec is not None and spec.named_leaf_roles:
         if any(
             not _is_leaf_operand(arg)
             or not isinstance(arg.get("role"), str)

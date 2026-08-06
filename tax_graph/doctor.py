@@ -8,6 +8,7 @@ visible instead of treating it as an empty result.
 from __future__ import annotations
 
 from dataclasses import dataclass
+import copy
 import datetime as _dt
 from pathlib import Path
 import re
@@ -19,7 +20,15 @@ from tax_graph.config import get_config_value, load_config, project_root
 from tax_graph.extract.inputs import load_document_input
 from tax_graph.extract.outline import build_outline_tree
 from tax_graph.io.loader import load_yaml
-from tax_graph.operation_registry import OPERATION_SPECS, operation_names, prompt_operation_documentation, projection_rule_for
+from tax_graph.operation_registry import (
+    NAMED_OPERAND_ROLE,
+    OPERATION_SPECS,
+    operation_model_roles,
+    operation_names,
+    operation_projection_roles,
+    prompt_operation_documentation,
+    projection_rule_for,
+)
 
 
 BAD_STATUSES = frozenset({"UNKNOWN", "DISAGREES", "STALE"})
@@ -76,7 +85,7 @@ class DoctorCheck:
 
 @dataclass(frozen=True)
 class OperationRow:
-    """Cross-layer presence row for one model operation."""
+    """Cross-layer operation and operand-role contract row."""
 
     operation: str
     prompt: bool | None
@@ -87,16 +96,28 @@ class OperationRow:
     schema: bool | None = True
     category: str = "value"
     projection_expected: bool | None = True
+    prompt_roles: tuple[str, ...] | None = ()
+    validator_roles: tuple[str, ...] | None = ()
+    projection_roles: tuple[str, ...] | None = ()
+    role_agreement: bool | None = True
 
     @property
     def status(self) -> str:
         """Return the row status without repairing any disagreement."""
-        values = (self.prompt, self.validator, self.projection, self.engine, self.schema, self.projection_expected)
+        values = (
+            self.prompt,
+            self.validator,
+            self.projection,
+            self.engine,
+            self.schema,
+            self.projection_expected,
+            self.role_agreement,
+        )
         if any(value is None for value in values):
             return "UNKNOWN"
         if self.projection != self.projection_expected:
             return "DISAGREES"
-        return "HOLDS" if all(value is True for value in (self.prompt, self.validator, self.engine, self.schema)) else "DISAGREES"
+        return "HOLDS" if all(value is True for value in (self.prompt, self.validator, self.engine, self.schema, self.role_agreement)) else "DISAGREES"
 
     def as_dict(self) -> dict[str, Any]:
         """Return a stable cross-layer record."""
@@ -109,6 +130,10 @@ class OperationRow:
             "schema": self.schema,
             "category": self.category,
             "projection_expected": self.projection_expected,
+            "prompt_roles": list(self.prompt_roles) if self.prompt_roles is not None else None,
+            "validator_roles": list(self.validator_roles) if self.validator_roles is not None else None,
+            "projection_roles": list(self.projection_roles) if self.projection_roles is not None else None,
+            "role_agreement": self.role_agreement,
             "status": self.status,
             "detail": self.detail,
         }
@@ -232,7 +257,7 @@ def render_doctor_report(report: DoctorReport) -> str:
             lines.append(f"    {detail}")
 
     lines.extend(("", "=== operation vocabulary ==="))
-    lines.append("  operation | category | prompt | validator | projection | expected | engine | schema | status")
+    lines.append("  operation | category | prompt | validator | projection | expected | engine | schema | roles | status")
     for item in report.operations:
         values = " | ".join(_yes_no(value) for value in (
             item.prompt,
@@ -241,6 +266,7 @@ def render_doctor_report(report: DoctorReport) -> str:
             item.projection_expected,
             item.engine,
             item.schema,
+            item.role_agreement,
         ))
         lines.append(f"  {item.operation} | {item.category} | {values} | {item.status}")
         if item.detail:
@@ -482,15 +508,29 @@ def _check_operations(root: Path) -> tuple[OperationRow, ...]:
     prompt_uses_registry = prompt_texts is not None and all(
         "<<operation_documentation>>" in text for text in prompt_texts
     )
+    prompt_documentation = prompt_operation_documentation()
     validator_operations = set(registry_operations)
     engine_operations = set(registered_operations())
     for spec in OPERATION_SPECS:
         operation = spec.name
-        prompt = prompt_uses_registry and operation in prompt_operation_documentation()
+        prompt_roles = (
+            _prompt_operation_roles(prompt_documentation, operation)
+            if prompt_uses_registry
+            else None
+        )
+        prompt = prompt_roles is not None
         validator = operation in validator_operations
         projection = projection_rule_for(operation, "less than") is not None
         engine = operation in engine_operations
         projection_expected = spec.category == "value"
+        validator_roles = _probe_validator_roles(spec) if validator else None
+        projection_roles = _probe_projection_roles(spec)
+        role_agreement = (
+            prompt_roles == validator_roles == operation_model_roles(operation)
+            and projection_roles == operation_projection_roles(operation, spec.min_args)
+            if prompt_roles is not None and validator_roles is not None and projection_roles is not None
+            else None
+        )
         layers = [
             ("prompt", prompt),
             ("validator", validator),
@@ -509,6 +549,10 @@ def _check_operations(root: Path) -> tuple[OperationRow, ...]:
                 schema=schema_matches_registry,
                 category=spec.category,
                 projection_expected=projection_expected,
+                prompt_roles=prompt_roles,
+                validator_roles=validator_roles,
+                projection_roles=projection_roles,
+                role_agreement=role_agreement,
                 detail=(
                     "missing: " + ", ".join(missing)
                     if missing
@@ -516,11 +560,135 @@ def _check_operations(root: Path) -> tuple[OperationRow, ...]:
                     if projection != projection_expected
                     else "schema enum differs from registry"
                     if not schema_matches_registry
+                    else "role contract disagrees: "
+                    + _format_role_contract(prompt_roles, validator_roles, projection_roles)
+                    if role_agreement is False
                     else ""
                 ),
             )
         )
     return tuple(rows)
+
+
+def _prompt_operation_roles(documentation: str, operation: str) -> tuple[str, ...] | None:
+    """Read one operation's advertised non-null roles from prompt documentation."""
+    prefix = f"- {operation}:"
+    line = next((item for item in documentation.splitlines() if item.startswith(prefix)), None)
+    if line is None:
+        return None
+    match = re.search(r"(?:^|;) roles=([^;]+)", line)
+    if match is None:
+        return ()
+    value = match.group(1).strip()
+    if value == "named leaf roles":
+        return (NAMED_OPERAND_ROLE,)
+    return tuple(role.strip() for role in value.split(",") if role.strip())
+
+
+def _format_role_contract(
+    prompt_roles: tuple[str, ...] | None,
+    validator_roles: tuple[str, ...] | None,
+    projection_roles: tuple[str, ...] | None,
+) -> str:
+    """Render a role mismatch compactly for the doctor report."""
+    def render(value: tuple[str, ...] | None) -> str:
+        return "UNKNOWN" if value is None else ",".join(value) or "none"
+
+    return (
+        f"prompt={render(prompt_roles)}; "
+        f"validator={render(validator_roles)}; "
+        f"projection={render(projection_roles)}"
+    )
+
+
+def _probe_expression(spec: Any) -> dict[str, Any]:
+    """Build a minimal valid expression for one provider-free role probe."""
+    operation = spec.name
+    if operation == "LOOKUP_TABLE":
+        return {
+            "op": operation,
+            "args": [
+                {"role": "key", "line": "1"},
+                {"role": "default", "const": 0},
+            ],
+        }
+    if operation == "IF":
+        return {
+            "op": operation,
+            "args": [
+                {"op": "COMPARE", "args": [{"line": "1"}, {"line": "2"}]},
+                {"line": "3"},
+            ],
+        }
+    if operation in {"AND", "OR"}:
+        predicate = lambda offset: {
+            "op": "COMPARE",
+            "args": [{"line": str(offset)}, {"line": str(offset + 1)}],
+        }
+        return {"op": operation, "args": [predicate(1), predicate(3)]}
+    if operation == "NOT":
+        return {
+            "op": operation,
+            "args": [{"op": "COMPARE", "args": [{"line": "1"}, {"line": "2"}]}],
+        }
+    return {
+        "op": operation,
+        "args": [{"line": str(index + 1)} for index in range(spec.min_args)],
+    }
+
+
+def _add_probe_role(expression: dict[str, Any]) -> None:
+    """Put one non-null role on the first leaf in a probe expression."""
+    for argument in expression.get("args", []):
+        if isinstance(argument, dict) and "op" in argument:
+            _add_probe_role(argument)
+            return
+        if isinstance(argument, dict):
+            argument["role"] = "probe"
+            return
+
+
+def _probe_validator_roles(spec: Any) -> tuple[str, ...] | None:
+    """Discover the validator's accepted role shape with a local probe."""
+    from tax_graph.extract.cells import validate_expression_tree
+
+    if spec.named_leaf_roles:
+        try:
+            validate_expression_tree(_probe_expression(spec))
+        except ValueError:
+            return None
+        return (NAMED_OPERAND_ROLE,)
+
+    expression = _probe_expression(spec)
+    _add_probe_role(expression)
+    try:
+        validate_expression_tree(expression)
+    except ValueError as exc:
+        if "operand role is only valid" in str(exc):
+            return ()
+        return None
+    return ("probe",)
+
+
+def _probe_projection_roles(spec: Any) -> tuple[str, ...] | None:
+    """Discover the root roles emitted by the deterministic graph projection."""
+    from tax_graph.extract.cells import expression_to_graph
+
+    expression = _probe_expression(spec)
+    try:
+        projection = expression_to_graph(
+            form="probe_form",
+            line="probe",
+            expression=copy.deepcopy(expression),
+            evidence_text="less than",
+        )
+    except (TypeError, ValueError):
+        return None
+    target = "probe_form_root_line_probe"
+    roles = tuple(edge.get("role") for edge in projection.edges if edge.get("target") == target)
+    if spec.named_leaf_roles:
+        return (NAMED_OPERAND_ROLE,) if roles == ("key", "default") else roles
+    return roles
 
 
 def _load_operation_prompt_texts(root: Path, config: dict[str, Any]) -> tuple[str, ...] | None:

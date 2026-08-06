@@ -1,4 +1,4 @@
-"""M20-S66 tests for the versioned operation registry."""
+"""M20-S67 tests for the versioned operation registry and role contract."""
 
 from __future__ import annotations
 
@@ -9,9 +9,12 @@ import pytest
 
 from tax_graph.engine.operations import MISSING, apply_operation, registered_operations
 from tax_graph.operation_registry import (
+    NAMED_OPERAND_ROLE,
     OPERATION_REGISTRY_VERSION,
     OPERATION_SPECS,
     operation_names,
+    operation_model_roles,
+    operation_projection_roles,
     prompt_operation_documentation,
     projection_rule_for,
 )
@@ -48,6 +51,23 @@ def test_registry_generates_prompt_contract() -> None:
     assert "REQUIRE_INPUT" in documentation
     assert "publink24811vd0e457" in documentation
     assert "ABS" not in operation_names()
+
+
+def test_prompt_contract_exposes_only_named_lookup_roles() -> None:
+    documentation = prompt_operation_documentation()
+    lines = {
+        line.split(":", 1)[0].removeprefix("- "): line
+        for line in documentation.splitlines()
+        if line.startswith("- ")
+    }
+
+    assert "roles=addend" not in lines["SUM"]
+    assert "roles=minuend" not in lines["SUBTRACT"]
+    assert "roles=named leaf roles" in lines["LOOKUP_TABLE"]
+    assert operation_model_roles("SUM") == ()
+    assert operation_model_roles("LOOKUP_TABLE") == (NAMED_OPERAND_ROLE,)
+    assert operation_projection_roles("SUM", 2) == ("addend", "addend")
+    assert operation_projection_roles("LOOKUP_TABLE", 2) == (NAMED_OPERAND_ROLE,)
 
 
 def test_every_registered_operation_has_projection_and_runtime() -> None:

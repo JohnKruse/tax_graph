@@ -1,4 +1,4 @@
-"""M20-S66 tests for the provider-free pipeline doctor."""
+"""M20-S67 tests for the provider-free pipeline doctor."""
 
 from __future__ import annotations
 
@@ -84,6 +84,53 @@ def test_doctor_accepts_predicate_and_disposition_rows_without_projection() -> N
     assert disposition.projection is False
     assert disposition.projection_expected is False
     assert disposition.status == "HOLDS"
+
+
+def test_doctor_catches_prompt_roles_validator_does_not_accept(monkeypatch: pytest.MonkeyPatch) -> None:
+    original = doctor.prompt_operation_documentation()
+    broken = original.replace(
+        "- SUM: Add one or more values. category=value; args=1+",
+        "- SUM: Add one or more values. category=value; args=1+; roles=addend",
+    )
+    monkeypatch.setattr(doctor, "prompt_operation_documentation", lambda: broken)
+
+    rows = doctor._check_operations(ROOT)
+    sum_row = next(row for row in rows if row.operation == "SUM")
+
+    assert sum_row.prompt_roles == ("addend",)
+    assert sum_row.validator_roles == ()
+    assert sum_row.projection_roles == ("addend",)
+    assert sum_row.role_agreement is False
+    assert sum_row.status == "DISAGREES"
+    assert "prompt=addend" in sum_row.detail
+
+
+def test_doctor_catches_validator_role_drift(monkeypatch: pytest.MonkeyPatch) -> None:
+    import tax_graph.extract.cells as cells
+
+    monkeypatch.setattr(cells, "validate_expression_tree", lambda expression, max_depth=2: None)
+
+    rows = doctor._check_operations(ROOT)
+    sum_row = next(row for row in rows if row.operation == "SUM")
+
+    assert sum_row.validator_roles == ("probe",)
+    assert sum_row.role_agreement is False
+    assert sum_row.status == "DISAGREES"
+    assert "validator=probe" in sum_row.detail
+
+
+def test_doctor_catches_projection_role_drift(monkeypatch: pytest.MonkeyPatch) -> None:
+    import tax_graph.extract.cells as cells
+
+    monkeypatch.setattr(cells, "_role_for", lambda operation, index, operand=None: "wrong")
+
+    rows = doctor._check_operations(ROOT)
+    sum_row = next(row for row in rows if row.operation == "SUM")
+
+    assert sum_row.projection_roles == ("wrong",)
+    assert sum_row.role_agreement is False
+    assert sum_row.status == "DISAGREES"
+    assert "projection=wrong" in sum_row.detail
 
 
 def test_declared_region_harvest_is_checked_and_missing_output_is_unknown(tmp_path: Path) -> None:
