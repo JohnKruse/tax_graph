@@ -176,6 +176,30 @@ MAX_PATH overflow while copying `graph/2025/_drafts` into the fixture project. T
 on `C:\Users\devbox\AppData\Local\Temp\tgpt`. A long temp root does not fail a few tests, it fails
 whole files at once - that shape is the signature, not a code regression.
 
+**WORKER COMPLETION (2026-08-06; awaiting Architect acceptance).** S69 is implemented under
+`pilot/` as `review_panel.py`, `test_review_panel.py`, and `README.md`. It reads the real
+`C:\tmp\m20_s68_candidate` source reports and candidate drafts, emits one self-contained HTML
+panel for every printed anchor, preserves separate label/form-face/instruction blocks, projects
+only promoted graph operations and edge roles, and renders held-back rows as named holes. It does
+not re-run the provider or write candidate/graph artifacts.
+
+**REAL-CORPUS EVIDENCE.** The generated artifact is at
+`C:\Users\devbox\.codex\visualizations\2026\08\06\019fd7ff-15d7-7d62-8122-8cb2b270f6a6\m20_s69_review_panel.html`:
+157 anchors, 9 diagrams, 36 chains, 112 none, and 92 panels with a hole. The HTML has 157 review
+articles. The graph terminology report lists 10 node ids containing `floor`, including
+`form_2441_2025_zero_floor` and `form_2441_2025_root_line_26_pre_floor`; no graph artifact was
+changed.
+
+**TEST EVIDENCE.** RAN:
+`.venv\Scripts\python.exe -m pytest pilot\test_review_panel.py -q` -> **5 passed, 1 warning**
+(2.51s). The warning is the known permission failure writing the pre-existing `.pytest_cache`;
+the first run also hit the known poisoned `.test_tmp` during `tmp_path` setup, so the CLI test was
+made hermetic by using the writable visualization scratch path and leaves no artifact. RAN:
+`.venv\Scripts\python.exe pilot\review_panel.py C:\tmp\m20_s68_candidate --output C:\Users\devbox\.codex\visualizations\2026\08\06\019fd7ff-15d7-7d62-8122-8cb2b270f6a6\m20_s69_review_panel.html`
+-> **157 anchors; 9 diagrams / 36 chains / 112 none; 92 holes**. RAN:
+`.venv\Scripts\python.exe tools\check_ascii.py` -> **ASCII check OK**. No provider run and no
+full suite were performed, per pilot rules.
+
 ## Open for Architect
 
 **Nothing is open for the Architect.** The three items `doctor` flagged STALE at 73 commits on
