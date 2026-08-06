@@ -14,22 +14,47 @@ from collections import Counter
 from collections import defaultdict
 from pathlib import Path
 import re
+import sys
 from typing import Any, Callable, Iterable, Mapping
 
 import yaml
+
+PILOT_ROOT = Path(__file__).resolve().parents[1]
+if str(PILOT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PILOT_ROOT))
+import cell_access
 
 
 REPORT_SUFFIX = "_derive_cells_report.yaml"
 EXAMPLE_LIMIT = 10
 OUTCOME_KEYS = ("derived", "repaired", "errored", "skipped")
-TEXT_FIELDS = (
-    "label_after",
-    "label_before",
-    "form_face_after",
-    "form_face_before",
-    "instruction_text",
-    "quote",
-)
+
+
+def _row_with_cell(
+    source: Mapping[str, Any] | None,
+    candidate: Mapping[str, Any] | None,
+    anchor: Mapping[str, Any] | None,
+    line: str,
+    *,
+    printed_anchor_index: int | None = None,
+) -> dict[str, Any]:
+    """Keep source records separate and attach the one joined cell view."""
+
+    if source is not None:
+        row = dict(source)
+    elif candidate is not None:
+        row = dict(candidate)
+    else:
+        row = {"line": line}
+    row["line"] = line
+    if printed_anchor_index is not None:
+        row["printed_anchor_index"] = printed_anchor_index
+    row["_cell"] = cell_access.join_rows(
+        anchor=anchor,
+        source=source,
+        candidate=candidate,
+    )
+    return row
 
 
 def _normalise_space(value: Any) -> str:
@@ -59,16 +84,31 @@ def _load_yaml(path: Path) -> dict[str, Any]:
 
 
 def _row_text(row: Mapping[str, Any]) -> str:
+    cell = row.get("_cell")
+    if not isinstance(cell, cell_access.Cell):
+        cell = cell_access.join_rows(source=row, anchor=row)
     parts: list[str] = []
-    for field in TEXT_FIELDS:
-        value = _normalise_space(row.get(field))
+    text_values = (
+        cell_access.label(cell),
+        cell_access.form_face(cell),
+        cell_access.instruction_section(cell),
+        cell_access.quote(cell),
+    )
+    for text_value in text_values:
+        if text_value.value is None:
+            continue
+        value = _normalise_space(text_value.value)
         if value and value not in parts:
             parts.append(value)
     return " ".join(parts)
 
 
 def _anchor_id(document_id: str, row: Mapping[str, Any]) -> str:
-    explicit = _normalise_space(row.get("node_id"))
+    cell = row.get("_cell")
+    if not isinstance(cell, cell_access.Cell):
+        cell = cell_access.join_rows(source=row, anchor=row)
+    node_value = cell_access.node_id(cell)
+    explicit = _normalise_space(node_value.value) if node_value.value is not None else ""
     if explicit:
         return explicit
     line = _line_key(row.get("line"))
@@ -79,7 +119,11 @@ def _anchor_id(document_id: str, row: Mapping[str, Any]) -> str:
 
 
 def _outcome(row: Mapping[str, Any]) -> str:
-    raw = _line_key(row.get("status") or row.get("original_status") or row.get("candidate_status"))
+    cell = row.get("_cell")
+    if not isinstance(cell, cell_access.Cell):
+        cell = cell_access.join_rows(source=row, anchor=row)
+    status_value = cell_access.status(cell)
+    raw = _line_key(status_value.value) if status_value.value is not None else ""
     if raw in {"derived", "repaired", "skipped"}:
         return raw
     if raw in {"error", "errored", "gapped", "review_gap", ""}:
@@ -88,7 +132,12 @@ def _outcome(row: Mapping[str, Any]) -> str:
 
 
 def _raw_status(row: Mapping[str, Any]) -> str:
-    return _line_key(row.get("status") or row.get("original_status") or row.get("candidate_status")) or "missing"
+    cell = row.get("_cell")
+    if not isinstance(cell, cell_access.Cell):
+        cell = cell_access.join_rows(source=row, anchor=row)
+    status_value = cell_access.status(cell)
+    raw = _line_key(status_value.value) if status_value.value is not None else ""
+    return raw if raw else "missing"
 
 
 def _report_rows(candidate_root: Path, report: Mapping[str, Any]) -> list[dict[str, Any]]:
@@ -142,38 +191,40 @@ def _report_rows(candidate_root: Path, report: Mapping[str, Any]) -> list[dict[s
                 continue
             skip_reason = _normalise_space(value.get("skip_reason"))
             if skip_reason:
-                row = {
+                source = {
                     "line": line,
-                    "label_after": value.get("label") or value.get("label_after") or "",
-                    "form_face_after": value.get("form_face_text") or "",
+                    "label_after": value.get("label_after"),
+                    "form_face_after": value.get("form_face_text"),
                     "status": "skipped",
                     "error": skip_reason,
                 }
+                candidate = None
             else:
-                row = raw_rows_by_line[line].pop(0) if raw_rows_by_line[line] else None
-                fallback = candidate_rows_by_line[line].pop(0) if candidate_rows_by_line[line] else None
-                if row is None:
-                    row = fallback or {
+                source = raw_rows_by_line[line].pop(0) if raw_rows_by_line[line] else None
+                candidate = candidate_rows_by_line[line].pop(0) if candidate_rows_by_line[line] else None
+                if source is None and candidate is None:
+                    source = {
                         "line": line,
-                        "label_after": value.get("label") or value.get("label_after") or "",
-                        "form_face_after": value.get("form_face_text") or "",
+                        "label_after": value.get("label_after"),
+                        "form_face_after": value.get("form_face_text"),
                         "status": "error",
                         "error": "missing derivation row for admitted anchor",
                     }
-                elif fallback:
-                    for key, item in fallback.items():
-                        if key not in row or row[key] in (None, "", []):
-                            row[key] = item
-            if line_counts[line] > 1:
-                row["printed_anchor_index"] = index
+            row = _row_with_cell(
+                source,
+                candidate,
+                value,
+                line,
+                printed_anchor_index=index if line_counts[line] > 1 else None,
+            )
             rows.append(row)
     else:
         rows = []
         for line, values in raw_rows_by_line.items():
-            rows.extend(values)
+            rows.extend(_row_with_cell(value, None, value, line) for value in values)
         for line, values in candidate_rows_by_line.items():
             if not raw_rows_by_line[line]:
-                rows.extend(values)
+                rows.extend(_row_with_cell(None, value, value, line) for value in values)
 
     printed = _first_int(
         report.get("line_anchor_count"),

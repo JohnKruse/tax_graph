@@ -4,6 +4,11 @@ This standalone pilot projects a real candidate workspace into one self-containe
 It preserves every printed anchor from the source derivation reports and keeps the three source
 layers separate: label, form face, and instruction page.
 
+All pilot consumers read cell evidence through `pilot/cell_access.py`.  Its `CellText` result uses
+`None` for absent text, so an absent caption cannot fall through to a different source record.
+The panel summary reports caption, instruction-section, and promoted-operation presence and
+absence counts.
+
 The operation column reads the promoted candidate graph. It shows the graph operation, the saved
 rendered expression, rule ids, and every operand node id with the edge role stored on that edge.
 A held-back candidate expression is displayed as evidence, never as a promoted operation.

@@ -17,6 +17,8 @@ from typing import Any, Iterable, Mapping
 
 import yaml
 
+import cell_access
+
 
 REPORT_SUFFIX = "_derive_cells_report.yaml"
 OUTCOME_STATUSES = {"derived", "repaired", "review_gap", "skipped", "error", "errored"}
@@ -113,43 +115,35 @@ def _merge_anchor(
 
     line = _line(anchor.get("anchor") or anchor.get("line"))
     skip_reason = _text(anchor.get("skip_reason")).strip()
-    source_row = dict(source or {})
-    candidate_row = dict(candidate or {})
-    source_status = _text(source_row.get("status")).strip().lower()
-    candidate_status = _text(
-        candidate_row.get("candidate_status") or candidate_row.get("status")
-    ).strip().lower()
-    status = candidate_status or source_status or ("skipped" if skip_reason else "missing")
+    source_row = dict(source) if source is not None else {}
+    candidate_row = dict(candidate) if candidate is not None else {}
+    cell = cell_access.join_rows(anchor=anchor, source=source_row, candidate=candidate_row)
+    source_status_value = cell_access.source_status(cell)
+    candidate_status_value = cell_access.candidate_status(cell)
+    source_status = _text(source_status_value.value).strip().lower()
+    candidate_status = _text(candidate_status_value.value).strip().lower()
+    status_value = cell_access.status(cell)
+    status = status_value.value.strip().lower() if status_value.value is not None else ""
+    if not status:
+        status = "skipped" if skip_reason else "missing"
     if skip_reason:
         status = "skipped"
 
-    label = _text(
-        candidate_row.get("label")
-        or source_row.get("label_after")
-        or source_row.get("label_before")
-        or anchor.get("label")
-        or anchor.get("label_after")
-    )
-    form_face = _text(
-        candidate_row.get("form_face_text")
-        or source_row.get("form_face_after")
-        or source_row.get("form_face_before")
-        or anchor.get("form_face_text")
-    )
-    instruction = _text(candidate_row.get("instruction_text") or source_row.get("instruction_text"))
-    findings = candidate_row.get("findings") or source_row.get("validation_failures") or []
-    if not isinstance(findings, list):
-        findings = [findings]
-    findings = [item for item in findings if item not in (None, "")]
+    label = cell_access.label(cell).value
+    form_face = cell_access.form_face(cell).value
+    instruction = cell_access.instruction_section(cell).value
+    findings = list(cell_access.findings(cell))
     if skip_reason and not findings:
         findings = [{"kind": "skipped_anchor", "message": skip_reason}]
     if not skip_reason and source is None:
         findings.append({"kind": "missing_source_row", "message": "source report row is absent"})
     if not skip_reason and candidate is None:
         findings.append({"kind": "missing_candidate_row", "message": "candidate row is absent"})
-    review_gap = _text(candidate_row.get("review_gap") or "").strip()
+    review_gap_value = cell_access.review_gap(cell)
+    review_gap = review_gap_value.value.strip() if review_gap_value.value is not None else ""
     if not review_gap and status in {"error", "errored", "missing"}:
-        review_gap = _text(candidate_row.get("error") or source_row.get("error") or "").strip()
+        error_value = cell_access.error(cell)
+        review_gap = error_value.value.strip() if error_value.value is not None else ""
     if review_gap and not any(_finding_text(item) == review_gap for item in findings):
         findings.append({"kind": "review_gap", "message": review_gap})
 
@@ -167,11 +161,11 @@ def _merge_anchor(
         "candidate_status": candidate_status,
         "findings": findings,
         "review_gap": review_gap,
-        "node_id": _text(candidate_row.get("node_id")).strip(),
-        "candidate_expression": candidate_row.get("expression") or source_row.get("expression"),
-        "candidate_rendered": _text(candidate_row.get("rendered") or source_row.get("rendered")).strip(),
-        "quote": _text(candidate_row.get("quote") or source_row.get("quote")),
-        "quote_span_id": _text(candidate_row.get("quote_span_id") or source_row.get("quote_span_id")),
+        "node_id": _text(cell_access.node_id(cell).value).strip(),
+        "candidate_expression": cell_access.expression(cell),
+        "candidate_rendered": cell_access.rendered_wording(cell).value,
+        "quote": cell_access.quote(cell).value,
+        "quote_span_id": cell_access.quote_span_id(cell).value,
     }
 
 
@@ -208,7 +202,8 @@ def _graph_jargon_nodes(document_id: str, graph: Mapping[str, Any]) -> list[dict
 
     result = []
     for node_id, node in graph["nodes"].items():
-        label = _text(node.get("label"))
+        label = cell_access.graph_node_label(graph, node_id).value
+        label = "" if label is None else label
         if "floor" in node_id.lower() or "floor" in label.lower():
             result.append({"document_id": document_id, "node_id": node_id})
     return result
@@ -234,11 +229,17 @@ def _target_rules(graph: Mapping[str, Any], node_id: str) -> tuple[list[str], li
 def _leaf(graph: Mapping[str, Any], node_id: str) -> dict[str, Any]:
     """Build a flow leaf from a graph node without inventing a label."""
 
-    node = graph["nodes"].get(node_id) or {}
+    node = graph["nodes"].get(node_id)
+    if not isinstance(node, Mapping):
+        node = {}
     constant = node.get("constant_value")
     if constant is not None:
         return {"kind": "constant", "node_id": node_id, "value": constant}
-    return {"kind": "reference", "node_id": node_id, "label": _text(node.get("label"))}
+    return {
+        "kind": "reference",
+        "node_id": node_id,
+        "label": cell_access.graph_node_label(graph, node_id).value,
+    }
 
 
 def _graph_tree(graph: Mapping[str, Any], node_id: str, stack: tuple[str, ...] = (), *, root: bool = False) -> dict[str, Any]:
@@ -254,14 +255,12 @@ def _graph_tree(graph: Mapping[str, Any], node_id: str, stack: tuple[str, ...] =
     if operation == "REQUIRE_INPUT" and not root:
         return _leaf(graph, node_id)
     operands: list[dict[str, Any]] = []
-    for edge in graph["edges_by_target"].get(node_id, []):
-        source = _text(edge.get("source"))
-        if not source:
-            continue
+    for edge in cell_access.graph_operands(graph, node_id):
+        source = _text(edge.get("node_id"))
         child = _graph_tree(graph, source, stack + (node_id,))
         operands.append(
             {
-                "role": _text(edge.get("role")) or "<unnamed>",
+                "role": edge["role"],
                 "node_id": source,
                 "edge_id": _text(edge.get("edge_id")),
                 "tree": child,
@@ -273,7 +272,7 @@ def _graph_tree(graph: Mapping[str, Any], node_id: str, stack: tuple[str, ...] =
         "node_id": node_id,
         "rule_ids": rule_ids,
         "operands": operands,
-        "label": _text(node.get("label")),
+        "label": cell_access.graph_node_label(graph, node_id).value,
     }
 
 
@@ -286,20 +285,7 @@ def _graph_projection(row: Mapping[str, Any], graph: Mapping[str, Any]) -> dict[
     rule_ids, operations = _target_rules(graph, node_id)
     if not operations:
         return None
-    operands = []
-    for edge in graph["edges_by_target"].get(node_id, []):
-        source = _text(edge.get("source"))
-        if not source:
-            continue
-        source_node = graph["nodes"].get(source) or {}
-        operands.append(
-            {
-                "edge_id": _text(edge.get("edge_id")),
-                "node_id": source,
-                "role": _text(edge.get("role")) or "<unnamed>",
-                "label": _text(source_node.get("label")),
-            }
-        )
+    operands = list(cell_access.graph_operands(graph, node_id))
     return {
         "node_id": node_id,
         "operation": operations[0] if len(operations) == 1 else operations,
@@ -398,6 +384,14 @@ def build_panel(candidate_root: str | Path) -> dict[str, Any]:
             panels.append(row)
 
     mode_counts = {mode: sum(item["flow_mode"] == mode for item in panels) for mode in ("diagram", "chain", "none")}
+    text_presence = {
+        "caption": sum(item["label"] is not None for item in panels),
+        "instruction": sum(item["instruction"] is not None for item in panels),
+        "operation": sum(item["graph"] is not None for item in panels),
+    }
+    text_absence = {
+        key: len(panels) - value for key, value in text_presence.items()
+    }
     return {
         "schema_version": 1,
         "kind": "review_panel",
@@ -407,21 +401,23 @@ def build_panel(candidate_root: str | Path) -> dict[str, Any]:
         "denominator": len(panels),
         "holes": sum(1 for item in panels if item["hole"]),
         "flow_modes": mode_counts,
+        "text_presence": text_presence,
+        "text_absence": text_absence,
         "graph_jargon_nodes": graph_jargon_nodes,
         "panels": panels,
     }
 
 
-def _source_block(title: str, value: str) -> str:
+def _source_block(title: str, value: str | None) -> str:
     """Render one separate source block without joining source layers."""
 
-    if value:
+    if value is not None:
         content = value
     elif title == "Instruction page":
         content = "No joined instruction section."
     else:
         content = f"No {title.lower()} text recorded."
-    empty = " empty" if not value else ""
+    empty = " empty" if value is None else ""
     return (
         f'<section class="source-block{empty}"><h4>{escape(title)}</h4>'
         f"<pre>{escape(content)}</pre></section>"
@@ -442,31 +438,40 @@ def _operation_html(row: Mapping[str, Any]) -> str:
 
     graph = row.get("graph")
     if not isinstance(graph, Mapping):
-        candidate_rendered = _text(row.get("candidate_rendered"))
+        candidate_rendered_value = row.get("candidate_rendered")
+        candidate_rendered = "" if candidate_rendered_value is None else str(candidate_rendered_value)
         attempted = (
             f'<h4>Candidate expression held back</h4><pre>{escape(candidate_rendered)}</pre>'
-            if candidate_rendered
+            if candidate_rendered_value is not None
             else ""
         )
         return (
             '<div class="operation-hole"><strong>No promoted graph operation.</strong>'
-            f"{attempted}<h4>Finding</h4>{_finding_list(row.get('findings') or [])}</div>"
+            f"{attempted}<h4>Finding</h4>{_finding_list(row.get('findings') if isinstance(row.get('findings'), list) else [])}</div>"
         )
 
     operation = graph.get("operation")
     operation_text = ", ".join(str(value) for value in operation) if isinstance(operation, list) else _text(operation)
-    rendered = _text(row.get("candidate_rendered"))
-    rendered_html = escape(rendered) if rendered else "No rendered expression in candidate report."
-    rule_ids = graph.get("rule_ids") or []
+    rendered_value = row.get("candidate_rendered")
+    rendered_html = (
+        escape(str(rendered_value))
+        if rendered_value is not None
+        else "No rendered expression in candidate report."
+    )
+    rule_ids = graph.get("rule_ids") if isinstance(graph.get("rule_ids"), list) else []
     rule_html = "<ul>" + "".join(f"<li><code>{escape(_text(value))}</code></li>" for value in rule_ids) + "</ul>"
-    operands = graph.get("operands") or []
+    operands = graph.get("operands") if isinstance(graph.get("operands"), list) else []
     if operands:
         operand_html = "<ul>"
         for operand in operands:
             source = escape(_text(operand.get("node_id")))
             role = escape(_text(operand.get("role")))
-            label = _text(operand.get("label"))
-            label_html = f'<pre class="graph-label">{escape(label)}</pre>' if label else ""
+            label_value = operand.get("label")
+            label_html = (
+                f'<pre class="graph-label">{escape(str(label_value))}</pre>'
+                if label_value is not None
+                else ""
+            )
             operand_html += f"<li><code>{source}</code> <span>role={role}</span>{label_html}</li>"
         operand_html += "</ul>"
     else:
@@ -527,9 +532,9 @@ def _panel_html(row: Mapping[str, Any]) -> str:
         f'<code>{escape(_text(row.get("anchor_id")))}</code></header>'
         '<div class="columns">'
         '<section class="column source-column"><h3>IRS text</h3>'
-        f'{_source_block("Label", _text(row.get("label")))}'
-        f'{_source_block("Form face", _text(row.get("form_face")))}'
-        f'{_source_block("Instruction page", _text(row.get("instruction")))}'
+        f'{_source_block("Label", row.get("label"))}'
+        f'{_source_block("Form face", row.get("form_face"))}'
+        f'{_source_block("Instruction page", row.get("instruction"))}'
         '</section>'
         f'<section class="column operation-column"><h3>Operation</h3>{_operation_html(row)}</section>'
         f'<section class="column flow-column"><h3>Flow</h3>{_flow_html(row)}</section>'
@@ -541,13 +546,18 @@ def render_html(panel: Mapping[str, Any]) -> str:
     """Render a complete self-contained HTML review artifact."""
 
     modes = panel.get("flow_modes") or {}
+    presence = panel.get("text_presence") if isinstance(panel.get("text_presence"), Mapping) else {}
+    absence = panel.get("text_absence") if isinstance(panel.get("text_absence"), Mapping) else {}
     summary = (
         f"{_text(panel.get('denominator'))} printed anchors; "
         f"{len(panel.get('documents') or [])} documents; "
         f"{_text(modes.get('diagram', 0))} diagrams / "
         f"{_text(modes.get('chain', 0))} chains / "
         f"{_text(modes.get('none', 0))} none; "
-        f"{_text(panel.get('holes', 0))} panels with a hole."
+        f"{_text(panel.get('holes', 0))} panels with a hole; "
+        f"captions {presence.get('caption', 0)} present / {absence.get('caption', 0)} absent; "
+        f"instruction sections {presence.get('instruction', 0)} present / {absence.get('instruction', 0)} absent; "
+        f"operations {presence.get('operation', 0)} present / {absence.get('operation', 0)} absent."
     )
     jargon_nodes = panel.get("graph_jargon_nodes") or []
     jargon_html = ""
@@ -638,7 +648,13 @@ def main(argv: list[str] | None = None) -> int:
         f"{output}: {panel['denominator']} anchors; "
         f"{panel['flow_modes']['diagram']} diagrams / "
         f"{panel['flow_modes']['chain']} chains / "
-        f"{panel['flow_modes']['none']} none; {panel['holes']} holes"
+        f"{panel['flow_modes']['none']} none; {panel['holes']} holes; "
+        f"captions {panel['text_presence']['caption']} present / "
+        f"{panel['text_absence']['caption']} absent; "
+        f"instruction sections {panel['text_presence']['instruction']} present / "
+        f"{panel['text_absence']['instruction']} absent; "
+        f"operations {panel['text_presence']['operation']} present / "
+        f"{panel['text_absence']['operation']} absent"
     )
     return 0
 

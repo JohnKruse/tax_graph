@@ -206,29 +206,31 @@ MAX_PATH overflow while copying `graph/2025/_drafts` into the fixture project. T
 on `C:\Users\devbox\AppData\Local\Temp\tgpt`. A long temp root does not fail a few tests, it fails
 whole files at once - that shape is the signature, not a code regression.
 
-**WORKER COMPLETION (2026-08-06; awaiting Architect acceptance).** S69 is implemented under
-`pilot/` as `review_panel.py`, `test_review_panel.py`, and `README.md`. It reads the real
-`C:\tmp\m20_s68_candidate` source reports and candidate drafts, emits one self-contained HTML
-panel for every printed anchor, preserves separate label/form-face/instruction blocks, projects
-only promoted graph operations and edge roles, and renders held-back rows as named holes. It does
-not re-run the provider or write candidate/graph artifacts.
+**WORKER COMPLETION (2026-08-06; awaiting Architect acceptance).** M20-S70 is implemented under
+`pilot/` as `cell_access.py`, the rewired `review_panel.py` and `constructions/measure.py`, their
+tests, and README updates. `CellText.value is None` is typed absence; the label accessor reads
+`label_after` only, so an absent caption cannot fall through to candidate or anchor text. The
+accessor also owns form-face, instruction, expression, rendered wording, findings, status, and
+graph operand reads. No provider was run and no candidate or graph artifact was written.
 
-**REAL-CORPUS EVIDENCE.** The generated artifact is at
-`C:\Users\devbox\.codex\visualizations\2026\08\06\019fd7ff-15d7-7d62-8122-8cb2b270f6a6\m20_s69_review_panel.html`:
-157 anchors, 9 diagrams, 36 chains, 112 none, and 92 panels with a hole. The HTML has 157 review
-articles. The graph terminology report lists 10 node ids containing `floor`, including
-`form_2441_2025_zero_floor` and `form_2441_2025_root_line_26_pre_floor`; no graph artifact was
-changed.
+**REAL-CORPUS EVIDENCE.** RAN:
+`.venv\Scripts\python.exe pilot\review_panel.py C:\tmp\m20_s68_candidate --output .test_tmp2\m20_s70_review_panel.html`
+-> **157 anchors; 9 diagrams / 36 chains / 112 none; 92 holes; captions 8 present / 149 absent;
+instruction sections 17 present / 140 absent; operations 65 present / 92 absent**. RAN:
+`.venv\Scripts\python.exe pilot\constructions\measure.py C:\tmp\m20_s68_candidate --output .test_tmp2\m20_s70_constructions.yaml`
+-> **construction inventory written**. The panel invariant covers all 157 anchors and no returned
+caption begins and ends with the same printed line token.
 
 **TEST EVIDENCE.** RAN:
-`.venv\Scripts\python.exe -m pytest pilot\test_review_panel.py -q` -> **5 passed, 1 warning**
-(2.51s). The warning is the known permission failure writing the pre-existing `.pytest_cache`;
-the first run also hit the known poisoned `.test_tmp` during `tmp_path` setup, so the CLI test was
-made hermetic by using the writable visualization scratch path and leaves no artifact. RAN:
-`.venv\Scripts\python.exe pilot\review_panel.py C:\tmp\m20_s68_candidate --output C:\Users\devbox\.codex\visualizations\2026\08\06\019fd7ff-15d7-7d62-8122-8cb2b270f6a6\m20_s69_review_panel.html`
--> **157 anchors; 9 diagrams / 36 chains / 112 none; 92 holes**. RAN:
-`.venv\Scripts\python.exe tools\check_ascii.py` -> **ASCII check OK**. No provider run and no
-full suite were performed, per pilot rules.
+`$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp2'; .venv\Scripts\python.exe -m pytest pilot\test_cell_access.py -q`
+-> **2 passed, 1 warning**. RAN:
+`$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp2'; .venv\Scripts\python.exe -m pytest pilot\test_review_panel.py -q`
+-> **5 passed, 1 warning**. RAN:
+`$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp2'; .venv\Scripts\python.exe -m pytest pilot\constructions\test_measure.py -q`
+-> **4 passed, 1 warning**. RAN:
+`.venv\Scripts\python.exe tools\check_ascii.py` -> **ASCII check OK**. The warning is the known
+permission failure writing the pre-existing `.pytest_cache`; the short override avoided the poisoned
+`.test_tmp`. No provider run and no full suite were performed, per pilot rules.
 
 ## Open for Architect
 

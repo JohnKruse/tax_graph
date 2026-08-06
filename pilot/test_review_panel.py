@@ -13,9 +13,6 @@ from review_panel import build_panel, main, render_html
 
 
 CANDIDATE = Path(r"C:\tmp\m20_s68_candidate")
-TEST_OUTPUT = Path(
-    r"C:\Users\devbox\.codex\visualizations\2026\08\06\019fd7ff-15d7-7d62-8122-8cb2b270f6a6"
-) / "m20_s69_review_panel_test.html"
 
 
 def _real_panel() -> dict:
@@ -41,6 +38,8 @@ def test_real_candidate_preserves_all_anchors_and_reports_flow_split() -> None:
     assert panel["documents"] == ["form_1040_2025", "form_2441_2025", "form_6251_2025"]
     assert sum(panel["flow_modes"].values()) == 157
     assert panel["holes"] == 92
+    assert panel["text_presence"] == {"caption": 8, "instruction": 17, "operation": 65}
+    assert panel["text_absence"] == {"caption": 149, "instruction": 140, "operation": 92}
     assert {
         item["node_id"]
         for item in panel["graph_jargon_nodes"]
@@ -88,15 +87,13 @@ def test_rendered_html_has_one_panel_per_anchor_and_nonempty_hole_columns() -> N
     assert "No promoted graph operation." in html
     assert "LOOKUP_TABLE arguments must be named leaf operands with a role" in html
     assert "form_2441_2025_zero_floor" in html
+    assert "captions 8 present / 149 absent" in html
     assert "Graph terminology to report (not changed)" in html
 
 
-def test_cli_writes_the_self_contained_artifact() -> None:
-    try:
-        assert main([str(CANDIDATE), "--output", str(TEST_OUTPUT)]) == 0
-        contents = TEST_OUTPUT.read_text(encoding="utf-8")
-        assert contents.startswith("<!doctype html>")
-        assert "<meta charset=\"utf-8\">" in contents
-    finally:
-        if TEST_OUTPUT.is_file():
-            TEST_OUTPUT.unlink()
+def test_cli_writes_the_self_contained_artifact(tmp_path: Path) -> None:
+    output = tmp_path / "review_panel.html"
+    assert main([str(CANDIDATE), "--output", str(output)]) == 0
+    contents = output.read_text(encoding="utf-8")
+    assert contents.startswith("<!doctype html>")
+    assert "<meta charset=\"utf-8\">" in contents
