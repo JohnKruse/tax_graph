@@ -160,7 +160,9 @@ and 6251 are preserved with instance-qualified evidence ids rather than being co
 
 Tests: `RAN: .venv\Scripts\python.exe -m pytest pilot\constructions\test_measure.py -q ->
 4 passed in 0.09s`. ASCII and `git diff --check` also pass. The real inventory run is provider-free;
-the provider was not rerun because the handoff artifacts already existed.
+the provider was not rerun because the handoff artifacts already existed. Pilot commit: `f0174ab`.
+The separate fixture correction is committed at `f2ac122`; `RAN: .venv\Scripts\python.exe -m
+pytest tests\test_m20_s31.py -q -> 8 passed in 0.23s`.
 
 **SEPARATE ONE-LINE FIX, its own commit, not part of the pilot.**
 `tests/test_m20_s31.py::test_all_prompt_templates_render_with_representative_values` is red because
