@@ -39,6 +39,18 @@ The repeatable input-versus-graph review is generated with:
 
 `python -m tax_graph.cli review-table --year 2025 --document form_1040_2025 --hardest 10 --output C:\\review\\form_1040.html`
 
+After a completed derivation run, build a pending-review candidate outside the
+repository and point the same table at it:
+
+`python -m tax_graph.cli regenerate-candidate --year 2025 --run-dir C:\\runs\\ty2025 --output-dir C:\\candidates\\ty2025`
+
+`python -m tax_graph.cli review-table --year 2025 --document form_1040_2025 --candidate-root C:\\candidates\\ty2025 --all-rows --output C:\\review\\form_1040_candidate.html`
+
+Candidate output is machine-generated evidence, not a human approval and not a
+published graph. Publishing is a later, review-gated operation that replaces the
+generated graph directories as one build artifact; rollback restores the prior
+committed tree.
+
 The output path must be outside the repository. The first column is the cleaned printed
 instruction used by derivation, with the related instruction source kept separate. The
 second column shows the exact stored graph expression, status, and any recorded validator

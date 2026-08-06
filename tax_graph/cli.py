@@ -522,6 +522,7 @@ def review_table_command(
     output: str | Path | None = None,
     all_rows: bool = False,
     hardest: int | None = None,
+    candidate_root: str | Path | None = None,
 ) -> int:
     """Write the deterministic input-versus-graph review table."""
     from tax_graph.review_table import review_table_command as _review_table_command
@@ -533,6 +534,7 @@ def review_table_command(
         output=output,
         all_rows=all_rows,
         hardest=hardest,
+        candidate_root=candidate_root,
     )
 
 
@@ -555,6 +557,29 @@ def summarize_runs_command(
         baseline_window=baseline_window,
         root=root_path,
     )
+
+
+def regenerate_candidate_command(
+    *,
+    run_dir: str | Path,
+    output_dir: str | Path,
+    year: str = "2025",
+    root: str | Path | None = None,
+    expected_documents: list[str] | None = None,
+) -> int:
+    """Materialize a review-only candidate from completed derive reports."""
+    from tax_graph.extract.candidate import write_candidate_from_run
+
+    root_path = Path(root).resolve() if root is not None else project_root()
+    destination = write_candidate_from_run(
+        run_dir,
+        output_dir,
+        root=root_path,
+        year=year,
+        expected_documents=expected_documents,
+    )
+    print(f"candidate: {destination}")
+    return 0
 
 
 def doctor_command(
@@ -1747,6 +1772,7 @@ def _build_typer_app():
         output: Path | None = typer.Option(None, "--output", help="HTML output file outside the repository."),
         all_rows: bool = typer.Option(False, "--all-rows", help="Include every source row."),
         hardest: int | None = typer.Option(None, "--hardest", help="Include the N highest-scoring rows."),
+        candidate_root: Path | None = typer.Option(None, "--candidate-root", help="Candidate workspace produced from a completed derivation run."),
         root: Path | None = typer.Option(None, "--root", help="Project root override."),
     ) -> None:
         """Render cleaned input, graph expression, and deterministic pseudocode."""
@@ -1757,6 +1783,7 @@ def _build_typer_app():
             output=output,
             all_rows=all_rows,
             hardest=hardest,
+            candidate_root=candidate_root,
         )
         if raise_code:
             raise typer.Exit(raise_code)
@@ -1776,6 +1803,25 @@ def _build_typer_app():
             expected_documents=expected_document,
             baseline_window=baseline_window,
             root=root,
+        )
+        if raise_code:
+            raise typer.Exit(raise_code)
+
+    @cli.command("regenerate-candidate")
+    def regenerate_candidate_cli(
+        run_dir: Path = typer.Option(..., "--run-dir", help="Completed run directory containing derive reports."),
+        output_dir: Path = typer.Option(..., "--output-dir", help="New candidate workspace outside the repository."),
+        year: str = typer.Option("2025", "--year", "-y", help="Tax year of the run."),
+        expected_document: list[str] = typer.Option([], "--expected-document", help="Expected document id; repeat to override the manifest."),
+        root: Path | None = typer.Option(None, "--root", help="Project root override."),
+    ) -> None:
+        """Build a pending-review candidate without calling a provider or publishing it."""
+        raise_code = regenerate_candidate_command(
+            run_dir=run_dir,
+            output_dir=output_dir,
+            year=year,
+            root=root,
+            expected_documents=expected_document or None,
         )
         if raise_code:
             raise typer.Exit(raise_code)
@@ -2467,6 +2513,7 @@ def _fallback_app() -> int:
     review_table_parser.add_argument("--output", default=None)
     review_table_parser.add_argument("--all-rows", action="store_true")
     review_table_parser.add_argument("--hardest", type=int, default=None)
+    review_table_parser.add_argument("--candidate-root", default=None)
     review_table_parser.add_argument("--root", default=None)
 
     summarize_runs_parser = subparsers.add_parser("summarize-runs")
@@ -2475,6 +2522,13 @@ def _fallback_app() -> int:
     summarize_runs_parser.add_argument("--expected-document", action="append", default=[])
     summarize_runs_parser.add_argument("--baseline-window", type=int, default=3)
     summarize_runs_parser.add_argument("--root", default=None)
+
+    regenerate_candidate_parser = subparsers.add_parser("regenerate-candidate")
+    regenerate_candidate_parser.add_argument("--run-dir", required=True)
+    regenerate_candidate_parser.add_argument("--output-dir", required=True)
+    regenerate_candidate_parser.add_argument("--year", "-y", default="2025")
+    regenerate_candidate_parser.add_argument("--expected-document", action="append", default=[])
+    regenerate_candidate_parser.add_argument("--root", default=None)
 
     doctor_parser = subparsers.add_parser(
         "doctor",
@@ -2682,6 +2736,7 @@ def _fallback_app() -> int:
             output=args.output,
             all_rows=args.all_rows,
             hardest=args.hardest,
+            candidate_root=args.candidate_root,
         )
     if args.command == "summarize-runs":
         return summarize_runs_command(
@@ -2690,6 +2745,14 @@ def _fallback_app() -> int:
             expected_documents=args.expected_document,
             baseline_window=args.baseline_window,
             root=args.root,
+        )
+    if args.command == "regenerate-candidate":
+        return regenerate_candidate_command(
+            run_dir=args.run_dir,
+            output_dir=args.output_dir,
+            year=args.year,
+            root=args.root,
+            expected_documents=args.expected_document or None,
         )
     if args.command == "doctor":
         return doctor_command(

@@ -148,6 +148,20 @@ def run_real_document(
             "validation_warnings": row.metadata.get("validation_warnings", []),
             "dropped_instruction_sections": row.metadata.get("dropped_instruction_sections", []),
             "unresolved_external_nodes": row.metadata.get("unresolved_external_nodes", []),
+            # The candidate writer consumes the exact evidence selected by
+            # the provider-side derivation.  Keep it beside the expression so
+            # a candidate can never be promoted without its citation.
+            "instruction_text": row.instruction_text,
+            "instruction_locator": row.instruction_locator,
+            "quote": row.quote,
+            "quote_span_id": row.quote_span_id,
+            "evidence_spans": row.metadata.get("evidence_spans", []),
+            "instruction_span_ids": row.metadata.get("instruction_span_ids", []),
+            "model": row.model,
+            "provider": row.provider,
+            "prompt_tokens": row.prompt_tokens,
+            "completion_tokens": row.completion_tokens,
+            "cost": row.cost,
         }
         for row in result.rows
     ]

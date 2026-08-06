@@ -21,8 +21,8 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## BALL
 
-**BALL: WORKER - M20-S64 (REGENERATE A CANDIDATE GRAPH FROM A FULL RUN).** Spec to be written when
-picked up. **S67 is ACCEPTED at `bb3daca`; the corpus is recovered.**
+**BALL: WORKER - M20-S64 (REGENERATE A CANDIDATE GRAPH FROM A FULL RUN).** Active spec is under
+Current round. **S67 is ACCEPTED at `bb3daca`; the corpus is recovered.**
 
 **Live: 67 attempted, 60 derived, 2 repaired, 5 errored.** `form_1040_2025` back to **17/17 with
 zero repairs**, 2441 **18/21**, 6251 **25/29**. `doctor` gained a **`roles`** column, so the
@@ -50,21 +50,40 @@ still never derived, but it now fails for the correct reason.**
 
 ## Current round
 
-**M20-S67 ACCEPTED (Architect, Claude Opus 5, 2026-08-05) at `bb3daca`.** The role invariant is
-restored and `doctor` now checks role agreement per operation - the S66 defect could not recur
-silently.
+**M20-S64 IN FLIGHT (Worker, 2026-08-06).** Canary: **Ground Truth**.
 
-**Live, three documents: 67 attempted, 60 derived, 2 repaired, 5 errored**, against 0 derived under
-S66. `form_1040_2025` 17/17 with zero repairs.
+This round implements S3a regeneration and the pipeline-only operating loop. It consumes a
+completed provider run and writes a candidate outside the published graph; it does not call a
+provider, tune the selector, hand-author graph objects, publish, or touch the protected live graph.
 
-**First firing of the S54 lookup completeness validator on real data**, recorded because the
-Architect had noted three times that it never had. 2441 line 8 emitted sixteen cumulative-threshold
-bands instead of the printed explicit ranges; the validator caught overlap, missing source bands and
-bounds absent from the source, and refused. **A plausible table with the wrong bounds was rejected
-rather than accepted.**
+1. Build a deterministic candidate writer from completed derive reports. Preserve the per-document
+   printed-anchor denominator and report attempted, derived, repaired, gapped, errored, and skipped
+   anchors with explicit skip reasons. Candidate expression and citation evidence must stay paired;
+   a derived row without a citation is a named candidate finding, never an accepted candidate row.
+2. Emit a candidate draft layout usable by the read-only review projection, and copy only the
+   manifest's harvested worksheet drafts into the candidate workspace. No candidate file is written
+   under `graph/<year>/_drafts`.
+3. Compare candidate addresses and expressions with the handcrafted graph as a review list: in both,
+   candidate-only, handcrafted-only, and expression disagreements listed individually rather than
+   collapsed to a count.
+4. Add an explicit candidate-root input to `review-table`, keeping the existing live-graph fallback.
+   The command must render the candidate's actual expression or an explicit gap for each source row.
+5. Record the publish path in the candidate manifest without taking it: publication would replace
+   the live generated artifacts after review, and rollback is the prior committed tree. The candidate
+   is never a human-confirmed claim.
 
-**Everything S66 earned survives:** the registry, `projection_expected` derived from category,
-`ABS` removed, `ROUND` and `DIVIDE` cited and tested.
+Focused tests: `tests/test_candidate_regeneration_m20.py` and the existing
+`tests/test_review_table_m20.py`.
+
+Evidence from this Worker session:
+
+- `RAN: $testTempRoot='C:\Users\devbox\.codex\visualizations\2026\08\06\019fd619-8ec3-7ee0-9f53-2611fa6a2ac9\pytest-temp'; $env:PYTEST_DEBUG_TEMPROOT=$testTempRoot; .venv\Scripts\python.exe -m pytest tests/test_candidate_regeneration_m20.py tests/test_review_table_m20.py tests/test_run_summary_m20.py tests/test_derive_cells_s30.py -q -> 18 passed, 1 warning.`
+- `RAN: $testTempRoot='C:\Users\devbox\.codex\visualizations\2026\08\06\019fd619-8ec3-7ee0-9f53-2611fa6a2ac9\pytest-temp'; $env:PYTEST_DEBUG_TEMPROOT=$testTempRoot; .venv\Scripts\python.exe -m pytest tests/test_derive_cells_s30.py tests/test_m20_s31.py tests/test_cli.py -q -> 16 passed, 2 failed, 2 warnings.` The failures are the existing `operation_documentation` prompt fixture omission in `tests/test_m20_s31.py::test_all_prompt_templates_render_with_representative_values` and the existing missing temporary `config/manifest.yaml` in `tests/test_cli.py::test_harvest_worksheet_command_writes_only_a_draft`; neither was weakened.
+- `RAN: .venv\Scripts\python.exe -m tax_graph.cli validate 2025 -> exit 0; documents=18, nodes=441, edges=409, rules=17, citations=401; graph integrity OK.`
+- `RAN: .venv\Scripts\python.exe tools\check_ascii.py -> ASCII check OK.`
+- `RAN: git diff --check -> clean.`
+- `RAN: .venv\Scripts\python.exe -m tax_graph.cli --help`, `regenerate-candidate --help`, and `review-table --help` -> new options rendered successfully; CLI materialization and candidate-root review-table smoke -> exit 0.`
+- `NOT RUN: provider execution and live full-corpus derivation; the provider leg is the Architect's.`
 
 ## Open for Architect
 

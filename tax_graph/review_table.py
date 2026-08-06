@@ -16,6 +16,8 @@ import re
 import tempfile
 from typing import Any, Mapping, Sequence
 
+import yaml
+
 from tax_graph.operation_registry import operation_roles
 
 from tax_graph.config import project_root
@@ -135,13 +137,15 @@ def build_review_table(
     *,
     all_rows: bool = False,
     hardest: int | None = None,
+    candidate_root: str | Path | None = None,
 ) -> dict[str, Any]:
     """Build the read-only review payload for one acquired document.
 
     The source column comes from ``build_cell_frame_from_document`` so it is
-    the cleaned text used by derivation.  Graph rows are read from the existing
-    workbench projection when present, with a graph-only fallback for other
-    documents.  No provider client is constructed.
+    the cleaned text used by derivation.  When ``candidate_root`` is supplied,
+    graph rows come only from that pending-review candidate; otherwise they
+    come from the existing workbench projection with a graph-only fallback.
+    No provider client is constructed.
     """
     if all_rows and hardest is not None:
         raise ValueError("--all-rows and --hardest cannot be used together")
@@ -151,7 +155,12 @@ def build_review_table(
     root_path = Path(root).resolve()
     document = load_document_input(document_id, year=year, root=root_path)
     source_rows = _source_rows(document)
-    graph_rows = _graph_projection_rows(root_path, year, document_id)
+    graph_rows = _graph_projection_rows(
+        root_path,
+        year,
+        document_id,
+        candidate_root=candidate_root,
+    )
     rows: list[ReviewTableRow] = []
     for source in source_rows:
         line = source["line"]
@@ -250,6 +259,7 @@ def review_table_command(
     output: str | Path | None = None,
     all_rows: bool = False,
     hardest: int | None = None,
+    candidate_root: str | Path | None = None,
 ) -> int:
     """Write the review table outside the repository and print its path."""
     root_path = Path(root).resolve() if root is not None else project_root()
@@ -259,6 +269,7 @@ def review_table_command(
         document_id,
         all_rows=all_rows,
         hardest=hardest,
+        candidate_root=candidate_root,
     )
     destination = _output_path(root_path, document_id, output)
     destination.write_text(render_review_table_html(payload), encoding="utf-8", newline="\n")
@@ -307,8 +318,16 @@ def _fallback_source_rows(document: Any) -> list[dict[str, str]]:
     return result
 
 
-def _graph_projection_rows(root: Path, year: str | int, document_id: str) -> dict[str, dict[str, Any]]:
+def _graph_projection_rows(
+    root: Path,
+    year: str | int,
+    document_id: str,
+    *,
+    candidate_root: str | Path | None = None,
+) -> dict[str, dict[str, Any]]:
     """Load graph-side review rows without constructing a provider client."""
+    if candidate_root is not None:
+        return _candidate_projection_rows(candidate_root, year, document_id)
     try:
         from workbench.generated_review import build_generated_document_cells
 
@@ -342,6 +361,43 @@ def _graph_projection_rows(root: Path, year: str | int, document_id: str) -> dic
     except (OSError, PermissionError, ValueError, KeyError, TypeError):
         pass
     return _graph_rows_from_loaded_graph(root, year, document_id)
+
+
+def _candidate_projection_rows(
+    candidate_root: str | Path,
+    year: str | int,
+    document_id: str,
+) -> dict[str, dict[str, Any]]:
+    """Read the candidate writer's rows without falling back to live graph state."""
+    candidate_path = Path(candidate_root).resolve()
+    draft_dir = candidate_path / "graph" / str(year) / "_drafts" / document_id
+    if not draft_dir.is_dir():
+        raise ValueError(f"candidate draft directory is missing: {draft_dir}")
+    rows_path = draft_dir / "rows.yaml"
+    if not rows_path.is_file():
+        raise ValueError(f"candidate rows artifact is missing: {rows_path}")
+    payload = yaml.safe_load(rows_path.read_text(encoding="ascii")) or []
+    if not isinstance(payload, list):
+        raise ValueError(f"candidate rows artifact must be a list: {rows_path}")
+    result: dict[str, dict[str, Any]] = {}
+    for row in payload:
+        if not isinstance(row, Mapping):
+            raise ValueError(f"candidate rows artifact contains a non-object row: {rows_path}")
+        line = str(row.get("line") or "").strip().lower()
+        if not line:
+            raise ValueError(f"candidate row has no printed line: {rows_path}")
+        if line in result:
+            raise ValueError(f"candidate has duplicate printed line {line}: {rows_path}")
+        failures = [item for item in (row.get("findings") or []) if item]
+        if row.get("review_gap"):
+            failures.append(str(row["review_gap"]))
+        result[line] = {
+            "expression": row.get("expression"),
+            "status": row.get("candidate_status") or row.get("status") or "candidate",
+            "failures": tuple(failures),
+            "warnings": tuple(row.get("warnings") or ()),
+        }
+    return result
 
 
 def _graph_rows_from_loaded_graph(root: Path, year: str | int, document_id: str) -> dict[str, dict[str, Any]]:
