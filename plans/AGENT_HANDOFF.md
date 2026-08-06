@@ -21,10 +21,25 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## BALL
 
-**BALL: WORKER - M20-S71 (CLEAN TEXT FOR EVERY PRINTED ANCHOR). IMPLEMENTED; AWAITING ARCHITECT ACCEPTANCE.**
-Active spec is under Current round. **PILOT WORK IS PAUSED** by John, 2026-08-06: the graph must
-carry clean text in its cell nodes before anything renders it. Pilot rules still bind when the
-pilot resumes: off to the side, read-only, own tests, no full-suite gate, lift in later.
+**BALL: WORKER - M20-S70 (ONE READ ACCESSOR FOR CELL TEXT). PILOT ROUND, `pilot/` ONLY.**
+Active spec is under Current round. **PILOT WORK RESUMES** (John, 2026-08-06): the graph now carries
+clean text, so the remaining garbage is consumer-side. Pilot rules bind: off to the side, read-only,
+own tests out of `tests/`, no full-suite run, no provider run, lift into the project later.
+
+**S71 IS IMPLEMENTED AT `e79f2cd` AND VERIFIED ON THE REAL CORPUS, BUT NOT YET ACCEPTED.** The
+Architect independently rebuilt the candidate: **153 of 153 rows carry clean form-face text** (was
+67) and **0 of 194 node labels** carry the raw-OCR signature (was 46 of 232), with coverage
+unchanged. Acceptance waits only on the full suite, which the Worker could not complete inside its
+600-second cap. **Do not edit `tax_graph/` while that suite is running** - `pilot/` is not collected
+by `testpaths`, which is why this round is safe to run alongside it.
+
+**S71 PROVED THE ACCESSOR IS NECESSARY, ON REAL OUTPUT.** With the graph clean, **72 of 157 panels
+still render `z Add lines 1a through 1h 1z`**. `pilot/review_panel.py:126` reads
+`candidate_row.get("label") or source_row.get("label_after") or source_row.get("label_before")`.
+S71 correctly made `label` empty because that row has no caption - and **`""` is falsy, so the chain
+read "correctly absent" as "missing, try the next source"** and reached back into the raw run report
+for the text the graph had just discarded. **This is the whole round in one line: fixing the source
+does not help while consumers can re-derive the wrong answer.**
 **S64 is ACCEPTED at `7189375`; S67 is ACCEPTED at `bb3daca`.**
 
 **A candidate graph now exists.** Rebuilt from a fresh canary run: **194 nodes, 233 edges, 72 rules,
@@ -58,28 +73,25 @@ clothes, and it is the reason the candidate diff cannot tell a real disagreement
 **Whoever takes the diff round converges these rather than adding a third.**
 
 **QUEUE - one line each. NOT SPECCED.**
-1. **One read accessor for cell text (pilot)** - three consumers answer "what is this cell's label"
-   three ways: `candidate.py:462`, `review_panel.py:128`, `measure.py:147`. No consumer performs a
-   fallback; absence is a typed value, never `""`. Was specced at `894974d`; recover with `git show`.
-2. **Column 3 becomes the agreed notation** - the S69 flow is an edge dump: zero `<svg>`, zero
+1. **Column 3 becomes the agreed notation** - the S69 flow is an edge dump: zero `<svg>`, zero
    diamonds, zero Yes/No arrows across all 157 panels; it renders `zero_floor` and node ids into the
    human column and re-narrates upstream lines. Must implement `docs/review-notation.md` rules 1-8,
    with phrasing read from the operation registry. Was specced at `41fffff`; recover with `git show`.
-3. **LIFT the accessor into the project** - make `tax_graph/extract/candidate.py` use it so the
+2. **LIFT the accessor into the project** - make `tax_graph/extract/candidate.py` use it so the
    GENERATED graph stops baking raw OCR into node labels (46 of 232 today), and move the invariant
    test into `tests/`. This is the round that pays the full-suite cost.
-4. **Depth-normalized candidate diff** - all **5 of 5** overlapping rows report a false
+3. **Depth-normalized candidate diff** - all **5 of 5** overlapping rows report a false
    `expression_disagreement`, because the candidate expression refers to neighbours by node id while
    `_live_expression` inlines the handcrafted subtree; same rule, two depths. Compare at one depth.
-5. **Round-trip renderer** - render a tree back to English from the operation registry and diff it
+4. **Round-trip renderer** - render a tree back to English from the operation registry and diff it
    against the printed source; disagreement becomes a review finding. Generation is deterministic
    even where parsing is not, so this is the reliability check the pipeline currently has no form of.
-6. **Sibling subexpression recovery (CSE)** - 2441 line 25's `UNRESOLVED` block is `MIN(line 20, line
+5. **Sibling subexpression recovery (CSE)** - 2441 line 25's `UNRESOLVED` block is `MIN(line 20, line
    21)`, sitting in the sibling branch. Hashing subtrees recovers deterministically what a human gets
    by reading across. Same machinery as item 3; do them together or not at all.
-7. **Construction drift detection** - reviews call out new punctuation and usage as a ranked finding
+6. **Construction drift detection** - reviews call out new punctuation and usage as a ranked finding
    with system-filed evidence, against the versioned inventory S68 produces.
-8. **Column and grid recovery**; **phrase obligations**; **S53 approval gate**; **known-red cleanup**.
+7. **Column and grid recovery**; **phrase obligations**; **S53 approval gate**; **known-red cleanup**.
 
 **STANDING FAILURES, honest.** 2441 line 25 wrong for the **eighth** consecutive run - now
 `LOOKUP_TABLE arguments must be named leaf operands with a role`, after one repair. 6251 lines 13 and
@@ -89,80 +101,78 @@ resolve now, and whether they resolve to the RIGHT line is unreviewed.
 
 ## Current round
 
-**M20-S71 IN FLIGHT (Worker, 2026-08-06). CLEAN TEXT FOR EVERY PRINTED ANCHOR.**
+**M20-S70 IN FLIGHT (Worker, 2026-08-06). ONE READ ACCESSOR FOR CELL TEXT - PILOT.**
+Reference: S69 generator at `af351d2`.
 
-**THIS IS A REAL-PROJECT ROUND, NOT A PILOT ROUND.** It edits `tax_graph/` and it pays the full
-suite. John, 2026-08-06: *"I want to get the graph extraction of the text into the cell nodes fixed
-first... It is a scandal that we keep having problems with the entries. Focus solely on that."*
-**All pilot work is paused. Do not touch `pilot/`. Do not add scope.**
+**PILOT RULES BIND (see BALL).** Everything under `pilot/`; nothing outside changes; tests in the
+pilot, out of `tests/`; no full-suite run; no provider run. **Do not edit `tax_graph/` in this
+round** - the generator fix is the lift round and is queued.
 
-**ROOT CAUSE, ONE LINE.** `tax_graph/extract/cells.py:242` - `for node in formula_nodes:`. That loop
-is the only place `clean_form_face_text` (`cells.py:598`) and `split_caption_and_instruction` run,
-and it iterates **only over anchors the selector admitted**. **Text cleaning is coupled to
-selection.** An anchor the selector skips never gets cleaned, so the only text it carries is
-`node.label` - the raw geometry row, line number at both ends and neighbouring columns bled in.
+**WHY THIS ROUND EXISTS.** John, 2026-08-06: *"pulling text from the graph and putting into
+something should be simple and reliable. Maybe we need some kind of fixed interface for the graph
+related actions."* He is right, and the label defect is the symptom rather than the disease.
 
-**MEASURED on `C:\tmp\m20_s68_candidate`, 157 printed anchors.**
+**THREE CONSUMERS ANSWER "WHAT IS THIS CELL'S LABEL" THREE DIFFERENT WAYS.**
 
-- **86 anchors carry NO cleaned text at all** - `form_face_text` empty; only the raw label survives,
-  e.g. 1040 line 1a: `Income 1 a Total amount from Form(s) W-2, box 1 (see instructions) 1a`.
-- The 65 attempted rows DO have clean text: `$15,750 14 Add lines 12e, 13a, and 13b 14` correctly
-  becomes `Add lines 12e, 13a, and 13b`. **The cleaner works. It is simply not being run.**
-- `label_before` == `form_face_before` on **67 of 67** attempted rows - label and form face were
-  never two sources.
-- Generated candidate graph: **46 of 232** node labels carry the raw-OCR signature. Published
-  hand-authored graph: **0 of 417**. The dirty graph is the one meant to replace the clean one.
+- `tax_graph/extract/candidate.py:462` - `label_after or label_before or ""`
+- `pilot/review_panel.py:128` - a four-step chain ending at `anchor.get("label_after")`
+- `pilot/constructions/measure.py:147` - `value.get("label") or value.get("label_after") or ""`
 
-**TARGET STATE.** Every printed anchor carries cleaned text and a caption split, **whether or not
-the selector admits it for derivation.** Node labels are built from cleaned text and never from
-`node.label`.
+Every new consumer invents a fourth. **This is the third instance of one architectural cause.** The
+other two: `workbench/address_verdicts.py:92` and `tax_graph/extract/candidate.py:573` are two
+independent expression normalizers that disagree about operand ordering; and S66 existed because the
+operation registry and the validator disagreed about roles. S66 centralized and S67 aligned, and
+that drift stopped. Same move here.
 
-1. **Decouple cleaning from selection.** Clean every printed anchor, not only formula nodes. The
-   selector decides what gets DERIVED; it must not decide what gets READ.
-2. **Node label comes from cleaned text.** Today `candidate.py` writes
-   `f"Line {line}: {row['label'] or line}"` over a raw label, producing
-   `Line 9: 9 Add lines 1z, 2b, ... 9`. The line number must appear once, from the anchor, never
-   from the text.
-3. **Delete the fallback at `candidate.py:462`** - `label_after or label_before`. `label` means the
-   caption only (`Excluded benefits.`, `AMT.`), present on 8 of 67 rows; absent is the truth on the
-   rest and must be recorded as absent, never backfilled with raw text.
-4. **INVARIANT TEST IN `tests/`, over the whole real candidate**, because this defect has returned
-   repeatedly and only a test stops it: no generated node label may begin and end with the same line
-   token, and no node label may equal its own `label_before`. **This test is the deliverable that
-   makes the fix permanent.**
-5. **Report table-bearing failures instead of passing them through.** 2441 line 8's cleaned text is
-   byte-identical to its raw label - the anchor `8` recurs inside the embedded decimal table and a
-   stray `8 X` sits mid-table, so the cleaner cannot find the boundary. That is a named finding, not
-   a clean result.
+**MEASURED, so the round starts from fact.**
 
-**Evidence required.** Re-derive is NOT needed for anchors that are only being re-cleaned; state
-plainly which numbers come from re-running the candidate writer over the existing run at
-`C:\tmp\m20_s68_live`. Report: how many of 157 anchors now carry cleaned text (target 157), how many
-node labels carry the raw-OCR signature (target 0), and how many table-bearing findings were raised.
-**Full suite required** - short `PYTEST_DEBUG_TEMPROOT`, see below. **Do not re-run the provider.**
+- `label_before` == `form_face_before` on **67 of 67** rows. Label and form face were never two
+  sources; they are the same string shown twice.
+- `form_face_after` is clean on **67 of 67**. The cleaner works: `$15,750 14 Add lines 12e, 13a, and
+  13b 14` becomes `Add lines 12e, 13a, and 13b`.
+- `label_after` is populated on only **8 of 67**, and when populated it is the real caption -
+  `Excluded benefits.`, `Tentative minimum tax.`, `AMT.`
+- The published hand-authored graph carries **0 of 417** raw-OCR node labels. The generated
+  candidate graph carries **46 of 232**. **The clean graph is the one humans wrote and the dirty one
+  is the thing meant to replace it.**
 
-**WORKER STATUS (2026-08-06).** Implemented in the real pipeline. `build_cell_frame_from_document`
-now cleans every printed anchor and records the selector decision separately; `derive_cells` skips
-non-admitted anchors without a provider call. Candidate regeneration reads the deterministic frame
-for skipped anchors, uses form-face text for generated node labels, and no longer falls back from
-`label_after` to `label_before`. The experiment report carries all anchor rows while retaining the
-67-row derivation denominator. Form 2441 line 8 is reported as one `table_anchor_boundary` finding.
+**LIVE PROOF FROM S71, and it is the sharpest evidence this round has.** With the graph now
+clean, **72 of 157 panels still render `z Add lines 1a through 1h 1z`**. `review_panel.py:126` reads
+`candidate_row.get("label") or source_row.get("label_after") or source_row.get("label_before")`.
+S71 correctly set `label` to empty because that row genuinely has no caption, and **`""` is falsy**,
+so the chain treated "correctly absent" as "missing, try the next source" and pulled back the raw
+OCR the graph had just discarded. **Rule 3 below is not a style preference; it is the fix.**
 
-**REAL-CORPUS EVIDENCE.** Re-running the candidate writer only over the existing run at
-`C:\tmp\m20_s68_live` produced 157 printed anchors in coverage, 153 unique canonical rows after
-duplicate-anchor collapse, 153/153 unique rows with clean form-face text, **0** raw line-token node
-labels, and **1** table-bearing finding (`form_2441_2025` line 8). Candidate coverage remains 61
-derived + 4 repaired, 2 errored, 90 skipped, 65 resolved. No provider was run.
+**END STATE.** One read-only accessor in the pilot - `pilot/cell_access.py` - that is the only way
+pilot code reads cell text, with `review_panel.py` and `measure.py` rewired onto it and their
+fallback chains deleted.
 
-**TEST EVIDENCE.** RAN:
-`.venv\Scripts\python.exe -m pytest tests\test_cell_caption_m20.py tests\test_derive_cells_m20.py tests\test_candidate_regeneration_m20.py tests\test_outline_span_resolution_m20.py tests\test_m20_s71.py -q`
--> **81 passed, 1 warning** (the warning is the pre-existing `.pytest_cache` permission warning).
-RAN: `.venv\Scripts\python.exe -m pytest tests\test_m20_s31.py -q` -> **8 passed, 1 warning**.
-RAN: `.venv\Scripts\python.exe tools\check_ascii.py` -> **ASCII check OK**.
-NOT RUN TO COMPLETION: `.venv\Scripts\python.exe -m pytest -q` -> timed out at the 600-second
-worker cap after partial output at 24%; no final result exists. NOT RUN TO COMPLETION: the complete
-non-e2e `tests\test_*.py` partition -> timed out at the same cap after partial output at 25%; no final
-result exists. Focused S71 files are green; the aggregate suites are unverified.
+1. **One function per question**: label, form face, instruction section, expression, rendered
+   wording, operands with their edge roles, findings, status. A consumer asks one question and gets
+   one answer.
+2. **NO CONSUMER PERFORMS A FALLBACK.** The accessor decides once, in one place. A `x or y` chain
+   over cell text anywhere outside the accessor is a defect in this round.
+3. **ABSENCE IS A TYPED VALUE, NOT AN EMPTY STRING.** `""` is exactly what makes `a or b` possible;
+   if absence cannot be coerced into a fallback chain, the bug class cannot recur. A missing caption
+   must be reportable as missing, never substitutable.
+4. **Label means the caption only.** `label_after` and nothing else. Absent on 59 of 67 rows is the
+   truth and must render as absent.
+5. **Invariant test at the accessor, over all 157 real anchors**: no label returned may begin and
+   end with the same line token. One test, inherited by every consumer, instead of one per surface.
+   This is what stops a fourth recurrence.
+6. **Report absence as data**: how many anchors have a real caption, how many have no joined
+   instruction section, how many have no operation. Absence becomes visible rather than filled in.
+
+**Evidence required.** Regenerate the panel over all 157 anchors from `C:\tmp\m20_s68_candidate`.
+State the caption/instruction/operation absence counts, and show that no fallback chain over cell
+text remains in pilot code outside the accessor.
+
+**DO NOT BUILD AGAINST A SYNTHETIC FIXTURE.** Standing S64 lesson.
+
+**S69 IS ACCEPTED at `af351d2`.** The generator reproduces exactly: 157 anchors, 9 diagrams /
+36 chains / 112 none, 92 holes. Columns 1 and 2 are structurally right; column 3 is a graph dump and
+is the NEXT round, deliberately after this one - there is no point rendering better diagrams on top
+of text fetched three different ways.
 
 **How to rebuild a candidate** - the two commands, in order, because the second is worthless
 without a run from current code:
