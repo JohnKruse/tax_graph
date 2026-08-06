@@ -21,11 +21,23 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## BALL
 
-**BALL: WORKER - M20-S64 (REGENERATE A CANDIDATE GRAPH FROM A FULL RUN).** Active spec is under
-Current round. **S67 is ACCEPTED at `bb3daca`; the corpus is recovered.**
+**BALL: ARCHITECT - no round in flight. John, 2026-08-06: accept S64 and wait to spec.**
+**S64 is ACCEPTED at `7189375`; S67 is ACCEPTED at `bb3daca`.**
 
-**Live: 67 attempted, 60 derived, 2 repaired, 5 errored.** `form_1040_2025` back to **17/17 with
-zero repairs**, 2441 **18/21**, 6251 **25/29**. `doctor` gained a **`roles`** column, so the
+**A candidate graph now exists.** Rebuilt from a fresh canary run: **194 nodes, 233 edges, 72 rules,
+66 citations** across the three documents, with **65 of 67 attempted rows entering the candidate**
+(61 derived, 4 repaired) and 2 held back as `review_gap` - one `quote_not_verbatim` on 2441, one
+`self_reference` on 6251. Both are named findings, never silent drops.
+
+**The first S64 measurement was invalid and the mistake is worth keeping.** The Architect ran the
+candidate writer against the `s67-live` reports, which were produced BEFORE S64 taught
+`derive_cells_s25.py` to carry `quote` and `quote_span_id` into `rows_detail`. Every derived row
+therefore arrived with no citation, the pairing gate correctly demoted all 62, and the candidate came
+out structurally empty - 0 nodes for every real document. **A run is only evidence for the code that
+produced it.** Re-run derivation before measuring anything that consumes a report.
+
+**Live: 67 attempted, 61 derived, 4 repaired, 2 errored.** `form_1040_2025` **17/17 with zero
+repairs**, 2441 **20/21**, 6251 **28/29**. `doctor` gained a **`roles`** column, so the
 layer-disagreement that caused S66 is now a check rather than a lesson.
 
 **THE S54 COMPLETENESS VALIDATOR FIRED ON REAL DATA FOR THE FIRST TIME**, and correctly. 2441 line 8
@@ -35,8 +47,10 @@ rather than the source's explicit ranges, and the validator refused it -
 first-match semantics "under 17,000" contains "under 15,000", so the refusal is right. **The row has
 still never derived, but it now fails for the correct reason.**
 
-**QUEUE - one line each.**
-1. **S64 candidate regeneration** - first full run; expect ~121 of 478 anchors.
+**QUEUE - one line each. NOT SPECCED; John is holding the next round.**
+1. **Depth-normalized candidate diff** - all **5 of 5** overlapping rows report a false
+   `expression_disagreement`, because the candidate expression refers to neighbours by node id while
+   `_live_expression` inlines the handcrafted subtree; same rule, two depths. Compare at one depth.
 2. **Construction grammar (Architect measuring first)** - John, 2026-08-05: a checkbox is boolean and
    the PDF says so (2441 carries 57 Text and **15 CheckBox** widgets); punctuation carries the
    structure, and `BASE (VARIANT if CONDITION)` is a systematic parenthetical construction that maps
@@ -45,45 +59,47 @@ still never derived, but it now fails for the correct reason.**
    ranked finding with system-filed evidence, against a VERSIONED construction inventory.
 4. **Column and grid recovery**; **phrase obligations**; **S53 approval gate**; **known-red cleanup**.
 
-**STANDING FAILURES, unchanged and honest.** 2441 line 25 wrong for the **seventh** consecutive run.
-6251 lines 13 and 20 still fail closed on the worksheet references, which regeneration addresses.
+**STANDING FAILURES, honest.** 2441 line 25 wrong for the **eighth** consecutive run - now
+`LOOKUP_TABLE arguments must be named leaf operands with a role`, after one repair. 6251 lines 13 and
+20 **no longer fail closed**; both repair to a cross-document reference (`max(form_1040_2025 line 4,
+0)` and `max(form_1040_nr_2025 line 15, 0)`). That is a status change, not a win: the references
+resolve now, and whether they resolve to the RIGHT line is unreviewed.
 
 ## Current round
 
-**M20-S64 IN FLIGHT (Worker, 2026-08-06).** Canary: **Ground Truth**.
+**None. S64 accepted; John is holding the next spec.** `git show 7189375` recovers the round.
 
-This round implements S3a regeneration and the pipeline-only operating loop. It consumes a
-completed provider run and writes a candidate outside the published graph; it does not call a
-provider, tune the selector, hand-author graph objects, publish, or touch the protected live graph.
+**How to rebuild a candidate** - the two commands, in order, because the second is worthless
+without a run from current code:
 
-1. Build a deterministic candidate writer from completed derive reports. Preserve the per-document
-   printed-anchor denominator and report attempted, derived, repaired, gapped, errored, and skipped
-   anchors with explicit skip reasons. Candidate expression and citation evidence must stay paired;
-   a derived row without a citation is a named candidate finding, never an accepted candidate row.
-2. Emit a candidate draft layout usable by the read-only review projection, and copy only the
-   manifest's harvested worksheet drafts into the candidate workspace. No candidate file is written
-   under `graph/<year>/_drafts`.
-3. Compare candidate addresses and expressions with the handcrafted graph as a review list: in both,
-   candidate-only, handcrafted-only, and expression disagreements listed individually rather than
-   collapsed to a count.
-4. Add an explicit candidate-root input to `review-table`, keeping the existing live-graph fallback.
-   The command must render the candidate's actual expression or an explicit gap for each source row.
-5. Record the publish path in the candidate manifest without taking it: publication would replace
-   the live generated artifacts after review, and rollback is the prior committed tree. The candidate
-   is never a human-confirmed claim.
+```
+.venv\Scripts\python.exe experiments\derive_cells_s25.py --year 2025 --output-dir <RUN> --document form_1040_2025 --document form_2441_2025 --document form_6251_2025
+.venv\Scripts\python.exe -m tax_graph.cli regenerate-candidate --run-dir <RUN> --output-dir <CAND> --expected-document form_1040_2025 --expected-document form_2441_2025 --expected-document form_6251_2025
+```
 
-Focused tests: `tests/test_candidate_regeneration_m20.py` and the existing
-`tests/test_review_table_m20.py`.
+**ONE RED IS OURS, and S64's evidence mislabelled it.**
+`tests/test_m20_s31.py::test_all_prompt_templates_render_with_representative_values` fails with
+`ValueError: prompt has unsupported placeholder: operation_documentation`. The Worker recorded it as
+an "existing prompt fixture omission"; it is not existing. **It PASSES at `origin/main` (26eead7)
+and fails on our tree**, because S66 added `<<operation_documentation>>` to `prompts/derive_cells.md`
+without adding the token to the test's representative values. The pipeline path itself is fine - the
+canary derived 65 rows through that same template - so this is the pinned vocabulary contract test
+going red, not a product defect. Fix is the fixture, not the prompt.
 
-Evidence from this Worker session:
+**The other 20 are pre-existing**, established by A/B against `origin/main` in a worktree with the
+local `.cache`, `graph/2025/_drafts`, and `build/` junctioned in so the comparison is fair: 3 fail
+identically on a bare checkout, 5 more fail identically once the artifacts are present, and all 11
+`tests/e2e/*_m15` fail identically with an empty review queue (0 documents, the known stale-queue
+condition). `tests/test_review_scope_migration_m15.py` is UNCOMPARABLE - it skips at baseline for
+missing 2441 extension artifacts and fails on ours, so it is untriaged, not cleared.
 
-- `RAN: $testTempRoot='C:\Users\devbox\.codex\visualizations\2026\08\06\019fd619-8ec3-7ee0-9f53-2611fa6a2ac9\pytest-temp'; $env:PYTEST_DEBUG_TEMPROOT=$testTempRoot; .venv\Scripts\python.exe -m pytest tests/test_candidate_regeneration_m20.py tests/test_review_table_m20.py tests/test_run_summary_m20.py tests/test_derive_cells_s30.py -q -> 18 passed, 1 warning.`
-- `RAN: $testTempRoot='C:\Users\devbox\.codex\visualizations\2026\08\06\019fd619-8ec3-7ee0-9f53-2611fa6a2ac9\pytest-temp'; $env:PYTEST_DEBUG_TEMPROOT=$testTempRoot; .venv\Scripts\python.exe -m pytest tests/test_derive_cells_s30.py tests/test_m20_s31.py tests/test_cli.py -q -> 16 passed, 2 failed, 2 warnings.` The failures are the existing `operation_documentation` prompt fixture omission in `tests/test_m20_s31.py::test_all_prompt_templates_render_with_representative_values` and the existing missing temporary `config/manifest.yaml` in `tests/test_cli.py::test_harvest_worksheet_command_writes_only_a_draft`; neither was weakened.
-- `RAN: .venv\Scripts\python.exe -m tax_graph.cli validate 2025 -> exit 0; documents=18, nodes=441, edges=409, rules=17, citations=401; graph integrity OK.`
-- `RAN: .venv\Scripts\python.exe tools\check_ascii.py -> ASCII check OK.`
-- `RAN: git diff --check -> clean.`
-- `RAN: .venv\Scripts\python.exe -m tax_graph.cli --help`, `regenerate-candidate --help`, and `review-table --help` -> new options rendered successfully; CLI materialization and candidate-root review-table smoke -> exit 0.`
-- `NOT RUN: provider execution and live full-corpus derivation; the provider leg is the Architect's.`
+**Full suite on our tree: 21 failed, 841 passed, 8 skipped, 1 xfailed.**
+
+**PYTEST_DEBUG_TEMPROOT must be a SHORT path.** A run rooted under the Claude session scratchpad
+produced **70 failures across 28 files**, every one of them `shutil.Error ... [WinError 3]` from
+MAX_PATH overflow while copying `graph/2025/_drafts` into the fixture project. The same tests pass
+on `C:\Users\devbox\AppData\Local\Temp\tgpt`. A long temp root does not fail a few tests, it fails
+whole files at once - that shape is the signature, not a code regression.
 
 ## Open for Architect
 
