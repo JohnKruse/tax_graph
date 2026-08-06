@@ -15,7 +15,13 @@ A held-back candidate expression is displayed as evidence, never as a promoted o
 
 The flow column follows review notation rule 9. Branching graph trees get a diagram, deeper
 non-branching trees get a linear chain, and depth-1 trees explicitly say that no diagram is shown.
-Missing promoted operations are red holes with their stored findings.
+Nested printed-line references stop at ``line X`` so the panel does not re-narrate the form. A
+repeated operation subtree is rendered once and then referenced. Missing promoted operations are
+red holes with their stored findings. Flow output contains no graph node ids.
+
+The summary's instruction count is the number of panel rows whose instruction value is present
+through ``cell_access.instruction_section``. It is not a second count of unique instruction
+sections, because the reviewer needs one answer for whether each row has joined text.
 The pilot also reports graph node ids containing the banned ``floor`` term without changing those
 graph artifacts; that vocabulary cleanup belongs to a later pipeline round.
 

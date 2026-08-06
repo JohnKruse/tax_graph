@@ -223,6 +223,36 @@ caption begins and ends with the same printed line token.
 permission failure writing the pre-existing `.pytest_cache`; the short override avoided the poisoned
 `.test_tmp`. No provider run and no full suite were performed, per pilot rules.
 
+**WORKER COMPLETION (2026-08-06; M20-S72 implementation, awaiting Architect acceptance).** The
+pilot now stops graph expansion at nested plain form-line references, renders them as `line X`,
+and hashes repeated operation subtrees so later occurrences say `same expression as above`.
+Column 3 emits no graph node ids; the `zero_floor` modelling oddity remains reported in the
+summary and the graph is unchanged. `build_panel` records per-panel arrow counts and their
+distribution. The summary and CLI now call the accessor-resolved count **instruction rows**;
+the S71 candidate has 17 such rows (4/8/5 by document) and 16 unique locators. The alleged 84
+rows is not present in this candidate's 67 `rows_detail` records, so no second section count is
+carried into the panel. Changes are limited to `pilot/` and pilot tests/docs.
+
+**S72 REAL-CORPUS EVIDENCE.** RAN against the S71 candidate at the path above. Before the fix,
+45 diagram/chain panels had distribution `{4: 3, 5: 1, 6: 4, 7: 1, 8: 1, 9: 1, 10: 2, 11: 2,
+12: 1, 13: 1, 14: 1, 16: 3, 17: 1, 18: 2, 19: 1, 20: 1, 23: 2, 24: 1, 26: 2, 27: 1,
+28: 2, 33: 1, 35: 1, 47: 1, 48: 1, 53: 1, 55: 1, 107: 1, 109: 1, 111: 1, 233: 1, 251: 1}`
+with max 251 and modes 9 diagrams / 36 chains / 112 none. After the fix, distribution is
+`{4: 9, 5: 2, 6: 1, 16: 2, 17: 1}`, max 17, with modes 4 diagrams / 11 chains / 142 none.
+The residual max 17 is still above the rough dozen target and is reported plainly; further
+notation/CSE work remains queued. The 157 generated flow sections contain no node-id leakage.
+
+**S72 TEST EVIDENCE.** RAN:
+`$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp2'; .venv\Scripts\python.exe -m pytest pilot\test_review_panel.py -q`
+-> **7 passed, 1 warning**. RAN:
+`$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp2'; .venv\Scripts\python.exe -m pytest pilot\test_cell_access.py -q`
+-> **2 passed, 1 warning**. RAN:
+`$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp2'; .venv\Scripts\python.exe -m pytest pilot\constructions\test_measure.py -q`
+-> **4 passed, 1 warning**. RAN:
+`.venv\Scripts\python.exe tools\check_ascii.py` -> **ASCII check OK**. The warnings are the
+known permission failure writing the pre-existing `.pytest_cache`; no provider run or full suite
+was performed, per pilot rules.
+
 ## Open for Architect
 
 **Nothing is open for the Architect.** The three items `doctor` flagged STALE at 73 commits on

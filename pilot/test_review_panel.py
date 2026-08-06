@@ -8,8 +8,9 @@ the held-back rows, or the graph edge roles found in the corpus.
 from __future__ import annotations
 
 from pathlib import Path
+import re
 
-from review_panel import build_panel, main, render_html
+from review_panel import _flow_tree_html, build_panel, main, render_html
 
 
 CANDIDATE = Path(r"C:\tmp\m20_s68_candidate")
@@ -65,6 +66,47 @@ def test_operation_projection_keeps_rule_and_edge_roles() -> None:
     assert subtract["flow_mode"] == "chain"
 
 
+def test_flow_stops_at_referenced_lines_and_reports_arrow_size() -> None:
+    panel = _real_panel()
+    refund = _by_anchor(panel, "form_1040_2025", "34")
+    tree = refund["graph"]["tree"]
+
+    assert refund["flow_arrows"] == 6
+    assert panel["max_flow_arrows"] == 17
+    assert panel["flow_arrow_distribution"] == {4: 9, 5: 2, 6: 1, 16: 2, 17: 1}
+    assert tree["operands"][0]["tree"] == {
+        "kind": "reference",
+        "node_id": "form_1040_2025_root_line_33",
+        "line": "33",
+        "label": tree["operands"][0]["tree"]["label"],
+    }
+    assert tree["operands"][2]["tree"]["operands"][0]["tree"]["line"] == "33"
+
+
+def test_repeated_operation_subtrees_render_once_then_as_reference() -> None:
+    leaf = {"kind": "reference", "line": "20", "node_id": "hidden_line_20"}
+    shared = {
+        "kind": "operation",
+        "operation": "MIN",
+        "operands": [{"role": "candidate", "tree": leaf}],
+    }
+    tree = {
+        "kind": "operation",
+        "operation": "IF",
+        "operands": [
+            {"role": "when_true", "tree": shared},
+            {"role": "when_false", "tree": shared},
+        ],
+    }
+
+    html = _flow_tree_html(tree)
+
+    assert html.count("<strong>MIN</strong>") == 1
+    assert html.count("same expression as above") == 1
+    assert "hidden_line_20" not in html
+    assert "line 20" in html
+
+
 def test_held_back_rows_are_visible_holes_with_findings() -> None:
     panel = _real_panel()
     for document_id, line, expected in (
@@ -88,6 +130,16 @@ def test_rendered_html_has_one_panel_per_anchor_and_nonempty_hole_columns() -> N
     assert "LOOKUP_TABLE arguments must be named leaf operands with a role" in html
     assert "form_2441_2025_zero_floor" in html
     assert "captions 8 present / 149 absent" in html
+    assert "instruction rows 17 present / 140 absent" in html
+    assert "instruction sections 17 present" not in html
+    flow_columns = re.findall(
+        r'<section class="column flow-column">(.*?)</section>',
+        html,
+        flags=re.DOTALL,
+    )
+    assert len(flow_columns) == 157
+    assert all("form_1040_2025_root_line_33" not in section for section in flow_columns)
+    assert all("form_1040_2025_zero_floor" not in section for section in flow_columns)
     assert "Graph terminology to report (not changed)" in html
 
 

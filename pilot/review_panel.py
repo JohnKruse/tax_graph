@@ -9,7 +9,7 @@ call a provider, write graph artifacts, or assign a human verdict.
 from __future__ import annotations
 
 import argparse
-from collections import defaultdict
+from collections import Counter, defaultdict
 from html import escape
 from pathlib import Path
 import re
@@ -23,6 +23,7 @@ import cell_access
 REPORT_SUFFIX = "_derive_cells_report.yaml"
 OUTCOME_STATUSES = {"derived", "repaired", "review_gap", "skipped", "error", "errored"}
 BRANCH_OPERATIONS = frozenset({"IF", "IF_ELSE", "LOOKUP_TABLE", "LOOKUP_BRACKET"})
+FORM_LINE_RE = re.compile(r"_root_line_(?P<line>[0-9]+[a-z]?|[a-z])$")
 
 
 def _text(value: Any) -> str:
@@ -238,14 +239,30 @@ def _leaf(graph: Mapping[str, Any], node_id: str) -> dict[str, Any]:
     return {
         "kind": "reference",
         "node_id": node_id,
+        "line": _line_reference(node_id),
         "label": cell_access.graph_node_label(graph, node_id).value,
     }
+
+
+def _line_reference(node_id: str) -> str | None:
+    """Return a printed line key for a plain form-line node id."""
+
+    match = FORM_LINE_RE.search(node_id)
+    return match.group("line") if match else None
+
+
+def _is_referenced_line(node_id: str) -> bool:
+    """Return whether a nested graph node is a printed line reference."""
+
+    return _line_reference(node_id) is not None
 
 
 def _graph_tree(graph: Mapping[str, Any], node_id: str, stack: tuple[str, ...] = (), *, root: bool = False) -> dict[str, Any]:
     """Build a graph-shaped expression tree for flow projection."""
 
     if not node_id or node_id in stack:
+        return _leaf(graph, node_id)
+    if not root and _is_referenced_line(node_id):
         return _leaf(graph, node_id)
     rule_ids, operations = _target_rules(graph, node_id)
     node = graph["nodes"].get(node_id) or {}
@@ -341,6 +358,41 @@ def _flow_mode(tree: Mapping[str, Any] | None) -> str:
     return "chain" if _tree_depth(tree) > 1 else "none"
 
 
+def _tree_key(tree: Mapping[str, Any]) -> tuple[Any, ...]:
+    """Return a structural key used to share repeated operation subtrees."""
+
+    if tree.get("kind") != "operation":
+        if tree.get("kind") == "constant":
+            return ("constant", _text(tree.get("value")))
+        return ("reference", _text(tree.get("line")) or _text(tree.get("node_id")))
+    operands = tuple(
+        (
+            _text(item.get("role")),
+            _tree_key(item["tree"]),
+        )
+        for item in tree.get("operands", [])
+        if isinstance(item, Mapping) and isinstance(item.get("tree"), Mapping)
+    )
+    return ("operation", _text(tree.get("operation")), operands)
+
+
+def _flow_arrow_count(tree: Mapping[str, Any], seen: set[tuple[Any, ...]] | None = None) -> int:
+    """Count arrows the flow renderer will emit, sharing repeated operations."""
+
+    if tree.get("kind") != "operation":
+        return 0
+    seen = set() if seen is None else seen
+    key = _tree_key(tree)
+    if key in seen:
+        return 0
+    seen.add(key)
+    return sum(
+        1 + _flow_arrow_count(item["tree"], seen)
+        for item in tree.get("operands", [])
+        if isinstance(item, Mapping) and isinstance(item.get("tree"), Mapping)
+    )
+
+
 def build_panel(candidate_root: str | Path) -> dict[str, Any]:
     """Build all printed-anchor panels from one real candidate workspace."""
 
@@ -380,10 +432,16 @@ def build_panel(candidate_root: str | Path) -> dict[str, Any]:
             row["graph"] = projection
             row["flow_mode"] = mode
             row["flow_depth"] = _tree_depth(tree) if isinstance(tree, Mapping) else 0
+            row["flow_arrows"] = _flow_arrow_count(tree) if isinstance(tree, Mapping) else 0
             row["hole"] = projection is None
             panels.append(row)
 
     mode_counts = {mode: sum(item["flow_mode"] == mode for item in panels) for mode in ("diagram", "chain", "none")}
+    flow_arrow_distribution = Counter(
+        item["flow_arrows"]
+        for item in panels
+        if item["flow_mode"] in {"diagram", "chain"}
+    )
     text_presence = {
         "caption": sum(item["label"] is not None for item in panels),
         "instruction": sum(item["instruction"] is not None for item in panels),
@@ -401,6 +459,8 @@ def build_panel(candidate_root: str | Path) -> dict[str, Any]:
         "denominator": len(panels),
         "holes": sum(1 for item in panels if item["hole"]),
         "flow_modes": mode_counts,
+        "flow_arrow_distribution": dict(sorted(flow_arrow_distribution.items())),
+        "max_flow_arrows": max(flow_arrow_distribution, default=0),
         "text_presence": text_presence,
         "text_absence": text_absence,
         "graph_jargon_nodes": graph_jargon_nodes,
@@ -484,22 +544,28 @@ def _operation_html(row: Mapping[str, Any]) -> str:
     )
 
 
-def _flow_tree_html(tree: Mapping[str, Any]) -> str:
-    """Render a graph tree as nested flow boxes and arrow-labeled edges."""
+def _flow_tree_html(tree: Mapping[str, Any], seen: set[tuple[Any, ...]] | None = None) -> str:
+    """Render a flow tree, stopping at lines and sharing repeated operations."""
 
+    seen = set() if seen is None else seen
     if tree.get("kind") != "operation":
-        node_id = escape(_text(tree.get("node_id")))
         if tree.get("kind") == "constant":
             value = escape(_text(tree.get("value")))
-            return f'<div class="flow-leaf"><code>{node_id}</code><span>constant_value={value}</span></div>'
-        return f'<div class="flow-leaf"><code>{node_id}</code></div>'
+            return f'<div class="flow-leaf"><span>constant {value}</span></div>'
+        line = _text(tree.get("line"))
+        label = f"line {line}" if line else "reference input"
+        return f'<div class="flow-leaf"><span>{escape(label)}</span></div>'
+    key = _tree_key(tree)
+    if key in seen:
+        return '<div class="flow-reference">same expression as above</div>'
+    seen.add(key)
     operation = escape(_text(tree.get("operation")))
     children = []
     for operand in tree.get("operands", []):
         if not isinstance(operand, Mapping) or not isinstance(operand.get("tree"), Mapping):
             continue
         role = escape(_text(operand.get("role")))
-        child = _flow_tree_html(operand["tree"])
+        child = _flow_tree_html(operand["tree"], seen)
         children.append(f'<div class="flow-edge"><span class="flow-role">{role}</span><span class="arrow">-&gt;</span>{child}</div>')
     child_html = f'<div class="flow-children">{"".join(children)}</div>' if children else ""
     return f'<div class="flow-box"><strong>{operation}</strong>{child_html}</div>'
@@ -556,7 +622,7 @@ def render_html(panel: Mapping[str, Any]) -> str:
         f"{_text(modes.get('none', 0))} none; "
         f"{_text(panel.get('holes', 0))} panels with a hole; "
         f"captions {presence.get('caption', 0)} present / {absence.get('caption', 0)} absent; "
-        f"instruction sections {presence.get('instruction', 0)} present / {absence.get('instruction', 0)} absent; "
+        f"instruction rows {presence.get('instruction', 0)} present / {absence.get('instruction', 0)} absent; "
         f"operations {presence.get('operation', 0)} present / {absence.get('operation', 0)} absent."
     )
     jargon_nodes = panel.get("graph_jargon_nodes") or []
@@ -651,7 +717,7 @@ def main(argv: list[str] | None = None) -> int:
         f"{panel['flow_modes']['none']} none; {panel['holes']} holes; "
         f"captions {panel['text_presence']['caption']} present / "
         f"{panel['text_absence']['caption']} absent; "
-        f"instruction sections {panel['text_presence']['instruction']} present / "
+        f"instruction rows {panel['text_presence']['instruction']} present / "
         f"{panel['text_absence']['instruction']} absent; "
         f"operations {panel['text_presence']['operation']} present / "
         f"{panel['text_absence']['operation']} absent"
