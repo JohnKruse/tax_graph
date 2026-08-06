@@ -21,7 +21,9 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## BALL
 
-**BALL: WORKER - M20-S68 (MEASURE THE CONSTRUCTIONS). Active spec is under Current round.**
+**BALL: WORKER - M20-S68 (MEASURE THE CONSTRUCTIONS, STANDALONE PILOT UNDER `pilot/`).**
+Active spec is under Current round. **Pilot rules bind every round in this line of work**, not just
+this one: off to the side, read-only, own tests, no full-suite gate, lift into the project later.
 **S64 is ACCEPTED at `7189375`; S67 is ACCEPTED at `bb3daca`.**
 
 **A candidate graph now exists.** Rebuilt from a fresh canary run: **194 nodes, 233 edges, 72 rules,
@@ -76,21 +78,33 @@ resolve now, and whether they resolve to the RIGHT line is unreviewed.
 
 ## Current round
 
-**M20-S68 IN FLIGHT (Worker, 2026-08-06). MEASURE THE CONSTRUCTIONS.** Reference: `7189375`.
+**M20-S68 IN FLIGHT (Worker, 2026-08-06). MEASURE THE CONSTRUCTIONS - STANDALONE PILOT.**
+Reference: `7189375`.
 
-**END STATE.** A committed, versioned construction inventory, plus the command that regenerates it
-from a completed run, so a later round can detect drift by diffing regenerated against committed.
-**This round changes no wire.** No grammar change, no new operation, no selector tuning, no
-rendering change, no provider call. It reads existing artifacts and reports.
+**THIS IS A PILOT AND IT LIVES OFF TO THE SIDE.** John, 2026-08-06: *"i want this to be kind of a
+stand alone pilot... if we are actually monkeying with the code base, this wil turn into a pita."*
+
+- **Everything this round writes lives under `pilot/constructions/`.** Nothing outside that
+  directory changes. No new CLI command, no edit to `tax_graph/`, `workbench/`, `prompts/`,
+  `schemas/`, or `graph/`.
+- **Read-only against existing artifacts.** Importing from `tax_graph` to load them is fine;
+  modifying it is not. The pilot consumes a candidate workspace and the run reports that produced it.
+- **Its tests live in the pilot too, and stay out of `tests/`.** `testpaths = ["tests"]` in
+  `pyproject.toml`, so a pilot test directory is not collected by the full suite and **this round is
+  not gated by the 56-minute floor.** That is deliberate: John wants quick turns.
+- **Entry point is a plain script**, `pilot/constructions/measure.py`, taking a candidate root and
+  writing its report beside itself or to a given path.
+- **Lifting into the project is a LATER round**, taken only once the pilot is reliable, and it is
+  the round that pays the full-suite cost. Do not pre-emptively make the pilot production-shaped.
+
+**END STATE.** A versioned construction inventory produced by a standalone pilot script, plus the
+counts that let the Architect and John argue from data. Drift detection against the inventory is a
+later round and is out of scope here.
 
 **WHY IT IS MEASUREMENT AND NOT DESIGN.** John, 2026-08-06, is deciding whether accurate-but-simple
 modelling is achievable deterministically or is a pick-two. That argument has to run on counts of
 what the corpus actually says, not on the constructions the Architect happens to remember.
 
-0. **Precondition, and it is one line.** `tests/test_m20_s31.py::test_all_prompt_templates_render_
-   with_representative_values` is red because S66 added `<<operation_documentation>>` to
-   `prompts/derive_cells.md` without adding the token to the test's representative values. It passes
-   at `26eead7`. Fix the fixture, not the prompt, so the suite floor is honest before S68 lands.
 1. **Denominator is printed anchors, not derived rows.** The constructions we cannot express hide in
    the skipped and errored rows; a report over derived rows only would measure our successes and call
    it a survey. State the denominator in the output.
@@ -109,11 +123,17 @@ what the corpus actually says, not on the constructions the Architect happens to
    `BASE (VARIANT if CONDITION)`; checkbox lines (2441 carries 57 Text and 15 CheckBox widgets);
    `smaller of` / `smallest of`; `If ... Otherwise ...`; `If zero or less, enter -0-`.
 
-Focused tests: new ones for the inventory writer, plus the existing
-`tests/test_candidate_regeneration_m20.py`.
+Tests: inside `pilot/constructions/`, fast, run directly. **Do not add anything to `tests/`** and do
+not run the full suite for this round.
 
-**Evidence required.** Run over all three canary documents and state the denominator. A construction
-count with no anchor ids behind it is not evidence. `PYTEST_DEBUG_TEMPROOT` short - see below.
+**Evidence required.** Run the pilot over all three canary documents and state the denominator. A
+construction count with no anchor ids behind it is not evidence.
+
+**SEPARATE ONE-LINE FIX, its own commit, not part of the pilot.**
+`tests/test_m20_s31.py::test_all_prompt_templates_render_with_representative_values` is red because
+S66 added `<<operation_documentation>>` to `prompts/derive_cells.md` without adding the token to the
+test's representative values. It passes at `26eead7`. Fix the fixture, not the prompt. Kept out of
+the pilot commit so the pilot touches `pilot/` only.
 
 **How to rebuild a candidate** - the two commands, in order, because the second is worthless
 without a run from current code:
