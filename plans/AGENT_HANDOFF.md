@@ -21,12 +21,12 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## BALL
 
-**BALL: WORKER - M20-S72 (STOP AT THE REFERENCED LINE). PILOT ROUND, `pilot/` ONLY.**
+**BALL: WORKER - M20-S73 (ONE ANSWER FOR INSTRUCTION COVERAGE). PILOT ROUND, `pilot/` ONLY.**
 Active spec is under Current round. **PILOT WORK RESUMES** (John, 2026-08-06): the graph now carries
 clean text, so the remaining garbage is consumer-side. Pilot rules bind: off to the side, read-only,
 own tests out of `tests/`, no full-suite run, no provider run, lift into the project later.
 
-**S71 IS ACCEPTED at `e79f2cd`. S70 IS ACCEPTED at `977e977`.**
+**S71 ACCEPTED at `e79f2cd`; S70 at `977e977`; S72 at `b18d9f1`.**
 **Full suite: 20 failed, 846 passed, 8 skipped, 1 xfailed in 1:01:19.** Those 20 are EXACTLY the
 known pre-existing set minus `test_m20_s31`, which S71's sibling commit fixed - **zero new
 failures**, and passes rose 841 -> 846 on S71's own tests. The 20 were triaged against
@@ -105,65 +105,51 @@ resolve now, and whether they resolve to the RIGHT line is unreviewed.
 
 ## Current round
 
-**M20-S72 IN FLIGHT (Worker, 2026-08-06). STOP AT THE REFERENCED LINE - PILOT.**
-Reference: S70 accessor at `977e977`.
+**M20-S73 IN FLIGHT (Worker, 2026-08-06). ONE ANSWER FOR INSTRUCTION COVERAGE - PILOT.**
+Reference: S70 accessor at `977e977`, S72 at `b18d9f1`.
 
 **PILOT RULES BIND.** Everything under `pilot/`; nothing outside changes; tests in the pilot, out of
-`tests/`; no full-suite run; no provider run. **Read the accessor, do not bypass it.**
+`tests/`; no full-suite run; no provider run.
 
-**WHAT JOHN SAW.** `form_1040_2025` line 34 is, in the graph,
-`if_else(line 33, line 24, line 33 - line 24, 0)` - four operands, one sentence of IRS text: *"If
-line 33 is more than line 24, subtract line 24 from line 33."* Column 2 renders that correctly and
-legibly. **Column 3 renders it as 48 arrows**, because it expands `line 33` and `line 24` into their
-entire upstream subtrees - and since line 33 is both the `condition` and part of `when_true`, **it
-draws that whole subtree twice.** 6251 line 40 is **251 arrows**. Line 38 is **233**.
+**THE DEFECT, AND IT HAS NOW SURVIVED TWO ROUNDS.** The panel reports **17 instruction sections
+present / 140 absent**. Counting directly, **84 of 153 candidate rows carry non-empty
+`instruction_text`**. S72 was asked to resolve this and instead renamed the caption from
+"instruction sections" to "instruction rows"; **the number did not change and the gap is still
+unexplained.**
 
-**MEASURED across the 45 diagram/chain panels**: 251, 233, 111, 109, 107, 55, 53, 48, 47, 35 arrows
-for the ten largest. **This is rule 3 failing at volume**, and rule 3 is the entire fix.
+**WHY IT IS THE WHOLE ROUND.** This is two answers to one question living *inside the accessor built
+to guarantee one answer*. S70 exists because three consumers each invented their own reading of "what
+is this cell's label"; if the accessor itself can report 17 while the data says 84, the accessor has
+inherited the disease it was built to cure.
 
-1. **STOP AT THE REFERENCED LINE.** `docs/review-notation.md` rule 3: *"Reference lines, never
-   re-narrate them. The reviewer has the form open."* A referenced line renders as `line 33` and
-   **nothing below it is drawn**. Line 34 becomes four boxes. Apply to diagrams AND chains.
-2. **SHARE REPEATED SUBTREES.** Where the same subexpression appears more than once in one cell,
-   draw it once and reference it. This is the same machinery John identified on 2441 line 25, whose
-   `UNRESOLVED` block is `MIN(line 20, line 21)` sitting in a sibling branch - a human reads across
-   and knows instantly. Hash subtrees; do not re-derive.
-3. **REPORT THE SIZE AFTER THE FIX.** Largest panel by arrow count, and the distribution. **If any
-   panel still exceeds roughly a dozen arrows, say so plainly rather than declaring success** - that
-   number is the deliverable, not a side note.
-4. **NO NODE IDS AND NO BANNED TERMS IN COLUMN 3**, unchanged from the queued notation work.
-   `form_1040_2025_zero_floor` currently renders as the `when_false` branch of line 34: the IRS's
-   plain "otherwise enter zero" is modelled as a floor node. **Report that modelling oddity; do not
-   fix the graph** - it is outside the pilot boundary.
+**AND THE ANSWER CHANGES SOMETHING REAL.** If 84 is right, instruction coverage is roughly **five
+times better** than the panel claims. If 17 is right, then **67 rows carry instruction text the
+accessor does not consider properly joined** - which is a real join defect wearing a display bug's
+clothes. John, 2026-07-25: the IRS instructions explain nearly every cell, and mining them per
+address is routine pipeline work. **Instruction coverage is not a cosmetic number.**
 
-**NOT THIS ROUND.** The full rules 1-8 notation (diamonds, Yes/No arrows, mathy boxes, `amount`) is
-still queued separately. **This round is about SIZE and REPETITION only.** A correct notation on a
-251-arrow diagram is worthless; shrink it first.
+1. **Find which number is correct and say why, with evidence.** Name the exact field each count
+   reads and where they diverge. A rename is not a resolution.
+2. **Make the accessor the single answer**, and delete or fix whatever produced the other one.
+3. **If the two counts are measuring genuinely different things** - say, text copied onto the row
+   versus a section formally joined with a section id - then **they are two named questions with two
+   named accessor functions**, and the panel says which it is showing. What must not survive is one
+   question with two answers.
+4. **Report instruction coverage across all 153 rows** once it is settled, with the per-document
+   split. That number feeds the queued instruction-page-furniture round.
 
 **Evidence required.** Regenerate over the S71 candidate at
-`C:\Users\devbox\AppData\Local\Temp\claude\C--Users-devbox-projects-tax-graph\6e1d97d0-c72d-4855-a055-e0c64f6224f8\scratchpad\cand_s71`
-(or any candidate the Architect names). Report the arrow-count distribution before and after.
+`C:\Users\devbox\AppData\Local\Temp\claude\C--Users-devbox-projects-tax-graph\6e1d97d0-c72d-4855-a055-e0c64f6224f8\scratchpad\cand_s71`.
+State the settled count, the reason the other count existed, and the per-document split.
 
-**ONE S70 DEFECT TO FIX WHILE HERE.** The panel footer reports **17 instruction sections present**
-but **84 rows carry instruction text**. Two numbers for one question is exactly what the accessor
-exists to prevent. Find which is right and make the accessor the single answer.
+**DO NOT REGRESS S72.** Max arrows across all panels is **17**, down from 251; `form_1040_2025`
+line 34 is **6 arrows**, down from 48. Keep a test pinning the arrow ceiling.
 
-**WHOLE-CORPUS TEXT PROOF, run by the Architect 2026-08-06 (no provider, `build_cell_frame_from_
-document` over all 16 form documents).** John asked why extraction had never been run corpus-wide;
-there was no good reason - derivation costs provider calls, cleaning does not.
+**S72 IS ACCEPTED at `b18d9f1`**, verified independently by the Architect: 251 -> 17 max arrows,
+line 34 48 -> 6, `zero_floor` now rendering as `constant 0`, and diagram/chain counts falling
+9/36 -> 4/11 because unexpanded cells are correctly depth 1. Rule 9 behaves as written for the
+first time.
 
-**478 printed anchors. 359 clean (75.1%).**
-
-- **113 (23.6%) carry instruction page furniture** - `# Page 62`, bare page numbers, and footers
-  like `Instructions for Form 8949 (2025)` or `Visit IRS.gov`. **This is now the dominant text
-  defect and it was never in S71's scope.**
-- **7 (1.5%) still carry the anchor in the text** - `Income 1 a Total amount from Form(s) W-2`,
-  `1h instructions.`, `schedule_1a_2025` line 4c.
-- **7 (1.5%) are one-word fragments** - `Gambling`, `instructions`, `1974`.
-- **`form_13614_c_2025` yields 0 anchors.** A document in the manifest producing nothing.
-
-**S71 IS VINDICATED AT SCALE:** the defect John was angry about is down to **7 of 478**. The
-remaining bulk is a different, unaddressed defect in instruction-section text.
 
 **How to rebuild a candidate** - the two commands, in order, because the second is worthless
 without a run from current code:
