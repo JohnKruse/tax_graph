@@ -102,29 +102,37 @@ clothes, and it is the reason the candidate diff cannot tell a real disagreement
 **Whoever takes the diff round converges these rather than adding a third.**
 
 **QUEUE - one line each. NOT SPECCED.**
-1. **S76 LIFT THE INSTRUCTION PARSER into `tax_graph/`** - deferred 2026-08-07, spec recoverable at
+1. **RAISE THE EXPRESSION DEPTH BOUND** - John approved this on 2026-08-05 and it was never done.
+   `max_depth` defaults to **2** at `cells.py:382` and **no caller anywhere overrides it** (verified
+   2026-08-07). `form_2441_2025` line 25's correct tree - `IF_ELSE(line 22 checked, MIN(20,21),
+   MAX(MIN(20,21) - line 24, 0))` - is **rejected at 2, accepted at 3**; 6251 line 18 passes at 2,
+   which is why it derives and line 25 has failed **nine** consecutive runs. Cost measured at ~+1,600
+   tokens at depth 6. **NOT a one-line round:** a higher ceiling lets the model return deeper trees
+   EVERYWHERE, so acceptance is "line 25 derives correctly AND no other cell changed shape without
+   reason" - diff every expression against `C:\tmp\m20_s74_run`. Provider canary + full suite.
+2. **S76 LIFT THE INSTRUCTION PARSER into `tax_graph/`** - deferred 2026-08-07, spec recoverable at
    `bcec03d`. Real-project; the invariant test is the deliverable: no instruction section filed under
    a line absent from that form's printed-line inventory. 106 phantoms -> 0, 1040 256 -> 143.
-2. **`form_13614_c_2025` yields 0 printed anchors** - a manifest document producing nothing.
-3. **Column 3 becomes the agreed notation** - the S69 flow is an edge dump: zero `<svg>`, zero
+3. **`form_13614_c_2025` yields 0 printed anchors** - a manifest document producing nothing.
+4. **Column 3 becomes the agreed notation** - the S69 flow is an edge dump: zero `<svg>`, zero
    diamonds, zero Yes/No arrows across all 157 panels; it renders `zero_floor` and node ids into the
    human column and re-narrates upstream lines. Must implement `docs/review-notation.md` rules 1-8,
    with phrasing read from the operation registry. Was specced at `41fffff`; recover with `git show`.
-4. **LIFT the accessor into the project** - make `tax_graph/extract/candidate.py` use it so the
+5. **LIFT the accessor into the project** - make `tax_graph/extract/candidate.py` use it so the
    GENERATED graph stops baking raw OCR into node labels (46 of 232 today), and move the invariant
    test into `tests/`. This is the round that pays the full-suite cost.
-5. **Depth-normalized candidate diff** - all **5 of 5** overlapping rows report a false
+6. **Depth-normalized candidate diff** - all **5 of 5** overlapping rows report a false
    `expression_disagreement`, because the candidate expression refers to neighbours by node id while
    `_live_expression` inlines the handcrafted subtree; same rule, two depths. Compare at one depth.
-6. **Round-trip renderer** - render a tree back to English from the operation registry and diff it
+7. **Round-trip renderer** - render a tree back to English from the operation registry and diff it
    against the printed source; disagreement becomes a review finding. Generation is deterministic
    even where parsing is not, so this is the reliability check the pipeline currently has no form of.
-7. **Sibling subexpression recovery (CSE)** - 2441 line 25's `UNRESOLVED` block is `MIN(line 20, line
+8. **Sibling subexpression recovery (CSE)** - 2441 line 25's `UNRESOLVED` block is `MIN(line 20, line
    21)`, sitting in the sibling branch. Hashing subtrees recovers deterministically what a human gets
    by reading across. Same machinery as item 3; do them together or not at all.
-8. **Construction drift detection** - reviews call out new punctuation and usage as a ranked finding
+9. **Construction drift detection** - reviews call out new punctuation and usage as a ranked finding
    with system-filed evidence, against the versioned inventory S68 produces.
-9. **Column and grid recovery**; **phrase obligations**; **S53 approval gate**; **known-red cleanup**.
+10. **Column and grid recovery**; **phrase obligations**; **S53 approval gate**; **known-red cleanup**.
 
 **STANDING FAILURES, honest.** 2441 line 25 wrong for the **eighth** consecutive run - now
 `LOOKUP_TABLE arguments must be named leaf operands with a role`, after one repair. 6251 lines 13 and
