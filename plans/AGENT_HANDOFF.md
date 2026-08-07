@@ -160,6 +160,43 @@ and filer-fact nodes"). It has **no document dimension**. Add one. Do not build 
 the round has not succeeded regardless of what the tests say. Report the full derived/repaired/
 errored/skipped counts so a regression elsewhere is visible.
 
+**WORKER STATUS (2026-08-07; implementation complete, provider leg blocked).** The reference
+inventory now merges live graph documents with manifest documents and manifest-backed worksheet
+drafts. It carries `document_inventory` entries as id plus title, and worksheet draft node lines
+for cross-document printed-line validation. The derive-cells prompt requires the cross-form id to
+come from that inventory. An unknown cross-form id is now a hard `operand_document_not_found`
+finding; an evidence-backed out-of-corpus reference still retains its unresolved payload, but the
+row fail-closes after the one repair. The real Form 6251 line 13 and line 20 prompts both contain
+the QDCGT inventory entry; the local inventory has 24 documents and QDCGT lines 1-25.
+
+**TEST EVIDENCE.** RAN:
+`$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp2'; .venv\Scripts\python.exe -m pytest tests/test_derive_cells_m20.py tests/test_m20_s31.py -q`
+-> **73 passed, 1 warning** (known `.pytest_cache` WinError 5). RAN:
+`$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp2'; .venv\Scripts\python.exe -m pytest tests/test_workbench_rederive_m20.py tests/test_rederive_m20.py -q`
+-> **5 passed, 1 warning** (same known cache warning). RAN:
+`$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp2'; .venv\Scripts\python.exe -m pytest tests/test_derive_cells_m20.py tests/test_m20_s31.py tests/test_workbench_rederive_m20.py tests/test_rederive_m20.py -q`
+-> **78 passed, 1 warning**. RAN:
+`.venv\Scripts\python.exe tools\check_ascii.py` -> **ASCII check OK**. RAN M20 marker partition:
+`$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp2'; .venv\Scripts\python.exe -m pytest -m m20 -q`
+-> **297 passed, 9 failed, 3 errors, 570 deselected**. The failures/errors are the known
+artifact/fixture baseline: draft-directory ACL errors, toy-root manifest absence, stale 2441
+denominator expectation, and candidate temp-root/real-artifact assumptions. RAN the broader
+offline attempt:
+`$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp2'; .venv\Scripts\python.exe -m pytest -m 'not e2e' -q`
+-> **NOT COMPLETE: command timed out at 600 seconds after 24%**, with partial setup errors and
+failures; no green claim. RAN combined workbench API consumers:
+`$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp2'; .venv\Scripts\python.exe -m pytest tests/test_workbench_rederive_m20.py tests/test_workbench_cells_api_m17.py tests/test_rederive_m20.py -q`
+-> **5 passed, 4 errors**; `tests/test_workbench_cells_api_m17.py` is UNVERIFIED because setup
+cannot enumerate the pre-existing `graph/2025/_drafts/form_1040_2025` directory (`WinError 5`).
+
+**PROVIDER AND CANDIDATE EVIDENCE.** NOT RUN:
+`.venv\Scripts\python.exe experiments\derive_cells_s25.py --year 2025 --output-dir C:\tmp\m20_s74_run --document form_1040_2025 --document form_2441_2025 --document form_6251_2025`
+-> the unprivileged attempt could not create `C:\tmp\m20_s74_run`, and the elevated retry was
+rejected because this turn has not explicitly authorized sending repository-derived tax-form and
+graph data to the configured external LLM provider. No provider report was written. NOT RUN the
+candidate regeneration command because it requires a current provider run. The explicit John
+approval is required before the canary can establish whether 6251 lines 13 and 20 select QDCGT.
+
 **PROVIDER RUN IS AUTHORIZED for this round** (John, 2026-08-07) - about 67 anchors on the
 three-document canary. Write the run outside the repository and record the path in the handoff.
 **Do not run the full 16-document corpus.**

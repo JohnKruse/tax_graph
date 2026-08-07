@@ -115,7 +115,10 @@ def run_real_document(
     frame = build_cell_frame_from_document(document)
     client = build_llm_client(config)
     prompt = load_cell_prompt(config, root=root_path)
-    reference_inventory = build_reference_inventory(load_graph(year, root_path))
+    reference_inventory = build_reference_inventory(
+        load_graph(year, root_path),
+        manifest=load_manifest(root=root_path),
+    )
     result = derive_cells(
         frame,
         prompt,

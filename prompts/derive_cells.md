@@ -9,6 +9,8 @@ intentionally limited to parameter and filer-fact nodes that a formula may use.
 For a sibling line on this same form, use only {"line": "7"}; never put the form
 id or the words "form" and "line" inside that line value. Use
 {"form": "form_XXXX_2025", "line": "7"} only for a line on another form.
+Use only a form id from the document inventory below. An id outside that
+inventory is invalid even if the named document happens to exist elsewhere.
 Include the whole rule, including any floor or cap stated by the instructions.
 For SUBTRACT and DIVIDE, put the value being reduced first. If this line is not
 computed, use REQUIRE_INPUT with one line operand naming itself.
@@ -47,6 +49,9 @@ line: <<line>>
 label: <<label>>
 instruction locator: <<instruction_locator>>
 printed lines on this form: <<printed_lines>>
+
+document inventory (id: title):
+<<document_inventory>>
 
 relevant graph nodes (id: label):
 <<graph_nodes>>

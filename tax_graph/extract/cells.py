@@ -19,6 +19,7 @@ from tax_graph.config import get_config_value
 from tax_graph.extract.llm_client import LlmClient, response_telemetry
 from tax_graph.extract.prompts import load_prompt_template, render_prompt
 from tax_graph.extract.structure import split_caption_and_instruction
+from tax_graph.io.loader import load_yaml
 from tax_graph.operation_registry import (
     OPERATION_SPECS,
     operation_names,
@@ -831,13 +832,12 @@ def validate_cell_output(
                     )
                 )
             elif operand_form not in reference_documents:
-                if not _legitimate_external_reference(row, operand_form, operand_line):
-                    hard.append(
-                        CellValidationIssue(
-                            "operand_document_not_found",
-                            f"cross-form operand names unknown document {operand_form}",
-                        )
+                hard.append(
+                    CellValidationIssue(
+                        "operand_document_not_found",
+                        f"cross-form operand names unknown document {operand_form}",
                     )
+                )
             else:
                 cross_form_lines = _reference_lines(inventory, operand_form)
                 if cross_form_lines is None:
@@ -1197,20 +1197,39 @@ def _available_lines(row: CellRecord) -> set[str]:
     return set()
 
 
-def build_reference_inventory(graph: Any) -> dict[str, Any]:
-    """Build the immutable graph inventory used to validate external operands.
+def build_reference_inventory(
+    graph: Any,
+    manifest: Any | None = None,
+) -> dict[str, Any]:
+    """Build the immutable inventory used to validate expression operands.
 
-    Derivation remains pure: callers load the graph and pass this projection in
-    as input.  The inventory distinguishes documents, their printed lines,
-    exact graph node ids, and the compact parameter/filer-fact id-label list
-    rendered into the model prompt so a model cannot invent either a form
-    reference or a filer-fact reference.
+    The live graph is not the complete universe of documents a formula may
+    reference: acquired manifest documents can be deliberately unmodeled, and
+    a harvested worksheet can remain in ``_drafts`` until promotion.  Callers
+    therefore pass the acquisition manifest alongside the loaded graph.  Draft
+    worksheets contribute only their document title and printed-line inventory;
+    they are never loaded as graph objects or promoted by this projection.
     """
-    document_ids = {
-        str(item.get("document_id") or "").strip().lower()
-        for item in graph.items("documents")
-        if item.get("document_id")
-    }
+    document_ids: set[str] = set()
+    document_titles: dict[str, str] = {}
+    for item in graph.items("documents"):
+        document_id = str(item.get("document_id") or "").strip().lower()
+        if not document_id:
+            continue
+        document_ids.add(document_id)
+        title = str(item.get("title") or "").strip()
+        if title:
+            document_titles[document_id] = title
+
+    for entry in _manifest_entries(manifest):
+        document_id = _manifest_value(entry, "document_id").strip().lower()
+        if not document_id:
+            continue
+        document_ids.add(document_id)
+        title = _manifest_value(entry, "region_title")
+        if title:
+            document_titles[document_id] = title
+
     node_ids: set[str] = set()
     graph_nodes: list[dict[str, str]] = []
     graph_node_details: dict[str, dict[str, Any]] = {}
@@ -1245,8 +1264,28 @@ def build_reference_inventory(graph: Any) -> dict[str, Any]:
         match = re.search(r"(?:^|_)line_([0-9]+[a-z]?|[a-z])(?:_|$)", node_id.lower())
         if match:
             printed_lines.setdefault(document_id, set()).add(match.group(1))
+
+    draft_documents, draft_lines = _draft_reference_inventory(graph, manifest)
+    for document_id, title in draft_documents.items():
+        document_ids.add(document_id)
+        document_titles[document_id] = title
+    for document_id, lines in draft_lines.items():
+        document_ids.add(document_id)
+        printed_lines.setdefault(document_id, set()).update(lines)
+
+    document_inventory = [
+        {
+            "document_id": document_id,
+            "title": _human_document_title(
+                document_id,
+                document_titles.get(document_id, ""),
+            ),
+        }
+        for document_id in sorted(document_ids)
+    ]
     return {
         "document_ids": sorted(document_ids),
+        "document_inventory": document_inventory,
         "printed_lines": {
             document_id: sorted(lines, key=_line_sort_key)
             for document_id, lines in sorted(printed_lines.items())
@@ -1255,6 +1294,109 @@ def build_reference_inventory(graph: Any) -> dict[str, Any]:
         "graph_nodes": sorted(graph_nodes, key=lambda item: item["node_id"]),
         "graph_node_details": graph_node_details,
     }
+
+
+def _manifest_entries(manifest: Any | None) -> Sequence[Any]:
+    """Return manifest entries without coupling the inventory to its dataclass."""
+    if manifest is None:
+        return ()
+    entries = (
+        manifest.get("documents", ())
+        if isinstance(manifest, Mapping)
+        else getattr(manifest, "documents", ())
+    )
+    if isinstance(entries, Mapping):
+        return tuple(entries.values())
+    return tuple(entries or ())
+
+
+def _manifest_value(entry: Any, key: str) -> str:
+    """Read one manifest field from either a dataclass or a mapping."""
+    if isinstance(entry, Mapping):
+        return str(entry.get(key) or "").strip()
+    return str(getattr(entry, key, "") or "").strip()
+
+
+def _draft_reference_inventory(
+    graph: Any,
+    manifest: Any | None,
+) -> tuple[dict[str, str], dict[str, set[str]]]:
+    """Read titles and printed lines from manifest-backed worksheet drafts."""
+    graph_dir = getattr(graph, "graph_dir", None)
+    if graph_dir is None:
+        return {}, {}
+    draft_root = Path(graph_dir) / "_drafts"
+    if not draft_root.is_dir():
+        return {}, {}
+
+    titles: dict[str, str] = {}
+    lines: dict[str, set[str]] = {}
+    for entry in _manifest_entries(manifest):
+        kind = _manifest_value(entry, "kind").lower()
+        is_region = bool(
+            entry.get("region") or entry.get("is_region")
+            if isinstance(entry, Mapping)
+            else getattr(entry, "is_region", False)
+        )
+        if kind != "worksheet" and not is_region:
+            continue
+        document_id = _manifest_value(entry, "document_id").lower()
+        if not document_id:
+            continue
+        draft_dir = draft_root / document_id
+        if not draft_dir.is_dir():
+            continue
+        document_payload = _load_draft_items(draft_dir / "documents.yaml")
+        for item in document_payload:
+            if not isinstance(item, Mapping):
+                continue
+            item_id = str(item.get("document_id") or document_id).strip().lower()
+            if item_id != document_id:
+                continue
+            title = str(item.get("title") or "").strip()
+            if title:
+                titles[document_id] = title
+        for item in _load_draft_items(draft_dir / "nodes.yaml"):
+            if not isinstance(item, Mapping):
+                continue
+            item_id = str(item.get("document_id") or document_id).strip().lower()
+            if item_id != document_id:
+                continue
+            node_id = str(item.get("node_id") or "").strip().lower()
+            match = re.search(r"(?:^|_)line_([0-9]+[a-z]?|[a-z])(?:_|$)", node_id)
+            line = match.group(1) if match else str(item.get("line") or "").strip().lower()
+            if line:
+                lines.setdefault(document_id, set()).add(line)
+    return titles, lines
+
+
+def _load_draft_items(path: Path) -> list[Any]:
+    """Load a draft YAML list, returning no items for an absent optional file."""
+    if not path.is_file():
+        return []
+    value = load_yaml(path)
+    if value is None:
+        return []
+    return value if isinstance(value, list) else [value]
+
+
+def _human_document_title(document_id: str, title: str) -> str:
+    """Return a useful prompt title even when the source lacks document prose."""
+    if title and not title.lower().startswith("header:"):
+        return title
+    stem = re.sub(r"_[0-9]{4}$", "", document_id.lower())
+    words = stem.split("_")
+    if words[:2] == ["instructions", "form"] and len(words) > 2:
+        return "Instructions for Form " + " ".join(words[2:])
+    if words[:2] == ["instructions", "schedule"] and len(words) > 2:
+        return "Instructions for Schedule " + " ".join(words[2:])
+    if words and words[0] == "form" and len(words) > 1:
+        return "Form " + " ".join(words[1:])
+    if words and words[0] == "schedule" and len(words) > 1:
+        return "Schedule " + " ".join(words[1:])
+    if title:
+        return title
+    return " ".join(word.capitalize() for word in words)
 
 
 def _reference_document_ids(inventory: Mapping[str, Any] | None) -> set[str] | None:
@@ -2074,6 +2216,7 @@ def _render_cell_prompt(
         "instruction_text": row.instruction_text,
         "instruction_locator": row.instruction_locator,
         "printed_lines": ", ".join(printed_lines),
+        "document_inventory": _document_inventory_prompt(reference_inventory),
         "graph_nodes": _graph_nodes_prompt(reference_inventory, row.form),
         "human_comment": row.human_comment,
         "operation_documentation": prompt_operation_documentation(),
@@ -2082,6 +2225,24 @@ def _render_cell_prompt(
         return render_prompt(template, values)
     except ValueError as exc:
         raise ValueError(f"cell {exc}") from exc
+
+
+def _document_inventory_prompt(inventory: Mapping[str, Any] | None) -> str:
+    """Render the complete allowed cross-document inventory for the model."""
+    if inventory is None:
+        return "none available"
+    values = inventory.get("document_inventory")
+    if not isinstance(values, Sequence) or isinstance(values, (str, bytes)):
+        return "none available"
+    lines = []
+    for item in values:
+        if not isinstance(item, Mapping):
+            continue
+        document_id = str(item.get("document_id") or "").strip()
+        title = " ".join(str(item.get("title") or "").split())
+        if document_id:
+            lines.append(f"- {document_id}: {title}" if title else f"- {document_id}")
+    return "\n".join(lines) if lines else "none available"
 
 
 def _graph_nodes_prompt(

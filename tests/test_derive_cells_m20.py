@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from pathlib import Path
+from types import SimpleNamespace
 
 import pytest
 
@@ -176,6 +177,88 @@ def test_reference_inventory_lists_only_parameter_and_fact_nodes() -> None:
     assert inventory["graph_node_details"]["fact_b"]["value_type"] == "enum"
 
 
+def test_reference_inventory_adds_manifest_documents_and_titles() -> None:
+    class FakeGraph:
+        def items(self, kind):
+            return {
+                "documents": [{"document_id": "form_1040_2025", "title": "Form 1040"}],
+                "nodes": [],
+            }.get(kind, [])
+
+    manifest = SimpleNamespace(documents=(
+        SimpleNamespace(
+            document_id="qualified_dividends_capital_gain_tax_worksheet",
+            kind="worksheet",
+            region_title="Qualified Dividends and Capital Gain Tax Worksheet",
+            is_region=True,
+        ),
+    ))
+
+    inventory = build_reference_inventory(FakeGraph(), manifest=manifest)
+
+    assert "qualified_dividends_capital_gain_tax_worksheet" in inventory["document_ids"]
+    assert inventory["document_inventory"] == [
+        {
+            "document_id": "form_1040_2025",
+            "title": "Form 1040",
+        },
+        {
+            "document_id": "qualified_dividends_capital_gain_tax_worksheet",
+            "title": "Qualified Dividends and Capital Gain Tax Worksheet",
+        },
+    ]
+
+
+def test_cross_form_operand_must_use_document_inventory() -> None:
+    row = CellFrame.from_rows([_frame()[1]]).rows[0]
+    inventory = {
+        "document_ids": ["qualified_dividends_capital_gain_tax_worksheet"],
+        "printed_lines": {
+            "qualified_dividends_capital_gain_tax_worksheet": ["13", "20"],
+        },
+    }
+
+    hard, _warnings = validate_cell_output(
+        row,
+        {
+            "op": "COPY",
+            "args": [{
+                "form": "form_1040_nr_2025",
+                "line": "15",
+            }],
+        },
+        row.form_face_text,
+        reference_inventory=inventory,
+    )
+
+    assert [issue.kind for issue in hard] == ["operand_document_not_found"]
+
+
+def test_manifest_worksheet_line_is_validated_against_document_inventory() -> None:
+    row = CellFrame.from_rows([_frame()[1]]).rows[0]
+    inventory = {
+        "document_ids": ["qualified_dividends_capital_gain_tax_worksheet"],
+        "printed_lines": {
+            "qualified_dividends_capital_gain_tax_worksheet": ["13", "20"],
+        },
+    }
+
+    hard, _warnings = validate_cell_output(
+        row,
+        {
+            "op": "COPY",
+            "args": [{
+                "form": "qualified_dividends_capital_gain_tax_worksheet",
+                "line": "13",
+            }],
+        },
+        row.form_face_text,
+        reference_inventory=inventory,
+    )
+
+    assert hard == ()
+
+
 def test_prompt_scopes_graph_nodes_to_document_and_global_filer_facts() -> None:
     row = {**_frame()[1], "metadata": {"printed_lines": ["21", "22"]}}
     client = FakeClient([
@@ -217,6 +300,36 @@ def test_prompt_scopes_graph_nodes_to_document_and_global_filer_facts() -> None:
         "- form_1040_2025_zero_floor: Zero floor\n"
         "- global_fact: Global fact\n"
         "- taxpayer_2025_filing_status: Filing status"
+    )
+
+
+def test_prompt_includes_document_inventory_with_titles() -> None:
+    row = {**_frame()[1], "metadata": {"printed_lines": ["21", "22"]}}
+    client = FakeClient([
+        {"expression": {"op": "COPY", "args": [{"line": "21"}]}, "quote": row["form_face_text"]},
+    ])
+    inventory = {
+        "document_inventory": [
+            {
+                "document_id": "qualified_dividends_capital_gain_tax_worksheet",
+                "title": "Qualified Dividends and Capital Gain Tax Worksheet",
+            },
+        ],
+    }
+
+    result = derive_cells(
+        CellFrame.from_rows([row]),
+        "documents:\n<<document_inventory>>",
+        "secret",
+        client=client,
+        reference_inventory=inventory,
+    )
+
+    assert result.rows[0].status == "derived"
+    assert client.calls[0]["prompt"] == (
+        "documents:\n"
+        "- qualified_dividends_capital_gain_tax_worksheet: "
+        "Qualified Dividends and Capital Gain Tax Worksheet"
     )
 
 
@@ -761,6 +874,8 @@ def test_properties_allow_explicit_cross_form_and_warn_on_quote_omission() -> No
 
 
 def test_named_unseen_form_reference_mints_unresolved_external_node() -> None:
+    # S74 keeps the unresolved payload but now fail-closes the row because the
+    # document id is outside the explicit inventory.
     row = {
         "form": "schedule_a_2025",
         "line": "15",
@@ -783,6 +898,10 @@ def test_named_unseen_form_reference_mints_unresolved_external_node() -> None:
             "expression": {"op": "COPY", "args": [{"form": "form_4684_2025", "line": "18"}]},
             "quote": row["form_face_text"],
         },
+        {
+            "expression": {"op": "COPY", "args": [{"form": "form_4684_2025", "line": "18"}]},
+            "quote": row["form_face_text"],
+        },
     ])
 
     result = derive_cells(
@@ -798,8 +917,11 @@ def test_named_unseen_form_reference_mints_unresolved_external_node() -> None:
         },
     )
 
-    assert result.rows[0].status == "derived"
-    assert result.validation_report["gapped"] == 0
+    assert result.rows[0].status == "error"
+    assert result.validation_report["gapped"] == 1
+    assert result.validation_report["validator_failures_by_kind"] == {
+        "operand_document_not_found": 2,
+    }
     assert result.rows[0].metadata["unresolved_external_nodes"] == [{
         "node_id": "form_4684_2025_root_line_18",
         "document_id": "form_4684_2025",

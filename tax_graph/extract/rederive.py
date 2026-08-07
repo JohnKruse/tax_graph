@@ -15,6 +15,7 @@ from typing import Any, Iterable, Mapping
 import yaml
 
 from tax_graph.config import get_config_value, load_config, project_root
+from tax_graph.acquire.manifest import load_manifest
 from tax_graph.extract.cells import (
     CellFrame,
     build_reference_inventory,
@@ -191,6 +192,11 @@ def _canonical_formula_address(
 def _load_reference_inventory(root: Path, year: str | int) -> dict[str, Any] | None:
     """Load the graph inventory used by the live single-cell validator."""
     try:
-        return build_reference_inventory(load_graph(year, root))
+        graph = load_graph(year, root)
     except FileNotFoundError:
         return None
+    try:
+        manifest = load_manifest(root=root)
+    except FileNotFoundError:
+        manifest = None
+    return build_reference_inventory(graph, manifest=manifest)
