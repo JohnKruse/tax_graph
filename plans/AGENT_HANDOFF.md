@@ -21,10 +21,11 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## BALL
 
-**BALL: ARCHITECT - no round in flight. S73 accepted; next round not yet specced.**
-Active spec is under Current round. **PILOT WORK RESUMES** (John, 2026-08-06): the graph now carries
-clean text, so the remaining garbage is consumer-side. Pilot rules bind: off to the side, read-only,
-own tests out of `tests/`, no full-suite run, no provider run, lift into the project later.
+**BALL: WORKER - M20-S74 (GIVE THE MODEL A DOCUMENT INVENTORY). REAL-PROJECT ROUND.**
+Active spec is under Current round. **PILOT WORK IS PAUSED AGAIN**; S74 is a real-project round and
+pays the full suite. John's arc, 2026-08-07: **fix column 1, then assess column 2, and column 3
+should then fall out.** S74 runs first because assessing column 2 while a known reference defect is
+live would measure a fault we already understand. Pilot rules still bind when the pilot resumes.
 
 **S71 ACCEPTED at `e79f2cd`; S70 at `977e977`; S72 at `b18d9f1`; S73 at `78516bc`.**
 
@@ -80,9 +81,15 @@ clothes, and it is the reason the candidate diff cannot tell a real disagreement
 **Whoever takes the diff round converges these rather than adding a third.**
 
 **QUEUE - one line each. NOT SPECCED.**
-1. **Instruction page furniture** - **113 of 478 anchors (23.6%)** carry `# Page 62`, bare page
-   numbers, and footers like `Instructions for Form 8949 (2025)` inside instruction text. Now the
-   DOMINANT text defect. Real-project round in instruction-section ingestion, not the pilot.
+1. **COLUMN 1 - instruction section extraction** (John's next priority). Three cheap fixes in OUR
+   parser, measured 2026-08-07: (a) **read bold headings** - Mistral emits `**Depletion**` instead of
+   `### Depletion` on some pages and we only match `^#`, which is why 6251 lines 2d/2f/2g looked
+   "missing" when the content was there; (b) **match anchors against the form's known printed lines**
+   - the lost em-dash turns `Line 3-Ordinary...` into phantom anchor `3o` (also `4a`, `5e`, `8a`,
+   `11a` on 6251), filing sections under lines that do not exist; (c) parse the **already-fetched
+   HTML** as a second source with provenance - all 7 instruction docs now have it cached.
+   **Page furniture is DEPRIORITISED**: measured 2026-08-07, it harms neither use - 57 of 65
+   derivations cite the form face, and an agent reading prose ignores page numbers.
 2. **`form_13614_c_2025` yields 0 printed anchors** - a manifest document producing nothing.
 3. **Column 3 becomes the agreed notation** - the S69 flow is an edge dump: zero `<svg>`, zero
    diamonds, zero Yes/No arrows across all 157 panels; it renders `zero_floor` and node ids into the
@@ -112,19 +119,53 @@ resolve now, and whether they resolve to the RIGHT line is unreviewed.
 
 ## Current round
 
-**None. S73 accepted at `78516bc`; John is choosing the next round.**
-`git show 78516bc` recovers it.
+**M20-S74 IN FLIGHT (Worker, 2026-08-07). GIVE THE MODEL A DOCUMENT INVENTORY.**
+**REAL-PROJECT ROUND** - touches `prompts/` and `tax_graph/extract/`, pays the full suite.
+Not a pilot round.
 
-**STATE OF THE PILOT, all verified by the Architect on the real candidate:** clean text end to end
-(0 panels showing a raw label), flows capped at **17 arrows** (was 251), instruction coverage
-**84/153**, captions 8/157, operations 65/157, 92 panels rendering a hole. Current artifact:
-`C:\tmp\m20_s73_review_panel.html`.
+**THE DEFECT: our only two known wrong answers, and the model could not have got either right.**
+`form_6251_2025` line 13 reads *"Enter the amount from line 4 of the Qualified Dividends and Capital
+Gain Tax Worksheet in the Instructions for Form 1040, line 16"* and derived
+`max(form_1040_2025 line 4, 0)` - Form 1040 line 4 is IRA distributions. Line 20 derived
+`max(form_1040_nr_2025 line 15, 0)`: wrong document (**1040-NR**, a different filer's form) and wrong
+line. Both **resolve**, so no validator objects. They are simply wrong.
 
-**THE OBVIOUS NEXT ROUND is instruction page furniture** - queue item 1, **113 of 478 anchors
-(23.6%)** carrying `# Page 62`, bare page numbers, and footers like `Instructions for Form 8949
-(2025)` inside instruction text. It is now the dominant text defect, and with coverage settled at
-84/153 rather than 17 it affects far more of the corpus than it appeared to. **Real-project round
-in instruction-section ingestion, so it pays the full suite** - not a pilot round.
+**THE CAUSE IS AN ASYMMETRY IN THE PROMPT.** `prompts/derive_cells.md` says *"Use
+`{"form": "form_XXXX_2025", "line": "7"}` only for a line on another form"* and then **never says
+which other documents exist**. Compare the same-form path: `printed lines on this form:
+<<printed_lines>>` plus a hard rule, *"use only a line from the printed-line inventory."* **The one
+operand kind with no inventory and no constraint is the one producing wrong answers.**
+
+The model literally cannot return `qualified_dividends_capital_gain_tax_worksheet` - it has never
+been told that id exists. `form_1040_2025` is the most plausible id constructible from the words in
+front of it. **This is a prompt gap, not a reasoning failure.**
+
+**MACHINERY ALREADY EXISTS; EXTEND IT.** `reference_inventory` is already threaded through
+`cells.py` and already scopes graph nodes into `<<graph_nodes>>` ("intentionally limited to parameter
+and filer-fact nodes"). It has **no document dimension**. Add one. Do not build a parallel path.
+
+1. **Supply a document inventory in the prompt**, id and human title, covering documents a formula
+   may legitimately reference - manifest documents plus worksheets present in the graph.
+   **`qualified_dividends_capital_gain_tax_worksheet` must be in it**; it is what 6251 lines 13 and
+   20 actually mean, and it is already in the graph with drafts.
+2. **Constrain and VALIDATE, do not merely inform.** A `{"form": ...}` operand whose id is not in
+   the inventory is a **named finding**, never a silent acceptance. Mirror the printed-line rule.
+3. **Resolution is not correctness.** Today `form_1040_2025 line 4` resolves, so nothing objects.
+   The validator must check the id came from the inventory, not merely that it exists.
+4. **Do NOT add multi-run voting this round.** Measure the inventory alone first. Voting is for
+   genuine judgment under ambiguity and may be solving a problem that no longer exists.
+
+**ACCEPTANCE TEST, and it is specific.** Re-run the three-document canary and report whether
+**6251 line 13 and line 20 now resolve to the QDCGT worksheet**. If they still resolve elsewhere,
+the round has not succeeded regardless of what the tests say. Report the full derived/repaired/
+errored/skipped counts so a regression elsewhere is visible.
+
+**PROVIDER RUN IS AUTHORIZED for this round** (John, 2026-08-07) - about 67 anchors on the
+three-document canary. Write the run outside the repository and record the path in the handoff.
+**Do not run the full 16-document corpus.**
+
+**Full suite required** - short `PYTEST_DEBUG_TEMPROOT`; see below. Baseline is **20 pre-existing
+failures**; anything beyond that set is a regression.
 
 **How to rebuild a candidate** - the two commands, in order, because the second is worthless
 without a run from current code:
