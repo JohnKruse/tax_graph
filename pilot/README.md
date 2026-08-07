@@ -2,7 +2,7 @@
 
 This standalone pilot projects a real candidate workspace into one self-contained HTML file.
 It preserves every printed anchor from the source derivation reports.  The panel has two columns:
-the lossless role-labelled Tree with the same expression flattened as Math on the left, and a
+the lossless Tree with the same expression flattened as Math on the left, and a
 vertical Flow on the right.  Source layers remain separate - label, form face, and instruction
 page - inside each panel's expandable evidence block.
 
@@ -13,10 +13,12 @@ counts. Candidate instruction coverage is also reported across all candidate row
 per-document split. A skipped derivation still keeps its candidate text evidence visible; its
 operation remains a hole.
 
-The Tree reads the promoted candidate graph and retains the edge roles.  Math is generated from
-the same tree, not from a second parser.  A collapsed graph-trace block keeps rule ids, operand
-node ids, and the held-back candidate expression available as evidence; a held-back expression
-is never presented as a promoted operation.
+The Tree reads the promoted candidate graph and retains edge roles that are not already determined
+by an operation and operand position.  Math is generated from the same tree, not from a second
+parser.  The stored graph remains unchanged: implied roles are suppressed only at this human
+printing boundary.  A collapsed graph-trace block keeps rule ids, operand node ids, and the
+held-back candidate expression available as evidence; a held-back expression is never presented
+as a promoted operation.
 
 The Flow follows review notation rule 11. Values enter from the top, the result leaves from the
 bottom, and moderators enter through one right-hand gutter. Every moderator arrow carries its
@@ -30,6 +32,11 @@ all candidate rows, including rows skipped before operation derivation. It is no
 unique instruction locators: the reviewer needs one answer for whether each row has joined text.
 The pilot also reports graph node ids containing the banned ``floor`` term without changing those
 graph artifacts; that vocabulary cleanup belongs to a later pipeline round.
+
+The flow layout measures each visible node before positioning it.  Input siblings receive their
+measured width plus a gap, operation chains use each prior subtree's measured bottom, and the
+moderator gutter reserves the measured height of every attached node.  The renderer fails closed
+if any node boxes overlap and reports ``node_boxes_overlap_free`` in the flow geometry summary.
 
 ## M20-S75 instruction parser pilot
 
@@ -114,3 +121,15 @@ Run it against a candidate workspace with:
 
 The S82 pilot uses the candidate workspace as input only.  It does not call a provider or write
 graph artifacts.
+
+## M20-S83 tidy-tree geometry and role printing
+
+S83 keeps the S82 two-column surface and moderator gutter, but makes flow coordinates depend on
+measured node extent.  It reports the node-box invariant alongside connector and edge-label checks.
+The Tree and Math projections suppress only ``addend``, ``minuend``, ``subtrahend``, ``multiplier``,
+and ``multiplicand`` where the operation and operand position already state the role.  Lookup keys,
+bands, thresholds, conditions, branch roles, and any future unrecognized role remain visible.
+
+Run it against a candidate workspace with:
+
+    .venv\Scripts\python.exe pilot\review_panel.py C:\path\to\candidate --output C:\tmp\m20_s83_review_panel.html

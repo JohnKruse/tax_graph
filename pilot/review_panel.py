@@ -489,6 +489,7 @@ def build_panel(candidate_root: str | Path) -> dict[str, Any]:
             row["flow_svg_dimensions"] = flow_metrics["dimensions"]
             row["moderator_arrows"] = flow_metrics["moderator_arrows"]
             row["moderator_arrows_without_labels"] = flow_metrics["moderator_arrows_without_labels"]
+            row["node_boxes_overlap_free"] = flow_metrics["node_boxes_overlap_free"]
             panels.append(row)
 
     mode_counts = {mode: sum(item["flow_mode"] == mode for item in panels) for mode in ("diagram", "chain", "none")}
@@ -528,6 +529,8 @@ def build_panel(candidate_root: str | Path) -> dict[str, Any]:
         == sum(1 for item in panels if item.get("flow_svg_dimensions") is not None),
         "edge_labels_outside_nodes": len(flow_svg_dimensions)
         == sum(1 for item in panels if item.get("flow_svg_dimensions") is not None),
+        "node_boxes_overlap_free": len(flow_svg_dimensions)
+        == sum(1 for item in panels if item.get("node_boxes_overlap_free") is True),
         "moderator_arrows": sum(item["moderator_arrows"] for item in panels),
         "moderator_arrows_without_labels": sum(item["moderator_arrows_without_labels"] for item in panels),
     }
@@ -646,23 +649,39 @@ def _leaf_text(tree: Mapping[str, Any]) -> str:
 
 
 def _math_text(tree: Mapping[str, Any]) -> str:
-    """Flatten the lossless graph tree while retaining every edge role."""
+    """Flatten the lossless graph tree, omitting roles implied by position."""
 
     if tree.get("kind") != "operation":
         return _leaf_text(tree)
     operation = _text(tree.get("operation")).upper() or "operation"
     operands = []
-    for item in tree.get("operands", []):
+    for index, item in enumerate(tree.get("operands", [])):
         if not isinstance(item, Mapping) or not isinstance(item.get("tree"), Mapping):
             continue
         role = _text(item.get("role")).strip()
         child = _math_text(item["tree"])
+        if _role_is_implied(tree, index, role):
+            role = ""
         operands.append(f"{role}={child}" if role else child)
     return f"{operation}({', '.join(operands)})"
 
 
+def _role_is_implied(tree: Mapping[str, Any], index: int, role: str) -> bool:
+    """Return whether an operation and operand position already state ``role``."""
+
+    operation = _text(tree.get("operation")).upper()
+    role = role.strip()
+    if operation == "SUM":
+        return role == "addend"
+    if operation == "SUBTRACT":
+        return role == ("minuend" if index == 0 else "subtrahend")
+    if operation == "MULTIPLY":
+        return role == ("multiplicand" if index == 0 else "multiplier")
+    return False
+
+
 def _flow_tree_html(tree: Mapping[str, Any], seen: set[tuple[Any, ...]] | None = None) -> str:
-    """Render the role-labelled lossless tree, sharing repeated subexpressions."""
+    """Render the lossless tree, retaining only roles not implied by position."""
 
     seen = set() if seen is None else seen
     if tree.get("kind") != "operation":
@@ -673,13 +692,15 @@ def _flow_tree_html(tree: Mapping[str, Any], seen: set[tuple[Any, ...]] | None =
     seen.add(key)
     operation = escape(_text(tree.get("operation")))
     children = []
-    for operand in tree.get("operands", []):
+    for index, operand in enumerate(tree.get("operands", [])):
         if not isinstance(operand, Mapping) or not isinstance(operand.get("tree"), Mapping):
             continue
-        role = escape(_text(operand.get("role")))
+        raw_role = _text(operand.get("role")).strip()
+        role = "" if _role_is_implied(tree, index, raw_role) else escape(raw_role)
         child = _flow_tree_html(operand["tree"], seen)
+        role_html = f'<span class="tree-role">{role}</span>' if role else ""
         children.append(
-            f'<div class="tree-edge"><span class="tree-role">{role}</span>'
+            f'<div class="tree-edge">{role_html}'
             f'<span class="tree-arrow">-&gt;</span>{child}</div>'
         )
     child_html = f'<div class="tree-children">{"".join(children)}</div>' if children else ""
@@ -754,14 +775,20 @@ def _flow_svg(row: Mapping[str, Any], tree: Mapping[str, Any]) -> str:
     edges: list[dict[str, Any]] = []
     edge_labels: list[dict[str, Any]] = []
     node_number = 0
+    vertical_gap = 18.0
+    gutter_next_y = 18.0
+
+    def measured_height(kind: str, label: str, node_width_value: float) -> float:
+        lines = _flow_wrap(label, max(12, int(node_width_value / 7.0)))
+        height = max(42.0, 22.0 + len(lines) * 16.0)
+        if kind == "table":
+            height = max(74.0, height)
+        return height
 
     def add_node(kind: str, label: str, x: float, y: float, node_width_value: float = node_width) -> dict[str, Any]:
         nonlocal node_number
         node_number += 1
-        lines = _flow_wrap(label, max(12, int(node_width_value / 7.0)))
-        node_height = max(42.0, 22.0 + len(lines) * 16.0)
-        if kind == "table":
-            node_height = max(74.0, node_height)
+        node_height = measured_height(kind, label, node_width_value)
         node = {
             "kind": kind,
             "label": label,
@@ -805,7 +832,8 @@ def _flow_svg(row: Mapping[str, Any], tree: Mapping[str, Any]) -> str:
                 }
             )
 
-    def add_moderator(parent: Mapping[str, Any], item: Mapping[str, Any], slot: int) -> None:
+    def add_moderator(parent: Mapping[str, Any], item: Mapping[str, Any]) -> None:
+        nonlocal gutter_next_y
         child = item["tree"]
         role = _text(item.get("role")).strip() or "moderator"
         if child.get("kind") == "operation" and _text(child.get("operation")).upper() in {"LOOKUP_TABLE", "LOOKUP_BRACKET"}:
@@ -817,8 +845,11 @@ def _flow_svg(row: Mapping[str, Any], tree: Mapping[str, Any]) -> str:
         else:
             label = _leaf_text(child)
             kind = "value"
-        moderator_y = float(parent["y"]) + slot * 58.0
+        moderator_height = measured_height(kind, label, 145.0)
+        preferred_y = float(parent["y"]) + (float(parent["height"]) - moderator_height) / 2.0
+        moderator_y = max(18.0, preferred_y, gutter_next_y)
         moderator = add_node(kind, label, gutter_x, moderator_y, 145.0)
+        gutter_next_y = moderator["y"] + moderator["height"] + vertical_gap
         add_edge(
             moderator["x"],
             moderator["y"] + moderator["height"] / 2.0,
@@ -826,17 +857,27 @@ def _flow_svg(row: Mapping[str, Any], tree: Mapping[str, Any]) -> str:
             parent["y"] + parent["height"] / 2.0,
             role=role,
             label_x=(moderator["x"] + parent["x"] + parent["width"]) / 2.0,
-            label_y=min(moderator["y"], parent["y"]) - 70.0,
+            label_y=max(12.0, min(moderator["y"], parent["y"]) - 20.0),
         )
 
     def add_inputs(parent: Mapping[str, Any], items: list[Mapping[str, Any]]) -> None:
         if not items:
             return
-        spacing = min(82.0, 150.0 / max(1, len(items)))
-        start = centre(parent) - spacing * (len(items) - 1) / 2.0
+        input_width = 84.0
+        input_gap = 18.0
+        total_width = len(items) * input_width + max(0, len(items) - 1) * input_gap
+        input_centre = centre(parent)
+        input_centre = min(input_centre, gutter_x - vertical_gap - total_width / 2.0)
+        input_centre = max(input_centre, vertical_gap + total_width / 2.0)
+        start = input_centre - total_width / 2.0
+        input_height = max(
+            measured_height("input", _leaf_text(item["tree"]), input_width)
+            for item in items
+        )
+        input_y = max(18.0, float(parent["y"]) - input_height - vertical_gap)
         for index, item in enumerate(items):
             child = item["tree"]
-            input_node = add_node("input", _leaf_text(child), start + index * spacing - 42.0, max(18.0, parent["y"] - 58.0), 84.0)
+            input_node = add_node("input", _leaf_text(child), start + index * (input_width + input_gap), input_y, input_width)
             add_edge(
                 centre(input_node),
                 input_node["y"] + input_node["height"],
@@ -869,21 +910,42 @@ def _flow_svg(row: Mapping[str, Any], tree: Mapping[str, Any]) -> str:
         order = operation_order(root)
         if not order:
             return None, []
+        layout: list[tuple[Mapping[str, Any], str, float, float]] = []
+        previous_bottom = None
+        for operation in order:
+            label = _flow_operation_label(operation)
+            operation_height = measured_height("box", label, node_width)
+            direct_items = [
+                item
+                for item in operation.get("operands", [])
+                if isinstance(item, Mapping)
+                and isinstance(item.get("tree"), Mapping)
+                and _text(item.get("role")) not in MODERATOR_ROLES
+                and item["tree"].get("kind") != "operation"
+            ]
+            direct_height = max(
+                (measured_height("input", _leaf_text(item["tree"]), 84.0) for item in direct_items),
+                default=0.0,
+            )
+            if previous_bottom is None:
+                operation_y = max(float(start_y) + direct_height + vertical_gap, 54.0)
+            else:
+                operation_y = previous_bottom + direct_height + 2.0 * vertical_gap
+            layout.append((operation, label, operation_y, operation_height))
+            previous_bottom = operation_y + operation_height
         placed: dict[int, dict[str, Any]] = {}
-        for index, operation in enumerate(order):
-            placed[id(operation)] = add_node("box", _flow_operation_label(operation), x, start_y + index * 104.0)
+        for operation, label, operation_y, _ in layout:
+            placed[id(operation)] = add_node("box", label, x, operation_y)
         for operation in order:
             parent = placed[id(operation)]
             normal_items: list[Mapping[str, Any]] = []
-            moderator_slot = 0
             for item in operation.get("operands", []):
                 if not isinstance(item, Mapping) or not isinstance(item.get("tree"), Mapping):
                     continue
                 role = _text(item.get("role"))
                 child = item["tree"]
                 if role in MODERATOR_ROLES:
-                    add_moderator(parent, item, moderator_slot)
-                    moderator_slot += 1
+                    add_moderator(parent, item)
                 elif child.get("kind") == "operation" and id(child) in placed:
                     child_node = placed[id(child)]
                     add_edge(centre(child_node), child_node["y"] + child_node["height"], centre(parent), parent["y"], role="")
@@ -918,18 +980,20 @@ def _flow_svg(row: Mapping[str, Any], tree: Mapping[str, Any]) -> str:
         diamond = add_node("diamond", f"{_leaf_text(condition['tree']) if condition else 'condition'}?", centre_x - 85.0, 142.0, 170.0)
         add_edge(centre(condition_node), condition_node["y"] + condition_node["height"], centre(diamond), diamond["y"], role="")
         if threshold is not None:
-            add_moderator(diamond, threshold, 0)
+            add_moderator(diamond, threshold)
         branch_roots: list[dict[str, Any]] = []
         branch_bottoms: list[float] = []
         branch_specs = branch_child_items(tree)
         branch_start_y = 326.0
+        next_branch_y = branch_start_y
         for index, (role, child) in enumerate(branch_specs[:2]):
             branch_x = 112.0 if index == 0 else 300.0
-            root_node, branch_nodes = place_operation_chain(child, branch_start_y + index * 26.0, branch_x)
+            root_node, branch_nodes = place_operation_chain(child, next_branch_y, branch_x)
             if root_node is None:
-                root_node = add_node("value", _leaf_text(child), branch_x, branch_start_y + index * 26.0, 120.0)
+                root_node = add_node("value", _leaf_text(child), branch_x, next_branch_y, 120.0)
             branch_roots.append(root_node)
             branch_bottoms.append(max(node["y"] + node["height"] for node in branch_nodes) if branch_nodes else root_node["y"] + root_node["height"])
+            next_branch_y = branch_bottoms[-1] + 2.0 * vertical_gap
             add_edge(
                 diamond["x"] + (diamond["width"] * 0.35 if index == 0 else diamond["width"] * 0.65),
                 diamond["y"] + diamond["height"],
@@ -957,6 +1021,22 @@ def _flow_svg(row: Mapping[str, Any], tree: Mapping[str, Any]) -> str:
         directions.append((round(edge["start_x"], 2), round(edge["start_y"], 2), direction))
     if len(directions) != len(set(directions)):
         raise ValueError("flow connectors share a start point and direction")
+
+    node_overlaps = [
+        (first, second)
+        for index, first in enumerate(nodes)
+        for second in nodes[index + 1 :]
+        if first["x"] < second["x"] + second["width"]
+        and first["x"] + first["width"] > second["x"]
+        and first["y"] < second["y"] + second["height"]
+        and first["y"] + first["height"] > second["y"]
+    ]
+    if node_overlaps:
+        first, second = node_overlaps[0]
+        raise ValueError(
+            "flow node boxes overlap: "
+            f"{first['kind']}#{first['number']} and {second['kind']}#{second['number']}"
+        )
 
     def label_box(label: Mapping[str, Any]) -> tuple[float, float, float, float]:
         lines = _flow_wrap(_text(label["text"]), 16)
@@ -990,7 +1070,7 @@ def _flow_svg(row: Mapping[str, Any], tree: Mapping[str, Any]) -> str:
         )
 
     parts = [
-        f'<svg class="flow-svg" width="{width:g}" height="{max_y:g}" viewBox="0 0 {width:g} {max_y:g}" role="img" aria-label="Vertical flow diagram" data-connector-starts-unique="true" data-edge-labels-outside-nodes="true" data-moderator-arrows-labelled="true">',
+        f'<svg class="flow-svg" width="{width:g}" height="{max_y:g}" viewBox="0 0 {width:g} {max_y:g}" role="img" aria-label="Vertical flow diagram" data-connector-starts-unique="true" data-edge-labels-outside-nodes="true" data-moderator-arrows-labelled="true" data-node-boxes-overlap-free="true">',
         '<defs><marker id="flow-arrowhead" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 z" /></marker></defs>',
     ]
     for edge in edges:
@@ -1039,11 +1119,17 @@ def _flow_metrics(flow_html: str) -> dict[str, Any]:
 
     match = FLOW_SVG_RE.search(flow_html)
     if not match:
-        return {"dimensions": None, "moderator_arrows": 0, "moderator_arrows_without_labels": 0}
+        return {
+            "dimensions": None,
+            "moderator_arrows": 0,
+            "moderator_arrows_without_labels": 0,
+            "node_boxes_overlap_free": False,
+        }
     return {
         "dimensions": {"width": float(match.group("width")), "height": float(match.group("height"))},
         "moderator_arrows": flow_html.count("flow-edge-moderator"),
         "moderator_arrows_without_labels": 0 if 'data-moderator-arrows-labelled="true"' in flow_html else flow_html.count("flow-edge-moderator"),
+        "node_boxes_overlap_free": 'data-node-boxes-overlap-free="true"' in flow_html,
     }
 
 

@@ -109,6 +109,50 @@ Architect's defaults are programmer defaults and are wrong in the same direction
     flowchart, worksheet and pseudocode cannot drift apart. Same single-source pattern that fixed the
     operation vocabulary in S66/S67.
 
+13. **NEW 2026-08-07. AN EDGE ROLE IS PRINTED ONLY WHERE POSITION DOES NOT ALREADY DETERMINE IT.**
+    This AMENDS rule 11's *"the Tree's labels ARE the graph's edge roles"* - all of them are still
+    read from the graph, but the redundant ones are no longer printed. John, on the S82 panel:
+    *"there are these minuend, subtrahend, etc tags. What is the point of these? they don't add
+    anything to the reviews."* He is right, and the counts say how right: of the role tags printed
+    on that page, **76 `addend`, 20 `minuend`, 20 `subtrahend`, 8 `multiplier`, and 8 `multiplicand`
+    are all fixed by the operator and the operand order** - `SUBTRACT(minuend=line 24,
+    subtrahend=line 33)` says nothing that `line 24 - line 33` does not. **Only about 19 tags carry
+    information**: `key`, the lookup band names, `default`, `threshold`, `condition`, `when_true`,
+    `when_false`. Those cannot be recovered from position and MUST stay.
+    - The test is mechanical: **could the reviewer reconstruct this role from the operator and the
+      operand's position alone?** If yes, do not print it.
+    - **This does not touch the graph.** Every role stays stored, and the flow column still reads
+      roles to decide moderator placement - `MODERATOR_ROLES` is unaffected. This is a printing
+      rule, not a data rule; the columns stay lossless in the sense that matters, because a
+      suppressed role is one the printed form already states.
+    - `SUM(addend=line 1a, addend=line 1b, ...)` repeated twenty times is also what makes the Math
+      lines overrun their column. Rule 3's *"noise"* objection applies to our own tags too.
+
+14. **NEW 2026-08-07. A NODE'S POSITION IS A FUNCTION OF ITS SUBTREE'S MEASURED EXTENT, NEVER A
+    CONSTANT.** John, on the S82 flow: *"the flow is all smooshed together in the upper lines."*
+    Measured across the 65 flow SVGs on that page, **63 have at least one pair of overlapping node
+    boxes** - 426 overlapping pairs, 288 input-on-input and 138 input-on-operation. The cause is not
+    a missing algorithm. The layout measures each box's height from its wrapped label and then
+    positions everything with constants anyway: inputs a fixed 58 units above the parent, chain rows
+    a fixed 104 apart, inputs spaced 82 apart while they are 84 wide, moderators 58 per slot. **Every
+    hardcoded offset is a place where a measured size was thrown away.**
+    - **Sibling separation comes from measured contours**, not a guessed gap. This is the classic
+      tidy-tree layout (Reingold-Tilford, what `d3.tree` implements): lay out bottom-up, each subtree
+      reports its own extent, siblings are pushed apart by those extents. **Overlap then becomes
+      impossible by construction rather than checked after the fact.**
+    - **A moderator widens the extent of the subtree it attaches to.** The right gutter of rule 11 is
+      a reserved band, but a moderator is not free: it must be able to push its neighbours.
+    - **NO EXTERNAL LAYOUT ENGINE.** Graphviz, dagre, elkjs and grandalf all solve this, and all were
+      considered and rejected. Graphviz needs a system binary, which cuts against
+      `docs/self-serve-extension.md`. The JavaScript engines move layout into the browser at render
+      time, where the geometry can no longer be asserted in Python - and the geometry assertions are
+      the whole point. None of them know rule 11's moderator gutter, so a stock engine would have to
+      be fought to preserve the one thing that makes the panel readable. **We are drawing a rooted
+      expression tree, not a general graph; take the algorithm, not the dependency.**
+    - **The geometry assertion must check node boxes.** Today it checks connector start points and
+      edge labels only, which is exactly why 63 broken diagrams shipped green while the SVG carried
+      `data-connector-starts-unique="true"`. **An SVG may not assert a property nobody verified.**
+
 ## OPEN - raised by John and not resolved
 
 - **A threshold is a decision, but is not written as one.** In the 6251 line 18 draft the threshold
