@@ -25,8 +25,24 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 **S77 is NOT accepted** - John could not evaluate it: escaped markup on screen, a raw payload dump,
 a horizontal flowchart at 21% scale, and a 16-band lookup drawn as flow. **RULE 9 IS AMENDED** in
 `docs/review-notation.md`: every cell shows something; the form varies, never the presence.
-**S75 ACCEPTED at `b2982c6`. S74 implemented at `b153e94` and STILL UNACCEPTED** - its suite was
-stopped deliberately so the lift could proceed; ONE full-suite run now gates both rounds.
+**S74 ACCEPTED at `b153e94`. S75 ACCEPTED at `b2982c6`.**
+**Full suite 2026-08-07: 20 failed, 850 passed, 8 skipped, 1 xfailed in 0:57:34** - exactly the
+known pre-existing set, **zero new failures**, passes 846 -> 850 on S74's own tests.
+
+**S74's acceptance test half-passed, and the other half was my error.** `form_6251_2025` line 13 now
+derives `max(qualified_dividends_capital_gain_tax_worksheet line 4, 0)` - correct document, correct
+line; the document inventory did its job. **Line 20 was never a wrong answer.** Its full text offers
+three alternatives and ends *"If you did not complete either worksheet... enter the amount from Form
+1040 or 1040-SR, line 15; if zero or less, enter -0-"*. It derived `max(form_1040_2025 line 15, 0)` -
+the third branch, stated verbatim, floor included. S74 still improved it: yesterday it said
+`form_1040_nr_2025`, the wrong filer's form. **The corpus now has ZERO known wrong references**; what
+remains on line 20 is a three-way "whichever applies" the grammar cannot hold, which belongs with
+named intermediates.
+
+**UNRESOLVED and honest:** 2441 moved from 1 error to 4 (`self_reference` line 5,
+`incomplete_evidence` line 8, `quote_not_verbatim` line 21, the standing line 25). The baseline run
+predates BOTH S71 and S74, so the delta cannot be attributed without a third run. All four fail for
+stated reasons rather than repairing into something unverifiable.
 Active spec is under Current round. **S76 IS DEFERRED to queue position 1** (John, 2026-08-07):
 Codex is on rendering options while the Architect runs the S74 suite. John's arc, 2026-08-07: **fix
 column 1, then assess column 2, and column 3 should then fall out.** S76 is the column-1 fix
