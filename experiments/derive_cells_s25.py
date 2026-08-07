@@ -97,6 +97,19 @@ def _portable_frame(frame: Any, root: Path) -> Any:
     return replace(frame, source_path=relative(frame.source_path), sections=sections)
 
 
+def _config_temperature(config: Any) -> float | None:
+    """Return the configured sampling temperature, preserving an explicit zero.
+
+    ``0`` is falsy, so a truthiness test here would silently discard the pinned
+    value and hand the provider its own default.  Only ``None`` and ``""`` mean
+    "unset".
+    """
+    value = get_config_value(config, "llm.temperature")
+    if value is None or value == "":
+        return None
+    return float(value)
+
+
 def run_real_document(
     *,
     root: str | Path,
@@ -126,6 +139,10 @@ def run_real_document(
         client=client,
         model=str(get_config_value(config, "llm.micro_model", "configured-llm")),
         provider=str(get_config_value(config, "llm.provider", "configured-provider")),
+        # Read from config like generator.py, critic.py, micro.py and background.py
+        # already do.  Without this the derivation path silently used the parameter
+        # default of None, so llm.temperature never reached the provider.
+        temperature=_config_temperature(config),
         reference_inventory=reference_inventory,
     )
     raw_status_counts = Counter(row.status for row in result.rows)

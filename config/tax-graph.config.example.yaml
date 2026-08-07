@@ -45,9 +45,18 @@ llm:
     quantizations: null            # for example [fp4]
   reasoning_effort: null         # optional OpenRouter reasoning control for capable models, e.g. minimal
   reasoning_exclude: null        # optional: true keeps reasoning tokens out of responses when supported
-  # NOTE (2026-08-03): temperature is intentionally omitted. Derivation uses the provider
-  # default because routed endpoints do not all advertise temperature; this is not a
-  # determinism guarantee.
+  # John, 2026-08-07: PINNED TO 0, superseding the 2026-08-03 note that omitted it.
+  # Reason: a prompt or approach change must be judgeable as our doing rather than
+  # sampling noise. Verified accepted by openai/gpt-5.6-luna with a live call.
+  # TWO CAVEATS, both still true:
+  #  - This reduces variance, it does not remove it. Batched inference is not
+  #    bit-deterministic (float addition is not associative; MoE routing depends on
+  #    batch composition), so repeated runs can still differ. Prefer invariants that
+  #    hold on ANY single run over diffs between two runs.
+  #  - The 2026-08-03 concern stands: routed endpoints do not all advertise
+  #    temperature, and provider_routing.allow_fallbacks is true, so a fallback
+  #    endpoint may reject or ignore it. Watch for provider errors after pinning.
+  temperature: 0
   strict_schema: true            # require the provider to honor the JSON Schema response contract
   max_tokens: 24000              # leave room for a complete form draft; length is a named failure
   critic_max_tokens: 8000
