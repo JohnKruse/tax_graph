@@ -56,12 +56,20 @@ Architect's defaults are programmer defaults and are wrong in the same direction
    options page implemented it as a dead-end message and John rejected the result: *"I'd be inclined
    to show some kind of diagram for even simple math operations... or just show the operation
    mathematically. It is just difficult to review a row with holes."*
-   **The reviewing eye must land in the same place on every row.** So:
-   a cell that **branches** gets a flowchart; a **lookup table** gets a table, never flow - sixteen
-   bands drawn as sixteen flow steps is the S77 mistake; **everything else shows the operation
-   mathematically** (`line 23 = line 15 - line 22`), which is compact and needs no arrows; and a cell
-   with **no operation** states that as a named finding in the same visual vocabulary.
-   **An empty column, a bare "no branch" string, or a raw payload dump is never an acceptable answer.**
+   **The reviewing eye must land in the same place on every row.**
+   **REFINED 2026-08-07 (John, on 2441 line 20): the gate is OPERATION COUNT, not branch presence.**
+   He asked why `min(line 17, line 18, line 19)` then `max(amount, 0)` was not drawn - *"there are
+   two operations here"* - and he is right; the first amendment sent it to a one-line math form.
+   - **one operation** -> the math line, `line 23 = line 15 - line 22`.
+   - **more than one, no branch** -> a **vertical chain of boxes**, one operation each.
+   - **branches** -> a diamond whose arms **genuinely diverge**. Two arrows leaving the same vertex
+     down the same axis is the S78 defect: they overlap, read as one exit, and the second passes
+     through the first box while its label lands inside it.
+   - **lookup table** -> a **table**, which is a NODE SHAPE, not a separate rendering. It may stand
+     alone (2441 line 8) or feed a box inside a flowchart (6251 line 18's threshold and offset).
+   - **no operation** -> a named finding in the same vocabulary, **carrying its actual reason**.
+   **An empty column, a bare "no branch" string, a raw payload dump, or a reason-free "needs review"
+   is never an acceptable answer.**
 10. **Phrasing belongs in the operation registry**, one declared wording per operation, so the
     flowchart, worksheet and pseudocode cannot drift apart. Same single-source pattern that fixed the
     operation vocabulary in S66/S67.

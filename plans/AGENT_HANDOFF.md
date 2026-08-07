@@ -21,10 +21,12 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## BALL
 
-**BALL: ARCHITECT - M20-S78 (NO HOLES, VERTICAL, LOOKUPS AS TABLES). PILOT ROUND, `pilot/` ONLY.**
-**S77 is NOT accepted** - John could not evaluate it: escaped markup on screen, a raw payload dump,
-a horizontal flowchart at 21% scale, and a 16-band lookup drawn as flow. **RULE 9 IS AMENDED** in
-`docs/review-notation.md`: every cell shows something; the form varies, never the presence.
+**BALL: WORKER - M20-S79 (DIVERGING BRANCHES, CHAINS, TABLES AS NODES). PILOT ROUND.**
+**S78 ACCEPTED at `fad5d57`.** John, 2026-08-07: the lookup-table form "is better", and the TREE
+rendering of 6251 line 18 is the structure he wants drawn - *"is it difficult to make this into a
+flow chart?"* It is not. **RULE 9 REFINED** in `docs/review-notation.md`: the gate is operation
+COUNT, not branch presence.
+
 **S74 ACCEPTED at `b153e94`. S75 ACCEPTED at `b2982c6`.**
 **Full suite 2026-08-07: 20 failed, 850 passed, 8 skipped, 1 xfailed in 0:57:34** - exactly the
 known pre-existing set, **zero new failures**, passes 846 -> 850 on S74's own tests.
@@ -134,82 +136,59 @@ resolve now, and whether they resolve to the RIGHT line is unreviewed.
 
 ## Current round
 
-**M20-S78 IN FLIGHT (Worker, 2026-08-07). NO HOLES, VERTICAL, AND LOOKUPS ARE TABLES.**
+**M20-S79 IN FLIGHT (Worker, 2026-08-07). BRANCHES THAT DIVERGE, CHAINS, AND TABLES AS NODES.**
 
 **PILOT RULES BIND.** Everything under `pilot/`; tests in the pilot, out of `tests/`; no full-suite
-run; no provider run. **DO NOT EDIT `tax_graph/`** - the Architect's S74 suite is running on this
-shared tree.
+run; no provider run. `tax_graph/` is free now - the S74 suite has finished - but this round has no
+business there.
 
-**S77 IS NOT ACCEPTED.** It produced all five renderings for 157/157 anchors, which was the
-reliability bar, and the flowchart is a real SVG with diamonds and arrowheads. **But John could not
-evaluate it, for four concrete reasons, all found by inspecting the artifact.**
+**S78 IS ACCEPTED at `fad5d57`**, verified by the Architect: zero escaped markup, zero payload dumps,
+zero `ValueError`, zero node ids, zero `floor`; SVG **320x348 at 1:1**, vertical and legible; 2441
+line 8 renders as a real lookup table; and 2441 line 23's English reads *"Subtract line 22 from line
+15."*, matching the IRS wording. **John: the lookup-table form "is better."** Keep all of it.
 
-1. **THE RENDERER'S HTML IS ESCAPED AND PRINTED AS MARKUP.** The flowchart cell for
-   `form_2441_2025` line 23 literally displays
-   `&lt;div class="flowchart-absence"&gt;No branch: line 23 = line 15 - line 22&lt;/div&gt;` inside a
-   `<pre>`. **Three occurrences escaped, zero rendered.** John read raw markup on screen.
-2. **A RAW PAYLOAD DUMP REACHES THE REVIEWER.** `form_2441_2025` line 25's flowchart AND worksheet
-   cells both print
-   `({'kind': 'review_gap', 'message': '... ValueError: LOOKUP_TABLE arguments must be named leaf
-   operands with a role'})` - a stringified Python dict with a `ValueError` in a human review panel.
-3. **THE FLOWCHART IS HORIZONTAL AND ILLEGIBLE.** 6251 line 18 is `viewBox="0 0 1005 444"`, boxes
-   spread across x=285..795, rendered at `width="210"` - **about 21% scale**. That is why John
-   reported "missing connector arrows": the arrowheads are present (5 paths, 4 `marker-end`), just
-   invisible. **We agreed vertical-in-a-column and this went the other way.**
-4. **THE SIXTEEN-BAND LOOKUP IS DRAWN AS FLOW.** 2441 line 8 is `viewBox="0 0 495 1644"` - sixteen
-   stacked boxes, 1,644 units tall. The worksheet form says the same thing in 6 rows.
+**THE TREE IS THE SKELETON WE WANT.** John pasted the tree rendering of 6251 line 18 and said *"this
+makes sense to me... is it difficult to make this into a flow chart?"* It is not difficult: **every
+named slot is already an edge label and every nested operation is already a box.** What is missing is
+layout, not information. That tree is the target structure for the diagram.
 
-**RULE 9 IS AMENDED, and the amendment is now in `docs/review-notation.md`.** John, 2026-08-07:
-*"I'd be inclined to show some kind of diagram for even simple math operations... or just show the
-operation mathematically. It is just difficult to review a row with holes."*
-**Every cell shows something; the FORM varies, never the presence.** The reviewing eye must land in
-the same place on every row.
+**FOUR DEFECTS TO FIX.**
 
-- **Branches** -> flowchart, **vertical**, sized to a column (target width ~320 units, grow
-  downward). Never wider than its column; never scaled below legibility.
-- **Lookup table** -> a **table**, never flow.
-- **Everything else** -> the operation **mathematically**: `line 23 = line 15 - line 22`.
-- **No operation** -> a named finding in the same visual vocabulary. **Never a bare "no branch"
-  string, never an empty cell, never a payload dump.**
+1. **BRANCH ARMS DO NOT DIVERGE.** Measured on the S78 SVG: the diamond's bottom vertex is
+   `(160,110)`, and **both** connectors are `M 160 110` running straight down the same x - one to the
+   Yes box at y=134, the other continuing **through it** to the No box at y=218. They overlap, so it
+   reads as a single exit. Worse, the **`No` label sits at y=164, inside the Yes box** (y 134-194).
+   John: *"an or diamond with ONE out arrow!"* **Arms must separate horizontally and rejoin.**
+2. **ONE OPERATION PER BOX; STOP INLINING.** The S78 diamond contains
+   `line 17 <= lookup(filing status: default -> $239,100; married filing separately -> $119,550)?`
+   across four wrapped lines. That is the most compound thing on the page and it breaks rule 5.
+   **The threshold lookup is its own node feeding the diamond**, which also restores the
+   status-dependent decision the notation doc flags as an open question.
+3. **MULTI-STEP CELLS GET A CHAIN.** Rule 9 is refined: the gate is **operation count, not branch
+   presence**. `form_2441_2025` line 20 is `min(line 17, line 18, line 19)` then `max(amount, 0)` -
+   **two operations, so two boxes**, not a one-line math form.
+4. **RESTORE THE REASON ON A FINDING.** `form_2441_2025` line 25 now reads *"Review finding -
+   generated operation needs review."* That is an over-correction of the Architect's "no payload
+   dumps": the dict went, and so did the information. The real reason is `LOOKUP_TABLE arguments must
+   be named leaf operands with a role`. **Say that, in human wording, without the dict or the
+   `ValueError`.** A reason-free finding is unreviewable, which defeats the panel.
 
-**ALSO FIX: role names are leaking into reviewer prose.** The English rendering for 2441 line 23
-reads *"Subtract the subtrahend from the minuend."* That is our internal vocabulary, and it is
-strictly worse than the IRS's own *"Subtract line 22 from line 15."* Rule 8 applies to generated
-sentences too.
+**TARGET LAYOUT for 6251 line 18** - seven boxes, each one operation:
+`line 17` and a **threshold table** (`default $239,100` / `married filing separately $119,550`) feed
+a diamond `line 17 <= threshold?`; **Yes** -> `line 17 * 0.26`; **No** -> `line 17 * 0.28` ->
+`amount - offset`, with an **offset table** (`$4,782` / `$2,391`) feeding it; both arms rejoin at
+`line 18`.
 
-**Evidence required.** Regenerate the options page. Report, per rendering: **anchors with an empty or
-placeholder cell - target zero**; the size distribution; and the **rendered width and height of every
-SVG**, to show nothing exceeds its column. Confirm zero escaped markup and zero payload dumps.
+**A TABLE IS A NODE SHAPE, NOT A SEPARATE RENDERING.** It may stand alone as on 2441 line 8, or sit
+inside a flowchart as on 6251 line 18. One vocabulary.
 
-**Do not choose for John.** He still has not been able to compare; the point of this round is to make
-that possible.
+**Evidence required.** Regenerate the options page. Report per rendering: empty/placeholder cells
+(**target zero**), the size distribution, and **every SVG's width and height**. Additionally:
+**no two connectors may share a start point and direction**, and **no label may fall inside another
+node's box** - state both as checked, since they are what made S78 unreadable. Confirm the line 25
+finding carries its reason.
 
-**WORKER COMPLETION (2026-08-07; M20-S78 implementation, awaiting Architect acceptance).** The
-options pilot now gives every cell a non-empty review form. Root lookup operations render as HTML
-tables, ordinary operations render as compact math, absent operations render as named findings
-without raw payloads, and true branches render as vertical SVGs constrained to a 320-unit column.
-English subtraction uses printed operands (`Subtract line 22 from line 15.`) instead of internal role
-names. The comparison report now records empty/placeholder counts, size distributions, and every
-SVG's declared width, height, and viewBox dimensions. Changes are limited to `pilot/`.
-
-**REAL-CORPUS EVIDENCE.** RAN:
-`$out = Join-Path (Get-Location) '.test_tmp_s78\m20_s78_renderings.html'; .venv\Scripts\python.exe pilot\render_options.py C:\tmp\m20_s68_candidate --output $out`
--> **157/157 for every renderer; zero failures and zero empty/placeholder cells.** Flowchart size
-distribution `{1: 153, 2: 3, 16: 1}`. SVGs: `form_1040_2025 line 34 = 320 x 284`,
-`form_6251_2025 line 18 = 320 x 348`, and `form_6251_2025 line 39 = 320 x 348`, each with the
-same viewBox dimensions. Static artifact checks found zero escaped `<div>`/`<table>` markup, zero
-`ValueError`, and zero raw payload dictionaries.
-
-**TEST EVIDENCE.** RAN:
-`$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp_s78'; .venv\Scripts\python.exe -m pytest pilot\test_render_options.py -q`
--> **8 passed, 1 warning in 3.99s**. RAN:
-`$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp_s78'; .venv\Scripts\python.exe -m pytest pilot -q`
--> **27 passed, 1 warning in 12.80s**. RAN:
-`.venv\Scripts\python.exe tools\check_ascii.py` -> **ASCII check OK**. RAN:
-`.venv\Scripts\python.exe -m py_compile pilot\render_options.py` -> **pass**. The warning is
-the known permission failure writing the pre-existing `.pytest_cache`. No provider run and no full
-suite were performed, per pilot rules. Browser visual preview was blocked by the app local-file URL
-policy; the generated HTML was verified through static structure and artifact metrics.
+**Do not choose for John.** He still has not picked a rendering.
 
 **How to rebuild a candidate** - the two commands, in order, because the second is worthless
 without a run from current code:
