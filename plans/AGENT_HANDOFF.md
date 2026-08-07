@@ -21,13 +21,13 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## BALL
 
-**BALL: WORKER - M20-S76 (LIFT THE INSTRUCTION PARSER). REAL-PROJECT ROUND.**
+**BALL: WORKER - M20-S77 (FIVE FLOWCHART OPTIONS). PILOT ROUND, `pilot/` ONLY.**
 **S75 ACCEPTED at `b2982c6`. S74 implemented at `b153e94` and STILL UNACCEPTED** - its suite was
 stopped deliberately so the lift could proceed; ONE full-suite run now gates both rounds.
-Active spec is under Current round. **PILOT WORK IS PAUSED**; S76 edits `tax_graph/extract` and
-pays the full suite. John's arc, 2026-08-07: **fix column 1, then assess column 2, and column 3
-should then fall out.** S76 is the column-1 fix reaching production. Pilot rules still bind when the
-pilot resumes.
+Active spec is under Current round. **S76 IS DEFERRED to queue position 1** (John, 2026-08-07):
+Codex is on rendering options while the Architect runs the S74 suite. John's arc, 2026-08-07: **fix
+column 1, then assess column 2, and column 3 should then fall out.** S76 is the column-1 fix
+reaching production and returns as soon as the suite is clear.
 
 **S71 ACCEPTED at `e79f2cd`; S70 at `977e977`; S72 at `b18d9f1`; S73 at `78516bc`.**
 
@@ -83,26 +83,29 @@ clothes, and it is the reason the candidate diff cannot tell a real disagreement
 **Whoever takes the diff round converges these rather than adding a third.**
 
 **QUEUE - one line each. NOT SPECCED.**
-1. **`form_13614_c_2025` yields 0 printed anchors** - a manifest document producing nothing.
-2. **Column 3 becomes the agreed notation** - the S69 flow is an edge dump: zero `<svg>`, zero
+1. **S76 LIFT THE INSTRUCTION PARSER into `tax_graph/`** - deferred 2026-08-07, spec recoverable at
+   `bcec03d`. Real-project; the invariant test is the deliverable: no instruction section filed under
+   a line absent from that form's printed-line inventory. 106 phantoms -> 0, 1040 256 -> 143.
+2. **`form_13614_c_2025` yields 0 printed anchors** - a manifest document producing nothing.
+3. **Column 3 becomes the agreed notation** - the S69 flow is an edge dump: zero `<svg>`, zero
    diamonds, zero Yes/No arrows across all 157 panels; it renders `zero_floor` and node ids into the
    human column and re-narrates upstream lines. Must implement `docs/review-notation.md` rules 1-8,
    with phrasing read from the operation registry. Was specced at `41fffff`; recover with `git show`.
-3. **LIFT the accessor into the project** - make `tax_graph/extract/candidate.py` use it so the
+4. **LIFT the accessor into the project** - make `tax_graph/extract/candidate.py` use it so the
    GENERATED graph stops baking raw OCR into node labels (46 of 232 today), and move the invariant
    test into `tests/`. This is the round that pays the full-suite cost.
-4. **Depth-normalized candidate diff** - all **5 of 5** overlapping rows report a false
+5. **Depth-normalized candidate diff** - all **5 of 5** overlapping rows report a false
    `expression_disagreement`, because the candidate expression refers to neighbours by node id while
    `_live_expression` inlines the handcrafted subtree; same rule, two depths. Compare at one depth.
-5. **Round-trip renderer** - render a tree back to English from the operation registry and diff it
+6. **Round-trip renderer** - render a tree back to English from the operation registry and diff it
    against the printed source; disagreement becomes a review finding. Generation is deterministic
    even where parsing is not, so this is the reliability check the pipeline currently has no form of.
-6. **Sibling subexpression recovery (CSE)** - 2441 line 25's `UNRESOLVED` block is `MIN(line 20, line
+7. **Sibling subexpression recovery (CSE)** - 2441 line 25's `UNRESOLVED` block is `MIN(line 20, line
    21)`, sitting in the sibling branch. Hashing subtrees recovers deterministically what a human gets
    by reading across. Same machinery as item 3; do them together or not at all.
-7. **Construction drift detection** - reviews call out new punctuation and usage as a ranked finding
+8. **Construction drift detection** - reviews call out new punctuation and usage as a ranked finding
    with system-filed evidence, against the versioned inventory S68 produces.
-8. **Column and grid recovery**; **phrase obligations**; **S53 approval gate**; **known-red cleanup**.
+9. **Column and grid recovery**; **phrase obligations**; **S53 approval gate**; **known-red cleanup**.
 
 **STANDING FAILURES, honest.** 2441 line 25 wrong for the **eighth** consecutive run - now
 `LOOKUP_TABLE arguments must be named leaf operands with a role`, after one repair. 6251 lines 13 and
@@ -112,56 +115,61 @@ resolve now, and whether they resolve to the RIGHT line is unreviewed.
 
 ## Current round
 
-**M20-S76 IN FLIGHT (Worker, 2026-08-07). LIFT THE INSTRUCTION PARSER INTO THE PROJECT.**
-**REAL-PROJECT ROUND** - touches `tax_graph/extract/instruction_sections.py` and its callers.
-**Pays the full suite, and that suite is ALSO S74's gate** (see below).
+**M20-S77 IN FLIGHT (Worker, 2026-08-07). FIVE RENDERINGS OF THE SAME CELLS, FOR JOHN TO CHOOSE.**
 
-**S75 IS ACCEPTED at `b2982c6`**, verified independently by the Architect. Lift
-`pilot/instruction_parser.py` into production. The pilot stays where it is; this round moves the
-behaviour, not the file.
+**PILOT RULES BIND.** Everything under `pilot/`; tests in the pilot, out of `tests/`; no full-suite
+run; no provider run. **DO NOT EDIT `tax_graph/`** - the Architect is running the S74 suite on this
+shared tree. `pilot/` is not collected by `testpaths`, which is why this round is safe right now.
 
-**THE THREE FIXES TO LIFT.** All are ours; none is an OCR failure.
-1. **Read bold-only lines as headings.** Mistral emits `**Depletion**` where our `_HEADING_RE` only
-   matches `^#`.
-2. **Canonicalize anchors against the form's KNOWN PRINTED LINES.** Deterministic, not heuristic.
-3. **Parse the cached HTML as a SECOND source with provenance** (`html` / `ocr`) on every section.
-   All 7 instruction documents have HTML cached.
+**S76 IS DEFERRED, NOT DROPPED** (John, 2026-08-07). It returns to the queue at position 1.
 
-**MEASURED EFFECT THE LIFT MUST REPRODUCE IN PRODUCTION.**
-- **106 phantom anchors -> 0.** 101 of them on the 1040 alone, from alpha-range expansion inventing
-  `1j`-`1y`, `6e`-`6y`, `13e`-`13y`, `17b`-`17y`, `24l`-`24y`; 5 on 6251 from lost em-dashes
-  (`3o`, `4a`, `5e`, `8a`, `11a`).
-- **1040 line sections 256 -> 143**, matching HTML 143. **The current parser reports nearly twice
-  the sections the document actually has.**
-- **6251 30 -> 35**, matching HTML, gaining lines **2d, 2f, 2g, 2l, 3, 4, 5, 8, 11, 15**. Lines 4 and
-  11 are cells we derive.
-- **Schedule D 11 -> 12.** **All seven documents match the HTML count exactly.**
+**WHAT JOHN ACTUALLY HAS TODAY, and his read is correct.** The S72 column 3 is **not a flowchart**.
+It is the expression tree rendered as a role-labelled outline - `IF_ELSE -> condition -> line 33,
+threshold -> line 24, when_true -> SUBTRACT`. It shows hierarchy. There is no diamond asking a
+question, no Yes/No on arrows, no mathy box, no `amount`. **`docs/review-notation.md` rules 1-8 have
+never been implemented.** John, 2026-08-07: *"I'm not totally sold on it, but i would like to see
+some options."*
 
-**STORE BOTH, NEVER "EITHER".** Sections carry provenance and consumers must not fall back between
-sources. 32 disagreements were recorded, **31 HTML-richer and 1 OCR-richer** (`schedule_a_2025`
-line 1: OCR has `Line 1 Medical and Dental Expenses`, HTML has bare `Line 1`). **Neither source
-dominates**, which is why both are kept and why a fallback would silently pick the poorer one.
+**END STATE.** One self-contained HTML page showing **the same five cells rendered five ways**, side
+by side, so John can choose. **Every rendering is generated from the graph. Nothing handcrafted** -
+that is the prime directive, and an Architect mock is what S69 was specced to replace.
 
-1. **THE INVARIANT TEST IS THE DELIVERABLE.** In `tests/`, over the real cached corpus: **no
-   instruction section may be filed under a line absent from that form's printed-line inventory.**
-   That is what makes 106 phantoms unable to come back, and it is the same shape as the S71 label
-   invariant that stopped the raw-OCR regression.
-2. **EXISTING TESTS WILL CHANGE, AND THAT IS EXPECTED - BUT NEVER BY WEAKENING.**
-   `tests/test_instruction_sections_m20.py` and the coverage assertions encode the OLD, phantom-laden
-   counts. Update them to the measured truth and **state the reason in the diff**. A count that drops
-   because phantoms disappeared is a fix; a deleted assertion is not.
-3. **`instructions_schedule_b_2025` produces no line sections from either source.** Surface it as
-   `document_without_line_sections`. Silence is not an acceptable answer for a manifest document.
-4. **Report the effect on cell coverage** - how many anchors gain an instruction section, per
-   document. Do NOT run the provider; the Architect will run the canary afterwards to see whether the
-   recovered 6251 sections change any derivation.
+**THE FIVE CELLS, fixed so comparison is fair. They span the difficulty range deliberately:**
+- `form_6251_2025` line 18 - branches; the notation's hardest normal case.
+- `form_2441_2025` line 8 - the sixteen-band lookup table. **The stress test for "tight".**
+- `form_2441_2025` line 20 - `max(0, min(line 17, line 18, line 19))`; depth 2, no branch.
+- `form_2441_2025` line 23 - `line 15 - line 22`; trivial, and the case where rule 9 says draw nothing.
+- `form_2441_2025` line 25 - a **hole**; no operation at all. A rendering that cannot show absence
+  honestly is disqualified.
 
-**FULL SUITE REQUIRED, AND IT GATES TWO ROUNDS.** **S74 is implemented at `b153e94` and still
-UNACCEPTED** - its suite was stopped deliberately by the Architect so this lift could proceed,
-because both rounds touch `tax_graph/extract` and one run validates the state that actually ships.
-Baseline is **20 pre-existing failures**; anything outside that set is a regression. If it fails,
-attribute by test name - `instruction_sections`/`outline` points at S76, `cells`/`derive` at S74.
-Short `PYTEST_DEBUG_TEMPROOT`; see below.
+**THE FIVE RENDERINGS.**
+1. **True flowchart, obeying rules 1-8.** Diamond asks and arrows answer; `Line X checked?: subject`
+   for checkboxes; reference lines, never re-narrate; no step letters; one operation per box; mathy
+   not prose (`line 17 * 0.26`, never `MULTIPLY`); `amount` for the value on the arrow; no `floor`,
+   `ceiling`, `clamp` or `truncate`. Real SVG.
+2. **Worksheet / ledger**, in the IRS's own idiom: numbered steps, one per row, each naming its
+   result. Familiar to any filer, and it needs no arrows.
+3. **Math notation**, one expression per line with named intermediates:
+   `t = $239,100 (or $119,550 if MFS)` then `line 18 = line 17 * 0.26 if line 17 <= t else ...`
+4. **English sentences generated from the operation registry.** This doubles as the queued
+   round-trip renderer: if the generated sentence and the printed source disagree, that is a review
+   finding. Cheapest way to learn whether that idea works.
+5. **The current role-labelled tree**, unchanged, as the control.
+
+**TIGHT AND RELIABLE ARE MEASURED, NOT ASSERTED.**
+- **Reliable:** every rendering must produce output for **all 157 anchors** without raising. Report
+  any that fail, per rendering. A rendering that only works on easy cells is disqualified.
+- **Tight:** report the **size distribution per rendering** - max and median, in whatever unit suits
+  it (arrows, rows, characters). **2441 line 8's sixteen bands is the number that matters.** The S72
+  ceiling is 17 arrows; beating it is the target.
+- **Honest:** every rendering must show the line-25 hole as a named absence.
+
+**NO NODE IDS AND NO BANNED TERMS in any rendering.** `form_1040_2025_zero_floor` must read as
+`constant 0`. Node ids belong in column 2.
+
+**Do not choose for John.** Present all five neutrally with their measurements and let him pick.
+A recommendation in the handoff is fine; a rendering deleted because the Worker preferred another
+is not.
 
 **How to rebuild a candidate** - the two commands, in order, because the second is worthless
 without a run from current code:
