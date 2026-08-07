@@ -1,4 +1,4 @@
-"""Generate five graph-backed renderings for the M20-S77 pilot.
+"""Generate five graph-backed renderings for the M20-S79 pilot.
 
 The comparison is deliberately a projection.  It reads the candidate graph
 and the joined source evidence through ``review_panel.build_panel``.  It does
@@ -230,17 +230,29 @@ def _result_name(row: Mapping[str, Any]) -> str:
 def _absence_text(row: Mapping[str, Any]) -> str:
     """Return a human-readable finding shared by every rendering."""
 
+    def reason(value: Any) -> str:
+        text = _text(value).strip()
+        text = re.sub(r"^ValueError:\s*", "", text, flags=re.IGNORECASE)
+        text = re.sub(r"^payload:\s*", "", text, flags=re.IGNORECASE)
+        text = text.rstrip(".").strip()
+        if "LOOKUP_TABLE arguments must be named leaf operands with a role" in text:
+            return "lookup table inputs must be named leaf values with roles"
+        text = text.replace("_", " ")
+        return text or "the generated operation is unavailable"
+
     findings = row.get("findings")
     if isinstance(findings, list):
         for finding in findings:
             if isinstance(finding, Mapping):
+                message = finding.get("message") or finding.get("error")
+                if message:
+                    return f"{_result_name(row)}: Review finding - {reason(message)}."
                 kind = _text(finding.get("kind")).strip().replace("_", " ")
-                message = _text(finding.get("message") or finding.get("error")).strip().lower()
-                if kind and (kind in {"payload", "row error", "review gap"} or "valueerror" in message):
-                    return f"{_result_name(row)}: Review finding - generated operation needs review."
                 if kind:
                     return f"{_result_name(row)}: Review finding - {kind}."
-    return f"{_result_name(row)}: Review finding - promoted operation unavailable."
+            elif finding:
+                return f"{_result_name(row)}: Review finding - {reason(finding)}."
+    return f"{_result_name(row)}: Review finding - the promoted operation is unavailable."
 
 
 def render_worksheet(row: Mapping[str, Any]) -> str:
@@ -362,7 +374,11 @@ def _branch_question(tree: Mapping[str, Any], row: Mapping[str, Any]) -> str:
     children = _children(tree)
     if operation == "IF_ELSE" and len(children) >= 2:
         condition = _math_expr(children[0][1])
-        threshold = _math_expr(children[1][1])
+        threshold = (
+            "threshold"
+            if children[1][1].get("kind") == "operation"
+            else _math_expr(children[1][1])
+        )
         operator = _comparison_operator(row)
         if operator == "compared with":
             return f"{condition} compared with {threshold}?"
@@ -388,17 +404,20 @@ def _svg_lines(x: float, y: float, text: str, *, width: int = 30) -> str:
 def _wrapped_lines(text: str, width: int) -> list[str]:
     """Wrap a label into the same lines used for its SVG height."""
 
-    words = text.split()
     lines: list[str] = []
-    current = ""
-    for word in words:
-        if current and len(current) + len(word) + 1 > width:
+    for paragraph in text.splitlines() or [text]:
+        words = paragraph.split()
+        current = ""
+        for word in words:
+            if current and len(current) + len(word) + 1 > width:
+                lines.append(current)
+                current = word
+            else:
+                current = f"{current} {word}".strip()
+        if current or not words:
             lines.append(current)
-            current = word
-        else:
-            current = f"{current} {word}".strip()
-    if current or not lines:
-        lines.append(current)
+    if not lines:
+        lines.append("")
     return lines
 
 
@@ -406,6 +425,105 @@ def _flow_node_height(label: str, *, width: int = 25, minimum: float = 60.0) -> 
     """Return a legible box height for a wrapped label."""
 
     return max(minimum, 26.0 + 16.0 * len(_wrapped_lines(label, width)))
+
+
+def _operation_count(tree: Mapping[str, Any]) -> int:
+    """Count operation nodes, including nested operations."""
+
+    if tree.get("kind") != "operation":
+        return 0
+    return 1 + sum(
+        _operation_count(child)
+        for _, child in _children(tree)
+        if isinstance(child, Mapping)
+    )
+
+
+def _flow_operand_text(child: Mapping[str, Any], role: str) -> str:
+    """Render one operation input without inlining a nested operation."""
+
+    if child.get("kind") == "operation":
+        if _operation_name(child) in {"LOOKUP_TABLE", "LOOKUP_BRACKET"}:
+            return "offset" if role == "subtrahend" else "selected value"
+        return "amount"
+    return _math_expr(child)
+
+
+def _flow_operation_label(tree: Mapping[str, Any]) -> str:
+    """Render exactly one operation for a flowchart or chain box."""
+
+    operation = _operation_name(tree)
+    children = _children(tree)
+    values = [_flow_operand_text(child, role) for role, child in children]
+    if operation == "COPY":
+        return values[0] if values else "input"
+    if operation == "SUM":
+        return " + ".join(values) or "sum"
+    if operation == "SUBTRACT":
+        return " - ".join(values) or "subtract"
+    if operation == "MULTIPLY":
+        return " * ".join(values) or "multiply"
+    if operation == "DIVIDE":
+        return " / ".join(values) or "divide"
+    if operation == "MIN":
+        return f"min({', '.join(values)})"
+    if operation == "MAX":
+        if any(child.get("kind") == "operation" for _, child in children) and any(
+            child.get("kind") == "constant" and child.get("value") == 0 for _, child in children
+        ):
+            values = [
+                _flow_operand_text(child, role)
+                for role, child in children
+                if child.get("kind") == "operation"
+            ] + [
+                _flow_operand_text(child, role)
+                for role, child in children
+                if child.get("kind") != "operation"
+            ]
+        return f"max({', '.join(values)})"
+    if operation == "NEGATE":
+        return f"-({values[0]})" if values else "-(amount)"
+    if operation == "ROUND":
+        return f"round({values[0]})" if values else "round(amount)"
+    if operation in {"AND", "OR"}:
+        joiner = " and " if operation == "AND" else " or "
+        return joiner.join(values) or operation.lower()
+    if operation == "NOT":
+        return f"not {values[0]}" if values else "not condition"
+    if operation == "COMPARE":
+        return " compared with ".join(values) or "comparison"
+    if operation == "REQUIRE_INPUT":
+        return values[0] if values else "input"
+    return f"{operation.lower()}({', '.join(values)})"
+
+
+def _chain_operations(tree: Mapping[str, Any]) -> list[Mapping[str, Any]]:
+    """Return nested operations in dependency order for a vertical chain."""
+
+    result: list[Mapping[str, Any]] = []
+
+    def visit(node: Mapping[str, Any]) -> None:
+        if node.get("kind") != "operation":
+            return
+        for _, child in _children(node):
+            visit(child)
+        result.append(node)
+
+    visit(tree)
+    return result
+
+
+def _operation_chain_html(row: Mapping[str, Any], tree: Mapping[str, Any]) -> str:
+    """Render multiple dependent operations as one vertical chain of boxes."""
+
+    boxes = []
+    for index, operation in enumerate(_chain_operations(tree), start=1):
+        label = _flow_operation_label(operation)
+        boxes.append(
+            f'<div class="chain-box" data-operation="{escape(_operation_name(operation))}">'
+            f'<span class="chain-step">Step {index}</span><code>{escape(label)}</code></div>'
+        )
+    return f'<div class="operation-chain"><div class="flow-kind">Operation chain</div>{"<div class=\"chain-then\">then</div>".join(boxes)}</div>'
 
 
 def _has_flow_branch(tree: Mapping[str, Any]) -> bool:
@@ -435,76 +553,202 @@ def _branch_children(tree: Mapping[str, Any]) -> list[tuple[str, Mapping[str, An
 
 
 def _flowchart_svg(row: Mapping[str, Any], tree: Mapping[str, Any]) -> str:
-    """Render a true branch as a vertical, column-sized SVG flowchart."""
+    """Render a branch as a legible flow with separate inputs and arms."""
 
-    nodes: list[tuple[str, float, float, float, float, str]] = []
-    edges: list[tuple[float, float, float, float, str]] = []
+    nodes: list[dict[str, Any]] = []
+    edges: list[dict[str, Any]] = []
+    edge_labels: list[dict[str, Any]] = []
+    node_counter = 0
 
-    def visit(node: Mapping[str, Any], top: float) -> tuple[float, float, float]:
+    def add_node(kind: str, label: str, x: float, y: float, width: float, *, minimum: float = 60.0) -> dict[str, Any]:
+        nonlocal node_counter
+        node_counter += 1
+        wrap_width = max(10, int(width / 7.0))
+        height = _flow_node_height(label, width=wrap_width, minimum=minimum)
+        node = {
+            "id": f"n{node_counter}",
+            "kind": kind,
+            "label": label,
+            "x": x,
+            "y": y,
+            "width": width,
+            "height": height,
+        }
+        nodes.append(node)
+        return node
+
+    def add_edge(start: Mapping[str, Any], end: Mapping[str, Any], *, start_x: float | None = None, end_x: float | None = None, route_x: float | None = None, label: str = "") -> None:
+        sx = start["x"] + start["width"] / 2 if start_x is None else start_x
+        ex = end["x"] + end["width"] / 2 if end_x is None else end_x
+        sy = start["y"] + start["height"]
+        ey = end["y"]
+        edges.append({"start_x": sx, "start_y": sy, "end_x": ex, "end_y": ey, "route_x": route_x, "label": label})
+        if label:
+            edge_labels.append({"x": (sx + ex) / 2, "y": (sy + ey) / 2 + 4, "text": label})
+
+    def table_label(tree_node: Mapping[str, Any], role: str) -> str:
+        title = {
+            "threshold": "threshold",
+            "subtrahend": "offset",
+        }.get(role, "lookup table")
+        rows = [title]
+        for branch_role, child in _children(tree_node)[1:]:
+            rows.append(f"{_lookup_condition(branch_role)}: {_math_expr(child)}")
+        return "\n".join(rows)
+
+    def branch_entries(node: Mapping[str, Any], role: str) -> list[tuple[Mapping[str, Any], str, str]]:
+        """Return (source tree, node kind, label) entries in dependency order."""
+
+        if node.get("kind") != "operation":
+            return [(node, "value", _leaf_text(node, role))]
         operation = _operation_name(node)
-        x = FLOW_X
-        if operation in FLOW_BRANCH_OPERATIONS:
-            question = _branch_question(node, row)
-            height = _flow_node_height(question, width=24, minimum=72.0)
-            nodes.append(("diamond", x, top, FLOW_NODE_WIDTH, height, question))
-            child_top = top + height + FLOW_GAP
-            for role, child in _branch_children(node):
-                child_x, child_y, child_bottom = visit(child, child_top)
-                label = role
-                if operation == "IF_ELSE":
-                    label = {"when_true": "Yes", "when_false": "No"}.get(role, role)
-                edges.append(
-                    (
-                        x + FLOW_NODE_WIDTH / 2,
-                        top + height,
-                        child_x + FLOW_NODE_WIDTH / 2,
-                        child_y,
-                        label,
-                    )
-                )
-                child_top = child_bottom + FLOW_GAP
-            return x, top, max(top + height, child_top - FLOW_GAP)
+        entries: list[tuple[Mapping[str, Any], str, str]] = []
+        for child_role, child in _children(node):
+            if child.get("kind") == "operation":
+                entries.extend(branch_entries(child, child_role))
+        if operation in {"LOOKUP_TABLE", "LOOKUP_BRACKET"}:
+            entries.append((node, "table", table_label(node, role)))
+        else:
+            entries.append((node, "box", _flow_operation_label(node)))
+        return entries
 
-        formula = _math_expr(node)
-        height = _flow_node_height(formula)
-        nodes.append(("box", x, top, FLOW_NODE_WIDTH, height, formula))
-        child_top = top + height + FLOW_GAP
-        for role, child in _children(node):
-            if child.get("kind") == "operation" and _has_flow_branch(child):
-                child_x, child_y, child_bottom = visit(child, child_top)
-                edges.append(
-                    (
-                        x + FLOW_NODE_WIDTH / 2,
-                        top + height,
-                        child_x + FLOW_NODE_WIDTH / 2,
-                        child_y,
-                        _role_text(role),
+    def place_branch(role: str, child: Mapping[str, Any], x: float, top: float, width: float) -> tuple[dict[str, Any], dict[str, Any], float]:
+        entries = branch_entries(child, role)
+        placed: list[dict[str, Any]] = []
+        current_top = top
+        for source, kind, label in entries:
+            minimum = 78.0 if kind == "table" else 60.0
+            placed.append(add_node(kind, label, x, current_top, width, minimum=minimum))
+            current_top = placed[-1]["y"] + placed[-1]["height"] + FLOW_GAP
+        if not placed:
+            placed.append(add_node("value", "value", x, top, width))
+        by_source = {id(source): node for source, node in zip((item[0] for item in entries), placed)}
+        source_to_node = {id(source): node for source, _, _ in entries for node in [by_source[id(source)]]}
+        for source, kind, _ in entries:
+            if kind not in {"box", "table"} or source.get("kind") != "operation":
+                continue
+            parent_node = source_to_node[id(source)]
+            for child_role, nested in _children(source):
+                if nested.get("kind") != "operation":
+                    continue
+                child_node = source_to_node.get(id(nested))
+                if child_node is not None:
+                    has_lookup_sibling = any(
+                        sibling.get("kind") == "operation"
+                        and _operation_name(sibling) in {"LOOKUP_TABLE", "LOOKUP_BRACKET"}
+                        for sibling_role, sibling in _children(source)
+                        if sibling_role != child_role
                     )
-                )
-                child_top = child_bottom + FLOW_GAP
-        return x, top, max(top + height, child_top - FLOW_GAP)
+                    route_x = x - 16.0 if has_lookup_sibling and child_node["x"] == parent_node["x"] else None
+                    add_edge(child_node, parent_node, route_x=route_x)
+        root_node = source_to_node[id(child)]
+        return placed[0], root_node, root_node["y"] + root_node["height"]
 
-    _, _, content_bottom = visit(tree, 20.0)
+    # The pilot corpus has IF_ELSE as its branch form.  Keep a conservative
+    # fallback for any future branch shape so a new cell remains visible.
+    if _operation_name(tree) not in FLOW_BRANCH_OPERATIONS:
+        node = add_node("box", _flow_operation_label(tree), FLOW_X, 20.0, FLOW_NODE_WIDTH)
+        return _render_flow_svg(nodes, edges, edge_labels)
+
+    children = _children(tree)
+    if len(children) < 4:
+        node = add_node("diamond", _branch_question(tree, row), FLOW_X, 20.0, FLOW_NODE_WIDTH, minimum=72.0)
+        return _render_flow_svg(nodes, edges, edge_labels)
+
+    source_width = 120.0
+    source_x = 8.0
+    table_x = 177.0
+    source_nodes: list[dict[str, Any]] = []
+    for role, child in children[:2]:
+        if child.get("kind") == "operation" and _operation_name(child) in {"LOOKUP_TABLE", "LOOKUP_BRACKET"}:
+            source_nodes.append(add_node("table", table_label(child, role), table_x, 20.0, 135.0, minimum=82.0))
+        else:
+            source_nodes.append(add_node("input", _math_expr(child), source_x if not source_nodes else table_x, 20.0, source_width))
+    source_bottom = max(node["y"] + node["height"] for node in source_nodes)
+    diamond_width = 160.0
+    diamond = add_node("diamond", _branch_question(tree, row), (FLOW_MAX_WIDTH - diamond_width) / 2, source_bottom + FLOW_GAP, diamond_width, minimum=72.0)
+    for source in source_nodes:
+        add_edge(source, diamond, end_x=diamond["x"] + (30.0 if source is source_nodes[0] else diamond["width"] - 30.0))
+
+    branch_top = diamond["y"] + diamond["height"] + FLOW_GAP * 2
+    branch_width = 125.0
+    left_x = 8.0
+    right_x = 187.0
+    branch_entries_for_edges: list[dict[str, Any]] = []
+    branch_roots: list[dict[str, Any]] = []
+    branch_bottoms: list[float] = []
+    for index, (role, child) in enumerate(_branch_children(tree)):
+        branch_entry, branch_root, branch_bottom = place_branch(role, child, left_x if index == 0 else right_x, branch_top, branch_width)
+        branch_entries_for_edges.append(branch_entry)
+        branch_roots.append(branch_root)
+        branch_bottoms.append(branch_bottom)
+
+    exit_x = diamond["x"] + diamond["width"] / 2
+    for index, branch_entry in enumerate(branch_entries_for_edges):
+        start_x = exit_x - 25.0 if index == 0 else exit_x + 25.0
+        add_edge(diamond, branch_entry, start_x=start_x, label=("Yes" if index == 0 else "No"))
+
+    result_label = _result_name(row)
+    result = add_node("output", result_label, (FLOW_MAX_WIDTH - 140.0) / 2, max(branch_bottoms) + FLOW_GAP * 2, 140.0, minimum=60.0)
+    for branch_root in branch_roots:
+        add_edge(branch_root, result)
+    return _render_flow_svg(nodes, edges, edge_labels)
+
+
+def _render_flow_svg(nodes: list[dict[str, Any]], edges: list[dict[str, Any]], edge_labels: list[dict[str, Any]]) -> str:
+    """Validate and serialize the shared flow layout."""
+
+    directions = []
+    for edge in edges:
+        dx = edge["end_x"] - edge["start_x"]
+        dy = edge["end_y"] - edge["start_y"]
+        direction = (0 if abs(dx) < 0.01 else (1 if dx > 0 else -1), 0 if abs(dy) < 0.01 else (1 if dy > 0 else -1))
+        directions.append((round(edge["start_x"], 2), round(edge["start_y"], 2), direction))
+    if len(directions) != len(set(directions)):
+        raise ValueError("flow connectors share a start point and direction")
+
+    def label_box(label: Mapping[str, Any]) -> tuple[float, float, float, float]:
+        lines = _wrapped_lines(_text(label["text"]), 18)
+        width = max(len(line) for line in lines) * 7.0 + 4.0
+        height = len(lines) * 16.0
+        return label["x"] - width / 2, label["y"] - height + 2.0, width, height
+
+    for label in edge_labels:
+        lx, ly, lw, lh = label_box(label)
+        for node in nodes:
+            if lx < node["x"] + node["width"] and lx + lw > node["x"] and ly < node["y"] + node["height"] and ly + lh > node["y"]:
+                raise ValueError(
+                    f"flow label {label['text']!r} falls inside {node['kind']} node box "
+                    f"at {node['x']},{node['y']},{node['width']},{node['height']}"
+                )
+
     max_x = FLOW_MAX_WIDTH
-    max_y = max(130.0, content_bottom + 24.0)
+    max_y = max(130.0, max(node["y"] + node["height"] for node in nodes) + 24.0)
     svg_parts = [
-        f'<svg class="flowchart-svg" width="{max_x:g}" height="{max_y:g}" viewBox="0 0 {max_x:g} {max_y:g}" role="img" aria-label="Generated flowchart">',
+        f'<svg class="flowchart-svg" width="{max_x:g}" height="{max_y:g}" viewBox="0 0 {max_x:g} {max_y:g}" role="img" aria-label="Generated flowchart" data-connector-starts-unique="true" data-edge-labels-outside-nodes="true">',
         '<defs><marker id="arrowhead" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 z" /></marker></defs>',
     ]
-    for start_x, start_y, end_x, end_y, label in edges:
-        midpoint = (start_y + end_y) / 2
-        svg_parts.append(
-            f'<path class="svg-edge" d="M {start_x:g} {start_y:g} C {start_x:g} {midpoint:g}, {end_x:g} {midpoint:g}, {end_x:g} {end_y:g}" marker-end="url(#arrowhead)" />'
-        )
-        svg_parts.append(_svg_lines(8.0, midpoint, label, width=18))
-    for kind, x, y, width, height, label in nodes:
+    for edge in edges:
+        midpoint = (edge["start_y"] + edge["end_y"]) / 2
+        route_x = edge.get("route_x")
+        if route_x is None:
+            path = f"M {edge['start_x']:g} {edge['start_y']:g} C {edge['start_x']:g} {midpoint:g}, {edge['end_x']:g} {midpoint:g}, {edge['end_x']:g} {edge['end_y']:g}"
+        else:
+            path = f"M {edge['start_x']:g} {edge['start_y']:g} C {route_x:g} {edge['start_y']:g}, {route_x:g} {edge['end_y']:g}, {edge['end_x']:g} {edge['end_y']:g}"
+        svg_parts.append(f'<path class="svg-edge" d="{path}" marker-end="url(#arrowhead)" />')
+    for label in edge_labels:
+        svg_parts.append(_svg_lines(label["x"], label["y"], label["text"], width=18))
+    for node in nodes:
+        kind = node["kind"]
+        x, y, width, height, label = node["x"], node["y"], node["width"], node["height"], node["label"]
         if kind == "diamond":
             points = f"{x + width / 2:g},{y:g} {x + width:g},{y + height / 2:g} {x + width / 2:g},{y + height:g} {x:g},{y + height / 2:g}"
             svg_parts.append(f'<polygon class="svg-diamond" points="{points}" />')
-            svg_parts.append(_svg_lines(x + 30, y + 25, label, width=24))
+            svg_parts.append(_svg_lines(x + 30, y + 25, label, width=max(12, int(width / 7))))
         else:
-            svg_parts.append(f'<rect class="svg-box" x="{x:g}" y="{y:g}" width="{width:g}" height="{height:g}" rx="8" />')
-            svg_parts.append(_svg_lines(x + 12, y + 25, label, width=25))
+            css_class = {"table": "svg-table-node", "input": "svg-input", "output": "svg-output"}.get(kind, "svg-box")
+            svg_parts.append(f'<rect class="{css_class}" x="{x:g}" y="{y:g}" width="{width:g}" height="{height:g}" rx="8" />')
+            svg_parts.append(_svg_lines(x + 10, y + 22, label, width=max(10, int(width / 7))))
     svg_parts.append("</svg>")
     return "".join(svg_parts)
 
@@ -549,16 +793,18 @@ def _finding_html(row: Mapping[str, Any]) -> str:
 
 
 def render_flowchart(row: Mapping[str, Any]) -> str:
-    """Render a branch, lookup table, operation, or finding in the flow column."""
+    """Render a branch, lookup table, chain, operation, or finding."""
 
     tree = row.get("graph", {}).get("tree") if isinstance(row.get("graph"), Mapping) else None
     if not isinstance(tree, Mapping):
         return _finding_html(row)
     if _operation_name(tree) in {"LOOKUP_TABLE", "LOOKUP_BRACKET"}:
         return _lookup_table_html(row, tree)
-    if not _has_flow_branch(tree):
-        return _operation_math_html(row, tree)
-    return _flowchart_svg(row, tree)
+    if _has_flow_branch(tree):
+        return _flowchart_svg(row, tree)
+    if _operation_count(tree) > 1:
+        return _operation_chain_html(row, tree)
+    return _operation_math_html(row, tree)
 
 
 RENDERERS: dict[str, Callable[[Mapping[str, Any]], str]] = {
@@ -673,6 +919,7 @@ def _render_inventory(panel: Mapping[str, Any]) -> dict[str, Any]:
     denominator = len(panel.get("panels", []))
     for name in RENDERING_NAMES:
         sizes = [item["size"] for item in inventory[name]]
+        svg_items = [item for item in inventory[name] if item.get("svg_dimensions") is not None]
         metrics[name] = {
             "unit": _metric_unit(name),
             "attempted": denominator,
@@ -690,11 +937,21 @@ def _render_inventory(panel: Mapping[str, Any]) -> dict[str, Any]:
                     "line": item["line"],
                     **item["svg_dimensions"],
                 }
-                for item in inventory[name]
+                for item in svg_items
                 if item.get("svg_dimensions") is not None
             ],
         }
-    return {"inventory": inventory, "failures": failures, "metrics": metrics}
+    flow_svg_items = [item for item in inventory["flowchart"] if item.get("svg_dimensions") is not None]
+    geometry_checks = {
+        "svg_count": len(flow_svg_items),
+        "connector_start_directions_unique": all(
+            'data-connector-starts-unique="true"' in item["content"] for item in flow_svg_items
+        ),
+        "edge_labels_outside_nodes": all(
+            'data-edge-labels-outside-nodes="true"' in item["content"] for item in flow_svg_items
+        ),
+    }
+    return {"inventory": inventory, "failures": failures, "metrics": metrics, "geometry_checks": geometry_checks}
 
 
 def build_comparison(panel: Mapping[str, Any]) -> dict[str, Any]:
@@ -731,6 +988,7 @@ def build_comparison(panel: Mapping[str, Any]) -> dict[str, Any]:
         "denominator": panel.get("denominator", 0),
         "fixed_cells": [f"{document_id} line {line}" for document_id, line in FIXED_CELLS],
         "metrics": rendered["metrics"],
+        "geometry_checks": rendered["geometry_checks"],
         "failures": rendered["failures"],
         "inventory": rendered["inventory"],
         "selected": selected,
@@ -816,6 +1074,17 @@ def render_html(comparison: Mapping[str, Any]) -> str:
         + (f"<ul>{''.join(svg_items)}</ul>" if svg_items else "<p>No SVGs were produced.</p>")
         + "</details>"
     )
+    geometry = comparison.get("geometry_checks") if isinstance(comparison.get("geometry_checks"), Mapping) else {}
+    connector_status = "checked" if geometry.get("connector_start_directions_unique") else "FAILED"
+    label_status = "checked" if geometry.get("edge_labels_outside_nodes") else "FAILED"
+    geometry_html = (
+        "<p class=\"geometry-checks\">Flowchart geometry: "
+        f"{escape(_text(geometry.get('svg_count', 0)))} SVGs checked; "
+        f"connector start points and directions unique: "
+        f"{connector_status}; "
+        f"edge labels outside every other node box: "
+        f"{label_status}.</p>"
+    )
     return f'''<!doctype html>
 <html lang="en">
 <head>
@@ -844,6 +1113,11 @@ th {{ background: #e4eaf0; }}
 pre {{ margin: 0; min-height: 100px; white-space: pre-wrap; overflow-wrap: anywhere; font: .78rem/1.35 Consolas, monospace; }}
 .flowchart-svg {{ display: block; width: min(100%, 320px); height: auto; background: #fbfcfd; border: 1px solid #b4c0cb; }}
 .lookup-table-wrap, .operation-math, .review-finding {{ min-height: 100px; padding: 10px; border: 1px solid #8795a5; background: #fbfcfd; }}
+.operation-chain {{ min-height: 100px; padding: 10px; border: 1px solid #8795a5; background: #fbfcfd; }}
+.chain-box {{ padding: 9px 10px; border: 2px solid #40566d; border-radius: 8px; background: #e7f0f8; overflow-wrap: anywhere; }}
+.chain-box code {{ font: .86rem Consolas, monospace; }}
+.chain-step {{ display: block; margin-bottom: 5px; color: #526171; font-size: .72rem; font-weight: bold; text-transform: uppercase; }}
+.chain-then {{ margin: 5px 0; color: #526171; font-size: .78rem; text-align: center; }}
 .review-finding {{ border: 2px solid #bd3b3b; background: #fff0f0; color: #8b1d1d; }}
 .flow-kind {{ margin-bottom: 8px; color: #526171; font-size: .78rem; font-weight: bold; text-transform: uppercase; letter-spacing: .05em; }}
 .operation-math code {{ font: .9rem Consolas, monospace; overflow-wrap: anywhere; }}
@@ -852,10 +1126,14 @@ pre {{ margin: 0; min-height: 100px; white-space: pre-wrap; overflow-wrap: anywh
 .lookup-table th, .lookup-table td {{ border: 1px solid #b4c0cb; padding: 5px 6px; text-align: left; vertical-align: top; }}
 .lookup-table thead th {{ background: #e4eaf0; }}
 .svg-box {{ fill: #e7f0f8; stroke: #40566d; stroke-width: 2; }}
+.svg-input {{ fill: #f3f6f8; stroke: #526171; stroke-width: 2; }}
+.svg-output {{ fill: #e7f0f8; stroke: #1f6a45; stroke-width: 2; }}
+.svg-table-node {{ fill: #eef7ee; stroke: #356b42; stroke-width: 2; }}
 .svg-diamond {{ fill: #fff3d1; stroke: #9a6b13; stroke-width: 2; }}
 .svg-edge {{ fill: none; stroke: #526171; stroke-width: 1.5; }}
 .svg-edge + text {{ fill: #526171; font-size: 12px; }}
 .svg-label {{ fill: #18212b; font-size: 12px; }}
+.geometry-checks {{ margin-top: 10px; font-weight: bold; }}
 details {{ margin-top: 10px; }}
 @media (max-width: 1500px) {{ .rendering-grid {{ grid-template-columns: repeat(2, minmax(320px, 1fr)); }} .rendering-card:nth-child(3) {{ border-left: 0; border-top: 1px solid #d4dce4; }} .rendering-card:nth-child(n+3) {{ border-top: 1px solid #d4dce4; }} }}
 @media (max-width: 700px) {{ body {{ padding: 8px; }} .rendering-grid {{ grid-template-columns: 1fr; }} .rendering-card, .rendering-card:nth-child(3) {{ border-left: 0; border-top: 1px solid #d4dce4; }} .rendering-card:first-child {{ border-top: 0; }} }}
@@ -866,6 +1144,7 @@ details {{ margin-top: 10px; }}
 <p>{escape(f"{_text(comparison.get('denominator'))} printed anchors evaluated. {failure_note}")}</p>
 <p>Each option is generated from the candidate graph; the form face and instruction text remain source evidence for comparison.</p>
 <table><thead><tr><th>Rendering</th><th>Produced</th><th>Failures</th><th>Empty/placeholder</th><th>Size distribution</th><th>Median</th><th>Maximum</th></tr></thead><tbody>{"".join(metric_rows)}</tbody></table>
+{geometry_html}
 {svg_html}
 {failure_html}</section>
 {"".join(cards)}

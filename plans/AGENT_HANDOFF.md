@@ -21,7 +21,7 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## BALL
 
-**BALL: WORKER - M20-S79 (DIVERGING BRANCHES, CHAINS, TABLES AS NODES). PILOT ROUND.**
+**BALL: ARCHITECT - M20-S79 (DIVERGING BRANCHES, CHAINS, TABLES AS NODES). PILOT ROUND.**
 **S78 ACCEPTED at `fad5d57`.** John, 2026-08-07: the lookup-table form "is better", and the TREE
 rendering of 6251 line 18 is the structure he wants drawn - *"is it difficult to make this into a
 flow chart?"* It is not. **RULE 9 REFINED** in `docs/review-notation.md`: the gate is operation
@@ -189,6 +189,39 @@ node's box** - state both as checked, since they are what made S78 unreadable. C
 finding carries its reason.
 
 **Do not choose for John.** He still has not picked a rendering.
+
+**WORKER COMPLETION (2026-08-07; M20-S79 implementation, awaiting Architect acceptance).** The
+pilot renderer now keeps nested operations out of branch boxes: lookup operations render as table
+nodes, dependent non-branching operations render as a vertical chain, and IF_ELSE arms leave
+different diamond ports, run in separate columns, and rejoin at the result. Form 6251 line 18 now
+shows line 17 and a threshold table feeding `line 17 <= threshold?`, with separate rate, offset,
+and subtraction nodes. Form 2441 line 20 shows `min(line 17, line 18, line 19)` then `max(amount,
+0)`. Missing operations preserve the actionable reason in human wording: `lookup table inputs
+must be named leaf values with roles`, without `ValueError` or payload text. The SVG builder checks
+that connector start points and directions are unique and that edge labels do not enter another
+node box; the checks are reported on the generated page.
+
+**S79 REAL-CORPUS EVIDENCE.** RAN:
+`.venv\Scripts\python.exe pilot\render_options.py C:\tmp\m20_s68_candidate --output C:\Users\devbox\projects\tax_graph\.test_tmp2\m20_s79_renderings.html`
+-> **157/157 produced for every renderer; zero failures and zero empty/placeholder outputs.**
+Flowchart distribution was `{1: 153, 6: 1, 8: 2, 16: 1}`; SVGs were `form_1040_2025 line 34:
+320 x 416`, `form_6251_2025 line 18: 320 x 676`, and `form_6251_2025 line 39: 320 x 676`.
+Geometry checks passed for all 3 SVGs. The generated page is the review artifact, not a promoted
+graph artifact.
+
+**S79 TEST EVIDENCE.** RAN:
+`$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp2'; .venv\Scripts\python.exe -m pytest pilot\test_cell_access.py -q`
+-> **2 passed, 1 warning.** RAN:
+`$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp2'; .venv\Scripts\python.exe -m pytest pilot\test_review_panel.py -q`
+-> **8 passed, 1 warning.** RAN:
+`$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp2'; .venv\Scripts\python.exe -m pytest pilot\test_instruction_parser.py -q`
+-> **4 passed, 1 warning.** RAN:
+`$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp2'; .venv\Scripts\python.exe -m pytest pilot\constructions\test_measure.py -q`
+-> **5 passed, 1 warning.** RAN:
+`$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp2'; .venv\Scripts\python.exe -m pytest pilot\test_render_options.py -q`
+-> **9 passed, 1 warning.** RAN: `.venv\Scripts\python.exe tools\check_ascii.py` -> **ASCII check OK.**
+The warnings are the known permission failure writing the pre-existing `.pytest_cache`. NOT RUN:
+provider and full-suite commands, per pilot rules.
 
 **How to rebuild a candidate** - the two commands, in order, because the second is worthless
 without a run from current code:

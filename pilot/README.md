@@ -67,20 +67,24 @@ Run the pilot tests:
 
     .venv\Scripts\python.exe -m pytest pilot\test_review_panel.py -q
 
-## M20-S78 rendering comparison
+## M20-S79 rendering comparison
 
-`render_options.py` renders the same five graph-backed cells five ways: a vertical SVG for true
-branches, a lookup table for a root lookup, an IRS-style worksheet, named math equations,
-registry-worded English, and the current role-labelled tree. The fixed cells span a branch, the
-sixteen-band table, nested arithmetic, one subtraction, and an unresolved operation. Every cell
-has a non-empty review surface; an unavailable operation is a named finding, never a raw error or
-payload dump.
+`render_options.py` renders the same five graph-backed cells five ways: a flow SVG for true
+branches, a lookup table for a root lookup, an operation chain for dependent arithmetic, an
+IRS-style worksheet, named math equations, registry-worded English, and the current role-labelled
+tree. Branch diagrams keep each operation in its own node, show lookup tables as nodes, split the
+arms horizontally, and rejoin them at the result. The fixed cells span a branch, the sixteen-band
+table, nested arithmetic, one subtraction, and an unresolved operation. Every cell has a non-empty
+review surface; an unavailable operation carries its actionable finding reason, never a raw error
+or payload dump.
 
 The comparison also runs every renderer against every printed anchor before it writes the page.
 Its summary reports produced/attempted counts, failures, empty/placeholder counts, median/max
-size, and the declared width and height of every SVG. Flow SVGs are constrained to a 320-unit
-column width and grow vertically. Run it against a candidate workspace with:
+size, and the declared width and height of every SVG. It also checks that no two connectors share
+a start point and direction and that no edge label falls inside another node's box. Flow SVGs are
+constrained to a 320-unit column width and grow vertically. Run it against a candidate workspace
+with:
 
-    .venv\Scripts\python.exe pilot\render_options.py C:\path\to\candidate --output C:\tmp\m20_s77_renderings.html
+    .venv\Scripts\python.exe pilot\render_options.py C:\path\to\candidate --output C:\tmp\m20_s79_renderings.html
 
 The page is a projection only. It does not call a provider or write graph artifacts.

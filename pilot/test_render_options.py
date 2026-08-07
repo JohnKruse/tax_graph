@@ -1,4 +1,4 @@
-"""Tests for the M20-S77 five-rendering comparison pilot."""
+"""Tests for the M20-S79 rendering comparison pilot."""
 
 from __future__ import annotations
 
@@ -38,12 +38,12 @@ def test_fixed_cells_are_the_same_across_all_options_and_line_25_is_absent() -> 
     for item in hole["renderings"].values():
         assert "line 25" in item["content"].lower()
         assert "review finding" in item["content"].lower()
-        assert "generated operation needs review" in item["content"].lower()
+        assert "lookup table inputs must be named leaf values with roles" in item["content"].lower()
         assert "valueerror" not in item["content"].lower()
         assert "payload" not in item["content"].lower()
 
 
-def test_s78_uses_a_table_math_or_finding_for_non_branch_cells() -> None:
+def test_s79_uses_a_table_chain_math_or_finding_for_non_branch_cells() -> None:
     comparison = _comparison()
 
     selected = {(item["document_id"], item["line"]): item for item in comparison["selected"]}
@@ -53,7 +53,10 @@ def test_s78_uses_a_table_math_or_finding_for_non_branch_cells() -> None:
 
     assert '<table class="lookup-table">' in lookup
     assert "<svg" not in lookup
-    assert "line 20 = max(0, min(line 17, line 18, line 19))" in operation
+    assert '<div class="operation-chain">' in operation
+    assert operation.count('class="chain-box"') == 2
+    assert "min(line 17, line 18, line 19)" in operation
+    assert "max(amount, 0)" in operation
     assert "<svg" not in operation
     assert subtraction["renderings"]["flowchart"]["content"].find(
         "line 23 = line 15 - line 22"
@@ -88,6 +91,21 @@ def test_flowchart_and_registry_english_are_real_renderings() -> None:
     assert "Choose between two values using a comparison." in english
 
 
+def test_s79_branch_has_separate_inputs_tables_arms_and_rejoin() -> None:
+    comparison = _comparison()
+    flow = comparison["selected"][0]["renderings"]["flowchart"]["content"]
+
+    assert flow.count('<polygon class="svg-diamond"') == 1
+    assert flow.count('<rect class="svg-table-node"') == 2
+    assert "line 17 &lt;= threshold?" in flow
+    assert "line 17 * 0.26" in flow
+    assert "line 17 * 0.28" in flow
+    assert "amount - offset" in flow
+    assert "line 18" in flow
+    assert 'data-connector-starts-unique="true"' in flow
+    assert 'data-edge-labels-outside-nodes="true"' in flow
+
+
 def test_html_contains_the_five_side_by_side_options_and_measurements() -> None:
     html = render_html(_comparison())
 
@@ -102,9 +120,11 @@ def test_html_contains_the_five_side_by_side_options_and_measurements() -> None:
     assert "&lt;table class=\"" not in html
     assert "valueerror" not in html.lower()
     assert "&#x27;kind&#x27;" not in html
+    assert "connector start points and directions unique: checked" in html
+    assert "edge labels outside every other node box: checked" in html
 
 
-def test_s78_reports_vertical_svg_dimensions_and_zero_placeholders() -> None:
+def test_s79_reports_vertical_svg_dimensions_and_zero_placeholders() -> None:
     comparison = _comparison()
 
     for name, metric in comparison["metrics"].items():
@@ -117,6 +137,11 @@ def test_s78_reports_vertical_svg_dimensions_and_zero_placeholders() -> None:
     assert all(item["height"] > 0 for item in dimensions)
     line_18 = next(item for item in dimensions if item["line"] == "18")
     assert line_18["height"] > line_18["width"]
+    assert comparison["geometry_checks"] == {
+        "svg_count": 3,
+        "connector_start_directions_unique": True,
+        "edge_labels_outside_nodes": True,
+    }
 
 
 def test_cli_writes_the_comparison_artifact(tmp_path: Path) -> None:
