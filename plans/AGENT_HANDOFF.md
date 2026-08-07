@@ -21,11 +21,9 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## BALL
 
-**BALL: ARCHITECT - M20-S79 (DIVERGING BRANCHES, CHAINS, TABLES AS NODES). PILOT ROUND.**
-**S78 ACCEPTED at `fad5d57`.** John, 2026-08-07: the lookup-table form "is better", and the TREE
-rendering of 6251 line 18 is the structure he wants drawn - *"is it difficult to make this into a
-flow chart?"* It is not. **RULE 9 REFINED** in `docs/review-notation.md`: the gate is operation
-COUNT, not branch presence.
+**BALL: WORKER - M20-S80 (CLICK TO ENLARGE). PILOT ROUND, small.**
+**S79 ACCEPTED at `a94a8aa`** - branches diverge, chains work, tables are nodes, findings carry
+their reason. John still needs to see the options at full size before choosing a rendering.
 
 **S74 ACCEPTED at `b153e94`. S75 ACCEPTED at `b2982c6`.**
 **Full suite 2026-08-07: 20 failed, 850 passed, 8 skipped, 1 xfailed in 0:57:34** - exactly the
@@ -45,10 +43,10 @@ named intermediates.
 `incomplete_evidence` line 8, `quote_not_verbatim` line 21, the standing line 25). The baseline run
 predates BOTH S71 and S74, so the delta cannot be attributed without a third run. All four fail for
 stated reasons rather than repairing into something unverifiable.
-Active spec is under Current round. **S76 IS DEFERRED to queue position 1** (John, 2026-08-07):
-Codex is on rendering options while the Architect runs the S74 suite. John's arc, 2026-08-07: **fix
-column 1, then assess column 2, and column 3 should then fall out.** S76 is the column-1 fix
-reaching production and returns as soon as the suite is clear.
+Active spec is under Current round. **S76 IS DEFERRED to queue position 1** (John, 2026-08-07);
+**the S74 suite has FINISHED, so `tax_graph/` is free and S76 is unblocked whenever John wants it.**
+John's arc, 2026-08-07: **fix column 1, then assess column 2, and column 3 should then fall out.**
+S76 is the column-1 fix reaching production.
 
 **S71 ACCEPTED at `e79f2cd`; S70 at `977e977`; S72 at `b18d9f1`; S73 at `78516bc`.**
 
@@ -136,92 +134,43 @@ resolve now, and whether they resolve to the RIGHT line is unreviewed.
 
 ## Current round
 
-**M20-S79 IN FLIGHT (Worker, 2026-08-07). BRANCHES THAT DIVERGE, CHAINS, AND TABLES AS NODES.**
+**M20-S80 IN FLIGHT (Worker, 2026-08-07). CLICK TO ENLARGE. SMALL ROUND.**
 
 **PILOT RULES BIND.** Everything under `pilot/`; tests in the pilot, out of `tests/`; no full-suite
-run; no provider run. `tax_graph/` is free now - the S74 suite has finished - but this round has no
-business there.
+run; no provider run.
 
-**S78 IS ACCEPTED at `fad5d57`**, verified by the Architect: zero escaped markup, zero payload dumps,
-zero `ValueError`, zero node ids, zero `floor`; SVG **320x348 at 1:1**, vertical and legible; 2441
-line 8 renders as a real lookup table; and 2441 line 23's English reads *"Subtract line 22 from line
-15."*, matching the IRS wording. **John: the lookup-table form "is better."** Keep all of it.
+**S79 IS ACCEPTED at `a94a8aa`**, verified by the Architect on the artifact rather than the report:
+branch arms diverge (Yes box at x=8, No at x=187, connectors leaving the diamond at different points
+and rejoining at line 18), **zero duplicate start+direction pairs**, **zero Yes/No labels inside a
+box**, the threshold and offset are their own table nodes rather than inlined into the diamond,
+2441 line 20 renders as a two-step chain using `amount`, and line 25's finding carries its real
+reason in plain wording with no dict and no `ValueError`.
 
-**THE TREE IS THE SKELETON WE WANT.** John pasted the tree rendering of 6251 line 18 and said *"this
-makes sense to me... is it difficult to make this into a flow chart?"* It is not difficult: **every
-named slot is already an edge label and every nested operation is already a box.** What is missing is
-layout, not information. That tree is the target structure for the diagram.
+**THE ASK.** John, 2026-08-07: *"can you let me click on one of these underdisplayed SVGs and see it
+in a bigger popout or something?"*
 
-**FOUR DEFECTS TO FIX.**
+**THE CAUSE IS THE COMPARISON PAGE, NOT THE DIAGRAM.** Five renderings side by side squeeze a
+320-unit-wide SVG into roughly a 200px column. **The real review panel has ONE flow column and will
+not have this problem** - so fix the comparison page, and do not shrink or re-lay-out the diagram to
+suit it.
 
-1. **BRANCH ARMS DO NOT DIVERGE.** Measured on the S78 SVG: the diamond's bottom vertex is
-   `(160,110)`, and **both** connectors are `M 160 110` running straight down the same x - one to the
-   Yes box at y=134, the other continuing **through it** to the No box at y=218. They overlap, so it
-   reads as a single exit. Worse, the **`No` label sits at y=164, inside the Yes box** (y 134-194).
-   John: *"an or diamond with ONE out arrow!"* **Arms must separate horizontally and rejoin.**
-2. **ONE OPERATION PER BOX; STOP INLINING.** The S78 diamond contains
-   `line 17 <= lookup(filing status: default -> $239,100; married filing separately -> $119,550)?`
-   across four wrapped lines. That is the most compound thing on the page and it breaks rule 5.
-   **The threshold lookup is its own node feeding the diamond**, which also restores the
-   status-dependent decision the notation doc flags as an open question.
-3. **MULTI-STEP CELLS GET A CHAIN.** Rule 9 is refined: the gate is **operation count, not branch
-   presence**. `form_2441_2025` line 20 is `min(line 17, line 18, line 19)` then `max(amount, 0)` -
-   **two operations, so two boxes**, not a one-line math form.
-4. **RESTORE THE REASON ON A FINDING.** `form_2441_2025` line 25 now reads *"Review finding -
-   generated operation needs review."* That is an over-correction of the Architect's "no payload
-   dumps": the dict went, and so did the information. The real reason is `LOOKUP_TABLE arguments must
-   be named leaf operands with a role`. **Say that, in human wording, without the dict or the
-   `ValueError`.** A reason-free finding is unreviewable, which defeats the panel.
+1. **Click any diagram to open it enlarged** - a lightbox or `<dialog>`, at a size where the text is
+   comfortably readable. Click outside or press Escape to close. The 6251 line 18 SVG is 320x676, so
+   the enlarged view must **scroll vertically rather than scale down to fit**.
+2. **Self-contained.** The page is opened from the filesystem, so **no external scripts, fonts or
+   stylesheets** - inline everything. It must work from `file://`.
+3. **Apply it to the lookup TABLE renderings too**, not only SVG. 2441 line 8's sixteen bands are
+   just as cramped in a fifth of the page.
+4. **Keep every S79 guarantee.** Do not change diagram geometry, sizes, or the divergence and label
+   checks. Re-report them so a regression is visible.
 
-**TARGET LAYOUT for 6251 line 18** - seven boxes, each one operation:
-`line 17` and a **threshold table** (`default $239,100` / `married filing separately $119,550`) feed
-a diamond `line 17 <= threshold?`; **Yes** -> `line 17 * 0.26`; **No** -> `line 17 * 0.28` ->
-`amount - offset`, with an **offset table** (`$4,782` / `$2,391`) feeding it; both arms rejoin at
-`line 18`.
+**Evidence required.** Regenerate the options page and confirm: the enlarged view opens and closes,
+nothing loads from the network, and the S79 checks still pass - empty/placeholder cells zero, no
+duplicate connector start+direction, no label inside another box, and every SVG's width and height
+unchanged.
 
-**A TABLE IS A NODE SHAPE, NOT A SEPARATE RENDERING.** It may stand alone as on 2441 line 8, or sit
-inside a flowchart as on 6251 line 18. One vocabulary.
-
-**Evidence required.** Regenerate the options page. Report per rendering: empty/placeholder cells
-(**target zero**), the size distribution, and **every SVG's width and height**. Additionally:
-**no two connectors may share a start point and direction**, and **no label may fall inside another
-node's box** - state both as checked, since they are what made S78 unreadable. Confirm the line 25
-finding carries its reason.
-
-**Do not choose for John.** He still has not picked a rendering.
-
-**WORKER COMPLETION (2026-08-07; M20-S79 implementation, awaiting Architect acceptance).** The
-pilot renderer now keeps nested operations out of branch boxes: lookup operations render as table
-nodes, dependent non-branching operations render as a vertical chain, and IF_ELSE arms leave
-different diamond ports, run in separate columns, and rejoin at the result. Form 6251 line 18 now
-shows line 17 and a threshold table feeding `line 17 <= threshold?`, with separate rate, offset,
-and subtraction nodes. Form 2441 line 20 shows `min(line 17, line 18, line 19)` then `max(amount,
-0)`. Missing operations preserve the actionable reason in human wording: `lookup table inputs
-must be named leaf values with roles`, without `ValueError` or payload text. The SVG builder checks
-that connector start points and directions are unique and that edge labels do not enter another
-node box; the checks are reported on the generated page.
-
-**S79 REAL-CORPUS EVIDENCE.** RAN:
-`.venv\Scripts\python.exe pilot\render_options.py C:\tmp\m20_s68_candidate --output C:\Users\devbox\projects\tax_graph\.test_tmp2\m20_s79_renderings.html`
--> **157/157 produced for every renderer; zero failures and zero empty/placeholder outputs.**
-Flowchart distribution was `{1: 153, 6: 1, 8: 2, 16: 1}`; SVGs were `form_1040_2025 line 34:
-320 x 416`, `form_6251_2025 line 18: 320 x 676`, and `form_6251_2025 line 39: 320 x 676`.
-Geometry checks passed for all 3 SVGs. The generated page is the review artifact, not a promoted
-graph artifact.
-
-**S79 TEST EVIDENCE.** RAN:
-`$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp2'; .venv\Scripts\python.exe -m pytest pilot\test_cell_access.py -q`
--> **2 passed, 1 warning.** RAN:
-`$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp2'; .venv\Scripts\python.exe -m pytest pilot\test_review_panel.py -q`
--> **8 passed, 1 warning.** RAN:
-`$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp2'; .venv\Scripts\python.exe -m pytest pilot\test_instruction_parser.py -q`
--> **4 passed, 1 warning.** RAN:
-`$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp2'; .venv\Scripts\python.exe -m pytest pilot\constructions\test_measure.py -q`
--> **5 passed, 1 warning.** RAN:
-`$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp2'; .venv\Scripts\python.exe -m pytest pilot\test_render_options.py -q`
--> **9 passed, 1 warning.** RAN: `.venv\Scripts\python.exe tools\check_ascii.py` -> **ASCII check OK.**
-The warnings are the known permission failure writing the pre-existing `.pytest_cache`. NOT RUN:
-provider and full-suite commands, per pilot rules.
+**Do not choose for John.** This round exists so he can finally see the options at full size and pick
+one.
 
 **How to rebuild a candidate** - the two commands, in order, because the second is worthless
 without a run from current code:
