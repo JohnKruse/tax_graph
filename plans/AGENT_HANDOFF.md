@@ -21,10 +21,37 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## BALL
 
-**BALL: WORKER - M20-S81 (RAISE EXPRESSION DEPTH).**
-**S80 implemented at `8a9b2a0`; S81 is the next approved queue slice.**
-**S79 ACCEPTED at `a94a8aa`** - branches diverge, chains work, tables are nodes, findings carry
-their reason. John still needs to see the options at full size before choosing a rendering.
+**BALL: ARCHITECT - no round in flight. John is choosing the review-panel layout.**
+**S81 ACCEPTED at `c89dd53`; temperature pinned at `50a64bf`.**
+**Full suite 2026-08-07: 20 failed, 851 passed, 8 skipped, 1 xfailed in 0:57:21** - exactly the
+known pre-existing set, zero new failures, passes 850 -> 851 on S81's own tests.
+
+**2441 LINE 25 DERIVES after nine failed runs**, and the encoding sidesteps a gap we thought was
+blocking: `max(0, if_else(line 22, 0, min(line 20, line 21), min(line 20, line 21) - line 24))`.
+It tests **line 22 against 0** rather than needing a boolean predicate, using the form's own
+structure - checking "No" makes line 22 read -0-, checking "Yes" makes it an amount. **Its
+correctness still rests on the unstored comparator**, the same gap measured across 36 anchors.
+
+**NEW DEFECT, from S74's inventory being too broadly scoped.** `form_6251_2025` line 13 now derives
+`max(qdcgt line 4, instructions_schedule_d_2025 line 13, 0)` - an operand pointing at an
+**instructions booklet**. A formula may reference forms and worksheets; it must never reference an
+instructions document. Scope the inventory and make an instructions-document operand a named
+finding.
+
+**TEMPERATURE IS PINNED TO 0, AND THE CONFIG LINE ALONE WOULD NOT HAVE DONE IT.**
+`derive_cells` was called without a `temperature` argument, so the derivation path used the
+parameter default of `None` and never read `llm.temperature` - while `generator.py`, `critic.py`,
+`micro.py` and `background.py` all did. Fixed, and the helper preserves an explicit zero because
+**`0` is falsy** and a truthiness test would have discarded the pin silently. Live-verified that
+`openai/gpt-5.6-luna` accepts it. **Caveats recorded in the example config:** this reduces variance
+without removing it (batched inference is not bit-deterministic), and `allow_fallbacks: true` means
+a routed endpoint may still reject or ignore it.
+
+**BASELINE RESET. EVERY CROSS-RUN COMPARISON MADE BEFORE 2026-08-07 IS UNATTRIBUTABLE.** All prior
+runs sampled at the provider default, so diffs conflated real change with sampling noise - including
+the 2441 "1 error -> 4 errors" and `form_1040_2025` line 35a going `repaired -> error` under S81.
+**Do not attribute those.** The next canary at temperature 0 is the new reference run.
+**Prefer invariants that hold on ANY single run over diffs between two runs.**
 
 **S74 ACCEPTED at `b153e94`. S75 ACCEPTED at `b2982c6`.**
 **Full suite 2026-08-07: 20 failed, 850 passed, 8 skipped, 1 xfailed in 0:57:34** - exactly the
@@ -103,14 +130,9 @@ clothes, and it is the reason the candidate diff cannot tell a real disagreement
 **Whoever takes the diff round converges these rather than adding a third.**
 
 **QUEUE - one line each. NOT SPECCED.**
-1. **RAISE THE EXPRESSION DEPTH BOUND** - John approved this on 2026-08-05 and it was never done.
-   `max_depth` defaults to **2** at `cells.py:382` and **no caller anywhere overrides it** (verified
-   2026-08-07). `form_2441_2025` line 25's correct tree - `IF_ELSE(line 22 checked, MIN(20,21),
-   MAX(MIN(20,21) - line 24, 0))` - is **rejected at 2, accepted at 3**; 6251 line 18 passes at 2,
-   which is why it derives and line 25 has failed **nine** consecutive runs. Cost measured at ~+1,600
-   tokens at depth 6. **NOT a one-line round:** a higher ceiling lets the model return deeper trees
-   EVERYWHERE, so acceptance is "line 25 derives correctly AND no other cell changed shape without
-   reason" - diff every expression against `C:\tmp\m20_s74_run`. Provider canary + full suite.
+1. **SCOPE THE DOCUMENT INVENTORY to forms and worksheets** - S74 included instructions booklets,
+   so `form_6251_2025` line 13 derived an operand pointing at `instructions_schedule_d_2025`. An
+   instructions-document operand must be a named finding. Small real-project round.
 2. **S76 LIFT THE INSTRUCTION PARSER into `tax_graph/`** - deferred 2026-08-07, spec recoverable at
    `bcec03d`. Real-project; the invariant test is the deliverable: no instruction section filed under
    a line absent from that form's printed-line inventory. 106 phantoms -> 0, 1040 256 -> 143.
