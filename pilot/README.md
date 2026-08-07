@@ -66,3 +66,19 @@ Run it against the M20-S71 candidate workspace:
 Run the pilot tests:
 
     .venv\Scripts\python.exe -m pytest pilot\test_review_panel.py -q
+
+## M20-S77 rendering comparison
+
+`render_options.py` renders the same five graph-backed cells five ways: a true SVG flowchart,
+an IRS-style worksheet, named math equations, registry-worded English, and the current
+role-labelled tree. The fixed cells span a branch, the sixteen-band table, nested arithmetic,
+one subtraction, and an unresolved operation. The unresolved cell is rendered as a named
+absence in every option.
+
+The comparison also runs every renderer against every printed anchor before it writes the page.
+Its summary reports produced/attempted counts, failures, and median/max size. Run it against a
+candidate workspace with:
+
+    .venv\Scripts\python.exe pilot\render_options.py C:\path\to\candidate --output C:\tmp\m20_s77_renderings.html
+
+The page is a projection only. It does not call a provider or write graph artifacts.

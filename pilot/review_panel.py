@@ -17,7 +17,10 @@ from typing import Any, Iterable, Mapping
 
 import yaml
 
-import cell_access
+try:
+    from . import cell_access
+except ImportError:
+    import cell_access
 
 
 REPORT_SUFFIX = "_derive_cells_report.yaml"

@@ -21,7 +21,8 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## BALL
 
-**BALL: WORKER - M20-S77 (FIVE FLOWCHART OPTIONS). PILOT ROUND, `pilot/` ONLY.**
+**BALL: JOHN - M20-S77 IMPLEMENTED (FIVE RENDERING OPTIONS). PILOT ROUND, `pilot/` ONLY; waiting
+for John's choice before any production notation round.**
 **S75 ACCEPTED at `b2982c6`. S74 implemented at `b153e94` and STILL UNACCEPTED** - its suite was
 stopped deliberately so the lift could proceed; ONE full-suite run now gates both rounds.
 Active spec is under Current round. **S76 IS DEFERRED to queue position 1** (John, 2026-08-07):
@@ -115,7 +116,11 @@ resolve now, and whether they resolve to the RIGHT line is unreviewed.
 
 ## Current round
 
-**M20-S77 IN FLIGHT (Worker, 2026-08-07). FIVE RENDERINGS OF THE SAME CELLS, FOR JOHN TO CHOOSE.**
+**M20-S77 IMPLEMENTED (Worker, 2026-08-07). FIVE RENDERINGS OF THE SAME CELLS, FOR JOHN TO
+CHOOSE.** Added `pilot/render_options.py` and `pilot/test_render_options.py`; the comparison page
+is generated from the candidate graph and preserves the existing role-labelled tree as control.
+`pilot/review_panel.py` now supports both script and module entry points. No production notation
+was selected or changed.
 
 **PILOT RULES BIND.** Everything under `pilot/`; tests in the pilot, out of `tests/`; no full-suite
 run; no provider run. **DO NOT EDIT `tax_graph/`** - the Architect is running the S74 suite on this
@@ -170,6 +175,31 @@ that is the prime directive, and an Architect mock is what S69 was specced to re
 **Do not choose for John.** Present all five neutrally with their measurements and let him pick.
 A recommendation in the handoff is fine; a rendering deleted because the Worker preferred another
 is not.
+
+**S77 REAL-CORPUS EVIDENCE.** RAN:
+`.venv\Scripts\python.exe -m pilot.render_options C:\tmp\m20_s68_candidate --output
+.test_tmp2\m20_s77_renderings_module.html` -> **157/157 produced, 0 failures** for every
+rendering. Flowchart max 17 arrows (median 0); worksheet max 6 rows (median 1); math max 6 lines
+(median 1); English max 533 characters (median 97); role-labelled tree max 24 lines (median 1).
+The page contains the five fixed cells and is at
+`.test_tmp2\m20_s77_renderings_module.html`.
+
+**S77 TEST EVIDENCE.** RAN:
+`$env:M20_S77_CANDIDATE='C:\tmp\m20_s68_candidate'; $env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp2'; .venv\Scripts\python.exe -m pytest pilot\test_render_options.py -q`
+-> **6 passed, 1 warning**. RAN:
+`$env:M20_S77_CANDIDATE='C:\tmp\m20_s68_candidate'; $env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp2'; .venv\Scripts\python.exe -m pytest pilot\test_review_panel.py -q`
+-> **8 passed, 1 warning**. RAN:
+`$env:M20_S77_CANDIDATE='C:\tmp\m20_s68_candidate'; $env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp2'; .venv\Scripts\python.exe -m pytest pilot\test_cell_access.py -q`
+-> **2 passed, 1 warning**. RAN:
+`$env:M20_S77_CANDIDATE='C:\tmp\m20_s68_candidate'; $env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp2'; .venv\Scripts\python.exe -m pytest pilot\test_cell_access.py pilot\test_review_panel.py pilot\test_instruction_parser.py pilot\test_render_options.py pilot\constructions\test_measure.py -q`
+-> **25 passed, 1 warning**. RAN:
+`.venv\Scripts\python.exe tools\check_ascii.py` -> **ASCII check OK**. The warnings are the
+known permission failure writing the pre-existing `.pytest_cache`; no provider run or full suite
+was performed, per pilot rules.
+
+**S77 OPEN FOR JOHN.** Choose which rendering, if any, should become the next production notation
+round. The pilot advances the queued column-3 and round-trip questions by measurement, but does
+not close either queue item until John chooses a notation.
 
 **How to rebuild a candidate** - the two commands, in order, because the second is worthless
 without a run from current code:
