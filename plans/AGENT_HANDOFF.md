@@ -21,7 +21,10 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## BALL
 
-**BALL: ARCHITECT - no round in flight. John is choosing the review-panel layout.**
+**BALL: WORKER - M20-S82 (TWO-COLUMN PANEL, POSITIONAL ARROWS). PILOT ROUND.**
+**S80 ACCEPTED at `8a9b2a0`. JOHN HAS CHOSEN THE RENDERINGS:** Tree over Math on the left third,
+flow diagram on the right two thirds. **Rule 11 in `docs/review-notation.md` is binding.**
+
 **S81 ACCEPTED at `c89dd53`; temperature pinned at `50a64bf`.**
 **Full suite 2026-08-07: 20 failed, 851 passed, 8 skipped, 1 xfailed in 0:57:21** - exactly the
 known pre-existing set, zero new failures, passes 850 -> 851 on S81's own tests.
@@ -224,6 +227,140 @@ link, or network URL**.
 blocked navigation to the generated `file://` page; no alternate browser or policy workaround was
 used. The pilot test and static artifact checks cover the emitted handlers, but this browser leg
 remains unverified for Architect acceptance.
+
+**How to rebuild a candidate** - the two commands, in order, because the second is worthless
+without a run from current code:
+
+```
+.venv\Scripts\python.exe experiments\derive_cells_s25.py --year 2025 --output-dir <RUN> --document form_1040_2025 --document form_2441_2025 --document form_6251_2025
+.venv\Scripts\python.exe -m tax_graph.cli regenerate-candidate --run-dir <RUN> --output-dir <CAND> --expected-document form_1040_2025 --expected-document form_2441_2025 --expected-document form_6251_2025
+```
+
+**ONE RED IS OURS, and S64's evidence mislabelled it.**
+`tests/test_m20_s31.py::test_all_prompt_templates_render_with_representative_values` fails with
+`ValueError: prompt has unsupported placeholder: operation_documentation`. The Worker recorded it as
+an "existing prompt fixture omission"; it is not existing. **It PASSES at `origin/main` (26eead7)
+and fails on our tree**, because S66 added `<<operation_documentation>>` to `prompts/derive_cells.md`
+without adding the token to the test's representative values. The pipeline path itself is fine - the
+canary derived 65 rows through that same template - so this is the pinned vocabulary contract test
+going red, not a product defect. Fix is the fixture, not the prompt.
+
+**The other 20 are pre-existing**, established by A/B against `origin/main` in a worktree with the
+local `.cache`, `graph/2025/_drafts`, and `build/` junctioned in so the comparison is fair: 3 fail
+identically on a bare checkout, 5 more fail identically once the artifacts are present, and all 11
+`tests/e2e/*_m15` fail identically with an empty review queue (0 documents, the known stale-queue
+condition). `tests/test_review_scope_migration_m15.py` is UNCOMPARABLE - it skips at baseline for
+missing 2441 extension artifacts and fails on ours, so it is untriaged, not cleared.
+
+**Full suite on our tree: 21 failed, 841 passed, 8 skipped, 1 xfailed.**
+
+**PYTEST_DEBUG_TEMPROOT must be a SHORT path.** A run rooted under the Claude session scratchpad
+produced **70 failures across 28 files**, every one of them `shutil.Error ... [WinError 3]` from
+MAX_PATH overflow while copying `graph/2025/_drafts` into the fixture project. The same tests pass
+on `C:\Users\devbox\AppData\Local\Temp\tgpt`. A long temp root does not fail a few tests, it fails
+whole files at once - that shape is the signature, not a code regression.
+
+**WORKER COMPLETION (2026-08-06; awaiting Architect acceptance).** M20-S70 is implemented under
+`pilot/` as `cell_access.py`, the rewired `review_panel.py` and `constructions/measure.py`, their
+tests, and README updates. `CellText.value is None` is typed absence; the label accessor reads
+`label_after` only, so an absent caption cannot fall through to candidate or anchor text. The
+accessor also owns form-face, instruction, expression, rendered wording, findings, status, and
+graph operand reads. No provider was run and no candidate or graph artifact was written.
+
+**REAL-CORPUS EVIDENCE.** RAN:
+`.venv\Scripts\python.exe pilot\review_panel.py C:\tmp\m20_s68_candidate --output .test_tmp2\m20_s70_review_panel.html`
+-> **157 anchors; 9 diagrams / 36 chains / 112 none; 92 holes; captions 8 present / 149 absent;
+instruction sections 17 present / 140 absent; operations 65 present / 92 absent**. RAN:
+`.venv\Scripts\python.exe pilot\constructions\measure.py C:\tmp\m20_s68_candidate --output .test_tmp2\m20_s70_constructions.yaml`
+-> **construction inventory written**. The panel invariant covers all 157 anchors and no returned
+caption begins and ends with the same printed line token.
+
+**TEST EVIDENCE.** RAN:
+`$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp2'; .venv\Scripts\python.exe -m pytest pilot\test_cell_access.py -q`
+-> **2 passed, 1 warning**. RAN:
+`$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp2'; .venv\Scripts\python.exe -m pytest pilot\test_review_panel.py -q`
+-> **5 passed, 1 warning**. RAN:
+`$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp2'; .venv\Scripts\python.exe -m pytest pilot\constructions\test_measure.py -q`
+-> **4 passed, 1 warning**. RAN:
+`.venv\Scripts\python.exe tools\check_ascii.py` -> **ASCII check OK**. The warning is the known
+permission failure writing the pre-existing `.pytest_cache`; the short override avoided the poisoned
+`.test_tmp`. No provider run and no full suite were performed, per pilot rules.
+
+**WORKER COMPLETION (2026-08-06; M20-S72 implementation, awaiting Architect acceptance).** The
+pilot now stops graph expansion at nested plain form-line references, renders them as `line X`,
+and hashes repeated operation subtrees so later occurrences say `same expression as above`.
+Column 3 emits no graph node ids; the `zero_floor` modelling oddity remains reported in the
+summary and the graph is unchanged. `build_panel` records per-panel arrow counts and their
+distribution. The summary and CLI now call the accessor-resolved count **instruction rows**;
+the S71 candidate has 17 such rows (4/8/5 by document) and 16 unique locators. The alleged 84
+rows is not present in this candidate's 67 `rows_detail` records, so no second section count is
+carried into the panel. Changes are limited to `pilot/` and pilot tests/docs.
+
+**S72 REAL-CORPUS EVIDENCE.** RAN against the S71 candidate at the path above. Before the fix,
+45 diagram/chain panels had distribution `{4: 3, 5: 1, 6: 4, 7: 1, 8: 1, 9: 1, 10: 2, 11: 2,
+12: 1, 13: 1, 14: 1, 16: 3, 17: 1, 18: 2, 19: 1, 20: 1, 23: 2, 24: 1, 26: 2, 27: 1,
+28: 2, 33: 1, 35: 1, 47: 1, 48: 1, 53: 1, 55: 1, 107: 1, 109: 1, 111: 1, 233: 1, 251: 1}`
+with max 251 and modes 9 diagrams / 36 chains / 112 none. After the fix, distribution is
+`{4: 9, 5: 2, 6: 1, 16: 2, 17: 1}`, max 17, with modes 4 diagrams / 11 chains / 142 none.
+The residual max 17 is still above the rough dozen target and is reported plainly; further
+notation/CSE work remains queued. The 157 generated flow sections contain no node-id leakage.
+
+**S72 TEST EVIDENCE.** RAN:
+`$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp2'; .venv\Scripts\python.exe -m pytest pilot\test_review_panel.py -q`
+-> **7 passed, 1 warning**. RAN:
+`$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp2'; .venv\Scripts\python.exe -m pytest pilot\test_cell_access.py -q`
+-> **2 passed, 1 warning**. RAN:
+`$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp2'; .venv\Scripts\python.exe -m pytest pilot\constructions\test_measure.py -q`
+-> **4 passed, 1 warning**. RAN:
+`.venv\Scripts\python.exe tools\check_ascii.py` -> **ASCII check OK**. The warnings are the
+known permission failure writing the pre-existing `.pytest_cache`; no provider run or full suite
+was performed, per pilot rules.
+
+## Current round
+
+**M20-S82 IN FLIGHT (Worker, 2026-08-07). THE TWO-COLUMN PANEL WITH POSITIONAL ARROWS.**
+
+**PILOT RULES BIND.** Everything under `pilot/`; tests in the pilot, out of `tests/`; no full-suite
+run; no provider run.
+
+**S80 IS ACCEPTED at `8a9b2a0`** - click-to-enlarge works on both the SVG and the lookup table, uses
+a real `<dialog>` with Escape, loads nothing from the network, and scrolls rather than scaling. The
+five-rendering comparison did its job: **John has chosen.**
+
+**THE CHOICE.** Five renderings collapse to two columns. **Left third: Tree, with Math beneath it** -
+*"I like the idea of two lossless reps in the same col."* **Right two thirds: the flow diagram.**
+Worksheet and English are **dropped from the panel**; keep the code, since English is the queued
+round-trip check. **Rule 11 in `docs/review-notation.md` is the binding statement of this** - read it
+before starting.
+
+1. **Two columns, one third / two thirds.** Tree above Math on the left. Both are lossless
+   projections; do not "improve" either by inventing names. **The Worksheet form's `t1`/`t2`
+   intermediates DO NOT EXIST in the graph** - that is why it was not chosen for a lossless column.
+2. **ARROW POSITION IS THE NOTATION.** Values enter from the **top**; the result leaves at the
+   **bottom**; **moderators enter from the RIGHT** - thresholds, rates, constants, and the facts that
+   select among variants. **One gutter only.** Suggested bands at ~600 units: a centre channel for
+   the flow and branch arms, and a right gutter for moderators. No left gutter - John: *"i fear it
+   being a width constraint."*
+3. **EVERY MODERATOR ARROW CARRIES ITS EDGE ROLE AS A LABEL**, straight from the graph -
+   `threshold`, `key`, `default`, `multiplier`, `subtrahend`. **Colour may reinforce; it must never
+   be the only signal.** The panel must stay readable in greyscale, and no legend may be required.
+4. **SHAPE CAPACITY.** A rectangle may take several stacked right-entering moderators. **A diamond
+   takes exactly ONE**, at its right vertex. A table absorbs its key and variants as rows, no arrows.
+   If a shape needs more, that is rule 5 saying split the cell.
+5. **KEEP EVERY EARNED GUARANTEE.** Branch arms diverge; no two connectors share a start point and
+   direction; no label falls inside another node's box; no node ids; no banned terms; findings carry
+   their real reason; empty/placeholder cells stay at zero. **Re-report all of them.**
+
+**THE CELL THAT PROVES IT.** `form_6251_2025` line 18: the threshold is `$239,100` or `$119,550`
+**depending on filing status**. Rendered correctly, the threshold enters from the right as a labelled
+moderator with filing status beside it, so **the reviewer can see the number was CHOSEN rather than
+given**. That is the open question this notation has carried since the beginning; this layout is what
+answers it. Show it working on that cell.
+
+**Evidence required.** Regenerate over all 157 anchors. Report: empty/placeholder cells (target
+zero), every SVG's width and height, the connector and label checks from S79, and **the count of
+moderator arrows rendered without a label - target zero**. Confirm the page is readable with colour
+removed.
 
 **How to rebuild a candidate** - the two commands, in order, because the second is worthless
 without a run from current code:

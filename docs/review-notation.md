@@ -70,7 +70,39 @@ Architect's defaults are programmer defaults and are wrong in the same direction
    - **no operation** -> a named finding in the same vocabulary, **carrying its actual reason**.
    **An empty column, a bare "no branch" string, a raw payload dump, or a reason-free "needs review"
    is never an acceptable answer.**
-10. **Phrasing belongs in the operation registry**, one declared wording per operation, so the
+11. **NEW 2026-08-07. THE PANEL IS TWO COLUMNS, AND POSITION CARRIES MEANING.**
+    John chose the layout after comparing five generated renderings. **Left third: the Tree, with the
+    Math beneath it** - *"I like the idea of two lossless reps in the same col."* Both are faithful
+    projections of the stored expression; the Tree's labels ARE the graph's edge roles, and the Math
+    is the same tree flattened. **Right two thirds: the flow diagram.**
+
+    **Arrow position is the notation, borrowed from IDEF0's ICOM discipline but ROTATED, because our
+    flow is vertical where IDEF0's is horizontal.** John: *"our flows are now vertical from top to
+    bottom. I feel like numbers/lines should flow from the top, conditions and thresholds from the
+    sides."* No IDEF0 numbering (rule 4 forbids step letters) and no ICOM vocabulary (rule 8);
+    **the position is the label.**
+    - **Top** - values entering: line references and amounts from the previous step.
+    - **Bottom** - the result leaving.
+    - **Right** - **moderators**: thresholds, rates, constants, and the facts that SELECT among
+      variants. One gutter, not two - John: *"i fear it being a width constraint."*
+
+    **This is what finally shows a hidden decision.** On `form_6251_2025` line 18 the threshold is
+    `$239,100` OR `$119,550` depending on filing status; today it arrives looking like any other
+    value. As a labelled moderator with filing status beside it, the reviewer can SEE the number was
+    chosen rather than given - the open question this document has carried from the start.
+
+    **Colour REINFORCES, it never carries the meaning alone.** Colour fails for colour-blind readers,
+    dies in print, and needs a legend, which is vocabulary by another name. **The arrow's label does
+    the work** - and it is free, because the graph already stores the edge role (`threshold`, `key`,
+    `default`, `multiplier`, `subtrahend`).
+
+    **Shape capacity:** a **rectangle** may take several right-entering moderators, stacked at
+    different heights. A **diamond** takes exactly one, at its right vertex - several arrows
+    converging on a single point cross and read badly, and rule 5 already makes one enough. A
+    **table** absorbs its own key and variants as rows, needing no arrows at all. **A shape wanting
+    more is rule 5 saying the cell should be split**, not a layout problem.
+
+12. **Phrasing belongs in the operation registry**, one declared wording per operation, so the
     flowchart, worksheet and pseudocode cannot drift apart. Same single-source pattern that fixed the
     operation vocabulary in S66/S67.
 
