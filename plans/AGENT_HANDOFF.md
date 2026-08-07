@@ -21,7 +21,9 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## BALL
 
-**BALL: WORKER - M20-S74 (GIVE THE MODEL A DOCUMENT INVENTORY). REAL-PROJECT ROUND.**
+**BALL: WORKER - M20-S75 (COLUMN 1 INSTRUCTION PARSER). PILOT ROUND, `pilot/` ONLY.**
+**S74 IS IMPLEMENTED AT `b153e94` BUT NOT ACCEPTED** - full suite still running on this shared
+tree, so **`tax_graph/`, `tests/`, `prompts/` and `experiments/` are OFF LIMITS until it reports.**
 Active spec is under Current round. **PILOT WORK IS PAUSED AGAIN**; S74 is a real-project round and
 pays the full suite. John's arc, 2026-08-07: **fix column 1, then assess column 2, and column 3
 should then fall out.** S74 runs first because assessing column 2 while a known reference defect is
@@ -81,7 +83,9 @@ clothes, and it is the reason the candidate diff cannot tell a real disagreement
 **Whoever takes the diff round converges these rather than adding a third.**
 
 **QUEUE - one line each. NOT SPECCED.**
-1. **COLUMN 1 - instruction section extraction** (John's next priority). Three cheap fixes in OUR
+1. **LIFT the S75 instruction parser into `tax_graph/`** once the pilot is measured and the suite is
+   free. Real-project round; pays the full suite. (Was queue item 1, now in flight as a pilot.)
+   Original notes: Three cheap fixes in OUR
    parser, measured 2026-08-07: (a) **read bold headings** - Mistral emits `**Depletion**` instead of
    `### Depletion` on some pages and we only match `^#`, which is why 6251 lines 2d/2f/2g looked
    "missing" when the content was there; (b) **match anchors against the form's known printed lines**
@@ -119,90 +123,57 @@ resolve now, and whether they resolve to the RIGHT line is unreviewed.
 
 ## Current round
 
-**M20-S74 IN FLIGHT (Worker, 2026-08-07). GIVE THE MODEL A DOCUMENT INVENTORY.**
-**REAL-PROJECT ROUND** - touches `prompts/` and `tax_graph/extract/`, pays the full suite.
-Not a pilot round.
+**M20-S75 IN FLIGHT (Worker, 2026-08-07). COLUMN 1 - INSTRUCTION SECTION PARSER, PILOT PROTOTYPE.**
 
-**THE DEFECT: our only two known wrong answers, and the model could not have got either right.**
-`form_6251_2025` line 13 reads *"Enter the amount from line 4 of the Qualified Dividends and Capital
-Gain Tax Worksheet in the Instructions for Form 1040, line 16"* and derived
-`max(form_1040_2025 line 4, 0)` - Form 1040 line 4 is IRA distributions. Line 20 derived
-`max(form_1040_nr_2025 line 15, 0)`: wrong document (**1040-NR**, a different filer's form) and wrong
-line. Both **resolve**, so no validator objects. They are simply wrong.
+**PILOT RULES BIND, AND ONE IS URGENT.** Everything under `pilot/`; tests in the pilot, out of
+`tests/`; no full-suite run; no provider run. **DO NOT EDIT `tax_graph/`, `tests/`, `prompts/` OR
+`experiments/` THIS ROUND** - the Architect has the full suite running on this shared tree for S74,
+and an edit there invalidates the result S74's acceptance depends on. `pilot/` is not collected by
+`testpaths`, which is why this round is safe to run right now.
 
-**THE CAUSE IS AN ASYMMETRY IN THE PROMPT.** `prompts/derive_cells.md` says *"Use
-`{"form": "form_XXXX_2025", "line": "7"}` only for a line on another form"* and then **never says
-which other documents exist**. Compare the same-form path: `printed lines on this form:
-<<printed_lines>>` plus a hard rule, *"use only a line from the printed-line inventory."* **The one
-operand kind with no inventory and no constraint is the one producing wrong answers.**
+**S74 IS NOT ACCEPTED YET.** Implemented at `b153e94`; the canary confirmed **6251 line 13 now
+resolves correctly** to `max(qualified_dividends_capital_gain_tax_worksheet line 4, 0)`. Suite
+pending. Do not build on S74's internals this round.
 
-The model literally cannot return `qualified_dividends_capital_gain_tax_worksheet` - it has never
-been told that id exists. `form_1040_2025` is the most plausible id constructible from the words in
-front of it. **This is a prompt gap, not a reasoning failure.**
+**WHY THIS IS A PILOT AND NOT THE REAL FIX.** The real change lands in
+`tax_graph/extract/instruction_sections.py`, which is exactly what this round may not touch.
+Prototype in the pilot, measure, and **lift in a later round** - the pattern John set on 2026-08-06.
 
-**MACHINERY ALREADY EXISTS; EXTEND IT.** `reference_inventory` is already threaded through
-`cells.py` and already scopes graph nodes into `<<graph_nodes>>` ("intentionally limited to parameter
-and filer-fact nodes"). It has **no document dimension**. Add one. Do not build a parallel path.
+**THE THREE DEFECTS, ALL MEASURED BY THE ARCHITECT 2026-08-07. NONE IS AN OCR FAILURE.**
 
-1. **Supply a document inventory in the prompt**, id and human title, covering documents a formula
-   may legitimately reference - manifest documents plus worksheets present in the graph.
-   **`qualified_dividends_capital_gain_tax_worksheet` must be in it**; it is what 6251 lines 13 and
-   20 actually mean, and it is already in the graph with drafts.
-2. **Constrain and VALIDATE, do not merely inform.** A `{"form": ...}` operand whose id is not in
-   the inventory is a **named finding**, never a silent acceptance. Mirror the printed-line rule.
-3. **Resolution is not correctness.** Today `form_1040_2025 line 4` resolves, so nothing objects.
-   The validator must check the id came from the inventory, not merely that it exists.
-4. **Do NOT add multi-run voting this round.** Measure the inventory alone first. Voting is for
-   genuine judgment under ambiguity and may be solving a problem that no longer exists.
+1. **We only read `^#` headings; Mistral sometimes emits bold instead.** On 6251 page 3 the section
+   headings are `**Depletion**` and `**Net Operating Loss Deduction (ATNOLD)**` - real headings, real
+   body text, invisible to `_HEADING_RE`. That is why lines 2d/2f/2g looked "missing" when the
+   content was present all along. **Read bold-only lines as headings.**
+2. **Lost em-dashes create PHANTOM anchors.** The source reads `Line 3-Ordinary...`; OCR emits
+   `Line 3Ordinary...`; our extractor reads line **`3o`**. Same for `4a`, `5e`, `8a`, `11a` on 6251.
+   Sections get filed under lines that do not exist while the real line gets nothing. **Match the
+   anchor against the form's KNOWN PRINTED LINES** - we already hold that list - instead of a greedy
+   digits-plus-letter regex. This is deterministic, not a heuristic.
+3. **The HTML is fetched and unused.** All 7 instruction documents now have HTML cached
+   (`.cache/raw/2025/<doc>.html`); the Architect fetched the missing 2441 page on 2026-08-07. It
+   carries an explicit hierarchy (`role-hd1`/`role-hd2`/`role-step-hd5`), intact separators
+   (`Line 2a-Taxes`), a `role-geninstr`/`role-spcinstr` split, and **no page furniture at all**.
+   **Parse it as a SECOND source, carrying provenance** (`html` or `ocr`) on every section.
 
-**ACCEPTANCE TEST, and it is specific.** Re-run the three-document canary and report whether
-**6251 line 13 and line 20 now resolve to the QDCGT worksheet**. If they still resolve elsewhere,
-the round has not succeeded regardless of what the tests say. Report the full derived/repaired/
-errored/skipped counts so a regression elsewhere is visible.
+**STORE BOTH, NEVER "EITHER".** John, 2026-08-07: both sources go in, blank where one is missing, and
+the agent gets the superset. **But a section must record which source it came from, and consumers
+must not fall back between them** - that is the `label_after or label_before` defect that cost S70
+and S71. Two sources means two named questions, not one question with a fallback.
 
-**WORKER STATUS (2026-08-07; implementation complete, provider leg blocked).** The reference
-inventory now merges live graph documents with manifest documents and manifest-backed worksheet
-drafts. It carries `document_inventory` entries as id plus title, and worksheet draft node lines
-for cross-document printed-line validation. The derive-cells prompt requires the cross-form id to
-come from that inventory. An unknown cross-form id is now a hard `operand_document_not_found`
-finding; an evidence-backed out-of-corpus reference still retains its unresolved payload, but the
-row fail-closes after the one repair. The real Form 6251 line 13 and line 20 prompts both contain
-the QDCGT inventory entry; the local inventory has 24 documents and QDCGT lines 1-25.
+**Evidence required, over all 7 instruction documents.**
+- Line-sections recovered by OCR-with-fixes vs OCR-today vs HTML. Baseline to beat: **6251 OCR 29,
+  HTML 33**; 2441 and 1040 already match at 16 and 111.
+- **Phantom anchors eliminated - target zero.** Name them before and after.
+- Lines that gain an instruction section they did not have.
+- Where HTML and OCR disagree about a line's section: **report it as a finding.** That disagreement
+  is a free cross-check and is the one signal neither source gives alone.
 
-**TEST EVIDENCE.** RAN:
-`$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp2'; .venv\Scripts\python.exe -m pytest tests/test_derive_cells_m20.py tests/test_m20_s31.py -q`
--> **73 passed, 1 warning** (known `.pytest_cache` WinError 5). RAN:
-`$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp2'; .venv\Scripts\python.exe -m pytest tests/test_workbench_rederive_m20.py tests/test_rederive_m20.py -q`
--> **5 passed, 1 warning** (same known cache warning). RAN:
-`$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp2'; .venv\Scripts\python.exe -m pytest tests/test_derive_cells_m20.py tests/test_m20_s31.py tests/test_workbench_rederive_m20.py tests/test_rederive_m20.py -q`
--> **78 passed, 1 warning**. RAN:
-`.venv\Scripts\python.exe tools\check_ascii.py` -> **ASCII check OK**. RAN M20 marker partition:
-`$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp2'; .venv\Scripts\python.exe -m pytest -m m20 -q`
--> **297 passed, 9 failed, 3 errors, 570 deselected**. The failures/errors are the known
-artifact/fixture baseline: draft-directory ACL errors, toy-root manifest absence, stale 2441
-denominator expectation, and candidate temp-root/real-artifact assumptions. RAN the broader
-offline attempt:
-`$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp2'; .venv\Scripts\python.exe -m pytest -m 'not e2e' -q`
--> **NOT COMPLETE: command timed out at 600 seconds after 24%**, with partial setup errors and
-failures; no green claim. RAN combined workbench API consumers:
-`$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp2'; .venv\Scripts\python.exe -m pytest tests/test_workbench_rederive_m20.py tests/test_workbench_cells_api_m17.py tests/test_rederive_m20.py -q`
--> **5 passed, 4 errors**; `tests/test_workbench_cells_api_m17.py` is UNVERIFIED because setup
-cannot enumerate the pre-existing `graph/2025/_drafts/form_1040_2025` directory (`WinError 5`).
+**DO NOT strip page furniture as a goal.** Measured 2026-08-07: it harms neither use. 57 of 65
+derivations cite the form face, and an agent reading prose ignores page numbers. It disappears on
+the HTML path anyway.
 
-**PROVIDER AND CANDIDATE EVIDENCE.** NOT RUN:
-`.venv\Scripts\python.exe experiments\derive_cells_s25.py --year 2025 --output-dir C:\tmp\m20_s74_run --document form_1040_2025 --document form_2441_2025 --document form_6251_2025`
--> the unprivileged attempt could not create `C:\tmp\m20_s74_run`, and the elevated retry was
-rejected because this turn has not explicitly authorized sending repository-derived tax-form and
-graph data to the configured external LLM provider. No provider report was written. NOT RUN the
-candidate regeneration command because it requires a current provider run. The explicit John
-approval is required before the canary can establish whether 6251 lines 13 and 20 select QDCGT.
-
-**PROVIDER RUN IS AUTHORIZED for this round** (John, 2026-08-07) - about 67 anchors on the
-three-document canary. Write the run outside the repository and record the path in the handoff.
-**Do not run the full 16-document corpus.**
-
-**Full suite required** - short `PYTEST_DEBUG_TEMPROOT`; see below. Baseline is **20 pre-existing
-failures**; anything beyond that set is a regression.
+**DO NOT BUILD AGAINST A SYNTHETIC FIXTURE.** Standing S64 lesson. Real cached artifacts only.
 
 **How to rebuild a candidate** - the two commands, in order, because the second is worthless
 without a run from current code:
