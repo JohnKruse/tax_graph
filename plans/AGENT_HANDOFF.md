@@ -21,8 +21,10 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## BALL
 
-**BALL: JOHN - M20-S77 IMPLEMENTED (FIVE RENDERING OPTIONS). PILOT ROUND, `pilot/` ONLY; waiting
-for John's choice before any production notation round.**
+**BALL: WORKER - M20-S78 (NO HOLES, VERTICAL, LOOKUPS AS TABLES). PILOT ROUND, `pilot/` ONLY.**
+**S77 is NOT accepted** - John could not evaluate it: escaped markup on screen, a raw payload dump,
+a horizontal flowchart at 21% scale, and a 16-band lookup drawn as flow. **RULE 9 IS AMENDED** in
+`docs/review-notation.md`: every cell shows something; the form varies, never the presence.
 **S75 ACCEPTED at `b2982c6`. S74 implemented at `b153e94` and STILL UNACCEPTED** - its suite was
 stopped deliberately so the lift could proceed; ONE full-suite run now gates both rounds.
 Active spec is under Current round. **S76 IS DEFERRED to queue position 1** (John, 2026-08-07):
@@ -116,90 +118,55 @@ resolve now, and whether they resolve to the RIGHT line is unreviewed.
 
 ## Current round
 
-**M20-S77 IMPLEMENTED (Worker, 2026-08-07). FIVE RENDERINGS OF THE SAME CELLS, FOR JOHN TO
-CHOOSE.** Added `pilot/render_options.py` and `pilot/test_render_options.py`; the comparison page
-is generated from the candidate graph and preserves the existing role-labelled tree as control.
-`pilot/review_panel.py` now supports both script and module entry points. No production notation
-was selected or changed.
+**M20-S78 IN FLIGHT (Worker, 2026-08-07). NO HOLES, VERTICAL, AND LOOKUPS ARE TABLES.**
 
 **PILOT RULES BIND.** Everything under `pilot/`; tests in the pilot, out of `tests/`; no full-suite
-run; no provider run. **DO NOT EDIT `tax_graph/`** - the Architect is running the S74 suite on this
-shared tree. `pilot/` is not collected by `testpaths`, which is why this round is safe right now.
+run; no provider run. **DO NOT EDIT `tax_graph/`** - the Architect's S74 suite is running on this
+shared tree.
 
-**S76 IS DEFERRED, NOT DROPPED** (John, 2026-08-07). It returns to the queue at position 1.
+**S77 IS NOT ACCEPTED.** It produced all five renderings for 157/157 anchors, which was the
+reliability bar, and the flowchart is a real SVG with diamonds and arrowheads. **But John could not
+evaluate it, for four concrete reasons, all found by inspecting the artifact.**
 
-**WHAT JOHN ACTUALLY HAS TODAY, and his read is correct.** The S72 column 3 is **not a flowchart**.
-It is the expression tree rendered as a role-labelled outline - `IF_ELSE -> condition -> line 33,
-threshold -> line 24, when_true -> SUBTRACT`. It shows hierarchy. There is no diamond asking a
-question, no Yes/No on arrows, no mathy box, no `amount`. **`docs/review-notation.md` rules 1-8 have
-never been implemented.** John, 2026-08-07: *"I'm not totally sold on it, but i would like to see
-some options."*
+1. **THE RENDERER'S HTML IS ESCAPED AND PRINTED AS MARKUP.** The flowchart cell for
+   `form_2441_2025` line 23 literally displays
+   `&lt;div class="flowchart-absence"&gt;No branch: line 23 = line 15 - line 22&lt;/div&gt;` inside a
+   `<pre>`. **Three occurrences escaped, zero rendered.** John read raw markup on screen.
+2. **A RAW PAYLOAD DUMP REACHES THE REVIEWER.** `form_2441_2025` line 25's flowchart AND worksheet
+   cells both print
+   `({'kind': 'review_gap', 'message': '... ValueError: LOOKUP_TABLE arguments must be named leaf
+   operands with a role'})` - a stringified Python dict with a `ValueError` in a human review panel.
+3. **THE FLOWCHART IS HORIZONTAL AND ILLEGIBLE.** 6251 line 18 is `viewBox="0 0 1005 444"`, boxes
+   spread across x=285..795, rendered at `width="210"` - **about 21% scale**. That is why John
+   reported "missing connector arrows": the arrowheads are present (5 paths, 4 `marker-end`), just
+   invisible. **We agreed vertical-in-a-column and this went the other way.**
+4. **THE SIXTEEN-BAND LOOKUP IS DRAWN AS FLOW.** 2441 line 8 is `viewBox="0 0 495 1644"` - sixteen
+   stacked boxes, 1,644 units tall. The worksheet form says the same thing in 6 rows.
 
-**END STATE.** One self-contained HTML page showing **the same five cells rendered five ways**, side
-by side, so John can choose. **Every rendering is generated from the graph. Nothing handcrafted** -
-that is the prime directive, and an Architect mock is what S69 was specced to replace.
+**RULE 9 IS AMENDED, and the amendment is now in `docs/review-notation.md`.** John, 2026-08-07:
+*"I'd be inclined to show some kind of diagram for even simple math operations... or just show the
+operation mathematically. It is just difficult to review a row with holes."*
+**Every cell shows something; the FORM varies, never the presence.** The reviewing eye must land in
+the same place on every row.
 
-**THE FIVE CELLS, fixed so comparison is fair. They span the difficulty range deliberately:**
-- `form_6251_2025` line 18 - branches; the notation's hardest normal case.
-- `form_2441_2025` line 8 - the sixteen-band lookup table. **The stress test for "tight".**
-- `form_2441_2025` line 20 - `max(0, min(line 17, line 18, line 19))`; depth 2, no branch.
-- `form_2441_2025` line 23 - `line 15 - line 22`; trivial, and the case where rule 9 says draw nothing.
-- `form_2441_2025` line 25 - a **hole**; no operation at all. A rendering that cannot show absence
-  honestly is disqualified.
+- **Branches** -> flowchart, **vertical**, sized to a column (target width ~320 units, grow
+  downward). Never wider than its column; never scaled below legibility.
+- **Lookup table** -> a **table**, never flow.
+- **Everything else** -> the operation **mathematically**: `line 23 = line 15 - line 22`.
+- **No operation** -> a named finding in the same visual vocabulary. **Never a bare "no branch"
+  string, never an empty cell, never a payload dump.**
 
-**THE FIVE RENDERINGS.**
-1. **True flowchart, obeying rules 1-8.** Diamond asks and arrows answer; `Line X checked?: subject`
-   for checkboxes; reference lines, never re-narrate; no step letters; one operation per box; mathy
-   not prose (`line 17 * 0.26`, never `MULTIPLY`); `amount` for the value on the arrow; no `floor`,
-   `ceiling`, `clamp` or `truncate`. Real SVG.
-2. **Worksheet / ledger**, in the IRS's own idiom: numbered steps, one per row, each naming its
-   result. Familiar to any filer, and it needs no arrows.
-3. **Math notation**, one expression per line with named intermediates:
-   `t = $239,100 (or $119,550 if MFS)` then `line 18 = line 17 * 0.26 if line 17 <= t else ...`
-4. **English sentences generated from the operation registry.** This doubles as the queued
-   round-trip renderer: if the generated sentence and the printed source disagree, that is a review
-   finding. Cheapest way to learn whether that idea works.
-5. **The current role-labelled tree**, unchanged, as the control.
+**ALSO FIX: role names are leaking into reviewer prose.** The English rendering for 2441 line 23
+reads *"Subtract the subtrahend from the minuend."* That is our internal vocabulary, and it is
+strictly worse than the IRS's own *"Subtract line 22 from line 15."* Rule 8 applies to generated
+sentences too.
 
-**TIGHT AND RELIABLE ARE MEASURED, NOT ASSERTED.**
-- **Reliable:** every rendering must produce output for **all 157 anchors** without raising. Report
-  any that fail, per rendering. A rendering that only works on easy cells is disqualified.
-- **Tight:** report the **size distribution per rendering** - max and median, in whatever unit suits
-  it (arrows, rows, characters). **2441 line 8's sixteen bands is the number that matters.** The S72
-  ceiling is 17 arrows; beating it is the target.
-- **Honest:** every rendering must show the line-25 hole as a named absence.
+**Evidence required.** Regenerate the options page. Report, per rendering: **anchors with an empty or
+placeholder cell - target zero**; the size distribution; and the **rendered width and height of every
+SVG**, to show nothing exceeds its column. Confirm zero escaped markup and zero payload dumps.
 
-**NO NODE IDS AND NO BANNED TERMS in any rendering.** `form_1040_2025_zero_floor` must read as
-`constant 0`. Node ids belong in column 2.
-
-**Do not choose for John.** Present all five neutrally with their measurements and let him pick.
-A recommendation in the handoff is fine; a rendering deleted because the Worker preferred another
-is not.
-
-**S77 REAL-CORPUS EVIDENCE.** RAN:
-`.venv\Scripts\python.exe -m pilot.render_options C:\tmp\m20_s68_candidate --output
-.test_tmp2\m20_s77_renderings_module.html` -> **157/157 produced, 0 failures** for every
-rendering. Flowchart max 17 arrows (median 0); worksheet max 6 rows (median 1); math max 6 lines
-(median 1); English max 533 characters (median 97); role-labelled tree max 24 lines (median 1).
-The page contains the five fixed cells and is at
-`.test_tmp2\m20_s77_renderings_module.html`.
-
-**S77 TEST EVIDENCE.** RAN:
-`$env:M20_S77_CANDIDATE='C:\tmp\m20_s68_candidate'; $env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp2'; .venv\Scripts\python.exe -m pytest pilot\test_render_options.py -q`
--> **6 passed, 1 warning**. RAN:
-`$env:M20_S77_CANDIDATE='C:\tmp\m20_s68_candidate'; $env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp2'; .venv\Scripts\python.exe -m pytest pilot\test_review_panel.py -q`
--> **8 passed, 1 warning**. RAN:
-`$env:M20_S77_CANDIDATE='C:\tmp\m20_s68_candidate'; $env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp2'; .venv\Scripts\python.exe -m pytest pilot\test_cell_access.py -q`
--> **2 passed, 1 warning**. RAN:
-`$env:M20_S77_CANDIDATE='C:\tmp\m20_s68_candidate'; $env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp2'; .venv\Scripts\python.exe -m pytest pilot\test_cell_access.py pilot\test_review_panel.py pilot\test_instruction_parser.py pilot\test_render_options.py pilot\constructions\test_measure.py -q`
--> **25 passed, 1 warning**. RAN:
-`.venv\Scripts\python.exe tools\check_ascii.py` -> **ASCII check OK**. The warnings are the
-known permission failure writing the pre-existing `.pytest_cache`; no provider run or full suite
-was performed, per pilot rules.
-
-**S77 OPEN FOR JOHN.** Choose which rendering, if any, should become the next production notation
-round. The pilot advances the queued column-3 and round-trip questions by measurement, but does
-not close either queue item until John chooses a notation.
+**Do not choose for John.** He still has not been able to compare; the point of this round is to make
+that possible.
 
 **How to rebuild a candidate** - the two commands, in order, because the second is worthless
 without a run from current code:

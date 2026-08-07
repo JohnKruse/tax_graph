@@ -50,8 +50,18 @@ Architect's defaults are programmer defaults and are wrong in the same direction
    seen floor until 2 years ago."* The test: **a term is either the IRS's own word, or it is
    genuinely common.** Mathematical correctness is not a defence. Note our own validator is named
    `missing_floor` - the jargon is already inside the system and must stop at the human boundary.
-9. **Draw a diagram only where the cell branches.** 48 of 66 emitted expressions are depth 1; a
-   flowchart for `line 15 - line 22` is worse than text. Offer it on demand otherwise.
+9. **AMENDED 2026-08-07. Every cell shows something; the FORM varies, never the presence.**
+   Originally: draw a diagram only where the cell branches, because a flowchart for
+   `line 15 - line 22` is worse than text. That still holds for the *flowchart* form, but the S77
+   options page implemented it as a dead-end message and John rejected the result: *"I'd be inclined
+   to show some kind of diagram for even simple math operations... or just show the operation
+   mathematically. It is just difficult to review a row with holes."*
+   **The reviewing eye must land in the same place on every row.** So:
+   a cell that **branches** gets a flowchart; a **lookup table** gets a table, never flow - sixteen
+   bands drawn as sixteen flow steps is the S77 mistake; **everything else shows the operation
+   mathematically** (`line 23 = line 15 - line 22`), which is compact and needs no arrows; and a cell
+   with **no operation** states that as a named finding in the same visual vocabulary.
+   **An empty column, a bare "no branch" string, or a raw payload dump is never an acceptable answer.**
 10. **Phrasing belongs in the operation registry**, one declared wording per operation, so the
     flowchart, worksheet and pseudocode cannot drift apart. Same single-source pattern that fixed the
     operation vocabulary in S66/S67.
