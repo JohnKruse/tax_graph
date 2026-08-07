@@ -21,7 +21,7 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## BALL
 
-**BALL: WORKER - M20-S78 (NO HOLES, VERTICAL, LOOKUPS AS TABLES). PILOT ROUND, `pilot/` ONLY.**
+**BALL: ARCHITECT - M20-S78 (NO HOLES, VERTICAL, LOOKUPS AS TABLES). PILOT ROUND, `pilot/` ONLY.**
 **S77 is NOT accepted** - John could not evaluate it: escaped markup on screen, a raw payload dump,
 a horizontal flowchart at 21% scale, and a 16-band lookup drawn as flow. **RULE 9 IS AMENDED** in
 `docs/review-notation.md`: every cell shows something; the form varies, never the presence.
@@ -183,6 +183,33 @@ SVG**, to show nothing exceeds its column. Confirm zero escaped markup and zero 
 
 **Do not choose for John.** He still has not been able to compare; the point of this round is to make
 that possible.
+
+**WORKER COMPLETION (2026-08-07; M20-S78 implementation, awaiting Architect acceptance).** The
+options pilot now gives every cell a non-empty review form. Root lookup operations render as HTML
+tables, ordinary operations render as compact math, absent operations render as named findings
+without raw payloads, and true branches render as vertical SVGs constrained to a 320-unit column.
+English subtraction uses printed operands (`Subtract line 22 from line 15.`) instead of internal role
+names. The comparison report now records empty/placeholder counts, size distributions, and every
+SVG's declared width, height, and viewBox dimensions. Changes are limited to `pilot/`.
+
+**REAL-CORPUS EVIDENCE.** RAN:
+`$out = Join-Path (Get-Location) '.test_tmp_s78\m20_s78_renderings.html'; .venv\Scripts\python.exe pilot\render_options.py C:\tmp\m20_s68_candidate --output $out`
+-> **157/157 for every renderer; zero failures and zero empty/placeholder cells.** Flowchart size
+distribution `{1: 153, 2: 3, 16: 1}`. SVGs: `form_1040_2025 line 34 = 320 x 284`,
+`form_6251_2025 line 18 = 320 x 348`, and `form_6251_2025 line 39 = 320 x 348`, each with the
+same viewBox dimensions. Static artifact checks found zero escaped `<div>`/`<table>` markup, zero
+`ValueError`, and zero raw payload dictionaries.
+
+**TEST EVIDENCE.** RAN:
+`$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp_s78'; .venv\Scripts\python.exe -m pytest pilot\test_render_options.py -q`
+-> **8 passed, 1 warning in 3.99s**. RAN:
+`$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp_s78'; .venv\Scripts\python.exe -m pytest pilot -q`
+-> **27 passed, 1 warning in 12.80s**. RAN:
+`.venv\Scripts\python.exe tools\check_ascii.py` -> **ASCII check OK**. RAN:
+`.venv\Scripts\python.exe -m py_compile pilot\render_options.py` -> **pass**. The warning is
+the known permission failure writing the pre-existing `.pytest_cache`. No provider run and no full
+suite were performed, per pilot rules. Browser visual preview was blocked by the app local-file URL
+policy; the generated HTML was verified through static structure and artifact metrics.
 
 **How to rebuild a candidate** - the two commands, in order, because the second is worthless
 without a run from current code:
