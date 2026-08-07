@@ -1,8 +1,10 @@
 # Review panel pilot
 
 This standalone pilot projects a real candidate workspace into one self-contained HTML file.
-It preserves every printed anchor from the source derivation reports and keeps the three source
-layers separate: label, form face, and instruction page.
+It preserves every printed anchor from the source derivation reports.  The panel has two columns:
+the lossless role-labelled Tree with the same expression flattened as Math on the left, and a
+vertical Flow on the right.  Source layers remain separate - label, form face, and instruction
+page - inside each panel's expandable evidence block.
 
 All pilot consumers read cell evidence through `pilot/cell_access.py`.  Its `CellText` result uses
 `None` for absent text, so an absent caption cannot fall through to a different source record.
@@ -11,15 +13,16 @@ counts. Candidate instruction coverage is also reported across all candidate row
 per-document split. A skipped derivation still keeps its candidate text evidence visible; its
 operation remains a hole.
 
-The operation column reads the promoted candidate graph. It shows the graph operation, the saved
-rendered expression, rule ids, and every operand node id with the edge role stored on that edge.
-A held-back candidate expression is displayed as evidence, never as a promoted operation.
+The Tree reads the promoted candidate graph and retains the edge roles.  Math is generated from
+the same tree, not from a second parser.  A collapsed graph-trace block keeps rule ids, operand
+node ids, and the held-back candidate expression available as evidence; a held-back expression
+is never presented as a promoted operation.
 
-The flow column follows review notation rule 9. Branching graph trees get a diagram, deeper
-non-branching trees get a linear chain, and depth-1 trees explicitly say that no diagram is shown.
-Nested printed-line references stop at ``line X`` so the panel does not re-narrate the form. A
-repeated operation subtree is rendered once and then referenced. Missing promoted operations are
-red holes with their stored findings. Flow output contains no graph node ids.
+The Flow follows review notation rule 11. Values enter from the top, the result leaves from the
+bottom, and moderators enter through one right-hand gutter. Every moderator arrow carries its
+stored edge role as text; colour only reinforces that label. Lookup tables absorb their key and
+variants as rows. Missing promoted operations are red holes with their stored findings. Flow
+output contains no graph node ids.
 
 The summary's instruction count is the number of printed-anchor panels whose instruction value is
 present through ``cell_access.instruction_section``. Candidate coverage uses the same accessor on
@@ -61,7 +64,7 @@ Run the pilot parser tests with:
 
 Run it against the M20-S71 candidate workspace:
 
-    .venv\Scripts\python.exe pilot\review_panel.py C:\path\to\cand_s71 --output C:\tmp\m20_s73_review_panel.html
+    .venv\Scripts\python.exe pilot\review_panel.py C:\path\to\cand_s71 --output C:\tmp\m20_s82_review_panel.html
 
 Run the pilot tests:
 
@@ -94,3 +97,20 @@ the Close button, or press Escape to return to the comparison. The page has no e
 fonts, or stylesheets, so this interaction works from `file://`.
 
 The page is a projection only. It does not call a provider or write graph artifacts.
+
+## M20-S82 two-column positional panel
+
+The review panel is now the selected Rule 11 surface: expandable IRS source evidence, Tree and
+Math in the left third, and a vertical Flow in the right two thirds.  Flow positions are semantic:
+values enter from the top, results leave from the bottom, and threshold, key, default, multiplier,
+and subtrahend moderators enter through one right-hand gutter.  Moderator arrows always carry the
+stored edge role as visible text, so the page remains understandable in grayscale.  The generated
+panel summary reports every flow SVG's declared width and height, connector and label geometry
+checks, and the count of moderator arrows without labels.
+
+Run it against a candidate workspace with:
+
+    .venv\Scripts\python.exe pilot\review_panel.py C:\path\to\candidate --output C:\tmp\m20_s82_review_panel.html
+
+The S82 pilot uses the candidate workspace as input only.  It does not call a provider or write
+graph artifacts.

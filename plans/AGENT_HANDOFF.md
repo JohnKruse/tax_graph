@@ -318,7 +318,7 @@ was performed, per pilot rules.
 
 ## Current round
 
-**M20-S82 IN FLIGHT (Worker, 2026-08-07). THE TWO-COLUMN PANEL WITH POSITIONAL ARROWS.**
+**M20-S82 WORKER COMPLETE (2026-08-07; awaiting Architect acceptance). THE TWO-COLUMN PANEL WITH POSITIONAL ARROWS.**
 
 **PILOT RULES BIND.** Everything under `pilot/`; tests in the pilot, out of `tests/`; no full-suite
 run; no provider run.
@@ -361,6 +361,37 @@ answers it. Show it working on that cell.
 zero), every SVG's width and height, the connector and label checks from S79, and **the count of
 moderator arrows rendered without a label - target zero**. Confirm the page is readable with colour
 removed.
+
+**IMPLEMENTATION.** `pilot/review_panel.py` now projects the candidate into the Rule 11 surface:
+expandable source evidence, Tree and Math in the left third, and a vertical Flow in the right two
+thirds. Values enter from the top, results leave from the bottom, and moderator nodes enter through
+one right gutter. Lookup keys and variants are absorbed into table nodes; moderator arrows carry
+their stored edge role as visible text. The graph trace remains collapsed in the left column so
+rule ids, operand ids, and held-back evidence are still available without putting ids in the Flow.
+`pilot/README.md` and `docs/review-notation.md` document the selected surface.
+
+**REAL-CANDIDATE EVIDENCE.** RAN:
+`.venv\Scripts\python.exe pilot\review_panel.py C:\Users\devbox\AppData\Local\Temp\claude\C--Users-devbox-projects-tax-graph\6e1d97d0-c72d-4855-a055-e0c64f6224f8\scratchpad\cand_s71 --output C:\Users\devbox\projects\tax_graph\.test_tmp2\m20_s82_review_panel.html`
+-> **157 anchors; 4 diagrams / 11 chains / 142 none; 92 holes; captions 8 present / 149 absent;
+instruction rows 84 present / 73 absent; candidate instruction coverage 84/153 present;
+operations 65 present / 92 absent**. The panel reports **65 flow SVGs, 31 moderator arrows, and
+0 moderator arrows without labels**; every SVG declares width 620 and a positive height.
+
+**TEST EVIDENCE.** RAN:
+`$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp2'; .venv\Scripts\python.exe -m pytest pilot\test_review_panel.py -q`
+-> **9 passed, 1 known `.pytest_cache` permission warning**. RAN:
+`$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp2'; .venv\Scripts\python.exe -m pytest pilot\test_render_options.py -q`
+-> **10 passed, 1 known `.pytest_cache` permission warning**. RAN:
+`$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp2'; .venv\Scripts\python.exe -m pytest pilot\test_cell_access.py -q`
+-> **2 passed, 1 known `.pytest_cache` permission warning**. RAN:
+`.venv\Scripts\python.exe tools\check_ascii.py` -> **ASCII check OK**. RAN:
+`git diff --check` -> **clean**.
+
+**NOT RUN:** provider derivation/regeneration and the full suite, per the pilot rules. The existing
+`cand_s71` workspace was used as the 157-anchor input. **NOT RUN:** live browser verification; the
+in-app browser rejected the local `file://` artifact under its URL policy, so no workaround was
+attempted. Static DOM/HTML assertions cover the two-column layout, grayscale text labels, line 18's
+threshold table, and the geometry metrics.
 
 **How to rebuild a candidate** - the two commands, in order, because the second is worthless
 without a run from current code:

@@ -1,11 +1,14 @@
 # Review notation - working design note
 
-Status: **OPEN DISCUSSION, not settled.** Started 2026-08-05 with John. This note exists so the
-thread can be picked up rather than re-derived. Nothing here is implemented.
+Status: **OPEN DISCUSSION, with Rule 11 implemented in the M20-S82 pilot.** Started 2026-08-05
+with John. This note exists so the thread can be picked up rather than re-derived.
 
 Mock-ups produced during the discussion (private artifacts):
 - three renderings of one cell - worksheet, flowchart, pseudocode
 - a review panel with three real cells, instructions beside the diagram
+
+The M20-S82 pilot implements the chosen Rule 11 surface: source evidence is expandable, the
+left third contains Tree and Math, and the right two thirds contain the positional Flow.
 
 ## Why this exists
 

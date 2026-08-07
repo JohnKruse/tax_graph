@@ -1,4 +1,4 @@
-"""Tests for the generated three-column review panel pilot.
+"""Tests for the generated two-column review panel pilot.
 
 These tests intentionally exercise the real M20-S68 candidate workspace.  A
 toy graph would not prove that the panel preserves the 157-anchor denominator,
@@ -145,14 +145,21 @@ def test_skipped_anchor_keeps_candidate_instruction_evidence() -> None:
     assert row["graph"] is None
 
 
-def test_rendered_html_has_one_panel_per_anchor_and_nonempty_hole_columns() -> None:
+def test_rendered_html_has_two_lossless_columns_and_named_holes() -> None:
     html = render_html(_real_panel())
 
     assert html.count('<article class="review-panel"') == 157
+    assert html.count('<section class="column expression-column">') == 157
+    assert html.count('<section class="column flow-column">') == 157
+    assert 'data-two-column-layout="true"' in html
+    assert "Generated two-column review panel" in html
+    assert "Generated three-column review panel" not in html
+    assert "source-column" not in html
+    assert "operation-column" not in html
     assert 'data-flow-mode="diagram"' in html
     assert 'data-flow-mode="chain"' in html
     assert 'data-hole="true"' in html
-    assert "No promoted graph operation." in html
+    assert "No promoted flow." in html
     assert "LOOKUP_TABLE arguments must be named leaf operands with a role" in html
     assert "form_2441_2025_zero_floor" in html
     assert "captions 8 present / 149 absent" in html
@@ -170,7 +177,29 @@ def test_rendered_html_has_one_panel_per_anchor_and_nonempty_hole_columns() -> N
     assert len(flow_columns) == 157
     assert all("form_1040_2025_root_line_33" not in section for section in flow_columns)
     assert all("form_1040_2025_zero_floor" not in section for section in flow_columns)
+    assert all('data-edge-labels-outside-nodes="true"' in section or "No promoted flow." in section for section in flow_columns)
+    assert all("flow-edge-moderator" not in section or "flow-edge-label" in section for section in flow_columns)
     assert "Graph terminology to report (not changed)" in html
+
+    line_18_start = html.index('data-anchor="form_6251_2025#anchor=41:line=18"')
+    line_18 = html[line_18_start:]
+    line_18 = line_18[: line_18.index('<article class="review-panel"', 1)]
+    assert "threshold" in line_18
+    assert "filing status" in line_18
+    assert "239100" in line_18
+    assert "119550" in line_18
+
+
+def test_flow_geometry_is_reported_and_moderator_roles_are_textual() -> None:
+    panel = _real_panel()
+
+    assert panel["flow_geometry"]["svg_count"] == 65
+    assert panel["flow_geometry"]["connector_start_directions_unique"] is True
+    assert panel["flow_geometry"]["edge_labels_outside_nodes"] is True
+    assert panel["flow_geometry"]["moderator_arrows"] > 0
+    assert panel["flow_geometry"]["moderator_arrows_without_labels"] == 0
+    assert len(panel["flow_svg_dimensions"]) == 65
+    assert all(item["width"] == 620.0 and item["height"] > 0 for item in panel["flow_svg_dimensions"])
 
 
 def test_cli_writes_the_self_contained_artifact(tmp_path: Path) -> None:
