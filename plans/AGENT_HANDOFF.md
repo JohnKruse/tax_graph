@@ -21,12 +21,19 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## BALL
 
-**BALL: WORKER - M20-S73 (ONE ANSWER FOR INSTRUCTION COVERAGE). PILOT ROUND, `pilot/` ONLY.**
+**BALL: ARCHITECT - no round in flight. S73 accepted; next round not yet specced.**
 Active spec is under Current round. **PILOT WORK RESUMES** (John, 2026-08-06): the graph now carries
 clean text, so the remaining garbage is consumer-side. Pilot rules bind: off to the side, read-only,
 own tests out of `tests/`, no full-suite run, no provider run, lift into the project later.
 
-**S71 ACCEPTED at `e79f2cd`; S70 at `977e977`; S72 at `b18d9f1`.**
+**S71 ACCEPTED at `e79f2cd`; S70 at `977e977`; S72 at `b18d9f1`; S73 at `78516bc`.**
+
+**INSTRUCTION COVERAGE IS SETTLED: 84 of 153 candidate rows (55%)**, not 17. S73 found the cause -
+the panel **discarded candidate rows whenever the denominator anchor carried a `skip_reason`** - and
+a second alignment defect alongside it: the admitted `form_2441_2025` line 21 candidate was being
+consumed by the preceding skipped header duplicate. Per document: **17/59 on 1040, 18/33 on 2441,
+24/61 on 6251.** Verified independently by the Architect; S72's 17-arrow ceiling and S70/S71's
+clean text both held, and 15 pilot tests pass.
 **Full suite: 20 failed, 846 passed, 8 skipped, 1 xfailed in 1:01:19.** Those 20 are EXACTLY the
 known pre-existing set minus `test_m20_s31`, which S71's sibling commit fixed - **zero new
 failures**, and passes rose 841 -> 846 on S71's own tests. The 20 were triaged against
@@ -105,80 +112,19 @@ resolve now, and whether they resolve to the RIGHT line is unreviewed.
 
 ## Current round
 
-**M20-S73 IN FLIGHT (Worker, 2026-08-06). ONE ANSWER FOR INSTRUCTION COVERAGE - PILOT.**
-Reference: S70 accessor at `977e977`, S72 at `b18d9f1`.
+**None. S73 accepted at `78516bc`; John is choosing the next round.**
+`git show 78516bc` recovers it.
 
-**PILOT RULES BIND.** Everything under `pilot/`; nothing outside changes; tests in the pilot, out of
-`tests/`; no full-suite run; no provider run.
+**STATE OF THE PILOT, all verified by the Architect on the real candidate:** clean text end to end
+(0 panels showing a raw label), flows capped at **17 arrows** (was 251), instruction coverage
+**84/153**, captions 8/157, operations 65/157, 92 panels rendering a hole. Current artifact:
+`C:\tmp\m20_s73_review_panel.html`.
 
-**THE DEFECT, AND IT HAS NOW SURVIVED TWO ROUNDS.** The panel reports **17 instruction sections
-present / 140 absent**. Counting directly, **84 of 153 candidate rows carry non-empty
-`instruction_text`**. S72 was asked to resolve this and instead renamed the caption from
-"instruction sections" to "instruction rows"; **the number did not change and the gap is still
-unexplained.**
-
-**WHY IT IS THE WHOLE ROUND.** This is two answers to one question living *inside the accessor built
-to guarantee one answer*. S70 exists because three consumers each invented their own reading of "what
-is this cell's label"; if the accessor itself can report 17 while the data says 84, the accessor has
-inherited the disease it was built to cure.
-
-**AND THE ANSWER CHANGES SOMETHING REAL.** If 84 is right, instruction coverage is roughly **five
-times better** than the panel claims. If 17 is right, then **67 rows carry instruction text the
-accessor does not consider properly joined** - which is a real join defect wearing a display bug's
-clothes. John, 2026-07-25: the IRS instructions explain nearly every cell, and mining them per
-address is routine pipeline work. **Instruction coverage is not a cosmetic number.**
-
-1. **Find which number is correct and say why, with evidence.** Name the exact field each count
-   reads and where they diverge. A rename is not a resolution.
-2. **Make the accessor the single answer**, and delete or fix whatever produced the other one.
-3. **If the two counts are measuring genuinely different things** - say, text copied onto the row
-   versus a section formally joined with a section id - then **they are two named questions with two
-   named accessor functions**, and the panel says which it is showing. What must not survive is one
-   question with two answers.
-4. **Report instruction coverage across all 153 rows** once it is settled, with the per-document
-   split. That number feeds the queued instruction-page-furniture round.
-
-**Evidence required.** Regenerate over the S71 candidate at
-`C:\Users\devbox\AppData\Local\Temp\claude\C--Users-devbox-projects-tax-graph\6e1d97d0-c72d-4855-a055-e0c64f6224f8\scratchpad\cand_s71`.
-State the settled count, the reason the other count existed, and the per-document split.
-
-**DO NOT REGRESS S72.** Max arrows across all panels is **17**, down from 251; `form_1040_2025`
-line 34 is **6 arrows**, down from 48. Keep a test pinning the arrow ceiling.
-
-**S72 IS ACCEPTED at `b18d9f1`**, verified independently by the Architect: 251 -> 17 max arrows,
-line 34 48 -> 6, `zero_floor` now rendering as `constant 0`, and diagram/chain counts falling
-9/36 -> 4/11 because unexpanded cells are correctly depth 1. Rule 9 behaves as written for the
-first time.
-
-**WORKER COMPLETION (2026-08-06; M20-S73 implementation, awaiting Architect acceptance).** The
-instruction-count discrepancy was a join defect, not two valid coverage questions. Candidate
-`rows.yaml` records contain `instruction_text` on **84 of 153 rows**: 42/59 for `form_1040_2025`,
-18/33 for `form_2441_2025`, and 24/61 for `form_6251_2025`. The source reports contain it on
-**17 of 67 attempted rows**: 4/17, 8/21, and 5/29. The old panel reported the latter because it
-discarded candidate rows whenever the denominator anchor had `skip_reason`; it also consumed the
-admitted Form 2441 line 21 candidate on the preceding skipped header duplicate. The pilot now
-keeps candidate text for skipped rows whose candidate status is `skipped`, leaves admitted
-candidate rows for admitted duplicate anchors, and keeps skipped operations as visible holes.
-The panel reports **84/153 candidate instruction coverage** with the per-document split and
-**84 present / 73 absent** across all 157 printed-anchor panels. The construction pilot uses the
-same candidate-row alignment policy. Changes are limited to `pilot/` plus this handoff record.
-
-**S73 REAL-CORPUS EVIDENCE.** RAN:
-`.venv\Scripts\python.exe pilot\review_panel.py C:\Users\devbox\AppData\Local\Temp\claude\C--Users-devbox-projects-tax-graph\6e1d97d0-c72d-4855-a055-e0c64f6224f8\scratchpad\cand_s71 --output .test_tmp_s73\m20_s73_review_panel.html`
--> **157 anchors; 4 diagrams / 11 chains / 142 none; 92 holes; captions 8 present / 149 absent;
-instruction rows 84 present / 73 absent; candidate instruction coverage 84/153 present;
-operations 65 present / 92 absent**. RAN:
-`.venv\Scripts\python.exe pilot\constructions\measure.py C:\Users\devbox\AppData\Local\Temp\claude\C--Users-devbox-projects-tax-graph\6e1d97d0-c72d-4855-a055-e0c64f6224f8\scratchpad\cand_s71 --output .test_tmp_s73\m20_s73_constructions.yaml`
--> **construction inventory written**. S72 flow counts remain **max 17 arrows** and
-`form_1040_2025` line 34 remains **6 arrows**.
-
-**S73 TEST EVIDENCE.** RAN:
-`$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp_s73'; .venv\Scripts\python.exe -m pytest pilot\test_cell_access.py pilot\test_review_panel.py pilot\constructions\test_measure.py -q`
--> **15 passed, 1 warning**. RAN:
-`.venv\Scripts\python.exe tools\check_ascii.py` -> **ASCII check OK**. The warning is the known
-permission failure writing the pre-existing `.pytest_cache`; the short override avoided the
-poisoned pytest temp root. No provider run and no full suite were performed, per pilot rules.
-
+**THE OBVIOUS NEXT ROUND is instruction page furniture** - queue item 1, **113 of 478 anchors
+(23.6%)** carrying `# Page 62`, bare page numbers, and footers like `Instructions for Form 8949
+(2025)` inside instruction text. It is now the dominant text defect, and with coverage settled at
+84/153 rather than 17 it affects far more of the corpus than it appeared to. **Real-project round
+in instruction-section ingestion, so it pays the full suite** - not a pilot round.
 
 **How to rebuild a candidate** - the two commands, in order, because the second is worthless
 without a run from current code:
