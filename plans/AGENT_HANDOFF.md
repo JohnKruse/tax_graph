@@ -175,6 +175,28 @@ the HTML path anyway.
 
 **DO NOT BUILD AGAINST A SYNTHETIC FIXTURE.** Standing S64 lesson. Real cached artifacts only.
 
+**WORKER UPDATE (2026-08-07; M20-S75 pilot implemented, awaiting Architect acceptance).** Added
+`pilot/instruction_parser.py` and `pilot/test_instruction_parser.py`, plus the S75 section in
+`pilot/README.md`. The pilot keeps OCR and HTML sections as separate provenance-bearing records,
+reads Markdown and bold-only OCR headings, canonicalizes malformed OCR anchors against the HTML
+printed-line witness, and records source disagreements instead of falling back. It measures the
+current parser, repaired OCR parser, and HTML over all seven cached instruction documents. On the
+real corpus, Form 6251 is 30 current OCR sections -> 33 repaired OCR sections, matching HTML 33;
+the named current phantoms `3o`, `4a`, `5e`, `8a`, and `11a` become zero repaired phantoms. The
+empty Schedule B document is emitted as `document_without_line_sections`, not treated as silence.
+No production files, graph artifacts, provider calls, or full-suite run were made.
+
+**TEST EVIDENCE.** RAN:
+`.venv\Scripts\python.exe -m pytest pilot\test_instruction_parser.py -q` -> **4 passed, 1 warning**.
+RAN:
+`$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp2'; .venv\Scripts\python.exe -m pytest pilot -q`
+-> **19 passed, 1 warning**. RAN:
+`.venv\Scripts\python.exe tools\check_ascii.py` -> **ASCII check OK**. RAN:
+`.venv\Scripts\python.exe -m pilot.instruction_parser --raw-root .cache\raw\2025 --output .test_tmp2\m20_s75_instruction_parser.json`
+-> **report written; all seven documents measured, repaired phantom count zero**. The warning is
+the known permission failure writing the pre-existing `.pytest_cache`; the short temp override was
+used. No provider run and no full suite were performed, per pilot rules.
+
 **How to rebuild a candidate** - the two commands, in order, because the second is worthless
 without a run from current code:
 
