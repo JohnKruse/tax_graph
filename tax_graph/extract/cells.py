@@ -379,7 +379,7 @@ def derive_cells(
     provider: str = "configured-provider",
     operations: Sequence[str] | None = None,
     human_comments: Mapping[str, str] | None = None,
-    max_depth: int = 2,
+    max_depth: int = 3,
     max_tokens: int = 4000,
     temperature: float | None = None,
     reference_inventory: Mapping[str, Any] | None = None,
@@ -390,8 +390,10 @@ def derive_cells(
     fixture tests.  ``client_factory`` can construct it from ``api_key`` when
     the caller owns provider configuration.  With neither supplied, rows are
     marked ``error`` rather than silently selecting a vendor or writing state.
-    A list input returns a list for compatibility with lightweight callers;
-    a ``CellFrame`` input returns a ``CellFrame``.
+    The default expression depth is three so the provider schema can express
+    the nested rules present in the source forms.  A list input returns a list
+    for compatibility with lightweight callers; a ``CellFrame`` input returns
+    a ``CellFrame``.
     """
     input_is_frame = isinstance(frame, CellFrame)
     source = frame if input_is_frame else CellFrame.from_rows(frame)
@@ -932,7 +934,7 @@ def validate_cell_output(
                     "evidence requires MAX(expression, 0) for the zero-or-less rule",
                 )
             )
-    warnings.extend(_projection_warnings(row, expression))
+    warnings.extend(_projection_warnings(row, expression, max_depth=max_depth))
     return tuple(_unique_issues(hard)), tuple(_unique_issues(warnings))
 
 
@@ -1739,6 +1741,8 @@ def _record_warnings(
 def _projection_warnings(
     row: CellRecord,
     expression: Mapping[str, Any],
+    *,
+    max_depth: int,
 ) -> list[CellValidationIssue]:
     """Return warnings using the row's primary evidence source.
 
@@ -1764,6 +1768,7 @@ def _projection_warnings(
         expression=expression,
         quote_span_id=row.quote_span_id,
         evidence_text=evidence_text,
+        max_depth=max_depth,
     )
     findings = []
     for finding in projection.findings:
@@ -2090,14 +2095,16 @@ def expression_to_graph(
     expression: Mapping[str, Any],
     quote_span_id: str = "",
     evidence_text: str = "",
+    max_depth: int = 3,
 ) -> GraphProjection:
     """Flatten a tree into stable intermediate nodes and role-bearing edges.
 
     Conditional rule direction is resolved from the supplied evidence text.
     A missing direction remains a named finding rather than silently choosing a
-    branch that may execute the wrong tax rule.
+    branch that may execute the wrong tax rule.  The default validation bound
+    matches the derivation schema so nested source rules remain projectable.
     """
-    validate_expression_tree(expression)
+    validate_expression_tree(expression, max_depth=max_depth)
     converter = _GraphConverter(form, line, quote_span_id, evidence_text)
     converter.walk(expression, converter.target)
     return GraphProjection(converter.nodes, converter.edges, converter.rules, converter.findings)

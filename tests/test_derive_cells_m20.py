@@ -458,6 +458,49 @@ def test_expression_schema_is_bounded_and_contains_no_recursive_ref() -> None:
     assert schema["properties"]["expression"]["properties"]["op"]["enum"] == ["MAX", "SUBTRACT"]
 
 
+def test_default_derivation_depth_accepts_the_next_nested_expression_level() -> None:
+    expression = {
+        "op": "MAX",
+        "args": [
+            {
+                "op": "MAX",
+                "args": [
+                    {
+                        "op": "MAX",
+                        "args": [
+                            {
+                                "op": "MAX",
+                                "args": [{"line": "21"}, {"const": 0}],
+                            },
+                            {"const": 1},
+                        ],
+                    },
+                    {"const": 2},
+                ],
+            },
+            {"const": 3},
+        ],
+    }
+
+    with pytest.raises(ValueError, match="expression tree exceeds configured depth"):
+        validate_expression_tree(expression, max_depth=2)
+    validate_expression_tree(expression, max_depth=3)
+
+    client = FakeClient([{"expression": expression, "quote": _frame()[1]["form_face_text"]}])
+    result = derive_cells(CellFrame.from_rows([_frame()[1]]), "<<line>>", "secret", client=client)
+
+    assert result.rows[0].status == "derived"
+    assert result.rows[0].expression == expression
+    assert result.validation_report["errored"] == 0
+    projection = expression_to_graph(
+        form="form_1040_2025",
+        line="22",
+        expression=expression,
+        evidence_text=_frame()[1]["form_face_text"],
+    )
+    assert projection.nodes
+
+
 def test_expression_schema_requires_every_declared_property_at_every_depth() -> None:
     schema = expression_schema(depth=3)
 

@@ -21,7 +21,8 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## BALL
 
-**BALL: ARCHITECT - M20-S80 (CLICK TO ENLARGE), awaiting acceptance.**
+**BALL: WORKER - M20-S81 (RAISE EXPRESSION DEPTH).**
+**S80 implemented at `8a9b2a0`; S81 is the next approved queue slice.**
 **S79 ACCEPTED at `a94a8aa`** - branches diverge, chains work, tables are nodes, findings carry
 their reason. John still needs to see the options at full size before choosing a rendering.
 
@@ -140,7 +141,7 @@ clothes, and it is the reason the candidate diff cannot tell a real disagreement
 0)` and `max(form_1040_nr_2025 line 15, 0)`). That is a status change, not a win: the references
 resolve now, and whether they resolve to the RIGHT line is unreviewed.
 
-## Current round
+## Previous round - M20-S80
 
 **M20-S80 WORKER COMPLETE (2026-08-07). CLICK TO ENLARGE. SMALL ROUND; awaiting Architect acceptance.**
 
@@ -289,6 +290,38 @@ notation/CSE work remains queued. The 157 generated flow sections contain no nod
 `.venv\Scripts\python.exe tools\check_ascii.py` -> **ASCII check OK**. The warnings are the
 known permission failure writing the pre-existing `.pytest_cache`; no provider run or full suite
 was performed, per pilot rules.
+
+## Current round
+
+**M20-S81 WORKER COMPLETE (2026-08-07). RAISE EXPRESSION DEPTH.** This advances queue item 1:
+the production derivation default is now depth 3, and the graph projection consumer uses the same
+bound. No operation vocabulary, prompt wording, or promoted artifact was hand-authored.
+
+**REAL PROVIDER CANARY.** RAN:
+`.venv\Scripts\python.exe experiments\derive_cells_s25.py --year 2025 --output-dir C:\tmp\m20_s81_run --document form_2441_2025`
+-> **form_2441_2025: 20 attempted, 17 derived, 2 repaired, 2 errored, 14 skipped**. Line 25 is
+`repaired` with the expected nested `MAX`/`IF_ELSE`/`MIN`/`SUBTRACT` expression; the baseline
+held it as a validation error. The two other expression changes were commutative MAX operand
+reorders (lines 20 and 26). Line 30 changed COPY(line 2) to SUM(line 2), which matches the form's
+verbatim instruction to add the amounts in column (d); this is recorded as a source-justified
+provider variation, not silently treated as equivalent.
+
+**DOWNSTREAM PROJECTION.** RAN:
+`.venv\Scripts\python.exe -m tax_graph.cli regenerate-candidate --run-dir C:\tmp\m20_s81_run --output-dir C:\tmp\m20_s81_candidate --expected-document form_2441_2025`
+-> **candidate written; line 25 is `repaired` with no finding; 41 draft nodes emitted**. Drafts
+remain temporary and unpromoted.
+
+**TEST EVIDENCE.** RAN:
+`$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp2'; .venv\Scripts\python.exe -m pytest tests\test_derive_cells_m20.py -q`
+-> **66 passed, 1 known `.pytest_cache` permission warning**. RAN:
+`$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp2'; .venv\Scripts\python.exe -m pytest tests\test_candidate_regeneration_m20.py tests\test_m20_s54.py tests\test_doctor_m20.py -q`
+-> **20 passed, 1 known `.pytest_cache` permission warning**. RAN:
+`$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp2'; .venv\Scripts\python.exe -m pytest tests\test_m20_s31.py -q`
+-> **8 passed, 1 known `.pytest_cache` permission warning**. RAN:
+`.venv\Scripts\python.exe tools\check_ascii.py` -> **ASCII check OK**.
+
+**NOT RUN:** full local suite and Tier 3 shakedown; those remain Architect-side per the standing
+rules. No provider prompt or schema wording was changed; the required live provider row did run.
 
 ## Open for Architect
 
