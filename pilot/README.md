@@ -67,7 +67,7 @@ Run the pilot tests:
 
     .venv\Scripts\python.exe -m pytest pilot\test_review_panel.py -q
 
-## M20-S79 rendering comparison
+## M20-S80 rendering comparison
 
 `render_options.py` renders the same five graph-backed cells five ways: a flow SVG for true
 branches, a lookup table for a root lookup, an operation chain for dependent arithmetic, an
@@ -85,6 +85,12 @@ a start point and direction and that no edge label falls inside another node's b
 constrained to a 320-unit column width and grow vertically. Run it against a candidate workspace
 with:
 
-    .venv\Scripts\python.exe pilot\render_options.py C:\path\to\candidate --output C:\tmp\m20_s79_renderings.html
+    .venv\Scripts\python.exe pilot\render_options.py C:\path\to\candidate --output C:\tmp\m20_s80_renderings.html
+
+The flow SVG and lookup-table cells have a small-card preview trigger. Clicking or pressing Enter
+or Space opens the same generated content in an inline dialog at its declared size; the dialog
+scrolls vertically for tall diagrams and horizontally for wide tables. Click the backdrop, use
+the Close button, or press Escape to return to the comparison. The page has no external scripts,
+fonts, or stylesheets, so this interaction works from `file://`.
 
 The page is a projection only. It does not call a provider or write graph artifacts.

@@ -1,4 +1,4 @@
-"""Tests for the M20-S79 rendering comparison pilot."""
+"""Tests for the M20-S80 rendering comparison pilot."""
 
 from __future__ import annotations
 
@@ -122,6 +122,24 @@ def test_html_contains_the_five_side_by_side_options_and_measurements() -> None:
     assert "&#x27;kind&#x27;" not in html
     assert "connector start points and directions unique: checked" in html
     assert "edge labels outside every other node box: checked" in html
+
+
+def test_s80_makes_svg_and_lookup_table_previews_openable_without_network() -> None:
+    html = render_html(_comparison())
+
+    assert html.count('class="preview-trigger"') == 2
+    assert html.count('class="preview-content"') == 2
+    assert html.count("Click to enlarge") == 2
+    assert '<dialog class="rendering-lightbox" id="rendering-lightbox"' in html
+    assert "data-lightbox-close" in html
+    assert "dialog.showModal()" in html
+    assert "dialog.close()" in html
+    assert "event.target === dialog" in html
+    assert 'event.key === "Escape"' in html
+    assert "<script src=" not in html
+    assert "<link " not in html
+    assert "http://" not in html
+    assert "https://" not in html
 
 
 def test_s79_reports_vertical_svg_dimensions_and_zero_placeholders() -> None:

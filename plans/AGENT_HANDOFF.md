@@ -21,7 +21,7 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## BALL
 
-**BALL: WORKER - M20-S80 (CLICK TO ENLARGE). PILOT ROUND, small.**
+**BALL: ARCHITECT - M20-S80 (CLICK TO ENLARGE), awaiting acceptance.**
 **S79 ACCEPTED at `a94a8aa`** - branches diverge, chains work, tables are nodes, findings carry
 their reason. John still needs to see the options at full size before choosing a rendering.
 
@@ -142,7 +142,7 @@ resolve now, and whether they resolve to the RIGHT line is unreviewed.
 
 ## Current round
 
-**M20-S80 IN FLIGHT (Worker, 2026-08-07). CLICK TO ENLARGE. SMALL ROUND.**
+**M20-S80 WORKER COMPLETE (2026-08-07). CLICK TO ENLARGE. SMALL ROUND; awaiting Architect acceptance.**
 
 **PILOT RULES BIND.** Everything under `pilot/`; tests in the pilot, out of `tests/`; no full-suite
 run; no provider run.
@@ -179,6 +179,28 @@ unchanged.
 
 **Do not choose for John.** This round exists so he can finally see the options at full size and pick
 one.
+
+**WORKER COMPLETION (2026-08-07).** `pilot/render_options.py` now wraps the generated flow SVG
+and lookup-table renderings in keyboard-accessible preview triggers. An inline filesystem-safe
+`<dialog>` copies the generated content at its intrinsic size; tall SVGs scroll vertically and
+wide lookup tables scroll horizontally. Click the backdrop, the Close button, or press Escape to
+close. No external scripts, fonts, stylesheets, or network URLs are emitted. S79 SVG markup and
+geometry are unchanged; the enlarged SVG CSS preserves each element's declared width and height.
+
+**TEST EVIDENCE.** RAN:
+`$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp2'; .venv\Scripts\python.exe -m pytest pilot\test_render_options.py -q`
+-> **10 passed, 1 known `.pytest_cache` permission warning**. RAN:
+`.venv\Scripts\python.exe tools\check_ascii.py` -> **ASCII check OK**. RAN:
+`.venv\Scripts\python.exe pilot\render_options.py C:\tmp\m20_s68_candidate --output .test_tmp2\m20_s80_renderings.html`
+-> **157/157 produced for all five renderers; zero failures/placeholders; 3 SVGs at 320x416,
+320x676, 320x676; connector and edge-label geometry checks checked**. Static artifact inspection
+-> **2 preview triggers, dialog open/close/backdrop/Escape handlers present, no external script,
+link, or network URL**.
+
+**NOT RUN:** live browser click/open/close verification. The in-app browser security policy
+blocked navigation to the generated `file://` page; no alternate browser or policy workaround was
+used. The pilot test and static artifact checks cover the emitted handlers, but this browser leg
+remains unverified for Architect acceptance.
 
 **How to rebuild a candidate** - the two commands, in order, because the second is worthless
 without a run from current code:

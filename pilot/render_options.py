@@ -1,4 +1,4 @@
-"""Generate five graph-backed renderings for the M20-S79 pilot.
+"""Generate five graph-backed renderings for the M20-S80 pilot.
 
 The comparison is deliberately a projection.  It reads the candidate graph
 and the joined source evidence through ``review_panel.build_panel``.  It does
@@ -999,7 +999,21 @@ def _rendering_card(name: str, item: Mapping[str, Any]) -> str:
     """Render one selected cell option card."""
 
     content = _text(item.get("content"))
-    if name == "flowchart" and content.lstrip().startswith(("<svg", "<table", "<div class=\"")):
+    previewable = name == "flowchart" and (
+        content.lstrip().startswith("<svg")
+        or '<table class="lookup-table">' in content
+    )
+    if previewable:
+        title = f"{name.title()} rendering"
+        body = (
+            '<div class="preview-trigger" role="button" tabindex="0" '
+            f'aria-label="Open enlarged {escape(title)}" '
+            f'data-preview-title="{escape(title)}">'
+            f'<div class="preview-content">{content}</div>'
+            '<span class="preview-hint">Click to enlarge</span>'
+            '</div>'
+        )
+    elif name == "flowchart" and content.lstrip().startswith("<div class=\""):
         body = content
     else:
         body = f"<pre>{escape(content)}</pre>"
@@ -1112,6 +1126,10 @@ th {{ background: #e4eaf0; }}
 .size {{ margin: 4px 0 9px; color: #526171; font-size: .78rem; }}
 pre {{ margin: 0; min-height: 100px; white-space: pre-wrap; overflow-wrap: anywhere; font: .78rem/1.35 Consolas, monospace; }}
 .flowchart-svg {{ display: block; width: min(100%, 320px); height: auto; background: #fbfcfd; border: 1px solid #b4c0cb; }}
+.preview-trigger {{ position: relative; cursor: zoom-in; outline: 0; }}
+.preview-trigger:focus-visible {{ border-radius: 6px; box-shadow: 0 0 0 3px #1b6ca8; }}
+.preview-trigger .preview-content {{ pointer-events: none; }}
+.preview-hint {{ display: block; margin-top: 7px; color: #1b6ca8; font-size: .76rem; font-weight: bold; }}
 .lookup-table-wrap, .operation-math, .review-finding {{ min-height: 100px; padding: 10px; border: 1px solid #8795a5; background: #fbfcfd; }}
 .operation-chain {{ min-height: 100px; padding: 10px; border: 1px solid #8795a5; background: #fbfcfd; }}
 .chain-box {{ padding: 9px 10px; border: 2px solid #40566d; border-radius: 8px; background: #e7f0f8; overflow-wrap: anywhere; }}
@@ -1135,6 +1153,16 @@ pre {{ margin: 0; min-height: 100px; white-space: pre-wrap; overflow-wrap: anywh
 .svg-label {{ fill: #18212b; font-size: 12px; }}
 .geometry-checks {{ margin-top: 10px; font-weight: bold; }}
 details {{ margin-top: 10px; }}
+.rendering-lightbox {{ width: min(92vw, 1200px); max-width: 92vw; max-height: 92vh; padding: 0; border: 1px solid #8795a5; border-radius: 9px; overflow: hidden; color: #18212b; }}
+.rendering-lightbox::backdrop {{ background: rgba(24, 33, 43, .72); }}
+.lightbox-header {{ display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 12px 16px; background: #18212b; color: white; }}
+.lightbox-header h2 {{ margin: 0; font-size: 1rem; }}
+.lightbox-close {{ padding: 6px 10px; border: 1px solid #d8e2eb; border-radius: 5px; background: white; color: #18212b; cursor: pointer; }}
+.lightbox-body {{ max-height: calc(92vh - 70px); overflow: auto; padding: 18px; background: #f8fafc; }}
+.lightbox-body .preview-content {{ pointer-events: auto; width: max-content; min-width: 100%; }}
+.lightbox-body .flowchart-svg {{ width: auto; max-width: none; height: auto; }}
+.lightbox-body .lookup-table-wrap {{ width: max-content; min-width: 760px; }}
+.lightbox-body .lookup-table {{ width: max-content; min-width: 760px; font-size: 1rem; }}
 @media (max-width: 1500px) {{ .rendering-grid {{ grid-template-columns: repeat(2, minmax(320px, 1fr)); }} .rendering-card:nth-child(3) {{ border-left: 0; border-top: 1px solid #d4dce4; }} .rendering-card:nth-child(n+3) {{ border-top: 1px solid #d4dce4; }} }}
 @media (max-width: 700px) {{ body {{ padding: 8px; }} .rendering-grid {{ grid-template-columns: 1fr; }} .rendering-card, .rendering-card:nth-child(3) {{ border-left: 0; border-top: 1px solid #d4dce4; }} .rendering-card:first-child {{ border-top: 0; }} }}
 </style>
@@ -1148,6 +1176,56 @@ details {{ margin-top: 10px; }}
 {svg_html}
 {failure_html}</section>
 {"".join(cards)}
+<dialog class="rendering-lightbox" id="rendering-lightbox" aria-labelledby="rendering-lightbox-title">
+<div class="lightbox-header"><h2 id="rendering-lightbox-title">Enlarged rendering</h2><button class="lightbox-close" type="button" data-lightbox-close>Close</button></div>
+<div class="lightbox-body" id="rendering-lightbox-content"></div>
+</dialog>
+<script>
+(() => {{
+  const dialog = document.getElementById("rendering-lightbox");
+  const title = document.getElementById("rendering-lightbox-title");
+  const content = document.getElementById("rendering-lightbox-content");
+  if (!dialog || !title || !content) return;
+
+  const close = () => {{
+    if (typeof dialog.close === "function" && dialog.open) dialog.close();
+    else dialog.removeAttribute("open");
+    content.innerHTML = "";
+  }};
+  const open = (trigger) => {{
+    const source = trigger.querySelector(".preview-content");
+    if (!source) return;
+    title.textContent = trigger.dataset.previewTitle || "Enlarged rendering";
+    content.innerHTML = source.innerHTML;
+    if (typeof dialog.showModal === "function") dialog.showModal();
+    else dialog.setAttribute("open", "");
+  }};
+
+  document.querySelectorAll(".preview-trigger").forEach((trigger) => {{
+    trigger.addEventListener("click", () => open(trigger));
+    trigger.addEventListener("keydown", (event) => {{
+      if (event.key === "Enter" || event.key === " ") {{
+        event.preventDefault();
+        open(trigger);
+      }}
+    }});
+  }});
+  document.querySelector("[data-lightbox-close]").addEventListener("click", close);
+  dialog.addEventListener("click", (event) => {{
+    if (event.target === dialog) close();
+  }});
+  dialog.addEventListener("cancel", (event) => {{
+    event.preventDefault();
+    close();
+  }});
+  dialog.addEventListener("keydown", (event) => {{
+    if (event.key === "Escape") {{
+      event.preventDefault();
+      close();
+    }}
+  }});
+}})();
+</script>
 </main></body></html>'''
 
 
