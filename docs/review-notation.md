@@ -185,6 +185,34 @@ Architect's defaults are programmer defaults and are wrong in the same direction
       Tree's only structural signal, so it must be unmistakable - and dropping the flow column frees
       the width to afford it.
 
+17. **NEW 2026-08-08. A BRANCH MUST SHOW WHICH WAY IT TESTS, AND A CHECKBOX IS NOT A BOOLEAN.**
+    John, reading the Tree: *"the condition of a checkbox is being treated as true/false as it would
+    in a programming language. I don't think non programmers would know to just test a particular
+    line number."*
+    - **A checkbox condition uses rule 2's template**, `Line 22 checked?`, never a bare
+      `condition=line 22`. The graph carries `control_role: checkbox`, so the Tree can tell a
+      checkbox from an amount and must.
+    - **A comparison condition PRINTS ITS COMPARATOR** - `line 17 <= threshold`, not two operands
+      sitting next to each other with the test left to the reader's imagination.
+    - **WHERE THE COMPARATOR IS ABSENT, SAY SO ON THE ROW.** It is not a rendering detail; see the
+      finding below. A blank is the one thing the Tree may never show for it.
+
+18. **NEW 2026-08-08. A COMPARISON OPERATOR MUST NEVER DEFAULT. PROVEN DEFECT.**
+    `IF_ELSE` keeps its comparator in `rule.parameters.comparison`, NOT on the operand tree, and
+    `tax_graph/engine/operations.py:241` reads it as `.get("comparison", "gt")`. **The candidate
+    rules carry no `parameters` block at all**, so every generated branch silently evaluates as
+    greater-than.
+    **On `form_6251_2025` line 18 this is inverted on every input.** The cited instruction is
+    verbatim: *"line 17, is $239,100 or less ... multiply line 17 by 26%. Otherwise, multiply line
+    17 by 28% and subtract $4,782."* The correct comparator is `le` and the stored `when_true` is
+    the 26% branch, so running the engine's own handler with a parameter-free rule returns the 26%
+    branch at line 17 = 300,000 (over the threshold) and the 28% branch at 100,000 (under it) -
+    **exactly backwards, both ways.** Passing `comparison: le` returns the right arm, so the
+    machinery is sound and only the data is missing.
+    **A silent default is the whole defect.** An absent comparator must be a NAMED FINDING that
+    fails closed, never a guess that computes a plausible wrong number. This is the same class as
+    the temperature pin, where `0` being falsy silently discarded the setting.
+
 ## OPEN - raised by John and not resolved
 
 - **A threshold is a decision, but is not written as one.** In the 6251 line 18 draft the threshold

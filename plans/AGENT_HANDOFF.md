@@ -21,19 +21,24 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## BALL
 
-**BALL: WORKER - M20-S84 (RETIRE THE FLOW COLUMN; FIX THE TREE'S NOTATION). PILOT ROUND.**
-**S83 ACCEPTED at `5ee8da2`**, verified independently: node-box overlaps **426 -> 0**, the redundant
-role tags gone, the overlap assertion failing closed, 32 pilot tests green.
+**BALL: WORKER - M20-S85 (THE COMPARATOR BECOMES REQUIRED DATA). REAL-PROJECT ROUND.**
+**S84 ACCEPTED at `13648c2`**, verified independently: the flow is gone, the three Tree corrections
+landed, holes state 83/7/2, `--top N` works, 34 pilot tests green, and **rule 13 did not regress**
+when `MODERATOR_ROLES` was deleted.
 
-**THE FLOW COLUMN IS RETIRED (John, 2026-08-08)** - *"one graphic display is enough."* **The Tree is
-now the only graphic**, at full width with Math beneath it. The flow code LEAVES the mainline; it is
-archived at the annotated tag **`archive/m20-flow-column`** (`5ee8da2`), which is **local-only and
-must be pushed**. **Rules 15 and 16 in `docs/review-notation.md` are binding; rule 15 supersedes
-rule 11 and retires rule 14.**
+**A PROVEN CORRECTNESS DEFECT, FOUND BY READING THE TREE (John, 2026-08-08).** He asked how a
+comparison condition is shown. It is not shown, because it is not stored: `IF_ELSE` keeps its
+comparator in `rule.parameters.comparison`, the candidate rules carry **no `parameters` block**, and
+the engine defaults to `"gt"`. **`form_6251_2025` line 18 is inverted on every input** - proven by
+executing the engine's own handler against the verbatim cited instruction. **Rule 18 in
+`docs/review-notation.md` holds the evidence; rule 17 covers the display.**
 
-**THIS FILE WAS PRUNED 2026-08-08, 541 -> 357 lines.** It held **three copies** of every durable
-block after S83's commit rewrote it. Per the rules above: a completed round's narration is DELETED,
-not appended, and git holds the history.
+**FULL-SUITE FLOOR APPLIES** - this round touches `tax_graph/` and `schemas/`, and Part C needs a
+provider run. The recent pilot-round exemptions do NOT apply.
+
+**THE FLOW COLUMN IS RETIRED**, archived at the pushed tag **`archive/m20-flow-column`** (`5ee8da2`).
+Recover with `git show archive/m20-flow-column:pilot/review_panel.py`. Rules 15 and 16 bind; rule 15
+supersedes rule 11 and retires rule 14.
 
 **S81 ACCEPTED at `c89dd53`; temperature pinned at `50a64bf`.**
 **Full suite 2026-08-07: 20 failed, 851 passed, 8 skipped, 1 xfailed in 0:57:21** - exactly the
@@ -178,71 +183,74 @@ resolve now, and whether they resolve to the RIGHT line is unreviewed.
 
 ## Current round
 
-**M20-S84 SPECCED BY ARCHITECT (2026-08-08). RETIRE THE FLOW COLUMN; FIX THE TREE'S NOTATION.**
-**S83 IS ACCEPTED at `5ee8da2`**, verified independently by the Architect: overlapping node-box
-pairs **426 -> 0** by the same measurement used on S82, `addend`/`minuend`/`subtrahend`/`multiplier`/
-`multiplicand` all to zero while `key`, `default`, the band names, `condition`, `threshold`,
-`when_true` and `when_false` survive, the overlap assertion raising out of `_flow_svg` with nothing
-catching it, and 32 pilot tests green on a clean temp root.
+**M20-S85 SPECCED BY ARCHITECT (2026-08-08). THE COMPARATOR BECOMES REQUIRED DATA.**
+**S84 ACCEPTED at `13648c2`**, verified independently: the flow is gone (zero `<svg`, zero flow
+classes, zero arrow glyphs, net -659 lines), the three Tree corrections landed, holes state 83/7/2,
+`--top N` works, 34 pilot tests green. **Rule 13 did NOT regress when `MODERATOR_ROLES` was deleted**
+- role counts are identical to S83, which was the real risk in removing that set.
 
-**AND THE FLOW COLUMN IT FIXED IS NOW BEING DELETED.** That is not a reversal - S83's measurement is
-what proved the column was carrying 15 cells out of 157 for two thirds of the width. **Rules 15 and
-16 in `docs/review-notation.md` are binding.**
+**THIS IS A REAL-PROJECT ROUND, NOT A PILOT ROUND.** It touches `tax_graph/` and `schemas/`, so the
+**full-suite floor applies**: run it, and report the count against the known pre-existing set of 20.
 
-**PILOT RULES BIND.** Everything under `pilot/`; tests in the pilot, out of `tests/`; no full-suite
-run; no provider run. Reuse the existing `cand_s71` workspace as the 157-anchor input.
+**THE DEFECT IS PROVEN, NOT SUSPECTED. Rule 18 in `docs/review-notation.md` holds the evidence.**
+`IF_ELSE` keeps its comparator in `rule.parameters.comparison`; the candidate rules carry **no
+`parameters` block at all**; and `tax_graph/engine/operations.py:241` defaults it to `"gt"`. On
+`form_6251_2025` line 18 that is **inverted on every input** - the engine's own handler returns the
+26% branch when line 17 is OVER the threshold and the 28% branch when it is UNDER, while the cited
+instruction says *"$239,100 or less ... multiply by 26%. Otherwise ... 28% and subtract $4,782."*
+**Reproduce this before changing anything; it is the acceptance case.**
 
-**PART A - DELETE THE FLOW, DO NOT DEPRECATE IT.** John: *"I don't want to keep the code in the main
-line."* **The code is already archived at the annotated tag `archive/m20-flow-column` (commit
-`5ee8da2`)**, so deletion loses nothing - recover with
-`git show archive/m20-flow-column:pilot/review_panel.py`. **PUSH THE TAG**; it is local-only today
-and the first tag in this repository.
-- Remove `_flow_svg`, `_flow_operation_label`, `_lookup_label`, `_flow_wrap`, `_flow_html`,
-  `_flow_metrics`, and every flow-only CSS class and `data-` attribute.
-- **`MODERATOR_ROLES` GOES WITH IT.** Its only remaining consumer was the gutter. **Rule 13 must not
-  regress when it goes** - role suppression is decided by operator and position, never by that set,
-  and the invariant test for it stays.
-- Remove the flow columns from the summary and CLI output: diagram/chain/none modes, SVG dimensions,
-  moderator-arrow counts, `node_boxes_overlap_free`. **Keep `holes` and the finding counts.**
-- **No dead flags, no `--no-flow`, no commented-out blocks.** The tag is the archive.
+**PART A - FAIL CLOSED IN THE ENGINE.** Remove the `"gt"` default at
+`tax_graph/engine/operations.py:241`. An `IF_ELSE` whose rule has no `comparison` must produce a
+named failure, never a computed number. **A plausible wrong answer is worse than a refusal** - this
+is the temperature-pin lesson again, where `0` being falsy silently discarded the setting.
 
-**PART B - THE TREE AT FULL WIDTH, WITH THREE CORRECTIONS.** Rule 16, all three from John reading
-the S83 page:
-1. **Left justify the block headers** - `.tree-box strong` is `text-align: center` today.
-2. **Delete the `->` glyph** and the `.tree-arrow` class. Containment already says it, and after
-   rule 13 the arrow usually trails an empty role label.
-3. **Increase per-level indentation** - `.tree-children` is `padding-left: 12px`, which does not
-   read as a level. Depth is the Tree's only structural signal.
-Collapse `.review-columns` from `minmax(280px, 1fr) minmax(520px, 2fr)` to one full-width column,
-Tree above Math. **The 392-character Math line should stop overrunning** once the column is whole.
+**PART B - REQUIRE IT IN THE SCHEMA.** `schemas/rule.schema.json` types `parameters` as a free-form
+object. Make `comparison` required when `operation` is `IF_ELSE`, with enum `gt|ge|lt|le|eq` - the
+five the engine already implements. Add the matching named finding in
+`tax_graph/validate/graph_validator.py` so a graph carrying a comparator-less branch does not
+validate.
 
-**PART C - MAKE A HOLE STATE ITS REAL REASON.** Small, and it is what stops the page reading as
-three-quarters broken. **92 of 157 rows render the identical string "No promoted flow."** They are
-not the same thing: **83 are `selector_no_formula_cue`** (an input line, no formula expected - a
-CORRECT and final answer), **7 are structural** (4 `structure_duplicate_anchor`,
-2 `structure_header_anchor`, 1 `structure_non_cell_anchor` - extraction bugs), and **2 are real
-derivation failures** (`self_reference`, `row_packet_incomplete`). Render the stored reason. An
-input line must not look like a failure.
+**PART C - THE PIPELINE EMITS IT. THIS IS THE WIRE-TOUCHING CHANGE; IT IS THE ONLY ONE.**
+**DO NOT HAND-AUTHOR the comparison into `rules.yaml`.** Per the prime directive, derivation must
+produce it: the derive_cells schema and prompt must carry the comparator, sourced from the
+instruction text that already states it in words (*"or less"*, *"Otherwise"*). **A provider run is
+required for this part** - unlike the recent pilot rounds. Temperature is pinned at 0; the run is
+the new reference for the branch cells.
 
-**PART D - `--top N`, ranked by operation count then operand count.** John wants to review the hard
-cells without scrolling past the rest. A throwaway proved it out; make it a real flag.
-**Report the ranking honestly in the CLI output** - the corpus is thin, and the panel must not imply
-otherwise: of 65 rows with an operation, **51 are a single operation, 12 are two, and 2 are six**
-(`form_6251_2025` lines 18 and 39). Operand count is the better signal in the tail -
-`form_6251_2025` line 4 is one operation with 23 operands.
+**PART D - VERIFY BY EXECUTION, NOT BY INSPECTION.** A regression test that runs
+`form_6251_2025` line 18 through the engine with real numbers either side of the threshold and
+asserts the arm against the cited instruction. **The existing evidence for this cell has always been
+a rendering; a rendering cannot catch an inverted comparator.**
 
-**OUTPUT GOES TO `C:	mp`, NEVER A DOT DIRECTORY.** The panel is a deliverable, not pytest scratch.
-`.test_tmp*/` is for `PYTEST_DEBUG_TEMPROOT` only, per AGENTS.md. Default `--output` under
-`C:	mp\<round>\`, and tighten `.gitignore` line 57 from `.test_tmp*/` to `.test_tmp/` so the next
-stray sibling shows up in `git status` - seven accumulated unnoticed behind that glob. The repo also
-has an empty, UNIGNORED `tmp/` at its root; add it to `.gitignore` or delete it.
+**PART E - THE TREE SHOWS THE TEST (rule 17), plus three corrections from John.** Pilot-side, no
+suite cost:
+1. **Labels right, boxes left.** `.tree-edge` is a flex row with the role span FIRST, so
+   `married_filing_separately` shoves its box right while `key` barely does. Two-column grid: box in
+   column one so every box shares a left edge, label in column two.
+2. **Indent only nested OPERATIONS.** `.tree-children` indents every child, so leaf value boxes get
+   the same 32px as a `when_true` branch. John: *"I meant the big operation levels that are nested."*
+   Leaves sit flush; operation boxes indent.
+3. **Pretty-print the Math across lines.** It already wraps, but via `overflow-wrap: anywhere`, which
+   breaks mid-token so `LOOKUP_TABLE` splits across lines. Break at operand boundaries with
+   indentation instead, so wrap points carry structure. The 392-character line is
+   `form_6251_2025` line 18 and it is long for real reasons; **it needs to READ, not to shrink.**
+4. **Checkbox and comparator phrasing per rule 17** - `Line 22 checked?` for `control_role:
+   checkbox`, `line 17 <= threshold` where the comparator is known, and a visible named finding
+   where it is not.
 
-**EVIDENCE REQUIRED.** Regenerate all 157 anchors and report: zero occurrences of `flow-svg`,
-`flow-edge`, `MODERATOR_ROLES` and `<svg` in the generated page; the role counts from S83 unchanged
-(rule 13 did not regress with `MODERATOR_ROLES`); hole reasons broken down 83/7/2 matching the
-counts above; the longest Math line before and after; and `--top 14` and `--top 25` both rendering.
-Show `form_6251_2025` line 18 as a Tree - **its `threshold` and `key` roles are what carry the
-hidden filing-status decision now that no arrow does.**
+**EVIDENCE REQUIRED.** In this order:
+1. **The 6251 line 18 execution, before and after**, both arms, against the quoted instruction.
+2. Count of `IF_ELSE` rules missing a comparator, before and after the pipeline run - and **if any
+   remain, say so plainly rather than defaulting them.**
+3. Full suite, against the known 20.
+4. The regenerated panel: checkbox conditions phrased per rule 17, comparators printed, boxes
+   sharing a left edge, and the longest Math line rendered across lines.
+
+**A SECONDARY OBSERVATION, not this round's job.** The instruction cited for 6251 line 18 is the
+**Form 1040-NR paragraph** (*"If you are filing Form 1040-NR..."*). The thresholds match, so the
+numbers are right, but a plain 1040 filer's cell is citing the NR text. This is the wrong-filer's-
+form family that S74 fixed on line 20. **Queue it; do not widen this round.**
 
 ## Standing operational notes
 
