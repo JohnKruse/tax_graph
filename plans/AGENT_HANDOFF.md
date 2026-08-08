@@ -21,28 +21,37 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## BALL
 
-**BALL: WORKER - M20-S89 (DELETE THE SELECTOR GATE). REAL-PROJECT ROUND.**
-**THE GUARD BLOCK IS ANSWERED (2026-08-08); the ruling is at the end of the S89 spec.** Both
-guards are superseded and rewritten, the compatibility shim is rejected in favour of one accessor,
-and the provider floor measurement is mine to run, not yours.
-**THE LEGACY-TELEMETRY QUESTION IS ANSWERED TOO (see Open for Architect): assert 13, my 12 was
-stale.** Remaining before this round can be accepted: the root-header guard, the full suite, and
-then hand back for the provider floor run.
-**S88 ACCEPTED at `49ff88a`.** The harness was correct; the Architect ran the three arms, since the
-Worker sandbox still cannot reach the provider or write `C:	mp`.
+**BALL: JOHN - M20-S89 ACCEPTED at `d2a077f`. S90 is PROPOSED under Current round and needs your
+gate before the Worker picks it up.**
 
-**THE ANSWER: 27 of 32 missed formulas recover with TODAY'S CONTEXT, for about nine cents.** All
-three arms recovered the same 27. Arm A - the line-anchored section we already build - had zero
-regressions and zero wrong-line quotes. Widening lost rows and provenance. **Ship arm A; delete the
-gate.**
+**THE GATE IS GONE AND NOTHING REGRESSED.** Against the S81 temperature-0 baseline, all **64** rows
+that derived or repaired then still do - checked row by row, not by count. **Coverage 64 -> 139 of
+157 printed anchors (88.5%)**, skips 90 -> the 7 structural rows, **cost $0.0954** over 142 priced
+calls against the $0.09 predicted.
+**Full suite 2026-08-08: 18 failed, 873 passed, 8 skipped, 1 xfailed in 0:56:59** - every failure
+in the documented pre-existing families (the 4 named known-red, 11 `tests/e2e/*_m15` on the empty
+queue, and the artifact-state `test_cli` / `test_field_identity_m16` / `test_review_preflight_m15`).
+**Zero failures anywhere in `tax_graph/extract` or the m20 series**, passes 851 -> 873, protected-set
+diff EMPTY.
 
-**COVERAGE: ~64% -> ~90% EXPECTED.** Report it against all printed anchors. The
-derived-over-attempted denominator is exactly what hid 32 formulas.
+**MY S88 HEADLINE WAS WRONG AND THE PRODUCTION RUN CORRECTED IT. "27 of 32 missed formulas recover"
+was never a count of formulas.** `pilot/context_arms.py` scores recovery as any row reaching
+`derived` or `repaired`, and `REQUIRE_INPUT` is a derivation - so the arms measured rows getting an
+ANSWER. **Of the 32 named rows only 4 produce an expression** (1040 `16`; 6251 `5`, `7`, `19`); 23
+answer `require_input`, 5 error. **This is the exact defect S89 was written to kill - a skip that
+reports as success - reappearing one level up, in the measurement rather than the pipeline.**
+Corpus-wide the deletion bought **13 new expressions and 67 model-asserted inputs**, and errors rose
+**3 -> 11**.
 
-**TWO ARCHITECT CLAIMS WERE WRONG THIS ROUND AND THE DATA CORRECTED BOTH.** Buffers were argued
-safe because a model treats overlap as context - wrong-line quotes went **0 -> 2 -> 6** as the
-window widened. And a wider region was expected to help 6251 most, since arm C reached 34 anchors
-versus 24; it recovered no more and broke five rows.
+**THE NEW OUTCOME HAS NOT EARNED ITS TRUST YET, which is what S90 is for.** 12 of 67 model-asserted
+inputs (18%) have a printed face naming another form. **Do not read `model_stated_input` as fact.**
+
+**S88 ACCEPTED at `49ff88a`.** Arm A shipped; context assembly unchanged. **Do not widen the context
+or revisit buffers without new evidence** - wrong-line quotes went 0 -> 2 -> 6 as the window widened.
+**The S89 floor run is at** `C:\tmp\m20_s89\run`.
+un`.
+un`.**
+
 
 **S81 ACCEPTED at `c89dd53`; temperature pinned at `50a64bf`.**
 **Full suite 2026-08-07: 20 failed, 851 passed, 8 skipped, 1 xfailed in 0:57:21** - exactly the
@@ -187,116 +196,28 @@ resolve now, and whether they resolve to the RIGHT line is unreviewed.
 
 ## Current round
 
-**M20-S89 SPECCED BY ARCHITECT (2026-08-08). DELETE THE SELECTOR GATE.**
-**REAL-PROJECT ROUND** - touches `tax_graph/`, so the **full-suite floor applies.**
+**M20-S90 PROPOSED BY ARCHITECT (2026-08-08), AWAITING JOHN. A FACE THAT NAMES ANOTHER FORM IS A
+REFERENCE, NOT AN INPUT.**
 
-**S88 SETTLED IT WITH NUMBERS. ARM A WON OUTRIGHT.** Same 157 anchors, three context arms, selector
-bypassed, live provider:
+**THE TARGET STATE.** A printed line whose own face says "from Form 8863, line 8" derives an
+operand pointing at that document and line - or, when the document is outside the corpus, a named
+finding that says so. `REQUIRE_INPUT` is reserved for a line the filer actually supplies from
+their own records. Reference commit for the shape of a cross-form operand: `b153e94` (S74's
+document inventory), which already resolves worksheet and form operands correctly.
 
-| arm | recovered of 32 | regressions | wrong-line quotes | cost |
-| --- | --- | --- | --- | --- |
-| **A - line section only (today's context)** | **27** | **0** | **0** | $0.095 |
-| B - section plus 8-line buffers | 27 | 1 | 2 | $0.072 |
-| C - raw 12-line region, no sectioner | 27 | 5 | 6, plus 9 unattributable | $0.074 |
+**THE MEASUREMENT THAT MOTIVATES IT, from the S89 floor run.** 12 of 67 model-asserted inputs
+(18%) have a face naming another form or schedule - 1040 `19` "from Schedule 8812", `20` "Amount
+from Schedule 3, line 8", `29` "from Form 8863, line 8", 6251 `2a` "Schedule A, line 7; otherwise
+... 1040 line 12e". **18% is the mechanical floor, not the true rate:** 1040 `4b` "Taxable amount"
+and `12e`'s standard-versus-itemized choice are also not inputs and no substring finds them.
 
-**THE CONTEXT WAS NEVER THE PROBLEM; THE GATE WAS.** Every arm recovered the same 27. Widening
-bought nothing and cost progressively more.
+**THE FLOOR.** The 64 non-regressing rows stay non-regressing. The 13 real expressions stay. **A
+line whose face names an out-of-corpus document must produce a NAMED FINDING, never a silent
+`REQUIRE_INPUT`** - that is the S89 defect repeating one level down.
 
-**AN ARCHITECT CLAIM WAS MEASURABLY WRONG, AND THE MEASUREMENT IS WHY WE KNOW.** The spec argued
-buffers were safe because a model, unlike a parser, treats overlap as context rather than
-contamination. **False: wrong-line quotes went 0 -> 2 -> 6 as the window widened**, and arm C also
-produced 9 quotes whose provenance could not be established. **Do not widen the context. Do not
-revisit buffers without new evidence.**
-
-**THE CHANGE.**
-1. **Every printed anchor goes to derivation.** `selector_no_formula_cue` stops existing as a skip.
-   The keyword cue lists at `outline_pipeline.py:51` stop gating derivation. **Delete the gate; do
-   not widen the cue list** - a longer substring list is the same defect.
-2. **"This line is an input" becomes a FIRST-CLASS MODEL-STATED OUTCOME**, carrying its evidence,
-   not a silent keyword drop and not an error. **A skip that reports as success is the exact defect
-   that hid 32 formulas for months.**
-3. **CONTEXT ASSEMBLY IS UNCHANGED.** Arm A is what ships. No buffers, no region fallback.
-4. **STRUCTURAL SKIPS STAY SKIPS** - the 7 `structure_duplicate_anchor`, `structure_header_anchor`
-   and `structure_non_cell_anchor` rows are extraction artifacts, not formula questions.
-5. **The review surface must distinguish a MODEL-ASSERTED input line from a STRUCTURAL skip.** They
-   are different claims with different trust: one is a judgment that can be wrong, the other is a
-   fact about the printed page.
-
-**THE FLOOR, and it is a floor not a target.**
-- **The 63 rows that derive or repair today MUST NOT regress.** Report any that do, by line.
-- **The 27 recovered in S88 must derive.** They are named in `pilot/context_arms.py`
-  `KNOWN_MISSED_FORMULAS`.
-- **Expected real coverage: ~64% -> ~90%** (63 of ~99 to ~90 of ~99). **Report the coverage number
-  against ALL printed anchors, not against attempted** - the attempted denominator is what hid this.
-- **Cost rises from about $0.04 to about $0.09 per run.** That is the whole price of the gate.
-
-**OUT OF SCOPE.** The 5 that no arm recovered - 1040 `27a`, `38`; 6251 `1a`, `10`, `25` - **errored
-rather than skipped**, so the model saw them and failed. That is derivation, not routing. **Queue
-it; do not widen this round.** Also queued and untouched: the run-together instruction headings
-(`**Line 2dDepletion**`), which cost 6251 ten instruction sections.
-
-**THE RISK TO WATCH, stated honestly.** 157 anchors instead of 67 means more rows that can error,
-and an "input line" answer must earn the same trust as an expression. **Spot-check a sample of
-model-asserted input lines against the printed form** and report the rate, rather than assuming the
-new outcome is reliable because the recovery number looks good.
-
-**ARCHITECT RULING ON THE S89 GUARD CONTRACT (2026-08-08). Asked and answered; the round is not
-blocked.** The Worker measured the slice at **1040 58 admitted / 1 structural; 2441 32 / 3;
-6251 60 / 3**, route denominator 67 -> 150, seven structural rows preserved. That is the intended
-shape.
-
-**1. S89 SUPERSEDES BOTH GUARDS. Rewrite them; do not delete them.** A test asserting that a
-no-cue anchor is skipped is asserting the defect this round exists to remove, and it is exactly
-the test that let 32 formulas hide. The replacement assertions:
-
-- `tests/test_m20_s51.py::test_denominator_reports_legacy_and_widened_selector_decisions` -
-  anchor `9` is now routed. Assert `by_anchor["9"]["skip_reason"] == ""`,
-  `derivation_admitted is True`, and `legacy_selector_admits is False`; report totals become
-  `admitted == 3`, `skipped == 0`, `legacy_admitted == 0`. **The cue telemetry stays asserted** -
-  that is the part of this test still worth having.
-- `tests/test_m20_s51.py::test_form_2441_denominator_names_the_newly_visible_rows` - assert the
-  measured `admitted == 32`, `skipped == 3`, `legacy_admitted == 12`,
-  `skipped_by_reason` containing only `structure_*` keys, and anchor `1` carrying
-  `skip_reason == ""` with `legacy_selector_admits is False`. Assert what you measure, not what
-  this ruling arithmetic-ed.
-- `tests/test_m20_s71.py::test_selector_skips_provider_but_retains_clean_cell_text` - rename to
-  name the structural case, set the fixture metadata to a `structure_non_cell_anchor` reason, and
-  keep every assertion (skipped, clean text, zero provider calls, `attempted == 0`).
-  **Then add the inverse guard in the same file: a row with no formula cue and no structural
-  reason DOES reach the provider and IS counted in `attempted`.** That pair is the contract.
-
-**2. NO. The old selector counts do NOT survive as a compatibility projection, and the slice's
-current shim is the thing I am rejecting.** It keeps `selector_admitted`, `selector_cue` and
-`selector_skip_reason` next to new `structural_skip_reason` and `legacy_selector_*`, and then
-`derive_cells` improvises `structural_skip_reason or (selector_skip_reason if it startswith
-"structure_")`. **That is one accessor's job done by every consumer, which is the recurring defect
-we already ruled on.** Worse, `selector_admitted` was redefined in place: same key, new meaning,
-so `test_outline_span_resolution_m20.py:245`, `test_derive_cells_m20.py:1510` and
-`pilot/review_panel.py` all still read it and now silently get a different answer.
-
-**The shape I want:** one accessor decides routing for a row - a single function returning the
-structural skip reason, where absence is a typed empty result and empty means "route it". Delete
-`selector_admitted` and `selector_skip_reason` from cell metadata rather than redefining them; the
-cue survives only inside `build_derivation_denominator` under `legacy_selector_*`, explicitly
-labelled measurement. Drop the redefined `selector_admits` from the report and let
-`derivation_admitted` be the only routing field. **No `.get(a, .get(b))` chains and no
-`startswith("structure_")` sniffing anywhere** - the reason is present or it is not. Put the
-invariant test at the accessor.
-
-**3. `model_stated_input` is right, and the machinery already existed** - `REQUIRE_INPUT` is a
-registered operation and `prompts/derive_cells.md` already instructs it. Labelling the outcome is
-the whole change; keep it that small.
-
-**4. `pilot/review_panel.py` still categorizes holes as `selector_no_formula_cue`, which now has
-no producer.** That is spec point 5 and it stays in this round, but do it AFTER the run, against
-real rows: a model-asserted input is an outcome, not a hole, and only `structure_*` rows remain
-holes.
-
-**ORDER OF WORK.** Land the accessor cleanup and the rewritten guards, then the full suite
-(real-project floor), then report. **Do not attempt the provider run** - your sandbox cannot reach
-it, and I will run the floor measurement myself as I did for S88: the 63 non-regressing rows, the
-27 recovered, coverage against all 157 printed anchors, cost, and the spot-check rate for
-model-asserted input lines.
+**OUT OF SCOPE.** The 11 errored rows, including the 5 no arm ever recovered. Still queued: the
+run-together instruction headings (`**Line 2dDepletion**`); artifact-pinned test counts measured
+against untracked `.cache/raw` files.
 
 ## Standing operational notes
 
@@ -418,48 +339,7 @@ was performed, per pilot rules.
 
 ## Open for Architect
 
-**S89 WORKER STATUS (2026-08-08):** The selector gate cleanup is implemented in the working
-tree. `get_structural_skip_reason` is the sole row routing accessor; cell metadata no longer
-contains `selector_admitted`, `selector_cue`, or `selector_skip_reason`; denominator telemetry is
-under `legacy_selector_*`; no-cue rows route and record `model_stated_input`; root header duplicate
-handling preserves the measured 58/1, 32/3, and 60/3 document slices. Pilot context metadata
-keeps historical selector data only under `pilot_original_legacy_*` and does not reintroduce it
-as routing. The pilot labels retired selector holes as `historical_selector` and tells the reviewer
-to regenerate; current `model_stated_input` rows are outcomes, not holes.
-
-**ANSWERED - ASSERT 13. The `12` was mine to get wrong and I told you not to copy it.** The ruling
-said assert what you measure; 12 came from the old S51 test and I echoed it without re-measuring.
-**S89 did not move this number and could not have:** the diff leaves `_formula_selector_decision`
-and the anchor list untouched, and `legacy_admitted` reads only `before`, which no part of the
-slice touches. **Architect verified independently** on the current artifact: 35 anchors, 13 legacy
-admitted, 32 admitted, 3 structural (2 duplicate, 1 header). All 13 are ordinary form lines with
-genuine cues - 5 `amount_from_line`, 9a `multiply_line`, 9c/28 `add_line`, 11/17/31
-`smaller_of_line`, 15 `combine_line`, 19 `amount_from_line`, 23/25/26/29 `subtract_line`.
-**Take no form-specific subtraction. You were right not to add one.**
-
-**THE REAL FINDING UNDER IT: this guard pins numbers to an UNTRACKED artifact.**
-`.cache/raw/2025/form_2441_2025.txt` is not in git; the 13 is measured against whichever local
-copy exists. Any such expectation drifts silently when a document is re-acquired or the extractor
-changes, and the test reports it as a code regression. **Queued, not this round:** decide whether
-artifact-pinned counts get a tracked fixture or stop being asserted.
-
-**ROOT-HEADER GUARD ADDED.** The
-`root_header_present` exemption is not cosmetic - it fires on `form_2441_2025` anchor `21` and
-`form_6251_2025` anchor `32`, rescuing two real cells that the form header's repeated sequence
-number would otherwise mark `structure_duplicate_anchor`. The named parameterized test
-`test_root_header_duplicate_does_not_consume_real_cell` now guards both anchors.
-
-**S89 TEST EVIDENCE:** RAN
-`$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp2'; .venv\Scripts\python.exe -m pytest tests\test_m20_s51.py -q`
--> **6 passed in 1.64s**. RAN
-`$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp2'; .venv\Scripts\python.exe -m pytest tests\test_m20_s51.py tests\test_m20_s71.py tests\test_derive_cells_m20.py tests\test_candidate_regeneration_m20.py tests\test_outline_span_resolution_m20.py pilot\test_context_arms.py pilot\test_review_panel.py pilot\constructions\test_measure.py -q`
--> **112 passed, 1 failed in 25.93s**; the single failure is the known environment boundary in
-`test_real_candidate_node_labels_use_clean_text`, which writes a candidate under the repository
-temp root and is correctly rejected by the external-output guard. The same command with the
-external `C:\Users\devbox\AppData\Local\Temp\tgpt` root was **100 passed, 13 environment errors**
-because that root is ACL-poisoned for this account. RAN
-`.venv\Scripts\python.exe tools\check_ascii.py` -> **ASCII check OK**. The full suite was NOT RUN:
-the last measured full suite was 0:57:21, beyond the 600-second Worker command cap.
+**S89 is accepted; its items are cleared. The record is `d2a077f` and the BALL block.**
 
 **S85 Part C is open for the Architect:** the fresh three-document run used the pinned
 `openai/gpt-5.6-luna` model but all 34 attempted rows failed with
