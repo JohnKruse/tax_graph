@@ -40,8 +40,8 @@ what the full-suite floor is for** - the Worker cannot run it under a 600-second
 wire-contract change shipped with a stale test behind it.
 
 **S85 PART C IS DONE (Architect, 2026-08-08). RULES 17 AND 18 ARE PROVEN ON REAL DATA.**
-Run `C:	mp\m20_s85c_run3` -> **58 derived, 5 repaired, 4 errored, 90 skipped, cost $0.0375.**
-Candidate `C:	mp\m20_s85c_cand`; panel `C:	mp\m20_s85_panel.html`.
+Run `C:\tmp\m20_s85c_run3` -> **58 derived, 5 repaired, 4 errored, 90 skipped, cost $0.0375.**
+Candidate `C:\tmp\m20_s85c_cand`; panel `C:\tmp\m20_s85_panel.html`.
 - **5 of 5 `IF_ELSE` rules carry a comparator; ZERO missing** (was 3 of 3 missing). Values: `le` x3,
   `gt` x2. **`rule_form_6251_2025_root_line_18_candidate` derived `comparison: le`** - exactly what
   the cited instruction requires (*"$239,100 or less ... 26%"*). The pipeline emitted it; nothing was
@@ -85,7 +85,7 @@ provider default.
    `is not None`, the same trap that swallowed the temperature pin.
 0b. **`form_2441_2025` has NO address registry file** in either `graph/2025/addresses/` or
    `_drafts/`, so its control roles resolve to nothing and its line 22 checkbox cannot render.
-0c. **The Worker sandbox cannot reach the network or write `C:	mp`** - fix the sandbox config or
+0c. **The Worker sandbox cannot reach the network or write `C:\tmp`** - fix the sandbox config or
    route every provider round through the Architect.
 
 **S81 ACCEPTED at `c89dd53`; temperature pinned at `50a64bf`.**
@@ -257,7 +257,7 @@ Run derivation for the branch documents, regenerate the candidate, and report:
 3. **Comparator symbols and `checked?` phrasing rendered from real data.** Both paths render ZERO
    times on `cand_s71` because it predates the change; `form_1040_2025` resolves 18 checkbox lines,
    so the checkbox half should now fire. **These are the first real-data proofs of rules 17 and 18.**
-4. The regenerated panel to `C:	mp`, never a dot directory.
+4. The regenerated panel to `C:\tmp`, never a dot directory.
 
 **`form_2441_2025` HAS NO ADDRESS REGISTRY FILE** in either `graph/2025/addresses/` or `_drafts/`,
 so its control roles resolve to nothing and its line 22 checkbox cannot render. **Queue it; do not

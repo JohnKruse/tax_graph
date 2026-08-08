@@ -39,7 +39,7 @@ class FakeMicroClient:
         self.response = response
         self.calls = []
 
-    def structured_completion(self, *, prompt, schema, model, max_tokens, temperature, purpose):
+    def structured_completion(self, *, prompt, schema, model, max_tokens, temperature, purpose, seed=None):
         self.calls.append(
             {
                 "prompt": prompt,
@@ -57,7 +57,7 @@ class PromptAwareMicroClient:
     def __init__(self):
         self.calls = []
 
-    def structured_completion(self, *, prompt, schema, model, max_tokens, temperature, purpose):
+    def structured_completion(self, *, prompt, schema, model, max_tokens, temperature, purpose, seed=None):
         self.calls.append(
             {
                 "prompt": prompt,
@@ -296,7 +296,7 @@ def test_formula_line_micro_path_is_bounded_and_isolates_failed_cells(tmp_path):
         def __init__(self):
             self.calls = []
 
-        def structured_completion(self, *, prompt, schema, model, max_tokens, temperature, purpose):
+        def structured_completion(self, *, prompt, schema, model, max_tokens, temperature, purpose, seed=None):
             self.calls.append({"prompt": prompt, "max_tokens": max_tokens, "purpose": purpose})
             if len(self.calls) == 1:
                 raise RuntimeError("cell failed")
@@ -640,7 +640,7 @@ def test_non_formula_micro_path_records_resolved_source_identity(tmp_path):
     )
 
     class SourceClient:
-        def structured_completion(self, *, prompt, schema, model, max_tokens, temperature, purpose):
+        def structured_completion(self, *, prompt, schema, model, max_tokens, temperature, purpose, seed=None):
             target_label = prompt.split("target line label:", 1)[1].splitlines()[0]
             if "W-2" in target_label:
                 return {

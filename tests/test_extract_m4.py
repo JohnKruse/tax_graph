@@ -34,7 +34,7 @@ class FakeLlmClient:
         }
         self.calls: list[str] = []
 
-    def structured_completion(self, *, prompt, schema, model, max_tokens, temperature, purpose):
+    def structured_completion(self, *, prompt, schema, model, max_tokens, temperature, purpose, seed=None):
         self.calls.append(purpose)
         if purpose == "tax_graph_critic":
             return self.critic_response

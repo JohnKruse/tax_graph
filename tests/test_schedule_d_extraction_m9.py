@@ -24,7 +24,7 @@ class ScheduleDMicroClient:
     def __init__(self):
         self.prompts: list[str] = []
 
-    def structured_completion(self, *, prompt, schema, model, max_tokens, temperature, purpose):
+    def structured_completion(self, *, prompt, schema, model, max_tokens, temperature, purpose, seed=None):
         self.prompts.append(prompt)
         span_id = re.search(r"- (span_[a-z0-9_]+):", prompt).group(1)
         return {

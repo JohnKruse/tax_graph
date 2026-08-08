@@ -24,6 +24,19 @@ _MODEL_CONFIG_PATHS = {
     "nversion": "llm.nversion_model",
 }
 
+# Roles that legitimately fall back to another role when their own key is unset.
+# M20-S86 removed the improvised `"configured-llm"` placeholder - correctly - but
+# also removed this DOCUMENTED cascade, which turned two optional keys into
+# required ones and failed 11 tests plus the example config.  The two are not the
+# same thing: a placeholder invents a model id nobody configured, while a cascade
+# resolves to a model the operator did configure.  `nversion` has no fallback on
+# purpose: a second-family cross-check that silently ran the primary model would
+# corroborate nothing.
+_MODEL_ROLE_FALLBACKS = {
+    "micro": "primary",
+    "example": "micro",
+}
+
 
 def project_root() -> Path:
     """Return the source checkout root or packaged runtime-data root.
@@ -95,18 +108,36 @@ def resolve_llm_model(config: Mapping[str, Any], role: str = "primary") -> str:
     typed error instead of silently changing the model family or emitting a
     placeholder model id.  The caller may use the primary role explicitly for
     a purpose that is intentionally run by the primary model.
+
+    A role listed in ``_MODEL_ROLE_FALLBACKS`` may resolve through its documented
+    cascade when its own key is unset.  That is not a placeholder: every model it
+    can land on is one the operator configured.  When nothing in the chain is set,
+    the error names every key that was tried.
     """
-    try:
-        path = _MODEL_CONFIG_PATHS[role]
-    except KeyError as exc:
-        allowed = ", ".join(sorted(_MODEL_CONFIG_PATHS))
-        raise ModelConfigurationError(
-            f"unknown LLM model role {role!r}; expected one of {allowed}"
-        ) from exc
-    value = get_config_value(dict(config), path)
-    if value is None or not str(value).strip():
-        raise ModelConfigurationError(f"{path} is required for LLM role {role}")
-    return str(value).strip()
+    settings = dict(config)
+    tried: list[str] = []
+    current = role
+    seen: set[str] = set()
+    while True:
+        try:
+            path = _MODEL_CONFIG_PATHS[current]
+        except KeyError as exc:
+            allowed = ", ".join(sorted(_MODEL_CONFIG_PATHS))
+            raise ModelConfigurationError(
+                f"unknown LLM model role {current!r}; expected one of {allowed}"
+            ) from exc
+        tried.append(path)
+        value = get_config_value(settings, path)
+        if value is not None and str(value).strip():
+            return str(value).strip()
+        seen.add(current)
+        nxt = _MODEL_ROLE_FALLBACKS.get(current)
+        if nxt is None or nxt in seen:
+            break
+        current = nxt
+    raise ModelConfigurationError(
+        f"no model configured for LLM role {role}; set one of {', '.join(tried)}"
+    )
 
 
 def resolve_llm_seed(config: Mapping[str, Any]) -> int | None:

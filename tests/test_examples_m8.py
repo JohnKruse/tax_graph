@@ -16,7 +16,7 @@ class FakeExampleClient:
     def __init__(self):
         self.calls: list[dict] = []
 
-    def structured_completion(self, *, prompt, schema, model, max_tokens, temperature, purpose):
+    def structured_completion(self, *, prompt, schema, model, max_tokens, temperature, purpose, seed=None):
         self.calls.append(
             {
                 "prompt": prompt,
@@ -52,17 +52,17 @@ class FakeExampleClient:
 
 
 class FailingExampleClient:
-    def structured_completion(self, *, prompt, schema, model, max_tokens, temperature, purpose):
+    def structured_completion(self, *, prompt, schema, model, max_tokens, temperature, purpose, seed=None):
         raise RuntimeError("provider down")
 
 
 class UnsupportedStructuredOutputClient:
-    def structured_completion(self, *, prompt, schema, model, max_tokens, temperature, purpose):
+    def structured_completion(self, *, prompt, schema, model, max_tokens, temperature, purpose, seed=None):
         raise RuntimeError("OpenRouter endpoint does not support JSON-schema structured outputs; choose a structured-output-capable endpoint or adjust llm.require_parameters")
 
 
 class RuntimeRowShorthandClient:
-    def structured_completion(self, *, prompt, schema, model, max_tokens, temperature, purpose):
+    def structured_completion(self, *, prompt, schema, model, max_tokens, temperature, purpose, seed=None):
         return {
             "facts": {
                 "filing_status": "single",
@@ -80,7 +80,7 @@ class RuntimeRowShorthandClient:
 
 
 class StaticRowTemplateIdClient:
-    def structured_completion(self, *, prompt, schema, model, max_tokens, temperature, purpose):
+    def structured_completion(self, *, prompt, schema, model, max_tokens, temperature, purpose, seed=None):
         return {
             "facts": {
                 "filing_status": "single",
@@ -100,7 +100,7 @@ class StaticRowTemplateIdClient:
 
 
 class ScheduleDShorthandClient:
-    def structured_completion(self, *, prompt, schema, model, max_tokens, temperature, purpose):
+    def structured_completion(self, *, prompt, schema, model, max_tokens, temperature, purpose, seed=None):
         return {
             "facts": {
                 "filing_status": "single",

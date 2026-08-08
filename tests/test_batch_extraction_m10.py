@@ -20,7 +20,7 @@ class ScheduleBFormulaClient:
     def __init__(self):
         self.calls: list[dict[str, str]] = []
 
-    def structured_completion(self, *, prompt, schema, model, max_tokens, temperature, purpose):
+    def structured_completion(self, *, prompt, schema, model, max_tokens, temperature, purpose, seed=None):
         self.calls.append({"model": model, "purpose": purpose, "prompt": prompt})
         outline_id = re.search(r"outline_id: ([^\n]+)", prompt).group(1)
         line_anchor = re.search(r"line_([0-9]+[a-z]?)$", outline_id).group(1)
@@ -44,7 +44,7 @@ class GenericBatchClient:
     def __init__(self):
         self.calls: list[dict[str, str]] = []
 
-    def structured_completion(self, *, prompt, schema, model, max_tokens, temperature, purpose):
+    def structured_completion(self, *, prompt, schema, model, max_tokens, temperature, purpose, seed=None):
         self.calls.append({"model": model, "purpose": purpose, "prompt": prompt})
         outline_id_match = re.search(r"outline_id: ([^\n]+)", prompt)
         columns_match = re.search(r"columns: \[(.*?)\]", prompt)

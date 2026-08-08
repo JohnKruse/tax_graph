@@ -20,7 +20,7 @@ class PromptAwareMicroClient:
     def __init__(self):
         self.calls: list[dict[str, Any]] = []
 
-    def structured_completion(self, *, prompt, schema, model, max_tokens, temperature, purpose):
+    def structured_completion(self, *, prompt, schema, model, max_tokens, temperature, purpose, seed=None):
         self.calls.append(
             {
                 "prompt": prompt,

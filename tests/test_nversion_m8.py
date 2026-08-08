@@ -20,7 +20,7 @@ class PromptAwareClient:
         self.swap_subtract_roles = swap_subtract_roles
         self.calls: list[dict] = []
 
-    def structured_completion(self, *, prompt, schema, model, max_tokens, temperature, purpose):
+    def structured_completion(self, *, prompt, schema, model, max_tokens, temperature, purpose, seed=None):
         self.calls.append({"prompt": prompt, "model": model, "purpose": purpose})
         if "kind: totals" in prompt:
             span_id = re.search(r"- (span_[a-z0-9_]+): .*- 2: Totals", prompt).group(1)
