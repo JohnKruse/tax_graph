@@ -21,28 +21,25 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## BALL
 
-**BALL: WORKER - M20-S87 (KILL THE CONFIG-PATH ROOT CAUSE; AUDIT THE 83 SKIPS).**
-**S86 ACCEPTED at `2d27205`, with the regression fixes at `b9cd181`.**
+**BALL: WORKER - M20-S88 (CONTEXT A/B: REGION PLUS BUFFERS, MODEL SELECTS). PILOT ROUND.**
+**S87 ACCEPTED at `1988fd8`.** The config guard works - it raised on every command until the decoy
+was removed, which is the guard doing its job. **The Architect moved
+`config/tax-graph.config.yaml` to the session scratchpad rather than deleting it** (a stale copy of
+the example; the example is strictly newer). Ten-plus fixtures now point at the loaded path.
 
-**STAGE-BY-STAGE STATE (Architect read for John, 2026-08-08).** None of the current suite noise is
-extraction or derivation.
-- **Text and anchors: FIXED**, as John believed - 153/153 rows clean form-face text, 0 of 194 node
-  labels carrying raw OCR, anchors 12% -> 1% wrong.
-- **Derivation: MEETING THE 98% BAR** - 66 attempted, 58 derived, 5 repaired, 4 errored, and the 4
-  fail for stated reasons rather than repairing into something unverifiable.
-- **Candidate/graph: working and newly stricter** - 5 of 5 branches carry a comparator.
-- **Review surface: working** - Tree over Math, 65 operation rows, holes stating their real reason.
-- **Selector: working, UNVERIFIED** - 83 of 157 anchors skipped on one unaudited judgment. **This is
-  where the risk is.**
-- **M15 review workbench: red, older milestone** - 11 e2e failures on an empty queue, unrelated to
-  the extraction pipeline.
+**S87 PART B IS THE HEADLINE: THE SELECTOR DROPS 38.6% OF REAL FORMULAS.** 32 of its 83 skips are
+computations - 1040 5/41, 2441 2/11, **6251 25/31 = 80.6%**. **Of the 90 skipped rows, ZERO reached
+the model**: no attribution, no tokens, no cost. These are not AI errors; the AI was never shown
+them, which is why they produce no error and look like a clean run.
 
-**WHAT TODAY BOUGHT, since it does not feel like progress:** a wrong tax number was found and fixed.
-`form_6251_2025` line 18 computed the 26% arm when it owed 28%, inverted on every input, because the
-comparator was unstored and the engine defaulted to `gt`. It is now derived from the instruction
-(`le`), required by schema, named by the validator, and visible in the review as
-`line 17 <= threshold`. **John found it by reading a tree and asking how a comparison is shown** -
-which is what the review surface is for.
+**THE COVERAGE NUMBER THE ARCHITECT REPORTED WAS WRONG, AND IT MATTERED.** "Derivation is meeting
+the 98% bar" was arithmetic over a denominator the selector had already shrunk by a third. **True
+formula population ~99, derived+repaired 63, REAL COVERAGE ~64%.** Lead with that number, not with
+derived-over-attempted.
+
+**THE GATE COSTS PENNIES.** 67 admitted rows cost $0.0375, about $0.00056 each. Asking about all 157
+anchors is roughly **$0.09 per run**. The selector is saving five cents and losing a third of the
+corpus.
 
 **S81 ACCEPTED at `c89dd53`; temperature pinned at `50a64bf`.**
 **Full suite 2026-08-07: 20 failed, 851 passed, 8 skipped, 1 xfailed in 0:57:21** - exactly the
@@ -187,209 +184,70 @@ resolve now, and whether they resolve to the RIGHT line is unreviewed.
 
 ## Current round
 
-**M20-S87 SPECCED BY ARCHITECT (2026-08-08). KILL THE CONFIG-PATH ROOT CAUSE, THEN AUDIT THE SKIPS.**
-John, 2026-08-08: *"The errors continue to be a whack a mole exercise. I am not feeling a lot of
-progress."* **He is right, and the mole has ONE hole.** Part A closes it. Part B then moves to the
-thing that actually carries risk, which is not the test suite.
+**M20-S88 SPECCED BY ARCHITECT (2026-08-08). CONTEXT A/B: REGION PLUS BUFFERS, MODEL SELECTS.**
+**PILOT ROUND** - exploratory, so it lives in `pilot/`, its tests stay out of `tests/`, and it wires
+nothing into the CLI. It is a MEASUREMENT, not a pipeline change. **Do not change the selector, the
+cue list, or the sectioner in this round.**
 
-**S86 IS ACCEPTED at `2d27205` with `b9cd181` on top.** The accessor raises `ModelConfigurationError`
-on absence, `configured-llm` is gone from the tree, `seed` reaches the wire with the falsy-zero trap
-avoided, `vendor_family` is derived, `doctor` resolves through the accessor, and the exact production
-config - Luna, `only: [openai]`, `allow_fallbacks: false`, `require_parameters: true`, seed, strict
-structured outputs - returns **HTTP 200 live**.
+**THE THESIS, in John's words (2026-08-08):** *"just hand the label, form face instruction, and the
+page/pdf instruction to the model with the standards for the operation format and let it work...
+I believe an AI model can read 3 paragraphs and pick out the instructions for Line 6c."*
 
-**S86 also shipped 11 new suite failures; `b9cd181` fixed nine.** Two remain, and they share Part A's
-cause. The nine were two mistakes: S86 deleted the improvised `"configured-llm"` placeholder
-(correct) AND the documented `micro -> primary` cascade (wrong - it made optional keys required and
-would break the shipped example config), and it added `seed` to the client without updating 17 test
-doubles.
+**WHY THE EVIDENCE SUPPORTS IT: every failure found today is a PARSING failure, not a comprehension
+failure.**
+- The selector matched `node.label.lower()` only - `outline_pipeline.py:536` - so it never read the
+  instruction text. Form 1040 line 6b's instruction literally contains `"smaller of line"`, a cue
+  ALREADY in the list. The vocabulary was fine; it was reading the wrong document.
+- The sectioner filed nothing for 6251 lines 2d, 2f and 2g because the raw headings are
+  `**Line 2dDepletion**`, `**Line 2fAlternative Tax Net Operating Loss Deduction (ATNOLD)**` and
+  `**Line 2gInterest From Private Activity Bonds**` - **the separator between number and title is
+  missing**, so a token parser sees `2dDepletion`. The instruction text sits directly beneath it.
+- The Architect nearly filed a finding because `"divide"` matched **dividends**.
+**A model reading those paragraphs handles all three without effort. Only the regexes cannot.**
 
-### PART A - ONE ROOT CAUSE, THREE SYMPTOMS. **THERE ARE TWO FILES NAMED `tax-graph.config.yaml`.**
+**BUFFERS ARE SAFE HERE, AND THE REASON MATTERS.** The wrong-owner defect - 295 spans down to 0 -
+was a PARSER filing text under the wrong line. When the consumer is a model asked *"which of this
+governs line 6c"*, overlap stops being contamination and becomes context. **Do not treat the
+295 -> 0 result as a reason to keep windows tight.**
 
-`tax_graph/config.py:default_config_path` resolves `<root>/tax-graph.config.yaml`. **Nothing reads
-`config/tax-graph.config.yaml`**, which is longer, better commented, and looks authoritative. Three
-symptoms, each of which looked unrelated until now:
-1. **Two wasted provider runs.** The Architect diagnosed and edited the decoy twice, and reported a
-   false "the model drifted to gemini at 15x cost" finding from it. The live config had Luna pinned
-   all along. That claim is wrong in the `95991c8` commit message.
-2. **John's recurring complaint** that model settings will not stick - *"I wanted it to be set in
-   the config file, full stop."* A fix applied to the decoy changes nothing.
-3. **The last two suite failures.** At least TEN hermetic fixtures do
-   `copyfile(root/"config"/"tax-graph.config.example.yaml", root/"config"/"tax-graph.config.yaml")`
-   and the loader never reads it - **so those tests have never had a config.** The
-   `"configured-llm"` placeholder hid it; removing the placeholder exposed it. **This is exposure,
-   not new breakage.**
+**TWO ARCHITECT ERRORS THIS ROUND CORRECTS, so they are not repeated:**
+1. *"77% of sections reference something outside themselves"* was presented as a defect. **It is
+   not.** Most are pointers to other forms, which canonical addresses exist to resolve so a new form
+   connects rather than dangles. John has raised reference standardization repeatedly.
+2. *"6251 has sections for only 30 of 61 lines"* implied a gap. **Wrong denominator.** John:
+   *"something like 'Subtract Line 7 from Line 9' doesn't need more explanation."* Absence of an
+   instruction is often the correct state. The real defect is the 10 missed formulas whose
+   instructions EXIST in the raw file and were not filed.
 
-1. **Point every fixture at the path the loader actually reads.** Expect this to change what config
-   those tests see; **that is the point, and the blast radius is why this is its own round.**
-2. **DELETE `config/tax-graph.config.yaml`.** It is a stray copy of the example, gitignored, read by
-   nothing. **Ask John first - it is his local file.**
-3. **MAKE IT UNREPEATABLE.** A guard that fails loudly when a config exists at a path that is not
-   loaded. **Without this the third symptom simply waits for a fourth.** A round that only fixes the
-   ten fixtures has not fixed anything.
-4. **Full suite. Target: the known 20, no more.**
+**THE ARMS.** Same 157 anchors, same model, same seed, one run each.
+- **A - control:** today's context, the line-anchored instruction section only.
+- **B - line section plus buffer:** the section plus surrounding text, both directions.
+- **C - region only:** a fixed window around the printed anchor with no section lookup at all,
+  which is the arm that tells us whether the sectioner is needed for derivation.
 
-### PART B - AUDIT THE SKIPS. **83 OF 157 ANCHORS ARE SKIPPED ON ONE UNVERIFIED JUDGMENT.**
+**BYPASS THE SELECTOR FOR ALL THREE ARMS.** The 32 known misses never reach the model today, so a
+gated experiment cannot score them. Send every printed anchor. **At $0.00056 per row this is about
+$0.09 per arm** - the gate saves pennies, which is the point.
 
-This is where the real risk is. Today's run: 157 printed anchors, 67 selected, 58 derived, 5
-repaired, 4 errored, **90 skipped - 83 of them `selector_no_formula_cue`**. Nobody has ever checked
-whether those 83 are genuinely input lines. **A skipped line looks identical to a clean run**, so
-over half the corpus rests on an unaudited call that reports as success.
+**THE SCORING SET IS FIXED IN ADVANCE.**
+- **Recovery: how many of the 32 known missed formulas each arm derives.** They are, per the S87
+  audit: 1040 `6b, 12e, 16, 27a, 38`; 2441 `4, 18`; 6251 `1a, 1b, 2c, 2d, 2f, 2g, 2h, 2i, 2k, 2l,
+  2m, 2n, 2o, 2p, 2q, 2r, 2t, 5, 7, 8, 2, 10, 15, 19, 25`.
+- **Regression: the 63 rows that derive or repair today must not get worse.** Report any that do,
+  by line. **A win on recovery that loses derived rows is not a win.**
+- **Mis-attribution: does the cited quote belong to the anchor it was filed under?** Buffers widen
+  the window, so this is the risk to watch. The stored `quote` and `quote_span_id` make it
+  checkable; do not assert it, measure it.
+- **Cost and prompt tokens per arm.**
 
-**The selector is a hardcoded substring list** - `_LEGACY_FORMULA_CUES` and `_WIDENED_FORMULA_CUES`
-at `tax_graph/extract/outline_pipeline.py:51`, 16 phrases such as `"add line"`, `"subtract line"`,
-`"smaller of line"`. **Any formula the IRS phrases differently is skipped silently**, and `"divide"`
-appears nowhere in the list.
+**OUT OF SCOPE, DELIBERATELY.** No cue-list widening - a longer substring list is the same defect.
+No sectioner repair - the run-together heading bug is real and gets its own round. **No multi-run
+voting:** John raised it and it is held in reserve, because it multiplies cost by N and varying the
+seed is exactly what makes a run non-reproducible. **Measure single-pass with proper context first;
+most of the 32 may fall out from context alone.**
 
-**DO NOT AUDIT WITH KEYWORD MATCHING.** The Architect screened for `"divide"` and got 14 hits that
-were all the word **dividends** - the exact substring bug the selector itself has. **Auditing a
-substring bug with substring matching reproduces it.** The audit reads the printed line and its
-instruction text and judges.
-
-1. **Classify every one of the 83** - this is pipeline work per the prime directive, not a hand
-   audit: for each skipped anchor, decide **input line** (a number the filer copies from a source
-   document - a correct and final answer) versus **missed formula** (the line computes from other
-   lines), citing the instruction text that decides it.
-2. **Report the miss rate with its denominator**, per document. **Lead with the misses, not the
-   hits.**
-3. **Name the cues that would have caught them.** The deliverable is evidence about the selector,
-   not a patched cue list - **do not widen the cue list in this round.** A substring list is the
-   defect; a longer one is the same defect.
-4. **`form_6251_2025` line 7 is a named candidate**: its printed text is a conditional
-   (*"If you reported capital gain distributions directly on Form 1040..."*) and it was skipped.
-
-**EVIDENCE.** Part A: the ten-plus fixtures repointed, the decoy gone, the guard failing on a decoy
-you plant deliberately, and a full suite at the known 20. Part B: 83 classified, a miss rate per
-document, and the instruction text quoted for every miss.
-
-**M20-S87 WORKER EVIDENCE (2026-08-08).** Part A implementation is complete; acceptance is held
-on the explicit John decision to remove the local decoy.
-
-- `tax_graph/config.py` now resolves only `<root>/tax-graph.config.yaml`; the `config/` fallback
-  is gone. If a stale `config/tax-graph.config.yaml` exists, the loader raises
-  `ModelConfigurationError` naming both the unloaded and loaded paths.
-- All config-writing fixtures now write the root-level file. Config-directory copies ignore the
-  developer-only decoy, so an ignored local file cannot enter a hermetic project. README and the
-  example config now name the root-level path.
-- RAN: `.venv\Scripts\python.exe -m pytest tests\test_config.py -q` -> **8 passed, 1 warning in
-  0.07s**. RAN: `.venv\Scripts\python.exe tools\check_ascii.py` -> **ASCII check OK**.
-- RAN: `.venv\Scripts\python.exe -m pytest tests\test_batch_extraction_m10.py tests\test_extract_m4.py tests\test_extract_outline_m4.py tests\test_nversion_m8.py tests\test_schedule_d_extraction_m9.py -q`
-  -> **55 passed, 2 failed, 2 warnings in 83.60s**. The two failures are the known ACL copy
-  failure in `test_nversion_m8` and the pre-existing Schedule D prompt expectation.
-- RAN: the full impacted fixture command over the 20 changed test files -> **109 passed, 26
-  failed, 2 warnings in 277.52s**. Two failures are the new intentional guard in the root-based
-  CLI tests while the local decoy remains; the rest are the known ACL/missing-fixture baseline.
-  The full suite is **NOT RUN** because the local decoy must be removed before the guard can permit
-  root-based commands.
-- `git diff --check` -> clean. No promoted graph, draft, or provider artifact was changed.
-
-**OPEN FOR JOHN - LOCAL FILE DECISION.** `C:\Users\devbox\projects\tax_graph\config\tax-graph.config.yaml`
-  is present and is now correctly rejected as an unloaded path. Please delete that local file;
-  it is ignored and contains the decoy settings. After deletion, rerun the full suite and the
-  two root-based CLI tests. No agent deleted it because the round explicitly called this John's
-  local-file decision.
-
-**PART B - 83 selector skips classified from source.** Source basis was the S71 candidate's
-`source_reports` and `C:\tmp\m20_s68_live\m20_s26_*_derive_cells_report.yaml`, checked against the
-acquired form text and instructions at `.cache\raw\2025\`. The audit did not use keyword search to
-decide whether a row was a formula; it read the instruction sentence and the operation it asks
-the filer to perform.
-
-| document | selector skips / printed anchors | missed formulas | miss rate among selector skips |
-| --- | --- | --- | --- |
-| form_1040_2025 | 41 / 59 | 5 | 5 / 41 = 12.2% |
-| form_2441_2025 | 11 / 35 | 2 | 2 / 11 = 18.2% |
-| form_6251_2025 | 31 / 63 | 25 | 25 / 31 = 80.6% |
-| total | 83 / 157 | 32 | 32 / 83 = 38.6% |
-
-The 51 remaining selector rows are inputs. The complete binary classification is:
-
-- Form 1040 inputs: `1a-1i, 2a-2b, 3a-3b, 4a-4b, 5a-5b, 6a, 7a, 8, 10, 12a, 13a-13b, 17,
-  19-20, 23, 25a-25c, 26, 28-31`. Missed formulas: `6b, 12e, 16, 27a, 38`.
-- Form 2441 inputs: `1, 2, 7, 9b, 10, 13, 14, 16, 22`. Missed formulas: `4, 18`.
-- Form 6251 inputs: `2a, 2b, 2e, 2j, 2s, 14`. Missed formulas: `1a, 1b, 2c, 2d, 2f, 2g,
-  2h, 2i, 2k, 2l, 2m, 2n, 2o, 2p, 2q, 2r, 2t, 5, 7, 8, 2, 10, 15, 19, 25`. The denominator
-  entries named `2` and `10` are two geometry fragments of printed Form 6251 line 10; both are
-  counted as selector misses because the underlying line is an add/subtract computation.
-
-**Instruction evidence for every missed formula.** Quotes below are from the acquired raw source;
-the line ranges are source-file line numbers, not hand-authored graph labels.
-
-- Form 1040 line 6b, `.cache\raw\2025\instructions_form_1040_2025.txt:1576-1594`: "Taxable
-  social security benefits. Enter the smaller of line 16 or line 17."
-- Form 1040 line 12e, `...\instructions_form_1040_2025.txt:1680-1705`: "your federal income tax
-  will be less if you take the larger of your standard deduction or itemized deductions" and
-  "To figure your itemized deductions, fill in Schedule A."
-- Form 1040 line 16, `...\instructions_form_1040_2025.txt:1729-1735`: "Include in the total ...
-  all of the following taxes" and "Figure the tax using one of the methods described later."
-- Form 1040 line 27a, `...\instructions_form_1040_2025.txt:1982-1993`: "Follow the steps in the
-  following flowchart" and "Complete the worksheet that applies to you."
-- Form 1040 line 38, `...\instructions_form_1040_2025.txt:3690-3731`: "Line 37 is at least $1,000
-  and it is more than 10%"; "If you choose to figure the penalty yourself, use Form 2210"; and
-  "Enter any penalty on line 38. Add the penalty to any tax due."
-- Form 2441 line 4, `.cache\raw\2025\instructions_form_2441_2025.txt:214-231`: "The amount shown
-  on Form 1040 ... line 1z, minus any amount" and "subtract any deduction" before entering
-  earned income.
-- Form 2441 line 18, `...\instructions_form_2441_2025.txt:312-318`: earned income is "determined
-  in the same way as earned income ... for lines 4 and 5" and excludes line 12 benefits.
-- Form 6251 lines 1a and 1b, `.cache\raw\2025\instructions_form_6251_2025.txt:96-100`: "the
-  difference between line 14 ... and line 37" and "the difference between line 1a ... and line
-  11b".
-- Form 6251 line 2c, `...\instructions_form_6251_2025.txt:116-146`: "Enter ... the difference
-  between line 8 of your AMT Form 4952 and line 8 of your regular tax Form 4952."
-- Form 6251 line 2d, `...\instructions_form_6251_2025.txt:149-154`: "Refigure your depletion
-  deduction for the AMT" and "Enter the difference between the regular tax and AMT deduction."
-- Form 6251 line 2f, `...\instructions_form_6251_2025.txt:158-173`: "Your ATNOLD is limited to
-  90% of the result" and "Enter on line 2f the smaller of the ATNOLD or the ATNOLD limitation."
-- Form 6251 line 2g, `...\instructions_form_6251_2025.txt:177-181`: enter interest "reduced
-  (but not below zero) by any deduction".
-- Form 6251 line 2h, `...\instructions_form_6251_2025.txt:198-200`: "multiply the excluded gain
-  ... by 7% (0.07). Enter the result on line 2h".
-- Form 6251 line 2i, `...\instructions_form_6251_2025.txt:202-207`: "include on line 2i the
-  excess" of FMV "over" the amount paid.
-- Form 6251 line 2k, `...\instructions_form_6251_2025.txt:221-236`: "figure the difference" for
-  each of four items and "Enter on line 2k the combined adjustments".
-- Form 6251 line 2l, `...\instructions_form_6251_2025.txt:256-318`: "Subtract the AMT deduction
-  for depreciation from the regular tax deduction and enter the result."
-- Form 6251 line 2m, `...\instructions_form_6251_2025.txt:322-337`: "Refigure your passive activity
-  gains and losses" and "Enter the difference" between AMT and regular tax.
-- Form 6251 line 2n, `...\instructions_form_6251_2025.txt:353-368`: "Refigure your gains and
-  losses" and "Enter the difference" between AMT and regular tax.
-- Form 6251 line 2o, `...\instructions_form_6251_2025.txt:374-378`: costs "must be capitalized and
-  amortized"; "Enter the difference" between deductions.
-- Form 6251 line 2p, `...\instructions_form_6251_2025.txt:382-388`: use the percentage-of-
-  completion method and "Enter the difference between the AMT and regular tax income."
-- Form 6251 line 2q, `...\instructions_form_6251_2025.txt:392-396`: costs "must be capitalized and
-  amortized"; "Enter the difference" between deductions.
-- Form 6251 line 2r, `...\instructions_form_6251_2025.txt:400-406`: costs "must be amortized" and
-  "Enter the difference between the amount allowed for AMT purposes and the amount allowed for
-  regular tax purposes."
-- Form 6251 line 2t, `...\instructions_form_6251_2025.txt:414-418, 431-435`: "Figure the preference"
-  separately, determine net income using AMT deductions, and apply the 40% exception test.
-- Form 6251 line 5, `...\instructions_form_6251_2025.txt:509-521`: the Exemption Worksheet says
-  "Subtract line 3 from line 2", "Multiply line 4 by 25%", and enter the result on line 5.
-- Form 6251 line 7, `...\instructions_form_6251_2025.txt:558-564`: complete Part III and enter
-  line 40, or "multiply line 6 by 26%" / "multiply line 6 by 28% ... and subtract $4,782".
-- Form 6251 line 8, `...\instructions_form_6251_2025.txt:566-711`: "You will figure the AMTFTC"
-  under limitation rules and "Enter on Form 6251, line 8, the amount from line 35" of the AMT
-  Form 1116.
-- Form 6251 line 10 (anchors `2` and `10`), form face
-  `.cache\raw\2025\form_6251_2025.txt:90-94` and instructions
-  `...\instructions_form_6251_2025.txt:729-740`: "Add Form 1040 ... and Schedule 2" then
-  "Subtract from the result Schedule 3"; the instructions also require refiguring Schedule J tax.
-- Form 6251 line 15, form face `.cache\raw\2025\form_6251_2025.txt:113-116` and instructions
-  `...\instructions_form_6251_2025.txt:746-785`: complete AMT worksheets and use their amounts
-  to complete lines 13, 14, and 15; the form says "add lines 13 and 14" and enter the smaller
-  result when applicable.
-- Form 6251 lines 19 and 25, form face `.cache\raw\2025\form_6251_2025.txt:124-128, 142-148`:
-  "Enter" the amount selected by filing status. This is a status-keyed lookup operation, not a
-  copied source value; the corresponding instruction path for Form 1040-NR is at
-  `...\instructions_form_6251_2025.txt:830-846`.
-
-The missed-cue evidence is therefore semantic and reusable: subtract/difference, add/combine,
-smaller/larger, multiply, excess-over, refigure, reduced-by/floor, worksheet, penalty, AMT credit,
-Part III branch, and filing-status lookup. The result is evidence for replacing the substring
-selector with a source-grounded classification stage; no cue list was widened in S87.
+**REPORT THE UNFLATTERING NUMBER FIRST:** recovery of the 32, then regressions, then cost. If arm A
+wins, say so plainly - the thesis is testable, not assumed.
 
 ## Standing operational notes
 
