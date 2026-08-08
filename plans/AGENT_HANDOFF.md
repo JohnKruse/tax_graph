@@ -39,24 +39,50 @@ made `comparison` a REQUIRED key on every expression node (null off `IF_ELSE`), 
 what the full-suite floor is for** - the Worker cannot run it under a 600-second cap, so a
 wire-contract change shipped with a stale test behind it.
 
-**STANDING CAVEAT, DO NOT LOSE IT: RULES 17 AND 18 ARE UNPROVEN OUTSIDE UNIT TESTS.** No comparator
-symbol and no `checked?` has ever rendered from real data. Both provider attempts failed at
-transport, and the second regenerated a candidate with **0 derived / 67 errored / zero `IF_ELSE`
-rules**. **That candidate must never be promoted; it would empty the corpus.** Accepting S85 accepts
-the code, not a demonstration.
+**S85 PART C IS DONE (Architect, 2026-08-08). RULES 17 AND 18 ARE PROVEN ON REAL DATA.**
+Run `C:	mp\m20_s85c_run3` -> **58 derived, 5 repaired, 4 errored, 90 skipped, cost $0.0375.**
+Candidate `C:	mp\m20_s85c_cand`; panel `C:	mp\m20_s85_panel.html`.
+- **5 of 5 `IF_ELSE` rules carry a comparator; ZERO missing** (was 3 of 3 missing). Values: `le` x3,
+  `gt` x2. **`rule_form_6251_2025_root_line_18_candidate` derived `comparison: le`** - exactly what
+  the cited instruction requires (*"$239,100 or less ... 26%"*). The pipeline emitted it; nothing was
+  hand-authored.
+- **The panel prints the direction**: `line 17 <= threshold`, `line 31 > threshold`, and three more.
+  **Zero `missing IF_ELSE comparison` findings**, down from 3.
+- **Correctness follows from two proven parts**: the data now carries `le`, and the S85 regression
+  already proves the engine computes both arms correctly given `le` (100,000 -> 26,000;
+  300,000 -> 79,218). **End-to-end execution from the candidate still needs a promote and was NOT
+  run.**
+- **`checked?` STILL RENDERS ZERO TIMES.** None of the 5 branch conditions is a checkbox control, so
+  rule 17's checkbox half remains unproven outside unit tests. 1040's 18 checkbox lines are not
+  `IF_ELSE` conditions, and `form_2441_2025` still has no address registry file.
 
-**WHAT DID GET PROVEN: ATTRIBUTION WORKS.** The failed run reports `openai/gpt-5.6-luna` on all 67
-rows, so the pin took and an artifact can now name the model that produced it. The model had drifted
-to `google/gemini-3.6-flash` at 15x prompt and 12.5x completion cost.
+**THE 404 WAS A THREE-WAY INTERACTION, AND THE ARCHITECT DIAGNOSED IT WRONG TWICE FIRST.**
+`openai/gpt-5.6-luna` **does not support `temperature`** (A/B against the live API: 404 with it, 200
+without). The live config set `temperature: 0` AND pinned `provider_routing.only: [openai]` - for
+good documented reasons, since Bedrock cannot do structured outputs and Azure is ~10x - so there was
+no other endpoint to absorb the unsupported parameter and every row failed. **Each of the three
+decisions is individually correct; together they were fatal.** `require_parameters: true` is what
+made it loud rather than a silently ignored pin. **LEAVE IT ON.**
 
-**THE PROVIDER BLOCK IS THE WORKER SANDBOX, NOT THE PROJECT.** From the Architect's shell OpenRouter
-answers in 0.16s and `C:	mp` is writable; from the Worker sandbox the same call fails at transport
-and `C:	mp` raises `PermissionError`. Same family as the July Python-spawn restriction.
-**Do not spend another round attempting Part C from that sandbox.**
+**THERE ARE TWO FILES NAMED `tax-graph.config.yaml` AND ONLY THE ROOT ONE IS LOADED.**
+`config/tax-graph.config.yaml` is a DECOY: longer, better commented, and read by nothing. The
+Architect diagnosed and edited it twice before noticing, which cost two provider runs. **The claim
+that the model had drifted to `google/gemini-3.6-flash` at 15x cost was about the decoy** - the live
+config has had Luna pinned for `model` and `micro_model` all along. That claim is wrong in the
+`95991c8` commit message. **This is almost certainly the "model switching" John reported: a fix
+applied to the decoy changes nothing, which looks exactly like a setting that will not stick.**
+Both files are gitignored, so neither appears in review.
+
+**RUNS ARE NOT A REPRODUCIBLE BASELINE UNTIL S86.** `temperature` is now unset because Luna rejects
+it; `seed` is the replacement lever and has NO CONSUMER in the code - only `temperature` is threaded,
+through six call sites. Until S86 plumbs `seed` through the single accessor, runs sample at the
+provider default.
 
 **QUEUE ADDITIONS - one line each.**
-0. **S85 PART C: derive with the comparator, from a network-capable context.** Then prove rules 17
-   and 18 on real data and execute 6251 line 18 from the regenerated candidate, not the fixture.
+0. **DELETE OR NEUTER THE DECOY `config/tax-graph.config.yaml`** - two files with one name, only
+   the root loaded. Fold into S86, which already owns "one accessor decides".
+0d. **`seed` HAS NO CONSUMER** - plumb it through S86's single accessor; `seed: 0` is falsy, so use
+   `is not None`, the same trap that swallowed the temperature pin.
 0b. **`form_2441_2025` has NO address registry file** in either `graph/2025/addresses/` or
    `_drafts/`, so its control roles resolve to nothing and its line 22 checkbox cannot render.
 0c. **The Worker sandbox cannot reach the network or write `C:	mp`** - fix the sandbox config or
