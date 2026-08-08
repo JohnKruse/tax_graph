@@ -153,6 +153,38 @@ Architect's defaults are programmer defaults and are wrong in the same direction
       edge labels only, which is exactly why 63 broken diagrams shipped green while the SVG carried
       `data-connector-starts-unique="true"`. **An SVG may not assert a property nobody verified.**
 
+15. **NEW 2026-08-08. ONE GRAPHIC PROJECTION, AND IT IS THE TREE. THE FLOW COLUMN IS RETIRED.**
+    This SUPERSEDES rule 11's two-column split and RETIRES rule 14 with the code it governed.
+    John: *"I actually find the Tree view better than the flow view... it would take too much effort
+    to make them good enough to be more useful than the tree - and one graphic display is enough."*
+    - **The measurement that settled it:** only **15 of 157 cells** ever rendered as a multi-box flow
+      (4 diagrams, 11 chains), while the flow held **two thirds of the page width**. The remaining
+      142 got a single box or a hole in that space.
+    - **Rule 11's justification did not survive.** The flow existed to show a decision hiding inside
+      a value - 6251 line 18's threshold being CHOSEN by filing status. The text projection shows it:
+      `IF_ELSE(condition=line 17, threshold=LOOKUP_TABLE(key=filing status, default=239100,
+      married_filing_separately=119550), ...)`. **Position was never the only way to show it**, and
+      rule 13 is what keeps it legible, because `threshold`, `key` and the band names are exactly the
+      roles that survived the cull.
+    - **The Tree and the Math stay, now at full width.** Two lossless projections, one column.
+    - **The flow code leaves the mainline** - John: *"I don't want to keep the code in the main
+      line."* It is archived at the annotated tag **`archive/m20-flow-column`** (commit `5ee8da2`),
+      recoverable with `git show archive/m20-flow-column:pilot/review_panel.py`. This is the first
+      tag in the repository; the convention is `archive/<subject>`, an annotated tag whose message
+      says what the code was and why it was retired.
+
+16. **NEW 2026-08-08. THE TREE'S OWN NOTATION.** Three corrections from John, reading the S83 panel.
+    - **Block headers are LEFT JUSTIFIED.** The operation name was centred in its box
+      (`.tree-box strong { text-align: center }`); centring makes the eye hunt for the start of each
+      label. Left is where the reviewing eye already is - rule 10's *"the reviewing eye must land in
+      the same place on every row"* applied inside the box.
+    - **NO ARROW GLYPH BEFORE A CHILD BOX.** The `->` between a role and its child *"adds nothing."*
+      Containment already says what the arrow said, and after rule 13 suppressed the redundant roles
+      the arrow usually trails an empty label. Delete the glyph and the `.tree-arrow` class.
+    - **INDENT MORE PER LEVEL.** 12px of `padding-left` does not read as a level. Depth is the
+      Tree's only structural signal, so it must be unmistakable - and dropping the flow column frees
+      the width to afford it.
+
 ## OPEN - raised by John and not resolved
 
 - **A threshold is a decision, but is not written as one.** In the 6251 line 18 draft the threshold

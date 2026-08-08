@@ -21,13 +21,19 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## BALL
 
-**BALL: WORKER - M20-S83 (TIDY-TREE LAYOUT + REDUNDANT ROLE TAGS). PILOT ROUND.**
-**S82 IS ACCEPTED AT `e3cd862` FOR ITS STRUCTURE AND REJECTED FOR ITS GEOMETRY.** The two columns,
-the moderator gutter, and the labelled moderator arrows are right and stay. **63 of its 65 flow
-SVGs overlap their own node boxes.** S83 fixes that and drops the role tags position already
-determines. **Rules 11, 13 and 14 in `docs/review-notation.md` are binding.**
-**S80 ACCEPTED at `8a9b2a0`. JOHN HAS CHOSEN THE RENDERINGS:** Tree over Math on the left third,
-flow diagram on the right two thirds.
+**BALL: WORKER - M20-S84 (RETIRE THE FLOW COLUMN; FIX THE TREE'S NOTATION). PILOT ROUND.**
+**S83 ACCEPTED at `5ee8da2`**, verified independently: node-box overlaps **426 -> 0**, the redundant
+role tags gone, the overlap assertion failing closed, 32 pilot tests green.
+
+**THE FLOW COLUMN IS RETIRED (John, 2026-08-08)** - *"one graphic display is enough."* **The Tree is
+now the only graphic**, at full width with Math beneath it. The flow code LEAVES the mainline; it is
+archived at the annotated tag **`archive/m20-flow-column`** (`5ee8da2`), which is **local-only and
+must be pushed**. **Rules 15 and 16 in `docs/review-notation.md` are binding; rule 15 supersedes
+rule 11 and retires rule 14.**
+
+**THIS FILE WAS PRUNED 2026-08-08, 541 -> 357 lines.** It held **three copies** of every durable
+block after S83's commit rewrote it. Per the rules above: a completed round's narration is DELETED,
+not appended, and git holds the history.
 
 **S81 ACCEPTED at `c89dd53`; temperature pinned at `50a64bf`.**
 **Full suite 2026-08-07: 20 failed, 851 passed, 8 skipped, 1 xfailed in 0:57:21** - exactly the
@@ -170,67 +176,75 @@ clothes, and it is the reason the candidate diff cannot tell a real disagreement
 0)` and `max(form_1040_nr_2025 line 15, 0)`). That is a status change, not a win: the references
 resolve now, and whether they resolve to the RIGHT line is unreviewed.
 
-## Previous round - M20-S80
+## Current round
 
-**M20-S80 WORKER COMPLETE (2026-08-07). CLICK TO ENLARGE. SMALL ROUND; awaiting Architect acceptance.**
+**M20-S84 SPECCED BY ARCHITECT (2026-08-08). RETIRE THE FLOW COLUMN; FIX THE TREE'S NOTATION.**
+**S83 IS ACCEPTED at `5ee8da2`**, verified independently by the Architect: overlapping node-box
+pairs **426 -> 0** by the same measurement used on S82, `addend`/`minuend`/`subtrahend`/`multiplier`/
+`multiplicand` all to zero while `key`, `default`, the band names, `condition`, `threshold`,
+`when_true` and `when_false` survive, the overlap assertion raising out of `_flow_svg` with nothing
+catching it, and 32 pilot tests green on a clean temp root.
+
+**AND THE FLOW COLUMN IT FIXED IS NOW BEING DELETED.** That is not a reversal - S83's measurement is
+what proved the column was carrying 15 cells out of 157 for two thirds of the width. **Rules 15 and
+16 in `docs/review-notation.md` are binding.**
 
 **PILOT RULES BIND.** Everything under `pilot/`; tests in the pilot, out of `tests/`; no full-suite
-run; no provider run.
+run; no provider run. Reuse the existing `cand_s71` workspace as the 157-anchor input.
 
-**S79 IS ACCEPTED at `a94a8aa`**, verified by the Architect on the artifact rather than the report:
-branch arms diverge (Yes box at x=8, No at x=187, connectors leaving the diamond at different points
-and rejoining at line 18), **zero duplicate start+direction pairs**, **zero Yes/No labels inside a
-box**, the threshold and offset are their own table nodes rather than inlined into the diamond,
-2441 line 20 renders as a two-step chain using `amount`, and line 25's finding carries its real
-reason in plain wording with no dict and no `ValueError`.
+**PART A - DELETE THE FLOW, DO NOT DEPRECATE IT.** John: *"I don't want to keep the code in the main
+line."* **The code is already archived at the annotated tag `archive/m20-flow-column` (commit
+`5ee8da2`)**, so deletion loses nothing - recover with
+`git show archive/m20-flow-column:pilot/review_panel.py`. **PUSH THE TAG**; it is local-only today
+and the first tag in this repository.
+- Remove `_flow_svg`, `_flow_operation_label`, `_lookup_label`, `_flow_wrap`, `_flow_html`,
+  `_flow_metrics`, and every flow-only CSS class and `data-` attribute.
+- **`MODERATOR_ROLES` GOES WITH IT.** Its only remaining consumer was the gutter. **Rule 13 must not
+  regress when it goes** - role suppression is decided by operator and position, never by that set,
+  and the invariant test for it stays.
+- Remove the flow columns from the summary and CLI output: diagram/chain/none modes, SVG dimensions,
+  moderator-arrow counts, `node_boxes_overlap_free`. **Keep `holes` and the finding counts.**
+- **No dead flags, no `--no-flow`, no commented-out blocks.** The tag is the archive.
 
-**THE ASK.** John, 2026-08-07: *"can you let me click on one of these underdisplayed SVGs and see it
-in a bigger popout or something?"*
+**PART B - THE TREE AT FULL WIDTH, WITH THREE CORRECTIONS.** Rule 16, all three from John reading
+the S83 page:
+1. **Left justify the block headers** - `.tree-box strong` is `text-align: center` today.
+2. **Delete the `->` glyph** and the `.tree-arrow` class. Containment already says it, and after
+   rule 13 the arrow usually trails an empty role label.
+3. **Increase per-level indentation** - `.tree-children` is `padding-left: 12px`, which does not
+   read as a level. Depth is the Tree's only structural signal.
+Collapse `.review-columns` from `minmax(280px, 1fr) minmax(520px, 2fr)` to one full-width column,
+Tree above Math. **The 392-character Math line should stop overrunning** once the column is whole.
 
-**THE CAUSE IS THE COMPARISON PAGE, NOT THE DIAGRAM.** Five renderings side by side squeeze a
-320-unit-wide SVG into roughly a 200px column. **The real review panel has ONE flow column and will
-not have this problem** - so fix the comparison page, and do not shrink or re-lay-out the diagram to
-suit it.
+**PART C - MAKE A HOLE STATE ITS REAL REASON.** Small, and it is what stops the page reading as
+three-quarters broken. **92 of 157 rows render the identical string "No promoted flow."** They are
+not the same thing: **83 are `selector_no_formula_cue`** (an input line, no formula expected - a
+CORRECT and final answer), **7 are structural** (4 `structure_duplicate_anchor`,
+2 `structure_header_anchor`, 1 `structure_non_cell_anchor` - extraction bugs), and **2 are real
+derivation failures** (`self_reference`, `row_packet_incomplete`). Render the stored reason. An
+input line must not look like a failure.
 
-1. **Click any diagram to open it enlarged** - a lightbox or `<dialog>`, at a size where the text is
-   comfortably readable. Click outside or press Escape to close. The 6251 line 18 SVG is 320x676, so
-   the enlarged view must **scroll vertically rather than scale down to fit**.
-2. **Self-contained.** The page is opened from the filesystem, so **no external scripts, fonts or
-   stylesheets** - inline everything. It must work from `file://`.
-3. **Apply it to the lookup TABLE renderings too**, not only SVG. 2441 line 8's sixteen bands are
-   just as cramped in a fifth of the page.
-4. **Keep every S79 guarantee.** Do not change diagram geometry, sizes, or the divergence and label
-   checks. Re-report them so a regression is visible.
+**PART D - `--top N`, ranked by operation count then operand count.** John wants to review the hard
+cells without scrolling past the rest. A throwaway proved it out; make it a real flag.
+**Report the ranking honestly in the CLI output** - the corpus is thin, and the panel must not imply
+otherwise: of 65 rows with an operation, **51 are a single operation, 12 are two, and 2 are six**
+(`form_6251_2025` lines 18 and 39). Operand count is the better signal in the tail -
+`form_6251_2025` line 4 is one operation with 23 operands.
 
-**Evidence required.** Regenerate the options page and confirm: the enlarged view opens and closes,
-nothing loads from the network, and the S79 checks still pass - empty/placeholder cells zero, no
-duplicate connector start+direction, no label inside another box, and every SVG's width and height
-unchanged.
+**OUTPUT GOES TO `C:	mp`, NEVER A DOT DIRECTORY.** The panel is a deliverable, not pytest scratch.
+`.test_tmp*/` is for `PYTEST_DEBUG_TEMPROOT` only, per AGENTS.md. Default `--output` under
+`C:	mp\<round>\`, and tighten `.gitignore` line 57 from `.test_tmp*/` to `.test_tmp/` so the next
+stray sibling shows up in `git status` - seven accumulated unnoticed behind that glob. The repo also
+has an empty, UNIGNORED `tmp/` at its root; add it to `.gitignore` or delete it.
 
-**Do not choose for John.** This round exists so he can finally see the options at full size and pick
-one.
+**EVIDENCE REQUIRED.** Regenerate all 157 anchors and report: zero occurrences of `flow-svg`,
+`flow-edge`, `MODERATOR_ROLES` and `<svg` in the generated page; the role counts from S83 unchanged
+(rule 13 did not regress with `MODERATOR_ROLES`); hole reasons broken down 83/7/2 matching the
+counts above; the longest Math line before and after; and `--top 14` and `--top 25` both rendering.
+Show `form_6251_2025` line 18 as a Tree - **its `threshold` and `key` roles are what carry the
+hidden filing-status decision now that no arrow does.**
 
-**WORKER COMPLETION (2026-08-07).** `pilot/render_options.py` now wraps the generated flow SVG
-and lookup-table renderings in keyboard-accessible preview triggers. An inline filesystem-safe
-`<dialog>` copies the generated content at its intrinsic size; tall SVGs scroll vertically and
-wide lookup tables scroll horizontally. Click the backdrop, the Close button, or press Escape to
-close. No external scripts, fonts, stylesheets, or network URLs are emitted. S79 SVG markup and
-geometry are unchanged; the enlarged SVG CSS preserves each element's declared width and height.
-
-**TEST EVIDENCE.** RAN:
-`$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp2'; .venv\Scripts\python.exe -m pytest pilot\test_render_options.py -q`
--> **10 passed, 1 known `.pytest_cache` permission warning**. RAN:
-`.venv\Scripts\python.exe tools\check_ascii.py` -> **ASCII check OK**. RAN:
-`.venv\Scripts\python.exe pilot\render_options.py C:\tmp\m20_s68_candidate --output .test_tmp2\m20_s80_renderings.html`
--> **157/157 produced for all five renderers; zero failures/placeholders; 3 SVGs at 320x416,
-320x676, 320x676; connector and edge-label geometry checks checked**. Static artifact inspection
--> **2 preview triggers, dialog open/close/backdrop/Escape handlers present, no external script,
-link, or network URL**.
-
-**NOT RUN:** live browser click/open/close verification. The in-app browser security policy
-blocked navigation to the generated `file://` page; no alternate browser or policy workaround was
-used. The pilot test and static artifact checks cover the emitted handlers, but this browser leg
-remains unverified for Architect acceptance.
+## Standing operational notes
 
 **How to rebuild a candidate** - the two commands, in order, because the second is worthless
 without a run from current code:
@@ -319,175 +333,6 @@ notation/CSE work remains queued. The 157 generated flow sections contain no nod
 `.venv\Scripts\python.exe tools\check_ascii.py` -> **ASCII check OK**. The warnings are the
 known permission failure writing the pre-existing `.pytest_cache`; no provider run or full suite
 was performed, per pilot rules.
-
-## Current round
-
-**M20-S83 SPECCED BY ARCHITECT (2026-08-07). TIDY-TREE LAYOUT AND REDUNDANT ROLE TAGS.**
-**BOTH CHANGES RIDE IN ONE ROUND** (John, 2026-08-07). They touch the same two functions and both
-amend the same notation document, so splitting them would mean regenerating the panel twice.
-
-**PILOT RULES BIND.** Everything under `pilot/`; tests in the pilot, out of `tests/`; no full-suite
-run; no provider run. Reuse the existing `cand_s71` workspace as the 157-anchor input.
-
-**THE TARGET STATE.** The S82 panel at `e3cd862` is structurally right - two columns, the moderator
-gutter, labelled moderator arrows, `0` unlabelled - and geometrically broken. S83 changes **nothing
-about which shapes are drawn or where the gutter is**; it changes only how coordinates are assigned
-and which role tags are printed. **Reference commit: `e3cd862`. Every guarantee it earned must be
-re-reported, not re-derived.**
-
-**PART A - THE FLOW OVERLAPS ITSELF. 63 of 65 SVGs.** John: *"the flow is all smooshed together in
-the upper lines."* Measured on `.test_tmp2/m20_s82_review_panel.html`: 426 overlapping `<rect>`
-pairs, **288 input-on-input and 138 input-on-operation**. Reproduce this measurement before changing
-anything and again after; **the pair count is the acceptance number and its target is zero.**
-
-The cause is in `_flow_svg` at `pilot/review_panel.py:746`, and it is one mistake repeated:
-`add_node` computes a height from the wrapped label, and then every caller positions by constant.
-- `add_inputs` (`:832`) spaces inputs `min(82, 150/n)` apart while they are **84 wide** - three
-  inputs overlap by 34 each. That is John's `line 3 / line 4 / line 5` row.
-- `add_inputs` also puts inputs a flat **58 above the parent's top**, clamped up to 18, ignoring both
-  the parent's height and whatever already occupies that band.
-- `place_operation_chain` (`:868`) stacks operations a flat **104 apart**. A two-line label makes a
-  box 54 tall, so `min: line 3, line 4, line 5` runs 54..108 while the `0` feeding the `max` below
-  lands at 100. That is the `0` sitting inside the `min` box in John's screenshot.
-- `add_moderator` (`:808`) uses a flat **58 per slot**, same defect in the gutter.
-
-**Fix it with the tidy-tree algorithm, per rule 14: lay out bottom-up, each subtree reports its
-measured extent, siblings separate by contour.** **DO NOT ADD A LAYOUT DEPENDENCY** - Graphviz,
-dagre, elkjs and grandalf were considered and rejected for stated reasons in rule 14. Reingold-
-Tilford over an expression tree is on the order of 80 lines and leaves the SVG serializer, the CSS,
-and the positional semantics untouched. A moderator widens the extent of the subtree it attaches to.
-
-**THE ASSERTION IS PART OF THE DELIVERABLE.** The validation block at `:952` checks connector start
-points and edge-label collisions and **never checks node boxes against each other** - which is
-precisely how 63 broken diagrams shipped while their SVGs carried
-`data-connector-starts-unique="true"`. Add a node-pair overlap check to that same block and fail
-loudly. **An SVG may not assert a property nobody verified.**
-
-**PART B - DROP THE ROLE TAGS POSITION ALREADY DETERMINES.** John, on the Tree and Math columns:
-*"there are these minuend, subtrahend, etc tags. What is the point of these? they don't add anything
-to the reviews."* **Rule 13 is the binding statement.** Printed on the S82 page today: 76 `addend`,
-20 `minuend`, 20 `subtrahend`, 8 `multiplier`, 8 `multiplicand` - every one implied by the operator
-and the operand order. Against roughly 19 that are not: `key`, the lookup band names, `default`,
-`threshold`, `condition`, `when_true`, `when_false`.
-
-Change `_math_text` (`:648`) and `_flow_tree_html` (`:664`) only. **Suppression is by the rule, not
-by a hardcoded list of role names** - the test is whether the operator and position determine the
-role - so a role the graph invents tomorrow prints by default rather than vanishing silently.
-**The graph is unchanged, `MODERATOR_ROLES` is unchanged, and the flow column still reads every
-role to place its gutter arrows.** Do not "simplify" the roles out of the stored tree.
-
-**THE CELL THAT PROVES BOTH.** `form_6251_2025` line 18 stays the acceptance cell from S82: the
-`$239,100` / `$119,550` threshold must still enter from the right as a labelled moderator with
-filing status beside it - **that is a `threshold`, which rule 13 keeps** - and its diagram must now
-also be free of overlapping boxes. Show the before and after for it, and for the `max(min(line 3,
-line 4, line 5), 0)` cell in John's screenshot.
-
-**EVIDENCE REQUIRED.** Regenerate over all 157 anchors and report, in this order:
-1. **Overlapping node-box pairs: before and after, target zero**, with the same measurement method
-   both times.
-2. Role tags printed before and after, broken down by role name, showing the informative ones
-   survived.
-3. Every S82 guarantee re-reported: empty/placeholder cells at zero, moderator arrows without a
-   label at zero, connector and label checks, no node ids, branch arms diverging, every SVG's width
-   and height.
-4. **The Math column's longest line, before and after** - the twenty-fold `addend=` repetition is
-   what overruns the column, so this number should fall visibly.
-
-**M20-S83 WORKER COMPLETE (2026-08-07).** The tidy layout now measures every visible node, spaces
-input siblings by measured width, stacks operation rows from the prior measured bottom, reserves the
-moderator gutter by measured height, and fails closed on any node-box overlap. Rule-based printing
-suppresses only roles implied by operation and operand position; the graph and `MODERATOR_ROLES`
-remain unchanged. The pilot README documents both projection rules.
-
-**REAL-CANDIDATE EVIDENCE.** RAN against the existing `cand_s71` workspace and regenerated all 157
-anchors into `.test_tmp2/m20_s83_review_panel.html`. The same rect-pair measurement used for S82 is
-**426 pairs / 63 SVGs before -> 0 pairs / 0 SVGs after**; input-input is 288 -> 0 and
-input-operation is 138 -> 0. Role counts changed exactly as intended: `addend` 76 -> 0,
-`minuend` 20 -> 0, `subtrahend` 20 -> 0, `multiplier` 8 -> 0, `multiplicand` 8 -> 0; informative
-roles including `key` 5, `threshold` 3, `condition` 3, `when_true` 3, and `when_false` 3 remain.
-The overall longest Math line remains 392 because the retained lookup-band names are longer; the
-affected longest SUM line falls **369 -> 208** after the twenty-fold `addend=` repetition is removed.
-
-The panel remains **4 diagrams / 11 chains / 142 none**, with 92 named holes carrying their real
-findings. It has 65 SVGs, every width 620 and every height positive (288-780), 31 moderator arrows
-and 0 without labels, connector-start/direction and edge-label checks true, node-box overlap-free
-true, 0 flow node-id leaks across all 157 flow sections, and 3 Yes/3 No branch arms with distinct
-directions. `form_6251_2025` line 18 still shows the threshold moderator with filing status and
-239100/119550 values (4 moderator arrows, 0 unlabeled); `form_2441_2025` line 6 shows
-`MAX(MIN(line 3, line 4, line 5), 0)` as a 5-arrow chain with a 420px SVG.
-
-**TEST EVIDENCE.** RAN:
-`$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp2'; .venv\Scripts\python.exe -m pytest pilot\test_cell_access.py pilot\test_instruction_parser.py pilot\test_render_options.py pilot\test_review_panel.py pilot\constructions\test_measure.py -q`
--> **32 passed, 1 known `.pytest_cache` permission warning**. RAN:
-`.venv\Scripts\python.exe tools\check_ascii.py` -> **ASCII check OK**. RAN:
-`git diff --check` -> **clean**.
-
-**NOT RUN:** provider derivation/regeneration, the full suite, and live browser verification, per
-the pilot rules. No provider prompt or schema was changed.
-
-**How to rebuild a candidate** - the two commands, in order, because the second is worthless
-without a run from current code:
-
-```
-.venv\Scripts\python.exe experiments\derive_cells_s25.py --year 2025 --output-dir <RUN> --document form_1040_2025 --document form_2441_2025 --document form_6251_2025
-.venv\Scripts\python.exe -m tax_graph.cli regenerate-candidate --run-dir <RUN> --output-dir <CAND> --expected-document form_1040_2025 --expected-document form_2441_2025 --expected-document form_6251_2025
-```
-
-**ONE RED IS OURS, and S64's evidence mislabelled it.**
-`tests/test_m20_s31.py::test_all_prompt_templates_render_with_representative_values` fails with
-`ValueError: prompt has unsupported placeholder: operation_documentation`. The Worker recorded it as
-an "existing prompt fixture omission"; it is not existing. **It PASSES at `origin/main` (26eead7)
-and fails on our tree**, because S66 added `<<operation_documentation>>` to `prompts/derive_cells.md`
-without adding the token to the test's representative values. The pipeline path itself is fine - the
-canary derived 65 rows through that same template - so this is the pinned vocabulary contract test
-going red, not a product defect. Fix is the fixture, not the prompt.
-
-**The other 20 are pre-existing**, established by A/B against `origin/main` in a worktree with the
-local `.cache`, `graph/2025/_drafts`, and `build/` junctioned in so the comparison is fair: 3 fail
-identically on a bare checkout, 5 more fail identically once the artifacts are present, and all 11
-`tests/e2e/*_m15` fail identically with an empty review queue (0 documents, the known stale-queue
-condition). `tests/test_review_scope_migration_m15.py` is UNCOMPARABLE - it skips at baseline for
-missing 2441 extension artifacts and fails on ours, so it is untriaged, not cleared.
-
-**Full suite on our tree: 21 failed, 841 passed, 8 skipped, 1 xfailed.**
-
-**PYTEST_DEBUG_TEMPROOT must be a SHORT path.** A run rooted under the Claude session scratchpad
-produced **70 failures across 28 files**, every one of them `shutil.Error ... [WinError 3]` from
-MAX_PATH overflow while copying `graph/2025/_drafts` into the fixture project. The same tests pass
-on `C:\Users\devbox\AppData\Local\Temp\tgpt`. A long temp root does not fail a few tests, it fails
-whole files at once - that shape is the signature, not a code regression.
-
-## Previous round - M20-S81 (ACCEPTED at `c89dd53`)
-
-**M20-S81 WORKER COMPLETE (2026-08-07). RAISE EXPRESSION DEPTH.** This advances queue item 1:
-the production derivation default is now depth 3, and the graph projection consumer uses the same
-bound. No operation vocabulary, prompt wording, or promoted artifact was hand-authored.
-
-**REAL PROVIDER CANARY.** RAN:
-`.venv\Scripts\python.exe experiments\derive_cells_s25.py --year 2025 --output-dir C:\tmp\m20_s81_run --document form_2441_2025`
--> **form_2441_2025: 20 attempted, 17 derived, 2 repaired, 2 errored, 14 skipped**. Line 25 is
-`repaired` with the expected nested `MAX`/`IF_ELSE`/`MIN`/`SUBTRACT` expression; the baseline
-held it as a validation error. The two other expression changes were commutative MAX operand
-reorders (lines 20 and 26). Line 30 changed COPY(line 2) to SUM(line 2), which matches the form's
-verbatim instruction to add the amounts in column (d); this is recorded as a source-justified
-provider variation, not silently treated as equivalent.
-
-**DOWNSTREAM PROJECTION.** RAN:
-`.venv\Scripts\python.exe -m tax_graph.cli regenerate-candidate --run-dir C:\tmp\m20_s81_run --output-dir C:\tmp\m20_s81_candidate --expected-document form_2441_2025`
--> **candidate written; line 25 is `repaired` with no finding; 41 draft nodes emitted**. Drafts
-remain temporary and unpromoted.
-
-**TEST EVIDENCE.** RAN:
-`$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp2'; .venv\Scripts\python.exe -m pytest tests\test_derive_cells_m20.py -q`
--> **66 passed, 1 known `.pytest_cache` permission warning**. RAN:
-`$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp2'; .venv\Scripts\python.exe -m pytest tests\test_candidate_regeneration_m20.py tests\test_m20_s54.py tests\test_doctor_m20.py -q`
--> **20 passed, 1 known `.pytest_cache` permission warning**. RAN:
-`$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp2'; .venv\Scripts\python.exe -m pytest tests\test_m20_s31.py -q`
--> **8 passed, 1 known `.pytest_cache` permission warning**. RAN:
-`.venv\Scripts\python.exe tools\check_ascii.py` -> **ASCII check OK**.
-
-**NOT RUN:** full local suite and Tier 3 shakedown; those remain Architect-side per the standing
-rules. No provider prompt or schema wording was changed; the required live provider row did run.
 
 ## Open for Architect
 
