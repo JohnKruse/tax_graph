@@ -21,25 +21,22 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## BALL
 
-**BALL: WORKER - M20-S88 (CONTEXT A/B: REGION PLUS BUFFERS, MODEL SELECTS). PILOT ROUND.**
-**S87 ACCEPTED at `1988fd8`.** The config guard works - it raised on every command until the decoy
-was removed, which is the guard doing its job. **The Architect moved
-`config/tax-graph.config.yaml` to the session scratchpad rather than deleting it** (a stale copy of
-the example; the example is strictly newer). Ten-plus fixtures now point at the loaded path.
+**BALL: WORKER - M20-S89 (DELETE THE SELECTOR GATE). REAL-PROJECT ROUND.**
+**S88 ACCEPTED at `49ff88a`.** The harness was correct; the Architect ran the three arms, since the
+Worker sandbox still cannot reach the provider or write `C:	mp`.
 
-**S87 PART B IS THE HEADLINE: THE SELECTOR DROPS 38.6% OF REAL FORMULAS.** 32 of its 83 skips are
-computations - 1040 5/41, 2441 2/11, **6251 25/31 = 80.6%**. **Of the 90 skipped rows, ZERO reached
-the model**: no attribution, no tokens, no cost. These are not AI errors; the AI was never shown
-them, which is why they produce no error and look like a clean run.
+**THE ANSWER: 27 of 32 missed formulas recover with TODAY'S CONTEXT, for about nine cents.** All
+three arms recovered the same 27. Arm A - the line-anchored section we already build - had zero
+regressions and zero wrong-line quotes. Widening lost rows and provenance. **Ship arm A; delete the
+gate.**
 
-**THE COVERAGE NUMBER THE ARCHITECT REPORTED WAS WRONG, AND IT MATTERED.** "Derivation is meeting
-the 98% bar" was arithmetic over a denominator the selector had already shrunk by a third. **True
-formula population ~99, derived+repaired 63, REAL COVERAGE ~64%.** Lead with that number, not with
-derived-over-attempted.
+**COVERAGE: ~64% -> ~90% EXPECTED.** Report it against all printed anchors. The
+derived-over-attempted denominator is exactly what hid 32 formulas.
 
-**THE GATE COSTS PENNIES.** 67 admitted rows cost $0.0375, about $0.00056 each. Asking about all 157
-anchors is roughly **$0.09 per run**. The selector is saving five cents and losing a third of the
-corpus.
+**TWO ARCHITECT CLAIMS WERE WRONG THIS ROUND AND THE DATA CORRECTED BOTH.** Buffers were argued
+safe because a model treats overlap as context - wrong-line quotes went **0 -> 2 -> 6** as the
+window widened. And a wider region was expected to help 6251 most, since arm C reached 34 anchors
+versus 24; it recovered no more and broke five rows.
 
 **S81 ACCEPTED at `c89dd53`; temperature pinned at `50a64bf`.**
 **Full suite 2026-08-07: 20 failed, 851 passed, 8 skipped, 1 xfailed in 0:57:21** - exactly the
@@ -184,95 +181,58 @@ resolve now, and whether they resolve to the RIGHT line is unreviewed.
 
 ## Current round
 
-**WORKER STARTED M20-S88 (2026-08-08).** Added the isolated pilot at
-`pilot/context_arms.py` with pilot-only tests and README instructions. It clones the production
-cell frame, admits all printed anchors only in the clone, and measures A (line section), B
-(section plus eight-line buffers), and C (twelve-line raw heading regions). It does not change
-the selector, cue list, sectioner, CLI, graph, or promoted artifacts.
+**M20-S89 SPECCED BY ARCHITECT (2026-08-08). DELETE THE SELECTOR GATE.**
+**REAL-PROJECT ROUND** - touches `tax_graph/`, so the **full-suite floor applies.**
 
-**CONTEXT-ONLY EVIDENCE.** RAN:
-`$env:PYTHONDONTWRITEBYTECODE='1'; @' ... '@ | .venv\Scripts\python.exe -` -> **157 anchors per
-arm; 471 arm rows total**. Per document: 1040 A 42 sections / B 42 buffered / C 50 raw regions;
-2441 A 20 / B 20 / C 15; 6251 A 24 / B 24 / C 34. The remainder correctly reports no
-instruction context and still reaches the model in the pilot frame.
+**S88 SETTLED IT WITH NUMBERS. ARM A WON OUTRIGHT.** Same 157 anchors, three context arms, selector
+bypassed, live provider:
 
-**WORKER TEST EVIDENCE.** RAN:
-`$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp_codex'; $env:PYTHONDONTWRITEBYTECODE='1'; .venv\Scripts\python.exe -m pytest pilot -q`
--> **43 passed, 1 warning in 26.43s**. RAN:
-`.venv\Scripts\python.exe tools\check_ascii.py` -> **ASCII check OK**. The warning is the
-known ACL failure writing the pre-existing repository `.pytest_cache`; it does not affect test
-results.
+| arm | recovered of 32 | regressions | wrong-line quotes | cost |
+| --- | --- | --- | --- | --- |
+| **A - line section only (today's context)** | **27** | **0** | **0** | $0.095 |
+| B - section plus 8-line buffers | 27 | 1 | 2 | $0.072 |
+| C - raw 12-line region, no sectioner | 27 | 5 | 6, plus 9 unattributable | $0.074 |
 
-**LIVE PROVIDER CANARY.** NOT RUN to completion: the bounded Form 1040 arm-A command was started
-twice with C:\tmp output and failed immediately on ACLs, then started from a writable workspace
-path and hung in the configured OpenRouter transport with no output; it was terminated before
-the 600-second cap. The full three-arm measurement needs a network-capable context and remains
-unverified. No provider report, draft, graph, or promoted artifact was written.
+**THE CONTEXT WAS NEVER THE PROBLEM; THE GATE WAS.** Every arm recovered the same 27. Widening
+bought nothing and cost progressively more.
 
-**M20-S88 SPECCED BY ARCHITECT (2026-08-08). CONTEXT A/B: REGION PLUS BUFFERS, MODEL SELECTS.**
-**PILOT ROUND** - exploratory, so it lives in `pilot/`, its tests stay out of `tests/`, and it wires
-nothing into the CLI. It is a MEASUREMENT, not a pipeline change. **Do not change the selector, the
-cue list, or the sectioner in this round.**
+**AN ARCHITECT CLAIM WAS MEASURABLY WRONG, AND THE MEASUREMENT IS WHY WE KNOW.** The spec argued
+buffers were safe because a model, unlike a parser, treats overlap as context rather than
+contamination. **False: wrong-line quotes went 0 -> 2 -> 6 as the window widened**, and arm C also
+produced 9 quotes whose provenance could not be established. **Do not widen the context. Do not
+revisit buffers without new evidence.**
 
-**THE THESIS, in John's words (2026-08-08):** *"just hand the label, form face instruction, and the
-page/pdf instruction to the model with the standards for the operation format and let it work...
-I believe an AI model can read 3 paragraphs and pick out the instructions for Line 6c."*
+**THE CHANGE.**
+1. **Every printed anchor goes to derivation.** `selector_no_formula_cue` stops existing as a skip.
+   The keyword cue lists at `outline_pipeline.py:51` stop gating derivation. **Delete the gate; do
+   not widen the cue list** - a longer substring list is the same defect.
+2. **"This line is an input" becomes a FIRST-CLASS MODEL-STATED OUTCOME**, carrying its evidence,
+   not a silent keyword drop and not an error. **A skip that reports as success is the exact defect
+   that hid 32 formulas for months.**
+3. **CONTEXT ASSEMBLY IS UNCHANGED.** Arm A is what ships. No buffers, no region fallback.
+4. **STRUCTURAL SKIPS STAY SKIPS** - the 7 `structure_duplicate_anchor`, `structure_header_anchor`
+   and `structure_non_cell_anchor` rows are extraction artifacts, not formula questions.
+5. **The review surface must distinguish a MODEL-ASSERTED input line from a STRUCTURAL skip.** They
+   are different claims with different trust: one is a judgment that can be wrong, the other is a
+   fact about the printed page.
 
-**WHY THE EVIDENCE SUPPORTS IT: every failure found today is a PARSING failure, not a comprehension
-failure.**
-- The selector matched `node.label.lower()` only - `outline_pipeline.py:536` - so it never read the
-  instruction text. Form 1040 line 6b's instruction literally contains `"smaller of line"`, a cue
-  ALREADY in the list. The vocabulary was fine; it was reading the wrong document.
-- The sectioner filed nothing for 6251 lines 2d, 2f and 2g because the raw headings are
-  `**Line 2dDepletion**`, `**Line 2fAlternative Tax Net Operating Loss Deduction (ATNOLD)**` and
-  `**Line 2gInterest From Private Activity Bonds**` - **the separator between number and title is
-  missing**, so a token parser sees `2dDepletion`. The instruction text sits directly beneath it.
-- The Architect nearly filed a finding because `"divide"` matched **dividends**.
-**A model reading those paragraphs handles all three without effort. Only the regexes cannot.**
+**THE FLOOR, and it is a floor not a target.**
+- **The 63 rows that derive or repair today MUST NOT regress.** Report any that do, by line.
+- **The 27 recovered in S88 must derive.** They are named in `pilot/context_arms.py`
+  `KNOWN_MISSED_FORMULAS`.
+- **Expected real coverage: ~64% -> ~90%** (63 of ~99 to ~90 of ~99). **Report the coverage number
+  against ALL printed anchors, not against attempted** - the attempted denominator is what hid this.
+- **Cost rises from about $0.04 to about $0.09 per run.** That is the whole price of the gate.
 
-**BUFFERS ARE SAFE HERE, AND THE REASON MATTERS.** The wrong-owner defect - 295 spans down to 0 -
-was a PARSER filing text under the wrong line. When the consumer is a model asked *"which of this
-governs line 6c"*, overlap stops being contamination and becomes context. **Do not treat the
-295 -> 0 result as a reason to keep windows tight.**
+**OUT OF SCOPE.** The 5 that no arm recovered - 1040 `27a`, `38`; 6251 `1a`, `10`, `25` - **errored
+rather than skipped**, so the model saw them and failed. That is derivation, not routing. **Queue
+it; do not widen this round.** Also queued and untouched: the run-together instruction headings
+(`**Line 2dDepletion**`), which cost 6251 ten instruction sections.
 
-**TWO ARCHITECT ERRORS THIS ROUND CORRECTS, so they are not repeated:**
-1. *"77% of sections reference something outside themselves"* was presented as a defect. **It is
-   not.** Most are pointers to other forms, which canonical addresses exist to resolve so a new form
-   connects rather than dangles. John has raised reference standardization repeatedly.
-2. *"6251 has sections for only 30 of 61 lines"* implied a gap. **Wrong denominator.** John:
-   *"something like 'Subtract Line 7 from Line 9' doesn't need more explanation."* Absence of an
-   instruction is often the correct state. The real defect is the 10 missed formulas whose
-   instructions EXIST in the raw file and were not filed.
-
-**THE ARMS.** Same 157 anchors, same model, same seed, one run each.
-- **A - control:** today's context, the line-anchored instruction section only.
-- **B - line section plus buffer:** the section plus surrounding text, both directions.
-- **C - region only:** a fixed window around the printed anchor with no section lookup at all,
-  which is the arm that tells us whether the sectioner is needed for derivation.
-
-**BYPASS THE SELECTOR FOR ALL THREE ARMS.** The 32 known misses never reach the model today, so a
-gated experiment cannot score them. Send every printed anchor. **At $0.00056 per row this is about
-$0.09 per arm** - the gate saves pennies, which is the point.
-
-**THE SCORING SET IS FIXED IN ADVANCE.**
-- **Recovery: how many of the 32 known missed formulas each arm derives.** They are, per the S87
-  audit: 1040 `6b, 12e, 16, 27a, 38`; 2441 `4, 18`; 6251 `1a, 1b, 2c, 2d, 2f, 2g, 2h, 2i, 2k, 2l,
-  2m, 2n, 2o, 2p, 2q, 2r, 2t, 5, 7, 8, 2, 10, 15, 19, 25`.
-- **Regression: the 63 rows that derive or repair today must not get worse.** Report any that do,
-  by line. **A win on recovery that loses derived rows is not a win.**
-- **Mis-attribution: does the cited quote belong to the anchor it was filed under?** Buffers widen
-  the window, so this is the risk to watch. The stored `quote` and `quote_span_id` make it
-  checkable; do not assert it, measure it.
-- **Cost and prompt tokens per arm.**
-
-**OUT OF SCOPE, DELIBERATELY.** No cue-list widening - a longer substring list is the same defect.
-No sectioner repair - the run-together heading bug is real and gets its own round. **No multi-run
-voting:** John raised it and it is held in reserve, because it multiplies cost by N and varying the
-seed is exactly what makes a run non-reproducible. **Measure single-pass with proper context first;
-most of the 32 may fall out from context alone.**
-
-**REPORT THE UNFLATTERING NUMBER FIRST:** recovery of the 32, then regressions, then cost. If arm A
-wins, say so plainly - the thesis is testable, not assumed.
+**THE RISK TO WATCH, stated honestly.** 157 anchors instead of 67 means more rows that can error,
+and an "input line" answer must earn the same trust as an expression. **Spot-check a sample of
+model-asserted input lines against the printed form** and report the rate, rather than assuming the
+new outcome is reliable because the recovery number looks good.
 
 ## Standing operational notes
 
