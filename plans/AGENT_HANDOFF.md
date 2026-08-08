@@ -21,72 +21,28 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## BALL
 
-**BALL: WORKER - M20-S86 (ONE MODEL ACCESSOR, ATTRIBUTABLE RUNS). THE TREE IS RELEASED.**
-**The full suite has finished; `tax_graph/`, `schemas/` and `tests/` are open for editing again.**
+**BALL: WORKER - M20-S87 (KILL THE CONFIG-PATH ROOT CAUSE; AUDIT THE 83 SKIPS).**
+**S86 ACCEPTED at `2d27205`, with the regression fixes at `b9cd181`.**
 
-**S85 IS ACCEPTED (John, 2026-08-08) at `1948b5b` and `19f1785`, WITH PART C NOT DELIVERED.**
-Parts A, B, D and E were verified independently by the Architect: the `"gt"` default is gone and an
-absent comparator returns MISSING with a named trace, `schemas/rule.schema.json` requires
-`parameters.comparison` on `IF_ELSE` with the five-value enum, the validator names it, the regression
-executes 6251 line 18 both arms (100,000 -> 26,000; 300,000 -> 79,218), and John's three Tree
-corrections landed - boxes share a left edge, the Math pretty-prints to 19 lines instead of one
-392-character run.
+**STAGE-BY-STAGE STATE (Architect read for John, 2026-08-08).** None of the current suite noise is
+extraction or derivation.
+- **Text and anchors: FIXED**, as John believed - 153/153 rows clean form-face text, 0 of 194 node
+  labels carrying raw OCR, anchors 12% -> 1% wrong.
+- **Derivation: MEETING THE 98% BAR** - 66 attempted, 58 derived, 5 repaired, 4 errored, and the 4
+  fail for stated reasons rather than repairing into something unverifiable.
+- **Candidate/graph: working and newly stricter** - 5 of 5 branches carry a comparator.
+- **Review surface: working** - Tree over Math, 65 operation rows, holes stating their real reason.
+- **Selector: working, UNVERIFIED** - 83 of 157 anchors skipped on one unaudited judgment. **This is
+  where the risk is.**
+- **M15 review workbench: red, older milestone** - 11 e2e failures on an empty queue, unrelated to
+  the extraction pipeline.
 
-**FULL SUITE 2026-08-08: 21 failed, 855 passed, 8 skipped, 1 xfailed in 0:57:46**, then **20 after
-the Architect fixed the one new red.** `tests/test_m20_s54.py` asserted the OLD wire contract: S85
-made `comparison` a REQUIRED key on every expression node (null off `IF_ELSE`), and that test's
-`COPY` and `LOOKUP_TABLE` fixtures carried no such key. Fixtures updated, intent unchanged. **This is
-what the full-suite floor is for** - the Worker cannot run it under a 600-second cap, so a
-wire-contract change shipped with a stale test behind it.
-
-**S85 PART C IS DONE (Architect, 2026-08-08). RULES 17 AND 18 ARE PROVEN ON REAL DATA.**
-Run `C:\tmp\m20_s85c_run3` -> **58 derived, 5 repaired, 4 errored, 90 skipped, cost $0.0375.**
-Candidate `C:\tmp\m20_s85c_cand`; panel `C:\tmp\m20_s85_panel.html`.
-- **5 of 5 `IF_ELSE` rules carry a comparator; ZERO missing** (was 3 of 3 missing). Values: `le` x3,
-  `gt` x2. **`rule_form_6251_2025_root_line_18_candidate` derived `comparison: le`** - exactly what
-  the cited instruction requires (*"$239,100 or less ... 26%"*). The pipeline emitted it; nothing was
-  hand-authored.
-- **The panel prints the direction**: `line 17 <= threshold`, `line 31 > threshold`, and three more.
-  **Zero `missing IF_ELSE comparison` findings**, down from 3.
-- **Correctness follows from two proven parts**: the data now carries `le`, and the S85 regression
-  already proves the engine computes both arms correctly given `le` (100,000 -> 26,000;
-  300,000 -> 79,218). **End-to-end execution from the candidate still needs a promote and was NOT
-  run.**
-- **`checked?` STILL RENDERS ZERO TIMES.** None of the 5 branch conditions is a checkbox control, so
-  rule 17's checkbox half remains unproven outside unit tests. 1040's 18 checkbox lines are not
-  `IF_ELSE` conditions, and `form_2441_2025` still has no address registry file.
-
-**THE 404 WAS A THREE-WAY INTERACTION, AND THE ARCHITECT DIAGNOSED IT WRONG TWICE FIRST.**
-`openai/gpt-5.6-luna` **does not support `temperature`** (A/B against the live API: 404 with it, 200
-without). The live config set `temperature: 0` AND pinned `provider_routing.only: [openai]` - for
-good documented reasons, since Bedrock cannot do structured outputs and Azure is ~10x - so there was
-no other endpoint to absorb the unsupported parameter and every row failed. **Each of the three
-decisions is individually correct; together they were fatal.** `require_parameters: true` is what
-made it loud rather than a silently ignored pin. **LEAVE IT ON.**
-
-**THERE ARE TWO FILES NAMED `tax-graph.config.yaml` AND ONLY THE ROOT ONE IS LOADED.**
-`config/tax-graph.config.yaml` is a DECOY: longer, better commented, and read by nothing. The
-Architect diagnosed and edited it twice before noticing, which cost two provider runs. **The claim
-that the model had drifted to `google/gemini-3.6-flash` at 15x cost was about the decoy** - the live
-config has had Luna pinned for `model` and `micro_model` all along. That claim is wrong in the
-`95991c8` commit message. **This is almost certainly the "model switching" John reported: a fix
-applied to the decoy changes nothing, which looks exactly like a setting that will not stick.**
-Both files are gitignored, so neither appears in review.
-
-**RUNS ARE NOT A REPRODUCIBLE BASELINE UNTIL S86.** `temperature` is now unset because Luna rejects
-it; `seed` is the replacement lever and has NO CONSUMER in the code - only `temperature` is threaded,
-through six call sites. Until S86 plumbs `seed` through the single accessor, runs sample at the
-provider default.
-
-**QUEUE ADDITIONS - one line each.**
-0. **DELETE OR NEUTER THE DECOY `config/tax-graph.config.yaml`** - two files with one name, only
-   the root loaded. Fold into S86, which already owns "one accessor decides".
-0d. **`seed` HAS NO CONSUMER** - plumb it through S86's single accessor; `seed: 0` is falsy, so use
-   `is not None`, the same trap that swallowed the temperature pin.
-0b. **`form_2441_2025` has NO address registry file** in either `graph/2025/addresses/` or
-   `_drafts/`, so its control roles resolve to nothing and its line 22 checkbox cannot render.
-0c. **The Worker sandbox cannot reach the network or write `C:\tmp`** - fix the sandbox config or
-   route every provider round through the Architect.
+**WHAT TODAY BOUGHT, since it does not feel like progress:** a wrong tax number was found and fixed.
+`form_6251_2025` line 18 computed the 26% arm when it owed 28%, inverted on every input, because the
+comparator was unstored and the engine defaulted to `gt`. It is now derived from the instruction
+(`le`), required by schema, named by the validator, and visible in the review as
+`line 17 <= threshold`. **John found it by reading a tree and asking how a comparison is shown** -
+which is what the review surface is for.
 
 **S81 ACCEPTED at `c89dd53`; temperature pinned at `50a64bf`.**
 **Full suite 2026-08-07: 20 failed, 851 passed, 8 skipped, 1 xfailed in 0:57:21** - exactly the
@@ -231,89 +187,80 @@ resolve now, and whether they resolve to the RIGHT line is unreviewed.
 
 ## Current round
 
-**TWO PIECES OF WORK, IN THIS ORDER. THE ORDER IS NOT NEGOTIABLE.**
-**A FULL SUITE IS RUNNING ON THE WORKING TREE (Architect, 2026-08-08, about 57 minutes).**
-**DO NOT MODIFY `tax_graph/`, `schemas/`, OR `tests/` UNTIL THE ARCHITECT POSTS THE RESULT.**
-An edit mid-run makes that result describe no commit at all, and we have already paid for one
-unattributable baseline this month. Work 1 does not touch source and is safe to start immediately.
+**M20-S87 SPECCED BY ARCHITECT (2026-08-08). KILL THE CONFIG-PATH ROOT CAUSE, THEN AUDIT THE SKIPS.**
+John, 2026-08-08: *"The errors continue to be a whack a mole exercise. I am not feeling a lot of
+progress."* **He is right, and the mole has ONE hole.** Part A closes it. Part B then moves to the
+thing that actually carries risk, which is not the test suite.
 
-### WORK 1 (START NOW) - M20-S85 PART C. THE PROVIDER IS NOT BLOCKED.
+**S86 IS ACCEPTED at `2d27205` with `b9cd181` on top.** The accessor raises `ModelConfigurationError`
+on absence, `configured-llm` is gone from the tree, `seed` reaches the wire with the falsy-zero trap
+avoided, `vendor_family` is derived, `doctor` resolves through the accessor, and the exact production
+config - Luna, `only: [openai]`, `allow_fallbacks: false`, `require_parameters: true`, seed, strict
+structured outputs - returns **HTTP 200 live**.
 
-**The Architect diagnosed the block: it was transport, not authorization.** OpenRouter answers in
-0.2s, HTTP 200, 400 models listed, and the key is present in the environment. `transport_retries`
-already defaults to 2 with 1s backoff, so 29/29 connection errors means that sandbox had no network,
-not that a retry was missing. **Do not request a safety escalation; nothing is gated.**
+**S86 also shipped 11 new suite failures; `b9cd181` fixed nine.** Two remain, and they share Part A's
+cause. The nine were two mistakes: S86 deleted the improvised `"configured-llm"` placeholder
+(correct) AND the documented `micro -> primary` cascade (wrong - it made optional keys required and
+would break the shipped example config), and it added `seed` to the client without updating 17 test
+doubles.
 
-**THE MODEL IS NOW PINNED TO `openai/gpt-5.6-luna`** in `config/tax-graph.config.yaml`. It had
-drifted to `google/gemini-3.6-flash`, which live OpenRouter pricing puts at **15x prompt and 12.5x
-completion** cost. **Confirm the resolved model in the run telemetry before trusting the output**, and
-if any row reports a different resolved model, STOP and report rather than continuing.
+### PART A - ONE ROOT CAUSE, THREE SYMPTOMS. **THERE ARE TWO FILES NAMED `tax-graph.config.yaml`.**
 
-Run derivation for the branch documents, regenerate the candidate, and report:
-1. **`IF_ELSE` rules missing a comparator, before and after.** Pre-round it was 3 of 3. **If any
-   remain, say so plainly and DO NOT default them** - the engine now refuses them, which is correct.
-2. **`form_6251_2025` line 18 executed both ways** against the quoted instruction, from the
-   regenerated candidate rather than the fixture.
-3. **Comparator symbols and `checked?` phrasing rendered from real data.** Both paths render ZERO
-   times on `cand_s71` because it predates the change; `form_1040_2025` resolves 18 checkbox lines,
-   so the checkbox half should now fire. **These are the first real-data proofs of rules 17 and 18.**
-4. The regenerated panel to `C:\tmp`, never a dot directory.
+`tax_graph/config.py:default_config_path` resolves `<root>/tax-graph.config.yaml`. **Nothing reads
+`config/tax-graph.config.yaml`**, which is longer, better commented, and looks authoritative. Three
+symptoms, each of which looked unrelated until now:
+1. **Two wasted provider runs.** The Architect diagnosed and edited the decoy twice, and reported a
+   false "the model drifted to gemini at 15x cost" finding from it. The live config had Luna pinned
+   all along. That claim is wrong in the `95991c8` commit message.
+2. **John's recurring complaint** that model settings will not stick - *"I wanted it to be set in
+   the config file, full stop."* A fix applied to the decoy changes nothing.
+3. **The last two suite failures.** At least TEN hermetic fixtures do
+   `copyfile(root/"config"/"tax-graph.config.example.yaml", root/"config"/"tax-graph.config.yaml")`
+   and the loader never reads it - **so those tests have never had a config.** The
+   `"configured-llm"` placeholder hid it; removing the placeholder exposed it. **This is exposure,
+   not new breakage.**
 
-**`form_2441_2025` HAS NO ADDRESS REGISTRY FILE** in either `graph/2025/addresses/` or `_drafts/`,
-so its control roles resolve to nothing and its line 22 checkbox cannot render. **Queue it; do not
-fix it here.**
+1. **Point every fixture at the path the loader actually reads.** Expect this to change what config
+   those tests see; **that is the point, and the blast radius is why this is its own round.**
+2. **DELETE `config/tax-graph.config.yaml`.** It is a stray copy of the example, gitignored, read by
+   nothing. **Ask John first - it is his local file.**
+3. **MAKE IT UNREPEATABLE.** A guard that fails loudly when a config exists at a path that is not
+   loaded. **Without this the third symptom simply waits for a fourth.** A round that only fixes the
+   ten fixtures has not fixed anything.
+4. **Full suite. Target: the known 20, no more.**
 
-### WORK 2 (AFTER THE SUITE RESULT) - M20-S86. ONE MODEL ACCESSOR, ATTRIBUTABLE RUNS.
+### PART B - AUDIT THE SKIPS. **83 OF 157 ANCHORS ARE SKIPPED ON ONE UNVERIFIED JUDGMENT.**
 
-John, 2026-08-08: *"I find that we keep running into this model switching. I wanted it to be set in
-the config file, full stop."* and *"I am always in favor of good logging and attribution."*
-**This round ends a recurring class of defect, not one instance of it.**
+This is where the real risk is. Today's run: 157 printed anchors, 67 selected, 58 derived, 5
+repaired, 4 errored, **90 skipped - 83 of them `selector_no_formula_cue`**. Nobody has ever checked
+whether those 83 are genuinely input lines. **A skipped line looks identical to a clean run**, so
+over half the corpus rests on an unaudited call that reports as success.
 
-**THE CAUSE IS IMPROVISED FALLBACKS, which is the 2026-08-06 accessor ruling all over again.**
-`generator.py:28`, `critic.py:24`, `background.py:536` and `micro.py:368` each resolve the model
-independently, with improvised defaults. **A missing or renamed key does not fail - it yields a
-fake model name and the run proceeds.**
-There are also five model knobs (`model`, `micro_model`, `example_model`, `nversion_model`) plus
-`vendor_family`, a SECOND hand-maintained field that must agree with the model id or the router
-misroutes. `micro_model` is absent from the live config today, so it silently falls back.
+**The selector is a hardcoded substring list** - `_LEGACY_FORMULA_CUES` and `_WIDENED_FORMULA_CUES`
+at `tax_graph/extract/outline_pipeline.py:51`, 16 phrases such as `"add line"`, `"subtract line"`,
+`"smaller of line"`. **Any formula the IRS phrases differently is skipped silently**, and `"divide"`
+appears nowhere in the list.
 
-1. **ONE ACCESSOR DECIDES.** A single resolver owns the model. **Absence is a typed error, never a
-   placeholder string.** Delete all four improvised fallbacks; no fake model id may survive in the
-   runtime tree.
-2. **`vendor_family` IS DERIVED from the model id**, not maintained by hand. Keep an explicit
-   override only if a caller genuinely needs one; otherwise remove the key.
-3. **EVERY RUN RECORDS WHAT PRODUCED IT** - requested model, resolved model, and resolved endpoint
-   when router metadata is on. **The plumbing already exists** (`llm_client.py:685`,
-   `generator.py:53`, `cells.py:517`, `background.py:255`); this is surfacing, not building.
-   `doctor` prints the resolved model.
-4. **`provider_routing.allow_fallbacks` GOES TO `false` in the example config**, with the reason
-   written down: endpoint-level fallback can route to a provider that ignores `temperature: 0`, which
-   is the pin the whole attributable-baseline argument rests on.
-5. **INVARIANT TEST AT THE ACCESSOR**, per the standing rule - not at the four call sites.
-6. **NO MODEL FALLBACK.** Considered and rejected with John, 2026-08-08: a silent substitute would
-   split a corpus across two families with different expression shapes and no way to attribute a
-   regression, at 15x the cost. **`nversion_model` is the sanctioned second model** - deliberate
-   cross-family corroboration that RECORDS its disagreement, the opposite of a silent swap.
-7. **DO NOT TOUCH `ocr.model`.** John, 2026-08-08: *"i'm cool with the mistral-ocr-latest tag as
-   that's what they push."* The alias stays.
+**DO NOT AUDIT WITH KEYWORD MATCHING.** The Architect screened for `"divide"` and got 14 hits that
+were all the word **dividends** - the exact substring bug the selector itself has. **Auditing a
+substring bug with substring matching reproduces it.** The audit reads the printed line and its
+instruction text and judges.
 
-**EVIDENCE.** Call sites carrying an improvised model fallback, before and after - **target zero**;
-a run report showing requested and resolved model side by side; `doctor` output naming the model;
-and the full suite against the known 20.
+1. **Classify every one of the 83** - this is pipeline work per the prime directive, not a hand
+   audit: for each skipped anchor, decide **input line** (a number the filer copies from a source
+   document - a correct and final answer) versus **missed formula** (the line computes from other
+   lines), citing the instruction text that decides it.
+2. **Report the miss rate with its denominator**, per document. **Lead with the misses, not the
+   hits.**
+3. **Name the cues that would have caught them.** The deliverable is evidence about the selector,
+   not a patched cue list - **do not widen the cue list in this round.** A substring list is the
+   defect; a longer one is the same defect.
+4. **`form_6251_2025` line 7 is a named candidate**: its printed text is a conditional
+   (*"If you reported capital gain distributions directly on Form 1040..."*) and it was skipped.
 
-**WORKER STATUS (2026-08-08; M20-S86 implementation in progress).** The shared resolver now owns
-primary, micro, example, and nversion model selection; missing roles raise `ModelConfigurationError`.
-Vendor family is derived from the model id, seeds preserve zero through provider requests, and run
-JSONL records requested models, resolved models, and resolved endpoints. The root checkout no longer
-selects the ignored `config/tax-graph.config.yaml` fallback when its root config is absent; the exact
-ignored decoy remains ACL-protected and could not be removed in-session.
-
-RAN: `$env:PYTEST_DEBUG_TEMPROOT=(Resolve-Path .test_tmp_s86).Path; .venv\\Scripts\\python.exe -m pytest tests/test_model_accessor_s86.py tests/test_config.py tests/test_llm_attribution_m20.py tests/test_doctor_m20.py tests/test_background_m20.py tests/test_extract_outline_m4.py tests/test_rederive_m20.py tests/test_examples_m8.py tests/test_nversion_m8.py tests/test_batch_extraction_m10.py tests/test_derive_cells_m20.py -q` -> **139 passed, 9 failed**. The nine failures are pre-existing Windows ACL errors copying `graph/2025/_drafts/` in `test_examples_m8.py` and `test_nversion_m8.py`; no assertion or S86 code failure occurred. The focused non-copy slices pass: accessor/config/telemetry/doctor 35 passed; extraction consumers and nversion excluding the ACL command 33 passed; offline example replay/segmentation 3 passed; accessor plus nversion excluding the ACL command 13 passed.
-
-RAN: `.venv\\Scripts\\python.exe tools\\check_ascii.py` -> **ASCII check OK**.
-RAN: `$env:PYTEST_DEBUG_TEMPROOT=(Resolve-Path .test_tmp_s86).Path; .venv\\Scripts\\python.exe -m pytest tests/test_prompt_experiment_m20.py tests/test_self_serve_extension_m14.py tests/test_workbench_rederive_m20.py -q` -> **8 passed**.
-RAN: `.venv\\Scripts\\python.exe -m tax_graph.cli doctor --year 2025` -> **exit 0**, output names `configured model (requested): openai/gpt-5.6-luna`.
-NOT RUN: full suite - Architect-side run; Worker command cap and the known 20 baseline apply.
+**EVIDENCE.** Part A: the ten-plus fixtures repointed, the decoy gone, the guard failing on a decoy
+you plant deliberately, and a full suite at the known 20. Part B: 83 classified, a miss rate per
+document, and the instruction text quoted for every miss.
 
 ## Standing operational notes
 
