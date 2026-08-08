@@ -55,6 +55,8 @@ def _lookup(roles: list[str]) -> dict[str, object]:
                 for index, role in enumerate(roles, 1)
             ),
         ],
+        # M20-S85: comparison is required on every node, null off IF_ELSE.
+        "comparison": None,
     }
 
 
@@ -105,8 +107,10 @@ def test_lookup_table_fails_closed_when_branch_roles_do_not_state_bounds() -> No
 
 def test_schema_leaves_role_ownership_to_the_deterministic_validator() -> None:
     schema = expression_schema()
-    ordinary = {"expression": {"op": "COPY", "args": [{"line": "1", "role": None}]}, "quote": "line 1"}
-    ordinary_with_role = {"expression": {"op": "COPY", "args": [{"line": "1", "role": "source"}]}, "quote": "line 1"}
+    # M20-S85 made comparison a required key on every expression node - null for
+    # everything but IF_ELSE - so absence is typed rather than silently defaulted.
+    ordinary = {"expression": {"op": "COPY", "args": [{"line": "1", "role": None}], "comparison": None}, "quote": "line 1"}
+    ordinary_with_role = {"expression": {"op": "COPY", "args": [{"line": "1", "role": "source"}], "comparison": None}, "quote": "line 1"}
     lookup = {"expression": _lookup(["band_0_10", "band_10_no_limit"]), "quote": "0-10 10-No limit"}
 
     from jsonschema import Draft202012Validator

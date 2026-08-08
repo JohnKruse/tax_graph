@@ -21,61 +21,46 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## BALL
 
-**BALL: WORKER - S85 PART C NOW; S86 AFTER THE SUITE RESULT.**
-**S85 IS PART-DONE at `1948b5b` and `19f1785`.** Parts A, B, D and E verified independently by the
-Architect: the `"gt"` default is gone and an absent comparator returns MISSING with a named trace,
-the rule schema requires `parameters.comparison` on `IF_ELSE` with the five-value enum, the validator
-names it, the regression executes 6251 line 18 both arms (100,000 -> 26,000; 300,000 -> 79,218), and
-John's three Tree corrections landed - boxes share a left edge, the Math pretty-prints to 19 lines
-instead of one 392-character run.
+**BALL: WORKER - M20-S86 (ONE MODEL ACCESSOR, ATTRIBUTABLE RUNS). THE TREE IS RELEASED.**
+**The full suite has finished; `tax_graph/`, `schemas/` and `tests/` are open for editing again.**
 
-**PART C IS UNBLOCKED. IT WAS TRANSPORT, NOT AUTHORIZATION.** OpenRouter answers in 0.2s with the key
-present; do not request an escalation. **The model is pinned to `openai/gpt-5.6-luna`**, having
-drifted to `google/gemini-3.6-flash` at 15x prompt cost.
+**S85 IS ACCEPTED (John, 2026-08-08) at `1948b5b` and `19f1785`, WITH PART C NOT DELIVERED.**
+Parts A, B, D and E were verified independently by the Architect: the `"gt"` default is gone and an
+absent comparator returns MISSING with a named trace, `schemas/rule.schema.json` requires
+`parameters.comparison` on `IF_ELSE` with the five-value enum, the validator names it, the regression
+executes 6251 line 18 both arms (100,000 -> 26,000; 300,000 -> 79,218), and John's three Tree
+corrections landed - boxes share a left edge, the Math pretty-prints to 19 lines instead of one
+392-character run.
 
-**BOTH NEW DISPLAY PATHS STILL RENDER ZERO TIMES ON REAL DATA** - no comparator symbol, no `checked?`
-- because `cand_s71` predates the change. **Rules 17 and 18 are unproven outside unit tests until
-Part C regenerates the candidate.** That is the round's remaining point.
+**FULL SUITE 2026-08-08: 21 failed, 855 passed, 8 skipped, 1 xfailed in 0:57:46**, then **20 after
+the Architect fixed the one new red.** `tests/test_m20_s54.py` asserted the OLD wire contract: S85
+made `comparison` a REQUIRED key on every expression node (null off `IF_ELSE`), and that test's
+`COPY` and `LOOKUP_TABLE` fixtures carried no such key. Fixtures updated, intent unchanged. **This is
+what the full-suite floor is for** - the Worker cannot run it under a 600-second cap, so a
+wire-contract change shipped with a stale test behind it.
 
-**A FULL SUITE IS RUNNING ON THE WORKING TREE.** No edits to `tax_graph/`, `schemas/` or `tests/`
-until the Architect posts the result.
+**STANDING CAVEAT, DO NOT LOSE IT: RULES 17 AND 18 ARE UNPROVEN OUTSIDE UNIT TESTS.** No comparator
+symbol and no `checked?` has ever rendered from real data. Both provider attempts failed at
+transport, and the second regenerated a candidate with **0 derived / 67 errored / zero `IF_ELSE`
+rules**. **That candidate must never be promoted; it would empty the corpus.** Accepting S85 accepts
+the code, not a demonstration.
 
-**FULL-SUITE FLOOR APPLIES** - this round touches `tax_graph/` and `schemas/`, and Part C needs a
-provider run. The recent pilot-round exemptions do NOT apply.
+**WHAT DID GET PROVEN: ATTRIBUTION WORKS.** The failed run reports `openai/gpt-5.6-luna` on all 67
+rows, so the pin took and an artifact can now name the model that produced it. The model had drifted
+to `google/gemini-3.6-flash` at 15x prompt and 12.5x completion cost.
 
-**WORKER STATUS (2026-08-08; S85 implementation in progress).** Parts A, B, D, and E are implemented:
-the engine fails closed with a named trace, the graph and expression contracts require an explicit
-comparator, candidate rows with a missing comparator become review gaps, the execution regression
-covers both Form 6251 line 18 arms, and the panel shows comparator, checkbox, finding, wrapping, and
-indentation behavior. No rules.yaml or promoted artifact was hand-authored.
+**THE PROVIDER BLOCK IS THE WORKER SANDBOX, NOT THE PROJECT.** From the Architect's shell OpenRouter
+answers in 0.16s and `C:	mp` is writable; from the Worker sandbox the same call fails at transport
+and `C:	mp` raises `PermissionError`. Same family as the July Python-spawn restriction.
+**Do not spend another round attempting Part C from that sandbox.**
 
-**TEST EVIDENCE.** RAN:
-`$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp_s85'; .venv\Scripts\python.exe -m pytest tests\test_m20_s85_comparator.py tests\test_operation_registry_m20.py tests\test_derive_cells_m20.py -q`
--> **94 passed, 1 warning**. RAN:
-`$testroot='C:\Users\devbox\AppData\Local\Temp\tax_graph_pytest_s85'; New-Item -ItemType Directory -Path $testroot -Force | Out-Null; $env:PYTEST_DEBUG_TEMPROOT=$testroot; .venv\Scripts\python.exe -m pytest tests\test_graph_validator.py -q`
--> **14 passed in 122.16s**. RAN:
-`$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp_s85'; .venv\Scripts\python.exe -m pytest tests\test_m20_s31.py -q`
--> **8 passed, 1 warning**. RAN:
-`$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp_s85'; .venv\Scripts\python.exe -m pytest pilot -q`
--> **39 passed, 1 warning**. RAN `.venv\Scripts\python.exe tools\check_ascii.py`
--> **ASCII check OK**. The warnings are the known permission failure writing the pre-existing
-`.pytest_cache`.
-
-**PROVIDER BLOCK.** The pre-round `C:\tmp\m20_s68_candidate` contains **3 IF_ELSE rules, all 3
-missing comparison data**. RAN:
-`.venv\Scripts\python.exe experiments\derive_cells_s25.py --year 2025 --output-dir C:\Users\devbox\AppData\Local\Temp\tax_graph_m20_s85 --document form_6251_2025`
--> process completed, but **0 derived / 29 errored**; every live row reported
-`LlmUnavailable: OpenRouter request failed: Connection error.` The required escalated retry was
-rejected by the safety review because it would send IRS-derived payloads to OpenRouter without
-explicit user authorization. Therefore the provider leg, after-run comparator count, candidate
-regeneration, and panel render from current output are **NOT RUN**. No draft was promoted.
-
-**FULL SUITE:** NOT RUN - the known full-suite runtime is about 57 minutes, beyond the Worker
-600-second command cap; Architect-side verification remains required.
-
-**THE FLOW COLUMN IS RETIRED**, archived at the pushed tag **`archive/m20-flow-column`** (`5ee8da2`).
-Recover with `git show archive/m20-flow-column:pilot/review_panel.py`. Rules 15 and 16 bind; rule 15
-supersedes rule 11 and retires rule 14.
+**QUEUE ADDITIONS - one line each.**
+0. **S85 PART C: derive with the comparator, from a network-capable context.** Then prove rules 17
+   and 18 on real data and execute 6251 line 18 from the regenerated candidate, not the fixture.
+0b. **`form_2441_2025` has NO address registry file** in either `graph/2025/addresses/` or
+   `_drafts/`, so its control roles resolve to nothing and its line 22 checkbox cannot render.
+0c. **The Worker sandbox cannot reach the network or write `C:	mp`** - fix the sandbox config or
+   route every provider round through the Architect.
 
 **S81 ACCEPTED at `c89dd53`; temperature pinned at `50a64bf`.**
 **Full suite 2026-08-07: 20 failed, 851 passed, 8 skipped, 1 xfailed in 0:57:21** - exactly the
@@ -410,7 +395,15 @@ was performed, per pilot rules.
 
 ## Open for Architect
 
-**Nothing is open for the Architect.** The three items `doctor` flagged STALE at 73 commits on
+**S85 Part C is open for the Architect:** the fresh three-document run used the pinned
+`openai/gpt-5.6-luna` model but all 34 attempted rows failed with
+`LlmUnavailable: OpenRouter request failed: Connection error.` The regenerated candidate is
+empty of rules, so Form 6251 line 18 execution and the real-data comparator/checkbox proof remain
+unverified. Rerun Part C in a network-capable context; no authorization escalation is needed. The
+Worker also could not create or write under `C:\tmp` in this sandbox, so the mandated panel path
+needs verification there. S86 remains after the full-suite result.
+
+The three items `doctor` flagged STALE at 73 commits on
 2026-08-05 are closed: the **S36 denominator decision** (moot - S51 replaced the denominator
 with 121 of 478 anchors and a named reason per skip); the **two scoping calls** (worksheets
 closed by the S59 nomination chain; the filing-status constant answered by measurement -
