@@ -22,6 +22,9 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 ## BALL
 
 **BALL: WORKER - M20-S89 (DELETE THE SELECTOR GATE). REAL-PROJECT ROUND.**
+**THE GUARD BLOCK IS ANSWERED (2026-08-08); the ruling is at the end of the S89 spec.** Both
+guards are superseded and rewritten, the compatibility shim is rejected in favour of one accessor,
+and the provider floor measurement is mine to run, not yours.
 **S88 ACCEPTED at `49ff88a`.** The harness was correct; the Architect ran the three arms, since the
 Worker sandbox still cannot reach the provider or write `C:	mp`.
 
@@ -233,6 +236,64 @@ it; do not widen this round.** Also queued and untouched: the run-together instr
 and an "input line" answer must earn the same trust as an expression. **Spot-check a sample of
 model-asserted input lines against the printed form** and report the rate, rather than assuming the
 new outcome is reliable because the recovery number looks good.
+
+**ARCHITECT RULING ON THE S89 GUARD CONTRACT (2026-08-08). Asked and answered; the round is not
+blocked.** The Worker measured the slice at **1040 58 admitted / 1 structural; 2441 32 / 3;
+6251 60 / 3**, route denominator 67 -> 150, seven structural rows preserved. That is the intended
+shape.
+
+**1. S89 SUPERSEDES BOTH GUARDS. Rewrite them; do not delete them.** A test asserting that a
+no-cue anchor is skipped is asserting the defect this round exists to remove, and it is exactly
+the test that let 32 formulas hide. The replacement assertions:
+
+- `tests/test_m20_s51.py::test_denominator_reports_legacy_and_widened_selector_decisions` -
+  anchor `9` is now routed. Assert `by_anchor["9"]["skip_reason"] == ""`,
+  `derivation_admitted is True`, and `legacy_selector_admits is False`; report totals become
+  `admitted == 3`, `skipped == 0`, `legacy_admitted == 0`. **The cue telemetry stays asserted** -
+  that is the part of this test still worth having.
+- `tests/test_m20_s51.py::test_form_2441_denominator_names_the_newly_visible_rows` - assert the
+  measured `admitted == 32`, `skipped == 3`, `legacy_admitted == 12`,
+  `skipped_by_reason` containing only `structure_*` keys, and anchor `1` carrying
+  `skip_reason == ""` with `legacy_selector_admits is False`. Assert what you measure, not what
+  this ruling arithmetic-ed.
+- `tests/test_m20_s71.py::test_selector_skips_provider_but_retains_clean_cell_text` - rename to
+  name the structural case, set the fixture metadata to a `structure_non_cell_anchor` reason, and
+  keep every assertion (skipped, clean text, zero provider calls, `attempted == 0`).
+  **Then add the inverse guard in the same file: a row with no formula cue and no structural
+  reason DOES reach the provider and IS counted in `attempted`.** That pair is the contract.
+
+**2. NO. The old selector counts do NOT survive as a compatibility projection, and the slice's
+current shim is the thing I am rejecting.** It keeps `selector_admitted`, `selector_cue` and
+`selector_skip_reason` next to new `structural_skip_reason` and `legacy_selector_*`, and then
+`derive_cells` improvises `structural_skip_reason or (selector_skip_reason if it startswith
+"structure_")`. **That is one accessor's job done by every consumer, which is the recurring defect
+we already ruled on.** Worse, `selector_admitted` was redefined in place: same key, new meaning,
+so `test_outline_span_resolution_m20.py:245`, `test_derive_cells_m20.py:1510` and
+`pilot/review_panel.py` all still read it and now silently get a different answer.
+
+**The shape I want:** one accessor decides routing for a row - a single function returning the
+structural skip reason, where absence is a typed empty result and empty means "route it". Delete
+`selector_admitted` and `selector_skip_reason` from cell metadata rather than redefining them; the
+cue survives only inside `build_derivation_denominator` under `legacy_selector_*`, explicitly
+labelled measurement. Drop the redefined `selector_admits` from the report and let
+`derivation_admitted` be the only routing field. **No `.get(a, .get(b))` chains and no
+`startswith("structure_")` sniffing anywhere** - the reason is present or it is not. Put the
+invariant test at the accessor.
+
+**3. `model_stated_input` is right, and the machinery already existed** - `REQUIRE_INPUT` is a
+registered operation and `prompts/derive_cells.md` already instructs it. Labelling the outcome is
+the whole change; keep it that small.
+
+**4. `pilot/review_panel.py` still categorizes holes as `selector_no_formula_cue`, which now has
+no producer.** That is spec point 5 and it stays in this round, but do it AFTER the run, against
+real rows: a model-asserted input is an outcome, not a hole, and only `structure_*` rows remain
+holes.
+
+**ORDER OF WORK.** Land the accessor cleanup and the rewritten guards, then the full suite
+(real-project floor), then report. **Do not attempt the provider run** - your sandbox cannot reach
+it, and I will run the floor measurement myself as I did for S88: the 63 non-regressing rows, the
+27 recovered, coverage against all 157 printed anchors, cost, and the spot-check rate for
+model-asserted input lines.
 
 ## Standing operational notes
 
