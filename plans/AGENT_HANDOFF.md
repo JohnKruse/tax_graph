@@ -21,8 +21,8 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## BALL
 
-**BALL: JOHN - M20-S89 ACCEPTED at `d2a077f`. S90 is PROPOSED under Current round and needs your
-gate before the Worker picks it up.**
+**BALL: WORKER - M20-S90 IMPLEMENTED and committed locally. S90 is under Current round awaiting
+Architect acceptance and one live provider row.**
 
 **THE GATE IS GONE AND NOTHING REGRESSED.** Against the S81 temperature-0 baseline, all **64** rows
 that derived or repaired then still do - checked row by row, not by count. **Coverage 64 -> 139 of
@@ -196,8 +196,8 @@ resolve now, and whether they resolve to the RIGHT line is unreviewed.
 
 ## Current round
 
-**M20-S90 PROPOSED BY ARCHITECT (2026-08-08), AWAITING JOHN. A FACE THAT NAMES ANOTHER FORM IS A
-REFERENCE, NOT AN INPUT.**
+**M20-S90 IMPLEMENTED BY WORKER (2026-08-08), AWAITING ARCHITECT ACCEPTANCE. A FACE THAT NAMES
+ANOTHER FORM IS A REFERENCE, NOT AN INPUT.**
 
 **THE TARGET STATE.** A printed line whose own face says "from Form 8863, line 8" derives an
 operand pointing at that document and line - or, when the document is outside the corpus, a named
@@ -218,6 +218,25 @@ line whose face names an out-of-corpus document must produce a NAMED FINDING, ne
 **OUT OF SCOPE.** The 11 errored rows, including the 5 no arm ever recovered. Still queued: the
 run-together instruction headings (`**Line 2dDepletion**`); artifact-pinned test counts measured
 against untracked `.cache/raw` files.
+
+**WORKER IMPLEMENTATION.** `validate_cell_output` now raises the named
+`external_reference_as_input` finding when a `REQUIRE_INPUT` expression is paired with form-face
+source wording naming another form, schedule, or worksheet. Source cues are `from`, `shown on`,
+and `reported on`; output wording such as `also enter on Schedule 3` is not treated as a source.
+The prompt now directs the model to emit a cross-document operand, including an unknown canonical
+document id so the existing unresolved-external path can fail closed with a named finding. The
+real S89 run was read as source evidence: exactly 12 `model_stated_input` rows match this guard.
+
+**S90 TEST EVIDENCE.** RAN:
+`$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp_codex'; .venv\Scripts\python.exe -m pytest tests/test_derive_cells_m20.py -q`
+-> **72 passed, 1 warning**. RAN:
+`$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp_codex'; .venv\Scripts\python.exe -m pytest tests/test_m20_s31.py -q`
+-> **8 passed, 1 warning**. RAN:
+`$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp_codex'; .venv\Scripts\python.exe -m pytest tests/test_candidate_regeneration_m20.py tests/test_run_summary_m20.py -q`
+-> **8 passed, 1 warning**. RAN `.venv\Scripts\python.exe tools\check_ascii.py`
+-> **ASCII check OK**. The warnings are the known permission failure writing the pre-existing
+`.pytest_cache`. **NOT RUN: live provider derivation** - this changes the prompt and validator
+contract; it must be verified in a network-capable context with at least one row deriving.
 
 ## Standing operational notes
 
@@ -338,6 +357,10 @@ known permission failure writing the pre-existing `.pytest_cache`; no provider r
 was performed, per pilot rules.
 
 ## Open for Architect
+
+**S90 acceptance is open:** fixture and provider-free evidence is green, but the live provider leg
+is NOT RUN. Verify that the 12 S89 input rows are repaired into cross-document operands or named
+unresolved-reference findings, with no silent `REQUIRE_INPUT` result.
 
 **S89 is accepted; its items are cleared. The record is `d2a077f` and the BALL block.**
 

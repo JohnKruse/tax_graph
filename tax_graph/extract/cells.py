@@ -821,6 +821,14 @@ def validate_cell_output(
             or str(direct_require_input_args[0].get("form")).strip().lower() == current_form
         )
     )
+    if is_require_input:
+        for reference in _form_face_source_references(row):
+            hard.append(
+                CellValidationIssue(
+                    "external_reference_as_input",
+                    f"form face cites {reference}; REQUIRE_INPUT is reserved for filer-supplied values",
+                )
+            )
     for operand in operands:
         operand_node = str(operand.get("node") or "").strip()
         operand_form = str(operand.get("form") or "").strip().lower()
@@ -1691,6 +1699,49 @@ def _evidence_span_text(row: CellRecord) -> str:
     if isinstance(values, Mapping):
         values = (values,)
     return " ".join(str(item.get("text") or "") for item in values if isinstance(item, Mapping))
+
+
+_FORM_FACE_SOURCE_REFERENCE_RE = re.compile(
+    r"\b(?:from|shown\s+on|reported\s+on)\s+(?:the\s+)?"
+    r"(?P<kind>form|schedule)\s+(?P<name>[0-9]+[a-z]?(?:-[a-z0-9]+)?|[a-z][a-z0-9-]*)",
+    re.IGNORECASE,
+)
+_WORKSHEET_FACE_SOURCE_REFERENCE_RE = re.compile(
+    r"\bfrom\s+(?:the\s+)?(?P<name>[^.;:!?]{1,120}?\bworksheet)\b",
+    re.IGNORECASE,
+)
+
+
+def _form_face_source_references(row: CellRecord) -> list[str]:
+    """Return other form, schedule, or worksheet sources named on the face.
+
+    The form face is the exact evidence layer for this decision.  Only source
+    wording is considered: ``from`` and ``shown on`` identify where a value
+    comes from, while wording such as ``also enter on Schedule 3`` describes
+    an output destination and must not turn a filer input into a false finding.
+    The current document is excluded so a form title or same-form reference
+    cannot trigger the cross-form guard.  Named worksheets are included because
+    they are document inputs with the same fail-closed treatment.
+    """
+    current = re.sub(r"_[0-9]{4}$", "", row.form.strip().lower())
+    references: list[str] = []
+    seen: set[str] = set()
+    for match in _FORM_FACE_SOURCE_REFERENCE_RE.finditer(row.form_face_text):
+        kind = match.group("kind").lower()
+        name = match.group("name").lower().replace("-", "_")
+        document_stem = f"{kind}_{name}"
+        if document_stem == current or document_stem in seen:
+            continue
+        seen.add(document_stem)
+        references.append(f"{kind.title()} {match.group('name')}")
+    for match in _WORKSHEET_FACE_SOURCE_REFERENCE_RE.finditer(row.form_face_text):
+        display = " ".join(match.group("name").split())
+        key = f"worksheet_{display.lower()}"
+        if key in seen:
+            continue
+        seen.add(key)
+        references.append(f"Worksheet {display}")
+    return references
 
 
 def _unique_issues(issues: Iterable[CellValidationIssue]) -> list[CellValidationIssue]:

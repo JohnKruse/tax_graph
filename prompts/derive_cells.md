@@ -14,6 +14,12 @@ inventory is invalid even if the named document happens to exist elsewhere.
 Include the whole rule, including any floor or cap stated by the instructions.
 For SUBTRACT and DIVIDE, put the value being reduced first. If this line is not
 computed, use REQUIRE_INPUT with one line operand naming itself.
+REQUIRE_INPUT is only for a value the filer supplies from their own records or
+directly enters on this line. If the form face says the value comes from another
+form, schedule, or worksheet, emit a cross-document operand instead of
+REQUIRE_INPUT. If that source is outside the document inventory, still emit its
+canonical form or schedule id so validation can fail closed with a named
+unresolved-reference finding; never hide the reference by calling it input.
 
 Conditional operations have positional meanings. IF_ELSE takes exactly four
 arguments: condition amount, threshold amount, when_true value, and when_false

@@ -916,6 +916,122 @@ def test_properties_allow_explicit_cross_form_and_warn_on_quote_omission() -> No
     assert result.validation_report["validator_warnings_by_kind"] == {}
 
 
+def test_require_input_is_rejected_when_form_face_names_external_source() -> None:
+    row = {
+        **_frame()[0],
+        "line": "20",
+        "label": "Amount from Schedule 3",
+        "form_face_text": "Amount from Schedule 3, line 8",
+        "instruction_text": "",
+        "metadata": {"printed_lines": ["20"]},
+    }
+    client = FakeClient([
+        {
+            "expression": {
+                "op": "REQUIRE_INPUT",
+                "args": [{"line": "20"}],
+            },
+            "quote": row["form_face_text"],
+        },
+        {
+            "expression": {
+                "op": "COPY",
+                "args": [{"form": "schedule_3_2025", "line": "8"}],
+            },
+            "quote": row["form_face_text"],
+        },
+    ])
+
+    result = derive_cells(
+        CellFrame.from_rows([row]),
+        "<<line>>",
+        "secret",
+        client=client,
+        reference_inventory={
+            "document_ids": ["form_1040_2025", "schedule_3_2025"],
+            "printed_lines": {"schedule_3_2025": ["8"]},
+            "node_ids": [],
+        },
+    )
+
+    assert result.rows[0].status == "repaired"
+    assert result.rows[0].expression == {
+        "op": "COPY",
+        "args": [{"form": "schedule_3_2025", "line": "8"}],
+    }
+    assert result.validation_report["validator_failures_by_kind"] == {
+        "external_reference_as_input": 1,
+    }
+    assert "external_reference_as_input" in client.calls[1]["prompt"]
+
+
+def test_require_input_guard_does_not_treat_output_destination_as_source() -> None:
+    row = {
+        **_frame()[0],
+        "line": "11",
+        "form_face_text": "Enter the smaller amount here and also enter it on Schedule 3 (Form 1040), line 2.",
+        "instruction_text": "",
+        "metadata": {"printed_lines": ["11"]},
+    }
+
+    hard, _warnings = validate_cell_output(
+        CellFrame.from_rows([row]).rows[0],
+        {"op": "REQUIRE_INPUT", "args": [{"line": "11"}]},
+        row["form_face_text"],
+    )
+
+    assert [issue.kind for issue in hard] == []
+
+
+@pytest.mark.parametrize(
+    ("form", "face", "references"),
+    (
+        (
+            "form_1040_2025",
+            "Child tax credit or credit for other dependents from Schedule 8812",
+            ("Schedule 8812",),
+        ),
+        (
+            "form_1040_2025",
+            "American opportunity credit from Form 8863, line 8",
+            ("Form 8863",),
+        ),
+        (
+            "form_6251_2025",
+            "If filing Schedule A (Form 1040), enter the taxes from Schedule A, line 7; otherwise, enter the amount from Form 1040 or 1040-SR, line 12e",
+            ("Schedule A", "Form 1040"),
+        ),
+        (
+            "form_6251_2025",
+            "Enter the amount from line 4 of the Qualified Dividends and Capital Gain Tax Worksheet in the Instructions for Form 1040",
+            ("Worksheet",),
+        ),
+    ),
+)
+def test_require_input_guard_names_real_form_face_sources(
+    form: str,
+    face: str,
+    references: tuple[str, ...],
+) -> None:
+    row = {
+        **_frame()[0],
+        "form": form,
+        "line": "2a",
+        "form_face_text": face,
+        "instruction_text": "",
+        "metadata": {"printed_lines": ["2a"]},
+    }
+
+    hard, _warnings = validate_cell_output(
+        CellFrame.from_rows([row]).rows[0],
+        {"op": "REQUIRE_INPUT", "args": [{"line": "2a"}]},
+        face,
+    )
+
+    assert [issue.kind for issue in hard] == ["external_reference_as_input"] * len(references)
+    assert all(reference in issue.message for reference, issue in zip(references, hard))
+
+
 def test_named_unseen_form_reference_mints_unresolved_external_node() -> None:
     # S74 keeps the unresolved payload but now fail-closes the row because the
     # document id is outside the explicit inventory.
