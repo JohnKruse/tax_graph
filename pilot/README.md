@@ -1,6 +1,32 @@
 # Review panel pilot
 
 This standalone pilot projects a real candidate workspace into one self-contained HTML file.
+
+## M20-S88 context arms
+
+`context_arms.py` measures the S88 hypothesis without changing the production selector,
+instruction sectioner, or graph writer. It sends the same printed-anchor denominator through
+three context packets:
+
+- Arm A: the current line-owned instruction section.
+- Arm B: that section plus a deterministic eight-line buffer in both directions.
+- Arm C: a deterministic twelve-line raw-text window around the printed line heading, with no
+  section lookup.
+
+All three arms bypass the selector only in the pilot copy of each row. The report records the
+original selector decision, context provenance, model telemetry, returned quote, and status.
+The fixed scoring set is the 32 formulas named in the M20-S88 handoff. Recovery is reported
+first, followed by regressions, quote ownership, and cost.
+
+Run the live pilot from a configured local clone with prior reports supplied for regression
+comparison:
+
+```text
+.venv\Scripts\python.exe pilot\context_arms.py --output C:\tmp\m20_s88 --baseline C:\tmp\m20_s81_run --baseline C:\tmp\m20_s81_rest
+```
+
+The output is a measurement artifact only: `m20_s88_context_arms.yaml` is not a draft and is
+not eligible for promotion.
 It preserves every printed anchor from the source derivation reports. The panel is one full-width
 column: the lossless Tree is followed by the same expression flattened as Math. Source layers
 remain separate - label, form face, and instruction page - inside each panel's expandable evidence

@@ -184,6 +184,31 @@ resolve now, and whether they resolve to the RIGHT line is unreviewed.
 
 ## Current round
 
+**WORKER STARTED M20-S88 (2026-08-08).** Added the isolated pilot at
+`pilot/context_arms.py` with pilot-only tests and README instructions. It clones the production
+cell frame, admits all printed anchors only in the clone, and measures A (line section), B
+(section plus eight-line buffers), and C (twelve-line raw heading regions). It does not change
+the selector, cue list, sectioner, CLI, graph, or promoted artifacts.
+
+**CONTEXT-ONLY EVIDENCE.** RAN:
+`$env:PYTHONDONTWRITEBYTECODE='1'; @' ... '@ | .venv\Scripts\python.exe -` -> **157 anchors per
+arm; 471 arm rows total**. Per document: 1040 A 42 sections / B 42 buffered / C 50 raw regions;
+2441 A 20 / B 20 / C 15; 6251 A 24 / B 24 / C 34. The remainder correctly reports no
+instruction context and still reaches the model in the pilot frame.
+
+**WORKER TEST EVIDENCE.** RAN:
+`$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp_codex'; $env:PYTHONDONTWRITEBYTECODE='1'; .venv\Scripts\python.exe -m pytest pilot -q`
+-> **43 passed, 1 warning in 26.43s**. RAN:
+`.venv\Scripts\python.exe tools\check_ascii.py` -> **ASCII check OK**. The warning is the
+known ACL failure writing the pre-existing repository `.pytest_cache`; it does not affect test
+results.
+
+**LIVE PROVIDER CANARY.** NOT RUN to completion: the bounded Form 1040 arm-A command was started
+twice with C:\tmp output and failed immediately on ACLs, then started from a writable workspace
+path and hung in the configured OpenRouter transport with no output; it was terminated before
+the 600-second cap. The full three-arm measurement needs a network-capable context and remains
+unverified. No provider report, draft, graph, or promoted artifact was written.
+
 **M20-S88 SPECCED BY ARCHITECT (2026-08-08). CONTEXT A/B: REGION PLUS BUFFERS, MODEL SELECTS.**
 **PILOT ROUND** - exploratory, so it lives in `pilot/`, its tests stay out of `tests/`, and it wires
 nothing into the CLI. It is a MEASUREMENT, not a pipeline change. **Do not change the selector, the
