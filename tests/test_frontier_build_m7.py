@@ -17,7 +17,11 @@ def _copy_frontier_root(tmp_path: Path) -> Path:
     root = tmp_path / "project"
     shutil.copytree(ROOT / "graph", root / "graph", ignore=shutil.ignore_patterns("_drafts"))
     shutil.copytree(ROOT / "schemas", root / "schemas")
-    shutil.copytree(ROOT / "config", root / "config")
+    shutil.copytree(
+        ROOT / "config",
+        root / "config",
+        ignore=shutil.ignore_patterns("tax-graph.config.yaml"),
+    )
     shutil.copytree(ROOT / "data", root / "data")
     _copy_required_drafts(root)
     return root

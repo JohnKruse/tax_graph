@@ -262,6 +262,135 @@ instruction text and judges.
 you plant deliberately, and a full suite at the known 20. Part B: 83 classified, a miss rate per
 document, and the instruction text quoted for every miss.
 
+**M20-S87 WORKER EVIDENCE (2026-08-08).** Part A implementation is complete; acceptance is held
+on the explicit John decision to remove the local decoy.
+
+- `tax_graph/config.py` now resolves only `<root>/tax-graph.config.yaml`; the `config/` fallback
+  is gone. If a stale `config/tax-graph.config.yaml` exists, the loader raises
+  `ModelConfigurationError` naming both the unloaded and loaded paths.
+- All config-writing fixtures now write the root-level file. Config-directory copies ignore the
+  developer-only decoy, so an ignored local file cannot enter a hermetic project. README and the
+  example config now name the root-level path.
+- RAN: `.venv\Scripts\python.exe -m pytest tests\test_config.py -q` -> **8 passed, 1 warning in
+  0.07s**. RAN: `.venv\Scripts\python.exe tools\check_ascii.py` -> **ASCII check OK**.
+- RAN: `.venv\Scripts\python.exe -m pytest tests\test_batch_extraction_m10.py tests\test_extract_m4.py tests\test_extract_outline_m4.py tests\test_nversion_m8.py tests\test_schedule_d_extraction_m9.py -q`
+  -> **55 passed, 2 failed, 2 warnings in 83.60s**. The two failures are the known ACL copy
+  failure in `test_nversion_m8` and the pre-existing Schedule D prompt expectation.
+- RAN: the full impacted fixture command over the 20 changed test files -> **109 passed, 26
+  failed, 2 warnings in 277.52s**. Two failures are the new intentional guard in the root-based
+  CLI tests while the local decoy remains; the rest are the known ACL/missing-fixture baseline.
+  The full suite is **NOT RUN** because the local decoy must be removed before the guard can permit
+  root-based commands.
+- `git diff --check` -> clean. No promoted graph, draft, or provider artifact was changed.
+
+**OPEN FOR JOHN - LOCAL FILE DECISION.** `C:\Users\devbox\projects\tax_graph\config\tax-graph.config.yaml`
+  is present and is now correctly rejected as an unloaded path. Please delete that local file;
+  it is ignored and contains the decoy settings. After deletion, rerun the full suite and the
+  two root-based CLI tests. No agent deleted it because the round explicitly called this John's
+  local-file decision.
+
+**PART B - 83 selector skips classified from source.** Source basis was the S71 candidate's
+`source_reports` and `C:\tmp\m20_s68_live\m20_s26_*_derive_cells_report.yaml`, checked against the
+acquired form text and instructions at `.cache\raw\2025\`. The audit did not use keyword search to
+decide whether a row was a formula; it read the instruction sentence and the operation it asks
+the filer to perform.
+
+| document | selector skips / printed anchors | missed formulas | miss rate among selector skips |
+| --- | --- | --- | --- |
+| form_1040_2025 | 41 / 59 | 5 | 5 / 41 = 12.2% |
+| form_2441_2025 | 11 / 35 | 2 | 2 / 11 = 18.2% |
+| form_6251_2025 | 31 / 63 | 25 | 25 / 31 = 80.6% |
+| total | 83 / 157 | 32 | 32 / 83 = 38.6% |
+
+The 51 remaining selector rows are inputs. The complete binary classification is:
+
+- Form 1040 inputs: `1a-1i, 2a-2b, 3a-3b, 4a-4b, 5a-5b, 6a, 7a, 8, 10, 12a, 13a-13b, 17,
+  19-20, 23, 25a-25c, 26, 28-31`. Missed formulas: `6b, 12e, 16, 27a, 38`.
+- Form 2441 inputs: `1, 2, 7, 9b, 10, 13, 14, 16, 22`. Missed formulas: `4, 18`.
+- Form 6251 inputs: `2a, 2b, 2e, 2j, 2s, 14`. Missed formulas: `1a, 1b, 2c, 2d, 2f, 2g,
+  2h, 2i, 2k, 2l, 2m, 2n, 2o, 2p, 2q, 2r, 2t, 5, 7, 8, 2, 10, 15, 19, 25`. The denominator
+  entries named `2` and `10` are two geometry fragments of printed Form 6251 line 10; both are
+  counted as selector misses because the underlying line is an add/subtract computation.
+
+**Instruction evidence for every missed formula.** Quotes below are from the acquired raw source;
+the line ranges are source-file line numbers, not hand-authored graph labels.
+
+- Form 1040 line 6b, `.cache\raw\2025\instructions_form_1040_2025.txt:1576-1594`: "Taxable
+  social security benefits. Enter the smaller of line 16 or line 17."
+- Form 1040 line 12e, `...\instructions_form_1040_2025.txt:1680-1705`: "your federal income tax
+  will be less if you take the larger of your standard deduction or itemized deductions" and
+  "To figure your itemized deductions, fill in Schedule A."
+- Form 1040 line 16, `...\instructions_form_1040_2025.txt:1729-1735`: "Include in the total ...
+  all of the following taxes" and "Figure the tax using one of the methods described later."
+- Form 1040 line 27a, `...\instructions_form_1040_2025.txt:1982-1993`: "Follow the steps in the
+  following flowchart" and "Complete the worksheet that applies to you."
+- Form 1040 line 38, `...\instructions_form_1040_2025.txt:3690-3731`: "Line 37 is at least $1,000
+  and it is more than 10%"; "If you choose to figure the penalty yourself, use Form 2210"; and
+  "Enter any penalty on line 38. Add the penalty to any tax due."
+- Form 2441 line 4, `.cache\raw\2025\instructions_form_2441_2025.txt:214-231`: "The amount shown
+  on Form 1040 ... line 1z, minus any amount" and "subtract any deduction" before entering
+  earned income.
+- Form 2441 line 18, `...\instructions_form_2441_2025.txt:312-318`: earned income is "determined
+  in the same way as earned income ... for lines 4 and 5" and excludes line 12 benefits.
+- Form 6251 lines 1a and 1b, `.cache\raw\2025\instructions_form_6251_2025.txt:96-100`: "the
+  difference between line 14 ... and line 37" and "the difference between line 1a ... and line
+  11b".
+- Form 6251 line 2c, `...\instructions_form_6251_2025.txt:116-146`: "Enter ... the difference
+  between line 8 of your AMT Form 4952 and line 8 of your regular tax Form 4952."
+- Form 6251 line 2d, `...\instructions_form_6251_2025.txt:149-154`: "Refigure your depletion
+  deduction for the AMT" and "Enter the difference between the regular tax and AMT deduction."
+- Form 6251 line 2f, `...\instructions_form_6251_2025.txt:158-173`: "Your ATNOLD is limited to
+  90% of the result" and "Enter on line 2f the smaller of the ATNOLD or the ATNOLD limitation."
+- Form 6251 line 2g, `...\instructions_form_6251_2025.txt:177-181`: enter interest "reduced
+  (but not below zero) by any deduction".
+- Form 6251 line 2h, `...\instructions_form_6251_2025.txt:198-200`: "multiply the excluded gain
+  ... by 7% (0.07). Enter the result on line 2h".
+- Form 6251 line 2i, `...\instructions_form_6251_2025.txt:202-207`: "include on line 2i the
+  excess" of FMV "over" the amount paid.
+- Form 6251 line 2k, `...\instructions_form_6251_2025.txt:221-236`: "figure the difference" for
+  each of four items and "Enter on line 2k the combined adjustments".
+- Form 6251 line 2l, `...\instructions_form_6251_2025.txt:256-318`: "Subtract the AMT deduction
+  for depreciation from the regular tax deduction and enter the result."
+- Form 6251 line 2m, `...\instructions_form_6251_2025.txt:322-337`: "Refigure your passive activity
+  gains and losses" and "Enter the difference" between AMT and regular tax.
+- Form 6251 line 2n, `...\instructions_form_6251_2025.txt:353-368`: "Refigure your gains and
+  losses" and "Enter the difference" between AMT and regular tax.
+- Form 6251 line 2o, `...\instructions_form_6251_2025.txt:374-378`: costs "must be capitalized and
+  amortized"; "Enter the difference" between deductions.
+- Form 6251 line 2p, `...\instructions_form_6251_2025.txt:382-388`: use the percentage-of-
+  completion method and "Enter the difference between the AMT and regular tax income."
+- Form 6251 line 2q, `...\instructions_form_6251_2025.txt:392-396`: costs "must be capitalized and
+  amortized"; "Enter the difference" between deductions.
+- Form 6251 line 2r, `...\instructions_form_6251_2025.txt:400-406`: costs "must be amortized" and
+  "Enter the difference between the amount allowed for AMT purposes and the amount allowed for
+  regular tax purposes."
+- Form 6251 line 2t, `...\instructions_form_6251_2025.txt:414-418, 431-435`: "Figure the preference"
+  separately, determine net income using AMT deductions, and apply the 40% exception test.
+- Form 6251 line 5, `...\instructions_form_6251_2025.txt:509-521`: the Exemption Worksheet says
+  "Subtract line 3 from line 2", "Multiply line 4 by 25%", and enter the result on line 5.
+- Form 6251 line 7, `...\instructions_form_6251_2025.txt:558-564`: complete Part III and enter
+  line 40, or "multiply line 6 by 26%" / "multiply line 6 by 28% ... and subtract $4,782".
+- Form 6251 line 8, `...\instructions_form_6251_2025.txt:566-711`: "You will figure the AMTFTC"
+  under limitation rules and "Enter on Form 6251, line 8, the amount from line 35" of the AMT
+  Form 1116.
+- Form 6251 line 10 (anchors `2` and `10`), form face
+  `.cache\raw\2025\form_6251_2025.txt:90-94` and instructions
+  `...\instructions_form_6251_2025.txt:729-740`: "Add Form 1040 ... and Schedule 2" then
+  "Subtract from the result Schedule 3"; the instructions also require refiguring Schedule J tax.
+- Form 6251 line 15, form face `.cache\raw\2025\form_6251_2025.txt:113-116` and instructions
+  `...\instructions_form_6251_2025.txt:746-785`: complete AMT worksheets and use their amounts
+  to complete lines 13, 14, and 15; the form says "add lines 13 and 14" and enter the smaller
+  result when applicable.
+- Form 6251 lines 19 and 25, form face `.cache\raw\2025\form_6251_2025.txt:124-128, 142-148`:
+  "Enter" the amount selected by filing status. This is a status-keyed lookup operation, not a
+  copied source value; the corresponding instruction path for Form 1040-NR is at
+  `...\instructions_form_6251_2025.txt:830-846`.
+
+The missed-cue evidence is therefore semantic and reusable: subtract/difference, add/combine,
+smaller/larger, multiply, excess-over, refigure, reduced-by/floor, worksheet, penalty, AMT credit,
+Part III branch, and filing-status lookup. The result is evidence for replacing the substring
+selector with a source-grounded classification stage; no cue list was widened in S87.
+
 ## Standing operational notes
 
 **WORKER COMPLETION (2026-08-08; M20-S84 implementation, awaiting Architect acceptance).** The

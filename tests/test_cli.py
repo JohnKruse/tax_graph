@@ -53,10 +53,14 @@ def test_expression_agreement_command_writes_report(tmp_path, capsys):
 
 def _copy_acquire_root(tmp_path):
     root = tmp_path / "project"
-    shutil.copytree(ROOT / "config", root / "config")
+    shutil.copytree(
+        ROOT / "config",
+        root / "config",
+        ignore=shutil.ignore_patterns("tax-graph.config.yaml"),
+    )
     shutil.copyfile(
         root / "config" / "tax-graph.config.example.yaml",
-        root / "config" / "tax-graph.config.yaml",
+        root / "tax-graph.config.yaml",
     )  # hermetic: never inherit the developer's gitignored local config
     shutil.copytree(ROOT / "schemas", root / "schemas")
     return root

@@ -1,4 +1,4 @@
-# Tax Graph - one-stop tuning. Copy to `config/tax-graph.config.yaml` (gitignored) and edit.
+# Tax Graph - one-stop tuning. Copy to `tax-graph.config.yaml` (gitignored) and edit.
 # This file is the single place to change behavior without touching code:
 # prompts, model/provider, API keys, paths, rate limits, thresholds.
 #

@@ -30,7 +30,7 @@ def test_form_1040_spine_computes_taxable_income_on_yaml_and_sqlite(tmp_path):
     shutil.copytree(ROOT / "graph", build_root / "graph", ignore=shutil.ignore_patterns("_drafts"))
     shutil.copytree(ROOT / "schemas", build_root / "schemas")
     (build_root / "config").mkdir()
-    (build_root / "config" / "tax-graph.config.yaml").write_text("", encoding="utf-8")
+    (build_root / "tax-graph.config.yaml").write_text("", encoding="utf-8")
     build_sqlite("2025", root=build_root)
     sqlite_result = Engine(Graph(2025, root=build_root, source="sqlite")).execute(facts)
 
@@ -70,7 +70,11 @@ def test_form_1040_spine_validate_and_frontier_build_are_green(tmp_path):
     root = tmp_path / "project"
     shutil.copytree(ROOT / "graph", root / "graph")
     shutil.copytree(ROOT / "schemas", root / "schemas")
-    shutil.copytree(ROOT / "config", root / "config")
+    shutil.copytree(
+        ROOT / "config",
+        root / "config",
+        ignore=shutil.ignore_patterns("tax-graph.config.yaml"),
+    )
     shutil.copytree(ROOT / "data", root / "data")
 
     registry = build_frontier_registry("2025", root=root).registry

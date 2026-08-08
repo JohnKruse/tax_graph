@@ -31,7 +31,11 @@ def test_qdcgt_worksheet_trace_matches_expected_on_yaml_and_sqlite(tmp_path):
     build_root = tmp_path / "project"
     shutil.copytree(ROOT / "graph", build_root / "graph", ignore=shutil.ignore_patterns("_drafts"))
     shutil.copytree(ROOT / "schemas", build_root / "schemas")
-    shutil.copytree(ROOT / "config", build_root / "config")
+    shutil.copytree(
+        ROOT / "config",
+        build_root / "config",
+        ignore=shutil.ignore_patterns("tax-graph.config.yaml"),
+    )
     shutil.copytree(ROOT / "data", build_root / "data")
     build_sqlite("2025", root=build_root)
     sqlite_result = Engine(Graph(2025, root=build_root, source="sqlite")).execute(facts)

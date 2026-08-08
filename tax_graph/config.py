@@ -10,7 +10,6 @@ import yaml
 
 
 DEFAULT_CONFIG_FILE = "tax-graph.config.yaml"
-CONFIG_DIR_CONFIG_FILE = "config/tax-graph.config.yaml"
 
 
 class ModelConfigurationError(ValueError):
@@ -59,20 +58,19 @@ def project_root() -> Path:
 def default_config_path(root: str | Path | None = None) -> Path:
     """Return the default user configuration path.
 
-    The repository's ignored ``config/`` copy is a legacy fixture location,
-    not a second live developer configuration.  Keep the fallback for copied
-    hermetic project roots, but never select it for the real checkout when the
-    root-level user config is absent.
+    The root-level file is the only live configuration path.  A file with the
+    same name below ``config/`` is a stale copy and must not become an
+    accidental second configuration source.
     """
     base = Path(root) if root is not None else project_root()
     root_config = base / DEFAULT_CONFIG_FILE
-    if root_config.exists():
-        return root_config
-    if base.resolve() == project_root().resolve():
-        return root_config
-    config_dir_config = base / CONFIG_DIR_CONFIG_FILE
-    if config_dir_config.exists():
-        return config_dir_config
+    legacy_config = base / "config" / DEFAULT_CONFIG_FILE
+    if legacy_config.exists():
+        raise ModelConfigurationError(
+            "found an unloaded configuration file at "
+            f"{legacy_config}; Tax Graph loads only {root_config}. "
+            "Move the settings to the root-level file and remove the stale copy."
+        )
     return root_config
 
 

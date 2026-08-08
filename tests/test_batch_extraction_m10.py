@@ -276,10 +276,14 @@ def test_extract_year_full_batch_writes_partial_document_records(tmp_path):
 
 def _make_batch_project(tmp_path: Path, *, manifest_docs: list[dict[str, str]] | None = None) -> Path:
     root = tmp_path / "project"
-    shutil.copytree(ROOT / "config", root / "config")
+    shutil.copytree(
+        ROOT / "config",
+        root / "config",
+        ignore=shutil.ignore_patterns("tax-graph.config.yaml"),
+    )
     shutil.copyfile(
         root / "config" / "tax-graph.config.example.yaml",
-        root / "config" / "tax-graph.config.yaml",
+        root / "tax-graph.config.yaml",
     )
     shutil.copytree(ROOT / "schemas", root / "schemas")
     shutil.copytree(ROOT / "graph", root / "graph", ignore=shutil.ignore_patterns("_drafts"))

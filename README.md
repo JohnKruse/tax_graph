@@ -65,7 +65,7 @@ uv sync --extra llm-openrouter
 Live differential oracle runs are optional and gated. The base suite replays
 committed fixtures offline; a maintainer who wants to invoke OpenTaxSolver
 should install the oracle extra and configure a pinned SourceForge release in
-`config/tax-graph.config.yaml`. The example config pins the 2025 Windows
+`tax-graph.config.yaml`. The example config pins the 2025 Windows
 v23.06 zip and sha256 used by M6:
 
 ```powershell

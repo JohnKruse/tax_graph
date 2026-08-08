@@ -125,7 +125,7 @@ def test_verify_report_rolls_up_metrics(tmp_path, capsys):
         encoding="utf-8",
     )
     (tmp_path / "config").mkdir()
-    shutil.copy(ROOT / "config" / "tax-graph.config.example.yaml", tmp_path / "config" / "tax-graph.config.yaml")
+    shutil.copy(ROOT / "config" / "tax-graph.config.example.yaml", tmp_path / "tax-graph.config.yaml")
 
     assert verify_report_command(year="2025", root=tmp_path) == 0
     out = capsys.readouterr().out
@@ -158,7 +158,7 @@ def test_diff_drafts_detects_added_removed_changed(tmp_path, capsys):
     shutil.copytree(ROOT / "graph", root / "graph", ignore=shutil.ignore_patterns("_drafts", "*.sqlite"))
     shutil.copytree(ROOT / "schemas", root / "schemas")
     (root / "config").mkdir()
-    shutil.copy(ROOT / "config" / "tax-graph.config.example.yaml", root / "config" / "tax-graph.config.yaml")
+    shutil.copy(ROOT / "config" / "tax-graph.config.example.yaml", root / "tax-graph.config.yaml")
 
     draft_dir = root / "graph" / "2025" / "_drafts" / "form_8949_2025"
     draft_dir.mkdir(parents=True)

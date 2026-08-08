@@ -15,15 +15,23 @@ def test_load_config_returns_empty_when_missing(tmp_path):
 
 
 @pytest.mark.m0
-def test_load_config_finds_config_dir_file(tmp_path):
-    config_dir = tmp_path / "config"
-    config_dir.mkdir()
-    (config_dir / "tax-graph.config.yaml").write_text(
+def test_load_config_finds_root_file(tmp_path):
+    (tmp_path / "tax-graph.config.yaml").write_text(
         "llm:\n  provider: openrouter\n",
         encoding="utf-8",
     )
 
     assert load_config(root=tmp_path)["llm"]["provider"] == "openrouter"
+
+
+@pytest.mark.m0
+def test_default_config_path_rejects_unloaded_config_dir_copy(tmp_path):
+    legacy = tmp_path / "config" / "tax-graph.config.yaml"
+    legacy.parent.mkdir()
+    legacy.write_text("llm:\n  provider: openrouter\n", encoding="utf-8")
+
+    with pytest.raises(config_module.ModelConfigurationError, match="unloaded configuration"):
+        config_module.default_config_path(root=tmp_path)
 
 
 @pytest.mark.m0
