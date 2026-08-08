@@ -72,9 +72,8 @@ def test_nversion_agreement_records_corroboration():
         config={
             "llm": {
                 "model": "family-a/model",
+                "micro_model": "family-a/model",
                 "nversion_model": "family-b/model",
-                "vendor_family": "family-a",
-                "nversion_vendor_family": "family-b",
             }
         },
         root=ROOT,
@@ -88,7 +87,7 @@ def test_nversion_agreement_records_corroboration():
         document,
         primary_client=PromptAwareClient(),
         secondary_client=PromptAwareClient(),
-        config={"llm": {"model": "family-a/model", "nversion_model": "family-b/model"}},
+        config={"llm": {"model": "family-a/model", "micro_model": "family-a/model", "nversion_model": "family-b/model"}},
         root=ROOT,
     )
     assert primary_batch.ok
@@ -101,7 +100,7 @@ def test_nversion_disagreement_creates_side_by_side_review_entry():
         document,
         primary_client=PromptAwareClient(),
         secondary_client=PromptAwareClient(swap_subtract_roles=True),
-        config={"llm": {"model": "family-a/model", "nversion_model": "family-b/model"}},
+        config={"llm": {"model": "family-a/model", "micro_model": "family-a/model", "nversion_model": "family-b/model"}},
         root=ROOT,
     )
 
@@ -121,19 +120,19 @@ def test_nversion_provenance_marks_disagreements():
         document,
         primary_client=primary_client,
         secondary_client=secondary_client,
-        config={"llm": {"model": "family-a/model", "nversion_model": "family-b/model"}},
+        config={"llm": {"model": "family-a/model", "micro_model": "family-a/model", "nversion_model": "family-b/model"}},
         root=ROOT,
     )
     agreed_report = run_nversion_extraction(
         document,
         primary_client=PromptAwareClient(),
         secondary_client=PromptAwareClient(),
-        config={"llm": {"model": "family-a/model", "nversion_model": "family-b/model"}},
+        config={"llm": {"model": "family-a/model", "micro_model": "family-a/model", "nversion_model": "family-b/model"}},
         root=ROOT,
     )
     from tax_graph.extract.outline_pipeline import generate_outline_first_drafts
 
-    batch = generate_outline_first_drafts(document, client=PromptAwareClient(), config={"llm": {"model": "family-a/model"}}, root=ROOT)
+    batch = generate_outline_first_drafts(document, client=PromptAwareClient(), config={"llm": {"model": "family-a/model", "micro_model": "family-a/model"}}, root=ROOT)
     disagreed = corroboration_provenance(batch, report)
     agreed = corroboration_provenance(batch, agreed_report)
 

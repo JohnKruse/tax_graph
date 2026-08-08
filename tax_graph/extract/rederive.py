@@ -14,7 +14,7 @@ from typing import Any, Iterable, Mapping
 
 import yaml
 
-from tax_graph.config import get_config_value, load_config, project_root
+from tax_graph.config import get_config_value, load_config, project_root, resolve_llm_model, resolve_llm_seed
 from tax_graph.acquire.manifest import load_manifest
 from tax_graph.extract.cells import (
     CellFrame,
@@ -97,15 +97,10 @@ def rederive_cell(
         prompt,
         api_key,
         client=active_client,
-        model=str(
-            get_config_value(
-                settings,
-                "llm.micro_model",
-                get_config_value(settings, "llm.model", "configured-llm"),
-            )
-        ),
+        model=resolve_llm_model(settings, "micro"),
         provider=str(get_config_value(settings, "llm.provider", "configured-provider")),
         max_tokens=int(get_config_value(settings, "extraction.micro_max_tokens", 4000)),
+        seed=resolve_llm_seed(settings),
         reference_inventory=reference_inventory,
     )
     if not isinstance(result, CellFrame):

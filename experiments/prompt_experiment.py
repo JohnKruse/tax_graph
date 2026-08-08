@@ -32,7 +32,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
-from tax_graph.config import load_config  # noqa: E402
+from tax_graph.config import load_config, resolve_llm_model, resolve_llm_seed  # noqa: E402
 from tax_graph.extract.cells import expression_schema, render  # noqa: E402
 from tax_graph.extract.llm_client import LlmUnavailable, build_llm_client  # noqa: E402
 from tax_graph.extract.instruction_sections import (  # noqa: E402
@@ -221,14 +221,17 @@ def run_form(form: str, data: dict, args, client) -> list[dict]:
             continue
         print(f"  [{i}/{len(rows)}] line {row['line']} ...", flush=True)
         try:
-            res = client.structured_completion(
-                prompt=prompt,
-                schema=schema,
-                model=args.model,
-                max_tokens=args.max_tokens,
-                temperature=None,
-                purpose="experiment_line_formula",
-            )
+            request = {
+                "prompt": prompt,
+                "schema": schema,
+                "model": args.model,
+                "max_tokens": args.max_tokens,
+                "temperature": None,
+                "purpose": "experiment_line_formula",
+            }
+            if getattr(args, "seed", None) is not None:
+                request["seed"] = args.seed
+            res = client.structured_completion(**request)
             payload = getattr(res, "payload", res)
             results.append({**row, "answer": payload, "error": None})
         except LlmUnavailable as exc:
@@ -326,7 +329,8 @@ def main() -> int:
         settings = load_config(root=str(ROOT))
         client = build_llm_client(settings)
         if args.model is None:
-            args.model = str(settings.get("llm", {}).get("model") or "google/gemini-3.6-flash")
+            args.model = resolve_llm_model(settings)
+        args.seed = resolve_llm_seed(settings)
 
     OUT.mkdir(parents=True, exist_ok=True)
     for form in forms:

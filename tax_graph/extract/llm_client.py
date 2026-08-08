@@ -48,6 +48,7 @@ class LlmClient(Protocol):
         max_tokens: int,
         temperature: float | None,
         purpose: str,
+        seed: int | None = None,
     ) -> dict[str, Any]:
         """Return schema-constrained output."""
 
@@ -239,6 +240,7 @@ class AnthropicLlmClient:
         max_tokens: int,
         temperature: float | None,
         purpose: str,
+        seed: int | None = None,
     ) -> dict[str, Any]:
         """Return the input payload of the required strict tool call."""
         tool_name = f"emit_{purpose}"
@@ -379,6 +381,7 @@ class OpenAICompatibleLlmClient:
         max_tokens: int,
         temperature: float | None,
         purpose: str,
+        seed: int | None = None,
     ) -> dict[str, Any]:
         """Return the parsed strict JSON-schema response payload."""
         kwargs: dict[str, Any] = {
@@ -396,6 +399,8 @@ class OpenAICompatibleLlmClient:
         }
         if temperature is not None:
             kwargs["temperature"] = temperature
+        if seed is not None:
+            kwargs["seed"] = seed
         extra_body = dict(self.extra_body)
         if extra_body:
             kwargs["extra_body"] = extra_body

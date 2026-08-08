@@ -58,6 +58,10 @@ def _control_document(tmp_path: Path) -> SourceDocumentInput:
 
 
 def _write_field_map(tmp_path: Path) -> None:
+    (tmp_path / "tax-graph.config.yaml").write_text(
+        "llm:\n  model: mock\n  micro_model: mock\n",
+        encoding="ascii",
+    )
     path = tmp_path / "graph" / "2025" / "field_maps"
     path.mkdir(parents=True)
     (path / "form_1040_2025.yaml").write_text(
@@ -115,7 +119,7 @@ def test_prompt_bench_print_data_is_in_memory_and_reports_matching_span(tmp_path
         document,
         ["control_a"],
         client=client,
-        config={"llm": {"model": "mock"}},
+        config={"llm": {"model": "mock", "micro_model": "mock"}},
         root=tmp_path,
     )
 
@@ -145,7 +149,7 @@ def test_prompt_bench_reports_form_face_citation_rejection(tmp_path: Path) -> No
         document,
         ["control_a"],
         client=client,
-        config={"llm": {"model": "mock"}},
+        config={"llm": {"model": "mock", "micro_model": "mock"}},
         root=tmp_path,
     )[0]
 
@@ -174,7 +178,7 @@ def test_prompt_bench_uses_formula_cell_prompt_path(tmp_path: Path) -> None:
         document,
         ["2"],
         client=client,
-        config={"llm": {"model": "mock"}},
+        config={"llm": {"model": "mock", "micro_model": "mock"}},
         root=ROOT,
     )[0]
 

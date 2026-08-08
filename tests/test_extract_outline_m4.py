@@ -170,7 +170,7 @@ def test_background_policy_calls_only_for_unsupported_and_resolves_identity_in_c
         document,
         spans,
         client=client,
-        config={"llm": {"model": "mock"}},
+        config={"llm": {"model": "mock", "micro_model": "mock"}},
         root=tmp_path,
     )
 
@@ -239,7 +239,7 @@ def test_background_policy_never_falls_back_for_computation_language(tmp_path):
         document,
         spans,
         client=client,
-        config={"llm": {"model": "mock"}},
+        config={"llm": {"model": "mock", "micro_model": "mock"}},
         root=tmp_path,
     )
 
@@ -310,7 +310,7 @@ def test_formula_line_micro_path_is_bounded_and_isolates_failed_cells(tmp_path):
     batch = generate_outline_first_drafts(
         document,
         client=client,
-        config={"extraction": {"micro_max_tokens": 4000}, "llm": {"model": "mock"}},
+        config={"extraction": {"micro_max_tokens": 4000}, "llm": {"model": "mock", "micro_model": "mock"}},
         root=ROOT,
     )
 
@@ -661,7 +661,7 @@ def test_non_formula_micro_path_records_resolved_source_identity(tmp_path):
     batch = generate_outline_first_drafts(
         document,
         client=SourceClient(),
-        config={"extraction": {"micro_max_tokens": 4000}, "llm": {"model": "mock"}},
+        config={"extraction": {"micro_max_tokens": 4000}, "llm": {"model": "mock", "micro_model": "mock"}},
         root=ROOT,
     )
 
@@ -970,7 +970,7 @@ def test_outline_first_mode_routes_and_writes_assembled_drafts(tmp_path):
         config={
             "project": {"paths": {"graph_dir": "graph", "raw_store": ".cache/raw"}},
                 "extraction": {"mode": "outline_first", "expression_mode": "none"},
-            "llm": {"model": "large-model", "micro_model": None, "temperature": 0},
+            "llm": {"model": "large-model", "micro_model": "large-model", "temperature": 0},
         },
     )
 

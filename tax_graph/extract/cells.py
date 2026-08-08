@@ -376,13 +376,14 @@ def derive_cells(
     *,
     client: LlmClient | None = None,
     client_factory: CellClientFactory | None = None,
-    model: str = "configured-llm",
+    model: str | None = None,
     provider: str = "configured-provider",
     operations: Sequence[str] | None = None,
     human_comments: Mapping[str, str] | None = None,
     max_depth: int = 3,
     max_tokens: int = 4000,
     temperature: float | None = None,
+    seed: int | None = None,
     reference_inventory: Mapping[str, Any] | None = None,
 ) -> CellFrame | list[dict[str, Any]]:
     """Derive every cell independently and return a new frame.
@@ -476,14 +477,17 @@ def derive_cells(
         )
         first_failure: tuple[CellValidationIssue, ...] = ()
         try:
-            response = active_client.structured_completion(
-                prompt=rendered_prompt,
-                schema=schema,
-                model=model,
-                max_tokens=max_tokens,
-                temperature=temperature,
-                purpose="tax_graph_cell_derivation",
-            )
+            request: dict[str, Any] = {
+                "prompt": rendered_prompt,
+                "schema": schema,
+                "model": model,
+                "max_tokens": max_tokens,
+                "temperature": temperature,
+                "purpose": "tax_graph_cell_derivation",
+            }
+            if seed is not None:
+                request["seed"] = seed
+            response = active_client.structured_completion(**request)
         except Exception as exc:  # noqa: BLE001 - provider failures stay row-local
             _mark_error(row, f"{type(exc).__name__}: {exc}", provider=provider, model=model)
             report["errored"] += 1
@@ -542,14 +546,17 @@ def derive_cells(
         row.metadata["validation_failures"] = [item.as_dict() for item in first_failure]
         repair_prompt = _repair_prompt(rendered_prompt, row, first_failure)
         try:
-            response = active_client.structured_completion(
-                prompt=repair_prompt,
-                schema=schema,
-                model=model,
-                max_tokens=max_tokens,
-                temperature=temperature,
-                purpose="tax_graph_cell_derivation_repair",
-            )
+            request = {
+                "prompt": repair_prompt,
+                "schema": schema,
+                "model": model,
+                "max_tokens": max_tokens,
+                "temperature": temperature,
+                "purpose": "tax_graph_cell_derivation_repair",
+            }
+            if seed is not None:
+                request["seed"] = seed
+            response = active_client.structured_completion(**request)
             payload = getattr(response, "payload", response)
             if not isinstance(payload, Mapping):
                 raise ValueError("provider returned a non-object payload")
@@ -601,7 +608,7 @@ def _apply_payload(
     *,
     max_depth: int,
     provider: str,
-    model: str,
+    model: str | None,
 ) -> None:
     expression = payload.get("expression")
     quote = payload.get("quote")
@@ -1801,7 +1808,7 @@ def _projection_warnings(
     return findings
 
 
-def _mark_gap(row: CellRecord, issues: Iterable[CellValidationIssue], *, provider: str, model: str) -> None:
+def _mark_gap(row: CellRecord, issues: Iterable[CellValidationIssue], *, provider: str, model: str | None) -> None:
     """Mark a row that failed its one allowed repair as a review gap."""
     _mark_error(row, f"validation gap after one repair: {_format_issues(issues)}", provider=provider, model=model)
     row.status = "error"
@@ -2429,7 +2436,7 @@ def _contains_verbatim(source: str, quote: str) -> bool:
     return normalize(quote) in normalize(source)
 
 
-def _mark_error(row: CellRecord, error: str, *, provider: str, model: str) -> None:
+def _mark_error(row: CellRecord, error: str, *, provider: str, model: str | None) -> None:
     row.status = "error"
     row.error = error
     row.provider = provider

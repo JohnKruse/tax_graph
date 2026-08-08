@@ -5,7 +5,7 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Any
 
-from tax_graph.config import get_config_value
+from tax_graph.config import get_config_value, resolve_llm_model, resolve_llm_seed
 from tax_graph.extract.llm_client import LlmClient, response_telemetry
 from tax_graph.extract.models import DRAFT_KINDS, ID_FIELDS, DraftObject, ExtractionBatch, SourceDocumentInput
 from tax_graph.extract.prompts import assemble_generator_prompt, closed_operations, draft_response_schema
@@ -25,15 +25,19 @@ def generate_drafts(
 ) -> ExtractionBatch:
     """Call the generator model and parse schema-pure draft objects."""
     settings = config or {}
-    model = get_config_value(settings, "llm.model", "configured-llm")
-    response = client.structured_completion(
-        prompt=assemble_generator_prompt(document, config=settings, root=root),
-        schema=draft_response_schema(root=root),
-        model=model,
-        max_tokens=int(get_config_value(settings, "llm.max_tokens", 24000)),
-        temperature=_optional_float(get_config_value(settings, "llm.temperature")),
-        purpose="tax_graph_draft",
-    )
+    model = resolve_llm_model(settings)
+    request: dict[str, Any] = {
+        "prompt": assemble_generator_prompt(document, config=settings, root=root),
+        "schema": draft_response_schema(root=root),
+        "model": model,
+        "max_tokens": int(get_config_value(settings, "llm.max_tokens", 24000)),
+        "temperature": _optional_float(get_config_value(settings, "llm.temperature")),
+        "purpose": "tax_graph_draft",
+    }
+    seed = resolve_llm_seed(settings)
+    if seed is not None:
+        request["seed"] = seed
+    response = client.structured_completion(**request)
     batch = parse_generator_response(response, document=document, model=str(model), root=root)
     complete_expression_roles(batch)
     return batch

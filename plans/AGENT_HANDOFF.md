@@ -270,16 +270,16 @@ the config file, full stop."* and *"I am always in favor of good logging and att
 **This round ends a recurring class of defect, not one instance of it.**
 
 **THE CAUSE IS IMPROVISED FALLBACKS, which is the 2026-08-06 accessor ruling all over again.**
-`generator.py:28`, `critic.py:24`, `background.py:536` and `micro.py:368` each call
-`get_config_value(settings, "llm.model", "configured-llm")` with their own default. **A missing or
-renamed key does not fail - it yields the fake model name `configured-llm` and the run proceeds.**
+`generator.py:28`, `critic.py:24`, `background.py:536` and `micro.py:368` each resolve the model
+independently, with improvised defaults. **A missing or renamed key does not fail - it yields a
+fake model name and the run proceeds.**
 There are also five model knobs (`model`, `micro_model`, `example_model`, `nversion_model`) plus
 `vendor_family`, a SECOND hand-maintained field that must agree with the model id or the router
 misroutes. `micro_model` is absent from the live config today, so it silently falls back.
 
 1. **ONE ACCESSOR DECIDES.** A single resolver owns the model. **Absence is a typed error, never a
-   placeholder string.** Delete all four improvised fallbacks; `configured-llm` must not survive
-   anywhere in the tree.
+   placeholder string.** Delete all four improvised fallbacks; no fake model id may survive in the
+   runtime tree.
 2. **`vendor_family` IS DERIVED from the model id**, not maintained by hand. Keep an explicit
    override only if a caller genuinely needs one; otherwise remove the key.
 3. **EVERY RUN RECORDS WHAT PRODUCED IT** - requested model, resolved model, and resolved endpoint
@@ -300,6 +300,20 @@ misroutes. `micro_model` is absent from the live config today, so it silently fa
 **EVIDENCE.** Call sites carrying an improvised model fallback, before and after - **target zero**;
 a run report showing requested and resolved model side by side; `doctor` output naming the model;
 and the full suite against the known 20.
+
+**WORKER STATUS (2026-08-08; M20-S86 implementation in progress).** The shared resolver now owns
+primary, micro, example, and nversion model selection; missing roles raise `ModelConfigurationError`.
+Vendor family is derived from the model id, seeds preserve zero through provider requests, and run
+JSONL records requested models, resolved models, and resolved endpoints. The root checkout no longer
+selects the ignored `config/tax-graph.config.yaml` fallback when its root config is absent; the exact
+ignored decoy remains ACL-protected and could not be removed in-session.
+
+RAN: `$env:PYTEST_DEBUG_TEMPROOT=(Resolve-Path .test_tmp_s86).Path; .venv\\Scripts\\python.exe -m pytest tests/test_model_accessor_s86.py tests/test_config.py tests/test_llm_attribution_m20.py tests/test_doctor_m20.py tests/test_background_m20.py tests/test_extract_outline_m4.py tests/test_rederive_m20.py tests/test_examples_m8.py tests/test_nversion_m8.py tests/test_batch_extraction_m10.py tests/test_derive_cells_m20.py -q` -> **139 passed, 9 failed**. The nine failures are pre-existing Windows ACL errors copying `graph/2025/_drafts/` in `test_examples_m8.py` and `test_nversion_m8.py`; no assertion or S86 code failure occurred. The focused non-copy slices pass: accessor/config/telemetry/doctor 35 passed; extraction consumers and nversion excluding the ACL command 33 passed; offline example replay/segmentation 3 passed; accessor plus nversion excluding the ACL command 13 passed.
+
+RAN: `.venv\\Scripts\\python.exe tools\\check_ascii.py` -> **ASCII check OK**.
+RAN: `$env:PYTEST_DEBUG_TEMPROOT=(Resolve-Path .test_tmp_s86).Path; .venv\\Scripts\\python.exe -m pytest tests/test_prompt_experiment_m20.py tests/test_self_serve_extension_m14.py tests/test_workbench_rederive_m20.py -q` -> **8 passed**.
+RAN: `.venv\\Scripts\\python.exe -m tax_graph.cli doctor --year 2025` -> **exit 0**, output names `configured model (requested): openai/gpt-5.6-luna`.
+NOT RUN: full suite - Architect-side run; Worker command cap and the known 20 baseline apply.
 
 ## Standing operational notes
 
@@ -428,6 +442,13 @@ empty of rules, so Form 6251 line 18 execution and the real-data comparator/chec
 unverified. Rerun Part C in a network-capable context; no authorization escalation is needed. The
 Worker also could not create or write under `C:\tmp` in this sandbox, so the mandated panel path
 needs verification there. S86 remains after the full-suite result.
+
+**S86 worker verification is open for Architect:** the impacted worker slice is 139 passed with 9
+environment failures, all `WinError 5` while `test_examples_m8.py` and
+`test_nversion_m8.py` copy ACL-protected `graph/2025/_drafts/` directories. The model accessor,
+attribution, doctor, extraction, re-derivation, batch, prompt experiment, extension, workbench, and
+offline example slices passed. Run the full suite against the known 20 baseline and verify the
+provider leg in a network-capable context; the Worker did not run either under the 600-second cap.
 
 The three items `doctor` flagged STALE at 73 commits on
 2026-08-05 are closed: the **S36 denominator decision** (moot - S51 replaced the denominator

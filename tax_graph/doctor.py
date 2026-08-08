@@ -16,7 +16,7 @@ import subprocess
 from typing import Any, Iterable
 
 from tax_graph.acquire.manifest import load_manifest
-from tax_graph.config import get_config_value, load_config, project_root
+from tax_graph.config import get_config_value, load_config, project_root, resolve_llm_model
 from tax_graph.extract.inputs import load_document_input
 from tax_graph.extract.outline import build_outline_tree
 from tax_graph.io.loader import load_yaml
@@ -169,6 +169,7 @@ class DoctorReport:
     artifacts: tuple[DoctorCheck, ...]
     operations: tuple[OperationRow, ...]
     open_items: tuple[OpenItemAge, ...]
+    configured_model: str | None = None
 
     @property
     def problems(self) -> tuple[str, ...]:
@@ -205,6 +206,7 @@ class DoctorReport:
             "artifacts": [item.as_dict() for item in self.artifacts],
             "operations": [item.as_dict() for item in self.operations],
             "open_items": [item.as_dict() for item in self.open_items],
+            "configured_model": self.configured_model,
         }
 
 
@@ -217,6 +219,11 @@ def run_doctor(
     """Run all doctor checks without providers and without writing artifacts."""
     root_path = Path(root).resolve() if root is not None else project_root()
     year_text = str(year)
+    config = load_config(root=root_path)
+    try:
+        configured_model = resolve_llm_model(config)
+    except ValueError:
+        configured_model = None
 
     claims = tuple(_run_claim(claim, root_path, year_text) for claim in CHECKABLE_CLAIMS)
     artifacts = _check_declared_artifacts(root_path, year_text)
@@ -231,6 +238,7 @@ def run_doctor(
         artifacts=artifacts,
         operations=operations,
         open_items=open_items,
+        configured_model=configured_model,
     )
 
 
@@ -239,6 +247,7 @@ def render_doctor_report(report: DoctorReport) -> str:
     lines = [
         "=== doctor ===",
         "provider calls: none",
+        f"configured model (requested): {report.configured_model or 'UNKNOWN'}",
         "exit 0 means no claim is UNKNOWN, no layer disagrees, and no open item is stale.",
         "",
         "=== executable blockers ===",

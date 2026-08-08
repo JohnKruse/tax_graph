@@ -7,7 +7,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
-from tax_graph.config import get_config_value
+from tax_graph.config import derive_vendor_family, resolve_llm_model
 from tax_graph.extract.llm_client import LlmClient
 from tax_graph.extract.models import DraftObject, ExtractionBatch, SourceDocumentInput
 from tax_graph.extract.outline_pipeline import generate_outline_first_drafts
@@ -84,8 +84,8 @@ def run_nversion_extraction(
         secondary=secondary_batch,
         primary_model=_configured_model(primary_config),
         secondary_model=_configured_model(secondary_config),
-        primary_family=str(get_config_value(settings, "llm.vendor_family", "primary")),
-        secondary_family=str(get_config_value(settings, "llm.nversion_vendor_family", "secondary")),
+        primary_family=derive_vendor_family(_configured_model(primary_config)),
+        secondary_family=derive_vendor_family(_configured_model(secondary_config)),
     )
 
 
@@ -195,13 +195,11 @@ def _strip_free_text(value: Any) -> Any:
 
 def _secondary_config(settings: dict[str, Any]) -> dict[str, Any]:
     secondary = deepcopy(settings)
-    nversion_model = get_config_value(settings, "llm.nversion_model")
-    if nversion_model:
-        secondary.setdefault("llm", {})["micro_model"] = nversion_model
-        secondary.setdefault("llm", {})["model"] = nversion_model
+    nversion_model = resolve_llm_model(settings, "nversion")
+    secondary.setdefault("llm", {})["micro_model"] = nversion_model
+    secondary.setdefault("llm", {})["model"] = nversion_model
     return secondary
 
 
 def _configured_model(settings: dict[str, Any]) -> str:
-    model = get_config_value(settings, "llm.micro_model") or get_config_value(settings, "llm.model")
-    return str(model or "configured-llm")
+    return resolve_llm_model(settings)

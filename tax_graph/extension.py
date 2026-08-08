@@ -22,7 +22,7 @@ import yaml
 from tax_graph.acquire.fetch import fetch_manifest_documents
 from tax_graph.acquire.manifest import AcquisitionManifest, ManifestEntry, load_manifest
 from tax_graph.acquire.render import render_source
-from tax_graph.config import get_config_value, load_config, resolve_secret
+from tax_graph.config import get_config_value, load_config, resolve_llm_model, resolve_secret
 from tax_graph.documents import document_class_for
 from tax_graph.extract import extract_document
 from tax_graph.io.loader import (
@@ -178,7 +178,10 @@ def doctor_extension(
     checks: list[DoctorCheck] = []
 
     provider = get_config_value(settings, "llm.provider")
-    model = get_config_value(settings, "llm.model")
+    try:
+        model = resolve_llm_model(settings)
+    except ValueError:
+        model = None
     if provider and model:
         checks.append(DoctorCheck("llm configuration", True, f"provider={provider}, model={model}"))
     else:

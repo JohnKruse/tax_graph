@@ -6,7 +6,7 @@ from pathlib import Path
 import re
 from typing import Any
 
-from tax_graph.config import get_config_value
+from tax_graph.config import get_config_value, resolve_llm_model, resolve_llm_seed
 from tax_graph.extract.llm_client import LlmClient
 from tax_graph.extract.outline import CandidateSpan, OutlineNode
 from tax_graph.extract.observability import llm_call_target
@@ -117,15 +117,19 @@ def extract_formula_plan(
     """Ask one human-shaped formula question and validate its answer."""
     settings = config or {}
     model = _micro_model(settings)
+    request: dict[str, Any] = {
+        "prompt": _table_formula_prompt(outline_node, spans) if table_mode else _formula_prompt(outline_node, spans),
+        "schema": _table_formula_schema(root=root) if table_mode else formula_micro_schema(root=root),
+        "model": model,
+        "max_tokens": _micro_max_tokens(settings),
+        "temperature": _optional_float(get_config_value(settings, "llm.temperature")),
+        "purpose": "tax_graph_micro_formula",
+    }
+    seed = resolve_llm_seed(settings)
+    if seed is not None:
+        request["seed"] = seed
     with llm_call_target(target_cell_id):
-        response = client.structured_completion(
-            prompt=_table_formula_prompt(outline_node, spans) if table_mode else _formula_prompt(outline_node, spans),
-            schema=_table_formula_schema(root=root) if table_mode else formula_micro_schema(root=root),
-            model=model,
-            max_tokens=_micro_max_tokens(settings),
-            temperature=_optional_float(get_config_value(settings, "llm.temperature")),
-            purpose="tax_graph_micro_formula",
-        )
+        response = client.structured_completion(**request)
     validate_formula_plan(response, spans=spans, root=root, outline_node=outline_node)
     return response
 
@@ -200,15 +204,19 @@ def extract_non_formula_source(
     """Ask where a non-computed line gets its value, without requesting ids."""
     settings = config or {}
     model = _micro_model(settings)
+    request: dict[str, Any] = {
+        "prompt": _non_formula_prompt(outline_node, spans),
+        "schema": non_formula_micro_schema(),
+        "model": model,
+        "max_tokens": _micro_max_tokens(settings),
+        "temperature": _optional_float(get_config_value(settings, "llm.temperature")),
+        "purpose": "tax_graph_micro_source",
+    }
+    seed = resolve_llm_seed(settings)
+    if seed is not None:
+        request["seed"] = seed
     with llm_call_target(target_cell_id):
-        response = client.structured_completion(
-            prompt=_non_formula_prompt(outline_node, spans),
-            schema=non_formula_micro_schema(),
-            model=model,
-            max_tokens=_micro_max_tokens(settings),
-            temperature=_optional_float(get_config_value(settings, "llm.temperature")),
-            purpose="tax_graph_micro_source",
-        )
+        response = client.structured_completion(**request)
     validate_non_formula_source(response, spans=spans)
     return response
 
@@ -362,19 +370,15 @@ def _optional_float(value: Any) -> float | None:
 
 
 def _micro_model(settings: dict[str, Any]) -> str:
-    model = get_config_value(settings, "llm.micro_model")
-    if model:
-        return str(model)
-    fallback = get_config_value(settings, "llm.model", "configured-llm")
-    return str(fallback or "configured-llm")
+    return resolve_llm_model(settings, "micro")
 
 
 def _micro_max_tokens(settings: dict[str, Any]) -> int:
     """Return the bounded per-cell response cap.
 
-    The extraction setting is authoritative. The old llm setting remains a
-    compatibility fallback for tests and copied configs, but the default is the
-    M20 canary cap rather than the whole-document response budget.
+    The extraction setting is authoritative. The micro model is an explicit
+    configuration contract, and the default is the M20 canary cap rather than
+    the whole-document response budget.
     """
     value = get_config_value(settings, "extraction.micro_max_tokens")
     if value is None:

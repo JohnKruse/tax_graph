@@ -10,7 +10,7 @@ from typing import Any, Mapping, Sequence
 
 import yaml
 
-from tax_graph.config import get_config_value
+from tax_graph.config import get_config_value, resolve_llm_model, resolve_llm_seed
 from tax_graph.engine import Engine, Graph, load_facts
 from tax_graph.extract.inputs import load_document_input
 from tax_graph.extract.llm_client import LlmClient, build_llm_client
@@ -151,7 +151,13 @@ def mine_examples(
         for block in segment_example_blocks(text, source_document_id=source_document_id):
             if limit is not None and len(examples) >= limit:
                 break
-            mined = _mine_block(block, client=llm_client, graph=graph, model=model)
+            mined = _mine_block(
+                block,
+                client=llm_client,
+                graph=graph,
+                model=model,
+                seed=resolve_llm_seed(settings),
+            )
             if confirm and mined.status == "agreed":
                 mined = _freeze_mined_example(
                     mined,
@@ -209,16 +215,26 @@ def replay_irs_examples(
     return ExampleReplayReport(example_count=example_count, issues=tuple(issues))
 
 
-def _mine_block(block: ExampleBlock, *, client: LlmClient, graph: Graph, model: str) -> MinedExample:
+def _mine_block(
+    block: ExampleBlock,
+    *,
+    client: LlmClient,
+    graph: Graph,
+    model: str,
+    seed: int | None = None,
+) -> MinedExample:
     try:
-        response = client.structured_completion(
-            prompt=_example_prompt(block, graph=graph),
-            schema=_example_schema(),
-            model=model,
-            max_tokens=2000,
-            temperature=0,
-            purpose="tax_graph_example_miner",
-        )
+        request: dict[str, Any] = {
+            "prompt": _example_prompt(block, graph=graph),
+            "schema": _example_schema(),
+            "model": model,
+            "max_tokens": 2000,
+            "temperature": 0,
+            "purpose": "tax_graph_example_miner",
+        }
+        if seed is not None:
+            request["seed"] = seed
+        response = client.structured_completion(**request)
     except Exception as exc:
         return MinedExample(
             block,
@@ -501,14 +517,7 @@ def _facts_from_document(facts_document: Mapping[str, Any]) -> dict[str, Any]:
 
 
 def _example_model(settings: Mapping[str, Any]) -> str:
-    config = dict(settings)
-    model = (
-        get_config_value(config, "llm.example_model")
-        or get_config_value(config, "llm.micro_model")
-        or get_config_value(config, "llm.model")
-        or get_config_value(config, "llm.nversion_model")
-    )
-    return str(model or "configured-llm")
+    return resolve_llm_model(settings, "example")
 
 
 def _example_prompt(block: ExampleBlock, *, graph: Graph) -> str:

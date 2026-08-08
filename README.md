@@ -451,9 +451,10 @@ Provider or routing failures are recorded as explicit unmappable candidates, not
 as agreed examples and not as committed fixtures.
 
 N-version corroboration is gated behind `tax-graph verify nversion`. Configure
-`llm.nversion_model` and `llm.nversion_vendor_family` for a second model family;
-the command reruns outline-first micro-extraction, diffs assembled canonical
-objects by id, and prints side-by-side review entries for disagreements.
+`llm.nversion_model` for a second model family; its vendor family is derived
+from the model id. The command reruns outline-first micro-extraction, diffs
+assembled canonical objects by id, and prints side-by-side review entries for
+disagreements.
 
 ## Compatibility Scripts
 

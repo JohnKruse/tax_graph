@@ -5,7 +5,7 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Any
 
-from tax_graph.config import get_config_value
+from tax_graph.config import get_config_value, resolve_llm_model, resolve_llm_seed
 from tax_graph.extract.llm_client import LlmClient, LlmUnavailable, response_telemetry
 from tax_graph.extract.models import CriticFinding, CriticReport, ExtractionBatch, SourceDocumentInput
 from tax_graph.extract.prompts import assemble_critic_prompt, critic_response_schema
@@ -21,16 +21,20 @@ def critique_drafts(
 ) -> CriticReport:
     """Ask an independent critic to re-derive source facts without generator reasoning."""
     settings = config or {}
-    model = get_config_value(settings, "llm.model", "configured-llm")
+    model = resolve_llm_model(settings)
+    request: dict[str, Any] = {
+        "prompt": assemble_critic_prompt(document, batch=batch, config=settings, root=root),
+        "schema": critic_response_schema(),
+        "model": model,
+        "max_tokens": int(get_config_value(settings, "llm.critic_max_tokens", 8000)),
+        "temperature": _optional_float(get_config_value(settings, "llm.temperature")),
+        "purpose": "tax_graph_critic",
+    }
+    seed = resolve_llm_seed(settings)
+    if seed is not None:
+        request["seed"] = seed
     try:
-        response = client.structured_completion(
-            prompt=assemble_critic_prompt(document, batch=batch, config=settings, root=root),
-            schema=critic_response_schema(),
-            model=model,
-            max_tokens=int(get_config_value(settings, "llm.critic_max_tokens", 8000)),
-            temperature=_optional_float(get_config_value(settings, "llm.temperature")),
-            purpose="tax_graph_critic",
-        )
+        response = client.structured_completion(**request)
     except LlmUnavailable as exc:
         report = _unavailable_critic_report(batch, str(exc))
         apply_critic_report(batch, report)

@@ -17,7 +17,7 @@ from typing import Any
 
 import yaml
 
-from tax_graph.config import get_config_value
+from tax_graph.config import get_config_value, resolve_llm_model, resolve_llm_seed
 from tax_graph.extract.llm_client import LlmClient, is_transient_transport_error, response_telemetry
 from tax_graph.extract.models import LlmCallTelemetry, SourceDocumentInput
 from tax_graph.extract.observability import llm_call_target
@@ -100,15 +100,19 @@ def extract_background_policy(
         raise MicroExtractionError("no deterministic form or instruction evidence for control")
     settings = config or {}
     target = str(field.get("field_name") or "")
+    request: dict[str, Any] = {
+        "prompt": _background_prompt(field, evidence),
+        "schema": background_policy_schema(),
+        "model": _background_model(settings),
+        "max_tokens": _background_max_tokens(settings),
+        "temperature": _optional_float(get_config_value(settings, "llm.temperature")),
+        "purpose": "tax_graph_background_policy",
+    }
+    seed = resolve_llm_seed(settings)
+    if seed is not None:
+        request["seed"] = seed
     with llm_call_target(target):
-        response = client.structured_completion(
-            prompt=_background_prompt(field, evidence),
-            schema=background_policy_schema(),
-            model=_background_model(settings),
-            max_tokens=_background_max_tokens(settings),
-            temperature=_optional_float(get_config_value(settings, "llm.temperature")),
-            purpose="tax_graph_background_policy",
-        )
+        response = client.structured_completion(**request)
     validate_background_policy(response, evidence)
     quote = str(response["quote"])
     citation_span_ids = [
@@ -530,10 +534,7 @@ def _quote_matches(quote: str, source: str) -> bool:
 
 
 def _background_model(settings: dict[str, Any]) -> str:
-    model = get_config_value(settings, "llm.micro_model")
-    if model:
-        return str(model)
-    return str(get_config_value(settings, "llm.model", "configured-llm") or "configured-llm")
+    return resolve_llm_model(settings, "micro")
 
 
 def _background_max_tokens(settings: dict[str, Any]) -> int:

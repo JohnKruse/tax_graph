@@ -160,7 +160,7 @@ def test_mine_examples_command_with_mocked_client_freezes_confirmed_fixture(tmp_
     assert exit_code == 0
     assert "agreed: 1" in captured.out
     assert client.calls[0]["purpose"] == "tax_graph_example_miner"
-    assert client.calls[0]["model"] == "configured-llm"
+    assert client.calls[0]["model"] == "z-ai/glm-5.2"
     assert (fixture_dir / "facts.yaml").exists()
     assert (fixture_dir / "expected.yaml").exists()
     assert (fixture_dir / "provenance.yaml").exists()
@@ -212,7 +212,7 @@ def test_mine_examples_rejects_conflicting_freeze_modes(tmp_path):
             year="2025",
             root=root,
             client=FakeExampleClient(),
-            config={"llm": {"model": "mock-model"}},
+            config={"llm": {"model": "mock-model", "example_model": "mock-model"}},
             confirm=True,
             freeze_agreed=True,
             limit=1,
@@ -229,7 +229,7 @@ def test_mine_examples_records_provider_failure_as_unmappable(tmp_path):
         year="2025",
         root=root,
         client=FailingExampleClient(),
-        config={"llm": {"model": "mock-model"}},
+        config={"llm": {"model": "mock-model", "example_model": "mock-model"}},
         limit=1,
         source="yaml",
     )
@@ -248,7 +248,7 @@ def test_mine_examples_records_actionable_structured_output_error(tmp_path):
         year="2025",
         root=root,
         client=UnsupportedStructuredOutputClient(),
-        config={"llm": {"provider": "openrouter", "require_parameters": "auto"}},
+        config={"llm": {"provider": "openrouter", "model": "mock-model", "example_model": "mock-model", "require_parameters": "auto"}},
         limit=1,
         source="yaml",
     )
@@ -266,7 +266,7 @@ def test_mine_examples_normalizes_runtime_row_shorthand(tmp_path):
         year="2025",
         root=root,
         client=RuntimeRowShorthandClient(),
-        config={"llm": {"model": "mock-model"}},
+        config={"llm": {"model": "mock-model", "example_model": "mock-model"}},
         limit=1,
         source="yaml",
     )
@@ -287,7 +287,7 @@ def test_mine_examples_rewrites_static_row_template_expected_ids(tmp_path):
         year="2025",
         root=root,
         client=StaticRowTemplateIdClient(),
-        config={"llm": {"model": "mock-model"}},
+        config={"llm": {"model": "mock-model", "example_model": "mock-model"}},
         limit=1,
         source="yaml",
     )
@@ -307,7 +307,7 @@ def test_mine_examples_maps_schedule_d_shorthand_aliases_into_table_rows(tmp_pat
         year="2025",
         root=root,
         client=ScheduleDShorthandClient(),
-        config={"llm": {"model": "mock-model"}},
+        config={"llm": {"model": "mock-model", "example_model": "mock-model"}},
         limit=1,
         source="yaml",
     )

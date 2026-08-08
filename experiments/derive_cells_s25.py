@@ -22,7 +22,7 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-from tax_graph.config import get_config_value, load_config
+from tax_graph.config import get_config_value, load_config, resolve_llm_model, resolve_llm_seed
 from tax_graph.acquire.manifest import load_manifest
 from tax_graph.extract.cells import (
     build_reference_inventory,
@@ -137,12 +137,13 @@ def run_real_document(
         prompt,
         None,
         client=client,
-        model=str(get_config_value(config, "llm.micro_model", "configured-llm")),
+        model=resolve_llm_model(config, "micro"),
         provider=str(get_config_value(config, "llm.provider", "configured-provider")),
         # Read from config like generator.py, critic.py, micro.py and background.py
         # already do.  Without this the derivation path silently used the parameter
         # default of None, so llm.temperature never reached the provider.
         temperature=_config_temperature(config),
+        seed=resolve_llm_seed(config),
         reference_inventory=reference_inventory,
     )
     raw_status_counts = Counter(row.status for row in result.rows)

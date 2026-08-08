@@ -127,9 +127,8 @@ def test_extract_year_writes_batch_sidecars_and_schedule_b_table_fixture(tmp_pat
             "llm": {
                 "model": "family-a/mock",
                 "micro_model": "family-a/mock-micro",
+                "example_model": "family-a/mock-micro",
                 "nversion_model": "family-b/mock-micro",
-                "vendor_family": "family-a",
-                "nversion_vendor_family": "family-b",
                 "temperature": 0,
             },
         },
@@ -191,6 +190,7 @@ def test_extract_year_full_batch_writes_partial_document_records(tmp_path):
             "llm": {
                 "model": "family-a/mock",
                 "micro_model": "family-a/mock-micro",
+                "example_model": "family-a/mock-micro",
                 "nversion_model": "family-b/mock-micro",
                 "temperature": 0,
             },

@@ -19,10 +19,8 @@ project:
 llm:
   provider: openrouter           # default: one key, any vendor's model via the OpenRouter gateway (https://openrouter.ai)
   model: "z-ai/glm-5.2"          # pin an exact OpenRouter model id; do not use floating aliases
-  vendor_family: null            # optional telemetry label for the primary model family, e.g. anthropic
-  example_model: null            # optional dedicated model for IRS example mining; falls back to micro_model, then model
+  example_model: "z-ai/glm-5.2"  # explicit model for IRS example mining when enabled
   nversion_model: null           # optional second-family model for verification, e.g. google/gemini-2.5-pro
-  nversion_vendor_family: null   # required by process when nversion_model is used live, e.g. google
   # Optional OpenAI-compatible endpoint override. For provider: openrouter this
   # defaults to the gateway; for provider: openai omit it for OpenAI or set it
   # for Azure, Together, Groq, Fireworks, vLLM, Ollama, or LM Studio.
@@ -41,7 +39,7 @@ llm:
     # not support JSON-schema structured outputs so it fails every row. Do not add
     # Azure as a fallback - a silent failover would cost 10x per call with no signal.
     ignore: null                   # provider slugs excluded from this request
-    allow_fallbacks: null          # set false for a deterministic single-provider route
+    allow_fallbacks: false         # endpoint fallback can ignore sampling pins; fail instead
     quantizations: null            # for example [fp4]
   reasoning_effort: null         # optional OpenRouter reasoning control for capable models, e.g. minimal
   reasoning_exclude: null        # optional: true keeps reasoning tokens out of responses when supported
@@ -54,13 +52,14 @@ llm:
   #    batch composition), so repeated runs can still differ. Prefer invariants that
   #    hold on ANY single run over diffs between two runs.
   #  - The 2026-08-03 concern stands: routed endpoints do not all advertise
-  #    temperature, and provider_routing.allow_fallbacks is true, so a fallback
-  #    endpoint may reject or ignore it. Watch for provider errors after pinning.
+  #    temperature, and provider_routing.allow_fallbacks is false, so a fallback
+  #    endpoint cannot silently ignore the sampling contract. Watch for provider errors after pinning.
   temperature: 0
+  seed: 7                         # optional provider seed; 0 is valid and must be preserved
   strict_schema: true            # require the provider to honor the JSON Schema response contract
   max_tokens: 24000              # leave room for a complete form draft; length is a named failure
   critic_max_tokens: 8000
-  micro_model: null              # optional cheaper/faster model for outline-first micro-extractions
+  micro_model: "z-ai/glm-5.2"    # explicit model for outline-first micro-extractions
   api_key: null                  # leave null; prefer keyring/env below
   api_key_keyring: tax-graph/openrouter
   api_key_env: OPENROUTER_API_KEY

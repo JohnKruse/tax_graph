@@ -11,7 +11,7 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Any
 
-from tax_graph.config import get_config_value
+from tax_graph.config import get_config_value, resolve_llm_seed
 from tax_graph.extract.background import (
     _background_max_tokens,
     _background_model,
@@ -226,14 +226,18 @@ def _call_and_validate(
     response = None
     try:
         with llm_call_target(target_id):
-            response = client.structured_completion(
-                prompt=prompt,
-                schema=schema,
-                model=model,
-                max_tokens=max_tokens,
-                temperature=_temperature(config),
-                purpose=purpose,
-            )
+            request: dict[str, Any] = {
+                "prompt": prompt,
+                "schema": schema,
+                "model": model,
+                "max_tokens": max_tokens,
+                "temperature": _temperature(config),
+                "purpose": purpose,
+            }
+            seed = resolve_llm_seed(config)
+            if seed is not None:
+                request["seed"] = seed
+            response = client.structured_completion(**request)
         validator(response)
     except Exception as exc:
         return response, f"{type(exc).__name__}: {exc}"

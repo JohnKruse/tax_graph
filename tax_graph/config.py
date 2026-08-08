@@ -4,13 +4,25 @@ from __future__ import annotations
 
 import os
 from pathlib import Path
-from typing import Any
+from typing import Any, Mapping
 
 import yaml
 
 
 DEFAULT_CONFIG_FILE = "tax-graph.config.yaml"
 CONFIG_DIR_CONFIG_FILE = "config/tax-graph.config.yaml"
+
+
+class ModelConfigurationError(ValueError):
+    """Raised when a requested LLM model is absent or malformed."""
+
+
+_MODEL_CONFIG_PATHS = {
+    "primary": "llm.model",
+    "micro": "llm.micro_model",
+    "example": "llm.example_model",
+    "nversion": "llm.nversion_model",
+}
 
 
 def project_root() -> Path:
@@ -32,10 +44,18 @@ def project_root() -> Path:
 
 
 def default_config_path(root: str | Path | None = None) -> Path:
-    """Return the default user configuration path."""
+    """Return the default user configuration path.
+
+    The repository's ignored ``config/`` copy is a legacy fixture location,
+    not a second live developer configuration.  Keep the fallback for copied
+    hermetic project roots, but never select it for the real checkout when the
+    root-level user config is absent.
+    """
     base = Path(root) if root is not None else project_root()
     root_config = base / DEFAULT_CONFIG_FILE
     if root_config.exists():
+        return root_config
+    if base.resolve() == project_root().resolve():
         return root_config
     config_dir_config = base / CONFIG_DIR_CONFIG_FILE
     if config_dir_config.exists():
@@ -65,6 +85,51 @@ def get_config_value(config: dict[str, Any], dotted_path: str, default: Any = No
             return default
         value = value[part]
     return value
+
+
+def resolve_llm_model(config: Mapping[str, Any], role: str = "primary") -> str:
+    """Resolve one explicitly configured model without selecting a vendor.
+
+    Model selection is a configuration contract, not a call-site convenience.
+    Each purpose has its own key so a missing or renamed setting fails with a
+    typed error instead of silently changing the model family or emitting a
+    placeholder model id.  The caller may use the primary role explicitly for
+    a purpose that is intentionally run by the primary model.
+    """
+    try:
+        path = _MODEL_CONFIG_PATHS[role]
+    except KeyError as exc:
+        allowed = ", ".join(sorted(_MODEL_CONFIG_PATHS))
+        raise ModelConfigurationError(
+            f"unknown LLM model role {role!r}; expected one of {allowed}"
+        ) from exc
+    value = get_config_value(dict(config), path)
+    if value is None or not str(value).strip():
+        raise ModelConfigurationError(f"{path} is required for LLM role {role}")
+    return str(value).strip()
+
+
+def resolve_llm_seed(config: Mapping[str, Any]) -> int | None:
+    """Resolve the optional provider seed, preserving an explicit zero."""
+    value = get_config_value(dict(config), "llm.seed")
+    if value is None or value == "":
+        return None
+    if isinstance(value, bool):
+        raise ModelConfigurationError("llm.seed must be an integer or null")
+    if isinstance(value, float) and not value.is_integer():
+        raise ModelConfigurationError("llm.seed must be an integer or null")
+    try:
+        return int(value)
+    except (TypeError, ValueError) as exc:
+        raise ModelConfigurationError("llm.seed must be an integer or null") from exc
+
+
+def derive_vendor_family(model: str) -> str:
+    """Derive a stable vendor-family label from a model id."""
+    value = str(model).strip().lstrip("~")
+    if not value:
+        raise ModelConfigurationError("model id must be non-empty")
+    return value.split("/", 1)[0]
 
 
 def resolve_secret(

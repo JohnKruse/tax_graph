@@ -47,7 +47,7 @@ def _config(tmp_path: Path) -> dict:
     prompt = tmp_path / "cells.md"
     prompt.write_text("human: <<human_comment>>\nline: <<line>>", encoding="ascii")
     return {
-        "llm": {"temperature": 0},
+        "llm": {"model": "mock-model", "micro_model": "mock-model", "temperature": 0},
         "extraction": {"prompts": {"cells": str(prompt)}},
     }
 

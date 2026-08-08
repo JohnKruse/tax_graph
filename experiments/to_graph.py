@@ -30,7 +30,7 @@ from prompt_experiment import (  # noqa: E402
     rows_with_instruction_sections,
 )
 from tax_graph.extract.cells import expression_to_graph  # noqa: E402
-from tax_graph.config import load_config  # noqa: E402
+from tax_graph.config import load_config, resolve_llm_model, resolve_llm_seed  # noqa: E402
 from tax_graph.extract.llm_client import build_llm_client  # noqa: E402
 
 # operation -> the reusable rule already in graph/2025/rules/core.yaml
@@ -115,18 +115,22 @@ def main() -> int:
 
     settings = load_config(root=str(ROOT))
     client = build_llm_client(settings)
-    model = args.model or str(settings.get("llm", {}).get("model") or "google/gemini-3.6-flash")
+    model = args.model or resolve_llm_model(settings)
+    seed = resolve_llm_seed(settings)
     schema = expression_schema(data["operations"])
 
     for row in rows:
-        res = client.structured_completion(
-            prompt=build_prompt(args.form, row, hints=True, mode="expr"),
-            schema=schema,
-            model=model,
-            max_tokens=4000,
-            temperature=None,
-            purpose="experiment_to_graph",
-        )
+        request = {
+            "prompt": build_prompt(args.form, row, hints=True, mode="expr"),
+            "schema": schema,
+            "model": model,
+            "max_tokens": 4000,
+            "temperature": None,
+            "purpose": "experiment_to_graph",
+        }
+        if seed is not None:
+            request["seed"] = seed
+        res = client.structured_completion(**request)
         payload = getattr(res, "payload", res)
         tree = payload["expression"]
 

@@ -7,7 +7,7 @@ from pathlib import Path
 import re
 from typing import Any
 
-from tax_graph.config import get_config_value
+from tax_graph.config import get_config_value, resolve_llm_model
 from tax_graph.documents import document_class_for
 from tax_graph.extract.assembly import FormulaAssemblyFinding, _resolve_source_line, assemble_formula_plan
 from tax_graph.extract.background import extract_background_controls
@@ -1573,11 +1573,7 @@ def _span_matches_line_label(node: OutlineNode, span: CandidateSpan) -> bool:
 
 
 def _micro_model(settings: dict[str, Any]) -> str:
-    model = get_config_value(settings, "llm.micro_model")
-    if model:
-        return str(model)
-    fallback = get_config_value(settings, "llm.model", "configured-llm")
-    return str(fallback or "configured-llm")
+    return resolve_llm_model(settings, "micro")
 
 
 def _slug(value: str) -> str:

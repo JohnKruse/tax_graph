@@ -20,7 +20,7 @@ import time
 from typing import Any, Iterator
 import uuid
 
-from tax_graph.config import get_config_value
+from tax_graph.config import get_config_value, resolve_llm_model, resolve_llm_seed
 
 
 _CURRENT_RUN: contextvars.ContextVar["RunLogger | None"] = contextvars.ContextVar(
@@ -76,6 +76,9 @@ class RunLogger:
     known_cost_calls: int = field(default=0, init=False)
     transport_retry_attempts: int = field(default=0, init=False)
     transport_retry_recoveries: int = field(default=0, init=False)
+    requested_models: set[str] = field(default_factory=set, init=False)
+    resolved_models: set[str] = field(default_factory=set, init=False)
+    resolved_endpoints: set[str] = field(default_factory=set, init=False)
     _lock: threading.Lock = field(default_factory=threading.Lock, init=False, repr=False)
 
     def __post_init__(self) -> None:
@@ -96,13 +99,19 @@ class RunLogger:
 
     def start(self) -> None:
         """Write the run-level start record with non-secret resolved settings."""
+        try:
+            requested_model = resolve_llm_model(self.config)
+        except ValueError:
+            requested_model = None
         self.emit(
             "run_start",
             document_id=self.document_id,
             tax_year=str(self.year),
+            requested_model=requested_model,
+            seed=resolve_llm_seed(self.config),
             config={
                 "provider": get_config_value(self.config, "llm.provider"),
-                "model": get_config_value(self.config, "llm.model"),
+                "model": requested_model,
                 "provider_routing": _safe_value(get_config_value(self.config, "llm.provider_routing", {})),
                 "router_metadata": bool(get_config_value(self.config, "llm.router_metadata", True)),
                 "mode": get_config_value(self.config, "extraction.mode", "one_pass"),
@@ -129,6 +138,9 @@ class RunLogger:
                 "transport_retry_attempts": self.transport_retry_attempts,
                 "transport_retry_recoveries": self.transport_retry_recoveries,
             },
+            "requested_models": sorted(self.requested_models),
+            "resolved_models": sorted(self.resolved_models),
+            "resolved_endpoints": sorted(self.resolved_endpoints),
         }
         if error:
             payload["error"] = error
@@ -175,6 +187,13 @@ class RunLogger:
             self.transport_retry_attempts += int(transport_retry_attempts)
             if transport_retry_recovered:
                 self.transport_retry_recoveries += 1
+            self.requested_models.add(str(requested_model))
+            resolved_model = _value(telemetry, "resolved_model")
+            resolved_endpoint = _value(telemetry, "resolved_provider")
+            if resolved_model:
+                self.resolved_models.add(str(resolved_model))
+            if resolved_endpoint:
+                self.resolved_endpoints.add(str(resolved_endpoint))
 
         call: dict[str, Any] = {
             "document_id": document_id,
@@ -183,6 +202,7 @@ class RunLogger:
             "requested_model": requested_model,
             "resolved_model": _value(telemetry, "resolved_model"),
             "resolved_provider": _value(telemetry, "resolved_provider"),
+            "resolved_endpoint": _value(telemetry, "resolved_provider"),
             "prompt_tokens": _value(telemetry, "prompt_tokens"),
             "completion_tokens": _value(telemetry, "completion_tokens"),
             "total_tokens": _value(telemetry, "total_tokens"),
