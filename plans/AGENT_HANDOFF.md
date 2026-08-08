@@ -246,6 +246,34 @@ hidden filing-status decision now that no arrow does.**
 
 ## Standing operational notes
 
+**WORKER COMPLETION (2026-08-08; M20-S84 implementation, awaiting Architect acceptance).** The
+pilot review page now has one full-width Tree and Math column. The retired positional renderer,
+flow-only summary fields, SVG output, moderator-role constant, arrow glyph, and flow-only CSS/data
+are removed from `pilot/review_panel.py`. Tree headers are left aligned, child indentation is
+32px, and informative graph roles remain while position-implied roles stay suppressed. Holes
+render their stored reason: the real cand_s71 workspace reports 83 `selector_no_formula_cue`, 7
+structural, and 2 derivation rows. `--top N` ranks by operation count then operand count and keeps
+the full 157-anchor totals in the summary. Default output is `C:\tmp\m20_s84\review_panel.html`.
+The root `.gitignore` now ignores only `.test_tmp/` and ignores the empty root `tmp/` directory.
+
+**S84 REAL-CORPUS EVIDENCE.** RAN:
+`.venv\Scripts\python.exe pilot\review_panel.py 'C:\Users\devbox\AppData\Local\Temp\claude\C--Users-devbox-projects-tax-graph\6e1d97d0-c72d-4855-a055-e0c64f6224f8\scratchpad\cand_s71' --output C:\tmp\m20_s84\review_panel.html`
+-> **157 anchors; 65 operation rows; operation counts 1: 51, 2: 12, 6: 2; 92 holes; hole reasons
+83 selector_no_formula_cue / 7 structural / 2 derivation; max operands 23**. RAN the same command
+with `--top 14` and `--top 25` -> **14 and 25 rendered operation rows respectively**, with the
+full 157-anchor summary retained. The generated full page has **zero** `flow-svg`, `flow-edge`,
+`MODERATOR_ROLES`, and `<svg` occurrences. Role counts are unchanged from the pre-S84 page, and
+the longest Math line is **392 characters before and after**. Form 6251 line 18 renders as a Tree
+with `threshold`, `key`, and `filing status` present.
+
+**S84 TEST EVIDENCE.** RAN:
+`$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp2'; $env:M20_S73_CANDIDATE='C:\Users\devbox\AppData\Local\Temp\claude\C--Users-devbox-projects-tax-graph\6e1d97d0-c72d-4855-a055-e0c64f6224f8\scratchpad\cand_s71'; .venv\Scripts\python.exe -m pytest pilot\test_review_panel.py -q`
+-> **13 passed, 1 warning**. RAN:
+`$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp2'; $env:M20_S73_CANDIDATE='C:\Users\devbox\AppData\Local\Temp\claude\C--Users-devbox-projects-tax-graph\6e1d97d0-c72d-4855-a055-e0c64f6224f8\scratchpad\cand_s71'; .venv\Scripts\python.exe -m pytest pilot -q`
+-> **34 passed, 1 warning**. RAN `.venv\Scripts\python.exe tools\check_ascii.py`
+-> **ASCII check OK**. The warning is the known permission failure writing the pre-existing
+`.pytest_cache`; no provider run and no full suite were performed, per pilot rules.
+
 **How to rebuild a candidate** - the two commands, in order, because the second is worthless
 without a run from current code:
 

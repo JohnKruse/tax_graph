@@ -1,14 +1,9 @@
-"""Build a self-contained two-column review panel from a candidate workspace.
+"""Build a self-contained Tree and Math review panel from a candidate workspace.
 
 This pilot is a read-only projection of the candidate run.  It joins every
 printed anchor from the source reports to the candidate row, then reads the
 promoted operation, rule, and edge data from the candidate draft.  It does not
 call a provider, write graph artifacts, or assign a human verdict.
-The left column keeps two lossless projections of the promoted graph: a role-labelled
-tree and the same tree flattened into math.  The right column renders the graph as a
-vertical flow.  Positions carry meaning there: values enter from the top, results leave
-from the bottom, and moderators enter from the right.  This is a read-only pilot
-projection; it never calls a provider, writes graph artifacts, or assigns a verdict.
 """
 
 from __future__ import annotations
@@ -30,12 +25,7 @@ except ImportError:
 
 REPORT_SUFFIX = "_derive_cells_report.yaml"
 OUTCOME_STATUSES = {"derived", "repaired", "review_gap", "skipped", "error", "errored"}
-BRANCH_OPERATIONS = frozenset({"IF", "IF_ELSE", "LOOKUP_TABLE", "LOOKUP_BRACKET"})
-MODERATOR_ROLES = frozenset({"threshold", "key", "default", "multiplier", "subtrahend"})
 FORM_LINE_RE = re.compile(r"_root_line_(?P<line>[0-9]+[a-z]?|[a-z])$")
-FLOW_SVG_RE = re.compile(
-    r'<svg[^>]*class="flow-svg"[^>]*width="(?P<width>[0-9.]+)"[^>]*height="(?P<height>[0-9.]+)"'
-)
 
 
 def _text(value: Any) -> str:
@@ -274,7 +264,7 @@ def _target_rules(graph: Mapping[str, Any], node_id: str) -> tuple[list[str], li
 
 
 def _leaf(graph: Mapping[str, Any], node_id: str) -> dict[str, Any]:
-    """Build a flow leaf from a graph node without inventing a label."""
+    """Build a tree leaf from a graph node without inventing a label."""
 
     node = graph["nodes"].get(node_id)
     if not isinstance(node, Mapping):
@@ -304,7 +294,7 @@ def _is_referenced_line(node_id: str) -> bool:
 
 
 def _graph_tree(graph: Mapping[str, Any], node_id: str, stack: tuple[str, ...] = (), *, root: bool = False) -> dict[str, Any]:
-    """Build a graph-shaped expression tree for flow projection."""
+    """Build a graph-shaped expression tree for the review projection."""
 
     if not node_id or node_id in stack:
         return _leaf(graph, node_id)
@@ -370,40 +360,6 @@ def _finding_text(value: Any) -> str:
     return _text(value)
 
 
-def _tree_depth(tree: Mapping[str, Any]) -> int:
-    """Return operation depth, where a leaf has depth zero."""
-
-    if tree.get("kind") != "operation":
-        return 0
-    children = [item.get("tree") for item in tree.get("operands", []) if isinstance(item, Mapping)]
-    depths = [_tree_depth(child) for child in children if isinstance(child, Mapping)]
-    return 1 + (max(depths) if depths else 0)
-
-
-def _has_branch(tree: Mapping[str, Any]) -> bool:
-    """Return whether a graph tree contains a branching operation."""
-
-    if tree.get("kind") != "operation":
-        return False
-    if _text(tree.get("operation")).upper() in BRANCH_OPERATIONS:
-        return True
-    return any(
-        _has_branch(item["tree"])
-        for item in tree.get("operands", [])
-        if isinstance(item, Mapping) and isinstance(item.get("tree"), Mapping)
-    )
-
-
-def _flow_mode(tree: Mapping[str, Any] | None) -> str:
-    """Apply review notation rule 9 to one projected graph tree."""
-
-    if not tree or tree.get("kind") != "operation":
-        return "none"
-    if _has_branch(tree):
-        return "diagram"
-    return "chain" if _tree_depth(tree) > 1 else "none"
-
-
 def _tree_key(tree: Mapping[str, Any]) -> tuple[Any, ...]:
     """Return a structural key used to share repeated operation subtrees."""
 
@@ -422,25 +378,78 @@ def _tree_key(tree: Mapping[str, Any]) -> tuple[Any, ...]:
     return ("operation", _text(tree.get("operation")), operands)
 
 
-def _flow_arrow_count(tree: Mapping[str, Any], seen: set[tuple[Any, ...]] | None = None) -> int:
-    """Count arrows the flow renderer will emit, sharing repeated operations."""
+def _tree_operation_count(tree: Mapping[str, Any]) -> int:
+    """Count operation nodes in the visible expression tree."""
 
     if tree.get("kind") != "operation":
         return 0
-    seen = set() if seen is None else seen
-    key = _tree_key(tree)
-    if key in seen:
-        return 0
-    seen.add(key)
-    return sum(
-        1 + _flow_arrow_count(item["tree"], seen)
+    return 1 + sum(
+        _tree_operation_count(item["tree"])
         for item in tree.get("operands", [])
         if isinstance(item, Mapping) and isinstance(item.get("tree"), Mapping)
     )
 
 
-def build_panel(candidate_root: str | Path) -> dict[str, Any]:
-    """Build all printed-anchor panels from one real candidate workspace."""
+def _tree_operand_count(tree: Mapping[str, Any]) -> int:
+    """Count operands in the visible expression tree."""
+
+    if tree.get("kind") != "operation":
+        return 0
+    return sum(
+        1 + _tree_operand_count(item["tree"])
+        for item in tree.get("operands", [])
+        if isinstance(item, Mapping) and isinstance(item.get("tree"), Mapping)
+    )
+
+
+def _hole_reason(row: Mapping[str, Any]) -> str:
+    """Return the stored primary reason for a row without a generic hole label."""
+
+    review_gap = _text(row.get("review_gap")).strip()
+    if review_gap:
+        if "selector_no_formula_cue" in review_gap:
+            return "selector_no_formula_cue"
+        return review_gap
+    for finding in row.get("findings", []):
+        if isinstance(finding, Mapping) and _text(finding.get("kind")).strip() == "skipped_anchor":
+            return _text(finding.get("message") or finding.get("error")).strip() or "skipped_anchor"
+    return "unclassified_hole"
+
+
+def _hole_category(reason: str) -> str:
+    """Group hole reasons for the corpus summary while retaining the exact row reason."""
+
+    if reason == "selector_no_formula_cue":
+        return "selector_no_formula_cue"
+    if reason.startswith("structure_"):
+        return "structural"
+    return "derivation"
+
+
+def _hole_reason_summary(rows: Iterable[Mapping[str, Any]]) -> dict[str, Any]:
+    """Count exact reasons and the three review-facing reason categories."""
+
+    reasons = Counter(_hole_reason(row) for row in rows if row.get("hole"))
+    categories = Counter(
+        _hole_category(reason)
+        for reason, number in reasons.items()
+        for _ in range(number)
+    )
+    return {
+        "exact": dict(sorted(reasons.items())),
+        "categories": {
+            "selector_no_formula_cue": categories.get("selector_no_formula_cue", 0),
+            "structural": categories.get("structural", 0),
+            "derivation": categories.get("derivation", 0),
+        },
+    }
+
+
+def build_panel(candidate_root: str | Path, *, top: int | None = None) -> dict[str, Any]:
+    """Build printed-anchor data and optionally select the hardest operation rows."""
+
+    if top is not None and top <= 0:
+        raise ValueError("--top must be a positive integer")
 
     root = Path(candidate_root).resolve()
     manifest = _load_yaml(root / "candidate.yaml", default={})
@@ -479,32 +488,31 @@ def build_panel(candidate_root: str | Path) -> dict[str, Any]:
             row = _merge_anchor(document_id, index, anchor, source, candidate)
             projection = _graph_projection(row, graph)
             tree = projection.get("tree") if projection else None
-            mode = _flow_mode(tree)
             row["graph"] = projection
-            row["flow_mode"] = mode
-            row["flow_depth"] = _tree_depth(tree) if isinstance(tree, Mapping) else 0
-            row["flow_arrows"] = _flow_arrow_count(tree) if isinstance(tree, Mapping) else 0
             row["hole"] = projection is None
-            flow_metrics = _flow_metrics(_flow_html(row))
-            row["flow_svg_dimensions"] = flow_metrics["dimensions"]
-            row["moderator_arrows"] = flow_metrics["moderator_arrows"]
-            row["moderator_arrows_without_labels"] = flow_metrics["moderator_arrows_without_labels"]
-            row["node_boxes_overlap_free"] = flow_metrics["node_boxes_overlap_free"]
+            row["hole_reason"] = _hole_reason(row) if row["hole"] else ""
+            row["hole_category"] = _hole_category(row["hole_reason"]) if row["hole"] else ""
+            row["operation_count"] = _tree_operation_count(tree) if isinstance(tree, Mapping) else 0
+            row["operand_count"] = _tree_operand_count(tree) if isinstance(tree, Mapping) else 0
             panels.append(row)
 
-    mode_counts = {mode: sum(item["flow_mode"] == mode for item in panels) for mode in ("diagram", "chain", "none")}
-    flow_arrow_distribution = Counter(
-        item["flow_arrows"]
-        for item in panels
-        if item["flow_mode"] in {"diagram", "chain"}
+    full_panels = panels
+    operation_rows = [row for row in full_panels if row["operation_count"] > 0]
+    operation_distribution = Counter(row["operation_count"] for row in operation_rows)
+    ranked = sorted(
+        enumerate(operation_rows),
+        key=lambda item: (-item[1]["operation_count"], -item[1]["operand_count"], item[0]),
     )
+    for rank, (_, row) in enumerate(ranked, start=1):
+        row["operation_rank"] = rank
+    visible_panels = [row for _, row in ranked[:top]] if top is not None else full_panels
     text_presence = {
-        "caption": sum(item["label"] is not None for item in panels),
-        "instruction": sum(item["instruction"] is not None for item in panels),
-        "operation": sum(item["graph"] is not None for item in panels),
+        "caption": sum(item["label"] is not None for item in full_panels),
+        "instruction": sum(item["instruction"] is not None for item in full_panels),
+        "operation": len(operation_rows),
     }
     text_absence = {
-        key: len(panels) - value for key, value in text_presence.items()
+        key: len(full_panels) - value for key, value in text_presence.items()
     }
     instruction_row_count = sum(item["row_count"] for item in instruction_by_document.values())
     instruction_present = sum(item["present"] for item in instruction_by_document.values())
@@ -514,44 +522,24 @@ def build_panel(candidate_root: str | Path) -> dict[str, Any]:
         "absent": instruction_row_count - instruction_present,
         "documents": instruction_by_document,
     }
-    flow_svg_dimensions = [
-        {
-            "document_id": item["document_id"],
-            "line": item["line"],
-            **item["flow_svg_dimensions"],
-        }
-        for item in panels
-        if isinstance(item.get("flow_svg_dimensions"), Mapping)
-    ]
-    flow_geometry = {
-        "svg_count": len(flow_svg_dimensions),
-        "connector_start_directions_unique": len(flow_svg_dimensions)
-        == sum(1 for item in panels if item.get("flow_svg_dimensions") is not None),
-        "edge_labels_outside_nodes": len(flow_svg_dimensions)
-        == sum(1 for item in panels if item.get("flow_svg_dimensions") is not None),
-        "node_boxes_overlap_free": len(flow_svg_dimensions)
-        == sum(1 for item in panels if item.get("node_boxes_overlap_free") is True),
-        "moderator_arrows": sum(item["moderator_arrows"] for item in panels),
-        "moderator_arrows_without_labels": sum(item["moderator_arrows_without_labels"] for item in panels),
-    }
     return {
-        "schema_version": 1,
+        "schema_version": 2,
         "kind": "review_panel",
         "source_candidate": str(root),
         "year": year,
         "documents": documents,
-        "denominator": len(panels),
-        "holes": sum(1 for item in panels if item["hole"]),
-        "flow_modes": mode_counts,
-        "flow_arrow_distribution": dict(sorted(flow_arrow_distribution.items())),
-        "max_flow_arrows": max(flow_arrow_distribution, default=0),
+        "denominator": len(full_panels),
+        "visible_denominator": len(visible_panels),
+        "top": top,
+        "holes": sum(1 for item in full_panels if item["hole"]),
+        "hole_reasons": _hole_reason_summary(full_panels),
         "text_presence": text_presence,
         "text_absence": text_absence,
         "instruction_coverage": instruction_coverage,
-        "flow_geometry": flow_geometry,
-        "flow_svg_dimensions": flow_svg_dimensions,
+        "operation_distribution": dict(sorted(operation_distribution.items())),
+        "max_operands": max((item["operand_count"] for item in operation_rows), default=0),
         "graph_jargon_nodes": graph_jargon_nodes,
-        "panels": panels,
+        "panels": visible_panels,
     }
 
 
@@ -680,8 +668,8 @@ def _role_is_implied(tree: Mapping[str, Any], index: int, role: str) -> bool:
     return False
 
 
-def _flow_tree_html(tree: Mapping[str, Any], seen: set[tuple[Any, ...]] | None = None) -> str:
-    """Render the lossless tree, retaining only roles not implied by position."""
+def _tree_html(tree: Mapping[str, Any], seen: set[tuple[Any, ...]] | None = None) -> str:
+    """Render the lossless expression tree, retaining informative edge roles."""
 
     seen = set() if seen is None else seen
     if tree.get("kind") != "operation":
@@ -697,444 +685,34 @@ def _flow_tree_html(tree: Mapping[str, Any], seen: set[tuple[Any, ...]] | None =
             continue
         raw_role = _text(operand.get("role")).strip()
         role = "" if _role_is_implied(tree, index, raw_role) else escape(raw_role)
-        child = _flow_tree_html(operand["tree"], seen)
+        child = _tree_html(operand["tree"], seen)
         role_html = f'<span class="tree-role">{role}</span>' if role else ""
-        children.append(
-            f'<div class="tree-edge">{role_html}'
-            f'<span class="tree-arrow">-&gt;</span>{child}</div>'
-        )
+        children.append(f'<div class="tree-edge">{role_html}{child}</div>')
     child_html = f'<div class="tree-children">{"".join(children)}</div>' if children else ""
     return f'<div class="tree-box"><strong>{operation}</strong>{child_html}</div>'
 
 
-def _flow_wrap(text: str, width: int) -> list[str]:
-    """Wrap SVG labels deterministically so geometry matches visible text."""
+def _hole_html(row: Mapping[str, Any]) -> str:
+    """Render a hole with its stored reason and an expected-absence distinction."""
 
-    lines: list[str] = []
-    for paragraph in text.splitlines() or [text]:
-        words = paragraph.split()
-        current = ""
-        for word in words:
-            if current and len(current) + len(word) + 1 > width:
-                lines.append(current)
-                current = word
-            else:
-                current = f"{current} {word}".strip()
-        lines.append(current)
-    return lines or [""]
-
-
-def _flow_operation_label(tree: Mapping[str, Any]) -> str:
-    """Name one flow box without inlining hidden graph identifiers."""
-
-    operation = _text(tree.get("operation")).upper() or "OPERATION"
-    normal = []
-    for item in tree.get("operands", []):
-        if not isinstance(item, Mapping) or not isinstance(item.get("tree"), Mapping):
-            continue
-        role = _text(item.get("role"))
-        if role in MODERATOR_ROLES:
-            continue
-        child = item["tree"]
-        normal.append("amount" if child.get("kind") == "operation" else _leaf_text(child))
-    if operation == "MULTIPLY":
-        return f"multiply: {' * '.join(normal) or 'amount'}"
-    if operation == "SUBTRACT":
-        return f"subtract: {' - '.join(normal) or 'amount'}"
-    if operation == "SUM":
-        return f"sum: {' + '.join(normal) or 'amount'}"
-    if operation == "MAX":
-        return f"max: {', '.join(normal) or 'amount'}"
-    if operation == "MIN":
-        return f"min: {', '.join(normal) or 'amount'}"
-    if operation == "COPY":
-        return normal[0] if normal else "copy"
-    return operation
-
-
-def _lookup_label(tree: Mapping[str, Any], role: str) -> str:
-    """Render a lookup as a table node; its key and variants need no arrows."""
-
-    lines = [role or "lookup table"]
-    for item in tree.get("operands", []):
-        if not isinstance(item, Mapping) or not isinstance(item.get("tree"), Mapping):
-            continue
-        item_role = _text(item.get("role")).strip() or "value"
-        lines.append(f"{item_role}: {_leaf_text(item['tree'])}")
-    return "\n".join(lines)
-
-
-def _flow_svg(row: Mapping[str, Any], tree: Mapping[str, Any]) -> str:
-    """Render a vertical flow with a single right-hand moderator gutter."""
-
-    width = 620.0
-    centre_x = 255.0
-    gutter_x = 455.0
-    node_width = 150.0
-    nodes: list[dict[str, Any]] = []
-    edges: list[dict[str, Any]] = []
-    edge_labels: list[dict[str, Any]] = []
-    node_number = 0
-    vertical_gap = 18.0
-    gutter_next_y = 18.0
-
-    def measured_height(kind: str, label: str, node_width_value: float) -> float:
-        lines = _flow_wrap(label, max(12, int(node_width_value / 7.0)))
-        height = max(42.0, 22.0 + len(lines) * 16.0)
-        if kind == "table":
-            height = max(74.0, height)
-        return height
-
-    def add_node(kind: str, label: str, x: float, y: float, node_width_value: float = node_width) -> dict[str, Any]:
-        nonlocal node_number
-        node_number += 1
-        node_height = measured_height(kind, label, node_width_value)
-        node = {
-            "kind": kind,
-            "label": label,
-            "x": x,
-            "y": y,
-            "width": node_width_value,
-            "height": node_height,
-            "number": node_number,
-        }
-        nodes.append(node)
-        return node
-
-    def centre(node: Mapping[str, Any]) -> float:
-        return float(node["x"]) + float(node["width"]) / 2.0
-
-    def add_edge(
-        start_x: float,
-        start_y: float,
-        end_x: float,
-        end_y: float,
-        *,
-        role: str = "",
-        label_x: float | None = None,
-        label_y: float | None = None,
-    ) -> None:
-        edge = {
-            "start_x": start_x,
-            "start_y": start_y,
-            "end_x": end_x,
-            "end_y": end_y,
-            "role": role,
-        }
-        edges.append(edge)
-        if role:
-            edge_labels.append(
-                {
-                    "x": (start_x + end_x) / 2.0 if label_x is None else label_x,
-                    "y": (start_y + end_y) / 2.0 - 6.0 if label_y is None else label_y,
-                    "text": role,
-                    "role": role,
-                }
-            )
-
-    def add_moderator(parent: Mapping[str, Any], item: Mapping[str, Any]) -> None:
-        nonlocal gutter_next_y
-        child = item["tree"]
-        role = _text(item.get("role")).strip() or "moderator"
-        if child.get("kind") == "operation" and _text(child.get("operation")).upper() in {"LOOKUP_TABLE", "LOOKUP_BRACKET"}:
-            label = _lookup_label(child, role)
-            kind = "table"
-        elif child.get("kind") == "operation":
-            label = _flow_operation_label(child)
-            kind = "box"
-        else:
-            label = _leaf_text(child)
-            kind = "value"
-        moderator_height = measured_height(kind, label, 145.0)
-        preferred_y = float(parent["y"]) + (float(parent["height"]) - moderator_height) / 2.0
-        moderator_y = max(18.0, preferred_y, gutter_next_y)
-        moderator = add_node(kind, label, gutter_x, moderator_y, 145.0)
-        gutter_next_y = moderator["y"] + moderator["height"] + vertical_gap
-        add_edge(
-            moderator["x"],
-            moderator["y"] + moderator["height"] / 2.0,
-            parent["x"] + parent["width"],
-            parent["y"] + parent["height"] / 2.0,
-            role=role,
-            label_x=(moderator["x"] + parent["x"] + parent["width"]) / 2.0,
-            label_y=max(12.0, min(moderator["y"], parent["y"]) - 20.0),
-        )
-
-    def add_inputs(parent: Mapping[str, Any], items: list[Mapping[str, Any]]) -> None:
-        if not items:
-            return
-        input_width = 84.0
-        input_gap = 18.0
-        total_width = len(items) * input_width + max(0, len(items) - 1) * input_gap
-        input_centre = centre(parent)
-        input_centre = min(input_centre, gutter_x - vertical_gap - total_width / 2.0)
-        input_centre = max(input_centre, vertical_gap + total_width / 2.0)
-        start = input_centre - total_width / 2.0
-        input_height = max(
-            measured_height("input", _leaf_text(item["tree"]), input_width)
-            for item in items
-        )
-        input_y = max(18.0, float(parent["y"]) - input_height - vertical_gap)
-        for index, item in enumerate(items):
-            child = item["tree"]
-            input_node = add_node("input", _leaf_text(child), start + index * (input_width + input_gap), input_y, input_width)
-            add_edge(
-                centre(input_node),
-                input_node["y"] + input_node["height"],
-                centre(parent),
-                parent["y"],
-                role="",
-            )
-
-    def operation_order(root: Mapping[str, Any]) -> list[Mapping[str, Any]]:
-        result: list[Mapping[str, Any]] = []
-
-        def visit(node: Mapping[str, Any]) -> None:
-            if node.get("kind") != "operation":
-                return
-            operation = _text(node.get("operation")).upper()
-            if operation in {"LOOKUP_TABLE", "LOOKUP_BRACKET"}:
-                return
-            for item in node.get("operands", []):
-                if not isinstance(item, Mapping) or not isinstance(item.get("tree"), Mapping):
-                    continue
-                if _text(item.get("role")) in MODERATOR_ROLES:
-                    continue
-                visit(item["tree"])
-            result.append(node)
-
-        visit(root)
-        return result
-
-    def place_operation_chain(root: Mapping[str, Any], start_y: float, x: float) -> tuple[dict[str, Any] | None, list[dict[str, Any]]]:
-        order = operation_order(root)
-        if not order:
-            return None, []
-        layout: list[tuple[Mapping[str, Any], str, float, float]] = []
-        previous_bottom = None
-        for operation in order:
-            label = _flow_operation_label(operation)
-            operation_height = measured_height("box", label, node_width)
-            direct_items = [
-                item
-                for item in operation.get("operands", [])
-                if isinstance(item, Mapping)
-                and isinstance(item.get("tree"), Mapping)
-                and _text(item.get("role")) not in MODERATOR_ROLES
-                and item["tree"].get("kind") != "operation"
-            ]
-            direct_height = max(
-                (measured_height("input", _leaf_text(item["tree"]), 84.0) for item in direct_items),
-                default=0.0,
-            )
-            if previous_bottom is None:
-                operation_y = max(float(start_y) + direct_height + vertical_gap, 54.0)
-            else:
-                operation_y = previous_bottom + direct_height + 2.0 * vertical_gap
-            layout.append((operation, label, operation_y, operation_height))
-            previous_bottom = operation_y + operation_height
-        placed: dict[int, dict[str, Any]] = {}
-        for operation, label, operation_y, _ in layout:
-            placed[id(operation)] = add_node("box", label, x, operation_y)
-        for operation in order:
-            parent = placed[id(operation)]
-            normal_items: list[Mapping[str, Any]] = []
-            for item in operation.get("operands", []):
-                if not isinstance(item, Mapping) or not isinstance(item.get("tree"), Mapping):
-                    continue
-                role = _text(item.get("role"))
-                child = item["tree"]
-                if role in MODERATOR_ROLES:
-                    add_moderator(parent, item)
-                elif child.get("kind") == "operation" and id(child) in placed:
-                    child_node = placed[id(child)]
-                    add_edge(centre(child_node), child_node["y"] + child_node["height"], centre(parent), parent["y"], role="")
-                elif child.get("kind") != "operation":
-                    normal_items.append(item)
-            add_inputs(parent, normal_items)
-        return placed.get(id(root)), list(placed.values())
-
-    def branch_child_items(root: Mapping[str, Any]) -> list[tuple[str, Mapping[str, Any]]]:
-        items = [
-            ("when_true", item["tree"])
-            for item in root.get("operands", [])
-            if isinstance(item, Mapping) and _text(item.get("role")) == "when_true" and isinstance(item.get("tree"), Mapping)
-        ]
-        items.extend(
-            ("when_false", item["tree"])
-            for item in root.get("operands", [])
-            if isinstance(item, Mapping) and _text(item.get("role")) == "when_false" and isinstance(item.get("tree"), Mapping)
-        )
-        return items
-
-    root_operation = _text(tree.get("operation")).upper() if tree.get("kind") == "operation" else ""
-    if root_operation in {"LOOKUP_TABLE", "LOOKUP_BRACKET"}:
-        table = add_node("table", _lookup_label(tree, "lookup table"), centre_x - 75.0, 42.0, 190.0)
-        output = add_node("output", _text(row.get("line")) and f"line {_text(row.get('line'))}" or "result", centre_x - 70.0, table["y"] + table["height"] + 54.0, 140.0)
-        add_edge(centre(table), table["y"] + table["height"], centre(output), output["y"])
-    elif root_operation in {"IF", "IF_ELSE"}:
-        operands = [item for item in tree.get("operands", []) if isinstance(item, Mapping) and isinstance(item.get("tree"), Mapping)]
-        condition = next((item for item in operands if _text(item.get("role")) == "condition"), None)
-        threshold = next((item for item in operands if _text(item.get("role")) == "threshold"), None)
-        condition_node = add_node("input", _leaf_text(condition["tree"]) if condition else "condition", centre_x - 60.0, 24.0, 120.0)
-        diamond = add_node("diamond", f"{_leaf_text(condition['tree']) if condition else 'condition'}?", centre_x - 85.0, 142.0, 170.0)
-        add_edge(centre(condition_node), condition_node["y"] + condition_node["height"], centre(diamond), diamond["y"], role="")
-        if threshold is not None:
-            add_moderator(diamond, threshold)
-        branch_roots: list[dict[str, Any]] = []
-        branch_bottoms: list[float] = []
-        branch_specs = branch_child_items(tree)
-        branch_start_y = 326.0
-        next_branch_y = branch_start_y
-        for index, (role, child) in enumerate(branch_specs[:2]):
-            branch_x = 112.0 if index == 0 else 300.0
-            root_node, branch_nodes = place_operation_chain(child, next_branch_y, branch_x)
-            if root_node is None:
-                root_node = add_node("value", _leaf_text(child), branch_x, next_branch_y, 120.0)
-            branch_roots.append(root_node)
-            branch_bottoms.append(max(node["y"] + node["height"] for node in branch_nodes) if branch_nodes else root_node["y"] + root_node["height"])
-            next_branch_y = branch_bottoms[-1] + 2.0 * vertical_gap
-            add_edge(
-                diamond["x"] + (diamond["width"] * 0.35 if index == 0 else diamond["width"] * 0.65),
-                diamond["y"] + diamond["height"],
-                centre(root_node),
-                root_node["y"],
-                role="Yes" if index == 0 else "No",
-                label_y=diamond["y"] + diamond["height"] + 22.0,
-            )
-        output_y = max(branch_bottoms, default=diamond["y"] + diamond["height"]) + 58.0
-        output = add_node("output", _text(row.get("line")) and f"line {_text(row.get('line'))}" or "result", centre_x - 70.0, output_y, 140.0)
-        for branch_root in branch_roots:
-            add_edge(centre(branch_root), branch_root["y"] + branch_root["height"], centre(output), output["y"])
+    reason = _text(row.get("hole_reason")) or "unclassified_hole"
+    category = _text(row.get("hole_category")) or "derivation"
+    if category == "selector_no_formula_cue":
+        detail = "This is an input line; no formula is expected."
+    elif category == "structural":
+        detail = "The source structure did not yield a promotable cell."
     else:
-        root_node, _ = place_operation_chain(tree, 54.0, centre_x - 75.0)
-        if root_node is None:
-            root_node = add_node("value", _leaf_text(tree), centre_x - 75.0, 54.0)
-        output = add_node("output", _text(row.get("line")) and f"line {_text(row.get('line'))}" or "result", centre_x - 70.0, root_node["y"] + root_node["height"] + 54.0, 140.0)
-        add_edge(centre(root_node), root_node["y"] + root_node["height"], centre(output), output["y"])
-
-    directions = []
-    for edge in edges:
-        dx = edge["end_x"] - edge["start_x"]
-        dy = edge["end_y"] - edge["start_y"]
-        direction = (0 if abs(dx) < 0.01 else (1 if dx > 0 else -1), 0 if abs(dy) < 0.01 else (1 if dy > 0 else -1))
-        directions.append((round(edge["start_x"], 2), round(edge["start_y"], 2), direction))
-    if len(directions) != len(set(directions)):
-        raise ValueError("flow connectors share a start point and direction")
-
-    node_overlaps = [
-        (first, second)
-        for index, first in enumerate(nodes)
-        for second in nodes[index + 1 :]
-        if first["x"] < second["x"] + second["width"]
-        and first["x"] + first["width"] > second["x"]
-        and first["y"] < second["y"] + second["height"]
-        and first["y"] + first["height"] > second["y"]
-    ]
-    if node_overlaps:
-        first, second = node_overlaps[0]
-        raise ValueError(
-            "flow node boxes overlap: "
-            f"{first['kind']}#{first['number']} and {second['kind']}#{second['number']}"
-        )
-
-    def label_box(label: Mapping[str, Any]) -> tuple[float, float, float, float]:
-        lines = _flow_wrap(_text(label["text"]), 16)
-        label_width = max(len(line) for line in lines) * 7.0 + 6.0
-        label_height = len(lines) * 15.0
-        return label["x"] - label_width / 2.0, label["y"] - label_height, label_width, label_height
-
-    for label in edge_labels:
-        for _ in range(20):
-            lx, ly, lw, lh = label_box(label)
-            collisions = [
-                node
-                for node in nodes
-                if lx < node["x"] + node["width"]
-                and lx + lw > node["x"]
-                and ly < node["y"] + node["height"]
-                and ly + lh > node["y"]
-            ]
-            if not collisions:
-                break
-            label["y"] -= 20.0
-        else:
-            raise ValueError(f"flow label {label['text']!r} cannot be placed outside node boxes")
-
-    max_y = max(150.0, max(node["y"] + node["height"] for node in nodes) + 36.0)
-
-    def svg_text(x: float, y: float, value: str, *, css_class: str = "flow-svg-label", width_chars: int = 20) -> str:
-        return "".join(
-            f'<text x="{x:g}" y="{y + index * 15:g}" class="{css_class}">{escape(line)}</text>'
-            for index, line in enumerate(_flow_wrap(value, width_chars))
-        )
-
-    parts = [
-        f'<svg class="flow-svg" width="{width:g}" height="{max_y:g}" viewBox="0 0 {width:g} {max_y:g}" role="img" aria-label="Vertical flow diagram" data-connector-starts-unique="true" data-edge-labels-outside-nodes="true" data-moderator-arrows-labelled="true" data-node-boxes-overlap-free="true">',
-        '<defs><marker id="flow-arrowhead" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 z" /></marker></defs>',
-    ]
-    for edge in edges:
-        midpoint_y = (edge["start_y"] + edge["end_y"]) / 2.0
-        route_x = edge["start_x"] if abs(edge["start_x"] - edge["end_x"]) < 0.01 else None
-        if route_x is None:
-            path = f'M {edge["start_x"]:g} {edge["start_y"]:g} C {edge["start_x"]:g} {midpoint_y:g}, {edge["end_x"]:g} {midpoint_y:g}, {edge["end_x"]:g} {edge["end_y"]:g}'
-        else:
-            path = f'M {edge["start_x"]:g} {edge["start_y"]:g} L {edge["end_x"]:g} {edge["end_y"]:g}'
-        css_class = "flow-edge flow-edge-moderator" if edge.get("role") in MODERATOR_ROLES else "flow-edge"
-        parts.append(f'<path class="{css_class}" d="{path}" marker-end="url(#flow-arrowhead)" />')
-    for label in edge_labels:
-        parts.append(svg_text(label["x"], label["y"], _text(label["text"]), css_class="flow-edge-label", width_chars=16))
-    for node in nodes:
-        kind = node["kind"]
-        x, y, node_width_value, node_height = node["x"], node["y"], node["width"], node["height"]
-        css_class = {
-            "table": "flow-svg-table",
-            "input": "flow-svg-input",
-            "output": "flow-svg-output",
-            "value": "flow-svg-input",
-            "diamond": "flow-svg-diamond",
-        }.get(kind, "flow-svg-box")
-        if kind == "diamond":
-            points = f"{x + node_width_value / 2:g},{y:g} {x + node_width_value:g},{y + node_height / 2:g} {x + node_width_value / 2:g},{y + node_height:g} {x:g},{y + node_height / 2:g}"
-            parts.append(f'<polygon class="{css_class}" points="{points}" />')
-            parts.append(svg_text(x + 18.0, y + 23.0, node["label"], width_chars=19))
-        else:
-            parts.append(f'<rect class="{css_class}" x="{x:g}" y="{y:g}" width="{node_width_value:g}" height="{node_height:g}" rx="7" />')
-            parts.append(svg_text(x + 9.0, y + 20.0, node["label"], width_chars=max(12, int(node_width_value / 7.0))))
-    parts.append("</svg>")
-    return "".join(parts)
-
-
-def _flow_html(row: Mapping[str, Any]) -> str:
-    """Render the right-hand positional flow column or its named finding."""
-
-    tree = row.get("graph", {}).get("tree") if isinstance(row.get("graph"), Mapping) else None
-    if not isinstance(tree, Mapping):
-        return '<div class="flow-hole"><strong>No promoted flow.</strong><p>The operation is absent; see the stored finding.</p></div>'
-    return f'<div class="flow-diagram">{_flow_svg(row, tree)}</div>'
-
-
-def _flow_metrics(flow_html: str) -> dict[str, Any]:
-    """Extract declared SVG dimensions and moderator-label evidence."""
-
-    match = FLOW_SVG_RE.search(flow_html)
-    if not match:
-        return {
-            "dimensions": None,
-            "moderator_arrows": 0,
-            "moderator_arrows_without_labels": 0,
-            "node_boxes_overlap_free": False,
-        }
-    return {
-        "dimensions": {"width": float(match.group("width")), "height": float(match.group("height"))},
-        "moderator_arrows": flow_html.count("flow-edge-moderator"),
-        "moderator_arrows_without_labels": 0 if 'data-moderator-arrows-labelled="true"' in flow_html else flow_html.count("flow-edge-moderator"),
-        "node_boxes_overlap_free": 'data-node-boxes-overlap-free="true"' in flow_html,
-    }
+        detail = "The derivation did not produce a promotable operation."
+    return (
+        f'<div class="operation-hole hole-{escape(category)}">'
+        f'<strong>{escape(category.replace("_", " ").title())}</strong>'
+        f'<p class="hole-reason"><code>{escape(reason)}</code></p>'
+        f"<p>{escape(detail)}</p></div>"
+    )
 
 
 def _panel_html(row: Mapping[str, Any]) -> str:
-    """Render one two-column panel with stable metadata for browser inspection."""
+    """Render one full-width panel with stable metadata for browser inspection."""
 
     status = _text(row.get("status")) or "missing"
     hole = "true" if row.get("hole") else "false"
@@ -1143,11 +721,13 @@ def _panel_html(row: Mapping[str, Any]) -> str:
         for title, key in (("Label", "label"), ("Form face", "form_face"), ("Instruction page", "instruction"))
     )
     tree = row.get("graph", {}).get("tree") if isinstance(row.get("graph"), Mapping) else None
-    tree_html = _flow_tree_html(tree) if isinstance(tree, Mapping) else _finding_list(row.get("findings", []))
+    tree_html = _tree_html(tree) if isinstance(tree, Mapping) else _hole_html(row)
     math_html = escape(_math_text(tree)) if isinstance(tree, Mapping) else "No promoted expression."
+    rank = row.get("operation_rank")
+    rank_attribute = "" if rank is None else f' data-operation-rank="{escape(_text(rank), quote=True)}"'
     return (
         f'<article class="review-panel" data-anchor="{escape(_text(row.get("anchor_id")), quote=True)}" '
-        f'data-flow-mode="{escape(_text(row.get("flow_mode")), quote=True)}" data-hole="{hole}">'
+        f'data-hole="{hole}" data-hole-reason="{escape(_text(row.get("hole_reason")), quote=True)}"{rank_attribute}>'
         '<header class="panel-header">'
         f'<h2>{escape(_text(row.get("document_id")))} line {escape(_text(row.get("line")))}</h2>'
         f'<span class="status status-{escape(status)}">{escape(status)}</span>'
@@ -1160,15 +740,21 @@ def _panel_html(row: Mapping[str, Any]) -> str:
         f'<pre class="math-expression">{math_html}</pre>'
         f'<details class="graph-trace"><summary>Graph trace</summary>{_operation_html(row)}</details>'
         '</section>'
-        f'<section class="column flow-column"><h3>Flow</h3>{_flow_html(row)}</section>'
         '</div></article>'
     )
 
 
-def render_html(panel: Mapping[str, Any]) -> str:
-    """Render the complete self-contained two-column review artifact."""
+def _operation_distribution_text(distribution: Mapping[Any, Any]) -> str:
+    """Format the operation-count distribution for a human-readable summary."""
 
-    modes = panel.get("flow_modes") or {}
+    return ", ".join(
+        f"{_text(count)}: {_text(number)}" for count, number in sorted(distribution.items())
+    ) or "none"
+
+
+def render_html(panel: Mapping[str, Any]) -> str:
+    """Render the complete self-contained Tree and Math review artifact."""
+
     presence = panel.get("text_presence") if isinstance(panel.get("text_presence"), Mapping) else {}
     absence = panel.get("text_absence") if isinstance(panel.get("text_absence"), Mapping) else {}
     instruction_coverage = panel.get("instruction_coverage")
@@ -1182,23 +768,27 @@ def render_html(panel: Mapping[str, Any]) -> str:
             if isinstance(item, Mapping):
                 coverage_parts.append(f"{_text(document_id)} {_text(item.get('present', 0))}/{_text(item.get('row_count', 0))}")
     coverage_detail = "; ".join(coverage_parts)
-    geometry = panel.get("flow_geometry") if isinstance(panel.get("flow_geometry"), Mapping) else {}
-    dimensions = panel.get("flow_svg_dimensions") if isinstance(panel.get("flow_svg_dimensions"), list) else []
-    dimension_items = "".join(
-        f'<li>{escape(_text(item.get("document_id")))} line {escape(_text(item.get("line")))}: '
-        f'{escape(_text(item.get("width")))} x {escape(_text(item.get("height")))}</li>'
-        for item in dimensions
-        if isinstance(item, Mapping)
-    )
+    reasons = panel.get("hole_reasons") if isinstance(panel.get("hole_reasons"), Mapping) else {}
+    categories = reasons.get("categories") if isinstance(reasons.get("categories"), Mapping) else {}
+    operation_distribution = panel.get("operation_distribution") if isinstance(panel.get("operation_distribution"), Mapping) else {}
+    top = panel.get("top")
+    visible = panel.get("visible_denominator", len(panel.get("panels") or []))
+    operation_rows = presence.get("operation", 0)
+    if top is None:
+        focus_text = f"showing all {operation_rows} operation rows"
+    else:
+        focus_text = f"showing top {visible} of {operation_rows} operation rows, ranked by operation count then operand count"
     summary = (
         f"{_text(panel.get('denominator'))} printed anchors; {len(panel.get('documents') or [])} documents; "
-        f"{_text(modes.get('diagram', 0))} branching trees / {_text(modes.get('chain', 0))} deeper trees / "
-        f"{_text(modes.get('none', 0))} shallow trees; {_text(panel.get('holes', 0))} named findings; "
+        f"{focus_text}; operation counts {_operation_distribution_text(operation_distribution)}; "
+        f"{_text(panel.get('holes', 0))} holes; "
+        f"hole reasons {categories.get('selector_no_formula_cue', 0)} selector_no_formula_cue / "
+        f"{categories.get('structural', 0)} structural / {categories.get('derivation', 0)} derivation; "
         f"captions {presence.get('caption', 0)} present / {absence.get('caption', 0)} absent; "
         f"instruction rows {presence.get('instruction', 0)} present / {absence.get('instruction', 0)} absent; "
         f"operations {presence.get('operation', 0)} present / {absence.get('operation', 0)} absent; "
         f"candidate instruction coverage {instruction_coverage.get('present', 0)}/{instruction_coverage.get('row_count', 0)} present "
-        f"({coverage_detail})."
+        f"({coverage_detail}); max operands {_text(panel.get('max_operands', 0))}."
     )
     jargon_nodes = panel.get("graph_jargon_nodes") or []
     jargon_html = ""
@@ -1214,7 +804,7 @@ def render_html(panel: Mapping[str, Any]) -> str:
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Generated two-column review panel</title>
+<title>Generated Tree and Math review panel</title>
 <style>
 :root {{ color-scheme: light; font-family: Arial, sans-serif; background: #f3f5f7; color: #18212b; }}
 body {{ margin: 0; padding: 24px; }}
@@ -1239,18 +829,16 @@ main {{ max-width: 1900px; margin: 0 auto; }}
 .source-block h4 {{ margin: 0 0 5px; font-size: .84rem; }}
 pre {{ margin: 0; white-space: pre-wrap; overflow-wrap: anywhere; font: .82rem/1.35 Consolas, monospace; }}
 code {{ overflow-wrap: anywhere; font-family: Consolas, monospace; font-size: .82rem; }}
-.review-columns {{ display: grid; grid-template-columns: minmax(280px, 1fr) minmax(520px, 2fr); gap: 0; }}
+.review-columns {{ display: block; }}
 .column {{ min-width: 0; padding: 14px 16px 18px; }}
-.column + .column {{ border-left: 1px solid #d8dee5; }}
 .column h3 {{ margin: 0 0 12px; font-size: 1rem; }}
 .column h3 + h3 {{ margin-top: 18px; }}
 .tree-expression {{ padding: 10px; border: 1px solid #8795a5; background: #fbfcfd; overflow: auto; }}
 .tree-box {{ display: inline-block; min-width: 125px; padding: 8px; border: 2px solid #40566d; border-radius: 6px; background: #e7f0f8; }}
-.tree-box strong {{ display: block; text-align: center; }}
-.tree-children {{ margin-top: 8px; padding-left: 12px; border-left: 2px solid #9aa7b4; }}
-.tree-edge {{ display: flex; align-items: flex-start; gap: 5px; margin: 7px 0; min-width: max-content; }}
+.tree-box strong {{ display: block; text-align: left; }}
+.tree-children {{ margin-top: 8px; padding-left: 32px; border-left: 2px solid #9aa7b4; }}
+.tree-edge {{ display: flex; align-items: flex-start; gap: 8px; margin: 7px 0; min-width: max-content; }}
 .tree-role {{ color: #18212b; font: .74rem Consolas, monospace; font-weight: bold; }}
-.tree-arrow {{ color: #18212b; font-weight: bold; }}
 .tree-leaf {{ display: inline-flex; min-width: 120px; padding: 7px; border: 1px solid #8795a5; border-radius: 4px; background: white; }}
 .tree-reference {{ padding: 7px; border: 1px dashed #8795a5; background: white; }}
 .math-expression {{ min-height: 52px; padding: 10px; border: 1px solid #8795a5; background: #fbfcfd; }}
@@ -1259,33 +847,25 @@ code {{ overflow-wrap: anywhere; font-family: Consolas, monospace; font-size: .8
 .graph-trace h4 {{ margin: 10px 0 5px; font-size: .84rem; }}
 .graph-trace ul {{ margin: 5px 0; padding-left: 20px; }}
 .graph-trace .operation-hole {{ margin-top: 8px; padding: 8px; border: 2px solid #c13c3c; background: #fff1f1; }}
-.flow-diagram {{ padding: 10px; border: 2px solid #596d82; background: #fbfcfd; overflow: auto; }}
-.flow-hole {{ padding: 12px; border: 2px solid #c13c3c; background: #fff1f1; }}
-.flow-hole strong {{ color: #a32121; }}
-.flow-svg {{ display: block; width: 620px; max-width: none; height: auto; background: white; }}
-.flow-edge {{ fill: none; stroke: #18212b; stroke-width: 1.6; }}
-.flow-edge-moderator {{ stroke-width: 2; }}
-.flow-edge-label {{ fill: #18212b; font: bold 12px Consolas, monospace; paint-order: stroke; stroke: white; stroke-width: 4px; stroke-linejoin: round; }}
-.flow-svg-label {{ fill: #18212b; font: 12px Arial, sans-serif; }}
-.flow-svg-box {{ fill: #e7f0f8; stroke: #18212b; stroke-width: 2; }}
-.flow-svg-input {{ fill: #f3f6f8; stroke: #18212b; stroke-width: 2; }}
-.flow-svg-output {{ fill: #e7f0f8; stroke: #18212b; stroke-width: 2.2; }}
-.flow-svg-table {{ fill: #eef7ee; stroke: #18212b; stroke-width: 2; }}
-.flow-svg-diamond {{ fill: #fff3d1; stroke: #18212b; stroke-width: 2; }}
-.geometry-checks, .svg-dimensions {{ margin-top: 10px; }}
+.operation-hole {{ padding: 12px; border: 2px solid #c13c3c; background: #fff1f1; }}
+.hole-selector_no_formula_cue {{ border-color: #718096; background: #f0f3f6; }}
+.hole-selector_no_formula_cue strong {{ color: #40566d; }}
+.hole-structural {{ border-color: #c78b22; background: #fffaf0; }}
+.hole-structural strong {{ color: #8a5a00; }}
+.hole-derivation strong {{ color: #a32121; }}
+.hole-reason {{ margin: 8px 0; }}
+.operation-shape {{ color: #526171; font-size: .8rem; }}
 .jargon-note {{ margin-top: 8px; }}
 ul {{ margin: 5px 0; padding-left: 20px; }}
 li {{ margin: 4px 0; overflow-wrap: anywhere; }}
-@media (max-width: 1050px) {{ .review-columns {{ grid-template-columns: 1fr; }} .column + .column {{ border-left: 0; border-top: 1px solid #d8dee5; }} .panel-header code {{ margin-left: 0; width: 100%; }} .source-evidence-grid {{ grid-template-columns: 1fr; }} }}
+@media (max-width: 1050px) {{ .panel-header code {{ margin-left: 0; width: 100%; }} .source-evidence-grid {{ grid-template-columns: 1fr; }} }}
 </style>
 </head>
-<body><main data-two-column-layout="true">
-<section class="summary"><h1>Generated two-column review panel</h1>
+<body><main data-tree-math-layout="true">
+<section class="summary"><h1>Generated Tree and Math review panel</h1>
 <p>{escape(summary)}</p>
-<p>Tree and Math occupy the left third; the positional Flow occupies the right two thirds. Values enter from the top, results leave from the bottom, and moderators enter from the right.</p>
-<p class="geometry-checks">Flow SVGs: {escape(_text(geometry.get('svg_count', 0)))}; connector starts and directions: checked; edge labels outside node boxes: checked; moderator arrows: {escape(_text(geometry.get('moderator_arrows', 0)))}; moderator arrows without labels: {escape(_text(geometry.get('moderator_arrows_without_labels', 0)))}. Labels remain explicit when colour is removed.</p>
+<p>Tree and Math are two lossless projections of the promoted expression. The Tree shows containment and informative edge roles; Math flattens the same stored tree.</p>
 {jargon_html}
-<details class="svg-dimensions"><summary>Flow SVG dimensions</summary><ul>{dimension_items or '<li>No flow SVGs were produced.</li>'}</ul></details>
 </section>
 {panels}
 </main></body>
@@ -1296,19 +876,27 @@ li {{ margin: 4px 0; overflow-wrap: anywhere; }}
 def main(argv: list[str] | None = None) -> int:
     """Run the pilot from a candidate workspace path."""
 
-    parser = argparse.ArgumentParser(description="Generate a three-column review panel from a candidate workspace.")
+    parser = argparse.ArgumentParser(description="Generate a Tree and Math review panel from a candidate workspace.")
     parser.add_argument("candidate_root", type=Path)
-    parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument("--output", type=Path, default=Path(r"C:\tmp\m20_s84\review_panel.html"))
+    parser.add_argument("--top", type=int, default=None, help="show the hardest N operation rows")
     args = parser.parse_args(argv)
-    panel = build_panel(args.candidate_root)
+    panel = build_panel(args.candidate_root, top=args.top)
     output = args.output.resolve()
     output.parent.mkdir(parents=True, exist_ok=True)
     output.write_text(render_html(panel), encoding="utf-8", newline="\n")
+    categories = panel["hole_reasons"]["categories"]
+    focus = (
+        f"showing top {panel['visible_denominator']} of {panel['text_presence']['operation']} operation rows"
+        if panel["top"] is not None
+        else f"showing all {panel['text_presence']['operation']} operation rows"
+    )
     print(
-        f"{output}: {panel['denominator']} anchors; "
-        f"{panel['flow_modes']['diagram']} diagrams / "
-        f"{panel['flow_modes']['chain']} chains / "
-        f"{panel['flow_modes']['none']} none; {panel['holes']} holes; "
+        f"{output}: {panel['denominator']} anchors; {focus}; "
+        f"operation counts {_operation_distribution_text(panel['operation_distribution'])}; "
+        f"{panel['holes']} holes; hole reasons "
+        f"{categories['selector_no_formula_cue']} selector_no_formula_cue / "
+        f"{categories['structural']} structural / {categories['derivation']} derivation; "
         f"captions {panel['text_presence']['caption']} present / "
         f"{panel['text_absence']['caption']} absent; "
         f"instruction rows {panel['text_presence']['instruction']} present / "
@@ -1316,7 +904,7 @@ def main(argv: list[str] | None = None) -> int:
         f"candidate instruction coverage {panel['instruction_coverage']['present']}/"
         f"{panel['instruction_coverage']['row_count']} present; "
         f"operations {panel['text_presence']['operation']} present / "
-        f"{panel['text_absence']['operation']} absent"
+        f"{panel['text_absence']['operation']} absent; max operands {panel['max_operands']}"
     )
     return 0
 

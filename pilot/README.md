@@ -1,10 +1,10 @@
 # Review panel pilot
 
 This standalone pilot projects a real candidate workspace into one self-contained HTML file.
-It preserves every printed anchor from the source derivation reports.  The panel has two columns:
-the lossless Tree with the same expression flattened as Math on the left, and a
-vertical Flow on the right.  Source layers remain separate - label, form face, and instruction
-page - inside each panel's expandable evidence block.
+It preserves every printed anchor from the source derivation reports. The panel is one full-width
+column: the lossless Tree is followed by the same expression flattened as Math. Source layers
+remain separate - label, form face, and instruction page - inside each panel's expandable evidence
+block.
 
 All pilot consumers read cell evidence through `pilot/cell_access.py`.  Its `CellText` result uses
 `None` for absent text, so an absent caption cannot fall through to a different source record.
@@ -20,11 +20,10 @@ printing boundary.  A collapsed graph-trace block keeps rule ids, operand node i
 held-back candidate expression available as evidence; a held-back expression is never presented
 as a promoted operation.
 
-The Flow follows review notation rule 11. Values enter from the top, the result leaves from the
-bottom, and moderators enter through one right-hand gutter. Every moderator arrow carries its
-stored edge role as text; colour only reinforces that label. Lookup tables absorb their key and
-variants as rows. Missing promoted operations are red holes with their stored findings. Flow
-output contains no graph node ids.
+Missing promoted operations are visible holes with their stored primary reasons. Input lines with
+``selector_no_formula_cue`` are presented as expected absence, while structural and derivation
+reasons remain actionable. The graph stays unchanged; role suppression happens only at this
+human-facing printing boundary.
 
 The summary's instruction count is the number of printed-anchor panels whose instruction value is
 present through ``cell_access.instruction_section``. Candidate coverage uses the same accessor on
@@ -33,10 +32,9 @@ unique instruction locators: the reviewer needs one answer for whether each row 
 The pilot also reports graph node ids containing the banned ``floor`` term without changing those
 graph artifacts; that vocabulary cleanup belongs to a later pipeline round.
 
-The flow layout measures each visible node before positioning it.  Input siblings receive their
-measured width plus a gap, operation chains use each prior subtree's measured bottom, and the
-moderator gutter reserves the measured height of every attached node.  The renderer fails closed
-if any node boxes overlap and reports ``node_boxes_overlap_free`` in the flow geometry summary.
+The panel can rank operation rows with ``--top N``. Ranking is deterministic: operation count is
+the primary key and operand count breaks ties. The full corpus counts remain in the summary so a
+focused page cannot imply that it contains the whole denominator.
 
 ## M20-S75 instruction parser pilot
 
@@ -105,31 +103,30 @@ fonts, or stylesheets, so this interaction works from `file://`.
 
 The page is a projection only. It does not call a provider or write graph artifacts.
 
-## M20-S82 two-column positional panel
+## Retired M20-S82/M20-S83 positional panel
 
-The review panel is now the selected Rule 11 surface: expandable IRS source evidence, Tree and
-Math in the left third, and a vertical Flow in the right two thirds.  Flow positions are semantic:
-values enter from the top, results leave from the bottom, and threshold, key, default, multiplier,
-and subtrahend moderators enter through one right-hand gutter.  Moderator arrows always carry the
-stored edge role as visible text, so the page remains understandable in grayscale.  The generated
-panel summary reports every flow SVG's declared width and height, connector and label geometry
-checks, and the count of moderator arrows without labels.
+These two pilot surfaces are archived at the annotated tag ``archive/m20-flow-column``. The main
+panel no longer contains their positional projection or geometry metrics.
 
-Run it against a candidate workspace with:
+## M20-S83 tidy-tree geometry and role printing (retired)
 
-    .venv\Scripts\python.exe pilot\review_panel.py C:\path\to\candidate --output C:\tmp\m20_s82_review_panel.html
+S83's measured geometry and role-printing work is preserved in the archive tag. It proved the
+Tree's role suppression invariant before the positional surface was retired.
 
-The S82 pilot uses the candidate workspace as input only.  It does not call a provider or write
-graph artifacts.
+## M20-S84 full-width Tree and Math panel
 
-## M20-S83 tidy-tree geometry and role printing
+The Tree is the sole graphic projection. Math remains directly beneath it, both at full width.
+Operation headers are left justified, child indentation is 32px per level, and no arrow glyph is
+inserted before a child. The panel keeps every graph edge role in data and prints only roles that
+are not already determined by operation and operand position.
 
-S83 keeps the S82 two-column surface and moderator gutter, but makes flow coordinates depend on
-measured node extent.  It reports the node-box invariant alongside connector and edge-label checks.
-The Tree and Math projections suppress only ``addend``, ``minuend``, ``subtrahend``, ``multiplier``,
-and ``multiplicand`` where the operation and operand position already state the role.  Lookup keys,
-bands, thresholds, conditions, branch roles, and any future unrecognized role remain visible.
+Holes retain their stored reason. The real cand_s71 corpus reports 83
+``selector_no_formula_cue`` rows, 7 structural rows, and 2 derivation gaps across 157 anchors.
+The CLI reports the operation distribution (51 one-operation rows, 12 two-operation rows, and 2
+six-operation rows) and accepts ``--top N`` to render only the ranked operation rows while keeping
+the full corpus totals in the summary.
 
-Run it against a candidate workspace with:
+Run it against a candidate workspace as:
 
-    .venv\Scripts\python.exe pilot\review_panel.py C:\path\to\candidate --output C:\tmp\m20_s83_review_panel.html
+    .venv\Scripts\python.exe pilot\review_panel.py C:\path\to\candidate --output C:\tmp\m20_s84\review_panel.html
+    .venv\Scripts\python.exe pilot\review_panel.py C:\path\to\candidate --output C:\tmp\m20_s84\top25.html --top 25

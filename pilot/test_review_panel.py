@@ -1,4 +1,4 @@
-"""Tests for the generated two-column review panel pilot.
+"""Tests for the generated Tree and Math review panel pilot.
 
 These tests intentionally exercise the real M20-S68 candidate workspace.  A
 toy graph would not prove that the panel preserves the 157-anchor denominator,
@@ -9,9 +9,8 @@ from __future__ import annotations
 
 import os
 from pathlib import Path
-import re
 
-from review_panel import _flow_tree_html, _math_text, build_panel, main, render_html
+from review_panel import _math_text, _tree_html, build_panel, main, render_html
 
 
 CANDIDATE = Path(
@@ -38,13 +37,19 @@ def _by_anchor(panel: dict, document_id: str, line: str) -> dict:
     return matches[0]
 
 
-def test_real_candidate_preserves_all_anchors_and_reports_flow_split() -> None:
+def test_real_candidate_preserves_all_anchors_and_reports_hole_reasons() -> None:
     panel = _real_panel()
 
     assert panel["denominator"] == 157
     assert panel["documents"] == ["form_1040_2025", "form_2441_2025", "form_6251_2025"]
-    assert sum(panel["flow_modes"].values()) == 157
     assert panel["holes"] == 92
+    assert panel["hole_reasons"]["categories"] == {
+        "selector_no_formula_cue": 83,
+        "structural": 7,
+        "derivation": 2,
+    }
+    assert panel["operation_distribution"] == {1: 51, 2: 12, 6: 2}
+    assert panel["max_operands"] == 23
     assert panel["text_presence"] == {"caption": 8, "instruction": 84, "operation": 65}
     assert panel["text_absence"] == {"caption": 149, "instruction": 73, "operation": 92}
     assert panel["instruction_coverage"] == {
@@ -74,22 +79,21 @@ def test_operation_projection_keeps_rule_and_edge_roles() -> None:
     assert lookup["graph"]["rule_ids"] == ["rule_form_2441_2025_root_line_8_candidate"]
     assert lookup["graph"]["operands"][0]["role"] == "key"
     assert lookup["graph"]["operands"][0]["node_id"] == "form_2441_2025_root_line_7"
-    assert lookup["flow_mode"] == "diagram"
 
     subtract = _by_anchor(panel, "form_1040_2025", "15")
     assert subtract["graph"]["operation"] == "MAX"
     assert [item["role"] for item in subtract["graph"]["operands"]] == ["candidate", "candidate"]
-    assert subtract["flow_mode"] == "chain"
+    assert subtract["operation_count"] == 2
 
 
-def test_flow_stops_at_referenced_lines_and_reports_arrow_size() -> None:
+def test_operation_ranking_counts_visible_tree_nodes_and_operands() -> None:
     panel = _real_panel()
     refund = _by_anchor(panel, "form_1040_2025", "34")
     tree = refund["graph"]["tree"]
 
-    assert refund["flow_arrows"] == 6
-    assert panel["max_flow_arrows"] == 17
-    assert panel["flow_arrow_distribution"] == {4: 9, 5: 2, 6: 1, 16: 2, 17: 1}
+    assert refund["operation_count"] == 2
+    assert refund["operand_count"] == 6
+    assert panel["max_operands"] == 23
     assert tree["operands"][0]["tree"] == {
         "kind": "reference",
         "node_id": "form_1040_2025_root_line_33",
@@ -115,7 +119,7 @@ def test_repeated_operation_subtrees_render_once_then_as_reference() -> None:
         ],
     }
 
-    html = _flow_tree_html(tree)
+    html = _tree_html(tree)
 
     assert html.count("<strong>MIN</strong>") == 1
     assert html.count("same expression as above") == 1
@@ -134,7 +138,7 @@ def test_role_printing_suppresses_only_positionally_implied_roles() -> None:
     }
 
     assert _math_text(tree) == "SUM(line 1, future_role=line 2)"
-    rendered = _flow_tree_html(tree)
+    rendered = _tree_html(tree)
     assert 'class="tree-role">addend</span>' not in rendered
     assert 'class="tree-role">future_role</span>' in rendered
 
@@ -161,21 +165,26 @@ def test_skipped_anchor_keeps_candidate_instruction_evidence() -> None:
     assert row["graph"] is None
 
 
-def test_rendered_html_has_two_lossless_columns_and_named_holes() -> None:
+def test_rendered_html_has_full_width_tree_math_and_named_holes() -> None:
     html = render_html(_real_panel())
 
     assert html.count('<article class="review-panel"') == 157
     assert html.count('<section class="column expression-column">') == 157
-    assert html.count('<section class="column flow-column">') == 157
-    assert 'data-two-column-layout="true"' in html
-    assert "Generated two-column review panel" in html
+    assert 'data-tree-math-layout="true"' in html
+    assert "Generated Tree and Math review panel" in html
+    assert "Generated two-column review panel" not in html
     assert "Generated three-column review panel" not in html
     assert "source-column" not in html
     assert "operation-column" not in html
-    assert 'data-flow-mode="diagram"' in html
-    assert 'data-flow-mode="chain"' in html
+    assert "flow-svg" not in html
+    assert "flow-edge" not in html
+    assert "MODERATOR_ROLES" not in html
+    assert "<svg" not in html
+    assert "tree-arrow" not in html
     assert 'data-hole="true"' in html
-    assert "No promoted flow." in html
+    assert "No promoted flow." not in html
+    assert "selector_no_formula_cue" in html
+    assert "hole reasons 83 selector_no_formula_cue / 7 structural / 2 derivation" in html
     assert "LOOKUP_TABLE arguments must be named leaf operands with a role" in html
     assert "form_2441_2025_zero_floor" in html
     assert "captions 8 present / 149 absent" in html
@@ -185,17 +194,6 @@ def test_rendered_html_has_two_lossless_columns_and_named_holes() -> None:
     assert "form_2441_2025 18/33" in html
     assert "form_6251_2025 24/61" in html
     assert "instruction sections 17 present" not in html
-    flow_columns = re.findall(
-        r'<section class="column flow-column">(.*?)</section>',
-        html,
-        flags=re.DOTALL,
-    )
-    assert len(flow_columns) == 157
-    assert all("form_1040_2025_root_line_33" not in section for section in flow_columns)
-    assert all("form_1040_2025_zero_floor" not in section for section in flow_columns)
-    assert all('data-edge-labels-outside-nodes="true"' in section or "No promoted flow." in section for section in flow_columns)
-    assert all('data-node-boxes-overlap-free="true"' in section or "No promoted flow." in section for section in flow_columns)
-    assert all("flow-edge-moderator" not in section or "flow-edge-label" in section for section in flow_columns)
     assert "Graph terminology to report (not changed)" in html
 
     line_18_start = html.index('data-anchor="form_6251_2025#anchor=41:line=18"')
@@ -207,17 +205,13 @@ def test_rendered_html_has_two_lossless_columns_and_named_holes() -> None:
     assert "119550" in line_18
 
 
-def test_flow_geometry_is_reported_and_moderator_roles_are_textual() -> None:
-    panel = _real_panel()
+def test_hole_reasons_are_rendered_as_expected_or_actionable_states() -> None:
+    html = render_html(_real_panel())
 
-    assert panel["flow_geometry"]["svg_count"] == 65
-    assert panel["flow_geometry"]["connector_start_directions_unique"] is True
-    assert panel["flow_geometry"]["edge_labels_outside_nodes"] is True
-    assert panel["flow_geometry"]["node_boxes_overlap_free"] is True
-    assert panel["flow_geometry"]["moderator_arrows"] > 0
-    assert panel["flow_geometry"]["moderator_arrows_without_labels"] == 0
-    assert len(panel["flow_svg_dimensions"]) == 65
-    assert all(item["width"] == 620.0 and item["height"] > 0 for item in panel["flow_svg_dimensions"])
+    assert 'data-hole-reason="selector_no_formula_cue"' in html
+    assert "This is an input line; no formula is expected." in html
+    assert "structure_header_anchor" in html
+    assert "validation gap after one repair" in html
 
 
 def test_real_candidate_keeps_informative_roles_and_drops_redundant_tags() -> None:
@@ -228,9 +222,30 @@ def test_real_candidate_keeps_informative_roles_and_drops_redundant_tags() -> No
         assert f'class="tree-role">{role}</span>' in html
 
 
+def test_top_limits_visible_panels_but_keeps_corpus_summary() -> None:
+    panel = build_panel(CANDIDATE, top=14)
+
+    assert panel["denominator"] == 157
+    assert panel["visible_denominator"] == 14
+    assert len(panel["panels"]) == 14
+    assert panel["panels"][0]["operation_count"] == 6
+    assert panel["panels"][0]["operand_count"] == 16
+    assert panel["panels"][-1]["operation_rank"] == 14
+    assert all(item["graph"] is not None for item in panel["panels"])
+
+
 def test_cli_writes_the_self_contained_artifact(tmp_path: Path) -> None:
     output = tmp_path / "review_panel.html"
     assert main([str(CANDIDATE), "--output", str(output)]) == 0
     contents = output.read_text(encoding="utf-8")
     assert contents.startswith("<!doctype html>")
     assert "<meta charset=\"utf-8\">" in contents
+
+
+def test_cli_top_renders_only_ranked_operation_rows(tmp_path: Path) -> None:
+    output = tmp_path / "top.html"
+    assert main([str(CANDIDATE), "--output", str(output), "--top", "25"]) == 0
+    contents = output.read_text(encoding="utf-8")
+    assert contents.count('<article class="review-panel"') == 25
+    assert "showing top 25 of 65 operation rows" in contents
+    assert "form_6251_2025 line 18" in contents
