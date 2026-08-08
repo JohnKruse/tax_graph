@@ -136,7 +136,14 @@ def test_outline_first_emits_nonfillable_heading_and_printed_total_node():
         )
     )
 
-    batch = generate_outline_first_drafts(document, client=NoCallClient(), root=ROOT)
+    # M20-S86 made the model accessor fail closed, so an explicit config is required
+    # where the placeholder used to stand in.  Matches the sibling call sites.
+    batch = generate_outline_first_drafts(
+        document,
+        client=NoCallClient(),
+        config={"llm": {"model": "family-a/model", "micro_model": "family-a/model"}},
+        root=ROOT,
+    )
     nodes = {node.object_id: node.data for node in batch.items("nodes")}
 
     heading = nodes["schedule_2_2025_part_i_line_1"]

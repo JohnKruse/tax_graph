@@ -207,6 +207,17 @@ def _make_project(tmp_path: Path) -> Path:
         root / "config" / "tax-graph.config.example.yaml",
         root / "tax-graph.config.yaml",
     )  # hermetic: never inherit the developer's gitignored local config
+    # The example ships nversion_model: null because a second-family model is
+    # optional.  M20-S86 made the nversion role fail closed rather than silently
+    # cross-checking against the primary model, which corroborates nothing - so an
+    # n-version test has to name its second model.
+    config_path = root / "tax-graph.config.yaml"
+    config_path.write_text(
+        config_path.read_text(encoding="utf-8").replace(
+            "nversion_model: null", 'nversion_model: "family-b/model"'
+        ),
+        encoding="utf-8",
+    )
     shutil.copytree(ROOT / "schemas", root / "schemas")
     shutil.copytree(ROOT / "graph", root / "graph")
     raw_dir = root / ".cache" / "raw" / "2025"

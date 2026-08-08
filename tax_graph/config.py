@@ -133,9 +133,12 @@ def resolve_llm_model(config: Mapping[str, Any], role: str = "primary") -> str:
         if nxt is None or nxt in seen:
             break
         current = nxt
-    raise ModelConfigurationError(
-        f"no model configured for LLM role {role}; set one of {', '.join(tried)}"
-    )
+    # Lead with "<path> is required": S86's accessor tests match on that shape, and
+    # naming the role's own key first is what the operator needs to set.
+    message = f"{tried[0]} is required for LLM role {role}"
+    if len(tried) > 1:
+        message += f"; also tried {', '.join(tried[1:])}"
+    raise ModelConfigurationError(message)
 
 
 def resolve_llm_seed(config: Mapping[str, Any]) -> int | None:
