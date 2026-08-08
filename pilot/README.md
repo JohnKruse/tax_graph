@@ -4,8 +4,8 @@ This standalone pilot projects a real candidate workspace into one self-containe
 
 ## M20-S88 context arms
 
-`context_arms.py` measures the S88 hypothesis without changing the production selector,
-instruction sectioner, or graph writer. It sends the same printed-anchor denominator through
+`context_arms.py` measures the S88 hypothesis without changing the production instruction
+sectioner or graph writer. It sends the same printed-anchor denominator through
 three context packets:
 
 - Arm A: the current line-owned instruction section.
@@ -13,8 +13,9 @@ three context packets:
 - Arm C: a deterministic twelve-line raw-text window around the printed line heading, with no
   section lookup.
 
-All three arms bypass the selector only in the pilot copy of each row. The report records the
-original selector decision, context provenance, model telemetry, returned quote, and status.
+All three arms admit every structurally valid row. The report records the historical selector
+decision only as comparison telemetry, along with context provenance, model telemetry, returned
+quote, and status.
 The fixed scoring set is the 32 formulas named in the M20-S88 handoff. Recovery is reported
 first, followed by regressions, quote ownership, and cost.
 
@@ -46,10 +47,13 @@ printing boundary.  A collapsed graph-trace block keeps rule ids, operand node i
 held-back candidate expression available as evidence; a held-back expression is never presented
 as a promoted operation.
 
-Missing promoted operations are visible holes with their stored primary reasons. Input lines with
-``selector_no_formula_cue`` are presented as expected absence, while structural and derivation
-reasons remain actionable. The graph stays unchanged; role suppression happens only at this
-human-facing printing boundary.
+Missing promoted operations are visible holes with their stored primary reasons. In the current
+S89 contract, a structurally valid row reaches derivation even without a formula cue; when the
+model returns ``REQUIRE_INPUT``, the panel presents ``model_stated_input`` as an outcome rather
+than a hole. Structural and derivation reasons remain actionable. The graph stays unchanged;
+role suppression happens only at this human-facing printing boundary. Older pre-S89 candidate
+artifacts may still contain the retired selector reason; the panel preserves that exact reason but
+labels it ``historical_selector`` and asks for regeneration rather than calling it a current input.
 
 The summary's instruction count is the number of printed-anchor panels whose instruction value is
 present through ``cell_access.instruction_section``. Candidate coverage uses the same accessor on
@@ -146,7 +150,7 @@ Operation headers are left justified, child indentation is 32px per level, and n
 inserted before a child. The panel keeps every graph edge role in data and prints only roles that
 are not already determined by operation and operand position.
 
-Holes retain their stored reason. The real cand_s71 corpus reports 83
+Holes retain their stored reason. The archived pre-S89 cand_s71 corpus reports 83
 ``selector_no_formula_cue`` rows, 7 structural rows, and 2 derivation gaps across 157 anchors.
 The CLI reports the operation distribution (51 one-operation rows, 12 two-operation rows, and 2
 six-operation rows) and accepts ``--top N`` to render only the ranked operation rows while keeping

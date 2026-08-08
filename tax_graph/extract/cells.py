@@ -43,6 +43,21 @@ CELL_INPUT_FIELDS = (
 )
 
 
+def get_structural_skip_reason(metadata: Mapping[str, Any]) -> str | None:
+    """Return the structural skip reason, or ``None`` when the row is routable.
+
+    Structural provenance is the only row-level routing input.  Formula cues
+    are denominator telemetry and must never be reconstructed here from old
+    metadata fields.
+    """
+    value = metadata.get("structural_skip_reason")
+    if value is None or value == "":
+        return None
+    if not isinstance(value, str):
+        raise TypeError("structural_skip_reason must be a string or None")
+    return value
+
+
 class CellClientFactory(Protocol):
     """Build a provider client from the resolved API key."""
 
@@ -228,7 +243,6 @@ def build_cell_frame_from_document(document: Any) -> CellFrame:
     )
     from tax_graph.extract.outline_pipeline import (
         _flatten_nodes,
-        _formula_selector_decision,
         _skip_reason_for_anchor,
         _span_for_line,
     )
@@ -245,6 +259,12 @@ def build_cell_frame_from_document(document: Any) -> CellFrame:
     for node in printed_nodes:
         anchor = str(node.line_anchor).lower()
         anchor_counts[anchor] = anchor_counts.get(anchor, 0) + 1
+    root_header_anchors = {
+        str(node.line_anchor).lower()
+        for node in printed_nodes
+        if node.outline_id.startswith("root_line_")
+        and anchor_counts.get(str(node.line_anchor).lower(), 0) > 1
+    }
     printed_lines = sorted(
         {
             str(node.line_anchor).lower()
@@ -258,16 +278,14 @@ def build_cell_frame_from_document(document: Any) -> CellFrame:
         line = str(node.line_anchor or "").lower()
         if not line:
             continue
-        selector = _formula_selector_decision(node, widened=True)
-        selector_admitted = bool(selector["admitted"])
-        selector_skip_reason = (
-            _skip_reason_for_anchor(
-                node,
-                outline_anchor_count=anchor_counts.get(line, 0),
-            )
-            if not selector_admitted
-            else ""
+        structural_skip_reason = _skip_reason_for_anchor(
+            node,
+            outline_anchor_count=anchor_counts.get(line, 0),
+            root_header_present=line in root_header_anchors,
         )
+        # Formula cues are historical telemetry only.  A structurally valid
+        # printed line reaches the model even when its label contains no cue;
+        # the model can then state REQUIRE_INPUT with its evidence.
         form_span = _span_for_line(document, node, spans)
         sections = instruction_frame.for_line(document.document_id, line)
         instruction_text = "\n\n".join(section.text for section in sections)
@@ -325,9 +343,7 @@ def build_cell_frame_from_document(document: Any) -> CellFrame:
                     "evidence_spans": evidence_spans,
                     "outline_id": node.outline_id,
                     "outline_kind": node.kind,
-                    "selector_admitted": selector_admitted,
-                    "selector_cue": selector.get("cue"),
-                    "selector_skip_reason": selector_skip_reason,
+                    "structural_skip_reason": structural_skip_reason or None,
                 },
             )
         )
@@ -429,7 +445,8 @@ def derive_cells(
     allowed_operations = list(operations or DEFAULT_OPERATIONS)
     for original in source.rows:
         row = CellRecord.from_mapping(original.as_dict())
-        if row.metadata.get("selector_admitted") is False:
+        structural_skip_reason = get_structural_skip_reason(row.metadata)
+        if structural_skip_reason:
             row.status = "skipped"
             row.error = None
             result_rows.append(row)
@@ -623,6 +640,11 @@ def _apply_payload(
     # source id independently satisfiable, even when they disagree.
     quote_span_id = known_spans[0][0]
     row.expression = dict(expression)
+    row.metadata["model_outcome"] = (
+        "model_stated_input"
+        if str(expression.get("op") or "").upper() == "REQUIRE_INPUT"
+        else "model_stated_expression"
+    )
     row.rendered = render(expression)
     row.quote = quote
     row.quote_span_id = quote_span_id

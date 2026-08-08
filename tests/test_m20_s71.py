@@ -15,6 +15,7 @@ from tax_graph.extract.cells import (
     _table_anchor_boundary_finding,
     build_cell_frame_from_document,
     derive_cells,
+    get_structural_skip_reason,
 )
 from tax_graph.extract.inputs import load_document_input
 
@@ -30,22 +31,32 @@ class _UnexpectedClient:
 
     def structured_completion(self, **_kwargs: Any) -> Any:
         self.calls += 1
-        raise AssertionError("selector-skipped cells must not call the provider")
+        raise AssertionError("structural skips must not call the provider")
 
 
-def test_selector_skips_provider_but_retains_clean_cell_text() -> None:
+def test_structural_skip_accessor_is_the_only_row_routing_signal() -> None:
+    assert get_structural_skip_reason({}) is None
+    assert get_structural_skip_reason({"structural_skip_reason": None}) is None
+    assert get_structural_skip_reason(
+        {"structural_skip_reason": "structure_non_cell_anchor"}
+    ) == "structure_non_cell_anchor"
+    assert get_structural_skip_reason(
+        {"selector_admitted": False, "selector_skip_reason": "selector_no_formula_cue"}
+    ) is None
+
+
+def test_structural_skip_bypasses_provider_but_retains_clean_cell_text() -> None:
     frame = CellFrame.from_rows(
         [
             {
                 "form": "form_test_2025",
                 "line": "1",
-                "label": "",
+                "label": "Input",
                 "form_face_text": "Enter an amount.",
                 "instruction_text": "",
                 "instruction_locator": "",
                 "metadata": {
-                    "selector_admitted": False,
-                    "selector_skip_reason": "selector_no_formula_cue",
+                    "structural_skip_reason": "structure_non_cell_anchor",
                 },
             }
         ]
@@ -56,9 +67,45 @@ def test_selector_skips_provider_but_retains_clean_cell_text() -> None:
 
     assert result.rows[0].status == "skipped"
     assert result.rows[0].form_face_text == "Enter an amount."
-    assert result.rows[0].metadata["selector_skip_reason"] == "selector_no_formula_cue"
+    assert result.rows[0].metadata["structural_skip_reason"] == "structure_non_cell_anchor"
     assert client.calls == 0
     assert result.validation_report["attempted"] == 0
+
+
+def test_no_formula_cue_without_structural_reason_reaches_provider() -> None:
+    frame = CellFrame.from_rows(
+        [
+            {
+                "form": "form_test_2025",
+                "line": "1",
+                "label": "Input",
+                "form_face_text": "Enter an amount.",
+                "instruction_text": "",
+                "instruction_locator": "",
+                "metadata": {
+                    "evidence_spans": [{"span_id": "span_line_1", "text": "Enter an amount."}],
+                },
+            }
+        ]
+    )
+
+    class _InputClient:
+        calls = 0
+
+        def structured_completion(self, **_kwargs: Any) -> Any:
+            self.calls += 1
+            return {
+                "expression": {"op": "REQUIRE_INPUT", "args": [{"line": "1"}]},
+                "quote": "Enter an amount.",
+            }
+
+    client = _InputClient()
+    result = derive_cells(frame, "line <<line>>", "unused", client=client)
+
+    assert result.rows[0].status == "derived"
+    assert result.rows[0].metadata["model_outcome"] == "model_stated_input"
+    assert client.calls == 1
+    assert result.validation_report["attempted"] == 1
 
 
 def test_table_anchor_boundary_is_a_named_finding() -> None:
@@ -88,7 +135,7 @@ def test_real_frame_cleans_all_printed_anchors_and_reports_line_8_table() -> Non
 
     assert len(frame.rows) == 35
     assert all(row.form_face_text for row in frame.rows)
-    assert all("selector_admitted" in row.metadata for row in frame.rows)
+    assert all("structural_skip_reason" in row.metadata for row in frame.rows)
     line_8 = next(row for row in frame.rows if row.line == "8")
     assert line_8.metadata["evidence_findings"][0]["code"] == "table_anchor_boundary"
 

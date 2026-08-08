@@ -26,6 +26,13 @@ except ImportError:
 REPORT_SUFFIX = "_derive_cells_report.yaml"
 OUTCOME_STATUSES = {"derived", "repaired", "review_gap", "skipped", "error", "errored"}
 FORM_LINE_RE = re.compile(r"_root_line_(?P<line>[0-9]+[a-z]?|[a-z])$")
+STRUCTURAL_HOLE_REASONS = frozenset(
+    {
+        "structure_duplicate_anchor",
+        "structure_header_anchor",
+        "structure_non_cell_anchor",
+    }
+)
 
 
 def _text(value: Any) -> str:
@@ -157,6 +164,7 @@ def _merge_anchor(
     cell = cell_access.join_rows(anchor=anchor, source=source_row, candidate=candidate_row)
     source_status_value = cell_access.source_status(cell)
     candidate_status_value = cell_access.candidate_status(cell)
+    model_outcome_value = cell_access.model_outcome(cell)
     source_status = _text(source_status_value.value).strip().lower()
     candidate_status = _text(candidate_status_value.value).strip().lower()
     status_value = cell_access.status(cell)
@@ -196,6 +204,7 @@ def _merge_anchor(
         "status": status,
         "source_status": source_status,
         "candidate_status": candidate_status,
+        "model_outcome": _text(model_outcome_value.value).strip(),
         "findings": findings,
         "review_gap": review_gap,
         "node_id": _text(cell_access.node_id(cell).value).strip(),
@@ -443,8 +452,6 @@ def _hole_reason(row: Mapping[str, Any]) -> str:
 
     review_gap = _text(row.get("review_gap")).strip()
     if review_gap:
-        if "selector_no_formula_cue" in review_gap:
-            return "selector_no_formula_cue"
         return review_gap
     for finding in row.get("findings", []):
         if isinstance(finding, Mapping) and _text(finding.get("kind")).strip() == "skipped_anchor":
@@ -456,8 +463,8 @@ def _hole_category(reason: str) -> str:
     """Group hole reasons for the corpus summary while retaining the exact row reason."""
 
     if reason == "selector_no_formula_cue":
-        return "selector_no_formula_cue"
-    if reason.startswith("structure_"):
+        return "historical_selector"
+    if reason in STRUCTURAL_HOLE_REASONS:
         return "structural"
     return "derivation"
 
@@ -474,7 +481,7 @@ def _hole_reason_summary(rows: Iterable[Mapping[str, Any]]) -> dict[str, Any]:
     return {
         "exact": dict(sorted(reasons.items())),
         "categories": {
-            "selector_no_formula_cue": categories.get("selector_no_formula_cue", 0),
+            "historical_selector": categories.get("historical_selector", 0),
             "structural": categories.get("structural", 0),
             "derivation": categories.get("derivation", 0),
         },
@@ -525,7 +532,7 @@ def build_panel(candidate_root: str | Path, *, top: int | None = None) -> dict[s
             projection = _graph_projection(row, graph)
             tree = projection.get("tree") if projection else None
             row["graph"] = projection
-            row["hole"] = projection is None
+            row["hole"] = projection is None and row.get("model_outcome") != "model_stated_input"
             row["hole_reason"] = _hole_reason(row) if row["hole"] else ""
             row["hole_category"] = _hole_category(row["hole_reason"]) if row["hole"] else ""
             row["operation_count"] = _tree_operation_count(tree) if isinstance(tree, Mapping) else 0
@@ -609,6 +616,11 @@ def _operation_html(row: Mapping[str, Any]) -> str:
 
     graph = row.get("graph")
     if not isinstance(graph, Mapping):
+        if row.get("model_outcome") == "model_stated_input":
+            return (
+                '<div class="model-outcome"><strong>Model-stated input.</strong>'
+                "<p>The form asks the filer to supply this value; no computation was emitted.</p></div>"
+            )
         candidate_rendered_value = row.get("candidate_rendered")
         candidate_rendered = "" if candidate_rendered_value is None else str(candidate_rendered_value)
         attempted = (
@@ -773,8 +785,8 @@ def _hole_html(row: Mapping[str, Any]) -> str:
 
     reason = _text(row.get("hole_reason")) or "unclassified_hole"
     category = _text(row.get("hole_category")) or "derivation"
-    if category == "selector_no_formula_cue":
-        detail = "This is an input line; no formula is expected."
+    if category == "historical_selector":
+        detail = "This candidate predates S89 and must be regenerated before review."
     elif category == "structural":
         detail = "The source structure did not yield a promotable cell."
     else:
@@ -797,8 +809,18 @@ def _panel_html(row: Mapping[str, Any]) -> str:
         for title, key in (("Label", "label"), ("Form face", "form_face"), ("Instruction page", "instruction"))
     )
     tree = row.get("graph", {}).get("tree") if isinstance(row.get("graph"), Mapping) else None
-    tree_html = _tree_html(tree) if isinstance(tree, Mapping) else _hole_html(row)
-    math_html = escape(_math_text(tree)) if isinstance(tree, Mapping) else "No promoted expression."
+    if isinstance(tree, Mapping):
+        tree_html = _tree_html(tree)
+        math_html = escape(_math_text(tree))
+    elif row.get("model_outcome") == "model_stated_input":
+        tree_html = (
+            '<div class="model-outcome"><strong>Model-stated input</strong>'
+            "<p>Input required from the filer.</p></div>"
+        )
+        math_html = "REQUIRE INPUT"
+    else:
+        tree_html = _hole_html(row)
+        math_html = "No promoted expression."
     rank = row.get("operation_rank")
     rank_attribute = "" if rank is None else f' data-operation-rank="{escape(_text(rank), quote=True)}"'
     return (
@@ -858,7 +880,7 @@ def render_html(panel: Mapping[str, Any]) -> str:
         f"{_text(panel.get('denominator'))} printed anchors; {len(panel.get('documents') or [])} documents; "
         f"{focus_text}; operation counts {_operation_distribution_text(operation_distribution)}; "
         f"{_text(panel.get('holes', 0))} holes; "
-        f"hole reasons {categories.get('selector_no_formula_cue', 0)} selector_no_formula_cue / "
+        f"hole reasons {categories.get('historical_selector', 0)} historical selector / "
         f"{categories.get('structural', 0)} structural / {categories.get('derivation', 0)} derivation; "
         f"captions {presence.get('caption', 0)} present / {absence.get('caption', 0)} absent; "
         f"instruction rows {presence.get('instruction', 0)} present / {absence.get('instruction', 0)} absent; "
@@ -928,8 +950,10 @@ code {{ overflow-wrap: anywhere; font-family: Consolas, monospace; font-size: .8
 .graph-trace ul {{ margin: 5px 0; padding-left: 20px; }}
 .graph-trace .operation-hole {{ margin-top: 8px; padding: 8px; border: 2px solid #c13c3c; background: #fff1f1; }}
 .operation-hole {{ padding: 12px; border: 2px solid #c13c3c; background: #fff1f1; }}
-.hole-selector_no_formula_cue {{ border-color: #718096; background: #f0f3f6; }}
-.hole-selector_no_formula_cue strong {{ color: #40566d; }}
+.model-outcome {{ padding: 12px; border: 2px solid #6584a3; background: #eef5fb; }}
+.model-outcome strong {{ color: #40566d; }}
+.hole-historical_selector {{ border-color: #718096; background: #f0f3f6; }}
+.hole-historical_selector strong {{ color: #40566d; }}
 .hole-structural {{ border-color: #c78b22; background: #fffaf0; }}
 .hole-structural strong {{ color: #8a5a00; }}
 .hole-derivation strong {{ color: #a32121; }}
@@ -975,7 +999,7 @@ def main(argv: list[str] | None = None) -> int:
         f"{output}: {panel['denominator']} anchors; {focus}; "
         f"operation counts {_operation_distribution_text(panel['operation_distribution'])}; "
         f"{panel['holes']} holes; hole reasons "
-        f"{categories['selector_no_formula_cue']} selector_no_formula_cue / "
+        f"{categories['historical_selector']} historical selector / "
         f"{categories['structural']} structural / {categories['derivation']} derivation; "
         f"captions {panel['text_presence']['caption']} present / "
         f"{panel['text_absence']['caption']} absent; "

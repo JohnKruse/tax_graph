@@ -1,4 +1,4 @@
-"""M20-S51 tests for honest derivation denominators and skipped anchors."""
+"""M20-S51 tests for honest derivation denominators and structural skips."""
 
 from __future__ import annotations
 
@@ -10,7 +10,10 @@ from tax_graph.extract.inputs import load_document_input
 from tax_graph.extract.models import SourceDocumentInput
 from tax_graph.extract.outline import OutlineNode, OutlineTree
 from tax_graph.extract.outline import build_outline_tree
-from tax_graph.extract.outline_pipeline import build_derivation_denominator
+from tax_graph.extract.outline_pipeline import (
+    _flatten_nodes,
+    build_derivation_denominator,
+)
 
 
 pytestmark = pytest.mark.m20
@@ -60,14 +63,16 @@ def test_denominator_reports_legacy_and_widened_selector_decisions() -> None:
 
     assert report["line_anchor_count"] == 3
     assert report["legacy_admitted"] == 0
-    assert report["admitted"] == 2
-    assert report["skipped"] == 1
+    assert report["admitted"] == 3
+    assert report["skipped"] == 0
     assert report["status"] == "complete"
     by_anchor = {item["anchor"]: item for item in report["anchors"]}
-    assert by_anchor["6"]["before"]["selector_admits"] is False
-    assert by_anchor["6"]["after"]["selector_cue"] == "smallest_of_line"
-    assert by_anchor["8"]["after"]["selector_cue"] == "amount_shown_below"
-    assert by_anchor["9"]["skip_reason"] == "selector_no_formula_cue"
+    assert by_anchor["6"]["before"]["legacy_selector_admits"] is False
+    assert by_anchor["6"]["after"]["legacy_selector_cue"] == "smallest_of_line"
+    assert by_anchor["8"]["after"]["legacy_selector_cue"] == "amount_shown_below"
+    assert by_anchor["9"]["skip_reason"] == ""
+    assert by_anchor["9"]["derivation_admitted"] is True
+    assert by_anchor["9"]["legacy_selector_admits"] is False
 
 
 def test_denominator_classifies_duplicate_and_header_structure_findings() -> None:
@@ -123,24 +128,59 @@ def test_form_2441_denominator_names_the_newly_visible_rows() -> None:
     )
 
     assert report["line_anchor_count"] == 35
-    assert report["legacy_admitted"] == 12
-    assert report["admitted"] == 21
-    assert report["skipped"] == 14
+    assert report["legacy_admitted"] == 13
+    assert report["admitted"] == 32
+    assert report["skipped"] == 3
     assert report["status"] == "complete"
-    assert report["newly_admitted_by_cue"] == {
-        "add_the_amount": 2,
-        "amount_shown_below": 2,
-        "dollar_constant": 2,
-        "smallest_of_line": 3,
+    assert set(report["skipped_by_reason"]) <= {
+        "structure_duplicate_anchor",
+        "structure_header_anchor",
+        "structure_non_cell_anchor",
     }
     by_anchor = {item["anchor"]: item for item in report["anchors"]}
-    assert by_anchor["8"]["selector_cue"] == "amount_shown_below"
-    assert by_anchor["6"]["selector_cue"] == "smallest_of_line"
-    assert by_anchor["19"]["selector_cue"] == "amount_shown_below"
-    assert by_anchor["21"]["selector_cue"] == "dollar_constant"
-    assert by_anchor["27"]["selector_cue"] == "dollar_constant"
+    assert by_anchor["8"]["legacy_selector_cue"] == "amount_shown_below"
+    assert by_anchor["6"]["legacy_selector_cue"] == "smallest_of_line"
+    assert by_anchor["19"]["legacy_selector_cue"] == "amount_from_line"
+    assert by_anchor["21"]["legacy_selector_cue"] == "dollar_constant"
+    assert by_anchor["27"]["legacy_selector_cue"] == "dollar_constant"
     assert by_anchor["12"]["skip_reason"] == "structure_duplicate_anchor"
-    assert by_anchor["1"]["skip_reason"] == "selector_no_formula_cue"
+    assert by_anchor["1"]["skip_reason"] == ""
+    assert by_anchor["1"]["derivation_admitted"] is True
+    assert by_anchor["1"]["legacy_selector_admits"] is False
+
+
+@pytest.mark.parametrize(
+    ("document_id", "anchor"),
+    (("form_2441_2025", "21"), ("form_6251_2025", "32")),
+)
+def test_root_header_duplicate_does_not_consume_real_cell(
+    document_id: str,
+    anchor: str,
+) -> None:
+    required = [
+        ROOT / ".cache" / "raw" / "2025" / f"{document_id}.txt",
+        ROOT / ".cache" / "raw" / "2025" / f"{document_id}.fields.json",
+        ROOT / ".cache" / "raw" / "2025" / f"{document_id}.pdf",
+    ]
+    if not all(path.exists() for path in required):
+        pytest.skip(f"local acquired {document_id} structure artifacts are not present")
+
+    document = load_document_input(document_id, year="2025", root=ROOT)
+    outline = build_outline_tree(document)
+    nodes = [
+        node
+        for node in _flatten_nodes(outline.children)
+        if str(node.line_anchor).lower() == anchor
+    ]
+    assert any(node.outline_id == f"root_line_{anchor}" for node in nodes)
+
+    report = build_derivation_denominator(document, outline=outline)
+    entries = [item for item in report["anchors"] if item["anchor"] == anchor]
+    assert any(item["skip_reason"] == "structure_header_anchor" for item in entries)
+    assert any(
+        item["derivation_admitted"] is True and item["skip_reason"] == ""
+        for item in entries
+    )
 
 
 def test_denominator_reports_total_classification() -> None:

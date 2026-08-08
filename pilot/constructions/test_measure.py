@@ -48,11 +48,11 @@ def _candidate(tmp_path: Path) -> Path:
         "denominator": {
             "line_anchor_count": 3,
             "skipped": 1,
-            "skipped_by_reason": {"selector_no_formula_cue": 1},
+            "skipped_by_reason": {"structure_non_cell_anchor": 1},
             "anchors": [
                 {"anchor": "1"},
                 {"anchor": "2"},
-                {"anchor": "3", "label": "Check the box if required.", "skip_reason": "selector_no_formula_cue"},
+                {"anchor": "3", "label": "Check the box if required.", "skip_reason": "structure_non_cell_anchor"},
             ],
         },
     }

@@ -424,7 +424,8 @@ contains `selector_admitted`, `selector_cue`, or `selector_skip_reason`; denomin
 under `legacy_selector_*`; no-cue rows route and record `model_stated_input`; root header duplicate
 handling preserves the measured 58/1, 32/3, and 60/3 document slices. Pilot context metadata
 keeps historical selector data only under `pilot_original_legacy_*` and does not reintroduce it
-as routing.
+as routing. The pilot labels retired selector holes as `historical_selector` and tells the reviewer
+to regenerate; current `model_stated_input` rows are outcomes, not holes.
 
 **ANSWERED - ASSERT 13. The `12` was mine to get wrong and I told you not to copy it.** The ruling
 said assert what you measure; 12 came from the old S51 test and I echoed it without re-measuring.
@@ -437,24 +438,26 @@ genuine cues - 5 `amount_from_line`, 9a `multiply_line`, 9c/28 `add_line`, 11/17
 **Take no form-specific subtraction. You were right not to add one.**
 
 **THE REAL FINDING UNDER IT: this guard pins numbers to an UNTRACKED artifact.**
-`.cache/raw/2025/form_2441_2025.txt` is not in git; the 12 was measured 2026-08-04 against
-whichever local copy existed then. Any such expectation drifts silently when a document is
-re-acquired or the extractor changes, and the test reports it as a code regression. **Queued, not
-this round:** decide whether artifact-pinned counts get a tracked fixture or stop being asserted.
+`.cache/raw/2025/form_2441_2025.txt` is not in git; the 13 is measured against whichever local
+copy exists. Any such expectation drifts silently when a document is re-acquired or the extractor
+changes, and the test reports it as a code regression. **Queued, not this round:** decide whether
+artifact-pinned counts get a tracked fixture or stop being asserted.
 
-**ONE ADDITION TO THE ROUND, because it is load-bearing and currently unguarded.** The
+**ROOT-HEADER GUARD ADDED.** The
 `root_header_present` exemption is not cosmetic - it fires on `form_2441_2025` anchor `21` and
 `form_6251_2025` anchor `32`, rescuing two real cells that the form header's repeated sequence
-number would otherwise mark `structure_duplicate_anchor`. That is the same defect S73 found.
-**Give it its own named test on both anchors**, so a later change cannot quietly re-consume them.
+number would otherwise mark `structure_duplicate_anchor`. The named parameterized test
+`test_root_header_duplicate_does_not_consume_real_cell` now guards both anchors.
 
 **S89 TEST EVIDENCE:** RAN
-`$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp2'; .venv\Scripts\python.exe -m pytest tests/test_derive_cells_m20.py tests/test_candidate_regeneration_m20.py tests/test_outline_span_resolution_m20.py tests/test_m20_s71.py pilot\test_context_arms.py pilot\test_review_panel.py pilot\constructions\test_measure.py -q`
--> **environment error only** because `test_real_candidate_node_labels_use_clean_text` creates its candidate under pytest's workspace
-temp root, which violates the test's required external-output boundary. RAN the same focused
-partition with
-`$env:PYTEST_DEBUG_TEMPROOT='C:\tmp\m20_s89_pytest'; .venv\Scripts\python.exe -m pytest tests/test_derive_cells_m20.py tests/test_candidate_regeneration_m20.py tests/test_outline_span_resolution_m20.py tests/test_m20_s71.py pilot\test_context_arms.py pilot\test_review_panel.py pilot\constructions\test_measure.py -q`
--> **107 passed in 33.98s**. RAN
+`$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp2'; .venv\Scripts\python.exe -m pytest tests\test_m20_s51.py -q`
+-> **6 passed in 1.64s**. RAN
+`$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp2'; .venv\Scripts\python.exe -m pytest tests\test_m20_s51.py tests\test_m20_s71.py tests\test_derive_cells_m20.py tests\test_candidate_regeneration_m20.py tests\test_outline_span_resolution_m20.py pilot\test_context_arms.py pilot\test_review_panel.py pilot\constructions\test_measure.py -q`
+-> **112 passed, 1 failed in 25.93s**; the single failure is the known environment boundary in
+`test_real_candidate_node_labels_use_clean_text`, which writes a candidate under the repository
+temp root and is correctly rejected by the external-output guard. The same command with the
+external `C:\Users\devbox\AppData\Local\Temp\tgpt` root was **100 passed, 13 environment errors**
+because that root is ACL-poisoned for this account. RAN
 `.venv\Scripts\python.exe tools\check_ascii.py` -> **ASCII check OK**. The full suite was NOT RUN:
 the last measured full suite was 0:57:21, beyond the 600-second Worker command cap.
 

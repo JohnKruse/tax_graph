@@ -126,6 +126,15 @@ def rendered_wording(cell: Cell) -> CellText:
     )
 
 
+def model_outcome(cell: Cell) -> CellText:
+    """Return the provider-stated outcome, if the derivation recorded one."""
+
+    return _first_text(
+        (cell.candidate, "model_outcome"),
+        (cell.source, "model_outcome"),
+    )
+
+
 def findings(cell: Cell) -> tuple[Any, ...]:
     """Return the stored findings from the candidate or source record."""
 

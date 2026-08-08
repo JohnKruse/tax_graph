@@ -2,7 +2,8 @@
 
 This module is deliberately outside ``tax_graph/``.  It measures three input
 packets against the same model and source rows without changing the production
-selector, sectioner, or graph writer:
+sectioner or graph writer.  The historical selector decision is retained only
+as a comparison label; production derivation no longer uses it:
 
 * A keeps the current line-owned instruction section.
 * B adds a line buffer on both sides of that section.
@@ -39,11 +40,13 @@ from tax_graph.extract.cells import (
     build_cell_frame_from_document,
     build_reference_inventory,
     derive_cells,
+    get_structural_skip_reason,
     load_cell_prompt,
 )
 from tax_graph.extract.inputs import load_document_input
 from tax_graph.extract.instruction_sections import InstructionSection
 from tax_graph.extract.outline import build_instruction_sections_frame
+from tax_graph.extract.outline_pipeline import build_derivation_denominator
 from tax_graph.extract.llm_client import build_llm_client
 from tax_graph.io.loader import load_graph
 
@@ -112,9 +115,9 @@ def build_arm_frame(
     """Build one all-anchor frame and return its canonical section witness.
 
     The returned frame contains every printed anchor from the production frame,
-    including rows the production selector would skip.  Only the copied pilot
-    metadata has ``selector_admitted=True``; the production frame is not
-    mutated.
+    including rows the historical selector would have skipped.  Pilot-only
+    metadata records the historical decision for comparison; structural
+    routing remains owned by the production row accessor.
     """
     normalized_arm = str(arm).upper()
     if normalized_arm not in ARM_NAMES:
@@ -123,6 +126,11 @@ def build_arm_frame(
         raise ValueError("buffer_lines and region_radius must be non-negative")
 
     production = build_cell_frame_from_document(document)
+    legacy_by_line = {
+        str(item.get("anchor") or "").lower(): item
+        for item in build_derivation_denominator(document).get("anchors", [])
+        if isinstance(item, Mapping)
+    }
     outline = None
     instruction_frame = build_instruction_sections_frame(document, outline=outline)
     source = next(
@@ -139,8 +147,9 @@ def build_arm_frame(
 
     for original in production.rows:
         row = CellRecord.from_mapping(original.as_dict())
-        original_admitted = row.metadata.get("selector_admitted")
-        original_reason = row.metadata.get("selector_skip_reason", "")
+        legacy_entry = legacy_by_line.get(row.line, {})
+        original_admitted = legacy_entry.get("legacy_selector_admits")
+        original_reason = get_structural_skip_reason(row.metadata) or ""
         packet = _context_packet(
             row,
             normalized_arm,
@@ -152,10 +161,8 @@ def build_arm_frame(
         metadata = dict(row.metadata)
         metadata.update(
             {
-                "selector_admitted": True,
-                "selector_skip_reason": "",
-                "pilot_original_selector_admitted": original_admitted,
-                "pilot_original_selector_skip_reason": original_reason,
+                "pilot_original_legacy_selector_admitted": original_admitted,
+                "pilot_original_structural_skip_reason": original_reason,
                 "pilot_arm": normalized_arm,
                 "pilot_context_source": packet.source,
                 "pilot_context_section_count": packet.section_count,
@@ -430,8 +437,8 @@ def score_arm(
                 "quote_span_id": row.get("quote_span_id"),
                 "validation_failures": row.get("validation_failures", []),
                 "pilot_arm": row.get("pilot_arm"),
-                "pilot_original_selector_admitted": row.get("pilot_original_selector_admitted"),
-                "pilot_original_selector_skip_reason": row.get("pilot_original_selector_skip_reason"),
+                "pilot_original_legacy_selector_admitted": row.get("pilot_original_legacy_selector_admitted"),
+                "pilot_original_structural_skip_reason": row.get("pilot_original_structural_skip_reason"),
                 "pilot_context_source": row.get("pilot_context_source"),
                 "pilot_context_section_count": row.get("pilot_context_section_count"),
                 "pilot_context_line_start": row.get("pilot_context_line_start"),

@@ -17,7 +17,7 @@ from typing import Any, Iterable, Mapping, Sequence
 import yaml
 
 from tax_graph.acquire.manifest import load_manifest
-from tax_graph.extract.cells import expression_to_graph
+from tax_graph.extract.cells import expression_to_graph, get_structural_skip_reason
 from tax_graph.io.loader import load_graph
 from tax_graph.operation_registry import OPERATION_SPECS, projection_rule_for
 
@@ -487,7 +487,7 @@ def _candidate_row(document_id: str, row: Mapping[str, Any], field_addresses: Ma
     warnings = [dict(item) for item in row.get("validation_warnings", []) or [] if isinstance(item, Mapping)]
     review_gap = str(row.get("error") or "")
     if original_status == "skipped":
-        review_gap = str(row.get("selector_skip_reason") or row.get("review_gap") or "")
+        review_gap = get_structural_skip_reason(row) or str(row.get("review_gap") or "")
         if review_gap:
             findings.append({"kind": "skipped_anchor", "message": review_gap})
     if candidate_status in {"derived", "repaired"} and (expression is None or not quote or not citation_refs):
@@ -513,6 +513,7 @@ def _candidate_row(document_id: str, row: Mapping[str, Any], field_addresses: Ma
         "form_face_text": str(row.get("form_face_after") or row.get("form_face_before") or ""),
         "instruction_text": str(row.get("instruction_text") or ""),
         "status": original_status,
+        "model_outcome": str(row.get("model_outcome") or ""),
         "candidate_status": candidate_status,
         "original_status": original_status,
         "node_id": _line_node_id(document_id, line),
@@ -551,8 +552,9 @@ def _source_cell_rows(root: Path, year: str, document_id: str) -> dict[str, Mapp
 def _source_row_priority(row: Mapping[str, Any]) -> tuple[int, int, str]:
     """Prefer the canonical admitted row when geometry repeats an anchor."""
     metadata = row.get("metadata") if isinstance(row.get("metadata"), Mapping) else row
-    admitted = 0 if metadata.get("selector_admitted") is True else 1
-    header = 1 if metadata.get("selector_skip_reason") == "structure_header_anchor" else 0
+    structural_reason = get_structural_skip_reason(metadata)
+    admitted = 1 if structural_reason else 0
+    header = 1 if structural_reason == "structure_header_anchor" else 0
     return admitted, header, str(metadata.get("outline_id") or "")
 
 

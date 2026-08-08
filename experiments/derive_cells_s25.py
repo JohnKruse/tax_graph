@@ -28,6 +28,7 @@ from tax_graph.extract.cells import (
     build_reference_inventory,
     build_cell_frame_from_document,
     derive_cells,
+    get_structural_skip_reason,
     load_cell_prompt,
     _scoped_graph_nodes,
 )
@@ -150,7 +151,7 @@ def run_real_document(
     selected_rows = [
         row
         for row in result.rows
-        if row.metadata.get("selector_admitted") is not False
+        if get_structural_skip_reason(row.metadata) is None
     ]
     status_counts = {
         "derived": raw_status_counts.get("derived", 0),
@@ -174,9 +175,8 @@ def run_real_document(
             "validation_warnings": row.metadata.get("validation_warnings", []),
             "dropped_instruction_sections": row.metadata.get("dropped_instruction_sections", []),
             "source_findings": row.metadata.get("evidence_findings", []),
-            "selector_admitted": row.metadata.get("selector_admitted"),
-            "selector_cue": row.metadata.get("selector_cue"),
-            "selector_skip_reason": row.metadata.get("selector_skip_reason", ""),
+            "structural_skip_reason": get_structural_skip_reason(row.metadata),
+            "model_outcome": row.metadata.get("model_outcome", ""),
             "unresolved_external_nodes": row.metadata.get("unresolved_external_nodes", []),
             # The candidate writer consumes the exact evidence selected by
             # the provider-side derivation.  Keep it beside the expression so

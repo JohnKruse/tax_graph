@@ -4,7 +4,7 @@ from pathlib import Path
 
 import pytest
 
-from tax_graph.extract.cells import build_cell_frame_from_document
+from tax_graph.extract.cells import build_cell_frame_from_document, get_structural_skip_reason
 from tax_graph.extract.inputs import load_document_input
 from tax_graph.extract.models import SourceDocumentInput
 from tax_graph.extract.outline import OutlineNode, build_candidate_spans
@@ -242,7 +242,7 @@ def test_real_form_6251_line_32_uses_form_row_not_page_header():
     row = next(
         row
         for row in frame.rows
-        if row.line == "32" and row.metadata["selector_admitted"]
+        if row.line == "32" and get_structural_skip_reason(row.metadata) is None
     )
 
     # S58 removes the printed anchor from the prompt's instruction slot.

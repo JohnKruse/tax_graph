@@ -35,16 +35,17 @@ def test_raw_region_handles_run_together_line_heading() -> None:
     assert "Enter the amount" in region.text
 
 
-def test_all_anchor_arm_frame_bypasses_only_the_pilot_copy_of_selector() -> None:
+def test_all_anchor_arm_frame_keeps_legacy_telemetry_outside_routing_metadata() -> None:
     document = load_document_input("form_1040_2025", year="2025", root=".")
     frames = [build_arm_frame(document, arm)[0] for arm in ("A", "B", "C")]
 
     assert [len(frame.rows) for frame in frames] == [59, 59, 59]
     for frame in frames:
         missed = next(row for row in frame.rows if row.line == "6b")
-        assert missed.metadata["pilot_original_selector_admitted"] is False
-        assert missed.metadata["selector_admitted"] is True
-    assert frames[0].rows[0].metadata["selector_admitted"] is True
+        assert missed.metadata["pilot_original_legacy_selector_admitted"] is False
+        assert "selector_admitted" not in missed.metadata
+        assert "selector_skip_reason" not in missed.metadata
+    assert "selector_admitted" not in frames[0].rows[0].metadata
 
 
 def test_score_reports_recovery_regression_and_quote_owner() -> None:

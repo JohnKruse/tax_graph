@@ -1504,10 +1504,11 @@ def test_real_1040_frame_carries_join_ownership_and_printed_line_inventory() -> 
 
     frame = build_cell_frame_from_document(document)
 
-    # S71 keeps all printed anchors in the source frame and marks the 17
-    # selector-admitted rows for derivation.
+    # S89 keeps all printed anchors in the source frame and routes every
+    # structurally valid row for derivation.
     assert len(frame.rows) == 59
-    assert sum(row.metadata["selector_admitted"] for row in frame.rows) == 17
+    assert sum(row.metadata["structural_skip_reason"] is None for row in frame.rows) == 58
+    assert sum(row.metadata["structural_skip_reason"] is not None for row in frame.rows) == 1
     assert all(row.metadata["instruction_owner_document_id"] == "form_1040_2025" for row in frame.rows)
     assert all(row.line in row.metadata["printed_lines"] for row in frame.rows)
     assert {"1a", "16", "23", "26"}.issubset(frame.rows[0].metadata["printed_lines"])
@@ -1534,7 +1535,7 @@ def test_real_1040_frame_carries_join_ownership_and_printed_line_inventory() -> 
     rows_by_line = {
         row.line: row
         for row in frame.rows
-        if row.metadata["selector_admitted"]
+        if row.metadata["structural_skip_reason"] is None
     }
     assert rows_by_line["1z"].form_face_text == "Add lines 1a through 1h"
     assert rows_by_line["25d"].form_face_text == "Add lines 25a through 25c"

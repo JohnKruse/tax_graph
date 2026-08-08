@@ -10,7 +10,7 @@ from __future__ import annotations
 import os
 from pathlib import Path
 
-from review_panel import _math_text, _tree_html, build_panel, main, render_html
+from review_panel import _math_text, _panel_html, _tree_html, build_panel, main, render_html
 
 
 CANDIDATE = Path(
@@ -37,6 +37,31 @@ def _by_anchor(panel: dict, document_id: str, line: str) -> dict:
     return matches[0]
 
 
+def test_model_stated_input_is_an_outcome_not_a_hole() -> None:
+    html = _panel_html(
+        {
+            "anchor_id": "toy#anchor=1:line=1",
+            "document_id": "toy_2025",
+            "line": "1",
+            "status": "derived",
+            "hole": False,
+            "hole_reason": "",
+            "model_outcome": "model_stated_input",
+            "label": "Input",
+            "form_face": "Enter an amount.",
+            "instruction": None,
+            "graph": None,
+            "findings": [],
+            "candidate_rendered": "require input(line 1)",
+        }
+    )
+
+    assert 'data-hole="false"' in html
+    assert "Model-stated input" in html
+    assert "Input required from the filer." in html
+    assert "No promoted graph operation." not in html
+
+
 def test_real_candidate_preserves_all_anchors_and_reports_hole_reasons() -> None:
     panel = _real_panel()
 
@@ -44,7 +69,7 @@ def test_real_candidate_preserves_all_anchors_and_reports_hole_reasons() -> None
     assert panel["documents"] == ["form_1040_2025", "form_2441_2025", "form_6251_2025"]
     assert panel["holes"] == 92
     assert panel["hole_reasons"]["categories"] == {
-        "selector_no_formula_cue": 83,
+        "historical_selector": 83,
         "structural": 7,
         "derivation": 2,
     }
@@ -184,7 +209,7 @@ def test_rendered_html_has_full_width_tree_math_and_named_holes() -> None:
     assert 'data-hole="true"' in html
     assert "No promoted flow." not in html
     assert "selector_no_formula_cue" in html
-    assert "hole reasons 83 selector_no_formula_cue / 7 structural / 2 derivation" in html
+    assert "hole reasons 83 historical selector / 7 structural / 2 derivation" in html
     assert "LOOKUP_TABLE arguments must be named leaf operands with a role" in html
     assert "form_2441_2025_zero_floor" in html
     assert "captions 8 present / 149 absent" in html
@@ -209,7 +234,7 @@ def test_hole_reasons_are_rendered_as_expected_or_actionable_states() -> None:
     html = render_html(_real_panel())
 
     assert 'data-hole-reason="selector_no_formula_cue"' in html
-    assert "This is an input line; no formula is expected." in html
+    assert "This candidate predates S89 and must be regenerated before review." in html
     assert "structure_header_anchor" in html
     assert "validation gap after one repair" in html
 

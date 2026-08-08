@@ -44,10 +44,10 @@ NON_FORMULA_REVIEW_DOCUMENTS = frozenset({
 })
 
 
-# Keep the selector deterministic and inspectable.  The first group is the
-# legacy denominator used by earlier M20 runs.  The second group contains
-# only lexical siblings that are visible in printed form labels; it is not a
-# model call and it does not infer arithmetic from arbitrary prose.
+# Keep the historical selector deterministic and inspectable for measurement
+# and compatibility with the older outline extractor.  It is not a production
+# admission gate: cell derivation admits every structurally valid printed line
+# and lets the model state whether that line is an input.
 _LEGACY_FORMULA_CUES = (
     ("add_line", "add line"),
     ("add_the_amount", "add the amount"),
@@ -554,9 +554,10 @@ def build_derivation_denominator(
 ) -> dict[str, Any]:
     """Build the deterministic per-anchor derivation denominator report.
 
-    Every printed line anchor is classified as admitted or explicitly
-    skipped.  This report is measurement data for the derivation harness; it
-    does not write drafts, graph objects, or human verdicts.
+    Every printed line anchor is classified as derivation-admitted or
+    structurally skipped.  Formula cues are retained only as historical
+    measurement data; they never decide whether a provider call is made.
+    This report does not write drafts, graph objects, or human verdicts.
     """
     tree = outline if outline is not None else build_outline_tree(document)
     anchors = [
@@ -568,6 +569,12 @@ def build_derivation_denominator(
     for node in anchors:
         anchor = str(node.line_anchor).lower()
         outline_anchor_counts[anchor] = outline_anchor_counts.get(anchor, 0) + 1
+    root_header_anchors = {
+        str(node.line_anchor).lower()
+        for node in anchors
+        if node.outline_id.startswith("root_line_")
+        and outline_anchor_counts.get(str(node.line_anchor).lower(), 0) > 1
+    }
 
     entries: list[dict[str, Any]] = []
     newly_admitted_by_cue: dict[str, int] = {}
@@ -576,14 +583,14 @@ def build_derivation_denominator(
         anchor = str(node.line_anchor).lower()
         before = _formula_selector_decision(node, widened=False)
         after = _formula_selector_decision(node, widened=True)
-        skip_reason = None
-        if not after["admitted"]:
-            skip_reason = _skip_reason_for_anchor(
-                node,
-                outline_anchor_count=outline_anchor_counts.get(anchor, 0),
-            )
+        skip_reason = _skip_reason_for_anchor(
+            node,
+            outline_anchor_count=outline_anchor_counts.get(anchor, 0),
+            root_header_present=anchor in root_header_anchors,
+        )
+        if skip_reason:
             skipped_by_reason[skip_reason] = skipped_by_reason.get(skip_reason, 0) + 1
-        elif not before["admitted"]:
+        elif not before["admitted"] and after["cue"]:
             cue = str(after["cue"])
             newly_admitted_by_cue[cue] = newly_admitted_by_cue.get(cue, 0) + 1
         entries.append(
@@ -592,16 +599,17 @@ def build_derivation_denominator(
                 "label": node.label,
                 "outline_kind": node.kind,
                 "before": {
-                    "selector_admits": bool(before["admitted"]),
-                    "selector_cue": before["cue"],
+                    "legacy_selector_admits": bool(before["admitted"]),
+                    "legacy_selector_cue": before["cue"],
                 },
                 "after": {
-                    "selector_admits": bool(after["admitted"]),
-                    "selector_cue": after["cue"],
+                    "legacy_selector_admits": bool(after["admitted"]),
+                    "legacy_selector_cue": after["cue"],
                 },
-                "selector_admits": bool(after["admitted"]),
-                "selector_cue": after["cue"],
-                "status": "admitted" if after["admitted"] else "skipped",
+                "legacy_selector_admits": bool(after["admitted"]),
+                "legacy_selector_cue": after["cue"],
+                "derivation_admitted": not bool(skip_reason),
+                "status": "skipped" if skip_reason else "admitted",
                 "skip_reason": skip_reason,
             }
         )
@@ -623,7 +631,7 @@ def build_derivation_denominator(
         "reason": reason,
         "outline_node_count": len(_flatten_nodes(tree.children)),
         "line_anchor_count": len(entries),
-        "legacy_admitted": sum(bool(item["before"]["selector_admits"]) for item in entries),
+        "legacy_admitted": sum(bool(item["before"]["legacy_selector_admits"]) for item in entries),
         "admitted": admitted,
         "skipped": skipped,
         "accounted": accounted,
@@ -635,16 +643,25 @@ def build_derivation_denominator(
     }
 
 
-def _skip_reason_for_anchor(node: OutlineNode, *, outline_anchor_count: int) -> str:
-    """Name why a printed anchor stays outside the derivation denominator."""
+def _skip_reason_for_anchor(
+    node: OutlineNode,
+    *,
+    outline_anchor_count: int,
+    root_header_present: bool = False,
+) -> str:
+    """Name a structural reason to skip an anchor, or return an empty string."""
     label = node.label.lower().strip()
     if label.startswith("internal revenue service") or "sequence no." in label:
         return "structure_header_anchor"
-    if outline_anchor_count > 1:
+    # The root-level duplicate is the form header's repeated sequence number;
+    # the section-level node with the same printed anchor is the actual cell.
+    # Do not turn that valid cell into a duplicate skip merely because the
+    # header shares its number.
+    if outline_anchor_count > 1 and not root_header_present:
         return "structure_duplicate_anchor"
     if node.kind in {"heading", "section"}:
         return "structure_non_cell_anchor"
-    return "selector_no_formula_cue"
+    return ""
 
 
 def _record_micro_failure(stats: dict[str, Any], node: OutlineNode, error: Exception) -> None:

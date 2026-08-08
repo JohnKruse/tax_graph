@@ -51,11 +51,11 @@ def _report(run_dir: Path) -> None:
         "denominator": {
             "line_anchor_count": 3,
             "skipped": 1,
-            "skipped_by_reason": {"selector_no_formula_cue": 1},
+            "skipped_by_reason": {"structure_non_cell_anchor": 1},
             "anchors": [
                 {"anchor": "1"},
                 {"anchor": "2"},
-                {"anchor": "3", "skip_reason": "selector_no_formula_cue"},
+                {"anchor": "3", "skip_reason": "structure_non_cell_anchor"},
             ],
         },
         "validation": {"attempted": 2, "derived": 1, "repaired": 0, "gapped": 0, "errored": 1},
@@ -115,7 +115,7 @@ def test_candidate_is_complete_evidence_and_diffs_live_graph(tmp_path: Path) -> 
         "errored": 1,
         "skipped": 1,
         "resolved": 1,
-        "skipped_by_reason": {"selector_no_formula_cue": 1},
+        "skipped_by_reason": {"structure_non_cell_anchor": 1},
         "documents": 1,
     }
     diff = summary["diff"]
