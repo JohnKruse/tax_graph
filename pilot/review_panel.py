@@ -13,7 +13,7 @@ from collections import Counter, defaultdict
 from html import escape
 from pathlib import Path
 import re
-from typing import Any, Iterable, Mapping
+from typing import Any, Iterable, Mapping, Sequence
 
 import yaml
 
@@ -263,6 +263,17 @@ def _target_rules(graph: Mapping[str, Any], node_id: str) -> tuple[list[str], li
     return rule_ids, operations
 
 
+def _rule_parameters(graph: Mapping[str, Any], rule_ids: Sequence[str]) -> Mapping[str, Any]:
+    """Return parameters for the first direct rule, if it is well formed."""
+    rules = graph.get("rules")
+    if not isinstance(rules, Mapping) or not rule_ids:
+        return {}
+    rule = rules.get(rule_ids[0])
+    if not isinstance(rule, Mapping) or not isinstance(rule.get("parameters"), Mapping):
+        return {}
+    return rule["parameters"]
+
+
 def _leaf(graph: Mapping[str, Any], node_id: str) -> dict[str, Any]:
     """Build a tree leaf from a graph node without inventing a label."""
 
@@ -272,12 +283,16 @@ def _leaf(graph: Mapping[str, Any], node_id: str) -> dict[str, Any]:
     constant = node.get("constant_value")
     if constant is not None:
         return {"kind": "constant", "node_id": node_id, "value": constant}
-    return {
+    result = {
         "kind": "reference",
         "node_id": node_id,
         "line": _line_reference(node_id),
         "label": cell_access.graph_node_label(graph, node_id).value,
     }
+    control_role = node.get("control_role")
+    if control_role:
+        result["control_role"] = str(control_role)
+    return result
 
 
 def _line_reference(node_id: str) -> str | None:
@@ -319,7 +334,7 @@ def _graph_tree(graph: Mapping[str, Any], node_id: str, stack: tuple[str, ...] =
                 "tree": child,
             }
         )
-    return {
+    result = {
         "kind": "operation",
         "operation": operation,
         "node_id": node_id,
@@ -327,6 +342,22 @@ def _graph_tree(graph: Mapping[str, Any], node_id: str, stack: tuple[str, ...] =
         "operands": operands,
         "label": cell_access.graph_node_label(graph, node_id).value,
     }
+    if operation == "IF_ELSE":
+        parameters = _rule_parameters(graph, rule_ids)
+        comparison = parameters.get("comparison")
+        if isinstance(comparison, str) and comparison:
+            result["comparison"] = comparison
+        else:
+            result["comparison_finding"] = (
+                "missing IF_ELSE comparison at rule.parameters.comparison"
+            )
+        condition = next(
+            (item["tree"] for item in operands if item.get("role") == "condition"),
+            None,
+        )
+        if isinstance(condition, Mapping) and condition.get("control_role"):
+            result["condition_control_role"] = condition["control_role"]
+    return result
 
 
 def _graph_projection(row: Mapping[str, Any], graph: Mapping[str, Any]) -> dict[str, Any] | None:
@@ -375,7 +406,12 @@ def _tree_key(tree: Mapping[str, Any]) -> tuple[Any, ...]:
         for item in tree.get("operands", [])
         if isinstance(item, Mapping) and isinstance(item.get("tree"), Mapping)
     )
-    return ("operation", _text(tree.get("operation")), operands)
+    return (
+        "operation",
+        _text(tree.get("operation")),
+        _text(tree.get("comparison")),
+        operands,
+    )
 
 
 def _tree_operation_count(tree: Mapping[str, Any]) -> int:
@@ -636,8 +672,8 @@ def _leaf_text(tree: Mapping[str, Any]) -> str:
     return label or "input"
 
 
-def _math_text(tree: Mapping[str, Any]) -> str:
-    """Flatten the lossless graph tree, omitting roles implied by position."""
+def _math_text(tree: Mapping[str, Any], indent: int = 0) -> str:
+    """Render Math with structural line breaks at operand boundaries."""
 
     if tree.get("kind") != "operation":
         return _leaf_text(tree)
@@ -646,12 +682,44 @@ def _math_text(tree: Mapping[str, Any]) -> str:
     for index, item in enumerate(tree.get("operands", [])):
         if not isinstance(item, Mapping) or not isinstance(item.get("tree"), Mapping):
             continue
-        role = _text(item.get("role")).strip()
-        child = _math_text(item["tree"])
-        if _role_is_implied(tree, index, role):
+        role = _tree_role(tree, index, _text(item.get("role")).strip())
+        child = _math_text(item["tree"], indent + 4)
+        if operation == "IF_ELSE" and index == 0:
+            operands.append("comparison missing" if not tree.get("comparison") else role)
+            continue
+        if _role_is_implied(tree, index, _text(item.get("role")).strip()):
             role = ""
         operands.append(f"{role}={child}" if role else child)
-    return f"{operation}({', '.join(operands)})"
+    compact = f"{operation}({', '.join(operands)})"
+    if "\n" not in compact and len(" " * indent + compact) <= 120:
+        return compact
+    lines = []
+    for index, operand in enumerate(operands):
+        parts = operand.splitlines()
+        lines.append(" " * (indent + 4) + parts[0])
+        lines.extend(parts[1:])
+        if index < len(operands) - 1:
+            lines[-1] += ","
+    return f"{operation}(\n" + "\n".join(lines) + "\n" + " " * indent + ")"
+
+
+_COMPARISON_SYMBOLS = {"gt": ">", "ge": ">=", "lt": "<", "le": "<=", "eq": "="}
+
+
+def _tree_role(tree: Mapping[str, Any], index: int, role: str) -> str:
+    """Render a human-facing branch test instead of a bare condition role."""
+    if _text(tree.get("operation")).upper() != "IF_ELSE" or index != 0:
+        return role
+    operands = tree.get("operands") if isinstance(tree.get("operands"), list) else []
+    condition = operands[0].get("tree") if operands and isinstance(operands[0], Mapping) else {}
+    line = _text(condition.get("line")).strip() if isinstance(condition, Mapping) else ""
+    if tree.get("condition_control_role") == "checkbox":
+        return f"Line {line} checked?" if line else "checkbox checked?"
+    comparison = _text(tree.get("comparison")).strip().lower()
+    symbol = _COMPARISON_SYMBOLS.get(comparison)
+    if symbol and line:
+        return f"line {line} {symbol} threshold"
+    return role or "condition"
 
 
 def _role_is_implied(tree: Mapping[str, Any], index: int, role: str) -> bool:
@@ -684,12 +752,20 @@ def _tree_html(tree: Mapping[str, Any], seen: set[tuple[Any, ...]] | None = None
         if not isinstance(operand, Mapping) or not isinstance(operand.get("tree"), Mapping):
             continue
         raw_role = _text(operand.get("role")).strip()
-        role = "" if _role_is_implied(tree, index, raw_role) else escape(raw_role)
+        display_role = _tree_role(tree, index, raw_role)
+        role = "" if _role_is_implied(tree, index, raw_role) else escape(display_role)
         child = _tree_html(operand["tree"], seen)
         role_html = f'<span class="tree-role">{role}</span>' if role else ""
-        children.append(f'<div class="tree-edge">{role_html}{child}</div>')
+        edge_class = "tree-edge tree-edge-operation" if operand["tree"].get("kind") == "operation" else "tree-edge"
+        children.append(f'<div class="{edge_class}">{child}{role_html}</div>')
     child_html = f'<div class="tree-children">{"".join(children)}</div>' if children else ""
-    return f'<div class="tree-box"><strong>{operation}</strong>{child_html}</div>'
+    finding = tree.get("comparison_finding")
+    finding_html = (
+        f'<div class="tree-finding">{escape(_text(finding))}</div>'
+        if finding
+        else ""
+    )
+    return f'<div class="tree-box"><strong>{operation}</strong>{finding_html}{child_html}</div>'
 
 
 def _hole_html(row: Mapping[str, Any]) -> str:
@@ -836,12 +912,16 @@ code {{ overflow-wrap: anywhere; font-family: Consolas, monospace; font-size: .8
 .tree-expression {{ padding: 10px; border: 1px solid #8795a5; background: #fbfcfd; overflow: auto; }}
 .tree-box {{ display: inline-block; min-width: 125px; padding: 8px; border: 2px solid #40566d; border-radius: 6px; background: #e7f0f8; }}
 .tree-box strong {{ display: block; text-align: left; }}
-.tree-children {{ margin-top: 8px; padding-left: 32px; border-left: 2px solid #9aa7b4; }}
-.tree-edge {{ display: flex; align-items: flex-start; gap: 8px; margin: 7px 0; min-width: max-content; }}
+.tree-children {{ margin-top: 8px; border-left: 2px solid #9aa7b4; }}
+.tree-edge {{ display: grid; grid-template-columns: max-content max-content; align-items: flex-start; column-gap: 8px; margin: 7px 0; min-width: max-content; }}
+.tree-edge-operation {{ margin-left: 32px; }}
+.tree-edge > :not(.tree-role) {{ grid-column: 1; }}
+.tree-edge > .tree-role {{ grid-column: 2; align-self: center; }}
 .tree-role {{ color: #18212b; font: .74rem Consolas, monospace; font-weight: bold; }}
 .tree-leaf {{ display: inline-flex; min-width: 120px; padding: 7px; border: 1px solid #8795a5; border-radius: 4px; background: white; }}
 .tree-reference {{ padding: 7px; border: 1px dashed #8795a5; background: white; }}
-.math-expression {{ min-height: 52px; padding: 10px; border: 1px solid #8795a5; background: #fbfcfd; }}
+.tree-finding {{ margin-top: 5px; color: #a32121; font: .74rem Consolas, monospace; }}
+.math-expression {{ min-height: 52px; padding: 10px; border: 1px solid #8795a5; background: #fbfcfd; white-space: pre-wrap; overflow-wrap: normal; }}
 .graph-trace {{ margin-top: 12px; padding: 8px; border: 1px solid #d8dee5; background: #fafbfc; }}
 .graph-trace summary {{ cursor: pointer; font-weight: bold; }}
 .graph-trace h4 {{ margin: 10px 0 5px; font-size: .84rem; }}

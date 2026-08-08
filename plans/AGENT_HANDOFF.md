@@ -36,6 +36,36 @@ executing the engine's own handler against the verbatim cited instruction. **Rul
 **FULL-SUITE FLOOR APPLIES** - this round touches `tax_graph/` and `schemas/`, and Part C needs a
 provider run. The recent pilot-round exemptions do NOT apply.
 
+**WORKER STATUS (2026-08-08; S85 implementation in progress).** Parts A, B, D, and E are implemented:
+the engine fails closed with a named trace, the graph and expression contracts require an explicit
+comparator, candidate rows with a missing comparator become review gaps, the execution regression
+covers both Form 6251 line 18 arms, and the panel shows comparator, checkbox, finding, wrapping, and
+indentation behavior. No rules.yaml or promoted artifact was hand-authored.
+
+**TEST EVIDENCE.** RAN:
+`$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp_s85'; .venv\Scripts\python.exe -m pytest tests\test_m20_s85_comparator.py tests\test_operation_registry_m20.py tests\test_derive_cells_m20.py -q`
+-> **94 passed, 1 warning**. RAN:
+`$testroot='C:\Users\devbox\AppData\Local\Temp\tax_graph_pytest_s85'; New-Item -ItemType Directory -Path $testroot -Force | Out-Null; $env:PYTEST_DEBUG_TEMPROOT=$testroot; .venv\Scripts\python.exe -m pytest tests\test_graph_validator.py -q`
+-> **14 passed in 122.16s**. RAN:
+`$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp_s85'; .venv\Scripts\python.exe -m pytest tests\test_m20_s31.py -q`
+-> **8 passed, 1 warning**. RAN:
+`$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp_s85'; .venv\Scripts\python.exe -m pytest pilot -q`
+-> **39 passed, 1 warning**. RAN `.venv\Scripts\python.exe tools\check_ascii.py`
+-> **ASCII check OK**. The warnings are the known permission failure writing the pre-existing
+`.pytest_cache`.
+
+**PROVIDER BLOCK.** The pre-round `C:\tmp\m20_s68_candidate` contains **3 IF_ELSE rules, all 3
+missing comparison data**. RAN:
+`.venv\Scripts\python.exe experiments\derive_cells_s25.py --year 2025 --output-dir C:\Users\devbox\AppData\Local\Temp\tax_graph_m20_s85 --document form_6251_2025`
+-> process completed, but **0 derived / 29 errored**; every live row reported
+`LlmUnavailable: OpenRouter request failed: Connection error.` The required escalated retry was
+rejected by the safety review because it would send IRS-derived payloads to OpenRouter without
+explicit user authorization. Therefore the provider leg, after-run comparator count, candidate
+regeneration, and panel render from current output are **NOT RUN**. No draft was promoted.
+
+**FULL SUITE:** NOT RUN - the known full-suite runtime is about 57 minutes, beyond the Worker
+600-second command cap; Architect-side verification remains required.
+
 **THE FLOW COLUMN IS RETIRED**, archived at the pushed tag **`archive/m20-flow-column`** (`5ee8da2`).
 Recover with `git show archive/m20-flow-column:pilot/review_panel.py`. Rules 15 and 16 bind; rule 15
 supersedes rule 11 and retires rule 14.
