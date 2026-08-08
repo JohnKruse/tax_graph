@@ -21,8 +21,30 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## BALL
 
-**BALL: WORKER - M20-S90 IMPLEMENTED and committed locally. S90 is under Current round awaiting
-Architect acceptance and one live provider row.**
+**BALL: WORKER - M20-S90 NOT ACCEPTED at `056e3be`. The mechanism is right; the failure mode is
+wrong. Rework spec is under Current round.**
+
+**IT COST 27 ROWS OF COVERAGE TO FIX 12 MISLABELLED ONES.** Live corpus run at
+`C:\tmp\m20_s90\run`, temperature 0, $0.1032: **coverage 139 -> 112 of 157 (88.5% -> 71.3%)**,
+**errors 11 -> 38**, model-stated inputs 67 -> 38.
+
+**THE FLOOR IS BREACHED: 3 of the 64 protected rows regressed.** `form_6251_2025` line 13 is
+**directly attributable** - it repaired to `max(qdcgt line 4, 0)` under S89 and now errors
+`operand_document_not_found` because the model added `schedule_d_tax_worksheet`, a document
+outside the inventory. `form_6251_2025` line 20 lost its floor and `form_2441_2025` line 25 threw a
+LOOKUP_TABLE payload error; **both are plausibly sampling** - line 25 has failed nine prior runs -
+**so I am not attributing them, only reporting them.**
+
+**THE VALIDATOR GUARD NEVER FIRED. `external_reference_as_input` raised ZERO times in the run.**
+The damage came entirely from the prompt clause telling the model to emit a canonical id even for
+documents outside the inventory. It did - corpus-wide, not on the 12 targeted rows - producing
+**59 `operand_document_not_found` and 10 `operand_inventory_unavailable`** failures.
+
+**MY SPEC IS WHAT MADE THIS HAPPEN.** I wrote "must produce a NAMED FINDING, never a silent
+`REQUIRE_INPUT`" without saying that a named finding must not be a HARD failure. An unresolvable
+reference is a **known limit of the corpus**, not a defective derivation, and the two must not
+share an outcome.
+
 
 **THE GATE IS GONE AND NOTHING REGRESSED.** Against the S81 temperature-0 baseline, all **64** rows
 that derived or repaired then still do - checked row by row, not by count. **Coverage 64 -> 139 of
@@ -49,8 +71,6 @@ inputs (18%) have a printed face naming another form. **Do not read `model_state
 **S88 ACCEPTED at `49ff88a`.** Arm A shipped; context assembly unchanged. **Do not widen the context
 or revisit buffers without new evidence** - wrong-line quotes went 0 -> 2 -> 6 as the window widened.
 **The S89 floor run is at** `C:\tmp\m20_s89\run`.
-un`.
-un`.**
 
 
 **S81 ACCEPTED at `c89dd53`; temperature pinned at `50a64bf`.**
@@ -196,47 +216,40 @@ resolve now, and whether they resolve to the RIGHT line is unreviewed.
 
 ## Current round
 
-**M20-S90 IMPLEMENTED BY WORKER (2026-08-08), AWAITING ARCHITECT ACCEPTANCE. A FACE THAT NAMES
-ANOTHER FORM IS A REFERENCE, NOT AN INPUT.**
+**M20-S90b SPECCED BY ARCHITECT (2026-08-08). AN UNRESOLVABLE REFERENCE IS A LIMIT, NOT A DEFECT.**
+**REAL-PROJECT ROUND** - the full-suite floor applies. Build on `056e3be`; do not revert it.
 
-**THE TARGET STATE.** A printed line whose own face says "from Form 8863, line 8" derives an
-operand pointing at that document and line - or, when the document is outside the corpus, a named
-finding that says so. `REQUIRE_INPUT` is reserved for a line the filer actually supplies from
-their own records. Reference commit for the shape of a cross-form operand: `b153e94` (S74's
-document inventory), which already resolves worksheet and form operands correctly.
+**WHAT S90 GOT RIGHT AND KEEPS.** `_form_face_source_references` is sound: source wording only
+(`from`, `shown on`, `reported on`), current document excluded, output wording such as "also enter
+on Schedule 3" correctly ignored. On the S89 rows it flags exactly the 12 intended. **Keep it.**
 
-**THE MEASUREMENT THAT MOTIVATES IT, from the S89 floor run.** 12 of 67 model-asserted inputs
-(18%) have a face naming another form or schedule - 1040 `19` "from Schedule 8812", `20` "Amount
-from Schedule 3, line 8", `29` "from Form 8863, line 8", 6251 `2a` "Schedule A, line 7; otherwise
-... 1040 line 12e". **18% is the mechanical floor, not the true rate:** 1040 `4b` "Taxable amount"
-and `12e`'s standard-versus-itemized choice are also not inputs and no substring finds them.
+**THE ONE CHANGE. A reference to a document outside the inventory must be a DISTINCT NON-FATAL
+OUTCOME that records the reference**, not an error indistinguishable from a wrong operand. Name it
+`unresolved_external_reference`: it carries the cited document and line, it is visible in the
+review surface as a corpus limit, and **it does not consume the row's one repair.** A wrong operand
+inside the corpus stays a hard failure. Today both land as `operand_document_not_found`, which is
+why one prompt clause cost 27 rows.
 
-**THE FLOOR.** The 64 non-regressing rows stay non-regressing. The 13 real expressions stay. **A
-line whose face names an out-of-corpus document must produce a NAMED FINDING, never a silent
-`REQUIRE_INPUT`** - that is the S89 defect repeating one level down.
+**INFORMATION RETURNS ARE FILER INPUTS, NOT CROSS-FORM REFERENCES.** A W-2, a 1099 of any suffix,
+and a K-1 are records the filer supplies; `REQUIRE_INPUT` is correct for them. `form_6251_2025`
+line 2j is flagged wrongly today on "Schedule K-1 (Form 1041), box 12, code A". **1040 lines 1a and
+25a escape only by accident** - the printed face reads "Form(s) W-2" and the regex needs whitespace
+after "form", so a face reading "from Form W-2, box 1" WOULD be flagged. **Exclude information
+returns by rule, not by spelling**, and guard 2j plus a synthetic "from Form W-2, box 1" face.
 
-**OUT OF SCOPE.** The 11 errored rows, including the 5 no arm ever recovered. Still queued: the
-run-together instruction headings (`**Line 2dDepletion**`); artifact-pinned test counts measured
-against untracked `.cache/raw` files.
+**RECHECK THE PROMPT CLAUSE.** With a non-fatal outcome in place the instruction to emit a canonical
+id for an out-of-corpus document may be right, but it is what produced 59
+`operand_document_not_found` and 10 `operand_inventory_unavailable`. **Measure it; do not assume it.**
 
-**WORKER IMPLEMENTATION.** `validate_cell_output` now raises the named
-`external_reference_as_input` finding when a `REQUIRE_INPUT` expression is paired with form-face
-source wording naming another form, schedule, or worksheet. Source cues are `from`, `shown on`,
-and `reported on`; output wording such as `also enter on Schedule 3` is not treated as a source.
-The prompt now directs the model to emit a cross-document operand, including an unknown canonical
-document id so the existing unresolved-external path can fail closed with a named finding. The
-real S89 run was read as source evidence: exactly 12 `model_stated_input` rows match this guard.
+**THE FLOOR, unchanged and now stated properly.** The 64 S81 rows and the 13 S89 expressions stay
+derived or repaired. **`form_6251_2025` line 13 must return to `max(qdcgt line 4, 0)`.** Coverage
+must return to at least the S89 139 of 157. **A named finding must never move a row out of
+derived/repaired unless the derivation itself is wrong.**
 
-**S90 TEST EVIDENCE.** RAN:
-`$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp_codex'; .venv\Scripts\python.exe -m pytest tests/test_derive_cells_m20.py -q`
--> **72 passed, 1 warning**. RAN:
-`$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp_codex'; .venv\Scripts\python.exe -m pytest tests/test_m20_s31.py -q`
--> **8 passed, 1 warning**. RAN:
-`$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp_codex'; .venv\Scripts\python.exe -m pytest tests/test_candidate_regeneration_m20.py tests/test_run_summary_m20.py -q`
--> **8 passed, 1 warning**. RAN `.venv\Scripts\python.exe tools\check_ascii.py`
--> **ASCII check OK**. The warnings are the known permission failure writing the pre-existing
-`.pytest_cache`. **NOT RUN: live provider derivation** - this changes the prompt and validator
-contract; it must be verified in a network-capable context with at least one row deriving.
+**OUT OF SCOPE.** The 11 pre-existing errored rows. Queued: `pilot/context_arms.py` still scores
+`REQUIRE_INPUT` as a recovered formula; the run-together instruction headings; artifact-pinned test
+counts measured against untracked `.cache/raw` files.
+
 
 ## Standing operational notes
 
