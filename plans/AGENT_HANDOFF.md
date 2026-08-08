@@ -21,17 +21,24 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## BALL
 
-**BALL: WORKER - M20-S85 (THE COMPARATOR BECOMES REQUIRED DATA). REAL-PROJECT ROUND.**
-**S84 ACCEPTED at `13648c2`**, verified independently: the flow is gone, the three Tree corrections
-landed, holes state 83/7/2, `--top N` works, 34 pilot tests green, and **rule 13 did not regress**
-when `MODERATOR_ROLES` was deleted.
+**BALL: WORKER - S85 PART C NOW; S86 AFTER THE SUITE RESULT.**
+**S85 IS PART-DONE at `1948b5b` and `19f1785`.** Parts A, B, D and E verified independently by the
+Architect: the `"gt"` default is gone and an absent comparator returns MISSING with a named trace,
+the rule schema requires `parameters.comparison` on `IF_ELSE` with the five-value enum, the validator
+names it, the regression executes 6251 line 18 both arms (100,000 -> 26,000; 300,000 -> 79,218), and
+John's three Tree corrections landed - boxes share a left edge, the Math pretty-prints to 19 lines
+instead of one 392-character run.
 
-**A PROVEN CORRECTNESS DEFECT, FOUND BY READING THE TREE (John, 2026-08-08).** He asked how a
-comparison condition is shown. It is not shown, because it is not stored: `IF_ELSE` keeps its
-comparator in `rule.parameters.comparison`, the candidate rules carry **no `parameters` block**, and
-the engine defaults to `"gt"`. **`form_6251_2025` line 18 is inverted on every input** - proven by
-executing the engine's own handler against the verbatim cited instruction. **Rule 18 in
-`docs/review-notation.md` holds the evidence; rule 17 covers the display.**
+**PART C IS UNBLOCKED. IT WAS TRANSPORT, NOT AUTHORIZATION.** OpenRouter answers in 0.2s with the key
+present; do not request an escalation. **The model is pinned to `openai/gpt-5.6-luna`**, having
+drifted to `google/gemini-3.6-flash` at 15x prompt cost.
+
+**BOTH NEW DISPLAY PATHS STILL RENDER ZERO TIMES ON REAL DATA** - no comparator symbol, no `checked?`
+- because `cand_s71` predates the change. **Rules 17 and 18 are unproven outside unit tests until
+Part C regenerates the candidate.** That is the round's remaining point.
+
+**A FULL SUITE IS RUNNING ON THE WORKING TREE.** No edits to `tax_graph/`, `schemas/` or `tests/`
+until the Architect posts the result.
 
 **FULL-SUITE FLOOR APPLIES** - this round touches `tax_graph/` and `schemas/`, and Part C needs a
 provider run. The recent pilot-round exemptions do NOT apply.
@@ -213,74 +220,75 @@ resolve now, and whether they resolve to the RIGHT line is unreviewed.
 
 ## Current round
 
-**M20-S85 SPECCED BY ARCHITECT (2026-08-08). THE COMPARATOR BECOMES REQUIRED DATA.**
-**S84 ACCEPTED at `13648c2`**, verified independently: the flow is gone (zero `<svg`, zero flow
-classes, zero arrow glyphs, net -659 lines), the three Tree corrections landed, holes state 83/7/2,
-`--top N` works, 34 pilot tests green. **Rule 13 did NOT regress when `MODERATOR_ROLES` was deleted**
-- role counts are identical to S83, which was the real risk in removing that set.
+**TWO PIECES OF WORK, IN THIS ORDER. THE ORDER IS NOT NEGOTIABLE.**
+**A FULL SUITE IS RUNNING ON THE WORKING TREE (Architect, 2026-08-08, about 57 minutes).**
+**DO NOT MODIFY `tax_graph/`, `schemas/`, OR `tests/` UNTIL THE ARCHITECT POSTS THE RESULT.**
+An edit mid-run makes that result describe no commit at all, and we have already paid for one
+unattributable baseline this month. Work 1 does not touch source and is safe to start immediately.
 
-**THIS IS A REAL-PROJECT ROUND, NOT A PILOT ROUND.** It touches `tax_graph/` and `schemas/`, so the
-**full-suite floor applies**: run it, and report the count against the known pre-existing set of 20.
+### WORK 1 (START NOW) - M20-S85 PART C. THE PROVIDER IS NOT BLOCKED.
 
-**THE DEFECT IS PROVEN, NOT SUSPECTED. Rule 18 in `docs/review-notation.md` holds the evidence.**
-`IF_ELSE` keeps its comparator in `rule.parameters.comparison`; the candidate rules carry **no
-`parameters` block at all**; and `tax_graph/engine/operations.py:241` defaults it to `"gt"`. On
-`form_6251_2025` line 18 that is **inverted on every input** - the engine's own handler returns the
-26% branch when line 17 is OVER the threshold and the 28% branch when it is UNDER, while the cited
-instruction says *"$239,100 or less ... multiply by 26%. Otherwise ... 28% and subtract $4,782."*
-**Reproduce this before changing anything; it is the acceptance case.**
+**The Architect diagnosed the block: it was transport, not authorization.** OpenRouter answers in
+0.2s, HTTP 200, 400 models listed, and the key is present in the environment. `transport_retries`
+already defaults to 2 with 1s backoff, so 29/29 connection errors means that sandbox had no network,
+not that a retry was missing. **Do not request a safety escalation; nothing is gated.**
 
-**PART A - FAIL CLOSED IN THE ENGINE.** Remove the `"gt"` default at
-`tax_graph/engine/operations.py:241`. An `IF_ELSE` whose rule has no `comparison` must produce a
-named failure, never a computed number. **A plausible wrong answer is worse than a refusal** - this
-is the temperature-pin lesson again, where `0` being falsy silently discarded the setting.
+**THE MODEL IS NOW PINNED TO `openai/gpt-5.6-luna`** in `config/tax-graph.config.yaml`. It had
+drifted to `google/gemini-3.6-flash`, which live OpenRouter pricing puts at **15x prompt and 12.5x
+completion** cost. **Confirm the resolved model in the run telemetry before trusting the output**, and
+if any row reports a different resolved model, STOP and report rather than continuing.
 
-**PART B - REQUIRE IT IN THE SCHEMA.** `schemas/rule.schema.json` types `parameters` as a free-form
-object. Make `comparison` required when `operation` is `IF_ELSE`, with enum `gt|ge|lt|le|eq` - the
-five the engine already implements. Add the matching named finding in
-`tax_graph/validate/graph_validator.py` so a graph carrying a comparator-less branch does not
-validate.
+Run derivation for the branch documents, regenerate the candidate, and report:
+1. **`IF_ELSE` rules missing a comparator, before and after.** Pre-round it was 3 of 3. **If any
+   remain, say so plainly and DO NOT default them** - the engine now refuses them, which is correct.
+2. **`form_6251_2025` line 18 executed both ways** against the quoted instruction, from the
+   regenerated candidate rather than the fixture.
+3. **Comparator symbols and `checked?` phrasing rendered from real data.** Both paths render ZERO
+   times on `cand_s71` because it predates the change; `form_1040_2025` resolves 18 checkbox lines,
+   so the checkbox half should now fire. **These are the first real-data proofs of rules 17 and 18.**
+4. The regenerated panel to `C:	mp`, never a dot directory.
 
-**PART C - THE PIPELINE EMITS IT. THIS IS THE WIRE-TOUCHING CHANGE; IT IS THE ONLY ONE.**
-**DO NOT HAND-AUTHOR the comparison into `rules.yaml`.** Per the prime directive, derivation must
-produce it: the derive_cells schema and prompt must carry the comparator, sourced from the
-instruction text that already states it in words (*"or less"*, *"Otherwise"*). **A provider run is
-required for this part** - unlike the recent pilot rounds. Temperature is pinned at 0; the run is
-the new reference for the branch cells.
+**`form_2441_2025` HAS NO ADDRESS REGISTRY FILE** in either `graph/2025/addresses/` or `_drafts/`,
+so its control roles resolve to nothing and its line 22 checkbox cannot render. **Queue it; do not
+fix it here.**
 
-**PART D - VERIFY BY EXECUTION, NOT BY INSPECTION.** A regression test that runs
-`form_6251_2025` line 18 through the engine with real numbers either side of the threshold and
-asserts the arm against the cited instruction. **The existing evidence for this cell has always been
-a rendering; a rendering cannot catch an inverted comparator.**
+### WORK 2 (AFTER THE SUITE RESULT) - M20-S86. ONE MODEL ACCESSOR, ATTRIBUTABLE RUNS.
 
-**PART E - THE TREE SHOWS THE TEST (rule 17), plus three corrections from John.** Pilot-side, no
-suite cost:
-1. **Labels right, boxes left.** `.tree-edge` is a flex row with the role span FIRST, so
-   `married_filing_separately` shoves its box right while `key` barely does. Two-column grid: box in
-   column one so every box shares a left edge, label in column two.
-2. **Indent only nested OPERATIONS.** `.tree-children` indents every child, so leaf value boxes get
-   the same 32px as a `when_true` branch. John: *"I meant the big operation levels that are nested."*
-   Leaves sit flush; operation boxes indent.
-3. **Pretty-print the Math across lines.** It already wraps, but via `overflow-wrap: anywhere`, which
-   breaks mid-token so `LOOKUP_TABLE` splits across lines. Break at operand boundaries with
-   indentation instead, so wrap points carry structure. The 392-character line is
-   `form_6251_2025` line 18 and it is long for real reasons; **it needs to READ, not to shrink.**
-4. **Checkbox and comparator phrasing per rule 17** - `Line 22 checked?` for `control_role:
-   checkbox`, `line 17 <= threshold` where the comparator is known, and a visible named finding
-   where it is not.
+John, 2026-08-08: *"I find that we keep running into this model switching. I wanted it to be set in
+the config file, full stop."* and *"I am always in favor of good logging and attribution."*
+**This round ends a recurring class of defect, not one instance of it.**
 
-**EVIDENCE REQUIRED.** In this order:
-1. **The 6251 line 18 execution, before and after**, both arms, against the quoted instruction.
-2. Count of `IF_ELSE` rules missing a comparator, before and after the pipeline run - and **if any
-   remain, say so plainly rather than defaulting them.**
-3. Full suite, against the known 20.
-4. The regenerated panel: checkbox conditions phrased per rule 17, comparators printed, boxes
-   sharing a left edge, and the longest Math line rendered across lines.
+**THE CAUSE IS IMPROVISED FALLBACKS, which is the 2026-08-06 accessor ruling all over again.**
+`generator.py:28`, `critic.py:24`, `background.py:536` and `micro.py:368` each call
+`get_config_value(settings, "llm.model", "configured-llm")` with their own default. **A missing or
+renamed key does not fail - it yields the fake model name `configured-llm` and the run proceeds.**
+There are also five model knobs (`model`, `micro_model`, `example_model`, `nversion_model`) plus
+`vendor_family`, a SECOND hand-maintained field that must agree with the model id or the router
+misroutes. `micro_model` is absent from the live config today, so it silently falls back.
 
-**A SECONDARY OBSERVATION, not this round's job.** The instruction cited for 6251 line 18 is the
-**Form 1040-NR paragraph** (*"If you are filing Form 1040-NR..."*). The thresholds match, so the
-numbers are right, but a plain 1040 filer's cell is citing the NR text. This is the wrong-filer's-
-form family that S74 fixed on line 20. **Queue it; do not widen this round.**
+1. **ONE ACCESSOR DECIDES.** A single resolver owns the model. **Absence is a typed error, never a
+   placeholder string.** Delete all four improvised fallbacks; `configured-llm` must not survive
+   anywhere in the tree.
+2. **`vendor_family` IS DERIVED from the model id**, not maintained by hand. Keep an explicit
+   override only if a caller genuinely needs one; otherwise remove the key.
+3. **EVERY RUN RECORDS WHAT PRODUCED IT** - requested model, resolved model, and resolved endpoint
+   when router metadata is on. **The plumbing already exists** (`llm_client.py:685`,
+   `generator.py:53`, `cells.py:517`, `background.py:255`); this is surfacing, not building.
+   `doctor` prints the resolved model.
+4. **`provider_routing.allow_fallbacks` GOES TO `false` in the example config**, with the reason
+   written down: endpoint-level fallback can route to a provider that ignores `temperature: 0`, which
+   is the pin the whole attributable-baseline argument rests on.
+5. **INVARIANT TEST AT THE ACCESSOR**, per the standing rule - not at the four call sites.
+6. **NO MODEL FALLBACK.** Considered and rejected with John, 2026-08-08: a silent substitute would
+   split a corpus across two families with different expression shapes and no way to attribute a
+   regression, at 15x the cost. **`nversion_model` is the sanctioned second model** - deliberate
+   cross-family corroboration that RECORDS its disagreement, the opposite of a silent swap.
+7. **DO NOT TOUCH `ocr.model`.** John, 2026-08-08: *"i'm cool with the mistral-ocr-latest tag as
+   that's what they push."* The alias stays.
+
+**EVIDENCE.** Call sites carrying an improvised model fallback, before and after - **target zero**;
+a run report showing requested and resolved model side by side; `doctor` output naming the model;
+and the full suite against the known 20.
 
 ## Standing operational notes
 
