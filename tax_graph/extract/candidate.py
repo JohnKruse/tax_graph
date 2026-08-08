@@ -19,7 +19,7 @@ import yaml
 from tax_graph.acquire.manifest import load_manifest
 from tax_graph.extract.cells import expression_to_graph
 from tax_graph.io.loader import load_graph
-from tax_graph.operation_registry import OPERATION_SPECS
+from tax_graph.operation_registry import OPERATION_SPECS, projection_rule_for
 
 
 CANDIDATE_SCHEMA_VERSION = 1
@@ -196,6 +196,7 @@ def _write_document_candidate(
     seen_citations: set[str] = set()
     seen_spans: set[str] = set()
     formula_cells: list[dict[str, Any]] = []
+    control_roles = _field_control_roles(root, year, document["document_id"])
 
     for row in rows:
         line = str(row["line"])
@@ -269,6 +270,7 @@ def _write_document_candidate(
                 }
             )
             continue
+        projection_parameters = _projection_rule_parameters(expression)
         target_rule_id = f"rule_{target}_candidate"
         _add_node(
             nodes,
@@ -287,19 +289,23 @@ def _write_document_candidate(
             item = dict(item)
             item.setdefault("citation_refs", [citation_id])
             _add_node(nodes, seen_nodes, item)
-        for source in _expression_leaf_nodes(expression, document["document_id"]):
+        for source in _expression_leaf_nodes(
+            expression,
+            document["document_id"],
+            control_roles=control_roles,
+        ):
             if source["node_id"] not in seen_nodes and source["node_id"] != target:
                 _add_node(nodes, seen_nodes, {**source, "citation_refs": [citation_id]})
-        _add_rule(
-            rules,
-            seen_rules,
-            {
-                "rule_id": target_rule_id,
-                "operation": str(expression.get("op") or "").upper(),
-                "description": f"Candidate derivation for {document['document_id']} line {line}.",
-                "citation_refs": [citation_id],
-            },
-        )
+        target_rule = {
+            "rule_id": target_rule_id,
+            "operation": str(expression.get("op") or "").upper(),
+            "description": f"Candidate derivation for {document['document_id']} line {line}.",
+            "citation_refs": [citation_id],
+        }
+        target_parameters = _rule_parameters(expression)
+        if target_parameters:
+            target_rule["parameters"] = target_parameters
+        _add_rule(rules, seen_rules, target_rule)
         for edge in projection.edges:
             edge = dict(edge)
             edge["rule_id"] = target_rule_id if edge.get("target") == target else str(edge.get("rule_id") or target_rule_id)
@@ -316,6 +322,11 @@ def _write_document_candidate(
                         "operation": operation,
                         "description": f"Candidate projection rule {rule_id}.",
                         "citation_refs": [citation_id],
+                        **(
+                            {"parameters": projection_parameters[rule_id]}
+                            if rule_id in projection_parameters
+                            else {}
+                        ),
                     },
                 )
 
@@ -485,6 +496,10 @@ def _candidate_row(document_id: str, row: Mapping[str, Any], field_addresses: Ma
         findings.append({"kind": "missing_verbatim_citation", "message": review_gap})
     if original_status in {"gapped", "errored", "error"} and not review_gap:
         review_gap = original_status
+    if expression is not None and _missing_if_else_comparison(expression):
+        candidate_status = "review_gap"
+        review_gap = "IF_ELSE comparator is missing; candidate graph emission is blocked"
+        findings.append({"kind": "missing_comparison", "message": review_gap})
     if original_status in {"gapped", "errored", "error"} and review_gap:
         findings.append(
             {
@@ -680,7 +695,13 @@ def _live_expression(
         else:
             value = {"node": source}
         args.append(value)
-    return {"op": operation, "args": args}
+    expression = {"op": operation, "args": args}
+    if operation == "IF_ELSE":
+        parameters = rule.get("parameters")
+        comparison = parameters.get("comparison") if isinstance(parameters, Mapping) else None
+        if isinstance(comparison, str) and comparison:
+            expression["comparison"] = comparison
+    return expression
 
 
 def _normalize_candidate_expression(value: Mapping[str, Any], document_id: str) -> dict[str, Any]:
@@ -694,7 +715,7 @@ def _normalize_candidate_expression(value: Mapping[str, Any], document_id: str) 
         if "node" in value:
             return {"node": str(value["node"])}
         return {"node": "unresolved"}
-    return {
+    normalized = {
         "op": str(value.get("op") or "").upper(),
         "args": [
             _normalize_candidate_expression(item, document_id)
@@ -703,9 +724,17 @@ def _normalize_candidate_expression(value: Mapping[str, Any], document_id: str) 
             for item in value.get("args", []) or []
         ],
     }
+    if normalized["op"] == "IF_ELSE" and isinstance(value.get("comparison"), str):
+        normalized["comparison"] = value["comparison"]
+    return normalized
 
 
-def _expression_leaf_nodes(expression: Mapping[str, Any], document_id: str) -> list[dict[str, Any]]:
+def _expression_leaf_nodes(
+    expression: Mapping[str, Any],
+    document_id: str,
+    *,
+    control_roles: Mapping[str, str] | None = None,
+) -> list[dict[str, Any]]:
     result: list[dict[str, Any]] = []
     seen: set[str] = set()
     for node in _walk_expression(expression):
@@ -727,17 +756,44 @@ def _expression_leaf_nodes(expression: Mapping[str, Any], document_id: str) -> l
         if node_id in seen:
             continue
         seen.add(node_id)
-        result.append(
-            {
-                "node_id": node_id,
-                "document_id": doc,
-                "label": f"Source {node_id}",
-                "node_type": "form_line" if "line" in node else "fact",
-                "value_type": "currency",
-                "required": "optional",
-            }
-        )
+        item = {
+            "node_id": node_id,
+            "document_id": doc,
+            "label": f"Source {node_id}",
+            "node_type": "form_line" if "line" in node else "fact",
+            "value_type": "currency",
+            "required": "optional",
+        }
+        line = str(node.get("line") or "").strip().lower()
+        role = (control_roles or {}).get(line) if doc == document_id else None
+        if role:
+            item["control_role"] = role
+        result.append(item)
     return result
+
+
+def _field_control_roles(root: Path, year: str, document_id: str) -> dict[str, str]:
+    """Return unambiguous control roles keyed by printed line."""
+    path = root / "graph" / year / "addresses" / f"{document_id}.yaml"
+    if not path.is_file():
+        return {}
+    try:
+        payload = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
+    except (OSError, yaml.YAMLError):
+        return {}
+    roles: dict[str, set[str]] = defaultdict(set)
+    for item in payload.get("addresses", []) if isinstance(payload, Mapping) else []:
+        if not isinstance(item, Mapping):
+            continue
+        role = str(item.get("control_role") or "").strip().lower()
+        official_ref = str(item.get("official_ref") or "").strip().lower()
+        if role and role != "none" and official_ref:
+            roles[official_ref].add(role)
+    return {
+        line: next(iter(values))
+        for line, values in roles.items()
+        if len(values) == 1
+    }
 
 
 def _walk_expression(value: Mapping[str, Any]) -> Iterable[Mapping[str, Any]]:
@@ -747,6 +803,18 @@ def _walk_expression(value: Mapping[str, Any]) -> Iterable[Mapping[str, Any]]:
             yield from _walk_expression(item)
         elif isinstance(item, Mapping):
             yield item
+
+
+def _missing_if_else_comparison(expression: Mapping[str, Any]) -> bool:
+    """Return whether any conditional node lacks its required comparator."""
+    return any(
+        str(node.get("op") or "").upper() == "IF_ELSE"
+        and (
+            not isinstance(node.get("comparison"), str)
+            or not str(node.get("comparison") or "").strip()
+        )
+        for node in _walk_expression(expression)
+    )
 
 
 def _copy_worksheet_drafts(root: Path, *, year: str, destination: Path) -> dict[str, Any]:
@@ -839,10 +907,37 @@ def _field_map_addresses(root: Path, year: str, document_id: str) -> dict[str, s
 
 
 def _operation_for_projection_rule(rule_id: str) -> str | None:
+    if rule_id in {"if_less_than_currency", "if_greater_than_currency"}:
+        return "IF_ELSE"
+    if re.fullmatch(r"if_(?:gt|ge|lt|le|eq)_currency", rule_id):
+        return "IF_ELSE"
     for spec in OPERATION_SPECS:
         if spec.projection_rule == rule_id:
             return spec.name
     return None
+
+
+def _rule_parameters(expression: Mapping[str, Any]) -> dict[str, Any]:
+    """Return operation parameters that are part of the expression contract."""
+    if str(expression.get("op") or "").upper() != "IF_ELSE":
+        return {}
+    comparison = expression.get("comparison")
+    return {"comparison": comparison} if isinstance(comparison, str) and comparison else {}
+
+
+def _projection_rule_parameters(expression: Mapping[str, Any]) -> dict[str, dict[str, str]]:
+    """Attach each nested IF_ELSE rule to its explicit comparison direction."""
+    result: dict[str, dict[str, str]] = {}
+    for node in _walk_expression(expression):
+        if str(node.get("op") or "").upper() != "IF_ELSE":
+            continue
+        comparison = node.get("comparison")
+        if not isinstance(comparison, str) or not comparison:
+            continue
+        rule_id = projection_rule_for("IF_ELSE", comparison=comparison)
+        if rule_id:
+            result[rule_id] = {"comparison": comparison}
+    return result
 
 
 def _add_node(items: list[dict[str, Any]], seen: set[str], item: Mapping[str, Any]) -> None:

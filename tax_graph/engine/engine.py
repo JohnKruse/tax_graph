@@ -315,6 +315,25 @@ class Engine:
                 }
             )
 
+        operation = str(rule.get("operation") or "").upper()
+        parameters = rule.get("parameters")
+        if operation == "IF_ELSE" and (
+            not isinstance(parameters, dict)
+            or not isinstance(parameters.get("comparison"), str)
+            or not parameters.get("comparison")
+        ):
+            result.values[node_id] = MISSING
+            result.trace[node_id] = {
+                "kind": "missing_comparison",
+                "rule": rule["rule_id"],
+                "operation": operation,
+                "inputs": operands,
+                "value": MISSING,
+                "citations": sorted({citation for edge in incoming for citation in edge.get("citation_refs", [])}),
+                "note": "IF_ELSE requires rule.parameters.comparison",
+            }
+            return MISSING
+
         raw_value = apply_operation(rule["operation"], operands, rule, context={"tax_table": self.g.tax_table})
         value = round_value(raw_value, rule)
         result.values[node_id] = value

@@ -22,6 +22,7 @@ from tax_graph.extract.structure import split_caption_and_instruction
 from tax_graph.io.loader import load_yaml
 from tax_graph.operation_registry import (
     OPERATION_SPECS,
+    IF_ELSE_COMPARISONS,
     operation_names,
     operation_numeric_roles,
     operation_roles,
@@ -1678,7 +1679,11 @@ def _unique_issues(issues: Iterable[CellValidationIssue]) -> list[CellValidation
 def _exception_issue(exc: Exception) -> CellValidationIssue:
     """Convert a payload exception into a stable validator kind."""
     message = str(exc)
-    if "verbatim" in message:
+    if "IF_ELSE requires comparison" in message:
+        kind = "missing_comparison"
+    elif "IF_ELSE comparison must be" in message:
+        kind = "invalid_comparison"
+    elif "verbatim" in message:
         kind = "quote_not_verbatim"
     elif "known input evidence span" in message:
         kind = "quote_span"
@@ -1836,12 +1841,22 @@ def _validate_tree_node(
             raise ValueError("node operand must contain one non-empty graph node id")
         _validate_operand_role(node, allow_role=allow_role)
         return
-    if set(node) != {"op", "args"}:
-        raise ValueError("expression nodes require only op and args")
+    if set(node) not in ({"op", "args"}, {"op", "args", "comparison"}):
+        raise ValueError("expression nodes require only op, args, and optional comparison")
     op = str(node.get("op") or "").upper()
     spec = operation_spec(op)
     if spec is None:
         raise ValueError(f"unsupported expression operation: {op}")
+    comparison = node.get("comparison")
+    if op == "IF_ELSE" and comparison is not None:
+        if not isinstance(comparison, str) or not comparison:
+            raise ValueError("IF_ELSE comparison must be one of gt, ge, lt, le, eq")
+        if comparison.lower() not in IF_ELSE_COMPARISONS:
+            raise ValueError(
+                "IF_ELSE comparison must be one of gt, ge, lt, le, eq"
+            )
+    elif comparison is not None:
+        raise ValueError("comparison is only valid for IF_ELSE")
     args = node.get("args")
     if not isinstance(args, list) or not args:
         raise ValueError(f"{op} requires at least one argument")
@@ -2003,10 +2018,15 @@ def _expression_node_schema(operations: list[str], depth: int) -> dict[str, Any]
     return {
         "type": "object",
         "additionalProperties": False,
-        "required": ["op", "args"],
+        "required": ["op", "args", "comparison"],
         "properties": {
             "op": {"type": "string", "enum": operations},
             "args": {"type": "array", "minItems": 1, "items": {"anyOf": operands}},
+            "comparison": {
+                "type": ["string", "null"],
+                "enum": [*IF_ELSE_COMPARISONS, None],
+                "description": "Required for IF_ELSE; null for every other operation.",
+            },
         },
     }
 
@@ -2063,9 +2083,13 @@ RULE_FOR_OP = {
 }
 
 
-def _rule_for_op(operation: str, evidence_text: str) -> str | None:
+def _rule_for_op(
+    operation: str,
+    evidence_text: str,
+    comparison: str | None = None,
+) -> str | None:
     """Resolve one expression operation to an existing reusable graph rule."""
-    return projection_rule_for(operation, evidence_text)
+    return projection_rule_for(operation, evidence_text, comparison)
 
 
 def _comparison_from_evidence(evidence_text: str) -> str | None:
@@ -2099,10 +2123,10 @@ def expression_to_graph(
 ) -> GraphProjection:
     """Flatten a tree into stable intermediate nodes and role-bearing edges.
 
-    Conditional rule direction is resolved from the supplied evidence text.
-    A missing direction remains a named finding rather than silently choosing a
-    branch that may execute the wrong tax rule.  The default validation bound
-    matches the derivation schema so nested source rules remain projectable.
+    Conditional rule direction is carried by each IF_ELSE expression node.
+    The evidence remains available to the caller for source reconciliation, but
+    projection never invents a comparison direction.  The default validation
+    bound matches the derivation schema so nested source rules remain projectable.
     """
     validate_expression_tree(expression, max_depth=max_depth)
     converter = _GraphConverter(form, line, quote_span_id, evidence_text)
@@ -2125,9 +2149,10 @@ class _GraphConverter:
 
     def walk(self, node: Mapping[str, Any], target: str) -> None:
         op = str(node.get("op", "")).upper()
-        rule = _rule_for_op(op, self.evidence_text)
+        comparison = node.get("comparison") if op == "IF_ELSE" else None
+        rule = _rule_for_op(op, self.evidence_text, comparison)
         if rule is None:
-            if op == "IF_ELSE":
+            if op == "IF_ELSE" and comparison is None:
                 self.findings.append("comparison direction unresolved for operation IF_ELSE")
             else:
                 self.findings.append(f"no reusable rule for operation {op}")

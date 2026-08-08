@@ -17,8 +17,13 @@ computed, use REQUIRE_INPUT with one line operand naming itself.
 
 Conditional operations have positional meanings. IF_ELSE takes exactly four
 arguments: condition amount, threshold amount, when_true value, and when_false
-value. It compares the condition amount with the threshold using the rule's
-comparison parameter, then selects one branch. Do not put COMPARE in the first
+value. It also requires a comparison field with exactly one of gt, ge, lt, le,
+or eq. Use le for wording such as "or less" or "at most", lt for "less than",
+ge for "or more" or "at least", gt for "more than", and eq for "equal to".
+The comparison is source data, not a rendering hint. Do not omit it and do not
+default it. Non-IF_ELSE nodes must use comparison null when the schema asks for
+that field. It compares the condition amount with the threshold using the
+comparison field, then selects one branch. Do not put COMPARE in the first
 slot. IF takes a predicate and a when_true value. COMPARE takes left and right
 value operands and produces a predicate. AND and OR take two or more predicate
 operands. NOT takes one predicate operand. These meanings are positional and

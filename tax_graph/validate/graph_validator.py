@@ -83,6 +83,7 @@ def validate_loaded_graph(
     errors: list[str] = []
 
     _validate_schemas(graph, schemas_dir, errors)
+    _validate_if_else_comparators(graph, errors)
     _validate_unique_ids(graph, errors)
     _validate_references_and_years(graph, errors)
     _validate_document_classes(graph, errors)
@@ -196,6 +197,28 @@ def _validate_unique_ids(graph: LoadedGraph, errors: list[str]) -> None:
             seen.add(obj_id)
         for duplicate in sorted(duplicates):
             errors.append(f"{subdir} -> duplicate {id_field} {duplicate}")
+
+
+_IF_ELSE_COMPARISONS = frozenset({"gt", "ge", "lt", "le", "eq"})
+
+
+def _validate_if_else_comparators(graph: LoadedGraph, errors: list[str]) -> None:
+    """Reject IF_ELSE rules whose comparison direction is absent or invalid."""
+    for rule in graph.items("rules"):
+        if str(rule.get("operation") or "").upper() != "IF_ELSE":
+            continue
+        rule_id = str(rule.get("rule_id") or "<unknown>")
+        parameters = rule.get("parameters")
+        comparison = parameters.get("comparison") if isinstance(parameters, Mapping) else None
+        if not isinstance(comparison, str) or not comparison:
+            errors.append(
+                f"rule {rule_id} -> missing IF_ELSE comparison at parameters.comparison"
+            )
+        elif comparison.lower() not in _IF_ELSE_COMPARISONS:
+            errors.append(
+                f"rule {rule_id} -> invalid IF_ELSE comparison {comparison}; "
+                "expected one of gt, ge, lt, le, eq"
+            )
 
 
 def _validate_references_and_years(graph: LoadedGraph, errors: list[str]) -> None:

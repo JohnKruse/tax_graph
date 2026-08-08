@@ -238,7 +238,11 @@ def _if_else(operands: list[dict[str, Any]], rule: dict[str, Any]) -> Any:
     if condition is None or threshold is None:
         return MISSING
 
-    comparison = str(rule.get("parameters", {}).get("comparison", "gt")).lower()
+    parameters = rule.get("parameters")
+    comparison = parameters.get("comparison") if isinstance(parameters, dict) else None
+    if not isinstance(comparison, str) or not comparison:
+        return MISSING
+    comparison = comparison.lower()
     left = _number(condition)
     right = _number(threshold)
     if comparison == "gt":

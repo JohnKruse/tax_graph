@@ -20,7 +20,17 @@
       ]
     },
     "description": { "type": "string" },
-    "parameters": { "type": "object", "description": "Operation-specific parameters." },
+    "parameters": {
+      "type": "object",
+      "description": "Operation-specific parameters.",
+      "properties": {
+        "comparison": {
+          "type": "string",
+          "enum": ["gt", "ge", "lt", "le", "eq"]
+        }
+      },
+      "additionalProperties": true
+    },
     "rounding": {
       "type": "string",
       "enum": ["none", "currency", "dollar", "cents"],
@@ -36,5 +46,22 @@
       "enum": ["project", "user"],
       "description": "Orthogonal provenance axis: who stood at the promotion gate."
     }
-  }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "operation": { "const": "IF_ELSE" }
+        }
+      },
+      "then": {
+        "required": ["parameters"],
+        "properties": {
+          "parameters": {
+            "required": ["comparison"]
+          }
+        }
+      }
+    }
+  ]
 }

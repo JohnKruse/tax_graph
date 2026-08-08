@@ -13,6 +13,7 @@ from dataclasses import dataclass
 
 OPERATION_REGISTRY_VERSION = "1"
 NAMED_OPERAND_ROLE = "<named>"
+IF_ELSE_COMPARISONS = ("gt", "ge", "lt", "le", "eq")
 
 
 @dataclass(frozen=True)
@@ -132,7 +133,11 @@ def predicate_operations() -> frozenset[str]:
     return frozenset(spec.name for spec in OPERATION_SPECS if spec.predicate)
 
 
-def projection_rule_for(operation: str, evidence_text: str = "") -> str | None:
+def projection_rule_for(
+    operation: str,
+    evidence_text: str = "",
+    comparison: str | None = None,
+) -> str | None:
     """Resolve an operation to the reusable graph rule used by projection."""
     spec = operation_spec(operation)
     if spec is None:
@@ -141,6 +146,14 @@ def projection_rule_for(operation: str, evidence_text: str = "") -> str | None:
         return None
     if spec.name != "IF_ELSE":
         return spec.projection_rule
+    if comparison is not None:
+        normalized = str(comparison).lower()
+        if normalized not in IF_ELSE_COMPARISONS:
+            return None
+        return {
+            "lt": "if_less_than_currency",
+            "gt": "if_greater_than_currency",
+        }.get(normalized, f"if_{normalized}_currency")
     text = " ".join(str(evidence_text or "").split()).lower()
     less = any(token in text for token in ("less than", "or less", "at most", "no more than", "below", "under"))
     greater = any(token in text for token in ("more than", "or more", "greater than", "at least", "exceeds", "above"))
@@ -155,6 +168,8 @@ def prompt_operation_documentation() -> str:
     for spec in OPERATION_SPECS:
         arity = str(spec.min_args) if spec.max_args == spec.min_args else f"{spec.min_args}+"
         line = f"- {spec.name}: {spec.description} category={spec.category}; args={arity}"
+        if spec.name == "IF_ELSE":
+            line += "; comparison is required: gt|ge|lt|le|eq"
         if spec.named_leaf_roles:
             line += "; roles=named leaf roles"
         if spec.runtime_notes:
@@ -172,6 +187,7 @@ __all__ = [
     "OPERATION_REGISTRY",
     "OPERATION_REGISTRY_VERSION",
     "OPERATION_SPECS",
+    "IF_ELSE_COMPARISONS",
     "NAMED_OPERAND_ROLE",
     "OperationSpec",
     "operation_names",
