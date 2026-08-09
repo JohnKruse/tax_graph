@@ -21,8 +21,18 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## BALL
 
-**BALL: JOHN - M20-S91b ACCEPTED at `4e77e9e`. EXTRACTION IS DONE. THE WIDE RUN (S92) IS NEXT AND
-NEEDS YOUR GO.**
+**BALL: WORKER - M20-S92 (ROW DIAGNOSIS HARNESS). PILOT ONLY, NO PRODUCTION CHANGES.**
+**JOHN, 2026-08-09: diagnose the odd rows in a side effort BEFORE going back into the code.**
+**15 errored rows are grouped under Current round; the wide run waits until they are understood.**
+
+**THE BIGGEST FINDING IS OURS, NOT THE MODEL'S.** 1040 `5a` fails `subtract_direction: instruction
+says subtract line 6 from line 2`. Its instruction section is CORRECT but 11,424 chars long and
+**embeds the Simplified Method Worksheet**, whose own numbered steps contain that phrase. **The
+validator applies a worksheet's internal line numbers to the parent row.** 4 of the 15 rows share
+that shape, and it would misfire on any line whose instructions embed a worksheet.
+
+**M20-S91b ACCEPTED at `4e77e9e`. Extraction is done.**
+
 
 **S91b, measured from `clause_extent`, not from an Architect harness.** **68 of 406 rows take the
 bracket** (42 under S91), **35 faces changed**, and **ZERO rows took the bracket when the fallback
@@ -269,66 +279,47 @@ resolve now, and whether they resolve to the RIGHT line is unreviewed.
 
 ## Current round
 
-**M20-S91 SPECCED BY ARCHITECT (2026-08-09), JOHN'S DIRECTION. THE PRINTED LINE NUMBER BRACKETS THE
-CLAUSE; USE IT TO FIND THE EXTENT.**
-**REAL-PROJECT ROUND** - full-suite floor applies. **NO PROVIDER CALL IS NEEDED TO VALIDATE THIS.**
+**M20-S92 SPECCED BY ARCHITECT (2026-08-09), JOHN'S DIRECTION. BUILD THE ROW DIAGNOSIS HARNESS.
+PILOT ONLY - NO PRODUCTION CODE CHANGES THIS ROUND.**
 
-**JOHN, 2026-08-09:** the form prints the line number at the START of a clause and again at its END.
-Use it to find the beginning and the end. **He is right, and it is the strongest structural signal
-in the corpus.**
+**JOHN, 2026-08-09, and he is right:** we keep proposing code changes before doing simple
+diagnoses, and reading one failing row cost 15 minutes of manual digging. **Get all the odd rows
+diagnosed in a side effort BEFORE going back into the code.**
 
-**MEASURED BY THE ARCHITECT, and the first number I gave him was wrong.** A probe requiring the
-anchor at the start of a physical line scored 48%. **That was the probe's fault, not the form's** -
-on 1040 two clauses often share one line behind a margin note:
-`Attach Sch. B 2a Tax-exempt interest 2a b Taxable interest 2b`. Searching the whole text instead:
-**384 of 406 anchors bracketed, 95%** - 2441 and 6251 **100%**, 1040 98%, Schedules 1/1A/2/3/A
-93-97%. **Weakest: Schedule D 62%, Schedule B 75%.**
+**WHAT TO BUILD.** `pilot/row_bench.py` - given a document id and one or more line anchors, print
+**the exact prompt, the raw response, and the validation verdict** for that row, on one screen.
+**Standing pilot rules apply: standalone in `pilot/`, its own tests outside `tests/`, no CLI
+wiring.**
 
-**THE COST OF NOT USING IT: 42 ROWS DERIVE FROM JUNK while the correct clause sits in the file.**
-6251 `2s`, `2f`, `2b` and Schedule 1 `8a`, `8d`, `8s` have the face `( )`. **Schedule 3 has 15 rows
-reading `Attach Form `** - the marginal column, not the clause. `6251 2s` is really "Income from
-certain installment sales before January 1, 1987". **We are asking a model to derive a formula from
-`( )`.**
+**THE ONE DESIGN CONSTRAINT THAT MATTERS: CALL THE REAL CODE.** Render the prompt through the same
+path `derive_cells` uses and validate through `validate_cell_output`. **A reimplementation proves
+nothing about production** - the whole point is that what you see is what the pipeline sent.
 
-**THE CHANGE.** Take clause extent from the bracket: the clause **ends** at the full anchor and
-**starts** at the full anchor **or its trailing letter** (the form prints `b Taxable interest 2b`).
-Strip leader-dot runs first. **Keep stripping the number from the SAVED text, per John's earlier
-ruling** - detect with it, save without it. **Current extent logic stays as the fallback** for the
-5% with no bracket.
+**TWO MODES.**
+- **replay** (default, free): re-validate a payload already recorded in a run's
+  `attempted_payloads` (added at `254877a`). **This is how validator changes get iterated without
+  spending a single call.**
+- **live**: call the provider for one row. **The Worker can now do this itself** - see the scoped
+  escape in AGENTS.md; python and HTTPS both verified working under it.
 
-**IT IS PURE PATTERN MATCHING - NO MODEL CALL - AND THE ARCHITECT MEASURED THREE VARIANTS SO THE
-WORKER DOES NOT HAVE TO REDISCOVER THEM.**
-1. **Per-anchor regex alone: 95% detection, unreliable extents.** Line numbers appear INSIDE clause
-   text ("enter the amount from line 4"), so a lone regex latches onto the wrong occurrence.
-2. **Sequential scan in printed anchor order** fixes the over-captures (Schedule 2 `1a` goes from
-   swallowing column headers to "Excess advance premium tax credit repayment. Attach Form 8962")
-   but introduces bleed where an occurrence is missed - 6251 `35` picks up line 34's text.
-3. **Sequential PLUS rejecting any span that contains another anchor's closing token: 146 of 374
-   spans clean (39%), 228 rejected.** The rejection rate is high **for a legitimate reason** -
-   "Add lines 1a through 1h" really does contain other anchors - so this rule is PRECISE, not
-   complete.
+**OUTPUT DISCIPLINE, John's words: "I don't want to see all the cruft."** Prompt, response,
+verdict. Nothing else unless asked. The response prints as the model returned it.
 
-**THEREFORE TIER IT, DO NOT PICK ONE.** Use the clean span **only** when it passes bracket, order,
-and the no-foreign-anchor check; otherwise keep today's extraction untouched. **Measured payoff:
-25 of the 42 junk faces are rescued by a clean span** - 6251 `2s`, `2f`; Schedule 1 `8a`, `8d`,
-`8s`; Schedule 2 `1a`, `1b`, `17c`, `17d` - **with no change anywhere else.**
+**THE WORKING SET - 15 errored rows from `C:\tmp\m20_s91b\run`, grouped by the Architect. Confirm the
+grouping with the harness; do not fix anything yet.**
 
-**THE REMAINING 17 ARE NOT A TEXT PROBLEM. Report them; do not force them.** A clean span also went
-wrong once - 6251 `32` grabbed the form header - so **guard against a span that matches document
-title or OMB text.**
+| pattern | rows | what appears to be happening |
+| --- | --- | --- |
+| **validator reads an embedded WORKSHEET's steps as the row's rule** | 1040 `5a`, `5b`, `10`, `27a` | **CONFIRMED for 5a:** its 11,424-char instruction section embeds the Simplified Method Worksheet, whose own steps say "Subtract line 6 from line 2"; `subtract_direction` matches that and rejects `REQUIRE_INPUT(5a)`. **Those line numbers are the worksheet's, not the 1040's.** |
+| complaint does not identify what failed | 1040 `3b`, `35a` | `quote_not_verbatim` against a plain `REQUIRE_INPUT`; repair returns the same payload |
+| grammar cannot express the rule | 2441 `5`, 1040 `12e` | needs a nested op where a leaf is required |
+| document outside the corpus | 1040 `25c`, 6251 `8` | should be stubs; still hard failures |
+| never reached the model | 2441 `8`, 6251 `1a` | `incomplete_evidence` fires pre-call; **zero payloads recorded** |
+| line-format mismatch | 6251 `2h`, 6251 `2` | "column (g)" vs `g`; and `1040 line 1z` rejected as not printed **although `1z` IS in both our inventory and the live graph - UNEXPLAINED** |
+| self reference | 1040 `38` | repair invented `line 38 - line 34` |
 
-**DO NOT SWAP IT IN BLIND. The bracket over-captures in places** - 6251 `35` starts mid-sentence
-("through 37 and go to line 38"), Schedule 2 `1a` swallows column headers, Schedule 3 `13a` runs
-into `13b`. **Where today's face is already good the bracket AGREES exactly** (verified on 2441 `5`,
-2441 `19`, 6251 `2j`, 1040 `2b`). **So prefer the bracket where today's face is weak, and report
-every row where the two disagree and today's is longer.**
-
-**THE FLOOR.** **All 42 named rows get a real clause.** No row whose face is good today gets worse.
-Report the count of disagreements both ways. **Provider-free: this is checkable by comparing
-extracted text, so do not spend a live run proving it.**
-
-**OUT OF SCOPE.** Schedule D's 62% - it is a table form and needs its own treatment. Form 8949
-(4 anchors, 0 admitted) likewise.
+**DELIVERABLE: the harness, plus one screen per row for all 15, and a corrected grouping where the
+evidence disagrees with mine.** **No production fix, no prompt edit, no validator edit this round.**
 
 
 ## Queued (ONE LINE each - do not spec ahead)
