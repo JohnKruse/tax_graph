@@ -82,10 +82,12 @@ def write_candidate_from_run(
             )
         )
 
+    missing_operand_ids = _candidate_missing_operand_ids(graph_root)
     stub_registry = _stub_registry(
         documents,
         year=str(year),
         real_document_ids={item[0] for item in reports},
+        extra_nodes=_stub_nodes_for_missing_operands(missing_operand_ids),
     )
     _write_stub_documents(
         stub_registry,
@@ -903,6 +905,7 @@ def _stub_registry(
     *,
     year: str,
     real_document_ids: set[str],
+    extra_nodes: Sequence[Mapping[str, Any]] = (),
 ) -> dict[str, Any]:
     """Collect source-backed external references into deterministic stubs.
 
@@ -942,6 +945,21 @@ def _stub_registry(
                     _stub_line_message(document_id, line),
                 )
                 records.setdefault(node_id, node)
+    for raw in extra_nodes:
+        if not isinstance(raw, Mapping):
+            continue
+        document_id = str(raw.get("document_id") or "").strip().lower()
+        line = str(raw.get("line") or "").strip().lower()
+        if not document_id or not line:
+            continue
+        node_id = _line_node_id(document_id, line)
+        node = dict(raw)
+        node["node_id"] = node_id
+        node["document_id"] = document_id
+        node["line"] = line
+        node.setdefault("status", "unresolved")
+        node.setdefault("stub_message", _stub_line_message(document_id, line))
+        records.setdefault(node_id, node)
 
     by_document: dict[str, list[dict[str, Any]]] = defaultdict(list)
     for node in records.values():
@@ -1040,10 +1058,63 @@ def _write_stub_documents(registry: Mapping[str, Any], *, destination: Path) -> 
         )
 
 
+def _candidate_missing_operand_ids(graph_root: Path) -> set[str]:
+    """Return canonical edge endpoints not emitted by the current candidate."""
+    node_ids: set[str] = set()
+    for path in graph_root.rglob("nodes.yaml"):
+        payload = yaml.safe_load(path.read_text(encoding="ascii")) or []
+        for item in payload if isinstance(payload, list) else [payload]:
+            if isinstance(item, Mapping) and str(item.get("node_id") or "").strip():
+                node_ids.add(str(item["node_id"]).strip())
+
+    missing: set[str] = set()
+    for path in graph_root.rglob("edges.yaml"):
+        payload = yaml.safe_load(path.read_text(encoding="ascii")) or []
+        for item in payload if isinstance(payload, list) else [payload]:
+            if not isinstance(item, Mapping):
+                continue
+            for key in ("source", "target"):
+                node_id = str(item.get(key) or "").strip()
+                if node_id and node_id not in node_ids:
+                    missing.add(node_id)
+    return missing
+
+
+def _stub_nodes_for_missing_operands(node_ids: Iterable[str]) -> list[dict[str, Any]]:
+    """Turn missing canonical line endpoints into source-backed line stubs."""
+    records: list[dict[str, Any]] = []
+    for node_id in sorted(node_ids):
+        match = re.fullmatch(r"(?P<document>[a-z0-9_]+)_root_line_(?P<line>[0-9]+[a-z]?)", node_id)
+        if not match:
+            raise ValueError(
+                f"candidate graph edge endpoint {node_id} is not a canonical line address"
+            )
+        document_id = match.group("document")
+        line = match.group("line")
+        if document_id.startswith("instructions_"):
+            raise ValueError(
+                f"instructions document {document_id} cannot be emitted as a stub"
+            )
+        records.append(
+            {
+                "node_id": node_id,
+                "document_id": document_id,
+                "line": line,
+                "label": f"Source {node_id}",
+                "node_type": "fact",
+                "value_type": "currency",
+                "required": "required",
+                "status": "unresolved",
+                "citation_refs": [],
+            }
+        )
+    return records
+
+
 def _assert_candidate_operand_resolution(graph_root: Path) -> dict[str, Any]:
     """Assert that every candidate edge endpoint is a real or stub node."""
-    node_ids: set[str] = set()
-    duplicate_node_ids: set[str] = set()
+    node_payloads: dict[str, dict[str, Any]] = {}
+    conflicting_node_ids: set[str] = set()
     edge_count = 0
     operand_ids: set[str] = set()
     for path in graph_root.rglob("nodes.yaml"):
@@ -1054,9 +1125,16 @@ def _assert_candidate_operand_resolution(graph_root: Path) -> dict[str, Any]:
             node_id = str(item.get("node_id") or "").strip()
             if not node_id:
                 continue
-            if node_id in node_ids:
-                duplicate_node_ids.add(node_id)
-            node_ids.add(node_id)
+            identity_payload = {
+                str(key): value
+                for key, value in item.items()
+                if key != "citation_refs"
+            }
+            previous = node_payloads.get(node_id)
+            if previous is None:
+                node_payloads[node_id] = identity_payload
+            elif previous != identity_payload:
+                conflicting_node_ids.add(node_id)
     missing: set[str] = set()
     for path in graph_root.rglob("edges.yaml"):
         payload = yaml.safe_load(path.read_text(encoding="ascii")) or []
@@ -1069,12 +1147,12 @@ def _assert_candidate_operand_resolution(graph_root: Path) -> dict[str, Any]:
                 if not node_id:
                     continue
                 operand_ids.add(node_id)
-                if node_id not in node_ids:
+                if node_id not in node_payloads:
                     missing.add(node_id)
-    if duplicate_node_ids:
+    if conflicting_node_ids:
         raise ValueError(
-            "candidate graph contains duplicate node ids: "
-            + ", ".join(sorted(duplicate_node_ids))
+            "candidate graph contains conflicting node payloads: "
+            + ", ".join(sorted(conflicting_node_ids))
         )
     if missing:
         raise ValueError(
@@ -1083,7 +1161,7 @@ def _assert_candidate_operand_resolution(graph_root: Path) -> dict[str, Any]:
         )
     return {
         "status": "ok",
-        "node_count": len(node_ids),
+        "node_count": len(node_payloads),
         "edge_count": edge_count,
         "operand_count": len(operand_ids),
         "dangling_node_ids": [],

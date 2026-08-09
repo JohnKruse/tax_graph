@@ -72,6 +72,43 @@ def test_evidence_backed_external_reference_is_nonfatal_and_does_not_repair() ->
     assert row.metadata["unresolved_external_nodes"][0]["line"] == "18"
 
 
+def test_document_only_external_evidence_is_enough_to_mint_a_stub() -> None:
+    row = _external_row()
+    row["form_face_text"] = "Attach Form 4684 and enter the amount from that form."
+    row["instruction_text"] = row["form_face_text"]
+    row["metadata"]["evidence_spans"] = [{
+        "span_id": "face_15",
+        "text": row["form_face_text"],
+    }]
+    client = FakeClient({
+        "expression": {"op": "COPY", "args": [{"form": "form_4684_2025", "line": "18"}]},
+        "quote": row["form_face_text"],
+    })
+
+    result = derive_cells(
+        CellFrame.from_rows([row]),
+        "line <<line>>",
+        "secret",
+        client=client,
+        reference_inventory={
+            "document_ids": ["schedule_a_2025"],
+            "printed_lines": {"schedule_a_2025": ["15"]},
+            "node_ids": [],
+            "graph_nodes": [],
+        },
+    )
+
+    assert result.rows[0].status == "derived"
+    assert result.validation_report["validator_failures_by_kind"] == {}
+    assert result.validation_report["validator_warnings_by_kind"][
+        "unresolved_external_reference"
+    ] == 1
+    assert result.validation_report["validator_warnings_by_kind"][
+        "operand_not_in_quote"
+    ] == 1
+    assert result.rows[0].metadata["unresolved_external_nodes"][0]["line"] == "18"
+
+
 def test_unsourced_unknown_document_is_still_a_hard_failure() -> None:
     row = CellFrame.from_rows([{
         "form": "form_1040_2025",

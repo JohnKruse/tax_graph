@@ -9,7 +9,10 @@ import jsonschema
 import pytest
 import yaml
 
-from tax_graph.extract.candidate import write_candidate_from_run
+from tax_graph.extract.candidate import (
+    _assert_candidate_operand_resolution,
+    write_candidate_from_run,
+)
 from tax_graph.extract.cells import derive_cells
 
 
@@ -227,3 +230,77 @@ def test_instructions_document_operand_is_named_and_never_becomes_stub() -> None
     assert result[0]["status"] == "error"
     assert result[0].get("unresolved_external_nodes") is None
     assert result[0]["validation_failures"][0]["kind"] == "instructions_document_operand"
+
+
+def test_shared_node_id_allows_identical_identity_payloads_with_distinct_citations(tmp_path: Path) -> None:
+    graph_root = tmp_path / "graph"
+    shared = {
+        "node_id": "taxpayer_2025_filing_status",
+        "document_id": "taxpayer_2025_filing_status",
+        "label": "Filing status",
+        "node_type": "fact",
+        "value_type": "enum",
+        "required": "optional",
+    }
+    for document_id, citation in (("form_1040_2025", "face_1040"), ("form_6251_2025", "face_6251")):
+        document_root = graph_root / document_id
+        document_root.mkdir(parents=True)
+        payload = {**shared, "citation_refs": [citation]}
+        (document_root / "nodes.yaml").write_text(
+            yaml.safe_dump([payload], sort_keys=False, allow_unicode=False),
+            encoding="ascii",
+        )
+        (document_root / "edges.yaml").write_text("[]\n", encoding="ascii")
+
+    result = _assert_candidate_operand_resolution(graph_root)
+
+    assert result["status"] == "ok"
+    assert result["node_count"] == 1
+
+
+def test_shared_node_id_rejects_conflicting_identity_payloads(tmp_path: Path) -> None:
+    graph_root = tmp_path / "graph"
+    for document_id, label in (("form_1040_2025", "Filing status"), ("form_6251_2025", "Wrong fact")):
+        document_root = graph_root / document_id
+        document_root.mkdir(parents=True)
+        (document_root / "nodes.yaml").write_text(
+            yaml.safe_dump([{
+                "node_id": "taxpayer_2025_filing_status",
+                "document_id": "taxpayer_2025_filing_status",
+                "label": label,
+                "node_type": "fact",
+                "value_type": "enum",
+                "required": "optional",
+            }], sort_keys=False, allow_unicode=False),
+            encoding="ascii",
+        )
+        (document_root / "edges.yaml").write_text("[]\n", encoding="ascii")
+
+    with pytest.raises(ValueError, match="conflicting node payloads: taxpayer_2025_filing_status"):
+        _assert_candidate_operand_resolution(graph_root)
+
+
+def test_missing_canonical_operand_becomes_a_line_stub_in_the_candidate(tmp_path: Path) -> None:
+    root = tmp_path / "repo"
+    run = tmp_path / "run"
+    output = tmp_path / "candidate"
+    root.mkdir()
+    run.mkdir()
+    row = _external_row()
+    row.pop("unresolved_external_nodes")
+    _write_report(run, "schedule_a_2025", [row], line_anchor_count=1)
+
+    write_candidate_from_run(
+        run,
+        output,
+        root=root,
+        expected_documents=["schedule_a_2025"],
+    )
+
+    stub_dir = output / "graph" / "2025" / "_drafts" / "form_4684_2025"
+    stub_node = yaml.safe_load((stub_dir / "nodes.yaml").read_text(encoding="ascii"))[0]
+    assert stub_node["node_id"] == "form_4684_2025_root_line_18"
+    assert stub_node["status"] == "unresolved"
+    candidate = yaml.safe_load((output / "candidate.yaml").read_text(encoding="ascii"))
+    assert candidate["graph_integrity"]["status"] == "ok"
+    assert candidate["stub_documents"] == ["form_4684_2025"]

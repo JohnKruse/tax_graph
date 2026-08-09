@@ -2459,9 +2459,15 @@ def _record_external_inputs(
 
 
 def _legitimate_external_reference(row: CellRecord, form: str, line: str) -> bool:
-    """Return true only when the row evidence names this external form and line."""
+    """Return true when the row evidence names this external form.
+
+    The model may obtain the printed line from the external document's
+    instructions rather than the current row's evidence.  The document name
+    is the source-backed proof needed to mint a stub; the line is preserved in
+    the canonical node address and checked when the document is inducted.
+    """
     evidence = " ".join((row.form_face_text, row.instruction_text, _evidence_span_text(row)))
-    return _external_form_is_named(evidence, form) and _line_mentioned(evidence, line)
+    return _external_form_is_named(evidence, form)
 
 
 def _external_form_is_named(evidence: str, form: str) -> bool:

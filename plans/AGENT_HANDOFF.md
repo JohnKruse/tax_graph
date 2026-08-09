@@ -507,22 +507,21 @@ was performed, per pilot rules.
 
 ## Open for Architect
 
-**S90c WORKER STATUS (2026-08-09):** Implemented and verified provider-free. The S90b
-`unresolved_external_nodes` payload now materializes in the candidate graph as a canonical line
-stub under the external document, with a matching document stub and an explicit
-`stub_lifecycle.yaml`. A current derivation report for that document marks the lifecycle
-`ingested` and emits no stub workspace; the real node lands at the same
-`<document>_root_line_<line>` id. Candidate writing now asserts that every edge endpoint resolves
-to exactly one real or stub node, and the node/document schemas carry the stub status and message.
-Instructions booklets are rejected as named `instructions_document_operand` findings and never
-mint stubs. Cross-document projection was corrected from the non-canonical
-`<document>_line_<line>` shape to the existing root-line address.
+**S90c WORKER STATUS (2026-08-09):** The implementation is complete provider-free, and the
+stale real S90c report now regenerates successfully. The candidate writer accepts a shared node id
+when its identity payload agrees across documents (citation provenance may differ), rejects a real
+payload collision, and synthesizes canonical document/line stubs for valid edge endpoints missing
+from a partial candidate. The document-only external-reference predicate now lets the model obtain
+the line from the external document while requiring source evidence to name the document.
+Instructions booklets remain named `instructions_document_operand` findings and never mint stubs.
 
-RAN: `$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp_s90c'; .venv\Scripts\python.exe -m pytest tests\test_m20_s90c.py tests\test_m20_s90b.py tests\test_candidate_regeneration_m20.py tests\test_derive_cells_m20.py tests\test_m20_s31.py tests\test_review_table_m20.py tests\test_run_summary_m20.py -q` -> **104 passed, 1 warning**.
-RAN: `$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp_s90c'; .venv\Scripts\python.exe -m pytest tests\test_m20_s90c.py tests\test_m20_s90b.py tests\test_candidate_regeneration_m20.py tests\test_derive_cells_m20.py tests\test_m20_s31.py tests\test_review_table_m20.py tests\test_run_summary_m20.py tests\test_graph_validator.py -q` -> **107 passed, 11 failed**; all 11 are `WinError 5` while copying the pre-existing protected `graph/2025/_drafts` directories in `test_graph_validator.py`, before validator logic runs.
+RAN: `$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp_codex'; .venv\Scripts\python.exe -m pytest tests\test_m20_s90c.py tests\test_m20_s90b.py tests\test_candidate_regeneration_m20.py tests\test_derive_cells_m20.py tests\test_m20_s31.py tests\test_review_table_m20.py tests\test_run_summary_m20.py -q` -> **108 passed, 1 warning**.
 RAN: `.venv\Scripts\python.exe tools\check_ascii.py` -> **ASCII check OK**.
-NOT RUN: live provider leg; the prompt contract now explicitly excludes instructions-booklet operands and requires the network-capable acceptance context.
-NOT RUN: full suite; the graph-validator copy ACL family is not a product result and the full suite exceeds the Worker command cap.
+RAN: `.venv\Scripts\python.exe -m tax_graph.cli regenerate-candidate --run-dir C:\tmp\m20_s90c\run --output-dir C:\Users\devbox\.codex\visualizations\2026\08\09\019fe5ae-61f8-7242-903c-df2b6142f862\m20_s90c_candidate_v2 --expected-document form_1040_2025 --expected-document form_2441_2025 --expected-document form_6251_2025` -> **exit 0**; real candidate has `graph_integrity: ok`, 230 unique semantic nodes, 315 edges, 228 operands, 22 unresolved stub documents, and zero dangling node ids.
+RAN: `.venv\Scripts\python.exe pilot\run_report.py C:\tmp\m20_s90c\run` -> **127 of 157 printed anchors (80.9%), cost $0.1008**; this is the pre-change report and is not evidence of the document-only predicate.
+RAN: `$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp_codex'; .venv\Scripts\python.exe -m pytest tests\test_graph_validator.py -q` -> **3 passed, 11 failed**; all 11 fail before validator logic while copying protected `graph/2025/_drafts` directories with `WinError 5`.
+NOT RUN: current-code live provider leg: `.venv\Scripts\python.exe experiments\derive_cells_s25.py --year 2025 --output-dir C:\Users\devbox\.codex\visualizations\2026\08\09\019fe5ae-61f8-7242-903c-df2b6142f862\run_s90c_current --document form_1040_2025 --document form_2441_2025 --document form_6251_2025` -> sandboxed command timed out at 600 seconds with no output; the escalated retry was rejected because it would send real tax-document contents to an unspecified external provider without explicit user authorization.
+NOT RUN: full suite; it exceeds the Worker command cap and the graph-validator copy ACL family remains environment-red.
 
 **S90b PREREQUISITE (2026-08-09):** Committed at `ad53a97`; its evidence-backed
 out-of-inventory operands now produce the non-fatal `unresolved_external_reference` warning,
