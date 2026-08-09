@@ -273,6 +273,27 @@ Strip leader-dot runs first. **Keep stripping the number from the SAVED text, pe
 ruling** - detect with it, save without it. **Current extent logic stays as the fallback** for the
 5% with no bracket.
 
+**IT IS PURE PATTERN MATCHING - NO MODEL CALL - AND THE ARCHITECT MEASURED THREE VARIANTS SO THE
+WORKER DOES NOT HAVE TO REDISCOVER THEM.**
+1. **Per-anchor regex alone: 95% detection, unreliable extents.** Line numbers appear INSIDE clause
+   text ("enter the amount from line 4"), so a lone regex latches onto the wrong occurrence.
+2. **Sequential scan in printed anchor order** fixes the over-captures (Schedule 2 `1a` goes from
+   swallowing column headers to "Excess advance premium tax credit repayment. Attach Form 8962")
+   but introduces bleed where an occurrence is missed - 6251 `35` picks up line 34's text.
+3. **Sequential PLUS rejecting any span that contains another anchor's closing token: 146 of 374
+   spans clean (39%), 228 rejected.** The rejection rate is high **for a legitimate reason** -
+   "Add lines 1a through 1h" really does contain other anchors - so this rule is PRECISE, not
+   complete.
+
+**THEREFORE TIER IT, DO NOT PICK ONE.** Use the clean span **only** when it passes bracket, order,
+and the no-foreign-anchor check; otherwise keep today's extraction untouched. **Measured payoff:
+25 of the 42 junk faces are rescued by a clean span** - 6251 `2s`, `2f`; Schedule 1 `8a`, `8d`,
+`8s`; Schedule 2 `1a`, `1b`, `17c`, `17d` - **with no change anywhere else.**
+
+**THE REMAINING 17 ARE NOT A TEXT PROBLEM. Report them; do not force them.** A clean span also went
+wrong once - 6251 `32` grabbed the form header - so **guard against a span that matches document
+title or OMB text.**
+
 **DO NOT SWAP IT IN BLIND. The bracket over-captures in places** - 6251 `35` starts mid-sentence
 ("through 37 and go to line 38"), Schedule 2 `1a` swallows column headers, Schedule 3 `13a` runs
 into `13b`. **Where today's face is already good the bracket AGREES exactly** (verified on 2441 `5`,
