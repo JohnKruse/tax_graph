@@ -872,12 +872,20 @@ def validate_cell_output(
                     )
                 )
             elif operand_form not in reference_documents:
-                hard.append(
-                    CellValidationIssue(
-                        "operand_document_not_found",
-                        f"cross-form operand names unknown document {operand_form}",
-                    )
+                issue = CellValidationIssue(
+                    "unresolved_external_reference",
+                    f"cross-form operand names document {operand_form} line {operand_line} outside the document inventory",
+                    hard=False,
                 )
+                if _legitimate_external_reference(row, operand_form, operand_line):
+                    warnings.append(issue)
+                else:
+                    hard.append(
+                        CellValidationIssue(
+                            "operand_document_not_found",
+                            f"cross-form operand names unknown document {operand_form}",
+                        )
+                    )
             else:
                 cross_form_lines = _reference_lines(inventory, operand_form)
                 if cross_form_lines is None:
@@ -1703,7 +1711,7 @@ def _evidence_span_text(row: CellRecord) -> str:
 
 _FORM_FACE_SOURCE_REFERENCE_RE = re.compile(
     r"\b(?:from|shown\s+on|reported\s+on)\s+(?:the\s+)?"
-    r"(?P<kind>form|schedule)\s+(?P<name>[0-9]+[a-z]?(?:-[a-z0-9]+)?|[a-z][a-z0-9-]*)",
+    r"(?P<kind>form(?:\(s\)|s)?|schedule)\s+(?P<name>[0-9]+[a-z]?(?:-[a-z0-9]+)?|[a-z][a-z0-9-]*)",
     re.IGNORECASE,
 )
 _WORKSHEET_FACE_SOURCE_REFERENCE_RE = re.compile(
@@ -1728,7 +1736,10 @@ def _form_face_source_references(row: CellRecord) -> list[str]:
     seen: set[str] = set()
     for match in _FORM_FACE_SOURCE_REFERENCE_RE.finditer(row.form_face_text):
         kind = match.group("kind").lower()
+        kind = "form" if kind.startswith("form") else kind
         name = match.group("name").lower().replace("-", "_")
+        if _is_information_return_reference(kind, name):
+            continue
         document_stem = f"{kind}_{name}"
         if document_stem == current or document_stem in seen:
             continue
@@ -1742,6 +1753,23 @@ def _form_face_source_references(row: CellRecord) -> list[str]:
         seen.add(key)
         references.append(f"Worksheet {display}")
     return references
+
+
+def _is_information_return_reference(kind: str, name: str) -> bool:
+    """Return whether a named source is a filer-supplied information return.
+
+    W-2s, every 1099 variant, and K-1s are records supplied by the filer.  A
+    REQUIRE_INPUT for one of these records is therefore not a hidden
+    cross-document computation and must not be rejected by the face-source
+    guard.  This rule is based on the document family, not on one spelling of
+    a particular form title.
+    """
+    normalized = str(name).strip().lower().replace("_", "-")
+    if kind == "form" and (normalized == "w-2" or normalized == "w2"):
+        return True
+    if kind == "form" and re.fullmatch(r"1099(?:-[a-z0-9]+)?", normalized):
+        return True
+    return kind == "schedule" and normalized == "k-1"
 
 
 def _unique_issues(issues: Iterable[CellValidationIssue]) -> list[CellValidationIssue]:

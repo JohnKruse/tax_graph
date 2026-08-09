@@ -20,6 +20,9 @@ form, schedule, or worksheet, emit a cross-document operand instead of
 REQUIRE_INPUT. If that source is outside the document inventory, still emit its
 canonical form or schedule id so validation can fail closed with a named
 unresolved-reference finding; never hide the reference by calling it input.
+Information returns are the exception: W-2, any 1099 variant, and K-1 are
+records supplied by the filer, so use REQUIRE_INPUT for a value copied from one
+of those records rather than inventing a cross-document graph operand.
 
 Conditional operations have positional meanings. IF_ELSE takes exactly four
 arguments: condition amount, threshold amount, when_true value, and when_false

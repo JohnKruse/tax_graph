@@ -485,6 +485,22 @@ def _candidate_row(document_id: str, row: Mapping[str, Any], field_addresses: Ma
     findings = [dict(item) for item in row.get("validation_failures", []) or [] if isinstance(item, Mapping)]
     findings.extend(_source_findings(row.get("source_findings")))
     warnings = [dict(item) for item in row.get("validation_warnings", []) or [] if isinstance(item, Mapping)]
+    unresolved = [
+        dict(item)
+        for item in row.get("unresolved_external_nodes", []) or []
+        if isinstance(item, Mapping)
+    ]
+    for item in unresolved:
+        external_document = str(item.get("document_id") or "unknown document")
+        external_line = str(item.get("line") or "unknown line")
+        finding = {
+            "kind": "unresolved_external_reference",
+            "message": f"{external_document} line {external_line} is outside the document inventory",
+            "document_id": external_document,
+            "line": external_line,
+        }
+        if finding not in findings:
+            findings.append(finding)
     review_gap = str(row.get("error") or "")
     if original_status == "skipped":
         review_gap = get_structural_skip_reason(row) or str(row.get("review_gap") or "")
@@ -525,6 +541,7 @@ def _candidate_row(document_id: str, row: Mapping[str, Any], field_addresses: Ma
         "citation_refs": citation_refs,
         "findings": findings,
         "warnings": warnings,
+        "unresolved_external_nodes": unresolved,
         "review_gap": review_gap,
     }
 

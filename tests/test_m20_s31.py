@@ -183,6 +183,7 @@ def test_all_prompt_templates_render_with_representative_values() -> None:
     assert "form_1040_2025: Form 1040" in cell_text
     assert "document inventory (id: title)" in cell_text
     assert 'For a filer fact or other graph input, use {"node": "exact_graph_node_id"}' in cell_text
+    assert "Information returns are the exception: W-2, any 1099 variant, and K-1" in cell_text
     assert "relevant graph nodes (id: label)" in cell_text
     assert "taxpayer_2025_filing_status: Taxpayer filing status" in cell_text
     assert "IF_ELSE takes exactly four arguments" in cell_text

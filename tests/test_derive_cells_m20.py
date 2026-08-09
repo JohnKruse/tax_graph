@@ -1033,8 +1033,9 @@ def test_require_input_guard_names_real_form_face_sources(
 
 
 def test_named_unseen_form_reference_mints_unresolved_external_node() -> None:
-    # S74 keeps the unresolved payload but now fail-closes the row because the
-    # document id is outside the explicit inventory.
+    # S90b treats a source-backed document outside the inventory as a named,
+    # non-fatal outcome.  The unresolved payload remains the handoff to the
+    # candidate graph and the repair call must not be consumed.
     row = {
         "form": "schedule_a_2025",
         "line": "15",
@@ -1052,16 +1053,10 @@ def test_named_unseen_form_reference_mints_unresolved_external_node() -> None:
             ],
         },
     }
-    client = FakeClient([
-        {
-            "expression": {"op": "COPY", "args": [{"form": "form_4684_2025", "line": "18"}]},
-            "quote": row["form_face_text"],
-        },
-        {
-            "expression": {"op": "COPY", "args": [{"form": "form_4684_2025", "line": "18"}]},
-            "quote": row["form_face_text"],
-        },
-    ])
+    client = FakeClient([{
+        "expression": {"op": "COPY", "args": [{"form": "form_4684_2025", "line": "18"}]},
+        "quote": row["form_face_text"],
+    }])
 
     result = derive_cells(
         CellFrame.from_rows([row]),
@@ -1076,10 +1071,12 @@ def test_named_unseen_form_reference_mints_unresolved_external_node() -> None:
         },
     )
 
-    assert result.rows[0].status == "error"
-    assert result.validation_report["gapped"] == 1
-    assert result.validation_report["validator_failures_by_kind"] == {
-        "operand_document_not_found": 2,
+    assert result.rows[0].status == "derived"
+    assert len(client.calls) == 1
+    assert result.validation_report["gapped"] == 0
+    assert result.validation_report["validator_failures_by_kind"] == {}
+    assert result.validation_report["validator_warnings_by_kind"] == {
+        "unresolved_external_reference": 1,
     }
     assert result.rows[0].metadata["unresolved_external_nodes"] == [{
         "node_id": "form_4684_2025_root_line_18",
