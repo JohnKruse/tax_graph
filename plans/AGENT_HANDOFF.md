@@ -216,39 +216,66 @@ resolve now, and whether they resolve to the RIGHT line is unreviewed.
 
 ## Current round
 
-**M20-S90b SPECCED BY ARCHITECT (2026-08-08). AN UNRESOLVABLE REFERENCE IS A LIMIT, NOT A DEFECT.**
-**REAL-PROJECT ROUND** - the full-suite floor applies. Build on `056e3be`; do not revert it.
+**M20-S90c SPECCED BY ARCHITECT (2026-08-09), JOHN'S DIRECTION. AN UNKNOWN REFERENCE MINTS A STUB,
+IT DOES NOT RAISE A FINDING.**
+**REAL-PROJECT ROUND** - full-suite floor applies. Build on the S90b working tree; commit it first.
 
-**WHAT S90 GOT RIGHT AND KEEPS.** `_form_face_source_references` is sound: source wording only
-(`from`, `shown on`, `reported on`), current document excluded, output wording such as "also enter
-on Schedule 3" correctly ignored. On the S89 rows it flags exactly the 12 intended. **Keep it.**
+**JOHN, 2026-08-09:** when the pipeline meets "Form 777X, Section B, Line 23" it should **add both
+the form and the line to the graph as stubs**, carrying the message that the form must be ingested
+or the human must supply that line; and when the form is later inducted there must be **no dangling
+connectors** back to it. **This is the predictable reference system, and it supersedes treating an
+unknown document as a validation outcome.**
 
-**THE ONE CHANGE. A reference to a document outside the inventory must be a DISTINCT NON-FATAL
-OUTCOME that records the reference**, not an error indistinguishable from a wrong operand. Name it
-`unresolved_external_reference`: it carries the cited document and line, it is visible in the
-review surface as a corpus limit, and **it does not consume the row's one repair.** A wrong operand
-inside the corpus stays a hard failure. Today both land as `operand_document_not_found`, which is
-why one prompt clause cost 27 rows.
+**HALF OF IT IS ALREADY BUILT - DO NOT REBUILD IT.**
+- `_canonical_external_operand_id` has minted the stub payload since S74: `node_id`,
+  `document_id`, `line`, `node_type: fact`, `value_type: currency`, `required: required`,
+  **`status: unresolved`**, `citation_refs`. That is a stub record in all but name.
+- **THE ID IS ALREADY THE RIGHT ID.** Architect verified that the stub id and the id real
+  ingestion produces are **identical** - `_canonical_external_operand_id('form_4684_2025','18')`
+  and `_line_node_id('form_4684_2025','18')` both give `form_4684_2025_root_line_18`. **Induction
+  therefore lands on the same address and replaces the stub in place. Dangling connectors are
+  prevented by construction, not repaired afterwards** - which is why identity must stay canonical-
+  address-only.
 
-**INFORMATION RETURNS ARE FILER INPUTS, NOT CROSS-FORM REFERENCES.** A W-2, a 1099 of any suffix,
-and a K-1 are records the filer supplies; `REQUIRE_INPUT` is correct for them. `form_6251_2025`
-line 2j is flagged wrongly today on "Schedule K-1 (Form 1041), box 12, code A". **1040 lines 1a and
-25a escape only by accident** - the printed face reads "Form(s) W-2" and the regex needs whitespace
-after "form", so a face reading "from Form W-2, box 1" WOULD be flagged. **Exclude information
-returns by rule, not by spelling**, and guard 2j plus a synthetic "from Form W-2, box 1" face.
+**WHAT IS ACTUALLY MISSING, measured not assumed.**
+1. **The stubs never reach the graph.** Architect counted nodes carrying `status: unresolved` in
+   the two real candidates `m20_s81_candidate` and `m20_s68_candidate`: **zero in both.** The
+   payload is minted on the row, rendered as a finding, and dropped. **Emit it as a node.**
+2. **There is no DOCUMENT-level stub.** Only lines get ids today. John asked for the form too, so
+   an unseen document becomes a stub document node that its line stubs belong to.
+3. **There is no lifecycle.** Nothing carries a stub from `unresolved` to ingested, and nothing
+   asks whether a real document has arrived for existing stubs.
+4. **Nothing states the invariant.** The check that matters is **every operand id resolves to a
+   node, stub or real** - assert that, rather than hunting dangling edges after the fact.
 
-**RECHECK THE PROMPT CLAUSE.** With a non-fatal outcome in place the instruction to emit a canonical
-id for an out-of-corpus document may be right, but it is what produced 59
-`operand_document_not_found` and 10 `operand_inventory_unavailable`. **Measure it; do not assume it.**
+**THE TWO MECHANICAL CAUSES FROM THE S90b RUN STILL APPLY, and stubs subsume the first.**
+- `_legitimate_external_reference` demands evidence name the document AND the line, so a terse face
+  like "Child tax credit ... from Schedule 8812" hard-fails when the model takes the line from the
+  instructions. **Costs 1040 `13a`, `19`, `28` and 6251 `8`.** With stubs, an unknown document is
+  no longer an error at all; **require the DOCUMENT in evidence and let the line mint a stub.**
+  In-corpus operands keep `operand_not_printed`, which is the real line check.
+- **Operands pointing at an INSTRUCTIONS booklet** (1040 `6b`, 2441 `9b`, `operand_inventory_
+  unavailable`) are the S74 scoping defect resurfacing. **An instructions document must never be an
+  operand and must never mint a stub** - it is a named finding.
 
-**THE FLOOR, unchanged and now stated properly.** The 64 S81 rows and the 13 S89 expressions stay
-derived or repaired. **`form_6251_2025` line 13 must return to `max(qdcgt line 4, 0)`.** Coverage
-must return to at least the S89 139 of 157. **A named finding must never move a row out of
-derived/repaired unless the derivation itself is wrong.**
+**THE ONE THAT MATTERS MORE THAN COVERAGE, and stubs do NOT fix it. `form_6251_2025` line 13 is
+green and WRONG.** It reads `max(qdcgt line 4 + schedule_d_tax_worksheet line 13, 0)` - it **SUMS
+two worksheets the form offers as ALTERNATIVES** - where S89 had the correct `max(qdcgt line 4, 0)`.
+Making unresolved references non-fatal removed the pressure that used to catch it. **An
+alternatives-of clause must not become a sum: name it, do not guess an operator.** **My S90b floor
+named line 13 and it was met in STATUS ONLY. That is the kind of green I do not want.**
 
-**OUT OF SCOPE.** The 11 pre-existing errored rows. Queued: `pilot/context_arms.py` still scores
-`REQUIRE_INPUT` as a recovered formula; the run-together instruction headings; artifact-pinned test
-counts measured against untracked `.cache/raw` files.
+**S90b's OWN NUMBERS, for the record.** Live run at `C:\tmp\m20_s90b\run`, temperature 0, $0.1008:
+**coverage 71.3% -> 83.4% (131 of 157)**, errors 38 -> 19, **zero regressions against the 64**, all
+13 S89 expressions kept, 6251 line 10 newly repaired, 10 `unresolved_external_reference` warnings.
+
+**THE FLOOR.** The 64 and the 13 stay. **Coverage at least 139 of 157.** 6251 line 13 back to
+`max(qdcgt line 4, 0)` **as an expression, not merely as a status.** **The protected set is
+untouched** - stubs are candidate-graph output, never a live-graph write.
+
+**OUT OF SCOPE.** Genuine derivation misses this run exposed - 1040 `12e` LOOKUP_TABLE payload,
+6251 `2e` quote_not_verbatim, `2h` line `g` on 8949. Queued: `pilot/context_arms.py` scoring
+`REQUIRE_INPUT` as a recovered formula; run-together instruction headings; artifact-pinned counts.
 
 
 ## Standing operational notes
