@@ -317,6 +317,36 @@ sum appeared in no scan** - it surfaced only when the grammar ran out of room du
 `REQUIRE_INPUT` as a recovered formula; run-together instruction headings; artifact-pinned counts.
 
 
+## Queued (ONE LINE each - do not spec ahead)
+
+- **S91 - THE WIDE RUN.** All 11 acquired forms and schedules, live, reported per document against
+  every printed anchor. Specced when picked up, not before.
+
+**PRIMED FOR S91, so the round starts with tools instead of setup.**
+
+**`pilot/run_report.py` replaces the hand-typed round numbers.** It reads the YAML the derivation
+already writes and prints per-document coverage **against every printed anchor**, the status and
+outcome split, cost, failure and warning kinds, and a **row-level** floor check. Validated against
+all three real runs: it reproduces S89 at 139/157 (88.5%, $0.0954), S90b at 131/157 (83.4%,
+$0.1008), and it independently finds the exact 3 S90 regressions. 5 tests, synthetic fixtures, no
+`.cache` dependency. **Report rounds with this, not with one-off snippets.**
+
+```
+.venv\Scripts\python.exe pilot\run_report.py <RUN> --baseline C:\tmp\m20_s81_rest --baseline C:\tmp\m20_s81_run
+```
+
+**The wide-run command, with the provider escape scoped to that one command** (see AGENTS.md; the
+Worker can now run its own live leg):
+
+```
+codex sandbox -c 'sandbox_mode="danger-full-access"' -- .venv\Scripts\python.exe experiments\derive_cells_s25.py --year 2025 --output-dir C:\tmp\m20_s91\run --document form_1040_2025 --document form_2441_2025 --document form_6251_2025 --document schedule_1_2025 --document schedule_1a_2025 --document schedule_2_2025 --document schedule_3_2025 --document schedule_a_2025 --document schedule_b_2025 --document schedule_d_2025 --document form_8949_2025
+```
+
+**Baselines: only 1040, 2441 and 6251 have one.** The other eight have never been derived, so their
+first run IS the baseline - report them as a snapshot and do not manufacture a comparison.
+**Form 8949 will look terrible (4 anchors, 0 admitted): it is a transactions table, not a
+line-anchored form. Report it, do not fix it in this round.**
+
 ## Standing operational notes
 
 **WORKER COMPLETION (2026-08-08; M20-S84 implementation, awaiting Architect acceptance).** The
