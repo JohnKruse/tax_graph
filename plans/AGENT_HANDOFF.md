@@ -371,6 +371,45 @@ was performed, per pilot rules.
 
 ## Open for Architect
 
+**S90b WORKER STATUS (2026-08-09):** Implemented in the working tree, not committed. Evidence-backed
+out-of-inventory operands now produce the non-fatal `unresolved_external_reference` warning,
+retain the structured `unresolved_external_nodes` record, remain `derived` without consuming a
+repair, and are copied into candidate-row findings for the review surface. Unsourced unknown
+documents remain hard `operand_document_not_found` failures. W-2, every 1099 suffix, and K-1 face
+references are excluded from the REQUIRE_INPUT guard as filer-supplied information returns.
+
+**ANSWERED - THAT GUARD IS SUPERSEDED. Rewrite it; the implementation is right.** You were right
+to stop. `test_named_unseen_form_reference_mints_unresolved_external_node` is an **S74** guard, not
+an S90 one, and its fixture is the exact case S90b redefines: the face reads "Attach Form 4684 and
+enter the amount from line 18 of that form", so the reference is evidence-backed and Form 4684 is
+simply outside the corpus. **Failing that row closed is the behaviour that cost 27 rows.**
+
+**Replacement assertions.** Status `derived`, not `error`. **Exactly ONE provider call** - the
+repair must not be consumed. `unresolved_external_reference` present in
+`validator_warnings_by_kind`, `operand_document_not_found` ABSENT, `gapped == 0`. **Keep the
+`unresolved_external_nodes` payload assertion byte-for-byte** - that record is what S74 actually
+bought and S90b does not change it.
+
+**Add the complementary guard in the same file, so the pair is visible:** an operand naming a
+document the row's own evidence does NOT name stays a hard `operand_document_not_found` with
+status `error`. That is the line `_legitimate_external_reference` draws, and reusing that existing
+predicate rather than inventing a second one was the right call.
+
+**The information-return rule is verified on real rows.** Architect ran it against the S89 corpus:
+flagged rows drop **12 -> 11**, `form_6251_2025` line 2j is correctly no longer flagged, and
+synthetic faces "from Form W-2, box 1", "from Form(s) W-2", "from Form 1099-R, box 1", "from Form
+1099-DIV" and the K-1 face all read as inputs while "from Form 8863, line 8" still flags. **By
+family, not by spelling, as specced.**
+
+**The live leg is mine and is running.** Acceptance still rests on it: coverage back to at least
+139 of 157, `form_6251_2025` line 13 back to `max(qdcgt line 4, 0)`, and the 64 plus 13 intact.
+
+RAN: `$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp_s90b'; .venv\Scripts\python.exe -m pytest tests/test_m20_s90b.py tests/test_candidate_regeneration_m20.py -q` -> 9 passed, 1 warning.
+RAN: `$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp_s90b'; .venv\Scripts\python.exe -m pytest tests/test_derive_cells_m20.py -q` -> 71 passed, 1 failed; the sole failure is the pre-S90b guard named above.
+RAN: `$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp_s90b'; .venv\Scripts\python.exe -m pytest tests/test_m20_s31.py tests/test_review_table_m20.py tests/test_run_summary_m20.py -q` -> 20 passed, 1 warning.
+RAN: `.venv\Scripts\python.exe tools\check_ascii.py` -> ASCII check OK.
+NOT RUN: live provider leg; requires the network-capable acceptance context.
+
 **S90 acceptance is open:** fixture and provider-free evidence is green, but the live provider leg
 is NOT RUN. Verify that the 12 S89 input rows are repaired into cross-document operands or named
 unresolved-reference findings, with no silent `REQUIRE_INPUT` result.
