@@ -21,9 +21,52 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## BALL
 
-**BALL: WORKER - M20-S92 (ROW DIAGNOSIS HARNESS). PILOT ONLY, NO PRODUCTION CHANGES.**
-**JOHN, 2026-08-09: diagnose the odd rows in a side effort BEFORE going back into the code.**
-**15 errored rows are grouped under Current round; the wide run waits until they are understood.**
+**BALL: JOHN - THE WIDE RUN IS DONE. Run at `C:\tmp\m20_wide\run`, candidate attempt at
+`...\cand`.**
+
+**THE ANSWER TO YOUR OVERFITTING QUESTION: QUALITY GENERALIZED. 356 of 410 printed anchors (86.8%)
+across 11 documents for $0.2512.** The eight documents we had NEVER derived came in at **79-96%**,
+several ABOVE the three-form set that everything was tuned on.
+
+| document | anchors | coverage | |
+| --- | --- | --- | --- |
+| `schedule_a_2025` | 28 | **96.4%** | first run |
+| `form_6251_2025` | 63 | 92.1% | |
+| `schedule_1a_2025` | 48 | **91.7%** | first run |
+| `schedule_2_2025` | 45 | **91.1%** | first run |
+| `schedule_1_2025` | 61 | **88.5%** | first run |
+| `schedule_b_2025` | 8 | **87.5%** | first run |
+| `form_1040_2025` | 59 | 86.4% | |
+| `schedule_3_2025` | 35 | **82.9%** | first run |
+| `schedule_d_2025` | 24 | **79.2%** | first run |
+| `form_2441_2025` | 35 | 74.3% | |
+| `form_8949_2025` | 4 | 0.0% | transactions table, expected |
+
+**FLOOR: 3 of the 64 protected rows regressed, all on 2441 - lines 19, 21, 25. NOT ATTRIBUTED.**
+Those exact rows have flipped in both directions across five runs now. **Treat 2441 19/21/25 as a
+known-unstable set and stop reading them as signal.**
+
+**BUT THE CANDIDATE WRITER FAILS ON THE WIDE CORPUS:**
+`ValueError: candidate graph edge endpoint form_1040_nr_2025_root_line_tax_on_non_effectively_connected_income is not a canonical line address`
+
+**THE CAUSE IS A REAL GAP BREADTH EXPOSED: 11 rows emit an operand whose "line" is a PHRASE, not a
+line number** - and **10 of them are marked `derived`**, so derivation accepted what the graph
+writer then rejected. **Two stages disagree about what a line is.**
+- `form_1040_2025` `6b` -> `social_security_benefits_worksheet_2025` line **"taxable benefits"**
+- `schedule_a_2025` `5e` -> `state_and_local_tax_deduction_worksheet` line **"amount"**
+- `schedule_2_2025` `1d` -> `form_4255_2025` line **"2a, column (l)"**
+- `schedule_3_2025` `13c` -> `form_3800_2025` line **"6, column (j)"**
+- `schedule_2_2025` `17o` -> `form_1040_nr_2025` line **"tax on non-effectively connected income"**
+
+**TWO DISTINCT CAUSES INSIDE THAT.**
+1. **Worksheets again, from a new direction.** When a worksheet is not a document with addressable
+   lines, the model DESCRIBES the value instead ("taxable benefits", "amount"). **More evidence for
+   the worksheet ruling, arrived at independently.**
+2. **COLUMN ADDRESSES.** Forms 4255, 3800 and 8949 carry values addressed by line AND column
+   ("2a, column (l)"). **Our address grammar has no column. That is new and it is structural.**
+
+**115 `unresolved_external_reference` warnings** - the stub path carrying the load it was built for.
+
 
 **THE BIGGEST FINDING IS OURS, NOT THE MODEL'S.** 1040 `5a` fails `subtract_direction: instruction
 says subtract line 6 from line 2`. Its instruction section is CORRECT but 11,424 chars long and
