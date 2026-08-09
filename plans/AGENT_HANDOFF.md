@@ -336,7 +336,19 @@ evidence disagrees with mine.** **No production fix, no prompt edit, no validato
   **THE ROOT CAUSE IS A STANDING-RULE VIOLATION: the harvester is END-ANCHORED** - it needs to know
   or infer a terminal line - **and John ruled that worksheet extent is AI-harvested, never
   end-anchored.** That is why it only ever worked on the one worksheet it was written against.
-  **So this is an engineering round on extent detection, NOT "run the command 20 times".**
+  **AND THE AI WAS NEVER ASKED. `worksheet_harvest.py` is 1,118 lines with ZERO llm/client/prompt
+  references - it is pure deterministic parsing.** John's design (find the start, hand the AI the
+  text, let it say where the worksheet ends) **was never built.**
+  **ARCHITECT PROBE, 2026-08-09, 6 worksheets, 6 correct on the first call:** Credit Limit 3 steps
+  (matches a hand-read of the source exactly), 6251 Exemption 6, Schedule D Tax 47, Simplified
+  Method 11, 28% Rate Gain 15, Social Security Benefits 18. **Two of MY hand estimates were the
+  wrong ones** (I guessed ~30 and ~19). **The model's own cue is the reusable one: a worksheet's
+  LAST step names where its answer goes** - "Also enter this amount on Form 2441, line 10". Only the
+  Credit Limit case is verified against the source; the other five are plausible and
+  self-consistent, **verify against the PDFs before trusting the counts.**
+  **So the round is SMALLER than "make the harvester general": replace end-anchored extent detection
+  with the AI call the prime directive says belongs there.** Probe:
+  `scratchpad/wsend.py`.
   Inventory: **~21 boxes** by the "Keep for Your Records" marker (a FLOOR - the Credit Limit
   Worksheet lacks it), 1 modelled, ~20 to go: 1040 x11, Schedule D x4, 8949 x3, 6251 x2, 2441 x1.
   **Watch 6251 line 5: the Exemption Worksheet would replace a lookup table that already derives
