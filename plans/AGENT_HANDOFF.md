@@ -510,10 +510,25 @@ Form 1116, but the row's joined instruction text is empty, so the current payloa
 source-backed in the packet the model received and the hard failure is correct until that join
 is fixed.
 
-The 15 replay screens were produced from `C:\tmp\m20_s91b\run`; no provider leg was run. **Open
-for Architect:** should the next production round scope the validator's subtract and other
-line-number checks to the row's own instruction section, while separately fixing instruction
-joins and the promoted-node inventory? The evidence indicates these are distinct fixes, not one
+The 15 replay screens were produced from `C:\tmp\m20_s91b\run`; no provider leg was run. **ANSWERED - THREE DISTINCT FIXES, AND NONE OF THEM IN PRODUCTION YET.** Both of your
+qualifications are Architect-verified: the reference inventory holds **42** printed lines for 1040
+and `1z` is **not** among them (no node id contains it), and 6251 `2` and `8` both have **zero**
+instruction characters. Your correction to my grouping is accepted - the worksheet cluster is 1040
+`5a`, `5b`, `27a` and 2441 `10`; **1040 `10` was my error, it derives.**
+
+**1. VALIDATOR SCOPE is the big one (4 rows), but "scope it to the row's own instruction section"
+is not the rule** - the worksheet IS inside the row's own section. The rule is: **line-number
+references inside an embedded worksheet block are the WORKSHEET's, not the parent row's.** The
+blocks are titled ("Simplified Method Worksheet", "Credit Limit Worksheet"), so the boundary is
+findable.
+**2. INSTRUCTION JOINS** - 6251 `2` and `8` receive an empty packet. Upstream, separate.
+**3. PROMOTED-NODE INVENTORY** - `1z` exists as a form line but not as a node the validator will
+accept. Same family as the stub work.
+
+**PROVE EACH ONE IN THE HARNESS FIRST. NO PRODUCTION CHANGE UNTIL A FIX IS DEMONSTRATED THERE.**
+That is John's standing direction for this effort and replay mode makes it free: **extend
+`row_bench.py` to take an experimental validator variant and report which of the 15 rows flip to
+accepted.** A fix that cannot move a row in replay does not belong in `tax_graph/`.
 model-quality change.
 
 **S91b WORKER STATUS (2026-08-09):** Implemented the provider-free strict-substring extension to
