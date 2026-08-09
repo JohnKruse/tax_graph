@@ -324,11 +324,23 @@ evidence disagrees with mine.** **No production fix, no prompt edit, no validato
 
 ## Queued (ONE LINE each - do not spec ahead)
 
-- **HARVEST THE NAMED WORKSHEETS AS DOCUMENTS** (John's ruling, now in AGENTS.md). **~21 boxes
-  found by the "Keep for Your Records" marker**, 1 already modelled, so ~20 remain: 1040 x11,
-  Schedule D x4, 8949 x3, 6251 x2, 2441 x1. **The marker is a FLOOR, not a total - the Credit Limit
-  Worksheet lacks it.** `harvest-worksheet` already exists and selects by title. **Watch 6251
-  line 5: the Exemption Worksheet would replace a lookup table that already derives correctly.**
+- **MAKE THE WORKSHEET HARVESTER GENERAL** (John's ruling, now in AGENTS.md), then harvest.
+  **ARCHITECT CORRECTION: I told John "harvest-worksheet already exists" and that was misleading.
+  It exists and it is a ONE-WORKSHEET TOOL.** `worksheet_harvest.py` holds a single hardcoded
+  target - `QDCGT_WORKSHEET_TARGET`, `expected_line_count=25`. **Tested 2026-08-09 on six real
+  worksheets: 0 succeeded**, with five distinct failures:
+  Credit Limit `missing_terminal_line` (line 3); 2441 Worksheet A `line_sequence_gap` (expected 14,
+  found 14a); 6251 Exemption `missing_terminal_line`; Schedule D Tax `missing_numbered_rows` (start
+  found, no numbered rows followed); Simplified Method `missing_start_title` (matched 0 headings);
+  28% Rate Gain `missing_terminal_line` (line 7).
+  **THE ROOT CAUSE IS A STANDING-RULE VIOLATION: the harvester is END-ANCHORED** - it needs to know
+  or infer a terminal line - **and John ruled that worksheet extent is AI-harvested, never
+  end-anchored.** That is why it only ever worked on the one worksheet it was written against.
+  **So this is an engineering round on extent detection, NOT "run the command 20 times".**
+  Inventory: **~21 boxes** by the "Keep for Your Records" marker (a FLOOR - the Credit Limit
+  Worksheet lacks it), 1 modelled, ~20 to go: 1040 x11, Schedule D x4, 8949 x3, 6251 x2, 2441 x1.
+  **Watch 6251 line 5: the Exemption Worksheet would replace a lookup table that already derives
+  correctly.**
 - **S92 - THE WIDE RUN.** All 11 acquired forms and schedules, live, per document against every
   printed anchor. **After S91: running it on 42 junk faces would measure extraction, not
   derivation.** Specced when picked up, not before.
