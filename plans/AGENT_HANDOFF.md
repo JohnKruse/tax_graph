@@ -476,6 +476,46 @@ was performed, per pilot rules.
 
 ## Open for Architect
 
+**S92 [DONE] WORKER STATUS (2026-08-09), commit `6833dad`:** Implemented `pilot/row_bench.py` and
+`pilot/test_row_bench.py`. Replay is read-only and uses the production `_render_cell_prompt`,
+`_apply_payload`, and `validate_cell_output`; live mode delegates to production `derive_cells`
+while capturing its prompts and responses. No production code, prompt, validator, graph, or
+review state changed.
+
+RAN: `.venv\Scripts\python.exe -m pytest pilot\test_row_bench.py -q` -> **3 passed, 1 warning**.
+RAN: `.venv\Scripts\python.exe tools\check_ascii.py` -> **ASCII check OK**.
+RAN: `git diff --check` -> **clean**.
+RAN: `.venv\Scripts\python.exe pilot\row_bench.py form_1040_2025 --line 3b --line 5a --line 5b --line 12e --line 25c --line 27a --line 35a --line 38 --run-dir C:\tmp\m20_s91b\run` -> **exit 0**.
+RAN: `.venv\Scripts\python.exe pilot\row_bench.py form_2441_2025 --line 5 --line 8 --line 10 --run-dir C:\tmp\m20_s91b\run` -> **exit 0**.
+RAN: `.venv\Scripts\python.exe pilot\row_bench.py form_6251_2025 --line 1a --line 2h --line 8 --line 2 --run-dir C:\tmp\m20_s91b\run` -> **exit 0**.
+
+**THE 15-ROW GROUPING IS CONFIRMED WITH ONE CORRECTION.** The embedded-worksheet validator
+pattern is 1040 `5a`, `5b`, `27a`, and 2441 `10`; 1040 line `10` is derived and is not in the
+15-row error set. The 1040 rows carry 11,424 and 43,748 character instruction packets that
+embed Simplified Method and EIC worksheets. 2441 line 10 carries the Credit Limit Worksheet;
+its internal line 3 says subtract line 2 from line 1, which the parent-row validator reads as
+the row rule. This is the same validator scope defect, with a different worksheet.
+
+The remaining groups match the spec: quote-not-verbatim on 1040 `3b`, `35a`; expression grammar
+payload rejection on 1040 `12e`, 2441 `5`; unknown external document on 1040 `25c`, 6251 `8`;
+source-side no-call evidence gaps on 2441 `8`, 6251 `1a`; line-format mismatch on 6251 `2h`,
+`2`; and self-reference on 1040 `38`. Replay confirms first and repair payloads are rejected
+under the same production validator for every provider-reached row.
+
+Two source-backed qualifications are recorded. For 6251 `2`, printed `1z` is present in the
+1040 field inventory, address map, and binding, but is absent from the promoted semantic node
+inventory used by `build_reference_inventory`; the hard failure is therefore a graph inventory
+shape gap, not a missing form control. For 6251 `8`, the acquired 6251 instructions do name
+Form 1116, but the row's joined instruction text is empty, so the current payload is not
+source-backed in the packet the model received and the hard failure is correct until that join
+is fixed.
+
+The 15 replay screens were produced from `C:\tmp\m20_s91b\run`; no provider leg was run. **Open
+for Architect:** should the next production round scope the validator's subtract and other
+line-number checks to the row's own instruction section, while separately fixing instruction
+joins and the promoted-node inventory? The evidence indicates these are distinct fixes, not one
+model-quality change.
+
 **S91b WORKER STATUS (2026-08-09):** Implemented the provider-free strict-substring extension to
 the printed-bracket clause selector. `clean_form_face_text_with_extent` keeps the near-empty-face
 rule and now also selects the bracket when the normalized fallback face is a strict substring of

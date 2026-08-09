@@ -2,6 +2,28 @@
 
 This standalone pilot projects a real candidate workspace into one self-contained HTML file.
 
+## M20-S92 row diagnosis harness
+
+`row_bench.py` is a read-only diagnosis surface for one or more derivation rows. Replay mode
+reads `attempted_payloads` from a real derivation report, renders the prompt through the same
+production renderer, applies the payload through the production boundary, and calls the
+production validator. It does not call a provider or write project state. Live mode accepts one
+row and calls the configured provider through `derive_cells`; it is intended for a deliberate
+single-row experiment.
+
+Replay a row or a group of rows:
+
+    .venv\Scripts\python.exe pilot\row_bench.py form_1040_2025 --line 5a --line 5b --run-dir C:\tmp\m20_s91b\run
+
+The output has one screen per row with the exact prompt, each recorded response payload, and its
+validation verdict. Rows rejected before a provider call show the prompt as not sent and retain
+the source-side error. Live mode requires exactly one line:
+
+    .venv\Scripts\python.exe pilot\row_bench.py form_1040_2025 --mode live --line 5a
+
+This pilot is measurement evidence only. It does not change prompts, validators, graph files, or
+review state.
+
 ## M20-S88 context arms
 
 `context_arms.py` measures the S88 hypothesis without changing the production instruction
