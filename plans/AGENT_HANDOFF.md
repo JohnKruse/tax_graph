@@ -21,47 +21,29 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## BALL
 
-**BALL: WORKER - M20-S90c NOT ACCEPTED at `01c166c`. ONE BLOCKING DEFECT, one unimplemented spec
-item, and real wins. Finish it; do not redesign it.**
+**BALL: WORKER - M20-S91 (CLAUSE EXTENT FROM THE PRINTED BRACKET). Spec under Current round.
+S90c ACCEPTED at `59ccb6a`. The wide run moves to S92, AFTER extraction is fixed.**
 
-**BLOCKING: `regenerate-candidate` CRASHES ON THE REAL CORPUS.** RAN the documented second command
-against the S90c run:
-`ValueError: candidate graph contains duplicate node ids: taxpayer_2025_filing_status`.
-That node is a **legitimately shared cross-document parameter**, emitted under both
-`_drafts/form_1040_2025/nodes.yaml` and `_drafts/form_6251_2025/nodes.yaml`. The new integrity
-assertion conflates **"one node emitted under two documents"** (correct, and what a shared
-parameter IS) with **"two different nodes claiming one id"** (the real hazard). **Compare node
-PAYLOADS: identical payload under one id is one node; differing payloads are a collision.**
-**The synthetic single-document tests could not see this** - the round's headline claim, that stubs
-materialize, is therefore STILL UNVERIFIED on real data, because the writer dies first.
+**S90c ACCEPTED ON INVARIANTS, NOT ON A RUN DIFF.** Verified on a REAL candidate, not fixtures:
+**22 stub nodes across 14 stub documents** at canonical `_root_line_` addresses, each carrying
+"must be ingested or supplied by the caller"; integrity **230 nodes, 315 edges, 228 operands, ZERO
+dangling ids**; the writer survives the corpus that crashed it; the document-only predicate raised
+`unresolved_external_reference` warnings 8 -> 17. **Full suite 2026-08-09: 19 failed, 891 passed,
+8 skipped, 1 xfailed in 0:57:21.** **One failure is NEW against the 18-failure baseline:**
+`test_m20_s71::test_real_candidate_node_labels_use_clean_text`. **Named, not chased.**
 
-**UNIMPLEMENTED, and it was Cause 1 of the spec.** `_legitimate_external_reference` still requires
-evidence to name the document AND the line. **Measured cost: 6 of the 8
-`operand_document_not_found` rows would become stub-plus-warning under document-only evidence** -
-1040 `6b`, `13a`, `19`, `25c`, `28` and 6251 `10`. The two that stay hard failures are correct:
-1040 `27a` and 2441 `9b` name documents nothing in their evidence mentions.
+**COVERAGE WAS 132 of 157 against S89's 139, AND I AM NOT ATTRIBUTING THE DIFFERENCE.** I twice
+called the 2441 rows variance, then attributable, then variance again; the third run derived both.
+**The handoff's own rule says prefer invariants that hold on ANY single run over diffs between two
+runs, and I broke it twice. Judge rounds on invariants.**
 
-**COVERAGE 127 of 157 (80.9%), cost $0.1008** - below the 139 floor AND below S90b's 131. **2
-regressions against the 64**: 2441 `19` and `25`, both `LOOKUP_TABLE` payload errors. **I am not
-attributing them** - the same payload family hit 2441 `25` under S90 and 1040 `12e` under S90b, a
-different row each run, which reads as instability in one operation rather than an S90c mechanism.
-**Name it and track it; it is costing 1-2 rows per run at random.**
-
-**WHAT S90c GOT RIGHT, and it is not small.**
-- **`form_6251_2025` line 13 is FIXED exactly as demanded: `max(qdcgt line 4, 0)`** - the
-  expression, not merely the status. The alternation sum is gone.
-- **A real dangling-reference defect was found and fixed.** Cross-document projection minted
-  `<document>_line_<line>` while ingestion and the stub minter use `<document>_root_line_<line>`,
-  so references pointed at an address nothing would ever occupy. **That is John's dangling-connector
-  concern, found in the live code.**
-- **Instructions booklets are excluded and it shows in real output:** 1040 `6b` now names
-  `social_security_benefits_worksheet` and 2441 `9b` names `worksheet_a_2441` instead of an
-  instructions document.
-
-**TO FINISH S90c:** fix the duplicate-id assertion, implement the document-only predicate, rerun the
-three-document leg with `pilot/run_report.py`, **verify stubs in a REAL candidate**, then the full
-suite. **NOT RUN by the Architect: the full suite** - the round is not acceptable yet and it costs
-an hour.
+**THE REAL FAILURE WAS INVISIBLE BECAUSE WE THREW THE EVIDENCE AWAY.** A rejected payload went out
+of scope with the exception, so five rounds could only COUNT rejections. Fixed at `254877a`:
+`attempted_payloads` keeps what the model actually answered, first attempt and repair.
+**Immediate findings from ONE run with it on:** 2441 line 5's repair response is **byte-identical**
+to its first attempt - the repair call can never succeed and is pure spend - and line 5's real
+problem is that **`REQUIRE_INPUT` is legal as a whole rule but not as a branch of one**
+(accepted on line 4, rejected inside `LOOKUP_TABLE` on line 5). **Both are queued, both are small.**
 
 
 **WE HAVE ONLY EVER DERIVED 3 OF 11 ACQUIRED DOCUMENTS - 157 of 410 printed anchors.** Every number
@@ -264,103 +246,55 @@ resolve now, and whether they resolve to the RIGHT line is unreviewed.
 
 ## Current round
 
-**M20-S90c SPECCED BY ARCHITECT (2026-08-09), JOHN'S DIRECTION. AN UNKNOWN REFERENCE MINTS A STUB,
-IT DOES NOT RAISE A FINDING.**
-**REAL-PROJECT ROUND** - full-suite floor applies. Build on the S90b working tree; commit it first.
+**M20-S91 SPECCED BY ARCHITECT (2026-08-09), JOHN'S DIRECTION. THE PRINTED LINE NUMBER BRACKETS THE
+CLAUSE; USE IT TO FIND THE EXTENT.**
+**REAL-PROJECT ROUND** - full-suite floor applies. **NO PROVIDER CALL IS NEEDED TO VALIDATE THIS.**
 
-**JOHN, 2026-08-09:** when the pipeline meets "Form 777X, Section B, Line 23" it should **add both
-the form and the line to the graph as stubs**, carrying the message that the form must be ingested
-or the human must supply that line; and when the form is later inducted there must be **no dangling
-connectors** back to it. **This is the predictable reference system, and it supersedes treating an
-unknown document as a validation outcome.**
+**JOHN, 2026-08-09:** the form prints the line number at the START of a clause and again at its END.
+Use it to find the beginning and the end. **He is right, and it is the strongest structural signal
+in the corpus.**
 
-**HALF OF IT IS ALREADY BUILT - DO NOT REBUILD IT.**
-- `_canonical_external_operand_id` has minted the stub payload since S74: `node_id`,
-  `document_id`, `line`, `node_type: fact`, `value_type: currency`, `required: required`,
-  **`status: unresolved`**, `citation_refs`. That is a stub record in all but name.
-- **THE ID IS ALREADY THE RIGHT ID.** Architect verified that the stub id and the id real
-  ingestion produces are **identical** - `_canonical_external_operand_id('form_4684_2025','18')`
-  and `_line_node_id('form_4684_2025','18')` both give `form_4684_2025_root_line_18`. **Induction
-  therefore lands on the same address and replaces the stub in place. Dangling connectors are
-  prevented by construction, not repaired afterwards** - which is why identity must stay canonical-
-  address-only.
+**MEASURED BY THE ARCHITECT, and the first number I gave him was wrong.** A probe requiring the
+anchor at the start of a physical line scored 48%. **That was the probe's fault, not the form's** -
+on 1040 two clauses often share one line behind a margin note:
+`Attach Sch. B 2a Tax-exempt interest 2a b Taxable interest 2b`. Searching the whole text instead:
+**384 of 406 anchors bracketed, 95%** - 2441 and 6251 **100%**, 1040 98%, Schedules 1/1A/2/3/A
+93-97%. **Weakest: Schedule D 62%, Schedule B 75%.**
 
-**WHAT IS ACTUALLY MISSING, measured not assumed.**
-1. **The stubs never reach the graph.** Architect counted nodes carrying `status: unresolved` in
-   the two real candidates `m20_s81_candidate` and `m20_s68_candidate`: **zero in both.** The
-   payload is minted on the row, rendered as a finding, and dropped. **Emit it as a node.**
-2. **There is no DOCUMENT-level stub.** Only lines get ids today. John asked for the form too, so
-   an unseen document becomes a stub document node that its line stubs belong to.
-3. **There is no lifecycle.** Nothing carries a stub from `unresolved` to ingested, and nothing
-   asks whether a real document has arrived for existing stubs.
-4. **Nothing states the invariant.** The check that matters is **every operand id resolves to a
-   node, stub or real** - assert that, rather than hunting dangling edges after the fact.
+**THE COST OF NOT USING IT: 42 ROWS DERIVE FROM JUNK while the correct clause sits in the file.**
+6251 `2s`, `2f`, `2b` and Schedule 1 `8a`, `8d`, `8s` have the face `( )`. **Schedule 3 has 15 rows
+reading `Attach Form `** - the marginal column, not the clause. `6251 2s` is really "Income from
+certain installment sales before January 1, 1987". **We are asking a model to derive a formula from
+`( )`.**
 
-**THE TWO MECHANICAL CAUSES FROM THE S90b RUN STILL APPLY, and stubs subsume the first.**
-- `_legitimate_external_reference` demands evidence name the document AND the line, so a terse face
-  like "Child tax credit ... from Schedule 8812" hard-fails when the model takes the line from the
-  instructions. **Costs 1040 `13a`, `19`, `28` and 6251 `8`.** With stubs, an unknown document is
-  no longer an error at all; **require the DOCUMENT in evidence and let the line mint a stub.**
-  In-corpus operands keep `operand_not_printed`, which is the real line check.
-- **Operands pointing at an INSTRUCTIONS booklet** (1040 `6b`, 2441 `9b`, `operand_inventory_
-  unavailable`) are the S74 scoping defect resurfacing. **An instructions document must never be an
-  operand and must never mint a stub** - it is a named finding.
+**THE CHANGE.** Take clause extent from the bracket: the clause **ends** at the full anchor and
+**starts** at the full anchor **or its trailing letter** (the form prints `b Taxable interest 2b`).
+Strip leader-dot runs first. **Keep stripping the number from the SAVED text, per John's earlier
+ruling** - detect with it, save without it. **Current extent logic stays as the fallback** for the
+5% with no bracket.
 
-**THE ONE THAT MATTERS MORE THAN COVERAGE, and stubs do NOT fix it. `form_6251_2025` line 13 is
-green and WRONG.** It reads `max(qdcgt line 4 + schedule_d_tax_worksheet line 13, 0)` - it **SUMS
-two worksheets the form offers as ALTERNATIVES** - where S89 had the correct `max(qdcgt line 4, 0)`.
-Making unresolved references non-fatal removed the pressure that used to catch it. **An
-alternatives-of clause must not become a sum: name it, do not guess an operator.** **My S90b floor
-named line 13 and it was met in STATUS ONLY. That is the kind of green I do not want.**
+**DO NOT SWAP IT IN BLIND. The bracket over-captures in places** - 6251 `35` starts mid-sentence
+("through 37 and go to line 38"), Schedule 2 `1a` swallows column headers, Schedule 3 `13a` runs
+into `13b`. **Where today's face is already good the bracket AGREES exactly** (verified on 2441 `5`,
+2441 `19`, 6251 `2j`, 1040 `2b`). **So prefer the bracket where today's face is weak, and report
+every row where the two disagree and today's is longer.**
 
-**S90b's OWN NUMBERS, for the record.** Live run at `C:\tmp\m20_s90b\run`, temperature 0, $0.1008:
-**coverage 71.3% -> 83.4% (131 of 157)**, errors 38 -> 19, **zero regressions against the 64**, all
-13 S89 expressions kept, 6251 line 10 newly repaired, 10 `unresolved_external_reference` warnings.
+**THE FLOOR.** **All 42 named rows get a real clause.** No row whose face is good today gets worse.
+Report the count of disagreements both ways. **Provider-free: this is checkable by comparing
+extracted text, so do not spend a live run proving it.**
 
-**THE FLOOR.** The 64 and the 13 stay. **Coverage at least 139 of 157.** 6251 line 13 back to
-`max(qdcgt line 4, 0)` **as an expression, not merely as a status.** **The protected set is
-untouched** - stubs are candidate-graph output, never a live-graph write.
-
-**JOHN SET THE SEQUENCE (2026-08-09): STUBS, THEN BREADTH, THEN DECIDE `CASE`.** He raised the
-risk directly - that we are crafting something excellent for a three-form dev set that breaks on a
-real corpus - and asked to test the pattern before wiring it in. **The measurement says he is
-right.**
-
-**1. S90c - STUBS (this round).** Not optional before breadth: more documents multiply outward
-references, and without stubs each becomes a hard error. **That is exactly how S90 lost 27 rows.**
-
-**2. S91 - THE WIDE RUN, as measurement, not a feature round.** All 11 acquired forms and schedules,
-about $0.25-0.35 at the S89 rate. **We have only ever derived 3 documents - 157 of 410 printed
-anchors. Eight are fully acquired with complete artifact sets and have NEVER been derived:**
-Schedule 1 (61), 1A (48), 2 (45), 3 (35), A (28), D (24), B (8), and Form 8949 (4, a transactions
-table needing separate handling). Cross-references among them start resolving internally instead of
-dangling. **Report coverage per document against all printed anchors.**
-
-**3. `CASE` IS HELD until that data exists, and the enum-gate question with it.** Alternation rows
-emit a named finding meanwhile.
-
-**THE EVIDENCE FOR HOLDING IT.** Architect scanned printed faces across all 11 acquired documents:
-the alternation shape is **essentially 6251-only** - whichever 3, "or amount from" 4, "if you didn't
-complete" 3, otherwise 5 - against **ZERO hits across 1040, Schedules 1, 1A, 2, 3, A and B (275
-rows)**, with 1 on Schedule D and 2 "if you checked" on 8949. **`CASE` as specced would be designed
-from four rows on one form.** Instruction text is broader - 1040 carries 9 "if ... enter", 2
-whichever, 4 otherwise; all 4 8949 rows are conditional - but those are mostly "if X then enter Y",
-which `IF_ELSE` may already cover, and **that signal is partial: 5 of 11 documents have no acquired
-instructions and coverage within the rest runs 0% (Schedule B) to 71% (1040).**
-
-**AND A PATTERN SCAN CANNOT SETTLE IT ANYWAY.** Regex finds phrasing, not semantics. **The line 13
-sum appeared in no scan** - it surfaced only when the grammar ran out of room during derivation.
-**Only the wide run answers whether `CASE` is a real construct or a 6251 specialty.**
-
-**OUT OF SCOPE.** Genuine derivation misses this run exposed - 1040 `12e` LOOKUP_TABLE payload,
-6251 `2e` quote_not_verbatim, `2h` line `g` on 8949. Queued: `pilot/context_arms.py` scoring
-`REQUIRE_INPUT` as a recovered formula; run-together instruction headings; artifact-pinned counts.
+**OUT OF SCOPE.** Schedule D's 62% - it is a table form and needs its own treatment. Form 8949
+(4 anchors, 0 admitted) likewise.
 
 
 ## Queued (ONE LINE each - do not spec ahead)
 
-- **S91 - THE WIDE RUN.** All 11 acquired forms and schedules, live, reported per document against
-  every printed anchor. Specced when picked up, not before.
+- **S92 - THE WIDE RUN.** All 11 acquired forms and schedules, live, per document against every
+  printed anchor. **After S91: running it on 42 junk faces would measure extraction, not
+  derivation.** Specced when picked up, not before.
+- **Repair calls that return a byte-identical payload** must be detected and not spent (2441 `5`).
+- **`REQUIRE_INPUT` as a lookup branch** - legal as a whole rule, illegal inside one; blocks 2441 `5`.
+- **`CASE` / alternation** - still HELD pending S92's wider evidence.
 
 **PRIMED FOR S91, so the round starts with tools instead of setup.**
 
