@@ -21,8 +21,16 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## BALL
 
-**BALL: WORKER - M20-S90 NOT ACCEPTED at `056e3be`. The mechanism is right; the failure mode is
-wrong. Rework spec is under Current round.**
+**BALL: WORKER - M20-S90c (STUBS). Then S91, the wide run. `CASE` is HELD until S91's data.**
+**JOHN'S SEQUENCE, 2026-08-09: stubs, then breadth, then decide the case statement.**
+
+**WE HAVE ONLY EVER DERIVED 3 OF 11 ACQUIRED DOCUMENTS - 157 of 410 printed anchors.** Every number
+in S88-S90b is measured on that 38%. **Eight forms and schedules are fully acquired and never
+derived.** Going wider is now the priority; depth on the same three forms is not.
+
+**M20-S90 NOT ACCEPTED at `056e3be`; S90b is uncommitted in the tree and its guard ruling is
+answered.** The mechanism is right, the coverage floor is not met.
+
 
 **IT COST 27 ROWS OF COVERAGE TO FIX 12 MISLABELLED ONES.** Live corpus run at
 `C:\tmp\m20_s90\run`, temperature 0, $0.1032: **coverage 139 -> 112 of 157 (88.5% -> 71.3%)**,
@@ -272,6 +280,37 @@ named line 13 and it was met in STATUS ONLY. That is the kind of green I do not 
 **THE FLOOR.** The 64 and the 13 stay. **Coverage at least 139 of 157.** 6251 line 13 back to
 `max(qdcgt line 4, 0)` **as an expression, not merely as a status.** **The protected set is
 untouched** - stubs are candidate-graph output, never a live-graph write.
+
+**JOHN SET THE SEQUENCE (2026-08-09): STUBS, THEN BREADTH, THEN DECIDE `CASE`.** He raised the
+risk directly - that we are crafting something excellent for a three-form dev set that breaks on a
+real corpus - and asked to test the pattern before wiring it in. **The measurement says he is
+right.**
+
+**1. S90c - STUBS (this round).** Not optional before breadth: more documents multiply outward
+references, and without stubs each becomes a hard error. **That is exactly how S90 lost 27 rows.**
+
+**2. S91 - THE WIDE RUN, as measurement, not a feature round.** All 11 acquired forms and schedules,
+about $0.25-0.35 at the S89 rate. **We have only ever derived 3 documents - 157 of 410 printed
+anchors. Eight are fully acquired with complete artifact sets and have NEVER been derived:**
+Schedule 1 (61), 1A (48), 2 (45), 3 (35), A (28), D (24), B (8), and Form 8949 (4, a transactions
+table needing separate handling). Cross-references among them start resolving internally instead of
+dangling. **Report coverage per document against all printed anchors.**
+
+**3. `CASE` IS HELD until that data exists, and the enum-gate question with it.** Alternation rows
+emit a named finding meanwhile.
+
+**THE EVIDENCE FOR HOLDING IT.** Architect scanned printed faces across all 11 acquired documents:
+the alternation shape is **essentially 6251-only** - whichever 3, "or amount from" 4, "if you didn't
+complete" 3, otherwise 5 - against **ZERO hits across 1040, Schedules 1, 1A, 2, 3, A and B (275
+rows)**, with 1 on Schedule D and 2 "if you checked" on 8949. **`CASE` as specced would be designed
+from four rows on one form.** Instruction text is broader - 1040 carries 9 "if ... enter", 2
+whichever, 4 otherwise; all 4 8949 rows are conditional - but those are mostly "if X then enter Y",
+which `IF_ELSE` may already cover, and **that signal is partial: 5 of 11 documents have no acquired
+instructions and coverage within the rest runs 0% (Schedule B) to 71% (1040).**
+
+**AND A PATTERN SCAN CANNOT SETTLE IT ANYWAY.** Regex finds phrasing, not semantics. **The line 13
+sum appeared in no scan** - it surfaced only when the grammar ran out of room during derivation.
+**Only the wide run answers whether `CASE` is a real construct or a 6251 specialty.**
 
 **OUT OF SCOPE.** Genuine derivation misses this run exposed - 1040 `12e` LOOKUP_TABLE payload,
 6251 `2e` quote_not_verbatim, `2h` line `g` on 8949. Queued: `pilot/context_arms.py` scoring
