@@ -762,17 +762,21 @@ def clean_form_face_text_with_extent(
     *,
     bracket_text: str | None = None,
 ) -> tuple[str, dict[str, Any]]:
-    """Select a printed-bracket clause only when the current face is weak.
+    """Select a printed-bracket clause for weak or strictly contained faces.
 
     The fallback remains authoritative for a useful existing face. The
     bracket is compared after caption/instruction projection so diagnostics
-    describe exactly what the derivation model receives, and both candidates
-    remain in the row metadata for human review and later measurement.
+    describe exactly what the derivation model receives. A bracket is also
+    preferred when the fallback is a strict substring of it, because that
+    retains every fallback word while recovering the surrounding clause.
+    Both candidates remain in the row metadata for human review and later
+    measurement.
     """
     fallback = _clean_form_face_text_fallback(text, line)
     fallback_face = _cell_face_text(fallback, line)
     bracket = _clean_form_face_text_fallback(bracket_text, line) if bracket_text else ""
     bracket_face = _cell_face_text(bracket, line) if bracket else ""
+    fallback_is_strict_substring = _is_strict_face_substring(fallback_face, bracket_face)
     disagreement: str | None = None
     if bracket_face and fallback_face != bracket_face:
         disagreement = (
@@ -783,12 +787,24 @@ def clean_form_face_text_with_extent(
     use_bracket = bool(
         bracket
         and bracket_face
-        and _weak_cell_face(fallback_face)
-        and len(bracket_face) >= len(fallback_face)
+        and (
+            (
+                _weak_cell_face(fallback_face)
+                and len(bracket_face) >= len(fallback_face)
+            )
+            or fallback_is_strict_substring
+        )
     )
     selected = bracket if use_bracket else fallback
+    if use_bracket and fallback_is_strict_substring:
+        selection_reason = "fallback_strict_substring"
+    elif use_bracket:
+        selection_reason = "weak_fallback"
+    else:
+        selection_reason = "fallback"
     return selected, {
         "method": "bracket" if use_bracket else "fallback",
+        "selection_reason": selection_reason,
         "bracket_available": bool(bracket),
         "disagreement": disagreement,
         "fallback_face": fallback_face,
@@ -808,6 +824,18 @@ def _weak_cell_face(value: str) -> bool:
     if normalized in {"( )", "()", "years", "instructions", "instructions."}:
         return True
     return normalized.startswith("attach form") or normalized.startswith("form ")
+
+
+def _is_strict_face_substring(needle: str, haystack: str) -> bool:
+    """Return whether a non-empty fallback is strictly contained in a bracket face."""
+    normalized_needle = " ".join(str(needle or "").split()).strip().casefold()
+    normalized_haystack = " ".join(str(haystack or "").split()).strip().casefold()
+    return bool(
+        normalized_needle
+        and normalized_haystack
+        and normalized_needle != normalized_haystack
+        and normalized_needle in normalized_haystack
+    )
 
 
 def _drop_instruction_evidence(

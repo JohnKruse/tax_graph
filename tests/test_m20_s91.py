@@ -49,7 +49,7 @@ def test_bracketed_source_text_joins_wrapped_clause_and_drops_dot_leaders() -> N
     ) == "Correct clause starts here and continues on the next source row"
 
 
-def test_bracket_selection_repairs_weak_face_but_preserves_good_face() -> None:
+def test_bracket_selection_repairs_weak_face_and_fragment_face_but_preserves_other_good_face() -> None:
     selected, diagnostic = clean_form_face_text_with_extent(
         "b Tax refund from Schedule 1 2b ( )",
         "2b",
@@ -62,14 +62,23 @@ def test_bracket_selection_repairs_weak_face_but_preserves_good_face() -> None:
     selected, diagnostic = clean_form_face_text_with_extent(
         "35 Add lines 17, 32, and 33 35",
         "35",
-        bracket_text="Add lines 17, 32, and 33 through 37 and go to line 38",
+        bracket_text="A different longer clause that does not contain the fallback",
     )
     assert selected == "35 Add lines 17, 32, and 33"
     assert diagnostic["method"] == "fallback"
     assert diagnostic["disagreement"] == "bracket_longer"
 
+    selected, diagnostic = clean_form_face_text_with_extent(
+        "Schedule 1 deductions",
+        "8a",
+        bracket_text="Schedule 1 deductions for certain taxpayers",
+    )
+    assert selected == "Schedule 1 deductions for certain taxpayers"
+    assert diagnostic["method"] == "bracket"
+    assert diagnostic["selection_reason"] == "fallback_strict_substring"
 
-def test_real_corpus_repairs_all_42_weak_packets_and_reports_both_directions() -> None:
+
+def test_real_corpus_repairs_all_68_weak_or_fragment_packets_and_reports_both_directions() -> None:
     document_ids = [
         "form_1040_2025",
         "form_2441_2025",
@@ -105,7 +114,7 @@ def test_real_corpus_repairs_all_42_weak_packets_and_reports_both_directions() -
                 selected.add((document_id, row.line))
                 selected_faces[(document_id, row.line)] = row.form_face_text
 
-    assert len(selected) == 42
+    assert len(selected) == 68
     assert selected == {
         ("form_6251_2025", line) for line in ("2b", "2f", "2s")
     } | {
@@ -119,6 +128,18 @@ def test_real_corpus_repairs_all_42_weak_packets_and_reports_both_directions() -
         for line in ("1", "2", "4", "6a", "6b", "6c", "6f", "6g", "6h", "6i", "6j", "6k", "6m", "9", "12", "13a", "13b")
     } | {
         ("schedule_a_2025", line) for line in ("5e", "9", "15")
+    } | {
+        ("form_6251_2025", line) for line in ("1b", "5", "19", "25")
+    } | {
+        ("schedule_1_2025", line)
+        for line in ("8l", "8t", "24b", "24c", "24e", "24h", "24i")
+    } | {
+        ("schedule_1a_2025", line) for line in ("4a", "14b", "36b")
+    } | {
+        ("schedule_2_2025", line)
+        for line in ("1b", "1e", "1f", "4", "17g", "17h", "17i", "17o", "17p")
+    } | {
+        ("schedule_a_2025", line) for line in ("5a", "8b", "8c")
     }
     assert directions["bracket_longer"] == 44
     assert directions["fallback_longer"] == 27

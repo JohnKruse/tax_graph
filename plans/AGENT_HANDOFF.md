@@ -21,8 +21,8 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## BALL
 
-**BALL: WORKER - M20-S91 ACCEPTED at `e1f97cc`. S91b is the immediate follow-up: it is the
-difference between fixing 7 rows and fixing 27.**
+**BALL: WORKER - M20-S91 ACCEPTED at `e1f97cc`. M20-S91b is implemented and awaiting Architect
+acceptance; it is the difference between fixing 7 rows and fixing 27.**
 
 **S91 IS SAFE AND POSITIVE, AND IT UNDER-DELIVERS AGAINST MY OWN SPEC.** Measured from the
 round's own `clause_extent` diagnostics, not from an Architect harness: **42 of 406 rows take the
@@ -488,6 +488,21 @@ known permission failure writing the pre-existing `.pytest_cache`; no provider r
 was performed, per pilot rules.
 
 ## Open for Architect
+
+**S91b WORKER STATUS (2026-08-09):** Implemented the provider-free strict-substring extension to
+the printed-bracket clause selector. `clean_form_face_text_with_extent` keeps the near-empty-face
+rule and now also selects the bracket when the normalized fallback face is a strict substring of
+the bracket face. `clause_extent` records `selection_reason` as `weak_fallback`,
+`fallback_strict_substring`, or `fallback` alongside both candidate faces and the disagreement
+direction. The real 2025 corpus selects **68** rows: the prior **42** weak-face repairs plus **26**
+strict-substring repairs. The disagreement split remains **44 bracket-longer / 27 fallback-longer**.
+
+RAN: `$env:PYTEST_DEBUG_TEMPROOT=(Resolve-Path .test_tmp_s91b).Path; .venv\Scripts\python.exe -m pytest tests\test_m20_s91.py tests\test_cell_caption_m20.py tests\test_derive_cells_m20.py tests\test_outline_span_resolution_m20.py tests\test_structure_m20.py tests\test_extract_outline_m4.py tests\test_extract_m16.py tests\test_acquire_citation_check.py tests\test_m20_s54.py tests\test_m20_s51.py -q` -> **166 passed, 1 warning**.
+RAN: `$env:PYTEST_DEBUG_TEMPROOT=(Resolve-Path .test_tmp_s91b).Path; .venv\Scripts\python.exe -m pytest tests\test_m20_s91.py tests\test_derive_cells_m20.py -q` -> **75 passed, 1 warning**.
+RAN: `.venv\Scripts\python.exe tools\check_ascii.py` -> **ASCII check OK**.
+RAN: `git diff --check` -> **clean**.
+NOT RUN: full suite; it exceeds the 600-second Worker command cap, and the latest accepted baseline
+is already recorded in BALL. NOT RUN: provider leg; S91b is explicitly provider-free.
 
 **S91 WORKER STATUS (2026-08-09):** Implemented the provider-free printed-bracket clause extent
 selection. `_bracketed_source_text` uses neighboring indexed printed anchors, accepts a full anchor
