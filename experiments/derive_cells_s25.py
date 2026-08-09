@@ -177,6 +177,9 @@ def run_real_document(
             "source_findings": row.metadata.get("evidence_findings", []),
             "structural_skip_reason": get_structural_skip_reason(row.metadata),
             "model_outcome": row.metadata.get("model_outcome", ""),
+            # What the model actually answered, kept even when it was rejected.
+            # Without this a failing row can only be counted, not diagnosed.
+            "attempted_payloads": row.metadata.get("attempted_payloads", []),
             "unresolved_external_nodes": row.metadata.get("unresolved_external_nodes", []),
             # The candidate writer consumes the exact evidence selected by
             # the provider-side derivation.  Keep it beside the expression so

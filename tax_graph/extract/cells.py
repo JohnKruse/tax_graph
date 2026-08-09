@@ -12,6 +12,7 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from decimal import Decimal, InvalidOperation
 from pathlib import Path
+import json
 import re
 from typing import Any, Iterable, Mapping, Protocol, Sequence
 
@@ -513,6 +514,7 @@ def derive_cells(
 
         try:
             payload = getattr(response, "payload", response)
+            _keep_attempted_payload(row, payload, attempt="first")
             if not isinstance(payload, Mapping):
                 raise ValueError("provider returned a non-object payload")
             _apply_payload(
@@ -575,6 +577,7 @@ def derive_cells(
                 request["seed"] = seed
             response = active_client.structured_completion(**request)
             payload = getattr(response, "payload", response)
+            _keep_attempted_payload(row, payload, attempt="repair")
             if not isinstance(payload, Mapping):
                 raise ValueError("provider returned a non-object payload")
             _apply_payload(
@@ -2549,6 +2552,23 @@ def _contains_verbatim(source: str, quote: str) -> bool:
         return True
     normalize = lambda value: " ".join(str(value).split())
     return normalize(quote) in normalize(source)
+
+
+def _keep_attempted_payload(row: CellRecord, payload: Any, *, attempt: str) -> None:
+    """Record what the model actually answered, including when it is rejected.
+
+    A rejected payload used to go out of scope with the exception, leaving only
+    the error string.  That made a failing row undiagnosable from a run: five
+    rounds were spent inferring causes from rejection COUNTS because the answer
+    itself was never written down.  Keep it verbatim and let the reader see it.
+    """
+    attempts = row.metadata.setdefault("attempted_payloads", [])
+    if not isinstance(attempts, list):
+        return
+    attempts.append({
+        "attempt": attempt,
+        "payload": json.loads(json.dumps(payload, default=str)) if isinstance(payload, Mapping) else repr(payload),
+    })
 
 
 def _mark_error(row: CellRecord, error: str, *, provider: str, model: str | None) -> None:
