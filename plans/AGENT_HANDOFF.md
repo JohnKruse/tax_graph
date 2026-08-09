@@ -21,34 +21,30 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## BALL
 
-**BALL: WORKER - M20-S91 ACCEPTED at `e1f97cc`. M20-S91b is implemented and awaiting Architect
-acceptance; it is the difference between fixing 7 rows and fixing 27.**
+**BALL: JOHN - M20-S91b ACCEPTED at `4e77e9e`. EXTRACTION IS DONE. THE WIDE RUN (S92) IS NEXT AND
+NEEDS YOUR GO.**
 
-**S91 IS SAFE AND POSITIVE, AND IT UNDER-DELIVERS AGAINST MY OWN SPEC.** Measured from the
-round's own `clause_extent` diagnostics, not from an Architect harness: **42 of 406 rows take the
-bracket, 364 keep the fallback, and ZERO rows took the bracket when the fallback was longer.**
-**7 junk faces rescued** - 6251 `2b`, `2f`, `2s`; Schedule 1 `8a`, `8d`, `8s`; Schedule 3 `13b`.
-`( )` becomes "Income from certain installment sales before January 1, 1987".
-**Full suite 2026-08-09: 19 failed, 894 passed, 8 skipped, 1 xfailed in 0:57:41** - the SAME 19 as
-the S90c run, **zero new failures**, passes 891 -> 894.
+**S91b, measured from `clause_extent`, not from an Architect harness.** **68 of 406 rows take the
+bracket** (42 under S91), **35 faces changed**, and **ZERO rows took the bracket when the fallback
+was longer** - the safety property held through both rounds. `( )` and mid-sentence fragments like
+`'1 4361 2 4029 3'` are gone.
+**Full suite 2026-08-09: 19 failed, 894 passed, 8 skipped, 1 xfailed in 0:56:58** - the SAME 19,
+**zero new failures.**
 
-**MY SPEC PROJECTED 25 AND IT DELIVERED 7. The cause is one gate, and it is fixable.** Selection
-fires only when the existing face is NEAR-EMPTY. But the dominant defect on Schedules 1, 2 and 3 is
-a face that is **non-empty and wrong** - a mid-sentence fragment. **Of the 22 rows where the bracket
-is longer but was not chosen, 20 have a fallback that is literally a SUBSTRING of the bracket
-span**: `'to meet the requirements of se'`, `'1 4361 2 4029 3'`, `'8936)'`.
+**DERIVATION: 135 of 157 (86.0%), $0.1006, ZERO regressions against the protected 64.**
+**I AM NOT CLAIMING S91b CAUSED THE +3.** Against the previous run 7 rows gained and 4 lost, and the
+movement is not confined to rows whose text changed. **Rows churn between runs; report the
+invariant, not the delta.**
 
-**M20-S91b: ALSO PREFER THE BRACKET WHEN THE FALLBACK IS A STRICT SUBSTRING OF IT.** Nothing can be
-lost - the bracket already contains every word the fallback had. **Expected ~20 more rows, taking
-the total to ~27.** Keep the existing near-empty rule, keep the zero-regression property, and
-**report the count both ways again from `clause_extent`.**
+**ONE CONTROLLED RESULT WORTH KEEPING. 2441 line 5 still fails identically** while its neighbours 19
+and 25 now derive. **We changed its face text and its behaviour did not move** - which is what you
+predict if the cause is the grammar, not extraction. **`REQUIRE_INPUT` can be a whole rule but not a
+branch of one. That diagnosis is now confirmed by intervention, not by argument.**
 
-**ARCHITECT ERROR, RECORDED SO IT IS NOT REPEATED.** I first reported S91 as changing NOTHING,
-from a git-worktree before/after that showed zero differences across 402 rows. **The worktree run
-read cached artifacts from the main repo root, so both sides saw post-S91 data.** The round was
-fine; the harness was not. **Measure a round from its own recorded diagnostics where they exist -
-`clause_extent` and `attempted_payloads` are there precisely so the Architect stops hand-rolling
-this.**
+**S92 - THE WIDE RUN - IS THE NEXT ROUND AND IT IS JOHN'S CALL.** All 11 acquired forms and
+schedules, about $0.25-0.35. The command with the provider escape is under Queued. **This is the
+round that tests whether three-form quality generalizes - the concern John raised on 2026-08-09,
+which the extraction work has now cleared out of the way.**
 
 
 **S90c ACCEPTED ON INVARIANTS, NOT ON A RUN DIFF.** Verified on a REAL candidate, not fixtures:
