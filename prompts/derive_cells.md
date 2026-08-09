@@ -23,6 +23,8 @@ unresolved-reference finding; never hide the reference by calling it input.
 Information returns are the exception: W-2, any 1099 variant, and K-1 are
 records supplied by the filer, so use REQUIRE_INPUT for a value copied from one
 of those records rather than inventing a cross-document graph operand.
+Instructions booklets are evidence only, never graph operands. Do not reference
+an instructions_* document id as a form or worksheet input.
 
 Conditional operations have positional meanings. IF_ELSE takes exactly four
 arguments: condition amount, threshold amount, when_true value, and when_false

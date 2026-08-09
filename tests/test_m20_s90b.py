@@ -172,7 +172,9 @@ def test_candidate_review_row_exposes_external_reference_as_finding(tmp_path: Pa
         expected_documents=["schedule_a_2025"],
     )
 
-    assert candidate["documents"] == ["schedule_a_2025"]
+    assert candidate["documents"] == ["schedule_a_2025", "form_4684_2025"]
+    assert candidate["source_documents"] == ["schedule_a_2025"]
+    assert candidate["stub_documents"] == ["form_4684_2025"]
     output = tmp_path / "candidate"
     write_candidate_from_run(
         run,

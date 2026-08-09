@@ -17,6 +17,10 @@
       "pattern": "^[a-z0-9_]+$",
       "description": "The document this node belongs to."
     },
+    "line": {
+      "type": "string",
+      "description": "Printed line carried by an unresolved source stub."
+    },
     "label": { "type": "string", "description": "Human-readable label, e.g. 'Net capital gain or loss'." },
     "node_type": {
       "type": "string",
@@ -31,6 +35,16 @@
       "enum": ["required", "conditional", "optional"],
       "default": "optional",
       "description": "Whether this node must be present; 'conditional' is gated by a fact or decision."
+    },
+    "status": {
+      "type": "string",
+      "enum": ["unresolved", "ingested"],
+      "description": "Lifecycle status for a source-backed external stub."
+    },
+    "stub_message": {
+      "type": "string",
+      "minLength": 1,
+      "description": "What must happen before an unresolved stub can be computed."
     },
     "enum_values": {
       "type": "array",

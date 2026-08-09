@@ -864,7 +864,14 @@ def validate_cell_output(
                 )
             )
         if operand_form:
-            if reference_documents is None:
+            if _is_instruction_document_id(operand_form):
+                hard.append(
+                    CellValidationIssue(
+                        "instructions_document_operand",
+                        f"instructions document {operand_form} cannot be a graph operand",
+                    )
+                )
+            elif reference_documents is None:
                 hard.append(
                     CellValidationIssue(
                         "operand_inventory_unavailable",
@@ -2294,7 +2301,7 @@ class _GraphConverter:
             self.findings.append(f"unrecognised operand: {operand}")
             return f"{self.base}_unresolved"
         if "form" in operand and "line" in operand:
-            return f"{_slug(str(operand['form']))}_line_{_slug(str(operand['line']))}"
+            return _canonical_line_node_id(str(operand["form"]), str(operand["line"]))
         if "line" in operand:
             return f"{self.form}_root_line_{_slug(str(operand['line']))}"
         if "const" in operand:
@@ -2426,6 +2433,7 @@ def _record_external_inputs(
             not operand_form
             or not operand_line
             or operand_form in reference_documents
+            or _is_instruction_document_id(operand_form)
             or not _legitimate_external_reference(row, operand_form, operand_line)
             or not re.fullmatch(r"[0-9]+[a-z]?", operand_line, re.IGNORECASE)
         ):
@@ -2546,6 +2554,16 @@ def _mark_error(row: CellRecord, error: str, *, provider: str, model: str | None
 
 def _slug(value: str) -> str:
     return re.sub(r"[^a-z0-9]+", "_", str(value).lower()).strip("_") or "item"
+
+
+def _canonical_line_node_id(document_id: str, line: str) -> str:
+    """Return the canonical root-line id used by real and stub ingestion."""
+    return f"{_slug(document_id)}_root_line_{_slug(line)}"
+
+
+def _is_instruction_document_id(document_id: str) -> bool:
+    """Return whether an id names an instructions booklet, not a form input."""
+    return str(document_id or "").strip().lower().startswith("instructions_")
 
 
 def _optional_int(value: Any) -> int | None:

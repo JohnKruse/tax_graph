@@ -38,7 +38,12 @@
     },
     "status": {
       "type": "string",
-      "enum": ["supported", "partial", "planned", "unsupported"]
+      "enum": ["supported", "partial", "planned", "unsupported", "unresolved"]
+    },
+    "stub_message": {
+      "type": "string",
+      "minLength": 1,
+      "description": "What must happen before an unresolved document stub can be computed."
     },
     "gate": {
       "type": "string",

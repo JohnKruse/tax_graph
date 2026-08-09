@@ -82,11 +82,23 @@ def write_candidate_from_run(
             )
         )
 
+    stub_registry = _stub_registry(
+        documents,
+        year=str(year),
+        real_document_ids={item[0] for item in reports},
+    )
+    _write_stub_documents(
+        stub_registry,
+        destination=graph_root,
+    )
+
     worksheet_report = _copy_worksheet_drafts(
         root_path,
         year=str(year),
         destination=graph_root,
     )
+    graph_integrity = _assert_candidate_operand_resolution(graph_root)
+    _write_yaml(destination / "stub_lifecycle.yaml", stub_registry["lifecycle"])
     graph_diff = _handcrafted_diff(root_path, str(year), documents)
     coverage = _coverage_total(documents)
     publish = {
@@ -106,8 +118,14 @@ def write_candidate_from_run(
         "year": str(year),
         "status": "pending_review",
         "source_run": str(source),
-        "documents": [item["document_id"] for item in documents],
+        "documents": [
+            item["document_id"] for item in documents
+        ] + stub_registry["document_ids"],
+        "source_documents": [item["document_id"] for item in documents],
+        "stub_documents": stub_registry["document_ids"],
         "coverage": coverage,
+        "stub_lifecycle": stub_registry["lifecycle"],
+        "graph_integrity": graph_integrity,
         "worksheet_drafts": worksheet_report,
         "diff": graph_diff,
         "publish": publish,
@@ -157,14 +175,24 @@ def build_candidate_from_run(
         )
         for _document_id, report_path, report in reports
     ]
+    stub_registry = _stub_registry(
+        documents,
+        year=str(year),
+        real_document_ids={item[0] for item in reports},
+    )
     return {
         "schema_version": CANDIDATE_SCHEMA_VERSION,
         "kind": "candidate_graph",
         "year": str(year),
         "status": "pending_review",
         "source_run": str(source),
-        "documents": [item["document_id"] for item in documents],
+        "documents": [
+            item["document_id"] for item in documents
+        ] + stub_registry["document_ids"],
+        "source_documents": [item["document_id"] for item in documents],
+        "stub_documents": stub_registry["document_ids"],
         "coverage": _coverage_total(documents),
+        "stub_lifecycle": stub_registry["lifecycle"],
         "diff": _handcrafted_diff(root_path, str(year), documents),
     }
 
@@ -726,7 +754,7 @@ def _live_expression(
 def _normalize_candidate_expression(value: Mapping[str, Any], document_id: str) -> dict[str, Any]:
     if "op" not in value:
         if "form" in value and "line" in value:
-            return {"node": f"{_slug(str(value['form']))}_line_{_slug(str(value['line']))}"}
+            return {"node": _line_node_id(str(value["form"]), str(value["line"]))}
         if "line" in value:
             return {"node": _line_node_id(document_id, str(value["line"]))}
         if "const" in value:
@@ -764,7 +792,9 @@ def _expression_leaf_nodes(
             doc = document_id
         elif "form" in node and "line" in node:
             doc = str(node["form"])
-            node_id = f"{_slug(doc)}_line_{_slug(str(node['line']))}"
+            if _slug(doc) != _slug(document_id):
+                continue
+            node_id = _line_node_id(doc, str(node["line"]))
         elif "node" in node:
             node_id = str(node["node"])
             doc = node_id.split("_root_line_", 1)[0]
@@ -865,6 +895,198 @@ def _copy_worksheet_drafts(root: Path, *, year: str, destination: Path) -> dict[
         "required": sorted(entry.document_id for entry in manifest.documents if entry.is_region),
         "copied": sorted(copied),
         "missing": sorted(missing, key=lambda item: item["document_id"]),
+    }
+
+
+def _stub_registry(
+    documents: Sequence[Mapping[str, Any]],
+    *,
+    year: str,
+    real_document_ids: set[str],
+) -> dict[str, Any]:
+    """Collect source-backed external references into deterministic stubs.
+
+    A stub is candidate output, never a live-graph write.  The canonical line
+    id is checked here because it is the join between an unresolved reference
+    and the later real ingestion of that document.
+    """
+    records: dict[str, dict[str, Any]] = {}
+    for document in documents:
+        for row in document.get("rows", []) or []:
+            if not isinstance(row, Mapping):
+                continue
+            for raw in row.get("unresolved_external_nodes", []) or []:
+                if not isinstance(raw, Mapping):
+                    continue
+                document_id = str(raw.get("document_id") or "").strip().lower()
+                line = str(raw.get("line") or "").strip().lower()
+                if not document_id or not line:
+                    continue
+                if document_id.startswith("instructions_"):
+                    raise ValueError(
+                        f"instructions document {document_id} cannot be emitted as a stub"
+                    )
+                node_id = _line_node_id(document_id, line)
+                supplied_id = str(raw.get("node_id") or "").strip()
+                if supplied_id and supplied_id != node_id:
+                    raise ValueError(
+                        f"external stub id {supplied_id} does not match canonical id {node_id}"
+                    )
+                node = dict(raw)
+                node["node_id"] = node_id
+                node["document_id"] = document_id
+                node["line"] = line
+                node.setdefault("status", "unresolved")
+                node.setdefault(
+                    "stub_message",
+                    _stub_line_message(document_id, line),
+                )
+                records.setdefault(node_id, node)
+
+    by_document: dict[str, list[dict[str, Any]]] = defaultdict(list)
+    for node in records.values():
+        by_document[str(node["document_id"])].append(node)
+
+    lifecycle: list[dict[str, Any]] = []
+    document_stubs: list[dict[str, Any]] = []
+    for document_id in sorted(by_document):
+        lines = sorted(
+            {str(item["line"]) for item in by_document[document_id]},
+            key=_line_sort_key,
+        )
+        status = "ingested" if document_id in real_document_ids else "unresolved"
+        lifecycle.extend(
+            {
+                "document_id": document_id,
+                "line": line,
+                "node_id": _line_node_id(document_id, line),
+                "status": status,
+                "message": (
+                    "canonical node is supplied by the inducted document"
+                    if status == "ingested"
+                    else _stub_line_message(document_id, line)
+                ),
+            }
+            for line in lines
+        )
+        if status == "unresolved":
+            document_stubs.append(_stub_document(document_id, year, lines))
+
+    return {
+        "document_ids": [item["document_id"] for item in document_stubs],
+        "documents": document_stubs,
+        "nodes": {
+            document_id: sorted(items, key=lambda item: _line_sort_key(str(item["line"])))
+            for document_id, items in sorted(by_document.items())
+            if document_id not in real_document_ids
+        },
+        "lifecycle": lifecycle,
+    }
+
+
+def _stub_document(document_id: str, year: str, lines: Sequence[str]) -> dict[str, Any]:
+    title = _stub_title(document_id)
+    line_text = ", ".join(f"line {line}" for line in lines)
+    return {
+        "document_id": document_id,
+        "title": title,
+        "tax_year": int(year),
+        "document_type": "schedule" if document_id.startswith("schedule_") else "tax_form",
+        "document_class": "return",
+        "status": "unresolved",
+        "stub_message": (
+            f"{title} must be ingested or the caller must supply {line_text} "
+            "before this value can be computed."
+        ),
+    }
+
+
+def _stub_title(document_id: str) -> str:
+    stem = re.sub(r"_[0-9]{4}$", "", str(document_id).strip().lower())
+    words = stem.replace("_", " ").split()
+    return " ".join(word.upper() if word.isdigit() else word.title() for word in words)
+
+
+def _stub_line_message(document_id: str, line: str) -> str:
+    return (
+        f"{_stub_title(document_id)}, line {line} must be ingested or supplied "
+        "by the caller before this value can be computed."
+    )
+
+
+def _write_stub_documents(registry: Mapping[str, Any], *, destination: Path) -> None:
+    """Write document and line stubs into the candidate graph workspace."""
+    documents = registry.get("documents", [])
+    nodes_by_document = registry.get("nodes", {})
+    for document in documents:
+        document_id = str(document["document_id"])
+        target = destination / document_id
+        if target.exists():
+            raise ValueError(f"stub document output already exists: {target}")
+        target.mkdir(parents=True)
+        _write_yaml(target / "documents.yaml", [document])
+        _write_yaml(target / "nodes.yaml", nodes_by_document.get(document_id, []))
+        _write_yaml(target / "edges.yaml", [])
+        _write_yaml(target / "rules.yaml", [])
+        _write_yaml(target / "citations.yaml", [])
+        _write_yaml(
+            target / "metrics.yaml",
+            {
+                "candidate": True,
+                "stub": True,
+                "provenance": "source-backed external reference; no human confirmation",
+                "stub_message": document["stub_message"],
+            },
+        )
+
+
+def _assert_candidate_operand_resolution(graph_root: Path) -> dict[str, Any]:
+    """Assert that every candidate edge endpoint is a real or stub node."""
+    node_ids: set[str] = set()
+    duplicate_node_ids: set[str] = set()
+    edge_count = 0
+    operand_ids: set[str] = set()
+    for path in graph_root.rglob("nodes.yaml"):
+        payload = yaml.safe_load(path.read_text(encoding="ascii")) or []
+        for item in payload if isinstance(payload, list) else [payload]:
+            if not isinstance(item, Mapping):
+                continue
+            node_id = str(item.get("node_id") or "").strip()
+            if not node_id:
+                continue
+            if node_id in node_ids:
+                duplicate_node_ids.add(node_id)
+            node_ids.add(node_id)
+    missing: set[str] = set()
+    for path in graph_root.rglob("edges.yaml"):
+        payload = yaml.safe_load(path.read_text(encoding="ascii")) or []
+        for item in payload if isinstance(payload, list) else [payload]:
+            if not isinstance(item, Mapping):
+                continue
+            edge_count += 1
+            for key in ("source", "target"):
+                node_id = str(item.get(key) or "").strip()
+                if not node_id:
+                    continue
+                operand_ids.add(node_id)
+                if node_id not in node_ids:
+                    missing.add(node_id)
+    if duplicate_node_ids:
+        raise ValueError(
+            "candidate graph contains duplicate node ids: "
+            + ", ".join(sorted(duplicate_node_ids))
+        )
+    if missing:
+        raise ValueError(
+            "candidate graph contains unresolved operand node ids: "
+            + ", ".join(sorted(missing))
+        )
+    return {
+        "status": "ok",
+        "node_count": len(node_ids),
+        "edge_count": edge_count,
+        "operand_count": len(operand_ids),
+        "dangling_node_ids": [],
     }
 
 

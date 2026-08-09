@@ -467,7 +467,24 @@ was performed, per pilot rules.
 
 ## Open for Architect
 
-**S90b WORKER STATUS (2026-08-09):** Implemented in the working tree, not committed. Evidence-backed
+**S90c WORKER STATUS (2026-08-09):** Implemented and verified provider-free. The S90b
+`unresolved_external_nodes` payload now materializes in the candidate graph as a canonical line
+stub under the external document, with a matching document stub and an explicit
+`stub_lifecycle.yaml`. A current derivation report for that document marks the lifecycle
+`ingested` and emits no stub workspace; the real node lands at the same
+`<document>_root_line_<line>` id. Candidate writing now asserts that every edge endpoint resolves
+to exactly one real or stub node, and the node/document schemas carry the stub status and message.
+Instructions booklets are rejected as named `instructions_document_operand` findings and never
+mint stubs. Cross-document projection was corrected from the non-canonical
+`<document>_line_<line>` shape to the existing root-line address.
+
+RAN: `$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp_s90c'; .venv\Scripts\python.exe -m pytest tests\test_m20_s90c.py tests\test_m20_s90b.py tests\test_candidate_regeneration_m20.py tests\test_derive_cells_m20.py tests\test_m20_s31.py tests\test_review_table_m20.py tests\test_run_summary_m20.py -q` -> **104 passed, 1 warning**.
+RAN: `$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp_s90c'; .venv\Scripts\python.exe -m pytest tests\test_m20_s90c.py tests\test_m20_s90b.py tests\test_candidate_regeneration_m20.py tests\test_derive_cells_m20.py tests\test_m20_s31.py tests\test_review_table_m20.py tests\test_run_summary_m20.py tests\test_graph_validator.py -q` -> **107 passed, 11 failed**; all 11 are `WinError 5` while copying the pre-existing protected `graph/2025/_drafts` directories in `test_graph_validator.py`, before validator logic runs.
+RAN: `.venv\Scripts\python.exe tools\check_ascii.py` -> **ASCII check OK**.
+NOT RUN: live provider leg; the prompt contract now explicitly excludes instructions-booklet operands and requires the network-capable acceptance context.
+NOT RUN: full suite; the graph-validator copy ACL family is not a product result and the full suite exceeds the Worker command cap.
+
+**S90b PREREQUISITE (2026-08-09):** Committed at `ad53a97`; its evidence-backed
 out-of-inventory operands now produce the non-fatal `unresolved_external_reference` warning,
 retain the structured `unresolved_external_nodes` record, remain `derived` without consuming a
 repair, and are copied into candidate-row findings for the review surface. Unsourced unknown
@@ -497,7 +514,7 @@ synthetic faces "from Form W-2, box 1", "from Form(s) W-2", "from Form 1099-R, b
 1099-DIV" and the K-1 face all read as inputs while "from Form 8863, line 8" still flags. **By
 family, not by spelling, as specced.**
 
-**The live leg is mine and is running.** Acceptance still rests on it: coverage back to at least
+**The live leg was not run by the Worker.** S90b acceptance still rested on it: coverage back to at least
 139 of 157, `form_6251_2025` line 13 back to `max(qdcgt line 4, 0)`, and the 64 plus 13 intact.
 
 RAN: `$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp_s90b'; .venv\Scripts\python.exe -m pytest tests/test_m20_s90b.py tests/test_candidate_regeneration_m20.py -q` -> 9 passed, 1 warning.
@@ -506,9 +523,9 @@ RAN: `$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp_s
 RAN: `.venv\Scripts\python.exe tools\check_ascii.py` -> ASCII check OK.
 NOT RUN: live provider leg; requires the network-capable acceptance context.
 
-**S90 acceptance is open:** fixture and provider-free evidence is green, but the live provider leg
-is NOT RUN. Verify that the 12 S89 input rows are repaired into cross-document operands or named
-unresolved-reference findings, with no silent `REQUIRE_INPUT` result.
+**S90b acceptance remains a network-capable Architect check:** verify that the 12 S89 input rows
+are repaired into cross-document operands or named unresolved-reference findings, with no silent
+`REQUIRE_INPUT` result. S90c adds the candidate-graph stub and lifecycle gate above.
 
 **S89 is accepted; its items are cleared. The record is `d2a077f` and the BALL block.**
 
