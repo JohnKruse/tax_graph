@@ -542,6 +542,16 @@ real form defeats the borrowed shape.
   opens the live graph to pipeline output. **Until that round lands and is accepted, this gate is
   unchanged** - a safety gate is never lifted before its replacement is in place, and every round
   before then still reports an empty protected-set diff.
+- **A NAMED WORKSHEET IS ITS OWN DOCUMENT, however small (John, 2026-08-09).** If the instructions
+  call it a worksheet, it is modelled in the graph as a document with its own lines - **naming
+  decides, not size and not how many rows reference it.** The Credit Limit Worksheet's 3 steps get
+  the same treatment as the Schedule D Tax Worksheet's 30. This is the predictable reference system:
+  a worksheet line is addressable, so nothing has to guess where its numbers belong.
+  **A consequence, and it is the fix for a real defect:** an unharvested worksheet leaves its step
+  numbers sitting inside the PARENT row's instruction text, where the validator reads them as the
+  parent's line numbers. Measured 2026-08-09: **9 rows misread a worksheet's steps as their own**,
+  and `schedule_d_2025` line 21 reads "Subtract line 4 from line 3" when its real rule is
+  "Subtract line 32 from line 23".
 - **`derive_cells` must remain pure - zero disk writes.**
 - **PYTEST TEMP ROOT MUST BE SHORT** (e.g. `C:\tgt`). An Architect session was burned reporting 22
   suite failures of which 8+ were `WinError 206` path-length artifacts of a deep temp root. With a
