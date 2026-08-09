@@ -292,9 +292,21 @@ def build_cell_frame_from_document(document: Any) -> CellFrame:
         instruction_text = "\n\n".join(section.text for section in sections)
         evidence_spans: list[dict[str, str]] = []
         full_form_face = ""
+        extent_diagnostic: dict[str, Any] = {
+            "method": "fallback",
+            "bracket_available": False,
+            "disagreement": None,
+            "fallback_face": "",
+            "bracket_face": "",
+        }
         caption_split = split_caption_and_instruction(node.label, line)
         if form_span is not None:
-            full_form_face = clean_form_face_text(form_span.text, line)
+            bracket_text = str(form_span.extent.get("bracket_text") or "")
+            full_form_face, extent_diagnostic = clean_form_face_text_with_extent(
+                form_span.text,
+                line,
+                bracket_text=bracket_text or None,
+            )
             caption_split = split_caption_and_instruction(full_form_face, line)
             form_face_text = caption_split.cell_instruction or full_form_face
             evidence_findings = list(form_span.findings)
@@ -315,6 +327,7 @@ def build_cell_frame_from_document(document: Any) -> CellFrame:
             full_form_face = clean_form_face_text(node.label, line)
             caption_split = split_caption_and_instruction(full_form_face, line)
             form_face_text = caption_split.cell_instruction or full_form_face
+            extent_diagnostic["fallback_face"] = form_face_text
             evidence_findings = []
         evidence_spans.extend(
             {"span_id": section.section_id, "text": section.text}
@@ -340,6 +353,7 @@ def build_cell_frame_from_document(document: Any) -> CellFrame:
                     "caption_status": caption_split.status,
                     "caption_finding": caption_split.finding or "",
                     "cell_instruction_before_split": full_form_face,
+                    "clause_extent": extent_diagnostic,
                     "printed_lines": printed_lines,
                     "evidence_spans": evidence_spans,
                     "outline_id": node.outline_id,
@@ -708,17 +722,8 @@ def validate_cell_input(row: CellRecord) -> tuple[CellValidationIssue, ...]:
     return tuple(issues)
 
 
-def clean_form_face_text(text: str, line: str) -> str:
-    """Remove neighboring geometry text without changing source token order.
-
-    The deterministic geometry pass can combine adjacent columns or rows into
-    one text row.  When the cell's anchor is followed by descriptive text, the
-    label starts at the first such occurrence and a repeated trailing anchor is
-    truncated.  When the anchor is only a final right-hand-column token, keep
-    the preceding text, dropping a split leading suffix and that final token.
-    Neither branch reorders or reconstructs text, so the returned value remains
-    a literal substring of the acquired text after whitespace normalization.
-    """
+def _clean_form_face_text_fallback(text: str, line: str) -> str:
+    """Apply the existing local geometry cleanup without a printed bracket."""
     value = " ".join(str(text or "").split())
     anchor = str(line or "").strip()
     if not value or not anchor:
@@ -739,6 +744,70 @@ def clean_form_face_text(text: str, line: str) -> str:
     if suffix and re.match(rf"{re.escape(suffix)}(?=\s|$)", preceding, re.IGNORECASE):
         preceding = preceding[len(suffix):].strip()
     return preceding
+
+
+def clean_form_face_text(text: str, line: str) -> str:
+    """Remove neighboring geometry text without changing source token order.
+
+    This is the stable fallback used by synthetic inputs and by rows without
+    a printed start/end bracket. Acquired forms pass the bracket alternative
+    through ``clean_form_face_text_with_extent`` below.
+    """
+    return _clean_form_face_text_fallback(text, line)
+
+
+def clean_form_face_text_with_extent(
+    text: str,
+    line: str,
+    *,
+    bracket_text: str | None = None,
+) -> tuple[str, dict[str, Any]]:
+    """Select a printed-bracket clause only when the current face is weak.
+
+    The fallback remains authoritative for a useful existing face. The
+    bracket is compared after caption/instruction projection so diagnostics
+    describe exactly what the derivation model receives, and both candidates
+    remain in the row metadata for human review and later measurement.
+    """
+    fallback = _clean_form_face_text_fallback(text, line)
+    fallback_face = _cell_face_text(fallback, line)
+    bracket = _clean_form_face_text_fallback(bracket_text, line) if bracket_text else ""
+    bracket_face = _cell_face_text(bracket, line) if bracket else ""
+    disagreement: str | None = None
+    if bracket_face and fallback_face != bracket_face:
+        disagreement = (
+            "bracket_longer"
+            if len(bracket_face) > len(fallback_face)
+            else "fallback_longer"
+        )
+    use_bracket = bool(
+        bracket
+        and bracket_face
+        and _weak_cell_face(fallback_face)
+        and len(bracket_face) >= len(fallback_face)
+    )
+    selected = bracket if use_bracket else fallback
+    return selected, {
+        "method": "bracket" if use_bracket else "fallback",
+        "bracket_available": bool(bracket),
+        "disagreement": disagreement,
+        "fallback_face": fallback_face,
+        "bracket_face": bracket_face,
+    }
+
+
+def _cell_face_text(value: str, line: str) -> str:
+    split = split_caption_and_instruction(value, line)
+    return split.cell_instruction or _clean_form_face_text_fallback(value, line)
+
+
+def _weak_cell_face(value: str) -> bool:
+    normalized = " ".join(str(value or "").split()).strip().lower()
+    if not normalized:
+        return True
+    if normalized in {"( )", "()", "years", "instructions", "instructions."}:
+        return True
+    return normalized.startswith("attach form") or normalized.startswith("form ")
 
 
 def _drop_instruction_evidence(

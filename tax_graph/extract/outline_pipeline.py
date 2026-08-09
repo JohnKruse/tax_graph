@@ -1488,6 +1488,7 @@ def _span_for_line(
             continue
         line_number = _locator_line_number(span.locator)
         if line_number in source_line_numbers and _span_matches_line_label(node, span):
+            resolved = span
             geometry_result = _geometry_assembled_source_row(
                 document,
                 start_line=line_number or 0,
@@ -1495,25 +1496,175 @@ def _span_for_line(
             )
             if geometry_result is not None:
                 geometry_row, findings = geometry_result
-                return replace(
-                    span,
+                resolved = replace(
+                    resolved,
                     text=geometry_row.text,
                     findings=tuple(finding.as_dict() for finding in findings),
                 )
-            assembled_text = _assembled_source_text(
+            else:
+                assembled_text = _assembled_source_text(
+                    document,
+                    start_line=line_number or 0,
+                    anchor=normalized_anchor,
+                )
+                if assembled_text and assembled_text != resolved.text:
+                    resolved = replace(resolved, text=assembled_text)
+            return _attach_clause_extent(
                 document,
-                start_line=line_number or 0,
+                resolved,
                 anchor=normalized_anchor,
+                matching_entries=matching_entries,
+                source_line=line_number or 0,
             )
-            if assembled_text and assembled_text != span.text:
-                return replace(span, text=assembled_text)
-            return span
 
     return None
 
 
+def _attach_clause_extent(
+    document: SourceDocumentInput,
+    span: CandidateSpan,
+    *,
+    anchor: str,
+    matching_entries: list[dict[str, Any]],
+    source_line: int,
+) -> CandidateSpan:
+    """Attach a source-backed printed-bracket alternative to a form span.
+
+    The geometry row remains the fallback text. The bracket is only an
+    alternative until the cell layer compares it with the existing face; this
+    keeps a structural improvement from silently replacing a known-good row.
+    """
+    entries = [
+        entry
+        for entry in matching_entries
+        if _valid_text_offset(document.text, entry.get("text_offset"))
+        and _line_number_at_offset(document.text, int(entry["text_offset"])) == source_line
+    ]
+    if not entries:
+        return span
+    entry = min(entries, key=lambda item: int(item["text_offset"]))
+    bracket_text = _bracketed_source_text(
+        document,
+        anchor=anchor,
+        anchor_offset=int(entry["text_offset"]),
+    )
+    if not bracket_text:
+        return span
+    return replace(
+        span,
+        extent={
+            "bracket_text": bracket_text,
+            "anchor_offset": int(entry["text_offset"]),
+            "source_line": source_line,
+        },
+    )
+
+
 def _valid_text_offset(text: str, value: Any) -> bool:
     return isinstance(value, int) and 0 <= value < len(text)
+
+
+def _bracketed_source_text(
+    document: SourceDocumentInput,
+    *,
+    anchor: str,
+    anchor_offset: int,
+) -> str | None:
+    """Return the clause between its printed start and end anchors.
+
+    IRS form text commonly prints a lettered row as ``b caption 2b``. The
+    line-anchor index may point at either side of that visual row, especially
+    when the caption wraps. Search the source interval bounded by neighboring
+    printed anchors, then use the nearest start token to the indexed position
+    and the final full anchor before the next row. Dot-leader-only rows are
+    removed before the saved clause is normalized.
+    """
+    value = str(document.text or "")
+    normalized_anchor = str(anchor or "").strip().lower()
+    if not value or not normalized_anchor or not _valid_text_offset(value, anchor_offset):
+        return None
+
+    records = sorted(
+        (
+            record
+            for record in (document.fields or {}).get("line_anchors", []) or []
+            if isinstance(record, dict) and _valid_text_offset(value, record.get("text_offset"))
+        ),
+        key=lambda record: int(record["text_offset"]),
+    )
+    prior_offset = max(
+        (
+            int(record["text_offset"])
+            for record in records
+            if int(record["text_offset"]) < anchor_offset
+            and str(record.get("anchor", "")).strip().lower() != normalized_anchor
+        ),
+        default=0,
+    )
+    next_offset = min(
+        (
+            int(record["text_offset"])
+            for record in records
+            if int(record["text_offset"]) > anchor_offset
+            and str(record.get("anchor", "")).strip().lower() != normalized_anchor
+        ),
+        default=len(value),
+    )
+
+    full_matches = [
+        match
+        for match in _printed_anchor_matches(value, normalized_anchor)
+        if prior_offset <= match.start() < next_offset
+    ]
+    if not full_matches:
+        return None
+    end_match = full_matches[-1]
+    start_matches = [
+        match
+        for match in _printed_anchor_matches(value, normalized_anchor)
+        if prior_offset <= match.start() < end_match.start()
+    ]
+    if normalized_anchor[-1].isalpha():
+        suffix = normalized_anchor[-1]
+        start_matches.extend(
+            match
+            for match in re.finditer(
+                rf"(?<![A-Za-z0-9]){re.escape(suffix)}(?![A-Za-z0-9])",
+                value,
+                re.IGNORECASE,
+            )
+            if prior_offset <= match.start() < end_match.start()
+        )
+    if not start_matches:
+        return None
+    start_match = min(
+        start_matches,
+        key=lambda match: (abs(match.start() - anchor_offset), -match.start()),
+    )
+    clause = _remove_dot_leader_rows(value[start_match.end() : end_match.start()])
+    return clause or None
+
+
+def _printed_anchor_matches(value: str, anchor: str) -> list[re.Match[str]]:
+    if anchor[-1].isalpha():
+        body = rf"{re.escape(anchor[:-1])}\s*{re.escape(anchor[-1])}"
+    else:
+        body = re.escape(anchor)
+    pattern = rf"(?<![A-Za-z0-9]){body}(?![A-Za-z0-9])"
+    return list(re.finditer(pattern, value, re.IGNORECASE))
+
+
+def _remove_dot_leader_rows(value: str) -> str:
+    rows: list[str] = []
+    for raw_row in str(value or "").splitlines():
+        row = raw_row.strip()
+        if not row:
+            continue
+        compact = "".join(row.split())
+        if compact and all(character in "._" for character in compact):
+            continue
+        rows.append(row)
+    return " ".join(rows)
 
 
 def _line_number_at_offset(text: str, offset: int) -> int:

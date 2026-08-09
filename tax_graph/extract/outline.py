@@ -48,6 +48,7 @@ class CandidateSpan:
     owner_lines: tuple[str, ...] = ()
     section_id: str | None = None
     findings: tuple[dict[str, Any], ...] = ()
+    extent: dict[str, Any] = field(default_factory=dict)
 
 
 @dataclass

@@ -462,6 +462,31 @@ was performed, per pilot rules.
 
 ## Open for Architect
 
+**S91 WORKER STATUS (2026-08-09):** Implemented the provider-free printed-bracket clause extent
+selection. `_bracketed_source_text` uses neighboring indexed printed anchors, accepts a full anchor
+or its trailing letter as the start, strips dot-leader-only rows, and ends at the full anchor. The
+cell layer keeps the existing geometry cleanup as fallback, selects the bracket only for a weak
+projected face when it is not shorter, and records both faces, selection method, and disagreement
+direction in `clause_extent` metadata. The real 2025 corpus selected **42** repairs; the measured
+disagreement split is **44 bracket-longer / 27 fallback-longer**. The cited good-face cases remain
+on fallback where the bracket would over-capture.
+
+RAN: `$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp_codex'; .venv\Scripts\python.exe -m pytest tests\test_m20_s91.py -q` -> **3 passed, 1 warning**.
+RAN: `$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp_codex'; .venv\Scripts\python.exe -m pytest tests\test_outline_span_resolution_m20.py tests\test_structure_m20.py tests\test_derive_cells_m20.py -q` -> **112 passed, 1 warning**.
+RAN: `$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp_codex'; .venv\Scripts\python.exe -m pytest tests\test_extract_outline_m4.py tests\test_extract_m16.py tests\test_acquire_citation_check.py -q` -> **34 passed, 1 warning**.
+RAN: `$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp_codex'; .venv\Scripts\python.exe -m pytest tests\test_m20_s90b.py tests\test_m20_s90c.py tests\test_m20_s54.py tests\test_m20_s51.py -q` -> **26 passed, 1 warning**.
+RAN: `$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp_codex'; .venv\Scripts\python.exe -m pytest tests\test_m20_s91.py tests\test_cell_caption_m20.py tests\test_m20_s71.py -q -k "not real_candidate_node_labels_use_clean_text"` -> **12 passed, 1 deselected, 1 warning**.
+RAN: `.venv\Scripts\python.exe tools\check_ascii.py` -> **ASCII check OK**.
+
+KNOWN RED, NOT S91: the declared combined consumer command produced **132 passed, 1 failed** at
+`tests\test_m20_s71.py::test_real_candidate_node_labels_use_clean_text`. With an external writable
+pytest temp root, the same file produced **5 passed, 1 failed**; the failure is the existing S90c
+candidate-writer integrity red: `form_1040_2025_root_line_4` is an unresolved operand. It is the
+named full-suite baseline red in BALL, not a clause-extent failure.
+
+NOT RUN: full suite; it exceeds the 600-second Worker command cap, and the latest accepted baseline
+is already recorded in BALL. NOT RUN: provider leg; S91 is explicitly provider-free.
+
 **S90c WORKER STATUS (2026-08-09):** The implementation is complete provider-free, and the
 stale real S90c report now regenerates successfully. The candidate writer accepts a shared node id
 when its identity payload agrees across documents (citation provenance may differ), rejects a real
