@@ -21,8 +21,48 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## BALL
 
-**BALL: WORKER - M20-S90c (STUBS). Then S91, the wide run. `CASE` is HELD until S91's data.**
-**JOHN'S SEQUENCE, 2026-08-09: stubs, then breadth, then decide the case statement.**
+**BALL: WORKER - M20-S90c NOT ACCEPTED at `01c166c`. ONE BLOCKING DEFECT, one unimplemented spec
+item, and real wins. Finish it; do not redesign it.**
+
+**BLOCKING: `regenerate-candidate` CRASHES ON THE REAL CORPUS.** RAN the documented second command
+against the S90c run:
+`ValueError: candidate graph contains duplicate node ids: taxpayer_2025_filing_status`.
+That node is a **legitimately shared cross-document parameter**, emitted under both
+`_drafts/form_1040_2025/nodes.yaml` and `_drafts/form_6251_2025/nodes.yaml`. The new integrity
+assertion conflates **"one node emitted under two documents"** (correct, and what a shared
+parameter IS) with **"two different nodes claiming one id"** (the real hazard). **Compare node
+PAYLOADS: identical payload under one id is one node; differing payloads are a collision.**
+**The synthetic single-document tests could not see this** - the round's headline claim, that stubs
+materialize, is therefore STILL UNVERIFIED on real data, because the writer dies first.
+
+**UNIMPLEMENTED, and it was Cause 1 of the spec.** `_legitimate_external_reference` still requires
+evidence to name the document AND the line. **Measured cost: 6 of the 8
+`operand_document_not_found` rows would become stub-plus-warning under document-only evidence** -
+1040 `6b`, `13a`, `19`, `25c`, `28` and 6251 `10`. The two that stay hard failures are correct:
+1040 `27a` and 2441 `9b` name documents nothing in their evidence mentions.
+
+**COVERAGE 127 of 157 (80.9%), cost $0.1008** - below the 139 floor AND below S90b's 131. **2
+regressions against the 64**: 2441 `19` and `25`, both `LOOKUP_TABLE` payload errors. **I am not
+attributing them** - the same payload family hit 2441 `25` under S90 and 1040 `12e` under S90b, a
+different row each run, which reads as instability in one operation rather than an S90c mechanism.
+**Name it and track it; it is costing 1-2 rows per run at random.**
+
+**WHAT S90c GOT RIGHT, and it is not small.**
+- **`form_6251_2025` line 13 is FIXED exactly as demanded: `max(qdcgt line 4, 0)`** - the
+  expression, not merely the status. The alternation sum is gone.
+- **A real dangling-reference defect was found and fixed.** Cross-document projection minted
+  `<document>_line_<line>` while ingestion and the stub minter use `<document>_root_line_<line>`,
+  so references pointed at an address nothing would ever occupy. **That is John's dangling-connector
+  concern, found in the live code.**
+- **Instructions booklets are excluded and it shows in real output:** 1040 `6b` now names
+  `social_security_benefits_worksheet` and 2441 `9b` names `worksheet_a_2441` instead of an
+  instructions document.
+
+**TO FINISH S90c:** fix the duplicate-id assertion, implement the document-only predicate, rerun the
+three-document leg with `pilot/run_report.py`, **verify stubs in a REAL candidate**, then the full
+suite. **NOT RUN by the Architect: the full suite** - the round is not acceptable yet and it costs
+an hour.
+
 
 **WE HAVE ONLY EVER DERIVED 3 OF 11 ACQUIRED DOCUMENTS - 157 of 410 printed anchors.** Every number
 in S88-S90b is measured on that 38%. **Eight forms and schedules are fully acquired and never
