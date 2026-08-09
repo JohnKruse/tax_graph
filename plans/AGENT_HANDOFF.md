@@ -324,6 +324,11 @@ evidence disagrees with mine.** **No production fix, no prompt edit, no validato
 
 ## Queued (ONE LINE each - do not spec ahead)
 
+- **HARVEST THE NAMED WORKSHEETS AS DOCUMENTS** (John's ruling, now in AGENTS.md). **~21 boxes
+  found by the "Keep for Your Records" marker**, 1 already modelled, so ~20 remain: 1040 x11,
+  Schedule D x4, 8949 x3, 6251 x2, 2441 x1. **The marker is a FLOOR, not a total - the Credit Limit
+  Worksheet lacks it.** `harvest-worksheet` already exists and selects by title. **Watch 6251
+  line 5: the Exemption Worksheet would replace a lookup table that already derives correctly.**
 - **S92 - THE WIDE RUN.** All 11 acquired forms and schedules, live, per document against every
   printed anchor. **After S91: running it on 42 junk faces would measure extraction, not
   derivation.** Specced when picked up, not before.
