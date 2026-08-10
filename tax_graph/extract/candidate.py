@@ -88,11 +88,13 @@ def write_candidate_from_run(
         year=str(year),
         real_document_ids={item[0] for item in reports},
         extra_nodes=_stub_nodes_for_missing_operands(missing_operand_ids),
+        present_node_ids=_candidate_node_ids(graph_root),
     )
     _write_stub_documents(
         stub_registry,
         destination=graph_root,
     )
+    _append_real_document_stubs(stub_registry, destination=graph_root)
 
     worksheet_report = _copy_worksheet_drafts(
         root_path,
@@ -906,6 +908,7 @@ def _stub_registry(
     year: str,
     real_document_ids: set[str],
     extra_nodes: Sequence[Mapping[str, Any]] = (),
+    present_node_ids: set[str] | None = None,
 ) -> dict[str, Any]:
     """Collect source-backed external references into deterministic stubs.
 
@@ -972,16 +975,27 @@ def _stub_registry(
             {str(item["line"]) for item in by_document[document_id]},
             key=_line_sort_key,
         )
+        # Decide per LINE, not per document.  A document being in the run does
+        # NOT mean it supplied every line: `form_8949_2025` lines 1 and 2 are
+        # structural skips and `schedule_d_2025` line 21 errored, so each
+        # produced no node while something still referenced it.  Treating the
+        # whole document as ingested dropped those stubs and left the operand
+        # dangling, which the integrity check then rejected.
+        emitted = present_node_ids if present_node_ids is not None else set()
         status = "ingested" if document_id in real_document_ids else "unresolved"
         lifecycle.extend(
             {
                 "document_id": document_id,
                 "line": line,
                 "node_id": _line_node_id(document_id, line),
-                "status": status,
+                "status": (
+                    "ingested"
+                    if _line_node_id(document_id, line) in emitted
+                    else status
+                ),
                 "message": (
                     "canonical node is supplied by the inducted document"
-                    if status == "ingested"
+                    if _line_node_id(document_id, line) in emitted
                     else _stub_line_message(document_id, line)
                 ),
             }
@@ -993,10 +1007,25 @@ def _stub_registry(
     return {
         "document_ids": [item["document_id"] for item in document_stubs],
         "documents": document_stubs,
+        # A stub node survives when its canonical id was not emitted, whatever
+        # the document's own status.  Nodes for a REAL document are returned
+        # separately because that document's directory already exists.
         "nodes": {
-            document_id: sorted(items, key=lambda item: _line_sort_key(str(item["line"])))
+            document_id: sorted(
+                [item for item in items if str(item["node_id"]) not in emitted],
+                key=lambda item: _line_sort_key(str(item["line"])),
+            )
             for document_id, items in sorted(by_document.items())
             if document_id not in real_document_ids
+        },
+        "real_document_nodes": {
+            document_id: sorted(
+                [item for item in items if str(item["node_id"]) not in emitted],
+                key=lambda item: _line_sort_key(str(item["line"])),
+            )
+            for document_id, items in sorted(by_document.items())
+            if document_id in real_document_ids
+            and any(str(item["node_id"]) not in emitted for item in items)
         },
         "lifecycle": lifecycle,
     }
@@ -1056,6 +1085,37 @@ def _write_stub_documents(registry: Mapping[str, Any], *, destination: Path) -> 
                 "stub_message": document["stub_message"],
             },
         )
+
+
+def _candidate_node_ids(graph_root: Path) -> set[str]:
+    """Return every node id the candidate has actually emitted."""
+    node_ids: set[str] = set()
+    for path in graph_root.rglob("nodes.yaml"):
+        payload = yaml.safe_load(path.read_text(encoding="ascii")) or []
+        for item in payload if isinstance(payload, list) else [payload]:
+            if isinstance(item, Mapping) and str(item.get("node_id") or "").strip():
+                node_ids.add(str(item["node_id"]).strip())
+    return node_ids
+
+
+def _append_real_document_stubs(registry: Mapping[str, Any], *, destination: Path) -> None:
+    """Add line stubs for a REAL document that did not emit that line.
+
+    A document can be in the run and still owe a node: a structural skip or a
+    failed derivation produces no node while another row keeps referencing it.
+    Its directory already exists, so the stub is appended to that document's
+    own nodes file rather than written as a separate stub document.
+    """
+    for document_id, nodes in (registry.get("real_document_nodes") or {}).items():
+        if not nodes:
+            continue
+        target = destination / str(document_id) / "nodes.yaml"
+        if not target.is_file():
+            raise ValueError(f"real document has no nodes file to extend: {target}")
+        payload = yaml.safe_load(target.read_text(encoding="ascii")) or []
+        if not isinstance(payload, list):
+            raise ValueError(f"real document nodes file is not a list: {target}")
+        _write_yaml(target, list(payload) + [dict(node) for node in nodes])
 
 
 def _candidate_missing_operand_ids(graph_root: Path) -> set[str]:
