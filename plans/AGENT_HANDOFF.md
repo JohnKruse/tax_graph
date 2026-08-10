@@ -367,66 +367,47 @@ evidence disagrees with mine.** **No production fix, no prompt edit, no validato
 
 ## Queued (ONE LINE each - do not spec ahead)
 
-- **MAKE THE WORKSHEET HARVESTER GENERAL** (John's ruling, now in AGENTS.md), then harvest.
-  **ARCHITECT CORRECTION: I told John "harvest-worksheet already exists" and that was misleading.
-  It exists and it is a ONE-WORKSHEET TOOL.** `worksheet_harvest.py` holds a single hardcoded
-  target - `QDCGT_WORKSHEET_TARGET`, `expected_line_count=25`. **Tested 2026-08-09 on six real
-  worksheets: 0 succeeded**, with five distinct failures:
-  Credit Limit `missing_terminal_line` (line 3); 2441 Worksheet A `line_sequence_gap` (expected 14,
-  found 14a); 6251 Exemption `missing_terminal_line`; Schedule D Tax `missing_numbered_rows` (start
-  found, no numbered rows followed); Simplified Method `missing_start_title` (matched 0 headings);
-  28% Rate Gain `missing_terminal_line` (line 7).
-  **THE ROOT CAUSE IS A STANDING-RULE VIOLATION: the harvester is END-ANCHORED** - it needs to know
-  or infer a terminal line - **and John ruled that worksheet extent is AI-harvested, never
-  end-anchored.** That is why it only ever worked on the one worksheet it was written against.
-  **AND THE AI WAS NEVER ASKED. `worksheet_harvest.py` is 1,118 lines with ZERO llm/client/prompt
-  references - it is pure deterministic parsing.** John's design (find the start, hand the AI the
-  text, let it say where the worksheet ends) **was never built.**
-  **ARCHITECT PROBE, 2026-08-09, 6 worksheets, 6 correct on the first call:** Credit Limit 3 steps
-  (matches a hand-read of the source exactly), 6251 Exemption 6, Schedule D Tax 47, Simplified
-  Method 11, 28% Rate Gain 15, Social Security Benefits 18. **Two of MY hand estimates were the
-  wrong ones** (I guessed ~30 and ~19). **The model's own cue is the reusable one: a worksheet's
-  LAST step names where its answer goes** - "Also enter this amount on Form 2441, line 10". Only the
-  Credit Limit case is verified against the source; the other five are plausible and
-  self-consistent, **verify against the PDFs before trusting the counts.**
-  **So the round is SMALLER than "make the harvester general": replace end-anchored extent detection
-  with the AI call the prime directive says belongs there.** Probe:
-  `scratchpad/wsend.py`.
-  Inventory: **~21 boxes** by the "Keep for Your Records" marker (a FLOOR - the Credit Limit
-  Worksheet lacks it), 1 modelled, ~20 to go: 1040 x11, Schedule D x4, 8949 x3, 6251 x2, 2441 x1.
-  **Watch 6251 line 5: the Exemption Worksheet would replace a lookup table that already derives
-  correctly.**
-- **S92 - THE WIDE RUN.** All 11 acquired forms and schedules, live, per document against every
-  printed anchor. **After S91: running it on 42 junk faces would measure extraction, not
-  derivation.** Specced when picked up, not before.
-- **Repair calls that return a byte-identical payload** must be detected and not spent (2441 `5`).
-- **`REQUIRE_INPUT` as a lookup branch** - legal as a whole rule, illegal inside one; blocks 2441 `5`.
-- **`CASE` / alternation** - still HELD pending S92's wider evidence.
+**JOHN'S PRIORITY, 2026-08-10: get the CORE documents processing reliably.** Ordered for that.
+**Every item below is a PIPELINE change - none of them is a per-cell human correction.**
 
-**PRIMED FOR S91, so the round starts with tools instead of setup.**
+1. **`column` ON AN OPERAND.** **BLOCKS the candidate writer on the wide corpus today**
+   (`line "2a, column (l)"` is not a canonical address). The graph ALREADY addresses columns -
+   `form_8949_2025_part_i_line_1_column_d`, `form_2441_2025_part_ii_line_3_column_d` - only the
+   derivation operand cannot say it. **Plumbing, not new capability.**
+2. **WORKSHEETS AS DOCUMENTS** (John's ruling, AGENTS.md). Clears the **9 rows that misread a
+   worksheet's steps as their own** AND the phrase-line references (1040 `6b`, Sch A `5e`).
+   **The AI finds the extent 6 for 6** (probe: `scratchpad/wsend.py`); the existing harvester is a
+   one-worksheet end-anchored tool that scored 0 for 6. **~20 boxes to harvest**, found by the
+   "Keep for Your Records" telltale. Watch 6251 `5`.
+3. **STUBS FOR OUT-OF-CORPUS FORMS, and fix the `Form(s) X` alias.** 1040 `25c` hard-fails because
+   the evidence says "Form(s) W-2G" and the matcher builds `form w2g`. Same "(s)" quirk that spared
+   1040 `1a` from the reference guard.
+4. **A LEAF MEANING "SUPPLIED HERE".** The only genuinely NEW vocabulary; needs the enum gate.
+   Blocks 2441 `5`, where `REQUIRE_INPUT` is legal as a whole rule but not as a lookup branch.
+5. **Repair calls that return an unchanged payload** must be detected and not spent (2441 `5`).
+6. **`CASE` / alternation** - still HELD; revisit with the wide-run evidence.
+7. **"Report issue" from a reviewer corrective** (John, 2026-08-10) - optional and **never hidden**;
+   emit a ready-to-paste GitHub body, no network and no auth to maintain. **Cluster by failure kind
+   and answer shape, not by form**, so 50 reports of one cause collapse into one issue. Derivation
+   runs on BLANK forms so the payload carries no filer data; **the reviewer's own comment is the one
+   field needing a preview before sending.** Product work - after the core set is reliable.
+8. **Housekeeping:** `pilot/context_arms.py` still scores `REQUIRE_INPUT` as a recovered formula;
+   run-together instruction headings (`**Line 2dDepletion**`); artifact-pinned test counts measured
+   against untracked `.cache/raw`; `form_8949_2025` needs table-form treatment (4 anchors, 0
+   admitted); 2441 `19`/`21`/`25` are a KNOWN-UNSTABLE set - do not read them as signal.
 
-**`pilot/run_report.py` replaces the hand-typed round numbers.** It reads the YAML the derivation
-already writes and prints per-document coverage **against every printed anchor**, the status and
-outcome split, cost, failure and warning kinds, and a **row-level** floor check. Validated against
-all three real runs: it reproduces S89 at 139/157 (88.5%, $0.0954), S90b at 131/157 (83.4%,
-$0.1008), and it independently finds the exact 3 S90 regressions. 5 tests, synthetic fixtures, no
-`.cache` dependency. **Report rounds with this, not with one-off snippets.**
+**REPORT EVERY ROUND WITH `pilot/run_report.py`** - per-document coverage against every printed
+anchor, plus a row-level floor check. Validated against four real runs.
 
 ```
 .venv\Scripts\python.exe pilot\run_report.py <RUN> --baseline C:\tmp\m20_s81_rest --baseline C:\tmp\m20_s81_run
 ```
 
-**The wide-run command, with the provider escape scoped to that one command** (see AGENTS.md; the
-Worker can now run its own live leg):
+**TEST FIXES ONE CELL AT A TIME, NOT WITH A CORPUS RUN.**
+`rederive_cell(document_id, line, draft_comment)` is a discrete call - cents and seconds.
+`pilot/row_bench.py` replays a recorded row for free. **An hour-long run to check a handful of rows
+is not acceptable** (John, 2026-08-10).
 
-```
-codex sandbox -c 'sandbox_mode="danger-full-access"' -- .venv\Scripts\python.exe experiments\derive_cells_s25.py --year 2025 --output-dir C:\tmp\m20_s91\run --document form_1040_2025 --document form_2441_2025 --document form_6251_2025 --document schedule_1_2025 --document schedule_1a_2025 --document schedule_2_2025 --document schedule_3_2025 --document schedule_a_2025 --document schedule_b_2025 --document schedule_d_2025 --document form_8949_2025
-```
-
-**Baselines: only 1040, 2441 and 6251 have one.** The other eight have never been derived, so their
-first run IS the baseline - report them as a snapshot and do not manufacture a comparison.
-**Form 8949 will look terrible (4 anchors, 0 admitted): it is a transactions table, not a
-line-anchored form. Report it, do not fix it in this round.**
 
 ## Standing operational notes
 
