@@ -889,7 +889,9 @@ def validate_cell_output(
     These checks are deliberately source- and expression-based.  They do not
     consult promoted graph artifacts, and the operand-in-quote check is only a
     warning because a concise quote can legitimately omit an operand that the
-    instruction still establishes elsewhere in the packet.
+    instruction still establishes elsewhere in the packet.  Source-backed
+    operands also require a numeric printed-line address; the candidate writer
+    cannot turn a phrase such as ``2a, column (l)`` into a canonical node.
     """
     hard: list[CellValidationIssue] = []
     warnings: list[CellValidationIssue] = []
@@ -951,6 +953,20 @@ def validate_cell_output(
             continue
         if not operand_line:
             continue
+        # Keep the existing unknown-document finding for an unsourced operand.
+        # A non-canonical line is the more useful finding once the evidence
+        # proves which external document the model intended to use.
+        if (
+            not re.fullmatch(r"[0-9]+[a-z]?", operand_line, re.IGNORECASE)
+            and (not operand_form or _legitimate_external_reference(row, operand_form, operand_line))
+        ):
+            hard.append(
+                CellValidationIssue(
+                    "operand_line_not_canonical",
+                    f"operand line {operand_line!r} is not a canonical line address; "
+                    "expected [0-9]+[a-z]?",
+                )
+            )
         is_require_input_self_operand = require_input_self and operand is direct_require_input_args[0]
         if not is_require_input_self_operand and not operand_form and operand_line == current_line:
             hard.append(CellValidationIssue("self_reference", f"expression references its own line {row.line}"))

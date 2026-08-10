@@ -368,6 +368,26 @@ parts, so it needs design.
 `pilot/row_bench.py --mode replay` reproduce these for cents. **Do not run a corpus derivation to
 check this round** (John, 2026-08-10).
 
+**M20-S93 WORKER STATUS (2026-08-10):** Added the `operand_line_not_canonical` hard finding to
+`validate_cell_output` for same-form and source-backed external operands whose line value does
+not match `[0-9]+[a-z]?`. The existing `operand_document_not_found` guard remains the outcome for
+an unsourced unknown external document. No column field, worksheet model, candidate writer, or
+promoted artifact was changed.
+
+RAN: `$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp_s93';
+.venv\Scripts\python.exe -m pytest tests\test_derive_cells_m20.py -q` -> **74 passed, 1 warning**.
+RAN: `$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp_s93';
+.venv\Scripts\python.exe -m pytest tests\test_derive_cells_m20.py tests\test_candidate_regeneration_m20.py
+tests\test_m20_s90b.py tests\test_m20_s90c.py -q` -> **90 passed, 1 warning**.
+RAN: `.venv\Scripts\python.exe pilot\row_bench.py schedule_2_2025 --line 1d --mode replay
+--run-dir C:\tmp\m20_wide\run` -> **exit 0**; the real row is rejected with
+`operand_line_not_canonical` and retains the expected unresolved-external warning.
+RAN: `.venv\Scripts\python.exe tools\check_ascii.py` -> **ASCII check OK**.
+RAN: `git diff --check` -> **clean**.
+NOT RUN: provider leg and corpus derivation; this round is explicitly provider-free and John
+required one-cell replay instead of a corpus run. NOT RUN: full suite; it exceeds the 600-second
+Worker command cap, with the accepted 19-failure baseline recorded above.
+
 
 ## Queued (ONE LINE each - do not spec ahead)
 

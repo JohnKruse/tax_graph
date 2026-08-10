@@ -234,6 +234,65 @@ def test_cross_form_operand_must_use_document_inventory() -> None:
     assert [issue.kind for issue in hard] == ["operand_document_not_found"]
 
 
+def test_operand_line_must_be_a_canonical_printed_line_address() -> None:
+    row = {
+        **_frame()[1],
+        "form_face_text": "Enter the amount from Form 4255, line 2a, column (l).",
+        "instruction_text": "Enter the amount from Form 4255, line 2a, column (l).",
+    }
+
+    hard, _warnings = validate_cell_output(
+        CellFrame.from_rows([row]).rows[0],
+        {
+            "op": "COPY",
+            "args": [{
+                "form": "form_4255_2025",
+                "line": "2a, column (l)",
+            }],
+        },
+        row["form_face_text"],
+        reference_inventory={"document_ids": []},
+    )
+
+    assert [issue.kind for issue in hard] == ["operand_line_not_canonical"]
+    assert [issue.kind for issue in _warnings] == ["unresolved_external_reference"]
+
+
+def test_noncanonical_operand_line_is_named_after_repair_still_fails() -> None:
+    row = {
+        **_frame()[1],
+        "form_face_text": "Enter the amount from Form 4255, line 2a, column (l).",
+        "instruction_text": "Enter the amount from Form 4255, line 2a, column (l).",
+    }
+    payload = {
+        "expression": {
+            "op": "COPY",
+            "args": [{
+                "line": "2a, column (l)",
+            }],
+        },
+        "quote": row["form_face_text"],
+    }
+    client = FakeClient([payload, payload])
+
+    result = derive_cells(
+        CellFrame.from_rows([row]),
+        "line <<line>>: <<form_face_text>>",
+        "secret",
+        client=client,
+    )
+
+    assert result.rows[0].status == "error"
+    assert [issue["kind"] for issue in result.rows[0].metadata["validation_failures"]] == [
+        "operand_line_not_canonical",
+    ]
+    assert result.validation_report["validator_failures_by_kind"] == {
+        "operand_line_not_canonical": 2,
+    }
+    assert len(client.calls) == 2
+    assert "operand_line_not_canonical" in client.calls[1]["prompt"]
+
+
 def test_manifest_worksheet_line_is_validated_against_document_inventory() -> None:
     row = CellFrame.from_rows([_frame()[1]]).rows[0]
     inventory = {
