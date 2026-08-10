@@ -21,310 +21,39 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## BALL
 
-**BALL: WORKER - M20-S93 (a line value that is not a line must fail at derivation). SMALL round,
-spec under Current round. Worksheets are staged as queue item 2, ready to promote after.**
-**JOHN'S PRIORITY, 2026-08-10: get the CORE documents processing reliably. Every queued item is a
-PIPELINE change - none is a per-cell human correction.**
+**BALL: JOHN - S93 AND S94 BOTH ACCEPTED. THE WIDE CORPUS IS WRITABLE FOR THE FIRST TIME.
+Worksheets are next and their spec is staged as queue item 2.**
 
-**THE WIDE RUN IS DONE AND IT ANSWERED THE BREADTH QUESTION: 356 of 410 anchors (86.8%) across 11
-documents for $0.2512, with the eight never-derived documents at 79-96%.** Quality generalized.
-`...\cand`.**
+**S93 ACCEPTED** (`cb57f8e`, `079525a`) - a line value that is not a line now fails at derivation
+instead of crashing the graph writer. **S94 ACCEPTED** (`c97d01c`, `010785f`) - `--process
+broken|all`, default `all`.
+**Architect fixes alongside them:** `b1cc7b8` one canonical line-id builder, `c6d4e4e` a stub
+survives per LINE not per document, `4a09e9b` per-pass accounting.
 
-**THE ANSWER TO YOUR OVERFITTING QUESTION: QUALITY GENERALIZED. 356 of 410 printed anchors (86.8%)
-across 11 documents for $0.2512.** The eight documents we had NEVER derived came in at **79-96%**,
-several ABOVE the three-form set that everything was tuned on.
+**FULL PASS, 11 documents:** **351 of 410 printed anchors (85.6%)**, cost **$0.2505**,
+**1 regression** against the 64 protected rows - `form_2441_2025` line 19, the known-unstable row.
+Coverage fell from 356 because `operand_line_not_canonical` fired **35 times**; **those rows were
+passing while unwritable, so this is the round working.**
 
-| document | anchors | coverage | |
-| --- | --- | --- | --- |
-| `schedule_a_2025` | 28 | **96.4%** | first run |
-| `form_6251_2025` | 63 | 92.1% | |
-| `schedule_1a_2025` | 48 | **91.7%** | first run |
-| `schedule_2_2025` | 45 | **91.1%** | first run |
-| `schedule_1_2025` | 61 | **88.5%** | first run |
-| `schedule_b_2025` | 8 | **87.5%** | first run |
-| `form_1040_2025` | 59 | 86.4% | |
-| `schedule_3_2025` | 35 | **82.9%** | first run |
-| `schedule_d_2025` | 24 | **79.2%** | first run |
-| `form_2441_2025` | 35 | 74.3% | |
-| `form_8949_2025` | 4 | 0.0% | transactions table, expected |
+**THE CANDIDATE BUILDS FROM A FRESH RUN: 588 nodes, 846 edges, 581 operands, ZERO dangling ids**,
+11 source documents, 61 stub documents, lifecycle 89 unresolved / 4 ingested. **Every operand
+resolves to something real or stubbed, and each stub already carries the address its real version
+will occupy.**
 
-**FLOOR: 3 of the 64 protected rows regressed, all on 2441 - lines 19, 21, 25. NOT ATTRIBUTED.**
-Those exact rows have flipped in both directions across five runs now. **Treat 2441 19/21/25 as a
-known-unstable set and stop reading them as signal.**
+**FULL SUITE 2026-08-10: 18 failed, 910 passed, 8 skipped, 1 xfailed in 0:58:36** - the documented
+pre-existing families, **zero new failures**, passes 894 -> 910, and
+`test_m20_s71::test_real_candidate_node_labels_use_clean_text` **now passes** after failing the
+last three suites.
 
-**BUT THE CANDIDATE WRITER FAILS ON THE WIDE CORPUS:**
-`ValueError: candidate graph edge endpoint form_1040_nr_2025_root_line_tax_on_non_effectively_connected_income is not a canonical line address`
+**A BROKEN PASS CANNOT SEE A CHANGE THAT AFFECTS PASSING ROWS, and we proved it the hard way.** The
+id fix changed stub minting for SUCCESSFUL rows, so a broken-only pass carried the stale ids forward
+and the candidate still failed. **Codex was right and the Architect was wrong to call that stale.**
+**This is exactly why the default is `all`.**
 
-**THE CAUSE IS A REAL GAP BREADTH EXPOSED: 11 rows emit an operand whose "line" is a PHRASE, not a
-line number** - and **10 of them are marked `derived`**, so derivation accepted what the graph
-writer then rejected. **Two stages disagree about what a line is.**
-- `form_1040_2025` `6b` -> `social_security_benefits_worksheet_2025` line **"taxable benefits"**
-- `schedule_a_2025` `5e` -> `state_and_local_tax_deduction_worksheet` line **"amount"**
-- `schedule_2_2025` `1d` -> `form_4255_2025` line **"2a, column (l)"**
-- `schedule_3_2025` `13c` -> `form_3800_2025` line **"6, column (j)"**
-- `schedule_2_2025` `17o` -> `form_1040_nr_2025` line **"tax on non-effectively connected income"**
+**PER-PASS ACCOUNTING NOW EXISTS** - `pass_rows_sent`, `pass_rows_attempted`, `pass_cost`,
+`pass_row_status_counts`, beside the merged totals. A full pass reads **410 rows / $0.2505**;
+without these a broken pass and a full pass were indistinguishable except by the mode flag.
 
-**TWO DISTINCT CAUSES INSIDE THAT.**
-1. **Worksheets again, from a new direction.** When a worksheet is not a document with addressable
-   lines, the model DESCRIBES the value instead ("taxable benefits", "amount"). **More evidence for
-   the worksheet ruling, arrived at independently.**
-2. **COLUMN ADDRESSES.** Forms 4255, 3800 and 8949 carry values addressed by line AND column
-   ("2a, column (l)"). **Our address grammar has no column. That is new and it is structural.**
-
-**115 `unresolved_external_reference` warnings** - the stub path carrying the load it was built for.
-
-
-**THE BIGGEST FINDING IS OURS, NOT THE MODEL'S.** 1040 `5a` fails `subtract_direction: instruction
-says subtract line 6 from line 2`. Its instruction section is CORRECT but 11,424 chars long and
-**embeds the Simplified Method Worksheet**, whose own numbered steps contain that phrase. **The
-validator applies a worksheet's internal line numbers to the parent row.** 4 of the 15 rows share
-that shape, and it would misfire on any line whose instructions embed a worksheet.
-
-**M20-S91b ACCEPTED at `4e77e9e`. Extraction is done.**
-
-
-**S91b, measured from `clause_extent`, not from an Architect harness.** **68 of 406 rows take the
-bracket** (42 under S91), **35 faces changed**, and **ZERO rows took the bracket when the fallback
-was longer** - the safety property held through both rounds. `( )` and mid-sentence fragments like
-`'1 4361 2 4029 3'` are gone.
-**Full suite 2026-08-09: 19 failed, 894 passed, 8 skipped, 1 xfailed in 0:56:58** - the SAME 19,
-**zero new failures.**
-
-**DERIVATION: 135 of 157 (86.0%), $0.1006, ZERO regressions against the protected 64.**
-**I AM NOT CLAIMING S91b CAUSED THE +3.** Against the previous run 7 rows gained and 4 lost, and the
-movement is not confined to rows whose text changed. **Rows churn between runs; report the
-invariant, not the delta.**
-
-**ONE CONTROLLED RESULT WORTH KEEPING. 2441 line 5 still fails identically** while its neighbours 19
-and 25 now derive. **We changed its face text and its behaviour did not move** - which is what you
-predict if the cause is the grammar, not extraction. **`REQUIRE_INPUT` can be a whole rule but not a
-branch of one. That diagnosis is now confirmed by intervention, not by argument.**
-
-**S92 - THE WIDE RUN - IS THE NEXT ROUND AND IT IS JOHN'S CALL.** All 11 acquired forms and
-schedules, about $0.25-0.35. The command with the provider escape is under Queued. **This is the
-round that tests whether three-form quality generalizes - the concern John raised on 2026-08-09,
-which the extraction work has now cleared out of the way.**
-
-
-**S90c ACCEPTED ON INVARIANTS, NOT ON A RUN DIFF.** Verified on a REAL candidate, not fixtures:
-**22 stub nodes across 14 stub documents** at canonical `_root_line_` addresses, each carrying
-"must be ingested or supplied by the caller"; integrity **230 nodes, 315 edges, 228 operands, ZERO
-dangling ids**; the writer survives the corpus that crashed it; the document-only predicate raised
-`unresolved_external_reference` warnings 8 -> 17. **Full suite 2026-08-09: 19 failed, 891 passed,
-8 skipped, 1 xfailed in 0:57:21.** **One failure is NEW against the 18-failure baseline:**
-`test_m20_s71::test_real_candidate_node_labels_use_clean_text`. **Named, not chased.**
-
-**COVERAGE WAS 132 of 157 against S89's 139, AND I AM NOT ATTRIBUTING THE DIFFERENCE.** I twice
-called the 2441 rows variance, then attributable, then variance again; the third run derived both.
-**The handoff's own rule says prefer invariants that hold on ANY single run over diffs between two
-runs, and I broke it twice. Judge rounds on invariants.**
-
-**THE REAL FAILURE WAS INVISIBLE BECAUSE WE THREW THE EVIDENCE AWAY.** A rejected payload went out
-of scope with the exception, so five rounds could only COUNT rejections. Fixed at `254877a`:
-`attempted_payloads` keeps what the model actually answered, first attempt and repair.
-**Immediate findings from ONE run with it on:** 2441 line 5's repair response is **byte-identical**
-to its first attempt - the repair call can never succeed and is pure spend - and line 5's real
-problem is that **`REQUIRE_INPUT` is legal as a whole rule but not as a branch of one**
-(accepted on line 4, rejected inside `LOOKUP_TABLE` on line 5). **Both are queued, both are small.**
-
-
-**WE HAVE ONLY EVER DERIVED 3 OF 11 ACQUIRED DOCUMENTS - 157 of 410 printed anchors.** Every number
-in S88-S90b is measured on that 38%. **Eight forms and schedules are fully acquired and never
-derived.** Going wider is now the priority; depth on the same three forms is not.
-
-**M20-S90 NOT ACCEPTED at `056e3be`; S90b is uncommitted in the tree and its guard ruling is
-answered.** The mechanism is right, the coverage floor is not met.
-
-
-**IT COST 27 ROWS OF COVERAGE TO FIX 12 MISLABELLED ONES.** Live corpus run at
-`C:\tmp\m20_s90\run`, temperature 0, $0.1032: **coverage 139 -> 112 of 157 (88.5% -> 71.3%)**,
-**errors 11 -> 38**, model-stated inputs 67 -> 38.
-
-**THE FLOOR IS BREACHED: 3 of the 64 protected rows regressed.** `form_6251_2025` line 13 is
-**directly attributable** - it repaired to `max(qdcgt line 4, 0)` under S89 and now errors
-`operand_document_not_found` because the model added `schedule_d_tax_worksheet`, a document
-outside the inventory. `form_6251_2025` line 20 lost its floor and `form_2441_2025` line 25 threw a
-LOOKUP_TABLE payload error; **both are plausibly sampling** - line 25 has failed nine prior runs -
-**so I am not attributing them, only reporting them.**
-
-**THE VALIDATOR GUARD NEVER FIRED. `external_reference_as_input` raised ZERO times in the run.**
-The damage came entirely from the prompt clause telling the model to emit a canonical id even for
-documents outside the inventory. It did - corpus-wide, not on the 12 targeted rows - producing
-**59 `operand_document_not_found` and 10 `operand_inventory_unavailable`** failures.
-
-**MY SPEC IS WHAT MADE THIS HAPPEN.** I wrote "must produce a NAMED FINDING, never a silent
-`REQUIRE_INPUT`" without saying that a named finding must not be a HARD failure. An unresolvable
-reference is a **known limit of the corpus**, not a defective derivation, and the two must not
-share an outcome.
-
-
-**THE GATE IS GONE AND NOTHING REGRESSED.** Against the S81 temperature-0 baseline, all **64** rows
-that derived or repaired then still do - checked row by row, not by count. **Coverage 64 -> 139 of
-157 printed anchors (88.5%)**, skips 90 -> the 7 structural rows, **cost $0.0954** over 142 priced
-calls against the $0.09 predicted.
-**Full suite 2026-08-08: 18 failed, 873 passed, 8 skipped, 1 xfailed in 0:56:59** - every failure
-in the documented pre-existing families (the 4 named known-red, 11 `tests/e2e/*_m15` on the empty
-queue, and the artifact-state `test_cli` / `test_field_identity_m16` / `test_review_preflight_m15`).
-**Zero failures anywhere in `tax_graph/extract` or the m20 series**, passes 851 -> 873, protected-set
-diff EMPTY.
-
-**MY S88 HEADLINE WAS WRONG AND THE PRODUCTION RUN CORRECTED IT. "27 of 32 missed formulas recover"
-was never a count of formulas.** `pilot/context_arms.py` scores recovery as any row reaching
-`derived` or `repaired`, and `REQUIRE_INPUT` is a derivation - so the arms measured rows getting an
-ANSWER. **Of the 32 named rows only 4 produce an expression** (1040 `16`; 6251 `5`, `7`, `19`); 23
-answer `require_input`, 5 error. **This is the exact defect S89 was written to kill - a skip that
-reports as success - reappearing one level up, in the measurement rather than the pipeline.**
-Corpus-wide the deletion bought **13 new expressions and 67 model-asserted inputs**, and errors rose
-**3 -> 11**.
-
-**THE NEW OUTCOME HAS NOT EARNED ITS TRUST YET, which is what S90 is for.** 12 of 67 model-asserted
-inputs (18%) have a printed face naming another form. **Do not read `model_stated_input` as fact.**
-
-**S88 ACCEPTED at `49ff88a`.** Arm A shipped; context assembly unchanged. **Do not widen the context
-or revisit buffers without new evidence** - wrong-line quotes went 0 -> 2 -> 6 as the window widened.
-**The S89 floor run is at** `C:\tmp\m20_s89\run`.
-
-
-**S81 ACCEPTED at `c89dd53`; temperature pinned at `50a64bf`.**
-**Full suite 2026-08-07: 20 failed, 851 passed, 8 skipped, 1 xfailed in 0:57:21** - exactly the
-known pre-existing set, zero new failures, passes 850 -> 851 on S81's own tests.
-
-**2441 LINE 25 DERIVES after nine failed runs**, and the encoding sidesteps a gap we thought was
-blocking: `max(0, if_else(line 22, 0, min(line 20, line 21), min(line 20, line 21) - line 24))`.
-It tests **line 22 against 0** rather than needing a boolean predicate, using the form's own
-structure - checking "No" makes line 22 read -0-, checking "Yes" makes it an amount. **Its
-correctness still rests on the unstored comparator**, the same gap measured across 36 anchors.
-
-**NEW DEFECT, from S74's inventory being too broadly scoped.** `form_6251_2025` line 13 now derives
-`max(qdcgt line 4, instructions_schedule_d_2025 line 13, 0)` - an operand pointing at an
-**instructions booklet**. A formula may reference forms and worksheets; it must never reference an
-instructions document. Scope the inventory and make an instructions-document operand a named
-finding.
-
-**TEMPERATURE IS PINNED TO 0, AND THE CONFIG LINE ALONE WOULD NOT HAVE DONE IT.**
-`derive_cells` was called without a `temperature` argument, so the derivation path used the
-parameter default of `None` and never read `llm.temperature` - while `generator.py`, `critic.py`,
-`micro.py` and `background.py` all did. Fixed, and the helper preserves an explicit zero because
-**`0` is falsy** and a truthiness test would have discarded the pin silently. Live-verified that
-`openai/gpt-5.6-luna` accepts it. **Caveats recorded in the example config:** this reduces variance
-without removing it (batched inference is not bit-deterministic), and `allow_fallbacks: true` means
-a routed endpoint may still reject or ignore it.
-
-**BASELINE RESET. EVERY CROSS-RUN COMPARISON MADE BEFORE 2026-08-07 IS UNATTRIBUTABLE.** All prior
-runs sampled at the provider default, so diffs conflated real change with sampling noise - including
-the 2441 "1 error -> 4 errors" and `form_1040_2025` line 35a going `repaired -> error` under S81.
-**Do not attribute those.** The next canary at temperature 0 is the new reference run.
-**Prefer invariants that hold on ANY single run over diffs between two runs.**
-
-**S74 ACCEPTED at `b153e94`. S75 ACCEPTED at `b2982c6`.**
-**Full suite 2026-08-07: 20 failed, 850 passed, 8 skipped, 1 xfailed in 0:57:34** - exactly the
-known pre-existing set, **zero new failures**, passes 846 -> 850 on S74's own tests.
-
-**S74's acceptance test half-passed, and the other half was my error.** `form_6251_2025` line 13 now
-derives `max(qualified_dividends_capital_gain_tax_worksheet line 4, 0)` - correct document, correct
-line; the document inventory did its job. **Line 20 was never a wrong answer.** Its full text offers
-three alternatives and ends *"If you did not complete either worksheet... enter the amount from Form
-1040 or 1040-SR, line 15; if zero or less, enter -0-"*. It derived `max(form_1040_2025 line 15, 0)` -
-the third branch, stated verbatim, floor included. S74 still improved it: yesterday it said
-`form_1040_nr_2025`, the wrong filer's form. **The corpus now has ZERO known wrong references**; what
-remains on line 20 is a three-way "whichever applies" the grammar cannot hold, which belongs with
-named intermediates.
-
-**UNRESOLVED and honest:** 2441 moved from 1 error to 4 (`self_reference` line 5,
-`incomplete_evidence` line 8, `quote_not_verbatim` line 21, the standing line 25). The baseline run
-predates BOTH S71 and S74, so the delta cannot be attributed without a third run. All four fail for
-stated reasons rather than repairing into something unverifiable.
-Active spec is under Current round. **S76 IS DEFERRED to queue position 1** (John, 2026-08-07);
-**the S74 suite has FINISHED, so `tax_graph/` is free and S76 is unblocked whenever John wants it.**
-John's arc, 2026-08-07: **fix column 1, then assess column 2, and column 3 should then fall out.**
-S76 is the column-1 fix reaching production.
-
-**S71 ACCEPTED at `e79f2cd`; S70 at `977e977`; S72 at `b18d9f1`; S73 at `78516bc`.**
-
-**INSTRUCTION COVERAGE IS SETTLED: 84 of 153 candidate rows (55%)**, not 17. S73 found the cause -
-the panel **discarded candidate rows whenever the denominator anchor carried a `skip_reason`** - and
-a second alignment defect alongside it: the admitted `form_2441_2025` line 21 candidate was being
-consumed by the preceding skipped header duplicate. Per document: **17/59 on 1040, 18/33 on 2441,
-24/61 on 6251.** Verified independently by the Architect; S72's 17-arrow ceiling and S70/S71's
-clean text both held, and 15 pilot tests pass.
-**Full suite: 20 failed, 846 passed, 8 skipped, 1 xfailed in 1:01:19.** Those 20 are EXACTLY the
-known pre-existing set minus `test_m20_s31`, which S71's sibling commit fixed - **zero new
-failures**, and passes rose 841 -> 846 on S71's own tests. The 20 were triaged against
-`origin/main` earlier with local artifacts junctioned in; 11 are `tests/e2e/*_m15` failing on an
-empty review queue, the rest are artifact-state driven. `test_review_scope_migration_m15` remains
-UNCOMPARABLE (skips at baseline) and is untriaged, not cleared.
-
-**S71 verified on the real corpus:** 153 of 153 rows carry clean form-face text (was 67), 0 of 194
-node labels carry the raw-OCR signature (was 46 of 232), coverage unchanged.
-**S70 verified:** 0 of 157 panels render a raw label, down from 72; absence renders as absence.
-**S70 carries one open defect into S72**: the panel reports 17 instruction sections present while
-84 rows carry instruction text.
-
-**S64 is ACCEPTED at `7189375`; S67 is ACCEPTED at `bb3daca`.**
-
-**A candidate graph now exists.** Rebuilt from a fresh canary run: **194 nodes, 233 edges, 72 rules,
-66 citations** across the three documents, with **65 of 67 attempted rows entering the candidate**
-(61 derived, 4 repaired) and 2 held back as `review_gap` - one `quote_not_verbatim` on 2441, one
-`self_reference` on 6251. Both are named findings, never silent drops.
-
-**The first S64 measurement was invalid and the mistake is worth keeping.** The Architect ran the
-candidate writer against the `s67-live` reports, which were produced BEFORE S64 taught
-`derive_cells_s25.py` to carry `quote` and `quote_span_id` into `rows_detail`. Every derived row
-therefore arrived with no citation, the pairing gate correctly demoted all 62, and the candidate came
-out structurally empty - 0 nodes for every real document. **A run is only evidence for the code that
-produced it.** Re-run derivation before measuring anything that consumes a report.
-
-**Live: 67 attempted, 61 derived, 4 repaired, 2 errored.** `form_1040_2025` **17/17 with zero
-repairs**, 2441 **20/21**, 6251 **28/29**. `doctor` gained a **`roles`** column, so the
-layer-disagreement that caused S66 is now a check rather than a lesson.
-
-**THE S54 COMPLETENESS VALIDATOR FIRED ON REAL DATA FOR THE FIRST TIME**, and correctly. 2441 line 8
-produced all sixteen bands as CUMULATIVE thresholds (`under_15000=0.35, under_17000=0.34, ...`)
-rather than the source's explicit ranges, and the validator refused it -
-`lookup_table_band_overlap`, `lookup_table_missing_bands`, `lookup_table_bounds_mismatch`. Under
-first-match semantics "under 17,000" contains "under 15,000", so the refusal is right. **The row has
-still never derived, but it now fails for the correct reason.**
-
-**TWO EXPRESSION NORMALIZERS ALREADY EXIST AND DISAGREE.** `workbench/address_verdicts.py:92`
-`normalize_expression` speaks `kind`/`operation`/`operands` and **sorts commutative operands**;
-`tax_graph/extract/candidate.py:573` `_normalize_candidate_expression` speaks `op`/`args` and does
-not sort. Neither knows about the other. This is the S66 registry-versus-validator drift wearing new
-clothes, and it is the reason the candidate diff cannot tell a real disagreement from a reordering.
-**Whoever takes the diff round converges these rather than adding a third.**
-
-**QUEUE - one line each. NOT SPECCED.**
-1. **SCOPE THE DOCUMENT INVENTORY to forms and worksheets** - S74 included instructions booklets,
-   so `form_6251_2025` line 13 derived an operand pointing at `instructions_schedule_d_2025`. An
-   instructions-document operand must be a named finding. Small real-project round.
-2. **S76 LIFT THE INSTRUCTION PARSER into `tax_graph/`** - deferred 2026-08-07, spec recoverable at
-   `bcec03d`. Real-project; the invariant test is the deliverable: no instruction section filed under
-   a line absent from that form's printed-line inventory. 106 phantoms -> 0, 1040 256 -> 143.
-3. **`form_13614_c_2025` yields 0 printed anchors** - a manifest document producing nothing.
-4. **Column 3 becomes the agreed notation** - the S69 flow is an edge dump: zero `<svg>`, zero
-   diamonds, zero Yes/No arrows across all 157 panels; it renders `zero_floor` and node ids into the
-   human column and re-narrates upstream lines. Must implement `docs/review-notation.md` rules 1-8,
-   with phrasing read from the operation registry. Was specced at `41fffff`; recover with `git show`.
-5. **LIFT the accessor into the project** - make `tax_graph/extract/candidate.py` use it so the
-   GENERATED graph stops baking raw OCR into node labels (46 of 232 today), and move the invariant
-   test into `tests/`. This is the round that pays the full-suite cost.
-6. **Depth-normalized candidate diff** - all **5 of 5** overlapping rows report a false
-   `expression_disagreement`, because the candidate expression refers to neighbours by node id while
-   `_live_expression` inlines the handcrafted subtree; same rule, two depths. Compare at one depth.
-7. **Round-trip renderer** - render a tree back to English from the operation registry and diff it
-   against the printed source; disagreement becomes a review finding. Generation is deterministic
-   even where parsing is not, so this is the reliability check the pipeline currently has no form of.
-8. **Sibling subexpression recovery (CSE)** - 2441 line 25's `UNRESOLVED` block is `MIN(line 20, line
-   21)`, sitting in the sibling branch. Hashing subtrees recovers deterministically what a human gets
-   by reading across. Same machinery as item 3; do them together or not at all.
-9. **Construction drift detection** - reviews call out new punctuation and usage as a ranked finding
-   with system-filed evidence, against the versioned inventory S68 produces.
-10. **Column and grid recovery**; **phrase obligations**; **S53 approval gate**; **known-red cleanup**.
-
-**STANDING FAILURES, honest.** 2441 line 25 wrong for the **eighth** consecutive run - now
-`LOOKUP_TABLE arguments must be named leaf operands with a role`, after one repair. 6251 lines 13 and
-20 **no longer fail closed**; both repair to a cross-document reference (`max(form_1040_2025 line 4,
-0)` and `max(form_1040_nr_2025 line 15, 0)`). That is a status change, not a win: the references
-resolve now, and whether they resolve to the RIGHT line is unreviewed.
 
 ## Current round
 
