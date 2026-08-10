@@ -955,10 +955,16 @@ def validate_cell_output(
             continue
         # Keep the existing unknown-document finding for an unsourced operand.
         # A non-canonical line is the more useful finding once the evidence
-        # proves which external document the model intended to use.
+        # proves which external document the model intended to use.  An
+        # explicitly qualified operand for the current form is source-backed
+        # by its owner even when the row text does not repeat the form name.
         if (
             not re.fullmatch(r"[0-9]+[a-z]?", operand_line, re.IGNORECASE)
-            and (not operand_form or _legitimate_external_reference(row, operand_form, operand_line))
+            and (
+                not operand_form
+                or operand_form == current_form
+                or _legitimate_external_reference(row, operand_form, operand_line)
+            )
         ):
             hard.append(
                 CellValidationIssue(
@@ -2622,13 +2628,17 @@ def _external_reference_text(row: CellRecord, form: str, line: str) -> str:
 
 
 def _canonical_external_operand_id(form: str, line: str) -> str:
-    """Reuse the outline pipeline's canonical id for an unseen form line."""
-    from tax_graph.extract.outline_pipeline import _canonical_external_source_id
+    """Return the canonical line id for an operand's document.
 
-    match = re.search(r"_([0-9]{4})$", str(form))
-    year = match.group(1) if match else "unknown"
-    stem = str(form)[: match.start()] if match else str(form)
-    return _canonical_external_source_id(stem, year, line=line)
+    An operand's ``form`` is already a document id by contract, so this must
+    not decompose and rebuild it.  The previous version split off the year and
+    re-prefixed ``form_``, which is correct for a bare printed reference like
+    ``8863`` and wrong for a document that already names itself: a worksheet
+    became ``form_social_security_benefits_worksheet_2025_...`` and a worksheet
+    with no year gained an ``_unknown`` segment.  Both then failed the graph
+    writer's canonical-address check.  One builder, shared with ingestion.
+    """
+    return _canonical_line_node_id(str(form), str(line))
 
 
 def _known_quote_spans(row: CellRecord, quote: str) -> list[tuple[str, str]]:
