@@ -53,6 +53,7 @@ class DocumentReport:
     failures: dict[str, int]
     warnings: dict[str, int]
     rows_by_line: dict[str, Mapping[str, Any]] = field(repr=False, default_factory=dict)
+    process_mode: str = "all"
 
     @property
     def covered(self) -> int:
@@ -105,6 +106,7 @@ def load_document(run_dir: pathlib.Path, document_id: str) -> DocumentReport | N
         failures=dict(validation.get("validator_failures_by_kind") or {}),
         warnings=dict(validation.get("validator_warnings_by_kind") or {}),
         rows_by_line=by_line,
+        process_mode=str(data.get("process_mode") or "all"),
     )
 
 
@@ -170,6 +172,8 @@ def format_report(
             "document", "anchors", "derived", "repair", "error", "skip", "coverage",
         ),
     ]
+    modes = sorted({report.process_mode for report in reports})
+    lines.append("PROCESS " + ", ".join(modes))
     for report in sorted(reports, key=lambda item: item.document_id):
         lines.append("%-24s %7d %7d %7d %7d %7d  %5.1f%%" % (
             report.document_id,

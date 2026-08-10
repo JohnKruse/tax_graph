@@ -14,7 +14,7 @@ from dataclasses import replace
 from pathlib import Path
 import sys
 import tempfile
-from typing import Any
+from typing import Any, Mapping
 
 import yaml
 
@@ -25,6 +25,7 @@ if str(ROOT) not in sys.path:
 from tax_graph.config import get_config_value, load_config, resolve_llm_model, resolve_llm_seed
 from tax_graph.acquire.manifest import load_manifest
 from tax_graph.extract.cells import (
+    CellFrame,
     build_reference_inventory,
     build_cell_frame_from_document,
     derive_cells,
@@ -42,6 +43,12 @@ from tax_graph.extract.outline import (
     build_outline_tree,
 )
 from tax_graph.extract.outline_pipeline import build_derivation_denominator
+
+
+PROCESS_MODES = frozenset({"all", "broken"})
+SUCCESS_STATUSES = frozenset({"derived", "repaired"})
+REPORT_SUFFIX = "_derive_cells_report.yaml"
+REPORT_PREFIX = "m20_s26_"
 
 
 def persist_instruction_frame(
@@ -111,22 +118,244 @@ def _config_temperature(config: Any) -> float | None:
     return float(value)
 
 
+def _normalize_process(process: str) -> str:
+    """Validate and normalize the corpus processing mode."""
+    value = str(process or "all").strip().lower()
+    if value not in PROCESS_MODES:
+        choices = ", ".join(sorted(PROCESS_MODES))
+        raise ValueError(f"process must be one of {choices}, got {process!r}")
+    return value
+
+
+def _report_path(run_dir: str | Path, document_id: str) -> Path:
+    """Return the persisted derivation report for one document."""
+    return Path(run_dir).resolve() / f"{REPORT_PREFIX}{document_id}{REPORT_SUFFIX}"
+
+
+def _load_prior_report(run_dir: str | Path, document_id: str) -> dict[str, Any]:
+    """Load one prior report used to select and merge a broken-only pass."""
+    path = _report_path(run_dir, document_id)
+    if not path.is_file():
+        raise FileNotFoundError(f"prior derivation report not found: {path}")
+    payload = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
+    if not isinstance(payload, dict):
+        raise ValueError(f"prior derivation report must be an object: {path}")
+    recorded_document = str(payload.get("document_id") or "")
+    if recorded_document and recorded_document != document_id:
+        raise ValueError(
+            f"prior derivation report document {recorded_document} does not match {document_id}"
+        )
+    rows = payload.get("rows_detail")
+    if not isinstance(rows, list):
+        raise ValueError(f"prior derivation report has no rows_detail list: {path}")
+    return payload
+
+
+def _row_key(row: Mapping[str, Any] | Any) -> str:
+    """Return the stable per-document key used by reports and run floors."""
+    if isinstance(row, Mapping):
+        value = row.get("line")
+    else:
+        value = getattr(row, "line", "")
+    return str(value or "").strip().lower()
+
+
+def _prior_rows_by_line(report: Mapping[str, Any]) -> dict[str, Mapping[str, Any]]:
+    """Index prior rows, rejecting duplicate printed anchors instead of guessing."""
+    result: dict[str, Mapping[str, Any]] = {}
+    for row in report.get("rows_detail", []) or []:
+        if not isinstance(row, Mapping):
+            continue
+        key = _row_key(row)
+        if not key:
+            continue
+        if key in result:
+            raise ValueError(f"prior derivation report has duplicate row for line {key}")
+        result[key] = row
+    return result
+
+
+def _frame_for_process(
+    frame: CellFrame,
+    *,
+    process: str,
+    prior_report: Mapping[str, Any] | None,
+) -> tuple[CellFrame, dict[str, Mapping[str, Any]]]:
+    """Select provider work and return the prior rows needed for a merge.
+
+    A broken-only pass never asks the provider about a row that already has a
+    shippable answer.  Rows absent from the prior report remain in the work
+    frame, which makes new anchors fail open into the ordinary derivation path.
+    """
+    mode = _normalize_process(process)
+    if mode == "all":
+        return frame, {}
+    if prior_report is None:
+        raise ValueError("broken process requires a prior derivation report")
+    prior_rows = _prior_rows_by_line(prior_report)
+    selected = [
+        row
+        for row in frame.rows
+        if str(prior_rows.get(_row_key(row), {}).get("status") or "").lower()
+        not in SUCCESS_STATUSES
+    ]
+    return CellFrame(selected), prior_rows
+
+
+def _row_detail(row: Any) -> dict[str, Any]:
+    """Serialize one derived row in the report schema."""
+    return {
+        "line": row.line,
+        "label_before": row.metadata.get("label_before", row.label),
+        "label_after": row.label,
+        "form_face_before": row.metadata.get("form_face_before", row.form_face_text),
+        "form_face_after": row.form_face_text,
+        "status": row.status,
+        "error": row.error,
+        "expression": row.expression,
+        "rendered": row.rendered,
+        "validation_failures": row.metadata.get("validation_failures", []),
+        "validation_warnings": row.metadata.get("validation_warnings", []),
+        "repaired_after": row.metadata.get("repaired_after", []),
+        "dropped_instruction_sections": row.metadata.get("dropped_instruction_sections", []),
+        "source_findings": row.metadata.get("evidence_findings", []),
+        "structural_skip_reason": get_structural_skip_reason(row.metadata),
+        "model_outcome": row.metadata.get("model_outcome", ""),
+        # What the model actually answered, kept even when it was rejected.
+        # Without this a failing row can only be counted, not diagnosed.
+        "attempted_payloads": row.metadata.get("attempted_payloads", []),
+        "unresolved_external_nodes": row.metadata.get("unresolved_external_nodes", []),
+        # The candidate writer consumes the exact evidence selected by the
+        # provider-side derivation.  Keep it beside the expression so a
+        # candidate can never be promoted without its citation.
+        "instruction_text": row.instruction_text,
+        "instruction_locator": row.instruction_locator,
+        "quote": row.quote,
+        "quote_span_id": row.quote_span_id,
+        "evidence_spans": row.metadata.get("evidence_spans", []),
+        "instruction_span_ids": row.metadata.get("instruction_span_ids", []),
+        "model": row.model,
+        "provider": row.provider,
+        "prompt_tokens": row.prompt_tokens,
+        "completion_tokens": row.completion_tokens,
+        "cost": row.cost,
+    }
+
+
+def _merge_row_details(
+    frame: CellFrame,
+    current_rows: list[Mapping[str, Any]],
+    prior_rows: Mapping[str, Mapping[str, Any]],
+) -> list[dict[str, Any]]:
+    """Merge current broken-row results with untouched successful prior rows."""
+    current_by_line = {_row_key(row): dict(row) for row in current_rows if _row_key(row)}
+    merged: list[dict[str, Any]] = []
+    for source_row in frame.rows:
+        key = _row_key(source_row.as_dict())
+        prior = prior_rows.get(key)
+        if prior is not None and str(prior.get("status") or "").lower() in SUCCESS_STATUSES:
+            merged.append(dict(prior))
+        elif key in current_by_line:
+            merged.append(current_by_line[key])
+    return merged
+
+
+def _report_status_counts(rows: list[Mapping[str, Any]]) -> tuple[dict[str, int], dict[str, int]]:
+    """Return normalized and raw row status counts for a merged report."""
+    raw = Counter(str(row.get("status") or "pending") for row in rows)
+    normalized = {
+        "derived": raw.get("derived", 0),
+        "repaired": raw.get("repaired", 0),
+        "gapped": raw.get("gapped", 0),
+        "errored": raw.get("error", 0) + raw.get("errored", 0),
+        "skipped": raw.get("skipped", 0),
+    }
+    return normalized, dict(sorted(raw.items()))
+
+
+def _merged_validation(
+    result: Any,
+    *,
+    process: str,
+    prior_rows: Mapping[str, Mapping[str, Any]],
+    merged_rows: list[Mapping[str, Any]],
+) -> dict[str, Any]:
+    """Build validation totals whose scope matches the merged row report."""
+    validation = dict(result.validation_report)
+    if _normalize_process(process) == "all":
+        return validation
+
+    untouched = [
+        row
+        for row in prior_rows.values()
+        if str(row.get("status") or "").lower() in SUCCESS_STATUSES
+    ]
+    status_counts, _ = _report_status_counts(merged_rows)
+    validation["attempted"] = len(untouched) + int(result.validation.get("attempted", 0))
+    validation["repaired"] = status_counts["repaired"]
+    validation["gapped"] = status_counts["gapped"]
+    validation["errored"] = status_counts["errored"]
+
+    failures = Counter(validation.get("validator_failures_by_kind") or {})
+    warnings = Counter(validation.get("validator_warnings_by_kind") or {})
+    dropped = 0
+    dropped_by_kind: Counter[str] = Counter()
+    for row in untouched:
+        for item in row.get("validation_failures", []) or []:
+            if isinstance(item, Mapping) and item.get("kind"):
+                failures[str(item["kind"])] += 1
+        for kind in row.get("repaired_after", []) or []:
+            failures[str(kind)] += 1
+        for item in row.get("validation_warnings", []) or []:
+            if isinstance(item, Mapping) and item.get("kind"):
+                warnings[str(item["kind"])] += 1
+        dropped_items = row.get("dropped_instruction_sections", []) or []
+        dropped += len(dropped_items)
+        for item in dropped_items:
+            if isinstance(item, Mapping) and item.get("kind"):
+                dropped_by_kind[str(item["kind"])] += 1
+    validation["validator_failures_by_kind"] = dict(sorted(failures.items()))
+    validation["validator_warnings_by_kind"] = dict(sorted(warnings.items()))
+    validation["instruction_sections_dropped"] = int(
+        validation.get("instruction_sections_dropped", 0)
+    ) + dropped
+    prior_drop_counts = Counter(validation.get("instruction_drops_by_kind") or {})
+    prior_drop_counts.update(dropped_by_kind)
+    validation["instruction_drops_by_kind"] = dict(sorted(prior_drop_counts.items()))
+    return validation
+
+
 def run_real_document(
     *,
     root: str | Path,
     year: str,
     document_id: str,
     output_dir: str | Path | None = None,
+    process: str = "all",
+    prior_run_dir: str | Path | None = None,
 ) -> dict[str, Any]:
-    """Derive one real document and persist only its aggregate report."""
+    """Derive one document and persist a full or merged aggregate report."""
+    mode = _normalize_process(process)
+    if mode == "broken" and prior_run_dir is None:
+        raise ValueError("broken process requires prior_run_dir")
     root_path = Path(root).resolve()
     destination = _output_destination(root_path, output_dir)
+    prior_report = (
+        _load_prior_report(prior_run_dir, document_id)
+        if mode == "broken" and prior_run_dir is not None
+        else None
+    )
     config = load_config(root=root_path)
     document = load_document_input(document_id, year=year, root=root_path, config=config)
     outline = build_outline_tree(document)
     outline_nodes = _flatten_outline_nodes(outline.children)
     denominator = build_derivation_denominator(document, outline=outline)
     frame = build_cell_frame_from_document(document)
+    work_frame, prior_rows = _frame_for_process(
+        frame,
+        process=mode,
+        prior_report=prior_report,
+    )
     client = build_llm_client(config)
     prompt = load_cell_prompt(config, root=root_path)
     reference_inventory = build_reference_inventory(
@@ -134,7 +363,7 @@ def run_real_document(
         manifest=load_manifest(root=root_path),
     )
     result = derive_cells(
-        frame,
+        work_frame,
         prompt,
         None,
         client=client,
@@ -147,57 +376,24 @@ def run_real_document(
         seed=resolve_llm_seed(config),
         reference_inventory=reference_inventory,
     )
-    raw_status_counts = Counter(row.status for row in result.rows)
+    current_row_details = [_row_detail(row) for row in result.rows]
+    row_details = (
+        _merge_row_details(frame, current_row_details, prior_rows)
+        if mode == "broken"
+        else current_row_details
+    )
+    status_counts, raw_status_counts = _report_status_counts(row_details)
     selected_rows = [
         row
-        for row in result.rows
-        if get_structural_skip_reason(row.metadata) is None
+        for row in row_details
+        if not row.get("structural_skip_reason")
     ]
-    status_counts = {
-        "derived": raw_status_counts.get("derived", 0),
-        "repaired": raw_status_counts.get("repaired", 0),
-        "gapped": raw_status_counts.get("gapped", 0),
-        "errored": raw_status_counts.get("error", 0) + raw_status_counts.get("errored", 0),
-        "skipped": int(denominator["skipped"]),
-    }
-    row_details = [
-        {
-            "line": row.line,
-            "label_before": row.metadata.get("label_before", row.label),
-            "label_after": row.label,
-            "form_face_before": row.metadata.get("form_face_before", row.form_face_text),
-            "form_face_after": row.form_face_text,
-            "status": row.status,
-            "error": row.error,
-            "expression": row.expression,
-            "rendered": row.rendered,
-            "validation_failures": row.metadata.get("validation_failures", []),
-            "validation_warnings": row.metadata.get("validation_warnings", []),
-            "dropped_instruction_sections": row.metadata.get("dropped_instruction_sections", []),
-            "source_findings": row.metadata.get("evidence_findings", []),
-            "structural_skip_reason": get_structural_skip_reason(row.metadata),
-            "model_outcome": row.metadata.get("model_outcome", ""),
-            # What the model actually answered, kept even when it was rejected.
-            # Without this a failing row can only be counted, not diagnosed.
-            "attempted_payloads": row.metadata.get("attempted_payloads", []),
-            "unresolved_external_nodes": row.metadata.get("unresolved_external_nodes", []),
-            # The candidate writer consumes the exact evidence selected by
-            # the provider-side derivation.  Keep it beside the expression so
-            # a candidate can never be promoted without its citation.
-            "instruction_text": row.instruction_text,
-            "instruction_locator": row.instruction_locator,
-            "quote": row.quote,
-            "quote_span_id": row.quote_span_id,
-            "evidence_spans": row.metadata.get("evidence_spans", []),
-            "instruction_span_ids": row.metadata.get("instruction_span_ids", []),
-            "model": row.model,
-            "provider": row.provider,
-            "prompt_tokens": row.prompt_tokens,
-            "completion_tokens": row.completion_tokens,
-            "cost": row.cost,
-        }
-        for row in result.rows
-    ]
+    validation = _merged_validation(
+        result,
+        process=mode,
+        prior_rows=prior_rows,
+        merged_rows=row_details,
+    )
     unresolved_external_nodes = [
         {
             "form": document.document_id,
@@ -205,20 +401,21 @@ def run_real_document(
             **node,
         }
         for row in row_details
-        for node in row["unresolved_external_nodes"]
+        for node in row.get("unresolved_external_nodes", [])
     ]
     report = {
         "document_id": document.document_id,
         "year": str(year),
+        "process_mode": mode,
         "rows": len(selected_rows),
-        "rows_attempted": result.validation.get("attempted", 0),
+        "rows_attempted": validation.get("attempted", 0),
         "outline_node_count": len(outline_nodes),
         "line_anchor_count": sum(1 for node in outline_nodes if node.line_anchor),
         "row_status_counts": status_counts,
         "raw_row_status_counts": dict(sorted(raw_status_counts.items())),
         "rows_detail": row_details,
         "denominator": denominator,
-        "validation": result.validation_report,
+        "validation": validation,
         "reference_inventory": {
             "total_graph_nodes": len(reference_inventory.get("graph_nodes", [])),
             "scoped_graph_nodes": len(
@@ -262,8 +459,17 @@ def run_documents(
     document_ids: list[str] | None = None,
     output_dir: str | Path | None = None,
     no_provider: bool = False,
+    process: str = "all",
+    prior_run_dir: str | Path | None = None,
 ) -> list[dict[str, Any]]:
-    """Run the harness once per document and report load/provider failures."""
+    """Run the harness once per document, optionally reusing healthy rows.
+
+    The default is ``all``.  ``broken`` requires a prior run directory and
+    merges its successful rows into each newly written report.
+    """
+    mode = _normalize_process(process)
+    if mode == "broken" and prior_run_dir is None:
+        raise ValueError("broken process requires prior_run_dir")
     root_path = Path(root).resolve()
     if document_ids is None:
         document_ids = manifest_document_ids(root=root_path, year=year)
@@ -324,6 +530,8 @@ def run_documents(
                 year=year,
                 document_id=document_id,
                 output_dir=destination,
+                process=mode,
+                prior_run_dir=prior_run_dir,
             )
         except Exception as exc:  # noqa: BLE001 - report provider failures per document
             reports.append(
@@ -410,13 +618,30 @@ def main() -> int:
     parser.add_argument("--output-dir", default=None)
     parser.add_argument("--document", action="append", dest="documents")
     parser.add_argument("--no-provider", action="store_true")
+    parser.add_argument(
+        "--process",
+        choices=sorted(PROCESS_MODES),
+        default="all",
+        help="derive every row or only rows not successful in the prior run",
+    )
+    parser.add_argument(
+        "--prior-run-dir",
+        "--prior-run",
+        dest="prior_run_dir",
+        default=None,
+        help="prior run directory used by --process broken",
+    )
     args = parser.parse_args()
+    if args.process == "broken" and args.prior_run_dir is None:
+        parser.error("--prior-run-dir is required with --process broken")
     reports = run_documents(
         root=args.root,
         year=args.year,
         document_ids=args.documents,
         output_dir=args.output_dir,
         no_provider=args.no_provider,
+        process=args.process,
+        prior_run_dir=args.prior_run_dir,
     )
     print(yaml.safe_dump({"documents": reports}, sort_keys=False, allow_unicode=False).rstrip())
     return 0

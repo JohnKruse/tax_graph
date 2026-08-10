@@ -377,6 +377,22 @@ RAN: `git diff --check` -> **clean**.
 RAN: `.venv\Scripts\python.exe -m tax_graph.cli regenerate-candidate --run-dir C:\tmp\m20_s93\run --output-dir C:\Users\devbox\.codex\visualizations\2026\08\10\019feafa-3685-7523-a9c7-72fa3f22a1ce\m20_s93_candidate --expected-document form_1040_2025 --expected-document form_2441_2025 --expected-document form_6251_2025 --expected-document schedule_a_2025 --expected-document schedule_1a_2025 --expected-document schedule_1_2025 --expected-document schedule_2_2025 --expected-document schedule_3_2025 --expected-document schedule_b_2025 --expected-document schedule_d_2025 --expected-document form_8949_2025` -> **exit 1**, `ValueError: external stub id form_social_security_benefits_worksheet_2025_root_line_18 does not match canonical id social_security_benefits_worksheet_2025_root_line_18`.
 NOT RUN: full suite and provider/corpus re-derivation; the S93 acceptance seam requires the S94 broken-only implementation and a network-capable provider leg.
 
+**M20-S94 WORKER STATUS (2026-08-10):** Implemented `--process all|broken` in
+`experiments/derive_cells_s25.py`, with `all` as the default. Broken mode reads the prior
+document report, sends only rows whose recorded status is not `derived` or `repaired`, and
+merges untouched successful rows back into the complete current report. The report records
+`process_mode`; `pilot/run_report.py` displays it. Missing or malformed prior reports and
+duplicate prior lines fail closed. No graph, draft, review, or promoted artifact was changed.
+
+RAN: `$env:PYTEST_DEBUG_TEMPROOT=(Resolve-Path .test_tmp_codex).Path; .venv\Scripts\python.exe -m pytest tests\test_m20_s94.py tests\test_derive_cells_m20.py tests\test_candidate_regeneration_m20.py tests\test_m20_s90b.py tests\test_m20_s90c.py tests\test_derive_cells_s30.py tests\test_m20_s31.py tests\test_m20_s41.py pilot\test_run_report.py -q` -> **120 passed, 1 warning**.
+RAN: `.venv\Scripts\python.exe tools\check_ascii.py` -> **ASCII check OK**.
+RAN: `git diff --check` -> **clean**.
+NOT RUN: provider/corpus re-derivation command against `C:\tmp\m20_s93\run`; the scoped
+provider/network action was rejected by the safety review because it would send source-derived
+prompts and payloads to an external destination without explicit egress approval. NOT RUN: full
+suite; it exceeds the 600-second Worker command cap and the accepted known-red baseline remains
+Architect-side.
+
 
 ## Queued (ONE LINE each - do not spec ahead)
 
