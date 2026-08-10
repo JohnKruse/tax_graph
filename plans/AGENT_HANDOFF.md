@@ -328,80 +328,40 @@ resolve now, and whether they resolve to the RIGHT line is unreviewed.
 
 ## Current round
 
-**M20-S93 SPECCED BY ARCHITECT (2026-08-10). A LINE VALUE THAT IS NOT A LINE MUST FAIL AT
-DERIVATION, NOT AT THE GRAPH WRITER.** **REAL-PROJECT ROUND** - full-suite floor applies.
-**SMALL: this is one validator rule and its guards. Do not widen it.**
+**M20-S94 SPECCED BY ARCHITECT (2026-08-10), JOHN'S IDEA. RERUN ONLY THE BROKEN ROWS.**
+**REAL-PROJECT ROUND** - full-suite floor applies.
 
-**THE DEFECT: TWO STAGES DISAGREE ABOUT WHAT A LINE IS.** Derivation ACCEPTS an operand whose
-`line` is a phrase; the candidate writer then dies on it:
-`ValueError: candidate graph edge endpoint form_1040_nr_2025_root_line_tax_on_non_effectively_connected_income is not a canonical line address`
-**The wide corpus cannot be written at all today.** The writer's rule is already explicit -
-`candidate.py` requires `(?P<document>[a-z0-9_]+)_root_line_(?P<line>[0-9]+[a-z]?)`.
+**WHY, and the second reason matters more than the first.** The wide run is 410 anchors, $0.2574,
+~35 minutes, and only ~54 rows fail - so a broken-only pass is about **$0.03 and 4 minutes**.
+**The bigger win is stability: re-asking rows that already work is what makes the report drift.**
+`form_2441_2025` `19`/`21`/`25` have flipped in both directions across six runs and **the Architect
+misread that churn as signal twice.** Leave healthy rows alone and a changed number MEANS something.
 
-**THE CHANGE.** `validate_cell_output` rejects an operand whose `line` does not match
-`[0-9]+[a-z]?`, as a NAMED hard finding - propose `operand_line_not_canonical`. **Same rule the
-writer already enforces, applied one stage earlier**, so a bad address is a reported row instead of
-a crash. **In-corpus operands keep `operand_not_printed`; that check is unchanged.**
+**THE INTERFACE.** `--process all|broken`, **DEFAULT `all`** (John). With `broken`, take the prior
+run directory and re-derive only rows whose recorded status is NOT `derived` or `repaired`.
 
-**THE 11 ROWS IT CATCHES** (23 operand instances, from `C:\tmp\m20_wide\run`; **10 of the 11 are
-un`; **10 of the 11 are
-currently `derived`**):
-1040 `6b` -> `social_security_benefits_worksheet` line "taxable benefits";
-1040 `25c` -> `schedule_k1` line "withholding";
-Sch 2 `1d`/`1e`/`1y`/`19` -> `form_4255` lines "2a, column (l)", "1a, column (n)(1)" and 9 more;
-Sch 2 `17o` -> `form_1040_nr` line "tax on non-effectively connected income";
-Sch 3 `6f` -> `form_8936` line "Part III"; `6i` -> `form_8834` line "qualified electric vehicle
-credit"; `13c` -> `form_3800` line "6, column (j)";
-Sch A `5e` -> `state_and_local_tax_deduction_worksheet` line "amount".
+**THE TWO THINGS IT MUST GET RIGHT.**
+1. **MERGE, do not report the subset.** Carry the prior run's successful rows into the new report so
+   coverage stays against **all 410 printed anchors**. A report of "40 of 54" is a false alarm.
+   `pilot/run_report.py` must read a merged run unchanged.
+2. **The default stays `all`, and S93 is exactly why.** That round changed a VALIDATOR, so rows that
+   passed the day before now fail. **A broken-only pass would never have looked at them.**
+   **Broken-only is for iterating on a fix; process-all is what a round is accepted on.**
 
-**REPORT, DO NOT FIX, THE TWO CAUSES UNDERNEATH.** These rows are **correct answers with nowhere to
-put them** and both causes are queued separately: **column addresses** (the graph has them, the
-operand cannot say them) and **worksheets that are not documents yet**. **Do not add a `column`
-field in this round** - every column node id carries a PART and 8949 line numbers repeat across
-parts, so it needs design.
+**RECORD WHICH MODE PRODUCED THE REPORT** in the run output, so nobody compares a merged run against
+a full one without knowing.
 
-**THE FLOOR.** `regenerate-candidate` completes on all 11 documents. The 64 protected rows stay.
-**Coverage WILL DROP by up to 10 rows and that is correct** - they were passing while unwritable.
-**Report the new number honestly; do not chase it back up.**
+**OUT OF SCOPE: skipping human-VERIFIED cells.** That is stronger and separate - it must read the
+review ledger, not a prior run's status, because re-deriving an approved cell could silently replace
+an approved answer. **Queue it; do not fold it in here.**
 
-**TEST IT ONE CELL AT A TIME.** `rederive_cell('schedule_2_2025','1d')` and
-`pilot/row_bench.py --mode replay` reproduce these for cents. **Do not run a corpus derivation to
-check this round** (John, 2026-08-10).
+**THE FLOOR.** A `broken` pass over the S93 run reproduces the same totals as a full run, minus the
+rows it legitimately fixed. **Prove it on a real run dir, not a fixture.** Verify with
+`pilot/run_report.py`.
 
-**M20-S93 WORKER STATUS (2026-08-10):** Added the `operand_line_not_canonical` hard finding to
-`validate_cell_output` for same-form and source-backed external operands whose line value does
-not match `[0-9]+[a-z]?`. The existing `operand_document_not_found` guard remains the outcome for
-an unsourced unknown external document. No column field, worksheet model, candidate writer, or
-promoted artifact was changed.
-
-RAN: `$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp_s93';
-.venv\Scripts\python.exe -m pytest tests\test_derive_cells_m20.py -q` -> **74 passed, 1 warning**.
-RAN: `$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp_s93';
-.venv\Scripts\python.exe -m pytest tests\test_derive_cells_m20.py tests\test_candidate_regeneration_m20.py
-tests\test_m20_s90b.py tests\test_m20_s90c.py -q` -> **90 passed, 1 warning**.
-RAN: `.venv\Scripts\python.exe pilot\row_bench.py schedule_2_2025 --line 1d --mode replay
---run-dir C:\tmp\m20_wide\run` -> **exit 0**; the real row is rejected with
-`operand_line_not_canonical` and retains the expected unresolved-external warning.
-RAN: `.venv\Scripts\python.exe tools\check_ascii.py` -> **ASCII check OK**.
-RAN: `git diff --check` -> **clean**.
-NOT RUN: provider leg and corpus derivation; this round is explicitly provider-free and John
-required one-cell replay instead of a corpus run. NOT RUN: full suite; it exceeds the 600-second
-Worker command cap, with the accepted 19-failure baseline recorded above.
-
-**M20-S93 FOLLOW-UP VERIFICATION (2026-08-10):** The focused consumer set passes against the
-current tree. The first rerun with a new `.test_tmp_s93` root was an environment setup failure;
-the usable existing `.test_tmp_codex` root produced the result below. The current code has no
-uncommitted implementation diff. The next queued column round remains untouched: existing
-canonical column node ids carry both PART and COLUMN, so its operand wire shape needs an explicit
-contract before implementation.
-
-RAN: `$env:PYTEST_DEBUG_TEMPROOT=(Resolve-Path .test_tmp_codex).Path;
-.venv\Scripts\python.exe -m pytest tests\test_derive_cells_m20.py
-tests\test_candidate_regeneration_m20.py tests\test_m20_s90b.py tests\test_m20_s90c.py -q`
--> **90 passed, 1 warning**. RAN: `.venv\Scripts\python.exe pilot\row_bench.py schedule_2_2025
---line 1d --mode replay --run-dir C:\tmp\m20_wide\run` -> **exit 0**; the real row is
-rejected with `operand_line_not_canonical`. RAN: `.venv\Scripts\python.exe tools\check_ascii.py`
--> **ASCII check OK**. RAN: `git diff --check` -> **clean**.
+**IMMEDIATE USE, so this pays for itself the day it lands:** S93's floor is still unproven because
+the stored run carries stub ids minted by the OLD builder. **A broken-only pass over
+`C:\tmp\m20_s93\run` is how we finish S93 for four minutes instead of thirty-five.**
 
 
 ## Queued (ONE LINE each - do not spec ahead)
