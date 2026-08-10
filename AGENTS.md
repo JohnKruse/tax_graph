@@ -542,6 +542,23 @@ real form defeats the borrowed shape.
   opens the live graph to pipeline output. **Until that round lands and is accepted, this gate is
   unchanged** - a safety gate is never lifted before its replacement is in place, and every round
   before then still reports an empty protected-set diff.
+- **A HUMAN COMMENT IS A BUG REPORT, NOT A PATCH (John, 2026-08-10).** Reviewer correctives are a
+  **last-ditch band-aid and must NOT be relied on for the identified core document set.** No hand
+  crafting in that set either. **A stored comment that makes a cell correct IS hand-authoring under
+  another name** - the graph then looks pipeline-derived while being hand-steered, and nobody can
+  tell which cells are which. **Every corrective must produce a PIPELINE change; otherwise the
+  band-aid silently becomes the mechanism.**
+  **What IS allowed and preferred:** AI models making the decision, voting, and **telltale
+  indicators printed in the documents themselves.** The whole 11-document run costs $0.25, so
+  three-way voting on disagreements is affordable.
+  **Proven value of printed telltales, both found 2026-08-09:** "Keep for Your Records" marks every
+  worksheet box, and the line number brackets its clause on **95% of 406 anchors**. Ask what the
+  FORM tells us before writing a parser.
+  **The re-ask loop (`rederive_cell(document_id, line, draft_comment)`) is the DIAGNOSTIC for this.**
+  Measured 2026-08-10: a corrective stating the right answer made the model produce the correct
+  answer on 4 of 4 rows, and **all 4 were then rejected by system limits** - a corrective that still
+  fails names the missing capability. **Prohibitions do the opposite:** "never do X" produced
+  wrong-but-passing answers on 3 of 4, dropping a column and losing half a rule while going green.
 - **A NAMED WORKSHEET IS ITS OWN DOCUMENT, however small (John, 2026-08-09).** If the instructions
   call it a worksheet, it is modelled in the graph as a document with its own lines - **naming
   decides, not size and not how many rows reference it.** The Credit Limit Worksheet's 3 steps get
