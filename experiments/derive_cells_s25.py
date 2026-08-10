@@ -513,10 +513,22 @@ def run_real_document(
         for row in row_details
         for node in row.get("unresolved_external_nodes", [])
     ]
+    # What THIS pass actually spent, kept apart from the merged totals.  The
+    # merged `rows_attempted` and per-row `cost` carry the prior run's figures
+    # forward, so without these a broken pass and a full pass are
+    # indistinguishable except by the mode flag - and the saving that
+    # justifies the mode cannot be checked at all.
+    pass_rows = [_row_detail(row) for row in result.rows]
+    pass_cost = sum(float(row.get("cost") or 0.0) for row in pass_rows)
+    pass_status_counts, _ = _report_status_counts(pass_rows)
     report = {
         "document_id": document.document_id,
         "year": str(year),
         "process_mode": mode,
+        "pass_rows_sent": len(pass_rows),
+        "pass_rows_attempted": int(result.validation_report.get("attempted", 0)),
+        "pass_cost": round(pass_cost, 6),
+        "pass_row_status_counts": pass_status_counts,
         "rows": len(selected_rows),
         "rows_attempted": validation.get("attempted", 0),
         "outline_node_count": len(outline_nodes),
