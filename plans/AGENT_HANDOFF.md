@@ -420,14 +420,26 @@ Worker command cap, with the accepted 19-failure baseline recorded above.
    1040 `1a` from the reference guard.
 4. **A LEAF MEANING "SUPPLIED HERE".** The only genuinely NEW vocabulary; needs the enum gate.
    Blocks 2441 `5`, where `REQUIRE_INPUT` is legal as a whole rule but not as a lookup branch.
-5. **Repair calls that return an unchanged payload** must be detected and not spent (2441 `5`).
-6. **`CASE` / alternation** - still HELD; revisit with the wide-run evidence.
-7. **"Report issue" from a reviewer corrective** (John, 2026-08-10) - optional and **never hidden**;
+5. **RERUN ONLY THE BROKEN ROWS** (John, 2026-08-10). `--process broken|all`, **default `all`**.
+   **~10x win, measured:** the wide run is 410 anchors, $0.2512, ~35 min; only ~54 rows fail, so a
+   broken-only pass is roughly $0.03 and 4 minutes. **The bigger benefit is stability** - re-running
+   healthy rows is what produces the 2441 `19`/`21`/`25` churn the Architect has twice misread as
+   signal; leave them alone and a changed number MEANS something.
+   **MUST MERGE with the prior run, not report the subset** - otherwise coverage reads 40 of 54 and
+   looks catastrophic; totals stay against all 410 printed anchors.
+   **John's default is right and S93 is why:** a round that changes a VALIDATOR makes yesterday's
+   passing rows fail, and broken-only would hide exactly that. **Broken-only is for iterating on a
+   fix; process-all is what a round is accepted on.**
+   **"Skip VERIFIED" is a separate, later step** - re-deriving a human-approved cell could silently
+   replace an approved answer, so it must read the review ledger, not a prior run's status.
+6. **Repair calls that return an unchanged payload** must be detected and not spent (2441 `5`).
+7. **`CASE` / alternation** - still HELD; revisit with the wide-run evidence.
+8. **"Report issue" from a reviewer corrective** (John, 2026-08-10) - optional and **never hidden**;
    emit a ready-to-paste GitHub body, no network and no auth to maintain. **Cluster by failure kind
    and answer shape, not by form**, so 50 reports of one cause collapse into one issue. Derivation
    runs on BLANK forms so the payload carries no filer data; **the reviewer's own comment is the one
    field needing a preview before sending.** Product work - after the core set is reliable.
-8. **Housekeeping:** `pilot/context_arms.py` still scores `REQUIRE_INPUT` as a recovered formula;
+9. **Housekeeping:** `pilot/context_arms.py` still scores `REQUIRE_INPUT` as a recovered formula;
    run-together instruction headings (`**Line 2dDepletion**`); artifact-pinned test counts measured
    against untracked `.cache/raw`; `form_8949_2025` needs table-form treatment (4 anchors, 0
    admitted); 2441 `19`/`21`/`25` are a KNOWN-UNSTABLE set - do not read them as signal.
