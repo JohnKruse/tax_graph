@@ -35,11 +35,42 @@ def _prior() -> dict[str, object]:
     return {
         "document_id": "form_test_2025",
         "rows_detail": [
-            {"line": "1", "status": "derived", "expression": {"op": "COPY"}},
-            {"line": "2", "status": "repaired", "expression": {"op": "COPY"}},
-            {"line": "3", "status": "error", "error": "payload"},
+            {
+                "line": "1",
+                "status": "derived",
+                "label_before": "one",
+                "form_face_before": "One",
+                "instruction_text": "",
+                "instruction_locator": "",
+                "expression": {"op": "COPY"},
+            },
+            {
+                "line": "2",
+                "status": "repaired",
+                "label_before": "two",
+                "form_face_before": "Two",
+                "instruction_text": "",
+                "instruction_locator": "",
+                "expression": {"op": "COPY"},
+            },
+            {
+                "line": "3",
+                "status": "error",
+                "label_before": "three",
+                "form_face_before": "Three",
+                "instruction_text": "",
+                "instruction_locator": "",
+                "error": "payload",
+            },
         ],
     }
+
+
+def _duplicate_frame() -> CellFrame:
+    return CellFrame([
+        CellRecord(form="form_test_2025", line="1", label="first", form_face_text="First"),
+        CellRecord(form="form_test_2025", line="1", label="second", form_face_text="Second"),
+    ])
 
 
 def test_all_is_the_default_and_processes_every_row() -> None:
@@ -64,6 +95,60 @@ def test_broken_process_requires_a_prior_report() -> None:
         _frame_for_process(_frame(), process="broken", prior_report=None)
 
 
+def test_broken_process_rederives_a_success_when_source_packet_changed() -> None:
+    prior = _prior()
+    prior["rows_detail"][0]["form_face_before"] = "Changed"
+
+    work, _ = _frame_for_process(_frame(), process="broken", prior_report=prior)
+
+    assert [row.line for row in work.rows] == ["1", "3", "4"]
+
+
+def test_broken_process_rejects_malformed_prior_rows() -> None:
+    with pytest.raises(ValueError, match="non-object row"):
+        _frame_for_process(
+            _frame(),
+            process="broken",
+            prior_report={"document_id": "form_test_2025", "rows_detail": ["bad"]},
+        )
+
+
+def test_repeated_printed_lines_are_rederived_as_one_flow_group() -> None:
+    prior = {
+        "document_id": "form_test_2025",
+        "rows_detail": [
+            {
+                "line": "1",
+                "status": "derived",
+                "label_before": "first",
+                "form_face_before": "First",
+                "instruction_text": "",
+                "instruction_locator": "",
+            },
+            {
+                "line": "1",
+                "status": "derived",
+                "label_before": "second",
+                "form_face_before": "Second",
+                "instruction_text": "",
+                "instruction_locator": "",
+            },
+        ],
+    }
+
+    work, prior_rows = _frame_for_process(
+        _duplicate_frame(), process="broken", prior_report=prior
+    )
+    merged = _merge_row_details(
+        _duplicate_frame(),
+        [{"line": "1", "status": "error"}, {"line": "1", "status": "error"}],
+        prior_rows,
+    )
+
+    assert [row.line for row in work.rows] == ["1", "1"]
+    assert [row["status"] for row in merged] == ["error", "error"]
+
+
 def test_merge_keeps_all_current_rows_and_carries_only_prior_successes() -> None:
     current = [
         {"line": "3", "status": "repaired", "expression": {"op": "COPY"}},
@@ -74,8 +159,24 @@ def test_merge_keeps_all_current_rows_and_carries_only_prior_successes() -> None
         _frame(),
         current,
         {
-            "1": {"line": "1", "status": "derived", "expression": {"op": "OLD"}},
-            "2": {"line": "2", "status": "repaired", "expression": {"op": "OLD"}},
+            "1": {
+                "line": "1",
+                "status": "derived",
+                "label_before": "one",
+                "form_face_before": "One",
+                "instruction_text": "",
+                "instruction_locator": "",
+                "expression": {"op": "OLD"},
+            },
+            "2": {
+                "line": "2",
+                "status": "repaired",
+                "label_before": "two",
+                "form_face_before": "Two",
+                "instruction_text": "",
+                "instruction_locator": "",
+                "expression": {"op": "OLD"},
+            },
             "3": {"line": "3", "status": "error"},
         },
     )
@@ -83,6 +184,19 @@ def test_merge_keeps_all_current_rows_and_carries_only_prior_successes() -> None
     assert [row["line"] for row in merged] == ["1", "2", "3", "4"]
     assert [row["status"] for row in merged] == ["derived", "repaired", "repaired", "error"]
     assert merged[0]["expression"] == {"op": "OLD"}
+
+
+def test_merge_fails_closed_when_a_broken_result_drops_a_row() -> None:
+    with pytest.raises(ValueError, match="missing row for line 4"):
+        _merge_row_details(
+            _frame(),
+            [
+                {"line": "1", "status": "error"},
+                {"line": "2", "status": "error"},
+                {"line": "3", "status": "error"},
+            ],
+            {},
+        )
 
 
 def test_status_counts_normalize_error_without_losing_raw_status() -> None:
@@ -235,6 +349,7 @@ def test_real_broken_run_writes_a_complete_merged_report(
     assert [row["status"] for row in report["rows_detail"]] == [
         "derived", "repaired", "repaired", "error",
     ]
+    assert all(row["source_fingerprint"] for row in report["rows_detail"])
     assert report["row_status_counts"] == {
         "derived": 1,
         "repaired": 2,

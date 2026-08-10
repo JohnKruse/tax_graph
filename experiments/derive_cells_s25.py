@@ -11,6 +11,8 @@ from __future__ import annotations
 import argparse
 from collections import Counter
 from dataclasses import replace
+import hashlib
+import json
 from pathlib import Path
 import sys
 import tempfile
@@ -141,7 +143,7 @@ def _load_prior_report(run_dir: str | Path, document_id: str) -> dict[str, Any]:
     if not isinstance(payload, dict):
         raise ValueError(f"prior derivation report must be an object: {path}")
     recorded_document = str(payload.get("document_id") or "")
-    if recorded_document and recorded_document != document_id:
+    if recorded_document != document_id:
         raise ValueError(
             f"prior derivation report document {recorded_document} does not match {document_id}"
         )
@@ -160,19 +162,82 @@ def _row_key(row: Mapping[str, Any] | Any) -> str:
     return str(value or "").strip().lower()
 
 
-def _prior_rows_by_line(report: Mapping[str, Any]) -> dict[str, Mapping[str, Any]]:
-    """Index prior rows, rejecting duplicate printed anchors instead of guessing."""
-    result: dict[str, Mapping[str, Any]] = {}
+def _prior_rows_by_line(report: Mapping[str, Any]) -> dict[str, list[Mapping[str, Any]]]:
+    """Index prior rows by printed line while preserving repeated flow positions."""
+    result: dict[str, list[Mapping[str, Any]]] = {}
     for row in report.get("rows_detail", []) or []:
         if not isinstance(row, Mapping):
-            continue
+            raise ValueError("prior derivation report has a non-object row")
         key = _row_key(row)
         if not key:
-            continue
-        if key in result:
-            raise ValueError(f"prior derivation report has duplicate row for line {key}")
-        result[key] = row
+            raise ValueError("prior derivation report has a row without a line")
+        result.setdefault(key, []).append(row)
     return result
+
+
+def _prior_group(
+    prior_rows: Mapping[str, Mapping[str, Any] | list[Mapping[str, Any]]],
+    key: str,
+) -> list[Mapping[str, Any]]:
+    """Normalize one prior-line entry, including legacy test mappings."""
+    value = prior_rows.get(key)
+    if value is None:
+        return []
+    if isinstance(value, Mapping):
+        return [value]
+    if isinstance(value, list) and all(isinstance(item, Mapping) for item in value):
+        return value
+    raise ValueError(f"prior derivation report has malformed rows for line {key}")
+
+
+def _source_fields(row: Mapping[str, Any] | Any) -> dict[str, str]:
+    """Return the source packet fields that determine whether a row is reusable."""
+    if isinstance(row, Mapping):
+        label = row.get("label_before", row.get("label", ""))
+        form_face = row.get("form_face_before", row.get("form_face_text", ""))
+        instruction_text = row.get("instruction_text", "")
+        instruction_locator = row.get("instruction_locator", "")
+    else:
+        metadata = getattr(row, "metadata", {}) or {}
+        label = metadata.get("label_before", getattr(row, "label", ""))
+        form_face = metadata.get("form_face_before", getattr(row, "form_face_text", ""))
+        instruction_text = getattr(row, "instruction_text", "")
+        instruction_locator = getattr(row, "instruction_locator", "")
+    return {
+        "label_before": str(label or ""),
+        "form_face_before": str(form_face or ""),
+        "instruction_text": str(instruction_text or ""),
+        "instruction_locator": str(instruction_locator or ""),
+    }
+
+
+def _source_fingerprint(row: Mapping[str, Any] | Any) -> str:
+    """Return a stable digest of the source evidence supplied to one row."""
+    encoded = json.dumps(
+        _source_fields(row),
+        ensure_ascii=True,
+        sort_keys=True,
+        separators=(",", ":"),
+    ).encode("ascii")
+    return hashlib.sha256(encoded).hexdigest()
+
+
+def _prior_row_is_reusable(
+    source_row: Mapping[str, Any] | Any,
+    prior_row: Mapping[str, Any] | None,
+) -> bool:
+    """Return whether a prior success belongs to the current source packet."""
+    if prior_row is None:
+        return False
+    if str(prior_row.get("status") or "").lower() not in SUCCESS_STATUSES:
+        return False
+    recorded = str(prior_row.get("source_fingerprint") or "")
+    if recorded:
+        return recorded == _source_fingerprint(source_row)
+    required = set(_source_fields(source_row))
+    if not required.issubset(prior_row):
+        return False
+    return _source_fields(source_row) == _source_fields(prior_row)
 
 
 def _frame_for_process(
@@ -180,12 +245,13 @@ def _frame_for_process(
     *,
     process: str,
     prior_report: Mapping[str, Any] | None,
-) -> tuple[CellFrame, dict[str, Mapping[str, Any]]]:
+) -> tuple[CellFrame, dict[str, list[Mapping[str, Any]]]]:
     """Select provider work and return the prior rows needed for a merge.
 
-    A broken-only pass never asks the provider about a row that already has a
-    shippable answer.  Rows absent from the prior report remain in the work
-    frame, which makes new anchors fail open into the ordinary derivation path.
+    A broken-only pass never asks the provider about a uniquely identified row
+    that already has a shippable answer. Repeated printed lines are rederived
+    as a group because their occurrence in the form flow is the only stable
+    local disambiguator available to this report format.
     """
     mode = _normalize_process(process)
     if mode == "all":
@@ -193,12 +259,18 @@ def _frame_for_process(
     if prior_report is None:
         raise ValueError("broken process requires a prior derivation report")
     prior_rows = _prior_rows_by_line(prior_report)
-    selected = [
-        row
-        for row in frame.rows
-        if str(prior_rows.get(_row_key(row), {}).get("status") or "").lower()
-        not in SUCCESS_STATUSES
-    ]
+    frame_counts = Counter(_row_key(row) for row in frame.rows)
+    selected = []
+    for row in frame.rows:
+        key = _row_key(row)
+        group = _prior_group(prior_rows, key)
+        reusable = (
+            frame_counts[key] == 1
+            and len(group) == 1
+            and _prior_row_is_reusable(row, group[0])
+        )
+        if not reusable:
+            selected.append(row)
     return CellFrame(selected), prior_rows
 
 
@@ -206,6 +278,7 @@ def _row_detail(row: Any) -> dict[str, Any]:
     """Serialize one derived row in the report schema."""
     return {
         "line": row.line,
+        "source_fingerprint": _source_fingerprint(row),
         "label_before": row.metadata.get("label_before", row.label),
         "label_after": row.label,
         "form_face_before": row.metadata.get("form_face_before", row.form_face_text),
@@ -245,18 +318,47 @@ def _row_detail(row: Any) -> dict[str, Any]:
 def _merge_row_details(
     frame: CellFrame,
     current_rows: list[Mapping[str, Any]],
-    prior_rows: Mapping[str, Mapping[str, Any]],
+    prior_rows: Mapping[str, Mapping[str, Any] | list[Mapping[str, Any]]],
 ) -> list[dict[str, Any]]:
-    """Merge current broken-row results with untouched successful prior rows."""
-    current_by_line = {_row_key(row): dict(row) for row in current_rows if _row_key(row)}
+    """Merge current results with reusable prior successes without dropping rows."""
+    current_by_line: dict[str, list[dict[str, Any]]] = {}
+    for row in current_rows:
+        key = _row_key(row)
+        if not key:
+            raise ValueError("current derivation result has a row without a line")
+        current_by_line.setdefault(key, []).append(dict(row))
+    frame_keys = [_row_key(row.as_dict()) for row in frame.rows]
+    if any(not key for key in frame_keys):
+        raise ValueError("current cell frame has a row without a line")
+    frame_counts = Counter(frame_keys)
+    unexpected = sorted(set(current_by_line) - set(frame_counts))
+    if unexpected:
+        raise ValueError(
+            "current derivation result has rows outside the current frame: "
+            + ", ".join(unexpected)
+        )
+    for key, rows in current_by_line.items():
+        if len(rows) != frame_counts[key]:
+            raise ValueError(
+                f"current derivation result has {len(rows)} rows for line {key}; "
+                f"expected {frame_counts[key]}"
+            )
     merged: list[dict[str, Any]] = []
+    positions: Counter[str] = Counter()
     for source_row in frame.rows:
         key = _row_key(source_row.as_dict())
-        prior = prior_rows.get(key)
-        if prior is not None and str(prior.get("status") or "").lower() in SUCCESS_STATUSES:
-            merged.append(dict(prior))
-        elif key in current_by_line:
-            merged.append(current_by_line[key])
+        position = positions[key]
+        positions[key] += 1
+        prior_group = _prior_group(prior_rows, key)
+        prior = prior_group[0] if len(prior_group) == 1 else None
+        if frame_counts[key] == 1 and _prior_row_is_reusable(source_row, prior):
+            carried = dict(prior)
+            carried["source_fingerprint"] = _source_fingerprint(source_row)
+            merged.append(carried)
+        elif position < len(current_by_line.get(key, [])):
+            merged.append(current_by_line[key][position])
+        else:
+            raise ValueError(f"current derivation result is missing row for line {key}")
     return merged
 
 
@@ -277,7 +379,8 @@ def _merged_validation(
     result: Any,
     *,
     process: str,
-    prior_rows: Mapping[str, Mapping[str, Any]],
+    frame: CellFrame,
+    prior_rows: Mapping[str, Mapping[str, Any] | list[Mapping[str, Any]]],
     merged_rows: list[Mapping[str, Any]],
 ) -> dict[str, Any]:
     """Build validation totals whose scope matches the merged row report."""
@@ -285,11 +388,17 @@ def _merged_validation(
     if _normalize_process(process) == "all":
         return validation
 
-    untouched = [
-        row
-        for row in prior_rows.values()
-        if str(row.get("status") or "").lower() in SUCCESS_STATUSES
-    ]
+    frame_counts = Counter(_row_key(row) for row in frame.rows)
+    untouched = []
+    for source_row in frame.rows:
+        key = _row_key(source_row)
+        group = _prior_group(prior_rows, key)
+        if (
+            frame_counts[key] == 1
+            and len(group) == 1
+            and _prior_row_is_reusable(source_row, group[0])
+        ):
+            untouched.append(group[0])
     status_counts, _ = _report_status_counts(merged_rows)
     validation["attempted"] = len(untouched) + int(result.validation.get("attempted", 0))
     validation["repaired"] = status_counts["repaired"]
@@ -391,6 +500,7 @@ def run_real_document(
     validation = _merged_validation(
         result,
         process=mode,
+        frame=frame,
         prior_rows=prior_rows,
         merged_rows=row_details,
     )

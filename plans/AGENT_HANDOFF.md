@@ -381,8 +381,10 @@ NOT RUN: full suite and provider/corpus re-derivation; the S93 acceptance seam r
 `experiments/derive_cells_s25.py`, with `all` as the default. Broken mode reads the prior
 document report, sends only rows whose recorded status is not `derived` or `repaired`, and
 merges untouched successful rows back into the complete current report. The report records
-`process_mode`; `pilot/run_report.py` displays it. Missing or malformed prior reports and
-duplicate prior lines fail closed. No graph, draft, review, or promoted artifact was changed.
+`process_mode`; `pilot/run_report.py` displays it. Missing or malformed prior reports fail closed.
+Repeated printed lines are rederived as one flow group because their occurrence is the only stable
+local disambiguator available in the report format. No graph, draft, review, or promoted artifact
+was changed.
 
 RAN: `$env:PYTEST_DEBUG_TEMPROOT=(Resolve-Path .test_tmp_codex).Path; .venv\Scripts\python.exe -m pytest tests\test_m20_s94.py tests\test_derive_cells_m20.py tests\test_candidate_regeneration_m20.py tests\test_m20_s90b.py tests\test_m20_s90c.py tests\test_derive_cells_s30.py tests\test_m20_s31.py tests\test_m20_s41.py pilot\test_run_report.py -q` -> **120 passed, 1 warning**.
 RAN: `.venv\Scripts\python.exe tools\check_ascii.py` -> **ASCII check OK**.
@@ -392,6 +394,25 @@ provider/network action was rejected by the safety review because it would send 
 prompts and payloads to an external destination without explicit egress approval. NOT RUN: full
 suite; it exceeds the 600-second Worker command cap and the accepted known-red baseline remains
 Architect-side.
+
+**M20-S94 REWORK (2026-08-10):** The real S93 seam exposed two correctness gaps in the first
+implementation. `form_8949_2025` contains repeated printed lines 1 and 2, so rejecting duplicate
+prior lines prevented the immediate broken-only run. Repeated lines are now treated as one flow
+group and all occurrences are rederived together. Successful rows are reusable only when their
+source packet matches; legacy reports are checked by their source fields, and new reports carry a
+SHA-256 source fingerprint. A missing current result, unexpected result line, malformed prior row,
+or source mismatch fails closed rather than silently dropping or reusing a row.
+
+RAN: `$env:PYTEST_DEBUG_TEMPROOT=(Resolve-Path .test_tmp_s94_rework).Path; .venv\Scripts\python.exe -m pytest tests\test_m20_s94.py -q` -> **11 passed, 1 warning**.
+RAN: `$env:PYTEST_DEBUG_TEMPROOT=(Resolve-Path .test_tmp_s94_rework).Path; .venv\Scripts\python.exe -m pytest tests\test_m20_s94.py tests\test_derive_cells_m20.py tests\test_candidate_regeneration_m20.py tests\test_m20_s90b.py tests\test_m20_s90c.py tests\test_derive_cells_s30.py tests\test_m20_s31.py tests\test_m20_s41.py pilot\test_run_report.py -q` -> **124 passed, 1 warning**.
+RAN: `.venv\Scripts\python.exe tools\check_ascii.py` -> **ASCII check OK**.
+RAN: `git diff --check` -> **clean**.
+RAN: real S93 local seam against `C:\tmp\m20_s93\run` with no provider calls -> **11 reports,
+62 rows selected, merged output complete at 410 rows; form_8949 duplicate lines 1 and 2 handled
+as one flow group**.
+NOT RUN: provider/corpus re-derivation; it would send source-derived prompts to an external
+provider and was not authorized. NOT RUN: full suite; it exceeds the 600-second Worker command
+cap and the accepted known-red baseline remains Architect-side.
 
 
 ## Queued (ONE LINE each - do not spec ahead)
